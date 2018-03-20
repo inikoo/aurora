@@ -66,7 +66,7 @@
 console.log(flag_label)
 
 
-                    $('#flag_location_'+$('#edit_location_dialog').attr('location_key')).removeClass('fa-flag-o super_discreet blue green orange pink purple red yellow').addClass('fa-flag '+flag_color).prop('title',flag_label)
+                    $('#flag_location_'+$('#edit_location_dialog').attr('location_key')).removeClass('far super_discreet blue green orange pink purple red yellow').addClass('fa fa-flag '+flag_color).prop('title',flag_label)
                     $('#edit_location_dialog').addClass('hide')
 
                 } else if (data.state == '400') {

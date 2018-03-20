@@ -166,7 +166,7 @@
                 <div id="undo_submit_operations" class="email_campaign_operation {if $email_campaign->get('State Index')!=50}hide{/if}">
                     <div class="square_button left" title="{t}Stop sending emails{/t}">
 												<span class="fa-stack" onclick="toggle_email_campaign_operation_dialog('undo_submit')">
-						<i class="fa fa-paper-plane-o discreet " aria-hidden="true"></i>
+						<i class="fa fa-paper-plane discreet " aria-hidden="true"></i>
 						<i class="fa fa-ban fa-stack-1x discreet error"></i>
 						</span>
 
@@ -192,7 +192,7 @@
 
                 <div id="schedule_mailshot_operations" class="email_campaign_operation {if {$email_campaign->get('State Index')}!=30  }hide{/if}">
                     <div  class="square_button right  " title="{t}Schedule mailshot{/t}">
-                        <i class="fa fa-clock-o  " aria-hidden="true" onclick="toggle_order_operation_dialog('schedule_mailshot')"></i>
+                        <i class="far fa-clock  " aria-hidden="true" onclick="toggle_order_operation_dialog('schedule_mailshot')"></i>
 
 
 

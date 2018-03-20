@@ -197,7 +197,7 @@ tr {
   height: $height_header;
 }
 
-.fa {
+.fa,.fal,.fas,.far,.fab {
   @include unselectable;
 }
 
@@ -442,7 +442,7 @@ input {
         background-color: $header_background_color;
         color: #333;
         padding: 0px 30px;
-        .fa {
+        .fa,.far,.fas,.fab,.fal {
           margin-right: 5px;
           color: #999;
         }

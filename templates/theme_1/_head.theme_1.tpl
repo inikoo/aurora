@@ -60,6 +60,8 @@
 
 
 
+    <link rel="stylesheet" href="/EcomB2B/css/fontawesome-all.min.css" type="text/css"/>
+
     <link rel="stylesheet" href="/EcomB2B/css/style.theme_1.EcomB2B.css" type="text/css"/>
 
 
@@ -68,8 +70,7 @@
 
 
 
-       <!-- <link rel="stylesheet" href="https://use.fontawesome.com/3052dece40.css"> -->
-    <link rel="stylesheet" href="/theme_1/local/font-awesome/css/font-awesome.min.css">
+
 
     <!--
    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css" integrity="sha384-BVYiiSIFeK1dGmJRAkycuHAHRg32OmUcww7on3RYdg4Va+PmSTsz/K68vbdEjh4u" crossorigin="anonymous">

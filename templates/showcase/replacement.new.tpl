@@ -44,7 +44,7 @@
                 <div style="float:left;padding-bottom:20px;padding-right:20px" class="Delivery_Address">
                     <div style="margin-bottom:10px">
                         <span class="{if $order->get('Order For Collection')=='Yes'}hide{/if}"><i   class="   fa fa-truck fa-flip-horizontal button" aria-hidden="true""></i>{t}Deliver to{/t}</span>
-                        <span class="{if $order->get('Order For Collection')=='No'}hide{/if}"><i   class="   fa fa-hand-rock-o fa-flip-horizontal button" aria-hidden="true""></i>{t}Collection{/t}</span>
+                        <span class="{if $order->get('Order For Collection')=='No'}hide{/if}"><i   class="   far fa-hand-rock fa-flip-horizontal button" aria-hidden="true""></i>{t}Collection{/t}</span>
 
                     </div>
 

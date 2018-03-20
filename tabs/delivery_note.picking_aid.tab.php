@@ -77,7 +77,7 @@ $table_buttons   = array();
 if($warehouse->get('Warehouse Delivery Note Processing Block')=='offline'){
 
     $table_buttons[] = array(
-        'icon'     => 'hand-lizard-o  fa-rotate-270',
+        'icon'     => 'hand-lizard  fa-rotate-270',
         'title'    => _('Pick delivery'),
         'id'       => 'pick_offline_delivery',
         'class'    => 'items_operation'.($state['_object']->get('State Index')>0 and  $state['_object']->get('State Index')<80   ? ' hide' : ''),
@@ -92,7 +92,7 @@ if($warehouse->get('Warehouse Delivery Note Processing Block')=='offline'){
 }else {
 
     $table_buttons[] = array(
-        'icon'     => 'hand-lizard-o  fa-rotate-270',
+        'icon'     => 'hand-lizard  fa-rotate-270',
         'title'    => _('Pick delivery'),
         'id'       => 'pick_real_time_delivery',
         'class'    => 'items_operation'.($state['_object']->get('State Index')>0 and  $state['_object']->get('State Index')<80   ? ' hide' : ''),

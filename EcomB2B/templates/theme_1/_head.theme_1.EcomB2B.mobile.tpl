@@ -29,14 +29,15 @@
 
     <link href="/css/sweetalert.css" rel="stylesheet">
 
-    <link rel="stylesheet" type="text/css" href="/theme_1/mobile/style.css?v=180301v5">
     <link rel="stylesheet" type="text/css" href="/theme_1/mobile/skin.css">
     <link rel="stylesheet" type="text/css" href="/theme_1/mobile/framework.css?v=171011b">
     <link rel="stylesheet" type="text/css" href="/theme_1/mobile/ionicons.min.css">
-    <link rel="stylesheet" type="text/css" href="/theme_1/sky_forms/css/sky-forms.css"  media="all">
-    <link rel="stylesheet" type="text/css" href="/theme_1/css/aurora.theme_1.EcomB2B.mobile.css?v=171011" />
-    <link rel="stylesheet" href="/theme_1/local/font-awesome/css/font-awesome.min.css">
+    <link rel="stylesheet" type="text/css" href="/theme_1/sky_forms/css/sky-forms.css?v=2"  media="all">
+    <link rel="stylesheet" type="text/css" href="/theme_1/css/aurora.theme_1.EcomB2B.mobile.css?v=171011v2" />
 
+    <link rel="stylesheet" href="/css/fontawesome-all.min.css" type="text/css"/>
+
+    <link rel="stylesheet" type="text/css" href="/theme_1/mobile/style.css?v=180301v6">
 
     <script src="/theme_1/mobile/jquery.js"></script>
     <script src="/theme_1/mobile/plugins.js"></script>
@@ -50,7 +51,7 @@
     <script src="/theme_1/sky_forms/js/jquery.validate.min.js"></script>
     <script src="/theme_1/sky_forms/js/additional-methods.min.js"></script>
 
-    <script src="/js/aurora.js?20180115v3"></script>
+    <script src="/js/aurora.js?20180319"></script>
     <script src="/js/validation.js"></script>
 
     <script src="/js/ordering.touch.js?20180115"></script>

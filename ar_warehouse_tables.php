@@ -218,7 +218,7 @@ function locations($_data, $db, $user, $account) {
             'flag'               => ($data['Warehouse Flag Key'] ? sprintf(
                 '<i id="flag_location_%d" class="fa fa-flag %s button" aria-hidden="true" onclick="show_edit_flag_dialog(this)" location_key="%d" title="%s"></i>', $data['Location Key'], strtolower($data['Warehouse Flag Color']), $data['Location Key'],
                 $data['Warehouse Flag Label']
-            ) : '<i id="flag_location_'.$data['Location Key'].'"  class="fa fa-flag-o super_discreet button" aria-hidden="true" onclick="show_edit_flag_dialog(this)" key="" ></i>'),
+            ) : '<i id="flag_location_'.$data['Location Key'].'"  class="far fa-flag super_discreet button" aria-hidden="true" onclick="show_edit_flag_dialog(this)" key="" ></i>'),
             'flag_key'           => $data['Warehouse Flag Key'],
             'area'               => $data['Warehouse Area Code'],
             'max_weight'         => $max_weight,
@@ -283,7 +283,7 @@ function replenishments($_data, $db, $user) {
             'id'                    => (integer)$data['Location Key'],
             'location'              => ($data['Warehouse Flag Key'] ? sprintf(
                     '<i class="fa fa-flag %s" aria-hidden="true" title="%s"></i>', strtolower($data['Warehouse Flag Color']), $data['Warehouse Flag Label']
-                ) : '<i class="fa fa-flag-o super_discreet" aria-hidden="true"></i>').' <span class="link" onClick="change_view(\'locations/'.$data['Location Warehouse Key'].'/'.$data['Location Key'].'\')">'.$data['Location Code'].'</span>',
+                ) : '<i class="far fa-flag super_discreet" aria-hidden="true"></i>').' <span class="link" onClick="change_view(\'locations/'.$data['Location Warehouse Key'].'/'.$data['Location Key'].'\')">'.$data['Location Code'].'</span>',
             'part'                  => sprintf('<span class="link" onCLick="change_view(\'part/%d\')" >%s</span>', $data['Part SKU'], $data['Part Reference']),
             'other_locations_stock' => $stock,
 
@@ -395,7 +395,7 @@ function stock_transactions($_data, $db, $user) {
             $stock = $data['Inventory Transaction Quantity'];
             switch ($data['Inventory Transaction Type']) {
                 case 'OIP':
-                    $type = '<i class="fa  fa-clock-o discreet fa-fw" aria-hidden="true"></i>';
+                    $type = '<i class="fa  fa-clock discreet fa-fw" aria-hidden="true"></i>';
 
                     if ($parameters['parent'] == 'part') {
                         $note = sprintf(
@@ -481,7 +481,7 @@ function stock_transactions($_data, $db, $user) {
                 case 'Audit':
 
 
-                    $type = '<i class="fa fa-fw fa-dot-circle-o" aria-hidden="true"></i>';
+                    $type = '<i class="fa fa-fw fa-dot-circle" aria-hidden="true"></i>';
 
                     $stock = sprintf('<b>'.$data['Part Location Stock'].'</b>');
                     break;
@@ -1042,7 +1042,7 @@ function parts_with_unknown_location($_data, $db, $user, $account) {
     foreach ($db->query($sql) as $data) {
 
         if ($data['Part Status'] == 'Not In Use') {
-            $part_status = '<i class="fa fa-square-o fa-fw  very_discreet" aria-hidden="true"></i> ';
+            $part_status = '<i class="fa fa-square fa-fw  very_discreet" aria-hidden="true"></i> ';
 
         } elseif ($data['Part Status'] == 'Discontinuing') {
             $part_status = '<i class="fa fa-square fa-fw  very_discreet" aria-hidden="true"></i> ';
@@ -1063,12 +1063,12 @@ function parts_with_unknown_location($_data, $db, $user, $account) {
                 $_locations_data = preg_split('/\:/', $raw_location_data);
 
                 if ($_locations_data[2] == '') {
-                    $last_audit = '<span title="'._('Never been audited').'">-</span> <i class="fa fa-clock-o padding_right_10" aria-hidden="true"></i> ';
+                    $last_audit = '<span title="'._('Never been audited').'">-</span> <i class="far fa-clock padding_right_10" aria-hidden="true"></i> ';
                 } else {
                     $last_audit = sprintf(
                             '<span title="%s">%s</span>', sprintf(_('Last audit %s'), strftime("%a %e %b %Y %H:%M %Z", strtotime($_locations_data[2].' +0:00')), $_locations_data[2]),
                             ($_locations_data[4] > 999 ? '<span class="error">+999</span>' : number($_locations_data[4]))
-                        ).' <i class="fa fa-clock-o padding_right_10" aria-hidden="true"></i>';
+                        ).' <i class="far fa-clock padding_right_10" aria-hidden="true"></i>';
 
 
                 }

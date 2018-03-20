@@ -12,7 +12,7 @@
             </tr>
             <tr class="total_sales">
                 <td>{$account->get('Total Acc Invoiced Amount Soft Minify')}</td>
-                <td><i class="fa fa-file-text-o" aria-hidden="true" title="{t}Invoices{/t}"></i> {$account->get('Total Acc Invoices Soft Minify')}</td>
+                <td><i class="fal fa-file-alt" aria-hidden="true" title="{t}Invoices{/t}"></i> {$account->get('Total Acc Invoices Soft Minify')}</td>
                 <td>{$customers}</td>
             </tr>
         </table>

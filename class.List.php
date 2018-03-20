@@ -367,8 +367,8 @@ class SubjectList extends DB_Table {
 
         $conditions[] = sprintf(
             '
-<i title="%s" style="margin-right: 10px;position: relative;top:1px" class="%s fa fa-fw fa-newspaper-o" aria-hidden="true"></i> 
-<i title="%s" style="margin-right: 10px"  class=" %s fa fa-fw fa-envelope-o" aria-hidden="true"></i>  
+<i title="%s" style="margin-right: 10px;position: relative;top:1px" class="%s fa fa-fw fa-newspaper" aria-hidden="true"></i> 
+<i title="%s" style="margin-right: 10px"  class=" %s fa fa-fw fa-envelope" aria-hidden="true"></i>  
 <i title="{t}Marketing by post{/t}" class="%s fa fa-fw fa-truck" aria-hidden="true"></i>', _('Newsletters'), ($data['Customer Send Newsletter'] == 'No' ? 'discreet error' : ''), _('Marketing by email'),
             ($data['Customer Send Email Marketing'] == 'No' ? 'discreet error' : ''), _('Marketing by post'), ($data['Customer Send Postal Marketing'] == 'No' ? 'discreet error' : '')
         );
@@ -388,7 +388,7 @@ class SubjectList extends DB_Table {
             }
 
             if ($data['With Tax Number'] == 'Yes') {
-                $tmp .= sprintf('<i title="%s" style="margin-right: 10px"  class=" fa fa-fw fa-black-tie" aria-hidden="true"></i> ', _('Valid tax number'));
+                $tmp .= sprintf('<i title="%s" style="margin-right: 10px"  class=" fab fa-fw fa-black-tie" aria-hidden="true"></i> ', _('Valid tax number'));
             }
             $conditions[] = $tmp;
         }
@@ -408,7 +408,7 @@ class SubjectList extends DB_Table {
             }
 
             if ($data['With Tax Number'] == 'No') {
-                $tmp .= sprintf('<i title="%s" style="margin-right: 10px"  class=" fa fa-fw fa-black-tie discreet" aria-hidden="true"></i> ', _('Valid tax number'));
+                $tmp .= sprintf('<i title="%s" style="margin-right: 10px"  class=" fab fa-fw fa-black-tie discreet" aria-hidden="true"></i> ', _('Valid tax number'));
             }
             $conditions[] = $tmp;
         }

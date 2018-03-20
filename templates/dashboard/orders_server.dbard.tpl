@@ -23,10 +23,10 @@
         <div class="title">
             <span class="" >
                 <span class="Orders_In_Process_Not_Paid_Number button {if  $order_flow=='submitted_not_paid'}blue{/if}" title="{t}Unpaid submitted orders{/t}" onclick="get_orders_table('submitted_not_paid',{ parent: 'account','parent_key':1})">
-                    <i style="font-size: 50%" class="fa fa-usd discreet" aria-hidden="true"></i> {$account->get('Orders In Process Not Paid Number')}
+                    <i style="font-size: 50%" class="fa fa-dollar-sign discreet" aria-hidden="true"></i> {$account->get('Orders In Process Not Paid Number')}
                 </span> | </span>
             <span class="Orders_In_Process_Paid_Number button {if  $order_flow=='submitted'}blue{/if}" title="{t}Paid submitted orders{/t}"
-                  onclick="get_orders_table('submitted',{ parent: 'account','parent_key':1})">{$account->get('Orders In Process Paid Number')} <i style="font-size: 50%" class="fa fa-usd success" aria-hidden="true"></i> </span>  </div>
+                  onclick="get_orders_table('submitted',{ parent: 'account','parent_key':1})">{$account->get('Orders In Process Paid Number')} <i style="font-size: 50%" class="fa fa-dollar-sign success" aria-hidden="true"></i> </span>  </div>
         <div >
             <span class=""><span onclick="get_orders_table('submitted_not_paid',{ parent: 'account','parent_key':1})" class="{if  $order_flow=='submitted_not_paid'}blue{/if} button Orders_In_Process_Not_Paid_Amount" title="{if $currency=='account'}{$account->get('DC Orders In Process Not Paid Amount')}{else}{$account->get('Orders In Process Not Paid Amount')}{/if}">{if $currency=='account'}{$account->get('DC Orders In Process Not Paid Amount Minify')}{else}{$account->get('Orders In Process Not Paid Amount Minify')}{/if}</span> | </span>
             <span  onclick="get_orders_table('submitted',{ parent: 'account','parent_key':1})" class="{if  $order_flow=='submitted'}blue{/if}  button Orders_In_Process_Paid_Amount" title="{if $currency=='account'}{$account->get('DC Orders In Process Paid Amount')}{else}{$account->get('Orders In Process Paid Amount')}{/if}">{if $currency=='account'}{$account->get('DC Orders In Process Paid Amount Minify')}{else}{$account->get('Orders In Process Paid Amount Minify')}{/if}</span></div>
@@ -61,7 +61,7 @@
         <div class="title">
             <span  id="order_flow_packed_done" class="{if  $order_flow=='packed_done'}blue{/if} Orders_Packed_Number button" title="{t}Closed orders waiting to be invoiced{/t}" onClick="get_orders_table('packed_done',{ 'parent': 'account','parent_key':1})"> <i style="font-size: 50%" class="fa fa-archive" aria-hidden="true"></i> {$account->get('Orders Packed Number')}</span>
             |
-            <span  id="order_flow_approved"  class="{if  $order_flow=='approved'}blue{/if}  Orders_Dispatch_Approved_Number button" title="{t}Invoiced orders waiting to be dispatched{/t}"  onclick="get_orders_table('approved',{ 'parent': 'account','parent_key':1})" >{$account->get('Orders Dispatch Approved Number')} <i style="font-size: 50%" class="fa fa-file-text-o" aria-hidden="true"></i> </span>
+            <span  id="order_flow_approved"  class="{if  $order_flow=='approved'}blue{/if}  Orders_Dispatch_Approved_Number button" title="{t}Invoiced orders waiting to be dispatched{/t}"  onclick="get_orders_table('approved',{ 'parent': 'account','parent_key':1})" >{$account->get('Orders Dispatch Approved Number')} <i style="font-size: 50%" class="fal fa-file-alt" aria-hidden="true"></i> </span>
 
         </div >
 

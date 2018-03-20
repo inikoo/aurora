@@ -165,7 +165,7 @@
     function select_dropdown_part(element) {
 
         $(element).closest('.part_tr').removeClass('in_process')
-        $(element).closest('.part_tr').find('.fa-trash-o').removeClass('fa-trash-o').addClass('fa-trash')
+        $(element).closest('.part_tr').find('.fa-trash').removeClass('fa-trash').addClass('fa-trash')
 
         $(element).closest('td.parts').find('.Part_Reference').html($(element).attr('formatted_value')).removeClass('hide')
         $(element).closest('td.parts').find('.Part_Reference_value').remove()

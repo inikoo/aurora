@@ -98,7 +98,7 @@ function get_report_orders_components_navigation($user, $smarty, $data) {
 
     $right_buttons[]
         = array(
-        'icon'  => 'usd',
+        'icon'  => 'fa-dollar-sign',
         'title' => '',
         'click'=>"change_view('/report/report_orders')",
         'pre_text'=>_("Sales"),

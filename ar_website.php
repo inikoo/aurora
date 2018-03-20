@@ -82,19 +82,19 @@ function webpage_block($data, $db, $user, $smarty) {
     if ($data['code'] == 'text') {
         $smarty->assign('template', 't1');
 
-        $block['text_blocks'][0]['text'] = preg_replace('/block_block_key_t1_editor/', 'block_'.$block_id.'_t1_editor', $block['text_blocks'][0]['text']);
+       // $block['text_blocks'][0]['text'] = preg_replace('/block_block_key_t1_editor/', 'block_'.$block_id.'_t1_editor', $block['text_blocks'][0]['text']);
     }elseif ($data['code'] == 'map') {
         $smarty->assign('store', get_object('store',$data['store_key']));
 
     }
 
     $smarty->assign('key', $block_id);
-
+//print_r($block);
 
     $smarty->assign('data', $block);
     $smarty->assign('block', $block);
 
-
+//print $smarty->fetch($data['theme'].'/blk.'.$data['code'].'.'.$data['theme'].'.tpl');
     $response = array(
         'state'     => 200,
         'button'    => $smarty->fetch($data['theme'].'/blk.control_label.'.$data['theme'].'.tpl'),

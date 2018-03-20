@@ -92,19 +92,19 @@ function toggle_list_elements(element){
 
     var number_elements=($(element).closest('td').find('i').length/2)
 
-    if(icon.hasClass('fa-check-square-o')){
+    if(icon.hasClass('fa-check-square')){
 
 
 
-        if( $(element).closest('td').find('i.fa-check-square-o').length-number_elements<2){
+        if( $(element).closest('td').find('i.fa-check-square').length-number_elements<2){
             return
         }
 
 
-        icon.removeClass('fa-check-square-o').addClass('fa-square-o').next('span').addClass('discreet')
+        icon.removeClass('fa-check-square').addClass('fa-square').next('span').addClass('discreet')
 
-    }else if(icon.hasClass('fa-square-o')){
-        icon.removeClass('fa-square-o').addClass('fa-check-square-o').next('span').removeClass('discreet')
+    }else if(icon.hasClass('fa-square')){
+        icon.removeClass('fa-square').addClass('fa-check-square').next('span').removeClass('discreet')
     }
 
     var form_validation = get_form_validation_state()
@@ -200,7 +200,7 @@ function post_process_new_customer_list_form_validation(){
 
         }  else if (field_type == 'elements') {
             var icon = $(this).find('i')
-            if (icon.hasClass('fa-check-square-o')) {
+            if (icon.hasClass('fa-check-square')) {
                 value = 'Yes'
 
             } else {
@@ -310,7 +310,7 @@ function estimate_number_list_items(){
 
         }  else if (field_type == 'elements') {
             var icon = $(this).find('i')
-            if (icon.hasClass('fa-check-square-o')) {
+            if (icon.hasClass('fa-check-square')) {
                 value = 'Yes'
 
             } else {

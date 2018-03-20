@@ -313,7 +313,7 @@ class PartLocation extends DB_Table {
         $this->updated = true;
 
         if ($note) {
-            $note = '<i class="note_data padding_left_5 fa fa-sticky-note-o" aria-hidden="true"></i> <span class="note">'.$note.'</span>';
+            $note = '<i class="note_data padding_left_5 fa fa-sticky-note" aria-hidden="true"></i> <span class="note">'.$note.'</span>';
 
         } else {
             //$details='<b>'._('Audit').'</b>, ';
@@ -351,7 +351,7 @@ class PartLocation extends DB_Table {
         } else {
 
             $details = sprintf(
-                '<span class="note_data"><i class="fa fa-dot-circle-o" aria-hidden="true"></i>: %s SKO <span class="link" onClick="change_view(\'part/%d\')"><i class="fa fa-square" aria-hidden="true"></i> %s</span> @ %s</span>%s', number($qty), $this->part_sku,
+                '<span class="note_data"><i class="fa fa-dot-circle" aria-hidden="true"></i>: %s SKO <span class="link" onClick="change_view(\'part/%d\')"><i class="fa fa-square" aria-hidden="true"></i> %s</span> @ %s</span>%s', number($qty), $this->part_sku,
                 $this->part->get('Reference'), $location_link, $audit_note
             );
 
@@ -375,7 +375,7 @@ class PartLocation extends DB_Table {
 
 
             $details = sprintf(
-                '<span class="note_data"><i class="fa fa-dot-circle-o" aria-hidden="true"></i>: <i class="fa fa-fw fa-sliders" aria-hidden="true"></i> <b>%s</b> SKO <span class="link" onClick="change_view(\'part/%d\')"><i class="fa fa-square" aria-hidden="true"></i> %s</span> @ <span class="link" onClick="change_view(\'locations/%d/%d\')">%s</span></span>',
+                '<span class="note_data"><i class="fa fa-dot-circle" aria-hidden="true"></i>: <i class="fa fa-fw fa-sliders" aria-hidden="true"></i> <b>%s</b> SKO <span class="link" onClick="change_view(\'part/%d\')"><i class="fa fa-square" aria-hidden="true"></i> %s</span> @ <span class="link" onClick="change_view(\'locations/%d/%d\')">%s</span></span>',
                 ($qty_change > 0 ? '+' : '').number($qty_change), $this->part_sku, $this->part->get('Reference'), $this->location->get('Warehouse Key'), $this->location->id, $this->location->get('Code')
             );
 
@@ -2124,7 +2124,7 @@ class PartLocation extends DB_Table {
 
 
                     $details = sprintf(
-                        '<span class="note_data"><i class="fa fa-dot-circle-o" aria-hidden="true"></i>: <i class="fa fa-fw fa-sliders" aria-hidden="true"></i> <b>%s</b> SKO <span class="link" onClick="change_view(\'part/%d\')"><i class="fa fa-square" aria-hidden="true"></i> %s</span> @ <span class="link" onClick="change_view(\'locations/%d/%d\')">%s</span></span>',
+                        '<span class="note_data"><i class="fa fa-dot-circle" aria-hidden="true"></i>: <i class="fa fa-fw fa-sliders" aria-hidden="true"></i> <b>%s</b> SKO <span class="link" onClick="change_view(\'part/%d\')"><i class="fa fa-square" aria-hidden="true"></i> %s</span> @ <span class="link" onClick="change_view(\'locations/%d/%d\')">%s</span></span>',
                         ($qty_change > 0 ? '+' : '').number($qty_change), $this->part_sku, $this->part->get('Reference'), $this->location->get('Warehouse Key'), $this->location->id, $this->location->get('Code')
                     );
 

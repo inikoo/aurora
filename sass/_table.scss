@@ -19,7 +19,7 @@
     border-top: 1px solid #eee;
     padding: 4px 0px 4px 15px;
     cursor: pointer;
-    .fa {
+    .fa,.fal,.fas,.far,.fab {
       font-size: 70%;
       position: relative;
       top: -1px;
@@ -30,10 +30,10 @@
     &:last-of-type {
       border-bottom: none;
     }
-    &:hover > .fa {
+    &:hover > .fa,.fal,.fas,.far,.fab {
       color: #333;
     }
-    &:hover > .fa, &.selected > .fa {
+    &:hover > .fa,.fal,.fas,.far,.fab, &.selected > .fa,.fal,.fas,.far,.fab {
       color: #222;
     }
   }
@@ -75,9 +75,12 @@
       border: none;
       color: $color_dark_font;
       background-color: $color_dark;
-      .button .fa {
-        position: relative;
-        top: 1px;
+      .button {
+        .fa,.fal,.fas,.far,.fab{
+          position: relative;
+          top: 1px;
+        }
+
       }
       .widget_types {
         @include unselectable;

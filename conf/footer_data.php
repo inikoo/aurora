@@ -34,7 +34,7 @@ function get_default_footer_data($template) {
                                 ),
                                 array(
                                     'type' => 'text',
-                                    'icon' => 'fa-map-marker ',
+                                    'icon' => 'fa-inventory ',
                                     'text' => '#address'
                                 ),
                                 array(

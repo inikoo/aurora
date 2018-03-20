@@ -241,7 +241,7 @@ function new_part_location($account, $db, $user, $editor, $data, $smarty) {
                         break;
                     case 'Storing':
                         $used_for = sprintf(
-                            '<i class="fa fa-fw  fa-hdd-o" aria-hidden="true" title="%s"></i>', _('Storing')
+                            '<i class="fa fa-fw  fa-hdd" aria-hidden="true" title="%s"></i>', _('Storing')
                         );
                         break;
                     default:
@@ -515,7 +515,7 @@ function place_part($account, $db, $user, $editor, $data, $smarty) {
     );
 
     if ($data['note'] != '') {
-        $origin .= ' <i class="fa fa-sticky-note-o" aria-hidden="true"></i> '.$data['note'];
+        $origin .= ' <i class="fa fa-sticky-note" aria-hidden="true"></i> '.$data['note'];
     }
 
 

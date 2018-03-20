@@ -5,7 +5,7 @@
     <div id="contact_data">
         <div class="data_container">
             <div class="data_field  {if $customer->get('Customer Type')!='Company'}hide{/if}">
-                <i title="{t}Company name{/t}" class="fa fa-building-o"></i> <span
+                <i title="{t}Company name{/t}" class="fa fa-building"></i> <span
                         class="Customer_Name">{$customer->get('Customer Name')}</span>
             </div>
             <div class="data_field">
@@ -13,7 +13,7 @@
                         class="Customer_Main_Contact_Name">{$customer->get('Customer Main Contact Name')}</span>
             </div>
             <div class="data_field {if !$customer->get('Customer Tax Number')}hide{/if}">
-                <i title="{t}Tax number{/t}" class="fa fa-black-tie"></i></i> <span
+                <i title="{t}Tax number{/t}" class="fab fa-black-tie"></i></i> <span
                         class="Customer_Tax_Number">{$customer->get('Tax Number')}</span>
             </div>
         </div>
@@ -74,7 +74,7 @@
         </div>
         <div class="data_container">
             <div style="min-height:80px;float:left;width:28px">
-                <i class="fa fa-map-marker"></i>
+                <i class="fa fa-map-marker-alt"></i>
             </div>
             <div class="Contact_Address" style="float:left;min-width:272px">
                 {$customer->get('Contact Address')}
@@ -128,26 +128,14 @@
                 <tr>
                     <td>{t}Subscriptions{/t}:</td>
                     <td style="text-align: right">
-                        <i title="{t}Newsletters{/t}" style="margin-right: 10px;position: relative;top:1px" class="Customer_Send_Newsletter {if $customer->get('Customer Send Newsletter')=='No' }discreet error {/if} fa fa-fw fa-newspaper-o" aria-hidden="true"></i> <i title="{t}Marketing by email{/t}" style="margin-right: 10px"  class="Customer_Send_Email_Marketing {if $customer->get('Customer Send Email Marketing')=='No' }discreet error {/if} fa fa-fw fa-envelope-o" aria-hidden="true"></i>  <i title="{t}Marketing by post{/t}" class="Customer_Send_Postal_Marketing {if $customer->get('Customer Send Postal Marketing')=='No' }discreet error {/if} fa fa-fw fa-truck" aria-hidden="true"></i>
+                        <i title="{t}Newsletters{/t}" style="margin-right: 10px;position: relative;top:1px" class="Customer_Send_Newsletter {if $customer->get('Customer Send Newsletter')=='No' }discreet error {/if} far fa-fw fa-newspaper" aria-hidden="true"></i> <i title="{t}Marketing by email{/t}" style="margin-right: 10px"  class="Customer_Send_Email_Marketing {if $customer->get('Customer Send Email Marketing')=='No' }discreet error {/if} far fa-fw fa-envelope" aria-hidden="true"></i>  <i title="{t}Marketing by post{/t}" class="Customer_Send_Postal_Marketing {if $customer->get('Customer Send Postal Marketing')=='No' }discreet error {/if} fa fa-fw fa-truck" aria-hidden="true"></i>
                     </td>
                 </tr>
 
             </table>
 
 
-            {if $customer->get('Customer Send Newsletter')=='No' or $customer->get('Customer Send Email Marketing')=='No' or $customer->get('Customer Send Postal Marketing')=='No'}
-                <table border="0" class="overview compact hide">
-                    <tr class="{if $customer->get('Customer Send Newsletter')=='Yes'}hide{/if}">
-                        <td colspan="2"><i class="fa fa-ban"></i> <span>{t}Don't send newsletters{/t}</span></td>
-                    </tr>
-                    <tr class="{if $customer->get('Customer Send Email Marketing')=='Yes'}hide{/if}">
-                        <td colspan="2"><i class="fa fa-ban"></i> <span>{t}Don't send marketing by email{/t}</span></td>
-                    </tr>
-                    <tr class="{if $customer->get('Customer Send Postal Marketing')=='Yes'}hide{/if}">
-                        <td colspan="2"><i class="fa fa-ban"></i> <span>{t}Don't send marketing by post{/t}</span></td>
-                    </tr>
-                </table>
-            {/if} {if $customer->get('Customer Orders')>0}
+      {if $customer->get('Customer Orders')>0}
                 <table class="overview">
                     {if $customer->get('Customer Type by Activity')=='Lost'}
                         <tr>

@@ -601,9 +601,53 @@ function set_as_main($account, $db, $user, $editor, $data, $smarty) {
             'action'         => ($object->updated ? 'set_main_contact_number_Mobile' : '')
         );
 
+    }elseif ($data['field'] == 'Supplier_Main_Plain_Mobile') {
+        $object->update(array('Supplier Preferred Contact Number' => 'Mobile'));
+        $response = array(
+            'state'          => 200,
+            'other_fields'   => $object->get_other_fields_update_info(),
+            'new_fields'     => $object->get_new_fields_info(),
+            'deleted_fields' => $object->get_deleted_fields_info(),
+            'action'         => ($object->updated ? 'set_main_contact_number_Mobile' : '')
+        );
+
+    } elseif ($data['field'] == 'Agent_Main_Plain_Mobile') {
+        $object->update(array('Agent Preferred Contact Number' => 'Mobile'));
+        $response = array(
+            'state'          => 200,
+            'other_fields'   => $object->get_other_fields_update_info(),
+            'new_fields'     => $object->get_new_fields_info(),
+            'deleted_fields' => $object->get_deleted_fields_info(),
+            'action'         => ($object->updated ? 'set_main_contact_number_Mobile' : '')
+        );
+
     } elseif ($data['field'] == 'Customer_Main_Plain_Telephone') {
         $object->update(
             array('Customer Preferred Contact Number' => 'Telephone')
+        );
+        $response = array(
+            'state'          => 200,
+            'other_fields'   => $object->get_other_fields_update_info(),
+            'new_fields'     => $object->get_new_fields_info(),
+            'deleted_fields' => $object->get_deleted_fields_info(),
+            'action'         => ($object->updated ? 'set_main_contact_number_Telephone' : '')
+        );
+
+    } elseif ($data['field'] == 'Supplier_Main_Plain_Telephone') {
+        $object->update(
+            array('Supplier Preferred Contact Number' => 'Telephone')
+        );
+        $response = array(
+            'state'          => 200,
+            'other_fields'   => $object->get_other_fields_update_info(),
+            'new_fields'     => $object->get_new_fields_info(),
+            'deleted_fields' => $object->get_deleted_fields_info(),
+            'action'         => ($object->updated ? 'set_main_contact_number_Telephone' : '')
+        );
+
+    }elseif ($data['field'] == 'Agent_Main_Plain_Telephone') {
+        $object->update(
+            array('Agent Preferred Contact Number' => 'Telephone')
         );
         $response = array(
             'state'          => 200,

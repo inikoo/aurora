@@ -75,7 +75,7 @@ function records($_data, $db, $user) {
 
             switch ($data['Upload Record State']) {
                 case 'InProcess':
-                    $state = '<i class="fa fa-clock-o padding_left_10"></i>';
+                    $state = '<i class="far fa-clock padding_left_10"></i>';
                     $msg   = _('In process');
                     break;
                 case 'OK':

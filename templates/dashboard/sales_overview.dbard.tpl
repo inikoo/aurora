@@ -18,7 +18,7 @@
                     </div>
                     <div id="invoices" onclick="change_sales_overview_type('invoices')"
                          class="widget  left {if $type=='invoices'}selected{/if}">
-                        <i class="fa fa-file-text-o"></i><span class="label"> {t}Invoices per store{/t} </span>
+                        <i class="fal fa-file-alt"></i><span class="label"> {t}Invoices per store{/t} </span>
                     </div>
                     <div id="invoice_categories" onclick="change_sales_overview_type('invoice_categories')"
                          class=" widget  left {if $type=='invoice_categories'}selected{/if}">
@@ -31,7 +31,7 @@
                      onclick="toggle_sales_overview_orders_view_type()"
                      style="font-size:90%;float:right;margin-left:20px;margin-right:10px">
                     <i class="fa fa-hashtag {if $orders_view_type=='numbers'}selected{/if}" aria-hidden="true"></i> | <i
-                            class="fa fa-usd {if $orders_view_type=='amounts'}selected{/if}" aria-hidden="true"></i>
+                            class="fa fa-dollar-sign {if $orders_view_type=='amounts'}selected{/if}" aria-hidden="true"></i>
 
 
                 </div>
@@ -312,11 +312,11 @@
         if ($('#sales_overview_orders_view_type_container .fa-hashtag').hasClass('selected')) {
             var orders_view_type = 'amounts'
             $('#sales_overview_orders_view_type_container .fa-hashtag').removeClass('selected')
-            $('#sales_overview_orders_view_type_container .fa-usd').addClass('selected')
+            $('#sales_overview_orders_view_type_container .fa-dollar-sign').addClass('selected')
         } else {
             var orders_view_type = 'numbers'
             $('#sales_overview_orders_view_type_container .fa-hashtag').addClass('selected')
-            $('#sales_overview_orders_view_type_container .fa-usd').removeClass('selected')
+            $('#sales_overview_orders_view_type_container .fa-dollar-sign').removeClass('selected')
         }
         $('#order_overview_orders_view_type').val(orders_view_type)
 

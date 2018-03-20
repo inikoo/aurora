@@ -10,7 +10,7 @@ function toggle_check_record(key) {
 
 
     if (check_box.hasClass('checked')) {
-        check_box.removeClass('checked success').addClass('unchecked disabled').html('<i class="fa fa-star-o">')
+        check_box.removeClass('checked success').addClass('unchecked disabled').html('<i class="far fa-star">')
 
     } else {
         check_box.removeClass('unchecked disabled').addClass('checked success').html('<i class="fa fa-star">')

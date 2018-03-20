@@ -20,7 +20,7 @@
     </span>
 
     <span id="drag_mode" class="button edit_modes very_discreet" onClick="change_edit_modes(this)">
-        <i class="fa fa-hand-rock-o discreet" style="margin-left:15px" aria-hidden="true"></i> {t}Drag{/t}
+        <i class="far fa-hand-rock discreet" style="margin-left:15px" aria-hidden="true"></i> {t}Drag{/t}
     </span>
 
     <span id="block_edit_mode" class="button edit_modes very_discreet" onClick="change_edit_modes(this)">

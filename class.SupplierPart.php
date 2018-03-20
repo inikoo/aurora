@@ -1473,18 +1473,18 @@ class SupplierPart extends DB_Table {
                 switch ($this->data['Supplier Part Status']) {
                     case 'Available':
                         $status = sprintf(
-                            '<i class="fa fa-stop success" ></i> %s', _('Available')
+                            '<i class="fa fa-hand-receiving success" ></i> %s', _('Available')
                         );
                         break;
                     case 'NoAvailable':
                         $status = sprintf(
-                            '<i class="fa fa-stop warning" ></i> %s', _('No available')
+                            '<i class="fa fa-hand-receiving warning" ></i> %s', _('No available')
                         );
 
                         break;
                     case 'Discontinued':
                         $status = sprintf(
-                            '<i class="fa fa-ban error" ></i> %s', _('Discontinued')
+                            '<i class="fa fa-hand-receiving error" ></i> %s', _('Discontinued')
                         );
 
                         break;
@@ -1864,7 +1864,7 @@ class SupplierPart extends DB_Table {
                 } else {
                     $date = strftime("%e %b %y", strtotime($row['Purchase Order Estimated Receiving Date'].' +0:00'));
                     $link = sprintf(
-                        '<span class="link" onclick="change_view(\'suppliers/order/%d\')"><i class="fa fa-clipboard" aria-hidden="true"></i> %s</span> <i class="fa fa-paper-plane-o" aria-hidden="true"></i>', $row['Purchase Order Key'], $row['Purchase Order Public ID']
+                        '<span class="link" onclick="change_view(\'suppliers/order/%d\')"><i class="fa fa-clipboard" aria-hidden="true"></i> %s</span> <i class="fa fa-paper-plane" aria-hidden="true"></i>', $row['Purchase Order Key'], $row['Purchase Order Public ID']
                     );
                     $qty  = '+'.number($row['Purchase Order Quantity']);
                 }

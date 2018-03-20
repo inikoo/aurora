@@ -394,7 +394,7 @@ function get_part_navigation($data, $smarty, $user, $db, $account) {
     if (count($supplier_parts) == 1) {
 
         $supplier_part = array_values($supplier_parts)[0];
-        $title .= ' <small class="padding_left_10"> <i class="fa fa-long-arrow-left padding_left_10"></i> <i class="fa fa-stop button" title="'._('Supplier part').'" onCLick="change_view(\'/supplier/'
+        $title .= ' <small class="padding_left_10"> <i class="fa fa-long-arrow-left padding_left_10"></i> <i class="fa fa-hand-receiving button" title="'._('Supplier part').'" onCLick="change_view(\'/supplier/'
             .$supplier_part->get('Supplier Part Supplier Key').'/part/'.$supplier_part->id.'\')" ></i> <span class="Supplier_Part_Reference button"  onCLick="change_view(\'supplier/'
             .$supplier_part->get('Supplier Part Supplier Key').'/part/'.$supplier_part->id.'\')">'.$supplier_part->get('Reference').'</small>';
 

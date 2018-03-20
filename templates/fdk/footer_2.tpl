@@ -43,7 +43,7 @@
         <a href="https://www.github.com/froala" class="network-icon github text-small" title="GitHub" target="_blank"><i class="fa fa-github"></i></a>
       </div>
       <div>
-        <p class="text-small">Made with <i class="fa fa-heart-o"></i> in USA. &copy; 2015 Froala</p>
+        <p class="text-small">Made with <i class="fa fa-heart"></i> in USA. &copy; 2015 Froala</p>
       </div>
     </div>
   </footer>

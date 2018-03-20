@@ -20,7 +20,7 @@
             </div>
 
             <div class="data_field ">
-                <i class="fa fa-fw  fa-black-tie" title="{t}Tax number{/t}"></i> <span class="Invoice_Tax_Number">{if $invoice->get('Invoice Tax Number')!=''}{$invoice->get('Invoice Tax Number')}{else}
+                <i class="fabfa-fw  fa-black-tie" title="{t}Tax number{/t}"></i> <span class="Invoice_Tax_Number">{if $invoice->get('Invoice Tax Number')!=''}{$invoice->get('Invoice Tax Number')}{else}
 
                         <span style="font-style: italic" class="super_discreet">No tax number provided</span>
                     {/if}</span>
@@ -39,7 +39,7 @@
 
         <div id="billing_address_container" class="data_container" style="">
             <div style="min-height:80px;float:left;width:16px">
-                <i style="position: relative;top:3px" class="fa fa-map-marker"></i>
+                <i style="position: relative;top:3px" class="fa fa-inventory"></i>
             </div>
             <div style="min-width:150px;max-width:220px;margin-left: 25px">
                 {$invoice->get('Invoice Address Formatted')}

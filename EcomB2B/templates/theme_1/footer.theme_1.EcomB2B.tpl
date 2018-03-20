@@ -43,7 +43,7 @@
                                     {if $item.type=='logo'}
                                         <li  class="item _logo"><img src="{$item.src}" alt="" title="{$item.title}" /></li>
                                     {elseif $item.type=='text'}
-                                        <li   class="item _text" ><i   class="fa fa-fw {$item.icon}"></i> <span >
+                                        <li   class="item _text" ><i   class="fa-fw {$item.icon}"></i> <span >
                                           {if $item.text=='#tel' and  $store->get('Telephone')!=''}{$store->get('Telephone')}
                                           {elseif $item.text=='#email' and  $store->get('Email')!=''}{$store->get('Email')}
                                           {elseif $item.text=='#address' and  $store->get('Address')!=''}{$store->get('Address')}
@@ -159,7 +159,7 @@
 
                                     <ul   class="footer_social_links">
                                         {foreach from=$column.items item=item}
-                                            <li class="social_link"   ><a href="{$item.url}"><i class="fa {$item.icon}"></i></a></li>
+                                            <li class="social_link"   ><a href="{$item.url}"><i class="fab {$item.icon}"></i></a></li>
 
                                         {/foreach}
                                     </ul>

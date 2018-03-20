@@ -36,7 +36,7 @@
     <div class="container">
       <div class="row">
         <div class="col-xs-12 col-sm-4 col-md-3">
-          <i class="fa fa-map-marker text-xlarge"></i>
+          <i class="fa fa-inventory text-xlarge"></i>
           <p class="inline-block text-small">
             Tina Petre, nr. 5, Bucuresti
             <br/>

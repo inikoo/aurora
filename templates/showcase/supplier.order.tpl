@@ -134,7 +134,7 @@
     <ul class="timeline" id="timeline">
         <li id="submitted_node" class="li {if $order->get('State Index')>=20}complete{/if}">
             <div class="label">
-                <span class="state " title="{t}Submitted to agent{/t}"><i class="fa fa-paper-plane-o" aria-hidden="true"></i> {t}Agent{/t}</span>
+                <span class="state " title="{t}Submitted to agent{/t}"><i class="fa fa-paper-plane" aria-hidden="true"></i> {t}Agent{/t}</span>
             </div>
             <div class="timestamp">
                 <span class="Purchase_Order_Submitted_Date">&nbsp;{$order->get('Submitted Date')}</span> <span
@@ -145,7 +145,7 @@
         </li>
         <li id="submitted_node" class="li {if $order->get('State Index')>=30}complete{/if}">
             <div class="label">
-                <span class="state " title="{t}Submitted to agent{/t}"><i class="fa fa-paper-plane-o" aria-hidden="true"></i> {t}Supplier{/t}</span></span>
+                <span class="state " title="{t}Submitted to agent{/t}"><i class="fa fa-paper-plane" aria-hidden="true"></i> {t}Supplier{/t}</span></span>
             </div>
             <div class="timestamp">
                 <span class="Purchase_Order_Submitted_Date">&nbsp;{$order->get('Submitted Date')}</span>
@@ -296,7 +296,7 @@
                      class="order_operation {if   $order->get('State Index')>30  or  $order->get('State Index')<20   }hide{/if}">
                     <div class="square_button left" title="{t}Undo submit{/t}">
                         <span class="fa-stack" onclick="toggle_order_operation_dialog('undo_submit')"> <i
-                                    class="fa fa-paper-plane-o discreet " aria-hidden="true"></i> <i
+                                    class="fa fa-paper-plane discreet " aria-hidden="true"></i> <i
                                     class="fa fa-ban fa-stack-1x discreet error"></i> </span>
                         <table id="undo_submit_dialog" border="0" class="order_operation_dialog hide">
                             <tr class="top">
@@ -325,7 +325,7 @@
                     <div id="submit_operation"
                          class="square_button right"
                          title="{t}Submit{/t}">
-                        <i class="fa fa-paper-plane-o   " aria-hidden="true"
+                        <i class="fa fa-paper-plane   " aria-hidden="true"
                            onclick="toggle_order_operation_dialog('submit')"></i>
                         <table id="submit_dialog" border="0" class="order_operation_dialog hide">
                             <tr class="top">
@@ -393,7 +393,7 @@
                                 class="fa fa-arrow-circle-down  fa-fw discreet" aria-hidden="true"></i> <span
                                 class="Purchase_Order_Number_Supplier_Delivery_Items">{$order->get('Number Supplier Delivery Items')}</span></span>
                     <span class="{if $order->get('State Index')<80}super_discreet{/if}" style="padding-left:20px"><i
-                                class="fa fa-map-marker fa-fw discreet" aria-hidden="true"></i> <span
+                                class="fa fa-inventory fa-fw discreet" aria-hidden="true"></i> <span
                                 class="Purchase_Order_Number_Placed_Items">{$order->get('Number Placed Items')}</span></span>
                 </td>
             </tr>
@@ -426,7 +426,7 @@
 </div>
 <div id="new_delivery" class="table_new_fields hide">
     <div class="invisible" style="align-items: stretch;flex: 1;padding:20px 5px;">
-        <i key="" class="fa fa-fw fa-square-o button" aria-hidden="true"></i> <span>{t}Select all{/t}</span>
+        <i key="" class="far fa-square fa-fw button" aria-hidden="true"></i> <span>{t}Select all{/t}</span>
     </div>
     <div style="align-items: stretch;flex: 1;padding:10px 20px;border-left:1px solid #eee">
         <table border="0" style="width:50%;float:right;xborder-left:1px solid #ccc;width:100%;">

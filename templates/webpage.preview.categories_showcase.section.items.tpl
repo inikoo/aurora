@@ -41,7 +41,7 @@
                 </div>
 
                     <div class="buttons panel_type"  >
-                        <div class="flex-item button" type="image"><i class="fa fa-picture-o" aria-hidden="true"></i></div>
+                        <div class="flex-item button" type="image"><i class="fa fa-image" aria-hidden="true"></i></div>
                         <div class="flex-item button" type="text"><i class="fa fa-align-center" aria-hidden="true"></i></div>
                         <div class="flex-item button" type="code"><i class="fa fa-code" aria-hidden="true"></i></div>
                         <div class="flex-item button invisible" type="banner"><i class="fa fa-bullhorn" aria-hidden="true"></i></div>
@@ -119,7 +119,7 @@
                                 <form method="post" action="/ar_edit.php" enctype="multipart/form-data" novalidate>
                                     <input type="file" name="image_upload"  panel_key="{$category_data.data.id}" id="file_upload_{$category_data.data.id}" class="input_file input_file_panel " multiple/>
                                     <label for="file_upload_{$category_data.data.id}">
-                                        <i class="fa  fa-picture-o fa-fw button" aria-hidden="true"></i>
+                                        <i class="fa  fa-image fa-fw button" aria-hidden="true"></i>
                                     </label>
                                 </form>
                                 </div>

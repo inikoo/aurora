@@ -12,8 +12,9 @@
 
     {if $_DEVEL}
         <link href="/css/jquery-ui.css" rel="stylesheet">
-        <link href="/css/font-awesome.css" rel="stylesheet">
-        <link href="/css/font-awesome-animation.css" rel="stylesheet">
+
+        <link href="/css/fa/fontawesome-all.css?v2" rel="stylesheet">
+
 
 
 
@@ -48,7 +49,7 @@
 
 
 
-        <link href="/css/app.css?v180314v2" rel="stylesheet">
+        <link href="/css/app.css?v180320v1" rel="stylesheet">
         <script src="/js/libs/jquery-2.2.1.js"></script>
         <script src="/js/libs/jquery-ui.js"></script>
         <script src="/js/libs/moment-with-locales.js"></script>
@@ -78,19 +79,19 @@
         <script src="/js/keyboard_shortcuts.js"></script>
         <script src="/js/barcode_scanner.js?v1712v2"></script>
         <script src="/js/search.js"></script>
-        <script src="/js/table.js"></script>
+        <script src="/js/table.js?v3"></script>
         <script src="/js/validation.js?v171206v5"></script>
-        <script src="/js/edit.js?v171229v5"></script>
-        <script src="/js/edit_webpage_edit.js?v180318"></script>
+        <script src="/js/edit.js?v171229v8"></script>
+        <script src="/js/edit_webpage_edit.js?v180318v5"></script>
 
-        <script src="/js/new.js?v180302v9"></script>
+        <script src="/js/new.js?v180302v10"></script>
         <script src="/js/order.common.js?v180314v5"></script>
         <script src="/js/email_campaign.common.js?v170207"></script>
 
 
         <script src="/js/supplier.order.js"></script>
         <script src="/js/supplier.delivery.js"></script>
-        <script src="/js/part_locations.edit.js?v=20180126"></script>
+        <script src="/js/part_locations.edit.js?v=20180319"></script>
         <script src="/js/alert_dial.js?v20180128v2"></script>
 
         <script src="/utils/country_data.js.php?locale={$locale}"></script>
@@ -135,7 +136,6 @@
         <script src="/js/libs/jquery.fancybox.min.js"></script>
         <script src="/js/libs/jquery.awesome-cursor.min.js"></script>
         <script src="/js/libs/base64.js?v2"></script>
-
 
 
 
@@ -229,7 +229,7 @@
         <div class="top_buttons">
 
             <div id="whiteboard_button" onclick="show_side_content('whiteboard')" class="side_content_icon square_button {if $_side_block='whiteboard'}selected{/if}" title="{t}Whiteboard{/t}">
-                <i class="fa fa-pencil-square-o fa-fw  "></i>
+                <i class="fa fa-pencil-square fa-fw  "></i>
             </div>
             <div id="help_button" onclick="show_side_content('help')" class="side_content_icon square_button {if $_side_block=='help'}selected{/if}" title="{t}Help{/t}">
                 <i class="fa fa-question-circle fa-fw  "></i>

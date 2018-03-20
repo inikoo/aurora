@@ -43,7 +43,7 @@
             </div>
             <div class="data_container" style=";margin-top:10px">
                 <div style="min-height:80px;float:left;width:28px;">
-                    <i class="fa fa-map-marker"></i>
+                    <i class="fa fa-map-marker-alt"></i>
                 </div>
                 <div style="float:left;width:272px" class="Supplier_Contact_Address">
                     {$supplier->get('Contact Address')}

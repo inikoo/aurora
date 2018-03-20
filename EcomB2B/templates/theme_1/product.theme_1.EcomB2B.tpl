@@ -28,7 +28,7 @@
 
 
                 <span id="ordering_settings" class="hide"
-                      data-labels='{ "ordered":"<i class=\"fa fa-thumbs-o-up fa-flip-horizontal \" aria-hidden=\"true\"></i> {if empty($labels._ordering_ordered)}{t}Ordered{/t}{else}{$labels._ordering_ordered}{/if}", "order":"<i class=\"fa fa-hand-pointer-o\" aria-hidden=\"true\"></i>  {if empty($labels._ordering_order_now)}{t}Order now{/t}{else}{$labels._ordering_order_now}{/if}", "update":"<i class=\"fa fa-hand-pointer-o\" aria-hidden=\"true\"></i>  {if empty($labels._ordering_click_to_update)}{t}Click to update{/t}{else}{$labels._ordering_click_to_update}{/if}"  }'></span>
+                      data-labels='{ "ordered":"<i class=\"fa fa-thumbs-up fa-flip-horizontal \" aria-hidden=\"true\"></i> {if empty($labels._ordering_ordered)}{t}Ordered{/t}{else}{$labels._ordering_ordered}{/if}", "order":"<i class=\"fa fa-hand-pointer\" aria-hidden=\"true\"></i>  {if empty($labels._ordering_order_now)}{t}Order now{/t}{else}{$labels._ordering_order_now}{/if}", "update":"<i class=\"fa fa-hand-pointer-o\" aria-hidden=\"true\"></i>  {if empty($labels._ordering_click_to_update)}{t}Click to update{/t}{else}{$labels._ordering_click_to_update}{/if}"  }'></span>
 
                 <div id="page_content" style="position:relative">
 
@@ -102,7 +102,7 @@
 
                         {if $product->get('Status')=='Discontinued' }
                             <div class="section description_block alert alert-error alert-title" style="text-align:center">
-                                <i class="fa fa-frown-o padding_right_20" aria-hidden="true"></i> {t}Discontinued{/t} <i class="fa fa-frown-o padding_left_20" aria-hidden="true"></i>
+                                <i class="far fa-frown padding_right_20" aria-hidden="true"></i> {t}Discontinued{/t} <i class="fa fa-frown-o padding_left_20" aria-hidden="true"></i>
                             </div>
                         {/if}
 
@@ -130,7 +130,7 @@
                                     {if !empty($customer)}
                                         {assign 'favourite_key' {$product->get('Favourite Key',{$customer->id})} }
                                         <span class="favourite" data-product_id="{$product->id}" data-favourite_key="{$favourite_key}">
-                                            <i style="" class="fa {if $favourite_key}fa-heart marked{else}fa-heart-o{/if}" aria-hidden="true"></i>  </span>
+                                            <i style="" class="{if $favourite_key}fa fa-heart marked{else}far fa-heart{/if}" aria-hidden="true"></i>  </span>
                                     {/if}
 
                                 </h1>
@@ -162,7 +162,7 @@
                                   <span class="label">
                                     {$product->get('Out of Stock Label')}
                                        <span class="label sim_button "> <i reminder_key="{$reminder_key}" title="{if $reminder_key>0}{t}Click to remove notification{/t}{else}{t}Click to be notified by email{/t}{/if}"
-                                            class="reminder hide  fa {if $reminder_key>0}fa-envelope{else}fa-envelope-o{/if}" aria-hidden="true"></i>  </span>
+                                            class="reminder hide  {if $reminder_key>0}fa fa-envelope{else}far fa-envelope-o{/if}" aria-hidden="true"></i>  </span>
                                             </span>
                                                     </div>
                                                 {/if}
@@ -178,10 +178,10 @@
                                                     data-ovalue='{$quantity_ordered}'>
 
                                                     {if $quantity_ordered==''}
-                                                        <div class="label sim_button" style="margin-left:57px"><i class="fa fa-hand-pointer-o fa-fw" aria-hidden="true"></i> <span
+                                                        <div class="label sim_button" style="margin-left:57px"><i class="fa fa-hand-pointer fa-fw" aria-hidden="true"></i> <span
                                                                     class="">{if empty($labels._ordering_order_now)}{t}Order now{/t}{else}{$labels._ordering_order_now}{/if}</span></div>
                                                     {else}
-                                                        <span class="label sim_button"><i class="fa  fa-thumbs-o-up fa-flip-horizontal fa-fw" aria-hidden="true"></i> <span
+                                                        <span class="label sim_button"><i class="fa  fa-thumbs-up fa-flip-horizontal fa-fw" aria-hidden="true"></i> <span
                                                                     class="">{if empty($labels._ordering_ordered)}{t}Ordered{/t}{else}{$labels._ordering_ordered}{/if}</span></span>
                                                     {/if}
 

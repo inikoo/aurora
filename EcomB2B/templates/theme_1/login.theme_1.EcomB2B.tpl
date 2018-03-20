@@ -78,7 +78,7 @@
                             <section>
                                 <label class="label"{$content._email_recovery_label}</label>
                                 <label class="input">
-                                    <i class="icon-append fa fa-envelope-o"></i>
+                                    <i class="icon-append fa fa-envelope"></i>
                                     <input type="email" name="email" id="recovery_email">
                                 </label>
                             </section>

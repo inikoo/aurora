@@ -200,7 +200,7 @@
                             <section>
                                 <label id="_email"  class="input " style="cursor:pointer" onclick="show_edit_input(this)">
 
-                                    <i   class="icon-append fa fa-envelope-o"  style="cursor:pointer" ></i>
+                                    <i   class="icon-append far envelope"  style="cursor:pointer" ></i>
                                     <input class="register_field" type="email" name="email" id="_email_placeholder" placeholder="{$content._email_placeholder}">
                                     <b id="_email_tooltip" class="tooltip tooltip-bottom-right">{$content._email_tooltip}</b>
                                 </label>

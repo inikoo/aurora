@@ -184,7 +184,7 @@ $object_fields = array(
                         $object->get_field_label('Supplier Other Email')
                     ).' <i onClick="set_this_as_main(this)" title="'._(
                         'Set as main email'
-                    ).'" class="fa fa-star-o very_discreet button"></i>',
+                    ).'" class="far fa-star very_discreet button"></i>',
                 'invalid_msg'       => get_invalid_message('email'),
                 'required'          => false,
                 'type'              => 'value'
@@ -217,10 +217,8 @@ $object_fields = array(
                 'label'           => ucfirst(
                         $object->get_field_label('Supplier Main Plain Mobile')
                     ).($object->get('Supplier Main Plain Mobile') != '' ? ($object->get('Supplier Preferred Contact Number') == 'Mobile'
-                        ? ''
-                        : ' <i onClick="set_this_as_main(this)" title="'._(
-                            'Set as main contact number'
-                        ).'" class="fa fa-star-o discreet button"></i>') : ''),
+                        ? ' <i  title="'._('Main contact number').'" class="fa fa-star button discreet"></i>'
+                        : ' <i onClick="set_this_as_main(this)" title="'._('Set as main contact number').'" class="far fa-star discreet button"></i>') : ''),
                 'invalid_msg'     => get_invalid_message('telephone'),
                 'required'        => false,
                 'type'            => 'value'
@@ -239,10 +237,8 @@ $object_fields = array(
                             'Supplier Main Plain Telephone'
                         )
                     ).($object->get('Supplier Main Plain Telephone') != '' ? ($object->get('Supplier Preferred Contact Number') == 'Telephone'
-                        ? ''
-                        : ' <i onClick="set_this_as_main(this)" title="'._(
-                            'Set as main contact number'
-                        ).'" class="fa fa-star-o discreet button"></i>') : ''),
+                        ? ' <i  title="'._('Main contact number').'" class="fa fa-star button discreet"></i>'
+                        : ' <i onClick="set_this_as_main(this)" title="'._('Set as main contact number').'" class="far fa-star discreet button"></i>') : ''),
                 'invalid_msg'     => get_invalid_message('telephone'),
                 'required'        => false,
                 'type'            => 'value'
@@ -258,7 +254,7 @@ $object_fields = array(
                         $object->get_field_label('Supplier Other Telephone')
                     ).' <i onClick="set_this_as_main(this)" title="'._(
                         'Set as main telephone'
-                    ).'" class="fa fa-star-o very_discreet button"></i>',
+                    ).'" class="far fa-star very_discreet button"></i>',
                 'required'        => false,
                 'type'            => 'ignore'
             ),
@@ -274,7 +270,7 @@ $object_fields = array(
                         $object->get_field_label('Supplier Other Telephone')
                     ).' <i onClick="set_this_as_main(this)" title="'._(
                         'Set as main telephone'
-                    ).'" class="fa fa-star-o very_discreet button"></i>',
+                    ).'" class="far fa-star very_discreet button"></i>',
                 'required'        => false,
                 'type'            => 'ignore'
             ),
@@ -999,7 +995,7 @@ if (count($other_emails) > 0) {
                     $object->get_field_label('Supplier Other Email')
                 ).' <i onClick="set_this_as_main(this)" title="'._(
                     'Set as main email'
-                ).'" class="fa fa-star-o very_discreet button"></i>',
+                ).'" class="far fa-star very_discreet button"></i>',
             'required'          => false
         );
     }
@@ -1022,7 +1018,7 @@ if (count($other_telephones) > 0) {
                     $object->get_field_label('Supplier Other Telephone')
                 ).' <i onClick="set_this_as_main(this)" title="'._(
                     'Set as main telephone'
-                ).'" class="fa fa-star-o very_discreet button"></i>',
+                ).'" class="far fa-star very_discreet button"></i>',
             'required'        => false
         );
     }

@@ -1244,12 +1244,12 @@ function get_user_navigation($data, $smarty, $user, $db, $account) {
         case 'Staff':
             $parent_reference = 'employee/'.$object->get('User Parent Key');
             $parent_icon
-                              = '<i style="font-size:80%;padding-left:10px" class="fa fa-hand-rock-o" aria-hidden="true"></i>';
+                              = '<i style="font-size:80%;padding-left:10px" class="fa fa-hand-rock" aria-hidden="true"></i>';
             break;
         case 'Contractor':
             $parent_reference = 'contractor/'.$object->get('User Parent Key');
             $parent_icon
-                              = '<i style="font-size:80%;padding-left:10px" class="fa fa-hand-spock-o" aria-hidden="true"></i>';
+                              = '<i style="font-size:80%;padding-left:10px" class="fa fa-hand-spock" aria-hidden="true"></i>';
             break;
         case 'Supplier':
             $parent_reference = 'supplier/'.$object->get('User Parent Key');

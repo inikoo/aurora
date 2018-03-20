@@ -16,8 +16,9 @@ $current_section = $data['section'];
 
 $nav_menu = array();
 
+
 $nav_menu[] = array(
-    '<i class="fa fa-dashboard fa-fw"></i>',
+    '<i class="far fa-tachometer-alt fa-fw"></i>',
     _('Dashboard'),
     '/dashboard',
     '_dashboard',
@@ -31,7 +32,7 @@ if ($user->can_view('customers')   ) {
 
     if ($user->get('User Hooked Store Key')) {
         $nav_menu[] = array(
-            '<i class="fa fa-users fa-fw"></i>',
+            '<i class="far fa-users fa-fw"></i>',
             _('Customers'),
             'customers/'.$user->get('User Hooked Store Key').'/dashboard',
             'customers',
@@ -41,7 +42,7 @@ if ($user->can_view('customers')   ) {
 
     } else {
         $nav_menu[] = array(
-            '<i class="fa fa-users fa-fw"></i>',
+            '<i class="far fa-users fa-fw"></i>',
             _('Customers'),
             'customers/all',
             'customers',
@@ -54,7 +55,7 @@ if ($user->can_view('customers')   ) {
     /*
     $sections=get_sections('customers', $data['parent_key']);
     foreach ($sections as $key=>$section ) {
-        $nav_menu[] = array('<i class="fa fa-'.$section['icon'].' fa-fw"></i>',$section['label'], $section['reference'], $key, 'section', '');
+        $nav_menu[] = array('<i class="far fa-'.$section['icon'].' fa-fw"></i>',$section['label'], $section['reference'], $key, 'section', '');
     }
     */
 }
@@ -64,7 +65,7 @@ if ($user->can_view('orders')) {
 
     if ($user->get('User Hooked Store Key')) {
         $nav_menu[] = array(
-            '<i class="fa fa-shopping-cart fa-fw"></i>',
+            '<i class="far fa-shopping-cart fa-fw"></i>',
             _('Orders'),
             'orders/'.$user->get('User Hooked Store Key').'/dashboard',
             'orders',
@@ -73,7 +74,7 @@ if ($user->can_view('orders')) {
         );
     } else {
         $nav_menu[] = array(
-            '<i class="fa fa-shopping-cart fa-fw"></i>',
+            '<i class="far fa-shopping-cart fa-fw"></i>',
             _('Orders'),
             'orders/all/dashboard',
             'orders',
@@ -84,13 +85,13 @@ if ($user->can_view('orders')) {
     /*
     $sections=get_sections('orders', $data['parent_key']);
     foreach ($sections as $key=>$section ) {
-        $nav_menu[] = array('<i class="fa fa-'.$section['icon'].' fa-fw"></i>',$section['label'], $section['reference'], $key, 'section', '');
+        $nav_menu[] = array('<i class="far fa-'.$section['icon'].' fa-fw"></i>',$section['label'], $section['reference'], $key, 'section', '');
     }
 */
 
     if ($user->get('User Hooked Store Key')) {
         $nav_menu[] = array(
-            '<i class="fa fa-truck fa-flip-horizontal fa-fw"></i>',
+            '<i class="far fa-truck fa-flip-horizontal fa-fw"></i>',
             _('Delivery notes'),
             'delivery_notes',
             'delivery_notes',
@@ -99,7 +100,7 @@ if ($user->can_view('orders')) {
         );
     } else {
         $nav_menu[] = array(
-            '<i class="fa fa-truck fa-flip-horizontal fa-fw"></i>',
+            '<i class="far fa-truck fa-flip-horizontal fa-fw"></i>',
             _('Delivery notes'),
             'delivery_notes/all',
             'delivery_notes',
@@ -110,14 +111,14 @@ if ($user->can_view('orders')) {
     /*
     $sections=get_sections('invoices', $data['parent_key']);
     foreach ($sections as $key=>$section ) {
-        $nav_menu[] = array('<i class="fa fa-'.$section['icon'].' fa-fw"></i>',$section['label'], $section['reference'], $key, 'section', '');
+        $nav_menu[] = array('<i class="far fa-'.$section['icon'].' fa-fw"></i>',$section['label'], $section['reference'], $key, 'section', '');
     }
 */
 /*
 
     if ($user->get('User Hooked Store Key')) {
         $nav_menu[] = array(
-            '<i class="fa fa-file-text-o fa-fw"></i>',
+            '<i class="far fa-file-alt fa-fw"></i>',
             _('Invoices'),
             'invoices',
             'invoices',
@@ -126,7 +127,7 @@ if ($user->can_view('orders')) {
         );
     } else {
         $nav_menu[] = array(
-            '<i class="fa fa-file-text-o fa-fw"></i>',
+            '<i class="far fa-file-alt fa-fw"></i>',
             _('Invoices'),
             'invoices/all',
             'invoices',
@@ -140,13 +141,13 @@ if ($user->can_view('orders')) {
     /*
     $sections=get_sections('invoices', $data['parent_key']);
     foreach ($sections as $key=>$section ) {
-        $nav_menu[] = array('<i class="fa fa-'.$section['icon'].' fa-fw"></i>',$section['label'], $section['reference'], $key, 'section', '');
+        $nav_menu[] = array('<i class="far fa-'.$section['icon'].' fa-fw"></i>',$section['label'], $section['reference'], $key, 'section', '');
     }
 */
 
     if ($user->get('User Hooked Store Key')) {
         $nav_menu[] = array(
-            '<i class="fa fa-usd fa-fw"></i>',
+            '<i class="fal fa-credit-card fa-fw"></i>',
             _('Payments'),
             'payments',
             'payments',
@@ -155,7 +156,7 @@ if ($user->can_view('orders')) {
         );
     } else {
         $nav_menu[] = array(
-            '<i class="fa fa-usd fa-fw"></i>',
+            '<i class="fal fa-credit-card fa-fw"></i>',
             _('Payments'),
             'payments/all',
             'payments',
@@ -166,7 +167,7 @@ if ($user->can_view('orders')) {
     /*
     $sections=get_sections('payments', $data['parent_key']);
     foreach ($sections as $key=>$section ) {
-        $nav_menu[] = array('<i class="fa fa-'.$section['icon'].' fa-fw"></i>',$section['label'], $section['reference'], $key, 'section', '');
+        $nav_menu[] = array('<i class="far fa-'.$section['icon'].' fa-fw"></i>',$section['label'], $section['reference'], $key, 'section', '');
     }
     */
 }
@@ -179,7 +180,7 @@ if ($user->can_view('sites')) {
 /*
     if ($user->get('User Hooked Site Key')) {
         $nav_menu[] = array(
-            '<i class="fa fa-globe fa-fw"></i>',
+            '<i class="far fa-globe fa-fw"></i>',
             _('Websites'),
             'website/'.$user->get('User Hooked Site Key'),
             'websites',
@@ -188,7 +189,7 @@ if ($user->can_view('sites')) {
         );
     } else {
         $nav_menu[] = array(
-            '<i class="fa fa-globe fa-fw"></i>',
+            '<i class="far fa-globe fa-fw"></i>',
             _('Websites'),
             'websites',
             'websites',
@@ -202,7 +203,7 @@ if ($user->can_view('sites')) {
     /*
     $sections=get_sections('websites', $data['parent_key']);
     foreach ($sections as $key=>$section ) {
-        $nav_menu[] = array('<i class="fa fa-'.$section['icon'].' fa-fw"></i>',$section['label'], $section['reference'], $key, 'section', '');
+        $nav_menu[] = array('<i class="far fa-'.$section['icon'].' fa-fw"></i>',$section['label'], $section['reference'], $key, 'section', '');
     }
 */
 
@@ -215,7 +216,7 @@ if ($user->can_view('marketing')) {
 
     if ($user->get('User Hooked Store Key')) {
         $nav_menu[] = array(
-            '<i class="fa fa-bullhorn fa-fw"></i>',
+            '<i class="far fa-bullhorn fa-fw"></i>',
             _('Marketing'),
             'campaigns/'.$user->get('User Hooked Store Key'),
             'marketing',
@@ -225,7 +226,7 @@ if ($user->can_view('marketing')) {
 
     } else {
         $nav_menu[] = array(
-            '<i class="fa fa-bullhorn fa-fw"></i>',
+            '<i class="far fa-bullhorn fa-fw"></i>',
             _('Marketing'),
             'marketing/all',
             'marketing',
@@ -245,7 +246,7 @@ if ($user->can_view('stores')) {
 
     if ($user->get('User Hooked Store Key')) {
         $nav_menu[] = array(
-            '<i class="fa fa-shopping-bag fa-fw"></i>',
+            '<i class="far fa-shopping-basket fa-fw"></i>',
             _('Products'),
             'store/'.$user->get('User Hooked Store Key'),
             'products',
@@ -255,7 +256,7 @@ if ($user->can_view('stores')) {
 
     } else {
         $nav_menu[] = array(
-            '<i class="fa fa-shopping-bag fa-fw"></i>',
+            '<i class="far fa-shopping-basket fa-fw"></i>',
             _('Stores'),
             'stores',
             'products',
@@ -267,7 +268,7 @@ if ($user->can_view('stores')) {
     /*
     $sections=get_sections('products', $data['parent_key']);
     foreach ($sections as $key=>$section ) {
-        $nav_menu[] = array('<i class="fa fa-'.$section['icon'].' fa-fw"></i>',$section['label'], $section['reference'], $key, 'section', '');
+        $nav_menu[] = array('<i class="far fa-'.$section['icon'].' fa-fw"></i>',$section['label'], $section['reference'], $key, 'section', '');
     }
 */
 
@@ -281,7 +282,7 @@ if ($user->can_view('locations')) {
     if ($user->get('User Hooked Warehouse Key')) {
 
         $nav_menu[] = array(
-            '<i class="fa fa-map fa-fw"></i>',
+            '<i class="far fa-warehouse-alt fa-fw"></i>',
             _('Warehouse'),
             'warehouse/'.$user->get('User Hooked Warehouse Key').'/dashboard',
             'warehouses',
@@ -304,7 +305,7 @@ if ($user->can_view('locations')) {
         }
 
         $nav_menu[] = array(
-            '<i class="fa fa-map fa-fw"></i>',
+            '<i class="far fa-warehouse-alt fa-fw"></i>',
             _('Warehouse'),
             'warehouse/'.$warehouse_key.'/dashboard',
             'warehouses',
@@ -314,7 +315,7 @@ if ($user->can_view('locations')) {
     } else {
 
         $nav_menu[] = array(
-            '<i class="fa fa-map fa-fw"></i>',
+            '<i class="far fa-forklift fa-fw"></i>',
             _('Warehouse'),
             'warehouses',
             'warehouses',
@@ -330,7 +331,7 @@ if ($user->can_view('parts')) {
 
 
     $nav_menu[] = array(
-        '<i class="fa fa-th-large fa-fw"></i>',
+        '<i class="far fa-boxes fa-fw"></i>',
         _('Inventory'),
         'inventory/dashboard',
         'inventory',
@@ -344,7 +345,7 @@ if ($user->can_view('parts')) {
 
 if ($user->can_view('suppliers')) {
     $nav_menu[] = array(
-        '<i class="fa fa-ship fa-fw"></i>',
+        '<i class="far fa-hand-holding-box fa-fw"></i>',
         _('Suppliers'),
         'suppliers',
         'suppliers',
@@ -359,7 +360,7 @@ if ($user->can_view('production') and $account->get('Account Manufacturers') > 0
 
     if ($user->get('User Hooked Production Key')) {
         $nav_menu[] = array(
-            '<i class="fa fa-industry fa-fw"></i>',
+            '<i class="far fa-industry fa-fw"></i>',
             _('Production'),
             'production/'.$user->get('User Hooked Production Key'),
             'production',
@@ -382,7 +383,7 @@ if ($user->can_view('production') and $account->get('Account Manufacturers') > 0
         }
 
         $nav_menu[] = array(
-            '<i class="fa fa-industry fa-fw"></i>',
+            '<i class="far fa-industry fa-fw"></i>',
             _('Production'),
             'production/'.$manufacturer_key,
             'production',
@@ -391,7 +392,7 @@ if ($user->can_view('production') and $account->get('Account Manufacturers') > 0
         );
     } else {
         $nav_menu[] = array(
-            '<i class="fa fa-industry fa-fw"></i>',
+            '<i class="far fa-industry fa-fw"></i>',
             _('Production'),
             'production/all',
             'production',
@@ -407,7 +408,7 @@ if ($user->can_view('production') and $account->get('Account Manufacturers') > 0
 
 if ($user->can_view('staff')) {
     $nav_menu[] = array(
-        '<i class="fa fa-hand-rock-o fa-fw"></i>',
+        '<i class="far fa-address-card fa-fw"></i>',
         _('Manpower'),
         'hr',
         'hr',
@@ -419,7 +420,7 @@ if ($user->can_view('staff')) {
 
 if ($user->can_view('reports')) {
     $nav_menu[] = array(
-        '<i class="fa fa-line-chart fa-fw"></i>',
+        '<i class="far fa-chart-line fa-fw"></i>',
         _('Reports'),
         'reports',
         'reports',
@@ -433,7 +434,7 @@ if ($user->get('User Type') == 'Agent') {
 
 
     $nav_menu[] = array(
-        '<i class="fa fa-clipboard fa-fw"></i>',
+        '<i class="far fa-clipboard fa-fw"></i>',
         _("Client's orders"),
         'orders',
         'agent_client_orders',
@@ -443,7 +444,7 @@ if ($user->get('User Type') == 'Agent') {
 
 
     $nav_menu[] = array(
-        '<i class="fa fa-ship fa-fw"></i>',
+        '<i class="far fa-ship fa-fw"></i>',
         _('Deliveries'),
         'agent_deliveries',
         'agent_client_deliveries',
@@ -452,7 +453,7 @@ if ($user->get('User Type') == 'Agent') {
     );
 
     $nav_menu[] = array(
-        '<i class="fa fa-industry fa-fw"></i>',
+        '<i class="far fa-industry fa-fw"></i>',
         _('Suppliers'),
         'suppliers',
         'agent_suppliers',
@@ -461,7 +462,7 @@ if ($user->get('User Type') == 'Agent') {
     );
 
     $nav_menu[] = array(
-        '<i class="fa fa-stop fa-fw"></i>',
+        '<i class="far fa-stop fa-fw"></i>',
         _('Products'),
         'agent_parts',
         'agent_parts',
@@ -469,7 +470,7 @@ if ($user->get('User Type') == 'Agent') {
         ''
     );
     $nav_menu[] = array(
-        '<i class="fa fa-user fa-fw"></i>',
+        '<i class="far fa-user fa-fw"></i>',
         _('My profile'),
         'profile',
         'agent_profile',
@@ -493,7 +494,7 @@ elseif ($user->get('User Type') == 'Supplier') {
 
 
     $nav_menu[] = array(
-        '<i class="fa fa-star fa-fw"></i>',
+        '<i class="fa fa-user-circle fa-fw"></i>',
         _('My profile'),
         '/profile',
         'profile',
@@ -512,7 +513,7 @@ if ($user->can_view('account')) {
 
 
     $nav_menu[] = array(
-        '<i class="fa fa-certificate fa-fw"></i>',
+        '<i class="far fa-cogs fa-fw"></i>',
         _('Account'),
         '/account',
         'account',

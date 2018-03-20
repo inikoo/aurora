@@ -27,7 +27,7 @@
                         <span id="_delivery_address_label"  >{if isset($labels._delivery_address_label) and $labels._delivery_address_label!=''}{$labels._delivery_address_label}{else}{t}Delivery Address:{/t}{/if}</span>
                         </span>
                         <span  id="collection_label" class="{if $order->get('Order For Collection')=='No'}hide{/if} "">
-                            <i id="_delivery_address_icon" class="fa fa-fw fa-hand-rock-o   aria-hidden="true"></i>
+                            <i id="_delivery_address_icon" class="far fa-fw fa-hand-rock  aria-hidden="true"></i>
                             <span id="_delivery_address_label"  >{if isset($labels._for_collecion_label) and $labels._for_collecion_label!=''}{$labels._for_collecion_label}{else}{t}To be collected at:{/t}{/if}</span>
 
                        </span>
@@ -40,7 +40,7 @@
 
                 <div class="one_third">
                     <h5 style="position: relative;left:-10px">
-                        <i id="_invoice_address_icon" class="fa fa-fw fa-usd" aria-hidden="true"></i>
+                        <i id="_invoice_address_icon" class="fa fa-fw fa-dollar-sign" aria-hidden="true"></i>
                         <span id="_invoice_address_label"  >{if isset($labels._invoice_address_label) and $labels._invoice_address_label!=''}{$labels._invoice_address_label}{else}{t}Invoice Address{/t}{/if}</span>
                         <a href="#order_invoice_address_form" class="modal-opener"><i class="fa fa-fw fa-pencil padding_left_5 discreet_on_hover like_button" aria-hidden="true"></i></a>
 
@@ -337,7 +337,7 @@
 
 
         <footer>
-            <button type="submit" class="button "  id="save_order_delivery_address_button" >{if isset($labels._save) and $labels._save!=''}{$labels._save}{else}{t}Save{/t}{/if}  <i  class="margin_left_10 fa fa-fw fa-floppy-o" aria-hidden="true"></i> </button>
+            <button type="submit" class="button "  id="save_order_delivery_address_button" >{if isset($labels._save) and $labels._save!=''}{$labels._save}{else}{t}Save{/t}{/if}  <i  class="margin_left_10 fa fa-fw fa-save" aria-hidden="true"></i> </button>
             <a href="#" class="button button-secondary modal-closer">{if isset($labels._close) and $labels._close!=''}{$labels._close}{else}{t}Close{/t}{/if}</a>
         </footer>
     </form>
@@ -466,7 +466,7 @@
 
 
         <footer>
-            <button type="submit" class="button "  id="save_order_invoice_address_button" >{if isset($labels._save) and $labels._save!=''}{$labels._save}{else}{t}Save{/t}{/if}  <i  class="margin_left_10 fa fa-fw fa-floppy-o" aria-hidden="true"></i>  </button>
+            <button type="submit" class="button "  id="save_order_invoice_address_button" >{if isset($labels._save) and $labels._save!=''}{$labels._save}{else}{t}Save{/t}{/if}  <i  class="margin_left_10 fa fa-fw fa-save" aria-hidden="true"></i>  </button>
             <a href="#" class="button button-secondary modal-closer">{if isset($labels._close) and $labels._close!=''}{$labels._close}{else}{t}Close{/t}{/if}</a>
         </footer>
     </form>

@@ -326,27 +326,27 @@ class Public_Website {
                 $payment_account = get_object('Payment_Account', $row['Payment Account Store Payment Account Key']);
                 switch ($payment_account->get('Payment Account Block')) {
                     case 'BTree':
-                        $icon            = 'fa-credit-card';
+                        $icon            = 'fa fa-credit-card';
                         $tab_label_index = '_credit_card_label';
                         $tab_label       = '';
                         $short_label     = '<i class="fa fa-credit-card" aria-hidden="true"></i>';
                         break;
                     case 'BTreePaypal':
-                        $icon            = 'fa-paypal';
+                        $icon            = 'fab fa-paypal';
                         $tab_label       = 'Paypal';
                         $tab_label_index = '';
-                        $short_label     = '<i class="fa fa-paypal" aria-hidden="true"></i>';
+                        $short_label     = '<i class="fab fa-paypal" aria-hidden="true"></i>';
 
                         break;
                     case 'Paypal':
-                        $icon            = 'fa-paypal';
+                        $icon            = 'fab fa-paypal';
                         $tab_label       = 'Paypal';
                         $tab_label_index = '';
-                        $short_label     = '<i class="fa fa-paypal" aria-hidden="true"></i>';
+                        $short_label     = '<i class="fab fa-paypal" aria-hidden="true"></i>';
 
                         break;
                     case 'Bank':
-                        $icon            = 'fa-university';
+                        $icon            = 'fa fa-university';
                         $tab_label_index = '_bank_label';
                         $tab_label       = '';
                         $short_label     = '';
@@ -361,7 +361,7 @@ class Public_Website {
                         }
 
 
-                        $icon            = 'fa-handshake-o';
+                        $icon            = 'fa fa-handshake';
                         $tab_label_index = '_cash_on_delivery_label';
                         $tab_label       = '';
                         $short_label     = '';

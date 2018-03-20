@@ -7,7 +7,7 @@
                 </h1>
             </div>
             <div class="data_field  {if $agent->get('Agent Company Name')==''}hide{/if}">
-                <i title="{t}Company name{/t}" class="fa fa-building-o"></i> <span
+                <i title="{t}Company name{/t}" class="fa fa-building"></i> <span
                         class="Agent_Name">{$agent->get('Agent Name')}</span>
             </div>
             <div class="data_field {if $agent->get('Agent Main Contact Name')=='' or $agent->get('Main Contact Name')==$agent->get('Name')}hide{/if}">
@@ -16,7 +16,7 @@
             </div>
             <div class="data_container" style=";margin-top:10px">
                 <div style="min-height:80px;float:left;width:28px;">
-                    <i class="fa fa-map-marker"></i>
+                    <i class="fa fa-map-marker-alt"></i>
                 </div>
                 <div style="float:left;width:272px" class="Agent_Contact_Address">
                     {$agent->get('Contact Address')}

@@ -49,7 +49,7 @@
                 <div class="one_third ">
 
                     <h5>
-                        <i class="fa fa-fw fa-usd" aria-hidden="true"></i>
+                        <i class="fa fa-fw fa-dollar-sign" aria-hidden="true"></i>
                         <span id="_invoice_address_label" class="website_localized_label"
                               contenteditable="true">{if isset($labels._invoice_address_label) and $labels._invoice_address_label!=''}{$labels._invoice_address_label}{else}{t}Invoice Address{/t}{/if}</span>
                     </h5>
@@ -132,10 +132,10 @@
 
                 <ul class="tabs3">
                     <li><a href="#example-3-tab-1" target="_self"><i class="fa fa-credit-card" aria-hidden="true"></i> <span contenteditable="true" id="_credit_card_label">{$content._credit_card_label}</span></a></li>
-                    <li><a href="#example-3-tab-2" target="_self"><i class="fa fa-paypal" aria-hidden="true"></i>&nbsp; Paypal</a></li>
+                    <li><a href="#example-3-tab-2" target="_self"><i class="fab fa-paypal" aria-hidden="true"></i>&nbsp; Paypal</a></li>
                     <li><a href="#example-3-tab-3" target="_self"><i class="fa fa-university" aria-hidden="true"></i>&nbsp; <span contenteditable="true" id="_bank_label">{{$content._bank_label}}</span></a></li>
-                    <li><a href="#example-3-tab-4" target="_self"><i class="fa fa-handshake-o" aria-hidden="true"></i>&nbsp; <span contenteditable="true" id="_cash_on_delivery_label">{if !empty($content._cash_on_delivery_label)}{{$content._cash_on_delivery_label}}{else}Cash on delivery{/if}</span></a></li>
-                    <li><a href="#example-3-tab-5" target="_self"><i class="fa fa-hand-peace-o" aria-hidden="true"></i> <span contenteditable="true" id="_online_bank_transfer_label">{if !empty($content._online_bank_transfer_label)}{{$content._online_bank_transfer_label}}{else}Online bank transfer{/if}</span></a></li>
+                    <li><a href="#example-3-tab-4" target="_self"><i class="fa fa-handshake" aria-hidden="true"></i>&nbsp; <span contenteditable="true" id="_cash_on_delivery_label">{if !empty($content._cash_on_delivery_label)}{{$content._cash_on_delivery_label}}{else}Cash on delivery{/if}</span></a></li>
+                    <li><a href="#example-3-tab-5" target="_self"><i class="fa fa-hand-peace" aria-hidden="true"></i> <span contenteditable="true" id="_online_bank_transfer_label">{if !empty($content._online_bank_transfer_label)}{{$content._online_bank_transfer_label}}{else}Online bank transfer{/if}</span></a></li>
 
                 </ul>
 

@@ -16,10 +16,10 @@
 
         $(element).closest('tr').find('.note').val($(textarea).val())
         if ($(textarea).val() == '') {
-            $(element).closest('tr').find('.add_note').addClass('fa-sticky-note-o').removeClass('fa-sticky-note')
+            $(element).closest('tr').find('.add_note').addClass('fa-sticky-note').removeClass('fa-sticky-note')
 
         } else {
-            $(element).closest('tr').find('.add_note').removeClass('fa-sticky-note-o').addClass('fa-sticky-note')
+            $(element).closest('tr').find('.add_note').removeClass('fa-sticky-note').addClass('fa-sticky-note')
         }
 
     }

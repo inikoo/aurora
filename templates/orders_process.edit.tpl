@@ -28,7 +28,7 @@
 <div style="padding:10px;padding-left:7px;border-bottom:1px solid #ccc;display:flex;">
 <div style="text-align: left;">
 
-    <i class="fa fa-hand-o-down" style="margin-right:2.5px" aria-hidden="true"></i> <i class="fa fa-square-o" aria-hidden="true" title="{t}Mark all in list{/t}"></i>
+    <i class="fa fa-hand-o-down" style="margin-right:2.5px" aria-hidden="true"></i> <i class="fa fa-square" aria-hidden="true" title="{t}Mark all in list{/t}"></i>
 </div>
 
 </div>

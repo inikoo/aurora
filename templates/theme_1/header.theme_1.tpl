@@ -541,138 +541,154 @@
     <div>{t}Bullet points{/t}</div>
 
     <div>
-        <i icon="fa-circle" class="button  fa fa-fw fa-circle" aria-hidden="true"></i>
-        <i icon="fa-circle-o" class="button  fa fa-fw fa-circle-o" aria-hidden="true"></i>
-        <i icon="fa-circle-thin" class="button  fa fa-fw fa-circle-thin" aria-hidden="true"></i>
-        <i icon="fa-dot-circle-o" class="button  fa fa-fw fa-dot-circle-o" aria-hidden="true"></i>
-        <i icon="fa-square" class="button  fa fa-fw fa-square" aria-hidden="true"></i>
-        <i icon="fa-square-o" class="button  fa fa-fw fa-square-o" aria-hidden="true"></i>
-        <i icon="fa-caret-square-o-right" class="button  fa fa-fw fa-caret-square-o-right" aria-hidden="true"></i>
-        <i icon="fa-caret-right" class="button  fa fa-fw fa-caret-right" aria-hidden="true"></i>
-        <i icon="fa-asterisk" class="button  fa fa-fw fa-asterisk" aria-hidden="true"></i>
-        <i icon="fa-adjust" class="button  fa fa-fw fa-adjust" aria-hidden="true"></i>
-        <i icon="fa-bullseye" class="button  fa fa-fw fa-bullseye" aria-hidden="true"></i>
-        <i icon="fa-certificate" class="button  fa fa-fw fa-certificate" aria-hidden="true"></i>
-        <i icon="fa-star" class="button  fa fa-fw fa-star" aria-hidden="true"></i>
-        <i icon="fa-star-o" class="button  fa fa-fw fa-star-o" aria-hidden="true"></i>
+        <i icon="fas fa-circle" class="button  fas fa-fw fa-circle" aria-hidden="true"></i>
+        <i icon="far fa-circle" class="button  far fa-fw fa-circle" aria-hidden="true"></i>
+        <i icon="fal fa-circle" class="button  fal fa-fw fa-circle" aria-hidden="true"></i>
+        <i icon="fa-dot-circle" class="button  fa fa-fw fa-dot-circle" aria-hidden="true"></i>
+        <i icon="fa fa-square" class="button  fa fa-fw fa-square" aria-hidden="true"></i>
+        <i icon="far fa-square" class="button  far fa-fw fa-square" aria-hidden="true"></i>
+        <i icon="fa fa-caret-square-right" class="button  fa fa-fw fa-caret-square-right" aria-hidden="true"></i>
+        <i icon="fa fa-caret-right" class="button  fa fa-fw fa-caret-right" aria-hidden="true"></i>
+        <i icon="fa fa-asterisk" class="button  fa fa-fw fa-asterisk" aria-hidden="true"></i>
+        <i icon="fa fa-adjust" class="button  fa fa-fw fa-adjust" aria-hidden="true"></i>
+        <i icon="fa fa-bullseye" class="button  fa fa-fw fa-bullseye" aria-hidden="true"></i>
+        <i icon="fa fa-certificate" class="button  fa fa-fw fa-certificate" aria-hidden="true"></i>
+        <i icon="fa fa-star" class="button  fa fa-fw fa-star" aria-hidden="true"></i>
+        <i icon="fa fa-star" class="button  far fa-fw fa-star" aria-hidden="true"></i>
     </div>
 
     <div>{t}Store{/t}</div>
 
     <div>
-        <i icon="fa-tag" class="button  fa fa-fw fa-tag" aria-hidden="true"></i>
-        <i icon="fa-tags" class="button  fa fa-fw fa-tags" aria-hidden="true"></i>
-        <i icon="fa-lightbulb-o" class="button  fa fa-fw fa-lightbulb-o" aria-hidden="true"></i>
+        <i icon="fa fa-tag" class="button  fa fa-fw fa-tag" aria-hidden="true"></i>
+        <i icon="fa fa-tags" class="button  fa fa-fw fa-tags" aria-hidden="true"></i>
+        <i icon="fa fa-lightbulb" class="button  fa fa-fw fa-lightbulb" aria-hidden="true"></i>
+             <i icon="fa fa-plus" class="button  fa fa-fw fa-plus" aria-hidden="true"></i>
+        <i icon="fa fa-percent" class="button  fa fa-fw fa-percent" aria-hidden="true"></i>
+        <i icon="fa a-gift" class="button  fa fa-fw fa-gift" aria-hidden="true"></i>
+        <i icon="fa fa-handshake" class="button  fa fa-fw fa-handshake" aria-hidden="true"></i>
+        <i icon="fa fa-bullhorn" class="button  fa fa-fw fa-bullhorn" aria-hidden="true"></i>
+        <i icon="fa fa-badge" class="button  fa fa-fw fa-badge" aria-hidden="true"></i>
+        <i icon="fa fa-star-exclamation" class="button  fa fa-fw fa-star-exclamation" aria-hidden="true"></i>
+        <i icon="fa fa-info" class="button  fa fa-fw fa-info" aria-hidden="true"></i>
+        <i icon="fa fa-info-circle" class="button  fa fa-fw fa-info-circle" aria-hidden="true"></i>
+        <i icon="fa fa-question" class="button  fa fa-fw fa-question" aria-hidden="true"></i>
+        <i icon="fa fa-question-circle" class="button  fa fa-fw fa-question-circle" aria-hidden="true"></i>
 
-        <i icon="fa-stop" class="button  fa fa-fw fa-stop" aria-hidden="true"></i>
-        <i icon="fa-th-large" class="button  fa fa-fw fa-th-large" aria-hidden="true"></i>
-        <i icon="fa-th" class="button  fa fa-fw fa-th" aria-hidden="true"></i>
-        <i icon="fa-plus" class="button  fa fa-fw fa-plus" aria-hidden="true"></i>
-        <i icon="fa-percent" class="button  fa fa-fw fa-percent" aria-hidden="true"></i>
-        <i icon="fa-gift" class="button  fa fa-fw fa-gift" aria-hidden="true"></i>
-
-        <i icon="fa-shopping-basket" class="button  fa fa-fw fa-shopping-basket" aria-hidden="true"></i>
-        <i icon="fa-shopping-bag" class="button  fa fa-fw fa-shopping-bag" aria-hidden="true"></i>
-        <i icon="fa-shopping-cart" class="button  fa fa-fw fa-shopping-cart" aria-hidden="true"></i>
-
-        <i icon="fa-money" class="button  fa fa-fw fa-money" aria-hidden="true"></i>
-        <i icon="fa-credit-card" class="button  fa fa-fw fa-credit-card" aria-hidden="true"></i>
-        <i icon="fa-paypal" class="button  fa fa-fw fa-paypal" aria-hidden="true"></i>
 
     </div>
     <div>
 
-        <i icon="fa-university" class="button  fa fa-fw fa-university" aria-hidden="true"></i>
-        <i icon="fa-usd" class="button  fa fa-fw fa-usd" aria-hidden="true"></i>
-        <i icon="fa-euro" class="button  fa fa-fw fa-euro" aria-hidden="true"></i>
-        <i icon="fa-gbp" class="button  fa fa-fw fa-gbp" aria-hidden="true"></i>
+        <i icon="fa fa-shopping-basket" class="button  fa fa-fw fa-shopping-basket" aria-hidden="true"></i>
+        <i icon="fa fa-shopping-basket" class="button  far fa-fw fa-shopping-basket" aria-hidden="true"></i>
+        <i icon="fa fa-shopping-cart" class="button  fa fa-fw fa-shopping-cart" aria-hidden="true"></i>
 
+        <i icon="far fa-money-bill" class="button  far fa-fw fa-money-bill" aria-hidden="true"></i>
+        <i icon="fa fa-credit-card" class="button  fa fa-fw fa-credit-card" aria-hidden="true"></i>
+        <i icon="fab fa-cc-vis" class="button  fab fa-fw fa-cc-visa" aria-hidden="true"></i>
 
-        <i icon="fa-handshake-o" class="button  fa fa-fw fa-handshake-o" aria-hidden="true"></i>
-        <i icon="fa-truck" class="button  fa fa-fw fa-truck" aria-hidden="true"></i>
-        <i icon="fa-ship" class="button  fa fa-fw fa-ship" aria-hidden="true"></i>
-        <i icon="fa-paper-plane" class="button  fa fa-fw fa-paper-plane" aria-hidden="true"></i>
-        <i icon="fa-paper-plane-o" class="button  fa fa-fw fa-paper-plane-o" aria-hidden="true"></i>
-
-        <i icon="fa-plane" class="button  fa fa-fw fa-plane" aria-hidden="true"></i>
-        <i icon="fa-fighter-jet" class="button  fa fa-fw fa-fighter-jet" aria-hidden="true"></i>
-
-        <i icon="fa-info" class="button  fa fa-fw fa-info" aria-hidden="true"></i>
-        <i icon="fa-info-circle" class="button  fa fa-fw fa-info-circle" aria-hidden="true"></i>
-        <i icon="fa-question" class="button  fa fa-fw fa-question" aria-hidden="true"></i>
-        <i icon="fa-question-circle" class="button  fa fa-fw fa-question-circle" aria-hidden="true"></i>
-
+        <i icon="fab fa-paypal" class="button  fab fa-fw fa-paypal" aria-hidden="true"></i>
+        <i icon="fa fa-university" class="button  fa fa-fw fa-university" aria-hidden="true"></i>
+        <i icon="fa fa-dollar-sign" class="button  fa fa-fw fa-dollar-sign" aria-hidden="true"></i>
+        <i icon="fa fa-euro-sign" class="button  fa fa-fw fa-euro-sign" aria-hidden="true"></i>
+        <i icon="fa fa-pound-sign" class="button  fa fa-fw fa-pound-sign" aria-hidden="true"></i>
 
     </div>
 
-    <div>{t}Office{/t}</div>
+
+    <div>{t}Logistics{/t}</div>
+    <div>
+
+
+
+        <i icon="fa fa-truck" class="button  fa fa-fw fa-truck" aria-hidden="true"></i>
+        <i icon="fa fa-shipping-fast" class="button  fa fa-fw fa-shipping-fast" aria-hidden="true"></i>
+
+
+        <i icon="fa fa-ship" class="button  fa fa-fw fa-ship" aria-hidden="true"></i>
+        <i icon="fa fa-paper-plane" class="button  fa fa-fw fa-paper-plane" aria-hidden="true"></i>
+        <i icon="far fa-paper-plane" class="button  far fa-fw fa-paper-plane" aria-hidden="true"></i>
+
+        <i icon="fa fa-plane" class="button  fa fa-fw fa-plane" aria-hidden="true"></i>
+        <i icon="fa fa-fighter-jet" class="button  fa fa-fw fa-fighter-jet" aria-hidden="true"></i>
+        <i icon="fa fa-box" class="button  fa fa-fw fa-box" aria-hidden="true"></i>
+
+        <i icon="fa fa-stop" class="button  fa fa-fw fa-stop" aria-hidden="true"></i>
+        <i icon="fa fa-th-large" class="button  fa fa-fw fa-th-large" aria-hidden="true"></i>
+        <i icon="fa fa-th" class="button  fa fa-fw fa-th" aria-hidden="true"></i>
+
+
+
+    </div>
+    <div>{t}Contact{/t}</div>
 
     <div>
-        <i icon="fa-user" class="button  fa fa-fw fa-user" aria-hidden="true"></i>
-        <i icon="fa-user-o" class="button  fa fa-fw fa-user-o" aria-hidden="true"></i>
-        <i icon="fa-user-circle-o" class="button  fa fa-fw fa-user-circle-o" aria-hidden="true"></i>
-        <i icon="fa-at" class="button  fa fa-fw fa-at" aria-hidden="true"></i>
-        <i icon="fa-envelope" class="button  fa fa-fw fa-envelope" aria-hidden="true"></i>
-        <i icon="fa-envelope-o" class="button  fa fa-fw fa-envelope-o" aria-hidden="true"></i>
-        <i icon="fa-commenting-o" class="button  fa fa-fw fa-commenting-o" aria-hidden="true"></i>
-        <i icon="fa-phone" class="button  fa fa-fw fa-phone" aria-hidden="true"></i>
-        <i icon="fa-phone-square" class="button  fa fa-fw fa-phone-square" aria-hidden="true"></i>
-        <i icon="fa-mobile" class="button  fa fa-fw fa-mobile" aria-hidden="mobile"></i>
-        <i icon="fa-bell" class="button  fa fa-fw fa-bell" aria-hidden="true"></i>
-        <i icon="fa-building" class="button  fa fa-fw fa-building" aria-hidden="true"></i>
+        <i icon="fa fa-user" class="button  fa fa-fw fa-user" aria-hidden="true"></i>
+        <i icon="far fa-user" class="button  far fa-fw fa-user" aria-hidden="true"></i>
+        <i icon="fa fa-user-circle" class="button  fa fa-fw fa-user-circle" aria-hidden="true"></i>
+        <i icon="fa fa-at" class="button  fa fa-fw fa-at" aria-hidden="true"></i>
+        <i icon="fa fa-envelope" class="button  fa fa-fw fa-envelope" aria-hidden="true"></i>
+        <i icon="far fa-envelope" class="button  far fa-fw fa-envelope" aria-hidden="true"></i>
+        <i icon="fa fa-comment-alt" class="button  fa fa-fw fa-comment-alt" aria-hidden="true"></i>
+        <i icon="fa fa-phone" class="button  fa fa-fw fa-phone" aria-hidden="true"></i>
+        <i icon="fa fa-phone-square" class="button  fa fa-fw fa-phone-square" aria-hidden="true"></i>
+        <i icon="fa fa-mobile" class="button  fa fa-fw fa-mobile" aria-hidden="mobile"></i>
+        <i icon="fa fa-bell" class="button  fa fa-fw fa-bell" aria-hidden="true"></i>
+        <i icon="fa fa-building" class="button  fa fa-fw fa-building" aria-hidden="true"></i>
     </div>
     <div>
-        <i icon="fa-clock-o" class="button  fa fa-fw fa-clock-o" aria-hidden="true"></i>
-        <i icon="fa-coffee" class="button  fa fa-fw fa-coffee" aria-hidden="true"></i>
-        <i icon="fa-cutlery" class="button  fa fa-fw fa-cutlery" aria-hidden="true"></i>
-        <i icon="fa-copyright" class="button  fa fa-fw fa-copyright" aria-hidden="true"></i>
-        <i icon="fa-black-tie" class="button  fa fa-fw fa-black-tie" aria-hidden="true"></i>
-        <i icon="fa-briefcase" class="button  fa fa-fw fa-briefcase" aria-hidden="true"></i>
+        <i icon="far fa-clock" class="button  fa fa-fw fa-clock" aria-hidden="true"></i>
+        <i icon="fa fa-coffee" class="button  fa fa-fw fa-coffee" aria-hidden="true"></i>
+        <i icon="fa fa-utensils" class="button  fa fa-fw fa-utensils" aria-hidden="true"></i>
+        <i icon="fa fa-copyright" class="button  fa fa-fw fa-copyright" aria-hidden="true"></i>
+        <i icon="fa fa-black-tie" class="button  fab fa-fw fa-black-tie" aria-hidden="true"></i>
+        <i icon="fa fa-briefcase" class="button  fa fa-fw fa-briefcase" aria-hidden="true"></i>
+
     </div>
 
     <div>{t}Nature{/t}</div>
 
     <div>
-        <i icon="fa-tree" class="button  fa fa-fw fa-tree" aria-hidden="true"></i>
-        <i icon="fa-pagelines" class="button  fa fa-fw fa-pagelines" aria-hidden="true"></i>
-        <i icon="fa-leaf" class="button  fa fa-fw fa-leaf" aria-hidden="true"></i>
-        <i icon="fa-lemon-o" class="button  fa fa-fw fa-lemon-o" aria-hidden="true"></i>
-        <i icon="fa-apple" class="button  fa fa-fw fa-apple" aria-hidden="true"></i>
-        <i icon="fa-sun-o" class="button  fa fa-fw fa-sun-o" aria-hidden="true"></i>
-        <i icon="fa-moon-o" class="button  fa fa-fw fa-moon-o" aria-hidden="true"></i>
-        <i icon="fa-star" class="button  fa fa-fw fa-star" aria-hidden="true"></i>
-        <i icon="fa-snowflake-o" class="button  fa fa-fw fa-snowflake-o" aria-hidden="true"></i>
-        <i icon="fa-fire" class="button  fa fa-fw fa-fire" aria-hidden="true"></i>
-        <i icon="fa-cloud" class="button  fa fa-fw fa-cloud" aria-hidden="true"></i>
-        <i icon="fa-bolt" class="button  fa fa-fw fa-bolt" aria-hidden="true"></i>
-        <i icon="fa-tint" class="button  fa fa-fw fa-tint" aria-hidden="mobile"></i>
-        <i icon="fa-thermometer" class="button  fa fa-fw fa-thermometer" aria-hidden="true"></i>
-        <i icon="fa-paw" class="button  fa fa-fw fa-paw" aria-hidden="true"></i>
+        <i icon="fa fa-tree" class="button  fa fa-fw fa-tree" aria-hidden="true"></i>
+        <i icon="fab fa-pagelines" class="button  fab fa-fw fa-pagelines" aria-hidden="true"></i>
+        <i icon="fa fa-leaf" class="button  fa fa-fw fa-leaf" aria-hidden="true"></i>
+        <i icon="fa fa-lemon" class="button  fa fa-fw fa-lemon" aria-hidden="true"></i>
+        <i icon="fab fa-apple" class="button  fab fa-fw fa-apple" aria-hidden="true"></i>
+        <i icon="fa fa-sun" class="button  fa fa-fw fa-sun" aria-hidden="true"></i>
+        <i icon="fa fa-moon" class="button  fa fa-fw fa-moon" aria-hidden="true"></i>
+        <i icon="fa fa-star" class="button  fa fa-fw fa-star" aria-hidden="true"></i>
+        <i icon="fa fa-snowflake" class="button  fa fa-fw fa-snowflake" aria-hidden="true"></i>
+        <i icon="fa fa-fire" class="button  fa fa-fw fa-fire" aria-hidden="true"></i>
+        <i icon="fa fa-cloud" class="button  fa fa-fw fa-cloud" aria-hidden="true"></i>
+        <i icon="fa fa-bolt" class="button  fa fa-fw fa-bolt" aria-hidden="true"></i>
+        <i icon="fa fa-tint" class="button  fa fa-fw fa-tint" aria-hidden="mobile"></i>
+        <i icon="fa fa-thermometer" class="button  fa fa-fw fa-thermometer" aria-hidden="true"></i>
+        <i icon="fa fa-paw" class="button  fa fa-fw fa-paw" aria-hidden="true"></i>
     </div>
 
     <div>{t}Humanoid{/t}</div>
 
     <div>
-        <i icon="fa-male" class="button  fa fa-fw fa-male" aria-hidden="true"></i>
-        <i icon="fa-female" class="button  fa fa-fw fa-female" aria-hidden="true"></i>
-        <i icon="fa-child" class="button  fa fa-fw fa-child" aria-hidden="true"></i>
-        <i icon="fa-blind" class="button  fa fa-fw fa-blind" aria-hidden="true"></i>
-        <i icon="fa-smile-o" class="button  fa fa-fw fa-smile-o" aria-hidden="true"></i>
-        <i icon="fa-meh-o" class="button  fa fa-fw fa-meh-o" aria-hidden="true"></i>
-        <i icon="fa-frown-o" class="button  fa fa-fw fa-frown-o" aria-hidden="true"></i>
-        <i icon="fa-hand-spock-o" class="button  fa fa-fw fa-hand-spock-o" aria-hidden="true"></i>
-        <i icon="fa-hand-rock-o" class="button  fa fa-fw fa-hand-rock-o" aria-hidden="true"></i>
-        <i icon="fa-thumbs-up" class="button  fa fa-fw fa-thumbs-up" aria-hidden="true"></i>
-        <i icon="fa-thumbs-o-up" class="button  fa fa-fw fa-thumbs-o-up" aria-hidden="true"></i>
-        <i icon="fa-heart" class="button  fa fa-fw fa-heart" aria-hidden="true"></i>
-        <i icon="fa-heart-o" class="button  fa fa-fw fa-heart-o" aria-hidden="mobile"></i>
+        <i icon="fa fa-male" class="button  fa fa-fw fa-male" aria-hidden="true"></i>
+        <i icon="fa fa-female" class="button  fa fa-fw fa-female" aria-hidden="true"></i>
+        <i icon="fa fa-child" class="button  fa fa-fw fa-child" aria-hidden="true"></i>
+        <i icon="fa fa-blind" class="button  fa fa-fw fa-blind" aria-hidden="true"></i>
+        <i icon="fa fa-smile" class="button  fa fa-fw fa-smile" aria-hidden="true"></i>
+        <i icon="fa fa-meh" class="button  fa fa-fw fa-meh" aria-hidden="true"></i>
+        <i icon="fa fa-frown" class="button  fa fa-fw fa-frown" aria-hidden="true"></i>
+        <i icon="fa fa-hand-spock" class="button  fa fa-fw fa-hand-spock" aria-hidden="true"></i>
+        <i icon="fa fa-hand-rock" class="button  fa fa-fw fa-hand-rock" aria-hidden="true"></i>
+        <i icon="fa fa-thumbs-up" class="button  fa fa-fw fa-thumbs-up" aria-hidden="true"></i>
+        <i icon="far fa-thumbs-up" class="button  far fa-fw fa-thumbs-up" aria-hidden="true"></i>
+        <i icon="fa fa-heart" class="button  fa fa-fw fa-heart" aria-hidden="true"></i>
+        <i icon="far fa-heart" class="button  far fa-fw fa-heart" aria-hidden="mobile"></i>
 
     </div>
 
     <div>{t}No icon{/t}</div>
 
     <div>
-        <i icon="fa-ban" class="button  fa fa-fw fa-ban discreet" aria-hidden="true"></i>
+        <i icon="fa-ban" style="color:red" class="button   fa fa-fw fa-ban discreet" aria-hidden="true"></i>
 
 
     </div>
@@ -739,7 +755,7 @@
 
                                             <li  id="menu_column_{$key}" class="dropdown {if !$column.show}hide{/if} on _column {if $column.type=='three_columns'}yamm-fw  3_columns{else}single_column{/if}  " >
                                                 <a  href="" data-toggle="dropdown" class="dropdown-toggle ">
-                                                    <i class="fa _column_label_icon {if $column.icon==''}fa-ban {else}{$column.icon}{/if} item_icon padding_right_5  " icon="{$column.icon}" aria-hidden="true"></i>  <span class="_column_label" contenteditable="true">{$column.label}</span>
+                                                    <i class=" _column_label_icon {if $column.icon==''}fa-ban {else}{$column.icon}{/if} item_icon padding_right_5  " icon="{$column.icon}" aria-hidden="true"></i>  <span class="_column_label" contenteditable="true">{$column.label}</span>
                                                 </a>
                                                 {if $column.type=='three_columns'}
                                                     <ul class="dropdown-menu">
@@ -761,7 +777,7 @@
                                                                                     {foreach from=$sub_column.items item=item}
                                                                                         <li class="item">
                                                                                             <i class="handle aux hide fa fa-arrows very_discreet fa-fw" aria-hidden="true"></i>
-                                                                                            <span class="link"><i class="fa item_icon fa-fw {$item.icon}" icon="{$item.icon}" ></i> <span class="_item_label" contenteditable="true">{$item.label}</span></span>
+                                                                                            <span class="link"><i class="{$item.icon} item_icon fa-fw " icon="{$item.icon}" ></i> <span class="_item_label" contenteditable="true">{$item.label}</span></span>
                                                                                             <i url="{$item.url}" class="fa item_link hide aux fa-chain button very_discreet" aria-hidden="true"></i>
                                                                                             <i class="fa item_delete hide aux fa-trash-o button very_discreet" aria-hidden="true"></i>
                                                                                         </li>
@@ -1078,7 +1094,7 @@
                 //console.log((className.match (/\bfa-\S+/g) || []).join(' '))
 
                 return (className.match (/\bfa-\S+/g) || []).join(' ');
-            }).addClass('fa-fw').addClass($(this).attr('icon'))
+            }).removeClass('fa fab fas far fal').addClass('fa-fw').addClass($(this).attr('icon'))
 
 
             if($(this).attr('icon')=='fa-ban'){

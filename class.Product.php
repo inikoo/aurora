@@ -3815,7 +3815,7 @@ class Product extends Asset {
                         } else {
                             $date = strftime("%e %b %y", strtotime($row['Purchase Order Estimated Receiving Date'].' +0:00'));
                             $link = sprintf(
-                                '<span class="link" onclick="change_view(\'suppliers/order/%d\')"><i class="fa fa-clipboard" aria-hidden="true"></i> %s</span> <i class="fa fa-paper-plane-o" aria-hidden="true"></i>', $row['Purchase Order Key'],
+                                '<span class="link" onclick="change_view(\'suppliers/order/%d\')"><i class="fa fa-clipboard" aria-hidden="true"></i> %s</span> <i class="fa fa-paper-plane" aria-hidden="true"></i>', $row['Purchase Order Key'],
                                 $row['Purchase Order Public ID']
                             );
                             $qty  = '+'.number($row['Purchase Order Quantity'] * $part_data['Ratio']);

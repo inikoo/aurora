@@ -519,7 +519,7 @@ function templates($_data, $db, $user) {
                 $scope      = _('Product');
                 break;
             case 'Blank':
-                $scope_icon = sprintf('<i class="fa fa-file-o" aria-hidden="true" label="%s"></i>', _('Blank'));
+                $scope_icon = sprintf('<i class="fa fa-file" aria-hidden="true" label="%s"></i>', _('Blank'));
                 $scope      = _('Blank');
                 break;
             case 'Category':
@@ -673,7 +673,7 @@ function webpages($_data, $db, $user) {
                 $type = sprintf('<i class="fa fa-info" aria-hidden="true" title="" ></i>', _('Info'));
                 break;
             case 'Category Products':
-                $type = sprintf('<i class="fa fa-pagelines" aria-hidden="true" title="" ></i>', _('Products'));
+                $type = sprintf('<i class="fab fa-pagelines" aria-hidden="true" title="" ></i>', _('Products'));
 
                 break;
             case 'Category Categories':
@@ -681,7 +681,7 @@ function webpages($_data, $db, $user) {
 
                 break;
             case 'Operations':
-                $type = sprintf('<i class="fa fa-keyboard-o" aria-hidden="true" title="" ></i>', _('Operations'));
+                $type = sprintf('<i class="fa fa-keyboard" aria-hidden="true" title="" ></i>', _('Operations'));
 
                 break;
             default:
@@ -903,7 +903,7 @@ function webpages_offline($_data, $db, $user) {
                 $type = sprintf('<i class="fa fa-info" aria-hidden="true" title="" ></i>', _('Info'));
                 break;
             case 'Category Products':
-                $type = sprintf('<i class="fa fa-pagelines" aria-hidden="true" title="" ></i>', _('Products'));
+                $type = sprintf('<i class="fab fa-pagelines" aria-hidden="true" title="" ></i>', _('Products'));
 
                 break;
             case 'Category Categories':
@@ -911,7 +911,7 @@ function webpages_offline($_data, $db, $user) {
 
                 break;
             case 'Operations':
-                $type = sprintf('<i class="fa fa-keyboard-o" aria-hidden="true" title="" ></i>', _('Operations'));
+                $type = sprintf('<i class="fa fa-keyboard" aria-hidden="true" title="" ></i>', _('Operations'));
 
                 break;
             default:

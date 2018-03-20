@@ -47,7 +47,7 @@
                     <div class="ordering log_in can_not_order {$product->get('Out of Stock Class')} ">
 
                         <span class="product_footer label ">{$product->get('Out of Stock Label')}</span>
-                        <span class="product_footer reminder"><i class="fa fa-envelope-o" aria-hidden="true"></i>  </span>
+                        <span class="product_footer reminder"><i class="fa fa-envelope" aria-hidden="true"></i>  </span>
 
 
                     </div>
@@ -55,8 +55,8 @@
 
                 <div class="ordering log_in " >
                     <input maxlength=6  class='order_input ' id='but_qty{$product->id}'   type="text" size='2'  value='{$product->get('Ordered Quantity')}' ovalue='{$product->get('Ordered Quantity')}'>
-                     <span class="product_footer order_button"   ><i class="fa fa-hand-pointer-o" aria-hidden="true"></i> {if empty($labels._ordering_order_now)}{t}Order now{/t}{else}{$labels._ordering_order_now}{/if}</span>
-                     <span class="product_footer  favourite "><i class="fa fa-heart-o" aria-hidden="true"></i>  </span>
+                     <span class="product_footer order_button"   ><i class="fa fa-hand-pointer" aria-hidden="true"></i> {if empty($labels._ordering_order_now)}{t}Order now{/t}{else}{$labels._ordering_order_now}{/if}</span>
+                     <span class="product_footer  favourite "><i class="fa fa-heart" aria-hidden="true"></i>  </span>
 
 
                 </div>
@@ -79,7 +79,7 @@
 
 
                     <div class="buttons panel_type"  >
-                        <div class="flex-item button" type="image"><i class="fa fa-picture-o" aria-hidden="true"></i></div>
+                        <div class="flex-item button" type="image"><i class="fa fa-image" aria-hidden="true"></i></div>
                         <div class="flex-item button" type="text"><i class="fa fa-align-center" aria-hidden="true"></i></div>
                         <div class="flex-item button " type="code"><i class="fa fa-code" aria-hidden="true"></i></div>
                         <div class="flex-item button invisible" type="banner"><i class="fa fa-bullhorn" aria-hidden="true"></i></div>
@@ -149,7 +149,7 @@
                                 <form method="post" action="/ar_edit.php" enctype="multipart/form-data" novalidate>
                                     <input type="file" name="image_upload"  panel_key="{$product_data.data.id}" id="file_upload_{$product_data.data.id}" class="input_file input_file_panel " multiple/>
                                     <label for="file_upload_{$product_data.data.id}">
-                                        <i class="fa  fa-picture-o fa-fw button" aria-hidden="true"></i><br>
+                                        <i class="fa  fa-image fa-fw button" aria-hidden="true"></i><br>
                                     </label>
                                 </form>
                                 </div>

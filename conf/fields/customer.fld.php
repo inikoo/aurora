@@ -140,7 +140,7 @@ if ($new) {
                             ? ''
                             : ' <i onClick="set_this_as_main(this)" title="'._(
                                 'Set as main contact number'
-                            ).'" class="fa fa-star-o discreet button"></i>') : ''),
+                            ).'" class="far fa-star discreet button"></i>') : ''),
                     'invalid_msg'     => get_invalid_message('telephone'),
                     'required'        => false,
                     'type'            => 'value'
@@ -162,7 +162,7 @@ if ($new) {
                             ? ''
                             : ' <i onClick="set_this_as_main(this)" title="'._(
                                 'Set as main contact number'
-                            ).'" class="fa fa-star-o discreet button"></i>') : ''),
+                            ).'" class="far fa-star discreet button"></i>') : ''),
                     'invalid_msg'     => get_invalid_message('telephone'),
                     'required'        => false,
                     'type'            => 'value'
@@ -375,7 +375,7 @@ if ($new) {
                             $object->get_field_label('Customer Other Email')
                         ).' <i onClick="set_this_as_main(this)" title="'._(
                             'Set as main email'
-                        ).'" class="fa fa-star-o very_discreet button"></i>',
+                        ).'" class="far fa-star very_discreet button"></i>',
                     'invalid_msg'       => get_invalid_message('email'),
                     'required'          => false
                 ),
@@ -416,10 +416,8 @@ if ($new) {
                     'label'           => ucfirst(
                             $object->get_field_label('Customer Main Plain Mobile')
                         ).($object->get('Customer Main Plain Mobile') != '' ? ($object->get('Customer Preferred Contact Number') == 'Mobile'
-                            ? ''
-                            : ' <i onClick="set_this_as_main(this)" title="'._(
-                                'Set as main contact number'
-                            ).'" class="fa fa-star-o discreet button"></i>') : ''),
+                            ? ' <i  title="'._('Main contact number').'" class="fa fa-star button discreet"></i>'
+                            : ' <i onClick="set_this_as_main(this)" title="'._('Set as main contact number').'" class="fal fa-star discreet button"></i>') : ''),
                     'invalid_msg'     => get_invalid_message('telephone'),
                     'required'        => false,
                     'type'            => 'value'
@@ -434,14 +432,10 @@ if ($new) {
                     ),
                     'formatted_value' => $object->get('Main XHTML Telephone'),
                     'label'           => ucfirst(
-                            $object->get_field_label(
-                                'Customer Main Plain Telephone'
-                            )
+                            $object->get_field_label('Customer Main Plain Telephone')
                         ).($object->get('Customer Main Plain Telephone') != '' ? ($object->get('Customer Preferred Contact Number') == 'Telephone'
-                            ? ''
-                            : ' <i onClick="set_this_as_main(this)" title="'._(
-                                'Set as main contact number'
-                            ).'" class="fa fa-star-o discreet button"></i>') : ''),
+                            ? ' <i  title="'._('Main contact number').'" class="fa fa-star button discreet"></i>'
+                            : ' <i onClick="set_this_as_main(this)" title="'._('Set as main contact number').'" class="fal fa-star discreet button"></i>') : ''),
                     'invalid_msg'     => get_invalid_message('telephone'),
                     'required'        => false
 
@@ -452,7 +446,7 @@ if ($new) {
                     'edit'            => ($edit ? 'new_telephone' : ''),
                     'value'           => '',
                     'formatted_value' => '',
-                    'label'           => ucfirst($object->get_field_label('Customer Other Telephone')).' <i onClick="set_this_as_main(this)" title="'._('Set as main telephone').'" class="fa fa-star-o very_discreet button"></i>',
+                    'label'           => ucfirst($object->get_field_label('Customer Other Telephone')).' <i onClick="set_this_as_main(this)" title="'._('Set as main telephone').'" class="far fa-star very_discreet button"></i>',
                     'required'        => false
                 ),
 
@@ -462,7 +456,7 @@ if ($new) {
                     'edit'            => ($edit ? 'telephone' : ''),
                     'value'           => '',
                     'formatted_value' => '',
-                    'label'           => ucfirst($object->get_field_label('Customer Other Telephone')).' <i onClick="set_this_as_main(this)" title="'._('Set as main telephone').'" class="fa fa-star-o very_discreet button"></i>',
+                    'label'           => ucfirst($object->get_field_label('Customer Other Telephone')).' <i onClick="set_this_as_main(this)" title="'._('Set as main telephone').'" class="far fa-star very_discreet button"></i>',
                     'required'        => false
                 ),
 
@@ -651,7 +645,7 @@ if ($new) {
                         $object->get_field_label('Customer Other Email')
                     ).' <i onClick="set_this_as_main(this)" title="'._(
                         'Set as main email'
-                    ).'" class="fa fa-star-o very_discreet button"></i>',
+                    ).'" class="far fa-star very_discreet button"></i>',
                 'required'          => false,
                 'type'              => 'value'
             );
@@ -674,7 +668,7 @@ if ($new) {
                         $object->get_field_label('Customer Other Telephone')
                     ).' <i onClick="set_this_as_main(this)" title="'._(
                         'Set as main telephone'
-                    ).'" class="fa fa-star-o very_discreet button"></i>',
+                    ).'" class="far fa-star very_discreet button"></i>',
                 'required'        => false
             );
         }

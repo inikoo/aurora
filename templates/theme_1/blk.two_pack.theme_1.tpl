@@ -30,7 +30,7 @@
                 <label style="margin-left:10px;font-weight: normal;cursor: pointer;width:100%"  for="update_image_{$key}">
                     <img   class="button _image rimg" image_key="{$data._image_key}"  src="{if $data._image!=''}{$data._image}{else}/art/image_562x280.png{/if}" alt="" >
                 </label>
-                <i class="fa  {if isset($data._image_tooltip) and $data._image_tooltip!='' }fa-commenting-o{else}fa-comment-o{/if}     like_button _image_tooltip" tooltip="{if isset($data._image_tooltip)}{$data._image_tooltip}{/if}"   style="margin-left:10px" aria-hidden="true"></i>
+                <i class="far  {if isset($data._image_tooltip) and $data._image_tooltip!='' }fa-comment-alt{else}fa-comment{/if}     like_button _image_tooltip" tooltip="{if isset($data._image_tooltip)}{$data._image_tooltip}{/if}"   style="margin-left:10px" aria-hidden="true"></i>
 
 
             </div>

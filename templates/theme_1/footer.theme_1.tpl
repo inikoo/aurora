@@ -177,16 +177,16 @@
 
               <div style="margin-bottom:5px">  <i  onClick="update_social_links_from_dialog()" style="position:relative;top:-5px" class="button fa fa-fw fa-window-close" aria-hidden="true"></i>  </div>
 
-              <div>   <i icon="fa-facebook" class="button social_link fa fa-fw fa-facebook" aria-hidden="true"></i>  <input  value="" placeholder="https://... Facebook"></div>
-              <div>   <i icon="fa-google-plus"  class="button social_link fa fa-fw fa-google-plus" aria-hidden="true"></i>  <input  value="" placeholder="https://... Google +"></div>
-              <div>   <i icon="fa-instagram"  class="button social_link fa fa-fw fa-instagram" aria-hidden="true"></i>  <input  value="" placeholder="https://... Instagram"></div>
-              <div>   <i icon="fa-linkedin"  class="button social_link fa fa-fw fa-linkedin" aria-hidden="true"></i>  <input  value="" placeholder="https://... Linkedin"></div>
-              <div>   <i icon="fa-pinterest"  class="button social_link fa fa-fw fa-pinterest" aria-hidden="true"></i>  <input  value="" placeholder="https://... Pinterest"></div>
-              <div>   <i icon="fa-snapchat"  class="button social_link fa fa-fw fa-snapchat" aria-hidden="true"></i>  <input  value="" placeholder="https://... Snapchat"></div>
-              <div>   <i icon="fa-twitter"  class="button social_link fa fa-fw fa-twitter" aria-hidden="true"></i>  <input  value="" placeholder="https://... Twitter"></div>
-              <div>   <i icon="fa-vk"  class="button social_link fa fa-fw fa-vk" aria-hidden="true"></i>  <input  value="" placeholder="https://... VK"></div>
-              <div>   <i icon="fa-xing"  class="button social_link fa fa-fw fa-xing" aria-hidden="true"></i>  <input  value="" placeholder="https://... Xing"></div>
-              <div>   <i icon="fa-youtube"  class="button social_link fa fa-fw fa-youtube" aria-hidden="true"></i>  <input  value="" placeholder="https://... Youtube"></div>
+              <div>   <i icon="fa-facebook" class="button social_link fab fa-fw fa-facebook" aria-hidden="true"></i>  <input  value="" placeholder="https://... Facebook"></div>
+              <div>   <i icon="fa-google-plus"  class="button social_link fab fa-fw fa-google-plus" aria-hidden="true"></i>  <input  value="" placeholder="https://... Google +"></div>
+              <div>   <i icon="fa-instagram"  class="button social_link fab fa-fw fa-instagram" aria-hidden="true"></i>  <input  value="" placeholder="https://... Instagram"></div>
+              <div>   <i icon="fa-linkedin"  class="button social_link fab fa-fw fa-linkedin" aria-hidden="true"></i>  <input  value="" placeholder="https://... Linkedin"></div>
+              <div>   <i icon="fa-pinterest"  class="button social_link fab fa-fw fa-pinterest" aria-hidden="true"></i>  <input  value="" placeholder="https://... Pinterest"></div>
+              <div>   <i icon="fa-snapchat"  class="button social_link fab fa-fw fa-snapchat" aria-hidden="true"></i>  <input  value="" placeholder="https://... Snapchat"></div>
+              <div>   <i icon="fa-twitter"  class="button social_link fab fa-fw fa-twitter" aria-hidden="true"></i>  <input  value="" placeholder="https://... Twitter"></div>
+              <div>   <i icon="fa-vk"  class="button social_link fab fa-fw fa-vk" aria-hidden="true"></i>  <input  value="" placeholder="https://... VK"></div>
+              <div>   <i icon="fa-xing"  class="button social_link fab fa-fw fa-xing" aria-hidden="true"></i>  <input  value="" placeholder="https://... Xing"></div>
+              <div>   <i icon="fa-youtube"  class="button social_link fab fa-fw fa-youtube" aria-hidden="true"></i>  <input  value="" placeholder="https://... Youtube"></div>
 
 
 
@@ -213,21 +213,22 @@
           </div>
 
           <div id="item_types" class="input_container  hide  " style="">
+              <div icon="fa fa-map"  onClick="add_item_type(this)" ><i  class="button fa fa-fw fa-map" aria-hidden="true" label="{t}My address{/t}"></i> </div>
+              <div icon="fa fa-map-marker"  onClick="add_item_type(this)" ><i  class="button fa fa-fw fa-map-marker" aria-hidden="true" label="{t}My address{/t}"></i> </div>
 
-              <div icon="fa-building-o"  onClick="add_item_type(this)" ><i  class="button fa fa-fw fa-building-o" aria-hidden="true" label="{t}My company name{/t}"></i> </div>
-              <div icon="fa-industry" onClick="add_item_type(this)" ><i  class="button fa fa-fw fa-industry" aria-hidden="true" label="{t}My company name{/t}"></i> </div>
-              <div icon="fa-balance-scale" onClick="add_item_type(this)" ><i  class="button fa fa-fw fa-balance-scale" aria-hidden="true" label="{t}Tax number{/t}"></i> </div>
+              <div icon="fa fa-building"  onClick="add_item_type(this)" ><i  class="button fa fa-fw fa-building" aria-hidden="true" label="{t}My company name{/t}"></i> </div>
+              <div icon="fa fa-industry" onClick="add_item_type(this)" ><i  class="button fa fa-fw fa-industry" aria-hidden="true" label="{t}My company name{/t}"></i> </div>
+              <div icon="fa fa-balance-scale" onClick="add_item_type(this)" ><i  class="button fa fa-fw fa-balance-scale" aria-hidden="true" label="{t}Tax number{/t}"></i> </div>
 
-              <div icon="fa-map-marker" onClick="add_item_type(this)" ><i  class="button fa fa-fw fa-map-marker" aria-hidden="true" label="110 Southmoor Road, Oxford OX2 6RB, UK"></i> </div>
-              <div icon="fa-phone"  onClick="add_item_type(this)"><i  class="button fa fa-fw  fa-phone" aria-hidden="true" label="+1-541-754-3010"></i> </div>
-              <div icon="fa-mobile"  onClick="add_item_type(this)"><i  class="button fa fa-fw fa-mobile" aria-hidden="true" label="+1-541-754-3010"></i> </div>
-              <div icon="fa-whatsapp"  onClick="add_item_type(this)"><i  class="button fa fa-fw fa-whatsapp" aria-hidden="true" label="+1-541-754-3010"	></i> </div>
-              <div icon="fa-skype"  onClick="add_item_type(this)"><i class="button fa fa-fw  fa-skype" aria-hidden="true" label="{t}Skype username{/t}"></i> </div>
-              <div icon="fa-envelope"  onClick="add_item_type(this)"><i  class="button fa fa-fw  fa-envelope" aria-hidden="true" label="info@yourdomain.com"></i> </div>
-              <div icon="fa-picture-o"  onClick="add_item_type(this)"> <i  class="button fa fa-fw  fa-picture-o" aria-hidden="true"  label=""  ></i> </div>
-              <div icon="fa-star" onClick="add_item_type(this)" ><i  class="button fa fa-fw fa-star" aria-hidden="true" label="{t}Custom text{/t}"></i> </div>
-              <div icon="fa-circle" onClick="add_item_type(this)" ><i  class="button fa fa-fw fa-circle" aria-hidden="true" label="{t}Custom text{/t}"></i> </div>
-              <div icon="fa-circle-o"  onClick="add_item_type(this)" ><i  class="button fa fa-fw fa-circle-o" aria-hidden="true" label="{t}Custom text{/t}"></i> </div>
+              <div icon="fa fa-phone"  onClick="add_item_type(this)"><i  class="button fa fa-fw  fa-phone" aria-hidden="true" label="+1-541-754-3010"></i> </div>
+              <div icon="fa fa-mobile"  onClick="add_item_type(this)"><i  class="button fa fa-fw fa-mobile" aria-hidden="true" label="+1-541-754-3010"></i> </div>
+              <div icon="fab fa-whatsapp"  onClick="add_item_type(this)"><i  class="button fab fa-fw fa-whatsapp" aria-hidden="true" label="+1-541-754-3010"	></i> </div>
+              <div icon="fab fa-skype"  onClick="add_item_type(this)"><i class="button fab fa-fw  fa-skype" aria-hidden="true" label="{t}Skype username{/t}"></i> </div>
+              <div icon="fa fa-envelope"  onClick="add_item_type(this)"><i  class="button fa fa-fw  fa-envelope" aria-hidden="true" label="info@yourdomain.com"></i> </div>
+              <div icon="fa fa-image"  onClick="add_item_type(this)"> <i  class="button fa fa-fw  fa-image" aria-hidden="true"  label=""  ></i> </div>
+              <div icon="fa fa-star" onClick="add_item_type(this)" ><i  class="button fa fa-fw fa-star" aria-hidden="true" label="{t}Custom text{/t}"></i> </div>
+              <div icon="fa fa-circle" onClick="add_item_type(this)" ><i  class="button fa fa-fw fa-circle" aria-hidden="true" label="{t}Custom text{/t}"></i> </div>
+              <div icon="far fa-circle"  onClick="add_item_type(this)" ><i  class="button far fa-fw fa-circle" aria-hidden="true" label="{t}Custom text{/t}"></i> </div>
 
 
           </div>
@@ -240,7 +241,7 @@
           <form id="change_image" class="hide" style="position:absolute;top:0;left:0" method="post" action="/ar_edit.php" enctype="multipart/form-data" novalidate>
               <input type="file" name="image_upload" id="file_upload" class="input_file" multiple/>
               <label for="file_upload">
-                  <i class=" fa fa-picture-o fa-fw button editing" aria-hidden="true" title="{t}Change image{/t}"></i>
+                  <i class=" fa fa-image fa-fw button editing" aria-hidden="true" title="{t}Change image{/t}"></i>
               </label>
           </form>
 
@@ -254,7 +255,7 @@
               <li id="link_stem_cell" class="item"><a href="/"><i class="fa fa-fw fa-angle-right link_icon" onClick="update_link(this)"></i> <span ondrop="return false;" contenteditable  class="item_label" >{t}New link{/t}<span></span></a></li>
 
               <li id="item_email_stem_cell" ><i class="fa fa-fw fa-envelope"></i> <span contenteditable>info@yourdomain.com</span></li>
-              <li id="item_stem_cell"    ><i class="fa fa-fw "></i> <span contenteditable></span></li>
+              <li id="item_stem_cell"    ><i class="fa-fw "></i> <span contenteditable></span></li>
               <li  id="item_image_stem_cell" ><img  onclick="edit_item_image(this)" src="theme_1/images/footer-wmap.png" alt="" title="" /></li>
 
 
@@ -335,211 +336,12 @@
                   <li   class="item"><i onclick="edit_item(this)"  class="fa fa-fw fa-phone"></i> <span contenteditable>+1-541-754-3010</span></li>
 
                   <li  class="item"><i onclick="edit_item(this)" class="fa fa-fw fa-envelope"></i> <span contenteditable>info@yourdomain.com</span></li>
-                  <li  class="item"><img  onclick="edit_item_image(this<footer class="footer">
+                  <li  class="item"><img  onclick="edit_item_image(this)" src="theme_1/images/footer-wmap.png" alt="" /></li>
 
 
-
-
-                      <div class="top_footer empty"></div><!-- end footer top section -->
-                      <div class="clearfix"></div>
-
-                      {foreach from=$footer_data.rows item=row}
-
-                          {if $row.type=='main_4'}
-
-                              <div class="container sortable_container ">
-
-
-
-
-                                  {foreach from=$row.columns item=column name=main_4}
-
-
-                                      {if $column.type=='address'}
-
-
-
-                                          <div class="one_fourth   editable_block {if $smarty.foreach.main_4.last}last{/if}" >
-
-
-
-
-
-                                              <i class="fa fa-hand-rock-o editing hide dragger" aria-hidden="true" style="position:absolute;top:-25px"></i>
-                                              <i onclick="open_block_type_options(this,'block_type_1','{$column.type}')" class="fa fa-recycle editing hide button recycler" aria-hidden="true" style="position:absolute;top:-23px;left:20px"></i>
-
-
-
-                                              <ul class="footer_block faddress">
-                                                  {foreach from=$column.items item=item }
-                                                      {if $item.type=='logo'}
-                                                          <li  class="item _logo"><img  onclick="edit_item_image(this)" src="{$item.src}" title=" {$item.title}" /></li>
-                                                      {elseif $item.type=='text'}
-                                                          <li   class="item _text" icon="{$item.icon}">
-                                                              <i onclick="edit_item(this)"  class="fa fa-fw {$item.icon}"></i> <span contenteditable>
-                                          {if $item.text=='#tel' and  $store->get('Telephone')!=''}{$store->get('Telephone')}
-                                          {elseif $item.text=='#email' and  $store->get('Email')!=''}{$store->get('Email')}
-                                          {elseif $item.text=='#address' and  $store->get('Address')!=''}{$store->get('Address')}
-                                          {else}{$item.text}{/if}
-                                      </span></li>
-                                                      {elseif $item.type=='email'}
-                                                          <li  class="item _email"><i onclick="edit_item(this)" class="fa fa-fw fa-envelope"></i> <span contenteditable>
-                                          {if $item.text=='#email' and  $store->get('Email')!=''}{$store->get('Email')}
-                                          {else}{$item.text}{/if}
-
-                                      </span></li>
-                                                      {/if}
-                                                  {/foreach}
-                                                  <li onClick="add_item(this)"  class="button add_item"   >
-                                                      <i class="fa fa-fw fa-plus editing " ></i> <span class="editing" ondrop="return false;" >{t}Add item{/t}<span></span></li>
-
-
-
-                                              </ul>
-
-
-
-                                          </div>
-                                      {elseif $column.type=='links'}
-                                          <div class="one_fourth links  editable_block {if $smarty.foreach.main_4.last}last{/if}" >
-                                              <i class="fa fa-hand-rock-o editing hide dragger" aria-hidden="true" style="position:absolute;top:-25px"></i>
-                                              <i onclick="open_block_type_options(this,'block_type_1','{$column.type}')" class="fa fa-recycle editing hide button recycler" aria-hidden="true" style="position:absolute;top:-23px;left:20px"></i>
-
-                                              <div class="footer_block qlinks">
-
-                                                  <h4 class="lmb" contenteditable>{$column.header}</h4>
-
-                                                  <ul class="links_list">
-                                                      {foreach from=$column.items item=item }
-                                                          <li class="item"><a href="{$item.url}">
-                                                                  <i class="fa fa-fw fa-angle-right link_icon" onClick="update_link(this)"></i>
-                                                                  <span class="item_label" ondrop="return false;" contenteditable>{$item.label}</span></a></li>
-
-                                                      {/foreach}
-
-                                                      <li onClick="add_link(this)"  class="add_link"><a href=""><i class="fa fa-fw fa-plus editing link_icon" "></i> <span class="editing" ondrop="return false;" >{t}Add link{/t}<span></span></a></li>
-
-                                                  </ul>
-
-                                              </div>
-                                          </div>
-                                      {elseif $column.type=='text'}
-                                          <div class="one_fourth  editable_block {if $smarty.foreach.main_4.last}last{/if}" >
-                                              <i class="fa fa-hand-rock-o editing hide dragger" aria-hidden="true" style="position:absolute;top:-25px"></i>
-                                              <i onclick="open_block_type_options(this,'block_type_1','{$column.type}')" class="fa fa-recycle editing hide button recycler" aria-hidden="true" style="position:absolute;top:-23px;left:20px"></i>
-
-                                              <div class="footer_block siteinfo">
-
-                                                  <h4 class="lmb" contenteditable>{$column.header}</h4>
-
-                                                  <div  contenteditable>
-                                                      {$column.text}
-                                                  </div>
-                                              </div>
-                                          </div>
-                                      {elseif $column.type=='nothing'}
-                                          <div class="one_fourth  editable_block {if $smarty.foreach.main_4.last}last{/if}">
-                                              <div class="footer_block nothing">
-
-                                              </div>
-
-                                          </div>
-                                      {/if}
-
-
-                                  {/foreach}
-
-                              </div>
-
-
-
-                          {elseif $row.type=='copyright'}
-                              <div class="clearfix"></div>
-
-
-
-
-                              <div class="copyright_info">
-                                  <div class="container sortable_container">
-
-                                      <div class="clearfix divider_dashed10"></div>
-
-
-
-                                      {foreach from=$row.columns item=column name=copyright_info}
-
-                                          {if $column.type=='text'}
-                                              <div class="one_half  {if $smarty.foreach.copyright_info.last}last{/if}" >
-                                                  <i class="fa fa-hand-rock-o editing hide dragger" aria-hidden="true" style="position:absolute;top:-25px"></i>
-                                                  <i onclick="open_block_type_options(this,'block_type_2','low_{$column.type}')" class="fa fa-recycle editing hide button recycler" aria-hidden="true" style="position:absolute;top:-23px;left:20px"></i>
-                                                  <div class="footer_block _copyright_text">
-                                                      {$column.text}
-                                                  </div>
-                                              </div>
-
-                                          {elseif $column.type=='nothing'}
-                                              <div class="one_half  {if $smarty.foreach.copyright_info.last}last{/if}" >
-                                                  <i class="fa fa-hand-rock-o editing hide dragger" aria-hidden="true" style="position:absolute;top:-25px"></i>
-                                                  <i onclick="open_block_type_options(this,'block_type_2','low_{$column.type}')" class="fa fa-recycle editing hide button recycler" aria-hidden="true" style="position:absolute;top:-23px;left:20px"></i>
-                                                  <div class="footer_block _copyright_nothing">
-                                                  </div>
-                                              </div>
-
-                                          {elseif $column.type=='copyright_bundle'}
-                                              <div class="one_half  {if $smarty.foreach.copyright_info.last}last{/if}"  >
-
-                                                  <i class="fa fa-hand-rock-o editing hide dragger" aria-hidden="true" style="position:absolute;top:-25px"></i>
-                                                  <i onclick="open_block_type_options(this,'block_type_2','{$column.type}')" class="fa fa-recycle editing hide button recycler" aria-hidden="true" style="position:absolute;top:-23px;left:20px"></i>
-
-                                                  <div class="footer_block _copyright_bundle">
-                                                      <div onClick="edit_copyright_bundle(this)"  class="footer_copyright_bundle">
-                                                          {t}Copyright{/t} © {"%Y"|strftime} <span class="copyright_bundle_owner">{$column.owner}</span>. {t}All rights reserved{/t}. <span class="copyright_bundle_links">{foreach  from=$column.links item=item name=copyright_links}<a class="copyright_bundle_link" href="{$item.url}">{$item.label}</a>{if !$smarty.foreach.copyright_links.last} | {/if}{/foreach}</span>
-                                                      </div>
-                                                  </div>
-                                              </div>
-                                          {elseif $column.type=='social_links'}
-
-
-
-                                              <div class="one_half  {if $smarty.foreach.copyright_info.last}last{/if}">
-
-                                                  <i class="fa fa-hand-rock-o editing hide dragger" aria-hidden="true" style="position:absolute;top:-25px"></i>
-                                                  <i onclick="open_block_type_options(this,'block_type_2','{$column.type}')" class="fa fa-recycle editing hide button recycler" aria-hidden="true" style="position:absolute;top:-23px;left:20px"></i>
-
-                                                  <div class="footer_block _social_links">
-
-                                                      <ul  onClick="edit_social_links(this)"  class="footer_social_links">
-                                                          {foreach from=$column.items item=item}
-                                                              <li class="social_link" icon="{$item.icon}"  ><a href="{$item.url}"><i class="fa {$item.icon}"></i></a></li>
-
-                                                          {/foreach}
-                                                      </ul>
-                                                  </div>
-                                              </div>
-                                          {/if}
-
-
-
-                                      {/foreach}
-
-
-
-                                  </div>
-                              </div>
-                          {/if}
-
-
-                      {/foreach}
-
-
-
-
-                      <div class="clearfix"></div>
-
-                      </footer>)" src="theme_1/images/footer-wmap.png" alt="" /></li>
-
-
-                  <li onClick="add_item(this)"  class="ui-state-disabled add_item"><a href="{$item.url}"><i class="fa fa-fw fa-plus editing link_icon" onClick="update_link(this)"></i> <span class="editing" ondrop="return false;" >{t}Add item{/t}<span></span></a></li>
+                  <li onClick="add_item(this)"  class="button add_item"   >
+                      <i class="fa fa-fw fa-plus editing " ></i> <span class="editing" ondrop="return false;" >{t}Add item{/t}<span></span>
+                  </li>
               </ul>
           </div>
 
@@ -573,7 +375,7 @@
 
 
 
-                                      <i class="fa fa-hand-rock-o editing hide dragger" aria-hidden="true" style="position:absolute;top:-25px"></i>
+                                      <i class="far fa-hand-rock editing hide dragger" aria-hidden="true" style="position:absolute;top:-25px"></i>
                                       <i onclick="open_block_type_options(this,'block_type_1','{$column.type}')" class="fa fa-recycle editing hide button recycler" aria-hidden="true" style="position:absolute;top:-23px;left:20px"></i>
 
 
@@ -583,7 +385,7 @@
                                               {if $item.type=='logo'}
                                                   <li  class="item _logo"><img  onclick="edit_item_image(this)" src="{$item.src}" title=" {$item.title}" /></li>
                                               {elseif $item.type=='text'}
-                                                  <li   class="item _text" icon="{$item.icon}"><i onclick="edit_item(this)"  class="fa fa-fw {$item.icon}"></i> <span contenteditable>
+                                                  <li   class="item _text" icon="{$item.icon}"><i onclick="edit_item(this)"  class="fa-fw {$item.icon}"></i> <span contenteditable>
                                           {if $item.text=='#tel' and  $store->get('Telephone')!=''}{$store->get('Telephone')}
                                           {elseif $item.text=='#email' and  $store->get('Email')!=''}{$store->get('Email')}
                                           {elseif $item.text=='#address' and  $store->get('Address')!=''}{$store->get('Address')}
@@ -598,7 +400,8 @@
                                               {/if}
                                           {/foreach}
                                           <li onClick="add_item(this)"  class="button add_item"   >
-                                              <i class="fa fa-fw fa-plus editing " ></i> <span class="editing" ondrop="return false;" >{t}Add item{/t}<span></span></li>
+                                              <i class="fa fa-fw fa-plus editing " ></i> <span class="editing" ondrop="return false;" >{t}Add item{/t}<span></span>
+                                          </li>
 
 
 
@@ -609,7 +412,7 @@
                                   </div>
                               {elseif $column.type=='links'}
                                   <div class="one_fourth links  editable_block {if $smarty.foreach.main_4.last}last{/if}" >
-                                      <i class="fa fa-hand-rock-o editing hide dragger" aria-hidden="true" style="position:absolute;top:-25px"></i>
+                                      <i class="far fa-hand-rock editing hide dragger" aria-hidden="true" style="position:absolute;top:-25px"></i>
                                       <i onclick="open_block_type_options(this,'block_type_1','{$column.type}')" class="fa fa-recycle editing hide button recycler" aria-hidden="true" style="position:absolute;top:-23px;left:20px"></i>
 
                                       <div class="footer_block qlinks">
@@ -632,7 +435,7 @@
                                   </div>
                               {elseif $column.type=='text'}
                                   <div class="one_fourth  editable_block {if $smarty.foreach.main_4.last}last{/if}" >
-                                      <i class="fa fa-hand-rock-o editing hide dragger" aria-hidden="true" style="position:absolute;top:-25px"></i>
+                                      <i class="far fa-hand-rock editing hide dragger" aria-hidden="true" style="position:absolute;top:-25px"></i>
                                       <i onclick="open_block_type_options(this,'block_type_1','{$column.type}')" class="fa fa-recycle editing hide button recycler" aria-hidden="true" style="position:absolute;top:-23px;left:20px"></i>
 
                                       <div class="footer_block siteinfo">
@@ -677,7 +480,7 @@
 
                                   {if $column.type=='text'}
                                       <div class="one_half  {if $smarty.foreach.copyright_info.last}last{/if}" >
-                                          <i class="fa fa-hand-rock-o editing hide dragger" aria-hidden="true" style="position:absolute;top:-25px"></i>
+                                          <i class="far fa-hand-rock editing hide dragger" aria-hidden="true" style="position:absolute;top:-25px"></i>
                                           <i onclick="open_block_type_options(this,'block_type_2','low_{$column.type}')" class="fa fa-recycle editing hide button recycler" aria-hidden="true" style="position:absolute;top:-23px;left:20px"></i>
                                           <div class="footer_block _copyright_text">
                                               {$column.text}
@@ -686,7 +489,7 @@
 
                                   {elseif $column.type=='nothing'}
                                       <div class="one_half  {if $smarty.foreach.copyright_info.last}last{/if}" >
-                                          <i class="fa fa-hand-rock-o editing hide dragger" aria-hidden="true" style="position:absolute;top:-25px"></i>
+                                          <i class="far fa-hand-rock editing hide dragger" aria-hidden="true" style="position:absolute;top:-25px"></i>
                                           <i onclick="open_block_type_options(this,'block_type_2','low_{$column.type}')" class="fa fa-recycle editing hide button recycler" aria-hidden="true" style="position:absolute;top:-23px;left:20px"></i>
                                           <div class="footer_block _copyright_nothing">
                                           </div>
@@ -695,7 +498,7 @@
                                   {elseif $column.type=='copyright_bundle'}
                                       <div class="one_half  {if $smarty.foreach.copyright_info.last}last{/if}"  >
 
-                                          <i class="fa fa-hand-rock-o editing hide dragger" aria-hidden="true" style="position:absolute;top:-25px"></i>
+                                          <i class="far fa-hand-rock editing hide dragger" aria-hidden="true" style="position:absolute;top:-25px"></i>
                                           <i onclick="open_block_type_options(this,'block_type_2','{$column.type}')" class="fa fa-recycle editing hide button recycler" aria-hidden="true" style="position:absolute;top:-23px;left:20px"></i>
 
                                           <div class="footer_block _copyright_bundle">
@@ -710,14 +513,14 @@
 
                                       <div class="one_half  {if $smarty.foreach.copyright_info.last}last{/if}">
 
-                                          <i class="fa fa-hand-rock-o editing hide dragger" aria-hidden="true" style="position:absolute;top:-25px"></i>
+                                          <i class="far fa-hand-rock editing hide dragger" aria-hidden="true" style="position:absolute;top:-25px"></i>
                                           <i onclick="open_block_type_options(this,'block_type_2','{$column.type}')" class="fa fa-recycle editing hide button recycler" aria-hidden="true" style="position:absolute;top:-23px;left:20px"></i>
 
                                           <div class="footer_block _social_links">
 
                                               <ul  onClick="edit_social_links(this)"  class="footer_social_links">
                                                   {foreach from=$column.items item=item}
-                                                      <li class="social_link" icon="{$item.icon}"  ><a href="{$item.url}"><i class="fa {$item.icon}"></i></a></li>
+                                                      <li class="social_link" icon="{$item.icon}"  ><a href="{$item.url}"><i class="fab {$item.icon}"></i></a></li>
 
                                                   {/foreach}
                                               </ul>
@@ -812,7 +615,7 @@
                       $('#' + block_type.attr('block_id')).html($('#block_copyright_bundle_stem_cell').html())
                   }else if ($(element).hasClass('type_links')) {
                       $('#' + block_type.attr('block_id')).replaceWith($('#block_links_stem_cell').html())
-                  }else if ($(element).hasClass('type_items')) {
+                  }else if ($(element).hasClass('type_address')) {
                       $('#' + block_type.attr('block_id')).replaceWith($('#block_items_stem_cell').html())
 
                       $('.faddress').sortable({
@@ -857,7 +660,7 @@
 
 
 
-                  if(icon.hasClass('fa-picture-o')){
+                  if(icon.hasClass('fa-image')){
 
                       var new_item= $("#item_image_stem_cell").clone()
 
@@ -1192,7 +995,7 @@
 
                   $('#social_links_control_center .social_link').each(function(i, obj) {
                       if ($(obj).next('input').val() != '') {
-                          social_links += ' <li class="" icon="' + $(obj).attr('icon') + '"  ><a href="' + $(obj).next('input').val() + '"><i class="fa ' + $(obj).attr('icon') + '"></i></a></li>'
+                          social_links += ' <li class="" icon="' + $(obj).attr('icon') + '"  ><a href="' + $(obj).next('input').val() + '"><i class="fab ' + $(obj).attr('icon') + '"></i></a></li>'
                       }
                   })
 

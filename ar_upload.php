@@ -517,6 +517,96 @@ function upload_images($account, $db, $user, $editor, $data, $smarty) {
                 echo json_encode($response);
                 exit;
             }
+        } if (!empty($_options['set_width']) and is_numeric($_options['set_width']) and $_options['set_width']>0 ) {
+
+
+
+
+
+
+            $size = getimagesize($tmp_name);
+            $width=$size[0];
+
+            $height=$size[1];
+            $new_width = $_options['set_width'];
+            $new_height = $height*($new_width/$width);
+            $format=guess_file_format($tmp_name);
+
+
+
+          //  print "$format $new_width $new_height";
+
+
+            if ($format == 'jpeg') {
+                $im = imagecreatefromjpeg($tmp_name);
+            } elseif ($format == 'png') {
+                $im = imagecreatefrompng($tmp_name);
+                imagealphablending($im, true);
+                imagesavealpha($im, true);
+            } elseif ($format == 'gif') {
+                $im = imagecreatefromgif($tmp_name);
+            } elseif ($format == 'wbmp') {
+                $im = imagecreatefromwbmp($tmp_name);
+            } elseif ($format == 'psd') {
+                include_once 'class.PSD.php';
+                $im = imagecreatefrompsd($tmp_name);
+            } else {
+
+                $response = array(
+                    'state' => 400,
+                    'title' => _('Error'),
+                    'msg'   => _('File format not supported')." ($format)",
+                    'key'   => 'image'
+                );
+                echo json_encode($response);
+                exit;
+            }
+
+            if (!$im) {
+
+
+                $response = array(
+                    'state' => 400,
+                    'title' => _('Error'),
+                    'msg'   => _('Can not read image'),
+                    'key'   => 'image'
+                );
+                echo json_encode($response);
+                exit;
+            }
+
+
+            $dst_img = imagecreatetruecolor($new_width, $new_height);
+            imagecopyresampled(
+                $dst_img, $im, 0, 0, 0, 0, $new_width + 1, $new_height + 1, $width, $height
+            );
+
+
+
+            ob_start();
+            if ($format == 'jpeg' or $format == 'psd') {
+                imagejpeg($dst_img, null);
+
+            } elseif ($format == 'png' or $format == 'wbmp') {
+                imagepng($dst_img);
+            } elseif ($format == 'gif') {
+                imagegif($dst_img);
+            }
+
+            $image_data = ob_get_contents();
+            ob_end_clean();
+
+
+
+
+            file_put_contents($tmp_name, $image_data);
+
+
+         //   exit;
+          //  exit;
+
+
+
         }
 
 
@@ -529,7 +619,8 @@ function upload_images($account, $db, $user, $editor, $data, $smarty) {
                 'type'     => $type
             ),
             'Image Filename'                   => $name,
-            'Image Subject Object Image Scope' => $parent_object_scope
+            'Image Subject Object Image Scope' => $parent_object_scope,
+
 
         );
 
@@ -1363,5 +1454,64 @@ function edit_objects($account, $db, $user, $editor, $data, $smarty) {
 
 }
 
+function guess_file_format($filename) {
+
+    $mimetype = 'Unknown';
+
+
+    ob_start();
+    system("uname");
+    $system  = 'Unknown';
+    $_system = ob_get_clean();
+
+    // print "S:$system M:$mimetype\n";
+
+    if (preg_match('/darwin/i', $_system)) {
+        ob_start();
+        $system = 'Mac';
+        system('file -I "'.addslashes($filename).'"');
+        $mimetype = ob_get_clean();
+        $mimetype = preg_replace('/^.*\:/', '', $mimetype);
+
+    } elseif (preg_match('/linux/i', $_system)) {
+        ob_start();
+        $system   = 'Linux';
+        $mimetype = system('file -ib "'.addslashes($filename).'"');
+        $mimetype = ob_get_clean();
+    } else {
+        $system = 'Other';
+
+    }
+
+
+    //print "** $filename **";
+
+    if (preg_match('/png/i', $mimetype)) {
+        $format = 'png';
+    } else {
+        if (preg_match('/jpeg/i', $mimetype)) {
+            $format = 'jpeg';
+        } else {
+            if (preg_match('/image.psd/i', $mimetype)) {
+                $format = 'psd';
+            } else {
+                if (preg_match('/gif/i', $mimetype)) {
+                    $format = 'gif';
+                } else {
+                    if (preg_match('/wbmp$/i', $mimetype)) {
+                        $format = 'wbmp';
+                    } else {
+                        $format = 'other';
+                    }
+                }
+            }
+        }
+    }
+    //  print "S:$system M:$mimetype\n";
+    // return;
+
+    return $format;
+
+}
 
 ?>

@@ -55,6 +55,8 @@ $smarty->assign(
     )
 );
 
+
+
 $smarty->assign('object', $state['_object']);
 $smarty->assign('key', $state['key']);
 

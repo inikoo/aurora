@@ -169,7 +169,7 @@ class Subject extends DB_Table {
                             ).'" class="fa fa-star discreet"></i>'
                             : ' <i onClick="set_this_as_main(this)" title="'._(
                                 'Set as main contact number'
-                            ).'" class="fa fa-star-o discreet button"></i>') : ''),
+                            ).'" class="far fa-star discreet button"></i>') : ''),
 
                 );
 
@@ -361,7 +361,7 @@ class Subject extends DB_Table {
                             ).'" class="fa fa-star discreet"></i>'
                             : ' <i onClick="set_this_as_main(this)" title="'._(
                                 'Set as main contact number'
-                            ).'" class="fa fa-star-o discreet button"></i>') : ''),
+                            ).'" class="far fa-star discreet button"></i>') : ''),
 
                 );
 
@@ -862,6 +862,7 @@ class Subject extends DB_Table {
 
     function update_subject_field_switcher($field, $value, $options = '', $metadata) {
 
+
         switch ($field) {
 
             /*
@@ -982,7 +983,7 @@ class Subject extends DB_Table {
                                 $this->table_name.' Preferred Contact Number'
                             ) == 'Mobile' ? ' <i title="'._(
                                     'Main contact number'
-                                ).'" class="fa fa-star discreet"></i>' : ' <i onClick="set_this_as_main(this)" title="'._('Set as main contact number').'" class="fa fa-star-o discreet button"></i>') : ''),
+                                ).'" class="fa fa-star discreet"></i>' : ' <i onClick="set_this_as_main(this)" title="'._('Set as main contact number').'" class="far fa-star discreet button"></i>') : ''),
                         'value'           => $this->get(
                             $this->table_name.' Main Plain Mobile'
                         ),
@@ -1001,7 +1002,7 @@ class Subject extends DB_Table {
                                 $this->table_name.' Preferred Contact Number'
                             ) == 'Telephone' ? ' <i title="'._(
                                     'Main contact number'
-                                ).'" class="fa fa-star discreet"></i>' : ' <i onClick="set_this_as_main(this)" title="'._('Set as main contact number').'" class="fa fa-star-o discreet button"></i>') : ''),
+                                ).'" class="fa fa-star discreet"></i>' : ' <i onClick="set_this_as_main(this)" title="'._('Set as main contact number').'" class="far fa-star discreet button"></i>') : ''),
 
                     );
                 } else {
@@ -1058,7 +1059,12 @@ class Subject extends DB_Table {
 
 
                 $this->update_field($field, $value, $options);
+
+
+
                 $this->update_field($this->table_name.' Preferred Contact Number Formatted Number', $this->get('Main XHTML '.$value), $options);
+
+
 
 
                 $this->other_fields_updated[$this->table_name.'_Main_Plain_Mobile'] = array(
@@ -1074,7 +1080,7 @@ class Subject extends DB_Table {
                             ? ' <i title="'._('Main contact number').'" class="fa fa-star discreet"></i>'
                             : ' <i onClick="set_this_as_main(this)" title="'._(
                                 'Set as main contact number'
-                            ).'" class="fa fa-star-o discreet button"></i>') : ''),
+                            ).'" class="far fa-star discreet button"></i>') : ''),
                 );
 
                 $this->other_fields_updated[$this->table_name.'_Main_Plain_Telephone'] = array(
@@ -1092,8 +1098,10 @@ class Subject extends DB_Table {
                             ).'" class="fa fa-star discreet"></i>'
                             : ' <i onClick="set_this_as_main(this)" title="'._(
                                 'Set as main contact number'
-                            ).'" class="fa fa-star-o discreet button"></i>') : ''),
+                            ).'" class="far fa-star discreet button"></i>') : ''),
                 );
+
+
 
 
                 return true;
@@ -1761,7 +1769,7 @@ class Subject extends DB_Table {
                             ? ' <i title="'._('Main contact number').'" class="fa fa-star discreet"></i>'
                             : ' <i onClick="set_this_as_main(this)" title="'._(
                                 'Set as main contact number'
-                            ).'" class="fa fa-star-o discreet button"></i>') : ''),
+                            ).'" class="far fa-star discreet button"></i>') : ''),
                 ),
                 $this->table_name.'_Main_Plain_Telephone' => array(
                     'field'  => $this->table_name.'_Main_Plain_Telephone',
@@ -1778,7 +1786,7 @@ class Subject extends DB_Table {
                             ).'" class="fa fa-star discreet"></i>'
                             : ' <i onClick="set_this_as_main(this)" title="'._(
                                 'Set as main contact number'
-                            ).'" class="fa fa-star-o discreet button"></i>') : ''),
+                            ).'" class="far fa-star discreet button"></i>') : ''),
                 )
             );
         }
@@ -1796,7 +1804,7 @@ class Subject extends DB_Table {
                     ? ' <i title="'._('Main contact number').'" class="fa fa-star discreet"></i>'
                     : ' <i onClick="set_this_as_main(this)" title="'._(
                         'Set as main contact number'
-                    ).'" class="fa fa-star-o discreet button"></i>') : ''),
+                    ).'" class="far fa-star discreet button"></i>') : ''),
             'value'           => $this->get(
                 $this->table_name.' Main Plain Mobile'
             ),
@@ -1814,7 +1822,7 @@ class Subject extends DB_Table {
                     ? ' <i title="'._('Main contact number').'" class="fa fa-star discreet"></i>'
                     : ' <i onClick="set_this_as_main(this)" title="'._(
                         'Set as main contact number'
-                    ).'" class="fa fa-star-o discreet button"></i>') : ''),
+                    ).'" class="far fa-star discreet button"></i>') : ''),
             'value'           => $this->get(
                 $this->table_name.' Main Plain Telephone'
             ),
@@ -1991,7 +1999,7 @@ class Subject extends DB_Table {
                                 )
                             ).' <i onClick="set_this_as_main(this)" title="'._(
                                 'Set as main email'
-                            ).'" class="fa fa-star-o very_discreet button"></i>',
+                            ).'" class="far fa-star very_discreet button"></i>',
 
 
                     )
@@ -2176,7 +2184,7 @@ class Subject extends DB_Table {
                                 )
                             ).' <i onClick="set_this_as_main(this)" title="'._(
                                 'Set as main telephone'
-                            ).'" class="fa fa-star-o very_discreet button"></i>',
+                            ).'" class="far fa-star very_discreet button"></i>',
 
 
                     )

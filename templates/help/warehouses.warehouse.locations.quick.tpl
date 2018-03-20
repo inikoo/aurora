@@ -26,7 +26,7 @@ About:
     <div class="answer hide">
         <p>
             {t}Click in the <i class="fa fa-cloud-upload"></i> icon at the table header to upload a excel or a CSV file with the following fields{/t} — <i
-                    class="fa fa-file-excel-o"></i> <a title="{t}You can use this file as template{/t}"
+                    class="fa fa-file-excel"></i> <a title="{t}You can use this file as template{/t}"
                                                        href="/upload_arrangement.php?object=location&parent=warehouse&parent_key=1"> {t}template{/t}</a>
             —
         </p>

@@ -39,7 +39,7 @@ function get_orders_operations($row, $user) {
             );
 
             $operations .= sprintf(
-                "<i id=\"send_to_warehouse_button_%d\" class=\"%s fa fa-hand-lizard-o fa-flip-horizontal button edit \" onClick=\"create_delivery_note_from_list(this,%d)\" title='%s'></i>",
+                "<i id=\"send_to_warehouse_button_%d\" class=\"%s fa fa-hand-lizard fa-flip-horizontal button edit \" onClick=\"create_delivery_note_from_list(this,%d)\" title='%s'></i>",
                 $row['Order Key'], ($row['Order Number Items'] == 0 ? 'disabled' : ''), $row['Order Key'], _('Send for picking')
             );
 

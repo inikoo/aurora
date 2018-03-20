@@ -33,7 +33,7 @@ $parameters = array(
 
 $table_buttons   = array();
 $table_buttons[] = array(
-    'icon'  => 'sticky-note-o',
+    'icon'  => 'sticky-note',
     'title' => _('New note'),
     'id'    => "show_history_note_dialog"
 );

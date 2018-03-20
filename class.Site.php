@@ -2226,7 +2226,7 @@ $sql = 'SELECT word FROM words_list
                     $label = '<i class="fa fa-bank"></i> '._('Bank Transfer');
                     break;
                 case 'Paypal':
-                    $label = '<i class="fa fa-paypal"></i> Paypal';
+                    $label = '<i class="fab fa-paypal"></i> Paypal';
                     break;
                 case 'Sofort':
                     $label = 'Sofort'.' '._('eBank Transfers');

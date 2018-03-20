@@ -1,7 +1,7 @@
 <div id="edit_history_note_dialog" class="hide textarea_dialog" object="{$history_notes_data['object']}" key="{$history_notes_data['key']}"
      history_key="">
     <div class="note_type">
-        <div class="label">{t}Permanent{/t} <i onClick="note_type()" id="note_type" class="fa fa-check-square-o fw"></i>
+        <div class="label">{t}Permanent{/t} <i onClick="note_type()" id="note_type" class="far fa-check-square fw"></i>
         </div>
     </div>
 
@@ -12,10 +12,10 @@
 </div>
 <script>
     function note_type() {
-        if ($('#note_type').hasClass('fa-check-square-o')) {
-            $('#note_type').removeClass('fa-check-square-o').addClass('fa-square-o')
+        if ($('#note_type').hasClass('fa-check-square')) {
+            $('#note_type').removeClass('fa-check-square').addClass('fa-square')
         } else {
-            $('#note_type').addClass('fa-check-square-o').removeClass('fa-square-o')
+            $('#note_type').addClass('fa-check-square').removeClass('fa-square')
         }
     }
 
@@ -29,7 +29,7 @@
 
             if (anchor == 'show_history_note_dialog') {
 
-                $('#note_type').addClass('fa-check-square-o').removeClass('fa-square-o')
+                $('#note_type').addClass('fa-check-square').removeClass('fa-square')
 
 
                 var position = $('#' + anchor).position();
@@ -85,7 +85,7 @@
         }
         var request = '/ar_edit.php?tipo=edit_field&object=' + object + '&key=' + key + '&field=' + field + '&value=' + fixedEncodeURIComponent(value)
         if (history_key == '') {
-            request += '&metadata=' + JSON.stringify({ 'deletable': ($('#note_type').hasClass('fa-check-square-o') ? 'No' : 'Yes')})
+            request += '&metadata=' + JSON.stringify({ 'deletable': ($('#note_type').hasClass('fa-check-square') ? 'No' : 'Yes')})
         }
 
 

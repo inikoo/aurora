@@ -1373,12 +1373,12 @@ function get_timesheets_navigation($data, $smarty, $user, $db) {
     $sections = get_sections('hr', '');
 
     $right_buttons[] = array(
-        'icon'      => 'calendar-o',
+        'icon'      => 'calendar',
         'title'     => _('Today'),
         'reference' => 'timesheets/day/'.date('Ymd')
     );
     $right_buttons[] = array(
-        'icon'      => 'calendar-plus-o',
+        'icon'      => 'calendar-plus',
         'title'     => _('This week'),
         'reference' => 'timesheets/week/'.date('oW')
     );

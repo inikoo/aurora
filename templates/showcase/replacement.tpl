@@ -151,7 +151,7 @@
                 <div id="undo_picking_operations" class="order_operation {if $delivery_note->get('State Index')!=20}hide{/if}">
                     <div class="square_button left" title="{t}Undo start picking{/t}">
 												<span class="fa-stack" onclick="toggle_order_operation_dialog('undo_picking')">
-						<i class="fa fa-hand-lizard-o  fa-rotate-270 very_discreet " aria-hidden="true"></i>
+						<i class="fa fa-hand-lizard  fa-rotate-270 very_discreet " aria-hidden="true"></i>
 						<i class="fa fa-ban fa-stack-1x discreet error"></i>
 						</span>
 
@@ -202,7 +202,7 @@
 
                 <div id="start_picking_operations" class="order_operation {if $delivery_note->get('State Index')!=10    }hide{/if}">
                     <div class="square_button right  " title="{t}Start picking{/t}">
-                        <i id="start_picking_save_buttons" class="fa button fa-hand-lizard-o  fa-rotate-270 fa-fw  very_discreet "
+                        <i id="start_picking_save_buttons" class="fa button fa-hand-lizard  fa-rotate-270 fa-fw  very_discreet "
                            data-data='{  "field": "Delivery Note State","value": "Picking","dialog_name":"start_picking"}' aria-hidden="true" onclick="save_order_operation(this)"></i>
 
                     </div>
@@ -255,7 +255,7 @@
 
                <span class="error {if $delivery_note->get('Order Number Items Out of Stock')==0}hide{/if}" style="padding-left:20px"><i class="fa fa-cube fa-fw  " aria-hidden="true"></i> <span
                            class="Order_Number_Items_with_Out_of_Stock">{$delivery_note->get('Number Items Out of Stock')}</span></span>
-                    <span class="error {if $delivery_note->get('Order Number Items Returned')==0}hide{/if}" style="padding-left:20px"><i class="fa fa-thumbs-o-down fa-fw   " aria-hidden="true"></i> <span
+                    <span class="error {if $delivery_note->get('Order Number Items Returned')==0}hide{/if}" style="padding-left:20px"><i class="far fa-thumbs-down fa-fw   " aria-hidden="true"></i> <span
                                 class="Order_Number_Items_with_Returned">{$delivery_note->get('Number Items Returned')}</span></span>
                 </td>
 

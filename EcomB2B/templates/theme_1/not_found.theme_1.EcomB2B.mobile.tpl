@@ -39,36 +39,7 @@
 
     <a href="#" class="back-to-top-badge"><i class="ion-ios-arrow-up"></i></a>
 
-    <div class="share-bottom share-light">
-        <h3>Share Page</h3>
-        <div class="share-socials-bottom">
-            <a href="https://www.facebook.com/sharer/sharer.php?u=http://www.themeforest.net/">
-                <i class="ion-social-facebook facebook-bg"></i>
-                Facebook
-            </a>
-            <a href="https://twitter.com/home?status=Check%20out%20ThemeForest%20http://www.themeforest.net">
-                <i class="ion-social-twitter twitter-bg"></i>
-                Twitter
-            </a>
-            <a href="https://plus.google.com/share?url=http://www.themeforest.net">
-                <i class="ion-social-googleplus google-bg"></i>
-                Google
-            </a>
-            <a href="https://pinterest.com/pin/create/button/?url=http://www.themeforest.net/&media=https://0.s3.envato.com/files/63790821/profile-image.jpg&description=Themes%20and%20Templates">
-                <i class="ion-social-pinterest-outline pinterest-bg"></i>
-                Pinterest
-            </a>
-            <a href="sms:">
-                <i class="ion-ios-chatboxes-outline sms-bg"></i>
-                Text
-            </a>
-            <a href="mailto:?&subject=Check this page out!&body=http://www.themeforest.net">
-                <i class="ion-ios-email-outline mail-bg"></i>
-                Email
-            </a>
-            <div class="clear"></div>
-        </div>
-    </div>
+    
 </div>
 </body>
 {include file="theme_1/bottom_scripts.theme_1.EcomB2B.mobile.tpl"}</body>

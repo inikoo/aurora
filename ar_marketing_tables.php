@@ -133,7 +133,7 @@ function deals($_data, $db, $user) {
             switch ($data['Deal Status']) {
                 case 'Waiting':
                     $status = sprintf(
-                        '<i class="fa fa-clock-o discreet fa-fw" aria-hidden="true" title="%s" ></i>', _('Waiting')
+                        '<i class="far fa-clock discreet fa-fw" aria-hidden="true" title="%s" ></i>', _('Waiting')
                     );
                     break;
                 case 'Active':
@@ -260,7 +260,7 @@ function campaigns($_data, $db, $user) {
             switch ($data['Deal Campaign Status']) {
                 case 'Waiting':
                     $status = sprintf(
-                        '<i class="fa fa-clock-o discreet fa-fw" aria-hidden="true" title="%s" ></i>', _('Waiting')
+                        '<i class="far fa-clock discreet fa-fw" aria-hidden="true" title="%s" ></i>', _('Waiting')
                     );
                     break;
                 case 'Active':
@@ -408,7 +408,7 @@ function components($_data, $db, $user) {
             switch ($data['Deal Component Status']) {
                 case 'Waiting':
                     $status = sprintf(
-                        '<i class="fa fa-clock-o discreet fa-fw" aria-hidden="true" title="%s" ></i>', _('Waiting')
+                        '<i class="far fa-clock discreet fa-fw" aria-hidden="true" title="%s" ></i>', _('Waiting')
                     );
                     break;
                 case 'Active':
@@ -554,7 +554,7 @@ function campaign_order_recursion_components($_data, $db, $user) {
             switch ($data['Deal Component Status']) {
                 case 'Waiting':
                     $status = sprintf(
-                        '<i class="fa fa-clock-o discreet fa-fw" aria-hidden="true" title="%s" ></i>', _('Waiting')
+                        '<i class="far fa-clock discreet fa-fw" aria-hidden="true" title="%s" ></i>', _('Waiting')
                     );
                     break;
                 case 'Active':
@@ -674,7 +674,7 @@ function campaign_bulk_deals($_data, $db, $user) {
             switch ($data['Deal Status']) {
                 case 'Waiting':
                     $status = sprintf(
-                        '<i class="fa fa-clock-o discreet fa-fw" aria-hidden="true" title="%s" ></i>', _('Waiting')
+                        '<i class="far fa-clock discreet fa-fw" aria-hidden="true" title="%s" ></i>', _('Waiting')
                     );
                     break;
                 case 'Active':

@@ -574,7 +574,7 @@ function get_campaign_navigation($data, $smarty, $user, $db) {
 
     }
     //$right_buttons[]=array('icon'=>'edit', 'title'=>_('Edit customer'), 'url'=>'edit_customer.php?id='.$object->id);
-    //$right_buttons[]=array('icon'=>'sticky-note-o', 'title'=>_('History note'), 'id'=>'note');
+    //$right_buttons[]=array('icon'=>'sticky-note', 'title'=>_('History note'), 'id'=>'note');
     //$right_buttons[]=array('icon'=>'paperclip', 'title'=>_('Attachement'), 'id'=>'attach');
     //$right_buttons[]=array('icon'=>'shopping-cart', 'title'=>_('New order'), 'id'=>'take_order');
     //$right_buttons[]=array('icon'=>'sticky-note', 'title'=>_('Sticky note'), 'id'=>'sticky_note_button', 'class'=> ($object->get('Sticky Note')==''?'':'hide'));
@@ -883,7 +883,7 @@ function get_deal_navigation($data, $smarty, $user, $db) {
 
     }
     //$right_buttons[]=array('icon'=>'edit', 'title'=>_('Edit customer'), 'url'=>'edit_customer.php?id='.$object->id);
-    //$right_buttons[]=array('icon'=>'sticky-note-o', 'title'=>_('History note'), 'id'=>'note');
+    //$right_buttons[]=array('icon'=>'sticky-note', 'title'=>_('History note'), 'id'=>'note');
     //$right_buttons[]=array('icon'=>'paperclip', 'title'=>_('Attachement'), 'id'=>'attach');
     //$right_buttons[]=array('icon'=>'shopping-cart', 'title'=>_('New order'), 'id'=>'take_order');
     //$right_buttons[]=array('icon'=>'sticky-note', 'title'=>_('Sticky note'), 'id'=>'sticky_note_button', 'class'=> ($object->get('Sticky Note')==''?'':'hide'));

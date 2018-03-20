@@ -466,7 +466,7 @@ function suppliers_edit($_data, $db, $user, $account) {
                 'link' => $data['Supplier Code'],
 
                 'checkbox'   => sprintf(
-                    '<i key="" class="fa fa-fw fa-square-o button" aria-hidden="true"></i>', $data['Supplier Key']
+                    '<i key="" class="far fa-square fa-fw button" aria-hidden="true"></i>', $data['Supplier Key']
                 ),
                 'operations' => sprintf(
                     '<i key="" class="fa fa-fw fa-cloud hide button" aria-hidden="true"></i>', $data['Supplier Key']
@@ -1358,7 +1358,7 @@ function order_items($_data, $db, $user, $account) {
                     if ($data['Part Fresh'] == 'No') {
                         $available_forecast .= ' <i class="fa fa-fighter-jet padding_left_5" aria-hidden="true" title="'._('On demand').'"></i>';
                     } else {
-                        $available_forecast = ' <i class="fa fa-lemon-o padding_left_5" aria-hidden="true" title="'._('On demand').'"></i>';
+                        $available_forecast = ' <i class="far fa-lemon padding_left_5" aria-hidden="true" title="'._('On demand').'"></i>';
                     }
                 } else {
                     $available_forecast = '<span >'.sprintf(
@@ -1458,7 +1458,7 @@ function order_items($_data, $db, $user, $account) {
                 'parent_type'       => strtolower($purchase_order->get('Purchase Order Parent')),
                 'supplier_part_key' => (integer)$data['Supplier Part Key'],
                 'supplier_key'      => (integer)$data['Supplier Key'],
-                'checkbox'          => sprintf('<i key="%d" class="invisible fa fa-fw fa-square-o button" aria-hidden="true"></i>', $data['Purchase Order Transaction Fact Key']),
+                'checkbox'          => sprintf('<i key="%d" class="invisible far fa-square fa-fw button" aria-hidden="true"></i>', $data['Purchase Order Transaction Fact Key']),
                 'operations'        => sprintf('<i key="%d" class="fa fa-fw fa-truck fa-flip-horizontal button" aria-hidden="true" onClick="change_on_delivery(this)"></i>', $data['Purchase Order Transaction Fact Key']),
                 'reference'         => $data['Supplier Part Reference'],
 
@@ -1591,7 +1591,7 @@ function agent_order_items($_data, $db, $user, $account) {
 
 
             $packing = sprintf(
-                '<i class="fa fa-fw fa-gift" aria-hidden="true" ></i> %ss, (%s <i class="fa fa-fw fa-dot-circle-o discreet" aria-hidden="true" ></i>, %s <i class="fa fa-fw fa-gift " aria-hidden="true" ></i>)/<i class="fa fa-fw fa-dropbox" aria-hidden="true" ></i>',
+                '<i class="fa fa-fw fa-gift" aria-hidden="true" ></i> %ss, (%s <i class="far fa-fw fa-dot-circle discreet" aria-hidden="true" ></i>, %s <i class="fa fa-fw fa-gift " aria-hidden="true" ></i>)/<i class="fa fa-fw fa-dropbox" aria-hidden="true" ></i>',
                 '<b>'.$data['Part Units Per Package'].'</b>', '<b>'.$units_per_carton.'</b>', '<b>'.$skos_per_carton.'</b>'
             );
 
@@ -1639,7 +1639,7 @@ function agent_order_items($_data, $db, $user, $account) {
                 'parent_type'       => strtolower($purchase_order->get('Purchase Order Parent')),
                 'supplier_part_key' => (integer)$data['Supplier Part Key'],
                 'supplier_key'      => (integer)$data['Supplier Key'],
-                'checkbox'          => sprintf('<i key="%d" class="invisible fa fa-fw fa-square-o button" aria-hidden="true"></i>', $data['Purchase Order Transaction Fact Key']),
+                'checkbox'          => sprintf('<i key="%d" class="invisible far fa-square fa-fw button" aria-hidden="true"></i>', $data['Purchase Order Transaction Fact Key']),
                 'operations'        => sprintf('<i key="%d" class="fa fa-fw fa-truck fa-flip-horizontal button" aria-hidden="true" onClick="change_on_delivery(this)"></i>', $data['Purchase Order Transaction Fact Key']),
                 'reference'         => $data['Supplier Part Reference'],
 
@@ -1741,7 +1741,7 @@ function delivery_items($_data, $db, $user) {
                 'id'                => (integer)$data['Purchase Order Transaction Fact Key'],
                 'supplier_part_key' => (integer)$data['Supplier Part Key'],
                 'checkbox'          => sprintf(
-                    '<i key="%d" class="fa fa-fw fa-square-o button" aria-hidden="true"></i>', $data['Purchase Order Transaction Fact Key']
+                    '<i key="%d" class="far fa-square fa-fw button" aria-hidden="true"></i>', $data['Purchase Order Transaction Fact Key']
                 ),
 
                 'operations' => sprintf(
@@ -1844,7 +1844,7 @@ function delivery_checking_items($_data, $db, $user) {
             }
 
             if ($locations != '') {
-                $description .= '<br><i style="margin-left:4px" class="fa fa-map-marker button discreet  hide'.($number_locations == 0 ? 'hide' : '').'" aria-hidden="true" title="'._('Show locations').'"  show_title="'._('Show locations').'" hide_title="'._(
+                $description .= '<br><i style="margin-left:4px" class="fa fa-inventory button discreet  hide'.($number_locations == 0 ? 'hide' : '').'" aria-hidden="true" title="'._('Show locations').'"  show_title="'._('Show locations').'" hide_title="'._(
                         'Hide locations'
                     ).'"    onClick="show_part_locations(this)" ></i>';
 
@@ -1920,7 +1920,7 @@ function delivery_checking_items($_data, $db, $user) {
             }
             $placement .= '<div style="clear:both"></div></div>';
 
-            $placement_note = '<input type="hidden" class="note" /><i class="fa add_note fa-sticky-note-o padding_right_5 button" aria-hidden="true"  onClick="show_placement_note(this)" ></i>';
+            $placement_note = '<input type="hidden" class="note" /><i class="far add_note fa-sticky-note padding_right_5 button" aria-hidden="true"  onClick="show_placement_note(this)" ></i>';
             $placement      .= '
 			    <div style="clear:both"  id="place_item_'.$data['Purchase Order Transaction Fact Key'].'" class="place_item '.($data['Supplier Delivery Transaction Placed'] == 'No' ? '' : 'hide').' " part_sku="'.$data['Part SKU'].'" transaction_key="'
                 .$data['Purchase Order Transaction Fact Key'].'"  >
@@ -1941,7 +1941,7 @@ function delivery_checking_items($_data, $db, $user) {
                 'supplier_part_key' => (integer)$data['Supplier Part Key'],
                 'part_sku'          => (integer)$data['Part SKU'],
                 'checkbox'          => sprintf(
-                    '<i key="%d" class="fa fa-fw fa-square-o button" aria-hidden="true"></i>', $data['Purchase Order Transaction Fact Key']
+                    '<i key="%d" class="far fa-square fa-fw button" aria-hidden="true"></i>', $data['Purchase Order Transaction Fact Key']
                 ),
 
                 'operations' => sprintf(
@@ -2421,7 +2421,7 @@ function order_supplier_all_parts($_data, $db, $user, $account) {
                     if ($data['Part Fresh'] == 'No') {
                         $available_forecast .= ' <i class="fa fa-fighter-jet padding_left_5" aria-hidden="true" title="'._('On demand').'"></i>';
                     } else {
-                        $available_forecast = ' <i class="fa fa-lemon-o padding_left_5" aria-hidden="true" title="'._('On demand').'"></i>';
+                        $available_forecast = ' <i class="far fa-lemon padding_left_5" aria-hidden="true" title="'._('On demand').'"></i>';
                     }
                 } else {
                     $available_forecast = '<span >'.sprintf(
@@ -3141,7 +3141,7 @@ function parts_by_stock_status($stock_status, $_data, $db, $user) {
                         }else{
                             $next_deliveries .= sprintf(
                                 ', <span class="link" onclick="change_view(\'%s\')"><i class="fa fa-clipboard" aria-hidden="true"></i> %s</span> %s <b>(%s)</b>',$delivery['link'],$delivery['order_id'],
-                                ($delivery['state'] != 'InProcess' ? '<i class="fa fa-paper-plane-o" aria-hidden="true"></i>' : ''), number($delivery['qty'])
+                                ($delivery['state'] != 'InProcess' ? '<i class="fa fa-paper-plane" aria-hidden="true"></i>' : ''), number($delivery['qty'])
                             );
 
                         }
@@ -3172,7 +3172,7 @@ function parts_by_stock_status($stock_status, $_data, $db, $user) {
                         $purchase_order  = preg_split('/\|/', $purchase_order);
                         $next_deliveries .= sprintf(
                             ', <span class="link" onclick="change_view(\'suppliers/order/%d\')"><i class="fa fa-clipboard" aria-hidden="true"></i> %s</span> %s <b>(%s)</b>', $purchase_order[0], $purchase_order[1],
-                            ($purchase_order[3] != 'InProcess' ? '<i class="fa fa-paper-plane-o" aria-hidden="true"></i>' : ''), number($purchase_order[2])
+                            ($purchase_order[3] != 'InProcess' ? '<i class="fa fa-paper-plane" aria-hidden="true"></i>' : ''), number($purchase_order[2])
                         );
                     }
                 }
@@ -3304,7 +3304,7 @@ function todo_paid_parts($_data, $db, $user) {
                         }else{
                             $next_deliveries .= sprintf(
                                 ', <span class="link" onclick="change_view(\'%s\')"><i class="fa fa-clipboard" aria-hidden="true"></i> %s</span> %s <b>(%s)</b>',$delivery['link'],$delivery['order_id'],
-                                ($delivery['state'] != 'InProcess' ? '<i class="fa fa-paper-plane-o" aria-hidden="true"></i>' : ''), number($delivery['qty'])
+                                ($delivery['state'] != 'InProcess' ? '<i class="fa fa-paper-plane" aria-hidden="true"></i>' : ''), number($delivery['qty'])
                             );
 
                         }
@@ -3332,7 +3332,7 @@ function todo_paid_parts($_data, $db, $user) {
                     $purchase_order  = preg_split('/\|/', $purchase_order);
                     $next_deliveries .= sprintf(
                         ', <span class="link" onclick="change_view(\'suppliers/order/%d\')"><i class="fa fa-clipboard" aria-hidden="true"></i> %s</span> %s <b>(%s)</b>', $purchase_order[0], $purchase_order[1],
-                        ($purchase_order[3] != 'InProcess' ? '<i class="fa fa-paper-plane-o" aria-hidden="true"></i>' : ''), number($purchase_order[2])
+                        ($purchase_order[3] != 'InProcess' ? '<i class="fa fa-paper-plane" aria-hidden="true"></i>' : ''), number($purchase_order[2])
                     );
                 }
             }
@@ -3636,10 +3636,10 @@ function agent_parts($_data, $db, $user, $account) {
 
 
             if ($data['Part Status'] == 'Not In Use' or $data['Part Status'] == 'Discontinuing') {
-                $part_status = '<i class="fa fa-square-o fa-fw  very_discreet" title="'._("No longer required").'" aria-hidden="true"></i> ';
+                $part_status = '<i class="fa fa-square fa-fw  very_discreet" title="'._("No longer required").'" aria-hidden="true"></i> ';
                 $required    = false;
             } else {
-                $part_status = '<i class="fa fa-shopping-bag fa-fw " aria-hidden="true"></i> ';
+                $part_status = '<i class="fa fa-shopping-basket fa-fw " aria-hidden="true"></i> ';
                 $required    = true;
 
             }
@@ -3803,7 +3803,7 @@ function replenishments($_data, $db, $user, $account) {
             'id'                    => (integer)$data['Location Key'],
             'location'              => ($data['Warehouse Flag Key'] ? sprintf(
                     '<i class="fa fa-flag %s" aria-hidden="true" title="%s"></i>', strtolower($data['Warehouse Flag Color']), $data['Warehouse Flag Label']
-                ) : '<i class="fa fa-flag-o super_discreet" aria-hidden="true"></i>').' <span class="link" onClick="change_view(\'locations/'.$data['Location Warehouse Key'].'/'.$data['Location Key'].'\')">'.$data['Location Code'].'</span>',
+                ) : '<i class="far fa-flag super_discreet" aria-hidden="true"></i>').' <span class="link" onClick="change_view(\'locations/'.$data['Location Warehouse Key'].'/'.$data['Location Key'].'\')">'.$data['Location Code'].'</span>',
             'part'                  => sprintf('<span class="link" onCLick="change_view(\'part/%d\')" >%s</span>', $data['Part SKU'], $data['Part Reference']),
             'other_locations_stock' => $stock,
             'description'           => $data['Part Package Description'],

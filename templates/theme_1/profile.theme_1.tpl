@@ -335,7 +335,7 @@
                                     <label id="_registration_number_label"  contenteditable="true" class="label">{$content._registration_number_label}</label>
 
                                     <label class="input">
-                                        <i id="_registration_number" onclick="show_edit_input(this)" class="icon-append icon-gavel"><i class="fa fa-building-o" aria-hidden="true"></i>
+                                        <i id="_registration_number" onclick="show_edit_input(this)" class="icon-append icon-gavel"><i class="fa fa-building" aria-hidden="true"></i>
                                         </i>
                                         <input class="register_field" type="text" name="registration_number" id="_registration_number_placeholder" placeholder="{$content._registration_number_placeholder}">
                                         <b id="_registration_number_tooltip" class="tooltip tooltip-bottom-right">{$content._registration_number_tooltip}</b>

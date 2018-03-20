@@ -9,7 +9,7 @@
 -->
 *}{include file="theme_1/_head.theme_1.EcomB2B.mobile.tpl"}
 <body>{include file="analytics.tpl"}
-<div id="">
+<div id="page-transitions">
     {include file="theme_1/header.theme_1.EcomB2B.mobile.tpl"}
     <div id="page-content" class="page-content">
         <div id="page-content-scroll" class="header-clear"><!--Enables this element to be scrolled -->
@@ -35,27 +35,29 @@
 
 
                 <a  class="like_button profile_button no-smoothState bg-black border-black color-gray-light  "  data-tab="_poll_details">
-                    <i class="fa fa-sign-in  color-gray-light" aria-hidden="true"  style="margin-top: 7px"></i>
+                    <i class="fa fa-clipboard-list  color-gray-light" aria-hidden="true"  style="margin-top: 7px"></i>
                     <em style="font-size: 11px">{if empty($content._poll_title)}{t}Poll{/t}{else}{$content._poll_title}{/if}</em>
                 </a>
 
 
                 <a  class="like_button profile_button no-smoothState bg-black border-black color-gray-light  "  data-tab="_login_details">
-                    <i class="fa fa-sign-in  color-gray-light" aria-hidden="true"  style="margin-top: 7px"></i>
+                    <i class="fa fa-key  color-gray-light" aria-hidden="true"  style="margin-top: 7px"></i>
                     <em style="font-size: 11px">{$content._login_details_title}</em>
                 </a>
                 <a  class="like_button profile_button no-smoothState bg-black border-black color-gray-light  "   data-tab="_invoice_address_details">
-                    <i class="fa fa-dollar color-gray-light" aria-hidden="true"  style="margin-top: 7px"></i>
+                    <i class="fa fa-map-signs color-gray-light" aria-hidden="true"  style="margin-top: 7px"></i>
                     <em style="font-size: 11px">{$content._invoice_address_title}</em>
                 </a>
                 <a  class="like_button profile_button no-smoothState bg-black border-black color-gray-light  "  data-tab="_delivery_addresses_details">
-                    <i class="fa fa-truck color-gray-light" aria-hidden="true"  style="margin-top: 7px"></i>
+                    <i class="far fa-map-signs color-gray-light" aria-hidden="true"  style="margin-top: 7px"></i>
                     <em style="font-size: 11px">{$content._delivery_addresses_title}</em>
                 </a>
 
             </div>
 
             <div class="clear"></div>
+
+            <div>
 
             <div id="_contact_details" class="profile_block profile_form">
                 <form id="contact_details" class="sky-form">
@@ -98,7 +100,7 @@
                         <section>
                             <label class="label">{$content._email_label}</label>
                             <label class="input">
-                                <i class="icon-append fa fa-envelope-o"></i>
+                                <i class="icon-append fa fa-envelope"></i>
                                 <input class="register_field" type="email" name="email" id="_email_placeholder" value="{$customer->get('Customer Main Plain Email')}" placeholder="{$content._email_placeholder}">
                                 <b id="_email_tooltip" class="tooltip tooltip-bottom-right">{$content._email_tooltip}</b>
                             </label>
@@ -113,7 +115,7 @@
                             <label class="label">{$content._registration_number_label}</label>
 
                             <label class="input">
-                                <i class="icon-append icon-gavel"><i class="fa fa-building-o" aria-hidden="true"></i>
+                                <i class="icon-append icon-gavel"><i class="fa fa-building" aria-hidden="true"></i>
                                 </i>
                                 <input class="register_field" type="text" name="registration_number"   value="{$customer->get('Customer Registration Number')}" placeholder="{$content._registration_number_placeholder}">
                                 <b id="_registration_number_tooltip" class="tooltip tooltip-bottom-right">{$content._registration_number_tooltip}</b>
@@ -152,11 +154,10 @@
 
 
                     <footer>
-                        <button id="save_contact_details_button" type="submit" class="button  " >{$content._save_contact_details_label} <i  class="margin_left_10 fa fa-fw fa-floppy-o" aria-hidden="true"></i> </button>
+                        <button id="save_contact_details_button" type="submit" class="button  " >{$content._save_contact_details_label} <i  class="margin_left_10 fa fa-fw fa-save" aria-hidden="true"></i> </button>
                     </footer>
                 </form>
             </div>
-
 
             <div id="_poll_details" class="profile_block hide profile_form">
                 <form  id="poll_details" class="sky-form">
@@ -207,7 +208,7 @@
 
                     </fieldset>
                     <footer>
-                        <button type="submit" class="button " id="save_poll_details" >{if empty($content._save_poll_details_label)}{t}Save{/t}{else}{$content._save_poll_details_label}{/if} <i  class="margin_left_10 fa fa-fw fa-floppy-o" aria-hidden="true"></i> </button>
+                        <button type="submit" class="button " id="save_poll_details" >{if empty($content._save_poll_details_label)}{t}Save{/t}{else}{$content._save_poll_details_label}{/if} <i  class="margin_left_10 fa fa-fw fa-save" aria-hidden="true"></i> </button>
                     </footer>
                 </form>
             </div>
@@ -242,7 +243,7 @@
 
                     </fieldset>
                     <footer>
-                        <button type="submit" class="button " id="save_login_details_button">{$content._save_login_details_label} <i  class="margin_left_10 fa fa-fw fa-floppy-o" aria-hidden="true"></i> </button>
+                        <button type="submit" class="button " id="save_login_details_button">{$content._save_login_details_label} <i  class="margin_left_10 fa fa-fw fa-save" aria-hidden="true"></i> </button>
 
                     </footer>
                 </form>
@@ -372,7 +373,7 @@
 
 
                         <footer>
-                            <button type="submit" class="button " id="save_invoice_address_details_button" >{$content._save_invoice_address_details_label} <i  class="margin_left_10 fa fa-fw fa-floppy-o" aria-hidden="true"></i> </button>
+                            <button type="submit" class="button " id="save_invoice_address_details_button" >{$content._save_invoice_address_details_label} <i  class="margin_left_10 fa fa-fw fa-save" aria-hidden="true"></i> </button>
                         </footer>
                     </form>
                 </div>
@@ -400,9 +401,9 @@
 
                         </fieldset>
 
+                        <div id="delivery_address_fields_container" class="{if $customer->get('Customer Delivery Address Link')=='Billing'}hide{/if}">
 
-                        <fieldset id="delivery_address_fields" class="{if $customer->get('Customer Delivery Address Link')=='Billing'}hide{/if}" style="position:relative">
-
+                        <fieldset id="delivery_address_fields"   >
 
 
                             <section id="delivery_addressLine1" class="{if 'addressLine1'|in_array:$delivery_used_address_fields}{else}hide{/if}">
@@ -513,7 +514,7 @@
 
 
                         <footer>
-                            <button type="submit" class="button "  id="save_delivery_address_details_button" >{$content._save_delivery_address_details_label} <i  class="margin_left_10 fa fa-fw fa-floppy-o" aria-hidden="true"></i> </button>
+                            <button type="submit" class="button "  id="save_delivery_address_details_button" >{$content._save_delivery_address_details_label} <i  class="margin_left_10 fa fa-fw fa-save" aria-hidden="true"></i> </button>
 
                         </footer>
                     </form>
@@ -521,47 +522,17 @@
 
             </div>
 
+                </div>
 
 
-           
 
 
             {include file="theme_1/footer.theme_1.EcomB2B.mobile.tpl"}
         </div>
     </div>
 
-    <a href="#" class="back-to-top-badge"><i class="ion-ios-arrow-up"></i></a>
 
-    <div class="share-bottom share-light">
-        <h3>Share Page</h3>
-        <div class="share-socials-bottom">
-            <a href="https://www.facebook.com/sharer/sharer.php?u=http://www.themeforest.net/">
-                <i class="ion-social-facebook facebook-bg"></i>
-                Facebook
-            </a>
-            <a href="https://twitter.com/home?status=Check%20out%20ThemeForest%20http://www.themeforest.net">
-                <i class="ion-social-twitter twitter-bg"></i>
-                Twitter
-            </a>
-            <a href="https://plus.google.com/share?url=http://www.themeforest.net">
-                <i class="ion-social-googleplus google-bg"></i>
-                Google
-            </a>
-            <a href="https://pinterest.com/pin/create/button/?url=http://www.themeforest.net/&media=https://0.s3.envato.com/files/63790821/profile-image.jpg&description=Themes%20and%20Templates">
-                <i class="ion-social-pinterest-outline pinterest-bg"></i>
-                Pinterest
-            </a>
-            <a href="sms:">
-                <i class="ion-ios-chatboxes-outline sms-bg"></i>
-                Text
-            </a>
-            <a href="mailto:?&subject=Check this page out!&body=http://www.themeforest.net">
-                <i class="ion-ios-email-outline mail-bg"></i>
-                Email
-            </a>
-            <div class="clear"></div>
-        </div>
-    </div>
+
 </div>
 </body>
 <script>
@@ -600,7 +571,7 @@
                 }
 
                 button.addClass('wait')
-                button.find('i').removeClass('fa-floppy-o').addClass('fa-spinner fa-spin')
+                button.find('i').removeClass('fa-save').addClass('fa-spinner fa-spin')
 
 
                 var register_data={ }
@@ -654,12 +625,12 @@
 
 
                         button.removeClass('wait')
-                        button.find('i').addClass('fa-floppy-o').removeClass('fa-spinner fa-spin')
+                        button.find('i').addClass('fa-save').removeClass('fa-spinner fa-spin')
 
 
                     }, error: function () {
                         button.removeClass('wait')
-                        button.find('i').addClass('fa-floppy-o').removeClass('fa-spinner fa-spin')
+                        button.find('i').addClass('fa-save').removeClass('fa-spinner fa-spin')
 
                     }
                 });
@@ -754,7 +725,7 @@
                 }
 
                 button.addClass('wait')
-                button.find('i').removeClass('fa-floppy-o').addClass('fa-spinner fa-spin')
+                button.find('i').removeClass('fa-save').addClass('fa-spinner fa-spin')
 
 
                 var register_data={ }
@@ -801,11 +772,11 @@
                         }
 
                         button.removeClass('wait')
-                        button.find('i').addClass('fa-floppy-o').removeClass('fa-spinner fa-spin')
+                        button.find('i').addClass('fa-save').removeClass('fa-spinner fa-spin')
 
                     }, error: function () {
                         button.removeClass('wait')
-                        button.find('i').addClass('fa-floppy-o').removeClass('fa-spinner fa-spin')
+                        button.find('i').addClass('fa-save').removeClass('fa-spinner fa-spin')
                     }
                 });
 
@@ -876,10 +847,10 @@
     $(document).on('change', "#delivery_address_link", function(ev){
 
         if($(this).is(':checked')){
-            $('#delivery_address_fields').addClass('hide')
+            $('#delivery_address_fields_container').addClass('hide')
 
         }else{
-            $('#delivery_address_fields').removeClass('hide')
+            $('#delivery_address_fields_container').removeClass('hide')
 
         }
     });
@@ -955,7 +926,7 @@
                 }
 
                 button.addClass('wait')
-                button.find('i').removeClass('fa-floppy-o').addClass('fa-spinner fa-spin')
+                button.find('i').removeClass('fa-save').addClass('fa-spinner fa-spin')
 
 
 
@@ -1002,12 +973,12 @@
                         }
 
                         button.removeClass('wait')
-                        button.find('i').addClass('fa-floppy-o').removeClass('fa-spinner fa-spin')
+                        button.find('i').addClass('fa-save').removeClass('fa-spinner fa-spin')
 
                     }, error: function () {
 
                         button.removeClass('wait')
-                        button.find('i').addClass('fa-floppy-o').removeClass('fa-spinner fa-spin')
+                        button.find('i').addClass('fa-save').removeClass('fa-spinner fa-spin')
 
                     }
                 });
@@ -1153,7 +1124,7 @@
                 }
 
                 button.addClass('wait')
-                button.find('i').removeClass('fa-floppy-o').addClass('fa-spinner fa-spin')
+                button.find('i').removeClass('fa-save').addClass('fa-spinner fa-spin')
 
 
                 var register_data={ }
@@ -1202,11 +1173,11 @@
                         }
 
                         button.removeClass('wait')
-                        button.find('i').addClass('fa-floppy-o').removeClass('fa-spinner fa-spin')
+                        button.find('i').addClass('fa-save').removeClass('fa-spinner fa-spin')
 
                     }, error: function () {
                         button.removeClass('wait')
-                        button.find('i').addClass('fa-floppy-o').removeClass('fa-spinner fa-spin')
+                        button.find('i').addClass('fa-save').removeClass('fa-spinner fa-spin')
                     }
                 });
 

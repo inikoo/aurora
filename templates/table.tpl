@@ -16,9 +16,9 @@
         {foreach from=$elements item=element_group key=_elements_type}
             <div id="elements_group_{$_elements_type}" elements_type="$_elements_type" class="elements_group {if $_elements_type!=$elements_type}hide{/if}">
                 {foreach from=$element_group['items']|@array_reverse item=element key=id}
-                    <div id="element_{$id}" item_key="{$id}" class="element right  {if isset($element.selected) and $element.selected}selected{/if}" onclick="change_table_element(event,'{$id}')"
+                    <div id="element_{$id}" item_key="{$id}" class="element right  {if isset($element.selected) and $element.selected}selected{/if}"  data-item="{$id}"
                          title="{$elements[$elements_type]['label']}: {if isset($element.title)}{$element.title}{else}{$element.label}{/if}">
-                        <i id="element_checkbox_{$id}" class="fa {if $element.selected}fa-check-square-o{else}fa-square-o{/if}"></i> <span class="label"> {$element.label}  </span> <span class="qty"
+                        <i id="element_checkbox_{$id}" class="far element_checkbox {if $element.selected}fa-check-square{else}fa-square{/if}"></i> <span class="label"> {$element.label}  </span> <span class="qty"
                                                                                                                                                                                           id="element_qty_{$id}"></span>
                     </div>
                 {/foreach}
@@ -92,7 +92,7 @@
                         data-data='{ "parent_code":"{$edit_table_dialog.spreadsheet_edit.parent_code}","parent":"{$edit_table_dialog.spreadsheet_edit.parent}","parent_key":"{$edit_table_dialog.spreadsheet_edit.parent_key}","object":"{$edit_table_dialog.spreadsheet_edit.object}" }'
 
 
-                    ><i class="fa fa-file-excel-o" title="Excel"></i>Excel
+                    ><i class="fa fa-file-excel" title="Excel"></i>Excel
                     </td>
                 </tr>
                 <tr>
@@ -145,7 +145,7 @@
                         <td></td>
                         <td style="width_20" class="field_export ">
                             <i id="toggle_all_export_fields" onclick="toggle_all_export_fields(this)"
-                               class="button fa-fw fa fa-square-o"></i>
+                               class="button fa-fw fa fa-square"></i>
                         </td>
                     </tr>
                     <tbody id="export_fields">
@@ -154,7 +154,7 @@
                             <td>{$export_field.label}</td>
                             <td style="width_20" class="field_export">
                                 <i id="field_export_{$_key}" onclick="toggle_export_field({$_key})" key="{$_key}"
-                                   class="button fa-fw object_field fa {if $export_field.checked }fa-check-square-o{else}fa-square-o{/if}"></i>
+                                   class="button fa-fw object_field far {if $export_field.checked }fa-check-square{else}fa-square{/if}"></i>
                             </td>
                         </tr>
                     {/foreach}
@@ -306,7 +306,7 @@
                            class="fa button fa-hand-stop-o error hide" title="{t}Stop{/t}"></i>
                     </td>
                     <td id="export_table_excel_export" class="link" onclick="export_table('excel')"><i
-                                class="fa fa-file-excel-o" title="Excel"></i>Excel
+                                class="fa fa-file-excel" title="Excel"></i>Excel
                     </td>
                 </tr>
                 <tr>
@@ -339,7 +339,7 @@
                         <td></td>
                         <td style="width_20" class="field_export ">
                             <i id="toggle_all_export_fields" onclick="toggle_all_export_fields(this)"
-                               class="button fa-fw fa fa-check-square-o"></i>
+                               class="button fa-fw fa fa-check-square"></i>
                         </td>
                     </tr>
                     <tbody id="export_fields">
@@ -348,7 +348,7 @@
                             <td>{$export_field.label}</td>
                             <td style="width_20" class="field_export">
                                 <i id="field_export_{$_key}" onclick="toggle_export_field({$_key})" key="{$_key}"
-                                   class="button fa-fw fa {if $export_field.checked }fa-check-square-o{else}fa-square-o{/if}"></i>
+                                   class="button fa-fw far {if $export_field.checked }fa-check-square{else}fa-square{/if}"></i>
                             </td>
                         </tr>
                     {/foreach}
@@ -694,7 +694,7 @@
     <span class="padding_left_10" id="rtext"></span></div>
 
 <div id="table_edit_control_panel" class="hide" style="padding:10px 5px;border-bottom:1px solid #ccc">
-    <div style="float:left"><i class="fa fa-fw fa-square-o button" style="padding:0px 5px 0px 0px" aria-hidden="true" onClick="select_all_rows(this)"></i> {t}Check/Uncheck all{/t}</div>
+    <div style="float:left"><i class="far fa-square fa-fw button" style="padding:0px 5px 0px 0px" aria-hidden="true" onClick="select_all_rows(this)"></i> {t}Check/Uncheck all{/t}</div>
     <div style="float:left;margin-left:20px"><span id="selected_checkboxes" data-keys=""></span></div>
     <div style="clear:both"></div>
 </div>
@@ -999,21 +999,21 @@
 <div id="elements_chooser" class="hide panel popout_chooser corner">
     {foreach from=$elements item=element_group key=_elements_type}
         <div onClick="change_elements_type('{$_elements_type}')" id="element_group_option_{$_elements_type}" elements_type="{$_elements_type}" class="{if $_elements_type==$elements_type}selected{/if}">
-            <i class="fa fw {if $_elements_type==$elements_type}fa-circle{else}fa-circle-o{/if}"></i> {$element_group['label']}
+            <i class="fa-fw {if $_elements_type==$elements_type}fa fa-circle{else}far fa-circle{/if}"></i> {$element_group['label']}
         </div>
     {/foreach}
 </div>
 <div id="f_options_chooser" class="hide panel popout_chooser">
     {foreach from=$f_options item=f_option key=_f_option}
         <div onClick="change_f_option(this)" id="element_group_option_{$_f_option}" f_field="{$_f_option}" class="{if $_f_option==$f_field}selected{/if}">
-            <i class="fa fw {if $_f_option==$f_field}fa-circle{else}fa-circle-o{/if}"></i> <span class="label">{$f_option['label']}</span>
+            <i class="fa-fw {if $_f_option==$f_field}fa fa-circle{else}far fa-circle{/if}"></i> <span class="label">{$f_option['label']}</span>
         </div>
     {/foreach}
 </div>
 <div id="columns_period_chooser" class="hide panel popout_chooser corner">
     {foreach from=$f_periods item=period_label key=_f_period}
         <div onClick="change_columns_period('{$_f_period}','{$period_label}')" id="element_group_option_{$_f_period}" elements_type="{$_f_period}" class="aright {if $f_period==$_f_period}selected{/if}">
-            {$period_label} <i class="fa fw {if $f_period==$_f_period}fa-circle{else}fa-circle-o{/if} padding_left_10 padding_right_10"></i>
+            {$period_label} <i class="fa-fw {if $f_period==$_f_period}fa fa-circle{else}far fa-circle{/if} padding_left_10 padding_right_10"></i>
         </div>
     {/foreach}
 </div>
@@ -1021,7 +1021,7 @@
     {foreach from=$frequencies item=frequency_label key=_f_frequency}
         <div onClick="change_columns_frequency('{$_f_frequency}','{$frequency_label}')" id="element_group_option_{$_f_frequency}" elements_type="{$_f_frequency}"
              class="aright {if $frequency==$_f_frequency}selected{/if}">
-            {$frequency_label} <i class="fa fw {if $frequency==$_f_frequency}fa-circle{else}fa-circle-o{/if} padding_left_10 padding_right_10"></i>
+            {$frequency_label} <i class="fa-fw {if $frequency==$_f_frequency}fa fa-circle{else}far fa-circle-o{/if} padding_left_10 padding_right_10"></i>
         </div>
     {/foreach}
 

@@ -972,7 +972,7 @@ function search_inventory($db, $account, $memcache_ip, $data) {
                 foreach ($result as $row) {
 
                     if ($row['Part Status'] == 'Not In Use') {
-                        $status = '<i class="fa fa-square-o fa-fw padding_right_5 very_discreet" aria-hidden="true"></i> ';
+                        $status = '<i class="fa fa-square fa-fw padding_right_5 very_discreet" aria-hidden="true"></i> ';
 
                     } elseif ($row['Part Status'] == 'Discontinuing') {
                         $status = '<i class="fa fa-square fa-fw padding_right_5 very_discreet" aria-hidden="true"></i> ';
@@ -2851,7 +2851,7 @@ function search_locations($db, $account, $memcache_ip, $data) {
 
                 $results[$row['Location Key']] = array(
                     'warehouse' => $row['Warehouse Code'],
-                    'label'     => '<i class="fa fa-map-marker padding_right_10" aria-hidden="true"></i> '.highlightkeyword($row['Location Code'], $queries),
+                    'label'     => '<i class="fa fa-inventory padding_right_10" aria-hidden="true"></i> '.highlightkeyword($row['Location Code'], $queries),
                     'details'   => '',
                     'view'      => sprintf(
                         'locations/%d/%d', $row['Location Warehouse Key'], $row['Location Key']
@@ -3487,12 +3487,12 @@ function search_webpages($db, $account, $memcache_ip, $data) {
 
 
                     if ($row['Webpage State'] == 'Offline') {
-                        $icon = '<i class="fa fa-file-o fa-fw padding_right_5 discreet" aria-hidden="true" ></i> ';
+                        $icon = '<i class="fa fa-file fa-fw padding_right_5 discreet" aria-hidden="true" ></i> ';
                         $code = '<span class="strikethrough">'.$icon.highlightkeyword(sprintf('%s', strtolower($row['Webpage Code'])), $queries).'</span>';
 
 
                     } elseif ($row['Webpage State'] == 'InProcess') {
-                        $icon = '<i class="fa fa-file-o fa-fw padding_right_5 " aria-hidden="true" ></i> ';
+                        $icon = '<i class="fa fa-file fa-fw padding_right_5 " aria-hidden="true" ></i> ';
                         $code = $icon.highlightkeyword(sprintf('%s', strtolower($row['Webpage Code'])), $queries);
 
 
@@ -3502,7 +3502,7 @@ function search_webpages($db, $account, $memcache_ip, $data) {
 
 
                     } else {
-                        $icon = '<i class="fa fa-file-o fa-fw padding_right_5" aria-hidden="true" ></i> ';
+                        $icon = '<i class="fa fa-file fa-fw padding_right_5" aria-hidden="true" ></i> ';
                         $code = $icon.highlightkeyword(sprintf('%s', strtolower($row['Webpage Code'])), $queries);
 
                     }

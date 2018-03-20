@@ -516,17 +516,17 @@ function timesheet_records($_data, $db, $user) {
                     break;
                 case 'MarkStart':
                     if ($data['Timesheet Record Type'] == 'WorkingHoursMark') {
-                        $action_type = '<span id="action_type_'.$data['Timesheet Record Key'].'"><span  class="disabled"><i class="fa fa-fw fa-map-marker"></i> '._('Start').'</span></span>';
+                        $action_type = '<span id="action_type_'.$data['Timesheet Record Key'].'"><span  class="disabled"><i class="fa fa-fw fa-inventory"></i> '._('Start').'</span></span>';
                     } else {
-                        $action_type = '<span id="action_type_'.$data['Timesheet Record Key'].'"><span  class="disabled"><i class="fa fa-fw fa-cutlery"></i> '._('End').'</span></span>';
+                        $action_type = '<span id="action_type_'.$data['Timesheet Record Key'].'"><span  class="disabled"><i class="fa fa-fw fa-utensils"></i> '._('End').'</span></span>';
                     }
 
                     break;
                 case 'MarkEnd':
                     if ($data['Timesheet Record Type'] == 'WorkingHoursMark') {
-                        $action_type = '<span id="action_type_'.$data['Timesheet Record Key'].'" ><span class="disabled"><i class="fa fa-fw fa-map-marker"></i> '._('End').'</span></span>';
+                        $action_type = '<span id="action_type_'.$data['Timesheet Record Key'].'" ><span class="disabled"><i class="fa fa-fw fa-inventory"></i> '._('End').'</span></span>';
                     } else {
-                        $action_type = '<span id="action_type_'.$data['Timesheet Record Key'].'" ><span class="disabled"><i class="fa fa-fw fa-cutlery"></i> '._('Start').'</span></span>';
+                        $action_type = '<span id="action_type_'.$data['Timesheet Record Key'].'" ><span class="disabled"><i class="fa fa-fw fa-utensils"></i> '._('Start').'</span></span>';
                     }
 
                     break;
@@ -541,13 +541,13 @@ function timesheet_records($_data, $db, $user) {
                     case 'Yes':
                         $ignored = _('Yes');
                         $used    = sprintf(
-                            '<i id="used_%d" value="No" onClick="toggle_ignore_record(%d)" class="fa fa-fw fa-square-o checkbox"></i>', $data['Timesheet Record Key'], $data['Timesheet Record Key']
+                            '<i id="used_%d" value="No" onClick="toggle_ignore_record(%d)" class="far fa-square fa-fw checkbox"></i>', $data['Timesheet Record Key'], $data['Timesheet Record Key']
                         );
                         break;
                     case 'No':
                         $ignored = _('No');
                         $used    = sprintf(
-                            '<i id="used_%d" value="Yes" onClick="toggle_ignore_record(%d)" class="fa fa-fw fa-check-square-o checkbox"></i>', $data['Timesheet Record Key'],
+                            '<i id="used_%d" value="Yes" onClick="toggle_ignore_record(%d)" class="far fa-fw fa-check-square checkbox"></i>', $data['Timesheet Record Key'],
                             $data['Timesheet Record Key']
                         );
                         break;
@@ -564,7 +564,7 @@ function timesheet_records($_data, $db, $user) {
             }
 
             $notes = sprintf(
-                '<span class="button" key="%d" onclick="open_timesheet_record_notes(this)" id="notes_%d" >%s<span class="note">%s</span></span>', $data['Timesheet Record Key'],$data['Timesheet Record Key'],'<i class="fa fa-sticky-note-o very_discreet '.($data['Timesheet Record Note']!=''?'hide':'').'" aria-hidden="true"></i> ',($data['Timesheet Record Note'])
+                '<span class="button" key="%d" onclick="open_timesheet_record_notes(this)" id="notes_%d" >%s<span class="note">%s</span></span>', $data['Timesheet Record Key'],$data['Timesheet Record Key'],'<i class="far fa-sticky-note very_discreet '.($data['Timesheet Record Note']!=''?'hide':'').'" aria-hidden="true"></i> ',($data['Timesheet Record Note'])
             );
 
 
