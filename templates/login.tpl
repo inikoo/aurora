@@ -8,7 +8,9 @@
         <title>{t}Login{/t}</title>
         {if $_DEVEL}
             <link href="/css/jquery-ui.css" rel="stylesheet">
-            <link href="/css/font-awesome.css" rel="stylesheet">
+            <link href="/css/fa/fontawesome-all.css?v2" rel="stylesheet">
+
+
             <link href="/css/intlTelInput.css" rel="stylesheet">
             <link href="/css/d3fc.css" rel="stylesheet">
             <link href="/css/backgrid.css" rel="stylesheet">
