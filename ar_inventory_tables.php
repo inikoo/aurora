@@ -605,7 +605,7 @@ function stock_transactions($_data, $db, $user) {
                 case 'Order In Process':
 
 
-                    $type = '<i class="fa  fa-clock-o discreet fa-fw" aria-hidden="true"></i>';
+                    $type = '<i class="fa  fa-clock discreet fa-fw" aria-hidden="true"></i>';
 
                     if ($parameters['parent'] == 'part') {
                         $note = sprintf(
@@ -748,7 +748,7 @@ function stock_transactions($_data, $db, $user) {
                 case 'Audit':
 
 
-                    $type = '<i class="fa fa-fw fa-dot-circle-o" aria-hidden="true"></i>';
+                    $type = '<i class="fa fa-fw fa-dot-circle" aria-hidden="true"></i>';
 
                     $change = sprintf('<b>'.$data['Part Location Stock'].'</b>');
                     $stock  = '';
@@ -778,7 +778,7 @@ function stock_transactions($_data, $db, $user) {
                     $type = '<i class="fa fa-cross error fa-fw" aria-hidden="true"></i>';
                     break;
                 case 'Production':
-                    $type = '<i class="fa fa-hand-rock-o  fa-fw" title="'._('Send to production').'" aria-hidden="true"></i>';
+                    $type = '<i class="far fa-hand-rock  fa-fw" title="'._('Send to production').'" aria-hidden="true"></i>';
                     break;
                 case 'Other Out':
                     $type = '<i class="fa fa-exclamation-circle  error fa-fw" aria-hidden="true"></i>';
@@ -1001,7 +1001,7 @@ function supplier_parts($_data, $db, $user, $account) {
             }
 
             if ($data['Part Status'] == 'Not In Use') {
-                $part_status = '<i class="fa fa-square-o fa-fw  very_discreet" aria-hidden="true"></i> ';
+                $part_status = '<i class="fa fa-square fa-fw  very_discreet" aria-hidden="true"></i> ';
 
             } elseif ($data['Part Status'] == 'Discontinuing') {
                 $part_status = '<i class="fa fa-square fa-fw  very_discreet" aria-hidden="true"></i> ';
@@ -2290,7 +2290,7 @@ function part_locations($_data, $db, $user, $account) {
 
         $notes = sprintf(
             '<span class="button" key="%s" onclick="open_part_location_notes(this)" id="pl_notes_%d" >%s<span class="note">%s</span></span>', $data['Part SKU'].'_'.$data['Location Key'], $data['Part SKU'].'_'.$data['Location Key'],
-            '<i class="fa fa-sticky-note-o very_discreet '.($data['Part Location Note'] != '' ? 'hide' : '').'" aria-hidden="true"></i> ', ($data['Part Location Note'])
+            '<i class="far fa-sticky-note very_discreet '.($data['Part Location Note'] != '' ? 'hide' : '').'" aria-hidden="true"></i> ', ($data['Part Location Note'])
         );
 
 

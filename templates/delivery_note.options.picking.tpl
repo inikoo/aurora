@@ -41,7 +41,7 @@
 
                 <div style="display:flex;margin-top:10px">
                     <div  class=" very_discreet Delivery_Note_Start_Picking_Datetime" style="align-items: stretch;flex: 1;border-left:1px solid #eee;text-align:center">
-                        {if $dn->get('State Index')==10}<span id="start_picking" class="button"><i class="fa fa-clock-o" title="{t}Start picking{/t}" aria-hidden="true"></i> {t}Start picking{/t}</span>
+                        {if $dn->get('State Index')==10}<span id="start_picking" class="button"><i class="far fa-clock" title="{t}Start picking{/t}" aria-hidden="true"></i> {t}Start picking{/t}</span>
                         {else}
                             {$dn->get('Start Picking Datetime')}
 
@@ -51,7 +51,7 @@
                     </div>
 
                     <div class=" very_discreet hide" style="align-items: stretch;flex: 1;border-left:1px solid #eee;text-align:center"><i class="fa fa-barcode" title="{t}Scan mode{/t}" aria-hidden="true"></i> {t}Scan mode{/t}</div>
-                    <div class=" very_discreet hide" style="align-items: stretch;flex: 1;border-left:1px solid #eeee;text-align:center"> <i class="fa fa-square-o"  title="{t}Set all as picked{/t}" aria-hidden="true"></i>  {t}mark all as picked{/t}</div>
+                    <div class=" very_discreet hide" style="align-items: stretch;flex: 1;border-left:1px solid #eeee;text-align:center"> <i class="fa fa-square"  title="{t}Set all as picked{/t}" aria-hidden="true"></i>  {t}mark all as picked{/t}</div>
 
                     <div class="  "style="align-items: stretch;flex: 1;border-left:1px solid #eeee;text-align:center">
 

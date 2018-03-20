@@ -909,7 +909,7 @@ class Order extends DB_Table {
             $invoices_xhtml .= sprintf(
                 ' <div class="node" id="invoice_%d">
                     <span class="node_label" >
-                        <i class="fa fa-file-text-o fa-fw " aria-hidden="true"></i>
+                        <i class="fal fa-file-alt fa-fw " aria-hidden="true"></i>
                         <span class="link" onClick="change_view(\'%s\')">%s</span>
                         <a class="pdf_link" target=\'_blank\' href="/pdf/invoice.pdf.php?id={$invoice->id}"> <img style="width: 50px;height:16px;position: relative;top:2px" src="/art/pdf.gif"></a>
                     </span>
@@ -1001,7 +1001,7 @@ class Order extends DB_Table {
 
                     switch ($payment_account->get('Payment Account Block')) {
                         case 'ConD':
-                            return '<i class="fa fa-handshake-o" aria-hidden="true"></i> '._('Cash on delivery');
+                            return '<i class="fa fa-handshake" aria-hidden="true"></i> '._('Cash on delivery');
                             break;
                         case 'Bank':
                             return _('Waiting bank transfer');
@@ -1067,7 +1067,7 @@ class Order extends DB_Table {
 
 
                     } elseif ($this->data['Order Tax Number Validation Source'] == 'Manual') {
-                        $source = '<i title=\''._('Set up manually').'\' class=\'fa fa-hand-rock-o\'></i>';
+                        $source = '<i title=\''._('Set up manually').'\' class=\'far fa-hand-rock\'></i>';
                     } else {
                         $source = '';
                     }

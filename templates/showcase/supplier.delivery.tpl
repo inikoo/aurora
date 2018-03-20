@@ -396,7 +396,7 @@
                                 class="Supplier_Delivery_Number_Dispatched_Items">{$delivery->get('Number Dispatched Items')}</span></span>
                     <span><i class="fa fa-arrow-circle-down fa-fw discreet" aria-hidden="true"></i>  <span
                                 class="Supplier_Delivery_Number_Received_and_Checked_Items">{$delivery->get('Number Received and Checked Items')}</span></span>
-                    <span style="padding-left:20px"><i class="fa fa-map-marker fa-fw discreet" aria-hidden="true"></i>  <span
+                    <span style="padding-left:20px"><i class="fa fa-inventory fa-fw discreet" aria-hidden="true"></i>  <span
                                 class="Supplier_Delivery_Number_Placed_Items">{$delivery->get('Number Placed Items')}</span></span>
                 </td>
             </tr>
@@ -435,7 +435,7 @@
 
 <div id="new_delivery" class="table_new_fields hide">
     <div style="align-items: stretch;flex: 1;padding:20px 5px;border-right:1px solid #eee">
-        <i key="" class="fa fa-fw fa-square-o button" aria-hidden="true"></i> <span>{t}Select all{/t}</span>
+        <i key="" class="far fa-square fa-fw button" aria-hidden="true"></i> <span>{t}Select all{/t}</span>
     </div>
     <div style="align-items: stretch;flex: 1;padding:10px 20px;">
         <table border="0" style="width:50%;float:right;xborder-left:1px solid #ccc;width:100%;">

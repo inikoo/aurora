@@ -165,9 +165,7 @@ class Image {
         }
 
 
-        $raw_data['Image File Checksum'] = md5_file(
-            $raw_data['upload_data']['tmp_name']
-        );
+        $raw_data['Image File Checksum'] = md5_file($raw_data['upload_data']['tmp_name']);
 
 
         $sql = sprintf(
@@ -212,6 +210,11 @@ class Image {
 
         $data['Image Width']  = imagesx($im);
         $data['Image Height'] = imagesy($im);
+
+
+
+
+
 
 
 

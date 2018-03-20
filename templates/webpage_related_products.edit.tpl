@@ -183,7 +183,7 @@
     function select_dropdown_webpage(element) {
 
         $(element).closest('.webpage_tr').removeClass('in_process')
-        $(element).closest('.webpage_tr').find('.fa-trash-o').removeClass('fa-trash-o').addClass('fa-trash')
+        $(element).closest('.webpage_tr').find('.fa-trash').removeClass('fa-trash').addClass('fa-trash')
 
         $(element).closest('td').find('.Webpage_Code').html($(element).attr('formatted_value')).removeClass('hide')
         $(element).closest('td').find('.Webpage_Code_value').remove()

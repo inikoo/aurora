@@ -82,7 +82,7 @@
 
                 <li id="_column_{$key}" class="column" style="" class="button unselectable {if !$column.show}very_discreet{/if}" key="{$key}">
                     <span class="button open_edit">
-                    <i class="fa fa-fw  {if $column.icon==''}} fa-ban very_discreet {else}{$column.icon}{/if}"  aria-hidden="true" title="{$column.label}"></i>
+                    <i class="fa-fw  {if $column.icon==''}} fa fa-ban very_discreet {else}{$column.icon}{/if}"  aria-hidden="true" title="{$column.label}"></i>
                     <span class="label ">{$column.label}</span>
                      </span>
                     <i class="fa {if $column.show}fa-eye{else}fa-eye-slash{/if} column_show" style="margin-left:10px;" aria-hidden="true"></i>
@@ -116,7 +116,7 @@
                 <span class="column_type button {$column.type}" style="border:1px solid #ccc;padding:4px;;margin-left:5px"><span class="column_type_label">{if $column.type=='three_columns'}3{else}1{/if}</span> <i class="fa fa-bars button  " aria-hidden="true"></i> &nbsp; </span>
                 <span class="button delete_column" title="{t}Delete this column{/t}" style="border:1px solid #ccc;padding:4px;border-left: none"><i class="fa fa-trash button  " style="padding-left: 5px;padding-right: 7px" aria-hidden="true"></i></span>
 
-                <i class="fa fa-fw {if $column.icon==''}} fa-ban very_discreet {else}{$column.icon}{/if}" style="margin-left:10px" aria-hidden="true" title="{$column.label}"></i>
+                <i class="fa-fw {if $column.icon==''}}fa fa-ban very_discreet {else}{$column.icon}{/if}" style="margin-left:10px" aria-hidden="true" title="{$column.label}"></i>
                 <span class="label">{$column.label}</span>
             </div>
 

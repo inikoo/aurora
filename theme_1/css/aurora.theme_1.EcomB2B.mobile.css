@@ -181,7 +181,7 @@ input{
 	font-weight: 700;
 	src: local("Ubuntu Bold"), local("Ubuntu-Bold"), url("/theme_1/fonts/ubuntu700.woff2") format("woff2"); }
 [class*="fontawesome-"]:before {
-	font-family: 'FontAwesome', sans-serif; }
+	font-family: 'Font Awesome 5 Pro', sans-serif; }
 
 
 

@@ -249,9 +249,13 @@ abstract class DB_Table extends stdClass {
 
         }
 
+        //print "$sql\n";
+
         $update_op = $this->db->prepare($sql);
         $update_op->execute();
         $affected = $update_op->rowCount();
+
+        //print "$affected\n";
 
         if ($affected == 0) {
 
@@ -668,8 +672,8 @@ abstract class DB_Table extends stdClass {
         }
 
 
-        $this->update(
-            array(($this->get_object_name() == 'Category' ? $this->subject_table_name : $this->get_object_name()).' Number History Records' => $number), 'no_history'
+        $this->fast_update(
+            array(($this->get_object_name() == 'Category' ? $this->subject_table_name : $this->get_object_name()).' Number History Records' => $number)
         );
 
 

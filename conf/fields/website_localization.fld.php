@@ -25,7 +25,7 @@ $labels = $object->get('Localised Labels');
 
 $object_fields = array(
     array(
-        'label'      => _('Registration'),
+        'label'      => _('Actions'),
         'show_title' => true,
         'fields'     => array(
 
@@ -51,6 +51,39 @@ $object_fields = array(
                 'edit'     => ($edit ? 'string' : ''),
                 'value'    => (empty($labels['_login_to_see']) ? _('For prices, please login or register') : $labels['_login_to_see']),
                 'label'    => _('Login to see message'),
+                'required' => true,
+                'type'     => 'value'
+            ),
+            array(
+                'id'       => 'Localised_Labels_Logout',
+                'edit'     => ($edit ? 'string' : ''),
+                'value'    => (empty($labels['_Logout']) ? _('Log out') : $labels['_Logout']),
+                'label'    => _('Log out'),
+                'required' => true,
+                'type'     => 'value'
+            ),
+
+            array(
+                'id'       => 'Localised_Labels_Profile',
+                'edit'     => ($edit ? 'string' : ''),
+                'value'    => (empty($labels['_Profile']) ? _('Profile') : $labels['_Profile']),
+                'label'    => _('Profile'),
+                'required' => true,
+                'type'     => 'value'
+            ),
+            array(
+                'id'       => 'Localised_Labels_Basket',
+                'edit'     => ($edit ? 'string' : ''),
+                'value'    => (empty($labels['Basket']) ? _('Basket') : $labels['_Basket']),
+                'label'    => _('Basket'),
+                'required' => true,
+                'type'     => 'value'
+            ),
+            array(
+                'id'       => 'Localised_Labels_Favourites',
+                'edit'     => ($edit ? 'string' : ''),
+                'value'    => (empty($labels['_Favourites']) ? _('My favourites') : $labels['_Favourites']),
+                'label'    => _('Favourites'),
                 'required' => true,
                 'type'     => 'value'
             ),

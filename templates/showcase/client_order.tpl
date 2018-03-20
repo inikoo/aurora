@@ -223,7 +223,7 @@
 </div>
 <div id="new_delivery" class="table_new_fields hide">
     <div class="invisible" style="align-items: stretch;flex: 1;padding:20px 5px;">
-        <i key="" class="fa fa-fw fa-square-o button" aria-hidden="true"></i> <span>{t}Select all{/t}</span>
+        <i key="" class="far fa-square fa-fw button" aria-hidden="true"></i> <span>{t}Select all{/t}</span>
     </div>
     <div style="align-items: stretch;flex: 1;padding:10px 20px;border-left:1px solid #eee">
         <table border="0" style="width:50%;float:right;xborder-left:1px solid #ccc;width:100%;">

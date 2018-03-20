@@ -74,7 +74,7 @@ function  terminate_employment(element) {
 
 
 
-    $(element).find('i.fa').removeClass('fa-hand-scissors-o').addClass('fa-spinner fa-spin')
+    $(element).find('i.fa').removeClass('fa-hand-scissors').addClass('fa-spinner fa-spin')
 
     var request = '/ar_edit_employees.php?tipo=terminate_employment&object=' + $(element).data('data').object + '&key=' + $(element).data('data').key
 
@@ -96,7 +96,7 @@ function  terminate_employment(element) {
             }
 
         } else if (data.state == 400) {
-            $(element).find('i.fa').addClass('fa-hand-scissors-o').removeClass('fa-spinner fa-spin')
+            $(element).find('i.fa').addClass('fa-hand-scissors').removeClass('fa-spinner fa-spin')
 
         }
     })

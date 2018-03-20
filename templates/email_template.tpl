@@ -24,7 +24,7 @@
     <div id="send_email_ok" style="border:1px solid #ccc;background-color: #fff;position: absolute;;padding:20px;top:170px;left:210px;z-index: 2000" class="popup_dialog hide">
         <i onclick="$(this).closest('div').addClass('hide')" style="position:relative;left:-10px;top:-10px" class="fa fa-window-close button" aria-hidden="true"></i>
 
-        {t}Email send{/t} <i class="fa fa-thumbs-o-up padding_left_5 padding_right_10" aria-hidden="true"></i>
+        {t}Email send{/t} <i class="fa fa-thumbs-up padding_left_5 padding_right_10" aria-hidden="true"></i>
 
     </div>
 

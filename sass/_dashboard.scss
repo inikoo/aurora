@@ -66,9 +66,11 @@
       color: #ddd;
       //border-top:1px solid #aaa;
       // border-bottom:1px solid #aaa;
-      .button .fa {
-        position: relative;
-        top: 1px;
+      .button {
+        .fa,.fal,.fas,.far,.fab {
+          position: relative;
+          top: 1px;
+        }
       }
       .widget_types {
         @include unselectable;
@@ -96,7 +98,7 @@
             border-right: none;
             border-left: 1px solid #ccc;
           }
-          .fa {
+          .fa,.fal,.fas,.far,.fab {
             font-size: 75%;
             // color: $color_dark_font;
 
@@ -142,7 +144,7 @@
           &.widget_selected:hover, &.widget_selected {
             color: $color_dark_font_selected !important;
           }
-          &:hover, &.selected > .fa {
+          &:hover, &.selected > .fa,.fal,.fas,.far,.fab {
             // color: #666;
           }
         }

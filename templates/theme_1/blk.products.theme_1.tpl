@@ -95,7 +95,7 @@
 
                 <div id="filter_edit_link_{$filter.id}" data-filter="{$filter.id}" class="cbp-filter-item-edit cbp-filter-item-link hide" style="border-right:none;margin-right:0px;padding-right:10px;padding-left:10px "><i class="fa fa-link fa-fw" aria-hidden="true"></i></div>
                 <div id="filter_edit_label_{$filter.id}" class="cbp-filter-item-edit cbp-filter-item-edit-label hide" data-linked_label="{$filter.id|replace:'filter_':''}" style="margin-right:0px;margin-left:0px" contenteditable="true">{$filter.label}</div>
-               <div id="filter_edit_delete_{$filter.id}" class=" cbp-filter-item-edit cbp-filter-item-delete hide" data-linked_label="{$filter.id|replace:'filter_':''}" style="border-left:none;margin-left:-5px;padding-right:10px;padding-left:15px "> <i class="fa fa-fw fa-trash-o" aria-hidden="true"></i></div>
+               <div id="filter_edit_delete_{$filter.id}" class=" cbp-filter-item-edit cbp-filter-item-delete hide" data-linked_label="{$filter.id|replace:'filter_':''}" style="border-left:none;margin-left:-5px;padding-right:10px;padding-left:15px "> <i class="fa fa-fw fa-trash" aria-hidden="true"></i></div>
             {/foreach}
 
 
@@ -255,7 +255,7 @@
 
         <div style="float:right;width: 700px;margin-right:20px">
 
-            <h4 style="padding:0px;margin:0px"><span style="color:#777">{t}Product{/t}:</span> <span id="catalogue_code"></span> <i id="catalogue_webpage_link" class="fa fa-file-text-o like_button" style="color:#777;font-size:60%;position: relative;top:-2px" aria-hidden="true"></i></h4>
+            <h4 style="padding:0px;margin:0px"><span style="color:#777">{t}Product{/t}:</span> <span id="catalogue_code"></span> <i id="catalogue_webpage_link" class="fal fa-file-alt like_button" style="color:#777;font-size:60%;position: relative;top:-2px" aria-hidden="true"></i></h4>
             <span id="catalogue_name"></span><br>
             <span id="catalogue_price"></span>
 
@@ -345,7 +345,7 @@
 
 
         $('#add_filter').before('<div id="filter_edit_label_filter_'+id+'" class="cbp-filter-item-edit cbp-filter-item-edit-label hide" data-linked_label="'+id+'" style="margin-right:0px;margin-left:0px" contenteditable="true">{t}tag{/t}</div>')
-        $('#add_filter').before('<div id="filter_edit_delete_filter_'+id+'" class=" cbp-filter-item-edit cbp-filter-item-delete hide" data-linked_label="'+id+'" style="border-left:none;margin-left:-5px;padding-right:10px;padding-left:15px "><i class="fa fa-fw fa-trash-o" aria-hidden="true"></i></div>')
+        $('#add_filter').before('<div id="filter_edit_delete_filter_'+id+'" class=" cbp-filter-item-edit cbp-filter-item-delete hide" data-linked_label="'+id+'" style="border-left:none;margin-left:-5px;padding-right:10px;padding-left:15px "><i class="fa fa-fw fa-trash" aria-hidden="true"></i></div>')
 
 
 

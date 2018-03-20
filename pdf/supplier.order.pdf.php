@@ -176,7 +176,7 @@ if ($result = $db->query($sql)) {
             'supplier_part_key' => (integer)$data['Supplier Part Key'],
             'supplier_key'      => (integer)$data['Supplier Key'],
             'checkbox'          => sprintf(
-                '<i key="%d" class="invisible fa fa-fw fa-square-o button" aria-hidden="true"></i>', $data['Purchase Order Transaction Fact Key']
+                '<i key="%d" class="invisible far fa-square fa-fw button" aria-hidden="true"></i>', $data['Purchase Order Transaction Fact Key']
             ),
             'operations'        => sprintf(
                 '<i key="%d" class="fa fa-fw fa-truck fa-flip-horizontal button" aria-hidden="true" onClick="change_on_delivery(this)"></i>', $data['Purchase Order Transaction Fact Key']

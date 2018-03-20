@@ -473,15 +473,15 @@ function supplier_parts($_data, $db, $user, $account) {
 
             if ($data['Part Status'] == 'Not In Use') {
                 $part_status
-                    = '<i class="fa fa-square-o fa-fw  very_discreet" aria-hidden="true"></i> ';
+                    = '<i class="far fa-box fa-fw  very_discreet" aria-hidden="true"></i> ';
 
             } elseif ($data['Part Status'] == 'Discontinuing') {
                 $part_status
-                    = '<i class="fa fa-square fa-fw  very_discreet" aria-hidden="true"></i> ';
+                    = '<i class="far fa-box fa-fw  very_discreet" aria-hidden="true"></i> ';
 
             } else {
                 $part_status
-                    = '<i class="fa fa-square fa-fw " aria-hidden="true"></i> ';
+                    = '<i class="far fa-box fa-fw " aria-hidden="true"></i> ';
             }
 
             $part_description = $part_status.'<span style="min-width:80px;display: inline-block;" class="link padding_right_10" onClick="change_view(\'part/'.$data['Supplier Part Part SKU'].'\')">'
@@ -683,15 +683,15 @@ function materials($_data, $db, $user, $account) {
 
             if ($data['Part Status'] == 'Not In Use') {
                 $part_status
-                    = '<i class="fa fa-square-o fa-fw  very_discreet" aria-hidden="true"></i> ';
+                    = '<i class="far fa-box fa-fw  very_discreet" aria-hidden="true"></i> ';
 
             } elseif ($data['Part Status'] == 'Discontinuing') {
                 $part_status
-                    = '<i class="fa fa-square fa-fw  very_discreet" aria-hidden="true"></i> ';
+                    = '<i class="far fa-box fa-fw  very_discreet" aria-hidden="true"></i> ';
 
             } else {
                 $part_status
-                    = '<i class="fa fa-square fa-fw " aria-hidden="true"></i> ';
+                    = '<i class="far fa-box fa-fw " aria-hidden="true"></i> ';
             }
 
             $part_description = $part_status.'<span style="min-width:80px;display: inline-block;" class="link padding_right_10" onClick="change_view(\'part/'.$data['Supplier Part Part SKU'].'\')">'

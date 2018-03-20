@@ -17,7 +17,7 @@ function get_mobile_menu($data,$user, $smarty) {
     $nav_menu = array();
 
     $nav_menu[] = array(
-        '<i class="fa fa-dashboard fa-fw"></i>',
+        '<i class="fas tachometer-alt fa-fw"></i>',
         _('Dashboard'),
         '/dashboard',
         'dashboard',
@@ -119,7 +119,7 @@ function get_mobile_menu($data,$user, $smarty) {
 
         if ($user->get('User Hooked Store Key')) {
             $nav_menu[] = array(
-                '<i class="fa fa-file-text-o fa-fw"></i>',
+                '<i class="fal fa-file-alt fa-fw"></i>',
                 _('Invoices'),
                 'invoices',
                 'invoices',
@@ -128,7 +128,7 @@ function get_mobile_menu($data,$user, $smarty) {
             );
         } else {
             $nav_menu[] = array(
-                '<i class="fa fa-file-text-o fa-fw"></i>',
+                '<i class="fal fa-file-alt fa-fw"></i>',
                 _('Invoices'),
                 'invoices/all',
                 'invoices',
@@ -145,7 +145,7 @@ function get_mobile_menu($data,$user, $smarty) {
 
         if ($user->get('User Hooked Store Key')) {
             $nav_menu[] = array(
-                '<i class="fa fa-usd fa-fw"></i>',
+                '<i class="fa fa-dollar-sign fa-fw"></i>',
                 _('Payments'),
                 'payments',
                 'payments',
@@ -154,7 +154,7 @@ function get_mobile_menu($data,$user, $smarty) {
             );
         } else {
             $nav_menu[] = array(
-                '<i class="fa fa-usd fa-fw"></i>',
+                '<i class="fa fa-dollar-sign fa-fw"></i>',
                 _('Payments'),
                 'payments/all',
                 'payments',
@@ -357,7 +357,7 @@ function get_mobile_menu($data,$user, $smarty) {
 
     if ($user->can_view('staff')) {
         $nav_menu[] = array(
-            '<i class="fa fa-hand-rock-o fa-fw"></i>',
+            '<i class="fa fa-hand-rock fa-fw"></i>',
             _('Manpower'),
             'hr',
             'hr',
@@ -467,7 +467,7 @@ function get_mobile_menu($data,$user, $smarty) {
 
 
         $nav_menu[] = array(
-            '<i class="fa fa-certificate fa-fw"></i>',
+            '<i class="fa fa-cogs fa-fw"></i>',
             _('Account'),
             '/account',
             'account',

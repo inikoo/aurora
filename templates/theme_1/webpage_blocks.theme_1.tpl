@@ -11,6 +11,65 @@
 
 
 <style>
+
+    #image_control_panel{
+        position: absolute;
+        background: #fff;
+        border: 1px solid #ccc;
+        padding: 10px 10px 10px 10px;
+        z-index: 3000;
+    }
+    #image_control_panel td{
+        padding-bottom: 10px;
+    }
+
+    div.blk_images figure {
+        margin:0px
+
+    }
+
+    div.blk_images {
+        display: flex;
+        flex-wrap: wrap;
+        justify-content: space-between;
+    }
+
+    div.blk_images figcaption{
+        font-family: "Ubuntu", Helvetica, Arial, sans-serif;
+        color:#999
+
+    }
+
+    .label{
+        padding-right: 20px;
+    }
+
+    .caption_align i{
+        padding-right: 10px;cursor: pointer;
+    }
+
+    figcaption.caption_left{
+        text-align: left;padding-left:5px
+
+    }
+    figcaption.caption_right{
+        text-align: right;padding-right:5px
+    }
+    figcaption.caption_center{
+        text-align: center;
+
+    }
+    figcaption.caption_hide{
+
+    }
+
+    .success{
+        color:#26A65B;
+    }
+
+
+
+
     #simple_line_icons_control_center {
         z-index: 3000;
         position: absolute;
@@ -30,11 +89,12 @@
         flex-direction: row;
     }
 
+
+
     .text_template_2 > div,
     .text_template_3 > div,
     .text_template_4 > div {
         flex: 1;
-
     }
 
 
@@ -87,13 +147,185 @@
 {include file="theme_1/_head.theme_1.tpl"}
 
 
+<div id="template_1" class="hide">
+<span class=" image">
+        <figure>
+            <img class="button" src="https://placehold.it/1240x250" alt="" data-width="1240" display_class="caption_left">
+            <figcaption contenteditable="true" class="caption_left" >{t}Caption{/t}</figcaption>
+        </figure>
+    </span>
+
+</div>
+
+<div id="template_2" class="hide">
+<span class=" image">
+        <figure>
+            <img class="button" src="https://placehold.it/610x250" alt="" data-width="610" display_class="caption_left">
+            <figcaption contenteditable="true" class="caption_left" >{t}Caption{/t}</figcaption>
+        </figure>
+    </span>
+    <span class=" image">
+        <figure>
+            <img class="button" src="https://placehold.it/610x250" alt=""  data-width="610" display_class="caption_left">
+            <figcaption contenteditable="true" class="caption_left" >{t}Caption{/t}</figcaption>
+        </figure>
+    </span>
+
+</div>
+
+
+<div id="template_3" class="hide">
+<span class=" image">
+        <figure>
+            <img class="button" src="https://placehold.it/400x250" alt=""  data-width="400" display_class="caption_left">
+            <figcaption contenteditable="true" class="caption_left" >{t}Caption{/t}</figcaption>
+        </figure>
+    </span>
+    <span class=" image">
+        <figure>
+            <img class="button" src="https://placehold.it/400x250" alt=""  data-width="400" display_class="caption_left">
+            <figcaption contenteditable="true" class="caption_left" >{t}Caption{/t}</figcaption>
+        </figure>
+    </span>
+    <span class=" image">
+        <figure>
+            <img class="button" src="https://placehold.it/400x250" alt=""  data-width="400" display_class="caption_left">
+            <figcaption contenteditable="true" class="caption_left" >{t}Caption{/t}</figcaption>
+        </figure>
+    </span>
+</div>
+
+
+
+<div id="template_4" class="hide">
+<span class=" image">
+        <figure>
+            <img class="button" src="https://placehold.it/300x250" alt=""  data-width="300" display_class="caption_left">
+            <figcaption contenteditable="true" class="caption_left" >{t}Caption{/t}</figcaption>
+        </figure>
+    </span>
+    <span class=" image">
+        <figure>
+            <img class="button" src="https://placehold.it/300x250" alt="" data-width="300" display_class="caption_left">
+            <figcaption contenteditable="true" class="caption_left" >{t}Caption{/t}</figcaption>
+        </figure>
+    </span>
+    <span class=" image">
+        <figure>
+            <img class="button" src="https://placehold.it/300x250" alt="" data-width="300" display_class="caption_left">
+            <figcaption contenteditable="true" class="caption_left" >{t}Caption{/t}</figcaption>
+        </figure>
+    </span>
+    <span class=" image">
+        <figure>
+            <img class="button" src="https://placehold.it/300x250" alt="" data-width="300" display_class="caption_left">
+            <figcaption contenteditable="true" class="caption_left" >{t}Caption{/t}</figcaption>
+        </figure>
+    </span>
+</div>
+
+
+<div id="template_12" class="hide">
+<span class=" image">
+        <figure>
+            <img class="button" src="https://placehold.it/400x250" data-width="400" alt="" display_class="caption_left">
+            <figcaption contenteditable="true" class="caption_left" >{t}Caption{/t}</figcaption>
+        </figure>
+    </span>
+    <span class=" image">
+        <figure>
+            <img class="button" src="https://placehold.it/800x250" data-width="800"  alt="" display_class="caption_left">
+            <figcaption contenteditable="true" class="caption_left" >{t}Caption{/t}</figcaption>
+        </figure>
+    </span>
+
+</div>
+
+<div id="template_21" class="hide">
+<span class=" image">
+        <figure>
+            <img class="button" src="https://placehold.it/800x250" data-width="800"  alt="" display_class="caption_left">
+            <figcaption contenteditable="true" class="caption_left" >{t}Caption{/t}</figcaption>
+        </figure>
+    </span>
+    <span class=" image">
+        <figure>
+            <img class="button" src="https://placehold.it/400x250" data-width="400"  alt="" display_class="caption_left">
+            <figcaption contenteditable="true" class="caption_left" >{t}Caption{/t}</figcaption>
+        </figure>
+    </span>
+
+</div>
+
+
+<div id="template_13" class="hide">
+<span class=" image">
+        <figure>
+            <img class="button" src="https://placehold.it/310x250" data-width="310"  alt="" display_class="caption_left">
+            <figcaption contenteditable="true" class="caption_left" >{t}Caption{/t}</figcaption>
+        </figure>
+    </span>
+    <span class=" image">
+        <figure>
+            <img class="button" src="https://placehold.it/910x250"  data-width="910" alt="" display_class="caption_left">
+            <figcaption contenteditable="true" class="caption_left" >{t}Caption{/t}</figcaption>
+        </figure>
+    </span>
+
+
+</div>
+
+
+
+<div id="template_31" class="hide">
+<span class=" image">
+        <figure>
+            <img class="button" src="https://placehold.it/910x250"  data-width="910" alt="" display_class="caption_left">
+            <figcaption contenteditable="true" class="caption_left" >{t}Caption{/t}</figcaption>
+        </figure>
+    </span>
+    <span class=" image">
+        <figure>
+            <img class="button" src="https://placehold.it/310x250"  data-width="310" alt="" display_class="caption_left">
+            <figcaption contenteditable="true" class="caption_left" >{t}Caption{/t}</figcaption>
+        </figure>
+    </span>
+
+
+</div>
+
+
+
+<div id="template_211" class="hide">
+<span class=" image">
+        <figure>
+            <img class="button" src="https://placehold.it/600x250"  data-width="600" alt="" display_class="caption_left">
+            <figcaption contenteditable="true" class="caption_left" >{t}Caption{/t}</figcaption>
+        </figure>
+    </span>
+    <span class=" image">
+        <figure>
+            <img class="button" src="https://placehold.it/300x250"  data-width="300" alt="" display_class="caption_left">
+            <figcaption contenteditable="true" class="caption_left" >{t}Caption{/t}</figcaption>
+        </figure>
+    </span>
+    <span class=" image">
+        <figure>
+            <img class="button" src="https://placehold.it/300x250"  data-width="300" alt="" display_class="caption_left">
+            <figcaption contenteditable="true" class="caption_left" >{t}Caption{/t}</figcaption>
+        </figure>
+    </span>
+
+</div>
+
+
+
 <div id="text_template_1" class="hide">
-    <div class="text_blocks  text_blocks" data-template="t1">
         <div class="text_block"><h1>Title</h1>When an unknown printer took a galley of type and scrambled it to make a type specimen book. It has survived not only five centuries, but also
             electronics typesetting, remaining
             essentially believable.
         </div>
-    </div>
+
 </div>
 <div id="text_template_2" class="hide">
         <div class="text_block"><h1>Title</h1>When an unknown printer took a galley of type and scrambled it to make a type specimen book. It has survived not only five centuries, but also electronics typesetting,
@@ -131,6 +363,20 @@
         <div class="text_block"><h1>Title</h1>When an unknown printer took a galley of type and scrambled it to make a type specimen book. It has survived not only five centuries, but also electronics typesetting,
             remaining essentially believable.
         </div>
+
+</div>
+
+
+<div class="hide">
+    <div id="image_layout_1">
+        <span class=" image">
+            <figure>
+                <img class="button" src="https://placehold.it/300x250" alt="" display_class="caption_left">
+                <figcaption contenteditable="true" class="caption_left" >{t}Caption{/t}</figcaption>
+            </figure>
+        </span>
+    </div>
+
 
 </div>
 
@@ -218,6 +464,50 @@
 </div>
 
 </div>
+
+
+
+
+<div id="image_control_panel" class="hide">
+    <div style="text-align: right;margin-bottom: 10px;padding-right: 5px">
+        <i class="fa fa-window-close button" onclick="close_image_control_panel()"></i>
+    </div>
+
+    <table>
+        <tr>
+            <td class="label">{t}Image{/t}</td>
+            <td class="image_control_panel_upload_td">
+                <input style="display:none" type="file" name="images" id="update_images_block_image" class="image_upload" />
+                <label style="font-weight: normal;cursor: pointer;width:100%"  for="update_images_block_image">
+                    {t}Click to upload image{/t} <i class="hide fa fa-check success" aria-hidden="true"></i>
+                </label>
+            </td>
+        </tr>
+        <tr>
+            <td class="label">{t}Tooltip{/t}</td><td><input class="image_tooltip" style="width: 200px" placeholder="tooltip"></td>
+        </tr>
+        <tr>
+            <td class="label">{t}Link{/t}</td><td><input class="image_link" style="width: 200px" placeholder="https://"></td>
+        </tr>
+        <tr>
+            <td class="label">{t}Caption{/t}</td>
+            <td class="caption_align">
+                <i class="fa fa-align-left super_discreet caption_left" display_class="caption_left" aria-hidden="true"></i>
+                <i class="fa fa-align-center super_discreet caption_center" display_class="caption_center" aria-hidden="true"></i>
+                <i class="fa fa-align-right super_discreet caption_right" display_class="caption_right" aria-hidden="true"></i>
+                <i class="fa fa-ban error super_discreet caption_hide" display_class="caption_hide" aria-hidden="true"></i>
+            </td>
+        </tr>
+    </table>
+
+    <div style="text-align: right;margin-bottom: 10px;padding-right: 5px">
+        <span class="button"  onclick="update_image()"><i class="fa fa-check-square "></i> {t}OK{/t}</span>
+    </div>
+
+</div>
+
+
+
 
 
 <body xmlns="http://www.w3.org/1999/html">
@@ -329,7 +619,7 @@
         $('._block').each(function (i, obj) {
 
 
-            console.log($(obj).attr('block'))
+           // console.log($(obj).attr('block'))
 
             switch ($(obj).attr('block')) {
 
@@ -337,17 +627,26 @@
                 case 'text':
 
 
-                    //var text=$(obj).find('._text').froalaEditor('html.get')
+
 
 
                     var text_blocks = []
 
 
-                    $("#blocks .text_block").each(function () {
-                        text_blocks.push({
-                            text: $(this).html(),
-                        })
+                    $('.text_block', obj).each(function (i, text_block) {
+
+                        var text=$(text_block).froalaEditor('html.get')
+
+                        //console.log(text_block)
+                        //console.log(text)
+
+                        text_blocks.push({ text: text})
+
                     });
+
+
+
+;
 
 
                     blocks.push({
@@ -355,13 +654,45 @@
                         label: '{t}Text{/t}',
                         icon: 'fa-font',
                         show: ($(obj).hasClass('hide') ? 0 : 1),
-                        top_margin: $(obj).find('._text').attr('top_margin'),
-                        bottom_margin: $(obj).find('._text').attr('bottom_margin'),
+                        top_margin: $(obj).attr('top_margin'),
+                        bottom_margin: $(obj).attr('bottom_margin'),
 
                         template: $(obj).find('.text_blocks').data('template'),
                         text_blocks: text_blocks
                     })
 
+                    break;
+
+                case 'images':
+                    var images = []
+
+                    $('.blk_images .image', obj).each(function (i, col) {
+
+                        var img = $(col).find('img')
+
+                        _col = {
+                            src: img.attr('src'), link: img.attr('link'), title: img.attr('alt'), caption_class: img.attr('display_class'), caption: $(col).find('figcaption').html()
+                        }
+
+
+                        //  console.log(_col)
+
+                        images.push(_col)
+
+                    });
+
+
+                    blocks.push({
+                        type: 'images',
+                        label: '{t}Images{/t}',
+                        icon: 'fa-image',
+                        show: ($(obj).hasClass('hide') ? 0 : 1),
+                        top_margin: $(obj).attr('top_margin'),
+                        bottom_margin: $(obj).attr('bottom_margin'),
+
+                        images: images
+
+                    })
                     break;
 
                 case 'basket':
@@ -405,7 +736,7 @@
                         src_mobile: $(obj).attr('src_mobile').replace(/(^\w+:|^)\/\//, '')
                     })
 
-                    console.log($(obj))
+                    //console.log($(obj))
 
                     break;
                 case 'static_banner':
@@ -536,7 +867,7 @@
 
 
                     blocks.push({
-                        type: 'button', label: '{t}Button{/t}', icon: 'fa-hand-pointer-o', show: ($(obj).hasClass('hide') ? 0 : 1),
+                        type: 'button', label: '{t}Button{/t}', icon: 'fa-hand-pointer', show: ($(obj).hasClass('hide') ? 0 : 1),
 
                         title: $(obj).find('._title').html(), text: $(obj).find('._text').html(), button_label: $(obj).find('._button').html(),
 
@@ -635,42 +966,15 @@
                 case 'map':
 
                     blocks.push({
-                        type: 'map', label: '{t}Map{/t}', icon: 'fa-map-marker', show: ($(obj).hasClass('hide') ? 0 : 1),
+                        type: 'map', label: '{t}Map{/t}', icon: 'fa-map-marker-alt', show: ($(obj).hasClass('hide') ? 0 : 1),
 
-                        src: $(obj).find('iframe').attr('_src')
+                        src: $(obj).find('iframe').attr('_src'),
+                        top_margin: $(obj).attr('top_margin'),
+                        bottom_margin: $(obj).attr('bottom_margin'),
                     })
 
 
-                case 'images':
-                    var images = []
 
-                    $('.blk_images .image', obj).each(function (i, col) {
-
-                        var img = $(col).find('img')
-
-                        _col = {
-                            src: img.attr('src'), link: img.attr('link'), title: img.attr('alt'), caption_class: img.attr('display_class'), caption: $(col).find('figcaption').html()
-                        }
-
-
-                        console.log(_col)
-
-                        images.push(_col)
-
-                    });
-
-
-                    blocks.push({
-                        type: 'images',
-                        label: '{t}Images{/t}',
-                        icon: 'fa-image',
-                        show: ($(obj).hasClass('hide') ? 0 : 1),
-                        top_margin: $(obj).find('.blk_images').attr('top_margin'),
-                        bottom_margin: $(obj).find('.blk_images').attr('bottom_margin'),
-
-                        images: images
-
-                    })
 
             }
 
@@ -680,6 +984,8 @@
         content_data.blocks = blocks
 
         console.log(content_data)
+
+        //return;
 
         var ajaxData = new FormData();
 
@@ -929,9 +1235,9 @@
         $('#image_tooltip_edit').addClass('hide').data('element').attr('tooltip', value)
 
         if (value == '') {
-            $('#image_tooltip_edit').data('element').removeClass('fa-commenting-o').addClass('fa-comment-o')
+            $('#image_tooltip_edit').data('element').removeClass('fa-comment-alt').addClass('fa-comment')
         } else {
-            $('#image_tooltip_edit').data('element').addClass('fa-commenting-o').removeClass('fa-comment-o')
+            $('#image_tooltip_edit').data('element').addClass('fa-comment-alt').removeClass('fa-comment')
 
         }
         $('#save_button', window.parent.document).addClass('save button changed valid')
@@ -971,15 +1277,30 @@
     function open_image_control_panel(element) {
 
 
+
         if (!$('#image_control_panel').hasClass('hide')) {
             return
         }
 
         var image_index = $('span.image').index($(element).closest('.image')) + 1
 
+
+        var block_key=$(element).closest('_block').data('block_key');
+
+
+
+        var image_options={ }
+            image_options['set_width']=$(element).data('width');
+
+
+
         $('#image_control_panel').removeClass('hide').offset({
             top: .25 * ($(element).offset().top + $(element).height()) / 2, left: $(element).offset().left
         }).attr('image_index', image_index).addClass('in_use').data('element', $(element))
+
+
+
+        $('#image_control_panel').find('.image_control_panel_upload_td input').attr('block_key',block_key).data('options',image_options)
 
 
         $('#image_control_panel').find('.image_tooltip').val($(element).attr('alt'))
@@ -1027,8 +1348,7 @@
     }
 
     function change_text_template(block_key, template) {
-        console.log(block_key)
-        console.log(template)
+
 
         var text_blocks= $('#block_'+block_key).find('.text_blocks')
 
@@ -1038,13 +1358,15 @@
 
         if(template=='12' || template=='21' || template=='13' || template=='31'){
             var _template='2';
-        } if(template=='211'){
+        }else if(template=='211'){
             var _template='3';
         }else{
             var _template=template;
         }
 
-
+        console.log(block_key)
+        console.log(template)
+        console.log(_template)
 
         text_blocks.data('template',template).html($('#text_template_'+_template).html())
 
@@ -1082,6 +1404,8 @@
 
 
     }
+
+
 
 
 </script>

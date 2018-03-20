@@ -33,7 +33,7 @@
                         <span id="_delivery_address_label"  >{if isset($labels._delivery_address_label) and $labels._delivery_address_label!=''}{$labels._delivery_address_label}{else}{t}Delivery Address:{/t}{/if}</span>
                         </span>
                         <span  id="collection_label" class="{if $order->get('Order For Collection')=='No'}hide{/if} "">
-                        <i id="_delivery_address_icon" class="fa fa-fw fa-hand-rock-o   aria-hidden="true"></i>
+                        <i id="_delivery_address_icon" class="far fa-hand-rock fa-fw   aria-hidden="true"></i>
                         <span id="_delivery_address_label"  >{if isset($labels._for_collecion_label) and $labels._for_collecion_label!=''}{$labels._for_collecion_label}{else}{t}To be collected at:{/t}{/if}</span>
 
                         </span>
@@ -48,7 +48,7 @@
         <div class="one-third-responsive">
                     <a href="#order_invoice_address_form" class="modal-opener " style="color:#777">
                     <h5 style="position: relative;left:-10px;;font-size: 90%;font-weight: 800;color: #333">
-                        <i id="_invoice_address_icon" class="fa fa-fw fa-usd" aria-hidden="true"></i>
+                        <i id="_invoice_address_icon" class="fa fa-fw fa-dollar-sign" aria-hidden="true"></i>
                         <span id="_invoice_address_label"  >{if isset($labels._invoice_address_label) and $labels._invoice_address_label!=''}{$labels._invoice_address_label}{else}{t}Invoice Address{/t}{/if}</span>
 
 
@@ -161,7 +161,7 @@
     <div class="mobile_ordering"  data-settings='{ "pid":{$item.pid},"basket":true }'>
         <i onclick="save_item_qty_change(this)" class="ordering_button one_less fa fa-fw  fa-minus-circle color-red-dark"></i>
         <input  type="number" min="0" value="{$item.qty_raw}" class="needsclick order_qty">
-        <i onclick="save_item_qty_change(this)" style="display:none" class="ordering_button save fa fa-fw fa-floppy-o color-blue-dark"></i>
+        <i onclick="save_item_qty_change(this)" style="display:none" class="ordering_button save far fa-save fa-fw color-blue-dark"></i>
         <i onclick="save_item_qty_change(this)" class="ordering_button add_one fa fa-fw  fa-plus-circle color-green-dark"></i>
     </div>
 </td>

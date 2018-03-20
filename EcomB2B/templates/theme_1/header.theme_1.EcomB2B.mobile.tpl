@@ -43,7 +43,7 @@
 
             {foreach from=$header_data.menu.columns item=column key=key}
                 <a data-sub="sidebar-sub-{$key}" href="#" class="{if !$column.show}hide{/if}">
-                    <i class="icon-bg bg-orange-dark fa  {$column.icon}"></i>
+                    <i class="icon-bg bg-orange-dark {$column.icon}"></i>
 
                     <span>{$column.label|strip_tags}</span><strong class="plushide-animated"></strong></a>
 

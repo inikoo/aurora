@@ -98,7 +98,7 @@
                         <section>
                             <label class="label">{$content._email_label}</label>
                             <label class="input">
-                                <i class="icon-append fa fa-envelope-o"></i>
+                                <i class="icon-append fa fa-envelope"></i>
                                 <input class="register_field" type="email" name="email" id="_email_placeholder" value="{$customer->get('Customer Main Plain Email')}" placeholder="{$content._email_placeholder}">
                                 <b id="_email_tooltip" class="tooltip tooltip-bottom-right">{$content._email_tooltip}</b>
                             </label>
@@ -113,7 +113,7 @@
                             <label class="label">{$content._registration_number_label}</label>
 
                             <label class="input">
-                                <i class="icon-append icon-gavel"><i class="fa fa-building-o" aria-hidden="true"></i>
+                                <i class="icon-append icon-gavel"><i class="fa fa-building" aria-hidden="true"></i>
                                 </i>
                                 <input class="register_field" type="text" name="registration_number"   value="{$customer->get('Customer Registration Number')}" placeholder="{$content._registration_number_placeholder}">
                                 <b id="_registration_number_tooltip" class="tooltip tooltip-bottom-right">{$content._registration_number_tooltip}</b>
@@ -152,7 +152,7 @@
 
 
                     <footer>
-                        <button id="save_contact_details_button" type="submit" class="button  " >{$content._save_contact_details_label} <i  class="margin_left_10 fa fa-fw fa-floppy-o" aria-hidden="true"></i> </button>
+                        <button id="save_contact_details_button" type="submit" class="button  " >{$content._save_contact_details_label} <i  class="margin_left_10 fa fa-fw fa-save" aria-hidden="true"></i> </button>
                     </footer>
                 </form>
             </div>
@@ -207,7 +207,7 @@
 
                     </fieldset>
                     <footer>
-                        <button type="submit" class="button " id="save_poll_details" >{if empty($content._save_poll_details_label)}{t}Save{/t}{else}{$content._save_poll_details_label}{/if} <i  class="margin_left_10 fa fa-fw fa-floppy-o" aria-hidden="true"></i> </button>
+                        <button type="submit" class="button " id="save_poll_details" >{if empty($content._save_poll_details_label)}{t}Save{/t}{else}{$content._save_poll_details_label}{/if} <i  class="margin_left_10 fa fa-fw fa-save" aria-hidden="true"></i> </button>
                     </footer>
                 </form>
             </div>
@@ -242,7 +242,7 @@
 
                     </fieldset>
                     <footer>
-                        <button type="submit" class="button " id="save_login_details_button">{$content._save_login_details_label} <i  class="margin_left_10 fa fa-fw fa-floppy-o" aria-hidden="true"></i> </button>
+                        <button type="submit" class="button " id="save_login_details_button">{$content._save_login_details_label} <i  class="margin_left_10 fa fa-fw fa-save" aria-hidden="true"></i> </button>
 
                     </footer>
                 </form>
@@ -372,7 +372,7 @@
 
 
                         <footer>
-                            <button type="submit" class="button " id="save_invoice_address_details_button" >{$content._save_invoice_address_details_label} <i  class="margin_left_10 fa fa-fw fa-floppy-o" aria-hidden="true"></i> </button>
+                            <button type="submit" class="button " id="save_invoice_address_details_button" >{$content._save_invoice_address_details_label} <i  class="margin_left_10 fa fa-fw fa-save" aria-hidden="true"></i> </button>
                         </footer>
                     </form>
                 </div>
@@ -513,7 +513,7 @@
 
 
                         <footer>
-                            <button type="submit" class="button "  id="save_delivery_address_details_button" >{$content._save_delivery_address_details_label} <i  class="margin_left_10 fa fa-fw fa-floppy-o" aria-hidden="true"></i> </button>
+                            <button type="submit" class="button "  id="save_delivery_address_details_button" >{$content._save_delivery_address_details_label} <i  class="margin_left_10 fa fa-fw fa-save" aria-hidden="true"></i> </button>
 
                         </footer>
                     </form>
@@ -600,7 +600,7 @@
                 }
 
                 button.addClass('wait')
-                button.find('i').removeClass('fa-floppy-o').addClass('fa-spinner fa-spin')
+                button.find('i').removeClass('fa-save').addClass('fa-spinner fa-spin')
 
 
                 var register_data={ }
@@ -654,12 +654,12 @@
 
 
                         button.removeClass('wait')
-                        button.find('i').addClass('fa-floppy-o').removeClass('fa-spinner fa-spin')
+                        button.find('i').addClass('fa-save').removeClass('fa-spinner fa-spin')
 
 
                     }, error: function () {
                         button.removeClass('wait')
-                        button.find('i').addClass('fa-floppy-o').removeClass('fa-spinner fa-spin')
+                        button.find('i').addClass('fa-save').removeClass('fa-spinner fa-spin')
 
                     }
                 });
@@ -754,7 +754,7 @@
                 }
 
                 button.addClass('wait')
-                button.find('i').removeClass('fa-floppy-o').addClass('fa-spinner fa-spin')
+                button.find('i').removeClass('fa-save').addClass('fa-spinner fa-spin')
 
 
                 var register_data={ }
@@ -801,11 +801,11 @@
                         }
 
                         button.removeClass('wait')
-                        button.find('i').addClass('fa-floppy-o').removeClass('fa-spinner fa-spin')
+                        button.find('i').addClass('fa-save').removeClass('fa-spinner fa-spin')
 
                     }, error: function () {
                         button.removeClass('wait')
-                        button.find('i').addClass('fa-floppy-o').removeClass('fa-spinner fa-spin')
+                        button.find('i').addClass('fa-save').removeClass('fa-spinner fa-spin')
                     }
                 });
 
@@ -955,7 +955,7 @@
                 }
 
                 button.addClass('wait')
-                button.find('i').removeClass('fa-floppy-o').addClass('fa-spinner fa-spin')
+                button.find('i').removeClass('fa-save').addClass('fa-spinner fa-spin')
 
 
 
@@ -1002,12 +1002,12 @@
                         }
 
                         button.removeClass('wait')
-                        button.find('i').addClass('fa-floppy-o').removeClass('fa-spinner fa-spin')
+                        button.find('i').addClass('fa-save').removeClass('fa-spinner fa-spin')
 
                     }, error: function () {
 
                         button.removeClass('wait')
-                        button.find('i').addClass('fa-floppy-o').removeClass('fa-spinner fa-spin')
+                        button.find('i').addClass('fa-save').removeClass('fa-spinner fa-spin')
 
                     }
                 });
@@ -1153,7 +1153,7 @@
                 }
 
                 button.addClass('wait')
-                button.find('i').removeClass('fa-floppy-o').addClass('fa-spinner fa-spin')
+                button.find('i').removeClass('fa-save').addClass('fa-spinner fa-spin')
 
 
                 var register_data={ }
@@ -1202,11 +1202,11 @@
                         }
 
                         button.removeClass('wait')
-                        button.find('i').addClass('fa-floppy-o').removeClass('fa-spinner fa-spin')
+                        button.find('i').addClass('fa-save').removeClass('fa-spinner fa-spin')
 
                     }, error: function () {
                         button.removeClass('wait')
-                        button.find('i').addClass('fa-floppy-o').removeClass('fa-spinner fa-spin')
+                        button.find('i').addClass('fa-save').removeClass('fa-spinner fa-spin')
                     }
                 });
 

@@ -52,7 +52,7 @@
                 <td class="label">
 
                         <span style="position:relative;left:-4px;top:2px;font-size:80%" class="fa-stack">
-  <i class="fa fa-square-o fa-stack-2x very_discreet"></i>
+  <i class="fal fa-square fa-stack-2x very_discreet"></i>
   <i class="fa fa-barcode fa-stack-1x"></i>
 </span>
 
@@ -224,7 +224,7 @@
                     <td colspan=2>
                         <table style="width:100%;;margin-bottom:10px">
                             <tr style="border-top:1px solid #ccc;border-bottom:1px solid #ccc">
-                                <td style="border-left:1px solid #ccc;width:30%" class="align_center " title="{t}Stock in locations{/t}"><i class="fa fa-map-marker fa-fw" aria-hidden="true"></i> <span
+                                <td style="border-left:1px solid #ccc;width:30%" class="align_center " title="{t}Stock in locations{/t}"><i class="fa fa-inventory fa-fw" aria-hidden="true"></i> <span
                                             class="Current_On_Hand_Stock">{$part->get('Current On Hand Stock')}</span></td>
                                 <td style="border-left:1px solid #ccc;width:20%" class="align_center discreet " title="{t}Reserved paid parts in process by customer services{/t}"><i class="fa fa-shopping-cart fa-fw"
                                                                                                                                                                                       aria-hidden="true"></i> <span
@@ -324,8 +324,7 @@
             <table id="locations_table" border="0" class="overview" part_sku="{$part->id}">
 
                 <tr id="move_stock_tr" class="discreet button hide " style="border-bottom:1px solid #ccc" max="">
-                    <td colspan=3><span id="move_from"></span> <i class="fa fa-fw fa-caret-square-o-right " aria-hidden="true"></i> <span id="move_to"></span>
-                    </td>
+                    <td colspan=3><span id="move_from"></span> <i class="fa fa-fw fa-forklift padding_left_5 padding_right_5 " aria-hidden="true"></i> <span id="move_to"></span></td>
 
                     <td class="aright">
                         <input id="move_stock_qty" style="width:80px" value="" placeholder="{t}Move stock{/t}">
@@ -419,7 +418,7 @@
                         <td colspan="3"><textarea id="part_to_production_note_input" style="width:95%;"  plaecholder="{t}Note{/t}" /></td>
                     </tr>
                     <tr>
-                        <td colspan="3" class="aright "><span onclick="save_stock_dialog_to_production(this)" class="save">{t}Send to production{/t} <i class="fa fa-hand-rock-o" aria-hidden="true"></i></span></td>
+                        <td colspan="3" class="aright "><span onclick="save_stock_dialog_to_production(this)" class="save">{t}Send to production{/t} <i class="fa fa-hand-rock" aria-hidden="true"></i></span></td>
                     </tr>
 
                 </table>

@@ -679,7 +679,7 @@ function get_supplier_navigation($data, $smarty, $user, $db, $account) {
             'title' => _('Sticky note'),
             'id'    => 'sticky_note_button'
         );
-        //$right_buttons[]=array('icon'=>'sticky-note-o','title'=>_('History note'),'id'=>'note');
+        //$right_buttons[]=array('icon'=>'sticky-note','title'=>_('History note'),'id'=>'note');
         //$right_buttons[]=array('icon'=>'paperclip','title'=>_('Attachement'),'id'=>'attach');
         //$right_buttons[]=array('icon'=>'shopping-cart','title'=>_('New order'),'id'=>'take_order');
 
@@ -1270,7 +1270,7 @@ function get_supplier_part_navigation($data, $smarty, $user, $db, $account) {
                 'title' => _('Sticky note'),
                 'id'    => 'sticky_note_button'
             );
-            //$right_buttons[]=array('icon'=>'sticky-note-o','title'=>_('History note'),'id'=>'note');
+            //$right_buttons[]=array('icon'=>'sticky-note','title'=>_('History note'),'id'=>'note');
             //$right_buttons[]=array('icon'=>'paperclip','title'=>_('Attachement'),'id'=>'attach');
             //$right_buttons[]=array('icon'=>'shopping-cart','title'=>_('New order'),'id'=>'take_order');
 
@@ -1287,7 +1287,7 @@ function get_supplier_part_navigation($data, $smarty, $user, $db, $account) {
 
 
     $title = _("Supplier's part").' <span class="id Supplier_Part_Reference">'.$data['_object']->get('Reference').'</span>';
-    $title .= ' <small class="padding_left_10"> <i class="fa fa-long-arrow-right padding_left_10"></i> <i class="fa fa-square button" title="'._('Part').'" onCLick="change_view(\'/part/'.$data['_object']->part->id
+    $title .= ' <small class="padding_left_10"> <i class="fa fa-long-arrow-right padding_left_10"></i> <i class="fa fa-box button" title="'._('Part').'" onCLick="change_view(\'/part/'.$data['_object']->part->id
         .'\')" ></i> <span class="Part_Reference button"  onCLick="change_view(\'part/'.$data['_object']->part->id.'\')">'.$data['_object']->part->get(
             'Reference'
         ).'</small>';
@@ -2393,8 +2393,8 @@ function get_order_item_navigation($data, $smarty, $user, $db, $account) {
     }
 
 
-    $title = '<i class="fa fa-stop"></i>  <span class="id Supplier_Part_Reference">'.$data['_object']->get('Reference').'</span>';
-    $title .= ' <small class="padding_left_10"> <i class="fa fa-long-arrow-right padding_left_10"></i> <i class="fa fa-square button" title="'._('Part').'" onCLick="change_view(\'/part/'.$data['_object']->part->id
+    $title = '<i class="fa fa-hand-receiving"></i>  <span class="id Supplier_Part_Reference">'.$data['_object']->get('Reference').'</span>';
+    $title .= ' <small class="padding_left_10"> <i class="fa fa-long-arrow-right padding_left_10"></i> <i class="fa fa-box button" title="'._('Part').'" onCLick="change_view(\'/part/'.$data['_object']->part->id
         .'\')" ></i> <span class="Part_Part_Reference button"  onCLick="change_view(\'part/'.$data['_object']->part->id.'\')">'.$data['_object']->part->get(
             'Reference'
         ).'</small>';

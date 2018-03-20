@@ -31,7 +31,7 @@
 
                             <section>
                                 <label class="input">
-                                    <i class="icon-append fa fa-envelope-o"></i>
+                                    <i class="icon-append fa fa-envelope"></i>
                                     <input class="register_field" type="email" name="email"  placeholder="{$content._email_placeholder}">
                                     <b id="_email_tooltip" class="tooltip tooltip-bottom-right">{$content._email_tooltip}</b>
                                 </label>

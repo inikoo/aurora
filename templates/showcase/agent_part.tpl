@@ -151,7 +151,7 @@
                     <td class="label">
 
                         <span style="position:relative;left:-4px;top:2px;font-size:80%" class="fa-stack">
-  <i class="fa fa-square-o fa-stack-2x very_discreet"></i>
+  <i class="fa; fa-square fa-stack-2x very_discreet"></i>
   <i class="fa fa-barcode fa-stack-1x"></i>
 </span>
 

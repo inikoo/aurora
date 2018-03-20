@@ -355,7 +355,7 @@ class Customer extends Subject {
 
 
                     } elseif ($this->data['Customer Tax Number Validation Source'] == 'Manual') {
-                        $source = '<i title=\''._('Set up manually').'\' class=\'fa fa-hand-rock-o\'></i>';
+                        $source = '<i title=\''._('Set up manually').'\' class=\'far fa-hand-rock\'></i>';
                     } else {
                         $source = '';
                     }

@@ -43,10 +43,10 @@ margin-left:5px;}
 <i class="fa fa-database discreet" aria-hidden="true"></i>
     </button>
    <button class="mdl-button mdl-js-button mdl-button--fab mdl-button--mini-fab">
-   <i class="fa fa-usd discreet" aria-hidden="true"></i>
+   <i class="fa fa-dollar-sign discreet" aria-hidden="true"></i>
     </button>
     <button class="mdl-button mdl-js-button mdl-button--fab mdl-button--mini-fab">
-<i class="fa fa-map-marker discreet" aria-hidden="true"></i>
+<i class="fa fa-inventory discreet" aria-hidden="true"></i>
     </button>
     <button class="mdl-button mdl-js-button mdl-button--fab mdl-button--mini-fab">
 <i class="fa fa-cube discreet" aria-hidden="true"></i>

@@ -99,7 +99,7 @@
 
 
 <span id="ordering_settings" class="hide"
-      data-labels='{ "ordered":"<i class=\"fa fa-thumbs-o-up fa-flip-horizontal \" aria-hidden=\"true\"></i> {if empty($labels._ordering_ordered)}{t}Ordered{/t}{else}{$labels._ordering_ordered}{/if}", "order":"<i class=\"fa fa-hand-pointer-o\" aria-hidden=\"true\"></i>  {if empty($labels._ordering_order_now)}{t}Order now{/t}{else}{$labels._ordering_order_now}{/if}", "update":"<i class=\"fa fa-hand-pointer-o\" aria-hidden=\"true\"></i>  {t}Update{/t}"  }'></span>
+      data-labels='{ "ordered":"<i class=\"fa fa-thumbs-up fa-flip-horizontal \" aria-hidden=\"true\"></i> {if empty($labels._ordering_ordered)}{t}Ordered{/t}{else}{$labels._ordering_ordered}{/if}", "order":"<i class=\"fa fa-hand-pointer-o\" aria-hidden=\"true\"></i>  {if empty($labels._ordering_order_now)}{t}Order now{/t}{else}{$labels._ordering_order_now}{/if}", "update":"<i class=\"fa fa-hand-pointer-o\" aria-hidden=\"true\"></i>  {t}Update{/t}"  }'></span>
 
 
 <div id="webpage_preview" webpage_key="{$webpage->id}" style="padding:20px;border-bottom:1px solid #ccc">
@@ -200,7 +200,7 @@
 
 
         <i class="_description_block_edit  create_text fa fa-align-center fa-fw button" aria-hidden="true" style="position:absolute;left:-40px;top:10px"></i>
-        <i class="_description_block_edit create_image fa fa-picture-o fa-fw button" aria-hidden="true" style="position:absolute;left:-40px;top:30px"></i>
+        <i class="_description_block_edit create_image fa fa-image fa-fw button" aria-hidden="true" style="position:absolute;left:-40px;top:30px"></i>
 
 
         <div id="image_edit_toolbar" class="edit_toolbar hide" section="description_block" style=" z-index: 200;position:relative;">
@@ -209,7 +209,7 @@
             <form method="post" action="/ar_edit.php" enctype="multipart/form-data" novalidate>
                 <input type="file" name="image_upload" id="file_upload" class="input_file" multiple/>
                 <label for="file_upload">
-                    <i class="fa  fa-picture-o fa-fw button" aria-hidden="true" style="position:relative;left:-18px"></i><br>
+                    <i class="fa  fa-image fa-fw button" aria-hidden="true" style="position:relative;left:-18px"></i><br>
                 </label>
             </form>
 
@@ -306,16 +306,16 @@
                         <div class="ordering log_in can_not_order {$product->get('Out of Stock Class')} ">
 
                             <span class="product_footer label ">{$product->get('Out of Stock Label')}</span>
-                            <span class="product_footer reminder"><i class="fa fa-envelope-o" aria-hidden="true"></i>  </span>
+                            <span class="product_footer reminder"><i class="fa fa-envelope" aria-hidden="true"></i>  </span>
 
 
                         </div>
                     {else if $product->get('Web State')=='For Sale'}
                         <div class="ordering log_in ">
                             <input maxlength=6 class='order_input ' id='but_qty{$product->id}' type="text" size='2' value='{$product->get('Ordered Quantity')}' ovalue='{$product->get('Ordered Quantity')}'>
-                            <span class="product_footer order_button"><i class="fa fa-hand-pointer-o"
+                            <span class="product_footer order_button"><i class="fa fa-hand-pointer"
                                                                          aria-hidden="true"></i> {if empty($labels._ordering_order_now)}{t}Order now{/t}{else}{$labels._ordering_order_now}{/if}</span>
-                            <span class="product_footer  favourite "><i class="fa fa-heart-o" aria-hidden="true"></i>  </span>
+                            <span class="product_footer  favourite "><i class="fa fa-heart" aria-hidden="true"></i>  </span>
 
 
                         </div>
@@ -377,15 +377,14 @@
         var icon = $(this).find('i');
 
 
-        if (icon.hasClass('fa-heart-o')) {
-            $(this).addClass('marked')
-            icon.removeClass('fa-heart-o').addClass('fa-heart')
+        if (icon.hasClass('far.fa-heart')) {
+            $(this).removeClass('marked')
+            icon.removeClass('fa-heart').addClass('fa-heart')
 
         } else {
-            $(this).removeClass('marked')
 
-            icon.removeClass('fa-heart').addClass('fa-heart-o')
-
+            $(this).addClass('marked')
+            icon.removeClass('fa-heart').addClass('fa-heart')
 
         }
 
@@ -396,14 +395,14 @@
         var icon = $(this).find('i');
 
 
-        if (icon.hasClass('fa-envelope-o')) {
+        if (icon.hasClass('fa-envelope')) {
             $(this).addClass('marked')
-            icon.removeClass('fa-envelope-o').addClass('fa-envelope')
+            icon.removeClass('fa-envelope').addClass('fa-envelope')
 
         } else {
             $(this).removeClass('marked')
 
-            icon.removeClass('fa-envelope').addClass('fa-envelope-o')
+            icon.removeClass('fa-envelope').addClass('fa-envelope')
 
 
         }

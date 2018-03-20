@@ -19022,7 +19022,7 @@ ul.list9 {
   left: -1px;
   width: 15px;
   height: 15px;
-  font: normal 12px/16px FontAwesome;
+  font: normal 12px/16px 'Font Awesome 5 Pro';
   text-align: center; }
 
 .sky-form .radio input:checked + i:after,
@@ -20013,6 +20013,58 @@ ul.tabs {
 
   .tabs3.three li a {
     padding: 0px 10px; } }
+/*
+
+ About:
+ Author: Raul Perusquia <raul@inikoo.com>
+ Created: 20 March 2018 at 16:05:48 GMT+8, Sanur, Indonesia, Bali
+ Copyright (c) 2018, Inikoo
+
+ Version 3
+
+*/
+.text_blocks {
+  display: flex;
+  flex-direction: row; }
+
+.text_template_2 > div,
+.text_template_3 > div,
+.text_template_4 > div {
+  flex: 1; }
+
+.text_template_12 > div:nth-child(1) {
+  width: calc(100% / 3 * 1); }
+
+.text_template_12 > div:nth-child(2) {
+  width: calc(100% / 3 * 2); }
+
+.text_template_21 > div:nth-child(1) {
+  width: calc(100% / 3 * 2); }
+
+.text_template_21 > div:nth-child(2) {
+  width: calc(100% / 3 * 1); }
+
+.text_template_31 > div:nth-child(1) {
+  width: calc(100% / 4 * 3); }
+
+.text_template_31 > div:nth-child(2) {
+  width: calc(100% / 4 * 1); }
+
+.text_template_13 > div:nth-child(1) {
+  width: calc(100% / 4 * 1); }
+
+.text_template_13 > div:nth-child(2) {
+  width: calc(100% / 4 * 3); }
+
+.text_template_211 > div:nth-child(1) {
+  width: calc(100% / 4 * 2); }
+
+.text_template_211 > div:nth-child(2) {
+  width: calc(100% / 4 * 1); }
+
+.text_template_211 > div:nth-child(3) {
+  width: calc(100% / 4 * 1); }
+
 /*
 
  About:

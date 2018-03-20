@@ -86,7 +86,7 @@ function get_default_header_data($template) {
                                     ),
                                     array(
                                         'label' => _('About us'),
-                                        'icon'  => 'fa-smile-o',
+                                        'icon'  => 'fa-smile',
                                         'url'   => ''
                                     ),
                                     array(
@@ -96,7 +96,7 @@ function get_default_header_data($template) {
                                     ),
                                     array(
                                         'label' => _('Terms & Conditions'),
-                                        'icon'  => 'fa-file-text-o',
+                                        'icon'  => 'fa-file-alt',
                                         'url'   => ''
                                     )
                                 )
@@ -204,7 +204,7 @@ function get_default_header_data($template) {
                         'type'        => 'three_columns',
                         'show'        => true,
                         'label'       => _('Inspiration'),
-                        'icon'        => 'fa-lightbulb-o',
+                        'icon'        => 'fa-lightbulb',
                         'sub_columns' => array(
 
 
@@ -237,7 +237,7 @@ function get_default_header_data($template) {
                                     ),
                                     array(
                                         'label' => _('Warm welcoming stuff'),
-                                        'icon'  => 'fa-sun-o',
+                                        'icon'  => 'fa-sun',
                                         'url'   => ''
                                     ),
                                     array(
@@ -262,12 +262,12 @@ function get_default_header_data($template) {
                                     ),
                                     array(
                                         'label' => _('Link 3'),
-                                        'icon'  => 'fa-thumbs-o-up',
+                                        'icon'  => 'fa-thumbs-up',
                                         'url'   => ''
                                     ),
                                     array(
                                         'label' => _('Link 4'),
-                                        'icon'  => 'fa-paper-plane-o',
+                                        'icon'  => 'fa-paper-plane',
                                         'url'   => ''
                                     )
                                 )

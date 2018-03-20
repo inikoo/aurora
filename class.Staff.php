@@ -978,7 +978,7 @@ class Staff extends DB_Table {
     function get_breaks($data) {
         // print_r($data);
 
-        $formatted_breaks = ' (<i class="fa fa-fw fa-cutlery"></i> ';
+        $formatted_breaks = ' (<i class="fa fa-fw fa-utensils"></i> ';
         if (count($data) == 0) {
             return '';
         }

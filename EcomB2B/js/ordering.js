@@ -95,7 +95,7 @@ $(function() {
         var input = order_row.find('.order_input')
 
         var order_qty = input.val()
-        $(this).find('i').removeClass('fa-hand-pointer-o').addClass('fa-spinner fa-spin  ')
+        $(this).find('i').removeClass('fa-hand-pointer').addClass('fa-spinner fa-spin  ')
         input.prop('readonly', true);
 
         var order_key = $('#webpage_data').data('order_key');
@@ -265,17 +265,17 @@ console.log(request)
 $(document).on('input propertychange', '.order_qty', function (evt) {
 
   //  if ($(this).val() == $(this).data('ovalue')) {
-  //      $(this).closest('span').find('i').removeClass('fa-floppy-o exclamation-circle error').addClass('fa-plus')
+  //      $(this).closest('span').find('i').removeClass('fa-save-o exclamation-circle error').addClass('fa-plus')
 
 //    } else {
 
         if (!validate_signed_integer($(this).val(), 4294967295) || $(this).val() == '') {
             $(this).closest('span').find('i.minus').addClass('hide')
-            $(this).closest('span').find('i.plus').removeClass('fa-plus exclamation-circle error').addClass('fa-floppy-o')
+            $(this).closest('span').find('i.plus').removeClass('fa-plus exclamation-circle error').addClass('fa-save')
             $(this).addClass('discreet')
         } else {
             $(this).closest('span').find('i.minus').addClass('hide')
-            $(this).closest('span').find('i.plus').removeClass('fa-plus fa-floppy-o').addClass('fa-exclamation-circle error')
+            $(this).closest('span').find('i.plus').removeClass('fa-plus fa-save').addClass('fa-exclamation-circle error')
 
         }
  //   }
@@ -323,7 +323,7 @@ function save_item_qty_change(element) {
     else {
         qty = parseFloat(input.val())
 
-        var _icon='fa-floppy-o'
+        var _icon='fa-save'
 
     }
 
@@ -343,7 +343,7 @@ function save_item_qty_change(element) {
 
 
 
-            $(element).closest('span').find('i.plus').removeClass('fa-spinner fa-spin fa-floppy-o').addClass('fa-plus')
+            $(element).closest('span').find('i.plus').removeClass('fa-spinner fa-spin fa-save').addClass('fa-plus')
             $(element).closest('span').find('i.minus').removeClass('hide fa-spinner fa-spin').addClass('fa-minus')
 
             console.log($(element))
@@ -491,7 +491,7 @@ function use_this_credit_card(element){
     $(element).closest('div.row').find('.cancel_use_this_card').removeClass('hide')
 
 
-    $(element).closest('div.row').find('.check_icon_saved_card').removeClass('fa-circle-o').addClass('fa-check-circle success')
+    $(element).closest('div.row').find('.check_icon_saved_card').removeClass('fa-circle').addClass('fa-check-circle success')
 
 
 
@@ -510,7 +510,7 @@ function cancel_use_this_card(element){
 
     $('.cvv_for_saved_card').addClass('invisible')
 
-    $('.check_icon_saved_card').addClass('fa-circle-o').removeClass('fa-check-circle success')
+    $('.check_icon_saved_card').addClass('fa-circle').removeClass('fa-check-circle success')
 
 
     $(element).closest('fieldset').find('.row').removeClass('hide')

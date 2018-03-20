@@ -23,7 +23,7 @@
             </tr>
             <tr class="total_sales">
                 <td><i class="fa fa-shopping-cart" aria-hidden="true" title="{t}Orders{/t}"></i>  {$payment_account->get('Total Acc Invoiced Amount Soft Minify')}</td>
-                <td><i class="fa fa-file-text-o" aria-hidden="true" title="{t}Invoices{/t}"></i> {$payment_account->get('Total Acc Invoices Soft Minify')}</td>
+                <td><i class="fal fa-file-alt" aria-hidden="true" title="{t}Invoices{/t}"></i> {$payment_account->get('Total Acc Invoices Soft Minify')}</td>
                 <td>{$customers}</td>
             </tr>
         </table>
@@ -144,7 +144,7 @@
                         <table style="width:100%;;margin-bottom:10px;margin-top:10px" class="mesh">
                             <tr >
                                 <td style="width:25%" class="Active_Web_For_Sale align_center  " title="{t}Active products online{/t}"><i class="fa fa-shopping-cart padding_right_10" aria-hidden="true" "></i> {$payment_account->get('Active Web For Sale')}</td>
-                                <td style="width:25%" class="Active_Web_Out_of_Stock align_center " title="{t}Active products out of stock{/t}"><i class="fa fa-file-text-o" padding_right_10" aria-hidden="true" "></i> {$payment_account->get('Active Web Out of Stock')} {if $payment_account->get('Payment Account Active Web For Sale')>0 and $payment_account->get('Payment Account Active Web Out of Stock')>0 }({$payment_account->get('Percentage Active Web Out of Stock')}){/if}</td>
+                                <td style="width:25%" class="Active_Web_Out_of_Stock align_center " title="{t}Active products out of stock{/t}"><i class="fal fa-file-alt" padding_right_10" aria-hidden="true" "></i> {$payment_account->get('Active Web Out of Stock')} {if $payment_account->get('Payment Account Active Web For Sale')>0 and $payment_account->get('Payment Account Active Web Out of Stock')>0 }({$payment_account->get('Percentage Active Web Out of Stock')}){/if}</td>
                                 <td style="width:25%" class="Active_Web_Offline align_center " title="{t}Active products offline{/t}"><i class="fa fa-users  padding_right_10" aria-hidden="true" "></i> {$payment_account->get('Active Web Offline')} {if $payment_account->get('Payment Account Active Web For Sale')>0 and $payment_account->get('Payment Account Active Web Offline')>0 }({$payment_account->get('Percentage Active Web Offline')}){/if}</td>
                             </tr>
                         </table>

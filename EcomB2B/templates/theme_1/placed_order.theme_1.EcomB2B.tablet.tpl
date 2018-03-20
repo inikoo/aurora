@@ -29,7 +29,7 @@
 
     <div class="one-third-responsive">
         <h5>
-            <i class="fa fa-fw fa-usd" aria-hidden="true"></i>
+            <i class="fa fa-fw fa-dollar-sign" aria-hidden="true"></i>
             <span id="_invoice_address_label" class="website_localized_label"
                   >{if !empty($labels._invoice_address_label) }{$labels._invoice_address_label}{else}{t}Invoice address{/t}{/if}</span>
 

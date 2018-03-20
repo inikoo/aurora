@@ -26,9 +26,9 @@ $(function() {
         var icon = $(this)
 
 
-        if (icon.hasClass('fa-envelope-o')) {
+        if (icon.hasClass('fa-envelope')) {
 
-            icon.removeClass('fa-envelope-o').addClass('fa-envelope').addClass('marked').attr('title', '{t}Click to remove notification{/t}')
+            icon.removeClass('fa-envelope').addClass('fa-envelope').addClass('marked').attr('title', '{t}Click to remove notification{/t}')
 
 
             var request = 'ar_reminders.php?tipo=send_reminder&pid=' + $(this).closest('.product_showcase').data('product_id')
@@ -37,7 +37,7 @@ $(function() {
         } else {
 
 
-            icon.removeClass('fa-envelope').addClass('fa-envelope-o').removeClass('marked').attr('title', '{t}Click to be notified by email{/t}')
+            icon.removeClass('fa-envelope').addClass('fa-envelope').removeClass('marked').attr('title', '{t}Click to be notified by email{/t}')
             var request = 'ar_reminders.php?tipo=cancel_send_reminder&esr_key=' + $(this).data('reminder_key')
 
         }
@@ -69,15 +69,23 @@ $(function() {
         var icon = $(this).find('i');
 
 
-        if (icon.hasClass('fa-heart-o')) {
-            icon.removeClass('fa-heart-o').addClass('fa-heart').addClass('marked')
+        console.log(icon)
+
+
+        if (icon.hasClass('far')) {
+            console.log('add')
+
+           icon.removeClass('far').addClass('fa').addClass('marked')
 
         } else {
+            console.log('off')
+            icon.removeClass('fa').addClass('far').removeClass('marked')
 
-            icon.removeClass('fa-heart').addClass('fa-heart-o').removeClass('marked')
 
 
         }
+
+
 
 
         var request = 'ar_web_basket.php?tipo=update_favourite&pid=' + $(this).data('product_id') + '&customer_key=' + $('#webpage_data').data('customer_key') + '&favourite_key=' + $(this).data('favourite_key')
@@ -196,7 +204,7 @@ $(function() {
         var input = order_row.find('.order_input')
 
         var order_qty = input.val()
-        $(this).find('i').removeClass('fa-hand-pointer-o').addClass('fa-spinner fa-spin  ')
+        $(this).find('i').removeClass('fa-hand-pointer').addClass('fa-spinner fa-spin  ')
         input.prop('readonly', true);
 
         var order_key = $('#webpage_data').data('order_key');
@@ -343,7 +351,7 @@ function use_this_credit_card(element){
     $(element).closest('div.row').find('.cancel_use_this_card').removeClass('hide')
 
 
-    $(element).closest('div.row').find('.check_icon_saved_card').removeClass('fa-circle-o').addClass('fa-check-circle success')
+    $(element).closest('div.row').find('.check_icon_saved_card').removeClass('fa-circle').addClass('fa-check-circle success')
 
 
 
@@ -362,7 +370,7 @@ function cancel_use_this_card(element){
 
     $('.cvv_for_saved_card').addClass('invisible')
 
-    $('.check_icon_saved_card').addClass('fa-circle-o').removeClass('fa-check-circle success')
+    $('.check_icon_saved_card').addClass('fa-circle').removeClass('fa-check-circle success')
 
 
     $(element).closest('fieldset').find('.row').removeClass('hide')

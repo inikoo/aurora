@@ -6,6 +6,8 @@
 function post_set_as_main(data) {
 
 
+    console.log(data.action)
+
     if (data.action == 'set_main_contact_number_Mobile') {
 
 

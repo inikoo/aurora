@@ -24,7 +24,7 @@
                          onclick="change_table_element(event,'{$id}')"
                          title="{$elements[$elements_type]['label']}: {if isset($element.title)}{$element.title}{else}{$element.label}{/if}">
                         <i id="element_checkbox_{$id}"
-                           class="fa {if $element.selected}fa-check-square-o{else}fa-square-o{/if}"></i> <span
+                           class="far {if $element.selected}fa-check-square{else}fa-square{/if}"></i> <span
                                 class="label"> {$element.label}</span> <span class="qty" id="element_qty_{$id}"></span>
                     </div>
                 {/foreach}
@@ -58,7 +58,7 @@
                     <td class="width_20">
                         <i id="stop_export_table_excel" stop=0 onclick="stop_export('excel')" class="fa button fa-hand-stop-o error hide" title="{t}Stop{/t}"></i>
                     </td>
-                    <td id="export_table_excel" class="link" onclick="get_editable_data('excel')"><i class="fa fa-file-excel-o" title="Excel"></i>Excel
+                    <td id="export_table_excel" class="link" onclick="get_editable_data('excel')"><i class="fa fa-file-excel" title="Excel"></i>Excel
                     </td>
                 </tr>
                 <tr>
@@ -89,7 +89,7 @@
                         <td></td>
                         <td style="width_20" class="field_export ">
                             <i id="toggle_all_export_fields" onclick="toggle_all_export_fields(this)"
-                               class="button fa-fw fa fa-square-o"></i>
+                               class="button fa-fw fa fa-square"></i>
                         </td>
                     </tr>
                     <tbody id="export_fields">
@@ -98,7 +98,7 @@
                             <td>{$export_field.label}</td>
                             <td style="width_20" class="field_export">
                                 <i id="field_export_{$_key}" onclick="toggle_export_field({$_key})" key="{$_key}"
-                                   class="button fa-fw object_field fa {if $export_field.checked }fa-check-square-o{else}fa-square-o{/if}"></i>
+                                   class="button fa-fw object_field far {if $export_field.checked }fa-check-square{else}fa-square{/if}"></i>
                             </td>
                         </tr>
                     {/foreach}
@@ -272,7 +272,7 @@
 
         var fields = []
         $('#export_dialog_config .field_export i.object_field').each(function (index, obj) {
-            if ($(obj).hasClass('fa-check-square-o')) fields.push($(obj).attr('key'))
+            if ($(obj).hasClass('fa-check-square')) fields.push($(obj).attr('key'))
         });
 
         var request = "/ar_export_edit_template.php?parent={$parent}&parent_key={$parent_key}&parent_code={$parent_code}&objects={$objects}&fields=" + JSON.stringify(fields) + '&type=' + type + '&metadata=' + JSON.stringify({})

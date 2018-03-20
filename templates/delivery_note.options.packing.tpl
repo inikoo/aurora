@@ -51,15 +51,15 @@
                 <td colspan=2>
                 <div style="display:flex">
                     <div  class=" very_discreet Delivery_Note_Start_Picking_Datetime" style="align-items: stretch;flex: 1;border-left:1px solid #eee;text-align:center">
-                        {if $dn->get('State Index')<=30 and  $dn->get('State Index')>=10}<span id="start_packing" class="button"><i class="fa fa-clock-o"  aria-hidden="true"></i> {t}Start packing{/t}</span>
+                        {if $dn->get('State Index')<=30 and  $dn->get('State Index')>=10}<span id="start_packing" class="button"><i class="far fa-clock"  aria-hidden="true"></i> {t}Start packing{/t}</span>
                         {else}
-                            <i class="fa fa-clock-o" aria-hidden="true"></i> {$dn->get('Start Packing Datetime')}
+                            <i class="far fa-clock" aria-hidden="true"></i> {$dn->get('Start Packing Datetime')}
 
                         {/if}
                     </div>
 
                     <div class=" very_discreet hide" style="align-items: stretch;flex: 1;border-left:1px solid #eee;text-align:center"></span><i class="fa fa-barcode" title="{t}Scan mode{/t}" aria-hidden="true"></i> {t}Scan mode{/t}</div>
-                  <div class=" very_discreet hide" style="align-items: stretch;flex: 1;border-left:1px solid #eeee;text-align:center"> <i class="fa fa-square-o"  title="{t}Set all as packed{/t}" aria-hidden="true"></i>  {t}mark all as packed{/t}</div>
+                  <div class=" very_discreet hide" style="align-items: stretch;flex: 1;border-left:1px solid #eeee;text-align:center"> <i class="fa fa-square"  title="{t}Set all as packed{/t}" aria-hidden="true"></i>  {t}mark all as packed{/t}</div>
                 </div>
                 
                 </td>

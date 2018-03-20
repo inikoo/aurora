@@ -97,9 +97,9 @@ function get_picked_offline_input($qty, $pending, $quantity_on_location, $itf_ke
 
         ($quantity_on_location < 1 && $pending > 0 ? 'success blocked' : 'super_discreet button'), ($quantity_on_location < 1 && $pending > 0 ? '' : 'hide'),
 
-        ($part_stock < 1 ? 'fa-ban' : 'fa-clock-o'),
+        ($part_stock < 1 ? 'fa-ban' : 'fa-clock'),
 
-        ($part_stock < 1 ? 'rgba(255,55,55, 0.2)' : 'rgba(255,155,55, 0.2)'), number($to_pick_value), ($part_stock < 1 ? 'fa-ban' : 'fa-clock-o'),
+        ($part_stock < 1 ? 'rgba(255,55,55, 0.2)' : 'rgba(255,155,55, 0.2)'), number($to_pick_value), ($part_stock < 1 ? 'fa-ban' : 'fa-clock'),
 
 
         $itf_key, $part_sku, $part_reference, $part_description, $part_image_key, $part_stock,
@@ -135,7 +135,7 @@ function get_item_picked($pending, $quantity_on_location, $itf_key, $part_sku, $
         ($quantity_on_location < 1 && $pending > 0 ? '' : 'hide'),
 
 
-        ($part_stock < 1 ? 'rgba(255,55,55, 0.2)' : 'rgba(255,155,55, 0.2)'), number($picked), ($part_stock < 1 ? 'fa-ban' : 'fa-clock-o'),
+        ($part_stock < 1 ? 'rgba(255,55,55, 0.2)' : 'rgba(255,155,55, 0.2)'), number($picked), ($part_stock < 1 ? 'fa-ban' : 'fa-clock'),
 
         $itf_key, $part_sku, $part_reference, $part_description, $part_image_key,
 
@@ -164,7 +164,7 @@ function get_item_location($pending, $quantity_on_location, $date_picked, $locat
     } elseif ($quantity_on_location <= 0) {
 
         if ($part_stock >= $pending) {
-            $location = sprintf('<i class="fa fa-fw fa-bookmark-o fa-flip-vertical warning %s" aria-hidden="true" title="%s"></i> ', $location_stock_icon_class, $stock_in_location);
+            $location = sprintf('<i class="far fa-fw fa-bookmark fa-flip-vertical warning %s" aria-hidden="true" title="%s"></i> ', $location_stock_icon_class, $stock_in_location);
 
         } else {
             $location = sprintf('<i class="fa fa-fw no_stock_location fa-circle error %s" aria-hidden="true" title="%s"></i> ', $location_stock_icon_class, $stock_in_location);
@@ -175,14 +175,14 @@ function get_item_location($pending, $quantity_on_location, $date_picked, $locat
     } else {
         if ($quantity_on_location < $pending) {
             if ($part_stock >= $pending) {
-                $location = sprintf('<i class="fa fa-fw fa-bookmark-o fa-flip-vertical warning %s" aria-hidden="true" title="%s"></i><span class="warning">(%s)</span> ', $location_stock_icon_class, $stock_in_location, number($quantity_on_location, 1));
+                $location = sprintf('<i class="far fa-fw fa-bookmark fa-flip-vertical warning %s" aria-hidden="true" title="%s"></i><span class="warning">(%s)</span> ', $location_stock_icon_class, $stock_in_location, number($quantity_on_location, 1));
 
             } else {
                 if ($quantity_on_location < 1) {
                     $location = sprintf('<i class="fa  fa-fw no_stock_location  fa-circle error %s" aria-hidden="true" title="%s"></i> ', $location_stock_icon_class, $stock_in_location);
 
                 } else {
-                    $location = sprintf('<i class="fa fa-fw fa-star-half-o error %s" aria-hidden="true" title="%s"></i> ', $location_stock_icon_class, $stock_in_location);
+                    $location = sprintf('<i class="far fa-fw fa-star-half error %s" aria-hidden="true" title="%s"></i> ', $location_stock_icon_class, $stock_in_location);
                 }
 
 

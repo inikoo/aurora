@@ -110,7 +110,7 @@ $('#'+$(this).data('tab')).removeClass('hide')
 $(document).on('input propertychange', '.order_qty', function (evt) {
 
   //  if ($(this).val() == $(this).attr('ovalue')) {
-  //      $(this).closest('span').find('i').removeClass('fa-floppy-o exclamation-circle error').addClass('fa-plus')
+  //      $(this).closest('span').find('i').removeClass('fa-save-o exclamation-circle error').addClass('fa-plus')
 
 //    } else {
 
@@ -120,13 +120,13 @@ $(document).on('input propertychange', '.order_qty', function (evt) {
 
 
         if (!validate_signed_integer($(this).val(), 4294967295) || $(this).val() == '') {
-            //$(this).closest('span').find('i').removeClass('fa-plus exclamation-circle error').addClass('fa-floppy-o')
+            //$(this).closest('span').find('i').removeClass('fa-plus exclamation-circle error').addClass('fa-save')
 
             $(this).removeClass('error')
           //  save_item_qty_change(this)
         } else {
             $(this).addClass('error')
-            //$(this).closest('span').find('i').removeClass('fa-plus fa-floppy-o').addClass('fa-exclamation-circle error')
+            //$(this).closest('span').find('i').removeClass('fa-plus fa-save').addClass('fa-exclamation-circle error')
 
         }
  //   }
@@ -187,7 +187,7 @@ function save_item_qty_change(element) {
     else {
         qty = parseFloat(input.val())
 
-        var _icon='fa-floppy-o'
+        var _icon='fa-save'
 
     }
 
@@ -210,7 +210,7 @@ console.log(request)
 
             $(element).removeClass('fa-circle-o-notch fa-spin')
 
-            if(_icon=='fa-floppy-o'){
+            if(_icon=='fa-save'){
 
                 order_div.find('.ordering_button').removeClass('invisible')
                 order_div.find('.save').addClass('invisible').css({ 'display':'none'})
@@ -222,7 +222,7 @@ console.log(request)
             console.log(data)
 
 
-        //    $(element).removeClass('fa-spinner fa-spin fa-floppy-o').addClass('fa-plus')
+        //    $(element).removeClass('fa-spinner fa-spin fa-save').addClass('fa-plus')
 
 
             console.log($(element))

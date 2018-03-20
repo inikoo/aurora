@@ -578,18 +578,18 @@ class Attachment extends DB_Table {
                 switch ($this->data['Attachment Type']) {
                     case 'PDF':
                         $file_type = sprintf(
-                            '<i title="%s" class="fa fa-fw fa-file-pdf-o"></i> %s', $this->data['Attachment MIME Type'], 'PDF'
+                            '<i title="%s" class="fa fa-fw fa-file-pdf"></i> %s', $this->data['Attachment MIME Type'], 'PDF'
                         );
 
                         break;
                     case 'Image':
                         $file_type = sprintf(
-                            '<i title="%s" class="fa fa-fw fa-picture-o"></i> %s', $this->data['Attachment MIME Type'], _('Image')
+                            '<i title="%s" class="fa fa-fw fa-image"></i> %s', $this->data['Attachment MIME Type'], _('Image')
                         );
                         break;
                     case 'Compressed':
                         $file_type = sprintf(
-                            '<i title="%s" class="fa fa-fw fa-file-archive-o"></i> %s', $this->data['Attachment MIME Type'], _('Compressed')
+                            '<i title="%s" class="fa fa-fw fa-file-archive"></i> %s', $this->data['Attachment MIME Type'], _('Compressed')
                         );
                         break;
                     case 'Spreadsheet':
@@ -599,17 +599,17 @@ class Attachment extends DB_Table {
                         break;
                     case 'Text':
                         $file_type = sprintf(
-                            '<i title="%s" class="fa fa-fw fa-file-text-o"></i> %s', $this->data['Attachment MIME Type'], _('Text')
+                            '<i title="%s" class="fal fa-file-alt fa-fw"></i> %s', $this->data['Attachment MIME Type'], _('Text')
                         );
                         break;
                     case 'Word':
                         $file_type = sprintf(
-                            '<i title="%s" class="fa fa-fw fa-file-word-o"></i> %s', $this->data['Attachment MIME Type'], 'Word'
+                            '<i title="%s" class="fa fa-fw fa-file-word"></i> %s', $this->data['Attachment MIME Type'], 'Word'
                         );
                         break;
                     default:
                         $file_type = sprintf(
-                            '<i title="%s" class="fa fa-fw fa-file-o"></i> %s', $this->data['Attachment MIME Type'], _('Other')
+                            '<i title="%s" class="fa fa-fw fa-file"></i> %s', $this->data['Attachment MIME Type'], _('Other')
                         );
                         break;
                 }

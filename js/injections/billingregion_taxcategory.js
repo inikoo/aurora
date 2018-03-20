@@ -26,14 +26,14 @@ function toggle_store_field(key) {
 
     var field_element = $('#field_store_' + key)
 
-    if (field_element.hasClass('fa-check-square-o')) {
-        field_element.removeClass('fa-check-square-o')
-        field_element.addClass('fa-square-o')
+    if (field_element.hasClass('fa-check-square')) {
+        field_element.removeClass('fa-check-square')
+        field_element.addClass('fa-square')
 
 
     } else {
-        field_element.addClass('fa-check-square-o')
-        field_element.removeClass('fa-square-o')
+        field_element.addClass('fa-check-square')
+        field_element.removeClass('fa-square')
     }
     if (setting_changed()) {
 
@@ -56,10 +56,10 @@ function setting_changed() {
     var changed = false;
     $('#report_config .field_store i').each(function (index, obj) {
 
-        if ($(obj).hasClass('fa-check-square-o') && $(obj).attr('original_val') != 'fa-check-square-o') {
+        if ($(obj).hasClass('fa-check-square') && $(obj).attr('original_val') != 'fa-check-square') {
             changed = true
             return false
-        } else if ($(obj).hasClass('fa-square-o') && $(obj).attr('original_val') != 'fa-square-o') {
+        } else if ($(obj).hasClass('fa-square') && $(obj).attr('original_val') != 'fa-square') {
             changed = true
             return false
         }
@@ -78,11 +78,11 @@ function apply_changes() {
 
 
     $('#report_config .field_store i').each(function (index, obj) {
-        if ($(obj).hasClass('fa-square-o')) {
+        if ($(obj).hasClass('fa-square')) {
             excluded_stores.push($(obj).attr('key'))
-            $(obj).attr('original_val', 'fa-square-o')
+            $(obj).attr('original_val', 'fa-square')
         } else {
-            $(obj).attr('original_val', 'fa-check-square-o')
+            $(obj).attr('original_val', 'fa-check-square')
         }
     });
     $('#report_config_save').addClass('disabled').removeClass('valid save')

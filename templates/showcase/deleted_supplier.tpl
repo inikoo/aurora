@@ -2,7 +2,7 @@
     <div id="contact_data">
         <div class="data_container">
             <div class="data_field">
-                <i title="{t}Company name{/t}" class="fa fa-building-o"></i> <span
+                <i title="{t}Company name{/t}" class="fa fa-building"></i> <span
                         class="Supplier_Name">{$supplier->get('Deleted Name')}</span>
             </div>
             <div class="data_field {if $supplier->get('Supplier Main Contact Name')==''}hide{/if}">
@@ -11,7 +11,7 @@
             </div>
             <div class="data_container" style=";margin-top:10px">
                 <div style="min-height:80px;float:left;width:28px;">
-                    <i class="fa fa-map-marker"></i>
+                    <i class="fa fa-inventory"></i>
                 </div>
                 <div style="float:left;width:272px" class="Supplier_Contact_Address">
                     {$supplier->get('Contact Address')}

@@ -17,7 +17,7 @@
 
 <i class="fa fa-code-fork fa-rotate-90" aria-hidden="true"></i>
 <span id="button_with_items" onClick="change_webpage_favourites_view('with_items')" style="margin-left:10px;padding:5px 7px;border:1px solid #ccc" class="button fav_view_selected"><i class="fa fa-heart" aria-hidden="true"></i>
-</span> <span id="button_no_items" onClick="change_webpage_favourites_view('no_items')" style="margin-left:5px;padding:5px 7px;border:1px solid #ccc" class="button "><i class="fa fa-heart-o" aria-hidden="true"></i>
+</span> <span id="button_no_items" onClick="change_webpage_favourites_view('no_items')" style="margin-left:5px;padding:5px 7px;border:1px solid #ccc" class="button "><i class="fa fa-heart" aria-hidden="true"></i>
 </span>
 
 

@@ -23,9 +23,6 @@
             <div class="content" style="margin-bottom: 10px">
                 <table class="order_totals" style="margin-bottom: 0px;width: 400px;margin:auto">
 
-
-
-
                     <tbody>
 
                     <tr class="net">
@@ -90,7 +87,7 @@
 
 
                     <a  class="but like_button payment_method_button no-smoothState {if $smarty.foreach.foo.first}bg-blue-light border-blue-dark{else}bg-black border-gray-dark{/if}" {if !$smarty.foreach.foo.first} style="opacity: .2"{/if}  data-tab="payment_account_item_{$payment_account.object->get('Block')}">
-                        <i class="fa {$payment_account.icon}" aria-hidden="true"></i>
+                        <i class="{$payment_account.icon}" aria-hidden="true"></i>
                         <em>{if $payment_account.tab_label==''}{$content[$payment_account.tab_label_index]}{else}{$payment_account.tab_label}{/if}</em>
                     </a>
 

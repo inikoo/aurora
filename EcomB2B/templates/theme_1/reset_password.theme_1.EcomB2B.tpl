@@ -57,7 +57,7 @@
                         <footer>
 
 
-                            <button type="submit" name="submit" class="button" id="change_password_button" >{$content._submit_label}  <i  class="margin_left_10 fa fa-fw fa-floppy-o" aria-hidden="true"></i>  </button>
+                            <button type="submit" name="submit" class="button" id="change_password_button" >{$content._submit_label}  <i  class="margin_left_10 fa fa-fw fa-save" aria-hidden="true"></i>  </button>
 
 
                         </footer>
@@ -130,7 +130,7 @@
                 }
 
                 button.addClass('wait')
-                button.find('i').removeClass('fa-floppy-o').addClass('fa-spinner fa-spin')
+                button.find('i').removeClass('fa-save').addClass('fa-spinner fa-spin')
 
 
 
@@ -155,11 +155,11 @@
                         }
 
                         button.removeClass('wait')
-                        button.find('i').addClass('fa-floppy-o').removeClass('fa-spinner fa-spin')
+                        button.find('i').addClass('fa-save').removeClass('fa-spinner fa-spin')
 
                     }, error: function () {
                         button.removeClass('wait')
-                        button.find('i').addClass('fa-floppy-o').removeClass('fa-spinner fa-spin')
+                        button.find('i').addClass('fa-save').removeClass('fa-spinner fa-spin')
                     }
                 });
 

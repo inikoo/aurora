@@ -5,8 +5,8 @@
                 <td>{$store_field.label}</td>
                 <td style="width_20" class="field_store"><i id="field_store_{$_key}"
                                                             onclick="toggle_store_field({$_key})" key="{$_key}"
-                                                            original_val="{if $store_field.checked }fa-check-square-o{else}fa-square-o{/if}"
-                                                            class="button fa {if $store_field.checked }fa-check-square-o{else}fa-square-o{/if}"></i>
+                                                            original_val="{if $store_field.checked }fa-check-square{else}fa-square{/if}"
+                                                            class="button far {if $store_field.checked }fa-check-square{else}fa-square{/if}"></i>
                 </td>
             </tr>
         {/foreach}

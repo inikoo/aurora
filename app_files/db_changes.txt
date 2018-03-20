@@ -885,6 +885,10 @@ ALTER TABLE `Part Dimension` ADD `Part Unknown Location Stock` FLOAT NOT NULL DE
 
 ALTER TABLE `Part Dimension` ADD `Part Stock Found SKOs` FLOAT NOT NULL DEFAULT '0' AFTER `Part Stock Lost Value`, ADD `Part Stock Found Value` DECIMAL(16,0) NOT NULL DEFAULT '0.00' AFTER `Part Stock Found SKOs`;
 
+
+ALTER TABLE `Agent Dimension` ADD `Agent Number History Records` SMALLINT UNSIGNED NULL DEFAULT '0' AFTER `Agent Acc Previous Intervals Updated`;
+
+
 ===============
 
 

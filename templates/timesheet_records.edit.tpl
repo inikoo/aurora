@@ -66,9 +66,9 @@
              element = $('#set_timesheet_record_note').data('element');
              element.find('.note').html(r.value)
              if(r.value==''){
-                 element.find('i.fa-sticky-note-o').removeClass('hide')
+                 element.find('i.fa-sticky-note').removeClass('hide')
              }else{
-                 element.find('i.fa-sticky-note-o').addClass('hide')
+                 element.find('i.fa-sticky-note').addClass('hide')
 
              }
              close_timesheet_record_notes();

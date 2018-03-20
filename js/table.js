@@ -190,7 +190,7 @@ function change_f_option(option) {
 
     if (!$(option).hasClass('selected')) {
         $('#f_options_chooser div').removeClass('selected')
-        $('#f_options_chooser div i').removeClass('fa-circle').addClass('fa-circle-o')
+        $('#f_options_chooser div i').removeClass('fa-circle').addClass('fa-circle')
         $(option).addClass('selected')
         $(option).find('i').addClass('fa-circle')
         $('#filter').attr('f_field', $(option).attr('f_field')).find('input').val('')
@@ -251,9 +251,9 @@ function change_columns_frequency(frequency, frequency_label) {
 
     close_columns_frequency_options()
     $('#columns_frequency_chooser div').removeClass('selected')
-    $('#columns_frequency_chooser .fa').removeClass('fa-circle').addClass('fa-circle-o')
+    $('#columns_frequency_chooser .fa').removeClass('fa-circle').addClass('fa-circle')
     $('#element_group_option_' + frequency).addClass('selected')
-    $('#element_group_option_' + frequency + ' .fa').removeClass('fa-circle-o').addClass('fa-circle')
+    $('#element_group_option_' + frequency + ' .fa').removeClass('fa-circle').addClass('fa-circle')
 
 }
 
@@ -274,9 +274,9 @@ function change_columns_period(period, period_label) {
 
     close_columns_period_options()
     $('#columns_period_chooser div').removeClass('selected')
-    $('#columns_period_chooser .fa').removeClass('fa-circle').addClass('fa-circle-o')
+    $('#columns_period_chooser .fa').removeClass('fa-circle').addClass('fa-circle')
     $('#element_group_option_' + period).addClass('selected')
-    $('#element_group_option_' + period + ' .fa').removeClass('fa-circle-o').addClass('fa-circle')
+    $('#element_group_option_' + period + ' .fa').removeClass('fa-circle').addClass('fa-circle')
 
 }
 
@@ -292,11 +292,10 @@ function change_elements_type(elements_type) {
     $('#element_group_option_' + elements_type).addClass('selected')
 
 
-    $('#elements_chooser  i').removeClass('fa-circle')
-    $('#elements_chooser  i').addClass('fa-circle-o')
+    $('#elements_chooser  i').removeClass('fa').addClass('far')
 
-    $('#element_group_option_' + elements_type + ' i').addClass('fa-circle')
-    $('#element_group_option_' + elements_type + ' i').removeClass('fa-circle-o')
+    $('#element_group_option_' + elements_type + ' i').addClass('fa')
+    $('#element_group_option_' + elements_type + ' i').removeClass('far')
 
 
     var icon = $('#element_type .fa')
@@ -319,31 +318,66 @@ function change_elements_type(elements_type) {
 
 }
 
+var element_delay = 300, element_clicks = 0, element_timer = null;
+
+
+$(document).on("click",'#elements .element', function(e){
+
+    element_clicks++;  //count clicks
+
+    var item= $(this).data('item')
+
+    if(element_clicks === 1) {
+
+        element_timer = setTimeout(function() {
+            change_table_element('click',item)
+            element_clicks = 0;             //after action performed, reset counter
+
+        }, element_delay);
+
+    } else {
+
+
+        clearTimeout(element_timer);    //prevent single-click action
+        change_table_element('double_click', item)
+        element_clicks = 0;             //after action performed, reset counter
+    }
+
+})
+    .on("dblclick", function(e){
+        e.preventDefault();  //cancel system double-click event
+    });
+
+
 function change_table_element(event, item) {
 
 
-    if (event.altKey) {
+console.log(event)
+
+    if (event=='double_click') {
 
 
-        $('#elements i').removeClass('fa-check-square-o')
-        $('#elements i').addClass('fa-square-o')
+        $('#elements i.element_checkbox').removeClass('fa-check-square').addClass('fa-square')
         $('#elements .element').removeClass('selected')
 
         $("#element_" + item).addClass('selected')
-        $("#element_checkbox_" + item).removeClass('fa-square-o')
-        $("#element_checkbox_" + item).addClass('fa-check-square-o')
+        $("#element_checkbox_" + item).removeClass('fa-square')
+        $("#element_checkbox_" + item).addClass('fa-check-square')
 
     } else {
+
+
+
         if ($("#element_" + item).hasClass('selected')) {
             $("#element_" + item).removeClass('selected')
-            $("#element_checkbox_" + item).removeClass('fa-check-square-o')
-            $("#element_checkbox_" + item).addClass('fa-square-o')
+            $("#element_checkbox_" + item).removeClass('fa-check-square')
+            $("#element_checkbox_" + item).addClass('fa-square')
         } else {
 
             $("#element_" + item).addClass('selected')
 
-            $("#element_checkbox_" + item).removeClass('fa-square-o')
-            $("#element_checkbox_" + item).addClass('fa-check-square-o')
+            $("#element_checkbox_" + item).removeClass('fa-square')
+            $("#element_checkbox_" + item).addClass('fa-check-square')
         }
     }
 
@@ -499,19 +533,19 @@ function hide_export_config_dialog() {
 
 
 function toggle_all_export_fields(element) {
-    if ($(element).hasClass('fa-check-square-o')) {
-        $(element).removeClass('fa-check-square-o')
-        $(element).addClass('fa-square-o')
+    if ($(element).hasClass('fa-check-square')) {
+        $(element).removeClass('fa-check-square')
+        $(element).addClass('fa-square')
 
-        $('#export_fields i').removeClass('fa-check-square-o')
-        $('#export_fields i').addClass('fa-square-o')
+        $('#export_fields i').removeClass('fa-check-square')
+        $('#export_fields i').addClass('fa-square')
 
 
     } else {
-        $(element).addClass('fa-check-square-o')
-        $(element).removeClass('fa-square-o')
-        $('#export_fields i').addClass('fa-check-square-o')
-        $('#export_fields i').removeClass('fa-square-o')
+        $(element).addClass('fa-check-square')
+        $(element).removeClass('fa-square')
+        $('#export_fields i').addClass('fa-check-square')
+        $('#export_fields i').removeClass('fa-square')
     }
 
 
@@ -521,13 +555,13 @@ function toggle_export_field(key) {
 
     var field_element = $('#field_export_' + key)
 
-    if (field_element.hasClass('fa-check-square-o')) {
-        field_element.removeClass('fa-check-square-o')
-        field_element.addClass('fa-square-o')
+    if (field_element.hasClass('fa-check-square')) {
+        field_element.removeClass('fa-check-square')
+        field_element.addClass('fa-square')
 
     } else {
-        field_element.addClass('fa-check-square-o')
-        field_element.removeClass('fa-square-o')
+        field_element.addClass('fa-check-square')
+        field_element.removeClass('fa-square')
     }
 }
 
@@ -543,7 +577,7 @@ function export_table(type) {
 
     var fields = []
     $('#export_dialog_config .field_export i').each(function (index, obj) {
-        if ($(obj).hasClass('fa-check-square-o')) fields.push($(obj).attr('key'))
+        if ($(obj).hasClass('fa-check-square')) fields.push($(obj).attr('key'))
     });
 
     var request = "/ar_export.php?ar_file=" + rows.ar_file + "&tipo=" + rows.tipo + "&parameters=" + rows.parameters + '&type=' + type + '&state=' + JSON.stringify(state) + '&fields=' + JSON.stringify(fields)
@@ -726,7 +760,7 @@ function get_editable_data(element,type) {
 
     var fields = []
     $('#download_edit_items_dialog_config .field_export i.object_field').each(function (index, obj) {
-        if ($(obj).hasClass('fa-check-square-o')) fields.push($(obj).attr('key'))
+        if ($(obj).hasClass('fa-check-square')) fields.push($(obj).attr('key'))
     });
 
     var request = "/ar_export_edit_template.php?parent="+_data.parent+"&parent_key="+_data.parent_key+"&parent_code="+_data.parent_code+"&objects="+_data.object+"&fields=" + JSON.stringify(fields) + '&type=' + type + '&metadata=' + JSON.stringify({})

@@ -37,7 +37,7 @@ function get_webpage_blocks($theme = '') {
             'template'    => 't1',
             'text_blocks' => array(
                 array(
-                    'text' => '<div id="block_block_key_t1_editor" data-template="t1" class="text_block"><h1>Title</h1>When an unknown printer took a galley of type and scrambled it to make a type specimen book. It has survived not only five centuries, but also electronics typesetting, remaining essentially believable.</div>'
+                    'text' => '<h1>Title</h1>When an unknown printer took a galley of type and scrambled it to make a type specimen book. It has survived not only five centuries, but also electronics typesetting, remaining essentially believable.'
                 )
             ),
         ),
@@ -198,7 +198,7 @@ function get_webpage_blocks($theme = '') {
         'button'     => array(
             'type'              => 'button',
             'label'             => _('Button'),
-            'icon'              => 'fa-hand-pointer-o',
+            'icon'              => 'fa-hand-pointer',
             'show'              => 1,
             'title'             => 'Great Value to Get the Dash on TF Only',
             'text'              => 'Packages and web page editors search versions have over the years sometimes.',
@@ -280,7 +280,7 @@ function get_webpage_blocks($theme = '') {
         'map'       => array(
             'type'  => 'map',
             'label' => _('Map'),
-            'icon'  => 'fa-map-marker',
+            'icon'  => 'fa-map-marker-alt',
             'show'  => 1,
             'src'   => '#map'
         ),

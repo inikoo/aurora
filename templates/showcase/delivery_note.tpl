@@ -129,7 +129,7 @@
             <div id="back_operations">
                 <div id="delete_operations" class="order_operation {if $delivery_note->get('Delivery Note Number Picked Items')>0       }hide{/if}">
                     <div class="square_button left" xstyle="padding:0;margin:0;position:relative;top:-5px" title="{t}delete{/t}">
-                        <i class="fa fa-trash very_discreet " aria-hidden="true" onclick="toggle_order_operation_dialog('delete')"></i>
+                        <i class="far fa-trash-alt very_discreet " aria-hidden="true" onclick="toggle_order_operation_dialog('delete')"></i>
                         <table id="delete_dialog" border="0" class="order_operation_dialog hide">
                             <tr class="top">
                                 <td colspan="2" class="label">{t}Delete delivery note{/t}</td>
@@ -148,7 +148,7 @@
                 <div id="undo_picking_operations" class="order_operation {if $delivery_note->get('State Index')!=20}hide{/if}">
                     <div class="square_button left" title="{t}Undo start picking{/t}">
 												<span class="fa-stack" onclick="toggle_order_operation_dialog('undo_picking')">
-						<i class="fa fa-hand-lizard-o  fa-rotate-270 very_discreet " aria-hidden="true"></i>
+						<i class="fas fa-hand-holding-box   very_discreet " aria-hidden="true"></i>
 						<i class="fa fa-ban fa-stack-1x discreet error"></i>
 						</span>
 
@@ -199,7 +199,7 @@
 
                 <div id="start_picking_operations" class="order_operation {if $delivery_note->get('State Index')!=10    }hide{/if}">
                     <div class="square_button right  " title="{t}Start picking{/t}">
-                        <i id="start_picking_save_buttons" class="fa button fa-hand-lizard-o  fa-rotate-270 fa-fw  very_discreet "
+                        <i id="start_picking_save_buttons" class="far fa-hand-holding-box  button   fa-fw  very_discreet fa-flip-vertical"
                            data-data='{  "field": "Delivery Note State","value": "Picking","dialog_name":"start_picking"}' aria-hidden="true" onclick="save_order_operation(this)"></i>
 
                     </div>

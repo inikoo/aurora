@@ -59,7 +59,7 @@
                 Url
             </td>
             <td>
-                <input id="api_url" value="http://au.bali/api/stock" style="width:400px">
+                <input id="api_url" value="" style="width:400px">
             </td>
         </tr>
         <tr>
@@ -67,7 +67,7 @@
                 Handle
             </td>
             <td>
-                <input id="api_handle" value="a312de7f" style="width:400px">
+                <input id="api_handle" value="" style="width:400px">
             </td>
         </tr>
         <tr>
@@ -75,7 +75,7 @@
                 Key
             </td>
             <td>
-                <input id="api_key" value="VCUlPCQ2Pl92LHg5KTwkKCUlSHVBaXA+PVx2QUJ9QnthLnldZTxTXg==" style="width:400px">
+                <input id="api_key" value="" style="width:400px">
             </td>
         </tr>
         <tr>
@@ -103,7 +103,7 @@
 
         <tr>
             <td colspan="2">
-                <button id="search_location_by_code">Get location data</button>
+                <button id="search_location_by_code">Search location by code</button>
             </td>
         </tr>
 
@@ -131,13 +131,43 @@
         get_location_data()
     });
 
+    $("#search_location_by_code").click(function () {
+        search_location_by_code()
+    });
+
+    function search_location_by_code() {
+
+        set_up_credentials();
+
+        var action = 'search_location_by_code';
+        var query = '10B';
+
+
+
+        var ajaxData = new FormData();
+        ajaxData.append("action", action)
+        ajaxData.append("query", query)
+
+
+        $.ajax({
+            url: api_url, type: 'POST', data: ajaxData, dataType: 'json', cache: false, contentType: false, processData: false, complete: function () {
+            }, success: function (data) {
+                console.log(data)
+            }, error: function () {
+                console.log(data)
+            }
+        });
+
+
+    }
+
     function get_part_data() {
 
         set_up_credentials();
 
         var action = 'get_part_data';
         var part_sku = 5285;
-        var part_sku = 148; // not found
+
 
 
         var ajaxData = new FormData();
@@ -163,7 +193,7 @@
 
         var action = 'get_location_data';
         var location_key = 215;
-        var location_key = 8;// not found
+
 
         var ajaxData = new FormData();
         ajaxData.append("action", action)

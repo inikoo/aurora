@@ -20,7 +20,7 @@ trait ImageSubject {
 
         include_once 'utils/units_functions.php';
 
-        //print_r($raw_data);
+      //  print_r($raw_data);
 
 
         $data = array(
@@ -35,6 +35,9 @@ trait ImageSubject {
             'upload_data' => $raw_data['Upload Data'],
             'editor'      => $this->editor
         );
+
+
+
 
 
         if (isset($raw_data['Image Subject Object Image Scope']) and $raw_data['Image Subject Object Image Scope']!='' ) {
@@ -63,6 +66,7 @@ trait ImageSubject {
         }
 
 
+      //  print_r($data);
 
         $image = new Image('find', $data, 'create');
 

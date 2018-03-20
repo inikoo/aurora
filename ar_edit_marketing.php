@@ -154,7 +154,7 @@ function edit_campaign_component_status($account, $db, $user, $editor, $data, $s
     switch ($deal_component->get('Deal Component Status')) {
         case 'Waiting':
             $status = sprintf(
-                '<i class="fa fa-clock-o discreet fa-fw" aria-hidden="true" title="%s" ></i>', _('Waiting')
+                '<i class="far fa-clock discreet fa-fw" aria-hidden="true" title="%s" ></i>', _('Waiting')
             );
             break;
         case 'Active':

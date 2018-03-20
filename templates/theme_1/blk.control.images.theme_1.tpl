@@ -40,7 +40,10 @@
 
 
         <span   id="open_images_layout_ideas" onclick="change_images_template()" class="button unselectable"  ><i class="fa fa-columns" aria-hidden="true"></i>  {t}Change layout{/t}</span>
-        <span style="margin-left:50px">{t}Margin{/t}:</span>  {t}top{/t} <input margin="top" class="image_margin" value="{if isset($block.top_margin)}{$block.top_margin}{/if}" style="width: 40px" placeholder="0"> {t}bottom{/t} <input  margin="bottom" class="image_margin" value="{if isset($block.bottom_margin)}{$block.bottom_margin}{/if}" style="width: 40px" placeholder="0">
+
+        <span style="margin-left:50px">{t}Margin{/t}:</span>
+        <input data-margin="top" class=" edit_margin top" value="{if isset($block.top_margin)}{$block.top_margin}{else}0{/if}"  placeholder="0"><input data-margin="bottom" class=" edit_margin bottom" value="{if isset($block.bottom_margin)}{$block.bottom_margin}{else}0{/if}" style="" placeholder="0">
+
 
     </div>
     <div style="clear: both"></div>
@@ -67,6 +70,8 @@
     </div>
 
 </div>
+
+
 
 <script>
 
@@ -104,35 +109,6 @@
 
 
 
-    $(document).on('input propertychange', '.image_margin', function (evt) {
-
-
-        if(!validate_signed_integer($(this).val(),50)){
-            $(this).removeClass('error')
-            var value=$(this).val()
-
-        }else{
-            value=0;
-
-            $(this).addClass('error')
-        }
-
-
-        if($(this).attr('margin')=='top'){
-            $("#preview").contents().find('#block_{$key}').find('.blk_images').attr('top_margin',value).css( "margin-top",value+"px")
-        }else if($(this).attr('margin')=='bottom'){
-            $("#preview").contents().find('#block_{$key}').find('.blk_images').attr('botton_margin',value).css( "margin-bottom",value+"px")
-        }
-
-
-        $('#save_button').addClass('save button changed valid')
-
-
-
-        console.log(value)
-
-
-    });
 
 
 </script>

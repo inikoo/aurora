@@ -34,7 +34,7 @@
 
                 <div class="one_third">
                     <h5>
-                        <i class="fa fa-fw fa-usd" aria-hidden="true"></i>
+                        <i class="fa fa-fw fa-dollar-sign" aria-hidden="true"></i>
                         <span id="_invoice_address_label" class="website_localized_label" contenteditable="true">{if isset($labels._invoice_address_label) and $labels._invoice_address_label!=''}{$labels._invoice_address_label}{else}{t}Invoice Address{/t}{/if}</span>
                     </h5>
                     <p>

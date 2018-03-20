@@ -243,7 +243,7 @@ function save_new_object(object, form_type) {
 
             }  else if (field_type == 'elements') {
                 var icon = $(this).find('i')
-                if (icon.hasClass('fa-check-square-o')) {
+                if (icon.hasClass('fa-check-square')) {
                     value = 'Yes'
 
                 } else {

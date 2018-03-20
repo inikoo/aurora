@@ -80,7 +80,7 @@
 
 
             <span id="ordering_settings" class="hide"
-                  data-labels='{ "ordered":"<i class=\"fa fa-thumbs-o-up fa-flip-horizontal \" aria-hidden=\"true\"></i> {if empty($labels._ordering_ordered)}{t}Ordered{/t}{else}{$labels._ordering_ordered}{/if}", "order":"<i class=\"fa fa-hand-pointer-o\" aria-hidden=\"true\"></i>  {if empty($labels._ordering_order_now)}{t}Order now{/t}{else}{$labels._ordering_order_now}{/if}", "update":"<i class=\"fa fa-hand-pointer-o\" aria-hidden=\"true\"></i>  {t}Update{/t}"  }'></span>
+                  data-labels='{ "ordered":"<i class=\"fa fa-thumbs-up fa-flip-horizontal \" aria-hidden=\"true\"></i> {if empty($labels._ordering_ordered)}{t}Ordered{/t}{else}{$labels._ordering_ordered}{/if}", "order":"<i class=\"fa fa-hand-pointer-o\" aria-hidden=\"true\"></i>  {if empty($labels._ordering_order_now)}{t}Order now{/t}{else}{$labels._ordering_order_now}{/if}", "update":"<i class=\"fa fa-hand-pointer-o\" aria-hidden=\"true\"></i>  {t}Update{/t}"  }'></span>
 
             <div id="webpage_preview" webpage_key="{$webpage->id}" style="padding:0px;border-bottom:1px solid #ccc;padding-bottom:20px;margin-bottom:200px">
 
@@ -135,7 +135,7 @@
 
 
                         <i class="create_text fa fa-align-center fa-fw button" aria-hidden="true" style="position:absolute;left:-40px;top:10px"></i>
-                        <i class="create_image fa fa-picture-o fa-fw button" aria-hidden="true" style="position:absolute;left:-40px;top:30px"></i>
+                        <i class="create_image fa fa-image fa-fw button" aria-hidden="true" style="position:absolute;left:-40px;top:30px"></i>
 
 
                         <div id="image_edit_toolbar" class="edit_toolbar hide" section="description_block" style=" z-index: 200;position:relative;">
@@ -144,7 +144,7 @@
                             <form method="post" action="/ar_edit.php" enctype="multipart/form-data" novalidate>
                                 <input type="file" name="image_upload" id="file_upload" class="input_file" multiple/>
                                 <label for="file_upload">
-                                    <i class="fa  fa-picture-o fa-fw button" aria-hidden="true"></i><br>
+                                    <i class="fa  fa-image fa-fw button" aria-hidden="true"></i><br>
                                 </label>
                             </form>
 

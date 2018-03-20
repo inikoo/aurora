@@ -423,14 +423,14 @@ function close_edit_field(field) {
 
 
             $('#' + field + '_options li').attr('is_selected', 0)
-            $('#' + field + '_options li  .checkbox').removeClass('fa-check-square-o').addClass('fa-square-o')
+            $('#' + field + '_options li  .checkbox').removeClass('fa-check-square').addClass('fa-square')
 
             var values = $('#' + field + '_value').val().split(",");
 
             for (var i = 0; i < values.length; i++) {
 
                 $('#' + field + '_option_' + values[i]).attr('is_selected', 1)
-                $('#' + field + '_option_' + values[i] + ' .checkbox').addClass('fa-check-square-o').removeClass('fa-square-o')
+                $('#' + field + '_option_' + values[i] + ' .checkbox').addClass('fa-check-square').removeClass('fa-square')
 
 
             }
@@ -739,11 +739,11 @@ function select_option_multiple_choices(field, value, label) {
 
 
     if (checkbox_option.attr('is_selected') == 1) {
-        $('#' + field + '_option_' + value + ' .checkbox').removeClass('fa-check-square-o').addClass('fa-square-o')
+        $('#' + field + '_option_' + value + ' .checkbox').removeClass('fa-check-square').addClass('fa-square')
         checkbox_option.attr('is_selected', 0)
     } else {
 
-        $('#' + field + '_option_' + value + ' .checkbox').addClass('fa-check-square-o').removeClass('fa-square-o')
+        $('#' + field + '_option_' + value + ' .checkbox').addClass('fa-check-square').removeClass('fa-square')
         checkbox_option.attr('is_selected', 1)
 
     }
@@ -779,11 +779,15 @@ function set_this_as_main(scope) {
 }
 
 function set_as_main(object, key, field) {
+
+
+
     var request = '/ar_edit.php?tipo=set_as_main&object=' + object + '&key=' + key + '&field=' + field
 
 
-    $.getJSON(request, function (data) {
 
+    $.getJSON(request, function (data) {
+console.log(data)
 
         //$('#' + field + '_save_button').addClass('fa-star').removeClass('fa-spinner fa-spin')
         if (data.state == 200) {

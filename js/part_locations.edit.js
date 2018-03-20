@@ -59,13 +59,16 @@ function close_edit_stock() {
 function move(element) {
 
 
-    $('.locations  .fa-dot-circle-o ').each(function (i, obj) {
+    $('.locations  far.fa-dot-circle ').each(function (i, obj) {
         $(obj).addClass('invisible')
     })
 
 
     //   $('#edit_stock_saving_buttons').addClass('hide')
-    if ($(element).hasClass('fa-caret-square-o-right')) {
+    if (!$(element).hasClass('fa-flip-horizontal')) {
+
+
+        console.log('xxx')
 
         movements = false
 
@@ -87,7 +90,7 @@ function move(element) {
             if (!$(obj).hasClass('from')) {
 
                 //console.log($(obj))
-                $(obj).removeClass('fa-caret-square-o-right super_discreet  invisible').addClass('fa-caret-square-o-left')
+                $(obj).removeClass('super_discreet  invisible').addClass('fa-flip-horizontal')
                 possible_to_locations++;
                 to = obj
             }
@@ -157,7 +160,7 @@ function close_move() {
         stock_changed(to_input)
 
     }
-    $('#locations_table .move_trigger').removeClass('fa-caret-square-o-left from to').addClass('fa-caret-square-o-right very_discreet')
+    $('#locations_table .move_trigger').removeClass('fa-flip-horizontal from to').addClass('very_discreet')
     $('#move_stock_tr').addClass('hide')
 
 
@@ -170,7 +173,7 @@ function close_move() {
         }
 
     })
-    $('.locations  .fa-dot-circle-o ').each(function (i, obj) {
+    $('.locations  far.fa-dot-circle ').each(function (i, obj) {
         $(obj).addClass('visible')
     })
 
@@ -433,10 +436,10 @@ function process_edit_stock() {
 
 
     if (set_as_audit == 1) {
-        diff_msg += ' <i class="fa fa-dot-circle-o" aria-hidden="true"></i> '
+        diff_msg += ' <i class="far fa-dot-circle" aria-hidden="true"></i> '
 
     } else if (set_as_audit > 1) {
-        diff_msg += set_as_audit + ' <i class="fa fa-dot-circle-o" aria-hidden="true"></i>'
+        diff_msg += set_as_audit + ' <i class="far fa-dot-circle" aria-hidden="true"></i>'
     }
 
 
@@ -1329,10 +1332,10 @@ function inventory_transaction_note_changed() {
 
     $(element).closest('tr').find('.note').val($(textarea).val())
     if ($(textarea).val() == '') {
-        $(element).closest('tr').find('.add_note').addClass('fa-sticky-note-o').removeClass('fa-sticky-note')
+        $(element).closest('tr').find('.add_note').addClass('fa-sticky-note').removeClass('fa-sticky-note')
 
     } else {
-        $(element).closest('tr').find('.add_note').removeClass('fa-sticky-note-o').addClass('fa-sticky-note')
+        $(element).closest('tr').find('.add_note').removeClass('fa-sticky-note').addClass('fa-sticky-note')
     }
 
 }
@@ -1449,9 +1452,9 @@ function save_part_location_notes_bis(){
             element = $('#set_part_location_note_bis').data('element');
             element.closest('span').find('.picking_location_note_value').html(r.value)
             if(r.value==''){
-                element.addClass('super_discreet_on_hover fa-sticky-note-o').removeClass('fa-sticky-note')
+                element.addClass('super_discreet_on_hover fa-sticky-note').removeClass('fa-sticky-note')
             }else{
-                element.addClass('fa-sticky-note').removeClass('super_discreet_on_hover fa-sticky-note-o')
+                element.addClass('fa-sticky-note').removeClass('super_discreet_on_hover fa-sticky-note')
 
             }
             close_part_location_notes_bis();

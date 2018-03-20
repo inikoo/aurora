@@ -191,7 +191,7 @@
                 <div style="float:left;padding-bottom:20px;padding-right:20px" class="Delivery_Address">
                     <div style="margin-bottom:10px">
                         <span class="{if $order->get('Order For Collection')=='Yes'}hide{/if}"><i   class="   fa fa-truck fa-flip-horizontal button" aria-hidden="true""></i>{t}Deliver to{/t}</span>
-                        <span class="{if $order->get('Order For Collection')=='No'}hide{/if}"><i   class="   fa fa-hand-rock-o fa-flip-horizontal button" aria-hidden="true""></i>{t}Collection{/t}</span>
+                        <span class="{if $order->get('Order For Collection')=='No'}hide{/if}"><i   class="   far fa-hand-rock fa-flip-horizontal button" aria-hidden="true""></i>{t}Collection{/t}</span>
 
                     </div>
 
@@ -237,7 +237,7 @@
                 <div id="undo_submit_operations" class="order_operation {if $order->get('State Index')!=30}hide{/if}">
                     <div class="square_button left" title="{t}Send back to basket{/t}">
 												<span class="fa-stack" onclick="toggle_order_operation_dialog('undo_submit')">
-						<i class="fa fa-paper-plane-o discreet " aria-hidden="true"></i>
+						<i class="fa fa-paper-plane discreet " aria-hidden="true"></i>
 						<i class="fa fa-ban fa-stack-1x discreet error"></i>
 						</span>
 
@@ -278,7 +278,7 @@
 
                 <div id="proforma_operations" class="order_operation {if  $order->get('State Index')<10 or  $order->get('State Index')>=90    or  $order->get('Order Number Items')==0 }hide{/if}">
                     <div  class="square_button right  " title="{t}Proforma invoice{/t}">
-                        <a class="" target='_blank' href="/pdf/proforma.pdf.php?id={$order->id}"><i class="fa fa-file-text-o   " style="color:darkseagreen" aria-hidden="true" ></i></a>
+                        <a class="" target='_blank' href="/pdf/proforma.pdf.php?id={$order->id}"><i class="fal fa-file-alt   " style="color:darkseagreen" aria-hidden="true" ></i></a>
 
                     </div>
                 </div>
@@ -286,7 +286,7 @@
 
                 <div id="create_refund_operations" class="order_operation {if {$order->get('State Index')}<100 or $order->get('Order To Pay Amount')!=0 }hide{/if}">
                     <div  class="square_button right  " title="{t}Create refund{/t}">
-                        <i class="fa fa-file-text-o error " aria-hidden="true" onclick="toggle_order_operation_dialog('create_refund')"></i>
+                        <i class="fal fa-file-alt error " aria-hidden="true" onclick="toggle_order_operation_dialog('create_refund')"></i>
                         <table id="create_refund_dialog" border="0" class="order_operation_dialog hide" style="color:#777" >
                             <tr class="top">
                                 <td class="label" colspan="2">{t}Create refund{/t}</td>
@@ -320,7 +320,7 @@
 
                 <div id="create_invoice_operations" class="order_operation {if {$order->get('State Index')}!=80  }hide{/if}">
                     <div  class="square_button right  " title="{t}Create invoice{/t}">
-                        <i class="fa fa-file-text-o  " aria-hidden="true" onclick="toggle_order_operation_dialog('create_invoice')"></i>
+                        <i class="fal fa-file-alt  " aria-hidden="true" onclick="toggle_order_operation_dialog('create_invoice')"></i>
                         <table id="create_invoice_dialog" border="0" class="order_operation_dialog hide">
                             <tr class="top">
                                 <td class="label" colspan="2">{t}Invoice order{/t}</td>
@@ -336,7 +336,7 @@
                 
                 <div id="send_to_warehouse_operations" class="order_operation {if {$order->get('State Index')|intval}>30 or  {$order->get('State Index')|intval}<10   or $order->get('Order Number Items')==0   }hide{/if}">
                     <div  class="square_button right  " title="{t}Send to warehouse{/t}">
-                        <i class="fa fa-map   " aria-hidden="true" onclick="toggle_order_operation_dialog('send_to_warehouse')"></i>
+                        <i class="fas fa-dolly-flatbed-alt" aria-hidden="true" onclick="toggle_order_operation_dialog('send_to_warehouse')"></i>
                         <table id="send_to_warehouse_dialog" border="0" class="order_operation_dialog hide">
                             <tr class="top">
                                 <td class="label" colspan="2">{t}Send to warehouse{/t}</td>
@@ -354,7 +354,7 @@
 
                 <div id="submit_operations" class="order_operation {if $order->get('State Index')!=10   or  $order->get('Order Number Items')==0 }hide{/if}">
                     <div  class="square_button right  " title="{t}Submit{/t}">
-                        <i class="fa fa-paper-plane-o   " aria-hidden="true" onclick="toggle_order_operation_dialog('submit')"></i>
+                        <i class="fa fa-paper-plane   " aria-hidden="true" onclick="toggle_order_operation_dialog('submit')"></i>
                         <table id="submit_dialog" border="0" class="order_operation_dialog hide">
                             <tr class="top">
                                 <td class="label" colspan="2">{t}Submit order{/t}</td>
@@ -475,7 +475,7 @@
 
                 <div class="node" id="invoice_{$invoice->id}">
                     <span class="node_label" >
-                        <i class="fa fa-file-text-o fa-fw {if $invoice->get('Invoice Type')=='Refund'}error {/if}" aria-hidden="true"></i>
+                        <i class="fal fa-file-alt fa-fw {if $invoice->get('Invoice Type')=='Refund'}error {/if}" aria-hidden="true"></i>
                         <span class="link {if $invoice->get('Invoice Type')=='Refund'}error{/if}" onClick="change_view('invoices/{$invoice->get('Invoice Store Key')}/{$invoice->id}')">{$invoice->get('Invoice Public ID')}</span>
                         <a class="pdf_link" target='_blank' href="/pdf/invoice.pdf.php?id={$invoice->id}"> <img style="width: 50px;height:16px;position: relative;top:2px" src="/art/pdf.gif"></a>
                     </span>

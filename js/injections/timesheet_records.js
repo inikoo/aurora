@@ -6,7 +6,7 @@
 
 function toggle_ignore_record(key) {
     var value = $('#used_' + key).attr('value')
-    $('#used_' + key).removeClass('fa-check-square-o fa-square-o')
+    $('#used_' + key).removeClass('fa-check-square-o fa-square')
     $('#used_' + key).addClass('fa-spinner fa-spin')
 
 
@@ -18,11 +18,11 @@ function toggle_ignore_record(key) {
 
         if (data.state == 200) {
             if (data.value == 'Yes') {
-                $('#used_' + key).addClass('fa-square-o')
+                $('#used_' + key).addClass('fa-square')
                 $('#used_' + key).attr('value', 'No')
 
             } else {
-                $('#used_' + key).addClass('fa-check-square-o')
+                $('#used_' + key).addClass('fa-check-square')
                 $('#used_' + key).attr('value', 'Yes')
 
             }
@@ -40,8 +40,8 @@ function toggle_ignore_record(key) {
             $("#inline_new_object_msg").html('').removeClass('success error')
 
         } else if (data.state == 400) {
-            if (value == 'Yes') $('#used_' + key).addClass('fa-check-square-o')
-            else $('#used_' + key).addClass('fa-square-o')
+            if (value == 'Yes') $('#used_' + key).addClass('fa-check-square')
+            else $('#used_' + key).addClass('fa-square')
 
         }
     })

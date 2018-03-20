@@ -57,7 +57,7 @@
 
                             <div  class="fast_track" style="align-items: stretch;flex: 1">
 
-                                <i id="reading_location_barcode" class="fa fa-barcode invisible" aria-hidden="true"></i> <i class="fa fa-map-marker" aria-hidden="true"></i>
+                                <i id="reading_location_barcode" class="fa fa-barcode invisible" aria-hidden="true"></i> <i class="fa fa-inventory" aria-hidden="true"></i>
                                 <input id="booking_in_barcode_location_input" val="" style="width: 150px"> <i class="fa fa-cloud" aria-hidden="true"></i>
 
                             </div>

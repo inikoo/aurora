@@ -357,7 +357,7 @@ $supplier_part_fields[] = array(
             'formatted_value' => ($new ? _('No') : $object->get('Fresh')),
             'label'           => ucfirst(
                     $object->get_field_label('Supplier Part Fresh')
-                ).' <i class="fa fa-lemon-o" aria-hidden="true"></i>',
+                ).' <i class="fa fa-lemon" aria-hidden="true"></i>',
             'required'        => false,
             'type'            => ($supplier->get('Supplier Fresh') == 'Yes' ? 'value' : ''),
 

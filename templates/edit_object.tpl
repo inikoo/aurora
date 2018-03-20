@@ -626,7 +626,7 @@
                                                 <li id="{$field.id}_option_{$value}" label="{$option.label}"
                                                     value="{$value}" is_selected="{$option.selected}"
                                                     onclick="select_option_multiple_choices('{$field.id}','{$value}','{$option.label}' )">
-                                                    <i class="fa fa-fw checkbox {if $option.selected}fa-check-square-o{else}fa-square-o{/if}"></i> {$option.label}
+                                                    <i class="far fa-fw checkbox {if $option.selected}fa-check-square{else}fa-square{/if}"></i> {$option.label}
                                                     <i class="fa fa-circle fw current_mark {if $option.selected}current{/if}"></i>
                                                 </li>
                                             {/foreach}

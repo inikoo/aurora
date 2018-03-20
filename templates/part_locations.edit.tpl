@@ -12,7 +12,7 @@
 
 
               <span class="picking_location_note" style="margin-right: 3px">
-                <i onclick="set_part_location_note_bis(this)" key="{$part_sku}_{$location_data.location_key}" class="button fa fa-fw   {if $location_data.note==''}super_discreet_on_hover fa-sticky-note-o{else}fa-sticky-note{/if}   " aria-hidden="true" title="{t}Part's location note{/t}" ></i>
+                <i onclick="set_part_location_note_bis(this)" key="{$part_sku}_{$location_data.location_key}" class="button  fa-fw   {if $location_data.note==''}super_discreet_on_hover far fa-sticky-note{else}fa fa-sticky-note{/if}   " aria-hidden="true" title="{t}Part's location note{/t}" ></i>
                      <div  class="hide picking_location_note_value">{$location_data.note}</div>
               </span>
 
@@ -49,19 +49,19 @@
 	        </span>
         </td>
         <td class="aright  last_audit_days">{$location_data.days_last_audit}</td>
-        <td class="aright  formatted_stock">{$location_data.formatted_stock}  <i onclick="open_sent_part_to_production(this)" location_key="{$location_data.location_key}" max="{$location_data.stock}"  class="fa fa-hand-rock-o padding_left_10 button production_supply_edit {if $part->get('Part Production Supply')=='No'}hide{/if}" aria-hidden="true"></i> </td>
+        <td class="aright  formatted_stock">{$location_data.formatted_stock}  <i onclick="open_sent_part_to_production(this)" location_key="{$location_data.location_key}" max="{$location_data.stock}"  class="far fa-hand-rock padding_left_10 button production_supply_edit {if $part->get('Part Production Supply')=='No'}hide{/if}" aria-hidden="true"></i> </td>
         <td class="aright  hide stock_input"><span class="stock_change"></span>
 
-            <i class="fa fa-dot-circle-o button super_discreet set_as_audit" aria-hidden="true"
+            <i class="far fa-dot-circle button super_discreet set_as_audit" aria-hidden="true"
                title="{t}Mark as audited{/t}" onclick="set_as_audit(this)"></i>
             <input class="stock" style="width:60px" action="" location_key="{$location_data.location_key}"
                    ovalue="{$location_data.stock}" value="{$location_data.stock}">
 
             <input type="hidden" class="note" value="">
-            <i class="fa fa-sticky-note-o button super_discreet add_note invisible " aria-hidden="true"
+            <i class="far fa-sticky-note button super_discreet add_note invisible " aria-hidden="true"
                title="{t}Note{/t}" onclick="set_inventory_transaction_note(this)"></i>
 
-            <i class="fa fa-fw fa-caret-square-o-right move_trigger button super_discreet  " aria-hidden="true"
+            <i class="fa fa-fw fa-forklift move_trigger button super_discreet  " aria-hidden="true"
                title="{t}Move from{/t}" onclick="move(this)"></i></td>
     </tr>
 
@@ -111,15 +111,15 @@
     <td class="aright  formatted_stock">0</td>
     <td class="aright  hide stock_input"><span class="stock_change"></span>
 
-        <i class="fa fa-dot-circle-o button super_discreet set_as_audit" aria-hidden="true"
+        <i class="far fa-dot-circle button super_discreet set_as_audit" aria-hidden="true"
            title="{t}Mark as audited{/t}" onclick="set_as_audit(this)"></i>
         <input class="stock" style="width:60px" action="" location_key="0" ovalue="0" value="0">
 
         <input type="hidden" class="note" value="">
-        <i class="fa fa-sticky-note-o button super_discreet add_note invisible " aria-hidden="true" title="{t}Note{/t}"
+        <i class="far fa-sticky-note button super_discreet add_note invisible " aria-hidden="true" title="{t}Note{/t}"
            onclick="set_inventory_transaction_note(this)"></i>
 
-        <i class="fa fa-fw fa-caret-square-o-right move_trigger button super_discreet invisible " aria-hidden="true"
+        <i class="fa fa-fw fa-forklift move_trigger button super_discreet invisible " aria-hidden="true"
            title="{t}Move from{/t}" onclick="move(this)"></i></td>
 
 </tr>

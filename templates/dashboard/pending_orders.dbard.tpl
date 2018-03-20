@@ -62,8 +62,8 @@
     <li class="flex-item">
         <span>{t}Submitted{/t}</span>
         <div class="title"><span class="" >
-                <span class="Orders_In_Process_Not_Paid_Number button" title="{t}Unpaid submitted orders{/t}"  onclick="go_to_orders('submitted_not_paid')" ><i style="font-size: 50%" class="fa fa-usd discreet" aria-hidden="true"></i> {$object->get('Orders In Process Not Paid Number')}</span> | </span>
-            <span class="Orders_In_Process_Paid_Number button" title="{t}Paid submitted orders{/t}"  onclick="go_to_orders('submitted')">{$object->get('Orders In Process Paid Number')}  <i style="font-size: 50%" class="fa fa-usd success" aria-hidden="true"></i></span> </div>
+                <span class="Orders_In_Process_Not_Paid_Number button" title="{t}Unpaid submitted orders{/t}"  onclick="go_to_orders('submitted_not_paid')" ><i style="font-size: 50%" class="fa fa-dollar-sign discreet" aria-hidden="true"></i> {$object->get('Orders In Process Not Paid Number')}</span> | </span>
+            <span class="Orders_In_Process_Paid_Number button" title="{t}Paid submitted orders{/t}"  onclick="go_to_orders('submitted')">{$object->get('Orders In Process Paid Number')}  <i style="font-size: 50%" class="fa fa-dollar-sign success" aria-hidden="true"></i></span> </div>
         <div >
             <span class=""><span class="Orders_In_Process_Not_Paid_Amount" title="{if $currency=='account'}{$object->get('DC Orders In Process Not Paid Amount')}{else}{$object->get('Orders In Process Not Paid Amount')}{/if}">{if $currency=='account'}{$object->get('DC Orders In Process Not Paid Amount Minify')}{else}{$object->get('Orders In Process Not Paid Amount Minify')}{/if}</span> | </span>
             <span class="Orders_In_Process_Paid_Amount" title="{if $currency=='account'}{$object->get('DC Orders In Process Paid Amount')}{else}{$object->get('Orders In Process Paid Amount')}{/if}">{if $currency=='account'}{$object->get('DC Orders In Process Paid Amount Minify')}{else}{$object->get('Orders In Process Paid Amount Minify')}{/if}</span></div>
@@ -88,7 +88,7 @@
         <span>{t}Invoicing{/t}</span>
         <div class="title">
             <span class=" button" title="{t}Closed orders waiting to be invoiced{/t}"  onclick="go_to_orders('packed_done')"><i style="font-size: 50%" class=" fa fa-archive " aria-hidden="true"></i> <span class="Orders_Packed_Number">{$object->get('Orders Packed Number')}</span></span> |
-            <span class=" button" title="{t}Invoiced orders waiting to be dispatched{/t}"   onclick="go_to_orders('approved')"><span class="Orders_Dispatch_Approved_Number">{$object->get('Orders Dispatch Approved Number')}</span> <i style="font-size: 50%" class="fa fa-file-text-o" aria-hidden="true"></i></span>
+            <span class=" button" title="{t}Invoiced orders waiting to be dispatched{/t}"   onclick="go_to_orders('approved')"><span class="Orders_Dispatch_Approved_Number">{$object->get('Orders Dispatch Approved Number')}</span> <i style="font-size: 50%" class="fal fa-file-alt" aria-hidden="true"></i></span>
         </div>
         <div >
             <span class="Orders_Packed_Amount" title="{if $currency=='account'}{$object->get('DC Orders Packed Amount')}{else}{$object->get('Orders Packed Amount')}{/if}">{if $currency=='account'}{$object->get('DC Orders Packed Amount Minify')}{else}{$object->get('Orders Packed Amount Minify')}{/if}</span> |

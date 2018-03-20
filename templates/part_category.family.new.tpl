@@ -36,7 +36,7 @@
                            class="fa button fa-hand-stop-o error hide" title="{t}Stop{/t}"></i>
                     </td>
                     <td id="export_table_excel" class="link" onclick="export_table('excel')"><i
-                                class="fa fa-file-excel-o" title="Excel"></i>Excel
+                                class="fa fa-file-excel" title="Excel"></i>Excel
                     </td>
                 </tr>
                 <tr>
@@ -70,7 +70,7 @@
                         <td></td>
                         <td style="width_20" class="field_export ">
                             <i id="toggle_all_export_fields" onclick="toggle_all_export_fields(this)"
-                               class="button fa-fw fa fa-square-o"></i>
+                               class="button fa-fw fa fa-square"></i>
                         </td>
                     </tr>
                     <tbody id="export_fields">
@@ -79,7 +79,7 @@
                             <td>{$export_field.label}</td>
                             <td style="width_20" class="field_export">
                                 <i id="field_export_{$_key}" onclick="toggle_export_field({$_key})" key="{$_key}"
-                                   class="button fa-fw object_field fa {if $export_field.show_for_new }fa-check-square-o{else}fa-square-o{/if}"></i>
+                                   class="button fa-fw object_field far {if $export_field.show_for_new }fa-check-square{else}fa-square{/if}"></i>
                             </td>
                         </tr>
                     {/foreach}
@@ -252,7 +252,7 @@
 
         var fields = []
         $('#export_dialog_config .field_export i.object_field').each(function (index, obj) {
-            if ($(obj).hasClass('fa-check-square-o')) fields.push($(obj).attr('key'))
+            if ($(obj).hasClass('fa-check-square')) fields.push($(obj).attr('key'))
         });
 
         var request = "/ar_export_edit_template.php?parent={$export_parent}&parent_key={$export_parent_key}&parent_code={$export_parent_code}&objects={$objects}&fields=" + JSON.stringify(fields) + '&type=' + type + '&metadata=' + JSON.stringify({

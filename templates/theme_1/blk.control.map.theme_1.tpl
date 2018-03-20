@@ -12,9 +12,15 @@
 
 <div id="edit_mode_{$key}" class=" edit_mode " type="{$block.type}" key="{$key}" style="height: 22px;line-height: 22px">
     <div style="float:left;margin-right:20px;min-width: 200px;">
-        <div style="float:left;min-width: 200px;position: relative;top:2px">
+        <div style="float:left;min-width: 200px;">
             <i class="fa fa-fw {$block.icon}" style="margin-left:10px" aria-hidden="true" title="{$block.label}"></i>
             <span class="label">{$block.label}</span>
+
+
+            <span style="margin-left:50px">{t}Margin{/t}:</span>
+            <input data-margin="top" class=" edit_margin top" value="{if isset($block.top_margin)}{$block.top_margin}{else}0{/if}"  placeholder="0"><input data-margin="bottom" class=" edit_margin bottom" value="{if isset($block.bottom_margin)}{$block.bottom_margin}{else}0{/if}" style="" placeholder="0">
+
+
         </div>
 
     </div>

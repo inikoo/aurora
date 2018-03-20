@@ -10,7 +10,7 @@ cell: "string",
 
 {
 name: "part_status",
-label: '<i class="fa fa-shopping-bag fa-fw very_discreet" aria-hidden="true"></i>',
+label: '<i class="fa fa-shopping-basket fa-fw very_discreet" aria-hidden="true"></i>',
 editable: false,
 title: '{t}Required by client{/t}',
 sortType: "toggle",

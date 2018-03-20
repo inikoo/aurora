@@ -363,7 +363,7 @@ class Part extends Asset {
                         $_next_delivery_time = strtotime($row['Purchase Order Estimated Receiving Date'].' +0:00');
                         $date                = strftime("%e %b %y", strtotime($row['Purchase Order Estimated Receiving Date'].' +0:00'));
                         $link                = sprintf(
-                            '<span class="link" onclick="change_view(\'suppliers/order/%d\')"><i class="fa fa-clipboard" aria-hidden="true"></i> %s</span> <i class="fa fa-paper-plane-o" aria-hidden="true"></i>', $row['Purchase Order Key'],
+                            '<span class="link" onclick="change_view(\'suppliers/order/%d\')"><i class="fa fa-clipboard" aria-hidden="true"></i> %s</span> <i class="fa fa-paper-plane" aria-hidden="true"></i>', $row['Purchase Order Key'],
                             $row['Purchase Order Public ID']
                         );
                         $qty                 = '+'.number($row['Purchase Order Quantity']);
@@ -906,7 +906,7 @@ class Part extends Asset {
                     if ($this->data['Part Fresh'] == 'No') {
                         $available_forecast .= ' <i class="fa fa-fighter-jet padding_left_5" aria-hidden="true" title="'._('On demand').'"></i>';
                     } else {
-                        $available_forecast = ' <i class="fa fa-lemon-o padding_left_5" aria-hidden="true" title="'._('On demand').'"></i>';
+                        $available_forecast = ' <i class="far fa-lemon padding_left_5" aria-hidden="true" title="'._('On demand').'"></i>';
                     }
                 } else {
                     $available_forecast = '<span >'.sprintf(
@@ -2509,7 +2509,7 @@ class Part extends Asset {
                                                 break;
                                             case 'Storing':
                                                 $used_for = sprintf(
-                                                    '<i class="fa fa-fw  fa-hdd-o" aria-hidden="true" title="%s"></i>', _('Storing')
+                                                    '<i class="fa fa-fw  fa-hdd" aria-hidden="true" title="%s"></i>', _('Storing')
                                                 );
                                                 break;
                                             default:
@@ -2551,11 +2551,11 @@ class Part extends Asset {
                         'can_pick'        => $row['Can Pick'],
                         'label'           => ($row['Can Pick'] == 'Yes' ? _('Picking location') : _('Set as picking location')),
                         'days_last_audit' => ($row['days_last_audit'] == ''
-                            ? '<span title="'._('Never been audited').'">-</span> <i class="fa fa-clock-o padding_right_10" aria-hidden="true"></i> '
+                            ? '<span title="'._('Never been audited').'">-</span> <i class="far fa-clock padding_right_10" aria-hidden="true"></i> '
                             : sprintf(
                                 '<span title="%s">%s</span>', sprintf(_('Last audit %s'), strftime("%a %e %b %Y %H:%M %Z", strtotime($row['Part Location Last Audit'].' +0:00')), $row['Part Location Last Audit']),
                                 ($row['days_last_audit'] > 999 ? '<span class="error">+999</span>' : number($row['days_last_audit']))
-                            ).' <i class="fa fa-clock-o padding_right_10" aria-hidden="true"></i>')
+                            ).' <i class="far fa-clock padding_right_10" aria-hidden="true"></i>')
 
 
                     );

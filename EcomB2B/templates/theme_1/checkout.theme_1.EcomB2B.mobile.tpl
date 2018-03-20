@@ -76,9 +76,10 @@
             {if  $order->get('Order Basket To Pay Amount')!=0}
 
             {assign "payment_accounts" $website->get_payment_accounts($order->get('Order Delivery Address Country 2 Alpha Code'))  }
+                {assign "number_payment_accounts"  $payment_accounts|count  }
 
 
-            <div class="menu-bottom-bar menu-bottom-bar-four color-menu-bar menu-bottom-bar-text flat-menu-bar">
+                <div class="menu-bottom-bar menu-bottom-bar-{if $number_payment_accounts==1}one{elseif $number_payment_accounts==2 }two{elseif $number_payment_accounts==3 }three{elseif $number_payment_accounts==4 }four{else}five{/if} color-menu-bar menu-bottom-bar-text flat-menu-bar">
 
                 {foreach from=$payment_accounts item=payment_account key=key name=foo}
 
@@ -86,7 +87,7 @@
 
 
                     <a  class="but like_button payment_method_button no-smoothState {if $smarty.foreach.foo.first}bg-blue-light border-blue-dark{else}bg-black border-gray-dark{/if}" {if !$smarty.foreach.foo.first} style="opacity: .2"{/if}  data-tab="payment_account_item_{$payment_account.object->get('Block')}">
-                        <i class="fa {$payment_account.icon}" aria-hidden="true"></i>
+                        <i class="{$payment_account.icon}" aria-hidden="true"></i>
                         <em>{if $payment_account.tab_label==''}{$content[$payment_account.tab_label_index]}{else}{$payment_account.tab_label}{/if}</em>
                     </a>
 

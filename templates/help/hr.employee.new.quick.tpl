@@ -27,7 +27,7 @@ About:
             <li><b>{t}Next of kind{/t}.</b> <i>({t}optional but important in case of an emergency{/t})</i></li>
             <li><b>{t}Type{/t}.</b> {t}Employment type.
                     <br>
-                    <i class="fa fa-lightbulb-o"></i>
+                    <i class="fa fa-lightbulb"></i>
                     For adding contractors click
                     <span class="link" onclick="change_view('contractor/new')">here</span>
                 {/t}</li>

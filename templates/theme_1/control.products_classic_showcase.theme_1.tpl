@@ -43,11 +43,11 @@
 
         {if $block=='intro'}
             {assign 'can_control' 1}
-            {assign 'icon' 'fa-smile-o'}
+            {assign 'icon' 'fa-smile'}
             {assign 'label' "{t}Intro{/t}"}
         {elseif $block=='catalogue'}
             {assign 'can_control' 0}
-            {assign 'icon' 'fa-shopping-bag'}
+            {assign 'icon' 'fa-shopping-basket'}
             {assign 'label' "{t}Catalogue{/t}"}
         {/if}
 

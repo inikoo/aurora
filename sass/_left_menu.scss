@@ -33,10 +33,10 @@
     &:last-of-type, &.last {
       border-bottom: 1px solid $color_dark_darker_font;
     }
-    .fa {
+    .fa,.fal,.fas,.far,.fab  {
       margin-right: 6px;
       font-size: 95%;
-      opacity: .20;
+      opacity: .50;
       &.highlight {
         opacity: 1
       }
@@ -47,7 +47,7 @@
       &:last-of-type {
         border-bottom: 1px solid $color_dark_darker_font;
       }
-      .fa {
+      .fa,.fal,.fas,.far,.fab  {
         opacity: 1;
       }
     }
@@ -60,7 +60,7 @@
   }
   li.selected, li.selected:hover {
     color: $color_dark_font_selected;
-    .fa {
+    .fa,.fal,.fas,.far,.fab  {
       opacity: .75;
     }
   }
@@ -70,7 +70,7 @@
 
   li.current_step, li.current_step:hover {
     color: $color_dark_font_current;
-    .fa {
+    .fa,.fal,.fas,.far,.fab {
       //  opacity: .75;
     }
   }
