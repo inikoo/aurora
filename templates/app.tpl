@@ -23,23 +23,23 @@
         <link href="/css/d3fc.css" rel="stylesheet">
         <link href="/css/backgrid.css?v=211917" rel="stylesheet">
         <link href="/css/backgrid-filter.css" rel="stylesheet">
-        <link href="/css/editor/froala_editor.css" rel="stylesheet">
-        <link href="/css/editor/froala_style.css" rel="stylesheet">
-        <link href="/css/editor/codemirror.css" rel="stylesheet">
-        <link href="/css/editor/codemirror_dracula.css" rel="stylesheet">
-        <link href="/css/editor/plugins/char_counter.css" rel="stylesheet">
-        <link href="/css/editor/plugins/code_view.css" rel="stylesheet">
-        <link href="/css/editor/plugins/colors.css" rel="stylesheet">
-        <link href="/css/editor/plugins/emoticons.css" rel="stylesheet">
-        <link href="/css/editor/plugins/file.css" rel="stylesheet">
-        <link href="/css/editor/plugins/fullscreen.css" rel="stylesheet">
-        <link href="/css/editor/plugins/image.css" rel="stylesheet">
-        <link href="/css/editor/plugins/image_manager.css" rel="stylesheet">
-        <link href="/css/editor/plugins/line_breaker.css" rel="stylesheet">
-        <link href="/css/editor/plugins/quick_insert.css" rel="stylesheet">
-        <link href="/css/editor/plugins/table.css" rel="stylesheet">
-        <link href="/css/editor/plugins/video.css" rel="stylesheet">
-        <link href="/css/editor/plugins/draggable.css" rel="stylesheet">
+        <link href="/css/editor_v1/froala_editor.css?v2" rel="stylesheet">
+        <link href="/css/editor_v1/froala_style.css?v2" rel="stylesheet">
+        <link href="/css/editor_v1/codemirror.css" rel="stylesheet">
+        <link href="/css/editor_v1/codemirror_dracula.css" rel="stylesheet">
+        <link href="/css/editor_v1/plugins/char_counter.css" rel="stylesheet">
+        <link href="/css/editor_v1/plugins/code_view.css" rel="stylesheet">
+        <link href="/css/editor_v1/plugins/colors.css" rel="stylesheet">
+        <link href="/css/editor_v1/plugins/emoticons.css" rel="stylesheet">
+        <link href="/css/editor_v1/plugins/file.css" rel="stylesheet">
+        <link href="/css/editor_v1/plugins/fullscreen.css" rel="stylesheet">
+        <link href="/css/editor_v1/plugins/image.css" rel="stylesheet">
+        <link href="/css/editor_v1/plugins/image_manager.css" rel="stylesheet">
+        <link href="/css/editor_v1/plugins/line_breaker.css" rel="stylesheet">
+        <link href="/css/editor_v1/plugins/quick_insert.css" rel="stylesheet">
+        <link href="/css/editor_v1/plugins/table.css" rel="stylesheet">
+        <link href="/css/editor_v1/plugins/video.css" rel="stylesheet">
+        <link href="/css/editor_v1/plugins/draggable.css" rel="stylesheet">
 
         <link href="/css/amcharts/style.css" rel="stylesheet">
 
@@ -82,7 +82,7 @@
         <script src="/js/table.js?v3"></script>
         <script src="/js/validation.js?v171206v5"></script>
         <script src="/js/edit.js?v171229v8"></script>
-        <script src="/js/edit_webpage_edit.js?v180318v5"></script>
+        <script src="/js/edit_webpage_edit.js?v180318v7"></script>
 
         <script src="/js/new.js?v180302v10"></script>
         <script src="/js/order.common.js?v180314v5"></script>
@@ -95,7 +95,7 @@
         <script src="/js/alert_dial.js?v20180128v2"></script>
 
         <script src="/utils/country_data.js.php?locale={$locale}"></script>
-        <script src="/js/libs/editor/froala_editor.min.js"></script>
+        <script src="/js/libs/editor/froala_editor.min.js?v1"></script>
         <script src="/js/libs/editor/codemirror.js"></script>
         <script src="/js/libs/editor/codemirror.xml.js"></script>
         <script src="/js/libs/editor/codemirror_active-line.js"></script>

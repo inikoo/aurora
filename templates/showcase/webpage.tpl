@@ -10,19 +10,11 @@
 *}
 
 <div class="name_and_categories">
-
     {if $webpage->get('Webpage Scope')=='Info'}
         <span class="strong">{t}Information page{/t}</span>
-
     {else}
-
         <span class="strong">{$webpage->get('Webpage Scope')}</span>
-
-
     {/if}
-
-
-
     <ul class="tags " style="float:right">
         {foreach from=$webpage->get_parents_data() item=item key=key}
             <li><span class="button" onclick="change_view('category/{$item.category_key}')" title="{$item.label}">{$item.code}</span></li>
