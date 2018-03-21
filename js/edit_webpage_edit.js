@@ -652,37 +652,38 @@ $(document).on('input propertychange', '.edit_margin', function (evt) {
 
 $(document).on('click', '#text_layout_ideas img', function () {
 
-    console.log('aaaa')
+    var template = $(this).attr('template')
+    var block_key = $('#text_layout_ideas').data('block_key')
 
-
-    var template=$(this).attr('template')
-
-
-var block_key= $('#text_layout_ideas').data('block_key')
-
-
-    console.log(block_key)
-
-    $("#preview")[0].contentWindow.change_text_template(block_key,template);
-
-
-
+    $("#preview")[0].contentWindow.change_text_template(block_key, template);
     $('#text_layout_ideas').addClass('hide')
-
     $('#save_button').addClass('save button changed valid')
 
 
 });
 
+$(document).on('click', '#images_layout_ideas img', function () {
+
+    var template = $(this).attr('template')
+    var block_key = $('#images_layout_ideas').data('block_key')
+
+console.log(template)
+    $("#preview")[0].contentWindow.change_image_template(block_key, template);
+
+
+    $('#images_layout_ideas').addClass('hide')
+    $('#save_button').addClass('save button changed valid')
+});
+
 
 function change_text_template(element) {
 
-
     $('#text_layout_ideas').removeClass('hide').data('block_key',$(element).closest('.edit_mode').attr('key'))
 
-
-  //  $('#preview').contents().find('#header').removeClass('hide')
-
+}
 
 
+
+function change_images_template(element) {
+    $('#images_layout_ideas').removeClass('hide').data('block_key',$(element).closest('.edit_mode').attr('key'))
 }

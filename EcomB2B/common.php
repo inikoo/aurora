@@ -113,7 +113,7 @@ if (!$is_cached) {
         $detected_device = 'desktop';
 
     }
-
+    //$detected_device = 'tablet';
 
 
 

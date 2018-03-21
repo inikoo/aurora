@@ -20,6 +20,6 @@
                 {if !empty($image.link)}</a>{/if}
             <figcaption class="{$image.caption_class}">{$image.caption}</figcaption>
         </figure>
- </span>
+     </span>
     {/foreach}
 </div>

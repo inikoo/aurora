@@ -29,15 +29,16 @@
 
     <link href="/css/sweetalert.css" rel="stylesheet">
 
+    <link rel="stylesheet" type="text/css" href="/theme_1/mobile/style.css?v=180301v6">
+
     <link rel="stylesheet" type="text/css" href="/theme_1/mobile/skin.css">
     <link rel="stylesheet" type="text/css" href="/theme_1/mobile/framework.css?v=171011b">
     <link rel="stylesheet" type="text/css" href="/theme_1/mobile/ionicons.min.css">
     <link rel="stylesheet" type="text/css" href="/theme_1/sky_forms/css/sky-forms.css?v=2"  media="all">
-    <link rel="stylesheet" type="text/css" href="/theme_1/css/aurora.theme_1.EcomB2B.mobile.css?v=171011v2" />
+    <link rel="stylesheet" type="text/css" href="/theme_1/css/aurora.theme_1.EcomB2B.mobile.css?v=180321v1" />
 
     <link rel="stylesheet" href="/css/fontawesome-all.min.css" type="text/css"/>
 
-    <link rel="stylesheet" type="text/css" href="/theme_1/mobile/style.css?v=180301v6">
 
     <script src="/theme_1/mobile/jquery.js"></script>
     <script src="/theme_1/mobile/plugins.js"></script>
