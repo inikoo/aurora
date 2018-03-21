@@ -40,7 +40,7 @@
     <link rel="shortcut icon" href="images/favicon.ico">
  Favicon -->
 
-
+    <link rel="canonical" href="{$webpage->get('URL')}"/>
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <!--[if lt IE 9]>
     <script src="https://html5shim.googlecode.com/svn/trunk/html5.js"></script>

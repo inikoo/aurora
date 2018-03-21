@@ -586,6 +586,89 @@
     });
 
 
+
+
+    $("#poll_details").validate(
+        {
+
+            submitHandler: function(form)
+            {
+
+                var button=$('#save_poll_details');
+
+                if(button.hasClass('wait')){
+                    return;
+                }
+
+                button.addClass('wait')
+                button.find('i').removeClass('fa-save').addClass('fa-spinner fa-spin')
+
+
+                var poll_data={ }
+
+                $("#poll_details textarea:not(.ignore)").each(function(i, obj) {
+                    if(!$(obj).attr('name')==''){
+                        poll_data[$(obj).attr('name')]=$(obj).val()
+                    }
+
+                });
+
+                $("#poll_details select:not(.ignore)").each(function(i, obj) {
+                    if(!$(obj).attr('name')==''){
+
+
+                        poll_data[$(obj).attr('name')]=$(obj).val()
+                    }
+
+                });
+
+
+                //  register_data['pwd']=sha256_digest(register_data['pwd']);
+
+                var ajaxData = new FormData();
+
+                ajaxData.append("tipo", 'poll')
+
+                ajaxData.append("data", JSON.stringify(poll_data))
+
+                $.ajax({
+                    url: "/ar_web_profile.php", type: 'POST', data: ajaxData, dataType: 'json', cache: false, contentType: false, processData: false,
+                    complete: function () {
+                    }, success: function (data) {
+
+                        console.log(data)
+
+                        if (data.state == '200') {
+
+
+
+
+                        } else if (data.state == '400') {
+                            swal("{t}Error{/t}!", data.msg, "error")
+                        }
+
+                        button.removeClass('wait')
+                        button.find('i').addClass('fa-save').removeClass('fa-spinner fa-spin')
+
+                    }, error: function () {
+                        button.removeClass('wait')
+                        button.find('i').addClass('fa-save').removeClass('fa-spinner fa-spin')
+                    }
+                });
+
+
+            },
+
+
+
+            // Do not change code below
+            errorPlacement: function(error, element)
+            {
+                error.insertAfter(element.parent());
+            }
+        });
+
+
     $("#contact_details").validate(
         {
 
