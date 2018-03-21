@@ -744,9 +744,7 @@ $(document).ready(function(){
         var swiper_quote_slider = new Swiper('.quote-slider',{autoplay:4000, loop:true});
         var swiper_text_slider = new Swiper('.text-slider',{autoplay:2000, loop:true});
         var swiper_call_to_action = new Swiper('.call-to-action-slider',{autoplay:4000, slidesPerView:1, loop:true});
-        var swiper_store_slider = new Swiper('.store-slider', {autoplay:3000, loop:true});
-        var swiper_store_slider2 = new Swiper('.store-slider-2', {autoplay:3000, loop:true});
-     
+
 		
 		var swiper_store_thumbnail_slider = new Swiper('.store-thumbnails', {
             pagination: '.swiper-pagination',

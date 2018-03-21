@@ -28,19 +28,24 @@
     <meta name="description" content="{$webpage->get('Webpage Meta Description')}"/>
 
     <link href="/css/sweetalert.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/Swiper/4.2.0/css/swiper.min.css">
 
-    <link rel="stylesheet" type="text/css" href="/theme_1/tablet/style.css?v=180301">
+    <link rel="stylesheet" type="text/css" href="/theme_1/tablet/style.css?v=static">
     <link rel="stylesheet" type="text/css" href="/theme_1/tablet/skin.css">
     <link rel="stylesheet" type="text/css" href="/theme_1/tablet/framework.css?v=171011b">
     <link rel="stylesheet" type="text/css" href="/theme_1/tablet/ionicons.min.css">
     <link rel="stylesheet" type="text/css" href="/theme_1/sky_forms/css/sky-forms.css"  media="all">
-    <link rel="stylesheet" type="text/css" href="/theme_1/css/aurora.theme_1.EcomB2B.mobile.css?v=171011" />
-    <link rel="stylesheet" href="/theme_1/local/font-awesome/css/font-awesome.min.css">
+    <link rel="stylesheet" type="text/css" href="/theme_1/css/aurora.theme_1.EcomB2B.tablet.css?v=180321v1" />
+
+
+
+    <link rel="stylesheet" href="/css/fontawesome-all.min.css" type="text/css"/>
 
 
     <script src="/theme_1/tablet/jquery.js"></script>
-    <script src="/theme_1/tablet/plugins.js"></script>
-    <script src="/theme_1/tablet/custom.js"></script>
+    <script src="/theme_1/tablet/plugins.js?v2"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/Swiper/4.2.0/js/swiper.min.js"></script>
+    <script src="/theme_1/tablet/custom.js?V2"></script>
     <script src="/js/sweetalert.min.js"></script>
 
     <script src="/theme_1/local/jquery-ui.js"></script>

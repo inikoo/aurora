@@ -1401,7 +1401,7 @@ class Public_Product {
         } elseif ($scope == 'data') {
 
             $sql = sprintf(
-                'SELECT `Webpage Code`,`Category Label`,`Category Code` FROM  `Category Dimension` C LEFT JOIN `Product Category Dimension`  ON (C.`Category Key`=`Product Category Key`) 
+                'SELECT `Webpage Code`,`Category Label`,`Category Code`,`Category Subject`,`Category Parent Key`,`Category Key` FROM  `Category Dimension` C LEFT JOIN `Product Category Dimension`  ON (C.`Category Key`=`Product Category Key`) 
         LEFT JOIN `Page Store Dimension` ON (`Page Key`=`Product Category Webpage Key`)  WHERE C.`Category Key`=%d ', $this->data['Product Family Category Key']
             );
 
@@ -1409,12 +1409,55 @@ class Public_Product {
 
         if ($result = $this->db->query($sql)) {
             if ($row = $result->fetch()) {
+
+
+
+
+
                 $parent_category = array(
                     'label'        => $row['Category Label'],
                     'code'         => $row['Category Code'],
                     'webpage_code' => strtolower($row['Webpage Code'])
 
                 );
+
+
+
+
+
+                $sql = sprintf(
+                    "SELECT `Webpage Code`,B.`Category Key`,`Category Root Key`,`Other Note`,`Category Label`,`Category Code`,`Is Category Field Other` 
+        FROM `Category Bridge` B 
+        LEFT JOIN `Category Dimension` C ON (C.`Category Key`=B.`Category Key`) 
+        LEFT JOIN `Page Store Dimension` W ON (W.`Webpage Scope Key`=B.`Category Key` AND `Webpage Scope`=%s) 
+
+          WHERE  `Category Branch Type`='Head'  AND B.`Subject Key`=%d AND B.`Subject`=%s",
+
+                    prepare_mysql('Category Categories'),
+
+                    $row['Category Key'], prepare_mysql('Category')
+                );
+
+
+
+
+                if ($result2=$this->db->query($sql)) {
+                    if ($row2= $result2->fetch()) {
+                        $parent_category['parent']=array(
+                            'label'        => $row2['Category Label'],
+                            'code'         => $row2['Category Code'],
+                            'webpage_code' => strtolower($row2['Webpage Code'])
+
+                        );
+                    }
+                }else {
+                    print_r($error_info=$this->db->errorInfo());
+                    print "$sql\n";
+                    exit;
+                }
+
+
+
             }
         } else {
             print_r($error_info = $this->db->errorInfo());

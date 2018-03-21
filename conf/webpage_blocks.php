@@ -66,7 +66,7 @@ function get_webpage_blocks($theme = '') {
                     '_text'     => 'When an unknown printer took a galley of type and scrambled it to make a type specimen book. It has survived not only five centuries, but also electronics typesetting, remaining essentially believable.',
                 ),
         */
-        /*
+
         'two_pack'   => array(
             'type'  => 'two_pack',
             'label' => _('Two-Pack'),
@@ -110,7 +110,7 @@ function get_webpage_blocks($theme = '') {
 
 
         ),
-        */
+
 
         'six_pack'   => array(
             'type'  => 'six_pack',
@@ -169,7 +169,7 @@ function get_webpage_blocks($theme = '') {
 
         ),
 
-        /*
+
         'two_one'    => array(
             'type'  => 'two_one',
             'label' => _('Two-One'),
@@ -193,7 +193,7 @@ function get_webpage_blocks($theme = '') {
 
         ),
 
-        */
+
 
         'button'     => array(
             'type'              => 'button',

@@ -135,6 +135,7 @@
     .text_template_211 > div:nth-child(2) {
         width: calc(100% / 4 * 1);
     }
+
     .text_template_211 > div:nth-child(3) {
         width: calc(100% / 4 * 1);
     }
@@ -193,7 +194,7 @@
 
 
 <div id="template_4" class="hide">
-<span class=" image">
+<span class="image"   >
         <figure>
             <img class="button" src="https://placehold.it/300x250" alt=""  data-width="300" display_class="caption_left">
             <figcaption contenteditable="true" class="caption_left" >{t}Caption{/t}</figcaption>
@@ -221,7 +222,7 @@
 
 
 <div id="template_12" class="hide">
-<span class=" image">
+<span class="image" >
         <figure>
             <img class="button" src="https://placehold.it/400x250" data-width="400" alt="" display_class="caption_left">
             <figcaption contenteditable="true" class="caption_left" >{t}Caption{/t}</figcaption>
@@ -237,7 +238,7 @@
 </div>
 
 <div id="template_21" class="hide">
-<span class=" image">
+<span class="image" >
         <figure>
             <img class="button" src="https://placehold.it/800x250" data-width="800"  alt="" display_class="caption_left">
             <figcaption contenteditable="true" class="caption_left" >{t}Caption{/t}</figcaption>
@@ -254,7 +255,7 @@
 
 
 <div id="template_13" class="hide">
-<span class=" image">
+<span class="image"  >
         <figure>
             <img class="button" src="https://placehold.it/310x250" data-width="310"  alt="" display_class="caption_left">
             <figcaption contenteditable="true" class="caption_left" >{t}Caption{/t}</figcaption>
@@ -273,7 +274,7 @@
 
 
 <div id="template_31" class="hide">
-<span class=" image">
+<span class="image"  >
         <figure>
             <img class="button" src="https://placehold.it/910x250"  data-width="910" alt="" display_class="caption_left">
             <figcaption contenteditable="true" class="caption_left" >{t}Caption{/t}</figcaption>
@@ -292,7 +293,7 @@
 
 
 <div id="template_211" class="hide">
-<span class=" image">
+<span class="image"  >
         <figure>
             <img class="button" src="https://placehold.it/600x250"  data-width="600" alt="" display_class="caption_left">
             <figcaption contenteditable="true" class="caption_left" >{t}Caption{/t}</figcaption>
@@ -608,7 +609,9 @@
         content_data = {};
 
         var blocks = []
-        var labels = {};
+        var labels = {
+
+        };
 
 
         $('._block').each(function (i, obj) {
@@ -653,7 +656,8 @@
                         bottom_margin: $(obj).attr('bottom_margin'),
 
                         template: $(obj).find('.text_blocks').data('template'),
-                        text_blocks: text_blocks
+                        text_blocks: text_blocks,
+
                     })
 
                     break;
@@ -685,8 +689,8 @@
                         top_margin: $(obj).attr('top_margin'),
                         bottom_margin: $(obj).attr('bottom_margin'),
 
-                        images: images
-
+                        images: images,
+                        template:$(obj).find('.blk_images').attr('template'),
                     })
                     break;
 
@@ -1338,6 +1342,16 @@
 
         $('#image_control_panel').addClass('hide')
         $('#save_button', window.parent.document).addClass('save button changed valid')
+
+
+    }
+
+
+    function  change_image_template(block_key, template) {
+
+        var image_blocks= $('#block_'+block_key).find('.blk_images')
+        image_blocks.html( $('#template_' + template).html() )
+        image_blocks.attr('template',template)
 
 
     }

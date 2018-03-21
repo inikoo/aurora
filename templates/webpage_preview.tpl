@@ -32,6 +32,29 @@
 </div>
 
 
+
+<div id="images_layout_ideas" class="hide">
+    <div style="text-align: right;margin-bottom: 10px;padding-right: 5px">
+        <i class="fa fa-window-close button" onclick="$('#images_layout_ideas').addClass('hide')"></i>
+    </div>
+
+    <div class="options">
+        <img class="button" template="1" src="/art/images_layout_1.png">
+        <img class="button" template="2" src="/art/images_layout_2.png">
+        <img class="button" template="3" src="/art/images_layout_3.png">
+        <img class="button" template="4" src="/art/images_layout_4.png">
+        <img class="button" template="12" src="/art/images_layout_12.png">
+        <img class="button" template="21" src="/art/images_layout_21.png">
+        <img class="button" template="13" src="/art/images_layout_13.png">
+        <img class="button" template="31" src="/art/images_layout_31.png">
+        <img class="button" template="211" src="/art/images_layout_211.png">
+
+
+    </div>
+
+</div>
+
+
 <div id="text_layout_ideas" class="hide">
     <div style="text-align: right;margin-bottom: 10px;padding-right: 5px">
         <i class="fa fa-window-close button" onclick="$('#text_layout_ideas').addClass('hide')"></i>

@@ -49,7 +49,7 @@
 
 
 
-        <link href="/css/app.css?v180320v1" rel="stylesheet">
+        <link href="/css/app.css?v180321v1" rel="stylesheet">
         <script src="/js/libs/jquery-2.2.1.js"></script>
         <script src="/js/libs/jquery-ui.js"></script>
         <script src="/js/libs/moment-with-locales.js"></script>
@@ -82,7 +82,7 @@
         <script src="/js/table.js?v3"></script>
         <script src="/js/validation.js?v171206v5"></script>
         <script src="/js/edit.js?v171229v8"></script>
-        <script src="/js/edit_webpage_edit.js?v180318v7"></script>
+        <script src="/js/edit_webpage_edit.js?v180320v3"></script>
 
         <script src="/js/new.js?v180302v10"></script>
         <script src="/js/order.common.js?v180314v5"></script>
