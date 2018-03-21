@@ -35,7 +35,7 @@
     <link rel="stylesheet" type="text/css" href="/theme_1/tablet/framework.css?v=171011b">
     <link rel="stylesheet" type="text/css" href="/theme_1/tablet/ionicons.min.css">
     <link rel="stylesheet" type="text/css" href="/theme_1/sky_forms/css/sky-forms.css"  media="all">
-    <link rel="stylesheet" type="text/css" href="/theme_1/css/aurora.theme_1.EcomB2B.tablet.css?v=180321v1" />
+    <link rel="stylesheet" type="text/css" href="/theme_1/css/aurora.theme_1.EcomB2B.tablet.css?v=180321v2" />
 
 
 

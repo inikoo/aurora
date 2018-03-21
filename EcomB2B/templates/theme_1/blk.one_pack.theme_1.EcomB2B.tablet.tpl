@@ -9,18 +9,19 @@
 -->
 *}
 
-<div id="block_{$key}"  class="{$data.type} _block  ">
+<div id="block_{$key}" class="{$data.type} _block  " style="padding-left:20px;padding-right: 20px;padding-top: 10px;padding-bottom: 30px"   >
 
-            <div class="content single_line_height boxed " style="">
-                <h4 >{$data._title}</h4>
-                {if !empty($data._subtitle)}<h6 class="_subtitle single_line_height" >{$data._subtitle}</h6>{/if}
 
-                <div style="margin-top: 10px">
-                    {$data._text}
-                </div>
+    <div class=" boxed  " style="">
+        <h1>{$data._title}</h1>
+        {if !empty($data._subtitle)}<h3 class="_subtitle single_line_height">{$data._subtitle}</h3>{/if}
 
-            </div>
+        <div style="margin-top: 10px" class="text">
+            {$data._text}
+        </div>
 
-          
+    </div>
+
+
 </div>
 
