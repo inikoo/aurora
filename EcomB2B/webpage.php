@@ -680,6 +680,9 @@ if ($webpage->id) {
 
     $smarty->display($template);
 
+
+    print 'Device:'.$detected_device;
+
 } else {
     print 'error webpage id not found  '.$webpage_key.' ,'.$webpage->id;
 
