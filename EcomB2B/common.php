@@ -106,6 +106,7 @@ if (!$is_cached) {
 
     if (   $detect->isTablet() ) {
         $detected_device = 'tablet';
+
     }elseif ($detect->isMobile()  ) {
         $detected_device = 'mobile';
     }else {
