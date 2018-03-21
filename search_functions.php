@@ -2734,7 +2734,7 @@ function search_locations($db, $account, $memcache_ip, $data) {
     }
 
     if ($data['scope'] == 'warehouse') {
-        if (in_array($data['scope_key'], $user->stores)) {
+        if (in_array($data['scope_key'], $user->warehouses)) {
             $warehouses      = $data['scope_key'];
             $where_warehouse = sprintf(
                 ' and `Location Warehouse Key`=%d', $data['scope_key']
@@ -2744,7 +2744,7 @@ function search_locations($db, $account, $memcache_ip, $data) {
             $where_warehouse = ' and false';
         }
     } else {
-        if (count($user->stores) == $account->data['Warehouses']) {
+        if (count($user->warehouses) == $account->data['Warehouses']) {
             $where_warehouse = '';
         } else {
             $where_warehouse = sprintf(

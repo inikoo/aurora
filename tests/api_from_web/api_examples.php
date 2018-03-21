@@ -59,7 +59,7 @@
                 Url
             </td>
             <td>
-                <input id="api_url" value="" style="width:400px">
+                <input id="api_url" value="http://au.bali/api/stock" style="width:400px">
             </td>
         </tr>
         <tr>
@@ -67,7 +67,7 @@
                 Handle
             </td>
             <td>
-                <input id="api_handle" value="" style="width:400px">
+                <input id="api_handle" value="9c370212" style="width:400px">
             </td>
         </tr>
         <tr>
@@ -75,7 +75,7 @@
                 Key
             </td>
             <td>
-                <input id="api_key" value="" style="width:400px">
+                <input id="api_key" value="QWU5dT5nPi44W1xWXlRBVV9FWyQ9cVxWQHouIypLX0plQyYqKytdLA==" style="width:400px">
             </td>
         </tr>
         <tr>
