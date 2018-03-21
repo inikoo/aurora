@@ -582,4 +582,6 @@ p {
 	font-size:16px;
 }
 
-
+.text p{
+	margin-bottom: 0;
+}
