@@ -118,6 +118,8 @@ if (!$is_cached) {
 
 
 
+
+
     if (isset($_SERVER['SERVER_NAME']) and $_SERVER['SERVER_NAME'] == 'ecom.bali') {
        //$detected_device = 'mobile';
     }

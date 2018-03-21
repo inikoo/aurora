@@ -10,6 +10,7 @@
 *}
 
 <div id="block_{$key}" block="{$data.type}" class="{$data.type} _block {if !$data.show}hide{/if} ">
+
     <div id="block_{$key}_editor" class="_text  container" style="padding-top:20px;padding-bottom: 20px">
 
         {$data._text}
