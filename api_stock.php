@@ -10,7 +10,7 @@
  Version 2.0
 */
 
-if(empty($_REQUEST['action'])){
+if (empty($_REQUEST['action'])) {
     $response = log_api_key_access_failure(
         $db, $api_key_key, 'Fail_Operation', "Action missing"
     );
@@ -18,9 +18,9 @@ if(empty($_REQUEST['action'])){
     exit;
 }
 
-switch ($_REQUEST['action']){
+switch ($_REQUEST['action']) {
     case 'get_user_data':
-        $response= array(
+        $response = array(
             'state' => 'OK',
             'data'  => $user->data
         );
@@ -28,11 +28,11 @@ switch ($_REQUEST['action']){
         exit;
         break;
     case 'get_employee_data':
-        $staff=get_object('staff',$user->get_staff_key());
-        $data=$staff->data;
+        $staff = get_object('staff', $user->get_staff_key());
+        $data  = $staff->data;
         unset($data['Staff Salary']);
         unset($data['Staff PIN']);
-        $response= array(
+        $response = array(
             'state' => 'OK',
             'data'  => $data
         );
@@ -40,20 +40,20 @@ switch ($_REQUEST['action']){
         exit;
         break;
     case 'get_part_data':
-        $part=get_object('part',$_REQUEST['part_sku']);
+        $part = get_object('part', $_REQUEST['part_sku']);
 
-        if(!$part->id){
-            $response= array(
+        if (!$part->id) {
+            $response = array(
                 'state' => 'Error',
-                'msg'  => 'part not found'
+                'msg'   => 'part not found'
             );
             echo json_encode($response);
             exit;
         }
 
-        $data=$part->data;
+        $data = $part->data;
 
-        $response= array(
+        $response = array(
             'state' => 'OK',
             'data'  => $data
         );
@@ -61,20 +61,20 @@ switch ($_REQUEST['action']){
         exit;
         break;
     case 'get_location_data':
-        $location=get_object('location',$_REQUEST['location_key']);
+        $location = get_object('location', $_REQUEST['location_key']);
 
-        if(!$location->id){
-            $response= array(
+        if (!$location->id) {
+            $response = array(
                 'state' => 'Error',
-                'msg'  => 'location not found'
+                'msg'   => 'location not found'
             );
             echo json_encode($response);
             exit;
         }
 
-        $data=$location->data;
+        $data = $location->data;
 
-        $response= array(
+        $response = array(
             'state' => 'OK',
             'data'  => $data
         );
@@ -84,15 +84,28 @@ switch ($_REQUEST['action']){
 
     case 'search_location_by_code':
 
-        if(empty($_REQUEST['query']))$_REQUEST['query']='';
+        if (empty($_REQUEST['query'])) {
+            $_REQUEST['query'] = '';
+        }
 
         include_once 'search_functions.php';
 
+        global $account, $memcache_ip;
+
+        $user->read_warehouses();
+
+
+
+        $data=array(
+            'user'=>$user,
+            'query'=>$_REQUEST['query'],
+            'scope'=>''
+        );
 
 
         search_locations($db, $account, $memcache_ip, $data);
 
-        $response= array(
+        $response = array(
             'state' => 'OK',
             'data'  => ''
         );
@@ -103,12 +116,12 @@ switch ($_REQUEST['action']){
     default:
 
 
-            $response= array(
-                'state' => 'Error',
-                'msg'  => "Action ".$_REQUEST['action'].' not found'
-            );
-            echo json_encode($response);
-            exit;
+        $response = array(
+            'state' => 'Error',
+            'msg'   => "Action ".$_REQUEST['action'].' not found'
+        );
+        echo json_encode($response);
+        exit;
 
 
         //$response = log_api_key_access_failure($db, $api_key_key, 'Fail_Operation', "Action ".$_REQUEST['action'].' not found');
