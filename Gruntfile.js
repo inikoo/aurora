@@ -1,20 +1,16 @@
 module.exports = function (grunt) {
 
     grunt.initConfig({
-        pkg: grunt.file.readJSON('package.json'),
-        secret: grunt.file.readJSON('deployment.secret.json'),
+        pkg: grunt.file.readJSON('package.json'), secret: grunt.file.readJSON('deployment.secret.json'),
 
         clean: {
-            app: ["build/app/*", "!build/app/keyring/**", "!build/app/server_files/**"],
-            fork: ["build/fork/*", "!build/fork/keyring/**", "!build/fork/server_files/**"],
+            app: ["build/app/*", "!build/app/keyring/**", "!build/app/server_files/**"], fork: ["build/fork/*", "!build/fork/keyring/**", "!build/fork/server_files/**"],
 
-        },
-        concat: {
+        }, concat: {
             js_libs: {
                 src: ['js/libs/jquery-2.2.1.js', 'js/libs/jquery-ui.js', 'js/libs/moment-with-locales.js', 'js/libs/chrono.js', 'js/libs/sha256.js', 'js/libs/underscore.js', 'js/libs/backbone.js', 'js/libs/backbone.paginator.js', 'js/libs/backgrid.js', 'js/libs/backgrid-filter.js', 'js/libs/intlTelInput.js', 'js/libs/d3.js', 'js/libs/d3fc.layout.js', 'js/libs/d3fc.js'],
                 dest: 'build/app/js/libs.js',
-            },
-            js_aurora: {
+            }, js_aurora: {
                 src: ['js/app.js', 'js/keyboard_shorcuts.js', 'js/search.js', 'js/table.js', 'js/validation.js', 'js/edit.js', 'js/new.js', 'js/order.js', 'js/supplier.order.js', 'js/supplier.delivery.js', 'js/help.js'],
                 dest: 'build/app/js/app.js',
             }
@@ -23,35 +19,30 @@ module.exports = function (grunt) {
         },
         uglify: {
             libs: {
-                src: 'build/app/js/libs.js',
-                dest: 'build/app/js/libs.min.js',
-            },
-            aurora: {
-                src: 'build/app/js/app.js',
-                dest: 'build/app/js/app.min.js',
-            },
-            injections: {
+                src: 'build/app/js/libs.js', dest: 'build/app/js/libs.min.js',
+            }, aurora: {
+                src: 'build/app/js/app.js', dest: 'build/app/js/app.min.js',
+            }, injections: {
                 files: [{
-                    expand: true,
-                    src: 'js/injections/*.js',
-                    dest: 'build/app/',
-                    ext: '.min.js'
+                    expand: true, src: 'js/injections/*.js', dest: 'build/app/', ext: '.min.js'
                 }]
             },
 
 
             login: {
-                src: ['js/libs/jquery-2.2.1.js', 'js/libs/sha256.js', 'js/libs/aes.js', 'js/login/login.js'],
-                dest: 'build/app/js/login.min.js'
-            },
-            login_setup: {
-                src: ['js/libs/jquery-2.2.1.js', 'js/libs/sha256.js', 'js/libs/aes.js', 'js/setup/login.setup.js'],
-                dest: 'build/app/js/login.setup.min.js'
-            },
-            setup: {
-                src: ['js/setup/setup.js'],
-                dest: 'build/app/js/setup.min.js'
+                src: ['js/libs/jquery-2.2.1.js', 'js/libs/sha256.js', 'js/libs/aes.js', 'js/login/login.js'], dest: 'build/app/js/login.min.js'
+            }, login_setup: {
+                src: ['js/libs/jquery-2.2.1.js', 'js/libs/sha256.js', 'js/libs/aes.js', 'js/setup/login.setup.js'], dest: 'build/app/js/login.setup.min.js'
+            }, setup: {
+                src: ['js/setup/setup.js'], dest: 'build/app/js/setup.min.js'
+            }, pweb_mobile: {
+                src: ['EcomB2B/theme_1/mobile/jquery.js','EcomB2B/theme_1/mobile/plugins.js','EcomB2B/theme_1/mobile/custom.js','EcomB2B/js/sweetalert.min.js','EcomB2B/theme_1/local/jquery-ui.js','EcomB2B/js/sha256.js',
+                'EcomB2B/theme_1/sky_forms/js/jquery.form.min.js','EcomB2B/theme_1/sky_forms/js/jquery.validate.min.js','EcomB2B/theme_1/sky_forms/js/additional-methods.min.js',
+                    'EcomB2B/js/aurora.js','EcomB2B/js/validation.js','EcomB2B/js/ordering.touch.js'
+
+                ], dest: 'EcomB2B/js/mobile.min.js'
             }
+
 
 
         },
@@ -59,32 +50,26 @@ module.exports = function (grunt) {
             aurora: {
                 options: {
                     // style: 'compressed'
-                },
-                files: {
-                    'css/app.css': 'sass/app.scss',
-                      'css/app.mobile.css': 'sass/app.mobile.scss',
-                  
+                }, files: {
+                    'css/app.css': 'sass/app.scss', 'css/app.mobile.css': 'sass/app.mobile.scss',
+
                 }
-            },
-            aurora_public: {
+            }, aurora_public: {
                 options: {
                     // style: 'compressed'
-                },
-                files: {
+                }, files: {
                     'EcomB2B/css/style.theme_1.EcomB2B.css': 'sass/style.theme_1.EcomB2B.scss',
 
                 }
             },
-            
+
             web: {
                 options: {
                     // style: 'compressed'
-                },
-                files: {
+                }, files: {
                     'web/css/aurora.css': 'web/sass/aurora.scss'
                 }
-            },
-            /*
+            }, /*
             ecom: {
                 options: {
                     // style: 'compressed'
@@ -97,19 +82,15 @@ module.exports = function (grunt) {
             login: {
                 options: {
                     // style: 'compressed'
-                },
-                files: {
+                }, files: {
                     'css/login.css': 'sass/login.scss'
                 }
             }
         },
         cssmin: {
             options: {
-                shorthandCompacting: false,
-                roundingPrecision: -1,
-                sourceMap: true,
-            },
-            libs: {
+                shorthandCompacting: false, roundingPrecision: -1, sourceMap: true,
+            }, libs: {
                 files: {
                     'build/app/css/libs.min.css': ['css/jquery-ui.css', 'css/font-awesome.css', 'css/intlTelInput.css', 'css/d3fc.css', 'css/backgrid.css', 'css/backgrid-filter.css']
 
@@ -118,7 +99,17 @@ module.exports = function (grunt) {
 
             pweb: {
                 files: {
-                    'EcomB2B/css/style.theme_1.EcomB2B.min.css': ['EcomB2B/css/style.theme_1.EcomB2B.css']
+                    'EcomB2B/css/style.theme_1.EcomB2B.min.css': ['EcomB2B/css/style.theme_1.EcomB2B.css'],
+                    'EcomB2B/css/mobile.min.css': [
+                        'EcomB2B/css/sweetalert.css',
+                        'EcomB2B/css/fontawesome-all.min.css',
+                        'EcomB2B/theme_1/mobile/style.css',
+                        'EcomB2B/theme_1/mobile/skin.css',
+                        'EcomB2B/theme_1/mobile/framework.css',
+                        'EcomB2B/theme_1/sky_forms/css/sky-forms.css',
+                        'EcomB2B/theme_1/css/aurora.theme_1.EcomB2B.mobile.css',
+                    ]
+
 
                 }
             },
@@ -128,63 +119,39 @@ module.exports = function (grunt) {
                     'build/app/css/app.min.css': ['css/app.css']
 
                 }
-            },
-            login: {
+            }, login: {
                 files: {
                     'build/app/css/login.min.css': ['css/login.css']
 
                 }
             }
-        },
-        copy: {
+        }, copy: {
 
             app: {
                 files: [{
-                    expand: true,
-                    src: ['fonts/*'],
-                    dest: 'build/app/'
+                    expand: true, src: ['fonts/*'], dest: 'build/app/'
                 }, {
-                    expand: true,
-                    src: ['css/images/*'],
-                    dest: 'build/app/'
+                    expand: true, src: ['css/images/*'], dest: 'build/app/'
                 },
 
                     {
-                        expand: true,
-                        src: ['*.php'],
-                        dest: 'build/app/'
+                        expand: true, src: ['*.php'], dest: 'build/app/'
                     }, {
-                        expand: true,
-                        src: ['external_libs/**'],
-                        dest: 'build/app/'
+                        expand: true, src: ['external_libs/**'], dest: 'build/app/'
                     }, {
-                        expand: true,
-                        src: ['locale/**'],
-                        dest: 'build/app/'
+                        expand: true, src: ['locale/**'], dest: 'build/app/'
                     }, {
-                        expand: true,
-                        src: ['conf/*.php'],
-                        dest: 'build/app/'
+                        expand: true, src: ['conf/*.php'], dest: 'build/app/'
                     }, {
-                        expand: true,
-                        src: ['utils/*.php'],
-                        dest: 'build/app/'
+                        expand: true, src: ['utils/*.php'], dest: 'build/app/'
                     }, {
-                        expand: true,
-                        src: ['cron/*.php'],
-                        dest: 'build/app/'
+                        expand: true, src: ['cron/*.php'], dest: 'build/app/'
                     }, {
-                        expand: true,
-                        src: ['navigation/*.php'],
-                        dest: 'build/app/'
+                        expand: true, src: ['navigation/*.php'], dest: 'build/app/'
                     }, {
-                        expand: true,
-                        src: ['pdf/*.php'],
-                        dest: 'build/app/'
+                        expand: true, src: ['pdf/*.php'], dest: 'build/app/'
                     }, {
-                        expand: true,
-                        src: ['prepare_table/*.php'],
-                        dest: 'build/app/'
+                        expand: true, src: ['prepare_table/*.php'], dest: 'build/app/'
                     },
 
                 ],
@@ -192,18 +159,11 @@ module.exports = function (grunt) {
 
             fork_stones: {
                 files: [{
-                    expand: true,
-                    src: ['external_libs/**'],
-                    dest: 'build/fork/'
+                    expand: true, src: ['external_libs/**'], dest: 'build/fork/'
                 }, {
-                    expand: true,
-                    src: ['locale/**'],
-                    dest: 'build/fork/'
+                    expand: true, src: ['locale/**'], dest: 'build/fork/'
                 }, {
-                    expand: true,
-                    cwd: 'fork/',
-                    src: ['*.php'],
-                    dest: 'build/fork/'
+                    expand: true, cwd: 'fork/', src: ['*.php'], dest: 'build/fork/'
                 }
 
                 ]
@@ -211,57 +171,34 @@ module.exports = function (grunt) {
 
             fork: {
                 files: [{
-                    expand: true,
-                    cwd: 'fork/',
-                    src: ['tmp/*.txt'],
-                    dest: 'build/fork/'
+                    expand: true, cwd: 'fork/', src: ['tmp/*.txt'], dest: 'build/fork/'
                 }, {
-                    expand: true,
-                    src: ['class.*.php'],
-                    dest: 'build/fork/'
+                    expand: true, src: ['class.*.php'], dest: 'build/fork/'
                 }, {
-                    expand: true,
-                    src: ['trait.*.php'],
-                    dest: 'build/fork/'
+                    expand: true, src: ['trait.*.php'], dest: 'build/fork/'
                 }, {
-                    expand: true,
-                    src: ['conf/*.php'],
-                    dest: 'build/fork/'
+                    expand: true, src: ['conf/*.php'], dest: 'build/fork/'
                 }, {
-                    expand: true,
-                    src: ['conf/fields/*.php'],
-                    dest: 'build/fork/'
+                    expand: true, src: ['conf/fields/*.php'], dest: 'build/fork/'
                 }, {
-                    expand: true,
-                    src: ['utils/*.php'],
-                    dest: 'build/fork/'
+                    expand: true, src: ['utils/*.php'], dest: 'build/fork/'
                 }, {
-                    expand: true,
-                    src: ['widgets/*.php'],
-                    dest: 'build/fork/'
+                    expand: true, src: ['widgets/*.php'], dest: 'build/fork/'
                 }, {
-                    expand: true,
-                    cwd: 'fork/',
-                    src: ['*.php'],
-                    dest: 'build/fork/'
+                    expand: true, cwd: 'fork/', src: ['*.php'], dest: 'build/fork/'
                 }
 
                 ],
             },
 
 
-        },
-        imagemin: {
+        }, imagemin: {
             aurora: {
                 options: {
                     optimizationLevel: 3,
 
-                },
-                files: [{
-                    expand: true,
-                    cwd: 'art/',
-                    src: ['**/*.{png,jpg,gif}'],
-                    dest: 'build/app/art/'
+                }, files: [{
+                    expand: true, cwd: 'art/', src: ['**/*.{png,jpg,gif}'], dest: 'build/app/art/'
                 }]
             }
         },
@@ -271,11 +208,8 @@ module.exports = function (grunt) {
 
             options: {
 
-                current_symlink: 'current',
-                zip_deploy: true,
-                max_buffer: 200 * 1024 * 1024
-            },
-            fork: {
+                current_symlink: 'current', zip_deploy: true, max_buffer: 200 * 1024 * 1024
+            }, fork: {
                 options: {
                     local_path: 'build/fork/',
                     deploy_path: '/home/fork/fork',
@@ -288,8 +222,7 @@ module.exports = function (grunt) {
                     exclude: ['keyring', 'external_libs', 'server_files'],
                     after_deploy: 'cd /home/fork/fork/current && ln -s /home/fork/external_libs/current/ external_libs && ln -s /home/fork/keyring/ keyring && sudo service supervisor restart'
                 }
-            },
-            fork_external_libs: {
+            }, fork_external_libs: {
                 options: {
                     local_path: 'build/fork/external_libs',
                     deploy_path: '/home/fork/external_libs',
@@ -300,8 +233,7 @@ module.exports = function (grunt) {
                     debug: true,
                     releases_to_keep: '3'
                 }
-            },
-            ecom: {
+            }, ecom: {
                 options: {
                     local_path: 'ecom/',
                     deploy_path: '/home/inikoo/ecom',
@@ -313,8 +245,7 @@ module.exports = function (grunt) {
                     releases_to_keep: '3'
 
                 }
-            },
-            b2becom: {
+            }, b2becom: {
                 options: {
                     local_path: 'ecom/',
                     deploy_path: '/home/inikoo/ecom',
@@ -334,16 +265,11 @@ module.exports = function (grunt) {
         watch: {
 
             sass: {
-                files: ['sass/*.scss'],
-                tasks: ['sass:aurora'],
-                options: {
+                files: ['sass/*.scss'], tasks: ['sass:aurora'], options: {
                     spawn: false,
                 },
-            },
-            fork: {
-                files: ['fork/*.php', 'conf/*.php', 'conf/fields/*.php', 'utils/*', 'class.*.php', 'trait.*.php'],
-                tasks: ['copy:fork'],
-                options: {
+            }, fork: {
+                files: ['fork/*.php', 'conf/*.php', 'conf/fields/*.php', 'utils/*', 'class.*.php', 'trait.*.php'], tasks: ['copy:fork'], options: {
                     spawn: false,
                 },
             }
@@ -367,7 +293,7 @@ module.exports = function (grunt) {
     grunt.registerTask('app', ['clean:app', 'imagemin', 'sass', 'concat', 'uglify', 'cssmin', 'copy:app']);
     grunt.registerTask('fork', ['clean:fork', 'copy:fork_stones', 'copy:fork']);
     grunt.registerTask('qfork', ['copy:fork']);
-    grunt.registerTask('pweb', ['sass:aurora_public','cssmin:pweb']);
+    grunt.registerTask('pweb', ['sass:aurora_public', 'cssmin:pweb','uglify:pweb_mobile']);
     grunt.registerTask('deploy_fork', ['clean:fork', 'copy:fork_stones', 'copy:fork', 'ssh_deploy:fork_external_libs', 'ssh_deploy:fork']);
     grunt.registerTask('deploy_qfork', ['copy:fork', 'ssh_deploy:fork']);
     grunt.registerTask('ecom', ['ssh_deploy:ecom']);
