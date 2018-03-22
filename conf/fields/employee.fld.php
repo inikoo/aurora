@@ -675,7 +675,7 @@ if (!$new) {
                 'id'        => 'recalculate_timesheets',
                 'class'     => 'operation_date_interval',
                 'value'     => '',
-                'label'     => '<span data-data=\'{ "object": "'.$object->get_object_name().'", "key":"'.$object->id.'"}\' onClick="show_choose_interval(this)" class="delete_object button">'._("Recalculate time sheets").' <i class="fa fa-refresh new_button "></i></span>',
+                'label'     => '<span data-data=\'{ "object": "'.$object->get_object_name().'", "key":"'.$object->id.'"}\' onClick="show_choose_interval(this)" class="delete_object button">'._("Recalculate time sheets").' <i class="fa fa-sync new_button "></i></span>',
                 'reference' => '',
                 'type'      => 'date_interval',
                 'from'=>$from,

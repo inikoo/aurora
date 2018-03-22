@@ -19,7 +19,7 @@
     <tr id="see_also_last_updated" class="{if $data.type!='Auto'}hide{/if}">
         <td>{t}Last updated{/t}</td>
         <td><span id="see_also_last_updated_date" class="padding_right_10">{$data.last_updated}</span> <i
-                    onclick="refresh_see_also(this,{$data.webpage_key})" class="fa fa-refresh button"
+                    onclick="refresh_see_also(this,{$data.webpage_key})" class="fa fa-sync button"
                     aria-hidden="true"></i></td>
     </tr>
     </tbody>
