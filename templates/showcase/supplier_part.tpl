@@ -117,8 +117,9 @@
                     <td><span class="Average_Delivery">{$supplier_part->get('Average Delivery')}</span></td>
                     <td class="aright highlight Status">{$supplier_part->get('Status')} </td>
                 </tr>
-                <tr class="purchase_order_data">
-                    <td></td>
+                <tr class="">
+                    <td>{t}Current landed cost{/t}</td>
+                    <td class="aright">{$supplier_part->get('Unit Delivered Cost')}</td>
                 </tr>
             </table>
             <div id="part_data" style="padding-top:10px;clear:both">
