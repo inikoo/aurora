@@ -31,7 +31,7 @@ function currency_conversion($db, $currency_from, $currency_to, $update_interval
     );
 
 
-
+/*
 
     if ($result = $db->query($sql)) {
         if ($row = $result->fetch()) {
@@ -57,7 +57,9 @@ function currency_conversion($db, $currency_from, $currency_to, $update_interval
         print_r($error_info = $db->errorInfo());
         exit;
     }
-
+*/
+    $reload = true;
+    $in_db  = false;
 
     $valid_currencies = array(
         'EUR',
