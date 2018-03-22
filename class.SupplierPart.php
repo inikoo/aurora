@@ -1414,7 +1414,7 @@ class SupplierPart extends DB_Table {
                     $extra_cost = $this->data['Supplier Part Unit Extra Cost'];
                 }
                 $exchange       = currency_conversion(
-                    $this->db,  $account->get('Account Currency'),$this->data['Supplier Part Currency Code'], '- 10 minute'
+                    $this->db,  $account->get('Account Currency'),$this->data['Supplier Part Currency Code'], '- 1 minute'
                 );
                 $delivered_cost =  ($this->data['Supplier Part Unit Cost'] + $extra_cost)/$exchange ;
 
