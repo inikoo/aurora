@@ -498,7 +498,7 @@ function stock_transactions($_data, $db, $user) {
 
                 case 'Move':
                     $stock = '±'.number($data['Metadata']);
-                    $type  = '<i class="fa fa-refresh fa-fw" aria-hidden="true"></i>';
+                    $type  = '<i class="fa fa-sync fa-fw" aria-hidden="true"></i>';
                     break;
                 case 'Error':
                     $type = '<i class="fa fa-question-circle error fa-fw" aria-hidden="true"></i>';

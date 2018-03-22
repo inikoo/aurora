@@ -766,7 +766,7 @@ function stock_transactions($_data, $db, $user) {
 
                 case 'Move':
                     $change = '±'.number($data['Metadata']);
-                    $type   = '<i class="fa fa-refresh fa-fw" aria-hidden="true"></i>';
+                    $type   = '<i class="fa fa-sync fa-fw" aria-hidden="true"></i>';
                     break;
                 case 'Error':
                     $type = '<i class="fa fa-question-circle error fa-fw" aria-hidden="true"></i>';
@@ -1650,7 +1650,7 @@ function product_families($_data, $db, $user) {
 
                 $family          = sprintf('<span class="button" onClick="change_view(\'products/%d/category/%d\')">%s</span>', $data['Store Key'], $family_data[0], $family_data[1]);
                 $number_products = number($data['number_products']);
-                $operations      = (in_array($data['Store Key'], $user->stores) ? '<i class="fa fa-refresh button" aria-hidden="true" onClick="open_new_product_family('.$data['Store Key'].')" )"></i>' : '<i class="fa fa-lock "></i>');
+                $operations      = (in_array($data['Store Key'], $user->stores) ? '<i class="fa fa-sync button" aria-hidden="true" onClick="open_new_product_family('.$data['Store Key'].')" )"></i>' : '<i class="fa fa-lock "></i>');
                 $code            =
                     sprintf('<span class="button" onClick="change_view(\'products/%d/category/%d\')">%s</span>', $data['Store Key'], $family_data[0], $data['Store Code']).($data['Store Type'] == 'B2BC' ? '<i class="fa fa-dropbox" title="'._("Carton's store")
                         .'"  aria-hidden="true"></i>' : '');
