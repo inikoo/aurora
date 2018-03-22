@@ -55,7 +55,7 @@ function fork_export($job) {
             }
         } else {
             print_r($error_info = $db->errorInfo());
-            exit;
+          //  exit;
         }
 
     } else {
@@ -166,7 +166,7 @@ function fork_export($job) {
     } else {
         print_r($error_info = $db->errorInfo());
         print "$sql_data\n";
-        exit;
+       // exit;
     }
 
 
