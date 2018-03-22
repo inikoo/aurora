@@ -879,14 +879,14 @@ ol ol ol{list-style-type:disc;}
 .decoration-zig-zag{
     margin-bottom:30px;
 	height: 6px;
-	background: url(../images/mobile/framework/deco-zig.png) repeat-x 0 0;
+	background: url(../theme_1/images/mobile/framework/deco-zig.png) repeat-x 0 0;
     border: 0;   
 }
 
 .decoration-slash{
     margin-bottom:30px;
 	height: 6px;
-	background: url(../images/mobile/framework/deco-slash.png) repeat-x 0 0;
+	background: url(../theme_1/images/mobile/framework/deco-slash.png) repeat-x 0 0;
     border: 0;   
 }
 
@@ -8259,7 +8259,7 @@ button.swiper-pagination-bullet {
 #swipebox-caption.force-visible-bars {top: 0!important;}
 #swipebox-action #swipebox-prev, #swipebox-action #swipebox-next,
 #swipebox-action #swipebox-close {
-	background-image: url("../images/mobile/framework/icons.png");
+	background-image: url("../theme_1/images/mobile/framework/icons.png");
 	background-repeat: no-repeat;
 	border: none!important;
 	text-decoration: none!important;
