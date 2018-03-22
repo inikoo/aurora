@@ -47,6 +47,10 @@
   *}
     <script src="/js/mobile.min.js"></script>
 
+    {if $webpage->get('Webpage Template Filename') == 'checkout'}
+        <script src="/js/braintree.js"></script>
+    {/if}
+
 {*
 
     <script src="/theme_1/mobile/jquery.js"></script>
@@ -65,12 +69,15 @@
     <script src="/js/validation.js"></script>
 
     <script src="/js/ordering.touch.js?20180115"></script>
-    <script src="/js/braintree.js"></script>
+
 *}
 
 
 </head>
 
+<script>
+    console.log('caca')
+    </script>
 
 
 
