@@ -1239,8 +1239,13 @@ class SupplierPart extends DB_Table {
                 } else {
                     $extra_cost = $this->data['Supplier Part Unit Extra Cost'];
                 }
-                $exchange       = currency_conversion($this->db, $this->data['Supplier Part Currency Code'], $account->get('Account Currency'), '- 1 day');
-                $delivered_cost = $exchange * $this->part->data['Part Units Per Package'] * $this->data['Supplier Part Packages Per Carton'] * ($this->data['Supplier Part Unit Cost'] + $extra_cost);
+
+
+                $exchange       = currency_conversion(
+                    $this->db,  $account->get('Account Currency'),$this->data['Supplier Part Currency Code'], '- 1 hour'
+                );
+
+                $delivered_cost =  $this->part->data['Part Units Per Package'] * $this->data['Supplier Part Packages Per Carton'] * ($this->data['Supplier Part Unit Cost'] + $extra_cost)/$exchange;
 
                 $cost = money(
                     $delivered_cost, $account->get('Account Currency')
@@ -1266,10 +1271,13 @@ class SupplierPart extends DB_Table {
                 }
 
                 include_once 'utils/currency_functions.php';
-                $exchange = currency_conversion($this->db, $this->data['Supplier Part Currency Code'], $account->get('Account Currency'), '- 1 day');
+
+                $exchange       = currency_conversion(
+                    $this->db,  $account->get('Account Currency'),$this->data['Supplier Part Currency Code'], '- 1 hour'
+                );
 
                 return money(
-                    $exchange * $this->data['Supplier Part Unit Cost'] * $this->part->data['Part Units Per Package'], $account->get('Account Currency')
+                     $this->data['Supplier Part Unit Cost'] * $this->part->data['Part Units Per Package']/$exchange, $account->get('Account Currency')
                 );
                 break;
 
@@ -1286,8 +1294,12 @@ class SupplierPart extends DB_Table {
                 } else {
                     $extra_cost = $this->data['Supplier Part Unit Extra Cost'];
                 }
-                $exchange       = currency_conversion($this->db, $this->data['Supplier Part Currency Code'], $account->get('Account Currency'), '- 1 day');
-                $delivered_cost = $exchange * $this->part->data['Part Units Per Package'] * ($this->data['Supplier Part Unit Cost'] + $extra_cost);
+
+                $exchange       = currency_conversion(
+                    $this->db,  $account->get('Account Currency'),$this->data['Supplier Part Currency Code'], '- 1 hour'
+                );
+
+                $delivered_cost = $this->part->data['Part Units Per Package'] * ($this->data['Supplier Part Unit Cost'] + $extra_cost) / $exchange;
 
                 $cost = money(
                     $delivered_cost, $account->get('Account Currency')
@@ -1389,11 +1401,11 @@ class SupplierPart extends DB_Table {
 
             case 'SKO Margin':
                 include_once 'utils/currency_functions.php';
-                $exchange = currency_conversion(
-                    $this->db, $this->data['Supplier Part Currency Code'], $account->get('Account Currency'), '- 1 day'
+                $exchange       = currency_conversion(
+                    $this->db,  $account->get('Account Currency'),$this->data['Supplier Part Currency Code'], '- 1 hour'
                 );
 
-                $unit_margin = $this->part->data['Part Unit Price'] - $this->data['Supplier Part Unit Cost'] * $exchange;
+                $unit_margin = $this->part->data['Part Unit Price'] - $this->data['Supplier Part Unit Cost'] / $exchange;
 
                 return sprintf(
                     '<span class="'.($unit_margin < 0 ? 'error' : '').'">'._('margin %s').'</span>', percentage($unit_margin, $this->part->data['Part Unit Price'])
@@ -1414,7 +1426,7 @@ class SupplierPart extends DB_Table {
                     $extra_cost = $this->data['Supplier Part Unit Extra Cost'];
                 }
                 $exchange       = currency_conversion(
-                    $this->db,  $account->get('Account Currency'),$this->data['Supplier Part Currency Code'], '- 1 minute'
+                    $this->db,  $account->get('Account Currency'),$this->data['Supplier Part Currency Code'], '- 1 hour'
                 );
                 $delivered_cost =  ($this->data['Supplier Part Unit Cost'] + $extra_cost)/$exchange ;
 
@@ -1533,11 +1545,13 @@ class SupplierPart extends DB_Table {
                 if ($this->part->data['Part Units Per Package'] != 0 and is_numeric($this->part->data['Part Units Per Package'])) {
 
                     include_once 'utils/currency_functions.php';
-                    $exchange = currency_conversion(
-                        $this->db, $this->data['Supplier Part Currency Code'], $account->get('Account Currency'), '- 1 day'
+
+
+                    $exchange       = currency_conversion(
+                        $this->db,  $account->get('Account Currency'),$this->data['Supplier Part Currency Code'], '- 1 hour'
                     );
 
-                    $unit_margin = $this->part->data['Part Unit Price'] - $this->data['Supplier Part Unit Cost'] * $exchange;
+                    $unit_margin = $this->part->data['Part Unit Price'] - $this->data['Supplier Part Unit Cost'] / $exchange;
 
                     $price_other_info .= sprintf(
                         '<span class="'.($unit_margin < 0 ? 'error' : '').'">'._('margin %s').'</span>', percentage($unit_margin, $this->part->data['Part Unit Price'])

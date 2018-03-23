@@ -937,8 +937,8 @@ function supplier_parts($_data, $db, $user, $account) {
 
 
             //  if ($exchange < 0) {
-            $exchange = currency_conversion(
-                $db, $data['Supplier Part Currency Code'], $account->get('Account Currency'), '- 1 day'
+            $exchange = 1.0/currency_conversion(
+                $db, $account->get('Account Currency'),$data['Supplier Part Currency Code'], '- 1 hour'
             );
             //    }
 

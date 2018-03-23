@@ -2367,14 +2367,14 @@ class Part extends Asset {
             if ($supplier_part->get('Supplier Part Currency Code') != $account->get('Account Currency')) {
                 include_once 'utils/currency_functions.php';
                 $exchange = currency_conversion(
-                    $this->db, $supplier_part->get('Supplier Part Currency Code'), $account->get('Account Currency'), '- 15 minutes'
+                    $this->db, $account->get('Account Currency'), $supplier_part->get('Supplier Part Currency Code'), '- 1 hour'
                 );
 
             } else {
                 $exchange = 1;
             }
 
-            $_cost = $exchange * ($supplier_part->get('Supplier Part Unit Cost') + $supplier_part->get('Supplier Part Unit Extra Cost'));
+            $_cost =   ($supplier_part->get('Supplier Part Unit Cost') + $supplier_part->get('Supplier Part Unit Extra Cost'))/$exchange;
 
 
             if ($supplier_part->get('Supplier Part Status') == 'Available') {
@@ -4590,7 +4590,7 @@ class Part extends Asset {
 
                 // print $product->get('Product 1 Year Acc Quantity Invoiced');
 
-                $exchange = currency_conversion($this->db, $product->get('Product Currency'), $account->get('Account Currency'));
+                $exchange = 1/currency_conversion($this->db,  $account->get('Account Currency'),$product->get('Product Currency'));
 
                 if ($sales > 0) {
                     $num_products_with_sales++;
