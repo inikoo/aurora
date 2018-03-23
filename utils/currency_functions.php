@@ -20,9 +20,9 @@ function currency_conversion($db, $currency_from, $currency_to, $update_interval
         return 1;
     }
 
-    $reload        = false;
-    $in_db         = false;
-    $exchange_rate = 1;
+    //$reload        = false;
+    //$in_db         = false;
+    //$exchange_rate = 1;
 
 
     //get info from database;
@@ -31,7 +31,7 @@ function currency_conversion($db, $currency_from, $currency_to, $update_interval
     );
 
 
-/*
+
 
     if ($result = $db->query($sql)) {
         if ($row = $result->fetch()) {
@@ -39,27 +39,25 @@ function currency_conversion($db, $currency_from, $currency_to, $update_interval
             $date1 = $row['Currency Exchange Last Updated'];
             $date2 = gmdate("Y-m-d H:i:s", strtotime('now '.$update_interval));
 
+            if (strtotime($date1) > strtotime($date2)) {
+               // $reload = true;
 
-            if (strtotime($date1) < strtotime($date2)) {
-                $reload = true;
-
-
+                return $row['Exchange'];
             }
-            $exchange_rate = $row['Exchange'];
-            return $exchange_rate;
+
+
+
 
 
         } else {
-            $reload = true;
-            $in_db  = false;
+            //$reload = true;
+            //$in_db  = false;
         }
     } else {
         print_r($error_info = $db->errorInfo());
         exit;
     }
-*/
-    $reload = true;
-    $in_db  = false;
+
 
     $valid_currencies = array(
         'EUR',
@@ -134,6 +132,7 @@ function currency_conversion($db, $currency_from, $currency_to, $update_interval
             "INSERT INTO kbase.`Currency Exchange Dimension`  (`Currency Pair`,`Exchange`,`Currency Exchange Last Updated`,`Currency Exchange Source`) VALUES (%s,%f,NOW(),%s)  ON DUPLICATE KEY UPDATE `Exchange`=%f,`Currency Exchange Last Updated`=NOW(),`Currency Exchange Source`=%s",
             prepare_mysql($currency_from.$currency_to), $exchange, prepare_mysql($source), $exchange, prepare_mysql($source)
         );
+
 
         $db->exec($sql);
 

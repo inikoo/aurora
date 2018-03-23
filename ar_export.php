@@ -121,7 +121,9 @@ foreach ($_data['fields'] as $_key => $field_key) {
         $fields .= $field_set[$field_key]['name'].',';
     }
 }
-$fields = preg_replace('/,$/', '', $fields);
+$fields = trim(preg_replace('/,$/', '', $fields));
+
+if($fields=='')$fields='*';
 
 $sql
     = "select $fields from $table $where $wheref  $group_by order by $order $order_direction ";
