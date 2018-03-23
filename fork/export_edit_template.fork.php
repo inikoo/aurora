@@ -15,10 +15,13 @@ function fork_export_edit_template($job) {
     include_once 'conf/export_edit_template_fields.php';
 
 
+
     if (!$_data = get_fork_data($job)) {
         return;
     }
 
+
+   // print_r($_data);
 
     $db                  = $_data['db'];
     $fork_data           = $_data['fork_data'];
@@ -56,6 +59,12 @@ function fork_export_edit_template($job) {
             $object_id_name = 'Id: Supplier Part Key';
             $download_type  = 'edit_supplier_parts';
             switch ($parent) {
+                case 'agent':
+
+                    $sql_count = sprintf('SELECT count(*) AS num FROM `Supplier Part Dimension` SP left join `Agent Supplier Bridge` on (SP.`Supplier Part Supplier Key`=`Agent Supplier Supplier Key`) WHERE `Agent Supplier Agent Key`=%d', $parent_key);
+                    $sql_data  = sprintf('SELECT `Supplier Part Key` AS id FROM `Supplier Part Dimension` SP left join `Agent Supplier Bridge` on (SP.`Supplier Part Supplier Key`=`Agent Supplier Supplier Key`) WHERE `Agent Supplier Agent Key`=%d', $parent_key);
+
+                    break;
                 case 'supplier':
 
                     $sql_count = sprintf('SELECT count(*) AS num FROM `Supplier Part Dimension` WHERE `Supplier Part Supplier Key`=%d', $parent_key);
