@@ -30,11 +30,15 @@
     <div id="edit_table_dialog" class="hide">
     <table>
         <tr>
+
             <td>{t}Edit items{/t}
             </td>
-            <td class="button" onclick="table_edit_view()" ><i class="fa  fa-fw fa-i-cursor" aria-hidden="true"></i> {t}inline{/t}
-            </td>
-
+            {if isset($edit_table_dialog.inline_edit)}
+                <td class="button" onclick="table_edit_view()" ><i class="fa  fa-fw fa-i-cursor" aria-hidden="true"></i> {t}inline{/t}</td>
+            {else}
+                <td></td>
+            {/if}
+            {if isset($edit_table_dialog.spreadsheet_edit)}
             <td><i class="fa  fa-fw fa-table" aria-hidden="true"></i> {t}by{/t} <span onclick="show_download_edit_items_dialog()" class="marked_link">{t}spreadsheet{/t}</span></td>
             <td>
 
@@ -49,14 +53,24 @@
 
 
             </td>
+            {else}
+                <td></td> <td></td>
+            {/if}
 
 
         </tr>
+        {if isset($edit_table_dialog.new_item) or isset($edit_table_dialog.upload_items)}
         <tr>
             <td>{t}Add items{/t}
             </td>
+
+            {if isset($edit_table_dialog.new_item)}
             <td class="button" onclick="change_view('{$edit_table_dialog.new_item.reference}')"><i class="fa  fa-fw fa-server fa-flip-horizontal " aria-hidden="true"></i> {t}Online form{/t}
             </td>
+            {else}
+                <td></td>
+            {/if}
+            {if isset($edit_table_dialog.upload_items)}
             <td><i class="fa fa-fw fa-table" aria-hidden="true"></i> {t}from{/t} <a class="marked_link" href="{$edit_table_dialog.upload_items.template_url}" >{t}template{/t}</a>
             </td>
             <td>
@@ -69,7 +83,11 @@
                 </form>
 
             </td>
+            {else}
+                <td></td> <td></td>
+            {/if}
         </tr>
+        {/if}
     </table>
 
 </div>
