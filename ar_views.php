@@ -2720,7 +2720,11 @@ function get_tabs($data, $db, $account, $modules, $user, $smarty) {
                                                      'login.sys',
                                                      'checkout.sys'
                                                  )
-        )) {
+        )
+
+        or ($data['_object']->get('Webpage Code')=='register.sys'  and $data['_object']->get('Website Registration Type')=='Closed'  )
+
+        ) {
             $_content['subtabs'] = '';
 
         } else {

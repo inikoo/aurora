@@ -12,6 +12,7 @@
 
 {include file="analytics.tpl"}
 
+{if $website->get('Website Registration Type')=='Open'}
 
 <div class="wrapper_boxed">
 
@@ -574,6 +575,50 @@
 
 
 </script>
+
+{elseif $website->get('Website Registration Type')=='Closed'}
+
+    <div class="wrapper_boxed">
+
+        <div class="site_wrapper">
+
+            {include file="theme_1/header.theme_1.EcomB2B.tpl"}
+
+            <div class="content_fullwidth less2">
+                <div class="container">
+
+                    <div class="reg_form" >
+                        <form id="registration_form" class="sky-form">
+                            <header id="_title">{$content._title}</header>
+
+                            <fieldset>
+                                <section >
+                                    <div id="_text">
+                                        {if empty($content._text)}{t}Please contact customer services to register{/t}{else}{$content._text}{/if}
+                                    </div>
+                                </section>
+
+
+                            </fieldset>
+
+
+                        </form>
+                    </div>
+
+
+                </div>
+            </div>
+
+
+            <div class="clearfix marb12"></div>
+
+            {include file="theme_1/footer.theme_1.EcomB2B.tpl"}
+
+        </div>
+
+    </div>
+
+{/if}
 
 
 {include file="theme_1/bottom_scripts.theme_1.EcomB2B.tpl"}</body>

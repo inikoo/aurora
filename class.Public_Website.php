@@ -64,7 +64,7 @@ class Public_Website {
             $this->code = $this->data['Website Code'];
 
 
-            if ($this->data['Website Settings'] == '') {
+            if (empty($this->data['Website Settings'] )) {
                 $this->settings = array();
             } else {
                 $this->settings = json_decode($this->data['Website Settings'], true);
@@ -300,6 +300,7 @@ class Public_Website {
             case 'Website Zendesk Chat Code':
             case 'Website Google Tag Manager Code':
             case 'Website Text Font':
+            case 'Website Registration Type':
                 return $this->data[$key];
                 break;
 

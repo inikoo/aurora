@@ -887,6 +887,7 @@ ALTER TABLE `Part Dimension` ADD `Part Stock Found SKOs` FLOAT NOT NULL DEFAULT 
 
 
 ALTER TABLE `Agent Dimension` ADD `Agent Number History Records` SMALLINT UNSIGNED NULL DEFAULT '0' AFTER `Agent Acc Previous Intervals Updated`;
+ALTER TABLE `Website Dimension` CHANGE `Website Registration Type` `Website Registration Type` ENUM('Open','ApprovedOnly','Closed') CHARACTER SET utf8 COLLATE utf8_general_ci NOT NULL DEFAULT 'Open';
 
 
 ===============

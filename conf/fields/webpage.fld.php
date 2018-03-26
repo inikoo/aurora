@@ -13,7 +13,8 @@
 
 $options_registration_type = array(
     'Open' => _('Open'),
-    'ApprovedOnly'  => _('Only approved')
+    'Closed'  => _('Closed'),
+   // 'ApprovedOnly'  => _('Only approved')
 
 );
 
@@ -490,7 +491,7 @@ if (in_array($object->get('Webpage Scope'), array('Register'))) {
                 'options'         => $options_registration_type,
                 'value'           => $website->get('Website Registration Type'),
                 'formatted_value' => $website->get('Registration Type'),
-                'label'           => $website->get_field_label('Website Registration Type'),
+                'label'           => ucfirst($website->get_field_label('Website Registration Type')),
                 'required'        => false,
                 'type'            => ''
             ),
