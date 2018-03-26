@@ -1869,8 +1869,20 @@ function save_webpage_content($data, $editor, $db, $smarty) {
 
     // exit;
 
+    $old_content_data=$webpage->get('Content Data');
+
+
+
 
     $webpage->update(array('Page Store Content Data' => $data['content_data']), 'no_history');
+
+    if(isset($old_content_data['backup'])){
+        $webpage->update_content_data('backup',$old_content_data['backup']);
+    }
+
+
+
+
     $webpage->publish();
 
     $response = array(

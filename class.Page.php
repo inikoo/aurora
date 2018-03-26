@@ -440,6 +440,15 @@ class Page extends DB_Table {
         switch ($key) {
 
 
+            case 'Website Registration Type':
+            case 'Registration Type':
+
+                $website = get_object('website', $this->get('Webpage Website Key'));
+
+               return $website->get($key);
+
+
+                break;
             case 'See Also':
 
                 $see_also_data = $this->get_see_also_data();
@@ -1774,10 +1783,43 @@ class Page extends DB_Table {
             case 'Website Registration Type':
 
 
+                $old_content_data=$this->get('Content Data');
+                if(empty($old_content_data['backup'])){
+                    $backup=array(
+                        'Open'=>'',
+                        'Closed'=>'',
+                        'ApprovedOnly'=>''
+                    );
+                }else{
+                    $backup=$old_content_data['backup'];
+                }
+                unset($old_content_data['backup']);
+
+
                 $website = get_object('website', $this->get('Webpage Website Key'));
+
+                $old_type=$website->get('Website Registration Type');
 
                 $website->editor = $this->editor;
                 $website->update_field($field, $value, $options);
+                if($website->updated){
+                    $this->updated;
+
+
+                    //print_r($backup);
+                    //print_r($old_type);
+
+                    $backup[$old_type]=$old_content_data;
+
+                    if(isset($backup[$value])){
+                        $this->update(array('Page Store Content Data'=>json_encode($backup[$value])),'no_history');
+                    }else{
+                        $this->reset_object();
+                    }
+                    $this->update_content_data('backup',$backup);
+
+
+                }
 
 
                 break;

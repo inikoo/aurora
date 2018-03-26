@@ -424,6 +424,9 @@ class Website extends DB_Table {
                   case 'Open':
                       return _('Open');
                       break;
+                  case 'Closed':
+                      return _('Closed');
+                      break;
                   case 'ApprovedOnly':
                       return _('Only approved');
                       break;

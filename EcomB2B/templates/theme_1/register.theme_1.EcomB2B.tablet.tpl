@@ -13,6 +13,8 @@
 
 <div id="page-transitions">
     {include file="theme_1/header.theme_1.EcomB2B.mobile.tpl"}
+
+    {if $website->get('Website Registration Type')=='Open'}
     <div id="page-content" class="page-content">
         <div id="page-content-scroll" class="header-clear"><!--Enables this element to be scrolled -->
 
@@ -267,37 +269,613 @@
     </div>
 
     <a href="#" class="back-to-top-badge"><i class="ion-ios-arrow-up"></i></a>
+    <script>
 
-    <div class="share-bottom share-light">
-        <h3>Share Page</h3>
-        <div class="share-socials-bottom">
-            <a href="https://www.facebook.com/sharer/sharer.php?u=http://www.themeforest.net/">
-                <i class="ion-social-facebook facebook-bg"></i>
-                Facebook
-            </a>
-            <a href="https://twitter.com/home?status=Check%20out%20ThemeForest%20http://www.themeforest.net">
-                <i class="ion-social-twitter twitter-bg"></i>
-                Twitter
-            </a>
-            <a href="https://plus.google.com/share?url=http://www.themeforest.net">
-                <i class="ion-social-googleplus google-bg"></i>
-                Google
-            </a>
-            <a href="https://pinterest.com/pin/create/button/?url=http://www.themeforest.net/&media=https://0.s3.envato.com/files/63790821/profile-image.jpg&description=Themes%20and%20Templates">
-                <i class="ion-social-pinterest-outline pinterest-bg"></i>
-                Pinterest
-            </a>
-            <a href="sms:">
-                <i class="ion-ios-chatboxes-outline sms-bg"></i>
-                Text
-            </a>
-            <a href="mailto:?&subject=Check this page out!&body=http://www.themeforest.net">
-                <i class="ion-ios-email-outline mail-bg"></i>
-                Email
-            </a>
-            <div class="clear"></div>
+        $( "#country_select" ).change(function() {
+
+            var selected=$( "#country_select option:selected" )
+            // console.log(selected.val())
+
+            var request= "ar_web_addressing.php?tipo=address_format&country_code="+selected.val()+'&website_key={$website->id}'
+
+            console.log(request)
+            $.getJSON(request, function( data ) {
+                console.log(data)
+                $.each(data.hidden_fields, function(index, value) {
+                    $('#'+value).addClass('hide')
+                    $('#'+value).find('input').addClass('ignore')
+
+                });
+
+                $.each(data.used_fields, function(index, value) {
+                    $('#'+value).removeClass('hide')
+                    $('#'+value).find('input').removeClass('ignore')
+
+                });
+
+                $.each(data.labels, function(index, value) {
+                    $('#'+index).find('input').attr('placeholder',value)
+                    $('#'+index).find('b').html(value)
+
+                });
+
+                $.each(data.no_required_fields, function(index, value) {
+
+
+                    // console.log(value)
+
+                    $('#'+value+' input').rules( "remove" );
+
+
+
+
+                });
+
+                $.each(data.required_fields, function(index, value) {
+                    console.log($('#'+value))
+                    //console.log($('#'+value+' input').rules())
+
+                    $('#'+value+' input').rules( "add", { required: true});
+
+                });
+
+
+            });
+
+
+        });
+
+
+        $("form").on('submit', function (e) {
+
+            e.preventDefault();
+            e.returnValue = false;
+
+        });
+
+
+        $("#registration_form").validate(
+            {
+
+                submitHandler: function(form)
+                {
+
+
+                    if($('#register_button').hasClass('wait')){
+                        return;
+                    }
+
+                    $('#register_button').addClass('wait')
+                    $('#register_button i').removeClass('fa-arrow-right').addClass('fa-spinner fa-spin')
+
+                    var register_data={ }
+
+                    $("#registration_form input:not(.ignore)").each(function(i, obj) {
+                        if(!$(obj).attr('name')==''){
+                            register_data[$(obj).attr('name')]=$(obj).val()
+                        }
+
+                    });
+
+                    $("#registration_form select:not(.ignore)").each(function(i, obj) {
+                        if(!$(obj).attr('name')==''){
+
+
+                            register_data[$(obj).attr('name')]=$(obj).val()
+                        }
+
+                    });
+
+
+
+                    register_data['password']=sha256_digest(register_data['password']);
+
+                    var ajaxData = new FormData();
+
+                    ajaxData.append("tipo", 'register')
+                    ajaxData.append("store_key", '{$store->id}')
+                    ajaxData.append("data", JSON.stringify(register_data))
+
+
+                    $.ajax({
+                        url: "/ar_web_register.php", type: 'POST', data: ajaxData, dataType: 'json', cache: false, contentType: false, processData: false,
+                        complete: function () {
+                        }, success: function (data) {
+
+
+
+
+                            if (data.state == '200') {
+
+
+
+
+                                window.location.replace("welcome.sys");
+
+
+                            } else if (data.state == '400') {
+                                swal("{t}Error{/t}!", data.msg, "error")
+                            }
+
+                            $('#register_button').removeClass('wait')
+                            $('#register_button i').addClass('fa-arrow-right').removeClass('fa-spinner fa-spin')
+
+
+                        }, error: function () {
+
+
+                            $('#register_button').removeClass('wait')
+                            $('#register_button i').addClass('fa-arrow-right').removeClass('fa-spinner fa-spin')
+
+
+                        }
+                    });
+
+
+                },
+
+                // Rules for form validation
+                rules:
+                    {
+
+                        email:
+                            {
+                                required: true,
+                                email: true,
+                                remote: {
+                                    url: "ar_web_validate.php",
+                                    data: {
+                                        tipo:'validate_email_registered',
+                                        website_key:'{$website->id}'
+                                    }
+                                }
+
+                            },
+                        password:
+                            {
+                                required: true,
+                                minlength: 8
+
+
+                            },
+                        password_confirm:
+                            {
+                                required: true,
+                                minlength: 8,
+                                equalTo: "#register_password"
+                            },
+                        contact_name:
+                            {
+                                required: true,
+
+                            },
+                        mobile:
+                            {
+                                required: true,
+
+                            },
+                        terms:
+                            {
+                                required: true,
+                            },
+
+        {foreach from=$required_fields item=required_field }
+        {$required_field}: { required: true },
+        {/foreach}
+
+        {foreach from=$no_required_fields item=no_required_field }
+        {$no_required_field}:{   required: false},
+        {/foreach}
+
+        },
+
+        // Messages for form validation
+        messages:
+        {
+
+            email:
+            {
+
+                required: '{if empty($labels._validation_required)}{t}Required field{/t}{else}{$labels._validation_required|escape}{/if}',
+                    email: '{if empty($labels._validation_email_invalid)}{t}Invalid email{/t}{else}{$labels._validation_email_invalid|escape}{/if}',
+                remote: '{if empty($labels._validation_handle_registered)}{t}Email address is already in registered{/t}{else}{$labels._validation_handle_registered|escape}{/if}',
+
+
+            },
+            password:
+            {
+                required: '{if empty($labels._validation_required)}{t}Required field{/t}{else}{$labels._validation_required|escape}{/if}',
+                    minlength: '{if empty($labels._validation_minlength_password)}{t}Enter at least 8 characters{/t}{else}{$labels._validation_minlength_password|escape}{/if}',
+
+
+
+            },
+            password_confirm:
+            {
+                required: '{if empty($labels._validation_required)}{t}Required field{/t}{else}{$labels._validation_required|escape}{/if}',
+                    equalTo: '{if empty($labels._validation_same_password)}{t}Enter the same password as above{/t}{else}{$labels._validation_same_password|escape}{/if}',
+
+                minlength: '{if empty($labels._validation_minlength_password)}{t}Enter at least 8 characters{/t}{else}{$labels._validation_minlength_password|escape}{/if}',
+            },
+            contact_name:
+            {
+                required: '{if empty($labels._validation_required)}{t}Required field{/t}{else}{$labels._validation_required|escape}{/if}',
+            },
+            mobile:
+            {
+                required: '{if empty($labels._validation_required)}{t}Required field{/t}{else}{$labels._validation_required|escape}{/if}',
+            },
+            terms:
+            {
+                required: '{if empty($labels._validation_accept_terms)}{t}Please accept our terms and conditions to proceed{/t}{else}{$labels._validation_accept_terms|escape}{/if}',
+
+
+            },
+            administrativeArea:
+            {
+                required: '{if empty($labels._validation_required)}{t}Required field{/t}{else}{$labels._validation_required|escape}{/if}',
+            },
+            locality:
+            {
+                required: '{if empty($labels._validation_required)}{t}Required field{/t}{else}{$labels._validation_required|escape}{/if}',
+            },
+            dependentLocality:
+            {
+                required: '{if empty($labels._validation_required)}{t}Required field{/t}{else}{$labels._validation_required|escape}{/if}',
+            },
+            postalCode:
+            {
+                required: '{if empty($labels._validation_required)}{t}Required field{/t}{else}{$labels._validation_required|escape}{/if}',
+            },
+            addressLine1:
+            {
+                required: '{if empty($labels._validation_required)}{t}Required field{/t}{else}{$labels._validation_required|escape}{/if}',
+            },
+            addressLine2:
+            {
+                required: '{if empty($labels._validation_required)}{t}Required field{/t}{else}{$labels._validation_required|escape}{/if}',
+            },
+            sortingCode:
+            {
+                required: '{if empty($labels._validation_required)}{t}Required field{/t}{else}{$labels._validation_required|escape}{/if}',
+            }
+
+
+
+
+        },
+
+        // Do not change code below
+        errorPlacement: function(error, element)
+        {
+            error.insertAfter(element.parent());
+        }
+        });
+
+
+    </script>
+
+    {elseif $website->get('Website Registration Type')=='Closed'}
+
+
+
+        <div id="page-content" class="page-content">
+            <div id="page-content-scroll" class="header-clear"><!--Enables this element to be scrolled -->
+
+
+                <div class="reg_form">
+                    <form id="registration_form" class="sky-form" style="width:650px;margin:auto">
+                        <header id="_title">{$content._title}</header>
+
+                        <fieldset>
+                            <section >
+                                <div id="_text">
+                                    {if empty($content._text)}{t}Please contact customer services to register{/t}{else}{$content._text}{/if}
+                                </div>
+                            </section>
+
+
+                        </fieldset>
+
+
+                    </form>
+                </div>
+
+                <div class="decoration decoration-margins"></div>
+                {include file="theme_1/footer.theme_1.EcomB2B.mobile.tpl"}
+            </div>
         </div>
-    </div>
+
+        <a href="#" class="back-to-top-badge"><i class="ion-ios-arrow-up"></i></a>
+        <script>
+
+            $( "#country_select" ).change(function() {
+
+                var selected=$( "#country_select option:selected" )
+                // console.log(selected.val())
+
+                var request= "ar_web_addressing.php?tipo=address_format&country_code="+selected.val()+'&website_key={$website->id}'
+
+                console.log(request)
+                $.getJSON(request, function( data ) {
+                    console.log(data)
+                    $.each(data.hidden_fields, function(index, value) {
+                        $('#'+value).addClass('hide')
+                        $('#'+value).find('input').addClass('ignore')
+
+                    });
+
+                    $.each(data.used_fields, function(index, value) {
+                        $('#'+value).removeClass('hide')
+                        $('#'+value).find('input').removeClass('ignore')
+
+                    });
+
+                    $.each(data.labels, function(index, value) {
+                        $('#'+index).find('input').attr('placeholder',value)
+                        $('#'+index).find('b').html(value)
+
+                    });
+
+                    $.each(data.no_required_fields, function(index, value) {
+
+
+                        // console.log(value)
+
+                        $('#'+value+' input').rules( "remove" );
+
+
+
+
+                    });
+
+                    $.each(data.required_fields, function(index, value) {
+                        console.log($('#'+value))
+                        //console.log($('#'+value+' input').rules())
+
+                        $('#'+value+' input').rules( "add", { required: true});
+
+                    });
+
+
+                });
+
+
+            });
+
+
+            $("form").on('submit', function (e) {
+
+                e.preventDefault();
+                e.returnValue = false;
+
+            });
+
+
+            $("#registration_form").validate(
+                {
+
+                    submitHandler: function(form)
+                    {
+
+
+                        if($('#register_button').hasClass('wait')){
+                            return;
+                        }
+
+                        $('#register_button').addClass('wait')
+                        $('#register_button i').removeClass('fa-arrow-right').addClass('fa-spinner fa-spin')
+
+                        var register_data={ }
+
+                        $("#registration_form input:not(.ignore)").each(function(i, obj) {
+                            if(!$(obj).attr('name')==''){
+                                register_data[$(obj).attr('name')]=$(obj).val()
+                            }
+
+                        });
+
+                        $("#registration_form select:not(.ignore)").each(function(i, obj) {
+                            if(!$(obj).attr('name')==''){
+
+
+                                register_data[$(obj).attr('name')]=$(obj).val()
+                            }
+
+                        });
+
+
+
+                        register_data['password']=sha256_digest(register_data['password']);
+
+                        var ajaxData = new FormData();
+
+                        ajaxData.append("tipo", 'register')
+                        ajaxData.append("store_key", '{$store->id}')
+                        ajaxData.append("data", JSON.stringify(register_data))
+
+
+                        $.ajax({
+                            url: "/ar_web_register.php", type: 'POST', data: ajaxData, dataType: 'json', cache: false, contentType: false, processData: false,
+                            complete: function () {
+                            }, success: function (data) {
+
+
+
+
+                                if (data.state == '200') {
+
+
+
+
+                                    window.location.replace("welcome.sys");
+
+
+                                } else if (data.state == '400') {
+                                    swal("{t}Error{/t}!", data.msg, "error")
+                                }
+
+                                $('#register_button').removeClass('wait')
+                                $('#register_button i').addClass('fa-arrow-right').removeClass('fa-spinner fa-spin')
+
+
+                            }, error: function () {
+
+
+                                $('#register_button').removeClass('wait')
+                                $('#register_button i').addClass('fa-arrow-right').removeClass('fa-spinner fa-spin')
+
+
+                            }
+                        });
+
+
+                    },
+
+                    // Rules for form validation
+                    rules:
+                        {
+
+                            email:
+                                {
+                                    required: true,
+                                    email: true,
+                                    remote: {
+                                        url: "ar_web_validate.php",
+                                        data: {
+                                            tipo:'validate_email_registered',
+                                            website_key:'{$website->id}'
+                                        }
+                                    }
+
+                                },
+                            password:
+                                {
+                                    required: true,
+                                    minlength: 8
+
+
+                                },
+                            password_confirm:
+                                {
+                                    required: true,
+                                    minlength: 8,
+                                    equalTo: "#register_password"
+                                },
+                            contact_name:
+                                {
+                                    required: true,
+
+                                },
+                            mobile:
+                                {
+                                    required: true,
+
+                                },
+                            terms:
+                                {
+                                    required: true,
+                                },
+
+            {foreach from=$required_fields item=required_field }
+            {$required_field}: { required: true },
+            {/foreach}
+
+            {foreach from=$no_required_fields item=no_required_field }
+            {$no_required_field}:{   required: false},
+            {/foreach}
+
+            },
+
+            // Messages for form validation
+            messages:
+            {
+
+                email:
+                {
+
+                    required: '{if empty($labels._validation_required)}{t}Required field{/t}{else}{$labels._validation_required|escape}{/if}',
+                        email: '{if empty($labels._validation_email_invalid)}{t}Invalid email{/t}{else}{$labels._validation_email_invalid|escape}{/if}',
+                    remote: '{if empty($labels._validation_handle_registered)}{t}Email address is already in registered{/t}{else}{$labels._validation_handle_registered|escape}{/if}',
+
+
+                },
+                password:
+                {
+                    required: '{if empty($labels._validation_required)}{t}Required field{/t}{else}{$labels._validation_required|escape}{/if}',
+                        minlength: '{if empty($labels._validation_minlength_password)}{t}Enter at least 8 characters{/t}{else}{$labels._validation_minlength_password|escape}{/if}',
+
+
+
+                },
+                password_confirm:
+                {
+                    required: '{if empty($labels._validation_required)}{t}Required field{/t}{else}{$labels._validation_required|escape}{/if}',
+                        equalTo: '{if empty($labels._validation_same_password)}{t}Enter the same password as above{/t}{else}{$labels._validation_same_password|escape}{/if}',
+
+                    minlength: '{if empty($labels._validation_minlength_password)}{t}Enter at least 8 characters{/t}{else}{$labels._validation_minlength_password|escape}{/if}',
+                },
+                contact_name:
+                {
+                    required: '{if empty($labels._validation_required)}{t}Required field{/t}{else}{$labels._validation_required|escape}{/if}',
+                },
+                mobile:
+                {
+                    required: '{if empty($labels._validation_required)}{t}Required field{/t}{else}{$labels._validation_required|escape}{/if}',
+                },
+                terms:
+                {
+                    required: '{if empty($labels._validation_accept_terms)}{t}Please accept our terms and conditions to proceed{/t}{else}{$labels._validation_accept_terms|escape}{/if}',
+
+
+                },
+                administrativeArea:
+                {
+                    required: '{if empty($labels._validation_required)}{t}Required field{/t}{else}{$labels._validation_required|escape}{/if}',
+                },
+                locality:
+                {
+                    required: '{if empty($labels._validation_required)}{t}Required field{/t}{else}{$labels._validation_required|escape}{/if}',
+                },
+                dependentLocality:
+                {
+                    required: '{if empty($labels._validation_required)}{t}Required field{/t}{else}{$labels._validation_required|escape}{/if}',
+                },
+                postalCode:
+                {
+                    required: '{if empty($labels._validation_required)}{t}Required field{/t}{else}{$labels._validation_required|escape}{/if}',
+                },
+                addressLine1:
+                {
+                    required: '{if empty($labels._validation_required)}{t}Required field{/t}{else}{$labels._validation_required|escape}{/if}',
+                },
+                addressLine2:
+                {
+                    required: '{if empty($labels._validation_required)}{t}Required field{/t}{else}{$labels._validation_required|escape}{/if}',
+                },
+                sortingCode:
+                {
+                    required: '{if empty($labels._validation_required)}{t}Required field{/t}{else}{$labels._validation_required|escape}{/if}',
+                }
+
+
+
+
+            },
+
+            // Do not change code below
+            errorPlacement: function(error, element)
+            {
+                error.insertAfter(element.parent());
+            }
+            });
+
+
+        </script>
+
+
+    {/if}
+
 </div>
 </body>
 
@@ -308,291 +886,7 @@
 
 
 
-<script>
 
-    $( "#country_select" ).change(function() {
-
-        var selected=$( "#country_select option:selected" )
-       // console.log(selected.val())
-
-        var request= "ar_web_addressing.php?tipo=address_format&country_code="+selected.val()+'&website_key={$website->id}'
-
-        console.log(request)
-        $.getJSON(request, function( data ) {
-            console.log(data)
-            $.each(data.hidden_fields, function(index, value) {
-                $('#'+value).addClass('hide')
-                $('#'+value).find('input').addClass('ignore')
-
-            });
-
-            $.each(data.used_fields, function(index, value) {
-                $('#'+value).removeClass('hide')
-                $('#'+value).find('input').removeClass('ignore')
-
-            });
-
-            $.each(data.labels, function(index, value) {
-                $('#'+index).find('input').attr('placeholder',value)
-                $('#'+index).find('b').html(value)
-
-            });
-
-            $.each(data.no_required_fields, function(index, value) {
-
-
-               // console.log(value)
-
-                    $('#'+value+' input').rules( "remove" );
-
-
-
-
-            });
-
-            $.each(data.required_fields, function(index, value) {
-                console.log($('#'+value))
-                //console.log($('#'+value+' input').rules())
-
-                $('#'+value+' input').rules( "add", { required: true});
-
-            });
-
-
-        });
-
-
-    });
-
-
-    $("form").on('submit', function (e) {
-
-        e.preventDefault();
-        e.returnValue = false;
-
-    });
-
-
-    $("#registration_form").validate(
-        {
-
-            submitHandler: function(form)
-            {
-
-
-                if($('#register_button').hasClass('wait')){
-                    return;
-                }
-
-                $('#register_button').addClass('wait')
-                $('#register_button i').removeClass('fa-arrow-right').addClass('fa-spinner fa-spin')
-
-                var register_data={ }
-
-                $("#registration_form input:not(.ignore)").each(function(i, obj) {
-                    if(!$(obj).attr('name')==''){
-                        register_data[$(obj).attr('name')]=$(obj).val()
-                    }
-
-                });
-
-                $("#registration_form select:not(.ignore)").each(function(i, obj) {
-                    if(!$(obj).attr('name')==''){
-
-
-                        register_data[$(obj).attr('name')]=$(obj).val()
-                    }
-
-                });
-
-
-
-                register_data['password']=sha256_digest(register_data['password']);
-
-                var ajaxData = new FormData();
-
-                ajaxData.append("tipo", 'register')
-                ajaxData.append("store_key", '{$store->id}')
-                ajaxData.append("data", JSON.stringify(register_data))
-
-
-                $.ajax({
-                    url: "/ar_web_register.php", type: 'POST', data: ajaxData, dataType: 'json', cache: false, contentType: false, processData: false,
-                    complete: function () {
-                    }, success: function (data) {
-
-
-
-
-                        if (data.state == '200') {
-
-
-
-
-                            window.location.replace("welcome.sys");
-
-
-                        } else if (data.state == '400') {
-                            swal("{t}Error{/t}!", data.msg, "error")
-                        }
-
-                        $('#register_button').removeClass('wait')
-                        $('#register_button i').addClass('fa-arrow-right').removeClass('fa-spinner fa-spin')
-
-
-                    }, error: function () {
-
-
-                        $('#register_button').removeClass('wait')
-                        $('#register_button i').addClass('fa-arrow-right').removeClass('fa-spinner fa-spin')
-
-
-                    }
-                });
-
-
-            },
-
-            // Rules for form validation
-            rules:
-                {
-
-                    email:
-                        {
-                            required: true,
-                            email: true,
-                            remote: {
-                                url: "ar_web_validate.php",
-                                data: {
-                                    tipo:'validate_email_registered',
-                                    website_key:'{$website->id}'
-                                }
-                            }
-
-                        },
-                    password:
-                        {
-                            required: true,
-                            minlength: 8
-
-
-                        },
-                    password_confirm:
-                        {
-                            required: true,
-                            minlength: 8,
-                            equalTo: "#register_password"
-                        },
-                    contact_name:
-                        {
-                            required: true,
-
-                        },
-                    mobile:
-                        {
-                            required: true,
-
-                        },
-                    terms:
-                        {
-                        required: true,
-                    },
-
-                    {foreach from=$required_fields item=required_field }
-                    {$required_field}: { required: true },
-                    {/foreach}
-
-                    {foreach from=$no_required_fields item=no_required_field }
-                        {$no_required_field}:{   required: false},
-                    {/foreach}
-
-                },
-
-            // Messages for form validation
-            messages:
-                {
-
-                    email:
-                        {
-
-                            required: '{if empty($labels._validation_required)}{t}Required field{/t}{else}{$labels._validation_required|escape}{/if}',
-                                email: '{if empty($labels._validation_email_invalid)}{t}Invalid email{/t}{else}{$labels._validation_email_invalid|escape}{/if}',
-                            remote: '{if empty($labels._validation_handle_registered)}{t}Email address is already in registered{/t}{else}{$labels._validation_handle_registered|escape}{/if}',
-
-
-                        },
-                    password:
-                        {
-                            required: '{if empty($labels._validation_required)}{t}Required field{/t}{else}{$labels._validation_required|escape}{/if}',
-                                minlength: '{if empty($labels._validation_minlength_password)}{t}Enter at least 8 characters{/t}{else}{$labels._validation_minlength_password|escape}{/if}',
-
-
-
-                        },
-                    password_confirm:
-                        {
-                            required: '{if empty($labels._validation_required)}{t}Required field{/t}{else}{$labels._validation_required|escape}{/if}',
-                            equalTo: '{if empty($labels._validation_same_password)}{t}Enter the same password as above{/t}{else}{$labels._validation_same_password|escape}{/if}',
-
-                            minlength: '{if empty($labels._validation_minlength_password)}{t}Enter at least 8 characters{/t}{else}{$labels._validation_minlength_password|escape}{/if}',
-                        },
-                    contact_name:
-                        {
-                            required: '{if empty($labels._validation_required)}{t}Required field{/t}{else}{$labels._validation_required|escape}{/if}',
-                        },
-                    mobile:
-                        {
-                           required: '{if empty($labels._validation_required)}{t}Required field{/t}{else}{$labels._validation_required|escape}{/if}',
-                        },
-                    terms:
-                        {
-                            required: '{if empty($labels._validation_accept_terms)}{t}Please accept our terms and conditions to proceed{/t}{else}{$labels._validation_accept_terms|escape}{/if}',
-
-
-                        },
-                    administrativeArea:
-                        {
-                            required: '{if empty($labels._validation_required)}{t}Required field{/t}{else}{$labels._validation_required|escape}{/if}',
-                        },
-                    locality:
-                        {
-                            required: '{if empty($labels._validation_required)}{t}Required field{/t}{else}{$labels._validation_required|escape}{/if}',
-                        },
-                    dependentLocality:
-                        {
-                            required: '{if empty($labels._validation_required)}{t}Required field{/t}{else}{$labels._validation_required|escape}{/if}',
-                        },
-                    postalCode:
-                        {
-                            required: '{if empty($labels._validation_required)}{t}Required field{/t}{else}{$labels._validation_required|escape}{/if}',
-                        },
-                    addressLine1:
-                        {
-                            required: '{if empty($labels._validation_required)}{t}Required field{/t}{else}{$labels._validation_required|escape}{/if}',
-                        },
-                    addressLine2:
-                        {
-                            required: '{if empty($labels._validation_required)}{t}Required field{/t}{else}{$labels._validation_required|escape}{/if}',
-                        },
-                    sortingCode:
-                        {
-                            required: '{if empty($labels._validation_required)}{t}Required field{/t}{else}{$labels._validation_required|escape}{/if}',
-                        }
-
-
-
-
-                },
-
-            // Do not change code below
-            errorPlacement: function(error, element)
-            {
-                error.insertAfter(element.parent());
-            }
-        });
-
-
-</script>
 
 
 {include file="theme_1/bottom_scripts.theme_1.EcomB2B.mobile.tpl"}</body>

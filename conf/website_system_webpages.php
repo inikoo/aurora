@@ -43,7 +43,7 @@ function website_system_webpages_config($website_type) {
                         $blocks['iframe'],
                         $blocks['six_pack'],
                         $blocks['images'],
-                        $blocks['counter'],
+                       // $blocks['counter'],
                         $blocks['three_pack'],
 
                     )
@@ -73,7 +73,7 @@ function website_system_webpages_config($website_type) {
 
                         $blocks['six_pack'],
                         $blocks['images'],
-                        $blocks['counter'],
+                       // $blocks['counter'],
                         $blocks['three_pack'],
 
                     )
@@ -97,7 +97,7 @@ function website_system_webpages_config($website_type) {
                         $blocks['iframe'],
                         $blocks['six_pack'],
                         $blocks['images'],
-                        $blocks['counter'],
+//                        $blocks['counter'],
                         $blocks['three_pack'],
 
                     )
@@ -281,7 +281,7 @@ function website_system_webpages_config($website_type) {
                     'blocks' => array(
 
                         $blocks['two_pack'],
-                        $blocks['one_pack'],
+                        $blocks['text'],
                         $blocks['telephone'],
 
                     )
@@ -580,7 +580,7 @@ function website_system_webpages_config($website_type) {
 
                 array(
                     'blocks' => array(
-                        $blocks['one_pack'],
+                        $blocks['text'],
                         $blocks['telephone'],
                     )
 
@@ -683,7 +683,7 @@ function website_system_webpages_config($website_type) {
             'Page Store Content Data'   => json_encode(
                 array(
                     'blocks' => array(
-                        $blocks['one_pack'],
+                        $blocks['text'],
                     )
 
                 )
@@ -701,7 +701,7 @@ function website_system_webpages_config($website_type) {
             'Page Store Content Data'   => json_encode(
                 array(
                     'blocks' => array(
-                        $blocks['one_pack'],
+                        $blocks['text'],
                     )
 
                 )
@@ -722,7 +722,7 @@ function website_system_webpages_config($website_type) {
                 array(
                     'blocks' => array(
                         $blocks['two_pack'],
-                        $blocks['one_pack'],
+                        $blocks['text'],
                     )
                 )
 
