@@ -475,7 +475,7 @@ function disassociate_location(element) {
 
     if ($(element).hasClass('fa-unlink')) {
 
-        $(element).removeClass('fa-unlink').addClass('fa-chain')
+        $(element).removeClass('fa-unlink').addClass('fa-link')
         $(element).closest('tr').find('.stock').val('').attr('action', 'disassociate')
         $(element).closest('tr').find('.location_code').addClass('deleted')
         $(element).closest('tr').find('.move_trigger').addClass('invisible')
@@ -485,7 +485,7 @@ function disassociate_location(element) {
         stock_changed($(element).closest('tr').find('.stock'))
     } else {
 
-        $(element).addClass('fa-unlink').removeClass('fa-chain')
+        $(element).addClass('fa-unlink').removeClass('fa-link')
         $(element).closest('tr').find('.stock').val($(element).closest('tr').find('.stock').attr('ovalue')).attr('action', '')
         $(element).closest('tr').find('.location_code').removeClass('deleted')
         $(element).closest('tr').find('.move_trigger').removeClass('invisible')

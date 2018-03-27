@@ -2237,7 +2237,7 @@ function part_family_part_locations($_data, $db, $user, $account) {
 
             'can_pick' => ($data['Can Pick'] == 'Yes' ? _('Yes') : _('No')),
 
-            'link' => '<span id="link_'.$data['Part SKU'].'"><i class="fa fa-chain-broken '.($data['Quantity On Hand'] != 0 ? 'invisible' : 'button').'" aria-hidden="true" part_sku="'.$data['Part SKU'].'" onclick="location_part_disassociate_from_table(this)"></i>',
+            'link' => '<span id="link_'.$data['Part SKU'].'"><i class="fa fa-unlink '.($data['Quantity On Hand'] != 0 ? 'invisible' : 'button').'" aria-hidden="true" part_sku="'.$data['Part SKU'].'" onclick="location_part_disassociate_from_table(this)"></i>',
 
 
             'sko_cost'    => money($data['Part Cost in Warehouse'], $account->get('Account Currency')),
@@ -2306,7 +2306,7 @@ function part_locations($_data, $db, $user, $account) {
 
             'can_pick' => ($data['Can Pick'] == 'Yes' ? '<i class="fa fa-shopping-basket"></i>' : ''),
 
-            'link' => '<span id="link_'.$data['Part SKU'].'"><i class="fa fa-chain-broken '.($data['Quantity On Hand'] != 0 ? 'invisible' : 'button').'" aria-hidden="true" part_sku="'.$data['Part SKU'].'" onclick="location_part_disassociate_from_table(this)"></i>',
+            'link' => '<span id="link_'.$data['Part SKU'].'"><i class="fa fa-unlink '.($data['Quantity On Hand'] != 0 ? 'invisible' : 'button').'" aria-hidden="true" part_sku="'.$data['Part SKU'].'" onclick="location_part_disassociate_from_table(this)"></i>',
 
             'last_audit' => ($data['Part Location Last Audit'] == '' ? '<span class="very_discreet italic ">'._('No audited yet').'</span>' : strftime("%a %e %b %Y", strtotime($data['Part Location Last Audit'].' +0:00'))),
 

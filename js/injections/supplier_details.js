@@ -100,9 +100,9 @@ function unlink_agent(element) {
     }
 
 
-    if (!$(element).find('i.fa').removeClass('chain-broken')) return;
+    if (!$(element).find('i.fa').removeClass('fa-unlink')) return;
 
-    $(element).find('i.fa').removeClass('fa-chain-broken').addClass('fa-spinner fa-spin')
+    $(element).find('i.fa').removeClass('fa-unlink').addClass('fa-spinner fa-spin')
 
     // console.log( $(element).data('data'))
 
@@ -123,7 +123,7 @@ function unlink_agent(element) {
             }
 
         } else if (data.state == 400) {
-            $(element).find('i.fa').addClass('fa-chain-broken').removeClass('fa-spinner fa-spin')
+            $(element).find('i.fa').addClass('fa-unlink').removeClass('fa-spinner fa-spin')
 
         }
 

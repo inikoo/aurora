@@ -369,7 +369,7 @@ function edit_part_location_stock($account, $db, $user, $editor, $data, $smarty)
 
     $update_metadata['location_part_stock_value_cell'] = money($part_location->get('Stock Value'), $account->get('Account Currency'));
 
-    $update_metadata['location_part_link_cell'] = '<i class="fa fa-chain-broken '.($part_location->get('Quantity On Hand') != 0 ? 'invisible' : 'button').'" aria-hidden="true" part_sku="'.$data['part_sku'].'" onclick="location_part_disassociate_from_table(this)"></i>';
+    $update_metadata['location_part_link_cell'] = '<i class="fa fa-unlink '.($part_location->get('Quantity On Hand') != 0 ? 'invisible' : 'button').'" aria-hidden="true" part_sku="'.$data['part_sku'].'" onclick="location_part_disassociate_from_table(this)"></i>';
 
     $response = array(
         'state'           => 200,

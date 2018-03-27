@@ -44,7 +44,7 @@
     <tbody id="see_also_manual_fields" class="{if $data.type!='Manual'}hide{/if}">
     <tr id="new_webpage_clone" class="webpage_tr  hide">
         <td style="width:20%"></td>
-        <td><i class="fa fa-trash-o button margin_right_10" aria-hidden="true" onclick="remove_webpage(this)"></i>
+        <td><i class="fa fa-trash button margin_right_10" aria-hidden="true" onclick="remove_webpage(this)"></i>
             <input type="hidden" class="see_also_list_value product_part_key" value="" ovalue="">
             <input type="hidden" class="see_also_list_value webpage_key" value="" ovalue="">
             <span class="Webpage_Code hide"></span>

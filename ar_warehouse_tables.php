@@ -344,7 +344,7 @@ function parts($_data, $db, $user, $account) {
 
             'can_pick' => ($data['Can Pick'] == 'Yes' ? _('Yes') : _('No')),
 
-            'link' => '<span id="link_'.$data['Part SKU'].'"><i class="fa fa-chain-broken '.($data['Quantity On Hand'] != 0 ? 'invisible' : 'button').'" aria-hidden="true" part_sku="'.$data['Part SKU'].'" onclick="location_part_disassociate_from_table(this)"></i>',
+            'link' => '<span id="link_'.$data['Part SKU'].'"><i class="fa fa-unlink '.($data['Quantity On Hand'] != 0 ? 'invisible' : 'button').'" aria-hidden="true" part_sku="'.$data['Part SKU'].'" onclick="location_part_disassociate_from_table(this)"></i>',
 
 
             'sko_cost'    => money($data['Part Cost in Warehouse'], $account->get('Account Currency')),

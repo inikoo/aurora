@@ -7,7 +7,7 @@
 function bridge_supplier(element) {
 
 
-    if ($(element).hasClass('fa-chain-broken')) {
+    if ($(element).hasClass('fa-unlink')) {
         var operation = 'unlink'
     } else {
         var operation = 'link'

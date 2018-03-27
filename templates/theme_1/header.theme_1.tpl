@@ -351,15 +351,15 @@
     <li id="link_stem_cell" class="item" >
     <i class="handle aux hide fa fa-arrows very_discreet fa-fw" aria-hidden="true"></i>
     <span class="link"><i class="fa item_icon fa-fw  fa-circle" icon="fa-circle"></i> <span class="_item_label" contenteditable="true">{t}New link{/t}</span></span>
-    <i url="" class="fa item_link hide aux fa-chain button very_discreet" aria-hidden="true"></i>
-    <i class="fa item_delete hide aux fa-trash-o button very_discreet" aria-hidden="true"></i>
+    <i url="" class="fa item_link hide aux fa-link button very_discreet" aria-hidden="true"></i>
+    <i class="fa item_delete hide aux fa-trash button very_discreet" aria-hidden="true"></i>
 </li>
     <li id="single_column_link_stem_cell" class="_item" type="item">
         <a href="">
             <i class="handle aux hide fa fa-arrows very_discreet fa-fw" aria-hidden="true"></i>
             <span class="_label" contenteditable="true">{t}Link{/t}</span>
-            <i url="" class="fa item_link hide aux fa-chain button very_discreet" aria-hidden="true"></i>
-            <i class="fa item_delete hide aux fa-trash-o button very_discreet" aria-hidden="true"></i>
+            <i url="" class="fa item_link hide aux fa-link button very_discreet" aria-hidden="true"></i>
+            <i class="fa item_delete hide aux fa-trash button very_discreet" aria-hidden="true"></i>
         </a>
     </li>
 
@@ -367,8 +367,8 @@
         <a href="">
             <i class="handle aux hide fa fa-arrows very_discreet fa-fw" aria-hidden="true"></i>
             <span class="_label" contenteditable="true">{t}Link{/t}</span>
-            <i url="" class="fa item_link hide aux fa-chain button very_discreet" aria-hidden="true"></i>
-            <i class="fa item_delete hide aux fa-trash-o button very_discreet" aria-hidden="true"></i>
+            <i url="" class="fa item_link hide aux fa-link button very_discreet" aria-hidden="true"></i>
+            <i class="fa item_delete hide aux fa-trash button very_discreet" aria-hidden="true"></i>
         </a>
     </li>
     <li id="single_column_submenu_stem_cell" type="submenu" class="_item _submenu dropdown-submenu mul">
@@ -376,7 +376,7 @@
             <i class="handle aux hide fa fa-arrows very_discreet fa-fw" aria-hidden="true"></i>
             <span class="_submenu_label" contenteditable="true">{t}Submenu{/t}</span>
             <i class="fa submenu_expand  fa-caret-right button" aria-hidden="true"></i>
-            <i class="fa item_delete hide aux fa-trash-o button very_discreet" aria-hidden="true"></i>
+            <i class="fa item_delete hide aux fa-trash button very_discreet" aria-hidden="true"></i>
         </a>
         <ul class="dropdown-menu submenu sortable">
 
@@ -384,8 +384,8 @@
                     <a href="">
                         <i class="handle aux hide fa fa-arrows very_discreet fa-fw" aria-hidden="true"></i>
                         <span class="_label" contenteditable="true">{t}Link{/t}</span>
-                        <i url="" class="fa item_link hide aux fa-chain button very_discreet" aria-hidden="true"></i>
-                        <i class="fa item_delete hide aux fa-trash-o button very_discreet" aria-hidden="true"></i>
+                        <i url="" class="fa item_link hide aux fa-link button very_discreet" aria-hidden="true"></i>
+                        <i class="fa item_delete hide aux fa-trash button very_discreet" aria-hidden="true"></i>
                     </a>
 
                 </li>
@@ -415,8 +415,8 @@
         <li class="item">
             <i class="handle aux hide fa fa-arrows very_discreet fa-fw" aria-hidden="true"></i>
             <span class="link"><i class="fa item_icon fa-fw fa-caret-right"></i> <span class="_item_label"  contenteditable="true">{t}Link{/t}</span></span>
-            <i url="" class="fa item_link hide aux fa-chain button very_discreet" aria-hidden="true"></i>
-            <i class="fa item_delete hide aux fa-trash-o button very_discreet" aria-hidden="true"></i>
+            <i url="" class="fa item_link hide aux fa-link button very_discreet" aria-hidden="true"></i>
+            <i class="fa item_delete hide aux fa-trash button very_discreet" aria-hidden="true"></i>
         </li>
     <span style="margin-left: 30px" class="discreet aux hide  button add_link"><i class="fa fa-plus" style="margin-right: 5px" aria-hidden="true"></i> {t}Add link{/t}</span>
 
@@ -493,24 +493,24 @@
             <a href="">
                 <i class="handle aux  fa fa-arrows very_discreet fa-fw" aria-hidden="true"></i>
                 <span class="_label"  contenteditable="true">{t}Link{/t}</span>
-                <i url="" class="fa item_link  aux fa-chain button very_discreet" aria-hidden="true"></i>
-                <i class="fa item_delete  aux fa-trash-o button very_discreet" aria-hidden="true"></i>
+                <i url="" class="fa item_link  aux fa-link button very_discreet" aria-hidden="true"></i>
+                <i class="fa item_delete  aux fa-trash button very_discreet" aria-hidden="true"></i>
             </a>
         </li>
         <li  class="_item" type="item" >
             <a href="">
                 <i class="handle aux  fa fa-arrows very_discreet fa-fw" aria-hidden="true"></i>
                 <span class="_label"  contenteditable="true">{t}Link{/t}</span>
-                <i url="" class="fa item_link  aux fa-chain button very_discreet" aria-hidden="true"></i>
-                <i class="fa item_delete  aux fa-trash-o button very_discreet" aria-hidden="true"></i>
+                <i url="" class="fa item_link  aux fa-link button very_discreet" aria-hidden="true"></i>
+                <i class="fa item_delete  aux fa-trash button very_discreet" aria-hidden="true"></i>
             </a>
         </li>
         <li  class="_item" type="item" >
             <a href="">
                 <i class="handle aux  fa fa-arrows very_discreet fa-fw" aria-hidden="true"></i>
                 <span class="_label"  contenteditable="true">{t}Link{/t}</span>
-                <i url="" class="fa item_link  aux fa-chain button very_discreet" aria-hidden="true"></i>
-                <i class="fa item_delete  aux fa-trash-o button very_discreet" aria-hidden="true"></i>
+                <i url="" class="fa item_link  aux fa-link button very_discreet" aria-hidden="true"></i>
+                <i class="fa item_delete  aux fa-trash button very_discreet" aria-hidden="true"></i>
             </a>
         </li>
         <li>
@@ -779,8 +779,8 @@
                                                                                         <li class="item">
                                                                                             <i class="handle aux hide fa fa-arrows very_discreet fa-fw" aria-hidden="true"></i>
                                                                                             <span class="link"><i class="{$item.icon} item_icon fa-fw " icon="{$item.icon}" ></i> <span class="_item_label" contenteditable="true">{$item.label}</span></span>
-                                                                                            <i url="{$item.url}" class="fa item_link hide aux fa-chain button very_discreet" aria-hidden="true"></i>
-                                                                                            <i class="fa item_delete hide aux fa-trash-o button very_discreet" aria-hidden="true"></i>
+                                                                                            <i url="{$item.url}" class="fa item_link hide aux fa-link button very_discreet" aria-hidden="true"></i>
+                                                                                            <i class="fa item_delete hide aux fa-trash button very_discreet" aria-hidden="true"></i>
                                                                                         </li>
 
 
@@ -863,8 +863,8 @@
                                                                         <a href="">
                                                                             <i class="handle aux hide fa fa-arrows very_discreet fa-fw" aria-hidden="true"></i>
                                                                             <span class="_label" contenteditable="true">{$item['label']}</span>
-                                                                            <i url="{$item.url}" class="fa item_link hide aux fa-chain button very_discreet" aria-hidden="true"></i>
-                                                                            <i class="fa item_delete hide aux fa-trash-o button very_discreet" aria-hidden="true"></i>
+                                                                            <i url="{$item.url}" class="fa item_link hide aux fa-link button very_discreet" aria-hidden="true"></i>
+                                                                            <i class="fa item_delete hide aux fa-trash button very_discreet" aria-hidden="true"></i>
                                                                         </a>
                                                                     </li>
 
@@ -874,7 +874,7 @@
                                                                             <i class="handle aux hide fa fa-arrows very_discreet fa-fw" aria-hidden="true"></i>
                                                                             <span  class="_submenu_label" contenteditable="true">{$item['label']}</span>
                                                                             <i class="fa submenu_expand  fa-caret-right button" aria-hidden="true"></i>
-                                                                            <i class="fa item_delete hide aux fa-trash-o button very_discreet" aria-hidden="true"></i>
+                                                                            <i class="fa item_delete hide aux fa-trash button very_discreet" aria-hidden="true"></i>
                                                                         </a>
                                                                         <ul class="dropdown-menu submenu sortable">
                                                                             {foreach from=$item.sub_items item=sub_item}
@@ -882,8 +882,8 @@
                                                                                     <a href="">
                                                                                         <i class="handle aux hide fa fa-arrows very_discreet fa-fw" aria-hidden="true"></i>
                                                                                         <span class="_label" contenteditable="true">{$sub_item.label}</span>
-                                                                                        <i url="{$sub_item.url}" class="fa item_link hide aux fa-chain button very_discreet" aria-hidden="true"></i>
-                                                                                        <i class="fa item_delete hide aux fa-trash-o button very_discreet" aria-hidden="true"></i>
+                                                                                        <i url="{$sub_item.url}" class="fa item_link hide aux fa-link button very_discreet" aria-hidden="true"></i>
+                                                                                        <i class="fa item_delete hide aux fa-trash button very_discreet" aria-hidden="true"></i>
                                                                                     </a>
 
                                                                                 </li>
