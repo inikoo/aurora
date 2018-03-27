@@ -227,7 +227,7 @@ function suppliers($_data, $db, $user, $account) {
 
             if ($_data['parameters']['parent'] == 'agent') {
                 $operations = sprintf(
-                    '<i agent_key="%d" supplier_key="%d"  class="fa fa-chain-broken button" aria-hidden="true"  onClick="bridge_supplier(this)" ></i>', $_data['parameters']['parent_key'],
+                    '<i agent_key="%d" supplier_key="%d"  class="fa fa-unlink button" aria-hidden="true"  onClick="bridge_supplier(this)" ></i>', $_data['parameters']['parent_key'],
                     $data['Supplier Key']
                 );
             } else {

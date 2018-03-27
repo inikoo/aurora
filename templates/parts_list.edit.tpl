@@ -9,7 +9,7 @@
     {include file="parts_list_items.edit.tpl" parts_list=$parts_list}
     </tbody>
     <tr id="new_part_clone" class="part_tr new in_process hide">
-        <td><i class="fa fa-trash-o button" aria-hidden="true" onclick="remove_part(this)"></i><input type="hidden"
+        <td><i class="fa fa-trash button" aria-hidden="true" onclick="remove_part(this)"></i><input type="hidden"
                                                                                                       class="part_list_value product_part_key"
                                                                                                       value=""
                                                                                                       ovalue=""></td>

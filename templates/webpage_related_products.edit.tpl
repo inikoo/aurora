@@ -21,7 +21,7 @@
     <tbody id="related_products_manual_fields">
     <tr id="new_related_products_new_product_clone" class="webpage_tr  hide">
         <td style="width:20%"></td>
-        <td><i class="fa fa-trash-o button margin_right_10" aria-hidden="true"
+        <td><i class="fa fa-trash button margin_right_10" aria-hidden="true"
                onclick="remove_webpage_related_product(this)"></i>
             <input type="hidden" class="related_products_list_value product_id" value="">
             <span class="Webpage_Code hide"></span>

@@ -126,7 +126,7 @@
 
 
 <tr id="add_location_tr" class="  hide">
-    <td><i class="fa fa-fw  discreet fa-chain button" aria-hidden="true" title="{t}Associate location{/t}"
+    <td><i class="fa fa-fw  discreet fa-link button" aria-hidden="true" title="{t}Associate location{/t}"
            onclick="open_add_location()"></i></td>
     <td colspan=2><span id="add_location_label" class="button discreet"
                         onclick="open_add_location()">{t}Associate location{/t}</span>

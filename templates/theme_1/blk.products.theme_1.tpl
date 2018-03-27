@@ -223,7 +223,7 @@
 
 
     <div class="container" style="padding-bottom 5px;text-align: right;padding-right: 20px">
-        <span id="disassociate_category" class="like_button hide" style="margin-right:20px">{t}Remove category{/t} <i class="fa fa-trash-o  " style="" aria-hidden="true"></i></span>
+        <span id="disassociate_category" class="like_button hide" style="margin-right:20px">{t}Remove category{/t} <i class="fa fa-trash  " style="" aria-hidden="true"></i></span>
         <span id="insert_category" class="like_button">{t}Insert category{/t} <i class="fa fa-flip-horizontal" style="position:relative;top:3px"><i class="fa fa-reply fa-rotate-270   " style="margin-left:20px" aria-hidden="true"></i></i></span>
         <i id="prev_item" class="fa fa-arrow-left like_button" style="margin-left:20px"  aria-hidden="true"></i>
         <i id="next_item" class="fa fa-arrow-right like_button" style="margin-left:10px" aria-hidden="true"></i>
@@ -445,9 +445,9 @@
 
 
                 if ($(obj).closest('.cbp-item').hasClass(filter_class)) {
-                    $(obj).removeClass('super_discreet fa-chain-broken').addClass('fa-link')
+                    $(obj).removeClass('super_discreet fa-unlink').addClass('fa-link')
                 } else {
-                    $(obj).addClass('super_discreet fa-link').addClass('fa-chain-broken')
+                    $(obj).addClass('super_discreet fa-link').addClass('fa-unlink')
                 }
 
             });
@@ -468,9 +468,9 @@
         console.log(filter_class)
 
         if ($(this).hasClass('super_discreet')) {
-            $(this).removeClass('super_discreet fa-chain-broken ').addClass('fa-link').closest('.cbp-item').addClass(filter_class)
+            $(this).removeClass('super_discreet fa-unlink ').addClass('fa-link').closest('.cbp-item').addClass(filter_class)
         } else {
-            $(this).addClass('super_discreet fa-link').addClass('fa-chain-broken').closest('.cbp-item').removeClass(filter_class)
+            $(this).addClass('super_discreet fa-link').addClass('fa-unlink').closest('.cbp-item').removeClass(filter_class)
         }
 
         $('#save_button', window.parent.document).addClass('save button changed valid')
