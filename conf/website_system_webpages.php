@@ -261,7 +261,7 @@ function website_system_webpages_config($website_type) {
                     '_submit_label' => _('Submit'),
 
                     'redirect'   => 'welcome',
-                    'send_email' => false,
+                    'send_email' => 1,
 
                 )
             )

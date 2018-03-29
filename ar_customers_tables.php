@@ -148,6 +148,9 @@ function customers($_data, $db, $user) {
             }
 
             switch ($data['Customer Type by Activity']) {
+                case 'ToApprove':
+                    $activity = _('To be approved');
+                    break;
                 case 'Inactive':
                     $activity = _('Lost');
                     break;

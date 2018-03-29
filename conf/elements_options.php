@@ -14,24 +14,13 @@ $elements_options = array(
 
 
     'customers'              => array(
-        'orders'   => array(
-            'label' => _('Orders'),
-            'items' => array(
-                'Yes' => array(
-                    'label'    => _('With orders'),
-                    'selected' => true
-                ),
-                'No'  => array(
-                    'label'    => _('Without orders'),
-                    'selected' => true
-                ),
-            )
-
-
-        ),
         'activity' => array(
-            'label' => _('Active/Lost'),
+            'label' => _('Status'),
             'items' => array(
+                'ToApprove' => array(
+                    'label'    => _('To be approved'),
+                    'selected' => true
+                ),
                 'Active' => array(
                     'label'    => _('Active'),
                     'selected' => true
@@ -48,6 +37,22 @@ $elements_options = array(
 
 
         ),
+        'orders'   => array(
+            'label' => _('Orders'),
+            'items' => array(
+                'Yes' => array(
+                    'label'    => _('With orders'),
+                    'selected' => true
+                ),
+                'No'  => array(
+                    'label'    => _('Without orders'),
+                    'selected' => true
+                ),
+            )
+
+
+        ),
+
         'type'     => array(
             'label' => _('Type'),
             'items' => array(

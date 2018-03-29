@@ -14,7 +14,7 @@
 $options_registration_type = array(
     'Open' => _('Open'),
     'Closed'  => _('Closed'),
-   // 'ApprovedOnly'  => _('Only approved')
+   'ApprovedOnly'  => _('Only approved')
 
 );
 

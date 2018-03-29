@@ -57,13 +57,18 @@ if ($webpage->get('Webpage Template Filename') == 'products_showcase') {
 
 } elseif ($webpage->get('Webpage Template Filename') == 'register') {
 
+    $scope_metadata = $webpage->get('Scope Metadata');
+
+
+
+
     require_once 'utils/get_addressing.php';
     list($address_format, $address_labels, $used_fields, $hidden_fields, $required_fields) = get_address_form_data($store->get('Store Home Country Code 2 Alpha'), $website->get('Website Locale'));
 
     require_once 'utils/get_countries.php';
     $countries = get_countries($website->get('Website Locale'));
 
-
+  
     $smarty->assign('address_labels', $address_labels);
     $smarty->assign('used_address_fields', $used_fields);
     $smarty->assign('countries', $countries);

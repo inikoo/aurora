@@ -137,13 +137,17 @@ class WebAuth {
 
     }
 
-    function authenticate_from_login($handle, $password, $website_key) {
+    function authenticate_from_login($handle, $password, $website) {
+
+        $website_key=$website->id;
+
 
         $pass_tests = true;
         $tests      = array(
             'handle'        => false,
             'handle_active' => false,
-            'password'      => false
+            'password'      => false,
+            'approved'      => false
 
         );
 
@@ -151,7 +155,7 @@ class WebAuth {
         $customer_key     = '';
 
         $sql = sprintf(
-            "SELECT `Website User Key`,`Website User Customer Key`,`Website User Password`,`Website User Active` FROM `Website User Dimension` WHERE `Website User Handle`=%s  AND `Website User Website Key`=%d ",
+            "SELECT `Customer Type by Activity`,`Website User Key`,`Website User Customer Key`,`Website User Password`,`Website User Active` FROM `Website User Dimension`  left join `Customer Dimension` on (`Customer Key`=`Website User Customer Key`)  WHERE `Website User Handle`=%s  AND `Website User Website Key`=%d ",
             prepare_mysql($handle), $website_key
         );
 
@@ -161,8 +165,14 @@ class WebAuth {
         if ($result = $this->db->query($sql)) {
             if ($row = $result->fetch()) {
 
+
+
+
                 $tests['handle']        = true;
                 $tests['handle_active'] = ($row['Website User Active'] == 'Yes' ? true : false);
+                $tests['approved'] = ($row['Customer Type by Activity'] == 'ToApprove' ? false : true);
+
+
                 $website_user_key       = $row['Website User Key'];
                 $customer_key           = $row['Website User Customer Key'];
 

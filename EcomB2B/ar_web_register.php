@@ -72,6 +72,7 @@ function register($db, $website, $data, $editor) {
             'Customer Main Plain Email'    => $raw_data['email'],
             'Customer Main Plain Mobile'   => $raw_data['mobile'],
             'Customer Registration Number' => $raw_data['registration_number'],
+            'Customer Type by Activity'=>($website->get('Website Registration Type')=='ApprovedOnly'?'ToApprove':'Active')
 
         );
 
@@ -117,71 +118,70 @@ function register($db, $website, $data, $editor) {
 
         if ($store->new_customer and $store->new_website_user) {
 
-            include_once('class.WebAuth.php');
-            $auth = new WebAuth();
 
-            list($logged_in, $website_user_log_key) = $auth->authenticate_from_register($website_user->id, $customer->id, $store->get('Store Website Key'));
+            foreach($raw_data as $_key=>$value){
 
-            if ($logged_in) {
-                $_SESSION['logged_in']            = true;
-                $_SESSION['customer_key']         = $customer->id;
-                $_SESSION['website_user_key']     = $website_user->id;
-                $_SESSION['website_user_log_key'] = $website_user_log_key;
+                if (preg_match('/^poll_(\d+)/i', $_key, $matches)) {
 
-
-                foreach($raw_data as $_key=>$value){
-
-                    if (preg_match('/^poll_(\d+)/i', $_key, $matches)) {
-
-                        $poll_key = $matches[1];
-                        $customer->update(array('Customer Poll Query '.$poll_key=>$value) ,'no_history');
-
-
-                    }
+                    $poll_key = $matches[1];
+                    $customer->update(array('Customer Poll Query '.$poll_key=>$value) ,'no_history');
 
 
                 }
 
 
+            }
+            send_welcome_email($db, $website, $customer, $website_user);
 
-                require_once "external_libs/random/lib/random.php";
-                $selector      = base64_encode(random_bytes(9));
-                $authenticator = random_bytes(33);
+            if($website->get('Website Registration Type')!='ApprovedOnly') {
 
-                setcookie(
-                    'rmb', $selector.':'.base64_encode($authenticator), time() + 864000, '/'
-                //,'',
-                //true, // TLS-only
-                //true  // http-only
-                );
+                include_once('class.WebAuth.php');
+                $auth = new WebAuth();
 
+                list($logged_in, $website_user_log_key) = $auth->authenticate_from_register($website_user->id, $customer->id, $store->get('Store Website Key'));
 
-                $sql = sprintf(
-                    'INSERT INTO `Website Auth Token Dimension` (`Website Auth Token Website Key`,`Website Auth Token Selector`,`Website Auth Token Hash`,`Website Auth Token Website User Key`,`Website Auth Token Customer Key`,`Website Auth Token Website User Log Key`,`Website Auth Token Expire`) 
-            VALUES (%d,%s,%s,%d,%d,%d,%s)', $store->get('Store Website Key'), prepare_mysql($selector), prepare_mysql(hash('sha256', $authenticator)), $website_user->id, $customer->id,
-                    $_SESSION['website_user_log_key'], prepare_mysql(date('Y-m-d H:i:s', time() + 864000))
-
-                );
-
-                $db->exec($sql);
+                if ($logged_in) {
+                    $_SESSION['logged_in']            = true;
+                    $_SESSION['customer_key']         = $customer->id;
+                    $_SESSION['website_user_key']     = $website_user->id;
+                    $_SESSION['website_user_log_key'] = $website_user_log_key;
 
 
-                send_welcome_email($db, $website, $customer, $website_user);
+                    require_once "external_libs/random/lib/random.php";
+                    $selector      = base64_encode(random_bytes(9));
+                    $authenticator = random_bytes(33);
+
+                    setcookie(
+                        'rmb', $selector.':'.base64_encode($authenticator), time() + 864000, '/'
+                    //,'',
+                    //true, // TLS-only
+                    //true  // http-only
+                    );
 
 
-            } else {
+                    $sql = sprintf(
+                        'INSERT INTO `Website Auth Token Dimension` (`Website Auth Token Website Key`,`Website Auth Token Selector`,`Website Auth Token Hash`,`Website Auth Token Website User Key`,`Website Auth Token Customer Key`,`Website Auth Token Website User Log Key`,`Website Auth Token Expire`) 
+            VALUES (%d,%s,%s,%d,%d,%d,%s)', $store->get('Store Website Key'), prepare_mysql($selector), prepare_mysql(hash('sha256', $authenticator)), $website_user->id, $customer->id, $_SESSION['website_user_log_key'],
+                        prepare_mysql(date('Y-m-d H:i:s', time() + 864000))
 
-                echo json_encode(
-                    array(
-                        'state'  => 400,
-                        'reason' => $reason
-                    )
-                );
-                exit;
+                    );
+
+                    $db->exec($sql);
+
+
+                } else {
+
+                    echo json_encode(
+                        array(
+                            'state'  => 400,
+                            'reason' => $reason
+                        )
+                    );
+                    exit;
+
+                }
 
             }
-
-
             echo json_encode(array('state' => 200));
             exit;
 

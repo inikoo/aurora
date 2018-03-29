@@ -178,7 +178,10 @@ if ($webpage->id) {
         $template = $theme.'/search.'.$theme.'.'.$website->get('Website Type').$template_suffix.'.tpl';
     } elseif ($webpage->get('Webpage Template Filename') == 'welcome') {
 
-        if (!$logged_in) {
+
+
+
+        if (!$logged_in and $website->get('Website Registration Type')!='ApprovedOnly') {
             header('Location: /index.php');
             exit;
         }

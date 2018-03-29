@@ -18,7 +18,15 @@ $scope_metadata = $webpage->get('Scope Metadata');
 if ($webpage->get('Webpage Code') == 'register.sys') {
 
 
-    $email_template_key = $scope_metadata['emails']['welcome']['key'];
+    if (empty($scope_metadata['emails']['welcome']['key'])) {
+        $email_template_key = 0;
+    } else {
+        $email_template_key = $scope_metadata['emails']['welcome']['key'];
+
+
+
+    }
+
 
     if (empty($scope_metadata['emails']['welcome']['published_key'])) {
         $published_email_template_key = 0;
