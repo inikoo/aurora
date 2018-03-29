@@ -10,7 +10,7 @@
 *}
 
 
-{if $webpage->get('Website Registration Type')=='Open'}
+{if $webpage->get('Website Registration Type')!='Closed'}
 <div id="redirect_options" class="hide options_dialog" style="">
 
     <i class="fa fa-window-close button" onclick="$(this).closest('div').addClass('hide')" aria-hidden="true" style="margin-bottom: 5px"></i>
