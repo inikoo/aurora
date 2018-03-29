@@ -10,10 +10,9 @@
 *}
 {include file="theme_1/_head.theme_1.tpl"}
 <body>
-{if $website->get('Website Registration Type')=='Open'}
+{if $website->get('Website Registration Type')!='Closed'}
 
-
-<div id="input_editor" class="hide" style="z-index:100;position:absolute;padding:10px;border:1px solid #ccc;background-color: #fff;width:560px">
+    <div id="input_editor" class="hide" style="z-index:100;position:absolute;padding:10px;border:1px solid #ccc;background-color: #fff;width:560px">fa
     <table style="width:100%;">
         <tr>
             <td >{t}Placeholder{/t}
