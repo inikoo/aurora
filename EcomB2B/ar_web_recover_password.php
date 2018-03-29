@@ -62,7 +62,7 @@ function recover_password($db, $data, $editor,$website) {
 
 
     $sql = sprintf(
-        "SELECT `Website User Key`,`Website User Customer Key` FROM `Website User Dimension` WHERE  `Website User Handle`=%s AND `Website User Website Key`=%d", prepare_mysql($data['recovery_email']),
+        "SELECT  `Customer Type by Activity`,`Website User Key`,`Website User Customer Key` FROM `Website User Dimension` left join `Customer Dimension` on (`Customer Key`=`Website User Customer Key`)   WHERE  `Website User Handle`=%s AND `Website User Website Key`=%d", prepare_mysql($data['recovery_email']),
         $data['website_key']
 
     );
@@ -71,6 +71,17 @@ function recover_password($db, $data, $editor,$website) {
     if ($result = $db->query($sql)) {
         if ($row = $result->fetch()) {
 
+
+
+            if($row['Customer Type by Activity'] == 'ToApprove'){
+                $response = array(
+                    'state'      => 400,
+                    'msg'        => _('Account waiting for approval'),
+                    'error_code' => 'waiting_approval'
+                );
+                echo json_encode($response);
+                exit;
+            }
 
             $customer=get_object('Customer',$row['Website User Customer Key']);
 

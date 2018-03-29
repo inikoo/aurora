@@ -94,6 +94,9 @@
                             <span class="password_recovery_msg hide" id="password_recovery_success_msg"  >{$content._password_recovery_success_msg}</span>
                             <span class="password_recovery_msg error hide" id="password_recovery_email_not_register_error_msg"  >{$content._password_recovery_email_not_register_error_msg}</span>
                             <span class="password_recovery_msg error hide" id="password_recovery_unknown_error_msg" >{$content._password_recovery_unknown_error_msg}</span>
+                            <span class="password_recovery_msg error hide" id="password_recovery_waiting_approval_error_msg" >{if empty($content._password_recovery_unknown_error_msg)}{t}Account waiting for approval{/t}{else}{$content._password_recovery_unknown_error_msg}{/if}</span>
+
+
 
                             <br>
                             <a href="login"  class="modal-closer" id="password_recovery_go_back" >{$content._password_recovery_go_back}</a>

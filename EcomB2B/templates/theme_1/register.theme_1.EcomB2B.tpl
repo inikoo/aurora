@@ -12,7 +12,7 @@
 
 {include file="analytics.tpl"}
 
-{if $website->get('Website Registration Type')=='Open'}
+{if $website->get('Website Registration Type')!='Closed'}
 
 <div class="wrapper_boxed">
 

@@ -37,7 +37,7 @@ switch ($tipo) {
 
                      )
         );
-        login($db, $data, $editor);
+        login($db, $data, $website,$editor);
         break;
 
 
@@ -51,7 +51,7 @@ switch ($tipo) {
         break;
 }
 
-function login($db, $data, $editor) {
+function login($db, $data, $website,$editor) {
 
     include_once 'class.WebAuth.php';
 
@@ -59,7 +59,7 @@ function login($db, $data, $editor) {
 
 
 
-    list($logged_in,$result,$customer_key,$website_user_key,$website_user_log_key)=$auth->authenticate_from_login($data['handle'],$data['pwd'],$data['website_key'],$data['keep_logged']);
+    list($logged_in,$result,$customer_key,$website_user_key,$website_user_log_key)=$auth->authenticate_from_login($data['handle'],$data['pwd'],$website,$data['keep_logged']);
 
 
     if($logged_in){
@@ -123,6 +123,9 @@ function login($db, $data, $editor) {
                 break;
             case 'password':
                 $msg=_('Incorrect password');
+                break;
+            case 'approved':
+                $msg=_('Account waiting for approval');
                 break;
             default:
                 $msg=_('Invalid login credentials');

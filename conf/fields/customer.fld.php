@@ -269,10 +269,55 @@ if ($new) {
 
 } else {
 
-    $company_field = array();
 
-    $customer_fields = array(
-        array(
+
+
+    $customer_fields =array();
+
+
+
+
+    if($object->get('Customer Type by Activity')=='ToApprove'){
+       $customer_fields[]= array(
+           'label'      => _('Approve customer'),
+           'show_title' => true,
+           'class'      => 'edit_fields',
+           'fields'     => array(
+
+
+               array(
+
+                   'id'        => 'approve_customer',
+                   'class'     => 'operation',
+                   'value'     => '',
+                   'label'     => '<i class="fa fa-fw fa-lock button invisible" onClick="toggle_unlock_delete_object(this)" style="margin-right:20px"></i> <span data-data=\'{ "object": "'.$object->get_object_name().'", "key":"'.$object->id
+                       .'"}\' onClick="approve_object(this)" class="delete_object button">'._('Approve customer').' <i class="fa fa-check new_button link"></i></span>',
+                   'reference' => '',
+                   'type'      => 'operation'
+               ),
+
+
+               array(
+
+                   'id'        => 'delete_customer',
+                   'class'     => 'operation',
+                   'value'     => '',
+                   'label'     => '<i class="fa fa-fw fa-lock button" onClick="toggle_unlock_delete_object(this)" style="margin-right:20px"></i> <span data-data=\'{ "object": "'.$object->get_object_name().'", "key":"'.$object->id
+                       .'"}\' onClick="delete_object(this)" class="delete_object disabled">'._('Delete customer').' <i class="fa fa-trash new_button link"></i></span>',
+                   'reference' => '',
+                   'type'      => 'operation'
+               ),
+
+
+           )
+
+       );
+    }
+
+
+
+
+    $customer_fields[]=  array(
             'label'      => _('Name, Ids'),
             'show_title' => true,
             'fields'     => array(
@@ -286,54 +331,11 @@ if ($new) {
                     'type'            => 'value'
                 ),
 
-                array(
 
-                    'id'              => 'Customer_Main_Contact_Name',
-                    'edit'            => ($edit ? 'string' : ''),
-                    'value'           => htmlspecialchars($object->get('Customer Main Contact Name')),
-                    'formatted_value' => $object->get('Main Contact Name'),
-                    'label'           => ucfirst($object->get_field_label('Customer Main Contact Name')),
-                    'required'        => true,
-                    'type'            => 'value'
-                ),
-                array(
-                    'id'              => 'Customer_Registration_Number',
-                    'edit'            => ($edit ? 'string' : ''),
-                    'value'           => $object->get('Customer Registration Number'),
-                    'formatted_value' => $object->get('Registration Number'),
-                    'label'           => ucfirst(
-                        $object->get_field_label('Customer Registration Number')
-                    ),
-                    'required'        => false,
-                    'type'            => 'value'
-                ),
-                array(
-                    'id'              => 'Customer_Tax_Number',
-                    'edit'            => ($edit ? 'string' : ''),
-                    'value'           => $object->get('Customer Tax Number'),
-                    'formatted_value' => $object->get('Tax Number'),
-                    'label'           => ucfirst(
-                        $object->get_field_label('Customer Tax Number')
-                    ),
-                    'required'        => false,
-                    'type'            => 'value'
-
-                ),
-                array(
-                    'render'          => ($object->get('Customer Tax Number') == '' ? false : true),
-                    'id'              => 'Customer_Tax_Number_Valid',
-                    'edit'            => ($edit ? 'option' : ''),
-                    'options'         => $options_valid_tax_number,
-                    'value'           => $object->get('Customer Tax Number Valid'),
-                    'formatted_value' => $object->get('Tax Number Valid'),
-                    'label'           => ucfirst(
-                        $object->get_field_label('Customer Tax Number Valid')
-                    ),
-                ),
 
             )
-        ),
-        array(
+        );
+    $customer_fields[]=  array(
             'label'      => _('Email').' ('._('Web login').')',
             'show_title' => false,
             'fields'     => array(
@@ -401,9 +403,9 @@ if ($new) {
                 ),
 
             )
-        ),
+        );
 
-        array(
+        $customer_fields[]= array(
             'label'      => _('Contact'),
             'show_title' => false,
             'fields'     => array(
@@ -493,9 +495,9 @@ if ($new) {
                 ),
 
             )
-        ),
+        );
 
-        array(
+        $customer_fields[]= array(
             'label'      => _('Address'),
             'show_title' => false,
             'fields'     => array(
@@ -583,9 +585,9 @@ if ($new) {
                 ),
 
             )
-        ),
+        );
 
-        array(
+        $customer_fields[]= array(
             'label'      => _('Marketing'),
             'show_title' => true,
             'fields'     => array(
@@ -602,9 +604,9 @@ if ($new) {
 
 
             )
-        ),
+        );
 
-        array(
+        $customer_fields[]= array(
             'label'      => _('Operations'),
             'show_title' => true,
             'class'      => 'edit_fields',
@@ -624,9 +626,9 @@ if ($new) {
 
             )
 
-        ),
+        );
 
-    );
+
 
 
     $other_emails = $object->get_other_emails_data();

@@ -2405,6 +2405,10 @@ class Customer extends Subject {
     public function update_activity() {
 
 
+        if($this->data['Customer Type by Activity']=='ToApprove'){
+            return;
+        }
+
         $this->data['Customer Lost Date'] = '';
         $this->data['Actual Customer']    = 'Yes';
 
@@ -3273,6 +3277,12 @@ class Customer extends Subject {
         $poll = get_object('Customer_Poll_Query', $poll_key);
         $poll->add_customer($this, $value,$options);
 
+
+    }
+
+    function approve(){
+
+        $this->update(array('Customer Type by Activity'=>'Active'));
 
     }
 
