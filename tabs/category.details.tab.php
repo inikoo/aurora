@@ -30,7 +30,6 @@ $smarty->assign('state', $state);
 $smarty->assign('object_fields', $object_fields);
 $smarty->assign('object', $category);
 
-
 $html = $smarty->fetch('edit_object.tpl');
 
 ?>

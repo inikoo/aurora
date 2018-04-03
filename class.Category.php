@@ -698,21 +698,15 @@ class Category extends DB_Table {
                         break;
 
                     case 'Department Category Key':
+
+                        return $this->get('Product Category Department Category Key');
+                        break;
+
                     case 'Department Category Code':
 
 
-                        include_once 'class.Category.php';
-                        if ($this->get(
-                                'Product Category Department Category Key'
-                            ) > 0
-                        ) {
-
-
-                            $department = new Category(
-                                $this->get(
-                                    'Product Category Department Category Key'
-                                )
-                            );
+                        if ($this->get('Product Category Department Category Key') > 0) {
+                            $department =  get_object('Category', $this->get('Product Category Department Category Key'));
                             if ($department->id) {
                                 return $department->get('Code');
                             }
@@ -2567,15 +2561,15 @@ VALUES (%d,%s, %d, %d, %s,%s, %d, %d, %s, %s, %s,%d,NOW())", $this->id,
 
                         include_once 'class.Category.php';
 
-                        include_once 'class.Store.php';
-                        $store = new Store($this->get('Category Store Key'));
+                        //include_once 'class.Store.php';
+                        //$store = new Store($this->get('Category Store Key'));
 
 
                         if ($this->data['Product Category Department Category Key'] != $value) {
 
-                            $old_parent_category = new Category($this->data['Product Category Department Category Key']);
+                            $old_parent_category =  get_object('Category',$this->data['Product Category Department Category Key']);
 
-                            $new_parent_category = new Category($value);
+                            $new_parent_category =  get_object('Category',$value);
 
 
                             $new_parent_category->associate_subject($this->id, false, '', 'skip_direct_update');
@@ -2585,13 +2579,17 @@ VALUES (%d,%s, %d, %d, %s,%s, %d, %d, %s, %s, %s,%d,NOW())", $this->id,
                             $new_parent_category->update_product_category_products_data();
 
 
-                            $webpage = $old_parent_category->get_webpage();
-                            if ($webpage->id) {
-                                $webpage->reindex_items();
-                                if ($webpage->updated) {
-                                    $webpage->publish();
+
+                            if($old_parent_category->id){
+                                $webpage = $old_parent_category->get_webpage();
+                                if ($webpage->id) {
+                                    $webpage->reindex_items();
+                                    if ($webpage->updated) {
+                                        $webpage->publish();
+                                    }
                                 }
                             }
+
                             $sql = sprintf(
                                 'SELECT `Category Webpage Index Webpage Key` FROM `Category Webpage Index` WHERE `Category Webpage Index Category Key`=%d  GROUP BY `Category Webpage Index Webpage Key` ',
                                 $old_parent_category->id

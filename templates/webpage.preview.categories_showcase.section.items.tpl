@@ -35,7 +35,7 @@
                     
                     <div class="category_block item_overlay hide" >
 
-  <div style="display:flex;padding:0px 5px;position:relative;top:-5px;font-size:90%" >
+                    <div style="display:flex;padding:0px 5px;position:relative;top:-5px;font-size:90%" >
                     <div class="flex-item" style="background-color:white">{$category_data.category_code}</div>
                     <div class="flex-item" style="background-color:white"> {$category_data.number_products} <i class="fa fa-cube" aria-hidden="true"></i></div>
                 </div>
@@ -122,7 +122,7 @@
                                         <i class="fa  fa-image fa-fw button" aria-hidden="true"></i>
                                     </label>
                                 </form>
-                                </div>
+                            </div>
                             <div class="flex-item button" type="update_caption"><i class="fa fa-comment caption_icon" aria-hidden="true"></i></div>
                             <div class="flex-item button" type="update_link"><i class="fa fa-link link_url_icon link_icon" aria-hidden="true"></i></div>
                             <div class="flex-item button" type="delete_panel" title="{t}Delete panel{/t}"><i class="fa fa-trash error" aria-hidden="true"></i></div>

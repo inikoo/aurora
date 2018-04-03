@@ -132,9 +132,7 @@ switch ($options['Category Scope']) {
 
         } else {
             include 'category.product.fld.php';
-            $category_fields = array_merge(
-                $category_fields, $category_product_fields
-            );
+            $category_fields = array_merge($category_fields, $category_product_fields);
 
         }
 

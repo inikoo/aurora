@@ -42,11 +42,24 @@ function get_webpage_blocks($theme = '') {
             ),
         ),
 
+        'blackboard'       => array(
+            'type'        => 'blackboard',
+            'label'       => _('Blackboard'),
+            'icon'        => 'fa-image',
+            'show'        => 1,
+            'top_margin'=>0,
+            'bottom_margin'=>0,
+            'height'=>'200',
+            'images'=>array(),
+            'text'=>array()
+
+        ),
+
 
         'images'     => array(
             'type'  => 'images',
             'label' => _('Images'),
-            'icon'  => 'fa-image',
+            'icon'  => 'fa-camera',
             'show'  => 1,
 
             'images' => array()
@@ -235,6 +248,7 @@ function get_webpage_blocks($theme = '') {
             'height' => 250,
             'src'    => 'cdn.bannersnack.com/banners/bxmldll37/embed/index.html?userId=30149291&t=1499779573'
         ),
+        /*
         'counter'   => array(
             'type'  => 'counter',
             'label' => _('Counter'),
@@ -268,6 +282,8 @@ function get_webpage_blocks($theme = '') {
 
             )
         ),
+
+        */
         'telephone' => array(
             'type'       => 'telephone',
             'label'      => _('Phone'),

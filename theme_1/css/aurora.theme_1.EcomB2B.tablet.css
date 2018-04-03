@@ -16,6 +16,9 @@
 
 }
 
+p strong{font-size:16px;}
+
+
 .asset_description{
 	color:#555;
 	line-height: 140%;
@@ -585,3 +588,168 @@ p {
 .text p{
 	margin-bottom: 0;
 }
+
+.page_break{
+
+}
+
+
+.page_break{
+
+	border-top:1px solid #ccc;margin:0px 20px 10px 20px;
+	height: 30px;position:relative;
+
+}
+
+.page_break .title{
+
+	padding:0px;margin:0px;float:left;;padding-top:5px;font-weight: 800;color:#000
+
+}
+
+
+.page_break .sub_title{
+
+	padding:0px;margin:0px;float:right;padding-top:5px;min-width:60px;text-align: right;
+
+}
+
+.section_items {
+	display:flex;flex-flow: row wrap;clear:both;
+}
+
+
+.section{
+
+	position:relative;margin-bottom:10px;;margin-top:0px
+}
+
+
+.category_wrap  .panel_1{
+	width:226px;
+
+}
+.category_wrap  .panel_2{
+	width:470px;
+
+}
+.category_wrap  .panel_3{
+	width:714px;
+
+}
+
+.category_wrap  .panel_4{
+	width:958px;
+}
+
+.category_wrap  .panel_5{
+	width:1202px;
+}
+
+
+.category_wrap .txt{
+	border:1px solid #ccc;
+	height: 220px;
+}
+
+
+
+.category_wrap{
+	position: relative;
+	float:left;
+
+	margin-left:18px;
+	margin-bottom:18px;
+	height:220px;
+
+}
+
+.category_wrap >div,.category_wrap >img{
+
+	padding:0px 0px 0px 0px;
+}
+
+.category_wrap img.panel_1{
+	width:226px;
+}
+.category_wrap img.panel_2{
+	width:470px;
+}
+.category_wrap img.panel_3{
+	width:714px;
+}
+.category_wrap img.panel_4{
+	width:958px;
+}
+.category_wrap img.panel_5{
+	width:1202px;
+}
+
+.category_wrap img.panel{
+
+
+	height: 220px;
+}
+
+
+.category_block{
+	width:226px;
+	height: 100%;
+	border: 1px solid #ccc;
+	background:#fff;
+
+}
+
+.category_header_text{
+	padding:8px;height:30px;margin-bottom:5px;
+	border:1px solid transparent;cursor:text;padding-top:10px;padding-bottom:0px;
+	font-weight: 800;
+
+}
+
+.category_header_text p{
+	padding:0px ; margin:0px;text-align: center;
+	z-index: 100;position:relative;
+}
+
+
+
+
+.wrap_to_center {
+
+	display: table-cell;
+	text-align: center;
+	vertical-align: middle;
+	width: 218px;
+	height: 160px;
+	margin-bottom:10px
+}
+.wrap_to_center img {
+	margin-top: 5px;
+	vertical-align: bottom;max-width:216px;max-height:155px;
+	border:1px dashed transparent;
+	position: initial;
+	display: initial;
+
+
+}
+
+.item_header_text a{
+	color:inherit;
+
+}
+
+
+
+.item_header_text{
+	padding:8px;margin-bottom:5px;
+	border:1px solid transparent;cursor:text;padding-top:10px;padding-bottom:0px;
+	font-weight: 800;z-index: 100;line-height: normal;text-align:center;
+
+}
+
+.item_header_text p{
+	padding:0px ; margin:0px;text-align: center;
+	z-index: 100;position:relative;
+}
+

@@ -52,11 +52,13 @@ $(document).on('click', '.add_webpage_block', function (e) {
         if (data.type == 'static_banner') {
             $('#preview')[0].contentWindow.create_static_banner()
         } else if (data.type == 'one_pack' || data.type == 'two_pack') {
-            $('#preview')[0].contentWindow.set_up_froala_editor(data.block_key)
+            $('#preview')[0].contentWindow.set_up_froala_editor('block_'+data.block_key+'_editor')
         } else if (data.type == 'text') {
-
-            //  console.log(data.block_key+'_0')
-            $('#preview')[0].contentWindow.set_up_froala_editor(data.block_key + '_0')
+            $('#preview')[0].contentWindow.set_up_froala_editor('block_'+data.block_key + '_0_editor')
+        }else if(data.type == 'blackboard'){
+            $('#preview')[0].contentWindow.set_up_blackboard(data.block_key)
+        }else if(data.type == 'images'){
+            $('#preview')[0].contentWindow.set_up_images(data.block_key)
         }
 
 
@@ -687,3 +689,60 @@ function change_text_template(element) {
 function change_images_template(element) {
     $('#images_layout_ideas').removeClass('hide').data('block_key',$(element).closest('.edit_mode').attr('key'))
 }
+
+function open_blackboard_text_edit_view(key, blackboard_text_id) {
+        console.log(key)
+    edit_webpage_block_column(key)
+    $('#edit_mode_main_' + key).addClass('hide')
+    $('#edit_mode_text_block_' + key).removeClass('hide').data('blackboard_text_id',blackboard_text_id)
+
+
+}
+
+
+function close_blackboard_text_edit_view(key) {
+
+    $('#edit_mode_main_' + key).removeClass('hide')
+    $('#edit_mode_text_block_' + key).addClass('hide')
+
+    $("#preview")[0].contentWindow.exit_blackboard_text_edit(  $('#edit_mode_text_block_' + key).data('blackboard_text_id'));
+
+
+
+}
+
+
+
+function delete_blackboard_text_edit_view(key) {
+
+    $('#edit_mode_main_' + key).removeClass('hide')
+    $('#edit_mode_text_block_' + key).addClass('hide')
+
+    $("#preview")[0].contentWindow.delete_blackboard_text_edit(  $('#edit_mode_text_block_' + key).data('blackboard_text_id'));
+
+
+
+}
+
+
+// category_categories
+
+$(document).on('click', '.toggle_view_category_categories', function () {
+
+    var title= $(this).attr('title-alt');
+    var title_alt= $(this).attr('title');
+
+    if($(this).hasClass('fa-cogs')){
+
+        $(this).removeClass('fa-cogs').addClass('fa-globe').attr('title',title).attr('title-alt',title_alt)
+        var view='backstage';
+    }else{
+        $(this).addClass('fa-cogs ').removeClass('fa-globe').attr('title',title).attr('title-alt',title_alt)
+        var view='display';
+    }
+    $("#preview")[0].contentWindow.toggle_view_category_categories(  $(this).closest('.edit_mode').attr('key') ,view );
+
+
+
+})
+

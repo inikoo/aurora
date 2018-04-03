@@ -40,9 +40,10 @@ if ($state['_object']->get('Webpage Template Filename') == 'products_showcase' o
 
     $smarty->assign('theme', $theme);
     $smarty->assign('webpage', $webpage);
+    $smarty->assign('website', $website);
+
     $smarty->assign('content', $webpage->get('Content Data'));
     $smarty->assign('metadata', $webpage->get('Scope MetaData'));
-
 
 
     $control_template = $theme.'/control.'.strtolower($webpage->get('Webpage Template Filename')).'.'.$theme.'.tpl';

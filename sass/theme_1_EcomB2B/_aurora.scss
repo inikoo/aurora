@@ -415,7 +415,7 @@ table.properties td{
 
 }
 
-#page_content  .product_header_text p,#page_content  .item_header_text p{
+#page_content  .product_header_text p{
 	padding:0px ; margin:0px;text-align: center;
 	z-index: 0;position:relative;
 }
@@ -490,13 +490,15 @@ table.properties td{
 
 }
 
-.product_wrap,.category_wrap{
+.product_wrap{
 	position: relative;
 	float:left;
 
 	margin-left:18px;
 
 }
+
+
 .product_block{
 	width:218px;
 	height:328px;
@@ -533,9 +535,19 @@ table.properties td{
 	margin-bottom:10px
 }
 .wrap_to_center img {
-	vertical-align: bottom;max-width:216px;max-height:160px
+  margin-top: 5px;
+	vertical-align: bottom;max-width:216px;max-height:165px;
+  border:1px dashed transparent;
+
+
 }
 
+.wrap_to_center img.edit:hover {
+
+    border:1px dashed #ccc;
+
+
+}
 
 
 
@@ -686,24 +698,6 @@ background-color: snow
 border:none;
 }
 
-.panel_1x{
-height:320px;width:220px;
-
-}
-.panel_2x{
-height:320px;width:447px;
-
-}
-
-.panel_3x{
-height:320px;width:696px;
-
-}
-
-.panel_4x{
-width:934px;
-
-}
 .panel img{
 height:100%;width:100%;border:none
 
@@ -714,77 +708,84 @@ border:1px solid #ccc;
 
 }
 
-.text_panel_default.panel_1x{
-height:328px;width:218px;
-}
 
-.text_panel_default.panel_2x{
-height:328px;width:455px;
-}
-
-.text_panel_default.panel_3x{
-height:328px;width:694px;
+.category_wrap  .panel_1{
+width:226px;
 
 }
+.category_wrap  .panel_2{
+  width:470px;
 
-.text_panel_default.panel_4x{
-height:328px;width:932px;
 }
-
-
-.category_wrap  .text_panel_default.panel_1x{
-height:218px;
-}
-
-.category_wrap   .text_panel_default.panel_2x{
-height:218px;
-}
-
-.category_wrap  .text_panel_default.panel_3x{
-height:218px;
+.category_wrap  .panel_3{
+  width:714px;
 
 }
 
-.category_wrap  .text_panel_default.panel_4x{
-height:218px;
+.category_wrap  .panel_4{
+  width:958px;
+}
+
+.category_wrap  .panel_5{
+  width:1202px;
 }
 
 
-.category_wrap  .panel_1x{
-height:220px;
-
+.category_wrap .txt{
+  border:1px solid #ccc;
+  height: 220px;
 }
-.category_wrap  .panel_2x{
-height:220px;
-
-}
-.category_wrap  .panel_3x{
-height:220px;
-
-}
-
-.category_wrap  .panel_4x{
-height:160px;
-
-
-}
-
 
 .text_panel_default .panel_content{
 margin:20px;
 }
 
-.category_block{
-width:218px;
-height:218px;
-margin-bottom:20px;
+
+
+.category_wrap{
+  position: relative;
+  float:left;
+
+  margin-left:18px;
+  margin-bottom:18px;
+  height:220px;
+
 }
 
-.category_showcase {
-border: 1px solid #ccc;
-background:#fff;
-padding:0px 0px 0px 0px;
+.category_wrap >div,.category_wrap >img{
 
+  padding:0px 0px 0px 0px;
+}
+
+.category_wrap img.panel_1{
+  width:226px;
+}
+.category_wrap img.panel_2{
+  width:470px;
+}
+.category_wrap img.panel_3{
+  width:714px;
+}
+.category_wrap img.panel_4{
+  width:958px;
+}
+.category_wrap img.panel_5{
+  width:1202px;
+}
+
+.category_wrap img.panel{
+
+
+  height: 220px;
+}
+
+
+
+.category_block{
+  width:226px;
+height: 100%;
+  border: 1px solid #ccc;
+  background:#fff;
 
 }
 
@@ -804,17 +805,13 @@ z-index: 100;position:relative;
 .page_break{
 
 border-top:1px solid #ccc;margin:0px 20px 10px 20px;
-height: 30px;
-
-
-
-
+height: 30px;position:relative;
 
 }
 
-.page_break span.title{
+.page_break .title{
 
-padding:0px;margin:0px;float:left;;padding-top:5px;
+padding:0px;margin:0px;float:left;;padding-top:5px;font-weight: 800;color:#000
 
 }
 
@@ -823,6 +820,15 @@ padding:0px;margin:0px;float:left;;padding-top:5px;
 
 padding:0px;margin:0px;float:right;padding-top:5px;min-width:60px;text-align: right;
 
+}
+
+.section{
+
+  position:relative;margin-bottom:10px;;margin-top:0px
+}
+
+.section_items {
+  display:flex;flex-flow: row wrap;clear:both;
 }
 
 section.product_tabs{
@@ -900,7 +906,7 @@ font-size:21px;
 .item_header_text{
 padding:8px;margin-bottom:5px;
 border:1px solid transparent;cursor:text;padding-top:10px;padding-bottom:0px;
-font-weight: 800;
+font-weight: 800;z-index: 100;line-height: normal;text-align:center;
 
 }
 
@@ -1012,3 +1018,18 @@ div.blk_images figcaption.caption_center{
 div.blk_images figcaption.caption_hide{
 display:none
 }
+
+h1 {
+  font-weight: 800;
+  font-size: 21px;
+  padding: 0;
+  margin: 17.4333px 0px;
+  line-height: 1.2em;
+
+}
+
+p{
+  line-height: 1.2em;
+  margin-bottom:1.8em;
+}
+

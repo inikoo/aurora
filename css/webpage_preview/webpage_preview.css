@@ -20,6 +20,7 @@ display:none
 
 }
 
+
 .ok{
   color: #26A65B
 }
@@ -43,6 +44,10 @@ color: #ffba00
   color: #777
 }
 
+.red{
+  color: #ff0000;
+
+}
 
 .fake_form_checkbox{
 	 font: 14px/1.55 'Open Sans', Helvetica, Arial, sans-serif;position:relative;top:1px;font-size:15px;color:#404040
@@ -187,5 +192,81 @@ color: #ffba00
         padding: 10px;
     }
     
-    
+/*    
+category_categries
+
+*/
+
+.flex-container {
+  padding: 0;
+  margin: 0;
+  list-style: none;
+
+  display: -webkit-box;
+  display: -moz-box;
+  display: -ms-flexbox;
+  display: -webkit-flex;
+  display: flex;
+
+  -webkit-flex-flow: row wrap;
+  justify-content: space-around;
+}
+
+.flex-item {
+
+  border: 1px solid #ccc;
+  padding: 5px;
+  width: 200px;
+  margin-top: 10px;
+
+
+
+  text-align: center;
+}
+
+    .item_overlay{
+        position:absolute;top:0px;left:0px; border:1px solid #ccc;
+        background-color: rgba(255,255,255,.9);z-index: 1000;
+
+
+    }
+
+
+.item_overlay   .close_category_block{
+    float: right;margin-right: 10px;margin-top: 10px;
+}
+.item_overlay .button_container{
+    clear:both;display:flex;padding:0px 5px;font-size:90%
+}
+.item_overlay .top_info div{
+    background-color:white
+}
+
+.item_overlay .full{
+    background-color:white;width: 100%
+}
+
+
+    .item_overlay .buttons{
+        padding:5px;display: flex;color:#777
+    }
+
+
+    .item_overlay .buttons div{
+        border-left:none;
+    }
+    .item_overlay .buttons div:first-of-type{
+        border-left:1px solid #ccc
+    }
+
+    .item_overlay .buttons .selected{
+        background-color: aliceblue;color:#000;
+    }
+
+.item_overlay label{
+    font-weight: normal;
+    margin-bottom: auto;
+    cursor: pointer;
+    width: 100%;
+}
   

@@ -29,28 +29,21 @@
         <!-- End Google Tag Manager -->
     {/if}
     <title>{$webpage->get('Webpage Browser Title')}</title>
-
     <meta charset="utf-8">
     <meta name="keywords" content=""/>
     <meta name="description" content="{$webpage->get('Webpage Meta Description')}"/>
-
     <link rel="shortcut icon" type="image/png" href="art/favicon.png"/>
-
-    <!--
-    <link rel="shortcut icon" href="images/favicon.ico">
- Favicon -->
-
-    <link rel="canonical" href="{$webpage->get('URL')}"/>
+    <!--<link rel="shortcut icon" href="images/favicon.ico"> Favicon -->
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <!--[if lt IE 9]>
     <script src="https://html5shim.googlecode.com/svn/trunk/html5.js"></script>
     <![endif]-->
-
+    <link rel="canonical" href="{$webpage->get('URL')}"/>
     <link rel="stylesheet" href="/css/fontawesome-all.min.css" type="text/css"/>
-    <link rel="stylesheet" href="css/style.theme_1.EcomB2B.css?v180319v1" type="text/css"/>
-
+    <link rel="stylesheet" href="css/style.theme_1.EcomB2B.css?v180402v2" type="text/css"/>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/simple-line-icons/2.4.1/css/simple-line-icons.css">
-    <!--  <script src="http://code.jquery.com/jquery-3.2.1.min.js" integrity="sha256-hwg4gsxgFZhOsEEamdOYGBf13FyQuiTwlAQgxVSNgt4=" crossorigin="anonymous"></script> -->
+
+
     <script src="/theme_1/local/jquery.js"></script>
 
     <script src="/theme_1/local/jquery-ui.js"></script>

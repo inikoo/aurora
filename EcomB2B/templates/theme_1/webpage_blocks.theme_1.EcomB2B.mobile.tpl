@@ -23,6 +23,8 @@
             {/if}
 
 
+
+
             {foreach from=$content.blocks item=$block key=key}
             {if $block.show}
 

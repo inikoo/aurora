@@ -454,6 +454,9 @@
 
 
                                 </script>
+                            {elseif $block=='Sofort'}
+
+
 
                             {elseif $block=='BTreePaypal'}
                                 <form action="" class="sky-form" style="max-width: 500px;">

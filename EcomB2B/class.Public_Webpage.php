@@ -30,8 +30,6 @@ class Public_Webpage {
         }
 
         $this->get_data($arg1, $arg2, $arg3);
-
-
     }
 
     function get_data($tipo, $tag, $tag2 = false) {

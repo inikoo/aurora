@@ -262,12 +262,12 @@ sub {
 
 /* Links */
 a {
-	color: #e54c4c;
+	color: inherit;
 	text-decoration: none;
 }
 a:hover {
-	text-decoration: none;
-	color: #454545;
+	text-decoration: underline;
+	//color: #454545;
 }
 
 .color {

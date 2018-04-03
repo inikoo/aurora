@@ -428,14 +428,8 @@ background-color: {$primary_color};
 }
 
 
-a {
-	color: {$primary_color};
-}
 
 
-a:hover {
-color: {$primary_color_darker};
-}
 
 .color {
 	color: {$primary_color};
