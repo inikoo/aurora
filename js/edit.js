@@ -1799,6 +1799,7 @@ function get_dropdown_select(dropdown_input, new_value) {
     $.getJSON(request, function (data) {
 
 
+
         if (data.number_results > 0) {
 
 
@@ -1854,7 +1855,7 @@ function get_dropdown_select(dropdown_input, new_value) {
             clone.attr('formatted_value', data.results[result_key].formatted_value)
 
 
-            //  console.log(data.results[result_key].metadata)
+             // console.log(data.results[result_key].metadata)
             clone.data('metadata', data.results[result_key].metadata)
 
 
@@ -1870,6 +1871,9 @@ function get_dropdown_select(dropdown_input, new_value) {
             clone.children(".code").html(data.results[result_key].code)
 
             clone.children(".label").html(data.results[result_key].description)
+
+
+
 
             $("#" + field + "_results").append(clone)
 
@@ -1951,7 +1955,9 @@ function delete_object(element) {
     save_object_operation('delete', element)
 }
 
-
+function approve_object(element) {
+    save_object_operation('approve', element)
+}
 function suspend_object(element) {
     save_object_operation('suspend', element)
 }

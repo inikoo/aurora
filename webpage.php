@@ -68,7 +68,7 @@ if ($webpage->get('Webpage Template Filename') == 'products_showcase') {
     require_once 'utils/get_countries.php';
     $countries = get_countries($website->get('Website Locale'));
 
-  
+
     $smarty->assign('address_labels', $address_labels);
     $smarty->assign('used_address_fields', $used_fields);
     $smarty->assign('countries', $countries);

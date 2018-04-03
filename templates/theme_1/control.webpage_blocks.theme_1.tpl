@@ -46,7 +46,9 @@
             <div style="border:1px solid #ccc;height: 22px;width: 22px;text-align: center;float: left;margin-right: 20px"><i id="exit_edit_column" style="position: relative;top:0px"  onClick="exit_edit_webpage_block_column()" key="" class="edit_column_button fa button fa-arrow-up " aria-hidden="true"></i></div>
             <i id="edit_next_column" style="margin-right: 10px" onClick="edit_next_webpage_blocks_column(this)" key="" class="hide edit_column_button fa button fa-arrow-right " aria-hidden="true"></i>
 
-            <i   class="fa button delete_block padding_left_5 padding_right_20  fa-trash" aria-hidden="true"></i>
+            <i   class="far button delete_block padding_left_5 padding_right_5  fa-trash-alt" aria-hidden="true"></i>
+            <i   class="far button show_only_block  padding_right_20  fa-crosshairs" aria-hidden="true"></i>
+
         </div>
 
         <div id="blk_control_container">

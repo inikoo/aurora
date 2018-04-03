@@ -50,7 +50,7 @@
     {foreach from=$data.images item=image}
         <span class=" image">
         <figure>
-            <img class="button" src="{$image.src}" alt="{$image.title}" link="{if isset($image.link)}{$image.link}{else}{/if}" display_class="{$image.caption_class}">
+            <img class="button"  data-width="{$image.width}" src="{$image.src}" alt="{$image.title}" link="{if isset($image.link)}{$image.link}{else}{/if}" display_class="{$image.caption_class}">
             <figcaption contenteditable="true" class="{$image.caption_class}" >{$image.caption}</figcaption>
         </figure>
     </span>
@@ -60,6 +60,7 @@
 
 
 </div>
+
 
 
 

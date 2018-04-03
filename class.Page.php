@@ -445,7 +445,7 @@ class Page extends DB_Table {
 
                 $website = get_object('website', $this->get('Webpage Website Key'));
 
-               return $website->get($key);
+                return $website->get($key);
 
 
                 break;
@@ -1764,10 +1764,246 @@ class Page extends DB_Table {
 
             case 'Page Store Content Data':
 
-                $this->update_field($field, $value, $options);
+                // post edit content data
+
+                include_once('utils/image_functions.php');
+
+                $content_data = json_decode($value, true);
+                // print_r($content_data);
+
+
+
+                if (isset($content_data['blocks'])) {
+                    foreach ($content_data['blocks'] as $block_key => $block) {
+
+                        if ($block['type'] == 'blackboard') {
+
+                            $items = array();
+                            $index = 0;
+
+                            $max_images = count($block['texts']);
+                            if ($max_images == 0) {
+                                $max_images = 1;
+                            }
+
+                            $counter = 0;
+                            foreach ($block['images'] as $key_item => $item) {
+                                $index        = $index + 10;
+                                $item['type'] = 'image';
+
+
+                                if (empty($item['image_website'])) {
+                                    $image_website = $item['src'];
+                                    if (preg_match('/id=(\d+)/', $item['src'], $matches)) {
+                                        $image_key = $matches[1];
+
+                                        $width         = $item['width'] * 2;
+                                        $height        = $item['height'] * 2;
+                                        $image_website = create_cached_image($image_key, $width, $height, 'do_not_enlarge');
+                                    }
+
+
+                                    $content_data['blocks'][$block_key]['images'][$key_item]['image_website'] = $image_website;
+                                    $item['image_website']                                                    = $image_website;
+
+                                }
+
+                                $items[$index] = $item;
+                                $counter++;
+
+                            }
+                            $index = 5;
+                            foreach ($block['texts'] as $item) {
+                                $index         = $index + 10;
+                                $item['type']  = 'text';
+                                $items[$index] = $item;
+                            }
+
+                            ksort($items);
+
+
+                            $image_counter = 0;
+                            $mobile_html   = '';
+                            $tablet_html   = '';
+
+
+                            foreach ($items as $item) {
+                                if ($item['type'] == 'text') {
+                                    $tablet_html .= '<p>'.$item['text'].'</p>';
+                                }
+                                if ($item['type'] == 'image') {
+
+                                    if ($image_counter >= $max_images) {
+                                        break;
+                                    }
+
+                                    if ($image_counter % 2 == 0) {
+                                        $tablet_html .= '<img src="'.$item['image_website'].'" style="width:45%;float:left;margin-right:20px;" alt="'.$item['title'].'">';
+
+                                    } else {
+                                        $tablet_html .= '<img src="'.$item['image_website'].'" style="width:40%;float:right;margin-left:20px;" alt="'.$item['title'].'">';
+
+                                    }
+
+
+                                    $image_counter++;
+
+                                }
+
+                            }
+                            $image_counter = 0;
+
+                            foreach ($items as $key_item => $item) {
+                                if ($item['type'] == 'image') {
+                                    $ratio = $item['width'] / $item['height'];
+                                    //print "$ratio\n";
+
+                                    if ($ratio > 7.5) {
+                                        $mobile_html .= '<img src="'.$item['image_website'].'" style="width:100%;" alt="'.$item['title'].'">';
+                                        unset($items[$key_item]);
+                                        break;
+                                    }
+
+
+                                }
+
+                            }
+
+
+                            foreach ($items as $item) {
+                                if ($item['type'] == 'text') {
+                                    $mobile_html .= '<p>'.$item['text'].'</p>';
+                                }
+                                if ($item['type'] == 'image') {
+
+
+                                    if ($image_counter % 2 == 0) {
+                                        $mobile_html .= '<img src="'.$item['image_website'].'" style="width:40%;padding-top:15px;float:left;margin-right:15px;" alt="'.$item['title'].'">';
+
+                                    } else {
+                                        $mobile_html .= '<img src="'.$item['image_website'].'" style="width:40%;padding-top:15px;float:right;margin-left:15px;" alt="'.$item['title'].'">';
+
+                                    }
+
+
+                                    $image_counter++;
+
+                                }
+
+                            }
+
+
+                            $mobile_html = preg_replace('/\<p\>\<br\>\<\/p\>/', '', $mobile_html);
+                            $mobile_html = preg_replace('/\<p style\=\"text-align: left;\"\><br\>\<\/p\>/', '', $mobile_html);
+                            $tablet_html = preg_replace('/\<p\>\<br\>\<\/p\>/', '', $tablet_html);
+                            $tablet_html = preg_replace('/\<p style\=\"text-align: left;\"\><br\>\<\/p\>/', '', $tablet_html);
+                            // print_r($mobile_html);
+                            $content_data['blocks'][$block_key]['mobile_html'] = $mobile_html;
+                            $content_data['blocks'][$block_key]['tablet_html'] = $tablet_html;
+
+                        } elseif ($block['type'] == 'category_categories') {
+
+
+                            foreach ($block['sections'] as $section_key => $section) {
+                                foreach ($section['items'] as $item_key => $item) {
+
+                                    if ($item['type'] == 'category') {
+                                        if (empty($item['image_mobile_website'])) {
+                                            $image_mobile_website = $item['image_src'];
+                                            if (preg_match('/id=(\d+)/', $item['image_src'], $matches)) {
+                                                $image_key = $matches[1];
+
+                                                $image_mobile_website = create_cached_image($image_key, 320, 200);
+
+                                            }
+
+
+                                            $content_data['blocks'][$block_key]['sections'][$section_key]['items'][$item_key]['image_mobile_website'] = $image_mobile_website;
+
+
+                                        }
+
+                                        if (empty($item['image_website'])) {
+                                            $image_website = $item['image_src'];
+                                            if (preg_match('/id=(\d+)/', $item['image_src'], $matches)) {
+                                                $image_key     = $matches[1];
+                                                $image_website = create_cached_image($image_key, 432, 330, 'fit_highest');
+                                            }
+
+
+                                            $content_data['blocks'][$block_key]['sections'][$section_key]['items'][$item_key]['image_website'] = $image_website;
+
+
+                                        }
+                                    } else {
+                                        if ($item['type'] == 'image') {
+
+                                            if (empty($item['image_website'])) {
+                                                $image_website = $item['image_src'];
+                                                if (preg_match('/id=(\d+)/', $item['image_src'], $matches)) {
+                                                    $image_key = $matches[1];
+                                                    $height    = 220;
+                                                    switch ($item['size_class']) {
+                                                        case 'panel_1':
+                                                            $width = 226;
+
+                                                            break;
+                                                        case 'panel_2':
+                                                            $width = 470;
+                                                            break;
+                                                        case 'panel_3':
+                                                            $width = 714;
+                                                            break;
+                                                        case 'panel_4':
+                                                            $width = 958;
+                                                            break;
+                                                        case 'panel_5':
+                                                            $width = 1202;
+                                                            break;
+
+                                                    }
+
+                                                    $image_website = create_cached_image($image_key, $width, $height);
+                                                }
+
+
+                                                $content_data['blocks'][$block_key]['sections'][$section_key]['items'][$item_key]['image_website'] = $image_website;
+
+
+                                            }
+
+
+                                        }
+                                    }
+
+
+                                }
+                            }
+
+
+                        }
+
+                    }
+
+                }
+               // exit('xs');
+
+                // if ($this->get('Webpage Template Filename') == 'category_categories') {
+
+                //   $this->reindex_category_categories();
+
+                //}
+
+
+                //print_r($content_data);
+
+                $value = json_encode($content_data);
+
+                $this->update_field('Page Store Content Data', $value, $options);
                 $this->update_store_search();
 
-                if ($this->get('Webpage Scope') == 'Category Categories') {
+                // Todo remove after migration
+                if ($this->get('Webpage Scope') == 'Category Categories' and $this->get('Webpage Template Filename') != 'category_categories') {
 
                     include_once 'class.Website.php';
                     $website = new Website($this->get('Webpage Website Key'));
@@ -1783,40 +2019,40 @@ class Page extends DB_Table {
             case 'Website Registration Type':
 
 
-                $old_content_data=$this->get('Content Data');
-                if(empty($old_content_data['backup'])){
-                    $backup=array(
-                        'Open'=>'',
-                        'Closed'=>'',
-                        'ApprovedOnly'=>''
+                $old_content_data = $this->get('Content Data');
+                if (empty($old_content_data['backup'])) {
+                    $backup = array(
+                        'Open'         => '',
+                        'Closed'       => '',
+                        'ApprovedOnly' => ''
                     );
-                }else{
-                    $backup=$old_content_data['backup'];
+                } else {
+                    $backup = $old_content_data['backup'];
                 }
                 unset($old_content_data['backup']);
 
 
                 $website = get_object('website', $this->get('Webpage Website Key'));
 
-                $old_type=$website->get('Website Registration Type');
+                $old_type = $website->get('Website Registration Type');
 
                 $website->editor = $this->editor;
                 $website->update_field($field, $value, $options);
-                if($website->updated){
+                if ($website->updated) {
                     $this->updated;
 
 
                     //print_r($backup);
                     //print_r($old_type);
 
-                    $backup[$old_type]=$old_content_data;
+                    $backup[$old_type] = $old_content_data;
 
-                    if(isset($backup[$value])){
-                        $this->update(array('Page Store Content Data'=>json_encode($backup[$value])),'no_history');
-                    }else{
+                    if (isset($backup[$value])) {
+                        $this->update(array('Page Store Content Data' => json_encode($backup[$value])), 'no_history');
+                    } else {
                         $this->reset_object();
                     }
-                    $this->update_content_data('backup',$backup);
+                    $this->update_content_data('backup', $backup);
 
 
                 }
@@ -1864,8 +2100,7 @@ class Page extends DB_Table {
         }
 
 
-
-        $this->update(array('Webpage Version' => $version),'no_history');
+        $this->update(array('Webpage Version' => $version), 'no_history');
 
     }
 
@@ -1971,17 +2206,15 @@ class Page extends DB_Table {
         } elseif ($this->get('Webpage Scope') == 'Product') {
 
 
-
-            if(isset($content_data['description_block']['content'])){
-                $web_text=$content_data['description_block']['content'];
-            }else{
-                $web_text='';
+            if (isset($content_data['description_block']['content'])) {
+                $web_text = $content_data['description_block']['content'];
+            } else {
+                $web_text = '';
             }
 
 
-
             $product = get_object('Product', $this->get('Webpage Scope Key'));
-            $product->fast_update(array('Product Published Webpage Description'=>$web_text));
+            $product->fast_update(array('Product Published Webpage Description' => $web_text));
 
         }
 
@@ -2145,6 +2378,15 @@ class Page extends DB_Table {
         $this->updated = false;
 
 
+        if ($this->get('Webpage Template Filename') == 'category_categories') {
+
+            $this->reindex_category_categories();
+            $this->updated = true;
+
+            return;
+        }
+
+
         if ($this->get('Webpage Scope') == 'Category Categories') {
 
             if ($this->get('Webpage Version') == 2) {
@@ -2254,6 +2496,190 @@ class Page extends DB_Table {
 
             }
         }
+    }
+
+    function reindex_category_categories() {
+        $content_data = $this->get('Content Data');
+
+        $block_key = false;
+        foreach ($content_data['blocks'] as $_block_key => $_block) {
+            if ($_block['type'] == 'category_categories') {
+                $block     = $_block;
+                $block_key = $_block_key;
+                break;
+            }
+        }
+
+        if (!$block_key) {
+            return;
+        }
+
+        $sql = sprintf(
+            "SELECT  `Webpage URL`,`Category Main Image Key`,`Category Main Image`,`Category Label`,`Category Main Image Key`,`Webpage State`,`Product Category Public`,`Webpage State`,`Page Key`,`Webpage Code`,`Product Category Active Products`,`Category Code`,Cat.`Category Key` 
+                FROM    `Category Bridge` B  LEFT JOIN     `Product Category Dimension` P   ON (`Subject Key`=`Product Category Key` AND `Subject`='Category' )    LEFT JOIN `Category Dimension` Cat ON (Cat.`Category Key`=P.`Product Category Key`) LEFT JOIN `Page Store Dimension` CatWeb ON (CatWeb.`Page Key`=`Product Category Webpage Key`)  WHERE  B.`Category Key`=%d  AND `Product Category Public`='Yes'  AND `Webpage State` IN ('Online','Ready')  ORDER BY  `Category Label` DESC   ",
+            $this->get('Webpage Scope Key')
+
+
+        );
+
+        $items                    = array();
+        $items_category_key_index = array();
+
+        if ($result = $this->db->query($sql)) {
+            foreach ($result as $row) {
+                $items[$row['Category Key']]                    = $row;
+                $items_category_key_index[$row['Category Key']] = $row['Category Key'];
+            }
+        } else {
+            print_r($error_info = $this->db->errorInfo());
+            print "$sql\n";
+            exit;
+        }
+
+
+        $offline_items_category_key_index = array();
+        $sql                              = sprintf(
+            "SELECT  B.`Category Key` FROM    `Category Bridge` B  LEFT JOIN     `Product Category Dimension` P   ON (`Subject Key`=`Product Category Key` AND `Subject`='Category' )    LEFT JOIN `Category Dimension` Cat ON (Cat.`Category Key`=P.`Product Category Key`) LEFT JOIN `Page Store Dimension` CatWeb ON (CatWeb.`Page Key`=`Product Category Webpage Key`)  
+            WHERE  B.`Category Key`=%d  AND  (`Product Category Public`='No'  OR `Webpage State` NOT IN ('Online','Ready')  )  ", $this->get('Webpage Scope Key')
+
+
+        );
+        if ($result = $this->db->query($sql)) {
+            foreach ($result as $row) {
+
+                $offline_items_category_key_index[$row['Category Key']] = $row['Category Key'];
+            }
+        } else {
+            print_r($error_info = $this->db->errorInfo());
+            print "$sql\n";
+            exit;
+        }
+
+        $anchor_section_key = 0;
+
+        foreach ($block['sections'] as $section_key => $section) {
+
+            if ($section['type'] == 'anchor') {
+                $anchor_section_key = $section_key;
+            }
+
+            foreach ($section['items'] as $item_key => $item) {
+                if ($item['type'] == 'category') {
+
+
+                    //print $item['category_key'];
+                    //print_r($items_category_key_index);
+                    //exit;
+
+                    if (in_array($item['category_key'], $items_category_key_index)) {
+
+                        $item_data=$items[$item['category_key']];
+
+                        $content_data['blocks'][$block_key]['sections'][$section_key]['items'][$item_key]['item_type']       = 'Subject';
+                        $content_data['blocks'][$block_key]['sections'][$section_key]['items'][$item_key]['webpage_key']     = $item_data['Page Key'];
+                        $content_data['blocks'][$block_key]['sections'][$section_key]['items'][$item_key]['webpage_code']    = $item_data['Webpage Code'];
+                        $content_data['blocks'][$block_key]['sections'][$section_key]['items'][$item_key]['category_code']   = $item_data['Category Code'];
+                        $content_data['blocks'][$block_key]['sections'][$section_key]['items'][$item_key]['number_products'] = $item_data['Product Category Active Products'];
+                        $content_data['blocks'][$block_key]['sections'][$section_key]['items'][$item_key]['link']            = $item_data['Webpage URL'];
+
+                        unset($items_category_key_index[$item['category_key']]);
+                    } else {
+
+                        if (in_array($item['category_key'], $offline_items_category_key_index)) {
+                            unset($content_data['blocks'][$block_key]['sections'][$section_key]['items'][$item_key]);
+
+                        } else {
+
+                            $sql = sprintf(
+                                "SELECT  `Webpage URL`,`Category Main Image Key`,`Category Main Image`,`Category Label`,`Category Main Image Key`,`Webpage State`,`Product Category Public`,`Webpage State`,`Page Key`,`Webpage Code`,`Product Category Active Products`,`Category Code`,Cat.`Category Key` 
+                                  FROM   `Product Category Dimension` P     LEFT JOIN `Category Dimension` Cat ON (Cat.`Category Key`=P.`Product Category Key`) LEFT JOIN `Page Store Dimension` CatWeb ON (CatWeb.`Page Key`=`Product Category Webpage Key`)  
+                                  WHERE  `Product Category Key`=%d  AND `Product Category Public`='Yes'  AND `Webpage State` IN ('Online','Ready')    ", $item['category_key']
+
+
+                            );
+
+                            if ($result = $this->db->query($sql)) {
+                                if ($row = $result->fetch()) {
+                                    $content_data['blocks'][$block_key]['sections'][$section_key]['items'][$item_key]['item_type']       = 'Guest';
+                                    $content_data['blocks'][$block_key]['sections'][$section_key]['items'][$item_key]['webpage_key']     = $row['Page Key'];
+                                    $content_data['blocks'][$block_key]['sections'][$section_key]['items'][$item_key]['webpage_code']    = $row['Webpage Code'];
+                                    $content_data['blocks'][$block_key]['sections'][$section_key]['items'][$item_key]['category_code']   = $row['Category Code'];
+                                    $content_data['blocks'][$block_key]['sections'][$section_key]['items'][$item_key]['number_products'] = $row['Product Category Active Products'];
+                                    $content_data['blocks'][$block_key]['sections'][$section_key]['items'][$item_key]['link']            = $row['Webpage URL'];
+
+
+                                } else {
+                                    unset($content_data['blocks'][$block_key]['sections'][$section_key]['items'][$item_key]);
+                                }
+                            } else {
+                                print_r($error_info = $this->db->errorInfo());
+                                print "$sql\n";
+                                exit;
+                            }
+
+
+                        }
+
+
+                    }
+
+                }
+
+
+            }
+
+
+        }
+
+        foreach ($items_category_key_index as $index) {
+            $item_data = $items[$index];
+            $items     = array(
+                'type'                 => 'category',
+                'category_key'         => $item_data['Category Key'],
+                'header_text'          => trim(strip_tags($item_data['Category Label'])),
+                'image_src'            => ($item_data['Category Main Image Key'] ? 'image_root.php?id='.$item_data['Category Main Image Key'] : '/art/nopic.png'),
+                'image_mobile_website' => '',
+                'image_website'        => '',
+                'webpage_key'          => $item_data['Page Key'],
+                'webpage_code'         => strtolower($item_data['Webpage Code']),
+                'item_type'            => 'Subject',
+                'category_code'        => $item_data['Category Code'],
+                'number_products'      => $item_data['Product Category Active Products'],
+                'link'                 => $item_data['Webpage URL'],
+
+
+            );
+
+            array_unshift($content_data['blocks'][$block_key]['sections'][$anchor_section_key], $item);
+        }
+
+
+        $this->update_field_switcher('Page Store Content Data',json_encode($content_data),'no_history');
+
+        $sql=sprintf('delete from `Website Webpage Scope Map` where `Website Webpage Scope Webpage Key`=%d ',$this->id);
+        $this->db->exec($sql);
+
+        $index = 0;
+        foreach ($content_data['blocks'][$block_key]['sections'] as $section_key => $section) {
+            foreach ($section['items'] as $item_key => $item) {
+                if ($item['type'] == 'category') {
+                    $sql = sprintf(
+                        'INSERT INTO `Website Webpage Scope Map` (`Website Webpage Scope Website Key`,`Website Webpage Scope Webpage Key`,`Website Webpage Scope Scope`,`Website Webpage Scope Scope Key`,`Website Webpage Scope Type`,`Website Webpage Scope Index`) VALUES (%d,%d,%s,%d,%s,%d) ',
+                        $this->get('Webpage Website Key'), $this->id, prepare_mysql('Category'), $item['category_key'], prepare_mysql($item['item_type']), $index
+
+                    );
+
+                    $this->db->exec($sql);
+                    $index++;
+
+                }
+
+            }
+
+
+        }
+
+
     }
 
     function add_section_item($item_key, $section_key = false) {
@@ -2591,6 +3017,382 @@ class Page extends DB_Table {
 
         }
 
+
+    }
+
+    function reset_object() {
+
+
+        $website = get_object('Website', $this->get('Webpage Website Key'));
+
+        if ($this->get('Webpage Scope') == 'Category Products') {
+
+            include_once 'class.Category.php';
+
+            $category = new Category($this->get('Webpage Scope Key'));
+
+            if ($website->get('Website Theme') == 'theme_1x') {
+
+
+                $category->create_category_webpage_index();
+
+
+                $content_data = array(
+
+
+                    'blocks' => array(
+                        'intro'    => 1,
+                        'products' => 1
+
+                    ),
+
+                    'intro' => array(
+                        'type'            => '50_50',
+                        'image'           => '',
+                        'image_key'       => '',
+                        'title'           => $this->get('Webpage Name'),
+                        'sub_title'       => 'Will cover many web sites still in their infancy various versions have evolved packages over the years.',
+                        'text'            => 'There are many variations of passages of Lorem Ipsum available, but the majority have suffered alteration in some form, by injected humour, or randomised words which don\'t look even slightly believable. If you are going to use a passage of Lorem Ipsum, you need to be sure there isn\'t anything embarrassing hidden in the middle of text. All the Lorem Ipsum generators on the Internet tend to repeat predefined chunks as necessary, making this the first true generator on the Internet anything embarrassing hidden in the middle many web sites.',
+                        'class_title'     => '',
+                        'class_sub_title' => '',
+                        'class_text'      => '',
+
+
+                    ),
+
+                    'products' => array(
+                        'items'   => $this->get_items(),
+                        'filters' => array()
+                    )
+
+
+                );
+
+                //print_r($content_data);
+
+
+                $this->update(array('Page Store Content Data' => json_encode($content_data)), 'no_history');
+
+
+            } else {
+                include_once 'class.Public_Product.php';
+
+
+                $title = $category->get('Label');
+                if ($title == '') {
+                    $title = $category->get('Code');
+                }
+                if ($title == '') {
+                    $title = _('Title');
+                }
+
+                $description = $category->get('Product Category Description');
+                if ($description == '') {
+                    $description = $category->get('Label');
+                }
+                if ($description == '') {
+                    $description = $category->get('Code');
+                }
+                if ($description == '') {
+                    $description = _('Description');
+                }
+
+
+                $image_src = $category->get('Image');
+
+                $content_data = array(
+                    'description_block' => array(
+                        'class' => '',
+
+                        'blocks' => array(
+
+                            'webpage_content_header_image' => array(
+                                'type'      => 'image',
+                                'image_src' => $image_src,
+                                'caption'   => '',
+                                'class'     => ''
+
+                            ),
+
+                            'webpage_content_header_text' => array(
+                                'class'   => '',
+                                'type'    => 'text',
+                                'content' => sprintf('<h1 class="description_title">%s</h1><div class="description">%s</div>', $title, $description)
+
+                            )
+
+                        )
+                    )
+
+                );
+
+                //print_r($content_data);
+                $this->update(array('Page Store Content Data' => json_encode($content_data)), 'no_history');
+
+                $content_data = $this->get('Content Data');
+
+
+            }
+
+
+        } elseif ($this->get('Webpage Scope') == 'Category Categories') {
+
+
+            //  $category=get_object('Category',$this->get('Webpage Scope Key'));
+
+            if ($website->get('Website Theme') == 'theme_1') {
+
+
+                $items = array();
+
+                $sql = sprintf(
+                    "SELECT  `Webpage URL`,`Category Main Image Key`,`Category Main Image`,`Category Label`,`Category Main Image Key`,`Webpage State`,`Product Category Public`,`Webpage State`,`Page Key`,`Webpage Code`,`Product Category Active Products`,`Category Code`,B.`Category Key` FROM    `Category Bridge` B  LEFT JOIN     `Product Category Dimension` P   ON (`Subject Key`=`Product Category Key` AND `Subject`='Category' )    LEFT JOIN `Category Dimension` Cat ON (Cat.`Category Key`=P.`Product Category Key`) LEFT JOIN `Page Store Dimension` CatWeb ON (CatWeb.`Page Key`=`Product Category Webpage Key`)  WHERE  B.`Category Key`=%d  AND `Product Category Public`='Yes'  AND `Webpage State` IN ('Online','Ready')    ORDER BY  `Category Label`  ",
+                    $this->get('Webpage Scope Key')
+
+
+                );
+
+                //   print $sql;
+
+                if ($result = $this->db->query($sql)) {
+                    foreach ($result as $row) {
+                        $items[] = array(
+                            'type'                 => 'category',
+                            'category_key'         => $row['Category Key'],
+                            'header_text'          => trim(strip_tags($row['Category Label'])),
+                            'image_src'            => ($row['Category Main Image Key'] ? 'image_root.php?id='.$row['Category Main Image Key'] : '/art/nopic.png'),
+                            'image_mobile_website' => '',
+                            'image_website'        => '',
+                            'webpage_key'          => $row['Page Key'],
+                            'webpage_code'         => strtolower($row['Webpage Code']),
+                            'item_type'            => 'Subject',
+                            'category_code'        => $row['Category Code'],
+                            'number_products'      => $row['Product Category Active Products'],
+                            'link'                 => $row['Webpage URL'],
+                        );
+                    }
+                } else {
+                    print_r($error_info = $this->db->errorInfo());
+                    print "$sql\n";
+                    exit;
+                }
+
+
+                $sections = array(
+
+                    array(
+                        'type'     => 'anchor',
+                        'title'    => '',
+                        'subtitle' => '',
+                        'items'    => $items
+                    )
+
+                );
+
+
+                $content_data = array(
+                    'blocks' => array(
+                        array(
+                            'type'          => 'category_categories',
+                            'label'         => _('Categories').' ('._('sections').')',
+                            'icon'          => 'fa-th',
+                            'show'          => 1,
+                            'top_margin'    => 0,
+                            'bottom_margin' => 30,
+                            'sections'      => $sections
+                        )
+                    )
+
+                );
+
+
+                $this->update(array('Page Store Content Data' => json_encode($content_data)), 'no_history');
+
+
+            } else {
+
+
+                include_once 'class.Category.php';
+
+                $category = new Category($this->get('Webpage Scope Key'));
+
+                $sql = sprintf(
+                    'DELETE FROM  `Webpage Section Dimension` WHERE `Webpage Section Webpage Key`=%d  ', $this->id
+
+                );
+
+                $this->db->exec($sql);
+
+                $sql = sprintf(
+                    'DELETE FROM  `Category Webpage Index` WHERE `Category Webpage Index Webpage Key`=%d  ', $this->id
+
+                );
+
+                $this->db->exec($sql);
+                $sql = sprintf(
+                    'DELETE FROM  `Category Webpage Index` WHERE `Category Webpage Index Parent Category Key`=%d  ', $this->get('Webpage Scope Key')
+
+                );
+
+
+                //  print "$sql\n";
+
+                $this->db->exec($sql);
+
+
+                $title = $category->get('Label');
+                if ($title == '') {
+                    $title = $category->get('Code');
+                }
+                if ($title == '') {
+                    $title = _('Title');
+                }
+
+                $description = $category->get('Product Category Description');
+                if ($description == '') {
+                    $description = $category->get('Label');
+                }
+                if ($description == '') {
+                    $description = $category->get('Code');
+                }
+                if ($description == '') {
+                    $description = _('Description');
+                }
+
+
+                $image_src = $category->get('Image');
+
+                $content_data = array(
+                    'description_block' => array(
+                        'class' => '',
+
+                        'blocks' => array(
+
+                            'webpage_content_header_image' => array(
+                                'type'      => 'image',
+                                'image_src' => $image_src,
+                                'caption'   => '',
+                                'class'     => ''
+
+                            ),
+
+                            'webpage_content_header_text' => array(
+                                'class'   => '',
+                                'type'    => 'text',
+                                'content' => sprintf('<h1 class="description_title">%s</h1><div class="description">%s</div>', $title, $description)
+
+                            )
+
+                        )
+                    ),
+                    'sections'          => array()
+
+                );
+
+                $section = array(
+                    'type'     => 'anchor',
+                    'title'    => '',
+                    'subtitle' => '',
+                    'panels'   => array()
+                );
+
+
+                $sql = sprintf(
+                    'INSERT INTO `Webpage Section Dimension` (`Webpage Section Webpage Key`,`Webpage Section Webpage Stack Index`,`Webpage Section Data`) VALUES (%d,%d,%s) ', $this->id, 0, prepare_mysql(json_encode($section))
+
+                );
+
+                //  print $sql;
+
+                $this->db->exec($sql);
+
+                $section['key'] = $this->db->lastInsertId();
+
+                $content_data['sections'][] = $section;
+                $this->update(array('Page Store Content Data' => json_encode($content_data)), 'no_history');
+
+                $category->create_stack_index(true);
+
+                // new list of
+
+            }
+
+
+        } else {
+
+            include_once 'class.Website.php';
+
+            include_once 'conf/website_system_webpages.php';
+
+            $website = new Website($this->get('Webpage Website Key'));
+
+            $website_system_webpages = website_system_webpages_config($website->get('Website Type'));
+
+
+            if (isset($website_system_webpages[$this->get('Webpage Code')]['Page Store Content Data'])) {
+
+                $this->update(array('Page Store Content Data' => $website_system_webpages[$this->get('Webpage Code')]['Page Store Content Data']), 'no_history');
+            }
+
+
+        }
+
+
+    }
+
+    function get_items() {
+
+
+        $items = array();
+
+
+        if ($this->get('Webpage Scope') == 'Category Products') {
+
+            $sql = sprintf(
+                "SELECT `Product Category Index Content Data` FROM `Product Category Index` 
+                 WHERE  `Product Category Index Website Key`=%d   ORDER BY  ifnull(`Product Category Index Stack`,99999999)", $this->id
+
+
+            );
+
+
+            if ($result = $this->db->query($sql)) {
+                foreach ($result as $row) {
+                    $items[] = json_decode($row['Product Category Index Content Data'], true);
+                }
+            } else {
+                print_r($error_info = $this->db->errorInfo());
+                print "$sql\n";
+                exit;
+            }
+
+
+        } else {
+            if ($this->get('Webpage Scope') == 'Category Categories') {
+
+                $sql = sprintf(
+                    "SELECT `Category Webpage Index Content Data` FROM `Category Webpage Index` CWI
+                 WHERE  `Category Webpage Index Webpage Key`=%d   ORDER BY  ifnull(`Category Webpage Index Stack`,99999999)", $this->id
+
+
+                );
+
+
+                if ($result = $this->db->query($sql)) {
+                    foreach ($result as $row) {
+                        $items[] = json_decode($row['Category Webpage Index Content Data'], true);
+                    }
+                } else {
+                    print_r($error_info = $this->db->errorInfo());
+                    print "$sql\n";
+                    exit;
+                }
+
+            }
+        }
+
+
+        return $items;
 
     }
 
@@ -6199,6 +7001,9 @@ class Page extends DB_Table {
         return $html;
     }
 
+
+    //======= new methods
+
     function get_site_key() {
 
         if ($this->type == 'Store') {
@@ -6221,9 +7026,6 @@ class Page extends DB_Table {
         }
 
     }
-
-
-    //======= new methods
 
     function get_primary_content() {
         $content = '';
@@ -7099,7 +7901,6 @@ class Page extends DB_Table {
         $_sections = $content_data['sections'];
 
 
-
         foreach ($_sections as $index => $section_data) {
 
 
@@ -7112,9 +7913,6 @@ class Page extends DB_Table {
                 $target_index = $index;
             }
         }
-
-
-
 
 
         if (!$section_index or !$target_index) {
@@ -7135,8 +7933,6 @@ class Page extends DB_Table {
 
 
         $sections = array();
-
-
 
 
         if ($target_index > $section_index) {
@@ -7378,360 +8174,6 @@ class Page extends DB_Table {
 
 
         return $result;
-
-    }
-
-    function reset_object() {
-
-        include_once 'class.Website.php';
-        $website = new Website($this->get('Webpage Website Key'));
-
-
-        if ($this->get('Webpage Scope') == 'Category Products') {
-
-            include_once 'class.Category.php';
-
-            $category = new Category($this->get('Webpage Scope Key'));
-
-            if ($website->get('Website Theme') == 'theme_1x') {
-
-
-                $category->create_category_webpage_index();
-
-
-                $content_data = array(
-
-
-                    'blocks' => array(
-                        'intro'    => 1,
-                        'products' => 1
-
-                    ),
-
-                    'intro' => array(
-                        'type'            => '50_50',
-                        'image'           => '',
-                        'image_key'       => '',
-                        'title'           => $this->get('Webpage Name'),
-                        'sub_title'       => 'Will cover many web sites still in their infancy various versions have evolved packages over the years.',
-                        'text'            => 'There are many variations of passages of Lorem Ipsum available, but the majority have suffered alteration in some form, by injected humour, or randomised words which don\'t look even slightly believable. If you are going to use a passage of Lorem Ipsum, you need to be sure there isn\'t anything embarrassing hidden in the middle of text. All the Lorem Ipsum generators on the Internet tend to repeat predefined chunks as necessary, making this the first true generator on the Internet anything embarrassing hidden in the middle many web sites.',
-                        'class_title'     => '',
-                        'class_sub_title' => '',
-                        'class_text'      => '',
-
-
-                    ),
-
-                    'products' => array(
-                        'items'   => $this->get_items(),
-                        'filters' => array()
-                    )
-
-
-                );
-
-                //print_r($content_data);
-
-
-                $this->update(array('Page Store Content Data' => json_encode($content_data)), 'no_history');
-
-
-            } else {
-                include_once 'class.Public_Product.php';
-
-
-                $title = $category->get('Label');
-                if ($title == '') {
-                    $title = $category->get('Code');
-                }
-                if ($title == '') {
-                    $title = _('Title');
-                }
-
-                $description = $category->get('Product Category Description');
-                if ($description == '') {
-                    $description = $category->get('Label');
-                }
-                if ($description == '') {
-                    $description = $category->get('Code');
-                }
-                if ($description == '') {
-                    $description = _('Description');
-                }
-
-
-                $image_src = $category->get('Image');
-
-                $content_data = array(
-                    'description_block' => array(
-                        'class' => '',
-
-                        'blocks' => array(
-
-                            'webpage_content_header_image' => array(
-                                'type'      => 'image',
-                                'image_src' => $image_src,
-                                'caption'   => '',
-                                'class'     => ''
-
-                            ),
-
-                            'webpage_content_header_text' => array(
-                                'class'   => '',
-                                'type'    => 'text',
-                                'content' => sprintf('<h1 class="description_title">%s</h1><div class="description">%s</div>', $title, $description)
-
-                            )
-
-                        )
-                    )
-
-                );
-
-                //print_r($content_data);
-                $this->update(array('Page Store Content Data' => json_encode($content_data)), 'no_history');
-
-                $content_data = $this->get('Content Data');
-
-
-            }
-
-
-        }
-        elseif ($this->get('Webpage Scope') == 'Category Categories') {
-
-            include_once 'class.Category.php';
-
-            $category = new Category($this->get('Webpage Scope Key'));
-
-
-
-
-            if ($website->get('Website Theme') == 'theme_1x') {
-
-
-                $category->create_category_webpage_index(true);
-
-
-                $content_data = array(
-
-
-                    'blocks' => array(
-                        'intro'     => 1,
-                        'catalogue' => 1
-
-                    ),
-
-                    'intro' => array(
-                        'type'            => '50_50',
-                        'image'           => '',
-                        'image_key'       => '',
-                        'title'           => $this->get('Webpage Name'),
-                        'sub_title'       => 'Will cover many web sites still in their infancy various versions have evolved packages over the years.',
-                        'text'            => 'There are many variations of passages of Lorem Ipsum available, but the majority have suffered alteration in some form, by injected humour, or randomised words which don\'t look even slightly believable. If you are going to use a passage of Lorem Ipsum, you need to be sure there isn\'t anything embarrassing hidden in the middle of text. All the Lorem Ipsum generators on the Internet tend to repeat predefined chunks as necessary, making this the first true generator on the Internet anything embarrassing hidden in the middle many web sites.',
-                        'class_title'     => '',
-                        'class_sub_title' => '',
-                        'class_text'      => '',
-
-
-                    ),
-
-                    'catalogue' => array(
-                        'items'   => $this->get_items(),
-                        'filters' => array()
-                    )
-
-
-                );
-
-
-                $this->update(array('Page Store Content Data' => json_encode($content_data)), 'no_history');
-
-
-            } else {
-
-
-                include_once 'class.Category.php';
-
-                $category = new Category($this->get('Webpage Scope Key'));
-
-                $sql = sprintf(
-                    'DELETE FROM  `Webpage Section Dimension` WHERE `Webpage Section Webpage Key`=%d  ', $this->id
-
-                );
-
-                $this->db->exec($sql);
-
-                $sql = sprintf(
-                    'DELETE FROM  `Category Webpage Index` WHERE `Category Webpage Index Webpage Key`=%d  ', $this->id
-
-                );
-
-                $this->db->exec($sql);
-                $sql = sprintf(
-                    'DELETE FROM  `Category Webpage Index` WHERE `Category Webpage Index Parent Category Key`=%d  ', $this->get('Webpage Scope Key')
-
-                );
-
-
-                //  print "$sql\n";
-
-                $this->db->exec($sql);
-
-
-                $title = $category->get('Label');
-                if ($title == '') {
-                    $title = $category->get('Code');
-                }
-                if ($title == '') {
-                    $title = _('Title');
-                }
-
-                $description = $category->get('Product Category Description');
-                if ($description == '') {
-                    $description = $category->get('Label');
-                }
-                if ($description == '') {
-                    $description = $category->get('Code');
-                }
-                if ($description == '') {
-                    $description = _('Description');
-                }
-
-
-                $image_src = $category->get('Image');
-
-                $content_data = array(
-                    'description_block' => array(
-                        'class' => '',
-
-                        'blocks' => array(
-
-                            'webpage_content_header_image' => array(
-                                'type'      => 'image',
-                                'image_src' => $image_src,
-                                'caption'   => '',
-                                'class'     => ''
-
-                            ),
-
-                            'webpage_content_header_text' => array(
-                                'class'   => '',
-                                'type'    => 'text',
-                                'content' => sprintf('<h1 class="description_title">%s</h1><div class="description">%s</div>', $title, $description)
-
-                            )
-
-                        )
-                    ),
-                    'sections'          => array()
-
-                );
-
-                $section = array(
-                    'type'     => 'anchor',
-                    'title'    => '',
-                    'subtitle' => '',
-                    'panels'   => array()
-                );
-
-
-                $sql = sprintf(
-                    'INSERT INTO `Webpage Section Dimension` (`Webpage Section Webpage Key`,`Webpage Section Webpage Stack Index`,`Webpage Section Data`) VALUES (%d,%d,%s) ', $this->id, 0, prepare_mysql(json_encode($section))
-
-                );
-
-                //  print $sql;
-
-                $this->db->exec($sql);
-
-                $section['key'] = $this->db->lastInsertId();
-
-                $content_data['sections'][] = $section;
-                $this->update(array('Page Store Content Data' => json_encode($content_data)), 'no_history');
-
-                $category->create_stack_index(true);
-
-                // new list of
-
-            }
-
-
-        } else {
-
-            include_once 'class.Website.php';
-
-            include_once 'conf/website_system_webpages.php';
-
-            $website = new Website($this->get('Webpage Website Key'));
-
-            $website_system_webpages = website_system_webpages_config($website->get('Website Type'));
-
-
-            if (isset($website_system_webpages[$this->get('Webpage Code')]['Page Store Content Data'])) {
-
-                $this->update(array('Page Store Content Data' => $website_system_webpages[$this->get('Webpage Code')]['Page Store Content Data']), 'no_history');
-            }
-
-
-        }
-
-
-    }
-
-    function get_items() {
-
-
-        $items = array();
-
-
-        if ($this->get('Webpage Scope') == 'Category Products') {
-
-            $sql = sprintf(
-                "SELECT `Product Category Index Content Data` FROM `Product Category Index` 
-                 WHERE  `Product Category Index Website Key`=%d   ORDER BY  ifnull(`Product Category Index Stack`,99999999)", $this->id
-
-
-            );
-
-
-            if ($result = $this->db->query($sql)) {
-                foreach ($result as $row) {
-                    $items[] = json_decode($row['Product Category Index Content Data'], true);
-                }
-            } else {
-                print_r($error_info = $this->db->errorInfo());
-                print "$sql\n";
-                exit;
-            }
-
-
-        } else {
-            if ($this->get('Webpage Scope') == 'Category Categories') {
-
-                $sql = sprintf(
-                    "SELECT `Category Webpage Index Content Data` FROM `Category Webpage Index` CWI
-                 WHERE  `Category Webpage Index Webpage Key`=%d   ORDER BY  ifnull(`Category Webpage Index Stack`,99999999)", $this->id
-
-
-                );
-
-
-                if ($result = $this->db->query($sql)) {
-                    foreach ($result as $row) {
-                        $items[] = json_decode($row['Category Webpage Index Content Data'], true);
-                    }
-                } else {
-                    print_r($error_info = $this->db->errorInfo());
-                    print "$sql\n";
-                    exit;
-                }
-
-            }
-        }
-
-
-        return $items;
 
     }
 

@@ -1061,7 +1061,14 @@ class Website extends DB_Table {
             $template = 'products_showcase';
 
         } else {
-            $template = 'categories_showcase';
+
+            if($this->get('Website Template')=='theme_1'){
+                $template = 'category_categories';
+            }else{
+                $template = 'categories_showcase';
+            }
+
+
 
         }
 

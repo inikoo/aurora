@@ -1163,6 +1163,7 @@ function publish_webpage($data, $editor, $db) {
     $webpage         = get_object('Webpage', $data['parent_key']);
     $webpage->editor = $editor;
 
+
     $webpage->publish();
 
 
@@ -1834,10 +1835,11 @@ function save_webpage_content($data, $editor, $db, $smarty) {
     $webpage         = new Page($data['key']);
     $webpage->editor = $editor;
 
+    $website         = get_object('Website', $webpage->get('Webpage Website Key'));
+    $website->editor = $editor;
+
     if (isset($data['labels'])) {
-        include_once('class.Website.php');
-        $website         = new Website($webpage->get('Webpage Website Key'));
-        $website->editor = $editor;
+
         $website->update_labels_in_localised_labels(json_decode($data['labels'], true));
 
         //print_r($data['labels']);
@@ -1869,19 +1871,20 @@ function save_webpage_content($data, $editor, $db, $smarty) {
 
     // exit;
 
-    $old_content_data=$webpage->get('Content Data');
+    $old_content_data = $webpage->get('Content Data');
 
-
+    //====== here ===== do all post edit stuff
 
 
     $webpage->update(array('Page Store Content Data' => $data['content_data']), 'no_history');
 
-    if(isset($old_content_data['backup'])){
-        $webpage->update_content_data('backup',$old_content_data['backup']);
+    if (isset($old_content_data['backup'])) {
+        $webpage->update_content_data('backup', $old_content_data['backup']);
     }
 
-
-
+    if ($website->get('Website Theme') == 'theme_1') {
+        $webpage->reindex_items();
+    }
 
     $webpage->publish();
 

@@ -142,11 +142,9 @@ function upload_attachment($account, $db, $user, $editor, $data, $smarty) {
 
 
     if (empty($_FILES) && empty($_POST) && isset($_SERVER['REQUEST_METHOD'])
-        && strtolower($_SERVER['REQUEST_METHOD']) == 'post'
-    ) { //catch file overload error...
+        && strtolower($_SERVER['REQUEST_METHOD']) == 'post') { //catch file overload error...
         $postMax  = ini_get('post_max_size'); //grab the size limits...
-        $msg      =
-            "File can not be attached, please note files larger than {$postMax} will result in this error!, let's us know, an we will increase the size limits"; // echo out error and solutions...
+        $msg      = "File can not be attached, please note files larger than {$postMax} will result in this error!, let's us know, an we will increase the size limits"; // echo out error and solutions...
         $response = array(
             'state' => 400,
             'msg'   => _('Files could not be attached').".<br>".$msg,
@@ -323,8 +321,6 @@ function upload_images($account, $db, $user, $editor, $data, $smarty) {
     }
 
 
-
-
     $parent         = get_object($data['parent'], $data['parent_key']);
     $parent->editor = $editor;
 
@@ -422,9 +418,7 @@ function upload_images($account, $db, $user, $editor, $data, $smarty) {
         list($width, $height) = getimagesize($tmp_name);
 
 
-
         $_options = json_decode($options, true);
-
 
 
         if (isset($_options['width']) and isset($_options['height'])) {
@@ -439,8 +433,8 @@ function upload_images($account, $db, $user, $editor, $data, $smarty) {
                 echo json_encode($response);
                 exit;
             }
-        }elseif (isset($_options['width'])) {
-            if ($_options['width'] != $width ) {
+        } elseif (isset($_options['width'])) {
+            if ($_options['width'] != $width) {
                 $msg      = sprintf(_('Image width must to be %s (px)'), $_options['width']);
                 $response = array(
                     'state' => 400,
@@ -451,9 +445,9 @@ function upload_images($account, $db, $user, $editor, $data, $smarty) {
                 echo json_encode($response);
                 exit;
             }
-        }elseif (isset($_options['height'])) {
-            if ( $_options['height'] != $height) {
-                $msg      = sprintf(_('Image height must to be %s (px)'),  $_options['height']);
+        } elseif (isset($_options['height'])) {
+            if ($_options['height'] != $height) {
+                $msg      = sprintf(_('Image height must to be %s (px)'), $_options['height']);
                 $response = array(
                     'state' => 400,
                     'title' => _('Wrong image height'),
@@ -466,7 +460,7 @@ function upload_images($account, $db, $user, $editor, $data, $smarty) {
         }
 
         if (isset($_options['max_width'])) {
-            if ($_options['max_width'] < $width ) {
+            if ($_options['max_width'] < $width) {
                 $msg      = sprintf(_('Image max width is %s (px)'), $_options['max_width']);
                 $response = array(
                     'state' => 400,
@@ -479,8 +473,8 @@ function upload_images($account, $db, $user, $editor, $data, $smarty) {
             }
         }
         if (isset($_options['max_height'])) {
-            if ( $_options['max_height'] < $height) {
-                $msg      = sprintf(_('Image max height is %s (px)'),  $_options['max_height']);
+            if ($_options['max_height'] < $height) {
+                $msg      = sprintf(_('Image max height is %s (px)'), $_options['max_height']);
                 $response = array(
                     'state' => 400,
                     'title' => _('Image too large'),
@@ -493,7 +487,7 @@ function upload_images($account, $db, $user, $editor, $data, $smarty) {
         }
 
         if (isset($_options['min_width'])) {
-            if ($_options['min_width'] > $width ) {
+            if ($_options['min_width'] > $width) {
                 $msg      = sprintf(_('Image min width is %s (px)'), $_options['min_width']);
                 $response = array(
                     'state' => 400,
@@ -506,8 +500,8 @@ function upload_images($account, $db, $user, $editor, $data, $smarty) {
             }
         }
         if (isset($_options['min_height'])) {
-            if ( $_options['min_height'] > $height) {
-                $msg      = sprintf(_('Image min height is %s (px)'),  $_options['min_height']);
+            if ($_options['min_height'] > $height) {
+                $msg      = sprintf(_('Image min height is %s (px)'), $_options['min_height']);
                 $response = array(
                     'state' => 400,
                     'title' => _('Image too small'),
@@ -517,24 +511,130 @@ function upload_images($account, $db, $user, $editor, $data, $smarty) {
                 echo json_encode($response);
                 exit;
             }
-        } if (!empty($_options['set_width']) and is_numeric($_options['set_width']) and $_options['set_width']>0 ) {
+        }
+
+        if (!empty($_options['fit_to_canvas'])) {
+
+            list($canvas_w,$canvas_h)=preg_split('/x/',$_options['fit_to_canvas']);
+
+            $size  = getimagesize($tmp_name);
+
+            $w = $size[0];
+            $h     = $size[1];
+
+                      $format     = guess_file_format($tmp_name);
+
+
+            //  print "$format $new_width $new_height";
+
+
+            if ($format == 'jpeg') {
+                $im = imagecreatefromjpeg($tmp_name);
+            } elseif ($format == 'png') {
+                $im = imagecreatefrompng($tmp_name);
+                imagealphablending($im, true);
+                imagesavealpha($im, true);
+            } elseif ($format == 'gif') {
+                $im = imagecreatefromgif($tmp_name);
+            } elseif ($format == 'wbmp') {
+                $im = imagecreatefromwbmp($tmp_name);
+            } elseif ($format == 'psd') {
+                include_once 'class.PSD.php';
+                $im = imagecreatefrompsd($tmp_name);
+            } else {
+
+                $response = array(
+                    'state' => 400,
+                    'title' => _('Error'),
+                    'msg'   => _('File format not supported')." ($format)",
+                    'key'   => 'image'
+                );
+                echo json_encode($response);
+                exit;
+            }
+
+            if (!$im) {
+
+
+                $response = array(
+                    'state' => 400,
+                    'title' => _('Error'),
+                    'msg'   => _('Can not read image'),
+                    'key'   => 'image'
+                );
+                echo json_encode($response);
+                exit;
+            }
+
+
+
+
+            $r = $w / $h;
+
+            $r_canvas=$canvas_w/$canvas_h;
+
+            if($r < $r_canvas) {
+                $fit_h = $canvas_h;
+                $fit_w = $w * ($fit_h / $h);
+                $canvas_y = 0;
+                $canvas_x = ($canvas_w - $fit_w) / 2;
+            }elseif($r > $r_canvas) {
+                $fit_w = $canvas_w;
+                $fit_h = $h * ($fit_w / $w);
+
+                $canvas_x = 0;
+                $canvas_y = ($canvas_h - $fit_h) / 2;
+            }else{
+                $fit_h = $canvas_h;
+                $fit_w = $canvas_w;
+                $canvas_x = 0;
+                $canvas_y = 0;
+
+            }
+
+            $canvas = imagecreatetruecolor($canvas_w, $canvas_h);
+            $white = imagecolorallocate($canvas, 255, 255, 255);
+            imagefill($canvas, 0, 0, $white);
+
+            imagecopyresampled($canvas, $im, $canvas_x, $canvas_y, 0, 0, $fit_w, $fit_h, $w, $h);
 
 
 
 
 
 
-            $size = getimagesize($tmp_name);
-            $width=$size[0];
+            ob_start();
+            if ($format == 'jpeg' or $format == 'psd') {
+                imagejpeg($canvas, null);
 
-            $height=$size[1];
-            $new_width = $_options['set_width'];
-            $new_height = $height*($new_width/$width);
-            $format=guess_file_format($tmp_name);
+            } elseif ($format == 'png' or $format == 'wbmp') {
+                imagepng($canvas);
+            } elseif ($format == 'gif') {
+                imagegif($canvas);
+            }
+
+            $image_data = ob_get_contents();
+            ob_end_clean();
 
 
+            file_put_contents($tmp_name, $image_data);
 
-          //  print "$format $new_width $new_height";
+
+        }
+
+        if (!empty($_options['set_width']) and is_numeric($_options['set_width']) and $_options['set_width'] > 0) {
+
+
+            $size  = getimagesize($tmp_name);
+            $width = $size[0];
+
+            $height     = $size[1];
+            $new_width  = $_options['set_width'];
+            $new_height = $height * ($new_width / $width);
+            $format     = guess_file_format($tmp_name);
+
+
+            //  print "$format $new_width $new_height";
 
 
             if ($format == 'jpeg') {
@@ -582,7 +682,6 @@ function upload_images($account, $db, $user, $editor, $data, $smarty) {
             );
 
 
-
             ob_start();
             if ($format == 'jpeg' or $format == 'psd') {
                 imagejpeg($dst_img, null);
@@ -597,14 +696,11 @@ function upload_images($account, $db, $user, $editor, $data, $smarty) {
             ob_end_clean();
 
 
-
-
             file_put_contents($tmp_name, $image_data);
 
 
-         //   exit;
-          //  exit;
-
+            //   exit;
+            //  exit;
 
 
         }
@@ -640,8 +736,6 @@ function upload_images($account, $db, $user, $editor, $data, $smarty) {
         }
 
 
-
-
     }
 
     if (isset($data['response_type']) and $data['response_type'] == 'froala') {
@@ -664,8 +758,7 @@ function upload_images($account, $db, $user, $editor, $data, $smarty) {
         }
 
 
-     //   print "xx $errors  $uploads";
-
+        //   print "xx $errors  $uploads";
 
 
         $response = array(
@@ -680,15 +773,15 @@ function upload_images($account, $db, $user, $editor, $data, $smarty) {
             'image_src'      => sprintf('/image_root.php?id=%d', $image->id),
             'thumbnail'      => sprintf('<img src="/image_root.php?id=%d&size=thumbnail">', $image->id),
             'small_image'    => sprintf('<img src="/image_root.php?id=%d&size=small">', $image->id),
-            'img_key'        => $image->id
-
+            'img_key'        => $image->id,
+            'height'         => $image->get('Image Height'),
+            'width'          => $image->get('Image Width'),
+            'ratio'          => $image->get('Image Width') / $image->get('Image Height'),
         );
 
 
-
-
         if (isset($data['response_type']) and $data['response_type'] == 'upload_item_image') {
-            $response['images']=$parent->get_images_slidesshow();
+            $response['images'] = $parent->get_images_slidesshow();
 
         }
 
@@ -698,7 +791,7 @@ function upload_images($account, $db, $user, $editor, $data, $smarty) {
         }
 
 
-      //  print_r($response);
+        //  print_r($response);
 
         echo json_encode($response);
 
@@ -747,8 +840,7 @@ function upload_objects_to_deete($account, $db, $user, $editor, $data, $smarty) 
 
 
     if (empty($_FILES) && empty($_POST) && isset($_SERVER['REQUEST_METHOD'])
-        && strtolower($_SERVER['REQUEST_METHOD']) == 'post'
-    ) { //catch file overload error...
+        && strtolower($_SERVER['REQUEST_METHOD']) == 'post') { //catch file overload error...
         $postMax  = ini_get('post_max_size'); //grab the size limits...
         $msg      = sprintf(
             _(
@@ -926,8 +1018,8 @@ function upload_objects_to_deete($account, $db, $user, $editor, $data, $smarty) 
 
                     if (!$empty) {
                         $sql = sprintf(
-                            'INSERT INTO `Upload Record Dimension` (`Upload Record Upload Key`,`Upload Record Data`,`Upload Record Upload File Key`,`Upload Record Row Index`) VALUE (%d,COMPRESS(%s),%d,%d)',
-                            $upload->id, prepare_mysql(json_encode($row_data)), $upload_file_key, ($row)
+                            'INSERT INTO `Upload Record Dimension` (`Upload Record Upload Key`,`Upload Record Data`,`Upload Record Upload File Key`,`Upload Record Row Index`) VALUE (%d,COMPRESS(%s),%d,%d)', $upload->id, prepare_mysql(json_encode($row_data)),
+                            $upload_file_key, ($row)
                         );
 
                         $db->exec($sql);
@@ -1166,8 +1258,7 @@ function edit_objects($account, $db, $user, $editor, $data, $smarty) {
 
 
     if (empty($_FILES) && empty($_POST) && isset($_SERVER['REQUEST_METHOD'])
-        && strtolower($_SERVER['REQUEST_METHOD']) == 'post'
-    ) { //catch file overload error...
+        && strtolower($_SERVER['REQUEST_METHOD']) == 'post') { //catch file overload error...
         $postMax  = ini_get('post_max_size'); //grab the size limits...
         $msg      = sprintf(
             _(
@@ -1361,8 +1452,8 @@ function edit_objects($account, $db, $user, $editor, $data, $smarty) {
 
                 if (!$empty) {
                     $sql = sprintf(
-                        'INSERT INTO `Upload Record Dimension` (`Upload Record Upload Key`,`Upload Record Data`,`Upload Record Upload File Key`,`Upload Record Row Index`) VALUE (%d,COMPRESS(%s),%d,%d)',
-                        $upload->id, prepare_mysql(json_encode($row_data)), $upload_file_key, ($row)
+                        'INSERT INTO `Upload Record Dimension` (`Upload Record Upload Key`,`Upload Record Data`,`Upload Record Upload File Key`,`Upload Record Row Index`) VALUE (%d,COMPRESS(%s),%d,%d)', $upload->id, prepare_mysql(json_encode($row_data)),
+                        $upload_file_key, ($row)
                     );
 
                     $db->exec($sql);

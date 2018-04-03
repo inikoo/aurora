@@ -13,6 +13,7 @@
 function get_webpage_showcase($data, $smarty) {
 
 
+
     $webpage = $data['_object'];
     if (!$webpage->id) {
         return "";
@@ -69,7 +70,6 @@ function get_webpage_showcase($data, $smarty) {
         $smarty->assign('webpage', $webpage);
         $smarty->assign('website', $website);
     }
-
 
 
 

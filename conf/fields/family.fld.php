@@ -31,17 +31,9 @@ $category_product_fields = array(
                 'edit'                     => 'dropdown_select',
                 'scope'                    => 'departments',
                 'parent'                   => 'store',
-                'parent_key'               => ($new
-                    ? $options['store_key']
-                    : $object->get(
-                        'Category Store Key'
-                    )),
-                'value'                    => htmlspecialchars(
-                    $object->get('Product Category Department Category Key')
-                ),
-                'formatted_value'          => $object->get(
-                    'Department Category Key'
-                ),
+                'parent_key'               => ($new ? $options['store_key'] : $object->get('Category Store Key')),
+                'value'                    => htmlspecialchars($object->get('Product Category Department Category Key')),
+                'formatted_value'          => $object->get('Department Category Key'),
                 'stripped_formatted_value' => '',
                 'label'                    => _('Department'),
                 'required'                 => true,

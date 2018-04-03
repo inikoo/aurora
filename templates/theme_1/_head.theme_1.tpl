@@ -40,7 +40,6 @@
 
     <link href="/css/jquery-ui.css" rel="stylesheet">
     <link href="/css/editor_v1/froala_editor.css" rel="stylesheet"/>
-    <link href="/css/editor_v1/froala_style.css" rel="stylesheet"/>
 
     <link href="/css/editor_v1/codemirror.css" rel="stylesheet">
     <link href="/css/editor_v1/codemirror_dracula.css" rel="stylesheet">
@@ -62,7 +61,7 @@
 
     <link rel="stylesheet" href="/EcomB2B/css/fontawesome-all.min.css" type="text/css"/>
 
-    <link rel="stylesheet" href="/EcomB2B/css/style.theme_1.EcomB2B.css" type="text/css"/>
+    <link rel="stylesheet" href="/EcomB2B/css/style.theme_1.EcomB2B.css?v180401v1" type="text/css"/>
 
 
 
@@ -82,8 +81,7 @@
 
 
 
-    <link rel="stylesheet" href="/theme_1/css/aurora.css">
-    <link rel="stylesheet" href="/css/webpage_preview.css" type="text/css"/>
+    <link rel="stylesheet" href="/css/webpage_preview/webpage_preview.css?v20180329v4" type="text/css"/>
 
 
 
