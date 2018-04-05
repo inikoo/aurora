@@ -310,6 +310,11 @@
     </div>
 
     <script>
+        document.addEventListener("paste", function(e) {
+            e.preventDefault();
+            var text = e.clipboardData.getData("text/plain");
+            document.execCommand("insertHTML", false, text);
+        });
 
         $('[contenteditable=true]').on('input paste', function (event) {
             $('#save_button', window.parent.document).addClass('save button changed valid')
