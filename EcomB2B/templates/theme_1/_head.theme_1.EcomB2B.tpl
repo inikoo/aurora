@@ -40,7 +40,7 @@
     <![endif]-->
     <link rel="canonical" href="{$webpage->get('URL')}"/>
     <link rel="stylesheet" href="/css/fontawesome-all.min.css" type="text/css"/>
-    <link rel="stylesheet" href="css/style.theme_1.EcomB2B.css?v180404v11" type="text/css"/>
+    <link rel="stylesheet" href="css/style.theme_1.EcomB2B.old.css?v180404v11" type="text/css"/>
 
 
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/simple-line-icons/2.4.1/css/simple-line-icons.css">
