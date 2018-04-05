@@ -63,23 +63,23 @@
     <table>
         <tr>
             <td>{t}Code{/t}</td>
-            <td><i class="fa fa-sort-alpha-asc button" aria-hidden="true" type="code_asc"></i></td>
-            <td><i class="fa fa-sort-alpha-desc button" aria-hidden="true" type="code_desc"></i></td>
+            <td><i class="fa fa-sort-alpha-down button" aria-hidden="true" type="code_asc"></i></td>
+            <td><i class="fa fa-sort-alpha-up button" aria-hidden="true" type="code_desc"></i></td>
         </tr>
         <tr>
             <td>{t}Name{/t}</td>
-            <td><i class="fa fa-sort-alpha-asc button" aria-hidden="true" type="name_asc"></i></td>
-            <td><i class="fa fa-sort-alpha-desc button" aria-hidden="true" type="name_desc"></i></td>
+            <td><i class="fa fa-sort-alpha-down button" aria-hidden="true" type="name_asc"></i></td>
+            <td><i class="fa fa-sort-alpha-up button" aria-hidden="true" type="name_desc"></i></td>
         </tr>
         <tr>
             <td>{t}Best sellers{/t} </td>
-            <td><i class="fa fa-sort-amount-desc button" aria-hidden="true" type="sales_asc"></i></td>
-            <td><i class="fa fa-sort-amount-asc button" aria-hidden="true" type="sales_desc"></i></td>
+            <td><i class="fa fa-sort-amount-down button" aria-hidden="true" type="sales_asc"></i></td>
+            <td><i class="fa fa-sort-amount-up button" aria-hidden="true" type="sales_desc"></i></td>
         </tr>
         <tr>
             <td>{t}Release date{/t} </td>
-            <td><i class="fa fa-sort-numeric-desc button" aria-hidden="true" type="date_asc"></i></td>
-            <td><i class="fa fa-sort-numeric-asc button" aria-hidden="true" type="date_desc"></i></td>
+            <td><i class="fa fa-sort-numeric-up button" aria-hidden="true" type="date_asc"></i></td>
+            <td><i class="fa fa-sort-numeric-down button" aria-hidden="true" type="date_desc"></i></td>
         </tr>
     </table>
 
@@ -252,7 +252,7 @@
 
     <div id="items_container" class="product_blocks">
         <i id="add_panel" class="fa fa-cog button" aria-hidden="true" style="position:absolute;left:10px;margin-top:10px"></i>
-        <i id="show_sort_options" class="fa fa-sort-alpha-asc button" aria-hidden="true" style="position:absolute;left:10px;margin-top:40px"></i>
+        <i id="show_sort_options" class="fa fa-sort-alpha-down button" aria-hidden="true" style="position:absolute;left:10px;margin-top:40px"></i>
         <div id="products_helper">
             {include file="webpage.preview.products_showcase.products.tpl" }
         </div>
