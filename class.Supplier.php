@@ -336,6 +336,8 @@ class Supplier extends SubjectSupplier {
     function update_field_switcher($field, $value, $options = '', $metadata = '') {
 
 
+
+
         if (is_string($value)) {
             $value = _trim($value);
         }
@@ -349,7 +351,12 @@ class Supplier extends SubjectSupplier {
 
 
         switch ($field) {
+            case 'Supplier Contact Address':
 
+
+                $this->update_address('Contact', json_decode($value, true), $options);
+
+                break;
 
             case('Supplier ID'):
             case('Supplier Valid From'):
