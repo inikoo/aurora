@@ -37,8 +37,8 @@ $editor = array(
 );
 
 
-//migrate_families();
-migrate_departments();
+migrate_families();
+//migrate_departments();
 //exit;
 
 
@@ -48,7 +48,7 @@ function migrate_families() {
     $left_offset = 158;
 
     $sql = sprintf('SELECT `Webpage Scope Key`,`Page Key`,`Page Store Key` ,`Page Store Section`,`Page Parent Code` FROM `Page Store Dimension` WHERE `Webpage Template Filename`="products_showcase" AND   `Page Key`=3070 ');
-    $sql = sprintf('SELECT `Webpage Scope Key`,`Page Key`,`Page Store Key` ,`Page Store Section`,`Page Parent Code` FROM `Page Store Dimension` WHERE  `Page Key`=3070 ');
+    $sql = sprintf('SELECT `Webpage Scope Key`,`Page Key`,`Page Store Key` ,`Page Store Section`,`Page Parent Code` FROM `Page Store Dimension` WHERE  `Page Key`=2562 ');
 
 
     if ($result = $db->query($sql)) {
@@ -192,25 +192,103 @@ function migrate_families() {
 
             $items = array();
 
+
             $sql = sprintf(
-                "SELECT P.`Product ID`,`Product Code`,`Product Web State` FROM `Category Bridge` B  LEFT JOIN `Product Dimension` P ON (`Subject Key`=P.`Product ID`)    WHERE  `Category Key`=%d  AND `Product Web State` IN  ('For Sale','Out of Stock')   ORDER BY `Product Web State` ",
+                "SELECT `Product Category Index Key`,`Product Category Index Content Data`,`Product Category Index Product ID`,`Product Category Index Category Key`,`Product Category Index Stack`, P.`Product ID`,`Product Code`,`Product Web State` 
+                  FROM `Category Bridge` B  LEFT JOIN `Product Dimension` P ON (`Subject Key`=P.`Product ID`)  
+                  LEFT JOIN `Product Category Index` S ON (`Subject Key`=S.`Product Category Index Product ID` AND S.`Product Category Index Category Key`=B.`Category Key`)  WHERE  `Category Key`=%d  AND `Product Web State` IN  ('For Sale','Out of Stock')   ORDER BY `Product Web State`,   ifnull(`Product Category Index Stack`,99999999)",
                 $row['Webpage Scope Key']
             );
 
+            $has_header = false;
 
             if ($result = $db->query($sql)) {
                 foreach ($result as $row) {
+
+                    $product = get_object('Public_Product', $row['Product ID']);
+                    $product->load_webpage();
+
+                    $header_text = '';
+                    if ($row['Product Category Index Content Data'] != '') {
+
+                        $product_content_data = json_decode($row['Product Category Index Content Data'], true);
+
+                        // print_r($product_content_data);
+                        if (isset($product_content_data['header_text'])) {
+                            $header_text = $product_content_data['header_text'];
+                        }
+
+
+                    }
+
+                    if ($header_text != '') {
+                        $has_header = true;
+
+                    }
+
+
                     $items[] = array(
-                        'type'       => 'product',
-                        'product_id' => $row['Product ID'],
-                        'code'       => $row['Product Code'],
-                        'web_state'  => $row['Product Web State'],
+                        'type'                 => 'product',
+                        'product_id'           => $row['Product ID'],
+                        'web_state'            => $row['Product Web State'],
+                        'price'                => $product->get('Price'),
+                        'rrp'                  => $product->get('RRP'),
+                        'header_text'          => $header_text,
+                        'code'                 => $product->get('Code'),
+                        'name'                 => $product->get('Name'),
+                        'link'                 => $product->webpage->get('URL'),
+                        'webpage_code'         => $product->webpage->get('Webpage Code'),
+                        'webpage_key'          => $product->webpage->id,
+                        'image_src'            => $product->get('Image'),
+                        'image_mobile_website' => '',
+                        'image_website'        => '',
+                        'out_of_stock_class'   => $product->get('Out of Stock Class'),
+                        'out_of_stock_label'   => $product->get('Out of Stock Label'),
+                        'sort_code'            => $product->get('Code File As'),
+                        'sort_name'            => mb_strtolower($product->get('Product Name')),
+
+
                     );
                 }
             } else {
                 print_r($error_info = $db->errorInfo());
                 print "$sql\n";
                 exit;
+            }
+
+
+            if (isset($content_data['panels'])) {
+
+                //  print_r($content_data['panels']);
+
+                foreach ($content_data['panels'] as $panel_index => $panel_data) {
+
+                    if ($panel_data['type'] == 'code' and $panel_data['size'] == '2x') {
+                        // suspect video
+
+                        if (preg_match('/youtube\.com\/embed\/([0-9a-z]+)/i', $panel_data['content'], $matches)) {
+
+                            //  print_r($matches);
+
+                            $item = array(
+                                'type'       => 'video',
+                                'video_id'   => $matches[1],
+                                'size_class' => 'panel_2',
+                            );
+
+
+                            array_splice($items, $panel_index, 0, '');
+                            $items[$panel_index] = $item;
+
+
+                        }
+
+                    }
+
+
+                }
+
+
             }
 
 
@@ -228,27 +306,36 @@ function migrate_families() {
                         'texts'         => $texts
                     ),
                     array(
-                        'type'          => 'category_products',
-                        'label'         => _('Products'),
-                        'icon'          => 'fa-cube',
-                        'show'          => 1,
-                        'top_margin'    => 0,
-                        'bottom_margin' => 0,
-                        'items'         => $items
+                        'type'              => 'category_products',
+                        'label'             => _('Products'),
+                        'icon'              => 'fa-cubes',
+                        'show'              => 1,
+                        'top_margin'        => 0,
+                        'bottom_margin'     => 0,
+                        'item_headers'      => $has_header,
+                        'items'             => $items,
+                        'sort'              => 'Manual',
+                        'new_first'         => true,
+                        'out_of_stock_last' => true,
                     )
                 ),
                 'old_data' => $content_data
             );
 
 
-            print_r($new_content_data);
+            //  print_r($new_content_data);
 
 
             //exit;
+
+
+            $sql = sprintf('UPDATE `Page Store Dimension` SET `Webpage Template Filename`="category_products" WHERE `Page Key`=%d ', $webpage->id);
+
+            $db->exec($sql);
+
             $webpage->update(
                 array(
-                    'Page Store Content Data'   => json_encode($new_content_data),
-                    'Webpage Template Filename' => 'category_products'
+                    'Page Store Content Data' => json_encode($new_content_data)
                 ), 'no_history'
             );
 
@@ -553,5 +640,6 @@ function migrate_registration() {
         }
     }
 }
+
 
 ?>

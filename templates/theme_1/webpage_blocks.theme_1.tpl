@@ -10,14 +10,14 @@
 *}{include file="theme_1/_head.theme_1.tpl"}
 <style>
 
-    #image_control_panel{
+    .object_control_panel{
         position: absolute;
         background: #fff;
         border: 1px solid #ccc;
         padding: 10px 10px 10px 10px;
         z-index: 3000;
     }
-    #image_control_panel td{
+    .object_control_panel td{
         padding-bottom: 10px;
     }
 
@@ -141,7 +141,24 @@
     }
 
 
+
+    .video.empty{
+        background-image: url("/art/static.png");
+    }
+
 </style>
+
+
+
+<div id="panel_txt_control" class="hide">
+    <div class="panel_txt_control" style="padding:2px 10px;z-index:2001;position: absolute;top:-30px;width:100%;height: 30px;border:1px solid #ccc;background: #fff;border-bottom: none">
+        <i class="fa fa-expand" title="{t}Padding{/t}"></i> <input size="2" style="height: 16px;" value="20">
+        <i onclick="delete_panel_text(this)" class="far fa-trash-alt padding_left_10 like_button" title="{t}Delete{/t}"></i>
+
+        <i onclick="close_panel_text(this)" class="fa fa-window-close button" style="float: right;margin-top:6px" title="{t}Close text edit mode{/t}"></i>
+
+    </div>
+</div>
 
 <div id="template_1" class="hide">
 <span class=" image">
@@ -463,8 +480,30 @@
 
 
 
-<div id="image_control_panel" class="hide">
-    <div style="text-align: right;margin-bottom: 10px;padding-right: 5px">
+
+<div id="video_control_panel" class="hide object_control_panel" style="width: 470px">
+    <div style="margin-bottom: 10px;padding-right: 5px">
+        <i class="fa fa-window-close button" onclick="close_video_control_panel()"></i>
+    </div>
+
+    <table>
+
+        <tr>
+            <td class="label"><i style="color:red" class="fab fa-youtube padding_right_5" title="Youtube"></i> {t}Video Id{/t}</td><td><input class="video_link" style="width: 200px" placeholder="M7lc1UVf-VE">  <i onClick="update_video()" class="fa fa-check link_button button padding_left_5"></i> </td>
+        </tr>
+
+        <tr>
+            <td class="label"></td><td><span onclick="delete_video()" class="button unselectable"><i class="fa fa-trash"></i> {t}Delete{/t}</span></td>
+        </tr>
+    </table>
+
+
+
+</div>
+
+
+<div id="image_control_panel" class="hide object_control_panel">
+    <div style="margin-bottom: 10px;padding-right: 5px">
         <i class="fa fa-window-close button" onclick="update_image()"></i>
     </div>
 
@@ -484,8 +523,13 @@
         <tr>
             <td class="label">{t}Link{/t}</td><td><input class="image_link" style="width: 200px" placeholder="https://"></td>
         </tr>
-        <tr class="caption_tr">
-            <td class="label">{t}Caption{/t}</td>
+
+        <tbody class="caption_tr">
+        <tr>
+            <td class="label">{t}Caption{/t}</td><td><input class="image_caption" style="width: 200px" placeholder="{t}caption{/t}"></td>
+        </tr>
+        <tr >
+            <td class="label">{t}Caption style{/t}</td>
             <td class="caption_align">
                 <i class="fa fa-align-left super_discreet caption_left" display_class="caption_left" aria-hidden="true"></i>
                 <i class="fa fa-align-center super_discreet caption_center" display_class="caption_center" aria-hidden="true"></i>
@@ -493,6 +537,8 @@
                 <i class="fa fa-ban error super_discreet caption_hide" display_class="caption_hide" aria-hidden="true"></i>
             </td>
         </tr>
+
+        </tbody>
         <tr>
             <td class="label"></td><td><span onclick="delete_image()" class="button unselectable"><i class="fa fa-trash"></i> {t}Delete{/t}</span></td>
         </tr>
@@ -548,26 +594,26 @@
 
     {elseif $block.type=='images'}
 
-    set_up_images('{$key}')
+        set_up_images('{$key}')
 
+    {elseif $block.type=='category_products'}
 
-
+    var product_sort_index=[];
+    $('#block_{$key} .products .type_product').each(function (i, product) {
+        $(product).uniqueId()
+        product_sort_index.push($(product).attr('id'))
+    })
 
 
     {elseif $block.type=='blackboard'}
 
-    set_up_blackboard('{$key}')
-
-    {foreach from=$block.images item=image}
-
-    set_up_blackboard_image('{$image.id}')
-
-    {/foreach}
-    {foreach from=$block.texts item=text}
-
-    set_up_blackboard_text('{$text.id}')
-
-    {/foreach}
+        set_up_blackboard('{$key}')
+        {foreach from=$block.images item=image}
+            set_up_blackboard_image('{$image.id}')
+        {/foreach}
+        {foreach from=$block.texts item=text}
+            set_up_blackboard_text('{$text.id}')
+        {/foreach}
 
     {/if}
 
@@ -669,6 +715,127 @@
 
             switch ($(obj).attr('block')) {
 
+                case 'category_products':
+
+                    var items = []
+                    $('.wrap  ', obj).each(function (j, item) {
+
+
+                        switch ($(item).data('type')){
+                            case 'product':
+
+                                var img=$(item).find('.wrap_to_center img')
+
+                                var txt=$(item).find('.product_header_text')
+
+                                if($(item).find('.panel_txt_control').hasClass('hide')){
+                                    var header_text=txt.html()
+                                }else{
+                                    var header_text=txt.froalaEditor('html.get')
+                                }
+
+
+                                items.push({
+                                    type: $(item).data('type'),
+                                    product_id: $(item).find('.product_block').data('product_id'),
+                                    web_state: $(item).find('.product_block').data('web_state'),
+                                    price: $(item).find('.product_block').data('price'),
+                                    rrp: $(item).find('.product_block').data('rrp'),
+                                    code: $(item).find('.product_block').data('code'),
+                                    name: $(item).find('.product_block').data('name'),
+                                    link: $(item).find('.product_block').data('link'),
+                                    webpage_code: $(item).find('.product_block').data('webpage_code'),
+                                    webpage_key: $(item).find('.product_block').data('webpage_key'),
+                                    out_of_stock_class: $(item).find('.product_block').data('out_of_stock_class'),
+                                    out_of_stock_label: $(item).find('.product_block').data('out_of_stock_label'),
+
+                                    sort_code: $(item).data('sort_code'),
+                                    sort_name: $(item).data('sort_name'),
+
+                                    image_src:img.data('src'),
+                                    image_website: ( img.attr('src')!='EcomB2B/'+img.data('image_website') ?'': img.data('image_website')),
+                                    image_mobile_website: ( img.attr('src')!='EcomB2B/'+img.data('image_website') ?'': img.data('image_mobile_website')),
+
+                                    header_text:header_text
+
+
+
+                                })
+                                break;
+                            case 'video':
+
+
+
+                                var video=$(item).find('.video')
+                                if(video.attr('video_id')!=''){
+                                    items.push({
+                                        type: $(item).data('type'),
+                                        video_id:video.attr('video_id'),
+                                        size_class: video.attr('size_class')
+
+
+                                    })
+
+                                }
+
+
+
+
+                                break;
+                            case 'image':
+
+
+
+                                var img=$(item).find('img')
+                                items.push({
+                                    type: $(item).data('type'),
+
+                                    image_src:img.data('src'),
+                                    image_website: ( img.attr('src')!='EcomB2B/'+img.data('image_website') ?'': img.data('image_website')),
+
+                                    link: img.attr('link'),
+                                    title: img.attr('alt'),
+                                    size_class: img.attr('size_class'),
+
+
+                                })
+                                break;
+                            case 'text':
+
+                                var txt=$(item).find('.txt')
+
+                                if($(item).find('.panel_txt_control').hasClass('hide')){
+                                    var text=txt.html()
+                                }else{
+                                    var text=txt.froalaEditor('html.get')
+                                }
+
+
+
+                                items.push({
+                                    type: $(item).data('type'),
+                                    text: text,
+                                    padding:txt.data('padding'),
+                                    size_class: txt.attr('size_class'),
+
+
+
+                                })
+                                break;
+                        }
+
+
+
+                    })
+
+
+                    blocks.push({
+                        type: 'category_products', label: '{t}Products{/t}', icon: 'fa-cubes', show: ($(obj).hasClass('hide') ? 0 : 1), top_margin: $(obj).attr('top_margin'), bottom_margin: $(obj).attr('bottom_margin'),
+                        sort:$(obj).find('.products').data('sort'),
+                        item_headers:($(obj).find('.products').hasClass('no_items_header')?false:true),
+                        items: items
+                    })
+                    break;
                 case 'category_categories':
 
                     var sections = []
@@ -1044,7 +1211,7 @@
 
 
                     blocks.push({
-                        type: 'counter', label: '{t}Counter{/t}', icon: 'fa-sort-numeric-asc', show: ($(obj).hasClass('hide') ? 0 : 1), columns: columns
+                        type: 'counter', label: '{t}Counter{/t}', icon: 'fa-sort-numeric-down', show: ($(obj).hasClass('hide') ? 0 : 1), columns: columns
 
                     })
 
@@ -1203,7 +1370,7 @@
 
         console.log(content_data)
 
-      // return;
+       //return;
 
         var ajaxData = new FormData();
 
@@ -1307,6 +1474,13 @@
 
 
                     }else if (element.attr('name') == 'category_categories') {
+
+                        var img_element = $('#image_control_panel').find('.image_upload').data('img')
+                        $(img_element).attr('src', data.image_src);
+                        $(img_element).data('src', data.image_src);
+
+
+                    }else if (element.attr('name') == 'category_products') {
 
                         var img_element = $('#image_control_panel').find('.image_upload').data('img')
                         $(img_element).attr('src', data.image_src);
@@ -1441,7 +1615,9 @@
 
     function set_up_froala_editor(key) {
 
-console.log($('#' + key).html())
+        console.log($('#' + key).html())
+
+
         $('#' + key).froalaEditor({
             toolbarInline: true,
             charCounterCount: false,
@@ -1466,6 +1642,9 @@ console.log($('#' + key).html())
         }).on('froalaEditor.contentChanged', function (e, editor, keyupEvent) {
             $('#save_button', window.parent.document).addClass('save button changed valid')
         });
+
+
+        console.log('caca')
 
     }
 
@@ -1514,6 +1693,11 @@ console.log($('#' + key).html())
         open_image_control_panel(this,'blackboard');
     })
 
+    $(document).on('click', '  .video', function (e) {
+        console.log('cacaca')
+        open_video_control_panel(this);
+    })
+
 
     $(document).on('click', '#image_control_panel .caption_align i', function (e) {
 
@@ -1551,37 +1735,75 @@ console.log($('#' + key).html())
 
             $('#image_control_panel .caption_tr').removeClass('hide')
             $('#update_images_block_image').attr('name','images')
+            $('#image_control_panel').find('.image_caption').val($(element).closest('figure').find('figcaption').html())
+
 
         }else if(type=='category_categories'){
 
             $('#update_images_block_image').attr('name','category_categories')
             $('#image_control_panel .caption_tr').addClass('hide')
-
+            height=220
 
             switch($(element).attr('size_class')){
                 case 'panel_1':
-                    $('#image_control_panel .image_size').html('(226x220)')
-                    image_options['fit_to_canvas']='226x220'
+                    $('#image_control_panel .image_size').html('(226x'+height+')')
+                    image_options['fit_to_canvas']='226x'+height+''
 
                     break;
                 case 'panel_2':
-                    $('#image_control_panel .image_size').html('(470x220)')
-                    image_options['fit_to_canvas']='470x220'
+                    $('#image_control_panel .image_size').html('(470x'+height+')')
+                    image_options['fit_to_canvas']='470x'+height+''
 
                     break;
                 case 'panel_3':
-                    $('#image_control_panel .image_size').html('(714x220)')
-                    image_options['fit_to_canvas']='714x220'
+                    $('#image_control_panel .image_size').html('(714x'+height+')')
+                    image_options['fit_to_canvas']='714x'+height+''
 
                     break;
                 case 'panel_4':
-                    $('#image_control_panel .image_size').html('(958x220)')
-                    image_options['fit_to_canvas']='958x220'
+                    $('#image_control_panel .image_size').html('(958x'+height+')')
+                    image_options['fit_to_canvas']='958x'+height+''
 
                     break;
                 case 'panel_5':
-                    $('#image_control_panel .image_size').html('(1202x220)')
-                    image_options['fit_to_canvas']='1202x220'
+                    $('#image_control_panel .image_size').html('(1202x'+height+')')
+                    image_options['fit_to_canvas']='1202x'+height+''
+
+                    break;
+            }
+
+
+
+        }else if(type=='category_products'){
+
+            $('#update_images_block_image').attr('name','category_products')
+            $('#image_control_panel .caption_tr').addClass('hide')
+
+            var height=$(element).data('height');
+            switch($(element).attr('size_class')){
+                case 'panel_1':
+                    $('#image_control_panel .image_size').html('(226x'+height+')')
+                    image_options['fit_to_canvas']='226x'+height+''
+
+                    break;
+                case 'panel_2':
+                    $('#image_control_panel .image_size').html('(470x'+height+')')
+                    image_options['fit_to_canvas']='470x'+height+''
+
+                    break;
+                case 'panel_3':
+                    $('#image_control_panel .image_size').html('(714x'+height+')')
+                    image_options['fit_to_canvas']='714x'+height+''
+
+                    break;
+                case 'panel_4':
+                    $('#image_control_panel .image_size').html('(958x'+height+')')
+                    image_options['fit_to_canvas']='958x'+height+''
+
+                    break;
+                case 'panel_5':
+                    $('#image_control_panel .image_size').html('(1202x'+height+')')
+                    image_options['fit_to_canvas']='1202x'+height+''
 
                     break;
             }
@@ -1605,7 +1827,17 @@ console.log($('#' + key).html())
             top:  $(element).offset().top, left: $(element).offset().left
         }).addClass('in_use').data('element', $(element))
 
-        console.log($(element).attr('alt'))
+
+
+        console.log($( '#blocks' ).width())
+        console.log( $('#image_control_panel').offset().left+$('#image_control_panel').width())
+
+        if($('#image_control_panel').offset().left+$('#image_control_panel').width()>$( '#blocks' ).width()){
+            $('#image_control_panel').offset({
+               left: $('#image_control_panel').offset().left-($('#image_control_panel').offset().left+$('#image_control_panel').width()-$( '#blocks' ).width())
+            })
+        }
+
 
 
         $('#image_control_panel').find('.image_control_panel_upload_td input').attr('block_key',block_key).data('options',image_options)
@@ -1613,6 +1845,11 @@ console.log($('#' + key).html())
 
         $('#image_control_panel').find('.image_tooltip').val($(element).attr('alt'))
         $('#image_control_panel').find('.image_link').val($(element).attr('link'))
+
+
+
+
+
         $('#image_control_panel').attr('old_image_src', $(element).attr('src'))
 
         $('#image_control_panel').find('.caption_align i').addClass('super_discreet').removeClass('selected')
@@ -1621,7 +1858,51 @@ console.log($('#' + key).html())
         $('#image_control_panel').find('.image_upload').data('img', $(element))
 
 
+
     }
+
+
+
+
+
+    function open_video_control_panel(element) {
+
+        console.log(element)
+
+
+        if (!$('#video_control_panel').hasClass('hide')) {
+            return
+        }
+
+
+
+
+
+
+
+// top: .25 * ($(element).offset().top + $(element).height()) / 2
+
+        $('#video_control_panel').removeClass('hide').offset({
+            top:  $(element).offset().top+40, left: $(element).offset().left
+        }).addClass('in_use').data('element', $(element))
+
+
+        if($('#video_control_panel').offset().left+$('#video_control_panel').width()>$( '#blocks' ).width()){
+            $('#video_control_panel').offset({
+                left: $('#video_control_panel').offset().left-($('#video_control_panel').offset().left+$('#video_control_panel').width()-$( '#blocks' ).width())
+            })
+        }
+
+
+console.log($(element))
+
+        console.log($(element).attr('video_id'))
+
+        $('#video_control_panel').find('.video_link').val($(element).attr('video_id'))
+
+
+    }
+
 
     function close_image_control_panel() {
 
@@ -1634,6 +1915,12 @@ console.log($('#' + key).html())
         $('#image_control_panel').addClass('hide')
 
     }
+
+
+    function close_video_control_panel(){
+        $('#video_control_panel').addClass('hide')
+    }
+
 
     function update_image() {
 
@@ -1648,12 +1935,33 @@ console.log($('#' + key).html())
         image.attr('display_class', caption_class)
 
         image.closest('figure').find('figcaption').removeClass('caption_left caption_right caption_center caption_hide').addClass(caption_class)
+        image.closest('figure').find('figcaption').html($('#image_control_panel').find('.image_caption').val())
 
         $('#image_control_panel').addClass('hide')
         $('#save_button', window.parent.document).addClass('save button changed valid')
 
 
     }
+
+    function update_video(){
+
+        var video = $('#video_control_panel').data('element');
+
+        var video_link=$('#video_control_panel').find('.video_link').val()
+
+
+        video.removeClass('empty')
+
+        video.attr('video_id', video_link)
+
+
+        video.html('<iframe width="470" height="330" frameborder="0" allowfullscreen="" src="http://www.youtube.com/embed/'+video_link+'?rel=0&amp;controls=0&amp;showinfo=0"></iframe><div class="block_video" style="position: absolute; top: 0; left: 0; width: 100%; height: 100%;"></div>')
+
+
+
+        close_video_control_panel();
+    }
+
 
 
     function  change_image_template(block_key, template) {
@@ -1776,8 +2084,8 @@ console.log($('#' + key).html())
 
 
     function set_up_images(key){
-
         $('#block_'+key+' .blk_images').sortable({
+            cancel: 'figcaption,input,textarea,button,select,option,[contenteditable]',
             stop: function (event, ui) {
 
                 $('#save_button',window.parent.document).addClass('save button changed valid')
@@ -1786,13 +2094,18 @@ console.log($('#' + key).html())
             }
         })
 
+       
+
+
+
+
     }
 
     function delete_image(){
         console.log($('#image_control_panel').data('element'))
 
         if($('#image_control_panel').data('element').hasClass('panel')){
-            $('#image_control_panel').data('element').closest('.category_wrap').remove()
+            $('#image_control_panel').data('element').closest('.wrap').remove()
 
         }else{
             $('#image_control_panel').data('element').remove()
@@ -1801,6 +2114,16 @@ console.log($('#' + key).html())
 
         close_image_control_panel()
     }
+
+    function delete_video(){
+
+
+        $('#video_control_panel').data('element').closest('.wrap').remove()
+
+
+        close_video_control_panel()
+    }
+
 
 
     function set_up_blackboard_image(img_id){
@@ -1985,6 +2308,41 @@ console.log($('#' + key).html())
         }
     })
 
+    $( ".products " ).sortable({
+        cancel: ".sortable-disabled",
+
+        update:function (event, ui) {
+            $('#save_button',window.parent.document).addClass('save button changed valid')
+
+            if($('.products').data('sort')!='Manual'){
+
+
+
+                var new_product_sort_index=[];
+                $('#block_{$key} .products .type_product').each(function (i, product) {
+
+                    new_product_sort_index.push($(product).attr('id'))
+                })
+
+                //console.log(product_sort_index)
+
+                //console.log(new_product_sort_index)
+
+                if(! product_sort_index.every(function(v,i) { return v === new_product_sort_index[i]})){
+                    console.log('changed sort')
+
+                    $('.products').data('sort','Manual')
+                    parent.category_products_change_sort_to_manual()
+
+                }
+
+
+            }
+
+        },
+
+    })
+
 
     $(document).on( "click", ".category_block .wrap_to_center", function() {
         $(this).closest('.category_wrap').addClass('sortable-disabled')
@@ -1996,6 +2354,20 @@ console.log($('#' + key).html())
         edit_panel_text($(this).closest('.category_wrap'))
 
     })
+    $(document).on( "click", ".product_header_text ", function() {
+
+
+        $(this).closest('.wrap').addClass('sortable-disabled').find('.panel_txt_control').removeClass('hide')
+
+        $(this).uniqueId()
+
+       // panel.find('.panel_txt_control').removeClass('hide')
+
+
+        set_up_froala_editor($(this).attr('id'))
+
+    })
+
 
 
     $(document).on( "click", ".close_category_block", function() {
@@ -2016,6 +2388,9 @@ console.log($('#' + key).html())
         open_image_control_panel(this,'category_categories');
     })
 
+    $(document).on('click', '.product_wrap img.panel', function (e) {
+        open_image_control_panel(this,'category_products');
+    })
 
 
     $(document).on( "click", ".section_items .move_to_other_section", function() {
@@ -2080,85 +2455,103 @@ console.log($('#' + key).html())
         $('#category_sections_'+block_key+' .section:eq('+section_index+') .section_items').append($(category_element))
     }
 
-    function category_categories_add_panel(block_key,section_index,type,size){
+    function add_panel(block_key,type,size,scope,scope_metadata){
 
 
+        
+        if(scope=='category_categories'){
+           var item_class='category_wrap wrap'
+            height=220;
+        }else if(scope=='category_products'){
+            var item_class='product_wrap wrap type_'+type
+            height=scope_metadata;
+        }
 
+        console.log(type)
+        console.log(size)
 
         if(type=='text'){
             switch(size){
                 case 1:
-                    panel=$('<div class="category_wrap" data-type="text"><div style="padding:20px" size_class="panel_1" data-padding="20" class="txt panel_1">bla bla</div></div>')
-                    $('#category_sections_'+block_key+' .section:eq('+section_index+') .section_items').prepend(panel)
+                    panel=$('<div class="'+item_class+'" data-type="text"><div style="padding:20px" size_class="panel_1" data-padding="20" class="txt panel_1">bla bla</div></div>')
 
                     break;
                 case 2:
-                    panel=$('<div class="category_wrap" data-type="text"><div style="padding:20px"  size_class="panel_2" data-padding="20" class="txt panel_2">bla bla</div></div>')
-                    $('#category_sections_'+block_key+' .section:eq('+section_index+') .section_items').prepend(panel)
+                    panel=$('<div class="'+item_class+'" data-type="text"><div style="padding:20px"  size_class="panel_2" data-padding="20" class="txt panel_2">bla bla</div></div>')
 
                     break;
                 case 3:
-                    panel=$('<div class="category_wrap" data-type="text"><div style="padding:20px" size_class="panel_3"  data-padding="20" class="txt panel_3">bla bla</div></div>')
-                    $('#category_sections_'+block_key+' .section:eq('+section_index+') .section_items').prepend(panel)
+                    panel=$('<div class="'+item_class+'" data-type="text"><div style="padding:20px" size_class="panel_3"  data-padding="20" class="txt panel_3">bla bla</div></div>')
 
                     break;
                 case 4:
-                    panel=$('<div class="category_wrap" data-type="text"><div style="padding:20px" size_class="panel_4"  data-padding="20" class="txt panel_4">bla bla</div></div>')
-                    $('#category_sections_'+block_key+' .section:eq('+section_index+') .section_items').prepend(panel)
+                    panel=$('<div class="'+item_class+'" data-type="text"><div style="padding:20px" size_class="panel_4"  data-padding="20" class="txt panel_4">bla bla</div></div>')
 
                     break;
                 case 5:
-                    panel=$('<div class="category_wrap" data-type="text"><div style="padding:20px"  size_class="panel_5" data-padding="20" class="txt panel_5">bla bla</div></div>');;
-                    $('#category_sections_'+block_key+' .section:eq('+section_index+') .section_items').prepend(panel)
+                    panel=$('<div class="'+item_class+'" data-type="text"><div style="padding:20px"  size_class="panel_5" data-padding="20" class="txt panel_5">bla bla</div></div>');;
 
                     break;
 
             }
 
-          //  console.log( panel.find('.txt').uniqueId())
 
-            $( "#panel_txt_control .panel_txt_control" ).clone().prependTo(panel);
-
-
-
-
-
-            edit_panel_text(panel)
-
-        }else if(type=='image'){
-
-            switch(size){
-                case 1:
-                    panel=$('<div class="category_wrap" data-type="image"><img class="panel panel_1" size_class="panel_1" alt="" link="" data-image_website=""  data-src="http://via.placeholder.com/226x220" src="http://via.placeholder.com/226x220"  /></div>')
-                    $('#category_sections_'+block_key+' .section:eq('+section_index+') .section_items').prepend(panel)
-
-                    break;
-                case 2:
-                    panel=$('<div class="category_wrap" data-type="image"><img class="panel  panel_2"  size_class="panel_2" alt="" link="" data-image_website=""  data-src="http://via.placeholder.com/470x220"  src="http://via.placeholder.com/470x220"  /></div>')
-                    $('#category_sections_'+block_key+' .section:eq('+section_index+') .section_items').prepend(panel)
-
-                    break;
-                case 3:
-                    panel=$('<div class="category_wrap data-type="image""><img class="panel panel_3"   size_class="panel_3" alt="" link="" data-image_website=""  data-src="http://via.placeholder.com/714x220"  src="http://via.placeholder.com/714x220"  /></div>')
-                    $('#category_sections_'+block_key+' .section:eq('+section_index+') .section_items').prepend(panel)
-
-                    break;
-                case 4:
-                    panel=$('<div class="category_wrap" data-type="image"><img class="panel  panel_4"   size_class="panel_4" alt="" link="" data-image_website=""  data-src="http://via.placeholder.com/958x220"  src="http://via.placeholder.com/958x220"  /></div>')
-                    $('#category_sections_'+block_key+' .section:eq('+section_index+') .section_items').prepend(panel)
-
-                    break;
-                case 5:
-                    panel=$('<div class="category_wrap" data-type="image"><img class="panel  panel_5"   size_class="panel_5" alt="" link=""  data-image_website=""  data-src="http://via.placeholder.com/1202x220"  src="http://via.placeholder.com/1202x220"  /></div>')
-                    $('#category_sections_'+block_key+' .section:eq('+section_index+') .section_items').prepend(panel)
-
-                    break;
-
-
-            }
 
 
         }
+        else if(type=='image'){
+
+            switch(size){
+                case 1:
+                    panel=$('<div class="'+item_class+'" data-type="image"><img class="panel panel_1" size_class="panel_1" alt="" link="" data-image_website="" data-height="'+height+'" data-src="http://via.placeholder.com/226x'+height+'" src="http://via.placeholder.com/226x'+height+'"  /></div>')
+
+                    break;
+                case 2:
+                    panel=$('<div class="'+item_class+'" data-type="image"><img class="panel  panel_2"  size_class="panel_2" alt="" link="" data-image_website=""  data-height="'+height+'" data-src="http://via.placeholder.com/470x'+height+'"  src="http://via.placeholder.com/470x'+height+'"  /></div>')
+
+                    break;
+                case 3:
+                    panel=$('<div class="'+item_class+'" data-type="image""><img class="panel panel_3"   size_class="panel_3" alt="" link="" data-image_website=""  data-height="'+height+'" data-src="http://via.placeholder.com/714x'+height+'"  src="http://via.placeholder.com/714x'+height+'"  /></div>')
+
+                    break;
+                case 4:
+                    panel=$('<div class="'+item_class+'" data-type="image"><img class="panel  panel_4"   size_class="panel_4" alt="" link="" data-image_website=""  data-height="'+height+'" data-src="http://via.placeholder.com/958x'+height+'"  src="http://via.placeholder.com/958x'+height+'"  /></div>')
+
+                    break;
+                case 5:
+                    panel=$('<div class="'+item_class+'" data-type="image"><img class="panel  panel_5"   size_class="panel_5" alt="" link=""  data-image_website="" data-height="'+height+'"  data-src="http://via.placeholder.com/1202x'+height+'"  src="http://via.placeholder.com/1202x'+height+'"  /></div>')
+
+                    break;
+
+
+            }
+
+
+        } else if(type=='video'){
+            panel=$('<div class="'+item_class+'" data-type="video"><div  size_class="panel_2" class="video  empty panel_2" video_id="" ></div></div>')
+
+        }
+
+        if(scope=='category_categories'){
+            $('#category_sections_'+block_key+' .section:eq('+scope_metadata+') .section_items').prepend(panel)
+
+        }else if(scope=='category_products'){
+            $('#block_'+block_key+' .products').prepend(panel)
+
+        }
+
+
+        if(type=='text'){
+            $( "#panel_txt_control .panel_txt_control" ).clone().prependTo(panel);
+            edit_panel_text(panel)
+        }else if(type=='video'){
+            open_video_control_panel(panel.find('.video'));
+        }
+
+
+
+
+
         $('#save_button',window.parent.document).addClass('save button changed valid')
 
     }
@@ -2170,15 +2563,185 @@ console.log($('#' + key).html())
         panel.find('.panel_txt_control').removeClass('hide')
 
         var panel_id = panel.addClass('sortable-disabled').find('.txt').attr('id');
+
+        //console.log(panel_id)
+
         set_up_froala_editor(panel_id)
 
     }
 
     function close_panel_text(element) {
 
-        $(element).closest('.panel_txt_control').addClass('hide').closest('.category_wrap').removeClass('sortable-disabled').find('.txt').froalaEditor('destroy')
+        $(element).closest('.panel_txt_control').addClass('hide').closest('.wrap').removeClass('sortable-disabled').find('.txt').froalaEditor('destroy')
 
-        $(element).closest('.category_wrap').find('.txt').addClass('fr-view')
+        $(element).closest('.wrap').find('.txt').addClass('fr-view')
+
+    }
+
+
+    function close_product_header_text(element){
+        $(element).closest('.panel_txt_control').addClass('hide').closest('.wrap').removeClass('sortable-disabled').find('.product_header_text').froalaEditor('destroy')
+
+        $(element).closest('.wrap').find('.product_header_text').addClass('fr-view')
+    }
+
+    function delete_panel_text(element){
+        $(element).closest('.wrap').remove();
+    }
+
+    function update_category_products_item_headers(block_key,value){
+
+        var product_wrap=$('#block_'+block_key).find('.products')
+
+       // console.log(value)
+
+        if(value=='on'){
+            product_wrap.removeClass('no_items_header')
+
+            $('#block_'+block_key+' img.panel').each(function (i, img) {
+                $(img).data('height',330)
+
+                if($(img).attr('src')=='http://via.placeholder.com/470x290'){
+                    $(img).attr('src','http://via.placeholder.com/470x330')
+                }
+
+                if($(img).attr('src')=='http://via.placeholder.com/226x290'){
+                    $(img).attr('src','http://via.placeholder.com/226x330')
+                }
+                if($(img).data('src')=='http://via.placeholder.com/226x290'){
+                    $(img).data('src','http://via.placeholder.com/226x330')
+                }
+
+                if($(img).attr('src')=='http://via.placeholder.com/470x290'){
+                    $(img).attr('src','http://via.placeholder.com/470x330')
+                }
+                if($(img).data('src')=='http://via.placeholder.com/470x290'){
+                    $(img).data('src','http://via.placeholder.com/470x330')
+                }
+
+                if($(img).attr('src')=='http://via.placeholder.com/714x290'){
+                    $(img).attr('src','http://via.placeholder.com/714x330')
+                }
+                if($(img).data('src')=='http://via.placeholder.com/714x290'){
+                    $(img).data('src','http://via.placeholder.com/714x330')
+                }
+
+                if($(img).attr('src')=='http://via.placeholder.com/958x290'){
+                    $(img).attr('src','http://via.placeholder.com/958x330')
+                }
+                if($(img).data('src')=='http://via.placeholder.com/1202x290'){
+                    $(img).data('src','http://via.placeholder.com/1202x330')
+                }
+
+            })
+
+        }else{
+            product_wrap.addClass('no_items_header')
+
+            $('#block_'+block_key+' img.panel').each(function (i, img) {
+
+
+
+                $(img).data('height',290)
+
+
+                if($(img).attr('src')=='http://via.placeholder.com/226x330'){
+                    $(img).attr('src','http://via.placeholder.com/226x290')
+                }
+                if($(img).data('src')=='http://via.placeholder.com/226x330'){
+                    $(img).data('src','http://via.placeholder.com/226x290')
+                }
+
+                if($(img).attr('src')=='http://via.placeholder.com/470x330'){
+                    $(img).attr('src','http://via.placeholder.com/470x290')
+                }
+                if($(img).data('src')=='http://via.placeholder.com/470x330'){
+                    $(img).data('src','http://via.placeholder.com/470x290')
+                }
+
+                if($(img).attr('src')=='http://via.placeholder.com/714x330'){
+                    $(img).attr('src','http://via.placeholder.com/714x290')
+                }
+                if($(img).data('src')=='http://via.placeholder.com/714x330'){
+                    $(img).data('src','http://via.placeholder.com/714x290')
+                }
+
+                if($(img).attr('src')=='http://via.placeholder.com/958x330'){
+                    $(img).attr('src','http://via.placeholder.com/958x290')
+                }
+                if($(img).data('src')=='http://via.placeholder.com/1202x330'){
+                    $(img).data('src','http://via.placeholder.com/1202x290')
+                }
+
+
+            })
+
+        }
+
+    }
+
+    function sort_category_products_items(block_key,type){
+
+
+        $('#block_'+block_key+' .products').data('sort',type)
+
+        var panel_index={
+
+        }
+
+
+        if(type!='Manual') {
+
+
+            $('#block_' + block_key + ' .products .product_wrap:not(.type_product)').each(function (i, panel) {
+
+                $(panel).uniqueId()
+                panel_index[$(panel).attr('id')] = $(panel).index()
+
+
+            })
+
+
+
+
+
+            if (type == 'Code') {
+
+                $('#block_' + block_key + ' .products .product_wrap').sort(sort_li).appendTo('#block_' + block_key + ' .products ');
+
+                function sort_li(a, b) {
+                    return ($(b).data('sort_code')) < ($(a).data('sort_code')) ? 1 : -1;
+                }
+            } else if (type == 'Code_desc') {
+
+                $('#block_' + block_key + ' .products .product_wrap').sort(sort_li).appendTo('#block_' + block_key + ' .products ');
+
+                function sort_li(a, b) {
+                    return ($(b).data('sort_code')) > ($(a).data('sort_code')) ? 1 : -1;
+                }
+            } else if (type == 'Name') {
+
+                $('#block_' + block_key + ' .products .product_wrap').sort(sort_li).appendTo('#block_' + block_key + ' .products ');
+
+                function sort_li(a, b) {
+                    return ($(b).data('sort_name')) < ($(a).data('sort_name')) ? 1 : -1;
+                }
+            }
+
+
+            $.each(panel_index, function (panel_id, index) {
+
+                $('#' + panel_id).insertAfter('#block_' + block_key + ' .products .product_wrap:eq(' + index + ')');
+
+            });
+
+            product_sort_index=[]
+            $('#block_'+block_key+' .products .type_product').each(function (i, product) {
+                product_sort_index.push($(product).attr('id'))
+            })
+
+        }
+
 
     }
 

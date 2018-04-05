@@ -146,6 +146,7 @@ class Public_Product {
             case 'Web State':
             case 'Description':
             case 'Current Key':
+            case 'Code File As':
                 return $this->data['Product '.$key];
                 break;
 
@@ -229,6 +230,11 @@ class Public_Product {
                 return $favourite_key;
                 break;
 
+            case 'Product Name':
+                return $this->data['Product Name'];
+
+
+                break;
 
             case 'Name':
 

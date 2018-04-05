@@ -59,9 +59,9 @@
 
 
 
-    <link rel="stylesheet" href="/EcomB2B/css/fontawesome-all.min.css" type="text/css"/>
+    <link rel="stylesheet" href="/EcomB2B/css/fontawesome-all.min.css?v5.0.9" type="text/css"/>
 
-    <link rel="stylesheet" href="/EcomB2B/css/style.theme_1.EcomB2B.css?v180401v1" type="text/css"/>
+    <link rel="stylesheet" href="/EcomB2B/css/style.theme_1.EcomB2B.css?v180405v8" type="text/css"/>
 
 
 
@@ -81,7 +81,7 @@
 
 
 
-    <link rel="stylesheet" href="/css/webpage_preview/webpage_preview.css?v20180329v4" type="text/css"/>
+    <link rel="stylesheet" href="/css/webpage_preview/webpage_preview.css?v20180329v5" type="text/css"/>
 
 
 
@@ -173,10 +173,9 @@
     {if $website->get('Website Text Font')!=''}
         <link href="https://fonts.googleapis.com/css?family={$website->get('Website Text Font')}:400,700" rel="stylesheet">
     {/if}
-
     <style>
         {if $website->get('Website Text Font')!=''}
-        body{
+        body {
             font-family: '{$website->get('Website Text Font')}', sans-serif;
         }
 
@@ -187,7 +186,124 @@
 
         {/if}
 
-        </style>
+        header #topHeader {
+
+            background-color: {$header_data.color.header_background};
+        {if $header_data.background_image!=''} background-image: url({$header_data.background_image});
+        {/if} color: {$header_data.color.header};
+
+        }
+
+        header #trueHeader {
+            background-color: {$header_data.color.menu_background};
+            border-bottom-color: {$header_data.color.menu_background_highlight};
+            color: {$header_data.color.menu};
+        }
+
+        header #trueHeader a {
+            color: {$header_data.color.menu};
+            cursor: pointer;
+
+        }
+
+        header #trueHeader a:hover {
+            color: {$header_data.color.menu_text_background_highlight};
+
+        }
+
+        header #_columns .dropdown a:hover {
+            background-color: transparent;
+        }
+
+        {if isset($header_data.color.items_title)}
+        header #_columns .dropdown li.item_li:hover > a * {
+            color: {$header_data.color.items_title};
+        }
+
+        {/if}
+
+        header #trueHeader .dropdown-menu {
+
+            color: {$header_data.color.items};
+        }
+
+        header #trueHeader .dropdown-menu a {
+
+            color: {$header_data.color.items};
+        }
+
+        {if isset($header_data.color.items_title)}
+
+        header #trueHeader .dropdown-menu a:hover {
+
+            color: {$header_data.color.items_title};
+        }
+
+        {/if}
+
+        header #menu_control_panel .button {
+            background-color: {$header_data.color.menu_background_highlight};
+        }
+
+        header #logo {
+            background-image: url({$header_data.logo});
+
+        }
+
+        header .yamm .dropdown-menu {
+            background: {$header_data.color.items_background};
+        }
+
+        header .dropdown-menu li a:hover {
+            background: {$header_data.color.items};
+            color: {$header_data.color.items_background};
+        }
+
+        header .list-unstyled span.link, .list-unstyled a.link {
+            color: {$header_data.color.items};
+
+        }
+
+        header .list-unstyled li p {
+            color: {$header_data.color.items}
+        }
+
+        header .dart {
+            color: {$header_data.color.items}
+
+        }
+
+        header .list-unstyled li i {
+            color: {$header_data.color.items}
+        }
+
+        header .list-unstyled li span {
+            color: {$header_data.color.items}
+        }
+
+        .order_row, .out_of_stock_row {
+            background-color: {$website->get('Website Button Color')};
+            color: {$website->get('Website Button Text Color')}
+
+        }
+
+        .order_row.empty:hover {
+            background-color: {$website->get('Website Active Button Color')};
+            color: {$website->get('Website Active Button Text Color')}
+
+        }
+
+        .order_row.ordered {
+            background-color: {$website->get('Website Active Button Color')};
+            color: {$website->get('Website Active Button Text Color')}
+
+        }
+
+        {if isset($extra_style)}{$extra_style}{/if}
+
+    </style>
+
+
 
 </head>
 

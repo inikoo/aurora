@@ -32,16 +32,6 @@
 {if isset($data.bottom_margin)}{assign "bottom_margin" $data.bottom_margin}{else}{assign "bottom_margin" "0"}{/if}
 
 
-<div id="panel_txt_control" class="hide">
-<div  class="panel_txt_control" style="padding:2px 10px;z-index:2001;position: absolute;top:-30px;width:100%;height: 30px;border:1px solid #ccc;background: #fff;border-bottom: none">
-    <i class="fa fa-expand" title="{t}Padding{/t}"></i> <input size="2" style="height: 16px;" value="20">
-    <i class="far fa-trash-alt padding_left_10 like_button" title="{t}Delete{/t}"></i>
-
-    <i onclick="close_panel_text(this)" class="fa fa-window-close button" style="float: right;margin-top:6px" title="{t}Close text edit mode{/t}"></i>
-
-</div>
-</div>
-
 <div id="sections_list" class="hide" data-block_key="{$key}">
 
 
@@ -99,7 +89,7 @@
 
                     <div class="section_items connectedSortable">
                         {foreach from=$section_data.items item=category_data}
-                            <div class="category_wrap" data-type="{$category_data.type}">
+                            <div class="category_wrap wrap" data-type="{$category_data.type}">
                                 {if $category_data.type=='category'}
                                     <div class="category_block" style="position:relative" data-category_key="{$category_data.category_key}" data-category_webpage_key="{$category_data.webpage_key}" data-item_type="{$category_data.item_type}" data-link="{$category_data.link}" data-webpage_code="{$category_data.webpage_code}">
                                         <div class="item_header_text" >{$category_data.header_text|strip_tags}</div>
