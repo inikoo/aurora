@@ -31,7 +31,7 @@
 
 
 
-        <link href="/css/mobile.min.css" rel="stylesheet" type="text/css">
+        <link href="/css/mobile.min.css?v3" rel="stylesheet" type="text/css">
 
 
 
