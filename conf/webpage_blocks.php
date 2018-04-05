@@ -252,7 +252,7 @@ function get_webpage_blocks($theme = '') {
         'counter'   => array(
             'type'  => 'counter',
             'label' => _('Counter'),
-            'icon'  => 'fa-sort-numeric-asc',
+            'icon'  => 'fa-sort-numeric-down',
 
             'show'    => 1,
             'columns' => array(
