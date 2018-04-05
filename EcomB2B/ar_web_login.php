@@ -107,7 +107,8 @@ function login($db, $data, $website,$editor) {
 
         echo json_encode(
             array(
-                'state' => 200
+                'state' => 200,
+                'msg'=>'L1'
             )
         );
         exit;
