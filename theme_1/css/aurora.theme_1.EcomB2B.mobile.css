@@ -392,6 +392,41 @@ input:-ms-input-placeholder {
 
 
 
+div.blk_images .caption_align i{
+	padding-right: 10px;cursor: pointer;
+}
 
+div.blk_images figcaption.caption_left{
+	text-align: left;padding-left:5px
 
+}
+div.blk_images figcaption.caption_right{
+	text-align: right;padding-right:5px
+}
+div.blk_images figcaption.caption_center{
+	text-align: center;
 
+}
+div.blk_images figcaption.caption_hide{
+	display:none
+}
+
+.blk_images{
+	//display: flex;
+	//flex-direction: row;
+}
+.blk_images figure{
+	float:left;
+}
+
+div.blk_images.template_4 figure{
+	width: calc(100% / 2 * 1);
+}
+
+div.blk_images.template_2 figure{
+	width: calc(100% / 2 * 1);
+}
+
+div.blk_images.template_3 figure{
+	width: calc(100% / 2 * 1);
+}
