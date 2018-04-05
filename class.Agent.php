@@ -316,6 +316,14 @@ class Agent extends SubjectSupplier {
 
 
         switch ($field) {
+
+            case 'Agent Contact Address':
+
+
+                $this->update_address('Contact', json_decode($value, true), $options);
+
+                break;
+
             case('Agent Valid From'):
             case('Agent Valid To'):
 
