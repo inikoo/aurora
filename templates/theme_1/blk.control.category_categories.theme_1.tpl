@@ -250,7 +250,8 @@
         }
 
 
-        $('#preview')[0].contentWindow.category_categories_add_panel('{$key}',index,type,size)
+        $('#preview')[0].contentWindow.add_panel('{$key}',type,size,'category_categories',index)
+
 
         $('#category_categories_items_showcase').addClass('hide')
         $('#category_categories_add_panel_dialog').addClass('hide')
@@ -316,7 +317,7 @@
 
 
         var new_category=$('' +
-            '<div class="category_wrap" data-type="category">' +
+            '<div class="category_wrap wrap" data-type="category">' +
             '<div class="category_block" style="position:relative" data-category_key="'+data.category_key+'"  data-category_webpage_key="'+data.category_webpage_key+'"  data-item_type="Guest"  data-link="'+data.category_webpage_link+'" data-webpage_code="'+data.category_webpage_code+'"  >\n' +
             '<div class="item_header_text">'+data.title+'</div>' +
             '<div class="wrap_to_center button"><img src="'+data.image+'" data-image_mobile_website="" data-image_website="" data-src="'+data.image+'"  /></div></div>\n'+

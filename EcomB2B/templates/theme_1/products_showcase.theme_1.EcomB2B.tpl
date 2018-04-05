@@ -10,7 +10,6 @@
 *}{include file="theme_1/_head.theme_1.EcomB2B.tpl"  extra_style=$webpage->get('Published CSS') }
 
 
-
 <body xmlns="http://www.w3.org/1999/html">
 {include file="analytics.tpl"}
 
@@ -46,70 +45,71 @@
     }'></span>
 
 
-                        <div class="description_block">
+                    <div class="description_block">
 
-                            {foreach from=$category->get_parent_categories('data') item=item key=key}
-                                <a href="/{$item.webpage_code}" class="parent_up">
-                                    <i class="fa fa-arrow-up" aria-hidden="true"></i>
-                                    <span>{$item.label}</span>
+                        {foreach from=$category->get_parent_categories('data') item=item key=key}
+                            <a href="/{$item.webpage_code}" class="parent_up">
+                                <i class="fa fa-arrow-up" aria-hidden="true"></i>
+                                <span>{$item.label}</span>
 
-                                </a>
-                                {break}
-                            {/foreach}
+                            </a>
+                            {break}
+                        {/foreach}
 
-                            <div class="discounts_block">
+                        <div class="discounts_block">
 
-                                {foreach from=$category->get_deal_components('objects') item=item key=key}
-                                    <div class="discount_card">
-                                        <span class="discount_icon">{$item->get('Deal Component Icon')}</span>
+                            {foreach from=$category->get_deal_components('objects') item=item key=key}
+                                <div class="discount_card">
+                                    <span class="discount_icon">{$item->get('Deal Component Icon')}</span>
 
-                                        <span class="discount_name">{$item->get('Deal Component Name Label')}</span><br/>
-                                        <span class="discount_term">{$item->get('Deal Component Term Label')}</span>
+                                    <span class="discount_name">{$item->get('Deal Component Name Label')}</span><br/>
+                                    <span class="discount_term">{$item->get('Deal Component Term Label')}</span>
 
-                                        <span class="discount_allowance">{$item->get('Deal Component Allowance Label')}</span>
+                                    <span class="discount_allowance">{$item->get('Deal Component Allowance Label')}</span>
 
-                                    </div>
-                                {/foreach}
-
-                            </div>
-
-
-                            <div style="clear: both"></div>
-
-                        </div>
-                        <div id="description_block" class="description_block  {if isset($content_data.description_block.class)}{$content_data.description_block.class}{/if}">
-
-
-                            {foreach from=$content_data.description_block.blocks key=id item=data}
-
-
-                                {if $data.type=='text'}
-                                    <div id="{$id}" class="webpage_content_header fr-view text">
-                                        {$data.content}
-                                    </div>
-                                {elseif $data.type=='image'}
-                                    <div id="{$id}" class="webpage_content_header webpage_content_header_image">
-                                        <img alt="" src="{$data.image_src}" style="width:100%" title="{if isset($data.caption)}{$data.caption}{/if}"/>
-                                    </div>
-                                {/if}
-                            {/foreach}
-
-
-                            <div style="clear:both"></div>
-                        </div>
-                        <div id="description_block_small_devices">
-
-                            {foreach from=$content_data.description_block.blocks key=id item=data name=foo}
-
-
-                                {if $data.type=='text' and $data.content!=''}
-                                    <p>{$data.content}</p>
-                                {elseif $data.type=='image'}
-                                    <img src="{$data.image_src}" style="width:40%;;{if $smarty.foreach.foo.iteration%2} float:left;margin-right:15px;{else}float:right;margin-left:15px;{/if}"  alt="" title="{if isset($data.caption)}{$data.caption}{/if}"/>
-                                {/if}
+                                </div>
                             {/foreach}
 
                         </div>
+
+
+                        <div style="clear: both"></div>
+
+                    </div>
+                    <div id="description_block" class="description_block  {if isset($content_data.description_block.class)}{$content_data.description_block.class}{/if}">
+
+
+                        {foreach from=$content_data.description_block.blocks key=id item=data}
+
+
+                            {if $data.type=='text'}
+                                <div id="{$id}" class="webpage_content_header fr-view text">
+                                    {$data.content}
+                                </div>
+                            {elseif $data.type=='image'}
+                                <div id="{$id}" class="webpage_content_header webpage_content_header_image">
+                                    <img alt="" src="{$data.image_src}" style="width:100%" title="{if isset($data.caption)}{$data.caption}{/if}"/>
+                                </div>
+                            {/if}
+                        {/foreach}
+
+
+                        <div style="clear:both"></div>
+                    </div>
+                    <div id="description_block_small_devices">
+
+                        {foreach from=$content_data.description_block.blocks key=id item=data name=foo}
+
+
+                            {if $data.type=='text' and $data.content!=''}
+                                <p>{$data.content}</p>
+                            {elseif $data.type=='image'}
+                                <img src="{$data.image_src}" style="width:40%;;{if $smarty.foreach.foo.iteration%2} float:left;margin-right:15px;{else}float:right;margin-left:15px;{/if}" alt=""
+                                     title="{if isset($data.caption)}{$data.caption}{/if}"/>
+                            {/if}
+                        {/foreach}
+
+                    </div>
 
 
                     {if $category->get('Product Category Status')=='Discontinued'}
@@ -126,8 +126,8 @@
 
                                 {if $product_data.type=='product'}
                                     {assign 'product' $product_data.object}
-                                    <div   data-product_code="{$product->get('Code')}" data-product_id="{$product->id}"
-                                         class="product_block product_showcase product_container " style="position:relative;border-bottom:none;">
+                                    <div data-product_code="{$product->get('Code')}" data-product_id="{$product->id}" class="product_block product_showcase product_container "
+                                         style="position:relative;border-bottom:none;">
 
 
                                         <a href="{$product->get('Code')|lower}">
@@ -185,7 +185,7 @@
                                                 {if isset($customer)}
                                                     {assign 'reminder_key' {$product->get('Reminder Key',{$customer->id})} }
                                                     <div class="out_of_stock_row {$product->get('Out of Stock Class')}">
-                        <span class="label">
+                                                         <span class="label">
                         {$product->get('Out of Stock Label')}
                             <span class="label sim_button "> <i reminder_key="{$reminder_key}" title="{if $reminder_key>0}{t}Click to remove notification{/t}{else}{t}Click to be notified by email{/t}{/if}"
                                                                 class="reminder hide {if $reminder_key>0}fa fa-envelope{else}far fa-envelope{/if}" aria-hidden="true"></i>  </span>
@@ -211,8 +211,7 @@
 
                                         {else}
                                             <div class=" order_row " style="display:flex;">
-                                                <div onclick='window.location.href = "/login.sys"' class="mark_on_hover"
-                                                     style="flex-grow:1;text-align:center;border-right:1px solid #fff;  font-weight: 800;"><span
+                                                <div onclick='window.location.href = "/login.sys"' class="mark_on_hover" style="flex-grow:1;text-align:center;border-right:1px solid #fff;  font-weight: 800;"><span
                                                             class="sim_button">{if empty($labels._Login)}{t}Login{/t}{else}{$labels._Login}{/if}</span></div>
                                                 <div onclick='window.location.href = "/register.sys"' class="mark_on_hover" style="flex-grow:1;text-align:center;border-left:1px solid #fff;  font-weight: 800;"><span
                                                             class="sim_button">{if empty($labels._Register)}{t}Register{/t}{else}{$labels._Register}{/if}</span></div>
@@ -232,10 +231,11 @@
 
                                         </div>
                                     {elseif $product_data.data.type=='code'}
-                                        <div id="{$product_data.data.id}"  style="position:relative;" class=" panel image panel_{$product_data.data.size}">
+                                        <div id="{$product_data.data.id}" style="position:relative;" class=" panel image panel_{$product_data.data.size}">
 
 
-                                            <iframe class="" src="/panel_code.php?id={$product_data.data.key}" style="position: absolute; height: 100%;width: 100%;padding:0px;margin:0px;background-color: white;border: 0px;overflow:hidden; "
+                                            <iframe class="" src="/panel_code.php?id={$product_data.data.key}"
+                                                    style="position: absolute; height: 100%;width: 100%;padding:0px;margin:0px;background-color: white;border: 0px;overflow:hidden; "
                                                     sandbox="allow-scripts allow-same-origin allow-popups allow-top-navigation"
 
                                             >
@@ -272,8 +272,8 @@
 
 
                                     {assign 'product' $product_data.object}
-                                    <div  data-stack_index="{$stack_index}" data-product_code="{$product->get('Code')}" data-product_id="{$product->id}"
-                                         class="product_block product_showcase product_container" style="position:relative;border-bottom:none;">
+                                    <div data-stack_index="{$stack_index}" data-product_code="{$product->get('Code')}" data-product_id="{$product->id}" class="product_block product_showcase product_container"
+                                         style="position:relative;border-bottom:none;">
 
                                         <a href="{$product->get('Code')|lower}">
 
@@ -381,7 +381,7 @@
                         <div class="warp">
                             {foreach from=$see_also item=see_also_item name=foo}
                                 <div class="warp_element see_also">
-                                    <div class="image" >
+                                    <div class="image">
                                         <a href="{$see_also_item->get('URL')}">
                                             <img src="{$see_also_item->get('Image')}" alt=""/>
                                         </a>

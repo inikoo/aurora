@@ -1765,12 +1765,9 @@ class Page extends DB_Table {
             case 'Page Store Content Data':
 
                 // post edit content data
-
                 include_once('utils/image_functions.php');
 
                 $content_data = json_decode($value, true);
-                // print_r($content_data);
-
 
 
                 if (isset($content_data['blocks'])) {
@@ -1901,6 +1898,84 @@ class Page extends DB_Table {
                             $content_data['blocks'][$block_key]['mobile_html'] = $mobile_html;
                             $content_data['blocks'][$block_key]['tablet_html'] = $tablet_html;
 
+                        } elseif ($block['type'] == 'category_products') {
+                            foreach ($block['items'] as $item_key => $item) {
+                                if ($item['type'] == 'product') {
+                                    if (empty($item['image_mobile_website'])) {
+                                        $image_mobile_website = $item['image_src'];
+                                        if (preg_match('/id=(\d+)/', $item['image_src'], $matches)) {
+                                            $image_key = $matches[1];
+
+                                            $image_mobile_website = create_cached_image($image_key, 340, 214);
+
+                                        }
+
+
+                                        $content_data['blocks'][$block_key]['items'][$item_key]['image_mobile_website'] = $image_mobile_website;
+
+
+                                    }
+
+                                    if (empty($item['image_website'])) {
+                                        $image_website = $item['image_src'];
+                                        if (preg_match('/id=(\d+)/', $item['image_src'], $matches)) {
+                                            $image_key     = $matches[1];
+                                            $image_website = create_cached_image($image_key, 432, 330, 'fit_highest');
+                                        }
+
+
+                                        $content_data['blocks'][$block_key]['items'][$item_key]['image_website'] = $image_website;
+
+
+                                    }
+                                } elseif ($item['type'] == 'image') {
+
+                                    if (empty($item['image_website'])) {
+                                        $image_website = $item['image_src'];
+                                        if (preg_match('/id=(\d+)/', $item['image_src'], $matches)) {
+                                            $image_key = $matches[1];
+
+                                            if ($content_data['blocks'][$block_key]['item_headers']) {
+                                                $height = 330;
+                                            } else {
+                                                $height = 290;
+                                            }
+
+
+                                            switch ($item['size_class']) {
+                                                case 'panel_1':
+                                                    $width = 226;
+
+                                                    break;
+                                                case 'panel_2':
+                                                    $width = 470;
+                                                    break;
+                                                case 'panel_3':
+                                                    $width = 714;
+                                                    break;
+                                                case 'panel_4':
+                                                    $width = 958;
+                                                    break;
+                                                case 'panel_5':
+                                                    $width = 1202;
+                                                    break;
+
+                                            }
+
+                                            $image_website = create_cached_image($image_key, $width, $height);
+                                        }
+
+
+                                        $content_data['blocks'][$block_key]['items'][$item_key]['image_website'] = $image_website;
+
+
+                                    }
+
+
+                                }
+
+                            }
+
                         } elseif ($block['type'] == 'category_categories') {
 
 
@@ -1935,67 +2010,55 @@ class Page extends DB_Table {
 
 
                                         }
-                                    } else {
-                                        if ($item['type'] == 'image') {
+                                    } elseif ($item['type'] == 'image') {
 
-                                            if (empty($item['image_website'])) {
-                                                $image_website = $item['image_src'];
-                                                if (preg_match('/id=(\d+)/', $item['image_src'], $matches)) {
-                                                    $image_key = $matches[1];
-                                                    $height    = 220;
-                                                    switch ($item['size_class']) {
-                                                        case 'panel_1':
-                                                            $width = 226;
+                                        if (empty($item['image_website'])) {
+                                            $image_website = $item['image_src'];
+                                            if (preg_match('/id=(\d+)/', $item['image_src'], $matches)) {
+                                                $image_key = $matches[1];
+                                                $height    = 220;
+                                                switch ($item['size_class']) {
+                                                    case 'panel_1':
+                                                        $width = 226;
 
-                                                            break;
-                                                        case 'panel_2':
-                                                            $width = 470;
-                                                            break;
-                                                        case 'panel_3':
-                                                            $width = 714;
-                                                            break;
-                                                        case 'panel_4':
-                                                            $width = 958;
-                                                            break;
-                                                        case 'panel_5':
-                                                            $width = 1202;
-                                                            break;
+                                                        break;
+                                                    case 'panel_2':
+                                                        $width = 470;
+                                                        break;
+                                                    case 'panel_3':
+                                                        $width = 714;
+                                                        break;
+                                                    case 'panel_4':
+                                                        $width = 958;
+                                                        break;
+                                                    case 'panel_5':
+                                                        $width = 1202;
+                                                        break;
 
-                                                    }
-
-                                                    $image_website = create_cached_image($image_key, $width, $height);
                                                 }
 
-
-                                                $content_data['blocks'][$block_key]['sections'][$section_key]['items'][$item_key]['image_website'] = $image_website;
-
-
+                                                $image_website = create_cached_image($image_key, $width, $height);
                                             }
 
 
+                                            $content_data['blocks'][$block_key]['sections'][$section_key]['items'][$item_key]['image_website'] = $image_website;
+
+
                                         }
+
+
                                     }
-
-
                                 }
+
+
                             }
-
-
                         }
+
 
                     }
 
                 }
-               // exit('xs');
 
-                // if ($this->get('Webpage Template Filename') == 'category_categories') {
-
-                //   $this->reindex_category_categories();
-
-                //}
-
-
-                //print_r($content_data);
 
                 $value = json_encode($content_data);
 
@@ -2573,7 +2636,7 @@ class Page extends DB_Table {
 
                     if (in_array($item['category_key'], $items_category_key_index)) {
 
-                        $item_data=$items[$item['category_key']];
+                        $item_data = $items[$item['category_key']];
 
                         $content_data['blocks'][$block_key]['sections'][$section_key]['items'][$item_key]['item_type']       = 'Subject';
                         $content_data['blocks'][$block_key]['sections'][$section_key]['items'][$item_key]['webpage_key']     = $item_data['Page Key'];
@@ -2654,9 +2717,9 @@ class Page extends DB_Table {
         }
 
 
-        $this->update_field_switcher('Page Store Content Data',json_encode($content_data),'no_history');
+        $this->update_field_switcher('Page Store Content Data', json_encode($content_data), 'no_history');
 
-        $sql=sprintf('delete from `Website Webpage Scope Map` where `Website Webpage Scope Webpage Key`=%d ',$this->id);
+        $sql = sprintf('DELETE FROM `Website Webpage Scope Map` WHERE `Website Webpage Scope Webpage Key`=%d ', $this->id);
         $this->db->exec($sql);
 
         $index = 0;
@@ -6069,7 +6132,9 @@ class Page extends DB_Table {
                         .'<span id="total"> <img src="art/loading.gif" style="width:14px;position:relative;top:2px;"/></span> (<span id="number_items"><img src="art/loading.gif" style="width:14px;position:relative;top:2px"/></span> '._('items')
                         .')</span> <img onClick=\'window.location="'.$this->site->get_checkout_data('url').'/cf/review.cfm?sd=ignore&userid='.$this->site->get_checkout_data('id').'&return='.$this->data['Page URL']
                         .'"\' src="art/basket.jpg" style="height:15px;position:relative;top:3px;margin-left:10px;cursor:pointer"/> <span style="color:#ff8000;margin-left:0px" class="link basket"  id="see_basket"  onClick=\'window.location="'
-                        .$this->site->get_checkout_data('url').'/cf/review.cfm?sd=ignore&userid='.$this->site->get_checkout_data('id').'&return='.$this->data['Page URL'].'"\' >'._('Basket & Checkout').'</span> </div>';
+                        .$this->site->get_checkout_data(
+                            'url'
+                        ).'/cf/review.cfm?sd=ignore&userid='.$this->site->get_checkout_data('id').'&return='.$this->data['Page URL'].'"\' >'._('Basket & Checkout').'</span> </div>';
                     $html   = $basket;
 
                     break;
@@ -6140,7 +6205,9 @@ class Page extends DB_Table {
         } else {
             $html =
                 '<div style="float:right"> <span class="link" onClick=\'window.location="registration.php"\' id="show_register_dialog">'._('Create Account').'</span> <span class="link"  onClick=\'window.location="login.php?from='.$this->id.'"\' id="show_login_dialog">'
-                ._('Log in').'</span><img src="art/gear.png" style="visibility:hidden" class="dummy_img" /></div>';
+                ._(
+                    'Log in'
+                ).'</span><img src="art/gear.png" style="visibility:hidden" class="dummy_img" /></div>';
         }
 
 

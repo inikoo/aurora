@@ -18,7 +18,7 @@
                {if !empty($image.link)}<a href="{$image.link}">{/if}
                 <img src="{$image.src}" alt="{$image.title}"  title="{$image.title}" />
                 {if !empty($image.link)}</a>{/if}
-            <figcaption class="{$image.caption_class}">{$image.caption}</figcaption>
+            <figcaption  class="{$image.caption_class}">{$image.caption}</figcaption>
         </figure>
      </span>
     {/foreach}

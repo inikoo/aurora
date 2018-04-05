@@ -41,10 +41,16 @@ $store = new Public_Store($webpage->get('Webpage Store Key'));
 $content_data = $webpage->get('Content Data');
 
 
+$header_data = $website->get('Header Data');
+$header_key=$website->get('Website Header Key');
+
+
+$smarty->assign('header_data', $header_data);
+$smarty->assign('header_key', $header_key);
 
 
 
-//print_r($content_data);
+//print_r($webpage);
 
 if ($webpage->get('Webpage Template Filename') == 'products_showcase') {
     include_once 'class.Public_Product.php';
