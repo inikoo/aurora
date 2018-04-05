@@ -76,7 +76,7 @@
                         <div style="clear: both"></div>
 
                     </div>
-                    <div id="description_block" class="description_block  {if isset($content_data.description_block.class)}{$content_data.description_block.class}{/if}">
+                    <div id="description_block"  style="position:relative" class="description_block  {if isset($content_data.description_block.class)}{$content_data.description_block.class}{/if}">
 
 
                         {foreach from=$content_data.description_block.blocks key=id item=data}
