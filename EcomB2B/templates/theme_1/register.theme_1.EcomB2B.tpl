@@ -32,7 +32,7 @@
 
                             <section>
                                 <label class="input">
-                                    <i class="icon-append fa fa-envelope"></i>
+                                    <i class="icon-append far fa-envelope"></i>
                                     <input class="register_field" type="email" name="email"  placeholder="{$content._email_placeholder}">
                                     <b id="_email_tooltip" class="tooltip tooltip-bottom-right">{$content._email_tooltip}</b>
                                 </label>
@@ -40,7 +40,7 @@
 
                             <section>
                                 <label class="input">
-                                    <i id="_password"  class="icon-append icon-lock"></i>
+                                    <i id="_password"  class="icon-append far fa-lock"></i>
                                     <input class="register_field" type="password" name="password" id="register_password" placeholder="{$content._password_placeholder}" >
                                     <b id="_password_tooltip"  class="tooltip tooltip-bottom-right">{$content._password_tooltip}</b>
                                 </label>
@@ -48,7 +48,7 @@
 
                             <section>
                                 <label class="input">
-                                    <i id="_password_confirm" class="icon-append icon-lock"></i>
+                                    <i id="_password_confirm" class="icon-append far fa-lock"></i>
                                     <input class="register_field ignore" type="password" name="password_confirm" placeholder="{$content._password_confirm_placeholder}" >
                                     <b id="_password_confirm_tooltip"  class="tooltip tooltip-bottom-right">{$content._password_confirm_tooltip}</b>
                                 </label>
@@ -59,7 +59,7 @@
 
                             <section>
                                 <label class="input">
-                                    <i class="icon-append fa fa-mobile" ></i>
+                                    <i class="icon-append far fa-mobile" ></i>
                                     <input class="register_field" type="text" name="mobile" placeholder="{$content._mobile_placeholder}">
                                     <b id="_mobile_tooltip"  class="tooltip tooltip-bottom-right">{$content._mobile_tooltip}</b>
                                 </label>
@@ -67,7 +67,7 @@
 
                             <section>
                                 <label class="input">
-                                    <i class="icon-append icon-user"></i>
+                                    <i class="icon-append far fa-user"></i>
                                     <input class="register_field" type="text" name="contact_name"  placeholder="{$content._contact_name_placeholder}">
                                     <b id="_contact_name_tooltip"  class="tooltip tooltip-bottom-right">{$content._contact_name_tooltip}</b>
                                 </label>
@@ -75,7 +75,7 @@
 
                             <section>
                                 <label class="input">
-                                    <i class="icon-append icon-briefcase"></i>
+                                    <i class="icon-append far fa-briefcase"></i>
                                     <input class="register_field" type="text" name="company"  placeholder="{$content._company_placeholder}">
                                     <b id="_company_tooltip"  class="tooltip tooltip-bottom-right">{$content._company_tooltip}</b>
                                 </label>

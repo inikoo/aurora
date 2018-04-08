@@ -40,6 +40,19 @@ if (!isset($_REQUEST['tipo'])) {
 $tipo = $_REQUEST['tipo'];
 
 switch ($tipo) {
+    case 'see_also':
+
+        $data = prepare_values(
+            $_REQUEST, array(
+                         'webpage_key'      => array('type' => 'key'),
+                         'number_items'     => array('type' => 'numeric'),
+
+
+                     )
+        );
+
+        see_also($data, $db, $user, $smarty);
+        break;
     case 'webpage_block':
 
         $data = prepare_values(
@@ -65,6 +78,64 @@ switch ($tipo) {
         echo json_encode($response);
         exit;
         break;
+}
+
+
+function see_also($data, $db, $user, $smarty) {
+    include_once('utils/image_functions.php');
+
+    $webpage=get_object('Webpage',$data['webpage_key']);
+
+
+   // $see_also=array();
+    $html='';
+    foreach($webpage->get_related_webpages_key($data['number_items']) as $webpage_key){
+
+        $see_also_page = get_object('Webpage', $webpage_key);
+
+        $category = get_object('Category', $see_also_page->get('Webpage Scope Key'));
+
+        $image_src =$category->get('Image');
+
+
+        if (preg_match('/id=(\d+)/', $image_src, $matches)) {
+            $image_key = $matches[1];
+
+            $image_mobile_website = create_cached_image($image_key, 320, 200);
+            $image_website = create_cached_image($image_key, 432, 330, 'fit_highest');
+
+        }else{
+            $image_mobile_website=$image_src;
+            $image_website=$image_src;
+        }
+
+        $see_also = array(
+            'type'                 => 'category',
+            'category_key'         => $category->id,
+            'header_text'          => $category->get('Category Label'),
+            'image_src'            => $category->get('Image'),
+            'image_mobile_website' => $image_mobile_website,
+            'image_website'        => $image_website,
+            'webpage_key'          => $see_also_page->id,
+            'webpage_code'         => strtolower($see_also_page->get('Webpage Code')),
+            'category_code'        => $category->get('Category Code'),
+            'number_products'      => $category->get('Product Category Active Products'),
+            'link'                 => $see_also_page->get('Webpage URL')
+
+        );
+        $smarty->assign('category_data',$see_also);
+        $html.=$smarty->fetch('splinters/see_also_item.splinter.tpl');
+
+    }
+
+    $response = array(
+        'state' => 200,
+        'html'  => $html,
+        'update_date'=>gmdate('Y-m-d H:i:s')
+    );
+    echo json_encode($response);
+
+
 }
 
 

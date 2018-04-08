@@ -237,7 +237,13 @@ class WebAuth {
 (
               `Website Failed Log Type`,`Website Failed Log Handle`,`Website Failed Log User Key`,`Website Failed Log Date`,`Website Failed Log IP`,
               `Website Failed Log Fail Reason`)  
-            VALUES (%s,%s,%s,%s,%s, %s)",prepare_mysql($type),  prepare_mysql($handle), prepare_mysql($website_user_key), prepare_mysql($date), prepare_mysql($ip), prepare_mysql($main_reason)
+            VALUES (%s,%s,%s,%s,%s, %s)",
+            prepare_mysql($type),
+            prepare_mysql($handle),
+            prepare_mysql($website_user_key),
+            prepare_mysql($date),
+            prepare_mysql($ip),
+            prepare_mysql($main_reason)
 
         );
 

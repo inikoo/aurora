@@ -9,6 +9,66 @@
 
 */
 
+body, input, textarea {
+  font-size: 14px;
+  font-weight: normal;
+  font-style: normal;
+  line-height: 140%;
+  color: #727272;
+}
+
+p {
+  margin-bottom:1.8em;
+  line-height: 140%;
+}
+
+
+h1,
+h2,
+h3,
+h4,
+h5,
+h6 {
+  padding: 0;
+  margin: 0;
+  margin-bottom: 17px;
+  font-weight: 800;
+}
+
+h1 {
+
+  font-size: 21px;
+  line-height: 120%;
+
+}
+
+h2 {
+  font-size: 19px;
+  line-height: 19px;
+}
+h3 {
+  font-size: 18px;
+  line-height: 18px;
+}
+h4 {
+  font-size: 17px;
+  line-height: 17px;
+}
+h5 {
+  font-size: 16px;
+  line-height: 16px;
+}
+h6 {
+  font-size: 15px;
+  line-height: 15px;
+}
+
+
+
+
+
+
+
 
 .info{
 	color: #007fff;
@@ -359,17 +419,6 @@ table.properties td{
 
 
 
-#page_content h1{
-
-	font-weight: 800;
-	font-size:21px;
-	padding:0;
-	margin:17.4333px 0px;
-
-}
-
-
-
 
 
 
@@ -495,11 +544,6 @@ table.properties td{
 }
 
 
-
-
-
-.product_image{
-	cursor:pointer}
 
 
 
@@ -749,7 +793,7 @@ font-size:21px;
 padding:8px;margin-bottom:5px;
 border:1px solid transparent;cursor:text;padding-top:10px;padding-bottom:0px;
 font-weight: 800;z-index: 100;line-height: normal;text-align:center;
-
+min-height: 45px;
 }
 
 .item_header_text p{
@@ -861,21 +905,6 @@ div.blk_images figcaption.caption_hide{
 display:none
 }
 
-h1 {
-  font-weight: 800;
-  font-size: 21px;
-  padding: 0;
-  margin: 17.4333px 0px;
-  line-height: 1.2em;
-
-}
-
-p{
-  line-height: 1.2em;
-  margin-bottom:1.8em;
-}
-
-
 
 
 .product_wrap{
@@ -967,6 +996,11 @@ p{
     z-index: 0;position:relative;
   }
 
+.product_image{
+  min-height: 170px;
+  max-height: 170px;
+  height: 170px;
+}
 
   .favourite i{
 
@@ -1016,7 +1050,7 @@ p{
 
 
 
-  .favourite i.marked{
+  .favourite.marked{
 
     color: deeppink;
   }
@@ -1068,4 +1102,12 @@ p{
 }
 
 
+.error{
+  color:red;
+}
+
+
+small{
+  font-size: smaller;
+}
 

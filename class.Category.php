@@ -2559,16 +2559,9 @@ VALUES (%d,%s, %d, %d, %s,%s, %d, %d, %s, %s, %s,%d,NOW())", $this->id,
 
                     if ($value) {
 
-                        include_once 'class.Category.php';
-
-                        //include_once 'class.Store.php';
-                        //$store = new Store($this->get('Category Store Key'));
-
-
                         if ($this->data['Product Category Department Category Key'] != $value) {
 
                             $old_parent_category =  get_object('Category',$this->data['Product Category Department Category Key']);
-
                             $new_parent_category =  get_object('Category',$value);
 
 

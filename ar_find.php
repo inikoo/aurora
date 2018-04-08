@@ -216,10 +216,10 @@ switch ($tipo) {
                 find_web_node($db, $account, $memcache_ip, $data);
                 break;
             case 'product_webpages':
-                find_product_webpages($db, $account, $memcache_ip, $data);
+                find_product_webpages($db, $account, $memcache_ip, $data, $smarty);
                 break;
             case 'category_webpages':
-                find_category_webpages($db, $account, $memcache_ip, $data);
+                find_category_webpages($db, $account, $memcache_ip, $data, $smarty);
                 break;
             default:
                 $response = array(
@@ -2813,7 +2813,7 @@ function find_webpages($db, $account, $memcache_ip, $data) {
 }
 
 
-function find_product_webpages($db, $account, $memcache_ip, $data) {
+function find_product_webpages($db, $account, $memcache_ip, $data, $smarty) {
 
 
     $cache       = false;
@@ -2833,6 +2833,7 @@ function find_product_webpages($db, $account, $memcache_ip, $data) {
         return;
     }
 
+    //print_r($data);
 
     $where = sprintf("  and `Product Status` in ('Active','Discontinuing') ");
     switch ($data['parent']) {
@@ -2900,11 +2901,11 @@ function find_product_webpages($db, $account, $memcache_ip, $data) {
 
 
         $sql = sprintf(
-            "select `Product ID`,`Product Code`,`Product Name`,`Webpage Name`,`Product Current Key` from `Page Store Dimension`  left join `Product Dimension` on (`Page Parent Key`=`Product ID` and `Page Store Section Type`='Product')  where  `Product Code` like '%s%%' %s order by `Product Code` limit $max_results ",
+            "select `Product ID`,`Product Code`,`Product Name`,`Webpage Name`,`Product Current Key` from `Page Store Dimension`  left join `Product Dimension` on (`Webpage Scope Key`=`Product ID` and `Webpage Scope`='Product')  where  `Product Code` like '%s%%' %s order by `Product Code` limit $max_results ",
             $q, $where
         );
 
-        //print $sql;
+        // print $sql;
         if ($result = $db->query($sql)) {
             foreach ($result as $row) {
 
@@ -2948,13 +2949,40 @@ function find_product_webpages($db, $account, $memcache_ip, $data) {
 
 
         $results = array();
-        foreach ($candidates as $product_sku => $candidate) {
+        foreach ($candidates as $product_id => $candidate) {
 
-            $results[$product_sku] = array(
-                'code'            => $candidates_data[$product_sku]['Product Code'],
-                'description'     => $candidates_data[$product_sku]['Product Name'],
-                'value'           => $product_sku,
-                'formatted_value' => $candidates_data[$product_sku]['Product Code']
+            $product = get_object('Public_Product', $product_id);
+            $product->load_webpage();
+
+            //  print_r($data);
+
+
+            $results[$product_id] = array(
+                'code'            => $candidates_data[$product_id]['Product Code'],
+                'description'     => $candidates_data[$product_id]['Product Name'],
+                'value'           => $product_id,
+                'formatted_value' => $candidates_data[$product_id]['Product Code'],
+                'metadata'        => json_encode(
+                    array(
+                        'product_id'           => $product->id,
+                        'web_state'            => $product->get('Web State'),
+                        'price'                => $product->get('Price'),
+                        'rrp'                  => $product->get('RRP'),
+                        'header_text'          => '',
+                        'code'                 => $product->get('Code'),
+                        'name'                 => $product->get('Name'),
+                        'link'                 => $product->webpage->get('URL'),
+                        'webpage_code'         => $product->webpage->get('Webpage Code'),
+                        'webpage_key'          => $product->webpage->id,
+                        'image_src'            => $product->get('Image'),
+                        'image_mobile_website' => '',
+                        'image_website'        => '',
+                        'out_of_stock_class'   => $product->get('Out of Stock Class'),
+                        'out_of_stock_label'   => $product->get('Out of Stock Label'),
+                        'sort_code'            => $product->get('Code File As'),
+                        'sort_name'            => mb_strtolower($product->get('Product Name')),
+                    )
+                )
             );
 
         }
@@ -2979,7 +3007,9 @@ function find_product_webpages($db, $account, $memcache_ip, $data) {
 }
 
 
-function find_category_webpages($db, $account, $memcache_ip, $data) {
+function find_category_webpages($db, $account, $memcache_ip, $data, $smarty) {
+
+    include_once('utils/image_functions.php');
 
 
     $cache       = false;
@@ -3126,10 +3156,10 @@ function find_category_webpages($db, $account, $memcache_ip, $data) {
                     'Public'                  => $row['Product Category Public'],
                     'Webpage State'           => $row['Webpage State'],
                     'Category Parent Key'     => $row['Category Parent Key'],
-                    'Category Webpage Key'     => $row['Product Category Webpage Key'],
+                    'Category Webpage Key'    => $row['Product Category Webpage Key'],
                     'Category Main Image Key' => $row['Category Main Image Key'],
-                    'Webpage URL' => $row['Webpage URL'],
-                    'Webpage Code' => strtolower($row['Webpage Code']),
+                    'Webpage URL'             => $row['Webpage URL'],
+                    'Webpage Code'            => strtolower($row['Webpage Code']),
 
                 );
 
@@ -3225,6 +3255,50 @@ function find_category_webpages($db, $account, $memcache_ip, $data) {
 
             }
 
+            $html = '';
+            if (!empty($data['metadata']['splinter'])) {
+                switch ($data['metadata']['splinter']) {
+                    case 'see_also_item':
+
+                        $image_src =$image;
+
+
+                        if (preg_match('/id=(\d+)/', $image_src, $matches)) {
+                            $image_key = $matches[1];
+
+                            $image_mobile_website = create_cached_image($image_key, 320, 200);
+                            $image_website = create_cached_image($image_key, 432, 330, 'fit_highest');
+
+                        }else{
+                            $image_mobile_website=$image_src;
+                            $image_website=$image_src;
+                        }
+
+
+                        $see_also = array(
+                            'type'                 => 'category',
+                            'category_key'         => $category_key,
+                            'header_text'          => $candidates_data[$category_key]['Category Label'],
+                            'image_src'            => $image_src,
+                            'image_mobile_website' => $image_mobile_website,
+                            'image_website'        => $image_website,
+                            'webpage_key'          => $candidates_data[$category_key]['Category Webpage Key'],
+                            'webpage_code'         => strtolower($candidates_data[$category_key]['Webpage Code']),
+                            'category_code'        => $candidates_data[$category_key]['Category Code'],
+                            'number_products'      => $candidates_data[$category_key]['Products'],
+                            'link'                 =>  $candidates_data[$category_key]['Webpage URL'],
+
+                        );
+                        $smarty->assign('category_data', $see_also);
+                        $html .= $smarty->fetch('splinters/see_also_item.splinter.tpl');
+                        break;
+
+                }
+            }
+
+            //print_r($data);
+
+
             $results[$category_key] = array(
                 'code'            => $code,
                 'description'     => $description,
@@ -3232,15 +3306,16 @@ function find_category_webpages($db, $account, $memcache_ip, $data) {
                 'formatted_value' => $candidates_data[$category_key]['Category Code'],
                 'metadata'        => json_encode(
                     array(
-                        'key'   => $category_key,
-                        'code'=> $candidates_data[$category_key]['Category Code'],
-                        'title' => $candidates_data[$category_key]['Category Label'],
-                        'image' => $image,
-                        'number_products'=>$candidates_data[$category_key]['Products'],
-                        'category_webpage_key'=>$candidates_data[$category_key]['Category Webpage Key'],
-                        'category_key'=>$category_key,
-                        'category_webpage_code'=>$candidates_data[$category_key]['Webpage Code'],
-                        'category_webpage_link'=>$candidates_data[$category_key]['Webpage URL'],
+                        'html'=>$html,
+                        'key'                   => $category_key,
+                        'code'                  => $candidates_data[$category_key]['Category Code'],
+                        'title'                 => $candidates_data[$category_key]['Category Label'],
+                        'image'                 => $image,
+                        'number_products'       => $candidates_data[$category_key]['Products'],
+                        'category_webpage_key'  => $candidates_data[$category_key]['Category Webpage Key'],
+                        'category_key'          => $category_key,
+                        'category_webpage_code' => $candidates_data[$category_key]['Webpage Code'],
+                        'category_webpage_link' => $candidates_data[$category_key]['Webpage URL'],
                     )
                 )
             );

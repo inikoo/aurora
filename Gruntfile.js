@@ -35,12 +35,66 @@ module.exports = function (grunt) {
                 src: ['js/libs/jquery-2.2.1.js', 'js/libs/sha256.js', 'js/libs/aes.js', 'js/setup/login.setup.js'], dest: 'build/app/js/login.setup.min.js'
             }, setup: {
                 src: ['js/setup/setup.js'], dest: 'build/app/js/setup.min.js'
-            }, pweb_mobile: {
-                src: ['EcomB2B/theme_1/mobile/jquery.js','EcomB2B/theme_1/mobile/plugins.js','EcomB2B/theme_1/mobile/custom.js','EcomB2B/js/sweetalert.min.js','EcomB2B/theme_1/local/jquery-ui.js','EcomB2B/js/sha256.js',
-                'EcomB2B/theme_1/sky_forms/js/jquery.form.min.js','EcomB2B/theme_1/sky_forms/js/jquery.validate.min.js','EcomB2B/theme_1/sky_forms/js/additional-methods.min.js',
-                    'EcomB2B/js/aurora.js','EcomB2B/js/validation.js','EcomB2B/js/ordering.touch.js'
+            }, pweb_desktop: {
+                src: [
+                    'EcomB2B/theme_1/local/jquery.js',
+                    'EcomB2B/theme_1/mainmenu/customeUI.js',
+                    'EcomB2B/theme_1/mainmenu/sticky.js',
+                    'EcomB2B/theme_1/mainmenu/modernizr.custom.75180.js',
+                    'EcomB2B/js/fotorama.js',
+                    'EcomB2B/js/aurora.js',
 
-                ], dest: 'EcomB2B/js/mobile.min.js'
+
+                ], dest: 'EcomB2B/js/desktop.min.js'
+            }, pweb_desktop_logged_in: {
+                src: [
+
+                    'EcomB2B/js/aurora.logged_in.js',
+                    'EcomB2B/js/ordering.js',
+
+
+                ], dest: 'EcomB2B/js/desktop.logged_in.min.js',
+            }, pweb_desktop_forms: {
+                src: [
+                    'EcomB2B/theme_1/local/jquery-ui.js',
+                    'EcomB2B/theme_1/sky_forms/js/jquery.form.min.j',
+                    'EcomB2B/theme_1/sky_forms/js/jquery.validate.min.js',
+                    'EcomB2B/theme_1/sky_forms/js/additional-methods.min.js',
+                    'EcomB2B/js/sweetalert.min.js',
+                    'EcomB2B/js/jquery.form.min.js',
+                    'EcomB2B/js/sha256.js',
+                    'EcomB2B/js/fotorama.js',
+
+
+
+                ], dest: 'EcomB2B/js/desktop.forms.min.js'
+            }, pweb_desktop_basket: {
+                src: [
+                    'EcomB2B/js/basket.js',
+                ], dest: 'EcomB2B/js/desktop.basket.min.js'
+            }, pweb_desktop_checkout: {
+                src: [
+                    'EcomB2B/js/braintree.js',
+                    'EcomB2B/js/checkout.js',
+                ], dest: 'EcomB2B/js/desktop.checkout.min.js'
+            }, pweb_mobile: {
+                src: [
+                    'EcomB2B/theme_1/mobile/jquery.js',
+                    'EcomB2B/theme_1/mobile/plugins.js',
+                    'EcomB2B/theme_1/mobile/custom.js',
+                    'EcomB2B/js/sweetalert.min.js',
+                    'EcomB2B/theme_1/local/jquery-ui.js',
+                    'EcomB2B/js/sha256.js',
+                    'EcomB2B/theme_1/sky_forms/js/jquery.form.min.js',
+                    'EcomB2B/theme_1/sky_forms/js/jquery.validate.min.js',
+                    'EcomB2B/theme_1/sky_forms/js/additional-methods.min.js',
+                    'EcomB2B/js/aurora.js',
+                    'EcomB2B/js/validation.js',
+                    'EcomB2B/js/ordering.touch.js'
+
+                ], dest: 'EcomB2B/js/mobile.min.js',
+
+
             }
 
 
@@ -58,7 +112,8 @@ module.exports = function (grunt) {
                 options: {
                     // style: 'compressed'
                 }, files: {
-                    'EcomB2B/css/style.theme_1.EcomB2B.css': 'sass/style.theme_1.EcomB2B.scss',
+                    'EcomB2B/css/style.theme_1.EcomB2B.desktop.css': 'sass/style.theme_1.EcomB2B.scss',
+                    'EcomB2B/css/style.theme_1.EcomB2B.tablet.css': 'sass/style.theme_1.EcomB2B.tablet.scss',
 
                 }
             },
@@ -99,7 +154,12 @@ module.exports = function (grunt) {
 
             pweb: {
                 files: {
-                    'EcomB2B/css/style.theme_1.EcomB2B.min.css': ['EcomB2B/css/style.theme_1.EcomB2B.css'],
+                    'EcomB2B/css/desktop.min.css': [
+                        'EcomB2B/css/sweetalert.css',
+                        'EcomB2B/css/fontawesome-all.min.css',
+                        'EcomB2B/theme_1/sky_forms/css/sky-forms.css',
+                        'EcomB2B/css/style.theme_1.EcomB2B.desktop.css'],
+
                     'EcomB2B/css/mobile.min.css': [
                         'EcomB2B/css/sweetalert.css',
                         'EcomB2B/css/fontawesome-all.min.css',
@@ -108,7 +168,21 @@ module.exports = function (grunt) {
                         'EcomB2B/theme_1/mobile/framework.css',
                         'EcomB2B/theme_1/sky_forms/css/sky-forms.css',
                         'EcomB2B/theme_1/css/aurora.theme_1.EcomB2B.mobile.css',
-                    ]
+                    ],
+
+
+
+                'EcomB2B/css/tablet.min.css': [
+                        'EcomB2B/css/sweetalert.css',
+                        'EcomB2B/css/fontawesome-all.min.css',
+                        'EcomB2B/theme_1/tablet/style.css',
+                        'EcomB2B/theme_1/tablet/skin.css',
+                        'EcomB2B/theme_1/tablet/framework.css',
+                        'EcomB2B/theme_1/sky_forms/css/sky-forms.css',
+                        'EcomB2B/css/style.theme_1.EcomB2B.tablet.css'
+                    ],
+
+
 
 
                 }
@@ -293,7 +367,9 @@ module.exports = function (grunt) {
     grunt.registerTask('app', ['clean:app', 'imagemin', 'sass', 'concat', 'uglify', 'cssmin', 'copy:app']);
     grunt.registerTask('fork', ['clean:fork', 'copy:fork_stones', 'copy:fork']);
     grunt.registerTask('qfork', ['copy:fork']);
-    grunt.registerTask('pweb', ['sass:aurora_public', 'cssmin:pweb','uglify:pweb_mobile']);
+    grunt.registerTask('pweb', ['sass:aurora_public', 'cssmin:pweb','uglify:pweb_mobile',
+        'uglify:pweb_mobile','uglify:pweb_desktop','uglify:pweb_desktop_logged_in','uglify:pweb_desktop_forms','uglify:pweb_desktop_basket','uglify:pweb_desktop_checkout'
+    ]);
     grunt.registerTask('deploy_fork', ['clean:fork', 'copy:fork_stones', 'copy:fork', 'ssh_deploy:fork_external_libs', 'ssh_deploy:fork']);
     grunt.registerTask('deploy_qfork', ['copy:fork', 'ssh_deploy:fork']);
     grunt.registerTask('ecom', ['ssh_deploy:ecom']);

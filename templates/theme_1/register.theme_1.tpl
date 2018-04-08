@@ -12,7 +12,7 @@
 <body>
 {if $website->get('Website Registration Type')!='Closed'}
 
-    <div id="input_editor" class="hide" style="z-index:100;position:absolute;padding:10px;border:1px solid #ccc;background-color: #fff;width:560px">fa
+    <div id="input_editor" class="hide" style="z-index:100;position:absolute;padding:10px;border:1px solid #ccc;background-color: #fff;width:560px">
     <table style="width:100%;">
         <tr>
             <td >{t}Placeholder{/t}
@@ -200,7 +200,7 @@
                             <section>
                                 <label id="_email"  class="input " style="cursor:pointer" onclick="show_edit_input(this)">
 
-                                    <i   class="icon-append far envelope"  style="cursor:pointer" ></i>
+                                    <i   class="icon-append far fa-envelope"  style="cursor:pointer" ></i>
                                     <input class="register_field" type="email" name="email" id="_email_placeholder" placeholder="{$content._email_placeholder}">
                                     <b id="_email_tooltip" class="tooltip tooltip-bottom-right">{$content._email_tooltip}</b>
                                 </label>
@@ -208,7 +208,7 @@
 
                             <section>
                                 <label id="_password" class="input "   style="cursor:pointer" onclick="show_edit_input(this)">
-                                    <i  class="icon-append icon-lock"  style="cursor:pointer" ></i>
+                                    <i  class="icon-append far fa-lock style="cursor:pointer" ></i>
                                     <input class="register_field" type="password" name="password" id="_password_placeholder" placeholder="{$content._password_placeholder}" >
                                     <b id="_password_tooltip"  class="tooltip tooltip-bottom-right">{$content._password_tooltip}</b>
                                 </label>
@@ -216,7 +216,7 @@
 
                             <section>
                                 <label id="_password_confirm" class="input "   style="cursor:pointer" onclick="show_edit_input(this)">
-                                    <i  class="icon-append icon-lock"  style="cursor:pointer" ></i>
+                                    <i  class="icon-append far fa-lock"  style="cursor:pointer" ></i>
                                     <input class="register_field" type="password" name="password_confirm" id="_password_confirm_placeholder" placeholder="{$content._password_confirm_placeholder}" >
                                     <b id="_password_confirm_tooltip"  class="tooltip tooltip-bottom-right">{$content._password_confirm_tooltip}</b>
                                 </label>
@@ -227,7 +227,7 @@
 
                             <section>
                                 <label id="_mobile" class="input "   style="cursor:pointer" onclick="show_edit_input(this)">
-                                    <i class="icon-append fa fa-mobile" ></i>
+                                    <i class="icon-append far fa-mobile" ></i>
                                     <input class="register_field" type="text" name="mobile" id="_mobile_placeholder" placeholder="{$content._mobile_placeholder}">
                                     <b id="_mobile_tooltip"  class="tooltip tooltip-bottom-right">{$content._mobile_tooltip}</b>
                                 </label>
@@ -235,7 +235,7 @@
 
                             <section>
                                 <label id="_contact_name" class="input "   style="cursor:pointer" onclick="show_edit_input(this)">
-                                    <i   class="icon-append icon-user"  style="cursor:pointer" ></i>
+                                    <i   class="icon-append  far fa-user"  style="cursor:pointer" ></i>
 
                                     <input class="register_field" type="text" name="contact_name" id="_contact_name_placeholder" placeholder="{$content._contact_name_placeholder}">
                                     <b id="_contact_name_tooltip"  class="tooltip tooltip-bottom-right">{$content._contact_name_tooltip}</b>
@@ -245,7 +245,7 @@
                             <section>
                                 <label id="_company" class="input "   style="cursor:pointer" onclick="show_edit_input(this)">
 
-                                    <i  class="icon-append icon-briefcase"  style="cursor:pointer" ></i>
+                                    <i  class="icon-append far fa-briefcase"  style="cursor:pointer" ></i>
 
                                     <input class="register_field" type="text" name="company" id="_company_placeholder" placeholder="{$content._company_placeholder}">
                                     <b id="_company_tooltip"  class="tooltip tooltip-bottom-right">{$content._company_tooltip}</b>

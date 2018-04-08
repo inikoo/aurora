@@ -270,7 +270,7 @@
         </div>
     </div>
 
-    <a href="#" class="back-to-top-badge"><i class="ion-ios-arrow-up"></i></a>
+    <a href="#" class="back-to-top-badge"><i class="fas fa-arrow-circle-up"></i></a>
     <script>
 
         $( "#country_select" ).change(function() {
@@ -589,7 +589,7 @@
             </div>
         </div>
 
-        <a href="#" class="back-to-top-badge"><i class="ion-ios-arrow-up"></i></a>
+        <a href="#" class="back-to-top-badge"><i class="fas fa-arrow-circle-up"></i></a>
         <script>
 
             $( "#country_select" ).change(function() {
