@@ -39,14 +39,36 @@
     <script src="https://html5shim.googlecode.com/svn/trunk/html5.js"></script>
     <![endif]-->
     <link rel="canonical" href="{$webpage->get('URL')}"/>
-    <link rel="stylesheet" href="/css/fontawesome-all.min.css" type="text/css"/>
-    <link rel="stylesheet" href="css/style.theme_1.EcomB2B.css?v180404v11" type="text/css"/>
+
+    <link rel="stylesheet" href="css/desktop.min.css?v2" type="text/css"/>
+    <script src="/js/desktop.min.js"></script>
+    {if $logged_in}
+        <script src="/js/desktop_logged_in.min.js"></script>
+        {if $webpage->get('Webpage Code')=='basket.sys'}
+        <script src="/js/desktop.forms.min.js"></script>
+        <script src="/js/desktop.basket.min.js"></script>
+        {elseif $webpage->get('Webpage Code')=='checkout.sys'}
+        <script src="/js/desktop.forms.min.js"></script>
+        <script src="/js/desktop.checkout.min.js"></script>
+        {elseif $webpage->get('Webpage Code')=='profile.sys'}
+        <script src="/js/desktop.forms.min.js"></script>
+        <script src="/js/desktop.checkout.min.js"></script>
+        {elseif $webpage->get('Webpage Code')=='reset_pwd.sys'}
+        <script src="/js/desktop.forms.min.js"></script>
+        {/if}
+    {else}
+    {if $webpage->get('Webpage Code')=='register.sys' or  $webpage->get('Webpage Code')=='login.sys'}
+        <script src="/js/desktop.forms.min.js"></script>
+    {/if}
+    {/if}
 
 
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/simple-line-icons/2.4.1/css/simple-line-icons.css">
 
+
+    {*
 
     <script src="/theme_1/local/jquery.js"></script>
+
 
     <script src="/theme_1/local/jquery-ui.js"></script>
     <script src="/theme_1/sky_forms/js/jquery.form.min.js"></script>
@@ -60,12 +82,14 @@
     <script src="/theme_1/sky_formsjs/sky-forms-ie8.js"></script>
     <![endif]-->
 
+
     <script src="/js/sweetalert.min.js"></script>
     <script src="/theme_1/tooltips/jquery.darktooltip.js"></script>
+
     <script src="/theme_1/aninum/jquery.animateNumber.min.js"></script>
     <script src="/theme_1/animations/js/animations.min.js"></script>
     <script src="/theme_1/cubeportfolio/js/jquery.cubeportfolio.js"></script>
-    <script src="/theme_1/tabs/assets/js/responsive-tabs.min.js"></script>
+    checkout <script src="/theme_1/tabs/assets/js/responsive-tabs.min.js"></script>
 
 
     <script src="/theme_1/mainmenu/customeUI.js"></script>
@@ -75,16 +99,19 @@
 
     <script src="/js/jquery.form.min.js"></script>
     <script src="/js/sha256.js"></script>
-    <script src="/js/aurora.js?20180319"></script>
+
+    <script src="/js/aurora.js?20180319v2"></script>
     <script src="/js/validation.js"></script>
 
     <script src="/js/ordering.js?20180115v3"></script>
     <script src="/js/fotorama.js"></script>
 
-    <link rel="stylesheet" href="/website.color.EcomB2B.css.php?&theme=theme_1" type="text/css"/>
 
 
     <script src="/js/braintree.js"></script>
+*}
+
+    <link rel="stylesheet" href="/website.color.EcomB2B.css.php?&theme=theme_1" type="text/css"/>
 
 
     {if $smarty.server.SERVER_NAME!='ecom.bali' and $zendesk_chat_code!=''}

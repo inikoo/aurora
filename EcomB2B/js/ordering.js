@@ -571,3 +571,40 @@ function place_order(element) {
 }
 
 
+function validate_integer(value, min_value,max_value) {
+
+    if (!$.isNumeric(value)) {
+        return {
+            class: 'invalid', type: 'not_integer'
+        }
+    }
+
+    if (value > max_value) {
+        return {
+            class: 'invalid',
+
+            type: 'too_big'
+        }
+    }
+
+    if (value < min_value) {
+        return {
+            class: 'invalid',
+
+            type: 'too_small'
+        }
+    }
+    if (Math.floor(value) != value) {
+
+
+        return {
+            class: 'invalid',
+
+            type: 'not_integer'
+        }
+    }
+
+    return false
+}
+
+

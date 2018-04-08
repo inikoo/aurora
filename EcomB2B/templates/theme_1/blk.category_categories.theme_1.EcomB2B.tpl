@@ -34,13 +34,13 @@
 
                     <div class="section_items">
                         {foreach from=$section_data.items item=category_data}
-                            <div class="category_wrap" data-type="{$category_data.type}">
+                            <div class="category_wrap"">
                                 {if $category_data.type=='category'}
 
                                     <div class="category_block" style="position:relative" >
 
                                         <div class="item_header_text" > <a href="{$category_data.link}">{$category_data.header_text|strip_tags}</a></div>
-                                        <div class="wrap_to_center button"   >
+                                        <div  style="position: relative;top:-2px;left:3px" class="wrap_to_center "   >
                                             <a href="{$category_data.link}">
                                             <img src="{$category_data.image_website}"/>
                                             </a>

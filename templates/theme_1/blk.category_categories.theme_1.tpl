@@ -91,36 +91,10 @@
                         {foreach from=$section_data.items item=category_data}
                             <div class="category_wrap wrap" data-type="{$category_data.type}">
                                 {if $category_data.type=='category'}
-                                    <div class="category_block" style="position:relative" data-category_key="{$category_data.category_key}" data-category_webpage_key="{$category_data.webpage_key}" data-item_type="{$category_data.item_type}" data-link="{$category_data.link}" data-webpage_code="{$category_data.webpage_code}">
-                                        <div class="item_header_text" >{$category_data.header_text|strip_tags}</div>
-                                        <div class="wrap_to_center button"   >
-                                            <img src="{if $category_data.image_website==''}https://via.placeholder.com/150x120{else}EcomB2B/{$category_data.image_website}{/if}"
-                                                 data-image_mobile_website="{if $category_data.image_mobile_website==''}https://via.placeholder.com/150x120{else}{$category_data.image_mobile_website}{/if}"
-                                                 data-image_website="{if $category_data.image_website==''}https://via.placeholder.com/150x120{else}{$category_data.image_website}{/if}"  data-src="{if $category_data.image_src==''}https://via.placeholder.com/150x120{else}{$category_data.image_src}{/if}"
-                                            />
-                                        </div>
-                                    </div>
-                                    <div class="category_block item_overlay hide" >
-                                        <div class="item_header_text " contenteditable="true">{$category_data.header_text|strip_tags}</div>
-                                        <div class="button_container">
-                                            <div class="flex-item category_code">{$category_data.category_code}</div>
-                                            <div class="flex-item "> <span class="number_products">{$category_data.number_products}</span> <i class="fa fa-cube" aria-hidden="true"></i></div>
-                                            <div class="flex-item" style="border:none;width:40px"><i style="position: relative;top:-12px;margin-left: 5px" class="fa fa-window-close button close_category_block"></i></div>
-                                        </div>
-                                        <div class="button_container" >
-                                            <div class="flex-item full move_to_other_section button">{t}Move to other section{/t}</div>
-                                        </div>
-                                        <div class="button_container" >
-                                            <div class="flex-item full change_category_image button">
-                                                <form method="post" action="/ar_edit.php" enctype="multipart/form-data" novalidate>
-                                                    <input type="file" name="category_categories_category"  id="file_upload_{$category_data.category_key}" class="image_upload hide" multiple data-options='{ "scope":"category", "scope_key":"{$category_data.category_key}"}' />
-                                                    <label for="file_upload_{$category_data.category_key}">
-                                                        <i class="fa  fa-image fa-fw button" aria-hidden="true"></i> {t}Change image{/t}
-                                                    </label>
-                                                </form>
-                                            </div>
-                                        </div>
-                                    </div>
+
+
+                                    {include file='splinters/category.splinter.tpl'}
+
                                 {elseif $category_data.type=='text'}
                                         <div  class="panel_txt_control hide" style="padding:2px 10px;z-index:2001;position: absolute;top:-30px;width:100%;height: 30px;border:1px solid #ccc;background: #fff;border-bottom: none">
                                             <span class="hide"><i class="fa fa-expand" title="{t}Padding{/t}"></i> <input size="2" style="height: 16px;" value="20"></span>

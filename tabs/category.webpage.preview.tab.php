@@ -34,7 +34,7 @@ $website=get_object('Website',$webpage->get('Webpage Website Key'));
 
 
 
-if($webpage->get('Webpage Template Filename')=='category_categories'){
+if($webpage->get('Webpage Template Filename')=='category_categories' or $webpage->get('Webpage Template Filename')=='category_products'){
 
 
     if (!$webpage->id) {

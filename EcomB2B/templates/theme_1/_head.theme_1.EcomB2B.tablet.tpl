@@ -27,19 +27,10 @@
     <title>{$webpage->get('Webpage Browser Title')}</title>
     <meta name="description" content="{$webpage->get('Webpage Meta Description')}"/>
 
-    <link href="/css/sweetalert.css" rel="stylesheet">
+
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/Swiper/4.2.0/css/swiper.min.css">
+    <link href="/css/tablet.min.css?v6" rel="stylesheet" type="text/css">
 
-    <link rel="stylesheet" type="text/css" href="/theme_1/tablet/style.css?v=static">
-    <link rel="stylesheet" type="text/css" href="/theme_1/tablet/skin.css">
-    <link rel="stylesheet" type="text/css" href="/theme_1/tablet/framework.css?v=171011b">
-    <link rel="stylesheet" type="text/css" href="/theme_1/tablet/ionicons.min.css">
-    <link rel="stylesheet" type="text/css" href="/theme_1/sky_forms/css/sky-forms.css"  media="all">
-    <link rel="stylesheet" type="text/css" href="/theme_1/css/aurora.theme_1.EcomB2B.tablet.css?v=180321v6" />
-
-
-
-    <link rel="stylesheet" href="/css/fontawesome-all.min.css" type="text/css"/>
 
 
     <script src="/theme_1/tablet/jquery.js"></script>
@@ -55,7 +46,7 @@
     <script src="/theme_1/sky_forms/js/jquery.validate.min.js"></script>
     <script src="/theme_1/sky_forms/js/additional-methods.min.js"></script>
 
-    <script src="/js/aurora.js?20180319"></script>
+    <script src="/js/aurora.js?20180319v3"></script>
     <script src="/js/validation.js"></script>
 
     <script src="/js/ordering.touch.js?20180115"></script>

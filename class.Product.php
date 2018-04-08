@@ -1754,6 +1754,8 @@ class Product extends Asset {
             $webpage->update(array('Webpage State' => $_state), 'no_history');
         }
 
+        $this->update_webpages();
+
 
     }
 
@@ -2937,7 +2939,7 @@ class Product extends Asset {
                 $updated = $this->updated;
                 $this->update_historic_object();
                 $this->updated = $updated;
-
+                $this->update_webpages();
                 break;
 
             case 'Product Name':
@@ -2951,6 +2953,9 @@ class Product extends Asset {
                 $this->update_field($field, $value, $options);
                 $updated = $this->updated;
                 $this->update_historic_object();
+
+                $this->update_webpages();
+
                 $this->updated = $updated;
 
                 break;
@@ -2979,7 +2984,7 @@ class Product extends Asset {
                     ),
 
                 );
-
+                $this->update_webpages();
                 break;
             case 'Product Label in Family':
 
@@ -2988,7 +2993,7 @@ class Product extends Asset {
                 );// Migration
 
                 $this->update_field($field, $value, $options);
-
+                $this->update_webpages();
                 break;
 
 
@@ -3031,7 +3036,7 @@ class Product extends Asset {
                 }
 
                 $this->updated = $updated;
-
+                $this->update_webpages();
                 break;
 
 
@@ -3054,7 +3059,7 @@ class Product extends Asset {
                     );
 
                 }
-
+                $this->update_webpages();
 
                 break;
 
@@ -3103,6 +3108,8 @@ class Product extends Asset {
                     ),
 
                 );
+
+                $this->update_webpages();
 
 
                 $this->update_historic_object();
@@ -3223,29 +3230,58 @@ class Product extends Asset {
 
                 if ($value) {
 
-                    include_once 'class.Category.php';
-                    $family = new Category($value);
-                    $family->associate_subject($this->id, false, '', 'skip_direct_update');
+                     if ($this->data['Product Family Category Key'] != $value) {
 
-                    $sql = sprintf(
-                        "SELECT C.`Category Key` FROM `Category Dimension` C LEFT JOIN `Category Bridge` B ON (C.`Category Key`=B.`Category Key`) WHERE `Category Root Key`=%d AND `Subject Key`=%d AND `Subject`='Category' AND `Category Branch Type`='Head'",
+                         $old_family=get_object('Category',$this->data['Product Family Category Key']);
 
-                        $this->data['Store Department Category Key'], $family->id
-                    );
-                    //print $sql;
-                    $department_key = '';
-                    if ($result = $this->db->query($sql)) {
-                        if ($row = $result->fetch()) {
-                            $department_key = $row['Category Key'];
-                        }
-                    } else {
-                        print_r($error_info = $this->db->errorInfo());
-                        exit;
-                    }
-                    $this->update_field(
-                        'Product Department Category Key', $department_key, 'no_history'
-                    );
+                         $family=get_object('Category',$value);
 
+                         $family->associate_subject($this->id, false, '', 'skip_direct_update');
+
+
+                         $sql = sprintf(
+                             "SELECT C.`Category Key` FROM `Category Dimension` C LEFT JOIN `Category Bridge` B ON (C.`Category Key`=B.`Category Key`) WHERE `Category Root Key`=%d AND `Subject Key`=%d AND `Subject`='Category' AND `Category Branch Type`='Head'",
+
+                             $this->data['Store Department Category Key'], $family->id
+                         );
+                         //print $sql;
+                         $department_key = '';
+                         if ($result = $this->db->query($sql)) {
+                             if ($row = $result->fetch()) {
+                                 $department_key = $row['Category Key'];
+                             }
+                         } else {
+                             print_r($error_info = $this->db->errorInfo());
+                             exit;
+                         }
+                         $this->update_field(
+                             'Product Department Category Key', $department_key, 'no_history'
+                         );
+
+
+                         if($old_family->id){
+                             $old_website=get_object('Webpage',$old_family->get('Product Category Webpage Key'));
+                             if($old_website->id){
+                                 $old_website->reindex_items();
+                                 if ($old_website->updated) {
+                                     $old_website->publish();
+                                 }
+                             }
+                         }
+
+                         if($family->id){
+                             $website=get_object('Webpage',$family->get('Product Category Webpage Key'));
+                             if($website->id){
+                                 $website->reindex_items();
+                                 if ($website->updated) {
+                                     $website->publish();
+                                 }
+                             }
+                         }
+
+
+
+                     }
 
                 } else {
                     if ($this->data['Product Family Category Key'] != '') {
@@ -3843,6 +3879,26 @@ class Product extends Asset {
 
 
         return $next_deliveries_data;
+
+    }
+
+    function update_webpages(){
+
+        $sql=sprintf('select `Website Webpage Scope Webpage Key`  from `Website Webpage Scope Map` where `Website Webpage Scope Scope`="Product" and `Website Webpage Scope Scope Key`=%d ',
+            $this->id
+            );
+
+        if ($result=$this->db->query($sql)) {
+        		foreach ($result as $row) {
+                   $webpage=get_object('Webpage',$row['Website Webpage Scope Webpage Key']);
+                    $webpage->reindex_items();
+        		}
+        }else {
+        		print_r($error_info=$this->db->errorInfo());
+        		print "$sql\n";
+        		exit;
+        }
+
 
     }
 

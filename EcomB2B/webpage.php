@@ -38,7 +38,8 @@ if ($webpage->id) {
         $content         = $offline_webpage->get('Content Data');
         $template        = $theme.'/offline.'.$theme.'.'.$website->get('Website Type').$template_suffix.'.tpl';
 
-    } elseif ($webpage->get('Webpage Template Filename') == 'Favourites') {
+    }
+    elseif ($webpage->get('Webpage Template Filename') == 'Favourites') {
         if (!$logged_in) {
             header('Location: /index.php');
             exit;
@@ -81,7 +82,8 @@ if ($webpage->id) {
 
         $template = $theme.'/favourites.'.$theme.'.'.$website->get('Website Type').$template_suffix.'.tpl';
 
-    } elseif ($webpage->get('Webpage Template Filename') == 'register') {
+    }
+    elseif ($webpage->get('Webpage Template Filename') == 'register') {
 
         if ($logged_in) {
             header('Location: /index.php');
@@ -119,7 +121,8 @@ if ($webpage->id) {
 
         $template = $theme.'/register.'.$theme.'.'.$website->get('Website Type').$template_suffix.'.tpl';
 
-    } elseif ($webpage->get('Webpage Template Filename') == 'login') {
+    }
+    elseif ($webpage->get('Webpage Template Filename') == 'login') {
 
         $redirect = '';
         if (!empty($_SERVER['HTTP_REFERER'])) {
@@ -164,7 +167,8 @@ if ($webpage->id) {
 
 
         $template = $theme.'/login.'.$theme.'.'.$website->get('Website Type').$template_suffix.'.tpl';
-    } elseif ($webpage->get('Webpage Template Filename') == 'search') {
+    }
+    elseif ($webpage->get('Webpage Template Filename') == 'search') {
 
         if (!empty($_REQUEST['q'])) {
             $search_query = $_REQUEST['q'];
@@ -176,7 +180,8 @@ if ($webpage->id) {
 
 
         $template = $theme.'/search.'.$theme.'.'.$website->get('Website Type').$template_suffix.'.tpl';
-    } elseif ($webpage->get('Webpage Template Filename') == 'welcome') {
+    }
+    elseif ($webpage->get('Webpage Template Filename') == 'welcome') {
 
 
 
@@ -188,7 +193,8 @@ if ($webpage->id) {
 
         $template = $theme.'/webpage_blocks.'.$theme.'.'.$website->get('Website Type').$template_suffix.'.tpl';
 
-    } elseif ($webpage->get('Webpage Template Filename') == 'categories_showcase') {
+    }
+    elseif ($webpage->get('Webpage Template Filename') == 'categories_showcase') {
 
         include_once 'class.Public_Category.php';
         $category = new Public_Category($webpage->get('Webpage Scope Key'));
@@ -199,7 +205,8 @@ if ($webpage->id) {
 
 
         $template = $theme.'/categories_showcase.'.$theme.'.'.$website->get('Website Type').$template_suffix.'.tpl';
-    } elseif ($webpage->get('Webpage Template Filename') == 'products_showcase') {
+    }
+    elseif ($webpage->get('Webpage Template Filename') == 'products_showcase') {
 
         include_once 'class.Public_Category.php';
         include_once 'class.Public_Product.php';
@@ -426,7 +433,8 @@ if ($webpage->id) {
         $template = $theme.'/products_showcase.'.$theme.'.'.$website->get('Website Type').$template_suffix.'.tpl';
 
 
-    } elseif ($webpage->get('Webpage Template Filename') == 'product') {
+    }
+    elseif ($webpage->get('Webpage Template Filename') == 'product') {
 
         include_once 'class.Public_Product.php';
 
@@ -474,13 +482,16 @@ if ($webpage->id) {
         $template = $theme.'/product.'.$theme.'.'.$website->get('Website Type').$template_suffix.'.tpl';
 
 
-    } elseif ($webpage->get('Webpage Template Filename') == 'reset_password') {
+    }
+    elseif ($webpage->get('Webpage Template Filename') == 'reset_password') {
         include 'reset_password.inc.php';
         $template = $theme.'/reset_password.'.$theme.'.'.$website->get('Website Type').$template_suffix.'.tpl';
 
-    } elseif ($webpage->get('Webpage Template Filename') == 'not_found') {
+    }
+    elseif ($webpage->get('Webpage Template Filename') == 'not_found') {
         $template = $theme.'/not_found.'.$theme.'.'.$website->get('Website Type').$template_suffix.'.tpl';
-    } elseif ($webpage->get('Webpage Template Filename') == 'checkout') {
+    }
+    elseif ($webpage->get('Webpage Template Filename') == 'checkout') {
 
 
         if (isset($order) and $order->id) {
@@ -508,7 +519,8 @@ if ($webpage->id) {
             $template = $theme.'/checkout_no_order.'.$theme.'.'.$website->get('Website Type').$template_suffix.'.tpl';
         }
 
-    } elseif ($webpage->get('Webpage Template Filename') == 'profile') {
+    }
+    elseif ($webpage->get('Webpage Template Filename') == 'profile') {
 
         if (!$logged_in) {
             header('Location: /login.sys?ref=profile');
@@ -550,7 +562,13 @@ if ($webpage->id) {
         $template = $theme.'/profile.'.$theme.'.'.$website->get('Website Type').$template_suffix.'.tpl';
 
 
-    } else {
+    }
+    elseif ($webpage->get('Webpage Template Filename') == 'category_products') {
+
+
+        $template = $theme.'/webpage_blocks.'.$theme.'.'.$website->get('Website Type').$template_suffix.'.tpl';
+    }
+    else {
 
 
         if ($webpage->get('Webpage Code') == 'thanks.sys') {
@@ -613,7 +631,8 @@ if ($webpage->id) {
             }
 
 
-        } elseif ($webpage->get('Webpage Code') == 'basket.sys') {
+        }
+        elseif ($webpage->get('Webpage Code') == 'basket.sys') {
 
 
             if (!$logged_in) {
@@ -660,6 +679,9 @@ if ($webpage->id) {
 
 
         }
+
+
+
 
 
         $template = $theme.'/webpage_blocks.'.$theme.'.'.$website->get('Website Type').$template_suffix.'.tpl';

@@ -14,17 +14,13 @@
 
 
 
-<div class="hide">
-    <span class="button" style="position: relative;top: 5px; left:20px;"><i class="fas fa-plus "></i> {t}Add category{/t}</span> <span class="button" style="margin-left:20px;position: relative;top: 5px; left:20px;"><i
-                class="fas fa-trash-alt "></i> {t}Delete this section{/t}</span>
-</div>
 
 
 <div id="block_{$key}" data-block_key="{$key}" block="{$data.type}" class="{$data.type} _block {if !$data.show}hide{/if}" top_margin="{$top_margin}" bottom_margin="{$bottom_margin}"
      style="padding-top:{$top_margin}px;padding-bottom:{$bottom_margin}px">
 
 
-    <div class="products {if !$data.item_headers}no_items_header{/if}"  data-sort="{$data.sort}" >
+    <div class="products  {if !$data.item_headers}no_items_header{/if}"  data-sort="{$data.sort}" >
     {foreach from=$data.items item=item}
 
 
@@ -88,10 +84,10 @@
 
 
                     {if $item.web_state=='Out of Stock'}
-                        <div class="ordering log_in can_not_order {$item.out_of_stock_class} ">
+                        <div class="ordering log_in can_not_order  out_of_stock_row  {$item.out_of_stock_class} ">
 
                             <span class="product_footer label ">{$item.out_of_stock_label}</span>
-                            <span class="product_footer reminder"><i class="fa fa-envelope" aria-hidden="true"></i>  </span>
+                            <span class="product_footer reminder"><i class="fa fa-envelope hide" aria-hidden="true"></i>  </span>
 
 
                         </div>
@@ -154,7 +150,7 @@
     {/foreach}
     </div>
 
-
+    <div style="clear:both"></div>
 </div>
 
 

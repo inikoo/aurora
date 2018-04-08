@@ -87,9 +87,9 @@
             {if $block.sort=='Manual'}<i class="far fa-hand-heart"></i> <span>{t}Hand picked sort{/t}</span>{elseif $block.sort=='Code'}<i class="far fa-sort-numeric-down"></i> <span title="{t}Sort by code 0-9 (ascending){/t}">{t}Code{/t}</span>{elseif $block.sort=='Code_desc'}<i class="far fa-sort-numeric-up"></i> <span title="{t}Sort by code 9-0 (descending){/t}">{t}Code{/t}</span>{elseif $block.sort=='Name'}<i class="far fa-sort-alpha-up"></i> <span title="{t}Sort by name a-z (ascending){/t}">{t}Name{/t}</span>{/if}
         </span>
 
-        <span onclick="show_category_products_items_showcase(this)" class="padding_left_20 unselectable button {if $block.new_first}very_discreet"> <i class="fas fa-seedling"></i> {t}New first{/t}</span>
+        <span onclick="show_category_products_items_showcase(this)" class="hide padding_left_20 unselectable button {if $block.new_first}very_discreet{/if}"> <i class="fas fa-seedling"></i> {t}New first{/t}</span>
 
-        <span onclick="show_category_products_items_showcase(this)" class="padding_left_20 unselectable button"> <i class="fas fa-ban"></i> {t}No stock last{/t}</span>
+        <span onclick="show_category_products_items_showcase(this)" class="hide padding_left_20 unselectable button"> <i class="fas fa-ban"></i> {t}No stock last{/t}</span>
 
 
 
@@ -97,8 +97,8 @@
 
 
     <div style="clear: both"></div>
+    </div>
 </div>
-
 <script>
 
 

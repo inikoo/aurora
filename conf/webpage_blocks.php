@@ -51,7 +51,7 @@ function get_webpage_blocks($theme = '') {
             'bottom_margin'=>0,
             'height'=>'200',
             'images'=>array(),
-            'text'=>array()
+            'texts'=>array()
 
         ),
 

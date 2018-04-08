@@ -33,7 +33,7 @@
                                     <label class="label col col-4">{$content._email_label}</label>
                                     <div class="col col-8">
                                         <label class="input">
-                                            <i class="icon-append icon-user"></i>
+                                            <i class="icon-append far fa-envelope"></i>
                                             <input id="handle" type="email" name="email">
                                         </label>
                                     </div>
@@ -45,7 +45,7 @@
                                     <label class="label col col-4">{$content._password_label}</label>
                                     <div class="col col-8">
                                         <label class="input">
-                                            <i class="icon-append icon-lock"></i>
+                                            <i class="icon-append far fa-lock"></i>
                                             <input id="pwd" type="password" name="password">
                                         </label>
                                         <div><span id="open_recovery" class="like_link">{$content._forgot_password_label}</span></div>
@@ -78,7 +78,7 @@
                             <section>
                                 <label class="label"{$content._email_recovery_label}</label>
                                 <label class="input">
-                                    <i class="icon-append fa fa-envelope"></i>
+                                    <i class="icon-append far fa-envelope"></i>
                                     <input type="email" name="email" id="recovery_email">
                                 </label>
                             </section>

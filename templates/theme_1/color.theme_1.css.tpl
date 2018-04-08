@@ -67,13 +67,7 @@ background-color: {$primary_color};
 	background: rgba(49, 131, 215, 0.9);
 }
 
-.features_sec2 {
-	background-color: {$primary_color};
-}
 
-.title1 .text{
-    background: {$primary_color};
-}
 
 .site_wrapper .ciref:hover,
 .site_wrapper .ciref.active {
@@ -298,9 +292,7 @@ background-color: {$primary_color};
 .stcode_title7 .line{
     background: {$primary_color};
 }
-.stcode_title12 h2{
-	color: {$primary_color};
-}
+
 
 .button.transp2 {
 	background: {$primary_color};

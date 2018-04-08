@@ -110,7 +110,7 @@
                                 <input type="number" min="0" value="{$quantity_ordered}" class="needsclick order_qty">
                                 <i onclick="save_item_qty_change(this)" style="display:none" class="ordering_button save far fa-save fa-fw color-blue-dark"></i>
                                 <i onclick="save_item_qty_change(this)" class="ordering_button add_one fa fa-fw  fa-plus-circle color-green-dark"></i>
-                            </div>
+                                </div>
                             {/if}
 
                             {/if}
@@ -132,7 +132,7 @@
         </div>
     </div>
 
-    <a href="#" class="back-to-top-badge"><i class="ion-ios-arrow-up"></i></a>
+    <a href="#" class="back-to-top-badge"><i class="fas fa-arrow-circle-up"></i></a>
 
     
 </div>
