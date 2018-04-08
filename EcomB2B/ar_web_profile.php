@@ -238,7 +238,7 @@ function contact_details($db, $data, $customer, $editor) {
 
     }
 
-    print_r($update_data);
+    //print_r($update_data);
 
     $customer->editor = $editor;
     $customer->update($update_data);
