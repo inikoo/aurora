@@ -2518,9 +2518,9 @@ console.log($(element))
 
 
 
-    $(document).on( "click", ".category_wrap .txt", function() {
+    $(document).on( "click", ".wrap .txt", function() {
 
-        edit_panel_text($(this).closest('.category_wrap'))
+        edit_panel_text($(this).closest('.wrap'))
 
     })
 
