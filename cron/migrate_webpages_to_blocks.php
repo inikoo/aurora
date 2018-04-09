@@ -56,7 +56,7 @@ function migrate_families() {
         foreach ($result as $row3) {
 
 
-           //   print_r($row3);
+              print_r($row3);
 
             $webpage = get_object('Webpage', $row3['Page Key']);
 
@@ -527,7 +527,7 @@ function migrate_families() {
                 'old_data' => $content_data
             );
 
-            if (count($related_products) > 0 and false) {
+            if (count($related_products) > 0) {
 
                 switch ($row3['Webpage Website Key']) {
                     case 12:
@@ -585,7 +585,7 @@ function migrate_families() {
             }
 
 
-            if (count($see_also) > 0 and false) {
+            if (count($see_also) > 0 ) {
 
                 switch ($row3['Webpage Website Key']) {
                     case 12:
