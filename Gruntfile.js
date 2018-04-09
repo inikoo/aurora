@@ -105,6 +105,7 @@ module.exports = function (grunt) {
             }, pweb_mobile_checkout: {
                 src: [
                     'EcomB2B/js/braintree.js',
+                    'EcomB2B/js/checkout.js',
                 ], dest: 'EcomB2B/js/mobile.checkout.min.js'
 
             }, pweb_tablet: {
