@@ -496,17 +496,7 @@ function migrate_families() {
 
             $new_content_data = array(
                 'blocks'   => array(
-                    array(
-                        'type'          => 'blackboard',
-                        'label'         => _('Blackboard'),
-                        'icon'          => 'fa-image',
-                        'show'          => 1,
-                        'top_margin'    => 20,
-                        'bottom_margin' => 0,
-                        'height'        => $blackboard_height,
-                        'images'        => $images,
-                        'texts'         => $texts
-                    ),
+                  
                     array(
                         'type'              => 'category_products',
                         'label'             => _('Family'),
@@ -524,7 +514,7 @@ function migrate_families() {
                 'old_data' => $content_data
             );
 
-            if (count($related_products) > 0) {
+            if (count($related_products) > 0 and false) {
 
                 switch ($row3['Webpage Website Key']) {
                     case 12:
@@ -582,7 +572,7 @@ function migrate_families() {
             }
 
 
-            if (count($see_also) > 0) {
+            if (count($see_also) > 0 and false) {
 
                 switch ($row3['Webpage Website Key']) {
                     case 12:
