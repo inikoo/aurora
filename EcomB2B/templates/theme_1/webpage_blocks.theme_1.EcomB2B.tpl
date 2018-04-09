@@ -39,7 +39,18 @@
                 </div>
             {/if}
 
-
+            {if isset($discounts)}
+                <div class="discounts" style="">
+                    {foreach from=$discounts.deals item=deal_data }
+                    <div class="discount_card" key="{$deal_data.key}" >
+                        <div class="discount_icon" style="">{$deal_data.icon}</div>
+                        <span contenteditable="true" class="discount_name">{$deal_data.name}</span><br/>
+                        <span contenteditable="true"  class="discount_term">{$deal_data.term}</span>
+                        <span contenteditable="true"  class="discount_allowance">{$deal_data.allowance}</span>
+                    </div>
+                    {/foreach}<div style="clear:both"></div>
+                </div>
+            {/if}
             {assign "with_iframe" 0}
             {assign "with_product_block" false}
             {foreach from=$content.blocks item=$block key=key}

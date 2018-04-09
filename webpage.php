@@ -10,6 +10,8 @@
 */
 
 include_once 'common.php';
+include_once 'utils/object_functions.php';
+
 include_once 'class.Public_Webpage.php';
 include_once 'class.Public_Store.php';
 include_once 'class.Public_Website.php';
@@ -106,6 +108,8 @@ $smarty->assign('template', $webpage->get('Webpage Template Filename'));
 
 
 $smarty->assign('navigation', $webpage->get('Navigation Data'));
+$smarty->assign('discounts', $webpage->get('Discounts'));
+
 
 $smarty->assign('poll_queries', $website->get_poll_queries($webpage));
 

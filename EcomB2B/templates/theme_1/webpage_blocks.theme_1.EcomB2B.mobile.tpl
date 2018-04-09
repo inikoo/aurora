@@ -15,7 +15,7 @@
     <div id="page-content" class="page-content">
         <div id="page-content-scroll" class="header-clear"><!--Enables this element to be scrolled -->
             {if $navigation.show}
-                <div class="menu-bar" style="margin:0px;height:50px;position: relative;top:-5px;border-bottom:1px solid #ccc">
+                <div class="menu-bar" style="margin:0px;height:55px;;border-bottom:1px solid #ccc">
                     <em class="menu-bar-text-1   ">
                         {foreach from=$navigation.breadcrumbs item=$breadcrumb name=breadcrumbs}
                             <span class="breadcrumbs"><a href="{$breadcrumb.link}"style="color:#1f2f1f" title="{$breadcrumb.title}">{$breadcrumb.label}</a> {if !$smarty.foreach.breadcrumbs.last}<i class="fas padding_left_10 padding_right_10 fa-angle-double-right"></i>{/if}</span>
@@ -24,7 +24,19 @@
                     <em class="menu-bar-text-2   " >
                         {if $navigation.prev}<a style="color:#1f2f1f" href="{$navigation.prev.link}" title="{$navigation.prev.title}"><i class="fas fa-arrow-left"></i></a>{/if} {if $navigation.next}<a style="color:#1f2f1f" href="{$navigation.next.link}" title="{$navigation.next.title}"><i style="margin-left:20px" class="fas fa-arrow-right next"></i></a>{/if}
                     </em>
-                    <div class="menu-bar-title" style="position: relative;"></div>
+                    <div class="menu-bar-title" style=""></div>
+                </div>
+            {/if}
+            {if isset($discounts)}
+                <div class="discounts" style="">
+                    {foreach from=$discounts.deals item=deal_data }
+                    <div class="discount_card" key="{$deal_data.key}" >
+                        <div class="discount_icon" style="">{$deal_data.icon}</div>
+                        <span contenteditable="true" class="discount_name">{$deal_data.name}</span><br/>
+                        <span contenteditable="true"  class="discount_term">{$deal_data.term}</span>
+                        <span contenteditable="true"  class="discount_allowance">{$deal_data.allowance}</span>
+                    </div>
+                    {/foreach}<div style="clear:both"></div>
                 </div>
             {/if}
             {assign "with_iframe" 0}

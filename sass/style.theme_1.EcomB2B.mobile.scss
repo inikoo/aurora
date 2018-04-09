@@ -430,3 +430,58 @@ div.blk_images.template_2 figure{
 div.blk_images.template_3 figure{
 	width: calc(100% / 2 * 1);
 }
+
+
+
+
+.discounts{
+	width: 100%;border-bottom: 1px solid #ccc;
+	display: flex;
+	font-size: 90%;
+	line-height: 120%;
+	.discount_card{
+		color:#555;
+		flex-grow:1;
+		padding:4px 5px 4px 8px;
+
+
+	}
+
+	.discount_icon{
+		margin-right: 5px;float:left;font-size:20px;height: 30px;line-height: 30px;
+		i{padding-bottom: 2px}
+	}
+
+	.discount_card .discount_name{
+		font-size: 90%;color:#333
+	}
+
+	.discount_card  .discount_allowance{
+		font-weight: 800;
+	}
+
+}
+
+.store-item-list span u{
+	font-weight: normal;
+	margin-top:-25px
+}
+
+.go_product{
+	position: absolute;top:2px;left: 145px;color:#777
+}
+
+.log_out_prod_label{
+	margin-top: 5px;
+}
+
+.log_out_prod_links{
+
+	display: flex;margin-top: 20px;
+	div{
+		flex-grow:1
+	}
+	span{
+		border:1px solid #ccc;padding: 5px 10px
+	}
+}

@@ -9384,18 +9384,25 @@ section.product_tabs input[type=radio]:checked + label + div {
   z-index: 100;
   position: relative; }
 
-.discount_card {
-  border: 1px solid #ccc;
-  width: 300px;
-  margin-left: 10px;
-  float: right;
-  padding: 2px 4px; }
-
-.discount_card .discount_name {
-  font-size: 90%; }
-
-.discount_card .discount_allowance {
-  font-weight: 800; }
+.discounts {
+  width: 100%;
+  border-bottom: 1px solid #ccc;
+  display: flex; }
+  .discounts .discount_card {
+    flex-grow: 1;
+    padding: 2px 20px; }
+  .discounts .discount_icon {
+    position: relative;
+    top: 4px;
+    margin-right: 10px;
+    float: left;
+    font-size: 30px;
+    height: 100%;
+    line-height: 30px; }
+  .discounts .discount_card .discount_name {
+    font-size: 90%; }
+  .discounts .discount_card .discount_allowance {
+    font-weight: 800; }
 
 .parent_up {
   font-weight: 800;
