@@ -66,7 +66,25 @@ if ($state['_object']->get('Webpage Template Filename') == 'products_showcase' o
     // print_r( $webpage->get('Content Data'));
 
 
-    $html = $smarty->fetch('webpage_preview.tpl');
+
+    $html='';
+    if($webpage->get('Webpage Scope')=='Category Categories' or $webpage->get('Webpage Scope')=='Category Products' ){
+
+        $scope=get_object('Category',$webpage->get('Webpage Scope Key'));
+
+
+        if($scope->get('Product Category Public')=='No'){
+
+            if ($scope->get('Product Category Public')=='No') {
+                $smarty->assign('offline', true);
+
+                $html = '<div style="background-color: tomato;color:whitesmoke;padding:5px 20px"><h1>'._('Category not public, webpage offline').'</h1></div>';
+            }
+        }
+
+    }
+
+    $html.= $smarty->fetch('webpage_preview.tpl');
 
 }
 

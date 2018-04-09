@@ -51,9 +51,14 @@ $subject_formatted_value = _('Products');
 $subject_render          = true;
 
 
-$category_fields = array(
 
-    array(
+
+
+$category_fields=array();
+
+
+if($object->get('Product Category Public')=='Yes'){
+    $category_fields[]=array(
         'label' => _('Webpage state'),
         'class' => 'operations',
 
@@ -117,8 +122,12 @@ $category_fields = array(
 
             )
         )
-    ),
-    array(
+    );
+}
+
+
+
+    $category_fields[]=array(
         'label'      => _('Webpage'),
         'show_title' => true,
         'fields'     => array(
@@ -190,71 +199,35 @@ $category_fields = array(
             */
 
         )
-    ),
+    );
 
 
-);
 
 
-$template_field = array(
+
+if($website->get('Website Theme')!='theme_1') {
 
 
-    array(
-        'label'      => _('Template'),
-        'show_title' => true,
-        'fields'     => array(
-
-
-            array(
-                'edit' => ($edit ? 'option' : ''),
-
-                'id'              => 'Webpage_Template',
-                'value'           => $object->get('Category Webpage Template'),
-                'formatted_value' => $object->get('Webpage Template'),
-                'options'         => $template_options,
-                'label'           => _('Template'),
-                'invalid_msg'     => get_invalid_message('string'),
-                'required'        => true,
-                'type'            => 'value'
-            ),
-
-
-        )
-    ),
-
-
-);
-
-
-if ($object->get('Category Subject') == 'Product') {
-
-
-    $template_fields = array(
+    $template_field = array(
 
 
         array(
-            'label'      => _('Template settings'),
+            'label'      => _('Template'),
             'show_title' => true,
             'fields'     => array(
 
 
                 array(
-                    'id'              => 'Webpage_Related_Products',
-                    'edit'            => 'webpage_related_products',
-                    'value'           => '',
-                    'formatted_value' => $object->get('Webpage Related Products'),
-                    'label'           => _('Related products links'),
-                    'required'        => false,
-                    'type'            => ''
-                ),
-                array(
-                    'id'              => 'Webpage_See_Also',
-                    'edit'            => 'webpage_see_also',
-                    'value'           => '',
-                    'formatted_value' => $object->get('Webpage See Also'),
-                    'label'           => _('See also links'),
-                    'required'        => false,
-                    'type'            => ''
+                    'edit' => ($edit ? 'option' : ''),
+
+                    'id'              => 'Webpage_Template',
+                    'value'           => $object->get('Category Webpage Template'),
+                    'formatted_value' => $object->get('Webpage Template'),
+                    'options'         => $template_options,
+                    'label'           => _('Template'),
+                    'invalid_msg'     => get_invalid_message('string'),
+                    'required'        => true,
+                    'type'            => 'value'
                 ),
 
 
@@ -263,14 +236,55 @@ if ($object->get('Category Subject') == 'Product') {
 
 
     );
-} else {
-    $template_fields = array();
+
+
+    if ($object->get('Category Subject') == 'Product') {
+
+
+        $template_fields = array(
+
+
+            array(
+                'label'      => _('Template settings'),
+                'show_title' => true,
+                'fields'     => array(
+
+
+                    array(
+                        'id'              => 'Webpage_Related_Products',
+                        'edit'            => 'webpage_related_products',
+                        'value'           => '',
+                        'formatted_value' => $object->get('Webpage Related Products'),
+                        'label'           => _('Related products links'),
+                        'required'        => false,
+                        'type'            => ''
+                    ),
+                    array(
+                        'id'              => 'Webpage_See_Also',
+                        'edit'            => 'webpage_see_also',
+                        'value'           => '',
+                        'formatted_value' => $object->get('Webpage See Also'),
+                        'label'           => _('See also links'),
+                        'required'        => false,
+                        'type'            => ''
+                    ),
+
+
+                )
+            ),
+
+
+        );
+    } else {
+        $template_fields = array();
+    }
+
+
+    $category_fields = array_merge(
+        $category_fields, $template_field, $template_fields
+    );
+
 }
-
-
-$category_fields = array_merge(
-    $category_fields, $template_field, $template_fields
-);
 
 
 $export_operations = array(

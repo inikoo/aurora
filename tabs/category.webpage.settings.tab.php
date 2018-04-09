@@ -21,14 +21,13 @@ include_once 'conf/object_fields.php';
 $category = $state['_object'];
 
 
-
-if ($category->get('Product Category Public')=='No') {
+/*
     $html = '<div style="padding:40px">'._("This category is not public").'</div>';
 
     return;
 }
 
-
+*/
 
 
 $webpage=$category->get_webpage();
@@ -88,6 +87,12 @@ $smarty->assign('object_fields', $object_fields);
 $smarty->assign('state', $state);
 $smarty->assign('object', $category);
 
-$html = $smarty->fetch('edit_object.tpl');
+if ($category->get('Product Category Public')=='No') {
+
+    $html = '<div style="background-color: tomato;color:whitesmoke;padding:5px 20px"><h1>'._('Category not public, webpage offline').'</h1></div>';
+}else{
+    $html='';
+}
+$html .= $smarty->fetch('edit_object.tpl');
 
 ?>

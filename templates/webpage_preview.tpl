@@ -17,8 +17,12 @@
     <a id="link_to_live_webpage" target="_blank"  class="{if $webpage->get('Webpage State')=='Offline'}invisible{/if}"  href="{$webpage->get('URL')}" ><i class="fa fa-external-link" aria-hidden="true"  style="float:right;margin-left:20px;position:relative;top:2px"></i>   </a>
 
 
-    <span id="save_button"  data-store_key="{$webpage->get('Store Key')}" class="unselectable" style="float:right;" onClick="$('#preview')[0].contentWindow.save()">{t}Publish{/t} <i class="fal fa-rocket  " aria-hidden="true"></i></span>
+    {if !empty($offline)}
+        <span id="save_button"  data-store_key="{$webpage->get('Store Key')}" class="unselectable" style="float:right;" onClick="$('#preview')[0].contentWindow.save()">{t}Save{/t} <i class="fa fa-cloud  " aria-hidden="true"></i></span>
 
+    {else}
+    <span id="save_button"  data-store_key="{$webpage->get('Store Key')}" class="unselectable" style="float:right;" onClick="$('#preview')[0].contentWindow.save()">{t}Publish{/t} <i class="fal fa-rocket  " aria-hidden="true"></i></span>
+    {/if}
     {if isset($control_template)}
         {include file=$control_template content=$content}
 

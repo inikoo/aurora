@@ -40,6 +40,29 @@ $editor = array(
 );
 
 
+
+$sql=sprintf('select `Product Category Webpage Key` from `Product Category Dimension` where `Product Category Public`="No" ');
+if ($result=$db->query($sql)) {
+		foreach ($result as $row) {
+		    $webpage=get_object('Webpage',$row['Product Category Webpage Key']);
+		    if($webpage->id and $webpage->get('Webpage State')=='Online'){
+                $webpage->update_state('Offline');
+            }
+
+
+		}
+}else {
+		print_r($error_info=$db->errorInfo());
+		print "$sql\n";
+		exit;
+}
+
+
+
+
+
+exit;
+
 $sql = sprintf("SELECT `History Abstract`,`Direct Object Key`,`History Date`  FROM  `History Dimension`  WHERE `Indirect Object`='Product Web Configuration' AND `History Date`  > '2018-01-01 00:52:48' AND `User Key`=0    ORDER BY `History Date` ASC;");
 
 
