@@ -42,7 +42,7 @@ module.exports = function (grunt) {
                     'EcomB2B/theme_1/mainmenu/sticky.js',
                     'EcomB2B/theme_1/mainmenu/modernizr.custom.75180.js',
                     'EcomB2B/js/fotorama.js',
-                    'EcomB2B/js/aurora.js',
+                    'EcomB2B/js/search.js',
 
 
                 ], dest: 'EcomB2B/js/desktop.min.js'
@@ -57,13 +57,12 @@ module.exports = function (grunt) {
             }, pweb_desktop_forms: {
                 src: [
                     'EcomB2B/theme_1/local/jquery-ui.js',
-                    'EcomB2B/theme_1/sky_forms/js/jquery.form.min.j',
+                    'EcomB2B/theme_1/sky_forms/js/jquery.form.min.js',
                     'EcomB2B/theme_1/sky_forms/js/jquery.validate.min.js',
                     'EcomB2B/theme_1/sky_forms/js/additional-methods.min.js',
                     'EcomB2B/js/sweetalert.min.js',
-                    'EcomB2B/js/jquery.form.min.js',
                     'EcomB2B/js/sha256.js',
-                    'EcomB2B/js/fotorama.js',
+                    'EcomB2B/js/aurora_forms.js',
 
 
 
@@ -79,25 +78,45 @@ module.exports = function (grunt) {
                 ], dest: 'EcomB2B/js/desktop.checkout.min.js'
             }, pweb_mobile: {
                 src: [
-                    'EcomB2B/theme_1/mobile/jquery.js',
+                    'EcomB2B/theme_1/local/jquery.js',
                     'EcomB2B/theme_1/mobile/plugins.js',
                     'EcomB2B/theme_1/mobile/custom.js',
-                    'EcomB2B/js/sweetalert.min.js',
+                    'EcomB2B/js/search.js',
+                ], dest: 'EcomB2B/js/mobile.min.js',
+
+            }, pweb_mobile_logged_in: {
+                src: [
+                    'EcomB2B/js/aurora.logged_in.mobile.js',
+                    'EcomB2B/js/ordering.touch.js'
+
+                ], dest: 'EcomB2B/js/mobile.logged_in.min.js',
+
+            }, pweb_mobile_forms: {
+                src: [
                     'EcomB2B/theme_1/local/jquery-ui.js',
-                    'EcomB2B/js/sha256.js',
                     'EcomB2B/theme_1/sky_forms/js/jquery.form.min.js',
                     'EcomB2B/theme_1/sky_forms/js/jquery.validate.min.js',
                     'EcomB2B/theme_1/sky_forms/js/additional-methods.min.js',
-                    'EcomB2B/js/aurora.js',
-                    'EcomB2B/js/validation.js',
-                    'EcomB2B/js/ordering.touch.js'
+                    'EcomB2B/js/sweetalert.min.js',
+                    'EcomB2B/js/sha256.js',
+                    'EcomB2B/js/aurora_forms.js',
+                ], dest: 'EcomB2B/js/mobile.forms.min.js',
 
-                ], dest: 'EcomB2B/js/mobile.min.js',
+            }, pweb_mobile_checkout: {
+                src: [
+                    'EcomB2B/js/braintree.js',
+                ], dest: 'EcomB2B/js/mobile.checkout.min.js'
 
+            }, pweb_tablet: {
+                src: [
+                    'EcomB2B/theme_1/local/jquery.js',
+                    'EcomB2B/theme_1/tablet/plugins.js',
+                    'EcomB2B/js/swiper.js',
+                    'EcomB2B/theme_1/tablet/custom.js',
+                    'EcomB2B/js/search.js',
+                ], dest: 'EcomB2B/js/tablet.min.js',
 
             }
-
-
 
         },
         sass: {
@@ -179,6 +198,7 @@ module.exports = function (grunt) {
                         'EcomB2B/theme_1/tablet/skin.css',
                         'EcomB2B/theme_1/tablet/framework.css',
                         'EcomB2B/theme_1/sky_forms/css/sky-forms.css',
+                        'EcomB2B/theme_1/css/swiper.css',
                         'EcomB2B/css/style.theme_1.EcomB2B.tablet.css'
                     ],
 
@@ -368,7 +388,16 @@ module.exports = function (grunt) {
     grunt.registerTask('fork', ['clean:fork', 'copy:fork_stones', 'copy:fork']);
     grunt.registerTask('qfork', ['copy:fork']);
     grunt.registerTask('pweb', ['sass:aurora_public', 'cssmin:pweb','uglify:pweb_mobile',
-        'uglify:pweb_mobile','uglify:pweb_desktop','uglify:pweb_desktop_logged_in','uglify:pweb_desktop_forms','uglify:pweb_desktop_basket','uglify:pweb_desktop_checkout'
+        'uglify:pweb_mobile',
+        'uglify:pweb_mobile_logged_in',
+        'uglify:pweb_mobile_forms',
+        'uglify:pweb_mobile_checkout',
+        'uglify:pweb_tablet',
+        'uglify:pweb_desktop',
+        'uglify:pweb_desktop_logged_in',
+        'uglify:pweb_desktop_forms',
+        'uglify:pweb_desktop_basket',
+        'uglify:pweb_desktop_checkout'
     ]);
     grunt.registerTask('deploy_fork', ['clean:fork', 'copy:fork_stones', 'copy:fork', 'ssh_deploy:fork_external_libs', 'ssh_deploy:fork']);
     grunt.registerTask('deploy_qfork', ['copy:fork', 'ssh_deploy:fork']);

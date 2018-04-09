@@ -93,38 +93,90 @@ function see_also($data, $db, $user, $smarty) {
 
         $see_also_page = get_object('Webpage', $webpage_key);
 
-        $category = get_object('Category', $see_also_page->get('Webpage Scope Key'));
-
-        $image_src =$category->get('Image');
 
 
-        if (preg_match('/id=(\d+)/', $image_src, $matches)) {
-            $image_key = $matches[1];
+        if ($see_also_page->get('Webpage Scope') == 'Category Products' or $see_also_page->get('Webpage Scope') == 'Category Categories') {
 
-            $image_mobile_website = create_cached_image($image_key, 320, 200);
-            $image_website = create_cached_image($image_key, 432, 330, 'fit_highest');
 
-        }else{
-            $image_mobile_website=$image_src;
-            $image_website=$image_src;
+            $category = get_object('Category', $see_also_page->get('Webpage Scope Key'));
+
+            $image_src =$category->get('Image');
+
+
+            if (preg_match('/id=(\d+)/', $image_src, $matches)) {
+                $image_key = $matches[1];
+
+                $image_mobile_website = create_cached_image($image_key, 320, 200);
+                $image_website = create_cached_image($image_key, 432, 330, 'fit_highest');
+
+            }else{
+                $image_mobile_website=$image_src;
+                $image_website=$image_src;
+            }
+
+            $see_also = array(
+                'type'                 => 'category',
+                'category_key'         => $category->id,
+                'header_text'          => $category->get('Category Label'),
+                'image_src'            => $category->get('Image'),
+                'image_mobile_website' => $image_mobile_website,
+                'image_website'        => $image_website,
+                'webpage_key'          => $see_also_page->id,
+                'webpage_code'         => strtolower($see_also_page->get('Webpage Code')),
+                'category_code'        => $category->get('Category Code'),
+                'number_products'      => $category->get('Product Category Active Products'),
+                'link'                 => $see_also_page->get('Webpage URL')
+
+            );
+
+
+
+        } elseif ($see_also_page->get('Webpage Scope') == 'Product') {
+            $product = get_object('Public_Product', $see_also_page->get('Webpage Scope Key'));
+
+            $image_src =$product->get('Image');
+
+
+            if (preg_match('/id=(\d+)/', $image_src, $matches)) {
+                $image_key = $matches[1];
+
+                $image_mobile_website = create_cached_image($image_key, 320, 200);
+                $image_website = create_cached_image($image_key, 432, 330, 'fit_highest');
+
+            }else{
+                $image_mobile_website=$image_src;
+                $image_website=$image_src;
+            }
+
+            $see_also = array(
+                'type'                 => 'product',
+                'product_id'         => $product->id,
+                'header_text'          => $product->get('Name'),
+                'image_src'            => $product->get('Image'),
+                'image_mobile_website' => $image_mobile_website,
+                'image_website'        => $image_website,
+                'webpage_key'          => $see_also_page->id,
+                'webpage_code'         => strtolower($see_also_page->get('Webpage Code')),
+
+                'product_code'        => $product->get('Code'),
+                'product_web_state'      =>$product->get('Web State'),
+                'link'                 => $see_also_page->get('Webpage URL')
+
+            );
+
         }
 
-        $see_also = array(
-            'type'                 => 'category',
-            'category_key'         => $category->id,
-            'header_text'          => $category->get('Category Label'),
-            'image_src'            => $category->get('Image'),
-            'image_mobile_website' => $image_mobile_website,
-            'image_website'        => $image_website,
-            'webpage_key'          => $see_also_page->id,
-            'webpage_code'         => strtolower($see_also_page->get('Webpage Code')),
-            'category_code'        => $category->get('Category Code'),
-            'number_products'      => $category->get('Product Category Active Products'),
-            'link'                 => $see_also_page->get('Webpage URL')
 
-        );
-        $smarty->assign('category_data',$see_also);
+
+        $smarty->assign('item_data',$see_also);
         $html.=$smarty->fetch('splinters/see_also_item.splinter.tpl');
+
+
+
+
+
+
+
 
     }
 

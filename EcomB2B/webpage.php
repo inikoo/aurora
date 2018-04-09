@@ -706,7 +706,8 @@ if ($webpage->id) {
     $smarty->display($template);
 
 
-} else {
+}
+else {
     print 'error webpage id not found  '.$webpage_key.' ,'.$webpage->id;
 
 }

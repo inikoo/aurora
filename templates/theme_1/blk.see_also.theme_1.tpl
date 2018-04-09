@@ -35,7 +35,7 @@
     >
 
 
-        {foreach from=$data.items item=category_data}
+        {foreach from=$data.items item=item_data}
            {include file='splinters/see_also_item.splinter.tpl'}
         {/foreach}
 
