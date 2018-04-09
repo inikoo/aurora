@@ -2317,7 +2317,7 @@ console.log($(element))
             $('#image_control_panel').data('element').remove()
 
         }
-
+        $('#save_button',window.parent.document).addClass('save button changed valid')
         close_image_control_panel()
     }
 
