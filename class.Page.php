@@ -9315,7 +9315,7 @@ class Page extends DB_Table {
                     if ($row = $result->fetch()) {
 
                         $sql = sprintf(
-                            'SELECT `Website Webpage Scope Scope Key` FROM `Website Webpage Scope Map` WHERE `Website Webpage Scope Webpage Key`=%d  AND `Website Webpage Scope Scope`="Category" AND `Website Webpage Scope Index`<%d ORDER BY `Website Webpage Scope Index` ',
+                            'SELECT `Website Webpage Scope Scope Key` FROM `Website Webpage Scope Map` WHERE `Website Webpage Scope Webpage Key`=%d  AND  `Website Webpage Scope Type`="Subject" and  `Website Webpage Scope Scope`="Category" AND `Website Webpage Scope Index`<%d ORDER BY `Website Webpage Scope Index` ',
                             $parent_webpage_key, $row['Website Webpage Scope Index']
                         );
 
@@ -9326,7 +9326,7 @@ class Page extends DB_Table {
                             } else {
 
                                 $sql = sprintf(
-                                    'SELECT `Website Webpage Scope Scope Key` FROM `Website Webpage Scope Map`  WHERE `Website Webpage Scope Webpage Key`=%d  AND `Website Webpage Scope Scope`="Category"  ORDER BY `Website Webpage Scope Index` desc ',
+                                    'SELECT `Website Webpage Scope Scope Key` FROM `Website Webpage Scope Map`  WHERE `Website Webpage Scope Webpage Key`=%d  AND  `Website Webpage Scope Type`="Subject" and `Website Webpage Scope Scope`="Category"  ORDER BY `Website Webpage Scope Index` desc ',
                                     $parent_webpage_key
                                 );
                                 if ($result3=$this->db->query($sql)) {
@@ -9350,7 +9350,7 @@ class Page extends DB_Table {
 
 
                         $sql = sprintf(
-                            'SELECT `Website Webpage Scope Scope Key` FROM `Website Webpage Scope Map`  WHERE `Website Webpage Scope Webpage Key`=%d  AND `Website Webpage Scope Scope`="Category" AND `Website Webpage Scope Index`>%d ORDER BY `Website Webpage Scope Index` ',
+                            'SELECT `Website Webpage Scope Scope Key` FROM `Website Webpage Scope Map`  WHERE `Website Webpage Scope Webpage Key`=%d  AND  `Website Webpage Scope Type`="Subject" and `Website Webpage Scope Scope`="Category" AND `Website Webpage Scope Index`>%d ORDER BY `Website Webpage Scope Index` ',
                             $parent_webpage_key, $row['Website Webpage Scope Index']
                         );
 
@@ -9360,7 +9360,7 @@ class Page extends DB_Table {
                             } else {
 
                                 $sql = sprintf(
-                                    'SELECT `Website Webpage Scope Scope Key` FROM `Website Webpage Scope Map`  WHERE `Website Webpage Scope Webpage Key`=%d  AND `Website Webpage Scope Scope`="Category"  ORDER BY `Website Webpage Scope Index` ',
+                                    'SELECT `Website Webpage Scope Scope Key` FROM `Website Webpage Scope Map`  WHERE `Website Webpage Scope Webpage Key`=%d  AND  `Website Webpage Scope Type`="Subject" and `Website Webpage Scope Scope`="Category"  ORDER BY `Website Webpage Scope Index` ',
                                     $parent_webpage_key
                                 );
                                 if ($result3=$this->db->query($sql)) {
