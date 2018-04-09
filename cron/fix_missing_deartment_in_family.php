@@ -40,6 +40,9 @@ if ($result=$db->query($sql)) {
             	$cat_data['category_key'],
             	$row['Category Key']
             	);
+
+            	print "$sql\n";
+            	$db->exec($sql);
             	
                 //$category->update(array('Product Category Department Category Key'=>$cat_data['category_key']),'no_history');
 
