@@ -59,7 +59,6 @@ if ($state['_object']->get('Webpage Template Filename') == 'products_showcase' o
         $blocks = get_webpage_blocks();
         $smarty->assign('blocks', $blocks);
 
-
         $smarty->assign('control_template', $theme.'/control.webpage_blocks.'.$theme.'.tpl');
     }
 

@@ -9603,4 +9603,13 @@ div.blk_images figcaption.caption_hide {
 small {
   font-size: smaller; }
 
+.navigation {
+  border-bottom: 1px solid #ccc;
+  width: 100%;
+  padding: 7px 20px 5px 20px; }
+  .navigation .nav {
+    float: right; }
+  .navigation .next {
+    margin-left: 20px; }
+
 /*# sourceMappingURL=style.theme_1.EcomB2B.desktop.css.map */

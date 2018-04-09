@@ -27,6 +27,19 @@
 
         <div class="content_fullwidth less">
 
+            {if $navigation.show}
+                <div class="navigation" >
+
+                    {foreach from=$navigation.breadcrumbs item=$breadcrumb name=breadcrumbs}
+                        <span class="breadcrumbs"><a href="{$breadcrumb.link}" title="{$breadcrumb.title}">{$breadcrumb.label}</a> {if !$smarty.foreach.breadcrumbs.last}<i class="fas padding_left_10 padding_right_10 fa-angle-double-right"></i>{/if}</span>
+
+                    {/foreach}
+                    <div style="" class="nav">{if $navigation.prev}<a href="{$navigation.prev.link}" title="{$navigation.prev.title}"><i class="fas fa-arrow-left"></i></a>{/if} {if $navigation.next}<a href="{$navigation.next.link}" title="{$navigation.next.title}"><i style="" class="fas fa-arrow-right next"></i></a>{/if}</div>
+                    <div style="clear:both"></div>
+                </div>
+            {/if}
+
+
             {assign "with_iframe" 0}
             {assign "with_product_block" false}
             {foreach from=$content.blocks item=$block key=key}
