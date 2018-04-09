@@ -38,7 +38,7 @@ $editor = array(
 
 
 migrate_families();
-//migrate_departments();
+migrate_departments();
 //exit;
 
 //2730
@@ -49,7 +49,7 @@ function migrate_families() {
     $left_offset = 158;
 
     $sql = sprintf('SELECT `Webpage Scope Key`,`Page Key`,`Webpage Website Key` FROM `Page Store Dimension` WHERE `Webpage Template Filename`="products_showcase"  ');
-    $sql = sprintf('SELECT `Webpage Scope Key`,`Page Key`,`Webpage Website Key` FROM `Page Store Dimension` WHERE  `Page Key`=32302 ');
+  //  $sql = sprintf('SELECT `Webpage Scope Key`,`Page Key`,`Webpage Website Key` FROM `Page Store Dimension` WHERE  `Page Key`=32302 ');
 
 
     if ($result = $db->query($sql)) {
