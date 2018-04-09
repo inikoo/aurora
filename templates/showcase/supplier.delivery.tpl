@@ -366,7 +366,7 @@
              style="height:30px;clear:both;border-top:1px solid #ccc;border-bottom:1px solid #ccc">
             <div id="back_operations"></div>
             <span style="float:left;padding-left:10px;padding-top:5px" class="very_discreet italic"><i
-                        class="fa fa-dollar button" aria-hidden="true"></i> {t}Invoice{/t} </span>
+                        class="fa fa-dollar-sign button" aria-hidden="true"></i> {t}Invoice{/t} </span>
             <div id="forward_operations">
 
                 <div id="received_operations"

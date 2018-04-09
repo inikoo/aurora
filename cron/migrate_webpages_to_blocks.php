@@ -49,14 +49,14 @@ function migrate_families() {
     $left_offset = 158;
 
     $sql = sprintf('SELECT `Webpage Scope Key`,`Page Key`,`Webpage Website Key` FROM `Page Store Dimension` WHERE `Webpage Template Filename`="products_showcase"  ');
-    $sql = sprintf('SELECT `Webpage Scope Key`,`Page Key`,`Webpage Website Key` FROM `Page Store Dimension` WHERE  `Page Key`=2562 ');
+   // $sql = sprintf('SELECT `Webpage Scope Key`,`Page Key`,`Webpage Website Key` FROM `Page Store Dimension` WHERE  `Page Key`=49780 ');
 
 
     if ($result = $db->query($sql)) {
         foreach ($result as $row3) {
 
 
-              print_r($row3);
+           //   print_r($row3);
 
             $webpage = get_object('Webpage', $row3['Page Key']);
 
@@ -463,16 +463,20 @@ function migrate_families() {
 
                                 $see_also[] = array(
                                     'type'                 => 'category',
-                                    'category_key'         => $category->id,
+
                                     'header_text'          => $category->get('Category Label'),
                                     'image_src'            => $category->get('Image'),
                                     'image_mobile_website' => '',
                                     'image_website'        => '',
+
                                     'webpage_key'          => $see_also_page->id,
-                                    'webpage_code'         => strtolower($see_also_page->get('Webpage Code')),
+                                    'webpage_code'         => mb_strtolower($see_also_page->get('Webpage Code')),
+
+                                    'category_key'         => $category->id,
                                     'category_code'        => $category->get('Category Code'),
                                     'number_products'      => $category->get('Product Category Active Products'),
-                                    'link'                 => $see_also_page->get('Webpage URL')
+                                    'link'                 => $see_also_page->get('Webpage URL'),
+
 
                                 );
                                 break;
@@ -503,7 +507,7 @@ function migrate_families() {
                     ),
                     array(
                         'type'              => 'category_products',
-                        'label'             => _('Products in family'),
+                        'label'             => _('Family'),
                         'icon'              => 'fa-cubes',
                         'show'              => 1,
                         'top_margin'        => 0,
@@ -832,7 +836,7 @@ function migrate_departments() {
                                     'image_mobile_website' => $item['image_mobile_website'],
                                     'image_website'        => '',
                                     'webpage_key'          => $item['webpage_key'],
-                                    'webpage_code'         => strtolower($item['webpage_code']),
+                                    'webpage_code'         => mb_strtolower($item['webpage_code']),
                                     'item_type'            => $item['item_type'],
                                     'category_code'        => $item['category_code'],
                                     'number_products'      => $item['number_products'],
@@ -900,7 +904,7 @@ function migrate_departments() {
                     ),
                     array(
                         'type'          => 'category_categories',
-                        'label'         => _('Categories').' ('._('sections').')',
+                        'label'         => _('Department'),
                         'icon'          => 'fa-th',
                         'show'          => 1,
                         'top_margin'    => 0,

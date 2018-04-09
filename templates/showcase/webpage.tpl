@@ -15,11 +15,7 @@
     {else}
         <span class="strong">{$webpage->get('Webpage Scope')}</span>
     {/if}
-    <ul class="tags " style="float:right">
-        {foreach from=$webpage->get_parents_data() item=item key=key}
-            <li><span class="button" onclick="change_view('category/{$item.category_key}')" title="{$item.label}">{$item.code}</span></li>
-        {/foreach}
-    </ul>
+
     <div style="clear:both"></div>
 </div>
 

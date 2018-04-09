@@ -795,26 +795,53 @@
 
                         var img=$(item).find('.wrap_to_center img')
 
-                        items.push({
-                            type: $(item).data('type'),
-                            category_key: $(item).find('.category_block').data('category_key'),
-                            webpage_key: $(item).find('.category_block').data('category_webpage_key'),
-                            item_type: $(item).find('.category_block').data('item_type'),
-                            link:$(item).find('.category_block').data('link'),
-                            webpage_code:$(item).find('.category_block').data('webpage_code'),
+
+                        if($(item).data('type')=='category'){
+
+                            items.push({
+                                type: $(item).data('type'),
+                                category_key: $(item).find('.category_block').data('item_key'),
+                                webpage_key: $(item).find('.category_block').data('webpage_key'),
+                                link:$(item).find('.category_block').data('link'),
+                                webpage_code:$(item).find('.category_block').data('webpage_code'),
 
 
-                            header_text: $(item).find('.item_header_text').html(),
-                            image_src:img.data('src'),
-                            image_website: ( img.attr('src')!='EcomB2B/'+img.data('image_website') ?'': img.data('image_website')),
-                            image_mobile_website: ( img.attr('src')!='EcomB2B/'+img.data('image_website') ?'': img.data('image_mobile_website')),
+                                header_text: $(item).find('.item_header_text').html(),
+                                image_src:img.data('src'),
+                                image_website: ( img.attr('src')!='EcomB2B/'+img.data('image_website') ?'': img.data('image_website')),
+                                image_mobile_website: ( img.attr('src')!='EcomB2B/'+img.data('image_website') ?'': img.data('image_mobile_website')),
 
 
 
-                            category_code: $(item).find('.category_code').html(),
-                            number_products: $(item).find('.number_products').html(),
+                                category_code: $(item).find('.category_code').html(),
+                                number_products: $(item).find('.number_products').html(),
 
-                        })
+                            })
+
+                        }else if(obj.data('type')=='product'){
+
+                            items.push({
+                                type: $(item).data('type'),
+                                category_key: $(item).find('.category_block').data('item_key'),
+                                webpage_key: $(item).find('.category_block').data('webpage_key'),
+                                link:$(item).find('.category_block').data('link'),
+                                webpage_code:$(item).find('.category_block').data('webpage_code'),
+
+
+                                header_text: $(item).find('.item_header_text').html(),
+                                image_src:img.data('src'),
+                                image_website: ( img.attr('src')!='EcomB2B/'+img.data('image_website') ?'': img.data('image_website')),
+                                image_mobile_website: ( img.attr('src')!='EcomB2B/'+img.data('image_website') ?'': img.data('image_mobile_website')),
+
+
+
+                                product_code: $(item).find('.product_code').html(),
+                                product_web_state: $(item).find('.product_web_state').data('product_web_state'),
+
+                            })
+
+                        }
+
 
 
 
@@ -822,7 +849,7 @@
                     })
 
                     blocks.push({
-                        type: 'see_also', label: '{t}Ses also{/t}', icon: 'fa-link', show: ($(obj).hasClass('hide') ? 0 : 1), top_margin: $(obj).attr('top_margin'), bottom_margin: $(obj).attr('bottom_margin'),
+                        type: 'see_also', label: '{t}See also{/t}', icon: 'fa-link', show: ($(obj).hasClass('hide') ? 0 : 1), top_margin: $(obj).attr('top_margin'), bottom_margin: $(obj).attr('bottom_margin'),
                         items: items,
                         auto:$(obj).find('.see_also').data('auto'),
                         auto_scope:$(obj).find('.see_also').data('auto_scope'),
@@ -1014,7 +1041,7 @@
 
 
                     blocks.push({
-                        type: 'category_products', label: '{t}Products in family{/t}', icon: 'fa-cubes', show: ($(obj).hasClass('hide') ? 0 : 1), top_margin: $(obj).attr('top_margin'), bottom_margin: $(obj).attr('bottom_margin'),
+                        type: 'category_products', label: '{t}Family{/t}', icon: 'fa-cubes', show: ($(obj).hasClass('hide') ? 0 : 1), top_margin: $(obj).attr('top_margin'), bottom_margin: $(obj).attr('bottom_margin'),
                         sort:$(obj).find('.products').data('sort'),
                         item_headers:($(obj).find('.products').hasClass('no_items_header')?false:true),
                         items: items
@@ -1112,7 +1139,7 @@
                     });
 
                     blocks.push({
-                        type: 'category_categories', label: '{t}Categories{/t} ({t}Sections{/t})', icon: 'fa-th', show: ($(obj).hasClass('hide') ? 0 : 1), top_margin: $(obj).attr('top_margin'), bottom_margin: $(obj).attr('bottom_margin'),
+                        type: 'category_categories', label: '{t}Department{/t}', icon: 'fa-th', show: ($(obj).hasClass('hide') ? 0 : 1), top_margin: $(obj).attr('top_margin'), bottom_margin: $(obj).attr('bottom_margin'),
                         sections: sections
                     })
 
@@ -1549,7 +1576,7 @@
 
         console.log(content_data)
 
-    //   return;
+      // return;
 
         var ajaxData = new FormData();
 

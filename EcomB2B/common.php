@@ -16,15 +16,11 @@ error_reporting(E_ALL ^ E_DEPRECATED);
 include_once 'utils/natural_language.php';
 include_once 'utils/general_functions.php';
 include_once 'utils/public_object_functions.php';
-
 include_once 'utils/detect_agent.php';
 include_once 'utils/aes.php';
-
-
 require_once 'external_libs/Smarty/Smarty.class.php';
-
-
 include_once 'external_libs/ImageCache.php';
+
 $imagecache = new ImageCache();
 $imagecache->cached_image_directory = 'server_files/cached_images';
 
@@ -36,7 +32,8 @@ $smarty->config_dir   = 'server_files/smarty/configs';
 
 
 //$smarty->caching = 1;
-$smarty->clearAllCache();
+
+//$smarty->clearAllCache();
 //$smarty->clear_cache('index.tpl');
 
 
@@ -279,71 +276,6 @@ if (!$is_cached) {
 
 
 
-    //$customer  = new Public_Customer(0);
-    /*
-    if (!isset($_SESSION['site_key'])) {
-        unset($_SESSION['user_key']);
-        unset($_SESSION['customer_key']);
-        unset($_SESSION['user_log_key']);
-        $_SESSION['logged_in'] = 0;
-        $logged_in             = false;
-        $St                    = get_sk();
-    }
-*/
-    /*
-
-    if ($logged_in) {
-        if ($_SESSION['site_key'] != $website->id) {
-            unset($_SESSION['user_key']);
-            unset($_SESSION['customer_key']);
-            unset($_SESSION['user_log_key']);
-            $_SESSION['logged_in'] = 0;
-            $_SESSION['_state']    = 'c';
-            $logged_in             = false;
-            $St                    = get_sk();
-        } else {
-
-            $user = new Public_User($_SESSION['user_key']);
-
-
-            $customer = new Public_Customer($_SESSION['customer_key']);
-
-            //print_r($customer);
-        }
-
-    } else {
-        unset($_SESSION['user_key']);
-        unset($_SESSION['customer_key']);
-        unset($_SESSION['user_log_key']);
-        $_SESSION['logged_in'] = 0;
-        $_SESSION['_state']    = 'd';
-        $logged_in             = false;
-        $St                    = get_sk();
-    }
-
-
-*/
-    /*
-    if ($logged_in and ($customer->get('Customer Store Key') != $website->get('Website Store Key'))) {
-        header('Location:  logout.php');
-        exit;
-    }
-
-*/
-    /*
-
-    $order_in_process     = false;
-    $order_in_process_key = $customer->get_order_in_process_key();
-    $order_in_process     = new Public_Order ($order_in_process_key);
-    $order_in_process->set_display_currency($_SESSION['set_currency'], $_SESSION['set_currency_exchange']);
-
-
-    $smarty->assign('website_locale', $website_locale);
-    $smarty->assign('language', $language);
-
-*/
-
-
     $theme = $website->get('Website Theme');
 
 
@@ -362,89 +294,6 @@ if (!$is_cached) {
 
     $logged_in = !empty($_SESSION['logged_in']);
 
-
-    /*
-    if (!$logged_in) {
-
-        if (isset($_REQUEST['p'])) {
-
-            header('Location: reset.php?x=x&master_key='.$_REQUEST['p']);
-            exit;
-        }
-        if (isset($_REQUEST['masterkey'])) {
-
-            $dencrypted_secret_data = AESDecryptCtr(base64_decode($_REQUEST['masterkey']), $secret_key, 256);
-
-            $auth           = new Auth(IKEY, SKEY);
-            $auth->site_key = $website->id;
-            $auth->log_page = 'customer';
-            $auth->authenticate_from_masterkey($dencrypted_secret_data);
-
-            if ($auth->is_authenticated()) {
-                $authentication_type      = 'masterkey';
-                $_SESSION['logged_in']    = true;
-                $_SESSION['store_key']    = $store_key;
-                $_SESSION['site_key']     = $website->id;
-                $_SESSION['_state']       = 'a';
-                $_SESSION['user_key']     = $auth->get_user_key();
-                $_SESSION['customer_key'] = $auth->get_user_parent_key();
-                $_SESSION['user_log_key'] = $auth->user_log_key;
-
-                header('location: profile.php?view=change_password');
-                exit;
-
-            } else {
-
-                $_SESSION['logged_in'] = 0;
-                $_SESSION['_state']    = 'b';
-                unset($_SESSION['user_key']);
-                unset($_SESSION['customer_key']);
-                unset($_SESSION['user_log_key']);
-                $logged_in = false;
-                $St        = get_sk();
-
-                header('Location: reset.php?error='.$auth->pass['main_reason']);
-                exit;
-
-
-            }
-
-
-        }
-        elseif (isset($_COOKIE['user_handle'])) {
-
-            //print_r($_COOKIE);
-
-
-            $auth = new Auth(IKEY, SKEY);
-            $auth->set_use_cookies();
-            //$auth->use_cookies=true;
-            $auth->authenticate(false, false, 'customer', $_COOKIE['page_key']);
-
-            if ($auth->is_authenticated()) {
-                $authentication_type      = 'cookie';
-                $_SESSION['logged_in']    = true;
-                $_SESSION['store_key']    = $store_key;
-                $_SESSION['site_key']     = $website->id;
-                $_SESSION['user_key']     = $auth->get_user_key();
-                $_SESSION['customer_key'] = $auth->get_user_parent_key();
-                $_SESSION['user_log_key'] = $auth->user_log_key;
-                $sql                      = sprintf(
-                    "UPDATE `User Log Dimension` SET `Remember Cookie`='Yes'  WHERE `User Log Key`=%d", $auth->user_log_key
-                );
-                mysql_query($sql);
-            } else {
-                unset($_SESSION['user_key']);
-                unset($_SESSION['customer_key']);
-                unset($_SESSION['user_log_key']);
-                $_SESSION['logged_in'] = 0;
-                $logged_in             = false;
-                $St                    = get_sk();
-            }
-        }
-
-    }
-    */
 
 
     if ($logged_in) {
@@ -532,7 +381,8 @@ if (!$is_cached) {
             exit;
         }
 
-    } elseif (!empty($_COOKIE['rmb'])) {
+    } elseif
+    (!empty($_COOKIE['rmb'])) {
 
 
         include_once('class.WebAuth.php');
