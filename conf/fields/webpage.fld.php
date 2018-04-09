@@ -36,6 +36,22 @@ if (isset($options['new']) and $options['new']) {
 
 
 $can_change_state = ($object->get('Webpage Scope') == 'System' ? false : true);
+
+
+if($object->get('Webpage Scope')=='Category Categories' or $object->get('Webpage Scope')=='Category Products' ){
+
+    $scope=get_object('Category',$object->get('Webpage Scope Key'));
+
+
+    if($scope->get('Product Category Public')=='No'){
+        $can_change_state=false;
+    }
+
+}
+
+
+
+
 $can_update_code =(in_array($object->get('Webpage Scope'),array('Product','Category Categories','Category Products','Info')) ? true : false);
 
 
@@ -56,7 +72,6 @@ if(in_array($object->get('Webpage Scope'),array('Category Categories'))){
 }
 
 
-
 $content_data = $object->get('Content Data');
 
 
@@ -65,7 +80,7 @@ $object_fields = array();
 
 if (in_array(
     $object->get('Webpage Scope'), array('Category Categories', 'Product', 'Category Products')
-)) {
+) and $can_change_state) {
 
     $object_fields[] =
 

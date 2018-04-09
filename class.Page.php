@@ -2551,8 +2551,21 @@ class Page extends DB_Table {
 
         if ($this->get('Webpage State') == 'Offline' or $this->get('Webpage State') == 'InProcess' or $this->get('Webpage State') == 'Ready') {
 
+            if($this->data['Webpage Scope']=='Category Products' or $this->data['Webpage Scope']=='Category Categories'){
+                $scope=get_object('Category',$this->data['Webpage Scope Key']);
+                if($scope->get('Product Category Public')=='Yes'){
+                    $this->update_state('Online');
+                }
+            }elseif($this->data['Webpage Scope']=='Product' ){
+                $scope=get_object('Product',$this->data['Webpage Scope Key']);
+                if($scope->get('Product Public')=='Yes'){
+                    $this->update_state('Online');
+                }
+            }else{
+                $this->update_state('Online');
+            }
 
-            $this->update_state('Online');
+
 
         }
         if ($this->get('Webpage Launch Date') == '') {
@@ -2695,11 +2708,19 @@ class Page extends DB_Table {
 
     function update_state($value, $options = '') {
 
+
+        if(!$this->id){
+            return;
+        }
+
         $old_state = $this->data['Webpage State'];
+
+
 
 
         $this->update_field('Page State', $value, 'no_history');
         $this->update_field('Webpage State', $value, $options);
+
 
 
         if ($old_state != $this->data['Webpage State']) {
@@ -2744,6 +2765,7 @@ class Page extends DB_Table {
 
 
             $this->reindex_items();
+
             if ($this->updated) {
                 $this->publish();
             }
@@ -2775,6 +2797,8 @@ class Page extends DB_Table {
 
         $show = array();
         $hide = array();
+
+
 
 
         if ($this->get('Webpage State') == 'Ready') {
@@ -4207,6 +4231,11 @@ class Page extends DB_Table {
         $content_data = $this->get('Content Data');
 
         $block_key = false;
+
+        if(!isset($content_data['blocks'])){
+            return;
+        }
+
         foreach ($content_data['blocks'] as $_block_key => $_block) {
             if ($_block['type'] == 'category_categories') {
                 $block     = $_block;
@@ -4366,6 +4395,8 @@ class Page extends DB_Table {
 
         $index = 0;
         foreach ($content_data['blocks'][$block_key]['sections'] as $section_key => $section) {
+
+           if(isset($section['items'])){
             foreach ($section['items'] as $item_key => $item) {
                 if ($item['type'] == 'category') {
                     $sql = sprintf(
@@ -4378,7 +4409,7 @@ class Page extends DB_Table {
                     $index++;
 
                 }
-
+            }
             }
 
 
@@ -4609,6 +4640,8 @@ class Page extends DB_Table {
 
 
         $this->update_state('Offline');
+
+
 
 
         if ($this->get('Webpage State') == 'Online') {

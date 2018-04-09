@@ -19,14 +19,14 @@ $logged = true;
 
 $category = $state['_object'];
 
-
+/*
 
 if ($category->get('Product Category Public')=='No') {
     $html = '<div style="padding:40px">'._("This category is not public").'</div>';
 
     return;
 }
-
+*/
 
 $webpage  = $category->get_webpage();
 
@@ -76,7 +76,15 @@ if($webpage->get('Webpage Template Filename')=='category_categories' or $webpage
     // print_r( $webpage->get('Content Data'));
 
 
-    $html = $smarty->fetch('webpage_preview.tpl');
+
+    if ($category->get('Product Category Public')=='No') {
+
+        $html = '<div style="background-color: tomato;color:whitesmoke;padding:5px 20px"><h1>'._('Category not public, webpage offline').'</h1></div>';
+    }else{
+        $html='';
+    }
+
+    $html .= $smarty->fetch('webpage_preview.tpl');
 
 }else{
 
