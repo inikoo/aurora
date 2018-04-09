@@ -496,7 +496,7 @@ function migrate_families() {
 
             $new_content_data = array(
                 'blocks'   => array(
-                  
+
                     array(
                         'type'              => 'category_products',
                         'label'             => _('Family'),
@@ -635,7 +635,7 @@ function migrate_families() {
             print $x;
 
             //          print_r
-            //exit;
+            exit;
             // continue;
 
 
