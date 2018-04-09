@@ -67,27 +67,3 @@
     {/foreach}
 
 </div>
-
-<script>
-    {if $logged_in}
-    $.getJSON( "ar_web_customer_products.php?tipo=category_products&webpage_key={$webpage->id}", function( data ) {
-
-        console.log(data)
-
-
-
-        $.each(data.ordered_products, function( index, value ) {
-            $('.order_qty_'+index).val(value)
-         });
-
-
-        $.each(data.favourite, function( index, value ) {
-           $('.favourite_'+index).removeClass('far').addClass('marked fas').data('favourite_key',value)
-        });
-
-
-    });
-
-    {/if}
-
- </script>

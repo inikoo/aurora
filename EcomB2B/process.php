@@ -15,10 +15,6 @@
 
 
 require_once 'keyring/dns.php';
-
-
-//date_default_timezone_set(TIMEZONE);
-
 $mem = new Memcached();
 $mem->addServer($memcache_ip, 11211);
 
@@ -32,7 +28,7 @@ if (!array_key_exists('website_key', $_SESSION) or !$_SESSION['website_key']    
     include('utils/find_website_key.include.php');
 }
 
-$cached_webpage_key = $mem->get('ECOMP'.md5($_SERVER['SERVER_NAME'].'_'.$_SERVER['REQUEST_URI']));
+$cached_webpage_key = $mem->get('ECOMPv1'.md5($_SERVER['SERVER_NAME'].'_'.$_SERVER['REQUEST_URI']));
 $cached_webpage_key = false;
 if (!$cached_webpage_key  ) {
 

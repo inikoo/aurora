@@ -38,10 +38,8 @@
                         </div>
 
                         <div class="wrap_to_center product_image" >
-                            <a href="{$item.link}"><i class="fa fa-fw fa-info-circle more_info" aria-hidden="true"></i></a>
-
-                            {if $logged_in}
-                                <i    data-product_id="{$item.product_id}" data-favourite_key="0" class="favourite_{$item.product_id} favourite far  fa-heart" aria-hidden="true"></i>
+                            <a href="{$item.link}"><i class="fa fa-info-circle more_info" aria-hidden="true"></i></a>
+                            {if $logged_in}<i    data-product_id="{$item.product_id}" data-favourite_key="0" class="favourite_{$item.product_id} favourite far  fa-heart" aria-hidden="true"></i>
                             {/if}
                             <img src="{$item.image_website}"  />
                         </div>
@@ -78,7 +76,7 @@
                                 </div>
                             {elseif  $item.web_state=='For Sale'}
 
-                                <div class="mobile_ordering" style="text-align:center;font-size: 14px;margin-bottom:5px;margin-top:5px" data-settings='{ "pid":{$item.product_id} }'>
+                                <div class="mobile_ordering" style="text-align:center;font-size: 14px;" data-settings='{ "pid":{$item.product_id} }'>
                                     <i onclick="save_item_qty_change(this)" class="ordering_button one_less fa fa-fw  fa-minus-circle color-red-dark"></i>
                                     <input type="number" min="0" value="" class="order_qty_{$item.product_id}  needsclick order_qty">
                                     <i onclick="save_item_qty_change(this)" style="display:none" class="ordering_button save far fa-save fa-fw color-blue-dark"></i>

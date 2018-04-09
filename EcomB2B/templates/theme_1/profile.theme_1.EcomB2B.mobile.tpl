@@ -1335,11 +1335,22 @@
 
 
 
+    $(document).on('click', '.profile_button', function (evt) {
+
+
+        $('.profile_button').addClass(' border-black color-gray-light ').removeClass(' border-orange-dark ').find('i').addClass('color-gray-light').removeClass('color-orange-dark')
+
+        $(this).removeClass(' border-black color-gray-light ').addClass(' border-orange-dark ').find('i').removeClass('color-gray-light').addClass('color-orange-dark')
+
+        $('.profile_block').addClass('hide')
+        $('#'+$(this).data('tab')).removeClass('hide')
+    });
+
 
 
 
 
 </script>
-{include file="theme_1/bottom_scripts.theme_1.EcomB2B.mobile.tpl"}</body>
+</body>
 </html>
 

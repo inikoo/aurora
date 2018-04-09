@@ -42,6 +42,6 @@
     
 </div>
 </body>
-{include file="theme_1/bottom_scripts.theme_1.EcomB2B.mobile.tpl"}</body>
+</body>
 </html>
 

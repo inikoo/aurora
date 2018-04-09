@@ -27,30 +27,17 @@
     <title>{$webpage->get('Webpage Browser Title')}</title>
     <meta name="description" content="{$webpage->get('Webpage Meta Description')}"/>
 
+    <link rel="stylesheet" type="text/css" href="/css/tablet.min.css">
 
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/Swiper/4.2.0/css/swiper.min.css">
-    <link href="/css/tablet.min.css?v6" rel="stylesheet" type="text/css">
+    <script src="/js/tablet.min.js?v5"></script>
+    {if $logged_in}<script src="/js/mobile.logged_in.min.js"></script>
+    {if $webpage->get('Webpage Code')=='checkout.sys'}<script src="/js/mobile.forms.min.js"></script><script src="/js/mobile.checkout.min.js"></script>
+    {elseif $webpage->get('Webpage Code')=='basket.sys' or $webpage->get('Webpage Code')=='profile.sys' or $webpage->get('Webpage Code')=='reset_pwd.sys'}<script src="/js/mobile.forms.min.js"></script>{/if}
+    {else}
+        {if $webpage->get('Webpage Code')=='register.sys' or  $webpage->get('Webpage Code')=='login.sys'}<script src="/js/mobile.forms.min.js"></script>{/if}
+    {/if}
 
 
-
-    <script src="/theme_1/tablet/jquery.js"></script>
-    <script src="/theme_1/tablet/plugins.js?v2"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/Swiper/4.2.0/js/swiper.min.js"></script>
-    <script src="/theme_1/tablet/custom.js?V2"></script>
-    <script src="/js/sweetalert.min.js"></script>
-
-    <script src="/theme_1/local/jquery-ui.js"></script>
-    <script src="/js/sha256.js"></script>
-
-    <script src="/theme_1/sky_forms/js/jquery.form.min.js"></script>
-    <script src="/theme_1/sky_forms/js/jquery.validate.min.js"></script>
-    <script src="/theme_1/sky_forms/js/additional-methods.min.js"></script>
-
-    <script src="/js/aurora.js?20180319v3"></script>
-    <script src="/js/validation.js"></script>
-
-    <script src="/js/ordering.touch.js?20180115"></script>
-    <script src="/js/braintree.js"></script>
 
 
 </head>

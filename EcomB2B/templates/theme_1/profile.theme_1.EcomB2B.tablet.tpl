@@ -45,7 +45,7 @@
                     <em style="font-size: 11px">{$content._login_details_title}</em>
                 </a>
                 <a  class="like_button profile_button no-smoothState bg-black border-black color-gray-light  "   data-tab="_invoice_address_details">
-                    <i class="fa fa-dollar color-gray-light" aria-hidden="true"  style="margin-top: 7px"></i>
+                    <i class="fa fa-dollar-sign color-gray-light" aria-hidden="true"  style="margin-top: 7px"></i>
                     <em style="font-size: 11px">{$content._invoice_address_title}</em>
                 </a>
                 <a  class="like_button profile_button no-smoothState bg-black border-black color-gray-light  "  data-tab="_delivery_addresses_details">
@@ -1362,10 +1362,22 @@
 
 
 
+    $(document).on('click', '.profile_button', function (evt) {
+
+
+        $('.profile_button').addClass(' border-black color-gray-light ').removeClass(' border-orange-dark ').find('i').addClass('color-gray-light').removeClass('color-orange-dark')
+
+        $(this).removeClass(' border-black color-gray-light ').addClass(' border-orange-dark ').find('i').removeClass('color-gray-light').addClass('color-orange-dark')
+
+        $('.profile_block').addClass('hide')
+        $('#'+$(this).data('tab')).removeClass('hide')
+    });
+
+
 
 
 
 </script>
-{include file="theme_1/bottom_scripts.theme_1.EcomB2B.mobile.tpl"}</body>
+</body>
 </html>
 

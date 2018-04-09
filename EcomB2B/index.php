@@ -10,7 +10,9 @@
   Version 2.0
 */
 
-
+require_once 'keyring/dns.php';
+$mem = new Memcached();
+$mem->addServer($memcache_ip, 11211);
 
 include_once 'common.php';
 
