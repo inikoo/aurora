@@ -24,6 +24,33 @@ $editor = array(
 
 
 
+
+$sql = sprintf('SELECT `Page Key` FROM `Page Store Dimension`  ');
+if ($result=$db->query($sql)) {
+    foreach ($result as $row) {
+
+        $webpage = get_object('Webpage', $row['Page Key']);
+
+
+
+        $webpage->reindex_items();
+
+
+
+
+
+
+
+
+    }
+}else {
+    print_r($error_info=$db->errorInfo());
+    print "$sql\n";
+    exit;
+}
+//exit;
+
+
 $sql = sprintf('SELECT `Page Key` FROM `Page Store Dimension`  ');
 if ($result=$db->query($sql)) {
 		foreach ($result as $row) {

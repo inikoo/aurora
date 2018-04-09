@@ -1468,12 +1468,15 @@ class Page extends DB_Table {
             $content_data = $this->get('Content Data');
             if (isset($content_data['blocks'])) {
                 foreach ($content_data['blocks'] as $block_key => $block) {
+
+                   // print $block['type']."\n";
+
                     switch ($block['type']) {
                         case 'category_products':
                             $this->reindex_category_products();
                             break;
                         case 'category_categories':
-                            $this->reindex_category_products();
+                            $this->reindex_category_categories();
                             break;
                         case 'products':
                             $this->reindex_products();
@@ -3427,7 +3430,7 @@ class Page extends DB_Table {
                 $this->get('Webpage Website Key'), $this->id, prepare_mysql('Product'), $item['product_id'], prepare_mysql('Products_Item'), $index
 
             );
-            //print "$sql\n";
+           // print "$sql\n";
 
             $this->db->exec($sql);
             $index++;
@@ -4393,6 +4396,7 @@ class Page extends DB_Table {
             array_unshift($content_data['blocks'][$block_key]['sections'][$anchor_section_key]['items'], $item);
         }
 
+       // print_r($content_data['blocks'][$block_key]['sections']);
 
         $this->update_field_switcher('Page Store Content Data', json_encode($content_data), 'no_history');
 
@@ -4410,6 +4414,7 @@ class Page extends DB_Table {
                             $this->get('Webpage Website Key'), $this->id, prepare_mysql('Category'), $item['category_key'], prepare_mysql($item['item_type']), $index
 
                         );
+                        //print "$sql\n";
 
                         $this->db->exec($sql);
                         $index++;
@@ -9254,8 +9259,8 @@ class Page extends DB_Table {
         $navigation_data = array(
             'show'=>false,
             'breadcrumbs' => array(),
-            'next'        => false,
             'prev'    => false,
+            'next'        => false,
         );
 
 
@@ -9279,6 +9284,9 @@ class Page extends DB_Table {
                     }
 
                 }
+
+
+               // print_r($parent_webpage);
 
                 $navigation_data['breadcrumbs'][] = array(
                     'link'        => $website->get('Website URL'),
@@ -9315,9 +9323,11 @@ class Page extends DB_Table {
                     if ($row = $result->fetch()) {
 
                         $sql = sprintf(
-                            'SELECT `Website Webpage Scope Scope Key` FROM `Website Webpage Scope Map` WHERE `Website Webpage Scope Webpage Key`=%d  AND  `Website Webpage Scope Type`="Subject" and  `Website Webpage Scope Scope`="Category" AND `Website Webpage Scope Index`<%d ORDER BY `Website Webpage Scope Index` ',
+                            'SELECT `Website Webpage Scope Scope Key` FROM `Website Webpage Scope Map` WHERE `Website Webpage Scope Webpage Key`=%d  AND  `Website Webpage Scope Type`="Subject" and  `Website Webpage Scope Scope`="Category" AND `Website Webpage Scope Index`<%d ORDER BY `Website Webpage Scope Index` desc',
                             $parent_webpage_key, $row['Website Webpage Scope Index']
                         );
+
+                        //print $sql;
 
                         if ($result2 = $this->db->query($sql)) {
                             if ($row2 = $result2->fetch()) {
@@ -9329,6 +9339,7 @@ class Page extends DB_Table {
                                     'SELECT `Website Webpage Scope Scope Key` FROM `Website Webpage Scope Map`  WHERE `Website Webpage Scope Webpage Key`=%d  AND  `Website Webpage Scope Type`="Subject" and `Website Webpage Scope Scope`="Category"  ORDER BY `Website Webpage Scope Index` desc ',
                                     $parent_webpage_key
                                 );
+                                //print $sql;
                                 if ($result3=$this->db->query($sql)) {
                                     if ($row3 = $result3->fetch()) {
                                         $prev_key = $row3['Website Webpage Scope Scope Key'];
@@ -9363,6 +9374,7 @@ class Page extends DB_Table {
                                     'SELECT `Website Webpage Scope Scope Key` FROM `Website Webpage Scope Map`  WHERE `Website Webpage Scope Webpage Key`=%d  AND  `Website Webpage Scope Type`="Subject" and `Website Webpage Scope Scope`="Category"  ORDER BY `Website Webpage Scope Index` ',
                                     $parent_webpage_key
                                 );
+
                                 if ($result3=$this->db->query($sql)) {
                                     if ($row3 = $result3->fetch()) {
                                         $next_key = $row3['Website Webpage Scope Scope Key'];
@@ -9425,7 +9437,7 @@ class Page extends DB_Table {
 
                 $navigation_data['prev']=$prev;
                 $navigation_data['next']=$next;
-               // print_r($navigation_data);
+              // print_r($navigation_data);
 
                 $this->update_field('Webpage Navigation Data',json_encode($navigation_data),'no_history');
 
