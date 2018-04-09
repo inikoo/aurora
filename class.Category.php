@@ -2669,6 +2669,10 @@ VALUES (%d,%s, %d, %d, %s,%s, %d, %d, %s, %s, %s,%d,NOW())", $this->id,
                         );
 
                     }
+
+                    $webpage = $this->get_webpage();
+                    $webpage->update_navigation();
+
                     $this->update_metadata = array(
                         'class_html' => array(
                             'Categories' => $categories,
