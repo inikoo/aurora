@@ -451,7 +451,18 @@
 
 
 </div>
+<script>
+    $(document).on('click', '.payment_method_button', function (evt) {
+
+
+        $('.payment_method_button').addClass('discreet bg-gray-light border-gray-dark').removeClass('bg-blue-light border-blue-dark').css({ 'opacity':.2})
+
+        $(this).removeClass('discreet bg-gray-light border-gray-dark').addClass('bg-blue-light border-blue-dark').css({ 'opacity':1})
+
+        $('.payment_method_block').addClass('hide')
+        $('#'+$(this).data('tab')).removeClass('hide')
+    });
+</script>
 </body>
-{include file="theme_1/bottom_scripts.theme_1.EcomB2B.mobile.tpl"}</body>
 </html>
 

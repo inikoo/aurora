@@ -13,25 +13,15 @@
 {if isset($data.bottom_margin)}{assign "bottom_margin" $data.bottom_margin}{else}{assign "bottom_margin" "0"}{/if}
 
 
-<div class="hide">
-    <span class="button" style="position: relative;top: 5px; left:20px;"><i class="fas fa-plus "></i> {t}Add category{/t}</span> <span class="button" style="margin-left:20px;position: relative;top: 5px; left:20px;"><i
-                class="fas fa-trash-alt "></i> {t}Delete this section{/t}</span>
-</div>
-
 
 <div id="block_{$key}" data-block_key="{$key}" block="{$data.type}" class="    _block {if !$data.show}hide{/if}" top_margin="{$top_margin}" bottom_margin="{$bottom_margin}"
      style="padding-top:{$top_margin}px;padding-bottom:{$bottom_margin}px">
 
     <h1 class="products_title {if !$block.show_title}hide{/if}" style="margin-left:20px;" >{$data.title}</h1>
 
-
-
     <div class="category_blocks see_also">
         {foreach from=$data.items item=category_data}
             <div class="category_wrap wrap" data-type="{$category_data.type}">
-
-
-
 
                 <div class="category_block" style="position:relative" >
                     <div class="item_header_text"><a href="{$category_data.link}">{$category_data.header_text|strip_tags}</a></div>

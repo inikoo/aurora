@@ -43,22 +43,54 @@
     <link rel="stylesheet" href="css/desktop.min.css?v2" type="text/css"/>
     <script src="/js/desktop.min.js"></script>
     {if $logged_in}
-        <script src="/js/desktop_logged_in.min.js"></script>
+        <script src="/js/desktop.logged_in.min.js"></script>
         {if $webpage->get('Webpage Code')=='basket.sys'}
         <script src="/js/desktop.forms.min.js"></script>
+        <!--[if lt IE 10]>
+        <script src="/theme_1/sky_formsjs/jquery.placeholder.min.js"></script>
+        <![endif]-->
+        <!--[if lt IE 9]>
+        <script src="/theme_1/sky_formsjs/sky-forms-ie8.js"></script>
+        <![endif]-->
         <script src="/js/desktop.basket.min.js"></script>
         {elseif $webpage->get('Webpage Code')=='checkout.sys'}
+        <script src="/theme_1/tabs/assets/js/responsive-tabs.min.js"></script>
         <script src="/js/desktop.forms.min.js"></script>
+        <!--[if lt IE 10]>
+        <script src="/theme_1/sky_formsjs/jquery.placeholder.min.js"></script>
+        <![endif]-->
+        <!--[if lt IE 9]>
+        <script src="/theme_1/sky_formsjs/sky-forms-ie8.js"></script>
+        <![endif]-->
         <script src="/js/desktop.checkout.min.js"></script>
+
         {elseif $webpage->get('Webpage Code')=='profile.sys'}
         <script src="/js/desktop.forms.min.js"></script>
+        <!--[if lt IE 10]>
+        <script src="/theme_1/sky_formsjs/jquery.placeholder.min.js"></script>
+        <![endif]-->
+        <!--[if lt IE 9]>
+        <script src="/theme_1/sky_formsjs/sky-forms-ie8.js"></script>
+        <![endif]-->
         <script src="/js/desktop.checkout.min.js"></script>
         {elseif $webpage->get('Webpage Code')=='reset_pwd.sys'}
         <script src="/js/desktop.forms.min.js"></script>
+        <!--[if lt IE 10]>
+        <script src="/theme_1/sky_formsjs/jquery.placeholder.min.js"></script>
+        <![endif]-->
+        <!--[if lt IE 9]>
+        <script src="/theme_1/sky_formsjs/sky-forms-ie8.js"></script>
+        <![endif]-->
         {/if}
     {else}
     {if $webpage->get('Webpage Code')=='register.sys' or  $webpage->get('Webpage Code')=='login.sys'}
         <script src="/js/desktop.forms.min.js"></script>
+        <!--[if lt IE 10]>
+        <script src="/theme_1/sky_formsjs/jquery.placeholder.min.js"></script>
+        <![endif]-->
+        <!--[if lt IE 9]>
+        <script src="/theme_1/sky_formsjs/sky-forms-ie8.js"></script>
+        <![endif]-->
     {/if}
     {/if}
 

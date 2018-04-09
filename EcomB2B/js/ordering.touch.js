@@ -5,105 +5,10 @@
 
 
 
-$(function() {
-
-
-    $(".asset_description .show_all").click(function() {
-
-        totalHeight = 0
-
-        $el = $(this);
-        $p  = $el.parent();
-        $up = $p.parent();
-        $ps = $up.find("p:not('.read-more')");
-
-        // measure how tall inside should be by adding together heights of all inside paragraphs (except read-more paragraph)
-        $ps.each(function() {
-            totalHeight += $(this).outerHeight();
-        });
-
-
-        console.log($(this).closest('.asset_description').find('.asset_description_wrap').outerHeight());
-
-        h=$(this).closest('.asset_description').find('.asset_description_wrap').outerHeight();
-
-        $up
-            .css({
-                // Set height to prevent instant jumpdown when max height is removed
-                "height": $up.height(),
-                "max-height": 9999
-            })
-            .animate({
-                "height": h+30
-            });
-
-        // fade out read-more
-        $p.fadeOut();
-
-        // prevent jump-down
-        return false;
-
-    });
-
-
-    $('.modal-opener').on('click', function()
-    {
-        if( !$('#sky-form-modal-overlay').length )
-        {
-            $('body').append('<div id="sky-form-modal-overlay" class="sky-form-modal-overlay"></div>');
-        }
-
-        $('#sky-form-modal-overlay').on('click', function()
-        {
-            $('#sky-form-modal-overlay').fadeOut();
-            $('.sky-form-modal').fadeOut();
-        });
-
-        form = $($(this).attr('href'));
-        $('#sky-form-modal-overlay').fadeIn();
-
-        $('#page-transitions').addClass('hide')
-
-        form.css('top', '50%').css('left', '50%').css('margin-top', -form.outerHeight()/2).css('margin-left', -form.outerWidth()/2).fadeIn();
-
-        return false;
-    });
-
-    $('.modal-closer').on('click', function()
-    {
-
-        $('#page-transitions').removeClass('hide')
-        $('#sky-form-modal-overlay').fadeOut();
-        $('.sky-form-modal').fadeOut();
-
-        return false;
-    });
-})
-
-
-$(document).on('click', '.profile_button', function (evt) {
-
-
-    $('.profile_button').addClass(' border-black color-gray-light ').removeClass(' border-orange-dark ').find('i').addClass('color-gray-light').removeClass('color-orange-dark')
-
-    $(this).removeClass(' border-black color-gray-light ').addClass(' border-orange-dark ').find('i').removeClass('color-gray-light').addClass('color-orange-dark')
-
-    $('.profile_block').addClass('hide')
-    $('#'+$(this).data('tab')).removeClass('hide')
-});
 
 
 
-$(document).on('click', '.payment_method_button', function (evt) {
 
-
-    $('.payment_method_button').addClass('discreet bg-gray-light border-gray-dark').removeClass('bg-blue-light border-blue-dark').css({ 'opacity':.2})
-
-    $(this).removeClass('discreet bg-gray-light border-gray-dark').addClass('bg-blue-light border-blue-dark').css({ 'opacity':1})
-
-$('.payment_method_block').addClass('hide')
-$('#'+$(this).data('tab')).removeClass('hide')
-});
 
 
 
@@ -276,6 +181,47 @@ console.log(request)
     })
 
 }
+
+
+
+function validate_signed_integer(value, max_value) {
+
+    if (!$.isNumeric(value)) {
+        return {
+            class: 'invalid', type: 'not_integer'
+        }
+    }
+
+    if (value > max_value) {
+        return {
+            class: 'invalid',
+
+            type: 'too_big'
+        }
+    }
+
+    if (value < 0) {
+        return {
+            class: 'invalid',
+
+            type: 'negative'
+        }
+    }
+    if (Math.floor(value) != value) {
+
+
+        return {
+            class: 'invalid',
+
+            type: 'not_integer'
+        }
+    }
+
+    return false
+}
+
+
+
 
 
 

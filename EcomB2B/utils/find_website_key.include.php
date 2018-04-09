@@ -10,50 +10,44 @@
 */
 
 
-  if ($_SERVER['SERVER_NAME'] == 'ecom.bali') {
-        $_SESSION['website_key'] = 2;
-    } else {
+if ($_SERVER['SERVER_NAME'] == 'ecom.bali') {
+    $_SESSION['website_key'] = 2;
+} else {
 
-      include_once 'utils/general_functions.php';
+    include_once 'utils/general_functions.php';
+    require_once 'keyring/dns.php';
 
-      require_once 'keyring/dns.php';
-
-        $db = new PDO(
-            "mysql:host=$dns_host;dbname=$dns_db;charset=utf8", $dns_user, $dns_pwd, array(\PDO::MYSQL_ATTR_INIT_COMMAND => "SET time_zone = '+0:00';")
-        );
-        $db->setAttribute(PDO::ATTR_DEFAULT_FETCH_MODE, PDO::FETCH_ASSOC);
-
-
-        $server_name=$_SERVER['SERVER_NAME'];//preg_replace('/^www\./','',$_SERVER['SERVER_NAME']);
-
-        $sql = sprintf(
-            'SELECT `Website Key`  FROM `Website Dimension` WHERE `Website URL`=%s', prepare_mysql($server_name)
-        );
+    $db = new PDO(
+        "mysql:host=$dns_host;dbname=$dns_db;charset=utf8", $dns_user, $dns_pwd, array(\PDO::MYSQL_ATTR_INIT_COMMAND => "SET time_zone = '+0:00';")
+    );
+    $db->setAttribute(PDO::ATTR_DEFAULT_FETCH_MODE, PDO::FETCH_ASSOC);
 
 
+    $server_name = $_SERVER['SERVER_NAME'];//preg_replace('/^www\./','',$_SERVER['SERVER_NAME']);
 
-        if ($result = $db->query($sql)) {
-            if ($row = $result->fetch()) {
-                $_SESSION['website_key'] = $row['Website Key'];
-            } else {
+    $sql = sprintf(
+        'SELECT `Website Key`  FROM `Website Dimension` WHERE `Website URL`=%s', prepare_mysql($server_name)
+    );
 
-                print 'E1 SERVER_NAME '.$_SERVER['SERVER_NAME'];
-                exit;
-            }
+
+    if ($result = $db->query($sql)) {
+        if ($row = $result->fetch()) {
+            $_SESSION['website_key'] = $row['Website Key'];
         } else {
 
-
-            print 'E2 SERVER_NAME '.$_SERVER['SERVER_NAME'];
+            print 'E1 SERVER_NAME '.$_SERVER['SERVER_NAME'];
             exit;
-
         }
+    } else {
 
+
+        print 'E2 SERVER_NAME '.$_SERVER['SERVER_NAME'];
+        exit;
 
     }
 
 
-
-
+}
 
 
 ?>

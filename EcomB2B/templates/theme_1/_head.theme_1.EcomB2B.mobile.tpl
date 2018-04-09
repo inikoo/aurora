@@ -28,56 +28,22 @@
     <meta name="description" content="{$webpage->get('Webpage Meta Description')}"/>
 
 
+    <link rel="stylesheet" type="text/css" href="/css/mobile.min.css">
 
-
-
-        <link href="/css/mobile.min.css?v3" rel="stylesheet" type="text/css">
-
-
-
-{*
-        <link href="/css/sweetalert.css" rel="stylesheet">
-        <link rel="stylesheet" href="/css/fontawesome-all.min.css" type="text/css"/>
-        <link rel="stylesheet" type="text/css" href="/theme_1/mobile/style.css?v=180301v6">
-        <link rel="stylesheet" type="text/css" href="/theme_1/mobile/skin.css">
-        <link rel="stylesheet" type="text/css" href="/theme_1/mobile/framework.css?v=171011b">
-        <link rel="stylesheet" type="text/css" href="/theme_1/mobile/ionicons.min.css">
-        <link rel="stylesheet" type="text/css" href="/theme_1/sky_forms/css/sky-forms.css?v=2"  media="all">
-        <link rel="stylesheet" type="text/css" href="/theme_1/css/aurora.theme_1.EcomB2B.mobile.css?v=180321v1" />
-  *}
-    <script src="/js/mobile.min.js"></script>
-
-    {if $webpage->get('Webpage Template Filename') == 'checkout'}
-        <script src="/js/braintree.js"></script>
+    <script src="/js/mobile.min.js?v4"></script>
+    {if $logged_in}<script src="/js/mobile.logged_in.min.js"></script>
+    {if $webpage->get('Webpage Code')=='checkout.sys'}<script src="/js/mobile.forms.min.js"></script><script src="/js/mobile.checkout.min.js"></script>
+    {elseif $webpage->get('Webpage Code')=='basket.sys' or $webpage->get('Webpage Code')=='profile.sys' or $webpage->get('Webpage Code')=='reset_pwd.sys'}<script src="/js/mobile.forms.min.js"></script>{/if}
+    {else}
+    {if $webpage->get('Webpage Code')=='register.sys' or  $webpage->get('Webpage Code')=='login.sys'}<script src="/js/mobile.forms.min.js"></script>{/if}
     {/if}
 
-{*
 
-    <script src="/theme_1/mobile/jquery.js"></script>
-    <script src="/theme_1/mobile/plugins.js"></script>
-    <script src="/theme_1/mobile/custom.js"></script>
-    <script src="/js/sweetalert.min.js"></script>
 
-    <script src="/theme_1/local/jquery-ui.js"></script>
-    <script src="/js/sha256.js"></script>
-
-    <script src="/theme_1/sky_forms/js/jquery.form.min.js"></script>
-    <script src="/theme_1/sky_forms/js/jquery.validate.min.js"></script>
-    <script src="/theme_1/sky_forms/js/additional-methods.min.js"></script>
-
-    <script src="/js/aurora.js?20180319"></script>
-    <script src="/js/validation.js"></script>
-
-    <script src="/js/ordering.touch.js?20180115"></script>
-
-*}
 
 
 </head>
 
-<script>
-    console.log('caca')
-    </script>
 
 
 
