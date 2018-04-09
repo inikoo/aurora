@@ -499,7 +499,7 @@ function migrate_families() {
                         'label'         => _('Blackboard'),
                         'icon'          => 'fa-image',
                         'show'          => 1,
-                        'top_margin'    => 0,
+                        'top_margin'    => 20,
                         'bottom_margin' => 0,
                         'height'        => $blackboard_height,
                         'images'        => $images,
