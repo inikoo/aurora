@@ -572,7 +572,21 @@
 <div class="wrapper_boxed">
 
 
+
+
     <div id="blocks" class="site_wrapper" data-webpage_key="{$webpage->id}">
+
+        {if $navigation.show}
+        <div class="navigation" >
+
+            {foreach from=$navigation.breadcrumbs item=$breadcrumb name=breadcrumbs}
+                <span class="breadcrumbs">{$breadcrumb.label} {if !$smarty.foreach.breadcrumbs.last}<i class="fas padding_left_10 padding_right_10 fa-angle-double-right"></i>{/if}</span>
+
+            {/foreach}
+            <div style="" class="nav"><i class="fas fa-arrow-left"></i>  <i style="" class="fas fa-arrow-right next"></i></div>
+            <div style="clear:both"></div>
+        </div>
+        {/if}
         {foreach from=$content.blocks item=$block key=key}
             {include file="{$theme}/blk.{$block.type}.{$theme}.tpl" data=$block key=$key  }
 

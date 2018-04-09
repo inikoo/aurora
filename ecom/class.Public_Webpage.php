@@ -239,7 +239,21 @@ class Public_Webpage {
 
                 return $content_data;
                 break;
+            case 'Navigation Data':
+                if ($this->data['Webpage '.$key] == '') {
+                    $navigation_data = array(
+                        'show'=>false,
+                        'breadcrumbs' => array(),
+                        'next'        => false,
+                        'prev'    => false,
 
+                    );
+                } else {
+                    $navigation_data = json_decode($this->data['Webpage '.$key], true);
+                }
+
+                return $navigation_data;
+                break;
             case 'Image':
                 if (!$this->scope_load) {
                     $this->load_scope();

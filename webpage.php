@@ -105,6 +105,8 @@ $smarty->assign('theme', $theme);
 $smarty->assign('template', $webpage->get('Webpage Template Filename'));
 
 
+$smarty->assign('navigation', $webpage->get('Navigation Data'));
+
 $smarty->assign('poll_queries', $website->get_poll_queries($webpage));
 
 

@@ -11,6 +11,7 @@
 */
 
 $webpage = new Public_Webpage($webpage_key);
+$smarty->assign('navigation', $webpage->get('Navigation Data'));
 
 if ($webpage->id) {
 

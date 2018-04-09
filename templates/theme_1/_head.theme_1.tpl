@@ -61,10 +61,10 @@
 
     <link rel="stylesheet" href="/EcomB2B/css/fontawesome-all.min.css?v5.0.9" type="text/css"/>
 
-    <link rel="stylesheet" href="/EcomB2B/css/style.theme_1.EcomB2B.css?v180407v2" type="text/css"/>
 
 
 
+    <link rel="stylesheet" href="/EcomB2B/css/desktop.min.css" type="text/css"/>
 
 
 
