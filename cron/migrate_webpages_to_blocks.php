@@ -283,7 +283,7 @@ function migrate_families() {
 
                     $header_text=mb_convert_encoding($header_text, 'UTF-8', 'UTF-8');
 
-/*
+
                     $items[] = array(
                         'type'                 => 'product',
                         'product_id'           => $row['Product ID'],
@@ -307,7 +307,7 @@ function migrate_families() {
 
                     );
 
-*/
+
 
                 }
             } else {
