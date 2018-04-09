@@ -3423,7 +3423,7 @@ class Page extends DB_Table {
         }
 
 
-        print_r($block['items']);
+    //    print_r($block['items']);
 
         foreach ($block['items'] as $item_key => $item) {
 

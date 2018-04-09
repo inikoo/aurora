@@ -1165,7 +1165,7 @@
                             title: img.attr('alt'),
                             width:img.width(),
                             height:img.height(),
-                            top:img.offset().top-$(obj).offset().top,
+                            top:img.offset().top-$(obj).offset().top-$(obj).attr('top_margin'),
                             left:img.offset().left
                         })
                     });
@@ -1194,7 +1194,7 @@
                             text: _text,
                             width:$(text_block).width(),
                             height:$(text_block).height(),
-                            top:$(text_block).offset().top-$(obj).offset().top,
+                            top:$(text_block).offset().top-$(obj).offset().top-$(obj).attr('top_margin'),
                             left:$(text_block).offset().left
                         })
                     });
