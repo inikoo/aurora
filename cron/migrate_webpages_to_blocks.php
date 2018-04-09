@@ -49,7 +49,7 @@ function migrate_families() {
     $left_offset = 158;
 
     $sql = sprintf('SELECT `Webpage Scope Key`,`Page Key`,`Webpage Website Key` FROM `Page Store Dimension` WHERE `Webpage Template Filename`="products_showcase"  ');
-   // $sql = sprintf('SELECT `Webpage Scope Key`,`Page Key`,`Webpage Website Key` FROM `Page Store Dimension` WHERE  `Page Key`=49780 ');
+    $sql = sprintf('SELECT `Webpage Scope Key`,`Page Key`,`Webpage Website Key` FROM `Page Store Dimension` WHERE  `Page Key`=2562 ');
 
 
     if ($result = $db->query($sql)) {
@@ -280,6 +280,8 @@ function migrate_families() {
                         $has_header = true;
 
                     }
+
+                    $header_text=mb_convert_encoding($header_text, 'UTF-8', 'UTF-8');
 
 
                     $items[] = array(
@@ -637,9 +639,12 @@ function migrate_families() {
                 );
             }
 
+            $x=json_encode($new_content_data);
 
-            //          print_r($new_content_data);
 
+            print $x;
+
+            //          print_r
             //exit;
             // continue;
 
@@ -669,7 +674,7 @@ function migrate_departments() {
     $left_offset = 158;
 
     $sql = sprintf('SELECT `Page Key`,`Page Store Key` ,`Page Store Section`,`Page Parent Code` FROM `Page Store Dimension` WHERE  `Webpage Template Filename`="categories_showcase"   ');
-    //  $sql = sprintf('SELECT `Page Key`,`Page Store Key` ,`Page Store Section`,`Page Parent Code` FROM `Page Store Dimension` WHERE   `Page Key`=2972 ');
+      $sql = sprintf('SELECT `Page Key`,`Page Store Key` ,`Page Store Section`,`Page Parent Code` FROM `Page Store Dimension` WHERE   `Page Key`=2972 ');
 
 
     if ($result = $db->query($sql)) {
@@ -701,7 +706,6 @@ function migrate_departments() {
 
             $images = array();
             $texts  = array();
-
 
             foreach ($content_data['description_block']['blocks'] as $block_id => $block) {
 
@@ -828,10 +832,12 @@ function migrate_departments() {
 
                                 $_webpage = get_object('Webpage', $item['webpage_key']);
 
+
+
                                 $items[] = array(
                                     'type'                 => $item['type'],
                                     'category_key'         => $item['category_key'],
-                                    'header_text'          => trim(strip_tags($item['header_text'])),
+                                    'header_text'          => trim(strip_tags(mb_convert_encoding($item['header_text'], 'UTF-8', 'UTF-8'))),
                                     'image_src'            => $item['image_src'],
                                     'image_mobile_website' => $item['image_mobile_website'],
                                     'image_website'        => '',
