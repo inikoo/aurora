@@ -17,7 +17,7 @@
 
                <div class="wrap_to_center product_image" onCLick="console.log('move')">
 
-                   <i class="fa fa-info-circle more_info" aria-hidden="true"></i>
+                   <i class="fa fa-external-link-square more_info" aria-hidden="true"></i>
 
 
 

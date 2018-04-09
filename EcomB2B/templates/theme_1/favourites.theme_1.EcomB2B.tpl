@@ -61,7 +61,7 @@
 
                              <a href="{$product->get('Code')|lower}">
 
-                                 <i class="fa fa-info-circle more_info" aria-hidden="true" title="More info"></i>
+                                 <i class="fa fa-external-link-square more_info" aria-hidden="true" title="More info"></i>
                              </a>
                              {if !empty($customer)}
                                  {assign 'favourite_key' {$product->get('Favourite Key',{$customer->id})} }
