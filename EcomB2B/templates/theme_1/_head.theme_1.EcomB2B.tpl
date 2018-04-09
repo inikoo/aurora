@@ -40,7 +40,7 @@
     <![endif]-->
     <link rel="canonical" href="{$webpage->get('URL')}"/>
 
-    <link rel="stylesheet" href="css/desktop.min.css?v2" type="text/css"/>
+    <link rel="stylesheet" href="css/desktop.min.css?v3" type="text/css"/>
     <script src="/js/desktop.min.js"></script>
     {if $logged_in}
         <script src="/js/desktop.logged_in.min.js"></script>
