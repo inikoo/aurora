@@ -37,8 +37,8 @@ $editor = array(
 );
 
 
-migrate_families();
-//migrate_departments();
+//migrate_families();
+migrate_departments();
 //exit;
 
 //2730
