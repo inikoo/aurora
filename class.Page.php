@@ -1673,7 +1673,7 @@ class Page extends DB_Table {
                     $content_data['blocks'][$block_key]['items'][$item_key]['out_of_stock_class'] = $product->get('Out of Stock Class');
                     $content_data['blocks'][$block_key]['items'][$item_key]['out_of_stock_label'] = $product->get('Out of Stock Label');
                     $content_data['blocks'][$block_key]['items'][$item_key]['sort_code']          = $product->get('Code File As');
-                    $content_data['blocks'][$block_key]['items'][$item_key]['sort_name']          = mb_strtolower($product->get('Product Name'));
+                    $content_data['blocks'][$block_key]['items'][$item_key]['sort_name']          = $product->get('Product Name');
 
 
                     unset($items_product_id_index[$item['product_id']]);
@@ -1709,7 +1709,7 @@ class Page extends DB_Table {
                 'out_of_stock_class'   => $product->get('Out of Stock Class'),
                 'out_of_stock_label'   => $product->get('Out of Stock Label'),
                 'sort_code'            => $product->get('Code File As'),
-                'sort_name'            => mb_strtolower($product->get('Product Name')),
+                'sort_name'            => $product->get('Product Name'),
 
 
             );
@@ -3364,7 +3364,7 @@ class Page extends DB_Table {
                         $content_data['blocks'][$block_key]['items'][$item_key]['out_of_stock_class'] = $product->get('Out of Stock Class');
                         $content_data['blocks'][$block_key]['items'][$item_key]['out_of_stock_label'] = $product->get('Out of Stock Label');
                         $content_data['blocks'][$block_key]['items'][$item_key]['sort_code']          = $product->get('Code File As');
-                        $content_data['blocks'][$block_key]['items'][$item_key]['sort_name']          = mb_strtolower($product->get('Product Name'));
+                        $content_data['blocks'][$block_key]['items'][$item_key]['sort_name']          = $product->get('Product Name');
 
                     } else {
                         unset($content_data['blocks'][$block_key]['items'][$item_key]);
@@ -3476,7 +3476,7 @@ class Page extends DB_Table {
 
 
                         $content_data['blocks'][$block_key]['items'][$item_key]['link']         = $row['Webpage URL'];
-                        $content_data['blocks'][$block_key]['items'][$item_key]['webpage_code'] = mb_strtolower($row['Webpage Code']);
+                        $content_data['blocks'][$block_key]['items'][$item_key]['webpage_code'] = $row['Webpage Code'];
                         $content_data['blocks'][$block_key]['items'][$item_key]['webpage_key']  = $row['`Page Key'];
 
 
@@ -3564,7 +3564,7 @@ class Page extends DB_Table {
                             'image_website'        => '',
 
                             'webpage_key'  => $see_also_page->id,
-                            'webpage_code' => mb_strtolower($see_also_page->get('Webpage Code')),
+                            'webpage_code' => $see_also_page->get('Webpage Code'),
 
                             'category_key'    => $category->id,
                             'category_code'   => $category->get('Category Code'),
@@ -3587,7 +3587,7 @@ class Page extends DB_Table {
                             'image_website'        => '',
 
                             'webpage_key'  => $see_also_page->id,
-                            'webpage_code' => mb_strtolower($see_also_page->get('Webpage Code')),
+                            'webpage_code' => $see_also_page->get('Webpage Code'),
 
                             'product_id'        => $product->id,
                             'product_code'      => $product->get('Code'),
