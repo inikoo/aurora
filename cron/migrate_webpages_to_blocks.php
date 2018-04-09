@@ -302,7 +302,7 @@ function migrate_families() {
                         'out_of_stock_class'   => $product->get('Out of Stock Class'),
                         'out_of_stock_label'   => $product->get('Out of Stock Label'),
                         'sort_code'            => $product->get('Code File As'),
-                        'sort_name'            => mb_strtolower($product->get('Product Name')),
+                        'sort_name'            => $product->get('Product Name'),
 
 
                     );
@@ -431,7 +431,7 @@ function migrate_families() {
                             'out_of_stock_class'   => $product->get('Out of Stock Class'),
                             'out_of_stock_label'   => $product->get('Out of Stock Label'),
                             'sort_code'            => $product->get('Code File As'),
-                            'sort_name'            => mb_strtolower($product->get('Product Name')),
+                            'sort_name'            => $product->get('Product Name'),
 
 
                         );
@@ -475,7 +475,7 @@ function migrate_families() {
                                     'image_website'        => '',
 
                                     'webpage_key'          => $see_also_page->id,
-                                    'webpage_code'         => mb_strtolower($see_also_page->get('Webpage Code')),
+                                    'webpage_code'         => $see_also_page->get('Webpage Code'),
 
                                     'category_key'         => $category->id,
                                     'category_code'        => $category->get('Category Code'),
@@ -643,12 +643,19 @@ function migrate_families() {
             }
 
             $x=json_encode($new_content_data);
+            if($x==''){
+                print_r($row3);
+
+                print_r($webpage->id);
+
+                continue;
+            }
 
 
-            print $x;
+            //print $x;
 
             //          print_r
-            exit;
+           // exit;
             // continue;
 
 
@@ -845,7 +852,7 @@ function migrate_departments() {
                                     'image_mobile_website' => $item['image_mobile_website'],
                                     'image_website'        => '',
                                     'webpage_key'          => $item['webpage_key'],
-                                    'webpage_code'         => mb_strtolower($item['webpage_code']),
+                                    'webpage_code'         => $item['webpage_code'],
                                     'item_type'            => $item['item_type'],
                                     'category_code'        => $item['category_code'],
                                     'number_products'      => $item['number_products'],
