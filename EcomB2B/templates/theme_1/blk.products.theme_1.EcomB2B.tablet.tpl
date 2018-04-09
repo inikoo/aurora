@@ -36,7 +36,7 @@
                     </div>
 
                     <div class="wrap_to_center product_image" >
-                        <a href="{$item.link}"><i class="fa fa-fw fa-info-circle more_info" aria-hidden="true"></i></a>
+                        <a href="{$item.link}"><i class="fa fa-fw fa-external-link-square more_info" aria-hidden="true"></i></a>
 
                         {if $logged_in}
                             <i    data-product_id="{$item.product_id}" data-favourite_key="0" class="favourite_{$item.product_id} favourite far  fa-heart" aria-hidden="true"></i>
