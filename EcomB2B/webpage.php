@@ -12,6 +12,7 @@
 
 $webpage = new Public_Webpage($webpage_key);
 $smarty->assign('navigation', $webpage->get('Navigation Data'));
+$smarty->assign('discounts', $webpage->get('Discounts'));
 
 if ($webpage->id) {
 

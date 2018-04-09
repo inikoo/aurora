@@ -134,6 +134,8 @@ module.exports = function (grunt) {
                 }, files: {
                     'EcomB2B/css/style.theme_1.EcomB2B.desktop.css': 'sass/style.theme_1.EcomB2B.scss',
                     'EcomB2B/css/style.theme_1.EcomB2B.tablet.css': 'sass/style.theme_1.EcomB2B.tablet.scss',
+                    'EcomB2B/css/style.theme_1.EcomB2B.mobile.css': 'sass/style.theme_1.EcomB2B.mobile.scss',
+
 
                 }
             },
@@ -187,7 +189,7 @@ module.exports = function (grunt) {
                         'EcomB2B/theme_1/mobile/skin.css',
                         'EcomB2B/theme_1/mobile/framework.css',
                         'EcomB2B/theme_1/sky_forms/css/sky-forms.css',
-                        'EcomB2B/theme_1/css/aurora.theme_1.EcomB2B.mobile.css',
+                        'EcomB2B/css/style.theme_1.EcomB2B.mobile.css',
                     ],
 
 

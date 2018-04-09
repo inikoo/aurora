@@ -802,21 +802,32 @@ z-index: 100;position:relative;
 }
 
 
-
+.discounts{
+	width: 100%;border-bottom: 1px solid #ccc;
+	display: flex;
 
 .discount_card{
 
-border:1px solid #ccc;width:300px;margin-left:10px;float:right;padding:2px 4px
+	flex-grow:1;
+	padding:2px 20px;
+
 
 }
 
-.discount_card .discount_name{
-font-size: 90%;
+	.discount_icon{
+		position:relative;top:4px;margin-right: 10px;float:left;font-size:30px;height: 100%;line-height: 30px
+	}
+
+	.discount_card .discount_name{
+		font-size: 90%;
+	}
+
+	.discount_card  .discount_allowance{
+		font-weight: 800;
+	}
+
 }
 
-.discount_card  .discount_allowance{
-font-weight: 800;
-}
 
 .parent_up{
 

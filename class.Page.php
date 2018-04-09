@@ -2211,11 +2211,21 @@ class Page extends DB_Table {
 
                             }
 
+                        
+
 
                             $mobile_html = preg_replace('/\<p\>\<br\>\<\/p\>/', '', $mobile_html);
                             $mobile_html = preg_replace('/\<p style\=\"text-align: left;\"\><br\>\<\/p\>/', '', $mobile_html);
+                            $mobile_html = preg_replace('/\<p style\=\"\"\>\<br\>\<\/p\>/', '', $mobile_html);
+
+
+
+
+
                             $tablet_html = preg_replace('/\<p\>\<br\>\<\/p\>/', '', $tablet_html);
                             $tablet_html = preg_replace('/\<p style\=\"text-align: left;\"\><br\>\<\/p\>/', '', $tablet_html);
+                            $tablet_html = preg_replace('/\<p style\=\"\"\>\<br\>\<\/p\>/', '', $tablet_html);
+
                             // print_r($mobile_html);
                             $content_data['blocks'][$block_key]['mobile_html'] = $mobile_html;
                             $content_data['blocks'][$block_key]['tablet_html'] = $tablet_html;

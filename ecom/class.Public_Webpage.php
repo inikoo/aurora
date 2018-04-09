@@ -254,11 +254,67 @@ class Public_Webpage {
 
                 return $navigation_data;
                 break;
+
+            case 'Discounts':
+
+
+                switch ($this->data['Webpage Scope']){
+                    case 'Category Products':
+                        $deals=array();
+                        $sql = sprintf(
+                            "SELECT `Deal Component Key`,`Deal Component Icon`,`Deal Component Name Label`,`Deal Component Term Label`,`Deal Component Allowance Label` FROM `Deal Component Dimension` WHERE `Deal Component Allowance Target`='Category' AND `Deal Component Allowance Target Key`=%d AND `Deal Component Status`='Active'",
+                            $this->data['Webpage Scope Key']
+                        );
+
+                        if ($result = $this->db->query($sql)) {
+                            foreach ($result as $row) {
+
+                                $deals[]=array(
+                                    'key'=>$row['Deal Component Key'],
+                                    'icon'=>$row['Deal Component Icon'],
+                                    'name'=>$row['Deal Component Name Label'],
+                                    'term'=>$row['Deal Component Term Label'],
+                                    'allowance'=>$row['Deal Component Allowance Label']
+                                );
+
+
+                            }
+                        } else {
+                            print_r($error_info = $this->db->errorInfo());
+                            exit;
+                        }
+
+
+
+
+
+
+
+
+
+
+
+                        return array(
+                            'show'=>count($deals==0?false:true),
+                            'deals'=>$deals
+                        );
+
+                        break;
+                    default:
+                        return array(
+                            'show'=>false,
+                            'deals'=>array()
+                        );
+                }
+
+
+                break;
+
             case 'Image':
                 if (!$this->scope_load) {
                     $this->load_scope();
                 }
-                //sasdasd asdasdasd asdasd
+
                 if (is_object($this->scope)) {
 
 

@@ -25,6 +25,7 @@
 
 
                         <a href="{$item.link}" style="z-index: 10000;"><img src="{$item.image_mobile_website}" alt="{$item.name|escape}"></a>
+                         <a class="go_product" href="{$item.link}" ><i  class="fal fa-external-link"></i></a>
 
 
 
@@ -52,7 +53,15 @@
                                 <i onclick="save_item_qty_change(this)" class="ordering_button add_one fa fa-fw  fa-plus-circle color-green-dark"></i>
                             </div>
                             {/if}
+                            {else}
 
+                            <div class="log_out_prod_info" >
+                                {if empty($labels._login_to_see)}{t}For prices, please login or register{/t}{else}{$labels._login_to_see}{/if}
+                                </div>
+                                <div class="log_out_prod_links" >
+                                   <div onclick='window.location.href = "/login.sys"'  ><span>{if empty($labels._Login)}{t}Login{/t}{else}{$labels._Login}{/if}</span></div>
+                                    <div onclick='window.location.href = "/register.sys"'><span>{if empty($labels._Register)}{t}Register{/t}{else}{$labels._Register}{/if}</span></div>
+                               </div>
                             {/if}
                         </em>
                              <u>{$item.code}</u>
