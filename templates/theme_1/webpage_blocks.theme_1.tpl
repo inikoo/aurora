@@ -587,6 +587,21 @@
             <div style="clear:both"></div>
         </div>
         {/if}
+        {if isset($discounts)}
+        {foreach from=discounts item=item key=key}
+            <div class="discount_card" key="{$item->id}" >
+                <span class="discount_icon">{$item->get('Deal Component Icon')}</span>
+
+                <span contenteditable="true" class="discount_name">{$item->get('Deal Component Name Label')}</span><br/>
+                <span contenteditable="true"  class="discount_term">{$item->get('Deal Component Term Label')}</span>
+
+                <span contenteditable="true"  class="discount_allowance">{$item->get('Deal Component Allowance Label')}</span>
+
+            </div>
+
+        {/foreach}
+        {/if}
+
         {foreach from=$content.blocks item=$block key=key}
             {include file="{$theme}/blk.{$block.type}.{$theme}.tpl" data=$block key=$key  }
 
