@@ -283,7 +283,7 @@ function migrate_families() {
 
                     $header_text=mb_convert_encoding($header_text, 'UTF-8', 'UTF-8');
 
-
+/*
                     $items[] = array(
                         'type'                 => 'product',
                         'product_id'           => $row['Product ID'],
@@ -306,6 +306,9 @@ function migrate_families() {
 
 
                     );
+
+*/
+
                 }
             } else {
                 print_r($error_info = $db->errorInfo());
@@ -496,7 +499,17 @@ function migrate_families() {
 
             $new_content_data = array(
                 'blocks'   => array(
-
+                    array(
+                        'type'          => 'blackboard',
+                        'label'         => _('Blackboard'),
+                        'icon'          => 'fa-image',
+                        'show'          => 1,
+                        'top_margin'    => 20,
+                        'bottom_margin' => 0,
+                        'height'        => $blackboard_height,
+                        'images'        => $images,
+                        'texts'         => $texts
+                    ),
                     array(
                         'type'              => 'category_products',
                         'label'             => _('Family'),
