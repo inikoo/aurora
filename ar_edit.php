@@ -348,7 +348,7 @@ function edit_field($account, $db, $user, $editor, $data, $smarty) {
 
 
     if ($field == 'Product Category Department Category Key') {
-        $formatted_field = 'Department Category Key';
+        $formatted_field = 'Department Category Code';
 
     }
 
