@@ -235,7 +235,11 @@ function migrate_families() {
             if (preg_match('/\#description_block\{ height\:([0-9.]+)px\}/', $css, $matches)) {
 
                 $blackboard_height = $matches[1];
+            }else{
+                $blackboard_height=$_height;
             }
+
+
 
 
            // if ($_height > $blackboard_height) {
