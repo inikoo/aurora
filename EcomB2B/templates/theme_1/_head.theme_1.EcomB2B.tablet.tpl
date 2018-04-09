@@ -31,7 +31,7 @@
 
     <script src="/js/tablet.min.js?v5"></script>
     {if $logged_in}<script src="/js/mobile.logged_in.min.js"></script>
-    {if $webpage->get('Webpage Code')=='checkout.sys'}<script src="/js/mobile.forms.min.js"></script><script src="/js/mobile.checkout.min.js"></script>
+    {if $webpage->get('Webpage Code')=='checkout.sys'}<script src="/js/mobile.forms.min.js"></script><script src="/js/mobile.checkout.min.js?v2"></script>
     {elseif $webpage->get('Webpage Code')=='basket.sys' or $webpage->get('Webpage Code')=='profile.sys' or $webpage->get('Webpage Code')=='reset_pwd.sys'}<script src="/js/mobile.forms.min.js"></script>{/if}
     {else}
         {if $webpage->get('Webpage Code')=='register.sys' or  $webpage->get('Webpage Code')=='login.sys'}<script src="/js/mobile.forms.min.js"></script>{/if}
