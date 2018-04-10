@@ -151,25 +151,37 @@
 
 
 
-    <span class="control_panel"  >
+
+
+    {if $logged_in}
+
+        <span class="control_panel"  >
 
         <a href="favourites.sys" ><i   class="fa fa-heart"></i></a>
         <a href="profile.sys"  ><i class="fa fa-user"></i></a>
 
         <a class="basket_link" href="basket.sys">
         <i class="fas fa-shopping-cart"></i>
-           {if !empty($website->settings['Info Bar Basket Amount Type']) and $website->settings['Info Bar Basket Amount Type']=='items_net'}<span id="header_order_items_net_amount" class="order_items_net" style="padding-right:10px" title="{if isset($labels._items_net) and $labels._items_net!=''}{$labels._items_net}{else}{t}Items Net{/t}{/if}">{if isset($order)}{$order->get('Items Net Amount')}{else}{$zero_money}{/if}</span>{else}<span id="header_order_total_amount" class="order_total" style="padding-right:10px" title="{if isset($labels._total) and $labels._total!=''}{$labels._total}{else}{t}Total{/t}{/if}">{if isset($order)}{$order->get('Total')}{else}{$zero_money}{/if}</span>{/if}
+            {if !empty($website->settings['Info Bar Basket Amount Type']) and $website->settings['Info Bar Basket Amount Type']=='items_net'}<span id="header_order_items_net_amount" class="order_items_net" style="padding-right:10px" title="{if isset($labels._items_net) and $labels._items_net!=''}{$labels._items_net}{else}{t}Items Net{/t}{/if}">{if isset($order)}{$order->get('Items Net Amount')}{else}{$zero_money}{/if}</span>{else}<span id="header_order_total_amount" class="order_total" style="padding-right:10px" title="{if isset($labels._total) and $labels._total!=''}{$labels._total}{else}{t}Total{/t}{/if}">{if isset($order)}{$order->get('Total')}{else}{$zero_money}{/if}</span>{/if}
         </a>
 
     </span>
-
-    {if $logged_in}
 
         <a href="#" class="header-icon header-icon-4 hamburger-animated open-sidebar-right"></a>
 
 
     {else}
-        <a href="#" class="header-icon header-icon-4 open-sidebar-right"><i class="fa fa-sign-in"></i></a>
+    <span class="control_panel"  >
+        <a href="/login.sys" ><i class="fa fa-sign-in" aria-hidden="true"></i> <span>{if empty($labels._Login)}{t}Login{/t}{else}{$labels._Login}{/if}</span></a>
+        <a href="/register.sys" ><i class="fa fa-user-plus" aria-hidden="true"></i> <span>{if empty($labels._Register)}{t}Register{/t}{else}{$labels._Register}{/if}</span></a>
+
+
+</span>
+
+
+
+        <a href="#" class="header-icon header-icon-4 hamburger-animated open-sidebar-right"></a>
+
     {/if}
 </div>
 {/if}
