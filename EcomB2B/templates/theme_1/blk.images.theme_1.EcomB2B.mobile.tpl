@@ -20,4 +20,5 @@
         </figure>
 
     {/foreach}
+    <div style="clear:both"></div>
 </div>
