@@ -39,10 +39,11 @@
                                     <div class="category_block" style="position:relative" >
 
                                         <div class="item_header_text" > <a href="{$category_data.link}">{$category_data.header_text|strip_tags}</a></div>
+
                                         <div class="wrap_to_center "   >
-                                           
+                                            <a href="{$category_data.link}">
                                             <img src="{$category_data.image_website}"/>
-                                           
+                                            </a>
                                         </div>
 
                                     </div>

@@ -2211,7 +2211,7 @@ class Page extends DB_Table {
 
                             }
 
-                        
+
 
 
                             $mobile_html = preg_replace('/\<p\>\<br\>\<\/p\>/', '', $mobile_html);
