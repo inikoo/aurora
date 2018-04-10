@@ -15,7 +15,5 @@
             <div class="text_block">{$text_block.text}</div>
         {/foreach}
     </div>
-
-
 </div>
 
