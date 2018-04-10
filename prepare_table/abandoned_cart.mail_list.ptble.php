@@ -20,7 +20,7 @@ $wheref   = '';
 $currency = '';
 
 
-$where = 'where `Order Class`="InWebsite" and `Customer Main Plain Email`!="" and `Customer Send Email Marketing`="Yes" ';
+$where = 'where `Order State`="InBasket" and `Customer Main Plain Email`!="" and `Customer Send Email Marketing`="Yes" ';
 $table = '`Order Dimension` O  left join `Customer Dimension` on (`Order Customer Key`=`Customer Key`) ';
 
 
