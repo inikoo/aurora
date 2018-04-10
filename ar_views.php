@@ -2589,11 +2589,20 @@ function get_tabs($data, $db, $account, $modules, $user, $smarty) {
 
         if ($data['_object']->get('Category Scope') == 'Product') {
 
-            // print_r($data['_object']);
+         //   print_r($_content['tabs']);
 
             if ($data['_object']->get('Category Branch Type') == 'Root') {
 
                 unset($_content['tabs']['category.sales']);
+                unset($_content['tabs']['category.webpage']);
+
+                if( $data['tab']!='category.details'){
+                    $_content['tabs']['category.categories']['selected'] = true;
+                    $data['tab']                                         = 'category.categories';
+
+                }
+
+
             }
 
             if ($data['_object']->get('Category Subject') == 'Product') {
@@ -2620,7 +2629,8 @@ function get_tabs($data, $db, $account, $modules, $user, $smarty) {
 
                 }
 
-            } else {
+            }
+            else {
                 if ($data['_object']->get('Root Key') == $data['store']->get('Store Department Category Key')) {
                     $_content['tabs']['category.subjects']['label']   = _('Families');
                     $_content['tabs']['category.categories']['label'] = _('Departments');
