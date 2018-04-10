@@ -47,7 +47,7 @@
 
 
 <div id="category_categories_add_category_dialog" class="hide" style="width:300px;position:absolute;border:1px solid #ccc;background-color:white;padding:20px;z-index: 1002">
-    <div style="margin-bottom:5px">  <i  onClick="close_add_category_dialog()" style="position:relative;top:-5px" class="button fa fa-fw fa-window-close" aria-hidden="true"></i>  </div>
+    <div style="margin-bottom:5px">  <i  onClick="close_add_category_to_department_dialog()" style="position:relative;top:-5px" class="button fa fa-fw fa-window-close" aria-hidden="true"></i>  </div>
     <table class="edit_container" >
         <tr>
             <td>
@@ -96,7 +96,7 @@
     <div style="margin-bottom:5px">  <i  onClick="$('#category_categories_items_showcase').addClass('hide')" style="position:relative;top:-5px" class="button fa fa-fw fa-window-close" aria-hidden="true"></i>  </div>
 
     <table style="width:100%;border-bottom: 1px solid #ccc;margin-top: 10px">
-        <tr><td  onclick="open_add_category_dialog('category_categories_items_showcase')" style="border-top: 1px solid #ccc"  class=" button"><span  ><i class="fa fa-sitemap fa-fw " style="margin-right: 50px" aria-hidden="true"></i> {t}Category{/t}</span> </td></tr>
+        <tr><td  onclick="open_add_category_to_department_dialog('category_categories_items_showcase')" style="border-top: 1px solid #ccc"  class=" button"><span  ><i class="fa fa-sitemap fa-fw " style="margin-right: 50px" aria-hidden="true"></i> {t}Category{/t}</span> </td></tr>
         <tr><td  onclick="open_add_panel_dialog('text')" style="border-top: 1px solid #ccc"  class=" button"><span  ><i class="fa fa-font fa-fw " style="margin-right: 50px" aria-hidden="true"></i> {t}Text{/t}</span> </td></tr>
         <tr><td  onclick="open_add_panel_dialog('image')" style="border-top: 1px solid #ccc"  class=" button"><span  ><i class="fa fa-camera fa-fw " style="margin-right: 50px" aria-hidden="true"></i> {t}Image{/t}</span> </td></tr>
 
@@ -117,7 +117,7 @@
                                                                                                                                                       style="" placeholder="0">
 
 
-        <span id='open_add_category_to_anchor_dialog' onclick="$('#category_categories_add_category_dialog').data('section_index',0);open_add_category_dialog('open_add_category_to_anchor_dialog')" class="padding_left_20 unselectable button"><i class="fa fa-plus"></i> {t}Category{/t}</span>
+        <span id='open_add_category_to_anchor_dialog' onclick="$('#category_categories_add_category_dialog').data('section_index',0);open_add_category_to_department_dialog('open_add_category_to_anchor_dialog')" class="padding_left_20 unselectable button"><i class="fa fa-plus"></i> {t}Category{/t}</span>
         <span onclick="show_sections_overview(this)" class="padding_left_20 unselectable button"><i class="fa fa-cogs"></i> {t}Sections{/t}</span>
 
 
@@ -267,7 +267,9 @@
         $('#sortable_sections_tbody tr:eq('+index+') ._title').html(text)
     }
 
-    function open_add_category_dialog(offset_parent_id){
+    function open_add_category_to_department_dialog(offset_parent_id){
+
+
 
         $('#category_categories_add_category_dialog').removeClass('hide').offset({
             left: $('#'+offset_parent_id).offset().left,top: $('#'+offset_parent_id).offset().top
@@ -293,7 +295,7 @@
 
     }
 
-    function close_add_category_dialog(){
+    function close_add_category_to_department_dialog(){
 
         $('#category_categories_add_category_dialog').addClass('hide')
         $('#add_category_dropdown_select_label').val('');
@@ -340,8 +342,8 @@
 
 
 
-        $('#preview')[0].contentWindow.add_category_categories_section('{$key}',$('#category_categories_add_category_dialog').data('section_index'),new_category);
-        close_add_category_dialog();
+        $('#preview')[0].contentWindow.add_guest_to_category_categories('{$key}',$('#category_categories_add_category_dialog').data('section_index'),new_category);
+        close_add_category_to_department_dialog();
         $('#save_button').addClass('save button changed valid')
 
 
