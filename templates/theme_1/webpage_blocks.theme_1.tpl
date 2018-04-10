@@ -2486,6 +2486,8 @@ console.log($(element))
     function add_category_categories_section(block_key){
         var new_section=$('<div class="section non_anchor"><div class="page_break"><span class="section_header title items_view" contenteditable="true" field="title">{t}Section title{/t}</span> <i onclick="show_add_category_to_category_categories_section(this)" style="margin-top:9px;margin-left:15px" class="fa fa-plus button" title="{t}Add category to this section{/t}"></i><span class="section_header sub_title items_view" contenteditable="true" field="subtitle">{t}Section subtitle{/t}</span></div><div class="section_items connectedSortable"></div></div>')
 
+
+
         new_section.insertAfter('#category_sections_'+block_key+' .section.anchor')
 
         $('<tr><td class="_title button">{t}Section title{/t}</td></tr>').prependTo('#sections_list_tbody')
@@ -2649,7 +2651,7 @@ console.log($(element))
 
     })
 
-    function add_category_categories_section(block_key,section_index,category_element){
+    function add_guest_to_category_categories(block_key,section_index,category_element){
         $('#category_sections_'+block_key+' .section:eq('+section_index+') .section_items').append($(category_element))
     }
 
