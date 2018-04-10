@@ -416,24 +416,22 @@ class Website extends DB_Table {
         switch ($key) {
 
 
-
-
             case 'Registration Type':
 
-              switch ($this->data['Website Registration Type']){
-                  case 'Open':
-                      return _('Open');
-                      break;
-                  case 'Closed':
-                      return _('Closed');
-                      break;
-                  case 'ApprovedOnly':
-                      return _('Only approved');
-                      break;
-                  default:
-                      return $this->data['Website Registration Type'];
+                switch ($this->data['Website Registration Type']) {
+                    case 'Open':
+                        return _('Open');
+                        break;
+                    case 'Closed':
+                        return _('Closed');
+                        break;
+                    case 'ApprovedOnly':
+                        return _('Only approved');
+                        break;
+                    default:
+                        return $this->data['Website Registration Type'];
 
-              }
+                }
 
                 break;
 
@@ -510,7 +508,7 @@ class Website extends DB_Table {
             case 'Settings Info Bar Basket Amount Type':
 
 
-                switch ($this->get('Website Settings Info Bar Basket Amount Type')){
+                switch ($this->get('Website Settings Info Bar Basket Amount Type')) {
                     case 'items_net':
                         return _('Items net');
                     default:
@@ -523,29 +521,25 @@ class Website extends DB_Table {
             default:
 
 
-                if(preg_match('/^Website Settings /',$key)){
+                if (preg_match('/^Website Settings /', $key)) {
 
 
-
-
-                    $_key=preg_replace('/^Website Settings /','',$key);
-                    if(isset($this->settings[$_key])){
+                    $_key = preg_replace('/^Website Settings /', '', $key);
+                    if (isset($this->settings[$_key])) {
                         return $this->settings[$_key];
-                    }else{
+                    } else {
                         return '';
                     }
 
                 }
 
-                if(preg_match('/^Settings /',$key)){
+                if (preg_match('/^Settings /', $key)) {
 
 
-
-
-                    $_key=preg_replace('/^Settings /','',$key);
-                    if(isset($this->settings[$_key])){
+                    $_key = preg_replace('/^Settings /', '', $key);
+                    if (isset($this->settings[$_key])) {
                         return $this->settings[$_key];
-                    }else{
+                    } else {
                         return '';
                     }
 
@@ -1058,16 +1052,20 @@ class Website extends DB_Table {
 
         if ($category->get('Category Subject') == 'Product') {
 
-            $template = 'products_showcase';
 
-        } else {
-
-            if($this->get('Website Template')=='theme_1'){
-                $template = 'category_categories';
-            }else{
+            if ($this->get('Website Theme') == 'theme_1') {
+                $template = 'category_products';
+            } else {
                 $template = 'categories_showcase';
             }
 
+        } else {
+
+            if ($this->get('Website Theme') == 'theme_1') {
+                $template = 'category_categories';
+            } else {
+                $template = 'categories_showcase';
+            }
 
 
         }
@@ -1118,19 +1116,18 @@ class Website extends DB_Table {
         );
 
 
-       // print_r($page_data);
+        //  print_r($page_data);
+        // exit;
         $page = new Page('find', $page_data, 'create');
 
         $category->update(array('Product Category Webpage Key' => $page->id), 'no_history');
 
 
-
         $sql = sprintf(
-            'UPDATE `Product Category Index` SET `Product Category Index Website Key`=%d WHERE `Product Category Index Category Key`=%d  ', $page->id,$category->id
+            'UPDATE `Product Category Index` SET `Product Category Index Website Key`=%d WHERE `Product Category Index Category Key`=%d  ', $page->id, $category->id
         );
-//        print "$sql\n";
+        //        print "$sql\n";
         $this->db->exec($sql);
-
 
 
         if ($page->new) {
@@ -1138,8 +1135,8 @@ class Website extends DB_Table {
         }
 
 
-       //   print_r($page->data);
-      //  print_r($category->get('Category Subject'));
+        //   print_r($page->data);
+        //  print_r($category->get('Category Subject'));
 
         $webpage_type->update_number_webpages();
 
@@ -1156,62 +1153,68 @@ class Website extends DB_Table {
         $this->error        = $page->error;
 
 
-        if ($category->get('Category Subject') == 'Product') {
+        if ($this->get('Website Theme') == 'theme_1') {
 
 
-            $title = $category->get('Label');
-            if ($title == '') {
-                $title = $category->get('Code');
-            }
-            if ($title == '') {
-                $title = _('Title');
-            }
+        } else {
 
-            $description = $category->get('Product Category Description');
-            if ($description == '') {
-                $description = $category->get('Label');
-            }
-            if ($description == '') {
-                $description = $category->get('Code');
-            }
-            if ($description == '') {
-                $description = _('Description');
-            }
+            if ($category->get('Category Subject') == 'Product') {
 
 
-            $image_src = $category->get('Image');
+                $title = $category->get('Label');
+                if ($title == '') {
+                    $title = $category->get('Code');
+                }
+                if ($title == '') {
+                    $title = _('Title');
+                }
 
-            $content_data = array(
-                'description_block' => array(
-                    'class' => '',
+                $description = $category->get('Product Category Description');
+                if ($description == '') {
+                    $description = $category->get('Label');
+                }
+                if ($description == '') {
+                    $description = $category->get('Code');
+                }
+                if ($description == '') {
+                    $description = _('Description');
+                }
 
-                    'blocks' => array(
 
-                        'webpage_content_header_image' => array(
-                            'type'      => 'image',
-                            'image_src' => $image_src,
-                            'caption'   => '',
-                            'class'     => ''
+                $image_src = $category->get('Image');
 
-                        ),
+                $content_data = array(
+                    'description_block' => array(
+                        'class' => '',
 
-                        'webpage_content_header_text' => array(
-                            'class'   => '',
-                            'type'    => 'text',
-                            'content' => sprintf('<h1 class="description_title">%s</h1><div class="description">%s</div>', $title, $description)
+                        'blocks' => array(
+
+                            'webpage_content_header_image' => array(
+                                'type'      => 'image',
+                                'image_src' => $image_src,
+                                'caption'   => '',
+                                'class'     => ''
+
+                            ),
+
+                            'webpage_content_header_text' => array(
+                                'class'   => '',
+                                'type'    => 'text',
+                                'content' => sprintf('<h1 class="description_title">%s</h1><div class="description">%s</div>', $title, $description)
+
+                            )
 
                         )
-
                     )
-                )
 
-            );
+                );
 
-          //  print_r($content_data);
-            $page->update(array('Page Store Content Data' => json_encode($content_data)), 'no_history');
+                //  print_r($content_data);
+                $page->update(array('Page Store Content Data' => json_encode($content_data)), 'no_history');
 
 
-            $category->create_stack_index(true);
+                $category->create_stack_index(true);
+            }
         }
 
 
@@ -1653,8 +1656,6 @@ class Website extends DB_Table {
 
 
     }
-
-
 
 
 }

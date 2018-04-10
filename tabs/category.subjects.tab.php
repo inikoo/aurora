@@ -108,6 +108,17 @@ if ($category->get('Category Scope') == 'Product') {
     }
     else {
 
+        $store=get_object('Store',$state['_object']->get('Store Key'));
+        //print_r($store);
+
+
+        if(
+            $store->get('Store Department Category Key')==$state['_object']->get('Category Root Key') or
+            $store->get('Store Family Category Key')==$state['_object']->get('Category Root Key')
+        ){
+            $smarty->assign('is_family', 'Yes');
+        }
+
 
 
 
@@ -179,6 +190,11 @@ if ($category->get('Category Scope') == 'Product') {
         );
         $smarty->assign('table_buttons', $table_buttons);
 
+
+
+        $smarty->assign(
+            'js_code', 'js/injections/edit_categories.'.(_DEVEL ? '' : 'min.').'js'
+        );
 
 
 

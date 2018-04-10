@@ -2307,7 +2307,7 @@ console.log($(element))
         var id='blackboard_text_'+datetime.getTime();
 
 
-        text = $('<div  id='+id+' class="blackboard_text" style="position:absolute;width:150px;height:100px;text-align:center" ><h1>Bla bla</h1><p>bla bla bla</p></div>').appendTo($('#blackboard_'+key));
+        text = $('<div  id='+id+' class="blackboard_text" style="position:absolute;width:150px;height:150px;" ><h1>Bla bla</h1><p>bla bla bla.</p></div>').appendTo($('#blackboard_'+key));
 
 
         set_up_blackboard_text(id)

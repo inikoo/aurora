@@ -10,6 +10,9 @@
 */
 
 
+
+//print_r($options);
+
 $public_options = array(
     'Yes' => _('Yes'),
     'No'  => _('No')
@@ -17,6 +20,8 @@ $public_options = array(
 asort($public_options);
 
 
+$category_product_fields=array();
+/*
 $category_product_fields = array(
     array(
         'label'      => _('Visibility'),
@@ -176,5 +181,5 @@ $category_product_fields = array(
 
 
 );
-
+*/
 ?>

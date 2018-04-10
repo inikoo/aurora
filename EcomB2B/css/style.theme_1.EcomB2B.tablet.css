@@ -734,9 +734,7 @@ p {
 .log_out_prod_links {
   display: flex;
   margin-top: 0px;
-  margin-bottom: 10px;
-  position: relative;
-  top: -5px; }
+  margin-bottom: 15px; }
   .log_out_prod_links div {
     flex-grow: 1;
     text-align: center; }
