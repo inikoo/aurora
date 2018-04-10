@@ -11,9 +11,7 @@
 
 
 <div id="block_{$key}" class="{$data.type} _block blk_images  template_{$data.template} {if !$data.show}hide{/if} " style="Width:100%;">
-
     {foreach from=$data.images item=image}
-
         <figure >
                {if !empty($image.link)}<a href="{$image.link}">{/if}
                 <img src="{$image.src}" alt="{$image.title}" title="{$image.title}" style="width:100%"/>
@@ -22,7 +20,4 @@
         </figure>
 
     {/foreach}
-
-
 </div>
-<div class="clearfix"></div>
