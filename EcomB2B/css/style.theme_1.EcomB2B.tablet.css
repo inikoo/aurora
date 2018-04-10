@@ -720,15 +720,28 @@ p {
   top: 0px;
   wixdth: 100px;
   position: absolute; }
+  .header .control_panel span {
+    color: #444444; }
   .header .control_panel i {
     display: inline; }
   .header .control_panel a {
     margin-right: 20px; }
-.header a.basket_link {
-  margin-right: 10px; }
-.header .basket_link i {
-  margin-right: 5px; }
-.header .basket_link span {
-  color: #444444; }
+  .header .control_panel a.basket_link {
+    margin-right: 10px; }
+  .header .control_panel .basket_link i {
+    margin-right: 5px; }
+
+.log_out_prod_links {
+  display: flex;
+  margin-top: 0px;
+  margin-bottom: 10px;
+  position: relative;
+  top: -5px; }
+  .log_out_prod_links div {
+    flex-grow: 1;
+    text-align: center; }
+  .log_out_prod_links span {
+    border: 1px solid #ccc;
+    padding: 5px 10px; }
 
 /*# sourceMappingURL=style.theme_1.EcomB2B.tablet.css.map */

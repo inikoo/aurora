@@ -27,7 +27,7 @@
     <title>{$webpage->get('Webpage Browser Title')}</title>
     <meta name="description" content="{$webpage->get('Webpage Meta Description')}"/>
 
-    <link rel="stylesheet" type="text/css" href="/css/tablet.min.css?v2">
+    <link rel="stylesheet" type="text/css" href="/css/tablet.min.css?v3">
 
     <script src="/js/tablet.min.js?v5"></script>
     {if $logged_in}<script src="/js/mobile.logged_in.min.js"></script>

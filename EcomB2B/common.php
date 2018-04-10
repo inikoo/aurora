@@ -434,14 +434,13 @@ if (!$is_cached) {
 
         }
 
-        $smarty->assign('zero_money', money(0,$store->get('Store Currency Code')));
 
 
 
     }
 
+    $smarty->assign('zero_money', money(0,$store->get('Store Currency Code')));
 
-    $smarty->assign('zero_amount', money(0,$store->get('Store Currency Code')));
 
 
     $smarty->assign('customer_key', $customer_key);
