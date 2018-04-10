@@ -3052,7 +3052,8 @@ class Page extends DB_Table {
                 $this->update(array('Page Store Content Data' => json_encode($content_data)), 'no_history');
 
 
-            } else {
+            }
+            else {
                 include_once 'class.Public_Product.php';
 
 
@@ -3124,7 +3125,8 @@ class Page extends DB_Table {
                 $items = array();
 
                 $sql = sprintf(
-                    "SELECT  `Webpage URL`,`Category Main Image Key`,`Category Main Image`,`Category Label`,`Category Main Image Key`,`Webpage State`,`Product Category Public`,`Webpage State`,`Page Key`,`Webpage Code`,`Product Category Active Products`,`Category Code`,B.`Category Key` FROM    `Category Bridge` B  LEFT JOIN     `Product Category Dimension` P   ON (`Subject Key`=`Product Category Key` AND `Subject`='Category' )    LEFT JOIN `Category Dimension` Cat ON (Cat.`Category Key`=P.`Product Category Key`) LEFT JOIN `Page Store Dimension` CatWeb ON (CatWeb.`Page Key`=`Product Category Webpage Key`)  WHERE  B.`Category Key`=%d  AND `Product Category Public`='Yes'  AND `Webpage State` IN ('Online','Ready')    ORDER BY  `Category Label`  ",
+                    "SELECT  `Webpage URL`,`Category Main Image Key`,`Category Main Image`,`Category Label`,`Category Main Image Key`,`Webpage State`,`Product Category Public`,`Webpage State`,`Page Key`,`Webpage Code`,`Product Category Active Products`,`Category Code`,B.`Category Key` ,`Product Category Key`
+                  FROM    `Category Bridge` B  LEFT JOIN     `Product Category Dimension` P   ON (`Subject Key`=`Product Category Key` AND `Subject`='Category' )    LEFT JOIN `Category Dimension` Cat ON (Cat.`Category Key`=P.`Product Category Key`) LEFT JOIN `Page Store Dimension` CatWeb ON (CatWeb.`Page Key`=`Product Category Webpage Key`)  WHERE  B.`Category Key`=%d  AND `Product Category Public`='Yes'  AND `Webpage State` IN ('Online','Ready')    ORDER BY  `Category Label`  ",
                     $this->get('Webpage Scope Key')
 
 
@@ -3136,7 +3138,7 @@ class Page extends DB_Table {
                     foreach ($result as $row) {
                         $items[] = array(
                             'type'                 => 'category',
-                            'category_key'         => $row['Category Key'],
+                            'category_key'         => $row['Product Category Key'],
                             'header_text'          => trim(strip_tags($row['Category Label'])),
                             'image_src'            => ($row['Category Main Image Key'] ? 'image_root.php?id='.$row['Category Main Image Key'] : '/art/nopic.png'),
                             'image_mobile_website' => '',
@@ -3172,7 +3174,7 @@ class Page extends DB_Table {
                     'blocks' => array(
                         array(
                             'type'          => 'category_categories',
-                            'label'         => _('Categories').' ('._('sections').')',
+                            'label'         => _('Department'),
                             'icon'          => 'fa-th',
                             'show'          => 1,
                             'top_margin'    => 0,
