@@ -10,6 +10,7 @@
 *}
 
 {if !empty($data.src_mobile)}
+    <div style="clear:both"></div>
 <div class="{$data.type} _block  " style="Width:100%;height:{$data.height_mobile}px" data-h="{$data.height_mobile}" data-w="420"  >
     <iframe onload="
     var div=$(this).closest('div');
