@@ -11,9 +11,15 @@
 */
 if (isset($options['new']) and $options['new']) {
     $new = true;
+
+    $store = get_object('Store',$options['store_key']);
+
 } else {
     $new = false;
+    $store = get_object('Store',$object->get('Store Key'));
+
 }
+
 
 $subject_render = false;
 switch ($options['Category Scope']) {
@@ -109,12 +115,7 @@ $category_fields = array(
 switch ($options['Category Scope']) {
     case 'Product':
 
-
-        $store = new Store($object->get('Store Key'));
-
-
         $object->get_webpage();
-
 
         if ($store->get('Store Family Category Key') == $object->get('Category Root Key')) {
 

@@ -1472,7 +1472,7 @@ class Page extends DB_Table {
             if (isset($content_data['blocks'])) {
                 foreach ($content_data['blocks'] as $block_key => $block) {
 
-                   // print $block['type']."\n";
+                 //   print $block['type']."\n";
 
                     switch ($block['type']) {
                         case 'category_products':
@@ -1627,16 +1627,17 @@ class Page extends DB_Table {
     function reindex_category_products() {
         $content_data = $this->get('Content Data');
 
-        $block_key = false;
+        $block_found = false;
         foreach ($content_data['blocks'] as $_block_key => $_block) {
             if ($_block['type'] == 'category_products') {
                 $block     = $_block;
                 $block_key = $_block_key;
+                $block_found =true;
                 break;
             }
         }
 
-        if (!$block_key) {
+        if (!$block_found) {
             return;
         }
 
@@ -3375,16 +3376,17 @@ class Page extends DB_Table {
 
     function reindex_products() {
         $content_data = $this->get('Content Data');
-        $block_key    = false;
+        $block_found    = false;
         foreach ($content_data['blocks'] as $_block_key => $_block) {
             if ($_block['type'] == 'products') {
                 $block     = $_block;
                 $block_key = $_block_key;
+                $block_found=true;
                 break;
             }
         }
 
-        if (!$block_key) {
+        if (!$block_found) {
             return;
         }
 
@@ -3457,16 +3459,17 @@ class Page extends DB_Table {
     function reindex_see_also() {
 
         $content_data = $this->get('Content Data');
-        $block_key    = false;
+        $block_found    = false;
         foreach ($content_data['blocks'] as $_block_key => $_block) {
             if ($_block['type'] == 'see_also') {
                 $block     = $_block;
                 $block_key = $_block_key;
+                $block_found=true;
                 break;
             }
         }
 
-        if (!$block_key) {
+        if (!$block_found) {
             return;
         }
 
@@ -4253,7 +4256,8 @@ class Page extends DB_Table {
     function reindex_category_categories() {
         $content_data = $this->get('Content Data');
 
-        $block_key = false;
+
+        $block_found = false;
 
         if (!isset($content_data['blocks'])) {
             return;
@@ -4263,13 +4267,17 @@ class Page extends DB_Table {
             if ($_block['type'] == 'category_categories') {
                 $block     = $_block;
                 $block_key = $_block_key;
+                $block_found = true;
                 break;
             }
         }
 
-        if (!$block_key) {
+        if (!$block_found) {
             return;
         }
+
+       // print_r($content_data);
+
 
         $sql = sprintf(
             "SELECT  `Webpage URL`,`Category Main Image Key`,`Category Main Image`,`Category Label`,`Category Main Image Key`,`Webpage State`,`Product Category Public`,`Webpage State`,`Page Key`,`Webpage Code`,`Product Category Active Products`,`Category Code`,Cat.`Category Key` 
@@ -4278,6 +4286,8 @@ class Page extends DB_Table {
 
 
         );
+
+       // print $sql;
 
         $items                    = array();
         $items_category_key_index = array();
@@ -9509,7 +9519,7 @@ class Page extends DB_Table {
     function refill_see_also($convert_to_auto=false,$number_items=false){
 
         $content_data = $this->get('Content Data');
-        $block_key    = false;
+        $block_found    = false;
 
 
 
@@ -9519,11 +9529,12 @@ class Page extends DB_Table {
         foreach ($content_data['blocks'] as $_block_key => $_block) {
             if ($_block['type'] == 'see_also') {
                 $block_key = $_block_key;
+                $block_found=true;
                 break;
             }
         }
 
-        if (!$block_key) {
+        if (!$block_found) {
             return;
         }
 

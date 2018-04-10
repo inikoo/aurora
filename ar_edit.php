@@ -32,6 +32,7 @@ $tipo = $_REQUEST['tipo'];
 switch ($tipo) {
 
 
+
     case 'calculate_sales':
         $data = prepare_values(
             $_REQUEST, array(
@@ -244,6 +245,15 @@ switch ($tipo) {
 
         regenerate_api($account, $db, $user, $editor, $data, $smarty);
         break;
+    case 'disassociate_category':
+        $data = prepare_values(
+            $_REQUEST, array(
+                         'parent_key' => array('type' => 'key'),
+                         'child_key'      => array('type' => 'key'),
+
+                     )
+        );
+        disassociate_category($account, $db, $data, $editor);
         break;
 
     default:
@@ -1247,6 +1257,9 @@ function new_object($account, $db, $user, $editor, $data, $smarty) {
             }
 
             if ($object->id) {
+
+
+
 
                 $parent->associate_subject($object->id);
 
@@ -2665,6 +2678,19 @@ function regenerate_api($account, $db, $user, $editor, $data, $smarty) {
     echo json_encode($response);
 
 
+}
+
+function disassociate_category($account, $db, $data, $editor){
+
+    $category=get_object('Category',$data['parent_key']);
+    $category->editor;
+    $category->disassociate_subject($data['child_key']);
+
+    $response = array(
+        'state'  => 200,
+
+    );
+    echo json_encode($response);
 }
 
 

@@ -36,12 +36,211 @@ $editor = array(
     'Date'         => gmdate('Y-m-d H:i:s')
 );
 
-
-migrate_families();
-migrate_departments();
+migrate_products();
+//migrate_families();
+//migrate_departments();
 //exit;
 
 //2730
+
+
+function migrate_products() {
+    global $db;
+
+    $sql = sprintf('SELECT `Webpage Scope Key`,`Page Key`,`Webpage Website Key` FROM `Page Store Dimension` WHERE `Webpage Template Filename`="product" ');
+    // $sql = sprintf('SELECT `Webpage Scope Key`,`Page Key`,`Webpage Website Key` FROM `Page Store Dimension` WHERE `Page Key`=238 ');
+
+    if ($result3 = $db->query($sql)) {
+        foreach ($result3 as $row3) {
+            $webpage = get_object('Webpage', $row3['Page Key']);
+
+
+            $content = '';
+
+            $_content_data = $webpage->get('Content Data');
+
+
+            if (isset($_content_data['old_data'])) {
+                $content_data = $_content_data['old_data'];
+            } else {
+                $content_data = $_content_data;
+            }
+
+
+            // print_r($_content_data);;
+
+            if (isset($content_data['description_block']['content'])) {
+
+                $content = $_content_data['description_block']['content'];
+
+                if ($content == '<div class="description"></div>') {
+                    $content = '';
+                }
+
+                if (preg_match('/\<div class\=\"description\"\>(.+)\<\/div\>/s', $content, $match)) {
+                    $content = $match[1];
+                }
+
+
+                awuser </font >
+
+
+                $content = preg_replace('/\<p\>\<br\>\<\/p\>/', '', $content);
+                    $content = preg_replace('/\<p style\=\"text-align: left;\"\><br\>\<\/p\>/', '', $content);
+                    $content = preg_replace('/\<p style\=\"\"\>\<br\>\<\/p\>/', '', $content);
+                    $content = preg_replace('/\<span>\&nbsp\;\<\/span\>/', '', $content);
+
+                    $content = preg_replace('/line-height\s*\:\s*[0-9.]+px\;/', '', $content);
+                    $content = preg_replace('/line-height\s*\:\s*[0-9.]+\;/', '', $content);
+
+                    $content = preg_replace('/font-size\s*\:\s*[0-9.]+px\;/', '', $content);
+                    $content = preg_replace('/size=\s*[0-9.]+px\;/', '', $content);
+
+
+
+
+
+                    $content = preg_replace('/\<br\>\s*$/', '', $content);
+
+
+                    $content = str_replace("font-family: 'Open Sans', Helvetica, Arial, sans-serif;", '', $content);
+                    $content = str_replace("<br><br>", '<br>', $content);
+
+                    $content = str_replace("<p><br>", '<p>', $content);
+                    $content = str_replace("font-family: Arial, sans-serif;", '', $content);
+                    $content = str_replace('class="Normal-C"', '', $content);
+
+                    $content = str_replace("font-family: Open Sans, Helvetica, Arial, sans-serif;", '', $content);
+
+                    $content = str_replace("font-family: Tahoma, Geneva, sans-serif;", '', $content);
+                    $content = str_replace("font-family: Arial, Helvetica, sans-serif;", '', $content);
+                    $content = str_replace("font-family: Ubuntu, Helvetica, Arial, sans-serif;", '', $content);
+                    $content = str_replace("font-family: inherit;", '', $content);
+                    $content = str_replace("font-family: 'Lucida Grande', 'Lucida Sans Unicode', Verdana, Arial, sans-serif;", '', $content);
+
+                    $content = str_replace("font-family: inherit;", '', $content);
+
+                    $content = str_replace('face="verdana"', '', $content);
+                    $content = str_replace("font-family: inherit;", '', $content);
+
+
+                  //  $content=str_replace('style=""','',$content);
+
+                   // if(preg_match('/font/',$content)){
+                      //  print $webpage->id."\n";
+                        //print $content."|\n";
+                   // }
+
+
+
+
+
+
+                }
+
+
+            switch ($row3['Webpage Website Key']) {
+                case 12:
+                    $title = 'Pozrite si tiež';
+
+                    break;
+                case 6:
+                    $title = 'Voir aussi';
+
+                    break;
+                case 8:
+                    $title = 'Guarda anche';
+
+                    break;
+                case 10:
+                    $title = 'Zobacz także';
+
+                    break;
+                case 14:
+                    $title = 'Viz též';
+
+                    break;
+                case 16:
+                    $title = 'Lásd még';
+
+                    break;
+                case 4:
+
+                    $title = 'Siehe auch';
+
+                    break;
+                default:
+                    $title = 'See also';
+            }
+
+
+            $new_content_data = array(
+                'blocks'   => array(
+                    array(
+                        'type'            => 'product',
+                        'label'           => _('Product'),
+                        'icon'            => 'fa-cube',
+                        'show'            => 1,
+                        'top_margin'      => 20,
+                        'bottom_margin'   => 0,
+                        'text'            => $content,
+                        'show_properties' => true
+                    ),
+                    array(
+                        'type'              => 'see_also',
+                        'auto'              => true,
+                        'auto_scope'        => 'webpage',
+                        'auto_items'        => 5,
+                        'auto_last_updated' => '',
+                        'label'             => _('See also'),
+                        'icon'              => 'fa-link',
+                        'show'              => 1,
+                        'top_margin'        => 0,
+                        'bottom_margin'     => 40,
+                        'item_headers'      => false,
+                        'items'             => array(),
+                        'sort'              => 'Manual',
+                        'title'             => $title,
+                        'show_title'        => true
+                    )
+                ),
+                'old_data' => $_content_data
+            );
+
+
+            $x = json_encode($new_content_data);
+            if ($x == '') {
+                print_r($row3);
+
+                print_r($webpage->id);
+
+                continue;
+            }
+
+
+
+            $sql = sprintf('UPDATE `Page Store Dimension` SET `Webpage Template Filename`="products2" WHERE `Page Key`=%d ', $webpage->id);
+
+            $db->exec($sql);
+
+            $webpage->update(
+                array(
+                    'Page Store Content Data' => json_encode($new_content_data)
+                ), 'no_history'
+            );
+
+            $webpage->reindex_items();
+
+
+        }
+    } else {
+        print_r($error_info = $db->errorInfo());
+        print "$sql\n";
+        exit;
+    }
+
+
+}
 
 function migrate_families() {
 
@@ -49,14 +248,14 @@ function migrate_families() {
     $left_offset = 158;
 
     $sql = sprintf('SELECT `Webpage Scope Key`,`Page Key`,`Webpage Website Key` FROM `Page Store Dimension` WHERE `Webpage Template Filename`="products_showcase"  ');
-  //  $sql = sprintf('SELECT `Webpage Scope Key`,`Page Key`,`Webpage Website Key` FROM `Page Store Dimension` WHERE  `Page Key`=32302 ');
+    //  $sql = sprintf('SELECT `Webpage Scope Key`,`Page Key`,`Webpage Website Key` FROM `Page Store Dimension` WHERE  `Page Key`=32302 ');
 
 
     if ($result = $db->query($sql)) {
         foreach ($result as $row3) {
 
 
-              print_r($row3);
+            print_r($row3);
 
             $webpage = get_object('Webpage', $row3['Page Key']);
 
@@ -235,16 +434,14 @@ function migrate_families() {
             if (preg_match('/\#description_block\{ height\:([0-9.]+)px\}/', $css, $matches)) {
 
                 $blackboard_height = $matches[1];
-            }else{
-                $blackboard_height=$_height;
+            } else {
+                $blackboard_height = $_height;
             }
 
 
-
-
-           // if ($_height > $blackboard_height) {
-           //     $blackboard_height = $_height;
-           // }
+            // if ($_height > $blackboard_height) {
+            //     $blackboard_height = $_height;
+            // }
 
 
             //  print " $blackboard_height";
@@ -285,7 +482,7 @@ function migrate_families() {
 
                     }
 
-                    $header_text=mb_convert_encoding($header_text, 'UTF-8', 'UTF-8');
+                    $header_text = mb_convert_encoding($header_text, 'UTF-8', 'UTF-8');
 
 
                     $items[] = array(
@@ -310,7 +507,6 @@ function migrate_families() {
 
 
                     );
-
 
 
                 }
@@ -471,20 +667,20 @@ function migrate_families() {
                                 $category = get_object('Category', $see_also_page->get('Webpage Scope Key'));
 
                                 $see_also[] = array(
-                                    'type'                 => 'category',
+                                    'type' => 'category',
 
                                     'header_text'          => $category->get('Category Label'),
                                     'image_src'            => $category->get('Image'),
                                     'image_mobile_website' => '',
                                     'image_website'        => '',
 
-                                    'webpage_key'          => $see_also_page->id,
-                                    'webpage_code'         => $see_also_page->get('Webpage Code'),
+                                    'webpage_key'  => $see_also_page->id,
+                                    'webpage_code' => $see_also_page->get('Webpage Code'),
 
-                                    'category_key'         => $category->id,
-                                    'category_code'        => $category->get('Category Code'),
-                                    'number_products'      => $category->get('Product Category Active Products'),
-                                    'link'                 => $see_also_page->get('Webpage URL'),
+                                    'category_key'    => $category->id,
+                                    'category_code'   => $category->get('Category Code'),
+                                    'number_products' => $category->get('Product Category Active Products'),
+                                    'link'            => $see_also_page->get('Webpage URL'),
 
 
                                 );
@@ -520,7 +716,7 @@ function migrate_families() {
                         'icon'              => 'fa-cubes',
                         'show'              => 1,
                         'top_margin'        => 0,
-                        'bottom_margin'     => ((count($see_also)==0 and count($related_products)==0  )?40:0),
+                        'bottom_margin'     => ((count($see_also) == 0 and count($related_products) == 0) ? 40 : 0),
                         'item_headers'      => $has_header,
                         'items'             => $items,
                         'sort'              => 'Manual',
@@ -569,27 +765,27 @@ function migrate_families() {
 
 
                 $new_content_data['blocks'][] = array(
-                    'type'          => 'products',
+                    'type'              => 'products',
                     'auto'              => false,
                     'auto_scope'        => 'webpage',
                     'auto_items'        => 5,
                     'auto_last_updated' => '',
-                    'label'         => _('Products'),
-                    'icon'          => 'fa-window-restore',
-                    'show'          => 1,
-                    'top_margin'    => 0,
-                    'bottom_margin' => (count($see_also)==0?30:0),
-                    'item_headers'  => false,
-                    'items'         => $related_products,
-                    'sort'          => 'Manual',
-                    'title'         => $title,
-                    'show_title'    => true
+                    'label'             => _('Products'),
+                    'icon'              => 'fa-window-restore',
+                    'show'              => 1,
+                    'top_margin'        => 0,
+                    'bottom_margin'     => (count($see_also) == 0 ? 30 : 0),
+                    'item_headers'      => false,
+                    'items'             => $related_products,
+                    'sort'              => 'Manual',
+                    'title'             => $title,
+                    'show_title'        => true
 
                 );
             }
 
 
-            if (count($see_also) > 0 ) {
+            if (count($see_also) > 0) {
 
                 switch ($row3['Webpage Website Key']) {
                     case 12:
@@ -632,22 +828,22 @@ function migrate_families() {
                     'auto_scope'        => 'webpage',
                     'auto_items'        => count($see_also),
                     'auto_last_updated' => ($webpage->get('Page Store See Also Type') == 'Auto' ? $webpage->get('Page See Also Last Updated') : ''),
-                    'label'         => _('See also'),
-                    'icon'          => 'fa-link',
-                    'show'          => 1,
-                    'top_margin'    => 0,
-                    'bottom_margin' => 40,
-                    'item_headers'  => false,
-                    'items'         => $see_also,
-                    'sort'          => 'Manual',
-                    'title'         => $title,
-                    'show_title'    => true
+                    'label'             => _('See also'),
+                    'icon'              => 'fa-link',
+                    'show'              => 1,
+                    'top_margin'        => 0,
+                    'bottom_margin'     => 40,
+                    'item_headers'      => false,
+                    'items'             => $see_also,
+                    'sort'              => 'Manual',
+                    'title'             => $title,
+                    'show_title'        => true
 
                 );
             }
 
-            $x=json_encode($new_content_data);
-            if($x==''){
+            $x = json_encode($new_content_data);
+            if ($x == '') {
                 print_r($row3);
 
                 print_r($webpage->id);
@@ -655,15 +851,6 @@ function migrate_families() {
                 continue;
             }
 
-
-            //print $x;
-
-            //          print_r
-           // exit;
-            // continue;
-
-
-           // print_r($new_content_data);
 
 
             $sql = sprintf('UPDATE `Page Store Dimension` SET `Webpage Template Filename`="category_products" WHERE `Page Key`=%d ', $webpage->id);
@@ -845,7 +1032,6 @@ function migrate_departments() {
                             if ($item['type'] == 'category') {
 
                                 $_webpage = get_object('Webpage', $item['webpage_key']);
-
 
 
                                 $items[] = array(

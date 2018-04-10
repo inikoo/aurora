@@ -1285,7 +1285,9 @@ function product_categories_products($_data, $db, $user) {
             '<span class="link" onClick="change_view(\'products/%d/category/%d>%d\')">%s</span>', $data['Category Store Key'], $parent->id, $data['Product Category Key'], $data['Category Code']
         );
 
-
+        $remove = sprintf(
+            '<span class="button" onClick="disassociate_category_from_table(this,%s,%d)"> <i class="fa fas padding_left_5 fa-unlink"></i> %s</span>', $parent->id,  $data['Product Category Key'],_('Unlink')
+        );
         $record_data[] = array(
             'id'                      => (integer)$data['Product Category Key'],
             'store_key'               => (integer)$data['Category Store Key'],
@@ -1308,6 +1310,7 @@ function product_categories_products($_data, $db, $user) {
             'percentage_out_of_stock' => ($data['Product Category Public'] == 'Yes' ? percentage($data['Product Category Active Web Out of Stock'], $data['online']) : ''),
             'webpage'                 => $webpage,
             'webpage_state'           => $webpage_state,
+            'remove'=>$remove,
 
             'sales_year0' => sprintf(
                 '<span>%s</span> %s', money($data['Product Category Year To Day Acc Invoiced Amount'], $data['Product Category Currency Code']),

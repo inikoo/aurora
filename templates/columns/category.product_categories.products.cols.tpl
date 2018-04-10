@@ -334,8 +334,20 @@ sortType: "toggle",
 cell: Backgrid.HtmlCell.extend({ className: "aright"} ),
 
 headerCell: integerHeaderCell
-}
+},
+{
+name: "remove",
+renderable: {if empty($is_family)}true{else}false{/if},
 
+label: "",
+editable: false,
+sortable:false,
+
+cell: Backgrid.HtmlCell.extend({ className: "aright"} ),
+headerCell: rightHeaderHtmlCell
+
+
+}
 
 ]
 
