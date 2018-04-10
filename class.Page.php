@@ -1265,6 +1265,9 @@ class Page extends DB_Table {
 
     }
 
+
+
+
     function update_image_key() {
 
 
@@ -3584,6 +3587,7 @@ class Page extends DB_Table {
 
 
         if ($block['auto'] and count($block['items']) < $block['auto_items']) {
+
             foreach ($this->get_related_webpages_key($block['auto_items']) as $webpage_key) {
                 $found = false;
                 foreach ($block['items'] as $item_key => $item) {
@@ -9498,6 +9502,105 @@ class Page extends DB_Table {
 
 
         }
+
+
+    }
+
+    function refill_see_also($convert_to_auto=false,$number_items=false){
+
+        $content_data = $this->get('Content Data');
+        $block_key    = false;
+
+
+
+        if($content_data=='')return;
+        if(!isset($content_data['blocks']))return;
+
+        foreach ($content_data['blocks'] as $_block_key => $_block) {
+            if ($_block['type'] == 'see_also') {
+                $block_key = $_block_key;
+                break;
+            }
+        }
+
+        if (!$block_key) {
+            return;
+        }
+
+        if($convert_to_auto){
+            $content_data['blocks'][$block_key]['auto']=true;
+        }
+        if(is_numeric($number_items) and $number_items>0){
+            $content_data['blocks'][$block_key]['auto_items']=$number_items;
+        }
+
+
+        $items=array();
+
+
+
+        if($content_data['blocks'][$block_key]['auto']){
+
+             foreach ($this->get_related_webpages_key($content_data['blocks'][$block_key]['auto_items']) as $webpage_key) {
+                 $see_also_page = get_object('Webpage', $webpage_key);
+
+
+                 if ($see_also_page->get('Webpage Scope') == 'Category Products' or $see_also_page->get('Webpage Scope') == 'Category Categories') {
+                     $category = get_object('Category', $see_also_page->get('Webpage Scope Key'));
+
+
+                     $items[] = array(
+                         'type' => 'category',
+
+                         'header_text'          => $category->get('Category Label'),
+                         'image_src'            => $category->get('Image'),
+                         'image_mobile_website' => '',
+                         'image_website'        => '',
+
+                         'webpage_key'  => $see_also_page->id,
+                         'webpage_code' => $see_also_page->get('Webpage Code'),
+
+                         'category_key'    => $category->id,
+                         'category_code'   => $category->get('Category Code'),
+                         'number_products' => $category->get('Product Category Active Products'),
+                         'link'            => $see_also_page->get('Webpage URL'),
+
+
+                     );
+                 } elseif ($see_also_page->get('Webpage Scope') == 'Product') {
+
+                     $product = get_object('Public_Product', $see_also_page->get('Webpage Scope Key'));
+
+
+                     $items[] = array(
+                         'type' => 'category',
+
+                         'header_text'          => $product->get('Name'),
+                         'image_src'            => $product->get('Image'),
+                         'image_mobile_website' => '',
+                         'image_website'        => '',
+
+                         'webpage_key'  => $see_also_page->id,
+                         'webpage_code' => $see_also_page->get('Webpage Code'),
+
+                         'product_id'        => $product->id,
+                         'product_code'      => $product->get('Code'),
+                         'product_web_state' => $product->get('Web State'),
+                         'link'              => $see_also_page->get('Webpage URL'),
+
+                     );
+                 }
+
+
+             }
+
+            $content_data['blocks'][$block_key]['items']=$items;
+            $this->update_field_switcher('Page Store Content Data', json_encode($content_data), 'no_history');
+
+        }
+
+        $this->reindex_see_also();
+
 
 
     }
