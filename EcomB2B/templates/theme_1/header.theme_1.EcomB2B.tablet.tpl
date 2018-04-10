@@ -8,14 +8,7 @@
  Version 3
 -->
 *}
-<span id="webpage_data" style="display:none"
-      data-webpage_key="{$webpage->id}"
-      data-customer_key="{$customer_key}"
-      data-order_key="{$order_key}"
-></span>
-
-
-
+<span id="webpage_data" style="display:none" data-webpage_key="{$webpage->id}" data-customer_key="{$customer_key}" data-order_key="{$order_key}"></span>
 <div class="sidebars sidebars-light">
     <div class="sidebar sidebar-left">
         <div class="sidebar-header sidebar-header-image bg-1">
@@ -154,9 +147,27 @@
 
 <div class="header header-logo-center header-light">
     <a href="#" class="header-icon header-icon-1 hamburger-animated open-sidebar-left"></a>
-    <a href="/" class="header-logo">{$website->get('Website Name')}</a>
+    <a href="/" style="margin:initial;left:70px" class="header-logo">{$website->get('Website Name')}</a>
+
+
+
+    <span class="control_panel"  >
+
+        <a href="favourites.sys" ><i   class="fa fa-heart"></i></a>
+        <a href="profile.sys"  ><i class="fa fa-user"></i></a>
+
+        <a class="basket_link" href="basket.sys">
+        <i class="fas fa-shopping-cart"></i>
+           {if !empty($website->settings['Info Bar Basket Amount Type']) and $website->settings['Info Bar Basket Amount Type']=='items_net'}<span id="header_order_items_net_amount" class="order_items_net" style="padding-right:10px" title="{if isset($labels._items_net) and $labels._items_net!=''}{$labels._items_net}{else}{t}Items Net{/t}{/if}">{if isset($order)}{$order->get('Items Net Amount')}{else}{$zero_money}{/if}</span>{else}<span id="header_order_total_amount" class="order_total" style="padding-right:10px" title="{if isset($labels._total) and $labels._total!=''}{$labels._total}{else}{t}Total{/t}{/if}">{if isset($order)}{$order->get('Total')}{else}{$zero_money}{/if}</span>{/if}
+        </a>
+
+    </span>
+
     {if $logged_in}
-        <a href="#" class="header-icon header-icon-4 open-sidebar-right "><i class="fa fa-shopping-cart"></i></a>
+
+        <a href="#" class="header-icon header-icon-4 hamburger-animated open-sidebar-right"></a>
+
+
     {else}
         <a href="#" class="header-icon header-icon-4 open-sidebar-right"><i class="fa fa-sign-in"></i></a>
     {/if}
