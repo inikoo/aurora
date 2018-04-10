@@ -17,7 +17,7 @@ $wheref   = '';
 $currency = '';
 
 
-$where = 'where `Order Class`="InWebsite" ';
+$where = 'where `Order State`="InBasket" ';
 $table = '`Order Dimension` O ';
 
 

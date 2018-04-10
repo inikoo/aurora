@@ -3493,7 +3493,7 @@ class Store extends DB_Table {
 
                 $this->update_address('Collect', json_decode($value, true));
 
-                $sql = sprintf('SELECT `Order Key` FROM `Order Dimension` WHERE  `Order Class`="InProcess"  AND `Order For Collection`="Yes"  AND `Order Customer Key`=%d ', $this->id);
+                $sql = sprintf('SELECT `Order Key` FROM `Order Dimension` WHERE  `Order State`="InBasket"  AND `Order For Collection`="Yes"  AND `Order Customer Key`=%d ', $this->id);
                 if ($result = $this->db->query($sql)) {
                     foreach ($result as $row) {
                         $order = get_object('Order', $row['Order Key']);

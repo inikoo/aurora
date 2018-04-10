@@ -3148,7 +3148,7 @@ class Page extends DB_Table {
                             'item_type'            => 'Subject',
                             'category_code'        => $row['Category Code'],
                             'number_products'      => $row['Product Category Active Products'],
-                            'link'                 => $row['Webpage URL'],
+                            'link'                 => $row['Webpage URL']
                         );
                     }
                 } else {
