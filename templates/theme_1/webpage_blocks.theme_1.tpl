@@ -1179,8 +1179,8 @@
 
                         var img = $(image_block).find('img')
 
-                        console.log(img.position())
 
+                        console.log(img)
 
                         images.push({
                             id:$(image_block).attr('id'),
