@@ -371,4 +371,17 @@ div.blk_images.template_3 figure {
     border: 1px solid #ccc;
     padding: 5px 10px; }
 
+.category_categories .store-item {
+  margin-bottom: 14px; }
+
+.cat_cats_fam_name {
+  line-height: normal;
+  min-height: 36px;
+  color: #555;
+  padding: 2px 5px 0px 5px; }
+
+.cat_cats_sec {
+  margin-top: 20px;
+  clear: both; }
+
 /*# sourceMappingURL=style.theme_1.EcomB2B.mobile.css.map */
