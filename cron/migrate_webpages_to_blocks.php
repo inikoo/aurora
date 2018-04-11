@@ -36,9 +36,9 @@ $editor = array(
     'Date'         => gmdate('Y-m-d H:i:s')
 );
 
-migrate_products();
-//migrate_families();
-//migrate_departments();
+//migrate_products();
+migrate_families();
+////migrate_departments();
 //exit;
 
 //2730
@@ -48,7 +48,7 @@ function migrate_products() {
     global $db;
 
     $sql = sprintf('SELECT `Webpage Scope Key`,`Page Key`,`Webpage Website Key` FROM `Page Store Dimension` WHERE `Webpage Template Filename`="product" ');
-    // $sql = sprintf('SELECT `Webpage Scope Key`,`Page Key`,`Webpage Website Key` FROM `Page Store Dimension` WHERE `Page Key`=238 ');
+     $sql = sprintf('SELECT `Webpage Scope Key`,`Page Key`,`Webpage Website Key` FROM `Page Store Dimension` WHERE `Page Key`=2582 ');
 
     if ($result3 = $db->query($sql)) {
         foreach ($result3 as $row3) {
@@ -67,11 +67,12 @@ function migrate_products() {
             }
 
 
-            // print_r($_content_data);;
+             //print_r($content_data);;
+
 
             if (isset($content_data['description_block']['content'])) {
 
-                $content = $_content_data['description_block']['content'];
+                $content = $content_data['description_block']['content'];
 
                 if ($content == '<div class="description"></div>') {
                     $content = '';
@@ -82,7 +83,6 @@ function migrate_products() {
                 }
 
 
-                awuser </font >
 
 
                 $content = preg_replace('/\<p\>\<br\>\<\/p\>/', '', $content);
@@ -182,7 +182,7 @@ function migrate_products() {
                         'icon'            => 'fa-cube',
                         'show'            => 1,
                         'top_margin'      => 20,
-                        'bottom_margin'   => 0,
+                        'bottom_margin'   => 30,
                         'text'            => $content,
                         'show_properties' => true
                     ),
@@ -230,7 +230,8 @@ function migrate_products() {
             );
 
             $webpage->reindex_items();
-
+            $webpage->refill_see_also();
+            $webpage->update_navigation();
 
         }
     } else {
@@ -248,7 +249,7 @@ function migrate_families() {
     $left_offset = 158;
 
     $sql = sprintf('SELECT `Webpage Scope Key`,`Page Key`,`Webpage Website Key` FROM `Page Store Dimension` WHERE `Webpage Template Filename`="products_showcase"  ');
-    //  $sql = sprintf('SELECT `Webpage Scope Key`,`Page Key`,`Webpage Website Key` FROM `Page Store Dimension` WHERE  `Page Key`=32302 ');
+      //$sql = sprintf('SELECT `Webpage Scope Key`,`Page Key`,`Webpage Website Key` FROM `Page Store Dimension` WHERE  `Page Key`=32302 ');
 
 
     if ($result = $db->query($sql)) {
