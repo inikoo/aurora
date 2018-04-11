@@ -78,9 +78,7 @@
                         {if $rrp!=''}<div>{if empty($labels._product_rrp)}{t}RRP{/t}{else}{$labels._product_rrp}{/if}: {$rrp}</div>{/if}
                     </div>
 
-                    <div class="product_prices log_out hide" >
-                        <div >{if empty($labels._login_to_see)}{t}For prices, please login or register{/t}{else}{$labels._login_to_see}{/if}</div>
-                    </div>
+
 
 
                     {if $item.web_state=='Out of Stock'}
