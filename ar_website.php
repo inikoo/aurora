@@ -62,6 +62,10 @@ switch ($tipo) {
                          'store_key' => array(
                              'type'     => 'key',
                              'optional' => true
+                         ),
+                         'webpage_key' => array(
+                             'type'     => 'key',
+                             'optional' => true
                          )
 
                      )
@@ -89,7 +93,13 @@ function see_also($data, $db, $user, $smarty) {
 
    // $see_also=array();
     $html='';
+
+//print $data['number_items'];
+   // print_r($webpage->get_related_webpages_key($data['number_items']));
     foreach($webpage->get_related_webpages_key($data['number_items']) as $webpage_key){
+
+
+
 
         $see_also_page = get_object('Webpage', $webpage_key);
 
@@ -131,7 +141,9 @@ function see_also($data, $db, $user, $smarty) {
 
 
 
-        } elseif ($see_also_page->get('Webpage Scope') == 'Product') {
+        }
+        elseif ($see_also_page->get('Webpage Scope') == 'Product') {
+
             $product = get_object('Public_Product', $see_also_page->get('Webpage Scope Key'));
 
             $image_src =$product->get('Image');
@@ -166,6 +178,8 @@ function see_also($data, $db, $user, $smarty) {
 
         }
 
+
+       // print_r($see_also);
 
 
         $smarty->assign('item_data',$see_also);
@@ -208,6 +222,16 @@ function webpage_block($data, $db, $user, $smarty) {
        // $block['text_blocks'][0]['text'] = preg_replace('/block_block_key_t1_editor/', 'block_'.$block_id.'_t1_editor', $block['text_blocks'][0]['text']);
     }elseif ($data['code'] == 'map') {
         $smarty->assign('store', get_object('store',$data['store_key']));
+
+    }
+
+
+    if(!empty($data['webpage_key'])){
+
+        $webpage=get_object('Webpage',$data['webpage_key']);
+        $website=get_object('Website',$webpage->get('Webpage Website Key'));
+        $smarty->assign('webpage', $webpage);
+        $smarty->assign('website', $website);
 
     }
 
