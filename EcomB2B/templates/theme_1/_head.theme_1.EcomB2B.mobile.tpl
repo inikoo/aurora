@@ -28,9 +28,9 @@
     <meta name="description" content="{$webpage->get('Webpage Meta Description')}"/>
 
 
-    <link rel="stylesheet" type="text/css" href="/css/mobile.min.css">
+    <link rel="stylesheet" type="text/css" href="/css/mobile.min.css?v2">
 
-    <script src="/js/mobile.min.js?v5"></script>
+    <script src="/js/mobile.min.js?v6"></script>
     {if $logged_in}<script src="/js/mobile.logged_in.min.js"></script>
     {if $webpage->get('Webpage Code')=='checkout.sys'}<script src="/js/mobile.forms.min.js"></script><script src="/js/mobile.checkout.min.js?v2"></script>
     {elseif $webpage->get('Webpage Code')=='basket.sys' or $webpage->get('Webpage Code')=='profile.sys' or $webpage->get('Webpage Code')=='reset_pwd.sys'}<script src="/js/mobile.forms.min.js"></script>{/if}
