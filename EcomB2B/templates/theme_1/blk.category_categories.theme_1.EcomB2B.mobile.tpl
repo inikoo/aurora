@@ -34,7 +34,7 @@
                         <a href="{$category_data.link}">
                             <img src="{$category_data.image_mobile_website}" alt="{$category_data.header_text|strip_tags|escape}">
                         </a>
-                        <div class="center-text cat_cats_fam_name" style="border:1px solid red">
+                        <div class="center-text cat_cats_fam_name" style="border:1px solid red;height: 40px">
                             {$category_data.header_text|strip_tags}
                         </div>
                     </div>
