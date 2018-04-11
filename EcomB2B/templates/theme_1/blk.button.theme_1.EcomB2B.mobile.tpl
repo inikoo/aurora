@@ -15,7 +15,7 @@
         <div class="content center" style="text-align: center;padding:20px 15px">
             <h3 class="color-white center">{$data.title}</h3>
             <p style="text-align: center" class="single_line_height center color-white">{$data.text}</p>
-            <a href="#" class="button button-round button-blue">{$data.button_label}</a>
+            <a href="{$data.link}" class="button button-round button-blue">{$data.button_label}</a>
 
         </div>
     </div>
