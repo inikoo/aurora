@@ -11,7 +11,7 @@
 
 <style>
     .store-item:nth-last-child(even){
-        margin-left: 3%;
+        margin-left: 0;
     }
     </style>
 
