@@ -30,7 +30,7 @@
             {foreach from=$section_data.items item=category_data name=families}
                 {if $category_data.type=='category'}
                     {counter}
-                    <div class="store-item">
+                    <div class="store-item" style="border:1px solid #ccc">
                         <a href="{$category_data.link}">
                             <img src="{$category_data.image_mobile_website}" alt="{$category_data.header_text|strip_tags|escape}">
                         </a>
