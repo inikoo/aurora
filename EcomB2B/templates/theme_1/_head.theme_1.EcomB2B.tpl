@@ -40,7 +40,8 @@
     <![endif]-->
     <link rel="canonical" href="{$webpage->get('URL')}"/>
 
-    <link rel="stylesheet" href="css/desktop.min.css?v3" type="text/css"/>
+    
+    <link rel="stylesheet" href="css/desktop.min.css?v4" type="text/css"/>
     <script src="/js/desktop.min.js"></script>
     {if $logged_in}
         <script src="/js/desktop.logged_in.min.js"></script>
@@ -290,7 +291,7 @@
             color: {$header_data.color.items}
         }
 
-        .order_row, .out_of_stock_row {
+        .order_row, .out_of_stock_row, .product_order {
             background-color: {$website->get('Website Button Color')};
             color: {$website->get('Website Button Text Color')}
 
