@@ -16,7 +16,6 @@
                     <h2>{$data.title}</h2>
                     <p>{$data.text}</p>
                     <a href="{$data.link}" class="button transp2 _button "  >{$data.button_label}</a>
-
                 </div>
             </div>
             <div class="clearfix"></div>

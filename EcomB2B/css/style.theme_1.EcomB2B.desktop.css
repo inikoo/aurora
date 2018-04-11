@@ -8883,6 +8883,16 @@ h6 {
 .text-left {
   text-align: left; }
 
+.button {
+  padding: 5px 10px; }
+  .button a {
+    text-decoration: none; }
+
+.button.transp2 {
+  padding: 15px 35px;
+  font-size: 18px;
+  color: #fff; }
+
 .text-right {
   text-align: right; }
 
@@ -9043,17 +9053,6 @@ font-size:14px;
   padding: 2px;
   margin: 2px 2px 6px 2px;
   cursor: pointer; }
-
-table.properties {
-  width: 100%; }
-
-table.properties tr {
-  border-top: 1px solid #CCCCCC; }
-
-table.properties td {
-  padding: 5px 20px;
-  vertical-align: top;
-  line-height: 150%; }
 
 .hide {
   display: none; }
@@ -9504,6 +9503,40 @@ div.blk_images figcaption.caption_hide {
     width: 100%;
     height: 100%; }
 
+.product input.order_input {
+  position: relative;
+  bottom: 2px;
+  padding: 4px 6px;
+  font-weight: normal;
+  color: #555;
+  vertical-align: middle;
+  background-color: #fff;
+  border: 1px solid #ccc;
+  margin: 0px;
+  font-family: inherit;
+  font-size: 100%;
+  line-height: normal;
+  outline: none;
+  -webkit-box-sizing: content-box;
+  -moz-box-sizing: content-box;
+  box-sizing: content-box;
+  -webkit-appearance: none; }
+.product .order_button {
+  width: 100%;
+  height: 30px;
+  line-height: 30px;
+  padding: 0px 10px;
+  bottom: 0;
+  text-align: left; }
+.product .properties tr {
+  border-top: 1px solid #CCCCCC; }
+.product .properties td {
+  padding: 5px 0px;
+  vertical-align: top;
+  line-height: 150%; }
+.product .properties td:first-child {
+  padding-right: 20px; }
+
 .product_block {
   width: 226px;
   border: 1px solid #ccc;
@@ -9560,7 +9593,6 @@ div.blk_images figcaption.caption_hide {
     width: 100%;
     height: 30px;
     line-height: 30px;
-    text-align: center;
     padding: 0px;
     bottom: 0;
     text-align: left; }
