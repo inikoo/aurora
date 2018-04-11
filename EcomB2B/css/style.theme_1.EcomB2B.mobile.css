@@ -373,6 +373,11 @@ div.blk_images.template_3 figure {
 
 .category_categories .store-item {
   margin-bottom: 14px; }
+.category_categories .sec_div .title, .category_categories .sec_div .subtitle {
+  margin-left: 10px;
+  line-height: normal; }
+.category_categories .sec_div .subtitle {
+  color: #555; }
 
 .cat_cats_fam_name {
   line-height: normal;
