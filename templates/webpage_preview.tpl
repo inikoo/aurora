@@ -11,7 +11,7 @@
 
 
 
-<div style="padding:20px 20px 10px 20px;border-bottom:1px solid #ccc;" class="control_panel">
+<div style="padding:20px 20px 10px 20px;border-bottom:1px solid #ccc;" class="control_panel"  data-webpage_key="{$webpage->id}"  >
 
 
     <a id="link_to_live_webpage" target="_blank"  class="{if $webpage->get('Webpage State')=='Offline'}invisible{/if}"  href="{$webpage->get('URL')}" ><i class="fa fa-external-link" aria-hidden="true"  style="float:right;margin-left:20px;position:relative;top:2px"></i>   </a>

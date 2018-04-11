@@ -645,10 +645,10 @@ class Page extends DB_Table {
             case 'Navigation Data':
                 if ($this->data['Webpage '.$key] == '') {
                     $navigation_data = array(
-                        'show'=>false,
+                        'show'        => false,
                         'breadcrumbs' => array(),
                         'next'        => false,
-                        'prev'    => false,
+                        'prev'        => false,
 
                     );
                 } else {
@@ -1266,8 +1266,6 @@ class Page extends DB_Table {
     }
 
 
-
-
     function update_image_key() {
 
 
@@ -1472,7 +1470,7 @@ class Page extends DB_Table {
             if (isset($content_data['blocks'])) {
                 foreach ($content_data['blocks'] as $block_key => $block) {
 
-                 //   print $block['type']."\n";
+                    //   print $block['type']."\n";
 
                     switch ($block['type']) {
                         case 'category_products':
@@ -1630,9 +1628,9 @@ class Page extends DB_Table {
         $block_found = false;
         foreach ($content_data['blocks'] as $_block_key => $_block) {
             if ($_block['type'] == 'category_products') {
-                $block     = $_block;
-                $block_key = $_block_key;
-                $block_found =true;
+                $block       = $_block;
+                $block_key   = $_block_key;
+                $block_found = true;
                 break;
             }
         }
@@ -2216,14 +2214,9 @@ class Page extends DB_Table {
                             }
 
 
-
-
                             $mobile_html = preg_replace('/\<p\>\<br\>\<\/p\>/', '', $mobile_html);
                             $mobile_html = preg_replace('/\<p style\=\"text-align: left;\"\><br\>\<\/p\>/', '', $mobile_html);
                             $mobile_html = preg_replace('/\<p style\=\"\"\>\<br\>\<\/p\>/', '', $mobile_html);
-
-
-
 
 
                             $tablet_html = preg_replace('/\<p\>\<br\>\<\/p\>/', '', $tablet_html);
@@ -3017,10 +3010,8 @@ class Page extends DB_Table {
 
                 $sql = sprintf(
                     "SELECT P.`Product ID`  FROM `Category Bridge` B  LEFT JOIN `Product Dimension` P ON (`Subject Key`=P.`Product ID`)  
-                    WHERE  `Category Key`=%d  AND `Product Web State` IN  ('For Sale','Out of Stock')   ORDER BY `Product Web State` ",
-                    $category->id
+                    WHERE  `Category Key`=%d  AND `Product Web State` IN  ('For Sale','Out of Stock')   ORDER BY `Product Web State` ", $category->id
                 );
-
 
 
                 if ($result = $this->db->query($sql)) {
@@ -3028,7 +3019,6 @@ class Page extends DB_Table {
 
                         $product = get_object('Public_Product', $row['Product ID']);
                         $product->load_webpage();
-
 
 
                         $items[] = array(
@@ -3064,7 +3054,7 @@ class Page extends DB_Table {
 
 
                 $content_data = array(
-                    'blocks'   => array(
+                    'blocks' => array(
 
                         array(
                             'type'              => 'category_products',
@@ -3084,13 +3074,11 @@ class Page extends DB_Table {
                 );
 
 
-
                 $this->update(array('Page Store Content Data' => json_encode($content_data)), 'no_history');
                 $this->reindex_items();
                 $this->update_navigation();
 
-            }
-            else {
+            } else {
                 include_once 'class.Public_Product.php';
 
 
@@ -3357,47 +3345,145 @@ class Page extends DB_Table {
 
     }
 
-    function get_items() {
+    function update_navigation() {
+
+        $navigation_data = array(
+            'show'        => false,
+            'breadcrumbs' => array(),
+            'prev'        => false,
+            'next'        => false,
+        );
 
 
-        $items = array();
+        switch ($this->get('Webpage Scope')) {
+            case 'Category Products':
+
+                $website = get_object('Website', $this->data['Webpage Website Key']);
+
+                $category = get_object('Category', $this->data['Webpage Scope Key']);
 
 
-        if ($this->get('Webpage Scope') == 'Category Products') {
+                $parent_webpage_key = 0;
 
-            $sql = sprintf(
-                "SELECT `Product Category Index Content Data` FROM `Product Category Index` 
-                 WHERE  `Product Category Index Website Key`=%d   ORDER BY  ifnull(`Product Category Index Stack`,99999999)", $this->id
+                if ($category->get('Product Category Department Category Key')) {
+                    $parent         = get_object('Category', $category->get('Product Category Department Category Key'));
+                    $parent_webpage = get_object('Webpage', $parent->get('Product Category Webpage Key'));
+                    if ($parent_webpage->get('Webpage State') == 'Offline') {
+                        $parent_webpage_key = 0;
+                    } else {
+                        $parent_webpage_key = $parent_webpage->id;
+                    }
 
-
-            );
-
-
-            if ($result = $this->db->query($sql)) {
-                foreach ($result as $row) {
-                    $items[] = json_decode($row['Product Category Index Content Data'], true);
                 }
-            } else {
-                print_r($error_info = $this->db->errorInfo());
-                print "$sql\n";
-                exit;
-            }
 
 
-        } else {
-            if ($this->get('Webpage Scope') == 'Category Categories') {
+                // print_r($parent_webpage);
 
-                $sql = sprintf(
-                    "SELECT `Category Webpage Index Content Data` FROM `Category Webpage Index` CWI
-                 WHERE  `Category Webpage Index Webpage Key`=%d   ORDER BY  ifnull(`Category Webpage Index Stack`,99999999)", $this->id
-
-
+                $navigation_data['breadcrumbs'][] = array(
+                    'link'        => $website->get('Website URL'),
+                    'label'       => '<i class="fa fa-home"></i>',
+                    'label_short' => '<i class="fa fa-home"></i>',
+                    'title'       => _('Home')
                 );
 
 
+                if ($parent_webpage_key) {
+                    $navigation_data['breadcrumbs'][] = array(
+                        'link'        => $parent_webpage->get('Webpage URL'),
+                        'label'       => $parent_webpage->get('Name'),
+                        'label_short' => $parent_webpage->get('Webpage Code'),
+                        'title'       => $parent_webpage->get('Webpage Browser Title'),
+                    );
+                }
+
+                //print_r($parent_webpage);
+
+                $prev = false;
+                $next = false;
+
+                $next_key = 0;
+                $prev_key = 0;
+
+                $sql = sprintf(
+                    'SELECT `Website Webpage Scope Index` FROM `Website Webpage Scope Map` WHERE `Website Webpage Scope Webpage Key`=%d  AND `Website Webpage Scope Scope`="Category" AND `Website Webpage Scope Scope Key`=%d ', $parent_webpage_key, $category->id
+
+                );
+                // print $sql;
+
                 if ($result = $this->db->query($sql)) {
-                    foreach ($result as $row) {
-                        $items[] = json_decode($row['Category Webpage Index Content Data'], true);
+                    if ($row = $result->fetch()) {
+
+                        $sql = sprintf(
+                            'SELECT `Website Webpage Scope Scope Key` FROM `Website Webpage Scope Map` WHERE `Website Webpage Scope Webpage Key`=%d  AND  `Website Webpage Scope Type`="Subject" AND  `Website Webpage Scope Scope`="Category" AND `Website Webpage Scope Index`<%d ORDER BY `Website Webpage Scope Index` DESC',
+                            $parent_webpage_key, $row['Website Webpage Scope Index']
+                        );
+
+                        //print $sql;
+
+                        if ($result2 = $this->db->query($sql)) {
+                            if ($row2 = $result2->fetch()) {
+                                $prev_key = $row2['Website Webpage Scope Scope Key'];
+
+                            } else {
+
+                                $sql = sprintf(
+                                    'SELECT `Website Webpage Scope Scope Key` FROM `Website Webpage Scope Map`  WHERE `Website Webpage Scope Webpage Key`=%d  AND  `Website Webpage Scope Type`="Subject" AND `Website Webpage Scope Scope`="Category"  ORDER BY `Website Webpage Scope Index` DESC ',
+                                    $parent_webpage_key
+                                );
+                                //print $sql;
+                                if ($result3 = $this->db->query($sql)) {
+                                    if ($row3 = $result3->fetch()) {
+                                        $prev_key = $row3['Website Webpage Scope Scope Key'];
+                                    }
+                                } else {
+                                    print_r($error_info = $this->db->errorInfo());
+                                    print "$sql\n";
+                                    exit;
+                                }
+
+                            }
+
+
+                        } else {
+                            print_r($error_info = $this->db->errorInfo());
+                            print "$sql\n";
+                            exit;
+                        }
+
+
+                        $sql = sprintf(
+                            'SELECT `Website Webpage Scope Scope Key` FROM `Website Webpage Scope Map`  WHERE `Website Webpage Scope Webpage Key`=%d  AND  `Website Webpage Scope Type`="Subject" AND `Website Webpage Scope Scope`="Category" AND `Website Webpage Scope Index`>%d ORDER BY `Website Webpage Scope Index` ',
+                            $parent_webpage_key, $row['Website Webpage Scope Index']
+                        );
+
+                        if ($result2 = $this->db->query($sql)) {
+                            if ($row2 = $result2->fetch()) {
+                                $next_key = $row2['Website Webpage Scope Scope Key'];
+                            } else {
+
+                                $sql = sprintf(
+                                    'SELECT `Website Webpage Scope Scope Key` FROM `Website Webpage Scope Map`  WHERE `Website Webpage Scope Webpage Key`=%d  AND  `Website Webpage Scope Type`="Subject" AND `Website Webpage Scope Scope`="Category"  ORDER BY `Website Webpage Scope Index` ',
+                                    $parent_webpage_key
+                                );
+
+                                if ($result3 = $this->db->query($sql)) {
+                                    if ($row3 = $result3->fetch()) {
+                                        $next_key = $row3['Website Webpage Scope Scope Key'];
+                                    }
+                                } else {
+                                    print_r($error_info = $this->db->errorInfo());
+                                    print "$sql\n";
+                                    exit;
+                                }
+
+                            }
+                        } else {
+                            print_r($error_info = $this->db->errorInfo());
+                            print "$sql\n";
+                            exit;
+                        }
+
+
                     }
                 } else {
                     print_r($error_info = $this->db->errorInfo());
@@ -3405,22 +3491,468 @@ class Page extends DB_Table {
                     exit;
                 }
 
-            }
+                if ($prev_key) {
+
+                    $prev_category         = get_object('Category', $prev_key);
+                    $prev_category_webpage = get_object('Webpage', $prev_category->get('Product Category Webpage Key'));
+                    $prev                  = array(
+                        'link'        => $prev_category_webpage->get('Webpage URL'),
+                        'label'       => $prev_category_webpage->get('Name'),
+                        'label_short' => $prev_category_webpage->get('Webpage Code'),
+                        'title'       => $prev_category_webpage->get('Webpage Browser Title'),
+                    );
+                }
+
+
+                if ($next_key) {
+
+                    $next_category         = get_object('Category', $next_key);
+                    $next_category_webpage = get_object('Webpage', $next_category->get('Product Category Webpage Key'));
+                    $next                  = array(
+                        'link'        => $next_category_webpage->get('Webpage URL'),
+                        'label'       => $next_category_webpage->get('Name'),
+                        'label_short' => $next_category_webpage->get('Webpage Code'),
+                        'title'       => $next_category_webpage->get('Webpage Browser Title'),
+                    );
+                }
+
+
+                if ($next_key or $prev_key or $parent_webpage_key) {
+                    $navigation_data['show'] = 1;
+                }
+
+                //  print $prev_key;
+
+                // print $next_key;
+
+
+                $navigation_data['prev'] = $prev;
+                $navigation_data['next'] = $next;
+                // print_r($navigation_data);
+
+                $this->update_field('Webpage Navigation Data', json_encode($navigation_data), 'no_history');
+
+
+            case 'Product':
+
+
+                $website = get_object('Website', $this->data['Webpage Website Key']);
+
+                $product = get_object('Product', $this->data['Webpage Scope Key']);
+
+
+                $parent_webpage_key = 0;
+
+
+                if ($product->get('Product Family Category Key')) {
+                    $parent         = get_object('Category', $product->get('Product Family Category Key'));
+                    $parent_webpage = get_object('Webpage', $parent->get('Product Category Webpage Key'));
+                    if ($parent_webpage->get('Webpage State') == 'Offline') {
+                        $parent_webpage_key = 0;
+                    } else {
+                        $parent_webpage_key = $parent_webpage->id;
+                    }
+
+                }
+
+
+                $navigation_data['breadcrumbs'][] = array(
+                    'link'        => $website->get('Website URL'),
+                    'label'       => '<i class="fa fa-home"></i>',
+                    'label_short' => '<i class="fa fa-home"></i>',
+                    'title'       => _('Home')
+                );
+
+
+                if ($parent_webpage_key) {
+
+
+                    $grandparent_webpage_key = 0;
+
+                    if ($parent->get('Product Category Department Category Key')) {
+                        $grandparent         = get_object('Category', $parent->get('Product Category Department Category Key'));
+                        $grandparent_webpage = get_object('Webpage', $grandparent->get('Product Category Webpage Key'));
+                        if ($grandparent_webpage->get('Webpage State') == 'Offline') {
+                            $grandparent_webpage_key = 0;
+                        } else {
+                            $grandparent_webpage_key = $grandparent_webpage->id;
+                        }
+
+                    }
+
+                    if ($grandparent_webpage_key) {
+                        $navigation_data['breadcrumbs'][] = array(
+                            'link'        => $grandparent_webpage->get('Webpage URL'),
+                            'label'       => $grandparent_webpage->get('Name'),
+                            'label_short' => $grandparent_webpage->get('Webpage Code'),
+                            'title'       => $grandparent_webpage->get('Webpage Browser Title'),
+                        );
+                    }
+
+
+                    $navigation_data['breadcrumbs'][] = array(
+                        'link'        => $parent_webpage->get('Webpage URL'),
+                        'label'       => $parent_webpage->get('Name'),
+                        'label_short' => $parent_webpage->get('Webpage Code'),
+                        'title'       => $parent_webpage->get('Webpage Browser Title'),
+                    );
+                }
+
+                //print_r($parent_webpage);
+
+                $prev = false;
+                $next = false;
+
+                $next_key = 0;
+                $prev_key = 0;
+
+                $sql = sprintf(
+                    'SELECT `Website Webpage Scope Index` FROM `Website Webpage Scope Map` WHERE `Website Webpage Scope Webpage Key`=%d  AND `Website Webpage Scope Scope`="Product" AND `Website Webpage Scope Scope Key`=%d ', $parent_webpage_key, $product->id
+
+                );
+                // print $sql;
+
+                if ($result = $this->db->query($sql)) {
+                    if ($row = $result->fetch()) {
+
+                        $sql = sprintf(
+                            'SELECT `Website Webpage Scope Scope Key` FROM `Website Webpage Scope Map` WHERE `Website Webpage Scope Webpage Key`=%d  AND  `Website Webpage Scope Type`="Subject" AND  `Website Webpage Scope Scope`="Product" AND `Website Webpage Scope Index`<%d ORDER BY `Website Webpage Scope Index` DESC',
+                            $parent_webpage_key, $row['Website Webpage Scope Index']
+                        );
+
+                        //print $sql;
+
+                        if ($result2 = $this->db->query($sql)) {
+                            if ($row2 = $result2->fetch()) {
+                                $prev_key = $row2['Website Webpage Scope Scope Key'];
+
+                            } else {
+
+                                $sql = sprintf(
+                                    'SELECT `Website Webpage Scope Scope Key` FROM `Website Webpage Scope Map`  WHERE `Website Webpage Scope Webpage Key`=%d  AND  `Website Webpage Scope Type`="Subject" AND `Website Webpage Scope Scope`="Product"  ORDER BY `Website Webpage Scope Index` DESC ',
+                                    $parent_webpage_key
+                                );
+                                //print $sql;
+                                if ($result3 = $this->db->query($sql)) {
+                                    if ($row3 = $result3->fetch()) {
+                                        $prev_key = $row3['Website Webpage Scope Scope Key'];
+                                    }
+                                } else {
+                                    print_r($error_info = $this->db->errorInfo());
+                                    print "$sql\n";
+                                    exit;
+                                }
+
+                            }
+
+
+                        } else {
+                            print_r($error_info = $this->db->errorInfo());
+                            print "$sql\n";
+                            exit;
+                        }
+
+
+                        $sql = sprintf(
+                            'SELECT `Website Webpage Scope Scope Key` FROM `Website Webpage Scope Map`  WHERE `Website Webpage Scope Webpage Key`=%d  AND  `Website Webpage Scope Type`="Subject" AND `Website Webpage Scope Scope`="Product" AND `Website Webpage Scope Index`>%d ORDER BY `Website Webpage Scope Index` ',
+                            $parent_webpage_key, $row['Website Webpage Scope Index']
+                        );
+
+                        if ($result2 = $this->db->query($sql)) {
+                            if ($row2 = $result2->fetch()) {
+                                $next_key = $row2['Website Webpage Scope Scope Key'];
+                            } else {
+
+                                $sql = sprintf(
+                                    'SELECT `Website Webpage Scope Scope Key` FROM `Website Webpage Scope Map`  WHERE `Website Webpage Scope Webpage Key`=%d  AND  `Website Webpage Scope Type`="Subject" AND `Website Webpage Scope Scope`="Product"  ORDER BY `Website Webpage Scope Index` ',
+                                    $parent_webpage_key
+                                );
+
+                                if ($result3 = $this->db->query($sql)) {
+                                    if ($row3 = $result3->fetch()) {
+                                        $next_key = $row3['Website Webpage Scope Scope Key'];
+                                    }
+                                } else {
+                                    print_r($error_info = $this->db->errorInfo());
+                                    print "$sql\n";
+                                    exit;
+                                }
+
+                            }
+                        } else {
+                            print_r($error_info = $this->db->errorInfo());
+                            print "$sql\n";
+                            exit;
+                        }
+
+
+                    }
+                } else {
+                    print_r($error_info = $this->db->errorInfo());
+                    print "$sql\n";
+                    exit;
+                }
+
+                if ($prev_key) {
+
+                    $prev_product         = get_object('Product', $prev_key);
+                    $prev_product_webpage = get_object('Webpage', $prev_product->get('Product Webpage Key'));
+                    $prev                 = array(
+                        'link'        => $prev_product_webpage->get('Webpage URL'),
+                        'label'       => $prev_product_webpage->get('Name'),
+                        'label_short' => $prev_product_webpage->get('Webpage Code'),
+                        'title'       => $prev_product_webpage->get('Webpage Browser Title'),
+                    );
+                }
+
+
+                if ($next_key) {
+
+                    $next_product         = get_object('Product', $next_key);
+                    $next_product_webpage = get_object('Webpage', $next_product->get('Product Webpage Key'));
+                    $next                 = array(
+                        'link'        => $next_product_webpage->get('Webpage URL'),
+                        'label'       => $next_product_webpage->get('Name'),
+                        'label_short' => $next_product_webpage->get('Webpage Code'),
+                        'title'       => $next_product_webpage->get('Webpage Browser Title'),
+                    );
+                }
+
+
+                if ($next_key or $prev_key or $parent_webpage_key) {
+                    $navigation_data['show'] = 1;
+                }
+
+                //  print $prev_key;
+
+                // print $next_key;
+
+
+                $navigation_data['prev'] = $prev;
+                $navigation_data['next'] = $next;
+                //  print_r($navigation_data);
+
+                $this->update_field('Webpage Navigation Data', json_encode($navigation_data), 'no_history');
+
+
+                break;
+
+            default:
+
+
         }
 
 
-        return $items;
+    }
+
+    function reindex_category_categories() {
+        $content_data = $this->get('Content Data');
+
+
+        $block_found = false;
+
+        if (!isset($content_data['blocks'])) {
+            return;
+        }
+
+        foreach ($content_data['blocks'] as $_block_key => $_block) {
+            if ($_block['type'] == 'category_categories') {
+                $block       = $_block;
+                $block_key   = $_block_key;
+                $block_found = true;
+                break;
+            }
+        }
+
+        if (!$block_found) {
+            return;
+        }
+
+        // print_r($content_data);
+
+
+        $sql = sprintf(
+            "SELECT  `Webpage URL`,`Category Main Image Key`,`Category Main Image`,`Category Label`,`Category Main Image Key`,`Webpage State`,`Product Category Public`,`Webpage State`,`Page Key`,`Webpage Code`,`Product Category Active Products`,`Category Code`,Cat.`Category Key` 
+                FROM    `Category Bridge` B  LEFT JOIN     `Product Category Dimension` P   ON (`Subject Key`=`Product Category Key` AND `Subject`='Category' )    LEFT JOIN `Category Dimension` Cat ON (Cat.`Category Key`=P.`Product Category Key`) LEFT JOIN `Page Store Dimension` CatWeb ON (CatWeb.`Page Key`=`Product Category Webpage Key`)  WHERE  B.`Category Key`=%d  AND `Product Category Public`='Yes'  AND `Webpage State` IN ('Online','Ready')  ORDER BY  `Category Label` DESC   ",
+            $this->get('Webpage Scope Key')
+
+
+        );
+
+        // print $sql;
+
+        $items                    = array();
+        $items_category_key_index = array();
+
+        if ($result = $this->db->query($sql)) {
+            foreach ($result as $row) {
+                $items[$row['Category Key']]                    = $row;
+                $items_category_key_index[$row['Category Key']] = $row['Category Key'];
+            }
+        } else {
+            print_r($error_info = $this->db->errorInfo());
+            print "$sql\n";
+            exit;
+        }
+
+
+        $offline_items_category_key_index = array();
+        $sql                              = sprintf(
+            "SELECT  B.`Category Key` FROM    `Category Bridge` B  LEFT JOIN     `Product Category Dimension` P   ON (`Subject Key`=`Product Category Key` AND `Subject`='Category' )    LEFT JOIN `Category Dimension` Cat ON (Cat.`Category Key`=P.`Product Category Key`) LEFT JOIN `Page Store Dimension` CatWeb ON (CatWeb.`Page Key`=`Product Category Webpage Key`)  
+            WHERE  B.`Category Key`=%d  AND  (`Product Category Public`='No'  OR `Webpage State` NOT IN ('Online','Ready')  )  ", $this->get('Webpage Scope Key')
+
+
+        );
+        if ($result = $this->db->query($sql)) {
+            foreach ($result as $row) {
+
+                $offline_items_category_key_index[$row['Category Key']] = $row['Category Key'];
+            }
+        } else {
+            print_r($error_info = $this->db->errorInfo());
+            print "$sql\n";
+            exit;
+        }
+
+        $anchor_section_key = 0;
+
+        foreach ($block['sections'] as $section_key => $section) {
+
+            if ($section['type'] == 'anchor') {
+                $anchor_section_key = $section_key;
+            }
+
+            foreach ($section['items'] as $item_key => $item) {
+                if ($item['type'] == 'category') {
+
+
+                    //print $item['category_key'];
+                    //print_r($items_category_key_index);
+                    //exit;
+
+                    if (in_array($item['category_key'], $items_category_key_index)) {
+
+                        $item_data = $items[$item['category_key']];
+
+                        $content_data['blocks'][$block_key]['sections'][$section_key]['items'][$item_key]['item_type']       = 'Subject';
+                        $content_data['blocks'][$block_key]['sections'][$section_key]['items'][$item_key]['webpage_key']     = $item_data['Page Key'];
+                        $content_data['blocks'][$block_key]['sections'][$section_key]['items'][$item_key]['webpage_code']    = $item_data['Webpage Code'];
+                        $content_data['blocks'][$block_key]['sections'][$section_key]['items'][$item_key]['category_code']   = $item_data['Category Code'];
+                        $content_data['blocks'][$block_key]['sections'][$section_key]['items'][$item_key]['number_products'] = $item_data['Product Category Active Products'];
+                        $content_data['blocks'][$block_key]['sections'][$section_key]['items'][$item_key]['link']            = $item_data['Webpage URL'];
+
+                        unset($items_category_key_index[$item['category_key']]);
+                    } else {
+
+                        if (in_array($item['category_key'], $offline_items_category_key_index)) {
+                            unset($content_data['blocks'][$block_key]['sections'][$section_key]['items'][$item_key]);
+
+                        } else {
+
+                            $sql = sprintf(
+                                "SELECT  `Webpage URL`,`Category Main Image Key`,`Category Main Image`,`Category Label`,`Category Main Image Key`,`Webpage State`,`Product Category Public`,`Webpage State`,`Page Key`,`Webpage Code`,`Product Category Active Products`,`Category Code`,Cat.`Category Key` 
+                                  FROM   `Product Category Dimension` P     LEFT JOIN `Category Dimension` Cat ON (Cat.`Category Key`=P.`Product Category Key`) LEFT JOIN `Page Store Dimension` CatWeb ON (CatWeb.`Page Key`=`Product Category Webpage Key`)  
+                                  WHERE  `Product Category Key`=%d  AND `Product Category Public`='Yes'  AND `Webpage State` IN ('Online','Ready')    ", $item['category_key']
+
+
+                            );
+
+                            if ($result = $this->db->query($sql)) {
+                                if ($row = $result->fetch()) {
+                                    $content_data['blocks'][$block_key]['sections'][$section_key]['items'][$item_key]['item_type']       = 'Guest';
+                                    $content_data['blocks'][$block_key]['sections'][$section_key]['items'][$item_key]['webpage_key']     = $row['Page Key'];
+                                    $content_data['blocks'][$block_key]['sections'][$section_key]['items'][$item_key]['webpage_code']    = $row['Webpage Code'];
+                                    $content_data['blocks'][$block_key]['sections'][$section_key]['items'][$item_key]['category_code']   = $row['Category Code'];
+                                    $content_data['blocks'][$block_key]['sections'][$section_key]['items'][$item_key]['number_products'] = $row['Product Category Active Products'];
+                                    $content_data['blocks'][$block_key]['sections'][$section_key]['items'][$item_key]['link']            = $row['Webpage URL'];
+
+
+                                } else {
+                                    unset($content_data['blocks'][$block_key]['sections'][$section_key]['items'][$item_key]);
+                                }
+                            } else {
+                                print_r($error_info = $this->db->errorInfo());
+                                print "$sql\n";
+                                exit;
+                            }
+
+
+                        }
+
+
+                    }
+
+                }
+
+
+            }
+
+
+        }
+
+        foreach ($items_category_key_index as $index) {
+            $item_data = $items[$index];
+            $item      = array(
+                'type'                 => 'category',
+                'category_key'         => $item_data['Category Key'],
+                'header_text'          => trim(strip_tags($item_data['Category Label'])),
+                'image_src'            => ($item_data['Category Main Image Key'] ? 'image_root.php?id='.$item_data['Category Main Image Key'] : '/art/nopic.png'),
+                'image_mobile_website' => '',
+                'image_website'        => '',
+                'webpage_key'          => $item_data['Page Key'],
+                'webpage_code'         => strtolower($item_data['Webpage Code']),
+                'item_type'            => 'Subject',
+                'category_code'        => $item_data['Category Code'],
+                'number_products'      => $item_data['Product Category Active Products'],
+                'link'                 => $item_data['Webpage URL'],
+
+
+            );
+
+            array_unshift($content_data['blocks'][$block_key]['sections'][$anchor_section_key]['items'], $item);
+        }
+
+        // print_r($content_data['blocks'][$block_key]['sections']);
+
+        $this->update_field_switcher('Page Store Content Data', json_encode($content_data), 'no_history');
+
+        $sql = sprintf('DELETE FROM `Website Webpage Scope Map` WHERE `Website Webpage Scope Webpage Key`=%d AND `Website Webpage Scope Type` IN ("Subject","Guest")  ', $this->id);
+        $this->db->exec($sql);
+
+        $index = 0;
+        foreach ($content_data['blocks'][$block_key]['sections'] as $section_key => $section) {
+
+            if (isset($section['items'])) {
+                foreach ($section['items'] as $item_key => $item) {
+                    if ($item['type'] == 'category') {
+                        $sql = sprintf(
+                            'INSERT INTO `Website Webpage Scope Map` (`Website Webpage Scope Website Key`,`Website Webpage Scope Webpage Key`,`Website Webpage Scope Scope`,`Website Webpage Scope Scope Key`,`Website Webpage Scope Type`,`Website Webpage Scope Index`) VALUES (%d,%d,%s,%d,%s,%d) ',
+                            $this->get('Webpage Website Key'), $this->id, prepare_mysql('Category'), $item['category_key'], prepare_mysql($item['item_type']), $index
+
+                        );
+                        //print "$sql\n";
+
+                        $this->db->exec($sql);
+                        $index++;
+
+                    }
+                }
+            }
+
+
+        }
+
 
     }
 
     function reindex_products() {
         $content_data = $this->get('Content Data');
-        $block_found    = false;
+        $block_found  = false;
         foreach ($content_data['blocks'] as $_block_key => $_block) {
             if ($_block['type'] == 'products') {
-                $block     = $_block;
-                $block_key = $_block_key;
-                $block_found=true;
+                $block       = $_block;
+                $block_key   = $_block_key;
+                $block_found = true;
                 break;
             }
         }
@@ -3484,7 +4016,7 @@ class Page extends DB_Table {
                 $this->get('Webpage Website Key'), $this->id, prepare_mysql('Product'), $item['product_id'], prepare_mysql('Products_Item'), $index
 
             );
-           // print "$sql\n";
+            // print "$sql\n";
 
             $this->db->exec($sql);
             $index++;
@@ -3498,12 +4030,12 @@ class Page extends DB_Table {
     function reindex_see_also() {
 
         $content_data = $this->get('Content Data');
-        $block_found    = false;
+        $block_found  = false;
         foreach ($content_data['blocks'] as $_block_key => $_block) {
             if ($_block['type'] == 'see_also') {
-                $block     = $_block;
-                $block_key = $_block_key;
-                $block_found=true;
+                $block       = $_block;
+                $block_key   = $_block_key;
+                $block_found = true;
                 break;
             }
         }
@@ -3705,7 +4237,7 @@ class Page extends DB_Table {
         $index = 0;
         foreach ($content_data['blocks'][$block_key]['items'] as $item) {
 
-          //  print_r($item);
+            //  print_r($item);
 
 
             $sql = sprintf(
@@ -3733,7 +4265,7 @@ class Page extends DB_Table {
         $max_sales_links = ceil($max_links * .6);
 
 
-       // $min_sales_correlation_samples = 5;
+        // $min_sales_correlation_samples = 5;
         // $correlation_upper_limit       = .5 / ($min_sales_correlation_samples);
         $see_also     = array();
         $number_links = 0;
@@ -3900,37 +4432,6 @@ class Page extends DB_Table {
 
                 }
 
-                $count = 0;
-
-                $order_value = 1;
-
-
-                if (count($see_also) > 0) {
-
-
-                    foreach ($see_also as $key => $row) {
-                        $correlation[$key] = $row['value'];
-                    }
-
-                    //print_r($correlation);
-
-                    array_multisort($correlation, SORT_DESC, $see_also);
-                    // print_r($see_also);
-
-
-                    foreach ($see_also as $see_also_page_key => $see_also_data) {
-
-                        if ($count >= $number_items) {
-                            break;
-                        }
-                        $items[] = $see_also_data['page_key'];
-
-                        $count++;
-                        $order_value++;
-                        //print "$sql\n";
-                    }
-
-                }
 
 
                 break;
@@ -4061,39 +4562,39 @@ class Page extends DB_Table {
                 break;
         }
 
-                $count = 0;
+        $count = 0;
 
-                $order_value = 1;
-
-
-                if (count($see_also) > 0) {
+        $order_value = 1;
 
 
-                    foreach ($see_also as $key => $row) {
-                        $correlation[$key] = $row['value'];
-                    }
 
-                    //print_r($correlation);
-
-                    array_multisort($correlation, SORT_DESC, $see_also);
-                    // print_r($see_also);
+        if (count($see_also) > 0) {
 
 
-                    foreach ($see_also as $see_also_page_key => $see_also_data) {
+            foreach ($see_also as $key => $row) {
+                $correlation[$key] = $row['value'];
+            }
 
-                        if ($count >= $number_items) {
-                            break;
-                        }
-                        $items[] = $see_also_data['page_key'];
+            //print_r($correlation);
 
-                        $count++;
-                        $order_value++;
-                        //print "$sql\n";
-                    }
+            array_multisort($correlation, SORT_DESC, $see_also);
+            // print_r($see_also);
 
+
+            foreach ($see_also as $see_also_page_key => $see_also_data) {
+
+
+                if ($count >= $number_items) {
+                    break;
                 }
+                $items[] = $see_also_data['page_key'];
 
+                $count++;
+                $order_value++;
+                //print "$sql\n";
+            }
 
+        }
 
         return $items;
 
@@ -4294,203 +4795,59 @@ class Page extends DB_Table {
 
     }
 
-    function reindex_category_categories() {
-        $content_data = $this->get('Content Data');
+    function get_items() {
 
 
-        $block_found = false;
-
-        if (!isset($content_data['blocks'])) {
-            return;
-        }
-
-        foreach ($content_data['blocks'] as $_block_key => $_block) {
-            if ($_block['type'] == 'category_categories') {
-                $block     = $_block;
-                $block_key = $_block_key;
-                $block_found = true;
-                break;
-            }
-        }
-
-        if (!$block_found) {
-            return;
-        }
-
-       // print_r($content_data);
+        $items = array();
 
 
-        $sql = sprintf(
-            "SELECT  `Webpage URL`,`Category Main Image Key`,`Category Main Image`,`Category Label`,`Category Main Image Key`,`Webpage State`,`Product Category Public`,`Webpage State`,`Page Key`,`Webpage Code`,`Product Category Active Products`,`Category Code`,Cat.`Category Key` 
-                FROM    `Category Bridge` B  LEFT JOIN     `Product Category Dimension` P   ON (`Subject Key`=`Product Category Key` AND `Subject`='Category' )    LEFT JOIN `Category Dimension` Cat ON (Cat.`Category Key`=P.`Product Category Key`) LEFT JOIN `Page Store Dimension` CatWeb ON (CatWeb.`Page Key`=`Product Category Webpage Key`)  WHERE  B.`Category Key`=%d  AND `Product Category Public`='Yes'  AND `Webpage State` IN ('Online','Ready')  ORDER BY  `Category Label` DESC   ",
-            $this->get('Webpage Scope Key')
+        if ($this->get('Webpage Scope') == 'Category Products') {
 
-
-        );
-
-       // print $sql;
-
-        $items                    = array();
-        $items_category_key_index = array();
-
-        if ($result = $this->db->query($sql)) {
-            foreach ($result as $row) {
-                $items[$row['Category Key']]                    = $row;
-                $items_category_key_index[$row['Category Key']] = $row['Category Key'];
-            }
-        } else {
-            print_r($error_info = $this->db->errorInfo());
-            print "$sql\n";
-            exit;
-        }
-
-
-        $offline_items_category_key_index = array();
-        $sql                              = sprintf(
-            "SELECT  B.`Category Key` FROM    `Category Bridge` B  LEFT JOIN     `Product Category Dimension` P   ON (`Subject Key`=`Product Category Key` AND `Subject`='Category' )    LEFT JOIN `Category Dimension` Cat ON (Cat.`Category Key`=P.`Product Category Key`) LEFT JOIN `Page Store Dimension` CatWeb ON (CatWeb.`Page Key`=`Product Category Webpage Key`)  
-            WHERE  B.`Category Key`=%d  AND  (`Product Category Public`='No'  OR `Webpage State` NOT IN ('Online','Ready')  )  ", $this->get('Webpage Scope Key')
-
-
-        );
-        if ($result = $this->db->query($sql)) {
-            foreach ($result as $row) {
-
-                $offline_items_category_key_index[$row['Category Key']] = $row['Category Key'];
-            }
-        } else {
-            print_r($error_info = $this->db->errorInfo());
-            print "$sql\n";
-            exit;
-        }
-
-        $anchor_section_key = 0;
-
-        foreach ($block['sections'] as $section_key => $section) {
-
-            if ($section['type'] == 'anchor') {
-                $anchor_section_key = $section_key;
-            }
-
-            foreach ($section['items'] as $item_key => $item) {
-                if ($item['type'] == 'category') {
-
-
-                    //print $item['category_key'];
-                    //print_r($items_category_key_index);
-                    //exit;
-
-                    if (in_array($item['category_key'], $items_category_key_index)) {
-
-                        $item_data = $items[$item['category_key']];
-
-                        $content_data['blocks'][$block_key]['sections'][$section_key]['items'][$item_key]['item_type']       = 'Subject';
-                        $content_data['blocks'][$block_key]['sections'][$section_key]['items'][$item_key]['webpage_key']     = $item_data['Page Key'];
-                        $content_data['blocks'][$block_key]['sections'][$section_key]['items'][$item_key]['webpage_code']    = $item_data['Webpage Code'];
-                        $content_data['blocks'][$block_key]['sections'][$section_key]['items'][$item_key]['category_code']   = $item_data['Category Code'];
-                        $content_data['blocks'][$block_key]['sections'][$section_key]['items'][$item_key]['number_products'] = $item_data['Product Category Active Products'];
-                        $content_data['blocks'][$block_key]['sections'][$section_key]['items'][$item_key]['link']            = $item_data['Webpage URL'];
-
-                        unset($items_category_key_index[$item['category_key']]);
-                    } else {
-
-                        if (in_array($item['category_key'], $offline_items_category_key_index)) {
-                            unset($content_data['blocks'][$block_key]['sections'][$section_key]['items'][$item_key]);
-
-                        } else {
-
-                            $sql = sprintf(
-                                "SELECT  `Webpage URL`,`Category Main Image Key`,`Category Main Image`,`Category Label`,`Category Main Image Key`,`Webpage State`,`Product Category Public`,`Webpage State`,`Page Key`,`Webpage Code`,`Product Category Active Products`,`Category Code`,Cat.`Category Key` 
-                                  FROM   `Product Category Dimension` P     LEFT JOIN `Category Dimension` Cat ON (Cat.`Category Key`=P.`Product Category Key`) LEFT JOIN `Page Store Dimension` CatWeb ON (CatWeb.`Page Key`=`Product Category Webpage Key`)  
-                                  WHERE  `Product Category Key`=%d  AND `Product Category Public`='Yes'  AND `Webpage State` IN ('Online','Ready')    ", $item['category_key']
-
-
-                            );
-
-                            if ($result = $this->db->query($sql)) {
-                                if ($row = $result->fetch()) {
-                                    $content_data['blocks'][$block_key]['sections'][$section_key]['items'][$item_key]['item_type']       = 'Guest';
-                                    $content_data['blocks'][$block_key]['sections'][$section_key]['items'][$item_key]['webpage_key']     = $row['Page Key'];
-                                    $content_data['blocks'][$block_key]['sections'][$section_key]['items'][$item_key]['webpage_code']    = $row['Webpage Code'];
-                                    $content_data['blocks'][$block_key]['sections'][$section_key]['items'][$item_key]['category_code']   = $row['Category Code'];
-                                    $content_data['blocks'][$block_key]['sections'][$section_key]['items'][$item_key]['number_products'] = $row['Product Category Active Products'];
-                                    $content_data['blocks'][$block_key]['sections'][$section_key]['items'][$item_key]['link']            = $row['Webpage URL'];
-
-
-                                } else {
-                                    unset($content_data['blocks'][$block_key]['sections'][$section_key]['items'][$item_key]);
-                                }
-                            } else {
-                                print_r($error_info = $this->db->errorInfo());
-                                print "$sql\n";
-                                exit;
-                            }
-
-
-                        }
-
-
-                    }
-
-                }
-
-
-            }
-
-
-        }
-
-        foreach ($items_category_key_index as $index) {
-            $item_data = $items[$index];
-            $item      = array(
-                'type'                 => 'category',
-                'category_key'         => $item_data['Category Key'],
-                'header_text'          => trim(strip_tags($item_data['Category Label'])),
-                'image_src'            => ($item_data['Category Main Image Key'] ? 'image_root.php?id='.$item_data['Category Main Image Key'] : '/art/nopic.png'),
-                'image_mobile_website' => '',
-                'image_website'        => '',
-                'webpage_key'          => $item_data['Page Key'],
-                'webpage_code'         => strtolower($item_data['Webpage Code']),
-                'item_type'            => 'Subject',
-                'category_code'        => $item_data['Category Code'],
-                'number_products'      => $item_data['Product Category Active Products'],
-                'link'                 => $item_data['Webpage URL'],
+            $sql = sprintf(
+                "SELECT `Product Category Index Content Data` FROM `Product Category Index` 
+                 WHERE  `Product Category Index Website Key`=%d   ORDER BY  ifnull(`Product Category Index Stack`,99999999)", $this->id
 
 
             );
 
-            array_unshift($content_data['blocks'][$block_key]['sections'][$anchor_section_key]['items'], $item);
-        }
 
-       // print_r($content_data['blocks'][$block_key]['sections']);
-
-        $this->update_field_switcher('Page Store Content Data', json_encode($content_data), 'no_history');
-
-        $sql = sprintf('DELETE FROM `Website Webpage Scope Map` WHERE `Website Webpage Scope Webpage Key`=%d AND `Website Webpage Scope Type` IN ("Subject","Guest")  ', $this->id);
-        $this->db->exec($sql);
-
-        $index = 0;
-        foreach ($content_data['blocks'][$block_key]['sections'] as $section_key => $section) {
-
-            if (isset($section['items'])) {
-                foreach ($section['items'] as $item_key => $item) {
-                    if ($item['type'] == 'category') {
-                        $sql = sprintf(
-                            'INSERT INTO `Website Webpage Scope Map` (`Website Webpage Scope Website Key`,`Website Webpage Scope Webpage Key`,`Website Webpage Scope Scope`,`Website Webpage Scope Scope Key`,`Website Webpage Scope Type`,`Website Webpage Scope Index`) VALUES (%d,%d,%s,%d,%s,%d) ',
-                            $this->get('Webpage Website Key'), $this->id, prepare_mysql('Category'), $item['category_key'], prepare_mysql($item['item_type']), $index
-
-                        );
-                        //print "$sql\n";
-
-                        $this->db->exec($sql);
-                        $index++;
-
-                    }
+            if ($result = $this->db->query($sql)) {
+                foreach ($result as $row) {
+                    $items[] = json_decode($row['Product Category Index Content Data'], true);
                 }
+            } else {
+                print_r($error_info = $this->db->errorInfo());
+                print "$sql\n";
+                exit;
             }
 
 
+        } else {
+            if ($this->get('Webpage Scope') == 'Category Categories') {
+
+                $sql = sprintf(
+                    "SELECT `Category Webpage Index Content Data` FROM `Category Webpage Index` CWI
+                 WHERE  `Category Webpage Index Webpage Key`=%d   ORDER BY  ifnull(`Category Webpage Index Stack`,99999999)", $this->id
+
+
+                );
+
+
+                if ($result = $this->db->query($sql)) {
+                    foreach ($result as $row) {
+                        $items[] = json_decode($row['Category Webpage Index Content Data'], true);
+                    }
+                } else {
+                    print_r($error_info = $this->db->errorInfo());
+                    print "$sql\n";
+                    exit;
+                }
+
+            }
         }
 
+
+        return $items;
 
     }
 
@@ -7973,15 +8330,15 @@ class Page extends DB_Table {
 
     }
 
+
+    //======= new methods
+
     function update_up_today_requests() {
         $this->update_requests('Today');
         $this->update_requests('Week To Day');
         $this->update_requests('Month To Day');
         $this->update_requests('Year To Day');
     }
-
-
-    //======= new methods
 
     function update_requests($interval) {
 
@@ -9319,432 +9676,23 @@ class Page extends DB_Table {
 
     }
 
-    function update_navigation() {
-
-        $navigation_data = array(
-            'show'=>false,
-            'breadcrumbs' => array(),
-            'prev'    => false,
-            'next'        => false,
-        );
-
-
-        switch ($this->get('Webpage Scope')) {
-            case 'Category Products':
-
-                $website = get_object('Website', $this->data['Webpage Website Key']);
-
-                $category = get_object('Category', $this->data['Webpage Scope Key']);
-
-
-                $parent_webpage_key = 0;
-
-                if ($category->get('Product Category Department Category Key')) {
-                    $parent         = get_object('Category', $category->get('Product Category Department Category Key'));
-                    $parent_webpage = get_object('Webpage', $parent->get('Product Category Webpage Key'));
-                    if ($parent_webpage->get('Webpage State') == 'Offline') {
-                        $parent_webpage_key = 0;
-                    } else {
-                        $parent_webpage_key = $parent_webpage->id;
-                    }
-
-                }
-
-
-               // print_r($parent_webpage);
-
-                $navigation_data['breadcrumbs'][] = array(
-                    'link'        => $website->get('Website URL'),
-                    'label'       => '<i class="fa fa-home"></i>',
-                    'label_short' => '<i class="fa fa-home"></i>',
-                    'title'       => _('Home')
-                );
-
-
-                if ($parent_webpage_key) {
-                    $navigation_data['breadcrumbs'][] = array(
-                        'link'        => $parent_webpage->get('Webpage URL'),
-                        'label'       => $parent_webpage->get('Name'),
-                        'label_short' => $parent_webpage->get('Webpage Code'),
-                        'title'       => $parent_webpage->get('Webpage Browser Title'),
-                    );
-                }
-
-                //print_r($parent_webpage);
-
-                $prev=false;
-                $next=false;
-
-                $next_key = 0;
-                $prev_key = 0;
-
-                $sql = sprintf(
-                    'SELECT `Website Webpage Scope Index` FROM `Website Webpage Scope Map` WHERE `Website Webpage Scope Webpage Key`=%d  AND `Website Webpage Scope Scope`="Category" AND `Website Webpage Scope Scope Key`=%d ', $parent_webpage_key, $category->id
-
-                );
-               // print $sql;
-
-                if ($result = $this->db->query($sql)) {
-                    if ($row = $result->fetch()) {
-
-                        $sql = sprintf(
-                            'SELECT `Website Webpage Scope Scope Key` FROM `Website Webpage Scope Map` WHERE `Website Webpage Scope Webpage Key`=%d  AND  `Website Webpage Scope Type`="Subject" and  `Website Webpage Scope Scope`="Category" AND `Website Webpage Scope Index`<%d ORDER BY `Website Webpage Scope Index` desc',
-                            $parent_webpage_key, $row['Website Webpage Scope Index']
-                        );
-
-                        //print $sql;
-
-                        if ($result2 = $this->db->query($sql)) {
-                            if ($row2 = $result2->fetch()) {
-                                $prev_key = $row2['Website Webpage Scope Scope Key'];
-
-                            } else {
-
-                                $sql = sprintf(
-                                    'SELECT `Website Webpage Scope Scope Key` FROM `Website Webpage Scope Map`  WHERE `Website Webpage Scope Webpage Key`=%d  AND  `Website Webpage Scope Type`="Subject" and `Website Webpage Scope Scope`="Category"  ORDER BY `Website Webpage Scope Index` desc ',
-                                    $parent_webpage_key
-                                );
-                                //print $sql;
-                                if ($result3=$this->db->query($sql)) {
-                                    if ($row3 = $result3->fetch()) {
-                                        $prev_key = $row3['Website Webpage Scope Scope Key'];
-                                    }
-                                }else {
-                                    print_r($error_info=$this->db->errorInfo());
-                                    print "$sql\n";
-                                    exit;
-                                }
-
-                            }
-
-
-                        } else {
-                            print_r($error_info = $this->db->errorInfo());
-                            print "$sql\n";
-                            exit;
-                        }
-
-
-                        $sql = sprintf(
-                            'SELECT `Website Webpage Scope Scope Key` FROM `Website Webpage Scope Map`  WHERE `Website Webpage Scope Webpage Key`=%d  AND  `Website Webpage Scope Type`="Subject" and `Website Webpage Scope Scope`="Category" AND `Website Webpage Scope Index`>%d ORDER BY `Website Webpage Scope Index` ',
-                            $parent_webpage_key, $row['Website Webpage Scope Index']
-                        );
-
-                        if ($result2 = $this->db->query($sql)) {
-                            if ($row2 = $result2->fetch()) {
-                                $next_key = $row2['Website Webpage Scope Scope Key'];
-                            } else {
-
-                                $sql = sprintf(
-                                    'SELECT `Website Webpage Scope Scope Key` FROM `Website Webpage Scope Map`  WHERE `Website Webpage Scope Webpage Key`=%d  AND  `Website Webpage Scope Type`="Subject" and `Website Webpage Scope Scope`="Category"  ORDER BY `Website Webpage Scope Index` ',
-                                    $parent_webpage_key
-                                );
-
-                                if ($result3=$this->db->query($sql)) {
-                                    if ($row3 = $result3->fetch()) {
-                                        $next_key = $row3['Website Webpage Scope Scope Key'];
-                                	}
-                                }else {
-                                	print_r($error_info=$this->db->errorInfo());
-                                	print "$sql\n";
-                                	exit;
-                                }
-
-                            }
-                        } else {
-                            print_r($error_info = $this->db->errorInfo());
-                            print "$sql\n";
-                            exit;
-                        }
-
-
-                    }
-                } else {
-                    print_r($error_info = $this->db->errorInfo());
-                    print "$sql\n";
-                    exit;
-                }
-
-                if ($prev_key) {
-
-                    $prev_category = get_object('Category', $prev_key);
-                    $prev_category_webpage = get_object('Webpage', $prev_category->get('Product Category Webpage Key'));
-                    $prev          = array(
-                        'link'        => $prev_category_webpage->get('Webpage URL'),
-                        'label'       => $prev_category_webpage->get('Name'),
-                        'label_short' => $prev_category_webpage->get('Webpage Code'),
-                        'title'       => $prev_category_webpage->get('Webpage Browser Title'),
-                    );
-                }
-
-
-                if ($next_key) {
-
-                    $next_category = get_object('Category',$next_key);
-                    $next_category_webpage = get_object('Webpage', $next_category->get('Product Category Webpage Key'));
-                    $next                  = array(
-                        'link'        => $next_category_webpage->get('Webpage URL'),
-                        'label'       => $next_category_webpage->get('Name'),
-                        'label_short' => $next_category_webpage->get('Webpage Code'),
-                        'title'       => $next_category_webpage->get('Webpage Browser Title'),
-                    );
-                }
-
-
-                if($next_key or $prev_key or $parent_webpage_key){
-                    $navigation_data['show']=1;
-                }
-
-              //  print $prev_key;
-
-               // print $next_key;
-
-
-                $navigation_data['prev']=$prev;
-                $navigation_data['next']=$next;
-              // print_r($navigation_data);
-
-                $this->update_field('Webpage Navigation Data',json_encode($navigation_data),'no_history');
-
-
-
-           
-
-            case 'Product':
-
-
-                $website = get_object('Website', $this->data['Webpage Website Key']);
-
-                $product = get_object('Product', $this->data['Webpage Scope Key']);
-
-
-                $parent_webpage_key = 0;
-
-
-
-                if ($product->get('Product Family Category Key')) {
-                    $parent         = get_object('Category', $product->get('Product Family Category Key'));
-                    $parent_webpage = get_object('Webpage', $parent->get('Product Category Webpage Key'));
-                    if ($parent_webpage->get('Webpage State') == 'Offline') {
-                        $parent_webpage_key = 0;
-                    } else {
-                        $parent_webpage_key = $parent_webpage->id;
-                    }
-
-                }
-
-
-
-                
-                $navigation_data['breadcrumbs'][] = array(
-                    'link'        => $website->get('Website URL'),
-                    'label'       => '<i class="fa fa-home"></i>',
-                    'label_short' => '<i class="fa fa-home"></i>',
-                    'title'       => _('Home')
-                );
-
-
-                if ($parent_webpage_key) {
-
-
-
-                    $grandparent_webpage_key = 0;
-
-                    if ($parent->get('Product Category Department Category Key')) {
-                        $grandparent         = get_object('Category', $parent->get('Product Category Department Category Key'));
-                        $grandparent_webpage = get_object('Webpage', $grandparent->get('Product Category Webpage Key'));
-                        if ($grandparent_webpage->get('Webpage State') == 'Offline') {
-                            $grandparent_webpage_key = 0;
-                        } else {
-                            $grandparent_webpage_key = $grandparent_webpage->id;
-                        }
-
-                    }
-
-                    if ($grandparent_webpage_key) {
-                        $navigation_data['breadcrumbs'][] = array(
-                            'link'        => $grandparent_webpage->get('Webpage URL'),
-                            'label'       => $grandparent_webpage->get('Name'),
-                            'label_short' => $grandparent_webpage->get('Webpage Code'),
-                            'title'       => $grandparent_webpage->get('Webpage Browser Title'),
-                        );
-                    }
-
-
-
-                    $navigation_data['breadcrumbs'][] = array(
-                        'link'        => $parent_webpage->get('Webpage URL'),
-                        'label'       => $parent_webpage->get('Name'),
-                        'label_short' => $parent_webpage->get('Webpage Code'),
-                        'title'       => $parent_webpage->get('Webpage Browser Title'),
-                    );
-                }
-
-                //print_r($parent_webpage);
-
-                $prev=false;
-                $next=false;
-
-                $next_key = 0;
-                $prev_key = 0;
-
-                $sql = sprintf(
-                    'SELECT `Website Webpage Scope Index` FROM `Website Webpage Scope Map` WHERE `Website Webpage Scope Webpage Key`=%d  AND `Website Webpage Scope Scope`="Product" AND `Website Webpage Scope Scope Key`=%d ', 
-                    $parent_webpage_key, $product->id
-
-                );
-                // print $sql;
-
-                if ($result = $this->db->query($sql)) {
-                    if ($row = $result->fetch()) {
-
-                        $sql = sprintf(
-                            'SELECT `Website Webpage Scope Scope Key` FROM `Website Webpage Scope Map` WHERE `Website Webpage Scope Webpage Key`=%d  AND  `Website Webpage Scope Type`="Subject" and  `Website Webpage Scope Scope`="Product" AND `Website Webpage Scope Index`<%d ORDER BY `Website Webpage Scope Index` desc',
-                            $parent_webpage_key, $row['Website Webpage Scope Index']
-                        );
-
-                        //print $sql;
-
-                        if ($result2 = $this->db->query($sql)) {
-                            if ($row2 = $result2->fetch()) {
-                                $prev_key = $row2['Website Webpage Scope Scope Key'];
-
-                            } else {
-
-                                $sql = sprintf(
-                                    'SELECT `Website Webpage Scope Scope Key` FROM `Website Webpage Scope Map`  WHERE `Website Webpage Scope Webpage Key`=%d  AND  `Website Webpage Scope Type`="Subject" and `Website Webpage Scope Scope`="Product"  ORDER BY `Website Webpage Scope Index` desc ',
-                                    $parent_webpage_key
-                                );
-                                //print $sql;
-                                if ($result3=$this->db->query($sql)) {
-                                    if ($row3 = $result3->fetch()) {
-                                        $prev_key = $row3['Website Webpage Scope Scope Key'];
-                                    }
-                                }else {
-                                    print_r($error_info=$this->db->errorInfo());
-                                    print "$sql\n";
-                                    exit;
-                                }
-
-                            }
-
-
-                        } else {
-                            print_r($error_info = $this->db->errorInfo());
-                            print "$sql\n";
-                            exit;
-                        }
-
-
-                        $sql = sprintf(
-                            'SELECT `Website Webpage Scope Scope Key` FROM `Website Webpage Scope Map`  WHERE `Website Webpage Scope Webpage Key`=%d  AND  `Website Webpage Scope Type`="Subject" and `Website Webpage Scope Scope`="Product" AND `Website Webpage Scope Index`>%d ORDER BY `Website Webpage Scope Index` ',
-                            $parent_webpage_key, $row['Website Webpage Scope Index']
-                        );
-
-                        if ($result2 = $this->db->query($sql)) {
-                            if ($row2 = $result2->fetch()) {
-                                $next_key = $row2['Website Webpage Scope Scope Key'];
-                            } else {
-
-                                $sql = sprintf(
-                                    'SELECT `Website Webpage Scope Scope Key` FROM `Website Webpage Scope Map`  WHERE `Website Webpage Scope Webpage Key`=%d  AND  `Website Webpage Scope Type`="Subject" and `Website Webpage Scope Scope`="Product"  ORDER BY `Website Webpage Scope Index` ',
-                                    $parent_webpage_key
-                                );
-
-                                if ($result3=$this->db->query($sql)) {
-                                    if ($row3 = $result3->fetch()) {
-                                        $next_key = $row3['Website Webpage Scope Scope Key'];
-                                    }
-                                }else {
-                                    print_r($error_info=$this->db->errorInfo());
-                                    print "$sql\n";
-                                    exit;
-                                }
-
-                            }
-                        } else {
-                            print_r($error_info = $this->db->errorInfo());
-                            print "$sql\n";
-                            exit;
-                        }
-
-
-                    }
-                } else {
-                    print_r($error_info = $this->db->errorInfo());
-                    print "$sql\n";
-                    exit;
-                }
-
-                if ($prev_key) {
-
-                    $prev_product = get_object('Product', $prev_key);
-                    $prev_product_webpage = get_object('Webpage', $prev_product->get('Product Webpage Key'));
-                    $prev          = array(
-                        'link'        => $prev_product_webpage->get('Webpage URL'),
-                        'label'       => $prev_product_webpage->get('Name'),
-                        'label_short' => $prev_product_webpage->get('Webpage Code'),
-                        'title'       => $prev_product_webpage->get('Webpage Browser Title'),
-                    );
-                }
-
-
-                if ($next_key) {
-
-                    $next_product = get_object('Product',$next_key);
-                    $next_product_webpage = get_object('Webpage', $next_product->get('Product Webpage Key'));
-                    $next                  = array(
-                        'link'        => $next_product_webpage->get('Webpage URL'),
-                        'label'       => $next_product_webpage->get('Name'),
-                        'label_short' => $next_product_webpage->get('Webpage Code'),
-                        'title'       => $next_product_webpage->get('Webpage Browser Title'),
-                    );
-                }
-
-
-                if($next_key or $prev_key or $parent_webpage_key){
-                    $navigation_data['show']=1;
-                }
-
-                //  print $prev_key;
-
-                // print $next_key;
-
-
-                $navigation_data['prev']=$prev;
-                $navigation_data['next']=$next;
-              //  print_r($navigation_data);
-
-                $this->update_field('Webpage Navigation Data',json_encode($navigation_data),'no_history');
-
-
-
-
-
-                break;
-
-            default:
-
-
-        }
-
-
-    }
-
-    function refill_see_also($convert_to_auto=false,$number_items=false){
+    function refill_see_also($convert_to_auto = false, $number_items = false) {
 
         $content_data = $this->get('Content Data');
-        $block_found    = false;
+        $block_found  = false;
 
 
-
-        if($content_data=='')return;
-        if(!isset($content_data['blocks']))return;
+        if ($content_data == '') {
+            return;
+        }
+        if (!isset($content_data['blocks'])) {
+            return;
+        }
 
         foreach ($content_data['blocks'] as $_block_key => $_block) {
             if ($_block['type'] == 'see_also') {
-                $block_key = $_block_key;
-                $block_found=true;
+                $block_key   = $_block_key;
+                $block_found = true;
                 break;
             }
         }
@@ -9753,84 +9701,79 @@ class Page extends DB_Table {
             return;
         }
 
-        if($convert_to_auto){
-            $content_data['blocks'][$block_key]['auto']=true;
+        if ($convert_to_auto) {
+            $content_data['blocks'][$block_key]['auto'] = true;
         }
-        if(is_numeric($number_items) and $number_items>0){
-            $content_data['blocks'][$block_key]['auto_items']=$number_items;
+        if (is_numeric($number_items) and $number_items > 0) {
+            $content_data['blocks'][$block_key]['auto_items'] = $number_items;
         }
 
 
-        $items=array();
+        $items = array();
 
 
+        if ($content_data['blocks'][$block_key]['auto']) {
 
 
-        if($content_data['blocks'][$block_key]['auto']){
+            foreach ($this->get_related_webpages_key($content_data['blocks'][$block_key]['auto_items']) as $webpage_key) {
+                $see_also_page = get_object('Webpage', $webpage_key);
+
+                switch ($see_also_page->get('Webpage Scope')) {
+                    case'Category Products' :
+                    case'Category Categories' :
+                        $category = get_object('Category', $see_also_page->get('Webpage Scope Key'));
+                        $items[]  = array(
+                            'type' => 'category',
+
+                            'header_text'          => $category->get('Category Label'),
+                            'image_src'            => $category->get('Image'),
+                            'image_mobile_website' => '',
+                            'image_website'        => '',
+
+                            'webpage_key'  => $see_also_page->id,
+                            'webpage_code' => $see_also_page->get('Webpage Code'),
+
+                            'category_key'    => $category->id,
+                            'category_code'   => $category->get('Category Code'),
+                            'number_products' => $category->get('Product Category Active Products'),
+                            'link'            => $see_also_page->get('Webpage URL'),
 
 
+                        );
+                        break;
+                    case 'Product':
+
+                        $product = get_object('Public_Product', $see_also_page->get('Webpage Scope Key'));
 
 
-             foreach ($this->get_related_webpages_key($content_data['blocks'][$block_key]['auto_items']) as $webpage_key) {
-                 $see_also_page = get_object('Webpage', $webpage_key);
+                        $items[] = array(
+                            'type' => 'product',
 
-                 switch ($see_also_page->get('Webpage Scope')) {
-                     case'Category Products' :
-                     case'Category Categories' :
-                         $category = get_object('Category', $see_also_page->get('Webpage Scope Key'));
-                         $items[]  = array(
-                             'type' => 'category',
+                            'header_text'          => $product->get('Name'),
+                            'image_src'            => $product->get('Image'),
+                            'image_mobile_website' => '',
+                            'image_website'        => '',
 
-                             'header_text'          => $category->get('Category Label'),
-                             'image_src'            => $category->get('Image'),
-                             'image_mobile_website' => '',
-                             'image_website'        => '',
+                            'webpage_key'  => $see_also_page->id,
+                            'webpage_code' => $see_also_page->get('Webpage Code'),
 
-                             'webpage_key'  => $see_also_page->id,
-                             'webpage_code' => $see_also_page->get('Webpage Code'),
+                            'product_id'        => $product->id,
+                            'product_code'      => $product->get('Code'),
+                            'product_web_state' => $product->get('Web State'),
+                            'link'              => $see_also_page->get('Webpage URL'),
 
-                             'category_key'    => $category->id,
-                             'category_code'   => $category->get('Category Code'),
-                             'number_products' => $category->get('Product Category Active Products'),
-                             'link'            => $see_also_page->get('Webpage URL'),
+                        );
+                        break;
+                }
+            }
 
 
-                         );
-                         break;
-                     case 'Product':
-
-                         $product = get_object('Public_Product', $see_also_page->get('Webpage Scope Key'));
-
-
-                         $items[] = array(
-                             'type' => 'product',
-
-                             'header_text'          => $product->get('Name'),
-                             'image_src'            => $product->get('Image'),
-                             'image_mobile_website' => '',
-                             'image_website'        => '',
-
-                             'webpage_key'  => $see_also_page->id,
-                             'webpage_code' => $see_also_page->get('Webpage Code'),
-
-                             'product_id'        => $product->id,
-                             'product_code'      => $product->get('Code'),
-                             'product_web_state' => $product->get('Web State'),
-                             'link'              => $see_also_page->get('Webpage URL'),
-
-                         );
-                         break;
-                 }
-             }
-
-
-            $content_data['blocks'][$block_key]['items']=$items;
+            $content_data['blocks'][$block_key]['items'] = $items;
             $this->update_field_switcher('Page Store Content Data', json_encode($content_data), 'no_history');
 
         }
 
         $this->reindex_see_also();
-
 
 
     }

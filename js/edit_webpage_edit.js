@@ -33,12 +33,12 @@ $(document).on('click', '.new_block', function (e) {
 $(document).on('click', '.add_webpage_block', function (e) {
 
 
-    var request = '/ar_website.php?tipo=webpage_block&code=' + $(this).attr('block') + '&theme=theme_1&store_key=' + $('#save_button').data('store_key')
+    var request = '/ar_website.php?tipo=webpage_block&code=' + $(this).attr('block') + '&theme=theme_1&store_key=' + $('#save_button').data('store_key')+'&webpage_key='+$('.control_panel').data('webpage_key')
     console.log(request)
 
     $.getJSON(request, function (data) {
 
-        // console.log(data)
+        console.log(data)
 
         $('#blk_control_container').prepend(data.controls)
 
@@ -59,7 +59,11 @@ $(document).on('click', '.add_webpage_block', function (e) {
             $('#preview')[0].contentWindow.set_up_blackboard(data.block_key)
         }else if(data.type == 'images'){
             $('#preview')[0].contentWindow.set_up_images(data.block_key)
+        }else if(data.type == 'see_also'){
+            $('#edit_mode_'+data.block_key+'  .refresh_auto_see_also_items').trigger( "click" )
         }
+
+
 
 
         $('#save_button').addClass('save button changed valid')

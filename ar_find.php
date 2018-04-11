@@ -2845,6 +2845,13 @@ function find_product_webpages($db, $account, $memcache_ip, $data, $smarty) {
             break;
     }
 
+    if (isset($data['action'])) {
+        $action = $data['action'];
+    } else {
+        $action = '';
+    }
+
+
 
     if (isset($data['metadata']['option'])) {
         switch ($data['metadata']['option']) {
@@ -2870,6 +2877,27 @@ function find_product_webpages($db, $account, $memcache_ip, $data, $smarty) {
         );
 
     }
+
+    if (isset($data['metadata']['parent_category_key'])) {
+        $parent_category_key = $data['metadata']['parent_category_key'];
+        $sql                 = sprintf("SELECT `Subject Key`   FROM `Category Bridge` WHERE `Category Key`=%d ", $parent_category_key);
+        //  print $sql;
+
+        $already_in_parent = array();
+        if ($result = $db->query($sql)) {
+            foreach ($result as $row) {
+                $already_in_parent[] = $row['Subject Key'];
+            }
+        } else {
+            print_r($error_info = $db->errorInfo());
+            exit;
+        }
+
+    } else {
+        $already_in_parent = array();
+    }
+
+
 
     $memcache_fingerprint = $account->get('Account Code').'FIND_PWebP'.md5($q);
 
@@ -2901,7 +2929,7 @@ function find_product_webpages($db, $account, $memcache_ip, $data, $smarty) {
 
 
         $sql = sprintf(
-            "select `Product ID`,`Product Code`,`Product Name`,`Webpage Name`,`Product Current Key` from `Page Store Dimension`  left join `Product Dimension` on (`Webpage Scope Key`=`Product ID` and `Webpage Scope`='Product')  where  `Product Code` like '%s%%' %s order by `Product Code` limit $max_results ",
+            "select `Product ID`,`Product Code`,`Product Name`,`Webpage Name`,`Product Current Key` ,`Product Web State`,`Product Public` from `Page Store Dimension`  left join `Product Dimension` on (`Webpage Scope Key`=`Product ID` and `Webpage Scope`='Product')  where  `Product Code` like '%s%%' %s order by `Product Code` limit $max_results ",
             $q, $where
         );
 
@@ -2922,6 +2950,8 @@ function find_product_webpages($db, $account, $memcache_ip, $data, $smarty) {
                 $candidates_data[$row['Product ID']] = array(
                     'Product Code' => $row['Product Code'],
                     'Product Name' => $row['Product Name'],
+                    'Webpage State' => $row['Product Web State'],
+                    'Public'=>$row['Product Public'],
                 );
 
             }
@@ -2951,17 +2981,53 @@ function find_product_webpages($db, $account, $memcache_ip, $data, $smarty) {
         $results = array();
         foreach ($candidates as $product_id => $candidate) {
 
+
+
+            $value       = $product_id;
+            $description = $candidates_data[$product_id]['Product Name'];
+            $code        = $candidates_data[$product_id]['Product Code'];
+
+            if ($action == 'add_product_to_webpage') {
+
+
+
+
+                if ($candidates_data[$product_id]['Public'] == 'No') {
+                    $description .= ' <i class="fa fa-exclamation-circle padding_left_10 error" aria-hidden="true"></i>  <span class="error">'._('Product is not public').'</span>';
+                    $code        = '<span class="strikethrough">'.$candidates_data[$product_id]['Product Code'].'</span>';
+                    $value       = 0;
+                } elseif ($candidates_data[$product_id]['Webpage State'] == 'Offline') {
+                    $description .= ' <i class="fa fa-exclamation-circle padding_left_10 error" aria-hidden="true"></i>  <span class="error">'._('Webpage is offline').'</span>';
+                    $code        = '<span class="strikethrough">'.$candidates_data[$product_id]['Product Code'].'</span>';
+                    $value       = 0;
+                } elseif ($candidates_data[$product_id]['Webpage State'] == 'Out of Stock') {
+                    $description .= ' <i class="fa fa-exclamation-circle padding_left_10 error" aria-hidden="true"></i>  <span class="error">'._('Product out of stock').'</span>';
+                    $code        = '<span >'.$candidates_data[$product_id]['Product Code'].'</span>';
+
+                }elseif (in_array($product_id, $already_in_parent)) {
+                    $description .= ' <i class="fa fa-exclamation-circle padding_left_10 error" aria-hidden="true"></i>  <span class="error">'._("Product already in this family").'</span>';
+                    $code        = '<span class="strikethrough">'.$candidates_data[$product_id]['Product Code'].'</span>';
+                    $value       = 0;
+                }else{
+
+                }
+
+            }
+
+
+
+
             $product = get_object('Public_Product', $product_id);
             $product->load_webpage();
 
-            //  print_r($data);
+
 
 
             $results[$product_id] = array(
-                'code'            => $candidates_data[$product_id]['Product Code'],
-                'description'     => $candidates_data[$product_id]['Product Name'],
-                'value'           => $product_id,
-                'formatted_value' => $candidates_data[$product_id]['Product Code'],
+                'code'            => $code,
+                'description'     => $description,
+                'value'           => $value,
+                'formatted_value' => $code,
                 'metadata'        => json_encode(
                     array(
                         'product_id'           => $product->id,

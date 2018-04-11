@@ -300,6 +300,43 @@ function get_webpage_blocks($theme = '') {
             'show'  => 1,
             'src'   => '#map'
         ),
+        'products'       => array(
+            'type'              => 'products',
+            'auto'              => false,
+            'auto_scope'        => 'webpage',
+            'auto_items'        => 5,
+            'auto_last_updated' => '',
+            'label'             => _('Products'),
+            'icon'              => 'fa-window-restore',
+            'show'              => 1,
+            'top_margin'        => 0,
+            'bottom_margin'     => 0,
+            'item_headers'      => false,
+            'items'             => array(),
+            'sort'              => 'Manual',
+            'title'             => _('Products'),
+            'show_title'        => true
+
+
+
+        ),
+        'see_also'       => array(
+            'type'              => 'see_also',
+            'auto'              => true,
+            'auto_scope'        => 'webpage',
+            'auto_items'        => 5,
+            'auto_last_updated' => '',
+            'label'             => _('See also'),
+            'icon'              => 'fa-link',
+            'show'              => 1,
+            'top_margin'        => 0,
+            'bottom_margin'     => 0,
+            'item_headers'      => false,
+            'items'             => array(),
+            'sort'              => 'Manual',
+            'title'             => _('See also'),
+            'show_title'        => true
+        ),
 
 
     );
