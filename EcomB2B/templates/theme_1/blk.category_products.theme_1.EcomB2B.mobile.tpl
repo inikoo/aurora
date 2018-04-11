@@ -9,6 +9,11 @@
 -->
 *}
 
+<style>
+    .store-item:nth-last-child(even){
+        margin-left: 3%;
+    }
+    </style>
 
 {if isset($data.top_margin)}{assign "top_margin" $data.top_margin}{else}{assign "top_margin" "0"}{/if}
 {if isset($data.bottom_margin)}{assign "bottom_margin" $data.bottom_margin}{else}{assign "bottom_margin" "0"}{/if}
