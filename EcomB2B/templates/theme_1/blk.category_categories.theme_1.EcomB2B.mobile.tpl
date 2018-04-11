@@ -9,11 +9,7 @@
 -->
 *}
 
-<style>
-    .store-item:nth-last-child(even){
-        margin-left: 0px;
-    }
-</style>
+
 
 {if isset($data.top_margin)}{assign "top_margin" $data.top_margin}{else}{assign "top_margin" "0"}{/if}
 {if isset($data.bottom_margin)}{assign "bottom_margin" $data.bottom_margin}{else}{assign "bottom_margin" "0"}{/if}
@@ -47,7 +43,7 @@
                                     <a href="/{$category_data.webpage_code|lower}">
                                         <img src="{$category_data.image_mobile_website}" alt="{$category_data.header_text|strip_tags|escape}">
                                     </a>
-                                    <div class="single_line_height center-text " style="min-height: 32px">
+                                    <div class="single_line_height center-text " style="min-height: 36px">
                                         {$category_data.header_text|strip_tags}
                                     </div>
                                 </div>
