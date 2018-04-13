@@ -30,6 +30,12 @@ if ($category->get('Product Category Public')=='No') {
 
 $webpage  = $category->get_webpage();
 
+
+if($webpage->id==150876){
+  exit('caca');
+}
+
+
 $website=get_object('Website',$webpage->get('Webpage Website Key'));
 
 
@@ -362,9 +368,6 @@ if($webpage->get('Webpage Template Filename')=='category_categories' or $webpage
 
                 // print_r($panel_rows);
 
-            if($webpage->id==150876){
-                print_r($products);
-            }
 
 
 
