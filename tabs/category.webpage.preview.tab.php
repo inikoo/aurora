@@ -36,12 +36,15 @@ $website=get_object('Website',$webpage->get('Webpage Website Key'));
 
 if($webpage->get('Webpage Template Filename')=='category_categories' or $webpage->get('Webpage Template Filename')=='category_products'){
 
-
     if (!$webpage->id) {
         $html = '<div style="padding:40px">'.'Webpage not found'.'</div>';
 
         return;
     }
+
+
+
+
 
     $website = new Website($webpage->get('Webpage Website Key'));
 
@@ -118,6 +121,9 @@ if($webpage->get('Webpage Template Filename')=='category_categories' or $webpage
 
         switch ($webpage->get('Page Store Content Template Filename')) {
             case 'products_showcase':
+
+
+
 
                 // todo remove this when all descriptions are moved inside webpage content data
 
@@ -204,6 +210,7 @@ if($webpage->get('Webpage Template Filename')=='category_categories' or $webpage
                     "SELECT `Product Category Index Key`,`Product Category Index Content Data`,`Product Category Index Product ID`,`Product Category Index Category Key`,`Product Category Index Stack`, P.`Product ID`,`Product Code`,`Product Web State` FROM `Category Bridge` B  LEFT JOIN `Product Dimension` P ON (`Subject Key`=P.`Product ID`)  LEFT JOIN `Product Category Index` S ON (`Subject Key`=S.`Product Category Index Product ID` AND S.`Product Category Index Category Key`=B.`Category Key`)  WHERE  `Category Key`=%d  AND `Product Web State` IN  ('For Sale','Out of Stock')   ORDER BY `Product Web State`,   ifnull(`Product Category Index Stack`,99999999)",
                     $public_category->id
                 );
+
 
 
                 $stack_index         = 0;
@@ -350,8 +357,16 @@ if($webpage->get('Webpage Template Filename')=='category_categories' or $webpage
 
 
                 }
+
+
+
                 // print_r($panel_rows);
-                // print_r($products);
+
+            if($webpage->id==150876){
+                print_r($products);
+            }
+
+
 
 
                 $related_products = array();
