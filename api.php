@@ -148,17 +148,17 @@ function authenticate($db) {
 
         if (preg_match('/^([a-z0-9]{8})(.+)$/', $api_key, $matches)) {
 
-            print_r($matches);
+           // print_r($matches);
 
             $api_key_code   = $matches[1];
 
             $_tmp=preg_replace('/^\./','',$matches[2]);
 
-            print $_tmp;
-
-            $api_key_secret = base64_decode($api_key_code);
 
 
+            $api_key_secret = base64_decode($_tmp);
+           //print $api_key_secret;
+           // exit;
             $sql = sprintf(
                 'SELECT `API Key Scope`,`User Key`,`User Active`,`API Key Key`,`API Key Active`,`API Key User Key`,`API Key Hash` FROM `API Key Dimension` LEFT JOIN `User Dimension` ON (`API Key User Key`=`User Key`) WHERE `API Key Code`=%s',
                 prepare_mysql($api_key_code)
@@ -169,7 +169,7 @@ function authenticate($db) {
             if ($row = $db->query($sql)->fetch()) {
 
 
-                print_r($row);
+                //print_r($row);
 
 
                 if ($row['API Key Active'] != 'Yes') {
@@ -180,7 +180,7 @@ function authenticate($db) {
                     exit;
                 }
 
-                print $api_key_secret;
+              //  print $api_key_secret;
 
 
                 if (!password_verify($api_key_secret, $row['API Key Hash'])) {

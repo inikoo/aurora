@@ -83,12 +83,18 @@ class API_Key extends DB_Table {
 
 
         include_once 'utils/password_functions.php';
-        $this->secret_key = generatePassword(40, 10);
+        $this->secret_key = 'P'.generatePassword(39, 10);
 
         $data['API Key Code'] = hash('crc32', generatePassword(32, 10), false);
 
 
         $data['API Key Hash'] = password_hash($this->secret_key, PASSWORD_DEFAULT);
+
+        //print $this->secret_key;
+
+        //print '>>>>>';
+        //print base64_encode($this->secret_key);
+        //print '<<<<<';
         $this->secret_key     = base64_encode($this->secret_key);
         $this->data           = $data;
 
