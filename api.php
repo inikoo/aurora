@@ -157,7 +157,7 @@ function authenticate($db) {
                 prepare_mysql($api_key_code)
             );
 
-            print $sql;
+
 
             if ($row = $db->query($sql)->fetch()) {
 
@@ -172,6 +172,9 @@ function authenticate($db) {
                     echo json_encode($response);
                     exit;
                 }
+
+                print $api_key_secret;
+
 
                 if (!password_verify($api_key_secret, $row['API Key Hash'])) {
 
