@@ -151,7 +151,7 @@ function authenticate($db) {
             print_r($matches);
 
             $api_key_code   = $matches[1];
-            $api_key_secret = base64_decode($matches[2]);
+            $api_key_secret = base64_decode(preg_replace('/^\./','',$matches[2]));
 
 
             $sql = sprintf(
