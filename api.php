@@ -148,6 +148,8 @@ function authenticate($db) {
 
         if (preg_match('/^([a-z0-9]{8})(.+)$/', $api_key, $matches)) {
 
+            print_r($matches);
+
             $api_key_code   = $matches[1];
             $api_key_secret = base64_decode($matches[2]);
 
