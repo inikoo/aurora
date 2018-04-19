@@ -156,7 +156,14 @@ function authenticate($db) {
                 'SELECT `API Key Scope`,`User Key`,`User Active`,`API Key Key`,`API Key Active`,`API Key User Key`,`API Key Hash` FROM `API Key Dimension` LEFT JOIN `User Dimension` ON (`API Key User Key`=`User Key`) WHERE `API Key Code`=%s',
                 prepare_mysql($api_key_code)
             );
+
+            print $sql;
+
             if ($row = $db->query($sql)->fetch()) {
+
+
+                print_r($row);
+
 
                 if ($row['API Key Active'] != 'Yes') {
                     $response = log_api_key_access_failure(
