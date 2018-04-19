@@ -34,7 +34,7 @@
         <tr>
             <td class="label">{t}API Key{/t}</td>
             <td>
-                <span id="api_key">{$api_key->get('API Key Code')}{$api_key->secret_key}</span>
+                <span id="api_key">{$api_key->secret_key}</span>
                 <br>
                 <span class="warning"><i class="fa fa-exclamation-circle"></i> {t}The API key is a secret information and should be treated as a password, the key will not be shown again{/t}</span>
             </td>
