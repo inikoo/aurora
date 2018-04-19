@@ -9,7 +9,7 @@
 
  Version 2.0
 */
-
+header('Access-Control-Allow-Origin: *');
 error_reporting(E_ALL);
 date_default_timezone_set('UTC');
 include_once 'utils/general_functions.php';
