@@ -90,6 +90,13 @@
                 <button id="get_employee_data">Get employee data</button>
             </td>
         </tr>
+
+        <tr>
+            <td colspan="2">
+                <button id="get_part_data_from_barcode">Get part data from barcode</button>
+            </td>
+        </tr>
+
         <tr>
             <td colspan="2">
                 <button id="get_part_data">Get part data</button>
@@ -127,6 +134,12 @@
     $("#get_part_data").click(function () {
         get_part_data()
     });
+
+    $("#get_part_data_from_barcode").click(function () {
+        get_part_data_from_barcode()
+    });
+
+
     $("#get_location_data").click(function () {
         get_location_data()
     });
@@ -173,6 +186,32 @@
         var ajaxData = new FormData();
         ajaxData.append("action", action)
         ajaxData.append("part_sku", part_sku)
+
+
+        $.ajax({
+            url: api_url, type: 'POST', data: ajaxData, dataType: 'json', cache: false, contentType: false, processData: false, complete: function () {
+            }, success: function (data) {
+                console.log(data)
+            }, error: function () {
+                console.log(data)
+            }
+        });
+
+
+    }
+
+    function get_part_data_from_barcode() {
+
+        set_up_credentials();
+
+        var action = 'get_part_data_from_barcode';
+        var barcode = 'JBB-01AWUK';
+
+
+
+        var ajaxData = new FormData();
+        ajaxData.append("action", action)
+        ajaxData.append("barcode", barcode)
 
 
         $.ajax({

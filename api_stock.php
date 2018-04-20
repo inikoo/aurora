@@ -39,6 +39,30 @@ switch ($_REQUEST['action']) {
         echo json_encode($response);
         exit;
         break;
+    case 'get_part_data_from_barcode':
+
+        include_once 'class.Part.php';
+
+        $part=new Part('barcode',$_REQUEST['barcode']);
+
+        if (!$part->id) {
+            $response = array(
+                'state' => 'Error',
+                'msg'   => 'part not found'
+            );
+            echo json_encode($response);
+            exit;
+        }
+
+        $data = $part->data;
+
+        $response = array(
+            'state' => 'OK',
+            'data'  => $data
+        );
+        echo json_encode($response);
+        exit;
+        break;
     case 'get_part_data':
         $part = get_object('part', $_REQUEST['part_sku']);
 
