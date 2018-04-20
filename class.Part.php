@@ -65,6 +65,10 @@ class Part extends Asset {
             $sql = sprintf(
                 "SELECT * FROM `Part Dimension` WHERE `Part SKU`=%d ", $tag
             );
+        } elseif ($tipo == 'barcode') {
+            $sql = sprintf(
+                "SELECT * FROM `Part Dimension` WHERE `Part SKO Barcode`=%s ", prepare_mysql($tag)
+            );
         } else {
             if ($tipo == 'code' or $tipo == 'reference') {
                 $sql = sprintf(
