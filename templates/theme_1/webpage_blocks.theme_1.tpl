@@ -572,7 +572,7 @@
     set_up_froala_editor('thanks_text_{$key}');
     {elseif $block.type=='product'}
 
-    set_up_froala_editor('product_description');
+    set_up_froala_editor('_product_description');
 
     {elseif $block.type=='favourites'}
 
@@ -1009,6 +1009,13 @@
                         })
 
                     });
+                    text_block=$(obj).find('.product_description_block')
+
+                    if ($(text_block).hasClass('fr-box')) {
+                        var text = $(text_block).froalaEditor('html.get')
+                    } else {
+                        var text = $(text_block).html()
+                    }
 
                     blocks.push({
                         type: 'product',
@@ -1017,7 +1024,7 @@
                         show: ($(obj).hasClass('hide') ? 0 : 1),
                         top_margin: $(obj).attr('top_margin'),
                         bottom_margin: $(obj).attr('bottom_margin'),
-                        text: $(obj).find('.product_description_block').froalaEditor('html.get'),
+                        text: text,
 
 
                         image: {

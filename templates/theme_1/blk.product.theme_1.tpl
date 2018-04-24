@@ -95,7 +95,7 @@
                 </div>
 
             </div>
-            <div id="product_description" class="product_description_block fr-view ">
+            <div id="_product_description" class="product_description_block fr-view " style="border:1px dashed #ccc">
                 {$data.text}
             </div>
 
@@ -149,6 +149,19 @@
 
 
 <script>
+
+
+    $(document).on( "dblclick", ".product_description_block", function() {
+
+        if($(this).hasClass('fr-box')){
+            return;
+        }
+
+
+        set_up_froala_editor($(this).attr('id'))
+
+    })
+
 
 </script>
 
