@@ -1527,6 +1527,7 @@ function migrate_families() {
             );
 
             $has_header = false;
+            $header_text='';
 
             if ($result = $db->query($sql)) {
                 foreach ($result as $row) {
