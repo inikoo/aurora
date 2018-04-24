@@ -137,6 +137,14 @@ $smarty->setCompileCheck(false);
     }
 
 
+
+
+
+    if ($webpage->get('Webpage Code') == 'register.sys' or  $webpage->get('Webpage Code') == 'profile.sys' ) {
+        $smarty->assign('poll_queries', $website->get_poll_queries($webpage));
+
+    }
+
     $smarty->assign('webpage', $webpage);
     $smarty->assign('content', $webpage->get('Content Data'));
 
