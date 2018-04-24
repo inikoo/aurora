@@ -58,7 +58,7 @@
                     </div>
 
                     <div class="wrap_to_center product_image" >
-                        <i class="fa fa-fw fa-external-link-square more_info" aria-hidden="true"></i>
+                        <i class="fal fa-fw fa-external-link-square more_info" aria-hidden="true"></i>
                         <i class="far fa-fw  fa-heart favourite" aria-hidden="true"></i>
 
                         <img src="{$item.image_src}" data-src="{$item.image_src}"  data-image_website="{$item.image_website}" />
