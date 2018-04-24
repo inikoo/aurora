@@ -38,9 +38,9 @@ $editor = array(
 
 
 $where=' and `Webpage Website Key`=14';
-$where=' and true';
-//migrate_families();
-////migrate_departments();
+//$where=' and true';
+migrate_families();
+migrate_departments();
 //exit;
 
 //2730
@@ -374,10 +374,10 @@ function migrate_blocks() {
 
                             case 'one_pack':
                                 $text = '';
-                                if ($block['_title'] != '') {
+                                if (!empty($block['_title'] )) {
                                     $text .= sprintf('<h1>%s</h1>', $block['_title']);
                                 }
-                                if ($block['_subtitle'] != '') {
+                                if (!empty($block['_subtitle'])) {
                                     $text .= sprintf('<h3>%s</h3>', $block['_subtitle']);
                                 }
                                 $text                          .= $block['_text'];
@@ -1197,7 +1197,7 @@ function migrate_products() {
                     $title = 'Zobacz także';
 
                     break;
-                case 14:
+                case 141:
                     $title = 'Viz též';
 
                     break;
@@ -1313,8 +1313,12 @@ function migrate_families() {
     global $db,$where;
     $left_offset = 158;
 
+
+
     $sql = sprintf('SELECT `Webpage Scope Key`,`Page Key`,`Webpage Website Key` FROM `Page Store Dimension` WHERE `Webpage Template Filename`="products_showcase"  %s ',$where);
     //$sql = sprintf('SELECT `Webpage Scope Key`,`Page Key`,`Webpage Website Key` FROM `Page Store Dimension` WHERE  `Page Key`=32302 ');
+
+
 
 
     if ($result = $db->query($sql)) {
@@ -1812,7 +1816,7 @@ function migrate_families() {
                         $title = 'Produkty powiązane';
                         //Zobacz także
                         break;
-                    case 14:
+                    case 141:
                         $title = 'Související produkty';
                         //Viz též
                         break;
@@ -1870,7 +1874,7 @@ function migrate_families() {
                         $title = 'Zobacz także';
 
                         break;
-                    case 14:
+                    case 141:
                         $title = 'Viz též';
 
                         break;
@@ -1941,6 +1945,7 @@ function migrate_departments() {
 
     $sql = sprintf('SELECT `Page Key`,`Page Store Key` ,`Page Store Section`,`Page Parent Code` FROM `Page Store Dimension` WHERE  `Webpage Template Filename`="categories_showcase"   %s ',$where);
     //  $sql = sprintf('SELECT `Page Key`,`Page Store Key` ,`Page Store Section`,`Page Parent Code` FROM `Page Store Dimension` WHERE   `Page Key`=2972 ');
+
 
 
     if ($result = $db->query($sql)) {
