@@ -1491,7 +1491,27 @@ class Page extends DB_Table {
                 }
             }
             $this->updated = true;
-        } else {
+
+
+            require_once 'external_libs/Smarty/Smarty.class.php';
+            $smarty_web               = new Smarty();
+            $smarty_web->template_dir = 'EcomB2B/templates';
+            $smarty_web->compile_dir  = 'EcomB2B/server_files/smarty/templates_c';
+            $smarty_web->cache_dir    = 'EcomB2B/server_files/smarty/cache';
+            $smarty_web->config_dir   = 'EcomB2B/server_files/smarty/configs';
+            $smarty_web->setCaching(Smarty::CACHING_LIFETIME_CURRENT);
+
+            $theme='theme_1';
+            $website_type='EcomB2B';
+
+
+            $cache_id=$this->get('Webpage Website Key').'|'.$this->id;
+            $smarty_web->clearCache(null,$cache_id);
+
+
+
+        }
+        else {
             if ($this->get('Webpage Scope') == 'Category Categories') {
 
                 if ($this->get('Webpage Version') == 2) {
@@ -2711,6 +2731,25 @@ class Page extends DB_Table {
             }
 
         }
+
+
+
+
+        require_once 'external_libs/Smarty/Smarty.class.php';
+        $smarty_web               = new Smarty();
+        $smarty_web->template_dir = 'EcomB2B/templates';
+        $smarty_web->compile_dir  = 'EcomB2B/server_files/smarty/templates_c';
+        $smarty_web->cache_dir    = 'EcomB2B/server_files/smarty/cache';
+        $smarty_web->config_dir   = 'EcomB2B/server_files/smarty/configs';
+        $smarty_web->setCaching(Smarty::CACHING_LIFETIME_CURRENT);
+
+        $theme='theme_1';
+        $website_type='EcomB2B';
+
+
+        $cache_id=$this->get('Webpage Website Key').'|'.$this->id;
+        $smarty_web->clearCache(null,$cache_id);
+
 
 
         $this->update_metadata = array(
@@ -5212,6 +5251,26 @@ class Page extends DB_Table {
 
 
         }
+
+
+
+
+
+        require_once 'external_libs/Smarty/Smarty.class.php';
+        $smarty_web               = new Smarty();
+        $smarty_web->template_dir = 'EcomB2B/templates';
+        $smarty_web->compile_dir  = 'EcomB2B/server_files/smarty/templates_c';
+        $smarty_web->cache_dir    = 'EcomB2B/server_files/smarty/cache';
+        $smarty_web->config_dir   = 'EcomB2B/server_files/smarty/configs';
+        $smarty_web->setCaching(Smarty::CACHING_LIFETIME_CURRENT);
+
+        $theme='theme_1';
+        $website_type='EcomB2B';
+
+
+        $cache_id=$this->get('Webpage Website Key').'|'.$this->id;
+        $smarty_web->clearCache(null,$cache_id);
+
 
 
         $this->update_metadata = array(

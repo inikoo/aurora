@@ -2732,6 +2732,7 @@ class Product extends Asset {
 
 
                 $this->update_field($field, $value, $options);
+                $this->update_webpages();
 
                 break;
 
@@ -2774,6 +2775,7 @@ class Product extends Asset {
 
                     $this->get_data('id', $this->id);
                     $this->updated = $part->updated;
+                    $this->update_webpages();
 
                     return;
 
@@ -2886,6 +2888,7 @@ class Product extends Asset {
 
 
                 $this->updated = $updated;
+                $this->update_webpages();
                 break;
 
 
@@ -3348,6 +3351,7 @@ class Product extends Asset {
 
 
                 $this->update_field($field, $value, $options);
+            $this->update_webpages();
 
                 break;
             case 'Product Origin Country Code':
@@ -3393,6 +3397,7 @@ class Product extends Asset {
 
 
                 $this->update_field($field, $value, $options);
+                $this->update_webpages();
                 break;
 
             case 'History Note':
@@ -3898,6 +3903,12 @@ class Product extends Asset {
         		print "$sql\n";
         		exit;
         }
+
+
+        $webpage=get_object('Webpage',$this->get('Product Webpage Key'));
+        $webpage->reindex_items();
+
+
 
 
     }
