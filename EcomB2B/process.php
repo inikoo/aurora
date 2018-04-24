@@ -13,6 +13,12 @@
 
 //error_reporting(E_ALL ^ E_DEPRECATED);
 
+$redis = new Redis();
+if(  $redis->connect('127.0.0.1', 6379)){
+    $redis_on=true;
+}else{
+    $redis_on=false;
+}
 
 require_once 'keyring/dns.php';
 
@@ -24,7 +30,28 @@ if (empty($_SESSION['website_key'])) {
     include('utils/find_website_key.include.php');
 }
 
-$webpage_id = get_url($_SESSION['website_key'], $_SERVER['REQUEST_URI'], $dns_host, $dns_user, $dns_pwd, $dns_db);
+
+
+
+$url = preg_replace('/^\//', '',  $_SERVER['REQUEST_URI']);
+$url = preg_replace('/\?.*$/', '', $url);
+$url=substr($url,0,256);
+
+$url_cache_key='pwc|'.$_SESSION['website_key'].'_'.$url;
+
+if($redis->exists($url_cache_key)){
+    $webpage_id=$redis->get($url_cache_key);
+
+
+
+
+}else{
+    $webpage_id = get_url($_SESSION['website_key'], $url, $dns_host, $dns_user, $dns_pwd, $dns_db);
+    $redis->set($url_cache_key,$webpage_id);
+
+
+}
+
 
 if (is_numeric($webpage_id)) {
     $website_key = $_SESSION['website_key'];
@@ -39,16 +66,6 @@ if (is_numeric($webpage_id)) {
 }
 
 
-if (is_numeric($cached_webpage_key)) {
-
-    include_once 'common.php';
-    $webpage_key = $cached_webpage_key;
-    include 'webpage.php';
-    exit;
-} else {
-
-
-}
 
 
 function get_url($website_key, $url, $dns_host, $dns_user, $dns_pwd, $dns_db) {
@@ -60,8 +77,6 @@ function get_url($website_key, $url, $dns_host, $dns_user, $dns_pwd, $dns_db) {
     $db->setAttribute(PDO::ATTR_DEFAULT_FETCH_MODE, PDO::FETCH_ASSOC);
 
 
-    $url = preg_replace('/^\//', '', $url);
-    $url = preg_replace('/\?.*$/', '', $url);
 
 
     $original_url = $url;

@@ -43,13 +43,13 @@ $cache_id=$_SESSION['website_key'].'|'.$webpage_key.'|'.($logged_in?'in':'out');
 
 $template = $theme.'/webpage_blocks.'.$theme.'.'.$website_type.$template_suffix.'.tpl';
 
-/*
+
 $smarty->setCaching(Smarty::CACHING_LIFETIME_CURRENT);
 $smarty->setCacheLifetime(-1);
 $smarty->setCompileCheck(false);
-*/
 
-//if(!$smarty->isCached($template,$cache_id)) {
+
+if(!$smarty->isCached($template,$cache_id)) {
 
     include_once 'utils/natural_language.php';
     include_once 'utils/public_object_functions.php';
@@ -148,7 +148,7 @@ $smarty->setCompileCheck(false);
     $smarty->assign('webpage', $webpage);
     $smarty->assign('content', $webpage->get('Content Data'));
 
-//}
+}
 
 $smarty->display($template,$cache_id);
 

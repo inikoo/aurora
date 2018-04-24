@@ -5,9 +5,6 @@
  
    function menu_in() {
 
-                if(pinned){
-                    return;
-                }
 
                 menu_open = true;
                 mouse_over_menu_link=true;
@@ -37,9 +34,7 @@
 
             function menu_out() {
 
-                if(pinned){
-                    return;
-                }
+
 
                 mouse_over_menu_link=false
                 if (!mouse_over_menu ) {
@@ -58,9 +53,6 @@
 
             function menu_block_in() {
 
-                if(pinned){
-                    return;
-                }
 
                 menu_open = true;
                 mouse_over_menu=true;
@@ -72,9 +64,7 @@
             }
             function menu_block_out() {
 
-                if(pinned){
-                    return;
-                }
+
 
                 mouse_over_menu=false;
                 var element= $(this)
@@ -92,9 +82,7 @@
 
             function menu_in_fast() {
 
-                if(pinned){
-                    return;
-                }
+
 
                 mouse_over_menu_link=true;
                 if (menu_open == true) {
@@ -111,9 +99,7 @@
             }
 
             function menu_out_fast() {
-                if(pinned){
-                    return;
-                }
+
 
                 mouse_over_menu_link=false;
             }

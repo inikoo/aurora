@@ -1095,7 +1095,7 @@ function migrate_login() {
 function migrate_products() {
     global $db,$where;
 
-    $sql = sprintf('SELECT `Webpage Scope Key`,`Page Key`,`Webpage Website Key` FROM `Page Store Dimension` WHERE `Webpage Template Filename`="product"  %s ',$where);
+    $sql = sprintf('SELECT `Webpage Scope Key`,`Page Key`,`Webpage Website Key` FROM `Page Store Dimension` WHERE `Webpage Template Filename`="product"  %s order by `Product Code` ',$where);
     //   $sql = sprintf('SELECT `Webpage Scope Key`,`Page Key`,`Webpage Website Key` FROM `Page Store Dimension` WHERE `Page Key`=2572 ');
 
     if ($result3 = $db->query($sql)) {
