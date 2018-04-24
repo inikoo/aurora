@@ -46,7 +46,9 @@
 
 
         </div>
-        <div class="information" style="padding: 0px 30px;min-width: 500px;flex-basis: auto;flex-grow: 1;">
+        <div class="information" style="padding: 0px 30px;min-width: 500px;flex-basis: auto;flex-grow: 1"
+
+        >
             <h1 style="padding-top:5px;margin:2px 0;font-size:150%" itemprop="name">
                 {$product->get('Name')}
 
@@ -105,7 +107,9 @@
         {assign 'barcode' $product->get('Barcode Number')}
         {assign 'cpnp' $product->get('CPNP Number')}
 
-        <table class="properties" style=flex-grow:1;padding-right: 20px">
+        <div style="flex-grow:1;padding-left: 0px;;flex-basis: auto;flex-grow: 1">
+
+        <table class="properties" >
         <tr class="{if $origin==''}hide{/if}">
             <td>{if empty($labels._product_origin)}{t}Origin{/t}{else}{$labels._product_origin}{/if}</td>
             <td>{$origin}</td>
@@ -143,6 +147,8 @@
         {/foreach}
 
         </table>
+
+        </div>
     </div>
 
 
