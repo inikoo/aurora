@@ -1681,6 +1681,8 @@ class Page extends DB_Table {
 
                     $content_data['blocks'][$block_key]['items'][$item_key]['web_state']    = $product->get('Web State');
                     $content_data['blocks'][$block_key]['items'][$item_key]['price']        = $product->get('Price');
+                    $content_data['blocks'][$block_key]['items'][$item_key]['price_unit']        = $product->get('Price Per Unit');
+
                     $content_data['blocks'][$block_key]['items'][$item_key]['rrp']          = $product->get('RRP');
                     $content_data['blocks'][$block_key]['items'][$item_key]['code']         = $product->get('Code');
                     $content_data['blocks'][$block_key]['items'][$item_key]['name']         = $product->get('Name');
@@ -2175,7 +2177,7 @@ class Page extends DB_Table {
                             $image_counter = 0;
 
                             foreach ($items as $key_item => $item) {
-                                if ($item['type'] == 'image') {
+                                if ($item['type'] == 'image'  and $item['height']>0 ) {
                                     $ratio = $item['width'] / $item['height'];
                                     //print "$ratio\n";
 
@@ -2582,7 +2584,7 @@ class Page extends DB_Table {
                 }
             } elseif ($this->data['Webpage Scope'] == 'Product') {
                 $scope = get_object('Product', $this->data['Webpage Scope Key']);
-                if ($scope->get('Product Public') == 'Yes') {
+                if ($scope->get('Product Public') == 'Yes' and in_array($scope->get('Product Web State'),array('For Sale','Out of Stock'))  ) {
                     $this->update_state('Online');
                 }
             } else {
@@ -3139,7 +3141,8 @@ class Page extends DB_Table {
             }
 
 
-        } elseif ($this->get('Webpage Scope') == 'Category Categories') {
+        }
+        elseif ($this->get('Webpage Scope') == 'Category Categories') {
 
 
             //  $category=get_object('Category',$this->get('Webpage Scope Key'));
@@ -3323,7 +3326,129 @@ class Page extends DB_Table {
             }
 
 
-        } else {
+        }
+        elseif ($this->get('Webpage Scope') == 'Product') {
+
+
+            //  $category=get_object('Category',$this->get('Webpage Scope Key'));
+            if ($website->get('Website Theme') == 'theme_1') {
+
+            $website=get_object('Website',$this->get('Webpage Website Key'));
+
+
+
+                switch ($website->get('Website Locale')) {
+                    case 'sk_SK':
+                        $title = 'Pozrite si tiež';
+
+                        break;
+                    case 'fr_FR':
+                        $title = 'Voir aussi';
+
+                        break;
+                    case 'it_IT':
+                        $title = 'Guarda anche';
+
+                        break;
+                    case 'pl_PL':
+                        $title = 'Zobacz także';
+
+                        break;
+                    case 'cs_CZ':
+                        $title = 'Viz též';
+
+                        break;
+                    case 'hu_HU':
+                        $title = 'Lásd még';
+
+                        break;
+                    case 'de_DE':
+
+                        $title = 'Siehe auch';
+
+                        break;
+                    default:
+                        $title = 'See also';
+                }
+
+
+                $product    = get_object('Public_Product', $this->get('Webpage Scope Key'));
+                $image_data = $product->get('Image Data');
+
+
+                $image_gallery = array();
+                foreach ($product->get_image_gallery() as $image_item) {
+                    if ($image_item['key'] != $image_data['key']) {
+                        $image_gallery[] = $image_item;
+                    }
+                }
+
+                $content_data = array(
+                    'blocks'   => array(
+                        array(
+                            'type'            => 'product',
+                            'label'           => _('Product'),
+                            'icon'            => 'fa-cube',
+                            'show'            => 1,
+                            'top_margin'      => 20,
+                            'bottom_margin'   => 30,
+                            'text'            => '',
+                            'show_properties' => true,
+
+                            'image'        => array(
+                                'key'           => $image_data['key'],
+                                'src'           => $image_data['src'],
+                                'caption'       => $image_data['caption'],
+                                'width'         => $image_data['width'],
+                                'height'        => $image_data['height'],
+                                'image_website' => $image_data['image_website']
+
+                            ),
+                            'other_images' => $image_gallery
+
+
+                        ),
+                        array(
+                            'type'              => 'see_also',
+                            'auto'              => true,
+                            'auto_scope'        => 'webpage',
+                            'auto_items'        => 5,
+                            'auto_last_updated' => '',
+                            'label'             => _('See also'),
+                            'icon'              => 'fa-link',
+                            'show'              => 1,
+                            'top_margin'        => 0,
+                            'bottom_margin'     => 40,
+                            'item_headers'      => false,
+                            'items'             => array(),
+                            'sort'              => 'Manual',
+                            'title'             => $title,
+                            'show_title'        => true
+                        )
+                    )
+
+                );
+
+
+
+
+                $this->update(array('Page Store Content Data' => json_encode($content_data)), 'no_history');
+
+            $this->reindex_items();
+            $this->refill_see_also();
+            $this->update_navigation();
+
+
+
+            } else {
+
+
+
+            }
+
+
+        }
+        else {
 
             include_once 'class.Website.php';
 

@@ -121,6 +121,10 @@ class Public_Payment_Account {
                 if ($this->data['Payment Account Block'] == 'BTreePaypal') {
 
 
+                    $key=md5('83edh3847203942,'.CKEY);
+                    $key='xx';
+
+
                     $paypal_data = base64_url_encode(
                         AESEncryptCtr(
                             json_encode(
@@ -134,11 +138,27 @@ class Public_Payment_Account {
                                     'currency'                 => $arg->get('Order Currency'),
                                     'Random'                   => password_hash(time(), PASSWORD_BCRYPT)
                                 )
-                            ), md5('83edh3847203942,'.CKEY), 256
+                            ), $key, 256
                         )
                     );
+/*
+                    $paypal_data = base64_url_encode(
 
+                            json_encode(
+                                array(
+                                    'braintree_account_key'    => $this->id,
+                                    'Payment Account ID'       => $this->get('Payment Account ID'),
+                                    'Payment Account Login'    => $this->get('Payment Account Login'),
+                                    'Payment Account Password' => $this->get('Payment Account Password'),
+                                    'order_key'                => $arg->id,
+                                    'amount'                   => $arg->get('Order To Pay Amount'),
+                                    'currency'                 => $arg->get('Order Currency'),
+                                    'Random'                   => password_hash(time(), PASSWORD_BCRYPT)
+                                )
+                            )
+                    );
 
+*/
                     return $paypal_data;
 
                 } elseif ($this->data['Payment Account Block'] = 'BTree') {

@@ -30,7 +30,7 @@ function search_suppliers($db, $account, $memcache_ip, $data) {
         return;
     }
 
-
+/*
     $memcache_fingerprint = $account->get('Account Code').'SEARCH_SUPPLIERS'.md5($queries);
 
     $cache = new Memcached();
@@ -52,8 +52,8 @@ function search_suppliers($db, $account, $memcache_ip, $data) {
 
 
     $results_data = $cache->get($memcache_fingerprint);
-
-
+*/
+    $results_data=false;
     if (!$results_data or true) {
 
 
@@ -3301,6 +3301,8 @@ function search_webpages($db, $account, $memcache_ip, $data) {
 
         $stores = join(',', $user->stores);
     }
+
+    /*
     $memcache_fingerprint = $account->get('Account Code').'SEARCH_WEBPAGES--'.$stores.md5($queries);
 
     $cache = new Memcached();
@@ -3320,8 +3322,8 @@ function search_webpages($db, $account, $memcache_ip, $data) {
 
 
     $results_data = $cache->get($memcache_fingerprint);
-
-
+*/
+    $results_data=false;
     if (!$results_data or true) {
 
 
@@ -3529,7 +3531,7 @@ function search_webpages($db, $account, $memcache_ip, $data) {
             'n' => count($results),
             'd' => $results
         );
-        $cache->set($memcache_fingerprint, $results_data, $memcache_time);
+       // $cache->set($memcache_fingerprint, $results_data, $memcache_time);
 
 
     }

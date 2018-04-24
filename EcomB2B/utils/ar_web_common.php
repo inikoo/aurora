@@ -62,7 +62,9 @@ function is_type($type, $value) {
 
 function prepare_values($data, $value_names) {
 
-    global $user;
+    $parsed_data=array();
+
+
     if (!is_array($data)) {
         exit(json_encode(
             array(
@@ -73,7 +75,7 @@ function prepare_values($data, $value_names) {
     }
 
     foreach ($value_names as $value_name => $extra_data) {
-        $optional = false;
+
         $optional = (isset($extra_data['optional']) and $extra_data['optional'] ? true : false);
         if (!isset($data[$value_name])) {
 

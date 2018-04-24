@@ -9,9 +9,8 @@
 
 */
 
-require_once 'common.php';
-require_once 'utils/ar_web_common.php';
-require_once 'utils/get_addressing.php';
+include_once 'ar_web_common_logged_in.php';
+
 
 
 

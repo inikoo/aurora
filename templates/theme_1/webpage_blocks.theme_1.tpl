@@ -8,176 +8,119 @@
  Version 3
 -->
 *}{include file="theme_1/_head.theme_1.tpl"}
+
+
+
+<body xmlns="http://www.w3.org/1999/html">
+
+
 <style>
 
 
-    .no_edit .edit_icon{
-        display:none;
-    }
-
-    .edit_icon{
-        transition: opacity .25s ease-out;
-        opacity: .2;
-
-    }
-    .wrap:hover .edit_icon{
-
-        opacity: 1;
-    }
-
-
-
-    .object_control_panel{
-        position: absolute;
-        background: #fff;
-        border: 1px solid #ccc;
-        padding: 10px 10px 10px 10px;
-        z-index: 3000;
-    }
-    .object_control_panel td{
-        padding-bottom: 10px;
-    }
-
-    div.blk_images figure {
-        margin:0px
-
-    }
-
-    div.blk_images {
-        display: flex;
-        flex-wrap: wrap;
-        justify-content: space-between;
-    }
-
-    div.blk_images figcaption{
-        font-family: "Ubuntu", Helvetica, Arial, sans-serif;
-        color:#999
-
-    }
-
-    .label{
-        padding-right: 20px;
-    }
-
-    .caption_align i{
-        padding-right: 10px;cursor: pointer;
-    }
-
-    figcaption.caption_left{
-        text-align: left;padding-left:5px
-
-    }
-    figcaption.caption_right{
-        text-align: right;padding-right:5px
-    }
-    figcaption.caption_center{
-        text-align: center;
-
-    }
-    figcaption.caption_hide{
-
-    }
-
-    .success{
-        color:#26A65B;
-    }
-
-
-
-
-    #simple_line_icons_control_center {
-        z-index: 3000;
-        position: absolute;
-        background-color: #fff;
-        border: 1px solid #ccc;
-        padding: 10px 20px 20px 20px
-    }
-
-    #simple_line_icons_control_center i {
-        padding: 2px;
-        font-size: 110%;
-        cursor: pointer
-    }
-
-    .text_blocks {
-        display: flex;
-        flex-direction: row;
-    }
-
-
-
-    .text_template_2 > div,
-    .text_template_3 > div,
-    .text_template_4 > div {
-        flex: 1;
-    }
-
-
-    .text_template_12 > div:nth-child(1) {
-        width: calc(100% / 3 * 1);
-    }
-
-    .text_template_12 > div:nth-child(2) {
-        width: calc(100% / 3 * 2);
-    }
-
-    .text_template_21 > div:nth-child(1) {
-        width: calc(100% / 3 * 2);
-    }
-
-    .text_template_21 > div:nth-child(2) {
-        width: calc(100% / 3 * 1);
-    }
-
-    .text_template_31 > div:nth-child(1) {
-        width: calc(100% / 4 * 3);
-    }
-
-    .text_template_31 > div:nth-child(2) {
-        width: calc(100% / 4 * 1);
-    }
-
-    .text_template_13 > div:nth-child(1) {
-        width: calc(100% / 4 * 1);
-    }
-
-    .text_template_13 > div:nth-child(2) {
-        width: calc(100% / 4 * 3);
-    }
-
-    .text_template_211 > div:nth-child(1) {
-        width: calc(100% / 4 * 2);
-    }
-
-    .text_template_211 > div:nth-child(2) {
-        width: calc(100% / 4 * 1);
-    }
-
-    .text_template_211 > div:nth-child(3) {
-        width: calc(100% / 4 * 1);
-    }
-
-
-
-    .video.empty{
-        background-image: url("/art/static.png");
-    }
-
 </style>
 
+<div id="aux">
 
 
-<div id="panel_txt_control" class="hide">
-    <div class="panel_txt_control" style="padding:2px 10px;z-index:2001;position: absolute;top:-30px;width:100%;height: 30px;border:1px solid #ccc;background: #fff;border-bottom: none">
-        <i class="fa fa-expand" title="{t}Padding{/t}"></i> <input size="2" style="height: 16px;" value="20">
-        <i onclick="delete_panel_text(this)" class="far fa-trash-alt padding_left_10 like_button" title="{t}Delete{/t}"></i>
 
-        <i onclick="close_panel_text(this)" class="fa fa-window-close button" style="float: right;margin-top:6px" title="{t}Close text edit mode{/t}"></i>
+    <div id="text_block_style" class="hide object_control_panel element_for_color element_for_margins" style="padding: 0px;z-index: 3001;">
 
-    </div>
+
+
+        <div class="handle" style="border-bottom: 1px solid #ccc;;width: 100%;line-height: 30px;height: 30px">
+            <i class="fa fa-window-close button padding_left_10" onclick="$('#text_block_style').addClass('hide')"></i>
+        </div>
+<div style="padding: 20px">
+        <table >
+
+            <tr>
+                <td class="label">{t}Margin{/t}</td>
+                <td class="margins_container unselectable margin" data-scope="margin">
+                    <input data-margin="top" class=" edit_margin top" value=""  placeholder="0"><input data-margin="bottom" class=" edit_margin bottom" value="" style="" placeholder="0">
+                    <input data-margin="left" class=" edit_margin left" value="" style="" placeholder="0"><input data-margin="right" class=" edit_margin right" value="" style="" placeholder="0">
+
+                    <i class="fa fa-plus-circle padding_left_10 like_button up_margins"></i>
+                    <i class="fa fa-minus-circle padding_left_5 like_button down_margins"></i>
+
+                </td>
+            </tr>
+
+            <tr>
+                <td class="label">{t}Padding{/t}</td>
+                <td class="margins_container unselectable padding" data-scope="padding">
+                    <input data-margin="top" class=" edit_margin top" value=""  placeholder="0"><input data-margin="bottom" class=" edit_margin bottom" value="" style="" placeholder="0">
+                    <input data-margin="left" class=" edit_margin left" value="" style="" placeholder="0"><input data-margin="right" class=" edit_margin right" value="" style="" placeholder="0">
+
+                    <i class="fa fa-plus-circle padding_left_10 like_button up_margins"></i>
+                    <i class="fa fa-minus-circle padding_left_5 like_button down_margins"></i>
+
+
+                </td>
+            </tr>
+            <tr>
+                <td class="label">{t}Border{/t}</td>
+                <td class="margins_container unselectable border border-width" data-scope="border">
+                    <input data-margin="top-width" class=" edit_margin top" value=""  placeholder="0"><input data-margin="bottom-width" class=" edit_margin bottom" value="" style="" placeholder="0">
+                    <input data-margin="left-width" class=" edit_margin left" value="" style="" placeholder="0"><input data-margin="right-width" class=" edit_margin right" value="" style="" placeholder="0">
+
+                    <i class="fa fa-plus-circle padding_left_10 like_button up_margins"></i>
+                    <i class="fa fa-minus-circle padding_left_5 like_button down_margins"></i>
+
+                        <span data-scope="border-color" style="position: relative;top:-1.5px" class="fa-stack color_picker scope_border-color like_button">
+                         <i class="fas fa-circle fa-stack-1x "></i>
+                         <i class="fas fa-circle fa-stack-1x "></i>
+                    </span>
+
+                </td>
+            </tr>
+
+            <tr>
+                <td class="label">{t}Text{/t}</td>
+                <td>
+                     <span data-scope="color" class="fa-stack color_picker scope_color like_button">
+                         <i class="fas fa-circle fa-stack-1x "></i>
+                         <i class="fas fa-circle fa-stack-1x "></i>
+                    </span>
+                </td>
+            </tr>
+            <tr>
+                <td id="" class="label">{t}Background{/t}</td>
+                <td>
+                    <span data-scope="background-color" class="fa-stack color_picker scope_background-color like_button">
+                         <i class="fas fa-circle fa-stack-1x "></i>
+                         <i class="fas fa-circle fa-stack-1x "></i>
+                    </span>
+                </td>
+            </tr>
+
+
+        </table>
+
+
 </div>
 
-<div id="template_1" class="hide">
+
+
+
+    </div>
+
+    <div id="color_picker_dialog" style="position:absolute;z-index: 6000" class="hide">
+        <input type='text'  class="hide"  />
+
+    </div>
+
+
+    <div id="panel_txt_control" class="hide">
+        <div class="panel_txt_control" style="padding:2px 10px;z-index:2001;position: absolute;top:-30px;width:100%;height: 30px;border:1px solid #ccc;background: #fff;border-bottom: none">
+            <i class="fa fa-expand" title="{t}Padding{/t}"></i> <input size="2" style="height: 16px;" value="20">
+            <i onclick="delete_panel_text(this)" class="far fa-trash-alt padding_left_10 like_button" title="{t}Delete{/t}"></i>
+
+            <i onclick="close_panel_text(this)" class="fa fa-window-close button" style="float: right;margin-top:6px" title="{t}Close text edit mode{/t}"></i>
+
+        </div>
+    </div>
+
+    <div id="template_1" class="hide">
 <span class=" image">
         <figure>
             <img class="button" src="https://placehold.it/1240x250" alt="" data-width="1240" display_class="caption_left">
@@ -185,117 +128,117 @@
         </figure>
     </span>
 
-</div>
+    </div>
 
-<div id="template_2" class="hide">
+    <div id="template_2" class="hide">
 <span class=" image">
         <figure>
             <img class="button" src="https://placehold.it/610x250" alt="" data-width="610" display_class="caption_left">
             <figcaption contenteditable="true" class="caption_left" >{t}Caption{/t}</figcaption>
         </figure>
     </span>
-    <span class=" image">
+        <span class=" image">
         <figure>
             <img class="button" src="https://placehold.it/610x250" alt=""  data-width="610" display_class="caption_left">
             <figcaption contenteditable="true" class="caption_left" >{t}Caption{/t}</figcaption>
         </figure>
     </span>
 
-</div>
+    </div>
 
 
-<div id="template_3" class="hide">
+    <div id="template_3" class="hide">
 <span class=" image">
         <figure>
             <img class="button" src="https://placehold.it/400x250" alt=""  data-width="400" display_class="caption_left">
             <figcaption contenteditable="true" class="caption_left" >{t}Caption{/t}</figcaption>
         </figure>
     </span>
-    <span class=" image">
+        <span class=" image">
         <figure>
             <img class="button" src="https://placehold.it/400x250" alt=""  data-width="400" display_class="caption_left">
             <figcaption contenteditable="true" class="caption_left" >{t}Caption{/t}</figcaption>
         </figure>
     </span>
-    <span class=" image">
+        <span class=" image">
         <figure>
             <img class="button" src="https://placehold.it/400x250" alt=""  data-width="400" display_class="caption_left">
             <figcaption contenteditable="true" class="caption_left" >{t}Caption{/t}</figcaption>
         </figure>
     </span>
-</div>
+    </div>
 
 
 
-<div id="template_4" class="hide">
+    <div id="template_4" class="hide">
 <span class="image"   >
         <figure>
             <img class="button" src="https://placehold.it/300x250" alt=""  data-width="300" display_class="caption_left">
             <figcaption contenteditable="true" class="caption_left" >{t}Caption{/t}</figcaption>
         </figure>
     </span>
-    <span class=" image">
+        <span class=" image">
         <figure>
             <img class="button" src="https://placehold.it/300x250" alt="" data-width="300" display_class="caption_left">
             <figcaption contenteditable="true" class="caption_left" >{t}Caption{/t}</figcaption>
         </figure>
     </span>
-    <span class=" image">
+        <span class=" image">
         <figure>
             <img class="button" src="https://placehold.it/300x250" alt="" data-width="300" display_class="caption_left">
             <figcaption contenteditable="true" class="caption_left" >{t}Caption{/t}</figcaption>
         </figure>
     </span>
-    <span class=" image">
+        <span class=" image">
         <figure>
             <img class="button" src="https://placehold.it/300x250" alt="" data-width="300" display_class="caption_left">
             <figcaption contenteditable="true" class="caption_left" >{t}Caption{/t}</figcaption>
         </figure>
     </span>
-</div>
+    </div>
 
 
-<div id="template_12" class="hide">
+    <div id="template_12" class="hide">
 <span class="image" >
         <figure>
             <img class="button" src="https://placehold.it/400x250" data-width="400" alt="" display_class="caption_left">
             <figcaption contenteditable="true" class="caption_left" >{t}Caption{/t}</figcaption>
         </figure>
     </span>
-    <span class=" image">
+        <span class=" image">
         <figure>
             <img class="button" src="https://placehold.it/800x250" data-width="800"  alt="" display_class="caption_left">
             <figcaption contenteditable="true" class="caption_left" >{t}Caption{/t}</figcaption>
         </figure>
     </span>
 
-</div>
+    </div>
 
-<div id="template_21" class="hide">
+    <div id="template_21" class="hide">
 <span class="image" >
         <figure>
             <img class="button" src="https://placehold.it/800x250" data-width="800"  alt="" display_class="caption_left">
             <figcaption contenteditable="true" class="caption_left" >{t}Caption{/t}</figcaption>
         </figure>
     </span>
-    <span class=" image">
+        <span class=" image">
         <figure>
             <img class="button" src="https://placehold.it/400x250" data-width="400"  alt="" display_class="caption_left">
             <figcaption contenteditable="true" class="caption_left" >{t}Caption{/t}</figcaption>
         </figure>
     </span>
 
-</div>
+    </div>
 
 
-<div id="template_13" class="hide">
+    <div id="template_13" class="hide">
 <span class="image"  >
         <figure>
             <img class="button" src="https://placehold.it/310x250" data-width="310"  alt="" display_class="caption_left">
             <figcaption contenteditable="true" class="caption_left" >{t}Caption{/t}</figcaption>
         </figure>
     </span>
-    <span class=" image">
+        <span class=" image">
         <figure>
             <img class="button" src="https://placehold.it/910x250"  data-width="910" alt="" display_class="caption_left">
             <figcaption contenteditable="true" class="caption_left" >{t}Caption{/t}</figcaption>
@@ -303,18 +246,18 @@
     </span>
 
 
-</div>
+    </div>
 
 
 
-<div id="template_31" class="hide">
+    <div id="template_31" class="hide">
 <span class="image"  >
         <figure>
             <img class="button" src="https://placehold.it/910x250"  data-width="910" alt="" display_class="caption_left">
             <figcaption contenteditable="true" class="caption_left" >{t}Caption{/t}</figcaption>
         </figure>
     </span>
-    <span class=" image">
+        <span class=" image">
         <figure>
             <img class="button" src="https://placehold.it/310x250"  data-width="310" alt="" display_class="caption_left">
             <figcaption contenteditable="true" class="caption_left" >{t}Caption{/t}</figcaption>
@@ -322,42 +265,42 @@
     </span>
 
 
-</div>
+    </div>
 
 
 
-<div id="template_211" class="hide">
+    <div id="template_211" class="hide">
 <span class="image"  >
         <figure>
             <img class="button" src="https://placehold.it/600x250"  data-width="600" alt="" display_class="caption_left">
             <figcaption contenteditable="true" class="caption_left" >{t}Caption{/t}</figcaption>
         </figure>
     </span>
-    <span class=" image">
+        <span class=" image">
         <figure>
             <img class="button" src="https://placehold.it/300x250"  data-width="300" alt="" display_class="caption_left">
             <figcaption contenteditable="true" class="caption_left" >{t}Caption{/t}</figcaption>
         </figure>
     </span>
-    <span class=" image">
+        <span class=" image">
         <figure>
             <img class="button" src="https://placehold.it/300x250"  data-width="300" alt="" display_class="caption_left">
             <figcaption contenteditable="true" class="caption_left" >{t}Caption{/t}</figcaption>
         </figure>
     </span>
 
-</div>
+    </div>
 
 
 
-<div id="text_template_1" class="hide">
+    <div id="text_template_1" class="hide">
         <div class="text_block"><h1>Title</h1>When an unknown printer took a galley of type and scrambled it to make a type specimen book. It has survived not only five centuries, but also
             electronics typesetting, remaining
             essentially believable.
         </div>
 
-</div>
-<div id="text_template_2" class="hide">
+    </div>
+    <div id="text_template_2" class="hide">
         <div class="text_block"><h1>Title</h1>When an unknown printer took a galley of type and scrambled it to make a type specimen book. It has survived not only five centuries, but also electronics typesetting,
             remaining essentially believable.
         </div>
@@ -365,25 +308,9 @@
             remaining essentially believable.
         </div>
 
-</div>
-<div id="text_template_3" class="hide">
+    </div>
+    <div id="text_template_3" class="hide">
 
-        <div class="text_block"><h1>Title</h1>When an unknown printer took a galley of type and scrambled it to make a type specimen book. It has survived not only five centuries, but also electronics typesetting,
-            remaining essentially believable.
-        </div>
-        <div class="text_block"><h1>Title</h1>When an unknown printer took a galley of type and scrambled it to make a type specimen book. It has survived not only five centuries, but also electronics typesetting,
-            remaining essentially believable.
-        </div>
-        <div class="text_block"><h1>Title</h1>When an unknown printer took a galley of type and scrambled it to make a type specimen book. It has survived not only five centuries, but also electronics typesetting,
-            remaining essentially believable.
-        </div>
-
-
-</div>
-<div id="text_template_4" class="hide">
-        <div class="text_block"><h1>Title</h1>When an unknown printer took a galley of type and scrambled it to make a type specimen book. It has survived not only five centuries, but also electronics typesetting,
-            remaining essentially believable.
-        </div>
         <div class="text_block"><h1>Title</h1>When an unknown printer took a galley of type and scrambled it to make a type specimen book. It has survived not only five centuries, but also electronics typesetting,
             remaining essentially believable.
         </div>
@@ -394,187 +321,192 @@
             remaining essentially believable.
         </div>
 
-</div>
+
+    </div>
+    <div id="text_template_4" class="hide">
+        <div class="text_block"><h1>Title</h1>When an unknown printer took a galley of type and scrambled it to make a type specimen book. It has survived not only five centuries, but also electronics typesetting,
+            remaining essentially believable.
+        </div>
+        <div class="text_block"><h1>Title</h1>When an unknown printer took a galley of type and scrambled it to make a type specimen book. It has survived not only five centuries, but also electronics typesetting,
+            remaining essentially believable.
+        </div>
+        <div class="text_block"><h1>Title</h1>When an unknown printer took a galley of type and scrambled it to make a type specimen book. It has survived not only five centuries, but also electronics typesetting,
+            remaining essentially believable.
+        </div>
+        <div class="text_block"><h1>Title</h1>When an unknown printer took a galley of type and scrambled it to make a type specimen book. It has survived not only five centuries, but also electronics typesetting,
+            remaining essentially believable.
+        </div>
+
+    </div>
 
 
-<div class="hide">
-    <div id="image_layout_1">
+    <div class="hide">
+        <div id="image_layout_1">
         <span class=" image">
             <figure>
                 <img class="button" src="https://placehold.it/300x250" alt="" display_class="caption_left">
                 <figcaption contenteditable="true" class="caption_left" >{t}Caption{/t}</figcaption>
             </figure>
         </span>
+        </div>
+
+
     </div>
 
+
+    <div id="simple_line_icons_control_center" class="input_container  hide   " style="">
+
+        <div style="margin-bottom:5px"><i onClick="$(this).closest('div').addClass('hide')" style="position:relative;top:-5px" class="button fa fa-fw fa-window-close" aria-hidden="true"></i></div>
+
+
+        <div>{t}Contact{/t}</div>
+
+        <div>
+
+            <i icon="icon-phone" aria-hidden="true" class="icon-phone"></i>
+            <i icon="icon-call-in" aria-hidden="true" class="icon-call-in"></i>
+            <i icon="icon-speech" aria-hidden="true" class="icon-speech"></i>
+            <i icon="icon-bubbles" aria-hidden="true" class="icon-bubbles"></i>
+            <i icon="icon-printer" aria-hidden="true" class="icon-printer"></i>
+            <i icon="icon-microphone" aria-hidden="true" class="icon-microphone"></i>
+            <i icon="icon-earphones" aria-hidden="true" class="icon-earphones"></i>
+            <i icon="icon-earphones-alt" aria-hidden="true" class="icon-earphones-alt"></i>
+            <i icon="icon-social-facebook" aria-hidden="true" class="icon-social-facebook"></i>
+            <i icon="icon-question" aria-hidden="true" class="icon-question"></i>
+            <i icon="icon-info" aria-hidden="true" class="icon-info"></i>
+            <i icon="icon-envelope" aria-hidden="true" class="icon-envelope"></i>
+            <i icon="icon-support" aria-hidden="true" class="icon-support"></i>
+            <i icon="icon-volume-1" aria-hidden="true" class="icon-volume-1"></i>
+
+
+        </div>
+
+        <div>{t}Store{/t}</div>
+        <div>
+            <i icon="icon-wallet" aria-hidden="true" class="icon-wallet"></i>
+            <i icon="icon-calculator" aria-hidden="true" class="icon-calculator"></i>
+            <i icon="icon-home" aria-hidden="true" class="icon-home"></i>
+            <i icon="icon-login" aria-hidden="true" class="icon-login"></i>
+            <i icon="icon-logout" aria-hidden="true" class="icon-logout"></i>
+            <i icon="icon-directions" aria-hidden="true" class="icon-directions"></i>
+            <i icon="icon-map" aria-hidden="true" class="icon-map"></i>
+            <i icon="icon-compass" aria-hidden="true" class="icon-compass"></i>
+            <i icon="icon-cursor" aria-hidden="true" class="icon-cursor"></i>
+            <i icon="icon-trophy" aria-hidden="true" class="icon-trophy"></i>
+            <i icon="icon-tag" aria-hidden="true" class="icon-tag"></i>
+            <i icon="icon-bulb" aria-hidden="true" class="icon-bulb"></i>
+
+            <i icon="icon-present" aria-hidden="true" class="icon-present"></i>
+            <i icon="icon-handbag" aria-hidden="true" class="icon-handbag"></i>
+            <i icon="icon-globe" aria-hidden="true" class="icon-globe"></i>
+            <i icon="icon-drawer" aria-hidden="true" class="icon-drawer"></i>
+            <i icon="icon-basket" aria-hidden="true" class="icon-basket"></i>
+            <i icon="icon-bag" aria-hidden="true" class="icon-bag"></i>
+            <i icon="icon-credit-card" aria-hidden="true" class="icon-credit-card"></i>
+            <i icon="icon-paypal" aria-hidden="true" class="icon-paypal"></i>
+            <i icon="icon-social-dropbox" aria-hidden="true" class="icon-social-dropbox"></i>
+
+        </div>
+        <div>{t}Other{/t}</div>
+        <div>
+            <i icon="icon-cup" aria-hidden="true" class="icon-cup"></i>
+            <i icon="icon-emotsmile" aria-hidden="true" class="icon-emotsmile"></i>
+            <i icon="icon-layers" aria-hidden="true" class="icon-layers"></i>
+            <i icon="icon-plus" aria-hidden="true" class="icon-plus"></i>
+            <i icon="icon-minus" aria-hidden="true" class="icon-minus"></i>
+            <i icon="icon-close" aria-hidden="true" class="icon-close"></i>
+            <i icon="icon-exclamation" aria-hidden="true" class="icon-exclamation"></i>
+            <i icon="icon-event" aria-hidden="true" class="icon-event"></i>
+            <i icon="icon-plane" aria-hidden="true" class="icon-plane"></i>
+            <i icon="icon-mustache" aria-hidden="true" class="icon-mustache"></i>
+            <i icon="icon-chemistry" aria-hidden="true" class="icon-chemistry"></i>
+            <i icon="icon-speedometer" aria-hidden="true" class="icon-speedometer"></i>
+            <i icon="icon-pin" aria-hidden="true" class="icon-pin"></i>
+            <i icon="icon-umbrella" aria-hidden="true" class="icon-umbrella"></i>
+            <i icon="icon-rocket" aria-hidden="true" class="icon-rocket"></i>
+            <i icon="icon-graph" aria-hidden="true" class="icon-graph"></i>
+            <i icon="icon-like" aria-hidden="true" class="icon-like"></i>
+            <i icon="icon-settings" aria-hidden="true" class="icon-settings"></i>
+            <i icon="icon-lock" aria-hidden="true" class="icon-lock"></i>
+            <i icon="icon-star" aria-hidden="true" class="icon-star"></i>
+            <i icon="icon-heart" aria-hidden="true" class="icon-heart"></i>
+
+        </div>
+
+    </div>
+
+    <div id="video_control_panel" class="hide object_control_panel" style="width: 470px">
+        <div style="margin-bottom: 10px;padding-right: 5px">
+            <i class="fa fa-window-close button" onclick="close_video_control_panel()"></i>
+        </div>
+
+        <table>
+
+            <tr>
+                <td class="label"><i style="color:red" class="fab fa-youtube padding_right_5" title="Youtube"></i> {t}Video Id{/t}</td><td><input class="video_link" style="width: 200px" placeholder="M7lc1UVf-VE">  <i onClick="update_video()" class="fa fa-check link_button button padding_left_5"></i> </td>
+            </tr>
+
+            <tr>
+                <td class="label"></td><td><span onclick="delete_video()" class="button unselectable"><i class="fa fa-trash"></i> {t}Delete{/t}</span></td>
+            </tr>
+        </table>
+
+
+
+    </div>
+
+
+    <div id="image_control_panel" class="hide object_control_panel">
+        <div style="margin-bottom: 10px;padding-right: 5px">
+            <i class="fa fa-window-close button" onclick="update_image()"></i>
+        </div>
+
+        <table>
+            <tr>
+                <td class="label">{t}Image{/t}</td>
+                <td class="image_control_panel_upload_td">
+                    <input style="display:none" type="file" name="images" id="update_images_block_image" class="image_upload" />
+                    <label style="font-weight: normal;cursor: pointer;width:100%"  for="update_images_block_image">
+                        {t}Upload image{/t} <span class="image_size"></span> <i class="hide fa fa-check success" aria-hidden="true"></i>
+                    </label>
+                </td>
+            </tr>
+            <tr>
+                <td class="label">{t}Tooltip{/t}</td><td><input class="image_tooltip" style="width: 200px" placeholder="tooltip"></td>
+            </tr>
+            <tr>
+                <td class="label">{t}Link{/t}</td><td><input class="image_link" style="width: 200px" placeholder="https://"></td>
+            </tr>
+
+            <tbody class="caption_tr">
+            <tr>
+                <td class="label">{t}Caption{/t}</td><td><input class="image_caption" style="width: 200px" placeholder="{t}caption{/t}"></td>
+            </tr>
+            <tr >
+                <td class="label">{t}Caption style{/t}</td>
+                <td class="caption_align">
+                    <i class="fa fa-align-left super_discreet caption_left" display_class="caption_left" aria-hidden="true"></i>
+                    <i class="fa fa-align-center super_discreet caption_center" display_class="caption_center" aria-hidden="true"></i>
+                    <i class="fa fa-align-right super_discreet caption_right" display_class="caption_right" aria-hidden="true"></i>
+                    <i class="fa fa-ban error super_discreet caption_hide" display_class="caption_hide" aria-hidden="true"></i>
+                </td>
+            </tr>
+
+            </tbody>
+            <tr>
+                <td class="label"></td><td><span onclick="delete_image()" class="button unselectable"><i class="fa fa-trash"></i> {t}Delete{/t}</span></td>
+            </tr>
+        </table>
+
+
+
+    </div>
 
 </div>
-
-
-
-<div id="simple_line_icons_control_center" class="input_container  hide   " style="">
-
-    <div style="margin-bottom:5px"><i onClick="$(this).closest('div').addClass('hide')" style="position:relative;top:-5px" class="button fa fa-fw fa-window-close" aria-hidden="true"></i></div>
-
-
-    <div>{t}Contact{/t}</div>
-
-    <div>
-
-        <i icon="icon-phone" aria-hidden="true" class="icon-phone"></i>
-        <i icon="icon-call-in" aria-hidden="true" class="icon-call-in"></i>
-        <i icon="icon-speech" aria-hidden="true" class="icon-speech"></i>
-        <i icon="icon-bubbles" aria-hidden="true" class="icon-bubbles"></i>
-        <i icon="icon-printer" aria-hidden="true" class="icon-printer"></i>
-        <i icon="icon-microphone" aria-hidden="true" class="icon-microphone"></i>
-        <i icon="icon-earphones" aria-hidden="true" class="icon-earphones"></i>
-        <i icon="icon-earphones-alt" aria-hidden="true" class="icon-earphones-alt"></i>
-        <i icon="icon-social-facebook" aria-hidden="true" class="icon-social-facebook"></i>
-        <i icon="icon-question" aria-hidden="true" class="icon-question"></i>
-        <i icon="icon-info" aria-hidden="true" class="icon-info"></i>
-        <i icon="icon-envelope" aria-hidden="true" class="icon-envelope"></i>
-        <i icon="icon-support" aria-hidden="true" class="icon-support"></i>
-        <i icon="icon-volume-1" aria-hidden="true" class="icon-volume-1"></i>
-
-
-    </div>
-
-    <div>{t}Store{/t}</div>
-    <div>
-        <i icon="icon-wallet" aria-hidden="true" class="icon-wallet"></i>
-        <i icon="icon-calculator" aria-hidden="true" class="icon-calculator"></i>
-        <i icon="icon-home" aria-hidden="true" class="icon-home"></i>
-        <i icon="icon-login" aria-hidden="true" class="icon-login"></i>
-        <i icon="icon-logout" aria-hidden="true" class="icon-logout"></i>
-        <i icon="icon-directions" aria-hidden="true" class="icon-directions"></i>
-        <i icon="icon-map" aria-hidden="true" class="icon-map"></i>
-        <i icon="icon-compass" aria-hidden="true" class="icon-compass"></i>
-        <i icon="icon-cursor" aria-hidden="true" class="icon-cursor"></i>
-        <i icon="icon-trophy" aria-hidden="true" class="icon-trophy"></i>
-        <i icon="icon-tag" aria-hidden="true" class="icon-tag"></i>
-        <i icon="icon-bulb" aria-hidden="true" class="icon-bulb"></i>
-
-        <i icon="icon-present" aria-hidden="true" class="icon-present"></i>
-        <i icon="icon-handbag" aria-hidden="true" class="icon-handbag"></i>
-        <i icon="icon-globe" aria-hidden="true" class="icon-globe"></i>
-        <i icon="icon-drawer" aria-hidden="true" class="icon-drawer"></i>
-        <i icon="icon-basket" aria-hidden="true" class="icon-basket"></i>
-        <i icon="icon-bag" aria-hidden="true" class="icon-bag"></i>
-        <i icon="icon-credit-card" aria-hidden="true" class="icon-credit-card"></i>
-        <i icon="icon-paypal" aria-hidden="true" class="icon-paypal"></i>
-        <i icon="icon-social-dropbox" aria-hidden="true" class="icon-social-dropbox"></i>
-
-    </div>
-    <div>{t}Other{/t}</div>
-    <div>
-        <i icon="icon-cup" aria-hidden="true" class="icon-cup"></i>
-        <i icon="icon-emotsmile" aria-hidden="true" class="icon-emotsmile"></i>
-        <i icon="icon-layers" aria-hidden="true" class="icon-layers"></i>
-        <i icon="icon-plus" aria-hidden="true" class="icon-plus"></i>
-        <i icon="icon-minus" aria-hidden="true" class="icon-minus"></i>
-        <i icon="icon-close" aria-hidden="true" class="icon-close"></i>
-        <i icon="icon-exclamation" aria-hidden="true" class="icon-exclamation"></i>
-        <i icon="icon-event" aria-hidden="true" class="icon-event"></i>
-        <i icon="icon-plane" aria-hidden="true" class="icon-plane"></i>
-        <i icon="icon-mustache" aria-hidden="true" class="icon-mustache"></i>
-        <i icon="icon-chemistry" aria-hidden="true" class="icon-chemistry"></i>
-        <i icon="icon-speedometer" aria-hidden="true" class="icon-speedometer"></i>
-        <i icon="icon-pin" aria-hidden="true" class="icon-pin"></i>
-        <i icon="icon-umbrella" aria-hidden="true" class="icon-umbrella"></i>
-        <i icon="icon-rocket" aria-hidden="true" class="icon-rocket"></i>
-        <i icon="icon-graph" aria-hidden="true" class="icon-graph"></i>
-        <i icon="icon-like" aria-hidden="true" class="icon-like"></i>
-        <i icon="icon-settings" aria-hidden="true" class="icon-settings"></i>
-        <i icon="icon-lock" aria-hidden="true" class="icon-lock"></i>
-        <i icon="icon-star" aria-hidden="true" class="icon-star"></i>
-        <i icon="icon-heart" aria-hidden="true" class="icon-heart"></i>
-
-    </div>
-
-</div>
-
-</div>
-
-
-
-
-<div id="video_control_panel" class="hide object_control_panel" style="width: 470px">
-    <div style="margin-bottom: 10px;padding-right: 5px">
-        <i class="fa fa-window-close button" onclick="close_video_control_panel()"></i>
-    </div>
-
-    <table>
-
-        <tr>
-            <td class="label"><i style="color:red" class="fab fa-youtube padding_right_5" title="Youtube"></i> {t}Video Id{/t}</td><td><input class="video_link" style="width: 200px" placeholder="M7lc1UVf-VE">  <i onClick="update_video()" class="fa fa-check link_button button padding_left_5"></i> </td>
-        </tr>
-
-        <tr>
-            <td class="label"></td><td><span onclick="delete_video()" class="button unselectable"><i class="fa fa-trash"></i> {t}Delete{/t}</span></td>
-        </tr>
-    </table>
-
-
-
-</div>
-
-
-<div id="image_control_panel" class="hide object_control_panel">
-    <div style="margin-bottom: 10px;padding-right: 5px">
-        <i class="fa fa-window-close button" onclick="update_image()"></i>
-    </div>
-
-    <table>
-        <tr>
-            <td class="label">{t}Image{/t}</td>
-            <td class="image_control_panel_upload_td">
-                <input style="display:none" type="file" name="images" id="update_images_block_image" class="image_upload" />
-                <label style="font-weight: normal;cursor: pointer;width:100%"  for="update_images_block_image">
-                    {t}Upload image{/t} <span class="image_size"></span> <i class="hide fa fa-check success" aria-hidden="true"></i>
-                </label>
-            </td>
-        </tr>
-        <tr>
-            <td class="label">{t}Tooltip{/t}</td><td><input class="image_tooltip" style="width: 200px" placeholder="tooltip"></td>
-        </tr>
-        <tr>
-            <td class="label">{t}Link{/t}</td><td><input class="image_link" style="width: 200px" placeholder="https://"></td>
-        </tr>
-
-        <tbody class="caption_tr">
-        <tr>
-            <td class="label">{t}Caption{/t}</td><td><input class="image_caption" style="width: 200px" placeholder="{t}caption{/t}"></td>
-        </tr>
-        <tr >
-            <td class="label">{t}Caption style{/t}</td>
-            <td class="caption_align">
-                <i class="fa fa-align-left super_discreet caption_left" display_class="caption_left" aria-hidden="true"></i>
-                <i class="fa fa-align-center super_discreet caption_center" display_class="caption_center" aria-hidden="true"></i>
-                <i class="fa fa-align-right super_discreet caption_right" display_class="caption_right" aria-hidden="true"></i>
-                <i class="fa fa-ban error super_discreet caption_hide" display_class="caption_hide" aria-hidden="true"></i>
-            </td>
-        </tr>
-
-        </tbody>
-        <tr>
-            <td class="label"></td><td><span onclick="delete_image()" class="button unselectable"><i class="fa fa-trash"></i> {t}Delete{/t}</span></td>
-        </tr>
-    </table>
-
-
-
-</div>
-
-
-
-<body xmlns="http://www.w3.org/1999/html">
 
 <div class="wrapper_boxed">
+    <div  class="site_wrapper" data-webpage_key="{$webpage->id}">
 
-
-
-
-    <div id="blocks" class="site_wrapper" data-webpage_key="{$webpage->id}">
 
         {if $navigation.show}
         <div class="navigation" >
@@ -587,8 +519,10 @@
             <div style="clear:both"></div>
         </div>
         {/if}
-        {if isset($discounts)}
-            <div class="discounts" style="">
+
+        {if isset($discounts) and count($discounts.deals)>0 }
+
+            <div class="discounts" >
             {foreach from=$discounts.deals item=deal_data }
             <div class="discount_card" key="{$deal_data.key}" >
                 <div class="discount_icon" style="">{$deal_data.icon}</div>
@@ -600,12 +534,12 @@
             </div>
         {/if}
 
+
+        <div id="blocks" data-webpage_key="{$webpage->id}">
         {foreach from=$content.blocks item=$block key=key}
             {include file="{$theme}/blk.{$block.type}.{$theme}.tpl" data=$block key=$key  }
-
-
-
         {/foreach}
+        </div>
     </div>
 
 </div>
@@ -614,7 +548,18 @@
 <script>
 
 
+    $(document).delegate('a', 'click', function (e) {
 
+        return false
+    })
+
+
+    $("form").on('submit', function (e) {
+
+        e.preventDefault();
+        e.returnValue = false;
+
+    });
 
 
 
@@ -622,6 +567,17 @@
     {foreach from=$content.blocks item=$block key=key}
     {if $block.type=='one_pack' or  $block.type=='two_pack'   }
     set_up_froala_editor('block_{$key}_editor')
+    {elseif $block.type=='thanks'}
+
+    set_up_froala_editor('thanks_text_{$key}');
+    {elseif $block.type=='product'}
+
+    set_up_froala_editor('product_description');
+
+    {elseif $block.type=='favourites'}
+
+    set_up_froala_editor('block_{$key}_with_items_editor');
+    set_up_froala_editor('block_{$key}_no_items_editor');
 
     {elseif $block.type=='text'}
 
@@ -804,13 +760,279 @@
 
         };
 
+        var  poll_labels = { };
+
 
         $('._block').each(function (i, obj) {
 
 
-            //console.log($(obj).attr('block'))
 
             switch ($(obj).attr('block')) {
+
+                case 'profile':
+
+
+                    content_data = {
+
+                    };
+
+
+                    $('[contenteditable=true]', obj).each(function (i, obj2) {
+
+                        if ($(obj2).hasClass('poll_query_label')) {
+                            poll_labels[$(obj2).data('query_key')] = base64_url_encode($(obj2).html())
+                        } else {
+                            content_data[$(obj2).attr('id')] = $(obj2).html()
+                        }
+
+
+                    })
+
+
+                    $('.register_field', obj).each(function (i, obj2) {
+                        content_data[$(obj2).attr('id')] = $(obj2).attr('placeholder')
+                    })
+
+
+                    $('.tooltip', obj).each(function (i, obj2) {
+                        if ($(obj2).attr('id') != undefined) content_data[$(obj2).attr('id')] = $(obj2).html()
+                    })
+
+
+                    $('.website_localized_label', obj).each(function (i, obj2) {
+                        if ($(obj2).val() != '') {
+                            labels[$(obj2).attr('id')] = $(obj2).val()
+
+
+                        }
+
+                    })
+
+
+                    blocks.push({
+                        type: 'profile',
+                        label: '{t}Profile{/t}',
+                        icon: 'fa-user',
+                        show: ($(obj).hasClass('hide') ? 0 : 1),
+                        top_margin: $(obj).attr('top_margin'),
+                        bottom_margin: $(obj).attr('bottom_margin'),
+                        labels: content_data
+
+                    })
+
+
+                    break;
+
+
+                case 'checkout':
+
+
+                    var content_data = {
+
+                    }
+
+
+                    $('[contenteditable=true]', obj).each(function (i, obj2) {
+
+                        if ($(obj2).hasClass('website_localized_label')) {
+                            labels[$(obj2).attr('id')] = $(obj2).html()
+                        } else {
+                            content_data[$(obj2).attr('id')] = $(obj2).html()
+                        }
+
+
+                    })
+
+
+                    content_data['_credit_card_number'] = $('#_credit_card_number').val()
+                    content_data['_credit_card_ccv'] = $('#_credit_card_ccv').val()
+                    content_data['_credit_card_expiration_date_month_label'] = $('#_credit_card_expiration_date_month_label').val()
+                    content_data['_credit_card_expiration_date_year_label'] = $('#_credit_card_expiration_date_year_label').val()
+
+
+                    blocks.push({
+                        type: 'checkout',
+                        label: '{t}Checkout{/t}',
+                        icon: 'fa-credit-card',
+                        show: ($(obj).hasClass('hide') ? 0 : 1),
+                        top_margin: $(obj).attr('top_margin'),
+                        bottom_margin: $(obj).attr('bottom_margin'),
+                        labels: content_data
+
+                    })
+
+                    break;
+
+
+                case 'thanks':
+
+                    blocks.push({
+                        type: 'thanks',
+                        label: '{t}Thanks{/t}',
+                        icon: 'fa-thumbs-up',
+                        show: ($(obj).hasClass('hide') ? 0 : 1),
+                        top_margin: $(obj).attr('top_margin'),
+                        bottom_margin: $(obj).attr('bottom_margin'),
+                        text: $(obj).find('.thanks_text').froalaEditor('html.get')
+
+                    })
+
+
+                    break;
+
+                case 'favourites':
+
+
+                    var content_data = {
+                        'with_items': $(obj).find('.with_items').froalaEditor('html.get'), 'no_items': $(obj).find('.no_items').froalaEditor('html.get')
+                    }
+
+
+                    blocks.push({
+                        type: 'favourites',
+                        label: '{t}Favourites{/t}',
+                        icon: 'fa-heart',
+                        show: ($(obj).hasClass('hide') ? 0 : 1),
+                        top_margin: $(obj).attr('top_margin'),
+                        bottom_margin: $(obj).attr('bottom_margin'),
+                        labels: content_data
+
+                    })
+
+
+                    break;
+
+                case 'register':
+
+
+                    var content_data = {
+
+                    }
+
+                    $('[contenteditable=true]', obj).each(function (i, obj2) {
+
+
+                        if ($(obj2).hasClass('poll_query_label')) {
+                            poll_labels[$(obj2).data('query_key')] = base64_url_encode($(obj2).html())
+                        } else {
+                            content_data[$(obj2).attr('id')] = $(obj2).html()
+                        }
+
+                    })
+
+
+                    $('.register_field', obj).each(function (i, obj2) {
+                        content_data[$(obj2).attr('id')] = $(obj2).attr('placeholder')
+                    })
+
+
+                    $('.tooltip', obj).each(function (i, obj2) {
+                        if ($(obj2).attr('id') != undefined) content_data[$(obj2).attr('id')] = $(obj2).html()
+                    })
+
+                    $('.website_localized_label', obj).each(function (i, obj2) {
+                        if ($(obj2).val() != '') {
+                            content_data[$(obj2).attr('id')] = $(obj2).val()
+
+
+                        }
+
+                    })
+
+
+                    blocks.push({
+                        type: 'register',
+                        label: '{t}Registration form{/t}',
+                        icon: 'fa-registered',
+                        show: ($(obj).hasClass('hide') ? 0 : 1),
+                        top_margin: $(obj).attr('top_margin'),
+                        bottom_margin: $(obj).attr('bottom_margin'),
+                        labels: content_data
+
+                    })
+
+
+                    break;
+
+
+                case 'login':
+
+
+                    var content_data = {
+
+                    }
+
+                    $('[contenteditable=true]', obj).each(function (i, obj2) {
+                        content_data[$(obj2).attr('id')] = $(obj2).html()
+                    })
+
+
+                    $('.register_field', obj).each(function (i, obj2) {
+                        content_data[$(obj2).attr('id')] = $(obj2).attr('placeholder')
+                    })
+
+
+                    $('.tooltip', obj).each(function (i, obj2) {
+                        content_data[$(obj2).attr('id')] = $(obj2).html()
+                    })
+
+                    blocks.push({
+                        type: 'login',
+                        label: '{t}Login{/t}',
+                        icon: 'fa-sign-in-alt',
+                        show: ($(obj).hasClass('hide') ? 0 : 1),
+                        top_margin: $(obj).attr('top_margin'),
+                        bottom_margin: $(obj).attr('bottom_margin'),
+                        labels: content_data
+
+                    })
+
+
+                    break;
+
+                case 'product':
+
+
+                    var img = $(obj).find('.main_image')
+
+                    var gallery = []
+
+
+                    $('.gallery figure', obj).each(function (i, gallery_image) {
+
+
+                        gallery.push({
+                            src: $(gallery_image).data('src'), caption: $(gallery_image).data('caption'), key: $(gallery_image).data('key'),
+
+                            width: $(gallery_image).data('width'), height: $(gallery_image).data('height'), image_website: $(gallery_image).data('image_website'),
+
+                        })
+
+                    });
+
+                    blocks.push({
+                        type: 'product',
+                        label: '{t}Product{/t}',
+                        icon: 'fa-cube',
+                        show: ($(obj).hasClass('hide') ? 0 : 1),
+                        top_margin: $(obj).attr('top_margin'),
+                        bottom_margin: $(obj).attr('bottom_margin'),
+                        text: $(obj).find('.product_description_block').froalaEditor('html.get'),
+
+
+                        image: {
+                            'key': $(img).data('key'), 'src': $(img).data('src'), 'caption': $(img).data('caption'),
+
+                            'width': $(img).data('width'), 'height': $(img).data('height'), 'image_website': $(img).data('image_website'),
+                        },
+
+
+                        other_images: gallery,
+
+                    })
+
+                    break;
+
 
                 case 'see_also':
 
@@ -818,26 +1040,25 @@
                     $('.wrap  ', obj).each(function (j, item) {
 
 
+                        var img = $(item).find('.wrap_to_center img')
 
 
-                        var img=$(item).find('.wrap_to_center img')
 
 
-                        if($(item).data('type')=='category'){
+                        if ($(item).data('type') == 'category') {
 
                             items.push({
                                 type: $(item).data('type'),
                                 category_key: $(item).find('.category_block').data('item_key'),
                                 webpage_key: $(item).find('.category_block').data('webpage_key'),
-                                link:$(item).find('.category_block').data('link'),
-                                webpage_code:$(item).find('.category_block').data('webpage_code'),
+                                link: $(item).find('.category_block').data('link'),
+                                webpage_code: $(item).find('.category_block').data('webpage_code'),
 
 
                                 header_text: $(item).find('.item_header_text').html(),
-                                image_src:img.data('src'),
-                                image_website: ( img.attr('src')!='EcomB2B/'+img.data('image_website') ?'': img.data('image_website')),
-                                image_mobile_website: ( img.attr('src')!='EcomB2B/'+img.data('image_website') ?'': img.data('image_mobile_website')),
-
+                                image_src: img.data('src'),
+                                image_website: (img.attr('src') != 'EcomB2B/' + img.data('image_website') ? '' : img.data('image_website')),
+                                image_mobile_website: (img.attr('src') != 'EcomB2B/' + img.data('image_website') ? '' : img.data('image_mobile_website')),
 
 
                                 category_code: $(item).find('.category_code').html(),
@@ -845,21 +1066,20 @@
 
                             })
 
-                        }else if(obj.data('type')=='product'){
+                        } else if ($(item).data('type') == 'product') {
 
                             items.push({
                                 type: $(item).data('type'),
-                                category_key: $(item).find('.category_block').data('item_key'),
+                                product_id: $(item).find('.category_block').data('item_key'),
                                 webpage_key: $(item).find('.category_block').data('webpage_key'),
-                                link:$(item).find('.category_block').data('link'),
-                                webpage_code:$(item).find('.category_block').data('webpage_code'),
+                                link: $(item).find('.category_block').data('link'),
+                                webpage_code: $(item).find('.category_block').data('webpage_code'),
 
 
                                 header_text: $(item).find('.item_header_text').html(),
-                                image_src:img.data('src'),
-                                image_website: ( img.attr('src')!='EcomB2B/'+img.data('image_website') ?'': img.data('image_website')),
-                                image_mobile_website: ( img.attr('src')!='EcomB2B/'+img.data('image_website') ?'': img.data('image_mobile_website')),
-
+                                image_src: img.data('src'),
+                                image_website: (img.attr('src') != 'EcomB2B/' + img.data('image_website') ? '' : img.data('image_website')),
+                                image_mobile_website: (img.attr('src') != 'EcomB2B/' + img.data('image_website') ? '' : img.data('image_mobile_website')),
 
 
                                 product_code: $(item).find('.product_code').html(),
@@ -870,25 +1090,28 @@
                         }
 
 
-
-
-
                     })
 
                     blocks.push({
-                        type: 'see_also', label: '{t}See also{/t}', icon: 'fa-link', show: ($(obj).hasClass('hide') ? 0 : 1), top_margin: $(obj).attr('top_margin'), bottom_margin: $(obj).attr('bottom_margin'),
+                        type: 'see_also',
+                        label: '{t}See also{/t}',
+                        icon: 'fa-link',
+                        show: ($(obj).hasClass('hide') ? 0 : 1),
+                        top_margin: $(obj).attr('top_margin'),
+                        bottom_margin: $(obj).attr('bottom_margin'),
                         items: items,
-                        auto:$(obj).find('.see_also').data('auto'),
-                        auto_scope:$(obj).find('.see_also').data('auto_scope'),
-                        auto_last_updated:$(obj).find('.see_also').data('auto_last_updated'),
-                        auto_items : $(obj).find('.see_also').children().length,
-                        show_title:($(obj).find('.products_title').hasClass('hide')?false:true),
-                        title:$(obj).find('.products_title').html(),
+                        auto: $(obj).find('.see_also').data('auto'),
+                        auto_scope: $(obj).find('.see_also').data('auto_scope'),
+                        auto_last_updated: $(obj).find('.see_also').data('auto_last_updated'),
+                        auto_items: $(obj).find('.see_also').children().length,
+                        show_title: ($(obj).find('.products_title').hasClass('hide') ? false : true),
+                        title: $(obj).find('.products_title').html(),
 
 
                     })
 
                     break;
+
 
                 case 'products':
 
@@ -896,57 +1119,58 @@
                     $('.wrap  ', obj).each(function (j, item) {
 
 
+                        var img = $(item).find('.wrap_to_center img')
 
-                                var img=$(item).find('.wrap_to_center img')
+                        var txt = $(item).find('.product_header_text')
 
-                                var txt=$(item).find('.product_header_text')
-
-                                if($(item).find('.panel_txt_control').hasClass('hide')){
-                                    var header_text=txt.html()
-                                }else{
-                                    var header_text=txt.froalaEditor('html.get')
-                                }
-
-
-                                items.push({
-                                    type: $(item).data('type'),
-                                    product_id: $(item).find('.product_block').data('product_id'),
-                                    web_state: $(item).find('.product_block').data('web_state'),
-                                    price: $(item).find('.product_block').data('price'),
-                                    rrp: $(item).find('.product_block').data('rrp'),
-                                    code: $(item).find('.product_block').data('code'),
-                                    name: $(item).find('.product_block').data('name'),
-                                    link: $(item).find('.product_block').data('link'),
-                                    webpage_code: $(item).find('.product_block').data('webpage_code'),
-                                    webpage_key: $(item).find('.product_block').data('webpage_key'),
-                                    out_of_stock_class: $(item).find('.product_block').data('out_of_stock_class'),
-                                    out_of_stock_label: $(item).find('.product_block').data('out_of_stock_label'),
-
-                                    sort_code: $(item).data('sort_code'),
-                                    sort_name: $(item).data('sort_name'),
-
-                                    image_src:img.data('src'),
-                                    image_website: ( img.attr('src')!='EcomB2B/'+img.data('image_website') ?'': img.data('image_website')),
-                                    image_mobile_website: ( img.attr('src')!='EcomB2B/'+img.data('image_website') ?'': img.data('image_mobile_website')),
-
-                                    header_text:header_text
+                        if ($(item).find('.panel_txt_control').hasClass('hide')) {
+                            var header_text = txt.html()
+                        } else {
+                            var header_text = txt.froalaEditor('html.get')
+                        }
 
 
+                        items.push({
+                            type: $(item).data('type'),
+                            product_id: $(item).find('.product_block').data('product_id'),
+                            web_state: $(item).find('.product_block').data('web_state'),
+                            price: $(item).find('.product_block').data('price'),
+                            rrp: $(item).find('.product_block').data('rrp'),
+                            code: $(item).find('.product_block').data('code'),
+                            name: $(item).find('.product_block').data('name'),
+                            link: $(item).find('.product_block').data('link'),
+                            webpage_code: $(item).find('.product_block').data('webpage_code'),
+                            webpage_key: $(item).find('.product_block').data('webpage_key'),
+                            out_of_stock_class: $(item).find('.product_block').data('out_of_stock_class'),
+                            out_of_stock_label: $(item).find('.product_block').data('out_of_stock_label'),
 
-                                })
+                            sort_code: $(item).data('sort_code'),
+                            sort_name: $(item).data('sort_name'),
+
+                            image_src: img.data('src'),
+                            image_website: (img.attr('src') != 'EcomB2B/' + img.data('image_website') ? '' : img.data('image_website')),
+                            image_mobile_website: (img.attr('src') != 'EcomB2B/' + img.data('image_website') ? '' : img.data('image_mobile_website')),
+
+                            header_text: header_text
 
 
+                        })
 
 
                     })
 
 
                     blocks.push({
-                        type: 'products', label: '{t}Products{/t}', icon: 'fa-window-restore', show: ($(obj).hasClass('hide') ? 0 : 1), top_margin: $(obj).attr('top_margin'), bottom_margin: $(obj).attr('bottom_margin'),
-                        sort:$(obj).find('.products').data('sort'),
-                        item_headers:($(obj).find('.products').hasClass('no_items_header')?false:true),
-                        show_title:($(obj).find('.products_title').hasClass('hide')?false:true),
-                        title:$(obj).find('.products_title').html(),
+                        type: 'products',
+                        label: '{t}Products{/t}',
+                        icon: 'fa-window-restore',
+                        show: ($(obj).hasClass('hide') ? 0 : 1),
+                        top_margin: $(obj).attr('top_margin'),
+                        bottom_margin: $(obj).attr('bottom_margin'),
+                        sort: $(obj).find('.products').data('sort'),
+                        item_headers: ($(obj).find('.products').hasClass('no_items_header') ? false : true),
+                        show_title: ($(obj).find('.products_title').hasClass('hide') ? false : true),
+                        title: $(obj).find('.products_title').html(),
                         items: items
                     })
                     break;
@@ -957,22 +1181,22 @@
                     $('.wrap  ', obj).each(function (j, item) {
 
 
-                        switch ($(item).data('type')){
+                        switch ($(item).data('type')) {
                             case 'product':
 
-                                var img=$(item).find('.wrap_to_center img')
+                                var img = $(item).find('.wrap_to_center img')
 
-                                var txt=$(item).find('.product_header_text')
+                                var txt = $(item).find('.product_header_text')
 
-                                if($(item).find('.panel_txt_control').hasClass('hide')){
-                                    var header_text=txt.html()
-                                }else{
-                                    var header_text=txt.froalaEditor('html.get')
+                                if ($(item).find('.panel_txt_control').hasClass('hide')) {
+                                    var header_text = txt.html()
+                                } else {
+                                    var header_text = txt.froalaEditor('html.get')
                                 }
 
 
-                                header_text=$.trim(header_text)
-                               // console.log(header_text)
+                                header_text = $.trim(header_text)
+                                // console.log(header_text)
                                 items.push({
                                     type: $(item).data('type'),
                                     product_id: $(item).find('.product_block').data('product_id'),
@@ -990,12 +1214,11 @@
                                     sort_code: $(item).data('sort_code'),
                                     sort_name: $(item).data('sort_name'),
 
-                                    image_src:img.data('src'),
-                                    image_website: ( img.attr('src')!='EcomB2B/'+img.data('image_website') ?'': img.data('image_website')),
-                                    image_mobile_website: ( img.attr('src')!='EcomB2B/'+img.data('image_website') ?'': img.data('image_mobile_website')),
+                                    image_src: img.data('src'),
+                                    image_website: (img.attr('src') != 'EcomB2B/' + img.data('image_website') ? '' : img.data('image_website')),
+                                    image_mobile_website: (img.attr('src') != 'EcomB2B/' + img.data('image_website') ? '' : img.data('image_mobile_website')),
 
-                                    header_text:header_text
-
+                                    header_text: header_text
 
 
                                 })
@@ -1003,13 +1226,10 @@
                             case 'video':
 
 
-
-                                var video=$(item).find('.video')
-                                if(video.attr('video_id')!=''){
+                                var video = $(item).find('.video')
+                                if (video.attr('video_id') != '') {
                                     items.push({
-                                        type: $(item).data('type'),
-                                        video_id:video.attr('video_id'),
-                                        size_class: video.attr('size_class')
+                                        type: $(item).data('type'), video_id: video.attr('video_id'), size_class: video.attr('size_class')
 
 
                                     })
@@ -1017,45 +1237,34 @@
                                 }
 
 
-
-
                                 break;
                             case 'image':
 
 
-
-                                var img=$(item).find('img')
+                                var img = $(item).find('img')
                                 items.push({
                                     type: $(item).data('type'),
 
-                                    image_src:img.data('src'),
-                                    image_website: ( img.attr('src')!='EcomB2B/'+img.data('image_website') ?'': img.data('image_website')),
+                                    image_src: img.data('src'), image_website: (img.attr('src') != 'EcomB2B/' + img.data('image_website') ? '' : img.data('image_website')),
 
-                                    link: img.attr('link'),
-                                    title: img.attr('alt'),
-                                    size_class: img.attr('size_class'),
+                                    link: img.attr('link'), title: img.attr('alt'), size_class: img.attr('size_class'),
 
 
                                 })
                                 break;
                             case 'text':
 
-                                var txt=$(item).find('.txt')
+                                var txt = $(item).find('.txt')
 
-                                if($(item).find('.panel_txt_control').hasClass('hide')){
-                                    var text=txt.html()
-                                }else{
-                                    var text=txt.froalaEditor('html.get')
+                                if ($(item).find('.panel_txt_control').hasClass('hide')) {
+                                    var text = txt.html()
+                                } else {
+                                    var text = txt.froalaEditor('html.get')
                                 }
 
 
-
                                 items.push({
-                                    type: $(item).data('type'),
-                                    text: text,
-                                    padding:txt.data('padding'),
-                                    size_class: txt.attr('size_class'),
-
+                                    type: $(item).data('type'), text: text, padding: txt.data('padding'), size_class: txt.attr('size_class'),
 
 
                                 })
@@ -1063,14 +1272,18 @@
                         }
 
 
-
                     })
 
 
                     blocks.push({
-                        type: 'category_products', label: '{t}Family{/t}', icon: 'fa-cubes', show: ($(obj).hasClass('hide') ? 0 : 1), top_margin: $(obj).attr('top_margin'), bottom_margin: $(obj).attr('bottom_margin'),
-                        sort:$(obj).find('.products').data('sort'),
-                        item_headers:($(obj).find('.products').hasClass('no_items_header')?false:true),
+                        type: 'category_products',
+                        label: '{t}Family{/t}',
+                        icon: 'fa-cubes',
+                        show: ($(obj).hasClass('hide') ? 0 : 1),
+                        top_margin: $(obj).attr('top_margin'),
+                        bottom_margin: $(obj).attr('bottom_margin'),
+                        sort: $(obj).find('.products').data('sort'),
+                        item_headers: ($(obj).find('.products').hasClass('no_items_header') ? false : true),
                         items: items
                     })
                     break;
@@ -1083,25 +1296,24 @@
                         $('.category_wrap  ', section).each(function (j, item) {
 
 
-                            switch ($(item).data('type')){
+                            switch ($(item).data('type')) {
                                 case 'category':
 
-                                    var img=$(item).find('.wrap_to_center img')
+                                    var img = $(item).find('.wrap_to_center img')
 
                                     items.push({
                                         type: $(item).data('type'),
                                         category_key: $(item).find('.category_block').data('category_key'),
                                         webpage_key: $(item).find('.category_block').data('category_webpage_key'),
                                         item_type: $(item).find('.category_block').data('item_type'),
-                                        link:$(item).find('.category_block').data('link'),
-                                        webpage_code:$(item).find('.category_block').data('webpage_code'),
+                                        link: $(item).find('.category_block').data('link'),
+                                        webpage_code: $(item).find('.category_block').data('webpage_code'),
 
 
                                         header_text: $(item).find('.item_header_text').html(),
-                                        image_src:img.data('src'),
-                                        image_website: ( img.attr('src')!='EcomB2B/'+img.data('image_website') ?'': img.data('image_website')),
-                                        image_mobile_website: ( img.attr('src')!='EcomB2B/'+img.data('image_website') ?'': img.data('image_mobile_website')),
-
+                                        image_src: img.data('src'),
+                                        image_website: (img.attr('src') != 'EcomB2B/' + img.data('image_website') ? '' : img.data('image_website')),
+                                        image_mobile_website: (img.attr('src') != 'EcomB2B/' + img.data('image_website') ? '' : img.data('image_mobile_website')),
 
 
                                         category_code: $(item).find('.category_code').html(),
@@ -1112,39 +1324,30 @@
                                 case 'image':
 
 
-
-                                    var img=$(item).find('img')
+                                    var img = $(item).find('img')
                                     items.push({
                                         type: $(item).data('type'),
 
-                                        image_src:img.data('src'),
-                                        image_website: ( img.attr('src')!='EcomB2B/'+img.data('image_website') ?'': img.data('image_website')),
+                                        image_src: img.data('src'), image_website: (img.attr('src') != 'EcomB2B/' + img.data('image_website') ? '' : img.data('image_website')),
 
-                                        link: img.attr('link'),
-                                        title: img.attr('alt'),
-                                        size_class: img.attr('size_class'),
+                                        link: img.attr('link'), title: img.attr('alt'), size_class: img.attr('size_class'),
 
 
                                     })
                                     break;
                                 case 'text':
 
-                                    var txt=$(item).find('.txt')
+                                    var txt = $(item).find('.txt')
 
-                                    if($(item).find('.panel_txt_control').hasClass('hide')){
-                                        var text=txt.html()
-                                    }else{
-                                        var text=txt.froalaEditor('html.get')
+                                    if ($(item).find('.panel_txt_control').hasClass('hide')) {
+                                        var text = txt.html()
+                                    } else {
+                                        var text = txt.froalaEditor('html.get')
                                     }
 
 
-
-                                   items.push({
-                                        type: $(item).data('type'),
-                                        text: text,
-                                        padding:txt.data('padding'),
-                                        size_class: txt.attr('size_class'),
-
+                                    items.push({
+                                        type: $(item).data('type'), text: text, padding: txt.data('padding'), size_class: txt.attr('size_class'),
 
 
                                     })
@@ -1152,21 +1355,25 @@
                             }
 
 
-
                         })
 
 
                         sections.push({
-                            type: ($(section).hasClass('anchor')?'anchor':'non_anchor'),
-                            title: ($(section).hasClass('anchor')?'':$(section).find('.title').html()),
-                            subtitle: ($(section).hasClass('anchor')?'':$(section).find('.sub_title').html()),
-                            items:items
+                            type: ($(section).hasClass('anchor') ? 'anchor' : 'non_anchor'),
+                            title: ($(section).hasClass('anchor') ? '' : $(section).find('.title').html()),
+                            subtitle: ($(section).hasClass('anchor') ? '' : $(section).find('.sub_title').html()),
+                            items: items
 
                         })
                     });
 
                     blocks.push({
-                        type: 'category_categories', label: '{t}Department{/t}', icon: 'fa-th', show: ($(obj).hasClass('hide') ? 0 : 1), top_margin: $(obj).attr('top_margin'), bottom_margin: $(obj).attr('bottom_margin'),
+                        type: 'category_categories',
+                        label: '{t}Department{/t}',
+                        icon: 'fa-th',
+                        show: ($(obj).hasClass('hide') ? 0 : 1),
+                        top_margin: $(obj).attr('top_margin'),
+                        bottom_margin: $(obj).attr('bottom_margin'),
                         sections: sections
                     })
 
@@ -1183,52 +1390,51 @@
                         console.log(img)
 
                         images.push({
-                            id:$(image_block).attr('id'),
+                            id: $(image_block).attr('id'),
 
-                            src:img.data('src'),
-                            image_website: ( (img.attr('src')!='EcomB2B/'+img.data('image_website') || img.width()!=img.data('width')   )?'': img.data('image_website')),
+                            src: img.data('src'), image_website: ((img.attr('src') != 'EcomB2B/' + img.data('image_website') || img.width() != img.data('width')) ? '' : img.data('image_website')),
 
-                            link: img.attr('link'),
-                            title: img.attr('alt'),
-                            width:img.width(),
-                            height:img.height(),
-                            top:img.offset().top-$(obj).offset().top-$(obj).attr('top_margin'),
-                            left:img.offset().left
+                            link: img.attr('link'), title: img.attr('alt'), width: img.width(), height: img.height(), top: img.offset().top - $(obj).offset().top - $(obj).attr('top_margin'), left: img.offset().left
                         })
                     });
 
                     $('.blackboard_text ', obj).each(function (i, text_block) {
 
-                       if($(text_block).hasClass('froala_on')){
-                           var text=$(text_block).froalaEditor('html.get')
-                       }else{
-                           var text=$(text_block).html()
-                       }
+                        if ($(text_block).hasClass('froala_on')) {
+                            var text = $(text_block).froalaEditor('html.get')
+                        } else {
+                            var text = $(text_block).html()
+                        }
 
 
-                     var   _text=''
-                        $(text).each(function( index ) {
-                            if(!$( this ).is(':empty')){
+                        var _text = ''
+                        $(text).each(function (index) {
+                            if (!$(this).is(':empty')) {
 
-                                _text=_text+ $(this).clone().wrap('<p>').parent().html();
+                                _text = _text + $(this).clone().wrap('<p>').parent().html();
                             }
-                            });
+                        });
 
-                       //console.log($(text))
+                        //console.log($(text))
 
                         texts.push({
-                            id:$(text_block).attr('id'),
+                            id: $(text_block).attr('id'),
                             text: _text,
-                            width:$(text_block).width(),
-                            height:$(text_block).height(),
-                            top:$(text_block).offset().top-$(obj).offset().top-$(obj).attr('top_margin'),
-                            left:$(text_block).offset().left
+                            width: $(text_block).width(),
+                            height: $(text_block).height(),
+                            top: $(text_block).offset().top - $(obj).offset().top - $(obj).attr('top_margin'),
+                            left: $(text_block).offset().left
                         })
                     });
 
 
                     blocks.push({
-                        type: 'blackboard', label: '{t}Blackboard{/t}', icon: 'fa-image', show: ($(obj).hasClass('hide') ? 0 : 1), top_margin: $(obj).attr('top_margin'), bottom_margin: $(obj).attr('bottom_margin'),
+                        type: 'blackboard',
+                        label: '{t}Blackboard{/t}',
+                        icon: 'fa-image',
+                        show: ($(obj).hasClass('hide') ? 0 : 1),
+                        top_margin: $(obj).attr('top_margin'),
+                        bottom_margin: $(obj).attr('bottom_margin'),
                         height: $('.blackboard').height(),
                         images: images,
                         texts: texts
@@ -1238,38 +1444,47 @@
                 case 'text':
 
 
-
-
-
                     var text_blocks = []
+
+
+
+
 
 
                     $('.text_block', obj).each(function (i, text_block) {
 
-                        var text=$(text_block).froalaEditor('html.get')
 
-                        //console.log(text_block)
-                        //console.log(text)
+                        styles={
+                            'margin-top':$(text_block).css('margin-top'),
+                            'margin-bottom':$(text_block).css('margin-bottom'),
+                            'margin-left':$(text_block).css('margin-left'),
+                            'margin-right':$(text_block).css('margin-right'),
+                            'padding-top':$(text_block).css('padding-top'),
+                            'padding-bottom':$(text_block).css('padding-bottom'),
+                            'padding-left':$(text_block).css('padding-left'),
+                            'padding-right':$(text_block).css('padding-right'),
+                            'border-top-width':$(text_block).css('border-top-width'),
+                            'border-bottom-width':$(text_block).css('border-bottom-width'),
+                            'border-left-width':$(text_block).css('border-left-width'),
+                            'border-right-width':$(text_block).css('border-right-width'),
+                            'background-color':$(text_block).css('background-color'),
+                            'color':$(text_block).css('color'),
+                            'border-color':$(text_block).css('border-color'),
+                        }
 
-                        text_blocks.push({ text: text})
+
+                        var text = $(text_block).froalaEditor('html.get')
+                        text_blocks.push({
+                            text: text,
+                            styles: styles
+                        })
 
                     });
 
-
-
-;
-
-
                     blocks.push({
-                        type: 'text',
-                        label: '{t}Text{/t}',
-                        icon: 'fa-font',
-                        show: ($(obj).hasClass('hide') ? 0 : 1),
-                        top_margin: $(obj).attr('top_margin'),
-                        bottom_margin: $(obj).attr('bottom_margin'),
+                        type: 'text', label: '{t}Text{/t}', icon: 'fa-font', show: ($(obj).hasClass('hide') ? 0 : 1), top_margin: $(obj).attr('top_margin'), bottom_margin: $(obj).attr('bottom_margin'),
 
-                        template: $(obj).find('.text_blocks').data('template'),
-                        text_blocks: text_blocks,
+                        template: $(obj).find('.text_blocks').data('template'), text_blocks: text_blocks,
 
                     })
 
@@ -1283,12 +1498,7 @@
                         var img = $(col).find('img')
 
                         _col = {
-                            src: img.attr('src'),
-                            link: img.attr('link'),
-                            title: img.attr('alt'),
-                            caption_class: img.attr('display_class'),
-                            caption: $(col).find('figcaption').html(),
-                            width:img.data('width')
+                            src: img.attr('src'), link: img.attr('link'), title: img.attr('alt'), caption_class: img.attr('display_class'), caption: $(col).find('figcaption').html(), width: img.data('width')
                         }
 
 
@@ -1300,18 +1510,55 @@
 
 
                     blocks.push({
-                        type: 'images',
-                        label: '{t}Images{/t}',
-                        icon: 'fa-photo',
-                        show: ($(obj).hasClass('hide') ? 0 : 1),
-                        top_margin: $(obj).attr('top_margin'),
-                        bottom_margin: $(obj).attr('bottom_margin'),
+                        type: 'images', label: '{t}Images{/t}', icon: 'fa-photo', show: ($(obj).hasClass('hide') ? 0 : 1), top_margin: $(obj).attr('top_margin'), bottom_margin: $(obj).attr('bottom_margin'),
 
-                        images: images,
-                        template:$(obj).find('.blk_images').attr('template'),
+                        images: images, template: $(obj).find('.blk_images').attr('template'),
                     })
                     break;
 
+                case 'not_found':
+
+
+                    content_data = {
+
+                    };
+
+
+                    $('[contenteditable=true]', obj).each(function (i, obj2) {
+                        content_data[$(obj2).attr('id')] = $(obj2).html()
+                    })
+
+                    blocks.push({
+                        type: 'not_found', label: '{t}Not found{/t}', icon: 'fa-times-octagon', show: ($(obj).hasClass('hide') ? 0 : 1), top_margin: $(obj).attr('top_margin'), bottom_margin: $(obj).attr('bottom_margin'),
+
+
+                        labels: content_data,
+
+                    })
+
+                    break;
+
+                case 'offline':
+
+
+                    content_data = {
+
+                    };
+
+
+                    $('[contenteditable=true]', obj).each(function (i, obj2) {
+                        content_data[$(obj2).attr('id')] = $(obj2).html()
+                    })
+
+                    blocks.push({
+                        type: 'offline', label: '{t}Offline page{/t}', icon: 'fa-ban', show: ($(obj).hasClass('hide') ? 0 : 1), top_margin: $(obj).attr('top_margin'), bottom_margin: $(obj).attr('bottom_margin'),
+
+
+                        labels: content_data,
+
+                    })
+
+                    break;
 
                 case 'basket':
 
@@ -1319,15 +1566,17 @@
                     var content_data = {
                         type: 'basket', label: '{t}Basket{/t}', icon: 'fa-basket', show: 1,
 
+                        top_margin: $(obj).attr('top_margin'), bottom_margin: $(obj).attr('bottom_margin'),
 
                     }
 
-                    $('[contenteditable=true]').each(function (i, obj) {
+                    $('[contenteditable=true]').each(function (i, obj2) {
 
-                        if ($(obj).hasClass('website_localized_label')) {
-                            labels[$(obj).attr('id')] = $(obj).html()
+                        if ($(obj2).hasClass('website_localized_label')) {
+
+                            labels[$(obj2).attr('id')] = $(obj2).html()
                         } else {
-                            content_data[$(obj).attr('id')] = $(obj).html()
+                            content_data[$(obj2).attr('id')] = $(obj2).html()
                         }
 
 
@@ -1339,7 +1588,11 @@
 
 
                     blocks.push(content_data)
+
+
                     break;
+
+
                 case 'iframe':
 
 
@@ -1357,6 +1610,43 @@
                     //console.log($(obj))
 
                     break;
+
+
+                case 'button':
+
+
+                    blocks.push({
+                        type: 'button', label: '{t}Button{/t}', icon: 'fa-hand-pointer', show: ($(obj).hasClass('hide') ? 0 : 1),
+
+                        title: $(obj).find('._title').html(), text: $(obj).find('._text').html(), button_label: $(obj).find('._button').html(),
+
+                        link: $(obj).find('._button').attr('link'),
+
+                        bg_color: '',
+
+
+                        bg_image: $(obj).find('.button_block').attr('button_bg'),
+
+                        text_color: '', button_bg_color: '', button_text_color: '',
+
+
+                    })
+
+
+                    break;
+                case 'telephone':
+
+                    blocks.push({
+                        type: 'telephone', label: '{t}Telephone{/t}', icon: 'fa-phone', show: ($(obj).hasClass('hide') ? 0 : 1),
+
+                        _title: $(obj).find('._title').html(), _text: $(obj).find('._text').html(), _telephone: $(obj).find('._telephone').html(),
+
+                    })
+
+                    break;
+
+
+
                 case 'static_banner':
 
                     blocks.push({
@@ -1378,6 +1668,7 @@
 
 
                     break;
+
                 case 'image':
 
                     blocks.push({
@@ -1481,29 +1772,6 @@
 
                     break;
 
-                case 'button':
-
-
-                    blocks.push({
-                        type: 'button', label: '{t}Button{/t}', icon: 'fa-hand-pointer', show: ($(obj).hasClass('hide') ? 0 : 1),
-
-                        title: $(obj).find('._title').html(), text: $(obj).find('._text').html(), button_label: $(obj).find('._button').html(),
-
-                        link: $(obj).find('._button').attr('link'),
-
-                        bg_color: '',
-
-
-                        bg_image: $(obj).find('.button_block').attr('button_bg'),
-
-                        text_color: '', button_bg_color: '', button_text_color: '',
-
-
-                    })
-
-
-                    break;
-
                 case 'two_pack':
 
                     var text = $(obj).find('._text').froalaEditor('html.get')
@@ -1540,16 +1808,6 @@
 
                     break;
 
-                case 'telephone':
-
-                    blocks.push({
-                        type: 'telephone', label: '{t}Telephone{/t}', icon: 'fa-phone', show: ($(obj).hasClass('hide') ? 0 : 1),
-
-                        _title: $(obj).find('._title').html(), _text: $(obj).find('._text').html(), _telephone: $(obj).find('._telephone').html(),
-
-                    })
-
-                    break;
 
                 case 'two_one':
 
@@ -1581,14 +1839,13 @@
                     console.log(columns)
 
                     break;
+
                 case 'map':
 
                     blocks.push({
                         type: 'map', label: '{t}Map{/t}', icon: 'fa-map-marker-alt', show: ($(obj).hasClass('hide') ? 0 : 1),
 
-                        src: $(obj).find('iframe').attr('_src'),
-                        top_margin: $(obj).attr('top_margin'),
-                        bottom_margin: $(obj).attr('bottom_margin'),
+                        src: $(obj).find('iframe').attr('_src'), top_margin: $(obj).attr('top_margin'), bottom_margin: $(obj).attr('bottom_margin'),
                     })
 
 
@@ -1611,6 +1868,9 @@
         ajaxData.append("key", '{$webpage->id}')
         ajaxData.append("content_data", JSON.stringify(content_data))
         ajaxData.append("labels", JSON.stringify(labels))
+        ajaxData.append("poll_labels", JSON.stringify(poll_labels))
+
+
 
 
         $.ajax({
@@ -1846,15 +2106,20 @@
     }
 
 
+
+
     function set_up_froala_editor(key) {
 
-        console.log($('#' + key).html())
+
+
 
 
         $('#' + key).froalaEditor({
+            iconsTemplate: 'font_awesome_5',
+
             toolbarInline: true,
             charCounterCount: false,
-            toolbarButtons: ['bold', 'italic', 'underline', 'strikeThrough', 'subscript', 'superscript', '|', 'fontFamily', 'fontSize', 'color', 'inlineStyle', 'paragraphStyle', '|', 'paragraphFormat', 'align', 'formatOL', 'formatUL', 'outdent', 'indent', 'quote', '-', 'insertLink', 'insertImage', 'insertVideo', 'insertFile', 'insertTable', '|', 'emoticons', 'specialCharacters', 'insertHR', 'selectAll', 'clearFormatting', '|', 'print', 'spellChecker', 'help', 'html', '|', 'undo', 'redo'],
+            toolbarButtons: [ 'bold', 'italic', 'underline', 'strikeThrough', 'subscript', 'superscript', '|', 'fontFamily', 'fontSize', 'color', 'inlineStyle', 'paragraphStyle', '|', 'paragraphFormat', 'align', 'formatOL', 'formatUL', 'outdent', 'indent', 'quote', '-', 'insertLink', 'insertImage', 'insertVideo', 'insertFile', 'insertTable', '|', 'emoticons', 'specialCharacters', 'insertHR', 'selectAll', 'clearFormatting', '|', 'print', 'spellChecker', 'help', 'html', '|', 'undo', 'redo'],
             toolbarButtonsMD: ['bold', 'italic', 'underline', 'strikeThrough', 'subscript', 'superscript', '|', 'fontFamily', 'fontSize', 'color', 'inlineStyle', 'paragraphStyle', '|', 'paragraphFormat', 'align', 'formatOL', 'formatUL', 'outdent', 'indent', 'quote', '-', 'insertLink', 'insertImage', 'insertVideo', 'insertFile', 'insertTable', '|', 'emoticons', 'specialCharacters', 'insertHR', 'selectAll', 'clearFormatting', '|', 'print', 'spellChecker', 'help', 'html', '|', 'undo', 'redo'],
             toolbarButtonsSM: ['bold', 'italic', 'underline', 'strikeThrough', 'subscript', 'superscript', '|', 'fontFamily', 'fontSize', 'color', 'inlineStyle', 'paragraphStyle', '|', 'paragraphFormat', 'align', 'formatOL', 'formatUL', 'outdent', 'indent', 'quote', '-', 'insertLink', 'insertImage', 'insertVideo', 'insertFile', 'insertTable', '|', 'emoticons', 'specialCharacters', 'insertHR', 'selectAll', 'clearFormatting', '|', 'print', 'spellChecker', 'help', 'html', '|', 'undo', 'redo'],
             toolbarButtonsXS: ['bold', 'italic', 'underline', 'strikeThrough', 'subscript', 'superscript', '|', 'fontFamily', 'fontSize', 'color', 'inlineStyle', 'paragraphStyle', '|', 'paragraphFormat', 'align', 'formatOL', 'formatUL', 'outdent', 'indent', 'quote', '-', 'insertLink', 'insertImage', 'insertVideo', 'insertFile', 'insertTable', '|', 'emoticons', 'specialCharacters', 'insertHR', 'selectAll', 'clearFormatting', '|', 'print', 'spellChecker', 'help', 'html', '|', 'undo', 'redo'],
@@ -1863,7 +2128,7 @@
             pastePlain: true,
             imageUploadURL: '/ar_upload.php',
             imageUploadParams: {
-                tipo: 'upload_images', parent: 'old_page', parent_key: $('#blocks').data('webpage_key'), parent_object_scope: JSON.stringify({
+                tipo: 'upload_images', parent: 'webpage', parent_key: $('#blocks').data('webpage_key'), parent_object_scope: JSON.stringify({
                     scope: 'block', block_key: key
 
                 }), response_type: 'froala'
@@ -2570,13 +2835,28 @@ console.log($(element))
 
 
 
+
+
+    $(document).on("input propertychange", ".item_overlay .item_header_text", function () {
+
+
+        $(this).closest('.wrap').find('.category_block .item_header_text').html($(this).html())
+
+    })
+
+
+
     $(document).on( "click", ".close_category_block", function() {
+
         $(this).closest('.wrap').addClass('sortable-disabled')
 
+        $(this).closest('.wrap').find('.edit_icon').removeClass('hide')
 
-        var title=$(this).closest('.item_overlay').find('.item_header_text').html()
 
-        $(this).closest('.wrap').find('.category_block .item_header_text').html(title)
+        //var title=$(this).closest('.item_overlay').find('.item_header_text').html()
+        //$(this).closest('.wrap').find('.category_block .item_header_text').html(title)
+
+
         $(this).closest('.wrap').removeClass('sortable-disabled')
         $(this).closest('.wrap').find('.edit').removeClass('hide')
 
@@ -2995,6 +3275,7 @@ console.log($(element))
 
 
     function toggle_see_also_auto(block_key,value){
+
         $('#block_'+block_key+' .see_also').data('auto',value)
 
 
@@ -3004,6 +3285,7 @@ console.log($(element))
 
 
             $( "#block_"+block_key+" .item_overlay " ).addClass('hide')
+
         }else{
 
 
@@ -3021,7 +3303,7 @@ console.log($(element))
             })
 
         }
-
+        $('#save_button',window.parent.document).addClass('save button changed valid')
     }
 
 
@@ -3038,7 +3320,6 @@ console.log($(element))
 
 
 </script>
-
 
 </body>
 

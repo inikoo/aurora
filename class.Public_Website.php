@@ -78,7 +78,7 @@ class Public_Website {
     function get_webpage($code) {
 
         if ($code == '') {
-            $code = 'p.home';
+            $code = 'home.sys';
         }
         include_once 'class.Public_Webpage.php';
 
@@ -430,14 +430,14 @@ class Public_Website {
     }
 
 
-    function get_poll_queries($webpage, $customer = false) {
+    function get_poll_queries($webpage, $customer_key = 0) {
 
         $poll_queries = array();
 
         switch ($webpage->get('Webpage Code')) {
             case 'profile.sys':
                 $where        = ' and `Customer Poll Query In Profile`="Yes" ';
-                $customer_key = $customer->id;
+                $customer_key = $customer_key;
                 break;
             case 'register.sys':
                 $where        = ' and `Customer Poll Query In Registration`="Yes" ';

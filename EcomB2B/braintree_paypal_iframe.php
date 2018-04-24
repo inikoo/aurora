@@ -10,21 +10,66 @@
  Version 2.0
 */
 
-include_once 'keyring/key.php';
-include_once 'utils/aes.php';
 
-date_default_timezone_set('Europe/London');
+
+include_once 'ar_web_common_logged_in.php';
+
 
 require_once 'external_libs/Smarty/Smarty.class.php';
+
+
 $smarty               = new Smarty();
 $smarty->template_dir = 'templates';
 $smarty->compile_dir  = 'server_files/smarty/templates_c';
 $smarty->cache_dir    = 'server_files/smarty/cache';
 $smarty->config_dir   = 'server_files/smarty/configs';
 
+//include_once 'keyring/key.php';
+//include_once 'utils/aes.php';
 
-$key  = md5('83edh3847203942,'.CKEY);
-$data = json_decode(AESDecryptCtr(base64_decode($_REQUEST['data']), $key, 256), true);
+//include_once 'utils/object_functions';
+
+
+date_default_timezone_set('Europe/London');
+
+
+//$key  = md5('83edh3847203942,'.CKEY);
+
+
+//$key='xx';
+
+//$data = json_decode(AESDecryptCtr(base64_decode($_REQUEST['data']), $key, 256), true);
+
+
+
+$payment_account=get_object('Payment_Account',$_REQUEST['payment_account_key']);
+
+
+$data=array(
+    'braintree_account_key'    => $payment_account->id,
+    'Payment Account ID'       => $payment_account->get('Payment Account ID'),
+    'Payment Account Login'    => $payment_account->get('Payment Account Login'),
+    'Payment Account Password' => $payment_account->get('Payment Account Password'),
+    'order_key'                => $order->id,
+    'amount'                   => $order->get('Order To Pay Amount'),
+    'currency'                 => $order->get('Order Currency'),
+);
+
+
+//$data = json_decode(base64_decode($_REQUEST['data']), true);
+
+
+
+//print '====';
+//print_r($key);
+
+//print_r($_REQUEST);
+//print_r($data);
+//print '-----';
+
+
+
+
 
 
 $braintree_clientToken = '';

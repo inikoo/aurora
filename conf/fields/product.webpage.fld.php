@@ -207,17 +207,21 @@ $template_field = array(
 
 );
 */
-$template_fields = array(
+
+
+if( $website->get('Website Theme')!='theme_1'){
+
+    $template_fields = array(
 
 
 
 
 
 
-    array(
-        'label'      => _('Template settings'),
-        'show_title' => true,
-        'fields'     => array(
+        array(
+            'label'      => _('Template settings'),
+            'show_title' => true,
+            'fields'     => array(
 
 
 
@@ -225,28 +229,32 @@ $template_fields = array(
 
 
 
-            array(
-                'id'              => 'Webpage_See_Also',
-                'edit'            => 'webpage_see_also',
-                'value'           => '',
-                'formatted_value' => $object->get('Webpage See Also'),
-                'label'           => _('See also links'),
-                'required'        => false,
-                'type'            => ''
-            ),
+                array(
+                    'id'              => 'Webpage_See_Also',
+                    'edit'            => 'webpage_see_also',
+                    'value'           => '',
+                    'formatted_value' => $object->get('Webpage See Also'),
+                    'label'           => _('See also links'),
+                    'required'        => false,
+                    'type'            => ''
+                ),
 
 
-        )
-    ),
+            )
+        ),
 
 
-);
+    );
 
-$product_fields = array_merge(
-    $product_fields,
-    //$template_field,
-    $template_fields
-);
+
+    $product_fields = array_merge(
+        $product_fields,
+        //$template_field,
+        $template_fields
+    );
+}
+
+
 
 
 

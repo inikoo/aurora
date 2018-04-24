@@ -71,7 +71,7 @@ $object_fields = array(
 );
 
 if (!$new) {
-
+/*
     $object_fields[]=
     array(
         'label'      => _('Look & feel'),
@@ -144,7 +144,7 @@ if (!$new) {
 
         )
     );
-
+*/
 /*
     $object_fields[] =  array(
         'label'      => _('Notify me'),

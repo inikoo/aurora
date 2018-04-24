@@ -277,7 +277,7 @@ ul.post_meta_links_small {
 	font-style: normal;
 }
 
-.google-map2 {
+.google-map {
 	width: 100%;
 	height: 450px;
 }
@@ -380,8 +380,8 @@ ul.recent_posts_list {
 
 
 
-/* 404 Error Page */
-.error_pagenotfound {
+
+.page_not_found {
 	padding: 50px 30px 58px 30px;
 	margin: 0 auto;
 	width: 59%;
@@ -391,7 +391,7 @@ ul.recent_posts_list {
 	text-align: center;
 	font-family: 'Open Sans', sans-serif;
 }
-.error_pagenotfound strong {
+.page_not_found strong {
 	display: block;
 	font-size: 145px;
 	line-height: 100px;
@@ -400,7 +400,7 @@ ul.recent_posts_list {
 	margin-bottom: 10px;
 	text-shadow: 5px 5px 1px #fafafa;
 }
-.error_pagenotfound b {
+.page_not_found b {
 	display: block;
 	font-size: 40px;
 	line-height: 50px;
@@ -408,7 +408,7 @@ ul.recent_posts_list {
 	margin: 0;
 	font-weight: 300;
 }
-.error_pagenotfound em {
+.page_not_found em {
 	display: block;
 	font-size: 18px;
 	line-height: 59px;
@@ -416,9 +416,6 @@ ul.recent_posts_list {
 	margin: 0;
 	font-style: normal;
 }
-
-
-
 
 
 

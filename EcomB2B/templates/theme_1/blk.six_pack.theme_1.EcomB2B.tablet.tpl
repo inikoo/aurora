@@ -15,19 +15,10 @@
         {foreach from=$feature_column  item=feature_row name=feature_rows}
             {counter}
 
-
-
-
-
              <div class="one-third-responsive {if $i%3}animate-left{else}last-column  animate-right{/if}">
                     <h5 class="thin">{$feature_row.title}</h5>
                     <p class="">{$feature_row.text}</p>
                 </div>
-
-
-
-
-
         {/foreach}
     {/foreach}
 

@@ -20,4 +20,12 @@ $smarty->assign('theme',$theme);
 
 
 $html = $smarty->fetch('website.colors.tpl');
+
+
+
+
+
+
+
+
 ?>

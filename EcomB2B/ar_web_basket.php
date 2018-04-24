@@ -10,68 +10,50 @@
 
 */
 
+include_once 'ar_web_common_logged_in.php';
 
-require_once 'common.php';
-require_once 'utils/ar_web_common.php';
+$account=get_object('Account',1);
 
-
-if (!isset($_REQUEST['tipo'])) {
-    $response = array(
-        'state' => 407,
-        'resp'  => 'Non acceptable request (t)'
-    );
-    echo json_encode($response);
-    exit;
-}
-
-
-if (!$customer->id) {
-    $response = array(
-        'state' => 400,
-        'resp'  => 'not customer'
-    );
-    echo json_encode($response);
-    exit;
-}
-
+$website=get_object('Website',$_SESSION['website_key']);
 
 $tipo = $_REQUEST['tipo'];
 
 switch ($tipo) {
+
+    case 'get_basket_html':
+        $data = prepare_values(
+            $_REQUEST, array(
+                         'device_prefix' => array(
+                             'type'     => 'string',
+                             'optional' => true
+                         )
+                     )
+        );
+
+        get_basket_html($data, $customer);
+
+
+        break;
 
     case 'update_item':
         $data = prepare_values(
             $_REQUEST, array(
                          'product_id'        => array('type' => 'key'),
                          'qty'               => array('type' => 'string'),
-                         'order_key'         => array('type' => 'string'),
                          'webpage_key'       => array('type' => 'numeric'),
                          'page_section_type' => array('type' => 'string')
                      )
         );
 
-        update_item($data, $customer, $website, $editor, $db);
+        update_item($data, $customer, $order, $editor, $db);
 
 
         break;
 
-    case 'update_favourite':
-        $data = prepare_values(
-            $_REQUEST, array(
-                         'pid'           => array('type' => 'key'),
-                         'customer_key'  => array('type' => 'key'),
-                         'favourite_key' => array('type' => 'numeric'),
 
-                     )
-        );
-
-        update_favourite($data, $customer, $website, $editor, $db);
-
-
-        break;
     case 'get_charges_info':
 
-        get_charges_info($db, $order);
+        get_charges_info($order);
         break;
     case 'special_instructions':
         $data = prepare_values(
@@ -80,7 +62,7 @@ switch ($tipo) {
 
                      )
         );
-        update_special_instructions($db, $data, $order, $editor);
+        update_special_instructions($data, $order, $editor);
         break;
     case 'invoice_address':
         $data = prepare_values(
@@ -89,7 +71,7 @@ switch ($tipo) {
 
                      )
         );
-        invoice_address($db, $data, $order, $editor,$website);
+        invoice_address($data, $order, $editor, $website);
         break;
     case 'delivery_address':
         $data = prepare_values(
@@ -98,32 +80,27 @@ switch ($tipo) {
 
                      )
         );
-        delivery_address($db, $data, $order, $editor, $website);
+        delivery_address($data, $order, $editor, $website);
         break;
 }
 
-function update_item($_data, $customer, $website, $editor, $db) {
+function update_item($_data, $customer, $order, $editor, $db) {
+
+
 
 
     $customer->editor = $editor;
 
 
-    $order_key = $_data['order_key'];
-    if (!$order_key) {
+    $website = get_object('Website', $_SESSION['website_key']);
 
-        $order_key = $customer->get_order_in_process_key();
-    }
-
-    if (!$order_key) {
+    if (!$order->id) {
 
         $order = create_order($editor, $customer);
+
         $order->update(array('Order Website Key' => $website->id), 'no_history');
+        $_SESSION['order_key'] = $order->id;
 
-
-    } else {
-        //$order=get_object('Order',$order_key);
-
-        $order = get_object('Order', $order_key);
     }
 
 
@@ -265,7 +242,8 @@ function update_item($_data, $customer, $website, $editor, $db) {
             'order_credits'           => $order->get('Net Credited Amount'),
             'order_shipping'          => $shipping_amount,
             'order_total'             => $order->get('Total Amount'),
-            'ordered_products_number' => $order->get('Number Items'),
+            'ordered_products_number' => $order->get('Products'),
+            'order_amount'=>((!empty($website->settings['Info Bar Basket Amount Type']) and $website->settings['Info Bar Basket Amount Type'] == 'items_net')?$order->get('Items Net Amount'):$order->get('Total'))
         );
 
 
@@ -283,7 +261,10 @@ function update_item($_data, $customer, $website, $editor, $db) {
             'to_charge'      => $transaction_data['to_charge'],
             'discounts_data' => $discounts_data,
             'discounts'      => ($order->data['Order Items Discount Amount'] != 0 ? true : false),
-            'charges'        => ($order->data['Order Charges Net Amount'] != 0 ? true : false)
+            'charges'        => ($order->data['Order Charges Net Amount'] != 0 ? true : false),
+
+            'order_empty'=>($order->get('Products')==0?true:false)
+
         );
     } else {
         $response = array('state' => 200);
@@ -293,7 +274,6 @@ function update_item($_data, $customer, $website, $editor, $db) {
     echo json_encode($response);
 
 }
-
 
 function create_order($editor, $customer) {
 
@@ -310,8 +290,7 @@ function create_order($editor, $customer) {
     return $order;
 }
 
-
-function invoice_address($db, $data, $order, $editor,$website) {
+function invoice_address($data, $order, $editor, $website) {
 
 
     $address_data = array(
@@ -396,7 +375,7 @@ function invoice_address($db, $data, $order, $editor,$website) {
 
 }
 
-function delivery_address($db, $data, $order, $editor, $website) {
+function delivery_address($data, $order, $editor, $website) {
 
 
     $order->editor = $editor;
@@ -491,15 +470,13 @@ function delivery_address($db, $data, $order, $editor, $website) {
 
 }
 
-
-function update_special_instructions($db, $data, $order, $editor) {
+function update_special_instructions($data, $order, $editor) {
 
 
     $order->editor = $editor;
 
-    $order->update(
-        array('Order Customer Message' => $data['value']), 'no_history'
-
+    $order->fast_update(
+        array('Order Customer Message' => $data['value'])
     );
     $response = array(
         'state' => 200,
@@ -510,53 +487,7 @@ function update_special_instructions($db, $data, $order, $editor) {
 
 }
 
-
-function update_favourite($data, $customer, $website, $editor, $db) {
-
-
-    $customer->editor = $editor;
-
-    if ($data['favourite_key']) {
-
-        $sql = sprintf('DELETE FROM `Customer Favourite Product Fact` WHERE `Customer Favourite Product Key`=%d ', $data['favourite_key']);
-
-
-        $db->exec($sql);
-
-        $favourite_key = 0;
-        $pid           = $data['pid'];
-
-    } else {
-
-        $product = get_object('Product', $data['pid']);
-        $sql     = sprintf(
-            'INSERT INTO  `Customer Favourite Product Fact` (`Customer Favourite Product Customer Key`,`Customer Favourite Product Product ID`,`Customer Favourite Product Store Key`,`Customer Favourite Product Creation Date`) VALUES
-		(%d,%d,%d,%s) ON DUPLICATE KEY UPDATE `Customer Favourite Product Store Key`=%d
-		', $data['customer_key'], $product->id, $product->data['Product Store Key'],
-
-            prepare_mysql(gmdate('Y-m-d H:i:s')), $product->data['Product Store Key']
-
-        );
-
-        // print $sql;
-        $db->exec($sql);
-
-        $favourite_key = $db->lastInsertId();
-        $pid           = $product->id;
-
-    }
-
-    $response = array(
-        'state'         => 200,
-        'favourite_key' => $favourite_key,
-        'pid'           => $pid
-    );
-    echo json_encode($response);
-
-
-}
-
-function get_charges_info($db, $order) {
+function get_charges_info($order) {
 
 
     $response = array(
@@ -568,5 +499,123 @@ function get_charges_info($db, $order) {
 
 }
 
+function get_basket_html($data, $customer) {
+
+    require_once 'external_libs/Smarty/Smarty.class.php';
+
+
+    $smarty               = new Smarty();
+    $smarty->template_dir = 'templates';
+    $smarty->compile_dir  = 'server_files/smarty/templates_c';
+    $smarty->cache_dir    = 'server_files/smarty/cache';
+    $smarty->config_dir   = 'server_files/smarty/configs';
+
+    $order = get_object('Order', $customer->get_order_in_process_key());
+
+    $website = get_object('Website', $_SESSION['website_key']);
+
+    $theme   = $website->get('Website Theme');
+
+
+
+
+
+
+    $store   = get_object('Store', $website->get('Website Store Key'));
+
+    $webpage = $website->get_webpage('basket.sys');
+
+    $content = $webpage->get('Content Data');
+
+
+    $block_found = false;
+    $block_key   = false;
+    foreach ($content['blocks'] as $_block_key => $_block) {
+        if ($_block['type'] == 'basket') {
+            $block       = $_block;
+            $block_key   = $_block_key;
+            $block_found = true;
+            break;
+        }
+    }
+
+    if (!$block_found) {
+        $response = array(
+            'state' => 200,
+            'html'  => '',
+            'msg'   => 'no basket in webpage'
+        );
+        echo json_encode($response);
+        exit;
+    }
+    $smarty->assign('order', $order);
+    $smarty->assign('customer', $customer);
+    $smarty->assign('website', $website);
+    $smarty->assign('store', $store);
+
+    $smarty->assign('key', $block_key);
+    $smarty->assign('data', $block);
+    $smarty->assign('labels', $website->get('Localised Labels'));
+
+
+    require_once 'utils/get_addressing.php';
+    require_once 'utils/get_countries.php';
+
+
+
+    $countries = get_countries($website->get('Website Locale'));
+    $smarty->assign('countries', $countries);
+
+    $smarty->assign('zero_amount', money(0, $store->get('Store Currency Code')));
+
+
+
+
+
+    if (!$order->id ) {
+        $response = array(
+            'state' => 200,
+            'empty' => true,
+            'html'  => $smarty->fetch('theme_1/blk.basket_no_order.'.$theme.'.EcomB2B'.($data['device_prefix'] != '' ? '.'.$data['device_prefix'] : '').'.tpl'),
+        );
+
+
+
+    }else{
+
+
+        list(
+            $invoice_address_format, $invoice_address_labels, $invoice_used_fields, $invoice_hidden_fields, $invoice_required_fields, $invoice_no_required_fields
+            ) = get_address_form_data($order->get('Order Invoice Address Country 2 Alpha Code'), $website->get('Website Locale'));
+
+        $smarty->assign('invoice_address_labels', $invoice_address_labels);
+        $smarty->assign('invoice_required_fields', $invoice_required_fields);
+        $smarty->assign('invoice_no_required_fields', $invoice_no_required_fields);
+        $smarty->assign('invoice_used_address_fields', $invoice_used_fields);
+
+
+        list(
+            $delivery_address_format, $delivery_address_labels, $delivery_used_fields, $delivery_hidden_fields, $delivery_required_fields, $delivery_no_required_fields
+            ) = get_address_form_data($order->get('Order Invoice Address Country 2 Alpha Code'), $website->get('Website Locale'));
+
+        $smarty->assign('delivery_address_labels', $delivery_address_labels);
+        $smarty->assign('delivery_required_fields', $delivery_required_fields);
+        $smarty->assign('delivery_no_required_fields', $delivery_no_required_fields);
+        $smarty->assign('delivery_used_address_fields', $delivery_used_fields);
+
+
+        $response = array(
+            'state' => 200,
+            'empty' => false,
+            'html'  => $smarty->fetch('theme_1/blk.basket.theme_1.EcomB2B'.($data['device_prefix'] != '' ? '.'.$data['device_prefix'] : '').'.tpl'),
+        );
+    }
+
+
+
+
+    echo json_encode($response);
+
+}
 
 ?>

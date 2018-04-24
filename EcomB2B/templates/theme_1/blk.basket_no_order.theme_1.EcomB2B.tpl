@@ -12,48 +12,58 @@
 
 
 
-
-<div id="block_{$key}"  class="{$data.type} _block  " style="Width:100%;" >
-
-
-    <div class="clearfix marb6"></div>
+<style>
 
 
-            <div class="container">
+    .basket{
+        font-size: 16px;
+    }
 
 
-                <div class="one_third ">
+
+    @media only screen  and (max-width: 1240px) {
+
+        #basket_continue_shopping {
+            display: none
+        }
+    }
+
+</style>
+
+
+{if isset($data.top_margin)}{assign "top_margin" $data.top_margin}{else}{assign "top_margin" "30"}{/if}
+{if isset($data.bottom_margin)}{assign "bottom_margin" $data.bottom_margin}{else}{assign "bottom_margin" "30"}{/if}
+
+
+<div id="block_{$key}" data-block_key="{$key}"  block="{$data.type}" class="{$data.type}  {if !$data.show}hide{/if}"  style="padding-top:{$top_margin}px;padding-bottom:{$bottom_margin}px"  >
+
+
+    <div class="order_header  text_blocks  text_template_3">
+        <div class="text_block ">
                     <h5>
                         <i class="fa fa-fw fa-truck" aria-hidden="true"></i>
-                        <span id="_delivery_address_label" class="website_localized_label" contenteditable="true">{if isset($labels._delivery_address_label) and $labels._delivery_address_label!=''}{$labels._delivery_address_label}{else}{t}Delivery Address{/t}{/if}</span>
+                        <span id="_delivery_address_label" class="website_localized_label" >{if isset($labels._delivery_address_label) and $labels._delivery_address_label!=''}{$labels._delivery_address_label}{else}{t}Delivery Address{/t}{/if}</span>
                     </h5>
                     <p>
                         {$customer->get('Customer Delivery Address Formatted')}
                     </p>
                 </div>
 
-                <div class="one_third">
+        <div class="text_block">
                     <h5>
                         <i class="fa fa-fw fa-dollar-sign" aria-hidden="true"></i>
-                        <span id="_invoice_address_label" class="website_localized_label" contenteditable="true">{if isset($labels._invoice_address_label) and $labels._invoice_address_label!=''}{$labels._invoice_address_label}{else}{t}Invoice Address{/t}{/if}</span>
+                        <span id="_invoice_address_label" class="website_localized_label" >{if isset($labels._invoice_address_label) and $labels._invoice_address_label!=''}{$labels._invoice_address_label}{else}{t}Invoice Address{/t}{/if}</span>
                     </h5>
                     <p>
                         {$customer->get('Customer Invoice Address Formatted')}
                     </p>
                 </div>
 
-                <div class="one_third text-right last" style="padding-left:20px">
+        <div class="totals text_block">
 
 
 
-
-
-
-                    <table class="table">
-
-
-
-
+            <table >
                         <tbody>
 
 
@@ -87,9 +97,9 @@
 
 
 
-                <div class="clearfix marb12"></div>
+             
 
-
+<div class="clear"></div>
     <div class="container">
         <h3>
         {if isset($content._no_products_ordered_yet) and $labels._no_products_ordered_yet!=''}{$labels._no_products_ordered_yet}{else}{t}No products has been ordered{/t}{/if}
@@ -99,9 +109,44 @@
 
 
 
-        <div class="clearfix marb12"></div>
+
 
 </div>
+
+
+
+
+<div class="order_header container text_blocks  text_template_2">
+
+    <div class="text_block">
+
+
+
+    </div>
+
+    <div class="text_block ">
+
+        <form action="" method="post" enctype="multipart/form-data"  class="sky-form" style="box-shadow: none">
+
+            <section class="col col-11">
+
+                <button id="" onclick="$(this).find('i').addClass('fa-spinner fa-spin'); window.location = '/'"  style="margin:0px;margin-right:30px;" type="submit" class="button"><i  class=" fa fa-fw fa-arrow-left" aria-hidden="true"></i> {if !empty($data._go_shop_label)}{$data._go_shop_label}{else}{t}Continue shopping{/t}{/if}  </button>
+
+
+            </section>
+
+
+        </form>
+
+    </div>
+
+
+
+
+</div>
+
+
+<div class="clear"></div>
 
 <script>
     $("form").submit(function(e) {

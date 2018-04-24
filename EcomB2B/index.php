@@ -11,8 +11,13 @@
 */
 
 require_once 'keyring/dns.php';
-$mem = new Memcached();
-$mem->addServer($memcache_ip, 11211);
+
+
+if (class_exists('Memcached')) {
+
+    $mem = new Memcached();
+    $mem->addServer($memcache_ip, 11211);
+}
 
 include_once 'common.php';
 

@@ -11,8 +11,10 @@
 
 use Aws\Ses\SesClient;
 
-require_once 'common.php';
-require_once 'utils/ar_web_common.php';
+
+include_once 'ar_web_common_logged_out.php';
+
+
 require_once 'utils/get_addressing.php';
 
 
@@ -159,6 +161,9 @@ function register($db, $website, $data, $editor) {
                     );
 
 
+                   // print_r($_SESSION);
+
+
                     $sql = sprintf(
                         'INSERT INTO `Website Auth Token Dimension` (`Website Auth Token Website Key`,`Website Auth Token Selector`,`Website Auth Token Hash`,`Website Auth Token Website User Key`,`Website Auth Token Customer Key`,`Website Auth Token Website User Log Key`,`Website Auth Token Expire`) 
             VALUES (%d,%s,%s,%d,%d,%d,%s)', $store->get('Store Website Key'), prepare_mysql($selector), prepare_mysql(hash('sha256', $authenticator)), $website_user->id, $customer->id, $_SESSION['website_user_log_key'],
@@ -169,7 +174,8 @@ function register($db, $website, $data, $editor) {
                     $db->exec($sql);
 
 
-                } else {
+                }
+                else {
 
                     echo json_encode(
                         array(
@@ -182,7 +188,10 @@ function register($db, $website, $data, $editor) {
                 }
 
             }
-            echo json_encode(array('state' => 200));
+            echo json_encode(array(
+                'state' => 200,
+                'msg'=>'reg'
+                             ));
             exit;
 
         } else {
@@ -292,9 +301,10 @@ function send_welcome_email($db, $website, $customer, $website_user) {
 
     try {
         $result    = $client->sendEmail($request);
-        $messageId = $result->get('MessageId');
         $response  = array(
-            'state' => 200
+            'state' => 200,
+            'scope'=>'send_email',
+            'msg'=>$result->get('MessageId')
 
 
         );
@@ -312,9 +322,8 @@ function send_welcome_email($db, $website, $customer, $website_user) {
         );
     }
 
+return $response;
 
-    echo json_encode($response);
-    exit;
 
 }
 

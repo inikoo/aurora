@@ -9,6 +9,11 @@
 -->
 *}
 
+<style>
+    h5{
+        margin-bottom: 5px
+    }
+</style>
 
 <div class="container">
 
@@ -17,14 +22,14 @@
 
 
     <div class="one-third-responsive ">
-        <h5>
+        <h5 >
             <i class="fa fa-fw fa-truck" aria-hidden="true"></i>
             <span id="_delivery_address_label" class="website_localized_label"
                   >{if !empty($labels._delivery_address_label) }{$labels._delivery_address_label}{else}{t}Delivery address{/t}{/if}</span>
         </h5>
-        <p>
+
             {$placed_order->get('Order Delivery Address Formatted')}
-        </p>
+
     </div>
 
     <div class="one-third-responsive">
@@ -36,15 +41,15 @@
 
 
         </h5>
-        <p>
+
             {$placed_order->get('Order Invoice Address Formatted')}
-        </p>
+
     </div>
 
-    <div class="one-third-responsive text-right last-column  animate-right" style="padding-left:20px">
+    <div class="one-third-responsive text-right last-column  " style="padding-left:20px">
 
 
-        <table class="table">
+        <table class="order_totals" style="width: 100%">
 
 
             <tbody>
@@ -93,16 +98,18 @@
         </table>
 
     </div>
+<div class="order">
+    {include file="theme_1/_order_items.theme_1.tpl" edit=false hide_title=true order=$placed_order }
+</div>
 
 </div>
 
 
-<div class="clearfix "></div>
+<div class="clear "></div>
 
 
 <div class="container order">
 
-    {include file="theme_1/_order_items.theme_1.tpl" edit=false hide_title=true order=$placed_order }
 
 
 </div>

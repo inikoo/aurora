@@ -54,6 +54,7 @@ $smarty->assign('website', $website);
 $smarty->assign('store', $store);
 
 
+$smarty->assign('content', $webpage->get('Content Data'));
 
 
 

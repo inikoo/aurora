@@ -41,67 +41,79 @@ $public_webpage=new Public_Webpage('scope', 'Product', $product->id);
 
 $content_data = $product->webpage->get('Content Data');
 
-switch ($webpage->get('Page Store Content Template Filename')) {
-    case 'product':
-
-        $content_data = $webpage->get('Content Data');
+//print_r($website);
 
 
-        if (($webpage->id and $webpage->get('Content Data') == '')) {
+if($website->get('Website Theme')=='theme_1'){
 
-            $content_data = array(
-                'description_block' => array(
-                    'class' => '',
+$html='xx';
 
-                    'content' => sprintf('<div class="description">%s</div>', $public_product->get('Description'))
+}else{
+    //todo delete this after migration
 
+    switch ($webpage->get('Page Store Content Template Filename')) {
+        case 'product':
 
-                ),
-                'tabs'              => array()
-
-            );
-
-            $webpage->update(array('Page Store Content Data' => json_encode($content_data)), 'no_history');
+            $content_data = $webpage->get('Content Data');
 
 
-        }
+            if (($webpage->id and $webpage->get('Content Data') == '')) {
+
+                $content_data = array(
+                    'description_block' => array(
+                        'class' => '',
+
+                        'content' => sprintf('<div class="description">%s</div>', $public_product->get('Description'))
 
 
-        $smarty->assign('content_data', $content_data);
+                    ),
+                    'tabs'              => array()
+
+                );
+
+                $webpage->update(array('Page Store Content Data' => json_encode($content_data)), 'no_history');
 
 
-        $smarty->assign('public_product', $public_product);
-        $smarty->assign('public_webpage', $public_webpage);
-
-        $origin       = $public_product->get('Origin');
-        $cpnp       = $public_product->get('CPNP Number');
-        $materials  = $public_product->get('Materials');
-        $weight     = $public_product->get('Unit Weight');
-        $dimensions = $public_product->get('Unit Dimensions');
-        $product_attachments = $public_product->get_attachments();
-
-        $smarty->assign('CPNP', $cpnp);
-        $smarty->assign('Materials', $materials);
-        $smarty->assign('Weight', $weight);
-        $smarty->assign('Dimensions', $dimensions);
-        $smarty->assign('Origin', $origin);
-        $smarty->assign('product_attachments', $product_attachments);
+            }
 
 
+            $smarty->assign('content_data', $content_data);
 
 
-        if ($weight != '' or $dimensions != ''or  $origin!='' or $cpnp != '' or $materials != '' or count($product_attachments)>0 ) {
-            $has_properties_tab = true;
-        } else {
-            $has_properties_tab = false;
+            $smarty->assign('public_product', $public_product);
+            $smarty->assign('public_webpage', $public_webpage);
 
-        }
+            $origin       = $public_product->get('Origin');
+            $cpnp       = $public_product->get('CPNP Number');
+            $materials  = $public_product->get('Materials');
+            $weight     = $public_product->get('Unit Weight');
+            $dimensions = $public_product->get('Unit Dimensions');
+            $product_attachments = $public_product->get_attachments();
 
-        $smarty->assign('has_properties_tab', $has_properties_tab);
+            $smarty->assign('CPNP', $cpnp);
+            $smarty->assign('Materials', $materials);
+            $smarty->assign('Weight', $weight);
+            $smarty->assign('Dimensions', $dimensions);
+            $smarty->assign('Origin', $origin);
+            $smarty->assign('product_attachments', $product_attachments);
 
 
-        $html = $smarty->fetch('webpage.preview.product.tpl');
-        break;
+
+
+            if ($weight != '' or $dimensions != ''or  $origin!='' or $cpnp != '' or $materials != '' or count($product_attachments)>0 ) {
+                $has_properties_tab = true;
+            } else {
+                $has_properties_tab = false;
+
+            }
+
+            $smarty->assign('has_properties_tab', $has_properties_tab);
+
+
+            $html = $smarty->fetch('webpage.preview.product.tpl');
+            break;
+    }
+
 }
 
 

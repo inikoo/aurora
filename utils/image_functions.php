@@ -13,14 +13,19 @@
 
 function create_cached_image($image_key, $width, $height ,$mode='') {
 
+    $path='EcomB2B/server_files/cached_images/';
+    $tmp_path='EcomB2B/server_files/tmp/';
+
     $cached_image = '';
 
-    if (is_writable('EcomB2B/server_files/cached_images/') and is_writable('EcomB2B/server_files/tmp/')) {
+
+
+    if (is_writable($path) and is_writable($tmp_path)) {
 
 
         require_once 'external_libs/ImageCache.php';
         $imagecache                         = new ImageCache();
-        $imagecache->cached_image_directory = 'EcomB2B/server_files/cached_images/';
+        $imagecache->cached_image_directory = $path;
 
 
         $image          = get_object('Image', $image_key);
@@ -41,7 +46,23 @@ function create_cached_image($image_key, $width, $height ,$mode='') {
                 $height=$image->get('Image Height');
 
             }
+        }elseif($mode=='height'){
+
+
+
+            $ratio=$image->get('Image Width')/$image->get('Image Height');
+
+            //print "ration $ratio  $height \n";
+            $width=$height*$ratio;
+
         }
+
+
+       // print "old size ".$image->get('Image Width')." x ".$image->get('Image Height')."\n";
+
+       // print "new size $width x $height\n";
+
+
 
 
 
@@ -49,20 +70,20 @@ function create_cached_image($image_key, $width, $height ,$mode='') {
 
 
         $image_format = 'jpeg';
-        if (file_exists('EcomB2B/server_files/cached_images/'.md5($image_key.'_'.$_size_image_product_webpage.'.'.$image_format).'.'.$image_format)) {
-            $cached_image = 'server_files/cached_images/'.md5($image_key.'_'.$_size_image_product_webpage.'.'.$image_format).'.'.$image_format;
+        if (file_exists($path.md5($image_key.'_'.$_size_image_product_webpage.'.'.$image_format).'.'.$image_format)) {
+            $cached_image = $path.md5($image_key.'_'.$_size_image_product_webpage.'.'.$image_format).'.'.$image_format;
         } else {
 
-            $image_filename = 'EcomB2B/server_files/tmp/'.$image_key.'_'.$_size_image_product_webpage.'.'.$image_format;
+            $image_filename = $tmp_path.$image_key.'_'.$_size_image_product_webpage.'.'.$image_format;
 
             if (!file_exists($image_filename)) {
 
                 $_image = $image->fit_to_canvas($width, $height);
 
                 if ($image->get('Image File Format') == 'png') {
-                    $image->save_image_to_file_as_jpeg('EcomB2B/server_files/tmp', $image_key.'_'.$_size_image_product_webpage, $_image, $image_format);
+                    $image->save_image_to_file_as_jpeg($tmp_path, $image_key.'_'.$_size_image_product_webpage, $_image, $image_format);
                 } else {
-                    $image->save_image_to_file('EcomB2B/server_files/tmp', $image_key.'_'.$_size_image_product_webpage, $_image, $image_format);
+                    $image->save_image_to_file($tmp_path, $image_key.'_'.$_size_image_product_webpage, $_image, $image_format);
 
                 }
             }
@@ -71,11 +92,15 @@ function create_cached_image($image_key, $width, $height ,$mode='') {
             $cached_image = $imagecache->cache($image_filename);
 
 
+
             unlink($image_filename);
         }
 
 
     }
+
+
+
     $cached_image=preg_replace('/^.*EcomB2B\//','',$cached_image);
     return $cached_image;
 }

@@ -28,7 +28,6 @@
     function change_webpage_favourites_view(view) {
 
 
-console.log(view)
 
             if (view=='no_items') {
 

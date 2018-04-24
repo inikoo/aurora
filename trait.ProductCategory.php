@@ -1290,6 +1290,7 @@ trait ProductCategory {
             );
 
 
+
             $stack = 0;
             if ($result = $this->db->query($sql)) {
                 foreach ($result as $row) {
@@ -1407,7 +1408,8 @@ trait ProductCategory {
             }
 
 
-        } elseif ($this->get('Category Subject') == 'Category') {
+        }
+        elseif ($this->get('Category Subject') == 'Category') {
 
 
             include_once 'class.Public_Webpage.php';

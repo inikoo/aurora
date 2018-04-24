@@ -1,0 +1,160 @@
+/*
+ About:
+ Author: Raul Perusquia <raul@inikoo.com>
+ Created: 18 April 2018 at 21:35:07 GMT+8, Plane Muscat Oman - Manchester UK,  over Irak
+ Copyright (c) 2016, Inikoo
+
+ Version 3
+*/
+
+
+
+@media only screen  and (max-width: 1240px){
+
+  .wrapper_boxed{
+    width: 100%;
+  }
+
+  #logout span{
+    display:none
+  }
+
+  #profile_button span{
+    display:none
+  }
+
+}
+
+@media only screen  and (max-width: 1100px){
+
+  #top_header input{
+    width: 300px
+  }
+
+  .control_panel span{
+    display:none;
+    color:red
+  }
+
+
+  #bottom_header a.button {
+    padding: 4px 8px 4px 8px;
+    margin: 9px 5px 9px 0px;
+  }
+  #bottom_header a.button:first-child{
+    margin-right: 5px
+  }
+
+  #bottom_header a.menu{
+    max-width: 150px;
+    overflow: hidden;
+    font-size: 14px;
+  }
+
+  #logout span{
+    display:none
+  }
+  #profile_button span{
+    display:none
+  }
+
+}
+
+@media only screen  and (max-width: 1000px){
+
+  #top_header input{
+    width: 250px
+  }
+
+  #top_header h1{
+
+    font-size: 16px;
+  }
+
+  #bottom_header a.menu i{
+    display:none
+  }
+
+  #bottom_header a.menu{
+    max-width: 100px;
+    font-size: 12.5px;
+  }
+  #logout span{
+    display:none
+  }
+  #profile_button span{
+    display:none
+  }
+
+}
+
+
+@media only screen  and (max-width: 750px){
+
+
+
+  #top_header input{
+    width: 200px
+  }
+
+  #top_header h1{
+
+    font-size: 15px;
+  }
+
+  #bottom_header a.menu span{
+    display:none;
+  }
+  #bottom_header a.menu i{
+    display:initial;
+  }
+
+
+  #logout span{
+    display:none
+  }
+  #profile_button span{
+    display:none
+  }
+
+}
+
+@media only screen  and (max-width: 550px){
+
+  .wrapper_boxed{
+    width: 550px;
+  }
+
+  #top_header input{
+    width: 200px
+  }
+
+  #top_header h1{
+
+    font-size: 15px;
+  }
+
+  #bottom_header a.menu span{
+    display:none
+  }
+  #bottom_header a.menu i{
+    display:initial;
+  }
+
+  #bottom_header a.menu .down_cadet{
+
+  }
+
+  #bottom_header a.menu i{
+    padding-right: 2px;
+  }
+
+  #logout span{
+    display:none
+  }
+  #profile_button span{
+    display:none
+  }
+
+}
+

@@ -12,10 +12,22 @@
 
 use Aws\Ses\SesClient;
 
-require_once 'common.php';
-require_once 'utils/ar_web_common.php';
+include_once 'ar_web_common_logged_in.php';
 require_once 'utils/placed_order_functions.php';
 
+require_once 'external_libs/Smarty/Smarty.class.php';
+
+
+$smarty               = new Smarty();
+$smarty->template_dir = 'templates';
+$smarty->compile_dir  = 'server_files/smarty/templates_c';
+$smarty->cache_dir    = 'server_files/smarty/cache';
+$smarty->config_dir   = 'server_files/smarty/configs';
+
+
+
+//print_r($_REQUEST);
+//exit;
 
 if (!isset($_REQUEST['tipo'])) {
     $response = array(
@@ -40,7 +52,20 @@ if (!$customer->id) {
 $tipo = $_REQUEST['tipo'];
 
 switch ($tipo) {
+    case 'get_checkout_html':
+        $data = prepare_values(
+            $_REQUEST, array(
+                         'device_prefix' => array(
+                             'type'     => 'string',
+                             'optional' => true
+                         )
+                     )
+        );
 
+        get_checkout_html($data, $customer,$smarty);
+
+
+        break;
     case 'place_order_pay_later':
         $data = prepare_values(
             $_REQUEST, array(
@@ -76,6 +101,8 @@ switch ($tipo) {
 
         }
 
+        $website=get_object('Website',$_SESSION['website_key']);
+        $store=get_object('Store',$order->get('Order Store Key'));
 
         place_order($store, $order, $payment_account_key, $customer, $website, $editor, $smarty);
 
@@ -94,6 +121,9 @@ switch ($tipo) {
 
                      )
         );
+        $website=get_object('Website',$_SESSION['website_key']);
+        $store=get_object('Store',$order->get('Order Store Key'));
+        $account=get_object('Account',1);
 
         place_order_pay_braintree_paypal($store, $data, $order, $customer, $website, $editor, $smarty, $db, $account);
 
@@ -109,7 +139,9 @@ switch ($tipo) {
 
                      )
         );
-
+        $website=get_object('Website',$_SESSION['website_key']);
+        $store=get_object('Store',$order->get('Order Store Key'));
+        $account=get_object('Account',1);
         place_order_pay_braintree($store, $data, $order, $customer, $website, $editor, $smarty, $db, $account);
 
 
@@ -472,6 +504,7 @@ function place_order($store, $order, $payment_account_key, $customer, $website, 
         'order_key' => $order->id,
 
     );
+
 
 
     echo json_encode($response);
@@ -1058,6 +1091,7 @@ function pay_credit($order, $amount, $editor, $db, $account) {
     $reference = $db->lastInsertId();
 
 
+
     //print " ****> $reference <*****";
 
 
@@ -1078,6 +1112,109 @@ function pay_credit($order, $amount, $editor, $db, $account) {
         $payment
     );
 
+
+}
+
+
+function get_checkout_html($data, $customer,$smarty) {
+
+
+    require_once "utils/aes.php";
+
+
+    $website = get_object('Website', $_SESSION['website_key']);
+    $theme   = $website->get('Website Theme');
+
+    $order = get_object('Order', $customer->get_order_in_process_key());
+
+    if (!$order->id or ($order->get('Products')==0) ) {
+
+       // print '>'.$data['device_prefix'].'<';
+
+
+        $response = array(
+            'state' => 200,
+            'html'  => $smarty->fetch('theme_1/checkout_no_order.'.$theme.'.EcomB2B.tpl'),
+        );
+
+
+        echo json_encode($response);
+        exit;
+    }
+
+
+    $order->update_totals();
+
+
+    $store = get_object('Store', $website->get('Website Store Key'));
+
+    $webpage = $website->get_webpage('checkout.sys');
+
+    $content      = $webpage->get('Content Data');
+
+
+
+    $block_found = false;
+    $block_key   = false;
+    foreach ($content['blocks'] as $_block_key => $_block) {
+        if ($_block['type'] == 'checkout') {
+            $block       = $_block;
+            $block_key   = $_block_key;
+            $block_found = true;
+            break;
+        }
+    }
+
+    if (!$block_found) {
+        $response = array(
+            'state' => 200,
+            'html'  => '',
+            'msg'   => 'no checkout in webpage'
+        );
+        echo json_encode($response);
+        exit;
+    }
+
+
+
+    $placeholders = array(
+
+        '[Order Number]' => $order->get('Public ID'),
+        '[Order Amount]' => $order->get('Basket To Pay Amount'),
+
+    );
+
+    if (isset($block['labels']['_bank_header'])) {
+        $block['labels']['_bank_header'] = strtr($block['labels']['_bank_header'], $placeholders);
+    }
+    if (isset($block['labels']['_bank_footer'])) {
+        $block['labels']['_bank_footer'] = strtr($block['labels']['_bank_footer'], $placeholders);
+    }
+
+
+
+
+
+
+    $smarty->assign('order', $order);
+    $smarty->assign('customer', $customer);
+    $smarty->assign('website', $website);
+    $smarty->assign('store', $store);
+
+    $smarty->assign('key', $block_key);
+    $smarty->assign('data', $block);
+    $smarty->assign('labels', $website->get('Localised Labels'));
+
+
+
+
+    $response = array(
+        'state' => 200,
+        'html'  => $smarty->fetch('theme_1/blk.checkout.theme_1.EcomB2B'.($data['device_prefix'] != '' ? '.'.$data['device_prefix'] : '').'.tpl'),
+    );
+
+
+    echo json_encode($response);
 
 }
 

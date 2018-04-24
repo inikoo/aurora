@@ -11,13 +11,13 @@
 
 <div class="category_wrap wrap" data-type="{$item_data.type}">
 
-     <span onclick="$(this).closest('.wrap').addClass('sortable-disabled');$(this).closest('.wrap').find('.item_overlay').removeClass('hide');$(this).closest('.wrap').find('.edit').addClass('hide')" class="fa-stack button edit_icon"
+     <span onclick="$(this).closest('.wrap').addClass('sortable-disabled');$(this).closest('.wrap').find('.item_overlay').removeClass('hide');$(this).closest('.wrap').find('.edit_icon').addClass('hide')" class="fa-stack button edit_icon"
            style="font-size:12.5px;position:absolute;z-index: 1005;right:10px;top:10px;;">
         <i style="color:cornflowerblue;" class="fas fa-circle fa-stack-2x "></i>
         <i class="fas fa-pencil fa-stack-1x fa-inverse"></i>
     </span>
 
-    <span onclick="$(this).closest('.wrap').remove()" class="fa-stack button edit_icon" style="font-size:12.5px;position:absolute;z-index: 1005;right:10px;top:40px;">
+    <span onclick="$(this).closest('.wrap').remove();$('#save_button',window.parent.document).addClass('save button changed valid')" class="fa-stack button edit_icon" style="font-size:12.5px;position:absolute;z-index: 1005;right:10px;top:40px;">
         <i style="color:red;" class="fas fa-circle fa-stack-2x "></i>
         <i class="fas fa-trash-alt fa-stack-1x fa-inverse"></i>
     </span>
@@ -54,7 +54,7 @@
         </div>
         <div class="button_container">
             <div class="flex-item full change_category_image button">
-                <form method="post" action="/ar_edit.php" enctype="multipart/form-data" novalidate>
+                <form method="post" _action="/ar_edit.php" enctype="multipart/form-data" novalidate>
                     <input type="file" name="category_categories_category" id="file_upload_{$item_data.category_key}" class="image_upload hide" multiple
                            data-options='{ "scope":"category", "scope_key":"{$item_data.category_key}"}'/>
                     <label for="file_upload_{$item_data.category_key}">

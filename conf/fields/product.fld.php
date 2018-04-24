@@ -649,6 +649,7 @@ foreach ($product_fields as $key=>$object_field) {
             ),
 
 
+            /*
             array(
                 'id'              => 'Webpage_See_Also',
                 'render' => ($new ? false : true),
@@ -659,7 +660,7 @@ foreach ($product_fields as $key=>$object_field) {
                 'required'        => false,
                 'type'            => ''
             ),
-
+*/
             /*
                 array(
                     'id'=>'Webpage_Related_Products',

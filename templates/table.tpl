@@ -401,14 +401,15 @@
 
     <div id="table_buttons" ">
 
-        {if (isset($table_buttons) and count(table_buttons)>0)  }
+        {if isset($table_buttons)   }
 
         {foreach from=$table_buttons item=button }
             {if isset($button.inline_new_object)}{include file="inline_new_object.tpl" data=$button.inline_new_object trigger={$button.id}}{/if}
 
 
         <div {if isset($button.id) and $button.id }id="{$button.id}"{/if}
-        {if isset($button.attr)} {foreach from=$button.attr key=attr_key item=attr_value }{$attr_key}="{$attr_value}" {/foreach}{/if}
+        {if isset($button.attr)} {foreach from=$button.attr key=attr_key item=attr_value }{$attr_key}="{$attr_value}" {/foreach}
+        {/if}
         class="table_button square_button right {if isset($button.class)}{$button.class}{/if}"
         {if isset($button.reference) and $button.reference!=''}onclick="change_view('{$button.reference}')"{else if isset($button.change_tab) and $button.change_tab!=''}onclick=
         "change_view(state.request + '&tab={$button.change_tab}')"{/if}

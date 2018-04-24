@@ -742,4 +742,10 @@ p {
     border: 1px solid #ccc;
     padding: 5px 10px; }
 
+.order table th {
+  padding: 4px 10px; }
+
+.order table {
+  border-bottom: 1px solid #ccc; }
+
 /*# sourceMappingURL=style.theme_1.EcomB2B.tablet.css.map */

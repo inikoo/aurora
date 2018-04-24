@@ -80,7 +80,7 @@
                                                                                                                                                       style="" placeholder="0">
 
 
-        <span id='toggle_category_products_item_headers' onclick="toggle_category_products_item_headers(this)" class="padding_left_20 unselectable button"><i class="fa fa-toggle-on"></i> {t}Header{/t}</span>
+        <span id='toggle_category_products_item_headers' onclick="toggle_category_products_item_headers(this)" class="padding_left_20 unselectable button"><i class="fa {if $block.item_headers}fa-toggle-on{else}fa-toggle-off{/if}"></i> {t}Header{/t}</span>
         <span onclick="show_category_products_items_showcase(this)" class="padding_left_20 unselectable button"><i class="fa fa-plus"></i> {t}Item{/t}</span>
 
         <span   onclick="show_category_products_items_sort_options(this)"  class="padding_left_20 unselectable button category_products_items_sort_labels">

@@ -259,6 +259,50 @@ class Public_Product {
 
                 break;
 
+            case 'Image Data':
+
+                include_once 'utils/image_functions.php';
+
+                $sql = sprintf(
+                    "SELECT `Image Subject Is Principal`,`Image Key`,`Image Subject Image Caption`,`Image Filename`,`Image File Size`,`Image File Checksum`,`Image Width`,`Image Height`,`Image File Format` 
+                    FROM `Image Dimension`    LEFT JOIN `Image Subject Bridge`   ON (`Image Subject Image Key`=`Image Key`)  WHERE `Image key`=%d ", $this->data['Product Main Image Key']
+                );
+
+
+                if ($result = $this->db->query($sql)) {
+                    if ($row = $result->fetch()) {
+
+                        $image_website = create_cached_image($row['Image Key'], 330, 330, 'fit_highest');
+
+                        $image_data = array(
+                            'key'           => $row['Image Key'],
+                            'src'           => $img = '/image_root.php?&id='.$row['Image Key'],
+                            'caption'       => $row['Image Subject Image Caption'],
+                            'width'         => $row['Image Width'],
+                            'height'        => $row['Image Height'],
+                            'image_website' => $image_website
+                        );
+                    } else {
+                        $image_data = array(
+                            'key' => 0,
+                            'src' => '/art/nopic.png',
+                            'caption'       => '',
+                            'width'         => 190,
+                            'height'        => 130,
+                            'image_website' => '/art/nopic.png'
+                        );
+                    }
+                } else {
+                    print_r($error_info = $this->db->errorInfo());
+                    print "$sql\n";
+                    exit;
+                }
+
+
+                return $image_data;
+
+                break;
+
             case 'Image':
 
 
@@ -410,12 +454,21 @@ class Public_Product {
 
                 $price = preg_replace('/PLN/', 'zł ', money($this->data['Product Price'], $this->data['Store Currency Code']));
 
+
+
+                return $price;
+                break;
+
+            case 'Price Per Unit':
+
+
                 if ($this->data['Product Units Per Case'] != 1) {
 
-                    $price .= ' ('.preg_replace('/PLN/', 'zł ', money($this->data['Product Price'] / $this->data['Product Units Per Case'], $this->data['Store Currency Code'])).'/'.$this->data['Product Unit Label'].')';
+                    $price = '('.preg_replace('/PLN/', 'zł ', money($this->data['Product Price'] / $this->data['Product Units Per Case'], $this->data['Store Currency Code'])).'/'.$this->data['Product Unit Label'].')';
 
 
-                    //$price.=' ('.sprintf(_('%s per %s'), money($this->data['Product Price']/$this->data['Product Units Per Case'], $this->data['Store Currency Code']), $this->data['Product Unit Label']).')';
+                }else{
+                    $price='';
                 }
 
 
@@ -721,7 +774,7 @@ class Public_Product {
 
 
                             break;
-                            print_r($data);
+                            //print_r($data);
                             exit;
                             if (!$part->data['Part '.$tag.' Dimensions Length Display'] or !$part->data['Part '.$tag.' Dimensions Diameter Display']) {
                                 $dimensions = '';
@@ -773,6 +826,7 @@ class Public_Product {
 
             case 'Materials':
 
+
                 if ($this->data[$this->table_name.' Materials'] != '') {
                     $materials_data  = json_decode(
                         $this->data[$this->table_name.' Materials'], true
@@ -814,6 +868,7 @@ class Public_Product {
                         preg_replace('/^\, /', '', $xhtml_materials)
                     );
 
+
                     return $xhtml_materials;
 
 
@@ -829,6 +884,46 @@ class Public_Product {
         }
 
     }
+
+
+    function get_attachments() {
+
+        $attachments = array();
+
+
+        $sql = sprintf(
+            'SELECT `Attachment Subject Type`, `Attachment Bridge Key`,`Attachment Caption`  FROM `Product Part Bridge`  LEFT JOIN `Attachment Bridge` AB  ON (AB.`Subject Key`=`Product Part Part SKU`)    WHERE AB.`Subject`="Part" AND  `Product Part Product ID`=%d  AND `Attachment Public`="Yes" AND `Attachment Subject Type`="MSDS" ',
+            $this->id
+        );
+
+
+        if ($result2 = $this->db->query($sql)) {
+            foreach ($result2 as $row2) {
+
+                if ($row2['Attachment Subject Type'] == 'MSDS') {
+                    $label = '<span title="'._('Material safety data sheet').'">MSDS</span>';
+                } else {
+                    $label = _('Attachment');
+                }
+
+
+                $attachments[] = array(
+                    'id'    => $row2['Attachment Bridge Key'],
+                    'label' => $label,
+                    'name'  => $row2['Attachment Caption']
+                );
+            }
+        } else {
+            print_r($error_info = $this->db->errorInfo());
+            exit;
+        }
+
+
+        return $attachments;
+
+
+    }
+
 
     function load_webpage() {
 
@@ -872,47 +967,58 @@ class Public_Product {
 
     }
 
-    function get_attachments() {
 
-        $attachments = array();
+
+
+    function get_image_gallery() {
+
+        include_once 'utils/image_functions.php';
 
 
         $sql = sprintf(
-            'SELECT `Attachment Subject Type`, `Attachment Bridge Key`,`Attachment Caption`  FROM `Product Part Bridge`  LEFT JOIN `Attachment Bridge` AB  ON (AB.`Subject Key`=`Product Part Part SKU`)    WHERE AB.`Subject`="Part" AND  `Product Part Product ID`=%d  AND `Attachment Public`="Yes" AND `Attachment Subject Type`="MSDS" ',
-            $this->id
+            "SELECT `Image Subject Is Principal`,`Image Key`,`Image Subject Image Caption`,`Image Filename`,`Image File Size`,`Image File Checksum`,`Image Width`,`Image Height`,`Image File Format` FROM `Image Subject Bridge` B LEFT JOIN `Image Dimension` I ON (`Image Subject Image Key`=`Image Key`) WHERE `Image Subject Object`=%s AND   `Image Subject Object Key`=%d ORDER BY `Image Subject Is Principal`,`Image Subject Date`,`Image Subject Key`",
+            prepare_mysql('Product'), $this->id
         );
 
 
-        if ($result2 = $this->db->query($sql)) {
-            foreach ($result2 as $row2) {
+        $gallery = array();
+        if ($result = $this->db->query($sql)) {
+            foreach ($result as $row) {
 
-                if ($row2['Attachment Subject Type'] == 'MSDS') {
-                    $label = '<span title="'._('Material safety data sheet').'">MSDS</span>';
-                } else {
-                    $label = _('Attachment');
+                if ($row['Image Key']) {
+
+                    $image_website = create_cached_image($row['Image Key'], '', 50, 'height');
+
+                    $gallery[] = array(
+                        'src'           => 'image_root.php?id='.$row['Image Key'],
+                        'caption'       => $row['Image Subject Image Caption'],
+                        'key'           => $row['Image Key'],
+                        'width'         => $row['Image Width'],
+                        'height'        => $row['Image Height'],
+                        'image_website' => $image_website
+
+                    );
                 }
 
-
-                $attachments[] = array(
-                    'id'    => $row2['Attachment Bridge Key'],
-                    'label' => $label,
-                    'name'  => $row2['Attachment Caption']
-                );
             }
         } else {
             print_r($error_info = $this->db->errorInfo());
+            print "$sql";
             exit;
         }
 
 
-        return $attachments;
+        // print_r($gallery);
 
+        return $gallery;
 
     }
 
-
     function get_images_slidesshow() {
+
+
         include_once 'utils/natural_language.php';
+
         global $imagecache;
 
         $image_subject_type = $this->table_name;
@@ -1417,18 +1523,12 @@ class Public_Product {
             if ($row = $result->fetch()) {
 
 
-
-
-
                 $parent_category = array(
                     'label'        => $row['Category Label'],
                     'code'         => $row['Category Code'],
                     'webpage_code' => strtolower($row['Webpage Code'])
 
                 );
-
-
-
 
 
                 $sql = sprintf(
@@ -1445,23 +1545,20 @@ class Public_Product {
                 );
 
 
-
-
-                if ($result2=$this->db->query($sql)) {
-                    if ($row2= $result2->fetch()) {
-                        $parent_category['parent']=array(
+                if ($result2 = $this->db->query($sql)) {
+                    if ($row2 = $result2->fetch()) {
+                        $parent_category['parent'] = array(
                             'label'        => $row2['Category Label'],
                             'code'         => $row2['Category Code'],
                             'webpage_code' => strtolower($row2['Webpage Code'])
 
                         );
                     }
-                }else {
-                    print_r($error_info=$this->db->errorInfo());
+                } else {
+                    print_r($error_info = $this->db->errorInfo());
                     print "$sql\n";
                     exit;
                 }
-
 
 
             }

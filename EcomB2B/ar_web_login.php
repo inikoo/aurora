@@ -9,8 +9,9 @@
 
 */
 
-require_once 'common.php';
-require_once 'utils/ar_web_common.php';
+
+include_once 'ar_web_common_logged_out.php';
+
 require_once 'utils/get_addressing.php';
 
 
@@ -30,14 +31,13 @@ switch ($tipo) {
     case 'login':
         $data = prepare_values(
             $_REQUEST, array(
-                         'website_key'   => array('type' => 'key'),
                          'handle'      => array('type' => 'string'),
                          'pwd'         => array('type' => 'string'),
                          'keep_logged' => array('type' => 'string'),
 
                      )
         );
-        login($db, $data, $website,$editor);
+        login($db, $data, $website);
         break;
 
 
@@ -51,7 +51,7 @@ switch ($tipo) {
         break;
 }
 
-function login($db, $data, $website,$editor) {
+function login($db, $data, $website) {
 
     include_once 'class.WebAuth.php';
 
@@ -88,7 +88,7 @@ function login($db, $data, $website,$editor) {
 
         $sql=sprintf('insert into `Website Auth Token Dimension` (`Website Auth Token Website Key`,`Website Auth Token Selector`,`Website Auth Token Hash`,`Website Auth Token Website User Key`,`Website Auth Token Customer Key`,`Website Auth Token Website User Log Key`,`Website Auth Token Expire`) 
             values (%d,%s,%s,%d,%d,%d,%s)',
-                     $data['website_key'],
+                     $website->id,
                      prepare_mysql($selector),
                      prepare_mysql(hash('sha256', $authenticator)),
                      $website_user_key,

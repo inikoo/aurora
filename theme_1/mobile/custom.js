@@ -1,4 +1,4 @@
-$(document).ready(function(){      
+$(document).ready(function(){
     'use strict'
 	    
     function init_template(){
@@ -19,7 +19,8 @@ $(document).ready(function(){
 		setTimeout(function(){
 			$('.sidebar').addClass('sidebar-visible');
 		},250);
-		
+
+
 		//Toggle Menu Style
 		
 		$('.toggle-menu-style').on('click', function(){

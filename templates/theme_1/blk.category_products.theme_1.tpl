@@ -73,9 +73,9 @@
 
 
                     <div class="product_prices log_in " >
-                        <div class="product_price">{if empty($labels._product_price)}{t}Price{/t}{else}{$labels._product_price}{/if}: {$item.price}</div>
+                        <div class="product_price">{if empty($labels._product_price)}{t}Price{/t}{else}{$labels._product_price}{/if}: {$item.price}  <small>{$item.price_unit}</small> </div>
                         {assign 'rrp' $item.rrp}
-                        {if $rrp!=''}<div>{if empty($labels._product_rrp)}{t}RRP{/t}{else}{$labels._product_rrp}{/if}: {$rrp}</div>{/if}
+                        {if $rrp!=''}<div><small>{if empty($labels._product_rrp)}{t}RRP{/t}{else}{$labels._product_rrp}{/if}: {$rrp}</small></div>{/if}
                     </div>
 
 
@@ -151,6 +151,23 @@
     <div style="clear:both"></div>
 </div>
 
+<script>
+
+
+    function jQueryTabs3() {
+        $(".tabs3").each(function () {
+            $(".tabs-panel3").not(":first").hide(), $("li", this).removeClass("active"), $("li:first-child", this).addClass("active"), $(".tabs-panel:first-child").show(), $("li", this).click(function (t){
+                var i=$("a",this).attr("href");
+                $(this).siblings().removeClass("active"),$(this).addClass("active"),$(i).siblings().hide(),$(i).fadeIn(400),t.preventDefault()}), $(window).width() < 100 && $(".tabs-panel3").show()
+        })
+    }
+
+    console.log('cacac')
+
+
+
+
+</script>
 
 
 

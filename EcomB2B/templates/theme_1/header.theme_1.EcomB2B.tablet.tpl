@@ -8,7 +8,7 @@
  Version 3
 -->
 *}
-<span id="webpage_data" style="display:none" data-webpage_key="{$webpage->id}" data-customer_key="{$customer_key}" data-order_key="{$order_key}"></span>
+<span id="webpage_data" style="display:none" data-webpage_key="{$webpage->id}" ></span>
 <div class="sidebars sidebars-light">
     <div class="sidebar sidebar-left">
         <div class="sidebar-header sidebar-header-image bg-1">
@@ -160,9 +160,9 @@
         <a href="favourites.sys" ><i   class="fa fa-heart"></i></a>
         <a href="profile.sys"  ><i class="fa fa-user"></i></a>
 
-        <a class="basket_link" href="basket.sys">
+        <a id="header_order_totals" class="basket_link" href="basket.sys">
         <i class="fas fa-shopping-cart"></i>
-            {if !empty($website->settings['Info Bar Basket Amount Type']) and $website->settings['Info Bar Basket Amount Type']=='items_net'}<span id="header_order_items_net_amount" class="order_items_net" style="padding-right:10px" title="{if isset($labels._items_net) and $labels._items_net!=''}{$labels._items_net}{else}{t}Items Net{/t}{/if}">{if isset($order)}{$order->get('Items Net Amount')}{else}{$zero_money}{/if}</span>{else}<span id="header_order_total_amount" class="order_total" style="padding-right:10px" title="{if isset($labels._total) and $labels._total!=''}{$labels._total}{else}{t}Total{/t}{/if}">{if isset($order)}{$order->get('Total')}{else}{$zero_money}{/if}</span>{/if}
+            <span class="order_amount" style="padding-right:10px" > <i class="fa fa-spinner fa-spin"></i> </span>
         </a>
 
     </span>

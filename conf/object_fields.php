@@ -250,6 +250,10 @@ function get_object_fields($object, $db, $user, $smarty, $options = false) {
                 include 'fields/website_info_bar.fld.php';
 
 
+            } elseif (!empty($options['logos'])) {
+                include 'fields/website_logos.fld.php';
+
+
             } else {
                 include 'fields/website.fld.php';
             }
