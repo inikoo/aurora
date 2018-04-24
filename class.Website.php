@@ -1687,9 +1687,9 @@ class Website extends DB_Table {
         //$theme='theme_1';
         //$website_type='EcomB2B';
 
-        $smarty_web->clearCache(null,$this->id);
+      //  $smarty_web->clearCache(null,$this->id);
 
-      
+        $smarty_web->clearAllCache();
 
 
 
