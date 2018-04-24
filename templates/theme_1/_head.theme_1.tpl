@@ -51,9 +51,6 @@
     <link href="/css/editor_v2/plugins/draggable.css" rel="stylesheet">
 
 
-
-
-
     <link rel="stylesheet" href="EcomB2B/css/desktop.min.css?v5" type="text/css"/>
     <link rel="stylesheet" href="EcomB2B/css/forms.min.css?v4" type="text/css"/>
 
@@ -155,7 +152,9 @@
     <script src="/js/libs/editor_v2/plugins/quick_insert.min.js"></script>
     <script src="/js/libs/editor_v2/plugins/quote.min.js"></script>
     <script src="/js/libs/editor_v2/plugins/table.min.js"></script>
-    <script src="/js/libs/editor_v2/plugins/save.min.js"></script>
+
+
+
     <script src="/js/libs/editor_v2/plugins/url.min.js"></script>
     <script src="/js/libs/editor_v2/plugins/video.min.js"></script>
 
