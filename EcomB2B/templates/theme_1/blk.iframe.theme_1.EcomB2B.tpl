@@ -12,8 +12,5 @@
 
 
 <div class="{$data.type} _block  "  style="width:1240px;height:{$data.height}px" data-h="{$data.height}" data-w="1240"  >
-    <iframe onloadx="
-    var div=$(this).closest('div');
-    div.css({ height: $(this).width()*div.data('h')/div.data('w') });
-    "  style="width:100%;height: 100%; border: 0px;overflow:hidden;" src="https://{$data.src}"   allowfullscreen ></iframe>
+    <iframe title="{$website->get('Website Name')}"  style="width:100%;height: 100%; border: 0px;overflow:hidden;" src="https://{$data.src}"   allowfullscreen ></iframe>
 </div>
