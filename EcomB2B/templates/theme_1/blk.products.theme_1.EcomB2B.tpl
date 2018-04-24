@@ -39,12 +39,12 @@
 
 
                         <div class="wrap_to_center product_image" >
-                            <a href="{$item.link}"><i class="fa fa-fw fa-external-link-square more_info" aria-hidden="true"  title="{t}More info{/t}"  ></i></a>
+                            <a href="{$item.link}"><i class="fal fa-fw fa-external-link-square more_info" aria-hidden="true"  title="{t}More info{/t}"  ></i></a>
 
                             {if $logged_in}
                                 <i    data-product_id="{$item.product_id}" data-favourite_key="0" class="favourite_{$item.product_id} favourite far  fa-heart" aria-hidden="true"></i>
                             {/if}
-                            <img src="{$item.image_website}"  />
+                            <a href="{$item.link}"><img src="{$item.image_website}"  /></a>
                         </div>
 
 

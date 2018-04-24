@@ -219,7 +219,7 @@
                 <div class="product_wrap wrap type_product " >
                     <div class="product_block item product_container" >
                         <div class="wrap_to_center product_image" >
-                                    <a href="#"><i class="fa fa-fw fa-external-link-square more_info" aria-hidden="true"  title="{t}More info{/t}"  ></i></a>
+                                    <a href="#"><i class="fal fa-fw fa-external-link-square more_info" aria-hidden="true"  title="{t}More info{/t}"  ></i></a>
 
                                     {if $logged_in}
                                         <i    data-product_id="" data-favourite_key="0" class="favourite_ favourite far  fa-heart" aria-hidden="true"></i>
@@ -292,7 +292,7 @@
                 <div class="product_wrap wrap type_product " >
                     <div class="product_block item product_container" >
                         <div class="wrap_to_center product_image" >
-                            <a href="#"><i class="fa fa-fw fa-external-link-square more_info" aria-hidden="true"  title="{t}More info{/t}"  ></i></a>
+                            <a href="#"><i class="fal fa-fw fa-external-link-square more_info" aria-hidden="true"  title="{t}More info{/t}"  ></i></a>
 
                             {if $logged_in}
                                 <i    data-product_id="" data-favourite_key="0" class="favourite_ favourite far  fa-heart" aria-hidden="true"></i>
@@ -368,7 +368,7 @@
                 <div class="product_wrap wrap type_product " >
                     <div class="product_block item product_container" >
                         <div class="wrap_to_center product_image" >
-                            <a href="#"><i class="fa fa-fw fa-external-link-square more_info" aria-hidden="true"  title="{t}More info{/t}"  ></i></a>
+                            <a href="#"><i class="fal fa-fw fa-external-link-square more_info" aria-hidden="true"  title="{t}More info{/t}"  ></i></a>
 
                             {if $logged_in}
                                 <i    data-product_id="" data-favourite_key="0" class="favourite_ favourite far  fa-heart" aria-hidden="true"></i>
@@ -434,7 +434,7 @@
                 <div class="product_wrap wrap type_product " >
                     <div class="product_block item product_container" >
                         <div class="wrap_to_center product_image" >
-                            <a href="#"><i class="fa fa-fw fa-external-link-square more_info" aria-hidden="true"  title="{t}More info{/t}"  ></i></a>
+                            <a href="#"><i class="fal fa-fw fa-external-link-square more_info" aria-hidden="true"  title="{t}More info{/t}"  ></i></a>
 
                             {if $logged_in}
                                 <i    data-product_id="" data-favourite_key="0" class="favourite_ favourite far  fa-heart" aria-hidden="true"></i>
