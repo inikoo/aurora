@@ -37,15 +37,15 @@ $editor = array(
 );
 
 
-$where=' and `Webpage Webisite Key`=14';
-
+$where=' and `Webpage Website Key`=14';
+$where=' and true';
 //migrate_families();
 ////migrate_departments();
 //exit;
 
 //2730
 
-/*
+
 
 migrate_thanks();
 migrate_search();
@@ -56,10 +56,11 @@ migrate_register();
 migrate_not_found();
 migrate_offline();
 migrate_checkout();
-migrate_products();
-*/
-
 migrate_blocks();
+
+migrate_products();
+
+
 
 function migrate_blocks() {
 
@@ -1090,7 +1091,6 @@ function migrate_login() {
         }
     }
 }
-
 
 function migrate_products() {
     global $db,$where;
