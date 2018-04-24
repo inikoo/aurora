@@ -220,7 +220,16 @@ if (!$new) {
         'show_title' => true,
         'class'      => 'operations',
         'fields'     => array(
-
+            array(
+                'id'        => 'clean_cache',
+                'class'     => 'operation',
+                'value'     => '',
+                'label'     => ' <span data-data=\'{ "object": "'.$object->get_object_name(
+                    ).'", "key":"'.$object->id.'"}\' onClick="clean_cache(this)" class=" button">'._("Flush cache")
+                    .' </span>',
+                'reference' => '',
+                'type'      => 'operation'
+            ),
             array(
                 'id'        => 'delete_website',
                 'class'     => 'operation',
