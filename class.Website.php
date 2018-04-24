@@ -1684,11 +1684,12 @@ class Website extends DB_Table {
         $smarty_web->config_dir   = 'EcomB2B/server_files/smarty/configs';
         $smarty_web->setCaching(Smarty::CACHING_LIFETIME_CURRENT);
 
-        $theme='theme_1';
-        $website_type='EcomB2B';
-
+        //$theme='theme_1';
+        //$website_type='EcomB2B';
 
         $smarty_web->clearCache(null,$this->id);
+
+      
 
 
 
