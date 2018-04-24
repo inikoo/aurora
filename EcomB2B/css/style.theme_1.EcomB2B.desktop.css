@@ -1489,8 +1489,8 @@ div.blk_images figcaption.caption_hide {
     width: 22px;
     top: 40px;
     right: 10px;
-    color: darkorange;
-    z-index: 1; }
+    z-index: 1;
+    opacity: .5; }
   .product_block .favourite {
     font-size: 22px;
     cursor: pointer;
