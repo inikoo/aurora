@@ -2118,7 +2118,9 @@
     function set_up_froala_editor(key) {
 
 
-
+        if ($('#' + key).data('froala.editor')) {
+            $('#' + key).froalaEditor('destroy');
+        }
 
 
         $('#' + key).froalaEditor({

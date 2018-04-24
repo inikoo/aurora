@@ -158,6 +158,9 @@
         }
 
 
+
+
+
         set_up_froala_editor($(this).attr('id'))
 
     })
