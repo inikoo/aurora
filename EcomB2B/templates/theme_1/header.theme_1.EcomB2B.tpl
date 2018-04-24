@@ -21,7 +21,7 @@
 
 
     </div>
-    <img style="padding:0px 10px ;float:left" src="art/mobile_logo.png"/>
+    <img style="padding:0px 10px ;float:left;max-height: 60px" src="art/mobile_logo.png"/>
 
     <h1> {$website->get('Website Name')}</h1>
 

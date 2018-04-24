@@ -1490,7 +1490,7 @@ div.blk_images figcaption.caption_hide {
     top: 40px;
     right: 10px;
     z-index: 1;
-    opacity: .5r; }
+    opacity: .5; }
   .product_block .favourite {
     font-size: 22px;
     cursor: pointer;
