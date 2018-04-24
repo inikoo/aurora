@@ -1955,6 +1955,11 @@ function delete_object(element) {
     save_object_operation('delete', element)
 }
 
+
+function clean_cache(element) {
+    save_object_operation('clean_cache', element)
+}
+
 function approve_object(element) {
     save_object_operation('approve', element)
 }

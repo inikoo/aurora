@@ -866,6 +866,9 @@ function object_operation($account, $db, $user, $editor, $data, $smarty) {
         case 'unarchive':
             $request = $object->unarchive();
             break;
+        case 'clean_cache':
+            $request = $object->clean_cache();
+            break;
         case 'un_dispatch':
             $request = $object->update_state('un_dispatch');
             break;
