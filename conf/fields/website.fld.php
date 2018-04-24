@@ -230,6 +230,7 @@ if (!$new) {
                 'reference' => '',
                 'type'      => 'operation'
             ),
+            /*
             array(
                 'id'        => 'delete_website',
                 'class'     => 'operation',
@@ -240,7 +241,7 @@ if (!$new) {
                 'reference' => '',
                 'type'      => 'operation'
             ),
-
+*/
 
         )
 

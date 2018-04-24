@@ -8,9 +8,10 @@
  Version 3
 -->
 *}{include file="theme_1/_head.theme_1.EcomB2B.tpl"}
-
 <body xmlns="http://www.w3.org/1999/html">
 {include file="analytics.tpl"}
+
+
 
 {if $logged_in}
     <span id="ordering_settings" class="hide" data-labels='{
@@ -155,6 +156,7 @@
                         {if $block.type=='iframe'   }{assign "with_iframe" 1}{/if}
                         {if $block.type=='product'   }{assign "with_gallery" 1}{/if}
                         {if $block.type=='category_products' or   $block.type=='products'  or   $block.type=='product' }{assign "with_product_order_input" 1}{/if}
+
 
                         {include file="theme_1/blk.{$block.type}.theme_1.EcomB2B.tpl" data=$block key=$key  }
 
