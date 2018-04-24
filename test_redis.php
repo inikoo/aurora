@@ -12,8 +12,7 @@
 
 
 
-
- $redis = new Redis();
+$redis = new Redis();
 
 
 print 'x';
@@ -24,6 +23,8 @@ print 'x';
      if($redis->exists('tutorial-name')){
 
          print $redis->get('tutorial-name').'xddddd';
+     }else{
+         $redis->set('tutorial-name','hola');
      }
  }else{
 
