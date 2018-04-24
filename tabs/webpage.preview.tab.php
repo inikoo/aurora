@@ -21,17 +21,17 @@ if($state['_object']->get_object_name()=='Product'){
 $website = get_object('Website',$webpage->get('Webpage Website Key'));
 
 
-if ($state['_object']->get('Webpage Template Filename') == 'products_showcase' or $state['_object']->get('Webpage Template Filename') == 'categories_showcase') {
+if ($webpage->get('Webpage Template Filename') == 'products_showcase' or $webpage->get('Webpage Template Filename') == 'categories_showcase') {
 
-    $state['_object'] = get_object('Category', $state['_object']->get('Webpage Scope Key'));
+    $state['_object'] = get_object('Category', $webpage->get('Webpage Scope Key'));
 
     include 'category.webpage.preview.tab.php';
 
-} elseif ($state['_object']->get('Webpage Template Filename') == 'product'  and  $website->get('Website Theme')!='theme_1' ) {
+} elseif ($webpage->get('Webpage Template Filename') == 'product'  and  $website->get('Website Theme')!='theme_1' ) {
 
 
 
-    $state['_object'] = get_object('Product', $state['_object']->get('Webpage Scope Key'));
+    $state['_object'] = get_object('Product',$webpage->get('Webpage Scope Key'));
 
     include 'product.webpage.preview.tab.php';
 
