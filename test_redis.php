@@ -10,13 +10,26 @@
 */
 
 
- $redis = new Redis(); 
+
+
+
+ $redis = new Redis();
+
+
+print 'x';
+
+
  if(  $redis->connect('127.0.0.1', 6379)){
 
      if($redis->exists('tutorial-name')){
 
          print $redis->get('tutorial-name').'xddddd';
      }
+ }else{
+
+
+     print 'o';
+
  }
 
 
