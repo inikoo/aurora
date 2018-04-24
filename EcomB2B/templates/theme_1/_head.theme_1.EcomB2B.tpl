@@ -41,7 +41,7 @@
     <link rel="canonical" href="{$webpage->get('URL')}"/>
 
 
-    <link rel="stylesheet" href="css/desktop.min.css?v5" type="text/css"/>
+    <link rel="stylesheet" href="css/desktop.min.css?v6" type="text/css"/>
     {*}
    <link rel="stylesheet" href="css/image_gallery.min.css">
    {*}
