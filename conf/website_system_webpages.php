@@ -15,13 +15,15 @@ function website_system_webpages_config($website_type) {
     include_once 'conf/webpage_blocks.php';
     $blocks = get_webpage_blocks();
 
-    $contact_content_data                         = $blocks['two_one'];
-    $contact_content_data['columns'][0]['_title'] = '';
-    $contact_content_data['columns'][0]['_text']  =
-        '<p>Feel free to talk to our online representative at any time you please using our Live Chat system on our website or one of the below instant messaging programs.</p><br /><p>Please be patient while waiting for response. (24/7 Support!) <strong>Phone General Inquiries: 1-888-123-4567-8900</strong></p>';
-    $contact_content_data['columns'][1]['_title'] = _('Our Details');
-    $contact_content_data['columns'][1]['_text']  = 'Telephone<br/>#tel<br/><br/>Email<br/>#email<br/><br/>Address<br/>#adr<br/><br/> ';
 
+    $contact_content_data = $blocks['text'];
+
+
+    $contact_content_data['template']    = 't1';
+    $contact_content_data['text_blocks'] = array(
+        array('text' => 'Feel free to talk to our online representative at any time you please using our Live Chat system on our website or one of the below instant messaging programs.</p><br /><p>Please be patient while waiting for response. (24/7 Support!) <strong>Phone General Inquiries: 1-888-123-4567-8900</strong>'),
+        array('text' => 'Telephone<br/>#tel<br/><br/>Email<br/>#email<br/><br/>Address<br/>#adr')
+    );
 
     $EcomB2B = array(
 
@@ -41,10 +43,10 @@ function website_system_webpages_config($website_type) {
 
 
                         $blocks['iframe'],
-                        $blocks['six_pack'],
+                        //$blocks['six_pack'],
                         $blocks['images'],
-                       // $blocks['counter'],
-                        $blocks['three_pack'],
+                        // $blocks['counter'],
+                        //$blocks['three_pack'],
 
                     )
 
@@ -71,10 +73,10 @@ function website_system_webpages_config($website_type) {
                         $blocks['iframe'],
                         $blocks['button'],
 
-                        $blocks['six_pack'],
+                        //   $blocks['six_pack'],
                         $blocks['images'],
-                       // $blocks['counter'],
-                        $blocks['three_pack'],
+                        // $blocks['counter'],
+                        //   $blocks['three_pack'],
 
                     )
 
@@ -83,30 +85,7 @@ function website_system_webpages_config($website_type) {
 
 
         ),
-        'home_rookie.sys' => array(
-            'Webpage Scope'             => 'HomepageNoOrders',
-            'Webpage Template Filename' => 'homepage_no_orders',
-            'Webpage Type'              => 'Home',
-            'Webpage Code'              => 'home_rookie.sys',
-            'Webpage Browser Title'     => _('Homepage'),
-            'Webpage Name'              => _("Prospect's homepage"),
-            'Webpage Meta Description'  => '',
-            'Page Store Content Data'   => json_encode(
-                array(
-                    'blocks' => array(
-                        $blocks['iframe'],
-                        $blocks['six_pack'],
-                        $blocks['images'],
-//                        $blocks['counter'],
-                        $blocks['three_pack'],
 
-                    )
-
-                )
-            )
-
-
-        ),
 
         'launching.sys' => array(
             'Webpage Scope'             => 'HomepageToLaunch',
@@ -154,10 +133,9 @@ function website_system_webpages_config($website_type) {
             'Webpage Scope Metadata'    => '',
             'Page Store Content Data'   => json_encode(
                 array(
-                    '_title'      => _('Favourites'),
-                    '_text'       => _('Here you can see your favourites'),
-                    '_text_empty' => _('You still have no favourites'),
-
+                    'blocks' => array(
+                        $blocks['favourites']
+                    )
 
                 )
             )
@@ -185,32 +163,51 @@ function website_system_webpages_config($website_type) {
                 )
             ),
             'Page Store Content Data'   => json_encode(
+
+
                 array(
-                    '_title'          => _('Login form'),
-                    '_title_recovery' => _('Password recovery'),
+                    'blocks' => array(
+                        array(
+                            'type'          => 'login',
+                            'label'         => _('Login'),
+                            'icon'          => 'fa-sign-in-alt',
+                            'show'          => 1,
+                            'top_margin'    => 80,
+                            'bottom_margin' => 120,
+                            'labels'        => array(
+                                '_title'          => _('Login form'),
+                                '_title_recovery' => _('Password recovery'),
 
 
-                    '_email_label'          => _('E-mail'),
-                    '_password_label'       => _('Password'),
-                    '_email_recovery_label' => _('E-mail'),
+                                '_email_label'          => _('E-mail'),
+                                '_password_label'       => _('Password'),
+                                '_email_recovery_label' => _('E-mail'),
 
 
-                    '_forgot_password_label' => _('Forgot password?'),
-                    '_keep_logged_in_label'  => _('Keep me logged in'),
+                                '_forgot_password_label' => _('Forgot password?'),
+                                '_keep_logged_in_label'  => _('Keep me logged in'),
 
 
-                    '_register_label' => _('Register'),
-                    '_log_in_label'   => _('Log in'),
-                    '_submit_label'   => _('Submit'),
-                    '_close_label'    => _('Go back'),
+                                '_register_label' => _('Register'),
+                                '_log_in_label'   => _('Log in'),
+                                '_submit_label'   => _('Submit'),
+                                '_close_label'    => _('Go back'),
 
-                    '_password_recovery_success_msg'                  => _('Your request successfully sent!'),
-                    '_password_recovery_email_not_register_error_msg' => _('Email is not registered in our system'),
-                    '_password_recovery_unknown_error_msg'            => _("Recovery email could't be send, please contact customer services"),
-                    '_password_recovery_go_back'                      => _('Try again'),
+                                '_password_recovery_success_msg'                  => _('Your request successfully sent!'),
+                                '_password_recovery_email_not_register_error_msg' => _('Email is not registered in our system'),
+                                '_password_recovery_unknown_error_msg'            => _("Recovery email could't be send, please contact customer services"),
+                                '_password_recovery_go_back'                      => _('Try again'),
 
 
+                            )
+
+
+                        )
+
+                    )
                 )
+
+
             )
         ),
 
@@ -236,35 +233,56 @@ function website_system_webpages_config($website_type) {
             ),
 
             'Page Store Content Data' => json_encode(
+
+
                 array(
-                    '_title'             => _('Registration form'),
-                    '_email_placeholder' => _('Email address'),
-                    '_email_tooltip'     => _('Needed to verify your account'),
+                    'blocks' => array(
+                        array(
+                            'type'          => 'register',
+                            'label'         => _('Registration form'),
+                            'icon'          => 'fa-registered',
+                            'show'          => 1,
+                            'top_margin'    => 40,
+                            'bottom_margin' => 60,
+                            'labels'        => array(
+                                '_title'             => _('Registration form'),
+                                '_email_placeholder' => _('Email address'),
+                                '_email_tooltip'     => _('Needed to verify your account'),
 
-                    '_password_placeholder' => _('Password'),
-                    '_password_tooltip'     => _("Don't forget your password"),
+                                '_password_placeholder' => _('Password'),
+                                '_password_tooltip'     => _("Don't forget your password"),
 
-                    '_password_confirm_placeholder' => _('Confirm password'),
-                    '_password_confirm_tooltip'     => _("Confirm your password"),
+                                '_password_confirm_placeholder' => _('Confirm password'),
+                                '_password_confirm_tooltip'     => _("Confirm your password"),
 
-                    '_mobile_placeholder' => _('Mobile'),
-                    '_mobile_tooltip'     => _('Needed to enter your mobile/telephone'),
+                                '_mobile_placeholder' => _('Mobile'),
+                                '_mobile_tooltip'     => _('Needed to enter your mobile/telephone'),
 
-                    '_contact_name_placeholder' => _('Contact name'),
-                    '_contact_name_tooltip'     => _('Needed to enter your name'),
+                                '_contact_name_placeholder' => _('Contact name'),
+                                '_contact_name_tooltip'     => _('Needed to enter your name'),
 
-                    '_company_placeholder' => _('Company'),
-                    '_company_tooltip'     => _('Enter your account company name'),
+                                '_company_placeholder' => _('Company'),
+                                '_company_tooltip'     => _('Enter your account company name'),
 
-                    '_subscription' => _('I want to receive news and special offers'),
-                    '_terms'        => _('I agree with the <span class="marked_link">Terms and Conditions</span>'),
-                    '_submit_label' => _('Submit'),
+                                '_subscription' => _('I want to receive news and special offers'),
+                                '_terms'        => _('I agree with the <span class="marked_link">Terms and Conditions</span>'),
+                                '_submit_label' => _('Submit'),
 
-                    'redirect'   => 'welcome',
-                    'send_email' => 1,
+                                'redirect'   => 'welcome',
+                                'send_email' => 1,
+
+                            )
+
+
+                        )
+
+                    )
 
                 )
+
+
             )
+
         ),
 
         'welcome.sys'   => array(
@@ -279,8 +297,6 @@ function website_system_webpages_config($website_type) {
             'Page Store Content Data'   => json_encode(
                 array(
                     'blocks' => array(
-
-                        $blocks['two_pack'],
                         $blocks['text'],
                         $blocks['telephone'],
 
@@ -339,77 +355,13 @@ function website_system_webpages_config($website_type) {
             'Webpage Name'              => _('Customer section'),
             'Webpage Meta Description'  => '',
             'Page Store Content Data'   => json_encode(
+
                 array(
 
-                    '_customer_orders_title'  => _("Customer <i>Orders</i>"),
-                    '_customer_profile_title' => _("Customer <i>Profile</i>"),
+                    'blocks' => array(
+                        $blocks['profile']
 
-
-                    '_current_order_title' => _('Current order'),
-                    '_last_order_title'    => _('Last order'),
-                    '_orders_title'        => _('Orders'),
-
-
-                    '_contact_details_title' => _('Contact details'),
-                    '_email_placeholder'     => _('Email address'),
-                    '_email_label'           => _('Email address (this is also your login name)'),
-                    '_email_tooltip'         => _('Needed to login to your account'),
-
-
-                    '_login_details_title' => _('Login details'),
-
-                    '_invoice_address_title'      => _('Invoice address'),
-                    '_invoice_address_save_label' => _('Save'),
-
-                    '_delivery_addresses_title'                 => _('Delivery address'),
-                    '_delivery_addresses_same_as_invoice_label' => _('Deliver to invoice address'),
-
-                    '_delivery_addresses_save_label' => _('Save'),
-
-
-                    '_password_placeholder' => _('New password'),
-                    '_password_label'       => _('Password'),
-
-                    '_password_tooltip' => _("Write new password"),
-
-                    '_password_confirm_placeholder' => _('Confirm new password'),
-                    '_password_confirm_label'       => _('Confirm new password'),
-
-                    '_password_conform_tooltip' => _("Don't forget your password"),
-
-                    '_mobile_placeholder' => _('Mobile'),
-                    '_mobile_label'       => _('Mobile'),
-
-                    '_mobile_tooltip' => _('Needed to enter your mobile/telephone'),
-
-                    '_contact_name_placeholder' => _('Contact name'),
-                    '_contact_name_label'       => _('Contact name'),
-
-                    '_contact_name_tooltip' => _('Needed to enter your name'),
-
-                    '_company_placeholder' => _('Company'),
-                    '_company_label'       => _('Company'),
-
-                    '_company_tooltip' => _('Enter your account company name (optional)'),
-
-                    '_tax_number_placeholder' => _('VAT number'),
-                    '_tax_number_label'       => _('VAT number'),
-
-                    '_tax_number_tooltip' => _('Enter your VAT number (optional)'),
-
-                    '_registration_number_placeholder' => _('Registration number'),
-                    '_registration_number_label'       => _('Registration number'),
-
-                    '_registration_number_tooltip' => _('Enter your company registration number (optional)'),
-
-
-                    '_save_contact_details_label'          => _('Save'),
-                    '_save_login_details_label'            => _('Save'),
-                    '_save_invoice_address_details_label'  => _('Save'),
-                    '_save_delivery_address_details_label' => _('Save'),
-
-
-                    '_username_info' => _('Your username is your email address')
+                    )
 
 
                 )
@@ -522,49 +474,16 @@ function website_system_webpages_config($website_type) {
             ),
 
 
-            'Page Store Content Data' => json_encode(
+            'Page Store Content Data'   => json_encode(
+
                 array(
-
-
-                    '_credit_card_label' => _('Credit card'),
-                    '_bank_label'        => _('Bank transfer'),
-
-                    '_credit_card_number'                      => _('Card number'),
-                    '_credit_card_ccv'                         => _('CVV'),
-                    '_credit_card_expiration_date'             => _('Expiration date'),
-                    '_credit_card_expiration_date_month_label' => _('Month'),
-                    '_credit_card_expiration_date_year_label'  => _('Year'),
-                    '_credit_card_save'                        => _('Save card'),
-
-
-                    '_form_title_credit_card'          => _('Checkout form'),
-                    '_form_title_paypal'               => _('Checkout form'),
-                    '_form_title_cond'                 => _('Checkout form'),
-                    '_form_title_sofort'               => _('Checkout form'),
-                    '_form_title_bank'                 => _('Checkout form'),
-                    '_form_title_other'                => _('Checkout form'),
-                    '_form_title_online_bank_transfer' => _('Checkout form'),
-                    '_form_title_cash_on_delivery'     => _('Checkout form'),
-
-
-                    '_bank_header' => _('Please go to your bank and make a payment of <b>[Order Amount]</b>  to our bank account, details below'),
-                    '_bank_footer' => _('Remember to state the order number in the payment reference').' [Order Number] . '._(
-                            'Please note, we cannot process your order until payment arrives in our account'
-                        ),
-
-
-                    '_back_to_basket' => _('Go back to basket'),
-
-                    '_place_order'                           => _('Place order'),
-                    '_place_order_from_bank'                 => _('Place order'),
-                    '_place_order_from_credit_card'          => _('Place order'),
-                    '_place_order_from_paypal'               => _('Place order'),
-                    '_place_order_from_cash_on_delivery'     => _('Place order'),
-                    '_place_order_from_online_bank_transfer' => _('Place order'),
-
+                    'blocks' => array(
+                        $blocks['checkout']
+                    )
 
                 )
-            )
+
+            ),
         ),
 
         'thanks.sys' => array(
@@ -580,7 +499,7 @@ function website_system_webpages_config($website_type) {
 
                 array(
                     'blocks' => array(
-                        $blocks['text'],
+                        $blocks['thanks'],
                         $blocks['telephone'],
                     )
 
@@ -602,15 +521,17 @@ function website_system_webpages_config($website_type) {
             'Webpage Name'              => _('Not found'),
             'Webpage Meta Description'  => '',
             'Page Store Content Data'   => json_encode(
+
                 array(
-                    '_strong_title' => '404',
-                    '_title'        => _('Oops... Page Not Found!'),
-                    '_text'         => _('Sorry the page could not be found here.'),
-                    '_home_guide'   => _('Try using the button below to go to main page of the site'),
-                    '_home_label'   => _('Go to homepage'),
+                    'blocks' => array(
+                        $blocks['not_found'],
+                    )
 
                 )
-            )
+
+            ),
+
+
         ),
         'offline.sys'    => array(
             'Webpage Scope'             => 'Offline',
@@ -622,19 +543,25 @@ function website_system_webpages_config($website_type) {
             'Webpage Name'              => _('Offline'),
             'Webpage Meta Description'  => '',
             'Page Store Content Data'   => json_encode(
+
                 array(
-                    '_strong_title' => '410',
-                    '_title'        => _('Oops... This page is gone!'),
-                    '_text'         => _('Sorry this page has been removed.'),
-
-                    '_link_guide' => _('Click button below to go to a similar web page'),
-
-                    '_home_guide' => _('Try using the button below to go to main page of the site'),
-                    '_home_label' => _('Go to homepage'),
+                    'blocks' => array(
+                        $blocks['offline'],
+                    )
 
                 )
-            )
+
+            ),
+
+
         ),
+
+
+
+
+
+
+
         'in_process.sys' => array(
             'Webpage Scope'             => 'InProcess',
             'Webpage Scope Metadata'    => '',
@@ -721,7 +648,7 @@ function website_system_webpages_config($website_type) {
 
                 array(
                     'blocks' => array(
-                        $blocks['two_pack'],
+
                         $blocks['text'],
                     )
                 )

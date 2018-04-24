@@ -1287,7 +1287,15 @@ class Website extends DB_Table {
 
         $webpage_type = new Webpage_Type('website_code', $this->id, 'Prod');
 
-        $template = 'product';
+
+        if($this->get('Website Theme')=='theme_1'){
+            $template = 'product2';
+
+        }else{
+            $template = 'product';
+
+        }
+
 
 
         $page_data = array(
@@ -1360,19 +1368,27 @@ class Website extends DB_Table {
         $this->error        = $page->error;
 
 
-        $content_data = array(
-            'description_block' => array(
-                'class' => '',
+        if($this->get('Website Theme')=='theme_1'){
+            $page->reset_object();
+        }else{
 
-                'content' => sprintf('<div class="description">%s</div>', $product->get('Description'))
+            $content_data = array(
+                'description_block' => array(
+                    'class' => '',
+
+                    'content' => sprintf('<div class="description">%s</div>', $product->get('Description'))
 
 
-            ),
-            'tabs'              => array()
+                ),
+                'tabs'              => array()
 
-        );
+            );
 
-        $page->update(array('Page Store Content Data' => json_encode($content_data)), 'no_history');
+            $page->update(array('Page Store Content Data' => json_encode($content_data)), 'no_history');
+
+
+        }
+
 
 
         //todo: AUR-33

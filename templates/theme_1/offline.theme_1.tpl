@@ -50,7 +50,7 @@
                         </div>
 
 
-                </div><!-- end error page notfound -->
+                </div>
 
             </div>
 

@@ -122,15 +122,32 @@ console.log(request)
             }
 
 
+            if(data.order_empty){
+                $('#basket_go_to_checkout').css({
+                    display:'none'
+                })
+                $('#basket_continue_shopping').css({
+                    display:'block'
+                })
+            }else{
+                $('#basket_go_to_checkout').css({
+                    display:'block'
+                })
+                $('#basket_continue_shopping').css({
+                    display:'none'
+                })
+            }
+
+
             input.val(data.quantity).removeClass('discreet')
 
-            console.log(data)
+           // console.log(data)
 
 
         //    $(element).removeClass('fa-spinner fa-spin fa-save').addClass('fa-plus')
 
 
-            console.log($(element))
+           // console.log($(element))
 
          //   $('#header_order_total_amount').html(data.data.order_total)
          //   $('#header_order_products').html(data.data.ordered_products_number)

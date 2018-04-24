@@ -36,12 +36,6 @@ if ($result=$db->query($sql)) {
             $webpage->refill_see_also(false,5);
 
 
-
-
-
-
-
-
 		}
 }else {
 		print_r($error_info=$db->errorInfo());

@@ -3162,7 +3162,7 @@ function find_category_webpages($db, $account, $memcache_ip, $data, $smarty) {
     }
 
     */
-
+/*
     $memcache_fingerprint = $account->get('Account Code').'FIND_CatWebP'.md5($q);
 
     $cache = new Memcached();
@@ -3184,9 +3184,9 @@ function find_category_webpages($db, $account, $memcache_ip, $data, $smarty) {
 
 
     $results_data = $cache->get($memcache_fingerprint);
+*/
 
-
-    if (!$results_data or true) {
+    if (true) {
 
         $candidates      = array();
         $candidates_data = array();
@@ -3355,8 +3355,12 @@ function find_category_webpages($db, $account, $memcache_ip, $data, $smarty) {
                             'link'                 =>  $candidates_data[$category_key]['Webpage URL'],
 
                         );
-                        $smarty->assign('category_data', $see_also);
+                        $smarty->assign('item_data', $see_also);
                         $html .= $smarty->fetch('splinters/see_also_item.splinter.tpl');
+
+
+                        //print $html;
+                        //exit;
                         break;
 
                 }
@@ -3392,7 +3396,7 @@ function find_category_webpages($db, $account, $memcache_ip, $data, $smarty) {
             'n' => count($results),
             'd' => $results
         );
-        $cache->set($memcache_fingerprint, $results_data, $memcache_time);
+        //$cache->set($memcache_fingerprint, $results_data, $memcache_time);
 
 
     }
@@ -3691,7 +3695,7 @@ function find_families($db, $account, $memcache_ip, $user, $data) {
 
                 $where = sprintf(' and `Category Root Key`=%d', $data['metadata']['parent_key']);
                 break;
-            default:
+
             case 'store':
 
 

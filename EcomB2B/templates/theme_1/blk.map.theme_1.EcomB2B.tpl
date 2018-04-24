@@ -9,6 +9,16 @@
 -->
 *}
 
+<style>
+
+    .google-map {
+        width: 100%;
+        height: 450px;
+    }
+
+
+</style>
+
 
 {if $data.src=='' or ($data.src=='#map' and  $store->get('Store Google Map URL')=='' )}
 
@@ -17,15 +27,11 @@
 {else}
 
 <div id="block_{$key}"class="{$data.type} _block  " style="Width:100%;" >
+        <iframe     class="google-map"  _src="{$data.src}" src="{if $data.src=='#map'}{$store->get('Store Google Map URL')}{else}{$data.src}{/if}" frameborder="0" scrolling="no" marginheight="0" marginwidth="0" allowfullscreen></iframe>
 
 
 
-    <div class="one_full">
-        <iframe     class="google-map2"  _src="{$data.src}" src="{if $data.src=='#map'}{$store->get('Store Google Map URL')}{else}{$data.src}{/if}" frameborder="0" scrolling="no" marginheight="0" marginwidth="0" allowfullscreen></iframe>
-
-    </div>
-
-    <div class="clearfix marb6"></div>
+    <div class="clear"></div>
 
 </div>
 

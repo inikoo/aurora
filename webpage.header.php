@@ -53,8 +53,16 @@ $webpage=new Public_Webpage($webpage_key);
 $smarty->assign('webpage', $webpage);
 $smarty->assign('website', $website);
 $smarty->assign('store', $store);
+$smarty->assign('logged_in', 'false');
+$smarty->assign('zero_money', money(0,$store->get('Store Currency Code')));
 
 
+$smarty->assign('content', $webpage->get('Content Data'));
+
+
+$settings=$website->get('Settings');
+
+$smarty->assign('settings',$settings);
 
 
 $template = $theme.'/header.'.$theme.'.tpl';

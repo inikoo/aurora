@@ -1,6 +1,64 @@
 $(document).ready(function(){      
     'use strict'
-	    
+
+
+    function animation_settings(){
+
+
+        window.sr = ScrollReveal();
+
+
+
+
+        //General Classes
+        sr.reveal('.animate-left',  {origin:'left',  distance:'100%', easing:'cubic-bezier(0.1, 0.2, 0.1, 1)'  });
+        sr.reveal('.animate-right', {origin:'right', distance:'100%', easing:'cubic-bezier(0.1, 0.2, 0.1, 1)'  });
+        sr.reveal('.animate-top',   {origin:'top',   distance:'100%', easing:'cubic-bezier(0.1, 0.2, 0.1, 1)'  });
+        sr.reveal('.animate-bottom',{origin:'bottom',distance:'100%', easing:'cubic-bezier(0.1, 0.2, 0.1, 1)'  });
+        sr.reveal('.animate-fade',  {origin:'top',   easing:'ease-in-out'  });
+        sr.reveal('.animate-zoom',  {origin:'top',   scale: 1.3, easing:'cubic-bezier(0.1, 0.2, 0.1, 1)'  });
+
+        sr.reveal('.animate-time-500',  {duration: 500 });
+        sr.reveal('.animate-time-1000',  {duration: 1000 });
+        sr.reveal('.animate-time-2000',  {duration: 2000 });
+        sr.reveal('.animate-time-3000',  {duration: 3000 });
+        sr.reveal('.animate-time-4000',  {duration: 4000 });
+        sr.reveal('.animate-time-5000',  {duration: 5000 });
+        sr.reveal('.animate-time-6000',  {duration: 6000 });
+
+        sr.reveal('.animate-delay-50',  {delay: 50 });
+        sr.reveal('.animate-delay-100',  {delay: 100 });
+        sr.reveal('.animate-delay-150',  {delay: 150 });
+        sr.reveal('.animate-delay-200',  {delay: 200 });
+        sr.reveal('.animate-delay-250',  {delay: 250 });
+        sr.reveal('.animate-delay-300',  {delay: 300 });
+        sr.reveal('.animate-delay-350',  {delay: 350 });
+        sr.reveal('.animate-delay-400',  {delay: 400 });
+        sr.reveal('.animate-delay-450',  {delay: 450 });
+        sr.reveal('.animate-delay-500',  {delay: 500 });
+        sr.reveal('.animate-delay-550',  {delay: 550 });
+        sr.reveal('.animate-delay-600',  {delay: 600 });
+        sr.reveal('.animate-delay-650',  {delay: 650 });
+        sr.reveal('.animate-delay-700',  {delay: 700 });
+        sr.reveal('.animate-delay-750',  {delay: 750 });
+        sr.reveal('.animate-delay-800',  {delay: 800 });
+        sr.reveal('.animate-delay-850',  {delay: 850 });
+        sr.reveal('.animate-delay-900',  {delay: 900 });
+        sr.reveal('.animate-delay-950',  {delay: 950 });
+        sr.reveal('.animate-delay-1000',  {delay: 1000 });
+        sr.reveal('.animate-delay-1050',  {delay: 1050 });
+        sr.reveal('.animate-delay-1100',  {delay: 1100 });
+        sr.reveal('.animate-delay-1150',  {delay: 1150 });
+        sr.reveal('.animate-delay-1200',  {delay: 1200 });
+        sr.reveal('.animate-delay-1250',  {delay: 1250 });
+        sr.reveal('.animate-delay-1300',  {delay: 1300 });
+        sr.reveal('.animate-delay-1350',  {delay: 1350 });
+        sr.reveal('.animate-delay-1400',  {delay: 1400 });
+        sr.reveal('.animate-delay-1450',  {delay: 1450 });
+        sr.reveal('.animate-delay-1500',  {delay: 1500 });
+    };
+
+
     function init_template(){
 		
 		var scroll_animations = 1; //1 = Automatic //2 = Disabled //3 = Manual Classes
@@ -581,6 +639,11 @@ $(document).ready(function(){
             var cover_center_height = $('.coverpage-center').outerHeight();
             var cover_center_width = $('.coverpage-center').outerWidth();
 
+            console.log((content_height/2)*(-1) - ($('.outter-elements').height()/2))
+            console.log((content_height/2)*(-1) )
+            console.log(  $('.outter-elements'))
+
+
             $('.content-center').css({
                 "left":"50%",
                 "top":"50%",
@@ -743,7 +806,9 @@ $(document).ready(function(){
             $(this).addClass('current');
             $("#"+tab_id).addClass('current');
         })
-    }//Init Template Function
+    }
+
+
 
 
     setTimeout(init_template, 0);//Activating all the plugins

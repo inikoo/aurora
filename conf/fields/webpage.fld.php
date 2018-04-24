@@ -393,7 +393,7 @@ if (in_array($object->get('Webpage Scope'), array('Category Categories'))) {
 
 }
 
-if (in_array($object->get('Webpage Scope'), array('Product'))) {
+if (in_array($object->get('Webpage Scope'), array('Product'))  and $website->get('Website Theme')!='theme_1'  ) {
 
 
 

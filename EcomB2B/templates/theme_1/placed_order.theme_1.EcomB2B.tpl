@@ -10,13 +10,13 @@
 *}
 
 
-<div class="container">
 
 
     <h2>{if isset($labels._order_number_label) and $labels._order_number_label!=''}{$labels._order_number_label}{else}{t}Order number{/t}{/if} <span class="order_number">{$placed_order->get('Public ID')}</span></h2>
 
+    <div class="order_header  text_blocks  text_template_3">
 
-    <div class="one_third ">
+        <div class="text_block ">
         <h5>
             <i class="fa fa-fw fa-truck" aria-hidden="true"></i>
             <span id="_delivery_address_label" class="website_localized_label"
@@ -27,7 +27,7 @@
         </p>
     </div>
 
-    <div class="one_third">
+        <div class="text_block">
         <h5>
             <i class="fa fa-fw fa-dollar-sign" aria-hidden="true"></i>
             <span id="_invoice_address_label" class="website_localized_label"
@@ -41,7 +41,7 @@
         </p>
     </div>
 
-    <div class="one_third text-right last" style="padding-left:20px">
+        <div class="totals text_block">
 
 
         <table class="table">
@@ -96,18 +96,12 @@
 
 </div>
 
+    <div class="clear" style="margin-bottom: 30px"> </div>
 
-<div class="clearfix "></div>
 
-
-<div class="container order">
+<div class=" order">
 
     {include file="theme_1/_order_items.theme_1.tpl" edit=false hide_title=true order=$placed_order }
 
 
 </div>
-
-<div class="clearfix marb6"></div>
-
-
-        

@@ -164,6 +164,29 @@ function get_pay_info($order, $website, $smarty) {
 
             $content = $webpage->get('Content Data');
 
+
+            $block_found = false;
+            $block_key   = false;
+            foreach ($content['blocks'] as $_block_key => $_block) {
+                if ($_block['type'] == 'checkout') {
+                    $block       = $_block;
+                    $block_key   = $_block_key;
+                    $block_found = true;
+                    break;
+                }
+            }
+
+            if (!$block_found) {
+                $response = array(
+                    'state' => 200,
+                    'html'  => '',
+                    'msg'   => 'no checkout in webpage'
+                );
+                echo json_encode($response);
+                exit;
+            }
+
+
             $placeholders = array(
 
                 '[Order Number]' => $order->get('Public ID'),
@@ -172,20 +195,26 @@ function get_pay_info($order, $website, $smarty) {
             );
 
 
-            if (isset($content['_bank_header'])) {
-                $content['_bank_header'] = strtr($content['_bank_header'], $placeholders);
+
+
+            if (isset($block['labels']['_bank_header'])) {
+                $content['_bank_header'] = strtr($block['labels']['_bank_header'], $placeholders);
             }
-            if (isset($content['_bank_footer'])) {
-                $content['_bank_footer'] = strtr($content['_bank_footer'], $placeholders);
+            if (isset($block['labels']['_bank_footer'])) {
+                $content['_bank_footer'] = strtr($block['labels']['_bank_footer'], $placeholders);
             }
 
 
-            $smarty->assign('content', $content);
+            $smarty->assign('content', $block['labels']);
             $smarty->assign('labels', $website->get('Localised Labels'));
             $smarty->assign('bank_payment_account', $payment_account);
 
 
             $payment_info_for_customer = $smarty->fetch('payment_bank_details.inc.tpl');
+
+
+            $payment_info_for_customer=strtr($payment_info_for_customer, $placeholders);
+
             break;
 
 

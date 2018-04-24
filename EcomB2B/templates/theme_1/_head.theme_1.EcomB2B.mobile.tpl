@@ -30,18 +30,106 @@
 
     <link rel="stylesheet" type="text/css" href="/css/mobile.min.css?v2">
 
-    <script src="/js/mobile.min.js?v6"></script>
-    {if $logged_in}<script src="/js/mobile.logged_in.min.js"></script>
-    {if $webpage->get('Webpage Code')=='checkout.sys'}<script src="/js/mobile.forms.min.js"></script><script src="/js/mobile.checkout.min.js?v2"></script>
-    {elseif $webpage->get('Webpage Code')=='basket.sys' or $webpage->get('Webpage Code')=='profile.sys' or $webpage->get('Webpage Code')=='reset_pwd.sys'}<script src="/js/mobile.forms.min.js"></script>{/if}
-    {else}
-    {if $webpage->get('Webpage Code')=='register.sys' or  $webpage->get('Webpage Code')=='login.sys'}<script src="/js/mobile.forms.min.js"></script>{/if}
+
+
+    {assign "with_forms" false}
+    {assign "with_not_found" 0}
+    {assign "with_offline" 0}
+    {assign "with_iframe" false}
+    {assign "with_login" false}
+    {assign "with_register" false}
+    {assign "with_basket" false}
+    {assign "with_checkout" false}
+    {assign "with_profile" false}
+    {assign "with_favourites" false}
+    {assign "with_search" false}
+    {assign "with_thanks" false}
+    {assign "with_gallery" false}
+    {assign "with_telephone" false}
+    {assign "with_product_order_input" false}
+
+    {assign "checkout" false}
+    {assign "profile" false}
+    {assign "favourites" false}
+    {assign "thanks" false}
+    {assign "checkout" false}
+
+    {assign "with_order" false}
+
+    {foreach from=$content.blocks item=$block }
+        {if $block.show}
+
+
+
+
+            {if $block.type=='profile'}
+                {if !$logged_in}
+                    {assign "with_not_found" 1}
+                {else}
+                    {assign "profile" 1} {assign "with_forms" 1}
+                {/if}
+            {elseif $block.type=='checkout'}
+                {if !$logged_in}
+                    {assign "with_not_found" 1}
+                {else}
+                    {assign "checkout" 1} {assign "with_forms" 1} {assign "with_order" 1}
+                {/if}
+            {elseif $block.type=='favourites'}
+                {if !$logged_in}
+                    {assign "with_not_found" 1}
+                {else}
+                    {assign "favourites" 1}
+                {/if}
+            {elseif $block.type=='thanks'}
+                {if !$logged_in}
+                    {assign "with_not_found" 1}
+                {else}
+                    {assign "thanks" 1} {assign "with_order" 1}
+                {/if}
+
+
+
+
+            {elseif $block.type=='basket'}
+                {if !$logged_in}
+                    {assign "with_not_found" 1}
+                {else}
+                    {assign "with_basket" 1} {assign "with_forms" 1} {assign "with_order" 1}
+                {/if}
+            {elseif $block.type=='login'}
+                {if $logged_in}
+                    {assign "with_not_found" 1}
+                {else}
+                    {assign "with_login" 1} {assign "with_forms" 1}
+                {/if}
+            {elseif $block.type=='register'}
+                {if $logged_in}
+                    {assign "with_not_found" 1}
+                {else}
+                    {assign "with_register" 1} {assign "with_forms" 1}
+                {/if}
+
+            {else}
+                {if $block.type=='search'   }{assign "with_search" 1}{/if}
+                {if $block.type=='iframe'   }{assign "with_iframe" 1}{/if}
+                {if $block.type=='product'   }{assign "with_gallery" 1}{/if}
+                {if $block.type=='not_found'   }{assign "with_not_found" 1}{/if}
+                {if $block.type=='offline'   }{assign "with_offline" 1}{/if}
+
+                {if $block.type=='telephone'   }{assign "with_telephone" 1}{/if}
+                {if $block.type=='category_products' or   $block.type=='products'  or   $block.type=='product' }{assign "with_product_order_input" 1}{/if}
+
+            {/if}
+        {/if}
+    {/foreach}
+
+    {if $with_forms==1}
+        <link rel="stylesheet" href="css/forms.min.css" type="text/css"/>
+
     {/if}
-
-
-
-
-
+    {if $with_gallery==1}
+    <link rel="stylesheet" href="css/image_gallery.min.css">
+    {/if}
 </head>
 
 

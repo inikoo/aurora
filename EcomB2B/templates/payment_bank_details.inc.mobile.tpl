@@ -10,7 +10,7 @@
 *}
 
 
-<p class="single_line_height" style="font-size: 85%"> {$content._bank_header}</p>
+<p class="single_line_height" style="font-size: 85%"> {$data.labels._bank_header}</p>
 
 <p class="single_line_height" style="font-size: 85%;margin-top:5px">
 <span>{if isset($labels._bank_beneficiary_label) and $labels._bank_beneficiary_label!=''}{$labels._bank_beneficiary_label}{else}{t}Beneficiary{/t}{/if}</span>: {$bank_payment_account->get("Payment Account Recipient Holder")}
@@ -33,5 +33,5 @@
 {/if}
 </p>
 
-<p class="single_line_height" style="font-size: 85%;;margin-top:5px"> {$content._bank_footer}</p>
+<p class="single_line_height" style="font-size: 85%;;margin-top:5px"> {$data.labels._bank_footer}</p>
 

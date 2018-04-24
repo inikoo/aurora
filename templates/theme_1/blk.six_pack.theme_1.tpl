@@ -9,10 +9,35 @@
 -->
 *}
 
-<div id="block_{$key}" block="{$data.type}" class="{$data.type} _block {if !$data.show}hide{/if} "   >
+<style>
+    .six_pack {
+       text-align: center;
 
-<div class="features_sec30">
-    <div class="container">
+    }
+
+
+
+
+</style>
+
+<div id="block_{$key}" block="{$data.type}" class="six_pack _block {if !$data.show}hide{/if} "   >
+
+
+    {counter assign=i start=0 print=false}
+    {foreach from=$data.columns  item=feature_column name=feature_columns}
+        {foreach from=$feature_column  item=feature_row name=feature_rows}
+            {counter}
+
+            <div class="one_third" style="border: 1px solid red">
+                <h5 class="thin">{$feature_row.title}</h5>
+                <p class="">{$feature_row.text}</p>
+            </div>
+        {/foreach}
+    {/foreach}
+
+
+<div class="six_pack hide">
+
 
 
         {foreach from=$data.columns  item=feature_column name=feature_columns}
@@ -37,7 +62,7 @@
             </div>
         {/foreach}
 
-    </div>
+
 </div>
 <div class="clearfix"></div>
 </div>

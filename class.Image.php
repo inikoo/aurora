@@ -83,8 +83,7 @@ class Image {
 
 
             $sql = sprintf(
-                "SELECT `Image Key`,`Image Data`,`Image Thumbnail Data`,`Image Small Data`,`Image Large Data`,`Image Filename`,`Image File Checksum`,`Image Width`,`Image Height`,`Image File Size`,`Image File Format` FROM `Image Dimension` WHERE `Image Key`=%d ",
-                $id
+                "SELECT `Image Key`,`Image Data`,`Image Thumbnail Data`,`Image Small Data`,`Image Large Data`,`Image Filename`,`Image File Checksum`,`Image Width`,`Image Height`,`Image File Size`,`Image File Format` FROM `Image Dimension` WHERE `Image Key`=%d ", $id
             );
 
             if ($this->data = $this->db->query($sql)->fetch()) {
@@ -212,13 +211,6 @@ class Image {
         $data['Image Height'] = imagesy($im);
 
 
-
-
-
-
-
-
-
         if ($data['Image File Format'] == 'gif' and $this->is_animated_gif($tmp_file)) {
             $data['Image Data'] = file_get_contents($tmp_file);
         } else {
@@ -255,6 +247,7 @@ class Image {
             $this->msg   = 'Can not insert the image ';
 
             print_r($this->db->errorInfo());
+
             return;
         }
 
@@ -425,9 +418,9 @@ class Image {
 
     function create_thumbnail() {
 
-       // if ($this->data['Image Thumbnail Data'] != '') {
-       //     return;
-       // }
+        // if ($this->data['Image Thumbnail Data'] != '') {
+        //     return;
+        // }
 
         $thumbnail_im = $this->transformToFit(
             $this->thumbnail_size[0], $this->thumbnail_size[1]
@@ -449,40 +442,46 @@ class Image {
     }
 
 
-    function fit_to_canvas($canvas_w,$canvas_h){
+    function fit_to_canvas($canvas_w, $canvas_h) {
 
         $w = $this->data['Image Width'];
         $h = $this->data['Image Height'];
 
         $r = $w / $h;
 
-        $r_canvas=$canvas_w/$canvas_h;
 
-        if($r < $r_canvas) {
-            $fit_h = $canvas_h;
-            $fit_w = $w * ($fit_h / $h);
+        if ($canvas_h == 0) {
+            sdsdsd();
+            exit;
+        }
+
+        $r_canvas = $canvas_w / $canvas_h;
+
+        if ($r < $r_canvas) {
+            $fit_h    = $canvas_h;
+            $fit_w    = $w * ($fit_h / $h);
             $canvas_y = 0;
             $canvas_x = ($canvas_w - $fit_w) / 2;
-        }elseif($r > $r_canvas) {
+        } elseif ($r > $r_canvas) {
             $fit_w = $canvas_w;
             $fit_h = $h * ($fit_w / $w);
 
             $canvas_x = 0;
             $canvas_y = ($canvas_h - $fit_h) / 2;
-        }else{
-            $fit_h = $canvas_h;
-            $fit_w = $canvas_w;
+        } else {
+            $fit_h    = $canvas_h;
+            $fit_w    = $canvas_w;
             $canvas_x = 0;
             $canvas_y = 0;
 
         }
 
 
-       // print " $w $h  ---  $fit_h   $fit_w $canvas_x  $canvas_y   ";
+        // print " $w $h  ---  $fit_h   $fit_w $canvas_x  $canvas_y   ";
 
 
         $canvas = imagecreatetruecolor($canvas_w, $canvas_h);
-        $white = imagecolorallocate($canvas, 255, 255, 255);
+        $white  = imagecolorallocate($canvas, 255, 255, 255);
         imagefill($canvas, 0, 0, $white);
 
         imagecopyresampled($canvas, imagecreatefromstring($this->data['Image Data']), $canvas_x, $canvas_y, 0, 0, $fit_w, $fit_h, $w, $h);
@@ -524,10 +523,6 @@ class Image {
 
         return $dst_img;
     }
-
-
-
-
 
 
     // scale the image constraining proportions (maxX and maxY)
@@ -631,12 +626,12 @@ class Image {
     }
 
 
-    function save_image_to_file($path, $filename = false,$im=false,$extension='') {
+    function save_image_to_file($path, $filename = false, $im = false, $extension = '') {
 
 
         if (!$im) {
             $image_data = $this->data['Image Data'];
-        }else{
+        } else {
             $image_data = $this->get_image_blob($im);
         }
 
@@ -645,11 +640,9 @@ class Image {
         }
 
 
-
-        if($extension==''){
-            $extension=$this->data['Image File Format'];
+        if ($extension == '') {
+            $extension = $this->data['Image File Format'];
         }
-
 
 
         file_put_contents($path.'/'.$filename.'.'.$extension, $image_data);
@@ -659,40 +652,33 @@ class Image {
     }
 
 
-    function save_image_to_file_as_jpeg($path, $filename = false,$im=false,$extension=''){
+    function save_image_to_file_as_jpeg($path, $filename = false, $im = false, $extension = '') {
 
-        if($extension==''){
-            $extension=$this->data['Image File Format'];
+        if ($extension == '') {
+            $extension = $this->data['Image File Format'];
         }
 
         if (!$im) {
             $input = $this->get_image_from_file($this->data['Image File Format'], $this->data['Image Data']);
-        }else{
+        } else {
             $input = $im;
         }
 
 
-
-
-        $width=imagesx($input);
-        $height=imagesy($input);
-
+        $width  = imagesx($input);
+        $height = imagesy($input);
 
 
         $output = imagecreatetruecolor($width, $height);
-        $white = imagecolorallocate($output,  255, 255, 255);
+        $white  = imagecolorallocate($output, 255, 255, 255);
         imagefilledrectangle($output, 0, 0, $width, $height, $white);
         imagecopy($output, $input, 0, 0, 0, 0, $width, $height);
-
 
 
         imagejpeg($im, $path.'/'.$filename.'.'.$extension);
 
 
-
     }
-
-
 
 
     function setCompression($val = 70) {
@@ -762,7 +748,6 @@ class Image {
 
         return $code;
     }
-
 
 
     function get_subjects_types($result_type = 'array') {
@@ -857,7 +842,7 @@ class Image {
             case 'Image Public':
                 if ($this->get('Subject') == 'Staff') {
                     $label = _('Employee can see file');
-                }elseif ($this->get('Subject') == 'Product') {
+                } elseif ($this->get('Subject') == 'Product') {
                     $label = _('Customers can see');
                 } else {
                     $label = _('Public');
@@ -875,7 +860,6 @@ class Image {
             case 'Image Preview':
                 $label = _('Preview');
                 break;
-
 
 
             default:

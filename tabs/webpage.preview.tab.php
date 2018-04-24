@@ -10,13 +10,26 @@
 */
 
 
+
+if($state['_object']->get_object_name()=='Product'){
+    $webpage = get_object('Webpage',$state['_object']->get('Product Webpage Key'));
+}else{
+    $webpage = $state['_object'];
+
+}
+
+$website = get_object('Website',$webpage->get('Webpage Website Key'));
+
+
 if ($state['_object']->get('Webpage Template Filename') == 'products_showcase' or $state['_object']->get('Webpage Template Filename') == 'categories_showcase') {
 
     $state['_object'] = get_object('Category', $state['_object']->get('Webpage Scope Key'));
 
     include 'category.webpage.preview.tab.php';
 
-} elseif ($state['_object']->get('Webpage Template Filename') == 'product') {
+} elseif ($state['_object']->get('Webpage Template Filename') == 'product'  and  $website->get('Website Theme')!='theme_1' ) {
+
+
 
     $state['_object'] = get_object('Product', $state['_object']->get('Webpage Scope Key'));
 
@@ -25,7 +38,7 @@ if ($state['_object']->get('Webpage Template Filename') == 'products_showcase' o
 } else {
 
 
-    $webpage = $state['_object'];
+
 
 
     if (!$webpage->id) {
@@ -34,7 +47,6 @@ if ($state['_object']->get('Webpage Template Filename') == 'products_showcase' o
         return;
     }
 
-    $website = new Website($webpage->get('Webpage Website Key'));
 
     $theme = $website->get('Website Theme');
 

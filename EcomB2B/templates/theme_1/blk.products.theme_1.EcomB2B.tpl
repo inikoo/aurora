@@ -91,6 +91,9 @@
                             {/if}
 
                         {else}
+
+
+
                             <div class="ordering log_out " >
 
                                 <div onclick='window.location.href = "/login.sys"' class="mark_on_hover" ><span class="login_button" >{if empty($labels._Login)}{t}Login{/t}{else}{$labels._Login}{/if}</span></div>

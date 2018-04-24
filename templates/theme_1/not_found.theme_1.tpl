@@ -37,7 +37,7 @@
 
                     <a href="index.php" class="but_medium1"><span class="fa fa-home fa-lg"></span>&nbsp; <span id="_home_label"  contenteditable="true">{$content._home_label}</span></a>
 
-                </div><!-- end error page notfound -->
+                </div>
 
             </div>
 

@@ -9,8 +9,8 @@
 
 */
 
-require_once 'common.php';
-require_once 'utils/ar_web_common.php';
+include_once 'ar_web_common_logged_in.php';
+
 require_once 'utils/get_addressing.php';
 
 
@@ -30,6 +30,22 @@ $tipo = $_REQUEST['tipo'];
 //print_r($_REQUEST);
 
 switch ($tipo) {
+
+
+    case 'get_profile_html':
+        $data = prepare_values(
+            $_REQUEST, array(
+                         'device_prefix' => array(
+                             'type'     => 'string',
+                             'optional' => true
+                         )
+                     )
+        );
+
+        get_profile_html($data, $customer,$db);
+
+
+        break;
 
     case 'contact_details':
         $data = prepare_values(
@@ -326,6 +342,107 @@ function update_poll($db, $data, $customer, $editor) {
     );
     exit;
 }
+
+
+
+function get_profile_html($data, $customer,$db) {
+
+    require_once 'external_libs/Smarty/Smarty.class.php';
+
+
+    $smarty               = new Smarty();
+    $smarty->template_dir = 'templates';
+    $smarty->compile_dir  = 'server_files/smarty/templates_c';
+    $smarty->cache_dir    = 'server_files/smarty/cache';
+    $smarty->config_dir   = 'server_files/smarty/configs';
+
+    $order = get_object('Order', $customer->get_order_in_process_key());
+
+    $website = get_object('Website', $_SESSION['website_key']);
+    $store   = get_object('Store', $website->get('Website Store Key'));
+
+    $webpage = $website->get_webpage('profile.sys');
+
+    $content = $webpage->get('Content Data');
+
+
+    $block_found = false;
+    $block_key   = false;
+    foreach ($content['blocks'] as $_block_key => $_block) {
+        if ($_block['type'] == 'profile') {
+            $block       = $_block;
+            $block_key   = $_block_key;
+            $block_found = true;
+            break;
+        }
+    }
+
+    if (!$block_found) {
+        $response = array(
+            'state' => 200,
+            'html'  => '',
+            'msg'   => 'no profile in webpage'
+        );
+        echo json_encode($response);
+        exit;
+    }
+    $smarty->assign('order', $order);
+    $smarty->assign('customer', $customer);
+    $smarty->assign('website', $website);
+    $smarty->assign('store', $store);
+
+    $smarty->assign('key', $block_key);
+    $smarty->assign('data', $block);
+    $smarty->assign('labels', $website->get('Localised Labels'));
+    $smarty->assign('logged_in', true);
+    $smarty->assign('order_key', $order->id);
+
+
+
+
+    require_once 'utils/get_addressing.php';
+    require_once 'utils/get_countries.php';
+
+    list(
+        $invoice_address_format, $invoice_address_labels, $invoice_used_fields, $invoice_hidden_fields, $invoice_required_fields, $invoice_no_required_fields
+        ) = get_address_form_data($customer->get('Customer Invoice Address Country 2 Alpha Code'), $website->get('Website Locale'));
+
+    $smarty->assign('invoice_address_labels', $invoice_address_labels);
+    $smarty->assign('invoice_required_fields', $invoice_required_fields);
+    $smarty->assign('invoice_no_required_fields', $invoice_no_required_fields);
+    $smarty->assign('invoice_used_address_fields', $invoice_used_fields);
+
+
+    list(
+        $delivery_address_format, $delivery_address_labels, $delivery_used_fields, $delivery_hidden_fields, $delivery_required_fields, $delivery_no_required_fields
+        ) = get_address_form_data($customer->get('Customer Invoice Address Country 2 Alpha Code'), $website->get('Website Locale'));
+
+    $smarty->assign('delivery_address_labels', $delivery_address_labels);
+    $smarty->assign('delivery_required_fields', $delivery_required_fields);
+    $smarty->assign('delivery_no_required_fields', $delivery_no_required_fields);
+    $smarty->assign('delivery_used_address_fields', $delivery_used_fields);
+
+
+    $countries = get_countries($website->get('Website Locale'));
+    $smarty->assign('countries', $countries);
+
+
+
+    $smarty->assign('poll_queries', $website->get_poll_queries($webpage,$customer->id));
+
+
+
+
+    $response = array(
+        'state' => 200,
+        'html'  => $smarty->fetch('theme_1/blk.profile.theme_1.EcomB2B'.($data['device_prefix'] != '' ? '.'.$data['device_prefix'] : '').'.tpl'),
+    );
+
+
+    echo json_encode($response);
+
+}
+
 
 
 ?>

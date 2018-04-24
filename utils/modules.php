@@ -21,7 +21,7 @@ $_product = array(
         'product.customers'         => 'product.customers',
         'product.customers.favored' => 'product.customers',
         'product.webpage.settings'  => 'product.webpage',
-        'product.webpage.preview'   => 'product.webpage',
+        'webpage.preview'   => 'product.webpage',
         //  'product.webpage.analytics'      => 'product.webpage',
         'product.webpage.logbook'   => 'product.webpage',
 
@@ -42,7 +42,7 @@ $_product = array(
                     'icon'  => 'sliders'
                 ),
 
-                'product.webpage.preview' => array(
+                'webpage.preview' => array(
                     'label' => _('Workshop'),
                     'icon'  => 'wrench'
                 ),
@@ -2496,7 +2496,7 @@ $modules = array(
                     'website.webpage.types'       => 'website.webpages',
                     'website.in_process_webpages' => 'website.webpages',
 
-                    'website.fonts'   => 'website.style',
+                    'website.logos'   => 'website.style',
                     'website.colours' => 'website.style',
 
                     'website.footer.preview' => 'website.templates',
@@ -2519,7 +2519,7 @@ $modules = array(
 
                     'website.style' => array(
                         'label'   => _('Look & feel'),
-                        'icon'    => 'paint-brush',
+                        'icon'    => 'tint blue',
                         'subtabs' => array(
 
                             'website.colours' => array(
@@ -2529,9 +2529,9 @@ $modules = array(
 
                             ),
 
-                            'website.fonts' => array(
-                                'label' => _('Fonts'),
-                                'icon'  => 'font',
+                            'website.logos' => array(
+                                'label' => _('Logos'),
+                                'icon'  => 'heart-circle',
 
 
                             ),
@@ -2840,7 +2840,7 @@ $modules = array(
                             ),
                             'webpage.email_blueprints' => array(
                                 'label' => _('Email HTML templates'),
-                                'icon'  => 'html5'
+                                'icon_html'  => '<i class="fab fa-html5"></i>'
                             )
 
 

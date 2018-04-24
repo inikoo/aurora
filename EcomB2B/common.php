@@ -94,7 +94,6 @@ if (!$is_cached) {
     include_once 'class.Public_Order.php';
 
     $account = new Public_Account($db);
-
     $smarty->assign('analytics_id', $account->get('Account Analytics ID'));
 
 
@@ -138,7 +137,6 @@ if (!$is_cached) {
 
 
     $smarty->assign('client_tag_google_manager_id',$website->get('Website Google Tag Manager Code'));
-
     $smarty->assign('zendesk_chat_code',$website->get('Website Zendesk Chat Code'));
 
 
@@ -381,8 +379,8 @@ if (!$is_cached) {
             exit;
         }
 
-    } elseif
-    (!empty($_COOKIE['rmb'])) {
+    }
+    elseif (!empty($_COOKIE['rmb'])) {
 
 
         include_once('class.WebAuth.php');
@@ -439,13 +437,12 @@ if (!$is_cached) {
 
     }
 
-    $smarty->assign('zero_money', money(0,$store->get('Store Currency Code')));
-
-
 
     $smarty->assign('customer_key', $customer_key);
-
     $smarty->assign('order_key', $order_key);
+
+
+    $smarty->assign('zero_money', money(0,$store->get('Store Currency Code')));
     $smarty->assign('website', $website);
     $smarty->assign('store', $store);
     $smarty->assign('footer_data', $website->get('Footer Data'));

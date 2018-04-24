@@ -9,15 +9,82 @@
 -->
 *}
 
-<div id="block_{$key}" block="{$data.type}" class="{$data.type} _block  " style="Width:100%;" >
-
-    <div class="clearfix marb5 "></div>
-            <div class="container">
+<style>
 
 
+    .basket{
+        font-size: 16px;
+    }
 
-                <div class="one_third">
-                    <h5>
+    .order_header{
+        padding:0px 30px
+    }
+
+    .order_header .totals{
+        padding-right: 20px;
+        text-align: right;
+
+    }
+
+    .totals  table{
+        width: initial;
+        float: right;
+    }
+
+    .totals  table  td{
+        padding:6px 20px 6px 50px; ;
+        border-bottom:1px solid #ccc;
+    }
+
+    .totals  table  tr.total{
+        font-weight: 800;
+    }
+
+    .totals  table tr:first-child td{
+        border-top:1px solid #c5c5c5;
+    }
+
+
+
+    .totals  table tr:last-child td{
+        border-bottom:2px solid #bbb;
+    }
+
+    .order table{
+        margin:40px 0px 30px 0px;
+    }
+
+    .order table td{
+        border-top:1px solid #ccc;
+        padding:4px 3px;
+    }
+
+    .order table tr:last-child td{
+        border-bottom:1px solid #c5c5c5;
+    }
+
+    @media only screen  and (max-width: 1240px) {
+
+        #basket_continue_shopping {
+            display: none
+        }
+    }
+
+</style>
+
+
+{if isset($data.top_margin)}{assign "top_margin" $data.top_margin}{else}{assign "top_margin" "20"}{/if}
+{if isset($data.bottom_margin)}{assign "bottom_margin" $data.bottom_margin}{else}{assign "bottom_margin" "20"}{/if}
+
+
+
+    <div id="block_{$key}" data-block_key="{$key}" block="{$data.type}" class="{$data.type} _block {if !$data.show}hide{/if}" top_margin="{$top_margin}" bottom_margin="{$bottom_margin}"
+         style="padding-top:{$top_margin}px;padding-bottom:{$bottom_margin}px">
+
+
+    <div class="order_header  text_blocks  text_template_3">
+        <div class="text_block ">
+            <h5>
                     <i class="fa fa-fw fa-truck" aria-hidden="true"></i>
                      <span id="_delivery_address_label" class="website_localized_label" contenteditable="true">{if isset($labels._delivery_address_label) and $labels._delivery_address_label!=''}{$labels._delivery_address_label}{else}{t}Delivery Address{/t}{/if}</span>
                 </h5>
@@ -32,9 +99,8 @@
                 </div>
 
 
-                <div class="one_third ">
-
-                    <h5>
+        <div class="text_block">
+            <h5 >
                         <i class="fa fa-fw fa-dollar-sign" aria-hidden="true"></i>
                     <span id="_invoice_address_label" class="website_localized_label" contenteditable="true">{if isset($labels._invoice_address_label) and $labels._invoice_address_label!=''}{$labels._invoice_address_label}{else}{t}Invoice Address{/t}{/if}</span>
                     </h5>
@@ -48,11 +114,11 @@
                     </p>
                 </div>
 
-                <div class="one_third text-right last" style="padding-left:20px">
+            <div class="totals text_block">
 
 
 
-                    <table class="table">
+                    <table >
 
                         <tbody>
                         <tr>
@@ -123,7 +189,7 @@
             </div>
 
 
-                <div class="clearfix "></div>
+
 
 
 
@@ -134,11 +200,10 @@
 
                 </div>
 
-                <div class="clearfix "></div>
 
-             <div class="container">
 
-                <div class="one_half">
+    <div class="order_header container text_blocks  text_template_2">
+        <div class="text_block">
 
                     <form action="" method="post" enctype="multipart/form-data"  class="sky-form"
                     style="box-shadow: none"
@@ -176,8 +241,7 @@ s
 
 
                 </div>
-
-                <div class="one_half last">
+        <div class="text_block ">
 
                     <form action="" method="post" enctype="multipart/form-data"  class="sky-form" style="box-shadow: none">
 
@@ -200,11 +264,7 @@ s
 
 
                 </div>
-
-
-
-
-            </div>
+    </div>
 
 
 </div>

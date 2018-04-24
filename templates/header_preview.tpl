@@ -9,13 +9,6 @@
 -->
 *}
 
-<style>
-
-
-
-
-
-</style>
 
 <div id="three_columns_options" class="hide options_dialog" style="">
 

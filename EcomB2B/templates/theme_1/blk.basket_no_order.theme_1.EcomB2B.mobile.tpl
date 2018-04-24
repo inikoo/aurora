@@ -9,58 +9,20 @@
 -->
 *}
 
-<div id="block_{$key}"  class="{$data.type} _block  ">
+
+<div class="content-center">
+    <div class="page-404">
+        <h2 class="animate-zoom animate-time-1000">{if isset($content._empty_basket) and $labels._empty_basket!=''}{$labels._empty_basket}{else}{t}Empty basket{/t}{/if}</h2>
+        <p class="animate-fade">
+            {if isset($content._no_products_ordered_yet) and $labels._no_products_ordered_yet!=''}{$labels._no_products_ordered_yet}{else}{t}No products has been ordered{/t}{/if}
+        </p>
 
 
-
-
-
-        <div class="notification-small bg-blue-light tap-hide  ">
-            <strong class="bg-blue-dark"><i class="ion-information-circled"></i></strong>
-            <p>
-                {if isset($content._no_products_ordered_yet) and $labels._no_products_ordered_yet!=''}{$labels._no_products_ordered_yet}{else}{t}No products has been ordered{/t}{/if}
-            </p>
-        </div>
-
-
-
-    <div class="landing-homepage">
-        <div class="ios_style_buttons-page ">
-            <div class="landing-wrapper">
-
-
-                <div class="content no-bottom"><div class="deco"></div></div>
-                <!-- Left Top Menu -->
-                <ul>
-                    <li>
-                        <a href="/">
-                            <i class="ion-ios-home bg-red-dark"></i>
-                            <em>{t}Home{/t}</em>
-                        </a>
-                    </li>
-                    <li class="hide">
-                        <a href="catalogue.sys">
-                            <i class="ion-ios-grid-view-outline bg-green-dark"></i>
-                            <em>{t}Catalogue{/t}</em>
-                        </a>
-                    </li>
-                    <li class="hide">
-                        <a href="favourites.sys">
-                            <i class="ion-heart bg-red-light"></i>
-                            <em>{t}Favourites{/t}</em>
-                        </a>
-                    </li>
-
-                </ul>
-
-
-            </div>
-
-        </div>
+        <a href="index.php" class="color-gray-dark border-gray-dark animate-fade"><i class="fa fa-home"></i></a>
     </div>
-
-    <div class="coverpage-clear"></div>
-
-          
 </div>
+
+<div class="coverpage-clear"></div>
+
+
 

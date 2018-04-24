@@ -15,30 +15,28 @@
 
 
 require_once 'keyring/dns.php';
-$mem = new Memcached();
-$mem->addServer($memcache_ip, 11211);
-
 
 
 session_start();
 
 
-if (!array_key_exists('website_key', $_SESSION) or !$_SESSION['website_key']    ) {
-
+if (empty($_SESSION['website_key'])) {
     include('utils/find_website_key.include.php');
 }
 
-$cached_webpage_key = $mem->get('ECOMPv1'.md5($_SERVER['SERVER_NAME'].'_'.$_SERVER['REQUEST_URI']));
-$cached_webpage_key = false;
-if (!$cached_webpage_key  ) {
+$webpage_id = get_url($_SESSION['website_key'], $_SERVER['REQUEST_URI'], $dns_host, $dns_user, $dns_pwd, $dns_db);
+
+if (is_numeric($webpage_id)) {
+    $website_key = $_SESSION['website_key'];
+    $webpage_key = $webpage_id;
+    include 'display_webpage.php';
+    exit;
+} else {
 
 
-
-
-    $cached_webpage_key = get_url($_SESSION['website_key'], $_SERVER['REQUEST_URI'], $dns_host, $dns_user, $dns_pwd, $dns_db);
-    $mem->set('ECOMP'.md5($_SERVER['SERVER_NAME'].'_'.$_SERVER['REQUEST_URI']), $cached_webpage_key, 172800);
+    header("Location: ".((isset($_SERVER['HTTPS']) && $_SERVER['HTTPS'] != 'off') ? 'https' : 'http')."://".$_SERVER['SERVER_NAME']."$webpage_id");
+    exit;
 }
-
 
 
 if (is_numeric($cached_webpage_key)) {
@@ -49,22 +47,11 @@ if (is_numeric($cached_webpage_key)) {
     exit;
 } else {
 
-    if (isset($_SERVER['HTTPS']) && $_SERVER['HTTPS'] != 'off') {
-        $protocol = 'https';
-    } else {
-        $protocol = 'http';
-    }
-
-
-
-    header("Location: $protocol://".$_SERVER['SERVER_NAME']."$cached_webpage_key");
-    exit;
 
 }
 
 
 function get_url($website_key, $url, $dns_host, $dns_user, $dns_pwd, $dns_db) {
-
 
 
     $db = new PDO(
@@ -105,15 +92,11 @@ function get_url($website_key, $url, $dns_host, $dns_user, $dns_pwd, $dns_db) {
 
     $original_url = '/'.$original_url;
 
-    $url_array    = explode("/", $url);
-    $file         = array_pop($url_array);
-
+    $url_array = explode("/", $url);
+    $file      = array_pop($url_array);
 
 
     if (preg_match('/^sitemap_index\.xml$/', $url, $match)) {
-
-
-
 
 
     }
@@ -123,38 +106,36 @@ function get_url($website_key, $url, $dns_host, $dns_user, $dns_pwd, $dns_db) {
         $sitemap_key = $match[1];
 
 
-    if($sitemap_key==0){
-        return '/sitemap_index.xml.php';
+        if ($sitemap_key == 0) {
+            return '/sitemap_index.xml.php';
 
-    }else{
-        return '/sitemap.xml.php?id='.$sitemap_key;
-    }
-
-
+        } else {
+            return '/sitemap.xml.php?id='.$sitemap_key;
+        }
 
 
     }
     $sql = sprintf(
-        "SELECT  `Webpage Alias Webpage Key` FROM `Webpage Alias Dimension` WHERE `Webpage Alias Website Key`=%d AND `Webpage Alias Tag`=%s ",
-        $website_key,
+        "SELECT  `Webpage Alias Webpage Key` FROM `Webpage Alias Dimension` WHERE `Webpage Alias Website Key`=%d AND `Webpage Alias Tag`=%s ", $website_key,
 
 
         _prepare_mysql($url)
     );
 
+
+
+
+
     if ($result = $db->query($sql)) {
         if ($row = $result->fetch()) {
 
-                return $row['Webpage Alias Webpage Key'];
-
+            return $row['Webpage Alias Webpage Key'];
 
 
         } else {
 
 
-
-
-            return "/404.php?x=x&url=$url&original_url=$original_url";
+            return "/404.php?url=$url&original_url=$original_url";
         }
     }
 
@@ -169,8 +150,6 @@ function get_page_key_from_code($website_key, $code, $db) {
     );
 
 
-
-
     if ($result = $db->query($sql)) {
         if ($row = $result->fetch()) {
             $page_key = $row['Page Key'];
@@ -180,7 +159,6 @@ function get_page_key_from_code($website_key, $code, $db) {
 
     return $page_key;
 }
-
 
 function _prepare_mysql($string, $null_if_empty = true) {
 

@@ -558,129 +558,142 @@ if ($webpage->id) {
 
 
 
-        $smarty->assign('poll_queries', $website->get_poll_queries($webpage,$customer));
+        $smarty->assign('poll_queries', $website->get_poll_queries($webpage,$customer->id));
 
 
         $template = $theme.'/profile.'.$theme.'.'.$website->get('Website Type').$template_suffix.'.tpl';
 
 
-    }
-    elseif ($webpage->get('Webpage Template Filename') == 'category_products') {
+    }else {
 
 
-        $template = $theme.'/webpage_blocks.'.$theme.'.'.$website->get('Website Type').$template_suffix.'.tpl';
-    }
-    else {
 
 
-        if ($webpage->get('Webpage Code') == 'thanks.sys') {
+        switch ($webpage->get('Webpage Scope')){
+            case 'Product':
+
+                $product = get_object('Product',$webpage->get('Webpage Scope Key'));
+                $smarty->assign('product', $product);
+
+                break;
+            default:
 
 
-            if (empty($_REQUEST['order_key']) or !is_numeric($_REQUEST['order_key']) or !$logged_in) {
-                header('Location: /index.php');
-                exit;
-            }
 
-            $placed_order = get_object('Order', $_REQUEST['order_key']);
-
-            if (!$placed_order->id OR $placed_order->get('Order Customer Key') != $customer->id) {
-                header('Location: /index.php');
-                exit;
-            }
-            require_once 'utils/placed_order_functions.php';
+                if ($webpage->get('Webpage Code') == 'thanks.sys') {
 
 
-            $smarty->assign('placed_order', $placed_order);
+                    if (empty($_REQUEST['order_key']) or !is_numeric($_REQUEST['order_key']) or !$logged_in) {
+                        header('Location: /index.php');
+                        exit;
+                    }
+
+                    $placed_order = get_object('Order', $_REQUEST['order_key']);
+
+                    if (!$placed_order->id OR $placed_order->get('Order Customer Key') != $customer->id) {
+                        header('Location: /index.php');
+                        exit;
+                    }
+                    require_once 'utils/placed_order_functions.php';
 
 
-            $smarty->assign('labels', $website->get('Localised Labels'));
-
-            $placeholders = array(
-                '[Greetings]'     => $customer->get_greetings(),
-                '[Customer Name]' => $customer->get('Name'),
-                '[Name]'          => $customer->get('Customer Main Contact Name'),
-                '[Name,Company]'  => preg_replace(
-                    '/^, /', '', $customer->get('Customer Main Contact Name').($customer->get('Customer Company Name') == '' ? '' : ', '.$customer->get('Customer Company Name'))
-                ),
-                '[Signature]'     => $webpage->get('Signature'),
-                '[Order Number]'  => $placed_order->get('Public ID'),
-                '[Order Amount]'  => $placed_order->get('To Pay'),
-                '[Pay Info]'      => get_pay_info($placed_order, $website, $smarty),
-                '[Order]'         => $smarty->fetch($theme.'/placed_order.'.$theme.'.EcomB2B'.$template_suffix.'.tpl'),
-                '#order_number'   => $placed_order->get('Public ID')
+                    $smarty->assign('placed_order', $placed_order);
 
 
-            );
+                    $smarty->assign('labels', $website->get('Localised Labels'));
 
-            foreach ($content['blocks'] as $block_key => $block) {
+                    $placeholders = array(
+                        '[Greetings]'     => $customer->get_greetings(),
+                        '[Customer Name]' => $customer->get('Name'),
+                        '[Name]'          => $customer->get('Customer Main Contact Name'),
+                        '[Name,Company]'  => preg_replace(
+                            '/^, /', '', $customer->get('Customer Main Contact Name').($customer->get('Customer Company Name') == '' ? '' : ', '.$customer->get('Customer Company Name'))
+                        ),
+                        '[Signature]'     => $webpage->get('Signature'),
+                        '[Order Number]'  => $placed_order->get('Public ID'),
+                        '[Order Amount]'  => $placed_order->get('To Pay'),
+                        '[Pay Info]'      => get_pay_info($placed_order, $website, $smarty),
+                        '[Order]'         => $smarty->fetch($theme.'/placed_order.'.$theme.'.EcomB2B'.$template_suffix.'.tpl'),
+                        '#order_number'   => $placed_order->get('Public ID')
 
-                if (isset($content['blocks'][$block_key]['_text'])) {
 
-                    $text = $content['blocks'][$block_key]['_text'];
+                    );
 
-                    if ($detected_device == 'mobile') {
-                        $text = str_replace('<br/>', '', $text);
-                        $text = str_replace('<br>', '', $text);
-                        $text = str_replace('<p></p>', '', $text);
+                    foreach ($content['blocks'] as $block_key => $block) {
 
+                        if (isset($content['blocks'][$block_key]['_text'])) {
+
+                            $text = $content['blocks'][$block_key]['_text'];
+
+                            if ($detected_device == 'mobile') {
+                                $text = str_replace('<br/>', '', $text);
+                                $text = str_replace('<br>', '', $text);
+                                $text = str_replace('<p></p>', '', $text);
+
+
+                            }
+
+
+                            $content['blocks'][$block_key]['_text'] = strtr($text, $placeholders);
+                        }
 
                     }
 
 
-                    $content['blocks'][$block_key]['_text'] = strtr($text, $placeholders);
+                }
+                elseif ($webpage->get('Webpage Code') == 'basket.sys') {
+
+
+                    if (!$logged_in) {
+                        header('Location: /login.sys?ref=basket');
+                        exit;
+                    }
+
+
+                    if (isset($order) and $order->id) {
+
+                        $order->update_totals();
+
+                        require_once 'utils/get_addressing.php';
+                        require_once 'utils/get_countries.php';
+
+                        list(
+                            $invoice_address_format, $invoice_address_labels, $invoice_used_fields, $invoice_hidden_fields, $invoice_required_fields, $invoice_no_required_fields
+                            ) = get_address_form_data($order->get('Order Invoice Address Country 2 Alpha Code'), $website->get('Website Locale'));
+
+                        $smarty->assign('invoice_address_labels', $invoice_address_labels);
+                        $smarty->assign('invoice_required_fields', $invoice_required_fields);
+                        $smarty->assign('invoice_no_required_fields', $invoice_no_required_fields);
+                        $smarty->assign('invoice_used_address_fields', $invoice_used_fields);
+
+
+                        list(
+                            $delivery_address_format, $delivery_address_labels, $delivery_used_fields, $delivery_hidden_fields, $delivery_required_fields, $delivery_no_required_fields
+                            ) = get_address_form_data($order->get('Order Invoice Address Country 2 Alpha Code'), $website->get('Website Locale'));
+
+                        $smarty->assign('delivery_address_labels', $delivery_address_labels);
+                        $smarty->assign('delivery_required_fields', $delivery_required_fields);
+                        $smarty->assign('delivery_no_required_fields', $delivery_no_required_fields);
+                        $smarty->assign('delivery_used_address_fields', $delivery_used_fields);
+
+
+                        $countries = get_countries($website->get('Website Locale'));
+                        $smarty->assign('countries', $countries);
+
+                    } else {
+
+
+                        $template = $theme.'/basket_no_order.'.$theme.'.'.$website->get('Website Type').$template_suffix.'.tpl';
+                    }
+
+
                 }
 
-            }
 
-
-        }
-        elseif ($webpage->get('Webpage Code') == 'basket.sys') {
-
-
-            if (!$logged_in) {
-                header('Location: /login.sys?ref=basket');
-                exit;
-            }
-
-
-            if (isset($order) and $order->id) {
-
-                $order->update_totals();
-
-                require_once 'utils/get_addressing.php';
-                require_once 'utils/get_countries.php';
-
-                list(
-                    $invoice_address_format, $invoice_address_labels, $invoice_used_fields, $invoice_hidden_fields, $invoice_required_fields, $invoice_no_required_fields
-                    ) = get_address_form_data($order->get('Order Invoice Address Country 2 Alpha Code'), $website->get('Website Locale'));
-
-                $smarty->assign('invoice_address_labels', $invoice_address_labels);
-                $smarty->assign('invoice_required_fields', $invoice_required_fields);
-                $smarty->assign('invoice_no_required_fields', $invoice_no_required_fields);
-                $smarty->assign('invoice_used_address_fields', $invoice_used_fields);
-
-
-                list(
-                    $delivery_address_format, $delivery_address_labels, $delivery_used_fields, $delivery_hidden_fields, $delivery_required_fields, $delivery_no_required_fields
-                    ) = get_address_form_data($order->get('Order Invoice Address Country 2 Alpha Code'), $website->get('Website Locale'));
-
-                $smarty->assign('delivery_address_labels', $delivery_address_labels);
-                $smarty->assign('delivery_required_fields', $delivery_required_fields);
-                $smarty->assign('delivery_no_required_fields', $delivery_no_required_fields);
-                $smarty->assign('delivery_used_address_fields', $delivery_used_fields);
-
-
-                $countries = get_countries($website->get('Website Locale'));
-                $smarty->assign('countries', $countries);
-
-            } else {
-
-
-                $template = $theme.'/basket_no_order.'.$theme.'.'.$website->get('Website Type').$template_suffix.'.tpl';
-            }
-
+                break;
 
         }
+
 
 
 

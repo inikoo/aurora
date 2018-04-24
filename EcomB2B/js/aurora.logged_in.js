@@ -62,19 +62,17 @@ $(function() {
         var icon = $(this)
 
 
-        console.log(icon)
 
-
-        console.log(icon)
 
         if (icon.hasClass('far')) {
             console.log('add')
 
-           icon.removeClass('far').addClass('fa').addClass('marked')
+           icon.removeClass('far').addClass('fas').addClass('marked')
 
         } else {
             console.log('off')
-            icon.removeClass('fa').addClass('far').removeClass('marked')
+            console.log(icon)
+            icon.removeClass('fa fas').addClass('far').removeClass('marked')
 
 
 
@@ -83,7 +81,7 @@ $(function() {
 
 
 
-        var request = 'ar_web_basket.php?tipo=update_favourite&pid=' + $(this).data('product_id') + '&customer_key=' + $('#webpage_data').data('customer_key') + '&favourite_key=' + $(this).data('favourite_key')
+        var request = 'ar_web_favourites.php?tipo=update_favourite&pid=' + $(this).data('product_id') +'&favourite_key=' + $(this).data('favourite_key')
 
         console.log(request)
         $.getJSON(request, function (data) {
@@ -100,6 +98,8 @@ $(function() {
 
 
     $('#logout').on("click", function () {
+
+
 
         var ajaxData = new FormData();
 

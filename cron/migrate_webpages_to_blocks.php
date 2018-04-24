@@ -36,22 +36,1072 @@ $editor = array(
     'Date'         => gmdate('Y-m-d H:i:s')
 );
 
-//migrate_products();
-migrate_families();
+
+$where=' and `Webpage Webisite Key`=14';
+
+//migrate_families();
 ////migrate_departments();
 //exit;
 
 //2730
 
+/*
+
+migrate_thanks();
+migrate_search();
+migrate_profile();
+migrate_favourites();
+migrate_login();
+migrate_register();
+migrate_not_found();
+migrate_offline();
+migrate_checkout();
+migrate_products();
+*/
+
+migrate_blocks();
+
+function migrate_blocks() {
+
+    global $db,$where;
+   // $sql = sprintf('SELECT `Page Key`,`Page Store Key` ,`Page Store Section`,`Page Parent Code` FROM `Page Store Dimension` where `Page Key`=47952 ');
+   $sql = sprintf('SELECT `Page Key`,`Page Store Key` ,`Page Store Section`,`Page Parent Code` FROM `Page Store Dimension` where true  %s ',$where);
+
+
+    if ($result = $db->query($sql)) {
+        foreach ($result as $row) {
+            $webpage       = get_object('Webpage', $row['Page Key']);
+            $_content_data = $webpage->get('Content Data');
+
+            if (isset($_content_data['blocks'])) {
+                foreach ($_content_data['blocks'] as $key => $block) {
+
+
+                    if (in_array(
+                        $block['type'], array(
+                                          'product',
+                                          'see_also',
+                                          'category_products',
+                                          'blackboard',
+                                          'products',
+                                          'text',
+                                          'images',
+                                          'map',
+                                          'button',
+                                          'category_categories',
+                                          'favourites',
+                                          'image',
+                                          'telephone',
+                                          'iframe',
+                                          'login',
+                                          'register',
+                                          'profile',
+                                          'basket',
+                                          'checkout',
+                                          'thanks',
+                                          'offline',
+                                          'not_found',
+                                          'search'
+                                      )
+                    )) {
+                        continue;
+                    } else {
+                        print $block['type']."\n";
+
+                        //print_r($row);
+
+                      //  exit;
+
+
+
+                        switch ($block['type']) {
+
+                            case 'six_pack':
+
+                              //  print_r($block);
+
+
+
+
+                                $_text1 = '';
+                                if ($block['columns'][0][0]['title'] != '') {
+                                    $_text1 .= sprintf('<h4>%s</h4>', $block['columns'][0][0]['title']);
+                                }
+                                $_text1 .= $block['columns'][0][0]['text'];
+
+                                $_text2 = '';
+                                if ($block['columns'][1][0]['title'] != '') {
+                                    $_text2 .= sprintf('<h4>%s</h4>', $block['columns'][1][0]['title']);
+                                }
+                                $_text2 .= $block['columns'][1][0]['text'];
+
+                                $_text3 = '';
+                                if ($block['columns'][2][0]['title'] != '') {
+                                    $_text3 .= sprintf('<h4>%s</h4>', $block['columns'][2][0]['title']);
+                                }
+                                $_text3 .= $block['columns'][2][0]['text'];
+
+
+
+
+                                $new_block = array(
+                                    'type'          => 'text',
+                                    'label'         => _('Text'),
+                                    'icon'          => 'fa-font',
+                                    'show'          => $block['show'],
+                                    'template'      => '3',
+                                    'top_margin'    => 20,
+                                    'bottom_margin' => 10,
+                                    'text_blocks'   => array(
+
+                                        array(
+                                            'text' => $_text1
+                                        ),
+                                        array(
+                                            'text' => $_text2
+                                        ),
+                                        array(
+                                            'text' => $_text3
+                                        )
+
+                                    )
+
+
+                                );
+                                $_content_data['blocks'][$key] = $new_block;
+
+
+
+
+                                $_text1 = '';
+                                if ($block['columns'][0][1]['title'] != '') {
+                                    $_text1 .= sprintf('<h4>%s</h4>', $block['columns'][0][1]['title']);
+                                }
+                                $_text1 .= $block['columns'][0][1]['text'];
+
+                                $_text2 = '';
+                                if ($block['columns'][1][1]['title'] != '') {
+                                    $_text2 .= sprintf('<h4>%s</h4>', $block['columns'][1][1]['title']);
+                                }
+                                $_text2 .= $block['columns'][1][1]['text'];
+
+                                $_text3 = '';
+                                if ($block['columns'][2][1]['title'] != '') {
+                                    $_text3 .= sprintf('<h4>%s</h4>', $block['columns'][2][1]['title']);
+                                }
+                                $_text3 .= $block['columns'][2][1]['text'];
+
+
+
+
+                                $new_block = array(
+                                    'type'          => 'text',
+                                    'label'         => _('Text'),
+                                    'icon'          => 'fa-font',
+                                    'show'          => $block['show'],
+                                    'template'      => '3',
+                                    'top_margin'    => 20,
+                                    'bottom_margin' => 10,
+                                    'text_blocks'   => array(
+
+                                        array(
+                                            'text' => $_text1
+                                        ),
+                                        array(
+                                            'text' => $_text2
+                                        ),
+                                        array(
+                                            'text' => $_text3
+                                        )
+
+                                    )
+
+
+                                );
+                                array_splice($_content_data['blocks'], $key , 0, array($new_block));
+
+
+
+                                break 2;
+                            case 'three_pack':
+
+
+
+
+
+                                $text = '';
+                                if ($block['title'] != '') {
+                                    $text .= sprintf('<h1>%s</h1>', $block['title']);
+                                }
+                                if ($block['subtitle'] != '') {
+                                    $text .= sprintf('<h4>%s</h4>', $block['subtitle']);
+                                }
+
+                                $new_block                     = array(
+                                    'type'          => 'text',
+                                    'label'         => _('Text'),
+                                    'icon'          => 'fa-font',
+                                    'show'          => $block['show'],
+                                    'template'      => 't1',
+                                    'top_margin'    => 20,
+                                    'bottom_margin' => 10,
+                                    'text_blocks'   => array(
+
+                                        array(
+                                            'text' => $text
+                                        )
+
+                                    )
+
+
+                                );
+                                $_content_data['blocks'][$key] = $new_block;
+
+
+                                $_text1 = '';
+                                if ($block['columns'][0]['title'] != '') {
+                                    $_text1 .= sprintf('<h4>%s</h4>', $block['columns'][0]['title']);
+                                }
+                                $_text1 .= $block['columns'][0]['text'];
+
+                                $_text2 = '';
+                                if ($block['columns'][1]['title'] != '') {
+                                    $_text2 .= sprintf('<h4>%s</h4>', $block['columns'][1]['title']);
+                                }
+                                $_text2 .= $block['columns'][1]['text'];
+
+                                $_text3 = '';
+                                if ($block['columns'][2]['title'] != '') {
+                                    $_text3 .= sprintf('<h4>%s</h4>', $block['columns'][2]['title']);
+                                }
+                                $_text3 .= $block['columns'][2]['text'];
+
+
+                                $new_block = array(
+                                    'type'          => 'text',
+                                    'label'         => _('Text'),
+                                    'icon'          => 'fa-font',
+                                    'show'          => $block['show'],
+                                    'template'      => '3',
+                                    'top_margin'    => 0,
+                                    'bottom_margin' => 20,
+                                    'text_blocks'   => array(
+
+                                        array(
+                                            'text' => $_text1
+                                        ),
+                                        array(
+                                            'text' => $_text2
+                                        ),
+                                        array(
+                                            'text' => $_text3
+                                        )
+
+                                    )
+
+
+                                );
+
+                                array_splice($_content_data['blocks'], $key - 1, 0, array($new_block));
+
+
+                                //print_r($_content_data);
+                                //exit;
+                                break 2;
+
+                            case 'two_one':
+
+
+                                $text1 = $block['columns'][0];
+                                $text2 = $block['columns'][1];
+
+                                if ($text1['type'] == 'one_third') {
+
+                                    $_tmp  = $text2;
+                                    $text2 = $text1;
+                                    $text1 = $_tmp;
+
+                                }
+
+
+                                $_text1 = '';
+                                if ($text1['_title'] != '') {
+                                    $_text1 .= sprintf('<h1>%s</h1>', $text1['_title']);
+                                }
+
+                                $_text1 .= $text1['_text'];
+
+                                $_text2 = '';
+                                if ($text2['_title'] != '') {
+                                    $_text2 .= sprintf('<h1>%s</h1>', $text2['_title']);
+                                }
+
+                                $_text2 .= $text2['_text'];
+
+
+                                $new_block                     = array(
+                                    'type'          => 'text',
+                                    'label'         => _('Text'),
+                                    'icon'          => 'fa-font',
+                                    'show'          => $block['show'],
+                                    'template'      => '21',
+                                    'top_margin'    => 20,
+                                    'bottom_margin' => 20,
+                                    'text_blocks'   => array(
+
+                                        array(
+                                            'text' => $_text1
+                                        ),
+                                        array(
+                                            'text' => $_text2
+                                        )
+
+                                    )
+
+
+                                );
+                                $_content_data['blocks'][$key] = $new_block;
+
+
+                                break;
+                            case 'counter':
+
+                                unset($_content_data['blocks'][$key]);
+
+                                break;
+
+
+                            case 'one_pack':
+                                $text = '';
+                                if ($block['_title'] != '') {
+                                    $text .= sprintf('<h1>%s</h1>', $block['_title']);
+                                }
+                                if ($block['_subtitle'] != '') {
+                                    $text .= sprintf('<h3>%s</h3>', $block['_subtitle']);
+                                }
+                                $text                          .= $block['_text'];
+                                $new_block                     = array(
+                                    'type'          => 'text',
+                                    'label'         => _('Text'),
+                                    'icon'          => 'fa-font',
+                                    'show'          => $block['show'],
+                                    'template'      => 't1',
+                                    'top_margin'    => 20,
+                                    'bottom_margin' => 20,
+                                    'text_blocks'   => array(
+
+                                        array(
+                                            'text' => $text
+                                        )
+
+                                    )
+
+
+                                );
+                                $_content_data['blocks'][$key] = $new_block;
+
+                                break;
+
+                            case 'two_pack':
+                                $text = '';
+                                if ($block['_title'] != '') {
+                                    $text .= sprintf('<h1>%s</h1>', $block['_title']);
+                                }
+                                if ($block['_subtitle'] != '') {
+                                    $text .= sprintf('<h3>%s</h3>', $block['_subtitle']);
+                                }
+                                $text .= $block['_text'];
+
+                                $tooltip = (empty($block['_image_tooltip']) ? '' : $block['_image_tooltip']);
+
+                                $image = '<div><img src="'.$block['_image'].'" title="'.$tooltip.'" alt="'.$tooltip.'"  ></div>';
+
+                                $new_block = array(
+                                    'type'          => 'text',
+                                    'label'         => _('Text'),
+                                    'icon'          => 'fa-font',
+                                    'show'          => $block['show'],
+                                    'template'      => 2,
+                                    'top_margin'    => 20,
+                                    'bottom_margin' => 20,
+                                    'text_blocks'   => array(
+                                        array(
+                                            'text' => $image,
+                                        ),
+                                        array(
+                                            'text' => $text
+                                        )
+
+                                    )
+
+
+                                );
+
+                                $_content_data['blocks'][$key] = $new_block;
+                                break;
+                        }
+
+
+                    }
+
+
+                }
+
+
+                // print_r($_content_data);
+
+
+                $webpage->update(
+                    array(
+                        'Page Store Content Data' => json_encode($_content_data)
+                    ), 'no_history'
+                );
+
+
+            }
+
+        }
+    }
+
+
+}
+
+function migrate_thanks() {
+
+    global $db,$where;
+
+    $sql = sprintf('SELECT `Page Key`,`Page Store Key` ,`Page Store Section`,`Page Parent Code` FROM `Page Store Dimension` WHERE  `Webpage Template Filename`="thanks"  %s ',$where);
+
+
+    if ($result = $db->query($sql)) {
+        foreach ($result as $row) {
+            $webpage = get_object('Webpage', $row['Page Key']);
+
+
+            $content_data = $webpage->get('Content Data');
+            print_r($content_data);
+
+            $text = '<h1>'.$content_data['blocks'][0]['_title'].'</h1>';
+
+            if (!empty($content_data['blocks'][0]['_subtitle'])) {
+                $text .= '<h2>'.$content_data['blocks'][0]['_subtitle'].'</h2>';
+            }
+            $text .= $content_data['blocks'][0]['_text'];
+
+
+            $new_content_data = array(
+                'blocks' => array(
+                    array(
+                        'type'          => 'thanks',
+                        'label'         => _('Thanks'),
+                        'icon'          => 'fa-thumbs-up',
+                        'show'          => 1,
+                        'top_margin'    => 40,
+                        'bottom_margin' => 60,
+                        'text'          => $text
+
+
+                    ),
+                    $content_data['blocks'][1]
+
+
+                )
+
+            );
+
+
+            $x = json_encode($new_content_data);
+            if ($x == '') {
+                print_r($row);
+
+                print_r($webpage->id);
+
+                continue;
+            }
+
+            print_r($new_content_data);
+
+
+            $sql = sprintf('UPDATE `Page Store Dimension` SET `Webpage Template Filename`="search2" WHERE `Page Key`=%d ', $webpage->id);
+
+            $db->exec($sql);
+
+
+            $webpage->update(
+                array(
+                    'Page Store Content Data' => json_encode($new_content_data)
+                ), 'no_history'
+            );
+
+
+        }
+    }
+}
+
+function migrate_search() {
+
+    global $db,$where;
+
+    $sql = sprintf('SELECT `Page Key`,`Page Store Key` ,`Page Store Section`,`Page Parent Code` FROM `Page Store Dimension` WHERE  `Webpage Template Filename`="search"  %s ',$where);
+
+
+    if ($result = $db->query($sql)) {
+        foreach ($result as $row) {
+            $webpage = get_object('Webpage', $row['Page Key']);
+
+
+            $content_data = array();
+
+            $new_content_data = array(
+                'blocks' => array(
+                    array(
+                        'type'          => 'search',
+                        'label'         => _('Search'),
+                        'icon'          => 'fa-search',
+                        'show'          => 1,
+                        'top_margin'    => 40,
+                        'bottom_margin' => 60,
+                        'labels'        => $content_data
+
+
+                    )
+
+                )
+
+            );
+
+
+            $x = json_encode($new_content_data);
+            if ($x == '') {
+                print_r($row);
+
+                print_r($webpage->id);
+
+                continue;
+            }
+
+
+            $sql = sprintf('UPDATE `Page Store Dimension` SET `Webpage Template Filename`="search2" WHERE `Page Key`=%d ', $webpage->id);
+
+            $db->exec($sql);
+            /*
+
+
+            $webpage->update(
+                array(
+                    'Page Store Content Data' => json_encode($new_content_data)
+                ), 'no_history'
+            );
+
+            */
+
+
+        }
+    }
+}
+
+function migrate_profile() {
+
+    global $db,$where;
+
+    $sql = sprintf('SELECT `Page Key`,`Page Store Key` ,`Page Store Section`,`Page Parent Code` FROM `Page Store Dimension` WHERE  `Webpage Template Filename`="profile"  %s ',$where);
+
+
+    if ($result = $db->query($sql)) {
+        foreach ($result as $row) {
+            $webpage = get_object('Webpage', $row['Page Key']);
+
+
+            $_content_data = $webpage->get('Content Data');
+
+
+            if (isset($_content_data['old_data'])) {
+                $content_data = $_content_data['old_data'];
+            } else {
+                $content_data = $_content_data;
+            }
+
+
+            $new_content_data = array(
+                'blocks'   => array(
+                    array(
+                        'type'          => 'profile',
+                        'label'         => _('Profile'),
+                        'icon'          => 'fa-user',
+                        'show'          => 1,
+                        'top_margin'    => 40,
+                        'bottom_margin' => 60,
+                        'labels'        => $content_data
+
+
+                    )
+
+                ),
+                'old_data' => $_content_data
+            );
+
+
+            $x = json_encode($new_content_data);
+            if ($x == '') {
+                print_r($row);
+
+                print_r($webpage->id);
+
+                continue;
+            }
+
+
+            $sql = sprintf('UPDATE `Page Store Dimension` SET `Webpage Template Filename`="profile2" WHERE `Page Key`=%d ', $webpage->id);
+
+            $db->exec($sql);
+
+
+            $webpage->update(
+                array(
+                    'Page Store Content Data' => json_encode($new_content_data)
+                ), 'no_history'
+            );
+
+
+        }
+    }
+}
+
+function migrate_favourites() {
+
+    global $db,$where;
+
+    $sql = sprintf('SELECT `Page Key`,`Page Store Key` ,`Page Store Section`,`Page Parent Code` FROM `Page Store Dimension` WHERE  `Webpage Template Filename`="favourites"  %s ',$where);
+
+
+    if ($result = $db->query($sql)) {
+        foreach ($result as $row) {
+            $webpage = get_object('Webpage', $row['Page Key']);
+
+
+            $_content_data = $webpage->get('Content Data');
+
+
+            if (isset($_content_data['old_data'])) {
+                $content_data = $_content_data['old_data'];
+            } else {
+                $content_data = $_content_data;
+            }
+
+
+            // print_r($content_data);
+            unset($content_data['undefined']);
+
+
+            $labels               = array();
+            $labels['with_items'] = '<h1>'.$content_data['_title'].'</h1>'.$content_data['_text'];
+            $labels['no_items']   = '<h1>'.$content_data['_title'].'</h1>'.$content_data['_text_empty'];
+
+            unset($_content_data['old_data']);
+
+
+            $new_content_data = array(
+                'blocks'   => array(
+                    array(
+                        'type'          => 'favourites',
+                        'label'         => _('Favourites'),
+                        'icon'          => 'fa-heart',
+                        'show'          => 1,
+                        'top_margin'    => 40,
+                        'bottom_margin' => 60,
+                        'labels'        => $labels
+
+
+                    )
+
+                ),
+                'old_data' => $_content_data
+            );
+
+
+            $x = json_encode($new_content_data);
+            if ($x == '') {
+                print_r($row);
+
+                print_r($webpage->id);
+
+                continue;
+            }
+
+
+            //          print_r($new_content_data);
+            //exit;
+            $sql = sprintf('UPDATE `Page Store Dimension` SET `Webpage Template Filename`="favourites2" WHERE `Page Key`=%d ', $webpage->id);
+
+            $db->exec($sql);
+
+
+            $webpage->update(
+                array(
+                    'Page Store Content Data' => json_encode($new_content_data)
+                ), 'no_history'
+            );
+
+
+        }
+    }
+}
+
+function migrate_checkout() {
+
+    global $db,$where;
+
+    $sql = sprintf('SELECT `Page Key`,`Page Store Key` ,`Page Store Section`,`Page Parent Code` FROM `Page Store Dimension` WHERE  `Webpage Template Filename`="checkout"  %s ',$where);
+
+
+    if ($result = $db->query($sql)) {
+        foreach ($result as $row) {
+            $webpage = get_object('Webpage', $row['Page Key']);
+
+
+            $_content_data = $webpage->get('Content Data');
+
+
+            print_r($_content_data);
+            //exit;
+
+            if (isset($_content_data['old_data'])) {
+                $content_data = $_content_data['old_data'];
+            } else {
+                $content_data = $_content_data;
+            }
+
+
+            $new_content_data = array(
+                'blocks'   => array(
+                    array(
+                        'type'          => 'checkout',
+                        'label'         => _('Checkout'),
+                        'icon'          => 'fa-credit-card',
+                        'show'          => 1,
+                        'top_margin'    => 40,
+                        'bottom_margin' => 60,
+                        'labels'        => $content_data
+
+
+                    )
+
+                ),
+                'old_data' => $_content_data
+            );
+
+
+            $x = json_encode($new_content_data);
+            if ($x == '') {
+                print_r($row);
+
+                print_r($webpage->id);
+
+                continue;
+            }
+
+
+            $sql = sprintf('UPDATE `Page Store Dimension` SET `Webpage Template Filename`="checkout2" WHERE `Page Key`=%d ', $webpage->id);
+
+            $db->exec($sql);
+
+
+            $webpage->update(
+                array(
+                    'Page Store Content Data' => json_encode($new_content_data)
+                ), 'no_history'
+            );
+
+
+        }
+    }
+}
+
+function migrate_offline() {
+
+    global $db,$where;
+
+    $sql = sprintf('SELECT `Page Key`,`Page Store Key` ,`Page Store Section`,`Page Parent Code` FROM `Page Store Dimension` WHERE  `Webpage Template Filename`="offline"   %s ',$where);
+
+
+    if ($result = $db->query($sql)) {
+        foreach ($result as $row) {
+            $webpage = get_object('Webpage', $row['Page Key']);
+
+
+            $_content_data = $webpage->get('Content Data');
+
+
+            print_r($_content_data);
+
+            if (isset($_content_data['old_data'])) {
+                $content_data = $_content_data['old_data'];
+            } else {
+                $content_data = $_content_data;
+            }
+
+
+            $new_content_data = array(
+                'blocks'   => array(
+                    array(
+                        'type'          => 'offline',
+                        'label'         => _('Offline page'),
+                        'icon'          => 'fa-ban',
+                        'show'          => 1,
+                        'top_margin'    => 40,
+                        'bottom_margin' => 60,
+                        'labels'        => $content_data
+
+
+                    )
+
+                ),
+                'old_data' => $_content_data
+            );
+
+
+            $x = json_encode($new_content_data);
+            if ($x == '') {
+                print_r($row);
+
+                print_r($webpage->id);
+
+                continue;
+            }
+
+
+            $sql = sprintf('UPDATE `Page Store Dimension` SET `Webpage Template Filename`="offline2" WHERE `Page Key`=%d ', $webpage->id);
+
+            $db->exec($sql);
+
+
+            $webpage->update(
+                array(
+                    'Page Store Content Data' => json_encode($new_content_data)
+                ), 'no_history'
+            );
+
+
+        }
+    }
+}
+
+function migrate_not_found() {
+
+    global $db,$where;
+
+    $sql = sprintf('SELECT `Page Key`,`Page Store Key` ,`Page Store Section`,`Page Parent Code` FROM `Page Store Dimension` WHERE  `Webpage Template Filename`="not_found"   %s ',$where);
+
+
+    if ($result = $db->query($sql)) {
+        foreach ($result as $row) {
+            $webpage = get_object('Webpage', $row['Page Key']);
+
+
+            $_content_data = $webpage->get('Content Data');
+
+
+            print_r($_content_data);
+
+            if (isset($_content_data['old_data'])) {
+                $content_data = $_content_data['old_data'];
+            } else {
+                $content_data = $_content_data;
+            }
+
+
+            $new_content_data = array(
+                'blocks'   => array(
+                    array(
+                        'type'          => 'not_found',
+                        'label'         => _('Not found'),
+                        'icon'          => 'fa-times-octagon',
+                        'show'          => 1,
+                        'top_margin'    => 40,
+                        'bottom_margin' => 60,
+                        'labels'        => $content_data
+
+
+                    )
+
+                ),
+                'old_data' => $_content_data
+            );
+
+
+            $x = json_encode($new_content_data);
+            if ($x == '') {
+                print_r($row);
+
+                print_r($webpage->id);
+
+                continue;
+            }
+
+
+            $sql = sprintf('UPDATE `Page Store Dimension` SET `Webpage Template Filename`="not_found2" WHERE `Page Key`=%d ', $webpage->id);
+
+            $db->exec($sql);
+
+
+            $webpage->update(
+                array(
+                    'Page Store Content Data' => json_encode($new_content_data)
+                ), 'no_history'
+            );
+
+
+        }
+    }
+}
+
+function migrate_register() {
+
+    global $db,$where;
+
+    $sql = sprintf('SELECT `Page Key`,`Page Store Key` ,`Page Store Section`,`Page Parent Code` FROM `Page Store Dimension` WHERE  `Webpage Template Filename`="register"   %s ',$where);
+
+
+    if ($result = $db->query($sql)) {
+        foreach ($result as $row) {
+            $webpage = get_object('Webpage', $row['Page Key']);
+
+
+            $_content_data = $webpage->get('Content Data');
+
+
+            print_r($_content_data);
+
+            if (isset($_content_data['old_data'])) {
+                $content_data = $_content_data['old_data'];
+            } else {
+                $content_data = $_content_data;
+            }
+
+
+            $new_content_data = array(
+                'blocks'   => array(
+                    array(
+                        'type'          => 'register',
+                        'label'         => _('Registration form'),
+                        'icon'          => 'fa-registered',
+                        'show'          => 1,
+                        'top_margin'    => 40,
+                        'bottom_margin' => 60,
+                        'labels'        => $content_data
+
+
+                    )
+
+                ),
+                'old_data' => $_content_data
+            );
+
+
+            $x = json_encode($new_content_data);
+            if ($x == '') {
+                print_r($row);
+
+                print_r($webpage->id);
+
+                continue;
+            }
+
+
+            $sql = sprintf('UPDATE `Page Store Dimension` SET `Webpage Template Filename`="register2" WHERE `Page Key`=%d ', $webpage->id);
+
+            $db->exec($sql);
+
+
+            $webpage->update(
+                array(
+                    'Page Store Content Data' => json_encode($new_content_data)
+                ), 'no_history'
+            );
+
+
+        }
+    }
+}
+
+function migrate_login() {
+
+    global $db,$where;
+
+    $sql = sprintf('SELECT `Page Key`,`Page Store Key` ,`Page Store Section`,`Page Parent Code` FROM `Page Store Dimension` WHERE  `Webpage Template Filename`="login"   %s ',$where);
+
+
+    if ($result = $db->query($sql)) {
+        foreach ($result as $row) {
+            $webpage = get_object('Webpage', $row['Page Key']);
+
+
+            $_content_data = $webpage->get('Content Data');
+
+
+            if (isset($_content_data['old_data'])) {
+                $content_data = $_content_data['old_data'];
+            } else {
+                $content_data = $_content_data;
+            }
+
+
+            $new_content_data = array(
+                'blocks'   => array(
+                    array(
+                        'type'          => 'login',
+                        'label'         => _('Login'),
+                        'icon'          => 'fa-sign-in-alt',
+                        'show'          => 1,
+                        'top_margin'    => 40,
+                        'bottom_margin' => 60,
+                        'labels'        => $content_data
+
+
+                    )
+
+                ),
+                'old_data' => $_content_data
+            );
+
+
+            $x = json_encode($new_content_data);
+            if ($x == '') {
+                print_r($row);
+
+                print_r($webpage->id);
+
+                continue;
+            }
+
+
+            $sql = sprintf('UPDATE `Page Store Dimension` SET `Webpage Template Filename`="login2" WHERE `Page Key`=%d ', $webpage->id);
+
+            $db->exec($sql);
+
+
+            $webpage->update(
+                array(
+                    'Page Store Content Data' => json_encode($new_content_data)
+                ), 'no_history'
+            );
+
+
+        }
+    }
+}
+
 
 function migrate_products() {
-    global $db;
+    global $db,$where;
 
-    $sql = sprintf('SELECT `Webpage Scope Key`,`Page Key`,`Webpage Website Key` FROM `Page Store Dimension` WHERE `Webpage Template Filename`="product" ');
-     $sql = sprintf('SELECT `Webpage Scope Key`,`Page Key`,`Webpage Website Key` FROM `Page Store Dimension` WHERE `Page Key`=2582 ');
+    $sql = sprintf('SELECT `Webpage Scope Key`,`Page Key`,`Webpage Website Key` FROM `Page Store Dimension` WHERE `Webpage Template Filename`="product"  %s ',$where);
+    //   $sql = sprintf('SELECT `Webpage Scope Key`,`Page Key`,`Webpage Website Key` FROM `Page Store Dimension` WHERE `Page Key`=2572 ');
 
     if ($result3 = $db->query($sql)) {
         foreach ($result3 as $row3) {
+
+
             $webpage = get_object('Webpage', $row3['Page Key']);
 
 
@@ -67,7 +1117,7 @@ function migrate_products() {
             }
 
 
-             //print_r($content_data);;
+            //print_r($content_data);;
 
 
             if (isset($content_data['description_block']['content'])) {
@@ -83,60 +1133,51 @@ function migrate_products() {
                 }
 
 
-
-
                 $content = preg_replace('/\<p\>\<br\>\<\/p\>/', '', $content);
-                    $content = preg_replace('/\<p style\=\"text-align: left;\"\><br\>\<\/p\>/', '', $content);
-                    $content = preg_replace('/\<p style\=\"\"\>\<br\>\<\/p\>/', '', $content);
-                    $content = preg_replace('/\<span>\&nbsp\;\<\/span\>/', '', $content);
+                $content = preg_replace('/\<p style\=\"text-align: left;\"\><br\>\<\/p\>/', '', $content);
+                $content = preg_replace('/\<p style\=\"\"\>\<br\>\<\/p\>/', '', $content);
+                $content = preg_replace('/\<span>\&nbsp\;\<\/span\>/', '', $content);
 
-                    $content = preg_replace('/line-height\s*\:\s*[0-9.]+px\;/', '', $content);
-                    $content = preg_replace('/line-height\s*\:\s*[0-9.]+\;/', '', $content);
+                $content = preg_replace('/line-height\s*\:\s*[0-9.]+px\;/', '', $content);
+                $content = preg_replace('/line-height\s*\:\s*[0-9.]+\;/', '', $content);
 
-                    $content = preg_replace('/font-size\s*\:\s*[0-9.]+px\;/', '', $content);
-                    $content = preg_replace('/size=\s*[0-9.]+px\;/', '', $content);
-
-
+                $content = preg_replace('/font-size\s*\:\s*[0-9.]+px\;/', '', $content);
+                $content = preg_replace('/size=\s*[0-9.]+px\;/', '', $content);
 
 
-
-                    $content = preg_replace('/\<br\>\s*$/', '', $content);
-
-
-                    $content = str_replace("font-family: 'Open Sans', Helvetica, Arial, sans-serif;", '', $content);
-                    $content = str_replace("<br><br>", '<br>', $content);
-
-                    $content = str_replace("<p><br>", '<p>', $content);
-                    $content = str_replace("font-family: Arial, sans-serif;", '', $content);
-                    $content = str_replace('class="Normal-C"', '', $content);
-
-                    $content = str_replace("font-family: Open Sans, Helvetica, Arial, sans-serif;", '', $content);
-
-                    $content = str_replace("font-family: Tahoma, Geneva, sans-serif;", '', $content);
-                    $content = str_replace("font-family: Arial, Helvetica, sans-serif;", '', $content);
-                    $content = str_replace("font-family: Ubuntu, Helvetica, Arial, sans-serif;", '', $content);
-                    $content = str_replace("font-family: inherit;", '', $content);
-                    $content = str_replace("font-family: 'Lucida Grande', 'Lucida Sans Unicode', Verdana, Arial, sans-serif;", '', $content);
-
-                    $content = str_replace("font-family: inherit;", '', $content);
-
-                    $content = str_replace('face="verdana"', '', $content);
-                    $content = str_replace("font-family: inherit;", '', $content);
+                $content = preg_replace('/\<br\>\s*$/', '', $content);
 
 
-                  //  $content=str_replace('style=""','',$content);
+                $content = str_replace("font-family: 'Open Sans', Helvetica, Arial, sans-serif;", '', $content);
+                $content = str_replace("<br><br>", '<br>', $content);
 
-                   // if(preg_match('/font/',$content)){
-                      //  print $webpage->id."\n";
-                        //print $content."|\n";
-                   // }
+                $content = str_replace("<p><br>", '<p>', $content);
+                $content = str_replace("font-family: Arial, sans-serif;", '', $content);
+                $content = str_replace('class="Normal-C"', '', $content);
+
+                $content = str_replace("font-family: Open Sans, Helvetica, Arial, sans-serif;", '', $content);
+
+                $content = str_replace("font-family: Tahoma, Geneva, sans-serif;", '', $content);
+                $content = str_replace("font-family: Arial, Helvetica, sans-serif;", '', $content);
+                $content = str_replace("font-family: Ubuntu, Helvetica, Arial, sans-serif;", '', $content);
+                $content = str_replace("font-family: inherit;", '', $content);
+                $content = str_replace("font-family: 'Lucida Grande', 'Lucida Sans Unicode', Verdana, Arial, sans-serif;", '', $content);
+
+                $content = str_replace("font-family: inherit;", '', $content);
+
+                $content = str_replace('face="verdana"', '', $content);
+                $content = str_replace("font-family: inherit;", '', $content);
 
 
+                //  $content=str_replace('style=""','',$content);
+
+                // if(preg_match('/font/',$content)){
+                //  print $webpage->id."\n";
+                //print $content."|\n";
+                // }
 
 
-
-
-                }
+            }
 
 
             switch ($row3['Webpage Website Key']) {
@@ -174,6 +1215,18 @@ function migrate_products() {
             }
 
 
+            $product    = get_object('Public_Product', $webpage->get('Webpage Scope Key'));
+            $image_data = $product->get('Image Data');
+
+
+            $image_gallery = array();
+            foreach ($product->get_image_gallery() as $image_item) {
+                if ($image_item['key'] != $image_data['key']) {
+                    $image_gallery[] = $image_item;
+                }
+            }
+
+
             $new_content_data = array(
                 'blocks'   => array(
                     array(
@@ -184,7 +1237,20 @@ function migrate_products() {
                         'top_margin'      => 20,
                         'bottom_margin'   => 30,
                         'text'            => $content,
-                        'show_properties' => true
+                        'show_properties' => true,
+
+                        'image'        => array(
+                            'key'           => $image_data['key'],
+                            'src'           => $image_data['src'],
+                            'caption'       => $image_data['caption'],
+                            'width'         => $image_data['width'],
+                            'height'        => $image_data['height'],
+                            'image_website' => $image_data['image_website']
+
+                        ),
+                        'other_images' => $image_gallery
+
+
                     ),
                     array(
                         'type'              => 'see_also',
@@ -218,7 +1284,6 @@ function migrate_products() {
             }
 
 
-
             $sql = sprintf('UPDATE `Page Store Dimension` SET `Webpage Template Filename`="products2" WHERE `Page Key`=%d ', $webpage->id);
 
             $db->exec($sql);
@@ -245,11 +1310,11 @@ function migrate_products() {
 
 function migrate_families() {
 
-    global $db;
+    global $db,$where;
     $left_offset = 158;
 
-    $sql = sprintf('SELECT `Webpage Scope Key`,`Page Key`,`Webpage Website Key` FROM `Page Store Dimension` WHERE `Webpage Template Filename`="products_showcase"  ');
-      //$sql = sprintf('SELECT `Webpage Scope Key`,`Page Key`,`Webpage Website Key` FROM `Page Store Dimension` WHERE  `Page Key`=32302 ');
+    $sql = sprintf('SELECT `Webpage Scope Key`,`Page Key`,`Webpage Website Key` FROM `Page Store Dimension` WHERE `Webpage Template Filename`="products_showcase"  %s ',$where);
+    //$sql = sprintf('SELECT `Webpage Scope Key`,`Page Key`,`Webpage Website Key` FROM `Page Store Dimension` WHERE  `Page Key`=32302 ');
 
 
     if ($result = $db->query($sql)) {
@@ -853,7 +1918,6 @@ function migrate_families() {
             }
 
 
-
             $sql = sprintf('UPDATE `Page Store Dimension` SET `Webpage Template Filename`="category_products" WHERE `Page Key`=%d ', $webpage->id);
 
             $db->exec($sql);
@@ -871,11 +1935,11 @@ function migrate_families() {
 
 function migrate_departments() {
 
-    global $db;
+    global $db,$where;
 
     $left_offset = 158;
 
-    $sql = sprintf('SELECT `Page Key`,`Page Store Key` ,`Page Store Section`,`Page Parent Code` FROM `Page Store Dimension` WHERE  `Webpage Template Filename`="categories_showcase"   ');
+    $sql = sprintf('SELECT `Page Key`,`Page Store Key` ,`Page Store Section`,`Page Parent Code` FROM `Page Store Dimension` WHERE  `Webpage Template Filename`="categories_showcase"   %s ',$where);
     //  $sql = sprintf('SELECT `Page Key`,`Page Store Key` ,`Page Store Section`,`Page Parent Code` FROM `Page Store Dimension` WHERE   `Page Key`=2972 ');
 
 
@@ -1136,30 +2200,6 @@ function migrate_departments() {
             );
 
             $webpage->reindex_items();
-
-
-        }
-    }
-}
-
-function migrate_registration() {
-
-    global $db;
-
-    $sql = sprintf('SELECT `Page Key`,`Page Store Key` ,`Page Store Section`,`Page Parent Code` FROM `Page Store Dimension` WHERE  `Page Code`="register.sys" ');
-
-
-    if ($result = $db->query($sql)) {
-        foreach ($result as $row) {
-            $webpage = get_object('Webpage', $row['Page Key']);
-
-
-            $_content_data = $webpage->get('Content Data');
-
-
-            print_r($_content_data);
-
-            exit;
 
 
         }

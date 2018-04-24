@@ -26,7 +26,9 @@ if (!isset($_REQUEST['theme']) or !preg_match('/^theme\_\d+$/', $_REQUEST['theme
 
     return;
 }
-
+require_once 'external_libs/ImageCache.php';
+$imagecache                         = new ImageCache();
+$imagecache->cached_image_directory = 'EcomB2B/server_files/cached_images/';
 
 $webpage_key = $_REQUEST['webpage_key'];
 $theme       = $_REQUEST['theme'];
@@ -44,12 +46,20 @@ $content_data = $webpage->get('Content Data');
 
 
 $header_data = $website->get('Header Data');
-$header_key=$website->get('Website Header Key');
+$header_key  = $website->get('Website Header Key');
 
 
 $smarty->assign('header_data', $header_data);
 $smarty->assign('header_key', $header_key);
 
+switch ($webpage->get('Webpage Scope')) {
+    case 'Product':
+        $public_product = get_object('Public_Product', $webpage->get('Webpage Scope Key'));
+        $smarty->assign('product', $public_product);
+
+
+        break;
+}
 
 
 //print_r($webpage);
@@ -65,26 +75,28 @@ if ($webpage->get('Webpage Template Filename') == 'products_showcase') {
 
 } elseif ($webpage->get('Webpage Template Filename') == 'register') {
 
-    $scope_metadata = $webpage->get('Scope Metadata');
-
-
-
-
-    require_once 'utils/get_addressing.php';
-    list($address_format, $address_labels, $used_fields, $hidden_fields, $required_fields) = get_address_form_data($store->get('Store Home Country Code 2 Alpha'), $website->get('Website Locale'));
-
-    require_once 'utils/get_countries.php';
-    $countries = get_countries($website->get('Website Locale'));
-
-
-    $smarty->assign('address_labels', $address_labels);
-    $smarty->assign('used_address_fields', $used_fields);
-    $smarty->assign('countries', $countries);
-    $smarty->assign('selected_country', $store->get('Store Home Country Code 2 Alpha'));
-    $template = $theme.'/'.$webpage->get('Webpage Template Filename').'.'.$theme.'.tpl';
+      $template = $theme.'/'.$webpage->get('Webpage Template Filename').'.'.$theme.'.tpl';
 
 } else {
 
+
+    if($webpage->get('Webpage Code')=='register.sys'){
+        $scope_metadata = $webpage->get('Scope Metadata');
+
+
+        require_once 'utils/get_addressing.php';
+        list($address_format, $address_labels, $used_fields, $hidden_fields, $required_fields) = get_address_form_data($store->get('Store Home Country Code 2 Alpha'), $website->get('Website Locale'));
+
+        require_once 'utils/get_countries.php';
+        $countries = get_countries($website->get('Website Locale'));
+
+
+        $smarty->assign('address_labels', $address_labels);
+        $smarty->assign('used_address_fields', $used_fields);
+        $smarty->assign('countries', $countries);
+        $smarty->assign('selected_country', $store->get('Store Home Country Code 2 Alpha'));
+
+    }
 
     $template = $theme.'/'.strtolower($webpage->get('Webpage Template Filename')).'.'.$theme.'.tpl';
 
@@ -95,7 +107,6 @@ if ($webpage->get('Webpage Template Filename') == 'products_showcase') {
 
 
 }
-
 
 
 $smarty->assign('content', $content_data);
@@ -115,7 +126,6 @@ $smarty->assign('poll_queries', $website->get_poll_queries($webpage));
 
 
 if (file_exists('templates/'.$template)) {
-
 
 
     $smarty->display($template);
