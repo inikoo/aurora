@@ -1690,7 +1690,7 @@ class Website extends DB_Table {
       //  $smarty_web->clearCache(null,$this->id);
 
         $smarty_web->clearAllCache();
-
+        $smarty_web->clearCompiledTemplate();
 
 
     }
