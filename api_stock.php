@@ -10,6 +10,9 @@
  Version 2.0
 */
 
+
+
+
 if (empty($_REQUEST['action'])) {
     $response = log_api_key_access_failure(
         $db, $api_key_key, 'Fail_Operation', "Action missing"
@@ -141,16 +144,19 @@ switch ($_REQUEST['action']) {
 
     case 'search_location_by_code':
 
+        include_once('utils/text_functions.php');
+
         if (empty($_REQUEST['query'])) {
             $_REQUEST['query'] = '';
         }
 
         include_once 'search_functions.php';
 
-        global $account, $memcache_ip;
+       $account=get_object('Account',1);
 
         $user->read_warehouses();
 
+        $user->read_stores();
 
 
         $data=array(
@@ -160,11 +166,14 @@ switch ($_REQUEST['action']) {
         );
 
 
-        search_locations($db, $account, $memcache_ip, $data);
+        $_response=search_locations($db, $account, $data,'data');
 
         $response = array(
             'state' => 'OK',
-            'data'  => ''
+            'data'  => array(
+            'results'=>$_response['results']
+
+            )
         );
         echo json_encode($response);
         exit;

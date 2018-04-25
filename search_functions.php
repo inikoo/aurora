@@ -2714,13 +2714,19 @@ function search_hr($db, $account, $memcache_ip, $data) {
 }
 
 
-function search_locations($db, $account, $memcache_ip, $data) {
+function search_locations($db, $account, $data,$response_type='echo') {
+
+
 
 
     $cache       = false;
     $max_results = 10;
     $user        = $data['user'];
     $queries     = trim($data['query']);
+
+
+   // print_r($user);
+
 
     if ($queries == '') {
         $response = array(
@@ -2744,7 +2750,8 @@ function search_locations($db, $account, $memcache_ip, $data) {
             $where_warehouse = ' and false';
         }
     } else {
-        if (count($user->warehouses) == $account->data['Warehouses']) {
+        if (count($user->warehouses) ==
+            $account->data['Account Warehouses']) {
             $where_warehouse = '';
         } else {
             $where_warehouse = sprintf(
@@ -2756,8 +2763,6 @@ function search_locations($db, $account, $memcache_ip, $data) {
     }
     $memcache_fingerprint = $account->get('Account Code').'SEARCH_LOC'.$warehouses.md5($queries);
 
-    $cache = new Memcached();
-    $cache->addServer($memcache_ip, 11211);
 
 
     if (strlen($queries) <= 2) {
@@ -2774,11 +2779,7 @@ function search_locations($db, $account, $memcache_ip, $data) {
     }
 
 
-    $results_data = $cache->get($memcache_fingerprint);
-
-
-    if (!$results_data or $cache) {
-
+//    $results_data = $cache->get($memcache_fingerprint);
 
         $candidates = array();
 
@@ -2871,10 +2872,6 @@ function search_locations($db, $account, $memcache_ip, $data) {
             'n' => count($results),
             'd' => $results
         );
-        
-
-
-    }
     $response = array(
         'state'          => 200,
         'number_results' => $results_data['n'],
@@ -2882,7 +2879,15 @@ function search_locations($db, $account, $memcache_ip, $data) {
         'q'              => $q
     );
 
-    echo json_encode($response);
+
+    if($response_type=='echo'){
+        echo json_encode($response);
+
+    }else{
+        return $response;
+    }
+
+
 
 }
 

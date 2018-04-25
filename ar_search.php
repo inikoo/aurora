@@ -141,7 +141,7 @@ switch ($tipo) {
                 } else {
                     $data['scope'] = 'warehouses';
                 }
-                search_locations($db, $account, $memcache_ip, $data);
+                search_locations($db, $account, $data);
             }
         }
         break;
