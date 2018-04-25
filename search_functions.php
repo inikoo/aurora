@@ -2731,10 +2731,19 @@ function search_locations($db, $account, $data,$response_type='echo') {
     if ($queries == '') {
         $response = array(
             'state'   => 200,
-            'results' => 0,
-            'data'    => ''
+            'number_results' => 0,
+            'results'    => array()
         );
-        echo json_encode($response);
+
+
+
+
+        if($response_type=='echo'){
+            echo json_encode($response);
+            return;
+        }else{
+            return $response;
+        }
 
         return;
     }
@@ -2820,12 +2829,22 @@ function search_locations($db, $account, $data,$response_type='echo') {
         if ($total_candidates == 0) {
             $response = array(
                 'state'   => 200,
-                'results' => 0,
-                'data'    => ''
+                'number_results' => 0,
+                'results'    => array()
             );
-            echo json_encode($response);
 
-            return;
+
+
+
+            if($response_type=='echo'){
+                echo json_encode($response);
+                return;
+            }else{
+                return $response;
+            }
+
+
+
         }
 
         $counter       = 0;

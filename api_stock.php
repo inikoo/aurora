@@ -171,7 +171,46 @@ switch ($_REQUEST['action']) {
         $response = array(
             'state' => 'OK',
             'data'  => array(
-            'results'=>$_response['results']
+                'results'=>$_response['results'],
+                'number_results'=>$_response['number_results'],
+
+            )
+        );
+        echo json_encode($response);
+        exit;
+        break;
+
+    case 'search_part_by_code':
+
+        include_once('utils/text_functions.php');
+
+        if (empty($_REQUEST['query'])) {
+            $_REQUEST['query'] = '';
+        }
+
+        include_once 'search_functions.php';
+
+        $account=get_object('Account',1);
+
+        $user->read_warehouses();
+
+        $user->read_stores();
+
+
+        $data=array(
+            'user'=>$user,
+            'query'=>$_REQUEST['query'],
+            'scope'=>''
+        );
+
+
+        $_response=search_parts($db, $account, $data,'data');
+
+        $response = array(
+            'state' => 'OK',
+            'data'  => array(
+                'results'=>$_response['results'],
+                'number_results'=>$_response['number_results'],
 
             )
         );

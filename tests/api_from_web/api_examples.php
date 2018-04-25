@@ -114,6 +114,14 @@
             </td>
         </tr>
 
+
+        <tr>
+            <td colspan="2">
+                <button id="search_part_by_code">Search part by code</button>
+            </td>
+        </tr>
+
+
     </table>
 </div>
 <div id="result">
@@ -148,12 +156,43 @@
         search_location_by_code()
     });
 
+    $("#search_part_by_code").click(function () {
+        search_part_by_code()
+    });
+
+
     function search_location_by_code() {
 
         set_up_credentials();
 
         var action = 'search_location_by_code';
-        var query = 'a';
+        var query = 'eo';
+
+
+
+        var ajaxData = new FormData();
+        ajaxData.append("action", action)
+        ajaxData.append("query", query)
+
+
+        $.ajax({
+            url: api_url, type: 'POST', data: ajaxData, dataType: 'json', cache: false, contentType: false, processData: false, complete: function () {
+            }, success: function (data) {
+                console.log(data)
+            }, error: function () {
+                console.log(data)
+            }
+        });
+
+
+    }
+
+    function search_part_by_code() {
+
+        set_up_credentials();
+
+        var action = 'search_part_by_code';
+        var query = 'jbb';
 
 
 
