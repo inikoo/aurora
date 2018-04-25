@@ -59,7 +59,7 @@
                 Url
             </td>
             <td>
-                <input id="api_url" value="http://aw.aurora.systems/api/stock" style="width:400px">
+                <input id="api_url" value="http://au.bali/api/stock" style="width:400px">
             </td>
         </tr>
         <tr>
@@ -67,7 +67,7 @@
                 Handle
             </td>
             <td>
-                <input id="api_handle" value="a40e82bf" style="width:400px">
+                <input id="api_handle" value="b2e99bfb" style="width:400px">
             </td>
         </tr>
         <tr>
@@ -75,7 +75,7 @@
                 Key
             </td>
             <td>
-                <input id="api_key" value="UEFVVzdCM1c3eDNUdUZpVGlYM004Yzl2RXFFRGlLOXZVaEVjNEVlRg==" style="width:400px">
+                <input id="api_key" value="UFVGOG43RDR1NVU5S0FFZUE1VDR3OVQ4VzV0OEQ2bkVOQWo2bUFyNQ==" style="width:400px">
             </td>
         </tr>
         <tr>
@@ -153,7 +153,7 @@
         set_up_credentials();
 
         var action = 'search_location_by_code';
-        var query = '10B';
+        var query = 'a';
 
 
 
