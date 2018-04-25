@@ -63,6 +63,12 @@ class Website extends DB_Table {
             } else {
                 $this->settings = json_decode($this->data['Website Settings'], true);
             }
+
+            if (empty($this->data['Website Style'])) {
+                $this->style = array();
+            } else {
+                $this->style = json_decode($this->data['Website Style'], true);
+            }
         }
 
 
@@ -539,6 +545,31 @@ class Website extends DB_Table {
                     $_key = preg_replace('/^Settings /', '', $key);
                     if (isset($this->settings[$_key])) {
                         return $this->settings[$_key];
+                    } else {
+                        return '';
+                    }
+
+                }
+
+
+                if (preg_match('/^Website Style /', $key)) {
+
+
+                    $_key = preg_replace('/^Website Style /', '', $key);
+                    if (isset($this->style[$_key])) {
+                        return $this->style[$_key];
+                    } else {
+                        return '';
+                    }
+
+                }
+
+                if (preg_match('/^Style /', $key)) {
+
+
+                    $_key = preg_replace('/^Style /', '', $key);
+                    if (isset($this->style[$_key])) {
+                        return $this->style[$_key];
                     } else {
                         return '';
                     }
@@ -1696,6 +1727,7 @@ class Website extends DB_Table {
     }
 
 }
+
 
 
 ?>

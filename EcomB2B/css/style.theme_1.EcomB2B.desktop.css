@@ -942,11 +942,7 @@ font-size:14px;
 
 .product_prices.log_out {
   text-align: center;
-  font-style: italic;
-  color: #236E4B; }
-
-.product_prices .product_price {
-  color: #236E4B; }
+  font-style: italic; }
 
 .description_block {
   margin-bottom: 20px;
@@ -998,12 +994,6 @@ font-size:14px;
   border-bottom: 1px solid #ccc;
   position: relative;
   top: 0px; }
-
-.out_of_stock_row.out_of_stock {
-  background-color: darkgray; }
-
-.out_of_stock_row.launching_soon {
-  background-color: darkseagreen; }
 
 .order_row .label, .out_of_stock_row .label {
   padding-left: 10px;
@@ -1425,8 +1415,6 @@ div.blk_images figcaption.caption_hide {
 
 .product_block {
   width: 226px;
-  border: 1px solid #ccc;
-  border-bottom: none;
   background: #fff;
   padding: 0px 0px 0px 0px;
   line-height: normal; }

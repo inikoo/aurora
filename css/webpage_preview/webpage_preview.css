@@ -475,3 +475,26 @@ figcaption.caption_hide{
     -ms-user-select: none;
     user-select: none;
 }
+
+.panel_txt_control {
+    padding: 2px 0px;
+    z-index: 2001;
+    position: absolute;
+    top: -30px;
+
+    width: 100%;
+    height: 30px;
+    border: 1px solid #ccc;
+    background: #fff;
+    border-bottom: none;
+
+
+
+}
+
+.product_wrap .panel_txt_control{
+    width:226px;
+    border-bottom:1px solid #ccc;
+    top: -33px;
+    left:0px;
+}

@@ -111,7 +111,7 @@
 
 
     <div id="panel_txt_control" class="hide">
-        <div class="panel_txt_control" style="padding:2px 10px;z-index:2001;position: absolute;top:-30px;width:100%;height: 30px;border:1px solid #ccc;background: #fff;border-bottom: none">
+        <div class="panel_txt_control" style="">
             <i class="fa fa-expand" title="{t}Padding{/t}"></i> <input size="2" style="height: 16px;" value="20">
             <i onclick="delete_panel_text(this)" class="far fa-trash-alt padding_left_10 like_button" title="{t}Delete{/t}"></i>
 
@@ -2118,10 +2118,6 @@
     function set_up_froala_editor(key) {
 
 
-        if ($('#' + key).data('froala.editor')) {
-            $('#' + key).froalaEditor('destroy');
-        }
-
 
         $('#' + key).froalaEditor({
             iconsTemplate: 'font_awesome_5',
@@ -2706,7 +2702,12 @@ console.log($(element))
           return;
       }
 
+
+
+
         $(this).draggable( 'destroy' ).resizable('destroy').addClass('editing froala_on')
+
+
 
         set_up_froala_editor($(this).attr('id'))
 
@@ -2830,6 +2831,7 @@ console.log($(element))
 
     $(document).on( "click", ".product_header_text ", function() {
 
+        console.log('xxx')
 
         $(this).closest('.wrap').addClass('sortable-disabled').find('.panel_txt_control').removeClass('hide')
 
