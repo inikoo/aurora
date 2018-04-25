@@ -87,7 +87,7 @@ switch ($_REQUEST['action']) {
 
     case 'get_locations_from_part_sku':
 
-        if (!isset(['part_sku'])) {
+        if (!isset($_REQUEST['part_sku'])) {
             $response = array(
                 'state' => 'Error',
                 'msg'   => 'part_sku needed'
