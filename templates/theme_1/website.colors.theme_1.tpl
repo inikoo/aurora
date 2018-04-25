@@ -10,6 +10,14 @@
 *}
 
 {include file="theme_1/_head.theme_1.tpl"}
+
+<style>
+    .object_control_panel td{
+        padding:0px 4px;
+    }
+
+    </style>
+
 <script src="js/website_style.js"></script>
 
 
@@ -64,6 +72,99 @@
         </div>
 
 
+
+        <div id="product_wrap_style" class="hide object_control_panel element_for_color element_for_margins" style="padding: 0px;z-index: 3001;">
+
+
+
+            <div class="handle" style="border-bottom: 1px solid #ccc;;width: 100%;line-height: 30px;height: 30px">
+                <i class="fa fa-window-close button padding_left_10" onclick="$('#product_wrap_style').addClass('hide')"></i>
+            </div>
+            <div style="padding: 20px">
+                <table >
+
+
+                    <tr>
+                        <td class="label">{t}Border{/t}</td>
+                        <td class="margins_container unselectable border border-width" data-scope="border">
+                            <input data-margin="top-width" class=" edit_margin top" value=""  placeholder="0"><input data-margin="bottom-width" class=" edit_margin bottom" value="" style="" placeholder="0">
+                            <input data-margin="left-width" class=" edit_margin left" value="" style="" placeholder="0"><input data-margin="right-width" class=" edit_margin right" value="" style="" placeholder="0">
+
+                            <i class="fa fa-plus-circle padding_left_10 like_button up_margins"></i>
+                            <i class="fa fa-minus-circle padding_left_5 like_button down_margins"></i>
+
+                            <span data-scope="border-color" style="position: relative;top:-1.5px" class="fa-stack color_picker scope_border-color like_button">
+                         <i class="fas fa-circle fa-stack-1x "></i>
+                         <i class="fas fa-circle fa-stack-1x "></i>
+                    </span>
+
+                        </td>
+                    </tr>
+
+                    <tr>
+                        <td class="label">{t}Body text{/t}</td>
+                        <td>
+                     <span data-scope="color" class="fa-stack color_picker scope_color like_button">
+                         <i class="fas fa-circle fa-stack-1x "></i>
+                         <i class="fas fa-circle fa-stack-1x "></i>
+                    </span>
+                        </td>
+                    </tr>
+
+                    <tr>
+                        <td class="label">{t}Price{/t}</td>
+                        <td>
+                     <span data-scope="price_color" class="fa-stack color_picker scope_price_color like_button">
+                         <i class="fas fa-circle fa-stack-1x "></i>
+                         <i class="fas fa-circle fa-stack-1x "></i>
+                    </span>
+                        </td>
+                    </tr>
+
+                    <tr>
+                        <td id="" class="label">{t}Footer text{/t}</td>
+                        <td>
+                    <span data-scope="footer_color" class="fa-stack color_picker scope_footer_color like_button">
+                         <i class="fas fa-circle fa-stack-1x "></i>
+                         <i class="fas fa-circle fa-stack-1x "></i>
+                    </span>
+
+                    <span data-scope="footer_hover_color" class="fa-stack color_picker scope_footer_hover_color like_button" title="hover">
+                         <i class="fas fa-circle fa-stack-1x "></i>
+                         <i class="fas fa-circle fa-stack-1x "></i>
+                    </span> <small style="position:relative;left:-8px;top:1px;opacity:.5" >:hover</small>
+                        </td>
+                    </tr>
+
+                    <tr>
+                        <td id="" class="label">{t}Footer background{/t}</td>
+                        <td>
+                    <span data-scope="background-color" class="fa-stack color_picker scope_footer_background-color like_button">
+                         <i class="fas fa-circle fa-stack-1x "></i>
+                         <i class="fas fa-circle fa-stack-1x "></i>
+                    </span>
+
+                    <span data-scope="background-color" class="fa-stack color_picker scope_footer_hover_background-color like_button" title="hover">
+                         <i class="fas fa-circle fa-stack-1x "></i>
+                         <i class="fas fa-circle fa-stack-1x "></i>
+                    </span> <small style="position:relative;left:-8px;top:1px;opacity:.5" >:hover</small>
+                        </td>
+                    </tr>
+
+
+                </table>
+
+
+            </div>
+
+
+
+
+        </div>
+
+
+
+
         <div id="color_picker_dialog" style="position:absolute;z-index: 6000" class="hide">
             <input type='text'  class="hide"  />
 
@@ -77,7 +178,16 @@
     <div class="site_wrapper ">
 
 
-        <span id="webpage_data" style="display:none" data-webpage_key="{$webpage->id}""></span>
+        <span id="webpage_data" style="display:none" data-webpage_key="{$webpage->id}"
+
+                {foreach from=$website->style  item=style  }
+                    {$style[0]}{ {$style[1]}: {$style[2]}}
+                {/foreach}
+
+
+
+
+        ></span>
 
         <div id="top_header" style="width: 100%;">
 
@@ -216,10 +326,10 @@
                 <div style="clear:both"></div>
             </div>
             <div class="products no_items_header"  style="margin-top: 20px;margin-bottom: 60px" >
-                <div class="product_wrap wrap type_product " >
+                <div class="product_wrap wrap type_product " data-element=".empty" onClick="open_edit_product_wrap_style(this)"  >
                     <div class="product_block item product_container" >
                         <div class="wrap_to_center product_image" >
-                                    <a href="#"><i class="fal fa-fw fa-external-link-square more_info" aria-hidden="true"  title="{t}More info{/t}"  ></i></a>
+                                    <i class="fal fa-fw fa-external-link-square more_info" aria-hidden="true"  title="{t}More info{/t}"  ></i>
 
                                     {if $logged_in}
                                         <i    data-product_id="" data-favourite_key="0" class="favourite_ favourite far  fa-heart" aria-hidden="true"></i>
@@ -251,7 +361,7 @@
 
                                         <div class="ordering log_in can_not_order  out_of_stock_row  hide ">
 
-                                            <span class="product_footer label ">{$item.out_of_stock_label}</span>
+                                            <span class="product_footer label "></span>
                                             <span class="product_footer reminder"><i class="fa fa-envelope hide" aria-hidden="true"></i>  </span>
 
 
@@ -289,7 +399,7 @@
 
                             </div>
                 </div>
-                <div class="product_wrap wrap type_product " >
+                <div class="product_wrap wrap type_product " data-element=".ordered"  onClick="open_edit_product_wrap_style(this)">
                     <div class="product_block item product_container" >
                         <div class="wrap_to_center product_image" >
                             <a href="#"><i class="fal fa-fw fa-external-link-square more_info" aria-hidden="true"  title="{t}More info{/t}"  ></i></a>
@@ -324,7 +434,7 @@
 
                             <div class="ordering log_in can_not_order  out_of_stock_row  hide ">
 
-                                <span class="product_footer label ">{$item.out_of_stock_label}</span>
+                                <span class="product_footer label "></span>
                                 <span class="product_footer reminder"><i class="fa fa-envelope hide" aria-hidden="true"></i>  </span>
 
 
@@ -365,7 +475,7 @@
                     </div>
 
                 </div>
-                <div class="product_wrap wrap type_product " >
+                <div class="product_wrap wrap type_product "  data-element=".out_of_stock" onClick="open_edit_product_wrap_style(this)">
                     <div class="product_block item product_container" >
                         <div class="wrap_to_center product_image" >
                             <a href="#"><i class="fal fa-fw fa-external-link-square more_info" aria-hidden="true"  title="{t}More info{/t}"  ></i></a>
@@ -382,23 +492,18 @@
                             <div class="name item_name">Hass avocado, Fulfill your obsession with guacamole</div>
 
                         </div>
-                        {if $logged_in}
+
                             <div class="product_prices  " >
                                 <div class="product_price">{if empty($labels._product_price)}{t}Price{/t}{else}{$labels._product_price}{/if}: {$price}</div>
 
                                 {if $rrp!=''}<div>{if empty($labels._product_rrp)}{t}RRP{/t}{else}{$labels._product_rrp}{/if}: {$rrp}</div>{/if}
                             </div>
-                        {else}
-                            <div class="product_prices  " >
-                                <div class="product_price">{if empty($labels._login_to_see)}{t}For prices, please login or register{/t}{else}{$labels._login_to_see}{/if}</div>
-
-                            </div>
-                        {/if}
 
 
-                        {if $logged_in}
 
-                            <div class="ordering log_in can_not_order  out_of_stock_row   ">
+
+
+                            <div class="ordering log_in can_not_order  out_of_stock_row out_of_stock  ">
 
                                 <span class="product_footer label ">{t}Out of stock{/t}</span>
                                 <span class="product_footer reminder"><i class="fa fa-envelope hide" aria-hidden="true"></i>  </span>
@@ -409,19 +514,6 @@
 
 
 
-                        {else}
-
-
-
-                            <div class="ordering log_out " >
-
-                                <div onclick='window.location.href = "/login.sys"' class="mark_on_hover" ><span class="login_button" >{if empty($labels._Login)}{t}Login{/t}{else}{$labels._Login}{/if}</span></div>
-                                <div onclick='window.location.href = "/register.sys"' class="mark_on_hover"><span class="register_button" > {if empty($labels._Register)}{t}Register{/t}{else}{$labels._Register}{/if}</span></div>
-
-
-                            </div>
-
-                        {/if}
 
 
 
@@ -431,7 +523,7 @@
                     </div>
 
                 </div>
-                <div class="product_wrap wrap type_product " >
+                <div class="product_wrap wrap type_product "  data-element=".launching_soon"  onClick="open_edit_product_wrap_style(this)">
                     <div class="product_block item product_container" >
                         <div class="wrap_to_center product_image" >
                             <a href="#"><i class="fal fa-fw fa-external-link-square more_info" aria-hidden="true"  title="{t}More info{/t}"  ></i></a>
@@ -464,9 +556,9 @@
 
                         {if $logged_in}
 
-                            <div class="ordering log_in can_not_order  out_of_stock_row   ">
+                            <div class="ordering log_in can_not_order  out_of_stock_row launching_soon   ">
 
-                                <span class="product_footer label ">{t}Out of stock{/t}</span>
+                                <span class="product_footer label ">{t}Launching soon{/t}</span>
                                 <span class="product_footer reminder"><i class="fa fa-envelope hide" aria-hidden="true"></i>  </span>
 
 
@@ -680,6 +772,14 @@
 
         $('._menu_block').addClass('hide')
         $('#menu_block_menu_' + key).removeClass('hide')
+
+    }
+
+
+    var styles={
+    {foreach from=$website->style  item=style  }
+            "{$style[0]} {$style[1]}":['{$style[0]}','{$style[1]}','{$style[2]}'],
+    {/foreach}
 
     }
 

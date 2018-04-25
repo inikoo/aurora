@@ -358,7 +358,7 @@
             'data-webpage_key="'+data.webpage_key+'" '+
             'data-out_of_stock_class="'+data.out_of_stock_class+'" '+
             'data-out_of_stock_label="'+data.out_of_stock_label+'" >'+
-            '<div class="panel_txt_control hide" style="padding:2px 10px;z-index:2001;position: absolute;top:-30px;left:0px;width:100%;height: 30px;border:1px solid #ccc;background: #fff;border-bottom: none"><i onclick="close_product_header_text(this)" class="fa fa-window-close button" style="float: right;margin-top:6px" title="{t}Close text edit mode{/t}"></i></div>'+
+            '<div class="panel_txt_control hide" ><i onclick="close_product_header_text(this)" class="fa fa-window-close button" style="float: right;margin-top:6px" title="{t}Close text edit mode{/t}"></i></div>'+
             '<div class="product_header_text fr-view" ></div>'+
             '<div class="wrap_to_center product_image" >'+
             '<i class="fal fa-fw fa-external-link-square more_info" aria-hidden="true"></i>'+

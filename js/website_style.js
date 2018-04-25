@@ -135,20 +135,68 @@ console.log()
 });
 
 
-function open_edit_button_style(element){
-
+function open_edit_button_style(element) {
 
     var offset = $(element).offset()
     $('#button_style').removeClass('hide').offset({
         'top': offset.top, 'left': offset.left - $('#button_style').width()
-    }).data('element',$('#basket_go_to_checkout'))
+    }).data('element', $('#basket_go_to_checkout'))
 
-        $('#button_style').find('.scope_color i:last').css('color',$(element).css('color')).data('color',$(element).css('color'))
-     $('#button_style').find('.scope_background-color i:last').css('color',$(element).css('background-color')).data('color',$(element).css('background-color'))
+    $('#button_style').find('.scope_footer_color i:last').css('color', $(element).css('color')).data('color', $(element).css('color'))
+    $('#button_style').find('.scope_footer_background-color i:last').css('color', $(element).css('background-color')).data('color', $(element).css('background-color'))
+
+}
+
+
+
+
+function open_edit_product_wrap_style(element){
+    console.log('xxxxxx')
+
+
+    var offset = $(element).offset()
+    $('#product_wrap_style').removeClass('hide').offset({
+        'top': offset.top, 'left': offset.left + $(element).width()+1
+    }).data('element',element)
+
+
+    var product_wrap=$(element).find('.product_block')
+
+
+
+    console.log('xxxxxx')
+    console.log(styles['.product_block border-top-width'][2])
+
+
+    $('#product_wrap_style').find('.border-width input.top').val(parse_margin_value(styles['.product_block border-top-width'][2]))
+    $('#product_wrap_style').find('.border-width input.bottom').val(parse_margin_value(styles['.product_block border-bottom-width'][2]))
+    $('#product_wrap_style').find('.border-width input.left').val(parse_margin_value(styles['.product_block border-left-width'][2]))
+    $('#product_wrap_style').find('.border-width input.right').val(parse_margin_value(styles['.product_block border-right-width'][2]))
+
+    var color=styles['.product_block border-color'][2]
+    if(color!='rgba(0, 0, 0, 0)'){
+        $('#product_wrap_style .scope_border-color i:last-child').css('color',color).data('color',color)
+    }else{
+        $('#product_wrap_style .scope_border-color i:last-child').data('color','')
+    }
+
+    $('#product_wrap_style').find('.scope_color i:last').css('color',styles[$(element).data('element')+' color'][2]).data('color',styles[$(element).data('element')+' color'][2])
+
+    $('#product_wrap_style').find('.scope_price_color i:last').css('color',styles['.product_price color'][2]).data('color',styles['.product_price color'][2])
+
+    $('#product_wrap_style').find('.scope_footer_color i:last').css('color',$(element).find('.order_row').css('color')).data('color',$(element).find('.order_row').css('color'))
+
+    $('#product_wrap_style').find('.scope_footer_background-color i:last').css('color',$(element).find('.ordering').css('background-color')).data('color',$(element).find('.ordering').css('background-color'))
+
+
+    var _color=getCssPropertyForRule($(element).data('hover_element'), 'background-color')
+
+    $('#product_wrap_style').find('.scope_footer_hover_background-color i:last').css('color',_color).data('color',_color)
 
 
 
 }
+
 
 function open_edit_text_style(element) {
 
@@ -220,6 +268,18 @@ function parse_margin_value(value){
 
 function change_color(color,element,scope){
 
+    console.log('--------')
+    console.log(element)
+    console.log(scope)
+    switch(scope){
+        case 'footer_color':
+            element=$(element).find('.ordering')
+            scope='color'
+            break;
+
+    }
+
+
     $(element).css(scope,color);
     $('#save_button',window.parent.document).addClass('save button changed valid')
 
@@ -261,3 +321,4 @@ function change_margins(input){
     $('#save_button',window.parent.document).addClass('save button changed valid')
 
 }
+

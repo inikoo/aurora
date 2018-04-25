@@ -70,6 +70,12 @@ class Public_Website {
                 $this->settings = json_decode($this->data['Website Settings'], true);
             }
 
+            if (empty($this->data['Website Style'])) {
+                $this->style = array();
+            } else {
+                $this->style = json_decode($this->data['Website Style'], true);
+            }
+
         }
 
 

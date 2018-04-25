@@ -26,11 +26,6 @@
      <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
 
-
-
-
-
-
     <link href="/css/jquery-ui.css" rel="stylesheet">
 
     <link href="/css/editor_v1/froala_editor.css?v=2a" rel="stylesheet"/>
@@ -51,7 +46,7 @@
     <link href="/css/editor_v1/plugins/draggable.css" rel="stylesheet">
 
 
-    <link rel="stylesheet" href="EcomB2B/css/desktop.min.css?v5" type="text/css"/>
+    <link rel="stylesheet" title="for_edit_colors" href="EcomB2B/css/desktop.min.css?v5" type="text/css"/>
     <link rel="stylesheet" href="EcomB2B/css/forms.min.css?v4" type="text/css"/>
 
     {assign "logged_in" true}
@@ -204,118 +199,7 @@
 
         {/if}
 
-        header #topHeader {
 
-            background-color: {$header_data.color.header_background};
-        {if $header_data.background_image!=''} background-image: url({$header_data.background_image});
-        {/if} color: {$header_data.color.header};
-
-        }
-
-        header #trueHeader {
-            background-color: {$header_data.color.menu_background};
-            border-bottom-color: {$header_data.color.menu_background_highlight};
-            color: {$header_data.color.menu};
-        }
-
-        header #trueHeader a {
-            color: {$header_data.color.menu};
-            cursor: pointer;
-
-        }
-
-        header #trueHeader a:hover {
-            color: {$header_data.color.menu_text_background_highlight};
-
-        }
-
-        header #_columns .dropdown a:hover {
-            background-color: transparent;
-        }
-
-        {if isset($header_data.color.items_title)}
-        header #_columns .dropdown li.item_li:hover > a * {
-            color: {$header_data.color.items_title};
-        }
-
-        {/if}
-
-        header #trueHeader .dropdown-menu {
-
-            color: {$header_data.color.items};
-        }
-
-        header #trueHeader .dropdown-menu a {
-
-            color: {$header_data.color.items};
-        }
-
-        {if isset($header_data.color.items_title)}
-
-        header #trueHeader .dropdown-menu a:hover {
-
-            color: {$header_data.color.items_title};
-        }
-
-        {/if}
-
-        header #menu_control_panel .button {
-            background-color: {$header_data.color.menu_background_highlight};
-        }
-
-        header #logo {
-            background-image: url({$header_data.logo});
-
-        }
-
-        header .yamm .dropdown-menu {
-            background: {$header_data.color.items_background};
-        }
-
-        header .dropdown-menu li a:hover {
-            background: {$header_data.color.items};
-            color: {$header_data.color.items_background};
-        }
-
-        header .list-unstyled span.link, .list-unstyled a.link {
-            color: {$header_data.color.items};
-
-        }
-
-        header .list-unstyled li p {
-            color: {$header_data.color.items}
-        }
-
-        header .dart {
-            color: {$header_data.color.items}
-
-        }
-
-        header .list-unstyled li i {
-            color: {$header_data.color.items}
-        }
-
-        header .list-unstyled li span {
-            color: {$header_data.color.items}
-        }
-
-        .order_row, .out_of_stock_row, .product_order{
-            background-color: {$website->get('Website Button Color')};
-            color: {$website->get('Website Button Text Color')}
-
-        }
-
-        .order_row.empty:hover {
-            background-color: {$website->get('Website Active Button Color')};
-            color: {$website->get('Website Active Button Text Color')}
-
-        }
-
-        .order_row.ordered {
-            background-color: {$website->get('Website Active Button Color')};
-            color: {$website->get('Website Active Button Text Color')}
-
-        }
 
         {if isset($extra_style)}{$extra_style}{/if}
 
@@ -580,6 +464,17 @@
             font-size: 16px;
         }
         {/if}
+
+
+    </style>
+
+
+
+    <style >
+
+        {foreach from=$website->style  item=style  }
+            {$style[0]}{ {$style[1]}: {$style[2]}}
+        {/foreach}
 
 
     </style>
