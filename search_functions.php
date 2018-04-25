@@ -679,7 +679,7 @@ function search_suppliers($db, $account, $memcache_ip, $data) {
             'n' => count($results),
             'd' => $results
         );
-        $cache->set($memcache_fingerprint, $results_data, $memcache_time);
+        
 
 
     }
@@ -1035,7 +1035,7 @@ function search_inventory($db, $account, $memcache_ip, $data) {
             'n' => count($results),
             'd' => $results
         );
-        $cache->set($memcache_fingerprint, $results_data, $memcache_time);
+        
 
 
     }
@@ -1445,7 +1445,7 @@ function search_products($db, $account, $memcache_ip, $data) {
             'n' => count($results),
             'd' => $results
         );
-        $cache->set($memcache_fingerprint, $results_data, $memcache_time);
+        
 
 
     }
@@ -1857,7 +1857,7 @@ function search_customers($db, $account, $memcache_ip, $data) {
             'n' => count($results),
             'd' => $results
         );
-        $cache->set($memcache_fingerprint, $results_data, $memcache_time);
+        
 
 
     }
@@ -2077,7 +2077,7 @@ function search_orders($db, $account, $memcache_ip, $data) {
             'n' => count($results),
             'd' => $results
         );
-        $cache->set($memcache_fingerprint, $results_data, $memcache_time);
+        
 
 
     }
@@ -2306,7 +2306,7 @@ function search_delivery_notes($db, $account, $memcache_ip, $data) {
             'n' => count($results),
             'd' => $results
         );
-        $cache->set($memcache_fingerprint, $results_data, $memcache_time);
+        
 
 
     }
@@ -2500,7 +2500,7 @@ function search_invoices($db, $account, $memcache_ip, $data) {
             'n' => count($results),
             'd' => $results
         );
-        $cache->set($memcache_fingerprint, $results_data, $memcache_time);
+        
 
 
     }
@@ -2699,7 +2699,7 @@ function search_hr($db, $account, $memcache_ip, $data) {
             'n' => count($results),
             'd' => $results
         );
-        $cache->set($memcache_fingerprint, $results_data, $memcache_time);
+        
 
 
     }
@@ -2871,7 +2871,7 @@ function search_locations($db, $account, $memcache_ip, $data) {
             'n' => count($results),
             'd' => $results
         );
-        $cache->set($memcache_fingerprint, $results_data, $memcache_time);
+        
 
 
     }
@@ -3248,7 +3248,7 @@ function agent_search($db, $account, $user, $memcache_ip, $data) {
             'n' => count($results),
             'd' => $results
         );
-        $cache->set($memcache_fingerprint, $results_data, $memcache_time);
+        
 
 
     }
@@ -3531,7 +3531,7 @@ function search_webpages($db, $account, $memcache_ip, $data) {
             'n' => count($results),
             'd' => $results
         );
-       // $cache->set($memcache_fingerprint, $results_data, $memcache_time);
+       // 
 
 
     }

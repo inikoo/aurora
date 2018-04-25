@@ -86,12 +86,23 @@ switch ($_REQUEST['action']) {
         break;
 
     case 'get_locations_from_part_sku':
+
+        if (!isset(['part_sku'])) {
+            $response = array(
+                'state' => 'Error',
+                'msg'   => 'part_sku needed'
+            );
+            echo json_encode($response);
+            exit;
+        }
+
+
         $part = get_object('part', $_REQUEST['part_sku']);
 
         if (!$part->id) {
             $response = array(
                 'state' => 'Error',
-                'msg'   => 'part not found'
+                'msg'   => 'part not found ('.$_REQUEST['part_sku'].')  '
             );
             echo json_encode($response);
             exit;
