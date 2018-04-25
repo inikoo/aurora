@@ -166,7 +166,7 @@
         set_up_credentials();
 
         var action = 'search_location_by_code';
-        var query = 'eo';
+        var query = 'a';
 
 
 

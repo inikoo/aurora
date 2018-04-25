@@ -100,7 +100,7 @@ switch ($tipo) {
                 } else {
                     $data['scope'] = 'warehouses';
                 }
-                search_inventory($db, $account, $memcache_ip, $data);
+                search_inventory($db, $account, $data);
             } elseif ($data['state']['module'] == 'hr') {
                 search_hr($db, $account, $memcache_ip, $data);
 
