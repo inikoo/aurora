@@ -695,7 +695,7 @@ function search_suppliers($db, $account, $memcache_ip, $data) {
 }
 
 
-function search_inventory($db, $account, $memcache_ip, $data) {
+function search_inventory($db, $account, $data) {
 
 
     $cache       = false;
@@ -715,10 +715,6 @@ function search_inventory($db, $account, $memcache_ip, $data) {
     }
 
 
-    $memcache_fingerprint = $account->get('Account Code').'SEARCH_INVENTORY'.md5($queries);
-
-    $cache = new Memcached();
-    $cache->addServer($memcache_ip, 11211);
 
 
     if (strlen($queries) <= 2) {
@@ -733,13 +729,6 @@ function search_inventory($db, $account, $memcache_ip, $data) {
         $memcache_time = 300;
 
     }
-
-
-    $results_data = $cache->get($memcache_fingerprint);
-
-
-    if (!$results_data or true) {
-
 
         $candidates = array();
 
@@ -1038,7 +1027,7 @@ function search_inventory($db, $account, $memcache_ip, $data) {
         
 
 
-    }
+
     $response = array(
         'state'          => 200,
         'number_results' => $results_data['n'],
@@ -2873,9 +2862,9 @@ function search_locations($db, $account, $data,$response_type='echo') {
                     'warehouse' => $row['Warehouse Code'],
                     'label'     => '<i class="fa fa-inventory padding_right_10" aria-hidden="true"></i> '.highlightkeyword($row['Location Code'], $queries),
                     'details'   => '',
-                    'view'      => sprintf(
-                        'locations/%d/%d', $row['Location Warehouse Key'], $row['Location Key']
-                    )
+                    'view'      => sprintf('locations/%d/%d', $row['Location Warehouse Key'], $row['Location Key']),
+                    'key'=>$row['Location Key'],
+                    'code'=>$row['Location Code']
 
 
                 );
@@ -3573,6 +3562,311 @@ function search_webpages($db, $account, $memcache_ip, $data) {
 
 }
 
+
+
+
+function search_parts($db, $account, $data,$response_type='echo') {
+
+
+    $cache       = false;
+    $max_results = 10;
+    $user        = $data['user'];
+    $queries     = trim($data['query']);
+
+    if ($queries == '') {
+        $response = array(
+            'state'   => 200,
+            'results' => 0,
+            'data'    => ''
+        );
+        if($response_type=='echo'){
+            echo json_encode($response);
+            return;
+        }else{
+            return $response;
+        }
+
+        return;
+    }
+
+
+
+
+    if (strlen($queries) <= 2) {
+        $memcache_time = 295200;
+    }
+    if (strlen($queries) <= 3) {
+        $memcache_time = 86400;
+    }
+    if (strlen($queries) <= 4) {
+        $memcache_time = 3600;
+    } else {
+        $memcache_time = 300;
+
+    }
+
+    $candidates = array();
+
+    $query_array    = preg_split('/\s+/', $queries);
+    $number_queries = count($query_array);
+
+
+    foreach ($query_array as $q) {
+
+
+        $sql = sprintf(
+            "SELECT `Part SKU`,`Part Reference`,`Part Status` FROM `Part Dimension` WHERE `Part Reference` LIKE '%s%%' LIMIT 20 ", $q
+        );
+
+
+        if ($result = $db->query($sql)) {
+            foreach ($result as $row) {
+
+                if ($row['Part Reference'] == $q) {
+                    if ($row['Part Status'] == 'In Use') {
+                        $candidates['P'.$row['Part SKU']] = 1000;
+                    } else {
+                        $candidates['P'.$row['Part SKU']] = 800;
+                    }
+                } else {
+
+                    $len_name = strlen($row['Part Reference']);
+                    $len_q    = strlen($q);
+                    $factor   = $len_q / $len_name;
+                    if ($row['Part Status'] == 'In Use') {
+                        $candidates['P'.$row['Part SKU']] = 500 * $factor;
+                    } else {
+                        $candidates['P'.$row['Part SKU']] = 400 * $factor;
+                    }
+                }
+
+            }
+        } else {
+            print_r($error_info = $db->errorInfo());
+            print $sql;
+            exit;
+        }
+
+
+        $sql = sprintf(
+            "SELECT `Part SKU`,`Part Reference`,`Part Package Description`,`Part Status` FROM `Part Dimension` WHERE `Part Package Description`  REGEXP '[[:<:]]%s' LIMIT 100 ", $q
+        );
+
+        if ($result = $db->query($sql)) {
+            foreach ($result as $row) {
+                if ($row['Part Package Description'] == $q) {
+                    if ($row['Part Status'] == 'In Use') {
+
+                        if (isset($candidates['P'.$row['Part SKU']])) {
+                            $candidates['P'.$row['Part SKU']] += 55;
+
+                        } else {
+                            $candidates['P'.$row['Part SKU']] = 55;
+
+                        }
+
+                    } else {
+
+                        if (isset($candidates['P'.$row['Part SKU']])) {
+                            $candidates['P'.$row['Part SKU']] += 35;
+
+                        } else {
+                            $candidates['P'.$row['Part SKU']] = 35;
+
+                        }
+
+                    }
+                } else {
+
+                    $len_name = strlen($row['Part Package Description']);
+                    $len_q    = strlen($q);
+                    $factor   = $len_q / $len_name;
+                    if ($row['Part Status'] == 'In Use') {
+                        if (isset($candidates['P'.$row['Part SKU']])) {
+                            $candidates['P'.$row['Part SKU']] += 50 * $factor;
+
+                        } else {
+                            $candidates['P'.$row['Part SKU']] = 50 * $factor;
+
+                        }
+                    } else {
+
+                        if (isset($candidates['P'.$row['Part SKU']])) {
+                            $candidates['P'.$row['Part SKU']] += 30 * $factor;
+
+                        } else {
+                            $candidates['P'.$row['Part SKU']] = 30 * $factor;
+
+                        }
+
+                    }
+                }
+
+            }
+        } else {
+            print_r($error_info = $db->errorInfo());
+            print $sql;
+            exit;
+        }
+
+
+
+
+
+
+    }
+
+
+    arsort($candidates);
+
+
+    $total_candidates = count($candidates);
+
+    if ($total_candidates == 0) {
+        $response = array(
+            'state'   => 200,
+            'results' => 0,
+            'data'    => ''
+        );
+        if($response_type=='echo'){
+            echo json_encode($response);
+            return;
+        }else{
+            return $response;
+        }
+
+        return;
+    }
+
+    $counter       = 0;
+    $part_keys     = '';
+    $category_keys = '';
+
+
+    $results = array();
+
+    $number_parts_keys      = 0;
+    $number_categories_keys = 0;
+
+
+    foreach ($candidates as $_key => $val) {
+        $counter++;
+
+        if ($_key[0] == 'P') {
+            $key            = preg_replace('/^P/', '', $_key);
+            $part_keys      .= ','.$key;
+            $results[$_key] = '';
+            $number_parts_keys++;
+
+        } elseif ($_key[0] == 'C') {
+            $key            = preg_replace('/^C/', '', $_key);
+            $category_keys  .= ','.$key;
+            $results[$_key] = '';
+            $number_categories_keys++;
+
+        }
+
+        if ($counter > $max_results) {
+            break;
+        }
+    }
+    $part_keys     = preg_replace('/^,/', '', $part_keys);
+    $category_keys = preg_replace('/^,/', '', $category_keys);
+
+
+    if ($number_parts_keys) {
+        $sql = sprintf(
+            "SELECT P.`Part SKU`,`Part Reference`,`Part Package Description`,`Part Status` FROM `Part Dimension` P  WHERE P.`Part SKU` IN (%s)", $part_keys
+        );
+
+        if ($result = $db->query($sql)) {
+            foreach ($result as $row) {
+
+                if ($row['Part Status'] == 'Not In Use') {
+                    $status = '<i class="fa fa-square fa-fw padding_right_5 very_discreet" aria-hidden="true"></i> ';
+
+                } elseif ($row['Part Status'] == 'Discontinuing') {
+                    $status = '<i class="fa fa-square fa-fw padding_right_5 very_discreet" aria-hidden="true"></i> ';
+
+                } else {
+                    $status = '<i class="fa fa-square fa-fw padding_right_5" aria-hidden="true"></i> ';
+                }
+
+                $results['P'.$row['Part SKU']] = array(
+                    'label'   => $status.highlightkeyword(sprintf('%s', $row['Part Reference']), $queries),
+                    'details' => highlightkeyword($row['Part Package Description'], $queries),
+                    'view'    => sprintf('part/%d', $row['Part SKU']),
+                    'sku'=>$row['Part SKU'],
+                    'reference'=>$row['Part Reference']
+
+
+                );
+
+            }
+        } else {
+            print_r($error_info = $db->errorInfo());
+            print $sql;
+            exit;
+        }
+
+    }
+
+    if ($number_categories_keys) {
+        $sql = sprintf(
+            "SELECT `Category Code`,`Category Store Key`,`Category Key`,`Category Code`,`Category Label` FROM `Category Dimension` WHERE `Category Key` IN (%s)", $category_keys
+        );
+
+        if ($result = $db->query($sql)) {
+            foreach ($result as $row) {
+
+
+                $icon = '<i class="fa fa-sitemap fa-fw padding_right_5" aria-hidden="true" ></i> ';
+
+                $results['C'.$row['Category Key']] = array(
+                    'label'   => $icon.highlightkeyword(
+                            sprintf('%s', $row['Category Code']), $queries
+                        ),
+                    'details' => highlightkeyword(
+                        $row['Category Label'], $queries
+                    ),
+                    'view'    => sprintf(
+                        'inventory/category/%d', $row['Category Key']
+                    )
+
+
+                );
+            }
+        } else {
+            print_r($error_info = $db->errorInfo());
+            print $sql;
+            exit;
+        }
+    }
+
+
+    $results_data = array(
+        'n' => count($results),
+        'd' => $results
+    );
+
+
+
+
+    $response = array(
+        'state'          => 200,
+        'number_results' => $results_data['n'],
+        'results'        => $results_data['d'],
+        'q'              => $queries
+    );
+
+    if($response_type=='echo'){
+        echo json_encode($response);
+        return;
+    }else{
+        return $response;
+    }
+
+}
 
 
 
