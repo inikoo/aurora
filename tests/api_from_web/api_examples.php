@@ -59,7 +59,7 @@
                 Url
             </td>
             <td>
-                <input id="api_url" value="" style="width:400px">
+                <input id="api_url" value="http://aw.aurora.systems/api/stock" style="width:400px">
             </td>
         </tr>
         <tr>
@@ -67,7 +67,7 @@
                 Handle
             </td>
             <td>
-                <input id="api_handle" value="" style="width:400px">
+                <input id="api_handle" value="a40e82bf" style="width:400px">
             </td>
         </tr>
         <tr>
@@ -75,7 +75,7 @@
                 Key
             </td>
             <td>
-                <input id="api_key" value="" style="width:400px">
+                <input id="api_key" value="UEFVVzdCM1c3eDNUdUZpVGlYM004Yzl2RXFFRGlLOXZVaEVjNEVlRg==" style="width:400px">
             </td>
         </tr>
         <tr>
