@@ -82,7 +82,7 @@ switch ($tipo) {
                 )) {
                     search_webpages($db, $account, $memcache_ip, $data);
                 } else {
-                    search_products($db, $account, $memcache_ip, $data);
+                    search_products($db, $account, $data);
                 }
 
                 //  print_r($data['state']);
@@ -92,7 +92,7 @@ switch ($tipo) {
 
                 $data['scope'] = 'stores';
 
-                search_products($db, $account, $memcache_ip, $data);
+                search_products($db, $account, $data);
             } elseif ($data['state']['module'] == 'inventory') {
                 if ($data['state']['current_warehouse']) {
                     $data['scope']     = 'warehouse';
