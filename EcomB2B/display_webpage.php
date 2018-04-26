@@ -46,7 +46,7 @@ $template = $theme.'/webpage_blocks.'.$theme.'.'.$website_type.$template_suffix.
 
 $smarty->setCaching(Smarty::CACHING_LIFETIME_CURRENT);
 $smarty->setCacheLifetime(-1);
-$smarty->setCompileCheck(false);
+$smarty->setCompileCheck(true);
 
 
 if(!$smarty->isCached($template,$cache_id)) {

@@ -73,14 +73,33 @@
                         <div style="margin-top:4px">{if empty($labels._product_rrp)}{t}RRP{/t}{else}{$labels._product_rrp}{/if}: {$rrp}</div>{/if}
                 </div>
 
-                <div style="margin-left:10px;">
-                    <div class="order_row empty  order_row_{$product->id} ">
-                        <input maxlength=6 class='order_input ' type="text" size='2' value='' data-ovalue=''>
-                        <span class="order_button label sim_button">
+
+                    {if $product->get('Web State')=='Out of Stock'}
+                        <div style="height:40px;line-height:40px;padding:0px 20px"   class="      {$product->get('Out of Stock Class')} ">
+
+                            <span class="product_footer label ">{$product->get('Out of Stock Label')}</span>
+                            <span class="product_footer reminder"><i class="fa fa-envelope hide" aria-hidden="true"></i>  </span>
+
+
+                        </div>
+                    {elseif  $product->get('Web State')=='For Sale'}
+
+                        <div style="margin-left:10px;">
+                            <div class="order_row empty  order_row_{$product->id} ">
+                                <input maxlength=6 class='order_input ' type="text" size='2' value='' data-ovalue=''>
+                                <span class="order_button label sim_button">
                             <i class="fa fa-hand-pointer  fa-fw" aria-hidden="true"></i> {if empty($labels._ordering_order_now)}{t}Order now{/t}{else}{$labels._ordering_order_now}{/if}
                         </span>
-                    </div>
-                </div>
+                            </div>
+                        </div>
+                    {/if}
+
+
+
+
+
+
+
                 {else}
                     <div class="ordering log_out " >
 

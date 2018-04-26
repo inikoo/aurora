@@ -14,6 +14,7 @@ use Aws\Ses\SesClient;
 
 include_once 'ar_web_common_logged_in.php';
 require_once 'utils/placed_order_functions.php';
+require_once 'utils/aes.php';
 
 require_once 'external_libs/Smarty/Smarty.class.php';
 
