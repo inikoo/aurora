@@ -123,6 +123,8 @@ trait OrderItems {
         );
 
 
+
+
         if ($dn_key) {
             $sql .= sprintf(' and `Delivery Note Key`=%d', $dn_key);
         }
@@ -264,6 +266,12 @@ VALUES (%f,%s,%f,%s,%s,%s,%s,%s,%s,
                         );
                         $this->db->exec($sql);
                     }
+                }else{
+                    $this->delete_transaction(
+                        $row['Order Transaction Fact Key']
+                    );
+                    $otf_key = 0;
+                    $gross   = 0;
                 }
             }
         } else {
