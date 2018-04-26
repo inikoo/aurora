@@ -88,6 +88,40 @@ switch ($_REQUEST['action']) {
         exit;
         break;
 
+
+    case 'get_parts_from_location_key':
+
+        if (!isset($_REQUEST['location_key'])) {
+            $response = array(
+                'state' => 'Error',
+                'msg'   => 'location_key needed'
+            );
+            echo json_encode($response);
+            exit;
+        }
+
+
+        $location = get_object('location', $_REQUEST['location_key']);
+
+        if (!$location->id) {
+            $response = array(
+                'state' => 'Error',
+                'msg'   => 'location not found ('.$_REQUEST['location_key'].')  '
+            );
+            echo json_encode($response);
+            exit;
+        }
+
+
+
+        $response = array(
+            'state' => 'OK',
+            'data'  => $location->get_parts('data')
+        );
+        echo json_encode($response);
+        exit;
+        break;
+
     case 'get_locations_from_part_sku':
 
         if (!isset($_REQUEST['part_sku'])) {

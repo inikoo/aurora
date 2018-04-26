@@ -691,7 +691,9 @@ class Location extends DB_Table {
                     $part_locations[$row['Part SKU']] = new  PartLocation($row['Part SKU'].'_'.$this->id);
                 } else {
 
+                        $part_location= new  PartLocation($row['Part SKU'].'_'.$this->id);
 
+                    $part_locations[$row['Part SKU']] = $part_location->data
 
                 }
 
