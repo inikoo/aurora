@@ -2703,7 +2703,11 @@ VALUES (%d,%s, %d, %d, %s,%s, %d, %d, %s, %s, %s,%d,NOW())", $this->id,
                         if ($webpage->id) {
                             $webpage->reindex_items();
                             if ($webpage->updated) {
-                                $webpage->publish();
+
+                                if($value=='Yes'){
+                                    $webpage->publish();
+                                }
+
                             }
                         }
                         $sql = sprintf(
@@ -2734,8 +2738,15 @@ VALUES (%d,%s, %d, %d, %s,%s, %d, %d, %s, %s, %s,%d,NOW())", $this->id,
 
 
                         if ($this->webpage->id) {
-                            $this->webpage->update(array('Page State' => 'Offline'));
+
+                        
+
+                            $this->webpage->unpublish();
                         }
+
+
+
+
 
                         $sql = sprintf(
                             'SELECT `Category Webpage Index Webpage Key`,`Category Webpage Index Key` FROM `Category Webpage Index` WHERE `Category Webpage Index Category Key`=%d  ', $this->id
