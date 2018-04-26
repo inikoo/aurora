@@ -551,15 +551,23 @@ function toggle_all_export_fields(element) {
 
 }
 
-function toggle_export_field(key) {
+function toggle_export_field(element) {
 
-    var field_element = $('#field_export_' + key)
+
+
+
+    field_element=$(element)
 
     if (field_element.hasClass('fa-check-square')) {
-        field_element.removeClass('fa-check-square')
+
+
+       field_element.removeClass('fa-check-square')
         field_element.addClass('fa-square')
 
     } else {
+        console.log('unckeced')
+
+
         field_element.addClass('fa-check-square')
         field_element.removeClass('fa-square')
     }

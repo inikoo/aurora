@@ -78,7 +78,7 @@
                         <tr class="small_row">
                             <td>{$export_field.label}</td>
                             <td style="width_20" class="field_export">
-                                <i id="field_export_{$_key}" onclick="toggle_export_field({$_key})" key="{$_key}"
+                                <i id="field_export_{$_key}" onclick="toggle_export_field(this)" key="{$_key}"
                                    class="button fa-fw object_field far {if $export_field.show_for_new }fa-check-square{else}fa-square{/if}"></i>
                             </td>
                         </tr>
