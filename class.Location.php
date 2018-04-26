@@ -702,8 +702,10 @@ class Location extends DB_Table {
             include_once 'class.Part.php';
         } elseif ($scope == 'part_location_object') {
             include_once 'class.PartLocation.php';
-        }
+        }elseif ($scope == 'data') {
+            include_once 'class.PartLocation.php';
 
+        }
         $sql = sprintf(
             "SELECT PL.`Part SKU`,`Quantity On Hand`,`Minimum Quantity`,`Maximum Quantity`,`Moving Quantity`,`Can Pick` 
             FROM `Part Location Dimension` PL LEFT JOIN `Part Dimension` P ON (P.`Part SKU`=PL.`Part SKU`)  WHERE `Location Key`=%d", $this->id
