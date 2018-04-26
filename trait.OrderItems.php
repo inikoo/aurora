@@ -118,11 +118,9 @@ trait OrderItems {
 
 
         $sql = sprintf(
-            "SELECT `Order Bonus Quantity`,`Order Quantity`,`Order Transaction Gross Amount`,`Order Transaction Total Discount Amount`,`Order Transaction Fact Key` FROM `Order Transaction Fact` OTF WHERE `Order Key`=%d AND `Product ID`=%d ",
-            $this->id, $data['item_key']
+            "SELECT `Order Bonus Quantity`,`Order Quantity`,`Order Transaction Gross Amount`,`Order Transaction Total Discount Amount`,`Order Transaction Fact Key` FROM `Order Transaction Fact` OTF WHERE `Order Key`=%d AND `Product Key`=%d ",
+            $this->id, $data['item_historic_key']
         );
-
-
 
 
         if ($dn_key) {
@@ -153,7 +151,7 @@ trait OrderItems {
 
                 //   print "\n**** $old_quantity $old_bonus_quantity   ;  ($quantity_set,$bonus_quantity_set) ; QTY    $quantity ==     $total_quantity\n";
 
-                $product = get_object('Product', $data['item_key']);
+                $product = get_object('Product', $data['item_historic_key'], 'historic_key');
 
                 if ($total_quantity == 0) {
 
@@ -266,12 +264,6 @@ VALUES (%f,%s,%f,%s,%s,%s,%s,%s,%s,
                         );
                         $this->db->exec($sql);
                     }
-                }else{
-                    $this->delete_transaction(
-                        $row['Order Transaction Fact Key']
-                    );
-                    $otf_key = 0;
-                    $gross   = 0;
                 }
             }
         } else {
