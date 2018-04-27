@@ -796,6 +796,8 @@ class Location extends DB_Table {
     function get($key) {
 
 
+
+
         if (!$this->id) {
             return '';
         }
@@ -803,7 +805,7 @@ class Location extends DB_Table {
 
         switch ($key) {
             case 'Stock Value':
-                global $account;
+                $account=get_object('Account',1);
 
                 return money($this->data['Location Stock Value'], $account->get('Account Currency'));
 

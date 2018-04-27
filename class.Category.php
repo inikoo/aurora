@@ -2739,7 +2739,7 @@ VALUES (%d,%s, %d, %d, %s,%s, %d, %d, %s, %s, %s,%d,NOW())", $this->id,
 
                         if ($this->webpage->id) {
 
-                        
+
 
                             $this->webpage->unpublish();
                         }
