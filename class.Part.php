@@ -2769,14 +2769,14 @@ class Part extends Asset {
         $this->update_stock_status();
 
         // todo find a way do it more efficient in aw
-        global $account;
+        $account=get_object('Account',1);
         if ($account->get('Code') == 'AWEU') {
             $this->update_stock_run();
         }
 
 
         include_once 'utils/new_fork.php';
-        global $account;
+         $account=get_object('Account',1);
 
 
         new_housekeeping_fork(

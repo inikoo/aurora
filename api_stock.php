@@ -10,7 +10,7 @@
  Version 2.0
 */
 
-
+$account=get_object('Account',1);
 
 
 if (empty($_REQUEST['action'])) {
@@ -224,7 +224,6 @@ switch ($_REQUEST['action']) {
 
         include_once 'search_functions.php';
 
-        $account=get_object('Account',1);
 
         $user->read_warehouses();
 
@@ -247,6 +246,88 @@ switch ($_REQUEST['action']) {
                 'number_results'=>$_response['number_results'],
 
             )
+        );
+        echo json_encode($response);
+        exit;
+        break;
+
+
+    case 'audit_stock':
+
+
+
+
+        if (empty($_REQUEST['part_sku'])) {
+            $response = array(
+                'state' => 'Error',
+                'msg'   => 'part_sku needed'
+            );
+            echo json_encode($response);
+            exit;
+        }
+
+
+        if (empty($_REQUEST['location_key'])) {
+            $response = array(
+                'state' => 'Error',
+                'msg'   => 'location_key needed'
+            );
+            echo json_encode($response);
+            exit;
+        }
+
+        if (empty($_REQUEST['qty'])) {
+            $response = array(
+                'state' => 'Error',
+                'msg'   => 'qty needed'
+            );
+            echo json_encode($response);
+            exit;
+        }
+        if (!is_numeric($_REQUEST['qty']) or $_REQUEST['qty']<0 ) {
+            $response = array(
+                'state' => 'Error',
+                'msg'   => 'qty has t be a positive number'
+            );
+            echo json_encode($response);
+            exit;
+        }
+
+        include_once 'class.PartLocation.php';
+
+        $editor = array(
+            'Author Name'  => $user->data['User Alias'],
+            'Author Alias' => $user->data['User Alias'].' (via App)',
+            'Author Type'  => $user->data['User Type'],
+            'Author Key'   => $user->data['User Parent Key'],
+            'User Key'     => $user->id,
+            'Date'         => gmdate('Y-m-d H:i:s')
+        );
+
+
+        $part_location         = new PartLocation($_REQUEST['part_sku'], $_REQUEST['location_key']);
+        $part_location->editor = $editor;
+
+        if (!$part_location->ok) {
+            $response = array(
+                'state' => 'Error',
+                'msg'   => 'location part not associated'
+            );
+
+
+            echo json_encode($response);
+            exit;
+
+        }
+
+
+        $part_location->audit($_REQUEST['qty'],(isset($_REQUEST['Note'])?$_REQUEST['Note']:''))  ;
+
+
+
+        $response = array(
+            'state' => 'OK',
+            'data'  => $part_location->data
         );
         echo json_encode($response);
         exit;

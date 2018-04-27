@@ -441,7 +441,8 @@ class PartLocation extends DB_Table {
 
 
         include_once 'utils/new_fork.php';
-        global $account;
+
+        $account=get_object('Account',1);
 
 
         new_housekeeping_fork(
