@@ -321,7 +321,7 @@ switch ($_REQUEST['action']) {
         }
 
 
-        $part_location->audit($_REQUEST['qty'],(isset($_REQUEST['Note'])?$_REQUEST['Note']:''))  ;
+        $part_location->audit($_REQUEST['qty'],(isset($_REQUEST['note'])?$_REQUEST['note']:''))  ;
 
 
 
