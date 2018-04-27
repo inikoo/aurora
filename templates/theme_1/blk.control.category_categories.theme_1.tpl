@@ -324,7 +324,7 @@
             '<div class="item_header_text">'+data.title+'</div>' +
             '<div class="wrap_to_center button"><img src="'+data.image+'" data-image_mobile_website="" data-image_website="" data-src="'+data.image+'"  /></div></div>\n'+
             '<div class="category_block item_overlay hide" >\n'+
-                '<div class="item_header_text" contenteditable="true">'+data.title+'</div>' +
+                '<div class="item_overlay_item_header_text " style="text-align: center;padding-top:9px" contenteditable="true">'+data.title+'</div>' +
                 '<div class="button_container"  >\n'+
                     '<div class="flex-item category_code">'+data.code+'</div>\n'+
                     '<div class="flex-item"> <span class="number_products">'+data.number_products+'</span> <i class="fa fa-cube" aria-hidden="true"></i></div>\n'+

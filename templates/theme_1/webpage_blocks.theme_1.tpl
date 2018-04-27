@@ -2855,7 +2855,7 @@ console.log($(element))
 
 
 
-    $(document).on("input propertychange", ".item_overlay .item_header_text", function () {
+    $(document).on("input propertychange", ".item_overlay_item_header_text", function () {
 
 
         $(this).closest('.wrap').find('.category_block .item_header_text').html($(this).html())

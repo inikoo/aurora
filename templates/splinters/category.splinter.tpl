@@ -33,7 +33,7 @@
     </div>
 </div>
 <div class="category_block item_overlay hide">
-    <div class="item_header_text " contenteditable="true">{$category_data.header_text|strip_tags}</div>
+    <div class="item_overlay_item_header_text " style="text-align: center;padding-top:9px" contenteditable="true">{$category_data.header_text|strip_tags}</div>
     <div class="button_container">
         <div class="flex-item category_code">{$category_data.category_code}</div>
         <div class="flex-item "><span class="number_products">{$category_data.number_products}</span> <i class="fa fa-cube" aria-hidden="true"></i></div>
