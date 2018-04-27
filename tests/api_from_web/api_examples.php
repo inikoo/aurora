@@ -122,6 +122,15 @@
         </tr>
 
 
+        <tr>
+            <td colspan="2">
+                <button id="audit_stock">Audit stock</button>
+            </td>
+        </tr>
+
+
+
+
     </table>
 </div>
 <div id="result">
@@ -158,6 +167,11 @@
 
     $("#search_part_by_code").click(function () {
         search_part_by_code()
+    });
+
+
+    $("#audit_stock").click(function () {
+        audit_stock()
     });
 
 
@@ -265,7 +279,36 @@
 
     }
 
-    function get_location_data() {
+    function audit_stock() {
+
+        set_up_credentials();
+
+        var action = 'audit_stock';
+        var location_key = 8;
+        var part_sku = 2430;
+        var qty = 20;
+
+        var ajaxData = new FormData();
+        ajaxData.append("action", action)
+        ajaxData.append("location_key", location_key)
+        ajaxData.append("part_sku", part_sku)
+        ajaxData.append("qty", qty)
+
+
+        $.ajax({
+            url: api_url, type: 'POST', data: ajaxData, dataType: 'json', cache: false, contentType: false, processData: false, complete: function () {
+            }, success: function (data) {
+                console.log(data)
+            }, error: function () {
+                console.log(data)
+            }
+        });
+
+
+    }
+
+
+    function get_location_data(){
 
         set_up_credentials();
 
@@ -286,7 +329,6 @@
                 console.log(data)
             }
         });
-
 
     }
 
