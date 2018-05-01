@@ -74,10 +74,15 @@
                         {/if}
                     {/foreach}
                     </div>
-                {else}
+                {else if $column.type=='single_column'}
 
-
+                <div class="submenu" id="sidebar-sub-{$key}">
+                    {foreach from=$column.items key=sub_col_key item=item}
+                        <a href="{$item.url}"><span>{$item.label}</span></a>
+                    {/foreach}
+                </div>
                 {/if}
+
 
 
 
