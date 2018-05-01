@@ -1468,6 +1468,15 @@ $tab_defaults = array(
         'f_field'     => 'code',
 
     ),
+    'supplier.delivery.costing'           => array(
+        'view'        => 'overview',
+        'sort_key'    => 'id',
+        'sort_order'  => 1,
+        'rpp'         => 1000,
+        'rpp_options' => $default_rrp_options,
+        'f_field'     => 'code',
+
+    ),
 
     'supplier.delivery.check_items' => array(
         'view'        => 'overview',

@@ -10,7 +10,7 @@
  Version 2.0
 */
 
-$account=get_object('Account',1);
+$account = get_object('Account', 1);
 
 
 if (empty($_REQUEST['action'])) {
@@ -46,7 +46,7 @@ switch ($_REQUEST['action']) {
 
         include_once 'class.Part.php';
 
-        $part=new Part('barcode',$_REQUEST['barcode']);
+        $part = new Part('barcode', $_REQUEST['barcode']);
 
         if (!$part->id) {
             $response = array(
@@ -111,7 +111,6 @@ switch ($_REQUEST['action']) {
             echo json_encode($response);
             exit;
         }
-
 
 
         $response = array(
@@ -186,27 +185,27 @@ switch ($_REQUEST['action']) {
 
         include_once 'search_functions.php';
 
-       $account=get_object('Account',1);
+        $account = get_object('Account', 1);
 
         $user->read_warehouses();
 
         $user->read_stores();
 
 
-        $data=array(
-            'user'=>$user,
-            'query'=>$_REQUEST['query'],
-            'scope'=>''
+        $data = array(
+            'user'  => $user,
+            'query' => $_REQUEST['query'],
+            'scope' => ''
         );
 
 
-        $_response=search_locations($db, $account, $data,'data');
+        $_response = search_locations($db, $account, $data, 'data');
 
         $response = array(
             'state' => 'OK',
             'data'  => array(
-                'results'=>$_response['results'],
-                'number_results'=>$_response['number_results'],
+                'results'        => $_response['results'],
+                'number_results' => $_response['number_results'],
 
             )
         );
@@ -230,20 +229,20 @@ switch ($_REQUEST['action']) {
         $user->read_stores();
 
 
-        $data=array(
-            'user'=>$user,
-            'query'=>$_REQUEST['query'],
-            'scope'=>''
+        $data = array(
+            'user'  => $user,
+            'query' => $_REQUEST['query'],
+            'scope' => ''
         );
 
 
-        $_response=search_parts($db, $account, $data,'data');
+        $_response = search_parts($db, $account, $data, 'data');
 
         $response = array(
             'state' => 'OK',
             'data'  => array(
-                'results'=>$_response['results'],
-                'number_results'=>$_response['number_results'],
+                'results'        => $_response['results'],
+                'number_results' => $_response['number_results'],
 
             )
         );
@@ -252,9 +251,144 @@ switch ($_REQUEST['action']) {
         break;
 
 
+    case 'link_part_location':
+
+
+        if (empty($_REQUEST['part_sku'])) {
+            $response = array(
+                'state' => 'Error',
+                'msg'   => 'part_sku needed'
+            );
+            echo json_encode($response);
+            exit;
+        }
+
+
+        if (empty($_REQUEST['location_key'])) {
+            $response = array(
+                'state' => 'Error',
+                'msg'   => 'location_key needed'
+            );
+            echo json_encode($response);
+            exit;
+        }
+
+
+
+        include_once 'class.PartLocation.php';
+
+        $editor = array(
+            'Author Name'  => $user->data['User Alias'].' (via App)',
+            'Author Alias' => $user->data['User Alias'].' (via App)',
+            'Author Type'  => $user->data['User Type'],
+            'Author Key'   => $user->data['User Parent Key'],
+            'User Key'     => $user->id,
+            'Date'         => gmdate('Y-m-d H:i:s')
+        );
+
+
+        $part_location         = new PartLocation($_REQUEST['part_sku'], $_REQUEST['location_key']);
+        $part_location->editor = $editor;
+
+
+        $part_location->associate();
+
+
+        $response = array(
+            'state' => 'OK',
+            'data'  => $part_location->data
+        );
+        echo json_encode($response);
+        exit;
+        break;
+
+
+    case 'unlink_part_location':
+
+
+        if (empty($_REQUEST['part_sku'])) {
+            $response = array(
+                'state' => 'Error',
+                'msg'   => 'part_sku needed'
+            );
+            echo json_encode($response);
+            exit;
+        }
+
+
+        if (empty($_REQUEST['location_key'])) {
+            $response = array(
+                'state' => 'Error',
+                'msg'   => 'location_key needed'
+            );
+            echo json_encode($response);
+            exit;
+        }
+
+
+        include_once 'class.PartLocation.php';
+
+        $editor = array(
+            'Author Name'  => $user->data['User Alias'].' (via App)',
+            'Author Alias' => $user->data['User Alias'].' (via App)',
+            'Author Type'  => $user->data['User Type'],
+            'Author Key'   => $user->data['User Parent Key'],
+            'User Key'     => $user->id,
+            'Date'         => gmdate('Y-m-d H:i:s')
+        );
+
+
+        $part_location         = new PartLocation($_REQUEST['part_sku'], $_REQUEST['location_key']);
+        $part_location->editor = $editor;
+
+        if (!$part_location->ok) {
+            $response = array(
+                'state' => 'OK'
+            );
+
+
+            echo json_encode($response);
+            exit;
+
+        }else{
+
+            if ($part_location_from->get('Quantity On Hand') !=0) {
+
+                $response = array(
+                    'state' => 'Error',
+                    'msg'   => 'location part has stock'
+                );
+
+
+                echo json_encode($response);
+                exit;
+
+            }else{
+
+
+                $part_location->disassociate();
+
+
+                $response = array(
+                    'state' => 'OK'
+
+                );
+                echo json_encode($response);
+
+            }
+
+
+
+
+        }
+
+
+
+        exit;
+        break;
+
+
     case 'audit_stock':
-
-
 
 
         if (empty($_REQUEST['part_sku'])) {
@@ -284,7 +418,7 @@ switch ($_REQUEST['action']) {
             echo json_encode($response);
             exit;
         }
-        if (!is_numeric($_REQUEST['qty']) or $_REQUEST['qty']<0 ) {
+        if (!is_numeric($_REQUEST['qty']) or $_REQUEST['qty'] < 0) {
             $response = array(
                 'state' => 'Error',
                 'msg'   => 'qty has t be a positive number'
@@ -321,13 +455,167 @@ switch ($_REQUEST['action']) {
         }
 
 
-        $part_location->audit($_REQUEST['qty'],(isset($_REQUEST['note'])?$_REQUEST['note']:''))  ;
-
+        $part_location->audit($_REQUEST['qty'], (isset($_REQUEST['note']) ? $_REQUEST['note'] : ''));
 
 
         $response = array(
             'state' => 'OK',
             'data'  => $part_location->data
+        );
+        echo json_encode($response);
+        exit;
+        break;
+
+    case 'move_stock':
+
+
+        if (empty($_REQUEST['part_sku'])) {
+            $response = array(
+                'state' => 'Error',
+                'msg'   => 'part_sku needed'
+            );
+            echo json_encode($response);
+            exit;
+        }
+
+
+        if (empty($_REQUEST['location_from_key'])) {
+            $response = array(
+                'state' => 'Error',
+                'msg'   => 'location_from_key needed'
+            );
+            echo json_encode($response);
+            exit;
+        }
+
+        if (empty($_REQUEST['location_to_key'])) {
+            $response = array(
+                'state' => 'Error',
+                'msg'   => 'location_to_key needed'
+            );
+            echo json_encode($response);
+            exit;
+        }
+
+
+        if ($_REQUEST['location_to_key'] != $_REQUEST['location_from_key']) {
+            $response = array(
+                'state' => 'Error',
+                'msg'   => 'location_from_key and location_to_key can not be same'
+            );
+            echo json_encode($response);
+            exit;
+        }
+
+        if (empty($_REQUEST['qty'])) {
+            $response = array(
+                'state' => 'Error',
+                'msg'   => 'qty needed'
+            );
+            echo json_encode($response);
+            exit;
+        }
+        if (!is_numeric($_REQUEST['qty']) or $_REQUEST['qty'] < 0) {
+            $response = array(
+                'state' => 'Error',
+                'msg'   => 'qty has t be a positive number'
+            );
+            echo json_encode($response);
+            exit;
+        }
+
+        include_once 'class.PartLocation.php';
+
+        $editor = array(
+            'Author Name'  => $user->data['User Alias'],
+            'Author Alias' => $user->data['User Alias'].' (via App)',
+            'Author Type'  => $user->data['User Type'],
+            'Author Key'   => $user->data['User Parent Key'],
+            'User Key'     => $user->id,
+            'Date'         => gmdate('Y-m-d H:i:s')
+        );
+
+
+        $part_location         = new PartLocation($_REQUEST['part_sku'], $_REQUEST['location_key']);
+        $part_location->editor = $editor;
+
+        if (!$part_location->ok) {
+            $response = array(
+                'state' => 'Error',
+                'msg'   => 'location part not associated'
+            );
+
+
+            echo json_encode($response);
+            exit;
+
+        }
+
+
+        $part_location_from         = new PartLocation($_REQUEST['part_sku'], $_REQUEST['location_from_key']);
+        $part_location_from->editor = $editor;
+
+        if (!$part_location_from->ok) {
+            $response = array(
+                'state' => 'Error',
+                'msg'   => 'location_from part not associated'
+            );
+
+
+            echo json_encode($response);
+            exit;
+
+        }
+
+
+        if ($part_location_from->get('Quantity On Hand') < $_REQUEST['qty']) {
+
+            $response = array(
+                'state' => 'Error',
+                'msg'   => 'location_from part has less stock the moving qty'
+            );
+
+
+            echo json_encode($response);
+            exit;
+
+        }
+
+
+        $part_location_to         = new PartLocation($_REQUEST['part_sku'], $_REQUEST['location_to_key']);
+        $part_location_to->editor = $editor;
+
+
+        if (!$part_location_from->ok) {
+            $response = array(
+                'state' => 'Error',
+                'msg'   => 'location_to part not associated'
+            );
+
+
+            echo json_encode($response);
+            exit;
+
+        }
+
+
+        $part_location_from->move_stock(
+            array(
+                'Destination Key'  => $_REQUEST['location_to_key'],
+                'Quantity To Move' => $_REQUEST['qty']
+            ), $editor['Date']
+        );
+
+
+        $part_location_to->get_data();
+
+
+        $response = array(
+            'state' => 'OK',
+            'data'  => array(
+                'from' => $part_location_from->data,
+                'to'   => $part_location_to->data,
+            )
         );
         echo json_encode($response);
         exit;

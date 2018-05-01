@@ -29,7 +29,6 @@ if (!isset($_REQUEST['tipo'])) {
 
 $tipo = $_REQUEST['tipo'];
 
-
 switch ($tipo) {
     case 'replenishments':
         replenishments(get_table_parameters(), $db, $user, $account);
@@ -123,11 +122,14 @@ switch ($tipo) {
     case 'supplier_timeseries_drill_down_families':
         timeseries_drill_down_families(get_table_parameters(), $db, $user, $account);
         break;
+    case 'delivery.costing':
+        delivery_costing(get_table_parameters(), $db, $user, $account);
+        break;
 
     default:
         $response = array(
             'state' => 405,
-            'resp'  => 'tipo not found '.$tipo
+            'resp'  => 'tipo not found: '.$tipo
         );
         echo json_encode($response);
         exit;
@@ -2801,9 +2803,6 @@ function sales_history($_data, $db, $user, $account) {
         foreach ($result as $data) {
 
 
-
-
-
             if ($_data['parameters']['frequency'] == 'annually') {
                 $_date           = strftime("%Y", strtotime($data['Date'].' +0:00'));
                 $_date_last_year = strftime("%Y", strtotime($data['Date'].' - 1 year'));
@@ -2983,9 +2982,7 @@ function part_locations_with_errors($_data, $db, $user) {
 
 function parts_by_stock_status($stock_status, $_data, $db, $user) {
 
-     $_stock_status= $stock_status;
-
-
+    $_stock_status = $stock_status;
 
 
     switch ($stock_status) {
@@ -3123,63 +3120,58 @@ function parts_by_stock_status($stock_status, $_data, $db, $user) {
             );
 
 
-
-
-
             $next_deliveries = '';
 
 
-            if($data['Part Next Deliveries Data']!=''){
-                $next_deliveries_data=json_decode($data['Part Next Deliveries Data'],true);
-               if(count($next_deliveries_data)>0){
-                    foreach($next_deliveries_data as $delivery){
+            if ($data['Part Next Deliveries Data'] != '') {
+                $next_deliveries_data = json_decode($data['Part Next Deliveries Data'], true);
+                if (count($next_deliveries_data) > 0) {
+                    foreach ($next_deliveries_data as $delivery) {
 
-                        if($delivery['type']=='delivery'){
+                        if ($delivery['type'] == 'delivery') {
                             $next_deliveries .= sprintf(
                                 ', <span class="link" onclick="change_view(\'%s\')"><i class="fa fa-industry" aria-hidden="true"></i> %s</span> <b>(%s)</b>', strtolower($delivery['link']), $delivery['order_id'], number($delivery['qty'])
                             );
-                        }else{
+                        } else {
                             $next_deliveries .= sprintf(
-                                ', <span class="link" onclick="change_view(\'%s\')"><i class="fa fa-clipboard" aria-hidden="true"></i> %s</span> %s <b>(%s)</b>',$delivery['link'],$delivery['order_id'],
+                                ', <span class="link" onclick="change_view(\'%s\')"><i class="fa fa-clipboard" aria-hidden="true"></i> %s</span> %s <b>(%s)</b>', $delivery['link'], $delivery['order_id'],
                                 ($delivery['state'] != 'InProcess' ? '<i class="fa fa-paper-plane" aria-hidden="true"></i>' : ''), number($delivery['qty'])
                             );
 
                         }
 
                     }
-               }
-
+                }
 
 
             }
 
 
+            /*
+                            $next_deliveries.= '||';
 
-/*
-                $next_deliveries.= '||';
+                            if ($data['in_deliveries'] != '') {
+                                foreach (preg_split('/\,/', $data['in_deliveries']) as $delivery) {
+                                    $delivery        = preg_split('/\|/', $delivery);
+                                    $next_deliveries .= sprintf(
+                                        ', <span class="link" onclick="change_view(\'%s/%d/delivery/%d\')"><i class="fa fa-industry" aria-hidden="true"></i> %s</span> <b>(%s)</b>', strtolower($delivery[0]), $delivery[1], $delivery[2], $delivery[3], number($delivery[4])
+                                    );
+                                }
+                            }
 
-                if ($data['in_deliveries'] != '') {
-                    foreach (preg_split('/\,/', $data['in_deliveries']) as $delivery) {
-                        $delivery        = preg_split('/\|/', $delivery);
-                        $next_deliveries .= sprintf(
-                            ', <span class="link" onclick="change_view(\'%s/%d/delivery/%d\')"><i class="fa fa-industry" aria-hidden="true"></i> %s</span> <b>(%s)</b>', strtolower($delivery[0]), $delivery[1], $delivery[2], $delivery[3], number($delivery[4])
-                        );
-                    }
-                }
-
-                if ($data['in_purchase_orders'] != '') {
-                    foreach (preg_split('/\,/', $data['in_purchase_orders']) as $purchase_order) {
-                        $purchase_order  = preg_split('/\|/', $purchase_order);
-                        $next_deliveries .= sprintf(
-                            ', <span class="link" onclick="change_view(\'suppliers/order/%d\')"><i class="fa fa-clipboard" aria-hidden="true"></i> %s</span> %s <b>(%s)</b>', $purchase_order[0], $purchase_order[1],
-                            ($purchase_order[3] != 'InProcess' ? '<i class="fa fa-paper-plane" aria-hidden="true"></i>' : ''), number($purchase_order[2])
-                        );
-                    }
-                }
-
+                            if ($data['in_purchase_orders'] != '') {
+                                foreach (preg_split('/\,/', $data['in_purchase_orders']) as $purchase_order) {
+                                    $purchase_order  = preg_split('/\|/', $purchase_order);
+                                    $next_deliveries .= sprintf(
+                                        ', <span class="link" onclick="change_view(\'suppliers/order/%d\')"><i class="fa fa-clipboard" aria-hidden="true"></i> %s</span> %s <b>(%s)</b>', $purchase_order[0], $purchase_order[1],
+                                        ($purchase_order[3] != 'InProcess' ? '<i class="fa fa-paper-plane" aria-hidden="true"></i>' : ''), number($purchase_order[2])
+                                    );
+                                }
+                            }
 
 
-*/
+
+            */
             $next_deliveries = preg_replace('/^, /', '', $next_deliveries);
 
             $table_data[] = array(
@@ -3202,7 +3194,7 @@ function parts_by_stock_status($stock_status, $_data, $db, $user) {
                     )." $stock_status",
                 'available_forecast'  => $available_forecast,
                 'dispatched_per_week' => $dispatched_per_week,
-                'next_deliveries'=>$next_deliveries
+                'next_deliveries'     => $next_deliveries
 
 
             );
@@ -3292,18 +3284,18 @@ function todo_paid_parts($_data, $db, $user) {
 
             $next_deliveries = '';
 
-            if($data['Part Next Deliveries Data']!=''){
-                $next_deliveries_data=json_decode($data['Part Next Deliveries Data'],true);
-                if(count($next_deliveries_data)>0){
-                    foreach($next_deliveries_data as $delivery){
+            if ($data['Part Next Deliveries Data'] != '') {
+                $next_deliveries_data = json_decode($data['Part Next Deliveries Data'], true);
+                if (count($next_deliveries_data) > 0) {
+                    foreach ($next_deliveries_data as $delivery) {
 
-                        if($delivery['type']=='delivery'){
+                        if ($delivery['type'] == 'delivery') {
                             $next_deliveries .= sprintf(
                                 ', <span class="link" onclick="change_view(\'%s\')"><i class="fa fa-industry" aria-hidden="true"></i> %s</span> <b>(%s)</b>', strtolower($delivery['link']), $delivery['order_id'], number($delivery['qty'])
                             );
-                        }else{
+                        } else {
                             $next_deliveries .= sprintf(
-                                ', <span class="link" onclick="change_view(\'%s\')"><i class="fa fa-clipboard" aria-hidden="true"></i> %s</span> %s <b>(%s)</b>',$delivery['link'],$delivery['order_id'],
+                                ', <span class="link" onclick="change_view(\'%s\')"><i class="fa fa-clipboard" aria-hidden="true"></i> %s</span> %s <b>(%s)</b>', $delivery['link'], $delivery['order_id'],
                                 ($delivery['state'] != 'InProcess' ? '<i class="fa fa-paper-plane" aria-hidden="true"></i>' : ''), number($delivery['qty'])
                             );
 
@@ -3311,7 +3303,6 @@ function todo_paid_parts($_data, $db, $user) {
 
                     }
                 }
-
 
 
             }
@@ -3949,6 +3940,120 @@ function timeseries_drill_down_families($_data, $db, $user, $account) {
         )
     );
     echo json_encode($response);
+}
+
+
+function delivery_costing($_data, $db, $user) {
+
+
+    $rtext_label = 'part';
+
+    $account = get_object('Account', 1);
+
+
+    $supplier_delivery = get_object('SupplierDelivery', $_data['parameters']['parent_key']);
+
+    include_once 'prepare_table/init.php';
+
+    $sql        = "select $fields from $table $where $wheref $group_by  order by $order $order_direction  limit $start_from,$number_results";
+    $table_data = array();
+
+    if ($result = $db->query($sql)) {
+        foreach ($result as $data) {
+
+
+            $items_amount = sprintf('<input id="items_amount_%d" data-sku="%d" class="items_amount width_100" value="%s" ovalue="%s">',
+
+                $data['Part SKU'], $data['Part SKU'],
+
+                format_money_paid($data['items_amount']), $data['items_amount']
+            );
+
+            $extra_amount = sprintf('<input class="extra_amount width_100" id="extra_amount_%d" data-sku="%d" value="%s" ovalue="%s"/>',
+
+                $data['Part SKU'], $data['Part SKU'],
+
+                format_money_paid($data['extra_amount']), $data['extra_amount']
+            );
+
+            $extra_amount_account_currency = sprintf('<input id="extra_amount_account_currency_%d" data-sku="%d" class="extra_amount_account_currency width_100" value="%s" ovalue="%s"/>',
+
+                $data['Part SKU'], $data['Part SKU'],
+
+                format_money_paid($data['extra_amount_account_currency']), $data['extra_amount_account_currency']
+            );
+
+            if ($data['skos_in'] != 0) {
+                $sko_cost =sprintf('<span id="sko_cost_%d"  class="sko_cost" >%s/sko</span>',$data['Part SKU'], money($data['paid_amount'] / $data['skos_in'], $account->get('Currency Code')));
+            } else {
+                $sko_cost = sprintf('<span id="sko_cost_%d"  class="sko_cost" ></span>',$data['Part SKU']);
+            }
+
+            $total_paid = sprintf(
+                '<span id="total_paid_%d" class="total_paid_amount" data-sku="%d" data-sko_in="%f" data-exchange="%f" data-items_amount="%f" data-extra_amount="%f" data-extra_amount_account_currency="%f"  data-changed=false >%s</span>',
+                $data['Part SKU'],
+                $data['Part SKU'],
+                $data['skos_in'],
+                1/$supplier_delivery->get('Supplier Delivery Currency Exchange'),
+                $data['items_amount'],
+                $data['extra_amount'],
+                $data['extra_amount_account_currency'],
+
+                money($data['paid_amount'], $account->get('Currency Code'))
+            );
+
+
+
+
+            $table_data[] = array(
+
+                'id'                => (integer)$data['Part SKU'],
+                'supplier_part_key' => (integer)$data['Supplier Part Key'],
+
+
+                'reference'      => $data['Supplier Part Reference'],
+                'part_reference' => sprintf('%s', $data['Part Reference']),
+                'description'    => $data['Part Package Description'],
+
+                'received_quantity'             => number($data['skos_in']),
+                'items_amount'                  => $items_amount,
+                'extra_amount'                  => $extra_amount,
+                'extra_amount_account_currency' => $extra_amount_account_currency,
+
+                'ordered'               => number($data['Purchase Order Quantity']),
+                //'qty'       => number($quantity),
+                'paid_account_currency' => money($data['Supplier Delivery Net Amount'] * $supplier_delivery->get('Supplier Delivery Currency Exchange'), $account->get('Currency Code')),
+
+                'total_paid' => $total_paid,
+                'sko_cost'   => $sko_cost
+            );
+
+
+        }
+    } else {
+        print_r($error_info = $db->errorInfo());
+        exit;
+    }
+
+
+    $response = array(
+        'resultset' => array(
+            'state'         => 200,
+            'data'          => $table_data,
+            'rtext'         => $rtext,
+            'sort_key'      => $_order,
+            'sort_dir'      => $_dir,
+            'total_records' => $total
+
+        )
+    );
+    echo json_encode($response);
+}
+
+function format_money_paid($number) {
+    $str = number_format($number, 4, '.', '');
+
+    return preg_replace('/(?<=\d{2})0+$/', '', $str);
 }
 
 

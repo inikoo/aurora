@@ -420,7 +420,13 @@
                 <td class="aright Supplier_Delivery_Total_Amount">{$delivery->get('Total Amount')}</td>
             </tr>
             <tr class="{if $account->get('Account Currency')==$delivery->get('Supplier Delivery Currency Code')}hide{/if}">
-                <td colspan="2"
+                <td class="small">
+                    1{$account->get('Currency Code')}={math equation="1/x" x=$delivery->get('Supplier Delivery Currency Exchange') format="%.5f"}{$delivery->get('Supplier Delivery Currency Code')}
+
+                </td>
+
+
+                <td
                     class="Supplier_Delivery_Total_Amount_Account_Currency aright ">{$delivery->get('Total Amount Account Currency')}</td>
             </tr>
 
