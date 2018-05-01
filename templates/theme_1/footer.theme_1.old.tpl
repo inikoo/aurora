@@ -595,6 +595,7 @@
 
               function change_block_type(element) {
 
+                  console.log( element)
 
 
 

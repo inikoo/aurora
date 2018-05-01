@@ -10,16 +10,9 @@
 body {
   padding: 0px;
   margin: 0px;
-  background: url(../theme_1/images/elements/bg.png) repeat left top;
+  //background: url(../theme_1/images/elements/bg.png) repeat left top;
 }
 
-body, input, textarea {
-  font-size: 15px;
-  font-weight: normal;
-  font-style: normal;
-  line-height: 23px;
-  color: #727272;
-}
 
 a {
   color: inherit;
@@ -53,13 +46,18 @@ table{
   //width: 1240px;
  // float: left;
   margin: 0px auto auto auto;
-  background-color: #fff;
   -webkit-box-shadow:  0px 0px 5px 0px rgba(0, 0, 0, 0.2);
   box-shadow:  0px 0px 5px 0px rgba(0, 0, 0, 0.2);
 }
-
 
 .container{
   padding:0px 20px;
 }
 
+input:focus {
+  outline: none;
+}
+
+textarea:focus {
+  outline: none;
+}

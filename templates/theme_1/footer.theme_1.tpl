@@ -13,6 +13,11 @@
 <style>
 
 
+    .invisible {
+        visibility: hidden;
+
+    }
+
     input.input_file {
         width: 0.1px;
         height: 0.1px;
@@ -69,11 +74,15 @@
     }
 
     .add_link, .add_item {
-        opacity: .1
+        opacity: .7;cursor: pointer;
+    }
+
+    a:hover{
+        text-decoration: none;
     }
 
     .qlinks:hover .add_link, .faddress:hover .add_item {
-        opacity: .5;
+        opacity: 1;
         -webkit-transition-duration: 500ms;
         transition-duration: 500ms;
     }
@@ -230,9 +239,9 @@
             </div>
 
 
-            <i id="delete_link" class="fa fa-trash hide editing button" aria-hidden="true" onClick="delete_link(this)" style="position:absolute" title="{t}Remove link{/t}"></i>
+            <i id="delete_link" class="far fa-trash-alt hide editing button" aria-hidden="true" onClick="delete_link(this)" style="z-index:3000;position:absolute" title="{t}Remove link{/t}"></i>
 
-            <i id="delete_item" class="fa fa-trash hide editing button" aria-hidden="true" onClick="delete_item(this)" style="position:absolute" title="{t}Remove item{/t}"></i>
+            <i id="delete_item" class="far fa-trash-alt hide editing button" aria-hidden="true" onClick="delete_item(this)" style="position:absolute" title="{t}Remove item{/t}"></i>
 
             <form id="change_image" class="hide" style="position:absolute;top:0;left:0" method="post" action="/ar_edit.php" enctype="multipart/form-data" novalidate>
                 <input type="file" name="image_upload" id="file_upload" class="input_file" multiple/>
@@ -244,11 +253,11 @@
 
             <ul class="hide">
 
-                <li id="link_stem_cell" class="item"><a href="/"><i class="fa fa-fw fa-angle-right link_icon" onClick="update_link(this)"></i> <span ondrop="return false;" contenteditable
+                <li id="link_stem_cell" class="item"><a href="/"><i class="fa fa-fw fa-angle-right link_icon" onClick="update_link(this)"></i> <span ondrop="return false;" contenteditable="true"
                                                                                                                                                      class="item_label">{t}New link{/t}<span></span></a></li>
 
-                <li id="item_email_stem_cell"><i class="fa fa-fw fa-envelope"></i> <span contenteditable>info@yourdomain.com</span></li>
-                <li id="item_stem_cell"><i class="fa-fw "></i> <span contenteditable></span></li>
+                <li id="item_email_stem_cell"><i class="fa fa-fw fa-envelope"></i> <span contenteditable="true">info@yourdomain.com</span></li>
+                <li id="item_stem_cell"><i class="fa-fw "></i> <span contenteditable="true"></span></li>
                 <li id="item_image_stem_cell"><img onclick="edit_item_image(this)" src="theme_1/images/footer-wmap.png" alt="" title=""/></li>
 
 
@@ -278,11 +287,15 @@
 
             <div id="block_text_stem_cell" class="hide">
 
-                <div class="footer_block siteinfo">
+                <div class="footer_block about_us" style="position: relative">
 
-                    <h4 class="lmb" contenteditable>{t}About us{/t}</h4>
 
-                    <div contenteditable>
+                    <i class="far fa-hand-rock editing hide dragger" aria-hidden="true" style="position:absolute;top:-5px;left:30px"></i>
+                    <i onclick="open_block_type_options(this,'block_type_1','text')" class="fa fa-recycle editing  button recycler" aria-hidden="true" style="position:absolute;top:-23px;left:0px"></i>
+
+                    <h5  contenteditable="true">{t}About us{/t}</h5>
+
+                    <div contenteditable="true">
                         <p>
                             All the Lorem Ipsum generators on the Internet tend to repeat predefined </p><br/>
                         <p>
@@ -294,15 +307,20 @@
 
 
             <div id="block_links_stem_cell" class="hide">
-                <div class="footer_block qlinks">
-                    <h4 class="lmb" contenteditable>{t}Useful Links{/t}</h4>
+                <div class="footer_block " style="position: relative">
+
+                    <i class="far fa-hand-rock editing hide dragger" aria-hidden="true" style="position:absolute;top:-5px;left:30px"></i>
+                    <i onclick="open_block_type_options(this,'block_type_1','text')" class="fa fa-recycle editing  button recycler" aria-hidden="true" style="position:absolute;top:-23px;left:40px"></i>
+
+
+                    <h5  contenteditable="true">{t}Useful Links{/t}</h5>
                     <ul class="links_list">
                         <li class="item"><a href="/"><i class="fa fa-fw fa-angle-right link_icon" onClick="update_link(this)"></i> <span class="item_label" ondrop="return false;"
-                                                                                                                                         contenteditable>{t}Home Page Variations{/t}<span></span></a></li>
+                                                                                                                                         contenteditable="true">{t}Home Page Variations{/t}<span></span></a></li>
                         <li class="item"><a href="/"><i class="fa fa-fw fa-angle-right link_icon" onClick="update_link(this)"></i> <span class="item_label" ondrop="return false;" contenteditable>{t}Awesome Products{/t}
                                     <span></span></a></li>
                         <li class="item"><a href="/"><i class="fa fa-fw fa-angle-right link_icon" onClick="update_link(this)"></i> <span class="item_label" ondrop="return false;"
-                                                                                                                                         contenteditable>{t}Features and Benefits{/t}<span></span></a></li>
+                                                                                                                                         contenteditable="true">{t}Features and Benefits{/t}<span></span></a></li>
                         <li onClick="add_link(this)" class="ui-state-disabled add_link"><a href="/"><i class="fa fa-fw fa-plus editing link_icon" )"></i> <span class="editing" ondrop="return false;">{t}Add link{/t}
                                     <span></span></a></li>
                     </ul>
@@ -314,22 +332,38 @@
 
             <div id="block_nothing_stem_cell" class="hide">
 
-                <div class="footer_block">&nbsp;</div>
+
+                <div class="footer_block" style="position: relative">
+                    <i class="far fa-hand-rock editing hide dragger" aria-hidden="true" style="position:absolute;top:-5px;left:30px"></i>
+                    <i onclick="open_block_type_options(this,'block_type_1','nothing')" class="fa fa-recycle editing  button recycler" aria-hidden="true" style="position:absolute;top:-23px;left:0px"></i>
+
+
+                </div>
             </div>
             <div id="block_low_nothing_stem_cell" class="hide">
                 &nbsp;
             </div>
 
             <div id="block_items_stem_cell" class="hide">
-                <ul class="footer_block faddress">
 
-                    <li class="item"><img onclick="edit_item_image(this)" src="theme_1/images/footer-logo.png" alt=""/></li>
 
-                    <li class="item"><i onclick="edit_item(this)" class="fa fa-fw fa-map-marker"></i> <span contenteditable>10 London Road, Oxford,  OX2 6RB, UK</span></li>
+                <div class="footer_block" style="position: relative">
 
-                    <li class="item"><i onclick="edit_item(this)" class="fa fa-fw fa-phone"></i> <span contenteditable>+1-541-754-3010</span></li>
+                    <i class="far fa-hand-rock editing hide dragger" aria-hidden="true" style="position:absolute;top:-5px;left:30px"></i>
+                    <i onclick="open_block_type_options(this,'block_type_1','text')" class="fa fa-recycle editing  button recycler" aria-hidden="true" style="position:absolute;top:-23px;left:20px"></i>
 
-                    <li class="item"><i onclick="edit_item(this)" class="fa fa-fw fa-envelope"></i> <span contenteditable>info@yourdomain.com</span></li>
+
+                    <ul class="address">
+
+
+
+                    <li class="item _logo"><img onclick="edit_item_image(this)" src="theme_1/images/footer-logo.png" alt=""/></li>
+
+                    <li class="item"><i onclick="edit_item(this)" class="fa fa-fw fa-map-marker"></i> <span contenteditable="true">10 London Road, Oxford,  OX2 6RB, UK</span></li>
+
+                    <li class="item"><i onclick="edit_item(this)" class="fa fa-fw fa-phone"></i> <span contenteditable="true">+1-541-754-3010</span></li>
+
+                    <li class="item"><i onclick="edit_item(this)" class="fa fa-fw fa-envelope"></i> <span contenteditable="true">info@yourdomain.com</span></li>
                     <li class="item"><img onclick="edit_item_image(this)" src="theme_1/images/footer-wmap.png" alt=""/></li>
 
 
@@ -348,14 +382,22 @@
             {foreach from=$footer_data.rows item=row}
 
                 {if $row.type=='main_4'}
-                    <div class="text_blocks  text_template_4  ">
+                    <div class="text_blocks  text_template_4 sortable_container " >
 
 
                         {foreach from=$row.columns item=column name=main_4}
 
 
+
+
+
                             {if $column.type=='address'}
-                                <div>
+                                <div class="footer_block" style="position: relative">
+
+
+                                    <i class="far fa-hand-rock editing hide dragger" aria-hidden="true" style="position:absolute;top:-5px;left:35px"></i>
+                                    <i onclick="open_block_type_options(this,'block_type_1','{$column.type}')" class="fa fa-recycle editing hide button recycler" aria-hidden="true" style="position:absolute;top:-23px;left:20px"></i>
+
 
 
                                     <ul class="address " style="">
@@ -363,36 +405,41 @@
                                             {if $item.type=='logo'}
                                                 <li class="item _logo"><img src="{$item.src}" alt="" title="{$item.title}"/></li>
                                             {elseif $item.type=='text'}
-                                                <li class="item _text"><i class="fa-fw {$item.icon}"></i> <span>
+                                                <li class="item _text"><i class="fa-fw {$item.icon}"></i> <span contenteditable="true">
                                           {if $item.text=='#tel' and  $store->get('Telephone')!=''}{$store->get('Telephone')}
                                           {elseif $item.text=='#email' and  $store->get('Email')!=''}{$store->get('Email')}
                                           {elseif $item.text=='#address' and  $store->get('Address')!=''}{$store->get('Address')}
                                           {else}{$item.text}{/if}
                                       </span></li>
                                             {elseif $item.type=='email'}
-                                                <li class="item _email"><i class="fa fa-fw fa-envelope"></i> <a
-                                                            href="mailto:{if $item.text=='#email' and  $store->get('Email')!=''}{$store->get('Email')}{else}{$item.text}{/if}">
+                                                <li class="item _email"><i class="fa fa-fw fa-envelope"></i> <a href="mailto:{if $item.text=='#email' and  $store->get('Email')!=''}{$store->get('Email')}
+                                            {else}{$item.text}{/if}">
                                                         {if $item.text=='#email' and  $store->get('Email')!=''}{$store->get('Email')}{else}{$item.text}{/if}
 
-                                                    </a></li>
                                             {/if}
                                         {/foreach}
-
+                                        <li onClick="add_item(this)"  class="button add_item"   >
+                                            <i class="fa fa-fw fa-plus editing " ></i> <span class="editing" ondrop="return false;" >{t}Add item{/t}<span></span>
+                                        </li>
 
                                     </ul>
 
 
                                 </div>
                             {elseif $column.type=='links'}
-                                <div>
+                                <div class="footer_block" style="position: relative">
+
+                                    <i class="far fa-hand-rock editing hide dragger" aria-hidden="true" style="position:absolute;top:-5px;left:30px"></i>
+                                    <i onclick="open_block_type_options(this,'block_type_1','{$column.type}')" class="fa fa-recycle editing hide button recycler" aria-hidden="true" style="position:absolute;top:-23px;left:40px"></i>
 
 
-                                    <h5>{$column.header}</h5>
+                                    <h5 contenteditable="true">{$column.header}</h5>
 
                                     <ul class="links_list">
                                         {foreach from=$column.items item=item }
-                                            <li class="item"><a href="{$item.url}"><i class="fa fa-fw fa-angle-right link_icon"></i><span class="item_label">{$item.label}</span></a></li>
+                                            <li class="item"><a href="{$item.url}"><i class="fa fa-fw fa-angle-right link_icon" onClick="update_link(this)" ></i><span class="item_label" contenteditable="true">{$item.label}</span></a></li>
                                         {/foreach}
+                                        <li onClick="add_link(this)"  class="add_link "><a  href=""><i class="fa fa-fw fa-plus editing link_icon" "></i> <span class="editing" ondrop="return false;" >{t}Add link{/t}<span></span></a></li>
 
 
                                     </ul>
@@ -400,19 +447,25 @@
 
                                 </div>
                             {elseif $column.type=='text'}
-                                <div class="   ">
+                                <div class=" footer_block  " style="position: relative">
+                                    <i class="far fa-hand-rock editing hide dragger" aria-hidden="true" style="position:absolute;top:-5px;left:30px"></i>
+                                    <i onclick="open_block_type_options(this,'block_type_1','{$column.type}')" class="fa fa-recycle editing  hide button recycler" aria-hidden="true" style="position:absolute;top:-23px;left:20px"></i>
 
 
-                                    <h5 class="">{$column.header}</h5>
+                                    <h5 contenteditable="true">{$column.header}</h5>
 
-                                    <div>
+                                    <div contenteditable="true">
                                         {$column.text}
                                     </div>
 
                                 </div>
                             {elseif $column.type=='nothing'}
-                                <div
-                                ">
+                                <div class="footer_block" style="position: relative">
+                                    <i class="far fa-hand-rock editing hide dragger" aria-hidden="true" style="position:absolute;top:-5px;left:30px"></i>
+                                    <i onclick="open_block_type_options(this,'block_type_1','{$column.type}')" class="fa fa-recycle editing  hide button recycler" aria-hidden="true" style="position:absolute;top:-23px;left:20px"></i>
+
+
+                                </div>
 
                             {/if}
 
@@ -486,10 +539,12 @@
 
                 var option_dialog = $('#' + option_id)
 
-                var block = $(element).next('.footer_block')
+                var block = $(element).closest('.footer_block')
 
                 block.uniqueId()
                 var id = block.attr('id')
+
+
 
 
                 if (!option_dialog.hasClass('hide') && option_dialog.attr('block_id') == id) {
@@ -513,7 +568,7 @@
 
 
             function change_block_type(element) {
-
+                console.log(element)
 
                 var block_type = $(element).closest('.block_type')
 
@@ -694,7 +749,7 @@
                     current_editing_link_id = id
 
                     $('#input_container_link').removeClass('hide').offset({ top: $(element).offset().top - 55, left: $(element).offset().left + 20}).find('input').val($(element).closest('a').attr("href"))
-                    $('#delete_link').removeClass('hide').offset({ top: $(element).offset().top, left: $(element).offset().left - 15}).attr('link_id', id).data('element', $(element))
+                    $('#delete_link').removeClass('hide').offset({ top: $(element).offset().top, left: $(element).offset().left - 20}).attr('link_id', id).data('element', $(element))
                     $(element).removeClass('fa-angle-right').addClass('editing fa-check-circle').next('span').addClass('editing')
 
 
@@ -813,15 +868,21 @@
 
             function add_link(element) {
 
-
+                console.log(element)
                 var ul = $(element).closest('ul');
 
                 var new_data = $("#link_stem_cell").clone();
+
+                console.log(new_data)
+
                 new_data.insertBefore($(element));
             }
 
 
             function delete_link(element) {
+
+                console.log(element)
+
                 $('#' + $(element).attr('link_id')).closest('li').remove()
                 $('#input_container_link').addClass('hide')
                 $('#delete_link').addClass('hide')
@@ -1016,7 +1077,7 @@
 
                         })
 
-                    } else if ($(obj).hasClass('siteinfo')) {
+                    } else if ($(obj).hasClass('')) {
 
                         cols_main_4.push({
                             'type': 'text', 'header': $(obj).find('h4.lmb').html(), 'text': $(obj).find('div').html()

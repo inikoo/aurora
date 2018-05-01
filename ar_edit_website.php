@@ -62,6 +62,25 @@ switch ($tipo) {
         );
         save_webpage_content($data, $editor, $smarty, $db);
         break;
+    case 'update_website_styles':
+        $data = prepare_values(
+            $_REQUEST, array(
+                         'key'      => array('type' => 'key'),
+                         'styles'   => array('type' => 'string'),
+                         'labels'   => array(
+                             'type'     => 'string',
+                             'optional' => true
+                         ),
+                         'settings' => array(
+                             'type'     => 'string',
+                             'optional' => true
+                         )
+
+
+                     )
+        );
+        update_website_styles($data, $editor, $smarty, $db);
+        break;
 
     case 'save_footer':
         $data = prepare_values(
@@ -1959,6 +1978,37 @@ function save_deal_component_labels($data, $editor) {
     );
     echo json_encode($response);
 
+
+}
+
+
+function update_website_styles($data, $editor, $db, $smarty) {
+
+
+    $website         = get_object('Website', $data['key']);
+    $website->editor = $editor;
+
+
+    if (isset($data['labels'])) {
+        $website->update_labels_in_localised_labels(json_decode($data['labels'], true));
+    }
+    if (isset($data['settings'])) {
+        $website->update_settings(json_decode($data['settings'], true));
+    }
+
+    if (isset($data['styles'])) {
+        $website->update_styles(json_decode($data['styles'], true));
+    }
+
+
+    $website->clean_cache();
+
+    $response = array(
+        'state' => 200,
+
+
+    );
+    echo json_encode($response);
 
 }
 

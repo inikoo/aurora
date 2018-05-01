@@ -172,6 +172,10 @@ class Image {
 
         );
 
+
+
+
+
         if ($result = $this->db->query($sql)) {
             if ($row = $result->fetch()) {
                 $this->found     = true;
@@ -184,6 +188,8 @@ class Image {
             exit;
         }
 
+
+
         if (!$this->found and $create) {
             $this->create($raw_data);
 
@@ -194,7 +200,7 @@ class Image {
 
     function create($data) {
 
-        //print_r($data);
+
 
         $tmp_file = $data['upload_data']['tmp_name'];
         unset($data['upload_data']);
@@ -218,6 +224,7 @@ class Image {
         }
 
 
+
         $keys   = '(';
         $values = 'values(';
         foreach ($data as $key => $value) {
@@ -230,9 +237,15 @@ class Image {
         }
         $keys   = preg_replace('/,$/', ')', $keys);
         $values = preg_replace('/,$/', ')', $values);
+
+
+
+
         $sql    = sprintf(
             "INSERT INTO `Image Dimension` %s %s", $keys, $values
         );
+
+
 
         if ($this->db->exec($sql)) {
             $this->id = $this->db->lastInsertId();

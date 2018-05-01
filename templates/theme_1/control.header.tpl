@@ -9,7 +9,7 @@
 -->
 *}
 
-
+<div id="aux">
 <div id="three_columns_options" class="hide options_dialog" style="">
 
     <i class="fa fa-window-close button" onclick="$(this).closest('div').addClass('hide')" aria-hidden="true" style="margin-bottom: 5px"></i>
@@ -17,9 +17,9 @@
 
     <table  class="options">
         <tr><td data-type="departments" >{t}Departments{/t}</td></tr>
-        <tr><td data-type="families" >{t}Families{/t}</td></tr>
-        <tr><td data-type="web_departments" >{t}Special departments{/t}</td></tr>
-        <tr><td data-type="web_families" >{t}Special Families{/t}</td></tr>
+        <tr class="hide"><td data-type="families" >{t}Families{/t}</td></tr>
+        <tr  class="hide"><td data-type="web_departments" >{t}Special departments{/t}</td></tr>
+        <tr  class="hide"><td data-type="web_families" >{t}Special Families{/t}</td></tr>
         <tr><td data-type="items" >{t}Items{/t}</td></tr>
         <tr><td data-type="text" >{t}Text{/t}</td></tr>
         <tr><td data-type="image" >{t}Image{/t}</td></tr>
@@ -56,13 +56,14 @@
 
 
     <table  class="options">
-        <tr><td data-type="single_column" >{t}Single column{/t}</td></tr>
-        <tr><td data-type="three_columns" >{t}Three columns{/t}</td></tr>
 
+        <tr><td class="column_type_three_columns" data-type="three_columns" >{t}Three columns{/t}</td></tr>
+        <tr><td class="column_type_single_column" data-type="single_column" >{t}Single column{/t}</td></tr>
+        <tr><td class="column_type_nothing" data-type="nothing" >{t}Nothing{/t}</td></tr>
     </table>
 
 </div>
-
+</div>
 
 <div style="padding:20px;min-height: 30px" class="control_panel">
 
@@ -73,13 +74,14 @@
 
         {foreach from=$header_data.menu.columns item=column key=key}
 
-                <li id="_column_{$key}" class="column" style="" class="button unselectable {if !$column.show}very_discreet{/if}" key="{$key}">
+
+                <li id="_column_{$key}" class="column" style="" class="button unselectable {if !$column.show}very_discreet hidden_menu{/if}" key="{$key}">
                     <span class="button open_edit">
-                    <i class="fa-fw  {if $column.icon==''}} fa fa-ban very_discreet {else}{$column.icon}{/if}"  aria-hidden="true" title="{$column.label}"></i>
+                    <i class="fa-fw  {if $column.icon==''}} fa fa-ban error very_discreet {else}{$column.icon}{/if}"  aria-hidden="true" title="{$column.label}"></i>
                     <span class="label ">{$column.label}</span>
                      </span>
-                    <i class="fa {if $column.show}fa-eye{else}fa-eye-slash{/if} column_show" style="margin-left:10px;" aria-hidden="true"></i>
-                    <i class="fa fa-arrows handle2"  aria-hidden="true"></i>
+                    <i class="far {if $column.show}fa-eye{else}fa-eye-slash{/if} column_show button" aria-hidden="true"></i>
+                    <i class="far fa-hand-rock handle2"  aria-hidden="true"></i>
                 </li>
 
 
@@ -106,11 +108,10 @@
     {foreach from=$header_data.menu.columns item=column key=key}
         <div id="edit_mode_{$key}" class=" edit_mode hide "  type="{$column.type}" key="{$key}">
             <div style="float:left;margin-right:20px;min-width: 200px;">
-                <span class="column_type button {$column.type}" style="border:1px solid #ccc;padding:4px;;margin-left:5px"><span class="column_type_label">{if $column.type=='three_columns'}3{else}1{/if}</span> <i class="fa fa-bars button  " aria-hidden="true"></i> &nbsp; </span>
-                <span class="button delete_column" title="{t}Delete this column{/t}" style="border:1px solid #ccc;padding:4px;border-left: none"><i class="fa fa-trash button  " style="padding-left: 5px;padding-right: 7px" aria-hidden="true"></i></span>
+                <span class="column_type button {$column.type}" data-column_type="{$column.type}" style="border:1px solid #ccc;padding:4px;;margin-left:5px"><span class="column_type_label">{if $column.type=='three_columns'}3{elseif $column.type=='single_column'}1{else}0{/if}</span> <i class="fa fa-bars button  " aria-hidden="true"></i> &nbsp; </span>
+                <span class="button delete_column" title="{t}Delete this column{/t}" style="border:1px solid #ccc;padding:4px;border-left: none"><i class="far fa-trash-alt button  " style="padding-left: 5px;padding-right: 7px" aria-hidden="true"></i></span>
 
-                <i class="fa-fw {if $column.icon==''}}fa fa-ban very_discreet {else}{$column.icon}{/if}" style="margin-left:10px" aria-hidden="true" title="{$column.label}"></i>
-                <span class="label">{$column.label}</span>
+
             </div>
 
 
@@ -119,7 +120,7 @@
             {if $column.type=='three_columns'}
                 <ul class="sortable unselectable columns" style="position: relative;top:-4px">
                     {foreach from=$column.sub_columns item=sub_column key=sub_column_key}
-                        <li class="column_label"  key="{$sub_column_key}" ><i class="fa fa-arrows handle" style="margin-right:10px" aria-hidden="true"></i>
+                        <li class="column_label"  key="{$sub_column_key}" ><i class="far fa-hand-rock handle" style="margin-right:10px" aria-hidden="true"></i>
 
                             {if $sub_column.type=='departments'}
                                 <span class="column_type_label">{t}Departments{/t}</span> <span class="page button">{$sub_column.page_label}</span>
@@ -228,7 +229,10 @@
     $(document).on('click', '.column_show', function (e) {
 
         if($(this).hasClass('fa-eye')){
-            var key=$(this).removeClass('fa-eye').addClass('fa-eye-slash').closest('li').addClass('very_discreet').attr('key')
+            var key=$(this).removeClass('fa-eye').addClass('fa-eye-slash').closest('li').addClass('very_discreet hidden_menu').attr('key')
+
+
+
 
 
             $('#preview')[0].contentWindow.hide_column_label(key);
@@ -236,8 +240,13 @@
             $('#preview')[0].contentWindow.hide_column(key);
 
         }else{
-            var key=$(this).addClass('fa-eye').removeClass('fa-eye-slash').closest('li').removeClass('very_discreet').attr('key')
+            var key=$(this).addClass('fa-eye').removeClass('fa-eye-slash').closest('li').removeClass('very_discreet hidden_menu').attr('key')
             $('#preview')[0].contentWindow.show_column_label(key);
+
+
+
+
+
            // $('#preview')[0].contentWindow.show_column(key);
         }
 
@@ -246,7 +255,6 @@
 
 
     })
-
 
     $(document).on('click', '.open_edit', function (e) {
 
@@ -275,7 +283,6 @@
 
     })
 
-
     $(document).on('click', '.page', function (e) {
 
 
@@ -294,18 +301,31 @@
     $(document).on('click', '.column_type', function (e) {
 
 
+
+
         if( $('#column_type_options').hasClass('hide')){
             var key=$(this).closest('li').attr('key')
+
+
+            $('#column_type_options ')
+
 
             $('#column_type_options').removeClass('hide').offset({
                 top:$(this).offset().top-40 ,
                 left:$(this).offset().left+$(this).width()+5    }).attr('key',$(this).closest('.edit_mode').attr('key'))
+
+            $('#column_type_options td').removeClass('hide')
+            $('#column_type_options td.column_type_'+$(this).data('column_type')).addClass('hide')
+
+
+
+
+
         }else{
             $('#column_type_options').addClass('hide')
         }
 
     })
-
 
     $(document).on('click', '#three_columns_options td', function (e) {
 
@@ -345,16 +365,11 @@
 
     })
 
-
-
-
-
-
     $(document).on('click', '#column_type_options td', function (e) {
 
-       // console.log($(this).data('type'))
 
-        console.log('caca1')
+
+
 
         var col_type_element=$('#edit_mode_'+$('#column_type_options').attr('key')).find('.column_type')
 
@@ -363,15 +378,20 @@
             if($(this).data('type')=='single_column') {
                 var html='';
 
-                col_type_element.removeClass('three_columns').addClass('single_column')
+                col_type_element.removeClass('three_columns nothing').addClass('single_column')
                 $('#edit_mode_'+$('#column_type_options').attr('key')).find('.column_type_label').html('1')
+            }else if($(this).data('type')=='nothing') {
+                var html='';
+
+                col_type_element.removeClass('three_columns single_column').addClass('nothing')
+                $('#edit_mode_'+$('#column_type_options').attr('key')).find('.column_type_label').html('0')
             }else if($(this).data('type')=='three_columns') {
                 var html='<ul class="sortable unselectable columns">' +
-                    '<li class="column_label"  key="0" ><i class="fa fa-arrows handle" style="margin-right:10px" aria-hidden="true"></i>  {t}Empty{/t} <i class="fa fa-recycle button change_type" style="margin-left:10px" aria-hidden="true"></i></li>' +
-                    '<li class="column_label"  key="1" ><i class="fa fa-arrows handle" style="margin-right:10px" aria-hidden="true"></i>  {t}Empty{/t} <i class="fa fa-recycle button change_type" style="margin-left:10px" aria-hidden="true"></i></li>' +
-                    '<li class="column_label"  key="2" ><i class="fa fa-arrows handle" style="margin-right:10px" aria-hidden="true"></i>  {t}Empty{/t} <i class="fa fa-recycle button change_type" style="margin-left:10px" aria-hidden="true"></i></li>' +
+                    '<li class="column_label"  key="0" ><i class="far fa-hand-rock handle" style="margin-right:10px" aria-hidden="true"></i>  <span class="column_type_label">{t}Empty{/t}</span> <i class="fa fa-recycle button change_type" style="margin-left:10px" aria-hidden="true"></i></li>' +
+                    '<li class="column_label"  key="1" ><i class="far fa-hand-rock handle" style="margin-right:10px" aria-hidden="true"></i>  <span class="column_type_label">{t}Empty{/t}</span> <i class="fa fa-recycle button change_type" style="margin-left:10px" aria-hidden="true"></i></li>' +
+                    '<li class="column_label"  key="2" ><i class="far fa-hand-rock handle" style="margin-right:10px" aria-hidden="true"></i>  <span class="column_type_label">{t}Empty{/t}</span> <i class="fa fa-recycle button change_type" style="margin-left:10px" aria-hidden="true"></i></li>' +
                     '</ul>';
-                col_type_element.removeClass('single_column').addClass('three_columns')
+                col_type_element.removeClass('single_column nothing').addClass('three_columns')
                 $('#edit_mode_'+$('#column_type_options').attr('key')).find('.column_type_label').html('3')
 
             }
@@ -385,6 +405,20 @@
 
             $('#edit_mode_'+$('#column_type_options').attr('key')).find('.column_controls').html(html)
 
+
+            $('#edit_mode_'+$('#column_type_options').attr('key')).find('.column_type').data('column_type',$(this).data('type'))
+
+
+            $('.sortable').sortable({
+                handle:'.handle',
+                start: function (event, ui) {
+                    pre = ui.item.index();
+                }, stop: function (event, ui) {
+
+                    post = ui.item.index();
+                    $('#preview')[0].contentWindow.move_column($('#exit_edit_column').attr('key'),pre,post);
+                }
+            });
 
         }
 
@@ -411,6 +445,9 @@
         $('#exit_edit_column').attr('key',key)
 
         $('#preview')[0].contentWindow.show_column(key);
+
+
+
 
         $('.options_dialog').addClass('hide')
 
@@ -478,8 +515,8 @@
 
       var label='{t}Column{/t} '+key
 
-        $('<li  id="_column_'+key+'" class="column" style="" class="button unselectable " key="'+key+'">\n' + '<span class="button open_edit">\n' + '<i class="fa fa-fw fa-ban very_discreet "  aria-hidden="true" title="'+label+'"></i>\n' + '<span class="label ">'+label+'</span>\n' + '            </span>\n' + '            <i class="fa fa-eye column_show" style="margin-left:10px;" aria-hidden="true"></i>\n' + '            <i class="fa fa-arrows handle2"  aria-hidden="true"></i>\n' + '            </li>').insertBefore( "#add_column" );
-        $('<div id="edit_mode_'+key+'" class=" edit_mode hide"  type="single_column" key="'+key+'"> <div style="float:left;margin-right:20px;min-width: 200px;"> <span class="column_type button single_column" style="border:1px solid #ccc;padding:4px;;margin-left:5px"><span class="column_type_label">1</span> <i class="fa fa-bars button  " aria-hidden="true"></i> &nbsp; </span> <i class="fa fa-fw fa-ban very_discreet" style="margin-left:10px" aria-hidden="true" title="'+label+'"></i> <span class="label">'+label+'</span> </div> <span class="column_controls"> </span> </div>').insertBefore( "#add_column_control_anchor" );
+        $('<li  id="_column_'+key+'" class="column" style="" class="button unselectable " key="'+key+'">\n' + '<span class="button open_edit">\n' + '<i class="fa fa-fw fa-ban error very_discreet "  aria-hidden="true" title="'+label+'"></i>\n' + '<span class="label ">'+label+'</span>\n' + '            </span>\n' + '            <i class="fa fa-eye column_show" style="margin-left:10px;" aria-hidden="true"></i>\n' + '            <i class="fa fa-arrows handle2"  aria-hidden="true"></i>\n' + '            </li>').insertBefore( "#add_column" );
+        $('<div id="edit_mode_'+key+'" class=" edit_mode hide"  type="single_column" key="'+key+'"> <div style="float:left;margin-right:20px;min-width: 200px;"> <span class="column_type button single_column" data-column_type="single_column"  style="border:1px solid #ccc;padding:4px;;margin-left:5px"><span class="column_type_label">1</span> <i class="fa fa-bars button  " aria-hidden="true"></i> &nbsp; </span> </div> <span class="column_controls"> </span> </div>').insertBefore( "#add_column_control_anchor" );
 
         $('#preview')[0].contentWindow.add_column(key,label);
 
@@ -489,17 +526,41 @@
     $(document).on('click', '.delete_column', function (e) {
         var key= $(this).closest('.edit_mode').attr('key')
 
-        console.log(key)
 
-        edit_next_column(key)
+
+       // edit_next_column(key)
 
         $('#edit_mode_'+key).remove();
         $('#_column_'+key).remove();
+
+
+
         $('#preview')[0].contentWindow.delete_column(key);
 
 
 
     })
 
+
+    function change_menu_label(key,label){
+        $('#_column_'+key).find('.label').html(label)
+        $('#_column_'+key).find('.open_edit i').attr('title',label)
+    }
+
+
+    function change_menu_icon(key, icon) {
+        element = $('#_column_' + key + ' .open_edit i')
+        element.removeClass(function (index, className) {
+            return (className.match(/\bfa-\S+/g) || []).join(' ');
+        }).removeClass('fa fab fas far fal').addClass('fa-fw').addClass(icon)
+
+
+        if(icon=='fa fa-ban'){
+            element.addClass('error very_discreet')
+        }else{
+            element.removeClass('error very_discreet')
+        }
+
+    }
 
 </script>

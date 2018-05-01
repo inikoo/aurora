@@ -98,7 +98,7 @@
         list-style: none;
         text-align: center;
         margin-right: 10px;
-        min-width: 100px;
+
         border: 1px solid #ccc;
         white-space: nowrap;
 
@@ -122,11 +122,40 @@
         list-style: none;
         text-align: center;
         margin-right: 10px;
-        min-width: 100px;
+
         border: 1px solid #ccc;
         padding:4px 16px 4px 8px;
         margin-bottom: 10px;
+
+        .column_show {
+          margin-left: 10px;
+        }
       }
+
+      .columns li.hidden_menu {
+
+
+
+
+        padding:4px 8px 4px 8px;
+
+        .handle2,.label{
+          display:none
+        }
+
+        .open_edit i{
+          margin-left:0px;
+          margin-right:0px;
+        }
+
+        .column_show{
+          margin-left:0px;
+        }
+
+
+      }
+
+
 
       .handle2{
         margin-left:5px;cursor: move

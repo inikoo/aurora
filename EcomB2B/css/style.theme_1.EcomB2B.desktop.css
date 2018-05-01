@@ -17,15 +17,7 @@
 */
 body {
   padding: 0px;
-  margin: 0px;
-  background: url(../theme_1/images/elements/bg.png) repeat left top; }
-
-body, input, textarea {
-  font-size: 15px;
-  font-weight: normal;
-  font-style: normal;
-  line-height: 23px;
-  color: #727272; }
+  margin: 0px; }
 
 a {
   color: inherit;
@@ -50,12 +42,17 @@ table {
 
 .site_wrapper {
   margin: 0px auto auto auto;
-  background-color: #fff;
   -webkit-box-shadow: 0px 0px 5px 0px rgba(0, 0, 0, 0.2);
   box-shadow: 0px 0px 5px 0px rgba(0, 0, 0, 0.2); }
 
 .container {
   padding: 0px 20px; }
+
+input:focus {
+  outline: none; }
+
+textarea:focus {
+  outline: none; }
 
 /*
  About:
@@ -168,28 +165,20 @@ table {
 
  Version 3
 */
-#top_header {
-  height: 60px;
-  line-height: 60px; }
-
-input {
+#top_header input {
   width: 300px; }
 
-#top_header h1 {
-  line-height: 60px; }
+.search_container {
+  margin-right: 20px; }
 
 #bottom_header {
   clear: both;
-  background-color: #333;
   overflow: hidden;
   height: 45px;
   line-height: initial; }
   #bottom_header a.button, #bottom_header span.button {
     float: right;
     padding: 4px 16px 4px 16px;
-    color: #fff;
-    border: 1px solid #222;
-    background-color: #111;
     font-size: 14px;
     margin: 9px 5px; }
   #bottom_header .control_panel {
@@ -200,7 +189,6 @@ input {
 
 #bottom_header a.menu {
   float: left;
-  color: #f2f2f2;
   text-align: center;
   padding: 14px 14px;
   text-decoration: none;
@@ -214,14 +202,6 @@ input {
 #bottom_header a.button:first-child {
   margin-right: 20px; }
 
-#bottom_header a.menu:hover {
-  background-color: #ddd;
-  color: black; }
-
-#bottom_header a.menu.active {
-  background-color: #ddd;
-  color: black; }
-
 #_menu_blocks {
   z-index: 5000; }
 
@@ -229,30 +209,23 @@ input {
   width: 300px; }
 
 .vertical-menu a {
-  background-color: #fff;
-  /* Grey background color */
-  color: #555;
-  /* Black text color */
   display: block;
-  /* Make the links appear below each other */
   padding: 12px;
-  /* Add some padding */
-  text-decoration: none;
-  /* Remove underline from links */ }
+  text-decoration: none; }
 
 .vertical-menu a i {
   padding-right: 5px; }
 
-.vertical-menu a:hover {
-  background-color: #ccc;
-  /* Dark grey background on mouse-over */ }
-
 .menu_block {
-  background-color: #fff;
-  border: 15px solid #ddd;
+  border-width: 15px;
+  border-style: solid;
   box-shadow: 0px 5px 5px rgba(0, 0, 0, 0.2);
   min-height: 200px;
   display: flex; }
+
+.single_column {
+  border-width: 15px;
+  border-style: solid; }
 
 .menu_block.hide {
   display: none; }
@@ -262,8 +235,11 @@ input {
   flex-grow: 1;
   flex-basis: 33%; }
 
-.menu_block .text div {
-  padding: 20px; }
+.menu_block .text > div {
+  padding: 20px 0px; }
+
+.menu_block .text img {
+  width: 100%; }
 
 .menu_block .image {
   display: flex;
@@ -275,9 +251,6 @@ input {
   flex-shrink: 0;
   min-width: 100%; }
 
-.single_column {
-  border: 15px solid #ddd; }
-
 /*
  About:
  Author: Raul Perusquia <raul@inikoo.com>
@@ -288,14 +261,19 @@ input {
 */
 footer {
   padding-top: 30px;
-  background: #303030;
-  color: #d7d7d7;
+  font-size: 14px;
   font-weight: lighter;
   clear: both; }
+  footer p {
+    font-size: 14px; }
   footer a {
     font-weight: lighter; }
   footer ul {
     padding-left: 40px; }
+  footer .about_us {
+    padding-right: 10px; }
+  footer .about_us h5 {
+    margin-left: 0px; }
   footer h5 {
     margin-left: 60px;
     font-weight: lighter; }
@@ -303,8 +281,7 @@ footer {
     list-style-type: none;
     margin-bottom: 2px; }
     footer li i {
-      padding-right: 5px;
-      color: #aaa; }
+      padding-right: 5px; }
   footer .footer_social_links i {
     font-size: 20px;
     margin-left: 10px;
@@ -313,8 +290,7 @@ footer {
     bottom: 5px; }
   footer .copyright {
     padding: 5px 20px 5px 40px;
-    line-height: 40px;
-    background: #202020; }
+    line-height: 40px; }
   footer .address {
     margin-top: 0;
     padding-top: 0px;
@@ -659,8 +635,7 @@ body, input, textarea {
   font-size: 16px;
   font-weight: normal;
   font-style: normal;
-  line-height: 140%;
-  color: #727272; }
+  line-height: 140%; }
 
 .sky-form .button {
   font-size: 15px; }
@@ -1246,7 +1221,6 @@ section.product_tabs input[type=radio]:checked + label + div {
 
 .discounts {
   width: 100%;
-  border-bottom: 1px solid #ccc;
   display: flex; }
   .discounts .discount_card {
     flex-grow: 1;
@@ -1520,7 +1494,6 @@ small {
   font-size: smaller; }
 
 .navigation {
-  border-bottom: 1px solid #ccc;
   width: 100%;
   padding: 7px 0px 5px 0px; }
   .navigation .breadcrumbs {

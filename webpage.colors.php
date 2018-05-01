@@ -66,9 +66,10 @@ $smarty->assign('rrp', money(3.99,$store->get('Store Currency Code')));
 $smarty->assign('content', $webpage->get('Content Data'));
 
 
-$settings=$website->get('Settings');
+$settings=$website->settings;
 
 $smarty->assign('settings',$settings);
+
 
 
 $template = $theme.'/website.colors.'.$theme.'.tpl';

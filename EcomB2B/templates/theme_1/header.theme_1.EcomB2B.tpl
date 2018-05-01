@@ -10,16 +10,11 @@
 *}
 
 
-
 <span id="webpage_data" style="display:none" data-webpage_key="{$webpage->id}""></span>
 <div id="top_header" style="width: 100%;">
 
     <div style="float:right;text-align: right;;" class="search_container {if $webpage->get('Webpage Code')=='search.sys'}hide{/if} ">
-
-
         <input  id="header_search_input"/> <i id="header_search_input" class="button fa fa-search"></i>
-
-
     </div>
     <img style="padding:0px 10px ;float:left;max-height: 60px" src="art/mobile_logo.png"/>
 
@@ -33,7 +28,7 @@
 
 
     {foreach from=$header_data.menu.columns item=column key=key}
-        <a id="menu_{$key}" class="menu" href="" data-key="{$key}"><i class="far  {$column.icon} "></i> <span>{$column.label|strip_tags}</span> <i  class="down_cadet fal fa-angle-down"></i></a>
+        <a id="menu_{$key}" class="menu {if $column.type=='nothing'}only_link{else}dropdown{/if}" href="" data-key="{$key}"><i class="far  {$column.icon} "></i> <span>{$column.label|strip_tags}</span> <i  class="down_cadet fal fa-angle-down"></i></a>
     {/foreach}
 
         {if $logged_in}

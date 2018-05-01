@@ -8081,7 +8081,6 @@ input.input_file {
   list-style: none;
   text-align: center;
   margin-right: 10px;
-  min-width: 100px;
   border: 1px solid #ccc;
   white-space: nowrap; }
 .control_panel .column_label {
@@ -8096,10 +8095,20 @@ input.input_file {
   list-style: none;
   text-align: center;
   margin-right: 10px;
-  min-width: 100px;
   border: 1px solid #ccc;
   padding: 4px 16px 4px 8px;
   margin-bottom: 10px; }
+  .control_panel .columns li .column_show {
+    margin-left: 10px; }
+.control_panel .columns li.hidden_menu {
+  padding: 4px 8px 4px 8px; }
+  .control_panel .columns li.hidden_menu .handle2, .control_panel .columns li.hidden_menu .label {
+    display: none; }
+  .control_panel .columns li.hidden_menu .open_edit i {
+    margin-left: 0px;
+    margin-right: 0px; }
+  .control_panel .columns li.hidden_menu .column_show {
+    margin-left: 0px; }
 .control_panel .handle2 {
   margin-left: 5px;
   cursor: move; }

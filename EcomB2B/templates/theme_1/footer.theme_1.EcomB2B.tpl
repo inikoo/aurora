@@ -33,10 +33,7 @@
                                         <li class="item _logo"><img src="{$item.src}" alt="" title="{$item.title}"/></li>
                                     {elseif $item.type=='text'}
                                         <li class="item _text"><i class="fa-fw {$item.icon}"></i> <span>
-                                          {if $item.text=='#tel' and  $store->get('Telephone')!=''}{$store->get('Telephone')}
-                                          {elseif $item.text=='#email' and  $store->get('Email')!=''}{$store->get('Email')}
-                                          {elseif $item.text=='#address' and  $store->get('Address')!=''}{$store->get('Address')}
-                                          {else}{$item.text}{/if}
+                                          {if $item.text=='#tel' and  $store->get('Telephone')!=''}{$store->get('Telephone')}{elseif $item.text=='#email' and  $store->get('Email')!=''}{$store->get('Email')}{elseif $item.text=='#address' and  $store->get('Address')!=''}{$store->get('Address')}{else}{$item.text|strip_tags|trim}{/if}
                                       </span></li>
                                     {elseif $item.type=='email'}
                                         <li class="item _email"><i class="fa fa-fw fa-envelope"></i> <a href="mailto:{if $item.text=='#email' and  $store->get('Email')!=''}{$store->get('Email')}{else}{$item.text}{/if}">
