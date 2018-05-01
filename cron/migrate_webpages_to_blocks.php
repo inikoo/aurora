@@ -37,7 +37,7 @@ $editor = array(
 );
 
 
-$where=' and `Webpage Website Key`=14';
+//$where=' and `Webpage Website Key`=14';
 $where=' and true';
 //migrate_families();
 //migrate_departments();
@@ -45,7 +45,7 @@ $where=' and true';
 
 //2730
 
-
+/*
 
 migrate_thanks();
 migrate_search();
@@ -60,7 +60,77 @@ migrate_blocks();
 
 migrate_products();
 
+*/
+migrate_reset_password();
 
+function migrate_reset_password(){
+
+    global $db,$where;
+
+    $sql = sprintf('SELECT `Page Key`,`Page Store Key` ,`Page Store Section`,`Page Parent Code` FROM `Page Store Dimension` WHERE  `Webpage Template Filename`="reset_password"  %s ',$where);
+
+
+    if ($result = $db->query($sql)) {
+        foreach ($result as $row) {
+            $webpage = get_object('Webpage', $row['Page Key']);
+
+
+            $content_data = $webpage->get('Content Data');
+
+
+
+
+            $new_content_data = array(
+                'blocks' => array(
+                    array(
+                        'type'          => 'reset_password',
+                        'label'         => _('Reset password'),
+                        'icon'          => 'fa-lock-open-alt',
+                        'show'          => 1,
+                        'top_margin'    => 40,
+                        'bottom_margin' => 60,
+                        'labels'          => $content_data
+
+
+                    )
+
+
+
+                )
+
+            );
+
+
+            $x = json_encode($new_content_data);
+            if ($x == '') {
+                print_r($row);
+
+                print_r($webpage->id);
+
+                continue;
+            }
+
+            print_r($new_content_data);
+
+
+
+
+
+            $sql = sprintf('UPDATE `Page Store Dimension` SET `Webpage Template Filename`="reset_password2" WHERE `Page Key`=%d ', $webpage->id);
+
+            $db->exec($sql);
+
+
+            $webpage->update(
+                array(
+                    'Page Store Content Data' => json_encode($new_content_data)
+                ), 'no_history'
+            );
+
+
+        }
+    }
+}
 
 function migrate_blocks() {
 
@@ -467,7 +537,8 @@ function migrate_blocks() {
 
 }
 
-function migrate_thanks() {
+function migrate_thanks()
+{
 
     global $db,$where;
 

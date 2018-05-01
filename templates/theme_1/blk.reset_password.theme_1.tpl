@@ -9,11 +9,7 @@
 -->
 *}
 
-
-{include file="theme_1/_head.theme_1.tpl"}
-
-
-<body>
+<div id="aux">
 
 <div id="password_input_editor" class="editor hide" style="z-index:100;position:absolute;padding:10px;border:1px solid #ccc;background-color: #fff;width:560px">
     <table style="width:100%;">
@@ -21,14 +17,14 @@
         <tr>
             <td>{t}Placeholder{/t}
             </td>
-            <td><input id="_password_placeholder" class="label_field input_editor_placeholder" value="{$content._password_placeholder}" style="width:100%"/>
+            <td><input id="_password_placeholder" class="label_field input_editor_placeholder" value="{$data.labels._password_placeholder}" style="width:100%"/>
             </td>
 
         </tr>
         <tr>
             <td>{t}Tooltip{/t}
             </td>
-            <td><input id="_password_tooltip" class="label_field input_editor_tooltip"  value="{$content._password_tooltip}" style="width:100%"/>
+            <td><input id="_password_tooltip" class="label_field input_editor_tooltip"  value="{$data.labels._password_tooltip}" style="width:100%"/>
             </td>
 
         </tr>
@@ -66,14 +62,14 @@
         <tr>
             <td>{t}Placeholder{/t}
             </td>
-            <td><input  class="label_field input_editor_placeholder"  id="_password_confirm_placeholder" value="{$content._password_confirm_placeholder}" style="width:100%"/>
+            <td><input  class="label_field input_editor_placeholder"  id="_password_confirm_placeholder" value="{$data.labels._password_confirm_placeholder}" style="width:100%"/>
             </td>
 
         </tr>
         <tr>
             <td>{t}Tooltip{/t}
             </td>
-            <td><input class="label_field input_editor_tooltip"  id="_password_confirm_tooltip" value="{$content._password_confirm_tooltip}" style="width:100%"/>
+            <td><input class="label_field input_editor_tooltip"  id="_password_confirm_tooltip" value="{$data.labels._password_confirm_tooltip}" style="width:100%"/>
             </td>
 
         </tr>
@@ -97,16 +93,19 @@
     </table>
 </div>
 
-<div class="wrapper_boxed">
-
-    <div class="site_wrapper">
-        <div class="clearfix marb12"></div>
+</div>
 
 
-        <div class="container">
+{if isset($data.top_margin)}{assign "top_margin" $data.top_margin}{else}{assign "top_margin" "20"}{/if}
+{if isset($data.bottom_margin)}{assign "bottom_margin" $data.bottom_margin}{else}{assign "bottom_margin" "20"}{/if}
 
 
-            <div class="password_reset_form" style="position: relative">
+<div id="block_{$key}" data-block_key="{$key}"  block="{$data.type}" class="{$data.type} _block {if !$data.show}hide{/if}" top_margin="{$top_margin}" bottom_margin="{$bottom_margin}" style="padding-top:{$top_margin}px;padding-bottom:{$bottom_margin}px"  >
+
+
+
+
+<div class="password_reset_form" style="position: relative">
 
                 <div id="show_password_reset_form" class="like_button hide" style="position:absolute;left:470px;width:300px;top:0px" onclick="show_password_reset_form()">
                         <span class=" " style="color:#333">
@@ -141,24 +140,24 @@
 
                 <form action="" id="password_reset_form" class="sky-form">
 
-                    <header id="_title" contenteditable="true">{$content._title}</header>
+                    <header id="_title" contenteditable="true">{$data.labels._title}</header>
 
 
                     <fieldset>
 
                         <section>
                             <label id="_password" class="input " editor="password_input_editor" style="cursor:pointer" onclick="show_edit_input(this)">
-                                <i class="icon-append icon-lock" style="cursor:pointer"></i>
-                                <input class="register_field" readonly type="password" name="password" placeholder="{$content._password_placeholder}">
-                                <b class="tooltip tooltip-bottom-right">{$content._password_tooltip}</b>
+                                <i class="icon-append  fa fa-lock-open-alt" style="cursor:pointer"></i>
+                                <input class="register_field" readonly type="password" name="password" placeholder="{$data.labels._password_placeholder}">
+                                <b class="tooltip tooltip-bottom-right">{$data.labels._password_tooltip}</b>
                             </label>
                         </section>
 
                         <section>
                             <label id="_password_confirm" class="input " editor="password_confirm_input_editor" style="cursor:pointer" onclick="show_edit_input(this)">
-                                <i class="icon-append icon-lock" style="cursor:pointer"></i>
-                                <input class="register_field" readonly type="password" name="password_confirm" placeholder="{$content._password_confirm_placeholder}">
-                                <b class="tooltip tooltip-bottom-right">{$content._password_confirm_tooltip}</b>
+                                <i class="icon-append fa fa-lock-open-alt" style="cursor:pointer"></i>
+                                <input class="register_field" readonly type="password" name="password_confirm" placeholder="{$data.labels._password_confirm_placeholder}">
+                                <b class="tooltip tooltip-bottom-right">{$data.labels._password_confirm_tooltip}</b>
                             </label>
                         </section>
 
@@ -168,7 +167,7 @@
                     <footer>
 
 
-                        <button type="submit" name="submit" class="button" id="_submit_label" contenteditable="true">{$content._submit_label}</button>
+                        <button type="submit" name="submit" class="button" id="_submit_label" contenteditable="true">{$data.labels._submit_label}</button>
 
 
                     </footer>
@@ -180,14 +179,14 @@
                         <i class="fa fa-check"></i>
 
 
-                        <span class="password_reset_msg " id="password_reset_success_msg" contenteditable="true">{$content.password_reset_success_msg}</span>
-                        <span class="password_reset_msg error" id="password_reset_expired_token_error_msg" contenteditable="true">{$content.password_reset_expired_token_error_msg}</span>
-                        <span class="password_reset_msg error" id="password_reset_error_msg" contenteditable="true">{$content.password_reset_error_msg}</span>
-                        <span class="password_reset_msg error" id="password_reset_logged_in_error_msg"  contenteditable="true">{$content.password_reset_logged_in_error_msg}</span>
+                        <span class="password_reset_msg " id="password_reset_success_msg" contenteditable="true">{$data.labels.password_reset_success_msg}</span>
+                        <span class="password_reset_msg error" id="password_reset_expired_token_error_msg" contenteditable="true">{$data.labels.password_reset_expired_token_error_msg}</span>
+                        <span class="password_reset_msg error" id="password_reset_error_msg" contenteditable="true">{$data.labels.password_reset_error_msg}</span>
+                        <span class="password_reset_msg error" id="password_reset_logged_in_error_msg"  contenteditable="true">{$data.labels.password_reset_logged_in_error_msg}</span>
 
                         <br>
-                        <a id="password_reset_go_back" class="marked_link" contenteditable="true">{$content.password_reset_go_back}</a>
-                        <a id="password_reset_go_home" class="marked_link" contenteditable="true">{$content.password_reset_go_home}</a>
+                        <a id="password_reset_go_back" class="marked_link" contenteditable="true">{$data.labels.password_reset_go_back}</a>
+                        <a id="password_reset_go_home" class="marked_link" contenteditable="true">{$data.labels.password_reset_go_home}</a>
 
 
                     </div>
@@ -196,23 +195,16 @@
 
             </div>
 
-
-        </div>
-
-        <div class="clearfix marb12"></div>
-        <div class="clearfix marb12"></div>
-
-    </div>
-
 </div>
+
+
+
 <script>
 
-    $('[contenteditable=true]').on('input paste', function (event) {
-        $('#save_button', window.parent.document).addClass('save button changed valid')
-    });
 
 
-    function save() {
+
+    function xsave() {
 
         if (!$('#save_button', window.parent.document).hasClass('save')) {
             return;
@@ -284,19 +276,6 @@
 
     }
 
-    $(document).delegate('a', 'click', function (e) {
-
-        return false
-    })
-
-
-    $("form").on('submit', function (e) {
-
-        e.preventDefault();
-        e.returnValue = false;
-
-// do things
-    });
 
     function show_edit_input(element) {
 
@@ -394,8 +373,4 @@
     }
 
 </script>
-
-</body>
-
-</html>
 

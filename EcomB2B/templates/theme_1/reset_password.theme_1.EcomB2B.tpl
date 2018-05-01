@@ -7,23 +7,10 @@
 
  Version 3
 -->
-*}{include file="theme_1/_head.theme_1.EcomB2B.tpl"}
+*}
 
 
-<body xmlns="http://www.w3.org/1999/html">
-{include file="analytics.tpl"}
-
-<div class="wrapper_boxed">
-
-    <div class="site_wrapper">
-
-        {include file="theme_1/header.theme_1.EcomB2B.tpl"}
-
-        <div class="content_fullwidth less2">
-            <div class="container">
-
-
-                <div class="password_reset_form" >
+<div class="password_reset_form" >
 
                     
 
@@ -87,19 +74,6 @@
                 
                 
 
-
-            </div>
-        </div>
-
-
-        <div class="clearfix marb12"></div>
-
-        {include file="theme_1/footer.theme_1.EcomB2B.tpl"}
-
-
-    </div>
-
-</div>
 <script>
 
 
@@ -218,8 +192,4 @@
 
 
 </script>
-
-</body>
-
-</html>
 

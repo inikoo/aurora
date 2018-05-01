@@ -769,6 +769,60 @@
 
             switch ($(obj).attr('block')) {
 
+
+                case 'reset_password':
+
+
+                    content_data = {
+
+                    };
+
+
+                    $('[contenteditable=true]', obj).each(function (i, obj2) {
+
+
+                            content_data[$(obj2).attr('id')] = $(obj2).html()
+
+
+
+                    })
+
+
+
+                    $('.label_field').each(function (i, obj) {
+                        content_data[$(obj).attr('id')] = $(obj).val()
+                    })
+
+                    $('.tooltip', obj).each(function (i, obj2) {
+                        if ($(obj2).attr('id') != undefined) content_data[$(obj2).attr('id')] = $(obj2).html()
+                    })
+
+
+                    $('.website_localized_label', obj).each(function (i, obj2) {
+                        if ($(obj2).val() != '') {
+                            labels[$(obj2).attr('id')] = $(obj2).val()
+
+
+                        }
+
+                    })
+
+
+                    blocks.push({
+                        type: 'reset_password',
+                        label: '{t}Reset password{/t}',
+                        icon: 'fa-lock-open-alt',
+                        show: ($(obj).hasClass('hide') ? 0 : 1),
+                        top_margin: $(obj).attr('top_margin'),
+                        bottom_margin: $(obj).attr('bottom_margin'),
+                        labels: content_data
+
+                    })
+
+
+                    break;
+
+
                 case 'profile':
 
 

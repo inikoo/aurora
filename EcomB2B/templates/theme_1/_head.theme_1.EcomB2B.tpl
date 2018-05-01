@@ -173,7 +173,7 @@
     {assign "with_gallery" false}
     {assign "with_telephone" false}
     {assign "with_product_order_input" false}
-
+    {assign "with_reset_password" false}
     {assign "checkout" false}
     {assign "profile" false}
     {assign "favourites" false}
@@ -234,6 +234,10 @@
             {else}
                 {assign "with_register" 1} {assign "with_forms" 1}
             {/if}
+
+        {elseif $block.type=='reset_password'}
+            {assign "with_reset_password" 1}
+            {assign "with_forms" 1}
 
         {else}
             {if $block.type=='search'   }{assign "with_search" 1}{/if}

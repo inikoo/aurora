@@ -115,7 +115,7 @@
                 {if $block.type=='product'   }{assign "with_gallery" 1}{/if}
                 {if $block.type=='not_found'   }{assign "with_not_found" 1}{/if}
                 {if $block.type=='offline'   }{assign "with_offline" 1}{/if}
-
+                {if $block.type=='reset_password'   }{assign "with_forms" 1}{/if}
                 {if $block.type=='telephone'   }{assign "with_telephone" 1}{/if}
                 {if $block.type=='category_products' or   $block.type=='products'  or   $block.type=='product' }{assign "with_product_order_input" 1}{/if}
 
