@@ -51,6 +51,15 @@ $webpage_key=$website->get_system_webpage_key('home.sys');
 $webpage=new Public_Webpage($webpage_key);
 
 $smarty->assign('webpage', $webpage);
+
+
+
+foreach($website->style as $key=>$value){
+    if($value[0]=='#bottom_header a.menu:hover'){
+        unset($website->style[$key]);
+    }
+}
+
 $smarty->assign('website', $website);
 $smarty->assign('store', $store);
 $smarty->assign('logged_in', 'false');
@@ -63,6 +72,8 @@ $smarty->assign('content', $webpage->get('Content Data'));
 $settings=$website->get('Settings');
 
 $smarty->assign('settings',$settings);
+
+
 
 
 $template = $theme.'/header.'.$theme.'.tpl';

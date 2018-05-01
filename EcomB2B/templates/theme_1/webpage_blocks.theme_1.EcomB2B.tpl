@@ -30,7 +30,7 @@
         <div id="body" >
 
             {if $navigation.show}
-                <div class="navigation">
+                <div class="navigation top_body">
                     <div class="breadcrumbs">
                     {foreach from=$navigation.breadcrumbs item=$breadcrumb name=breadcrumbs}
                         <span class="breadcrumb"><a href="{$breadcrumb.link}" title="{$breadcrumb.title}">{$breadcrumb.label}</a> {if !$smarty.foreach.breadcrumbs.last}
@@ -45,7 +45,7 @@
             {/if}
 
             {if isset($discounts) and count($discounts.deals)>0 }
-                <div class="discounts" style="">
+                <div class="discounts top_body"  >
                     {foreach from=$discounts.deals item=deal_data }
                     <div class="discount_card" key="{$deal_data.key}">
                         <div class="discount_icon" style="">{$deal_data.icon}</div>
@@ -203,8 +203,8 @@
 
 
 
-            $("#bottom_header a").hoverIntent(menu_in, menu_out);
-            $("#bottom_header a").hover(menu_in_fast, menu_out_fast);
+            $("#bottom_header a.dropdown").hoverIntent(menu_in, menu_out);
+            $("#bottom_header a.dropdown").hover(menu_in_fast, menu_out_fast);
             $("._menu_block").hover(menu_block_in, menu_block_out);
 
             $('#_menu_blocks').width($('#top_header').width())
@@ -525,7 +525,8 @@
                                 if (data.state == '200') {
 
 
-                                  //  window.location.replace("welcome.sys");
+
+                                    window.location.replace("welcome.sys");
 
 
                                 } else if (data.state == '400') {

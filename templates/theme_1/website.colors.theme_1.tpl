@@ -16,6 +16,10 @@
         padding:0px 4px;
     }
 
+    #aux{
+        color:#555
+    }
+
     </style>
 
 <script src="js/website_style.js"></script>
@@ -30,6 +34,421 @@
 
 
 
+        <div id="header_style" class="hide object_control_panel element_for_color element_for_margins" style="padding: 0px;z-index: 5002;">
+
+
+
+            <div class="handle" style="border-bottom: 1px solid #ccc;;width: 100%;line-height: 30px;height: 30px">
+                <i class="fa fa-window-close button padding_left_10" onclick="$('#header_style').addClass('hide')"></i>
+            </div>
+            <div style="padding: 20px">
+                <table >
+
+
+                    <tr>
+                        <td class="label">{t}Header height{/t}</td>
+                        <td class="margins_container unselectable border border-width" data-scope="header_height">
+                            <input   class="header_height edit_margin " value=""  placeholder="0">
+
+                            <i class="fa fa-plus-circle padding_left_10 like_button up_margins"></i>
+                            <i class="fa fa-minus-circle padding_left_5 like_button down_margins"></i>
+
+                        </td>
+                    </tr>
+
+
+
+                    <tr>
+                        <td class="label">{t}Header text{/t}</td>
+                        <td>
+                     <span data-scope="header_color" class="fa-stack color_picker scope_header_color like_button">
+                         <i class="fas fa-circle fa-stack-1x "></i>
+                         <i class="fas fa-circle fa-stack-1x "></i>
+                    </span>
+
+
+
+                        </td>
+                    </tr>
+
+
+                    <tr>
+                        <td id="" class="label">{t}Header background{/t}</td>
+                        <td>
+                    <span data-scope="header_background-color" class="fa-stack color_picker scope_header_background-color like_button">
+                         <i class="fas fa-circle fa-stack-1x "></i>
+                         <i class="fas fa-circle fa-stack-1x "></i>
+                    </span>
+
+
+
+                        </td>
+                    </tr>
+
+
+
+
+                </table>
+
+
+            </div>
+
+
+
+
+        </div>
+
+
+
+        <div id="footer_style" class="hide object_control_panel element_for_color element_for_margins" style="padding: 0px;z-index: 5002;">
+
+
+            <div class="handle" style="border-bottom: 1px solid #ccc;;width: 100%;line-height: 30px;height: 30px">
+                <i class="fa fa-window-close button padding_left_10" onclick="$('#footer_style').addClass('hide')"></i>
+            </div>
+            <div style="padding: 20px">
+                <table>
+
+                    <tr>
+                        <td class="label">{t}Footer text{/t}</td>
+                        <td>
+                     <span data-scope="real_footer_color" class="fa-stack color_picker scope_footer_color like_button">
+                         <i class="fas fa-circle fa-stack-1x "></i>
+                         <i class="fas fa-circle fa-stack-1x "></i>
+                    </span>
+
+
+                        </td>
+                    </tr>
+
+                    <tr>
+                        <td id="" class="label">{t}Footer background{/t}</td>
+                        <td>
+                    <span data-scope="real_footer_background-color" class="fa-stack color_picker scope_footer_background-color like_button">
+                         <i class="fas fa-circle fa-stack-1x "></i>
+                         <i class="fas fa-circle fa-stack-1x "></i>
+                    </span>
+
+
+                        </td>
+                    </tr>
+
+                    <tr>
+                        <td class="label">{t}Lower footer text{/t}</td>
+                        <td>
+                     <span data-scope="lower_footer_color" class="fa-stack color_picker scope_lower_footer_color like_button">
+                         <i class="fas fa-circle fa-stack-1x "></i>
+                         <i class="fas fa-circle fa-stack-1x "></i>
+                    </span>
+
+
+                        </td>
+                    </tr>
+
+                    <tr>
+                        <td id="" class="label">{t}Lower footer background{/t}</td>
+                        <td>
+                    <span data-scope="lower_footer_background-color" class="fa-stack color_picker scope_lower_footer_background-color like_button">
+                         <i class="fas fa-circle fa-stack-1x "></i>
+                         <i class="fas fa-circle fa-stack-1x "></i>
+                    </span>
+
+
+                        </td>
+                    </tr>
+
+
+                </table>
+
+
+            </div>
+
+
+        </div>
+
+
+        <div id="menu_bar_style" class="hide object_control_panel element_for_color element_for_margins" style="padding: 0px;z-index: 5002;">
+
+
+
+            <div class="handle" style="border-bottom: 1px solid #ccc;;width: 100%;line-height: 30px;height: 30px">
+                <i class="fa fa-window-close button padding_left_10" onclick="$('#menu_bar_style').addClass('hide')"></i>
+            </div>
+            <div style="padding: 20px">
+                <table >
+
+                    <tr>
+                        <td id="" class="label">{t}Control area background{/t}</td>
+                        <td>
+                    <span data-scope="menu_bar_background-color" class="fa-stack color_picker scope_menu_bar_background-color like_button">
+                         <i class="fas fa-circle fa-stack-1x "></i>
+                         <i class="fas fa-circle fa-stack-1x "></i>
+                    </span>
+
+
+
+
+
+
+                        </td>
+                    </tr>
+
+                    <tr>
+                        <td class="label">{t}Control button text{/t}</td>
+                        <td>
+                     <span data-scope="menu_button_color" class="fa-stack color_picker scope_menu_button_color like_button">
+                         <i class="fas fa-circle fa-stack-1x "></i>
+                         <i class="fas fa-circle fa-stack-1x "></i>
+                    </span>
+
+                            <span data-scope="menu_button_hover_color" class="fa-stack color_picker scope_menu_button_hover_color like_button" title="hover">
+                         <i class="fas fa-circle fa-stack-1x "></i>
+                         <i class="fas fa-circle fa-stack-1x "></i>
+                    </span> <small style="position:relative;left:-8px;top:1px;opacity:.5" >:hover</small>
+
+                        </td>
+                    </tr>
+                    <tr>
+                        <td id="" class="label">{t}Control button background{/t}</td>
+                        <td>
+                     <span data-scope="menu_button_background-color" class="fa-stack color_picker scope_menu_button_background-color like_button">
+                         <i class="fas fa-circle fa-stack-1x "></i>
+                         <i class="fas fa-circle fa-stack-1x "></i>
+                    </span>
+
+                            <span data-scope="menu_button_hover_background-color" class="fa-stack color_picker scope_menu_button_hover_background-color like_button" title="hover">
+                         <i class="fas fa-circle fa-stack-1x "></i>
+                         <i class="fas fa-circle fa-stack-1x "></i>
+                    </span> <small style="position:relative;left:-8px;top:1px;opacity:.5" >:hover</small>
+
+                        </td>
+                    </tr>
+
+
+                    <tr style="border-top:1px solid #ccc">
+                        <td class="label">{t}Menu text{/t}</td>
+                        <td>
+                     <span data-scope="menu_color" class="fa-stack color_picker scope_menu_color like_button">
+                         <i class="fas fa-circle fa-stack-1x "></i>
+                         <i class="fas fa-circle fa-stack-1x "></i>
+                    </span>
+
+                            <span data-scope="menu_hover_color" class="fa-stack color_picker scope_menu_hover_color like_button" title="hover">
+                         <i class="fas fa-circle fa-stack-1x "></i>
+                         <i class="fas fa-circle fa-stack-1x "></i>
+                    </span> <small style="position:relative;left:-8px;top:1px;opacity:.5" >:hover</small>
+
+                        </td>
+                    </tr>
+
+
+                    <tr>
+                        <td class="label">{t}Menu background{/t}</td>
+                        <td>
+                     <span data-scope="menu_background-color" class="fa-stack color_picker scope_menu_background-color like_button">
+                         <i class="fas fa-circle fa-stack-1x "></i>
+                         <i class="fas fa-circle fa-stack-1x "></i>
+                    </span>
+
+                            <span data-scope="menu_hover_background-color" class="fa-stack color_picker scope_menu_hover_background-color like_button" title="hover">
+                         <i class="fas fa-circle fa-stack-1x "></i>
+                         <i class="fas fa-circle fa-stack-1x "></i>
+                    </span> <small style="position:relative;left:-8px;top:1px;opacity:.5" >:hover & {t}border{/t}</small>
+
+                        </td>
+                    </tr>
+                    <tr style="border-top:1px solid #ccc">
+
+                        <td class="label">{t}Submenu text{/t}</td>
+                        <td>
+                     <span data-scope="submenu_color" class="fa-stack color_picker scope_submenu_color like_button">
+                         <i class="fas fa-circle fa-stack-1x "></i>
+                         <i class="fas fa-circle fa-stack-1x "></i>
+                    </span>
+
+
+                        </td>
+                    </tr>
+
+                    <tr >
+
+                    <td class="label">{t}Submenu background{/t}</td>
+                        <td>
+                     <span data-scope="submenu_background-color" class="fa-stack color_picker scope_submenu_background-color like_button">
+                         <i class="fas fa-circle fa-stack-1x "></i>
+                         <i class="fas fa-circle fa-stack-1x "></i>
+                    </span>
+
+
+                        </td>
+                    </tr>
+
+                    <tr>
+                        <td class="label">{t}Submenu item text{/t}</td>
+                        <td>
+                     <span data-scope="submenu_item_color" class="fa-stack color_picker scope_submenu_item_color like_button">
+                         <i class="fas fa-circle fa-stack-1x "></i>
+                         <i class="fas fa-circle fa-stack-1x "></i>
+                    </span>
+
+                            <span data-scope="submenu_item_hover_color" class="fa-stack color_picker scope_submenu_item_hover_color like_button" title="hover">
+                         <i class="fas fa-circle fa-stack-1x "></i>
+                         <i class="fas fa-circle fa-stack-1x "></i>
+                    </span> <small style="position:relative;left:-8px;top:1px;opacity:.5" >:hover</small>
+
+                        </td>
+                    </tr>
+                    <tr>
+                        <td id="" class="label">{t}Submenu item background{/t}</td>
+                        <td>
+                     <span data-scope="submenu_item_background-color" class="fa-stack color_picker scope_submenu_item_background-color like_button">
+                         <i class="fas fa-circle fa-stack-1x "></i>
+                         <i class="fas fa-circle fa-stack-1x "></i>
+                    </span>
+
+                            <span data-scope="submenu_item_hover_background-color" class="fa-stack color_picker scope_submenu_item_hover_background-color like_button" title="hover">
+                         <i class="fas fa-circle fa-stack-1x "></i>
+                         <i class="fas fa-circle fa-stack-1x "></i>
+                    </span> <small style="position:relative;left:-8px;top:1px;opacity:.5" >:hover</small>
+
+                        </td>
+                    </tr>
+
+
+                </table>
+
+
+            </div>
+
+
+
+
+        </div>
+
+
+
+
+        <div id="navigation_style" class="hide object_control_panel element_for_color element_for_margins" style="padding: 0px;z-index: 3001;">
+
+
+
+            <div class="handle" style="border-bottom: 1px solid #ccc;;width: 100%;line-height: 30px;height: 30px">
+                <i class="fa fa-window-close button padding_left_10" onclick="$('#navigation_style').addClass('hide')"></i>
+            </div>
+            <div style="padding: 20px">
+                <table >
+                    <tr>
+                        <td class="label">{t}Navigation text{/t}</td>
+                        <td>
+                     <span data-scope="navigation_color" class="fa-stack color_picker scope_navigation_color like_button">
+                         <i class="fas fa-circle fa-stack-1x "></i>
+                         <i class="fas fa-circle fa-stack-1x "></i>
+                    </span>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td id="" class="label">{t}Navigation background{/t}</td>
+                        <td>
+                    <span data-scope="navigation_background-color" class="fa-stack color_picker scope_navigation_background-color like_button">
+                         <i class="fas fa-circle fa-stack-1x "></i>
+                         <i class="fas fa-circle fa-stack-1x "></i>
+                    </span>
+                        </td>
+                    </tr>
+
+
+
+
+
+
+
+
+                    <tr>
+                        <td class="label">{t}Navigation bottom border{/t}</td>
+                        <td class="margins_container unselectable border border-width" data-scope="navigation_bottom_border">
+
+                            <input data-margin="bottom-width" class=" edit_margin navigation_bottom_border" value="" style="" placeholder="0">
+
+                            <i class="fa fa-plus-circle padding_left_10 like_button up_margins"></i>
+                            <i class="fa fa-minus-circle padding_left_5 like_button down_margins"></i>
+
+
+
+                            <span data-scope="navigation_border_bottom_color" class="fa-stack color_picker scope_navigation_border_bottom_color like_button">
+                         <i class="fas fa-circle fa-stack-1x "></i>
+                         <i class="fas fa-circle fa-stack-1x "></i>
+                    </span>
+                        </td>
+                    </tr>
+
+
+
+                </table>
+
+
+            </div>
+
+
+
+
+        </div>
+
+
+
+        <div id="body_style" class="hide object_control_panel element_for_color element_for_margins" style="padding: 0px;z-index: 3001;">
+
+
+
+            <div class="handle" style="border-bottom: 1px solid #ccc;;width: 100%;line-height: 30px;height: 30px">
+                <i class="fa fa-window-close button padding_left_10" onclick="$('#body_style').addClass('hide')"></i>
+            </div>
+            <div style="padding: 20px">
+                <table >
+
+
+
+                    <tr>
+                        <td class="label">{t}Body text{/t}</td>
+                        <td>
+                     <span data-scope="body_color" class="fa-stack color_picker scope_body_color like_button">
+                         <i class="fas fa-circle fa-stack-1x "></i>
+                         <i class="fas fa-circle fa-stack-1x "></i>
+                    </span>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td id="" class="label">{t}Body background{/t}</td>
+                        <td>
+                    <span data-scope="body_background-color" class="fa-stack color_picker scope_body_background-color like_button">
+                         <i class="fas fa-circle fa-stack-1x "></i>
+                         <i class="fas fa-circle fa-stack-1x "></i>
+                    </span>
+                        </td>
+                    </tr>
+
+
+                    <tr>
+                        <td id="" class="label">{t}Outside background{/t}</td>
+                        <td>
+                    <span data-scope="scope_outside_background-color" class="fa-stack color_picker scope_outside_background-color like_button">
+                         <i class="fas fa-circle fa-stack-1x "></i>
+                         <i class="fas fa-circle fa-stack-1x "></i>
+                    </span>
+                        </td>
+                    </tr>
+
+
+                </table>
+
+
+            </div>
+
+
+
+
+        </div>
+
+
         <div id="button_style" class="hide object_control_panel element_for_color element_for_margins" style="padding: 0px;z-index: 3001;">
 
 
@@ -40,20 +459,21 @@
             <div style="padding: 20px">
                 <table >
 
-
                     <tr>
-                        <td class="label">{t}Text{/t}</td>
+                        <td id="" class="label">{t}Button text{/t}</td>
                         <td>
-                     <span data-scope="color" class="fa-stack color_picker scope_color like_button">
+                    <span data-scope="button_background-color" class="fa-stack color_picker scope_background-color like_button">
                          <i class="fas fa-circle fa-stack-1x "></i>
                          <i class="fas fa-circle fa-stack-1x "></i>
                     </span>
                         </td>
                     </tr>
+
+
                     <tr>
-                        <td id="" class="label">{t}Background{/t}</td>
+                        <td id="" class="label">{t}Button background{/t}</td>
                         <td>
-                    <span data-scope="background-color" class="fa-stack color_picker scope_background-color like_button">
+                    <span data-scope="button_background-color" class="fa-stack color_picker scope_background-color like_button">
                          <i class="fas fa-circle fa-stack-1x "></i>
                          <i class="fas fa-circle fa-stack-1x "></i>
                     </span>
@@ -102,9 +522,9 @@
                     </tr>
 
                     <tr>
-                        <td class="label">{t}Body text{/t}</td>
+                        <td class="label">{t}Text{/t}</td>
                         <td>
-                     <span data-scope="color" class="fa-stack color_picker scope_color like_button">
+                     <span data-scope="product_cointainer_color" class="fa-stack color_picker scope_product_cointainer_color like_button">
                          <i class="fas fa-circle fa-stack-1x "></i>
                          <i class="fas fa-circle fa-stack-1x "></i>
                     </span>
@@ -122,8 +542,12 @@
                     </tr>
 
                     <tr>
-                        <td id="" class="label">{t}Footer text{/t}</td>
+                        <td id="" class="label">{t}Order button text{/t}</td>
                         <td>
+
+
+
+
                     <span data-scope="footer_color" class="fa-stack color_picker scope_footer_color like_button">
                          <i class="fas fa-circle fa-stack-1x "></i>
                          <i class="fas fa-circle fa-stack-1x "></i>
@@ -137,14 +561,14 @@
                     </tr>
 
                     <tr>
-                        <td id="" class="label">{t}Footer background{/t}</td>
+                        <td id="" class="label">{t}Order button background{/t}</td>
                         <td>
-                    <span data-scope="background-color" class="fa-stack color_picker scope_footer_background-color like_button">
+                    <span data-scope="footer_background-color" class="fa-stack color_picker scope_footer_background-color like_button">
                          <i class="fas fa-circle fa-stack-1x "></i>
                          <i class="fas fa-circle fa-stack-1x "></i>
                     </span>
 
-                    <span data-scope="background-color" class="fa-stack color_picker scope_footer_hover_background-color like_button" title="hover">
+                    <span data-scope="footer_hover_background-color" class="fa-stack color_picker scope_footer_hover_background-color like_button" title="hover">
                          <i class="fas fa-circle fa-stack-1x "></i>
                          <i class="fas fa-circle fa-stack-1x "></i>
                     </span> <small style="position:relative;left:-8px;top:1px;opacity:.5" >:hover</small>
@@ -178,7 +602,7 @@
     <div class="site_wrapper ">
 
 
-        <span id="webpage_data" style="display:none" data-webpage_key="{$webpage->id}"
+        <span id="webpage_data" style="display:none" data-website_key="{$website->id}"
 
                 {foreach from=$website->style  item=style  }
                     {$style[0]}{ {$style[1]}: {$style[2]}}
@@ -189,18 +613,26 @@
 
         ></span>
 
-        <div id="top_header" style="width: 100%;">
+        <div id="top_header" style="width: 100%;"  >
 
-            <div style="float:right;text-align: right;;" class="search_container {if $webpage->get('Webpage Code')=='search.sys'}hide{/if} ">
+            <div style="float:right;text-align: right;border-left:1px dashed #ccc;padding-left:559px" onclick="open_header_style()" class="search_container {if $webpage->get('Webpage Code')=='search.sys'}hide{/if} ">
 
 
                 <input id="header_search_input"/> <i id="header_search_input" class="button fa fa-search"></i>
 
 
             </div>
-            <img style="padding:0px 10px ;float:left" src="{if empty($settings['logo_website'])}http://via.placeholder.com/60x60{else}{$settings['logo_website']}{/if}"/>
 
-            <h1> {$website->get('Website Name')}</h1>
+
+            <input style="display:none" type="file" name="logo" id="update_image_logo" class="image_upload" data-options='{ }'/>
+            <label style="cursor: pointer" for="update_image_logo">
+                <img id="website_logo" style="padding:0px 10px ;height:100%;float:left" src="{if empty($settings['logo_website'])}http://via.placeholder.com/60x60{else}{$settings['logo_website']}{/if}"/>
+            </label>
+
+
+
+
+            <h1 id="header_title" contenteditable="true" style="max-width: 330px;">{if empty($settings['header_title'])}{$website->get('Website Name')}{else}{$settings['header_title']}{/if}</h1>
 
 
             <div style="clear:both"></div>
@@ -213,8 +645,8 @@
                 <a id="menu_{$key}" class="menu" href="" data-key="{$key}"><i class="far  {$column.icon} "></i> <span>{$column.label|strip_tags}</span> <i class="down_cadet fal fa-angle-down"></i></a>
             {/foreach}
 
-            {if $logged_in}
-                <div class="control_panel">
+
+                <div class="control_panel" onclick="open_menu_style()">
 
                     <a id="header_order_totals" href="basket.sys" class="button">
                         <span class="ordered_products_number">0</span>
@@ -236,12 +668,7 @@
 
 
                 </div>
-            {else}
-                <div class="control_panel">
-                    <a href="/login.sys" class="button"><i class="fa fa-sign-in" aria-hidden="true"></i> <span>{if empty($labels._Login)}{t}Login{/t}{else}{$labels._Login}{/if}</span></a>
-                    <a href="/register.sys" class="button"><i class="fa fa-user-plus" aria-hidden="true"></i> <span>{if empty($labels._Register)}{t}Register{/t}{else}{$labels._Register}{/if}</span></a>
-                </div>
-            {/if}
+
 
 
         </div>
@@ -295,8 +722,8 @@
             {/foreach}
         </div>
 
-        <div id=body">
-            <div class="navigation">
+        <div id=body"   >
+            <div class="navigation top_body" onclick="open_navigation_style()" >
                 <div class="breadcrumbs" style="">
                     <span class="breadcrumb ">
                         <a href="#" title="{t}Home{/t}"><i class="fa fa-home"></i></a>
@@ -357,15 +784,7 @@
                                 {/if}
 
 
-                                {if $logged_in}
 
-                                        <div class="ordering log_in can_not_order  out_of_stock_row  hide ">
-
-                                            <span class="product_footer label "></span>
-                                            <span class="product_footer reminder"><i class="fa fa-envelope hide" aria-hidden="true"></i>  </span>
-
-
-                                        </div>
 
                                         <div class="order_row empty  order_row_ ">
                                             <input maxlength=6 style="" class='order_input  ' type="text"' size='2' value='' data-ovalue=''>
@@ -378,19 +797,7 @@
                                         </div>
 
 
-                                {else}
 
-
-
-                                    <div class="ordering log_out " >
-
-                                        <div onclick='window.location.href = "/login.sys"' class="mark_on_hover" ><span class="login_button" >{if empty($labels._Login)}{t}Login{/t}{else}{$labels._Login}{/if}</span></div>
-                                        <div onclick='window.location.href = "/register.sys"' class="mark_on_hover"><span class="register_button" > {if empty($labels._Register)}{t}Register{/t}{else}{$labels._Register}{/if}</span></div>
-
-
-                                    </div>
-
-                                {/if}
 
 
 
@@ -413,24 +820,19 @@
 
                         <div class="product_description"  >
                             <span class="code">Fruit-01</span>
-                            <div class="name item_name">Cavendish apple, I know you like it!</div>
+                            <div class="name item_name">Cavendish banana, I know you like it!</div>
 
                         </div>
-                        {if $logged_in}
+
                             <div class="product_prices  " >
                                 <div class="product_price">{if empty($labels._product_price)}{t}Price{/t}{else}{$labels._product_price}{/if}: {$price}</div>
 
                                 {if $rrp!=''}<div>{if empty($labels._product_rrp)}{t}RRP{/t}{else}{$labels._product_rrp}{/if}: {$rrp}</div>{/if}
                             </div>
-                        {else}
-                            <div class="product_prices  " >
-                                <div class="product_price">{if empty($labels._login_to_see)}{t}For prices, please login or register{/t}{else}{$labels._login_to_see}{/if}</div>
-
-                            </div>
-                        {/if}
 
 
-                        {if $logged_in}
+
+
 
                             <div class="ordering log_in can_not_order  out_of_stock_row  hide ">
 
@@ -440,7 +842,7 @@
 
                             </div>
 
-                            <div class="order_row empty  order_row_ ">
+                            <div class="order_row ordered  order_row_ ">
                                 <input maxlength=6 style="" class='order_input  ' type="text"' size='2' value='1' data-ovalue=''>
 
                                 <div class="label sim_button" style="margin-left:57px">
@@ -453,19 +855,6 @@
                             </div>
 
 
-                        {else}
-
-
-
-                            <div class="ordering log_out " >
-
-                                <div onclick='window.location.href = "/login.sys"' class="mark_on_hover" ><span class="login_button" >{if empty($labels._Login)}{t}Login{/t}{else}{$labels._Login}{/if}</span></div>
-                                <div onclick='window.location.href = "/register.sys"' class="mark_on_hover"><span class="register_button" > {if empty($labels._Register)}{t}Register{/t}{else}{$labels._Register}{/if}</span></div>
-
-
-                            </div>
-
-                        {/if}
 
 
 
@@ -591,12 +980,21 @@
                 </div>
 
 
-                <div class="text_block " style="float: left">
+                <div class="text_block " style="float: left"   >
+
+
+                    <div style="margin-left:15px;margin-bottom:20px;padding:10px;border: 1px dashed #ccc;"  onClick="open_edit_body_style(this)"  >
+
+                        {t}Body text{/t}
+
+                    </div>
+
+
 
                     <form action="" method="post" enctype="multipart/form-data"  class="sky-form" style="box-shadow: none">
 
                         <section class="col ">
-                            <button onClick="open_edit_button_style(this)" id="basket_go_to_checkout"   style="margin:0px;" type="submit" class="button">{t}Button{/t}  <i  class="fas fa-fw fa-arrow-right" aria-hidden="true"></i> </button>
+                            <button  id="basket_go_to_checkout"   onClick="open_button_style(this)" style="margin:0px;" type="submit" class="button">{t}Button{/t}  <i  class="fas fa-fw fa-arrow-right" aria-hidden="true"></i> </button>
 
 
 
@@ -616,7 +1014,7 @@
         </div>
 
 
-        <footer>
+        <footer onclick="open_footer_style()">
 
 
             {foreach from=$footer_data.rows item=row}
@@ -638,11 +1036,8 @@
                                                 <li class="item _logo"><img src="{$item.src}" alt="" title="{$item.title}"/></li>
                                             {elseif $item.type=='text'}
                                                 <li class="item _text"><i class="fa-fw {$item.icon}"></i> <span>
-                                          {if $item.text=='#tel' and  $store->get('Telephone')!=''}{$store->get('Telephone')}
-                                          {elseif $item.text=='#email' and  $store->get('Email')!=''}{$store->get('Email')}
-                                          {elseif $item.text=='#address' and  $store->get('Address')!=''}{$store->get('Address')}
-                                          {else}{$item.text}{/if}
-                                      </span></li>
+                                          {if $item.text=='#tel' and  $store->get('Telephone')!=''}{$store->get('Telephone')}{elseif $item.text=='#email' and  $store->get('Email')!=''}{$store->get('Email')}
+                                          {elseif $item.text=='#address' and  $store->get('Address')!=''}{$store->get('Address')}{else}{$item.text|strip_tags|trim}{/if}</span></li>
                                             {elseif $item.type=='email'}
                                                 <li class="item _email"><i class="fa fa-fw fa-envelope"></i> <a href="mailto:{if $item.text=='#email' and  $store->get('Email')!=''}{$store->get('Email')}{else}{$item.text}{/if}">
                                                         {if $item.text=='#email' and  $store->get('Email')!=''}{$store->get('Email')}{else}{$item.text}{/if}
@@ -752,6 +1147,11 @@
 
 
 <script>
+
+
+
+
+
 
     var pinned = false;
 

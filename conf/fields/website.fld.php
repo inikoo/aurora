@@ -18,6 +18,15 @@ if (isset($options['new']) and $options['new']) {
 }
 
 
+
+
+$options_basket_amount = array(
+    'total' => _('Total'),
+    'items_net' => _('Items net'),
+
+);
+
+
 $object_fields = array(
     array(
         'label'      => _('Id'),
@@ -58,8 +67,32 @@ $object_fields = array(
 
             ),
 
+        ),
+
+),
+
+         array(
+        'label'      => _('Menu basket button'),
+        'show_title' => true,
+        'fields'     => array(
+
+
+                array(
+                    'id'              => 'Website_Settings_Info_Bar_Basket_Amount_Type',
+                    'edit'            => ($edit ? 'option' : ''),
+                    'options'         => $options_basket_amount,
+                    'value'           => ($object->get('Website Settings Info Bar Basket Amount Type')==''?'total':$object->get('Website Settings Info Bar Basket Amount Type')),
+                    'formatted_value' => ($object->get('Website Settings Info Bar Basket Amount Type')==''?_('Total'):$object->get('Settings Info Bar Basket Amount Type')),
+                    'label'           => _('Displayed amount'),
+                    'type'            => 'value'
+                ),
+
+
+
         )
     ),
+
+
 
 
 
@@ -122,7 +155,7 @@ if (!$new) {
             ),
 
             array(
-                'id'                => 'Website_Title_Font',
+                'id'                => 'header_title_Font',
                 'render'=>false,
                 'edit'              => ($edit ? 'string' : ''),
                 'value'             => $object->get('Website Title Font'),

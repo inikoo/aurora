@@ -24,6 +24,6 @@ $smarty->assign('header_data', $header_data);
 $smarty->assign('header_key', $header_key);
 
 
-$html = $smarty->fetch('header_preview.tpl');
+$html = $smarty->fetch('theme_1/control.header.tpl');
 
 ?>
