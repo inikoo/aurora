@@ -161,7 +161,7 @@
         <li id="single_column_link_stem_cell" class="_item" type="item">
             <a href="">
                 <i class="handle aux hide fa fa-arrows very_discreet fa-fw" aria-hidden="true"></i>
-                <span class="_label" contenteditable="true">{t}Link{/t}</span>
+                <span class="_item_label" contenteditable="true">{t}Link{/t}</span>
                 <i url="" class="fa item_link hide aux fa-link button very_discreet" aria-hidden="true"></i>
                 <i class="fa item_delete hide aux fa-trash button very_discreet" aria-hidden="true"></i>
             </a>
@@ -491,16 +491,17 @@
 
                         {foreach from=$column.items item=item}
                             {if $item.type=='item'}
-                                <a class="item" href="{$item['url']}"><span class="_label" contenteditable="true">{$item['label']}</span>
+                                <a class="item" href="{$item['url']}"><span class="_item_label" contenteditable="true">{$item['label']}</span>
                                 <i class="fal item_delete  aux fa-trash-alt like_button  hide" style="float: right" title="{t}Remove link{/t}"></i>
                                 <i url="{$item['url']}" class="fal item_link  aux fa-link like_button  hide" style="float: right;margin-right: 10px" title="{t}Update link{/t}"></i>
                                 <i  class="fal item_handle  aux far fa-hand-rock like_button  hide" style="float: right;margin-right: 10px" title="{t}Move link{/t}"></i>
                                 </a>
                             {/if}
-                            <a class="add_link like_button" href=""><i  class="fa item_icon fa-fw fa-plus"></i> <span class="_item_label">{t}Add link{/t}</span></a>
 
 
                             {/foreach}
+                        <a class="add_link like_button" href=""><i  class="fa item_icon fa-fw fa-plus"></i> <span class="_item_label">{t}Add link{/t}</span></a>
+
                     </div>
                 {elseif $column.type=='nothing'}
                     <div id="menu_block_menu_{$key}" class="_menu_block hide nothing"  data-column_type="{$column.type}" data-key="{$key}">

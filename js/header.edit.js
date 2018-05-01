@@ -578,7 +578,7 @@ function save_header() {
                 $('.item', obj).each(function (i, obj2) {
                     items.push({
                         type:'item',
-                        label: $(obj2).find('._label').html(),
+                        label: $(obj2).find('._item_label').html(),
                         url:$(obj2).find('.item_link').attr('url')
 
                     })
@@ -1025,7 +1025,7 @@ function add_column(key, label) {
     add_link_label=$('#webpage_data').data('add_link_label')
 
     $('#_columns').append($('<a  id="menu_' + key + '" class="menu _column dropdown"  data-column_type="single_column" data-key="'+key+'"> <i class="menu_icon fa fa-ban error very_discreet " icon="" ></i>  <span class="menu_label" contenteditable="true">' + label + '</span> <i class="down_cadet fal fa-fw fa-angle-down"></i>  </a>'))
-$('#_menu_blocks').append($('<div id="menu_block_menu_'+key+'" class="_menu_block  hide vertical-menu single_column sortable" data-key="'+key+'"><a class="add_link like_button" href=""><i  class="fa item_icon fa-fw fa-plus"></i> <span class="_item_label">'+add_link_label+'</span></a></div>'))
+$('#_menu_blocks').append($('<div id="menu_block_menu_'+key+'" data-column_type="single_column" class="_menu_block  hide vertical-menu single_column sortable" data-key="'+key+'"><a class="add_link like_button" href=""><i  class="fa item_icon fa-fw fa-plus"></i> <span class="_item_label">'+add_link_label+'</span></a></div>'))
 
 
     $('#save_button',window.parent.document).addClass('save button changed valid')
