@@ -352,7 +352,7 @@ switch ($_REQUEST['action']) {
 
         }else{
 
-            if ($part_location_from->get('Quantity On Hand') !=0) {
+            if ($part_location->get('Quantity On Hand') !=0) {
 
                 $response = array(
                     'state' => 'Error',
