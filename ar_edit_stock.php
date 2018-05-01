@@ -204,7 +204,20 @@ switch ($tipo) {
 
         update_itf_amount($account, $db, $user, $editor, $data, $smarty);
         break;
+    case 'set_delivery_costing':
 
+        $data = prepare_values(
+            $_REQUEST, array(
+                         'key'     => array('type' => 'key'),
+                         'exchange' => array('type' => 'numeric'),
+                         'items_data' => array('type' => 'json array'),
+
+                     )
+        );
+
+
+        set_delivery_costing($account, $db, $user, $editor, $data, $smarty);
+        break;
     default:
         $response = array(
             'state' => 405,
@@ -215,6 +228,42 @@ switch ($tipo) {
         break;
 }
 
+function  set_delivery_costing($account, $db, $user, $editor, $data, $smarty){
+
+    print_r($data);
+
+
+    $delivery=get_object('SupplierDelivery',$data['key']);
+
+
+    $sql=sprintf('select `Supplier Part Part SKU`,count(*) as num , group_concat(`Purchase Order Transaction Fact Key`) as potf_keys  from `Purchase Order Transaction Fact`  POTF left join  `Supplier Part Dimension` SP on (POTF.`Supplier Part Key`=SP.`Supplier Part Key`) where `Supplier Delivery Key`=%d group by `Supplier Part Part SKU` ', $delivery->id );
+    if ($result=$db->query($sql)) {
+    		foreach ($result as $row) {
+
+
+    		    print_r($row);
+
+    		    if($row['num']==1){
+
+
+    		        $sql=sprintf('update `Purchase Order Transaction Fact` set `Supplier Delivery Net Amount`=%.2f ,`Supplier Delivery Extra Cost Amount`=%.2f, `Supplier Delivery Extra Cost Account Currency Amount`=%.2f      ');
+
+                }else{
+
+                }
+
+
+    		}
+    }else {
+    		print_r($error_info=$db->errorInfo());
+    		print "$sql\n";
+    		exit;
+    }
+
+
+
+
+}
 
 function new_part_location($account, $db, $user, $editor, $data, $smarty) {
 

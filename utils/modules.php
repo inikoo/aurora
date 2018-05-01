@@ -2512,8 +2512,8 @@ $modules = array(
 
 
                     'website.details' => array(
-                        'label' => _('Data'),
-                        'icon'  => 'database'
+                        'label' => _('Settings'),
+                        'icon'  => 'sliders-h'
                     ),
 
 
@@ -2541,11 +2541,23 @@ $modules = array(
 
                     ),
 
+                    'website.header.preview' => array(
+                        'label' => _('Menu'),
+                        'icon'  => 'bars',
+                    ),
+
+                    'website.footer.preview' => array(
+                        'label' => _('Footer'),
+                        'icon'  => 'arrow-alt-to-bottom',
+                    ),
+
+
                     'website.localization' => array(
                         'label' => _('Localization'),
                         'icon'  => 'language',
                     ),
 
+                    /*
 
                     'website.analytics' => array(
                         'label' => _('Analytics'),
@@ -2659,44 +2671,7 @@ $modules = array(
 
                     ),
 
-                    'website.templates' => array(
-                        'label'   => _('Header & footer'),
-                        'icon'    => 'code',
-                        'subtabs' => array(
-
-                            'website.info_bar'       => array(
-                                'label' => _('Info bar'),
-                                'icon'  => 'info',
-
-
-                            ),
-                            'website.header.preview' => array(
-                                'label' => _('Header'),
-                                'icon'  => 'header',
-
-
-                            ),
-                            'website.footer.preview' => array(
-                                'label' => _('Footer'),
-                                'icon'  => 'minus',
-
-
-                            ),
-
-                            /*
-                                                        'website.templates' => array(
-                                                            'label' => '',
-                                                            'title' => _('Templates'),
-                                                            'icon'  => 'code',
-                                                            'class' => 'right icon_only',
-
-
-                                                        ),
-                            */
-
-                        ),
-
-                    ),
+*/
 
 
                     'website.webpages' => array(
@@ -4096,20 +4071,21 @@ $modules = array(
                 'tabs' => array(
 
                     'supplier.delivery.details' => array(
-                        'label' => _(
-                            'Data'
-                        ),
-                        'icon'  => 'database'
+                        'label' => _('Settings'),
+                        'icon'  => 'sliders-h'
                     ),
 
                     'supplier.delivery.items'   => array(
-                        'label' => _(
-                            'Items'
-                        ),
+                        'label' => _('Items'),
                         'icon'  => 'bars'
                     ),
+                    'supplier.delivery.costing'   => array(
+                        'label' => _('Costing'),
+                        'icon'  => 'box-usd'
+                    ),
                     'supplier.delivery.history' => array(
-                        'label' => _(
+                        'label' => '',
+                        'title' => _(
                             'History/Notes'
                         ),
                         'icon'  => 'road',

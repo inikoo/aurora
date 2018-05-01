@@ -136,6 +136,10 @@
         <script src="/js/libs/jquery.fancybox.min.js"></script>
         <script src="/js/libs/jquery.awesome-cursor.min.js"></script>
         <script src="/js/libs/base64.js?v2"></script>
+        <script src="/js/libs/jquery.formatCurrency-1.4.0.min.js"></script>
+
+
+
 
 
 

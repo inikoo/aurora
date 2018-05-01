@@ -189,11 +189,14 @@ function get_item_location($pending, $quantity_on_location, $date_picked, $locat
             }
 
         } else {
-            if ($quantity_on_location < $stock_quantity_safe_limit) {
-                $location = sprintf('<i class="fa fa-fw fa-star warning %s" aria-hidden="true" title="%s"></i> ', $location_stock_icon_class, $stock_in_location);
-            } else {
-                $location = sprintf('<i class="fa fa-fw fa-star success very_discreet %s" aria-hidden="true" title="%s"></i> ', $location_stock_icon_class, $stock_in_location);
-            }
+           // if ($quantity_on_location < $stock_quantity_safe_limit) {
+           //     $location = sprintf('<i class="fa fa-fw fa-star warning %s" aria-hidden="true" title="%s"></i> ', $location_stock_icon_class, $stock_in_location);
+           // } else {
+
+           // }
+
+            $location = sprintf('<i class="fa fa-fw fa-star success very_discreet %s" aria-hidden="true" title="%s"></i> ', $location_stock_icon_class, $stock_in_location);
+
         }
     }
 
