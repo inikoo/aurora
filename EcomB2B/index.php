@@ -10,28 +10,29 @@
   Version 2.0
 */
 
+
+$redis = new Redis();
+if(  $redis->connect('127.0.0.1', 6379)){
+    $redis_on=true;
+}else{
+    $redis_on=false;
+}
+
 require_once 'keyring/dns.php';
 
 
-if (class_exists('Memcached')) {
+session_start();
 
-    $mem = new Memcached();
-    $mem->addServer($memcache_ip, 11211);
+
+if (empty($_SESSION['website_key'])) {
+    include('utils/find_website_key.include.php');
 }
 
-include_once 'common.php';
-
-if ($logged_in ) {
-
-    $webpage_key = $website->get_system_webpage_key('home.sys');
 
 
-}else{
-    $webpage_key = $website->get_system_webpage_key('home_logout.sys');
-}
+$is_homepage=true;
 
-include_once 'webpage.php';
-
+include 'display_webpage.php';
 
 
 ?>

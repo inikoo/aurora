@@ -11,13 +11,29 @@
 */
 
 
-include_once('common.php');
-$webpage_key = $website->get_system_webpage_key('reset_pwd.sys');
 
-if (!$webpage_key) {
-    header("HTTP/1.0 404 Not Found");
-    exit;
+
+$redis = new Redis();
+if(  $redis->connect('127.0.0.1', 6379)){
+    $redis_on=true;
+}else{
+    $redis_on=false;
 }
 
-include_once('webpage.php');
+require_once 'keyring/dns.php';
+
+
+session_start();
+
+
+if (empty($_SESSION['website_key'])) {
+    include('utils/find_website_key.include.php');
+}
+
+
+
+$is_reset=true;
+
+include 'display_webpage.php';
+
 ?>

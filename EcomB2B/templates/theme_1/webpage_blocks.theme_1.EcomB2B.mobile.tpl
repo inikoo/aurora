@@ -77,7 +77,7 @@
             {assign "with_product_order_input" false}
             {assign "with_product" false}
             {assign "with_blackboard" false}
-
+            {assign "with_reset_passoword" false}
 
 
 
@@ -165,7 +165,7 @@
                     {else}
                         {if $block.type=='search'   }{assign "with_search" 1}{/if}
                         {if $block.type=='blackboard'   }{assign "with_blackboard" 1}{/if}
-
+                        {if $block.type=='reset_passowrd'   }{assign "with_reset_passowrd" 1}{/if}
                         {if $block.type=='iframe'   }{assign "with_iframe" 1}{/if}
                         {if $block.type=='product'   }{assign "with_gallery" 1}{/if}
                         {if $block.type=='category_products' or   $block.type=='products'  or   $block.type=='product' }{assign "with_product_order_input" 1}{/if}
@@ -691,6 +691,119 @@
             });
 
             {/if}
+
+
+            {if $with_reset_passoword}
+            getScript('/js/mobile.forms.min.js', function () {
+                $("form").on('submit', function (e) {
+
+                    e.preventDefault();
+                    e.returnValue = false;
+
+                });
+
+
+                $("#password_reset_form").validate({
+
+                    submitHandler: function(form)
+                    {
+
+
+                        var button=$('#change_password_button');
+
+                        if(button.hasClass('wait')){
+                            return;
+                        }
+
+                        button.addClass('wait')
+                        button.find('i').removeClass('fa-save').addClass('fa-spinner fa-spin')
+
+
+
+                        var ajaxData = new FormData();
+
+                        ajaxData.append("tipo", 'update_password')
+                        ajaxData.append("pwd", sha256_digest($('#password').val()))
+
+
+                        $.ajax({
+                            url: "/ar_web_profile.php", type: 'POST', data: ajaxData, dataType: 'json', cache: false, contentType: false, processData: false,
+                            complete: function () {
+                            }, success: function (data) {
+
+
+
+                                if (data.state == '200') {
+                                    $('#password_reset_form').addClass('submited')
+
+                                } else if (data.state == '400') {
+                                    swal("{t}Error{/t}!", data.msg, "error")
+                                }
+
+                                button.removeClass('wait')
+                                button.find('i').addClass('fa-save').removeClass('fa-spinner fa-spin')
+
+                            }, error: function () {
+                                button.removeClass('wait')
+                                button.find('i').addClass('fa-save').removeClass('fa-spinner fa-spin')
+                            }
+                        });
+
+
+                    },
+
+                    // Rules for form validation
+                    rules:
+                        {
+
+
+                            password:
+                                {
+                                    required: true,
+                                    minlength: 8
+                                },
+                            password_confirm:
+                                {
+                                    required: true,
+                                    minlength: 8,
+                                    equalTo: "#password"
+                                }
+
+                        },
+
+                    // Messages for form validation
+                    messages:
+                        {
+
+                            password:
+                                {
+                                    required: '{if empty($labels._validation_required)}{t}Required field{/t}{else}{$labels._validation_required|escape}{/if}',
+                                    minlength: '{if empty($labels._validation_minlength_password)}{t}Enter at least 8 characters{/t}{else}{$labels._validation_minlength_password|escape}{/if}',
+
+
+                                },
+                            password_confirm:
+                                {
+                                    required: '{if empty($labels._validation_required)}{t}Required field{/t}{else}{$labels._validation_required|escape}{/if}',
+                                    equalTo: '{if empty($labels._validation_same_password)}{t}Enter the same password as above{/t}{else}{$labels._validation_same_password|escape}{/if}',
+
+                                    minlength: '{if empty($labels._validation_minlength_password)}{t}Enter at least 8 characters{/t}{else}{$labels._validation_minlength_password|escape}{/if}',
+                                }
+                        },
+
+                    // Do not change code below
+                    errorPlacement: function(error, element)
+                    {
+                        error.insertAfter(element.parent());
+                    }
+                });
+
+
+
+            })
+
+            {/if}
+
             {if $with_login==1}
 
             getScript('/js/mobile.forms.min.js', function () {

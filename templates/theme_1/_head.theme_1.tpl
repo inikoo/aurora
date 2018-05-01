@@ -64,6 +64,7 @@
     {assign "with_search" false}
     {assign "with_thanks" false}
     {assign "with_gallery" false}
+    {assign "with_reset_password" false}
     {assign "with_telephone" false}
     {assign "with_product_order_input" false}
     {assign "basket" false}
@@ -81,6 +82,7 @@
             {elseif $block.type=='checkout'} {if $logged_in}{assign "checkout" 1} {assign "with_forms" 1} {/if}
             {elseif $block.type=='favourites'} {if $logged_in}{assign "favourites" 1} {/if}
             {elseif $block.type=='thanks'} {if $logged_in}{assign "thanks" 1} {/if}
+            {elseif $block.type=='reset_password'} {if $logged_in}{assign "with_reset_password" 1} {/if}
             {else}
                 {if $block.type=='search'   }{assign "with_search" 1}{/if}
                 {if $block.type=='login'   }{assign "with_login" 1} {assign "with_forms" 1}{/if}

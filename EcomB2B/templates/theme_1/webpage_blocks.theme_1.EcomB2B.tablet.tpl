@@ -49,6 +49,7 @@
             {assign "with_search" false}
             {assign "with_thanks" false}
             {assign "with_gallery" false}
+            {assign "with_reset_password" false}
             {assign "with_product_order_input" false}
             {assign "with_product" false}
 
@@ -56,6 +57,9 @@
 
             {foreach from=$content.blocks item=$block key=key}
                     {if $block.show}
+
+
+
                      {if $block.type=='basket'}
                             {if $logged_in}{assign "with_basket" 1}
                                 <div id="basket">
@@ -68,7 +72,7 @@
                                 {include file="theme_1/blk.forbidden.theme_1.EcomB2B.tablet.tpl" data=$block key=$key   }
                             {/if}
 
-                        {elseif $block.type=='profile'}
+                     {elseif $block.type=='profile'}
                             {if $logged_in}
                                 {assign "with_profile" 1}
                                 <div id="profile">
@@ -134,6 +138,9 @@
                             {/if}
                         {else}
                             {if $block.type=='search'   }{assign "with_search" 1}{/if}
+                         {if $block.type=='reset_password'   }{assign "with_reset_password" 1}{/if}
+
+
 
                             {if $block.type=='iframe'   }{assign "with_iframe" 1}{/if}
                             {if $block.type=='product'   }{assign "with_gallery" 1}{/if}
@@ -185,6 +192,125 @@
 
         getScript('/js/tablet.min.js?v=2', function () {
             getScript('/js/tablet.custom.min.js?v=2', function () {
+
+
+
+                {if $with_reset_password==1}
+
+                    getScript('/js/mobile.forms.min.js', function () {
+
+                        $("form").on('submit', function (e) {
+
+                            e.preventDefault();
+                            e.returnValue = false;
+
+                        });
+
+
+                        $("#password_reset_form").validate({
+
+                            submitHandler: function(form)
+                            {
+
+
+                                var button=$('#change_password_button');
+
+                                if(button.hasClass('wait')){
+                                    return;
+                                }
+
+                                button.addClass('wait')
+                                button.find('i').removeClass('fa-save').addClass('fa-spinner fa-spin')
+
+
+
+                                var ajaxData = new FormData();
+
+                                ajaxData.append("tipo", 'update_password')
+                                ajaxData.append("pwd", sha256_digest($('#password').val()))
+
+
+                                $.ajax({
+                                    url: "/ar_web_profile.php", type: 'POST', data: ajaxData, dataType: 'json', cache: false, contentType: false, processData: false,
+                                    complete: function () {
+                                    }, success: function (data) {
+
+
+
+                                        if (data.state == '200') {
+                                            $('#password_reset_form').addClass('submited')
+
+                                        } else if (data.state == '400') {
+                                            swal("{t}Error{/t}!", data.msg, "error")
+                                        }
+
+                                        button.removeClass('wait')
+                                        button.find('i').addClass('fa-save').removeClass('fa-spinner fa-spin')
+
+                                    }, error: function () {
+                                        button.removeClass('wait')
+                                        button.find('i').addClass('fa-save').removeClass('fa-spinner fa-spin')
+                                    }
+                                });
+
+
+                            },
+
+                            // Rules for form validation
+                            rules:
+                                {
+
+
+                                    password:
+                                        {
+                                            required: true,
+                                            minlength: 8
+                                        },
+                                    password_confirm:
+                                        {
+                                            required: true,
+                                            minlength: 8,
+                                            equalTo: "#password"
+                                        }
+
+                                },
+
+                            // Messages for form validation
+                            messages:
+                                {
+
+                                    password:
+                                        {
+                                            required: '{if empty($labels._validation_required)}{t}Required field{/t}{else}{$labels._validation_required|escape}{/if}',
+                                            minlength: '{if empty($labels._validation_minlength_password)}{t}Enter at least 8 characters{/t}{else}{$labels._validation_minlength_password|escape}{/if}',
+
+
+                                        },
+                                    password_confirm:
+                                        {
+                                            required: '{if empty($labels._validation_required)}{t}Required field{/t}{else}{$labels._validation_required|escape}{/if}',
+                                            equalTo: '{if empty($labels._validation_same_password)}{t}Enter the same password as above{/t}{else}{$labels._validation_same_password|escape}{/if}',
+
+                                            minlength: '{if empty($labels._validation_minlength_password)}{t}Enter at least 8 characters{/t}{else}{$labels._validation_minlength_password|escape}{/if}',
+                                        }
+                                },
+
+                            // Do not change code below
+                            errorPlacement: function(error, element)
+                            {
+                                error.insertAfter(element.parent());
+                            }
+                        });
+
+
+
+
+
+                    })
+
+
+                {/if}
+
 
 
                 {if $with_search==1}
