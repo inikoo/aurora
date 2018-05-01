@@ -287,11 +287,17 @@ switch ($_REQUEST['action']) {
         );
 
 
-        $part_location         = new PartLocation($_REQUEST['part_sku'], $_REQUEST['location_key']);
-        $part_location->editor = $editor;
+        $part_location_data = array(
+            'Location Key' => $_REQUEST['location_key'],
+            'Part SKU'     => $_REQUEST['part_sku'],
+            'editor'       => $editor
+        );
 
 
-        $part_location->associate();
+        $part_location = new PartLocation('find', $part_location_data, 'create');
+
+
+
 
 
         $response = array(
