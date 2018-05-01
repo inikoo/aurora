@@ -536,21 +536,6 @@ switch ($_REQUEST['action']) {
         );
 
 
-        $part_location         = new PartLocation($_REQUEST['part_sku'], $_REQUEST['location_key']);
-        $part_location->editor = $editor;
-
-        if (!$part_location->ok) {
-            $response = array(
-                'state' => 'Error',
-                'msg'   => 'location part not associated'
-            );
-
-
-            echo json_encode($response);
-            exit;
-
-        }
-
 
         $part_location_from         = new PartLocation($_REQUEST['part_sku'], $_REQUEST['location_from_key']);
         $part_location_from->editor = $editor;
