@@ -340,9 +340,9 @@
 
                 </div>
             </div>
-            <div id="block_low_nothing_stem_cell" class="hide">
+            <div id="block_low_nothing_stem_cell" class="hide"> </div>
                 &nbsp;
-            </div>
+
 
             <div id="block_items_stem_cell" class="hide">
 
@@ -375,6 +375,7 @@
 
         </div>
 
+        </div>
 
         <footer>
 
@@ -382,7 +383,7 @@
             {foreach from=$footer_data.rows item=row}
 
                 {if $row.type=='main_4'}
-                    <div class="text_blocks  text_template_4 sortable_container " >
+                    <div class="text_blocks  top_header text_template_4 sortable_container " >
 
 
                         {foreach from=$row.columns item=column name=main_4}
@@ -392,7 +393,7 @@
 
 
                             {if $column.type=='address'}
-                                <div class="footer_block" style="position: relative">
+                                <div class="footer_block" data-type="{$column.type}" style="position: relative">
 
 
                                     <i class="far fa-hand-rock editing hide dragger" aria-hidden="true" style="position:absolute;top:-5px;left:35px"></i>
@@ -427,7 +428,7 @@
 
                                 </div>
                             {elseif $column.type=='links'}
-                                <div class="footer_block" style="position: relative">
+                                <div class="footer_block" data-type="{$column.type}" style="position: relative">
 
                                     <i class="far fa-hand-rock editing hide dragger" aria-hidden="true" style="position:absolute;top:-5px;left:30px"></i>
                                     <i onclick="open_block_type_options(this,'block_type_1','{$column.type}')" class="fa fa-recycle editing hide button recycler" aria-hidden="true" style="position:absolute;top:-23px;left:40px"></i>
@@ -447,7 +448,7 @@
 
                                 </div>
                             {elseif $column.type=='text'}
-                                <div class=" footer_block  " style="position: relative">
+                                <div class=" footer_block  " data-type="{$column.type}" style="position: relative">
                                     <i class="far fa-hand-rock editing hide dragger" aria-hidden="true" style="position:absolute;top:-5px;left:30px"></i>
                                     <i onclick="open_block_type_options(this,'block_type_1','{$column.type}')" class="fa fa-recycle editing  hide button recycler" aria-hidden="true" style="position:absolute;top:-23px;left:20px"></i>
 
@@ -460,7 +461,7 @@
 
                                 </div>
                             {elseif $column.type=='nothing'}
-                                <div class="footer_block" style="position: relative">
+                                <div class="footer_block" data-type="{$column.type}" style="position: relative">
                                     <i class="far fa-hand-rock editing hide dragger" aria-hidden="true" style="position:absolute;top:-5px;left:30px"></i>
                                     <i onclick="open_block_type_options(this,'block_type_1','{$column.type}')" class="fa fa-recycle editing  hide button recycler" aria-hidden="true" style="position:absolute;top:-23px;left:20px"></i>
 
@@ -474,7 +475,7 @@
 
                     </div>
                 {elseif $row.type=='copyright'}
-                    <div class="text_blocks  text_template_2 copyright">
+                    <div class="text_blocks  bottom_header text_template_2 copyright">
                         {foreach from=$row.columns item=column name=copyright_info}
 
                             {if $column.type=='text'}
@@ -1047,7 +1048,29 @@
                 var cols_main_4 = [];
                 var cols_copyright = [];
 
-                $('footer.footer .footer_block').each(function (i, obj) {
+                $('footer .text_blocks').each(function (i, obj) {
+
+
+                    if ($(obj).hasClass('top_header')) {
+
+                        $('.footer_block',obj).each(function (i, obj2) {
+
+                            switch (($obj2).data('type')){
+
+
+                            }
+
+                        })
+
+
+                    }
+
+
+                    if ($(obj).hasClass('bottom_header')) {
+
+                    }
+
+
 
 
                     if ($(obj).hasClass('faddress')) {
