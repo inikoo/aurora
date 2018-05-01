@@ -51,11 +51,10 @@ $(function () {
 
 
 
+
+
     $('#_menu_blocks').on('mouseenter', '.vertical-menu a.item', function () {
-
-
-            $(this).find('.aux').removeClass('hide')
-
+        $(this).find('.aux').removeClass('hide')
     });
 
     $('#_menu_blocks').on('mouseleave', '.vertical-menu a.item', function () {
@@ -624,13 +623,13 @@ function save_header() {
 
 
     console.log(menu)
-    return;
+    //return;
 
     var ajaxData = new FormData();
 
     ajaxData.append("tipo", 'save_header')
-    ajaxData.append("header_key", $('webpage_data').data('header_key'))
-    ajaxData.append("header_data", JSON.stringify(menu))
+    ajaxData.append("header_key", $('#webpage_data').data('header_key'))
+    ajaxData.append("menu", JSON.stringify(menu))
 
 
     $.ajax({

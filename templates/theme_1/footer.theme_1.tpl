@@ -529,6 +529,31 @@
 
         <script>
 
+
+            $(document).on('click', 'a', function (e) {
+                if (e.which == 1 && !e.metaKey && !e.shiftKey) {
+
+                    return false
+                }
+            })
+
+
+            document.addEventListener("paste", function (e) {
+                e.preventDefault();
+                var text = e.clipboardData.getData("text/plain");
+                document.execCommand("insertHTML", false, text);
+            });
+
+
+
+
+            $(document).on('input paste', '[contenteditable=true]', function (e) {
+                $('#save_button', window.parent.document).addClass('save button changed valid')
+            });
+
+
+
+
             var image = false;
 
             var current_editing_link_id = false;
@@ -894,12 +919,7 @@
             }
 
 
-            $(document).on('click', 'a', function (e) {
-                if (e.which == 1 && !e.metaKey && !e.shiftKey) {
 
-                    return false
-                }
-            })
 
             function edit_social_links(element) {
 
@@ -1011,16 +1031,14 @@
                 block.find('.copyright_bundle_links').html(copyright_links)
             }
 
-            $("body").on('DOMSubtreeModified', ".footer", function () {
-                $('#save_button', window.parent.document).addClass('save button changed valid')
-            });
+
 
             function save_footer() {
 
-                return false;
+
 
                 if (!$('#save_button', window.parent.document).hasClass('save')) {
-                    //  return;
+                    return;
                 }
 
                 $('#save_button', window.parent.document).find('i').addClass('fa-spinner fa-spin')
@@ -1172,6 +1190,9 @@
                     'type': 'copyright', 'columns': cols_copyright
                 })
 
+
+                console.log(footer_data)
+                return;
 
                 var ajaxData = new FormData();
 

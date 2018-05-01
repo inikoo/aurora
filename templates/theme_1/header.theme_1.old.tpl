@@ -82,37 +82,9 @@
     }
 
 
-        #logo_edit {
-        background-image: url({$header_data.logo});
-        background-repeat:no-repeat;
-        background-origin: left top;
 
-    }
 
-    #menu_active_edit{
-        background-color: {$header_data.color.menu_background_highlight};
-        color:{$header_data.color.menu_text_background_highlight};
-    }
 
-    #topHeader_edit {
-
-        background-color: {$header_data.color.header_background};
-    {if $header_data.background_image!=''}
-        background-image: url({$header_data.background_image});
-    {/if}
-
-    }
-
-    #items_color_edit{
-        color:{$header_data.color.items};
-        background: {$header_data.color.items_background};
-        border:1px solid {$header_data.color.items_background_border};
-        border-bottom-color:{$header_data.color.items_background_border};
-    }
-
-#items_color_edit_title{
-    color:{$header_data.color.items_title}
-}
 
 
 </style>

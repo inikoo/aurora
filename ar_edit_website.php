@@ -97,7 +97,7 @@ switch ($tipo) {
         $data = prepare_values(
             $_REQUEST, array(
                          'header_key'  => array('type' => 'key'),
-                         'header_data' => array('type' => 'string')
+                         'menu' => array('type' => 'string')
 
 
                      )
@@ -1809,13 +1809,21 @@ function save_header($data, $editor) {
     include_once('class.WebsiteHeader.php');
 
 
-    $header_data = json_decode($data['header_data'], true);
-
-
-    //print_r($header_data);
-    //exit;
-
     $header         = new WebsiteHeader($data['header_key']);
+
+
+
+
+    $header_data=json_decode($header->get('Website Header Data'),true);
+
+
+
+   // $header_data=$website->get('Header Data');
+
+    $header_data['menu']['columns']=json_decode($data['menu'], true);
+
+
+
     $header->editor = $editor;
     $header->update(
         array(
