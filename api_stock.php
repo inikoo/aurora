@@ -498,7 +498,7 @@ switch ($_REQUEST['action']) {
         }
 
 
-        if ($_REQUEST['location_to_key'] != $_REQUEST['location_from_key']) {
+        if ($_REQUEST['location_to_key'] == $_REQUEST['location_from_key']) {
             $response = array(
                 'state' => 'Error',
                 'msg'   => 'location_from_key and location_to_key can not be same'
