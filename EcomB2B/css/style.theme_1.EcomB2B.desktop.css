@@ -277,6 +277,8 @@ footer {
   footer h5 {
     margin-left: 60px;
     font-weight: lighter; }
+  footer h5.for_text {
+    margin-left: 0px; }
   footer li {
     list-style-type: none;
     margin-bottom: 2px; }
@@ -1508,7 +1510,7 @@ small {
 a.real_link span {
   border-bottom-width: 1px;
   border-bottom-style: dashed;
-  border-bottom-color: rgba(255, 255, 255, 0.2);
+  border-bottom-color: rgba(255, 255, 255, 0.25);
   padding-bottom: 2px; }
 
 /*# sourceMappingURL=style.theme_1.EcomB2B.desktop.css.map */

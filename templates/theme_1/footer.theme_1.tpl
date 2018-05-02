@@ -297,7 +297,7 @@
                     <i class="far fa-hand-rock editing hide dragger" aria-hidden="true" style="position:absolute;top:-5px;left:30px"></i>
                     <i onclick="open_block_type_options(this,'block_type_1','text')" class="fa fa-recycle editing  button recycler" aria-hidden="true" style="position:absolute;top:-23px;left:0px"></i>
 
-                    <h5  contenteditable="true">{t}About us{/t}</h5>
+                    <h5  class="for_text" contenteditable="true">{t}About us{/t}</h5>
 
                     <div class="footer_text" contenteditable="true">
                         <p>
@@ -457,7 +457,7 @@
                                     <i onclick="open_block_type_options(this,'block_type_1','{$column.type}')" class="fa fa-recycle editing  hide button recycler" aria-hidden="true" style="position:absolute;top:-23px;left:20px"></i>
 
 
-                                    <h5 contenteditable="true">{$column.header}</h5>
+                                    <h5 class="for_text" contenteditable="true">{$column.header}</h5>
 
                                     <div class="footer_text" contenteditable="true">
                                         {$column.text}
