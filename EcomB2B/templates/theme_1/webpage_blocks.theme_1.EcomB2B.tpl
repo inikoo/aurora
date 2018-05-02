@@ -168,6 +168,9 @@
                     {/if}
 
                 {/if}
+
+
+
             {/foreach}
 
         </div>
@@ -217,10 +220,33 @@
 
 
 
+            $('#header_search_icon').on("click", function () {
+
+                window.location.href = "search.sys?q=" + encodeURIComponent($('#header_search_input').val());
+
+
+            });
+
+
+
+
+            $("#header_search_input").on('keyup', function (e) {
+                if (e.keyCode == 13) {
+                    window.location.href = "search.sys?q=" + encodeURIComponent($(this).val());
+                }
+            });
+
+
+
+
+
             {if $with_search==1}
 
 
             var _args=document.location.href.split("?")[1];
+
+
+            console.log(_args)
 
             if(_args!=undefined){
                 args=_args.split("=");
@@ -234,8 +260,18 @@
                 search($('#search_input').val())
             }
 
+            $('#search_icon').on("click", function () {
+
+                search($('#search_input').val());
 
 
+            });
+
+            $(document).on('keyup', '#search_input', function (e) {
+                if (e.keyCode == 13) {
+                    search($(this).val())
+                }
+            });
 
                 {/if}
 

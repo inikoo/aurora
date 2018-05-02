@@ -4,7 +4,7 @@
  Version 3.0*/
 
 
-
+/*
 
 $(function() {
 
@@ -20,37 +20,11 @@ $(function() {
    
 
 
-    $('#header_search_icon').on("click", function () {
-
-        window.location.href = "search.sys?q=" + encodeURIComponent($('#header_search_input').val());
-
-
-    });
-
-    $('#search_icon').on("click", function () {
-
-        search($('#search_input').val());
-
-
-    });
-
-
-    $("#header_search_input").on('keyup', function (e) {
-        if (e.keyCode == 13) {
-            window.location.href = "search.sys?q=" + encodeURIComponent($(this).val());
-        }
-    });
-
-    $(document).on('keyup', '#search_input', function (e) {
-        if (e.keyCode == 13) {
-            search($(this).val())
-        }
-    });
 
 
 
 });
-
+*/
 
 function search(query){
 

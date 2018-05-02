@@ -526,7 +526,16 @@ function get_webpage_blocks($theme = '') {
             'bottom_margin' => 60,
             'text'        => '<h1 >'._('Thank you for your order').'</h1><p>'._('Thank you!  We are delighted to receive your order').'</p><p>[Pay Info]</p><p>'._('Your order details are listed below, if you have any questions please email our team').'</p><p>[Order]</p>'
         ),
+        'search' => array(
+            'type'          => 'search',
+            'label'         => _('search'),
+            'icon'          => 'fa-search',
+            'show'          => 1,
+            'top_margin'    => 40,
+            'bottom_margin' => 60,
+            'labels'=>array()
 
+        ),
 
     );
 

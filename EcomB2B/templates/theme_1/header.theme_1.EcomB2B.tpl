@@ -14,7 +14,7 @@
 <div id="top_header" style="width: 100%;">
 
     <div style="float:right;text-align: right;;" class="search_container {if $webpage->get('Webpage Code')=='search.sys'}hide{/if} ">
-        <input  id="header_search_input"/> <i id="header_search_input" class="button fa fa-search"></i>
+        <input  id="header_search_input"/> <i id="header_search_icon" class="button fa fa-search"></i>
     </div>
     <img style="padding:0px 10px ;float:left;max-height: 60px" src="art/mobile_logo.png"/>
 
