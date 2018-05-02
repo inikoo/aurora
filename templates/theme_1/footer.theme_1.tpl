@@ -295,7 +295,7 @@
 
                     <h5  contenteditable="true">{t}About us{/t}</h5>
 
-                    <div contenteditable="true">
+                    <div class="footer_text" contenteditable="true">
                         <p>
                             All the Lorem Ipsum generators on the Internet tend to repeat predefined </p><br/>
                         <p>
@@ -406,16 +406,16 @@
                                             {if $item.type=='logo'}
                                                 <li class="item _logo"><img src="{$item.src}" alt="" title="{$item.title}"/></li>
                                             {elseif $item.type=='text'}
-                                                <li class="item _text"><i class="fa-fw {$item.icon}"></i> <span contenteditable="true">
+                                                <li class="item _text"  icon="{$item.icon}"><i class="fa-fw {$item.icon}"></i> <span contenteditable="true">
                                           {if $item.text=='#tel' and  $store->get('Telephone')!=''}{$store->get('Telephone')}
                                           {elseif $item.text=='#email' and  $store->get('Email')!=''}{$store->get('Email')}
                                           {elseif $item.text=='#address' and  $store->get('Address')!=''}{$store->get('Address')}
-                                          {else}{$item.text}{/if}
+                                          {else}{$item.text|strip_tags}{/if}
                                       </span></li>
                                             {elseif $item.type=='email'}
-                                                <li class="item _email"><i class="fa fa-fw fa-envelope"></i> <a href="mailto:{if $item.text=='#email' and  $store->get('Email')!=''}{$store->get('Email')}
-                                            {else}{$item.text}{/if}">
-                                                        {if $item.text=='#email' and  $store->get('Email')!=''}{$store->get('Email')}{else}{$item.text}{/if}
+                                                <li class="item _email"><i class="fa fa-fw fa-envelope"></i> <span contenteditable="true">{if $item.text=='#email' and  $store->get('Email')!=''}{$store->get('Email')}{else}{$item.text|strip_tags}{/if}</span>
+
+
 
                                             {/if}
                                         {/foreach}
@@ -434,11 +434,11 @@
                                     <i onclick="open_block_type_options(this,'block_type_1','{$column.type}')" class="fa fa-recycle editing hide button recycler" aria-hidden="true" style="position:absolute;top:-23px;left:40px"></i>
 
 
-                                    <h5 contenteditable="true">{$column.header}</h5>
+                                    <h5  contenteditable="true">{$column.header}</h5>
 
                                     <ul class="links_list">
                                         {foreach from=$column.items item=item }
-                                            <li class="item"><a href="{$item.url}"><i class="fa fa-fw fa-angle-right link_icon" onClick="update_link(this)" ></i><span class="item_label" contenteditable="true">{$item.label}</span></a></li>
+                                            <li class="item"><a href="{$item.url}"><i class="fa fa-fw fa-angle-right link_icon" onClick="update_link(this)" ></i><span class="item_label" contenteditable="true">{$item.label|strip_tags}</span></a></li>
                                         {/foreach}
                                         <li onClick="add_link(this)"  class="add_link "><a  href=""><i class="fa fa-fw fa-plus editing link_icon" "></i> <span class="editing" ondrop="return false;" >{t}Add link{/t}<span></span></a></li>
 
@@ -455,7 +455,7 @@
 
                                     <h5 contenteditable="true">{$column.header}</h5>
 
-                                    <div contenteditable="true">
+                                    <div class="footer_text" contenteditable="true">
                                         {$column.text}
                                     </div>
 
@@ -479,40 +479,38 @@
                         {foreach from=$row.columns item=column name=copyright_info}
 
                             {if $column.type=='text'}
-                                <div class="one_half  ">
-                                    <div class="footer_block _copyright_text">
+
+                                    <div class="footer_block" data-type="text"  >
                                         {$column.text}
                                     </div>
-                                </div>
+
                             {elseif $column.type=='nothing'}
-                                <div class="one_half  ">
-                                    <div class="footer_block _copyright_nothing"></div>
-                                </div>
+
+                                    <div class="footer_block"  data-type="nothing" ></div>
                             {elseif $column.type=='copyright_bundle'}
-                                <div class="one_half  ">
+                                <div class="footer_block" data-type="copyright_bundle"  >
 
 
                                     <small>
 
-                                        {t}Copyright{/t} © {"%Y"|strftime} <span class="copyright_bundle_owner">{$column.owner}</span>. {t}All rights reserved{/t}. <span
-                                                class="copyright_bundle_links">{foreach  from=$column.links item=item name=copyright_links}<a class="copyright_bundle_link"
-                                                                                                                                              href="{$item.url}">{$item.label}</a>{if !$smarty.foreach.copyright_links.last} | {/if}{/foreach}</span>
+                                        {t}Copyright{/t} © {"%Y"|strftime} <span class="copyright_bundle_owner" contenteditable="true">{$column.owner}</span> {t}All rights reserved{/t}.
+                                        <span class="copyright_bundle_links">{foreach  from=$column.links item=item name=copyright_links}<a class="copyright_bundle_link" href="{$item.url}">{$item.label}</a>{if !$smarty.foreach.copyright_links.last} | {/if}{/foreach}</span>
                                     </small>
 
                                 </div>
                             {elseif $column.type=='social_links'}
-                                <div class="one_half  ">
 
 
-                                    <div class=" ">
+
+                                    <div class="footer_block"   data-type="social_links"  >
 
                                         <ul class="footer_social_links">
                                             {foreach from=$column.items item=item}
-                                                <li class="social_link"><a href="{$item.url}"><i class="fab {$item.icon}"></i></a></li>
+                                                <li class="social_link" icon="{$item.icon}"><a href="{$item.url}"><i class="fab {$item.icon}"></i></a></li>
                                             {/foreach}
                                         </ul>
                                     </div>
-                                </div>
+
                             {/if}
 
 
@@ -1053,10 +1051,84 @@
 
                     if ($(obj).hasClass('top_header')) {
 
-                        $('.footer_block',obj).each(function (i, obj2) {
+                        $('.footer_block', obj).each(function (i, obj2) {
 
-                            switch (($obj2).data('type')){
+                            switch ($(obj2).data('type')) {
 
+                                case 'address':
+
+                                    items = []
+
+                                    $('.item', obj2).each(function (i, obj3) {
+
+                                        if ($(obj3).hasClass('_logo')) {
+                                            var img = $(obj3).find('img')
+                                            items.push({
+                                                type: "logo", src: img.attr('src'), title: $.trim(img.attr('title'))
+                                            });
+
+                                        } else if ($(obj3).hasClass('_text')) {
+
+
+                                            items.push({
+                                                type: "text",
+                                                icon: $(obj3).attr('icon'),
+                                                text: $.trim($(obj3).find('span').html()),
+                                            });
+
+                                        } else if ($(obj3).hasClass('_email')) {
+
+
+                                            items.push({
+                                                type: "email", text: $.trim($(obj3).find('span').html()),
+                                            });
+
+                                        }
+
+
+                                    })
+
+                                    cols_main_4.push({
+                                        'type': 'address', 'items': items
+
+                                    })
+
+                                    break;
+
+                                case 'links':
+                                    var items = []
+                                    $('.links_list .item', obj2).each(function (i, obj3) {
+
+                                        items.push({
+                                            url: $(obj3).find('a').attr('href'), label: $(obj3).find('.item_label').html(),
+                                        });
+
+                                        // console.log($(obj2).find('a').attr('href'))
+                                        // console.log($(obj2).find('.item_label').html())
+                                    });
+
+
+                                    cols_main_4.push({
+                                        'type': 'links', 'header': $(obj2).find('h5').html(), 'items': items
+                                    })
+
+                                    break;
+
+                                case 'text':
+
+
+                                    cols_main_4.push({
+                                        'type': 'text', 'header': $(obj2).find('h5').html(), 'text': $(obj2).find('.footer_text').html()
+                                    })
+                                    break;
+
+                                case 'nothing':
+                                    cols_main_4.push({
+                                        'type': 'nothing'
+
+                                    })
+
+                                    break;
 
                             }
 
@@ -1068,137 +1140,58 @@
 
                     if ($(obj).hasClass('bottom_header')) {
 
-                    }
+                        $('.footer_block', obj).each(function (i, obj2) {
+
+                            switch ($(obj2).data('type')) {
+
+                                case 'text':
+                                    cols_copyright.push({
+                                        'type': 'text', 'text': $(obj2).html()
+                                    })
+
+                                    break;
+                                case 'nothing':
+                                    cols_copyright.push({
+                                        'type': 'nothing'
+                                    })
+
+                                    break;
+                                case 'social_links':
+                                    items = []
+                                    $('.social_link', obj2).each(function (i, obj3) {
+                                        items.push({
+                                            url: $(obj3).find('a').attr('href'), icon: $(obj3).attr('icon'),
+                                        });
+                                    })
+                                    cols_copyright.push({
+                                        'type': 'social_links', 'items': items
+                                    })
+
+                                    break;
+                                case 'copyright_bundle':
+                                    var links = []
+                                    $(obj2).find('.copyright_bundle_link').each(function (j, obj3) {
+
+                                        links.push({
+                                            url: $(obj3).attr('href'), label: $(obj3).html(),
+                                        });
 
 
+                                    });
 
+                                    cols_copyright.push({
+                                        'type': 'copyright_bundle', 'owner': $(obj).find('.copyright_bundle_owner').html(), 'links': links
+                                    })
+                                    break;
 
-                    if ($(obj).hasClass('faddress')) {
-
-                        var items = [];
-
-                        $(obj).find('.item').each(function (j, obj2) {
-
-                            if ($(obj2).hasClass('_logo')) {
-
-
-                                //  console.log($(obj2))
-
-                                var img = $(obj2).find('img')
-
-
-                                items.push({
-                                    type: "logo", src: img.attr('src'), title: img.attr('title')
-                                });
-
-                            } else if ($(obj2).hasClass('_text')) {
-
-
-                                items.push({
-                                    type: "text", icon: $(obj2).attr('icon'), text: $(obj2).find('span').html(),
-                                });
-
-                            } else if ($(obj2).hasClass('_email')) {
-
-
-                                items.push({
-                                    type: "email", text: $(obj2).find('span').html(),
-                                });
 
                             }
 
-
-                            //console.log(obj2)
-
-                        });
-
-
-                        cols_main_4.push({
-                            'type': 'address', 'items': items
-
-                        })
-
-                    } else if ($(obj).hasClass('')) {
-
-                        cols_main_4.push({
-                            'type': 'text', 'header': $(obj).find('h4.lmb').html(), 'text': $(obj).find('div').html()
-                        })
-
-                    } else if ($(obj).hasClass('qlinks')) {
-
-
-                        var items = []
-                        $(obj).find('.item').each(function (j, obj2) {
-
-                            items.push({
-                                url: $(obj2).find('a').attr('href'), label: $(obj2).find('.item_label').html(),
-                            });
-
-                            // console.log($(obj2).find('a').attr('href'))
-                            // console.log($(obj2).find('.item_label').html())
-                        });
-
-
-                        cols_main_4.push({
-                            'type': 'links', 'header': $(obj).find('h4.lmb').html(), 'items': items
-                        })
-
-                    } else if ($(obj).hasClass('nothing')) {
-                        cols_main_4.push({
-                            'type': 'nothing'
-
-                        })
-                    } else if ($(obj).hasClass('_copyright_text')) {
-
-                        cols_copyright.push({
-                            'type': 'text', 'text': $(obj).html()
-                        })
-
-                    } else if ($(obj).hasClass('_copyright_nothing')) {
-
-                        cols_copyright.push({
-                            'type': 'nothing'
                         })
 
                     }
 
-                    else if ($(obj).hasClass('_copyright_bundle')) {
 
-
-                        var links = []
-                        $(obj).find('.copyright_bundle_link').each(function (j, obj2) {
-
-                            links.push({
-                                url: $(obj2).attr('href'), label: $(obj2).html(),
-                            });
-
-
-                        });
-
-                        cols_copyright.push({
-                            'type': 'copyright_bundle', 'owner': $(obj).find('.copyright_bundle_owner').html(), 'links': links
-                        })
-
-                    } else if ($(obj).hasClass('_social_links')) {
-
-                        var items = []
-                        $(obj).find('.footer_social_links li').each(function (j, obj2) {
-
-
-                            //console.log($(obj2).find('a').attr('href'))
-
-                            items.push({
-                                url: $(obj2).find('a').attr('href'), icon: $(obj2).attr('icon'),
-                            });
-
-
-                        });
-
-                        cols_copyright.push({
-                            'type': 'social_links', 'items': items
-                        })
-
-                    }
                 })
 
                 footer_data = {
@@ -1215,7 +1208,7 @@
 
 
                 console.log(footer_data)
-                return;
+               // return;
 
                 var ajaxData = new FormData();
 
