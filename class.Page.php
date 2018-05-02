@@ -3733,7 +3733,7 @@ class Page extends DB_Table {
 
 
                 $navigation_data['breadcrumbs'][] = array(
-                    'link'        => $website->get('Website URL'),
+                    'link'        => 'https://'.$website->get('Website URL'),
                     'label'       => '<i class="fa fa-home"></i>',
                     'label_short' => '<i class="fa fa-home"></i>',
                     'title'       => _('Home')
