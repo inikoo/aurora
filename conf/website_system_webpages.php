@@ -586,7 +586,15 @@ function website_system_webpages_config($website_type) {
             'Webpage Code'              => 'search.sys',
             'Webpage Browser Title'     => _('Search'),
             'Webpage Name'              => _('Search'),
-            'Webpage Meta Description'  => ''
+            'Webpage Meta Description'  => '',
+            'Page Store Content Data'   => json_encode(
+                array(
+                    'blocks' => array(
+                        $blocks['search'],
+                    )
+
+                )
+            )
         ),
         'catalogue.sys'  => array(
             'Webpage Scope'             => 'Catalogue',
