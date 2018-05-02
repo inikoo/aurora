@@ -209,6 +209,10 @@ if(!$smarty->isCached($template,$cache_id) or true) {
 
     $smarty->assign('webpage', $webpage);
     $smarty->assign('content', $webpage->get('Content Data'));
+    $smarty->assign('settings', $website->settings);
+
+
+
 
    //print $template;
 
