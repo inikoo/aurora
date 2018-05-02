@@ -406,6 +406,7 @@ function close_item_edit_link() {
 
 
     $('#input_container_link').data('item').attr('url', $('#input_container_link').find('input').val())
+    $('#save_button',window.parent.document).addClass('save button changed valid')
 
 }
 
@@ -498,7 +499,7 @@ function save_header() {
 
     $('._menu_block').each(function (i, obj) {
 
-        var menu_header_elemet= $('#menu_'+$(obj).data('key'))
+        var menu_header_element= $('#menu_'+$(obj).data('key'))
 
 
 
@@ -565,9 +566,10 @@ function save_header() {
 
                 menu.push({
                     type: $(obj).data('column_type'),
-                    show: (menu_header_elemet.hasClass('hide') ? false : true),
-                    label: menu_header_elemet.find('.menu_label').html(),
-                    icon: menu_header_elemet.find('.menu_icon').attr('icon'),
+                    show: (menu_header_element.hasClass('hide') ? false : true),
+                    label: menu_header_element.find('.menu_label').html(),
+                    link: menu_header_element.find('.down_cadet').attr('url'),
+                    icon: menu_header_element.find('.menu_icon').attr('icon'),
                     sub_columns:sub_columns
 
                 })
@@ -586,9 +588,10 @@ function save_header() {
 
                 menu.push({
                     type: $(obj).data('column_type'),
-                    show: (menu_header_elemet.hasClass('hide') ? false : true),
-                    label: menu_header_elemet.find('.menu_label').html(),
-                    icon: menu_header_elemet.find('.menu_icon').attr('icon'),
+                    show: (menu_header_element.hasClass('hide') ? false : true),
+                    label: menu_header_element.find('.menu_label').html(),
+                    link: menu_header_element.find('.down_cadet').attr('url'),
+                    icon: menu_header_element.find('.menu_icon').attr('icon'),
                     items:items
 
                 })
@@ -597,9 +600,9 @@ function save_header() {
 
                 menu.push({
                     type: $(obj).data('column_type'),
-                    show: (menu_header_elemet.hasClass('hide') ? false : true),
-                    label: menu_header_elemet.find('.menu_label').html(),
-                    icon: menu_header_elemet.find('.menu_icon').attr('icon'),
+                    show: (menu_header_element.hasClass('hide') ? false : true),
+                    label: menu_header_element.find('.menu_label').html(),
+                    icon: menu_header_element.find('.menu_icon').attr('icon'),
 
 
                 })
