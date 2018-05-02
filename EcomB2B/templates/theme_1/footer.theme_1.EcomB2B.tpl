@@ -72,7 +72,7 @@
 
                             <h5 class="for_text">{$column.header}</h5>
 
-                            <div>
+                            <div  class="for_text" >
                                 {$column.text}
                             </div>
 
