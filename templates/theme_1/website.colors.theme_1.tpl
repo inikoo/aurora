@@ -632,7 +632,7 @@
 
 
 
-            <h1 id="header_title" contenteditable="true" style="max-width: 330px;">{if empty($settings['header_title'])}{$website->get('Website Name')}{else}{$settings['header_title']}{/if}</h1>
+            <h1 id="header_title" contenteditable="true" style="max-width: 330px;">{if !isset($settings['header_title'])}{$website->get('Website Name')}{else}{$settings['header_title']}{/if}</h1>
 
 
             <div style="clear:both"></div>
