@@ -3889,14 +3889,15 @@ class Product extends Asset {
 
     function update_webpages(){
 
+
         $sql=sprintf('select `Website Webpage Scope Webpage Key`  from `Website Webpage Scope Map` where `Website Webpage Scope Scope`="Product" and `Website Webpage Scope Scope Key`=%d ',
             $this->id
             );
 
         if ($result=$this->db->query($sql)) {
         		foreach ($result as $row) {
-                   $webpage=get_object('Webpage',$row['Website Webpage Scope Webpage Key']);
-                    $webpage->reindex_items();
+        		    $webpage=get_object('Webpage',$row['Website Webpage Scope Webpage Key']);
+        		    $webpage->reindex_items();
         		}
         }else {
         		print_r($error_info=$this->db->errorInfo());
