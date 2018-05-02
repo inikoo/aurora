@@ -154,9 +154,6 @@
 
 /*Header Logo*/
 
-.header-dark .header-logo{background-image:url(/art/mobile_logo.png);}
-.header-light .header-logo{background-image:url(/art/mobile_logo.png);}
-
 .header-logo{
 	background-repeat: no-repeat;
 	background-position: center left;

@@ -27,7 +27,7 @@
     <title>{$webpage->get('Webpage Browser Title')}</title>
     <meta name="description" content="{$webpage->get('Webpage Meta Description')}"/>
 
-    <link rel="stylesheet" type="text/css" href="/css/tablet.min.css?vxxxxx">
+    <link rel="stylesheet" type="text/css" href="/css/tablet.min.css?v=10">
 
 
 
@@ -134,6 +134,40 @@
     {if $with_gallery==1}
         <link rel="stylesheet" href="css/image_gallery.min.css">
     {/if}
+
+    {if $website->get('Website Text Font')!=''}
+        <link href="https://fonts.googleapis.com/css?family={$website->get('Website Text Font')}:400,700" rel="stylesheet">
+    {/if}
+
+    <style>
+
+
+        .header-logo{
+            background-image:url({if !empty($settings['logo_website'])}{$settings['logo_website']}{else}/art/mobile_logo.png{/if});
+            background-size: auto 100%;
+        };
+
+
+        {if $website->get('Website Text Font')!=''}
+        body {
+            font-family: '{$website->get('Website Text Font')}', sans-serif;
+        }
+
+        h1, h2, h3, h4, h5, h6 {
+            font-family: '{$website->get('Website Text Font')}', sans-serif;
+
+        }
+
+        {/if}
+
+        {foreach from=$website->style  item=style  }
+        {$style[0]}{ {$style[1]}: {$style[2]}}
+        {/foreach}
+
+
+
+    </style>
+
 
 </head>
 
