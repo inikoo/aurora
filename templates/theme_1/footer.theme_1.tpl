@@ -13,6 +13,10 @@
 <style>
 
 
+    .button{
+        cursor: pointer;
+    }
+
     .invisible {
         visibility: hidden;
 
@@ -241,7 +245,7 @@
 
             <i id="delete_link" class="far fa-trash-alt hide editing button" aria-hidden="true" onClick="delete_link(this)" style="z-index:3000;position:absolute" title="{t}Remove link{/t}"></i>
 
-            <i id="delete_item" class="far fa-trash-alt hide editing button" aria-hidden="true" onClick="delete_item(this)" style="position:absolute" title="{t}Remove item{/t}"></i>
+            <i id="delete_item" class="far fa-trash-alt hide editing button"  aria-hidden="true" onClick="delete_item(this)" style="position:absolute;cursor: pointer;z-index: 10000" title="{t}Remove item{/t}"></i>
 
             <form id="change_image" class="hide" style="position:absolute;top:0;left:0" method="post" action="/ar_edit.php" enctype="multipart/form-data" novalidate>
                 <input type="file" name="image_upload" id="file_upload" class="input_file" multiple/>
@@ -404,16 +408,16 @@
                                     <ul class="address " style="">
                                         {foreach from=$column.items item=item }
                                             {if $item.type=='logo'}
-                                                <li class="item _logo"><img src="{$item.src}" alt="" title="{$item.title}"/></li>
+                                                <li class="item _logo"><img  onclick="edit_item_image(this)" src="{$item.src}" alt="" title="{$item.title}"/></li>
                                             {elseif $item.type=='text'}
-                                                <li class="item _text"  icon="{$item.icon}"><i class="fa-fw {$item.icon}"></i> <span contenteditable="true">
+                                                <li class="item _text"  icon="{$item.icon}"><i onclick="edit_item(this)" class="fa-fw {$item.icon}"></i> <span onclick="edit_item(this)" contenteditable="true">
                                           {if $item.text=='#tel' and  $store->get('Telephone')!=''}{$store->get('Telephone')}
                                           {elseif $item.text=='#email' and  $store->get('Email')!=''}{$store->get('Email')}
                                           {elseif $item.text=='#address' and  $store->get('Address')!=''}{$store->get('Address')}
                                           {else}{$item.text|strip_tags}{/if}
                                       </span></li>
                                             {elseif $item.type=='email'}
-                                                <li class="item _email"><i class="fa fa-fw fa-envelope"></i> <span contenteditable="true">{if $item.text=='#email' and  $store->get('Email')!=''}{$store->get('Email')}{else}{$item.text|strip_tags}{/if}</span>
+                                                <li class="item _email"><i onclick="edit_item(this)" class="fa fa-fw fa-envelope"></i> <span contenteditable="true">{if $item.text=='#email' and  $store->get('Email')!=''}{$store->get('Email')}{else}{$item.text|strip_tags}{/if}</span>
 
 
 
@@ -713,7 +717,7 @@
 
 
                     $('#delete_item').removeClass('hide').offset(
-                            { top: $(element).offset().top, left: $(element).offset().left - 20}).attr('item_id', id)
+                            { top: $(element).offset().top, left: $(element).offset().left - 20}).data('element', element)
                 } else {
 
 
@@ -722,7 +726,7 @@
                     } else {
                         current_editing_item_id = id
                         $('#delete_item').removeClass('hide').offset({ 
-                            top: $(element).offset().top, left: $(element).offset().left - 20}).attr('item_id', id)
+                            top: $(element).offset().top, left: $(element).offset().left - 20}).data('element', element)
                     }
 
                 }
@@ -737,9 +741,9 @@
                     current_editing_item_id = id
 
                     $('#delete_item').removeClass('hide').offset({ 
-                        top: $(element).offset().top, left: $(element).offset().left - 20}).attr('item_id', id)
+                        top: $(element).offset().top, left: $(element).offset().left - 20}).data('element', element)
                     $('#change_image').removeClass('hide').offset({ 
-                        top: $(element).offset().top + 20, left: $(element).offset().left - 20}).attr('item_id', id)
+                        top: $(element).offset().top + 20, left: $(element).offset().left - 20}).data('element', element)
 
                     //   $('#change_image').removeClass('hide')
 
@@ -913,8 +917,14 @@
             }
 
             function delete_item(element) {
-                $('#' + $(element).attr('item_id')).closest('li').remove()
+
+
+                $($(element).data('element')).closest('li').remove()
                 $('#delete_item').addClass('hide')
+
+
+
+
             }
 
 

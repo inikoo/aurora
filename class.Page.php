@@ -1623,7 +1623,7 @@ class Page extends DB_Table {
             }
         }
 
-
+/*
         if ($this->get('Webpage Template Filename') == 'category_categories') {
 
             $this->reindex_category_categories();
@@ -1638,7 +1638,7 @@ class Page extends DB_Table {
 
             return;
         }
-
+*/
 
     }
 
