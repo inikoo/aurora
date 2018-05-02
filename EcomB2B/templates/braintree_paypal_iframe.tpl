@@ -46,7 +46,7 @@
 </style>
 
 </head>
-<body class="yui-skin-sam inikoo">
+<body >
 <div id="possessing_payment_message" style="display:none"  ><i class="fa fa-spinner fa-spin"></i> {t}Processing Payment{/t} </div>
 
     <input type="hidden" id="braintree_clientToken_paypal" value="{$braintree_clientToken_paypal}"> 

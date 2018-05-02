@@ -12,6 +12,14 @@
 
 include_once 'ar_web_common_logged_in.php';
 
+if (!isset($_REQUEST['tipo'])) {
+    $response = array(
+        'state' => 407,
+        'resp'  => 'Non acceptable request (t)'
+    );
+    echo json_encode($response);
+    exit;
+}
 
 $tipo = $_REQUEST['tipo'];
 

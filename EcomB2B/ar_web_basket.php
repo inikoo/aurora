@@ -16,6 +16,16 @@ $account=get_object('Account',1);
 
 $website=get_object('Website',$_SESSION['website_key']);
 
+
+if (!isset($_REQUEST['tipo'])) {
+    $response = array(
+        'state' => 407,
+        'resp'  => 'Non acceptable request (t)'
+    );
+    echo json_encode($response);
+    exit;
+}
+
 $tipo = $_REQUEST['tipo'];
 
 switch ($tipo) {

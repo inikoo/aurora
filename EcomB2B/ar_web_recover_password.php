@@ -19,16 +19,15 @@ require_once 'utils/public_object_functions.php';
 require_once 'utils/get_addressing.php';
 
 
+
 if (!isset($_REQUEST['tipo'])) {
     $response = array(
-        'state' => 405,
+        'state' => 407,
         'resp'  => 'Non acceptable request (t)'
     );
     echo json_encode($response);
     exit;
 }
-
-
 $tipo = $_REQUEST['tipo'];
 
 switch ($tipo) {

@@ -1208,7 +1208,6 @@ function get_checkout_html($data, $customer,$smarty) {
 
 
 
-
     $response = array(
         'state' => 200,
         'html'  => $smarty->fetch('theme_1/blk.checkout.theme_1.EcomB2B'.($data['device_prefix'] != '' ? '.'.$data['device_prefix'] : '').'.tpl'),
