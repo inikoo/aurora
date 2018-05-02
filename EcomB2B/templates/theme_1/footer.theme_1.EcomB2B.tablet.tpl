@@ -12,7 +12,7 @@
 <div class="outter-elements">
 
 <div class="footer footer-dark">
-    <a href="index.html" class="footer-logo"></a>
+
     <p class="footer-text center-block">
         <span onclick="location.href='tel:{$store->get('Telephone')}';"><i class="fa fa-phone padding_right_10" aria-hidden="true"></i> {$store->get('Telephone')}</span><br>
         <span onclick="location.href='mailto:{$store->get('Email')}';"><i class="fa fa-envelope-o padding_right_10" aria-hidden="true"></i> {$store->get('Email')}</span>
