@@ -336,6 +336,9 @@
                     getScript('/js/mobile.checkout.min.js?v2', function () {
                         $.getJSON("ar_web_checkout.php?tipo=get_checkout_html&device_prefix=mobile", function (data) {
 
+
+
+
                             $('#checkout').html(data.html)
 
 

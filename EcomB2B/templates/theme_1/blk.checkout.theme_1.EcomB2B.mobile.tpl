@@ -8,7 +8,6 @@
  Version 3
 -->
 *}
-
             <div class="content" style="margin-bottom: 10px">
                 <table class="order_totals" style="margin-bottom: 0px">
 
@@ -360,7 +359,7 @@
 
                                 <fieldset style="min-height: 280px">
 
-                                    <iframe style="border:none;width:100%" src="/braintree_paypal_iframe.php?data={$payment_account['object']->get('Block Data',$order)}"></iframe>
+                                    <iframe style="border:none;width:100%" src="/braintree_paypal_iframe.php?tipo=a&payment_account_key={$payment_account['object']->id}"></iframe>
 
 
                                 </fieldset>

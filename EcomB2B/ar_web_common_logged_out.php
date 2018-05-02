@@ -35,7 +35,7 @@ if (!isset($_REQUEST['tipo'])) {
 $logged_in = !empty($_SESSION['logged_in']);
 
 if (!isset($db)) {
-    require_once 'keyring/dns.php';
+    require 'keyring/dns.php';
     $db = new PDO(
         "mysql:host=$dns_host;dbname=$dns_db;charset=utf8", $dns_user, $dns_pwd, array(\PDO::MYSQL_ATTR_INIT_COMMAND => "SET time_zone = '+0:00';")
     );
