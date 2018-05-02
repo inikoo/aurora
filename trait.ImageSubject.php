@@ -537,6 +537,11 @@ trait ImageSubject {
 
         } elseif ($this->table_name == 'Part') {
             $this->activate();
+        }elseif ($this->table_name == 'Product') {
+
+            $this->update_webpages();
+
+
         }
 
         // -------------
