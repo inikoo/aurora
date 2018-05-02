@@ -270,15 +270,14 @@ footer {
     font-weight: lighter; }
   footer ul {
     padding-left: 40px; }
-  footer .about_us {
-    padding-right: 10px; }
-  footer .about_us h5 {
-    margin-left: 0px; }
   footer h5 {
     margin-left: 60px;
     font-weight: lighter; }
   footer h5.for_text {
     margin-left: 0px; }
+  footer div.for_text {
+    padding-right: 10px;
+    padding-bottom: 10px; }
   footer li {
     list-style-type: none;
     margin-bottom: 2px; }
