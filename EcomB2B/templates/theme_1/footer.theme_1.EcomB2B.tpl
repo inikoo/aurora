@@ -70,7 +70,7 @@
 
 
 
-                            <h5 class="">{$column.header}</h5>
+                            <h5 class="for_text">{$column.header}</h5>
 
                             <div>
                                 {$column.text}
