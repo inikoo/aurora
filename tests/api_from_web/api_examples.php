@@ -67,7 +67,7 @@
                 Handle
             </td>
             <td>
-                <input id="api_handle" value="b2e99bfb" style="width:400px">
+                <input id="api_handle" value="69d5117b" style="width:400px">
             </td>
         </tr>
         <tr>
@@ -75,7 +75,7 @@
                 Key
             </td>
             <td>
-                <input id="api_key" value="UFVGOG43RDR1NVU5S0FFZUE1VDR3OVQ4VzV0OEQ2bkVOQWo2bUFyNQ==" style="width:400px">
+                <input id="api_key" value="UE1lR0FiOUt1TnVONGU1ZWltNk4yaGVYdUQ1Yjl3NERFUTRQNms4Zg==" style="width:400px">
             </td>
         </tr>
         <tr>
@@ -129,6 +129,13 @@
         </tr>
 
 
+        <tr>
+            <td colspan="2">
+                <button id="set_picking_location">Set picking location</button>
+            </td>
+        </tr>
+
+
 
 
     </table>
@@ -173,6 +180,11 @@
     $("#audit_stock").click(function () {
         audit_stock()
     });
+
+    $("#set_picking_location").click(function () {
+        set_picking_location()
+    });
+
 
 
     function search_location_by_code() {
@@ -278,6 +290,34 @@
 
 
     }
+
+
+    function set_picking_location() {
+
+        set_up_credentials();
+
+        var action = 'set_as_picking_location';
+        var location_key = 8;
+        var part_sku = 2426;
+
+
+        var ajaxData = new FormData();
+        ajaxData.append("action", action)
+        ajaxData.append("location_key", location_key)
+        ajaxData.append("part_sku", part_sku)
+
+
+        $.ajax({
+            url: api_url, type: 'POST', data: ajaxData, dataType: 'json', cache: false, contentType: false, processData: false, complete: function () {
+            }, success: function (data) {
+                console.log(data)
+            }, error: function () {
+                console.log(data)
+            }
+        });
+
+    }
+
 
     function audit_stock() {
 
