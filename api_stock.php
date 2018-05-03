@@ -94,7 +94,7 @@ switch ($_REQUEST['action']) {
             exit;
 
         }
-
+/*
 
         foreach ($part_location->part->get_locations('part_location_object') as $part_location) {
 
@@ -107,7 +107,7 @@ switch ($_REQUEST['action']) {
 
 
         }
-
+*/
         $response = array(
             'state' => 'OK'
 
