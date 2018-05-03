@@ -112,7 +112,8 @@ switch ($_REQUEST['action']) {
             'state' => 'OK'
 
         );
-
+        echo json_encode($response);
+        exit;
         break;
 
     case 'get_part_data_from_barcode':
