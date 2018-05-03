@@ -41,7 +41,6 @@ switch ($tipo) {
                      )
         );
 
-
         set_as_picking_location($account, $db, $user, $editor, $data, $smarty);
         break;
 
