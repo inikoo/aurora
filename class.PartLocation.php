@@ -812,7 +812,12 @@ class PartLocation extends DB_Table {
 
         if ($update->rowCount()) {
             $this->updated          = true;
-            $this->data['Can Pick'] = $value;
+
+
+            if(isset($this->data)){
+                $this->data['Can Pick'] = $value;
+            }
+
 
 
         }
