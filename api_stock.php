@@ -42,6 +42,79 @@ switch ($_REQUEST['action']) {
         echo json_encode($response);
         exit;
         break;
+
+    case 'set_as_picking_location':
+
+
+        if (empty($_REQUEST['part_sku'])) {
+            $response = array(
+                'state' => 'Error',
+                'msg'   => 'part_sku needed'
+            );
+            echo json_encode($response);
+            exit;
+        }
+
+
+        if (empty($_REQUEST['location_key'])) {
+            $response = array(
+                'state' => 'Error',
+                'msg'   => 'location_key needed'
+            );
+            echo json_encode($response);
+            exit;
+        }
+
+
+
+        include_once 'class.PartLocation.php';
+
+        $editor = array(
+            'Author Name'  => $user->data['User Alias'].' (via App)',
+            'Author Alias' => $user->data['User Alias'].' (via App)',
+            'Author Type'  => $user->data['User Type'],
+            'Author Key'   => $user->data['User Parent Key'],
+            'User Key'     => $user->id,
+            'Date'         => gmdate('Y-m-d H:i:s')
+        );
+
+
+
+        $part_location         = new PartLocation($_REQUEST['part_sku'], $_REQUEST['location_key']);
+        $part_location->editor = $editor;
+
+        if (!$part_location->ok) {
+            $response = array(
+                'state' => 'Error',
+                'msg'   => 'location part not associated'
+            );
+
+
+            echo json_encode($response);
+            exit;
+
+        }
+
+
+        foreach ($part_location->part->get_locations('part_location_object') as $part_location) {
+
+
+            if ($part_location->location_key == $_REQUEST['location_key']) {
+                $part_location->update(array('Part Location Can Pick' => 'Yes'));
+            } else {
+                $part_location->update(array('Part Location Can Pick' => 'No'));
+            }
+
+
+        }
+
+        $response = array(
+            'state' => 'OK'
+
+        );
+
+        break;
+
     case 'get_part_data_from_barcode':
 
         include_once 'class.Part.php';
