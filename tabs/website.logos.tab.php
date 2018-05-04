@@ -17,9 +17,7 @@ include_once 'conf/object_fields.php';
 $website = $state['_object'];
 
 
-$object_fields = get_object_fields(
-    $website, $db, $user, $smarty, array('logos' => true)
-);
+$object_fields = get_object_fields($website, $db, $user, $smarty, array('logos' => true));
 
 
 $smarty->assign('object', $state['_object']);
@@ -30,5 +28,6 @@ $smarty->assign('state', $state);
 
 
 $html = $smarty->fetch('edit_object.tpl');
+$html.= '<span class="hide " id="webpage_data" data-website_key="'.$website->id.'"></span>'.$smarty->fetch('website.logos.edit.js');
 
 ?>

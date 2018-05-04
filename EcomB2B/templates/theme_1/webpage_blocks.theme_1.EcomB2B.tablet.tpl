@@ -161,7 +161,7 @@
         </div>
     </div>
 
-    <a href="#" class="back-to-top-badge"><i class="fas fa-arrow-circle-up"></i></a>
+    <a href="#" class="hide back-to-top-badge"><i class="fas fa-arrow-circle-up"></i></a>
 
 
 </div>

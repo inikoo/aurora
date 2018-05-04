@@ -11,6 +11,9 @@
 */
 
 
+$settings=$object->settings;
+
+
 
 
 $object_fields = array(
@@ -20,32 +23,57 @@ $object_fields = array(
         'fields'     => array(
 
 
-                array(
-                   'id'              => 'Website_Favicon',
-                    'edit'            => 'no_icon',
-                    'value'           => $object->get('Website Favicon'),
-                    'formatted_value' => '0px"><i class=" fa fa-fw '.($object->get('Customer Send Newsletter')=='Yes'?'fa-toggle-on':'fa-toggle-off').'" aria-hidden="true"></i> <span class="'.($object->get('Customer Send Newsletter')=='No'?'discreet':'').'">'._('Newsletter').'</span></span>'.'<span onclick="toggle_subscription(this)"  field="Customer_Send_Email_Marketing" class="button" style="margin-right:40px"><i class=" fa fa-fw '.($object->get('Customer Send Email Marketing')=='Yes'?'fa-toggle-on':'fa-toggle-off').'" aria-hidden="true"></i> <span class="'.($object->get('Customer Send Email Marketing')=='No'?'discreet':'').'">'._('Marketing emails').'</span></span>'.'<span onclick="toggle_subscription(this)"  field="Customer_Send_Postal_Marketing" class="button" style="margin-right:40px"><i class=" fa fa-fw '.($object->get('Customer Send Postal Marketing')=='Yes'?'fa-toggle-on':'fa-toggle-off').'" aria-hidden="true"></i> <span class="'.($object->get('Customer Send Postal Marketing')=='No'?'discreet':'').'">'._('Postal marketing').'</span></span>',
-                    'formatted_value' => '',
-                    'label'           => _('Favicon').' png (310x310)',
-                    'required'        => true,
-                    'type'            => 'value'
-                ),
+            array(
+                'id'              => 'Website_Favicon',
+                'edit'            => 'no_icon',
+                'value'           => $object->get('Website Favicon'),
+                'value'           => '',
+                'formatted_value' => '<input style="display:none" type="file" name="_Website_Favicon" id="_Website_Favicon" class="image_upload" data-options=\'{ }\'/><label style="cursor: pointer" for="_Website_Favicon"><img src="'.(empty($settings['mobile_logo'])?'http://via.placeholder.com/310x310':$settings['mobile_logo']).'" /></label>',
+                'label'           => _('Favicon').'<br><span class="discreet italic">png (310x310)</span>',
+                'required'        => true,
+                'type'            => 'value'
+            ),
 
-        
+
 
         )
     ),
 
 
+    array(
+        'label'      => _('Mobile'),
+        'show_title' => true,
+        'fields'     => array(
 
 
 
+            array(
+                'id'              => 'Mobile_Logo',
+                'edit'            => 'no_icon',
+                'value'           => $object->get('Website Mobile Logo'),
+                'value'           => '',
+                'formatted_value' => '<img src="'.(empty($settings['mobile_logo'])?'http://via.placeholder.com/60x60':$settings['mobile_logo']).'" />',
+                'label'           => _('Header logo').'<br><span class="discreet italic">png (60x60)</span>',
+                'required'        => true,
+                'type'            => 'value'
+            ),
+            array(
+                'id'              => 'Mobile_Menu_Background',
+                'edit'            => 'no_icon',
+                'value'           => $object->get('Website Mobile Menu Background'),
+                'value'           => '',
+                'formatted_value' => '<img src="'.(empty($settings['mobile_logo'])?'http://via.placeholder.com/300x188':$settings['mobile_logo']).'" />',
+                'label'           => _('Menu background').'<br><span class="discreet italic">png (300x188)</span>',
+                'required'        => true,
+                'type'            => 'value'
+            ),
 
+
+        )
+    ),
 
 
 );
-
-
 
 
 ?>

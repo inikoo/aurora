@@ -28,8 +28,8 @@ $website_styles=array(
 
 
     array('#top_header', 'height','60px'),
-    array('#top_header', 'line-height','60px'),
-    array('#top_header h1', 'line-height','60px'),
+
+    array('#header_logo', 'flex-basis','80px'),
 
     array('#top_header', 'color','#727272'),
    array('#top_header', 'background-color','#fff'),

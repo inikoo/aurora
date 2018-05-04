@@ -19,7 +19,7 @@ $smarty->assign('theme',$theme);
 //print_r($website->settings);
 
 
-$html = $smarty->fetch('website.colors.tpl');
+$html = $smarty->fetch('control.website.colors.tpl');
 
 
 

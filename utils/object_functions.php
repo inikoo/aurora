@@ -52,6 +52,11 @@ function get_object($object_name, $key, $load_other_data = false) {
             $object = new Public_Product($key);
 
             break;
+        case 'public_store':
+            include_once 'class.Public_Store.php';
+            $object = new Public_Store($key);
+
+            break;
         case 'product-historic_key':
             include_once 'class.Product.php';
             $object = new Product('historic_key', $key);

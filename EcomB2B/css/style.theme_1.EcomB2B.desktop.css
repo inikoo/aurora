@@ -1512,4 +1512,17 @@ a.real_link span {
   border-bottom-color: rgba(255, 255, 255, 0.25);
   padding-bottom: 2px; }
 
+#top_header h1.huge {
+  font-size: 50px; }
+#top_header h1.big {
+  font-size: 40px; }
+#top_header h1 {
+  font-size: 30px; }
+#top_header h2 {
+  font-size: 20px; }
+#top_header h3 {
+  font-size: 16px; }
+#top_header .bold {
+  font-weight: 800; }
+
 /*# sourceMappingURL=style.theme_1.EcomB2B.desktop.css.map */

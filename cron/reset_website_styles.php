@@ -20,6 +20,23 @@ if ($result = $db->query($sql)) {
     foreach ($result as $row) {
         $website = get_object('Website', $row['Website Key']);
 
+        $old_styles=$website->style;
+
+        foreach($website_styles as $key=>$style){
+
+
+
+
+            $found=false;
+            foreach($old_styles as $old_style){
+                if($old_style[0]==$style[0] and $old_style[1]==$style[1]){
+                    $website_styles[$key][2]=$old_style[2];
+                }
+            }
+
+
+        }
+
         $website->fast_update(
             array(
                 'Website Style' => json_encode($website_styles)
