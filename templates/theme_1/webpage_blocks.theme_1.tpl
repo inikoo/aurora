@@ -1447,16 +1447,21 @@
 
                         var img = $(image_block).find('img')
 
+                            if(img.length){
+                                console.log(img)
 
-                        console.log(img)
+                                images.push({
+                                    id: $(image_block).attr('id'),
 
-                        images.push({
-                            id: $(image_block).attr('id'),
+                                    src: img.data('src'), image_website: ((img.attr('src') != 'EcomB2B/' + img.data('image_website') || img.width() != img.data('width')) ? '' : img.data('image_website')),
 
-                            src: img.data('src'), image_website: ((img.attr('src') != 'EcomB2B/' + img.data('image_website') || img.width() != img.data('width')) ? '' : img.data('image_website')),
+                                    link: img.attr('link'), title: img.attr('alt'), width: img.width(), height: img.height(), top: img.offset().top - $(obj).offset().top - $(obj).attr('top_margin'), left: img.offset().left
+                                })
 
-                            link: img.attr('link'), title: img.attr('alt'), width: img.width(), height: img.height(), top: img.offset().top - $(obj).offset().top - $(obj).attr('top_margin'), left: img.offset().left
-                        })
+                            }
+
+
+
                     });
 
                     $('.blackboard_text ', obj).each(function (i, text_block) {
