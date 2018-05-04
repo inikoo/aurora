@@ -126,7 +126,7 @@
         {assign 'barcode' $product->get('Barcode Number')}
         {assign 'cpnp' $product->get('CPNP Number')}
 
-        <div style="flex-grow:1;padding-left: 0px;;flex-basis: auto;flex-grow: 1">
+        <div class="product_properties" >
 
         <table class="properties" >
         <tr class="{if $origin==''}hide{/if}">
@@ -143,7 +143,7 @@
             <td>{$dimensions}</td>
         </tr>
         <tr class="{if $materials==''}hide{/if}">
-            <td>{if empty($labels._product_materials)}{t}Materials{/t}/{t}Ingredients{/t}{else}{$labels._product_materials}{/if}</td>
+            <td>{if empty($labels._product_materials)}{t}Materials{/t} / {t}Ingredients{/t}{else}{$labels._product_materials}{/if}</td>
             <td>
                 {$materials}
             </td>

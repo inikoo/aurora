@@ -933,8 +933,7 @@ font-size:14px;
   text-align: center; }
 
 .ordering.log_out span {
-  height: 32px !important;
-  padding: 7px 20px 5px 10px;
+  padding: 7px 20px 7px 10px;
   display: block;
   height: 20px;
   cursor: pointer;
@@ -942,9 +941,6 @@ font-size:14px;
 
 .ordering.log_out span.login_button {
   border-right: 1px solid white; }
-
-.ordering.log_out span:hover {
-  height: 32px !important; }
 
 .mark_on_hover:hover {
   background-color: brown; }
@@ -1524,5 +1520,13 @@ a.real_link span {
   font-size: 16px; }
 #top_header .bold {
   font-weight: 800; }
+
+.product_properties {
+  font-size: 14px;
+  flex-grow: 1;
+  padding-left: 0px;
+  flex-basis: auto;
+  flex-grow: 1;
+  padding-right: 20px; }
 
 /*# sourceMappingURL=style.theme_1.EcomB2B.desktop.css.map */
