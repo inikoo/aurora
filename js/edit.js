@@ -1963,6 +1963,11 @@ function clean_cache(element) {
 function approve_object(element) {
     save_object_operation('approve', element)
 }
+
+
+function reject_object(element) {
+    save_object_operation('reject', element)
+}
 function suspend_object(element) {
     save_object_operation('suspend', element)
 }

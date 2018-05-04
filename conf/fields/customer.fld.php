@@ -291,7 +291,18 @@ if ($new) {
                    'class'     => 'operation',
                    'value'     => '',
                    'label'     => '<i class="fa fa-fw fa-lock button invisible" onClick="toggle_unlock_delete_object(this)" style="margin-right:20px"></i> <span data-data=\'{ "object": "'.$object->get_object_name().'", "key":"'.$object->id
-                       .'"}\' onClick="approve_object(this)" class="delete_object button">'._('Approve customer').' <i class="fa fa-check new_button link"></i></span>',
+                       .'"}\' onClick="approve_object(this)" class="delete_object unselectable button">'._('Approve customer').' <i class="fa fa-check new_button link"></i></span>',
+                   'reference' => '',
+                   'type'      => 'operation'
+               ),
+
+               array(
+
+                   'id'        => 'reject_customer',
+                   'class'     => 'operation',
+                   'value'     => '',
+                   'label'     => '<i class="fa fa-fw fa-lock button invisible" onClick="toggle_unlock_delete_object(this)" style="margin-right:20px"></i> <span data-data=\'{ "object": "'.$object->get_object_name().'", "key":"'.$object->id
+                       .'"}\' onClick="reject_object(this)" class="delete_object unselectable button">'._('Reject customer').' <i class="fa fa-times new_button  error link"></i></span>',
                    'reference' => '',
                    'type'      => 'operation'
                ),

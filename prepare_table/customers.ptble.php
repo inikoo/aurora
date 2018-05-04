@@ -197,7 +197,7 @@ switch ($parameters['elements_type']) {
         $_elements = preg_replace('/^\,/', '', $_elements);
         if ($_elements == '') {
             $where .= ' and false';
-        } elseif ($count_elements < 3) {
+        } elseif ($count_elements < 5) {
             $where .= ' and `Customer Type by Activity` in ('.$_elements.')';
         }
         break;

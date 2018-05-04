@@ -2405,7 +2405,7 @@ class Customer extends Subject {
     public function update_activity() {
 
 
-        if($this->data['Customer Type by Activity']=='ToApprove'){
+        if($this->data['Customer Type by Activity']=='ToApprove' or  $this->data['Customer Type by Activity']=='Rejected' ){
             return;
         }
 
@@ -3283,6 +3283,12 @@ class Customer extends Subject {
     function approve(){
 
         $this->update(array('Customer Type by Activity'=>'Active'));
+
+    }
+
+    function reject(){
+
+        $this->update(array('Customer Type by Activity'=>'Rejected'));
 
     }
 
