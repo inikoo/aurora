@@ -13,7 +13,7 @@ require_once 'common.php';
 require_once 'utils/ar_common.php';
 require_once 'utils/table_functions.php';
 
-
+/*
 if (!$user->can_view('users')) {
     echo json_encode(
         array(
@@ -23,7 +23,7 @@ if (!$user->can_view('users')) {
     );
     exit;
 }
-
+*/
 
 if (!isset($_REQUEST['tipo'])) {
     $response = array(
