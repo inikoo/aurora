@@ -17,6 +17,10 @@ $elements_options = array(
         'activity' => array(
             'label' => _('Status'),
             'items' => array(
+                'Rejected' => array(
+                    'label'    => _('Rejected'),
+                    'selected' => true
+                ),
                 'ToApprove' => array(
                     'label'    => _('To be approved'),
                     'selected' => true

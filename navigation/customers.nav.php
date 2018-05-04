@@ -1322,7 +1322,9 @@ function get_customer_navigation($data, $smarty, $user, $db) {
     $title = '<span class="id"><span class="Customer_Name">'.$customer->get('Customer Name').'</span> ('.$customer->get_formatted_id().')</span>';
 if($customer->get('Customer Type by Activity')=='ToApprove'){
     $title.=' <span class="error padding_left_10"><i class="far fa-exclamation-circle"></i> '._('To be approved').'</span>';
-}
+}elseif($customer->get('Customer Type by Activity')=='Rejected'){
+        $title.=' <span class="error padding_left_10"><i class="far fa-times"></i> '._('Rejected').'</span>';
+    }
 
     $_content = array(
         'sections_class' => '',

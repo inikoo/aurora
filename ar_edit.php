@@ -860,6 +860,9 @@ function object_operation($account, $db, $user, $editor, $data, $smarty) {
         case 'approve':
             $request = $object->approve();
             break;
+        case 'reject':
+            $request = $object->reject();
+            break;
         case 'archive':
             $request = $object->archive();
             break;

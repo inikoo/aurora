@@ -170,7 +170,7 @@ class WebAuth {
 
                 $tests['handle']        = true;
                 $tests['handle_active'] = ($row['Website User Active'] == 'Yes' ? true : false);
-                $tests['approved'] = ($row['Customer Type by Activity'] == 'ToApprove' ? false : true);
+                $tests['approved'] = (  ( $row['Customer Type by Activity'] == 'ToApprove'  or $row['Customer Type by Activity'] == 'Rejected' )  ? false : true);
 
 
                 $website_user_key       = $row['Website User Key'];

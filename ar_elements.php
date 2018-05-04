@@ -1175,6 +1175,7 @@ function get_customers_element_numbers($db, $data) {
             'No'  => 0
         ),
         'activity' => array(
+            'Rejected' => 0,
             'ToApprove' => 0,
             'Active' => 0,
             'Losing' => 0,
