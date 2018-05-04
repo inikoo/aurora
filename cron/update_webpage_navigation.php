@@ -24,25 +24,14 @@ $editor = array(
 
 
 
-
-$sql = sprintf('SELECT `Page Key` FROM `Page Store Dimension` left join `Website Dimension` on (`Website Key`=`Webpage Website Key`)  where   `Website Theme`="theme_1" ');
+$sql = sprintf('SELECT `Page Key` FROM `Page Store Dimension` left join `Website Dimension` on (`Website Key`=`Webpage Website Key`)  where   `Website Theme`="theme_1"  ');
 if ($result=$db->query($sql)) {
     foreach ($result as $row) {
 
         $webpage = get_object('Webpage', $row['Page Key']);
-
-
-
         $webpage->reindex_items();
 
-
-
-
-
-
-
-
-    }
+        }
 }else {
     print_r($error_info=$db->errorInfo());
     print "$sql\n";
@@ -51,7 +40,7 @@ if ($result=$db->query($sql)) {
 //exit;
 
 
-$sql = sprintf('SELECT `Page Key` FROM `Page Store Dimension`  left join `Website Dimension` on (`Website Key`=`Webpage Website Key`)  where    `Website Theme`="theme_1" ');
+$sql = sprintf('SELECT `Page Key` FROM `Page Store Dimension`  left join `Website Dimension` on (`Website Key`=`Webpage Website Key`)  where    `Website Theme`="theme_1"  ');
 if ($result=$db->query($sql)) {
 		foreach ($result as $row) {
 

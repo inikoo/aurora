@@ -564,7 +564,7 @@
             {/if}
 
             {if $with_register==1}
-
+            $('#register_header_button').addClass('hide')
             getScript('/js/desktop.forms.min.js', function () {
 
                 $("#country_select").change(function () {
@@ -854,8 +854,12 @@
 
             {/if}
             {if $with_login==1}
-
+            $('.control_panel').addClass('hide')
             getScript('/js/desktop.forms.min.js', function () {
+
+
+
+
 
 
                 $('#open_recovery').on('click', function (e) {
@@ -920,7 +924,30 @@
 
                                 if (data.state == '200') {
 
-                                    window.location.replace("index.php");
+
+
+
+                                    if(document.referrer.indexOf(location.protocol + "//" + location.host) === 0){
+                                        //console.log(document.referrer)
+
+
+                                        if(document.referrer.match(/login\.sys/g)){
+
+                                            window.location.replace("index.php");
+                                        }else if(document.referrer.match(/register\.sys/g)){
+                                            window.location.replace("index.php");
+                                        }else{
+                                            window.location.replace(document.referrer);
+                                        }
+
+
+
+                                    }else{
+                                        window.location.replace("index.php");
+                                    }
+
+
+                                   // window.location.replace("index.php");
 
 
                                 } else if (data.state == '400') {

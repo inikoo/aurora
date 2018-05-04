@@ -91,7 +91,7 @@ function get_logged_in(){
 
         if (!isset($db)) {
 
-            require_once 'keyring/dns.php';
+            require 'keyring/dns.php';
 
             $db = new PDO(
                 "mysql:host=$dns_host;dbname=$dns_db;charset=utf8", $dns_user, $dns_pwd, array(\PDO::MYSQL_ATTR_INIT_COMMAND => "SET time_zone = '+0:00';")
@@ -99,10 +99,10 @@ function get_logged_in(){
             $db->setAttribute(PDO::ATTR_DEFAULT_FETCH_MODE, PDO::FETCH_ASSOC);
         }
 
-
+        date_default_timezone_set('utc');
         $sql = sprintf(
             'INSERT INTO `Website Auth Token Dimension` (`Website Auth Token Website Key`,`Website Auth Token Selector`,`Website Auth Token Hash`,`Website Auth Token Website User Key`,`Website Auth Token Customer Key`,`Website Auth Token Website User Log Key`,`Website Auth Token Expire`) 
-            VALUES (%d,%s,%s,%d,%d,%d,%s)', $website->id, prepare_mysql($selector), prepare_mysql(hash('sha256', $authenticator)), $_SESSION['website_user_key'], $_SESSION['customer_key'], $_SESSION['website_user_log_key'],
+            VALUES (%d,%s,%s,%d,%d,%d,%s)', $_SESSION['website_key'], prepare_mysql($selector), prepare_mysql(hash('sha256', $authenticator)), $_SESSION['website_user_key'], $_SESSION['customer_key'], $_SESSION['website_user_log_key'],
             prepare_mysql(date('Y-m-d H:i:s', time() + 864000))
 
         );
