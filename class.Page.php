@@ -655,6 +655,9 @@ class Page extends DB_Table {
                     $navigation_data = json_decode($this->data['Webpage '.$key], true);
                 }
 
+
+
+
                 return $navigation_data;
                 break;
             case 'Content Data':
@@ -1804,6 +1807,8 @@ class Page extends DB_Table {
     }
 
     function update_field_switcher($field, $value, $options = '', $metadata = '') {
+
+
 
 
         switch ($field) {
@@ -3574,6 +3579,10 @@ class Page extends DB_Table {
                     );
                 }
 
+
+
+
+
                 //print_r($parent_webpage);
 
                 $prev = false;
@@ -3708,8 +3717,12 @@ class Page extends DB_Table {
                 $navigation_data['next'] = $next;
                 // print_r($navigation_data);
 
+
                 $this->update_field('Webpage Navigation Data', json_encode($navigation_data), 'no_history');
 
+
+                //print_r($this);
+                break;
 
             case 'Product':
 
