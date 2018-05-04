@@ -9,6 +9,13 @@ $(function () {
 
 
 
+
+
+
+    $('#search_hanger').draggable({
+        containment: "parent" }
+    )
+
     document.addEventListener("paste", function (e) {
         e.preventDefault();
         var text = e.clipboardData.getData("text/plain");
@@ -633,22 +640,19 @@ function change_margins(input) {
             var height = value + 'px'
 
             $('#top_header').css({
-                'height': height, 'line-height': height,
+                'height': height,
             })
-            $('#top_header h1').css({
-                'line-height': height,
-            })
+
 
             styles['#top_header height'][2] = height;
-            styles['#top_header line-height'][2] = height;
-            styles['#top_header h1 line-height'][2] = height;
 
 
-            delta = 60 - value;
+
+            //delta = 60 - value;
 
 
-            $('#header_title').css('max-width', (330 - delta) + 'px')
-            $('.search_container').css('padding-left', (559 + delta) + 'px')
+          //  $('#header_title').css('max-width', (330 - delta) + 'px')
+          //  $('.search_container').css('padding-left', (559 + delta) + 'px')
 
 
             break
@@ -720,8 +724,6 @@ function save_styles(){
 
 
 }
-
-
 
 
 

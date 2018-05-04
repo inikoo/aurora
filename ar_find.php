@@ -680,32 +680,6 @@ function find_locations($db, $account, $memcache_ip, $data, $user) {
         ' and `Location Warehouse Key` in (%s) and `Location Key`!=1 ', join(',', $user->warehouses)
     );
 
-    $memcache_fingerprint = $account->get('Account Code').'FIND_LOCATIONS'.md5(
-            $q
-        );
-
-    $cache = new Memcached();
-    $cache->addServer($memcache_ip, 11211);
-
-
-    if (strlen($q) <= 2) {
-        $memcache_time = 295200;
-    }
-    if (strlen($q) <= 3) {
-        $memcache_time = 86400;
-    }
-    if (strlen($q) <= 4) {
-        $memcache_time = 3600;
-    } else {
-        $memcache_time = 300;
-
-    }
-
-
-    $results_data = $cache->get($memcache_fingerprint);
-
-
-    if (!$results_data or true) {
 
 
         $candidates = array();
@@ -789,10 +763,9 @@ function find_locations($db, $account, $memcache_ip, $data, $user) {
             'n' => count($results),
             'd' => $results
         );
-        $cache->set($memcache_fingerprint, $results_data, $memcache_time);
 
 
-    }
+
     $response = array(
         'state'          => 200,
         'number_results' => $results_data['n'],

@@ -12,6 +12,11 @@
 {include file="theme_1/_head.theme_1.tpl"}
 
 <style>
+
+    .header_text div{
+        display: inline;padding: 0px;margin: 0px;
+    }
+
     .object_control_panel td{
         padding:0px 4px;
     }
@@ -613,31 +618,103 @@
 
         ></span>
 
-        <div id="top_header" style="width: 100%;"  >
-
-            <div style="float:right;text-align: right;border-left:1px dashed #ccc;padding-left:559px" onclick="open_header_style()" class="search_container {if $webpage->get('Webpage Code')=='search.sys'}hide{/if} ">
+        <div id="top_header" style="width: 100%; display: flex;"  >
 
 
-                <input id="header_search_input"/> <i id="header_search_input" class="button fa fa-search"></i>
+
+
+
+
+
+            <div id="header_logo" style="flex-grow:1;;flex-grow: 0;flex-shrink: 0;flex-grow: 0;flex-shrink: 0; ;text-align: center">
+
+
+                <input style="display:none" type="file" name="logo" id="update_image_logo" class="image_upload" data-options='{ }'/>
+                <label style="cursor: pointer" for="update_image_logo">
+                    <img id="website_logo" style="max-height: 100%;max-width:  100%;vertical-align: middle;" src="{if empty($settings['logo_website'])}http://via.placeholder.com/60x60{else}{$settings['logo_website']}{/if}"/>
+                </label>
 
 
             </div>
 
+            <div id="main_header" style="flex-grow:2;position: relative">
+                {if isset($settings.search_texts)}
+                    {foreach from=$settings.header_texts key=key item=header_text}
+                        {assign 'key'  "u_id_`$key`" }
+                        {if $header_text.type=='H1++'}
+                            <div id="{$key}" class="header_text" data-link="{$header_text.link}" style="position: absolute;left:{$header_text.left}px;top:{$header_text.top}px;color:{$header_text.color}">
+                                <h1 class="huge" type="{$header_text.type}">{$header_text.text}</h1>
+                            </div>
+                        {elseif $header_text.type=='H1+'}
+                            <div id="{$key}" class="header_text" data-link="{$header_text.link}" style="position: absolute;left:{$header_text.left}px;top:{$header_text.top}px;color:{$header_text.color}">
+                                <h1 class="big" type="{$header_text.type}">{$header_text.text}</h1>
+                            </div>
+                        {elseif $header_text.type=='H1'}
+                            <div id="{$key}" class="header_text" data-link="{$header_text.link}" style="position: absolute;left:{$header_text.left}px;top:{$header_text.top}px;color:{$header_text.color}">
+                                <h1 type="{$header_text.type}">{$header_text.text}</h1>
+                            </div>
+                        {elseif $header_text.type=='H2'}
+                            <div id="{$key}" class="header_text" data-link="{$header_text.link}" style="position: absolute;left:{$header_text.left}px;top:{$header_text.top}px;color:{$header_text.color}">
+                                <h2 type="{$header_text.type}">{$header_text.text}</h2>
+                            </div>
+                        {elseif $header_text.type=='H3'}
+                            <div id="{$key}" class="header_text" data-link="{$header_text.link}" style="position: absolute;left:{$header_text.left}px;top:{$header_text.top}px;color:{$header_text.color}">
+                                <h3  type="{$header_text.type}">{$header_text.text}</h3>
+                            </div>
+                        {elseif $header_text.type=='N'}
+                            <div id="{$key}" class="header_text" data-link="{$header_text.link}" style="position: absolute;left:{$header_text.left}px;top:{$header_text.top}px;color:{$header_text.color}">
+                                <span  type="{$header_text.type}">{$header_text.text}</span>
+                            </div>
+                        {elseif $header_text.type=='N-'}
+                            <div id="{$key}" class="header_text" data-link="{$header_text.link}" style="position: absolute;left:{$header_text.left}px;top:{$header_text.top}px;color:{$header_text.color}">
+                                <small  type="{$header_text.type}">{$header_text.text}</small>
+                            </div>
+                        {/if}
+                    {/foreach}
+                {/if}
 
-            <input style="display:none" type="file" name="logo" id="update_image_logo" class="image_upload" data-options='{ }'/>
-            <label style="cursor: pointer" for="update_image_logo">
-                <img id="website_logo" style="padding:0px 10px ;height:100%;float:left" src="{if empty($settings['logo_website'])}http://via.placeholder.com/60x60{else}{$settings['logo_website']}{/if}"/>
-            </label>
+            </div>
+
+            <div id="buffer_zone" style="flex-grow:1;text-align: right;;flex-grow: 0;flex-shrink: 0; flex-basis:100px;" >
+
+            </div>
 
 
+            <div id="search_header" style="padding-top:5px;flex-grow:1;text-align: right;;flex-grow: 0;flex-shrink: 0; flex-basis:350px;position: relative" oncxlick="open_header_style()" >
 
 
-            <h1 id="header_title" contenteditable="true" style="max-width: 330px;">{if !isset($settings['header_title'])}{$website->get('Website Name')}{else}{$settings['header_title']}{/if}</h1>
+                <div id="search_hanger" style="position: absolute;left:10px;top:{if isset($settings.search_top)}{$settings.search_top}{else}0{/if}px"><input/> <i class="button fa fa-search"></i></div>
+
+                {if isset($settings.search_texts)}
+                    {foreach from=$settings.search_texts key=key item=header_text}
+                        {assign 'key'  "su_id_`$key`" }
+                        {if $header_text.type=='N b'}
+                            <div id="{$key}" class="header_text" data-link="{$header_text.link}" style="position: absolute;left:{$header_text.left}px;top:{$header_text.top}px;color:{$header_text.color}">
+                                <span class="bold" type="{$header_text.type}">{$header_text.text}</span>
+                            </div>
+                        {elseif $header_text.type=='N- b'}
+                            <div id="{$key}" class="header_text" data-link="{$header_text.link}" style="position: absolute;left:{$header_text.left}px;top:{$header_text.top}px;color:{$header_text.color}">
+                                <small  class="bold" type="{$header_text.type}">{$header_text.text}</small>
+                            </div>
+                        {elseif $header_text.type=='N'}
+                            <div id="{$key}" class="header_text" data-link="{$header_text.link}" style="position: absolute;left:{$header_text.left}px;top:{$header_text.top}px;color:{$header_text.color}">
+                                <span type="{$header_text.type}">{$header_text.text}</span>
+                            </div>
+                        {elseif $header_text.type=='N-'}
+                            <div id="{$key}" class="header_text" data-link="{$header_text.link}" style="position: absolute;left:{$header_text.left}px;top:{$header_text.top}px;color:{$header_text.color}">
+                                <small type="{$header_text.type}">{$header_text.text}</small>
+                            </div>
+                        {/if}
+                    {/foreach}
+                {/if}
 
 
-            <div style="clear:both"></div>
+            </div>
 
         </div>
+
+
+
         <div id="bottom_header" class="">
 
 
@@ -819,7 +896,7 @@
 
 
                         <div class="product_description"  >
-                            <span class="code">Fruit-01</span>
+                            <span class="code">Fruit-02</span>
                             <div class="name item_name">Cavendish banana, I know you like it!</div>
 
                         </div>

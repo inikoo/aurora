@@ -162,7 +162,7 @@
 </div>
 
 
-<iframe id="preview" style="width:100%;height: 750px" frameBorder="0" src="/webpage.header.php?&website_key={$website->id}&theme={$theme}"></iframe>
+<iframe id="preview" style="width:100%;height: 750px" frameBorder="0" src="/website.menu.php?&website_key={$website->id}&theme={$theme}"></iframe>
 
 
 <div style="padding:20px">

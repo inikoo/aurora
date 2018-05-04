@@ -2,7 +2,7 @@
 /*
  About:
  Author: Raul Perusquia <raul@inikoo.com>
- Created: 2 June 2016 at 15:13:50 CEST, Mijas Costa, Spain
+ Created: 2 May 2018 at 21:31:18 BST, Sheffield, UK
  Copyright (c) 2015, Inikoo
 
  Version 3
@@ -16,14 +16,11 @@ $theme=$website->get('Website Theme');
 $smarty->assign('website',$website);
 $smarty->assign('theme',$theme);
 
-$header_data = $website->get('Header Data');
-$header_key=$website->get('Website Header Key');
+//print_r($website->settings);
 
 
-$smarty->assign('header_data', $header_data);
-$smarty->assign('header_key', $header_key);
+$html = $smarty->fetch('control.website.header.tpl');
 
 
-$html = $smarty->fetch('theme_1/control.header.tpl');
 
 ?>

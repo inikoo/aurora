@@ -2496,14 +2496,20 @@ $modules = array(
                     'website.webpage.types'       => 'website.webpages',
                     'website.in_process_webpages' => 'website.webpages',
 
-                    'website.logos'   => 'website.style',
-                    'website.colours' => 'website.style',
 
-                    'website.footer.preview' => 'website.templates',
-                    'website.header.preview' => 'website.templates',
                     'website.info_bar'       => 'website.templates',
 
                     'website.templates' => 'website.templates',
+
+
+                    'website.details'      => 'website.settings',
+                    'website.logos'      => 'website.settings',
+                    'website.colours'      => 'website.settings',
+                    'website.details'      => 'website.settings',
+                    'website.localization'      => 'website.settings',
+                    'website.menu.preview' => 'website.settings',
+                    'website.footer.preview' => 'website.settings',
+                    'website.header.preview' => 'website.settings',
 
 
                 ),
@@ -2511,16 +2517,16 @@ $modules = array(
                 'tabs' => array(
 
 
-                    'website.details' => array(
+
+                    'website.settings' => array(
                         'label' => _('Settings'),
-                        'icon'  => 'sliders-h'
-                    ),
-
-
-                    'website.style' => array(
-                        'label'   => _('Look & feel'),
-                        'icon'    => 'tint blue',
+                        'icon'  => 'sliders-h',
                         'subtabs' => array(
+
+                            'website.details' => array(
+                                'label' => _('General'),
+                                'icon'  => 'cogs'
+                            ),
 
                             'website.colours' => array(
                                 'label' => _('Colours'),
@@ -2535,27 +2541,38 @@ $modules = array(
 
 
                             ),
+                            'website.header.preview' => array(
+                                'label' => _('Header'),
+                                'icon'  => 'arrow-alt-to-top',
+                            ),
 
+
+                            'website.menu.preview' => array(
+                                'label' => _('Menu'),
+                                'icon'  => 'bars',
+                            ),
+
+                            'website.footer.preview' => array(
+                                'label' => _('Footer'),
+                                'icon'  => 'arrow-alt-to-bottom',
+                            ),
+
+
+                            'website.localization' => array(
+                                'label' => _('Localization'),
+                                'icon'  => 'language',
+                            ),
 
                         ),
-
-                    ),
-
-                    'website.header.preview' => array(
-                        'label' => _('Menu'),
-                        'icon'  => 'bars',
-                    ),
-
-                    'website.footer.preview' => array(
-                        'label' => _('Footer'),
-                        'icon'  => 'arrow-alt-to-bottom',
                     ),
 
 
-                    'website.localization' => array(
-                        'label' => _('Localization'),
-                        'icon'  => 'language',
-                    ),
+
+
+
+
+
+
 
                     /*
 
@@ -2676,7 +2693,7 @@ $modules = array(
 
                     'website.webpages' => array(
                         'label' => _('Web pages'),
-                        'icon'  => 'files',
+                        'icon'  => 'browser',
 
 
                         'subtabs' => array(
@@ -2684,7 +2701,7 @@ $modules = array(
 
                             'website.in_process_webpages' => array(
                                 'label' => _('In process web pages'),
-                                'icon'  => 'child'
+                                'icon'  => 'seedling'
                             ),
 
                             'website.ready_webpages' => array(
@@ -6229,26 +6246,53 @@ $modules = array(
                 'reference' => '',
                 'tabs'      => array(
                     'profile.details'       => array(
-                        'label' => _(
-                            'Data'
-                        ),
-                        'title' => _(
-                            'My details'
-                        )
+                        'label' => _('Settings'),
+                        'icon'  => 'sliders-h'
                     ),
-                    'profile.history'       => array(
-                        'label' => _(
-                            'History, notes'
-                        ),
-                        'icon'  => 'sticky-note'
-                    ),
-                    'profile.login_history' => array(
+
+                    'user.login_history' => array(
                         'label' => _(
                             'Login history'
-                        )
+                        ),
+                        'icon'  => 'sign-in'
                     ),
+
+                    'profile.api_keys'      => array(
+                        'label' => _('API keys'),
+                        'icon'  => 'key'
+                    ),
+                    'profile.history'          => array(
+                        'label' => '',
+                        'title' => _('History/Notes'),
+                        'icon'  => 'road',
+                        'class' => 'right icon_only'
+                    ),
+                    'user.deleted_api_keys' => array(
+                        'icon'  => 'ban',
+                        'label' => _('Deleted API keys'),
+                        'title' => _('Deleted API keys'),
+                        'class' => 'right icon_only'
+                    ),
+
+
+
+
+
                 )
             ),
+
+            'profile.api_key.new' => array(
+                'type' => 'new_object',
+                'tabs' => array(
+                    'user.api_key.new' => array(
+                        'label' => _('New API')
+                    ),
+
+                )
+            ),
+
+
+
 
         )
 

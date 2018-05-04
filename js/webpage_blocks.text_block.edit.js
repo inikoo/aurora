@@ -89,6 +89,7 @@ $(function () {
         $('input',$(this).closest('.margins_container')).each(function( index,input ) {
 
 
+
             value=parseInt($(input).val())
 
             if(isNaN(value)){

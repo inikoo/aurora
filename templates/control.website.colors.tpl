@@ -12,12 +12,12 @@
 
 
 
-<div style="padding:10px  20px  0px 20px  ;min-height: 30px;border-bottom:1px solid #ccc " class="control_panel">
+<div style="padding:10px  20px  0px 0px  ; min-height: 30px;border-bottom:1px solid #ccc " class="control_panel">
 
     <span class="hide"><i class="fa fa-toggle-on" aria-hidden="true"></i> {t}Logged in{/t}</span>
 
 
-    <i class="far fa-expand-alt button" onclick="toggle_showcase(this)" ></i>
+    <i class="far hide fa-expand-alt button" onclick="toggle_showcase(this)" ></i>
 
 
 
@@ -33,6 +33,22 @@
 <iframe id="preview" style="width:100%;height: 1000px" frameBorder="0" src="/webpage.colors.php?&website_key={$website->id}&theme={$theme}"></iframe>
 
 <script>
+
+
+    function add_header_text(){
+
+        $('#preview')[0].contentWindow.add_header_text()
+
+    }
+
+    function add_search_text(){
+
+        $('#preview')[0].contentWindow.add_search_text()
+
+    }
+
+
+
 function toggle_showcase(element){
 
 
