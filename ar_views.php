@@ -2205,7 +2205,19 @@ function get_navigation($user, $smarty, $data, $db, $account) {
         case ('profile'):
             require_once 'navigation/account.nav.php';
 
-            return get_profile_navigation($data, $smarty, $user, $db, $account);
+            switch ($data['section']) {
+                case ('profile.api_key.new'):
+                    return get_profile_new_api_key_navigation($data, $smarty, $user, $db, $account);
+                    break;
+                default:
+                    return get_profile_navigation($data, $smarty, $user, $db, $account);
+                    break;
+            }
+
+
+
+
+
             break;
         case ('payments_server'):
             require_once 'navigation/payments.nav.php';
@@ -2413,9 +2425,7 @@ function get_navigation($user, $smarty, $data, $db, $account) {
                     );
                     break;
                 case ('user.api_key.new') :
-                    return get_new_api_key_navigation(
-                        $data, $smarty, $user, $db, $account
-                    );
+                    return get_new_api_key_navigation($data, $smarty, $user, $db, $account);
                 case ('deleted_api_key') :
                     return get_deleted_api_key_navigation(
                         $data, $smarty, $user, $db, $account

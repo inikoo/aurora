@@ -1972,10 +1972,35 @@ function get_deleted_api_key_navigation($data, $smarty, $user, $db, $account) {
 
 
 
+
 function get_profile_navigation($data, $smarty, $user, $db, $account) {
 
 
     $title = _('My profile');
+
+    $_content = array(
+        'sections_class' => '',
+        'sections'       => array(),
+        'left_buttons'   => array(),
+        'right_buttons'  => array(),
+        'title'          => $title,
+        'search'         => array(
+            'show'        => false,
+            'placeholder' => _('Search account')
+        )
+
+    );
+    $smarty->assign('_content', $_content);
+
+    $html = $smarty->fetch('navigation.tpl');
+
+    return $html;
+}
+
+function get_profile_new_api_key_navigation($data, $smarty, $user, $db, $account) {
+
+
+    $title = _('New API key');
 
     $_content = array(
         'sections_class' => '',

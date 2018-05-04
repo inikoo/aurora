@@ -4206,9 +4206,11 @@ function parse_request($_data, $db, $modules, $account = '', $user = '', $is_set
 
 
             case 'profile':
-                if ($user->get('User Type') == 'Staff' or $user->get(
-                        'User Type'
-                    ) == 'Contractor') {
+
+
+
+
+                if ($user->get('User Type') == 'Staff' or $user->get('User Type') == 'Contractor') {
                     $module  = 'profile';
                     $section = 'profile';
 
@@ -4223,6 +4225,48 @@ function parse_request($_data, $db, $modules, $account = '', $user = '', $is_set
 
                     }
                 }
+
+
+         //   print_r($view_path);
+
+                if (isset($view_path[0])) {
+
+                    if ($view_path[0] == 'new') {
+
+                        if (isset($view_path[1])) {
+
+                            if ($view_path[1] == 'api_key') {
+
+
+
+                                $parent     = 'user';
+                                $parent_key = $key;
+                                $section    = 'profile.api_key.new';
+                                $object     = 'api_key';
+                                $key=0;
+
+                            }
+
+                        }
+                    } elseif ($view_path[0] == 'api_key') {
+
+                        if (isset($view_path[1])) {
+
+                            if (is_numeric($view_path[1])) {
+
+                                $parent     = 'user';
+                                $parent_key = $key;
+                             //   $section    = 'user.api_key';
+                                $object     = 'api_key';
+
+                                $key = $view_path[1];
+                            }
+
+                        }
+                    }
+
+                }
+
 
 
                 break;
