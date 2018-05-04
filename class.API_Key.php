@@ -63,10 +63,17 @@ class API_Key extends DB_Table {
 
     function get_deleted_data($tag) {
 
+
+        if($tag>0){
+
+
+
         $this->deleted = true;
         $sql           = sprintf(
             "SELECT * FROM `API Key Deleted Dimension` WHERE `API Key Deleted Key`=%d", $tag
         );
+
+
 
 
         if ($this->data = $this->db->query($sql)->fetch()) {
@@ -74,7 +81,7 @@ class API_Key extends DB_Table {
             $this->user = get_object('User', $this->data['API Key Deleted User Key']);
 
         }
-
+        }
 
     }
 
