@@ -2535,12 +2535,7 @@ $modules = array(
 
                             ),
 
-                            'website.logos' => array(
-                                'label' => _('Logos'),
-                                'icon'  => 'heart-circle',
 
-
-                            ),
                             'website.header.preview' => array(
                                 'label' => _('Header'),
                                 'icon'  => 'arrow-alt-to-top',

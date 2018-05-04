@@ -414,12 +414,11 @@ function save_header(){
         return;
     }
 
-    $('#save_button', window.parent.document).find('i').addClass('fa-spinner fa-spin')
-
 
     settings={
         'search_top':$('#search_hanger').offset().top,
-        'logo_website':  $('#website_logo').attr('src')
+        'logo_website':  $('#website_logo').attr('src'),
+        'logo_top_margin':  $('#website_logo').css('margin-top')
     }
 
     var header_texts=[]
