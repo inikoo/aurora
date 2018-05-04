@@ -200,6 +200,33 @@ $export_fields = array(
             'label'   => _('Main payment method'),
             'checked' => 1
         ),
+
+         array(
+            'name'    => '`Invoice Items Net Amount`',
+            'label'   => _('Items net'),
+            'checked' => 1
+        ),
+
+        array(
+            'name'    => '`Invoice Shipping Net Amount`',
+            'label'   => _('Shipping net'),
+            'checked' => 1
+        ),
+
+
+        array(
+            'name'    => '`Invoice Charges Net Amount`',
+            'label'   => _('Charges net'),
+            'checked' => 1
+        ),
+
+        array(
+            'name'    => '`Invoice Insurance Net Amount`',
+            'label'   => _('Insurance net'),
+            'checked' => 1
+        ),
+
+
         array(
             'name'    => '`Invoice Total Net Amount`',
             'label'   => _('Net'),
