@@ -1669,6 +1669,8 @@ class Page extends DB_Table {
                 WHERE  `Category Key`=%d  AND `Product Web State` IN  ('For Sale','Out of Stock')   ORDER BY `Product Web State`", $this->data['Webpage Scope Key']
         );
 
+        //print $sql;
+
         $items                  = array();
         $items_product_id_index = array();
 
@@ -3786,17 +3788,17 @@ class Page extends DB_Table {
                     'SELECT `Website Webpage Scope Index` FROM `Website Webpage Scope Map` WHERE `Website Webpage Scope Webpage Key`=%d  AND `Website Webpage Scope Scope`="Product" AND `Website Webpage Scope Scope Key`=%d ', $parent_webpage_key, $product->id
 
                 );
-                // print $sql;
+
 
                 if ($result = $this->db->query($sql)) {
                     if ($row = $result->fetch()) {
 
                         $sql = sprintf(
-                            'SELECT `Website Webpage Scope Scope Key` FROM `Website Webpage Scope Map` WHERE `Website Webpage Scope Webpage Key`=%d  AND  `Website Webpage Scope Type`="Subject" AND  `Website Webpage Scope Scope`="Product" AND `Website Webpage Scope Index`<%d ORDER BY `Website Webpage Scope Index` DESC',
+                            'SELECT `Website Webpage Scope Scope Key` FROM `Website Webpage Scope Map` WHERE `Website Webpage Scope Webpage Key`=%d  AND  `Website Webpage Scope Type`="Category_Products_Item" AND  `Website Webpage Scope Scope`="Product" AND `Website Webpage Scope Index`<%d ORDER BY `Website Webpage Scope Index` DESC',
                             $parent_webpage_key, $row['Website Webpage Scope Index']
                         );
 
-                        //print $sql;
+
 
                         if ($result2 = $this->db->query($sql)) {
                             if ($row2 = $result2->fetch()) {
@@ -3805,7 +3807,7 @@ class Page extends DB_Table {
                             } else {
 
                                 $sql = sprintf(
-                                    'SELECT `Website Webpage Scope Scope Key` FROM `Website Webpage Scope Map`  WHERE `Website Webpage Scope Webpage Key`=%d  AND  `Website Webpage Scope Type`="Subject" AND `Website Webpage Scope Scope`="Product"  ORDER BY `Website Webpage Scope Index` DESC ',
+                                    'SELECT `Website Webpage Scope Scope Key` FROM `Website Webpage Scope Map`  WHERE `Website Webpage Scope Webpage Key`=%d  AND  `Website Webpage Scope Type`="Category_Products_Item" AND `Website Webpage Scope Scope`="Product"  ORDER BY `Website Webpage Scope Index` DESC ',
                                     $parent_webpage_key
                                 );
                                 //print $sql;
@@ -3830,9 +3832,12 @@ class Page extends DB_Table {
 
 
                         $sql = sprintf(
-                            'SELECT `Website Webpage Scope Scope Key` FROM `Website Webpage Scope Map`  WHERE `Website Webpage Scope Webpage Key`=%d  AND  `Website Webpage Scope Type`="Subject" AND `Website Webpage Scope Scope`="Product" AND `Website Webpage Scope Index`>%d ORDER BY `Website Webpage Scope Index` ',
+                            'SELECT `Website Webpage Scope Scope Key` FROM `Website Webpage Scope Map`  WHERE `Website Webpage Scope Webpage Key`=%d  AND  `Website Webpage Scope Type`="Category_Products_Item" AND `Website Webpage Scope Scope`="Product" AND `Website Webpage Scope Index`>%d ORDER BY `Website Webpage Scope Index` ',
                             $parent_webpage_key, $row['Website Webpage Scope Index']
                         );
+
+                       // print $sql;
+
 
                         if ($result2 = $this->db->query($sql)) {
                             if ($row2 = $result2->fetch()) {
@@ -3840,7 +3845,7 @@ class Page extends DB_Table {
                             } else {
 
                                 $sql = sprintf(
-                                    'SELECT `Website Webpage Scope Scope Key` FROM `Website Webpage Scope Map`  WHERE `Website Webpage Scope Webpage Key`=%d  AND  `Website Webpage Scope Type`="Subject" AND `Website Webpage Scope Scope`="Product"  ORDER BY `Website Webpage Scope Index` ',
+                                    'SELECT `Website Webpage Scope Scope Key` FROM `Website Webpage Scope Map`  WHERE `Website Webpage Scope Webpage Key`=%d  AND  `Website Webpage Scope Type`="Category_Products_Item" AND `Website Webpage Scope Scope`="Product"  ORDER BY `Website Webpage Scope Index` ',
                                     $parent_webpage_key
                                 );
 
