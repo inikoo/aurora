@@ -39,16 +39,18 @@ $_dir   = $order_direction;
 if ($order == 'code') {
     $order = '`Customer Poll Query Option Name`';
 }elseif ($order == 'label') {
-    $order = '`Customer Poll Query Label`';
+    $order = '`Customer Poll Query Option Label`';
 }elseif ($order == 'customers' or $order == 'customers_percentage') {
-    $order = 'Customer Poll Query Option Customers';
+    $order = '`Customer Poll Query Option Customers`';
+}elseif ($order == 'last_chose') {
+    $order = '`Customer Poll Query Option Last Answered`';
 }  else {
     $order = '`Customer Poll Query Option Name`';
 }
 
 
 $table  = '`Customer Poll Query Option Dimension`   ';
-$fields = "`Customer Poll Query Option Store Key`,`Customer Poll Query Option Key`,`Customer Poll Query Option Query Key`,`Customer Poll Query Option Name`,`Customer Poll Query Option Label`,`Customer Poll Query Option Customers` ";
+$fields = "`Customer Poll Query Option Last Answered`,`Customer Poll Query Option Store Key`,`Customer Poll Query Option Key`,`Customer Poll Query Option Query Key`,`Customer Poll Query Option Name`,`Customer Poll Query Option Label`,`Customer Poll Query Option Customers` ";
 $group_by='';
 $sql_totals = "select count(*) as num from $table $where ";
 

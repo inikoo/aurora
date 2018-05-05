@@ -46,13 +46,17 @@ switch ($tipo) {
     case 'save_webpage_content':
         $data = prepare_values(
             $_REQUEST, array(
-                         'key'          => array('type' => 'key'),
-                         'content_data' => array('type' => 'string'),
-                         'labels'       => array(
+                         'key'           => array('type' => 'key'),
+                         'content_data'  => array('type' => 'string'),
+                         'labels'        => array(
                              'type'     => 'string',
                              'optional' => true
                          ),
-                         'poll_labels'  => array(
+                         'poll_labels'   => array(
+                             'type'     => 'string',
+                             'optional' => true
+                         ),
+                         'poll_position' => array(
                              'type'     => 'string',
                              'optional' => true
                          )
@@ -96,8 +100,8 @@ switch ($tipo) {
     case 'save_header':
         $data = prepare_values(
             $_REQUEST, array(
-                         'header_key'  => array('type' => 'key'),
-                         'menu' => array('type' => 'string')
+                         'header_key' => array('type' => 'key'),
+                         'menu'       => array('type' => 'string')
 
 
                      )
@@ -1809,19 +1813,15 @@ function save_header($data, $editor) {
     include_once('class.WebsiteHeader.php');
 
 
-    $header         = new WebsiteHeader($data['header_key']);
+    $header = new WebsiteHeader($data['header_key']);
 
 
+    $header_data = json_decode($header->get('Website Header Data'), true);
 
 
-    $header_data=json_decode($header->get('Website Header Data'),true);
+    // $header_data=$website->get('Header Data');
 
-
-
-   // $header_data=$website->get('Header Data');
-
-    $header_data['menu']['columns']=json_decode($data['menu'], true);
-
+    $header_data['menu']['columns'] = json_decode($data['menu'], true);
 
 
     $header->editor = $editor;
@@ -1833,7 +1833,8 @@ function save_header($data, $editor) {
 
 
     if (!$header->error) {
-
+        $website = get_object('Website', $header->get('Website Header Website Key'));
+        $website->clean_cache();
         $response = array(
             'state' => 200
 
@@ -1855,7 +1856,7 @@ function save_header($data, $editor) {
 }
 
 
-function save_webpage_content($data, $editor, $db, $smarty) {
+function save_webpage_content($data, $editor, $smarty, $db) {
 
 
     include_once('class.Page.php');
@@ -1884,6 +1885,24 @@ function save_webpage_content($data, $editor, $db, $smarty) {
             $poll_query         = get_object('Customer_Poll_Query', $poll_key);
             $poll_query->editor = $editor;
             $poll_query->update($_data);
+
+        }
+
+
+    }
+
+    if (isset($data['poll_position'])) {
+        $poll_position_data = json_decode($data['poll_position'], true);
+
+        $position = 1;
+        foreach ($poll_position_data as $key) {
+
+            $sql = sprintf(
+                'update `Customer Poll Query Dimension` set `Customer Poll Query Position`=%d where `Customer Poll Query Key`=%d ', $position, $key
+            );
+
+            $db->exec($sql);
+            $position++;
 
         }
 

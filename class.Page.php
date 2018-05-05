@@ -96,7 +96,7 @@ class Page extends DB_Table {
 
         } elseif ($tipo == 'website_code') {
             $sql = sprintf(
-                "SELECT * FROM `Page Store Dimension` PS LEFT JOIN `Page Dimension` P  ON (P.`Page Key`=PS.`Page Key`) WHERE `Website Code`=%s AND PS.`Webpage Website Key`=%d ", prepare_mysql($tag2), $tag
+                "SELECT * FROM `Page Store Dimension`  PS LEFT JOIN `Page Dimension` P  ON (P.`Page Key`=PS.`Page Key`) WHERE `Webpage Code`=%s AND PS.`Webpage Website Key`=%d ", prepare_mysql($tag2), $tag
             );
 
         } elseif ($tipo == 'scope') {
@@ -114,7 +114,6 @@ class Page extends DB_Table {
                 "SELECT * FROM `Page Dimension` WHERE  `Page Key`=%d", $tag
             );
         }
-
 
         if ($this->data = $this->db->query($sql)->fetch()) {
 
