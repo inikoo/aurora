@@ -188,14 +188,19 @@ function get_employee_navigation($data, $smarty, $user, $db) {
 
     $_user=$object->get_user();
 
-    $right_buttons[]
-        = array(
-        'icon'  => 'terminal',
-        'title' => '',
-        'click'=>"change_view('/account/user/".$_user->id."')",
-        'pre_text'=>_('User'),
-        'class'=>'text'
-    );
+
+    if($_user->id){
+
+        $right_buttons[]
+            = array(
+            'icon'  => 'terminal',
+            'title' => '',
+            'click'=>"change_view('/account/user/".$_user->id."')",
+            'pre_text'=>_('User'),
+            'class'=>'text'
+        );
+    }
+
 
 
     if ($data['parent']) {
