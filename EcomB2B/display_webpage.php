@@ -36,24 +36,24 @@ $smarty->cache_dir    = 'server_files/smarty/cache';
 $smarty->config_dir   = 'server_files/smarty/configs';
 
 
-$theme='theme_1';
-$website_type='EcomB2B';
+$theme        = 'theme_1';
+$website_type = 'EcomB2B';
 
-if(isset($is_homepage)){
+if (isset($is_homepage)) {
     include_once 'utils/public_object_functions.php';
 
     $website = get_object('Website', $_SESSION['website_key']);
 
-    if ($logged_in ) {
+    if ($logged_in) {
 
         $webpage_key = $website->get_system_webpage_key('home.sys');
 
 
-    }else{
+    } else {
         $webpage_key = $website->get_system_webpage_key('home_logout.sys');
     }
 
-}elseif(isset($is_reset)){
+} elseif (isset($is_reset)) {
     include_once 'utils/public_object_functions.php';
     include_once 'utils/detect_agent.php';
 
@@ -61,13 +61,13 @@ if(isset($is_homepage)){
 
     $webpage_key = $website->get_system_webpage_key('reset_pwd.sys');
 
-    $form_error=false;
-    if(!$logged_in){
+    $form_error = false;
+    if (!$logged_in) {
         include_once('class.WebAuth.php');
         $auth = new WebAuth();
 
         list($logged_in, $result, $customer_key, $website_user_key, $website_user_log_key) = $auth->authenticate_from_reset_password(
-            (isset($_REQUEST['s'])?$_REQUEST['s']:''),(isset($_REQUEST['a'])?$_REQUEST['a']:''), $website->id
+            (isset($_REQUEST['s']) ? $_REQUEST['s'] : ''), (isset($_REQUEST['a']) ? $_REQUEST['a'] : ''), $website->id
         );
 
         if ($logged_in) {
@@ -79,16 +79,13 @@ if(isset($is_homepage)){
         }
 
 
-        if(!$logged_in){
-            $form_error=$result;
+        if (!$logged_in) {
+            $form_error = $result;
         }
 
-    }else{
+    } else {
         //todo remove the reset password
     }
-
-
-
 
 
     $smarty->assign('form_error', $form_error);
@@ -98,18 +95,17 @@ if(isset($is_homepage)){
 
 https://www.awgifts.eu/reset.php?s=ZBTN9OVoYabB&a=OZz-bvClmCKb0h8-QIYgz_UsR5sxz8PCR_rcs2_gFQZO
 
-$cache_id=$_SESSION['website_key'].'|'.$webpage_key.'|'.($logged_in?'in':'out');
+$cache_id = $_SESSION['website_key'].'|'.$webpage_key.'|'.($logged_in ? 'in' : 'out');
 
 $template = $theme.'/webpage_blocks.'.$theme.'.'.$website_type.$template_suffix.'.tpl';
 
 
-//$smarty->setCaching(Smarty::CACHING_LIFETIME_CURRENT);
-//$smarty->setCacheLifetime(-1);
-//$smarty->setCompileCheck(true);
+$smarty->setCaching(Smarty::CACHING_LIFETIME_CURRENT);
+$smarty->setCacheLifetime(-1);
+$smarty->setCompileCheck(true);
 
 
-if(!$smarty->isCached($template,$cache_id) or true) {
-
+if (!$smarty->isCached($template, $cache_id) ) {
 
 
     include_once 'utils/public_object_functions.php';
@@ -180,10 +176,24 @@ if(!$smarty->isCached($template,$cache_id) or true) {
         $countries = get_countries($website->get('Website Locale'));
 
 
+        foreach($website->get_poll_queries($webpage) as $poll_query){
+            if($poll_query['Customer Poll Query Registration Required']=='Yes'){
+                $required_fields[]='poll_'.$poll_query['Customer Poll Query Key'];
+            }
+
+        }
+
+
+
         $smarty->assign('address_labels', $address_labels);
         $smarty->assign('used_address_fields', $used_fields);
         $smarty->assign('required_fields', $required_fields);
         $smarty->assign('no_required_fields', $no_required_fields);
+
+
+
+
+
 
         $smarty->assign('countries', $countries);
         $smarty->assign('selected_country', $store->get('Store Home Country Code 2 Alpha'));
@@ -199,10 +209,7 @@ if(!$smarty->isCached($template,$cache_id) or true) {
     }
 
 
-
-
-
-    if ($webpage->get('Webpage Code') == 'register.sys' or  $webpage->get('Webpage Code') == 'profile.sys' ) {
+    if ($webpage->get('Webpage Code') == 'register.sys' or $webpage->get('Webpage Code') == 'profile.sys') {
         $smarty->assign('poll_queries', $website->get_poll_queries($webpage));
 
     }
@@ -212,15 +219,12 @@ if(!$smarty->isCached($template,$cache_id) or true) {
     $smarty->assign('settings', $website->settings);
 
 
-
-
-   //print $template;
+    //print $template;
 
 }
 
 
-
-$smarty->display($template,$cache_id);
+$smarty->display($template, $cache_id);
 
 
 ?>

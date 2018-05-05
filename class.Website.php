@@ -913,7 +913,8 @@ class Website extends DB_Table {
             $code = 'p.home';
         }
 
-        $webpage = new Webpage('website_code', $this->id, $code);
+        include_once 'class.Page.php';
+        $webpage = new Page('website_code', $this->id, $code);
 
         return $webpage;
 
@@ -1668,13 +1669,8 @@ class Website extends DB_Table {
         $smarty_web->config_dir   = 'EcomB2B/server_files/smarty/configs';
         $smarty_web->setCaching(Smarty::CACHING_LIFETIME_CURRENT);
 
-        //$theme='theme_1';
-        //$website_type='EcomB2B';
+       $smarty_web->clearCache(null,$this->id);
 
-      //  $smarty_web->clearCache(null,$this->id);
-
-        $smarty_web->clearAllCache();
-        $smarty_web->clearCompiledTemplate();
 
 
     }

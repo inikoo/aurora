@@ -76,7 +76,7 @@ $smarty->assign('settings',$settings);
 
 
 
-$template = $theme.'/header.'.$theme.'.tpl';
+$template = $theme.'/menu.'.$theme.'.tpl';
 
 if (file_exists('templates/'.$template)) {
     $smarty->display($template);

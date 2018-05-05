@@ -87,6 +87,11 @@ function get_object($object_name, $key, $load_other_data = false) {
 
             $object = new Website($key);
             break;
+        case 'public_website':
+            include_once 'class.Public_Website.php';
+
+            $object = new Public_Website($key);
+            break;
         case 'websiteuser':
         case 'website_user':
             include_once 'class.Website_User.php';

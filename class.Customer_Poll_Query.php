@@ -136,6 +136,8 @@ class Customer_Poll_Query extends DB_Table {
                 $history_data, true, 'No', 'Changes', $this->get_object_name(), $this->id
             );
 
+            $this->update_website();
+
 
             return;
         } else {
@@ -382,6 +384,8 @@ class Customer_Poll_Query extends DB_Table {
 
 
         }
+
+        $this->update_website();
     }
 
     function get_field_label($field) {
@@ -413,6 +417,8 @@ class Customer_Poll_Query extends DB_Table {
                 $label = $field;
 
         }
+
+
 
         return $label;
 
@@ -677,9 +683,22 @@ class Customer_Poll_Query extends DB_Table {
             $history_data, true, 'No', 'Changes', $this->get_object_name(), $this->id
         );
 
+        $this->update_website();
 
         $this->deleted = true;
     }
+
+
+
+
+    function update_website(){
+        $store=get_object('Public_Store',$this->data['Customer Poll Query Store Key']);
+        $website=get_object('Website',$store->get('Store Website Key'));
+        $registration_webpage=$website->get_webpage('register.sys');
+
+        $registration_webpage->reindex_items();
+    }
+
 
 
 }

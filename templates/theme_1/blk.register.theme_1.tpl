@@ -393,7 +393,7 @@
             </fieldset>
 
             {if !empty($poll_queries)}
-                <fieldset>
+                <fieldset class="poll_queries">
                     <section>
 
                         <label class="input">
@@ -404,20 +404,19 @@
 
                     {foreach from=$poll_queries item=query}
 
-
+                        <section class="poll_query_section" style="position: relative">
+                        <i style="position: absolute;cursor:move" class="far very_discreet fa-hand-rock handle"></i>
+                        <label style="margin-left:22px" data-query_key="{$query['Customer Poll Query Key']}" class="label poll_query_label" contenteditable="true">{$query['Customer Poll Query Label']}</label>
                         {if $query['Customer Poll Query Type']=='Open'}
-                            <section>
-                                <label data-query_key="{$query['Customer Poll Query Key']}" class="label poll_query_label" contenteditable="true">{$query['Customer Poll Query Label']}</label>
+
                                 <label class="textarea">
                                     <textarea rows="4" name="message" id="message"></textarea>
                                 </label>
                             </section>
                         {else}
-                            <section>
-                                <label data-query_key="{$query['Customer Poll Query Key']}" class="label poll_query_label" contenteditable="true">{$query['Customer Poll Query Label']}</label>
-                                <label class="select">
+                            <label class="select">
                                     <select name="gender">
-                                        <option value="0" selected disabled>{if !empty($labels._choose_one)}{$labels._choose_one}{else}{t}{t}Please choose one{/t}{/t}{/if}</option>
+                                        <option value="0" selected disabled>{if !empty($labels._choose_one)}{$labels._choose_one}{else}{t}Please choose one{/t}{/if}</option>
 
                                         {foreach from=$query['Options'] item=option}
                                             <option value="{$option['Customer Poll Query Option Key']}">{$option['Customer Poll Query Option Label']}</option>
@@ -427,9 +426,9 @@
                                     </select>
                                     <i></i>
                                 </label>
-                            </section>
-                        {/if}
 
+                        {/if}
+                        </section>
                     {/foreach}
 
 
@@ -439,10 +438,10 @@
             <fieldset class="last">
 
                 <section>
-                    <label class="checkbox"><input type="checkbox" name="subscription" id="subscription"><i></i> </label>
+                    <label class="checkbox" style="position:relative;top:-22px;" ><input type="checkbox" name="subscription" id="subscription"><i></i> </label>
                     <span style="margin-left:27px;	font: 14px/1.55 'Open Sans', Helvetica, Arial, sans-serif;position:relative;top:-22px;font-size:15px;color:#404040" id="_subscription"
                           contenteditable="true">{$data.labels._subscription}</span>
-                    <label class="checkbox"><input type="checkbox" name="terms" id="terms"><i></i> </label>
+                    <label class="checkbox"  style="position:relative;top:-20px;"><input type="checkbox" name="terms" id="terms"><i></i> </label>
                     <span style="margin-left:27px;	font: 14px/1.55 'Open Sans', Helvetica, Arial, sans-serif;position:relative;top:-22px;font-size:15px;color:#404040" id="_terms"
                           contenteditable="true">{$data.labels._terms}</span>
 
@@ -534,6 +533,20 @@
 
 
     });
+
+
+    $('.poll_queries').sortable({
+
+        items:".poll_query_section",
+        handle: '.handle',
+
+         stop: function (event, ui) {
+
+             $('#save_button', window.parent.document).addClass('save button changed valid')
+
+         }
+
+    })
 
 
 </script>

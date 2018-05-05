@@ -737,17 +737,17 @@ $(document).on('change', '.image_upload', function (e) {
 
 function move_column_label(pre, post) {
 
-    //console.log(pre+' '+post)
-
     if (post > pre) {
-
-
         $('#_columns ._column:eq(' + pre + ')').insertAfter('#_columns ._column:eq(' + post + ')');
+        $('#_menu_blocks ._menu_block:eq(' + pre + ')').insertAfter('#_menu_blocks ._menu_block:eq(' + post + ')');
     } else {
-
-
         $('#_columns ._column:eq(' + pre + ')').insertBefore('#_columns ._column:eq(' + post + ')');
+        $('#_menu_blocks ._menu_block:eq(' + pre + ')').insertBefore('#_menu_blocks ._menu_block:eq(' + post + ')');
     }
+
+
+
+
     $('#save_button',window.parent.document).addClass('save button changed valid')
 
 }

@@ -753,8 +753,9 @@
         $('#save_button', window.parent.document).find('i').addClass('fa-spinner fa-spin')
 
 
-        content_data = {};
+        content_data = { };
 
+        var poll_position=[];
         var blocks = []
         var labels = {
 
@@ -840,6 +841,10 @@
                         }
 
 
+                    })
+
+                    $('.poll_query_label', obj).each(function (i, obj2) {
+                        poll_position.push($(obj2).data('query_key'))
                     })
 
 
@@ -963,6 +968,10 @@
 
                     }
 
+
+
+
+
                     $('[contenteditable=true]', obj).each(function (i, obj2) {
 
 
@@ -973,6 +982,14 @@
                         }
 
                     })
+
+
+                    $('.poll_query_label', obj).each(function (i, obj2) {
+                        poll_position.push($(obj2).data('query_key'))
+                    })
+
+
+
 
 
                     $('.register_field', obj).each(function (i, obj2) {
@@ -1001,7 +1018,8 @@
                         show: ($(obj).hasClass('hide') ? 0 : 1),
                         top_margin: $(obj).attr('top_margin'),
                         bottom_margin: $(obj).attr('bottom_margin'),
-                        labels: content_data
+                        labels: content_data,
+
 
                     })
 
@@ -1935,6 +1953,7 @@
         ajaxData.append("content_data", JSON.stringify(content_data))
         ajaxData.append("labels", JSON.stringify(labels))
         ajaxData.append("poll_labels", JSON.stringify(poll_labels))
+        ajaxData.append("poll_position", JSON.stringify(poll_position))
 
 
 

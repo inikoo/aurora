@@ -166,20 +166,18 @@ function customers($_data, $db, $user) {
             }
 
 
+            if ($parameters['parent'] == 'store') {
+                $link_format  = '/customers/%d/%d';
+                $formatted_id = sprintf('<span class="link" onClick="change_view(\''.$link_format.'\')">%06d</span>', $parameters['parent_key'], $data['Customer Key'], $data['Customer Key']);
 
-
-            if ($parameters['parent'] == 'store' ) {
-                $link_format = '/customers/%d/%d';
-                $formatted_id=sprintf('<span class="link" onClick="change_view(\''.$link_format.'\')">%06d</span>', $parameters['parent_key'], $data['Customer Key'], $data['Customer Key']);
-
-            } elseif ($parameters['parent']=='customer_poll_query_option' or $parameters['parent']=='customer_poll_query') {
-                $link_format = '/customers/%d/%d';
-                $formatted_id=sprintf('<span class="link" onClick="change_view(\''.$link_format.'\')">%06d</span>', $data['Customer Store Key'], $data['Customer Key'], $data['Customer Key']);
+            } elseif ($parameters['parent'] == 'customer_poll_query_option' or $parameters['parent'] == 'customer_poll_query') {
+                $link_format  = '/customers/%d/%d';
+                $formatted_id = sprintf('<span class="link" onClick="change_view(\''.$link_format.'\')">%06d</span>', $data['Customer Store Key'], $data['Customer Key'], $data['Customer Key']);
 
             } else {
                 $link_format = '/'.$parameters['parent'].'/%d/customer/%d';
 
-                $formatted_id=sprintf('<span class="link" onClick="change_view(\''.$link_format.'\')">%06d</span>', $parameters['parent_key'], $data['Customer Key'], $data['Customer Key']);
+                $formatted_id = sprintf('<span class="link" onClick="change_view(\''.$link_format.'\')">%06d</span>', $parameters['parent_key'], $data['Customer Key'], $data['Customer Key']);
 
             }
 
@@ -287,7 +285,7 @@ function lists($_data, $db, $user) {
             $adata[] = array(
                 'id'            => (integer)$data['List key'],
                 'type'          => $customer_list_type,
-                'name'          => sprintf('<span class="link"  onclick="change_view(\'customers/list/%d\')">%s</span>',$data['List key'],$data['List Name']),
+                'name'          => sprintf('<span class="link"  onclick="change_view(\'customers/list/%d\')">%s</span>', $data['List key'], $data['List Name']),
                 'creation_date' => strftime(
                     "%a %e %b %Y %H:%M %Z", strtotime($data['List Creation Date']." +00:00")
                 ),
@@ -712,8 +710,6 @@ function newsletter_mail_list($_data, $db, $user) {
         foreach ($result as $data) {
 
 
-
-
             $customer_link_format = '/customers/%d/%d';
 
 
@@ -726,7 +722,7 @@ function newsletter_mail_list($_data, $db, $user) {
                 'company_name' => $data['Customer Company Name'],
                 'contact_name' => $data['Customer Main Contact Name'],
 
-                'email'          => $data['Customer Main Plain Email'],
+                'email' => $data['Customer Main Plain Email'],
 
 
             );
@@ -888,6 +884,13 @@ function poll_query_options($_data, $db, $user) {
         foreach ($result as $data) {
 
 
+            if ($data['Customer Poll Query Option Last Answered'] != '') {
+                $last_chose =  strftime("%e %b %y", strtotime($data['Customer Poll Query Option Last Answered']." +00:00"))  ;
+            } else {
+                $last_chose = '';
+            }
+
+
             $adata[] = array(
                 'id'    => (integer)$data['Customer Poll Query Option Key'],
                 'code'  => sprintf(
@@ -898,6 +901,7 @@ function poll_query_options($_data, $db, $user) {
 
                 'customers'            => number($data['Customer Poll Query Option Customers']),
                 'customers_percentage' => percentage($data['Customer Poll Query Option Customers'], $total_customers),
+                'last_chose'           => $last_chose
 
 
             );
@@ -948,7 +952,7 @@ function poll_query_answers($_data, $db, $user) {
             $adata[] = array(
                 'id'           => (integer)$data['Customer Poll Key'],
                 'formatted_id' => sprintf('<span class="link" onClick="change_view(\''.$link_format.'\')">%06d</span>', $data['Customer Store Key'], $data['Customer Key'], $data['Customer Key']),
-                'customer'         => $data['Customer Name'],
+                'customer'     => $data['Customer Name'],
                 'answer'       => $data['Customer Poll Reply'],
                 'date'         => strftime("%e %b %y", strtotime($data['Customer Poll Date']." +00:00"))
 

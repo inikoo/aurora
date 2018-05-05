@@ -498,7 +498,7 @@
                         <form  class="sky-form">
                             <header class="mirror_master" id="_poll_details_title" contenteditable="true">{if empty($data.labels._poll_details_title)}{t}Poll{/t}{else}{$data.labels._poll_details_title}{/if}</header>
 
-                            <fieldset>
+                            <fieldset class="poll_queries">
                                 <section>
 
                                     <label class="input">
@@ -510,32 +510,31 @@
 
                                 {foreach from=$poll_queries item=query}
 
+                                    <section class="poll_query_section" style="position: relative">
+                                    <i style="position: absolute;cursor:move" class="far very_discreet fa-hand-rock handle"></i>
+                                    <label style="margin-left:22px" data-query_key="{$query['Customer Poll Query Key']}" class="label poll_query_label" contenteditable="true">{$query['Customer Poll Query Label']}</label>
                                     {if $query['Customer Poll Query Type']=='Open'}
-                                        <section>
-                                            <label data-query_key="{$query['Customer Poll Query Key']}" class="label poll_query_label" contenteditable="true">{$query['Customer Poll Query Label']}</label>
-                                            <label class="textarea">
-                                                <textarea rows="4" name="message" id="message"></textarea>
-                                            </label>
+
+                                        <label class="textarea">
+                                            <textarea rows="4" name="message" id="message"></textarea>
+                                        </label>
                                         </section>
                                     {else}
-                                        <section>
-                                            <label data-query_key="{$query['Customer Poll Query Key']}" class="label poll_query_label" contenteditable="true">{$query['Customer Poll Query Label']}</label>
-                                            <label class="select">
-                                                <select name="gender">
-                                                    <option value="0" selected disabled>{if !empty($labels._choose_one)}{$labels._choose_one}{else}{t}{t}Please choose one{/t}{/t}{/if}</option>
+                                        <label class="select">
+                                            <select name="gender">
+                                                <option value="0" selected disabled>{if !empty($labels._choose_one)}{$labels._choose_one}{else}{t}Please choose one{/t}{/if}</option>
 
-                                                    {foreach from=$query['Options'] item=option}
-                                                        <option value="{$option['Customer Poll Query Option Key']}">{$option['Customer Poll Query Option Label']}</option>
-                                                    {/foreach}
+                                                {foreach from=$query['Options'] item=option}
+                                                    <option value="{$option['Customer Poll Query Option Key']}">{$option['Customer Poll Query Option Label']}</option>
+                                                {/foreach}
 
 
-                                                </select>
-                                                <i></i>
-                                            </label>
-                                        </section>
+                                            </select>
+                                            <i></i>
+                                        </label>
 
                                     {/if}
-
+                                    </section>
                                 {/foreach}
 
 
@@ -672,6 +671,19 @@
         $('#save_button', window.parent.document).addClass('save button changed valid')
 
     });
+
+    $('.poll_queries').sortable({
+
+        items:".poll_query_section",
+        handle: '.handle',
+
+        stop: function (event, ui) {
+
+            $('#save_button', window.parent.document).addClass('save button changed valid')
+
+        }
+
+    })
 
 
 </script>

@@ -85,8 +85,8 @@ $object_fields = array(
                 'id'              => 'Customer_Poll_Query_In_Registration',
                 'edit'            => ($edit ? 'option' : ''),
                 'options'         => $options_yes_no,
-                'value'           => 'Yes',
-                'formatted_value' => _('Yes'),
+                'value'           => ($new?'Yes':$object->get('Customer Poll Query In Registration')),
+                'formatted_value' =>  ($new?_('Yes'):$object->get('In Registration')),
                 'label'           => ucfirst($object->get_field_label('Customer Poll Query In Registration')),
                 'type' => 'value'
             ),
@@ -94,8 +94,8 @@ $object_fields = array(
                 'id'              => 'Customer_Poll_Query_Registration_Required',
                 'edit'            => ($edit ? 'option' : ''),
                 'options'         => $options_yes_no,
-                'value'           => 'No',
-                'formatted_value' => _('No'),
+                'value'           => ($new?'No':$object->get('Customer Poll Query Registration Required')),
+                'formatted_value' =>  ($new?_('No'):$object->get('Registration Required')),
                 'label'           => ucfirst($object->get_field_label('Customer Poll Query Registration Required')),
                 'type' => 'value'
             ),
@@ -103,8 +103,8 @@ $object_fields = array(
                 'id'              => 'Customer_Poll_Query_In_Profile',
                 'edit'            => ($edit ? 'option' : ''),
                 'options'         => $options_yes_no,
-                'value'           => 'Yes',
-                'formatted_value' => _('Yes'),
+                'value'           => ($new?'Yes':$object->get('Customer Poll Query In Profile')),
+                'formatted_value' =>  ($new?_('Yes'):$object->get('In Profile')),
                 'label'           => ucfirst($object->get_field_label('Customer Poll Query In Profile')),
                 'type' => 'value'
             ),
@@ -128,7 +128,7 @@ if (!$new) {
                 'class'     => 'operation',
                 'value'     => '',
                 'label'     => '<i class="fa fa-fw fa-lock button" onClick="toggle_unlock_delete_object(this)" style="margin-right:20px"></i> <span data-data=\'{ "object": "'.$object->get_object_name().'", "key":"'.$object->id
-                    .'"}\' onClick="delete_object(this)" class="delete_object disabled">'._("Delete poll query").' <i class="fa fa-trash new_button link"></i></span>',
+                    .'"}\' onClick="delete_object(this)" class="delete_object disabled">'._("Delete poll query").' <i class="far fa-trash-alt new_button link"></i></span>',
                 'reference' => '',
                 'type'      => 'operation'
             ),
