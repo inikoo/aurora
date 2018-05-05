@@ -8,11 +8,7 @@
  Version 3
 -->
 *}
-<span id="webpage_data" style="display:none"
-      data-webpage_key="{$webpage->id}"
-      data-customer_key="{$customer_key}"
-      data-order_key="{$order_key}"
-></span>
+<span id="webpage_data" style="display:none" data-webpage_key="{$webpage->id}"></span>
 
 
 
