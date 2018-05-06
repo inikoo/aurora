@@ -27,7 +27,7 @@
     <title>{$webpage->get('Webpage Browser Title')}</title>
     <meta name="description" content="{$webpage->get('Webpage Meta Description')}"/>
 
-    <link rel="stylesheet" type="text/css" href="/css/tablet.min.css?v=10">
+    <link rel="stylesheet" type="text/css" href="/css/tablet.min.css?v=2.0">
 
 
 
@@ -127,7 +127,7 @@
     {/foreach}
 
     {if $with_forms==1}
-        <link rel="stylesheet" href="css/forms.min.css" type="text/css"/>
+        <link rel="stylesheet" href="css/forms.min.css?v2.0" type="text/css"/>
 
     {/if}
 

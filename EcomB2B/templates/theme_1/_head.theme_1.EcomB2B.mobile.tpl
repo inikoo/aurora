@@ -27,10 +27,7 @@
     <title>{$webpage->get('Webpage Browser Title')}</title>
     <meta name="description" content="{$webpage->get('Webpage Meta Description')}"/>
 
-
-    <link rel="stylesheet" type="text/css" href="/css/mobile.min.css?v3">
-
-
+    <link rel="stylesheet" type="text/css" href="/css/mobile.min.css?v2.0">
 
     {assign "with_forms" false}
     {assign "with_not_found" 0}
@@ -124,7 +121,7 @@
     {/foreach}
 
     {if $with_forms==1}
-        <link rel="stylesheet" href="css/forms.min.css" type="text/css"/>
+        <link rel="stylesheet" href="css/forms.min.css?v2.0" type="text/css"/>
 
     {/if}
     {if $with_gallery==1}
