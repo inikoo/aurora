@@ -258,8 +258,7 @@ if (!$new) {
                 'class'     => 'operation',
                 'value'     => '',
                 'label'     => ' <span data-data=\'{ "object": "'.$object->get_object_name(
-                    ).'", "key":"'.$object->id.'"}\' onClick="clean_cache(this)" class=" button">'._("Flush cache")
-                    .' </span>',
+                    ).'", "key":"'.$object->id.'"}\' onClick="clean_cache(this)" class=" button">'._("Flush cache").' <i class="fa fa-shower new_button link"></i> </span>',
                 'reference' => '',
                 'type'      => 'operation'
             ),

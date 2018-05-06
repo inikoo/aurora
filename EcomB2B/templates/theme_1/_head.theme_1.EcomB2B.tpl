@@ -33,7 +33,7 @@
     <meta name="keywords" content=""/>
     <meta name="description" content="{$webpage->get('Webpage Meta Description')}"/>
     <link rel="shortcut icon" type="image/png" href="art/favicon.png"/>
-    <!--<link rel="shortcut icon" href="images/favicon.ico"> Favicon -->
+
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <!--[if lt IE 9]>
     <script src="https://html5shim.googlecode.com/svn/trunk/html5.js"></script>
@@ -42,121 +42,6 @@
 
 
     <link rel="stylesheet" href="css/desktop.min.css?v7" type="text/css"/>
-    {*}
-   <link rel="stylesheet" href="css/image_gallery.min.css">
-   {*}
-
-
-
-
-    {*}
-         {if $logged_in and false}
-             <script src="/js/desktop.logged_in.min.js"></script>
-             {if $webpage->get('Webpage Code')=='basket.sys'}
-             <script src="/js/desktop.forms.min.js"></script>
-             <!--[if lt IE 10]>
-             <script src="/theme_1/sky_formsjs/jquery.placeholder.min.js"></script>
-             <![endif]-->
-             <!--[if lt IE 9]>
-             <script src="/theme_1/sky_formsjs/sky-forms-ie8.js"></script>
-             <![endif]-->
-             <script src="/js/desktop.basket.min.js"></script>
-             {elseif $webpage->get('Webpage Code')=='checkout.sys'}
-             <script src="/theme_1/tabs/assets/js/responsive-tabs.min.js"></script>
-             <script src="/js/desktop.forms.min.js"></script>
-             <!--[if lt IE 10]>
-             <script src="/theme_1/sky_formsjs/jquery.placeholder.min.js"></script>
-             <![endif]-->
-             <!--[if lt IE 9]>
-             <script src="/theme_1/sky_formsjs/sky-forms-ie8.js"></script>
-             <![endif]-->
-             <script src="/js/desktop.checkout.min.js"></script>
-
-             {elseif $webpage->get('Webpage Code')=='profile.sys'}
-             <script src="/js/desktop.forms.min.js"></script>
-             <!--[if lt IE 10]>
-             <script src="/theme_1/sky_formsjs/jquery.placeholder.min.js"></script>
-             <![endif]-->
-             <!--[if lt IE 9]>
-             <script src="/theme_1/sky_formsjs/sky-forms-ie8.js"></script>
-             <![endif]-->
-             <script src="/js/desktop.checkout.min.js"></script>
-             {elseif $webpage->get('Webpage Code')=='reset_pwd.sys'}
-             <script src="/js/desktop.forms.min.js"></script>
-             <!--[if lt IE 10]>
-             <script src="/theme_1/sky_formsjs/jquery.placeholder.min.js"></script>
-             <![endif]-->
-             <!--[if lt IE 9]>
-             <script src="/theme_1/sky_formsjs/sky-forms-ie8.js"></script>
-             <![endif]-->
-             {/if}
-         {else}
-             {if $webpage->get('Webpage Code')=='register.syss' or  $webpage->get('Webpage Code')=='login.syss'}
-                 <script src="/js/desktop.forms.min.js"></script>
-                 <!--[if lt IE 10]>
-                 <script src="/theme_1/sky_formsjs/jquery.placeholder.min.js"></script>
-                 <![endif]-->
-                 <!--[if lt IE 9]>
-                 <script src="/theme_1/sky_formsjs/sky-forms-ie8.js"></script>
-                 <![endif]-->
-             {/if}
-         {/if}
-
-     {*}
-
-
-    {*
-
-    <script src="/theme_1/local/jquery.js"></script>
-
-
-    <script src="/theme_1/local/jquery-ui.js"></script>
-    <script src="/theme_1/sky_forms/js/jquery.form.min.js"></script>
-    <script src="/theme_1/sky_forms/js/jquery.validate.min.js"></script>
-    <script src="/theme_1/sky_forms/js/additional-methods.min.js"></script>
-
-    <!--[if lt IE 10]>
-    <script src="/theme_1/sky_formsjs/jquery.placeholder.min.js"></script>
-    <![endif]-->
-    <!--[if lt IE 9]>
-    <script src="/theme_1/sky_formsjs/sky-forms-ie8.js"></script>
-    <![endif]-->
-
-
-    <script src="/js/sweetalert.min.js"></script>
-    <script src="/theme_1/tooltips/jquery.darktooltip.js"></script>
-
-    <script src="/theme_1/aninum/jquery.animateNumber.min.js"></script>
-    <script src="/theme_1/animations/js/animations.min.js"></script>
-    <script src="/theme_1/cubeportfolio/js/jquery.cubeportfolio.js"></script>
-    checkout <script src="/theme_1/tabs/assets/js/responsive-tabs.min.js"></script>
-
-
-    <script src="/theme_1/mainmenu/customeUI.js"></script>
-    <script src="/theme_1/mainmenu/sticky.js"></script>
-    <script src="/theme_1/mainmenu/modernizr.custom.75180.js"></script>
-
-
-    <script src="/js/jquery.form.min.js"></script>
-    <script src="/js/sha256.js"></script>
-
-    <script src="/js/aurora.js?20180319v2"></script>
-    <script src="/js/validation.js"></script>
-
-    <script src="/js/ordering.js?20180115v3"></script>
-    <script src="/js/fotorama.js"></script>
-
-
-
-    <script src="/js/braintree.js"></script>
-    *}
-
-
-
-    {*}
-        <link rel="stylesheet" href="/website.color.EcomB2B.css.php?&theme=theme_1" type="text/css"/>
-    {*}
-
 
     {assign "with_forms" false}
     {assign "with_not_found" 0}

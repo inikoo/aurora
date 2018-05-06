@@ -1786,7 +1786,8 @@ function save_footer($data, $editor) {
 
 
     if (!$footer->error) {
-
+        $website = get_object('Website', $footer->get('Website Footer Website Key'));
+        $website->clean_cache();
         $response = array(
             'state' => 200
 

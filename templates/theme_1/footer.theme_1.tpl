@@ -13,6 +13,31 @@
 <style>
 
 
+
+    .handle{
+        cursor: move;
+    }
+
+    .footer_block .handle{
+        position:absolute;top:-23px;left:20px
+    }
+
+    .footer_block.last .handle{
+        left:94%;
+    }
+
+
+    .footer_block .recycler{
+        position:absolute;top:-23px;left:20px
+    }
+
+    .footer_block.last .recycler{
+       left:94%;
+    }
+
+
+
+
     .button{
         cursor: pointer;
     }
@@ -166,7 +191,7 @@
 
             <div id="copyright_bundle_control_center" class="input_container link_url  hide " style="">
 
-                <div style="margin-bottom:5px"><i onClick="update_copyright_bundle_from_dialog()" style="position:relative;top:-5px" class="button fa fa-fw fa-window-close" aria-hidden="true"></i></div>
+                <div style="margin-bottom:5px"><span onClick="update_copyright_bundle_from_dialog()" class="button"  style="position:relative;top:-5px"><i  class="button fa fa-fw fa-check" aria-hidden="true"></i> {t}Apply changes{/t}</span></div>
 
 
                 <div><span>{t}Copyright owner{/t}</span> <input id="copyright_bundle_control_center_owner" value="" placeholder="{t}name{/t}"></div>
@@ -187,7 +212,7 @@
 
             <div id="social_links_control_center" class="input_container link_url hide  " style="">
 
-                <div style="margin-bottom:5px"><i onClick="update_social_links_from_dialog()" style="position:relative;top:-5px" class="button fa fa-fw fa-window-close" aria-hidden="true"></i></div>
+                <div style="margin-bottom:5px"><span onClick="update_social_links_from_dialog()" class="button"  style="position:relative;top:-5px"><i  class="button fa fa-fw fa-check" aria-hidden="true"></i> {t}Apply changes{/t}</span></div>
 
                 <div><i icon="fa-facebook" class="button social_link fab fa-fw fa-facebook" aria-hidden="true"></i> <input value="" placeholder="https://... Facebook"></div>
                 <div><i icon="fa-google-plus" class="button social_link fab fa-fw fa-google-plus" aria-hidden="true"></i> <input value="" placeholder="https://... Google +"></div>
@@ -206,18 +231,18 @@
             <div id="block_type_1" class="input_container block_type  hide" style="">
 
 
-                <div onClick="change_block_type(this)" class="type_address"><span>{t}Items{/t} <span class="italic">({t}Contact info{/t})</span></span></div>
-                <div onClick="change_block_type(this)" class="type_text"><span>{t}Text{/t} <span class="italic">({t}About us{/t})</span></span></div>
-                <div onClick="change_block_type(this)" class="type_links"><span>{t}Links{/t}</span></div>
-                <div onClick="change_block_type(this)" class="type_nothing"><span>{t}Nothing{/t}</span></div>
+                <div onClick="change_block_type(this)" data-type="address" class="type_address"><span>{t}Items{/t} <span class="italic">({t}Contact info{/t})</span></span></div>
+                <div onClick="change_block_type(this)" data-type="text" class="type_text"><span>{t}Text{/t} <span class="italic">({t}About us{/t})</span></span></div>
+                <div onClick="change_block_type(this)" data-type="links" class="type_links"><span>{t}Links{/t}</span></div>
+                <div onClick="change_block_type(this)" data-type="nothing" class="type_nothing"><span>{t}Nothing{/t}</span></div>
 
             </div>
 
             <div id="block_type_2" class="input_container block_type  hide" style="">
-                <div onClick="change_block_type(this)" class="type_copyright_bundle"><span>{t}Copyright{/t}</span></div>
-                <div onClick="change_block_type(this)" class="type_social_links"><span>{t}Social icons{/t}</span></div>
-                <div onClick="change_block_type(this)" class="type_low_text"><span>{t}Text{/t}</span></div>
-                <div onClick="change_block_type(this)" class="type_low_nothing"><span>{t}Nothing{/t}</span></div>
+                <div onClick="change_block_type(this)" data-type="copyright_bundle" class="type_copyright_bundle"><span>{t}Copyright{/t}</span></div>
+                <div onClick="change_block_type(this)" data-type="social_links" class="type_social_links"><span>{t}Social icons{/t}</span></div>
+                <div onClick="change_block_type(this)" data-type="text" class="type_low_text"><span>{t}Text{/t}</span></div>
+                <div onClick="change_block_type(this)" data-type="nothing" class="type_low_nothing"><span>{t}Nothing{/t}</span></div>
 
             </div>
 
@@ -269,21 +294,41 @@
 
 
             <div id="block_copyright_bundle_stem_cell" class="hide">
-                <div onClick="edit_copyright_bundle(this)" class="footer_copyright_bundle">
+
+
+                <i class="far fa-hand-rock editing hide handle" aria-hidden="true" ></i>
+                <i onclick="open_block_type_options(this,'block_type_2','block_type_2')" class="fa fa-recycle editing  button recycler"  ></i>
+
+
+                <div onClick="edit_copyright_bundle(this)" class="copyright_bundle ">
+                    <small  >
                     {t}Copyright{/t} © {"%Y"|strftime} <span class="copyright_bundle_owner">Aurora</span>. {t}All rights reserved{/t}. <span class="copyright_bundle_links"> <a class="copyright_bundle_link" href="/"> Terms of Use</a> | <a
                                 class="copyright_bundle_link" href="/"> Privacy Policy</a></span>
+                    </small>
                 </div>
             </div>
             <div id="block_low_text_stem_cell" class="hide">
-                Bla bla bla
+
+                <i class="far fa-hand-rock editing hide handle" aria-hidden="true" ></i>
+                <i onclick="open_block_type_options(this,'block_type_2','block_type_2')" class="fa fa-recycle editing  button recycler"  ></i>
+
+                <div class="text">
+                <span  class="lower_footer_text" contenteditable="true">{t}text{/t}</span>
+                </div>
             </div>
 
             <div id="block_social_links_stem_cell" class="hide">
+
+
+                <i class="far fa-hand-rock editing hide handle" aria-hidden="true" ></i>
+                <i onclick="open_block_type_options(this,'block_type_2','block_type_2')" class="fa fa-recycle editing  button recycler"  ></i>
+
+
                 <ul onClick="edit_social_links(this)" class="footer_social_links">
 
-                    <li class="" icon="fa-facebook"><a href="/"><i class="fa fa-facebook"></i></a></li>
-                    <li class="" icon="fa-twitter"><a href="/"><i class="fa fa-twitter"></i></a></li>
-                    <li class="" icon="fa-linkedin"><a href="/"><i class="fa fa-linkedin"></i></a></li>
+                    <li class="social_link" icon="fa-facebook"><a href="/"><i class="fab fa-facebook"></i></a></li>
+                    <li class="social_link" icon="fa-twitter"><a href="/"><i class="fab fa-twitter"></i></a></li>
+                    <li class="social_link" icon="fa-linkedin"><a href="/"><i class="fab fa-linkedin"></i></a></li>
 
 
                 </ul>
@@ -294,7 +339,7 @@
                 <div class="footer_block about_us" style="position: relative">
 
 
-                    <i class="far fa-hand-rock editing hide dragger" aria-hidden="true" style="position:absolute;top:-5px;left:30px"></i>
+                    <i class="far fa-hand-rock editing hide handle" aria-hidden="true" style="position:absolute;top:-5px;left:30px"></i>
                     <i onclick="open_block_type_options(this,'block_type_1','text')" class="fa fa-recycle editing  button recycler" aria-hidden="true" style="position:absolute;top:-23px;left:0px"></i>
 
                     <h5  class="for_text" contenteditable="true">{t}About us{/t}</h5>
@@ -313,7 +358,7 @@
             <div id="block_links_stem_cell" class="hide">
                 <div class="footer_block " style="position: relative">
 
-                    <i class="far fa-hand-rock editing hide dragger" aria-hidden="true" style="position:absolute;top:-5px;left:30px"></i>
+                    <i class="far fa-hand-rock editing hide handle" aria-hidden="true" style="position:absolute;top:-5px;left:30px"></i>
                     <i onclick="open_block_type_options(this,'block_type_1','text')" class="fa fa-recycle editing  button recycler" aria-hidden="true" style="position:absolute;top:-23px;left:40px"></i>
 
 
@@ -338,14 +383,20 @@
 
 
                 <div class="footer_block" style="position: relative">
-                    <i class="far fa-hand-rock editing hide dragger" aria-hidden="true" style="position:absolute;top:-5px;left:30px"></i>
+                    <i class="far fa-hand-rock editing hide handle" aria-hidden="true" style="position:absolute;top:-5px;left:30px"></i>
                     <i onclick="open_block_type_options(this,'block_type_1','nothing')" class="fa fa-recycle editing  button recycler" aria-hidden="true" style="position:absolute;top:-23px;left:0px"></i>
 
 
                 </div>
             </div>
-            <div id="block_low_nothing_stem_cell" class="hide"> </div>
-                &nbsp;
+            <div id="block_low_nothing_stem_cell" class="hide">
+
+                <i class="far fa-hand-rock editing hide handle" aria-hidden="true" ></i>
+                <i onclick="open_block_type_options(this,'block_type_2','block_type_2')" class="fa fa-recycle editing  button recycler"  ></i>
+
+
+            </div>
+
 
 
             <div id="block_items_stem_cell" class="hide">
@@ -353,7 +404,7 @@
 
                 <div class="footer_block" style="position: relative">
 
-                    <i class="far fa-hand-rock editing hide dragger" aria-hidden="true" style="position:absolute;top:-5px;left:30px"></i>
+                    <i class="far fa-hand-rock editing hide handle" aria-hidden="true" style="position:absolute;top:-5px;left:30px"></i>
                     <i onclick="open_block_type_options(this,'block_type_1','text')" class="fa fa-recycle editing  button recycler" aria-hidden="true" style="position:absolute;top:-23px;left:20px"></i>
 
 
@@ -400,8 +451,8 @@
                                 <div class="footer_block" data-type="{$column.type}" style="position: relative">
 
 
-                                    <i class="far fa-hand-rock editing hide dragger" aria-hidden="true" style="position:absolute;top:-5px;left:35px"></i>
-                                    <i onclick="open_block_type_options(this,'block_type_1','{$column.type}')" class="fa fa-recycle editing hide button recycler" aria-hidden="true" style="position:absolute;top:-23px;left:20px"></i>
+                                    <i class="far fa-hand-rock editing hide handle" aria-hidden="true"></i>
+                                    <i onclick="open_block_type_options(this,'block_type_1','{$column.type}')" class="fa fa-recycle editing hide button recycler" aria-hidden="true" ></i>
 
 
 
@@ -434,8 +485,8 @@
                             {elseif $column.type=='links'}
                                 <div class="footer_block" data-type="{$column.type}" style="position: relative">
 
-                                    <i class="far fa-hand-rock editing hide dragger" aria-hidden="true" style="position:absolute;top:-5px;left:30px"></i>
-                                    <i onclick="open_block_type_options(this,'block_type_1','{$column.type}')" class="fa fa-recycle editing hide button recycler" aria-hidden="true" style="position:absolute;top:-23px;left:40px"></i>
+                                    <i class="far fa-hand-rock editing hide handle" aria-hidden="true"></i>
+                                    <i onclick="open_block_type_options(this,'block_type_1','{$column.type}')" class="fa fa-recycle editing hide button recycler" aria-hidden="true" ></i>
 
 
                                     <h5  contenteditable="true">{$column.header}</h5>
@@ -453,8 +504,8 @@
                                 </div>
                             {elseif $column.type=='text'}
                                 <div class=" footer_block  " data-type="{$column.type}" style="position: relative">
-                                    <i class="far fa-hand-rock editing hide dragger" aria-hidden="true" style="position:absolute;top:-5px;left:30px"></i>
-                                    <i onclick="open_block_type_options(this,'block_type_1','{$column.type}')" class="fa fa-recycle editing  hide button recycler" aria-hidden="true" style="position:absolute;top:-23px;left:20px"></i>
+                                    <i class="far fa-hand-rock editing hide handle" aria-hidden="true" ></i>
+                                    <i onclick="open_block_type_options(this,'block_type_1','{$column.type}')" class="fa fa-recycle editing  hide button recycler" aria-hidden="true" ></i>
 
 
                                     <h5 class="for_text" contenteditable="true">{$column.header}</h5>
@@ -466,8 +517,8 @@
                                 </div>
                             {elseif $column.type=='nothing'}
                                 <div class="footer_block" data-type="{$column.type}" style="position: relative">
-                                    <i class="far fa-hand-rock editing hide dragger" aria-hidden="true" style="position:absolute;top:-5px;left:30px"></i>
-                                    <i onclick="open_block_type_options(this,'block_type_1','{$column.type}')" class="fa fa-recycle editing  hide button recycler" aria-hidden="true" style="position:absolute;top:-23px;left:20px"></i>
+                                    <i class="far fa-hand-rock editing hide handle" aria-hidden="true" ></i>
+                                    <i onclick="open_block_type_options(this,'block_type_1','{$column.type}')" class="fa fa-recycle editing  hide button recycler" aria-hidden="true" ></i>
 
 
                                 </div>
@@ -479,36 +530,59 @@
 
                     </div>
                 {elseif $row.type=='copyright'}
-                    <div class="text_blocks  bottom_header text_template_2 copyright">
+                    <div class="text_blocks  bottom_header text_template_2 copyright sortable_container2" >
                         {foreach from=$row.columns item=column name=copyright_info}
+
+
 
                             {if $column.type=='text'}
 
-                                    <div class="footer_block" data-type="text"  >
-                                        {$column.text}
+                                    <div class="footer_block {if $smarty.foreach.copyright_info.last}last{/if} " data-type="text"  style="position: relative" >
+
+                                        <i class="far fa-hand-rock editing hide handle" aria-hidden="true" ></i>
+                                        <i onclick="open_block_type_options(this,'block_type_2','{$column.type}')" class="fa fa-recycle editing hide button recycler" aria-hidden="true" ></i>
+
+
+                                        <div class="text">
+                                            <span  class="lower_footer_text" contenteditable="true">{$column.text}</span>
+                                        </div>
                                     </div>
 
                             {elseif $column.type=='nothing'}
 
-                                    <div class="footer_block"  data-type="nothing" ></div>
+                                    <div class="footer_block {if $smarty.foreach.copyright_info.last}last{/if}"  data-type="nothing" >
+                                        <i class="far fa-hand-rock editing hide handle" aria-hidden="true" ></i>
+                                        <i onclick="open_block_type_options(this,'block_type_2','{$column.type}')" class="fa fa-recycle editing hide button recycler" aria-hidden="true" ></i>
+
+
+                                    </div>
                             {elseif $column.type=='copyright_bundle'}
-                                <div class="footer_block" data-type="copyright_bundle"  >
+                                <div class="footer_block {if $smarty.foreach.copyright_info.last}last{/if} " data-type="copyright_bundle" style="position: relative" >
 
 
-                                    <small>
+                                    <i class="far fa-hand-rock editing hide handle" aria-hidden="true" ></i>
+                                    <i onclick="open_block_type_options(this,'block_type_2','{$column.type}')" class="fa fa-recycle editing hide button recycler" aria-hidden="true" ></i>
 
-                                        {t}Copyright{/t} © {"%Y"|strftime} <span class="copyright_bundle_owner" contenteditable="true">{$column.owner}</span> {t}All rights reserved{/t}.
+                                    <div onClick="edit_copyright_bundle(this)" class="copyright_bundle ">
+                                    <small  >
+
+                                        {t}Copyright{/t} © {"%Y"|strftime} <span class="copyright_bundle_owner" >{$column.owner}</span> {t}All rights reserved{/t}.
                                         <span class="copyright_bundle_links">{foreach  from=$column.links item=item name=copyright_links}<a class="copyright_bundle_link" href="{$item.url}">{$item.label}</a>{if !$smarty.foreach.copyright_links.last} | {/if}{/foreach}</span>
                                     </small>
+                                    </div>
 
                                 </div>
                             {elseif $column.type=='social_links'}
 
 
 
-                                    <div class="footer_block"   data-type="social_links"  >
+                                    <div class="footer_block {if $smarty.foreach.copyright_info.last}last{/if}"   data-type="social_links" style="position: relative" >
 
-                                        <ul class="footer_social_links">
+                                        <i class="far fa-hand-rock editing hide handle" aria-hidden="true" ></i>
+                                        <i onclick="open_block_type_options(this,'block_type_2','{$column.type}')" class="fa fa-recycle editing hide button recycler" aria-hidden="true" ></i>
+
+
+                                        <ul onClick="edit_social_links(this)" class="footer_social_links">
                                             {foreach from=$column.items item=item}
                                                 <li class="social_link" icon="{$item.icon}"><a href="{$item.url}"><i class="fab {$item.icon}"></i></a></li>
                                             {/foreach}
@@ -581,14 +655,28 @@
                 } else {
 
 
-                    option_dialog.removeClass('hide').offset({ 
-                        top: $(element).offset().top - 5, left: $(element).offset().left + 20
-                    }).attr('block_id', id)
 
-                    $('#' + option_id + ' div').removeClass('selected')
+                    if( $(element).closest('.text_blocks').hasClass('copyright')  && $(element).closest('.footer_block').hasClass('last') ){
 
 
-                    option_dialog.find('.type_' + current_block_type).addClass('selected')
+
+                        option_dialog.removeClass('hide').offset({
+                            top: $(element).offset().top - 5, left: $(element).offset().left - 20 -option_dialog.width()
+                        }).attr('block_id', id)
+
+                    }else{
+                        option_dialog.removeClass('hide').offset({
+                            top: $(element).offset().top - 5, left: $(element).offset().left + 20
+                        }).attr('block_id', id)
+
+                    }
+
+
+
+                    $('#' + option_id + ' div').addClass('selected')
+
+
+                    option_dialog.find('.type_' + current_block_type).removeClass('selected')
 
                 }
 
@@ -596,14 +684,13 @@
 
 
             function change_block_type(element) {
-                console.log(element)
+
 
                 var block_type = $(element).closest('.block_type')
 
-                console.log(block_type.attr('block_id'))
+                console.log(element)
 
-                console.log($('#' + block_type.attr('block_id')))
-
+              / $('#' + block_type.attr('block_id')).data('type',$(element).data('type'))
 
                 if ($(element).hasClass('type_text')) {
                     $('#' + block_type.attr('block_id')).replaceWith($('#block_text_stem_cell').html())
@@ -642,7 +729,7 @@
 
                 block_type.addClass('hide')
 
-
+                $('#save_button', window.parent.document).addClass('save button changed valid')
             }
 
 
@@ -826,17 +913,32 @@
                 });
 
                 $('.sortable_container').sortable({
-                    disabled: false, update: function (event, ui) {
-                        $(this).children().removeClass('last')
-                        $(this).children().last().addClass('last')
+                    disabled: false,
+                    handle: '.handle',
+                    update: function (event, ui) {
 
+                        $('#save_button', window.parent.document).addClass('save button changed valid')
 
                     }
 
                 });
 
 
-                $('.dragger').removeClass('hide')
+                $('.sortable_container2').sortable({
+                    disabled: false,
+                    handle: '.handle',
+                    update: function (event, ui) {
+                        $(this).children().removeClass('last')
+                        $(this).children().last().addClass('last')
+
+                        $('#save_button', window.parent.document).addClass('save button changed valid')
+                    }
+
+                });
+
+
+
+                $('.handle').removeClass('hide')
 
 
                 $('.add_item').addClass('invisible')
@@ -861,7 +963,7 @@
                     disabled: true
 
                 });
-                $('.dragger').addClass('hide')
+                $('.handle').addClass('hide')
                 $('.recycler').removeClass('hide')
 
                 $('.add_item').addClass('invisible')
@@ -885,7 +987,7 @@
                     disabled: true
 
                 });
-                $('.dragger').addClass('hide')
+                $('.handle').addClass('hide')
                 $('.recycler').addClass('hide')
 
                 $('.add_item').removeClass('invisible')
@@ -933,9 +1035,7 @@
             function edit_social_links(element) {
 
 
-                //  if(! $('#social_links_control_center').hasClass('hide')){
-                //    return
-                // }
+
 
                 var block = $(element)
                 block.uniqueId()
@@ -946,14 +1046,14 @@
                 });
 
 
-                if ($(element).closest('.one_half').hasClass('last')) {
+                if ($(element).closest('.footer_block').hasClass('last')) {
                     $('#social_links_control_center').attr('block_id', id).removeClass('hide').offset({ 
-                        top: block.offset().top - 30 - $('#social_links_control_center').height(),
+                        top: 10,
                         left: block.offset().left + block.width() - $('#social_links_control_center').width()
                     })
 
                 } else {
-                    $('#social_links_control_center').attr('block_id', id).removeClass('hide').offset({ top: block.offset().top - 30 - $('#social_links_control_center').height(), left: block.offset().left})
+                    $('#social_links_control_center').attr('block_id', id).removeClass('hide').offset({ top: 10, left: block.offset().left})
 
                 }
 
@@ -969,7 +1069,7 @@
 
                 $('#social_links_control_center .social_link').each(function (i, obj) {
                     if ($(obj).next('input').val() != '') {
-                        social_links += ' <li class="" icon="' + $(obj).attr('icon') + '"  ><a href="' + $(obj).next('input').val() + '"><i class="fab ' + $(obj).attr('icon') + '"></i></a></li>'
+                        social_links += ' <li class="social_link" icon="' + $(obj).attr('icon') + '"  ><a href="' + $(obj).next('input').val() + '"><i class="fab ' + $(obj).attr('icon') + '"></i></a></li>'
                     }
                 })
 
@@ -978,6 +1078,11 @@
                 }
 
                 block.html(social_links)
+
+
+                $('#save_button', window.parent.document).addClass('save button changed valid')
+
+
             }
 
 
@@ -1038,6 +1143,9 @@
                 copyright_links = copyright_links.replace(/ \| $/g, "");
 
                 block.find('.copyright_bundle_links').html(copyright_links)
+
+                $('#save_button', window.parent.document).addClass('save button changed valid')
+
             }
 
 
@@ -1156,7 +1264,7 @@
 
                                 case 'text':
                                     cols_copyright.push({
-                                        'type': 'text', 'text': $(obj2).html()
+                                        'type': 'text', 'text': $(obj2).find('.lower_footer_text').html()
                                     })
 
                                     break;

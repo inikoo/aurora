@@ -787,7 +787,7 @@ class Website extends DB_Table {
 
 
         $this->fast_update(array('Website Localised Labels' => json_encode($localised_labels)));
-
+        $this->clean_cache();
 
     }
 
@@ -803,7 +803,7 @@ class Website extends DB_Table {
 
 
         $this->fast_update(array('Website Settings' => json_encode($this->settings)));
-
+        $this->clean_cache();
     }
 
 
@@ -819,12 +819,14 @@ class Website extends DB_Table {
 
 
         $this->fast_update(array('Website Style' => json_encode($this->style)));
-
+        $this->clean_cache();
     }
 
 
 
     function update_field_switcher($field, $value, $options = '', $metadata = '') {
+
+
 
 
         if ($this->deleted) {
@@ -840,6 +842,18 @@ class Website extends DB_Table {
                 $user->update(array('User Password Recovery Email' => $value));
 
                 break;
+
+
+            case 'Website URL':
+
+
+                $this->update_field($field, $value, $options);
+
+                $this->clean_cache();
+
+                break;
+
+
             default:
                 $base_data = $this->base_data();
                 if (array_key_exists($field, $base_data)) {
