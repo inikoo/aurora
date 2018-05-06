@@ -219,7 +219,26 @@
 
 
     getScript('/js/tablet.min.js?v=4', function () {
-        getScript('/js/tablet.custom.min.js?v=2', function () {
+
+
+        {if $website->get('Website Text Font')!=''  and !$logged_in}
+
+        WebFontConfig = {
+            google: { families: [ '{$website->get('Website Text Font')}:400,700' ] }
+        };
+
+            var wf = document.createElement('script');
+            wf.src = ('https:' == document.location.protocol ? 'https' : 'http') +
+                '://ajax.googleapis.com/ajax/libs/webfont/1.5.18/webfont.js';
+            wf.type = 'text/javascript';
+            wf.async = 'true';
+            var s = document.getElementsByTagName('script')[0];
+            s.parentNode.insertBefore(wf, s);
+
+        {/if}
+
+
+getScript('/js/tablet.custom.min.js?v=2', function () {
 
 
             {if $with_search==1}
