@@ -269,9 +269,9 @@ footer {
   footer a {
     font-weight: lighter; }
   footer ul {
-    padding-left: 40px; }
+    padding-left: 0px; }
   footer h5 {
-    margin-left: 60px;
+    margin-left: 20px;
     font-weight: lighter; }
   footer h5.for_text {
     margin-left: 0px; }
@@ -283,15 +283,30 @@ footer {
     margin-bottom: 2px; }
     footer li i {
       padding-right: 5px; }
+  footer .top_header {
+    padding: 0px 10px; }
+  footer .footer_block {
+    padding: 0px 20px; }
   footer .footer_social_links i {
     font-size: 20px;
-    margin-left: 10px;
-    float: right;
+    margin-left: 0px;
+    margin-right: 20px;
+    float: left;
     position: relative;
     bottom: 5px; }
-  footer .copyright {
-    padding: 5px 20px 5px 40px;
+  footer .last .footer_social_links i {
+    float: right;
+    margin-left: 20px;
+    margin-right: 0px; }
+  footer .last .copyright_bundle {
+    text-align: right; }
+  footer .last .text {
+    text-align: right; }
+  footer .bottom_header {
+    padding: 5px 10px 5px 10px;
     line-height: 40px; }
+    footer .bottom_header ul {
+      padding-left: 0px; }
   footer .address {
     margin-top: 0;
     padding-top: 0px;

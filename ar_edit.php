@@ -311,6 +311,9 @@ function edit_field($account, $db, $user, $editor, $data, $smarty) {
         echo json_encode($response);
 
 
+
+
+
         return;
 
     }
@@ -336,6 +339,7 @@ function edit_field($account, $db, $user, $editor, $data, $smarty) {
             'directory'          => '',
             'items_in_directory' => ''
         );
+
 
         echo json_encode($response);
 

@@ -1085,20 +1085,27 @@
         </div>
 
 
-        <footer onclick="open_footer_style()">
+
+
+
+
+
+
+
+        <footer   onclick="open_footer_style()">
 
 
             {foreach from=$footer_data.rows item=row}
 
                 {if $row.type=='main_4'}
-                    <div class="text_blocks  text_template_4  ">
+                    <div class="text_blocks  top_header text_template_4  ">
 
 
                         {foreach from=$row.columns item=column name=main_4}
 
 
                             {if $column.type=='address'}
-                                <div >
+                                <div class="footer_block">
 
 
                                     <ul class="address " style="">
@@ -1107,8 +1114,8 @@
                                                 <li class="item _logo"><img src="{$item.src}" alt="" title="{$item.title}"/></li>
                                             {elseif $item.type=='text'}
                                                 <li class="item _text"><i class="fa-fw {$item.icon}"></i> <span>
-                                          {if $item.text=='#tel' and  $store->get('Telephone')!=''}{$store->get('Telephone')}{elseif $item.text=='#email' and  $store->get('Email')!=''}{$store->get('Email')}
-                                          {elseif $item.text=='#address' and  $store->get('Address')!=''}{$store->get('Address')}{else}{$item.text|strip_tags|trim}{/if}</span></li>
+                                          {if $item.text=='#tel' and  $store->get('Telephone')!=''}{$store->get('Telephone')}{elseif $item.text=='#email' and  $store->get('Email')!=''}{$store->get('Email')}{elseif $item.text=='#address' and  $store->get('Address')!=''}{$store->get('Address')}{else}{$item.text|strip_tags|trim}{/if}
+                                      </span></li>
                                             {elseif $item.type=='email'}
                                                 <li class="item _email"><i class="fa fa-fw fa-envelope"></i> <a href="mailto:{if $item.text=='#email' and  $store->get('Email')!=''}{$store->get('Email')}{else}{$item.text}{/if}">
                                                         {if $item.text=='#email' and  $store->get('Email')!=''}{$store->get('Email')}{else}{$item.text}{/if}
@@ -1123,7 +1130,7 @@
 
                                 </div>
                             {elseif $column.type=='links'}
-                                <div >
+                                <div class="footer_block">
 
 
 
@@ -1140,19 +1147,21 @@
 
                                 </div>
                             {elseif $column.type=='text'}
-                                <div class="   ">
+                                <div class="footer_block">
 
 
 
-                                    <h5 class="">{$column.header}</h5>
+                                    <h5 class="for_text">{$column.header}</h5>
 
-                                    <div>
+                                    <div  class="footer_text" >
                                         {$column.text}
                                     </div>
 
                                 </div>
                             {elseif $column.type=='nothing'}
-                                <div   ">
+                                <div class="footer_block">
+
+                                </div>
 
                             {/if}
 
@@ -1161,43 +1170,41 @@
 
                     </div>
                 {elseif $row.type=='copyright'}
-                    <div class="text_blocks  text_template_2 copyright">
+                    <div class="text_blocks  text_template_2 bottom_header copyright">
                         {foreach from=$row.columns item=column name=copyright_info}
 
                             {if $column.type=='text'}
-                                <div class="one_half  ">
-                                    <div class="footer_block _copyright_text">
+                                <div class="footer_block {if $smarty.foreach.copyright_info.last}last{/if} ">
+
+                                    <div class="text">
                                         {$column.text}
                                     </div>
                                 </div>
                             {elseif $column.type=='nothing'}
-                                <div class="one_half  ">
-                                    <div class="footer_block _copyright_nothing"></div>
-                                </div>
+                                <div class="footer_block "></div>
                             {elseif $column.type=='copyright_bundle'}
-                                <div class="one_half  ">
+                                <div class="footer_block {if $smarty.foreach.copyright_info.last}last{/if} ">
 
+                                    <div class="copyright_bundle ">
+                                        <small>
 
-                                    <small>
-
-                                        {t}Copyright{/t} © {"%Y"|strftime} <span class="copyright_bundle_owner">{$column.owner}</span>. {t}All rights reserved{/t}. <span
-                                                class="copyright_bundle_links">{foreach  from=$column.links item=item name=copyright_links}<a class="copyright_bundle_link"
-                                                                                                                                              href="{$item.url}">{$item.label}</a>{if !$smarty.foreach.copyright_links.last} | {/if}{/foreach}</span>
-                                    </small>
+                                            {t}Copyright{/t} © {"%Y"|strftime} <span class="copyright_bundle_owner">{$column.owner}</span>. {t}All rights reserved{/t}. <span
+                                                    class="copyright_bundle_links">{foreach  from=$column.links item=item name=copyright_links}<a class="copyright_bundle_link"
+                                                                                                                                                  href="{$item.url}">{$item.label}</a>{if !$smarty.foreach.copyright_links.last} | {/if}{/foreach}</span>
+                                        </small>
+                                    </div>
 
                                 </div>
                             {elseif $column.type=='social_links'}
-                                <div class="one_half  ">
+                                <div class="footer_block {if $smarty.foreach.copyright_info.last}last{/if} ">
 
 
-                                    <div class=" ">
+                                    <ul class="footer_social_links">
+                                        {foreach from=$column.items item=item}
+                                            <li class="social_link"><a href="{$item.url}"><i class="fab {$item.icon}"></i></a></li>
+                                        {/foreach}
+                                    </ul>
 
-                                        <ul class="footer_social_links">
-                                            {foreach from=$column.items item=item}
-                                                <li class="social_link"><a href="{$item.url}"><i class="fab {$item.icon}"></i></a></li>
-                                            {/foreach}
-                                        </ul>
-                                    </div>
                                 </div>
                             {/if}
 
