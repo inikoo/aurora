@@ -211,6 +211,23 @@
 
 
 
+            {if $website->get('Website Text Font')!=''  and !$logged_in}
+
+            WebFontConfig = {
+                google: { families: [ '{$website->get('Website Text Font')}:400,700' ] }
+            };
+
+            var wf = document.createElement('script');
+            wf.src = ('https:' == document.location.protocol ? 'https' : 'http') +
+                '://ajax.googleapis.com/ajax/libs/webfont/1.5.18/webfont.js';
+            wf.type = 'text/javascript';
+            wf.async = 'true';
+            var s = document.getElementsByTagName('script')[0];
+            s.parentNode.insertBefore(wf, s);
+
+            {/if}
+
+
             $("#bottom_header a.dropdown").hoverIntent(menu_in, menu_out);
             $("#bottom_header a.dropdown").hover(menu_in_fast, menu_out_fast);
             $("._menu_block").hover(menu_block_in, menu_block_out);
