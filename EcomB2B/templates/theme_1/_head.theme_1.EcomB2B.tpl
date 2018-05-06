@@ -41,7 +41,7 @@
     <link rel="canonical" href="{$webpage->get('URL')}"/>
 
 
-    <link rel="stylesheet" href="css/desktop.min.css?v7" type="text/css"/>
+    <link rel="stylesheet" href="css/desktop.min.css?v2.0" type="text/css"/>
 
     {assign "with_forms" false}
     {assign "with_not_found" 0}
@@ -97,10 +97,6 @@
             {else}
                 {assign "thanks" 1} {assign "with_order" 1}
             {/if}
-
-
-
-
         {elseif $block.type=='basket'}
             {if !$logged_in}
                 {assign "with_not_found" 1}
@@ -139,8 +135,10 @@
     {/foreach}
 
     {if $with_forms==1}
-        <link rel="stylesheet" href="css/forms.min.css" type="text/css"/>
-
+        <link rel="stylesheet" href="css/forms.min.css?v2.0" type="text/css"/>
+    {/if}
+    {if $with_gallery==1}
+        <link rel="stylesheet" href="css/image_gallery.min.css">
     {/if}
 
     {if $smarty.server.SERVER_NAME!='ecom.bali' and $zendesk_chat_code!=''}
@@ -173,8 +171,6 @@
         <!--End of Zendesk Chat Script-->
 
     {/if}
-
-
 
     {if $website->get('Website Text Font')!=''  and $logged_in}
         <link href="https://fonts.googleapis.com/css?family={$website->get('Website Text Font')}:400,700" rel="stylesheet">
