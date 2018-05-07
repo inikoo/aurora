@@ -481,7 +481,10 @@
                                     <header >{$data.labels._form_title_online_bank_transfer}</header>
 
 
+                                    <div style="padding:20px">
+                                        <p id="_online_bank_transfer_text" contenteditable="true" >{if !empty($data.labels._online_bank_transfer_text)}{{$data.labels._online_bank_transfer_text}}{else}Pay with Sofort{/if}</p>
 
+                                    </div>
 
 
                                     <footer>

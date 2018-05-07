@@ -132,7 +132,7 @@
             <li><a href="#example-3-tab-2" target="_self"><i class="fab fa-paypal" aria-hidden="true"></i>&nbsp; Paypal</a></li>
             <li><a href="#example-3-tab-3" target="_self"><i class="fa fa-university" aria-hidden="true"></i>&nbsp; <span contenteditable="true" id="_bank_label">{{$data.labels._bank_label}}</span></a></li>
             <li><a href="#example-3-tab-4" target="_self"><i class="fa fa-handshake" aria-hidden="true"></i>&nbsp; <span contenteditable="true" id="_cash_on_delivery_label">{if !empty($data.labels._cash_on_delivery_label)}{{$data.labels._cash_on_delivery_label}}{else}Cash on delivery{/if}</span></a></li>
-            <li><a href="#example-3-tab-5" target="_self"><i class="fa fa-hand-peace" aria-hidden="true"></i> <span contenteditable="true" id="_online_bank_transfer_label">{if !empty($data.labels._online_bank_transfer_label)}{{$data.labels._online_bank_transfer_label}}{else}Online bank transfer{/if}</span></a></li>
+            <li ><a href="#example-3-tab-5" target="_self"><i class="fa fa-hand-peace" aria-hidden="true"></i> <span >Sofort</span></a></li>
 
         </ul>
 
@@ -281,7 +281,7 @@
 
 
                     <div style="padding:20px">
-                        <p id="_online_bank_transfer_text" contenteditable="true">{if !empty($data.labels._online_bank_transfer_text)}{{$data.labels._online_bank_transfer_text}}{else}Online bank transfer{/if}</p>
+                        <p id="_online_bank_transfer_text" contenteditable="true" >{if !empty($data.labels._online_bank_transfer_text)}{{$data.labels._online_bank_transfer_text}}{else}Pay with Sofort{/if}</p>
 
                     </div>
 

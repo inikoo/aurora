@@ -86,12 +86,25 @@ class Public_Payment extends DBW_Table {
             $keys .= ",`".$key."`";
             if (
 
-                in_array($key,array('Payment Completed Date','Payment Last Updated Date','Payment Cancelled Date','Payment Order Key','Payment Invoice Key','Payment Site Key','Payment Fees',
-                    'Payment Balance','Payment Amount','Payment Refund','Payment Related Payment Key','Payment User Key'
+            in_array(
+                $key, array(
+                'Payment Completed Date',
+                'Payment Last Updated Date',
+                'Payment Cancelled Date',
+                'Payment Order Key',
+                'Payment Invoice Key',
+                'Payment Site Key',
+                'Payment Fees',
+                'Payment Balance',
+                'Payment Amount',
+                'Payment Refund',
+                'Payment Related Payment Key',
+                'Payment User Key'
 
-                    ))
+            )
+            )
 
-             ) {
+            ) {
                 $values .= ','.prepare_mysql($value, true);
 
             } else {
@@ -103,7 +116,6 @@ class Public_Payment extends DBW_Table {
         $keys   = preg_replace('/^,/', '', $keys);
 
         $sql = "insert into `Payment Dimension` ($keys) values ($values)";
-
 
 
         if ($this->db->exec($sql)) {
@@ -223,11 +235,51 @@ class Public_Payment extends DBW_Table {
 
             case 'Payment Order Key':
 
-                $this->update_field($field,$value, $options);
+                $this->update_field($field, $value, $options);
 
                 break;
 
+            case 'Payment Transaction Status':
 
+
+                $this->update_field($field, $value, $options);
+
+
+                if ($value == 'Completed') {
+                    $this->fast_update(
+                        array(
+                            'Payment Completed Date'    => gmdate('Ym-d H:i:s'),
+                            'Payment Last Updated Date' => gmdate('Ym-d H:i:s'),
+                        )
+                    );
+                } elseif ($value == 'Cancelled') {
+                    $this->fast_update(
+                        array(
+                            'Payment Cancelled Date'    => gmdate('Ym-d H:i:s'),
+                            'Payment Last Updated Date' => gmdate('Ym-d H:i:s'),
+                        )
+                    );
+                }
+
+
+                $order=get_object('order',$this->data['Payment Order Key']);
+
+                $order->update_totals();
+
+                include_once 'utils/new_fork.php';
+
+
+                $account = get_object('Account', 1);
+
+
+                new_housekeeping_fork(
+                    'au_housekeeping', array(
+                    'type'        => 'payment_added_order',
+                    'order_key'   => $order->id,
+                    'store_key'   => $order->get('Order Store Key'),
+                    'payment_key' => $this->id,
+                ), $account->get('Account Code')
+                );
 
 
 
@@ -279,8 +331,7 @@ class Public_Payment extends DBW_Table {
                     $info = sprintf(
                         "%s %s %s %s %s %s. %s: %s", _('A payment of'), money(
                         $this->data['Payment Transaction Amount'], $this->data['Payment Currency Code']
-                    ), _('using'), $this->payment_service_provider->data['Payment Service Provider Name'], _('payment service provider'), _('has been completed sucessfully'), _('Reference'),
-                        $this->data['Payment Transaction ID']
+                    ), _('using'), $this->payment_service_provider->data['Payment Service Provider Name'], _('payment service provider'), _('has been completed sucessfully'), _('Reference'), $this->data['Payment Transaction ID']
 
                     );
                 }
@@ -311,7 +362,7 @@ class Public_Payment extends DBW_Table {
 
     function load_payment_account() {
 
-        $this->payment_account =  get_object('Payment_Account',$this->data['Payment Account Key']);
+        $this->payment_account = get_object('Payment_Account', $this->data['Payment Account Key']);
 
 
     }
