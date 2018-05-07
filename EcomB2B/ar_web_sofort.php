@@ -97,7 +97,7 @@ function place_order_pay_sofort($store, $order, $data,$customer, $website, $edit
     $sofort = new Sofortueberweisung($payment_account->get('Payment Account Password'));
 
 
-    
+
 
     $sofort->setAmount(10.21);
     $sofort->setCurrencyCode('EUR');
