@@ -65,6 +65,18 @@ if (!$customer->id) {
 }
 
 
+$editor = array(
+    'Author Name'  => $customer->get('Name'),
+    'Author Alias' =>$customer->get('Name'),
+    'Author Type'  => 'Customer',
+    'Author Key'   => $customer->id,
+    'Subject'  => 'Customer',
+    'Subject Key'   => $customer->id,
+    'User Key'     => 0,
+    'Date'         => gmdate('Y-m-d H:i:s')
+);
+
+
 $order_key = $customer->get_order_in_process_key();
 $order = get_object('Order', $order_key);
 

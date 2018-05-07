@@ -353,10 +353,10 @@ class Public_Website {
 
                         break;
                     case 'Sofort':
-                        $icon            = 'fa fa-university';
+                        $icon            = 'fa fa-hand-peace ';
                         $tab_label       = 'Sofort';
                         $tab_label_index = '';
-                        $short_label     = '<i class="fa fa-university" aria-hidden="true"></i>';
+                        $short_label     = '<i class="fa fa-hand-peace" aria-hidden="true"></i>';
 
                         break;
                     case 'Bank':

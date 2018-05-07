@@ -43,28 +43,27 @@ switch ($tipo) {
                          'payment_account_key' => array('type' => 'key')
 
 
-
                      )
         );
 
-        $website=get_object('Website',$_SESSION['website_key']);
-        $store=get_object('Store',$order->get('Order Store Key'));
-        $account=get_object('Account',1);
+        $website = get_object('Website', $_SESSION['website_key']);
+        $store   = get_object('Store', $order->get('Order Store Key'));
+        $account = get_object('Account', 1);
 
-        place_order_pay_sofort($store, $order, $data,$customer, $website, $editor, $db, $account);
+        place_order_pay_sofort($store, $order, $data, $customer, $website, $editor, $db, $account);
 
 
         break;
-   
+
 
         break;
 }
 
-function place_order_pay_sofort($store, $order, $data,$customer, $website, $editor, $db, $account) {
+function place_order_pay_sofort($store, $order, $data, $customer, $website, $editor, $db, $account) {
 
 
-    $payment_account=get_object('Payment_Account',$data['payment_account_key']);
-
+    $payment_account         = get_object('Payment_Account', $data['payment_account_key']);
+    $payment_account->editor = $editor;
     spl_autoload_register(
         function ($className) {
             //include_once 'external_libs/CommerceGuys/Addressing/AddressFormat/AddressFormatRepository.php';
@@ -93,18 +92,30 @@ function place_order_pay_sofort($store, $order, $data,$customer, $website, $edit
     );
 
 
-
     $sofort = new Sofortueberweisung($payment_account->get('Payment Account Password'));
 
+    require_once "external_libs/random/lib/random.php";
+    $secret = hash('crc32', base64_url_encode(random_bytes(9)), false);
+
+
+    $sofort->setAmount($order->get('Order To Pay Amount'));
+    $sofort->setCurrencyCode($order->get('Order Currency'));
 
 
 
-    $sofort->setAmount(10.21);
-    $sofort->setCurrencyCode('EUR');
-    $sofort->setReason(_('Payment'));
-    $sofort->setSuccessUrl('https://'.$website->get('Website URL').'/sofort.php', true); // i.e. http://my.shop/order/success
-    $sofort->setAbortUrl('https://'.$website->get('Website URL').'/checkout.sys');
-    $sofort->setNotificationUrl('https://'.$website->get('Website URL').'/sofort.php');
+    $sofort->setLanguageCode( substr($website->get('Website Locale'), 0, 2));
+
+
+
+
+
+
+    $sofort->setReason(sprintf('Payment order %s', $order->get('Order Public ID')));
+    $sofort->setSuccessUrl('https://'.$website->get('Website URL').'/sofort.php?conf='.$secret.'&tx=-TRANSACTION-&order_key='.$order->id, true);
+    $sofort->setAbortUrl('https://'.$website->get('Website URL').'/sofort.php?cancel=1&conf='.$secret.'&tx=-TRANSACTION-&order_key='.$order->id, true);
+
+
+    $sofort->setNotificationUrl('https://'.$website->get('Website URL').'/sofort_notification.php');
 
     $sofort->sendRequest();
     if ($sofort->isError()) {
@@ -121,11 +132,43 @@ function place_order_pay_sofort($store, $order, $data,$customer, $website, $edit
         exit;
     } else {
         $transaction_key = $sofort->getTransactionId();
-        $response        = array(
+
+
+        $payment_data = array(
+            'Payment Store Key'                   => $order->get('Order Store Key'),
+            'Payment Website Key'                 => $website->id,
+            'Payment Customer Key'                => $customer->id,
+            'Payment Transaction Amount'          => $order->get('Order To Pay Amount'),
+            'Payment Currency Code'               => $order->get('Order Currency'),
+            'Payment Sender'                      => $order->get('Order Invoice Address Recipient'),
+            'Payment Sender Country 2 Alpha Code' => $order->get('Order Invoice Address Country 2 Alpha Code'),
+            'Payment Sender Email'                => $order->get('Order Email'),
+            'Payment Created Date'                => gmdate('Y-m-d H:i:s'),
+
+
+            'Payment Last Updated Date'  => gmdate('Y-m-d H:i:s'),
+            'Payment Transaction Status' => 'Pending',
+            'Payment Transaction ID'     => $transaction_key,
+            'Payment Method'             => 'EPS',
+            'Payment Location'           => 'Basket',
+            'Payment Metadata'           => $secret
+
+        );
+
+
+        $payment = $payment_account->create_payment($payment_data);
+
+        $order->add_payment($payment);
+
+        $order->fast_update(
+            array('Order Checkout Block Payment Account Key' => $payment_account->id)
+        );
+
+        $response = array(
 
             'state'    => 200,
             'redirect' => $sofort->getPaymentUrl(),
-        //    'transaction_key'=>$transaction_key
+            //    'transaction_key'=>$transaction_key
 
         );
         echo json_encode($response);
@@ -134,8 +177,6 @@ function place_order_pay_sofort($store, $order, $data,$customer, $website, $edit
 
 
 }
-
-
 
 
 ?>

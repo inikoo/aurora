@@ -353,6 +353,112 @@
 
                             </script>
 
+
+                        {elseif $block=='Sofort'}
+
+
+                            <form id="Sofort_form" action="" class="sky-form" style="max-width: 500px;">
+                                <header >{$data.labels._form_title_online_bank_transfer}</header>
+
+
+                                <div style="padding:20px">
+                                    <p id="_online_bank_transfer_text" contenteditable="true" >{if !empty($data.labels._online_bank_transfer_text)}{{$data.labels._online_bank_transfer_text}}{else}Pay with Sofort{/if}</p>
+
+                                </div>
+
+
+                                <footer>
+                                    <button   class="button" id="place_order_from_Sofort">{$data.labels._place_order_from_online_bank_transfer} <i class="margin_left_10 fa fa-fw fa-arrow-right" aria-hidden="true"></i> </button>
+                                </footer>
+                            </form>
+
+
+
+                            <script>
+
+
+                                $("#Sofort_form").validate(
+                                    {
+
+                                        submitHandler: function(form)
+                                        {
+
+
+
+                                            var button=$('#place_order_from_Sofort');
+
+                                            if(button.hasClass('wait')){
+                                                return;
+                                            }
+
+                                            button.addClass('wait')
+                                            button.find('i').removeClass('fa-arrow-right').addClass('fa-spinner fa-spin')
+
+
+
+                                            var ajaxData = new FormData();
+
+                                            ajaxData.append("tipo", 'place_order_pay_sofort')
+
+                                            ajaxData.append("payment_account_key",'{$payment_account.object->id}' )
+
+
+
+
+
+
+
+                                            $.ajax({
+                                                url: "/ar_web_sofort.php", type: 'POST', data: ajaxData, dataType: 'json', cache: false, contentType: false, processData: false,
+                                                complete: function () {
+                                                }, success: function (data) {
+
+
+
+
+                                                    if (data.state == '200') {
+
+
+                                                        window.location.replace(data.redirect);
+
+
+                                                    } else if (data.state == '400') {
+                                                        var button=$('#place_order_from_Sofort');
+                                                        button.removeClass('wait')
+                                                        button.find('i').addClass('fa-arrow-right').removeClass('fa-spinner fa-spin')
+
+                                                        swal({ title:"{t}Error{/t}!", text:data.msg, type:"error", html: true}
+                                                        )
+
+                                                    }
+
+
+
+                                                }, error: function () {
+                                                    var button=$('#place_order_from_Sofort');
+                                                    button.removeClass('wait')
+                                                    button.find('i').addClass('fa-arrow-right').removeClass('fa-spinner fa-spin')
+
+                                                }
+                                            });
+
+
+
+
+
+                                        },
+
+                                        // Do not change code below
+                                        errorPlacement: function(error, element)
+                                        {
+                                            error.insertAfter(element.parent());
+                                        }
+                                    });
+
+
+                            </script>
+
+
                         {elseif $block=='BTreePaypal'}
                             <form action="" class="sky-form" style="max-width: 500px;">
 

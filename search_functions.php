@@ -1879,30 +1879,6 @@ function search_orders($db, $account, $memcache_ip, $data) {
 
         $stores = join(',', $user->stores);
     }
-    $memcache_fingerprint = $account->get('Account Code').'SEARCH_ORDER'.$stores.md5($queries);
-
-    $cache = new Memcached();
-    $cache->addServer($memcache_ip, 11211);
-
-
-    if (strlen($queries) <= 2) {
-        $memcache_time = 295200;
-    }
-    if (strlen($queries) <= 3) {
-        $memcache_time = 86400;
-    }
-    if (strlen($queries) <= 4) {
-        $memcache_time = 3600;
-    } else {
-        $memcache_time = 300;
-
-    }
-
-
-    $results_data = $cache->get($memcache_fingerprint);
-
-
-    if (!$results_data or $cache) {
 
 
         $candidates = array();
@@ -2048,7 +2024,7 @@ function search_orders($db, $account, $memcache_ip, $data) {
         
 
 
-    }
+
     $response = array(
         'state'          => 200,
         'number_results' => $results_data['n'],

@@ -986,6 +986,9 @@ font-size:14px;
   padding-left: 10px;
   font-weight: 800; }
 
+.pink {
+  color: pink; }
+
 #page_content .title {
   font-weight: 800;
   font-size: 120%;
