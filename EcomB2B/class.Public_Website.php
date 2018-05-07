@@ -352,6 +352,13 @@ class Public_Website {
                         $short_label     = '<i class="fab fa-paypal" aria-hidden="true"></i>';
 
                         break;
+                    case 'Sofort':
+                        $icon            = 'fa fa-university';
+                        $tab_label       = 'Sofort';
+                        $tab_label_index = '';
+                        $short_label     = '<i class="fa fa-university" aria-hidden="true"></i>';
+
+                        break;
                     case 'Bank':
                         $icon            = 'fa fa-university';
                         $tab_label_index = '_bank_label';
