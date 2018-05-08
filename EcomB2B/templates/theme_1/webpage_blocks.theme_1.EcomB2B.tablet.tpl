@@ -1059,7 +1059,7 @@
                 });
 
                 function resize_banners() {
-
+                    console.log('resizing banners')
 
                     $('.iframe').each(function (i, obj) {
                         $(this).css({
