@@ -441,6 +441,9 @@ class Deal extends DB_Table {
                 $sql = sprintf('UPDATE `Deal Component Dimension` SET `Deal Component Term Label`=%s WHERE `Deal Component Deal Key`=%d  ', prepare_mysql($value), $this->id);
                 $this->db->exec($sql);
 
+                $this->update_websites();
+
+
                 break;
             case('Deal Begin Date'):
                 $this->update_begin_date($value, $options);
@@ -1187,6 +1190,129 @@ class Deal extends DB_Table {
         return $label;
 
     }
+
+
+    function update_websites() {
+
+        $webpage_keys = array();
+
+        $families    = array();
+        $departments = array();
+        $sql         = sprintf(
+            'select `Deal Component Trigger Key`,`Category Scope` from  `Deal Component Dimension`  left join `Category Dimension` on (`Deal Component Trigger Key`=`Category Key`)   where `Deal Component Deal Key`=%d  and `Deal Component Trigger`="Category"  ',
+            $this->id
+        );
+        if ($result = $this->db->query($sql)) {
+            foreach ($result as $row) {
+
+                if ($row['Category Scope'] == 'Product') {
+                    $families[$row['Deal Component Trigger Key']] = $row['Deal Component Trigger Key'];
+                } else {
+                    $departments[$row['Deal Component Trigger Key']] = $row['Deal Component Trigger Key'];
+                }
+
+
+            }
+        } else {
+            print_r($error_info = $this->db->errorInfo());
+            print "$sql\n";
+            exit;
+        }
+
+        $sql = sprintf(
+            'select `Deal Component Allowance Target Key`,`Category Scope` from  `Deal Component Dimension`  left join `Category Dimension` on (`Deal Component Allowance Target Key`=`Category Key`)    where `Deal Component Deal Key`=%d  and `Deal Component Allowance Target`="Category"   ',
+            $this->id
+        );
+        if ($result = $this->db->query($sql)) {
+            foreach ($result as $row) {
+
+                if ($row['Category Scope'] == 'Product') {
+                    $families[$row['Deal Component Allowance Target Key']] = $row['Deal Component Allowance Target Key'];
+                } else {
+                    $departments[$row['Deal Component Allowance Target Key']] = $row['Deal Component Allowance Target Key'];
+                }
+
+
+            }
+        } else {
+            print_r($error_info = $this->db->errorInfo());
+            print "$sql\n";
+            exit;
+        }
+
+
+        if (count($families) > 0) {
+            $sql = sprintf('select group_concat(`Subject Key`) as products from `Category Bridge` where `Category Key` in (%s) ', join($families, ','));
+
+            //  print $sql;
+            if ($result = $this->db->query($sql)) {
+                if ($row = $result->fetch()) {
+                    $products = preg_split('/,/', $row['products']);
+                }
+            } else {
+                print_r($error_info = $this->db->errorInfo());
+                print "$sql\n";
+                exit;
+            }
+
+        }
+
+
+        foreach ($products as $product_id) {
+            $sql = sprintf('select `Page Key` from `Page Store Dimension` where `Webpage Scope`="Product" and `Webpage Scope Key`=%d ', $product_id);
+
+            if ($result = $this->db->query($sql)) {
+                foreach ($result as $row) {
+                    $webpage_keys[$row['Page Key']] = $row['Page Key'];
+                }
+            } else {
+                print_r($error_info = $this->db->errorInfo());
+                print "$sql\n";
+                exit;
+            }
+
+        }
+
+        foreach ($families as $family_key) {
+            $sql = sprintf('select `Page Key`,`Webpage Website Key` from `Page Store Dimension` where `Webpage Scope`="Category Products" and `Webpage Scope Key`=%d ', $family_key);
+
+            if ($result = $this->db->query($sql)) {
+                foreach ($result as $row) {
+                    $webpage_keys[$row['Page Key']] = array(
+                        $row['Webpage Website Key'],
+                        $row['Page Key']
+                    );
+                }
+            } else {
+                print_r($error_info = $this->db->errorInfo());
+                print "$sql\n";
+                exit;
+            }
+
+        }
+
+        require_once 'external_libs/Smarty/Smarty.class.php';
+        $smarty_web               = new Smarty();
+        $smarty_web->template_dir = 'EcomB2B/templates';
+        $smarty_web->compile_dir  = 'EcomB2B/server_files/smarty/templates_c';
+        $smarty_web->cache_dir    = 'EcomB2B/server_files/smarty/cache';
+        $smarty_web->config_dir   = 'EcomB2B/server_files/smarty/configs';
+        $smarty_web->setCaching(Smarty::CACHING_LIFETIME_CURRENT);
+
+
+        foreach ($webpage_keys as $data) {
+
+            $cache_id = $data[0].'|'.$data[1];
+            $smarty_web->clearCache(null, $cache_id);
+        }
+
+
+        //print_r($webpage_keys);
+        //  print_r($products);
+
+
+    }
+
 
 }
 
