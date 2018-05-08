@@ -158,13 +158,15 @@
 	background-repeat: no-repeat;
 	background-position: center left;
 	xbackground-size:120px 32px;
-	width:220px;
-	padding-left: 80px;
+	width:320px;
+	padding-left: 70px;
 	height:54px;
 	z-index:999;
 	font-family: "Ubuntu", Helvetica, Arial, sans-serif;
 	font-weight: 800;
 	color: #0b0b0b;
+	white-space: nowrap;
+	overflow: hidden;
 }
 
 /*Animated Icons*/
