@@ -1100,8 +1100,10 @@ getScript('/js/tablet.custom.min.js?v=2', function () {
 
 
                 $('.iframe').each(function (i, obj) {
+
+
                     $(this).css({
-                        height: $(this).width() * $(this).attr('h') / $(this).attr('w')
+                        height: $(this).width() * $(this).data('h') / $(this).data('w')
                     })
                 });
             }

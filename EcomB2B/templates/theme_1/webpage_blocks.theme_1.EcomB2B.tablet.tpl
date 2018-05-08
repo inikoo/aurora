@@ -1059,11 +1059,16 @@
                 });
 
                 function resize_banners() {
-                    console.log('resizing banners')
+
 
                     $('.iframe').each(function (i, obj) {
+
+                        console.log($(this))
+                        console.log($(this).width() )
+
+                        console.log( $(this).data('h'))
                         $(this).css({
-                            height: $(this).width() * $(this).attr('h') / $(this).attr('w')
+                            height: $(this).width() * $(this).data('h') / $(this).data('w')
                         })
                     });
                 }
