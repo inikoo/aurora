@@ -509,8 +509,7 @@
 
 
         {if $navigation.show}
-        <div class="navigation" >
-
+        <div class="navigation top_body" >
             {foreach from=$navigation.breadcrumbs item=$breadcrumb name=breadcrumbs}
                 <span class="breadcrumbs">{$breadcrumb.label} {if !$smarty.foreach.breadcrumbs.last}<i class="fas padding_left_10 padding_right_10 fa-angle-double-right"></i>{/if}</span>
 
@@ -522,13 +521,13 @@
 
         {if isset($discounts) and count($discounts.deals)>0 }
 
-            <div class="discounts" >
+            <div class="discounts top_body" >
             {foreach from=$discounts.deals item=deal_data }
-            <div class="discount_card" key="{$deal_data.key}" >
+            <div class="discount_card" data-key="{$deal_data.key}" >
                 <div class="discount_icon" style="">{$deal_data.icon}</div>
                 <span contenteditable="true" class="discount_name">{$deal_data.name}</span><br/>
-                <span contenteditable="true"  class="discount_term">{$deal_data.term}</span>
-                <span contenteditable="true"  class="discount_allowance">{$deal_data.allowance}</span>
+                <span contenteditable="true" class="discount_term">{$deal_data.term}</span>
+                <span contenteditable="true" class="discount_allowance">{$deal_data.allowance}</span>
             </div>
             {/foreach}<div style="clear:both"></div>
             </div>
@@ -762,6 +761,21 @@
         };
 
         var  poll_labels = { };
+
+        var discounts_data= { };
+
+
+
+        $('.discount_card').each(function (i, obj) {
+
+            discounts_data[$(obj).data('key')]={
+                'name':$(obj).find('.discount_name').html(),
+                'term':$(obj).find('.discount_term').html(),
+                'allowance':$(obj).find('.discount_allowance').html()
+
+            }
+        })
+
 
 
         $('._block').each(function (i, obj) {
@@ -1954,6 +1968,10 @@
         ajaxData.append("labels", JSON.stringify(labels))
         ajaxData.append("poll_labels", JSON.stringify(poll_labels))
         ajaxData.append("poll_position", JSON.stringify(poll_position))
+        ajaxData.append("discounts_data", JSON.stringify(discounts_data))
+
+
+
 
 
 

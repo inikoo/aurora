@@ -46,17 +46,21 @@ switch ($tipo) {
     case 'save_webpage_content':
         $data = prepare_values(
             $_REQUEST, array(
-                         'key'           => array('type' => 'key'),
-                         'content_data'  => array('type' => 'string'),
-                         'labels'        => array(
+                         'key'            => array('type' => 'key'),
+                         'content_data'   => array('type' => 'string'),
+                         'labels'         => array(
                              'type'     => 'string',
                              'optional' => true
                          ),
-                         'poll_labels'   => array(
+                         'poll_labels'    => array(
                              'type'     => 'string',
                              'optional' => true
                          ),
-                         'poll_position' => array(
+                         'poll_position'  => array(
+                             'type'     => 'string',
+                             'optional' => true
+                         ),
+                         'discounts_data' => array(
                              'type'     => 'string',
                              'optional' => true
                          )
@@ -64,6 +68,8 @@ switch ($tipo) {
 
                      )
         );
+
+
         save_webpage_content($data, $editor, $smarty, $db);
         break;
     case 'update_website_styles':
@@ -1872,6 +1878,32 @@ function save_webpage_content($data, $editor, $smarty, $db) {
         $website->update_labels_in_localised_labels(json_decode($data['labels'], true));
 
         //print_r($data['labels']);
+    }
+
+
+    if (isset($data['discounts_data'])) {
+        $discounts_data = json_decode($data['discounts_data'], true);
+
+        foreach ($discounts_data as $deal_component_key => $deal_component_data) {
+
+
+            $deal_component         = get_object('Deal_Component', $deal_component_key);
+            $deal_component->editor = $editor;
+
+            $deal_component->update(
+                array(
+                    'Deal Component Name Label' => $deal_component_data['name'],
+                    'Deal Component Term Label' => $deal_component_data['term'],
+                    'Deal Component Allowance Label' => $deal_component_data['allowance']
+                )
+            );
+          //  print_r($deal_component_data);
+
+            //$poll_query->update($_data);
+
+        }
+
+
     }
 
 

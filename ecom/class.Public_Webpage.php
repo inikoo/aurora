@@ -288,14 +288,57 @@ class Public_Webpage {
                             exit;
                         }
 
+                        return array(
+                            'show'=>count($deals==0?false:true),
+                            'deals'=>$deals
+                        );
+
+                        break;
+
+                    case 'Product':
+                        $deals=array();
+
+                        $categories=array();
+
+                        $sql=sprintf('select `Category Key` from `Category Bridge` where   `Subject`="Product"   and `Subject Key`=%d ',$this->data['Webpage Scope Key']);
+                        if ($result=$this->db->query($sql)) {
+                        		foreach ($result as $row) {
+                                    $categories[$row['Category Key']]=$row['Category Key'];
+                        		}
+                        }else {
+                        		print_r($error_info=$this->db->errorInfo());
+                        		print "$sql\n";
+                        		exit;
+                        }
 
 
 
 
+                        if(count($categories)>0){
+                            $sql = sprintf(
+                                "SELECT `Deal Component Key`,`Deal Component Icon`,`Deal Component Name Label`,`Deal Component Term Label`,`Deal Component Allowance Label` FROM `Deal Component Dimension` WHERE `Deal Component Allowance Target`='Category' AND `Deal Component Allowance Target Key` in (%s) AND `Deal Component Status`='Active'",
+                                join($categories,',')
+                            );
+
+                            if ($result = $this->db->query($sql)) {
+                                foreach ($result as $row) {
+
+                                    $deals[]=array(
+                                        'key'=>$row['Deal Component Key'],
+                                        'icon'=>$row['Deal Component Icon'],
+                                        'name'=>$row['Deal Component Name Label'],
+                                        'term'=>$row['Deal Component Term Label'],
+                                        'allowance'=>$row['Deal Component Allowance Label']
+                                    );
 
 
+                                }
+                            } else {
+                                print_r($error_info = $this->db->errorInfo());
+                                exit;
+                            }
 
-
+                        }
 
 
                         return array(
