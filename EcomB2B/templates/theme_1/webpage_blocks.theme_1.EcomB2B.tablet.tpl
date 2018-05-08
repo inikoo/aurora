@@ -191,6 +191,24 @@
 
 
         getScript('/js/tablet.min.js?v=2', function () {
+
+
+
+
+
+
+
+            $('#header_search_icon').on("click", function () {
+
+                window.location.href = "search.sys?q=" + encodeURIComponent($('#header_search_input').val());
+
+
+            });
+
+
+
+
+
             getScript('/js/tablet.custom.min.js?v=2', function () {
 
 
