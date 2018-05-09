@@ -155,144 +155,26 @@ function open_image_control_panel(element) {
     }
 
 
+    console.log($(element).data('type'))
 
-return;
+
     switch ($(element).data('type')){
         case 'image':
+            $('#image_control_panel').find('.image_url').val($(element).attr('link'))
 
+            $('#image_control_panel').find('.image_tooltip').val($(element).attr('alt'))
             break;
 
         case 'image_and_text':
-             break;
+
+            $('#image_control_panel').find('.image_url').val($(element).attr('link'))
+
+            $('#image_control_panel').find('.image_tooltip').val($(element).attr('alt'))
+
+            break;
 
     }
 
-    if(type=='images'){
-        image_options['set_width']=$(element).data('width');
-
-        $('#image_control_panel .caption_tr').removeClass('hide')
-        $('#update_images_block_image').attr('name','images')
-        $('#image_control_panel').find('.image_caption').val($(element).closest('figure').find('figcaption').html())
-
-
-    }else if(type=='category_categories'){
-
-        $('#update_images_block_image').attr('name','category_categories')
-        $('#image_control_panel .caption_tr').addClass('hide')
-        height=220
-
-        switch($(element).attr('size_class')){
-            case 'panel_1':
-                $('#image_control_panel .image_size').html('(226x'+height+')')
-                image_options['fit_to_canvas']='226x'+height+''
-
-                break;
-            case 'panel_2':
-                $('#image_control_panel .image_size').html('(470x'+height+')')
-                image_options['fit_to_canvas']='470x'+height+''
-
-                break;
-            case 'panel_3':
-                $('#image_control_panel .image_size').html('(714x'+height+')')
-                image_options['fit_to_canvas']='714x'+height+''
-
-                break;
-            case 'panel_4':
-                $('#image_control_panel .image_size').html('(958x'+height+')')
-                image_options['fit_to_canvas']='958x'+height+''
-
-                break;
-            case 'panel_5':
-                $('#image_control_panel .image_size').html('(1202x'+height+')')
-                image_options['fit_to_canvas']='1202x'+height+''
-
-                break;
-        }
-
-
-
-    }else if(type=='category_products'){
-
-        $('#update_images_block_image').attr('name','category_products')
-        $('#image_control_panel .caption_tr').addClass('hide')
-
-        var height=$(element).data('height');
-        switch($(element).attr('size_class')){
-            case 'panel_1':
-                $('#image_control_panel .image_size').html('(226x'+height+')')
-                image_options['fit_to_canvas']='226x'+height+''
-
-                break;
-            case 'panel_2':
-                $('#image_control_panel .image_size').html('(470x'+height+')')
-                image_options['fit_to_canvas']='470x'+height+''
-
-                break;
-            case 'panel_3':
-                $('#image_control_panel .image_size').html('(714x'+height+')')
-                image_options['fit_to_canvas']='714x'+height+''
-
-                break;
-            case 'panel_4':
-                $('#image_control_panel .image_size').html('(958x'+height+')')
-                image_options['fit_to_canvas']='958x'+height+''
-
-                break;
-            case 'panel_5':
-                $('#image_control_panel .image_size').html('(1202x'+height+')')
-                image_options['fit_to_canvas']='1202x'+height+''
-
-                break;
-        }
-
-
-
-    }else{
-
-        $('#image_control_panel .caption_tr').addClass('hide')
-
-
-        $('#update_images_block_image').attr('name','blackboard_image')
-
-
-    }
-
-
-// top: .25 * ($(element).offset().top + $(element).height()) / 2
-
-    $('#image_control_panel').removeClass('hide').offset({
-        top:  $(element).offset().top, left: $(element).offset().left
-    }).addClass('in_use').data('element', $(element))
-
-
-
-    console.log($( '#blocks' ).width())
-    console.log( $('#image_control_panel').offset().left+$('#image_control_panel').width())
-
-    if($('#image_control_panel').offset().left+$('#image_control_panel').width()>$( '#blocks' ).width()){
-        $('#image_control_panel').offset({
-            left: $('#image_control_panel').offset().left-($('#image_control_panel').offset().left+$('#image_control_panel').width()-$( '#blocks' ).width())
-        })
-    }
-
-
-
-    $('#image_control_panel').find('.image_control_panel_upload_td input').attr('block_key',block_key).data('options',image_options)
-
-
-    $('#image_control_panel').find('.image_tooltip').val($(element).attr('alt'))
-    $('#image_control_panel').find('.image_link').val($(element).attr('link'))
-
-
-
-
-
-    $('#image_control_panel').attr('old_image_src', $(element).attr('src'))
-
-    $('#image_control_panel').find('.caption_align i').addClass('super_discreet').removeClass('selected')
-    $('#image_control_panel').find('.caption_align i.' + $(element).attr('display_class')).removeClass('super_discreet').addClass('selected')
-
-    $('#image_control_panel').find('.image_upload').data('img', $(element))
 
 
 
@@ -681,7 +563,9 @@ $(document).on('change', '.image_upload', function (e) {
 
     ajaxData.append("tipo", 'upload_images')
     ajaxData.append("parent", 'header')
-    ajaxData.append("parent_key", '{$header_key}')
+    ajaxData.append("parent_key", $('#webpage_data').data('header_key'))
+
+
     ajaxData.append("options", JSON.stringify($(this).data('options')))
     ajaxData.append("response_type", 'webpage')
 
@@ -699,28 +583,20 @@ $(document).on('change', '.image_upload', function (e) {
 
             if (data.state == '200') {
 
-                //console.log(element)
+                console.log(element )
 
-                if (element.attr('id') == 'upload_logo') {
-                    $('#logo,#logo_edit').css('background-image', 'url(' + data.image_src + ')')
-                    $('#logo_visibility').addClass('fa-eye').removeClass('hide')
-                    $('#logo').attr('bg', data.image_src)
 
-                } else if (element.attr('id') == 'upload_header_background') {
-                    $('#topHeader,#topHeader_edit').css('background-image', 'url(' + data.image_src + ')')
-                    $('#topHeader').attr('bg', data.image_src)
-                    $('#header_background_visibility').addClass('fa-eye').removeClass('hide')
 
-                } else {
-                    element.closest('.dart').find('img.rimg').attr('src', data.image_src).attr('image_key', data.img_key).data('src', data.image_src)
 
-                }
+                    $('#image_control_panel').data('element').attr('src', data.image_src).attr('image_key', data.img_key).data('src', data.image_src)
+
+
 
                 $('#save_button', window.parent.document).addClass('save button changed valid')
 
             } else if (data.state == '400') {
                 swal({
-                    title: data.title, text: data.msg, confirmButtonText: "{t}OK{/t}"
+                    title: data.title, text: data.msg, confirmButtonText: "OK"
                 });
             }
 
@@ -1032,5 +908,21 @@ $('#_menu_blocks').append($('<div id="menu_block_menu_'+key+'" data-column_type=
 
 
     $('#save_button',window.parent.document).addClass('save button changed valid')
+
+}
+
+
+function update_image(){
+
+    $('#image_control_panel').addClass('hide')
+
+   img=$('#image_control_panel').data('element')
+
+  img.attr('link',$('#image_control_panel').find('.image_url').val())
+    img.attr('alt',$('#image_control_panel').find('.image_tooltip').val())
+
+    $('#save_button',window.parent.document).addClass('save button changed valid')
+
+
 
 }
