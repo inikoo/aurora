@@ -2617,6 +2617,12 @@ function get_tabs($data, $db, $account, $modules, $user, $smarty) {
 
             if ($data['_object']->get('Category Subject') == 'Product') {
                 $_content['tabs']['category.subjects']['label'] = _('Products');
+                $_content['tabs']['category.subjects']['icon'] = 'cube';
+
+
+
+
+
 
 
                 if ($data['_object']->get('Root Key') == $data['store']->get('Store Family Category Key')) {
@@ -2666,7 +2672,10 @@ function get_tabs($data, $db, $account, $modules, $user, $smarty) {
                 }
 
             }
-        } elseif ($data['_object']->get('Category Scope') == 'Part') {
+        }
+        elseif ($data['_object']->get('Category Scope') == 'Part') {
+
+            $_content['tabs']['category.customers']['class'] = 'hide';
 
 
             if ($data['_object']->get('Root Key') == $account->get('Account Part Family Category Key')) {
@@ -2691,6 +2700,11 @@ function get_tabs($data, $db, $account, $modules, $user, $smarty) {
 
 
         }
+        else{
+            $_content['tabs']['category.customers']['class'] = 'hide';
+        }
+
+
 
 
         if ($data['_object']->get('Category Branch Type') == 'Head') {

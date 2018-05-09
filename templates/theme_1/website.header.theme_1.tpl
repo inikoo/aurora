@@ -83,7 +83,7 @@
 
     </style>
 
-<script src="js/website_header.js"></script>
+<script src="js/website_header.js?v=2"></script>
 
 
 <body xmlns="http://www.w3.org/1999/html">

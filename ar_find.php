@@ -808,28 +808,6 @@ function find_customers($db, $account, $memcache_ip, $data, $user) {
             $q
         );
 
-    $cache = new Memcached();
-    $cache->addServer($memcache_ip, 11211);
-
-
-    if (strlen($q) <= 2) {
-        $memcache_time = 295200;
-    } elseif (strlen($q) <= 3) {
-        $memcache_time = 86400;
-    } elseif (strlen($q) <= 4) {
-        $memcache_time = 3600;
-    } else {
-        $memcache_time = 300;
-
-    }
-
-
-    $results_data = $cache->get($memcache_fingerprint);
-
-
-    if (!$results_data or true) {
-
-
         $candidates = array();
 
         $candidates_data = array();
@@ -934,10 +912,9 @@ function find_customers($db, $account, $memcache_ip, $data, $user) {
             'n' => count($results),
             'd' => $results
         );
-        $cache->set($memcache_fingerprint, $results_data, $memcache_time);
 
 
-    }
+
     $response = array(
         'state'          => 200,
         'number_results' => $results_data['n'],
@@ -1493,37 +1470,10 @@ function find_assets_on_sale($db, $account, $memcache_ip, $data) {
     }
 
     if (!isset($data['metadata']['options']['for_order'])) {
-        $where .= "  and  `Product Status` not in ( 'Suspended','Discontinued')  ";
+        $where_product = "  and  `Product Status` not in ( 'Suspended','Discontinued')  ";
     }
 
-
-    $memcache_fingerprint = $account->get('Account Code').'FIND_PRODUCTS'.md5(
-            $q
-        );
-
-    $cache = new Memcached();
-    $cache->addServer($memcache_ip, 11211);
-
-
-    if (strlen($q) <= 2) {
-        $memcache_time = 295200;
-    }
-    if (strlen($q) <= 3) {
-        $memcache_time = 86400;
-    }
-    if (strlen($q) <= 4) {
-        $memcache_time = 3600;
-    } else {
-        $memcache_time = 300;
-
-    }
-
-
-    $results_data = $cache->get($memcache_fingerprint);
-
-
-    if (!$results_data or true) {
-
+    $where_product='';
 
         $candidates = array();
 
@@ -1531,7 +1481,7 @@ function find_assets_on_sale($db, $account, $memcache_ip, $data) {
 
 
         $sql = sprintf(
-            "select `Product ID`,`Product Code`,`Product Name`,`Product Current Key`,`Product Availability` from `Product Dimension` where  `Product Code` like '%s%%' %s order by `Product Code` limit $max_results ", $q, $where
+            "select `Product ID`,`Product Code`,`Product Name`,`Product Current Key`,`Product Availability` from `Product Dimension` where  `Product Code` like '%s%%' %s %s order by `Product Code` limit $max_results ", $q, $where,$where_product
         );
 
 
@@ -1551,15 +1501,16 @@ function find_assets_on_sale($db, $account, $memcache_ip, $data) {
                 }
 
                 $candidates_data['P'.$row['Product ID']] = array(
-                    'Product Code'        => $row['Product Code'],
-                    'Product Name'        => $row['Product Name'].', <span style="font-style: italic"  class="'.($row['Product Availability'] <= 0 ? 'error' : '').'" >'._('Stock').': '.number($row['Product Availability']).'</span>',
-                    'Product Current Key' => $row['Product Current Key']
+                    'Code'        => $row['Product Code'],
+                    'Name'        => $row['Product Name'].', <span style="font-style: italic"  class="'.($row['Product Availability'] <= 0 ? 'error' : '').'" >'._('Stock').': '.number($row['Product Availability']).'</span>',
+                    'Current Key' => $row['Product Current Key']
 
                 );
 
             }
         } else {
             print_r($error_info = $db->errorInfo());
+            print $sql;
             exit;
         }
 
@@ -1572,7 +1523,7 @@ function find_assets_on_sale($db, $account, $memcache_ip, $data) {
         if ($result = $db->query($sql)) {
             foreach ($result as $row) {
 
-                if ($row['Product Code'] == $q) {
+                if ($row['Category Code'] == $q) {
                     $candidates['C'.$row['Category Key']] = 1000;
                 } else {
 
@@ -1583,16 +1534,17 @@ function find_assets_on_sale($db, $account, $memcache_ip, $data) {
                 }
 
                 $candidates_data['C'.$row['Category Key']] = array(
-                    'Product Code'        => $row['Category Code'],
-                    'Product Name'        => $row['Category Label'].', <span style="font-style: italic"  >('.($row['Category Subject'] == 'Category' ? _('Department') : _('Family')).') <i class="fa fa-fw fa-cube"></i>: '.number($row['Category Number Active Subjects'])
+                    'Code'        => $row['Category Code'],
+                    'Name'        => $row['Category Label'].', <span style="font-style: italic"  >('.($row['Category Subject'] == 'Category' ? _('Department') : _('Family')).') <i class="fa fa-fw fa-cube"></i>: '.number($row['Category Number Active Subjects'])
                         .'</span>',
-                    'Product Current Key' => $row['Product Current Key']
+                    'Current Key' => $row['Category Key']
 
                 );
 
             }
         } else {
             print_r($error_info = $db->errorInfo());
+            print $sql;
             exit;
         }
 
@@ -1646,14 +1598,14 @@ function find_assets_on_sale($db, $account, $memcache_ip, $data) {
 
         if ($number_product_ids) {
             $sql = sprintf(
-                "SELECT P.`Product ID`,`Product Code`,`Product Name`,`Product Availability'` FROM `Product Dimension` P  WHERE P.`Product ID` IN (%s)", $product_ids
+                "SELECT P.`Product ID`,`Product Code`,`Product Name`,`Product Availability` FROM `Product Dimension` P  WHERE P.`Product ID` IN (%s)", $product_ids
             );
 
             if ($result = $db->query($sql)) {
                 foreach ($result as $row) {
 
 
-                    $results['P'.$row['Part SKU']] = array(
+                    $results['P'.$row['Product ID']] = array(
                         'label'   => highlightkeyword(sprintf('%s', $row['Product Code']), $q),
                         'details' => highlightkeyword($row['Product Name'], $q).', <span style="font-style: italic"  class="'.($row['Product Availability'] <= 0 ? 'error' : '').'" >'._('Stock').': '.number($row['Product Availability']).'</span>',
 
@@ -1702,13 +1654,14 @@ function find_assets_on_sale($db, $account, $memcache_ip, $data) {
         $results = array();
         foreach ($candidates as $product_sku => $candidate) {
 
+
             $results[$product_sku] = array(
-                'code'              => $candidates_data[$product_sku]['Product Code'],
-                'description'       => $candidates_data[$product_sku]['Product Name'],
-                'item_historic_key' => $candidates_data[$product_sku]['Product Current Key'],
+                'code'              => $candidates_data[$product_sku]['Code'],
+                'description'       => $candidates_data[$product_sku]['Name'],
+                'item_historic_key' => $candidates_data[$product_sku]['Current Key'],
 
                 'value'           => $product_sku,
-                'formatted_value' => $candidates_data[$product_sku]['Product Code']
+                'formatted_value' => $candidates_data[$product_sku]['Code']
             );
 
         }
@@ -1717,10 +1670,7 @@ function find_assets_on_sale($db, $account, $memcache_ip, $data) {
             'n' => count($results),
             'd' => $results
         );
-        $cache->set($memcache_fingerprint, $results_data, $memcache_time);
 
-
-    }
     $response = array(
         'state'          => 200,
         'number_results' => $results_data['n'],
@@ -2006,31 +1956,6 @@ function find_special_category($type, $db, $account, $memcache_ip, $data) {
     }
 
 
-    $memcache_fingerprint = $account->get('Account Code').'SEARCH_SPCL_CAT'.$type.$root_keys.md5($queries);
-
-    $cache = new Memcached();
-    $cache->addServer($memcache_ip, 11211);
-
-
-    if (strlen($queries) <= 2) {
-        $memcache_time = 295200;
-    }
-    if (strlen($queries) <= 3) {
-        $memcache_time = 86400;
-    }
-    if (strlen($queries) <= 4) {
-        $memcache_time = 3600;
-    } else {
-        $memcache_time = 300;
-
-    }
-
-
-    $results_data = $cache->get($memcache_fingerprint);
-
-
-    if (!$results_data or true) {
-
 
         $candidates = array();
 
@@ -2175,10 +2100,7 @@ function find_special_category($type, $db, $account, $memcache_ip, $data) {
             'n' => count($results),
             'd' => $results
         );
-        $cache->set($memcache_fingerprint, $results_data, $memcache_time);
 
-
-    }
     $response = array(
         'state'          => 200,
         'number_results' => $results_data['n'],
@@ -2930,6 +2852,8 @@ function find_product_webpages($db, $account, $memcache_ip, $data, $smarty) {
             }
         } else {
             print_r($error_info = $db->errorInfo());
+
+            print $sql;
             exit;
         }
 

@@ -532,7 +532,7 @@ function open_header_text_edit_link(element){
 
 
 
-function open_text_styles_search_header(element){
+function open_text_styles_main_header(element){
 
 
     $('#text_styles_main_header').removeClass('hide').offset({
@@ -542,7 +542,7 @@ function open_text_styles_search_header(element){
 
 }
 
-function open_text_styles_main_header(element){
+function open_text_styles_search_header(element){
 
 
     $('#text_styles_search_header').removeClass('hide').offset({

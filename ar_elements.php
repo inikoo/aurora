@@ -344,6 +344,7 @@ switch ($tab) {
         $data = prepare_values($_REQUEST, array('parameters' => array('type' => 'json array')));
         parts_barcode_errors($db, $data['parameters'], $user);
         break;
+
     default:
         $response = array(
             'state' => 405,
@@ -3062,6 +3063,8 @@ function get_agent_parts_element_numbers($db, $data, $user) {
 
 
 }
+
+
 
 
 ?>

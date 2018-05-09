@@ -59,6 +59,35 @@ if (isset($parameters['awhere']) and $parameters['awhere']) {
     }
 
 
+} elseif ($parameters['parent'] == 'product_category') {
+
+    include_once 'class.Category.php';
+    $category = new Category($parameters['parent_key']);
+
+    if (!in_array($category->data['Category Store Key'], $user->stores)) {
+        return;
+    }
+
+    $store=get_object('store',$category->get('Store Key'));
+
+    if($store->get('Store Family Category Key')==$category->get('Category Root Key')){
+
+
+
+        $table = '`Order Transaction Fact` OTF  left join `Customer Dimension` C on (OTF.`Customer Key`=C.`Customer Key`)  left join `Product Dimension` P on (OTF.`Product ID`=P.`Product ID`)  ';
+
+        $where = sprintf(' where  P.`Product Family Category Key`=%d ', $parameters['parent_key']);
+
+
+
+    }elseif($store->get('Store Department Category Key')==$category->get('Category Root Key')){
+
+    }else{
+
+    }
+
+
+
 } elseif ($parameters['parent'] == 'category') {
 
     include_once 'class.Category.php';
@@ -72,6 +101,9 @@ if (isset($parameters['awhere']) and $parameters['awhere']) {
         " where `Subject`='Customer' and  `Category Key`=%d", $parameters['parent_key']
     );
     $table = ' `Category Bridge` left join  `Customer Dimension` C on (`Subject Key`=`Customer Key`) ';
+
+
+
 
 } elseif ($parameters['parent'] == 'store') {
     include_once('class.Store.php');

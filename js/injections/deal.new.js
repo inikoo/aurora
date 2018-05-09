@@ -42,6 +42,42 @@ function toggle_new_deal_entitled_to(element){
 
 
 
+function toggle_new_deal_extra_trigger(element){
+
+
+
+    if(!$(element).hasClass('selected')){
+
+        $(element).closest('.button_radio_options').find('.button').removeClass('selected')
+        $(element).addClass('selected')
+    }
+
+
+    console.log($(element).attr('field'))
+
+    switch ($(element).attr('field')){
+        case 'Trigger_Extra_Amount_Net':
+
+            $('#Trigger_Extra_Amount_Net_field').removeClass('hide')
+            $('#Trigger_Extra_Amount_Net').removeClass('hide')
+
+            break;
+        default:
+
+    }
+
+    // var form_validation = get_form_validation_state()
+    // process_form_validation(form_validation)
+
+
+}
+
+function show_extra_term(){
+    $('#Extra_Terms_field').removeClass('hide')
+    $('#add_extra_term_field').addClass('hide')
+
+}
+
 function toggle_new_deal_trigger(element){
 
 
@@ -69,6 +105,9 @@ function toggle_new_deal_trigger(element){
         default:
 
     }
+
+
+    $('#add_extra_term_field').removeClass('hide')
 
     // var form_validation = get_form_validation_state()
     // process_form_validation(form_validation)
@@ -141,6 +180,7 @@ function toggle_voucher_auto_code(element){
 
         $('#Deal_Voucher_Type_field').addClass('hide')
         $('#Deal_Voucher_Code_field').removeClass('hide')
+        $('#Deal_Voucher_Code').addClass('hide')
 
 
     }
