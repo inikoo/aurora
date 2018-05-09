@@ -413,7 +413,7 @@
 
             <div id="_columns">
             {foreach from=$header_data.menu.columns item=column key=key}
-                <a id="menu_{$key}" class="menu _column {if $column.type=='nothing'}only_link{else}dropdown{/if}"  data-column_type="{$column.type}"  href="" data-key="{$key}"><i class="{$column.icon} menu_icon" icon="{$column.icon}" ></i> <span class="menu_label" contenteditable="true">{$column.label|strip_tags}</span> <i url="{if isset($column.link)}{$column.link}{/if}" class="down_cadet  fal fa-fw fa-angle-down"></i></a>
+                <a id="menu_{$key}" class="menu  {if !$column.show}hide{/if}  _column {if $column.type=='nothing'}only_link{else}dropdown{/if}"  data-column_type="{$column.type}"  href="" data-key="{$key}"><i class="{$column.icon} menu_icon" icon="{$column.icon}" ></i> <span class="menu_label" contenteditable="true">{$column.label|strip_tags}</span> <i url="{if isset($column.link)}{$column.link}{/if}" class="down_cadet  fal fa-fw fa-angle-down"></i></a>
             {/foreach}
             </div>
 
