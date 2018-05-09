@@ -44,6 +44,9 @@ switch ($tipo) {
     case 'customers':
         customers(get_table_parameters(), $db, $user);
         break;
+    case 'asset_customers':
+        asset_customers(get_table_parameters(), $db, $user);
+        break;
     case 'lists':
         lists(get_table_parameters(), $db, $user);
         break;
@@ -126,6 +129,8 @@ function customers($_data, $db, $user) {
                               )
                 );
             }
+
+
 
 
             $contact_since = strftime(
@@ -962,6 +967,111 @@ function poll_query_answers($_data, $db, $user) {
 
     } else {
         print_r($error_info = $db->errorInfo());
+        exit;
+    }
+
+
+    $response = array(
+        'resultset' => array(
+            'state'         => 200,
+            'data'          => $adata,
+            'rtext'         => $rtext,
+            'sort_key'      => $_order,
+            'sort_dir'      => $_dir,
+            'total_records' => $total
+
+        )
+    );
+    echo json_encode($response);
+}
+
+
+
+function asset_customers($_data, $db, $user) {
+
+
+    if ($_data['parameters']['parent'] == 'favourites') {
+        $rtext_label = 'customer who favored';
+    } else {
+        $rtext_label = 'customer';
+    }
+
+    include_once 'prepare_table/init.php';
+
+    $sql = "select  $fields from $table $where $wheref $group_by order by $order $order_direction limit $start_from,$number_results";
+
+
+    $adata = array();
+
+    if ($result = $db->query($sql)) {
+
+        foreach ($result as $data) {
+
+
+
+
+
+
+             if ($data['invoices']==0 or $data['last_invoice'] == '') {
+                 $last_invoice_date = '';
+                 $invoiced_amount='';
+             } else {
+                 $last_invoice_date = strftime(
+                     "%e %b %y", strtotime(
+                                   $data['last_invoice']." +00:00"
+                               )
+                 );
+                 $invoiced_amount=money($data['invoiced_amount'],$data['Invoice Currency Code']);
+             }
+
+
+
+            switch ($data['Customer Type by Activity']) {
+                case 'ToApprove':
+                    $activity = _('To be approved');
+                    break;
+                case 'Inactive':
+                    $activity = _('Lost');
+                    break;
+                case 'Active':
+                    $activity = _('Active');
+                    break;
+                case 'Prospect':
+                    $activity = _('Prospect');
+                    break;
+                default:
+                    $activity = $data['Customer Type by Activity'];
+                    break;
+            }
+
+
+
+                $link_format  = '/customers/%d/%d';
+                $formatted_id = sprintf('<span class="link" onClick="change_view(\''.$link_format.'\')">%06d</span>', $data['Customer Store Key'], $data['Customer Key'], $data['Customer Key']);
+
+
+
+
+            $adata[] = array(
+                'id'           => (integer)$data['Customer Key'],
+                'store_key'    => $data['Customer Store Key'],
+                'formatted_id' => $formatted_id,
+                'name'         => $data['Customer Name'],
+                'location' => $data['Customer Location'],
+                'invoices'  => $data['invoices'],
+                'last_invoice'  => $last_invoice_date,
+                'activity'      => $activity,
+                'invoiced_amount'=>$invoiced_amount,
+                'basket_amount'=>($data['basket_amount']==0?'':money($data['basket_amount'],$data['Invoice Currency Code']))
+
+
+
+            );
+        }
+
+    } else {
+        print_r($error_info = $db->errorInfo());
+        print "$sql\n";
         exit;
     }
 

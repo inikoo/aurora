@@ -246,7 +246,7 @@ if ($user->can_view('stores')) {
 
     if ($user->get('User Hooked Store Key')) {
         $nav_menu[] = array(
-            '<i class="far fa-shopping-basket fa-fw"></i>',
+            '<i class="far fa-cube fa-fw"></i>',
             _('Products'),
             'store/'.$user->get('User Hooked Store Key'),
             'products',
@@ -256,7 +256,7 @@ if ($user->can_view('stores')) {
 
     } else {
         $nav_menu[] = array(
-            '<i class="far fa-shopping-basket fa-fw"></i>',
+            '<i class="far fa-cube fa-fw"></i>',
             _('Stores'),
             'stores',
             'products',

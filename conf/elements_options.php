@@ -95,6 +95,25 @@ $elements_options = array(
 
         )
     ),
+
+
+    'product_category_customers'              => array(
+        'sales_status' => array(
+            'label' => _('Status'),
+            'items' => array(
+                'basket' => array(
+                    'label'    => _('Just in basket'),
+                    'selected' => true
+                ),
+                'ordered' => array(
+                    'label'    => _('Ordered'),
+                    'selected' => true
+                )
+            )
+
+
+        )
+    ),
     'customer_history'       => array(
         'type' => array(
             'label' => _('Type'),

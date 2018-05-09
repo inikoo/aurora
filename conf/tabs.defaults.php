@@ -855,6 +855,8 @@ $tab_defaults = array(
 
     ),
 
+
+
     'product.images'        => array(
         'view'        => 'overview',
         'sort_key'    => 'image_order',
@@ -933,6 +935,31 @@ $tab_defaults = array(
         'elements'      => $elements_options['deal_history']
     ),
 
+
+    'category_customers' => array(
+        'view'          => 'overview',
+        'sort_key'      => 'formatted_id',
+        'sort_order'    => 1,
+        'rpp'           => 100,
+        'rpp_options'   => $default_rrp_options,
+        'f_field'       => 'name',
+
+        'export_fields' => $export_fields['customers']
+
+    ),
+
+    'category_customers_favored' => array(
+        'view'          => 'overview',
+        'sort_key'      => 'formatted_id',
+        'sort_order'    => 1,
+        'rpp'           => 100,
+        'rpp_options'   => $default_rrp_options,
+        'f_field'       => 'name',
+        'elements_type' => each($elements_options['customers']) ['key'],
+        'elements'      => $elements_options['customers'],
+        'export_fields' => $export_fields['customers']
+
+    ),
 
 
     'category.product.sales.history'       => array(

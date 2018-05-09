@@ -450,7 +450,7 @@ $modules = array(
                     ),
                     'email_campaign.email_blueprints' => array(
                         'label' => _('Email HTML templates'),
-                        'icon'  => 'html5'
+                        'icon_v2'  => 'fab fa-html5'
                     ),
 
                     'email_campaign.history' => array(
@@ -994,7 +994,7 @@ $modules = array(
                     ),
                     'email_campaign.email_blueprints' => array(
                         'label' => _('Email HTML templates'),
-                        'icon'  => 'html5'
+                        'icon_v2'  => 'fab fa-html5'
                     ),
 
                     'email_campaign.history' => array(
@@ -1070,7 +1070,7 @@ $modules = array(
                     ),
                     'email_campaign.email_blueprints' => array(
                         'label' => _('Email HTML templates'),
-                        'icon'  => 'html5'
+                        'icon_v2'  => 'fab fa-html5'
                     ),
                     'email_campaign.email_template'   => array(
                         'label' => _('Email'),
@@ -2827,7 +2827,7 @@ $modules = array(
                             ),
                             'webpage.email_blueprints' => array(
                                 'label' => _('Email HTML templates'),
-                                'icon_html'  => '<i class="fab fa-html5"></i>'
+                                'icon_v2'  => 'fab fa-html5'
                             )
 
 
@@ -3101,7 +3101,9 @@ $modules = array(
                     'category.webpage.settings'       => 'category.webpage',
                     'category.webpage.products'       => 'category.webpage',
                     'category.webpage.analytics'      => 'category.webpage',
-                    'category.webpage.logbook'        => 'category.webpage'
+                    'category.webpage.logbook'        => 'category.webpage',
+                    'category.customers'         => 'category.customers',
+                    'category.customers.favored' => 'category.customers',
 
                 ),
                 'tabs'           => array(
@@ -3172,7 +3174,37 @@ $modules = array(
                     ),
 
                     'category.subjects' => array('label' => ''),
+                    'category.customers'         => array(
+                        'label'         => _('Customers'),
+                       // 'quantity_data' => array('object' => '_object', 'field'  => 'Number Customers'),
+                        'icon'=>'user'
+                    ),
 
+                    /*
+                    'category.customers' => array('label' => '',
+
+                                                  'subtabs'       => array(
+                                                      'category.customers'         => array(
+                                                          'label'         => _('Customers'),
+                                                          'quantity_data' => array(
+                                                              'object' => '_object',
+                                                              'field'  => 'Number Customers'
+                                                          ),
+                                                      ),
+                                                      'category.customers.favored' => array(
+                                                          'label'         => _('Customers who favored'),
+                                                          'quantity_data' => array(
+                                                              'object' => '_object',
+                                                              'field'  => 'Number Customers Favored'
+                                                          ),
+
+                                                      ),
+                                                  )
+
+
+                    ),
+
+                    */
 
                     'category.history' => array(
                         'title'         => _('History/Notes'),
@@ -3531,9 +3563,7 @@ $modules = array(
 
 
                     'products' => array(
-                        'label' => _(
-                            'Products'
-                        ),
+                        'label' => _('Products'),
                         'icon'  => 'cube'
                     ),
 
@@ -4904,7 +4934,8 @@ $modules = array(
                         'label' => _('Product families')
                     ),
                     'part_family.products'         => array(
-                        'label' => _('Products')
+                        'label' => _('Products'),
+                        'icon'=>'cubes'
                     ),
 
                     'category.images'  => array(

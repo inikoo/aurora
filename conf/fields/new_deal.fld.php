@@ -57,9 +57,6 @@ $object_fields[] = array(
 );
 
 
-
-
-
 $object_fields[] = array(
     'label'      => _('Beneficiary'),
     'show_title' => true,
@@ -83,27 +80,26 @@ $object_fields[] = array(
         ),
 
         array(
-            'edit'              => 'customer',
-            'class'=>'hide',
-            'id'                => 'Customer',
-            'value'             => '',
-            'label'             => _('Customer'),
-            'invalid_msg'       => get_invalid_message('string'),
-            'required'          => false,
-            'type'            => 'value'
+            'edit'        => 'customer',
+            'class'       => 'hide',
+            'id'          => 'Customer',
+            'value'       => '',
+            'label'       => _('Customer'),
+            'invalid_msg' => get_invalid_message('string'),
+            'required'    => false,
+            'type'        => 'value'
         ),
 
         array(
-            'edit'              => 'customer_list',
-            'class'=>'hide',
-            'id'                => 'customer_list',
-            'value'             => '',
-            'label'             => _('Customer list'),
-            'invalid_msg'       => get_invalid_message('string'),
-            'required'          => false,
-            'type'            => 'value'
+            'edit'        => 'customer_list',
+            'class'       => 'hide',
+            'id'          => 'customer_list',
+            'value'       => '',
+            'label'       => _('Customer list'),
+            'invalid_msg' => get_invalid_message('string'),
+            'required'    => false,
+            'type'        => 'value'
         ),
-
 
 
     ),
@@ -115,7 +111,6 @@ $object_fields[] = array(
     'label'      => _('Terms'),
     'show_title' => true,
     'fields'     => array(
-
 
 
         array(
@@ -139,9 +134,10 @@ $object_fields[] = array(
         array(
             'id'              => 'Deal_Voucher_Type',
             'edit'            => 'no_icon',
-            'class'=>'hide',
+            'class'           => 'hide',
             'value'           => false,
-            'formatted_value' => '<span class="button" onclick="toggle_voucher_auto_code(this)"  field="Deal_Voucher_Type"  style="margin-right:40px"><i class=" fa fa-fw fa-toggle-on" aria-hidden="true"></i> <span class="discreet">'._('Automatically generated').'</span></span>',
+            'formatted_value' => '<span class="button" onclick="toggle_voucher_auto_code(this)"  field="Deal_Voucher_Type"  style="margin-right:40px"><i class=" fa fa-fw fa-toggle-on" aria-hidden="true"></i> <span class="discreet">'._('Automatically generated')
+                .'</span></span>',
             'label'           => _('Voucher code'),
             'required'        => false,
             'type'            => 'value'
@@ -149,7 +145,7 @@ $object_fields[] = array(
         array(
             'edit'              => ($edit ? 'string' : ''),
             'id'                => 'Deal_Voucher_Code',
-            'class'=>'hide',
+            'class'             => 'hide',
             'value'             => '',
             'label'             => ucfirst($object->get_field_label('Voucher code')).' <i onClick="set_voucher_code_as_auto()" class="fa fa-magic button padding_left_10" title="'._('Automatically generated voucher code').'"></i>',
             'invalid_msg'       => get_invalid_message('string'),
@@ -157,22 +153,69 @@ $object_fields[] = array(
             'server_validation' => json_encode(array('tipo' => 'check_for_duplicates')),
             'type'              => 'value'
         ),
-    array(
-            'edit'              => 'asset',
-            'class'=>'hide',
-            'id'                => 'Asset',
-            'value'             => '',
-            'label'             => _('Product/Category'),
-            'invalid_msg'       => get_invalid_message('string'),
-            'required'          => false,
+        array(
+            'edit'        => 'asset',
+            'class'       => 'hide',
+            'id'          => 'Asset',
+            'value'       => '',
+            'label'       => _('Product/Category'),
+            'invalid_msg' => get_invalid_message('string'),
+            'required'    => false,
+            'type'        => 'value'
+        ),
+          array(
+            'edit'        => ($edit ? 'smallint_unsigned' : ''),
+            'id'          => 'Asset_Min_Qty',
+            'class'       => 'hide',
+            'value'       => '',
+            'label'       => _('Minimum outers ordered'),
+            'invalid_msg' => get_invalid_message('smallint_unsigned'),
+            'required'    => false,
+            'type'        => 'value'
+        ),
+
+        array(
+            'edit'            => 'no_icon',
+            'class'           => 'hide',
+            'id'              => 'add_extra_term',
+            'value'           => '',
+            'formatted_value' => '<span onClick="show_extra_term()" class="button "><i class="fa fa-plus fa-fw"></i> '._('Add term').'</span>',
+            'label'           => '',
+            'invalid_msg'     => get_invalid_message('string'),
+            'required'        => false,
             'type'            => 'value'
         ),
+
+        array(
+            'id'              => 'Extra_Terms',
+            'edit'            => 'no_icon',
+            'class'           => 'hide',
+            'value'           => false,
+            'formatted_value' => '
+<div class="button_radio_options">
+<span id="Trigger_Voucher_field" field_type="button_radio_options" field="Trigger_Extra_Amount_Net" class="button" onclick="toggle_new_deal_extra_trigger(this)"  style="border:1px solid #ccc;padding:5px;margin:4px">'._('Minimum order').'</span>  
+</div>
+',
+            'label'           => _('extra term'),
+            'required'        => false,
+            'type'            => 'value'
+        ),
+        array(
+            'edit'        => ($edit ? 'amount' : ''),
+            'id'          => 'Trigger_Extra_Amount_Net',
+            'class'       => 'hide',
+            'value'       => '',
+            'label'       => _('Minimum items net amount'),
+            'invalid_msg' => get_invalid_message('amount'),
+            'required'    => false,
+            'type'        => 'value'
+        )
+
 
     ),
 
 
 );
-
 
 
 ?>
