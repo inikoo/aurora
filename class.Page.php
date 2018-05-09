@@ -2348,7 +2348,8 @@ class Page extends DB_Table {
 
                             }
 
-                        } elseif ($block['type'] == 'products') {
+                        }
+                        elseif ($block['type'] == 'products') {
                             foreach ($block['items'] as $item_key => $item) {
 
                                 if (empty($item['image_mobile_website'])) {
@@ -4916,9 +4917,31 @@ class Page extends DB_Table {
         $image_gallery = array();
         foreach ($product->get_image_gallery() as $image_item) {
             if ($image_item['key'] != $image_data['key']) {
+
+
+                if($image_item['image_website']==''){
+                    foreach( $content_data['blocks'][$block_key]['other_images'] as $_img_data ){
+                        if($_img_data['key']==$image_item['key']   ){
+                            $image_item['image_website']=$_img_data['image_website'];
+                            break;
+                        }
+                    }
+
+                }
                 $image_gallery[] = $image_item;
             }
         }
+
+
+        //$old_image_website=$content_data['blocks'][$block_key]['image']['image_website'];
+
+
+        if($image_data['image_website']==''){
+            if($image_data['key']==$content_data['blocks'][$block_key]['image']['key']){
+                $image_data['image_website']=$content_data['blocks'][$block_key]['image']['image_website'];
+            }
+        }
+
 
         $content_data['blocks'][$block_key]['image'] = array(
 
