@@ -115,8 +115,8 @@
 
 
     <div id="image_control_panel" class="hide object_control_panel" style="z-index: 8000">
-        <div style="margin-bottom: 10px;padding-right: 5px">
-            <i class="fa fa-window-close button" onclick="update_image()"></i>
+        <div style="margin-bottom: 10px;padding-right: 5px;text-align: right">
+            <span onclick="update_image()" class="button unselectable"><i class="fa fa-check button""></i> {t}Apply changes{/t}</span>
         </div>
 
         <table>
@@ -133,7 +133,7 @@
                 <td class="label">{t}Tooltip{/t}</td><td><input class="image_tooltip" style="width: 200px" placeholder="tooltip"></td>
             </tr>
             <tr>
-                <td class="label">{t}Link{/t}</td><td><input class="image_link" style="width: 200px" placeholder="https://"></td>
+                <td class="label">{t}Link{/t}</td><td><input class="image_url" style="width: 200px" placeholder="https://"></td>
             </tr>
 
 
@@ -184,7 +184,7 @@
 
 
 
-                <img src="https://placehold.it/360x120" alt=""   />
+                <img data-type="image_and_text" link=""   src="https://placehold.it/360x120" alt=""   />
 
 
             <div class="new_editor"></div>
@@ -196,7 +196,7 @@
 
 
 
-                <img src="https://placehold.it/360x240" alt=""   />
+                <img data-type="image" link=""  src="https://placehold.it/360x240" alt=""   />
 
 
         </ul>
@@ -464,7 +464,7 @@
                             {elseif $sub_column.type=='text'}
                                 <div id="submenu_{$key}_{$sub_key}" data-type="{$sub_column.type}" class="submenu text">
 
-                                        <img data-type="image_an_text" link="{$sub_column.url}" src="{$sub_column.image}" alt="{$sub_column.title}"/>
+                                        <img data-type="image_and_text" link="{$sub_column.url}" src="{$sub_column.image}" alt="{$sub_column.title}"/>
 
                                     <div class="editor">
                                         {$sub_column.text}

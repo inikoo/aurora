@@ -1521,7 +1521,7 @@ small {
     margin-left: 10px; }
 
 a.real_link span {
-  border-bottom-width: 1px;
+  border-bottom-width: 0px;
   border-bottom-style: dashed;
   border-bottom-color: rgba(255, 255, 255, 0.25);
   padding-bottom: 2px; }
