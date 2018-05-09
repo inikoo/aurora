@@ -351,7 +351,7 @@
 
         <div>
             <i icon="fa fa-tree" class="button  fa fa-fw fa-tree" aria-hidden="true"></i>
-            <i icon="fab fa-pagelines" class="button  fab fa-fw fa-pagelines" aria-hidden="true"></i>
+            <i icon="fab fa-pagelines" class="button fab fa-fw fa-pagelines" aria-hidden="true"></i>
             <i icon="fa fa-leaf" class="button  fa fa-fw fa-leaf" aria-hidden="true"></i>
             <i icon="fa fa-lemon" class="button  fa fa-fw fa-lemon" aria-hidden="true"></i>
             <i icon="fab fa-apple" class="button  fab fa-fw fa-apple" aria-hidden="true"></i>

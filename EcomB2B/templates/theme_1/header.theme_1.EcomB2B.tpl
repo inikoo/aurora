@@ -154,7 +154,7 @@
                 {if $sub_column.type=='items'}
                     <div class="vertical-menu  ">
                         {foreach from=$sub_column.items item=item}
-                            <a href="{$item.url}"><i class="far item_icon fa-fw {$item.icon}"></i> <span class="_item_label">{$item.label}</span></a>
+                            <a href="{$item.url}"><i class="item_icon fa-fw {$item.icon}"></i> <span class="_item_label">{$item.label}</span></a>
                         {/foreach}
                     </div>
                 {elseif $sub_column.type=='text'}
