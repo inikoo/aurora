@@ -25,7 +25,7 @@
             <figure class="main_image" style="margin: 0px;padding:0px" itemprop="associatedMedia" itemscope itemtype="http://schema.org/ImageObject">
 
                 <a href="{$data.image.src}" itemprop="contentUrl" data-w="{$data.image.width}" data-h="{$data.image.height}">
-                    <img style="max-width: 330px;max-height: 330px" src="{$data.image.image_website}" itemprop="image" alt="{$data.image.caption}">
+                    <img style="max-width: 330px;max-height: 330px" src="{if $data.image.image_website=='' }{$data.image.src}{else}{$data.image.image_website}{/if}" itemprop="image" title="{$data.image.caption}" alt="{$data.image.caption}">
                 </a>
             </figure>
 
@@ -36,7 +36,7 @@
 
                     >
                         <a href="{$image.src}" itemprop="contentUrl" data-w="{$image.width}" data-h="{$image.height}">
-                            <img style="height: 50px" src="{$image.image_website}" itemprop="thumbnail" alt="{$image.caption}"/>
+                            <img style="height: 50px" src="{if $image.image_website=='' }{$image.src}{else}{$image.image_website}{/if}" itemprop="thumbnail" alt="{$image.caption}"/>
                         </a>
                     </figure>
                 {/foreach}
