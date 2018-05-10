@@ -23,27 +23,24 @@ $editor = array(
 );
 
 
-
-
 $sql = sprintf('SELECT `Page Key` FROM `Page Store Dimension` ');
-if ($result=$db->query($sql)) {
-		foreach ($result as $row) {
+if ($result = $db->query($sql)) {
+    foreach ($result as $row) {
 
-            $webpage = get_object('Webpage', $row['Page Key']);
-
-
-
-            $webpage->refill_see_also(false,5);
+        $webpage = get_object('Webpage', $row['Page Key']);
 
 
-		}
-}else {
-		print_r($error_info=$db->errorInfo());
-		print "$sql\n";
-		exit;
+        $webpage->refill_see_also(false, 5);
+
+        $webpage->reindex_items();
+
+
+    }
+} else {
+    print_r($error_info = $db->errorInfo());
+    print "$sql\n";
+    exit;
 }
-
-
 
 
 ?>
