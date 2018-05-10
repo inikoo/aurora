@@ -33,7 +33,9 @@ if ($result = $db->query($sql)) {
         $webpage->refill_see_also(false, 5);
 
         $webpage->reindex_items();
-        print $webpage->get('Code')."\n";
+        print $webpage->id.' '.$webpage->get('Webpage URL')."\n";
+
+
 
 
     }
