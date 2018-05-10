@@ -1132,86 +1132,97 @@ class Page extends DB_Table {
 
                 $max_customers = 0;
 
-                $sql = sprintf(
-                    "SELECT P.`Product ID`,P.`Product Code`,`Product Web State`,`Product Webpage Key`,`Product Total Acc Customers` FROM `Product Dimension` P LEFT JOIN `Product Data Dimension` D ON (P.`Product ID`=D.`Product ID`)    LEFT JOIN `Page Store Dimension` ON (`Page Key`=`Product Webpage Key`)  WHERE  `Product Web State`='For Sale' AND `Webpage State`='Online' AND P.`Product ID`!=%d  AND `Product Family Category Key`=%d ORDER BY `Product Total Acc Customers` DESC  ",
-                    $product->id, $product->get('Product Family Category Key')
 
-                );
+                if($product->get('Product Family Category Key')>0){
+                    $sql = sprintf(
+                        "SELECT P.`Product ID`,P.`Product Code`,`Product Web State`,`Product Webpage Key`,`Product Total Acc Customers` FROM `Product Dimension` P LEFT JOIN `Product Data Dimension` D ON (P.`Product ID`=D.`Product ID`)    LEFT JOIN `Page Store Dimension` ON (`Page Key`=`Product Webpage Key`)  
+                      WHERE  `Product Web State`='For Sale' AND `Webpage State`='Online' AND P.`Product ID`!=%d  AND `Product Family Category Key`=%d ORDER BY `Product Total Acc Customers` DESC  ",
+                        $product->id, $product->get('Product Family Category Key')
 
-                if ($result = $this->db->query($sql)) {
-                    foreach ($result as $row) {
+                    );
+
+                    if ($result = $this->db->query($sql)) {
+                        foreach ($result as $row) {
 
 
-                        if (!array_key_exists($row['Product ID'], $see_also) and $row['Product Webpage Key']) {
+                            if (!array_key_exists($row['Product ID'], $see_also) and $row['Product Webpage Key']) {
 
 
-                            if ($max_customers == 0) {
-                                $max_customers = $row['Product Total Acc Customers'];
+                                if ($max_customers == 0) {
+                                    $max_customers = $row['Product Total Acc Customers'];
+                                }
+
+
+                                $rnd = mt_rand() / mt_getrandmax();
+
+                                $see_also[$row['Product Webpage Key']] = array(
+                                    'type'     => 'Same Family',
+                                    'value'    => .25 * $rnd * ($row['Product Total Acc Customers'] == 0 ? 1 : $row['Product Total Acc Customers']) / ($max_customers == 0 ? 1 : $max_customers),
+                                    'page_key' => $row['Product Webpage Key']
+                                );
+                                $number_links                          = count($see_also);
+                                if ($number_links >= $max_links) {
+                                    break;
+                                }
                             }
 
-
-                            $rnd = mt_rand() / mt_getrandmax();
-
-                            $see_also[$row['Product Webpage Key']] = array(
-                                'type'     => 'Same Family',
-                                'value'    => .25 * $rnd * ($row['Product Total Acc Customers'] == 0 ? 1 : $row['Product Total Acc Customers']) / ($max_customers == 0 ? 1 : $max_customers),
-                                'page_key' => $row['Product Webpage Key']
-                            );
-                            $number_links                          = count($see_also);
-                            if ($number_links >= $max_links) {
-                                break;
-                            }
                         }
-
+                    } else {
+                        print_r($error_info = $this->db->errorInfo());
+                        print "$sql\n";
+                        exit;
                     }
-                } else {
-                    print_r($error_info = $this->db->errorInfo());
-                    print "$sql\n";
-                    exit;
+
                 }
+
+
 
 
                 if ($number_links >= $max_links) {
                     break;
                 }
                 $max_customers = 0;
-                $sql           = sprintf(
-                    "SELECT P.`Product ID`,P.`Product Code`,`Product Web State`,`Product Webpage Key`,`Product Total Acc Customers` FROM `Product Dimension` P LEFT JOIN `Product Data Dimension` D ON (P.`Product ID`=D.`Product ID`)    LEFT JOIN `Page Store Dimension` ON (`Page Key`=`Product Webpage Key`)  WHERE  `Product Web State`='For Sale' AND `Webpage State`='Online' AND P.`Product ID`!=%d  AND `Product Store Key`=%d ORDER BY `Product Total Acc Customers` DESC  ",
-                    $product->id, $product->get('Product Store Key')
-
-                );
-
-                if ($result = $this->db->query($sql)) {
-                    foreach ($result as $row) {
 
 
-                        if (!array_key_exists($row['Product ID'], $see_also) and $row['Product Webpage Key']) {
+                 if($product->get('Product Store Key')>0) {
 
-                            if ($max_customers == 0) {
-                                $max_customers = $row['Product Total Acc Customers'];
-                            }
+                     $sql = sprintf(
+                         "SELECT P.`Product ID`,P.`Product Code`,`Product Web State`,`Product Webpage Key`,`Product Total Acc Customers` FROM `Product Dimension` P LEFT JOIN `Product Data Dimension` D ON (P.`Product ID`=D.`Product ID`)    LEFT JOIN `Page Store Dimension` ON (`Page Key`=`Product Webpage Key`)  
+                      WHERE  `Product Web State`='For Sale' AND `Webpage State`='Online' AND P.`Product ID`!=%d  AND `Product Store Key`=%d ORDER BY `Product Total Acc Customers` DESC  ", $product->id, $product->get('Product Store Key')
+
+                     );
+
+                     if ($result = $this->db->query($sql)) {
+                         foreach ($result as $row) {
 
 
-                            $rnd = mt_rand() / mt_getrandmax();
+                             if (!array_key_exists($row['Product ID'], $see_also) and $row['Product Webpage Key']) {
 
-                            $see_also[$row['Product Webpage Key']] = array(
-                                'type'     => 'Other',
-                                'value'    => .1 * $rnd * ($row['Product Total Acc Customers'] == 0 ? 1 : $row['Product Total Acc Customers']) / ($max_customers == 0 ? 1 : $max_customers),
-                                'page_key' => $row['Product Webpage Key']
-                            );
-                            $number_links                          = count($see_also);
-                            if ($number_links >= $max_links) {
-                                break;
-                            }
-                        }
+                                 if ($max_customers == 0) {
+                                     $max_customers = $row['Product Total Acc Customers'];
+                                 }
 
-                    }
-                } else {
-                    print_r($error_info = $this->db->errorInfo());
-                    print "$sql\n";
-                    exit;
-                }
 
+                                 $rnd = mt_rand() / mt_getrandmax();
+
+                                 $see_also[$row['Product Webpage Key']] = array(
+                                     'type'     => 'Other',
+                                     'value'    => .1 * $rnd * ($row['Product Total Acc Customers'] == 0 ? 1 : $row['Product Total Acc Customers']) / ($max_customers == 0 ? 1 : $max_customers),
+                                     'page_key' => $row['Product Webpage Key']
+                                 );
+                                 $number_links                          = count($see_also);
+                                 if ($number_links >= $max_links) {
+                                     break;
+                                 }
+                             }
+
+                         }
+                     } else {
+                         print_r($error_info = $this->db->errorInfo());
+                         print "$sql\n";
+                         exit;
+                     }
+                 }
 
                 break;
             default:
