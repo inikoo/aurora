@@ -29,11 +29,11 @@ if ($result = $db->query($sql)) {
 
         $webpage = get_object('Webpage', $row['Page Key']);
 
-
+        print $webpage->id.' '.$webpage->get('Webpage URL')."\n";
         $webpage->refill_see_also(false, 5);
 
-       
-        print $webpage->id.' '.$webpage->get('Webpage URL')."\n";
+
+
 
 
 
