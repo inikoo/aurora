@@ -39,7 +39,7 @@ $editor = array(
     'Author Alias' => 'Script (fix offline)',
 );
 
-
+/*
 
 $sql=sprintf('select `Product Category Webpage Key` from `Product Category Dimension` where `Product Category Public`="No" ');
 if ($result=$db->query($sql)) {
@@ -62,6 +62,8 @@ if ($result=$db->query($sql)) {
 
 
 exit;
+
+*/
 
 $sql = sprintf("SELECT `History Abstract`,`Direct Object Key`,`History Date`  FROM  `History Dimension`  WHERE `Indirect Object`='Product Web Configuration' AND `History Date`  > '2018-01-01 00:52:48' AND `User Key`=0    ORDER BY `History Date` ASC;");
 
