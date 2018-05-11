@@ -176,6 +176,52 @@ switch ($_REQUEST['action']) {
         exit;
         break;
 
+    case 'get_delivery_note_items':
+
+        if (!isset($_REQUEST['delivery_note_key'])) {
+            $response = array(
+                'state' => 'Error',
+                'msg'   => 'delivery_note_key needed'
+            );
+            echo json_encode($response);
+            exit;
+        }
+
+        if (!is_numeric($_REQUEST['delivery_note_key'])  or $_REQUEST['delivery_note_key']<=0 ) {
+            $response = array(
+                'state' => 'Error',
+                'msg'   => 'invalid delivery_note_key: '.$_REQUEST['delivery_note_key']
+            );
+            echo json_encode($response);
+            exit;
+        }
+
+
+        $items=array();
+
+        $sql=sprintf('select * from `Inventory Transaction Fact` where `Delivery Note Key`=%d ',$_REQUEST['delivery_note_key']);
+
+        if ($result=$db->query($sql)) {
+        		foreach ($result as $row) {
+                    $items[]=$row;
+        		}
+        }else {
+        		print_r($error_info=$db->errorInfo());
+        		//print "$sql\n";
+        		exit;
+        }
+
+
+
+
+        $response = array(
+            'state' => 'OK',
+            'data'  => $items
+        );
+        echo json_encode($response);
+        exit;
+        break;
+
 
     case 'get_part_data':
         $part = get_object('part', $_REQUEST['part_sku']);

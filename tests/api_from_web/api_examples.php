@@ -143,6 +143,11 @@
         </tr>
 
 
+        <tr>
+            <td colspan="2">
+                <button id="get_delivery_note_items">Get delivery note items</button>
+            </td>
+        </tr>
 
     </table>
 </div>
@@ -193,6 +198,12 @@
     $("#get_delivery_note").click(function () {
         get_delivery_note()
     });
+
+    $("#get_delivery_note_items").click(function () {
+        get_delivery_note_items()
+    });
+
+
 
 
     function search_location_by_code() {
@@ -404,6 +415,36 @@
 
 
     }
+
+
+
+
+
+
+    function get_delivery_note_items(){
+        set_up_credentials();
+
+        var action = 'get_delivery_note_items';
+        var delivery_note_key = 1478;
+
+
+        var ajaxData = new FormData();
+        ajaxData.append("action", action)
+        ajaxData.append("delivery_note_key", delivery_note_key)
+
+
+        $.ajax({
+            url: api_url, type: 'POST', data: ajaxData, dataType: 'json', cache: false, contentType: false, processData: false, complete: function () {
+            }, success: function (data) {
+                console.log(data)
+            }, error: function () {
+                console.log(data)
+            }
+        });
+
+
+    }
+
 
     function get_employee_data() {
 
