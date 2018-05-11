@@ -66,7 +66,6 @@ switch ($_REQUEST['action']) {
         }
 
 
-
         include_once 'class.PartLocation.php';
 
         $editor = array(
@@ -77,7 +76,6 @@ switch ($_REQUEST['action']) {
             'User Key'     => $user->id,
             'Date'         => gmdate('Y-m-d H:i:s')
         );
-
 
 
         $part_location         = new PartLocation($_REQUEST['part_sku'], $_REQUEST['location_key']);
@@ -187,7 +185,7 @@ switch ($_REQUEST['action']) {
             exit;
         }
 
-        if (!is_numeric($_REQUEST['delivery_note_key'])  or $_REQUEST['delivery_note_key']<=0 ) {
+        if (!is_numeric($_REQUEST['delivery_note_key']) or $_REQUEST['delivery_note_key'] <= 0) {
             $response = array(
                 'state' => 'Error',
                 'msg'   => 'invalid delivery_note_key: '.$_REQUEST['delivery_note_key']
@@ -196,22 +194,37 @@ switch ($_REQUEST['action']) {
             exit;
         }
 
+        include_once 'class.PartLocation.php';
+        $items = array();
 
-        $items=array();
+        $sql =
+            sprintf('select * from `Inventory Transaction Fact` ITF left join `Part Dimension` P on (P.`Part SKU`=ITF.`Part SKU`) left join `Location Dimension` L on (L.`Location Key`=ITF.`Location Key`)  where `Delivery Note Key`=%d ', $_REQUEST['delivery_note_key']);
 
-        $sql=sprintf('select * from `Inventory Transaction Fact` where `Delivery Note Key`=%d ',$_REQUEST['delivery_note_key']);
+        if ($result = $db->query($sql)) {
+            foreach ($result as $row) {
 
-        if ($result=$db->query($sql)) {
-        		foreach ($result as $row) {
-                    $items[]=$row;
-        		}
-        }else {
-        		print_r($error_info=$db->errorInfo());
-        		//print "$sql\n";
-        		exit;
+                $part_location_data = array();
+                $sql                = sprintf('select * from `Part Location Dimension`  where `Part SKU`=%d and `Location Key`=%d ', $row['Part SKU'], $row['Location Key']);
+
+                if ($result2 = $db->query($sql)) {
+                    foreach ($result2 as $row2) {
+                        $part_location_data = $row2;
+                    }
+                }
+
+
+                $part_location = new PartLocation($row['Part SKU'], $row['Location Key']);
+
+                $items[] = array(
+                    'item'          => $row,
+                    'part_location' => $part_location_data
+                );
+            }
+        } else {
+            print_r($error_info = $db->errorInfo());
+            //print "$sql\n";
+            exit;
         }
-
-
 
 
         $response = array(
@@ -431,7 +444,6 @@ switch ($_REQUEST['action']) {
         }
 
 
-
         include_once 'class.PartLocation.php';
 
         $editor = array(
@@ -452,9 +464,6 @@ switch ($_REQUEST['action']) {
 
 
         $part_location = new PartLocation('find', $part_location_data, 'create');
-
-
-
 
 
         $response = array(
@@ -513,9 +522,9 @@ switch ($_REQUEST['action']) {
             echo json_encode($response);
             exit;
 
-        }else{
+        } else {
 
-            if ($part_location->get('Quantity On Hand') !=0) {
+            if ($part_location->get('Quantity On Hand') != 0) {
 
                 $response = array(
                     'state' => 'Error',
@@ -526,7 +535,7 @@ switch ($_REQUEST['action']) {
                 echo json_encode($response);
                 exit;
 
-            }else{
+            } else {
 
 
                 $part_location->disassociate();
@@ -541,10 +550,7 @@ switch ($_REQUEST['action']) {
             }
 
 
-
-
         }
-
 
 
         exit;
@@ -697,7 +703,6 @@ switch ($_REQUEST['action']) {
             'User Key'     => $user->id,
             'Date'         => gmdate('Y-m-d H:i:s')
         );
-
 
 
         $part_location_from         = new PartLocation($_REQUEST['part_sku'], $_REQUEST['location_from_key']);
