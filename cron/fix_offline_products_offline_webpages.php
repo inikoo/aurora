@@ -72,7 +72,7 @@ $sql = sprintf("SELECT `History Abstract`,`Direct Object Key`,`History Date`  FR
 if ($result = $db->query($sql)) {
     foreach ($result as $row) {
 
-        print_r($row);
+       // print_r($row);
 
         $product = get_object('Product', $row['Direct Object Key']);
         $product->editor=$editor;
