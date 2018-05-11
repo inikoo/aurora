@@ -85,7 +85,7 @@ if ($result = $db->query($sql)) {
                 )
             );
 
-            print $product->id."\n";
+            print $product->get('Code')."\n";
 
         }else{
             // print_r($product);
