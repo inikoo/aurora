@@ -64,7 +64,7 @@ class DeliveryNote extends DB_Table {
             );
         } elseif ($tipo == 'public_id') {
             $sql = sprintf(
-                "SELECT * FROM `Delivery Note Dimension` WHERE  `Delivery Note Public ID`=%s", prepare_mysql($tag)
+                "SELECT * FROM `Delivery Note Dimension` WHERE  `Delivery Note ID`=%s", prepare_mysql($tag)
             );
 
         } else {
@@ -72,7 +72,7 @@ class DeliveryNote extends DB_Table {
          // print
             return;
         }
-        //  print $sql;
+       //   print $sql;
 
 
         if ($this->data = $this->db->query($sql)->fetch()) {

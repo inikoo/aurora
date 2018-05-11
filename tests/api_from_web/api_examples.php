@@ -59,7 +59,7 @@
                 Url
             </td>
             <td>
-                <input id="api_url" value="http://au.bali/api/stock" style="width:400px">
+                <input id="api_url" value="http://au.bali/api/picking" style="width:400px">
             </td>
         </tr>
         <tr>
@@ -67,7 +67,7 @@
                 Handle
             </td>
             <td>
-                <input id="api_handle" value="69d5117b" style="width:400px">
+                <input id="api_handle" value="30bf6b09" style="width:400px">
             </td>
         </tr>
         <tr>
@@ -75,7 +75,7 @@
                 Key
             </td>
             <td>
-                <input id="api_key" value="UE1lR0FiOUt1TnVONGU1ZWltNk4yaGVYdUQ1Yjl3NERFUTRQNms4Zg==" style="width:400px">
+                <input id="api_key" value="UDN0QUs2UDN4aWc4aDlTN3lpanVQRXN1YzJiYUIyYjNWOWthUFVWZQ==" style="width:400px">
             </td>
         </tr>
         <tr>
@@ -136,6 +136,12 @@
         </tr>
 
 
+        <tr>
+            <td colspan="2">
+                <button id="get_delivery_note">Get delivery note</button>
+            </td>
+        </tr>
+
 
 
     </table>
@@ -184,7 +190,9 @@
     $("#set_picking_location").click(function () {
         set_picking_location()
     });
-
+    $("#get_delivery_note").click(function () {
+        get_delivery_note()
+    });
 
 
     function search_location_by_code() {
@@ -373,6 +381,30 @@
     }
 
 
+    function get_delivery_note(){
+        set_up_credentials();
+
+        var action = 'get_delivery_note_from_public_id';
+        var public_id = 314944;
+
+
+        var ajaxData = new FormData();
+        ajaxData.append("action", action)
+        ajaxData.append("public_id", public_id)
+
+
+        $.ajax({
+            url: api_url, type: 'POST', data: ajaxData, dataType: 'json', cache: false, contentType: false, processData: false, complete: function () {
+            }, success: function (data) {
+                console.log(data)
+            }, error: function () {
+                console.log(data)
+            }
+        });
+
+
+    }
+
     function get_employee_data() {
 
         set_up_credentials();
@@ -419,6 +451,13 @@
 
 
     }
+
+
+
+
+
+
+
 
 
     function set_up_credentials() {
