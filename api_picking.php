@@ -145,7 +145,7 @@ switch ($_REQUEST['action']) {
 
         include_once 'class.DeliveryNote.php';
 
-        $delivery_note = new DeliveryNote('barcode', $_REQUEST['public_id']);
+        $delivery_note = new DeliveryNote('public_id', $_REQUEST['public_id']);
 
         if (!$delivery_note->id) {
             $response = array(
