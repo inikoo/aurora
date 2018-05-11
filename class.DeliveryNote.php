@@ -68,9 +68,11 @@ class DeliveryNote extends DB_Table {
             );
 
         } else {
+
+         // print
             return;
         }
-          print $sql;
+        //  print $sql;
 
 
         if ($this->data = $this->db->query($sql)->fetch()) {
