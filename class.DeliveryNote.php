@@ -66,6 +66,7 @@ class DeliveryNote extends DB_Table {
             $sql = sprintf(
                 "SELECT * FROM `Delivery Note Dimension` WHERE  `Delivery Note Public ID`=%s", prepare_mysql($tag)
             );
+            print $sql;
         } else {
             return;
         }
