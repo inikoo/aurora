@@ -96,6 +96,12 @@ function authorization($db, $user_key, $api_key_key, $scope) {
 
 
             break;
+        case 'Picking':
+
+            include_once 'api_picking.php';
+
+
+            break;
         default:
             $response = log_api_key_access_failure(
                 $db, $api_key_key, 'Fail_Access', 'Unknown scope'
