@@ -143,6 +143,16 @@ switch ($_REQUEST['action']) {
 
     case 'get_delivery_note_from_public_id':
 
+        if (!isset($_REQUEST['public_id'])) {
+            $response = array(
+                'state' => 'Error',
+                'msg'   => 'public_id needed'
+            );
+            echo json_encode($response);
+            exit;
+        }
+
+
         include_once 'class.DeliveryNote.php';
 
         $delivery_note = new DeliveryNote('public_id', $_REQUEST['public_id']);
