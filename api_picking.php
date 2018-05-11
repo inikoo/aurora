@@ -140,6 +140,33 @@ switch ($_REQUEST['action']) {
         echo json_encode($response);
         exit;
         break;
+
+    case 'get_delivery_note_from_public_id':
+
+        include_once 'class.DeliveryNote.php';
+
+        $delivery_note = new DeliveryNote('barcode', $_REQUEST['public_id']);
+
+        if (!$part->id) {
+            $response = array(
+                'state' => 'Error',
+                'msg'   => 'delivery note not found'
+            );
+            echo json_encode($response);
+            exit;
+        }
+
+        $data = $part->data;
+
+        $response = array(
+            'state' => 'OK',
+            'data'  => $data
+        );
+        echo json_encode($response);
+        exit;
+        break;
+
+
     case 'get_part_data':
         $part = get_object('part', $_REQUEST['part_sku']);
 
