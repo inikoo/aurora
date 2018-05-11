@@ -147,7 +147,7 @@ switch ($_REQUEST['action']) {
 
         $delivery_note = new DeliveryNote('barcode', $_REQUEST['public_id']);
 
-        if (!$part->id) {
+        if (!$delivery_note->id) {
             $response = array(
                 'state' => 'Error',
                 'msg'   => 'delivery note not found'
@@ -156,7 +156,7 @@ switch ($_REQUEST['action']) {
             exit;
         }
 
-        $data = $part->data;
+        $data = $delivery_note->data;
 
         $response = array(
             'state' => 'OK',
