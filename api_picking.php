@@ -211,7 +211,7 @@ switch ($_REQUEST['action']) {
 
 
 
-    if($_REQUEST['action']=='set_picker'){
+    if($_REQUEST['action']=='unset_picker'){
 
         $type='Picker';
     }else{
