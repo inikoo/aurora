@@ -9,11 +9,6 @@
 
 */
 
-if (!isset($_REQUEST['id']) or !is_numeric($_REQUEST['id']) or !$_REQUEST['id']) {
-    exit();
-} else {
-    $email_send_key = $_REQUEST['id'];
-}
 
 
 require_once 'keyring/dns.php';
