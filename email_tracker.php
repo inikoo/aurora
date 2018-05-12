@@ -20,7 +20,7 @@ $db->setAttribute(PDO::ATTR_DEFAULT_FETCH_MODE, PDO::FETCH_ASSOC);
 
 
 $sql = sprintf(
-    'insert into atest  values(NOW(),"%s","%s")  ', addslashes(json_encode(getallheaders())), addslashes(json_encode($_REQUEST))
+    'insert into atest  (`date`,`headers`,`request`) values (NOW(),"%s","%s")  ', addslashes(json_encode(getallheaders())), addslashes(json_encode($_REQUEST))
 
     );
 
