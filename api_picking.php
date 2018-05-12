@@ -174,6 +174,184 @@ switch ($_REQUEST['action']) {
         exit;
         break;
 
+
+    case 'unset_picker':
+    case 'unset_packer':
+    if (!isset($_REQUEST['delivery_note_key'])) {
+        $response = array(
+            'state' => 'Error',
+            'msg'   => 'delivery_note_key needed'
+        );
+        echo json_encode($response);
+        exit;
+    }
+
+    if (!is_numeric($_REQUEST['delivery_note_key']) or $_REQUEST['delivery_note_key'] <= 0) {
+        $response = array(
+            'state' => 'Error',
+            'msg'   => 'invalid delivery_note_key: '.$_REQUEST['delivery_note_key']
+        );
+        echo json_encode($response);
+        exit;
+    }
+
+
+
+    $delivery_note = get_object('DeliveryNote', $_REQUEST['delivery_note_key']);
+
+    if (!$delivery_note->){
+        $response = array(
+            'state' => 'Error',
+            'msg'   => 'delivery note not found'
+        );
+        echo json_encode($response);
+        exit;
+    }
+
+
+
+
+    if($_REQUEST['action']=='set_picker'){
+
+        $type='Picker';
+    }else{
+        $type='Packer';
+    }
+
+    $delivery_note->update(
+        array(
+            'Delivery Note Assigned '.$type.' Key'   => '',
+            'Delivery Note Assigned '.$type.' Alias' =>''
+        )
+    );
+
+
+    $response = array(
+        'state' => 'OK',
+        'data'  => $delivery_note->update_metadata()
+    );
+    echo json_encode($response);
+    exit;
+    break;
+
+    case 'set_picker':
+    case 'set_packer':
+
+        if (!isset($_REQUEST['delivery_note_key'])) {
+            $response = array(
+                'state' => 'Error',
+                'msg'   => 'delivery_note_key needed'
+            );
+            echo json_encode($response);
+            exit;
+        }
+
+        if (!is_numeric($_REQUEST['delivery_note_key']) or $_REQUEST['delivery_note_key'] <= 0) {
+            $response = array(
+                'state' => 'Error',
+                'msg'   => 'invalid delivery_note_key: '.$_REQUEST['delivery_note_key']
+            );
+            echo json_encode($response);
+            exit;
+        }
+
+
+        if (!isset($_REQUEST['staff_key'])) {
+            $response = array(
+                'state' => 'Error',
+                'msg'   => 'staff_key needed'
+            );
+            echo json_encode($response);
+            exit;
+        }
+
+        if (!is_numeric($_REQUEST['staff_key']) or $_REQUEST['staff_key'] <= 0) {
+            $response = array(
+                'state' => 'Error',
+                'msg'   => 'invalid staff_key: '.$_REQUEST['staff_key']
+            );
+            echo json_encode($response);
+            exit;
+        }
+
+        $delivery_note = get_object('DeliveryNote', $_REQUEST['delivery_note_key']);
+
+        if (!$delivery_note->){
+            $response = array(
+                'state' => 'Error',
+                'msg'   => 'delivery note not found'
+            );
+            echo json_encode($response);
+            exit;
+        }
+
+        $staff = get_object('staff', $_REQUEST['staff_key']);
+        if (!$staff->id) {
+            $response = array(
+                'state' => 'Error',
+                'msg'   => 'staff not found'
+            );
+            echo json_encode($response);
+            exit;
+
+        }
+
+
+        if($_REQUEST['action']=='set_picker'){
+
+            $type='Picker';
+        }else{
+            $type='Packer';
+        }
+
+        $delivery_note->update(
+            array(
+                'Delivery Note Assigned '.$type.' Key'   => $staff->id,
+                'Delivery Note Assigned '.$type.' Alias' => $staff->get('Alias')
+            )
+        );
+
+
+        $response = array(
+            'state' => 'OK',
+            'data'  => $delivery_note->update_metadata()
+        );
+        echo json_encode($response);
+        exit;
+        break;
+
+
+    case 'start_picking':
+
+        if (!isset($_REQUEST['delivery_note_key'])) {
+            $response = array(
+                'state' => 'Error',
+                'msg'   => 'delivery_note_key needed'
+            );
+            echo json_encode($response);
+            exit;
+        }
+
+        if (!is_numeric($_REQUEST['delivery_note_key']) or $_REQUEST['delivery_note_key'] <= 0) {
+            $response = array(
+                'state' => 'Error',
+                'msg'   => 'invalid delivery_note_key: '.$_REQUEST['delivery_note_key']
+            );
+            echo json_encode($response);
+            exit;
+        }
+
+        $delivery_note = get_object('DeliveryNote', $_REQUEST['delivery_note_key']);
+        $delivery_note->update_state('Picking');
+
+        $response = array(
+            'state' => 'OK',
+            'data'  => $delivery_note->update_metadata()
+        );
+        echo json_encode($response);
+        exit;
+        break;
+
     case 'get_delivery_note_items':
 
         if (!isset($_REQUEST['delivery_note_key'])) {
