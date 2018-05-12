@@ -19,8 +19,10 @@ $db = new PDO(
 $db->setAttribute(PDO::ATTR_DEFAULT_FETCH_MODE, PDO::FETCH_ASSOC);
 
 
+$postBody = file_get_contents('php://input');
+
 $sql = sprintf(
-    'insert into atest  (`date`,`headers`,`request`) values (NOW(),"%s","%s")  ', addslashes(json_encode(getallheaders())), addslashes(json_encode($_REQUEST))
+    'insert into atest  (`date`,`headers`,`request`) values (NOW(),"%s","%s")  ', addslashes(json_encode(getallheaders())), addslashes($postBody)
 
     );
 
