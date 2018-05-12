@@ -228,7 +228,7 @@ switch ($_REQUEST['action']) {
 
     $response = array(
         'state' => 'OK',
-        'data'  => $delivery_note->update_metadata()
+        'data'  => $delivery_note->get_update_metadata()
     );
     echo json_encode($response);
     exit;
@@ -314,7 +314,7 @@ switch ($_REQUEST['action']) {
 
         $response = array(
             'state' => 'OK',
-            'data'  => $delivery_note->update_metadata()
+            'data'  => $delivery_note->get_update_metadata()
         );
         echo json_encode($response);
         exit;
@@ -346,7 +346,7 @@ switch ($_REQUEST['action']) {
 
         $response = array(
             'state' => 'OK',
-            'data'  => $delivery_note->update_metadata()
+            'data'  => $delivery_note->get_update_metadata()
         );
         echo json_encode($response);
         exit;
