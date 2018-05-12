@@ -199,7 +199,7 @@ switch ($_REQUEST['action']) {
 
     $delivery_note = get_object('DeliveryNote', $_REQUEST['delivery_note_key']);
 
-    if (!$delivery_note->){
+    if (!$delivery_note->id){
         $response = array(
             'state' => 'Error',
             'msg'   => 'delivery note not found'
@@ -276,7 +276,7 @@ switch ($_REQUEST['action']) {
 
         $delivery_note = get_object('DeliveryNote', $_REQUEST['delivery_note_key']);
 
-        if (!$delivery_note->){
+        if (!$delivery_note->id){
             $response = array(
                 'state' => 'Error',
                 'msg'   => 'delivery note not found'
