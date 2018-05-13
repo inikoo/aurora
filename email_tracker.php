@@ -57,6 +57,11 @@ try {
                         $event_type = 'Send';
 
                         break;
+                    case 'Delivery':
+                        $event_type = 'Delivery';
+                        $date       = gmdate('Y-m-d H:i:s', strtotime($message['delivery']['timestamp']));
+
+                        break;
                     case 'Open':
                         $event_type = 'Open';
                         $date       = gmdate('Y-m-d H:i:s', strtotime($message['open']['timestamp']));
