@@ -14,23 +14,17 @@ require 'vendor/autoload.php';
 use Aws\Sns\Message;
 use Aws\Sns\MessageValidator;
 
-/*
+
 if ('POST' !== $_SERVER['REQUEST_METHOD']) {
     http_response_code(405);
     die;
 }
-*/
-
-
-try {
-
-
-    $message   = Message::fromRawPostData();
-    $validator = new AwsSnsMessageValidator();
-    $validator->MessageValidator($message);
 
 
 
+$message   = Message::fromRawPostData();
+$validator = new MessageValidator();
+if ($validator->isValid($message)) {
 
     if (in_array(
         $message['Type'], array(
@@ -40,7 +34,8 @@ try {
     )) {
 
         file_get_contents($message['SubscribeURL']);
-    } else {
+    }
+    else {
         require_once 'utils/general_functions.php';
         require_once 'keyring/dns.php';
         require 'external_libs/aws.phar';
@@ -98,7 +93,7 @@ try {
 
                 );
 
-            }else{
+            } else {
                 $sql = sprintf(
                     'insert into atest  (`date`,`headers`,`request`) values (NOW(),"%s","%s")  ', '', addslashes(json_decode($message))
 
@@ -114,11 +109,10 @@ try {
 
 
     }
+} else {
 
-
-} catch (Exception $e) {
     http_response_code(404);
-    die;
+    exit;
 }
 
 
