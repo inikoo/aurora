@@ -30,42 +30,39 @@ $db = new PDO(
 $db->setAttribute(PDO::ATTR_DEFAULT_FETCH_MODE, PDO::FETCH_ASSOC);
 
 
-$sns   = Message::fromRawPostData();
+$sns       = Message::fromRawPostData();
 $validator = new MessageValidator();
 if ($validator->isValid($sns)) {
 
 
+    $sql = sprintf('insert into atest  (`date`,`headers`,`request`) values (NOW(),"%s","%s")  ', 'xx', addslashes( print_r($sns,true)  ));
 
-
+     $db->exec($sql);
 
 
     if (in_array(
         $sns['Type'], array(
-                            'SubscriptionConfirmation',
-                            'UnsubscribeConfirmation'
-                        )
+                        'SubscriptionConfirmation',
+                        'UnsubscribeConfirmation'
+                    )
     )) {
 
         file_get_contents($message['SubscribeURL']);
-    }
-    else {
+    } else {
 
 
-$message=json_decode($sns['Message'],true);
+        $message = json_decode($sns['Message'], true);
 
 
-        $sql = sprintf(
-            'insert into atest  (`date`,`headers`,`request`) values (NOW(),"%s","%s")  ', 'xx', addslashes(json_encode($message))
+        // $sql = sprintf('insert into atest  (`date`,`headers`,`request`) values (NOW(),"%s","%s")  ', 'xx', addslashes(json_encode($message)));
 
-        );
-
-        $db->exec($sql);
+        // $db->exec($sql);
 
 
         $sql = sprintf('select `Email Tracking Key`  from `Email Tracking Dimension`  where `Email Tracking SES ID`=%s  ', prepare_mysql($message['mail']['messageId']));
 
 
-      //  $db->exec($_sql);
+        //  $db->exec($_sql);
 
 
         if ($result = $db->query($sql)) {
@@ -82,7 +79,7 @@ $message=json_decode($sns['Message'],true);
 
                         break;
                     case 'Delivery':
-                        $event_type = 'Delivery';
+                        $event_type = 'Delivered';
                         $date       = gmdate('Y-m-d H:i:s', strtotime($message['delivery']['timestamp']));
 
                         break;
@@ -92,6 +89,16 @@ $message=json_decode($sns['Message'],true);
 
                         unset($message['open']['timestamp']);
                         $event_data = $message['open'];
+
+
+                        break;
+
+                    case 'Click':
+                        $event_type = 'Clicked';
+                        $date       = gmdate('Y-m-d H:i:s', strtotime($message['click']['timestamp']));
+
+                        unset($message['click']['timestamp']);
+                        $event_data = $message['click'];
 
 
                         break;
@@ -106,7 +113,6 @@ $message=json_decode($sns['Message'],true);
 
                         break;
                 }
-
 
 
                 $sql = sprintf(
