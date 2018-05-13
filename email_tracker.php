@@ -78,7 +78,7 @@ if ($validator->isValid($message)) {
                     default:
 
                         $sql = sprintf(
-                            'insert into atest  (`date`,`headers`,`request`) values (NOW(),"%s","%s")  ', $row['Email Tracking Key'], addslashes(json_decode($message))
+                            'insert into atest  (`date`,`headers`,`request`) values (NOW(),"%s","%s")  ', $row['Email Tracking Key'], addslashes(json_encode($message))
 
                         );
 
@@ -95,7 +95,7 @@ if ($validator->isValid($message)) {
 
             } else {
                 $sql = sprintf(
-                    'insert into atest  (`date`,`headers`,`request`) values (NOW(),"%s","%s")  ', '', addslashes(json_decode($message))
+                    'insert into atest  (`date`,`headers`,`request`) values (NOW(),"%s","%s")  ', '', addslashes(json_encode($message))
 
                 );
 
