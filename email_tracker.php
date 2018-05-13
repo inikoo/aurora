@@ -26,6 +26,15 @@ $message   = Message::fromRawPostData();
 $validator = new MessageValidator();
 if ($validator->isValid($message)) {
 
+
+    $message=json_decode($message,true);
+
+    $_sql = sprintf(
+        'insert into atest  (`date`,`headers`,`request`) values (NOW(),"%s","%s")  ', 'aaa', addslashes(print_r($message, true))
+
+    );
+    $db->exec($_sql);
+
     if (in_array(
         $message['Type'], array(
                             'SubscriptionConfirmation',
