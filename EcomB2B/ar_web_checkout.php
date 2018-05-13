@@ -26,6 +26,8 @@ $smarty->cache_dir    = 'server_files/smarty/cache';
 $smarty->config_dir   = 'server_files/smarty/configs';
 
 
+$account=get_object('Account',1);
+
 
 //print_r($_REQUEST);
 //exit;
@@ -105,7 +107,7 @@ switch ($tipo) {
         $website=get_object('Website',$_SESSION['website_key']);
         $store=get_object('Store',$order->get('Order Store Key'));
 
-        place_order($store, $order, $payment_account_key, $customer, $website, $editor, $smarty);
+        place_order($store, $order, $payment_account_key, $customer, $website, $editor, $smarty,$account,$db);
 
 
         break;
@@ -211,7 +213,7 @@ function place_order_pay_braintree($store, $_data, $order, $customer, $website, 
 
             list($customer, $order, $credit_payment_account, $credit_payment) = pay_credit($order, $to_pay_credits, $editor, $db, $account);
 
-            place_order($store, $order, $credit_payment_account->id, $customer, $website, $editor, $smarty);
+            place_order($store, $order, $credit_payment_account->id, $customer, $website, $editor, $smarty,$account,$db);
             exit;
 
         } else {
@@ -353,7 +355,7 @@ function place_order_pay_braintree($store, $_data, $order, $customer, $website, 
                 $order->add_payment($payment);
 
 
-                place_order($store, $order, $payment_account->id, $customer, $website, $editor, $smarty);
+                place_order($store, $order, $payment_account->id, $customer, $website, $editor, $smarty,$account,$db);
 
 
             } else {
@@ -483,7 +485,8 @@ function place_order_pay_braintree($store, $_data, $order, $customer, $website, 
 }
 
 
-function place_order($store, $order, $payment_account_key, $customer, $website, $editor, $smarty) {
+function place_order($store, $order, $payment_account_key, $customer, $website, $editor, $smarty,$account,$db) {
+
 
 
     $customer->editor = $editor;
@@ -497,7 +500,7 @@ function place_order($store, $order, $payment_account_key, $customer, $website, 
     );
 
 
-    send_order_confirmation_email($store, $website, $customer, $order, $smarty);
+    send_order_confirmation_email($store, $website, $customer, $order, $smarty,$account,$db);
 
 
     $response = array(
@@ -635,7 +638,7 @@ function place_order_pay_braintree_paypal($store, $_data, $order, $customer, $we
 
             list($customer, $order, $credit_payment_account, $credit_payment) = pay_credit($order, $to_pay_credits, $editor, $db, $account);
 
-            place_order($store, $order, $credit_payment_account->id, $customer, $website, $editor, $smarty);
+            place_order($store, $order, $credit_payment_account->id, $customer, $website, $editor, $smarty,$account,$db);
             exit;
 
         } else {
@@ -778,7 +781,7 @@ function place_order_pay_braintree_paypal($store, $_data, $order, $customer, $we
                 $order->add_payment($payment);
 
 
-                place_order($store, $order, $payment_account->id, $customer, $website, $editor, $smarty);
+                place_order($store, $order, $payment_account->id, $customer, $website, $editor, $smarty,$account,$db);
 
 
             } else {

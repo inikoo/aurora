@@ -13,7 +13,7 @@
 use Aws\Ses\SesClient;
 
 
-function send_order_confirmation_email($store, $website, $customer, $order, $smarty) {
+function send_order_confirmation_email($store, $website, $customer, $order, $smarty,$account,$db) {
     require 'external_libs/aws.phar';
 
 
@@ -94,7 +94,7 @@ function send_order_confirmation_email($store, $website, $customer, $order, $sma
     $request['Destination']['ToAddresses']      = array($order->get('Order Email'));
     $request['Message']['Subject']['Data']      = $published_email_template->get('Published Email Template Subject');
     $request['Message']['Body']['Text']['Data'] = strtr($published_email_template->get('Published Email Template Text'), $placeholders);
-
+    $request['ConfigurationSetName']            = $account->get('Account Code');
 
     if ($email_template->get('Email Template Type') == 'HTML') {
 
@@ -102,29 +102,60 @@ function send_order_confirmation_email($store, $website, $customer, $order, $sma
 
     }
 
-    //   print_r($request);
+
+    $sql = sprintf(
+        'insert into `Email Tracking Dimension` (
+              `Email Tracking Scope`,`Email Tracking Scope Key`,
+              `Email Tracking Email Template Key`,`Email Tracking Published Email Template Key`,
+              `Email Tracking Recipient`,`Email Tracking Recipient Key`,`Email Tracking Created Date`) values (
+                    %s,%d,
+                    %d,%d,
+                    %s,%s,%s)', prepare_mysql('Order Confirmation'), $website->id, $email_template->id, $published_email_template->id, prepare_mysql('Customer'), $customer->id, prepare_mysql(gmdate('Y-m-d H:i:s'))
+
+
+    );
+    $db->exec($sql);
+    $email_tracking_key = $db->lastInsertId();
+
+
+
 
     try {
         $result    = $client->sendEmail($request);
         $messageId = $result->get('MessageId');
-        $response  = array(
-            'state' => 200
 
 
+        $sql = sprintf(
+            'update `Email Tracking Dimension` set `Email Tracking State`="Send to SES" , `Email Tracking SES Id`=%s   where `Email Tracking Key`=%d ', prepare_mysql($messageId), $email_tracking_key
         );
+        $db->exec($sql);
+
+
 
 
     } catch (Exception $e) {
-        // echo("The email was not sent. Error message: ");
-        // echo($e->getMessage()."\n");
-        $response = array(
-            'state'      => 400,
-            'msg'        => "Error, email not send",
-            'code'       => $e->getMessage(),
-            'error_code' => 'unknown'
+
+        $sql = sprintf(
+            'update `Email Tracking Dimension` set `Email Tracking State`="Error"   where `Email Tracking Key`=%d ', $email_tracking_key
+        );
+        $db->exec($sql);
+
+
+        $sql = sprintf(
+            'insert into `Email Tracking Event Dimension` (
+              `Email Tracking Event Tracking Key`,`Email Tracking Event Type`,
+              `Email Tracking Event Date`,`Email Tracking Event Data`
+     ) values (
+                    %d,%s,%s,%s)', $email_tracking_key, prepare_mysql('Send to SES Error'), prepare_mysql(gmdate('Y-m-d H:i:s')), prepare_mysql(json_encode(array('error'=>$e->getMessage())))
 
 
         );
+        $db->exec($sql);
+
+
+
+
+
     }
 
 
