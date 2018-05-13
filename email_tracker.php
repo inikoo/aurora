@@ -47,7 +47,7 @@ if ($validator->isValid($sns)) {
                     )
     )) {
 
-        file_get_contents($message['SubscribeURL']);
+        file_get_contents($sns['SubscribeURL']);
     } else {
 
 
