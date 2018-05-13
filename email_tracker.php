@@ -48,7 +48,7 @@ if ($validator->isValid($message)) {
 
         $sql = sprintf('select `Email Tracking Key`  from `Email Tracking Dimension`  where `Email Tracking SES ID`=%s  ', prepare_mysql($message['messageId']));
 
-        if ($result = $this->db->query($sql)) {
+        if ($result = $db->query($sql)) {
             if ($row = $result->fetch()) {
 
                 $event_type = '';
@@ -102,7 +102,7 @@ if ($validator->isValid($message)) {
                 $db->exec($sql);
             }
         } else {
-            print_r($error_info = $this->db->errorInfo());
+            print_r($error_info = $db->errorInfo());
             print "$sql\n";
             exit;
         }
