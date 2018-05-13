@@ -27,7 +27,7 @@ $validator = new MessageValidator();
 if ($validator->isValid($message)) {
 
 
-    $message=json_decode($message,true);
+
 
     $_sql = sprintf(
         'insert into atest  (`date`,`headers`,`request`) values (NOW(),"%s","%s")  ', 'aaa', addslashes(print_r($message, true))
