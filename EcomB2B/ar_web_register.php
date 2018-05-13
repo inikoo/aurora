@@ -38,7 +38,7 @@ switch ($tipo) {
                          'store_key' => array('type' => 'key')
                      )
         );
-        register($db, $website, $data, $editor);
+        register($db, $website, $data, $editor,$account);
         break;
 
 
@@ -52,8 +52,7 @@ switch ($tipo) {
         break;
 }
 
-function register($db, $website, $data, $editor) {
-
+function register($db, $website, $data, $editor,$account) {
 
 
     include_once 'class.Public_Store.php';
@@ -74,7 +73,7 @@ function register($db, $website, $data, $editor) {
             'Customer Main Plain Email'    => $raw_data['email'],
             'Customer Main Plain Mobile'   => $raw_data['mobile'],
             'Customer Registration Number' => $raw_data['registration_number'],
-            'Customer Type by Activity'=>($website->get('Website Registration Type')=='ApprovedOnly'?'ToApprove':'Active')
+            'Customer Type by Activity'    => ($website->get('Website Registration Type') == 'ApprovedOnly' ? 'ToApprove' : 'Active')
 
         );
 
@@ -108,12 +107,11 @@ function register($db, $website, $data, $editor) {
             $customer_data['Customer Send Email Marketing']  = 'Yes';
             $customer_data['Customer Send Postal Marketing'] = 'Yes';
 
-        }else{
+        } else {
             $customer_data['Customer Send Newsletter']       = 'No';
             $customer_data['Customer Send Email Marketing']  = 'No';
             $customer_data['Customer Send Postal Marketing'] = 'No';
         }
-
 
 
         list($customer, $website_user) = $store->create_customer($customer_data, array('Website User Password' => $raw_data['password']));
@@ -121,21 +119,21 @@ function register($db, $website, $data, $editor) {
         if ($store->new_customer and $store->new_website_user) {
 
 
-            foreach($raw_data as $_key=>$value){
+            foreach ($raw_data as $_key => $value) {
 
                 if (preg_match('/^poll_(\d+)/i', $_key, $matches)) {
 
                     $poll_key = $matches[1];
-                    $customer->update(array('Customer Poll Query '.$poll_key=>$value) ,'no_history');
+                    $customer->update(array('Customer Poll Query '.$poll_key => $value), 'no_history');
 
 
                 }
 
 
             }
-            send_welcome_email($db, $website, $customer, $website_user);
+            send_welcome_email($db, $website, $customer, $account);
 
-            if($website->get('Website Registration Type')!='ApprovedOnly') {
+            if ($website->get('Website Registration Type') != 'ApprovedOnly') {
 
                 include_once('class.WebAuth.php');
                 $auth = new WebAuth();
@@ -161,7 +159,7 @@ function register($db, $website, $data, $editor) {
                     );
 
 
-                   // print_r($_SESSION);
+                    // print_r($_SESSION);
 
 
                     $sql = sprintf(
@@ -174,8 +172,7 @@ function register($db, $website, $data, $editor) {
                     $db->exec($sql);
 
 
-                }
-                else {
+                } else {
 
                     echo json_encode(
                         array(
@@ -188,10 +185,12 @@ function register($db, $website, $data, $editor) {
                 }
 
             }
-            echo json_encode(array(
-                'state' => 200,
-                'msg'=>'reg'
-                             ));
+            echo json_encode(
+                array(
+                    'state' => 200,
+                    'msg'   => 'reg'
+                )
+            );
             exit;
 
         } else {
@@ -220,7 +219,7 @@ function register($db, $website, $data, $editor) {
 }
 
 
-function send_welcome_email($db, $website, $customer, $website_user) {
+function send_welcome_email($db, $website, $customer, $account) {
 
     require 'external_libs/aws.phar';
 
@@ -290,6 +289,7 @@ function send_welcome_email($db, $website, $customer, $website_user) {
     $request['Destination']['ToAddresses']      = array($customer->get('Customer Main Plain Email'));
     $request['Message']['Subject']['Data']      = $published_email_template->get('Published Email Template Subject');
     $request['Message']['Body']['Text']['Data'] = strtr($published_email_template->get('Published Email Template Text'), $placeholders);
+    $request['ConfigurationSetName']            = $account->get('Account Code');
 
 
     if ($email_template->get('Email Template Type') == 'HTML') {
@@ -298,13 +298,39 @@ function send_welcome_email($db, $website, $customer, $website_user) {
 
     }
 
+    $sql = sprintf(
+        'insert into `Email Tracking Dimension` (
+              `Email Tracking Scope`,`Email Tracking Scope Key`,
+              `Email Tracking Email Template Key`,`Email Tracking Published Email Template Key`,
+              `Email Tracking Recipient`,`Email Tracking Recipient Key`,`Email Tracking Created Date`) values (
+                    %s,%d,
+                    %d,%d,
+                    %s,%s,%s)', prepare_mysql('Registration'), $website->id, $email_template->id, $published_email_template->id, prepare_mysql('Customer'), $customer->id, prepare_mysql(gmdate('Y-m-d H:i:s'))
+
+
+    );
+
+
+    $db->exec($sql);
+    $email_tracking_key = $db->lastInsertId();
 
     try {
-        $result    = $client->sendEmail($request);
-        $response  = array(
+        $result = $client->sendEmail($request);
+
+
+        $messageId = $result->get('MessageId');
+
+
+        $sql = sprintf(
+            'update `Email Tracking Dimension` set `Email Tracking State`="Send to SES" , `Email Tracking SES Id`=%s   where `Email Tracking Key`=%d ', prepare_mysql($messageId), $email_tracking_key
+        );
+        $db->exec($sql);
+
+
+        $response = array(
             'state' => 200,
-            'scope'=>'send_email',
-            'msg'=>$result->get('MessageId')
+            'scope' => 'send_email',
+            'msg'   => $messageId
 
 
         );
@@ -312,6 +338,20 @@ function send_welcome_email($db, $website, $customer, $website_user) {
     } catch (Exception $e) {
         // echo("The email was not sent. Error message: ");
         // echo($e->getMessage()."\n");
+
+
+        $sql = sprintf(
+            'insert into `Email Tracking Event Dimension` (
+              `Email Tracking Event Tracking Key`,`Email Tracking Event Type`,
+              `Email Tracking Event Date`,`Email Tracking Event Data`
+     ) values (
+                    %d,%s,%s,%s)', $email_tracking_key, prepare_mysql('Send to SES Error'), prepare_mysql(gmdate('Y-m-d H:i:s')), prepare_mysql(json_encode(array('error' => $e->getMessage())))
+
+
+        );
+        $db->exec($sql);
+
+
         $response = array(
             'state'      => 400,
             'msg'        => "Error, email not send",
@@ -322,7 +362,7 @@ function send_welcome_email($db, $website, $customer, $website_user) {
         );
     }
 
-return $response;
+    return $response;
 
 
 }

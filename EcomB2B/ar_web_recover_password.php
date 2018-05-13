@@ -182,13 +182,8 @@ function recover_password($db, $data, $editor, $website, $account) {
 
 
             );
-
-
-           // print "$sql\n";
-
-
             $db->exec($sql);
-            $email_send_key = $db->lastInsertId();
+            $email_tracking_key = $db->lastInsertId();
 
 
             try {
@@ -197,7 +192,7 @@ function recover_password($db, $data, $editor, $website, $account) {
 
 
                 $sql = sprintf(
-                    'update `Email Tracking Dimension` set `Email Tracking State`="Send to SES" , `Email Tracking SES Id`=%s   where `Email Tracking Key`=%d ', prepare_mysql($messageId), $email_send_key
+                    'update `Email Tracking Dimension` set `Email Tracking State`="Send to SES" , `Email Tracking SES Id`=%s   where `Email Tracking Key`=%d ', prepare_mysql($messageId), $email_tracking_key
                 );
                 $db->exec($sql);
 
@@ -214,7 +209,7 @@ function recover_password($db, $data, $editor, $website, $account) {
                 // echo($e->getMessage()."\n");
 
                 $sql = sprintf(
-                    'update `Email Tracking Dimension` set `Email Tracking State`="Error"   where `Email Tracking Key`=%d ', $email_send_key
+                    'update `Email Tracking Dimension` set `Email Tracking State`="Error"   where `Email Tracking Key`=%d ', $email_tracking_key
                 );
                 $db->exec($sql);
 
@@ -224,15 +219,11 @@ function recover_password($db, $data, $editor, $website, $account) {
               `Email Tracking Event Tracking Key`,`Email Tracking Event Type`,
               `Email Tracking Event Date`,`Email Tracking Event Data`
      ) values (
-                    %d,%s,%s,COMPRESS(%s))', $email_send_key, prepare_mysql('Send to SES Error'), prepare_mysql(gmdate('Y-m-d H:i:s')), prepare_mysql(json_encode(array('error'=>$e->getMessage())))
+                    %d,%s,%s,%s)', $email_tracking_key, prepare_mysql('Send to SES Error'), prepare_mysql(gmdate('Y-m-d H:i:s')), prepare_mysql(json_encode(array('error'=>$e->getMessage())))
 
 
                 );
-
-
-
                 $db->exec($sql);
-               // print_r($error_info = $db->errorInfo());
 
 
 

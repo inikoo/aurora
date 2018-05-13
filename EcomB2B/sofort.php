@@ -44,7 +44,6 @@ session_start();
 include('utils/find_website_key.include.php');
 
 
-
 if(isset($_REQUEST['cancel'])){
     $cancel=true;
 }else{
@@ -59,6 +58,7 @@ if (!isset($db)) {
     $db->setAttribute(PDO::ATTR_DEFAULT_FETCH_MODE, PDO::FETCH_ASSOC);
 }
 $website = get_object('Website', $_SESSION['website_key']);
+$account=get_object('Account',1);
 
 
 $order = get_object('Order', $_REQUEST['order_key']);
@@ -110,7 +110,7 @@ $order->update(
 );
 
 
-send_order_confirmation_email($store, $website, $customer, $order, $smarty);
+send_order_confirmation_email($store, $website, $customer, $order, $smarty,$account,$db);
 
 header('Location: thanks.sys?order_key='.$order->id);
 exit;
