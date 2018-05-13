@@ -403,7 +403,7 @@ switch ($_REQUEST['action']) {
         $qty=intval($_REQUEST['quantity']);
 
 
-        if ( $_REQUEST['quantity'] <= 0) {
+        if ( $qty <= 0) {
             $response = array(
                 'state' => 'Error',
                 'msg'   => 'invalid quantity: '.$_REQUEST['quantity'] .'=>',$qty
