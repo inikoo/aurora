@@ -684,7 +684,30 @@ function get_view($db, $smarty, $user, $account, $modules) {
         }
 
 
+    }elseif ($state['module'] == 'orders') {
+
+        if ($state['section'] == 'email_campaign'){
+
+            switch ($state['_object']->get('Email Campaign State')){
+
+                case 'InProcess':
+
+                    if(!in_array($state['tab'],array('email_campaign.details','email_campaign.mail_list')))
+
+                    $state['tab'] = 'email_campaign.details';
+
+
+                    break;
+
+            }
+        }
+
+
+
+
     }
+
+
 
 
     list($state, $response['tabs']) = get_tabs($state, $db, $account, $modules, $user, $smarty);// todo only calculate when is subtabs in the section
@@ -2595,6 +2618,7 @@ function get_tabs($data, $db, $account, $modules, $user, $smarty) {
     );
 
 
+
     if ($data['section'] == 'category') {
 
         if ($data['_object']->get('Category Scope') == 'Product') {
@@ -2726,7 +2750,8 @@ function get_tabs($data, $db, $account, $modules, $user, $smarty) {
         //print_r($_content);
 
 
-    } elseif ($data['module'] == 'suppliers' and $data['section'] == 'order') {
+    }
+    elseif ($data['module'] == 'suppliers' and $data['section'] == 'order') {
         if ($data['_object']->get('Purchase Order State') == 'InProcess') {
 
             //$data['tab']='supplier.order.items';
@@ -2745,7 +2770,8 @@ function get_tabs($data, $db, $account, $modules, $user, $smarty) {
 
 
         }
-    } elseif ($data['module'] == 'products' and $data['section'] == 'webpage') {
+    }
+    elseif ($data['module'] == 'products' and $data['section'] == 'webpage') {
 
 
         if (!in_array(
@@ -2766,7 +2792,8 @@ function get_tabs($data, $db, $account, $modules, $user, $smarty) {
         }
 
 
-    } elseif ($data['section'] == 'website') {
+    }
+    elseif ($data['section'] == 'website') {
 
 
         if ($data['website']->get('Website Status') == 'Active') {
@@ -2778,7 +2805,8 @@ function get_tabs($data, $db, $account, $modules, $user, $smarty) {
         }
 
 
-    } elseif ($data['section'] == 'delivery_note') {
+    }
+    elseif ($data['section'] == 'delivery_note') {
 
 
         if ($data['tab'] == 'set_delivery_note.fast_track_packing') {
@@ -2804,7 +2832,8 @@ function get_tabs($data, $db, $account, $modules, $user, $smarty) {
         //  exit;
 
 
-    }elseif ($data['section'] == 'poll_query') {
+    }
+    elseif ($data['section'] == 'poll_query') {
 
 
         if($data['_object']->get('Customer Poll Query Type')=='Options'){
@@ -2814,7 +2843,7 @@ function get_tabs($data, $db, $account, $modules, $user, $smarty) {
             }
 
             $_content['tabs']['poll_query.answers']['class'] = 'hide';
-           $_content['tabs']['poll_query.options']['class'] = '';
+            $_content['tabs']['poll_query.options']['class'] = '';
 
             $_content['tabs']['poll_query.options']['selected'] = true;
 
@@ -2828,6 +2857,43 @@ function get_tabs($data, $db, $account, $modules, $user, $smarty) {
             $_content['tabs']['poll_query.answers']['selected'] = true;
 
         }
+
+
+
+
+    }elseif ($data['section'] == 'email_campaign') {
+
+        switch ($data['_object']->get('Email Campaign State')){
+
+            case 'InProcess':
+                $_content['tabs']['email_campaign.email_blueprints']['class'] = 'hide';
+                $_content['tabs']['email_campaign.email_template']['class'] = 'hide';
+                $_content['tabs']['email_campaign.send_emails']['class'] = 'hide';
+                $_content['tabs']['email_campaign.published_email']['class'] = 'hide';
+
+
+
+                break;
+
+            case 'ComposingEmail':
+                $_content['tabs']['email_campaign.email_blueprints']['class'] = 'hide';
+               // $_content['tabs']['email_campaign.email_template']['class'] = 'hide';
+
+                $_content['tabs']['email_campaign.published_email']['class'] = 'hide';
+                $_content['tabs']['email_campaign.send_emails']['class'] = 'hide';
+
+                break;
+
+            case 'Ready':
+                $_content['tabs']['email_campaign.email_blueprints']['class'] = 'hide';
+                $_content['tabs']['email_campaign.email_template']['class'] = 'hide';
+                $_content['tabs']['email_campaign.send_emails']['class'] = 'hide';
+
+                break;
+
+        }
+
+
 
 
 

@@ -227,6 +227,7 @@ class Email_Template extends DB_Table {
 
             case 'Published Info':
                 $data = array(
+                    'scope'=>$this->data['Email Template Scope'],
                     'editing'     => ($this->data['Email Template Editing Checksum'] == $this->data['Email Template Published Checksum'] ? false : true),
                     'published'   => ($this->data['Email Template Published Email Key'] ? true : false),
                     'edited_date' => ($this->data['Email Template Last Edited'] == '' ? '' : strftime("%a %e %b %Y %H:%M:%S %Z", strtotime($this->data['Email Template Last Edited'].' +0:00')))

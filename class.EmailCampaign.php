@@ -63,12 +63,14 @@ class EmailCampaign extends DB_Table {
             $this->id = $this->data['Email Campaign Key'];
         }
 
+
         switch ($this->get('Email Campaign Type')) {
             case 'AbandonedCart':
 
                 $sql = sprintf(
                     "SELECT * FROM `Email Campaign Abandoned Cart Dimension` WHERE  `Email Campaign Abandoned Cart Email Campaign Key`=%d", $tag
                 );
+
 
                 if ($result = $this->db->query($sql)) {
                     if ($row = $result->fetch()) {
@@ -185,8 +187,16 @@ class EmailCampaign extends DB_Table {
 
 
             case 'Creation Date':
+            case 'Setup Date':
+            case 'Composed Date':
+            case 'Start Send Date':
+            case 'End Send Date':
+                if ($this->data['Email Campaign '.$key] != '') {
+                    return strftime('%e %b %y %k:%M', strtotime($this->data['Email Campaign '.$key]));
+                } else {
+                    return '';
+                }
 
-                return strftime('%e %b %y %k:%M', strtotime($this->data['Email Campaign '.$key]));
 
                 break;
 
@@ -377,15 +387,15 @@ class EmailCampaign extends DB_Table {
                     break;
 
                 case 'Newsletter':
-                    $sql=sprintf('select count(*)  as num from `Customer Dimension` where `Customer Store Key`=%d and `Customer Main Plain Email`!="" and `Customer Send Newsletter`="Yes" ',$this->get('Store Key'));
-                    if ($result=$this->db->query($sql)) {
+                    $sql = sprintf('select count(*)  as num from `Customer Dimension` where `Customer Store Key`=%d and `Customer Main Plain Email`!="" and `Customer Send Newsletter`="Yes" ', $this->get('Store Key'));
+                    if ($result = $this->db->query($sql)) {
                         if ($row = $result->fetch()) {
                             $estimated_recipients = $row['num'];
-                    	}
-                    }else {
-                    	print_r($error_info=$this->db->errorInfo());
-                    	print "$sql\n";
-                    	exit;
+                        }
+                    } else {
+                        print_r($error_info = $this->db->errorInfo());
+                        print "$sql\n";
+                        exit;
                     }
 
                     break;
@@ -686,7 +696,13 @@ class EmailCampaign extends DB_Table {
     function delete() {
 
 
-        if (in_array($this->data['Email Campaign State'] ,array('InProcess','ComposingEmail','Ready'))) {
+        if (in_array(
+            $this->data['Email Campaign State'], array(
+                                                   'InProcess',
+                                                   'ComposingEmail',
+                                                   'Ready'
+                                               )
+        )) {
 
 
             $store = get_object('Store', $this->data['Email Campaign Store Key']);
@@ -1169,6 +1185,9 @@ class EmailCampaign extends DB_Table {
 
     function update_state($value) {
 
+        $operations = array();
+
+
         switch ($value) {
 
             case 'ComposingEmail':
@@ -1188,25 +1207,45 @@ class EmailCampaign extends DB_Table {
                     return;
                 }
 
-                if ($this->data['Email Campaign State'] == 'Scheduled' or $this->data['Email Campaign State'] == 'Ready' or $this->data['Email Campaign State'] == 'Cancelled' or $this->data['Email Campaign State'] == 'ComposingEmail') {
-
+                if ($this->data['Email Campaign State'] == 'Ready') {
                     $this->fast_update(
                         array(
-                            'Email Campaign Last Updated Date' => gmdate('Y-m-d H:i:s')
-                        )
-                    );
-                }else{
-
-                    $this->fast_update(
-                        array(
-                            'Email Campaign State'             => $value,
-                            'Email Campaign Last Updated Date' => gmdate('Y-m-d H:i:s')
+                            'Email Campaign Composed Date' => ''
                         )
                     );
                 }
+                /*
+                                if ($this->data['Email Campaign State'] == 'Scheduled' or $this->data['Email Campaign State'] == 'Ready' or $this->data['Email Campaign State'] == 'Cancelled' or $this->data['Email Campaign State'] == 'ComposingEmail') {
 
+                                    $this->fast_update(
+                                        array(
+                                            'Email Campaign Last Updated Date' => gmdate('Y-m-d H:i:s')
+                                        )
+                                    );
+                                }else{
 
+                                    $this->fast_update(
+                                        array(
+                                            'Email Campaign State'             => $value,
+                                            'Email Campaign Last Updated Date' => gmdate('Y-m-d H:i:s'),
+                                            'Email Campaign Setup Date' => gmdate('Y-m-d H:i:s')
+                                        )
+                                    );
+                                }
+                */
 
+                $this->fast_update(
+                    array(
+                        'Email Campaign State'             => $value,
+                        'Email Campaign Last Updated Date' => gmdate('Y-m-d H:i:s'),
+                        'Email Campaign Setup Date'        => gmdate('Y-m-d H:i:s')
+                    )
+                );
+
+                $operations = array(
+                    'delete_operations'
+
+                );
 
                 break;
 
@@ -1228,30 +1267,143 @@ class EmailCampaign extends DB_Table {
                 }
 
 
-
-                if ($this->data['Email Campaign State'] == 'Scheduled' or  $this->data['Email Campaign State'] == 'Cancelled') {
+                if ($this->data['Email Campaign State'] == 'Scheduled' or $this->data['Email Campaign State'] == 'Cancelled') {
 
                     $this->fast_update(
                         array(
                             'Email Campaign Last Updated Date' => gmdate('Y-m-d H:i:s')
                         )
                     );
-                }else{
+                } else {
                     $this->fast_update(
                         array(
                             'Email Campaign State'             => $value,
-                            'Email Campaign Last Updated Date' => gmdate('Y-m-d H:i:s')
+                            'Email Campaign Last Updated Date' => gmdate('Y-m-d H:i:s'),
+                            'Email Campaign Composed Date'     => gmdate('Y-m-d H:i:s')
+
                         )
                     );
                 }
 
+                $operations = array(
+                    'delete_operations',
+                    //  'schedule_mailshot_operations',
+                    'send_mailshot_operations',
+                    'undo_set_as_ready_operations'
+                );
+
+                break;
+            case 'Sending':
+
+                //'InProcess','ComposingEmail','Ready','Scheduled','Sending','Send','Cancelled'
+
+                if ($this->data['Email Campaign State'] == 'Sending') {
+                    $this->error = true;
+                    $this->msg   = _('Campaign already sending emails');
+
+                    return;
+                }
+                if ($this->data['Email Campaign State'] == 'Send') {
+                    $this->error = true;
+                    $this->msg   = _('Campaign already send');
+
+                    return;
+                }
+                if ($this->data['Email Campaign State'] == 'Cancelled') {
+                    $this->error = true;
+                    $this->msg   = _('Campaign cancelled');
+
+                    return;
+                }
 
 
+                $this->fast_update(
+                    array(
+                        'Email Campaign State'             => $value,
+                        'Email Campaign Last Updated Date' => gmdate('Y-m-d H:i:s'),
+                        'Email Campaign Start Send Date'   => gmdate('Y-m-d H:i:s'),
+                    )
+                );
+
+                $operations = array(
+                    'stop_operations',
+
+                );
+
+                break;
+            case 'Stopped':
+
+                //'InProcess','ComposingEmail','Ready','Scheduled','Sending','Send','Cancelled'
+
+                if ($this->data['Email Campaign State'] == 'Sending') {
+                    $this->error = true;
+                    $this->msg   = _('Campaign already sending emails');
+
+                    return;
+                }
+                if ($this->data['Email Campaign State'] == 'Send') {
+                    $this->error = true;
+                    $this->msg   = _('Campaign already send');
+
+                    return;
+                }
+                if ($this->data['Email Campaign State'] == 'Cancelled') {
+                    $this->error = true;
+                    $this->msg   = _('Campaign cancelled');
+
+                    return;
+                }
+
+
+                $this->fast_update(
+                    array(
+                        'Email Campaign State'             => $value,
+                        'Email Campaign Last Updated Date' => gmdate('Y-m-d H:i:s'),
+                        'Email Campaign Start Send Date'   => gmdate('Y-m-d H:i:s'),
+                    )
+                );
 
 
                 break;
 
+            case 'Send':
+
+                //'InProcess','ComposingEmail','Ready','Scheduled','Sending','Send','Cancelled'
+
+
+                $this->fast_update(
+                    array(
+                        'Email Campaign State'             => $value,
+                        'Email Campaign Last Updated Date' => gmdate('Y-m-d H:i:s'),
+                        'Email Campaign End Send Date'   => gmdate('Y-m-d H:i:s'),
+                    )
+                );
+
+                $operations = array(
+
+
+                );
+
+                break;
+
+
         }
+
+
+        $this->update_metadata = array(
+            'class_html'  => array(
+                'Email_Campaign_State'         => $this->get('State'),
+                'Email_Campaign_Setup_Date'    => '&nbsp;'.$this->get('Setup Date'),
+                'Email_Campaign_Composed_Date' => '&nbsp;'.$this->get('Composed Date'),
+                'Email_Campaign_Start_Send_Date' => '&nbsp;'.$this->get('Start Send Date'),
+                'Email_Campaign_End_Send_Date' => '&nbsp;'.$this->get('End Send Date'),
+
+
+            ),
+            'operations'  => $operations,
+            'state_index' => $this->get('State Index'),
+            'state'       => $this->data['Email Campaign State']
+        );
 
 
     }
@@ -1382,6 +1534,55 @@ class EmailCampaign extends DB_Table {
 
     }
 
+
+    function send_mailshot() {
+
+        $sql = $this->get_recipients_sql();
+
+
+    }
+
+
+    function get_sql_recipients_count() {
+
+        switch ($this->data['Email Campaign Type']) {
+
+            case 'AbandonedCart':
+
+
+                $sql = sprintf(
+                    'select count(distinct `Customer Key`) as num from `Order Dimension` O  left join `Customer Dimension` on (`Order Customer Key`=`Customer Key`) where `Order State`="InBasket" and `Customer Main Plain Email`!="" and `Customer Send Email Marketing`="Yes"  and `Order Store Key`=%d  and `Order Last Updated Date`<= CURRENT_DATE - INTERVAL %d DAY ',
+                    $this->data['Email Campaign Store Key'], $this->data['Email Campaign Abandoned Cart Days Inactive in Basket']
+                );
+
+                return $sql;
+
+
+                break;
+
+        }
+    }
+
+
+    function get_sql_recipients() {
+
+        switch ($this->data['Email Campaign Type']) {
+
+            case 'AbandonedCart':
+
+
+                $sql = sprintf(
+                    'select `Customer Key` from `Order Dimension` O  left join `Customer Dimension` on (`Order Customer Key`=`Customer Key`) where `Order State`="InBasket" and `Customer Main Plain Email`!="" and `Customer Send Email Marketing`="Yes"  and `Order Store Key`=%d  and `Order Last Updated Date`<= CURRENT_DATE - INTERVAL %d DAY ',
+                    $this->data['Email Campaign Store Key'], $this->data['Email Campaign Abandoned Cart Days Inactive in Basket']
+                );
+
+                return $sql;
+
+
+                break;
+
+        }
+    }
 
 }
 

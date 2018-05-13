@@ -25,7 +25,7 @@ if (!isset($db)) {
     $db->setAttribute(PDO::ATTR_DEFAULT_FETCH_MODE, PDO::FETCH_ASSOC);
 }
 
-
+date_default_timezone_set('UTC');
 $logged_in = get_logged_in();
 
 require_once 'external_libs/Smarty/Smarty.class.php';

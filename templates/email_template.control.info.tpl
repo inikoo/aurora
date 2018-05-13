@@ -8,5 +8,31 @@
  Version 3
 -->
 *}
-    <span style="font-size: 85%;font-style: italic" class="discreet  {if !$data.editing}invisible{/if} ">({t}Unpublished version on editor{/t})  <span class=" edited_date">{$data.edited_date}</span></span><br>
-    <span class=" {if !$data.published}invisible{/if}" >{t}Published{/t}  <span  class="small published_date discreet">{if isset($data.published_date)}{$data.published_date}{/if}</span></span>
+{if $data.scope=='EmailCampaign'}
+
+
+    {if $data.published}
+        {t}Ready for sending{/t}
+        <br/>
+
+    {elseif $data.edited_date!='' }
+        <span style="font-size: 85%;font-style: italic" class="discreet   ">
+      {t}last saved{/t}:<span class=" edited_date">{$data.edited_date}</span>
+
+
+
+
+     {/if}
+
+
+
+
+
+
+
+
+{else}
+    <span style="font-size: 85%;font-style: italic" class="discreet  {if !$data.editing}invisible{/if} ">({t}Unpublished version on editor{/t})  <span class=" edited_date">{$data.edited_date}</span></span>
+    <br>
+    <span class=" {if !$data.published}invisible{/if}">{t}Published{/t} <span class="small published_date discreet">{if isset($data.published_date)}{$data.published_date}{/if}</span></span>
+{/if}

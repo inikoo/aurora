@@ -16,11 +16,13 @@
 
 <div class="timeline_horizontal with_time   {if $email_campaign->get('State Index')<0}hide{/if}  ">
 
-    <ul class="timeline">
+    <ul class="timeline">{$email_campaign->get('State Index')}
+
+
 
         {if $email_campaign->get('Email Campaign Type')=='Newsletter'}
 
-            <li id="compose_email_node" class="li {if $email_campaign->get('State Index')>=30}complete{/if}">
+            <li id="composed_email_node" class="li {if $email_campaign->get('State Index')>=30}complete{/if}">
                 <div class="label     ">
                     <span class="state ">{t}Compose newsletter{/t}</span>
                 </div>
@@ -39,49 +41,44 @@
                     <span class="state ">{t}Setup mail list{/t}</span>
                 </div>
                 <div class="timestamp">
-                    <span class="">&nbsp;</span> <span class="start_date">{$email_campaign->get('Creation Date')}</span>
+                    <span class="Email_Campaign_Setup_Date">{$email_campaign->get('Setup Date')}&nbsp;</span> <span class="start_date">{$email_campaign->get('Creation Date')}</span>
                 </div>
                 <div class="dot"></div>
             </li>
 
-            <li id="compose_email_node" class="li  {if $email_campaign->get('State Index')>=30}complete{/if} ">
+            <li id="composed_email_node" class="li  {if $email_campaign->get('State Index')>=30}complete{/if} ">
                 <div class="label">
                     <span class="state" >&nbsp;{t}Compose email{/t}&nbsp;<span></i></span></span>
                 </div>
                 <div class="timestamp">
-                    <span class="Order_In_Warehouse" ">&nbsp;
-
-                    <span class="">&nbsp;</span>
-
-                    &nbsp;</span>
+                    <span class="Email_Campaign_Composed_Date" ">&nbsp;{$email_campaign->get('Composed Date')}&nbsp;</span>
                 </div>
                 <div class="dot"></div>
             </li>
         {/if}
 
 
-
-        <li id="packed_done_node" class="li {if $email_campaign->get('State Index')>=80}complete{/if} ">
+        <li id="scheduled_node" class="hide li {if $email_campaign->get('State Index')>=40}complete{/if} ">
             <div class="label">
                 <span class="state">{t}Schedule send{/t}</span>
             </div>
             <div class="timestamp">
-                <span>&nbsp;<span class="Order_Packed_Done_Date">&nbsp;{$email_campaign->get('Packed Done Date')}</span></span>
+                <span>&nbsp;<span class="Email_Campaign_Scheduled_Date">&nbsp;{$email_campaign->get('Scheduled Date')}</span></span>
             </div>
             <div class="dot"></div>
         </li>
 
-        <li  id="approved_node"  class="li {if $email_campaign->get('State Index')>=90}complete{/if} ">
+        <li  id="sending_node"  class="li {if $email_campaign->get('State Index')>=50}complete{/if} ">
             <div class="label">
                 <span class="state">{t}Start send{/t}</span>
             </div>
             <div class="timestamp">
-                <span>&nbsp;<span class="Order_Invoiced_Date">&nbsp;{$email_campaign->get('Invoiced Date')}</span></span>
+                <span>&nbsp;<span class="Email_Campaign_Start_Send_Date">&nbsp;{$email_campaign->get('Start Send Date')}</span></span>
             </div>
             <div class="dot"></div>
         </li>
 
-        <li  id="dispatched_node"  class="li  {if $email_campaign->get('State Index')>=100}complete{/if}">
+        <li  id="send_node"  class="li  {if $email_campaign->get('State Index')>=100}complete{/if}">
             <div class="label">
                 <span class="state">{t}Send{/t}</span>
             </div>
@@ -124,7 +121,7 @@
     </ul>
 </div>
 
-<div id="email_campaign" class="order" style="display: flex;" data-object="{$object_data}" email_campaign_key="{$email_campaign->id}">
+<div id="email_campaign" class="order" style="display: flex;" data-object="{$object_data}" data-email_campaign_key="{$email_campaign->id}">
     <div class="block" style="padding:10px 20px; align-items: stretch;flex: 1">
 
 
@@ -139,11 +136,11 @@
         <div class="state" style="height:30px;margin-bottom:10px;position:relative;top:-5px">
             <div id="back_operations">
 
-                <div id="delete_operations" class="email_campaign_operation {if $email_campaign->get('State Index')<0}hide{/if}">
+                <div id="delete_operations" class="email_campaign_operation {if $email_campaign->get('State Index')<0 or   $email_campaign->get('State Index')>=50 }hide{/if}">
                     <div class="square_button left" title="{t}Delete{/t}">
 
 
-                        <i class="fa fa-trash discreet " aria-hidden="true" onclick="toggle_order_operation_dialog('delete')"></i>
+                        <i class="far fa-trash-alt discreet " aria-hidden="true" onclick="toggle_order_operation_dialog('delete')"></i>
                         <table id="delete_dialog" border="0" class="order_operation_dialog hide">
                             <tr class="top">
                                 <td colspan="2" >{t}Delete mailshot{/t}</td>
@@ -163,34 +160,63 @@
                     </div>
 
                 </div>
-                <div id="undo_submit_operations" class="email_campaign_operation {if $email_campaign->get('State Index')!=50}hide{/if}">
-                    <div class="square_button left" title="{t}Stop sending emails{/t}">
-												<span class="fa-stack" onclick="toggle_email_campaign_operation_dialog('undo_submit')">
-						<i class="fa fa-paper-plane discreet " aria-hidden="true"></i>
-						<i class="fa fa-ban fa-stack-1x discreet error"></i>
-						</span>
 
+                <div id="undo_set_as_ready_operations" class="email_campaign_operation {if $email_campaign->get('State Index')!=30   }hide{/if}">
+                    <div  class="square_button left  " title="{t}Edit email{/t}">
+                        <i class="fa discreet fa-edit button"  id="undo_set_as_ready_save_buttons" aria-hidden="true"  data-data='{  "field": "Email Campaign State","value": "ComposingEmail","dialog_name":"undo_set_as_ready"}'   onclick="save_email_campaign_operation(this)" ></i>
 
-                        <table id="undo_submit_dialog" border="0" class="order_operation_dialog hide">
-                            <tr class="top">
-                                <td class="label" colspan="2">{t}Send back to basket{/t}</td>
-                            </tr>
-                            <tr class="changed buttons">
-                                <td><i class="fa fa-sign-out fa-flip-horizontal button" aria-hidden="true" onclick="close_dialog('undo_submit')"></i></td>
-                                <td class="aright"><span data-data='{  "field": "Order State","value": "InBasket","dialog_name":"undo_submit"}' id="undo_submit_save_buttons" class="valid save button"
-                                                         onclick="save_email_campaign_operation(this)"><span class="label">{t}Save{/t}</span> <i class="fa fa-cloud fa-fw  " aria-hidden="true"></i></span></td>
-                            </tr>
-                        </table>
                     </div>
                 </div>
 
+
+                <div id="stop_operations" class="email_campaign_operation {if $email_campaign->get('State Index')!=50   }hide{/if}">
+                    <div  class="square_button left  " title="{t}Stop sending emails{/t}">
+                        <i class="fa  fa-stop button error"  id="stop_save_buttons" aria-hidden="true"  data-data='{  "field": "Email Campaign State","value": "Stopped","dialog_name":"stop"}'   onclick="save_email_campaign_operation(this)" ></i>
+
+                    </div>
+                </div>
+
+
+
             </div>
-            <span style="float:left;padding-left:10px;padding-top:5px" class="Order_State"> {$email_campaign->get('State')} </span>
+            <span style="float:left;padding-left:10px;padding-top:5px" class="Email_Campaign_State"> {$email_campaign->get('State')} </span>
             <div id="forward_operations">
 
 
+                <div id="compose_email_operations" class="email_campaign_operation {if $email_campaign->get('State Index')!=10   or  $email_campaign->get('Email Campaign Number Estimated Emails')==0 }hide{/if}">
+                    <div  class="square_button right  " title="{t}Compose email{/t}">
+                        <i class="fa fa-arrow-right button"  id="compose_email_save_buttons" aria-hidden="true"  data-data='{  "field": "Email Campaign State","value": "ComposingEmail","dialog_name":"compose_email"}'   onclick="save_email_campaign_operation(this)" ></i>
 
-                <div id="schedule_mailshot_operations" class="email_campaign_operation {if {$email_campaign->get('State Index')}!=30  }hide{/if}">
+                    </div>
+                </div>
+
+
+                <div id="send_mailshot_operations" class="email_campaign_operation {if $email_campaign->get('State Index')!=30}hide{/if}">
+                    <div class="square_button right" title="{t}Send mailshot{/t}">
+
+
+                        <i class="fa fa-paper-plane " aria-hidden="true" onclick="toggle_order_operation_dialog('send_mailshot')"></i>
+                        <table id="send_mailshot_dialog" border="0" class="order_operation_dialog hide">
+                            <tr class="top">
+                                <td colspan="2" >{t}Send mailshot now{/t}</td>
+                            </tr>
+                            <tr class="changed buttons">
+                                <td>
+                                    <i class="fa fa-sign-out fa-flip-horizontal button" aria-hidden="true" onclick="close_dialog('send_mailshot')"></i>
+                                </td>
+                                <td class="aright">
+                                    <span data-data='{ "object": "email_campaign", "key":"{$email_campaign->id}"  }' onClick="send_mailshot_now(this)">
+                                    <span class="label">{t}Start sending{/t}</span>
+                                    <i class="fa fa-paper-plane fa-fw  " aria-hidden="true"></i>
+                                    </span>
+                                </td>
+                            </tr>
+                        </table>
+                    </div>
+
+                </div>
+
+                <div id="schedule_mailshot_operations" class="hide email_campaign_operation {if {$email_campaign->get('State Index')}!=30  }hide{/if}">
                     <div  class="square_button right  " title="{t}Schedule mailshot{/t}">
                         <i class="far fa-clock  " aria-hidden="true" onclick="toggle_order_operation_dialog('schedule_mailshot')"></i>
 
@@ -206,22 +232,22 @@
 
                             <tr style="height: 50px">
                                 <td style="text-align: center">
-                                    <span class="square_button" style="border:1px solid #ccc;padding:5px">{t}Send now{/t}</span>
-                                    <span class="square_button" style="border:1px solid #ccc;padding:5px;margin-right: 10px;margin-left: 10px">{t}Send in <em>n</em> hours{/t}</span>
-                                    <span class="square_button" style="border:1px solid #ccc;padding:5px">{t}Choose time{/t}</span>
+                                    <span onclick="send_mailshot_now(this)" class="square_button" style="border:1px solid #ccc;padding:5px">{t}Send now{/t} <i class="fa fa-fw fa-paper-plane"></i>
+                                    <span class="square_button hide " style="border:1px solid #ccc;padding:5px;margin-right: 10px;margin-left: 10px">{t}Send in <em>n</em> hours{/t}</span>
+                                    <span class="square_button hide" style="border:1px solid #ccc;padding:5px">{t}Choose time{/t}</span>
 
                                 </td>
                             </tr>
 
 
-                            <tr class="changed buttons">
+                            <tr class="changed buttons hide">
 
                                 <td style="text-align: center">{t}Send in{/t}  <input type="number"  style="width:3em"  > {t}hours{/t}  <span class="save "><i class="fa fa-cloud fa-fw  " aria-hidden="true"></i></span></td>
                             </tr>
 
 
 
-                            <tr class="changed buttons">
+                            <tr class="changed buttons hide">
 
                                 <td style="text-align: center">
 
@@ -254,7 +280,7 @@
 
 
 
-                            <tr class="changed buttons">
+                            <tr class="changed buttons hide">
 
                                 <td class="aright"><span data-data='{  "field": "Order State","value": "Approved","dialog_name":"schedule_mailshot"}' id="schedule_mailshot_save_buttons" class="valid save button"
                                                          onclick="save_email_campaign_operation(this)"><span class="label">{t}Save{/t}</span> <i class="fa fa-cloud fa-fw  " aria-hidden="true"></i></span></td>
@@ -263,13 +289,6 @@
                     </div>
                 </div>
 
-
-                <div id="compose_email_operations" class="email_campaign_operation {if $email_campaign->get('State Index')!=10   or  $email_campaign->get('Email Campaign Number Estimated Emails')==0 }hide{/if}">
-                    <div  class="square_button right  " title="{t}Submit{/t}">
-                        <i class="fa fa-arrow-right button"  id="compose_email_save_buttons" aria-hidden="true"  data-data='{  "field": "Email Campaign State","value": "ComposingEmail","dialog_name":"compose_email"}'   onclick="save_email_campaign_operation(this)" ></i>
-
-                    </div>
-                </div>
 
 
             </div>
@@ -355,7 +374,7 @@
 
 <div style="clear:both"></div></div>
 <div class="block " style="align-items: stretch;flex: 1 ">
-    <table border="0" class="totals {if $email_campaign->get('State Index')<30}hide{/if}" style="position:relative;top:-5px;margin-bottom:20px">
+    <table border="0" class="totals {if $email_campaign->get('State Index')<=30}hide{/if}" style="position:relative;top:-5px;margin-bottom:20px">
 
         <tr>
             <td class="label">{t}Send{/t}</td>
@@ -421,6 +440,7 @@
         $('#select_date_save').addClass(validation)
 
     }
+
 
 
 

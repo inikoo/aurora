@@ -19,7 +19,6 @@ require_once 'utils/public_object_functions.php';
 require_once 'utils/get_addressing.php';
 
 
-
 if (!isset($_REQUEST['tipo'])) {
     $response = array(
         'state' => 407,
@@ -41,7 +40,7 @@ switch ($tipo) {
 
                      )
         );
-        recover_password($db, $data, $editor,$website);
+        recover_password($db, $data, $editor, $website, $account);
         break;
 
 
@@ -55,14 +54,14 @@ switch ($tipo) {
         break;
 }
 
-function recover_password($db, $data, $editor,$website) {
+function recover_password($db, $data, $editor, $website, $account) {
 
     require 'external_libs/aws.phar';
 
 
     $sql = sprintf(
-        "SELECT  `Customer Type by Activity`,`Website User Key`,`Website User Customer Key` FROM `Website User Dimension` left join `Customer Dimension` on (`Customer Key`=`Website User Customer Key`)   WHERE  `Website User Handle`=%s AND `Website User Website Key`=%d", prepare_mysql($data['recovery_email']),
-        $data['website_key']
+        "SELECT  `Customer Type by Activity`,`Website User Key`,`Website User Customer Key` FROM `Website User Dimension` left join `Customer Dimension` on (`Customer Key`=`Website User Customer Key`)   WHERE  `Website User Handle`=%s AND `Website User Website Key`=%d",
+        prepare_mysql($data['recovery_email']), $data['website_key']
 
     );
 
@@ -71,8 +70,7 @@ function recover_password($db, $data, $editor,$website) {
         if ($row = $result->fetch()) {
 
 
-
-            if($row['Customer Type by Activity'] == 'ToApprove'){
+            if ($row['Customer Type by Activity'] == 'ToApprove') {
                 $response = array(
                     'state'      => 400,
                     'msg'        => _('Account waiting for approval'),
@@ -82,20 +80,18 @@ function recover_password($db, $data, $editor,$website) {
                 exit;
             }
 
-            $customer=get_object('Customer',$row['Website User Customer Key']);
+            $customer = get_object('Customer', $row['Website User Customer Key']);
 
             require_once "external_libs/random/lib/random.php";
             $selector      = base64_url_encode(random_bytes(9));
-            $authenticator=base64_url_encode(random_bytes(33));
+            $authenticator = base64_url_encode(random_bytes(33));
 
 
-
-            $hash=hash('sha256',$authenticator);
+            $hash = hash('sha256', $authenticator);
 
             $sql = sprintf(
                 'INSERT INTO `Website Recover Token Dimension` (`Website Recover Token Website Key`,`Website Recover Token Selector`,`Website Recover Token Hash`,`Website Recover Token Website User Key`,`Website Recover Token Customer Key`,`Website Recover Token Expire`) 
-            VALUES (%d,%s,%s,%d,%d,%s)', $data['website_key'], prepare_mysql($selector), prepare_mysql($hash), $row['Website User Key'], $row['Website User Customer Key'],
-                prepare_mysql(date('Y-m-d H:i:s', time() + 1200))
+            VALUES (%d,%s,%s,%d,%d,%s)', $data['website_key'], prepare_mysql($selector), prepare_mysql($hash), $row['Website User Key'], $row['Website User Customer Key'], prepare_mysql(date('Y-m-d H:i:s', time() + 1200))
 
             );
 
@@ -103,17 +99,14 @@ function recover_password($db, $data, $editor,$website) {
             $db->exec($sql);
 
 
-
-
             $webpage = get_object('webpage', $data['webpage_key']);
 
             $scope_metadata = $webpage->get('Scope Metadata');
 
 
-            $email_template = get_object('email_template',$scope_metadata['emails']['reset_password']['key']);
+            $email_template = get_object('email_template', $scope_metadata['emails']['reset_password']['key']);
 
-            $published_email_template= get_object('published_email_template',$email_template->get('Email Template Published Email Key'));
-
+            $published_email_template = get_object('published_email_template', $email_template->get('Email Template Published Email Key'));
 
 
             if ($email_template->get('Email Template Subject') == '') {
@@ -152,17 +145,15 @@ function recover_password($db, $data, $editor,$website) {
             );
 
 
-
-
             $placeholders = array(
-                '[Greetings]'=>$customer->get_greetings(),
-                '[Name]'=>$customer->get('Name'),
-                '[Name,Company]'=>preg_replace('/^, /','',$customer->get('Customer Main Contact Name').(($customer->get('Customer Company Name')=='' or  $customer->get('Customer Company Name')==$customer->get('Customer Main Contact Name') )?'':', '.$customer->get('Customer Company Name'))),
-                '[Reset_Password_URL]'=>'https://'.$website->get('Website URL').'/reset.php?s='.$selector.'&a='.$authenticator,
-                '[Signature]'=>$webpage->get('Signature'),
+                '[Greetings]'          => $customer->get_greetings(),
+                '[Name]'               => $customer->get('Name'),
+                '[Name,Company]'       => preg_replace(
+                    '/^, /', '', $customer->get('Customer Main Contact Name').(($customer->get('Customer Company Name') == '' or $customer->get('Customer Company Name') == $customer->get('Customer Main Contact Name')) ? '' : ', '.$customer->get('Customer Company Name'))
+                ),
+                '[Reset_Password_URL]' => 'https://'.$website->get('Website URL').'/reset.php?s='.$selector.'&a='.$authenticator,
+                '[Signature]'          => $webpage->get('Signature'),
             );
-
-
 
 
             $request                                    = array();
@@ -170,8 +161,7 @@ function recover_password($db, $data, $editor,$website) {
             $request['Destination']['ToAddresses']      = array($data['recovery_email']);
             $request['Message']['Subject']['Data']      = $published_email_template->get('Published Email Template Subject');
             $request['Message']['Body']['Text']['Data'] = strtr($published_email_template->get('Published Email Template Text'), $placeholders);
-
-
+            $request['ConfigurationSetName']            = $account->get('Account Code');
 
 
             if ($email_template->get('Email Template Type') == 'HTML') {
@@ -181,13 +171,38 @@ function recover_password($db, $data, $editor,$website) {
             }
 
 
-            //print_r($request);
-            //exit;
+            $sql = sprintf(
+                'insert into `Email Tracking Dimension` (
+              `Email Tracking Scope`,`Email Tracking Scope Key`,
+              `Email Tracking Email Template Key`,`Email Tracking Published Email Template Key`,
+              `Email Tracking Recipient`,`Email Tracking Recipient Key`,`Email Tracking Created Date`) values (
+                    %s,%d,
+                    %d,%d,
+                    %s,%s,%s)', prepare_mysql('Password Reminder'), $website->id, $email_template->id, $published_email_template->id, prepare_mysql('Customer'), $customer->id, prepare_mysql(gmdate('Y-m-d H:i:s'))
+
+
+            );
+
+
+           // print "$sql\n";
+
+
+            $db->exec($sql);
+            $email_send_key = $db->lastInsertId();
+
 
             try {
                 $result    = $client->sendEmail($request);
                 $messageId = $result->get('MessageId');
-                $response  = array(
+
+
+                $sql = sprintf(
+                    'update `Email Tracking Dimension` set `Email Tracking State`="Send to SES" , `Email Tracking SES Id`=%s   where `Email Tracking Key`=%d ', prepare_mysql($messageId), $email_send_key
+                );
+                $db->exec($sql);
+
+
+                $response = array(
                     'state' => 200
 
 
@@ -197,6 +212,31 @@ function recover_password($db, $data, $editor,$website) {
             } catch (Exception $e) {
                 // echo("The email was not sent. Error message: ");
                 // echo($e->getMessage()."\n");
+
+                $sql = sprintf(
+                    'update `Email Tracking Dimension` set `Email Tracking State`="Error"   where `Email Tracking Key`=%d ', $email_send_key
+                );
+                $db->exec($sql);
+
+
+                $sql = sprintf(
+                    'insert into `Email Tracking Event Dimension` (
+              `Email Tracking Event Tracking Key`,`Email Tracking Event Type`,
+              `Email Tracking Event Date`,`Email Tracking Event Data`
+     ) values (
+                    %d,%s,%s,COMPRESS(%s))', $email_send_key, prepare_mysql('Send to SES Error'), prepare_mysql(gmdate('Y-m-d H:i:s')), prepare_mysql(json_encode(array('error'=>$e->getMessage())))
+
+
+                );
+
+
+
+                $db->exec($sql);
+               // print_r($error_info = $db->errorInfo());
+
+
+
+              //  print $sql;
                 $response = array(
                     'state'      => 400,
                     'msg'        => "Error, email not send",

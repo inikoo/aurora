@@ -501,6 +501,7 @@ function parse_request($_data, $db, $modules, $account = '', $user = '', $is_set
                 }
                 break;
 
+
             case 'products':
                 if (!$user->can_view('stores')) {
                     $module  = 'utils';
