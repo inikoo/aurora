@@ -47,7 +47,7 @@ if ($validator->isValid($message)) {
 
 
         $sql = sprintf(
-            'insert into atest  (`date`,`headers`,`request`) values (NOW(),"%s","%s")  ', '$sql', addslashes(json_encode($message))
+            'insert into atest  (`date`,`headers`,`request`) values (NOW(),"%s","%s")  ', "$sql", addslashes(json_encode($message))
 
         );
         $db->exec($sql);
