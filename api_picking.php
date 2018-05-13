@@ -177,62 +177,59 @@ switch ($_REQUEST['action']) {
 
     case 'unset_picker':
     case 'unset_packer':
-    if (!isset($_REQUEST['delivery_note_key'])) {
+        if (!isset($_REQUEST['delivery_note_key'])) {
+            $response = array(
+                'state' => 'Error',
+                'msg'   => 'delivery_note_key needed'
+            );
+            echo json_encode($response);
+            exit;
+        }
+
+        if (!is_numeric($_REQUEST['delivery_note_key']) or $_REQUEST['delivery_note_key'] <= 0) {
+            $response = array(
+                'state' => 'Error',
+                'msg'   => 'invalid delivery_note_key: '.$_REQUEST['delivery_note_key']
+            );
+            echo json_encode($response);
+            exit;
+        }
+
+
+        $delivery_note = get_object('DeliveryNote', $_REQUEST['delivery_note_key']);
+
+        if (!$delivery_note->id) {
+            $response = array(
+                'state' => 'Error',
+                'msg'   => 'delivery note not found'
+            );
+            echo json_encode($response);
+            exit;
+        }
+
+
+        if ($_REQUEST['action'] == 'unset_picker') {
+
+            $type = 'Picker';
+        } else {
+            $type = 'Packer';
+        }
+
+        $delivery_note->update(
+            array(
+                'Delivery Note Assigned '.$type.' Key'   => '',
+                'Delivery Note Assigned '.$type.' Alias' => ''
+            )
+        );
+
+
         $response = array(
-            'state' => 'Error',
-            'msg'   => 'delivery_note_key needed'
+            'state' => 'OK',
+            'data'  => $delivery_note->get_update_metadata()
         );
         echo json_encode($response);
         exit;
-    }
-
-    if (!is_numeric($_REQUEST['delivery_note_key']) or $_REQUEST['delivery_note_key'] <= 0) {
-        $response = array(
-            'state' => 'Error',
-            'msg'   => 'invalid delivery_note_key: '.$_REQUEST['delivery_note_key']
-        );
-        echo json_encode($response);
-        exit;
-    }
-
-
-
-    $delivery_note = get_object('DeliveryNote', $_REQUEST['delivery_note_key']);
-
-    if (!$delivery_note->id){
-        $response = array(
-            'state' => 'Error',
-            'msg'   => 'delivery note not found'
-        );
-        echo json_encode($response);
-        exit;
-    }
-
-
-
-
-    if($_REQUEST['action']=='unset_picker'){
-
-        $type='Picker';
-    }else{
-        $type='Packer';
-    }
-
-    $delivery_note->update(
-        array(
-            'Delivery Note Assigned '.$type.' Key'   => '',
-            'Delivery Note Assigned '.$type.' Alias' =>''
-        )
-    );
-
-
-    $response = array(
-        'state' => 'OK',
-        'data'  => $delivery_note->get_update_metadata()
-    );
-    echo json_encode($response);
-    exit;
-    break;
+        break;
 
     case 'set_picker':
     case 'set_packer':
@@ -276,7 +273,7 @@ switch ($_REQUEST['action']) {
 
         $delivery_note = get_object('DeliveryNote', $_REQUEST['delivery_note_key']);
 
-        if (!$delivery_note->id){
+        if (!$delivery_note->id) {
             $response = array(
                 'state' => 'Error',
                 'msg'   => 'delivery note not found'
@@ -297,11 +294,11 @@ switch ($_REQUEST['action']) {
         }
 
 
-        if($_REQUEST['action']=='set_picker'){
+        if ($_REQUEST['action'] == 'set_picker') {
 
-            $type='Picker';
-        }else{
-            $type='Packer';
+            $type = 'Picker';
+        } else {
+            $type = 'Packer';
         }
 
         $delivery_note->update(
@@ -343,6 +340,84 @@ switch ($_REQUEST['action']) {
 
         $delivery_note = get_object('DeliveryNote', $_REQUEST['delivery_note_key']);
         $delivery_note->update_state('Picking');
+
+        $response = array(
+            'state' => 'OK',
+            'data'  => $delivery_note->get_update_metadata()
+        );
+        echo json_encode($response);
+        exit;
+        break;
+
+
+    case 'pick_item':
+
+        if (!isset($_REQUEST['delivery_note_key'])) {
+            $response = array(
+                'state' => 'Error',
+                'msg'   => 'delivery_note_key needed'
+            );
+            echo json_encode($response);
+            exit;
+        }
+
+        if (!isset($_REQUEST['itf_key'])) {
+            $response = array(
+                'state' => 'Error',
+                'msg'   => 'itf_key needed'
+            );
+            echo json_encode($response);
+            exit;
+        }
+
+
+        if (!isset($_REQUEST['quantity'])) {
+            $response = array(
+                'state' => 'Error',
+                'msg'   => 'quantity needed'
+            );
+            echo json_encode($response);
+            exit;
+        }
+
+        if (!is_numeric($_REQUEST['delivery_note_key']) or $_REQUEST['delivery_note_key'] <= 0) {
+            $response = array(
+                'state' => 'Error',
+                'msg'   => 'invalid delivery_note_key: '.$_REQUEST['delivery_note_key']
+            );
+            echo json_encode($response);
+            exit;
+        }
+
+
+        if (!is_numeric($_REQUEST['itf_key']) or $_REQUEST['itf_key'] <= 0) {
+            $response = array(
+                'state' => 'Error',
+                'msg'   => 'invalid itf_key: '.$_REQUEST['itf_key']
+            );
+            echo json_encode($response);
+            exit;
+        }
+
+
+        if (!is_numeric($_REQUEST['quantity']) or !is_integer($_REQUEST['quantity']) or $_REQUEST['quantity'] <= 0) {
+            $response = array(
+                'state' => 'Error',
+                'msg'   => 'invalid quantity: '.$_REQUEST['quantity']
+            );
+            echo json_encode($response);
+            exit;
+        }
+
+
+        $delivery_note = get_object('DeliveryNote', $_REQUEST['delivery_note_key']);
+        $delivery_note->update_item_picked_quantity(
+            array(
+                'transaction_key' => $_REQUEST['itf_key'],
+                'qty'             => $_REQUEST['quantity']
+
+            )
+        );
 
         $response = array(
             'state' => 'OK',
