@@ -46,7 +46,16 @@ if ($validator->isValid($message)) {
         $db->setAttribute(PDO::ATTR_DEFAULT_FETCH_MODE, PDO::FETCH_ASSOC);
 
 
+        $sql = sprintf(
+            'insert into atest  (`date`,`headers`,`request`) values (NOW(),"%s","%s")  ', '$sql', addslashes(json_encode($message))
+
+        );
+        $db->exec($sql);
+
         $sql = sprintf('select `Email Tracking Key`  from `Email Tracking Dimension`  where `Email Tracking SES ID`=%s  ', prepare_mysql($message['messageId']));
+
+
+
 
         if ($result = $db->query($sql)) {
             if ($row = $result->fetch()) {
@@ -96,7 +105,7 @@ if ($validator->isValid($message)) {
 
             } else {
                 $sql = sprintf(
-                    'insert into atest  (`date`,`headers`,`request`) values (NOW(),"%s","%s")  ', '', addslashes(json_encode($message))
+                    'insert into atest  (`date`,`headers`,`request`) values (NOW(),"%s","%s")  ', 'xx', addslashes(json_encode($message))
 
                 );
 
