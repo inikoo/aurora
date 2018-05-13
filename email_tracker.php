@@ -51,7 +51,7 @@ if ($validator->isValid($message)) {
         $sql = sprintf('select `Email Tracking Key`  from `Email Tracking Dimension`  where `Email Tracking SES ID`=%s  ', prepare_mysql($message['messageId']));
 
         $_sql = sprintf(
-            'insert into atest  (`date`,`headers`,`request`) values (NOW(),"%s","%s")  ', $sql, addslashes(json_encode($message))
+            'insert into atest  (`date`,`headers`,`request`) values (NOW(),"%s","%s")  ', $sql, addslashes($message['Message'])
 
         );
         $db->exec($_sql);
