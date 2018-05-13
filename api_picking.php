@@ -352,6 +352,19 @@ switch ($_REQUEST['action']) {
 
     case 'pick_item':
 
+
+
+
+
+         if (!isset($_REQUEST['picker_key'])) {
+             $response = array(
+                 'state' => 'Error',
+                 'msg'   => 'picker_key needed'
+             );
+             echo json_encode($response);
+             exit;
+         }
+
         if (!isset($_REQUEST['delivery_note_key'])) {
             $response = array(
                 'state' => 'Error',
@@ -389,6 +402,18 @@ switch ($_REQUEST['action']) {
             exit;
         }
 
+        if (!is_numeric($_REQUEST['picker_key']) or $_REQUEST['picker_key'] <= 0) {
+            $response = array(
+                'state' => 'Error',
+                'msg'   => 'invalid picker_key: '.$_REQUEST['picker_key']
+            );
+            echo json_encode($response);
+            exit;
+        }
+
+
+
+
 
         if (!is_numeric($_REQUEST['itf_key']) or $_REQUEST['itf_key'] <= 0) {
             $response = array(
@@ -417,7 +442,8 @@ switch ($_REQUEST['action']) {
         $delivery_note->update_item_picked_quantity(
             array(
                 'transaction_key' => $_REQUEST['itf_key'],
-                'qty'             => $qty
+                'qty'             => $qty,
+                'picker_key' => $_REQUEST['picker_key'],
 
             )
         );
@@ -892,6 +918,11 @@ switch ($_REQUEST['action']) {
         break;
 
     case 'move_stock':
+
+
+
+
+
 
 
         if (empty($_REQUEST['part_sku'])) {
