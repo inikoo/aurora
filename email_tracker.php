@@ -65,7 +65,7 @@ $message=json_decode($sns['Message'],true);
                 $event_type = '';
                 $event_data = '';
 
-                $date = gmdate('Y-m-d H:i:s', strtotime($message['email']['timestamp']));
+                $date = gmdate('Y-m-d H:i:s', strtotime($message['mail']['timestamp']));
 
                 switch ($message['eventType']) {
                     case 'Send':
@@ -98,7 +98,7 @@ $message=json_decode($sns['Message'],true);
                         break;
                 }
 
-                $sql = spintf(
+                $sql = sprintf(
                     'insert into `Email Tracking Event Dimension`  (`Email Tracking Event Tracking Key`,`Email Tracking Event Type`,`Email Tracking Event Date`,`Email Tracking Event Data`) 
                   values (%d,%s,%s,%s)', $row['Email Tracking Key'], prepare_mysql($event_type), prepare_mysql($date), prepare_mysql(json_encode($event_data))
 
@@ -109,6 +109,7 @@ $message=json_decode($sns['Message'],true);
                     'insert into atest  (`date`,`headers`,`request`) values (NOW(),"%s","%s")  ', $sql, 'xx'
 
                 );
+                $db->exec($_sql);
 
             } else {
                 $sql = sprintf(
