@@ -92,6 +92,7 @@ if ($validator->isValid($message)) {
                   values (%d,%s,%s,%s)', $row['Email Tracking Key'], prepare_mysql($event_type), prepare_mysql($date), prepare_mysql(json_encode($event_data))
 
                 );
+                $db->exec($sql);
 
             } else {
                 $sql = sprintf(
