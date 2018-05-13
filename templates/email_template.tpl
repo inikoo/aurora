@@ -52,9 +52,14 @@
 
         <span id="show_save_as_blueprint_dialog_from_save"   class="button"  style="border:1px solid #ccc;padding:5px 10px;margin-left:5px"   >{t}Save as template{/t}</span>
         <span onclick="save_template_email()"  class="button"  style="border:1px solid #ccc;padding:5px 10px;margin-left:20px" title="{t}Save and continue editing later{/t}"  >{t}Save{/t}</span>
-        <span id="save_email_template_html" onclick="publish_email_template()"  class="button"  style="border:1px solid #ccc;padding:5px 10px;margin-left:10px"   >
-{if $email_template->get('Email Template Scope')=='Webpage'}{t}Save & Publish email{/t}{else}{t}Set as ready for sending{/t}{/if}
-        </span>
+        {if $email_template->get('Email Template Scope')=='Webpage'}
+            <span id="save_email_template_html" onclick="publish_webpage_email_template()"  class="button"  style="border:1px solid #ccc;padding:5px 10px;margin-left:10px">{t}Save & Publish email{/t}</span>
+         {else}
+            <span id="save_email_template_html" onclick="publish_email_template('{$email_template->id}')"  class="button"  style="border:1px solid #ccc;padding:5px 10px;margin-left:10px">{t}Set as ready for sending{/t}</span>
+
+        {/if}
+
+
     </div>
 
 </div>
@@ -75,9 +80,22 @@
      <span id="change_template" onclick="open_send_email_dialog('')" class="button" style="float:left;border:1px solid #ccc;padding:5px 10px;margin-right:40px">
       {t}Send test email{/t}
     </span>
-    <span id="publish_email_template_from_text_controls" onclick="publish_email_template()" class=" {if $email_template->get('Email Template Editing Checksum')==$email_template->get('Email Template Published Checksum')}super_discreet{else}button{/if}  " style="float:right;border:1px solid #ccc;padding:5px 10px;margin-right:0px">
+
+
+
+    {if $email_template->get('Email Template Scope')=='Webpage'}
+        <span id="publish_email_template_from_text_controls" onclick="publish_webpage_email_template()" class=" {if $email_template->get('Email Template Editing Checksum')==$email_template->get('Email Template Published Checksum')}super_discreet{else}button{/if}  " style="float:right;border:1px solid #ccc;padding:5px 10px;margin-right:0px">
       {t}Publish email{/t}
+    </span>    {else}
+
+        <span id="publish_email_template_from_text_controls" onclick="publish_email_template({$email_template->id})" class=" {if $email_template->get('Email Template Editing Checksum')==$email_template->get('Email Template Published Checksum')}super_discreet{else}button{/if}  " style="float:right;border:1px solid #ccc;padding:5px 10px;margin-right:0px">
+      {t}Set as ready for sending{/t}
     </span>
+
+
+    {/if}
+
+
 
     <div style="clear: both"></div>
 
@@ -358,7 +376,7 @@
     }
 
 
-    function publish_email_template() {
+    function publish_webpage_email_template() {
 
         $('#save_email_template_dialog').addClass('hide')
 

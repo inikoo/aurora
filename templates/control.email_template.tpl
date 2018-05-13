@@ -28,7 +28,7 @@
 
     <span id="change_template" onclick="change_view(state.request + '&tab=email_campaign.email_blueprints')" class="button  {if $email_template->get('Email Template Type')=='Text'}hide{/if}" style="border:1px solid #ccc;padding:5px 10px;margin-left:40px"
           title="{$change_template_label}, ({t}Change template{/t}) ">
-      <i class="fa fa-th-large padding_right_5" aria-hidden="true"></i> {t}Email Templates{/t}
+      <i class="fa fa-eraser padding_right_5" aria-hidden="true"></i> {t}Start over{/t}
     </span>
 
     <span id="email_template_add_html_section"  onclick="update_email_template_type('HTML')" class="button {if $email_template->get('Email Template Type')=='HTML'}hide{/if}" style="border:1px solid #ccc;padding:5px 10px;margin-left:40px">

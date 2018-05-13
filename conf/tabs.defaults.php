@@ -3444,6 +3444,17 @@ $tab_defaults = array(
 
 
     ),
+
+    'email_campaign.send_emails'                     => array(
+        'view'          => 'overview',
+        'sort_key'      => 'email',
+        'sort_order'    => 1,
+        'rpp'           => 100,
+        'rpp_options'   => $default_rrp_options,
+        'f_field'       => 'email',
+
+
+    ),
     'email_campaign.email_blueprints'            => array(
         'view'        => 'overview',
         'sort_key'    => 'id',

@@ -392,21 +392,29 @@ $modules = array(
 
             'email_campaigns' => array(
                 'type'      => 'navigation',
-                'label'     => _('Marketing emails'),
-                'icon'      => 'envelope',
+                'label'     => _('Emails'),
+                'icon'      => 'paper-plane',
                 'reference' => 'customers/%s/email_campaigns',
                 'tabs'      => array(
                     'email_campaigns.newsletters'   => array(
-                        'label' => _('Newsletters')
+                        'label' => _('Newsletters'),
+                        'icon'=>'newspaper'
                     ),
                     'email_campaigns.mailshots'     => array(
-                        'label' => _('Mailshots')
+                        'label' => _('Mailshots'),
+                        'icon'=>'bullhorn'
                     ),
                     'email_campaigns.reminders'     => array(
-                        'label' => _('Reminders')
+                        'label' => _('Reminders'),
+                        'icon'=>'bell'
+                    ),
+                    'email_campaigns.abandoned_basket'     => array(
+                        'label' => _('Abandoned cart'),
+                        'icon'=>'shopping-basket'
                     ),
                     'email_campaigns.back_in_stock' => array(
-                        'label' => _('Back in stock')
+                        'label' => _('Back in stock'),
+                        'icon'=>'person-dolly'
                     ),
                     /*
                     'contacts'       => array(
@@ -453,6 +461,14 @@ $modules = array(
                         'icon_v2'  => 'fab fa-html5'
                     ),
 
+                    'email_campaign.send_emails' => array(
+                        'label' => _('Send emails'),
+                        'icon'  => 'paper-plane'
+                    ),
+                    'email_campaign.published_email'   => array(
+                        'label' => _('Email'),
+                        'icon'  => 'envelope'
+                    ),
                     'email_campaign.history' => array(
                         'title' => _('History'),
                         'label' => '',
@@ -989,12 +1005,23 @@ $modules = array(
                     ),
 
                     'email_campaign.email_template'   => array(
-                        'label' => _('Email'),
-                        'icon'  => 'envelope'
+                        'label' => _('Compose email'),
+                        'icon'  => 'edit'
                     ),
                     'email_campaign.email_blueprints' => array(
                         'label' => _('Email HTML templates'),
                         'icon_v2'  => 'fab fa-html5'
+                    ),
+
+                    'email_campaign.published_email'   => array(
+                        'label' => _('Email'),
+                        'icon'  => 'envelope'
+                    ),
+                  
+
+                    'email_campaign.send_emails' => array(
+                        'label' => _('Send emails'),
+                        'icon'  => 'paper-plane'
                     ),
 
                     'email_campaign.history' => array(
@@ -1075,6 +1102,11 @@ $modules = array(
                     'email_campaign.email_template'   => array(
                         'label' => _('Email'),
                         'icon'  => 'envelope'
+                    ),
+
+                    'email_campaign.send_emails' => array(
+                        'label' => _('Send email'),
+                        'icon'  => 'paper-plane'
                     ),
 
                     'email_campaign.history' => array(
@@ -1807,7 +1839,7 @@ $modules = array(
                         'label'         => '',
                         'quantity_data' => array(
                             'object' => '_object',
-                            'field'  => 'Number History Records'
+                            'field'  => 'Number History records'
                         ),
 
                         'icon'  => 'road',
@@ -2743,6 +2775,9 @@ $modules = array(
                 )
 
             ),
+
+
+
             'webpage.new' => array(
                 'type' => 'new_object',
                 'tabs' => array(

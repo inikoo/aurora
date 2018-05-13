@@ -8,6 +8,144 @@
 
 
 
+function publish_email_template(email_template_key) {
+
+    $('#save_email_template_dialog').addClass('hide')
+
+
+    var ajaxData = new FormData();
+
+    ajaxData.append("tipo", 'publish_email_template')
+    ajaxData.append("email_template_key", email_template_key)
+    ajaxData.append("json", $('#template_name2').data('jsonFile'))
+    ajaxData.append("html", $('#template_name2').data('htmlFile'))
+
+    //$('#save_email_template_dialog').closest('div').addClass('hide')
+
+
+
+    $.ajax({
+        url: "/ar_edit_email_template.php", type: 'POST', data: ajaxData, dataType: 'json', cache: false, contentType: false, processData: false,
+        complete: function () {
+        }, success: function (data) {
+
+            if (data.state == '200') {
+
+
+                $('#email_campaign\\.published_email').removeClass('hide')
+                change_tab('email_campaign.published_email')
+
+
+                for (var key in data.update_metadata.class_html) {
+                    $('.' + key).html(data.update_metadata.class_html[key])
+                }
+
+
+                $('.email_campaign_operation').addClass('hide')
+
+                console.log(data.update_metadata.operations)
+
+                for (var key in data.update_metadata.operations) {
+                            $('#' + data.update_metadata.operations[key]).removeClass('hide')
+                }
+
+
+
+
+                $('.timeline .li').removeClass('complete')
+
+                $('#setup_mail_list_node').addClass('complete')
+                $('#composed_email_node').addClass('complete')
+
+
+
+
+
+
+            } else if (data.state == '400') {
+                swal({
+                    title: data.title, text: data.msg, confirmButtonText: "OK"
+                });
+            }
+
+
+
+        }, error: function () {
+
+        }
+    });
+
+}
+
+
+
+
+function send_mailshot_now(element){
+    $(element).find('i').removeClass('fa-paper-plane').addClass('fa-spinner fa-spin')
+
+
+    var ajaxData = new FormData();
+
+    ajaxData.append("tipo", 'send_mailshot')
+    ajaxData.append("key", $('#email_campaign').data('email_campaign_key'))
+
+
+
+
+
+
+
+    $.ajax({
+        url: "/ar_mailshot.php", type: 'POST', data: ajaxData, dataType: 'json', cache: false, contentType: false, processData: false, complete: function () {
+        }, success: function (data) {
+
+            if (data.state == '200') {
+
+                $('#email_campaign\\.published_email').removeClass('hide')
+                change_tab('email_campaign.published_email')
+
+
+                for (var key in data.update_metadata.class_html) {
+                    $('.' + key).html(data.update_metadata.class_html[key])
+                }
+
+
+                $('.email_campaign_operation').addClass('hide')
+
+                console.log(data.update_metadata.operations)
+
+                for (var key in data.update_metadata.operations) {
+                    $('#' + data.update_metadata.operations[key]).removeClass('hide')
+                }
+
+
+
+
+                $('.timeline .li').removeClass('complete')
+
+                $('#setup_mail_list_node').addClass('complete')
+                $('#composed_email_node').addClass('complete')
+                $('#scheduled_node').addClass('complete')
+                $('#sending_node').addClass('complete')
+
+
+
+
+            } else if (data.state == '400') {
+                swal({
+                    title: data.title, text: data.msg, confirmButtonText: "OK"
+                });
+            }
+
+
+        }, error: function () {
+
+        }
+    });
+
+
+}
+
 
 
 function save_email_campaign_operation(element) {
@@ -91,6 +229,8 @@ function save_email_campaign_operation(element) {
 
 
 
+
+
             if (data.value == 'Cancelled') {
                 change_view(state.request, {
                     reload_showcase: true
@@ -98,12 +238,25 @@ function save_email_campaign_operation(element) {
             }
 
 
+
+            switch (data.update_metadata.state){
+                case 'ComposingEmail':
+                    $('#email_campaign\\.email_template').removeClass('hide')
+                    change_tab('email_campaign.email_template')
+                    break;
+
+
+            }
+
+
+
+
             for (var key in data.update_metadata.class_html) {
                 $('.' + key).html(data.update_metadata.class_html[key])
             }
 
 
-            $('.order_operation').addClass('hide')
+            $('.email_campaign_operation').addClass('hide')
            // $('.items_operation').addClass('hide')
 
 
@@ -122,12 +275,8 @@ function save_email_campaign_operation(element) {
             $('.timeline .li').removeClass('complete')
 
 
-
-
-
-
-                if (data.update_metadata.state_index >= 30) {
-                    $('#submitted_node').addClass('complete')
+                if (data.update_metadata.state_index >= 20) {
+                    $('#setup_mail_list_node').addClass('complete')
                 }
                 if (data.update_metadata.state_index >= 40) {
                     $('#in_warehouse_node').addClass('complete')
@@ -141,13 +290,6 @@ function save_email_campaign_operation(element) {
                 if (data.update_metadata.state_index >= 100) {
                     $('#dispatched_node').addClass('complete')
                 }
-
-
-
-
-
-
-
 
 
 

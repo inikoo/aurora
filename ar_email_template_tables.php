@@ -30,11 +30,7 @@ switch ($tipo) {
     case 'email_blueprints':
         email_blueprints(get_table_parameters(), $db, $user);
         break;
-    case 'email_blueprints':
 
-
-        email_blueprints(get_table_parameters(), $db, $user);
-        break;
 
     default:
         $response = array(
@@ -48,6 +44,10 @@ switch ($tipo) {
 
 
 function email_blueprints($_data, $db, $user) {
+
+
+
+
 
     include_once 'utils/natural_language.php';
 

@@ -18,40 +18,40 @@ function get_email_campaign_showcase($data, $smarty, $user, $db) {
 
 
     $email_campaign = $data['_object'];
-    $email_campaign->update_estimated_recipients();
-
-    $smarty->assign('email_campaign',$email_campaign);
-
-    $smarty->assign('store', get_object('store',$email_campaign->get('Store Key')));
 
 
+    if ($email_campaign->get('State Index') <= 40) {
+        $email_campaign->update_estimated_recipients();
+    }
+
+
+    $smarty->assign('email_campaign', $email_campaign);
+
+    $smarty->assign('store', get_object('store', $email_campaign->get('Store Key')));
 
 
     $smarty->assign(
         'object_data', base64_encode(
-            json_encode(
-                array(
-                    'object' => $data['object'],
-                    'key'    => $data['key'],
+                         json_encode(
+                             array(
+                                 'object' => $data['object'],
+                                 'key'    => $data['key'],
 
-                    'tab' => $data['tab']
-                )
-            )
-        )
+                                 'tab' => $data['tab']
+                             )
+                         )
+                     )
     );
 
 
-switch ($email_campaign->get('Email Campaign Type')){
-    case 'AbandonedCart':
-    case 'Newsletter':
-        return $smarty->fetch('showcase/email_campaign.tpl');
-        break;
+    switch ($email_campaign->get('Email Campaign Type')) {
+        case 'AbandonedCart':
+        case 'Newsletter':
+            return $smarty->fetch('showcase/email_campaign.tpl');
+            break;
 
 
-}
-
-
-
+    }
 
 
 }

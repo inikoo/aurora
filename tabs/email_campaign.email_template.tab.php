@@ -16,37 +16,6 @@ $scope_metadata = $email_campaign->get('Scope Metadata');
 
 
 
-$email_template_key = 0;
-$published_email_template_key = 0;
-switch ($email_campaign->get('Email Campaign Type')){
-
-    case 'AbandonedCart':
-        $role               = 'AbandonedCart';
-        $email_template_key = $scope_metadata['emails']['AbandonedCart']['key'];
-
-        if (empty($scope_metadata['emails']['AbandonedCart']['published_key'])) {
-            $published_email_template_key = 0;
-        } else {
-            $published_email_template_key = $scope_metadata['emails']['AbandonedCart']['published_key'];
-        }
-
-        break;
-    case 'Newsletter':
-        $role               = 'Newsletter';
-        $email_template_key = $scope_metadata['emails']['Newsletter']['key'];
-
-        if (empty($scope_metadata['emails']['Newsletter']['published_key'])) {
-            $published_email_template_key = 0;
-        } else {
-            $published_email_template_key = $scope_metadata['emails']['Newsletter']['published_key'];
-        }
-
-        break;
-    default:
-        return;
-}
-
-
 $control_template = 'control.email_template.tpl';
 
 
@@ -59,20 +28,21 @@ $smarty->assign('control_template', $control_template);
 $smarty->assign('control_blueprint_template', $control_blueprint_template);
 
 
-include_once 'class.Email_Template.php';
-$email_template = new Email_Template($email_template_key);
+
+$email_template = get_object('Email_Template',$email_campaign->get('Email Campaign Email Template Key'));
 
 $smarty->assign('email_template_redirect', '&tab=email_campaign.email_template');
+
 
 
 if ($email_template->id and !($email_template->get('Email Template Type') == 'HTML' and $email_template->get('Email Template Editing JSON') == '')) {
 
     $smarty->assign('control_template', $control_template);
 
-    $smarty->assign('email_template_key', $email_template_key);
+    $smarty->assign('email_template_key', $email_template->id);
 
 
-    if ($published_email_template_key) {
+    if ($email_campaign->get('Email Campaign Published Email Template Key')) {
         $smarty->assign('change_template_label', _('Reformat'));
 
     } else {
@@ -129,10 +99,12 @@ if ($email_template->id and !($email_template->get('Email Template Type') == 'HT
     $parameters = array(
         'parent'     => 'EmailCampaign',
         'parent_key' => $state['key'],
+        'redirect' => base64_url_encode('&tab=email_campaign.email_template'),
+
 
     );
 
-    $smarty->assign('role', $role);
+    $smarty->assign('role', $email_campaign->get('Email Campaign Type'));
     $smarty->assign('scope', 'EmailCampaign');
     $smarty->assign('scope_key', $state['key']);
 

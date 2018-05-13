@@ -386,7 +386,7 @@ class WebAuth {
                       VALUES (%d,%s,%s,%d,%d,%d,%s)',
 
                         $website_key, prepare_mysql($selector), prepare_mysql(hash('sha256', $authenticator)), $website_user_key, $customer_key, $website_user_log_key,
-                        prepare_mysql(date('Y-m-d H:i:s', time() + 864000))
+                        prepare_mysql(gmdate('Y-m-d H:i:s', time() + 864000))
 
                     );
 

@@ -23,6 +23,7 @@ include 'housekeeping.fork.php';
 include 'asset_sales.fork.php';
 include 'time_series.fork.php';
 include 'calculate_sales.fork.php';
+include 'send_mailshot.fork.php';
 
 
 $count_number_used = 0;
@@ -37,6 +38,7 @@ $worker->addFunction("au_housekeeping", "fork_housekeeping");
 $worker->addFunction("au_asset_sales", "fork_asset_sales");
 $worker->addFunction("au_time_series", "fork_time_series");
 $worker->addFunction("au_calculate_sales", "fork_calculate_sales");
+$worker->addFunction("au_send_mailshot", "fork_send_mailshot");
 
 
 $db      = false;
@@ -169,6 +171,8 @@ function get_fork_data($job) {
     $fork_metadata    = json_decode($fork_raw_data, true);
 
 
+
+
     $inikoo_account_code = $fork_metadata['code'];
     if (!ctype_alnum($inikoo_account_code)) {
 
@@ -232,13 +236,17 @@ function get_fork_data($job) {
             $fork_data = json_decode($row['Fork Process Data'], true);
 
 
-            return array(
+            $fork_data=array(
                 'fork_key'            => $fork_key,
                 'inikoo_account_code' => $inikoo_account_code,
                 'fork_data'           => $fork_data,
                 'db'                  => $db,
-                'editor'=>$editor
+                'editor'=>$editor,
+
             );
+
+
+            return $fork_data;
         } else {
             print "fork data not found";
 
