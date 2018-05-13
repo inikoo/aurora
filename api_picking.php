@@ -400,7 +400,7 @@ switch ($_REQUEST['action']) {
         }
 
 
-        if (!is_numeric($_REQUEST['quantity']) or !is_integer($_REQUEST['quantity']) or $_REQUEST['quantity'] <= 0) {
+        if (!is_numeric($_REQUEST['quantity']) or !is_int($_REQUEST['quantity']) or $_REQUEST['quantity'] <= 0) {
             $response = array(
                 'state' => 'Error',
                 'msg'   => 'invalid quantity: '.$_REQUEST['quantity']
