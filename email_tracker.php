@@ -35,9 +35,8 @@ $validator = new MessageValidator();
 if ($validator->isValid($sns)) {
 
 
-    $sql = sprintf('insert into atest  (`date`,`headers`,`request`) values (NOW(),"%s","%s")  ', 'xx', addslashes( print_r($sns,true)  ));
-
-     $db->exec($sql);
+    //$sql = sprintf('insert into atest  (`date`,`headers`,`request`) values (NOW(),"%s","%s")  ', 'xx', addslashes( print_r($sns,true)  ));
+    //$db->exec($sql);
 
 
     if (in_array(
