@@ -400,10 +400,13 @@ switch ($_REQUEST['action']) {
         }
 
 
-        if (!is_numeric($_REQUEST['quantity']) or !is_int($_REQUEST['quantity']) or $_REQUEST['quantity'] <= 0) {
+        $qty=intval($_REQUEST['quantity']);
+
+
+        if ( $_REQUEST['quantity'] <= 0) {
             $response = array(
                 'state' => 'Error',
-                'msg'   => 'invalid quantity: '.$_REQUEST['quantity']
+                'msg'   => 'invalid quantity: '.$_REQUEST['quantity'] .'=>',$qty
             );
             echo json_encode($response);
             exit;
@@ -414,7 +417,7 @@ switch ($_REQUEST['action']) {
         $delivery_note->update_item_picked_quantity(
             array(
                 'transaction_key' => $_REQUEST['itf_key'],
-                'qty'             => $_REQUEST['quantity']
+                'qty'             => $qty
 
             )
         );
