@@ -356,10 +356,10 @@ switch ($_REQUEST['action']) {
 
 
 
-         if (!isset($_REQUEST['picker_key'])) {
+         if (!isset($_REQUEST['staff_key'])) {
              $response = array(
                  'state' => 'Error',
-                 'msg'   => 'picker_key needed'
+                 'msg'   => 'staff_key needed'
              );
              echo json_encode($response);
              exit;
@@ -402,10 +402,10 @@ switch ($_REQUEST['action']) {
             exit;
         }
 
-        if (!is_numeric($_REQUEST['picker_key']) or $_REQUEST['picker_key'] <= 0) {
+        if (!is_numeric($_REQUEST['staff_key']) or $_REQUEST['staff_key'] <= 0) {
             $response = array(
                 'state' => 'Error',
-                'msg'   => 'invalid picker_key: '.$_REQUEST['picker_key']
+                'msg'   => 'invalid staff_key: '.$_REQUEST['staff_key']
             );
             echo json_encode($response);
             exit;
@@ -443,7 +443,7 @@ switch ($_REQUEST['action']) {
             array(
                 'transaction_key' => $_REQUEST['itf_key'],
                 'qty'             => $qty,
-                'picker_key' => $_REQUEST['picker_key'],
+                'picker_key' => $_REQUEST['staff_key'],
 
             )
         );
