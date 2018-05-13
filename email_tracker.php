@@ -102,7 +102,7 @@ $message=json_decode($sns['Message'],true);
 
                 $sql = sprintf(
                     'insert into `Email Tracking Event Dimension`  (`Email Tracking Event Tracking Key`,`Email Tracking Event Type`,`Email Tracking Event Date`,`Email Tracking Event Data`) 
-                  values (%d,%s,%s,%s)', $row['Email Tracking Key'], prepare_mysql($event_type), prepare_mysql($date), COMPRESS(prepare_mysql(json_encode($event_data)))
+                  values (%d,%s,%s,COMPRESS(%s))', $row['Email Tracking Key'], prepare_mysql($event_type), prepare_mysql($date), prepare_mysql(json_encode($event_data))
 
                 );
                 $db->exec($sql);
