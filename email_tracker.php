@@ -56,7 +56,7 @@ $message=json_decode($sns['Message'],true);
         $sql = sprintf('select `Email Tracking Key`  from `Email Tracking Dimension`  where `Email Tracking SES ID`=%s  ', prepare_mysql($message['mail']['messageId']));
 
 
-        $db->exec($_sql);
+      //  $db->exec($_sql);
 
 
         if ($result = $db->query($sql)) {
