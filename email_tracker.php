@@ -106,7 +106,7 @@ $message=json_decode($sns['Message'],true);
                 $db->exec($sql);
 
                 $_sql = sprintf(
-                    'insert into atest  (`date`,`headers`,`request`) values (NOW(),"%s","%s")  ', $sql, 'xx')
+                    'insert into atest  (`date`,`headers`,`request`) values (NOW(),"%s","%s")  ', $sql, 'xx'
 
                 );
 
