@@ -30,21 +30,17 @@ $db = new PDO(
 $db->setAttribute(PDO::ATTR_DEFAULT_FETCH_MODE, PDO::FETCH_ASSOC);
 
 
-$message   = Message::fromRawPostData();
+$sns   = Message::fromRawPostData();
 $validator = new MessageValidator();
-if ($validator->isValid($message)) {
+if ($validator->isValid($sns)) {
 
 
 
 
-    $_sql = sprintf(
-        'insert into atest  (`date`,`headers`,`request`) values (NOW(),"%s","%s")  ', 'aaa', addslashes(print_r($message, true))
 
-    );
-    $db->exec($_sql);
 
     if (in_array(
-        $message['Type'], array(
+        $sns['Type'], array(
                             'SubscriptionConfirmation',
                             'UnsubscribeConfirmation'
                         )
@@ -55,7 +51,7 @@ if ($validator->isValid($message)) {
     else {
 
 
-
+$message=json_decode($sns['Message'],true);
 
         $sql = sprintf('select `Email Tracking Key`  from `Email Tracking Dimension`  where `Email Tracking SES ID`=%s  ', prepare_mysql($message['messageId']));
 
