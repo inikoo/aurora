@@ -9,22 +9,28 @@
 
 */
 
-use AwsSnsMessage;
-use AwsSnsMessageValidator;
+require 'vendor/autoload.php';
 
+use Aws\Sns\Message;
+use Aws\Sns\MessageValidator;
 
+/*
 if ('POST' !== $_SERVER['REQUEST_METHOD']) {
     http_response_code(405);
     die;
 }
+*/
 
-
-require 'vendor/autoload.php';
 
 try {
-    $message   = AwsSnsMessage::fromRawPostData();
+
+
+    $message   = Message::fromRawPostData();
     $validator = new AwsSnsMessageValidator();
-    $validator->validate($message);
+    $validator->MessageValidator($message);
+
+
+
 
     if (in_array(
         $message['Type'], array(
