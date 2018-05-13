@@ -65,7 +65,7 @@ $message=json_decode($sns['Message'],true);
                 $event_type = '';
                 $event_data = '';
 
-                $date = gmdate('Y-m-d H:i:s', strtotime($message['timestamp']));
+                $date = gmdate('Y-m-d H:i:s', strtotime($message['email']['timestamp']));
 
                 switch ($message['eventType']) {
                     case 'Send':
