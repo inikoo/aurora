@@ -78,7 +78,7 @@ $message=json_decode($sns['Message'],true);
 
                         break;
                     case 'Open':
-                        $event_type = 'Open';
+                        $event_type = 'Opened';
                         $date       = gmdate('Y-m-d H:i:s', strtotime($message['open']['timestamp']));
 
                         unset($message['open']['timestamp']);
@@ -99,7 +99,7 @@ $message=json_decode($sns['Message'],true);
                 }
 
                 $sql = sprintf(
-                    'insert into `Email Tracking Event Dimension`  (`Email Tracking Event Tracking Key`,`Email Tracking Event Type`,`Email Tracking Event Date`,`Email Tracking Event Data`) 
+                    'insert into `Email Tracking Event Dimension`  (`Email Tracking Event Tracking Key`,`Email Tracking Event Type`,`Email Tracking Event Date`,COMPRESS(`Email Tracking Event Data`)) 
                   values (%d,%s,%s,%s)', $row['Email Tracking Key'], prepare_mysql($event_type), prepare_mysql($date), prepare_mysql(json_encode($event_data))
 
                 );
