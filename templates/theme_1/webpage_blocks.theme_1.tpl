@@ -2953,6 +2953,7 @@ console.log($(element))
 
     $(document).on("input propertychange", ".item_overlay_item_header_text", function () {
 
+console.log('caca')
 
         $(this).closest('.wrap').find('.category_block .item_header_text').html($(this).html())
 
@@ -3365,6 +3366,7 @@ console.log($(element))
 
         }
 
+        $('#save_button',window.parent.document).addClass('save button changed valid')
 
     }
 
@@ -3383,6 +3385,7 @@ console.log($(element))
             $('#block_'+block_key+' .products_title').addClass('hide')
 
         }
+        $('#save_button',window.parent.document).addClass('save button changed valid')
 
 
     }

@@ -178,7 +178,7 @@
 		 </td>
 
 		
-		<td  id="{$field.id}_container" class="{$field.type} new" field="{$field.id}" _required="{$required}" field_type='{$edit}' server_validation='{$server_validation}' object='{$object_name}' key='{$state.key}' parent='{$state.parent}' parent_key='{$state.parent_key}'> 
+		<td  id="{$field.id}_container" class="{$field.type} new" field="{$field.id}" _required="{$required}" field_type='{$edit}' server_validation='{$server_validation}' object='{$object_name}' key='{$state.key}' parent='{$state.parent}' parent_key='{if isset($overwrite_parent_key)}{$overwrite_parent_key}{else}{$state.parent_key}{/if}'>
 	   
 	
 		<span id="{$field.id}_formatted_value" class="{$field.id} formatted_value hide" ondblclick="open_edit_field('{$object_name}','{$state.key}','{$field.id}')">{if isset($field.formatted_value)}{$field.formatted_value}{else}{$field.value}{/if}</span>
@@ -601,7 +601,7 @@ function input_barcode_to_new_object(field) {
 	
 	</td>
 </tr>
-<tr id="{$object_name}_controls " class="controls" >
+<tr id="{$object_name}_controls" class="controls {if isset($control_class)}{$control_class}{/if}  " >
 <td></td>
 <td></td>
 <td>

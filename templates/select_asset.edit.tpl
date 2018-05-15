@@ -83,7 +83,6 @@
 
             for (var result_key in data.results) {
 
-                console.log(data.results[result_key].value)
 
                 var clone = results_container.find('.search_result_template').clone()
                 //         clone.prop('id', field + '_result_' + result_key);
@@ -132,7 +131,6 @@
     function select_dropdown_customer(element) {
 
 
-        console.log('caca')
 
         $(element).closest('td').find('.Asset_Select').html($(element).attr('formatted_value')).removeClass('hide')
 
@@ -143,7 +141,11 @@
         $(element).closest('td').find('.Asset_Select_value').addClass('hide')
 
         $(element).closest('td').find('.search_results_container').find('tr.result').remove()
-        on_change_customer_list()
+
+
+        on_change_customer_list(element)
+
+
 
     }
 
@@ -172,6 +174,8 @@
     });
 
     function on_change_customer_list(element) {
+
+
 
 
     }

@@ -209,6 +209,41 @@ function check_for_duplicates($data, $db, $user, $account) {
             }
             break;
 
+        case 'Deal':
+            switch ($field) {
+                case 'Deal Name':
+                    $invalid_msg = _('Another offer has this name');
+                    $sql         = sprintf(
+                        "SELECT `Deal Key`AS `key` ,`Deal Name` AS field FROM `Deal Dimension` WHERE `Deal Name`=%s  and `Deal Store Key`=%d ", prepare_mysql($data['value']),$data['parent_key']
+                    );
+
+
+
+                    $validation_sql_queries[] = array(
+                        'sql'         => $sql,
+                        'invalid_msg' => $invalid_msg
+                    );
+                    break;
+                case 'Deal Voucher Code':
+                    $invalid_msg = _('Voucher code already used');
+                    $sql         = sprintf(
+                        "SELECT `Voucher Key`AS `key` ,`Voucher Code` AS field FROM `Voucher Dimension` WHERE `Voucher Code`=%s  and `Voucher Store Key`=%d ", prepare_mysql($data['value']),$data['parent_key']
+                    );
+
+
+
+                    $validation_sql_queries[] = array(
+                        'sql'         => $sql,
+                        'invalid_msg' => $invalid_msg
+                    );
+                    break;
+
+
+                default:
+
+                    break;
+            }
+            break;
 
         case 'Contractor':
 

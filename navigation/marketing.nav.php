@@ -26,7 +26,7 @@ function get_new_deal_navigation($data, $smarty, $user, $db) {
         $title=sprintf(_('New offer for campaign %s'),'<span class="id">'.$data['_parent']->get('Name')).'</span>';
 
     }else{
-        $title=_('Nre offer');
+        $title=_('New offer');
     }
 
     $_content = array(
@@ -628,15 +628,21 @@ function get_deal_navigation($data, $smarty, $user, $db) {
     $left_buttons  = array();
     $right_buttons = array();
 
+
     if ($data['parent']) {
 
         switch ($data['parent']) {
             case 'store':
                 $tab = 'deals';
-
+                $_section = 'marketing';
                 break;
             case 'campaign':
                 $tab = 'deals';
+                $_section = 'marketing';
+                break;
+            case 'category':
+                $tab = 'category.deals';
+                $_section = 'categories';
                 break;
         }
 
@@ -829,7 +835,8 @@ function get_deal_navigation($data, $smarty, $user, $db) {
             }
 
 
-        } elseif ($data['parent'] == 'campaign') {
+        }
+        elseif ($data['parent'] == 'campaign') {
 
             $up_button = array(
                 'icon'      => 'arrow-up',
@@ -862,6 +869,53 @@ function get_deal_navigation($data, $smarty, $user, $db) {
                     'icon'      => 'arrow-right',
                     'title'     => $next_title,
                     'reference' => 'campaigns/'.$data['store']->id.'/'.$data['parent_key'].'/deal/'.$next_key
+                );
+
+
+            } else {
+                $left_buttons[] = array(
+                    'icon'  => 'arrow-right disabled',
+                    'title' => '',
+                    'url'   => ''
+                );
+
+            }
+
+
+        }
+        elseif ($data['parent'] == 'category') {
+
+            $up_button = array(
+                'icon'      => 'arrow-up',
+                'title'     => _(
+                        "Category"
+                    ).' '.$data['_parent']->get('Code'),
+                'reference' => 'products/'.$data['store']->id.'/category/'.$data['parent_key']
+            );
+
+            if ($prev_key) {
+                $left_buttons[] = array(
+                    'icon'      => 'arrow-left',
+                    'title'     => $prev_title,
+                    'reference' => 'products/'.$data['store']->id.'/category/'.$data['parent_key'].'/deal/'.$prev_key
+                );
+
+            } else {
+                $left_buttons[] = array(
+                    'icon'  => 'arrow-left disabled',
+                    'title' => '',
+                    'url'   => ''
+                );
+
+            }
+            $left_buttons[] = $up_button;
+
+
+            if ($next_key) {
+                $left_buttons[] = array(
+                    'icon'      => 'arrow-right',
+                    'title'     => $next_title,
+                    'reference' => 'products/'.$data['store']->id.'/category/'.$data['parent_key'].'/deal/'.$next_key
                 );
 
 

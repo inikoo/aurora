@@ -4,25 +4,79 @@
  Version 3.0*/
 
 
+function toggle_new_category_deal_entitled_to(element) {
 
+
+    if (!$(element).hasClass('selected')) {
+
+
+        var tr = $(element).closest('tr')
+
+        tr.find('.button').removeClass('selected')
+
+        $(element).addClass('selected')
+
+        if ($(element).attr('id') == 'Entitled_To_Anyone_field') {
+
+            $('#Deal_Voucher_Type_field').addClass('hide')
+            $('#Deal_Voucher_Code_field').addClass('hide')
+
+        } else if ($(element).attr('id') == 'Entitled_To_Voucher_field') {
+            $('#Deal_Voucher_Type_field').removeClass('hide')
+
+            $('#Deal_Voucher_Code').removeClass('hide')
+
+            if($('#toggle_voucher_auto_code_icon').hasClass('fa-toggle-on')){
+
+                $('#Deal_Voucher_Code_field').addClass('hide')
+                $('#Deal_Voucher_Type_field').removeClass('hide')
+
+            }else{
+                $('#Deal_Voucher_Code_field').removeClass('hide')
+                $('#Deal_Voucher_Type_field').addClass('hide')
+            }
+
+
+
+        }
+
+
+        $('.deal_type_title').removeClass('hide')
+        $('#Type_field').removeClass('hide')
+       // $('#Percentage_Off_field').removeClass('hide')
+
+
+    }
+
+
+}
 
 function toggle_new_deal_entitled_to(element){
-
 
 
     if(!$(element).hasClass('selected')){
 
         $(element).closest('.button_radio_options').find('.button').removeClass('selected')
         $(element).addClass('selected')
+
+
+
+
     }
 
 
     console.log($(element).attr('field'))
 
+
+    $('#_Customer_Selected_field').addClass('hide')
+
     switch ($(element).attr('field')){
         case 'Entitled_To_Customer':
             $('#Customer_field').removeClass('hide')
             $('#customer_list_field').addClass('hide')
+
+
+
             break;
         case 'Entitled_To_Customer_List':
             $('#customer_list_field').removeClass('hide')
@@ -180,7 +234,7 @@ function toggle_voucher_auto_code(element){
 
         $('#Deal_Voucher_Type_field').addClass('hide')
         $('#Deal_Voucher_Code_field').removeClass('hide')
-        $('#Deal_Voucher_Code').addClass('hide')
+        //$('#Deal_Voucher_Code').addClass('hide')
 
 
     }
@@ -416,6 +470,76 @@ function estimate_number_list_items(){
 
 
     });
+
+
+}
+
+function on_change_customer_list(element) {
+
+console.log(element)
+
+    console.log($(element).attr('formatted_value'))
+
+    $('#Customer_field').addClass('hide')
+    $('#_Customer_Selected_field').removeClass('hide')
+
+    $('#_Customer_Selected_container').html($(element).attr('formatted_value'))
+    $('#_Customer_Selected_formatted_value').html($(element).attr('formatted_value'))
+
+
+
+
+
+}
+
+function select_other_customer(){
+
+console.log($('#Customer_Select_value'))
+
+
+    $('#Customer_field').removeClass('hide')
+    $('#_Customer_Selected_field').addClass('hide')
+    $('#Customer_container').find('input.Customer_Select_value').val('')
+
+    $('#_Customer_Selected_container').html('')
+    $('#_Customer_Selected_formatted_value').html('')
+}
+
+function toggle_category_deal_type(element){
+
+    if(!$(element).hasClass('selected')){
+        $(element).closest('.button_radio_options').find('.button').removeClass('selected')
+        $(element).addClass('selected')
+
+
+        if ($(element).attr('id') == 'Deal_Type_Percentage_Off_field') {
+
+            $('#Percentage_Off_field').removeClass('hide')
+            $('#Buy_n_get_n_free_field').addClass('hide')
+            $('#Buy_n_n_free_field').addClass('hide')
+
+
+        } else if ($(element).attr('id') == 'Deal_Type_Buy_n_get_n_free_field') {
+            $('#Percentage_Off_field').addClass('hide')
+            $('#Buy_n_get_n_free_field').removeClass('hide')
+            $('#Buy_n_n_free_field').addClass('hide')
+
+
+        }else if ($(element).attr('id') == 'Deal_Type_Buy_n_pay_n_field') {
+            $('#Percentage_Off_field').addClass('hide')
+            $('#Buy_n_get_n_free_field').addClass('hide')
+            $('#Buy_n_n_free_field').removeClass('hide')
+
+
+        }
+
+
+
+
+
+    }
+    console.log('xx')
+    $('#Deal_controls').removeClass('hide')
 
 
 }

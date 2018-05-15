@@ -938,8 +938,8 @@ $tab_defaults = array(
 
     'category_customers' => array(
         'view'          => 'overview',
-        'sort_key'      => 'formatted_id',
-        'sort_order'    => 1,
+        'sort_key'      => 'invoiced_amount',
+        'sort_order'    => -1,
         'rpp'           => 100,
         'rpp_options'   => $default_rrp_options,
         'f_field'       => 'name',
@@ -3248,6 +3248,19 @@ $tab_defaults = array(
         'elements'      => $elements_options['customers']
 
     ),
+
+    'category.deals'                               => array(
+        'view'          => 'overview',
+        'sort_key'      => 'name',
+        'sort_order'    => 1,
+        'rpp'           => 100,
+        'rpp_options'   => $default_rrp_options,
+        'f_field'       => 'name',
+        'elements_type' => each($elements_options['deals'])['key'],
+        'elements'      => $elements_options['deals'],
+    ),
+
+
     'material.parts'                      => array(
         'view'          => 'overview',
         'sort_key'      => 'id',

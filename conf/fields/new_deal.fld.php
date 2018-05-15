@@ -87,9 +87,19 @@ $object_fields[] = array(
             'label'       => _('Customer'),
             'invalid_msg' => get_invalid_message('string'),
             'required'    => false,
+            'type'        => ''
+        ),
+        array(
+            'edit'        => 'no_icon',
+            'class'       => 'hide',
+            'id'          => '_Customer_Selected',
+            'value'       => '',
+            'formatted_value' =>'',
+            'label'       => _('Customer').' <i onclick="select_other_customer()" class="fa fa-eraser padding_left_5 button" title="'._('Choose other customer').'" ></i>'  ,
+            'invalid_msg' => '',
+            'required'    => false,
             'type'        => 'value'
         ),
-
         array(
             'edit'        => 'customer_list',
             'class'       => 'hide',
@@ -163,7 +173,7 @@ $object_fields[] = array(
             'required'    => false,
             'type'        => 'value'
         ),
-          array(
+        array(
             'edit'        => ($edit ? 'smallint_unsigned' : ''),
             'id'          => 'Asset_Min_Qty',
             'class'       => 'hide',
@@ -193,7 +203,7 @@ $object_fields[] = array(
             'value'           => false,
             'formatted_value' => '
 <div class="button_radio_options">
-<span id="Trigger_Voucher_field" field_type="button_radio_options" field="Trigger_Extra_Amount_Net" class="button" onclick="toggle_new_deal_extra_trigger(this)"  style="border:1px solid #ccc;padding:5px;margin:4px">'._('Minimum order').'</span>  
+<span id="Trigger_Voucher_field" field_type="button_radio_options" field="Trigger_Extra_Amount_Net" class="button" onclick="toggle_new_deal_extra_trigger(this)"  style="border:1px solid #ccc;padding:5px;margin:4px">'._('Minimum order').' ('._('Items net').')</span>  
 </div>
 ',
             'label'           => _('extra term'),

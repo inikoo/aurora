@@ -416,6 +416,10 @@ $modules = array(
                         'label' => _('Back in stock'),
                         'icon'=>'person-dolly'
                     ),
+                    'email_campaigns.transactional' => array(
+                        'label' => _('Transactional'),
+                        'icon'=>'location-arrow'
+                    ),
                     /*
                     'contacts'       => array(
                         'label' => _('Contacts')
@@ -529,6 +533,7 @@ $modules = array(
                         'icon'  => 'sticky-note'
                     ),
                     'category.customers'  => array('label' => _('Customers')),
+
                     'category.categories' => array(
                         'label' => _(
                             'Subcategories'
@@ -3214,6 +3219,11 @@ $modules = array(
                        // 'quantity_data' => array('object' => '_object', 'field'  => 'Number Customers'),
                         'icon'=>'user'
                     ),
+                    'category.deals'         => array(
+                        'label'         => _('Offers'),
+                        // 'quantity_data' => array('object' => '_object', 'field'  => 'Number Customers'),
+                        'icon'=>'tags'
+                    ),
 
                     /*
                     'category.customers' => array('label' => '',
@@ -3725,18 +3735,6 @@ $modules = array(
                 )
             ),
 
-            'campaign.new' => array(
-                'type' => 'new_object',
-                'tabs' => array(
-                    'campaign.new' => array(
-                        'label' => _(
-                            'New campaign'
-                        )
-                    ),
-
-                )
-
-            ),
 
             'deal.new' => array(
                 'type' => 'new_object',
@@ -3744,6 +3742,20 @@ $modules = array(
                     'deal.new' => array(
                         'label' => _(
                             'New offer'
+                        )
+                    ),
+
+                )
+
+            ),
+
+
+            'campaign.new' => array(
+                'type' => 'new_object',
+                'tabs' => array(
+                    'campaign.new' => array(
+                        'label' => _(
+                            'New campaign'
                         )
                     ),
 
