@@ -43,7 +43,7 @@
     </div>
     {if $item_data.type=='category'}
     <div class="category_block item_overlay hide">
-        <div class="item_header_text " contenteditable="true">{$item_data.header_text|strip_tags}</div>
+        <div class="item_overlay_item_header_text  " style="text-align: center" contenteditable="true">{$item_data.header_text|strip_tags}</div>
         <div class="button_container">
             <div class="flex-item category_code">{$item_data.category_code}</div>
             <div class="flex-item "><span class="number_products">{$item_data.number_products}</span> <i class="fa fa-cube" aria-hidden="true"></i></div>
@@ -66,7 +66,7 @@
     </div>
     {elseif $item_data.type=='product'}
         <div class="category_block item_overlay hide">
-            <div class="item_header_text " contenteditable="true">{$item_data.header_text|strip_tags}</div>
+            <div class="item_overlay_item_header_text  " contenteditable="true">{$item_data.header_text|strip_tags}</div>
             <div class="button_container">
                 <div class="flex-item product_code">{$item_data.product_code}</div>
                 <div class="flex-item product_web_state " data-product_web_state="{$item_data.product_web_state}"></div>

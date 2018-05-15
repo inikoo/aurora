@@ -623,7 +623,38 @@ function parse_request($_data, $db, $modules, $account = '', $user = '', $is_set
 
                                                     }
 
-                                                } elseif ($view_path[3] == 'upload') {
+
+
+
+
+
+                                                } elseif ($view_path[3] == 'deal') {
+                                                    $section    = 'deal';
+                                                    $object     = 'deal';
+                                                    $parent     = 'category';
+                                                    $parent_key = $category->id;
+
+
+
+
+                                                    if (isset($view_path[4])) {
+                                                        if (is_numeric($view_path[4])) {
+                                                            $key = $view_path[4];
+                                                        } elseif ($view_path[4] == 'new') {
+
+
+                                                            $key     = 0;
+                                                            $section = 'deal.new';
+
+                                                        }
+
+                                                    }
+
+
+
+
+
+                                                }  elseif ($view_path[3] == 'upload') {
                                                     //$module='account';
                                                     $section    = 'upload';
                                                     $parent     = 'category';

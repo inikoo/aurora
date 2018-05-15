@@ -76,7 +76,6 @@
 
             for (var result_key in data.results) {
 
-                console.log(data.results[result_key].value)
 
                 var clone = results_container.find('.search_result_template').clone()
                 //         clone.prop('id', field + '_result_' + result_key);

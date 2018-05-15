@@ -2,43 +2,21 @@
 /*
  About:
  Author: Raul Perusquia <raul@inikoo.com>
- Created: 29 September 2015 12:00:00 BST (aprox), Sheffield, UK
- Copyright (c) 2015, Inikoo
+ Created: 14 May 2018 at 10:27:01 CEST, Mijas Costa, Spain
+ Copyright (c) 2018, Inikoo
 
  Version 3
 
 */
 
 
-switch ($parameters['parent']) {
-    case('store'):
-        $where = sprintf(
-            ' where  `Deal Store Key`=%d', $parameters['parent_key']
-        );
-        break;
-    case('campaign'):
-        $where = sprintf(
-            ' where D.`Deal Campaign Key`=%d', $parameters['parent_key']
-        );
-        break;
-    case('account'):
-
-        $where = sprintf(' where true ');
-        break;
-
-    case('category'):
+$table  = ' `Deal Component Dimension` DCD left join   `Deal Dimension` D on (`Deal Key`=`Deal Component Deal Key`) left join `Deal Campaign Dimension` C on (C.`Deal Campaign Key`=D.`Deal Campaign Key`) left join `Store Dimension` on (`Deal Store Key`=`Store Key`)';
 
 
 
         $where = sprintf(
-            ' where  `Deal Store Key`=%d', $parameters['parent_key']
+            ' where  `Deal Component Allowance Target`="Category" AND `Deal Component Allowance Target Key`=%d ', $parameters['parent_key']
         );
-
-        break;
-
-    default:
-        $where = 'where false';
-}
 
 
 if (isset($parameters['elements_type'])) {
@@ -125,8 +103,7 @@ if ($order == 'name') {
 } else {
     $order = '`Deal Key`';
 }
-$table  = '`Deal Dimension` D left join `Deal Campaign Dimension` C on (C.`Deal Campaign Key`=D.`Deal Campaign Key`) left join `Store Dimension` on (`Deal Store Key`=`Store Key`) ';
-$fields = "`Deal Key`,`Deal Name`,`Deal Term Allowances`,`Deal Term Allowances Label`,`Deal Store Key`,D.`Deal Campaign Key`,`Deal Status`,`Deal Begin Date`,`Deal Expiration Date`,
+$fields = "`Deal Component Terms Description`,`Deal Component Allowance Description`,`Deal Key`,`Deal Name`,`Deal Term Allowances`,`Deal Term Allowances Label`,`Deal Store Key`,D.`Deal Campaign Key`,`Deal Status`,`Deal Begin Date`,`Deal Expiration Date`,
 `Deal Total Acc Used Orders`,`Deal Total Acc Used Customers`,`Store Bulk Discounts Campaign Key`";
 
 

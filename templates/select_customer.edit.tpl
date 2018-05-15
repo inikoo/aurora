@@ -83,7 +83,6 @@
 
             for (var result_key in data.results) {
 
-                console.log(data.results[result_key].value)
 
                 var clone = results_container.find('.search_result_template').clone()
                 //         clone.prop('id', field + '_result_' + result_key);
@@ -132,7 +131,7 @@
     function select_dropdown_customer(element) {
 
 
-        console.log('caca')
+        console.log('cacaxxxx')
 
         $(element).closest('td').find('.Customer_Select').html($(element).attr('formatted_value')).removeClass('hide')
 

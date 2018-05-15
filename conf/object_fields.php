@@ -208,11 +208,23 @@ function get_object_fields($object, $db, $user, $smarty, $options = false) {
 
 
 
-            if($options['new']){
+            if(isset($options['new'])){
                switch ($options['parent']){
                    case 'campaign':
 
                        include 'fields/new_deal.fld.php';
+
+
+                       break;
+                   case 'category':
+
+                       $smarty->assign('control_class','hide');
+
+                       $smarty->assign('overwrite_parent_key',$options['store_key']);
+
+
+
+                       include 'fields/new_category_deal.fld.php';
 
 
                        break;

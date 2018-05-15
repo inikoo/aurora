@@ -954,6 +954,16 @@ function new_object($account, $db, $user, $editor, $data, $smarty) {
     $redirect = '';
 
     switch ($data['object']) {
+
+        case 'Deal':
+
+            print_r($data);
+
+
+
+            exit;
+
+            break;
         case 'Page':
         case 'Webpage':
             include_once 'class.Page.php';

@@ -3617,6 +3617,57 @@ function get_view_position($db, $state, $user, $smarty, $account) {
                         'reference' => 'campaigns/'.$state['store']->id.'/'.$state['_parent']->id
                     );
 
+                }elseif ($state['parent'] == 'category') {
+
+
+                    $category = $state['_parent'];
+                    $branch[] = array(
+                        'label'     => _("Products's categories").' <span class="id">'.$state['store']->get('Code').'</span>',
+                        'icon'      => 'sitemap',
+                        'reference' => 'products/'.$category->get(
+                                'Store Key'
+                            ).'/categories'
+                    );
+
+
+                    if (isset($state['metadata'])) {
+                        $parent_category_keys = $state['metadata'];
+                    } else {
+
+                        $parent_category_keys = preg_split(
+                            '/\>/', $category->get('Category Position')
+                        );
+                    }
+
+
+                    foreach ($parent_category_keys as $category_key) {
+                        if (!is_numeric($category_key)) {
+                            continue;
+                        }
+                        if ($category_key == $state['key']) {
+                            $branch[] = array(
+                                'label'     => '<span class="Category_Code">'.$category->get('Code').'</span> <span class="italic hide Category_Label">'.$category->get('Label').'</span>',
+                                'icon'      => '',
+                                'reference' => ''
+                            );
+                            break;
+                        } else {
+
+                            $parent_category = new Category($category_key);
+                            if ($parent_category->id) {
+
+                                $branch[] = array(
+                                    'label'     => $parent_category->get(
+                                        'Code'
+                                    ),
+                                    'icon'      => '',
+                                    'reference' => 'products/'.$category->get('Store Key').'/category/'.$parent_category->id
+                                );
+
+                            }
+                        }
+                    }
+
                 }
 
                 $branch[] = array(

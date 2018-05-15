@@ -195,6 +195,10 @@ function deals($_data, $db, $user) {
                 $from = '';
             }
 
+            if ($data['Deal Term Allowances Label'] == '' and isset($data['Deal Component Allowance Description'])) {
+                $data['Deal Term Allowances Label'] = $data['Deal Component Terms Description'].' &rArr; '.$data['Deal Component Allowance Description'];
+            }
+
             if (strlen(strip_tags($data['Deal Term Allowances Label'])) > 75) {
                 $description_class = 'super_small';
             } elseif (strlen(strip_tags($data['Deal Term Allowances Label'])) > 60) {
@@ -206,13 +210,22 @@ function deals($_data, $db, $user) {
             }
 
 
+            if ($_data['parameters']['parent'] == 'category') {
+                $name = sprintf('<span class="link" onClick="change_view(\'products/%d/category/%d/deal/%d\')">%s</span>', $data['Deal Store Key'], $_data['parameters']['parent_key'], $data['Deal Key'], $data['Deal Name']);
+
+            } else {
+                $name = sprintf('<span class="link" onClick="change_view(\'campaigns/%d/%d/deal/%d\')">%s</span>', $data['Deal Store Key'], $data['Deal Campaign Key'], $data['Deal Key'], $data['Deal Name']);
+
+            }
+
+
             $description = sprintf('<span class="%s"  >%s</span>', $description_class, $data['Deal Term Allowances Label']);
 
 
             $adata[] = array(
                 'id'          => (integer)$data['Deal Key'],
                 'status'      => $status,
-                'name'        => sprintf('<span class="link" onClick="change_view(\'campaigns/%d/%d/deal/%d\')">%s</span>', $data['Deal Store Key'], $data['Deal Campaign Key'], $data['Deal Key'], $data['Deal Name']),
+                'name'        => $name,
                 'description' => $description,
                 'from'        => $from,
                 'to'          => $to,
@@ -749,16 +762,8 @@ function campaign_bulk_deals($_data, $db, $user) {
 
             $description = sprintf(
                 '<span id="deal_component_description_%d"><span  class="%s button"  key="%d" target="%s" terms="%d"  allowance="%s" description_terms="%s" description_allowances="%s"  onclick="edit_volume_deal(this)"  title="%s">%s</span></span>',
-                $data['Deal Component Key'],
-                $description_class,
-                $data['Deal Component Key'],
-                $data['Deal Component Allowance Target Label'],
-                $data['Deal Component Terms'],
-                percentage($data['Deal Component Allowance'], 1),
-                $data['Deal Term Label'],
-                $data['Deal Component Allowance Label'],
-                strip_tags($data['Deal Term Label'].' '.$data['Deal Component Allowance Label']),
-                $data['Deal Term Allowances Label']
+                $data['Deal Component Key'], $description_class, $data['Deal Component Key'], $data['Deal Component Allowance Target Label'], $data['Deal Component Terms'], percentage($data['Deal Component Allowance'], 1), $data['Deal Term Label'],
+                $data['Deal Component Allowance Label'], strip_tags($data['Deal Term Label'].' '.$data['Deal Component Allowance Label']), $data['Deal Term Allowances Label']
             );
 
 
@@ -766,13 +771,13 @@ function campaign_bulk_deals($_data, $db, $user) {
                 'id'          => (integer)$data['Deal Key'],
                 'status'      => $status,
                 'name'        => sprintf('<span class="link" onClick="change_view(\'campaigns/%d/%d/deal/%d\')">%s</span>', $data['Deal Store Key'], $data['Deal Campaign Key'], $data['Deal Key'], $data['Deal Name']),
-                'target' => sprintf('<span class="link" onClick="change_view(\'products/%d/category/%d\')">%s</span>', $data['Deal Store Key'], $data['Deal Component Allowance Target Key'], $data['Deal Component Allowance Target Label']),
+                'target'      => sprintf('<span class="link" onClick="change_view(\'products/%d/category/%d\')">%s</span>', $data['Deal Store Key'], $data['Deal Component Allowance Target Key'], $data['Deal Component Allowance Target Label']),
                 'description' => $description,
 
-                'from'        => $from,
-                'to'          => $to,
-                'orders'      => number($data['Deal Total Acc Used Orders']),
-                'customers'   => number($data['Deal Total Acc Used Customers'])
+                'from'      => $from,
+                'to'        => $to,
+                'orders'    => number($data['Deal Total Acc Used Orders']),
+                'customers' => number($data['Deal Total Acc Used Customers'])
 
             );
 
@@ -799,7 +804,6 @@ function campaign_bulk_deals($_data, $db, $user) {
 }
 
 
-
 function newsletters($_data, $db, $user) {
 
     $rtext_label = 'newsletter';
@@ -808,63 +812,58 @@ function newsletters($_data, $db, $user) {
     include_once 'prepare_table/init.php';
 
 
-    $sql   = "select $fields from $table $where $wheref order by $order $order_direction limit $start_from,$number_results";
+    $sql = "select $fields from $table $where $wheref order by $order $order_direction limit $start_from,$number_results";
 
     //print $sql;
 
     $adata = array();
 
 
-
-
     foreach ($db->query($sql) as $data) {
 
 
-
-            $name =  sprintf('<span class="link" onClick="change_view(\'newsletters/%d/%d\')">%s</span>', $data['Email Campaign Store Key'], $data['Email Campaign Key'], $data['Email Campaign Name']);
+        $name = sprintf('<span class="link" onClick="change_view(\'newsletters/%d/%d\')">%s</span>', $data['Email Campaign Store Key'], $data['Email Campaign Key'], $data['Email Campaign Name']);
 
 
         switch ($data['Email Campaign State']) {
             case 'InProcess':
-                $state= _('Setting up mailing list');
+                $state = _('Setting up mailing list');
                 break;
             case 'ComposingEmail':
-                $state =_('Composing email');
+                $state = _('Composing email');
                 break;
             case 'Ready':
-                $state= _('Ready to send');
+                $state = _('Ready to send');
                 break;
             case 'Scheduled':
-                $state =_('Scheduled to be send');
+                $state = _('Scheduled to be send');
                 break;
             case 'Sending':
-                $state =_('Sending');
+                $state = _('Sending');
 
                 break;
             case 'Cancelled':
-                $state =_('Cancelled');
+                $state = _('Cancelled');
                 break;
             case 'Send':
-                $state =_('Send');
+                $state = _('Send');
                 break;
-
 
 
             default:
-                $state =$data['Email Campaign State'];
+                $state = $data['Email Campaign State'];
                 break;
         }
 
 
         $adata[] = array(
-            'id' => (integer)$data['Email Campaign Key'],
-            'date'           => strftime("%a %e %b %Y", strtotime($data['Email Campaign Last Updated Date'].' +0:00')),
+            'id'   => (integer)$data['Email Campaign Key'],
+            'date' => strftime("%a %e %b %Y", strtotime($data['Email Campaign Last Updated Date'].' +0:00')),
 
 
-            'name' => $name,
-            'state'=>$state,
-            'emails'=>number($data['Email Campaign Number Estimated Emails']),
-
+            'name'   => $name,
+            'state'  => $state,
+            'emails' => number($data['Email Campaign Number Estimated Emails']),
 
 
         );
@@ -884,4 +883,5 @@ function newsletters($_data, $db, $user) {
     );
     echo json_encode($response);
 }
+
 ?>
