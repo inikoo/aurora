@@ -103,10 +103,10 @@ if (isset($parameters['elements_type'])) {
 }
 
 
-if (($parameters['f_field'] == 'supplier') and $f_value != '') {
+if (($parameters['f_field'] == 'number') and $f_value != '') {
 
     $wheref = sprintf(
-        '  and  `Purcahse Order Supplier Name`  REGEXP "[[:<:]]%s" ', addslashes($f_value)
+        '  and  `Supplier Delivery Public ID`  REGEXP "[[:<:]]%s" ', addslashes($f_value)
     );
 
 

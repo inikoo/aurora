@@ -14,6 +14,8 @@ function toggle_options(field) {
 }
 
 
+
+
 function show_options(field) {
     $('#' + field + '_options').removeClass('hide')
 }
@@ -29,9 +31,10 @@ function get_form_validation_state(submitting) {
     $(".value").each(function (index) {
 
         var field = $(this).attr('field')
+       // console.log(index)
+        console.log($(this).attr('id'))
 
-
-       // console.log(field)
+         //console.log(field)
        // console.log($('#' + field + '_field').hasClass('valid'))
 
         //console.log($(this).attr('field_type'))
@@ -91,9 +94,13 @@ function process_form_validation(validation, submitting) {
             var field = $(this).attr('field')
 
 
-            if (!$('#' + field + '_field').hasClass('valid')) {
+            if (!$('#' + field + '_field').hasClass('valid') &&   $('#' + field + '_field').length>0    ) {
 
                 $('#' + field + '_field').addClass('invalid')
+
+
+                console.log(field)
+
 
             }
 

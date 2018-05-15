@@ -110,14 +110,14 @@ $object_fields[] = array(
             'value'           => false,
             'formatted_value' => '
 <div class="button_radio_options">
-<span id="Deal_Type_Percentage_Off_field" field_type="button_radio_options" field="Deal_Type_Percentage_Off" onclick="toggle_category_deal_type(this)" class="button " style="border:1px solid #ccc;padding:5px;margin:4px">'._('Percentage off').'</span>
-<span id="Deal_Type_Buy_n_get_n_free_field" field_type="button_radio_options" field="Deal_Type_Buy_n_get_n_free" onclick="toggle_category_deal_type(this)" class="button" style="border:1px solid #ccc;padding:5px;margin:4px">'.sprintf(_('Buy %s get %s free'),'<span>2</span>',1).'</span>
-<span id="Deal_Type_Buy_n_pay_n_field" field_type="button_radio_options" field="Deal_Type_Buy_n_pay_n" onclick="toggle_category_deal_type(this)" class="button " style="border:1px solid #ccc;padding:5px;margin:4px">'.sprintf(_('Buy %s pay only for %s'),3,2).'</span>
+<span id="Deal_Type_Percentage_Off_field" field_type="button_radio_options" field="Deal_Type_Percentage_Off" onclick="toggle_category_deal_type(this)" class="button value" style="border:1px solid #ccc;padding:5px;margin:4px">'._('Percentage off').'</span>
+<span id="Deal_Type_Buy_n_get_n_free_field" field_type="button_radio_options" field="Deal_Type_Buy_n_get_n_free" onclick="toggle_category_deal_type(this)" class="button value" style="border:1px solid #ccc;padding:5px;margin:4px">'.sprintf(_('Buy %s get %s free'),'<span>2</span>',1).'</span>
+<span id="Deal_Type_Buy_n_pay_n_field" field_type="button_radio_options" field="Deal_Type_Buy_n_pay_n" onclick="toggle_category_deal_type(this)" class="button value" style="border:1px solid #ccc;padding:5px;margin:4px">'.sprintf(_('Buy %s pay only for %s'),3,2).'</span>
 </div>
 ',
             'label'           => _('Choose offer'),
             'required'        => false,
-            'type'            => 'value'
+            'type'            => ''
         ),
 
         array(
@@ -125,11 +125,11 @@ $object_fields[] = array(
             'class'=>'Deal_Type',
             'edit'            => 'no_icon',
             'class'=>'hide',
-            'value'           => false,
-            'formatted_value' => '<input id="Deal_Percentage_Off_field" value="10" style="margin-left:5px;width:30px"> %',
+            'value'           => 'x',
+            'formatted_value' => '<input id="Percentage_Off_field" field="Percentage_Off" value="10" class="value valid" style="margin-left:5px;width:30px"> %',
             'label'           => '',
             'required'        => false,
-            'type'            => 'value'
+            'type'            => ''
         ),
 
         array(
@@ -138,10 +138,10 @@ $object_fields[] = array(
             'edit'            => 'no_icon',
             'class'=>'hide',
             'value'           => false,
-            'formatted_value' => sprintf(_('Buy %s get %s free'),'<input id="Deal_Buy_n_get_n_free_A_field" value="2" style="margin-left:5px;width:30px">','<input id="Deal_Buy_n_get_n_free_B_field" value="1" style="margin-left:5px;width:30px">'),
+            'formatted_value' => sprintf(_('Buy %s get %s free'),'<input id="Deal_Buy_n_get_n_free_A_field" field_type="string" class="value valid"  field="Deal_Buy_n_get_n_free_A" value="2" style="margin-left:5px;width:30px">','<input id="Deal_Buy_n_get_n_free_B_field" field="Deal_Buy_n_get_n_free_B" field_type="string"  class="value valid" value="1" style="margin-left:5px;width:30px">'),
             'label'           => '',
             'required'        => false,
-            'type'            => 'value'
+            'type'            => ''
         ),
         array(
             'id'              => 'Buy_n_n_free',
@@ -149,10 +149,10 @@ $object_fields[] = array(
             'edit'            => 'no_icon',
             'class'=>'hide',
             'value'           => false,
-            'formatted_value' => sprintf(_('Buy %s pay only for %s'),'<input id="Deal_Buy_n_get_n_free_A_field" value="3" style="margin-left:5px;width:30px">','<input id="Deal_Buy_n_get_n_free_B_field" value="2" style="margin-left:5px;width:30px">'),
+            'formatted_value' => sprintf(_('Buy %s pay only for %s'),'<input id="Deal_Buy_n_n_free_A_field" field="Deal_Buy_n_n_free_A" class="value valid" value="3" style="margin-left:5px;width:30px">','<input id="Deal_Buy_n_n_free_B_field" field="Deal_Buy_n_n_free_B" class="value valid" value="2" style="margin-left:5px;width:30px">'),
             'label'           => '',
             'required'        => false,
-            'type'            => 'value'
+            'type'            => ''
         ),
 
     ),
