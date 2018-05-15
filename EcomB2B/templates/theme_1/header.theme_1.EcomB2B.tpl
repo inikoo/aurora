@@ -102,7 +102,7 @@
 
 
     {foreach from=$header_data.menu.columns item=column key=key}
-        <a id="menu_{$key}" class="menu {if !$column.show}hide{/if} {if $column.type=='nothing'}only_link{else}dropdown{/if}  {if !empty($column.link)}real_link{/if} " href="{if !empty($column.link)}{$column.link}{/if}" data-key="{$key}"><i class="far  {$column.icon} "></i> <span>{$column.label|strip_tags}</span> <i  class="down_cadet fal fa-angle-down"></i></a>
+        <a id="menu_{$key}" class="menu {if !$column.show}hide{/if} {if $column.type=='nothing'}only_link{else}dropdown{/if}  {if !empty($column.link)}real_link{/if} " href="{if !empty($column.link)}{$column.link}{/if}" data-key="{$key}"><i class="far  {$column.icon} "></i> <span>{$column.label|strip_tags}</span> <i  class="down_cadet {if $column.type=='nothing'}hide{/if}  fal fa-angle-down   "></i></a>
     {/foreach}
 
         {if $logged_in}
