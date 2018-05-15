@@ -485,6 +485,7 @@ function save_header() {
                     show: (menu_header_element.hasClass('hide') ? false : true),
                     label: menu_header_element.find('.menu_label').html(),
                     icon: menu_header_element.find('.menu_icon').attr('icon'),
+                    link: menu_header_element.find('.down_cadet').attr('url'),
 
 
                 })
