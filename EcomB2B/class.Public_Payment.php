@@ -248,15 +248,15 @@ class Public_Payment extends DBW_Table {
                 if ($value == 'Completed') {
                     $this->fast_update(
                         array(
-                            'Payment Completed Date'    => gmdate('Ym-d H:i:s'),
-                            'Payment Last Updated Date' => gmdate('Ym-d H:i:s'),
+                            'Payment Completed Date'    => gmdate('Y-m-d H:i:s'),
+                            'Payment Last Updated Date' => gmdate('Y-m-d H:i:s'),
                         )
                     );
                 } elseif ($value == 'Cancelled') {
                     $this->fast_update(
                         array(
-                            'Payment Cancelled Date'    => gmdate('Ym-d H:i:s'),
-                            'Payment Last Updated Date' => gmdate('Ym-d H:i:s'),
+                            'Payment Cancelled Date'    => gmdate('Y-m-d H:i:s'),
+                            'Payment Last Updated Date' => gmdate('Y-m-d H:i:s'),
                         )
                     );
                 }
