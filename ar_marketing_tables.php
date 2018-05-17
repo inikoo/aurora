@@ -195,9 +195,7 @@ function deals($_data, $db, $user) {
                 $from = '';
             }
 
-            if ($data['Deal Term Allowances Label'] == '' and isset($data['Deal Component Allowance Description'])) {
-                $data['Deal Term Allowances Label'] = $data['Deal Component Terms Description'].' &rArr; '.$data['Deal Component Allowance Description'];
-            }
+
 
             if (strlen(strip_tags($data['Deal Term Allowances Label'])) > 75) {
                 $description_class = 'super_small';
@@ -212,6 +210,9 @@ function deals($_data, $db, $user) {
 
             if ($_data['parameters']['parent'] == 'category') {
                 $name = sprintf('<span class="link" onClick="change_view(\'products/%d/category/%d/deal/%d\')">%s</span>', $data['Deal Store Key'], $_data['parameters']['parent_key'], $data['Deal Key'], $data['Deal Name']);
+
+            }elseif ($_data['parameters']['parent'] == 'store') {
+                $name = sprintf('<span class="link" onClick="change_view(\'deals/%d/%d\')">%s</span>', $data['Deal Store Key'], $data['Deal Key'], $data['Deal Name']);
 
             } else {
                 $name = sprintf('<span class="link" onClick="change_view(\'campaigns/%d/%d/deal/%d\')">%s</span>', $data['Deal Store Key'], $data['Deal Campaign Key'], $data['Deal Key'], $data['Deal Name']);

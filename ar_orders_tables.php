@@ -2183,7 +2183,7 @@ function delivery_note_items($_data, $db, $user) {
             'dispatched'        => number(
                 -1 * $data['Inventory Transaction Quantity']
             ),
-            'overview_required' => number($data['Required']),
+            'overview_required' => number($data['quantity']),
 
             'overview_packed'  => number($data['Packed']),
             'overview_picked'  => number($data['Picked']),

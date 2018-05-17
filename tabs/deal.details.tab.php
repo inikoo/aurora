@@ -15,6 +15,7 @@ include_once 'conf/object_fields.php';
 
 $deal = $state['_object'];
 
+
 $object_fields = get_object_fields($deal, $db, $user, $smarty, array('store_key'=>$deal->get('Store Key')));
 
 $smarty->assign('object_fields', $object_fields);

@@ -13,7 +13,7 @@
 switch ($parameters['parent']) {
     case('store'):
         $where = sprintf(
-            ' where  `Deal Store Key`=%d', $parameters['parent_key']
+            ' where  `Deal Store Key`=%d  and D.`Deal Campaign Key` is NULL ', $parameters['parent_key']
         );
         break;
     case('campaign'):
@@ -126,7 +126,7 @@ if ($order == 'name') {
     $order = '`Deal Key`';
 }
 $table  = '`Deal Dimension` D left join `Deal Campaign Dimension` C on (C.`Deal Campaign Key`=D.`Deal Campaign Key`) left join `Store Dimension` on (`Deal Store Key`=`Store Key`) ';
-$fields = "`Deal Key`,`Deal Name`,`Deal Term Allowances`,`Deal Term Allowances Label`,`Deal Store Key`,D.`Deal Campaign Key`,`Deal Status`,`Deal Begin Date`,`Deal Expiration Date`,
+$fields = "`Deal Key`,`Deal Name`,`Deal Term Allowances Label`,`Deal Store Key`,D.`Deal Campaign Key`,`Deal Status`,`Deal Begin Date`,`Deal Expiration Date`,
 `Deal Total Acc Used Orders`,`Deal Total Acc Used Customers`,`Store Bulk Discounts Campaign Key`";
 
 

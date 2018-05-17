@@ -70,7 +70,7 @@ class DealComponent extends DB_Table {
 
             case('Description'):
             case('Deal Description'):
-                return $this->data['Deal Component Terms Description'].' &rArr; '.$this->data['Deal Component Allowance Description'];
+                return $this->get_formatted_terms().' <i class="far fa-arrow-right"></i> '.$this->get_formatted_allowances();
                 break;
         }
 
@@ -160,12 +160,9 @@ class DealComponent extends DB_Table {
         $values = 'values(';
         foreach ($data as $key => $value) {
             $keys .= "`$key`,";
-            if ($key == 'Deal Component Replace' or $key == 'Deal Component Allowance Target XHTML Label' or $key == 'Deal Component Allowance XHTML Description' or $key
-                == 'Deal Component Allowance Plain Description') {
-                $values .= prepare_mysql($value, false).",";
-            } else {
+
                 $values .= prepare_mysql($value).",";
-            }
+
         }
         $keys   = preg_replace('/,$/', ')', $keys);
         $values = preg_replace('/,$/', ')', $values);
@@ -178,7 +175,7 @@ class DealComponent extends DB_Table {
         if ($this->db->exec($sql)) {
             $this->id = $this->db->lastInsertId();
             $this->get_data('id', $this->id);
-            $this->update_allowance_description();
+
             $this->new = true;
         } else {
             print "Error can not create deal component\n $sql\n";
@@ -187,87 +184,26 @@ class DealComponent extends DB_Table {
         }
     }
 
-    function update_allowance_description() {
-        $allowance='';
-        switch ($this->data['Deal Component Allowance Type']) {
-            case 'Percentage Off':
-                $allowance = sprintf(_('%s off'),percentage($this->data['Deal Component Allowance'],1,0));
-
-                break;
-        };
-
-        $this->update(
-            array(
-                'Deal Component Allowance Description' => $allowance,
-
-            ), 'no_history'
-        );
-
-
-
-    }
-
-    function update_terms_description() {
-
-        $terms = '';
-
-        $deal=get_object('Deal',$this->data['Deal Component Deal Key']);
-
-        switch ($deal->get('Deal Terms Type')) {
-
-            case 'Order Interval':
-                $terms = sprintf('last order within %d days', $deal->get('Deal Terms'));
-
-
-                break;
-            case 'Category Quantity Ordered':
-
-                $terms = sprintf('order %d or more %s', $deal->get('Deal Terms'), $this->get('Deal Component Allowance Target Label'));
-
-                break;
-
-        }
-
-
-        $this->update(
-            array(
-                'Deal Component Terms Description' => $terms,
-
-            ), 'no_history'
-        );
-
-
-
-    }
-
-    function get_xhtml_status() {
-        switch ($this->data['Deal Component Status']) {
-            case('Active'):
-                return _("Active");
-                break;
-            case('Finish'):
-                return _("Finished");
-                break;
-            case('Waiting'):
-                return _("Waiting");
-                break;
-            case('Suspended'):
-                return _("Suspended");
-                break;
-
-
-        }
-
-    }
 
     function update_field_switcher($field, $value, $options = '', $metadata = '') {
 
         switch ($field) {
 
             case 'Deal Component Name Label':
-                $campaign         = get_object('DealCampaign', $this->data['Deal Component Campaign Key']);
-                $campaign->editor = $this->editor;
-                $campaign->update(array('Deal Campaign Name' => $value));
+
+                if($this->data['Deal Component Campaign Key']){
+                    $campaign         = get_object('DealCampaign', $this->data['Deal Component Campaign Key']);
+                    $campaign->editor = $this->editor;
+                    $campaign->update(array('Deal Campaign Name' => $value));
+                }else{
+                    $deal = get_object('Deal', $this->data['Deal Component Deal Key']);
+                    $deal->editor = $this->editor;
+                    $deal->update(array('Deal Name Label' => $value));
+                    $this->update_field('Deal Component Name Label', $value, $options);
+
+                }
+
+
                 break;
 
             case 'Deal Component Term Label':
@@ -308,7 +244,6 @@ class DealComponent extends DB_Table {
                 $this->update_field($field, $value, $options);
                 $deal = get_object('Deal', $this->data['Deal Component Deal Key']);
                 $deal->editor = $this->editor;
-                $this->update_allowance_description();
                 $deal->update_term_allowances();
 
                 break;
@@ -336,24 +271,6 @@ class DealComponent extends DB_Table {
 
         }
 
-        $sql = sprintf(
-            'SELECT `Deal Component Key` FROM `Deal Component Dimension` WHERE `Deal Component Status`!="Finish" AND `Deal Component Mirror Key`=%d', $this->id
-        );
-
-
-        if ($result = $this->db->query($sql)) {
-            foreach ($result as $row) {
-                $deal_component = new DealComponent($row['Deal Component Key']);
-                $deal_component->update(
-                    array('Deal Component Expiration Date' => $value)
-                );
-                $deal_component->update_status_from_dates();
-            }
-        } else {
-            print_r($error_info = $this->db->errorInfo());
-            print "$sql\n";
-            exit;
-        }
 
 
         $this->update_status_from_dates();
@@ -407,36 +324,7 @@ class DealComponent extends DB_Table {
             $this->update_status_from_dates($force = true);
         }
 
-        $sql = sprintf(
-            "SELECT `Deal Component Key` FROM `Deal Component Dimension` WHERE `Deal Component Mirror Key`=%d", $this->id
-        );
 
-
-        if ($result = $this->db->query($sql)) {
-            foreach ($result as $row) {
-                $mirror_component         = new DealComponent(
-                    $row['Deal Component Key']
-                );
-                $mirror_component->editor = $this->editor;
-
-
-                if ($value == 'Suspended') {
-                    $sql = sprintf(
-                        "UPDATE `Deal Component Dimension` SET `Deal Component Status`=%s WHERE `Deal Component Key`=%d", prepare_mysql($value), $mirror_component->id
-                    );
-                    $this->db->exec($sql);
-                    $mirror_component->data['Deal Component Status'] = $value;
-
-
-                } else {
-                    $mirror_component->update_status_from_dates($force = true);
-                }
-            }
-        } else {
-            print_r($error_info = $this->db->errorInfo());
-            print "$sql\n";
-            exit;
-        }
 
 
     }
@@ -552,6 +440,56 @@ class DealComponent extends DB_Table {
 
     }
 
+
+
+    function get_formatted_terms() {
+
+        $terms = '';
+
+
+        switch ($this->data['Deal Component Terms Type']) {
+
+            case 'Order Interval':
+                $terms = sprintf('last order within %d days', $this->get('Deal Component Terms'));
+
+
+                break;
+            case 'Category Quantity Ordered':
+
+
+
+                    $terms = sprintf('order %d or more %s', $this->data['Deal Component Terms'], $this->get('Deal Component Allowance Target Label'));
+
+
+
+                break;
+            case 'Category For Every Quantity Ordered':
+
+
+
+
+                    $terms = sprintf('%s, buy %d', $this->get('Deal Component Allowance Target Label'), $this->data['Deal Component Terms']);
+
+
+
+                break;
+            case 'Category For Every Quantity Any Product Ordered':
+
+
+
+                    $terms = sprintf('%s (Mix & match), buy %d ', $this->get('Deal Component Allowance Target Label'), $this->data['Deal Component Terms']);
+
+
+                break;
+
+        }
+
+
+        return $terms;
+    }
+
+
+
     function get_formatted_allowances() {
 
 
@@ -559,6 +497,19 @@ class DealComponent extends DB_Table {
         switch ($this->data['Deal Component Allowance Type']) {
             case 'Percentage Off':
                 $allowance = sprintf(_('%s off'),percentage($this->data['Deal Component Allowance'],1,0));
+
+                break;
+
+            case 'Get Cheapest Free':
+
+                if ($this->data['Deal Component Allowance'] == 1) {
+                    $allowance= sprintf(_('cheapest free'));
+
+                } else {
+                    $allowance= sprintf(_('cheapest %d free'), $this->data['Deal Component Allowance']);
+
+                }
+
 
                 break;
 

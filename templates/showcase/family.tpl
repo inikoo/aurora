@@ -159,8 +159,8 @@
     </div>
 
 
-    <div class="block info">
-        <div class="block info">
+
+        <div class="block info" style="width: 435px" >
             <div id="overviews">
                 <table id="stock_table" border="0" class="overview">
                     <tbody class="info">
@@ -223,7 +223,7 @@
                 
             </div>
         </div>
-    </div>
+
     
     
     <div style="clear:both">

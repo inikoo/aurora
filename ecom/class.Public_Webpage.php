@@ -266,7 +266,7 @@ class Public_Webpage {
                     case 'Category Products':
                         $deals=array();
                         $sql = sprintf(
-                            "SELECT `Deal Component Key`,`Deal Component Icon`,`Deal Component Name Label`,`Deal Component Term Label`,`Deal Component Allowance Label` FROM `Deal Component Dimension` WHERE `Deal Component Allowance Target`='Category' AND `Deal Component Allowance Target Key`=%d AND `Deal Component Status`='Active'",
+                            "SELECT `Deal Component Expiration Date`,`Deal Component Key`,`Deal Component Icon`,`Deal Component Name Label`,`Deal Component Term Label`,`Deal Component Allowance Label` FROM `Deal Component Dimension` WHERE `Deal Component Allowance Target`='Category' AND `Deal Component Allowance Target Key`=%d AND `Deal Component Status`='Active'",
                             $this->data['Webpage Scope Key']
                         );
 
@@ -277,6 +277,8 @@ class Public_Webpage {
                                     'key'=>$row['Deal Component Key'],
                                     'icon'=>$row['Deal Component Icon'],
                                     'name'=>$row['Deal Component Name Label'],
+                                    'until'=>$row['Deal Component Expiration Date'],
+                                    'until_formatted'=>  strftime("%a %e %b %Y", strtotime($row['Deal Component Expiration Date'].' +0:00')),
                                     'term'=>$row['Deal Component Term Label'],
                                     'allowance'=>$row['Deal Component Allowance Label']
                                 );

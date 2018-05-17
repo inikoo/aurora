@@ -828,6 +828,9 @@ class DeliveryNote extends DB_Table {
     function create_inventory_transaction_fact_item($product_id, $map_to_otf_key, $to_sell_quantity, $bonus_qty, $date, $supplier_metadata_array) {
 
 
+
+
+
         $product = new Product('id', $product_id);
 
         $part_list = $product->get_parts_data();

@@ -890,6 +890,8 @@ ALTER TABLE `Agent Dimension` ADD `Agent Number History Records` SMALLINT UNSIGN
 ALTER TABLE `Website Dimension` CHANGE `Website Registration Type` `Website Registration Type` ENUM('Open','ApprovedOnly','Closed') CHARACTER SET utf8 COLLATE utf8_general_ci NOT NULL DEFAULT 'Open';
 
 
+
+
 ===============
 
 
@@ -920,5 +922,31 @@ update `Location Dimension` set `Location Warehouse Flag Key`=`Warehouse Flag Ke
 
 
 ALTER TABLE `Page Store Dimension` CHANGE `Webpage State` `Webpage State` ENUM('InProcess','Online','Offline') CHARACTER SET utf8 COLLATE utf8_general_ci NULL DEFAULT 'InProcess';
+
+
+ALTER TABLE `Deal Dimension` DROP `Deal Term Allowances`;
+ALTER TABLE `Deal Dimension` DROP `Deal Label`;
+ALTER TABLE `Deal Dimension` DROP `Deal Trigger XHTML Label`;
+ALTER TABLE `Deal Dimension` DROP `Deal XHTML Terms Description Label`;
+ALTER TABLE `Deal Dimension` DROP `Deal Terms Description`;
+ALTER TABLE `Deal Dimension` DROP `Deal Terms Lock`;
+ALTER TABLE `Deal Dimension` DROP `Deal Allowance Target Type`;
+ALTER TABLE `Deal Dimension` DROP `Deal Mirror Key`;
+
+ALTER TABLE `Deal Component Dimension` DROP `Deal Component Mirror Key`;
+ALTER TABLE `Deal Component Dimension` DROP `Deal Component Terms Lock`;
+ALTER TABLE `Deal Component Dimension` DROP `Deal Component Allowance Lock`;
+ALTER TABLE `Deal Component Dimension` DROP `Deal Component Allowance Target XHTML Label`;
+ALTER TABLE `Deal Component Dimension` DROP `Deal Component Allowance XHTML Description`;
+ALTER TABLE `Deal Component Dimension` DROP `Deal Component XHTML Allowance Description Label`;
+ALTER TABLE `Deal Component Dimension` DROP `Deal Component Allowance Plain Description`;
+ALTER TABLE `Deal Component Dimension` DROP `Deal Component Replace Type`;
+ALTER TABLE `Deal Component Dimension` DROP `Deal Component XHTML Terms Description Label`;
+ALTER TABLE `Deal Component Dimension` DROP `Deal Component Replace`;
+ALTER TABLE `Deal Component Dimension` DROP `Deal Component Allowance Description`;
+ALTER TABLE `Deal Component Dimension` DROP `Deal Component Terms Description`;
+ALTER TABLE `Deal Component Dimension` DROP `Deal Component Public`;
+
+
 
 

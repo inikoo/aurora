@@ -622,7 +622,6 @@ function validate(field, value) {
         return validate_salary_components();
     } else {
 
-        console.log('xxxxx: '+field+' '+value+' '+type+' '+required)
 
         return validate_field(field, value, type, required, server_validation, parent, parent_key, _object, key)
     }
@@ -1583,7 +1582,6 @@ function on_changed_address_value(field, address_field, new_address_field_value)
 
     var new_value = get_address_value(field);
 
-    //console.log('xxxxx')
     //console.log($('#' + field + '_value').val())
     if (new_value != $('#' + field + '_value').val()) {
         $("#" + field + '_editor').addClass('changed')

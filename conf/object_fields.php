@@ -242,7 +242,7 @@ function get_object_fields($object, $db, $user, $smarty, $options = false) {
                     include 'fields/bulk_deal.fld.php';
 
                 } else {
-                    include 'fields/campaign.fld.php';
+                    include 'fields/deal.fld.php';
 
                 }
 

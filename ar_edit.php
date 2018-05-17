@@ -32,7 +32,6 @@ $tipo = $_REQUEST['tipo'];
 switch ($tipo) {
 
 
-
     case 'calculate_sales':
         $data = prepare_values(
             $_REQUEST, array(
@@ -249,7 +248,7 @@ switch ($tipo) {
         $data = prepare_values(
             $_REQUEST, array(
                          'parent_key' => array('type' => 'key'),
-                         'child_key'      => array('type' => 'key'),
+                         'child_key'  => array('type' => 'key'),
 
                      )
         );
@@ -271,7 +270,6 @@ function edit_field($account, $db, $user, $editor, $data, $smarty) {
 
 
     $object = get_object($data['object'], $data['key']);
-
 
 
     if (!$object->id) {
@@ -309,9 +307,6 @@ function edit_field($account, $db, $user, $editor, $data, $smarty) {
         );
 
         echo json_encode($response);
-
-
-
 
 
         return;
@@ -442,7 +437,7 @@ function edit_field($account, $db, $user, $editor, $data, $smarty) {
             }
 
 
-           // print $formatted_field;
+            // print $formatted_field;
 
             $formatted_value = $object->get($formatted_field);
 
@@ -615,7 +610,7 @@ function set_as_main($account, $db, $user, $editor, $data, $smarty) {
             'action'         => ($object->updated ? 'set_main_contact_number_Mobile' : '')
         );
 
-    }elseif ($data['field'] == 'Supplier_Main_Plain_Mobile') {
+    } elseif ($data['field'] == 'Supplier_Main_Plain_Mobile') {
         $object->update(array('Supplier Preferred Contact Number' => 'Mobile'));
         $response = array(
             'state'          => 200,
@@ -659,7 +654,7 @@ function set_as_main($account, $db, $user, $editor, $data, $smarty) {
             'action'         => ($object->updated ? 'set_main_contact_number_Telephone' : '')
         );
 
-    }elseif ($data['field'] == 'Agent_Main_Plain_Telephone') {
+    } elseif ($data['field'] == 'Agent_Main_Plain_Telephone') {
         $object->update(
             array('Agent Preferred Contact Number' => 'Telephone')
         );
@@ -957,11 +952,149 @@ function new_object($account, $db, $user, $editor, $data, $smarty) {
 
         case 'Deal':
 
-            print_r($data);
+           //print_r($data);
+
+            switch ($data['parent']) {
+                case 'category':
+
+                    $category = get_object('Category', $data['parent_key']);
+                    $store = get_object('Store', $category->get('Store Key'));
+                    $store->editor=$editor;
+
+
+                    if ($data['fields_data']['Entitled To Voucher']) {
+                        $voucher      = true;
+                        $voucher_data = array(
+                            'Voucher Auto Code' => $data['fields_data']['Deal Voucher Auto Code'],
+                            'Voucher Code'      => $data['fields_data']['Deal Voucher Code']
+                        );
+                    } else {
+                        $voucher      = false;
+                        $voucher_data = array();
+                    }
+
+
+                    $deal_new_data = array(
+                        'Deal Name'        => $data['fields_data']['Deal Name'],
+                        'Deal Description' => '',
+
+                        'Deal Begin Date'      => $data['fields_data']['Deal Interval From'],
+                        'Deal Expiration Date' => $data['fields_data']['Deal Interval To'],
+
+
+                        'Deal Name Label' => $data['fields_data']['Deal Name'],
+                        'Deal Name Label' => $data['fields_data']['Deal Name'],
+                        'Deal Icon' => '<i class="fa fa-tag" ></i>',
+
+                        'Deal Trigger'     => 'Category',
+                        'Deal Trigger Key' => $category->id,
+                        'Voucher'=>$voucher,
+                        'Voucher Data'=>$voucher_data,
 
 
 
-            exit;
+
+                    );
+
+
+
+
+                    if ($data['fields_data']['Deal Type Percentage Off']) {
+
+                        $deal_new_data['Deal Allowance Label'] =  sprintf(_('%s%% off'),$data['fields_data']['Percentage Off']);
+                        $deal_new_data['Deal Terms'] =  1;
+                        $deal_new_data['Deal Terms Type'] =  ($voucher ? 'Category Quantity Ordered AND Voucher' : 'Category Quantity Ordered');
+                        $deal_new_data['Deal Term Label'] =  sprintf(_('%s products'), $category->get('Code'));
+
+
+                        $new_component_data = array(
+                            'Deal Component Name Label'         => $data['fields_data']['Deal Name'],
+                            'Deal Component Term Label'         => sprintf(_('%s products'), $category->get('Code')),
+
+                            'Deal Component Allowance Label'         => sprintf(_('%s%% off'),$data['fields_data']['Percentage Off']),
+                            'Deal Component Allowance Type'         => 'Percentage Off',
+                            'Deal Component Allowance Target'       => 'Category',
+                            'Deal Component Allowance Target Type'  => 'Items',
+                            'Deal Component Allowance Target Key'   => $category->id,
+                            'Deal Component Allowance Target Label' => $category->get('Code'),
+                            'Deal Component Allowance'              => $data['fields_data']['Percentage Off'] / 100
+                        );
+
+                    }else if ($data['fields_data']['Deal Type Buy n get n free']) {
+
+                        $deal_new_data['Deal Allowance Label'] =  sprintf(_('get %d free'),$data['fields_data']['Deal Buy n get n free B']);
+
+
+                        $deal_new_data['Deal Terms'] =  $data['fields_data']['Deal Buy n get n free A'];
+                        $deal_new_data['Deal Terms Type'] =  ($voucher ? 'Category For Every Quantity Ordered AND Voucher' : 'Category For Every Quantity Ordered');
+                        $deal_new_data['Deal Term Label'] =  sprintf(_('%s products, buy %d'), $category->get('Code'),$data['fields_data']['Deal Buy n get n free A']);
+
+                        $new_component_data = array(
+                            'Deal Component Name Label'         => $data['fields_data']['Deal Name'],
+                            'Deal Component Term Label'         => sprintf(_('%s products'), $category->get('Code')),
+
+                            'Deal Component Allowance Label'         => sprintf(_('get %d free'),$data['fields_data']['Deal Buy n get n free B']),
+                            'Deal Component Allowance Type'         => 'Get Free',
+                            'Deal Component Allowance Target'       => 'Category',
+                            'Deal Component Allowance Target Type'  => 'Items',
+                            'Deal Component Allowance Target Key'   => $category->id,
+                            'Deal Component Allowance Target Label' => $category->get('Code'),
+                            'Deal Component Allowance'              => $data['fields_data']['Deal Buy n get n free B']
+                        );
+
+                    }else if ($data['fields_data']['Deal Type Buy n pay n']) {
+
+                        $deal_new_data['Deal Allowance Label'] =  sprintf(_('get cheapest %d free'),$data['fields_data']['Deal Buy n n free B']);
+
+
+                        $deal_new_data['Deal Terms'] =  $data['fields_data']['Deal Buy n n free A'];
+                        $deal_new_data['Deal Terms Type'] =  ($voucher ? 'Category For Every Quantity Any Product Ordered AND Voucher' : 'Category For Every Quantity Any Product Ordered');
+                        $deal_new_data['Deal Term Label'] =  sprintf(_('%s (Mix & match), buy %d'), $category->get('Code'),$data['fields_data']['Deal Buy n n free A']);
+
+                        $new_component_data = array(
+                            'Deal Component Name Label'         => $data['fields_data']['Deal Name'],
+                            'Deal Component Term Label'         => sprintf(_('%s (Mix & match), buy %d'), $category->get('Code'),$data['fields_data']['Deal Buy n n free A']),
+
+                            'Deal Component Allowance Label'         => sprintf(_('get cheapest %d free'),$data['fields_data']['Deal Buy n n free B']),
+                            'Deal Component Allowance Type'         => 'Get Cheapest Free',
+                            'Deal Component Allowance Target'       => 'Category',
+                            'Deal Component Allowance Target Type'  => 'Items',
+                            'Deal Component Allowance Target Key'   => $category->id,
+                            'Deal Component Allowance Target Label' => $category->get('Code'),
+                            'Deal Component Allowance'              => $data['fields_data']['Deal Buy n n free B']
+                        );
+
+                    }
+
+
+
+
+
+
+                   //print_r($deal_new_data);
+                   //print_r($new_component_data);
+                   //exit;
+
+
+
+                    $object=$store->create_deal($deal_new_data,$new_component_data);
+
+                   // print_r($deal);
+
+                    $pcard = '';
+
+
+                    $redirect     = 'products/'.$category->get('Store Key').'/category/'.$category->id.'/deal/'.$object->id;
+                    $updated_data = array();
+
+
+                    break;
+                default:
+                    break;
+            }
+
+
+
 
             break;
         case 'Page':
@@ -1277,8 +1410,6 @@ function new_object($account, $db, $user, $editor, $data, $smarty) {
             }
 
             if ($object->id) {
-
-
 
 
                 $parent->associate_subject($object->id);
@@ -2700,14 +2831,14 @@ function regenerate_api($account, $db, $user, $editor, $data, $smarty) {
 
 }
 
-function disassociate_category($account, $db, $data, $editor){
+function disassociate_category($account, $db, $data, $editor) {
 
-    $category=get_object('Category',$data['parent_key']);
+    $category = get_object('Category', $data['parent_key']);
     $category->editor;
     $category->disassociate_subject($data['child_key']);
 
     $response = array(
-        'state'  => 200,
+        'state' => 200,
 
     );
     echo json_encode($response);

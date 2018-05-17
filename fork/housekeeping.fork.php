@@ -24,6 +24,64 @@ function fork_housekeeping($job) {
 
     switch ($data['type']) {
 
+
+        case 'deal_created':
+
+            $deal = get_object('Deal', $data['deal_key']);
+
+
+
+
+            if ($deal->get('Deal Status')=='Active' and !$deal->get('Deal Voucher Key')) {
+
+
+
+
+                switch ($deal->get('Deal Trigger')) {
+                    case 'Category':
+
+
+                        $sql = sprintf(
+                            'SELECT `Order Key`  FROM `Order Transaction Fact` OTF   LEFT JOIN `Category Bridge`  ON (`Subject Key`=`Product ID`)    WHERE `Subject`="Product" AND `Category Key`=%d and `Current Dispatching State`="In Process"  group by `Order Key`', $deal->get('Deal Trigger Key')
+                        );
+
+
+
+                        if ($result = $db->query($sql)) {
+                            foreach ($result as $row) {
+
+
+                                $order = get_object('Order', $row['Order Key']);
+                                $order->update_totals();
+
+                                $order->update_discounts_items();
+
+
+                                $order->update_shipping(false, false);
+                                $order->update_charges(false, false);
+
+                                $order->update_deal_bridge();
+
+
+                                $order->update_totals();
+                            }
+                        } else {
+                            print_r($error_info = $db->errorInfo());
+                            print "$sql\n";
+                            exit;
+                        }
+
+
+                        break;
+                    default:
+                        break;
+                }
+
+            }
+
+
+            break;
+
         case 'payment_created':
         case 'payment_updated':
 
@@ -32,7 +90,7 @@ function fork_housekeeping($job) {
             $payment_account          = get_object('Payment_Account', $payment->get('Payment Account Key'));
             $payment_service_provider = get_object('Payment_Service_Provider', $payment->get('Payment Service Provider Key'));
 
-            $customer                = get_object('Customer', $payment->get('Payment Customer Key'));
+            $customer = get_object('Customer', $payment->get('Payment Customer Key'));
 
             $payment_account->update_payments_data();
             $payment_service_provider->update_payments_data();
@@ -46,7 +104,6 @@ function fork_housekeeping($job) {
             $account->update_orders();
 
             break;
-
 
 
         case 'update_orders_in_basket_data': // remove after migration
@@ -151,9 +208,9 @@ function fork_housekeeping($job) {
             include_once 'class.Store.php';
             $order = new Order($data['subject_key']);
 
-            $customer         = new Customer($order->get('Order Customer Key'));
-            $data['editor']['Date']=gmdate('Y-m-d H:i:s');
-            $customer->editor = $data['editor'];
+            $customer               = new Customer($order->get('Order Customer Key'));
+            $data['editor']['Date'] = gmdate('Y-m-d H:i:s');
+            $customer->editor       = $data['editor'];
             $customer->add_history_new_order($order);
             $customer->update_orders();
             $store = new Store($order->get('Order Store Key'));
@@ -202,9 +259,9 @@ function fork_housekeeping($job) {
         case 'website_launched':
 
 
-            $website         = get_object('Website', $data['website_key']);
-            $data['editor']['Date']=gmdate('Y-m-d H:i:s');
-            $website->editor = $data['editor'];
+            $website                = get_object('Website', $data['website_key']);
+            $data['editor']['Date'] = gmdate('Y-m-d H:i:s');
+            $website->editor        = $data['editor'];
 
 
             $sql = sprintf(
@@ -266,8 +323,6 @@ function fork_housekeeping($job) {
             $website_user = get_object('Website_User', $data['website_user_key']);
 
 
-
-
             if ($customer->get('Customer Tax Number') != '') {
 
                 $customer->update_tax_number_valid('Auto');
@@ -294,11 +349,11 @@ function fork_housekeeping($job) {
             include_once 'class.Product.php';
             $product = new Product('id', $data['product_id']);
 
-            if(isset($data['editor'])){
-                $data['editor']['Date']=gmdate('Y-m-d H:i:s');
-                $product->editor=$data['editor'];
-            }else{
-                $product->editor=$editor;
+            if (isset($data['editor'])) {
+                $data['editor']['Date'] = gmdate('Y-m-d H:i:s');
+                $product->editor        = $data['editor'];
+            } else {
+                $product->editor = $editor;
             }
 
             $product->update_web_state_slow_forks($data['web_availability_updated']);
@@ -306,34 +361,31 @@ function fork_housekeeping($job) {
             break;
 
 
-
         case 'full_after_part_stock_update':
             // for use in pre migration inikoo
 
-            $part = get_object('Part',$data['part_sku']);
+            $part = get_object('Part', $data['part_sku']);
 
-            if(isset($data['editor'])){
-                $data['editor']['Date']=gmdate('Y-m-d H:i:s');
-                $part->editor=$data['editor'];
-            }else{
-                $part->editor=$editor;
+            if (isset($data['editor'])) {
+                $data['editor']['Date'] = gmdate('Y-m-d H:i:s');
+                $part->editor           = $data['editor'];
+            } else {
+                $part->editor = $editor;
             }
 
             $part->activate();
             $part->discontinue_trigger();
 
 
-
-
             $part->update_available_forecast();
             $part->update_stock_status();
 
             foreach ($part->get_products('objects') as $product) {
-                if(isset($data['editor'])){
-                    $data['editor']['Date']=gmdate('Y-m-d H:i:s');
-                    $product->editor=$data['editor'];
-                }else{
-                    $product->editor=$editor;
+                if (isset($data['editor'])) {
+                    $data['editor']['Date'] = gmdate('Y-m-d H:i:s');
+                    $product->editor        = $data['editor'];
+                } else {
+                    $product->editor = $editor;
                 }
                 $product->update_availability(true);
             }
@@ -345,11 +397,11 @@ function fork_housekeeping($job) {
             include_once 'class.Part.php';
             $part = new Part($data['part_sku']);
 
-            if(isset($data['editor'])){
-                $data['editor']['Date']=gmdate('Y-m-d H:i:s');
-                $part->editor=$data['editor'];
-            }else{
-                $part->editor=$editor;
+            if (isset($data['editor'])) {
+                $data['editor']['Date'] = gmdate('Y-m-d H:i:s');
+                $part->editor           = $data['editor'];
+            } else {
+                $part->editor = $editor;
             }
 
 
@@ -357,11 +409,11 @@ function fork_housekeeping($job) {
             $part->update_stock_status();
 
             foreach ($part->get_products('objects') as $product) {
-                if(isset($data['editor'])){
-                    $data['editor']['Date']=gmdate('Y-m-d H:i:s');
-                    $product->editor=$data['editor'];
-                }else{
-                    $product->editor=$editor;
+                if (isset($data['editor'])) {
+                    $data['editor']['Date'] = gmdate('Y-m-d H:i:s');
+                    $product->editor        = $data['editor'];
+                } else {
+                    $product->editor = $editor;
                 }
                 $product->update_availability(true);
             }
@@ -392,7 +444,7 @@ function fork_housekeeping($job) {
         case 'order_payment_changed': // this can be removed after all inikoo gone
 
 
-             $order    = get_object('Order', $data['order_key']);
+            $order = get_object('Order', $data['order_key']);
 
             $store = get_object('Store', $order->get('Order Store Key'));
             $store->update_orders();
@@ -486,7 +538,7 @@ function fork_housekeeping($job) {
 
             $poll_option = get_object('Customer_Poll_Query_Option', $data['poll_option_key']);
             $poll_option->update_customers();
-            $poll= get_object('Customer_Poll_Query',$poll_option->get('Customer Poll Query Option Query Key'));
+            $poll = get_object('Customer_Poll_Query', $poll_option->get('Customer Poll Query Option Query Key'));
             $poll->update_answers();
             break;
 
