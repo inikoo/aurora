@@ -685,7 +685,6 @@ function select_assign_barcode_to_part_option(element){
 
             if (data.state == 200) {
 
-                console.log('xxxxxxxxxxx')
                 console.log($('#not_found_barcode_number').html())
 
                 $('#part_sko_item_'+td.attr('value')).attr('barcode',$('#not_found_barcode_number').html())

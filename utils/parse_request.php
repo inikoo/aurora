@@ -2634,8 +2634,9 @@ function parse_request($_data, $db, $modules, $account = '', $user = '', $is_set
             case 'deals':
                 $module = 'products';
 
+
                 if (isset($view_path[0])) {
-                    $section = 'deals';
+                    $section = 'deal';
 
 
                     $parent     = 'store';

@@ -45,7 +45,7 @@ if ($order == 'name') {
     $order = '`Deal Key`';
 }
 $table  = '`Deal Component Dimension` DC left join `Deal Dimension` D on (DC.`Deal Component Deal Key`=D.`Deal Key`)  join `Deal Campaign Dimension` C on (C.`Deal Campaign Key`=D.`Deal Campaign Key`) left join `Store Dimension` on (`Deal Store Key`=`Store Key`) ';
-$fields = "`Deal Key`,`Deal Name`,`Deal Term Allowances`,`Deal Term Allowances Label`,`Deal Store Key`,D.`Deal Campaign Key`,`Deal Status`,`Deal Begin Date`,`Deal Expiration Date`,`Deal Component Key`,
+$fields = "`Deal Key`,`Deal Name`,`Deal Term Allowances Label`,`Deal Store Key`,D.`Deal Campaign Key`,`Deal Status`,`Deal Begin Date`,`Deal Expiration Date`,`Deal Component Key`,
 `Deal Total Acc Used Orders`,`Deal Total Acc Used Customers`,`Store Bulk Discounts Campaign Key`,`Deal Component Allowance Target Label`,`Deal Component Allowance`,`Deal Component Allowance Label`,`Deal Component Terms`,`Deal Term Label`,`Deal Component Allowance Target Key`";
 
 

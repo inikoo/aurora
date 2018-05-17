@@ -219,16 +219,10 @@ function add_target_to_campaign($account, $db, $user, $editor, $data, $smarty) {
             'Deal Component Allowance Target Key' => $category->id,
             'Deal Component Allowance Label'      => sprintf(_('%s off'), percentage($allowance, 1)),
             'Deal Component Allowance'            => $allowance,
-            'Deal Component Public'               => 'Yes',
         );
 
 
         $component_data['Deal Component Allowance Target Label']            = $category->get('Code');
-        $component_data['Deal Component Allowance Target XHTML Label']      = $category->get('Code');
-        $component_data['Deal Component Allowance Description']             = sprintf(_('%s off'), percentage($allowance, 1));
-        $component_data['Deal Component Allowance Plain Description']       = sprintf(_('%s off'), percentage($allowance, 1)).' '.$category->get('Code');
-        $component_data['Deal Component Allowance XHTML Description']       = sprintf(_('%s off'), percentage($allowance, 1)).' ('.$category->get('Code').')';
-        $component_data['Deal Component XHTML Allowance Description Label'] = sprintf(_('%s off'), percentage($allowance, 1));
         $deal->add_component($component_data);
 
 
@@ -250,13 +244,8 @@ function add_target_to_campaign($account, $db, $user, $editor, $data, $smarty) {
             'Deal Trigger'                       => 'Category',
             'Deal Icon'                       => $campaign->get('Deal Campaign Icon'),
             'Deal Trigger Key'                   => $category->id,
-          //  'Deal Trigger XHTML Label'           => $category_code,
             'Deal Terms Type'                    => 'Category Quantity Ordered',
-            //'Deal Terms Description'             => "order $qty or more",
-            //'Deal XHTML Terms Description Label' => "order $qty or more",
             'Deal Terms'                         => $qty,
-            'Deal Terms Lock'                    => 'No',
-            'Deal Allowance Target Type'         => 'items'
 
 
         );
@@ -274,16 +263,10 @@ function add_target_to_campaign($account, $db, $user, $editor, $data, $smarty) {
             'Deal Component Allowance Target'             => 'Category',
             'Deal Component Allowance Target Key'         => $category->id,
             'Deal Component Allowance'                    => $off_ratio,
-            'Deal Component Public'                       => 'Yes'
 
         );
 
         $component_data['Deal Component Allowance Target Label']            = $category->get('Code');
-        $component_data['Deal Component Allowance Target XHTML Label']      = $category->get('Code');
-         $component_data['Deal Component Allowance Description']             = sprintf(_('%s off'), percentage($allowance, 1));
-        $component_data['Deal Component Allowance Plain Description']       = sprintf(_('%s off'), percentage($allowance, 1)).' '.$category->get('Code');
-        $component_data['Deal Component Allowance XHTML Description']       = sprintf(_('%s off'), percentage($allowance, 1)).' ('.$category->get('Code').')';
-        $component_data['Deal Component XHTML Allowance Description Label'] = sprintf(_('%s off'), percentage($allowance, 1));
 
         $deal->add_component($component_data);
 

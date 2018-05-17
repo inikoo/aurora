@@ -541,19 +541,6 @@ class DealCampaign extends DB_Table {
 
     }
 
-    function get_deal_component_keys() {
-        $deal_component_keys = array();
-        $sql                 = sprintf(
-            "SELECT `Deal Component Key` FROM `Deal Component Dimension` WHERE `Deal Component Campaign Key`=%d ", $this->id
-        );
-        $res                 = mysql_query($sql);
-        while ($row = mysql_fetch_assoc($res)) {
-            $deal_component_keys[] = $row['Deal Component Key'];
-        }
-
-        return $deal_component_keys;
-
-    }
 
     function update_usage() {
 

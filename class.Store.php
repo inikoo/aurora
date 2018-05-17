@@ -1056,9 +1056,167 @@ class Store extends DB_Table {
 
     }
 
+    function create_deal($data, $component_data) {
+
+
+        include_once 'class.Deal.php';
+
+        if (!array_key_exists('Deal Name', $data) or $data['Deal Name'] == '') {
+            $this->error = true;
+            $this->msg   = 'error, no deal name';
+
+            return;
+        }
+
+        if (!array_key_exists('Deal Begin Date', $data)) {
+            $this->error = true;
+            $this->msg   = 'error, no deal start date';
+
+            return;
+        }
+
+
+        $data['Deal Store Key'] = $this->id;
+
+        $data['editor'] = $this->editor;
+
+
+        $deal = new Deal('find create', $data);
+
+
+        if ($deal->id) {
+            $this->new_object_msg = $deal->msg;
+
+            if ($deal->new) {
+                $this->new_object = true;
+                $deal->add_component($component_data);
+
+                if ($data['Voucher']) {
+                    include_once 'class.Voucher.php';
+
+                    $voucher_data = array(
+                        'Voucher Store Key'                => $this->id,
+                        'Voucher Deal Key'                 => $deal->id,
+                        'Voucher Code'                     => ($data['Voucher Auto Code'] ? '' : $data['Voucher Code']),
+                        'Voucher Usage Limit per Customer' => 1
+
+                    );
+
+                    $voucher_ok = false;
+
+                    if (!$data['Voucher Auto Code'] and $data['Voucher Code'] != '') {
+                        $voucher_data['Voucher Code'] = $data['Voucher Code'];
+                        $voucher                      = new Voucher('find create', $voucher_data);
+
+                        if (!$voucher->error) {
+                            $voucher_ok = true;
+                        }
+
+
+                    }
+
+                    if (!$voucher_ok) {
+
+
+                        for ($j = 0; $j < 1000; $j++) {
+
+                            $voucher_length = 6;
+
+                            if ($j > 50) {
+                                $voucher_length = 7;
+                            } elseif ($j > 100) {
+                                $voucher_length = 8;
+                            } elseif ($j > 200) {
+                                $voucher_length = 9;
+                            } elseif ($j > 300) {
+                                $voucher_length = 10;
+                            } elseif ($j > 500) {
+                                $voucher_length = 12;
+                            }
+
+                            $chars        = "0123456789ABCDEFGHJKLMNPQRSTUVWXYZABCDEFGHJKLMNPQRSTUVWXYZ";
+                            $voucher_code = "";
+                            for ($i = 0; $i < $voucher_length; $i++) {
+                                $voucher_code .= $chars[mt_rand(0, strlen($chars) - 1)];
+                            }
+                            $voucher_data['Voucher Code'] = $data['Voucher Code'];
+                            $voucher                      = new Voucher('find create', $voucher_data);
+
+                            if (!$voucher->error) {
+
+
+                                break;
+                            }
+
+
+                        }
+
+
+                    }
+
+
+                    $deal->fast_update(array('Deal Voucher Key' => $voucher->id));
+
+
+                }
+
+                if ($data['Voucher']) {
+                    $history_abstract = sprintf(_('Offer %s, voucher: %s (%s) created'), $deal->get('Deal Name'), $voucher->get('Voucher Code'), $deal->get('Deal Term Allowances Label'));
+
+                } else {
+                    $history_abstract = sprintf(_('Offer %s (%s) created'), $deal->get('Deal Name'), $deal->get('Deal Term Allowances Label'));
+
+                }
+
+
+                $history_data = array(
+                    'History Abstract' => $history_abstract,
+                    'History Details'  => '',
+                    'Action'           => 'created'
+                );
+
+                $deal->add_subject_history(
+                    $history_data, true, 'No', 'Changes', $deal->get_object_name(), $deal->id
+                );
+
+                $account = get_object('Account', 1);
+                require_once 'utils/new_fork.php';
+                new_housekeeping_fork(
+                    'au_housekeeping', array(
+                    'type'     => 'deal_created',
+                    'deal_key' => $deal->id
+                ), $account->get('Account Code'), $this->db
+                );
+
+
+            } else {
+                $this->error = true;
+                if ($deal->found) {
+
+                    $this->error_code     = 'duplicated_field';
+                    $this->error_metadata = json_encode(array($deal->duplicated_field));
+
+                    if ($deal->duplicated_field == 'Deal Name') {
+                        $this->msg = _('Duplicated name');
+                    }
+
+
+                } else {
+                    $this->msg = $deal->msg;
+                }
+            }
+
+            return $deal;
+        } else {
+            $this->error = true;
+            $this->msg   = $deal->msg;
+        }
+
+    }
+
     function create_customers_list($data) {
 
-        $this->new_list=false;
+        $this->new_list = false;
 
         include_once 'class.List.php';
 
@@ -1088,9 +1246,6 @@ class Store extends DB_Table {
         }
 
 
-
-
-
         $list_data['List Creation Date'] = gmdate('Y-m-d H:i:s');
 
 
@@ -1098,16 +1253,15 @@ class Store extends DB_Table {
         $list_data['List Use Type'] = 'UserCreated';
 
         $list_data['List Parent Key'] = $this->id;
-        $list_data['editor']=$this->editor;
-        $list_data['List Name']=$data['List Name'];
-        $list_data['List Type']=$data['List Type'];
+        $list_data['editor']          = $this->editor;
+        $list_data['List Name']       = $data['List Name'];
+        $list_data['List Type']       = $data['List Type'];
 
         unset($data['List Name']);
         unset($data['List Type']);
 
 
-
-        $list_data['List Metadata']=json_encode($data);
+        $list_data['List Metadata'] = json_encode($data);
 
         $list = new SubjectList('new', $list_data);
 
@@ -1117,7 +1271,6 @@ class Store extends DB_Table {
 
             if ($list->new) {
                 $this->new_list = true;
-
 
 
             } else {

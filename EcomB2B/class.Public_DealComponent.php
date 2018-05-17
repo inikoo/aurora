@@ -65,7 +65,7 @@ class Public_DealComponent  {
 
             case('Description'):
             case('Deal Description'):
-                return $this->data['Deal Component Terms Description'].' &rArr; '.$this->data['Deal Component Allowance Description'];
+                return $this->data['Deal Component Term Label'].' &rArr; '.$this->data['Deal Component Allowance Label'];
                 break;
         }
 
@@ -81,25 +81,7 @@ class Public_DealComponent  {
         return false;
     }
 
-    function get_xhtml_status() {
-        switch ($this->data['Deal Component Status']) {
-            case('Active'):
-                return _("Active");
-                break;
-            case('Finish'):
-                return _("Finished");
-                break;
-            case('Waiting'):
-                return _("Waiting");
-                break;
-            case('Suspended'):
-                return _("Suspended");
-                break;
 
-
-        }
-
-    }
 
   
 }

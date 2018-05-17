@@ -32,7 +32,7 @@ function get_form_validation_state(submitting) {
 
         var field = $(this).attr('field')
        // console.log(index)
-        console.log($(this).attr('id'))
+     //   console.log($(this).attr('id'))
 
          //console.log(field)
        // console.log($('#' + field + '_field').hasClass('valid'))
@@ -50,6 +50,7 @@ function get_form_validation_state(submitting) {
                 component_validation = 'valid'
             } else {
                 component_validation = 'potentially_valid'
+                console.log($(this))
             }
         }
 
@@ -74,7 +75,7 @@ function get_form_validation_state(submitting) {
 
     });
 
-    //console.log(form_validation)
+    console.log('val: '+form_validation)
 
     return form_validation
 
@@ -87,6 +88,9 @@ function process_form_validation(validation, submitting) {
         validation = 'invalid'
     }
     $('#fields .controls').removeClass('invalid valid potentially_valid').addClass(validation).addClass('changed')
+
+
+
 
     if (validation == 'invalid') {
         $(".value").each(function (index) {
@@ -157,7 +161,11 @@ function check_if_form_is_valid() {
 function save_new_object(object, form_type) {
 
     var form_validation = get_form_validation_state()
+
+
     process_form_validation(form_validation, true)
+
+
 
 
     if ($('tr.controls').hasClass('valid') && !$('tr.controls').hasClass('waiting')) {
@@ -181,7 +189,7 @@ function save_new_object(object, form_type) {
         $(".value").each(function (index) {
 
 
-            var field_tr = $(this).closest('tr')
+           // var field_tr = $(this).closest('tr')
            // console.log($(this).attr('field'))
 
             //      if (!field_tr.hasClass('hidden') && field_tr.hasClass('hide')) {
@@ -193,7 +201,7 @@ function save_new_object(object, form_type) {
             var field_type = $(this).attr('field_type')
 
             //console.log(field)
-            //console.log(field_type+' '+field)
+            console.log(field_type+' '+field)
 
 
             if (field_type == 'time') {
@@ -268,12 +276,24 @@ function save_new_object(object, form_type) {
                 } else {
                     value = ''
                 }
-            } else {
+            } else if(field_type == 'toggle') {
+
+                console.log('#' + field+'_field')
+                console.log( '#' + field+'_toggle')
+
+                var value = $('#' + field+'_field').find(  '.' + field+'_toggle').hasClass('fa-toggle-on')
+            }else if(field_type == 'button_radio_options') {
+                var value = $('#' + field+'_field').hasClass('selected')
+            }else if(field_type == 'input_with_field') {
+                var value = $('#' + field+'_field').val()
+            }else {
                 var value = $('#' + field).val()
             }
             //console.log($(this).attr('id') + ' ' + field + ' ' + $(this).closest('tr').hasClass('hide'))
             fields_data[field.replace(re, ' ')] = value
         });
+
+        console.log(fields_data)
 
 
         if (form_type == 'setup') {
@@ -314,7 +334,7 @@ function save_new_object(object, form_type) {
         request.done(function (data) {
 
 
-            //console.log(data)
+            console.log(data)
             $('#' + object + '_save_icon').addClass('fa-cloud');
             $('#' + object + '_save_icon').removeClass('fa-spinner fa-spin');
            // $('#save_label').removeClass('hide')
@@ -325,7 +345,7 @@ function save_new_object(object, form_type) {
 
                 if (data.pcard == '' && data.redirect != '') {
 
-                    //console.log(data.updated_data.redirect)
+                    console.log(data.updated_data.redirect)
                     change_view(data.redirect)
                     return;
 

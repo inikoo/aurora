@@ -18,22 +18,22 @@ function toggle_new_category_deal_entitled_to(element) {
 
         if ($(element).attr('id') == 'Entitled_To_Anyone_field') {
 
-            $('#Deal_Voucher_Type_field').addClass('hide')
+            $('#Deal_Voucher_Auto_Code_field').addClass('hide')
             $('#Deal_Voucher_Code_field').addClass('hide')
 
         } else if ($(element).attr('id') == 'Entitled_To_Voucher_field') {
-            $('#Deal_Voucher_Type_field').removeClass('hide')
+            $('#Deal_Voucher_Auto_Code_field').removeClass('hide')
 
             $('#Deal_Voucher_Code').removeClass('hide')
 
             if($('#toggle_voucher_auto_code_icon').hasClass('fa-toggle-on')){
 
                 $('#Deal_Voucher_Code_field').addClass('hide')
-                $('#Deal_Voucher_Type_field').removeClass('hide')
+                $('#Deal_Voucher_Auto_Code_field').removeClass('hide')
 
             }else{
                 $('#Deal_Voucher_Code_field').removeClass('hide')
-                $('#Deal_Voucher_Type_field').addClass('hide')
+                $('#Deal_Voucher_Auto_Code_field').addClass('hide')
             }
 
 
@@ -152,7 +152,7 @@ function toggle_new_deal_trigger(element){
 
             break;
         case 'Trigger_Asset':
-            $('#Deal_Voucher_Type_field').addClass('hide')
+            $('#Deal_Voucher_Auto_Code_field').addClass('hide')
             $('#Deal_Voucher_Code_field').addClass('hide')
             $('#Asset_field').removeClass('hide')
             break;
@@ -211,10 +211,10 @@ function toggle_list_elements(element){
 
 function set_voucher_code_as_auto(){
 
-    var icon=$('#Deal_Voucher_Type_container').find('i')
+    var icon=$('#Deal_Voucher_Auto_Code_container').find('i')
     icon.removeClass('fa-toggle-off').addClass('fa-toggle-on')
 
-    $('#Deal_Voucher_Type_field').removeClass('hide')
+    $('#Deal_Voucher_Auto_Code_field').removeClass('hide')
     $('#Deal_Voucher_Code_field').addClass('hide')
 
 
@@ -232,7 +232,7 @@ function toggle_voucher_auto_code(element){
     if(icon.hasClass('fa-toggle-on')){
         icon.removeClass('fa-toggle-on').addClass('fa-toggle-off')
 
-        $('#Deal_Voucher_Type_field').addClass('hide')
+        $('#Deal_Voucher_Auto_Code_field').addClass('hide')
         $('#Deal_Voucher_Code_field').removeClass('hide')
         //$('#Deal_Voucher_Code').addClass('hide')
 
@@ -514,19 +514,19 @@ function toggle_category_deal_type(element){
 
         if ($(element).attr('id') == 'Deal_Type_Percentage_Off_field') {
 
-            $('#Percentage_Off_field').removeClass('hide')
+            $('#Percentage_field').removeClass('hide')
             $('#Buy_n_get_n_free_field').addClass('hide')
             $('#Buy_n_n_free_field').addClass('hide')
 
 
         } else if ($(element).attr('id') == 'Deal_Type_Buy_n_get_n_free_field') {
-            $('#Percentage_Off_field').addClass('hide')
+            $('#Percentage_field').addClass('hide')
             $('#Buy_n_get_n_free_field').removeClass('hide')
             $('#Buy_n_n_free_field').addClass('hide')
 
 
         }else if ($(element).attr('id') == 'Deal_Type_Buy_n_pay_n_field') {
-            $('#Percentage_Off_field').addClass('hide')
+            $('#Percentage_field').addClass('hide')
             $('#Buy_n_get_n_free_field').addClass('hide')
             $('#Buy_n_n_free_field').removeClass('hide')
 

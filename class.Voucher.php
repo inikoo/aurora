@@ -46,10 +46,7 @@ class Voucher extends DB_Table {
             );
         }
 
-
-        $result = mysql_query($sql);
-
-        if ($this->data = mysql_fetch_array($result, MYSQL_ASSOC)) {
+        if ($this->data = $this->db->query($sql)->fetch()) {
             $this->id = $this->data['Voucher Key'];
         }
 
@@ -70,15 +67,14 @@ class Voucher extends DB_Table {
 
         $this->candidate = array();
         $this->found     = false;
+        $this->error     = false;
         $this->found_key = 0;
         $create          = '';
-        $update          = '';
+
         if (preg_match('/create/i', $options)) {
             $create = 'create';
         }
-        if (preg_match('/update/i', $options)) {
-            $update = 'update';
-        }
+
 
         $data = $this->base_data();
 
@@ -93,24 +89,36 @@ class Voucher extends DB_Table {
 
 
         $sql = sprintf(
-            "SELECT `Voucher Key` FROM `Voucher Dimension` WHERE  `Voucher Code`=%s AND `Voucher Store Key`=%d ", prepare_mysql($data['Voucher Code']), $data['Voucher Store Key']
+            "SELECT `Voucher Key`,`Voucher Deal Key` FROM `Voucher Dimension` WHERE  `Voucher Code`=%s AND `Voucher Store Key`=%d ", prepare_mysql($data['Voucher Code']), $data['Voucher Store Key']
         );
 
 
-        $result      = mysql_query($sql);
-        $num_results = mysql_num_rows($result);
-        if ($num_results == 1) {
-            $row             = mysql_fetch_array($result, MYSQL_ASSOC);
-            $this->found     = true;
-            $this->found_key = $row['Voucher Key'];
+        if ($result=$this->db->query($sql)) {
+            if ($row = $result->fetch()) {
 
+                if($row['Voucher Deal Key']==$data['Voucher Deal Key']){
+                    $this->found     = true;
+                    $this->found_key = $row['Voucher Key'];
+                }else{
+                    $this->error=true;
+                }
+
+
+        	}
+        }else {
+        	print_r($error_info=$this->db->errorInfo());
+        	print "$sql\n";
+        	exit;
         }
+
+
+
         if ($this->found) {
             $this->get_data('id', $this->found_key);
         }
 
 
-        if ($create and !$this->found) {
+        if ($create and !$this->found and !$this->error) {
             $this->create($data);
 
         }
@@ -140,13 +148,12 @@ class Voucher extends DB_Table {
             "INSERT INTO `Voucher Dimension` (%s) VALUES (%s)", $keys, $values
         );
 
-        if (mysql_query($sql)) {
-            $this->id = mysql_insert_id();
+        if ($this->db->exec($sql)) {
+            $this->id =$this->db->lastInsertId();
             $this->get_data('id', $this->id);
             $this->new = true;
 
-            $store = new Store('id', $this->data['Voucher Store Key']);
-            $store->update_campaings_data();
+
 
         } else {
             print "Error can not create voucher  $sql\n";
@@ -163,53 +170,55 @@ class Voucher extends DB_Table {
         }
 
         switch ($key) {
+            case 'Status':
+                switch ($this->data['Voucher Status']) {
+                    case 'Waiting':
+                        return _('Waiting');
+                        break;
+                    case 'Used':
+                        return _('Used');
+                        break;
+                    case 'Active':
+                        return _('Active');
+                        break;
+                    case 'Expired':
+                        return _('Expired');
+                        break;
+
+                    default:
+                        return $this->data['Voucher Status'];
+                }
+
+                break;
+
+            case 'Valid From':
+
+                if ($this->data['Voucher Valid From'] == '') {
+                    return '';
+                } else {
+                    return gmdate(
+                        'd-m-Y', strtotime($this->data['Voucher Valid From'].' +0:00')
+                    );
+                }
+                break;
+            case 'Valid To':
+                if ($this->data['Voucher Valid To'] == '') {
+                    return '';
+                } else {
+                    return gmdate(
+                        'd-m-Y', strtotime($this->data['Voucher Valid To'].' +0:00')
+                    );
+                }
+
+                break;
 
         }
 
         return false;
     }
 
-    function get_formatted_status() {
 
-        switch ($this->data['Voucher Status']) {
-            case 'Waiting':
-                return _('Waiting');
-                break;
-            case 'Used':
-                return _('Used');
-                break;
-            case 'Active':
-                return _('Active');
-                break;
-            case 'Expired':
-                return _('Expired');
-                break;
 
-            default:
-                return $this->data['Voucher Status'];
-        }
-
-    }
-
-    function get_from_date() {
-        if ($this->data['Voucher Valid From'] == '') {
-            return '';
-        } else {
-            return gmdate(
-                'd-m-Y', strtotime($this->data['Voucher Valid From'].' +0:00')
-            );
-        }
-    }
-
-    function get_to_date() {
-        if ($this->data['Voucher Valid To'] == '') {
-            return '';
-        } else {
-            return gmdate(
-                'd-m-Y', strtotime($this->data['Voucher Valid To'].' +0:00')
-            );
-        }
-    }
 
 
     function update_status_from_dates() {
@@ -245,10 +254,7 @@ class Voucher extends DB_Table {
 
         }
 
-        foreach ($this->get_deal_component_keys() as $deal_component_key) {
-            $deal_component = new DealComponent($deal_key);
-            $deal_component->update_status_from_dates();
-        }
+
 
 
     }
@@ -256,40 +262,36 @@ class Voucher extends DB_Table {
 
     function update_usage() {
 
+        $orders    = 0;
+        $customers = 0;
+
 
         $sql       = sprintf(
             "SELECT count(*) AS orders,count( DISTINCT `Customer Key`) AS customers FROM `Voucher Order Bridge` B WHERE B.`Voucher Key`=%d ", $this->id
 
         );
-        $res       = mysql_query($sql);
-        $orders    = 0;
-        $customers = 0;
-        if ($row = mysql_fetch_assoc($res)) {
-            $orders    = $row['orders'];
-            $customers = $row['customers'];
+
+        if ($result=$this->db->query($sql)) {
+            if ($row = $result->fetch()) {
+                $orders    = $row['orders'];
+                $customers = $row['customers'];
+        	}
+        }else {
+        	print_r($error_info=$this->db->errorInfo());
+        	print "$sql\n";
+        	exit;
         }
-        /*
-        $sql=sprintf("select count(*) as orders_done from `Voucher Order Bridge` B where B.`Voucher Key`=%d and `State`='Consolidated'",
-            $this->id
 
-        );
 
-        $res=mysql_query($sql);
-        $orders_done=0;
 
-        if ($row=mysql_fetch_assoc($res)) {
-            $orders_done=$row['orders_done'];
-
-        }
-*/
         $sql = sprintf(
             "UPDATE `Voucher Dimension` SET `Voucher Total Acc Used Orders`=%d, `Voucher Total Acc Used Customers`=%d WHERE `Voucher Key`=%d", //$orders_done,
             $orders, $customers, $this->id
         );
-        mysql_query($sql);
+       $this->db->exec($sql);
 
 
-        $store = new Store($this->data['Voucher Store Key']);
+        $store = get_object('Store',$this->data['Voucher Store Key']);
         $store->update_campaings_data();
         $store->update_deals_data();
 
@@ -313,33 +315,7 @@ class Voucher extends DB_Table {
     }
 
 
-    function delete_todo() {
 
-
-        if ($this->get_number_deals() > 0 and $this->data['Voucher Status'] != 'Waiting') {
-            $this->msg = 'can not delete';
-
-            return;
-        }
-
-
-        $sql = sprintf(
-            "DELETE FROM `Voucher Dimension` WHERE `Voucher Key`=%d", $this->id
-        );
-        mysql_query($sql);
-
-        $sql = sprintf(
-            "DELETE FROM `Deal Dimension` WHERE `Voucher Key`=%d", $this->id
-        );
-        mysql_query($sql);
-
-        $sql = sprintf(
-            "DELETE FROM `Deal Component Dimension` WHERE `Deal Component Campaign Key`=%d", $this->id
-        );
-        mysql_query($sql);
-
-
-    }
 
 }
 

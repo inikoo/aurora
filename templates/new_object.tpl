@@ -180,18 +180,20 @@
 		
 		<td  id="{$field.id}_container" class="{$field.type} new" field="{$field.id}" _required="{$required}" field_type='{$edit}' server_validation='{$server_validation}' object='{$object_name}' key='{$state.key}' parent='{$state.parent}' parent_key='{if isset($overwrite_parent_key)}{$overwrite_parent_key}{else}{$state.parent_key}{/if}'>
 	   
-	
+	     {if $edit!='custom'  }
 		<span id="{$field.id}_formatted_value" class="{$field.id} formatted_value hide" ondblclick="open_edit_field('{$object_name}','{$state.key}','{$field.id}')">{if isset($field.formatted_value)}{$field.formatted_value}{else}{$field.value}{/if}</span>
 		<span id="{$field.id}_value" class="hide " >{$field.value}</span>
-
+        {/if}
 		{if $edit=='string' or $edit=='handle' or $edit=='dimensions'  or $edit=='email' or   $edit=='numeric_unsigned' or  $edit=='int_unsigned' or $edit=='smallint_unsigned' or $edit=='mediumint_unsigned' or $edit=='int' or $edit=='smallint' or $edit=='mediumint' or $edit=='anything' or  $edit=='percentage' or $edit=='numeric'  or $edit=='amount'  or $edit=='amount_margin'  or $edit=='amount_percentage' }
 		
 	
 		<input id="{$field.id}" class="input_field {if isset($field.class)}{$field.class}{/if}" value="{$field.value}" {if $locked}readonly="readonly="{/if}  has_been_valid="0" {if isset($field.placeholder)}placeholder="{$field.placeholder}"{/if}/>
 		<span id="{$field.id}_msg" class="msg"></span>
 
+        {elseif $edit=='custom'  }
+		 {$field.custom}
 		{elseif $edit=='no_icon'  }
-		{$field.formatted_value}
+		 {$field.formatted_value}
 		{elseif $edit=='parts_list'  } {include file="parts_list.edit.tpl" field=$field parts_list=$object->get_parts_data(true) mode='new'}
 		{elseif $edit=='customer'  } {include file="select_customer.edit.tpl" field=$field  mode='new'}
 		{elseif $edit=='customer_list'  } {include file="select_customer_list.edit.tpl" field=$field  mode='new'}
@@ -479,9 +481,13 @@ function input_barcode_to_new_object(field) {
 		<input id="{$field.id}_formatted_To" class="option_input_field "  value="{$field.formatted_value['To']}" />
 		<span id="{$field.id}_msg_To" class="msg"></span> 
 		<div id="{$field.id}_To_datepicker" class="hide datepicker"></div>
-		
+
+
+
+
+
 		<script>
-		
+
 		    $(function() {
 		        $("#{$field.id}_From_datepicker").datepicker({
 		            showOtherMonths: true,
@@ -496,8 +502,8 @@ function input_barcode_to_new_object(field) {
 		                post_process_form_validation();
 		            }
 		        });
-		        
-		        
+
+
 		          $("#{$field.id}_To_datepicker").datepicker({
 		            showOtherMonths: true,
 		            selectOtherMonths: true,
@@ -511,8 +517,8 @@ function input_barcode_to_new_object(field) {
 		                post_process_form_validation();
 		            }
 		        });
-		        
-		        
+
+
 		    });
 
 		    $('#{$field.id}_formatted_From').focusin(function() {
@@ -532,7 +538,7 @@ function input_barcode_to_new_object(field) {
 
 
 		        $('#{$field.id}_From').val(value).change()
-		      
+
 
 		    });
 
@@ -548,7 +554,7 @@ function input_barcode_to_new_object(field) {
 		        $('#{$field.id}_From').val('')
 		    }
 
-		    
+
 		       $('#{$field.id}_formatted_To').focusin(function() {
 		        $('#{$field.id}_To_datepicker').removeClass('hide')
 
@@ -566,7 +572,7 @@ function input_barcode_to_new_object(field) {
 
 
 		        $('#{$field.id}_To').val(value).change()
-		      
+
 
 		    });
 		    $('#{$field.id}_To').on('change', function() {
@@ -579,9 +585,13 @@ function input_barcode_to_new_object(field) {
 		        $('#{$field.id}_To').val('')
 		    }
 
-		    
+
 
 		     </script>
+
+
+
+
         {/if} 
   	    
   

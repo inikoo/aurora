@@ -333,24 +333,6 @@ VALUES (%f,%s,%f,%s,%s,%s,%s,%s,%s,
         }
 
 
-       // if (!$this->skip_update_after_individual_transaction) {
-
-
-            //$this->update_number_products();
-            //$this->update_insurance();
-
-            //$this->update_discounts_items();
-            // $this->update_totals();
-
-
-            //$this->update_shipping($dn_key, false);
-            // $this->update_charges($dn_key, false);
-            // $this->update_discounts_no_items($dn_key);
-
-
-            // $this->update_deal_bridge();
-
-            //$this->update_deals_usage();now forked
 
             $this->update_totals();
 
@@ -365,11 +347,7 @@ VALUES (%f,%s,%f,%s,%s,%s,%s,%s,%s,
 
             $this->update_totals();
 
-            // $this->update_number_products();
 
-            //  $this->apply_payment_from_customer_account();
-
-       // }
 
 
         if ($dn_key) {

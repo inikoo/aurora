@@ -901,7 +901,6 @@
 
             function drag_mode_on(element) {
 
-                console.log('xxxxx')
 
 
                 $('.links_list').sortable({
