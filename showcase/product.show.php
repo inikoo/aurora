@@ -42,7 +42,7 @@ function get_product_showcase($data, $smarty, $user, $db) {
     $smarty->assign('images', $images);
 
     $sql = sprintf(
-        "SELECT `Category Label`,`Category Code`,`Category Key` FROM `Category Dimension` WHERE `Category Key`=%d ", $product->get('Store Product Department Category Key')
+        "SELECT `Category Label`,`Category Code`,`Category Key` FROM `Category Dimension` WHERE `Category Key`=%d ", $product->get('Product Department Category Key')
     );
 
     if ($result = $db->query($sql)) {
@@ -61,7 +61,7 @@ function get_product_showcase($data, $smarty, $user, $db) {
     }
 
     $sql = sprintf(
-        "SELECT `Category Label`,`Category Code`,`Category Key` FROM `Category Dimension` WHERE `Category Key`=%d ", $product->get('Store Product Family Category Key')
+        "SELECT `Category Label`,`Category Code`,`Category Key` FROM `Category Dimension` WHERE `Category Key`=%d ", $product->get('Product Family Category Key')
     );
     if ($result = $db->query($sql)) {
         if ($row = $result->fetch()) {

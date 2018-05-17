@@ -53,8 +53,25 @@ sortType: "toggle",
 {if $sort_key=='activity'}direction: '{if $sort_order==1}descending{else}ascending{/if}',{/if}
 
 cell: "string"
-}
-, {
+},
+
+{
+name: "favourited",
+label: "{t}Favourited{/t}",
+title: "{t}Favourited products in{/t} {$asset_code}",
+
+editable: false,
+
+defaultOrder:1,
+sortType: "toggle",
+{if $sort_key=='favourited'}direction: '{if $sort_order==1}descending{else}ascending{/if}',{/if}
+cell: Backgrid.HtmlCell.extend({ className: "aright"} ),
+
+headerCell: integerHeaderCell
+},
+
+
+{
 name: "last_invoice",
 label: "{t}Last invoice{/t}",
 title: "{t}Last invoice with{/t} {$asset_code}",
