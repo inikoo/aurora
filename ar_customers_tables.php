@@ -1062,6 +1062,7 @@ function asset_customers($_data, $db, $user) {
                 'last_invoice'  => $last_invoice_date,
                 'activity'      => $activity,
                 'invoiced_amount'=>$invoiced_amount,
+                'favourited'=>'<span class="'.(!$data['favourited']?'super_discreet':'').'">'.number($data['favourited']).'</span>',
                 'basket_amount'=>($data['basket_amount']==0?'':money($data['basket_amount'],$data['Invoice Currency Code']))
 
 

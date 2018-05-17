@@ -3196,6 +3196,9 @@ class Product extends Asset {
                     if ($family->id) {
 
                         $this->update_field_switcher('Product Family Category Key', $family->id, $options);
+                        $this->update_field_switcher('Product Department Category Key', $family->get('Product Category Department Category Key'), 'no_history');
+
+
 
 
                     } else {
@@ -3242,6 +3245,8 @@ class Product extends Asset {
                          $family->associate_subject($this->id, false, '', 'skip_direct_update');
 
 
+                         /*
+
                          $sql = sprintf(
                              "SELECT C.`Category Key` FROM `Category Dimension` C LEFT JOIN `Category Bridge` B ON (C.`Category Key`=B.`Category Key`) WHERE `Category Root Key`=%d AND `Subject Key`=%d AND `Subject`='Category' AND `Category Branch Type`='Head'",
 
@@ -3261,6 +3266,7 @@ class Product extends Asset {
                              'Product Department Category Key', $department_key, 'no_history'
                          );
 
+                         */
 
                          if($old_family->id){
                              $old_website=get_object('Webpage',$old_family->get('Product Category Webpage Key'));
@@ -3282,6 +3288,8 @@ class Product extends Asset {
                              }
                          }
 
+                         $this->update_field_switcher('Product Department Category Key', $family->get('Product Category Department Category Key'), 'no_history');
+
 
 
                      }
@@ -3297,6 +3305,9 @@ class Product extends Asset {
                         if ($category->id) {
                             $category->disassociate_subject($this->id);
                         }
+
+                        $this->update_field_switcher('Product Department Category Key', '', 'no_history');
+
 
                     }
 

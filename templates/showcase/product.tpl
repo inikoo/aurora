@@ -2,10 +2,17 @@
     <span class="strong"> <span class="Product_Units_Per_Case">{$product->get('Units Per Case')}</span>x <span
                 class="Product_Name">{$product->get('Name')}</span></span>
     <ul class="tags Categories" style="float:right">
-        {foreach from=$product->get_parent_categories('data') item=item key=key}
-            <li><span class="button" onclick="change_view('category/{$item.category_key}')"
-                      title="{$item.label}">{$item.code}</span></li>
-        {/foreach}
+
+        {if $family_data.id}
+        <li><span class="button" onclick="change_view('category/{$family_data.id}')" title="{$family_data.label}">{$family_data.code}</span></li>
+        {/if}
+        {if $department_data.id}
+        <li><span class="button department" onclick="change_view('category/{$department_data.id}')"  title="{$department_data.label}">{$department_data.code}</span></li>
+        {/if}
+
+
+
+
     </ul>
     <div style="clear:both">
     </div>

@@ -2613,7 +2613,13 @@ VALUES (%d,%s, %d, %d, %s,%s, %d, %d, %s, %s, %s,%d,NOW())", $this->id,
                             }
 
 
+                            $sql=sprintf('update `Product Dimension` set `Product Department Category Key`=%d  where `Product Family Category Key`=%d  ',$new_parent_category->id,$this->id);
+                            $this->db->exec($sql);
+
+
                         }
+
+
 
 
                     } else {
@@ -2629,6 +2635,10 @@ VALUES (%d,%s, %d, %d, %s,%s, %d, %d, %s, %s, %s,%d,NOW())", $this->id,
                             }
 
                         }
+
+
+                        $sql=sprintf('update `Product Dimension` set `Product Department Category Key`=NULL  where `Product Family Category Key`=%d  ',$this->id);
+                        $this->db->exec($sql);
 
                     }
 
