@@ -491,6 +491,23 @@ class SupplierDelivery extends DB_Table {
 
                 break;
 
+            case 'Items Amount':
+            case 'Extra Costs Amount':
+            case 'Total Amount':
+                return money(
+                    $this->data['Supplier Delivery '.$key], $this->data['Supplier Delivery Currency Code']
+                );
+                break;
+
+            case 'AC Subtotal Amount':
+            case 'AC Extra Costs Amount':
+            case 'AC Total Amount':
+
+            return money(
+                $this->data['Supplier Delivery '.$key], $account->get('Account Currency')
+            );
+                break;
+
             case 'PO Creation Date':
             case 'PO Submitted Date':
 
@@ -1103,7 +1120,13 @@ class SupplierDelivery extends DB_Table {
 
 		sum(`Supplier Delivery Placed Quantity`) AS placed_qty,
 
-		sum(`Supplier Delivery Net Amount`) AS net,sum(`Supplier Delivery Tax Amount`) AS tax FROM `Purchase Order Transaction Fact` WHERE `Supplier Delivery Key`=%d", $this->id
+		sum(`Supplier Delivery Net Amount`) AS items_amount,
+		sum(`Supplier Delivery Extra Cost Amount`) AS extra_cost_amount,
+		sum(`Supplier Delivery Extra Cost Account Currency Amount`) AS ac_extra_cost_amount,
+		sum(`Supplier Delivery Paid Amount`) AS ac_total
+		 
+		 
+		 FROM `Purchase Order Transaction Fact` WHERE `Supplier Delivery Key`=%d", $this->id
         );
 
 
@@ -1119,14 +1142,15 @@ class SupplierDelivery extends DB_Table {
                 }
 
 
-                $total_net = $row['net'] + $this->get('Supplier Delivery Shipping Net Amount') + $this->get('Supplier Delivery Charges Net Amount') + $this->get('Supplier Delivery Other Net Amount');
-                $total_tax = $row['tax'] + $this->get('Supplier Delivery Shipping Tax Amount') + $this->get('Supplier Delivery Charges Tax Amount') + $this->get('Supplier Delivery Other Tax Amount');
-                $total     = $total_net + $total_tax;
-
                 $this->update(
                     array(
-                        'Supplier Delivery Items Net Amount'                  => $row['net'],
-                        'Supplier Delivery Items Tax Amount'                  => $row['tax'],
+                        'Supplier Delivery Items Amount'                  => $row['items_amount'],
+                        'Supplier Delivery Extra Costs Amount'                  => $row['extra_cost_amount'],
+                        'Supplier Delivery Total Amount'                  => $row['items_amount']+$row['extra_cost_amount'],
+                        'Supplier Delivery AC Subtotal Amount'                  => $row['ac_total']-$row['ac_extra_cost_amount'],
+                        'Supplier Delivery AC Extra Costs Amount'                  => $row['ac_extra_cost_amount'],
+                        'Supplier Delivery AC Total Amount'                  => $row['ac_total'],
+
                         'Supplier Delivery Number Items'                      => $row['num_items'],
                         'Supplier Delivery Number Dispatched Items'           => $dispatched_items,
                         'Supplier Delivery Number Checked Items'              => $row['checked_items'],
@@ -1136,9 +1160,7 @@ class SupplierDelivery extends DB_Table {
                         'Supplier Delivery Number Items Without PO'           => $row['num_items'] - $row['ordered_items'],
                         'Supplier Delivery Weight'                            => $row['weight'],
                         'Supplier Delivery CBM'                               => $row['cbm'],
-                        'Supplier Delivery Total Net Amount'                  => $total_net,
-                        'Supplier Delivery Total Tax Amount'                  => $total_tax,
-                        'Supplier Delivery Total Amount'                      => $total,
+
                         'Supplier Delivery Placed Items'                      => ($row['placed_qty'] > 0 ? 'Yes' : 'No')
                     ), 'no_history'
                 );

@@ -207,8 +207,8 @@ switch ($tipo) {
 
         $data = prepare_values(
             $_REQUEST, array(
-                         'key'     => array('type' => 'key'),
-                         'exchange' => array('type' => 'numeric'),
+                         'key'        => array('type' => 'key'),
+                         'exchange'   => array('type' => 'numeric'),
                          'items_data' => array('type' => 'json array'),
 
                      )
@@ -227,40 +227,69 @@ switch ($tipo) {
         break;
 }
 
-function  set_delivery_costing($account, $db, $user, $editor, $data, $smarty){
+function set_delivery_costing($account, $db, $user, $editor, $data, $smarty) {
 
-    print_r($data);
-
-
-    $delivery=get_object('SupplierDelivery',$data['key']);
+    //print_r($data);
 
 
-    $sql=sprintf('select `Supplier Part Part SKU`,count(*) as num , group_concat(`Purchase Order Transaction Fact Key`) as potf_keys  from `Purchase Order Transaction Fact`  POTF left join  `Supplier Part Dimension` SP on (POTF.`Supplier Part Key`=SP.`Supplier Part Key`) where `Supplier Delivery Key`=%d group by `Supplier Part Part SKU` ', $delivery->id );
-    if ($result=$db->query($sql)) {
-    		foreach ($result as $row) {
+    $delivery = get_object('SupplierDelivery', $data['key']);
 
 
-    		    print_r($row);
-
-    		    if($row['num']==1){
-
-
-    		        $sql=sprintf('update `Purchase Order Transaction Fact` set `Supplier Delivery Net Amount`=%.2f ,`Supplier Delivery Extra Cost Amount`=%.2f, `Supplier Delivery Extra Cost Account Currency Amount`=%.2f      ');
-
-                }else{
-
-                }
+    $sql = sprintf(
+        'select `Supplier Part Part SKU`,count(*) as num , group_concat(`Purchase Order Transaction Fact Key`) as potf_keys  from `Purchase Order Transaction Fact`  POTF left join  `Supplier Part Dimension` SP on (POTF.`Supplier Part Key`=SP.`Supplier Part Key`) where `Supplier Delivery Key`=%d group by `Supplier Part Part SKU` ',
+        $delivery->id
+    );
+    if ($result = $db->query($sql)) {
+        foreach ($result as $row) {
 
 
-    		}
-    }else {
-    		print_r($error_info=$db->errorInfo());
-    		print "$sql\n";
-    		exit;
+           // print_r($row);
+
+            if ($row['num'] == 1) {
+
+
+                $sql = sprintf(
+                    'update `Purchase Order Transaction Fact` set `Supplier Delivery Net Amount`=%.2f ,`Supplier Delivery Extra Cost Amount`=%.2f, `Supplier Delivery Extra Cost Account Currency Amount`=%.2f , `Supplier Delivery Exchange Rate`=%f,`Supplier Delivery Paid Amount`=%.2f  where `Purchase Order Transaction Fact Key`=%d    ',
+                    $data['items_data'][$row['Supplier Part Part SKU']][0], $data['items_data'][$row['Supplier Part Part SKU']][1], $data['items_data'][$row['Supplier Part Part SKU']][2], $data['exchange'],
+                    (($data['items_data'][$row['Supplier Part Part SKU']][0] + $data['items_data'][$row['Supplier Part Part SKU']][1]) / $data['exchange']) + $data['items_data'][$row['Supplier Part Part SKU']][2],
+
+                    $row['potf_keys']
+
+                );
+
+                //print "$sql\n";
+
+                $db->exec($sql);
+
+
+            } else {
+
+
+                exit('caca');
+
+            }
+
+
+        }
+    } else {
+        print_r($error_info = $db->errorInfo());
+        print "$sql\n";
+        exit;
     }
 
+    $delivery->fast_update(
+        array('Supplier Delivery Currency Exchange'=>1/$data['exchange'])
+    );
 
 
+    $delivery->update_totals();
+
+
+
+    $response = array(
+        'state' => 200
+    );
+    echo json_encode($response);
 
 }
 
@@ -977,57 +1006,48 @@ function update_itf_amount($account, $db, $user, $editor, $data, $smarty) {
     if ($result = $db->query($sql)) {
         if ($row = $result->fetch()) {
 
-            $amount=$data['value'];
+            $amount = $data['value'];
 
             $sql = sprintf(
                 'UPDATE `Inventory Transaction Fact` SET `Inventory Transaction Amount`=%.2f WHERE `Inventory Transaction Key`=%d ', $amount, $row['Inventory Transaction Key']
             );
 
             $db->exec($sql);
-            $part=get_object('Part',$row['Part SKU']);
+            $part = get_object('Part', $row['Part SKU']);
             $part->update_stock_run();
 
-            
-            
+
             $cost_per_sko = $amount / $row['Inventory Transaction Quantity'];
 
-            $cost=sprintf(
-                '<span  class="part_cost button"  data-itf_key="%d" data-cost="%s"  data-skos="%s"  data-currency_symbol="%s"  data-cost_per_sko="%s" onClick="open_edit_cost(this)">%s</span>',
-                $row['Inventory Transaction Key'], $amount,$row['Inventory Transaction Quantity'],$account->get('Account Currency Symbol'),
-                money($cost_per_sko, $account->get('Account Currency Code')),
-                money($amount, $account->get('Account Currency Code'))
+            $cost     = sprintf(
+                '<span  class="part_cost button"  data-itf_key="%d" data-cost="%s"  data-skos="%s"  data-currency_symbol="%s"  data-cost_per_sko="%s" onClick="open_edit_cost(this)">%s</span>', $row['Inventory Transaction Key'], $amount,
+                $row['Inventory Transaction Quantity'], $account->get('Account Currency Symbol'), money($cost_per_sko, $account->get('Account Currency Code')), money($amount, $account->get('Account Currency Code'))
             );
-            $sko_cost=sprintf(
-                '<span  class="part_cost_per_sko "  >%s</span>',
-                money($cost_per_sko, $account->get('Account Currency Code'))
+            $sko_cost = sprintf(
+                '<span  class="part_cost_per_sko "  >%s</span>', money($cost_per_sko, $account->get('Account Currency Code'))
             );
 
             $part->redo_inventory_snapshot_fact();
 
             $response = array(
-                'state' => 200,
-                'part_cost_cell' => $cost,
+                'state'                  => 200,
+                'part_cost_cell'         => $cost,
                 'part_cost_per_sko_cell' => $sko_cost,
-                'class_html'=>array(
-                    'Part_Cost_in_Warehouse'=>$part->get('Cost in Warehouse')
+                'class_html'             => array(
+                    'Part_Cost_in_Warehouse' => $part->get('Cost in Warehouse')
 
 
                 )
             );
             echo json_encode($response);
-            
-            
+
+
         }
     } else {
         print_r($error_info = $db->errorInfo());
         print "$sql\n";
         exit;
     }
-
-
-    
-
-  
 
 
 }
