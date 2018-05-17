@@ -77,3 +77,5 @@ EcomB2B/art/mobile_logo.png
 cron/shipping.php
 
 cron/amazon_costa.php
+
+locale/de_DE/LC_MESSAGES/aurora_de.bk.po
