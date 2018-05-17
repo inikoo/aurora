@@ -32,7 +32,7 @@
 
 </div>
 
-    <span id="save_button" class="" style="float:right" onClick="save_costing()"><i class="fa fa-cloud  " aria-hidden="true"></i> {t}Save{/t}</span>
+    <span id="save_button" class="save" style="float:right" onClick="save_costing()"><i class="fa fa-cloud  " aria-hidden="true"></i> {t}Save{/t}</span>
 
 
 
@@ -244,6 +244,8 @@
 
             });
 
+            $('#save_button').addClass('valid changed')
+
 
         } else {
 
@@ -264,6 +266,14 @@
 
 
     function save_costing(){
+
+
+        if(!$('#save_button').hasClass('valid')){
+            return;
+        }
+
+
+        $('#save_button').removeClass('valid').find('i').addClass('fa-spin fa-spinner')
 
 
 var items_data={
@@ -297,9 +307,13 @@ var items_data={
             url: "/ar_edit_stock.php", type: 'POST', data: ajaxData, dataType: 'json', cache: false, contentType: false, processData: false, complete: function () {
             }, success: function (data) {
 
+                console.log(data)
+
                 if (data.state == '200') {
 
-                    $('#save_button').removeClass('save').find('i').removeClass('fa-spinner fa-spin')
+                    change_view(state.request,{ 'reload_showcase': 1})
+
+                    //$('#save_button').removeClass('save').find('i').removeClass('fa-spinner fa-spin')
                 } else if (data.state == '400') {
                     swal(data.msg);
                 }

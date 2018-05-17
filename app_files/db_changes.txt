@@ -948,5 +948,23 @@ ALTER TABLE `Deal Component Dimension` DROP `Deal Component Terms Description`;
 ALTER TABLE `Deal Component Dimension` DROP `Deal Component Public`;
 
 
+ALTER TABLE `Supplier Delivery Dimension`
+  DROP `Supplier Delivery Items Net Amount`,
+  DROP `Supplier Delivery Items Tax Amount`,
+  DROP `Supplier Delivery Shipping Net Amount`,
+  DROP `Supplier Delivery Charges Net Amount`,
+  DROP `Supplier Delivery Other Net Amount`,
+  DROP `Supplier Delivery Total Net Amount`,
+  DROP `Supplier Delivery Shipping Tax Amount`,
+  DROP `Supplier Delivery Charges Tax Amount`,
+  DROP `Supplier Delivery Other Tax Amount`,
+  DROP `Supplier Delivery Total Tax Amount`,
+  DROP `Supplier Delivery Total Amount`,
+  DROP `Supplier Delivery Total To Pay Amount`;
+
+  ALTER TABLE `Supplier Delivery Dimension` ADD `Supplier Delivery Items Amount` DECIMAL(18,2) NOT NULL DEFAULT '0.00' AFTER `Supplier Delivery Actions Taken`, ADD `Supplier Delivery Extra Costs Amount` DECIMAL(18,2) NOT NULL DEFAULT '0.00' AFTER `Supplier Delivery Items Amount`, ADD `Supplier Delivery Total Amount` DECIMAL(18,2) NOT NULL DEFAULT '0' AFTER `Supplier Delivery Extra Costs Amount`, ADD `Supplier Delivery AC Subtotal Amount` DECIMAL(18,2) NOT NULL DEFAULT '0' AFTER `Supplier Delivery Total Amount`, ADD `Supplier Delivery AC Extra Costs Amount` DECIMAL(18,2) NOT NULL DEFAULT '0' AFTER `Supplier Delivery AC Subtotal Amount`, ADD `Supplier Delivery AC Total Amount` DECIMAL(18,2) NOT NULL DEFAULT '0' AFTER `Supplier Delivery AC Extra Costs Amount`;
+
+
+
 
 

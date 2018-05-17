@@ -413,22 +413,69 @@
         <div style="clear:both">
         </div>
     </div>
-    <div class="block " style="align-items: stretch;flex: 1 ">
+    <div class="block " style="align-items: stretch;flex: 1;padding-top: 0px ">
+
+
+
         <table border="0" class="info_block">
-            <tr>
-                <td class="label">{t}Cost{/t} ({$delivery->get('Supplier Delivery Currency Code')})</td>
+
+            <tr style="height: 16px" class="{if $account->get('Account Currency')==$delivery->get('Supplier Delivery Currency Code')}hide{/if}">
+                <td class="small" colspan="2" style="border-bottom:1px solid #ccc;text-align: center">
+                    {t}Supplier invoice currency{/t} <b>{$delivery->get('Supplier Delivery Currency Code')}</b>
+                </td>
+
+
+
+            </tr>
+
+
+            <tr style="border-bottom:1px solid #eee;" >
+                <td class="label">{t}Items{/t} </td>
+                <td class="aright Supplier_Delivery_Items_Amount">{$delivery->get('Items Amount')}</td>
+            </tr>
+
+            <tr  >
+                <td class="label">{t}Extra costs{/t} </td>
+                <td class="aright Supplier_Delivery_Extra_Costs_Amount">{$delivery->get('Extra Costs Amount')}</td>
+            </tr>
+
+            <tr style="border-bottom:1px solid #ccc;border-top:1px solid #ccc;" >
+                <td class="label">{t}Total{/t} </td>
                 <td class="aright Supplier_Delivery_Total_Amount">{$delivery->get('Total Amount')}</td>
             </tr>
-            <tr class="{if $account->get('Account Currency')==$delivery->get('Supplier Delivery Currency Code')}hide{/if}">
-                <td class="small">
-                    1{$account->get('Currency Code')}={math equation="1/x" x=$delivery->get('Supplier Delivery Currency Exchange') format="%.5f"}{$delivery->get('Supplier Delivery Currency Code')}
+
+
+            <tbody class="{if $account->get('Account Currency')==$delivery->get('Supplier Delivery Currency Code')}hide{/if}">
+
+            <tr style="height: 16px" class="{if $account->get('Account Currency')==$delivery->get('Supplier Delivery Currency Code')}hide{/if}">
+                <td class="small" colspan="2" style="border-bottom:1px solid #ccc;text-align: center">
+                    1 {$account->get('Currency Code')}={math equation="1/x" x=$delivery->get('Supplier Delivery Currency Exchange') format="%.5f"} {$delivery->get('Supplier Delivery Currency Code')}
 
                 </td>
 
 
-                <td
-                    class="Supplier_Delivery_Total_Amount_Account_Currency aright ">{$delivery->get('Total Amount Account Currency')}</td>
+
             </tr>
+
+            <tr  >
+                <td class="label">{t}Subtotal{/t}</td>
+                <td class="aright Supplier_Delivery_AC_Subtotal_Amount">{$delivery->get('AC Subtotal Amount')}</td>
+            </tr>
+            <tr style="border-top:1px solid #eee;" >
+                <td class="label">{t}Extra costs{/t}</td>
+                <td class="aright Supplier_Delivery_AC_Extra_Costs_Amount">{$delivery->get('AC Extra Costs Amount')}</td>
+            </tr>
+
+
+            <tr style="border-top:1px solid #ccc;" >
+
+                <td class="label">{t}Total{/t}</td>
+
+
+                <td class="Supplier_Delivery_AC_Total_Amount aright ">{$delivery->get('AC Total Amount')}</td>
+            </tr>
+
+            </tbody>
 
         </table>
         <div style="clear:both">
