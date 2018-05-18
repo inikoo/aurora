@@ -146,15 +146,7 @@
                     {foreach from=$order->get_items() item="item" }
 
                         <tr>
-                            <td style="text-align: left">{$item.code_description}
-
-
-
-
-
-
-
-                            </td>
+                            <td style="text-align: left">{$item.code_description}</td>
 <td>
 
     <div class="mobile_ordering"  data-settings='{ "pid":{$item.pid},"basket":true }'>
