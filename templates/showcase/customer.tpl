@@ -150,15 +150,14 @@
                         </tr>
                     {/if}
                     <tr>
-                        <td class="text"> {if $customer->get('Customer Orders')==1}
+                        <td class="text"> {if $customer->get('Customer Orders Invoiced')==1}
                             <p>
-                                {$customer->get('Name')} {t}has place one order{/t}.
+                                {$customer->get('Name')} {t}has been invoiced once{/t}.
                             </p>
-                            {elseif $customer->get('Customer Orders')>1 } {$customer->get('Name')} {if $customer->get('Customer Type by Activity')=='Lost'}{t}placed{/t}{else}{t}has placed{/t}{/if}
-                            <b>{$customer->get('Customer Orders')}</b> {if $customer->get('Customer Type by Activity')=='Lost'}{t}orders{/t}{else}{t}orders so far{/t}{/if}
-                            , {t}which amounts to a total of{/t} <b>{$customer->get('Net Balance')}</b> {t}plus tax{/t}
+                            {elseif $customer->get('Customer Orders Invoiced')>1 } {$customer->get('Name')} {t}has been invoiced{/t}
+                            <b>{$customer->get('Orders Invoiced')}</b> {if $customer->get('Customer Type by Activity')=='Lost'}{t}times{/t}{else}{t}times so far{/t}{/if}, {t}which amounts to a total of{/t} <b>{$customer->get('Invoiced Net Amount')}</b> {t}plus tax{/t}
                             ({t}an average of{/t} {$customer->get('Total Net Per Order')} {t}per order{/t}
-                            ). {if $customer->get('Customer Orders Invoiced')}
+                            ). {if $customer->get('Customer Orders')}
                             </p>
                             <p>
                                 {if $customer->get('Customer Type by Activity')=='Lost'}{t}This customer used to place an order every{/t}{else}{t}This customer usually places an order every{/t}{/if} {$customer->get('Order Interval')}

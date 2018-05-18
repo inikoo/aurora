@@ -11,7 +11,7 @@
 
 
 $tab     = 'email_campaigns.transactional';
-$ar_file = 'ar_email_template.php';
+$ar_file = 'ar_marketing_tables.php';
 $tipo    = 'transactional_emails';
 
 $default = $user->get_tab_defaults($tab);
@@ -20,9 +20,7 @@ $default = $user->get_tab_defaults($tab);
 $table_views = array();
 
 $table_filters = array(
-    'type' => array(
-        'label' => _('Type')
-    )
+    'type' => array('label' => _('Type'))
 
 );
 

@@ -86,6 +86,78 @@ class DealComponent extends DB_Table {
         return false;
     }
 
+    function get_formatted_allowances() {
+
+
+        switch ($this->data['Deal Component Allowance Type']) {
+            case 'Percentage Off':
+                $allowance = sprintf(_('%s off'), percentage($this->data['Deal Component Allowance'], 1, 0));
+
+                break;
+
+            case 'Get Cheapest Free':
+
+                if ($this->data['Deal Component Allowance'] == 1) {
+                    $allowance = sprintf(_('cheapest free'));
+
+                } else {
+                    $allowance = sprintf(_('cheapest %d free'), $this->data['Deal Component Allowance']);
+
+                }
+
+
+                break;
+
+            default:
+                $allowance = $this->data['Deal Component Allowance'];
+
+        };
+
+        return $allowance;
+
+
+    }
+
+    function get_formatted_terms() {
+
+        $terms = '';
+
+
+        switch ($this->data['Deal Component Terms Type']) {
+
+            case 'Order Interval':
+                $terms = sprintf('last order within %d days', $this->get('Deal Component Terms'));
+
+
+                break;
+            case 'Category Quantity Ordered':
+
+
+                $terms = sprintf('order %d or more %s', $this->data['Deal Component Terms'], $this->get('Deal Component Allowance Target Label'));
+
+
+                break;
+            case 'Category For Every Quantity Ordered':
+
+
+                $terms = sprintf('%s, buy %d', $this->get('Deal Component Allowance Target Label'), $this->data['Deal Component Terms']);
+
+
+                break;
+            case 'Category For Every Quantity Any Product Ordered':
+
+
+                $terms = sprintf('%s (Mix & match), buy %d ', $this->get('Deal Component Allowance Target Label'), $this->data['Deal Component Terms']);
+
+
+                break;
+
+        }
+
+
+        return $terms;
+    }
+
     function find($raw_data, $options) {
 
         if (isset($raw_data['editor']) and is_array($raw_data['editor'])) {
@@ -118,8 +190,8 @@ class DealComponent extends DB_Table {
 
         $sql = sprintf(
             "SELECT `Deal Component Key` FROM `Deal Component Dimension` WHERE `Deal Component Deal Key`=%d AND  `Deal Component Trigger`=%s AND `Deal Component Trigger Key`=%d AND `Deal Component Terms Type`=%s AND `Deal Component Allowance Type`=%s AND `Deal Component Allowance Target`=%s AND `Deal Component Allowance Target Key`=%d ",
-            $data['Deal Component Deal Key'], prepare_mysql($data['Deal Component Trigger']), $data['Deal Component Trigger Key'], prepare_mysql($data['Deal Component Terms Type']),
-            prepare_mysql($data['Deal Component Allowance Type']), prepare_mysql($data['Deal Component Allowance Target']), $data['Deal Component Allowance Target Key']
+            $data['Deal Component Deal Key'], prepare_mysql($data['Deal Component Trigger']), $data['Deal Component Trigger Key'], prepare_mysql($data['Deal Component Terms Type']), prepare_mysql($data['Deal Component Allowance Type']),
+            prepare_mysql($data['Deal Component Allowance Target']), $data['Deal Component Allowance Target Key']
 
         );
 
@@ -161,7 +233,7 @@ class DealComponent extends DB_Table {
         foreach ($data as $key => $value) {
             $keys .= "`$key`,";
 
-                $values .= prepare_mysql($value).",";
+            $values .= prepare_mysql($value).",";
 
         }
         $keys   = preg_replace('/,$/', ')', $keys);
@@ -184,19 +256,24 @@ class DealComponent extends DB_Table {
         }
     }
 
-
     function update_field_switcher($field, $value, $options = '', $metadata = '') {
 
         switch ($field) {
 
+
+            case 'Deal Component Status':
+
+                $this->update_status($value, $options);
+                break;
+
             case 'Deal Component Name Label':
 
-                if($this->data['Deal Component Campaign Key']){
+                if ($this->data['Deal Component Campaign Key']) {
                     $campaign         = get_object('DealCampaign', $this->data['Deal Component Campaign Key']);
                     $campaign->editor = $this->editor;
                     $campaign->update(array('Deal Campaign Name' => $value));
-                }else{
-                    $deal = get_object('Deal', $this->data['Deal Component Deal Key']);
+                } else {
+                    $deal         = get_object('Deal', $this->data['Deal Component Deal Key']);
                     $deal->editor = $this->editor;
                     $deal->update(array('Deal Name Label' => $value));
                     $this->update_field('Deal Component Name Label', $value, $options);
@@ -207,14 +284,13 @@ class DealComponent extends DB_Table {
                 break;
 
             case 'Deal Component Term Label':
-                $deal = get_object('Deal', $this->data['Deal Component Deal Key']);
+                $deal         = get_object('Deal', $this->data['Deal Component Deal Key']);
                 $deal->editor = $this->editor;
                 $deal->update(array('Deal Term Label' => $value));
                 break;
             case 'Deal Terms':
-                $deal = get_object('Deal', $this->data['Deal Component Deal Key']);
+                $deal         = get_object('Deal', $this->data['Deal Component Deal Key']);
                 $deal->editor = $this->editor;
-
 
 
                 $deal->update(array('Deal Terms' => $value));
@@ -229,7 +305,7 @@ class DealComponent extends DB_Table {
 
                 $this->update_websites();
 
-                $deal = get_object('Deal', $this->data['Deal Component Deal Key']);
+                $deal         = get_object('Deal', $this->data['Deal Component Deal Key']);
                 $deal->editor = $this->editor;
 
                 $deal->update_allowance_label();
@@ -242,7 +318,7 @@ class DealComponent extends DB_Table {
 
             case 'Deal Component Allowance':
                 $this->update_field($field, $value, $options);
-                $deal = get_object('Deal', $this->data['Deal Component Deal Key']);
+                $deal         = get_object('Deal', $this->data['Deal Component Deal Key']);
                 $deal->editor = $this->editor;
                 $deal->update_term_allowances();
 
@@ -257,35 +333,65 @@ class DealComponent extends DB_Table {
         }
     }
 
-    function update_expiration_date($value, $options) {
+    function update_status($value, $options = '') {
 
-        if ($this->data['Deal Component Status'] == 'Finish') {
-            $this->error = true;
-            $this->msg   = 'Deal component already finished';
+        if ($value == 'Suspended') {
+
+            $old_value = $this->data['Deal Component Status'];
+            $this->update_field('Deal Component Status', $value, $options);
+
+
+            if ($old_value != $value) {
+
+                $account = get_object('Account', 1);
+                require_once 'utils/new_fork.php';
+                new_housekeeping_fork(
+                    'au_housekeeping', array(
+                    'type'     => 'deal_updated',
+                    'deal_key' => $this->get('Deal Component Deal Key')
+                ), $account->get('Account Code'), $this->db
+                );
+
+
+            }
+
+
         } else {
-            $this->update_field(
-                'Deal Component Expiration Date', $value, $options
-            );
-            $this->updated = true;
-
-
+            $this->update_status_from_dates($force = true);
         }
-
-
-
-        $this->update_status_from_dates();
 
 
     }
 
     function update_status_from_dates($force = false) {
 
+
+        $old_value = $this->data['Deal Component Status'];
+
         if ($this->data['Deal Component Expiration Date'] != '' and strtotime(
                 $this->data['Deal Component Expiration Date'].' +0:00'
             ) <= strtotime('now +0:00')) {
-            $this->update_field_switcher(
+
+
+            $this->update_field(
                 'Deal Component Status', 'Finish', 'no_history'
             );
+
+            $value = 'Finish';
+
+            if ($old_value != $value) {
+
+                $account = get_object('Account', 1);
+                require_once 'utils/new_fork.php';
+                new_housekeeping_fork(
+                    'au_housekeeping', array(
+                    'type'     => 'deal_updated',
+                    'deal_key' => $this->get('Deal Component Deal Key')
+                ), $account->get('Account Code'), $this->db
+                );
+
+
+            }
 
             return;
         }
@@ -296,234 +402,34 @@ class DealComponent extends DB_Table {
         }
 
         if (strtotime($this->data['Deal Component Begin Date'].' +0:00') >= strtotime('now +0:00')) {
-            $this->update_field_switcher(
+            $this->update_field(
                 'Deal Component Status', 'Waiting', 'no_history'
             );
-        }
-
-
-        if (strtotime($this->data['Deal Component Begin Date'].' +0:00') <= strtotime('now +0:00')) {
-            $this->update_field_switcher(
+            $value = 'Waiting';
+        } elseif (strtotime($this->data['Deal Component Begin Date'].' +0:00') <= strtotime('now +0:00')) {
+            $this->update_field(
                 'Deal Component Status', 'Active', 'no_history'
             );
+            $value = 'Active';
         }
 
 
-    }
+        if ($old_value != $value) {
 
-    function update_status($value) {
-
-
-        if ($value == 'Suspended') {
-
-
-            $this->update_field('Deal Component Status', $value);
-
-
-        } else {
-            $this->update_status_from_dates($force = true);
-        }
-
-
-
-
-    }
-
-    function update_target_bridge() {
-
-        if ($this->data['Deal Component Status'] == 'Finish') {
-            $sql = sprintf(
-                "DELETE FROM `Deal Target Bridge` WHERE `Deal Component Key`=%d ", $this->id
+            $account = get_object('Account', 1);
+            require_once 'utils/new_fork.php';
+            new_housekeeping_fork(
+                'au_housekeeping', array(
+                'type'     => 'deal_updated',
+                'deal_key' => $this->get('Deal Component Deal Key')
+            ), $account->get('Account Code'), $this->db
             );
-            $this->db->exec($sql);
-        } else {
-
-
-            $sql = sprintf(
-                "INSERT INTO `Deal Target Bridge` VALUES (%d,%s,%s,%d) ", $this->data['Deal Component Deal Key'], $this->id, prepare_mysql($this->data['Deal Component Allowance Target']),
-                $this->data['Deal Component Allowance Target Key']
-
-            );
-            $this->db->exec($sql);
-
-            if ($this->data['Deal Component Allowance Target'] == 'Category') {
-
-
-                $sql = sprintf(
-                    "SELECT `Subject Key` FROM `Category Bridge` WHERE `Category Key`=%d ", $this->data['Deal Component Allowance Target Key']
-                );
-
-                if ($result2 = $this->db->query($sql)) {
-                    foreach ($result2 as $row2) {
-                        $sql = sprintf(
-                            "INSERT INTO `Deal Target Bridge` VALUES (%d,%d,%s,%d) ", $this->data['Deal Component Deal Key'], $this->id, prepare_mysql('Product'), $row2['Subject Key']
-
-                        );
-                        $this->db->exec($sql);
-                    }
-                } else {
-                    print_r($error_info = $this->db->errorInfo());
-                    print "$sql\n";
-                    exit;
-                }
-
-
-            }
 
 
         }
-    }
-
-
-    function update_usage() {
-
-
-        $sql = sprintf(
-            "SELECT count( DISTINCT O.`Order Key`) AS orders,count( DISTINCT `Order Customer Key`) AS customers FROM `Order Deal Bridge` B LEFT  JOIN `Order Dimension` O ON (O.`Order Key`=B.`Order Key`) WHERE B.`Deal Component Key`=%d AND `Applied`='Yes' AND `Order State`!='Cancelled' ",
-            $this->id
-
-        );
-
-        $orders    = 0;
-        $customers = 0;
-
-        if ($result = $this->db->query($sql)) {
-            if ($row = $result->fetch()) {
-                $orders    = $row['orders'];
-                $customers = $row['customers'];
-            }
-        } else {
-            print_r($error_info = $this->db->errorInfo());
-            print "$sql\n";
-            exit;
-        }
-
-
-        $this->update(
-            array(
-                'Deal Component Total Acc Applied Orders'    => $orders,
-                'Deal Component Total Acc Applied Customers' => $customers,
-
-            ), 'no_history'
-        );
-
-
-        $sql       = sprintf(
-            "SELECT count( DISTINCT O.`Order Key`) AS orders,count( DISTINCT `Order Customer Key`) AS customers FROM `Order Deal Bridge` B LEFT  JOIN `Order Dimension` O ON (O.`Order Key`=B.`Order Key`) WHERE B.`Deal Component Key`=%d AND `Used`='Yes' AND `Order State`!='Cancelled' ",
-            $this->id
-
-        );
-        $orders    = 0;
-        $customers = 0;
-
-
-        if ($result = $this->db->query($sql)) {
-            if ($row = $result->fetch()) {
-                $orders    = $row['orders'];
-                $customers = $row['customers'];
-            }
-        } else {
-            print_r($error_info = $this->db->errorInfo());
-            print "$sql\n";
-            exit;
-        }
-
-
-        $this->update(
-            array(
-                'Deal Component Total Acc Used Orders'    => $orders,
-                'Deal Component Total Acc Used Customers' => $customers,
-
-            ), 'no_history'
-        );
 
 
     }
-
-
-
-    function get_formatted_terms() {
-
-        $terms = '';
-
-
-        switch ($this->data['Deal Component Terms Type']) {
-
-            case 'Order Interval':
-                $terms = sprintf('last order within %d days', $this->get('Deal Component Terms'));
-
-
-                break;
-            case 'Category Quantity Ordered':
-
-
-
-                    $terms = sprintf('order %d or more %s', $this->data['Deal Component Terms'], $this->get('Deal Component Allowance Target Label'));
-
-
-
-                break;
-            case 'Category For Every Quantity Ordered':
-
-
-
-
-                    $terms = sprintf('%s, buy %d', $this->get('Deal Component Allowance Target Label'), $this->data['Deal Component Terms']);
-
-
-
-                break;
-            case 'Category For Every Quantity Any Product Ordered':
-
-
-
-                    $terms = sprintf('%s (Mix & match), buy %d ', $this->get('Deal Component Allowance Target Label'), $this->data['Deal Component Terms']);
-
-
-                break;
-
-        }
-
-
-        return $terms;
-    }
-
-
-
-    function get_formatted_allowances() {
-
-
-
-        switch ($this->data['Deal Component Allowance Type']) {
-            case 'Percentage Off':
-                $allowance = sprintf(_('%s off'),percentage($this->data['Deal Component Allowance'],1,0));
-
-                break;
-
-            case 'Get Cheapest Free':
-
-                if ($this->data['Deal Component Allowance'] == 1) {
-                    $allowance= sprintf(_('cheapest free'));
-
-                } else {
-                    $allowance= sprintf(_('cheapest %d free'), $this->data['Deal Component Allowance']);
-
-                }
-
-
-                break;
-
-            default:
-                $allowance=$this->data['Deal Component Allowance'];
-
-        };
-
-        return $allowance;
-
-
-    }
-
-
 
     function update_websites() {
 
@@ -532,8 +438,7 @@ class DealComponent extends DB_Table {
         $families    = array();
         $departments = array();
         $sql         = sprintf(
-            'select `Deal Component Trigger Key`,`Category Scope` from  `Deal Component Dimension`  left join `Category Dimension` on (`Deal Component Trigger Key`=`Category Key`)   where `Deal Component Key`=%d  and `Deal Component Trigger`="Category"  ',
-            $this->id
+            'select `Deal Component Trigger Key`,`Category Scope` from  `Deal Component Dimension`  left join `Category Dimension` on (`Deal Component Trigger Key`=`Category Key`)   where `Deal Component Key`=%d  and `Deal Component Trigger`="Category"  ', $this->id
         );
         if ($result = $this->db->query($sql)) {
             foreach ($result as $row) {
@@ -642,6 +547,135 @@ class DealComponent extends DB_Table {
 
         //print_r($webpage_keys);
         //  print_r($products);
+
+
+    }
+
+    function update_expiration_date($value, $options) {
+
+        if ($this->data['Deal Component Status'] == 'Finish') {
+            $this->error = true;
+            $this->msg   = 'Deal component already finished';
+        } else {
+            $this->update_field(
+                'Deal Component Expiration Date', $value, $options
+            );
+            $this->updated = true;
+
+
+        }
+
+
+        $this->update_status_from_dates();
+
+
+    }
+
+    function update_target_bridge() {
+
+        if ($this->data['Deal Component Status'] == 'Finish') {
+            $sql = sprintf(
+                "DELETE FROM `Deal Target Bridge` WHERE `Deal Component Key`=%d ", $this->id
+            );
+            $this->db->exec($sql);
+        } else {
+
+
+            $sql = sprintf(
+                "INSERT INTO `Deal Target Bridge` VALUES (%d,%s,%s,%d) ", $this->data['Deal Component Deal Key'], $this->id, prepare_mysql($this->data['Deal Component Allowance Target']), $this->data['Deal Component Allowance Target Key']
+
+            );
+            $this->db->exec($sql);
+
+            if ($this->data['Deal Component Allowance Target'] == 'Category') {
+
+
+                $sql = sprintf(
+                    "SELECT `Subject Key` FROM `Category Bridge` WHERE `Category Key`=%d ", $this->data['Deal Component Allowance Target Key']
+                );
+
+                if ($result2 = $this->db->query($sql)) {
+                    foreach ($result2 as $row2) {
+                        $sql = sprintf(
+                            "INSERT INTO `Deal Target Bridge` VALUES (%d,%d,%s,%d) ", $this->data['Deal Component Deal Key'], $this->id, prepare_mysql('Product'), $row2['Subject Key']
+
+                        );
+                        $this->db->exec($sql);
+                    }
+                } else {
+                    print_r($error_info = $this->db->errorInfo());
+                    print "$sql\n";
+                    exit;
+                }
+
+
+            }
+
+
+        }
+    }
+
+    function update_usage() {
+
+
+        $sql = sprintf(
+            "SELECT count( DISTINCT O.`Order Key`) AS orders,count( DISTINCT `Order Customer Key`) AS customers FROM `Order Deal Bridge` B LEFT  JOIN `Order Dimension` O ON (O.`Order Key`=B.`Order Key`) WHERE B.`Deal Component Key`=%d AND `Applied`='Yes' AND `Order State`!='Cancelled' ",
+            $this->id
+
+        );
+
+        $orders    = 0;
+        $customers = 0;
+
+        if ($result = $this->db->query($sql)) {
+            if ($row = $result->fetch()) {
+                $orders    = $row['orders'];
+                $customers = $row['customers'];
+            }
+        } else {
+            print_r($error_info = $this->db->errorInfo());
+            print "$sql\n";
+            exit;
+        }
+
+
+        $this->update(
+            array(
+                'Deal Component Total Acc Applied Orders'    => $orders,
+                'Deal Component Total Acc Applied Customers' => $customers,
+
+            ), 'no_history'
+        );
+
+
+        $sql       = sprintf(
+            "SELECT count( DISTINCT O.`Order Key`) AS orders,count( DISTINCT `Order Customer Key`) AS customers FROM `Order Deal Bridge` B LEFT  JOIN `Order Dimension` O ON (O.`Order Key`=B.`Order Key`) WHERE B.`Deal Component Key`=%d AND `Used`='Yes' AND `Order State`!='Cancelled' ",
+            $this->id
+
+        );
+        $orders    = 0;
+        $customers = 0;
+
+
+        if ($result = $this->db->query($sql)) {
+            if ($row = $result->fetch()) {
+                $orders    = $row['orders'];
+                $customers = $row['customers'];
+            }
+        } else {
+            print_r($error_info = $this->db->errorInfo());
+            print "$sql\n";
+            exit;
+        }
+
+
+        $this->update(
+            array(
+                'Deal Component Total Acc Used Orders'    => $orders,
+                'Deal Component Total Acc Used Customers' => $customers,
+
+            ), 'no_history'
+        );
 
 
     }

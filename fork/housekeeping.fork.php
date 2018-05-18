@@ -27,6 +27,7 @@ function fork_housekeeping($job) {
 
         case 'deal_created':
 
+
             $deal = get_object('Deal', $data['deal_key']);
 
 
@@ -79,6 +80,66 @@ function fork_housekeeping($job) {
 
             }
 
+
+            break;
+
+        case 'deal_updated':
+
+
+            $deal = get_object('Deal', $data['deal_key']);
+
+
+
+
+
+//print $deal->get('Deal Trigger');
+
+
+                switch ($deal->get('Deal Trigger')) {
+                    case 'Category':
+
+
+                        $sql = sprintf(
+                            'SELECT `Order Key`  FROM `Order Transaction Fact` OTF   LEFT JOIN `Category Bridge`  ON (`Subject Key`=`Product ID`)    WHERE `Subject`="Product" AND `Category Key`=%d and `Current Dispatching State`="In Process"  group by `Order Key`',
+                            $deal->get('Deal Trigger Key')
+                        );
+
+
+                      // print $sql;
+
+
+                        if ($result = $db->query($sql)) {
+                            foreach ($result as $row) {
+
+                                //print_r($row);
+                                $order = get_object('Order', $row['Order Key']);
+                                $order->update_totals();
+
+                                $order->update_discounts_items();
+
+
+                                $order->update_shipping(false, false);
+                                $order->update_charges(false, false);
+
+                                $order->update_deal_bridge();
+
+
+                                $order->update_totals();
+                            }
+                        } else {
+                            print_r($error_info = $db->errorInfo());
+                            print "$sql\n";
+                            exit;
+                        }
+
+
+                        break;
+                    default:
+                        break;
+                }
+
+
+//exit;
 
             break;
 

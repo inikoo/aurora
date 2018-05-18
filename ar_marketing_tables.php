@@ -59,6 +59,9 @@ switch ($tipo) {
     case 'newsletters':
         newsletters(get_table_parameters(), $db, $user);
         break;
+    case 'transactional_emails':
+        transactional_emails(get_table_parameters(), $db, $user);
+        break;
     default:
         $response = array(
             'state' => 405,
@@ -864,6 +867,59 @@ function newsletters($_data, $db, $user) {
 
             'name'   => $name,
             'state'  => $state,
+            'emails' => number($data['Email Campaign Number Estimated Emails']),
+
+
+        );
+
+    }
+
+    $response = array(
+        'resultset' => array(
+            'state'         => 200,
+            'data'          => $adata,
+            'rtext'         => $rtext,
+            'sort_key'      => $_order,
+            'sort_dir'      => $_dir,
+            'total_records' => $total
+
+        )
+    );
+    echo json_encode($response);
+}
+
+
+
+
+function transactional_emails($_data, $db, $user) {
+
+    $rtext_label = 'newsletter';
+
+
+    include_once 'prepare_table/init.php';
+
+
+    $sql = "select $fields from $table $where $wheref order by $order $order_direction limit $start_from,$number_results";
+
+    //print $sql;
+
+    $adata = array();
+
+
+    foreach ($db->query($sql) as $data) {
+
+
+        $name = sprintf('<span class="link" onClick="change_view(\'newsletters/%d/%d\')">%s</span>', $data['Email Campaign Store Key'], $data['Email Campaign Key'], $data['Email Campaign Name']);
+
+
+
+
+        $adata[] = array(
+            'id'   => (integer)$data['Email Campaign Key'],
+            'date' => strftime("%a %e %b %Y", strtotime($data['Email Campaign Last Updated Date'].' +0:00')),
+
+
+            'name'   => $name,
             'emails' => number($data['Email Campaign Number Estimated Emails']),
 
 

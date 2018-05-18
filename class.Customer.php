@@ -454,7 +454,7 @@ class Customer extends Subject {
                 return nl2br($this->data['Customer Sticky Note']);
                 break;
             case('Account Balance'):
-
+            case 'Invoiced Net Amount':
                 if (is_object($arg1)) {
                     $store = $arg1;
                 } else {
@@ -467,7 +467,15 @@ class Customer extends Subject {
                 break;
             case('Total Net Per Order'):
                 if ($this->data['Customer Orders Invoiced'] > 0) {
-                    return money($this->data['Customer Net Balance'] / $this->data['Customer Orders Invoiced'], $this->data['Customer Currency Code']);
+
+                    if (is_object($arg1)) {
+                        $store = $arg1;
+                    } else {
+                        $store = get_object('Store', $this->data['Customer Store Key']);
+                    }
+
+
+                    return money($this->data['Customer Invoiced Net Amount'] / $this->data['Customer Orders Invoiced'], $store->data['Store Currency Code']);
                 } else {
                     return _('ND');
                 }
@@ -2777,9 +2785,9 @@ class Customer extends Subject {
 
 
         $sql = sprintf(
-            "SELECT count(*) AS customers FROM `Customer Dimension` USE INDEX (`Customer Net Balance`) WHERE `Customer Store Key`=%d AND `Customer Net Balance`<%f", $this->data['Customer Store Key'],
+            "SELECT count(*) AS customers FROM `Customer Dimension` USE INDEX (`Customer Invoiced Net Amount`) WHERE `Customer Store Key`=%d AND `Customer Invoiced Net Amount`<%f", $this->data['Customer Store Key'],
 
-            $this->data['Customer Net Balance']
+            $this->data['Customer Invoiced Net Amount']
         );
 
         if ($result = $this->db->query($sql)) {

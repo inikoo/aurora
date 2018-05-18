@@ -20,7 +20,7 @@ function get_deal_showcase($data, $smarty) {
 
     $deal->update_usage();
     $deal->update_number_components();
-    $deal->update_term_allowances();
+   // $deal->update_term_allowances();
 
 
 

@@ -40,6 +40,8 @@ className: "width_20"
 {
 name: "target",
 label: "{t}Target{/t}",
+editable: false,
+
 sortType: "toggle",
 cell: Backgrid.HtmlCell.extend({
 
@@ -50,6 +52,8 @@ cell: Backgrid.HtmlCell.extend({
 {
 name: "description",
 label: "{t}Description{/t}",
+editable: false,
+
 sortType: "toggle",
 cell: Backgrid.HtmlCell.extend({
 

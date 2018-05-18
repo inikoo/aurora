@@ -252,12 +252,18 @@ class Public_Webpage {
                     $navigation_data = json_decode($this->data['Webpage '.$key], true);
                 }
 
+
+
+
+
                // print_r(json_decode($this->data['Webpage '.$key], true));
 
                // exit('caca');
 
                 return $navigation_data;
                 break;
+
+
 
             case 'Discounts':
 
@@ -318,7 +324,7 @@ class Public_Webpage {
 
                         if(count($categories)>0){
                             $sql = sprintf(
-                                "SELECT `Deal Component Key`,`Deal Component Icon`,`Deal Component Name Label`,`Deal Component Term Label`,`Deal Component Allowance Label` FROM `Deal Component Dimension` WHERE `Deal Component Allowance Target`='Category' AND `Deal Component Allowance Target Key` in (%s) AND `Deal Component Status`='Active'",
+                                "SELECT `Deal Component Expiration Date`,`Deal Component Key`,`Deal Component Icon`,`Deal Component Name Label`,`Deal Component Term Label`,`Deal Component Allowance Label` FROM `Deal Component Dimension` WHERE `Deal Component Allowance Target`='Category' AND `Deal Component Allowance Target Key` in (%s) AND `Deal Component Status`='Active'",
                                 join($categories,',')
                             );
 
@@ -329,6 +335,8 @@ class Public_Webpage {
                                         'key'=>$row['Deal Component Key'],
                                         'icon'=>$row['Deal Component Icon'],
                                         'name'=>$row['Deal Component Name Label'],
+                                        'until'=>$row['Deal Component Expiration Date'],
+                                        'until_formatted'=>  strftime("%a %e %b %Y", strtotime($row['Deal Component Expiration Date'].' +0:00')),
                                         'term'=>$row['Deal Component Term Label'],
                                         'allowance'=>$row['Deal Component Allowance Label']
                                     );
