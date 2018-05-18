@@ -45,7 +45,7 @@
                             <span class="code">{$item.code}</span>
 
 
-                            <div class="name item_name {if $item.name|strlen > 40}small{elseif $item.name|strlen > 60} very_small{/if} ">{$item.name}</div>
+                            <div class="name item_name {if $item.name|strlen > 50}small{elseif $item.name|strlen > 60} very_small{/if} ">{$item.name}</div>
 
                         </div>
                         {if $logged_in}
