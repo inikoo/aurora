@@ -436,9 +436,13 @@ class Deal extends DB_Table {
             case 'Component Allowance Label':
 
                 $deal_components = $this->get_deal_components('objects');
-                $deal_component  = array_pop($deal_components);
+                 if(count($deal_components)>0) {
+                     $deal_component = array_pop($deal_components);
 
-                return $deal_component->get('Deal Component Allowance Label');
+                     return $deal_component->get('Deal Component Allowance Label');
+                 }else{
+                     return '';
+                 }
                 break;
 
             case 'Deal Component Allowance':
@@ -453,9 +457,15 @@ class Deal extends DB_Table {
             case 'Component Allowance Percentage':
 
                 $deal_components = $this->get_deal_components('objects');
-                $deal_component  = array_pop($deal_components);
 
-                return percentage($deal_component->get('Deal Component Allowance'), 1, 0);
+                if(count($deal_components)>0){
+                    $deal_component  = array_pop($deal_components);
+
+                    return percentage($deal_component->get('Deal Component Allowance'), 1, 0);
+                }else{
+                    return '';
+                }
+
                 break;
 
             case 'Component Allowance':
@@ -979,17 +989,29 @@ class Deal extends DB_Table {
     function update_status($value = '') {
 
 
+
+
+
         if ($value == 'Suspended') {
 
 
             $this->update_field('Deal Status', $value);
 
+
+
+
         } else {
 
 
             $this->update_status_from_dates($force = true);
-        }
 
+
+        }
+        foreach($this->get_deal_components('objects','all') as $component){
+
+
+            $component->update(array('Deal Component Status'=>$value),'no_history');
+        }
 
     }
 
