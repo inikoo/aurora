@@ -770,6 +770,20 @@
 
         $('.discount_card').each(function (i, obj) {
 
+
+            $('.website_localized_label', obj).each(function (i, obj2) {
+
+
+
+
+
+                    labels[$(obj2).attr('id')] = $(obj2).html()
+
+
+
+
+            })
+
             discounts_data[$(obj).data('key')]={
                 'name':$(obj).find('.discount_name').html(),
                 'term':$(obj).find('.discount_term').html(),
@@ -777,6 +791,9 @@
 
             }
         })
+
+
+        console.log(labels)
 
 
 
@@ -1958,7 +1975,7 @@
 
         content_data.blocks = blocks
 
-        console.log(content_data)
+        console.log(labels)
 
       // return;
 
