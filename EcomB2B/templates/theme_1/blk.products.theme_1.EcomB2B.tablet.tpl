@@ -58,7 +58,7 @@
                         </div>
                     {else}
                         <div class="product_prices  " style="font-size: 14px;padding:0px 4px">
-                            <div class="product_price">{if empty($labels._login_to_see)}{t}For prices, please login or register{/t}{else}{$labels._login_to_see}{/if}</div>
+                            <div class="product_price"><small>{if empty($labels._login_to_see)}{t}For prices, please login or register{/t}{else}{$labels._login_to_see}{/if}</small></div>
 
                         </div>
                     {/if}
