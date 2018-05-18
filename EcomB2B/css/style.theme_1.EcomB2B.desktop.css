@@ -1509,10 +1509,10 @@ small {
   font-size: smaller; }
 
 .small {
-  font-size: small; }
+  font-size: 90%; }
 
 .very_small {
-  font-size: x-small; }
+  font-size: 80%; }
 
 .navigation {
   width: 100%;
