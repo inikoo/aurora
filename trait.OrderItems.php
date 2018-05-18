@@ -559,7 +559,7 @@ LEFT JOIN `Product History Dimension` PHD ON (OTF.`Product Key`=PHD.`Product Key
 
                 $items[] = array(
                     'code'        => sprintf('<a href="/%s">%s</a>',strtolower($row['Product Code']) ,$row['Product Code']),
-                    'code_description' => '<b>'.$row['Product Code'].'</b> '.$row['Product History Units Per Case'].'x '.$row['Product History Name'],
+                    'code_description' => '<b>'.$row['Product Code'].'</b> '.$row['Product History Units Per Case'].'x '.$row['Product History Name'].$deal_info.$out_of_stock_info,
                     'description' => $row['Product History Units Per Case'].'x '.$row['Product History Name'].$deal_info.$out_of_stock_info,
                     'qty'         => number($row['Order Quantity']),
                     'qty_raw'         => $row['Order Quantity']+0,
