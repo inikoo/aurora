@@ -80,7 +80,7 @@
 
         {if $logged_in}
             <div class="store-product-rating half-top">
-                <h2>{t}Price{/t}: {$product->get('Price')}</h2>
+                <h2>{t}Price{/t}: {$product->get('Price')} <span style="font-size:80%">{$product->get('Price Per Unit')}</span></h2>
                 {if $product->get('RRP')!=''}<span>{t}RRP{/t}: {$product->get('RRP')}</span>{/if}
             </div>
 

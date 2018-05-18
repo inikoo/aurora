@@ -67,7 +67,7 @@
 
                 {if $logged_in}
                 <div class="product_prices log_in " style="margin-left:0px;padding-left:0px;font-size: 120%;width:250px">
-                    <div class="product_price">{if empty($labels._product_price)}{t}Price{/t}{else}{$labels._product_price}{/if}: {$product->get('Price')}</div>
+                    <div class="product_price">{if empty($labels._product_price)}{t}Price{/t}{else}{$labels._product_price}{/if}: {$product->get('Price')} <small>{$product->get('Price Per Unit')}</small></div>
                     {assign 'rrp' $product->get('RRP')}
                     {if $rrp!=''}
                         <div style="margin-top:4px">{if empty($labels._product_rrp)}{t}RRP{/t}{else}{$labels._product_rrp}{/if}: {$rrp}</div>{/if}

@@ -79,14 +79,20 @@
             <div class="ordering-container  log_in" style="display: flex;margin-top:40px;">
 
                 <div class="product_prices log_in " style="margin-left:0px;padding-left:0px;font-size: 120%;width:250px">
-                    <div class="product_price">{if empty($labels._product_price)}{t}Price{/t}{else}{$labels._product_price}{/if}: {$product->get('Price')}</div>
+                    <div class="product_price">{if empty($labels._product_price)}{t}Price{/t}{else}{$labels._product_price}{/if}: {$product->get('Price')} <small>{$product->get('Price Per Unit')}</small>   </div>
+
+
+
+
+
+
                     {assign 'rrp' $product->get('RRP')}
                     {if $rrp!=''}
                         <div style="margin-top:4px">{if empty($labels._product_rrp)}{t}RRP{/t}{else}{$labels._product_rrp}{/if}: {$rrp}</div>{/if}
                 </div>
 
                 <div style="margin-left:10px;">
-                    <div class="product_order  ">
+                    <div class="order_row empty   ">
                         <input maxlength=6 class='order_input ' type="text" size='2' value='' ovalue=''>
                         <span class="order_button">
                             <i class="fa fa-hand-pointer" aria-hidden="true"></i> {if empty($labels._ordering_order_now)}{t}Order now{/t}{else}{$labels._ordering_order_now}{/if}

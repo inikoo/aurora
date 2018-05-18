@@ -98,9 +98,13 @@
                     <div class="decoration half-bottom full-top"></div>
 
                     {if $logged_in}
-                        <div class="store-product-rating half-top">
-                            <h2>{t}Price{/t}: {$product->get('Price')}</h2>
-                            {if $product->get('RRP')!=''}<span>{t}RRP{/t}: {$product->get('RRP')}</span>{/if}
+                        <div class="container">
+                            <div class="product_prices log_in " style="margin-left:0px;padding-left:0px;font-size: 140%;">
+                                <div class="product_price">{if empty($labels._product_price)}{t}Price{/t}{else}{$labels._product_price}{/if}: {$product->get('Price')} <span style="font-size: 90%">{$product->get('Price Per Unit')}</span></div>
+                                {assign 'rrp' $product->get('RRP')}
+                                {if $rrp!=''}
+                                    <div style="margin-top:4px">{if empty($labels._product_rrp)}{t}RRP{/t}{else}{$labels._product_rrp}{/if}: {$rrp}</div>{/if}
+                            </div>
                         </div>
                     {else}
                         <div class="container">

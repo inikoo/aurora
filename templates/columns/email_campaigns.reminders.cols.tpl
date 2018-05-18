@@ -37,8 +37,8 @@ cell: Backgrid.HtmlCell.extend({ className: "aright"} ),
 headerCell: integerHeaderCell
 },
 {
-name: "open",
-label: "{t}Open{/t}",
+name: "send",
+label: "{t}Emails send{/t}",
 editable: false,
 defaultOrder:1,
 sortType: "toggle",
@@ -47,32 +47,22 @@ cell: Backgrid.HtmlCell.extend({ className: "aright"} ),
 headerCell: integerHeaderCell
 },
 {
-name: "read",
-label: "{t}Read{/t}",
+name: "open",
+label: "{t}Open rate{/t}",
 editable: false,
 defaultOrder:1,
 sortType: "toggle",
-{if $sort_key=='read'}direction: '{if $sort_order==1}descending{else}ascending{/if}',{/if}
+{if $sort_key=='open'}direction: '{if $sort_order==1}descending{else}ascending{/if}',{/if}
 cell: Backgrid.HtmlCell.extend({ className: "aright"} ),
 headerCell: integerHeaderCell
 },
 {
-name: "revived",
-label: "{t}Revived{/t}",
+name: "clicked",
+label: "{t}Click rate{/t}",
 editable: false,
 defaultOrder:1,
 sortType: "toggle",
-{if $sort_key=='revived'}direction: '{if $sort_order==1}descending{else}ascending{/if}',{/if}
-cell: Backgrid.HtmlCell.extend({ className: "aright"} ),
-headerCell: integerHeaderCell
-},
-{
-name: "ordered",
-label: "{t}Ordered{/t}",
-editable: false,
-defaultOrder:1,
-sortType: "toggle",
-{if $sort_key=='ordered'}direction: '{if $sort_order==1}descending{else}ascending{/if}',{/if}
+{if $sort_key=='clicked'}direction: '{if $sort_order==1}descending{else}ascending{/if}',{/if}
 cell: Backgrid.HtmlCell.extend({ className: "aright"} ),
 headerCell: integerHeaderCell
 }
