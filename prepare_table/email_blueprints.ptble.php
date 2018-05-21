@@ -17,26 +17,13 @@ $fields = "`Email Blueprint Name`,`Email Blueprint Created`,`Email Blueprint Key
 switch ($parameters['parent']) {
 
     case 'EmailCampaign':
+    case 'EmailCampaignType':
     case 'Webpage':
         $where = sprintf(
             " where `Email Blueprint Scope`=%s and `Email Blueprint Scope Key`=%d", prepare_mysql($parameters['parent']),$parameters['parent_key']
         );
         break;
-    case 'product':
-        $where = sprintf(
-            " where `Email Blueprint Subject Object`='Product' and `Email Blueprint Subject Object Key`=%d", $parameters['parent_key']
-        );
-        break;
-    case 'employee':
-        $where = sprintf(
-            " where `Email Blueprint Subject Object`='Staff' and `Email Blueprint Subject Object Key`=%d", $parameters['parent_key']
-        );
-        break;
-    case 'category':
-        $where = sprintf(
-            " where `Email Blueprint Subject Object`='Category' and `Email Blueprint Subject Object Key`=%d", $parameters['parent_key']
-        );
-        break;
+
     case 'account':
         // $table='`Email Blueprint Dimension` I ';
         $where = ' where true';

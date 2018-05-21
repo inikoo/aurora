@@ -55,6 +55,13 @@ $email_templates_data = array(
         'subject' => _('Newsletter'),
         'sender'  => 'Store'
 
+    ),
+    'OOS Notification'      => array(
+        'key'     => 'OOS Notification',
+        'name'    => _('Out of stock notification'),
+        'subject' => _('Back in stock'),
+        'sender'  => 'Store'
+
     )
 
 

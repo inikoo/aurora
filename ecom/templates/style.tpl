@@ -1,11 +1,5 @@
    <style>
 
-
-
-          .ui-resizable-handle, .ui-resizable-e{
-                 display:none
-          }
-
           .sim_button{
                  cursor:pointer;
 
@@ -208,7 +202,7 @@ h1{
      }
      .product_block{
          width:218px;
-         height:318px;
+         height:333px;
          margin-bottom:20px;   float:left
      }
 

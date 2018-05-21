@@ -408,14 +408,7 @@ $modules = array(
                         'label' => _('Reminders'),
                         'icon'=>'bell'
                     ),
-                    'email_campaigns.abandoned_basket'     => array(
-                        'label' => _('Abandoned cart'),
-                        'icon'=>'shopping-basket'
-                    ),
-                    'email_campaigns.back_in_stock' => array(
-                        'label' => _('Back in stock'),
-                        'icon'=>'person-dolly'
-                    ),
+
                     'email_campaigns.transactional' => array(
                         'label' => _('Transactional'),
                         'icon'=>'location-arrow'
@@ -442,6 +435,35 @@ $modules = array(
                 )
             ),
 
+
+            'email_campaign_type'=> array(
+                'type' => 'object',
+                'tabs' => array(
+                    'email_campaign_type.details'   => array(
+                        'label' => _('Data'),
+                        'icon'  => 'database',
+                        'title' => _('Details')
+                  ),
+
+                    'email_campaign_type.email_template'   => array(
+                        'label' => _('Email template'),
+                        'icon'  => 'envelope'
+                    ),
+
+                    'email_campaign_type.mailshots' => array(
+                        'label' => _('Mailshots'),
+                        'icon'  => 'paper-plane'
+                    ),
+
+                    'email_campaign_type.history' => array(
+                        'title' => _('History'),
+                        'label' => '',
+                        'icon'  => 'road',
+                        'class' => 'right icon_only'
+                    ),
+
+                )
+            ),
 
             'newsletter' => array(
                 'type' => 'object',

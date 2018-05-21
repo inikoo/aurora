@@ -22,7 +22,25 @@
 
 
 
+
+
 	<div id="product_bd" style="padding:5px 20px 0px 20px;clear:both;" class="product_container" product_id="{$public_product->id}" >
+
+ 
+                        {assign 'parent_family'  $public_product->get_parent_category('data') }
+ 
+                        <div style="position: relative;top:-10px;width: 200px;">
+                            {if $parent_family}
+                                <a style="" href= '/{$parent_family.webpage_code}' class="like_button padding_right_5" title="{$parent_family.code}  {$parent_family.label}">
+                                     <b>{$parent_family.label}</b>
+                                </a>
+                               
+
+                            {/if}
+
+                            
+                        </div>
+   
 
 
         {if $public_product->get('Status')=='Discontinued' }

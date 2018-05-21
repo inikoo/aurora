@@ -1848,6 +1848,25 @@ function parse_request($_data, $db, $modules, $account = '', $user = '', $is_set
                         }elseif ($view_path[0] == 'email_campaigns') {
                             $section = 'email_campaigns';
 
+                        }elseif ($view_path[0] == 'email_campaign_type') {
+
+
+                            $section = 'email_campaign_type';
+                            $object = 'email_campaign_type';
+                            if (isset($view_path[1])) {
+
+
+                                if (is_numeric($view_path[1])) {
+
+                                    $key=$view_path[1];
+                                }
+
+
+
+                            }
+
+
+
                         } elseif ($view_path[0] == 'insights') {
                             $section = 'insights';
 

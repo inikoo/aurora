@@ -18,11 +18,11 @@ renderable: false
 },
 
 {
-name: "type",
-label: "{t}Type{/t}",
+name: "name",
+label: "{t}Scope{/t}",
 editable: false,
 sortType: "toggle",
-{if $sort_key=='type'}direction: '{if $sort_order==1}descending{else}ascending{/if}',{/if}
+{if $sort_key=='name'}direction: '{if $sort_order==1}descending{else}ascending{/if}',{/if}
 
 cell: Backgrid.HtmlCell.extend({
 })

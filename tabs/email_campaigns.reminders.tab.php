@@ -19,7 +19,7 @@ $default = $user->get_tab_defaults($tab);
 $table_views = array();
 
 $table_filters = array(
-    'id' => array('label' => _('Id')),
+   // 'id' => array('label' => _('Id')),
 
 );
 

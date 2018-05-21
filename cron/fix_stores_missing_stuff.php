@@ -30,8 +30,37 @@ $editor = array(
 );
 
 
+$email_campaign_types = array(
+    'Newsletter',
+    'Marketing',
+    'GR Reminder',
+    'AbandonedCart',
+    'OOS Notification',
+    'Registration',
+    'Password Reminder',
+    'Order Confirmation',
+    'Delivery Confirmation'
+);
 
-$sql='truncate `Payment Account Dimension`';
+$sql = sprintf("SELECT `Store Key` FROM `Store Dimension`");
+if ($result = $db->query($sql)) {
+    foreach ($result as $row) {
+        $store = new Store('id', $row['Store Key']);
+        foreach ($email_campaign_types as $email_campaign_type) {
+            $sql = sprintf(
+                'insert into `Email Campaign Type Dimension`  (`Email Campaign Type Store Key`,`Email Campaign Type Code`) values (%d,%s) ', $store->id, prepare_mysql($email_campaign_type)
+
+            );
+            print "$sql\n";
+            $db->exec($sql);
+        }
+    }
+}
+
+
+exit;
+
+$sql = 'truncate `Payment Account Dimension`';
 $db->exec($sql);
 
 
@@ -40,8 +69,8 @@ $braintree_service_provider = new Payment_Service_Provider('block', 'Btree');
 if ($braintree_service_provider->id) {
 
     $account_data = array(
-        'Payment Account Code'     => 'BTree',
-        'Payment Account Name'     => 'Braintree',
+        'Payment Account Code'  => 'BTree',
+        'Payment Account Name'  => 'Braintree',
         'Payment Account Block' => 'BTree',
 
     );
@@ -50,8 +79,8 @@ if ($braintree_service_provider->id) {
 
 
     $account_data = array(
-        'Payment Account Code'     => 'Paypal_BT',
-        'Payment Account Name'     => 'Paypal by Braintree',
+        'Payment Account Code'  => 'Paypal_BT',
+        'Payment Account Name'  => 'Paypal by Braintree',
         'Payment Account Block' => 'BTreePaypal',
     );
 
@@ -73,7 +102,6 @@ if ($paypal_service_provider->id) {
     $paypal_account = $paypal_service_provider->create_payment_account($account_data);
 
 }
-
 
 
 $bank_service_provider = new Payment_Service_Provider('block', 'Bank');
@@ -167,7 +195,6 @@ if ($result = $db->query($sql)) {
         $internal_payment_account->assign_to_store($data);
 
 
-
         $data['Show Cart Order'] = 3;
         $sofort_account->assign_to_store($data);
 
@@ -184,12 +211,11 @@ if ($result = $db->query($sql)) {
         $braintree_paypal_account->assign_to_store($data);
 
 
-        $data['Status']    = 'Inactive';
-        $data['Show In Cart']    = 'No';
+        $data['Status']       = 'Inactive';
+        $data['Show In Cart'] = 'No';
 
         $data['Show Cart Order'] = 2;
         $paypal_account->assign_to_store($data);
-
 
 
     }
