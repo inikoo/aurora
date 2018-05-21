@@ -1088,6 +1088,10 @@ function get_object_showcase($showcase, $data, $smarty, $user, $db, $account) {
             include_once 'showcase/list.show.php';
             $html = get_list_showcase($data, $smarty, $user, $db);
             break;
+        case 'email_campaign_type':
+            include_once 'showcase/email_campaign_type.show.php';
+            $html = get_email_campaign_type_showcase($data, $smarty, $user, $db);
+            break;
         default:
             $html = $data['object'].' -> '.$data['key'];
             break;
@@ -3730,6 +3734,7 @@ function get_view_position($db, $state, $user, $smarty, $account) {
             }
 
 
+
             switch ($state['section']) {
                 case 'list':
                     $list  = new SubjectList($state['key']);
@@ -3854,6 +3859,20 @@ function get_view_position($db, $state, $user, $smarty, $account) {
                         'icon'      => 'envelope',
                         'reference' => 'customers/'.$store->id.'/email_campaigns'
                     );
+                    break;
+                case 'email_campaign_type':
+                    $branch[] = array(
+                        'label'     => _("Reminders").' '.$store->data['Store Code'],
+                        'icon'      => 'bell',
+                        'reference' => 'customers/'.$store->id.'/email_campaigns/reminders'
+                    );
+
+                    $branch[] = array(
+                        'label'     => $state['_object']->get('Name'),
+                        'icon'      => '',
+                        'reference' => ''
+                    );
+
                     break;
 
                 case 'newsletter':

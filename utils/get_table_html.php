@@ -128,10 +128,18 @@ if (isset($parameters['period'])) {
 
 }
 
-$smarty->assign('f_field', $parameters['f_field']);
-$smarty->assign(
-    'f_label', ($parameters['f_field'] ? $table_filters[$parameters['f_field']]['label'] : '')
-);
+
+if(isset($parameters['f_field'])){
+    $smarty->assign('f_field', $parameters['f_field']);
+    $smarty->assign(
+        'f_label', ($parameters['f_field'] ? $table_filters[$parameters['f_field']]['label'] : '')
+    );
+
+}else{
+    $smarty->assign('f_field', '');
+    $smarty->assign('f_label','');
+}
+
 
 $smarty->assign('f_options', $table_filters);
 

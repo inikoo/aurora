@@ -376,6 +376,8 @@
         </div>
     </div>
 
+
+    {if  isset($parameters['f_field'])}
     <div id="filter_container" class="">
         <div id="show_filter" onclick="show_filter()" class="square_button right " title="{t}Filter table{/t}" style="border-left:1px solid #aaa">
             <i class="fa fa-filter fa-fw"></i>
@@ -398,6 +400,8 @@
 
 
     </div>
+    {/if}
+
 
     <div id="table_buttons" ">
 
@@ -891,7 +895,7 @@
             // if (resp.resultset.total_records > 20) {
             //     $('#results_per_page').removeClass('hide')
             // }
-            if (total_pages > 1 && '{$f_label}' != '') {
+            if (total_pages > 1 && '{if isset($f_label)}{$f_label}{/if}' != '') {
                 $('#filter_container').removeClass('hide')
             }
 

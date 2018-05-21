@@ -47,6 +47,9 @@ switch ($tipo) {
     case 'deals':
         deals(get_table_parameters(), $db, $user);
         break;
+    case 'reminders':
+        reminders(get_table_parameters(), $db, $user);
+        break;
     case 'campaign_bulk_deals':
         campaign_bulk_deals(get_table_parameters(), $db, $user);
         break;
@@ -889,6 +892,87 @@ function newsletters($_data, $db, $user) {
 }
 
 
+
+function reminders($_data, $db, $user) {
+
+    $rtext_label = 'scope';
+
+
+    include_once 'prepare_table/init.php';
+
+
+    $sql = "select $fields from $table $where $wheref order by $order $order_direction limit $start_from,$number_results";
+
+    //print $sql;
+
+    $adata = array();
+
+
+    foreach ($db->query($sql) as $data) {
+
+//'Newsletter','Marketing','GR Reminder','AbandonedCart','OOS Notification','Registration','Password Reminder','Order Confirmation','Delivery Confirmation'
+        switch ($data['Email Campaign Type Code']){
+            case 'Newsletter':
+                $name=_('Newsletter');
+                break;
+            case 'Marketing':
+                $name=_('Mailshot');
+                break;
+            case 'AbandonedCart':
+                $name=_('Abandoned cart');
+                break;
+            case 'OOS Notification':
+                $name=_('Out of stock notification');
+                break;
+            case 'Registration':
+                $name=_('Welcome');
+                break;
+            case 'Password Reminder':
+                $name=_('Password reset');
+                break;
+            case 'Order Confirmation':
+                $name=_('order confirmation');
+                break;
+            case 'GR Reminder':
+                $name=_('Reorder reminder');
+                break;
+            default:
+                $name=$data['Email Campaign Type Code'];
+
+
+        }
+
+
+        $name = sprintf('<span class="link" onClick="change_view(\'customers/%d/email_campaign_type/%d/\')">%s</span>', $data['Email Campaign Type Store Key'], $data['Email Campaign Type Key'], $name);
+
+
+
+
+        $adata[] = array(
+            'id'   => (integer)$data['Email Campaign Type Key'],
+
+
+            'name'   => $name,
+            'mailshots' => number($data['Email Campaign Type Mailshots']),
+
+
+        );
+
+    }
+
+    $response = array(
+        'resultset' => array(
+            'state'         => 200,
+            'data'          => $adata,
+            'rtext'         => $rtext,
+            'sort_key'      => $_order,
+            'sort_dir'      => $_dir,
+            'total_records' => $total
+
+        )
+    );
+    echo json_encode($response);
+}
 
 
 function transactional_emails($_data, $db, $user) {

@@ -158,11 +158,11 @@ $tab_defaults = array(
     ),
     'email_campaigns.reminders' => array(
         'view'        => 'overview',
-        'sort_key'    => 'id',
+        'sort_key'    => 'name',
         'sort_order'  => 1,
         'rpp'         => 500,
         'rpp_options' => $default_rrp_options,
-        'f_field'     => 'id',
+
     ),
     'email_campaigns.abandoned_basket' => array(
         'view'        => 'overview',
