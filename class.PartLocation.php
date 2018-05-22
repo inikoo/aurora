@@ -1160,13 +1160,21 @@ class PartLocation extends DB_Table {
     }
 
     function add_stock($data, $date) {
+
+        $stock_transfer_data= array(
+            'Quantity'         => $data['Quantity'],
+            'Transaction Type' => 'In',
+            'Destination'      => $this->location_key,
+            'Origin'           => $data['Origin']
+        );
+
+        if(isset($data['Amount'])){
+            $stock_transfer_data['Amount']=$data['Amount'];
+        }
+
+
         $transaction_id = $this->stock_transfer(
-            array(
-                'Quantity'         => $data['Quantity'],
-                'Transaction Type' => 'In',
-                'Destination'      => $this->location_key,
-                'Origin'           => $data['Origin']
-            ), $date
+            $stock_transfer_data, $date
         );
 
         if (!$transaction_id) {
@@ -1199,7 +1207,15 @@ class PartLocation extends DB_Table {
         $transaction_type = $data['Transaction Type'];
 
 
-        $value_change = $this->part->get('Part Cost in Warehouse') * $qty_change;
+        if(isset( $data['Amount'])){
+            $value_change=$data['Amount'];
+        }else{
+            $value_change = $this->part->get('Part Cost in Warehouse') * $qty_change;
+
+        }
+
+
+       // print "qyy $qty_change  value  $value_change ";
 
         $sql = sprintf(
             "UPDATE `Part Location Dimension` SET `Quantity On Hand`=%f ,`Stock Value`=%.3f, `Last Updated`=NOW()  WHERE `Part SKU`=%d AND `Location Key`=%d ", $this->data['Quantity On Hand'] + $qty_change,
@@ -1243,38 +1259,7 @@ class PartLocation extends DB_Table {
 
                 break;
 
-           /*
-            case('Broken'):
-                $record_type = 'Movement';
-                $section     = 'Out';
-                $tmp         = $data['Reason'].', '.$data['Action'];
-                $tmp         = preg_replace('/, $/', '', $tmp);
-                if (preg_match('/^\s*,\s*$/', $tmp)) {
-                    $tmp = '';
-                } else {
-                    $tmp = ' '.$tmp;
-                }
-                $details =
-                    number(-$qty_change).'x '.'<a href="part.php?sku='.$this->part_sku.'">'.$this->part->id.'</a>'.' '._('broken').' <a href="location.php?id='.$this->location->id.'">'.$this->location->data['Location Code'].'</a>'.$tmp.': '.($qty_change > 0 ? '+' : '')
-                    .number($qty_change).' ('.($value_change > 0 ? '+' : '').money($value_change).')';
-                break;
 
-            case('Other Out'):
-                $record_type = 'Movement';
-                $section     = 'Out';
-                $tmp         = $data['Reason'].', '.$data['Action'];
-                $tmp         = preg_replace('/, $/', '', $tmp);
-                if (preg_match('/^\s*,\s*$/', $tmp)) {
-                    $tmp = '';
-                } else {
-                    $tmp = ' '.$tmp;
-                }
-                $details = number(-$qty_change).'x '.'<a href="part.php?sku='.$this->part_sku.'">'.$this->part->id.'</a>'.' '._(
-                        'stock out (other)'
-                    ).' <a href="location.php?id='.$this->location->id.'">'.$this->location->data['Location Code'].'</a>'.$tmp.': '.($qty_change > 0 ? '+' : '').number($qty_change).' ('.($value_change > 0 ? '+' : '').money($value_change).')';
-                break;
-
-  */
             case('Move Out'):
                 $record_type          = 'Helper';
                 $section              = 'Other';

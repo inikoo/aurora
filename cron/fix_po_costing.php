@@ -61,16 +61,7 @@ if ($result = $db->query($sql)) {
         }
 
 
-        $sql = sprintf(
-            'update `Purchase Order Transaction Fact` set  `Supplier Delivery Exchange Rate`=%f,`Supplier Delivery Paid Amount`=%.2f  where `Purchase Order Transaction Fact Key`=%d '
-            , $exchange, $amount * $exchange, $row['Purchase Order Transaction Fact Key']
 
-
-        );
-
-        print "$sql\n";
-
-        $db->exec($sql);
 
 
         //print 'X '.$amount * $exchange."\n";

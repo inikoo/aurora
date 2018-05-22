@@ -201,7 +201,7 @@ switch ($tipo) {
         );
 
 
-        update_itf_amount($account, $db, $user, $editor, $data, $smarty);
+        itf_cost($account, $db, $user, $editor, $data, $smarty);
         break;
     case 'set_delivery_costing':
 
@@ -236,38 +236,90 @@ function set_delivery_costing($account, $db, $user, $editor, $data, $smarty) {
 
 
     $sql = sprintf(
-        'select `Supplier Part Part SKU`,count(*) as num , group_concat(`Purchase Order Transaction Fact Key`) as potf_keys  from `Purchase Order Transaction Fact`  POTF left join  `Supplier Part Dimension` SP on (POTF.`Supplier Part Key`=SP.`Supplier Part Key`) where `Supplier Delivery Key`=%d group by `Supplier Part Part SKU` ',
+        'select `Supplier Part Part SKU`,`Purchase Order Transaction Fact Key`,`Metadata` from `Purchase Order Transaction Fact`  POTF left join  `Supplier Part Dimension` SP on (POTF.`Supplier Part Key`=SP.`Supplier Part Key`) where `Supplier Delivery Key`=%d group by `Supplier Part Part SKU` ',
         $delivery->id
     );
     if ($result = $db->query($sql)) {
         foreach ($result as $row) {
 
+            $amount_paid=(($data['items_data'][$row['Supplier Part Part SKU']][0] + $data['items_data'][$row['Supplier Part Part SKU']][1]) / $data['exchange']) + $data['items_data'][$row['Supplier Part Part SKU']][2];
 
-           // print_r($row);
-
-            if ($row['num'] == 1) {
 
 
                 $sql = sprintf(
-                    'update `Purchase Order Transaction Fact` set `Supplier Delivery Net Amount`=%.2f ,`Supplier Delivery Extra Cost Amount`=%.2f, `Supplier Delivery Extra Cost Account Currency Amount`=%.2f , `Supplier Delivery Exchange Rate`=%f,`Supplier Delivery Paid Amount`=%.2f  where `Purchase Order Transaction Fact Key`=%d    ',
-                    $data['items_data'][$row['Supplier Part Part SKU']][0], $data['items_data'][$row['Supplier Part Part SKU']][1], $data['items_data'][$row['Supplier Part Part SKU']][2], $data['exchange'],
-                    (($data['items_data'][$row['Supplier Part Part SKU']][0] + $data['items_data'][$row['Supplier Part Part SKU']][1]) / $data['exchange']) + $data['items_data'][$row['Supplier Part Part SKU']][2],
+                    'update `Purchase Order Transaction Fact` set `Supplier Delivery Net Amount`=%.2f ,`Supplier Delivery Extra Cost Amount`=%.2f, `Supplier Delivery Extra Cost Account Currency Amount`=%.2f   where `Purchase Order Transaction Fact Key`=%d    ',
+                    $data['items_data'][$row['Supplier Part Part SKU']][0], $data['items_data'][$row['Supplier Part Part SKU']][1], $data['items_data'][$row['Supplier Part Part SKU']][2],
 
-                    $row['potf_keys']
+
+                    $row['Purchase Order Transaction Fact Key']
 
                 );
 
-                //print "$sql\n";
 
                 $db->exec($sql);
 
 
-            } else {
+
+            if($row['Metadata']!=''){
+                $metadata=json_decode($row['Metadata'],true);
+              //  print_r($metadata);
+
+                if(isset($metadata['placement_data'])){
 
 
-                exit('caca');
+                    $min_date='';
+                    $total_placed=0;
+                    foreach($metadata['placement_data'] as $placement_data){
+
+
+                        $sql=sprintf('select `Date` from `Inventory Transaction Fact`    where `Inventory Transaction Key`=%d' , $placement_data['oif_key']);
+
+                        if ($result2=$db->query($sql)) {
+                        		foreach ($result2 as $row2) {
+                                    $date=gmdate('U',strtotime($row2['Date']));
+                                    if($min_date==''){
+                                        $min_date=$date;
+
+                                    }elseif($date<$min_date){
+                                        $min_date=$date;
+                                    }
+                        		}
+                        }else {
+                        		print_r($error_info=$db->errorInfo());
+                        		print "$sql\n";
+                        		exit;
+                        }
+
+
+                        $total_placed+= $placement_data['qty'];
+
+
+
+
+                    }
+
+                    if($total_placed>0){
+                        foreach($metadata['placement_data'] as $placement_data){
+                            $sql=sprintf('update `Inventory Transaction Fact`  set `Inventory Transaction Amount`=%f   where `Inventory Transaction Key`=%d',
+                                         $amount_paid*$placement_data['qty']/$total_placed,
+                                         $placement_data['oif_key']
+                            );
+                            $db->exec($sql);
+
+                        }
+                    }
+
+                }
 
             }
+
+
+           // print ($min_date!=''?gmdate('Y-m-d',$min_date):'');
+
+            $part=get_object('Part',$row['Supplier Part Part SKU']);
+            $part->update_stock_run();
+            $part->redo_inventory_snapshot_fact(($min_date!=''?gmdate('Y-m-d',$min_date):''));
+
 
 
         }
@@ -278,12 +330,11 @@ function set_delivery_costing($account, $db, $user, $editor, $data, $smarty) {
     }
 
     $delivery->fast_update(
-        array('Supplier Delivery Currency Exchange'=>1/$data['exchange'])
+        array('Supplier Delivery Currency Exchange' => 1 / $data['exchange'])
     );
 
 
     $delivery->update_totals();
-
 
 
     $response = array(
@@ -597,7 +648,8 @@ function place_part($account, $db, $user, $editor, $data, $smarty) {
 
 
     $sql = sprintf(
-        'SELECT `Part Units Per Package`,`Supplier Part Unit Extra Cost`,`Supplier Part Unit Cost`,`Supplier Part Currency Code`,POTF.`Currency Code`,SP.`Supplier Part Key`,`Supplier Part Unit Extra Cost Percentage`,`Supplier Delivery Quantity`,`Supplier Delivery Net Amount`,`Purchase Order Transaction Fact Key`,`Supplier Delivery Checked Quantity`,`Supplier Delivery Placed Quantity` ,`Supplier Part Packages Per Carton` FROM	  `Purchase Order Transaction Fact` POTF
+        'SELECT `Supplier Delivery Extra Cost Amount`,`Supplier Delivery Extra Cost Account Currency Amount`,`Supplier Delivery Key`,`Part Units Per Package`,`Supplier Part Unit Extra Cost`,`Supplier Part Unit Cost`,`Supplier Part Currency Code`,POTF.`Currency Code`,SP.`Supplier Part Key`,`Supplier Part Unit Extra Cost Percentage`,`Supplier Delivery Quantity`,`Supplier Delivery Net Amount`,`Purchase Order Transaction Fact Key`,`Supplier Delivery Checked Quantity`,`Supplier Delivery Placed Quantity` ,`Supplier Part Packages Per Carton` FROM	
+  `Purchase Order Transaction Fact` POTF
 LEFT JOIN `Supplier Part Historic Dimension` SPH ON (POTF.`Supplier Part Historic Key`=SPH.`Supplier Part Historic Key`)
  LEFT JOIN  `Supplier Part Dimension` SP ON (POTF.`Supplier Part Key`=SP.`Supplier Part Key`)
   LEFT JOIN  `Part Dimension` P ON (`Part SKU`=SP.`Supplier Part Part SKU`)
@@ -616,44 +668,13 @@ LEFT JOIN `Supplier Part Historic Dimension` SPH ON (POTF.`Supplier Part Histori
             }
 
 
-            // here the magic happens for the update of Part Cost in Warehouse !!!
-
-
-            if ($row['Supplier Part Currency Code'] != $account->get('Account Currency')) {
-                include_once 'utils/currency_functions.php';
-                $exchange = currency_conversion(
-                    $db, $row['Supplier Part Currency Code'], $account->get('Account Currency'), '- 15 minutes'
-                );
-
-            } else {
-                $exchange = 1;
-            }
-
-            $cost = $row['Part Units Per Package'] * $exchange * ($row['Supplier Part Unit Cost'] + $row['Supplier Part Unit Extra Cost']);
-
-
             $part = get_object('part', $data['part_sku']);
 
             $old_value = $part->get('Part Cost in Warehouse');
-            $part->update(array('Part Cost in Warehouse' => $cost), 'no_history');
-            $part->editor = $editor;
 
 
-            if ($old_value != $part->get('Part Cost in Warehouse')) {
 
 
-                $history_data = array(
-                    'Action'           => 'edited',
-                    'History Abstract' => sprintf(
-                        _('Part stock value changed to %s following %s policy after received from supplier delivery %s'), $part->get('Cost in Warehouse only'), '<span class="italic">'._('Last delivery cost set stock value').'</span>', $origin
-                    ),
-                    'History Details'  => ''
-                );
-                $part->add_subject_history(
-                    $history_data, true, 'No', 'Changes', $part->get_object_name(), $part->id
-                );
-
-            }
             $part_location         = new PartLocation('find', $part_location_data, 'create');
             $part_location->editor = $editor;
             if (!$part_location) {
@@ -663,96 +684,143 @@ LEFT JOIN `Supplier Part Historic Dimension` SPH ON (POTF.`Supplier Part Histori
                 );
                 echo json_encode($response);
                 exit;
-            } else {
+            }
 
 
-                if (round($data['qty'] / $row['Supplier Part Packages Per Carton'], 2) > round($row['Supplier Delivery Checked Quantity'] - $row['Supplier Delivery Placed Quantity'], 2)) {
-                    $response = array(
-                        'state' => 400,
-                        'msg'   => _('Placement quantity greater than the checked quantity')
+            if (round($data['qty'] / $row['Supplier Part Packages Per Carton'], 2) > round($row['Supplier Delivery Checked Quantity'] - $row['Supplier Delivery Placed Quantity'], 2)) {
+                $response = array(
+                    'state' => 400,
+                    'msg'   => _('Placement quantity greater than the checked quantity')
+                );
+                echo json_encode($response);
+                exit;
+            }
+
+
+            $exchange = $object->get('Supplier Delivery Currency Exchange');
+
+            $amount_per_sko = round( ( $exchange * ($row['Supplier Delivery Net Amount'] + $row['Supplier Delivery Extra Cost Amount'])    + $row['Supplier Delivery Extra Cost Account Currency Amount']) / $row['Supplier Delivery Quantity'],4);
+
+
+
+
+
+
+            if ($account->get('Account Add Stock Value Type') == 'Last Price') {
+
+
+
+                $part_location->part->update(array('Part Cost in Warehouse' => $amount_per_sko));
+
+                print  'xx:'.$amount_per_sko;
+
+                if ($old_value != $amount_per_sko) {
+
+
+                    $history_data = array(
+                        'Action'           => 'edited',
+                        'History Abstract' => sprintf(
+                            _('Part stock value changed to %s following %s policy after received from supplier delivery %s'), $part->get('Cost in Warehouse only'), '<span class="italic">'._('Last delivery cost set stock value').'</span>', $origin
+                        ),
+                        'History Details'  => ''
                     );
-                    echo json_encode($response);
-                    exit;
+                    $part->add_subject_history(
+                        $history_data, true, 'No', 'Changes', $part->get_object_name(), $part->id
+                    );
+
                 }
 
 
-                $oif_key  = $part_location->add_stock(
+
+                $oif_key = $part_location->add_stock(
                     array(
                         'Quantity' => $data['qty'],
                         'Origin'   => $origin
                     ), gmdate('Y-m-d H:i:s')
                 );
-                $exchange = currency_conversion($db, $row['Currency Code'], $account->get('Account Currency'), '-  30 minutes');
 
-                $part_location->part->update(array('Part Cost in Warehouse' => $exchange * (1 + $row['Supplier Part Unit Extra Cost Percentage']) * $row['Supplier Delivery Net Amount'] / $row['Supplier Delivery Quantity'] / $row['Supplier Part Packages Per Carton']));
+            } else {
 
 
-                if ($part_location->error) {
-                    $response = array(
-                        'state' => 400,
-                        'msg'   => $part_location->msg
-                    );
-                    echo json_encode($response);
-                    exit;
-                }
-
-                $_data = array(
-                    'transaction_key' => $row['Purchase Order Transaction Fact Key'],
-                    'qty'             => $data['qty'],
-                    'placement_data'  => array(
-                        'oif_key' => $oif_key,
-                        'wk'      => $part_location->location->get('Location Warehouse Key'),
-                        'lk'      => $part_location->location->id,
-                        'l'       => $part_location->location->get('Code'),
-                        'qty'     => $data['qty']
-                    )
+                $oif_key = $part_location->add_stock(
+                    array(
+                        'Quantity' => $data['qty'],
+                        'Origin'   => $origin,
+                        'Amount'   => $data['qty'] * $amount_per_sko
+                    ), gmdate('Y-m-d H:i:s')
                 );
 
 
-                $result_placement = $object->update_item_delivery_placed_quantity($_data);
+                $part_location->part->update_stock_run();
 
-                if ($object->error) {
-                    $response = array(
-                        'state' => 400,
-                        'msg'   => $object->msg
-                    );
-                    echo json_encode($response);
-                    exit;
-                }
+            }
 
 
-                $number_part_locations = 0;
-                $part_locations        = '';
-
-                $sql = sprintf(
-                    'SELECT L.`Location Key`,L.`Location Code`,`Can Pick`,`Quantity On Hand` FROM `Part Location Dimension` PLD  LEFT JOIN `Location Dimension` L ON (L.`Location Key`=PLD.`Location Key`) WHERE PLD.`Part SKU`=%d', $data['part_sku']
-                );
-                if ($result = $db->query($sql)) {
-                    foreach ($result as $row) {
-                        $number_part_locations++;
-                        $part_locations .= '<div class="button" onClick="set_placement_location(this)" style="clear:both;"  location_key="'.$row['Location Key'].'"><div  class="code data w150"  >'.$row['Location Code'].'</div><div class="data w30 aright" >'.number(
-                                $row['Quantity On Hand']
-                            ).'</div></div>';
-                    }
-                } else {
-                    print_r($error_info = $db->errorInfo());
-                    exit;
-                }
-
-
+            if ($part_location->error) {
                 $response = array(
-                    'state'                 => 200,
-                    'update_metadata'       => $object->get_update_metadata(),
-                    'part_locations'        => $part_locations,
-                    'number_part_locations' => $number_part_locations,
-                    'placed'                => $result_placement['placed'],
-                    'place_qty'             => $result_placement['place_qty']
-
+                    'state' => 400,
+                    'msg'   => $part_location->msg
                 );
                 echo json_encode($response);
                 exit;
-
             }
+
+            $_data = array(
+                'transaction_key' => $row['Purchase Order Transaction Fact Key'],
+                'qty'             => $data['qty'],
+                'placement_data'  => array(
+                    'oif_key' => $oif_key,
+                    'wk'      => $part_location->location->get('Location Warehouse Key'),
+                    'lk'      => $part_location->location->id,
+                    'l'       => $part_location->location->get('Code'),
+                    'qty'     => $data['qty']
+                )
+            );
+
+
+            $result_placement = $object->update_item_delivery_placed_quantity($_data);
+
+            if ($object->error) {
+                $response = array(
+                    'state' => 400,
+                    'msg'   => $object->msg
+                );
+                echo json_encode($response);
+                exit;
+            }
+
+
+            $number_part_locations = 0;
+            $part_locations        = '';
+
+            $sql = sprintf(
+                'SELECT L.`Location Key`,L.`Location Code`,`Can Pick`,`Quantity On Hand` FROM `Part Location Dimension` PLD  LEFT JOIN `Location Dimension` L ON (L.`Location Key`=PLD.`Location Key`) WHERE PLD.`Part SKU`=%d', $data['part_sku']
+            );
+            if ($result = $db->query($sql)) {
+                foreach ($result as $row) {
+                    $number_part_locations++;
+                    $part_locations .= '<div class="button" onClick="set_placement_location(this)" style="clear:both;"  location_key="'.$row['Location Key'].'"><div  class="code data w150"  >'.$row['Location Code'].'</div><div class="data w30 aright" >'.number(
+                            $row['Quantity On Hand']
+                        ).'</div></div>';
+                }
+            } else {
+                print_r($error_info = $db->errorInfo());
+                exit;
+            }
+
+
+            $response = array(
+                'state'                 => 200,
+                'update_metadata'       => $object->get_update_metadata(),
+                'part_locations'        => $part_locations,
+                'number_part_locations' => $number_part_locations,
+                'placed'                => $result_placement['placed'],
+                'place_qty'             => $result_placement['place_qty']
+
+            );
+            echo json_encode($response);
+            exit;
+
 
         } else {
             $response = array(
@@ -999,7 +1067,7 @@ function edit_part_location_note($account, $db, $user, $editor, $data, $smarty) 
 
 }
 
-function update_itf_amount($account, $db, $user, $editor, $data, $smarty) {
+function itf_cost($account, $db, $user, $editor, $data, $smarty) {
 
 
     $sql = sprintf('SELECT `Inventory Transaction Key`,`Part SKU`,`Inventory Transaction Quantity`,`Inventory Transaction Amount` FROM `Inventory Transaction Fact`  WHERE `Inventory Transaction Key`=%d ', $data['key']);

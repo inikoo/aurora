@@ -419,6 +419,13 @@
 
         <table border="0" class="info_block">
 
+
+            <tr style="border-bottom:1px solid #ccc;" >
+                <td class="label">{t}Purchase order amount{/t} </td>
+                <td class="aright Supplier_Delivery_Items_Amount">{$delivery->get('Purchase Order Amount')}</td>
+            </tr>
+
+
             <tr style="height: 16px" class="{if $account->get('Account Currency')==$delivery->get('Supplier Delivery Currency Code')}hide{/if}">
                 <td class="small" colspan="2" style="border-bottom:1px solid #ccc;text-align: center">
                     {t}Supplier invoice currency{/t} <b>{$delivery->get('Supplier Delivery Currency Code')}</b>
