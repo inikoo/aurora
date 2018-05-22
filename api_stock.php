@@ -22,6 +22,29 @@ if (empty($_REQUEST['action'])) {
 }
 
 switch ($_REQUEST['action']) {
+
+
+    case 'get_empty_locations':
+
+        $sql            = sprintf('select `Location Key`,`Location Code` from `Location Dimension` where `Location Distinct Parts`=0 ');
+        $locations_data = array();
+        if ($result = $db->query($sql)) {
+            foreach ($result as $row) {
+                $locations_data[] = $row;
+            }
+        } else {
+            print_r($error_info = $db->errorInfo());
+            print "$sql\n";
+            exit;
+        }
+
+        $response = array(
+            'state' => 'OK',
+            'data'  => $locations_data
+        );
+        echo json_encode($response);
+        exit;
+        break;
     case 'get_user_data':
         $response = array(
             'state' => 'OK',
