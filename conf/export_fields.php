@@ -526,6 +526,11 @@ $export_fields = array(
             'label'   => _('Parts'),
             'checked' => 1
         ),
+        array(
+            'name'    => 'CONCAT ("!W",`Location Warehouse Key`,"L",LPAD(`Location Key`,8,0))',
+            'label'   => _('Barcode'),
+            'checked' => 0
+        ),
 
 
     ),
