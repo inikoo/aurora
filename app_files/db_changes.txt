@@ -890,6 +890,12 @@ ALTER TABLE `Agent Dimension` ADD `Agent Number History Records` SMALLINT UNSIGN
 ALTER TABLE `Website Dimension` CHANGE `Website Registration Type` `Website Registration Type` ENUM('Open','ApprovedOnly','Closed') CHARACTER SET utf8 COLLATE utf8_general_ci NOT NULL DEFAULT 'Open';
 
 
+ALTER TABLE `Purchase Order Transaction Fact` ADD `Purchase Order Extra Cost Amount` DECIMAL(16,2) NOT NULL DEFAULT '0.0' AFTER `Purchase Order Net Amount`;
+ALTER TABLE `Purchase Order Dimension` ADD `Purchase Order Extra Cost Amount` DECIMAL(16,2) NOT NULL DEFAULT '0.0' AFTER `Purchase Order Total Net Amount`;
+
+
+ALTER TABLE `Purchase Order Transaction Fact` DROP `Supplier Delivery Exchange Rate`, DROP `Supplier Delivery Paid Amount`;
+ALTER TABLE `Purchase Order Transaction Fact` DROP `Purchase Order Tax Code`, DROP `Purchase Order Tax Amount`, DROP `Purchase Order Shipping Contribution Amount`,  DROP `Supplier Delivery Tax Amount`;
 
 
 ===============

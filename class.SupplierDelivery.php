@@ -74,8 +74,8 @@ class SupplierDelivery extends DB_Table {
 
 
         $sql = sprintf(
-            "SELECT `Supplier Delivery Key` FROM `Supplier Delivery Dimension` WHERE `Supplier Delivery Public ID`=%s  AND `Supplier Delivery Parent`=%s AND `Supplier Delivery Parent Key`=%d ",
-            prepare_mysql($data['Supplier Delivery Public ID']), prepare_mysql($data['Supplier Delivery Parent']), $data['Supplier Delivery Parent Key']
+            "SELECT `Supplier Delivery Key` FROM `Supplier Delivery Dimension` WHERE `Supplier Delivery Public ID`=%s  AND `Supplier Delivery Parent`=%s AND `Supplier Delivery Parent Key`=%d ", prepare_mysql($data['Supplier Delivery Public ID']),
+            prepare_mysql($data['Supplier Delivery Parent']), $data['Supplier Delivery Parent Key']
         );
 
         if ($result = $this->db->query($sql)) {
@@ -282,9 +282,9 @@ class SupplierDelivery extends DB_Table {
 
             case 'Progress Date':
 
-                switch ($this->data['Supplier Delivery State']){
+                switch ($this->data['Supplier Delivery State']) {
                     case 'InProcess':
-                    return $this->get('Creation Date');
+                        return $this->get('Creation Date');
                         break;
                     case 'Dispatched':
                         return $this->get('Dispatched Date');
@@ -301,29 +301,29 @@ class SupplierDelivery extends DB_Table {
                 break;
             case 'Progress':
 
-                switch ($this->data['Supplier Delivery State']){
+                switch ($this->data['Supplier Delivery State']) {
                     case 'Dispatched':
                         return '('._('Dispatched').')';
                         break;
                     case 'Received':
-                        $progress= '('._('Received').')';
+                        $progress = '('._('Received').')';
 
-                        if($this->get('Supplier Delivery Number Checked Items')>0){
-                            $progress= '('._('Checking').' '.percentage($this->get('Supplier Delivery Number Checked Items'), $this->get('Supplier Delivery Number Dispatched Items'),0).')';
+                        if ($this->get('Supplier Delivery Number Checked Items') > 0) {
+                            $progress = '('._('Checking').' '.percentage($this->get('Supplier Delivery Number Checked Items'), $this->get('Supplier Delivery Number Dispatched Items'), 0).')';
 
                         }
-                        if($this->get('Supplier Delivery Number Placed Items')>0){
-                            $progress= '('._('Placing').' '.percentage($this->get('Supplier Delivery Number Placed Items'), $this->get('Supplier Delivery Number Dispatched Items'),0).')';
+                        if ($this->get('Supplier Delivery Number Placed Items') > 0) {
+                            $progress = '('._('Placing').' '.percentage($this->get('Supplier Delivery Number Placed Items'), $this->get('Supplier Delivery Number Dispatched Items'), 0).')';
 
                         }
 
                         return $progress;
                         break;
                     case 'Checked':
-                        $progress= '('._('Checked').')';
+                        $progress = '('._('Checked').')';
 
-                        if($this->get('Supplier Delivery Number Placed Items')>0){
-                            $progress= '('._('Placing').' '.percentage($this->get('Supplier Delivery Number Placed Items'), $this->get('Supplier Delivery Number Dispatched Items'),0).')';
+                        if ($this->get('Supplier Delivery Number Placed Items') > 0) {
+                            $progress = '('._('Placing').' '.percentage($this->get('Supplier Delivery Number Placed Items'), $this->get('Supplier Delivery Number Dispatched Items'), 0).')';
 
                         }
 
@@ -494,6 +494,8 @@ class SupplierDelivery extends DB_Table {
             case 'Items Amount':
             case 'Extra Costs Amount':
             case 'Total Amount':
+            case 'Purchase Order Amount':
+
                 return money(
                     $this->data['Supplier Delivery '.$key], $this->data['Supplier Delivery Currency Code']
                 );
@@ -503,14 +505,14 @@ class SupplierDelivery extends DB_Table {
             case 'AC Extra Costs Amount':
             case 'AC Total Amount':
 
-            return money(
-                $this->data['Supplier Delivery '.$key], $account->get('Account Currency')
-            );
+
+                return money(
+                    $this->data['Supplier Delivery '.$key], $account->get('Account Currency')
+                );
                 break;
 
             case 'PO Creation Date':
             case 'PO Submitted Date':
-
 
 
                 $key = preg_replace('/^PO /', '', $key);
@@ -705,8 +707,7 @@ class SupplierDelivery extends DB_Table {
 
 
                 $sql = sprintf(
-                    'UPDATE `Purchase Order Transaction Fact` SET `Supplier Delivery Transaction State`=%s ,`Supplier Delivery Last Updated Date`=%s WHERE `Supplier Delivery Key`=%d ',
-                    prepare_mysql($value), prepare_mysql($date), $this->id
+                    'UPDATE `Purchase Order Transaction Fact` SET `Supplier Delivery Transaction State`=%s ,`Supplier Delivery Last Updated Date`=%s WHERE `Supplier Delivery Key`=%d ', prepare_mysql($value), prepare_mysql($date), $this->id
                 );
                 $this->db->exec($sql);
 
@@ -756,8 +757,7 @@ class SupplierDelivery extends DB_Table {
                 if ($parent->get('Parent Skip Checking') == 'Yes') {
 
                     $sql = sprintf(
-                        'SELECT `Purchase Order Transaction Fact Key`,`Supplier Part Key`,`Supplier Part Historic Key`,`Supplier Delivery Quantity` FROM `Purchase Order Transaction Fact` WHERE `Supplier Delivery Key`=%d  ',
-                        $this->id
+                        'SELECT `Purchase Order Transaction Fact Key`,`Supplier Part Key`,`Supplier Part Historic Key`,`Supplier Delivery Quantity` FROM `Purchase Order Transaction Fact` WHERE `Supplier Delivery Key`=%d  ', $this->id
                     );
 
 
@@ -849,8 +849,7 @@ class SupplierDelivery extends DB_Table {
 
 
                 $sql = sprintf(
-                    'UPDATE `Purchase Order Transaction Fact` SET `Supplier Delivery Transaction State`=%s ,`Supplier Delivery Last Updated Date`=%s WHERE `Supplier Delivery Key`=%d ',
-                    prepare_mysql($value), prepare_mysql($date), $this->id
+                    'UPDATE `Purchase Order Transaction Fact` SET `Supplier Delivery Transaction State`=%s ,`Supplier Delivery Last Updated Date`=%s WHERE `Supplier Delivery Key`=%d ', prepare_mysql($value), prepare_mysql($date), $this->id
                 );
                 $this->db->exec($sql);
 
@@ -941,8 +940,7 @@ class SupplierDelivery extends DB_Table {
         if ($qty == 0) {
 
             $sql = sprintf(
-                "SELECT `Purchase Order Transaction Fact Key`,`Purchase Order Key`,`Note to Supplier Locked` FROM `Purchase Order Transaction Fact` WHERE `Supplier Delivery Key`=%d AND `Supplier Part Key`=%d ",
-                $this->id, $item_key
+                "SELECT `Purchase Order Transaction Fact Key`,`Purchase Order Key`,`Note to Supplier Locked` FROM `Purchase Order Transaction Fact` WHERE `Supplier Delivery Key`=%d AND `Supplier Part Key`=%d ", $this->id, $item_key
             );
 
             if ($result = $this->db->query($sql)) {
@@ -957,11 +955,11 @@ class SupplierDelivery extends DB_Table {
                     } else {
 
                         $sql = sprintf(
-                            "UPDATE  `Purchase Order Transaction Fact` SET  `Supplier Delivery Key`=NULL,`Supplier Delivery Received Location Key`=1, `Supplier Delivery Quantity`=0,`Supplier Delivery Checked Quantity`=0,`Supplier Delivery Damaged Quantity`=0,`Supplier Delivery Placed Quantity`=0,`Supplier Delivery Net Amount`=0,`Supplier Delivery Tax Amount`=0,`Supplier Delivery Transaction State`=NULL,`Supplier Delivery Counted`='No' WHERE `Purchase Order Transaction Fact Key`=%d ",
+                            "UPDATE  `Purchase Order Transaction Fact` SET  `Supplier Delivery Key`=NULL,`Supplier Delivery Received Location Key`=1, `Supplier Delivery Quantity`=0,`Supplier Delivery Checked Quantity`=0,`Supplier Delivery Damaged Quantity`=0,`Supplier Delivery Placed Quantity`=0,`Supplier Delivery Net Amount`=0,`Supplier Delivery Transaction State`=NULL,`Supplier Delivery Counted`='No' WHERE `Purchase Order Transaction Fact Key`=%d ",
                             $row['Purchase Order Transaction Fact Key']
                         );
 
-                        print $sql;
+                       // print $sql;
                         $this->db->exec($sql);
 
                     }
@@ -1003,8 +1001,7 @@ class SupplierDelivery extends DB_Table {
 
 
             $sql = sprintf(
-                "SELECT `Purchase Order Transaction Fact Key`,`Note to Supplier Locked` FROM `Purchase Order Transaction Fact` WHERE `Supplier Delivery Key`=%d AND `Supplier Part Key`=%d ", $this->id,
-                $item_key
+                "SELECT `Purchase Order Transaction Fact Key`,`Note to Supplier Locked` FROM `Purchase Order Transaction Fact` WHERE `Supplier Delivery Key`=%d AND `Supplier Part Key`=%d ", $this->id, $item_key
             );
 
 
@@ -1012,8 +1009,8 @@ class SupplierDelivery extends DB_Table {
                 if ($row = $result->fetch()) {
 
                     $sql = sprintf(
-                        "update`Purchase Order Transaction Fact` set  `Supplier Delivery Quantity`=%f,`Supplier Delivery Last Updated Date`=%s,`Supplier Delivery Net Amount`=%f ,`Supplier Delivery Tax Amount`=%f ,`Supplier Delivery CBM`=%s,`Supplier Delivery Weight`=%s  where  `Purchase Order Transaction Fact Key`=%d ",
-                        $qty, prepare_mysql($date), $amount, $tax_amount, $cbm, $weight, $row['Purchase Order Transaction Fact Key']
+                        "update`Purchase Order Transaction Fact` set  `Supplier Delivery Quantity`=%f,`Supplier Delivery Last Updated Date`=%s,`Supplier Delivery Net Amount`=%f ,`Supplier Delivery CBM`=%s,`Supplier Delivery Weight`=%s  where  `Purchase Order Transaction Fact Key`=%d ",
+                        $qty, prepare_mysql($date), $amount, $cbm, $weight, $row['Purchase Order Transaction Fact Key']
                     );
 
                     $this->db->exec($sql);
@@ -1023,11 +1020,11 @@ class SupplierDelivery extends DB_Table {
 
                     $sql = sprintf(
                         "INSERT INTO `Purchase Order Transaction Fact` (`Supplier Part Key`,`Supplier Part Historic Key`,`Currency Code`,`Supplier Delivery Last Updated Date`,`Supplier Delivery Transaction State`,
-					`Supplier Key`,`Agent Key`,`Supplier Delivery Key`,`Supplier Delivery Quantity`,`Supplier Delivery Net Amount`,`Supplier Delivery Tax Amount`,`Note to Supplier`,`Supplier Delivery CBM`,`Supplier Delivery Weight`,
+					`Supplier Key`,`Agent Key`,`Supplier Delivery Key`,`Supplier Delivery Quantity`,`Supplier Delivery Net Amount`,`Note to Supplier`,`Supplier Delivery CBM`,`Supplier Delivery Weight`,
 					`User Key`,`Creation Date`
 					)
 					VALUES (%d,%d,%s,%s,%s,
-					 %d,%s,%d,%.6f,%.2f,%.2f,%s,%s,%s,
+					 %d,%s,%d,%.6f,%.2f,%s,%s,%s,
 					 %d,%s
 					 )", $item_key, $item_historic_key, prepare_mysql(
                         $this->get('Supplier Delivery Currency Code')
@@ -1037,7 +1034,7 @@ class SupplierDelivery extends DB_Table {
                         ? 'Null'
                         : sprintf(
                             "%d", $supplier_part->get('Supplier Part Agent Key')
-                        )), $this->id, $qty, $amount, $tax_amount, prepare_mysql(
+                        )), $this->id, $qty, $amount,  prepare_mysql(
                             $supplier_part->get(
                                 'Supplier Part Note to Supplier'
                             ), false
@@ -1120,10 +1117,14 @@ class SupplierDelivery extends DB_Table {
 
 		sum(`Supplier Delivery Placed Quantity`) AS placed_qty,
 
+
+
+		sum(`Purchase Order Net Amount`+`Purchase Order Extra Cost Amount`) AS po_items_amount,
+
+
 		sum(`Supplier Delivery Net Amount`) AS items_amount,
 		sum(`Supplier Delivery Extra Cost Amount`) AS extra_cost_amount,
-		sum(`Supplier Delivery Extra Cost Account Currency Amount`) AS ac_extra_cost_amount,
-		sum(`Supplier Delivery Paid Amount`) AS ac_total
+		sum(`Supplier Delivery Extra Cost Account Currency Amount`) AS ac_extra_cost_amount
 		 
 		 
 		 FROM `Purchase Order Transaction Fact` WHERE `Supplier Delivery Key`=%d", $this->id
@@ -1135,21 +1136,28 @@ class SupplierDelivery extends DB_Table {
         if ($result = $this->db->query($sql)) {
             if ($row = $result->fetch()) {
 
+
+             //   print_r($row);
+
                 if ($this->get('State Index') >= 30) {
                     $dispatched_items = $row['num_items'];
                 } else {
                     $dispatched_items = 0;
                 }
 
+                $items_amount=($row['items_amount'] == '' ? 0 : $row['items_amount']);
+                $extra_amount=($row['extra_cost_amount'] == '' ? 0 : $row['extra_cost_amount']);
 
                 $this->update(
                     array(
-                        'Supplier Delivery Items Amount'                  => $row['items_amount'],
-                        'Supplier Delivery Extra Costs Amount'                  => $row['extra_cost_amount'],
-                        'Supplier Delivery Total Amount'                  => $row['items_amount']+$row['extra_cost_amount'],
-                        'Supplier Delivery AC Subtotal Amount'                  => $row['ac_total']-$row['ac_extra_cost_amount'],
-                        'Supplier Delivery AC Extra Costs Amount'                  => $row['ac_extra_cost_amount'],
-                        'Supplier Delivery AC Total Amount'                  => $row['ac_total'],
+                        'Supplier Delivery Purchase Order Amount' => ($row['po_items_amount'] == '' ? 0 : $row['po_items_amount']) ,
+
+                        'Supplier Delivery Items Amount'          => $items_amount,
+                        'Supplier Delivery Extra Costs Amount'    => $extra_amount,
+                        'Supplier Delivery Total Amount'          => $items_amount + $extra_amount,
+                        'Supplier Delivery AC Subtotal Amount'    => $items_amount*$this->get('Supplier Delivery Currency Exchange'),
+                        'Supplier Delivery AC Extra Costs Amount' => $extra_amount*$this->get('Supplier Delivery Currency Exchange'),
+                        'Supplier Delivery AC Total Amount'       => ($items_amount + $extra_amount)*$this->get('Supplier Delivery Currency Exchange'),
 
                         'Supplier Delivery Number Items'                      => $row['num_items'],
                         'Supplier Delivery Number Dispatched Items'           => $dispatched_items,
@@ -1161,7 +1169,7 @@ class SupplierDelivery extends DB_Table {
                         'Supplier Delivery Weight'                            => $row['weight'],
                         'Supplier Delivery CBM'                               => $row['cbm'],
 
-                        'Supplier Delivery Placed Items'                      => ($row['placed_qty'] > 0 ? 'Yes' : 'No')
+                        'Supplier Delivery Placed Items' => ($row['placed_qty'] > 0 ? 'Yes' : 'No')
                     ), 'no_history'
                 );
 
@@ -1220,8 +1228,7 @@ class SupplierDelivery extends DB_Table {
                 if (round($qty, 2) < round($placement_qty, 2)) {
                     $this->error = true;
                     $this->msg   = sprintf(
-                        _("%d SKOs have been already placed, checked SKOs can't be set up to %d"), $placement_qty * $supplier_part->get('Supplier Part Packages Per Carton'),
-                        $qty * $supplier_part->get('Supplier Part Packages Per Carton')
+                        _("%d SKOs have been already placed, checked SKOs can't be set up to %d"), $placement_qty * $supplier_part->get('Supplier Part Packages Per Carton'), $qty * $supplier_part->get('Supplier Part Packages Per Carton')
 
                     );
 
@@ -1251,8 +1258,8 @@ class SupplierDelivery extends DB_Table {
 
 
                 $sql = sprintf(
-                    "UPDATE `Purchase Order Transaction Fact` SET  `Supplier Delivery Checked Quantity`=%f,`Supplier Delivery Last Updated Date`=%s ,`Supplier Delivery Transaction Placed`=%s WHERE  `Purchase Order Transaction Fact Key`=%d ",
-                    $qty, prepare_mysql($date), prepare_mysql($placed), $transaction_key
+                    "UPDATE `Purchase Order Transaction Fact` SET  `Supplier Delivery Checked Quantity`=%f,`Supplier Delivery Last Updated Date`=%s ,`Supplier Delivery Transaction Placed`=%s WHERE  `Purchase Order Transaction Fact Key`=%d ", $qty, prepare_mysql($date),
+                    prepare_mysql($placed), $transaction_key
                 );
 
 
@@ -1302,8 +1309,8 @@ class SupplierDelivery extends DB_Table {
 
 
                 $placement .= '
-                                <div style="clear:both"  id="place_item_'.$row['Purchase Order Transaction Fact Key'].'" class="place_item '.($placed == 'No' ? '' : 'hide').' " part_sku="'
-                    .$row['Part SKU'].'" transaction_key="'.$row['Purchase Order Transaction Fact Key'].'"  >
+                                <div style="clear:both"  id="place_item_'.$row['Purchase Order Transaction Fact Key'].'" class="place_item '.($placed == 'No' ? '' : 'hide').' " part_sku="'.$row['Part SKU'].'" transaction_key="'
+                    .$row['Purchase Order Transaction Fact Key'].'"  >
                                 <input class="place_qty width_50 changed" value="'.($quantity + 0).'" ovalue="'.($quantity + 0).'"  min="1" max="'.$quantity.'"  >
                                 <input class="location_code"  placeholder="'._('Location code').'"  >
                                 <i  class="fa  fa-cloud  fa-fw save " aria-hidden="true" title="'._('Place to location').'"  location_key="" onClick="place_item(this)"  ></i>
@@ -1402,8 +1409,7 @@ class SupplierDelivery extends DB_Table {
 
             $state = 'Placed';
             $sql   = sprintf(
-                'SELECT `Supplier Delivery Quantity`,`Supplier Delivery Checked Quantity`,`Supplier Delivery Placed Quantity`  FROM  `Purchase Order Transaction Fact`  WHERE `Supplier Delivery Key` =%d',
-                $this->id
+                'SELECT `Supplier Delivery Quantity`,`Supplier Delivery Checked Quantity`,`Supplier Delivery Placed Quantity`  FROM  `Purchase Order Transaction Fact`  WHERE `Supplier Delivery Key` =%d', $this->id
             );
 
             if ($result = $this->db->query($sql)) {
@@ -1518,9 +1524,14 @@ LEFT JOIN `Supplier Part Historic Dimension` SPH ON (POTF.`Supplier Part Histori
 
                 $encoded_metadata = json_encode($metadata);
 
+
+
                 $sql = sprintf(
-                    "update`Purchase Order Transaction Fact` set  `Supplier Delivery Placed Quantity`=%f,`Supplier Delivery Last Updated Date`=%s ,`Supplier Delivery Transaction Placed`=%s ,`Metadata`=%s where  `Purchase Order Transaction Fact Key`=%d ",
-                    $qty, prepare_mysql($date), prepare_mysql($placed), prepare_mysql($encoded_metadata), $transaction_key
+                    "update`Purchase Order Transaction Fact` set  `Supplier Delivery Placed Quantity`=%f,`Supplier Delivery Last Updated Date`=%s ,`Supplier Delivery Transaction Placed`=%s ,
+                  
+                    `Metadata`=%s 
+                    where  `Purchase Order Transaction Fact Key`=%d ", $qty,
+                    prepare_mysql($date), prepare_mysql($placed), prepare_mysql($encoded_metadata), $transaction_key
                 );
 
 
@@ -1556,8 +1567,7 @@ LEFT JOIN `Supplier Part Historic Dimension` SPH ON (POTF.`Supplier Part Histori
 
 
                 $placement .= '
-			    <div style="clear:both"  id="place_item_'.$row['Purchase Order Transaction Fact Key'].'" class="place_item '.($placed == 'No' ? '' : 'hide').' " part_sku="'.$row['Part SKU']
-                    .'" transaction_key="'.$row['Purchase Order Transaction Fact Key'].'"  >
+			    <div style="clear:both"  id="place_item_'.$row['Purchase Order Transaction Fact Key'].'" class="place_item '.($placed == 'No' ? '' : 'hide').' " part_sku="'.$row['Part SKU'].'" transaction_key="'.$row['Purchase Order Transaction Fact Key'].'"  >
 			    <input class="place_qty width_50 changed" value="'.($place_qty + 0).'" ovalue="'.($place_qty + 0).'"  min="1" max="'.$place_qty.'"  >
 				<input class="location_code"  placeholder="'._('Location code').'"  >
 				<i  class="fa  fa-cloud  fa-fw save " aria-hidden="true" title="'._('Place to location').'"  location_key="" onClick="place_item(this)"  ></i>
@@ -1687,7 +1697,7 @@ LEFT JOIN `Supplier Part Historic Dimension` SPH ON (POTF.`Supplier Part Histori
             );
             $this->db->exec($sql);
             $sql = sprintf(
-                "UPDATE `Purchase Order Transaction Fact` SET `Supplier Delivery Key`=NULL ,`Supplier Delivery Quantity`=0 ,`Supplier Delivery Checked Quantity`=NULL,`Supplier Delivery Placed Quantity`=NULL,`Supplier Delivery Net Amount`=0,`Supplier Delivery Tax Amount`=0,`Supplier Delivery Transaction State`=NULL,`Supplier Delivery Transaction Placed`=NULL,`Supplier Delivery CBM`=NULL,`Supplier Delivery CBM`=NULL  ,`Supplier Delivery Last Updated Date`=NULL  WHERE `Supplier Delivery Key`=%d  ",
+                "UPDATE `Purchase Order Transaction Fact` SET `Supplier Delivery Key`=NULL ,`Supplier Delivery Quantity`=0 ,`Supplier Delivery Checked Quantity`=NULL,`Supplier Delivery Placed Quantity`=NULL,`Supplier Delivery Net Amount`=0,`Supplier Delivery Transaction State`=NULL,`Supplier Delivery Transaction Placed`=NULL,`Supplier Delivery CBM`=NULL,`Supplier Delivery CBM`=NULL  ,`Supplier Delivery Last Updated Date`=NULL  WHERE `Supplier Delivery Key`=%d  ",
                 $this->id
             );
             $this->db->exec($sql);
@@ -1734,8 +1744,8 @@ LEFT JOIN `Supplier Part Historic Dimension` SPH ON (POTF.`Supplier Part Histori
 
             $this->deleted = true;
 
-            foreach($items as $item){
-                $part=get_object('Part',$item[4]);
+            foreach ($items as $item) {
+                $part = get_object('Part', $item[4]);
                 $part->update_next_deliveries_data();
 
             }

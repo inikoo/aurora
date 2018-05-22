@@ -484,30 +484,33 @@ if (!$supplier_part_scope) {
     );
 }
 
-if (!($supplier_part_scope or $new)) {
+if($account->get('Account Add Stock Value Type')=='Last Price') {
 
-    $part_fields[] = array(
-        'label' => _('Stock value'),
+    if (!($supplier_part_scope or $new)) {
 
-        'show_title' => true,
-        'fields'     => array(
-            array(
+        $part_fields[] = array(
+            'label' => _('Stock value'),
+
+            'show_title' => true,
+            'fields'     => array(
+                array(
 
 
-                'id'   => 'Part_Cost_in_Warehouse',
-                'edit' => ($edit ? 'amount' : ''),
+                    'id'   => 'Part_Cost_in_Warehouse',
+                    'edit' => ($edit ? 'amount' : ''),
 
-                'value'           => $object->get('Part Cost in Warehouse'),
-                'formatted_value' => $object->get('Cost in Warehouse'),
-                'label'           => ucfirst($object->get_field_label('Part Cost in Warehouse')),
-                'invalid_msg'     => get_invalid_message('amount'),
-                'required'        => true,
-                'type'            => 'value'
+                    'value'           => $object->get('Part Cost in Warehouse'),
+                    'formatted_value' => $object->get('Cost in Warehouse'),
+                    'label'           => ucfirst($object->get_field_label('Part Cost in Warehouse')),
+                    'invalid_msg'     => get_invalid_message('amount'),
+                    'required'        => true,
+                    'type'            => 'value'
+                )
+
+
             )
-
-
-        )
-    );
+        );
+    }
 }
 
 $part_fields[] = array(

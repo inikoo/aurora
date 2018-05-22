@@ -2846,6 +2846,8 @@ class Part extends Asset {
 
     function update_stock_run() {
 
+        $account=get_object('Account',1);
+
         $running_stock = 0;
         $running_stock_value=0;
         $running_cost_per_sko='';
@@ -2903,8 +2905,12 @@ class Part extends Asset {
             }
 
 
+            if($account->get('Account Add Stock Value Type')=='Blockchain'){
 
-            $this->update_field_switcher('Part Cost in Warehouse',$running_cost_per_sko,'no_history');
+
+                $this->update_field_switcher('Part Cost in Warehouse',$running_cost_per_sko,'no_history');
+
+            }
 
 
 
@@ -4636,9 +4642,15 @@ class Part extends Asset {
 
     }
 
-    function redo_inventory_snapshot_fact(){
+    function redo_inventory_snapshot_fact($from=''){
 
-        $from = $this->get('Part Valid From');
+        include_once "class.PartLocation.php";
+
+
+        if($from==''){
+            $from = $this->get('Part Valid From');
+        }
+
         $to   = ($this->get('Part Status') == 'Not In Use' ? $this->get('Part Valid To') : gmdate('Y-m-d H:i:s'));
 
 

@@ -704,7 +704,9 @@ class PurchaseOrder extends DB_Table {
 
     function create_delivery($data) {
 
+        include_once 'utils/currency_functions.php';
 
+        $account = get_object('Account', 1);
         // $warehouse=ger_object('Warehouse',$data['Supplier Delivery Warehouse Key']);
 
 
@@ -723,6 +725,9 @@ class PurchaseOrder extends DB_Table {
             'Supplier Delivery Port of Import'      => $this->get('Purchase Order Port of Import'),
             'Supplier Delivery Port of Export'      => $this->get('Purchase Order Port of Export'),
             'Supplier Delivery Purchase Order Key'  => $this->id,
+            'Supplier Delivery Currency Exchange'   => currency_conversion(
+                $this->db, $this->get('Purchase Order Currency Code'), $account->get('Account Currency'), '- 15 minutes'
+            ),
             //'Supplier Delivery Warehouse Key'=>$warehouse->id,
             //'Supplier Delivery Warehouse Metadata'=>json_encode($warehouse->data),
 
@@ -746,7 +751,7 @@ class PurchaseOrder extends DB_Table {
 
 
                 $sql = sprintf(
-                    "SELECT `Purchase Order Net Amount`,`Purchase Order Tax Amount`,`Purchase Order Quantity` FROM `Purchase Order Transaction Fact`  WHERE `Purchase Order Transaction Fact Key`=%d",
+                    "SELECT `Purchase Order Net Amount`,`Purchase Order Extra Cost Amount`,`Purchase Order Quantity` FROM `Purchase Order Transaction Fact`  WHERE `Purchase Order Transaction Fact Key`=%d",
 
                     $potf_key
                 );
@@ -755,15 +760,21 @@ class PurchaseOrder extends DB_Table {
 
                         if ($row['Purchase Order Quantity'] != 0) {
                             $net = $qty * $row['Purchase Order Net Amount'] / $row['Purchase Order Quantity'];
-                            $tax = $qty * $row['Purchase Order Tax Amount'] / $row['Purchase Order Quantity'];
+                            $extra = $qty * $row['Purchase Order Extra Cost Amount'] / $row['Purchase Order Quantity'];
                         } else {
                             $net = 0;
-                            $tax = 0;
+                            $extra = 0;
                         }
                         $sql = sprintf(
-                            'UPDATE `Purchase Order Transaction Fact` SET `Supplier Delivery Net Amount`=%f,`Supplier Delivery Tax Amount`=%f,`Supplier Delivery Quantity`=%f,`Supplier Delivery Key`=%d,`Supplier Delivery Transaction State`=%s  ,`Supplier Delivery Transaction Placed`="No" WHERE `Purchase Order Transaction Fact Key`=%d',
-                            $net, $tax, $qty, $delivery->id, prepare_mysql('InProcess'), $potf_key
+                            'UPDATE `Purchase Order Transaction Fact` SET `Supplier Delivery Net Amount`=%f,
+                                `Supplier Delivery Extra Cost Amount`=%f,
+                                `Supplier Delivery Quantity`=%f,
+                                `Supplier Delivery Key`=%d,`Supplier Delivery Transaction State`=%s  ,`Supplier Delivery Transaction Placed`="No" WHERE `Purchase Order Transaction Fact Key`=%d',
+                            $net, $extra, $qty, $delivery->id, prepare_mysql('InProcess'), $potf_key
                         );
+
+                     //   print $sql;
+
                         $this->db->exec($sql);
                     }
                 } else {
@@ -795,18 +806,17 @@ class PurchaseOrder extends DB_Table {
     function update_totals() {
 
         $sql = sprintf(
-            "SELECT sum(`Purchase Order Weight`) AS  weight,sum(if(isNULL(`Purchase Order Weight`),1,0) )AS missing_weights ,sum(if(isNULL(`Purchase Order CBM`),1,0) )AS missing_cbms , sum(`Purchase Order CBM` )AS cbm ,count(DISTINCT `Supplier Key`) AS num_suppliers ,count(*) AS num_items ,sum(if(`Purchase Order Quantity`>0,1,0)) AS num_ordered_items ,sum(`Purchase Order Net Amount`) AS items_net, sum(`Purchase Order Tax Amount`) AS tax,  sum(`Purchase Order Shipping Contribution Amount`) AS shipping FROM `Purchase Order Transaction Fact` WHERE `Purchase Order Key`=%d",
+            "SELECT sum(`Purchase Order Weight`) AS  weight,sum(if(isNULL(`Purchase Order Weight`),1,0) )AS missing_weights ,sum(if(isNULL(`Purchase Order CBM`),1,0) )AS missing_cbms , sum(`Purchase Order CBM` )AS cbm ,count(DISTINCT `Supplier Key`) AS num_suppliers ,count(*) AS num_items ,sum(if(`Purchase Order Quantity`>0,1,0)) AS num_ordered_items ,
+sum(`Purchase Order Net Amount`) AS items_net, sum(`Purchase Order Extra Cost Amount`) AS extra_cost FROM `Purchase Order Transaction Fact` WHERE `Purchase Order Key`=%d",
             $this->id
         );
         if ($result = $this->db->query($sql)) {
             if ($row = $result->fetch()) {
 
 
-                $total_net = $row['items_net'] + $this->get(
-                        'Purchase Order Shipping Net Amount'
-                    ) + $this->get('Purchase Order Charges Net Amount') + $this->get('Purchase Order Net Credited Amount');
-                $total_tax = $row['tax'];
-                $total     = $total_net + $total_tax;
+                $total_net = $row['items_net'] ;
+                $extra_cost = $row['extra_cost'];
+                $total     = $total_net + $extra_cost;
 
                 //print $sql;
 
@@ -814,7 +824,8 @@ class PurchaseOrder extends DB_Table {
                 $this->update(
                     array(
                         'Purchase Order Items Net Amount'     => $row['items_net'],
-                        'Purchase Order Items Tax Amount'     => $row['tax'],
+
+                        'Purchase Order Extra Cost Amount'     => $row['extra_cost'],
                         'Purchase Order Number Suppliers'     => $row['num_suppliers'],
                         'Purchase Order Number Items'         => $row['num_items'],
                         'Purchase Order Ordered Number Items' => $row['num_ordered_items'],
@@ -822,7 +833,7 @@ class PurchaseOrder extends DB_Table {
                         'Purchase Order CBM'                  => $row['cbm'],
                         'Purchase Order Missing Weights'      => $row['missing_weights'],
                         'Purchase Order Missing CBMs'         => $row['missing_cbms'],
-                        'Purchase Order Total Net Amount'     => $total_net,
+                       // 'Purchase Order Total Net Amount'     => $total_net,
                         'Purchase Order Total Amount'         => $total
                     ), 'no_history'
                 );
@@ -1187,9 +1198,8 @@ class PurchaseOrder extends DB_Table {
 
         if ($result = $this->db->query($sql)) {
             foreach ($result as $row) {
-                $supplier_part = get_object('SupplierPart',$row['Supplier Part Key']);
+                $supplier_part = get_object('SupplierPart', $row['Supplier Part Key']);
                 $supplier_part->part->update_next_deliveries_data();
-
 
 
             }
@@ -1257,11 +1267,6 @@ class PurchaseOrder extends DB_Table {
 
         global $account;
 
-        // Todo calculate taxed, 0 tax for now
-        //include_once 'class.TaxCategory.php';
-        //$tax_category=new TaxCategory($data['tax_code']);
-        //$tax_amount=$tax_category->calculate_tax($data ['amount']);
-
 
         $item_key          = $data['item_key'];
         $item_historic_key = $data['item_historic_key'];
@@ -1302,6 +1307,8 @@ class PurchaseOrder extends DB_Table {
 
 
             $amount = $qty * $supplier_part->get('Supplier Part Unit Cost') * $supplier_part->part->get('Part Units Per Package') * $supplier_part->get('Supplier Part Packages Per Carton');
+
+            $extra_amount=round($amount*   $supplier_part->get('Supplier Part Unit Extra Cost Percentage')/100,2) ;
             if (is_numeric($supplier_part->get('Supplier Part Carton CBM'))) {
                 $cbm = $qty * $supplier_part->get('Supplier Part Carton CBM');
             } else {
@@ -1320,9 +1327,6 @@ class PurchaseOrder extends DB_Table {
             }
 
 
-            // Todo calculate taxed, 0 tax for now
-            $tax_amount = 0;
-            $tax_code   = '';
 
 
             $sql = sprintf(
@@ -1333,8 +1337,11 @@ class PurchaseOrder extends DB_Table {
                 if ($row = $result->fetch()) {
 
                     $sql = sprintf(
-                        "update`Purchase Order Transaction Fact` set  `Purchase Order Quantity`=%f,`Purchase Order Last Updated Date`=%s,`Purchase Order Net Amount`=%f ,`Purchase Order Tax Amount`=%f ,`Purchase Order CBM`=%s,`Purchase Order Weight`=%s  where  `Purchase Order Transaction Fact Key`=%d ",
-                        $qty, prepare_mysql($date), $amount, $tax_amount, $cbm, $weight, $row['Purchase Order Transaction Fact Key']
+                        "update`Purchase Order Transaction Fact` set  `Purchase Order Quantity`=%f,`Purchase Order Last Updated Date`=%s,
+                        `Purchase Order Net Amount`=%f ,
+                        `Purchase Order Extra Cost Amount`=%f ,
+                        `Purchase Order CBM`=%s,`Purchase Order Weight`=%s  where  `Purchase Order Transaction Fact Key`=%d ",
+                        $qty, prepare_mysql($date), $amount, $extra_amount, $cbm, $weight, $row['Purchase Order Transaction Fact Key']
                     );
                     $this->db->exec($sql);
                     /*
@@ -1369,22 +1376,20 @@ class PurchaseOrder extends DB_Table {
 
 
                     $sql = sprintf(
-                        "INSERT INTO `Purchase Order Transaction Fact` (`Purchase Order Item Index`,`Supplier Part Key`,`Supplier Part Historic Key`,`Purchase Order Tax Code`,`Currency Code`,`Purchase Order Last Updated Date`,`Purchase Order Transaction State`,
-					`Supplier Key`,`Agent Key`,`Purchase Order Key`,`Purchase Order Quantity`,`Purchase Order Net Amount`,`Purchase Order Tax Amount`,`Note to Supplier`,`Purchase Order CBM`,`Purchase Order Weight`,
+                        "INSERT INTO `Purchase Order Transaction Fact` (`Purchase Order Item Index`,`Supplier Part Key`,`Supplier Part Historic Key`,`Currency Code`,`Purchase Order Last Updated Date`,`Purchase Order Transaction State`,
+					`Supplier Key`,`Agent Key`,`Purchase Order Key`,`Purchase Order Quantity`,`Purchase Order Net Amount`,`Purchase Order Extra Cost Amount`,`Note to Supplier`,`Purchase Order CBM`,`Purchase Order Weight`,
 					`User Key`,`Creation Date`
 					)
-					VALUES (%d,%d,%d,%s,%s,%s,%s,
+					VALUES (%d,%d,%d,%s,%s,%s,
 					 %d,%s,%d,%.6f,%.2f,%.2f,%s,%s,%s,
 					 %d,%s
-					 )", $item_index, $item_key, $item_historic_key, prepare_mysql($tax_code), prepare_mysql(
-                        $this->get('Purchase Order Currency Code')
-                    ), prepare_mysql($date), prepare_mysql($this->get('Purchase Order State')),
+					 )", $item_index, $item_key, $item_historic_key, prepare_mysql($this->get('Purchase Order Currency Code')), prepare_mysql($date), prepare_mysql($this->get('Purchase Order State')),
 
                         $supplier_part->get('Supplier Part Supplier Key'), ($supplier_part->get('Supplier Part Agent Key') == ''
                         ? 'Null'
                         : sprintf(
                             "%d", $supplier_part->get('Supplier Part Agent Key')
-                        )), $this->id, $qty, $amount, $tax_amount, prepare_mysql(
+                        )), $this->id, $qty, $amount, $extra_amount, prepare_mysql(
                             $supplier_part->get(
                                 'Supplier Part Note to Supplier'
                             ), false
@@ -1442,7 +1447,6 @@ class PurchaseOrder extends DB_Table {
                         $subtotals .= ' | '.number($cbm).' m³';
                     }
                 }
-
 
 
             } else {
@@ -1533,55 +1537,9 @@ class PurchaseOrder extends DB_Table {
 
     }
 
-    function update_item_totals_from_order_transactions_old() {
 
 
-        $sql =
-            "SELECT count(DISTINCT `Supplier Product ID`) AS num_items ,sum(`Purchase Order Net Amount`) AS net, sum(`Purchase Order Tax Amount`) AS tax,  sum(`Purchase Order Shipping Contribution Amount`) AS shipping FROM `Purchase Order Transaction Fact` WHERE `Purchase Order Key`="
-            .$this->id;
-        //print "$sql\n";
-        $result = mysql_query($sql);
-        if ($row = mysql_fetch_array(
-            $result, MYSQL_ASSOC
-        )) {
-            //   $total = $row ['gross'] + $row ['tax'] + $row ['shipping']  - $row ['discount'] + $this->data ['Order Items Adjust Amount'];
 
-            $this->data ['Purchase Order Items Net Amount'] = $row ['net'];
-            $this->data ['Purchase Order Number Items']     = $row ['num_items'];
-
-
-            $sql = sprintf(
-                "UPDATE `Purchase Order Dimension` SET `Purchase Order Number Items`=%d , `Purchase Order Items Net Amount`=%.2f , `Purchase Order Items Tax Amount`=%.2f WHERE  `Purchase Order Key`=%d ", $this->data ['Purchase Order Number Items'],
-                $this->data ['Purchase Order Items Net Amount'], $this->data ['Purchase Order Items Tax Amount']
-
-
-                , $this->id
-            );
-
-
-            //exit;
-            $this->db->exec($sql);
-
-
-        }
-
-
-    }
-
-    function get_number_items() {
-        $num_items = 0;
-        $sql       = sprintf(
-            "SELECT count(DISTINCT `Supplier Product ID`) AS num_items  FROM `Purchase Order Transaction Fact` WHERE `Purchase Order Key`=%d", $this->id
-        );
-        $result    = mysql_query($sql);
-        if ($row = mysql_fetch_array(
-            $result, MYSQL_ASSOC
-        )) {
-            $num_items = $row['num_items'];
-        }
-
-        return $num_items;
-    }
 
     function delete() {
 
@@ -1721,8 +1679,8 @@ class PurchaseOrder extends DB_Table {
         }
 
 
-        foreach($items as $item){
-            $part=get_object('Part',$item[4]);
+        foreach ($items as $item) {
+            $part = get_object('Part', $item[4]);
             $part->update_next_deliveries_data();
 
         }
