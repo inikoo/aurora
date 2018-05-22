@@ -377,7 +377,7 @@
     </div>
 
 
-    {if  isset($parameters['f_field'])}
+  
     <div id="filter_container" class="">
         <div id="show_filter" onclick="show_filter()" class="square_button right " title="{t}Filter table{/t}" style="border-left:1px solid #aaa">
             <i class="fa fa-filter fa-fw"></i>
@@ -400,7 +400,7 @@
 
 
     </div>
-    {/if}
+
 
 
     <div id="table_buttons" ">
