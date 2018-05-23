@@ -1249,4 +1249,73 @@ function lost_stock($_data, $db, $user, $account) {
 }
 
 
+
+
+function stock_given_free($_data, $db, $user, $account) {
+
+    $rtext_label = 'transaction';
+    include_once 'prepare_table/init.php';
+
+    $sql   = "select $fields from $table $where $wheref $group_by order by $order $order_direction limit $start_from,$number_results";
+    $adata = array();
+
+
+    if ($result = $db->query($sql)) {
+
+        foreach ($result as $data) {
+
+
+            switch ($data['type']) {
+                case 'Replacement':
+                    $type = _('Replacement');
+                    break;
+                case 'Order':
+                    $type = _('Offer');
+                    break;
+
+
+                default:
+                    $type = $data['type'];
+            }
+
+
+            $note = preg_replace('/\-?\d+ SKO (.+) /', '', $data['Note']);
+
+
+            $adata[] = array(
+                'id'          => $data['Inventory Transaction Key'],
+                'reference'   => sprintf('<span class="link" title="%s" onclick="change_view(\'part/%d\')">%s</span>', $data['Part Package Description'], $data['Part SKU'], $data['Part Reference']),
+                'description' => $data['Part Package Description'],
+                'stock'       => number($data['stock']),
+                'type'        => $type,
+                'value'       => money($data['value'], $account->get('Account Currency Code')),
+                'date'        => strftime("%e %b %Y %k:%M", strtotime($data['date'].' +0:00')),
+                'note'        => $note,
+                'delivery_note'       => sprintf('<span class="link" onclick="change_view(\'delivery_notes/%d/%d\')">%s</span>', $data['Delivery Note Store Key'], $data['Delivery Note Key'], $data['Delivery Note ID']),
+
+            );
+
+
+        }
+    } else {
+        print_r($error_info = $db->errorInfo());
+        exit;
+    }
+
+
+    $response = array(
+        'resultset' => array(
+            'state'         => 200,
+            'data'          => $adata,
+            'rtext'         => $rtext,
+            'sort_key'      => $_order,
+            'sort_dir'      => $_dir,
+            'total_records' => $total
+
+        )
+    );
+    echo json_encode($response);
+}
+
+
 ?>

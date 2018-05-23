@@ -29,6 +29,14 @@ if (!isset($_REQUEST['tab'])) {
 $tab = $_REQUEST['tab'];
 
 switch ($tab) {
+    case 'stock_given_free':
+        $data = prepare_values(
+            $_REQUEST, array(
+                         'parameters' => array('type' => 'json array')
+                     )
+        );
+        get_stock_given_free_element_numbers($db, $data['parameters'], $user,$account);
+        break;
     case 'lost_stock':
         $data = prepare_values(
             $_REQUEST, array(
@@ -3144,5 +3152,69 @@ function get_lost_stock_element_numbers($db, $data, $user,$account) {
 
 
 
+function get_stock_given_free_element_numbers($db, $data, $user,$account) {
+
+
+    $elements_numbers = array(
+
+        'type' => array(
+            'Order'  => 0,
+            'Replacement' => 0,
+        ),
+
+    );
+
+
+
+    $class_html=array(
+        'Order_Parts'=>0,
+        'Order_Amount'=>money(0,$account->get('Currency Code')),
+        'Replacement_Parts'=>0,
+        'Replacement_Amount'=>money(0,$account->get('Currency Code')),
+
+
+    );
+
+
+    $where = " where  `Amount In`=0 and `Inventory Transaction Type`='Sale' ";
+
+
+    if (isset($data['period'])) {
+
+        include_once 'utils/date_functions.php';
+        list(
+            $db_interval, $from, $to, $from_date_1yb, $to_1yb
+            ) = calculate_interval_dates(
+            $db, $data['period'], $data['from'], $data['to']
+        );
+        $where_interval = prepare_mysql_dates($from, $to, '`Date`');
+        $where          .= $where_interval['mysql'];
+
+    }
+
+    $sql = sprintf("select count(*) as number,`Delivery Note Type` as element,sum(`Inventory Transaction Amount`) as amount,count(distinct `Part SKU`) as parts from `Inventory Transaction Fact` ITF left join `Delivery Note Dimension` DN on (ITF.`Delivery Note Key`=DN.`Delivery Note Key`)  $where  group by `Delivery Note Type` ");
+
+    // print $sql;
+    foreach ($db->query($sql) as $row) {
+
+        $elements_numbers['type'][$row['element']] = number($row['number']);
+
+        $class_html[$row['element'].'_Amount']=money(-1*$row['amount'],$account->get('Currency Code'));
+        $class_html[$row['element'].'_Parts']=$row['parts'];
+
+    }
+
+
+
+
+    $response = array(
+        'state'            => 200,
+        'elements_numbers' => $elements_numbers,
+        'class_html'=>$class_html
+    );
+    echo json_encode($response);
+
+
+}
 
 ?>

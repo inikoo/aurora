@@ -36,6 +36,7 @@ $parameters = array(
     'parent_key' => 1,
 );
 
+$smarty->assign('table_top_template', 'stock_given_free.tpl');
 
 
 include 'utils/get_table_html.php';
