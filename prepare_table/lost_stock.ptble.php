@@ -17,7 +17,26 @@ $group_by = '  ';
 $wheref = '';
 
 
-$where = " where `Inventory Transaction Type` in ('Lost','Broken','Other Out') and `Inventory Transaction Quantity`<0 ";
+$where = " where  `Inventory Transaction Quantity`<0 ";
+
+
+$_elements      = '';
+$count_elements = 0;
+foreach (
+    $parameters['elements'][$parameters['elements_type']]['items'] as $_key => $_value
+) {
+    if ($_value['selected']) {
+        $count_elements++;
+        $_elements .= ','.prepare_mysql($_key);
+
+    }
+}
+$_elements = preg_replace('/^\,/', '', $_elements);
+if ($_elements == '') {
+    $where .= ' and false';
+} elseif ($count_elements < 5) {
+    $where .= ' and `Inventory Transaction Type` in ('.$_elements.')';
+}
 
 if (isset($parameters['period'])) {
 

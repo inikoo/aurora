@@ -74,7 +74,9 @@ function change_period(period) {
     });
     if (with_elements) get_elements_numbers(rows.tab, rows.parameters)
 
+
 }
+
 
 
 function get_elements_numbers(tab, parameters) {
@@ -90,6 +92,15 @@ function get_elements_numbers(tab, parameters) {
 
                 }
             }
+
+            if(data.class_html!=undefined) {
+
+                for (var key in data.class_html) {
+                    $('.' + key).html(data.class_html[key])
+                }
+            }
+
+
         }
     })
 
