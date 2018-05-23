@@ -1657,6 +1657,12 @@ function get_navigation($user, $smarty, $data, $db, $account) {
                 case ('packers'):
                     return get_packers_navigation($user, $smarty, $data);
                     break;
+                case ('lost_stock'):
+                    return get_lost_stock_navigation($user, $smarty, $data);
+                    break;
+                case ('stock_given_free'):
+                    return get_stock_given_free_navigation($user, $smarty, $data);
+                    break;
                 case ('sales'):
                     return get_sales_navigation($user, $smarty, $data);
                     break;
@@ -7589,6 +7595,22 @@ function get_view_position($db, $state, $user, $smarty, $account) {
             elseif ($state['section'] == 'packers') {
                 $branch[] = array(
                     'label'     => _('Packers productivity'),
+                    'icon'      => '',
+                    'reference' => ''
+                );
+
+            }
+            elseif ($state['section'] == 'lost_stock') {
+                $branch[] = array(
+                    'label'     => _('Lost/Damaged stock'),
+                    'icon'      => '',
+                    'reference' => ''
+                );
+
+            }
+            elseif ($state['section'] == 'stock_given_free') {
+                $branch[] = array(
+                    'label'     => _('Stock given for free'),
                     'icon'      => '',
                     'reference' => ''
                 );

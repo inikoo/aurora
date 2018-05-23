@@ -42,7 +42,12 @@ $available_reports = array(
         'GroupLabel' => _('Sales'),
 
     ),
+    'stock_given_free'             => array(
+        'Label'      => _('Stock given for free'),
+        'Group'      => 'sales',
+        'GroupLabel' => _('Sales'),
 
+    ),
     'billingregion_taxcategory' => array(
         'Label'      => _('Billing Country/Tax Categories'),
         'Group'      => 'tax',
@@ -61,6 +66,15 @@ $available_reports = array(
         'GroupLabel' => _('Tax'),
 
     ),
+
+    'lost_stock'             => array(
+        'Label'      => _('Lost stock'),
+        'Group'      => 'stock',
+        'GroupLabel' => _('Stock'),
+
+    ),
+
+
 );
 
 

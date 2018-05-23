@@ -4206,6 +4206,14 @@ function parse_request($_data, $db, $modules, $account = '', $user = '', $is_set
                         $section = 'sales';
 
 
+                    }  elseif ($view_path[0] == 'lost_stock') {
+                        $section = 'lost_stock';
+
+
+                    }  elseif ($view_path[0] == 'stock_given_free') {
+                        $section = 'stock_given_free';
+
+
                     }  elseif ($view_path[0] == 'report_orders') {
                         $section = 'report_orders';
 

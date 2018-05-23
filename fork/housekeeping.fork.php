@@ -27,7 +27,7 @@ function fork_housekeeping($job) {
 
         case 'update_parts_stock_run':
 
-            print_r($data);
+          //  print_r($data);
 
             foreach ($data['parts_data'] as $part_sku => $from_date) {
                 $part = get_object('Part', $part_sku);
