@@ -853,7 +853,11 @@ class Warehouse extends DB_Table {
         }
     }
 
-    function update_inventory_snapshot($from, $to = false) {
+    function update_inventory_snapshot($from='', $to = false) {
+
+        if($from==''){
+            $from=gmdate('Y-m-d',strtotime($this->data['Warehouse Valid From'].' +0:00'));
+        }
 
         if (!$to) {
             $to = $from;
@@ -953,7 +957,7 @@ class Warehouse extends DB_Table {
                         );
                         $this->db->exec($sql);
 
-                        // print "$sql\n";
+                     //    print "$sql\n";
 
 
                     }

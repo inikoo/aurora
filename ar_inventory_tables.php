@@ -448,6 +448,8 @@ function stock_history($_data, $db, $user, $account) {
 
     $sql = "select $fields from $table $where $wheref $group_by order by $order $order_direction limit $start_from,$number_results";
 
+
+  //  print $sql;
     $record_data = array();
 
     if ($result = $db->query($sql)) {
@@ -462,7 +464,7 @@ function stock_history($_data, $db, $user, $account) {
 
                 'date'  => strftime($date_format, strtotime($data['Date'].' +0:00')),
                 'stock' => number($data['Quantity On Hand']),
-                'value' => money($data['Value At Day Cost'], $account->get('Currency')),
+                'value' => money($data['Stock Value'], $account->get('Currency Code')),
                 'in'    => number($data['Quantity In']),
                 'sold'  => number($data['Quantity Sold']),
                 'lost'  => number($data['Quantity Lost']),
@@ -534,21 +536,18 @@ function inventory_stock_history($_data, $db, $user, $account) {
                 );
             }
 
+
+            $value= money($data['Value'], $account->get('Currency Code'));
+
             $record_data[] = array(
-                //'date'       => $data['Date'],
 
-
-                // 'day'        => strftime("%a %e %b %Y", strtotime($data['Date'].' +0:00')),
-                // 'year'       => strftime("%Y", strtotime($data['Date'].' +0:00')),
-                // 'month_year' => strftime("%b %Y", strtotime($data['Date'].' +0:00')),
-                // 'week_year'  => strftime("(%e %b) %Y %W ", strtotime($data['Date'].' +0:00')),
 
                 'date' => $date,
 
                 'parts'     => number($data['Parts']),
                 'locations' => number($data['Locations']),
 
-                'value'            => money($data['Value At Day Cost'], $account->get('Currency Code')),
+                'value'            =>$value,
                 'commercial_value' => money($data['Value Commercial'], $account->get('Currency Code')),
                 //'in'=>number($data['Quantity In']),
                 //'sold'=>number($data['Quantity Sold']),

@@ -30,10 +30,10 @@ About:
             <li><b>{t}Unit extra costs{/t}</b> <i>({t}required{/t})</i> [{t}amount (local supplier's currency){/t}
                 <i>{t}or{/t}</i> {t}percentage{/t}]
             </li>
-            <li><b>{t}Unit price{/t}</b> <i>({t}required{/t})</i> [{t}amount{/t} ({$account->get('Currency')})
+            <li><b>{t}Unit price{/t}</b> <i>({t}required{/t})</i> [{t}amount{/t} ({$account->get('Currency Code')})
                 <i>{t}or{/t}</i> {t}margin{/t}]
             </li>
-            <li><b>{t}Unit RRP{/t}</b> <i>({t}required{/t})</i> [{t}amount{/t} ({$account->get('Currency')})
+            <li><b>{t}Unit RRP{/t}</b> <i>({t}required{/t})</i> [{t}amount{/t} ({$account->get('Currency Code')})
                 <i>{t}or{/t}</i> {t}margin{/t}]
             </li>
             <li><b>{t}Units per outer{/t}</b> <i>({t}required{/t})</i> [{t}number{/t}]</li>

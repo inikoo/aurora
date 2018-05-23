@@ -238,7 +238,7 @@ $part_fields[] = array(
             'formatted_value' => $object->get('Unit Price'),
             'label'           => ucfirst($object->get_field_label('Part Unit Price')),
             'required'        => true,
-            'placeholder'     => sprintf(_('amount in %s or margin (%%)'), $account->get('Currency')),
+            'placeholder'     => sprintf(_('amount in %s or margin (%%)'), $account->get('Currency Code')),
             'type'            => 'value'
         ),
         array(
@@ -255,7 +255,7 @@ $part_fields[] = array(
             ),
             'required'        => true,
             'placeholder'     => sprintf(
-                _('amount in %s or margin (%%)'), $account->get('Currency')
+                _('amount in %s or margin (%%)'), $account->get('Currency Code')
             ),
             'type'            => 'value'
         ),

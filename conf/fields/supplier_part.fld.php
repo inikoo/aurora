@@ -548,7 +548,7 @@ if($new) {
                 'formatted_value' => $object->get('Part Unit Price'),
                 'label'           => ucfirst($object->get_field_label('Part Unit Price')),
                 'required'        => false,
-                'placeholder'     => sprintf(_('amount in %s or margin (%%)'), $account->get('Currency')),
+                'placeholder'     => sprintf(_('amount in %s or margin (%%)'), $account->get('Currency Code')),
                 'type'            => 'value'
             ),
             array(
@@ -558,7 +558,7 @@ if($new) {
                 'formatted_value' => $object->get('Part Unit RRP'),
                 'label'           => ucfirst($object->get_field_label('Part Unit RRP')),
                 'required'        => false,
-                'placeholder'     => sprintf(_('amount in %s or margin (%%)'), $account->get('Currency')),
+                'placeholder'     => sprintf(_('amount in %s or margin (%%)'), $account->get('Currency Code')),
                 'type'            => 'value'
             ),
 

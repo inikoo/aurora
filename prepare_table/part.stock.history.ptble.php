@@ -79,15 +79,31 @@ $sql_totals
     = "select count(Distinct $sql_totals_fields) as num from $table  $where  ";
 $fields .= '`Date`';
 
-$fields
-    = "`Date`,
+
+
+if($account->get('Account Add Stock Value Type')=='Blockchain'){
+    $fields
+        = "`Date`,
 ( select  sum(`Quantity On Hand`) from `Inventory Spanshot Fact` OISF  $where_sub)as `Quantity On Hand`,
-	( select  sum(`Value At Day Cost`) from `Inventory Spanshot Fact` OISF  $where_sub   )as `Value At Day Cost`,
+	( select  sum(`Value At Cost`) from `Inventory Spanshot Fact` OISF  $where_sub   )as `Stock Value`,
 	sum(`Quantity Sold`) as `Quantity Sold`,
 	sum(`Quantity In`) as `Quantity In`,
 	sum(`Quantity Lost`) as `Quantity Lost` 
 
 ";
+}else{
+    $fields
+        = "`Date`,
+( select  sum(`Quantity On Hand`) from `Inventory Spanshot Fact` OISF  $where_sub)as `Quantity On Hand`,
+	( select  sum(`Value At Day Cost`) from `Inventory Spanshot Fact` OISF  $where_sub   )as `Stock Value`,
+	sum(`Quantity Sold`) as `Quantity Sold`,
+	sum(`Quantity In`) as `Quantity In`,
+	sum(`Quantity Lost`) as `Quantity Lost` 
+
+";
+}
+
+
 
 
 ?>

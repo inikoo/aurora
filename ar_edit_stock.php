@@ -232,7 +232,8 @@ function set_delivery_costing($account, $db, $user, $editor, $data, $smarty) {
     //print_r($data);
 
 
-    $delivery = get_object('SupplierDelivery', $data['key']);
+    $delivery  = get_object('SupplierDelivery', $data['key']);
+    $parts_data = array();
 
 
     $sql = sprintf(
@@ -240,69 +241,76 @@ function set_delivery_costing($account, $db, $user, $editor, $data, $smarty) {
         $delivery->id
     );
     if ($result = $db->query($sql)) {
+        $all_parts_min_date = '';
         foreach ($result as $row) {
 
-            $amount_paid=(($data['items_data'][$row['Supplier Part Part SKU']][0] + $data['items_data'][$row['Supplier Part Part SKU']][1]) / $data['exchange']) + $data['items_data'][$row['Supplier Part Part SKU']][2];
+            $amount_paid = (($data['items_data'][$row['Supplier Part Part SKU']][0] + $data['items_data'][$row['Supplier Part Part SKU']][1]) / $data['exchange']) + $data['items_data'][$row['Supplier Part Part SKU']][2];
 
 
-
-                $sql = sprintf(
-                    'update `Purchase Order Transaction Fact` set `Supplier Delivery Net Amount`=%.2f ,`Supplier Delivery Extra Cost Amount`=%.2f, `Supplier Delivery Extra Cost Account Currency Amount`=%.2f   where `Purchase Order Transaction Fact Key`=%d    ',
-                    $data['items_data'][$row['Supplier Part Part SKU']][0], $data['items_data'][$row['Supplier Part Part SKU']][1], $data['items_data'][$row['Supplier Part Part SKU']][2],
-
-
-                    $row['Purchase Order Transaction Fact Key']
-
-                );
+            $sql = sprintf(
+                'update `Purchase Order Transaction Fact` set `Supplier Delivery Net Amount`=%.2f ,`Supplier Delivery Extra Cost Amount`=%.2f, `Supplier Delivery Extra Cost Account Currency Amount`=%.2f   where `Purchase Order Transaction Fact Key`=%d    ',
+                $data['items_data'][$row['Supplier Part Part SKU']][0], $data['items_data'][$row['Supplier Part Part SKU']][1], $data['items_data'][$row['Supplier Part Part SKU']][2],
 
 
-                $db->exec($sql);
+                $row['Purchase Order Transaction Fact Key']
+
+            );
 
 
-
-            if($row['Metadata']!=''){
-                $metadata=json_decode($row['Metadata'],true);
-              //  print_r($metadata);
-
-                if(isset($metadata['placement_data'])){
+            $db->exec($sql);
 
 
-                    $min_date='';
-                    $total_placed=0;
-                    foreach($metadata['placement_data'] as $placement_data){
+            if ($row['Metadata'] != '') {
+                $metadata = json_decode($row['Metadata'], true);
+                //  print_r($metadata);
+
+                if (isset($metadata['placement_data'])) {
 
 
-                        $sql=sprintf('select `Date` from `Inventory Transaction Fact`    where `Inventory Transaction Key`=%d' , $placement_data['oif_key']);
+                    $min_date     = '';
+                    $total_placed = 0;
+                    foreach ($metadata['placement_data'] as $placement_data) {
 
-                        if ($result2=$db->query($sql)) {
-                        		foreach ($result2 as $row2) {
-                                    $date=gmdate('U',strtotime($row2['Date']));
-                                    if($min_date==''){
-                                        $min_date=$date;
 
-                                    }elseif($date<$min_date){
-                                        $min_date=$date;
-                                    }
-                        		}
-                        }else {
-                        		print_r($error_info=$db->errorInfo());
-                        		print "$sql\n";
-                        		exit;
+                        $sql = sprintf('select `Date` from `Inventory Transaction Fact`    where `Inventory Transaction Key`=%d', $placement_data['oif_key']);
+
+                        if ($result2 = $db->query($sql)) {
+                            foreach ($result2 as $row2) {
+                                $date = gmdate('U', strtotime($row2['Date']));
+                                if ($min_date == '') {
+                                    $min_date = $date;
+
+                                } elseif ($date < $min_date) {
+                                    $min_date = $date;
+                                }
+                                if ($all_parts_min_date == '') {
+                                    $all_parts_min_date = $date;
+
+                                } elseif ($date < $all_parts_min_date) {
+                                    $all_parts_min_date = $date;
+                                }
+
+
+                            }
+                        } else {
+                            print_r($error_info = $db->errorInfo());
+                            print "$sql\n";
+                            exit;
                         }
 
 
-                        $total_placed+= $placement_data['qty'];
-
-
+                        $total_placed += $placement_data['qty'];
 
 
                     }
 
-                    if($total_placed>0){
-                        foreach($metadata['placement_data'] as $placement_data){
-                            $sql=sprintf('update `Inventory Transaction Fact`  set `Inventory Transaction Amount`=%f   where `Inventory Transaction Key`=%d',
-                                         $amount_paid*$placement_data['qty']/$total_placed,
-                                         $placement_data['oif_key']
+                    $parts_data[$row['Supplier Part Part SKU']] = ($min_date != '' ? gmdate('Y-m-d', $min_date) : '');
+
+
+                    if ($total_placed > 0) {
+                        foreach ($metadata['placement_data'] as $placement_data) {
+                            $sql = sprintf(
+                                'update `Inventory Transaction Fact`  set `Inventory Transaction Amount`=%f   where `Inventory Transaction Key`=%d', $amount_paid * $placement_data['qty'] / $total_placed, $placement_data['oif_key']
                             );
                             $db->exec($sql);
 
@@ -312,14 +320,6 @@ function set_delivery_costing($account, $db, $user, $editor, $data, $smarty) {
                 }
 
             }
-
-
-           // print ($min_date!=''?gmdate('Y-m-d',$min_date):'');
-
-            $part=get_object('Part',$row['Supplier Part Part SKU']);
-            $part->update_stock_run();
-            $part->redo_inventory_snapshot_fact(($min_date!=''?gmdate('Y-m-d',$min_date):''));
-
 
 
         }
@@ -335,6 +335,21 @@ function set_delivery_costing($account, $db, $user, $editor, $data, $smarty) {
 
 
     $delivery->update_totals();
+
+
+    include_once 'utils/new_fork.php';
+
+
+    new_housekeeping_fork(
+        'au_housekeeping', array(
+        'type'                => 'update_parts_stock_run',
+        'parts_data'           => $parts_data,
+        'all_parts_min_date' => ($all_parts_min_date != '' ? gmdate('Y-m-d', $all_parts_min_date) : ''),
+    ), $account->get('Account Code')
+    );
+
+
+
 
 
     $response = array(
@@ -673,8 +688,6 @@ LEFT JOIN `Supplier Part Historic Dimension` SPH ON (POTF.`Supplier Part Histori
             $old_value = $part->get('Part Cost in Warehouse');
 
 
-
-
             $part_location         = new PartLocation('find', $part_location_data, 'create');
             $part_location->editor = $editor;
             if (!$part_location) {
@@ -699,15 +712,10 @@ LEFT JOIN `Supplier Part Historic Dimension` SPH ON (POTF.`Supplier Part Histori
 
             $exchange = $object->get('Supplier Delivery Currency Exchange');
 
-            $amount_per_sko = round( ( $exchange * ($row['Supplier Delivery Net Amount'] + $row['Supplier Delivery Extra Cost Amount'])    + $row['Supplier Delivery Extra Cost Account Currency Amount']) / $row['Supplier Delivery Quantity'],4);
-
-
-
-
+            $amount_per_sko = round(($exchange * ($row['Supplier Delivery Net Amount'] + $row['Supplier Delivery Extra Cost Amount']) + $row['Supplier Delivery Extra Cost Account Currency Amount']) / $row['Supplier Delivery Quantity'], 4);
 
 
             if ($account->get('Account Add Stock Value Type') == 'Last Price') {
-
 
 
                 $part_location->part->update(array('Part Cost in Warehouse' => $amount_per_sko));
@@ -729,7 +737,6 @@ LEFT JOIN `Supplier Part Historic Dimension` SPH ON (POTF.`Supplier Part Histori
                     );
 
                 }
-
 
 
                 $oif_key = $part_location->add_stock(

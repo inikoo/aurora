@@ -25,17 +25,36 @@ function fork_housekeeping($job) {
     switch ($data['type']) {
 
 
+        case 'update_parts_stock_run':
+
+            print_r($data);
+
+            foreach ($data['parts_data'] as $part_sku => $from_date) {
+                $part = get_object('Part', $part_sku);
+                $part->update_stock_run();
+                $part->redo_inventory_snapshot_fact($from_date);
+            }
+
+            $sql = sprintf('SELECT `Warehouse Key` FROM `Warehouse Dimension`');
+            if ($result2 = $db->query($sql)) {
+                foreach ($result2 as $row2) {
+                    $warehouse = get_object('Warehouse',$row2['Warehouse Key']);
+                    $warehouse->update_inventory_snapshot($data['all_parts_min_date'],gmdate('Y-m-d'));
+                }
+            } else {
+                print_r($error_info = $db->errorInfo());
+                exit;
+            }
+
+            break;
+
         case 'deal_created':
 
 
             $deal = get_object('Deal', $data['deal_key']);
 
 
-
-
-            if ($deal->get('Deal Status')=='Active' and !$deal->get('Deal Voucher Key')) {
-
-
+            if ($deal->get('Deal Status') == 'Active' and !$deal->get('Deal Voucher Key')) {
 
 
                 switch ($deal->get('Deal Trigger')) {
@@ -43,9 +62,9 @@ function fork_housekeeping($job) {
 
 
                         $sql = sprintf(
-                            'SELECT `Order Key`  FROM `Order Transaction Fact` OTF   LEFT JOIN `Category Bridge`  ON (`Subject Key`=`Product ID`)    WHERE `Subject`="Product" AND `Category Key`=%d and `Current Dispatching State`="In Process"  group by `Order Key`', $deal->get('Deal Trigger Key')
+                            'SELECT `Order Key`  FROM `Order Transaction Fact` OTF   LEFT JOIN `Category Bridge`  ON (`Subject Key`=`Product ID`)    WHERE `Subject`="Product" AND `Category Key`=%d and `Current Dispatching State`="In Process"  group by `Order Key`',
+                            $deal->get('Deal Trigger Key')
                         );
-
 
 
                         if ($result = $db->query($sql)) {
@@ -89,57 +108,54 @@ function fork_housekeeping($job) {
             $deal = get_object('Deal', $data['deal_key']);
 
 
+            //print $deal->get('Deal Trigger');
 
 
-
-//print $deal->get('Deal Trigger');
-
-
-                switch ($deal->get('Deal Trigger')) {
-                    case 'Category':
+            switch ($deal->get('Deal Trigger')) {
+                case 'Category':
 
 
-                        $sql = sprintf(
-                            'SELECT `Order Key`  FROM `Order Transaction Fact` OTF   LEFT JOIN `Category Bridge`  ON (`Subject Key`=`Product ID`)    WHERE `Subject`="Product" AND `Category Key`=%d and `Current Dispatching State`="In Process"  group by `Order Key`',
-                            $deal->get('Deal Trigger Key')
-                        );
+                    $sql = sprintf(
+                        'SELECT `Order Key`  FROM `Order Transaction Fact` OTF   LEFT JOIN `Category Bridge`  ON (`Subject Key`=`Product ID`)    WHERE `Subject`="Product" AND `Category Key`=%d and `Current Dispatching State`="In Process"  group by `Order Key`',
+                        $deal->get('Deal Trigger Key')
+                    );
 
 
-                      // print $sql;
+                    // print $sql;
 
 
-                        if ($result = $db->query($sql)) {
-                            foreach ($result as $row) {
+                    if ($result = $db->query($sql)) {
+                        foreach ($result as $row) {
 
-                                //print_r($row);
-                                $order = get_object('Order', $row['Order Key']);
-                                $order->update_totals();
+                            //print_r($row);
+                            $order = get_object('Order', $row['Order Key']);
+                            $order->update_totals();
 
-                                $order->update_discounts_items();
-
-
-                                $order->update_shipping(false, false);
-                                $order->update_charges(false, false);
-
-                                $order->update_deal_bridge();
+                            $order->update_discounts_items();
 
 
-                                $order->update_totals();
-                            }
-                        } else {
-                            print_r($error_info = $db->errorInfo());
-                            print "$sql\n";
-                            exit;
+                            $order->update_shipping(false, false);
+                            $order->update_charges(false, false);
+
+                            $order->update_deal_bridge();
+
+
+                            $order->update_totals();
                         }
+                    } else {
+                        print_r($error_info = $db->errorInfo());
+                        print "$sql\n";
+                        exit;
+                    }
 
 
-                        break;
-                    default:
-                        break;
-                }
+                    break;
+                default:
+                    break;
+            }
 
 
-//exit;
+            //exit;
 
             break;
 

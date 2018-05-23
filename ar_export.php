@@ -51,7 +51,7 @@ if ($_data['tipo'] == 'timeserie_records') {
 
     if ($timeseries->get('Type') == 'StoreSales') {
         $field_set[1]['label'] .= ' '.$timeseries->parent->get('Currency Code');
-        $field_set[2]['label'] .= ' '.$account->get('Currency');
+        $field_set[2]['label'] .= ' '.$account->get('Currency Code');
         if ($timeseries->parent->get('Currency Code') == $account->get(
                 'Currency'
             )

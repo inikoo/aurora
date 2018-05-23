@@ -330,10 +330,10 @@ function suppliers($_data, $db, $user, $account) {
 
 
                 'sales'    => '<span class="highlight">'.money(
-                        $data['sales'], $account->get('Currency')
+                        $data['sales'], $account->get('Currency Code')
                     ).'</span>',
                 'sales_1y' => '<span class="highlight" title="'.money(
-                        $data['sales_1y'], $account->get('Currency')
+                        $data['sales_1y'], $account->get('Currency Code')
                     ).'">'.delta($data['sales'], $data['sales_1y']).'</span>',
 
                 'sales_year0' => sprintf(
@@ -594,10 +594,10 @@ function agents($_data, $db, $user, $account) {
                 'company'   => $data['Agent Company Name'],
 
                 'sales'    => '<span class="highlight">'.money(
-                        $data['sales'], $account->get('Currency')
+                        $data['sales'], $account->get('Currency Code')
                     ).'</span>',
                 'sales_1y' => '<span class="highlight" title="'.money(
-                        $data['sales_1y'], $account->get('Currency')
+                        $data['sales_1y'], $account->get('Currency Code')
                     ).'">'.delta($data['sales'], $data['sales_1y']).'</span>',
 
                 'sales_year0' => sprintf(
@@ -2216,10 +2216,10 @@ function category_all_suppliers($_data, $db, $user, $account) {
                 'contact'    => $data['Supplier Main Contact Name'],
                 'company'    => $data['Supplier Company Name'],
                 'revenue'    => '<span class="highlight">'.money(
-                        $data['revenue'], $account->get('Currency')
+                        $data['revenue'], $account->get('Currency Code')
                     ).'</span>',
                 'revenue_1y' => '<span class="highlight" title="'.money(
-                        $data['revenue_1y'], $account->get('Currency')
+                        $data['revenue_1y'], $account->get('Currency Code')
                     ).'">'.delta($data['revenue'], $data['revenue_1y']).'</span>',
 
             );
@@ -3475,10 +3475,10 @@ function supplier_categories($_data, $db, $user) {
 
 
             'sales'    => '<span class="highlight">'.money(
-                    $data['sales'], $account->get('Currency')
+                    $data['sales'], $account->get('Currency Code')
                 ).'</span>',
             'sales_1y' => '<span class="highlight" title="'.money(
-                    $data['sales_1y'], $account->get('Currency')
+                    $data['sales_1y'], $account->get('Currency Code')
                 ).'">'.delta($data['sales'], $data['sales_1y']).'</span>',
 
             'sales_year0' => sprintf(
