@@ -52,6 +52,13 @@ if (isset($parameters['period'])) {
 }
 
 
+
+if ($parameters['f_field'] == 'reference' and $f_value != '') {
+    $wheref .= " and  `Part Reference` like '".addslashes($f_value)."%'";
+}
+
+
+
 $_order = $order;
 $_dir   = $order_direction;
 
@@ -79,7 +86,7 @@ if ($order == 'date') {
 $order = '`Date`';
 
 
-$sql_totals = "select count(*) as num from $table  $where  ";
+$sql_totals = "select count(*) as num from $table    ";
 
 $fields = '`User Alias`,ITF.`User Key`,`Note`,`Inventory Transaction Type` as type , -1*`Inventory Transaction Amount` as value,-1*`Inventory Transaction Quantity` as stock ,`Date` date, `Inventory Transaction Key`,ITF.`Part SKU`,`Part Reference`,`Part Package Description` ';
 

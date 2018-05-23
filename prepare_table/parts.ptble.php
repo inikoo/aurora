@@ -150,11 +150,7 @@ if (isset($parameters['f_period'])) {
     $yb_fields = " '' as dispatched_1yb,'' as sales_1yb,";
 }
 
-if ($parameters['f_field'] == 'used_in' and $f_value != '') {
-    $wheref .= " and  `Part XHTML Currently Used In` like '%".addslashes(
-            $f_value
-        )."%'";
-} elseif ($parameters['f_field'] == 'reference' and $f_value != '') {
+if ($parameters['f_field'] == 'reference' and $f_value != '') {
     $wheref .= " and  `Part Reference` like '".addslashes($f_value)."%'";
 } elseif ($parameters['f_field'] == 'supplied_by' and $f_value != '') {
     $wheref .= " and  `Part XHTML Currently Supplied By` like '%".addslashes(
