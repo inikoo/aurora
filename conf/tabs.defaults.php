@@ -3082,7 +3082,9 @@ $tab_defaults = array(
         'f_field'       => 'part_reference',
         'from'          => '',
         'to'            => '',
-        'period'        => 'mtd'
+        'period'        => 'mtd',
+        'elements_type' => each($elements_options['lost_stock'])['key'],
+        'elements'      => $elements_options['lost_stock'],
 
     ),
     'stock_given_free' => array(

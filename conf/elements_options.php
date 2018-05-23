@@ -1429,7 +1429,27 @@ $elements_options = array(
         )
     ),
 
+    'lost_stock' => array(
+        'type' => array(
+            'label' => _('Type'),
+            'items' => array(
+                'Lost'     => array(
+                    'label'    => _('Lost'),
+                    'selected' => true
+                ),
+                'Broken'      => array(
+                    'label'    => _('Damaged'),
+                    'selected' => true
+                ),
+                'Error'      => array(
+                    'label'    => _('Error'),
+                    'selected' => false
+                )
 
+            ),
+
+        )
+    ),
 
 
     'part_barcode_errors' => array(
