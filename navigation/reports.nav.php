@@ -11,6 +11,39 @@
 */
 
 
+
+function get_lost_stock_navigation($user, $smarty, $data) {
+
+
+    $left_buttons  = array();
+    $right_buttons = array();
+    $sections      = array();
+
+    if (isset($sections[$data['section']])) {
+        $sections[$data['section']]['selected'] = true;
+    }
+
+    $title = _('Lost stock');
+
+    $_content = array(
+        'sections_class' => '',
+        'sections'       => $sections,
+        'left_buttons'   => $left_buttons,
+        'right_buttons'  => $right_buttons,
+        'title'          => $title,
+        'search'         => array(
+            'show'        => true,
+            'placeholder' => _('Search reports')
+        )
+    );
+    $smarty->assign('_content', $_content);
+    $html = $smarty->fetch('navigation.tpl');
+
+    return $html;
+
+}
+
+
 function get_sales_navigation($user, $smarty, $data) {
 
 

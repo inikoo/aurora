@@ -5767,6 +5767,27 @@ $modules = array(
                 )
 
             ),
+              'stock_given_free'         => array(
+                'type' => '',
+                'tabs' => array(
+                    'stock_given_free' => array(),
+
+                )
+
+            ),
+              'lost_stock'         => array(
+                'type' => '',
+                'tabs' => array(
+                    'lost_stock' => array(),
+
+                )
+
+            ),
+
+
+
+
+
             'report_orders' => array(
                 'type' => '',
                 'tabs' => array(

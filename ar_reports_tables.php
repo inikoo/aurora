@@ -29,6 +29,12 @@ switch ($tipo) {
     case 'reports':
         reports(get_table_parameters(), $db, $user);
         break;
+    case 'lost_stock':
+        lost_stock(get_table_parameters(), $db, $user, $account);
+        break;
+    case 'stock_given_free':
+        stock_given_free(get_table_parameters(), $db, $user, $account);
+        break;
     case 'ec_sales_list':
         ec_sales_list(get_table_parameters(), $db, $user, $account);
         break;
@@ -90,17 +96,14 @@ function reports($_data, $db, $user) {
     include_once 'utils/available_reports.php';
 
 
-    //$sql="select $fields from $table $where $wheref order by $order $order_direction limit $start_from,$number_results";
-
-
     $adata = array();
 
 
     foreach ($available_reports as $key => $data) {
 
         $adata[] = array(
-            'name'            =>sprintf('<span class="link" onclick="change_view(\'/report/%s\')">%s</span>', $key,$data['Label']),
-            'section'         => sprintf('<span class="link" onclick="change_view(\'/reports/%s\')">%s</span>', $data['Group'],$data['GroupLabel'])
+            'name'    => sprintf('<span class="link" onclick="change_view(\'/report/%s\')">%s</span>', $key, $data['Label']),
+            'section' => sprintf('<span class="link" onclick="change_view(\'/reports/%s\')">%s</span>', $data['Group'], $data['GroupLabel'])
 
         );
 
@@ -660,38 +663,33 @@ function pickers($_data, $db, $user, $account) {
     $rtext_label = 'picker';
 
 
-
     foreach ($_data['parameters'] as $parameter => $parameter_value) {
         $_SESSION['table_state']['packers'][$parameter] = $parameter_value;
 
     }
 
 
-
-
-
     include_once 'prepare_table/init.php';
 
 
-    $total_dp=0;
-    $sql=sprintf("select sum(`Inventory Transaction Weight`) as weight,count(distinct `Delivery Note Key`) as delivery_notes,count(distinct `Delivery Note Key`,`Part SKU`) as units  from  `Inventory Transaction Fact` $where group by `Picker Key` ");
+    $total_dp = 0;
+    $sql      = sprintf("select sum(`Inventory Transaction Weight`) as weight,count(distinct `Delivery Note Key`) as delivery_notes,count(distinct `Delivery Note Key`,`Part SKU`) as units  from  `Inventory Transaction Fact` $where group by `Picker Key` ");
 
 
-    if ($result=$db->query($sql)) {
+    if ($result = $db->query($sql)) {
         foreach ($result as $row) {
-            $total_dp+=($row['units']);
+            $total_dp += ($row['units']);
 
         }
-    }else {
-        print_r($error_info=$db->errorInfo());
+    } else {
+        print_r($error_info = $db->errorInfo());
         print "$sql\n";
         exit;
     }
 
 
-
-    if($total_dp==0){
-        $total_dp=1;
+    if ($total_dp == 0) {
+        $total_dp = 1;
     }
 
 
@@ -704,20 +702,19 @@ function pickers($_data, $db, $user, $account) {
         foreach ($result as $data) {
 
 
-
             $adata[] = array(
 
-                'name'          => $data['Staff Name'],
-                'deliveries'    => number($data['deliveries']),
-                'deliveries_with_errors'=> number($data['deliveries_with_errors']),
-                'deliveries_with_errors_percentage'=>  percentage($data['deliveries_with_errors'], $data['deliveries']),
-                'picks_with_errors'=> number($data['picks_with_errors']),
-                'picks_with_errors_percentage'=>  percentage($data['picks_with_errors_percentage'], 1),
-                'picked'        => number($data['picked'],0),
-                'dp'            => number($data['dp']),
-                'dp_percentage' => percentage($data['dp'], $total_dp),
-                'hrs'           => number($data['hrs'], 1, true),
-                'dp_per_hour'   => ($data['dp_per_hour'] == '' ? '' : number($data['dp_per_hour'], 1, true)),
+                'name'                              => $data['Staff Name'],
+                'deliveries'                        => number($data['deliveries']),
+                'deliveries_with_errors'            => number($data['deliveries_with_errors']),
+                'deliveries_with_errors_percentage' => percentage($data['deliveries_with_errors'], $data['deliveries']),
+                'picks_with_errors'                 => number($data['picks_with_errors']),
+                'picks_with_errors_percentage'      => percentage($data['picks_with_errors_percentage'], 1),
+                'picked'                            => number($data['picked'], 0),
+                'dp'                                => number($data['dp']),
+                'dp_percentage'                     => percentage($data['dp'], $total_dp),
+                'hrs'                               => number($data['hrs'], 1, true),
+                'dp_per_hour'                       => ($data['dp_per_hour'] == '' ? '' : number($data['dp_per_hour'], 1, true)),
 
             );
 
@@ -755,25 +752,24 @@ function packers($_data, $db, $user, $account) {
     include_once 'prepare_table/init.php';
 
 
-    $total_dp=0;
-    $sql=sprintf("select sum(`Inventory Transaction Weight`) as weight,count(distinct `Delivery Note Key`) as delivery_notes,count(distinct `Delivery Note Key`,`Part SKU`) as units  from  `Inventory Transaction Fact` $where group by `Packer Key` ");
+    $total_dp = 0;
+    $sql      = sprintf("select sum(`Inventory Transaction Weight`) as weight,count(distinct `Delivery Note Key`) as delivery_notes,count(distinct `Delivery Note Key`,`Part SKU`) as units  from  `Inventory Transaction Fact` $where group by `Packer Key` ");
 
 
-    if ($result=$db->query($sql)) {
+    if ($result = $db->query($sql)) {
         foreach ($result as $row) {
-            $total_dp+=($row['units']);
+            $total_dp += ($row['units']);
 
         }
-    }else {
-        print_r($error_info=$db->errorInfo());
+    } else {
+        print_r($error_info = $db->errorInfo());
         print "$sql\n";
         exit;
     }
 
 
-
-    if($total_dp==0){
-        $total_dp=1;
+    if ($total_dp == 0) {
+        $total_dp = 1;
     }
 
 
@@ -788,17 +784,17 @@ function packers($_data, $db, $user, $account) {
 
             $adata[] = array(
 
-                'name'          => $data['Staff Name'],
-                'deliveries'    => number($data['deliveries']),
-                'packed'        => number($data['packed'],0),
-                'dp'            => number($data['dp']),
-                'dp_percentage' => percentage($data['dp'], $total_dp),
-                'hrs'           => number($data['hrs'], 1, true),
-                'dp_per_hour'   => ($data['dp_per_hour'] == '' ? '' : number($data['dp_per_hour'], 1, true)),
-                'deliveries_with_errors'=> number($data['deliveries_with_errors']),
-                'deliveries_with_errors_percentage'=>  percentage($data['deliveries_with_errors'], $data['deliveries']),
-                'picks_with_errors'=> number($data['picks_with_errors']),
-                'picks_with_errors_percentage'=>  percentage($data['picks_with_errors_percentage'], 1),
+                'name'                              => $data['Staff Name'],
+                'deliveries'                        => number($data['deliveries']),
+                'packed'                            => number($data['packed'], 0),
+                'dp'                                => number($data['dp']),
+                'dp_percentage'                     => percentage($data['dp'], $total_dp),
+                'hrs'                               => number($data['hrs'], 1, true),
+                'dp_per_hour'                       => ($data['dp_per_hour'] == '' ? '' : number($data['dp_per_hour'], 1, true)),
+                'deliveries_with_errors'            => number($data['deliveries_with_errors']),
+                'deliveries_with_errors_percentage' => percentage($data['deliveries_with_errors'], $data['deliveries']),
+                'picks_with_errors'                 => number($data['picks_with_errors']),
+                'picks_with_errors_percentage'      => percentage($data['picks_with_errors_percentage'], 1),
 
 
             );
@@ -825,7 +821,6 @@ function packers($_data, $db, $user, $account) {
 }
 
 
-
 function sales($_data, $db, $user, $account) {
 
     $rtext_label = 'store';
@@ -834,16 +829,16 @@ function sales($_data, $db, $user, $account) {
     $sql   = "select $fields from $table $where $wheref $group_by order by $order $order_direction limit $start_from,$number_results";
     $adata = array();
 
-    $totals=array(
-        'store' =>_('Total'),
-        'invoices' =>0,
-        'refunds' =>0,
-        'replacements' =>0,
-        'customers' =>0,
-        'refund_amount' =>0,
-        'revenue' =>0,
-        'profit' =>0,
-        'margin' =>0,
+    $totals = array(
+        'store'         => _('Total'),
+        'invoices'      => 0,
+        'refunds'       => 0,
+        'replacements'  => 0,
+        'customers'     => 0,
+        'refund_amount' => 0,
+        'revenue'       => 0,
+        'profit'        => 0,
+        'margin'        => 0,
     );
 
     // print $sql;
@@ -853,27 +848,27 @@ function sales($_data, $db, $user, $account) {
         foreach ($result as $data) {
 
 
-            $refund_amount=money($data['refunds_amount_oc'],$account->get('Account Currency Code'));
-            $revenue=money($data['revenue_oc'],$account->get('Account Currency Code'));
-            $profit=money($data['profit_oc'],$account->get('Account Currency Code'));
+            $refund_amount = money($data['refunds_amount_oc'], $account->get('Account Currency Code'));
+            $revenue       = money($data['revenue_oc'], $account->get('Account Currency Code'));
+            $profit        = money($data['profit_oc'], $account->get('Account Currency Code'));
 
             $adata[] = array(
 
-                'store' =>$data['Store Code'],
-                'invoices' =>number($data['invoices']),
-                'refunds' =>number($data['refunds']),
-                'customers' =>number($data['customers']),
-                'refund_amount' =>$refund_amount,
-                'revenue' =>$revenue,
-                'profit' =>$profit
+                'store'         => $data['Store Code'],
+                'invoices'      => number($data['invoices']),
+                'refunds'       => number($data['refunds']),
+                'customers'     => number($data['customers']),
+                'refund_amount' => $refund_amount,
+                'revenue'       => $revenue,
+                'profit'        => $profit
             );
 
-            $totals['customers']+=$data['customers'];
-            $totals['invoices']+=$data['invoices'];
-            $totals['refunds']+=$data['refunds'];
-            $totals['refund_amount']+=$data['refunds_amount_oc'];
-            $totals['revenue']+=$data['revenue_oc'];
-            $totals['profit']+=$data['profit_oc'];
+            $totals['customers']     += $data['customers'];
+            $totals['invoices']      += $data['invoices'];
+            $totals['refunds']       += $data['refunds'];
+            $totals['refund_amount'] += $data['refunds_amount_oc'];
+            $totals['revenue']       += $data['revenue_oc'];
+            $totals['profit']        += $data['profit_oc'];
 
 
         }
@@ -882,17 +877,17 @@ function sales($_data, $db, $user, $account) {
         exit;
     }
 
-    $totals['invoices']=number($totals['invoices']);
-    $totals['refunds']=number($totals['refunds']);
-    $totals['customers']=number($totals['customers']);
+    $totals['invoices']  = number($totals['invoices']);
+    $totals['refunds']   = number($totals['refunds']);
+    $totals['customers'] = number($totals['customers']);
 
 
-    $totals['margin']=percentage($totals['profit'],$totals['revenue']);
-    $totals['refund_amount']=money($totals['refund_amount'],$account->get('Account Currency Code'));
-    $totals['revenue']=money($totals['revenue'],$account->get('Account Currency Code'));
-    $totals['profit']=money($totals['profit'],$account->get('Account Currency Code'));
+    $totals['margin']        = percentage($totals['profit'], $totals['revenue']);
+    $totals['refund_amount'] = money($totals['refund_amount'], $account->get('Account Currency Code'));
+    $totals['revenue']       = money($totals['revenue'], $account->get('Account Currency Code'));
+    $totals['profit']        = money($totals['profit'], $account->get('Account Currency Code'));
 
-    $adata[] =$totals;
+    $adata[] = $totals;
 
     $response = array(
         'resultset' => array(
@@ -920,16 +915,16 @@ function dispatched_orders($_data, $db, $user, $account) {
     // print $sql;
 
 
-    $totals=array(
-        'store' =>_('Total'),
-        'orders' =>0,
-        'refunds' =>0,
-        'replacements' =>0,
-        'customers' =>0,
-        'refund_amount' =>0,
-        'revenue' =>0,
-        'profit' =>0,
-        'margin' =>0,
+    $totals = array(
+        'store'         => _('Total'),
+        'orders'        => 0,
+        'refunds'       => 0,
+        'replacements'  => 0,
+        'customers'     => 0,
+        'refund_amount' => 0,
+        'revenue'       => 0,
+        'profit'        => 0,
+        'margin'        => 0,
     );
 
     if ($result = $db->query($sql)) {
@@ -937,31 +932,31 @@ function dispatched_orders($_data, $db, $user, $account) {
         foreach ($result as $data) {
 
 
-            $refund_amount=money($data['refunds_amount_oc'],$account->get('Account Currency Code'));
-            $revenue=money($data['revenue_oc'],$account->get('Account Currency Code'));
-            $profit=money($data['profit_oc'],$account->get('Account Currency Code'));
+            $refund_amount = money($data['refunds_amount_oc'], $account->get('Account Currency Code'));
+            $revenue       = money($data['revenue_oc'], $account->get('Account Currency Code'));
+            $profit        = money($data['profit_oc'], $account->get('Account Currency Code'));
 
             $adata[] = array(
 
-                'store' =>$data['Store Code'],
-                'orders' =>number($data['orders']),
-                'refunds' =>number($data['refunds']),
-                'replacements' =>number($data['replacements']),
-                'customers' =>number($data['customers']),
-                'refund_amount' =>$refund_amount,
-                'revenue' =>$revenue,
-                'profit' =>$profit,
-                'margin' =>percentage($data['profit_oc'],$data['revenue_oc'])
+                'store'         => $data['Store Code'],
+                'orders'        => number($data['orders']),
+                'refunds'       => number($data['refunds']),
+                'replacements'  => number($data['replacements']),
+                'customers'     => number($data['customers']),
+                'refund_amount' => $refund_amount,
+                'revenue'       => $revenue,
+                'profit'        => $profit,
+                'margin'        => percentage($data['profit_oc'], $data['revenue_oc'])
             );
 
 
-            $totals['customers']+=$data['customers'];
-            $totals['orders']+=$data['orders'];
-            $totals['refunds']+=$data['refunds'];
-            $totals['replacements']+=$data['replacements'];
-            $totals['refund_amount']+=$data['refunds_amount_oc'];
-            $totals['revenue']+=$data['revenue_oc'];
-            $totals['profit']+=$data['profit_oc'];
+            $totals['customers']     += $data['customers'];
+            $totals['orders']        += $data['orders'];
+            $totals['refunds']       += $data['refunds'];
+            $totals['replacements']  += $data['replacements'];
+            $totals['refund_amount'] += $data['refunds_amount_oc'];
+            $totals['revenue']       += $data['revenue_oc'];
+            $totals['profit']        += $data['profit_oc'];
 
         }
     } else {
@@ -969,14 +964,14 @@ function dispatched_orders($_data, $db, $user, $account) {
         exit;
     }
 
-    $totals['margin']=percentage($totals['profit'],$totals['revenue']);
+    $totals['margin'] = percentage($totals['profit'], $totals['revenue']);
 
-    $totals['refund_amount']=money($totals['refund_amount'],$account->get('Account Currency Code'));
-    $totals['revenue']=money($totals['revenue'],$account->get('Account Currency Code'));
+    $totals['refund_amount'] = money($totals['refund_amount'], $account->get('Account Currency Code'));
+    $totals['revenue']       = money($totals['revenue'], $account->get('Account Currency Code'));
 
-    $totals['profit']=money($totals['profit'],$account->get('Account Currency Code'));
+    $totals['profit'] = money($totals['profit'], $account->get('Account Currency Code'));
 
-    $adata[] =$totals;
+    $adata[] = $totals;
 
     $response = array(
         'resultset' => array(
@@ -993,7 +988,6 @@ function dispatched_orders($_data, $db, $user, $account) {
 }
 
 
-
 function dispatched_delivery_notes($_data, $db, $user, $account) {
 
     $rtext_label = 'store';
@@ -1005,12 +999,12 @@ function dispatched_delivery_notes($_data, $db, $user, $account) {
     // print $sql;
 
 
-    $totals=array(
-        'store' =>_('Total'),
-        'shipments' =>0,
-        'delivery_notes' =>0,
-        'replacements' =>0,
-        'customers' =>0,
+    $totals = array(
+        'store'          => _('Total'),
+        'shipments'      => 0,
+        'delivery_notes' => 0,
+        'replacements'   => 0,
+        'customers'      => 0,
     );
 
 
@@ -1019,19 +1013,19 @@ function dispatched_delivery_notes($_data, $db, $user, $account) {
         foreach ($result as $data) {
 
 
-           // $refund_amount=money($data['refunds_amount_oc'],$account->get('Account Currency Code'));
-           // $revenue=money($data['revenue_oc'],$account->get('Account Currency Code'));
-          //  $profit=money($data['profit_oc'],$account->get('Account Currency Code'));
+            // $refund_amount=money($data['refunds_amount_oc'],$account->get('Account Currency Code'));
+            // $revenue=money($data['revenue_oc'],$account->get('Account Currency Code'));
+            //  $profit=money($data['profit_oc'],$account->get('Account Currency Code'));
 
             $adata[] = array(
 
-                'store' =>$data['Store Code'],
-                'shipments' =>number($data['shipments']),
+                'store'     => $data['Store Code'],
+                'shipments' => number($data['shipments']),
 
-                'delivery_notes' =>number($data['shipments']-$data['replacements']),
+                'delivery_notes' => number($data['shipments'] - $data['replacements']),
                 //'refunds' =>number($data['refunds']),
-                'replacements' =>number($data['replacements']),
-                'customers' =>number($data['customers']),
+                'replacements'   => number($data['replacements']),
+                'customers'      => number($data['customers']),
                 //'refund_amount' =>$refund_amount,
                 //'revenue' =>$revenue,
                 //'profit' =>$profit,
@@ -1039,17 +1033,17 @@ function dispatched_delivery_notes($_data, $db, $user, $account) {
             );
 
 
-            $totals['customers']+=$data['customers'];
-            $totals['shipments']+=$data['shipments'];
-            $totals['delivery_notes']+=$data['shipments']-$data['replacements'];
-            $totals['replacements']+=$data['replacements'];
+            $totals['customers']      += $data['customers'];
+            $totals['shipments']      += $data['shipments'];
+            $totals['delivery_notes'] += $data['shipments'] - $data['replacements'];
+            $totals['replacements']   += $data['replacements'];
         }
     } else {
         print_r($error_info = $db->errorInfo());
         exit;
     }
 
-    $adata[] =$totals;
+    $adata[] = $totals;
 
 
     $sql  = "select $fields from $table $where $wheref $group_by";
@@ -1081,7 +1075,6 @@ function dispatched_delivery_notes($_data, $db, $user, $account) {
 }
 
 
-
 function dispatched_orders_components($_data, $db, $user, $account) {
 
     $rtext_label = 'store';
@@ -1093,20 +1086,20 @@ function dispatched_orders_components($_data, $db, $user, $account) {
     // print $sql;
 
 
-    $totals=array(
-        'store' =>_('Total'),
-        'items_cost' =>0,
-        'shipping_cost' =>0,
-        'replacement_cost' =>0,
-        'items_net' =>0,
-        'shipping_net' =>0,
-        'charges_net' =>0,
-        'total_net' =>0,
-        'tax' =>0,
-        'refund_amount' =>0,
-        'revenue' =>0,
-        'profit' =>0,
-        'margin' =>0,
+    $totals = array(
+        'store'            => _('Total'),
+        'items_cost'       => 0,
+        'shipping_cost'    => 0,
+        'replacement_cost' => 0,
+        'items_net'        => 0,
+        'shipping_net'     => 0,
+        'charges_net'      => 0,
+        'total_net'        => 0,
+        'tax'              => 0,
+        'refund_amount'    => 0,
+        'revenue'          => 0,
+        'profit'           => 0,
+        'margin'           => 0,
     );
 
     if ($result = $db->query($sql)) {
@@ -1116,36 +1109,36 @@ function dispatched_orders_components($_data, $db, $user, $account) {
 
             $adata[] = array(
 
-                'store' =>$data['Store Code'],
-                'items_cost' =>money($data['items_cost'],$account->get('Account Currency Code')),
-                'shipping_cost' =>money($data['shipping_cost'],$account->get('Account Currency Code')),
-                'replacement_cost' =>money($data['replacement_cost'],$account->get('Account Currency Code')),
+                'store'            => $data['Store Code'],
+                'items_cost'       => money($data['items_cost'], $account->get('Account Currency Code')),
+                'shipping_cost'    => money($data['shipping_cost'], $account->get('Account Currency Code')),
+                'replacement_cost' => money($data['replacement_cost'], $account->get('Account Currency Code')),
 
-                'items_net' =>money($data['items_net'],$account->get('Account Currency Code')),
-                'shipping_net' =>money($data['shipping_net'],$account->get('Account Currency Code')),
-                'charges_net' =>money($data['charges_net'],$account->get('Account Currency Code')),
-                'total_net' =>money($data['total_net'],$account->get('Account Currency Code')),
+                'items_net'    => money($data['items_net'], $account->get('Account Currency Code')),
+                'shipping_net' => money($data['shipping_net'], $account->get('Account Currency Code')),
+                'charges_net'  => money($data['charges_net'], $account->get('Account Currency Code')),
+                'total_net'    => money($data['total_net'], $account->get('Account Currency Code')),
 
-                'tax' =>money($data['tax'],$account->get('Account Currency Code')),
+                'tax' => money($data['tax'], $account->get('Account Currency Code')),
 
-                'refund_amount' =>money($data['refund_amount'],$account->get('Account Currency Code')),
-                'revenue' =>money($data['revenue'],$account->get('Account Currency Code')),
-                'profit' =>money($data['profit'],$account->get('Account Currency Code')),
-                'margin' =>percentage($data['profit'],$data['revenue'])
+                'refund_amount' => money($data['refund_amount'], $account->get('Account Currency Code')),
+                'revenue'       => money($data['revenue'], $account->get('Account Currency Code')),
+                'profit'        => money($data['profit'], $account->get('Account Currency Code')),
+                'margin'        => percentage($data['profit'], $data['revenue'])
             );
 
-            $totals['items_cost']+=$data['items_cost'];
-            $totals['shipping_cost']+=$data['shipping_cost'];
-            $totals['replacement_cost']+=$data['replacement_cost'];
-            $totals['items_net']+=$data['items_net'];
-            $totals['shipping_net']+=$data['shipping_net'];
-            $totals['charges_net']+=$data['charges_net'];
-            $totals['total_net']+=$data['total_net'];
-            $totals['tax']+=$data['tax'];
+            $totals['items_cost']       += $data['items_cost'];
+            $totals['shipping_cost']    += $data['shipping_cost'];
+            $totals['replacement_cost'] += $data['replacement_cost'];
+            $totals['items_net']        += $data['items_net'];
+            $totals['shipping_net']     += $data['shipping_net'];
+            $totals['charges_net']      += $data['charges_net'];
+            $totals['total_net']        += $data['total_net'];
+            $totals['tax']              += $data['tax'];
 
-            $totals['refund_amount']+=$data['refund_amount'];
-            $totals['revenue']+=$data['revenue'];
-            $totals['profit']+=$data['profit'];
+            $totals['refund_amount'] += $data['refund_amount'];
+            $totals['revenue']       += $data['revenue'];
+            $totals['profit']        += $data['profit'];
 
         }
     } else {
@@ -1153,23 +1146,23 @@ function dispatched_orders_components($_data, $db, $user, $account) {
         exit;
     }
 
-    $totals['margin']=percentage($totals['profit'],$totals['revenue']);
-    $totals['refund_amount']=money($totals['refund_amount'],$account->get('Account Currency Code'));
-    $totals['revenue']=money($totals['revenue'],$account->get('Account Currency Code'));
-    $totals['profit']=money($totals['profit'],$account->get('Account Currency Code'));
+    $totals['margin']        = percentage($totals['profit'], $totals['revenue']);
+    $totals['refund_amount'] = money($totals['refund_amount'], $account->get('Account Currency Code'));
+    $totals['revenue']       = money($totals['revenue'], $account->get('Account Currency Code'));
+    $totals['profit']        = money($totals['profit'], $account->get('Account Currency Code'));
 
 
-    $totals['items_cost']=money($totals['items_cost'],$account->get('Account Currency Code'));
-    $totals['shipping_cost']=money($totals['shipping_cost'],$account->get('Account Currency Code'));
-    $totals['replacement_cost']=money($totals['replacement_cost'],$account->get('Account Currency Code'));
-    $totals['items_net']=money($totals['items_net'],$account->get('Account Currency Code'));
-    $totals['shipping_net']=money($totals['shipping_net'],$account->get('Account Currency Code'));
-    $totals['charges_net']=money($totals['charges_net'],$account->get('Account Currency Code'));
-    $totals['total_net']=money($totals['total_net'],$account->get('Account Currency Code'));
-    $totals['tax']=money($totals['tax'],$account->get('Account Currency Code'));
+    $totals['items_cost']       = money($totals['items_cost'], $account->get('Account Currency Code'));
+    $totals['shipping_cost']    = money($totals['shipping_cost'], $account->get('Account Currency Code'));
+    $totals['replacement_cost'] = money($totals['replacement_cost'], $account->get('Account Currency Code'));
+    $totals['items_net']        = money($totals['items_net'], $account->get('Account Currency Code'));
+    $totals['shipping_net']     = money($totals['shipping_net'], $account->get('Account Currency Code'));
+    $totals['charges_net']      = money($totals['charges_net'], $account->get('Account Currency Code'));
+    $totals['total_net']        = money($totals['total_net'], $account->get('Account Currency Code'));
+    $totals['tax']              = money($totals['tax'], $account->get('Account Currency Code'));
 
 
-    $adata[] =$totals;
+    $adata[] = $totals;
 
     $response = array(
         'resultset' => array(
@@ -1184,5 +1177,76 @@ function dispatched_orders_components($_data, $db, $user, $account) {
     );
     echo json_encode($response);
 }
+
+
+function lost_stock($_data, $db, $user, $account) {
+
+    $rtext_label = 'incidents';
+    include_once 'prepare_table/init.php';
+
+    $sql   = "select $fields from $table $where $wheref $group_by order by $order $order_direction limit $start_from,$number_results";
+    $adata = array();
+
+
+    if ($result = $db->query($sql)) {
+
+        foreach ($result as $data) {
+
+
+            switch ($data['type']) {
+                case 'Other Out':
+                    $type = _('Error');
+                    break;
+                case 'Broken':
+                    $type = _('Damaged');
+                    break;
+                case 'Lost':
+                    $type = _('Lost');
+                    break;
+
+                default:
+                    $type = $data['type'];
+            }
+
+
+            $note = preg_replace('/\-?\d+ SKO (.+) /', '', $data['Note']);
+
+            $staff = $data['User Alias'];
+
+            $adata[] = array(
+                'id'          => $data['Inventory Transaction Key'],
+                'reference'   => sprintf('<span class="link" title="%s" onclick="change_view(\'part/%d\')">%s</span>', $data['Part Package Description'], $data['Part SKU'], $data['Part Reference']),
+                'description' => $data['Part Package Description'],
+                'stock'       => number($data['stock']),
+                'type'        => $type,
+                'value'       => money($data['value'], $account->get('Account Currency Code')),
+                'date'        => strftime("%e %b %Y %k:%M", strtotime($data['date'].' +0:00')),
+                'note'        => $note,
+                'staff'       => $staff
+
+            );
+
+
+        }
+    } else {
+        print_r($error_info = $db->errorInfo());
+        exit;
+    }
+
+
+    $response = array(
+        'resultset' => array(
+            'state'         => 200,
+            'data'          => $adata,
+            'rtext'         => $rtext,
+            'sort_key'      => $_order,
+            'sort_dir'      => $_dir,
+            'total_records' => $total
+
+        )
+    );
+    echo json_encode($response);
+}
+
 
 ?>
