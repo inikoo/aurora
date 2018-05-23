@@ -343,14 +343,7 @@ class DealComponent extends DB_Table {
 
             if ($old_value != $value) {
 
-                $account = get_object('Account', 1);
-                require_once 'utils/new_fork.php';
-                new_housekeeping_fork(
-                    'au_housekeeping', array(
-                    'type'     => 'deal_updated',
-                    'deal_key' => $this->get('Deal Component Deal Key')
-                ), $account->get('Account Code'), $this->db
-                );
+                $this->update_assets();
 
 
             }
@@ -362,6 +355,75 @@ class DealComponent extends DB_Table {
 
 
     }
+
+
+    function update_assets() {
+        $account = get_object('Account', 1);
+        require_once 'utils/new_fork.php';
+        new_housekeeping_fork(
+            'au_housekeeping', array(
+            'type'     => 'deal_updated',
+            'deal_key' => $this->get('Deal Component Deal Key')
+        ), $account->get('Account Code'), $this->db
+        );
+
+
+        require_once 'external_libs/Smarty/Smarty.class.php';
+        $smarty_web               = new Smarty();
+        $smarty_web->template_dir = 'EcomB2B/templates';
+        $smarty_web->compile_dir  = 'EcomB2B/server_files/smarty/templates_c';
+        $smarty_web->cache_dir    = 'EcomB2B/server_files/smarty/cache';
+        $smarty_web->config_dir   = 'EcomB2B/server_files/smarty/configs';
+        $smarty_web->setCaching(Smarty::CACHING_LIFETIME_CURRENT);
+
+
+        switch ($this->get('Deal Trigger')) {
+            case 'Category':
+
+
+                $category = get_object('Category', $this->get('Deal Trigger Key'));
+
+                $webpage = $category->get_webpage();
+
+                if ($webpage->id) {
+
+
+                    $cache_id = $webpage->get('Webpage Website Key').'|'.$webpage->id;
+                    $smarty_web->clearCache(null, $cache_id);
+
+                }
+
+                $sql = sprintf(
+                    "SELECT `Product Webpage Key`  FROM `Category Bridge` B  LEFT JOIN `Product Dimension` P ON (`Subject Key`=P.`Product ID`)  
+                    WHERE  `Category Key`=%d  AND `Product Web State` IN  ('For Sale','Out of Stock')   ", $category->id
+                );
+
+
+                if ($result = $this->db->query($sql)) {
+                    foreach ($result as $row) {
+
+                        $webpage = get_object('Webpage', $row['`Product Webpage Key']);
+                        if ($webpage->id) {
+                            $cache_id = $webpage->get('Webpage Website Key').'|'.$webpage->id;
+                            $smarty_web->clearCache(null, $cache_id);
+                        }
+
+                    }
+                } else {
+                    print_r($error_info = $this->db->errorInfo());
+                    print "$sql\n";
+                    exit;
+                }
+
+
+                break;
+            default:
+                break;
+        }
+
+
+    }
+
 
     function update_status_from_dates($force = false) {
 
@@ -381,15 +443,8 @@ class DealComponent extends DB_Table {
 
             if ($old_value != $value) {
 
-                $account = get_object('Account', 1);
-                require_once 'utils/new_fork.php';
-                new_housekeeping_fork(
-                    'au_housekeeping', array(
-                    'type'     => 'deal_updated',
-                    'deal_key' => $this->get('Deal Component Deal Key')
-                ), $account->get('Account Code'), $this->db
-                );
 
+                $this->update_assets();
 
             }
 
@@ -416,14 +471,7 @@ class DealComponent extends DB_Table {
 
         if ($old_value != $value) {
 
-            $account = get_object('Account', 1);
-            require_once 'utils/new_fork.php';
-            new_housekeeping_fork(
-                'au_housekeeping', array(
-                'type'     => 'deal_updated',
-                'deal_key' => $this->get('Deal Component Deal Key')
-            ), $account->get('Account Code'), $this->db
-            );
+            $this->update_assets();
 
 
         }
