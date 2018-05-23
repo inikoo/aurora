@@ -166,15 +166,8 @@ class Deal extends DB_Table {
             $this->new = true;
 
 
-
-
-
             $this->update_status_from_dates();
             $this->update_term_allowances();
-
-
-
-
 
 
             $store = get_object('Store', $this->data['Deal Store Key']);
@@ -190,9 +183,7 @@ class Deal extends DB_Table {
     function update_status_from_dates($force = false) {
 
 
-        if ($this->data['Deal Expiration Date'] != '' and strtotime(
-                $this->data['Deal Expiration Date'].' +0:00'
-            ) <= strtotime('now +0:00')) {
+        if ($this->data['Deal Expiration Date'] != '' and strtotime($this->data['Deal Expiration Date'].' +0:00') <= strtotime('now +0:00')) {
             $this->update_field_switcher('Deal Status', 'Finish', 'no_history');
 
             if ($this->data['Deal Voucher Key']) {
@@ -207,16 +198,15 @@ class Deal extends DB_Table {
         }
 
 
+
+
+
         if (!$force and $this->data['Deal Status'] == 'Suspended') {
-            return;
+          return;
         }
 
-        if (strtotime($this->data['Deal Begin Date'].' +0:00') >= strtotime(
-                'now +0:00'
-            )) {
-            $this->update_field_switcher(
-                'Deal Status', 'Waiting', 'no_history'
-            );
+        if (strtotime($this->data['Deal Begin Date'].' +0:00') >= strtotime('now +0:00')) {
+            $this->update_field_switcher('Deal Status', 'Waiting', 'no_history');
         }
 
 
@@ -372,10 +362,10 @@ class Deal extends DB_Table {
                     $component = array_pop($component);
 
 
-                    if($this->data['Deal Terms']==1){
+                    if ($this->data['Deal Terms'] == 1) {
                         $terms = sprintf('order %d', $component->get('Deal Component Allowance Target Label'));
 
-                    }else{
+                    } else {
                         $terms = sprintf('order %d or more %s', $this->data['Deal Terms'], $component->get('Deal Component Allowance Target Label'));
 
                     }
@@ -436,13 +426,13 @@ class Deal extends DB_Table {
             case 'Component Allowance Label':
 
                 $deal_components = $this->get_deal_components('objects');
-                 if(count($deal_components)>0) {
-                     $deal_component = array_pop($deal_components);
+                if (count($deal_components) > 0) {
+                    $deal_component = array_pop($deal_components);
 
-                     return $deal_component->get('Deal Component Allowance Label');
-                 }else{
-                     return '';
-                 }
+                    return $deal_component->get('Deal Component Allowance Label');
+                } else {
+                    return '';
+                }
                 break;
 
             case 'Deal Component Allowance':
@@ -458,11 +448,11 @@ class Deal extends DB_Table {
 
                 $deal_components = $this->get_deal_components('objects');
 
-                if(count($deal_components)>0){
-                    $deal_component  = array_pop($deal_components);
+                if (count($deal_components) > 0) {
+                    $deal_component = array_pop($deal_components);
 
                     return percentage($deal_component->get('Deal Component Allowance'), 1, 0);
-                }else{
+                } else {
                     return '';
                 }
 
@@ -989,15 +979,10 @@ class Deal extends DB_Table {
     function update_status($value = '') {
 
 
-
-
-
         if ($value == 'Suspended') {
 
 
             $this->update_field('Deal Status', $value);
-
-
 
 
         } else {
@@ -1007,10 +992,12 @@ class Deal extends DB_Table {
 
 
         }
-        foreach($this->get_deal_components('objects','all') as $component){
 
 
-            $component->update(array('Deal Component Status'=>$value),'no_history');
+        foreach ($this->get_deal_components('objects', 'all') as $component) {
+
+
+            $component->update(array('Deal Component Status' => $value), 'no_history');
         }
 
     }
