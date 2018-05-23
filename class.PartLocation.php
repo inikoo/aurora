@@ -1757,9 +1757,7 @@ class PartLocation extends DB_Table {
                 }
 
 
-                list($stock, $value, $in_process) = $this->get_stock(
-                    $row['Date'].' 23:59:59'
-                );
+                list($stock, $value, $in_process) = $this->get_stock($row['Date'].' 23:59:59');
                 list($sold, $sales_value) = $this->get_sales(
                     $row['Date'].' 23:59:59'
                 );

@@ -303,7 +303,7 @@ class Manufacture_Task extends DB_Table {
                 if ($cost_label == 'unknown') {
                     return _('Unknown');
                 } else {
-                    return money($cost, $account->get('Currency'));
+                    return money($cost, $account->get('Currency Code'));
                 }
 
                 break;
@@ -317,7 +317,7 @@ class Manufacture_Task extends DB_Table {
                 }
 
                 return money(
-                    $this->data['Manufacture Task '.$key], $account->get('Currency')
+                    $this->data['Manufacture Task '.$key], $account->get('Currency Code')
                 );
                 break;
             case 'Lower Target':

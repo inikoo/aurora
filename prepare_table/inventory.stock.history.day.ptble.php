@@ -50,8 +50,18 @@ $order = '`Date`';
 $sql_totals
     = "select count(Distinct ISF.`Part SKU`) as num from $table  $where  ";
 
-$fields
-    = "ISF.`Part SKU`,`Part Reference`,`Part Package Description`,sum(`Quantity On Hand`) as stock,sum(`Quantity Sold`) as sold,sum(`Quantity Lost`) as lost,sum(`Quantity On Hand`) as stock,sum(`Quantity Given`) as given,sum(`Quantity In`) as book_in,sum(`Value At Cost`) as stock_value";
+
+if($account->get('Account Add Stock Value Type')=='Blockchain'){
+    $fields
+        = "ISF.`Part SKU`,`Part Reference`,`Part Package Description`,sum(`Quantity On Hand`) as stock,sum(`Quantity Sold`) as sold,sum(`Quantity Lost`) as lost,sum(`Quantity On Hand`) as stock,sum(`Quantity Given`) as given,sum(`Quantity In`) as book_in,
+    sum(`Value At Cost`) as stock_value";
+}else{
+    $fields
+        = "ISF.`Part SKU`,`Part Reference`,`Part Package Description`,sum(`Quantity On Hand`) as stock,sum(`Quantity Sold`) as sold,sum(`Quantity Lost`) as lost,sum(`Quantity On Hand`) as stock,sum(`Quantity Given`) as given,sum(`Quantity In`) as book_in,
+    sum(`Value At Day Cost`) as stock_value";
+}
+
+
 
 
 ?>

@@ -56,8 +56,15 @@ $order = '`Date`';
 $sql_totals
     = "select count(Distinct $sql_totals_fields) as num from $table  $where  ";
 
-$fields
-    = "`Date`,`Parts`,`Locations`,`Value At Cost`,`Value At Day Cost`,`Value Commercial`";
+
+
+if($account->get('Account Add Stock Value Type')=='Blockchain'){
+    $fields = "`Date`,`Parts`,`Locations`,`Value At Cost`,`Value At Day Cost`,`Value Commercial`,`Value At Cost` as Value  ";
+}else{
+    $fields = "`Date`,`Parts`,`Locations`,`Value At Cost`,`Value At Day Cost`,`Value Commercial`,`Value At Day Cost` as Value  ";
+}
+
+
 
 
 ?>

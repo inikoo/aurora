@@ -22,8 +22,8 @@ include 'conf/export_fields.php';
 $default['export_fields']=$export_fields['timeserie_records_'.$state['_object']->get('Type')];
 if ($state['_object']->get('Type')=='StoreSales') {
 	$default['export_fields'][1]['label'].=' '.$state['_object']->parent->get('Currency Code');
-	$default['export_fields'][2]['label'].=' '.$account->get('Currency');
-	if ($state['_object']->parent->get('Currency Code')==$account->get('Currency')) {
+	$default['export_fields'][2]['label'].=' '.$account->get('Currency Code');
+	if ($state['_object']->parent->get('Currency Code')==$account->get('Currency Code')) {
 		unset($default['export_fields'][2]);
 	}
 }
@@ -46,10 +46,10 @@ if ($state['_object']->get('Type') == 'StoreSales') {
         'b'     => array(
             'render' => ($state['_object']->parent->get(
                 'Currency Code'
-            ) != $account->get('Currency') ? 'true' : 'false'),
+            ) != $account->get('Currency Code') ? 'true' : 'false'),
             'label'  => _(
                     'Sales Net'
-                ).' '.$account->get('Currency')
+                ).' '.$account->get('Currency Code')
         ),
         'c'     => array(
             'render' => 'false',

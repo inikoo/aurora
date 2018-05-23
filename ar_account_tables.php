@@ -270,7 +270,7 @@ function timeserie_records($_data, $db, $user, $account) {
                         $data['Timeseries Record Float A'], $timeseries->parent->get('Currency Code')
                     ),
                     'float_b' => money(
-                        $data['Timeseries Record Float B'], $account->get('Currency')
+                        $data['Timeseries Record Float B'], $account->get('Currency Code')
                     ),
                     'int_a'   => number($data['Timeseries Record Integer A']),
                     'int_b'   => number($data['Timeseries Record Integer B']),
