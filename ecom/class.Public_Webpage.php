@@ -284,7 +284,7 @@ class Public_Webpage {
                                     'icon'=>$row['Deal Component Icon'],
                                     'name'=>$row['Deal Component Name Label'],
                                     'until'=>$row['Deal Component Expiration Date'],
-                                    'until_formatted'=>  strftime("%a %e %b %Y", strtotime($row['Deal Component Expiration Date'].' +0:00')),
+                                    'until_formatted'=>  strftime("%a %e %b %Y", strtotime($row['Deal Component Expiration Date'].' ')),
                                     'term'=>$row['Deal Component Term Label'],
                                     'allowance'=>$row['Deal Component Allowance Label']
                                 );
