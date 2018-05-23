@@ -23,7 +23,39 @@ if (empty($_REQUEST['action'])) {
 
 switch ($_REQUEST['action']) {
 
+    case 'get_locations_by_flag':
 
+        if (empty($_REQUEST['flag'])) {
+            $response = array(
+                'state' => 'Error',
+                'msg'   => 'flag needed'
+            );
+            echo json_encode($response);
+            exit;
+        }
+
+
+
+
+        $sql            = sprintf('select `Location Key`,`Location Code` from `Location Dimension` L left join `Warehouse Flag Dimension`F  on (F.`Warehouse Flag Key`=L.`Location Warehouse Flag Key`) where `Warehouse Flag Color`=%s ',prepare_mysql($_REQUEST['flag']));
+        $locations_data = array();
+        if ($result = $db->query($sql)) {
+            foreach ($result as $row) {
+                $locations_data[] = $row;
+            }
+        } else {
+            print_r($error_info = $db->errorInfo());
+            print "$sql\n";
+            exit;
+        }
+
+        $response = array(
+            'state' => 'OK',
+            'data'  => $locations_data
+        );
+        echo json_encode($response);
+        exit;
+        break;
     case 'get_empty_locations':
 
         $sql            = sprintf('select `Location Key`,`Location Code` from `Location Dimension` where `Location Distinct Parts`=0 ');
