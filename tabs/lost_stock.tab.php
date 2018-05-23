@@ -27,7 +27,7 @@ if (isset($_SESSION['table_state']['lost_stock']['period'])) {
 $table_views = array();
 
 $table_filters = array(
-    'part_reference' => array('label' => _('Part')),
+    'reference' => array('label' => _('Part')),
 
 );
 
