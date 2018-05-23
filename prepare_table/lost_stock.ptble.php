@@ -34,7 +34,7 @@ foreach (
 $_elements = preg_replace('/^\,/', '', $_elements);
 if ($_elements == '') {
     $where .= ' and false';
-} elseif ($count_elements < 5) {
+} else {
     $where .= ' and `Inventory Transaction Type` in ('.$_elements.')';
 }
 

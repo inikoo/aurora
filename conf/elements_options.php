@@ -1451,7 +1451,23 @@ $elements_options = array(
         )
     ),
 
+'stock_given_free' => array(
+        'type' => array(
+            'label' => _('Type'),
+            'items' => array(
+                'Order'     => array(
+                    'label'    => _('Offer'),
+                    'selected' => true
+                ),
+                'Replacement'      => array(
+                    'label'    => _('Replacement'),
+                    'selected' => true
+                )
 
+            ),
+
+        )
+    ),
     'part_barcode_errors' => array(
         'type' => array(
             'label' => _('Type'),

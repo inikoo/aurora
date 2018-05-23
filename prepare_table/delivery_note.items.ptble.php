@@ -54,7 +54,7 @@ $fields = "`Part Package Description`,`Inventory Transaction Quantity`,`Out of S
 `Required`+`Given`+`Inventory Transaction Quantity`-`Out of Stock`-`No Authorized`-`Not Found`-`No Picked Other` as pending,
 `Required`+`Given`-`Out of Stock`-`No Authorized`-`Not Found`-`No Picked Other` as to_pick,`Part SKO Barcode`,`Picking Note`,`Part Main Image Key`,
 
-`Quantity On Hand`,PD.`Part Current On Hand Stock`,`Date Picked`,`Date Packed`
+`Quantity On Hand`,PD.`Part Current On Hand Stock`,`Date Picked`,`Date Packed`,`Given`
 ";
 
 //	$sql="select $fields from $table $where $wheref order by $order $order_direction limit $start_from,$number_results";
