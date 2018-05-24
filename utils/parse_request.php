@@ -1727,6 +1727,61 @@ function parse_request($_data, $db, $modules, $account = '', $user = '', $is_set
 
 
                 break;
+
+            case 'prospects':
+                if (!$user->can_view('customers')) {
+                    $module  = 'utils';
+                    $section = 'forbidden';
+                    break;
+                }
+
+                $module = 'customers';
+
+
+
+                if ($count_view_path == 0) {
+                    $section = 'prospects';
+                    $parent  = 'store';
+                    if ($user->data['User Hooked Store Key'] and in_array(
+                            $user->data['User Hooked Store Key'], $user->stores
+                        )) {
+                        $parent_key = $user->data['User Hooked Store Key'];
+                    } else {
+                        $_tmp       = $user->stores;
+                        $parent_key = array_shift($_tmp);
+                    }
+
+                }
+                $arg1 = array_shift($view_path);
+            if (is_numeric($arg1)) {
+                   $section    = 'prospects';
+                $parent     = 'store';
+                $parent_key = $arg1;
+
+                if (isset($view_path[0])) {
+
+                    if (is_numeric($view_path[0])) {
+                        $section = 'prospect';
+
+                        $parent     = 'store';
+                        $parent_key = $arg1;
+                        $object     = 'prospect';
+                        $key        = $view_path[0];
+
+
+                    }
+
+                    elseif ($view_path[0] == 'new') {
+                        $section = 'prospect.new';
+                        $object  = '';
+                    }
+                }
+
+        }
+
+
+
+                break;
             case 'customers':
                 if (!$user->can_view('customers')) {
                     $module  = 'utils';
@@ -1814,7 +1869,8 @@ function parse_request($_data, $db, $modules, $account = '', $user = '', $is_set
                         //error
                     }
 
-                } elseif (is_numeric($arg1)) {
+                }
+                elseif (is_numeric($arg1)) {
                     $section    = 'customers';
                     $parent     = 'store';
                     $parent_key = $arg1;

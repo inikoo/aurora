@@ -99,6 +99,63 @@ $export_fields = array(
         ),
 
     ),
+
+    'prospects'                    => array(
+
+        array(
+            'name'    => '`Prospect Name`',
+            'label'   => _('Name'),
+            'checked' => 1
+        ),
+        array(
+            'name'    => '`Prospect Main Contact Name`',
+            'label'   => _('Contact'),
+            'checked' => 1
+        ),
+        array(
+            'name'    => '`Prospect Main Plain Email`',
+            'label'   => _('Email'),
+            'checked' => 1
+        ),
+        array(
+            'name'    => '`Prospect Main Plain Telephone`',
+            'label'   => _('Telephone'),
+            'checked' => 0
+        ),
+        array(
+            'name'    => '`Prospect Main Plain Mobile`',
+            'label'   => _('Mobile'),
+            'checked' => 0
+        ),
+        array(
+            'name'    => '`Prospect Tax Number`',
+            'label'   => _('Tax Number'),
+            'checked' => 0
+        ),
+        array(
+            'name'    => 'REPLACE(`Prospect Contact Address Formatted`,"<br/>","\n") as`Prospect Address`',
+            'label'   => _('Contact address'),
+            'checked' => 0
+        ),
+        array(
+            'name'    => '`Prospect Contact Address Postal Label`',
+            'label'   => _('Contact address (Postal label)'),
+            'checked' => 0
+        ),
+        array(
+            'name'    => '`Prospect Main Address Line 1`,`Prospect Main Address Line 2`,`Prospect Main Address Line 3`,`Prospect Main Town`,`Prospect Main Postal Code`,`Prospect Main Country Second Division`,`Prospect Main Country First Division`,`Prospect Main Country Code`',
+            'label'   => _('Contact address (Separated fields)'),
+            'checked' => 0
+        ),
+        array(
+            'name'    => '`Prospect Main Address Lines`',
+            'label'   => _('Contact address (Lines)'),
+            'checked' => 0
+        ),
+
+
+    ),
+    
     'orders'                       => array(
         array(
             'name'    => '`Order Public ID`',

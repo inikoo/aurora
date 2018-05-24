@@ -44,6 +44,9 @@ switch ($tipo) {
     case 'customers':
         customers(get_table_parameters(), $db, $user);
         break;
+    case 'prospects':
+        prospects(get_table_parameters(), $db, $user);
+        break;
     case 'asset_customers':
         asset_customers(get_table_parameters(), $db, $user);
         break;
@@ -1091,5 +1094,140 @@ function asset_customers($_data, $db, $user) {
     echo json_encode($response);
 }
 
+
+
+function prospects($_data, $db, $user) {
+
+
+        $rtext_label = 'prospect';
+    
+
+    include_once 'prepare_table/init.php';
+
+    $sql = "select  $fields from $table $where $wheref $group_by order by $order $order_direction limit $start_from,$number_results";
+
+
+    $adata = array();
+
+    if ($result = $db->query($sql)) {
+
+        foreach ($result as $data) {
+
+
+
+            $contact_since = strftime(
+                "%e %b %y", strtotime($data['Prospect First Contacted Date']." +00:00")
+            );
+
+
+
+            switch ($data['Prospect Status']) {
+                case 'NoContacted':
+                    $activity = _('To be contacted');
+                    break;
+                case 'Contacted':
+                    $activity = _('Contacted');
+                    break;
+                case 'NotInterested':
+                    $activity = _('Not interested');
+                    break;
+                case 'Registered':
+                    $activity = _('Registered');
+                    break;
+                default:
+                    $activity = $data['Prospect Type by Activity'];
+                    break;
+            }
+
+
+            if ($parameters['parent'] == 'store') {
+                $link_format  = '/prospects/%d/%d';
+                $formatted_id = sprintf('<span class="link" onClick="change_view(\''.$link_format.'\')">%06d</span>', $parameters['parent_key'], $data['Prospect Key'], $data['Prospect Key']);
+
+            } elseif ($parameters['parent'] == 'prospect_poll_query_option' or $parameters['parent'] == 'prospect_poll_query') {
+                $link_format  = '/prospects/%d/%d';
+                $formatted_id = sprintf('<span class="link" onClick="change_view(\''.$link_format.'\')">%06d</span>', $data['Prospect Store Key'], $data['Prospect Key'], $data['Prospect Key']);
+
+            } else {
+                $link_format = '/'.$parameters['parent'].'/%d/prospect/%d';
+
+                $formatted_id = sprintf('<span class="link" onClick="change_view(\''.$link_format.'\')">%06d</span>', $parameters['parent_key'], $data['Prospect Key'], $data['Prospect Key']);
+
+            }
+
+
+            $adata[] = array(
+                'id'           => (integer)$data['Prospect Key'],
+                'store_key'    => $data['Prospect Store Key'],
+                'formatted_id' => $formatted_id,
+
+                'name'         => $data['Prospect Name'],
+                'company_name' => $data['Prospect Company Name'],
+                'contact_name' => $data['Prospect Main Contact Name'],
+
+                'location' => $data['Prospect Location'],
+
+                'invoices'  => (integer)$data['Prospect Orders Invoiced'],
+                'email'     => $data['Prospect Main Plain Email'],
+                'telephone' => $data['Prospect Main XHTML Telephone'],
+                'mobile'    => $data['Prospect Main XHTML Mobile'],
+                'orders'    => number($data['Prospect Orders']),
+
+                'last_order'    => $last_order_date,
+                'last_invoice'  => $last_invoice_date,
+                'contact_since' => $contact_since,
+
+                'other_value' => $category_other_value,
+
+                'total_payments'            => money($data['Prospect Payments Amount'], $currency),
+                'total_invoiced_amount'     => money($data['Prospect Invoiced Amount'], $currency),
+                'total_invoiced_net_amount' => money($data['Prospect Invoiced Net Amount'], $currency),
+
+
+                'top_orders'       => percentage(
+                    $data['Prospect Orders Top Percentage'], 1, 2
+                ),
+                'top_invoices'     => percentage(
+                    $data['Prospect Invoices Top Percentage'], 1, 2
+                ),
+                'top_balance'      => percentage(
+                    $data['Prospect Balance Top Percentage'], 1, 2
+                ),
+                'top_profits'      => percentage(
+                    $data['Prospect Profits Top Percentage'], 1, 2
+                ),
+                'address'          => $data['Prospect Contact Address Formatted'],
+                'billing_address'  => $billing_address,
+                'delivery_address' => $delivery_address,
+
+                'activity'      => $activity,
+                'logins'        => number($data['Prospect Number Web Logins']),
+                'failed_logins' => number($data['Prospect Number Web Failed Logins']),
+                'requests'      => number($data['Prospect Number Web Requests']),
+
+
+            );
+        }
+
+    } else {
+        print_r($error_info = $db->errorInfo());
+        print "$sql\n";
+        exit;
+    }
+
+
+    $response = array(
+        'resultset' => array(
+            'state'         => 200,
+            'data'          => $adata,
+            'rtext'         => $rtext,
+            'sort_key'      => $_order,
+            'sort_dir'      => $_dir,
+            'total_records' => $total
+
+        )
+    );
+    echo json_encode($response);
+}
 
 ?>

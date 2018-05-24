@@ -2218,6 +2218,587 @@ function get_email_campaign_navigation($data, $smarty, $user, $db, $account) {
 }
 
 
+function get_prospects_navigation($data, $smarty, $user, $db) {
+
+
+    require_once 'class.Store.php';
+
+    switch ($data['parent']) {
+        case 'store':
+
+            break;
+        default:
+
+            break;
+    }
+
+
+
+    $left_buttons = array();
+    if ($user->stores > 1) {
+
+
+        list($prev_key, $next_key) = get_prev_next(
+            $data['store']->id, $user->stores
+        );
+
+        $sql = sprintf(
+            "SELECT `Store Code` FROM `Store Dimension` WHERE `Store Key`=%d", $prev_key
+        );
+        if ($result = $db->query($sql)) {
+            if ($row = $result->fetch()) {
+                $prev_title = _('Prospects').' '.$row['Store Code'];
+            } else {
+                $prev_title = '';
+            }
+        } else {
+            print_r($error_info = $db->errorInfo());
+            exit;
+        }
+
+
+        $sql = sprintf(
+            "SELECT `Store Code` FROM `Store Dimension` WHERE `Store Key`=%d", $next_key
+        );
+        if ($result = $db->query($sql)) {
+            if ($row = $result->fetch()) {
+                $next_title = _('Prospects').' '.$row['Store Code'];
+            } else {
+                $next_title = '';
+            }
+        } else {
+            print_r($error_info = $db->errorInfo());
+            exit;
+        }
+
+
+        $left_buttons[] = array(
+            'icon'      => 'arrow-left',
+            'title'     => $prev_title,
+            'reference' => 'prospects/'.$prev_key
+        );
+
+
+        $left_buttons[] = array(
+            'icon'      => 'arrow-right',
+            'title'     => $next_title,
+            'reference' => 'prospects/'.$next_key
+        );
+    }
+
+
+    $right_buttons = array();
+    $sections      = get_sections('customers', $data['store']->id);
+
+    if (isset($sections[$data['section']])) {
+        $sections[$data['section']]['selected'] = true;
+    }
+
+
+    $_content = array(
+
+        'sections_class' => '',
+        'sections'       => $sections,
+
+        'left_buttons'  => $left_buttons,
+        'right_buttons' => $right_buttons,
+        'title'         => _('Prospects').' <span class="id">'.$data['store']->get('Store Code').'</span>',
+        'search'        => array(
+            'show'        => true,
+            'placeholder' => _('Search prospects')
+        )
+
+    );
+    $smarty->assign('_content', $_content);
+
+    $html = $smarty->fetch('navigation.tpl');
+
+    return $html;
+
+}
+
+
+function get_prospect_navigation($data, $smarty, $user, $db) {
+
+
+    $prospect = $data['_object'];
+
+    if (!$prospect->id) {
+        return;
+    }
+
+
+
+    $block_view = $data['section'];
+
+
+    $left_buttons  = array();
+    $right_buttons = array();
+
+    if ($data['parent']) {
+
+        switch ($data['parent']) {
+            case 'store':
+                $tab      = 'prospects';
+                $_section = 'prospects';
+                break;
+            case 'category':
+                $tab      = 'prospect.categories';
+                $_section = 'categories';
+                break;
+            case 'list':
+                $tab      = 'prospects.list';
+                $_section = 'lists';
+                break;
+            case 'campaign':
+                $tab      = 'campaign.prospects';
+                $_section = 'marketing';
+                break;
+            case 'deal':
+                $tab      = 'deal.prospects';
+                $_section = 'marketing';
+                break;
+        }
+
+
+        if (isset($_SESSION['table_state'][$tab])) {
+            $number_results  = $_SESSION['table_state'][$tab]['nr'];
+            $start_from      = 0;
+            $order           = $_SESSION['table_state'][$tab]['o'];
+            $order_direction = ($_SESSION['table_state'][$tab]['od'] == 1 ? 'desc' : '');
+            $f_value         = $_SESSION['table_state'][$tab]['f_value'];
+            $parameters      = $_SESSION['table_state'][$tab];
+        } else {
+
+            $default                  = $user->get_tab_defaults($tab);
+            $number_results           = $default['rpp'];
+            $start_from               = 0;
+            $order                    = $default['sort_key'];
+            $order_direction          = ($default['sort_order'] == 1 ? 'desc' : '');
+            $f_value                  = '';
+            $parameters               = $default;
+            $parameters['parent']     = $data['parent'];
+            $parameters['parent_key'] = $data['parent_key'];
+        }
+
+        include_once 'prepare_table/'.$tab.'.ptble.php';
+
+        $_order_field       = $order;
+        $order              = preg_replace('/^.*\.`/', '', $order);
+        $order              = preg_replace('/^`/', '', $order);
+        $order              = preg_replace('/`$/', '', $order);
+        $_order_field_value = $prospect->get($order);
+
+
+        $prev_title = '';
+        $next_title = '';
+        $prev_key   = 0;
+        $next_key   = 0;
+        $sql        = trim($sql_totals." $wheref");
+
+        if ($result2 = $db->query($sql)) {
+            if ($row2 = $result2->fetch() and $row2['num'] > 1) {
+
+
+                $sql = sprintf(
+                    "select `Prospect Name` object_name,C.`Prospect Key` as object_key from $table   $where $wheref
+	                and ($_order_field < %s OR ($_order_field = %s AND C.`Prospect Key` < %d))  order by $_order_field desc , C.`Prospect Key` desc limit 1",
+
+                    prepare_mysql($_order_field_value), prepare_mysql($_order_field_value), $prospect->id
+                );
+
+                if ($result = $db->query($sql)) {
+                    if ($row = $result->fetch()) {
+                        $prev_key   = $row['object_key'];
+                        $prev_title = _("Prospect").' '.$row['object_name'].' ('.$row['object_key'].')';
+
+                    }
+                } else {
+                    print_r($error_info = $db->errorInfo());
+                    exit;
+                }
+
+
+                $sql = sprintf(
+                    "select `Prospect Name` object_name,C.`Prospect Key` as object_key from $table   $where $wheref
+	                and ($_order_field  > %s OR ($_order_field  = %s AND C.`Prospect Key` > %d))  order by $_order_field   , C.`Prospect Key`  limit 1", prepare_mysql($_order_field_value),
+                    prepare_mysql($_order_field_value), $prospect->id
+                );
+
+                if ($result = $db->query($sql)) {
+                    if ($row = $result->fetch()) {
+                        $next_key   = $row['object_key'];
+                        $next_title = _("Prospect").' '.$row['object_name'].' ('.$row['object_key'].')';
+
+                    }
+                } else {
+                    print_r($error_info = $db->errorInfo());
+                    exit;
+                }
+
+
+                if ($order_direction == 'desc') {
+                    $_tmp1      = $prev_key;
+                    $_tmp2      = $prev_title;
+                    $prev_key   = $next_key;
+                    $prev_title = $next_title;
+                    $next_key   = $_tmp1;
+                    $next_title = $_tmp2;
+                }
+
+
+            }
+        } else {
+            print_r($error_info = $db->errorInfo());
+            exit;
+        }
+
+
+        $placeholder=_('Search prospects');
+        $sections = get_sections('prospects', $prospect->data['Prospect Store Key']);
+
+
+        if ($data['parent'] == 'list') {
+
+            include_once 'class.List.php';
+            $list = new SubjectList($data['parent_key']);
+
+            $up_button = array(
+                'icon'      => 'arrow-up',
+                'title'     => _("List").' '.$list->data['List Name'],
+                'reference' => 'prospects/list/'.$list->id
+            );
+
+            if ($prev_key) {
+                $left_buttons[] = array(
+                    'icon'      => 'arrow-left',
+                    'title'     => $prev_title,
+                    'reference' => 'prospects/list/'.$data['parent_key'].'/'.$prev_key
+                );
+
+            } else {
+                $left_buttons[] = array(
+                    'icon'  => 'arrow-left disabled',
+                    'title' => '',
+                    'url'   => ''
+                );
+
+            }
+            $left_buttons[] = $up_button;
+
+
+            if ($next_key) {
+                $left_buttons[] = array(
+                    'icon'      => 'arrow-right',
+                    'title'     => $next_title,
+                    'reference' => 'prospects/list/'.$data['parent_key'].'/'.$next_key
+                );
+
+            } else {
+                $left_buttons[] = array(
+                    'icon'  => 'arrow-right disabled',
+                    'title' => '',
+                    'url'   => ''
+                );
+
+            }
+
+
+        }
+        elseif ($data['parent'] == 'category') {
+
+
+            include_once 'class.Category.php';
+            $category = new Category($data['parent_key']);
+
+
+            $category_keys = preg_split(
+                '/\>/', preg_replace('/\>$/', '', $category->data['Category Position'])
+            );
+            array_pop($category_keys);
+            if (count($category_keys) > 0) {
+                $sql = sprintf(
+                    "SELECT `Category Code`,`Category Key` FROM `Category Dimension` WHERE `Category Key` IN (%s)", join(',', $category_keys)
+                );
+
+                if ($result = $this->db->query($sql)) {
+                    foreach ($result as $row) {
+                        $branch[] = array(
+                            'label' => $row['Category Code'],
+                            'icon'  => '',
+                            'url'   => 'prospect_category.php?id='.$row['Category Key']
+                        );
+
+                    }
+                } else {
+                    print_r($error_info = $db->errorInfo());
+                    exit;
+                }
+
+
+            }
+
+
+            $up_button = array(
+                'icon'  => 'arrow-up',
+                'title' => _(
+                        "Category"
+                    ).' '.$category->data['Category Code'],
+                'url'   => 'prospect_category.php?id='.$category->id
+            );
+
+        }
+        elseif ($data['parent'] == 'campaign') {
+
+
+            $up_button = array(
+                'icon'      => 'arrow-up',
+                'title'     => _("Campaign").' '.$data['_parent']->get('Name'),
+                'reference' => 'campaigns/'.$store->id.'/'.$data['_parent']->id
+            );
+
+            if ($prev_key) {
+                $left_buttons[] = array(
+                    'icon'      => 'arrow-left',
+                    'title'     => $prev_title,
+                    'reference' => 'campaign/'.$data['parent_key'].'/prospect/'.$prev_key
+                );
+
+            } else {
+                $left_buttons[] = array(
+                    'icon'  => 'arrow-left disabled',
+                    'title' => '',
+                    'url'   => ''
+                );
+
+            }
+            $left_buttons[] = $up_button;
+
+
+            if ($next_key) {
+                $left_buttons[] = array(
+                    'icon'      => 'arrow-right',
+                    'title'     => $next_title,
+                    'reference' => 'campaign/'.$data['parent_key'].'/prospect/'.$next_key
+                );
+
+            } else {
+                $left_buttons[] = array(
+                    'icon'  => 'arrow-right disabled',
+                    'title' => '',
+                    'url'   => ''
+                );
+
+            }
+            $sections = get_sections('products',$store->id);
+
+            $placeholder=_('Search marketing');
+
+
+        }
+        elseif ($data['parent'] == 'deal') {
+
+
+            $up_button = array(
+                'icon'      => 'arrow-up',
+                'title'     => _("Deal").' '.$data['_parent']->get('Name'),
+                'reference' => 'campaigns/'.$store->id.'/'.$data['_parent']->get('Deal Campaign Key').'/deal/'.$data['_parent']->id
+            );
+
+            if ($prev_key) {
+                $left_buttons[] = array(
+                    'icon'      => 'arrow-left',
+                    'title'     => $prev_title,
+                    'reference' => 'deal/'.$data['parent_key'].'/prospect/'.$prev_key
+                );
+
+            } else {
+                $left_buttons[] = array(
+                    'icon'  => 'arrow-left disabled',
+                    'title' => '',
+                    'url'   => ''
+                );
+
+            }
+            $left_buttons[] = $up_button;
+
+
+            if ($next_key) {
+                $left_buttons[] = array(
+                    'icon'      => 'arrow-right',
+                    'title'     => $next_title,
+                    'reference' => 'deal/'.$data['parent_key'].'/prospect/'.$next_key
+                );
+
+            } else {
+                $left_buttons[] = array(
+                    'icon'  => 'arrow-right disabled',
+                    'title' => '',
+                    'url'   => ''
+                );
+
+            }
+            $sections = get_sections('products',$store->id);
+
+            $placeholder=_('Search marketing');
+
+
+        }
+        else {
+
+            $up_button = array(
+                'icon'      => 'arrow-up',
+                'title'     => _("Prospects").' '.$store->data['Store Code'],
+                'reference' => 'prospects/'.$store->id
+            );
+
+            if ($prev_key) {
+                $left_buttons[] = array(
+                    'icon'      => 'arrow-left',
+                    'title'     => $prev_title,
+                    'reference' => 'prospects/'.$data['parent_key'].'/'.$prev_key
+                );
+
+            } else {
+                $left_buttons[] = array(
+                    'icon'  => 'arrow-left disabled',
+                    'title' => '',
+                    'url'   => ''
+                );
+
+            }
+            $left_buttons[] = $up_button;
+
+
+            if ($next_key) {
+                $left_buttons[] = array(
+                    'icon'      => 'arrow-right',
+                    'title'     => $next_title,
+                    'reference' => 'prospects/'.$data['parent_key'].'/'.$next_key
+                );
+
+            } else {
+                $left_buttons[] = array(
+                    'icon'  => 'arrow-right disabled',
+                    'title' => '',
+                    'url'   => ''
+                );
+
+            }
+
+
+        }
+
+
+    } else {
+        $_section = 'prospects';
+
+    }
+    //$right_buttons[]=array('icon'=>'edit', 'title'=>_('Edit prospect'), 'url'=>'edit_prospect.php?id='.$prospect->id);
+    //$right_buttons[]=array('icon'=>'sticky-note', 'title'=>_('History note'), 'id'=>'note');
+    //$right_buttons[]=array('icon'=>'paperclip', 'title'=>_('Attachement'), 'id'=>'attach');
+    $right_buttons[] = array(
+        'icon'  => 'shopping-cart',
+        'title' => _('New order'),
+        'id'    => 'take_order'
+    );
+    $right_buttons[] = array(
+        'icon'  => 'sticky-note',
+        'title' => _('Sticky note'),
+        'id'    => 'sticky_note_button',
+        'class' => ($prospect->get('Sticky Note') == '' ? '' : 'hide')
+    );
+
+
+
+    if (isset($sections[$_section])) {
+        $sections[$_section]['selected'] = true;
+    }
+
+
+    //  {if $prospect->get_image_src()} <img id="avatar" src="{$prospect->get_image_src()}" style="cursor:pointer;border:1px solid #eee;height:45px;max-width:100px"> {else} <img id="avatar" src="/art/avatar.jpg" style="cursor:pointer;"> {/if} {if $prospect->get('Prospect Level Type')=='VIP'}<img src="/art/icons/shield.png" style="position:absolute;xtop:-36px;left:40px">{/if} {if $prospect->get('Prospect Level Type')=='Partner'}<img src="/art/icons/group.png" style="position:absolute;xtop:-36px;left:40px">{/if}
+    $avatar = '<div class="square_button"></div>';
+    $avatar
+            = '<div class="square_button left"><img id="avatar" style="height:100%" src="/art/avatar.jpg" style="cursor:pointer;"> </div> ';
+    $avatar = '';
+
+    $title = '<span class="id"><span class="Prospect_Name">'.$prospect->get('Prospect Name').'</span> ('.$prospect->get_formatted_id().')</span>';
+    if($prospect->get('Prospect Type by Activity')=='ToApprove'){
+        $title.=' <span class="error padding_left_10"><i class="far fa-exclamation-circle"></i> '._('To be approved').'</span>';
+    }elseif($prospect->get('Prospect Type by Activity')=='Rejected'){
+        $title.=' <span class="error padding_left_10"><i class="far fa-times"></i> '._('Rejected').'</span>';
+    }
+
+    $_content = array(
+        'sections_class' => '',
+        'sections'       => $sections,
+        'left_buttons'   => $left_buttons,
+        'right_buttons'  => $right_buttons,
+        'avatar'         => $avatar,
+        'title'          => $title,
+        'search'         => array(
+            'show'        => true,
+            'placeholder' => $placeholder
+        )
+
+    );
+    $smarty->assign('_content', $_content);
+
+
+    $html = $smarty->fetch('navigation.tpl');
+
+    return $html;
+
+}
+
+
+function get_new_prospect_navigation($data, $smarty, $user, $db) {
+
+
+    $left_buttons  = array();
+    $right_buttons = array();
+
+
+    $sections = get_sections('customers', $data['parent_key']);
+
+    $_section = 'prospects';
+    if (isset($sections[$_section])) {
+        $sections[$_section]['selected'] = true;
+    }
+
+    $up_button = array(
+        'icon'      => 'arrow-up',
+        'title'     => _("Prospects"),
+        'reference' => 'prospects/'.$data['parent_key']
+    );
+
+
+    $left_buttons[] = $up_button;
+
+
+    $title = _('New Prospect').' ('._('Store').' <span class="id">'.$data['store']->get('Code').'</span>)';
+
+
+    $_content = array(
+        'sections_class' => '',
+        'sections'       => $sections,
+        'left_buttons'   => $left_buttons,
+        'right_buttons'  => $right_buttons,
+        'title'          => $title,
+        'search'         => array(
+            'show'        => true,
+            'placeholder' => _('Search prospects')
+        )
+
+    );
+    $smarty->assign('_content', $_content);
+
+
+    $html = $smarty->fetch('navigation.tpl');
+
+    return $html;
+
+}
 
 
 ?>
