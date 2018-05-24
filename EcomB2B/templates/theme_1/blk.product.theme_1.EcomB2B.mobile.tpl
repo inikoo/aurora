@@ -42,10 +42,10 @@
 
 
             {if $product->get('Web State')=='Out of Stock'}
-                <div style="margin-top: 10px" class="notification-small  {if $product->get('Out of Stock Class')=='launching_soon'}bg-green-light{else}bg-red-light{/if} ">
-                    <strong class="{if $product->get('Out of Stock Class')=='launching_soon'}bg-green-dark{else}bg-red-dark{/if} "><i class="ion-information-circled"></i></strong>
+                <div style="margin-top: 10px" class="notification-small  bg-red-light ">
+                    <strong class="bg-red-dark "><i class="fa fa-frown"></i></strong>
                     <p style="line-height: 50px;">
-                        {$product->get('Out of Stock Label')}
+                        {if empty($labels.out_of_stock)}{t}Out of stock{/t}{else}{$labels.out_of_stock}{/if}
                     </p>
                 </div>
             {elseif $product->get('Web State')=='For Sale'}

@@ -34,7 +34,7 @@
                             <div class="description"  {if ($item.name|count_characters)>40} style="font-size: 80% {elseif ($item.name|count_characters)>35}{/if}">{$item.name}</div>
                             {if $logged_in}
                                 <div class="price" style="margin-top: 5px">
-                                {t}Price{/t}: {$item.price}
+                                {t}Price{/t}: {$item.price} {$item.price_unit}
                                 </div>
                                 {if $item.rrp!=''}
                                 <div class="price">
@@ -44,7 +44,7 @@
 
                             {if $item.web_state=='Out of Stock'}
 
-                                <div style="margin-top:10px;"><span style="padding:5px 10px" class="{if $item.out_of_stock_class=='launching_soon'}highlight-green color-white{else}highlight-red color-white{/if}">{$item.out_of_stock_label}</span></div>
+                                <div style="margin-top:10px;"><span style="padding:5px 10px" class="highlight-red color-white">{if empty($labels.out_of_stock)}{t}Out of stock{/t}{else}{$labels.out_of_stock}{/if}</span></div>
                             {elseif $item.web_state=='For Sale'}
                                 <div class="mobile_ordering"  data-settings='{ "pid":{$item.product_id} }'>
                                 <i onclick="save_item_qty_change(this)" class="ordering_button one_less fa fa-fw  fa-minus-circle color-red-dark"></i>

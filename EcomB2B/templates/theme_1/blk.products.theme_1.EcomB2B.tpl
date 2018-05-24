@@ -55,7 +55,7 @@
                         </div>
                         {if $logged_in}
                             <div class="product_prices  " >
-                                <div class="product_price">{if empty($labels._product_price)}{t}Price{/t}{else}{$labels._product_price}{/if}: {$item.price}</div>
+                                <div class="product_price">{if empty($labels._product_price)}{t}Price{/t}{else}{$labels._product_price}{/if}: {$item.price} <small>{$item.price_unit}</small></div>
                                 {assign 'rrp' $item.rrp}
                                 {if $rrp!=''}<div>{if empty($labels._product_rrp)}{t}RRP{/t}{else}{$labels._product_rrp}{/if}: {$rrp}</div>{/if}
                             </div>
@@ -70,9 +70,9 @@
                         {if $logged_in}
 
                             {if $item.web_state=='Out of Stock'}
-                                <div class="ordering log_in can_not_order  out_of_stock_row  {$item.out_of_stock_class} ">
+                                <div class="ordering log_in can_not_order  out_of_stock_row  out_of_stock ">
 
-                                    <span class="product_footer label ">{$item.out_of_stock_label}</span>
+                                    <span class="product_footer label ">{if empty($labels.out_of_stock)}{t}Out of stock{/t}{else}{$labels.out_of_stock}{/if}</span>
                                     <span class="product_footer reminder"><i class="fa fa-envelope hide" aria-hidden="true"></i>  </span>
 
 
