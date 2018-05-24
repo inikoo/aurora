@@ -319,6 +319,18 @@ $modules = array(
                 )
             ),
 
+            'prospects' => array(
+                'type'      => 'navigation',
+                'label'     => _('Prospects'),
+                'icon'      => 'user-friends',
+                'reference' => 'prospects/%d',
+                'tabs'      => array(
+                    'prospects' => array()
+                )
+
+
+            ),
+
             'customers' => array(
                 'type'      => 'navigation',
                 'label'     => _('Customers'),
@@ -735,6 +747,42 @@ $modules = array(
 
 
                 )
+            ),
+
+
+            'prospect' => array(
+                'type'           => 'object',
+                'label'          => _('Prospect'),
+                'title'          => _('Prospect'),
+                'icon'           => 'user-plus',
+                'reference'      => 'prospect/%d',
+
+                'tabs'           => array(
+                    'prospect.details'   => array(
+                        'label' => _('Data'),
+                        'icon'  => 'database'
+                    ),
+
+                    'prospect.history'   => array(
+                        'label' => _('History, notes'),
+                        'icon'  => 'sticky-note'
+                    ),
+
+
+
+                )
+            ),
+
+
+            'prospect.new' => array(
+                'type' => 'new_object',
+                'tabs' => array(
+                    'prospect.new' => array(
+                        'label' => _('New prospect')
+                    ),
+
+                )
+
             ),
 
 

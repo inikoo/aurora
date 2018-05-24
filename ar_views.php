@@ -1445,6 +1445,23 @@ function get_navigation($user, $smarty, $data, $db, $account) {
                     return get_new_customer_navigation(
                         $data, $smarty, $user, $db, $account, $account
                     );
+
+                case ('prospect'):
+                    return get_prospect_navigation(
+                        $data, $smarty, $user, $db, $account
+                    );
+                    break;
+
+                case ('prospects'):
+                    return get_prospects_navigation(
+                        $data, $smarty, $user, $db, $account
+                    );
+                    break;
+                case ('prospect.new'):
+                    return get_new_prospect_navigation(
+                        $data, $smarty, $user, $db, $account, $account
+                    );
+                    
                     break;
             }
 
@@ -3833,7 +3850,13 @@ function get_view_position($db, $state, $user, $smarty, $account) {
                         'reference' => 'customers/'.$store->id
                     );
                     break;
-
+                case 'prospects':
+                    $branch[] = array(
+                        'label'     => _('Prospects').' '.$store->data['Store Code'],
+                        'icon'      => 'user-friends',
+                        'reference' => 'prospects/'.$store->id
+                    );
+                    break;
                 case 'categories':
                     $branch[] = array(
                         'label'     => _(

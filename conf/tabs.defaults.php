@@ -140,6 +140,20 @@ $tab_defaults = array(
 
     ),
 
+    'prospects'                     => array(
+        'view'          => 'overview',
+        'sort_key'      => 'email',
+        'sort_order'    => 1,
+        'rpp'           => 100,
+        'rpp_options'   => $default_rrp_options,
+        'f_field'       => 'name',
+        'elements_type' => each($elements_options['prospects']) ['key'],
+        'elements'      => $elements_options['prospects'],
+        'export_fields' => $export_fields['prospects']
+
+    ),
+
+
     'email_campaigns.newsletters' => array(
         'view'        => 'overview',
         'sort_key'    => 'id',

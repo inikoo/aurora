@@ -13,7 +13,7 @@
     {if $_DEVEL}
         <link href="/css/jquery-ui.css" rel="stylesheet">
 
-        <link href="/css/fa/fontawesome-all.css?v5.0.9" rel="stylesheet">
+        <link href="/css/fa/fontawesome-all.css?v5.0.12b" rel="stylesheet">
 
 
 

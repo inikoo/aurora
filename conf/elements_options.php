@@ -95,7 +95,85 @@ $elements_options = array(
 
         )
     ),
+    'prospects'              => array(
+        'activity' => array(
+            'label' => _('Status'),
+            'items' => array(
+                'NoContacted' => array(
+                    'label'    => _('To be contacted'),
+                    'selected' => true
+                ),
+                'Contacted' => array(
+                    'label'    => _('Contacted'),
+                    'selected' => true
+                ),
+                'NotInterested' => array(
+                    'label'    => _('Not interested'),
+                    'selected' => false
+                ),
+                'Registered' => array(
+                    'label'    => _('Registered'),
+                    'selected' => false
+                ),
 
+            )
+
+
+        ),
+        'orders'   => array(
+            'label' => _('Orders'),
+            'items' => array(
+                'Yes' => array(
+                    'label'    => _('With orders'),
+                    'selected' => true
+                ),
+                'No'  => array(
+                    'label'    => _('Without orders'),
+                    'selected' => true
+                ),
+            )
+
+
+        ),
+
+        'type'     => array(
+            'label' => _('Type'),
+            'items' => array(
+                'Normal'  => array(
+                    'label'    => _('Normal'),
+                    'selected' => true
+                ),
+                'VIP'     => array(
+                    'label'    => _('VIP'),
+                    'selected' => true
+                ),
+                'Partner' => array(
+                    'label'    => _('Partner'),
+                    'selected' => true
+                ),
+                'Staff'   => array(
+                    'label'    => _('Staff'),
+                    'selected' => true
+                ),
+            )
+        ),
+        'location' => array(
+            'label' => _('Location'),
+            'items' => array(
+                'Domestic' => array(
+                    'label'    => _('Domestic'),
+                    'selected' => true
+                ),
+                'Export'   => array(
+                    'label'    => _('Export'),
+                    'selected' => true
+                ),
+
+            )
+
+
+        )
+    ),
 
     'product_category_customers'              => array(
         'sales_status' => array(
