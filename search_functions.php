@@ -2732,6 +2732,7 @@ function search_locations($db, $account, $data,$response_type='echo') {
     }
 
 
+
 //    $results_data = $cache->get($memcache_fingerprint);
 
         $candidates = array();
@@ -2740,7 +2741,7 @@ function search_locations($db, $account, $data,$response_type='echo') {
 
 
         $sql = sprintf(
-            "select `Location Key`,`Location Code` from `Location Dimension` where true $where_warehouse and `Location Code` like '%s%%' limit 20 ", $q
+            "select `Location Key`,`Location Code` from `Location Dimension` L   where true $where_warehouse and `Location Code`   like '%s%%' limit 20 ", $q
         );
 
         if ($result = $db->query($sql)) {
@@ -2750,9 +2751,7 @@ function search_locations($db, $account, $data,$response_type='echo') {
                     $candidates[$row['Location Key']] = 30;
                 } else {
 
-                    $len_name                         = strlen(
-                        $row['Location Code']
-                    );
+                    $len_name                         = strlen($row['Location Code']);
                     $len_q                            = strlen($q);
                     $factor                           = $len_q / $len_name;
                     $candidates[$row['Location Key']] = 20 * $factor;
@@ -2806,7 +2805,7 @@ function search_locations($db, $account, $data,$response_type='echo') {
         $customer_keys = preg_replace('/^,/', '', $customer_keys);
 
         $sql = sprintf(
-            "SELECT `Location Code`,`Location Warehouse Key`,`Location Key`, `Warehouse Code` FROM `Location Dimension` LEFT JOIN `Warehouse Dimension` ON (`Location Warehouse Key`=`Warehouse Key`) WHERE `Location Key` IN (%s)", $customer_keys
+            "SELECT `Location Code`,`Location Warehouse Key`,`Location Key`, `Warehouse Flag Color`,`Warehouse Code` FROM `Location Dimension` L LEFT JOIN `Warehouse Dimension` ON (`Location Warehouse Key`=`Warehouse Key`) left join `Warehouse Flag Dimension`F  on (F.`Warehouse Flag Key`=L.`Location Warehouse Flag Key`) WHERE `Location Key` IN (%s)", $customer_keys
         );
 
         if ($result = $db->query($sql)) {
@@ -2819,7 +2818,8 @@ function search_locations($db, $account, $data,$response_type='echo') {
                     'details'   => '',
                     'view'      => sprintf('locations/%d/%d', $row['Location Warehouse Key'], $row['Location Key']),
                     'key'=>$row['Location Key'],
-                    'code'=>$row['Location Code']
+                    'code'=>$row['Location Code'],
+                    'flag'=>$row['Warehouse Flag Color']
 
 
                 );
