@@ -1706,6 +1706,20 @@ function new_object($account, $db, $user, $editor, $data, $smarty) {
                 $updated_data = array();
             }
             break;
+        case 'Prospect':
+            include_once 'class.Prospect.php';
+            if (!$parent->error) {
+                $prospect= $parent->create_prospect($data['fields_data']);
+                $object = $prospect;
+                $smarty->assign('account', $account);
+                $smarty->assign('prospect', $prospect);
+
+                $pcard        = $smarty->fetch(
+                    'presentation_cards/prospect.pcard.tpl'
+                );
+                $updated_data = array();
+            }
+            break;
         case 'Supplier':
             include_once 'class.Supplier.php';
             $object = $parent->create_supplier($data['fields_data']);

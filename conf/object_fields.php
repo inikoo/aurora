@@ -513,14 +513,15 @@ function get_object_fields($object, $db, $user, $smarty, $options = false) {
                     break;
 
             }
-
-
-
-
-
-
             return $object_fields;
             break;
+        case 'Prospect':
+            include 'fields/prospect.fld.php';
+
+            return $prospect_fields;
+            break;
+
+
         default:
             print 'todo object in object fields'.$object->get_object_name();
 
