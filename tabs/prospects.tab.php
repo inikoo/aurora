@@ -11,7 +11,7 @@
 
 
 $tab     = 'prospects';
-$ar_file = 'ar_prospects_tables.php';
+$ar_file = 'ar_customers_tables.php';
 $tipo    = 'prospects';
 
 $default = $user->get_tab_defaults($tab);
