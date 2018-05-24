@@ -27,7 +27,7 @@
     <title>{$webpage->get('Webpage Browser Title')}</title>
     <meta name="description" content="{$webpage->get('Webpage Meta Description')}"/>
 
-    <link rel="stylesheet" type="text/css" href="/css/tablet.min.css?v=2.0.1">
+    <link rel="stylesheet" type="text/css" href="/css/tablet.min.css?v=2.0.2">
 
 
 

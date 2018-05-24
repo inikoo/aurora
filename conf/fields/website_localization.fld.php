@@ -215,6 +215,15 @@ $object_fields = array(
                 'type'     => 'value'
             ),
 
+            array(
+                'id'       => 'Localised_Labelsout_of_stock',
+                'edit'     => ($edit ? 'string' : ''),
+                'value'    => (empty($labels['out_of_stock']) ? _('Out of stock') : $labels['out_of_stock']),
+                'label'    => _('Out of stock'),
+                'required' => true,
+                'type'     => 'value'
+            ),
+
 
         )
     ),
@@ -349,49 +358,7 @@ $object_fields = array(
         )
     ),
 
-    array(
-        'label'      => _('Order button states'),
-        'show_title' => true,
-        'fields'     => array(
 
-            array(
-                'id'       => 'Localised_Labels_ordering_order_now',
-                'edit'     => ($edit ? 'string' : ''),
-                'value'    => (empty($labels['_ordering_order_now']) ? _('Order now') : $labels['_ordering_order_now']),
-                'label'    => _('Order quantity =0'),
-                'required' => true,
-                'type'     => 'value'
-            ),
-            array(
-                'id'       => 'Localised_Labels_ordering_ordered',
-                'edit'     => ($edit ? 'string' : ''),
-                'value'    => (empty($labels['_ordering_ordered']) ? _('Ordered') : $labels['_ordering_ordered']),
-                'label'    => _('Order quantity >0'),
-                'required' => true,
-                'type'     => 'value'
-            ),
-
-            array(
-                'id'       => 'Localised_Labels_ordering_click_to_update',
-                'edit'     => ($edit ? 'string' : ''),
-                'value'    => (empty($labels['_ordering_click_to_update']) ? _('Click to update') : $labels['_ordering_click_to_update']),
-                'label'    => _('Order quantity changed'),
-                'required' => true,
-                'type'     => 'value'
-            ),
-
-            array(
-                'id'       => 'Localised_Labels_ordering_ordering_updated',
-                'edit'     => ($edit ? 'string' : ''),
-                'value'    => (empty($labels['_ordering_updated']) ? _('Update') : $labels['_ordering_updated']),
-                'label'    => _('Order quantity saved'),
-                'required' => true,
-                'type'     => 'value'
-            ),
-
-
-        )
-    ),
 
 
     array(

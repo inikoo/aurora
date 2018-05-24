@@ -75,9 +75,9 @@
 
 
                     {if $product->get('Web State')=='Out of Stock'}
-                        <div style="height:40px;line-height:40px;padding:0px 20px"   class="      {$product->get('Out of Stock Class')} ">
+                        <div style="height:40px;line-height:40px;padding:0px 20px"   class="   out_of_stock ">
 
-                            <span class="product_footer label ">{$product->get('Out of Stock Label')}</span>
+                            <span class="product_footer label ">{if empty($labels.out_of_stock)}{t}Out of stock{/t}{else}{$labels.out_of_stock}{/if}</span>
                             <span class="product_footer reminder"><i class="fa fa-envelope hide" aria-hidden="true"></i>  </span>
 
 

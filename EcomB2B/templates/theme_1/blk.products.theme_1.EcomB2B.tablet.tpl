@@ -30,7 +30,7 @@
             <div class="product_wrap wrap type_{$item.type} " data-type="{$item.type}" {if $item.type=='product'} data-sort_code="{$item.sort_code}" data-sort_name="{$item.sort_name}{/if} ">
 
 
-                <div class="product_block item product_container" ">
+                <div class="product_block item product_container tablet" >
                     <div class="product_header_text fr-view" >
                         {$item.header_text}
                     </div>
@@ -52,7 +52,7 @@
                     </div>
                     {if $logged_in}
                         <div class="product_prices  " style="font-size: 14px;padding:0px 4px">
-                            <div class="product_price">{if empty($labels._product_price)}{t}Price{/t}{else}{$labels._product_price}{/if}: {$item.price}</div>
+                            <div class="product_price">{if empty($labels._product_price)}{t}Price{/t}{else}{$labels._product_price}{/if}: {$item.price} <small>{$item.price_unit}</small></div>
                             {assign 'rrp' $item.rrp}
                             {if $rrp!=''}<div>{if empty($labels._product_rrp)}{t}RRP{/t}{else}{$labels._product_rrp}{/if}: {$rrp}</div>{/if}
                         </div>
@@ -66,14 +66,14 @@
 
                     {if $logged_in}
 
-                        {if $item.web_state=='Out of Stock'}
-                            <div class="ordering log_in can_not_order  out_of_stock_row  {$item.out_of_stock_class} ">
+                            {if $item.web_state=='Out of Stock'}
+                                <div class="ordering log_in can_not_order  out_of_stock_row  out_of_stock ">
 
-                                <span class="product_footer label ">{$item.out_of_stock_label}</span>
-                                <span class="product_footer reminder"><i class="fa fa-envelope hide" aria-hidden="true"></i>  </span>
+                                    <span class="product_footer label ">{if empty($labels.out_of_stock)}{t}Out of stock{/t}{else}{$labels.out_of_stock}{/if}</span>
+                                    <span class="product_footer reminder"><i class="fa fa-envelope hide" aria-hidden="true"></i>  </span>
 
 
-                            </div>
+                                </div>
                         {elseif  $item.web_state=='For Sale'}
 
                             <div class="mobile_ordering" style="text-align:center;font-size: 14px;margin-bottom:5px;margin-top:5px" data-settings='{ "pid":{$item.product_id} }'>

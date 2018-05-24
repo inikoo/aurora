@@ -650,19 +650,18 @@ p {
     -webkit-appearance: none; }
   .product_block .order_row, .product_block .out_of_stock_row {
     width: 100%;
-    height: 30px;
-    line-height: 30px;
-    text-align: center;
-    padding: 0px;
-    bottom: 0;
-    text-align: left; }
+    height: 42px;
+    line-height: 42px;
+    padding: 0px 10px;
+    text-align: left;
+    font-weight: 800; }
   .product_block .more_info {
     font-size: 25px;
     cursor: pointer;
     position: absolute;
     top: -1px;
     right: 4px;
-    color: darkorange;
+    color: #ccc;
     z-index: 1; }
   .product_block .favourite {
     font-size: 25px;
@@ -747,5 +746,8 @@ p {
 
 .order table {
   border-bottom: 1px solid #ccc; }
+
+.product_block.tablet {
+  border-bottom-width: 1px; }
 
 /*# sourceMappingURL=style.theme_1.EcomB2B.tablet.css.map */
