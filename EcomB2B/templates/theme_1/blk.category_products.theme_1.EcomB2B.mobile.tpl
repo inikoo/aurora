@@ -35,7 +35,7 @@
                             <div class="description"  {if ($item.name|count_characters)>40} style="font-size: 80% {elseif ($item.name|count_characters)>35}{/if}">{$item.name}</div>
                             {if $logged_in}
                                 <div class="price" style="margin-top: 5px">
-                                {t}Price{/t}: {$item.price}
+                                {t}Price{/t}: {$item.price} {$item.price_unit}
                                 </div>
                                 {if $item.rrp!=''}
                                 <div class="price">
