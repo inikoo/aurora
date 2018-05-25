@@ -34,182 +34,81 @@ $object_fields[] = array(
             'type'              => 'value'
         ),
 
-        /*
-        array(
-            'edit'              => ($edit ? 'string' : ''),
-            'id'                => 'Deal_Name',
-            'value'             => $object->get('Deal Component Term Label'),
-            'label'             => ucfirst($object->get_field_label('Deal Name')),
-            'invalid_msg'       => get_invalid_message('string'),
-            'required'          => true,
-            'server_validation' => json_encode(array('tipo' => 'check_for_duplicates')),
-            'type' => 'value'
-        ),
-        array(
-            'edit'              => ($edit ? 'string' : ''),
-            'id'                => 'Deal_Name',
-            'value'             => $object->get('Deal Component Term Label'),
-            'label'             => ucfirst($object->get_field_label('Deal Name')),
-            'invalid_msg'       => get_invalid_message('string'),
-            'required'          => true,
-            'server_validation' => json_encode(array('tipo' => 'check_for_duplicates')),
-            'type' => 'value'
-        ),
-*/
+
 
     )
 
 );
 
-/*
+$object_fields[] = array(
 
-$object_fields[]=array(
-    array(
-        'label'      => _('Id'),
+        'label'      => _('Dates'),
         'show_title' => true,
         'fields'     => array(
 
 
             array(
-                'edit'              => ($edit ? 'string' : ''),
-                'id'                => 'Deal_Name',
-                'value'             => $object->get('Deal Name'),
-                'label'             => ucfirst($object->get_field_label('Deal Name')),
-                'invalid_msg'       => get_invalid_message('string'),
-                'required'          => true,
-                'server_validation' => json_encode(array('tipo' => 'check_for_duplicates')),
-                'type' => 'value'
+                'edit' => ($edit ? 'date' : ''),
+                'time' => '00:00:00',
+
+                'id'              => 'Deal_Begin_Date',
+                'value'           => $object->get('Deal Begin Date'),
+                'formatted_value' => $object->get('Begin Date'),
+                'label'           => ucfirst($object->get_field_label('Begin Date')),
+                'invalid_msg'     => get_invalid_message('date'),
+                'required'        => true
             ),
 
+            array(
+                'edit' => ($edit ? 'date' : ''),
+                'time' => '00:00:00',
 
+                'id'              => 'Deal_Expiration_Date',
+                'value'           => $object->get('Deal Expiration Date'),
+                'formatted_value' => $object->get('Expiration Date'),
+                'label'           => ucfirst($object->get_field_label('Expiration Date')),
+                'invalid_msg'     => get_invalid_message('date'),
+                'required'        => true
+            ),
         )
+
+);
+
+$operations = array(
+    'label'      => _('Operations'),
+    'show_title' => true,
+    'class'      => 'operations',
+    'fields'     => array(
+
+        array(
+            'id'        => 'suspend_deal',
+            'class'     => 'operation',
+            'render'=>($object->get('Deal Status')=='Suspended'?false:true),
+            'value'     => '',
+            'label'     => '<i class="fa fa-fw fa-lock button" onClick="toggle_unlock_delete_object(this)" style="margin-right:20px"></i> <span data-data=\'{ "object": "'.$object->get_object_name().'", "key":"'.$object->id
+                .'"}\' onClick="suspend_object(this)" class="delete_object disabled">'._("Suspend offer").' <i class="fa fa-stop error new_button link"></i></span>',
+            'reference' => '',
+            'type'      => 'operation'
+        ),
+
+        array(
+            'id'        => 'activate_deal',
+            'class'     => 'operation',
+            'render'=>($object->get('Deal Status')!='Suspended'?false:true),
+
+            'value'     => '',
+            'label'     => '<i class="fa fa-fw fa-lock hide button" onClick="toggle_unlock_delete_object(this)" style="margin-right:20px"></i> <span data-data=\'{ "object": "'.$object->get_object_name().'", "key":"'.$object->id
+                .'"}\' onClick="activate_object(this)" class="button">'._("Activate offer").' <i class="fa fa-play success new_button"></i></span>',
+            'reference' => '',
+            'type'      => 'operation'
+        ),
+
+
     )
-);
-$object_fields[]=array(
-    array(
-        'label'      => _('Trigger'),
-        'show_title' => true,
-        'fields'     => array(
-
-
-            array(
-                'id'              => 'Deal_Trigger',
-                'edit'            => ($edit ? 'option' : ''),
-                'options'         => $options_trigger,
-                'value'           => $object->get('Deal Trigger'),
-                'formatted_value' => $object->get('Trigger'),
-                'label'           => _('Target'),
-                'placeholder'     => _('Choose one option'),
-                'type'            => 'value'
-            ),
-
-
-            array(
-                'id'                       => 'Product_Category_Key',
-                'edit'                     => 'dropdown_select',
-                'scope'                    => 'product_categories',
-                'parent'                   => 'store',
-                'parent_key'               => $options['store_key'],
-                'value'                    => '',
-                'formatted_value'          => '',
-                'stripped_formatted_value' => '',
-                'label'                    => _("Product category"),
-                'required'                 => false,
-                'type'                     => 'value'
-
-
-            ),
-
-            array(
-                'id'                       => 'Product_Key',
-                'edit'                     => 'dropdown_select',
-                'scope'                    => 'products',
-                'parent'                   => 'store',
-                'parent_key'               => $options['store_key'],
-                'value'                    => '',
-                'formatted_value'          => '',
-                'stripped_formatted_value' => '',
-                'label'                    => _("Product"),
-                'required'                 => false,
-                'type'                     => 'value'
-
-
-            ),
-
-
-            array(
-                'id'   => 'Minumun_Order_Amount',
-                'edit' => 'amount',
-
-                'value'           => '',
-                'formatted_value' => '',
-                'label'           => _('Minimum items net amount'),
-                'invalid_msg'     => get_invalid_message('amount'),
-                'required'        => true,
-                'type'            => 'value'
-            ),
-
-        )
-    ),
-
-    array(
-        'label'      => _('Discount/Allowance'),
-        'show_title' => true,
-        'fields'     => array(
-
-
-            array(
-                'id'              => 'Deal_Trigger',
-                'edit'            => ($edit ? 'option' : ''),
-                'options'         => $options_trigger,
-                'value'           => $object->get('Deal Trigger'),
-                'formatted_value' => $object->get('Trigger'),
-                'label'           => _('Target'),
-                'placeholder'     => _('Choose one option'),
-                'type'            => 'value'
-            ),
-
-
-            array(
-                'id'                       => 'Product_Category_Key',
-                'edit'                     => 'dropdown_select',
-                'scope'                    => 'product_categories',
-                'parent'                   => 'store',
-                'parent_key'               => $options['store_key'],
-                'value'                    => '',
-                'formatted_value'          => '',
-                'stripped_formatted_value' => '',
-                'label'                    => _("Product category"),
-                'required'                 => false,
-                'type'                     => 'value'
-
-
-            ),
-
-            array(
-                'id'                       => 'Product_Key',
-                'edit'                     => 'dropdown_select',
-                'scope'                    => 'products',
-                'parent'                   => 'store',
-                'parent_key'               => $options['store_key'],
-                'value'                    => '',
-                'formatted_value'          => '',
-                'stripped_formatted_value' => '',
-                'label'                    => _("Product"),
-                'required'                 => false,
-                'type'                     => 'value'
-
-
-            ),
-
-
-        )
-    ),
-
 
 );
 
-*/
+$object_fields[] = $operations;
 
 
 ?>

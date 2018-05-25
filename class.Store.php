@@ -2408,10 +2408,6 @@ class Store extends DB_Table {
 
     }
 
-    function get_from_date($period) {
-        return $this->update_sales_from_invoices($period);
-
-    }
 
     function update_sales_from_invoices($interval, $this_year = true, $last_year = true) {
 

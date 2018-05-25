@@ -198,11 +198,8 @@ class Deal extends DB_Table {
         }
 
 
-
-
-
         if (!$force and $this->data['Deal Status'] == 'Suspended') {
-          return;
+            return;
         }
 
         if (strtotime($this->data['Deal Begin Date'].' +0:00') >= strtotime('now +0:00')) {
@@ -420,8 +417,57 @@ class Deal extends DB_Table {
         }
 
         switch ($key) {
+            case 'Status Icon':
+                switch ($this->data['Deal Status']) {
+                    case 'Waiting':
+                        $status = sprintf(
+                            '<i class="far fa-clock discreet fa-fw" aria-hidden="true" title="%s" ></i>', _('Waiting')
+                        );
+                        break;
+                    case 'Active':
+                        $status = sprintf(
+                            '<i class="fa fa-play success fa-fw" aria-hidden="true" title="%s" ></i>', _('Active')
+                        );
+                        break;
+                    case 'Suspended':
+                        $status = sprintf(
+                            '<i class="fa fa-pause error fa-fw" aria-hidden="true" title="%s" ></i>', _('Suspended')
+                        );
+                        break;
+                    case 'Finish':
+                        $status = sprintf(
+                            '<i class="fa fa-stop discreet fa-fw" aria-hidden="true" title="%s" ></i>', _('Finished')
+                        );
+                        break;
+                    default:
+                        $status = '';
+                }
 
+                return $status;
 
+                break;
+            case 'Status':
+                switch ($this->data['Deal Status']) {
+                    case 'Waiting':
+                        return _('Waiting');
+                        break;
+                    case 'Suspended':
+                        return _('Suspended');
+                        break;
+                    case 'Active':
+                        return _('Active');
+                        break;
+                    case 'Finish':
+                        return _('Finished');
+                        break;
+                    case 'Waiting':
+                        return _('Waiting');
+                        break;
+                    default:
+                        return $this->data['Deal Status'];
+                }
+
+                break;
             case 'Deal Component Allowance Label':
             case 'Component Allowance Label':
 
@@ -479,6 +525,16 @@ class Deal extends DB_Table {
             case 'Number Active Components':
                 return number($this->data['Deal '.$key]);
                 break;
+            case 'Begin Date':
+            case 'Expiration Date':
+
+                if ($this->data['Deal '.$key] == '') {
+                    return '';
+                } else {
+                    return strftime("%a, %e %h %Y", strtotime($this->data['Deal '.$key]." +00:00"));
+                }
+
+
             case 'Duration':
                 $duration = '';
                 if ($this->data['Deal Expiration Date'] == '' and $this->data['Deal Begin Date'] == '') {
@@ -487,16 +543,16 @@ class Deal extends DB_Table {
 
                     if ($this->data['Deal Begin Date'] != '') {
                         $duration = strftime(
-                            "%x", strtotime($this->data['Deal Begin Date']." +00:00")
+                            "%a, %e %h %Y", strtotime($this->data['Deal Begin Date']." +00:00")
                         );
 
                     }
                     $duration .= ' - ';
                     if ($this->data['Deal Expiration Date'] != '') {
                         $duration .= strftime(
-                            "%x", strtotime(
-                                    $this->data['Deal Expiration Date']." +00:00"
-                                )
+                            "%a, %e %h %Y", strtotime(
+                                              $this->data['Deal Expiration Date']." +00:00"
+                                          )
                         );
 
                     } else {
@@ -726,14 +782,30 @@ class Deal extends DB_Table {
 
             $this->update_status_from_dates();
             $this->updated = true;
+
+
         } else {
             $this->error = true;
             $this->msg   = 'Deal already started';
         }
+
+
+        $this->update_metadata = array(
+            'class_html' => array(
+                'Duration'          => $this->get('Duration'),
+                'Status_Icon' => $this->get('Status Icon'),
+                'Status' => $this->get('Status')
+
+
+            )
+        );
+
+
     }
 
     function update_expiration_date($value, $options) {
 
+        /*
         if ($this->data['Deal Status'] == 'Finish') {
             $this->error = true;
             $this->msg   = 'Deal already finished';
@@ -743,6 +815,10 @@ class Deal extends DB_Table {
 
 
         }
+*/
+
+        $this->update_field('Deal Expiration Date', $value, $options);
+        $this->updated = true;
 
         $sql = sprintf(
             'SELECT `Deal Component Key` FROM `Deal Component Dimension` WHERE `Deal Component Status`!="Finish" AND `Deal Component Deal Key`=%d', $this->id
@@ -751,7 +827,7 @@ class Deal extends DB_Table {
 
         if ($result = $this->db->query($sql)) {
             foreach ($result as $row) {
-                $deal_component = new DealComponent($row['Deal Component Key']);
+                $deal_component = get_object('DealComponent', $row['Deal Component Key']);
                 $deal_component->update(
                     array('Deal Component Expiration Date' => $value)
                 );
@@ -766,88 +842,19 @@ class Deal extends DB_Table {
 
         $this->update_status_from_dates();
 
+        $this->update_metadata = array(
+            'class_html' => array(
+                'Duration'          => $this->get('Duration'),
+                'Status_Icon' => $this->get('Status Icon'),
+                'Status' => $this->get('Status')
+
+
+            )
+        );
+
 
     }
 
-    function get_formatted_status() {
-
-        switch ($this->data['Deal Status']) {
-            case 'Waiting':
-                return _('Waiting');
-                break;
-            case 'Suspended':
-                return _('Suspended');
-                break;
-            case 'Active':
-                return _('Active');
-                break;
-            case 'Finish':
-                return _('Finished');
-                break;
-            case 'Waiting':
-                return _('Waiting');
-                break;
-            default:
-                return $this->data['Deal Status'];
-        }
-
-    }
-
-    function get_percentage_orders() {
-
-        $total_orders = 0;
-        $dates        = prepare_mysql_dates(
-            $this->data['Deal Begin Date'], $this->data['Deal Expiration Date'], '`Order Date`'
-        );
-        $sql          = sprintf(
-            "SELECT  count(*) AS num  FROM `Order Dimension` WHERE TRUE   %s", $dates['mysql']
-        );
-        //print $sql;
-        //exit;
-        $res = mysql_query($sql);
-        if ($row = mysql_fetch_assoc($res)) {
-            $total_orders = $row['num'];
-        }
-
-        return percentage(
-            $this->data['Deal Total Acc Used Orders'], $total_orders
-        );
-
-    }
-
-    function get_percentage_applied_vouchers() {
-        $total_orders = 0;
-        $dates        = prepare_mysql_dates(
-            $this->data['Deal Begin Date'], $this->data['Deal Expiration Date'], '`Order Date`'
-        );
-        $sql          = sprintf(
-            "SELECT  count(*) AS num  FROM `Order Dimension` WHERE TRUE   %s", $dates['mysql']
-        );
-        //print $sql;
-        //exit;
-        $res = mysql_query($sql);
-        if ($row = mysql_fetch_assoc($res)) {
-            $total_orders = $row['num'];
-        }
-
-        return percentage($this->get_applied_vouchers(), $total_orders);
-
-    }
-
-    function get_applied_vouchers() {
-
-        $sql = sprintf(
-            "SELECT count(*) AS num FROM `Voucher Order Bridge` WHERE `Deal Key`=%d", $this->id
-        );
-        $res = mysql_query($sql);
-        if ($row = mysql_fetch_assoc($res)) {
-            return $row['num'];
-        } else {
-            return 0;
-        }
-
-
-    }
 
     function update_allowance_label() {
 
@@ -959,18 +966,6 @@ class Deal extends DB_Table {
 
     }
 
-    function get_number_no_finished_components() {
-        $number_no_finished_components = 0;
-        $sql                           = sprintf(
-            "SELECT count(*) AS num FROM `Deal Component Dimension` WHERE `Deal Component Deal Key`=%d AND  `Deal Component Status`!='Finish'", $this->id
-        );
-        $res                           = mysql_query($sql);
-        while ($row = mysql_fetch_assoc($res)) {
-            $number_no_finished_components = $row['num'];
-        }
-
-        return $number_no_finished_components;
-    }
 
     function suspend() {
         $this->update_status('Suspended');
@@ -1006,15 +1001,6 @@ class Deal extends DB_Table {
         $this->update_status();
     }
 
-    function get_from_date() {
-        if ($this->data['Deal Begin Date'] == '') {
-            return '';
-        } else {
-            return gmdate(
-                'd-m-Y', strtotime($this->data['Deal Begin Date'].' +0:00')
-            );
-        }
-    }
 
     function get_to_date() {
         if ($this->data['Deal Expiration Date'] == '') {
