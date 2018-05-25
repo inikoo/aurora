@@ -39,7 +39,9 @@ $email_campaign_types = array(
     'Registration',
     'Password Reminder',
     'Order Confirmation',
-    'Delivery Confirmation'
+    'Delivery Confirmation',
+    'Invite',
+    'Invite Mailshot',
 );
 
 $sql = sprintf("SELECT `Store Key` FROM `Store Dimension`");

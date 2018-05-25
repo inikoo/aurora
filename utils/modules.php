@@ -421,11 +421,11 @@ $modules = array(
                         'icon'=>'newspaper'
                     ),
                     'email_campaigns.mailshots'     => array(
-                        'label' => _('Mailshots'),
+                        'label' => _('Marketing mailshots'),
                         'icon'=>'bullhorn'
                     ),
                     'email_campaigns.reminders'     => array(
-                        'label' => _('Reminders'),
+                        'label' => _('Transactional mailshots'),
                         'icon'=>'bell'
                     ),
 
