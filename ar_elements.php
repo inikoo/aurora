@@ -35,7 +35,7 @@ switch ($tab) {
                          'parameters' => array('type' => 'json array')
                      )
         );
-        get_stock_given_free_element_numbers($db, $data['parameters'], $user,$account);
+        get_stock_given_free_element_numbers($db, $data['parameters'], $user, $account);
         break;
     case 'lost_stock':
         $data = prepare_values(
@@ -43,7 +43,7 @@ switch ($tab) {
                          'parameters' => array('type' => 'json array')
                      )
         );
-        get_lost_stock_element_numbers($db, $data['parameters'], $user,$account);
+        get_lost_stock_element_numbers($db, $data['parameters'], $user, $account);
         break;
     case 'agent_parts':
         $data = prepare_values(
@@ -179,6 +179,7 @@ switch ($tab) {
         );
         get_customers_element_numbers($db, $data['parameters'], $user);
         break;
+
     case 'store.products':
     case 'category.products':
     case 'part.products':
@@ -271,6 +272,7 @@ switch ($tab) {
         get_invoices_element_numbers($db, $data['parameters'], $user);
         break;
     case 'customer.history':
+    case 'prospect.history':
     case 'supplier_part.history':
     case 'agent.history':
     case 'location.history':
@@ -360,7 +362,11 @@ switch ($tab) {
         $data = prepare_values($_REQUEST, array('parameters' => array('type' => 'json array')));
         parts_barcode_errors($db, $data['parameters'], $user);
         break;
+    case 'prospects':
 
+        $data = prepare_values($_REQUEST, array('parameters' => array('type' => 'json array')));
+        get_prospects_elements($db, $data['parameters'], $user);
+        break;
     default:
         $response = array(
             'state' => 405,
@@ -375,19 +381,17 @@ switch ($tab) {
 function parts_barcode_errors($db, $data, $user) {
 
 
-
     $elements_numbers = array(
-        'type'  => array(
-            'Duplicated'    => 0,
-            'Size'   => 0,
+        'type' => array(
+            'Duplicated'       => 0,
+            'Size'             => 0,
             'Short_Duplicated' => 0,
-            'Checksum_missing'    => 0,
-            'Checksum'    => 0
+            'Checksum_missing' => 0,
+            'Checksum'         => 0
         ),
 
 
     );
-
 
 
     $sql = sprintf(
@@ -413,35 +417,30 @@ function parts_barcode_errors($db, $data, $user) {
 function warehouse_leakages_transactions($db, $data, $user) {
 
 
-
-
     $elements_numbers = array(
         'type' => array(
-            'found'  => 0,
-            'lost' => 0,
+            'found' => 0,
+            'lost'  => 0,
         ),
 
     );
 
 
-
-
-
-    $timeseries_record=get_object('timeseries_record',$data['parent_key']);
+    $timeseries_record = get_object('timeseries_record', $data['parent_key']);
     //print_r($timeseries_record);
 
-    $_tmp=json_decode($timeseries_record->get('Timeseries Record Metadata'),true);
-    $from_date=$_tmp['f'];
-    $to_date=$_tmp['t'];
+    $_tmp      = json_decode($timeseries_record->get('Timeseries Record Metadata'), true);
+    $from_date = $_tmp['f'];
+    $to_date   = $_tmp['t'];
 
-    $where = sprintf(" where `Inventory Transaction Type` = 'Adjust' and `Inventory Transaction Section`='Audit'  AND `Warehouse Key`=%d %s %s  ",
-                     $timeseries_record->get('Timeseries Parent Key'),
-        ($from_date ? sprintf('and  `Date`>=%s', prepare_mysql($from_date)) : ''), ($to_date ? sprintf('and `Date`<%s', prepare_mysql($to_date)) : '')
+    $where = sprintf(
+        " where `Inventory Transaction Type` = 'Adjust' and `Inventory Transaction Section`='Audit'  AND `Warehouse Key`=%d %s %s  ", $timeseries_record->get('Timeseries Parent Key'), ($from_date ? sprintf('and  `Date`>=%s', prepare_mysql($from_date)) : ''),
+        ($to_date ? sprintf('and `Date`<%s', prepare_mysql($to_date)) : '')
     );
 
 
     $sql = sprintf(
-        "select count(*) as number from `Inventory Transaction Fact` %s    and `Inventory Transaction Quantity`<0  ",$where
+        "select count(*) as number from `Inventory Transaction Fact` %s    and `Inventory Transaction Quantity`<0  ", $where
     );
     foreach ($db->query($sql) as $row) {
 
@@ -450,14 +449,13 @@ function warehouse_leakages_transactions($db, $data, $user) {
     }
 
     $sql = sprintf(
-        "select count(*) as number from `Inventory Transaction Fact` %s    and `Inventory Transaction Quantity`>0  ",$where
+        "select count(*) as number from `Inventory Transaction Fact` %s    and `Inventory Transaction Quantity`>0  ", $where
     );
     foreach ($db->query($sql) as $row) {
 
         $elements_numbers['type']['found'] = number($row['number']);
 
     }
-
 
 
     $response = array(
@@ -470,8 +468,6 @@ function warehouse_leakages_transactions($db, $data, $user) {
 }
 
 function get_webnodes_element_numbers($db, $data, $user) {
-
-
 
 
     $elements_numbers = array(
@@ -538,12 +534,12 @@ function get_deals_element_numbers($db, $data, $user) {
             'Finish'    => 0
         ),
         'trigger' => array(
-            'Order'              => 0,
-            'Product_Category'   => 0,
-            'Product'            => 0,
-            'Customer'           => 0,
+            'Order'             => 0,
+            'Product_Category'  => 0,
+            'Product'           => 0,
+            'Customer'          => 0,
             'Customer_Category' => 0,
-            'Customer_List'      => 0
+            'Customer_List'     => 0
         ),
 
     );
@@ -666,7 +662,7 @@ function get_stock_transactions_elements($db, $data, $user) {
         'stock_status' => array(
             'OIP'          => 0,
             'In'           => 0,
-            'Other'         => 0,
+            'Other'        => 0,
             'Move'         => 0,
             'Out'          => 0,
             'Audit'        => 0,
@@ -1005,8 +1001,6 @@ function get_products_element_numbers($db, $data, $user) {
             break;
 
 
-
-
         default:
             $response = array(
                 'state' => 405,
@@ -1192,11 +1186,11 @@ function get_customers_element_numbers($db, $data) {
             'No'  => 0
         ),
         'activity' => array(
-            'Rejected' => 0,
+            'Rejected'  => 0,
             'ToApprove' => 0,
-            'Active' => 0,
-            'Losing' => 0,
-            'Lost'   => 0
+            'Active'    => 0,
+            'Losing'    => 0,
+            'Lost'      => 0
         ),
         'type'     => array(
             'Normal'  => 0,
@@ -1384,11 +1378,13 @@ function get_history_elements($db, $data) {
             'Attachments' => 0,
             'WebLog'      => 0,
             'Emails'      => 0,
-            'Deployment'  => 0
+            'Deployment'  => 0,
+            'Calls'       => 0,
+            'Posts'       => 0
         )
     );
 
-   // print_r($data);
+    // print_r($data);
 
     if ($data['parent'] == 'category') {
         $sql = sprintf(
@@ -1438,25 +1434,29 @@ function get_history_elements($db, $data) {
         $sql = sprintf(
             "SELECT count(*) AS num ,`Type` FROM  `Webpage Publishing History Bridge` WHERE  `Webpage Key`=%d GROUP BY  `Type`", $data['parent_key']
         );
-    }elseif ($data['parent'] == 'charge') {
+    } elseif ($data['parent'] == 'charge') {
         $sql = sprintf(
             "SELECT count(*) AS num ,`Type` FROM  `Charge History Bridge` WHERE  `Charge Key`=%d GROUP BY  `Type`", $data['parent_key']
         );
-    }elseif ($data['parent'] == 'email_campaign') {
+    } elseif ($data['parent'] == 'email_campaign') {
         $sql = sprintf(
             "SELECT count(*) AS num ,`Type` FROM  `Email Campaign History Bridge` WHERE  `Email Campaign Key`=%d GROUP BY  `Type`", $data['parent_key']
         );
-    }elseif ($data['parent'] == 'Customer_Poll_Query_Option') {
+    } elseif ($data['parent'] == 'Customer_Poll_Query_Option') {
         $sql = sprintf(
             "SELECT count(*) AS num ,`Type` FROM  `Customer Poll Query Option History Bridge` WHERE  `Customer Poll Query Option Key`=%d GROUP BY  `Type`", $data['parent_key']
         );
-    }elseif ($data['parent'] == 'Customer_Poll_Query') {
+    } elseif ($data['parent'] == 'Customer_Poll_Query') {
         $sql = sprintf(
             "SELECT count(*) AS num ,`Type` FROM  `Customer Poll Query History Bridge` WHERE  `Customer Poll Query Key`=%d GROUP BY  `Type`", $data['parent_key']
         );
     } elseif ($data['parent'] == 'none') {
         $sql = sprintf(
             "SELECT count(*) AS num ,`Type` FROM  `%s Category History Bridge`  GROUP BY  `Type`", $data['subject']
+        );
+    } elseif ($data['parent'] == 'prospect') {
+        $sql = sprintf(
+            "SELECT count(*) AS num ,`Type` FROM  `Prospect History Bridge` WHERE  `Prospect Key`=%d GROUP BY  `Type`", $data['parent_key']
         );
     } else {
         $response = array(
@@ -1701,8 +1701,6 @@ function get_orders_archived_element_numbers($db, $data, $user) {
 function get_orders_element_numbers($db, $data, $user) {
 
 
-
-
     list($db_interval, $from, $to, $from_date_1yb, $to_1yb) = calculate_interval_dates($db, $data['period'], $data['from'], $data['to']);
 
 
@@ -1804,7 +1802,7 @@ function get_orders_element_numbers($db, $data, $user) {
 
         $elements_numbers['state']['Cancelled'] = $object->get('Orders Cancelled Number');
 
-    }else{
+    } else {
         $sql = sprintf(
             "SELECT %s AS number,`Order State` AS element FROM %s %s %s GROUP BY `Order State` ", $count, $table, $where, $where_interval
         );
@@ -1814,8 +1812,6 @@ function get_orders_element_numbers($db, $data, $user) {
         }
 
     }
-
-
 
 
     $sql = sprintf(
@@ -1848,8 +1844,6 @@ function get_orders_element_numbers($db, $data, $user) {
 
 
 }
-
-
 
 
 function get_delivery_notes_element_numbers($db, $data, $user) {
@@ -1889,17 +1883,17 @@ function get_delivery_notes_element_numbers($db, $data, $user) {
     $where_interval = $where_interval['mysql'];
 
     $elements_numbers = array(
-        'state'   => array(
+        'state' => array(
             'Ready'    => 0,
-            'Picking'   => 0,
-            'Packed' => 0,
-            'Done'  => 0,
-            'Send'    => 0,
-            'Returned'  => 0
+            'Picking'  => 0,
+            'Packed'   => 0,
+            'Done'     => 0,
+            'Send'     => 0,
+            'Returned' => 0
         ),
         'type'  => array(
-            'Order' => 0,
-            'Replacements'     => 0
+            'Order'        => 0,
+            'Replacements' => 0
         ),
 
 
@@ -1909,47 +1903,59 @@ function get_delivery_notes_element_numbers($db, $data, $user) {
         "SELECT %s AS number,`Delivery Note State` AS element FROM %s %s %s GROUP BY `Delivery Note State` ", $count, $table, $where, $where_interval
     );
 
-    if ($result=$db->query($sql)) {
-    		foreach ($result as $row) {
-
-                if($row['element']=='Ready to be Picked' or $row['element']=='Picker & Packer Assigned' or $row['element']=='Picker Assigned' or $row['element']=='Packer Assigned')$row['element']='Ready';
-                if($row['element']=='Picking & Packing' or  $row['element']=='Picking' or  $row['element']=='Picked' or  $row['element']=='Packing' )$row['element']='Picking';
-
-                if($row['element']=='Approved' or $row['element']=='Packed Done')$row['element']='Done';
-                if($row['element']=='Dispatched')$row['element']='Send';
-                if($row['element']=='Cancelled' or $row['element']=='Cancelled to Restock'    )$row['element']='Returned';
-
-                $elements_numbers['state'][$row['element']] += $row['number'];
-
-            }
-    }else {
-    		print_r($error_info=$db->errorInfo());
-    		print "$sql\n";
-    		exit;
-    }
-
-//'Replacement & Shortages','Order','Replacement','Shortages','Sample','Donation'
-    $sql = sprintf(
-        "SELECT %s AS number,`Delivery Note Type` AS element FROM %s %s %s GROUP BY `Delivery Note Type` ", $count, $table, $where, $where_interval
-    );
-
-    if ($result=$db->query($sql)) {
+    if ($result = $db->query($sql)) {
         foreach ($result as $row) {
 
-            if($row['element']=='Replacement & Shortages' or $row['element']=='Replacement' or $row['element']=='Shortages')$row['element']='Replacements';
+            if ($row['element'] == 'Ready to be Picked' or $row['element'] == 'Picker & Packer Assigned' or $row['element'] == 'Picker Assigned' or $row['element'] == 'Packer Assigned') {
+                $row['element'] = 'Ready';
+            }
+            if ($row['element'] == 'Picking & Packing' or $row['element'] == 'Picking' or $row['element'] == 'Picked' or $row['element'] == 'Packing') {
+                $row['element'] = 'Picking';
+            }
 
-            if($row['element']=='Order' or $row['element']=='Sample' or $row['element']=='Donation')$row['element']='Order';
+            if ($row['element'] == 'Approved' or $row['element'] == 'Packed Done') {
+                $row['element'] = 'Done';
+            }
+            if ($row['element'] == 'Dispatched') {
+                $row['element'] = 'Send';
+            }
+            if ($row['element'] == 'Cancelled' or $row['element'] == 'Cancelled to Restock') {
+                $row['element'] = 'Returned';
+            }
 
-            $elements_numbers['type'][$row['element']] += $row['number'];
+            $elements_numbers['state'][$row['element']] += $row['number'];
 
         }
-    }else {
-        print_r($error_info=$db->errorInfo());
+    } else {
+        print_r($error_info = $db->errorInfo());
         print "$sql\n";
         exit;
     }
 
+    //'Replacement & Shortages','Order','Replacement','Shortages','Sample','Donation'
+    $sql = sprintf(
+        "SELECT %s AS number,`Delivery Note Type` AS element FROM %s %s %s GROUP BY `Delivery Note Type` ", $count, $table, $where, $where_interval
+    );
 
+    if ($result = $db->query($sql)) {
+        foreach ($result as $row) {
+
+            if ($row['element'] == 'Replacement & Shortages' or $row['element'] == 'Replacement' or $row['element'] == 'Shortages') {
+                $row['element'] = 'Replacements';
+            }
+
+            if ($row['element'] == 'Order' or $row['element'] == 'Sample' or $row['element'] == 'Donation') {
+                $row['element'] = 'Order';
+            }
+
+            $elements_numbers['type'][$row['element']] += $row['number'];
+
+        }
+    } else {
+        print_r($error_info = $db->errorInfo());
+        print "$sql\n";
+        exit;
+    }
 
 
     //print_r($elements_numbers);
@@ -1963,7 +1969,6 @@ function get_delivery_notes_element_numbers($db, $data, $user) {
 
 
 }
-
 
 
 function get_invoices_element_numbers($db, $parameters) {
@@ -2012,8 +2017,7 @@ function get_invoices_element_numbers($db, $parameters) {
         list($where, $table) = invoices_awhere($raw_data);
 
 
-    }
-    elseif ($parameters['parent'] == 'category') {
+    } elseif ($parameters['parent'] == 'category') {
         $category = new Category($parameters['parent_key']);
 
 
@@ -2076,31 +2080,27 @@ function get_invoices_element_numbers($db, $parameters) {
     } elseif ($parameters['parent'] == 'account') {
 
 
+        if (count($user->stores) == 0) {
+            $where = ' where false';
+        } else {
 
-            if (count($user->stores) == 0) {
-                $where = ' where false';
-            } else {
+            $where = sprintf(
+                'where  `Invoice Store Key` in (%s)  ', join(',', $user->stores)
+            );
 
-                $where = sprintf(
-                    'where  `Invoice Store Key` in (%s)  ', join(',', $user->stores)
-                );
-
-            }
-
+        }
 
 
     } elseif ($parameters['parent'] == 'order') {
 
-        $table =
-            '`Order Invoice Bridge` B left join   `Invoice Dimension` I  on (I.`Invoice Key`=B.`Invoice Key`)     left join `Payment Account Dimension` P on (P.`Payment Account Key`=I.`Invoice Payment Account Key`)';
+        $table = '`Order Invoice Bridge` B left join   `Invoice Dimension` I  on (I.`Invoice Key`=B.`Invoice Key`)     left join `Payment Account Dimension` P on (P.`Payment Account Key`=I.`Invoice Payment Account Key`)';
         $where = sprintf(
             'where  B.`Order Key`=%d  ', $parameters['parent_key']
         );
 
     } elseif ($parameters['parent'] == 'delivery_note') {
 
-        $table =
-            '`Invoice Delivery Note Bridge` B left join   `Invoice Dimension` I  on (I.`Invoice Key`=B.`Invoice Key`)     left join `Payment Account Dimension` P on (P.`Payment Account Key`=I.`Invoice Payment Account Key`)';
+        $table = '`Invoice Delivery Note Bridge` B left join   `Invoice Dimension` I  on (I.`Invoice Key`=B.`Invoice Key`)     left join `Payment Account Dimension` P on (P.`Payment Account Key`=I.`Invoice Payment Account Key`)';
         $where = sprintf(
             'where  B.`Delivery Note Key`=%d  ', $parameters['parent_key']
         );
@@ -2115,8 +2115,7 @@ function get_invoices_element_numbers($db, $parameters) {
     } elseif ($parameters['parent'] == 'billingregion_taxcategory.invoices') {
 
         $fields = '`Store Code`,`Store Name`,`Country Name`,';
-        $table  =
-            '`Invoice Dimension` I left join `Store Dimension` S on (S.`Store Key`=I.`Invoice Store Key`)  left join kbase.`Country Dimension` C on (I.`Invoice Billing Country 2 Alpha Code`=C.`Country 2 Alpha Code`) ';
+        $table  = '`Invoice Dimension` I left join `Store Dimension` S on (S.`Store Key`=I.`Invoice Store Key`)  left join kbase.`Country Dimension` C on (I.`Invoice Billing Country 2 Alpha Code`=C.`Country 2 Alpha Code`) ';
 
         $parents = preg_split('/_/', $parameters['parent_key']);
         $where   = sprintf(
@@ -2126,8 +2125,7 @@ function get_invoices_element_numbers($db, $parameters) {
 
     } elseif ($parameters['parent'] == 'billingregion_taxcategory.refunds') {
 
-        $table =
-            '`Invoice Dimension` I left join `Store Dimension` S on (S.`Store Key`=I.`Invoice Store Key`)  left join kbase.`Country Dimension` C on (I.`Invoice Billing Country 2 Alpha Code`=C.`Country 2 Alpha Code`) ';
+        $table = '`Invoice Dimension` I left join `Store Dimension` S on (S.`Store Key`=I.`Invoice Store Key`)  left join kbase.`Country Dimension` C on (I.`Invoice Billing Country 2 Alpha Code`=C.`Country 2 Alpha Code`) ';
 
         $parents = preg_split('/_/', $parameters['parent_key']);
         $where   = sprintf(
@@ -2242,8 +2240,7 @@ function get_delivery_note_element_numbers($db, $data) {
 
         if ($row['element'] == 'Ready to be Picked') {
             $_element = 'Ready';
-        } elseif ($row['element'] == 'Picking' or $row['element'] == 'Picking & Packing' or $row['element'] == 'Picked' or $row['element'] == 'Picker Assigned' or $row['element']
-            == 'Picker & Packer Assigned') {
+        } elseif ($row['element'] == 'Picking' or $row['element'] == 'Picking & Packing' or $row['element'] == 'Picked' or $row['element'] == 'Picker Assigned' or $row['element'] == 'Picker & Packer Assigned') {
             $_element = 'Picking';
         } elseif ($row['element'] == 'Packing' or $row['element'] == 'Packed' or $row['element'] == 'Packer Assigned' or $row['element'] == 'Packed Done') {
             $_element = 'Packing';
@@ -3081,29 +3078,27 @@ function get_agent_parts_element_numbers($db, $data, $user) {
 }
 
 
-
-function get_lost_stock_element_numbers($db, $data, $user,$account) {
+function get_lost_stock_element_numbers($db, $data, $user, $account) {
 
 
     $elements_numbers = array(
 
         'type' => array(
-            'Broken'  => 0,
-            'Lost' => 0,
-            'Error' => 0,
+            'Broken' => 0,
+            'Lost'   => 0,
+            'Error'  => 0,
         ),
 
     );
 
 
-
-    $class_html=array(
-        'Broken_Parts'=>0,
-        'Broken_Amount'=>money(0,$account->get('Currency Code')),
-        'Lost_Parts'=>0,
-        'Lost_Amount'=>money(0,$account->get('Currency Code')),
-        'Error_Parts'=>0,
-        'Error_Amount'=>money(0,$account->get('Currency Code'))
+    $class_html = array(
+        'Broken_Parts'  => 0,
+        'Broken_Amount' => money(0, $account->get('Currency Code')),
+        'Lost_Parts'    => 0,
+        'Lost_Amount'   => money(0, $account->get('Currency Code')),
+        'Error_Parts'   => 0,
+        'Error_Amount'  => money(0, $account->get('Currency Code'))
 
     );
 
@@ -3126,24 +3121,24 @@ function get_lost_stock_element_numbers($db, $data, $user,$account) {
 
     $sql = sprintf("select count(*) as number,`Inventory Transaction Type` as element,sum(`Inventory Transaction Amount`) as amount,count(distinct `Part SKU`) as parts from `Inventory Transaction Fact`  $where  group by `Inventory Transaction Type` ");
 
-  // print $sql;
+    // print $sql;
     foreach ($db->query($sql) as $row) {
 
-        if($row['element']=='Other Out')$row['element']='Error';
+        if ($row['element'] == 'Other Out') {
+            $row['element'] = 'Error';
+        }
         $elements_numbers['type'][$row['element']] = number($row['number']);
 
-        $class_html[$row['element'].'_Amount']=money(-1*$row['amount'],$account->get('Currency Code'));
-        $class_html[$row['element'].'_Parts']=$row['parts'];
+        $class_html[$row['element'].'_Amount'] = money(-1 * $row['amount'], $account->get('Currency Code'));
+        $class_html[$row['element'].'_Parts']  = $row['parts'];
 
     }
-
-
 
 
     $response = array(
         'state'            => 200,
         'elements_numbers' => $elements_numbers,
-        'class_html'=>$class_html
+        'class_html'       => $class_html
     );
     echo json_encode($response);
 
@@ -3151,26 +3146,24 @@ function get_lost_stock_element_numbers($db, $data, $user,$account) {
 }
 
 
-
-function get_stock_given_free_element_numbers($db, $data, $user,$account) {
+function get_stock_given_free_element_numbers($db, $data, $user, $account) {
 
 
     $elements_numbers = array(
 
         'type' => array(
-            'Order'  => 0,
+            'Order'       => 0,
             'Replacement' => 0,
         ),
 
     );
 
 
-
-    $class_html=array(
-        'Order_Parts'=>0,
-        'Order_Amount'=>money(0,$account->get('Currency Code')),
-        'Replacement_Parts'=>0,
-        'Replacement_Amount'=>money(0,$account->get('Currency Code')),
+    $class_html = array(
+        'Order_Parts'        => 0,
+        'Order_Amount'       => money(0, $account->get('Currency Code')),
+        'Replacement_Parts'  => 0,
+        'Replacement_Amount' => money(0, $account->get('Currency Code')),
 
 
     );
@@ -3192,29 +3185,85 @@ function get_stock_given_free_element_numbers($db, $data, $user,$account) {
 
     }
 
-    $sql = sprintf("select count(*) as number,`Delivery Note Type` as element,sum(`Inventory Transaction Amount`) as amount,count(distinct `Part SKU`) as parts from `Inventory Transaction Fact` ITF left join `Delivery Note Dimension` DN on (ITF.`Delivery Note Key`=DN.`Delivery Note Key`)  $where  group by `Delivery Note Type` ");
+    $sql = sprintf(
+        "select count(*) as number,`Delivery Note Type` as element,sum(`Inventory Transaction Amount`) as amount,count(distinct `Part SKU`) as parts from `Inventory Transaction Fact` ITF left join `Delivery Note Dimension` DN on (ITF.`Delivery Note Key`=DN.`Delivery Note Key`)  $where  group by `Delivery Note Type` "
+    );
 
     // print $sql;
     foreach ($db->query($sql) as $row) {
 
         $elements_numbers['type'][$row['element']] = number($row['number']);
 
-        $class_html[$row['element'].'_Amount']=money(-1*$row['amount'],$account->get('Currency Code'));
-        $class_html[$row['element'].'_Parts']=$row['parts'];
+        $class_html[$row['element'].'_Amount'] = money(-1 * $row['amount'], $account->get('Currency Code'));
+        $class_html[$row['element'].'_Parts']  = $row['parts'];
 
     }
-
-
 
 
     $response = array(
         'state'            => 200,
         'elements_numbers' => $elements_numbers,
-        'class_html'=>$class_html
+        'class_html'       => $class_html
     );
     echo json_encode($response);
 
 
 }
+
+
+function get_prospects_elements($db, $data) {
+
+
+    $elements_numbers = array(
+
+        'status' => array(
+            'Contacted'     => 0,
+            'NoContacted'   => 0,
+            'NotInterested' => 0,
+            'Registered'    => 0,
+        )
+    );
+
+    $table = '`Prospect Dimension`  P';
+
+    switch ($data['parent']) {
+        case 'store':
+            $where = sprintf(
+                ' where `Prospect Store Key`=%d  ', $data['parent_key']
+            );
+            break;
+
+        default:
+            $response = array(
+                'state' => 405,
+                'resp'  => 'prospect parent not found '.$data['parent']
+            );
+            echo json_encode($response);
+
+            return;
+    }
+
+
+    $sql = sprintf(
+        "select count(Distinct P.`Prospect Key`) as number,`Prospect Status` as element from $table $where  group by `Prospect Status` "
+    );
+
+
+    foreach ($db->query($sql) as $row) {
+
+        $elements_numbers['status'][$row['element']] = number($row['number']);
+
+    }
+
+
+    $response = array(
+        'state'            => 200,
+        'elements_numbers' => $elements_numbers
+    );
+    echo json_encode($response);
+
+
+}
+
 
 ?>

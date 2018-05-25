@@ -959,7 +959,7 @@ class SupplierDelivery extends DB_Table {
                             $row['Purchase Order Transaction Fact Key']
                         );
 
-                       // print $sql;
+                        // print $sql;
                         $this->db->exec($sql);
 
                     }
@@ -1034,7 +1034,7 @@ class SupplierDelivery extends DB_Table {
                         ? 'Null'
                         : sprintf(
                             "%d", $supplier_part->get('Supplier Part Agent Key')
-                        )), $this->id, $qty, $amount,  prepare_mysql(
+                        )), $this->id, $qty, $amount, prepare_mysql(
                             $supplier_part->get(
                                 'Supplier Part Note to Supplier'
                             ), false
@@ -1137,7 +1137,7 @@ class SupplierDelivery extends DB_Table {
             if ($row = $result->fetch()) {
 
 
-             //   print_r($row);
+                //   print_r($row);
 
                 if ($this->get('State Index') >= 30) {
                     $dispatched_items = $row['num_items'];
@@ -1145,19 +1145,19 @@ class SupplierDelivery extends DB_Table {
                     $dispatched_items = 0;
                 }
 
-                $items_amount=($row['items_amount'] == '' ? 0 : $row['items_amount']);
-                $extra_amount=($row['extra_cost_amount'] == '' ? 0 : $row['extra_cost_amount']);
+                $items_amount = ($row['items_amount'] == '' ? 0 : $row['items_amount']);
+                $extra_amount = ($row['extra_cost_amount'] == '' ? 0 : $row['extra_cost_amount']);
 
                 $this->update(
                     array(
-                        'Supplier Delivery Purchase Order Amount' => ($row['po_items_amount'] == '' ? 0 : $row['po_items_amount']) ,
+                        'Supplier Delivery Purchase Order Amount' => ($row['po_items_amount'] == '' ? 0 : $row['po_items_amount']),
 
                         'Supplier Delivery Items Amount'          => $items_amount,
                         'Supplier Delivery Extra Costs Amount'    => $extra_amount,
                         'Supplier Delivery Total Amount'          => $items_amount + $extra_amount,
-                        'Supplier Delivery AC Subtotal Amount'    => $items_amount*$this->get('Supplier Delivery Currency Exchange'),
-                        'Supplier Delivery AC Extra Costs Amount' => $extra_amount*$this->get('Supplier Delivery Currency Exchange'),
-                        'Supplier Delivery AC Total Amount'       => ($items_amount + $extra_amount)*$this->get('Supplier Delivery Currency Exchange'),
+                        'Supplier Delivery AC Subtotal Amount'    => $items_amount * $this->get('Supplier Delivery Currency Exchange'),
+                        'Supplier Delivery AC Extra Costs Amount' => $extra_amount * $this->get('Supplier Delivery Currency Exchange'),
+                        'Supplier Delivery AC Total Amount'       => ($items_amount + $extra_amount) * $this->get('Supplier Delivery Currency Exchange'),
 
                         'Supplier Delivery Number Items'                      => $row['num_items'],
                         'Supplier Delivery Number Dispatched Items'           => $dispatched_items,
@@ -1394,22 +1394,22 @@ class SupplierDelivery extends DB_Table {
 
         if (in_array(
             $this->get('Supplier Delivery State'), array(
-                                                     'InProcess',
-                                                     'Dispatched',
-
-                                                     'Cancelled'
-                                                 )
+            'InProcess',
+            'Dispatched',
+            'Cancelled'
+        )
         )) {
 
             $state = $this->get('Supplier Delivery State');
-        } else {
+        }
+        else {
 
 
             $items = 0;
 
             $state = 'Placed';
             $sql   = sprintf(
-                'SELECT `Supplier Delivery Quantity`,`Supplier Delivery Checked Quantity`,`Supplier Delivery Placed Quantity`  FROM  `Purchase Order Transaction Fact`  WHERE `Supplier Delivery Key` =%d', $this->id
+                'SELECT `Supplier Part Key`,`Purchase Order Transaction State`,`Supplier Delivery Quantity`,`Supplier Delivery Checked Quantity`,`Supplier Delivery Placed Quantity`  FROM  `Purchase Order Transaction Fact`  WHERE `Supplier Delivery Key` =%d', $this->id
             );
 
             if ($result = $this->db->query($sql)) {
@@ -1423,6 +1423,7 @@ class SupplierDelivery extends DB_Table {
 
                     if ($row['Supplier Delivery Checked Quantity'] == '') {
                         $state = 'Received';
+
                         break;
                     } else {
                         if ($row['Supplier Delivery Checked Quantity'] == 0) {
@@ -1451,6 +1452,9 @@ class SupplierDelivery extends DB_Table {
 
                     }
                 }
+
+               // print $state."\n";
+
             } else {
                 print_r($error_info = $this->db->errorInfo());
                 print "$sql\n";
@@ -1459,10 +1463,13 @@ class SupplierDelivery extends DB_Table {
 
             //  print $state;exit;
 
-            return $state;
+
 
 
         }
+     //   print $state."\n";
+       // exit;
+        return $state;
 
     }
 
@@ -1525,13 +1532,11 @@ LEFT JOIN `Supplier Part Historic Dimension` SPH ON (POTF.`Supplier Part Histori
                 $encoded_metadata = json_encode($metadata);
 
 
-
                 $sql = sprintf(
                     "update`Purchase Order Transaction Fact` set  `Supplier Delivery Placed Quantity`=%f,`Supplier Delivery Last Updated Date`=%s ,`Supplier Delivery Transaction Placed`=%s ,
                   
                     `Metadata`=%s 
-                    where  `Purchase Order Transaction Fact Key`=%d ", $qty,
-                    prepare_mysql($date), prepare_mysql($placed), prepare_mysql($encoded_metadata), $transaction_key
+                    where  `Purchase Order Transaction Fact Key`=%d ", $qty, prepare_mysql($date), prepare_mysql($placed), prepare_mysql($encoded_metadata), $transaction_key
                 );
 
 

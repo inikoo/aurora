@@ -15,6 +15,11 @@ if ($parameters['parent'] == 'customer' or $parameters['parent'] == 'order_custo
         ' where   B.`Customer Key`=%d   ', $parameters['parent_key']
     );
     $subject = 'Customer';
+} elseif ($parameters['parent'] == 'prospect') {
+    $where   = sprintf(
+        ' where   B.`Prospect Key`=%d   ', $parameters['parent_key']
+    );
+    $subject = 'Prospect';
 } elseif ($parameters['parent'] == 'store') {
     $where   = sprintf(
         ' where   B.`Store Key`=%d   ', $parameters['parent_key']

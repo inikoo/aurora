@@ -325,7 +325,15 @@ $modules = array(
                 'icon'      => 'user-friends',
                 'reference' => 'prospects/%d',
                 'tabs'      => array(
-                    'prospects' => array()
+
+
+                     'prospects' => array(
+                        'label' => _('Prospects')
+                    ),
+                    'prospects.email_temmplate'          => array(
+                        'label' => _('Email template')
+                    ),
+
                 )
 
 
@@ -764,8 +772,8 @@ $modules = array(
                     ),
 
                     'prospect.history'   => array(
-                        'label' => _('History, notes'),
-                        'icon'  => 'sticky-note'
+                        'label' => _('Communications, history, notes'),
+                        'icon'  => 'comment'
                     ),
 
 

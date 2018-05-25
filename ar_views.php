@@ -1092,6 +1092,10 @@ function get_object_showcase($showcase, $data, $smarty, $user, $db, $account) {
             include_once 'showcase/email_campaign_type.show.php';
             $html = get_email_campaign_type_showcase($data, $smarty, $user, $db);
             break;
+        case 'prospect':
+            include_once 'showcase/prospect.show.php';
+            $html = get_prospect_showcase($data, $smarty, $user, $db);
+            break;
         default:
             $html = $data['object'].' -> '.$data['key'];
             break;
