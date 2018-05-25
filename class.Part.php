@@ -744,7 +744,7 @@ class Part extends Asset {
                 $total_value = $this->data['Part Cost in Warehouse'] * $this->get('Part Current On Hand Stock');
 
                 if ($total_value > 0) {
-                    $total_value = sprintf('<span class="hide_in_history" title="%s">%s</span>', _('Total stock value'), money($total_value, $account->get('Account Currency')));
+                    $total_value = sprintf('<span class="hide_in_history" >%s %s</span>',    money($total_value, $account->get('Account Currency')  ) ,_('total stock value')  );
                 } else {
                     $total_value = '';
                 }
