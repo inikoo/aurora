@@ -712,15 +712,15 @@ LEFT JOIN `Supplier Part Historic Dimension` SPH ON (POTF.`Supplier Part Histori
 
             $exchange = $object->get('Supplier Delivery Currency Exchange');
 
-            $amount_per_sko = round(($exchange * ($row['Supplier Delivery Net Amount'] + $row['Supplier Delivery Extra Cost Amount']) + $row['Supplier Delivery Extra Cost Account Currency Amount']) / $row['Supplier Delivery Quantity'], 4);
+            $amount_per_sko = round(($exchange * ($row['Supplier Delivery Net Amount'] + $row['Supplier Delivery Extra Cost Amount']) + $row['Supplier Delivery Extra Cost Account Currency Amount']) / $row['Supplier Delivery Quantity']/$row['Part Units Per Package']/$row['Supplier Part Packages Per Carton'], 4);
 
 
             if ($account->get('Account Add Stock Value Type') == 'Last Price') {
 
 
-                $part_location->part->update(array('Part Cost in Warehouse' => $amount_per_sko));
+                $part_location->part->update(array('Part Cost in Warehouse' => $amount_per_sko),'no_history');
 
-                print  'xx:'.$amount_per_sko;
+
 
                 if ($old_value != $amount_per_sko) {
 
@@ -731,10 +731,7 @@ LEFT JOIN `Supplier Part Historic Dimension` SPH ON (POTF.`Supplier Part Histori
                             _('Part stock value changed to %s following %s policy after received from supplier delivery %s'), $part->get('Cost in Warehouse only'), '<span class="italic">'._('Last delivery cost set stock value').'</span>', $origin
                         ),
                         'History Details'  => ''
-                    );
-                    $part->add_subject_history(
-                        $history_data, true, 'No', 'Changes', $part->get_object_name(), $part->id
-                    );
+                    );$part->add_subject_history($history_data, true, 'No', 'Changes', $part->get_object_name(), $part->id);
 
                 }
 
@@ -746,7 +743,8 @@ LEFT JOIN `Supplier Part Historic Dimension` SPH ON (POTF.`Supplier Part Histori
                     ), gmdate('Y-m-d H:i:s')
                 );
 
-            } else {
+            }
+            else {
 
 
                 $oif_key = $part_location->add_stock(
