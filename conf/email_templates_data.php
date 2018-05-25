@@ -62,6 +62,13 @@ $email_templates_data = array(
         'subject' => _('Back in stock'),
         'sender'  => 'Store'
 
+    ),
+    'Invite Mailshot'      => array(
+        'key'     => 'Invitation',
+        'name'    => _('Invitation'),
+        'subject' => _('Hello'),
+        'sender'  => 'Store'
+
     )
 
 

@@ -24,9 +24,7 @@ class EmailCampaignType extends DB_Table {
         $this->db = $db;
 
         $this->table_name    = 'Email Campaign Type';
-        $this->ignore_fields = array(
-            'Email Campaign Type Key',
-        );
+        $this->ignore_fields = array('Email Campaign Type Key',);
 
         if (!$arg1 and !$arg2) {
             $this->error = true;
@@ -46,16 +44,25 @@ class EmailCampaignType extends DB_Table {
         }
 
 
-        $this->get_data($arg1, $arg2);
+        $this->get_data($arg1, $arg2,$arg3);
 
     }
 
-    function get_data($tipo, $tag) {
+    function get_data($tipo, $tag,$tag2='') {
 
 
-        $sql = sprintf(
-            "SELECT * FROM `Email Campaign Type Dimension` WHERE  `Email Campaign Type Key`=%d", $tag
-        );
+        if($tipo=='id'){
+            $sql = sprintf(
+                "SELECT * FROM `Email Campaign Type Dimension` WHERE  `Email Campaign Type Key`=%d", $tag
+            );
+        }elseif($tipo=='code_store'){
+            $sql = sprintf(
+                "SELECT * FROM `Email Campaign Type Dimension` WHERE  `Email Campaign Type Code`=%s and `Email Campaign Type Store Key`=%d ",prepare_mysql($tag), $tag2
+            );
+        }else{
+            return;
+        }
+
 
 
         if ($this->data = $this->db->query($sql)->fetch()) {
