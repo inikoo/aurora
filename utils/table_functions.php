@@ -465,6 +465,14 @@ function get_rtext($record_label, $total_records) {
         return sprintf(
             ngettext('%s newsletter', '%s newsletters', $total_records), number($total_records)
         );
+    } elseif ($record_label == 'prospect') {
+        return sprintf(
+            ngettext('%s prospect', '%s prospects', $total_records), number($total_records)
+        );
+    } elseif ($record_label == 'incident') {
+        return sprintf(
+            ngettext('%s incident', '%s incidents', $total_records), number($total_records)
+        );
     } else {
         return sprintf(
             ngettext('%s record', '%s records', $total_records), number($total_records)

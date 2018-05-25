@@ -274,6 +274,17 @@ $tab_defaults = array(
         'f_period'    => 'ytd',
 
     ),
+
+    'prospect.history'              => array(
+        'view'          => 'overview',
+        'sort_key'      => 'date',
+        'sort_order'    => 1,
+        'rpp'           => 100,
+        'rpp_options'   => $default_rrp_options,
+        'f_field'       => 'note',
+        'elements_type' => each($elements_options['prospect_history'])['key'],
+        'elements'      => $elements_options['prospect_history']
+    ),
     'orders.website'              => array(
         'view'        => 'overview',
         'sort_key'    => 'id',

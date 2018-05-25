@@ -149,10 +149,8 @@ class Prospect extends Subject {
             if (in_array(
                 $key, array(
                         'Prospect First Contacted Date',
+                        'Prospect Lost Date'
 
-                        'Prospect Tax Number Validation Date',
-                        'Prospect Last Order Date',
-                        'Prospect First Order Date'
                     )
             )) {
                 $values .= ','.prepare_mysql($value, true);

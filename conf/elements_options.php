@@ -224,6 +224,35 @@ $elements_options = array(
 
         )
     ),
+    'prospect_history'       => array(
+        'type' => array(
+            'label' => _('Type'),
+            'items' => array(
+                'Notes'       => array(
+                    'label'    => _('Notes'),
+                    'selected' => true
+                ),
+
+                'Changes'     => array(
+                    'label'    => _('Changes'),
+                    'selected' => true
+                ),
+                'Emails' => array(
+                    'label'    => _('Emails'),
+                    'selected' => true
+                ),
+                'Calls'      => array(
+                    'label'    => _('Calls'),
+                    'selected' => true
+                ),
+                'Posts'      => array(
+                    'label'    => _('Mail posts'),
+                    'selected' => true
+                )
+            ),
+
+        )
+    ),
 
 
     'webpage_publishing_history'       => array(

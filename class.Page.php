@@ -4853,6 +4853,8 @@ class Page extends DB_Table {
 
                         $content_data['blocks'][$block_key]['items'][$item_key]['web_state']    = $product->get('Web State');
                         $content_data['blocks'][$block_key]['items'][$item_key]['price']        = $product->get('Price');
+                        $content_data['blocks'][$block_key]['items'][$item_key]['price_unit'] = $product->get('Price Per Unit');
+
                         $content_data['blocks'][$block_key]['items'][$item_key]['rrp']          = $product->get('RRP');
                         $content_data['blocks'][$block_key]['items'][$item_key]['code']         = $product->get('Code');
                         $content_data['blocks'][$block_key]['items'][$item_key]['name']         = $product->get('Name');

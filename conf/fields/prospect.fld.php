@@ -303,45 +303,14 @@ else {
                     'required'        => true,
                     'type'            => 'value'
                 ),
-                array(
-                    'id'              => 'Prospect_Registration_Number',
-                    'edit'            => ($edit ? 'string' : ''),
-                    'value'           => $object->get('Prospect Registration Number'),
-                    'formatted_value' => $object->get('Registration Number'),
-                    'label'           => ucfirst(
-                        $object->get_field_label('Prospect Registration Number')
-                    ),
-                    'required'        => false,
-                    'type'            => 'value'
-                ),
-                array(
-                    'id'              => 'Prospect_Tax_Number',
-                    'edit'            => ($edit ? 'string' : ''),
-                    'value'           => $object->get('Prospect Tax Number'),
-                    'formatted_value' => $object->get('Tax Number'),
-                    'label'           => ucfirst(
-                        $object->get_field_label('Prospect Tax Number')
-                    ),
-                    'required'        => false,
-                    'type'            => 'value'
-                ),
-                array(
-                    'render'          => ($object->get('Prospect Tax Number') == '' ? false : true),
-                    'id'              => 'Prospect_Tax_Number_Valid',
-                    'edit'            => ($edit ? 'option' : ''),
-                    'options'         => $options_valid_tax_number,
-                    'value'           => $object->get('Prospect Tax Number Valid'),
-                    'formatted_value' => $object->get('Tax Number Valid'),
-                    'label'           => ucfirst(
-                        $object->get_field_label('Prospect Tax Number Valid')
-                    ),
-                )
 
 
             )
         );
-    $prospect_fields[]=  array(
-            'label'      => _('Email').' ('._('Web login').')',
+
+
+        $prospect_fields[]= array(
+            'label'      => _('Contact'),
             'show_title' => false,
             'fields'     => array(
 
@@ -356,65 +325,6 @@ else {
                     'required'          => true,
                     'type'              => 'value'
                 ),
-                array(
-                    'id'                => 'new_email',
-                    'render'            => false,
-                    'edit'              => ($edit ? 'new_email' : ''),
-                    'value'             => '',
-                    'server_validation' => json_encode(array('tipo' => 'check_for_duplicates')),
-                    'formatted_value'   => '',
-                    'label'             => ucfirst($object->get_field_label('Prospect Other Email')),
-                    'invalid_msg'       => get_invalid_message('email'),
-
-                    'required' => false
-                ),
-
-                array(
-                    'id'                => 'Prospect_Other_Email',
-                    'render'            => false,
-                    'edit'              => ($edit ? 'email' : ''),
-                    'value'             => '',
-                    'formatted_value'   => '',
-                    'server_validation' => json_encode(
-                        array('tipo' => 'check_for_duplicates')
-                    ),
-                    'label'             => ucfirst(
-                            $object->get_field_label('Prospect Other Email')
-                        ).' <i onClick="set_this_as_main(this)" title="'._(
-                            'Set as main email'
-                        ).'" class="far fa-star very_discreet button"></i>',
-                    'invalid_msg'       => get_invalid_message('email'),
-                    'required'          => false
-                ),
-
-                array(
-                    //  'render'    => ($object->get('Prospect Main Plain Email') == '' ? false : true),
-                    'render'    => false,
-                    'id'        => 'show_new_email',
-                    'class'     => 'new',
-                    'value'     => '',
-                    'label'     => _('Add email').' <i class="fa fa-plus new_button button"></i>',
-                    'reference' => ''
-                ),
-                array(
-                    'id'              => 'Prospect_Web_Login_Password',
-                    'edit'            => ($edit ? 'string' : ''),
-                    'value'           => $object->get('Prospect Web Login Password'),
-                    'formatted_value' => $object->get('Web Login Password'),
-                    'label'           => _('Password'),
-                    'invalid_msg'     => get_invalid_message('string'),
-                    'required'        => true,
-                    'type'            => ''
-                ),
-
-            )
-        );
-
-        $prospect_fields[]= array(
-            'label'      => _('Contact'),
-            'show_title' => false,
-            'fields'     => array(
-
                 array(
                     'id'              => 'Prospect_Main_Plain_Mobile',
                     'edit'            => ($edit ? 'telephone' : ''),
@@ -477,16 +387,6 @@ else {
                     'reference' => ''
                 ),
 
-                array(
-                    'id'              => 'Prospect_Main_Plain_FAX',
-                    'edit'            => ($edit ? 'telephone' : ''),
-                    'value'           => $object->get('Prospect Main Plain FAX'),
-                    'formatted_value' => $object->get('Main Plain FAX'),
-                    'label'           => ucfirst($object->get_field_label('Prospect Main Plain FAX')),
-                    'invalid_msg'     => get_invalid_message('telephone'),
-                    'required'        => false,
-                    'type'            => 'value'
-                ),
 
                 array(
                     'id'                => 'Prospect_Website',
@@ -592,24 +492,7 @@ else {
             )
         );
 
-        $prospect_fields[]= array(
-            'label'      => _('Marketing'),
-            'show_title' => true,
-            'fields'     => array(
-                array(
-                    'id'              => 'Prospect_Subscriptions',
-                    'edit'            => 'no_icon',
-                    'value'           => $object->get('Prospect Subscriptions'),
-                    'formatted_value' => '<span class="button" onclick="toggle_subscription(this)"  field="Prospect_Send_Newsletter"  style="margin-right:40px"><i class=" fa fa-fw '.($object->get('Prospect Send Newsletter')=='Yes'?'fa-toggle-on':'fa-toggle-off').'" aria-hidden="true"></i> <span class="'.($object->get('Prospect Send Newsletter')=='No'?'discreet':'').'">'._('Newsletter').'</span></span>'.'<span onclick="toggle_subscription(this)"  field="Prospect_Send_Email_Marketing" class="button" style="margin-right:40px"><i class=" fa fa-fw '.($object->get('Prospect Send Email Marketing')=='Yes'?'fa-toggle-on':'fa-toggle-off').'" aria-hidden="true"></i> <span class="'.($object->get('Prospect Send Email Marketing')=='No'?'discreet':'').'">'._('Marketing emails').'</span></span>'.'<span onclick="toggle_subscription(this)"  field="Prospect_Send_Postal_Marketing" class="button" style="margin-right:40px"><i class=" fa fa-fw '.($object->get('Prospect Send Postal Marketing')=='Yes'?'fa-toggle-on':'fa-toggle-off').'" aria-hidden="true"></i> <span class="'.($object->get('Prospect Send Postal Marketing')=='No'?'discreet':'').'">'._('Postal marketing').'</span></span>',
-                    'label'           => _('Subscriptions'),
-                    'required'        => false,
-                    'type'            => 'value'
-                ),
 
-
-
-            )
-        );
 
         $prospect_fields[]= array(
             'label'      => _('Operations'),
@@ -636,29 +519,6 @@ else {
 
 
 
-    $other_emails = $object->get_other_emails_data();
-    if (count($other_emails) > 0) {
-        $other_emails_fields = array();
-        foreach ($other_emails as $other_email_data_key => $other_email_data) {
-            $other_emails_fields[] = array(
-                'id'                => 'Prospect_Other_Email_'.$other_email_data_key,
-                'edit'              => 'email',
-                'value'             => $other_email_data['email'],
-                'formatted_value'   => $other_email_data['email'],
-                'server_validation' => json_encode(
-                    array('tipo' => 'check_for_duplicates')
-                ),
-                'label'             => ucfirst(
-                        $object->get_field_label('Prospect Other Email')
-                    ).' <i onClick="set_this_as_main(this)" title="'._(
-                        'Set as main email'
-                    ).'" class="far fa-star very_discreet button"></i>',
-                'required'          => false,
-                'type'              => 'value'
-            );
-        }
-        array_splice($prospect_fields[1]['fields'], 1, 0, $other_emails_fields);
-    }
 
     $other_telephones = $object->get_other_telephones_data();
     if (count($other_telephones) > 0) {
@@ -682,54 +542,7 @@ else {
         array_splice($prospect_fields[2]['fields'], 2, 0, $other_telephones_fields);
     }
 
-    $other_delivery_addresses_fields = array();
 
-
-    $other_delivery_addresses = $object->get_other_delivery_addresses_data();
-
-    $smarty->assign('other_delivery_addresses', $other_delivery_addresses);
-
-    $number_other_delivery_address = count($other_delivery_addresses);
-
-    if ($number_other_delivery_address > 0) {
-
-        foreach ($other_delivery_addresses as $other_delivery_address_key => $other_delivery_address) {
-
-            //   addresses ready to be edited from  $other_delivery_addresses_fields_directory
-
-            $other_delivery_addresses_fields[] = array(
-                'id'              => 'Prospect_Other_Delivery_Address_'.$other_delivery_address_key,
-                'edit'            => 'address',
-                'countries'       => $countries,
-                'render'          => false,
-                'value'           => htmlspecialchars($other_delivery_address['value']),
-                'field_type'      => 'other_delivery_address',
-                'formatted_value' => $other_delivery_address['formatted_value'],
-                'invalid_msg'     => get_invalid_message('address'),
-                'label'           => '',
-                'required'        => false
-            );
-        }
-
-
-    }
-
-    //print_r($other_delivery_addresses);
-
-    $other_delivery_addresses_fields_directory = $smarty->fetch('delivery_addresses_directory.tpl');
-
-    $other_delivery_addresses_fields[] = array(
-        'id'     => 'other_delivery_addresses',
-        'render' => ($number_other_delivery_address > 0 ? true : false),
-        'class'  => 'directory',
-
-        'value'           => '',
-        'label'           => _('Other delivery addresses'),
-        'formatted_value' => $other_delivery_addresses_fields_directory,
-        'reference'       => ''
-    );
-
-    array_splice($prospect_fields[3]['fields'], 3, 0, $other_delivery_addresses_fields);
 
 }
 

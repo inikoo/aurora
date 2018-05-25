@@ -2455,7 +2455,7 @@ function get_prospect_navigation($data, $smarty, $user, $db) {
 
 
         $placeholder=_('Search prospects');
-        $sections = get_sections('prospects', $prospect->data['Prospect Store Key']);
+        $sections = get_sections('customers', $prospect->data['Prospect Store Key']);
 
 
         if ($data['parent'] == 'list') {
@@ -2694,14 +2694,7 @@ function get_prospect_navigation($data, $smarty, $user, $db) {
         $_section = 'prospects';
 
     }
-    //$right_buttons[]=array('icon'=>'edit', 'title'=>_('Edit prospect'), 'url'=>'edit_prospect.php?id='.$prospect->id);
-    //$right_buttons[]=array('icon'=>'sticky-note', 'title'=>_('History note'), 'id'=>'note');
-    //$right_buttons[]=array('icon'=>'paperclip', 'title'=>_('Attachement'), 'id'=>'attach');
-    $right_buttons[] = array(
-        'icon'  => 'shopping-cart',
-        'title' => _('New order'),
-        'id'    => 'take_order'
-    );
+    
     $right_buttons[] = array(
         'icon'  => 'sticky-note',
         'title' => _('Sticky note'),
@@ -2716,15 +2709,9 @@ function get_prospect_navigation($data, $smarty, $user, $db) {
     }
 
 
-    //  {if $prospect->get_image_src()} <img id="avatar" src="{$prospect->get_image_src()}" style="cursor:pointer;border:1px solid #eee;height:45px;max-width:100px"> {else} <img id="avatar" src="/art/avatar.jpg" style="cursor:pointer;"> {/if} {if $prospect->get('Prospect Level Type')=='VIP'}<img src="/art/icons/shield.png" style="position:absolute;xtop:-36px;left:40px">{/if} {if $prospect->get('Prospect Level Type')=='Partner'}<img src="/art/icons/group.png" style="position:absolute;xtop:-36px;left:40px">{/if}
-    $avatar = '<div class="square_button"></div>';
-    $avatar
-            = '<div class="square_button left"><img id="avatar" style="height:100%" src="/art/avatar.jpg" style="cursor:pointer;"> </div> ';
-    $avatar = '';
-
-    $title = '<span class="id"><span class="Prospect_Name">'.$prospect->get('Prospect Name').'</span> ('.$prospect->get_formatted_id().')</span>';
-    if($prospect->get('Prospect Type by Activity')=='ToApprove'){
-        $title.=' <span class="error padding_left_10"><i class="far fa-exclamation-circle"></i> '._('To be approved').'</span>';
+    $title = '<span class="id"><span class="Prospect_Name">'.$prospect->get('Prospect Name').'</span> </span>';
+    if($prospect->get('Prospect Status')=='NotInterested'){
+        $title.=' <span class="error padding_left_10"><i class="far fa-exclamation-circle"></i> '._('Not interested').'</span>';
     }elseif($prospect->get('Prospect Type by Activity')=='Rejected'){
         $title.=' <span class="error padding_left_10"><i class="far fa-times"></i> '._('Rejected').'</span>';
     }
@@ -2734,7 +2721,6 @@ function get_prospect_navigation($data, $smarty, $user, $db) {
         'sections'       => $sections,
         'left_buttons'   => $left_buttons,
         'right_buttons'  => $right_buttons,
-        'avatar'         => $avatar,
         'title'          => $title,
         'search'         => array(
             'show'        => true,
