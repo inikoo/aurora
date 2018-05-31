@@ -2787,6 +2787,24 @@ class Page extends DB_Table {
         $smarty_web->clearCache(null, $cache_id);
 
 
+        $redis = new Redis();
+        if(  $redis->connect('127.0.0.1', 6379)){
+
+
+            $url_cache_key='pwc|'.$this->get('Webpage Website Key').'_'.$this->get('Webpage Code');
+            $redis->set($url_cache_key,$this->id);
+            $url_cache_key='pwc|'.$this->get('Webpage Website Key').'_'.strtoupper($this->get('Webpage Code'));
+            $redis->set($url_cache_key,$this->id);
+            $url_cache_key='pwc|'.$this->get('Webpage Website Key').'_'.strtolower($this->get('Webpage Code'));
+            $redis->set($url_cache_key,$this->id);
+
+        }
+
+
+
+
+
+
         $this->update_metadata = array(
             'class_html'    => array(
                 'Webpage_State_Icon'    => $this->get('State Icon'),

@@ -30,10 +30,5 @@ if (!$webpage_key) {
 }
 
 
-
-
-
-//exit("::: Not found");
-
-include_once('webpage.php');
+include 'display_webpage.php';
 ?>
