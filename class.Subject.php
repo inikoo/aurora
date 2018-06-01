@@ -736,6 +736,7 @@ class Subject extends DB_Table {
             }
         }
 
+
         list($address, $formatter, $postal_label_formatter) = get_address_formatter($country, $locale);
 
 
@@ -2501,6 +2502,36 @@ class Subject extends DB_Table {
         }
 
     }
+
+    function has_telephone(){
+
+
+
+        if(!empty($this->data[$this->table_name.' Main Plain Telephone'])  or  !empty($this->data[$this->table_name.' Main Plain Mobile']) ){
+            return true;
+        }else{
+            return false;
+        }
+
+    }
+
+    function has_address(){
+
+        if(
+            empty($this->data[$this->table_name.' Contact Address Line 1'])  and
+            empty($this->data[$this->table_name.' Contact Address Line 1']) and
+            empty($this->data[$this->table_name.' Postal Code'])   and
+            empty($this->data[$this->table_name.' Address Sorting Code'])
+
+        ){
+            return false;
+        }else{
+            return true;
+        }
+
+    }
+
+
 
 
 }

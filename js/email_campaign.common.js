@@ -7,6 +7,60 @@
 
 
 
+function send_email(recipient,recipient_key) {
+
+    $('#save_email_template_dialog').addClass('hide')
+
+
+    var ajaxData = new FormData();
+
+    ajaxData.append("tipo", 'send_email')
+    ajaxData.append("recipient", recipient)
+    ajaxData.append("recipient_key", recipient_key)
+
+    ajaxData.append("html", $('#template_name2').data('htmlFile'))
+    ajaxData.append("json", $('#template_name2').data('jsonFile'))
+    ajaxData.append("text", $('#email_template_text').val())
+    ajaxData.append("subject", $('#email_template_subject').val())
+
+
+
+
+    //$('#save_email_template_dialog').closest('div').addClass('hide')
+
+
+
+    $.ajax({
+        url: "/ar_edit_email_template.php", type: 'POST', data: ajaxData, dataType: 'json', cache: false, contentType: false, processData: false,
+        complete: function () {
+        }, success: function (data) {
+
+            if (data.state == '200') {
+
+
+
+                change_view(data.redirect)
+
+
+
+
+
+            } else if (data.state == '400') {
+                swal({
+                    title: data.title, text: data.msg, confirmButtonText: "OK"
+                });
+            }
+
+
+
+        }, error: function () {
+
+        }
+    });
+
+}
+
+
 
 function publish_email_template(email_template_key) {
 

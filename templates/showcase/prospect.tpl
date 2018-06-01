@@ -95,28 +95,48 @@
 
             <table border="0" class="overview">
 
+                <tr>
+                    <td>{t}Agent{/t}:</td>
+                    <td class="aright">{$prospect->user->get('Alias')}</td>
+                </tr>
 
                 <tr>
                     <td>{t}Created{/t}:</td>
-                    <td class="aright">{$prospect->get('First Contacted Date')}</td>
+                    <td class="aright">{$prospect->get('Created Date')}</td>
                 </tr>
 
-                {if $prospect->get('Prospect Status')=='NotInterested'}
-                    <tr>
-                        <td>{t}Fail{/t}</td>
-                        <td>{$prospect->get('Lost Date')}</td>
-                    </tr>
-                {/if}
 
-                {if $prospect->get('Prospect Status')=='Registered'}
-                    <tr>
-                        <td>{t}Registered{/t}</td>
-                        <td>{$prospect->get('Registered Date')}</td>
-                    </tr>
-                {/if}
+
+                <tr class="contacted_date_tr {if $prospect->get('Prospect Status')=='NoContacted'}hide{/if}">
+                    <td>{t}Contacted{/t}</td>
+                    <td class="aright Contacted_Date">{$prospect->get('First Contacted Date')}</td>
+                </tr>
+
+                <tr  class="fail_date_tr {if $prospect->get('Prospect Status')!='NotInterested'}hide{/if}">
+                    <td>{t}Fail{/t}</td>
+                    <td class="aright Lost_Date">{$prospect->get('Lost Date')}</td>
+                </tr>
+
+                <tr  class="registration_date_tr {if $prospect->get('Prospect Status')!='Registered'}hide{/if}">
+                    <td>{t}Registered{/t}</td>
+                    <td class="aright Registration_Date">{$prospect->get('Registration Date')}</td>
+                </tr>
+
+
 
             </table>
 
+            <style>
+                .not_interested_button{
+                    clear:both;position:relative;top:10px;margin-top:20px;border:1px solid indianred; lightpink;padding:5px 10px
+                }
+                .not_interested_button:hover{
+                    opacity: 1;
+                }
+
+             </style>
+
+            <span  class="button unselectable error very_discreet not_interested_button {if $prospect->get('Prospect Status')!='Contacted'}hide{/if}" onclick="prospect_not_interested(this)" data-key="{$prospect->id}">{t}Set as not interested{/t} <i class="fal fa-frown margin_left_5 fa-fw" ></i></span>
 
 
         </div>
@@ -142,88 +162,83 @@
         open_new_order()
     })
 
-    function open_new_order() {
 
 
-        if (!$('#take_order i').hasClass('fa-shopping-cart')) {
+    function prospect_not_interested(element){
+
+
+        var save_icon = $(element).find('i')
+
+        if (save_icon.hasClass('wait')) {
             return;
         }
 
-        $('#take_order i').removeClass('fa-shopping-cart').addClass('fa-spinner fa-spin')
+
+        console.log(save_icon)
 
 
-        var request = '/ar_find.php?tipo=number_orders_in_process&prospect_key=' + $('#prospect').attr('key')
+        save_icon.removeClass('fa-frown ').addClass('fa-spin fa-spinner wait')
 
-        $.getJSON(request, function (data) {
+        var ajaxData = new FormData();
 
 
-            if (data.orders_in_process > 0) {
-                $('#take_order i').addClass('fa-shopping-cart').removeClass('fa-spinner fa-spin')
+        ajaxData.append("tipo", 'edit_field')
+        ajaxData.append("object", 'Prospect')
+        ajaxData.append("key", $(element).data('key'))
+        ajaxData.append("field", 'Prospect_Status')
+        ajaxData.append("value",'NotInterested')
 
-            } else {
-                new_order();
+
+        $.ajax({
+            url: "/ar_edit.php", type: 'POST', data: ajaxData, dataType: 'json', cache: false, contentType: false, processData: false,
+
+
+            complete: function () {
+
+            }, success: function (data) {
+
+
+                if (data.state == '200') {
+
+
+                    for (var key in data.update_metadata.class_html) {
+                        $('.' + key).html(data.update_metadata.class_html[key])
+                    }
+
+
+
+                    for (var key in data.update_metadata.hide) {
+
+
+                        $('.' + data.update_metadata.hide[key]).addClass('hide')
+                    }
+
+                    for (var key in data.update_metadata.show) {
+
+                        $('.' + data.update_metadata.show[key]).removeClass('hide')
+                    }
+
+                    rows.fetch({
+                        reset: true
+                    });
+                    get_elements_numbers(rows.tab, rows.parameters)
+
+
+                } else if (data.state == '400') {
+
+
+                    save_icon.addClass('fa-frown ').removeClass('fa-spin fa-spinner wait')
+
+
+
+                }
+
+
+            }, error: function () {
+
             }
-
-
-        })
-
-    }
-
-    function new_order() {
-
-
-        var object = 'Order'
-        var parent = 'prospect'
-        var parent_key = $('#prospect').attr('key')
-        var fields_data = {};
-
-
-        var request = '/ar_edit.php?tipo=new_object&object=' + object + '&parent=' + parent + '&parent_key=' + parent_key + '&fields_data=' + JSON.stringify(fields_data)
-        console.log(request)
-        var form_data = new FormData();
-        form_data.append("tipo", 'new_object')
-        form_data.append("object", object)
-        form_data.append("parent", parent)
-        form_data.append("parent_key", parent_key)
-        form_data.append("fields_data", JSON.stringify(fields_data))
-
-        var request = $.ajax({
-            url: "/ar_edit.php",
-            data: form_data,
-            processData: false,
-            contentType: false,
-            type: 'POST',
-            dataType: 'json'
-        })
-
-        request.done(function (data) {
-
-
-            $('#' + object + '_save').addClass('fa-cloud').removeClass('fa-spinner fa-spin');
-
-            //console.log(data)
-            if (data.state == 200) {
-                change_view('orders/' + $('#prospect').attr('store_key') + '/' + data.new_id)
-
-            }
-            else if (data.state == 400) {
-                //TODO make a nice msg
-                alert(data.msg)
-
-
-            }
-        })
-
-        request.fail(function (jqXHR, textStatus) {
-            console.log(textStatus)
-
-            console.log(jqXHR.responseText)
-            $('#' + object + '_save').addClass('fa-cloud').removeClass('fa-spinner fa-spin')
-            $('#inline_new_object_msg').html('Server error please contact Aurora support').addClass('error')
-
-
         });
 
-
     }
+
 </script>

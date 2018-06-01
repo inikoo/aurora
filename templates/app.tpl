@@ -67,7 +67,7 @@
         <script src="/js/libs/d3.js"></script>
         <script src="/js/libs/d3fc.layout.js"></script>
         <script src="/js/libs/d3fc.js"></script>
-        <script src="/js/libs/sweetalert.min.js?v2"></script>
+        <script src="/js/libs/sweetalert.min.js?v2a"></script>
 
         <script src="/js/libs/fotorama.js"></script>
         <script src="/js/libs/tooltipster.bundle.min.js"></script>

@@ -96,7 +96,7 @@ $elements_options = array(
         )
     ),
     'prospects'              => array(
-        'activity' => array(
+        'status' => array(
             'label' => _('Status'),
             'items' => array(
                 'NoContacted' => array(

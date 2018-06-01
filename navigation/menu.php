@@ -30,6 +30,7 @@ $nav_menu[] = array(
 if ($user->can_view('customers')   ) {
 
 
+
     if ($user->get('User Hooked Store Key')) {
         $nav_menu[] = array(
             '<i class="far fa-users fa-fw"></i>',

@@ -488,7 +488,7 @@ abstract class DB_Table extends stdClass {
                 include_once 'class.Supplier.php';
 
                 $supplier            = new Supplier($data['Subject Key']);
-                $data['Author Name'] = $staff->data['Supplier Name'];
+                $data['Author Name'] = $supplier->data['Supplier Name'];
             } elseif ($data['Subject'] == 'System') {
 
                 $data['Author Name'] = _('System');
@@ -558,7 +558,7 @@ abstract class DB_Table extends stdClass {
             prepare_mysql($data['Metadata'])
         );
 
-        // print "$sql\n";
+
 
 
         $this->db->exec($sql);
@@ -784,6 +784,7 @@ abstract class DB_Table extends stdClass {
         $sql = sprintf(
             "INSERT INTO `%s History Bridge` VALUES (%d,%d,%s,'No',%s)", $table_name, $table_key, $history_key, prepare_mysql($deletable), prepare_mysql($type)
         );
+
 
         $this->db->exec($sql);
 

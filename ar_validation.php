@@ -420,13 +420,46 @@ function check_for_duplicates($data, $db, $user, $account) {
 
 
             break;
+            
+            
+        case 'Prospect':
+
+            $invalid_msg              = _('Prospect already inputted');
+            $sql                      = sprintf(
+                "SELECT `Prospect Key` AS `key` ,`Prospect Main Plain Email` AS field FROM `Prospect Dimension` WHERE `Prospect Main Plain Email`=%s AND `Prospect Store Key`=%d ", prepare_mysql($data['value']), $data['parent_key']
+            );
+            $validation_sql_queries[] = array(
+                'sql'         => $sql,
+                'invalid_msg' => $invalid_msg
+            );
+
+
+            $invalid_msg              = _('Prospect already registered');
+            $sql                      = sprintf(
+                "SELECT `Customer Key` AS `key` ,`Customer Main Plain Email` AS field FROM `Customer Dimension` WHERE `Customer Main Plain Email`=%s AND `Customer Store Key`=%d ", prepare_mysql($data['value']), $data['parent_key']
+            );
+            $validation_sql_queries[] = array(
+                'sql'         => $sql,
+                'invalid_msg' => $invalid_msg
+            );
+
+            $invalid_msg              = _('Prospect already registered');
+            $sql                      = sprintf(
+                "SELECT `Customer Other Email Customer Key` AS `key` ,`Customer Other Email Email` AS field FROM `Customer Other Email Dimension` WHERE `Customer Other Email Email`=%s AND `Customer Other Email Store Key`=%d   ",
+                prepare_mysql($data['value']), $data['parent_key']
+            );
+            $validation_sql_queries[] = array(
+                'sql'         => $sql,
+                'invalid_msg' => $invalid_msg
+            );
+
+
+            break;
 
         case 'Customer':
             switch ($field) {
                 case 'Customer Main Plain Email':
-                    $invalid_msg              = _(
-                        'Another customer have this email'
-                    );
+                    $invalid_msg              = _('Another customer have this email');
                     $sql                      = sprintf(
                         "SELECT `Customer Key` AS `key` ,`Customer Main Plain Email` AS field FROM `Customer Dimension` WHERE `Customer Main Plain Email`=%s AND `Customer Store Key`=%d ", prepare_mysql($data['value']), $data['parent_key']
                     );
@@ -435,9 +468,7 @@ function check_for_duplicates($data, $db, $user, $account) {
                         'invalid_msg' => $invalid_msg
                     );
 
-                    $invalid_msg              = _(
-                        'Another customer have this email'
-                    );
+                    $invalid_msg              = _('Another customer have this email');
                     $sql                      = sprintf(
                         "SELECT `Customer Other Email Customer Key` AS `key` ,`Customer Other Email Email` AS field FROM `Customer Other Email Dimension` WHERE `Customer Other Email Email`=%s AND `Customer Other Email Store Key`=%d  AND `Customer Other Email Customer Key`!=%d ",
                         prepare_mysql($data['value']), $data['parent_key'], $data['key']
@@ -448,9 +479,7 @@ function check_for_duplicates($data, $db, $user, $account) {
                     );
 
 
-                    $invalid_msg              = _(
-                        'Email already set up in this customer'
-                    );
+                    $invalid_msg              = _('Email already set up in this customer');
                     $sql                      = sprintf(
                         "SELECT `Customer Other Email Customer Key` AS `key` ,`Customer Other Email Email` AS field FROM `Customer Other Email Dimension` WHERE `Customer Other Email Email`=%s AND  `Customer Other Email Customer Key`=%d ", prepare_mysql($data['value']),
                         $data['key']

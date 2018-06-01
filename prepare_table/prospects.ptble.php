@@ -35,21 +35,21 @@ if ($parameters['parent'] == 'store') {
 exit();
 }
 
-
 switch ($parameters['elements_type']) {
    
     case 'status':
         $_elements      = '';
         $count_elements = 0;
-        foreach (
-            $parameters['elements'][$parameters['elements_type']]['items'] as $_key => $_value
-        ) {
+        foreach ($parameters['elements'][$parameters['elements_type']]['items'] as $_key => $_value) {
             if ($_value['selected']) {
                 $count_elements++;
                 $_elements .= ','.prepare_mysql($_key);
 
             }
         }
+
+
+
         $_elements = preg_replace('/^\,/', '', $_elements);
         if ($_elements == '') {
             $where .= ' and false';

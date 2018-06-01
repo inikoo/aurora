@@ -330,7 +330,7 @@ $modules = array(
                      'prospects' => array(
                         'label' => _('Prospects')
                     ),
-                    'prospects.email_temmplate'          => array(
+                    'prospects.email_template'          => array(
                         'label' => _('Email template')
                     ),
 
@@ -776,7 +776,10 @@ $modules = array(
                         'icon'  => 'comment'
                     ),
 
-
+                    'prospect.send_emails'   => array(
+                        'label' => _('Send emails'),
+                        'icon'  => 'paper-plane'
+                    ),
 
                 )
             ),
@@ -787,6 +790,34 @@ $modules = array(
                 'tabs' => array(
                     'prospect.new' => array(
                         'label' => _('New prospect')
+                    ),
+
+                )
+
+            ),
+
+            'email_tracking'=> array(
+                'type' => 'object',
+                'tabs' => array(
+                    'email_tracking.email'   => array(
+                        'label' => _('Email'),
+                        'icon'  => 'envelope',
+                    ),
+
+                    'email_tracking.events'   => array(
+                        'label' => _('Tracking'),
+                        'icon'  => 'stopwatch'
+                    ),
+
+
+
+                )
+            ),
+            'prospect.compose_email' => array(
+                'type' => 'new_object',
+                'tabs' => array(
+                    'prospect.compose_email' => array(
+                        'label' => 'New invitation'
                     ),
 
                 )

@@ -3562,6 +3562,26 @@ $tab_defaults = array(
 
 
     ),
+    'email_campaign_type.send_emails'                     => array(
+        'view'          => 'overview',
+        'sort_key'      => 'email',
+        'sort_order'    => 1,
+        'rpp'           => 100,
+        'rpp_options'   => $default_rrp_options,
+        'f_field'       => 'email',
+
+
+    ),
+    'prospect.send_emails'                     => array(
+        'view'          => 'overview',
+        'sort_key'      => 'date',
+        'sort_order'    => 1,
+        'rpp'           => 100,
+        'rpp_options'   => $default_rrp_options,
+        'f_field'       => 'subject',
+
+
+    ),
     'email_campaign.email_blueprints'            => array(
         'view'        => 'overview',
         'sort_key'    => 'id',
@@ -3610,6 +3630,16 @@ $tab_defaults = array(
         'f_field'       => '',
         'elements_type' => each($elements_options['list_history'])['key'],
         'elements'      => $elements_options['list_history']
+    ),
+    'email_tracking.events'                     => array(
+        'view'          => 'overview',
+        'sort_key'      => 'date',
+        'sort_order'    => 1,
+        'rpp'           => 100,
+        'rpp_options'   => $default_rrp_options,
+        'f_field'       => '',
+
+
     ),
 
 
