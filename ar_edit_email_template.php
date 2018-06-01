@@ -247,6 +247,8 @@ function send_test_email($data, $editor, $smarty, $db) {
 
     $scope_object = get_object($email_template->get('Email Template Scope'), $email_template->get('Email Template Scope Key'));
 
+
+
     $sender_email_address = $scope_object->get('Send Email Address');
 
     if ($sender_email_address == '') {
