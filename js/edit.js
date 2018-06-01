@@ -1982,6 +1982,11 @@ function reset_object(element) {
     save_object_operation('reset', element)
 }
 
+
+function reindex_object(element) {
+    save_object_operation('reindex', element)
+}
+
 function archive_object(element) {
     save_object_operation('archive', element)
 }
