@@ -508,7 +508,7 @@ $modules = array(
                     ),
 
                     'email_campaign.send_emails' => array(
-                        'label' => _('Send emails'),
+                        'label' => _('Sent emails'),
                         'icon'  => 'paper-plane'
                     ),
                     'email_campaign.published_email'   => array(

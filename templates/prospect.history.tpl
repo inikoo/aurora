@@ -14,10 +14,10 @@
 <span id="prospect_history_data" class="hide" data-key="{$prospect->id}"></span>
 
 <div id="send_email_dialog" class="hide choose_dialog textarea_dialog">
-    <span class="button unselectable log_email" onclick="open_log_dialog(this)" title="{t}Log email send with another application{/t}"><i class="fa fa-sticky-note"></i> {t}Log email{/t}</span>
+    <span class="button unselectable log_email hide" onclick="open_log_dialog(this)" title="{t}Log email send with another application{/t}"><i class="fa fa-sticky-note"></i> {t}Log email{/t}</span>
     <span class="button unselectable" onclick="change_view('/prospects/{$prospect->get('Store Key')}/{$prospect->id}/email/new')"  title="{t}Write a custom made invitation email{/t}"><i class="fa fa-pen-alt"></i> {t}Personalized invitation{/t}</span>
 
-    <span class="button unselectable" onclick="send_invitation(this)"  title="{t}Send invitation email from template{/t}"><i class="fa fa-paper-plane"></i> {t}Send invitation{/t}</span>
+    <span class="button unselectable" onclick="send_invitation(this)"  title="{t}Send invitation email from template{/t}"><i class="fa fa-paper-plane"></i> {t}Send invitation using general template{/t}</span>
 
     <i class="fa fa-window-close" style="padding-top: 0px;position: relative;top:-5px" onclick="close_send_email_dialog()"></i>
 
