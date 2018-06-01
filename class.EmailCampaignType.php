@@ -107,7 +107,9 @@ class EmailCampaignType extends DB_Table {
 
         switch ($key) {
 
-
+            case 'Send Email Address':
+                $store=get_object('store',$this->get('Store Key'));
+                return $store->get('Store Email');
 
             case 'Name':
 
