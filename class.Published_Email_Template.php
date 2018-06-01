@@ -56,6 +56,8 @@ class Published_Email_Template extends DB_Table {
 
     function create($data) {
 
+
+
         $data['Published Email Template From']         = gmdate('Y-m-d H:i:s');
         $data['Published Email Template Published By'] = $data['editor']['Author Key'];
 

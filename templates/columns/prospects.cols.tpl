@@ -15,16 +15,18 @@ editable: false,
 renderable: false,
 cell: "string",
 
-}, {
+},
+
+{
 name: "name",
 label: "{t}Name{/t}",
+editable: false,
+
 sortType: "toggle",
 {if $sort_key=='name'}direction: '{if $sort_order==1}descending{else}ascending{/if}',{/if}
 
 cell: Backgrid.HtmlCell.extend({
-events: {
-"dblclick": "enterEditMode"
-}
+
 })
 },{
 name: "email",
@@ -45,15 +47,8 @@ sortType: "toggle",
 editable: false,
 
 cell: "html"
-}, {
-name: "status",
-label: "{t}Status{/t}",
-editable: false,
-sortType: "toggle",
-{if $sort_key=='activity'}direction: '{if $sort_order==1}descending{else}ascending{/if}',{/if}
-
-cell: "string"
-}, {
+},
+{
 name: "contact_since",
 label: "{t}Created{/t}",
 editable: false,
@@ -64,6 +59,16 @@ sortType: "toggle",
 cell: Backgrid.HtmlCell.extend({ className: "aright"} ),
 headerCell: integerHeaderCell
 
+},
+
+{
+name: "status",
+label: "{t}Status{/t}",
+editable: false,
+sortType: "toggle",
+{if $sort_key=='activity'}direction: '{if $sort_order==1}descending{else}ascending{/if}',{/if}
+
+cell: "string"
 }, {
 name: "company_name",
 label: "{t}Company{/t}",

@@ -79,6 +79,8 @@ if ($email_template->id and !($email_template->get('Email Template Type') == 'HT
     $html = $smarty->fetch('email_template.tpl');
 } else {
 
+
+
     $tab     = 'email_campaign.email_blueprints';
     $ar_file = 'ar_email_template_tables.php';
     $tipo    = 'email_blueprints';

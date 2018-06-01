@@ -397,6 +397,10 @@ function get_object($object_name, $key, $load_other_data = false) {
             include_once 'class.Prospect.php';
             $object = new Prospect('id', $key);
             break;
+        case 'email_tracking':
+            include_once 'class.Email_Tracking.php';
+            $object = new Email_Tracking('id', $key);
+            break;
         default:
             exit('need to complete E1: x>'.strtolower($object_name).'<<++>>'.$load_other_data."<\n");
             break;

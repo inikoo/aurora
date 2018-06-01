@@ -289,6 +289,7 @@ $table
 $sql_totals
     = "select count(Distinct B.`History Key`) as num from $table  $where  ";
 
+
 $fields
     = "`Type`,`Strikethrough`,`Deletable`,`Subject`,`Author Name`,`History Details`,`History Abstract`,H.`History Key`,`History Date`";
 

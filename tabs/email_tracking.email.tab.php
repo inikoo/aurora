@@ -2,7 +2,7 @@
 /*
  About:
  Author: Raul Perusquia <raul@inikoo.com>
- Created:  11 May 2018 at 09:36:13 CEST, Mijas Costa, Spain
+ Created: 31 May 2018 at 18:54:57 GMT+8, Kuala Lumpur, Malaysia
  Copyright (c) 2018, Inikoo
 
  Version 3
@@ -10,12 +10,11 @@
 */
 
 
-$email_campaign = $state['_object'];
+$email_tracking = $state['_object'];
 
 
-$email_template = get_object('Email_Template',$email_campaign->get('Email Campaign Email Template Key'));
 
-$published_email_template = get_object('Published_Email_Template',$email_template->get('Email Template Published Email Key'));
+$published_email_template = get_object('Published_Email_Template',$email_tracking->get('Email Tracking Published Email Template Key'));
 
 
 

@@ -38,42 +38,69 @@ $table_buttons[] = array(
     'id'    => "show_history_note_dialog"
 );
 
-$table_buttons[] = array(
-    'icon'  => 'person-carry',
-    'title' => _('Log postal mail'),
-    'id'    => "show_history_post_dialog"
-);
+
+if (in_array(
+    $state['_object']->get('Prospect Status'), array(
+                                                 'Contacted',
+                                                 'NoContacted'
+                                             )
+)) {
+
+    if ($state['_object']->has_address()) {
+        $table_buttons[] = array(
+            'icon'  => 'person-carry',
+            'title' => _('Log postal mail'),
+            'class' => "open_log_dialog log_post"
+        );
 
 
-$table_buttons[] = array(
-    'icon'  => 'phone',
-    'title' => _('Log call'),
-    'id'    => "show_history_call_dialog"
-);
+    }
+
+    if ($state['_object']->has_telephone()) {
+
+        $table_buttons[] = array(
+            'icon'  => 'phone',
+            'title' => _('Log call'),
+            'class' => "open_log_dialog log_call"
+        );
+    }
 
 
-$table_buttons[] = array(
-    'icon'  => 'envelope',
-    'title' => _('Send email'),
-    'reference' => "prospects/".$state['parent_key']."/".$state['key'].'/email/new'
-);
+    $table_buttons[] = array(
+        'icon'  => 'envelope',
+        'title' => _('Send email'),
+        'id'    => "show_send_email_dialog"
+        //  'reference' => "prospects/".$state['parent_key']."/".$state['key'].'/email/new'
+    );
+
+}
+
+
 $smarty->assign('table_buttons', $table_buttons);
+$smarty->assign('prospect', $state['_object']);
 
 
+$smarty->assign(
+    'history_notes_data', array(
 
-$smarty->assign('history_notes_data',
-                array(
-
-                    'object'=>'prospect',
-                    'key'=>$state['_object']->id
-                )
+                            'object' => 'prospect',
+                            'key'    => $state['_object']->id
+                        )
 );
 
 
-
-
-$smarty->assign('aux_templates', array('history_notes.tpl'));
+$smarty->assign(
+    'aux_templates', array(
+                       'history_notes.tpl',
+                       'prospect.history.tpl'
+                   )
+);
 $smarty->assign('state', $state);
+
+
+$smarty->assign(
+    'js_code', 'js/injections/prospect.history.'.(_DEVEL ? '' : 'min.').'js'
+);
 
 include('utils/get_table_html.php');
 

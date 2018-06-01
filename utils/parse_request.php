@@ -624,17 +624,11 @@ function parse_request($_data, $db, $modules, $account = '', $user = '', $is_set
                                                     }
 
 
-
-
-
-
                                                 } elseif ($view_path[3] == 'deal') {
                                                     $section    = 'deal';
                                                     $object     = 'deal';
                                                     $parent     = 'category';
                                                     $parent_key = $category->id;
-
-
 
 
                                                     if (isset($view_path[4])) {
@@ -651,10 +645,7 @@ function parse_request($_data, $db, $modules, $account = '', $user = '', $is_set
                                                     }
 
 
-
-
-
-                                                }  elseif ($view_path[3] == 'upload') {
+                                                } elseif ($view_path[3] == 'upload') {
                                                     //$module='account';
                                                     $section    = 'upload';
                                                     $parent     = 'category';
@@ -1738,7 +1729,6 @@ function parse_request($_data, $db, $modules, $account = '', $user = '', $is_set
                 $module = 'customers';
 
 
-
                 if ($count_view_path == 0) {
                     $section = 'prospects';
                     $parent  = 'store';
@@ -1753,32 +1743,57 @@ function parse_request($_data, $db, $modules, $account = '', $user = '', $is_set
 
                 }
                 $arg1 = array_shift($view_path);
-            if (is_numeric($arg1)) {
-                   $section    = 'prospects';
-                $parent     = 'store';
-                $parent_key = $arg1;
+                if (is_numeric($arg1)) {
+                    $section    = 'prospects';
+                    $parent     = 'store';
+                    $parent_key = $arg1;
 
-                if (isset($view_path[0])) {
+                    if (isset($view_path[0])) {
 
-                    if (is_numeric($view_path[0])) {
-                        $section = 'prospect';
+                        if (is_numeric($view_path[0])) {
+                            $section = 'prospect';
 
-                        $parent     = 'store';
-                        $parent_key = $arg1;
-                        $object     = 'prospect';
-                        $key        = $view_path[0];
+                            $parent     = 'store';
+                            $parent_key = $arg1;
+                            $object     = 'prospect';
+                            $key        = $view_path[0];
 
 
+                            if (isset($view_path[1])) {
+                                if ($view_path[1] == 'email') {
+
+                                    $store_key = $arg1;
+
+                                    $section = 'email_tracking';
+
+                                    $parent     = 'prospect';
+                                    $parent_key = $key;
+
+                                    if (is_numeric($view_path[2])) {
+                                        $section = 'email_tracking';
+                                        $object  = 'email_tracking';
+                                        $key     = $view_path[2];
+
+
+                                    } elseif ($view_path[2] == 'new') {
+                                        $section = 'prospect.compose_email';
+
+                                    }
+
+
+                                }
+
+                            }
+
+
+
+                        } elseif ($view_path[0] == 'new') {
+                            $section = 'prospect.new';
+                            $object  = '';
+                        }
                     }
 
-                    elseif ($view_path[0] == 'new') {
-                        $section = 'prospect.new';
-                        $object  = '';
-                    }
                 }
-
-        }
-
 
 
                 break;
@@ -1869,8 +1884,7 @@ function parse_request($_data, $db, $modules, $account = '', $user = '', $is_set
                         //error
                     }
 
-                }
-                elseif (is_numeric($arg1)) {
+                } elseif (is_numeric($arg1)) {
                     $section    = 'customers';
                     $parent     = 'store';
                     $parent_key = $arg1;
@@ -1893,7 +1907,7 @@ function parse_request($_data, $db, $modules, $account = '', $user = '', $is_set
                             if (!empty($view_path[1])) {
                                 if ($view_path[1] == 'new') {
                                     $section = 'list.new';
-                                    $object     = 'list';
+                                    $object  = 'list';
 
                                 }
                             }
@@ -1901,35 +1915,31 @@ function parse_request($_data, $db, $modules, $account = '', $user = '', $is_set
                         } elseif ($view_path[0] == 'categories') {
                             $section = 'categories';
 
-                        }elseif ($view_path[0] == 'email_campaigns') {
+                        } elseif ($view_path[0] == 'email_campaigns') {
                             $section = 'email_campaigns';
 
-                        }elseif ($view_path[0] == 'email_campaign_type') {
+                        } elseif ($view_path[0] == 'email_campaign_type') {
 
 
                             $section = 'email_campaign_type';
-                            $object = 'email_campaign_type';
+                            $object  = 'email_campaign_type';
                             if (isset($view_path[1])) {
 
 
                                 if (is_numeric($view_path[1])) {
 
-                                    $key=$view_path[1];
+                                    $key = $view_path[1];
                                 }
 
 
-
                             }
-
 
 
                         } elseif ($view_path[0] == 'insights') {
                             $section = 'insights';
 
 
-
-
-                        }  elseif ($view_path[0] == 'poll_query') {
+                        } elseif ($view_path[0] == 'poll_query') {
                             $section = 'insights';
 
 
@@ -1941,19 +1951,15 @@ function parse_request($_data, $db, $modules, $account = '', $user = '', $is_set
                                     $key     = $view_path[1];
 
 
-
-                                    if (isset($view_path[2]) and $view_path[2]=='option'  and isset($view_path[3])  ) {
+                                    if (isset($view_path[2]) and $view_path[2] == 'option' and isset($view_path[3])) {
                                         $object = 'Customer_Poll_Query_Option';
 
-                                        $parent='customer_poll_query';
-                                        $parent_key=$key;
+                                        $parent     = 'customer_poll_query';
+                                        $parent_key = $key;
 
                                         if (is_numeric($view_path[3])) {
                                             $section = 'poll_query_option';
                                             $key     = $view_path[3];
-
-
-
 
 
                                         } elseif ($view_path[3] == 'new') {
@@ -1963,7 +1969,6 @@ function parse_request($_data, $db, $modules, $account = '', $user = '', $is_set
 
 
                                     }
-
 
 
                                 } elseif ($view_path[1] == 'new') {
@@ -2007,23 +2012,21 @@ function parse_request($_data, $db, $modules, $account = '', $user = '', $is_set
                 break;
             case 'newsletters':
                 $module  = 'customers';
-                $section    = 'newsletter';
-                $parent     = 'store';
+                $section = 'newsletter';
+                $parent  = 'store';
 
                 if (isset($view_path[0])) {
                     $parent_key = $view_path[0];
 
                     if (isset($view_path[1])) {
 
-                        $object='email_campaign';
-                        $key = $view_path[1];
+                        $object = 'email_campaign';
+                        $key    = $view_path[1];
 
                     }
 
 
                 }
-
-
 
 
                 break;
@@ -4262,23 +4265,23 @@ function parse_request($_data, $db, $modules, $account = '', $user = '', $is_set
                         $section = 'sales';
 
 
-                    }  elseif ($view_path[0] == 'lost_stock') {
+                    } elseif ($view_path[0] == 'lost_stock') {
                         $section = 'lost_stock';
 
 
-                    }  elseif ($view_path[0] == 'stock_given_free') {
+                    } elseif ($view_path[0] == 'stock_given_free') {
                         $section = 'stock_given_free';
 
 
-                    }  elseif ($view_path[0] == 'report_orders') {
+                    } elseif ($view_path[0] == 'report_orders') {
                         $section = 'report_orders';
 
 
-                    }  elseif ($view_path[0] == 'report_orders_components') {
+                    } elseif ($view_path[0] == 'report_orders_components') {
                         $section = 'report_orders_components';
 
 
-                    }  elseif ($view_path[0] == 'report_delivery_notes') {
+                    } elseif ($view_path[0] == 'report_delivery_notes') {
                         $section = 'report_delivery_notes';
 
 
@@ -4324,8 +4327,6 @@ function parse_request($_data, $db, $modules, $account = '', $user = '', $is_set
             case 'profile':
 
 
-
-
                 if ($user->get('User Type') == 'Staff' or $user->get('User Type') == 'Contractor') {
                     $module  = 'profile';
                     $section = 'profile';
@@ -4343,7 +4344,7 @@ function parse_request($_data, $db, $modules, $account = '', $user = '', $is_set
                 }
 
 
-         //   print_r($view_path);
+                //   print_r($view_path);
 
                 if (isset($view_path[0])) {
 
@@ -4354,12 +4355,11 @@ function parse_request($_data, $db, $modules, $account = '', $user = '', $is_set
                             if ($view_path[1] == 'api_key') {
 
 
-
                                 $parent     = 'user';
                                 $parent_key = $key;
                                 $section    = 'profile.api_key.new';
                                 $object     = 'api_key';
-                                $key=0;
+                                $key        = 0;
 
                             }
 
@@ -4372,8 +4372,8 @@ function parse_request($_data, $db, $modules, $account = '', $user = '', $is_set
 
                                 $parent     = 'user';
                                 $parent_key = $key;
-                             //   $section    = 'user.api_key';
-                                $object     = 'api_key';
+                                //   $section    = 'user.api_key';
+                                $object = 'api_key';
 
                                 $key = $view_path[1];
                             }
@@ -4382,7 +4382,6 @@ function parse_request($_data, $db, $modules, $account = '', $user = '', $is_set
                     }
 
                 }
-
 
 
                 break;
@@ -4969,6 +4968,11 @@ function parse_request($_data, $db, $modules, $account = '', $user = '', $is_set
     if (isset($metadata)) {
         $state['metadata'] = $metadata;
     }
+
+    if (isset($store_key)) {
+        $state['store_key'] = $store_key;
+    }
+
 
 
     return $state;

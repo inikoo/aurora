@@ -17,7 +17,7 @@
 
         <i onclick="$(this).closest('div').addClass('hide')" style="position:relative;left:-10px;top:-10px" class="fa fa-window-close button" aria-hidden="true"></i>
 
-        {t}Email{/t} <input id="send_email_to" value="{$send_email_to}" style="width:300px"  > <i  style="margin-left:5px" id="send_email" onclick="send_email()"  class=" fa fa-paper-plane save {if $send_email_to!=''}valid changed{/if} aria-hidden="true"></i>
+        {t}Email{/t} <input id="send_email_to" value="{$send_email_to}" style="width:300px"  > <i  style="margin-left:5px" id="send_email" onclick="send_test_email()"  class=" fa fa-paper-plane save {if $send_email_to!=''}valid changed{/if} aria-hidden="true"></i>
 
     </div>
 
@@ -50,14 +50,37 @@
     <div id="save_email_template_dialog" style="border:1px solid #ccc;background-color: #fff;position: absolute;;padding:20px;top:55px;right:0px;z-index: 2000" class="hide">
         <i onclick="$(this).closest('div').addClass('hide')" style="position:relative;left:-10px;top:-10px" class="fa fa-window-close button" aria-hidden="true"></i>
 
-        <span id="show_save_as_blueprint_dialog_from_save"   class="button"  style="border:1px solid #ccc;padding:5px 10px;margin-left:5px"   >{t}Save as template{/t}</span>
-        <span onclick="save_template_email()"  class="button"  style="border:1px solid #ccc;padding:5px 10px;margin-left:20px" title="{t}Save and continue editing later{/t}"  >{t}Save{/t}</span>
-        {if $email_template->get('Email Template Scope')=='Webpage'}
-            <span id="save_email_template_html" onclick="publish_webpage_email_template()"  class="button"  style="border:1px solid #ccc;padding:5px 10px;margin-left:10px">{t}Save & Publish email{/t}</span>
-         {else}
+        <span id="show_save_as_blueprint_dialog_from_save"  class="{if isset($direct_email)}hide{/if}"  class="button"  style="border:1px solid #ccc;padding:5px 10px;margin-left:5px"   >{t}Save as template{/t}</span>
+        <span onclick="save_template_email()"  class="button hide"  style="border:1px solid #ccc;padding:5px 10px;margin-left:20px" title="{t}Save and continue editing later{/t}"  >{t}Save{/t}</span>
+
+
+
+
+        {if isset($direct_email)}
+            <span  onclick="send_email('{$recipient}',{$recipient_key})"  class="button"  style="border:1px solid #ccc;padding:5px 10px;margin-left:10px">
+                {t}Send email{/t}
+            </span>
+
+        {else}
+
+        {if $email_template->get('Email Template Scope')=='EmailCampaignType'}
+            <span id="save_email_template_html" onclick="publish_webpage_email_template('{$email_template->id}')"  class="button"  style="border:1px solid #ccc;padding:5px 10px;margin-left:10px">{t}Publish{/t}</span>
+
+
+        {elseif $email_template->get('Email Template Scope')=='Webpage'}
+
+            <span id="save_email_template_html" onclick="publish_webpage_email_template()"  class="button"  style="border:1px solid #ccc;padding:5px 10px;margin-left:10px">{t}Publish{/t}</span>
+
+
+        {else}
+
             <span id="save_email_template_html" onclick="publish_email_template('{$email_template->id}')"  class="button"  style="border:1px solid #ccc;padding:5px 10px;margin-left:10px">{t}Set as ready for sending{/t}</span>
 
+
         {/if}
+        {/if}
+
+
 
 
     </div>
@@ -222,7 +245,11 @@
 
     }
 
-    function send_email(){
+
+
+
+
+    function send_test_email(){
 
         $('#send_email').addClass('fa-spinner fa-spin').removeClass('valid changed fa-paper-plane')
 
@@ -459,6 +486,12 @@
     });
 
     $("#email_template_subject").on("input propertychange", function (evt) {
+
+        {if isset($direct_email)}
+        return;
+
+        {/if}
+
         if (window.event && event.type == "propertychange" && event.propertyName != "value")
             return;
 
@@ -506,6 +539,15 @@
     });
 
     $("#email_template_text").on("input propertychange", function (evt) {
+
+
+
+        {if isset($direct_email)}
+            return;
+
+        {/if}
+
+
         if (window.event && event.type == "propertychange" && event.propertyName != "value")
             return;
 

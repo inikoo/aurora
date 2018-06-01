@@ -2902,6 +2902,11 @@ class Store extends DB_Table {
 
 
 
+
+
+
+        $data['Prospect User Key']=$this->editor['User Key'];
+
         $address_fields = array(
             'Address Recipient'            => $data['Prospect Main Contact Name'],
             'Address Organization'         => $data['Prospect Company Name'],
@@ -2955,6 +2960,8 @@ class Store extends DB_Table {
         //exit;
 
         $prospect         = new Prospect('new', $data, $address_fields);
+
+
 
         if ($prospect->id) {
             $this->new_prospect_msg = $prospect->msg;

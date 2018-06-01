@@ -35,7 +35,7 @@
       <i class="fab fa-html5 padding_right_5" aria-hidden="true"></i> {t}Add HTML section{/t}
     </span>
 
-    <div id="email_template_info" class="" style="position: absolute;right: 20px;top:2px;line-height: 20px;text-align: right;width:400px;height: 50px">
+    <div id="email_template_info" class="{if isset($direct_email)}hide{/if}" style="position: absolute;right: 20px;top:2px;line-height: 20px;text-align: right;width:400px;height: 50px">
         {include file="email_template.control.info.tpl" data=$email_template->get('Published Info')}
     </div>
 

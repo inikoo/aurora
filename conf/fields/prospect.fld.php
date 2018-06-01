@@ -423,124 +423,43 @@ else {
                 ),
 
 
-                array(
-                    'id'              => 'Prospect_Invoice_Address',
-                    'edit'            => ($edit ? 'address' : ''),
-                    'countries'       => $countries,
-                    'value'           => htmlspecialchars($object->get('Prospect Invoice Address')),
-                    'formatted_value' => $object->get('Invoice Address'),
-                    'label'           => ucfirst($object->get_field_label('Prospect Invoice Address')),
-                    'required'        => false
-                ),
-
-
-                array(
-                    'id'              => 'Prospect_Delivery_Address_Link',
-                    'edit'            => ($edit ? 'option' : ''),
-                    'value'           => htmlspecialchars($object->get('Prospect Delivery Address Link')),
-                    'formatted_value' => $object->get('Delivery Address Link'),
-                    'label'           => ucfirst($object->get_field_label('Prospect Delivery Address Link')),
-                    'options'         => $options_delivery_address_link,
-                    'required'        => true
-                ),
-
-                array(
-                    'id'              => 'Prospect_Delivery_Address',
-                    'edit'            => ($edit ? 'address' : ''),
-                    'render'          => ($object->get('Prospect Delivery Address Link') != 'None' ? false : true),
-                    'countries'       => $countries,
-                    'value'           => htmlspecialchars($object->get('Prospect Delivery Address')),
-                    'formatted_value' => $object->get('Delivery Address'),
-                    'label'           => ucfirst($object->get_field_label('Prospect Delivery Address')),
-                    'invalid_msg'     => get_invalid_message('address'),
-                    'required'        => false
-                ),
-                array(
-                    'id'              => 'Prospect_Other_Delivery_Address',
-                    'render'          => false,
-                    'edit'            => ($edit ? 'address_to_clone' : ''),
-                    'countries'       => $countries,
-                    'field_type'      => 'other_delivery_address',
-                    'value'           => '',
-                    'formatted_value' => '',
-                    'invalid_msg'     => get_invalid_message('address'),
-                    'label'           => '',
-                    'required'        => false
-                ),
-
-                array(
-                    'id'              => 'new_delivery_address',
-                    'render'          => false,
-                    'edit'            => ($edit ? 'new_delivery_address' : ''),
-                    'countries'       => $countries,
-                    'value'           => '',
-                    'formatted_value' => '',
-                    'label'           => _('New delivery address'),
-                    'required'        => false
-                ),
-                array(
-                    'id'     => 'show_new_delivery_address',
-                    'render' => ($object->get('Prospect Delivery Address Link') != 'None' ? false : true),
-
-
-                    'class'     => 'new',
-                    'value'     => '',
-                    'label'     => _('Add delivery address').' <i class="fa fa-plus new_button button"></i>',
-                    'reference' => ''
-                ),
 
             )
         );
 
 
-
-        $prospect_fields[]= array(
-            'label'      => _('Operations'),
-            'show_title' => true,
-            'class'      => 'edit_fields',
-            'fields'     => array(
-
-
-                array(
-
-                    'id'        => 'delete_prospect',
-                    'class'     => 'operation',
-                    'value'     => '',
-                    'label'     => '<i class="fa fa-fw fa-lock button" onClick="toggle_unlock_delete_object(this)" style="margin-right:20px"></i> <span data-data=\'{ "object": "'.$object->get_object_name().'", "key":"'.$object->id
-                        .'"}\' onClick="delete_object(this)" class="delete_object disabled">'._('Delete prospect').' <i class="fa fa-trash new_button link"></i></span>',
-                    'reference' => '',
-                    'type'      => 'operation'
-                ),
-
-            )
-
-        );
+        if($object->get('Prospect Status')=='NoContacted'){
+            $prospect_fields[]= array(
+                'label'      => _('Operations'),
+                'show_title' => true,
+                'class'      => 'edit_fields',
+                'fields'     => array(
 
 
+                    array(
 
+                        'id'        => 'delete_prospect',
+                        'class'     => 'operation',
+                        'value'     => '',
+                        'label'     => '<i class="fa fa-fw fa-lock button" onClick="toggle_unlock_delete_object(this)" style="margin-right:20px"></i> <span data-data=\'{ "object": "'.$object->get_object_name().'", "key":"'.$object->id
+                            .'"}\' onClick="delete_object(this)" class="delete_object disabled">'._('Delete prospect').' <i class="fa fa-trash new_button link"></i></span>',
+                        'reference' => '',
+                        'type'      => 'operation'
+                    ),
 
+                )
 
-    $other_telephones = $object->get_other_telephones_data();
-    if (count($other_telephones) > 0) {
-        $other_telephones_fields = array();
-        foreach (
-            $other_telephones as $other_telephone_data_key => $other_telephone_data
-        ) {
-            $other_telephones_fields[] = array(
-                'id'              => 'Prospect_Other_Telephone_'.$other_telephone_data_key,
-                'edit'            => 'telephone',
-                'value'           => $other_telephone_data['telephone'],
-                'formatted_value' => $other_telephone_data['formatted_telephone'],
-                'label'           => ucfirst(
-                        $object->get_field_label('Prospect Other Telephone')
-                    ).' <i onClick="set_this_as_main(this)" title="'._(
-                        'Set as main telephone'
-                    ).'" class="far fa-star very_discreet button"></i>',
-                'required'        => false
             );
         }
-        array_splice($prospect_fields[2]['fields'], 2, 0, $other_telephones_fields);
-    }
+
+
+
+
+
+
+
+
+
 
 
 

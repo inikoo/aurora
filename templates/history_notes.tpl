@@ -108,6 +108,7 @@
                     rows.fetch({
                         reset: true
                     });
+                    get_elements_numbers(rows.tab, rows.parameters)
 
                 }
                 $('#history_note_save_button').removeClass('changed valid')
