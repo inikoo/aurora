@@ -547,6 +547,17 @@ $operations      = array(
 
 
         array(
+            'id'        => 'reindex_webpage',
+            'class'     => 'operation',
+            'value'     => '',
+            'label'     => '<i class="fa fa-fw fa-lock button" onClick="toggle_unlock_delete_object(this)" style="margin-right:20px"></i> <span data-data=\'{ "object": "old_page", "key":"'.$object->id
+                .'"}\' onClick="reindex_object(this)" class="delete_object disabled ">'._("Reindex").' <i class="fa fa-indent  "></i></span>',
+            'reference' => '',
+            'type'      => 'operation'
+        ),
+
+
+        array(
             'id'        => 'reset_webpage',
             'class'     => 'operation',
             'value'     => '',

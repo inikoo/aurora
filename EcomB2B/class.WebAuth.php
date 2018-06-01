@@ -438,7 +438,7 @@ class WebAuth {
             );
 
         } else {
-            $this->log_failed_login('Cookie', '',$website_user_key, $tests, $customer_key, $website_key);
+            $this->log_failed_login('Cookie', '',$website_user_key, $fail_test, $customer_key, $website_key);
 
             return array(
                 false,

@@ -655,8 +655,6 @@ class Page extends DB_Table {
                 }
 
 
-
-
                 return $navigation_data;
                 break;
             case 'Content Data':
@@ -1133,11 +1131,10 @@ class Page extends DB_Table {
                 $max_customers = 0;
 
 
-                if($product->get('Product Family Category Key')>0){
+                if ($product->get('Product Family Category Key') > 0) {
                     $sql = sprintf(
                         "SELECT P.`Product ID`,P.`Product Code`,`Product Web State`,`Product Webpage Key`,`Product Total Acc Customers` FROM `Product Dimension` P LEFT JOIN `Product Data Dimension` D ON (P.`Product ID`=D.`Product ID`)    LEFT JOIN `Page Store Dimension` ON (`Page Key`=`Product Webpage Key`)  
-                      WHERE  `Product Web State`='For Sale' AND `Webpage State`='Online' AND P.`Product ID`!=%d  AND `Product Family Category Key`=%d ORDER BY `Product Total Acc Customers` DESC  ",
-                        $product->id, $product->get('Product Family Category Key')
+                      WHERE  `Product Web State`='For Sale' AND `Webpage State`='Online' AND P.`Product ID`!=%d  AND `Product Family Category Key`=%d ORDER BY `Product Total Acc Customers` DESC  ", $product->id, $product->get('Product Family Category Key')
 
                     );
 
@@ -1176,53 +1173,51 @@ class Page extends DB_Table {
                 }
 
 
-
-
                 if ($number_links >= $max_links) {
                     break;
                 }
                 $max_customers = 0;
 
 
-                 if($product->get('Product Store Key')>0) {
+                if ($product->get('Product Store Key') > 0) {
 
-                     $sql = sprintf(
-                         "SELECT P.`Product ID`,P.`Product Code`,`Product Web State`,`Product Webpage Key`,`Product Total Acc Customers` FROM `Product Dimension` P LEFT JOIN `Product Data Dimension` D ON (P.`Product ID`=D.`Product ID`)    LEFT JOIN `Page Store Dimension` ON (`Page Key`=`Product Webpage Key`)  
+                    $sql = sprintf(
+                        "SELECT P.`Product ID`,P.`Product Code`,`Product Web State`,`Product Webpage Key`,`Product Total Acc Customers` FROM `Product Dimension` P LEFT JOIN `Product Data Dimension` D ON (P.`Product ID`=D.`Product ID`)    LEFT JOIN `Page Store Dimension` ON (`Page Key`=`Product Webpage Key`)  
                       WHERE  `Product Web State`='For Sale' AND `Webpage State`='Online' AND P.`Product ID`!=%d  AND `Product Store Key`=%d ORDER BY `Product Total Acc Customers` DESC  ", $product->id, $product->get('Product Store Key')
 
-                     );
+                    );
 
-                     if ($result = $this->db->query($sql)) {
-                         foreach ($result as $row) {
-
-
-                             if (!array_key_exists($row['Product ID'], $see_also) and $row['Product Webpage Key']) {
-
-                                 if ($max_customers == 0) {
-                                     $max_customers = $row['Product Total Acc Customers'];
-                                 }
+                    if ($result = $this->db->query($sql)) {
+                        foreach ($result as $row) {
 
 
-                                 $rnd = mt_rand() / mt_getrandmax();
+                            if (!array_key_exists($row['Product ID'], $see_also) and $row['Product Webpage Key']) {
 
-                                 $see_also[$row['Product Webpage Key']] = array(
-                                     'type'     => 'Other',
-                                     'value'    => .1 * $rnd * ($row['Product Total Acc Customers'] == 0 ? 1 : $row['Product Total Acc Customers']) / ($max_customers == 0 ? 1 : $max_customers),
-                                     'page_key' => $row['Product Webpage Key']
-                                 );
-                                 $number_links                          = count($see_also);
-                                 if ($number_links >= $max_links) {
-                                     break;
-                                 }
-                             }
+                                if ($max_customers == 0) {
+                                    $max_customers = $row['Product Total Acc Customers'];
+                                }
 
-                         }
-                     } else {
-                         print_r($error_info = $this->db->errorInfo());
-                         print "$sql\n";
-                         exit;
-                     }
-                 }
+
+                                $rnd = mt_rand() / mt_getrandmax();
+
+                                $see_also[$row['Product Webpage Key']] = array(
+                                    'type'     => 'Other',
+                                    'value'    => .1 * $rnd * ($row['Product Total Acc Customers'] == 0 ? 1 : $row['Product Total Acc Customers']) / ($max_customers == 0 ? 1 : $max_customers),
+                                    'page_key' => $row['Product Webpage Key']
+                                );
+                                $number_links                          = count($see_also);
+                                if ($number_links >= $max_links) {
+                                    break;
+                                }
+                            }
+
+                        }
+                    } else {
+                        print_r($error_info = $this->db->errorInfo());
+                        print "$sql\n";
+                        exit;
+                    }
+                }
 
                 break;
             default:
@@ -1468,6 +1463,474 @@ class Page extends DB_Table {
             }
 
         }
+
+    }
+
+    function get_items() {
+
+
+        $items = array();
+
+
+        if ($this->get('Webpage Scope') == 'Category Products') {
+
+            $sql = sprintf(
+                "SELECT `Product Category Index Content Data` FROM `Product Category Index` 
+                 WHERE  `Product Category Index Website Key`=%d   ORDER BY  ifnull(`Product Category Index Stack`,99999999)", $this->id
+
+
+            );
+
+
+            if ($result = $this->db->query($sql)) {
+                foreach ($result as $row) {
+                    $items[] = json_decode($row['Product Category Index Content Data'], true);
+                }
+            } else {
+                print_r($error_info = $this->db->errorInfo());
+                print "$sql\n";
+                exit;
+            }
+
+
+        } else {
+            if ($this->get('Webpage Scope') == 'Category Categories') {
+
+                $sql = sprintf(
+                    "SELECT `Category Webpage Index Content Data` FROM `Category Webpage Index` CWI
+                 WHERE  `Category Webpage Index Webpage Key`=%d   ORDER BY  ifnull(`Category Webpage Index Stack`,99999999)", $this->id
+
+
+                );
+
+
+                if ($result = $this->db->query($sql)) {
+                    foreach ($result as $row) {
+                        $items[] = json_decode($row['Category Webpage Index Content Data'], true);
+                    }
+                } else {
+                    print_r($error_info = $this->db->errorInfo());
+                    print "$sql\n";
+                    exit;
+                }
+
+            }
+        }
+
+
+        return $items;
+
+    }
+
+    function update_code($value, $options = '') {
+
+
+        if ($this->type != 'Store') {
+            return;
+        }
+
+        $value = _trim($value);
+        if ($value == '') {
+            $this->msg           .= ' '._('Invalid Code')."\n";
+            $this->error_updated = true;
+            $this->error         = true;
+
+            return;
+        }
+
+        if ($value == $this->data['Page Code']) {
+            $this->msg .= ' '._('Same value as the old record');
+
+            return;
+        }
+
+        $old_value = $this->data['Page Code'];
+
+
+        $sql = sprintf(
+            "SELECT `Page Code`  FROM  `Page Store Dimension`  WHERE `Page Store Key`=%d AND `Page Code`=%s ", $this->data['Page Store Key'], prepare_mysql($value)
+
+        );
+
+        $result = mysql_query($sql);
+        if ($row = mysql_fetch_array($result, MYSQL_ASSOC)) {
+            $this->msg           .= ' '._('Code already used on this website')."\n";
+            $this->error_updated = true;
+            $this->error         = true;
+
+            return;
+
+
+        }
+
+
+        $site = new Site($this->data['Page Site Key']);
+        $url  = $site->data['Site URL'].'/'.strtolower($value);
+
+        $sql = sprintf(
+            "UPDATE `Page Store Dimension`  SET  `Page Code`=%s  WHERE `Page Key`=%d", prepare_mysql($value), $this->id
+        );
+        // print $sql;
+
+
+        mysql_query($sql);
+        $affected = mysql_affected_rows();
+        if ($affected == -1) {
+            $this->msg           .= ' '._('Record can not be updated')."\n";
+            $this->error_updated = true;
+            $this->error         = true;
+
+            return;
+        } elseif ($affected == 0) {
+            $this->msg .= ' '._('Same value as the old record');
+
+        } else {
+
+            $this->msg               .= _('Code updated').", \n";
+            $this->msg_updated       .= _('Code updated').", \n";
+            $this->updated           = true;
+            $this->new_value         = $value;
+            $this->data['Page Code'] = $value;
+
+            $save_history = true;
+            if (preg_match('/no( |\_)history|nohistory/i', $options)) {
+                $save_history = false;
+            }
+
+            if (!$this->new and $save_history) {
+                $history_data = array(
+                    'indirect_object' => 'Page Code',
+                    'old_value'       => $old_value,
+                    'new_value'       => $value
+
+                );
+
+
+                $this->add_history($history_data);
+
+
+                $site = new Site($this->data['Page Site Key']);
+                $url  = $site->data['Site URL'].'/'.strtolower($value);
+
+                $sql = sprintf(
+                    "UPDATE `Page Dimension`  SET  `Page URL`=%s  WHERE `Page Key`=%d", prepare_mysql($url), $this->id
+                );
+
+                mysql_query($sql);
+
+                $sql = sprintf(
+                    "UPDATE `Page Redirection Dimension`  SET  `Page Target URL`=%s  WHERE `Page Target Key`=%d", prepare_mysql($url), $this->id
+                );
+
+                mysql_query($sql);
+            }
+
+
+            //$this->update_field('Page URL',$url,'nohistory');
+
+        }
+
+    }
+
+    function update_content_display_type($value, $options) {
+
+
+        //'Front Page Store','Search','Product Description','Information','Product Category Catalogue','Family Category Catalogue','Family Catalogue','Department Catalogue','Registration','Client Section','Checkout','Login','Welcome','Not Found','Reset','Basket','Login Help','Thanks','Payment Limbo','Family Description','Department Description'
+        //'System','Info','Department','Family','Product','FamilyCategory','ProductCategory'
+        if ($value == 'Template') {
+            if ($this->data['Page Store Section'] == 'Front Page Store') {
+                $this->update_field(
+                    'Page Store Content Template Filename', 'home', 'no_history'
+                );
+            }
+        }
+        $this->update_field(
+            'Page Store Content Display Type', $value, $options
+        );
+        $this->update_store_search();
+    }
+
+    function update_store_search() {
+
+
+        //todo redo this
+
+        if ($this->data['Page Type'] == 'Store') {
+
+
+            $sql = sprintf(
+                "INSERT INTO `Page Store Search Dimension` VALUES (%d,%d,%s,%s,%s,%s)  ON DUPLICATE KEY UPDATE `Page Store Title`=%s ,`Page Store Resume`=%s ,`Page Store Content`=%s  ", $this->id, $this->data['Page Site Key'], prepare_mysql($this->data['Page URL']),
+                prepare_mysql($this->data['Page Title'], false), prepare_mysql($this->data['Page Store Description'], false), prepare_mysql($this->get_plain_content(), false), prepare_mysql($this->data['Page Title'], false),
+                prepare_mysql($this->data['Page Store Description'], false), prepare_mysql($this->get_plain_content(), false)
+            );
+            $this->db->exec($sql);
+
+
+        }
+
+    }
+
+    function display_found_in() {
+
+        $found_in = '';
+        foreach ($this->get_found_in() as $item) {
+            $found_in .= $item['link'];
+            break;
+        }
+
+        return $found_in;
+    }
+
+    function get_found_in() {
+
+        $found_in = array();
+        $sql      = sprintf(
+            "SELECT `Page Store Found In Key` FROM  `Page Store Found In Bridge` WHERE `Page Store Key`=%d", $this->id
+        );
+
+        $res = mysql_query($sql);
+
+        while ($row = mysql_fetch_assoc($res)) {
+            $found_in_page = new Page($row['Page Store Found In Key']);
+            if ($found_in_page->id) {
+
+                $link = '<a class="found_in" href="http://'.$found_in_page->data['Page URL'].'">'.$found_in_page->data['Page Short Title'].'</a>';
+
+                $found_in[] = array(
+                    'link'           => $link,
+                    'found_in_label' => $found_in_page->data['Page Short Title'],
+                    'found_in_url'   => $found_in_page->data['Page URL'],
+                    'found_in_key'   => $found_in_page->id,
+                    'found_in_code'  => $found_in_page->data['Page Code']
+                );
+            }
+
+        }
+
+        return $found_in;
+
+    }
+
+    function get_related_products_data() {
+
+        $related_products = array();
+        $sql              = sprintf(
+            "SELECT `Webpage Related Product Product ID`,`Webpage Related Product Product Page Key`  FROM  `Webpage Related Product Bridge` WHERE `Webpage Related Product Page Key`=%d ORDER BY `Webpage Related Product Order` ", $this->id
+        );
+
+
+        if ($result = $this->db->query($sql)) {
+            foreach ($result as $row) {
+
+                $related_products_page = new Page(
+                    $row['Webpage Related Product Product Page Key']
+                );
+                if ($related_products_page->id) {
+
+
+                    $link = '<a href="http://'.$related_products_page->data['Page URL'].'">'.$related_products_page->data['Page Short Title'].'</a>';
+
+                    $related_products[] = array(
+                        'link'       => $link,
+                        'label'      => $related_products_page->data['Page Short Title'],
+                        'url'        => $related_products_page->data['Page URL'],
+                        'key'        => $related_products_page->id,
+                        'product_id' => $row['Webpage Related Product Product ID'],
+                        'code'       => $related_products_page->data['Page Code'],
+
+                        'image_key' => $related_products_page->data['Page Store Image Key']
+
+                    );
+                }
+
+
+            }
+        } else {
+            print_r($error_info = $this->db->errorInfo());
+            exit;
+        }
+
+
+        $data = array(
+            'website_key' => $this->get('Page Site Key'),
+            'webpage_key' => $this->id,
+            'links'       => $related_products
+        );
+
+        return $data;
+    }
+
+    function unpublish() {
+
+
+        $this->update_state('Offline');
+
+
+        if ($this->get('Webpage State') == 'Online') {
+            $icon = 'fa-rocket';
+        } elseif ($this->get('Webpage State') == 'Offline') {
+            $icon = ' fa-rocket discreet fa-flip-vertical';
+        } elseif ($this->get('Webpage State') == 'Ready') {
+            $icon = 'fa-check-circle';
+
+        } elseif ($this->get('Webpage State') == 'InProcess') {
+            $icon = 'fa-child';
+
+
+        }
+
+
+        require_once 'external_libs/Smarty/Smarty.class.php';
+        $smarty_web               = new Smarty();
+        $smarty_web->template_dir = 'EcomB2B/templates';
+        $smarty_web->compile_dir  = 'EcomB2B/server_files/smarty/templates_c';
+        $smarty_web->cache_dir    = 'EcomB2B/server_files/smarty/cache';
+        $smarty_web->config_dir   = 'EcomB2B/server_files/smarty/configs';
+        $smarty_web->setCaching(Smarty::CACHING_LIFETIME_CURRENT);
+
+        $theme        = 'theme_1';
+        $website_type = 'EcomB2B';
+
+
+        $cache_id = $this->get('Webpage Website Key').'|'.$this->id;
+        $smarty_web->clearCache(null, $cache_id);
+
+
+        $this->update_metadata = array(
+            'class_html'      => array(
+                'Webpage_State_Icon'    => $this->get('State Icon'),
+                'Webpage_State'         => $this->get('State'),
+                'preview_publish_label' => _('Republish')
+
+            ),
+            'hide_by_id'      => array(
+                'unpublish_webpage_field',
+                'launch_webpage_field'
+            ),
+            'show_by_id'      => array('republish_webpage_field'),
+            'invisible_by_id' => array('link_to_live_webpage'),
+
+
+        );
+
+
+    }
+
+    function update_state($value, $options = '') {
+
+
+        if (!$this->id) {
+            return;
+        }
+
+        $old_state = $this->data['Webpage State'];
+
+
+        $this->update_field('Page State', $value, 'no_history');
+        $this->update_field('Webpage State', $value, $options);
+
+
+        if ($old_state != $this->data['Webpage State']) {
+
+
+            if ($this->data['Webpage State'] == 'Offline') {
+
+                $this->update_field('Webpage Take Down Date', gmdate('Y-m-d H:i:s'), 'no_history');
+
+            }
+
+            $sql = sprintf(
+                "INSERT INTO `Page State Timeline`  (`Page Key`,`Site Key`,`Store Key`,`Date`,`State`,`Operation`) VALUES (%d,%d,%d,%s,%s,'Change') ", $this->id, $this->data['Webpage Website Key'], $this->data['Webpage Store Key'], prepare_mysql(gmdate('Y-m-d H:i:s')),
+                prepare_mysql($this->data['Webpage State'])
+
+            );
+
+            $this->db->exec($sql);
+
+
+            $sql = sprintf(
+                "UPDATE `Page Product Dimension` SET `State`=%s WHERE `Page Key`=%d", prepare_mysql($this->data['Page State']), $this->id
+            );
+            $this->db->exec($sql);
+
+
+            $sql = sprintf(
+                "SELECT `Page Store Key`  FROM  `Page Store See Also Bridge` WHERE `Page Store See Also Key`=%d ", $this->id
+            );
+
+
+            if ($result = $this->db->query($sql)) {
+                foreach ($result as $row) {
+                    $_page = new Page ($row['Page Store Key']);
+                    $_page->update_see_also();
+                }
+            } else {
+                print_r($error_info = $this->db->errorInfo());
+                print "$sql\n";
+                exit;
+            }
+
+
+            $this->reindex_items();
+
+            if ($this->updated) {
+                $this->publish();
+            }
+
+            $sql = sprintf(
+                'SELECT `Category Webpage Index Webpage Key` FROM `Category Webpage Index` WHERE `Category Webpage Index Category Webpage Key`=%d  GROUP BY `Category Webpage Index Webpage Key` ', $this->id
+            );
+
+
+            if ($result = $this->db->query($sql)) {
+                foreach ($result as $row) {
+                    $webpage = new Page($row['Category Webpage Index Webpage Key']);
+                    $webpage->reindex_items();
+                    if ($webpage->updated) {
+                        $webpage->publish();
+                    }
+                }
+            } else {
+                print_r($error_info = $this->db->errorInfo());
+                print "$sql\n";
+                exit;
+            }
+
+
+            $this->updated = true;
+
+        }
+
+
+        $show = array();
+        $hide = array();
+
+
+        if ($this->get('Webpage State') == 'Ready') {
+
+            $show = array('set_as_not_ready_webpage_field');
+            $hide = array('set_as_ready_webpage_field');
+        } elseif ($this->get('Webpage State') == 'InProcess') {
+
+
+            $show = array('set_as_ready_webpage_field');
+            $hide = array('set_as_not_ready_webpage_field');
+        }
+
+
+        $this->update_metadata = array(
+            'class_html' => array(
+                'Webpage_State_Icon' => $this->get('State Icon'),
+                'Webpage_State'      => $this->get('State'),
+
+
+            ),
+            'hide_by_id' => $hide,
+            'show_by_id' => $show
+
+
+        );
+
 
     }
 
@@ -1817,8 +2280,6 @@ class Page extends DB_Table {
     }
 
     function update_field_switcher($field, $value, $options = '', $metadata = '') {
-
-
 
 
         switch ($field) {
@@ -2359,8 +2820,7 @@ class Page extends DB_Table {
 
                             }
 
-                        }
-                        elseif ($block['type'] == 'products') {
+                        } elseif ($block['type'] == 'products') {
                             foreach ($block['items'] as $item_key => $item) {
 
                                 if (empty($item['image_mobile_website'])) {
@@ -2639,9 +3099,9 @@ class Page extends DB_Table {
                 $scope = get_object('Product', $this->data['Webpage Scope Key']);
                 if ($scope->get('Product Public') == 'Yes' and in_array(
                         $scope->get('Product Web State'), array(
-                        'For Sale',
-                        'Out of Stock'
-                    )
+                                                            'For Sale',
+                                                            'Out of Stock'
+                                                        )
                     )) {
                     $this->update_state('Online');
                 }
@@ -2788,21 +3248,17 @@ class Page extends DB_Table {
 
 
         $redis = new Redis();
-        if(  $redis->connect('127.0.0.1', 6379)){
+        if ($redis->connect('127.0.0.1', 6379)) {
 
 
-            $url_cache_key='pwc|'.$this->get('Webpage Website Key').'_'.$this->get('Webpage Code');
-            $redis->set($url_cache_key,$this->id);
-            $url_cache_key='pwc|'.$this->get('Webpage Website Key').'_'.strtoupper($this->get('Webpage Code'));
-            $redis->set($url_cache_key,$this->id);
-            $url_cache_key='pwc|'.$this->get('Webpage Website Key').'_'.strtolower($this->get('Webpage Code'));
-            $redis->set($url_cache_key,$this->id);
+            $url_cache_key = 'pwc|'.$this->get('Webpage Website Key').'_'.$this->get('Webpage Code');
+            $redis->set($url_cache_key, $this->id);
+            $url_cache_key = 'pwc|'.$this->get('Webpage Website Key').'_'.strtoupper($this->get('Webpage Code'));
+            $redis->set($url_cache_key, $this->id);
+            $url_cache_key = 'pwc|'.$this->get('Webpage Website Key').'_'.strtolower($this->get('Webpage Code'));
+            $redis->set($url_cache_key, $this->id);
 
         }
-
-
-
-
 
 
         $this->update_metadata = array(
@@ -2818,124 +3274,6 @@ class Page extends DB_Table {
             ),
             'show_by_id'    => array('unpublish_webpage_field'),
             'visible_by_id' => array('link_to_live_webpage'),
-        );
-
-
-    }
-
-    function update_state($value, $options = '') {
-
-
-        if (!$this->id) {
-            return;
-        }
-
-        $old_state = $this->data['Webpage State'];
-
-
-        $this->update_field('Page State', $value, 'no_history');
-        $this->update_field('Webpage State', $value, $options);
-
-
-        if ($old_state != $this->data['Webpage State']) {
-
-
-            if ($this->data['Webpage State'] == 'Offline') {
-
-                $this->update_field('Webpage Take Down Date', gmdate('Y-m-d H:i:s'), 'no_history');
-
-            }
-
-            $sql = sprintf(
-                "INSERT INTO `Page State Timeline`  (`Page Key`,`Site Key`,`Store Key`,`Date`,`State`,`Operation`) VALUES (%d,%d,%d,%s,%s,'Change') ", $this->id, $this->data['Webpage Website Key'], $this->data['Webpage Store Key'], prepare_mysql(gmdate('Y-m-d H:i:s')),
-                prepare_mysql($this->data['Webpage State'])
-
-            );
-
-            $this->db->exec($sql);
-
-
-            $sql = sprintf(
-                "UPDATE `Page Product Dimension` SET `State`=%s WHERE `Page Key`=%d", prepare_mysql($this->data['Page State']), $this->id
-            );
-            $this->db->exec($sql);
-
-
-            $sql = sprintf(
-                "SELECT `Page Store Key`  FROM  `Page Store See Also Bridge` WHERE `Page Store See Also Key`=%d ", $this->id
-            );
-
-
-            if ($result = $this->db->query($sql)) {
-                foreach ($result as $row) {
-                    $_page = new Page ($row['Page Store Key']);
-                    $_page->update_see_also();
-                }
-            } else {
-                print_r($error_info = $this->db->errorInfo());
-                print "$sql\n";
-                exit;
-            }
-
-
-            $this->reindex_items();
-
-            if ($this->updated) {
-                $this->publish();
-            }
-
-            $sql = sprintf(
-                'SELECT `Category Webpage Index Webpage Key` FROM `Category Webpage Index` WHERE `Category Webpage Index Category Webpage Key`=%d  GROUP BY `Category Webpage Index Webpage Key` ', $this->id
-            );
-
-
-            if ($result = $this->db->query($sql)) {
-                foreach ($result as $row) {
-                    $webpage = new Page($row['Category Webpage Index Webpage Key']);
-                    $webpage->reindex_items();
-                    if ($webpage->updated) {
-                        $webpage->publish();
-                    }
-                }
-            } else {
-                print_r($error_info = $this->db->errorInfo());
-                print "$sql\n";
-                exit;
-            }
-
-
-            $this->updated = true;
-
-        }
-
-
-        $show = array();
-        $hide = array();
-
-
-        if ($this->get('Webpage State') == 'Ready') {
-
-            $show = array('set_as_not_ready_webpage_field');
-            $hide = array('set_as_ready_webpage_field');
-        } elseif ($this->get('Webpage State') == 'InProcess') {
-
-
-            $show = array('set_as_ready_webpage_field');
-            $hide = array('set_as_not_ready_webpage_field');
-        }
-
-
-        $this->update_metadata = array(
-            'class_html' => array(
-                'Webpage_State_Icon' => $this->get('State Icon'),
-                'Webpage_State'      => $this->get('State'),
-
-
-            ),
-            'hide_by_id' => $hide,
-            'show_by_id' => $show
-
-
         );
 
 
@@ -3017,26 +3355,6 @@ class Page extends DB_Table {
             array('Number Found In Links' => $number_found_in_links), 'no_history'
         );
 
-
-    }
-
-    function update_store_search() {
-
-
-        //todo redo this
-
-        if ($this->data['Page Type'] == 'Store') {
-
-
-            $sql = sprintf(
-                "INSERT INTO `Page Store Search Dimension` VALUES (%d,%d,%s,%s,%s,%s)  ON DUPLICATE KEY UPDATE `Page Store Title`=%s ,`Page Store Resume`=%s ,`Page Store Content`=%s  ", $this->id, $this->data['Page Site Key'], prepare_mysql($this->data['Page URL']),
-                prepare_mysql($this->data['Page Title'], false), prepare_mysql($this->data['Page Store Description'], false), prepare_mysql($this->get_plain_content(), false), prepare_mysql($this->data['Page Title'], false),
-                prepare_mysql($this->data['Page Store Description'], false), prepare_mysql($this->get_plain_content(), false)
-            );
-            $this->db->exec($sql);
-
-
-        }
 
     }
 
@@ -3233,8 +3551,7 @@ class Page extends DB_Table {
             }
 
 
-        }
-        elseif ($this->get('Webpage Scope') == 'Category Categories') {
+        } elseif ($this->get('Webpage Scope') == 'Category Categories') {
 
 
             //  $category=get_object('Category',$this->get('Webpage Scope Key'));
@@ -3418,8 +3735,7 @@ class Page extends DB_Table {
             }
 
 
-        }
-        elseif ($this->get('Webpage Scope') == 'Product') {
+        } elseif ($this->get('Webpage Scope') == 'Product') {
 
 
             //  $category=get_object('Category',$this->get('Webpage Scope Key'));
@@ -3545,7 +3861,6 @@ class Page extends DB_Table {
             $website_system_webpages = website_system_webpages_config($website->get('Website Type'));
 
 
-
             if (isset($website_system_webpages[$this->get('Webpage Code')]['Page Store Content Data'])) {
 
                 $this->update(array('Page Store Content Data' => $website_system_webpages[$this->get('Webpage Code')]['Page Store Content Data']), 'no_history');
@@ -3607,9 +3922,6 @@ class Page extends DB_Table {
                         'title'       => $parent_webpage->get('Webpage Browser Title'),
                     );
                 }
-
-
-
 
 
                 //print_r($parent_webpage);
@@ -3841,7 +4153,6 @@ class Page extends DB_Table {
                         );
 
 
-
                         if ($result2 = $this->db->query($sql)) {
                             if ($row2 = $result2->fetch()) {
                                 $prev_key = $row2['Website Webpage Scope Scope Key'];
@@ -3878,7 +4189,7 @@ class Page extends DB_Table {
                             $parent_webpage_key, $row['Website Webpage Scope Index']
                         );
 
-                       // print $sql;
+                        // print $sql;
 
 
                         if ($result2 = $this->db->query($sql)) {
@@ -4869,8 +5180,8 @@ class Page extends DB_Table {
                         $product->load_webpage();
 
 
-                        $content_data['blocks'][$block_key]['items'][$item_key]['web_state']    = $product->get('Web State');
-                        $content_data['blocks'][$block_key]['items'][$item_key]['price']        = $product->get('Price');
+                        $content_data['blocks'][$block_key]['items'][$item_key]['web_state']  = $product->get('Web State');
+                        $content_data['blocks'][$block_key]['items'][$item_key]['price']      = $product->get('Price');
                         $content_data['blocks'][$block_key]['items'][$item_key]['price_unit'] = $product->get('Price Per Unit');
 
                         $content_data['blocks'][$block_key]['items'][$item_key]['rrp']          = $product->get('RRP');
@@ -4950,10 +5261,10 @@ class Page extends DB_Table {
             if ($image_item['key'] != $image_data['key']) {
 
 
-                if($image_item['image_website']==''){
-                    foreach( $content_data['blocks'][$block_key]['other_images'] as $_img_data ){
-                        if($_img_data['key']==$image_item['key']   ){
-                            $image_item['image_website']=$_img_data['image_website'];
+                if ($image_item['image_website'] == '') {
+                    foreach ($content_data['blocks'][$block_key]['other_images'] as $_img_data) {
+                        if ($_img_data['key'] == $image_item['key']) {
+                            $image_item['image_website'] = $_img_data['image_website'];
                             break;
                         }
                     }
@@ -4967,9 +5278,9 @@ class Page extends DB_Table {
         //$old_image_website=$content_data['blocks'][$block_key]['image']['image_website'];
 
 
-        if($image_data['image_website']==''){
-            if($image_data['key']==$content_data['blocks'][$block_key]['image']['key']){
-                $image_data['image_website']=$content_data['blocks'][$block_key]['image']['image_website'];
+        if ($image_data['image_website'] == '') {
+            if ($image_data['key'] == $content_data['blocks'][$block_key]['image']['key']) {
+                $image_data['image_website'] = $content_data['blocks'][$block_key]['image']['image_website'];
             }
         }
 
@@ -4985,15 +5296,12 @@ class Page extends DB_Table {
         );
 
 
-
-        $content_data['blocks'][$block_key]['other_images'] =  $image_gallery;
+        $content_data['blocks'][$block_key]['other_images'] = $image_gallery;
 
         //print $product->get('Code');
         //print_r($content_data);
 
         $this->update_field_switcher('Page Store Content Data', json_encode($content_data), 'no_history');
-
-
 
 
     }
@@ -5189,336 +5497,6 @@ class Page extends DB_Table {
 
 
         return $result;
-
-    }
-
-    function get_items() {
-
-
-        $items = array();
-
-
-        if ($this->get('Webpage Scope') == 'Category Products') {
-
-            $sql = sprintf(
-                "SELECT `Product Category Index Content Data` FROM `Product Category Index` 
-                 WHERE  `Product Category Index Website Key`=%d   ORDER BY  ifnull(`Product Category Index Stack`,99999999)", $this->id
-
-
-            );
-
-
-            if ($result = $this->db->query($sql)) {
-                foreach ($result as $row) {
-                    $items[] = json_decode($row['Product Category Index Content Data'], true);
-                }
-            } else {
-                print_r($error_info = $this->db->errorInfo());
-                print "$sql\n";
-                exit;
-            }
-
-
-        } else {
-            if ($this->get('Webpage Scope') == 'Category Categories') {
-
-                $sql = sprintf(
-                    "SELECT `Category Webpage Index Content Data` FROM `Category Webpage Index` CWI
-                 WHERE  `Category Webpage Index Webpage Key`=%d   ORDER BY  ifnull(`Category Webpage Index Stack`,99999999)", $this->id
-
-
-                );
-
-
-                if ($result = $this->db->query($sql)) {
-                    foreach ($result as $row) {
-                        $items[] = json_decode($row['Category Webpage Index Content Data'], true);
-                    }
-                } else {
-                    print_r($error_info = $this->db->errorInfo());
-                    print "$sql\n";
-                    exit;
-                }
-
-            }
-        }
-
-
-        return $items;
-
-    }
-
-    function update_code($value, $options = '') {
-
-
-        if ($this->type != 'Store') {
-            return;
-        }
-
-        $value = _trim($value);
-        if ($value == '') {
-            $this->msg           .= ' '._('Invalid Code')."\n";
-            $this->error_updated = true;
-            $this->error         = true;
-
-            return;
-        }
-
-        if ($value == $this->data['Page Code']) {
-            $this->msg .= ' '._('Same value as the old record');
-
-            return;
-        }
-
-        $old_value = $this->data['Page Code'];
-
-
-        $sql = sprintf(
-            "SELECT `Page Code`  FROM  `Page Store Dimension`  WHERE `Page Store Key`=%d AND `Page Code`=%s ", $this->data['Page Store Key'], prepare_mysql($value)
-
-        );
-
-        $result = mysql_query($sql);
-        if ($row = mysql_fetch_array($result, MYSQL_ASSOC)) {
-            $this->msg           .= ' '._('Code already used on this website')."\n";
-            $this->error_updated = true;
-            $this->error         = true;
-
-            return;
-
-
-        }
-
-
-        $site = new Site($this->data['Page Site Key']);
-        $url  = $site->data['Site URL'].'/'.strtolower($value);
-
-        $sql = sprintf(
-            "UPDATE `Page Store Dimension`  SET  `Page Code`=%s  WHERE `Page Key`=%d", prepare_mysql($value), $this->id
-        );
-        // print $sql;
-
-
-        mysql_query($sql);
-        $affected = mysql_affected_rows();
-        if ($affected == -1) {
-            $this->msg           .= ' '._('Record can not be updated')."\n";
-            $this->error_updated = true;
-            $this->error         = true;
-
-            return;
-        } elseif ($affected == 0) {
-            $this->msg .= ' '._('Same value as the old record');
-
-        } else {
-
-            $this->msg               .= _('Code updated').", \n";
-            $this->msg_updated       .= _('Code updated').", \n";
-            $this->updated           = true;
-            $this->new_value         = $value;
-            $this->data['Page Code'] = $value;
-
-            $save_history = true;
-            if (preg_match('/no( |\_)history|nohistory/i', $options)) {
-                $save_history = false;
-            }
-
-            if (!$this->new and $save_history) {
-                $history_data = array(
-                    'indirect_object' => 'Page Code',
-                    'old_value'       => $old_value,
-                    'new_value'       => $value
-
-                );
-
-
-                $this->add_history($history_data);
-
-
-                $site = new Site($this->data['Page Site Key']);
-                $url  = $site->data['Site URL'].'/'.strtolower($value);
-
-                $sql = sprintf(
-                    "UPDATE `Page Dimension`  SET  `Page URL`=%s  WHERE `Page Key`=%d", prepare_mysql($url), $this->id
-                );
-
-                mysql_query($sql);
-
-                $sql = sprintf(
-                    "UPDATE `Page Redirection Dimension`  SET  `Page Target URL`=%s  WHERE `Page Target Key`=%d", prepare_mysql($url), $this->id
-                );
-
-                mysql_query($sql);
-            }
-
-
-            //$this->update_field('Page URL',$url,'nohistory');
-
-        }
-
-    }
-
-    function update_content_display_type($value, $options) {
-
-
-        //'Front Page Store','Search','Product Description','Information','Product Category Catalogue','Family Category Catalogue','Family Catalogue','Department Catalogue','Registration','Client Section','Checkout','Login','Welcome','Not Found','Reset','Basket','Login Help','Thanks','Payment Limbo','Family Description','Department Description'
-        //'System','Info','Department','Family','Product','FamilyCategory','ProductCategory'
-        if ($value == 'Template') {
-            if ($this->data['Page Store Section'] == 'Front Page Store') {
-                $this->update_field(
-                    'Page Store Content Template Filename', 'home', 'no_history'
-                );
-            }
-        }
-        $this->update_field(
-            'Page Store Content Display Type', $value, $options
-        );
-        $this->update_store_search();
-    }
-
-    function display_found_in() {
-
-        $found_in = '';
-        foreach ($this->get_found_in() as $item) {
-            $found_in .= $item['link'];
-            break;
-        }
-
-        return $found_in;
-    }
-
-    function get_found_in() {
-
-        $found_in = array();
-        $sql      = sprintf(
-            "SELECT `Page Store Found In Key` FROM  `Page Store Found In Bridge` WHERE `Page Store Key`=%d", $this->id
-        );
-
-        $res = mysql_query($sql);
-
-        while ($row = mysql_fetch_assoc($res)) {
-            $found_in_page = new Page($row['Page Store Found In Key']);
-            if ($found_in_page->id) {
-
-                $link = '<a class="found_in" href="http://'.$found_in_page->data['Page URL'].'">'.$found_in_page->data['Page Short Title'].'</a>';
-
-                $found_in[] = array(
-                    'link'           => $link,
-                    'found_in_label' => $found_in_page->data['Page Short Title'],
-                    'found_in_url'   => $found_in_page->data['Page URL'],
-                    'found_in_key'   => $found_in_page->id,
-                    'found_in_code'  => $found_in_page->data['Page Code']
-                );
-            }
-
-        }
-
-        return $found_in;
-
-    }
-
-    function get_related_products_data() {
-
-        $related_products = array();
-        $sql              = sprintf(
-            "SELECT `Webpage Related Product Product ID`,`Webpage Related Product Product Page Key`  FROM  `Webpage Related Product Bridge` WHERE `Webpage Related Product Page Key`=%d ORDER BY `Webpage Related Product Order` ", $this->id
-        );
-
-
-        if ($result = $this->db->query($sql)) {
-            foreach ($result as $row) {
-
-                $related_products_page = new Page(
-                    $row['Webpage Related Product Product Page Key']
-                );
-                if ($related_products_page->id) {
-
-
-                    $link = '<a href="http://'.$related_products_page->data['Page URL'].'">'.$related_products_page->data['Page Short Title'].'</a>';
-
-                    $related_products[] = array(
-                        'link'       => $link,
-                        'label'      => $related_products_page->data['Page Short Title'],
-                        'url'        => $related_products_page->data['Page URL'],
-                        'key'        => $related_products_page->id,
-                        'product_id' => $row['Webpage Related Product Product ID'],
-                        'code'       => $related_products_page->data['Page Code'],
-
-                        'image_key' => $related_products_page->data['Page Store Image Key']
-
-                    );
-                }
-
-
-            }
-        } else {
-            print_r($error_info = $this->db->errorInfo());
-            exit;
-        }
-
-
-        $data = array(
-            'website_key' => $this->get('Page Site Key'),
-            'webpage_key' => $this->id,
-            'links'       => $related_products
-        );
-
-        return $data;
-    }
-
-    function unpublish() {
-
-
-        $this->update_state('Offline');
-
-
-        if ($this->get('Webpage State') == 'Online') {
-            $icon = 'fa-rocket';
-        } elseif ($this->get('Webpage State') == 'Offline') {
-            $icon = ' fa-rocket discreet fa-flip-vertical';
-        } elseif ($this->get('Webpage State') == 'Ready') {
-            $icon = 'fa-check-circle';
-
-        } elseif ($this->get('Webpage State') == 'InProcess') {
-            $icon = 'fa-child';
-
-
-        }
-
-
-        require_once 'external_libs/Smarty/Smarty.class.php';
-        $smarty_web               = new Smarty();
-        $smarty_web->template_dir = 'EcomB2B/templates';
-        $smarty_web->compile_dir  = 'EcomB2B/server_files/smarty/templates_c';
-        $smarty_web->cache_dir    = 'EcomB2B/server_files/smarty/cache';
-        $smarty_web->config_dir   = 'EcomB2B/server_files/smarty/configs';
-        $smarty_web->setCaching(Smarty::CACHING_LIFETIME_CURRENT);
-
-        $theme        = 'theme_1';
-        $website_type = 'EcomB2B';
-
-
-        $cache_id = $this->get('Webpage Website Key').'|'.$this->id;
-        $smarty_web->clearCache(null, $cache_id);
-
-
-        $this->update_metadata = array(
-            'class_html'      => array(
-                'Webpage_State_Icon'    => $this->get('State Icon'),
-                'Webpage_State'         => $this->get('State'),
-                'preview_publish_label' => _('Republish')
-
-            ),
-            'hide_by_id'      => array(
-                'unpublish_webpage_field',
-                'launch_webpage_field'
-            ),
-            'show_by_id'      => array('republish_webpage_field'),
-            'invisible_by_id' => array('link_to_live_webpage'),
-
-
-        );
-
 
     }
 
@@ -10089,6 +10067,42 @@ class Page extends DB_Table {
 
     }
 
+    function reindex() {
+
+        $this->reindex_items();
+        $this->update_navigation();
+
+        switch ($this->get('Webpage Scope')) {
+            case 'Category Products':
+
+                $sql = sprintf(
+                    'SELECT `Product Webpage Key` FROM `Website Webpage Scope Map` left join `Product Dimension` on (`Product ID`=`Website Webpage Scope Scope Key`) WHERE `Website Webpage Scope Webpage Key`=%d and `Website Webpage Scope Scope`="Product" ', $this->id
+
+                );
+
+                if ($result=$this->db->query($sql)) {
+                		foreach ($result as $row) {
+
+                		    $webpage=get_object('Webpage',$row['Product Webpage Key']);
+                		    if($webpage->id){
+                                $webpage->reindex_items();
+                                $webpage->update_navigation();
+                            }
+
+
+
+                		}
+                }else {
+                		print_r($error_info=$this->db->errorInfo());
+                		print "$sql\n";
+                		exit;
+                }
+
+
+
+        }
+
+    }
 }
 
 ?>

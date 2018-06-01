@@ -862,6 +862,9 @@ function object_operation($account, $db, $user, $editor, $data, $smarty) {
         case 'reject':
             $request = $object->reject();
             break;
+        case 'reindex':
+            $request = $object->reindex();
+            break;
         case 'archive':
             $request = $object->archive();
             break;
