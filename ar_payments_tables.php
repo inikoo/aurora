@@ -186,8 +186,12 @@ function payments($_data, $db, $user) {
 
 
     $is_refund = false;
+
+
+    /*
     if ($parent->get_object_name() == 'Order' and $parent->get('State Index') < 90) {
         $show_operations = true;
+
     } elseif ($parent->get_object_name() == 'Invoice' and $parent->get('Invoice Type') == 'Refund') {
         $show_operations = true;
         $is_refund       = true;
@@ -195,7 +199,13 @@ function payments($_data, $db, $user) {
         $show_operations = false;
 
     }
+    */
 
+    if ($parent->get_object_name() == 'Invoice' and $parent->get('Invoice Type') == 'Refund') {
+        $is_refund = true;
+    }
+
+    $show_operations = true;
 
     $sql = "select $fields from $table $where $wheref order by $order $order_direction limit $start_from,$number_results";
 
@@ -439,7 +449,6 @@ function credits($_data, $db, $user) {
     include_once 'prepare_table/init.php';
 
 
-
     $sql = "select $fields from $table $where $wheref order by $order $order_direction limit $start_from,$number_results";
 
 
@@ -450,13 +459,12 @@ function credits($_data, $db, $user) {
         foreach ($result as $data) {
 
 
-
             $adata[] = array(
-                'id'         => (integer)$data['Customer Key'],
-                'amount'     => money($data['Customer Account Balance'],$data['Store Currency Code']),
-                'store'      => sprintf("<span class='link' onclick='change_view(\"/credits/%d\")' title='%s'>%s</span>", $data['Store Key'], $data['Store Name'], $data['Store Code']),
-                'customer_id'      => sprintf("<span class='link' onclick='change_view(\"/customers/%d/%d\")' >%05d</span>", $data['Store Key'], $data['Customer Key'], $data['Customer Key']),
-                'customer'      => sprintf("<span class='link' onclick='change_view(\"/customers/%d/%d\")' >%s</span>", $data['Store Key'], $data['Customer Key'], $data['Customer Name']),
+                'id'          => (integer)$data['Customer Key'],
+                'amount'      => money($data['Customer Account Balance'], $data['Store Currency Code']),
+                'store'       => sprintf("<span class='link' onclick='change_view(\"/credits/%d\")' title='%s'>%s</span>", $data['Store Key'], $data['Store Name'], $data['Store Code']),
+                'customer_id' => sprintf("<span class='link' onclick='change_view(\"/customers/%d/%d\")' >%05d</span>", $data['Store Key'], $data['Customer Key'], $data['Customer Key']),
+                'customer'    => sprintf("<span class='link' onclick='change_view(\"/customers/%d/%d\")' >%s</span>", $data['Store Key'], $data['Customer Key'], $data['Customer Name']),
 
             );
 
@@ -481,7 +489,6 @@ function credits($_data, $db, $user) {
     );
     echo json_encode($response);
 }
-
 
 
 function payments_group_by_store($_data, $db, $user) {
@@ -501,14 +508,14 @@ function payments_group_by_store($_data, $db, $user) {
 
         foreach ($result as $data) {
 
-            $total_payments         += $data['payments'];
+            $total_payments += $data['payments'];
 
 
             $adata[] = array(
-                'store_key'      => $data['Store Key'],
-                'code'           => sprintf('<span class="link" onclick="change_view(\'orders/%d\')">%s</span>', $data['Store Key'], $data['Store Code']),
-                'name'           => sprintf('<span class="link" onclick="change_view(\'orders/%d\')">%s</span>', $data['Store Key'], $data['Store Name']),
-                'payments'         => number($data['payments']),
+                'store_key' => $data['Store Key'],
+                'code'      => sprintf('<span class="link" onclick="change_view(\'orders/%d\')">%s</span>', $data['Store Key'], $data['Store Code']),
+                'name'      => sprintf('<span class="link" onclick="change_view(\'orders/%d\')">%s</span>', $data['Store Key'], $data['Store Name']),
+                'payments'  => number($data['payments']),
 
             );
 
@@ -525,7 +532,7 @@ function payments_group_by_store($_data, $db, $user) {
         'name'      => '',
         'code'      => _('Total').($filtered > 0 ? ' '.'<i class="fa fa-filter fa-fw"></i>' : ''),
 
-        'payments'         => number($total_payments),
+        'payments' => number($total_payments),
 
 
     );
@@ -543,7 +550,6 @@ function payments_group_by_store($_data, $db, $user) {
     );
     echo json_encode($response);
 }
-
 
 
 ?>
