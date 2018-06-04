@@ -1361,6 +1361,11 @@ class Customer extends Subject {
 
         include_once 'utils/validate_tax_number.php';
 
+
+
+        print $value;
+
+
         if ($value == 'Auto') {
 
             $tax_validation_data = validate_tax_number(
