@@ -1368,6 +1368,8 @@ class Customer extends Subject {
 
         if ($value == 'Auto') {
 
+
+
             $tax_validation_data = validate_tax_number(
                 $this->data['Customer Tax Number'], $this->data['Customer Invoice Address Country 2 Alpha Code']
             );
