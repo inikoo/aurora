@@ -13,6 +13,9 @@
 
 function validate_tax_number($tax_number, $country_2alpha_code) {
 
+
+    print '===xxx==';
+
     if (in_array(
         $country_2alpha_code, array(
             "AT",
