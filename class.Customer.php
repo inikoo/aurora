@@ -1377,12 +1377,11 @@ class Customer extends Subject {
             $this->update(
                 array(
                     'Customer Tax Number Valid'              => $tax_validation_data['Tax Number Valid'],
-                    'Customer Tax Number Validation Date'    => gmdate('Y-m-d H:i:s'),
 
                     'Customer Tax Number Details Match'      => $tax_validation_data['Tax Number Details Match'],
-                    'Customer Tax Number Validation Date'    => $tax_validation_data['Tax Number Validation Date'],
+                    'Customer Tax Number Validation Date'    => ($tax_validation_data['Tax Number Validation Date']==''?gmdate('Y-m-d H:i:s'):$tax_validation_data['Tax Number Validation Date']),
                     'Customer Tax Number Validation Source'  => 'Online',
-                    'Customer Tax Number Validation Message' => 'C: '.$tax_validation_data['Tax Number Validation Message'],
+                    'Customer Tax Number Validation Message' => $tax_validation_data['Tax Number Validation Message'],
                 ), 'no_history'
             );
 
@@ -1395,7 +1394,7 @@ class Customer extends Subject {
                 array(
                     'Customer Tax Number Details Match'      => 'Unknown',
                     'Customer Tax Number Validation Date'    => $this->editor['Date'],
-                    'Customer Tax Number Validation Source'  => 'Manual',
+                    'Customer Tax Number Validation Source'  => 'Staff',
                     'Customer Tax Number Validation Message' => $this->editor['Author Name'],
                 ), 'no_history'
             );

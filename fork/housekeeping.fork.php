@@ -457,9 +457,6 @@ function fork_housekeeping($job) {
             }
 
 
-            // print $sql;
-
-            exit;
 
             break;
 
