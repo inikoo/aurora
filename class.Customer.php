@@ -1363,7 +1363,7 @@ class Customer extends Subject {
 
 
 
-        print $value;
+
 
 
         if ($value == 'Auto') {
@@ -1384,6 +1384,9 @@ class Customer extends Subject {
 
         } else {
             $this->update_field('Customer Tax Number Valid', $value);
+
+
+
             $this->update(
                 array(
                     'Customer Tax Number Details Match'      => 'Unknown',
@@ -1394,6 +1397,9 @@ class Customer extends Subject {
             );
         }
 
+
+
+        print_r($this->data);
 
         $this->other_fields_updated = array(
             'Customer_Tax_Number' => array(
