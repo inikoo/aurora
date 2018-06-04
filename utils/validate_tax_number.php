@@ -14,7 +14,7 @@
 function validate_tax_number($tax_number, $country_2alpha_code) {
 
 
-  
+
 
     if (in_array(
         $country_2alpha_code, array(
