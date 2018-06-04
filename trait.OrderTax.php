@@ -55,7 +55,7 @@ trait OrderTax {
                 'Order Tax Number Details Match'      => $tax_validation_data['Tax Number Details Match'],
                 'Order Tax Number Validation Date'    => $tax_validation_data['Tax Number Validation Date'],
                 'Order Tax Number Validation Source'  => 'Online',
-                'Order Tax Number Validation Message' => $tax_validation_data['Tax Number Validation Message'],
+                'Order Tax Number Validation Message' => 'A '.$tax_validation_data['Tax Number Validation Message'],
             ), 'no_history'
         );
 
@@ -784,7 +784,7 @@ trait OrderTax {
                     'Order Tax Number Details Match'      => $tax_validation_data['Tax Number Details Match'],
                     'Order Tax Number Validation Date'    => $tax_validation_data['Tax Number Validation Date'],
                     'Order Tax Number Validation Source'  => 'Online',
-                    'Order Tax Number Validation Message' => $tax_validation_data['Tax Number Validation Message'],
+                    'Order Tax Number Validation Message' => 'B'. $tax_validation_data['Tax Number Validation Message'],
                 ), 'no_history'
             );
 

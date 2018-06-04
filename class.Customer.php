@@ -1333,7 +1333,7 @@ class Customer extends Subject {
                     'Customer Tax Number Details Match'      => $tax_validation_data['Tax Number Details Match'],
                     'Customer Tax Number Validation Date'    => $tax_validation_data['Tax Number Validation Date'],
                     'Customer Tax Number Validation Source'  => 'Online',
-                    'Customer Tax Number Validation Message' => $tax_validation_data['Tax Number Validation Message'],
+                    'Customer Tax Number Validation Message' => 'B: '.$tax_validation_data['Tax Number Validation Message'],
                 ), 'no_history'
             );
 
@@ -1382,7 +1382,7 @@ class Customer extends Subject {
                     'Customer Tax Number Details Match'      => $tax_validation_data['Tax Number Details Match'],
                     'Customer Tax Number Validation Date'    => $tax_validation_data['Tax Number Validation Date'],
                     'Customer Tax Number Validation Source'  => 'Online',
-                    'Customer Tax Number Validation Message' => $tax_validation_data['Tax Number Validation Message'],
+                    'Customer Tax Number Validation Message' => 'C: '.$tax_validation_data['Tax Number Validation Message'],
                 ), 'no_history'
             );
 

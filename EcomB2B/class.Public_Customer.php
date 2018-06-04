@@ -1080,7 +1080,7 @@ class Public_Customer extends DBW_Table {
                     'Customer Tax Number Details Match'      => $tax_validation_data['Tax Number Details Match'],
                     'Customer Tax Number Validation Date'    => $tax_validation_data['Tax Number Validation Date'],
                     'Customer Tax Number Validation Source'  => 'Online',
-                    'Customer Tax Number Validation Message' => $tax_validation_data['Tax Number Validation Message'],
+                    'Customer Tax Number Validation Message' => 'A: '.$tax_validation_data['Tax Number Validation Message'],
                 ), 'no_history'
             );
 
