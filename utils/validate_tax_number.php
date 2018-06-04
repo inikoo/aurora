@@ -65,7 +65,14 @@ function validate_tax_number($tax_number, $country_2alpha_code) {
 
 
 
-        return check_european_tax_number($country_2alpha_code, $tax_number);
+//        return check_european_tax_number($country_2alpha_code, $tax_number);
+
+
+
+    return json_decode(file_get_contents('http://www.inikoo.com/vies.php?45798437589347=1&c='.$country_2alpha_code.'&t='.$tax_number),true);
+
+
+        ;
 
 
     } else {
