@@ -1148,7 +1148,7 @@ class SupplierDelivery extends DB_Table {
                 $items_amount = ($row['items_amount'] == '' ? 0 : $row['items_amount']);
                 $extra_amount = ($row['extra_cost_amount'] == '' ? 0 : $row['extra_cost_amount']);
 
-                $this->update(
+                $this->fast_update(
                     array(
                         'Supplier Delivery Purchase Order Amount' => ($row['po_items_amount'] == '' ? 0 : $row['po_items_amount']),
 
@@ -1170,7 +1170,7 @@ class SupplierDelivery extends DB_Table {
                         'Supplier Delivery CBM'                               => $row['cbm'],
 
                         'Supplier Delivery Placed Items' => ($row['placed_qty'] > 0 ? 'Yes' : 'No')
-                    ), 'no_history'
+                    )
                 );
 
 
