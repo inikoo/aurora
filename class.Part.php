@@ -2852,7 +2852,7 @@ class Part extends Asset {
         $running_stock_value=0;
         $running_cost_per_sko='';
 
-        $sql = sprintf('SELECT `Note`,`Running Stock`,`Inventory Transaction Key`, `Inventory Transaction Quantity`,`Inventory Transaction Amount`,`Inventory Transaction Type`,`Location Key`,`Inventory Transaction Section`,`Running Cost per SKO`,`Running Stock Value`,`Running Cost per SKO` FROM `Inventory Transaction Fact` WHERE `Part SKU`=%d ORDER BY `Date`   and  `Inventory Transaction Type` not in ("Move Out","Move In","Move")   ', $this->id);
+        $sql = sprintf('SELECT `Date`,`Note`,`Running Stock`,`Inventory Transaction Key`, `Inventory Transaction Quantity`,`Inventory Transaction Amount`,`Inventory Transaction Type`,`Location Key`,`Inventory Transaction Section`,`Running Cost per SKO`,`Running Stock Value`,`Running Cost per SKO` FROM `Inventory Transaction Fact` WHERE `Part SKU`=%d ORDER BY `Date`   and  `Inventory Transaction Type` not in ("Move Out","Move In","Move")   ', $this->id);
 
       //  print "$sql\n";
 
@@ -2874,6 +2874,10 @@ class Part extends Asset {
                    // print "$sql\n";
 
                     $row['Inventory Transaction Amount']=$row['Inventory Transaction Quantity']*$running_cost_per_sko;
+
+
+                  //  print $running_cost_per_sko."\n";
+
 
                 }
 
@@ -2909,6 +2913,27 @@ class Part extends Asset {
 
 
                 $this->update_field_switcher('Part Cost in Warehouse',$running_cost_per_sko,'no_history');
+
+            }else{
+
+
+                $sql=sprintf('select `Date`,(`Inventory Transaction Amount`/`Inventory Transaction Quantity`) as value_per_sko from  `Inventory Transaction Fact` ITF  where  `Inventory Transaction Amount`>0 and `Inventory Transaction Quantity`>0 and  ( `Inventory Transaction Section`=\'In\' or ( `Inventory Transaction Type`=\'Adjust\' and `Inventory Transaction Quantity`>0 and `Location Key`>1 )  )  and ITF.`Part SKU`=%d  order by `Date` desc limit 1 ',$this->id);
+
+
+                if ($result=$this->db->query($sql)) {
+                		foreach ($result as $row) {
+                            $this->update_field_switcher('Part Cost in Warehouse',$row['value_per_sko'],'no_history');
+                		}
+                }else {
+                		print_r($error_info=$this->db->errorInfo());
+                		print "$sql\n";
+                		exit;
+                }
+
+
+               // exit('caca');
+                //$this->update_field_switcher('Part Cost in Warehouse',$running_cost_per_sko,'no_history');
+
 
             }
 
