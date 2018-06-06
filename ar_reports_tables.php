@@ -254,6 +254,12 @@ function billingregion_taxcategory($_data, $db, $user, $account) {
 
     //print $sql;
 
+    $sum_invoices=0;
+    $sum_refunds=0;
+    $sum_net=0;
+    $sum_tax=0;
+    $sum_total=0;
+
     if ($result = $db->query($sql)) {
 
         foreach ($result as $data) {
@@ -281,19 +287,11 @@ function billingregion_taxcategory($_data, $db, $user, $account) {
             $adata[] = array(
 
                 'billing_region' => $billing_region,
-                'tax_code'       => sprintf(
-                    '<span title="%s">%s</span>', ($data['Invoice Tax Code'] == 'UNK' ? _('Unknown tax code') : $data['Tax Category Name']), $data['Invoice Tax Code']
-                ),
+                'tax_code'       => sprintf('<span title="%s">%s</span>', ($data['Invoice Tax Code'] == 'UNK' ? _('Unknown tax code') : $data['Tax Category Name']), $data['Invoice Tax Code']),
                 'request'        => $data['Invoice Billing Region'].'/'.$data['Invoice Tax Code'],
+                'invoices' => sprintf('<span class="link" onClick="change_view(\'report/billingregion_taxcategory/invoices/%s/%s\')" >%s</span>', $data['Invoice Billing Region'], $data['Invoice Tax Code'], number($data['invoices'])),
 
-
-                'invoices' => sprintf(
-                    '<span class="link" onClick="change_view(\'report/billingregion_taxcategory/invoices/%s/%s\')" >%s</span>', $data['Invoice Billing Region'], $data['Invoice Tax Code'], number($data['invoices'])
-                ),
-
-                'refunds' => sprintf(
-                    '<span class="link" onClick="change_view(\'report/billingregion_taxcategory/refunds/%s/%s\')" >%s</span>', $data['Invoice Billing Region'], $data['Invoice Tax Code'], number($data['refunds'])
-                ),
+                'refunds' => sprintf('<span class="link" onClick="change_view(\'report/billingregion_taxcategory/refunds/%s/%s\')" >%s</span>', $data['Invoice Billing Region'], $data['Invoice Tax Code'], number($data['refunds'])),
 
                 'customers' => number($data['customers']),
                 'tax'       => money($data['tax'], $account->get('Account Currency')),
@@ -303,18 +301,40 @@ function billingregion_taxcategory($_data, $db, $user, $account) {
 
             );
 
+            $sum_invoices+=$data['invoices'];
+            $sum_refunds+=$data['refunds'];
+            $sum_net+=$data['net'];
+            $sum_tax+=$data['tax'];
+            $sum_total+=$data['total'];
+
         }
     } else {
         print_r($error_info = $db->errorInfo());
         exit;
     }
 
+
+    $adata[] = array(
+
+        'billing_region' => _('Total'),
+        'tax_code'       => '',
+        'request'        => '',
+        'invoices' =>  number($sum_invoices),
+        'refunds' =>  number($sum_refunds),
+
+        'customers' => '',
+        'tax'       => money($sum_tax, $account->get('Account Currency')),
+        'net'       => money($sum_net, $account->get('Account Currency')),
+        'total'     => money($sum_total, $account->get('Account Currency')),
+
+
+    );
+
+
     $rtext = preg_replace('/\(|\)/', '', $rtext);
 
 
-    if (is_array($parameters['excluded_stores']) and count(
-            $parameters['excluded_stores']
-        ) > 0) {
+    if (is_array($parameters['excluded_stores']) and count($parameters['excluded_stores']) > 0) {
         $excluded_stores = '';
         $sql             = sprintf(
             'SELECT `Store Key`,`Store Code`,`Store Name` FROM `Store Dimension` WHERE `Store Key` IN (%s)', join($parameters['excluded_stores'], ',')
