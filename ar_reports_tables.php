@@ -138,7 +138,7 @@ function ec_sales_list($_data, $db, $user, $account) {
     $sql   = "select $fields from $table $where $wheref $group_by order by $order $order_direction limit $start_from,$number_results";
     $adata = array();
 
-    print $sql;
+    //print $sql;
 
     if ($result = $db->query($sql)) {
 
