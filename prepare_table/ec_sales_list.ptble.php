@@ -10,26 +10,28 @@
 */
 
 
-$countries = '';
-$sql       = sprintf(
-    'SELECT `Country 2 Alpha Code`  FROM kbase.`Country Dimension`  WHERE `EC Fiscal VAT Area`="Yes" AND `Country 2 Alpha Code` NOT IN ("GB","IM")  ORDER BY `Country Name`'
-);
 
-if ($result = $db->query($sql)) {
-    foreach ($result as $row) {
-        $countries .= "'".$row['Country 2 Alpha Code']."',";
+include_once('class.Country.php');
 
-    }
-} else {
-    print_r($error_info = $db->errorInfo());
-    exit;
-}
-
-$countries = preg_replace('/\,$/', '', $countries);
+$account_country=new Country('code',$account->get('Account Country Code'));
 
 
-$where = ' where `Invoice Billing Country 2 Alpha Code` in ('.$countries.')';
 
+$european_union_2alpha=array('NL', 'BE', 'GB', 'BG', 'ES', 'IE', 'IT', 'AT', 'GR', 'CY', 'LV', 'LT', 'LU', 'MT', 'PT', 'PL', 'FR', 'RO', 'SE', 'DE', 'SK', 'SI', 'FI', 'DK', 'CZ', 'HU', 'EE', 'RE');
+
+
+
+
+$european_union_2alpha= "'" . implode("','", $european_union_2alpha) . "'";
+
+
+$european_union_2alpha=preg_replace('/,?\''.$account_country->get('Country 2 Alpha Code').'\'/','',$european_union_2alpha);
+
+$european_union_2alpha=preg_replace('/^,/','',$european_union_2alpha);
+
+
+
+$where = ' where `Invoice Address Country 2 Alpha Code` in ('.$european_union_2alpha.')';
 
 if (isset($parameters['period'])) {
 
@@ -204,7 +206,7 @@ $sql_totals = "";
 
 $fields
     = "
-`Invoice Tax Code`,`Invoice Customer Name`,`Invoice Customer Key`,`Invoice Tax Number`,`Invoice Tax Number Valid`,`Invoice Billing Country 2 Alpha Code`,`Invoice Tax Number Valid`,
+`Invoice Tax Code`,`Invoice Customer Name`,`Invoice Customer Key`,`Invoice Tax Number`,`Invoice Tax Number Valid`,`Invoice Address Country 2 Alpha Code`,`Invoice Tax Number Valid`,
 sum(if(`Invoice Type`='Invoice',1,0)) as invoices,
  sum(if(`Invoice Type`!='Invoice',1,0)) as refunds,
 

@@ -165,7 +165,7 @@ function ec_sales_list($_data, $db, $user, $account) {
             }
 
             $tax_number          = $data['Invoice Tax Number'];
-            $country_2alpha_code = $data['Invoice Billing Country 2 Alpha Code'];
+            $country_2alpha_code = $data['Invoice Address Country 2 Alpha Code'];
             $tax_number          = preg_replace(
                 '/^'.$country_2alpha_code.'/i', '', $tax_number
             );
@@ -186,7 +186,7 @@ function ec_sales_list($_data, $db, $user, $account) {
 
                 // 'tax_code'=> sprintf('<span title="%s">%s</span>', ($data['Invoice Tax Code']=='UNK'?_('Unknown tax code'):$data['Tax Category Name']), $data['Invoice Tax Code']),
                 // 'request'=>$data['Invoice Billing Region'].'/'.$data['Invoice Tax Code'],
-                'country_code' => $data['Invoice Billing Country 2 Alpha Code'],
+                'country_code' => $data['Invoice Address Country 2 Alpha Code'],
                 'invoices'     => number($data['invoices']),
                 'refunds'      => number($data['refunds']),
                 'customer'     => sprintf(
@@ -434,9 +434,9 @@ function invoices_billingregion_taxcategory($_data, $db, $user) {
                 'type'                 => $type,
                 'payment_method'       => $method,
                 'state'                => $state,
-                'billing_country'      => $data['Invoice Billing Country 2 Alpha Code'],
+                'billing_country'      => $data['Invoice Address Country 2 Alpha Code'],
                 'billing_country_flag' => sprintf(
-                    '<img title="%s" src="/art/flags/%s.gif">', $data['Country Name'], strtolower($data['Invoice Billing Country 2 Alpha Code'])
+                    '<img title="%s" src="/art/flags/%s.gif">', $data['Country Name'], strtolower($data['Invoice Address Country 2 Alpha Code'])
                 )
 
             );

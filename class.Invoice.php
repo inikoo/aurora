@@ -392,7 +392,7 @@ class Invoice extends DB_Table {
             }
             $this->fast_update(array('Invoice Total Profit' => $profit));
 
-
+            $this->update_billing_region();
 
             return $this;
 
@@ -670,6 +670,8 @@ class Invoice extends DB_Table {
             }
             $this->fast_update(array('Invoice Total Profit' => $profit));
 
+
+            $this->update_billing_region();
 
             //todo distribute_insurance_over_the_otf
             //$this->distribute_insurance_over_the_otf();
@@ -2129,7 +2131,75 @@ class Invoice extends DB_Table {
     }
 
 
+
+    function update_billing_region() {
+        $account=get_object('Account',1);
+        $european_union_2alpha=array('NL', 'BE', 'GB', 'BG', 'ES', 'IE', 'IT', 'AT', 'GR', 'CY', 'LV', 'LT', 'LU', 'MT', 'PT', 'PL', 'FR', 'RO', 'SE', 'DE', 'SK', 'SI', 'FI', 'DK', 'CZ', 'HU', 'EE', 'RE');
+
+
+        $european_union=array('NLD', 'BEL', 'GBR', 'BGR', 'ESP', 'IRL', 'ITA', 'AUT', 'GRC', 'CYP', 'LVA', 'LTU', 'LUX', 'MLT', 'PRT', 'POL', 'FRA', 'ROU', 'SWE', 'DEU', 'SVK', 'SVN', 'FIN', 'DNK', 'CZE', 'HUN', 'EST', 'REU');
+
+
+        include_once('class.Country.php');
+
+        $account_country=new Country('code',$account->get('Account Country Code'));
+
+
+
+        if ($account->get('Account Country Code')=='GBR') {
+
+
+            if ($this->get('Invoice Address Country 2 Alpha Code')=='GB' or $this->get('Invoice Address Country 2 Alpha Code')=='IM') {
+                $billing_region='GBIM';
+            }else if (  in_array($this->get('Invoice Address Country 2 Alpha Code'), $european_union_2alpha) ) {
+                $billing_region='EU';
+            }elseif ($this->get('Invoice Address Country 2 Alpha Code')=='XX') {
+                $billing_region='Unknown';
+            }else {
+                $billing_region='NOEU';
+            }
+
+        }elseif (in_array($account->get('Account Country Code'), $european_union)) {
+
+         //   exit;
+
+            if ($this->get('Invoice Address Country 2 Alpha Code')==$account_country->get('Country 2 Alpha Code')) {
+                $billing_region=$account->get('Account Country Code' );
+            }else if (  in_array($this->get('Invoice Address Country 2 Alpha Code'), $european_union_2alpha) ) {
+                $billing_region='EU';
+            }elseif ($this->get('Invoice Address Country 2 Alpha Code')=='XX') {
+
+                $billing_region='Unknown';
+              
+
+
+            }else {
+                $billing_region='NOEU';
+            }
+
+
+        }else {
+
+            if ($this->get('Invoice Address Country 2 Alpha Code')==$account_country->get('Country 2 Alpha Code')) {
+                $billing_region=$account->get('Account Country Code' );
+            }elseif ($this->get('Invoice Address Country 2 Alpha Code')=='XX') {
+                $billing_region='Unknown';
+            }else {
+                $billing_region='Export';
+            }
+
+
+        }
+
+
+
+        $this->update(array('Invoice Billing Region'=>$billing_region), 'no_history');
+    }
+
+
 }
+
+
 
 
 ?>
