@@ -62,8 +62,17 @@ switch ($tipo) {
     case 'intrastat':
         intrastat(get_table_parameters(), $db, $user, $account);
         break;
+    case 'intrastat_totals':
+        intrastat_totals($db, $user, $account);
+        break;
     case 'intrastat_orders':
         intrastat_orders(get_table_parameters(), $db, $user, $account);
+        break;
+    case 'intrastat_orders_totals':
+        intrastat_orders_totals($db, $user, $account);
+        break;
+    case 'intrastat_products_totals':
+        intrastat_products_totals($db, $user, $account);
         break;
     case 'intrastat_products':
         intrastat_products(get_table_parameters(), $db, $user, $account);
@@ -132,13 +141,13 @@ function reports($_data, $db, $user) {
 
 function ec_sales_list($_data, $db, $user, $account) {
 
-    $rtext_label = 'record';
+
     include_once 'prepare_table/init.php';
 
     $sql   = "select $fields from $table $where $wheref $group_by order by $order $order_direction limit $start_from,$number_results";
     $adata = array();
 
-    print $sql;
+    //print $sql;
 
     if ($result = $db->query($sql)) {
 
@@ -220,7 +229,7 @@ function ec_sales_list($_data, $db, $user, $account) {
     $total_records = $stmt->rowCount();
 
     $rtext = sprintf(
-            ngettext('%s record', '%s records', $total_records), number($total_records)
+            ngettext('%s Customer/Tax number/Country', '%s Customers/Tax number/Country', $total_records), number($total_records)
         ).' <span class="discreet">'.$rtext.'</span>';
 
 
@@ -254,11 +263,11 @@ function billingregion_taxcategory($_data, $db, $user, $account) {
 
     //print $sql;
 
-    $sum_invoices=0;
-    $sum_refunds=0;
-    $sum_net=0;
-    $sum_tax=0;
-    $sum_total=0;
+    $sum_invoices = 0;
+    $sum_refunds  = 0;
+    $sum_net      = 0;
+    $sum_tax      = 0;
+    $sum_total    = 0;
 
     if ($result = $db->query($sql)) {
 
@@ -289,7 +298,7 @@ function billingregion_taxcategory($_data, $db, $user, $account) {
                 'billing_region' => $billing_region,
                 'tax_code'       => sprintf('<span title="%s">%s</span>', ($data['Invoice Tax Code'] == 'UNK' ? _('Unknown tax code') : $data['Tax Category Name']), $data['Invoice Tax Code']),
                 'request'        => $data['Invoice Billing Region'].'/'.$data['Invoice Tax Code'],
-                'invoices' => sprintf('<span class="link" onClick="change_view(\'report/billingregion_taxcategory/invoices/%s/%s\')" >%s</span>', $data['Invoice Billing Region'], $data['Invoice Tax Code'], number($data['invoices'])),
+                'invoices'       => sprintf('<span class="link" onClick="change_view(\'report/billingregion_taxcategory/invoices/%s/%s\')" >%s</span>', $data['Invoice Billing Region'], $data['Invoice Tax Code'], number($data['invoices'])),
 
                 'refunds' => sprintf('<span class="link" onClick="change_view(\'report/billingregion_taxcategory/refunds/%s/%s\')" >%s</span>', $data['Invoice Billing Region'], $data['Invoice Tax Code'], number($data['refunds'])),
 
@@ -301,11 +310,11 @@ function billingregion_taxcategory($_data, $db, $user, $account) {
 
             );
 
-            $sum_invoices+=$data['invoices'];
-            $sum_refunds+=$data['refunds'];
-            $sum_net+=$data['net'];
-            $sum_tax+=$data['tax'];
-            $sum_total+=$data['total'];
+            $sum_invoices += $data['invoices'];
+            $sum_refunds  += $data['refunds'];
+            $sum_net      += $data['net'];
+            $sum_tax      += $data['tax'];
+            $sum_total    += $data['total'];
 
         }
     } else {
@@ -319,8 +328,8 @@ function billingregion_taxcategory($_data, $db, $user, $account) {
         'billing_region' => _('Total'),
         'tax_code'       => '',
         'request'        => '',
-        'invoices' =>  number($sum_invoices),
-        'refunds' =>  number($sum_refunds),
+        'invoices'       => number($sum_invoices),
+        'refunds'        => number($sum_refunds),
 
         'customers' => '',
         'tax'       => money($sum_tax, $account->get('Account Currency')),
@@ -483,6 +492,376 @@ function invoices_billingregion_taxcategory($_data, $db, $user) {
 }
 
 
+function intrastat_totals($db, $user, $account) {
+
+    // print_r($_SESSION['table_state']['intrastat']);
+
+    $sum_amount   = 0;
+    $sum_weight   = 0;
+    $sum_orders   = 0;
+    $sum_products = 0;
+
+    $parameters = $_SESSION['table_state']['intrastat'];
+
+    include_once('class.Country.php');
+    $account_country     = new Country('code', $account->get('Account Country Code'));
+    $intrastat_countries = array(
+        'NL',
+        'BE',
+        'GB',
+        'BG',
+        'ES',
+        'IE',
+        'IT',
+        'AT',
+        'GR',
+        'CY',
+        'LV',
+        'LT',
+        'LU',
+        'MT',
+        'PT',
+        'PL',
+        'FR',
+        'RO',
+        'SE',
+        'DE',
+        'SK',
+        'SI',
+        'FI',
+        'DK',
+        'CZ',
+        'HU',
+        'EE'
+    );
+    $intrastat_countries = "'".implode("','", $intrastat_countries)."'";
+    $intrastat_countries = preg_replace('/,?\''.$account_country->get('Country 2 Alpha Code').'\'/', '', $intrastat_countries);
+    $intrastat_countries = preg_replace('/^,/', '', $intrastat_countries);
+
+    $where = ' where `Delivery Note Address Country 2 Alpha Code` in ('.$intrastat_countries.')  and DN.`Delivery Note Key` is not null  ';
+
+
+    if (isset($_SESSION['table_state']['intrastat']['period'])) {
+
+
+        include_once 'utils/date_functions.php';
+
+
+        list(
+            $db_interval, $from, $to, $from_date_1yb, $to_1yb
+            ) = calculate_interval_dates(
+            $db, $_SESSION['table_state']['intrastat']['period'], $_SESSION['table_state']['intrastat']['from'], $_SESSION['table_state']['intrastat']['to']
+        );
+
+
+        $where_interval_invoice = prepare_mysql_dates($from, $to, 'I.`Invoice Date`');
+        $where_interval_dn      = prepare_mysql_dates($from, $to, '`Delivery Note Date`');
+
+
+        $where .= " and ( (  I.`Invoice Key`>0  ".$where_interval_invoice['mysql']." ) or ( I.`Invoice Key` is NULL  ".$where_interval_dn['mysql']." ))  ";
+
+
+    }
+
+
+    if ($parameters['invoices_vat'] == 1 and $parameters['invoices_no_vat'] == 1 and $parameters['invoices_null'] == 1) {
+
+    } elseif ($parameters['invoices_vat'] == 1 and $parameters['invoices_no_vat'] == 1 and $parameters['invoices_null'] == 0) {
+        $where .= " and  I.`Invoice Key`>0  ";
+
+    } elseif ($parameters['invoices_vat'] == 1 and $parameters['invoices_no_vat'] == 0 and $parameters['invoices_null'] == 0) {
+        $where .= " and  I.`Invoice Key`>0  and I.`Invoice Tax Code` not in ('EX','OUT') ";
+
+    } elseif ($parameters['invoices_vat'] == 0 and $parameters['invoices_no_vat'] == 1 and $parameters['invoices_null'] == 0) {
+        $where .= " and  I.`Invoice Key`>0  and I.`Invoice Tax Code` in ('EX','OUT') ";
+
+    } elseif ($parameters['invoices_vat'] == 0 and $parameters['invoices_no_vat'] == 0 and $parameters['invoices_null'] == 1) {
+        $where .= " and  I.`Invoice Key` is null  ";
+
+    } elseif ($parameters['invoices_vat'] == 1 and $parameters['invoices_no_vat'] == 0 and $parameters['invoices_null'] == 1) {
+        $where .= " and   (  I.`Invoice Key` is null  or   ( I.`Invoice Key`>0    and I.`Invoice Tax Code` not in ('EX','OUT') )  ) ";
+
+    } elseif ($parameters['invoices_vat'] == 0 and $parameters['invoices_no_vat'] == 1 and $parameters['invoices_null'] == 1) {
+        $where .= " and   (  I.`Invoice Key` is null   or  I.`Invoice Tax Code` in ('EX','OUT')    ) ";
+
+    } elseif ($parameters['invoices_vat'] == 0 and $parameters['invoices_no_vat'] == 0 and $parameters['invoices_null'] == 0) {
+        $where .= " and false ";
+
+    }
+
+
+    $sql = "select 
+count(distinct OTF.`Product ID`) as products,
+count(distinct OTF.`Order Key`) as orders,
+
+sum(`Order Transaction Amount`*`Invoice Currency Exchange Rate`) as amount,
+	sum(`Delivery Note Quantity`*`Product Unit Weight`*`Product Units Per Case`) as weight 
+	
+ from  `Order Transaction Fact` OTF left join `Product Dimension` P on (P.`Product ID`=OTF.`Product ID`) left join `Delivery Note Dimension` DN  on (OTF.`Delivery Note Key`=DN.`Delivery Note Key`)  left join `Invoice Dimension` I  on (OTF.`Invoice Key`=I.`Invoice Key`) 
+ 
+ 
+   $where
+  ";
+
+    if ($result = $db->query($sql)) {
+        if ($row = $result->fetch()) {
+            $sum_amount   = $row['amount'];
+            $sum_weight   = $row['weight'];
+            $sum_orders   = $row['orders'];
+            $sum_products = $row['products'];
+
+        }
+    } else {
+        print_r($error_info = $db->errorInfo());
+        print "$sql\n";
+        exit;
+    }
+
+    $totals   = array(
+        'total_amount'   => money($sum_amount, $account->get('Account Currency')),
+        'total_weight'   => weight($sum_weight, 'Kg', 0, false, true),
+        'total_orders'   => number($sum_orders),
+        'total_products' => number($sum_products),
+
+    );
+    $response = array(
+        'state'  => 200,
+        'totals' => $totals
+    );
+
+    echo json_encode($response);
+
+
+}
+
+
+function intrastat_orders_totals($db, $user, $account) {
+
+    // print_r($_SESSION['table_state']['intrastat']);
+
+    $sum_amount   = 0;
+    $sum_weight   = 0;
+    $sum_products = 0;
+
+    $parameters = $_SESSION['table_state']['intrastat_orders'];
+
+
+    if ($parameters['tariff_code'] == 'missing') {
+        $where = sprintf(' where `Delivery Note Address Country 2 Alpha Code`=%s and (`Product Tariff Code` is null or `Product Tariff Code`="")  and DN.`Delivery Note Key` is not null  ', prepare_mysql($parameters['country_code']));
+
+    } else {
+        $where = sprintf(' where `Delivery Note Address Country 2 Alpha Code`=%s and `Product Tariff Code` like "%s%%"  and DN.`Delivery Note Key` is not null  ', prepare_mysql($parameters['country_code']), addslashes($parameters['tariff_code']));
+
+    }
+
+
+    if (isset($parameters['parent_period'])) {
+
+
+        include_once 'utils/date_functions.php';
+
+
+        list(
+            $db_interval, $from, $to, $from_date_1yb, $to_1yb
+            ) = calculate_interval_dates(
+            $db, $parameters['parent_period'], $parameters['parent_from'], $parameters['parent_to']
+        );
+
+
+        $where_interval_invoice = prepare_mysql_dates($from, $to, 'I.`Invoice Date`');
+        $where_interval_dn      = prepare_mysql_dates($from, $to, '`Delivery Note Date`');
+
+
+        $where .= " and ( (  I.`Invoice Key`>0  ".$where_interval_invoice['mysql']." ) or ( I.`Invoice Key` is NULL  ".$where_interval_dn['mysql']." ))  ";
+
+
+    }
+
+
+    if ($parameters['invoices_vat'] == 1 and $parameters['invoices_no_vat'] == 1 and $parameters['invoices_null'] == 1) {
+
+    } elseif ($parameters['invoices_vat'] == 1 and $parameters['invoices_no_vat'] == 1 and $parameters['invoices_null'] == 0) {
+        $where .= " and  I.`Invoice Key`>0  ";
+
+    } elseif ($parameters['invoices_vat'] == 1 and $parameters['invoices_no_vat'] == 0 and $parameters['invoices_null'] == 0) {
+        $where .= " and  I.`Invoice Key`>0  and I.`Invoice Tax Code` not in ('EX','OUT') ";
+
+    } elseif ($parameters['invoices_vat'] == 0 and $parameters['invoices_no_vat'] == 1 and $parameters['invoices_null'] == 0) {
+        $where .= " and  I.`Invoice Key`>0  and I.`Invoice Tax Code` in ('EX','OUT') ";
+
+    } elseif ($parameters['invoices_vat'] == 0 and $parameters['invoices_no_vat'] == 0 and $parameters['invoices_null'] == 1) {
+        $where .= " and  I.`Invoice Key` is null  ";
+
+    } elseif ($parameters['invoices_vat'] == 1 and $parameters['invoices_no_vat'] == 0 and $parameters['invoices_null'] == 1) {
+        $where .= " and   (  I.`Invoice Key` is null  or   ( I.`Invoice Key`>0    and I.`Invoice Tax Code` not in ('EX','OUT') )  ) ";
+
+    } elseif ($parameters['invoices_vat'] == 0 and $parameters['invoices_no_vat'] == 1 and $parameters['invoices_null'] == 1) {
+        $where .= " and   (  I.`Invoice Key` is null   or  I.`Invoice Tax Code` in ('EX','OUT')    ) ";
+
+    } elseif ($parameters['invoices_vat'] == 0 and $parameters['invoices_no_vat'] == 0 and $parameters['invoices_null'] == 0) {
+        $where .= " and false ";
+
+    }
+
+
+    $sql = "select 
+count(distinct OTF.`Product ID`) as products,
+
+sum(`Order Transaction Amount`*`Invoice Currency Exchange Rate`) as amount,
+	sum(`Delivery Note Quantity`*`Product Unit Weight`*`Product Units Per Case`) as weight 
+	
+ from  `Order Transaction Fact` OTF left join `Product Dimension` P on (P.`Product ID`=OTF.`Product ID`) left join `Delivery Note Dimension` DN  on (OTF.`Delivery Note Key`=DN.`Delivery Note Key`)  left join `Invoice Dimension` I  on (OTF.`Invoice Key`=I.`Invoice Key`) 
+ 
+ 
+   $where
+  ";
+
+    if ($result = $db->query($sql)) {
+        if ($row = $result->fetch()) {
+            $sum_amount   = $row['amount'];
+            $sum_weight   = $row['weight'];
+            $sum_products = $row['products'];
+
+        }
+    } else {
+        print_r($error_info = $db->errorInfo());
+        print "$sql\n";
+        exit;
+    }
+
+    $totals   = array(
+        'intrastat_orders_total_amount'   => money($sum_amount, $account->get('Account Currency')),
+        'intrastat_orders_total_weight'   => weight($sum_weight, 'Kg', 0, false, true),
+        'intrastat_orders_total_products' => number($sum_products),
+
+    );
+    $response = array(
+        'state'  => 200,
+        'totals' => $totals
+    );
+
+    echo json_encode($response);
+
+
+}
+
+
+
+function intrastat_products_totals($db, $user, $account) {
+
+    // print_r($_SESSION['table_state']['intrastat']);
+
+    $sum_amount   = 0;
+    $sum_weight   = 0;
+    $sum_orders = 0;
+
+    $parameters = $_SESSION['table_state']['intrastat_products'];
+
+
+
+
+    if($parameters['tariff_code']=='missing'){
+        $where = sprintf(' where `Delivery Note Address Country 2 Alpha Code`=%s and (`Product Tariff Code` is null or `Product Tariff Code`="")  and DN.`Delivery Note Key` is not null  ',prepare_mysql($parameters['country_code']));
+
+    }else{
+        $where = sprintf(' where `Delivery Note Address Country 2 Alpha Code`=%s and `Product Tariff Code` like "%s%%"  and DN.`Delivery Note Key` is not null  ',prepare_mysql($parameters['country_code']),addslashes($parameters['tariff_code']));
+
+    }
+
+
+
+
+    if (isset($parameters['parent_period'])) {
+
+
+        include_once 'utils/date_functions.php';
+
+
+        list(
+            $db_interval, $from, $to, $from_date_1yb, $to_1yb
+            ) = calculate_interval_dates(
+            $db, $parameters['parent_period'], $parameters['parent_from'], $parameters['parent_to']
+        );
+
+
+        $where_interval_invoice = prepare_mysql_dates($from, $to, 'I.`Invoice Date`');
+        $where_interval_dn      = prepare_mysql_dates($from, $to, '`Delivery Note Date`');
+
+
+        $where .= " and ( (  I.`Invoice Key`>0  ".$where_interval_invoice['mysql']." ) or ( I.`Invoice Key` is NULL  ".$where_interval_dn['mysql']." ))  ";
+
+
+    }
+
+
+    if ($parameters['invoices_vat'] == 1 and $parameters['invoices_no_vat'] == 1 and $parameters['invoices_null'] == 1) {
+
+    } elseif ($parameters['invoices_vat'] == 1 and $parameters['invoices_no_vat'] == 1 and $parameters['invoices_null'] == 0) {
+        $where .= " and  I.`Invoice Key`>0  ";
+
+    } elseif ($parameters['invoices_vat'] == 1 and $parameters['invoices_no_vat'] == 0 and $parameters['invoices_null'] == 0) {
+        $where .= " and  I.`Invoice Key`>0  and I.`Invoice Tax Code` not in ('EX','OUT') ";
+
+    } elseif ($parameters['invoices_vat'] == 0 and $parameters['invoices_no_vat'] == 1 and $parameters['invoices_null'] == 0) {
+        $where .= " and  I.`Invoice Key`>0  and I.`Invoice Tax Code` in ('EX','OUT') ";
+
+    } elseif ($parameters['invoices_vat'] == 0 and $parameters['invoices_no_vat'] == 0 and $parameters['invoices_null'] == 1) {
+        $where .= " and  I.`Invoice Key` is null  ";
+
+    } elseif ($parameters['invoices_vat'] == 1 and $parameters['invoices_no_vat'] == 0 and $parameters['invoices_null'] == 1) {
+        $where .= " and   (  I.`Invoice Key` is null  or   ( I.`Invoice Key`>0    and I.`Invoice Tax Code` not in ('EX','OUT') )  ) ";
+
+    } elseif ($parameters['invoices_vat'] == 0 and $parameters['invoices_no_vat'] == 1 and $parameters['invoices_null'] == 1) {
+        $where .= " and   (  I.`Invoice Key` is null   or  I.`Invoice Tax Code` in ('EX','OUT')    ) ";
+
+    } elseif ($parameters['invoices_vat'] == 0 and $parameters['invoices_no_vat'] == 0 and $parameters['invoices_null'] == 0) {
+        $where .= " and false ";
+
+    }
+
+
+    $sql = "select 
+count(distinct OTF.`Order Key`) as orders,
+
+sum(`Order Transaction Amount`*`Invoice Currency Exchange Rate`) as amount,
+	sum(`Delivery Note Quantity`*`Product Unit Weight`*`Product Units Per Case`) as weight 
+	
+ from  `Order Transaction Fact` OTF left join `Product Dimension` P on (P.`Product ID`=OTF.`Product ID`) left join `Delivery Note Dimension` DN  on (OTF.`Delivery Note Key`=DN.`Delivery Note Key`)  left join `Invoice Dimension` I  on (OTF.`Invoice Key`=I.`Invoice Key`) 
+ 
+ 
+   $where
+  ";
+
+    if ($result = $db->query($sql)) {
+        if ($row = $result->fetch()) {
+            $sum_amount   = $row['amount'];
+            $sum_weight   = $row['weight'];
+            $sum_orders = $row['orders'];
+
+        }
+    } else {
+        print_r($error_info = $db->errorInfo());
+        print "$sql\n";
+        exit;
+    }
+
+    $totals   = array(
+        'intrastat_products_total_amount'   => money($sum_amount, $account->get('Account Currency')),
+        'intrastat_products_total_weight'   => weight($sum_weight, 'Kg', 0, false, true),
+        'intrastat_products_total_orders' => number($sum_orders),
+
+    );
+    $response = array(
+        'state'  => 200,
+        'totals' => $totals
+    );
+
+    echo json_encode($response);
+
+
+}
+
+
 function intrastat($_data, $db, $user, $account) {
 
     $rtext_label = 'record';
@@ -491,7 +870,7 @@ function intrastat($_data, $db, $user, $account) {
     $sql   = "select $fields from $table $where $wheref $group_by order by $order $order_direction limit $start_from,$number_results";
     $adata = array();
 
-    // print $sql;
+    //print $sql;
 
     if ($result = $db->query($sql)) {
 
@@ -520,6 +899,8 @@ function intrastat($_data, $db, $user, $account) {
 
         }
     } else {
+        print "$sql\n";
+
         print_r($error_info = $db->errorInfo());
         exit;
     }
@@ -534,6 +915,7 @@ function intrastat($_data, $db, $user, $account) {
     $rtext = sprintf(
             ngettext('%s record', '%s records', $total_records), number($total_records)
         ).' <span class="discreet">'.$rtext.'</span>';
+
 
 
     //$rtext=preg_replace('/\(|\)/', '', $rtext);
@@ -571,11 +953,12 @@ function intrastat_orders($_data, $db, $user, $account) {
             $adata[] = array(
 
 
-                'number'       => sprintf('<span class="link" onClick="change_view(\'orders/%s/%s\')" >%s</span>', $data['Order Store Key'], $data['Order Key'], $data['Order Public ID']),
-                'customer'     => sprintf('<span class="link" onClick="change_view(\'customers/%s/%s\')" >%s</span>', $data['Order Store Key'], $data['Order Customer Key'], $data['Order Customer Name']),
-                'date'         => strftime("%e %b %Y", strtotime($data['Delivery Note Date'].' +0:00')),
-                'total_amount' => money($data['Order Total Amount'], $data['Order Currency Code'])
-
+                'number'   => sprintf('<span class="link" onClick="change_view(\'orders/%s/%s\')" >%s</span>', $data['Order Store Key'], $data['Order Key'], $data['Order Public ID']),
+                'customer' => sprintf('<span class="link" onClick="change_view(\'customers/%s/%s\')" >%s</span>', $data['Order Store Key'], $data['Order Customer Key'], $data['Order Customer Name']),
+                'date'     => strftime("%e %b %Y", strtotime($data['Delivery Note Date'].' +0:00')),
+                'amount'   => money($data['amount'], $data['Order Currency Code']),
+                'weight'   => weight($data['weight'], 'Kg', 2, false, true),
+                'products' => $data['products']
 
             );
 
@@ -1269,8 +1652,6 @@ function lost_stock($_data, $db, $user, $account) {
 }
 
 
-
-
 function stock_given_free($_data, $db, $user, $account) {
 
     $rtext_label = 'transaction';
@@ -1303,15 +1684,15 @@ function stock_given_free($_data, $db, $user, $account) {
 
 
             $adata[] = array(
-                'id'          => $data['Inventory Transaction Key'],
-                'reference'   => sprintf('<span class="link" title="%s" onclick="change_view(\'part/%d\')">%s</span>', $data['Part Package Description'], $data['Part SKU'], $data['Part Reference']),
-                'description' => $data['Part Package Description'],
-                'stock'       => number($data['stock']),
-                'type'        => $type,
-                'value'       => money($data['value'], $account->get('Account Currency Code')),
-                'date'        => strftime("%e %b %Y %k:%M", strtotime($data['date'].' +0:00')),
-                'note'        => $note,
-                'delivery_note'       => sprintf('<span class="link" onclick="change_view(\'delivery_notes/%d/%d\')">%s</span>', $data['Delivery Note Store Key'], $data['Delivery Note Key'], $data['Delivery Note ID']),
+                'id'            => $data['Inventory Transaction Key'],
+                'reference'     => sprintf('<span class="link" title="%s" onclick="change_view(\'part/%d\')">%s</span>', $data['Part Package Description'], $data['Part SKU'], $data['Part Reference']),
+                'description'   => $data['Part Package Description'],
+                'stock'         => number($data['stock']),
+                'type'          => $type,
+                'value'         => money($data['value'], $account->get('Account Currency Code')),
+                'date'          => strftime("%e %b %Y %k:%M", strtotime($data['date'].' +0:00')),
+                'note'          => $note,
+                'delivery_note' => sprintf('<span class="link" onclick="change_view(\'delivery_notes/%d/%d\')">%s</span>', $data['Delivery Note Store Key'], $data['Delivery Note Key'], $data['Delivery Note ID']),
 
             );
 

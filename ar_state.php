@@ -30,17 +30,23 @@ $tipo = $_REQUEST['tipo'];
 
 switch ($tipo) {
     case 'set_table_view':
-
         $data = prepare_values(
             $_REQUEST, array(
-                'tab' => array('type' => 'string'),
-                'table_view' => array('type' => 'string'),
-
-
-            )
+                         'tab'        => array('type' => 'string'),
+                         'table_view' => array('type' => 'string'),
+                     )
         );
-
         set_table_view($data);
+        break;
+    case 'update_table_state':
+        $data = prepare_values(
+            $_REQUEST, array(
+                         'table'        => array('type' => 'string'),
+                         'key' => array('type' => 'string'),
+                         'value' => array('type' => 'numberic'),
+                     )
+        );
+        update_table_state($data);
         break;
 
     default:
@@ -59,6 +65,22 @@ function set_table_view($data) {
     if (isset($_SESSION['table_state'][$data['tab']])) {
         $_SESSION['table_state'][$data['tab']]['view'] = $data['table_view'];
         print 'ok';
+    }
+}
+
+
+function update_table_state($data) {
+
+    if (isset($_SESSION['table_state'][$data['table']][$data['key']])) {
+        $_SESSION['table_state'][$data['table']][$data['key']] = $data['value'];
+
+
+        echo json_encode(array('state'=>200));
+
+
+    }else{
+        echo json_encode(array('state'=>400));
+
     }
 
 

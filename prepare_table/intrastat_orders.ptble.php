@@ -36,13 +36,44 @@ if (isset($parameters['parent_period']) ) {
     );
 
 
-    $where_interval = prepare_mysql_dates($from, $to, '`Delivery Note Date`');
+    $where_interval_invoice = prepare_mysql_dates($from, $to, 'I.`Invoice Date`');
+    $where_interval_dn = prepare_mysql_dates($from, $to, '`Delivery Note Date`');
 
 
-    $where .= $where_interval['mysql'];
+
+    $where .= " and ( (  I.`Invoice Key`>0  ".$where_interval_invoice['mysql']." ) or ( I.`Invoice Key` is NULL  ".$where_interval_dn['mysql']." ))  ";
+
 
 
 }
+
+
+
+if($parameters['invoices_vat']==1 and $parameters['invoices_no_vat']==1 and  $parameters['invoices_null']==1 ){
+
+}elseif($parameters['invoices_vat']==1 and $parameters['invoices_no_vat']==1 and  $parameters['invoices_null']==0 ){
+    $where .= " and  I.`Invoice Key`>0  ";
+
+}elseif($parameters['invoices_vat']==1 and $parameters['invoices_no_vat']==0 and  $parameters['invoices_null']==0 ){
+    $where .= " and  I.`Invoice Key`>0  and I.`Invoice Tax Code` not in ('EX','OUT') ";
+
+}elseif($parameters['invoices_vat']==0 and $parameters['invoices_no_vat']==1 and  $parameters['invoices_null']==0 ){
+    $where .= " and  I.`Invoice Key`>0  and I.`Invoice Tax Code` in ('EX','OUT') ";
+
+}elseif($parameters['invoices_vat']==0 and $parameters['invoices_no_vat']==0 and  $parameters['invoices_null']==1 ){
+    $where .= " and  I.`Invoice Key` is null  ";
+
+}elseif($parameters['invoices_vat']==1 and $parameters['invoices_no_vat']==0 and  $parameters['invoices_null']==1 ){
+    $where .= " and   (  I.`Invoice Key` is null  or   ( I.`Invoice Key`>0    and I.`Invoice Tax Code` not in ('EX','OUT') )  ) ";
+
+}elseif($parameters['invoices_vat']==0 and $parameters['invoices_no_vat']==1 and  $parameters['invoices_null']==1 ){
+    $where .= " and   (  I.`Invoice Key` is null   or  I.`Invoice Tax Code` in ('EX','OUT')    ) ";
+
+}elseif($parameters['invoices_vat']==0 and $parameters['invoices_no_vat']==0 and  $parameters['invoices_null']==0 ){
+    $where .= " and false ";
+
+}
+
 
 
 $wheref = '';
@@ -65,6 +96,10 @@ if ($order == 'number') {
     $order = '`Delivery Note Date`';
 }elseif ($order == 'customer') {
     $order = '`Order Customer Name`';
+}elseif ($order == 'amount') {
+    $order = 'amount';
+}elseif ($order == 'weight') {
+    $order = 'weight';
 }else{
 
     $order='OTF.`Order Key`';
@@ -74,12 +109,17 @@ if ($order == 'number') {
 $group_by
     = ' group by OTF.`Order Key` ';
 
-$table = ' `Order Transaction Fact` OTF left join `Product Dimension` P on (P.`Product ID`=OTF.`Product ID`)  left join `Order Dimension` O  on (OTF.`Order Key`=O.`Order Key`) left join `Delivery Note Dimension` DN  on (OTF.`Delivery Note Key`=DN.`Delivery Note Key`) ';
+$table = ' `Order Transaction Fact` OTF left join `Product Dimension` P on (P.`Product ID`=OTF.`Product ID`)  left join `Order Dimension` O  on (OTF.`Order Key`=O.`Order Key`) left join `Delivery Note Dimension` DN  on (OTF.`Delivery Note Key`=DN.`Delivery Note Key`) left join `Invoice Dimension` I  on (OTF.`Invoice Key`=I.`Invoice Key`) ';
 
 $sql_totals = "";
 
 
-$fields = "OTF.`Order Key`,O.`Order Public ID`,`Order Customer Name`,`Delivery Note Date`,`Order Store Key`,`Order Customer Key`,`Order Total Amount`,`Order Currency Code`";
+$fields = "OTF.`Order Key`,O.`Order Public ID`,`Order Customer Name`,`Delivery Note Date`,`Order Store Key`,`Order Customer Key`,`Order Currency Code`,
+sum(`Order Transaction Amount`*`Invoice Currency Exchange Rate`) as amount,
+	sum(`Delivery Note Quantity`*`Product Unit Weight`*`Product Units Per Case`) as weight ,
+	group_concat(P.`Product Code` SEPARATOR ', ') as products
+
+";
 
 
 ?>

@@ -95,7 +95,6 @@ class Country {
             }
 
 
-
             $sql = sprintf(
                 "SELECT *  FROM kbase.`Country Dimension`WHERE  `Country Name`=%s  ", prepare_mysql($id)
             );
@@ -187,16 +186,27 @@ class Country {
 
     function get($key) {
 
+
+        switch ($key) {
+            case 'Flag':
+                return '<img src="/art/flags/'.strtolower($this->data['Country 2 Alpha Code']).'.gif"/>';
+                break;
+            case 'Population':
+                return number($this->data['Country Population']);
+                break;
+            case 'GNP':
+                return money($this->data['Country GNP'], 'USD');
+                break;
+            default:
+                if (isset($this->data[$key])) {
+                    return $this->data[$key];
+                }
+        }
+
         if (isset($this->data[$key])) {
             return $this->data[$key];
         }
 
-        if ($key == 'Population') {
-            return number($this->data['Country Population']);
-        }
-        if ($key == 'GNP') {
-            return money($this->data['Country GNP']);
-        }
 
         return false;
 
@@ -208,14 +218,14 @@ class Country {
             case('tr'):
 
                 return '<tr><td>'.money(1, $currency_code).'</td><td>=</td><td>'.money(
-                    $this->exchange($currency_code, $date), $this->data['Country Currency Code']
-                )."</td></tr>";
+                        $this->exchange($currency_code, $date), $this->data['Country Currency Code']
+                    )."</td></tr>";
 
                 break;
             default:
                 return money(1, $currency_code).'='.money(
-                    $this->exchange($currency_code, $date), $this->data['Country Currency Code']
-                );
+                        $this->exchange($currency_code, $date), $this->data['Country Currency Code']
+                    );
         }
 
     }
@@ -237,15 +247,15 @@ class Country {
             case('tr'):
 
                 return '<tr><td>'.money(1, $this->data['Country Currency Code']).'</td><td>=</td><td>'.money(
-                    1 / $this->exchange($currency_code, $date), $currency_code
-                )."</td></tr>";
+                        1 / $this->exchange($currency_code, $date), $currency_code
+                    )."</td></tr>";
 
                 break;
             default:
 
                 return money(1, $this->data['Country Currency Code']).'='.money(
-                    1 / $this->exchange($currency_code, $date), $currency_code
-                );
+                        1 / $this->exchange($currency_code, $date), $currency_code
+                    );
         }
     }
 
