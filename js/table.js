@@ -755,6 +755,14 @@ function post_table_rendered(otable) {
                 hotspot: 'bottom left'
             })
             break;
+        case 'intrastat_orders':
+
+            get_intrastat_orders_totals();
+            break;
+        case 'intrastat_products':
+
+            get_intrastat_products_totals();
+            break;
 
     }
 

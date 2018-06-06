@@ -41,13 +41,30 @@ sortType: "toggle",
 editable: false,
 cell: Backgrid.HtmlCell.extend({})
 },
+ {
+name: "products",
+label: "{t}Products{/t}",
+sortable: false,
+editable: false,
+cell: Backgrid.HtmlCell.extend({})
+},
 {
-name: "total_amount",
-label: "{t}Total{/t}",
+name: "amount",
+label: "{t}Amount net{/t}",
 editable: false,
 defaultOrder:1,
 sortType: "toggle",
-{if $sort_key=='total_amount'}direction: '{if $sort_order==1}descending{else}ascending{/if}',{/if}
+{if $sort_key=='amount'}direction: '{if $sort_order==1}descending{else}ascending{/if}',{/if}
+cell: Backgrid.HtmlCell.extend({ className: "aright"} ),
+headerCell: integerHeaderCell
+},
+{
+name: "weight",
+label: "{t}Weight{/t}",
+editable: false,
+defaultOrder:1,
+sortType: "toggle",
+{if $sort_key=='weight'}direction: '{if $sort_order==1}descending{else}ascending{/if}',{/if}
 cell: Backgrid.HtmlCell.extend({ className: "aright"} ),
 headerCell: integerHeaderCell
 }

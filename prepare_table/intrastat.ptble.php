@@ -26,35 +26,27 @@ $sql="select  sum(`Delivery Note Quantity`*`Product Units Per Case`) as items,su
 
 */
 
-switch($account->get('Account Country 2 Alpha Code')) {
-case 'GB':
-    $_exclude='"GB","IM"';
 
-    break;
-default:
-    $_exclude='"'.$account->get('Account Country 2 Alpha Code').'"';
-    break;
-}
+include_once('class.Country.php');
 
-$countries = '';
-$sql       = sprintf(
-    'SELECT `Country 2 Alpha Code`  FROM kbase.`Country Dimension`  WHERE `EC Fiscal VAT Area`="Yes" AND `Country 2 Alpha Code` NOT IN (%s)  ORDER BY `Country Name`',$_exclude
-);
-
-if ($result = $db->query($sql)) {
-    foreach ($result as $row) {
-        $countries .= "'".$row['Country 2 Alpha Code']."',";
-
-    }
-} else {
-    print_r($error_info = $db->errorInfo());
-    exit;
-}
-
-$countries = preg_replace('/\,$/', '', $countries);
+$account_country=new Country('code',$account->get('Account Country Code'));
 
 
-$where = ' where `Delivery Note Address Country 2 Alpha Code` in ('.$countries.')  and DN.`Delivery Note Key` is not null  ';
+
+$intrastat_countries=array('NL', 'BE', 'GB', 'BG', 'ES', 'IE', 'IT', 'AT', 'GR', 'CY', 'LV', 'LT', 'LU', 'MT', 'PT', 'PL', 'FR', 'RO', 'SE', 'DE', 'SK', 'SI', 'FI', 'DK', 'CZ', 'HU', 'EE');
+
+
+
+
+$intrastat_countries= "'" . implode("','", $intrastat_countries) . "'";
+
+
+$intrastat_countries=preg_replace('/,?\''.$account_country->get('Country 2 Alpha Code').'\'/','',$intrastat_countries);
+
+$intrastat_countries=preg_replace('/^,/','',$intrastat_countries);
+
+
+$where = ' where `Delivery Note Address Country 2 Alpha Code` in ('.$intrastat_countries.')  and DN.`Delivery Note Key` is not null  ';
 
 
 if (isset($parameters['period']) ) {
@@ -69,13 +61,42 @@ if (isset($parameters['period']) ) {
     );
 
 
-    $where_interval = prepare_mysql_dates($from, $to, '`Delivery Note Date`');
+    $where_interval_invoice = prepare_mysql_dates($from, $to, 'I.`Invoice Date`');
+    $where_interval_dn = prepare_mysql_dates($from, $to, '`Delivery Note Date`');
 
 
-    $where .= $where_interval['mysql'];
+
+    $where .= " and ( (  I.`Invoice Key`>0  ".$where_interval_invoice['mysql']." ) or ( I.`Invoice Key` is NULL  ".$where_interval_dn['mysql']." ))  ";
 
 
 }
+
+if($parameters['invoices_vat']==1 and $parameters['invoices_no_vat']==1 and  $parameters['invoices_null']==1 ){
+
+}elseif($parameters['invoices_vat']==1 and $parameters['invoices_no_vat']==1 and  $parameters['invoices_null']==0 ){
+    $where .= " and  I.`Invoice Key`>0  ";
+
+}elseif($parameters['invoices_vat']==1 and $parameters['invoices_no_vat']==0 and  $parameters['invoices_null']==0 ){
+    $where .= " and  I.`Invoice Key`>0  and I.`Invoice Tax Code` not in ('EX','OUT') ";
+
+}elseif($parameters['invoices_vat']==0 and $parameters['invoices_no_vat']==1 and  $parameters['invoices_null']==0 ){
+    $where .= " and  I.`Invoice Key`>0  and I.`Invoice Tax Code` in ('EX','OUT') ";
+
+}elseif($parameters['invoices_vat']==0 and $parameters['invoices_no_vat']==0 and  $parameters['invoices_null']==1 ){
+    $where .= " and  I.`Invoice Key` is null  ";
+
+}elseif($parameters['invoices_vat']==1 and $parameters['invoices_no_vat']==0 and  $parameters['invoices_null']==1 ){
+    $where .= " and   (  I.`Invoice Key` is null  or   ( I.`Invoice Key`>0    and I.`Invoice Tax Code` not in ('EX','OUT') )  ) ";
+
+}elseif($parameters['invoices_vat']==0 and $parameters['invoices_no_vat']==1 and  $parameters['invoices_null']==1 ){
+    $where .= " and   (  I.`Invoice Key` is null   or  I.`Invoice Tax Code` in ('EX','OUT')    ) ";
+
+}elseif($parameters['invoices_vat']==0 and $parameters['invoices_no_vat']==0 and  $parameters['invoices_null']==0 ){
+    $where .= " and false ";
+
+}
+
+
 
 
 $wheref = '';
@@ -110,9 +131,9 @@ if ($order == 'period') {
 
 
 $group_by
-    = 'group by `Product Tariff Code`,`Delivery Note Address Country 2 Alpha Code`';
+    = 'group by LEFT(`Product Tariff Code`,8),`Delivery Note Address Country 2 Alpha Code`';
 
-$table = ' `Order Transaction Fact` OTF left join `Product Dimension` P on (P.`Product ID`=OTF.`Product ID`) left join `Delivery Note Dimension` DN  on (OTF.`Delivery Note Key`=DN.`Delivery Note Key`) ';
+$table = ' `Order Transaction Fact` OTF left join `Product Dimension` P on (P.`Product ID`=OTF.`Product ID`) left join `Delivery Note Dimension` DN  on (OTF.`Delivery Note Key`=DN.`Delivery Note Key`) left join `Invoice Dimension` I  on (OTF.`Invoice Key`=I.`Invoice Key`) ';
 
 $sql_totals = "";
 

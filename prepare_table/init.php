@@ -45,12 +45,29 @@ if (!isset($dont_save_table_state)) {
     $_SESSION['table_state'][$_data['parameters']['tab']]['od'] = ($order_direction == '' ? -1 : 1);
     $_SESSION['table_state'][$_data['parameters']['tab']]['nr'] = $number_results;
     $_SESSION['table_state'][$_data['parameters']['tab']]['f_value'] = $f_value;
+
+
+
+
+}
+
+if (!empty($_data['parameters']['invoices_vat']) ) {
+    $_SESSION['table_state'][$_data['parameters']['tab']]['invoices_vat'] = $_data['parameters']['invoices_vat'];
+}
+if (!empty($_data['parameters']['invoices_no_vat']) ) {
+    $_SESSION['table_state'][$_data['parameters']['tab']]['invoices_no_vat'] =  $_data['parameters']['invoices_no_vat'];
+}
+if (!empty($_data['parameters']['invoices_null']) ) {
+    $_SESSION['table_state'][$_data['parameters']['tab']]['invoices_null'] =  $_data['parameters']['invoices_null'];
 }
 
 //print 'prepare_table/'.$_data['parameters']['tab'].'.ptble.php';
 
 //print_r('prepare_table/'.$_data['parameters']['tab'].'.ptble.php');
 
+//print_r($_data['parameters']);
+
+//print_r($_SESSION['table_state']['intrastat']);
 
 include_once 'prepare_table/'.$_data['parameters']['tab'].'.ptble.php';
 
@@ -77,6 +94,29 @@ if (isset($parameters['period']) and $parameters['period'] != 'all') {
     } else {
         $rtext .= " ($_from)";
     }
+
+
+
+}
+
+
+if (isset($parameters['parent_period']) and $parameters['parent_period'] != 'all') {
+    include_once 'utils/date_functions.php';
+
+    list($db_interval, $from, $to, $from_date_1yb, $to_1yb)
+        = calculate_interval_dates(
+        $db, $parameters['parent_period'], $parameters['parent_from'], $parameters['parent_to']
+    );
+
+    $_from = strftime('%d %b %Y', strtotime($from));
+    $_to   = strftime('%d %b %Y', strtotime($to));
+    if ($_from != $_to) {
+        $rtext .= " ($_from-$_to)";
+    } else {
+        $rtext .= " ($_from)";
+    }
+
+
 
 }
 
