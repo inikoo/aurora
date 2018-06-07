@@ -62,6 +62,8 @@ $parameters['invoices_vat']=(int)$parameters['invoices_vat'];
 $parameters['invoices_no_vat']=(int)$parameters['invoices_no_vat'];
 $parameters['invoices_null']=(int)$parameters['invoices_null'];
 
+print_r($parameters);
+
 if($parameters['invoices_vat']==1 and $parameters['invoices_no_vat']==1 and  $parameters['invoices_null']==1 ){
 
 }elseif($parameters['invoices_vat']==1 and $parameters['invoices_no_vat']==1 and  $parameters['invoices_null']==0 ){
@@ -88,7 +90,7 @@ if($parameters['invoices_vat']==1 and $parameters['invoices_no_vat']==1 and  $pa
 }
 
 
-
+print $where;
 
 $wheref = '';
 if ($parameters['f_field'] == 'commodity' and $f_value != '') {
