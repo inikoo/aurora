@@ -761,8 +761,9 @@ function intrastat_totals($db, $user, $account) {
         $where_interval_invoice = prepare_mysql_dates($from, $to, 'I.`Invoice Date`');
         $where_interval_dn      = prepare_mysql_dates($from, $to, '`Delivery Note Date`');
 
+        $where .= $where_interval_dn['mysql'];
 
-        $where .= " and ( (  I.`Invoice Key`>0  ".$where_interval_invoice['mysql']." ) or ( I.`Invoice Key` is NULL  ".$where_interval_dn['mysql']." ))  ";
+      //  $where .= " and ( (  I.`Invoice Key`>0  ".$where_interval_invoice['mysql']." ) or ( I.`Invoice Key` is NULL  ".$where_interval_dn['mysql']." ))  ";
 
 
     }
@@ -875,9 +876,10 @@ function intrastat_orders_totals($db, $user, $account) {
 
         $where_interval_invoice = prepare_mysql_dates($from, $to, 'I.`Invoice Date`');
         $where_interval_dn      = prepare_mysql_dates($from, $to, '`Delivery Note Date`');
+        $where .= $where_interval_dn['mysql'];
 
 
-        $where .= " and ( (  I.`Invoice Key`>0  ".$where_interval_invoice['mysql']." ) or ( I.`Invoice Key` is NULL  ".$where_interval_dn['mysql']." ))  ";
+      //  $where .= " and ( (  I.`Invoice Key`>0  ".$where_interval_invoice['mysql']." ) or ( I.`Invoice Key` is NULL  ".$where_interval_dn['mysql']." ))  ";
 
 
     }
@@ -992,8 +994,9 @@ function intrastat_products_totals($db, $user, $account) {
         $where_interval_invoice = prepare_mysql_dates($from, $to, 'I.`Invoice Date`');
         $where_interval_dn      = prepare_mysql_dates($from, $to, '`Delivery Note Date`');
 
+        $where .= $where_interval_dn['mysql'];
 
-        $where .= " and ( (  I.`Invoice Key`>0  ".$where_interval_invoice['mysql']." ) or ( I.`Invoice Key` is NULL  ".$where_interval_dn['mysql']." ))  ";
+      //  $where .= " and ( (  I.`Invoice Key`>0  ".$where_interval_invoice['mysql']." ) or ( I.`Invoice Key` is NULL  ".$where_interval_dn['mysql']." ))  ";
 
 
     }
