@@ -130,16 +130,38 @@ $table = ' `Order Transaction Fact` OTF left join `Product Dimension` P on (P.`P
 $sql_totals = "";
 
 
-$fields = "
+if ($account->get('Account Code') == 'AWEU') {
+
+
+    $fields = "
 sum(`Delivery Note Quantity`*`Product Units Per Case`) as items,
 count(distinct OTF.`Product ID`) as products,
 count(distinct OTF.`Order Key`) as orders,
 
-sum(`Order Transaction Amount`) as value,
+sum(`Invoice Currency Exchange Rate`*`Order Transaction Amount`) as value,
 	sum(`Delivery Note Quantity`*`Product Unit Weight`*`Product Units Per Case`) as weight ,
 	LEFT(`Product Tariff Code`,8) as tariff_code, min(`Delivery Note Date`) as min_date , `Delivery Note Date` , `Delivery Note Address Country 2 Alpha Code`,
 	group_concat(DN.`Delivery Note Key`),group_concat(distinct date_format(`Delivery Note Date`,'%y%m')) as monthyear 
 ";
+} else {
+
+
+
+    $fields = "
+sum(`Delivery Note Quantity`*`Product Units Per Case`) as items,
+count(distinct OTF.`Product ID`) as products,
+count(distinct OTF.`Order Key`) as orders,
+
+	sum(`Invoice Currency Exchange Rate`*(`Invoice Transaction Gross Amount`-`Invoice Transaction Total Discount Amount`+`Invoice Transaction Shipping Amount`+`Invoice Transaction Charges Amount`+`Invoice Transaction Insurance Amount`)) as value, 
+	sum(`Delivery Note Quantity`*`Product Unit Weight`*`Product Units Per Case`) as weight ,
+	LEFT(`Product Tariff Code`,8) as tariff_code, min(`Delivery Note Date`) as min_date , `Delivery Note Date` , `Delivery Note Address Country 2 Alpha Code`,
+	group_concat(DN.`Delivery Note Key`),group_concat(distinct date_format(`Delivery Note Date`,'%y%m')) as monthyear 
+";
+
+
+
+}
+
 
 
 ?>
