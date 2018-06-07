@@ -825,7 +825,7 @@ count(distinct OTF.`Order Key`) as orders,
 
     }
 
-
+print $sql;
 
     if ($result = $db->query($sql)) {
         if ($row = $result->fetch()) {
