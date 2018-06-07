@@ -32,11 +32,21 @@ $parameters = array(
 
 //print_r($_SESSION['table_state']['intrastat']);
 
+
 if(!isset($default['invoices_vat']))$default['invoices_vat']=1;
 if(!isset($default['invoices_no_vat']))$default['invoices_no_vat']=1;
 if(!isset($default['invoices_null']))$default['invoices_null']=1;
 
+
+if(isset($_SESSION['table_state']['intrastat'])){
+    $smarty->assign('table_state',$_SESSION['table_state']['intrastat']);
+
+}else{
     $smarty->assign('table_state',$default);
+
+}
+
+
 
 
 $smarty->assign('table_top_template', 'control.intrastat.tpl');
