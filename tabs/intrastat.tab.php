@@ -41,6 +41,8 @@ $parameters = array(
 $smarty->assign('table_top_template', 'control.intrastat.tpl');
 
 
+print_r($default);
+
 
 include 'utils/get_table_html.php';
 
