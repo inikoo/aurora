@@ -34,6 +34,8 @@ $intrastat_countries=preg_replace('/^,/','',$intrastat_countries);
 $where = ' where `Delivery Note Address Country 2 Alpha Code` in ('.$intrastat_countries.')  and DN.`Delivery Note Key` is not null  ';
 
 
+print_r($parameters);
+
 if (isset($parameters['period']) ) {
 
 
@@ -55,6 +57,8 @@ if (isset($parameters['period']) ) {
 
 
 }
+
+
 
 if($parameters['invoices_vat']==1 and $parameters['invoices_no_vat']==1 and  $parameters['invoices_null']==1 ){
 
