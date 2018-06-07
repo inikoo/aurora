@@ -78,7 +78,7 @@
 
 <script>
 
-    get_intrastat_totals();
+
 
 
     function change_intrastat_element(element, key) {

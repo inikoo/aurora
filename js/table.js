@@ -757,6 +757,10 @@ function post_table_rendered() {
                 hotspot: 'bottom left'
             })
             break;
+        case 'intrastat':
+
+            get_intrastat_totals();
+            break;
         case 'intrastat_orders':
 
             get_intrastat_orders_totals();
