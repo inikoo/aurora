@@ -761,9 +761,9 @@ function intrastat_totals($db, $user, $account) {
         $where_interval_invoice = prepare_mysql_dates($from, $to, 'I.`Invoice Date`');
         $where_interval_dn      = prepare_mysql_dates($from, $to, '`Delivery Note Date`');
 
-      //  $where .= $where_interval_dn['mysql'];
+        $where .= $where_interval_dn['mysql'];
 
-        $where .= " and ( (  I.`Invoice Key`>0  ".$where_interval_invoice['mysql']." ) or ( I.`Invoice Key` is NULL  ".$where_interval_dn['mysql']." ))  ";
+      //  $where .= " and ( (  I.`Invoice Key`>0  ".$where_interval_invoice['mysql']." ) or ( I.`Invoice Key` is NULL  ".$where_interval_dn['mysql']." ))  ";
 
 
     }
@@ -795,7 +795,8 @@ function intrastat_totals($db, $user, $account) {
     }
 
 
-    $sql = "select 
+    if($account->get('Account Code')=='AWEU'){
+        $sql = "select 
 count(distinct OTF.`Product ID`) as products,
 count(distinct OTF.`Order Key`) as orders,
 
@@ -807,6 +808,23 @@ sum(`Order Transaction Amount`*`Invoice Currency Exchange Rate`) as amount,
  
    $where
   ";
+
+    }else{
+        $sql = "select 
+count(distinct OTF.`Product ID`) as products,
+count(distinct OTF.`Order Key`) as orders,
+
+	sum(`Invoice Currency Exchange Rate`*(`Invoice Transaction Gross Amount`-`Invoice Transaction Total Discount Amount`+`Invoice Transaction Shipping Amount`+`Invoice Transaction Charges Amount`+`Invoice Transaction Insurance Amount`+`Invoice Transaction Net Adjust`+`Invoice Transaction Net Refund Items`+`Invoice Transaction Net Refund Shipping`+`Invoice Transaction Net Refund Charges`+`Invoice Transaction Net Refund Insurance`)) as amount, 
+	sum(`Delivery Note Quantity`*`Product Unit Weight`*`Product Units Per Case`) as weight 
+	
+ from  `Order Transaction Fact` OTF left join `Product Dimension` P on (P.`Product ID`=OTF.`Product ID`) left join `Delivery Note Dimension` DN  on (OTF.`Delivery Note Key`=DN.`Delivery Note Key`)  left join `Invoice Dimension` I  on (OTF.`Invoice Key`=I.`Invoice Key`) 
+ 
+ 
+   $where
+  ";
+
+    }
+
 
 
     if ($result = $db->query($sql)) {
