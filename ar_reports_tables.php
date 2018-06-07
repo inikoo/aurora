@@ -774,7 +774,6 @@ function intrastat_totals($db, $user, $account) {
     $parameters['invoices_null']=(int)$parameters['invoices_null'];
 
 
-    print_r($parameters);
 
     if ($parameters['invoices_vat'] == 1 and $parameters['invoices_no_vat'] == 1 and $parameters['invoices_null'] == 1) {
 
@@ -800,7 +799,6 @@ function intrastat_totals($db, $user, $account) {
         $where .= " and false ";
 
     }
-print $where;
 
     if($account->get('Account Code')=='AWEU'){
         $sql = "select 
