@@ -31,7 +31,7 @@ $intrastat_countries=preg_replace('/,?\''.$account_country->get('Country 2 Alpha
 $intrastat_countries=preg_replace('/^,/','',$intrastat_countries);
 
 
-$where = ' where `Delivery Note Address Country 2 Alpha Code` in ('.$intrastat_countries.')  and DN.`Delivery Note Key` is not null  ';
+$where = ' where `Delivery Note Address Country 2 Alpha Code` in ('.$intrastat_countries.')  and DN.`Delivery Note Key` is not null  and `Delivery Note State`="Dispatched" ';
 
 
 //print_r($parameters);
