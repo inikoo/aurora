@@ -309,7 +309,7 @@ if ($order == 'date') {
 $fields
     .= 'I.`Invoice Key`,`Invoice Paid`,`Invoice Type`,`Invoice Main Payment Method`,`Invoice Store Key`,`Invoice Customer Key`,`Invoice Public ID`,`Invoice Customer Name`,`Invoice Date`,`Invoice Total Amount`,`Invoice Currency`,
 `Invoice Total Net Amount`,`Invoice Total Tax Amount`,`Invoice Shipping Net Amount`,`Invoice Items Net Amount`,`Invoice Total Net Amount`,`Invoice Shipping Net Amount`,
-`Invoice Billing Country 2 Alpha Code`,`Invoice Delivery Country 2 Alpha Code`
+`Invoice Address Country 2 Alpha Code`
 ';
 $sql_totals
     = "select count(Distinct I.`Invoice Key`) as num from $table $where ";

@@ -385,7 +385,16 @@ function billingregion_taxcategory($_data, $db, $user, $account) {
 
 function invoices_billingregion_taxcategory($_data, $db, $user) {
 
-    $rtext_label = 'invoice';
+
+
+    if($_data['parameters']['tab']=='billingregion_taxcategory.refunds'){
+        $rtext_label = 'refund';
+    }else{
+        $rtext_label = 'invoice';
+    }
+
+
+
     include_once 'prepare_table/init.php';
 
     $sql = "select $fields from $table $where $wheref order by $order $order_direction limit $start_from,$number_results";
