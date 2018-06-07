@@ -807,7 +807,6 @@ sum(`Order Transaction Amount`*`Invoice Currency Exchange Rate`) as amount,
    $where
   ";
 
-    print $sql;
 
     if ($result = $db->query($sql)) {
         if ($row = $result->fetch()) {
