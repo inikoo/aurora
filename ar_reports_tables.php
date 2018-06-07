@@ -742,7 +742,7 @@ function intrastat_totals($db, $user, $account) {
     $intrastat_countries = preg_replace('/,?\''.$account_country->get('Country 2 Alpha Code').'\'/', '', $intrastat_countries);
     $intrastat_countries = preg_replace('/^,/', '', $intrastat_countries);
 
-    $where = ' where `Delivery Note Address Country 2 Alpha Code` in ('.$intrastat_countries.')  and DN.`Delivery Note Key` is not null  ';
+    $where = ' where `Delivery Note Address Country 2 Alpha Code` in ('.$intrastat_countries.')  and DN.`Delivery Note Key` is not null and `Delivery Note State`="Dispatched" ';
 
 
     if (isset($_SESSION['table_state']['intrastat']['period'])) {
@@ -853,10 +853,10 @@ function intrastat_orders_totals($db, $user, $account) {
 
 
     if ($parameters['tariff_code'] == 'missing') {
-        $where = sprintf(' where `Delivery Note Address Country 2 Alpha Code`=%s and (`Product Tariff Code` is null or `Product Tariff Code`="")  and DN.`Delivery Note Key` is not null  ', prepare_mysql($parameters['country_code']));
+        $where = sprintf(' where `Delivery Note Address Country 2 Alpha Code`=%s and (`Product Tariff Code` is null or `Product Tariff Code`="")  and DN.`Delivery Note Key` is not null and `Delivery Note State`="Dispatched" ', prepare_mysql($parameters['country_code']));
 
     } else {
-        $where = sprintf(' where `Delivery Note Address Country 2 Alpha Code`=%s and `Product Tariff Code` like "%s%%"  and DN.`Delivery Note Key` is not null  ', prepare_mysql($parameters['country_code']), addslashes($parameters['tariff_code']));
+        $where = sprintf(' where `Delivery Note Address Country 2 Alpha Code`=%s and `Product Tariff Code` like "%s%%"  and DN.`Delivery Note Key` is not null and `Delivery Note State`="Dispatched" ', prepare_mysql($parameters['country_code']), addslashes($parameters['tariff_code']));
 
     }
 
@@ -968,10 +968,10 @@ function intrastat_products_totals($db, $user, $account) {
 
 
     if($parameters['tariff_code']=='missing'){
-        $where = sprintf(' where `Delivery Note Address Country 2 Alpha Code`=%s and (`Product Tariff Code` is null or `Product Tariff Code`="")  and DN.`Delivery Note Key` is not null  ',prepare_mysql($parameters['country_code']));
+        $where = sprintf(' where `Delivery Note Address Country 2 Alpha Code`=%s and (`Product Tariff Code` is null or `Product Tariff Code`="")  and DN.`Delivery Note Key` is not null and `Delivery Note State`="Dispatched" ',prepare_mysql($parameters['country_code']));
 
     }else{
-        $where = sprintf(' where `Delivery Note Address Country 2 Alpha Code`=%s and `Product Tariff Code` like "%s%%"  and DN.`Delivery Note Key` is not null  ',prepare_mysql($parameters['country_code']),addslashes($parameters['tariff_code']));
+        $where = sprintf(' where `Delivery Note Address Country 2 Alpha Code`=%s and `Product Tariff Code` like "%s%%"  and DN.`Delivery Note Key` is not null and `Delivery Note State`="Dispatched" ',prepare_mysql($parameters['country_code']),addslashes($parameters['tariff_code']));
 
     }
 
