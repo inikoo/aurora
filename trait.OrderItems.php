@@ -198,8 +198,7 @@ trait OrderItems {
                         $sql = sprintf(
                             "UPDATE  `Order Transaction Fact` SET `Delivery Note ID`=%s,`Delivery Note Key`=%d ,`Destination Country 2 Alpha Code`=%s WHERE `Order Transaction Fact Key`=%d",
 
-                            prepare_mysql($dn->data['Delivery Note ID']), $dn_key, prepare_mysql(
-                                $dn->get('Delivery Note Address Country 2 Alpha Code')
+                            prepare_mysql($dn->data['Delivery Note ID']), $dn_key, prepare_mysql($dn->get('Delivery Note Address Country 2 Alpha Code')
                             ), $row['Order Transaction Fact Key']
 
                         );

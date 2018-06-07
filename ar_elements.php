@@ -350,7 +350,7 @@ switch ($tab) {
         break;
     case 'ec_sales_list':
         $data = prepare_values($_REQUEST, array('parameters' => array('type' => 'json array')));
-        get_ec_sales_list_elements($db, $data['parameters'], $user);
+        get_ec_sales_list_elements($db, $data['parameters'], $account,$user);
         break;
 
     case 'warehouse.leakages.transactions':
@@ -2689,7 +2689,7 @@ function get_category_root_all_parts_elements($db, $data) {
 }
 
 
-function get_ec_sales_list_elements($db, $parameters) {
+function get_ec_sales_list_elements($db, $parameters,$account) {
 
     list(
         $db_interval, $from, $to, $from_date_1yb, $to_1yb
@@ -2710,25 +2710,27 @@ function get_ec_sales_list_elements($db, $parameters) {
     );
 
 
-    $countries = '';
-    $sql       = sprintf(
-        'SELECT `Country 2 Alpha Code`  FROM kbase.`Country Dimension`  WHERE `EC Fiscal VAT Area`="Yes" AND `Country 2 Alpha Code` NOT IN ("GB","IM")  ORDER BY `Country Name`'
-    );
+    include_once('class.Country.php');
 
-    if ($result = $db->query($sql)) {
-        foreach ($result as $row) {
-            $countries .= "'".addslashes($row['Country 2 Alpha Code'])."',";
-
-        }
-    } else {
-        print_r($error_info = $db->errorInfo());
-        exit;
-    }
-
-    $countries = preg_replace('/\,$/', '', $countries);
+    $account_country=new Country('code',$account->get('Account Country Code'));
 
 
-    $where = ' where `Invoice Billing Country 2 Alpha Code` in ('.$countries.')';
+
+    $european_union_2alpha=array('NL', 'BE', 'GB', 'BG', 'ES', 'IE', 'IT', 'AT', 'GR', 'CY', 'LV', 'LT', 'LU', 'MT', 'PT', 'PL', 'FR', 'RO', 'SE', 'DE', 'SK', 'SI', 'FI', 'DK', 'CZ', 'HU', 'EE');
+
+
+
+
+    $european_union_2alpha= "'" . implode("','", $european_union_2alpha) . "'";
+
+
+    $european_union_2alpha=preg_replace('/,?\''.$account_country->get('Country 2 Alpha Code').'\'/','',$european_union_2alpha);
+
+    $european_union_2alpha=preg_replace('/^,/','',$european_union_2alpha);
+
+
+
+    $where = ' where `Invoice Address Country 2 Alpha Code` in ('.$european_union_2alpha.')';
 
 
     $table = '`Invoice Dimension`';

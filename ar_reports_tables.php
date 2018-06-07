@@ -71,6 +71,12 @@ switch ($tipo) {
     case 'intrastat_orders_totals':
         intrastat_orders_totals($db, $user, $account);
         break;
+
+    case 'ec_sales_list_totals':
+
+        ec_sales_list_totals($db, $user, $account);
+
+        break;
     case 'intrastat_products_totals':
         intrastat_products_totals($db, $user, $account);
         break;
@@ -500,6 +506,195 @@ function invoices_billingregion_taxcategory($_data, $db, $user) {
     echo json_encode($response);
 }
 
+
+function ec_sales_list_totals($db, $user, $account) {
+
+    $sum_net   = 0;
+    $sum_tax   = 0;
+    $sum_total   = 0;
+    $sum_invoices = 0;
+    $sum_refunds = 0;
+    $sum_customers = 0;
+
+    $parameters = $_SESSION['table_state']['ec_sales_list'];
+
+
+    include_once('class.Country.php');
+
+    $account_country=new Country('code',$account->get('Account Country Code'));
+
+
+
+    $european_union_2alpha=array('NL', 'BE', 'GB', 'BG', 'ES', 'IE', 'IT', 'AT', 'GR', 'CY', 'LV', 'LT', 'LU', 'MT', 'PT', 'PL', 'FR', 'RO', 'SE', 'DE', 'SK', 'SI', 'FI', 'DK', 'CZ', 'HU', 'EE');
+
+
+
+
+    $european_union_2alpha= "'" . implode("','", $european_union_2alpha) . "'";
+
+
+    $european_union_2alpha=preg_replace('/,?\''.$account_country->get('Country 2 Alpha Code').'\'/','',$european_union_2alpha);
+
+    $european_union_2alpha=preg_replace('/^,/','',$european_union_2alpha);
+
+
+
+    $where = ' where `Invoice Address Country 2 Alpha Code` in ('.$european_union_2alpha.')';
+
+    if (isset($parameters['period'])) {
+
+
+        include_once 'utils/date_functions.php';
+
+
+        list($db_interval, $from, $to, $from_date_1yb, $to_1yb)
+            = calculate_interval_dates(
+            $db, $parameters['period'], $parameters['from'], $parameters['to']
+        );
+
+
+        $where_interval = prepare_mysql_dates($from, $to, '`Invoice Date`');
+
+
+        $where .= $where_interval['mysql'];
+
+
+    }
+
+
+
+
+    if (isset($parameters['elements'])) {
+        $elements = $parameters['elements'];
+
+
+        switch ($parameters['elements_type']) {
+
+            case('tax_status'):
+                //print_r($parameters['elements']);
+
+                $number_elements = 0;
+
+
+                $with_tax_number    = false;
+                $with_no_tax_number = false;
+
+                $valid_tax_number   = false;
+                $invalid_tax_number = false;
+
+                foreach (
+                    $parameters['elements'][$parameters['elements_type']]['items'] as $_element => $element_data
+                ) {
+
+                    if ($element_data['selected']) {
+                        //print $_element;
+                        if ($_element == 'Missing') {
+                            $with_no_tax_number = true;
+                        } else {
+
+                            if ($_element == 'Yes') {
+                                $valid_tax_number = true;
+                            } else {
+                                if ($_element == 'No') {
+                                    $invalid_tax_number = true;
+
+                                }
+                            }
+
+                            $with_tax_number = true;
+                        }
+
+                        $number_elements++;
+                    }
+
+                }
+                if ($number_elements == 0) {
+                    $where .= ' and false';
+                } elseif ($number_elements < 3) {
+
+                    if ($with_no_tax_number and !$with_tax_number) {
+                        $where .= " and ( `Invoice Tax Number` is NULL or `Invoice Tax Number`='' ) ";
+                    } elseif ($with_tax_number and !$with_no_tax_number) {
+                        $where .= " and `Invoice Tax Number`!='' ";
+
+                        if ($valid_tax_number and !$invalid_tax_number) {
+                            $where .= " and `Invoice Tax Number Valid`='Yes' ";
+                        }
+                        if ($invalid_tax_number and !$valid_tax_number) {
+                            $where .= " and `Invoice Tax Number Valid`!='Yes' ";
+                        }
+
+
+                    } elseif ($with_tax_number and $with_no_tax_number) {
+
+
+                        if ($valid_tax_number and !$invalid_tax_number) {
+                            $where .= " and  ( `Invoice Tax Number Valid`='Yes'  or  ( `Invoice Tax Number` is NULL or `Invoice Tax Number`='' )    )  ";
+                        }
+                        if ($invalid_tax_number and !$valid_tax_number) {
+                            $where .= " and ( `Invoice Tax Number Valid`!='Yes' or  ( `Invoice Tax Number` is NULL or `Invoice Tax Number`='' )  ) ";
+                        }
+
+
+                    }
+
+                }
+
+
+                break;
+        }
+
+    }
+
+
+
+    $sql = "select 
+sum(if(`Invoice Type`='Invoice',1,0)) as invoices,
+ sum(if(`Invoice Type`!='Invoice',1,0)) as refunds,
+count(distinct `Invoice Customer Key` ) as customers,
+  sum(`Invoice Total Amount`*`Invoice Currency Exchange`) as total ,
+  sum( `Invoice Total Net Amount`*`Invoice Currency Exchange`) as net,
+  sum( `Invoice Total Tax Amount`*`Invoice Currency Exchange`) as tax
+  	
+from `Invoice Dimension` 
+ 
+   $where
+  ";
+
+    if ($result = $db->query($sql)) {
+        if ($row = $result->fetch()) {
+            $sum_customers   = $row['customers'];
+            $sum_net   = $row['net'];
+            $sum_tax   = $row['tax'];
+            $sum_total   =$row['total'];
+            $sum_invoices = $row['invoices'];
+            $sum_refunds =$row['refunds'];
+
+        }
+    } else {
+        print_r($error_info = $db->errorInfo());
+        print "$sql\n";
+        exit;
+    }
+
+    $totals   = array(
+        'total_amount_net'   => money($sum_net, $account->get('Account Currency')),
+        'total_amount_tax'   => money($sum_tax, $account->get('Account Currency')),
+        'total_amount_total'   => money($sum_total, $account->get('Account Currency')),
+        'total_customers'   => number($sum_customers),
+
+        'total_invoices'   => number($sum_invoices),
+        'total_refunds'   => number($sum_refunds),
+
+    );
+    $response = array(
+        'state'  => 200,
+        'totals' => $totals
+    );
+
+    echo json_encode($response);
+
+}
 
 function intrastat_totals($db, $user, $account) {
 

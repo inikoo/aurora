@@ -54,14 +54,6 @@ if (isset($parameters['period'])) {
 }
 
 
-$wheref = '';
-if ($parameters['f_field'] == 'tax_number' and $f_value != '') {
-    $wheref .= " and  `Invoice Tax Number` like '".addslashes($f_value)."%'    ";
-} elseif ($parameters['f_field'] == 'customer' and $f_value != '') {
-    $wheref = sprintf(
-        '  and  `Customer Name`  REGEXP "[[:<:]]%s" ', addslashes($f_value)
-    );
-}
 
 
 if (isset($parameters['elements'])) {
@@ -144,6 +136,17 @@ if (isset($parameters['elements'])) {
             break;
     }
 
+}
+
+
+
+$wheref = '';
+if ($parameters['f_field'] == 'tax_number' and $f_value != '') {
+    $wheref .= " and  `Invoice Tax Number` like '".addslashes($f_value)."%'    ";
+} elseif ($parameters['f_field'] == 'customer' and $f_value != '') {
+    $wheref = sprintf(
+        '  and  `Customer Name`  REGEXP "[[:<:]]%s" ', addslashes($f_value)
+    );
 }
 
 //print $where;
