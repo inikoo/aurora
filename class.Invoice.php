@@ -2134,10 +2134,10 @@ class Invoice extends DB_Table {
 
     function update_billing_region() {
         $account=get_object('Account',1);
-        $european_union_2alpha=array('NL', 'BE', 'GB', 'BG', 'ES', 'IE', 'IT', 'AT', 'GR', 'CY', 'LV', 'LT', 'LU', 'MT', 'PT', 'PL', 'FR', 'RO', 'SE', 'DE', 'SK', 'SI', 'FI', 'DK', 'CZ', 'HU', 'EE', 'RE');
+        $european_union_2alpha=array('NL', 'BE', 'GB', 'BG', 'ES', 'IE', 'IT', 'AT', 'GR', 'CY', 'LV', 'LT', 'LU', 'MT', 'PT', 'PL', 'FR', 'RO', 'SE', 'DE', 'SK', 'SI', 'FI', 'DK', 'CZ', 'HU', 'EE');
 
 
-        $european_union=array('NLD', 'BEL', 'GBR', 'BGR', 'ESP', 'IRL', 'ITA', 'AUT', 'GRC', 'CYP', 'LVA', 'LTU', 'LUX', 'MLT', 'PRT', 'POL', 'FRA', 'ROU', 'SWE', 'DEU', 'SVK', 'SVN', 'FIN', 'DNK', 'CZE', 'HUN', 'EST', 'REU');
+        $european_union=array('NLD', 'BEL', 'GBR', 'BGR', 'ESP', 'IRL', 'ITA', 'AUT', 'GRC', 'CYP', 'LVA', 'LTU', 'LUX', 'MLT', 'PRT', 'POL', 'FRA', 'ROU', 'SWE', 'DEU', 'SVK', 'SVN', 'FIN', 'DNK', 'CZE', 'HUN', 'EST');
 
 
         include_once('class.Country.php');
