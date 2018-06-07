@@ -42,7 +42,9 @@ $parameters = array(
 );
 
 
-//$smarty->assign('hide_period',true);
+
+$smarty->assign('table_top_template', 'control.ec_sales_list.tpl');
+
 
 include 'utils/get_table_html.php';
 

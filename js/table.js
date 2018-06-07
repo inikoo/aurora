@@ -763,6 +763,12 @@ function post_table_rendered(otable) {
 
             get_intrastat_products_totals();
             break;
+        case 'ec_sales_list':
+
+            get_ec_sales_list_totals();
+            break;
+
+
 
     }
 
