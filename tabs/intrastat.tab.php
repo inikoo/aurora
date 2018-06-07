@@ -32,12 +32,18 @@ if (isset($_SESSION['table_state']['intrastat']['excluded_stores'])) {
 
 if (isset($_SESSION['table_state']['intrastat']['invoices_vat'])) {
     $default['invoices_vat'] = $_SESSION['table_state']['intrastat']['invoices_vat'];
+}else{
+    $default['invoices_vat'] = 1;
 }
 if (isset($_SESSION['table_state']['intrastat']['invoices_no_vat'])) {
     $default['invoices_no_vat'] = $_SESSION['table_state']['intrastat']['invoices_no_vat'];
+}else{
+    $default['invoices_no_vat'] = 1;
 }
 if (isset($_SESSION['table_state']['intrastat']['invoices_null'])) {
     $default['invoices_null'] = $_SESSION['table_state']['intrastat']['invoices_null'];
+}else{
+    $default['invoices_null'] = 1;
 }
 
 
@@ -62,15 +68,15 @@ $parameters = array(
 
 if(!isset($_SESSION['table_state']['intrastat'])){
     $smarty->assign('table_state',$default);
-    print 'c1';
+   // print 'c1';
 
-    print_r($default);
+   // print_r($default);
 
 
 }else{
     $smarty->assign('table_state',$_SESSION['table_state']['intrastat']);
-    print 'c2';
-    print_r($_SESSION['table_state']['intrastat']);
+  //  print 'c2';
+  //  print_r($_SESSION['table_state']['intrastat']);
 }
 
 
