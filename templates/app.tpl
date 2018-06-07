@@ -79,7 +79,7 @@
         <script src="/js/keyboard_shortcuts.js"></script>
         <script src="/js/barcode_scanner.js?v1712v2"></script>
         <script src="/js/search.js"></script>
-        <script src="/js/table.js?v3"></script>
+        <script src="/js/table.js?v4"></script>
         <script src="/js/validation.js?v171206v5"></script>
         <script src="/js/edit.js?v180325v5"></script>
         <script src="/js/edit_webpage_edit.js?v180411v1"></script>
