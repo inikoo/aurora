@@ -62,12 +62,14 @@ $parameters = array(
 
 if(!isset($_SESSION['table_state']['intrastat'])){
     $smarty->assign('table_state',$default);
+    print 'c1';
 
     print_r($default);
 
 
 }else{
     $smarty->assign('table_state',$_SESSION['table_state']['intrastat']);
+    print 'c2';
     print_r($_SESSION['table_state']['intrastat']);
 }
 
