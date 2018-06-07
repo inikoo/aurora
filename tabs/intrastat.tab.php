@@ -38,7 +38,7 @@ if(!isset($default['invoices_null']))$default['invoices_null']=1;
 
     $smarty->assign('table_state',$default);
 
-
+print_r($default);
 
 $smarty->assign('table_top_template', 'control.intrastat.tpl');
 
