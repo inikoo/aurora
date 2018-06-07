@@ -984,7 +984,11 @@ $export_fields = array(
             'label'   => _('Units send'),
             'checked' => 1
         ),
-
+        array(
+            'name'    => ($account->get('Account Code')=='AWEU'? 'sum(`Invoice Currency Exchange Rate`*`Order Transaction Amount`) '  :  'sum(`Invoice Currency Exchange Rate`*(`Invoice Transaction Gross Amount`-`Invoice Transaction Total Discount Amount`+`Invoice Transaction Shipping Amount`+`Invoice Transaction Charges Amount`+`Invoice Transaction Insurance Amount`))' ),
+            'label'   => _('Amount').' ('.$account->get('Account Currency Code').')',
+            'checked' => 1
+        ),
         array(
             'name'    => 'sum(`Delivery Note Quantity`*`Product Unit Weight`*`Product Units Per Case`)',
             'label'   => _('Weight').' (Kg)',
