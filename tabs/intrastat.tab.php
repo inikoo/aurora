@@ -16,38 +16,6 @@ $tipo    = 'intrastat';$smarty->assign('table_top_template', 'prospects.base_blu
 
 $default = $user->get_tab_defaults($tab);
 
-if (isset($_SESSION['table_state']['intrastat']['to'])) {
-    $default['to'] = $_SESSION['table_state']['intrastat']['to'];
-}
-if (isset($_SESSION['table_state']['intrastat']['from'])) {
-    $default['from'] = $_SESSION['table_state']['intrastat']['from'];
-}
-if (isset($_SESSION['table_state']['intrastat']['period'])) {
-    $default['period'] = $_SESSION['table_state']['intrastat']['period'];
-}
-if (isset($_SESSION['table_state']['intrastat']['excluded_stores'])) {
-    $default['excluded_stores']
-        = $_SESSION['table_state']['intrastat']['excluded_stores'];
-}
-
-if (isset($_SESSION['table_state']['intrastat']['invoices_vat'])) {
-    $default['invoices_vat'] = $_SESSION['table_state']['intrastat']['invoices_vat'];
-}else{
-    $default['invoices_vat'] = 1;
-}
-if (isset($_SESSION['table_state']['intrastat']['invoices_no_vat'])) {
-    $default['invoices_no_vat'] = $_SESSION['table_state']['intrastat']['invoices_no_vat'];
-}else{
-    $default['invoices_no_vat'] = 1;
-}
-if (isset($_SESSION['table_state']['intrastat']['invoices_null'])) {
-    $default['invoices_null'] = $_SESSION['table_state']['intrastat']['invoices_null'];
-}else{
-    $default['invoices_null'] = 1;
-}
-
-
-
 
 
 
@@ -66,18 +34,8 @@ $parameters = array(
 
 //print_r($_SESSION['table_state']['intrastat']);
 
-if(!isset($_SESSION['table_state']['intrastat'])){
     $smarty->assign('table_state',$default);
-   // print 'c1';
-
-   // print_r($default);
-
-
-}else{
-    $smarty->assign('table_state',$_SESSION['table_state']['intrastat']);
-  //  print 'c2';
-  //  print_r($_SESSION['table_state']['intrastat']);
-}
+  
 
 
 $smarty->assign('table_top_template', 'control.intrastat.tpl');
