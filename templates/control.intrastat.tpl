@@ -26,7 +26,8 @@
 <div style="padding:20px;border-bottom:1px solid #ccc" class="control_panel">
 
 
-    <table style="float: left">\  <tr>
+    <table style="float: left">
+        <tr>
             <td><span class="button unselectable" onclick="change_intrastat_element(this,'invoices_no_vat')"><i id="icon_invoices_no_vat"
                                                                                                                 class="fa {if $table_state['invoices_no_vat']==1}fa-toggle-on{else}fa-toggle-off{/if} fa-fw"></i>
                     {t}Invoices with no VAT{/t}
@@ -52,22 +53,22 @@
     <table class="intrastat_totals">
         <tr>
             <td>{t}Orders{/t}</td>
-            <td class="aright total_orders"></td>
+            <td class="aright element_total total_orders"></td>
         </tr>
 
         <tr>
             <td>{t}Products{/t}</td>
-            <td class="aright total_products"></td>
+            <td class="aright element_total total_products"></td>
         </tr>
 
         <tr>
             <td>{t}Amount{/t}</td>
-            <td class="aright total_amount"></td>
+            <td class="aright element_total total_amount"></td>
         </tr>
 
         <tr>
             <td>{t}Weight{/t}</td>
-            <td class="aright total_weight"></td>
+            <td class="aright element_total total_weight"></td>
         </tr>
 
     </table>
@@ -111,6 +112,8 @@
             var value = 1
         }
 
+
+        $('.element_total').html('');
 
         var request = "/ar_state.php?tipo=update_table_state&table=intrastat&key=" + key + '&value=' + value
         $.getJSON(request, function (data) {
