@@ -51,13 +51,13 @@ if (!isset($dont_save_table_state)) {
 
 }
 
-if (!empty($_data['parameters']['invoices_vat']) ) {
+if (isset($_data['parameters']['invoices_vat']) ) {
     $_SESSION['table_state'][$_data['parameters']['tab']]['invoices_vat'] = $_data['parameters']['invoices_vat'];
 }
-if (!empty($_data['parameters']['invoices_no_vat']) ) {
+if (isset($_data['parameters']['invoices_no_vat']) ) {
     $_SESSION['table_state'][$_data['parameters']['tab']]['invoices_no_vat'] =  $_data['parameters']['invoices_no_vat'];
 }
-if (!empty($_data['parameters']['invoices_null']) ) {
+if (isset($_data['parameters']['invoices_null']) ) {
     $_SESSION['table_state'][$_data['parameters']['tab']]['invoices_null'] =  $_data['parameters']['invoices_null'];
 }
 
