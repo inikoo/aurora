@@ -304,6 +304,8 @@ class Public_Website {
 
             case 'Website Accent Color':
             case 'Website Zendesk Chat Code':
+            case 'Website Tawk Chat Code':
+
             case 'Website Google Tag Manager Code':
             case 'Website Text Font':
             case 'Website Registration Type':
