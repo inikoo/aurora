@@ -60,7 +60,7 @@ $parameters = array(
 
 //print_r($_SESSION['table_state']['intrastat']);
 
-$smarty->assign('table_state',$_SESSION['table_state']['intrastat']);
+$smarty->assign('table_state',$default);
 
 $smarty->assign('table_top_template', 'control.intrastat.tpl');
 
