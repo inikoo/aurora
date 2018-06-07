@@ -95,8 +95,9 @@ function fork_export($job) {
 
 
     $row_index = 1;
-   // print "$sql_data\n";
-
+    //print "$sql_data\n";
+  //  return 1;
+//exit;
     if ($result = $db->query($sql_data)) {
         foreach ($result as $row) {
 

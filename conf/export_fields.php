@@ -9,6 +9,8 @@
 
 */
 
+global $account;
+
 $export_fields = array(
     'customers'                    => array(
         array(
@@ -529,9 +531,15 @@ $export_fields = array(
     ),
     'ec_sales_list'                           => array(
         array(
-            'name'    => '`Invoice Billing Country 2 Alpha Code`',
+            'name'    => '`Invoice Address Country 2 Alpha Code`',
             'label'   => _('Country Code'),
             'checked' => 1
+        ),
+        array(
+            'name'      => '`Invoice Customer Key`',
+            'label'     => _('Customer ID'),
+            'checked'   => 1,
+            'cell_type' => 'string'
         ),
         array(
             'name'      => '`Invoice Tax Number`',
@@ -540,13 +548,26 @@ $export_fields = array(
             'cell_type' => 'string'
         ),
         array(
-            'name'    => 'ROUND(`Invoice Total Net Amount`*`Invoice Currency Exchange`,2)',
-            'label'   => _('Net'),
+            'name'      => 'sum(if(`Invoice Type`=\'Invoice\',1,0))',
+            'label'     => _('Invoices'),
+            'checked'   => 1,
+            'cell_type' => 'string'
+        ),
+        array(
+            'name'      => 'sum(if(`Invoice Type`=\'Refund\',1,0))',
+            'label'     => _('Refunds'),
+            'checked'   => 1,
+            'cell_type' => 'string'
+        ),
+
+        array(
+            'name'    => 'ROUND(sum(`Invoice Total Net Amount`*`Invoice Currency Exchange`),2)',
+            'label'   => _('Net').' ('.$account->get('Account Currency Code').')',
             'checked' => 1
         ),
         array(
-            'name'    => 'ROUND(`Invoice Total Tax Amount`*`Invoice Currency Exchange`)',
-            'label'   => _('Tax'),
+            'name'    => 'ROUND(sum(`Invoice Total Tax Amount`*`Invoice Currency Exchange`))',
+            'label'   => _('Tax').' ('.$account->get('Account Currency Code').')',
             'checked' => 1
         ),
         array(
