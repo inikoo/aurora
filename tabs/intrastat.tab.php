@@ -17,8 +17,6 @@ $tipo    = 'intrastat';$smarty->assign('table_top_template', 'prospects.base_blu
 $default = $user->get_tab_defaults($tab);
 
 
-
-
 $table_views = array();
 
 $table_filters = array(
@@ -33,6 +31,10 @@ $parameters = array(
 );
 
 //print_r($_SESSION['table_state']['intrastat']);
+
+if(!isset($default['invoices_vat']))$default['invoices_vat']=1;
+if(!isset($default['invoices_no_vat']))$default['invoices_no_vat']=1;
+if(!isset($default['invoices_null']))$default['invoices_null']=1;
 
     $smarty->assign('table_state',$default);
 
