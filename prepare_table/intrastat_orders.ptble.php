@@ -115,12 +115,35 @@ $table = ' `Order Transaction Fact` OTF left join `Product Dimension` P on (P.`P
 $sql_totals = "";
 
 
-$fields = "OTF.`Order Key`,O.`Order Public ID`,`Order Customer Name`,`Delivery Note Date`,`Order Store Key`,`Order Customer Key`,`Order Currency Code`,
+
+if ($account->get('Account Code') == 'AWEU') {
+
+
+    $fields = "OTF.`Order Key`,O.`Order Public ID`,`Order Customer Name`,`Delivery Note Date`,`Order Store Key`,`Order Customer Key`,`Order Currency Code`,
 sum(`Order Transaction Amount`*`Invoice Currency Exchange Rate`) as amount,
 	sum(`Delivery Note Quantity`*`Product Unit Weight`*`Product Units Per Case`) as weight ,
 	group_concat(P.`Product Code` SEPARATOR ', ') as products
 
 ";
+
+} else {
+
+
+    $fields = "OTF.`Order Key`,O.`Order Public ID`,`Order Customer Name`,`Delivery Note Date`,`Order Store Key`,`Order Customer Key`,`Order Currency Code`,
+
+	sum(`Invoice Currency Exchange Rate`*(`Invoice Transaction Gross Amount`-`Invoice Transaction Total Discount Amount`+`Invoice Transaction Shipping Amount`+`Invoice Transaction Charges Amount`+`Invoice Transaction Insurance Amount`)) as amount, 
+
+	sum(`Delivery Note Quantity`*`Product Unit Weight`*`Product Units Per Case`) as weight ,
+	group_concat(P.`Product Code` SEPARATOR ', ') as products
+
+";
+
+
+
+
+}
+
+
 
 
 ?>

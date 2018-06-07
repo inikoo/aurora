@@ -392,13 +392,11 @@ function billingregion_taxcategory($_data, $db, $user, $account) {
 function invoices_billingregion_taxcategory($_data, $db, $user) {
 
 
-
-    if($_data['parameters']['tab']=='billingregion_taxcategory.refunds'){
+    if ($_data['parameters']['tab'] == 'billingregion_taxcategory.refunds') {
         $rtext_label = 'refund';
-    }else{
+    } else {
         $rtext_label = 'invoice';
     }
-
 
 
     include_once 'prepare_table/init.php';
@@ -509,11 +507,11 @@ function invoices_billingregion_taxcategory($_data, $db, $user) {
 
 function ec_sales_list_totals($db, $user, $account) {
 
-    $sum_net   = 0;
-    $sum_tax   = 0;
-    $sum_total   = 0;
-    $sum_invoices = 0;
-    $sum_refunds = 0;
+    $sum_net       = 0;
+    $sum_tax       = 0;
+    $sum_total     = 0;
+    $sum_invoices  = 0;
+    $sum_refunds   = 0;
     $sum_customers = 0;
 
     $parameters = $_SESSION['table_state']['ec_sales_list'];
@@ -521,22 +519,46 @@ function ec_sales_list_totals($db, $user, $account) {
 
     include_once('class.Country.php');
 
-    $account_country=new Country('code',$account->get('Account Country Code'));
+    $account_country = new Country('code', $account->get('Account Country Code'));
 
 
+    $european_union_2alpha = array(
+        'NL',
+        'BE',
+        'GB',
+        'BG',
+        'ES',
+        'IE',
+        'IT',
+        'AT',
+        'GR',
+        'CY',
+        'LV',
+        'LT',
+        'LU',
+        'MT',
+        'PT',
+        'PL',
+        'FR',
+        'RO',
+        'SE',
+        'DE',
+        'SK',
+        'SI',
+        'FI',
+        'DK',
+        'CZ',
+        'HU',
+        'EE'
+    );
 
-    $european_union_2alpha=array('NL', 'BE', 'GB', 'BG', 'ES', 'IE', 'IT', 'AT', 'GR', 'CY', 'LV', 'LT', 'LU', 'MT', 'PT', 'PL', 'FR', 'RO', 'SE', 'DE', 'SK', 'SI', 'FI', 'DK', 'CZ', 'HU', 'EE');
+
+    $european_union_2alpha = "'".implode("','", $european_union_2alpha)."'";
 
 
+    $european_union_2alpha = preg_replace('/,?\''.$account_country->get('Country 2 Alpha Code').'\'/', '', $european_union_2alpha);
 
-
-    $european_union_2alpha= "'" . implode("','", $european_union_2alpha) . "'";
-
-
-    $european_union_2alpha=preg_replace('/,?\''.$account_country->get('Country 2 Alpha Code').'\'/','',$european_union_2alpha);
-
-    $european_union_2alpha=preg_replace('/^,/','',$european_union_2alpha);
-
+    $european_union_2alpha = preg_replace('/^,/', '', $european_union_2alpha);
 
 
     $where = ' where `Invoice Address Country 2 Alpha Code` in ('.$european_union_2alpha.')';
@@ -547,8 +569,9 @@ function ec_sales_list_totals($db, $user, $account) {
         include_once 'utils/date_functions.php';
 
 
-        list($db_interval, $from, $to, $from_date_1yb, $to_1yb)
-            = calculate_interval_dates(
+        list(
+            $db_interval, $from, $to, $from_date_1yb, $to_1yb
+            ) = calculate_interval_dates(
             $db, $parameters['period'], $parameters['from'], $parameters['to']
         );
 
@@ -560,8 +583,6 @@ function ec_sales_list_totals($db, $user, $account) {
 
 
     }
-
-
 
 
     if (isset($parameters['elements'])) {
@@ -647,7 +668,6 @@ function ec_sales_list_totals($db, $user, $account) {
     }
 
 
-
     $sql = "select 
 sum(if(`Invoice Type`='Invoice',1,0)) as invoices,
  sum(if(`Invoice Type`!='Invoice',1,0)) as refunds,
@@ -663,12 +683,12 @@ from `Invoice Dimension`
 
     if ($result = $db->query($sql)) {
         if ($row = $result->fetch()) {
-            $sum_customers   = $row['customers'];
-            $sum_net   = $row['net'];
-            $sum_tax   = $row['tax'];
-            $sum_total   =$row['total'];
-            $sum_invoices = $row['invoices'];
-            $sum_refunds =$row['refunds'];
+            $sum_customers = $row['customers'];
+            $sum_net       = $row['net'];
+            $sum_tax       = $row['tax'];
+            $sum_total     = $row['total'];
+            $sum_invoices  = $row['invoices'];
+            $sum_refunds   = $row['refunds'];
 
         }
     } else {
@@ -680,11 +700,11 @@ from `Invoice Dimension`
     $totals   = array(
         'total_amount_net'   => money($sum_net, $account->get('Account Currency')),
         'total_amount_tax'   => money($sum_tax, $account->get('Account Currency')),
-        'total_amount_total'   => money($sum_total, $account->get('Account Currency')),
-        'total_customers'   => number($sum_customers),
+        'total_amount_total' => money($sum_total, $account->get('Account Currency')),
+        'total_customers'    => number($sum_customers),
 
-        'total_invoices'   => number($sum_invoices),
-        'total_refunds'   => number($sum_refunds),
+        'total_invoices' => number($sum_invoices),
+        'total_refunds'  => number($sum_refunds),
 
     );
     $response = array(
@@ -763,16 +783,15 @@ function intrastat_totals($db, $user, $account) {
 
         $where .= $where_interval_dn['mysql'];
 
-      //  $where .= " and ( (  I.`Invoice Key`>0  ".$where_interval_invoice['mysql']." ) or ( I.`Invoice Key` is NULL  ".$where_interval_dn['mysql']." ))  ";
+        //  $where .= " and ( (  I.`Invoice Key`>0  ".$where_interval_invoice['mysql']." ) or ( I.`Invoice Key` is NULL  ".$where_interval_dn['mysql']." ))  ";
 
 
     }
 
 
-    $parameters['invoices_vat']=(int)$parameters['invoices_vat'];
-    $parameters['invoices_no_vat']=(int)$parameters['invoices_no_vat'];
-    $parameters['invoices_null']=(int)$parameters['invoices_null'];
-
+    $parameters['invoices_vat']    = (int)$parameters['invoices_vat'];
+    $parameters['invoices_no_vat'] = (int)$parameters['invoices_no_vat'];
+    $parameters['invoices_null']   = (int)$parameters['invoices_null'];
 
 
     if ($parameters['invoices_vat'] == 1 and $parameters['invoices_no_vat'] == 1 and $parameters['invoices_null'] == 1) {
@@ -800,7 +819,7 @@ function intrastat_totals($db, $user, $account) {
 
     }
 
-    if($account->get('Account Code')=='AWEU'){
+    if ($account->get('Account Code') == 'AWEU') {
         $sql = "select 
 count(distinct OTF.`Product ID`) as products,
 count(distinct OTF.`Order Key`) as orders,
@@ -814,7 +833,7 @@ sum(`Order Transaction Amount`*`Invoice Currency Exchange Rate`) as amount,
    $where
   ";
 
-    }else{
+    } else {
         $sql = "select 
 count(distinct OTF.`Product ID`) as products,
 count(distinct OTF.`Order Key`) as orders,
@@ -875,10 +894,13 @@ function intrastat_orders_totals($db, $user, $account) {
 
 
     if ($parameters['tariff_code'] == 'missing') {
-        $where = sprintf(' where `Delivery Note Address Country 2 Alpha Code`=%s and (`Product Tariff Code` is null or `Product Tariff Code`="")  and DN.`Delivery Note Key` is not null and `Delivery Note State`="Dispatched" ', prepare_mysql($parameters['country_code']));
+        $where =
+            sprintf(' where `Delivery Note Address Country 2 Alpha Code`=%s and (`Product Tariff Code` is null or `Product Tariff Code`="")  and DN.`Delivery Note Key` is not null and `Delivery Note State`="Dispatched" ', prepare_mysql($parameters['country_code']));
 
     } else {
-        $where = sprintf(' where `Delivery Note Address Country 2 Alpha Code`=%s and `Product Tariff Code` like "%s%%"  and DN.`Delivery Note Key` is not null and `Delivery Note State`="Dispatched" ', prepare_mysql($parameters['country_code']), addslashes($parameters['tariff_code']));
+        $where = sprintf(
+            ' where `Delivery Note Address Country 2 Alpha Code`=%s and `Product Tariff Code` like "%s%%"  and DN.`Delivery Note Key` is not null and `Delivery Note State`="Dispatched" ', prepare_mysql($parameters['country_code']), addslashes($parameters['tariff_code'])
+        );
 
     }
 
@@ -898,10 +920,10 @@ function intrastat_orders_totals($db, $user, $account) {
 
         $where_interval_invoice = prepare_mysql_dates($from, $to, 'I.`Invoice Date`');
         $where_interval_dn      = prepare_mysql_dates($from, $to, '`Delivery Note Date`');
-        $where .= $where_interval_dn['mysql'];
+        $where                  .= $where_interval_dn['mysql'];
 
 
-      //  $where .= " and ( (  I.`Invoice Key`>0  ".$where_interval_invoice['mysql']." ) or ( I.`Invoice Key` is NULL  ".$where_interval_dn['mysql']." ))  ";
+        //  $where .= " and ( (  I.`Invoice Key`>0  ".$where_interval_invoice['mysql']." ) or ( I.`Invoice Key` is NULL  ".$where_interval_dn['mysql']." ))  ";
 
 
     }
@@ -933,7 +955,12 @@ function intrastat_orders_totals($db, $user, $account) {
     }
 
 
-    $sql = "select 
+
+
+    if ($account->get('Account Code') == 'AWEU') {
+
+
+        $sql = "select 
 count(distinct OTF.`Product ID`) as products,
 
 sum(`Order Transaction Amount`*`Invoice Currency Exchange Rate`) as amount,
@@ -944,6 +971,28 @@ sum(`Order Transaction Amount`*`Invoice Currency Exchange Rate`) as amount,
  
    $where
   ";
+
+
+    } else {
+
+        $sql = "select 
+count(distinct OTF.`Product ID`) as products,
+
+	sum(`Invoice Currency Exchange Rate`*(`Invoice Transaction Gross Amount`-`Invoice Transaction Total Discount Amount`+`Invoice Transaction Shipping Amount`+`Invoice Transaction Charges Amount`+`Invoice Transaction Insurance Amount`)) as amount, 
+	sum(`Delivery Note Quantity`*`Product Unit Weight`*`Product Units Per Case`) as weight 
+	
+ from  `Order Transaction Fact` OTF left join `Product Dimension` P on (P.`Product ID`=OTF.`Product ID`) left join `Delivery Note Dimension` DN  on (OTF.`Delivery Note Key`=DN.`Delivery Note Key`)  left join `Invoice Dimension` I  on (OTF.`Invoice Key`=I.`Invoice Key`) 
+ 
+ 
+   $where
+  ";
+
+
+
+
+
+    }
+
 
     if ($result = $db->query($sql)) {
         if ($row = $result->fetch()) {
@@ -975,29 +1024,27 @@ sum(`Order Transaction Amount`*`Invoice Currency Exchange Rate`) as amount,
 }
 
 
-
 function intrastat_products_totals($db, $user, $account) {
 
     // print_r($_SESSION['table_state']['intrastat']);
 
-    $sum_amount   = 0;
-    $sum_weight   = 0;
+    $sum_amount = 0;
+    $sum_weight = 0;
     $sum_orders = 0;
 
     $parameters = $_SESSION['table_state']['intrastat_products'];
 
 
+    if ($parameters['tariff_code'] == 'missing') {
+        $where =
+            sprintf(' where `Delivery Note Address Country 2 Alpha Code`=%s and (`Product Tariff Code` is null or `Product Tariff Code`="")  and DN.`Delivery Note Key` is not null and `Delivery Note State`="Dispatched" ', prepare_mysql($parameters['country_code']));
 
-
-    if($parameters['tariff_code']=='missing'){
-        $where = sprintf(' where `Delivery Note Address Country 2 Alpha Code`=%s and (`Product Tariff Code` is null or `Product Tariff Code`="")  and DN.`Delivery Note Key` is not null and `Delivery Note State`="Dispatched" ',prepare_mysql($parameters['country_code']));
-
-    }else{
-        $where = sprintf(' where `Delivery Note Address Country 2 Alpha Code`=%s and `Product Tariff Code` like "%s%%"  and DN.`Delivery Note Key` is not null and `Delivery Note State`="Dispatched" ',prepare_mysql($parameters['country_code']),addslashes($parameters['tariff_code']));
+    } else {
+        $where = sprintf(
+            ' where `Delivery Note Address Country 2 Alpha Code`=%s and `Product Tariff Code` like "%s%%"  and DN.`Delivery Note Key` is not null and `Delivery Note State`="Dispatched" ', prepare_mysql($parameters['country_code']), addslashes($parameters['tariff_code'])
+        );
 
     }
-
-
 
 
     if (isset($parameters['parent_period'])) {
@@ -1018,7 +1065,7 @@ function intrastat_products_totals($db, $user, $account) {
 
         $where .= $where_interval_dn['mysql'];
 
-      //  $where .= " and ( (  I.`Invoice Key`>0  ".$where_interval_invoice['mysql']." ) or ( I.`Invoice Key` is NULL  ".$where_interval_dn['mysql']." ))  ";
+        //  $where .= " and ( (  I.`Invoice Key`>0  ".$where_interval_invoice['mysql']." ) or ( I.`Invoice Key` is NULL  ".$where_interval_dn['mysql']." ))  ";
 
 
     }
@@ -1050,7 +1097,14 @@ function intrastat_products_totals($db, $user, $account) {
     }
 
 
-    $sql = "select 
+
+
+
+
+
+    if ($account->get('Account Code') == 'AWEU') {
+
+        $sql = "select 
 count(distinct OTF.`Order Key`) as orders,
 
 sum(`Order Transaction Amount`*`Invoice Currency Exchange Rate`) as amount,
@@ -1062,10 +1116,32 @@ sum(`Order Transaction Amount`*`Invoice Currency Exchange Rate`) as amount,
    $where
   ";
 
+    } else {
+
+
+
+        $sql = "select 
+count(distinct OTF.`Order Key`) as orders,
+
+	sum(`Invoice Currency Exchange Rate`*(`Invoice Transaction Gross Amount`-`Invoice Transaction Total Discount Amount`+`Invoice Transaction Shipping Amount`+`Invoice Transaction Charges Amount`+`Invoice Transaction Insurance Amount`)) as amount, 
+	sum(`Delivery Note Quantity`*`Product Unit Weight`*`Product Units Per Case`) as weight 
+	
+ from  `Order Transaction Fact` OTF left join `Product Dimension` P on (P.`Product ID`=OTF.`Product ID`) left join `Delivery Note Dimension` DN  on (OTF.`Delivery Note Key`=DN.`Delivery Note Key`)  left join `Invoice Dimension` I  on (OTF.`Invoice Key`=I.`Invoice Key`) 
+ 
+ 
+   $where
+  ";
+
+
+
+    }
+
+
+
     if ($result = $db->query($sql)) {
         if ($row = $result->fetch()) {
-            $sum_amount   = $row['amount'];
-            $sum_weight   = $row['weight'];
+            $sum_amount = $row['amount'];
+            $sum_weight = $row['weight'];
             $sum_orders = $row['orders'];
 
         }
@@ -1076,8 +1152,8 @@ sum(`Order Transaction Amount`*`Invoice Currency Exchange Rate`) as amount,
     }
 
     $totals   = array(
-        'intrastat_products_total_amount'   => money($sum_amount, $account->get('Account Currency')),
-        'intrastat_products_total_weight'   => weight($sum_weight, 'Kg', 0, false, true),
+        'intrastat_products_total_amount' => money($sum_amount, $account->get('Account Currency')),
+        'intrastat_products_total_weight' => weight($sum_weight, 'Kg', 0, false, true),
         'intrastat_products_total_orders' => number($sum_orders),
 
     );
@@ -1145,7 +1221,6 @@ function intrastat($_data, $db, $user, $account) {
     $rtext = sprintf(
             ngettext('%s record', '%s records', $total_records), number($total_records)
         ).' <span class="discreet">'.$rtext.'</span>';
-
 
 
     //$rtext=preg_replace('/\(|\)/', '', $rtext);
