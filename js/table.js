@@ -363,7 +363,6 @@ $(document).on("click",'#elements .element', function(e){
 function change_table_element(event, item) {
 
 
-console.log(event)
 
     if (event=='double_click') {
 
@@ -409,6 +408,9 @@ console.log(event)
     rows.fetch({
         reset: true
     });
+
+
+    post_table_rendered()
 
 }
 
@@ -745,7 +747,7 @@ function edit_category_subject(element) {
 
 }
 
-function post_table_rendered(otable) {
+function post_table_rendered() {
 
 
     switch (state.tab){
