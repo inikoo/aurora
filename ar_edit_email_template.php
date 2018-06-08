@@ -427,7 +427,7 @@ function save_email_template_subject($data, $editor, $smarty, $db) {
         );
 
 
-        $email_template->update($update_data, 'no_history');
+        $email_template->fast_update($update_data);
     }
 
 

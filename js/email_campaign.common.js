@@ -484,8 +484,24 @@ function autosave_email_template(jsonFile) {
 
 }
 
+$(document).on('click', "#email_template_text_button,#email_template_html_button", function() {
+    if($('#email_template_html_container').hasClass('hide')){
+        $('#email_template_html_container').removeClass('hide')
+        $('#email_template_text_container').addClass('hide')
+        $("#email_template_text_button").removeClass('hide')
+        $("#email_template_html_button").addClass('hide')
 
-$(".template_name").on('input propertychange', function(){
+    }else{
+        $('#email_template_html_container').addClass('hide')
+        $('#email_template_text_container').removeClass('hide')
+        $("#email_template_text_button").addClass('hide')
+        $("#email_template_html_button").removeClass('hide')
+
+    }
+});
+
+
+$(document).on('input propertychange', ".template_name", function() {
 
     if($(this).val()!=''){
 
@@ -494,19 +510,17 @@ $(".template_name").on('input propertychange', function(){
     }else{
         $(this).next('i').removeClass('changed valid')
     }
+})
 
-});
 
-$(".save_template").on('click', function(){
-
+$(document).on('input propertychange', ".save_template", function() {
     if($(this).hasClass('valid')){
         save_as_another_template($(this).prev('input'))
     }
+})
 
-});
 
-
-$("#email_template_subject").on("input propertychange", function (evt) {
+$(document).on('input propertychange', "#email_template_subject", function() {
 
 
 
@@ -519,7 +533,7 @@ $("#email_template_subject").on("input propertychange", function (evt) {
             var ajaxData = new FormData();
 
             ajaxData.append("tipo", 'save_email_template_subject')
-            ajaxData.append("email_template_key", $('#email_template_data').data('email_template_data'))
+            ajaxData.append("email_template_key", $('#email_template_data').data('email_template_key'))
             ajaxData.append("subject",$("#email_template_subject").val())
 
 
@@ -556,9 +570,9 @@ $("#email_template_subject").on("input propertychange", function (evt) {
         }, 200));
     });
 
-$("#email_template_text").on("input propertychange", function (evt) {
 
 
+    $(document).on('input propertychange', "#email_template_text", function() {
 
 
 
@@ -578,7 +592,7 @@ $("#email_template_text").on("input propertychange", function (evt) {
             var ajaxData = new FormData();
 
             ajaxData.append("tipo", 'save_email_template_text')
-            ajaxData.append("email_template_key", $('#email_template_data').data('email_template_data'))
+            ajaxData.append("email_template_key", $('#email_template_data').data('email_template_key'))
             ajaxData.append("text",$("#email_template_text").val())
 
 
@@ -623,7 +637,7 @@ function update_email_template_type(value){
     var ajaxData = new FormData();
 
     ajaxData.append("tipo", 'set_email_template_type')
-    ajaxData.append("email_template_key", $('#email_template_data').data('email_template_data'))
+    ajaxData.append("email_template_key", $('#email_template_data').data('email_template_key'))
     ajaxData.append("value",value)
 
 
