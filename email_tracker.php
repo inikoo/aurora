@@ -75,6 +75,9 @@ if ($validator->isValid($sns)) {
 
                 $date = gmdate('Y-m-d H:i:s', strtotime($message['mail']['timestamp']));
 
+
+                //'Sent','Rejected by SES','Send','Read','Hard Bounce','Soft Bounce','Spam','Delivered','Opened','Clicked','Send to SES Error'
+
                 switch ($message['eventType']) {
                     case 'Send':
                         $event_type = 'Sent';
@@ -117,15 +120,19 @@ if ($validator->isValid($sns)) {
                 }
 
 
-                $sql = sprintf(
-                    'insert into `Email Tracking Event Dimension`  (`Email Tracking Event Tracking Key`,`Email Tracking Event Type`,`Email Tracking Event Date`,`Email Tracking Event Data`) 
+               
+                    $sql = sprintf(
+                        'insert into `Email Tracking Event Dimension`  (`Email Tracking Event Tracking Key`,`Email Tracking Event Type`,`Email Tracking Event Date`,`Email Tracking Event Data`) 
                   values (%d,%s,%s,%s)', $row['Email Tracking Key'], prepare_mysql($event_type), prepare_mysql($date), prepare_mysql(json_encode($event_data))
 
-                );
-                $db->exec($sql);
+                    );
+                    $db->exec($sql);
 
-                $email_tracking=get_object('email_tracking',$row['Email Tracking Key']);
-                $email_tracking->update_state($event_type);
+                    $email_tracking=get_object('email_tracking',$row['Email Tracking Key']);
+                    $email_tracking->update_state($event_type);
+
+
+
 
 
                 //$_sql = sprintf('insert into atest  (`date`,`headers`,`request`) values (NOW(),"%s","%s")  ', $sql, 'xx');
