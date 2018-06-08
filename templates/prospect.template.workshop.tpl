@@ -122,8 +122,8 @@
         name: '{t}Contact name, Company{/t}',
         value: '[Name,Company]'
     }, {
-        name: '{t}Customer name{/t}',
-        value: '[Customer Name]'
+        name: '{t}Prospect name{/t}',
+        value: '[Prospect Name]'
     },{
         name: '{t}Contact name{/t}',
         value: '[Name]'
