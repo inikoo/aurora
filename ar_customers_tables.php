@@ -77,6 +77,9 @@ switch ($tipo) {
     case 'newsletter_mail_list':
         newsletter_mail_list(get_table_parameters(), $db, $user);
         break;
+    case 'prospects.email_templates':
+        prospects_email_templates(get_table_parameters(), $db, $user);
+        break;
     default:
         $response = array(
             'state' => 405,
@@ -1146,10 +1149,8 @@ function prospects($_data, $db, $user) {
 
                 'contact_since' => $contact_since,
 
-                'status' => $status,
-                'address'          => $data['Prospect Contact Address Formatted']
-
-
+                'status'  => $status,
+                'address' => $data['Prospect Contact Address Formatted']
 
 
             );
@@ -1175,5 +1176,78 @@ function prospects($_data, $db, $user) {
     );
     echo json_encode($response);
 }
+
+
+function prospects_email_templates($_data, $db, $user) {
+
+
+    include_once 'utils/natural_language.php';
+
+    $rtext_label = 'email template';
+    include_once 'prepare_table/init.php';
+
+
+    $sql = "select $fields from $table $where $wheref order by $order $order_direction limit $start_from,$number_results";
+
+
+    //  print $sql;
+
+    $adata = array();
+
+
+    if ($result = $db->query($sql)) {
+
+        foreach ($result as $data) {
+
+
+            if ($data['Staff Alias'] != '') {
+                $author = sprintf('<span>%s</span>', $data['Staff Alias']);
+            } else {
+                $author = sprintf('<span class="discreet">%s</span>', _('Anonymous'));
+            }
+
+            switch ($data['Email Template State']){
+                case 'Active':
+                    $state='<i class="fa success fa-play fa-fw"></i> '.('Active');
+                    break;
+                case 'Suspended':
+                    $state='<i class="fa error fa-stop fa-fw"></i> '._('Suspended');
+                    break;
+            }
+
+            $adata[] = array(
+                'id'     => (integer)$data['Email Template Key'],
+                'author' => $author,
+                'state' => $state,
+                'subject' => $data['Email Template Subject'],
+
+                'name'   => sprintf('<span class="link" onclick="change_view(\'prospects/%d/template/%d\')">%s</span>',$_data['parameters']['store_key'],$data['Email Template Key'],$data['Email Template Name']),
+                'date'   => strftime("%a %e %b %Y", strtotime($data['Email Template Created'].' +0:00')),
+
+            );
+
+
+        }
+
+    } else {
+        print_r($error_info = $db->errorInfo());
+        exit;
+    }
+
+
+    $response = array(
+        'resultset' => array(
+            'state'         => 200,
+            'data'          => $adata,
+            'rtext'         => $rtext,
+            'sort_key'      => $_order,
+            'sort_dir'      => $_dir,
+            'total_records' => $total
+
+        )
+    );
+    echo json_encode($response);
+}
+
 
 ?>

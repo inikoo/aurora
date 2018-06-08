@@ -343,7 +343,7 @@ class Prospect extends Subject {
 
         switch ($field) {
             case 'Send Invitation':
-                $this->send_invitation();
+                $this->send_invitation($value);
                 break;
             case 'Prospect Status':
 
@@ -507,7 +507,7 @@ class Prospect extends Subject {
         }
     }
 
-    function send_invitation() {
+    function send_invitation($email_template_key) {
 
 
         include_once 'class.EmailCampaignType.php';
@@ -520,14 +520,9 @@ class Prospect extends Subject {
 
             return;
         }
-        if (!$email_campaign_type->get('Email Campaign Type Email Template Key')) {
-            $this->error = true;
-            $this->msg   = _('Invitation email template not configured').'<div class="button" style="border:1px solid #ccc;padding:10px;margin-top:20px" onclick="swal.close();change_view(\'prospects/'.$this->get('Store Key').'\',{ tab:\'prospects.email_template\'})">'._('Configure it here').'</div>';
 
-            return;
-        }
 
-        $email_template = get_object('Email_Template', $email_campaign_type->get('Email Campaign Type Email Template Key'));
+        $email_template = get_object('Email_Template', $email_template_key);
         if (!$email_template->id) {
             $this->error = true;
             $this->msg   = 'Email_Template not found';
@@ -637,8 +632,7 @@ class Prospect extends Subject {
 
             $history_data = array(
                 'History Abstract' => '<i class="fal fa-paper-plane fa-fw"></i> '._('Invitation email send').' '.sprintf(
-                        '<span class="link" onclick="change_view(\'prospects/%d/%d/email/%d\')" >%s</span>',
-                        $this->get('Store Key'), $this->id, $email_tracking_key, $published_email_template->get('Published Email Template Subject')
+                        '<span class="link" onclick="change_view(\'prospects/%d/%d/email/%d\')" >%s</span>', $this->get('Store Key'), $this->id, $email_tracking_key, $published_email_template->get('Published Email Template Subject')
 
 
                     ),
@@ -775,6 +769,54 @@ class Prospect extends Subject {
                             'fail_date_tr'
                         )
                     );
+
+                    if ($this->get('Prospect Spam') == 'No') {
+                        $this->update_metadata['show'][] = 'activate_prospect_field_operation_tr';
+                    } else {
+                        $this->update_metadata['hide'][] = 'activate_prospect_field_operation_tr';
+
+                    }
+
+                }
+                break;
+            case 'Contacted':
+            case 'NoContacted':
+
+                if ($this->data['Prospect Status'] == 'NotInterested') {
+
+                    $this->fast_update(
+                        array(
+                            'Prospect Status'    => $value,
+                            'Prospect Lost Date' => ''
+                        )
+                    );
+
+
+                    $history_data = array(
+                        'History Abstract' => _('Not interested status removed'),
+                        'History Details'  => '',
+                        'Action'           => 'edited'
+                    );
+
+                    $this->add_subject_history(
+                        $history_data, true, 'No', 'Changes', $this->get_object_name(), $this->id
+                    );
+
+
+                    $this->update_metadata = array(
+                        'class_html' => array(
+                            'Status_Label'   => $this->get('Status Label'),
+                            'Contacted_Date' => $this->get('First Contacted Date'),
+                            'Lost_Date'      => $this->get('Lost Date'),
+
+                        ),
+                        'show'       => array('not_interested_button'),
+                        'hide'       => array(
+                            'contacted_date_tr',
+                            'fail_date_tr',
+                            'activate_prospect_field_operation_tr'
+                        )
+                    );
                 }
 
 
@@ -909,6 +951,66 @@ class Prospect extends Subject {
         $this->deleted = true;
     }
 
+    function activate() {
+
+        if ($this->get('Prospect Status') == 'NotInterested' and $this->get('Prospect Spam') == 'No') {
+            $value = 'NoContacted';
+            $sql   = sprintf(
+                "select count(*) as num from `Prospect History Bridge` where `Prospect Key`=%d and `Type` in ('Emails','Calls','Posts') ", $this->id
+            );
+            if ($result = $this->db->query($sql)) {
+                if ($row = $result->fetch()) {
+                    if ($row['num'] > 0) {
+                        $value = 'Contacted';
+                    }
+                }
+            } else {
+                print_r($error_info = $this->db->errorInfo());
+                print "$sql\n";
+                exit;
+            }
+
+            $this->update_status($value);
+
+        }
+    }
+
+
+    function get_templates($scope = 'keys', $options = '') {
+
+        $templates = array();
+
+        include_once 'class.EmailCampaignType.php';
+        $email_campaign_type = new EmailCampaignType('code_store', 'Invite Mailshot', $this->get('Store Key'));
+
+        if ($options == 'Active') {
+            $where = ' and `Email Template State`="Active" ';
+        } else {
+            $where = '';
+        }
+
+        $sql = sprintf('select `Email Template Key` from `Email Template Dimension` where  `Email Template Scope`="EmailCampaignType" and `Email Template Scope Key`=%d %s order by `Email Template Name`', $email_campaign_type->id, $where);
+
+        if ($result = $this->db->query($sql)) {
+            foreach ($result as $row) {
+                switch ($scope) {
+                    case 'keys':
+                        $templates[] = $row['Email Template Key'];
+                        break;
+                    case 'objects':
+                        $templates[] = get_object('EmailTemplate', $row['Email Template Key']);
+                        break;
+
+                }
+            }
+        } else {
+            print_r($error_info = $this->db->errorInfo());
+            print "$sql\n";
+            exit;
+        }
+
+        return $templates;
+    }
 
 }
 

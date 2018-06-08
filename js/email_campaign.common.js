@@ -370,71 +370,328 @@ function save_email_campaign_operation(element) {
 
 
 
-
-function picked_offline_items_qty_change(element) {
-
-
-    var input = $(element).closest('span').find('input')
-    var icon = $(element)
-
-    if ($(element).hasClass('fa-plus')) {
+function open_send_test_email_dialog(htmlFile){
 
 
-        var _icon = 'fa-plus'
-
-        if (isNaN(input.val()) || input.val() == '') {
-            var qty = 1
-        } else {
-            qty = parseFloat(input.val()) + 1
-        }
-
-
-
-
-
-
-    } else if ($(element).hasClass('fa-minus')) {
-
-        if (isNaN(input.val()) || input.val() == '' || input.val() == 0) {
-            var qty = 0
-        } else {
-            qty = parseFloat(input.val()) - 1
-        }
-
-
-        var _icon = 'fa-minus'
-
-    } else {
-        qty = parseFloat(input.val())
-
-        var _icon = 'fa-cloud'
-
-    }
-
-    if(qty>input.attr('max')){
-
-        qty=input.attr('max')
+    if($('#email_template_text_controls').hasClass('hide')){
+        $('#send_email_dialog').removeClass('hide').css({ top:'170px',left:'210px' })
+    }else{
+        $('#send_email_dialog').removeClass('hide').css({ top:'64px',left:'160px' })
     }
 
 
-    input.val(qty).addClass('discreet')
+
+    $('#send_email_to').data('html',htmlFile)
 
 
-    console.log(_icon)
-
-    $(element).addClass(_icon)
-
-    if (qty == '') qty = 0;
+    $('#send_email_ok').addClass('hide')
 
 
-    var settings = $(element).closest('span').data('settings')
-
-
-    var table_metadata = JSON.parse(atob($('#table').data("metadata")))
+}
 
 
 
 
+
+function send_test_email(){
+
+    $('#send_email').addClass('fa-spinner fa-spin').removeClass('valid changed fa-paper-plane')
+
+
+    var ajaxData = new FormData();
+
+    ajaxData.append("tipo", 'send_test_email')
+    ajaxData.append("email_template_key", '{$email_template_key}')
+    ajaxData.append("html", $('#send_email_to').data('html'))
+    ajaxData.append("email",$('#send_email_to').val())
+
+
+
+    $.ajax({
+        url: "/ar_edit_email_template.php", type: 'POST', data: ajaxData, dataType: 'json', cache: false, contentType: false, processData: false,
+        complete: function () {
+        }, success: function (data) {
+
+            if (data.state == '200') {
+
+                $('#send_email').removeClass('fa-spinner fa-spin').addClass('valid changed fa-paper-plane')
+                $('#send_email_dialog').addClass('hide')
+
+
+
+                if($('#email_template_text_controls').hasClass('hide')){
+                    $('#send_email_ok').removeClass('hide').css({ top:'170px',left:'210px' })
+                }else{
+                    $('#send_email_ok').removeClass('hide').css({ top:'64px',left:'160px' })
+                }
+
+
+
+
+            } else if (data.state == '400') {
+                swal("{t}Error{/t}", data.msg, "error");
+
+            }
+
+
+
+        }, error: function () {
+
+        }
+    });
+
+}
+
+
+function autosave_email_template(jsonFile) {
+
+
+
+    var ajaxData = new FormData();
+
+    ajaxData.append("tipo", 'save_email_template_editing_json')
+    ajaxData.append("email_template_key", '{$email_template_key}')
+    ajaxData.append("json",jsonFile)
+
+
+
+    $.ajax({
+        url: "/ar_edit_email_template.php", type: 'POST', data: ajaxData, dataType: 'json', cache: false, contentType: false, processData: false,
+        complete: function () {
+        }, success: function (data) {
+
+            if (data.state == '200') {
+
+
+                $('#email_template_info').html(data.email_template_info)
+                if(data.published){
+                    $('#publish_email_template_from_text_controls').addClass('super_discreet').removeClass('button')
+                }else{
+                    $('#publish_email_template_from_text_controls').removeClass('super_discreet').addClass('button')
+
+                }
+
+            } else if (data.state == '400') {
+
+            }
+
+
+
+        }, error: function () {
+
+        }
+    });
+
+}
+
+
+$(".template_name").on('input propertychange', function(){
+
+    if($(this).val()!=''){
+
+        $(this).next('i').addClass('changed valid')
+
+    }else{
+        $(this).next('i').removeClass('changed valid')
+    }
+
+});
+
+$(".save_template").on('click', function(){
+
+    if($(this).hasClass('valid')){
+        save_as_another_template($(this).prev('input'))
+    }
+
+});
+
+
+$("#email_template_subject").on("input propertychange", function (evt) {
+
+
+
+        if (window.event && event.type == "propertychange" && event.propertyName != "value")
+            return;
+
+        window.clearTimeout($(this).data("timeout"));
+        $(this).data("timeout", setTimeout(function () {
+
+            var ajaxData = new FormData();
+
+            ajaxData.append("tipo", 'save_email_template_subject')
+            ajaxData.append("email_template_key", $('#email_template_data').data('email_template_data'))
+            ajaxData.append("subject",$("#email_template_subject").val())
+
+
+
+            $.ajax({
+                url: "/ar_edit_email_template.php", type: 'POST', data: ajaxData, dataType: 'json', cache: false, contentType: false, processData: false,
+                complete: function () {
+                }, success: function (data) {
+
+                    if (data.state == '200') {
+
+
+                        $('#email_template_info').html(data.email_template_info)
+                        if(data.published){
+                            $('#publish_email_template_from_text_controls').addClass('super_discreet').removeClass('button')
+                        }else{
+                            $('#publish_email_template_from_text_controls').removeClass('super_discreet').addClass('button')
+
+                        }
+
+
+                    } else if (data.state == '400') {
+
+                    }
+
+
+
+                }, error: function () {
+
+                }
+            });
+
+
+        }, 200));
+    });
+
+$("#email_template_text").on("input propertychange", function (evt) {
+
+
+
+
+
+
+        if (window.event && event.type == "propertychange" && event.propertyName != "value")
+            return;
+
+        window.clearTimeout($(this).data("timeout"));
+        $(this).data("timeout", setTimeout(function () {
+
+            if($("#email_template_text").val()==''){
+                $('#email_template_text_button').addClass('error very_discreet')
+            }else{
+                $('#email_template_text_button').removeClass('error very_discreet')
+            }
+
+            var ajaxData = new FormData();
+
+            ajaxData.append("tipo", 'save_email_template_text')
+            ajaxData.append("email_template_key", $('#email_template_data').data('email_template_data'))
+            ajaxData.append("text",$("#email_template_text").val())
+
+
+
+
+
+            $.ajax({
+                url: "/ar_edit_email_template.php", type: 'POST', data: ajaxData, dataType: 'json', cache: false, contentType: false, processData: false,
+                complete: function () {
+                }, success: function (data) {
+
+                    if (data.state == '200') {
+
+
+                        $('#email_template_info').html(data.email_template_info)
+                        if(data.published){
+                            $('#publish_email_template_from_text_controls').addClass('super_discreet').removeClass('button')
+                        }else{
+                            $('#publish_email_template_from_text_controls').removeClass('super_discreet').addClass('button')
+
+                        }
+
+
+
+                    } else if (data.state == '400') {
+
+                    }
+
+
+
+                }, error: function () {
+
+                }
+            });
+
+
+        }, 200));
+    });
+
+function update_email_template_type(value){
+
+    var ajaxData = new FormData();
+
+    ajaxData.append("tipo", 'set_email_template_type')
+    ajaxData.append("email_template_key", $('#email_template_data').data('email_template_data'))
+    ajaxData.append("value",value)
+
+
+
+
+
+    $.ajax({
+        url: "/ar_edit_email_template.php", type: 'POST', data: ajaxData, dataType: 'json', cache: false, contentType: false, processData: false,
+        complete: function () {
+        }, success: function (data) {
+
+            if (data.state == '200') {
+
+
+                $('.popup_dialog').addClass('hide');
+
+                if(value=='HTML'){
+
+                    if(data.has_html_json){
+                        $('#email_template_add_html_section').addClass('hide')
+                        $('#email_template_text_container').addClass('hide')
+                        $('#email_template_text_controls').addClass('hide')
+
+                        $('#email_template_set_as_text').removeClass('hide')
+                        $('#email_template_html_container').removeClass('hide')
+                        $('#change_template').removeClass('hide')
+
+
+
+                        $('#email_template_text_button').removeClass('hide')
+                        $('#email_template_html_button').addClass('hide')
+
+                    }else{
+                        change_view(state.request + '{$email_template_redirect}')
+                    }
+
+
+
+
+
+
+
+                }else{
+                    $('#email_template_add_html_section').removeClass('hide')
+                    $('#email_template_text_container').removeClass('hide')
+                    $('#email_template_text_controls').removeClass('hide')
+
+                    $('#email_template_set_as_text').addClass('hide')
+                    $('#email_template_html_container').addClass('hide')
+                    $('#change_template').addClass('hide')
+
+                    $('#email_template_text_button').addClass('hide')
+                    $('#email_template_html_button').addClass('hide')
+
+
+                }
+
+
+            } else if (data.state == '400') {
+
+            }
+
+
+
+        }, error: function () {
+
+        }
+    });
 
 
 

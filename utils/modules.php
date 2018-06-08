@@ -330,8 +330,8 @@ $modules = array(
                      'prospects' => array(
                         'label' => _('Prospects')
                     ),
-                    'prospects.email_template'          => array(
-                        'label' => _('Email template')
+                    'prospects.email_templates'          => array(
+                        'label' => _('Email templates')
                     ),
 
                 )
@@ -667,6 +667,39 @@ $modules = array(
                     'customer.new' => array(
                         'label' => _(
                             'New customer'
+                        )
+                    ),
+
+                )
+
+            ),
+
+            'prospects.email_template' => array(
+                'type' => 'object',
+                 'tabs'           => array(
+                    'prospects.template.details'   => array(
+                        'label' => _('Data'),
+                        'icon'  => 'database'
+                    ),
+                    'prospects.template.workshop'  => array(
+                        'label' => _('Workshop'),
+                        'icon'  => 'wrench'
+                    ),
+
+
+                )
+
+                ),
+
+
+
+
+            'prospects.template.new' => array(
+                'type' => 'new_object',
+                'tabs' => array(
+                    'prospects.template.new' => array(
+                        'label' => _(
+                            'New invitation template'
                         )
                     ),
 

@@ -912,7 +912,7 @@ function server_validation(settings, parent, parent_key, object, key, field, val
 
 
 
-    // console.log(settings.setup)
+    console.log(settings)
     if (settings.parent != null) {
         parent = settings.parent;
     }
@@ -944,6 +944,12 @@ function server_validation(settings, parent, parent_key, object, key, field, val
 
         if (settings.actual_field != null) {
             request += '&actual_field=' + settings.actual_field;
+        }
+
+
+        console.log(settings.metadata)
+        if (settings.metadata != null) {
+            request += '&metadata=' + JSON.stringify(settings.metadata);
         }
 
 

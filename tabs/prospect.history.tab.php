@@ -79,6 +79,20 @@ if (in_array(
 $smarty->assign('table_buttons', $table_buttons);
 $smarty->assign('prospect', $state['_object']);
 
+$templates=$state['_object']->get_templates('objects','Active');
+
+$smarty->assign('templates', $templates);
+$smarty->assign('number_templates', count($templates));
+
+foreach($templates as $template){
+    $smarty->assign('template_key', $template->id);
+    $smarty->assign('template_name', $template->get('Email Template Name'));
+
+    break;
+
+}
+
+
 
 $smarty->assign(
     'history_notes_data', array(

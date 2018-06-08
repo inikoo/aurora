@@ -44,7 +44,14 @@ $_order = $order;
 $_dir   = $order_direction;
 
 
-$order = '`Date`';
+
+if ($order == 'stock_value') {
+    $order = 'stock_value';
+}else{
+    $order = '`Date`';
+
+}
+
 
 
 $sql_totals
