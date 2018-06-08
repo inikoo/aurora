@@ -21,7 +21,6 @@
 *}
 
 
-
 <span class="hide" id="email_template_data"  data-email_template_key="{$email_template->id}"  ></span>
 
 <div style="position: relative">
@@ -180,24 +179,6 @@
 
 
 
-    $("#email_template_text_button,#email_template_html_button").on('click', function(){
-
-
-        if($('#email_template_html_container').hasClass('hide')){
-            $('#email_template_html_container').removeClass('hide')
-            $('#email_template_text_container').addClass('hide')
-            $("#email_template_text_button").removeClass('hide')
-            $("#email_template_html_button").addClass('hide')
-
-        }else{
-            $('#email_template_html_container').addClass('hide')
-            $('#email_template_text_container').removeClass('hide')
-            $("#email_template_text_button").addClass('hide')
-            $("#email_template_html_button").removeClass('hide')
-
-        }
-
-    });
 
 
 
@@ -214,17 +195,9 @@
 
     }
 
-    function open_save_email_template_dialog(jsonFile,htmlFile){
-
-        $('#save_email_template_dialog').removeClass('hide')
-        $('#template_name2').data('jsonFile',jsonFile).data('htmlFile',htmlFile)
 
 
-    }
-
-
-
-    function save_as_another_template(element) {
+    function save_as_another_template() {
 
         var ajaxData = new FormData();
 
@@ -266,12 +239,6 @@
 
     }
 
-    function save_template_email(){
-
-        $('#save_email_template_dialog').addClass('hide')
-        autosave($('#template_name2').data('jsonFile'))
-
-    }
 
 
     function save_email_template(json,html) {

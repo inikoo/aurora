@@ -435,16 +435,36 @@ class Email_Template extends DB_Table {
 
                 $this->update_field($field,$value,$options);
 
-                if($this->data['Email Template Role']=='Invitation Mailshot'){
+                if($this->updated){
+                    $checksum = md5(
+                        ($this->get('Email Template Type') == 'Text' ? '' : $this->get('Email Template Editing JSON')).'|'.$this->get('Email Template Text').'|'.$value
+                    );
 
 
-                    $published_template=get_object('published_email_template',$this->data['Email Template Published Email Key']);
-                    if($published_template->id){
-                        $published_template->editor=$this->editor;
-                        $published_template->fast_update(array('Published Email Template Subject'=>$value));
+                    $update_data = array(
+                        'Email Template Last Edited'      => gmdate('Y-m-d H:i:s'),
+                        'Email Template Editing Checksum' => $checksum,
+                        'Email Template Last Edited By'   => $this->editor['Author Key']
+
+                    );
+
+                    $this->fast_update($update_data);
+
+
+                    if($this->data['Email Template Role']=='Invitation Mailshot'){
+
+
+                        $published_template=get_object('published_email_template',$this->data['Email Template Published Email Key']);
+                        if($published_template->id){
+                            $published_template->editor=$this->editor;
+                            $published_template->fast_update(array('Published Email Template Subject'=>$value));
+                        }
+
                     }
 
+
                 }
+
 
 
 
