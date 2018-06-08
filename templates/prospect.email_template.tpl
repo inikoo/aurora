@@ -58,7 +58,7 @@
 <div id="email_template_text_container" style="height:1000px;position:relative" class="{if $email_template->get('Email Template Type')=='HTML'}hide{/if}">
 
 
-    <span id="email_template_set_as_text" class="small marked_link  {if $email_template->get('Email Template Type')=='Text'}hide{/if}" style="position: absolute;top:7px;right:30px;" onclick="update_email_template_type('Text')" >{t}Set as text only email{/t}</span>
+    <span id="email_template_set_as_text" class="small marked_link hide {if $email_template->get('Email Template Type')=='Text'}hide{/if}" style="position: absolute;top:7px;right:30px;" onclick="update_email_template_type('Text')" >{t}Set as text only email{/t}</span>
 
     <textarea id="email_template_text" style="width:1155px;min-height:600px;resize: vertical;padding:5px 20px;;margin:25px 20px 20px 20px">{$email_template->get('Email Template Text')}</textarea>
 
