@@ -576,12 +576,14 @@ class Prospect extends Subject {
 
 
         $placeholders = array(
-            '[Greetings]'    => $this->get_greetings(),
-            '[Name]'         => $this->get('Name'),
-            '[Name,Company]' => preg_replace(
+            '[Greetings]'     => $this->get_greetings(),
+            '[Prospect Name]' => $this->get('Name'),
+            '[Customer Name]' => $this->get('Name'),
+            '[Name]'          => $this->get('Main Contact Name'),
+            '[Name,Company]'  => preg_replace(
                 '/^, /', '', $this->get('Main Contact Name').($this->get('Company Name') == '' ? '' : ', '.$this->get('Company Name'))
             ),
-            '[Signature]'    => $store->get('Signature'),
+            '[Signature]'     => $store->get('Signature'),
         );
 
 

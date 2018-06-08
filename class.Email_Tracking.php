@@ -183,6 +183,8 @@ class Email_Tracking extends DB_Table {
             case 'Sent Date':
             case 'First Read Date':
             case 'Last Read Date':
+            case 'First Clicked Date':
+            case 'Last Clicked Date':
 
                 if ($this->data['Email Tracking '.$key] == '') {
                     return '';
