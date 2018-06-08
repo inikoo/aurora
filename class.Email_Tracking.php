@@ -53,6 +53,98 @@ class Email_Tracking extends DB_Table {
     }
 
 
+    function update_state($event){
+
+        // Events: 'Rejected by SES','Send','Read','Hard Bounce','Soft Bounce','Spam','Delivered','Opened','Clicked','Send to SES Error'
+      // 'Ready','Send to SES','Rejected by SES','Send','Read','Hard Bounce','Soft Bounce','Spam','Delivered','Opened','Clicked','Error'
+        switch ($event){
+
+            case 'Sent':
+
+                if(in_array($this->data['Email Tracking State'],array('Ready','Sent to SES'))){
+                    $this->update_field('Email Tracking State','Sent','no_history');
+                    $this->update_field('Email Tracking Sent Date',gmdate('Y-m-d H:i:s'),'no_history');
+
+                }
+
+                break;
+
+            case 'Delivered':
+
+                if(in_array($this->data['Email Tracking State'],array('Ready','Sent to SES','Rejected by SES','Sent'))){
+                    $this->update_field('Email Tracking State','Delivered','no_history');
+
+                }
+
+                break;
+            case 'Open':
+
+
+
+
+                if(in_array($this->data['Email Tracking State'],array('Ready','Sent to SES','Rejected by SES','Sent','Delivered','Soft Bounce','Hard Bounce','Spam'))){
+
+                    if($this->data['Email Tracking First Read Date']==''){
+                        $this->update_field('Email Tracking First Read Date',gmdate('Y-m-d H:i:s'),'no_history');
+
+                    }
+
+                    $this->update_field('Email Tracking State','Opened','no_history');
+
+                    $this->update_field('Email Tracking Last Read Date',gmdate('Y-m-d H:i:s'),'no_history');
+                    $sql=sprintf('select count(*) as num from  `Email Tracking Event Dimension` where `Email Tracking Event Tracking Key`=%d and `Email Tracking Event Type`="Opened" ',$this->id);
+
+                    if ($result=$this->db->query($sql)) {
+                        if ($row = $result->fetch()) {
+                            $this->update_field('Email Tracking Number Reads',$row['num'],'no_history');
+
+                        }
+                    }else {
+                        print_r($error_info=$this->db->errorInfo());
+                        print "$sql\n";
+                        exit;
+                    }
+
+                }
+
+
+
+
+
+                break;
+            case 'Clicked':
+
+                if(in_array($this->data['Email Tracking State'],array('Ready','Sent to SES','Rejected by SES','Sent','Delivered','Soft Bounce','Hard Bounce','Spam','Opened','Clicked'))){
+
+                    if($this->data['Email Tracking First Clicked Date']==''){
+                        $this->update_field('Email Tracking First Read Date',gmdate('Y-m-d H:i:s'),'no_history');
+
+                    }
+                    $this->update_field('Email Tracking State','Clicked','no_history');
+
+                    $this->update_field('Email Tracking Last Clicked Date',gmdate('Y-m-d H:i:s'),'no_history');
+                    $sql=sprintf('select count(*) as num from  `Email Tracking Event Dimension` where `Email Tracking Event Tracking Key`=%d and `Email Tracking Event Type`="Clicked" ',$this->id);
+
+                    if ($result=$this->db->query($sql)) {
+                        if ($row = $result->fetch()) {
+                            $this->update_field('Email Tracking Number Clicks',$row['num'],'no_history');
+
+                        }
+                    }else {
+                        print_r($error_info=$this->db->errorInfo());
+                        print "$sql\n";
+                        exit;
+                    }
+
+
+                }
+
+                break;
+        }
+
+
+    }
+
     function get($key) {
         switch ($key) {
 
@@ -87,7 +179,7 @@ class Email_Tracking extends DB_Table {
             case 'Created Date':
             case 'Send Date':
             case 'First Read Date':
-            case 'Last Read  Date':
+            case 'Last Read Date':
 
                 if ($this->data['Email Tracking '.$key] == '') {
                     return '';

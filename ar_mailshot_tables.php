@@ -80,7 +80,7 @@ function subject_send_emails($_data, $db, $user) {
                 case 'Ready':
                     $state = _('Ready to send');
                     break;
-                case 'Send to SES':
+                case 'Sent to SES':
                     $state = _('Sending');
                     break;
 

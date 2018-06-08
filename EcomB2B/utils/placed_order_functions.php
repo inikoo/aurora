@@ -126,7 +126,7 @@ function send_order_confirmation_email($store, $website, $customer, $order, $sma
 
 
         $sql = sprintf(
-            'update `Email Tracking Dimension` set `Email Tracking State`="Send to SES" , `Email Tracking SES Id`=%s   where `Email Tracking Key`=%d ', prepare_mysql($messageId), $email_tracking_key
+            'update `Email Tracking Dimension` set `Email Tracking State`="Sent to SES" , `Email Tracking SES Id`=%s   where `Email Tracking Key`=%d ', prepare_mysql($messageId), $email_tracking_key
         );
         $db->exec($sql);
 

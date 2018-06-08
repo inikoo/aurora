@@ -625,13 +625,13 @@ class Prospect extends Subject {
 
 
             $sql = sprintf(
-                'update `Email Tracking Dimension` set `Email Tracking State`="Send to SES" , `Email Tracking SES Id`=%s   where `Email Tracking Key`=%d ', prepare_mysql($messageId), $email_tracking_key
+                'update `Email Tracking Dimension` set `Email Tracking State`="Sent to SES" , `Email Tracking SES Id`=%s   where `Email Tracking Key`=%d ', prepare_mysql($messageId), $email_tracking_key
             );
             $this->db->exec($sql);
 
 
             $history_data = array(
-                'History Abstract' => '<i class="fal fa-paper-plane fa-fw"></i> '._('Invitation email send').' '.sprintf(
+                'History Abstract' => '<i class="fal fa-paper-plane fa-fw"></i> '._('Invitation email sent').' '.sprintf(
                         '<span class="link" onclick="change_view(\'prospects/%d/%d/email/%d\')" >%s</span>', $this->get('Store Key'), $this->id, $email_tracking_key, $published_email_template->get('Published Email Template Subject')
 
 

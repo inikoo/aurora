@@ -22,6 +22,9 @@ if ('POST' !== $_SERVER['REQUEST_METHOD']) {
 
 require_once 'utils/general_functions.php';
 require_once 'keyring/dns.php';
+
+require_once 'utils/object_functions.php';
+
 // require 'external_libs/aws.phar';
 
 $db = new PDO(
@@ -74,7 +77,7 @@ if ($validator->isValid($sns)) {
 
                 switch ($message['eventType']) {
                     case 'Send':
-                        $event_type = 'Send';
+                        $event_type = 'Sent';
 
                         break;
                     case 'Delivery':
@@ -120,6 +123,10 @@ if ($validator->isValid($sns)) {
 
                 );
                 $db->exec($sql);
+
+                $email_tracking=get_object('email_tracking',$row['Email Tracking Key']);
+                $email_tracking->update_state($event_type);
+
 
                 //$_sql = sprintf('insert into atest  (`date`,`headers`,`request`) values (NOW(),"%s","%s")  ', $sql, 'xx');
                 //$db->exec($_sql);
