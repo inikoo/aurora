@@ -193,6 +193,7 @@ function get_view($db, $smarty, $user, $account, $modules) {
             $warehouse = new Warehouse($state['current_warehouse']);
 
             break;
+
         case 'website':
 
             include_once 'class.Store.php';
@@ -276,6 +277,9 @@ function get_view($db, $smarty, $user, $account, $modules) {
     if ($state['object'] != '') {
 
 
+
+
+
         if ($state['object'] == 'website' and $state['parent'] == 'store') {
             $state['key'] = $state['_parent']->get('Store Website Key');
         }
@@ -286,8 +290,10 @@ function get_view($db, $smarty, $user, $account, $modules) {
         }
 
 
-        //exit;
+
         if (is_numeric($_object->get('Store Key'))) {
+
+
             include_once 'class.Store.php';
             $store                  = new Store($_object->get('Store Key'));
             $state['current_store'] = $store->id;
@@ -386,6 +392,11 @@ function get_view($db, $smarty, $user, $account, $modules) {
             }
 
 
+        }
+
+
+        if(empty($store) and !empty($state['_parent']) and is_numeric($state['_parent']->get('Store Key'))){
+            $store=get_object('Store',$state['_parent']->get('Store Key'));
         }
 
 

@@ -480,6 +480,8 @@ class Email_Template extends DB_Table {
                 }
 
 
+
+
         }
     }
 

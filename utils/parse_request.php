@@ -1780,13 +1780,26 @@ function parse_request($_data, $db, $modules, $account = '', $user = '', $is_set
                                         $key     = $view_path[2];
 
 
-                                    } elseif ($view_path[2] == 'new') {
+                                    }
+
+                                }elseif ($view_path[1] == 'compose') {
+
+
+                                    if (isset($view_path[2])  and is_numeric($view_path[2]) ) {
+
+                                        $parent='prospect';
+                                        $parent_key =$key;
+                                        $object = 'email_template';
+                                        $key=$view_path[2];
+
                                         $section = 'prospect.compose_email';
 
                                     }
 
 
+
                                 }
+
 
                             }
 
