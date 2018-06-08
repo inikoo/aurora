@@ -50,8 +50,8 @@
 
 
                 <tr class=" {if $email_tracking->get('Email Tracking Sent Date')==''}hide{/if}">
-                    <td>{t}Send{/t}</td>
-                    <td class="aright ">{$email_tracking->get('Send Date')}</td>
+                    <td>{t}Sent{/t}</td>
+                    <td class="aright ">{$email_tracking->get('Sent Date')}</td>
                 </tr>
 
                 <tr  class=" {if $email_tracking->get('Email Tracking First Read Date')==''}hide{/if}">
