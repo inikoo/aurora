@@ -127,7 +127,10 @@ class Email_Tracking extends DB_Table {
 
                     if ($result=$this->db->query($sql)) {
                         if ($row = $result->fetch()) {
-                            $this->update_field('Email Tracking Number Clicks',$row['num'],'no_history');
+                            $this->update_field('Email Tracking Number Clicks
+                            
+                            
+                            ',$row['num'],'no_history');
 
                         }
                     }else {
