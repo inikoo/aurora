@@ -77,7 +77,7 @@ class Email_Tracking extends DB_Table {
                 }
 
                 break;
-            case 'Open':
+            case 'Opened':
 
 
 
@@ -180,7 +180,7 @@ class Email_Tracking extends DB_Table {
                 break;
 
             case 'Created Date':
-            case 'Send Date':
+            case 'Sent Date':
             case 'First Read Date':
             case 'Last Read Date':
 
