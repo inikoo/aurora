@@ -42,14 +42,14 @@
 
 
 
-                <tr class=" {if $email_tracking->get('Email Tracking Send Date')!=''}hide{/if}">
+                <tr class=" {if $email_tracking->get('Email Tracking Sent Date')!=''}hide{/if}">
                     <td>{t}Created{/t}:</td>
                     <td class="aright">{$email_tracking->get('Created Date')}</td>
                 </tr>
 
 
 
-                <tr class=" {if $email_tracking->get('Email Tracking Send Date')==''}hide{/if}">
+                <tr class=" {if $email_tracking->get('Email Tracking Sent Date')==''}hide{/if}">
                     <td>{t}Send{/t}</td>
                     <td class="aright ">{$email_tracking->get('Send Date')}</td>
                 </tr>

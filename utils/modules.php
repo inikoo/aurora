@@ -810,7 +810,7 @@ $modules = array(
                     ),
 
                     'prospect.send_emails'   => array(
-                        'label' => _('Send emails'),
+                        'label' => _('Sent emails'),
                         'icon'  => 'paper-plane'
                     ),
 
