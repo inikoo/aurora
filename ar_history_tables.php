@@ -114,7 +114,7 @@ function object_history($_data, $db, $user) {
             'id'     => (integer)$data['History Key'],
             'date'   => $data['History Date'],
             'date'   => strftime(
-                "%a %e %b %Y %H:%M %Z ", strtotime($data['History Date']." +00:00")
+                "%a %e %b %Y %H:%M:%S %Z ", strtotime($data['History Date']." +00:00")
             ),
             'time'   => strftime(
                 "%H:%M %Z", strtotime($data['History Date']." +00:00")

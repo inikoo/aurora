@@ -53,6 +53,8 @@ $smarty->assign('history_notes_data',
 
 
 
+
+
 $smarty->assign('aux_templates', array('history_notes.tpl'));
 
 

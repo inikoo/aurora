@@ -41,7 +41,7 @@ switch ($tipo) {
                          'text'          => array('type' => 'string'),
                          'json'          => array('type' => 'string'),
                          'html'          => array('type' => 'html'),
-                         'subject'          => array('type' => 'string'),
+                         'subject'       => array('type' => 'string'),
                      )
         );
         send_email($data, $editor, $smarty, $db);
@@ -116,6 +116,7 @@ switch ($tipo) {
         );
         publish_email_template($data, $editor, $smarty, $db);
         break;
+
     case 'save_blueprint':
         $data = prepare_values(
             $_REQUEST, array(
@@ -141,6 +142,29 @@ switch ($tipo) {
                      )
         );
         select_blueprint($data, $editor, $smarty, $db);
+        break;
+    case 'select_base_template':
+        $data = prepare_values(
+            $_REQUEST, array(
+
+                         'template_email_key' => array('type' => 'key'),
+                         'base_template_key'  => array('type' => 'key'),
+
+
+                     )
+        );
+        select_base_template($data, $editor, $smarty, $db);
+        break;
+    case 'set_email_template_base':
+        $data = prepare_values(
+            $_REQUEST, array(
+                         'blueprint' => array('type' => 'string'),
+                         'key'       => array('type' => 'key'),
+
+
+                     )
+        );
+        set_email_template_base($data, $editor, $smarty, $db);
         break;
 
     case 'create_text_only_email_template':
@@ -184,7 +208,7 @@ function bee_token() {
 function send_email($data, $editor, $smarty, $db) {
 
 
-   // print_r($data);
+    // print_r($data);
 
     include_once 'class.Published_Email_Template.php';
 
@@ -212,15 +236,14 @@ function send_email($data, $editor, $smarty, $db) {
     $email_campaign_type = new EmailCampaignType('code_store', 'Invite Mailshot', $recipient->get('Store Key'));
 
 
-     $recipient->send_email($published_template,$email_campaign_type->id,$email_campaign_type->id);
+    $recipient->send_email($published_template, $email_campaign_type->id, $email_campaign_type->id);
 
 
     $response = array(
-        'state' => 200,
+        'state'    => 200,
         'redirect' => strtolower($data['recipient']).'s/'.$recipient->get('Store Key').'/'.$recipient->id
     );
     echo json_encode($response);
-
 
 
 }
@@ -246,7 +269,6 @@ function send_test_email($data, $editor, $smarty, $db) {
 
 
     $scope_object = get_object($email_template->get('Email Template Scope'), $email_template->get('Email Template Scope Key'));
-
 
 
     $sender_email_address = $scope_object->get('Send Email Address');
@@ -854,6 +876,93 @@ function select_blueprint($data, $editor, $db) {
 
 }
 
+
+function select_base_template($data, $editor, $db) {
+
+
+    $email_template         = get_object('Email_Template', $data['template_email_key']);
+    $email_template->editor = $editor;
+    $email_template_base    = get_object('Email_Template', $data['base_template_key']);
+
+
+    $email_template->fast_update(
+        array(
+            'Email Template Editing JSON'       => $email_template_base->get('Email Template Editing JSON'),
+            'Email Template Published Checksum' => $email_template_base->get('Email Template Published Checksum'),
+            'Email Template Last Edited'        => gmdate('Y-m-d H:i:s'),
+            'Email Template Last Edited By'     => $email_template_base->get('Email Template Last Edited By'),
+
+            'Email Template Subject'          => $email_template_base->get('Email Template Subject'),
+            'Email Template Type'             => $email_template_base->get('Email Template Type'),
+            'Email Template Editing Checksum' => $email_template_base->get('Email Template Editing Checksum'),
+
+        )
+    );
+
+
+
+
+    $response = array(
+        'state' => 200,
+
+
+    );
+
+    echo json_encode($response);
+
+}
+
+
+function set_email_template_base($data, $editor, $db) {
+
+
+    $blueprint = preg_replace('/(a-z0-9\_)/', '', $data['blueprint']);
+
+    $filename = 'conf/etemplates/'.$blueprint.'.json';
+    if (!file_exists($filename)) {
+        $response = array(
+            'state' => 400,
+            'resp'  => 'Error no blueprint'
+        );
+        echo json_encode($response);
+        exit;
+
+    }
+
+
+    $blueprint_json = file_get_contents($filename);
+
+
+    $email_template = get_object('Email_Template', $data['key']);
+    $email_template->update(
+        array(
+            'Email Template Editing JSON' => $blueprint_json,
+            'Email Template Type'         => 'HTML'
+        ), 'no_history'
+    );
+    $checksum = md5(
+        ($email_template->get('Email Template Type') == 'Text' ? '' : $email_template->get('Email Template Editing JSON')).'|'.$email_template->get('Email Template Text').'|'.$email_template->get(
+            'Email Template Subject'
+        )
+    );
+
+
+    $email_template->update(
+        array(
+            'Email Template Editing Checksum' => $checksum,
+        ), 'no_history'
+    );
+
+
+    $response = array(
+        'state' => 200,
+
+
+    );
+
+    echo json_encode($response);
+
+}
 
 function create_text_only_email_template($data, $editor, $db) {
 

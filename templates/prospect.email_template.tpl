@@ -2,7 +2,7 @@
 <!--
  About:
  Author: Raul Perusquia <raul@inikoo.com>
- Created: 21 September 2016 at 13:58:35 GMT+8, Kuala Lumpur, Malaysia
+ Created: 4 June 2018 at 15:39:47 GMT+8, Kuala Lumpur, Malaysia
  Copyright (c) 2016, Inikoo
 
  Version 3
@@ -30,60 +30,15 @@
 
 
 
-    <div id="save_as_blueprint_dialog" style="border:1px solid #ccc;background-color: #fff;position: absolute;;padding:20px;top:200px;left:210px;z-index: 2000" class="save_as_blueprint_dialog hide">
+    <div id="save_as_another_template_dialog" style="border:1px solid #ccc;background-color: #fff;position: absolute;;padding:20px;top:200px;left:210px;z-index: 2000" class="save_as_another_template_dialog hide">
 
     <i onclick="$(this).closest('div').addClass('hide')" style="position:relative;left:-10px;top:-10px" class="fa fa-window-close button" aria-hidden="true"></i>
 
-    {t}Template name{/t} <input class="template_name" value="" style="width:300px"  > <i  style="margin-left:5px" class="save_template fa fa-cloud save " aria-hidden="true"></i>
+    {t}Template name{/t} <input class="template_name" value="" style="width:300px"  > <i  style="margin-left:5px" class="save_as_another_template fa fa-cloud save " aria-hidden="true"></i>
 
 </div>
 
-    <div id="save_as_blueprint_dialog2" style="border:1px solid #ccc;background-color: #fff;position: absolute;;padding:20px;top:55px;right:0px;z-index: 2000" class="save_as_blueprint_dialog hide">
 
-        <i onclick="$(this).closest('div').addClass('hide')" style="position:relative;left:-10px;top:-10px" class="fa fa-window-close button" aria-hidden="true"></i>
-
-        {t}Template name{/t} <input id="template_name2" class="template_name" value="" style="width:300px"  > <i  style="margin-left:5px" class="save_template fa fa-cloud save " aria-hidden="true"></i>
-
-    </div>
-
-
-    <div id="save_email_template_dialog" style="border:1px solid #ccc;background-color: #fff;position: absolute;;padding:20px;top:55px;right:0px;z-index: 2000" class="hide">
-        <i onclick="$(this).closest('div').addClass('hide')" style="position:relative;left:-10px;top:-10px" class="fa fa-window-close button" aria-hidden="true"></i>
-
-        <span id="show_save_as_blueprint_dialog_from_save"  class="{if isset($direct_email)}hide{/if}"  class="button"  style="border:1px solid #ccc;padding:5px 10px;margin-left:5px"   >{t}Save as template{/t}</span>
-        <span onclick="save_template_email()"  class="button hide"  style="border:1px solid #ccc;padding:5px 10px;margin-left:20px" title="{t}Save and continue editing later{/t}"  >{t}Save{/t}</span>
-
-
-
-
-        {if isset($direct_email)}
-            <span  onclick="send_email('{$recipient}',{$recipient_key})"  class="button"  style="border:1px solid #ccc;padding:5px 10px;margin-left:10px">
-                {t}Send email{/t}
-            </span>
-
-        {else}
-
-        {if $email_template->get('Email Template Scope')=='EmailCampaignType'}
-            <span id="save_email_template_html" onclick="publish_webpage_email_template('{$email_template->id}')"  class="button"  style="border:1px solid #ccc;padding:5px 10px;margin-left:10px">{t}Publish{/t}</span>
-
-
-        {elseif $email_template->get('Email Template Scope')=='Webpage'}
-
-            <span id="save_email_template_html" onclick="publish_webpage_email_template()"  class="button"  style="border:1px solid #ccc;padding:5px 10px;margin-left:10px">{t}Publish{/t}</span>
-
-
-        {else}
-
-            <span id="save_email_template_html" onclick="publish_email_template('{$email_template->id}')"  class="button"  style="border:1px solid #ccc;padding:5px 10px;margin-left:10px">{t}Set as ready for sending{/t}</span>
-
-
-        {/if}
-        {/if}
-
-
-
-
-    </div>
 
 </div>
 
@@ -96,33 +51,7 @@
 {/if}
 
 
-<div id="email_template_text_controls"  style="padding:15px 20px;border-bottom:1px solid #ccc;position: relative" class="{if $email_template->get('Email Template Type')=='HTML'}hide{/if}  control_panel">
 
-
-
-     <span id="change_template" onclick="open_send_test_email_dialog('')" class="button" style="float:left;border:1px solid #ccc;padding:5px 10px;margin-right:40px">
-      {t}Send test email{/t}
-    </span>
-
-
-
-    {if $email_template->get('Email Template Scope')=='Webpage'}
-        <span id="publish_email_template_from_text_controls" onclick="publish_webpage_email_template()" class=" {if $email_template->get('Email Template Editing Checksum')==$email_template->get('Email Template Published Checksum')}super_discreet{else}button{/if}  " style="float:right;border:1px solid #ccc;padding:5px 10px;margin-right:0px">
-      {t}Publish email{/t}
-    </span>    {else}
-
-        <span id="publish_email_template_from_text_controls" onclick="publish_email_template({$email_template->id})" class=" {if $email_template->get('Email Template Editing Checksum')==$email_template->get('Email Template Published Checksum')}super_discreet{else}button{/if}  " style="float:right;border:1px solid #ccc;padding:5px 10px;margin-right:0px">
-      {t}Set as ready for sending{/t}
-    </span>
-
-
-    {/if}
-
-
-
-    <div style="clear: both"></div>
-
-</div>
 
 <div id="email_template_html_container" style="height:1000px"  class="{if $email_template->get('Email Template Type')=='Text'}hide{/if}"></div>
 
@@ -169,7 +98,7 @@
         mergeContents: mergeContents, // [optional, default:[]] Array of Object to specify merge content
         //preventClose: false, // [optional, default:false] if true an alert is shown before browser closure
         onSave: open_save_email_template_dialog,
-        onSaveAsTemplate:open_save_as_blueprint_dialog,
+        onSaveAsTemplate:open_save_as_template_dialog,
         onAutoSave:autosave_email_template,
         onSend: open_send_test_email_dialog,
         //onError: function(errorMessage) { /* Implements function to handle error messages */ } // [optional]
@@ -226,64 +155,18 @@
 
 
 
-
-    function open_save_as_blueprint_dialog(jsonFile){
-
+    function open_save_as_template_dialog(jsonFile){
 
 
-        $('#save_as_blueprint_dialog').removeClass('hide')
-        $('#save_as_blueprint_dialog').find('input').val('').focus().data('jsonFile',jsonFile).data('htmlFile','')
 
-    }
-
-    function open_save_email_template_dialog(jsonFile,htmlFile){
-
-        $('#save_email_template_dialog').removeClass('hide')
-        $('#template_name2').data('jsonFile',jsonFile).data('htmlFile',htmlFile)
-
+        $('#save_as_another_template_dialog').removeClass('hide')
+        $('#save_as_another_template_dialog').find('input').val('').focus().data('jsonFile',jsonFile).data('htmlFile','')
 
     }
 
 
 
-    function save_as_blueprint(element) {
 
-        var ajaxData = new FormData();
-
-        ajaxData.append("tipo", 'save_blueprint')
-        ajaxData.append("email_template_key", '{$email_template_key}')
-        ajaxData.append("json", element.data('jsonFile'))
-        ajaxData.append("html", element.data('htmlFile'))
-
-        ajaxData.append("name", element.val())
-
-       // element.closest('div').addClass('hide')
-
-        $.ajax({
-            url: "/ar_edit_email_template.php", type: 'POST', data: ajaxData, dataType: 'json', cache: false, contentType: false, processData: false,
-            complete: function () {
-            }, success: function (data) {
-
-                if (data.state == '200') {
-
-                    $('.save_as_blueprint_dialog').addClass('hide')
-
-
-
-                } else if (data.state == '400') {
-                    swal({
-                        title: data.title, text: data.msg, confirmButtonText: "OK"
-                    });
-                }
-
-
-
-            }, error: function () {
-
-            }
-        });
-
-    }
 
     function save_template_email(){
 
@@ -352,10 +235,46 @@
 
     });
 
-    $(".save_template").on('click', function(){
+    $(".save_as_another_template").on('click', function(){
 
         if($(this).hasClass('valid')){
-            save_as_blueprint($(this).prev('input'))
+
+            element=$(this).prev('input');
+
+            var ajaxData = new FormData();
+
+            ajaxData.append("tipo", 'save_as_another_template')
+            ajaxData.append("json", element.data('jsonFile'))
+            ajaxData.append("html", element.data('htmlFile'))
+
+            ajaxData.append("name", element.val())
+
+            // element.closest('div').addClass('hide')
+
+            $.ajax({
+                url: "/ar_edit_email_template.php", type: 'POST', data: ajaxData, dataType: 'json', cache: false, contentType: false, processData: false,
+                complete: function () {
+                }, success: function (data) {
+
+                    if (data.state == '200') {
+
+
+                        change_view(data.rediect)
+
+
+                    } else if (data.state == '400') {
+                        swal({
+                            title: data.title, text: data.msg, confirmButtonText: "OK"
+                        });
+                    }
+
+
+
+                }, error: function () {
+
+                }
+            });
+
         }
 
     });
@@ -364,13 +283,13 @@
 
 
 
-    $("#show_save_as_blueprint_dialog_from_save").on('click', function(){
+    $("#show_save_as_another_template_dialog_from_save").on('click', function(){
 
        $('#save_email_template_dialog').addClass('hide')
 
 
-        $('#save_as_blueprint_dialog2').removeClass('hide')
-        $('#save_as_blueprint_dialog2').find('input').val('').focus()
+        $('#save_as_another_template_dialog2').removeClass('hide')
+        $('#save_as_another_template_dialog2').find('input').val('').focus()
 
 
     });

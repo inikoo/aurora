@@ -218,10 +218,16 @@
                         $('.' + data.update_metadata.show[key]).removeClass('hide')
                     }
 
-                    rows.fetch({
-                        reset: true
-                    });
-                    get_elements_numbers(rows.tab, rows.parameters)
+                    console.log(state.tab)
+
+
+                    if(state.tab='prospect.history'){
+                        rows.fetch({
+                            reset: true
+                        });
+                        get_elements_numbers(rows.tab, rows.parameters)
+
+                    }
 
 
                 } else if (data.state == '400') {

@@ -1748,6 +1748,8 @@ function parse_request($_data, $db, $modules, $account = '', $user = '', $is_set
                     $parent     = 'store';
                     $parent_key = $arg1;
 
+
+
                     if (isset($view_path[0])) {
 
                         if (is_numeric($view_path[0])) {
@@ -1760,6 +1762,9 @@ function parse_request($_data, $db, $modules, $account = '', $user = '', $is_set
 
 
                             if (isset($view_path[1])) {
+
+
+
                                 if ($view_path[1] == 'email') {
 
                                     $store_key = $arg1;
@@ -1787,10 +1792,30 @@ function parse_request($_data, $db, $modules, $account = '', $user = '', $is_set
 
 
 
-                        } elseif ($view_path[0] == 'new') {
+                        }
+                        elseif ($view_path[0] == 'new') {
                             $section = 'prospect.new';
                             $object  = '';
+                        }elseif ($view_path[0] == 'template') {
+
+
+
+                            if (is_numeric($view_path[1])) {
+                                $section = 'prospects.email_template';
+                                $object  = 'email_template';
+                                $key     = $view_path[1];
+
+
+                            } elseif ($view_path[1] == 'new') {
+                                $object  = 'email_template';
+                                $key     =0;
+                                $section = 'prospects.template.new';
+
+                            }
+
+
                         }
+
                     }
 
                 }

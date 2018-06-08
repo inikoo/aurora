@@ -66,6 +66,12 @@ class Email_Template extends DB_Table {
             }
         }
 
+
+        $base_data['Email Template Created']=gmdate('Y-m-d H:i:s');
+        //$base_data['Email Template Last Edited']=gmdate('Y-m-d H:i:s');
+
+
+
         $keys   = '(';
         $values = 'values(';
         foreach ($base_data as $key => $value) {
@@ -97,6 +103,20 @@ class Email_Template extends DB_Table {
                     'Email Template Editing Checksum' => $checksum,
                 ), 'no_history'
             );
+
+
+
+
+            $history_data = array(
+                'History Abstract' => sprintf(_('%s email template created'), '<b>'.$this->get('Name').'</b>'),
+                'History Details'  => '',
+                'Action'           => 'created'
+            );
+
+            $this->add_subject_history(
+                $history_data, true, 'No', 'Changes', $this->get_object_name(), $this->id
+            );
+
 
 
             return $this;
@@ -133,17 +153,29 @@ class Email_Template extends DB_Table {
         foreach ($raw_data as $key => $value) {
             if (array_key_exists($key, $data)) {
                 $data[$key] = _trim($value);
-            } elseif ($key == 'Website Key') {
-                $data[$key] = _trim($value);
             }
         }
 
 
-        $sql = sprintf(
-            "SELECT `Email Template Key` FROM `Email Template Dimension` WHERE `Email Template Role`=%s AND  `Email Template Scope`=%s AND  `Email Template Scope Key`=%d ",
-            prepare_mysql($data['Email Template Role']), prepare_mysql($data['Email Template Scope']), $data['Email Template Scope Key']
 
-        );
+        if($data['Email Template Role']=='Invitation Mailshot'){
+            $sql = sprintf(
+                "SELECT `Email Template Key` FROM `Email Template Dimension` WHERE `Email Template Name`=%s AND  `Email Template Scope`=%s AND  `Email Template Scope Key`=%d ",
+                prepare_mysql($data['Email Template Name']), prepare_mysql($data['Email Template Scope']), $data['Email Template Scope Key']
+
+            );
+
+        }else{
+            $sql = sprintf(
+                "SELECT `Email Template Key` FROM `Email Template Dimension` WHERE `Email Template Role`=%s AND  `Email Template Scope`=%s AND  `Email Template Scope Key`=%d ",
+                prepare_mysql($data['Email Template Role']), prepare_mysql($data['Email Template Scope']), $data['Email Template Scope Key']
+
+            );
+        }
+
+//print $sql;
+
+
 
 
         if ($result = $this->db->query($sql)) {
@@ -399,6 +431,26 @@ class Email_Template extends DB_Table {
         }
 
         switch ($field) {
+            case 'Email Template Subject':
+
+                $this->update_field($field,$value,$options);
+
+                if($this->data['Email Template Role']=='Invitation Mailshot'){
+
+
+                    $published_template=get_object('published_email_template',$this->data['Email Template Published Email Key']);
+                    if($published_template->id){
+                        $published_template->editor=$this->editor;
+                        $published_template->fast_update(array('Published Email Template Subject'=>$value));
+                    }
+
+                }
+
+
+
+
+                break;
+
             default:
                 $base_data = $this->base_data();
                 if (array_key_exists($field, $base_data)) {
@@ -432,6 +484,48 @@ class Email_Template extends DB_Table {
 
     }
 
+    function delete() {
+
+
+        $this->deleted = false;
+
+
+        if ($this->data['Email Template Deliveries'] >0) {
+
+            $this->error = true;
+
+            return;
+        }
+
+
+
+
+        $sql = sprintf(
+            "DELETE FROM `Email Template Dimension` WHERE `Email Template Key`=%d", $this->id
+        );
+        $this->db->exec($sql);
+
+        $sql = sprintf(
+            "DELETE FROM `Email Template History Bridge` WHERE `Email Template Key`=%d", $this->id
+        );
+        $this->db->exec($sql);
+
+
+        $this->deleted = true;
+    }
+
+
+    function suspend(){
+
+        $this->update_field_switcher('Email Template State','Suspended');
+
+    }
+
+    function activate(){
+
+        $this->update_field_switcher('Email Template State','Active');
+
+    }
 
 }
 

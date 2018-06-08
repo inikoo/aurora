@@ -26,6 +26,8 @@ if (!isset($_REQUEST['tipo'])) {
 
 $tipo = $_REQUEST['tipo'];
 
+
+
 switch ($tipo) {
 
     case 'valid_redirection_webpage_code':
@@ -72,6 +74,9 @@ switch ($tipo) {
                          ),
                      )
         );
+
+
+
 
         check_for_duplicates($data, $db, $user, $account);
         break;
@@ -143,6 +148,7 @@ function check_for_duplicates($data, $db, $user, $account) {
     $validation_sql_queries = array();
 
     $options_where = '';
+
 
 
     switch ($data['object']) {
@@ -920,6 +926,27 @@ function check_for_duplicates($data, $db, $user, $account) {
                     $invalid_msg              = _('Webpage code already used');
                     $sql                      = sprintf(
                         "SELECT P.`Page Key` AS `key` ,`Webpage Code` AS field FROM `Page Store Dimension` P WHERE  `Webpage Code`=%s  AND `Webpage Website Key`=%s  ", prepare_mysql($data['value']), $data['parent_key']
+
+                    );
+                    $validation_sql_queries[] = array(
+                        'sql'         => $sql,
+                        'invalid_msg' => $invalid_msg
+                    );
+
+            }
+
+            break;
+        case 'Email Template':
+
+
+            switch ($field) {
+                case 'Email Template Name':
+
+
+                    $invalid_msg              = _('There is an invitation template que this name');
+                    $sql                      = sprintf(
+                        "SELECT `Email Template Key` AS `key` ,`Email Template Name` AS field FROM `Email Template Dimension` left join `Email Campaign Type Dimension` on (`Email Campaign Type Key`=`Email Template Scope Key`)  WHERE `Email Template Scope`='EmailCampaignType' and  `Email Template Name`=%s  AND `Email Campaign Type Store Key`=%d and `Email Template Role`=%s  ",
+                        prepare_mysql($data['value']), $data['parent_key'], prepare_mysql($data['metadata']['role'])
 
                     );
                     $validation_sql_queries[] = array(

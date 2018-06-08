@@ -520,6 +520,18 @@ function get_object_fields($object, $db, $user, $smarty, $options = false) {
 
             return $prospect_fields;
             break;
+        case 'Email Template':
+
+
+            switch ($options['role']){
+                case 'Invite Mailshot':
+                    include 'fields/prospects.email_template.fld.php';
+            }
+
+
+
+            return $object_fields;
+            break;
 
 
         default:

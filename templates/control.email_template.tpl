@@ -24,19 +24,13 @@
 
     <input style="margin-left:20px;width:500px" maxlength="70" id="email_template_subject" value="{$email_template->get('Email Template Subject')}" placeholder="{t}Email subject{/t}">
 
-    {if $email_template->get('Email Template Role')=='Invite Mailshot'}
-        <span id="change_template" onclick="change_view(state.request + '&tab=prospects.email_blueprints')" class="button  {if $email_template->get('Email Template Type')=='Text'}hide{/if}" style="border:1px solid #ccc;padding:5px 10px;margin-left:40px"
-              title="{$change_template_label}, ({t}Change template{/t}) ">
-      <i class="fa fa-chalkboard padding_right_5" aria-hidden="true"></i> {t}Templates{/t}
-    </span>
 
-    {else}
         <span id="change_template" onclick="change_view(state.request + '&tab=email_campaign.email_blueprints')" class="button  {if $email_template->get('Email Template Type')=='Text'}hide{/if}" style="border:1px solid #ccc;padding:5px 10px;margin-left:40px"
               title="{$change_template_label}, ({t}Change template{/t}) ">
       <i class="fa fa-eraser padding_right_5" aria-hidden="true"></i> {t}Start over{/t}
     </span>
 
-    {/if}
+
 
 
 

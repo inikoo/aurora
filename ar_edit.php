@@ -1891,6 +1891,47 @@ function new_object($account, $db, $user, $editor, $data, $smarty) {
                 exit;
             }
             break;
+
+        case 'Email Template':
+
+            include_once 'class.EmailCampaignType.php';
+            $email_campaign_type = new EmailCampaignType('code_store', 'Invite Mailshot', $data['parent_key']);
+
+
+            include_once 'class.Email_Template.php';
+
+            $email_template_data = array(
+                'Email Template Name'      => $data['fields_data']['Email Template Name'],
+                'Email Template Role Type' => 'Marketing',
+                'Email Template Role'      => $data['fields_data']['Email Template Role'],
+                'Email Template Scope'     => 'EmailCampaignType',
+                'Email Template Scope Key' => $email_campaign_type->id,
+                'Email Template Text'      => '',
+                'Email Template Subject'   => $data['fields_data']['Email Template Subject'],
+
+
+                'Email Template Editing JSON' => ''
+            );
+
+
+
+
+
+
+            $object = new Email_Template('find', $email_template_data, 'create');
+
+            if ($object->id) {
+
+
+                $pcard = '';
+
+
+                $redirect     = sprintf('prospects/%d/template/%d',$data['parent_key'],$object->id);
+                $updated_data = array();
+            }
+
+            break;
+
         default:
             $response = array(
                 'state' => 400,

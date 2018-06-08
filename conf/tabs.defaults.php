@@ -23,7 +23,7 @@ $default_rrp_options = array(
 $tab_defaults = array(
 
 
-    'customers'                     => array(
+    'customers' => array(
         'view'          => 'overview',
         'sort_key'      => 'formatted_id',
         'sort_order'    => 1,
@@ -37,7 +37,7 @@ $tab_defaults = array(
     ),
 
 
-    'customers.list'                     => array(
+    'customers.list' => array(
         'view'          => 'overview',
         'sort_key'      => 'formatted_id',
         'sort_order'    => 1,
@@ -48,7 +48,7 @@ $tab_defaults = array(
 
     ),
 
-    'customers.lists'               => array(
+    'customers.lists'        => array(
         'view'        => 'overview',
         'sort_key'    => 'creation_date',
         'sort_order'  => 1,
@@ -56,7 +56,7 @@ $tab_defaults = array(
         'rpp_options' => $default_rrp_options,
         'f_field'     => 'name'
     ),
-    'customers.categories'          => array(
+    'customers.categories'   => array(
         'view'        => 'overview',
         'sort_key'    => 'code',
         'sort_order'  => 1,
@@ -64,7 +64,7 @@ $tab_defaults = array(
         'rpp_options' => $default_rrp_options,
         'f_field'     => 'code'
     ),
-    'customers.geo'               => array(
+    'customers.geo'          => array(
         'view'        => 'overview',
         'sort_key'    => 'customers',
         'sort_order'  => 1,
@@ -72,7 +72,7 @@ $tab_defaults = array(
         'rpp_options' => $default_rrp_options,
         'f_field'     => 'country'
     ),
-    'customers_poll.queries'               => array(
+    'customers_poll.queries' => array(
         'view'        => 'overview',
         'sort_key'    => 'position',
         'sort_order'  => -1,
@@ -81,7 +81,7 @@ $tab_defaults = array(
         'f_field'     => 'query'
     ),
 
-    'poll_query.history'              => array(
+    'poll_query.history'        => array(
         'view'          => 'overview',
         'sort_key'      => 'date',
         'sort_order'    => 1,
@@ -91,7 +91,7 @@ $tab_defaults = array(
         'elements_type' => each($elements_options['poll_query_history'])['key'],
         'elements'      => $elements_options['poll_query_history']
     ),
-    'poll_query_option.history'              => array(
+    'poll_query_option.history' => array(
         'view'          => 'overview',
         'sort_key'      => 'date',
         'sort_order'    => 1,
@@ -103,7 +103,7 @@ $tab_defaults = array(
     ),
 
 
-    'customers_poll.query.answers'               => array(
+    'customers_poll.query.answers'   => array(
         'view'        => 'overview',
         'sort_key'    => 'code',
         'sort_order'  => 1,
@@ -111,7 +111,7 @@ $tab_defaults = array(
         'rpp_options' => $default_rrp_options,
         'f_field'     => 'code'
     ),
-    'customers_poll.query.options'               => array(
+    'customers_poll.query.options'   => array(
         'view'        => 'overview',
         'sort_key'    => 'code',
         'sort_order'  => 1,
@@ -119,7 +119,7 @@ $tab_defaults = array(
         'rpp_options' => $default_rrp_options,
         'f_field'     => 'code'
     ),
-    'customers_poll.reply.customers'               => array(
+    'customers_poll.reply.customers' => array(
         'view'        => 'overview',
         'sort_key'    => 'query',
         'sort_order'  => 1,
@@ -127,7 +127,7 @@ $tab_defaults = array(
         'rpp_options' => $default_rrp_options,
         'f_field'     => 'query'
     ),
-    'poll_query_option.customers'                     => array(
+    'poll_query_option.customers'    => array(
         'view'          => 'overview',
         'sort_key'      => 'formatted_id',
         'sort_order'    => 1,
@@ -140,7 +140,7 @@ $tab_defaults = array(
 
     ),
 
-    'prospects'                     => array(
+    'prospects' => array(
         'view'          => 'overview',
         'sort_key'      => 'email',
         'sort_order'    => 1,
@@ -154,7 +154,7 @@ $tab_defaults = array(
     ),
 
 
-    'email_campaigns.newsletters' => array(
+    'email_campaigns.newsletters'      => array(
         'view'        => 'overview',
         'sort_key'    => 'id',
         'sort_order'  => 1,
@@ -162,7 +162,7 @@ $tab_defaults = array(
         'rpp_options' => $default_rrp_options,
         'f_field'     => 'id',
     ),
-    'email_campaigns.mailshots' => array(
+    'email_campaigns.mailshots'        => array(
         'view'        => 'overview',
         'sort_key'    => 'id',
         'sort_order'  => 1,
@@ -170,7 +170,7 @@ $tab_defaults = array(
         'rpp_options' => $default_rrp_options,
         'f_field'     => 'id',
     ),
-    'email_campaigns.reminders' => array(
+    'email_campaigns.reminders'        => array(
         'view'        => 'overview',
         'sort_key'    => 'name',
         'sort_order'  => 1,
@@ -186,7 +186,7 @@ $tab_defaults = array(
         'rpp_options' => $default_rrp_options,
         'f_field'     => 'id',
     ),
-    'email_campaigns.back_in_stock' => array(
+    'email_campaigns.back_in_stock'    => array(
         'view'        => 'overview',
         'sort_key'    => 'id',
         'sort_order'  => 1,
@@ -275,7 +275,7 @@ $tab_defaults = array(
 
     ),
 
-    'prospect.history'              => array(
+    'prospect.history' => array(
         'view'          => 'overview',
         'sort_key'      => 'date',
         'sort_order'    => 1,
@@ -285,7 +285,7 @@ $tab_defaults = array(
         'elements_type' => each($elements_options['prospect_history'])['key'],
         'elements'      => $elements_options['prospect_history']
     ),
-    'orders.website'              => array(
+    'orders.website'   => array(
         'view'        => 'overview',
         'sort_key'    => 'id',
         'sort_order'  => 1,
@@ -922,7 +922,6 @@ $tab_defaults = array(
     ),
 
 
-
     'product.images'        => array(
         'view'        => 'overview',
         'sort_key'    => 'image_order',
@@ -1003,12 +1002,12 @@ $tab_defaults = array(
 
 
     'category_customers' => array(
-        'view'          => 'overview',
-        'sort_key'      => 'invoiced_amount',
-        'sort_order'    => -1,
-        'rpp'           => 100,
-        'rpp_options'   => $default_rrp_options,
-        'f_field'       => 'name',
+        'view'        => 'overview',
+        'sort_key'    => 'invoiced_amount',
+        'sort_order'  => -1,
+        'rpp'         => 100,
+        'rpp_options' => $default_rrp_options,
+        'f_field'     => 'name',
 
         'export_fields' => $export_fields['customers']
 
@@ -1561,7 +1560,7 @@ $tab_defaults = array(
         'f_field'     => 'code',
 
     ),
-    'supplier.delivery.costing'           => array(
+    'supplier.delivery.costing'         => array(
         'view'        => 'overview',
         'sort_key'    => 'id',
         'sort_order'  => 1,
@@ -1829,13 +1828,13 @@ $tab_defaults = array(
 
     ),
 
-    'part.locations'         => array(
-        'view'          => 'overview',
-        'sort_key'      => 'code',
-        'sort_order'    => 1,
-        'rpp'           => 100,
-        'rpp_options'   => $default_rrp_options,
-        'f_field'       => 'code',
+    'part.locations' => array(
+        'view'        => 'overview',
+        'sort_key'    => 'code',
+        'sort_order'  => 1,
+        'rpp'         => 100,
+        'rpp_options' => $default_rrp_options,
+        'f_field'     => 'code',
 
     ),
 
@@ -2118,13 +2117,13 @@ $tab_defaults = array(
                            ) ['key'],
         'elements'      => $elements_options['part_stock_transactions'],
     ),
-    'part.stock.cost'             => array(
-        'view'          => 'overview',
-        'sort_key'      => 'date',
-        'sort_order'    => 1,
-        'rpp'           => 1000,
-        'rpp_options'   => $default_rrp_options,
-        'f_field'       => 'note',
+    'part.stock.cost'                     => array(
+        'view'        => 'overview',
+        'sort_key'    => 'date',
+        'sort_order'  => 1,
+        'rpp'         => 1000,
+        'rpp_options' => $default_rrp_options,
+        'f_field'     => 'note',
     ),
 
     'part.stock.history' => array(
@@ -2201,7 +2200,7 @@ $tab_defaults = array(
 
     ),
 
-    'inventory.barcodes'           => array(
+    'inventory.barcodes' => array(
         'view'          => 'overview',
         'sort_key'      => 'id',
         'sort_order'    => 1,
@@ -2876,7 +2875,7 @@ $tab_defaults = array(
         'f_field'     => '',
 
     ),
-    'staff.user.deleted_api_keys'         => array(
+    'staff.user.deleted_api_keys' => array(
         'view'        => 'overview',
         'sort_key'    => 'formatted_id',
         'sort_order'  => 1,
@@ -2899,7 +2898,7 @@ $tab_defaults = array(
     ),
 
 
-    'api_key.history'     => array(
+    'api_key.history' => array(
         'view'        => 'overview',
         'sort_key'    => 'date',
         'sort_order'  => 1,
@@ -2909,7 +2908,7 @@ $tab_defaults = array(
     ),
 
 
-    'deleted_api_key.history'     => array(
+    'deleted_api_key.history' => array(
         'view'        => 'overview',
         'sort_key'    => 'date',
         'sort_order'  => 1,
@@ -3012,93 +3011,99 @@ $tab_defaults = array(
     ),
 
     'intrastat' => array(
-        'view'          => 'overview',
-        'sort_key'      => 'country_code',
-        'sort_order'    => 1,
-        'rpp'           => 500,
-        'rpp_options'   => $default_rrp_options,
-        'f_field'       => 'commodity',
-        'from'          => '',
-        'to'            => '',
-        'period'        => 'last_m',
+        'view'        => 'overview',
+        'sort_key'    => 'country_code',
+        'sort_order'  => 1,
+        'rpp'         => 500,
+        'rpp_options' => $default_rrp_options,
+        'f_field'     => 'commodity',
+        'from'        => '',
+        'to'          => '',
+        'period'      => 'last_m',
+
+
+        'invoices_vat'    => 1,
+        'invoices_no_vat' => 1,
+        'invoices_null'   => 1,
+
         'export_fields' => $export_fields['intrastat']
 
 
     ),
 
-    'sales' => array(
-        'view'          => 'overview',
-        'sort_key'      => 'store',
-        'sort_order'    => 1,
-        'rpp'           => 500,
-        'rpp_options'   => $default_rrp_options,
-        'f_field'       => 'store',
-        'from'          => '',
-        'to'            => '',
-        'period'        => 'mtd'
+    'sales'                    => array(
+        'view'        => 'overview',
+        'sort_key'    => 'store',
+        'sort_order'  => 1,
+        'rpp'         => 500,
+        'rpp_options' => $default_rrp_options,
+        'f_field'     => 'store',
+        'from'        => '',
+        'to'          => '',
+        'period'      => 'mtd'
 
     ),
-    'report_orders' => array(
-        'view'          => 'overview',
-        'sort_key'      => 'store',
-        'sort_order'    => 1,
-        'rpp'           => 500,
-        'rpp_options'   => $default_rrp_options,
-        'f_field'       => 'store',
-        'from'          => '',
-        'to'            => '',
-        'period'        => 'mtd'
+    'report_orders'            => array(
+        'view'        => 'overview',
+        'sort_key'    => 'store',
+        'sort_order'  => 1,
+        'rpp'         => 500,
+        'rpp_options' => $default_rrp_options,
+        'f_field'     => 'store',
+        'from'        => '',
+        'to'          => '',
+        'period'      => 'mtd'
 
     ),
     'report_orders_components' => array(
-        'view'          => 'overview',
-        'sort_key'      => 'store',
-        'sort_order'    => 1,
-        'rpp'           => 500,
-        'rpp_options'   => $default_rrp_options,
-        'f_field'       => 'store',
-        'from'          => '',
-        'to'            => '',
-        'period'        => 'mtd'
+        'view'        => 'overview',
+        'sort_key'    => 'store',
+        'sort_order'  => 1,
+        'rpp'         => 500,
+        'rpp_options' => $default_rrp_options,
+        'f_field'     => 'store',
+        'from'        => '',
+        'to'          => '',
+        'period'      => 'mtd'
 
     ),
-    'report_delivery_notes' => array(
-        'view'          => 'overview',
-        'sort_key'      => 'store',
-        'sort_order'    => 1,
-        'rpp'           => 500,
-        'rpp_options'   => $default_rrp_options,
-        'f_field'       => 'store',
-        'from'          => '',
-        'to'            => '',
-        'period'        => 'mtd'
+    'report_delivery_notes'    => array(
+        'view'        => 'overview',
+        'sort_key'    => 'store',
+        'sort_order'  => 1,
+        'rpp'         => 500,
+        'rpp_options' => $default_rrp_options,
+        'f_field'     => 'store',
+        'from'        => '',
+        'to'          => '',
+        'period'      => 'mtd'
 
     ),
-    'pickers' => array(
-        'view'          => 'overview',
-        'sort_key'      => 'name',
-        'sort_order'    => -1,
-        'rpp'           => 500,
-        'rpp_options'   => $default_rrp_options,
-        'f_field'       => 'name',
-        'from'          => '',
-        'to'            => '',
-        'period'        => 'last_w'
+    'pickers'                  => array(
+        'view'        => 'overview',
+        'sort_key'    => 'name',
+        'sort_order'  => -1,
+        'rpp'         => 500,
+        'rpp_options' => $default_rrp_options,
+        'f_field'     => 'name',
+        'from'        => '',
+        'to'          => '',
+        'period'      => 'last_w'
 
     ),
-    'packers' => array(
-        'view'          => 'overview',
-        'sort_key'      => 'name',
-        'sort_order'    => -1,
-        'rpp'           => 500,
-        'rpp_options'   => $default_rrp_options,
-        'f_field'       => 'name',
-        'from'          => '',
-        'to'            => '',
-        'period'        => 'last_w'
+    'packers'                  => array(
+        'view'        => 'overview',
+        'sort_key'    => 'name',
+        'sort_order'  => -1,
+        'rpp'         => 500,
+        'rpp_options' => $default_rrp_options,
+        'f_field'     => 'name',
+        'from'        => '',
+        'to'          => '',
+        'period'      => 'last_w'
 
     ),
-    'lost_stock' => array(
+    'lost_stock'               => array(
         'view'          => 'overview',
         'sort_key'      => 'date',
         'sort_order'    => -1,
@@ -3112,7 +3117,7 @@ $tab_defaults = array(
         'elements'      => $elements_options['lost_stock'],
 
     ),
-    'stock_given_free' => array(
+    'stock_given_free'         => array(
         'view'          => 'overview',
         'sort_key'      => 'date',
         'sort_order'    => -1,
@@ -3127,24 +3132,24 @@ $tab_defaults = array(
 
     ),
 
-    'intrastat_orders'               => array(
-        'view'          => 'overview',
-        'sort_key'      => 'id',
-        'sort_order'    => 1,
-        'rpp'           => 100,
-        'rpp_options'   => $default_rrp_options,
-        'f_field'       => 'number',
+    'intrastat_orders' => array(
+        'view'        => 'overview',
+        'sort_key'    => 'id',
+        'sort_order'  => 1,
+        'rpp'         => 100,
+        'rpp_options' => $default_rrp_options,
+        'f_field'     => 'number',
 
     ),
 
     'intrastat_products' => array(
-        'view'          => 'overview',
-        'sort_key'      => 'id',
-        'sort_order'    => 1,
-        'rpp'           => 100,
-        'rpp_options'   => $default_rrp_options,
-        'f_field'       => 'code',
-        'f_period'      => 'ytd',
+        'view'        => 'overview',
+        'sort_key'    => 'id',
+        'sort_order'  => 1,
+        'rpp'         => 100,
+        'rpp_options' => $default_rrp_options,
+        'f_field'     => 'code',
+        'f_period'    => 'ytd',
 
 
     ),
@@ -3216,7 +3221,7 @@ $tab_defaults = array(
         'f_field'     => 'code'
     ),
 
-    'deals'                               => array(
+    'deals'            => array(
         'view'          => 'overview',
         'sort_key'      => 'name',
         'sort_order'    => 1,
@@ -3226,7 +3231,7 @@ $tab_defaults = array(
         'elements_type' => each($elements_options['deals'])['key'],
         'elements'      => $elements_options['deals'],
     ),
-    'campaigns'                           => array(
+    'campaigns'        => array(
         'view'          => 'overview',
         'sort_key'      => 'name',
         'sort_order'    => 1,
@@ -3236,7 +3241,7 @@ $tab_defaults = array(
         'elements_type' => each($elements_options['campaigns'])['key'],
         'elements'      => $elements_options['campaigns'],
     ),
-    'campaign.history'                    => array(
+    'campaign.history' => array(
         'view'          => 'overview',
         'sort_key'      => 'date',
         'sort_order'    => 1,
@@ -3246,7 +3251,7 @@ $tab_defaults = array(
         'elements_type' => each($elements_options['campaign_history'])['key'],
         'elements'      => $elements_options['campaign_history']
     ),
-    'campaign.deals'                      => array(
+    'campaign.deals'   => array(
         'view'          => 'overview',
         'sort_key'      => 'name',
         'sort_order'    => 1,
@@ -3257,7 +3262,7 @@ $tab_defaults = array(
         'elements'      => $elements_options['deals'],
     ),
 
-    'campaign_bulk_deals'                      => array(
+    'campaign_bulk_deals'                 => array(
         'view'        => 'overview',
         'sort_key'    => 'from',
         'sort_order'  => -1,
@@ -3343,7 +3348,7 @@ $tab_defaults = array(
 
     ),
 
-    'category.deals'                               => array(
+    'category.deals' => array(
         'view'          => 'overview',
         'sort_key'      => 'name',
         'sort_order'    => 1,
@@ -3355,7 +3360,7 @@ $tab_defaults = array(
     ),
 
 
-    'material.parts'                      => array(
+    'material.parts'              => array(
         'view'          => 'overview',
         'sort_key'      => 'id',
         'sort_order'    => 1,
@@ -3366,18 +3371,15 @@ $tab_defaults = array(
         'elements_type' => each($elements_options['parts']) ['key'],
         'elements'      => $elements_options['parts'],
     ),
-    'inventory.stock.history.day'                      => array(
-        'view'          => 'overview',
-        'sort_key'      => 'reference',
-        'sort_order'    => 1,
-        'rpp'           => 1000,
-        'rpp_options'   => $default_rrp_options,
-        'f_field'       => 'reference',
+    'inventory.stock.history.day' => array(
+        'view'        => 'overview',
+        'sort_key'    => 'reference',
+        'sort_order'  => 1,
+        'rpp'         => 1000,
+        'rpp_options' => $default_rrp_options,
+        'f_field'     => 'reference',
 
     ),
-
-
-
 
 
     'warehouse.parts_to_replenish_picking_location.wget' => array(
@@ -3387,7 +3389,7 @@ $tab_defaults = array(
         'rpp'         => 500,
         'rpp_options' => $default_rrp_options,
         'f_field'     => 'reference',
-    //    'export_fields' => $export_fields['warehouse_parts_to_replenish_picking_location']
+        //    'export_fields' => $export_fields['warehouse_parts_to_replenish_picking_location']
 
     ),
     'supplier.parts_to_replenish_picking_location.wget'  => array(
@@ -3482,7 +3484,7 @@ $tab_defaults = array(
         'elements'      => $elements_options['webpage_publishing_history']
     ),
 
-    'deleted.webpage.history'     => array(
+    'deleted.webpage.history' => array(
         'view'        => 'overview',
         'sort_key'    => 'date',
         'sort_order'  => 1,
@@ -3519,7 +3521,7 @@ $tab_defaults = array(
         'export_fields' => $export_fields['supplier_timeseries_drill_down_families']
 
     ),
-    'email_campaign.mail_list'                     => array(
+    'email_campaign.mail_list'            => array(
         'view'          => 'overview',
         'sort_key'      => 'email',
         'sort_order'    => -1,
@@ -3529,7 +3531,7 @@ $tab_defaults = array(
         'export_fields' => $export_fields['mail_list']
 
     ),
-    'newsletter.mail_list'                     => array(
+    'newsletter.mail_list'                => array(
         'view'          => 'overview',
         'sort_key'      => 'email',
         'sort_order'    => -1,
@@ -3540,7 +3542,7 @@ $tab_defaults = array(
 
 
     ),
-    'abandoned_cart.mail_list'                     => array(
+    'abandoned_cart.mail_list'            => array(
         'view'          => 'overview',
         'sort_key'      => 'email',
         'sort_order'    => 1,
@@ -3552,37 +3554,60 @@ $tab_defaults = array(
 
     ),
 
-    'email_campaign.send_emails'                     => array(
-        'view'          => 'overview',
-        'sort_key'      => 'email',
-        'sort_order'    => 1,
-        'rpp'           => 100,
-        'rpp_options'   => $default_rrp_options,
-        'f_field'       => 'email',
+    'email_campaign.send_emails'      => array(
+        'view'        => 'overview',
+        'sort_key'    => 'email',
+        'sort_order'  => 1,
+        'rpp'         => 100,
+        'rpp_options' => $default_rrp_options,
+        'f_field'     => 'email',
 
 
     ),
-    'email_campaign_type.send_emails'                     => array(
-        'view'          => 'overview',
-        'sort_key'      => 'email',
-        'sort_order'    => 1,
-        'rpp'           => 100,
-        'rpp_options'   => $default_rrp_options,
-        'f_field'       => 'email',
+    'email_campaign_type.send_emails' => array(
+        'view'        => 'overview',
+        'sort_key'    => 'email',
+        'sort_order'  => 1,
+        'rpp'         => 100,
+        'rpp_options' => $default_rrp_options,
+        'f_field'     => 'email',
 
 
     ),
-    'prospect.send_emails'                     => array(
-        'view'          => 'overview',
-        'sort_key'      => 'date',
-        'sort_order'    => 1,
-        'rpp'           => 100,
-        'rpp_options'   => $default_rrp_options,
-        'f_field'       => 'subject',
+    'prospect.send_emails'            => array(
+        'view'        => 'overview',
+        'sort_key'    => 'date',
+        'sort_order'  => 1,
+        'rpp'         => 100,
+        'rpp_options' => $default_rrp_options,
+        'f_field'     => 'subject',
 
 
     ),
-    'email_campaign.email_blueprints'            => array(
+    'prospects.email_templates'       => array(
+        'view'        => 'overview',
+        'sort_key'    => 'name',
+        'sort_order'  => 1,
+        'rpp'         => 100,
+        'rpp_options' => $default_rrp_options,
+        'f_field'     => 'name',
+
+
+    ),
+
+    'prospects.base_templates' => array(
+        'view'        => 'overview',
+        'sort_key'    => 'name',
+        'sort_order'  => 1,
+        'rpp'         => 100,
+        'rpp_options' => $default_rrp_options,
+        'f_field'     => 'name',
+
+
+    ),
+
+
+    'email_campaign.email_blueprints' => array(
         'view'        => 'overview',
         'sort_key'    => 'id',
         'sort_order'  => 1,
@@ -3621,7 +3646,7 @@ $tab_defaults = array(
         'elements_type' => each($elements_options['leakages_transactions'])['key'],
         'elements'      => $elements_options['leakages_transactions']
     ),
-    'list.history' => array(
+    'list.history'                    => array(
         'view'          => 'overview',
         'sort_key'      => 'date',
         'sort_order'    => 1,
@@ -3631,20 +3656,19 @@ $tab_defaults = array(
         'elements_type' => each($elements_options['list_history'])['key'],
         'elements'      => $elements_options['list_history']
     ),
-    'email_tracking.events'                     => array(
-        'view'          => 'overview',
-        'sort_key'      => 'date',
-        'sort_order'    => 1,
-        'rpp'           => 100,
-        'rpp_options'   => $default_rrp_options,
-        'f_field'       => '',
+    'email_tracking.events'           => array(
+        'view'        => 'overview',
+        'sort_key'    => 'date',
+        'sort_order'  => 1,
+        'rpp'         => 100,
+        'rpp_options' => $default_rrp_options,
+        'f_field'     => '',
 
 
     ),
 
 
 );
-
 
 
 ?>
