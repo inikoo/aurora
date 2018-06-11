@@ -401,7 +401,7 @@ function send_test_email(){
     var ajaxData = new FormData();
 
     ajaxData.append("tipo", 'send_test_email')
-    ajaxData.append("email_template_key", '{$email_template_key}')
+    ajaxData.append("email_template_key", $('#email_template_data').data('email_template_key'))
     ajaxData.append("html", $('#send_email_to').data('html'))
     ajaxData.append("email",$('#send_email_to').val())
 
