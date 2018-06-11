@@ -21,8 +21,7 @@ $smarty->assign('email_template', $email_template);
 
 //$smarty->assign('email_template_redirect', '&tab=email_campaign_type.email_template');
 
-
-
+$smarty->assign('send_email_to', $user->get_staff_email());
 
 
 if ($email_template->id and !($email_template->get('Email Template Type') == 'HTML' and $email_template->get('Email Template Editing JSON') == '')) {
@@ -46,7 +45,6 @@ if ($email_template->id and !($email_template->get('Email Template Type') == 'HT
     $smarty->assign('merge_tags', $merge_tags);
     $smarty->assign('merge_contents', $merge_contents);
 
-    $smarty->assign('send_email_to', $user->get_staff_email());
 
     $html = $smarty->fetch('prospect.template.workshop.tpl');
 

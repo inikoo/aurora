@@ -21,7 +21,7 @@
 *}
 
 
-<span class="hide" id="email_template_data"  data-email_template_key="{$email_template->id}"  ></span>
+<span class="hide" id="email_template_data"  data-email_template_key="{$email_template->id}"  data-send_email_to="{$send_email_to}"  ></span>
 
 <div style="position: relative">
 
