@@ -382,6 +382,7 @@ function open_send_test_email_dialog(htmlFile){
 
 
     $('#send_email_to').data('html',htmlFile)
+    $('#send_email_to').val($('#email_template_data').data('send_email_to'))
 
 
     $('#send_email_ok').addClass('hide')
