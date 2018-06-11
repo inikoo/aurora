@@ -357,7 +357,7 @@
                         <td></td>
                         <td style="width_20" class="field_export ">
                             <i id="toggle_all_export_fields" onclick="toggle_all_export_fields(this)"
-                               class="button fa-fw fa fa-check-square"></i>
+                               class="button fa-fw far fa-square"></i>
                         </td>
                     </tr>
                     <tbody id="export_fields">

@@ -98,6 +98,26 @@ function fork_export($job) {
     //print "$sql_data\n";
   //  return 1;
 //exit;
+
+  //  print_r($fork_data);
+
+    if(empty($fork_data['fields']) or $fork_data['fields']=='' ){
+
+
+
+        $sql = sprintf(
+            "UPDATE `Fork Dimension` SET `Fork State`='Finished' ,`Fork Finished Date`=NOW(),`Fork Operations Done`=%d,`Fork Result`=%s WHERE `Fork Key`=%d ",0,
+            prepare_mysql('Error'), $fork_key
+        );
+
+        print $sql;
+
+        $db->exec($sql);
+
+        return 1;
+    }
+
+
     if ($result = $db->query($sql_data)) {
         foreach ($result as $row) {
 

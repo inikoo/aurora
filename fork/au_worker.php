@@ -171,7 +171,7 @@ function get_fork_data($job) {
     $fork_metadata    = json_decode($fork_raw_data, true);
 
 
-//print_r($fork_metadata);
+print_r($fork_metadata);
 
     $inikoo_account_code = $fork_metadata['code'];
     if (!ctype_alnum($inikoo_account_code)) {
