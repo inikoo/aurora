@@ -392,19 +392,51 @@ function fork_housekeeping($job) {
 
             break;
 
+
+        case 'customer_created_migration':
+            //todo  delete when migrate
+
+            $customer     = get_object('Customer', $data['customer_key']);
+
+
+            $sql = sprintf(
+                'select `Prospect Key` from `Prospect Dimension`  where `Prospect Store Key`=%d and `Prospect Main Plain Email`=%s and `Prospect Customer Key` is  NULL ', $customer->get('Store Key'), prepare_mysql($customer->get('Customer Main Plain Email'))
+
+            );
+            if ($result = $db->query($sql)) {
+                if ($row = $result->fetch()) {
+
+                    $prospect         = get_object('Prospect', $row['Prospect Key']);
+                    $prospect->editor = $data['editor'];
+                    if ($prospect->id) {
+                        $sql = sprintf('select `History Key`,`Type`,`Deletable`,`Strikethrough` from `Prospect History Bridge` where `Prospect Key`=%d ', $prospect->id);
+                        if ($result2 = $db->query($sql)) {
+                            foreach ($result2 as $row2) {
+                                $sql = sprintf(
+                                    "INSERT INTO `Customer History Bridge` VALUES (%d,%d,%s,%s,%s)", $customer->id, $row2['History Key'], prepare_mysql($row2['Deletable']), prepare_mysql($row2['Strikethrough']), prepare_mysql($row2['Type'])
+                                );
+                                //print "$sql\n";
+                                $db->exec($sql);
+                            }
+                        }
+
+
+                        $prospect->update_status('Registered', $customer);
+                    }
+                }
+            }
+            break;
+
         case 'customer_created':
-
-
 
 
             $customer     = get_object('Customer', $data['customer_key']);
             $store        = get_object('Store', $customer->get('Customer Store Key'));
             $website_user = get_object('Website_User', $data['website_user_key']);
 
-            $customer->editor=$data['editor'];
-            $store->editor=$data['editor'];
-            $website_user->editor=$data['editor'];
-
+            $customer->editor     = $data['editor'];
+            $store->editor        = $data['editor'];
+            $website_user->editor = $data['editor'];
 
 
             if ($customer->get('Customer Tax Number') != '') {
@@ -432,30 +464,25 @@ function fork_housekeeping($job) {
             if ($result = $db->query($sql)) {
                 if ($row = $result->fetch()) {
 
-                    $prospect = get_object('Prospect', $row['Prospect Key']);
-                    $prospect->editor=$data['editor'];
+                    $prospect         = get_object('Prospect', $row['Prospect Key']);
+                    $prospect->editor = $data['editor'];
                     if ($prospect->id) {
                         $sql = sprintf('select `History Key`,`Type`,`Deletable`,`Strikethrough` from `Prospect History Bridge` where `Prospect Key`=%d ', $prospect->id);
-                        if ($result2=$db->query($sql)) {
-                        		foreach ($result2 as $row2) {
-                                    $sql = sprintf(
-                                        "INSERT INTO `Customer History Bridge` VALUES (%d,%d,%s,%s,%s)", $customer->id, $row2['History Key'],prepare_mysql($row2['Deletable']),prepare_mysql($row2['Strikethrough']),prepare_mysql($row2['Type'])
-                                    );
-                                    //print "$sql\n";
-                                    $db->exec($sql);
-                        		}
+                        if ($result2 = $db->query($sql)) {
+                            foreach ($result2 as $row2) {
+                                $sql = sprintf(
+                                    "INSERT INTO `Customer History Bridge` VALUES (%d,%d,%s,%s,%s)", $customer->id, $row2['History Key'], prepare_mysql($row2['Deletable']), prepare_mysql($row2['Strikethrough']), prepare_mysql($row2['Type'])
+                                );
+                                //print "$sql\n";
+                                $db->exec($sql);
+                            }
                         }
-
-
-
-
 
 
                         $prospect->update_status('Registered', $customer);
                     }
                 }
             }
-
 
 
             break;
