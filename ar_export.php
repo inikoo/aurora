@@ -88,7 +88,6 @@ else {
 
 
 
-
     if (!isset($export_fields[$_tipo])) {
         $response = array(
             'state' => 405,
@@ -104,16 +103,17 @@ else {
 
 
 
-
 $group_by = '';
+$_export_data=$_data;
 include_once 'prepare_table/init.php';
 
 
 $fields = '';
-foreach ($_data['fields'] as $_key => $field_key) {
+
+foreach ($_export_data['fields'] as $_key => $field_key) {
 
     if ($field_key == '') {
-        unset($_data['fields'][$_key]);
+        unset($_export_data['fields'][$_key]);
         continue;
     }
 
@@ -121,6 +121,8 @@ foreach ($_data['fields'] as $_key => $field_key) {
         $fields .= $field_set[$field_key]['name'].',';
     }
 }
+
+
 $fields = trim(preg_replace('/,$/', '', $fields));
 
 if($fields=='')$fields='*';
@@ -130,14 +132,14 @@ $sql
 
 
 
-if ($_data['type'] == 'excel') {
+if ($_export_data['type'] == 'excel') {
     $output = 'xls';
 } else {
-    $output = $_data['type'];
+    $output = $_export_data['type'];
 }
 
 
-if ($_data['tipo'] == 'products'  ) {
+if ($_export_data['tipo'] == 'products'  ) {
 
     $placeholders=array(
         '[image_address]'=>$account->get('Account System Public URL').'/i.php?id='
@@ -153,17 +155,19 @@ if ($_data['tipo'] == 'products'  ) {
 
 
 $export_data = array(
-    'table'      => $_data['tipo'],
+    'table'      => $_export_data['tipo'],
     'output'     => $output,
     'user_key'   => $user->id,
     'sql_count'  => $sql_totals,
     'sql_data'   => $sql,
     'fetch_type' => 'simple',
-    'fields'     => $_data['fields'],
+    'fields'     => $_export_data['fields'],
     'field_set'  => $field_set
 );
 
 
+//print_r($export_data);
+//exit;
 
 list($fork_key, $msg) = new_fork(
     'au_export', $export_data, $account->get('Account Code'), $db
@@ -174,8 +178,8 @@ $response = array(
     'state'    => 200,
     'fork_key' => $fork_key,
     'msg'      => $msg,
-    'type'     => $_data['type'],
-    'tipo'     => $_data['tipo']
+    'type'     => $_export_data['type'],
+    'tipo'     => $_export_data['tipo']
 );
 echo json_encode($response);
 
