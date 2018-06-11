@@ -28,7 +28,7 @@ cell: Backgrid.HtmlCell.extend({
 })
 },
 {
-name: "send",
+name: "sent",
 label: "{t}Send{/t}",
 editable: false,
 defaultOrder:1,
@@ -38,12 +38,23 @@ cell: Backgrid.HtmlCell.extend({ className: "aright"} ),
 headerCell: integerHeaderCell
 },
 {
-name: "read",
-label: "{t}Read{/t}",
+name: "open",
+label: "{t}Open{/t}",
+editable: false,
+defaultOrder:1,
+sortType: "open",
+{if $sort_key=='read'}direction: '{if $sort_order==1}descending{else}ascending{/if}',{/if}
+cell: Backgrid.HtmlCell.extend({ className: "aright"} ),
+headerCell: integerHeaderCell
+},
+
+{
+name: "clicked",
+label: "{t}Clicked{/t}",
 editable: false,
 defaultOrder:1,
 sortType: "toggle",
-{if $sort_key=='read'}direction: '{if $sort_order==1}descending{else}ascending{/if}',{/if}
+{if $sort_key=='clicked'}direction: '{if $sort_order==1}descending{else}ascending{/if}',{/if}
 cell: Backgrid.HtmlCell.extend({ className: "aright"} ),
 headerCell: integerHeaderCell
 }

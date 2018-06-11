@@ -15,9 +15,7 @@ require_once 'utils/natural_language.php';
 require_once 'utils/date_functions.php';
 
 
-require_once 'class.Store.php';
-require_once 'class.Category.php';
-require_once 'class.Payment_Service_Provider.php';
+require_once 'class.EmailCampaignType.php';
 
 
 $editor = array(
@@ -29,35 +27,6 @@ $editor = array(
     'Date'         => gmdate('Y-m-d H:i:s')
 );
 
-
-$email_campaign_types = array(
-    'Newsletter',
-    'Marketing',
-    'GR Reminder',
-    'AbandonedCart',
-    'OOS Notification',
-    'Registration',
-    'Password Reminder',
-    'Order Confirmation',
-    'Delivery Confirmation',
-    'Invite',
-    'Invite Mailshot',
-);
-
-$sql = sprintf("SELECT `Store Key` FROM `Store Dimension`");
-if ($result = $db->query($sql)) {
-    foreach ($result as $row) {
-        $store = new Store('id', $row['Store Key']);
-        foreach ($email_campaign_types as $email_campaign_type) {
-            $sql = sprintf(
-                'insert into `Email Campaign Type Dimension`  (`Email Campaign Type Store Key`,`Email Campaign Type Code`) values (%d,%s) ', $store->id, prepare_mysql($email_campaign_type)
-
-            );
-            print "$sql\n";
-            $db->exec($sql);
-        }
-    }
-}
 
 
 exit;

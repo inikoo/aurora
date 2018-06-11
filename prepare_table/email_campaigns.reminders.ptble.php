@@ -31,16 +31,16 @@ if ($order == 'name') {
 } elseif ($order == 'mailshots') {
     $order = '`Email Campaign Type Mailshots`';
 } elseif ($order == 'send') {
-    $order = '`Email Campaign Type Send`';
+    $order = '`Email Campaign Type Sent`';
 }elseif ($order == 'open_rate') {
-    $order = '`Email Campaign Type Open`/`Email Campaign Type Send`';
+    $order = '`Email Campaign Type Open`/`Email Campaign Type Sent`';
 } elseif ($order == 'clicked_rate') {
-    $order = '`Email Campaign Type Clicked`/`Email Campaign Type Send`';
+    $order = '`Email Campaign Type Clicked`/`Email Campaign Type Sent`';
 } else {
     $order = '`Email Campaign Type Key`';
 }
 $table  = '`Email Campaign Type Dimension` ';
-$fields = "`Email Campaign Type Code`,`Email Campaign Type Key`,`Email Campaign Type Store Key`,`Email Campaign Type Mailshots`,`Email Campaign Type Send`,`Email Campaign Type Open`,`Email Campaign Type Clicked`,`Email Campaign Type Email Template Key`";
+$fields = "`Email Campaign Type Code`,`Email Campaign Type Key`,`Email Campaign Type Store Key`,`Email Campaign Type Mailshots`,`Email Campaign Type Sent`,`Email Campaign Type Open`,`Email Campaign Type Clicked`,`Email Campaign Type Email Template Key`";
 
 
 $sql_totals = "select count(*) as num from $table $where ";

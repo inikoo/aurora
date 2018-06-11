@@ -604,12 +604,18 @@ class Prospect extends Subject {
 
         $sql = sprintf(
             'insert into `Email Tracking Dimension` (
+             `Email Tracking Email`,
               `Email Tracking Scope`,`Email Tracking Scope Key`,
               `Email Tracking Email Template Type Key`,`Email Tracking Email Template Key`,`Email Tracking Published Email Template Key`,
               `Email Tracking Recipient`,`Email Tracking Recipient Key`,`Email Tracking Created Date`) values (
+               %s,
                     %s,%d,
                     %d,%d,%d,
-                    %s,%s,%s)', prepare_mysql('Invitation'), $store->id, $email_campaign_type_key, $published_email_template->get('Published Email Template Email Template Key'), $published_email_template->id, prepare_mysql('Prospect'), $this->id,
+                    %s,%s,%s)',
+            prepare_mysql($this->get('Main Plain Email')),
+
+            prepare_mysql('Invitation'), $store->id,
+            $email_campaign_type_key, $published_email_template->get('Published Email Template Email Template Key'), $published_email_template->id, prepare_mysql('Prospect'), $this->id,
             prepare_mysql(gmdate('Y-m-d H:i:s'))
 
 

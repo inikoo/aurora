@@ -195,7 +195,7 @@ $tab_defaults = array(
         'f_field'     => 'id',
     ),
 
-    'email_campaigns.transactional' => array(
+    'transactional_emails_types' => array(
         'view'        => 'overview',
         'sort_key'    => 'type',
         'sort_order'  => 1,
@@ -3564,7 +3564,7 @@ $tab_defaults = array(
 
 
     ),
-    'email_campaign_type.send_emails' => array(
+    'email_campaign_type.sent_emails' => array(
         'view'        => 'overview',
         'sort_key'    => 'email',
         'sort_order'  => 1,

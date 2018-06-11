@@ -158,7 +158,7 @@ class Email_Template extends DB_Table {
 
 
 
-        if($data['Email Template Role']=='Invitation Mailshot'){
+        if($data['Email Template Role']=='Invite Mailshot'){
             $sql = sprintf(
                 "SELECT `Email Template Key` FROM `Email Template Dimension` WHERE `Email Template Name`=%s AND  `Email Template Scope`=%s AND  `Email Template Scope Key`=%d ",
                 prepare_mysql($data['Email Template Name']), prepare_mysql($data['Email Template Scope']), $data['Email Template Scope Key']
@@ -451,7 +451,7 @@ class Email_Template extends DB_Table {
                     $this->fast_update($update_data);
 
 
-                    if($this->data['Email Template Role']=='Invitation Mailshot'){
+                    if($this->data['Email Template Role']=='Invite Mailshot'){
 
 
                         $published_template=get_object('published_email_template',$this->data['Email Template Published Email Key']);

@@ -28,48 +28,40 @@ cell: Backgrid.EmailCell.extend({
 
 })
 },
+
 {
-name: "formatted_id",
-label: "{t}Customer Id{/t}",
-editable: false,
-sortType: "toggle",
-{if $sort_key=='formatted_id'}direction: '{if $sort_order==1}descending{else}ascending{/if}',{/if}
-
-cell: Backgrid.HtmlCell.extend({ })
-
-
-},
-{
-name: "name",
-label: "{t}Customer Name{/t}",
+name: "customer",
+label: "{t}Customer{/t}",
 sortType: "toggle",
 editable: false,
 
-{if $sort_key=='name'}direction: '{if $sort_order==1}descending{else}ascending{/if}',{/if}
+{if $sort_key=='customer'}direction: '{if $sort_order==1}descending{else}ascending{/if}',{/if}
 cell: Backgrid.HtmlCell.extend({ })
 },
 
  {
-name: "order",
-label: "{t}Order{/t}",
+name: "date",
+label: "{t}Sent date{/t}",
 sortType: "toggle",
 editable: false,
 
-{if $sort_key=='order'}direction: '{if $sort_order==1}descending{else}ascending{/if}',{/if}
+{if $sort_key=='date'}direction: '{if $sort_order==1}descending{else}ascending{/if}',{/if}
 
 cell: Backgrid.HtmlCell.extend({
+className: "aright"
+}),
+headerCell: integerHeaderCell
 
-})
 },
 
 {
-name: "inactive_days",
-label: "{t}Inactivity (days){/t}",
+name: "state",
+label: "{t}State{/t}",
 editable: false,
 
 defaultOrder:1,
 sortType: "toggle",
-{if $sort_key=='inactive_days'}direction: '{if $sort_order==1}descending{else}ascending{/if}',{/if}
+{if $sort_key=='state'}direction: '{if $sort_order==1}descending{else}ascending{/if}',{/if}
 cell: Backgrid.HtmlCell.extend({ className: "aright"} ),
 
 headerCell: integerHeaderCell

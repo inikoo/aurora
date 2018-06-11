@@ -62,8 +62,8 @@ switch ($tipo) {
     case 'newsletters':
         newsletters(get_table_parameters(), $db, $user);
         break;
-    case 'transactional_emails':
-        transactional_emails(get_table_parameters(), $db, $user);
+    case 'transactional_emails_types':
+        transactional_emails_types(get_table_parameters(), $db, $user);
         break;
     default:
         $response = array(
@@ -202,7 +202,6 @@ function deals($_data, $db, $user) {
             }
 
 
-
             if (strlen(strip_tags($data['Deal Term Allowances Label'])) > 75) {
                 $description_class = 'super_small';
             } elseif (strlen(strip_tags($data['Deal Term Allowances Label'])) > 60) {
@@ -217,7 +216,7 @@ function deals($_data, $db, $user) {
             if ($_data['parameters']['parent'] == 'category') {
                 $name = sprintf('<span class="link" onClick="change_view(\'products/%d/category/%d/deal/%d\')">%s</span>', $data['Deal Store Key'], $_data['parameters']['parent_key'], $data['Deal Key'], $data['Deal Name']);
 
-            }elseif ($_data['parameters']['parent'] == 'store') {
+            } elseif ($_data['parameters']['parent'] == 'store') {
                 $name = sprintf('<span class="link" onClick="change_view(\'deals/%d/%d\')">%s</span>', $data['Deal Store Key'], $data['Deal Key'], $data['Deal Name']);
 
             } else {
@@ -892,7 +891,6 @@ function newsletters($_data, $db, $user) {
 }
 
 
-
 function reminders($_data, $db, $user) {
 
     $rtext_label = 'scope';
@@ -910,34 +908,34 @@ function reminders($_data, $db, $user) {
 
     foreach ($db->query($sql) as $data) {
 
-//'Newsletter','Marketing','GR Reminder','AbandonedCart','OOS Notification','Registration','Password Reminder','Order Confirmation','Delivery Confirmation'
-        switch ($data['Email Campaign Type Code']){
+        //'Newsletter','Marketing','GR Reminder','AbandonedCart','OOS Notification','Registration','Password Reminder','Order Confirmation','Delivery Confirmation'
+        switch ($data['Email Campaign Type Code']) {
             case 'Newsletter':
-                $name=_('Newsletter');
+                $name = _('Newsletter');
                 break;
             case 'Marketing':
-                $name=_('Mailshot');
+                $name = _('Mailshot');
                 break;
             case 'AbandonedCart':
-                $name=_('Abandoned cart');
+                $name = _('Abandoned cart');
                 break;
             case 'OOS Notification':
-                $name=_('Out of stock notification');
+                $name = _('Out of stock notification');
                 break;
             case 'Registration':
-                $name=_('Welcome');
+                $name = _('Welcome');
                 break;
             case 'Password Reminder':
-                $name=_('Password reset');
+                $name = _('Password reset');
                 break;
             case 'Order Confirmation':
-                $name=_('order confirmation');
+                $name = _('order confirmation');
                 break;
             case 'GR Reminder':
-                $name=_('Reorder reminder');
+                $name = _('Reorder reminder');
                 break;
             default:
-                $name=$data['Email Campaign Type Code'];
+                $name = $data['Email Campaign Type Code'];
 
 
         }
@@ -946,13 +944,11 @@ function reminders($_data, $db, $user) {
         $name = sprintf('<span class="link" onClick="change_view(\'customers/%d/email_campaign_type/%d/\')">%s</span>', $data['Email Campaign Type Store Key'], $data['Email Campaign Type Key'], $name);
 
 
-
-
         $adata[] = array(
-            'id'   => (integer)$data['Email Campaign Type Key'],
+            'id' => (integer)$data['Email Campaign Type Key'],
 
 
-            'name'   => $name,
+            'name'      => $name,
             'mailshots' => number($data['Email Campaign Type Mailshots']),
 
 
@@ -975,9 +971,9 @@ function reminders($_data, $db, $user) {
 }
 
 
-function transactional_emails($_data, $db, $user) {
+function transactional_emails_types($_data, $db, $user) {
 
-    $rtext_label = 'newsletter';
+    $rtext_label = 'operational email';
 
 
     include_once 'prepare_table/init.php';
@@ -993,18 +989,38 @@ function transactional_emails($_data, $db, $user) {
     foreach ($db->query($sql) as $data) {
 
 
-        $name = sprintf('<span class="link" onClick="change_view(\'newsletters/%d/%d\')">%s</span>', $data['Email Campaign Store Key'], $data['Email Campaign Key'], $data['Email Campaign Name']);
+        switch ($data['Email Campaign Type Code']) {
+            case 'GR Reminder':
+                $type = _('GR reminder');
+                break;
+            case 'AbandonedCart':
+                $type = _('Abandoned cart');
+                break;
+            case 'Registration':
+                $type = _('Welcome email');
+                break;
+            case 'OOS Notification':
+                $type = _('Back in stock');
+                break;
+
+                break;
+            default:
+                $type = $data['Email Campaign Type Code'];
+                break;
+        }
 
 
+        $type = sprintf('<span class="link" onClick="change_view(\'email_campaign_type/%d/%d\')">%s</span>', $data['Email Campaign Type Store Key'], $data['Email Campaign Type Key'], $type);
 
 
         $adata[] = array(
-            'id'   => (integer)$data['Email Campaign Key'],
-            'date' => strftime("%a %e %b %Y", strtotime($data['Email Campaign Last Updated Date'].' +0:00')),
+            'id' => (integer)$data['Email Campaign Type Key'],
 
 
-            'name'   => $name,
-            'emails' => number($data['Email Campaign Number Estimated Emails']),
+            'type'    => $type,
+            'sent'    => number($data['Email Campaign Type Sent']),
+            'open'    => number($data['Email Campaign Type Open']),
+            'clicked' => number($data['Email Campaign Type Clicked']),
 
 
         );

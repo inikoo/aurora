@@ -40,7 +40,7 @@ if ($new) {
                     'server_validation' => json_encode(
                         array(
                             'tipo'     => 'check_for_duplicates',
-                            'metadata' => array('role' => 'Invitation Mailshot')
+                            'metadata' => array('role' => 'Invite Mailshot')
                         )
                     ),
 
@@ -51,7 +51,7 @@ if ($new) {
                     'id'     => 'Email_Template_Role',
                     'render' => false,
                     'edit'   => 'string',
-                    'value'  => 'Invitation Mailshot',
+                    'value'  => 'Invite Mailshot',
                     'label'  => '',
                     'type'   => 'value'
                 ),
@@ -103,7 +103,7 @@ if ($new) {
                     'server_validation' => json_encode(
                         array(
                             'tipo'     => 'check_for_duplicates',
-                            'metadata' => array('role' => 'Invitation Mailshot')
+                            'metadata' => array('role' => 'Invite Mailshot')
                         )
                     ),
 

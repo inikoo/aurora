@@ -106,6 +106,7 @@ function recover_password($db, $data, $editor, $website, $account) {
 
             $email_template = get_object('email_template', $scope_metadata['emails']['reset_password']['key']);
 
+
             $published_email_template = get_object('published_email_template', $email_template->get('Email Template Published Email Key'));
 
 
@@ -173,12 +174,16 @@ function recover_password($db, $data, $editor, $website, $account) {
 
             $sql = sprintf(
                 'insert into `Email Tracking Dimension` (
+                `Email Tracking Email`,`Email Tracking Email Template Type Key`,
               `Email Tracking Scope`,`Email Tracking Scope Key`,
               `Email Tracking Email Template Key`,`Email Tracking Published Email Template Key`,
               `Email Tracking Recipient`,`Email Tracking Recipient Key`,`Email Tracking Created Date`) values (
                     %s,%d,
+                      %s,%d,
                     %d,%d,
-                    %s,%s,%s)', prepare_mysql('Password Reminder'), $website->id, $email_template->id, $published_email_template->id, prepare_mysql('Customer'), $customer->id, prepare_mysql(gmdate('Y-m-d H:i:s'))
+                    %s,%s,%s)',
+                prepare_mysql($data['recovery_email']),$email_template->get('Email Template Email Campaign Type Key'),
+                prepare_mysql('Password Reminder'), $website->id, $email_template->id, $published_email_template->id, prepare_mysql('Customer'), $customer->id, prepare_mysql(gmdate('Y-m-d H:i:s'))
 
 
             );

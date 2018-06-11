@@ -21,7 +21,7 @@ $_product = array(
         'product.customers'         => 'product.customers',
         'product.customers.favored' => 'product.customers',
         'product.webpage.settings'  => 'product.webpage',
-        'webpage.preview'   => 'product.webpage',
+        'webpage.preview'           => 'product.webpage',
         //  'product.webpage.analytics'      => 'product.webpage',
         'product.webpage.logbook'   => 'product.webpage',
 
@@ -42,7 +42,7 @@ $_product = array(
                     'icon'  => 'sliders'
                 ),
 
-                'webpage.preview' => array(
+                'webpage.preview'         => array(
                     'label' => _('Workshop'),
                     'icon'  => 'wrench'
                 ),
@@ -92,7 +92,7 @@ $_product = array(
         ),
         'product.orders'  => array(
             'label'         => _('Orders'),
-            'icon'=>'shopping-cart',
+            'icon'          => 'shopping-cart',
             'quantity_data' => array(
                 'object' => '_object',
                 'field'  => 'Number Orders'
@@ -102,7 +102,7 @@ $_product = array(
 
         'product.customers' => array(
             'label'         => _('Customers'),
-            'icon'=>'users',
+            'icon'          => 'users',
             'quantity_data' => array(
                 'object' => '_object',
                 'field'  => 'Customers Numbers'
@@ -327,10 +327,10 @@ $modules = array(
                 'tabs'      => array(
 
 
-                     'prospects' => array(
+                    'prospects'                 => array(
                         'label' => _('Prospects')
                     ),
-                    'prospects.email_templates'          => array(
+                    'prospects.email_templates' => array(
                         'label' => _('Email templates')
                     ),
 
@@ -415,24 +415,54 @@ $modules = array(
                 'label'     => _('Emails'),
                 'icon'      => 'paper-plane',
                 'reference' => 'customers/%s/email_campaigns',
+
+
+
+
                 'tabs'      => array(
-                    'email_campaigns.newsletters'   => array(
+                    'email_campaigns.newsletters' => array(
                         'label' => _('Newsletters'),
-                        'icon'=>'newspaper'
+                        'icon'  => 'newspaper'
                     ),
-                    'email_campaigns.mailshots'     => array(
+                    'email_campaigns.mailshots'   => array(
                         'label' => _('Marketing mailshots'),
-                        'icon'=>'bullhorn'
-                    ),
-                    'email_campaigns.reminders'     => array(
-                        'label' => _('Transactional mailshots'),
-                        'icon'=>'bell'
+                        'icon'  => 'bullhorn'
                     ),
 
-                    'email_campaigns.transactional' => array(
-                        'label' => _('Transactional'),
-                        'icon'=>'location-arrow'
+
+                    'transactional_emails_types' => array(
+                        'label'   => _('Operations'),
+                        'icon'    => 'handshake-alt',
+
+                      /*
+                        'subtabs' => array(
+
+                            'sent_emails.welcome' => array(
+                                'label' => _('Welcome'),
+                                'icon'  => 'door-open'
+                            ),
+                            'sent_emails.order_notification' => array(
+                                'label' => _('Order notification'),
+                                'icon'  => 'shopping-cart'
+                            ),
+                            'sent_emails.dispatched_order' => array(
+                                'label' => _('Dispatched'),
+                                'icon'  => 'truck'
+                            ),
+                            'send_email.reminders'   => array(
+                                'label' => _('Deal reminders'),
+                                'icon'  => 'bell'
+                            ),
+                            'send_email.back_in_stock'   => array(
+                                'label' => _('Back in stock'),
+                                'icon'  => 'dolly'
+                            ),
+  )
+*/
+
                     ),
+
+
                     /*
                     'contacts'       => array(
                         'label' => _('Contacts')
@@ -456,22 +486,25 @@ $modules = array(
             ),
 
 
-            'email_campaign_type'=> array(
+            'email_campaign_type' => array(
                 'type' => 'object',
                 'tabs' => array(
-                    'email_campaign_type.details'   => array(
-                        'label' => _('Data'),
-                        'icon'  => 'database',
-                        'title' => _('Details')
-                  ),
+                    'email_campaign_type.details' => array(
+                        'label' => _('Settings'),
+                        'icon'  => 'sliders-h',
+                    ),
 
-                    'email_campaign_type.email_template'   => array(
-                        'label' => _('Email template'),
-                        'icon'  => 'envelope'
+                    'email_campaign_type.workshop' => array(
+                        'label' => _('Workshop'),
+                        'icon'  => 'wrench'
                     ),
 
                     'email_campaign_type.mailshots' => array(
                         'label' => _('Mailshots'),
+                        'icon'  => 'container-storage'
+                    ),
+                    'email_campaign_type.sent_emails' => array(
+                        'label' => _('Sent emails'),
                         'icon'  => 'paper-plane'
                     ),
 
@@ -503,19 +536,19 @@ $modules = array(
                         'icon'  => 'envelope'
                     ),
                     'email_campaign.email_blueprints' => array(
-                        'label' => _('Email HTML templates'),
-                        'icon_v2'  => 'fab fa-html5'
+                        'label'   => _('Email HTML templates'),
+                        'icon_v2' => 'fab fa-html5'
                     ),
 
-                    'email_campaign.send_emails' => array(
+                    'email_campaign.send_emails'     => array(
                         'label' => _('Sent emails'),
                         'icon'  => 'paper-plane'
                     ),
-                    'email_campaign.published_email'   => array(
+                    'email_campaign.published_email' => array(
                         'label' => _('Email'),
                         'icon'  => 'envelope'
                     ),
-                    'email_campaign.history' => array(
+                    'email_campaign.history'         => array(
                         'title' => _('History'),
                         'label' => '',
                         'icon'  => 'road',
@@ -566,15 +599,15 @@ $modules = array(
                 'type' => 'object',
 
                 'tabs' => array(
-                    'category.details'    => array(
+                    'category.details'   => array(
                         'label' => _('Data'),
                         'icon'  => 'database'
                     ),
-                    'category.history'    => array(
+                    'category.history'   => array(
                         'label' => _('History'),
                         'icon'  => 'sticky-note'
                     ),
-                    'category.customers'  => array('label' => _('Customers')),
+                    'category.customers' => array('label' => _('Customers')),
 
                     'category.categories' => array(
                         'label' => _(
@@ -615,7 +648,7 @@ $modules = array(
                     ),
                     'customer.orders'    => array(
                         'label' => _('Orders'),
-                        'icon'=>'shopping-cart'
+                        'icon'  => 'shopping-cart'
 
                     ),
                     'customer.invoices'  => array('label' => _('Invoices')),
@@ -676,12 +709,12 @@ $modules = array(
 
             'prospects.email_template' => array(
                 'type' => 'object',
-                 'tabs'           => array(
-                    'prospects.template.details'   => array(
+                'tabs' => array(
+                    'prospects.template.details'  => array(
                         'label' => _('Data'),
                         'icon'  => 'database'
                     ),
-                    'prospects.template.workshop'  => array(
+                    'prospects.template.workshop' => array(
                         'label' => _('Workshop'),
                         'icon'  => 'wrench'
                     ),
@@ -689,9 +722,7 @@ $modules = array(
 
                 )
 
-                ),
-
-
+            ),
 
 
             'prospects.template.new' => array(
@@ -792,24 +823,24 @@ $modules = array(
 
 
             'prospect' => array(
-                'type'           => 'object',
-                'label'          => _('Prospect'),
-                'title'          => _('Prospect'),
-                'icon'           => 'user-plus',
-                'reference'      => 'prospect/%d',
+                'type'      => 'object',
+                'label'     => _('Prospect'),
+                'title'     => _('Prospect'),
+                'icon'      => 'user-plus',
+                'reference' => 'prospect/%d',
 
-                'tabs'           => array(
-                    'prospect.details'   => array(
+                'tabs' => array(
+                    'prospect.details' => array(
                         'label' => _('Data'),
                         'icon'  => 'database'
                     ),
 
-                    'prospect.history'   => array(
+                    'prospect.history' => array(
                         'label' => _('Communications, history, notes'),
                         'icon'  => 'comment'
                     ),
 
-                    'prospect.send_emails'   => array(
+                    'prospect.send_emails' => array(
                         'label' => _('Sent emails'),
                         'icon'  => 'paper-plane'
                     ),
@@ -829,19 +860,18 @@ $modules = array(
 
             ),
 
-            'email_tracking'=> array(
+            'email_tracking'         => array(
                 'type' => 'object',
                 'tabs' => array(
-                    'email_tracking.email'   => array(
+                    'email_tracking.email' => array(
                         'label' => _('Email'),
                         'icon'  => 'envelope',
                     ),
 
-                    'email_tracking.events'   => array(
+                    'email_tracking.events' => array(
                         'label' => _('Tracking'),
                         'icon'  => 'stopwatch'
                     ),
-
 
 
                 )
@@ -1156,15 +1186,15 @@ $modules = array(
                         'icon'  => 'edit'
                     ),
                     'email_campaign.email_blueprints' => array(
-                        'label' => _('Email HTML templates'),
-                        'icon_v2'  => 'fab fa-html5'
+                        'label'   => _('Email HTML templates'),
+                        'icon_v2' => 'fab fa-html5'
                     ),
 
-                    'email_campaign.published_email'   => array(
+                    'email_campaign.published_email' => array(
                         'label' => _('Email'),
                         'icon'  => 'envelope'
                     ),
-                  
+
 
                     'email_campaign.send_emails' => array(
                         'label' => _('Send emails'),
@@ -1243,8 +1273,8 @@ $modules = array(
                         'icon'  => 'users',
                     ),
                     'email_campaign.email_blueprints' => array(
-                        'label' => _('Email HTML templates'),
-                        'icon_v2'  => 'fab fa-html5'
+                        'label'   => _('Email HTML templates'),
+                        'icon_v2' => 'fab fa-html5'
                     ),
                     'email_campaign.email_template'   => array(
                         'label' => _('Email'),
@@ -2676,17 +2706,17 @@ $modules = array(
                     'website.in_process_webpages' => 'website.webpages',
 
 
-                    'website.info_bar'       => 'website.templates',
+                    'website.info_bar' => 'website.templates',
 
                     'website.templates' => 'website.templates',
 
 
-                    'website.details'      => 'website.settings',
-                    'website.logos'      => 'website.settings',
-                    'website.colours'      => 'website.settings',
-                    'website.details'      => 'website.settings',
-                    'website.localization'      => 'website.settings',
-                    'website.menu.preview' => 'website.settings',
+                    'website.details'        => 'website.settings',
+                    'website.logos'          => 'website.settings',
+                    'website.colours'        => 'website.settings',
+                    'website.details'        => 'website.settings',
+                    'website.localization'   => 'website.settings',
+                    'website.menu.preview'   => 'website.settings',
                     'website.footer.preview' => 'website.settings',
                     'website.header.preview' => 'website.settings',
 
@@ -2696,10 +2726,9 @@ $modules = array(
                 'tabs' => array(
 
 
-
                     'website.settings' => array(
-                        'label' => _('Settings'),
-                        'icon'  => 'sliders-h',
+                        'label'   => _('Settings'),
+                        'icon'    => 'sliders-h',
                         'subtabs' => array(
 
                             'website.details' => array(
@@ -2739,13 +2768,6 @@ $modules = array(
 
                         ),
                     ),
-
-
-
-
-
-
-
 
 
                     /*
@@ -2924,7 +2946,6 @@ $modules = array(
             ),
 
 
-
             'webpage.new' => array(
                 'type' => 'new_object',
                 'tabs' => array(
@@ -3008,8 +3029,8 @@ $modules = array(
                                 'icon'  => 'envelope'
                             ),
                             'webpage.email_blueprints' => array(
-                                'label' => _('Email HTML templates'),
-                                'icon_v2'  => 'fab fa-html5'
+                                'label'   => _('Email HTML templates'),
+                                'icon_v2' => 'fab fa-html5'
                             )
 
 
@@ -3284,8 +3305,8 @@ $modules = array(
                     'category.webpage.products'       => 'category.webpage',
                     'category.webpage.analytics'      => 'category.webpage',
                     'category.webpage.logbook'        => 'category.webpage',
-                    'category.customers'         => 'category.customers',
-                    'category.customers.favored' => 'category.customers',
+                    'category.customers'              => 'category.customers',
+                    'category.customers.favored'      => 'category.customers',
 
                 ),
                 'tabs'           => array(
@@ -3355,16 +3376,16 @@ $modules = array(
 
                     ),
 
-                    'category.subjects' => array('label' => ''),
-                    'category.customers'         => array(
-                        'label'         => _('Customers'),
-                       // 'quantity_data' => array('object' => '_object', 'field'  => 'Number Customers'),
-                        'icon'=>'user'
-                    ),
-                    'category.deals'         => array(
-                        'label'         => _('Offers'),
+                    'category.subjects'  => array('label' => ''),
+                    'category.customers' => array(
+                        'label' => _('Customers'),
                         // 'quantity_data' => array('object' => '_object', 'field'  => 'Number Customers'),
-                        'icon'=>'tags'
+                        'icon'  => 'user'
+                    ),
+                    'category.deals'     => array(
+                        'label' => _('Offers'),
+                        // 'quantity_data' => array('object' => '_object', 'field'  => 'Number Customers'),
+                        'icon'  => 'tags'
                     ),
 
                     /*
@@ -4310,7 +4331,7 @@ $modules = array(
                         'label' => _('Items'),
                         'icon'  => 'bars'
                     ),
-                    'supplier.delivery.costing'   => array(
+                    'supplier.delivery.costing' => array(
                         'label' => _('Costing'),
                         'icon'  => 'box-usd'
                     ),
@@ -5124,7 +5145,7 @@ $modules = array(
                     ),
                     'part_family.products'         => array(
                         'label' => _('Products'),
-                        'icon'=>'cubes'
+                        'icon'  => 'cubes'
                     ),
 
                     'category.images'  => array(
@@ -5879,7 +5900,7 @@ $modules = array(
 
             ),
 
-            'sales'         => array(
+            'sales'            => array(
                 'type' => '',
                 'tabs' => array(
                     'sales' => array(),
@@ -5887,7 +5908,7 @@ $modules = array(
                 )
 
             ),
-              'stock_given_free'         => array(
+            'stock_given_free' => array(
                 'type' => '',
                 'tabs' => array(
                     'stock_given_free' => array(),
@@ -5895,7 +5916,7 @@ $modules = array(
                 )
 
             ),
-              'lost_stock'         => array(
+            'lost_stock'       => array(
                 'type' => '',
                 'tabs' => array(
                     'lost_stock' => array(),
@@ -5903,9 +5924,6 @@ $modules = array(
                 )
 
             ),
-
-
-
 
 
             'report_orders' => array(
@@ -6481,7 +6499,7 @@ $modules = array(
                 'icon'      => '',
                 'reference' => '',
                 'tabs'      => array(
-                    'profile.details'       => array(
+                    'profile.details' => array(
                         'label' => _('Settings'),
                         'icon'  => 'sliders-h'
                     ),
@@ -6497,7 +6515,7 @@ $modules = array(
                         'label' => _('API keys'),
                         'icon'  => 'key'
                     ),
-                    'profile.history'          => array(
+                    'profile.history'       => array(
                         'label' => '',
                         'title' => _('History/Notes'),
                         'icon'  => 'road',
@@ -6509,9 +6527,6 @@ $modules = array(
                         'title' => _('Deleted API keys'),
                         'class' => 'right icon_only'
                     ),
-
-
-
 
 
                 )
@@ -6526,8 +6541,6 @@ $modules = array(
 
                 )
             ),
-
-
 
 
         )

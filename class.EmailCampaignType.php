@@ -110,8 +110,41 @@ class EmailCampaignType extends DB_Table {
             case 'Send Email Address':
                 $store=get_object('store',$this->get('Store Key'));
                 return $store->get('Store Email');
+            case 'Icon':
+                switch ($this->data['Email Campaign Type Code']){
+                    case 'Newsletter':
+                        $icon=_('Newsletter');
+                        break;
+                    case 'Marketing':
+                        $icon=_('Mailshot');
+                        break;
+                    case 'AbandonedCart':
+                        $icon=_('Abandoned cart');
+                        break;
+                    case 'OOS Notification':
+                        $icon=_('Back in stock');
+                        break;
+                    case 'Registration':
+                        $icon='door-open';
+                        break;
+                    case 'Password Reminder':
+                        $icon=_('Password reset');
+                        break;
+                    case 'Order Confirmation':
+                        $icon=_('order confirmation');
+                        break;
+                    case 'GR Reminder':
+                        $icon=_('Reorder reminder');
+                        break;
+                    default:
+                        $icon='';
 
-            case 'Name':
+
+                }
+                return $icon;
+                break;
+
+            case 'Label':
 
                 switch ($this->data['Email Campaign Type Code']){
                     case 'Newsletter':
@@ -124,10 +157,10 @@ class EmailCampaignType extends DB_Table {
                         $name=_('Abandoned cart');
                         break;
                     case 'OOS Notification':
-                        $name=_('Out of stock notification');
+                        $name=_('Back in stock');
                         break;
                     case 'Registration':
-                        $name=_('Welcome');
+                        $name=_('Welcome emails');
                         break;
                     case 'Password Reminder':
                         $name=_('Password reset');
