@@ -39,8 +39,11 @@ if (!isset($_REQUEST['tipo'])) {
 $tipo = $_REQUEST['tipo'];
 
 switch ($tipo) {
-    case 'subject_send_emails':
-        subject_send_emails(get_table_parameters(), $db, $user);
+    case 'subject_sent_emails':
+        subject_sent_emails(get_table_parameters(), $db, $user);
+        break;
+    case 'sent_emails':
+        sent_emails(get_table_parameters(), $db, $user);
         break;
     case 'email_tracking_events':
         email_tracking_events(get_table_parameters(), $db, $user);
@@ -57,7 +60,7 @@ switch ($tipo) {
 }
 
 
-function subject_send_emails($_data, $db, $user) {
+function subject_sent_emails($_data, $db, $user) {
 
     $rtext_label = 'email';
     include_once 'prepare_table/init.php';
@@ -190,6 +193,99 @@ function email_tracking_events($_data, $db, $user) {
         );
 
     }
+
+    $response = array(
+        'resultset' => array(
+            'state'         => 200,
+            'data'          => $adata,
+            'rtext'         => $rtext,
+            'sort_key'      => $_order,
+            'sort_dir'      => $_dir,
+            'total_records' => $total
+
+        )
+    );
+    echo json_encode($response);
+}
+
+
+
+function sent_emails($_data, $db, $user) {
+
+    $rtext_label = 'email';
+    include_once 'prepare_table/init.php';
+
+    $sql   = "select $fields from $table $where $wheref order by $order $order_direction limit $start_from,$number_results";
+    $adata = array();
+
+
+    $parent = get_object($_data['parameters']['parent'], $_data['parameters']['parent_key']);
+
+    // print $sql;
+    //'Ready','Send to SES','Rejected by SES','Send','Read','Hard Bounce','Soft Bounce','Spam','Delivered','Opened','Clicked','Error'
+
+
+    if ($result = $db->query($sql)) {
+        foreach ($result as $data) {
+
+
+            switch ($data['Email Tracking State']) {
+                case 'Ready':
+                    $state = _('Ready to send');
+                    break;
+                case 'Sent to SES':
+                    $state = _('Sending');
+                    break;
+
+                    break;
+                case 'Delivered':
+                    $state = _('Delivered');
+                    break;
+                case 'Opened':
+                    $state = _('Opened');
+                    break;
+                case 'Clicked':
+                    $state = _('Clicked');
+                    break;
+                case 'Error':
+                    $state = '<span class="warning">'._('Error').'</span>';
+                    break;
+                case 'Hard Bounce':
+                    $state = '<span class="error"><i class="fa fa-exclamation-circle"></i>  '._('Bounced').'</span>';
+                    break;
+                case 'Soft Bounce':
+                    $state = '<span class="warning"><i class="fa fa-exclamation-triangle"></i>  '._('Probable bounce').'</span>';
+                    break;
+                case 'Spam':
+                    $state = '<span class="error"><i class="fa fa-exclamation-circle"></i>  '._('Mark as spam').'</span>';
+                    break;
+                default:
+                    $state = $data['Email Tracking State'];
+            }
+
+
+            $subject = sprintf('<span class="link" onclick="change_view(\'%s/%d/%d/email/%d\')"  >%s</span>', strtolower($parent->get_object_name()).'s', $parent->get('Store Key'), $parent->id, $data['Email Tracking Key'], $data['Published Email Template Subject']);
+            $customer = sprintf('<span class="link" onclick="change_view(\'customers/%d/%d\')"  >%s (%05d)</span>',$data['Customer Store Key'],$data['Customer Key'] , $data['Customer Name'],$data['Customer Key']);
+
+
+            $adata[] = array(
+                'id'      => (integer)$data['Email Tracking Key'],
+                'state'   => $state,
+                'email'   => $data['Email Tracking Email'],
+                'subject' => $subject,
+                'customer' => $customer,
+                'date'    => strftime("%a, %e %b %Y %R:%S", strtotime($data['Email Tracking Created Date']." +00:00")),
+
+
+            );
+
+
+        }
+    } else {
+        print_r($error_info = $db->errorInfo());
+        exit;
+    }
+
 
     $response = array(
         'resultset' => array(

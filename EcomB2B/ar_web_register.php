@@ -300,12 +300,18 @@ function send_welcome_email($db, $website, $customer, $account) {
 
     $sql = sprintf(
         'insert into `Email Tracking Dimension` (
+         `Email Tracking Email`,`Email Tracking Email Template Type Key`,
               `Email Tracking Scope`,`Email Tracking Scope Key`,
               `Email Tracking Email Template Key`,`Email Tracking Published Email Template Key`,
               `Email Tracking Recipient`,`Email Tracking Recipient Key`,`Email Tracking Created Date`) values (
+               %s,%d,
                     %s,%d,
                     %d,%d,
-                    %s,%s,%s)', prepare_mysql('Registration'), $website->id, $email_template->id, $published_email_template->id, prepare_mysql('Customer'), $customer->id, prepare_mysql(gmdate('Y-m-d H:i:s'))
+                    %s,%s,%s)',
+
+        prepare_mysql($customer->get('Customer Main Plain Email')),$email_template->get('Email Template Email Campaign Type Key'),
+
+        prepare_mysql('Registration'), $website->id, $email_template->id, $published_email_template->id, prepare_mysql('Customer'), $customer->id, prepare_mysql(gmdate('Y-m-d H:i:s'))
 
 
     );

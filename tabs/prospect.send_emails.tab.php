@@ -19,7 +19,7 @@ $parameters = array(
 
   $tab     = 'prospect.send_emails';
         $ar_file = 'ar_mailshot_tables.php';
-        $tipo    = 'subject_send_emails';
+        $tipo    = 'subject_sent_emails';
 
 
 

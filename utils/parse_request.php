@@ -1719,6 +1719,124 @@ function parse_request($_data, $db, $modules, $account = '', $user = '', $is_set
 
                 break;
 
+            case 'email_campaign_type':
+                if (!$user->can_view('customers')) {
+                    $module  = 'utils';
+                    $section = 'forbidden';
+                    break;
+                }
+
+                $module = 'customers';
+
+
+                if ($count_view_path == 0) {
+                    $section = 'email_campaign_type';
+                    $parent  = 'store';
+                    if ($user->data['User Hooked Store Key'] and in_array(
+                            $user->data['User Hooked Store Key'], $user->stores
+                        )) {
+                        $parent_key = $user->data['User Hooked Store Key'];
+                    } else {
+                        $_tmp       = $user->stores;
+                        $parent_key = array_shift($_tmp);
+                    }
+
+                }
+                $arg1 = array_shift($view_path);
+                if (is_numeric($arg1)) {
+                    $section    = 'email_campaign_type';
+                    $parent     = 'store';
+                    $parent_key = $arg1;
+
+
+
+                    if (isset($view_path[0])) {
+
+                        if (is_numeric($view_path[0])) {
+                            $section = 'email_campaign_type';
+
+                            $parent     = 'store';
+                            $parent_key = $arg1;
+                            $object     = 'email_campaign_type';
+                            $key        = $view_path[0];
+
+
+                            if (isset($view_path[1])) {
+
+
+
+                                if ($view_path[1] == 'email') {
+
+                                    $store_key = $arg1;
+
+                                    $section = 'email_tracking';
+
+                                    $parent     = 'prospect';
+                                    $parent_key = $key;
+
+                                    if (is_numeric($view_path[2])) {
+                                        $section = 'email_tracking';
+                                        $object  = 'email_tracking';
+                                        $key     = $view_path[2];
+
+
+                                    }
+
+                                }elseif ($view_path[1] == 'compose') {
+
+
+                                    if (isset($view_path[2])  and is_numeric($view_path[2]) ) {
+
+                                        $parent='prospect';
+                                        $parent_key =$key;
+                                        $object = 'email_template';
+                                        $key=$view_path[2];
+
+                                        $section = 'prospect.compose_email';
+
+                                    }
+
+
+
+                                }
+
+
+                            }
+
+
+
+                        }
+                        elseif ($view_path[0] == 'new') {
+                            $section = 'prospect.new';
+                            $object  = '';
+                        }elseif ($view_path[0] == 'template') {
+
+
+
+                            if (is_numeric($view_path[1])) {
+                                $section = 'prospects.email_template';
+                                $object  = 'email_template';
+                                $key     = $view_path[1];
+
+
+                            } elseif ($view_path[1] == 'new') {
+                                $object  = 'email_template';
+                                $key     =0;
+                                $section = 'prospects.template.new';
+
+                            }
+
+
+                        }
+
+                    }
+
+                }
+
+
+                break;
+
+
             case 'prospects':
                 if (!$user->can_view('customers')) {
                     $module  = 'utils';

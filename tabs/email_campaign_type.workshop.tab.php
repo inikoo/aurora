@@ -26,6 +26,7 @@ $smarty->assign('control_blueprint_template', $control_blueprint_template);
 
 
 
+
 $email_template = get_object('Email_Template',$email_campaign_type->get('Email Campaign Type Email Template Key'));
 
 $smarty->assign('email_template_redirect', '&tab=email_campaign_type.email_template');

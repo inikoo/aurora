@@ -854,6 +854,11 @@ ALTER TABLE `Order Dimension` ADD `Order Replacement Cost` DECIMAL(16,2) NULL DE
 ALTER TABLE `Delivery Note Dimension` ADD `Delivery Note Items Cost` DECIMAL(16,2) NULL DEFAULT '0' AFTER `Delivery Note Premium Key`, ADD `Delivery Note Shipping Cost` DECIMAL(16,2) NULL DEFAULT '0' AFTER `Delivery Note Items Cost`;
 
 
+ALTER TABLE `Email Tracking Dimension` ADD `Email Tracking Email` VARCHAR(255) NULL DEFAULT NULL AFTER `Email Tracking Key`;
+ALTER TABLE `Email Template Dimension` ADD `Email Template Email Campaign Type Key` MEDIUMINT UNSIGNED NULL DEFAULT NULL AFTER `Email Template Key`, ADD INDEX (`Email Template Email Campaign Type Key`);
+
+
+
 
 ======= fer migration ordering in dw and costa
 

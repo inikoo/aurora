@@ -1504,6 +1504,13 @@ function get_navigation($user, $smarty, $data, $db, $account) {
                     );
                     break;
 
+
+                case 'email_campaign_type':
+                    return get_email_campaign_type_navigation(
+                        $data, $smarty, $user, $db, $account
+                    );
+                    break;
+
                 case ('prospects'):
                     return get_prospects_navigation(
                         $data, $smarty, $user, $db, $account
@@ -4082,14 +4089,14 @@ function get_view_position($db, $state, $user, $smarty, $account) {
                     break;
                 case 'email_campaign_type':
                     $branch[] = array(
-                        'label'     => _("Reminders").' '.$store->data['Store Code'],
-                        'icon'      => 'bell',
-                        'reference' => 'customers/'.$store->id.'/email_campaigns/reminders'
+                        'label'     => _("Emails").' '.$store->data['Store Code'],
+                        'icon'      => 'paper-plane',
+                        'reference' => 'customers/'.$store->id.'/email_campaigns/operations'
                     );
 
                     $branch[] = array(
-                        'label'     => $state['_object']->get('Name'),
-                        'icon'      => '',
+                        'label'     => $state['_object']->get('Label'),
+                        'icon'      => $state['_object']->get('Icon'),
                         'reference' => ''
                     );
 
