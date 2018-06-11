@@ -86,7 +86,7 @@
 
         <script src="/js/new.js?v180516v3"></script>
         <script src="/js/order.common.js?v180314v5"></script>
-        <script src="/js/email_campaign.common.js?v170207"></script>
+        <script src="/js/email_campaign.common.js?v180611"></script>
 
 
         <script src="/js/supplier.order.js"></script>
