@@ -107,6 +107,46 @@ if ($validator->isValid($sns)) {
 
 
                         break;
+                    case 'Bounce':
+                        $date       = gmdate('Y-m-d H:i:s', strtotime($message['bounce']['timestamp']));
+                        $event_data = $message['bounce'];
+
+                        unset($message['bounce']['timestamp']);
+
+                        switch ($message['bounce']['bounceType']) {
+                            case 'Undetermined':
+                                $event_type = 'Soft Bounce';
+
+
+                                break;
+
+                            case 'Transient':
+                                $event_type = 'Soft Bounce';
+
+
+                                break;
+
+                            case 'Permanent':
+                                $event_type = 'Hard Bounce';
+
+
+                                break;
+
+                        }
+
+
+                        break;
+                    case 'Complaint':
+                        $date       = gmdate('Y-m-d H:i:s', strtotime($message['complaint']['timestamp']));
+                        $event_data = $message['complaint'];
+
+                        unset($message['complaint']['timestamp']);
+
+                        $event_type = 'Spam';
+
+
+                        break;
+
                     default:
 
                         $sql = sprintf(
@@ -120,19 +160,54 @@ if ($validator->isValid($sns)) {
                 }
 
 
-
-                    $sql = sprintf(
-                        'insert into `Email Tracking Event Dimension`  (`Email Tracking Event Tracking Key`,`Email Tracking Event Type`,`Email Tracking Event Date`,`Email Tracking Event Data`) 
+                $sql = sprintf(
+                    'insert into `Email Tracking Event Dimension`  (`Email Tracking Event Tracking Key`,`Email Tracking Event Type`,`Email Tracking Event Date`,`Email Tracking Event Data`) 
                   values (%d,%s,%s,%s)', $row['Email Tracking Key'], prepare_mysql($event_type), prepare_mysql($date), prepare_mysql(json_encode($event_data))
 
-                    );
-                    $db->exec($sql);
-
-                    $email_tracking=get_object('email_tracking',$row['Email Tracking Key']);
-                    $email_tracking->update_state($event_type);
+                );
+                $db->exec($sql);
+                $event_key = $db->lastInsertId();
 
 
+                $email_tracking = get_object('email_tracking', $row['Email Tracking Key']);
+                $email_tracking->update_state($event_type);
 
+                if ($event_type == 'Hard Bounce') {
+
+
+                    foreach ($event_data['bouncedRecipients'] as $_bounced_recipients) {
+
+                        $sql = sprintf(
+                            'insert into `Email Hard Bounce Dimension` (`Email Hard Bounce Email`,`Email Hard Bounce Tracking Event Key`) values (%s,%d) ',
+
+                            prepare_mysql($_bounced_recipients['emailAddress']), $event_key
+
+                        );
+                        $db->exec($sql);
+
+                    }
+
+
+                }
+
+                if ($event_type == 'Spam') {
+
+
+                    foreach ($event_data['complainedRecipients'] as $_spam_recipients) {
+
+                        $sql = sprintf(
+                            'insert into `Email Spam Dimension` (`Email Spam Sender`,`Email Spam Recipient`,`Email Spam Tracking Event Key`) values (%s,%d) ',
+
+                            prepare_mysql($_spam_recipients['emailAddress']), prepare_mysql($message['mail']['source']),
+
+                            $event_key
+
+                        );
+                        $db->exec($sql);
+                    }
+
+
+                }
 
 
                 //$_sql = sprintf('insert into atest  (`date`,`headers`,`request`) values (NOW(),"%s","%s")  ', $sql, 'xx');

@@ -392,7 +392,6 @@ function fork_housekeeping($job) {
 
             break;
 
-
         case 'customer_created_migration':
             //todo  delete when migrate
 
