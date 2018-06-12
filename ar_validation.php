@@ -845,6 +845,9 @@ function check_for_duplicates($data, $db, $user, $account) {
                         'sql'         => $sql,
                         'invalid_msg' => $invalid_msg
                     );
+
+
+
             }
 
             break;
@@ -958,7 +961,36 @@ function check_for_duplicates($data, $db, $user, $account) {
 
             break;
 
+        case 'Supplier_Part':
+        case 'Supplier Part':
+
+
+
+            switch ($field) {
+                case 'Supplier Part Reference':
+
+
+
+                    $invalid_msg              = _('Reference used');
+                    $sql                      = sprintf(
+                        "SELECT `Supplier Part Key` AS `key` ,`Supplier Part Reference` AS field FROM `Supplier Part Dimension`  WHERE `Supplier Part Reference`=%s  and  `Supplier Part Supplier Key`=%d  ",
+                        prepare_mysql($data['value']), $data['parent_key']
+
+                    );
+
+
+                    $validation_sql_queries[] = array(
+                        'sql'         => $sql,
+                        'invalid_msg' => $invalid_msg
+                    );
+
+            }
+
+            break;
+
         default:
+
+
 
 
             break;

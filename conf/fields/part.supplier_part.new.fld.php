@@ -56,18 +56,21 @@ $supplier_part_fields[] = array(
         array(
             'id'   => 'Supplier_Part_Reference',
             'edit' => ($edit ? 'string' : ''),
-
-            'value'             => htmlspecialchars(
-                $object->get('Supplier Part Reference')
-            ),
+            'locked'          => ($part_scope ? 1 : 0),
+            'value'             => htmlspecialchars($object->get('Supplier Part Reference')),
             'formatted_value'   => $object->get('Reference'),
-            'label'             => ucfirst(
-                $object->get_field_label('Supplier Part Reference')
-            ),
+            'label'             => ucfirst($object->get_field_label('Supplier Part Reference')),
             'required'          => true,
-            'server_validation' => json_encode(
-                array('tipo' => 'check_for_duplicates')
-            ),
+            'server_validation' => json_encode(array('tipo' => 'check_for_duplicates', 'parent'=>'supplier', 'parent_key'=>0)),
+            'type'              => 'value'
+        ),
+        array(
+            'id'   => 'Supplier_Part_Description',
+            'edit' => ($edit ? 'string' : ''),
+            'value'             => htmlspecialchars($object->get('Supplier Part Description')),
+            'formatted_value'   => $object->get('Description'),
+            'label'             => ucfirst($object->get_field_label('Supplier Part Description')),
+            'required'          => true,
             'type'              => 'value'
         ),
 
@@ -201,9 +204,7 @@ $supplier_part_fields[] = array(
             'id'              => 'Supplier_Part_Unit_Cost',
             'edit'            => ($edit ? 'amount' : ''),
             'locked'          => ($part_scope ? 1 : 0),
-            'value'           => htmlspecialchars(
-                $object->get('Supplier Part Unit Cost')
-            ),
+            'value'           => htmlspecialchars($object->get('Supplier Part Unit Cost')),
             'formatted_value' => $object->get('Unit Cost'),
             'label'           => ucfirst(
                 $object->get_field_label('Supplier Part Unit Cost')

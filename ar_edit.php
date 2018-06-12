@@ -1786,7 +1786,9 @@ function new_object($account, $db, $user, $editor, $data, $smarty) {
             }
             break;
         case 'Supplier Part':
-            include_once 'class.SupplierPart.php';
+        case 'Supplier_Part':
+
+        include_once 'class.SupplierPart.php';
             $object = $parent->create_supplier_part_record(
                 $data['fields_data']
             );
