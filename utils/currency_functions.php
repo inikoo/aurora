@@ -102,10 +102,11 @@ function currency_conversion($db, $currency_from, $currency_to, $update_interval
         $contents = json_decode(
             file_get_contents(
                 sprintf(
-                    'http://api.fixer.io/latest?base=%s&symbols=%s', $currency_from, $currency_to
+                    'http://data.fixer.io/api/latest?access_key=46f6ee57415a369d42c0ea5486de8a53&base=%s&symbols=%s', $currency_from, $currency_to
                 )
             ), true
         );
+
 
         $exchange = floatval($contents['rates'][$currency_to]);
 
