@@ -124,15 +124,13 @@ function get_view($db, $smarty, $user, $account, $modules) {
     }
 
 
-
-    if(!empty($data['tab'])){
-        $requested_tab=$data['tab'];
-    }else{
-        $requested_tab='';
+    if (!empty($data['tab'])) {
+        $requested_tab = $data['tab'];
+    } else {
+        $requested_tab = '';
     }
 
     $state = parse_request($data, $db, $modules, $account, $user);
-
 
 
     $state['current_store']     = $_SESSION['current_store'];
@@ -277,9 +275,6 @@ function get_view($db, $smarty, $user, $account, $modules) {
     if ($state['object'] != '') {
 
 
-
-
-
         if ($state['object'] == 'website' and $state['parent'] == 'store') {
             $state['key'] = $state['_parent']->get('Store Website Key');
         }
@@ -288,7 +283,6 @@ function get_view($db, $smarty, $user, $account, $modules) {
         if (!isset($_object)) {
             $_object = get_object($state['object'], $state['key']);
         }
-
 
 
         if (is_numeric($_object->get('Store Key'))) {
@@ -395,8 +389,8 @@ function get_view($db, $smarty, $user, $account, $modules) {
         }
 
 
-        if(empty($store) and !empty($state['_parent']) and is_numeric($state['_parent']->get('Store Key'))){
-            $store=get_object('Store',$state['_parent']->get('Store Key'));
+        if (empty($store) and !empty($state['_parent']) and is_numeric($state['_parent']->get('Store Key'))) {
+            $store = get_object('Store', $state['_parent']->get('Store Key'));
         }
 
 
@@ -561,8 +555,6 @@ function get_view($db, $smarty, $user, $account, $modules) {
     }
 
 
-
-
     if (is_object($_parent) and !$_parent->id) {
         $state = array(
             'old_state'  => $state,
@@ -720,9 +712,9 @@ function get_view($db, $smarty, $user, $account, $modules) {
 
                     if (!in_array(
                         $state['tab'], array(
-                        'email_campaign.details',
-                        'email_campaign.mail_list'
-                    )
+                                         'email_campaign.details',
+                                         'email_campaign.mail_list'
+                                     )
                     )) {
                         $state['tab'] = 'email_campaign.details';
                     }
@@ -737,7 +729,7 @@ function get_view($db, $smarty, $user, $account, $modules) {
     }
 
 
-    list($state, $response['tabs']) = get_tabs($state, $db, $account, $modules, $user, $smarty,$requested_tab);// todo only calculate when is subtabs in the section
+    list($state, $response['tabs']) = get_tabs($state, $db, $account, $modules, $user, $smarty, $requested_tab);// todo only calculate when is subtabs in the section
 
 
     //  print_r($state);
@@ -761,7 +753,6 @@ function get_view($db, $smarty, $user, $account, $modules) {
     }
 
     $state['metadata'] = (isset($data['metadata']) ? $data['metadata'] : array());
-
 
 
     $response['tab'] = get_tab($db, $smarty, $user, $account, $state['tab'], $state['subtab'], $state, $data['metadata']);
@@ -798,9 +789,6 @@ function get_tab($db, $smarty, $user, $account, $tab, $subtab, $state = false, $
 
     $_tab    = $tab;
     $_subtab = $subtab;
-
-
-
 
 
     $actual_tab   = ($subtab != '' ? $subtab : $tab);
@@ -1137,11 +1125,6 @@ function get_object_showcase($showcase, $data, $smarty, $user, $db, $account) {
             break;
 
 
-
-
-
-
-
         default:
             $html = $data['object'].' -> '.$data['key'];
             break;
@@ -1395,8 +1378,6 @@ function get_navigation($user, $smarty, $data, $db, $account) {
             }
         case ('customers'):
             require_once 'navigation/customers.nav.php';
-
-
 
 
             switch ($data['section']) {
@@ -2663,8 +2644,7 @@ function get_navigation($user, $smarty, $data, $db, $account) {
 }
 
 
-function get_tabs($data, $db, $account, $modules, $user, $smarty,$requested_tab='') {
-
+function get_tabs($data, $db, $account, $modules, $user, $smarty, $requested_tab = '') {
 
 
     if (preg_match('/\_edit$/', $data['tab'])) {
@@ -2722,7 +2702,6 @@ function get_tabs($data, $db, $account, $modules, $user, $smarty,$requested_tab=
 
 
     );
-
 
 
     if ($data['section'] == 'category') {
@@ -2846,16 +2825,42 @@ function get_tabs($data, $db, $account, $modules, $user, $smarty,$requested_tab=
         //print_r($_content);
 
 
-    }
-    elseif ($data['section'] == 'prospects.email_template') {
+    } elseif ($data['section'] == 'prospects.email_template') {
 
-if($requested_tab!=''){
-    $data['tab']=$requested_tab;
+        if ($requested_tab != '') {
+            $data['tab'] = $requested_tab;
 
-}else{
-    $data['tab']='prospects.template.workshop';
+        } else {
+            $data['tab'] = 'prospects.template.workshop';
 
-}
+        }
+
+
+    } elseif ($data['section'] == 'email_campaign_type') {
+
+
+        if (in_array(
+            $data['_object']->get('Email Campaign Type Code'), array(
+            'Registration',
+            'Password Reminder',
+            'Invite',
+            'Delivery Confirmation',
+            'Order Confirmation'
+        )
+        )) {
+            $_content['tabs']['email_campaign_type.mailshots']['class'] = 'hide';
+
+            if ($data['tab'] == 'email_campaign_type.mailshots') {
+                $_content['tabs']['email_campaign_type.sent_emails']['selected'] = true;
+                $data['tab']                                                     = 'email_campaign_type.sent_emails';
+
+            }
+
+
+        } else {
+            $_content['tabs']['email_campaign_type.mailshots']['class'] = '';
+
+        }
 
 
     } elseif ($data['module'] == 'suppliers' and $data['section'] == 'order') {
@@ -3029,7 +3034,6 @@ function get_view_position($db, $state, $user, $smarty, $account) {
 
     $branch = array();
     //$branch=array(array('label'=>'<span >'._('Home').'</span>', 'icon'=>'home', 'reference'=>'/dashboard'));
-
 
 
     switch ($state['module']) {
@@ -3831,8 +3835,6 @@ function get_view_position($db, $state, $user, $smarty, $account) {
             }
 
 
-
-
             switch ($state['section']) {
                 case 'list':
                     $list  = new SubjectList($state['key']);
@@ -3939,7 +3941,7 @@ function get_view_position($db, $state, $user, $smarty, $account) {
                 case 'email_tracking':
 
 
-                   $store=get_object('Store',$state['_parent']->get('Store Key'));
+                    $store = get_object('Store', $state['_parent']->get('Store Key'));
 
 
                     if ($state['_parent']->get_object_name() == 'Prospect') {
@@ -3961,9 +3963,27 @@ function get_view_position($db, $state, $user, $smarty, $account) {
                             'reference' => ''
                         );
 
+                    } elseif ($state['_parent']->get_object_name() == 'Email Campaign Type') {
+
+                        $branch[] = array(
+                            'label'     => _("Emails").' '.$store->data['Store Code'],
+                            'icon'      => 'paper-plane',
+                            'reference' => 'customers/'.$store->id.'/email_campaigns/operations'
+                        );
+
+                        $branch[] = array(
+                            'label'     => $state['_parent']->get('Label'),
+                            'icon'      => $state['_parent']->get('Icon'),
+                            'reference' => 'email_campaign_type/'.$state['_parent']->get('Store Key').'/'.$state['_parent']->id
+                        );
+
+                        $branch[] = array(
+                            'label'     => _('Tracking').': <span class="id">'.$state['_object']->get('Email Tracking Email').'</span>',
+                            'icon'      => '',
+                            'reference' => ''
+                        );
+
                     }
-
-
 
 
                     break;
@@ -4048,11 +4068,6 @@ function get_view_position($db, $state, $user, $smarty, $account) {
                     );
 
                     break;
-
-
-
-
-
 
 
                 case 'categories':
@@ -7076,11 +7091,11 @@ function get_view_position($db, $state, $user, $smarty, $account) {
 
                 if ($state['parent'] == 'account') {
 
-                        $branch[] = array(
-                            'label'     => _('Payments').' ('._('All stores').')',
-                            'icon'      => '',
-                            'reference' => 'payments/all'
-                        );
+                    $branch[] = array(
+                        'label'     => _('Payments').' ('._('All stores').')',
+                        'icon'      => '',
+                        'reference' => 'payments/all'
+                    );
                     $branch[] = array(
                         'label'     => _('Payment').'  <span id="id">'.$state['_object']->get('Payment Key').'</span>',
                         'icon'      => '',

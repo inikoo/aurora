@@ -113,28 +113,31 @@ class EmailCampaignType extends DB_Table {
             case 'Icon':
                 switch ($this->data['Email Campaign Type Code']){
                     case 'Newsletter':
-                        $icon=_('Newsletter');
+                        $icon='newspaper';
                         break;
                     case 'Marketing':
-                        $icon=_('Mailshot');
+                        $icon='bullhorn';
                         break;
                     case 'AbandonedCart':
-                        $icon=_('Abandoned cart');
+                        $icon='basket';
                         break;
                     case 'OOS Notification':
-                        $icon=_('Back in stock');
+                        $icon='dolly';
                         break;
                     case 'Registration':
                         $icon='door-open';
                         break;
                     case 'Password Reminder':
-                        $icon=_('Password reset');
+                        $icon='lock-open';
                         break;
                     case 'Order Confirmation':
-                        $icon=_('order confirmation');
+                        $icon='shopping-cart';
+                        break;
+                    case 'Delivery Confirmation':
+                        $icon='truck';
                         break;
                     case 'GR Reminder':
-                        $icon=_('Reorder reminder');
+                        $icon='bell';
                         break;
                     default:
                         $icon='';
@@ -148,28 +151,28 @@ class EmailCampaignType extends DB_Table {
 
                 switch ($this->data['Email Campaign Type Code']){
                     case 'Newsletter':
-                        $name=_('Newsletter');
+                        $name=_('Newsletters');
                         break;
                     case 'Marketing':
-                        $name=_('Mailshot');
+                        $name=_('Mailshots');
                         break;
                     case 'AbandonedCart':
-                        $name=_('Abandoned cart');
+                        $name=_('Abandoned carts');
                         break;
                     case 'OOS Notification':
-                        $name=_('Back in stock');
+                        $name=_('Back in stock emails');
                         break;
                     case 'Registration':
                         $name=_('Welcome emails');
                         break;
                     case 'Password Reminder':
-                        $name=_('Password reset');
+                        $name=_('Password reset emails');
                         break;
                     case 'Order Confirmation':
-                        $name=_('order confirmation');
+                        $name=_('Order confirmations');
                         break;
                     case 'GR Reminder':
-                        $name=_('Reorder reminder');
+                        $name=_('Reorder reminders');
                         break;
                     default:
                         $name=$this->data['Email Campaign Type Code'];

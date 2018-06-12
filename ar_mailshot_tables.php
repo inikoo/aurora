@@ -264,15 +264,18 @@ function sent_emails($_data, $db, $user) {
             }
 
 
-            $subject = sprintf('<span class="link" onclick="change_view(\'%s/%d/%d/email/%d\')"  >%s</span>', strtolower($parent->get_object_name()).'s', $parent->get('Store Key'), $parent->id, $data['Email Tracking Key'], $data['Published Email Template Subject']);
             $customer = sprintf('<span class="link" onclick="change_view(\'customers/%d/%d\')"  >%s (%05d)</span>',$data['Customer Store Key'],$data['Customer Key'] , $data['Customer Name'],$data['Customer Key']);
+
+
+            $email = sprintf('<span class="link" onclick="change_view(\'email_campaign_type/%d/%d/tracking/%d\')"  >%s</span>',  $parent->get('Store Key'), $parent->id, $data['Email Tracking Key'], $data['Email Tracking Email']);
+
+
 
 
             $adata[] = array(
                 'id'      => (integer)$data['Email Tracking Key'],
                 'state'   => $state,
-                'email'   => $data['Email Tracking Email'],
-                'subject' => $subject,
+                'email'   => $email,
                 'customer' => $customer,
                 'date'    => strftime("%a, %e %b %Y %R:%S", strtotime($data['Email Tracking Created Date']." +00:00")),
 

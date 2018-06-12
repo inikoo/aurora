@@ -24,7 +24,7 @@ editable: false,
 sortType: "toggle",
 {if $sort_key=='email'}direction: '{if $sort_order==1}descending{else}ascending{/if}',{/if}
 
-cell: Backgrid.EmailCell.extend({
+cell: Backgrid.HtmlCell.extend({
 
 })
 },

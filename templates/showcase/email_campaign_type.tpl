@@ -11,7 +11,6 @@
 
 <div class="name_and_categories">
 
-        <span class="strong">{$email_campaign_type->get('Code')}</span>
 
 
     <div style="clear:both"></div>
