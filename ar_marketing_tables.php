@@ -989,25 +989,38 @@ function transactional_emails_types($_data, $db, $user) {
     foreach ($db->query($sql) as $data) {
 
 
+
         switch ($data['Email Campaign Type Code']) {
-            case 'GR Reminder':
-                $type = _('GR reminder');
+            case 'Newsletter':
+                $type=_('Newsletters');
+                break;
+            case 'Marketing':
+                $type=_('Mailshots');
                 break;
             case 'AbandonedCart':
-                $type = _('Abandoned cart');
-                break;
-            case 'Registration':
-                $type = _('Welcome email');
+                $type=_('Abandoned carts');
                 break;
             case 'OOS Notification':
-                $type = _('Back in stock');
+                $type=_('Back in stock emails');
                 break;
-
+            case 'Registration':
+                $type=_('Welcome emails');
+                break;
+            case 'Password Reminder':
+                $type=_('Password reset emails');
+                break;
+            case 'Order Confirmation':
+                $type=_('Order confirmations');
+                break;
+            case 'GR Reminder':
+                $type=_('Reorder reminders');
                 break;
             default:
-                $type = $data['Email Campaign Type Code'];
-                break;
+                $type=$data['Email Campaign Type Code'];
+
+
         }
+
 
 
         $type = sprintf('<span class="link" onClick="change_view(\'email_campaign_type/%d/%d\')">%s</span>', $data['Email Campaign Type Store Key'], $data['Email Campaign Type Key'], $type);

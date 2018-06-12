@@ -21,7 +21,7 @@ function get_prospect_email_tracking($data, $smarty) {
     $published_email=get_object('Published_Email_Template',$email_tracking->get('Email Tracking Published Email Template Key'));
 
     $smarty->assign('email_tracking', $email_tracking);
-    $smarty->assign('receiver',$data['_parent']);
+    $smarty->assign('receiver',get_object($data['_object']->get('Email Tracking Recipient') ,$data['_object']->get('Email Tracking Recipient Key') ));
     $smarty->assign('published_email', $published_email);
 
     return $smarty->fetch('showcase/email_tracking.tpl');

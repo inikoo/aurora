@@ -1764,14 +1764,13 @@ function parse_request($_data, $db, $modules, $account = '', $user = '', $is_set
                             if (isset($view_path[1])) {
 
 
-
-                                if ($view_path[1] == 'email') {
+                                if ($view_path[1] == 'tracking') {
 
                                     $store_key = $arg1;
 
                                     $section = 'email_tracking';
 
-                                    $parent     = 'prospect';
+                                    $parent     = 'email_campaign_type';
                                     $parent_key = $key;
 
                                     if (is_numeric($view_path[2])) {
@@ -1781,22 +1780,6 @@ function parse_request($_data, $db, $modules, $account = '', $user = '', $is_set
 
 
                                     }
-
-                                }elseif ($view_path[1] == 'compose') {
-
-
-                                    if (isset($view_path[2])  and is_numeric($view_path[2]) ) {
-
-                                        $parent='prospect';
-                                        $parent_key =$key;
-                                        $object = 'email_template';
-                                        $key=$view_path[2];
-
-                                        $section = 'prospect.compose_email';
-
-                                    }
-
-
 
                                 }
 

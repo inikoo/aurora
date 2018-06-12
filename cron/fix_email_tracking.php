@@ -184,7 +184,7 @@ if ($result = $db->query($sql)) {
             }
 
         }
-        if ($row['Email Tracking Scope'] == 'Registration') {
+        if ($row['Email Tracking Scope'] == 'Order Confirmation') {
 
 
             $sql = sprintf('select `Email Campaign Type Key`  from `Email Campaign Type Dimension` where `Email Campaign Type Email Template Key`=%d ', $row['Email Tracking Email Template Key']);
@@ -204,7 +204,7 @@ if ($result = $db->query($sql)) {
             }
 
         }
-        if ($row['Email Tracking Scope'] == 'Registration') {
+        if ($row['Email Tracking Scope'] == 'Password Reminder') {
 
 
             $sql = sprintf('select `Email Campaign Type Key`  from `Email Campaign Type Dimension` where `Email Campaign Type Email Template Key`=%d ', $row['Email Tracking Email Template Key']);
