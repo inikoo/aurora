@@ -167,11 +167,13 @@ function save_new_object(object, form_type) {
 
 
 
-
     if ($('tr.controls').hasClass('valid') && !$('tr.controls').hasClass('waiting')) {
 
 
         $('tr.controls').addClass('waiting')
+
+
+
 
         $('#' + object + '_save_icon').removeClass('fa-cloud').addClass('fa-spinner fa-spin');;
 
@@ -310,6 +312,9 @@ function save_new_object(object, form_type) {
             var tipo = 'new_object';
 
         }
+
+
+
 
 
         // used only for debug

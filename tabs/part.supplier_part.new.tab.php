@@ -27,7 +27,7 @@ $object_fields = get_object_fields(
 $smarty->assign('state', $state);
 $smarty->assign('object', $supplier_part);
 
-$smarty->assign('object_name', $supplier_part->get_object_name());
+$smarty->assign('object_name', preg_replace('/\s/','_',$supplier_part->get_object_name()));
 $smarty->assign('object_fields', $object_fields);
 
 
