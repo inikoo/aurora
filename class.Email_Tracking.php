@@ -143,6 +143,27 @@ class Email_Tracking extends DB_Table {
                 }
 
                 break;
+
+            case 'Hard Bounce':
+
+
+                    $this->update_field('Email Tracking State','Hard Bounce','no_history');
+
+                    break;
+            case 'Soft Bounce':
+
+
+                $this->update_field('Email Tracking State','Soft Bounce','no_history');
+
+                break;
+
+            case 'Spam':
+
+
+                $this->update_field('Email Tracking State','Spam','no_history');
+
+                break;
+
         }
 
 
