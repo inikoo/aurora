@@ -316,6 +316,8 @@ function get_object($object_name, $key, $load_other_data = false) {
             $object = new WebsiteHeader($key);
             break;
         case 'email_blueprint':
+        case 'emailblueprint':
+
             require_once "class.Email_Blueprint.php";
             $object = new Email_Blueprint($key);
             break;
@@ -389,6 +391,7 @@ function get_object($object_name, $key, $load_other_data = false) {
             break;
         case 'email_campaign_type':
         case 'emailcampaigntype':
+        case 'email campaign type':
 
             require_once "class.EmailCampaignType.php";
             $object = new EmailCampaignType($key);

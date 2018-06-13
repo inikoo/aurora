@@ -528,11 +528,46 @@ function get_object_fields($object, $db, $user, $smarty, $options = false) {
                     include 'fields/prospects.email_template.fld.php';
             }
 
-
-
             return $object_fields;
             break;
+        case 'Email Campaign Type':
 
+
+            switch ($object->get('Email Campaign Type Code')){
+                case 'OOS Notification':
+                    include 'fields/email_campaign_type.oos_notification.fld.php';
+                    break;
+                case 'Registration':
+                    include 'fields/email_campaign_type.registration.fld.php';
+                    break;
+                case 'Password Reminder':
+                    include 'fields/email_campaign_type.password_reminder.fld.php';
+                    break;
+                case 'Order Confirmation':
+                case 'Delivery Confirmation':
+
+                    include 'fields/email_campaign_type.order_confirmation.fld.php';
+                    break;
+                case 'GR Reminder':
+                    include 'fields/email_campaign_type.gr_reminder.fld.php';
+                    break;
+
+
+
+                case 'Invite Mailshot':
+                case 'Invite':
+                case 'AbandonedCart':
+
+                $object_fields=array();
+                    break;
+                default:
+                    print 'todo  Email Campaign Type '.$object->get('Email Campaign Type Code');
+                    exit;
+                    break;
+
+            }
+            return $object_fields;
+            break;
 
         default:
             print 'todo object in object fields'.$object->get_object_name();

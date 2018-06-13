@@ -60,7 +60,7 @@ function send_email(recipient,recipient_key) {
 
 }
 
-
+/*
 
 function publish_email_template(email_template_key) {
 
@@ -131,7 +131,7 @@ function publish_email_template(email_template_key) {
 
 }
 
-
+*/
 
 
 function send_mailshot_now(element){
@@ -390,6 +390,14 @@ function open_send_test_email_dialog(htmlFile){
 
 }
 
+function open_save_as_blueprint_dialog(jsonFile){
+
+
+
+    $('#save_as_blueprint_dialog').removeClass('hide')
+    $('#save_as_blueprint_dialog').find('input').val('').focus().data('jsonFile',jsonFile).data('htmlFile','')
+
+}
 
 
 
@@ -444,15 +452,17 @@ function send_test_email(){
 }
 
 
-function autosave_email_template(jsonFile) {
-
+function save_email_template(jsonFile,htmlFile) {
 
 
     var ajaxData = new FormData();
 
-    ajaxData.append("tipo", 'save_email_template_editing_json')
-    ajaxData.append("email_template_key", '{$email_template_key}')
+    ajaxData.append("tipo", 'publish_email_template')
+    ajaxData.append("email_template_key", $('#email_template_data').data('email_template_key'))
     ajaxData.append("json",jsonFile)
+    ajaxData.append("html",htmlFile)
+    ajaxData.append("subject",$("#email_template_subject").val())
+    ajaxData.append("text",$("#email_template_text").val())
 
 
 
@@ -484,6 +494,53 @@ function autosave_email_template(jsonFile) {
     });
 
 }
+
+
+function save_as_blueprint(icon) {
+
+    var input=$(icon).closest('div').find('input')
+
+    var ajaxData = new FormData();
+
+
+
+
+    ajaxData.append("tipo", 'save_blueprint')
+    ajaxData.append("email_template_key", $('#email_template_data').data('email_template_key'))
+
+    ajaxData.append("json", input.data('jsonFile'))
+    ajaxData.append("html", input.data('htmlFile'))
+
+    ajaxData.append("name", input.val())
+
+    // element.closest('div').addClass('hide')
+
+    $.ajax({
+        url: "/ar_edit_email_template.php", type: 'POST', data: ajaxData, dataType: 'json', cache: false, contentType: false, processData: false,
+        complete: function () {
+        }, success: function (data) {
+
+            if (data.state == '200') {
+
+                $('.save_as_blueprint_dialog').addClass('hide')
+
+
+
+            } else if (data.state == '400') {
+                swal({
+                    title: data.title, text: data.msg, confirmButtonText: "OK"
+                });
+            }
+
+
+
+        }, error: function () {
+
+        }
+    });
+
+}
+
 
 $(document).on('click', "#email_template_text_button,#email_template_html_button", function() {
     if($('#email_template_html_container').hasClass('hide')){
@@ -520,6 +577,34 @@ $(document).on('input propertychange', ".save_template", function() {
     }
 })
 
+
+
+
+
+
+
+$(document).on('input propertychange', "#email_template_text", function() {
+
+
+    if($("#email_template_text").val()==''){
+        $('#email_template_text_button').addClass('error very_discreet')
+    }else{
+        $('#email_template_text_button').removeClass('error very_discreet')
+    }
+
+
+});
+
+$(document).on('input propertychange', "#email_template_subject", function() {
+    if($("#email_template_subject").val()==''){
+        $('#email_template_subject').addClass('error ')
+    }else{
+        $('#email_template_subject').removeClass('error ')
+    }
+
+});
+
+/*
 
 $(document).on('input propertychange', "#email_template_subject", function() {
 
@@ -712,3 +797,5 @@ function update_email_template_type(value){
 
 
 }
+
+*/

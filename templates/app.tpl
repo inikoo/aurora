@@ -49,7 +49,7 @@
 
 
 
-        <link href="/css/app.css?v180321v1" rel="stylesheet">
+        <link href="/css/app.css?v180612p1" rel="stylesheet">
         <script src="/js/libs/jquery-2.2.1.js"></script>
         <script src="/js/libs/jquery-ui.js"></script>
         <script src="/js/libs/moment-with-locales.js"></script>
@@ -86,7 +86,7 @@
 
         <script src="/js/new.js?v180612"></script>
         <script src="/js/order.common.js?v180314v5"></script>
-        <script src="/js/email_campaign.common.js?v180611"></script>
+        <script src="/js/email_campaign.common.js?v180611v3"></script>
 
 
         <script src="/js/supplier.order.js"></script>

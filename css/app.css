@@ -33,6 +33,21 @@ html, body, textarea, button {
     text-decoration: none; }
   html .error, body .error, textarea .error, button .error {
     color: tomato; }
+  html input.error, body input.error, textarea input.error, button input.error {
+    color: tomato;
+    background: #ffebeb; }
+    html input.error::-webkit-input-placeholder, body input.error::-webkit-input-placeholder, textarea input.error::-webkit-input-placeholder, button input.error::-webkit-input-placeholder {
+      color: tomato;
+      opacity: .5; }
+    html input.error:-moz-placeholder, body input.error:-moz-placeholder, textarea input.error:-moz-placeholder, button input.error:-moz-placeholder {
+      color: tomato;
+      opacity: .5; }
+    html input.error::-moz-placeholder, body input.error::-moz-placeholder, textarea input.error::-moz-placeholder, button input.error::-moz-placeholder {
+      color: tomato;
+      opacity: .5; }
+    html input.error:-ms-input-placeholder, body input.error:-ms-input-placeholder, textarea input.error:-ms-input-placeholder, button input.error:-ms-input-placeholder {
+      color: tomato;
+      opacity: .5; }
   html .marked_link, body .marked_link, textarea .marked_link, button .marked_link {
     color: #6a6d91;
     cursor: pointer;

@@ -108,6 +108,62 @@ if ($result = $db->query($sql)) {
 
                 );
                 $db->exec($sql);
+            } elseif ($email_campaign_type->get('Email Campaign Type Code') == 'OOS Notification') {
+
+
+                $_metadata = array(
+
+                    'Schedule' => array(
+
+                        'Days'     => array(
+                            'Monday'    => 'Yes',
+                            'Tuesday'   => 'Yes',
+                            'Wednesday' => 'Yes',
+                            'Thursday'  => 'Yes',
+                            'Friday'    => 'Yes',
+                            'Saturday'  => 'Yes',
+                            'Sunday'    => 'Yes'
+                        ),
+                        'Time'     => '16:00:00',
+                        'Timezone' => $store->get('Store Timezone')
+                    )
+
+                );
+
+                print_r($_metadata);
+
+
+                $email_campaign_type->fast_update(array('Email Campaign Type Metadata' => json_encode($_metadata)));
+
+
+            }elseif ($email_campaign_type->get('Email Campaign Type Code') == 'GR Reminder') {
+
+
+                $_metadata = array(
+
+                    'Schedule' => array(
+
+                        'Days'     => array(
+                            'Monday'    => 'Yes',
+                            'Tuesday'   => 'Yes',
+                            'Wednesday' => 'Yes',
+                            'Thursday'  => 'Yes',
+                            'Friday'    => 'Yes',
+                            'Saturday'  => 'Yes',
+                            'Sunday'    => 'Yes'
+                        ),
+                        'Time'     => '16:00:00',
+                        'Timezone' => $store->get('Store Timezone')
+                    )
+
+                );
+
+                print_r($_metadata);
+
+
+                $email_campaign_type->fast_update(array('Email Campaign Type Metadata' => json_encode($_metadata)));
+
+
             }
 
 
@@ -119,7 +175,7 @@ if ($result = $db->query($sql)) {
 $sql = sprintf('select * from `Email Template Dimension`');
 
 
-if ($result =$db->query($sql)) {
+if ($result = $db->query($sql)) {
     foreach ($result as $row) {
         $email_template = get_object('EmailTemplate', $row['Email Template Key']);
 
@@ -141,13 +197,12 @@ if ($result =$db->query($sql)) {
         }
 
 
-        }
+    }
 } else {
     print_r($error_info = $this->db->errorInfo());
     print "$sql\n";
     exit;
 }
-
 
 
 $sql = sprintf('select * from `Email Tracking Dimension`');
@@ -232,3 +287,65 @@ if ($result = $db->query($sql)) {
     exit;
 }
 
+
+$sql = sprintf('select * from `Email Blueprint Dimension`');
+
+
+if ($result = $db->query($sql)) {
+    foreach ($result as $row) {
+        $email_blueprint = get_object('EmailBlueprint', $row['Email Blueprint Key']);
+        $parent          = get_object($email_blueprint->get('Email Blueprint Scope'), $email_blueprint->get('Email Blueprint Scope Key'));
+
+
+
+
+        switch ($email_blueprint->get('Email Blueprint Scope')) {
+            case 'Webpage':
+
+                switch ($parent->get('Webpage Code')){
+                    case 'register.sys':
+                        $scope_metadata    = $parent->get('Scope Metadata');
+                        $email_template=get_object('EmailTemplate',$scope_metadata['emails']['welcome']['key']);
+                        break;
+                    case 'login.sys':
+                        $scope_metadata    = $parent->get('Scope Metadata');
+                        $email_template=get_object('EmailTemplate',$scope_metadata['emails']['reset_password']['key']);
+                        break;
+                    case 'checkout.sys':
+                        $scope_metadata    = $parent->get('Scope Metadata');
+                        $email_template=get_object('EmailTemplate',$scope_metadata['emails']['order_confirmation']['key']);
+                        break;
+
+
+                }
+
+                $email_blueprint->fast_update(
+                    array(
+                        'Email Blueprint Email Campaign Type Key' => $email_template->get('Email Template Email Campaign Type Key'),
+                        'Email Blueprint Email Template Key'      => $email_template->id
+
+                    )
+                );
+
+                break;
+
+            case 'EmailCampaignType':
+                $email_blueprint->fast_update(
+                    array(
+                        'Email Blueprint Email Campaign Type Key' => $parent->id,
+                        'Email Blueprint Email Template Key'      => $parent->get('Email Campaign Type Email Template Key')
+
+                    )
+                );
+                break;
+
+
+        }
+
+
+    }
+} else {
+    print_r($error_info = $this->db->errorInfo());
+    print "$sql\n";
+    exit;
+}

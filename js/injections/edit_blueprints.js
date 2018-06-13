@@ -71,6 +71,8 @@ function select_blueprint_from_table(element,blueprint_key,redirect) {
         return
     }
 
+    icon.removeClass('fa-trophy')
+
     icon.addClass('fa-spinner fa-spin')
 
 
@@ -91,8 +93,8 @@ function select_blueprint_from_table(element,blueprint_key,redirect) {
         }, success: function (data) {
 
             if (data.state == '200') {
-
-               change_view(state.request + redirect)
+                change_tab(redirect)
+              // change_view(state.request + redirect)
             } else if (data.state == '400') {
                 icon.removeClass('fa-spinner fa-spin')
 

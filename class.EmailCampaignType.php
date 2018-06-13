@@ -44,25 +44,24 @@ class EmailCampaignType extends DB_Table {
         }
 
 
-        $this->get_data($arg1, $arg2,$arg3);
+        $this->get_data($arg1, $arg2, $arg3);
 
     }
 
-    function get_data($tipo, $tag,$tag2='') {
+    function get_data($tipo, $tag, $tag2 = '') {
 
 
-        if($tipo=='id'){
+        if ($tipo == 'id') {
             $sql = sprintf(
                 "SELECT * FROM `Email Campaign Type Dimension` WHERE  `Email Campaign Type Key`=%d", $tag
             );
-        }elseif($tipo=='code_store'){
+        } elseif ($tipo == 'code_store') {
             $sql = sprintf(
-                "SELECT * FROM `Email Campaign Type Dimension` WHERE  `Email Campaign Type Code`=%s and `Email Campaign Type Store Key`=%d ",prepare_mysql($tag), $tag2
+                "SELECT * FROM `Email Campaign Type Dimension` WHERE  `Email Campaign Type Code`=%s and `Email Campaign Type Store Key`=%d ", prepare_mysql($tag), $tag2
             );
-        }else{
+        } else {
             return;
         }
-
 
 
         if ($this->data = $this->db->query($sql)->fetch()) {
@@ -106,79 +105,101 @@ class EmailCampaignType extends DB_Table {
         }
 
         switch ($key) {
+            case 'Metadata':
+                if ($this->data['Email Campaign Type '.$key] == '') {
+                    $content_data = false;
+                } else {
+                    $content_data = json_decode($this->data['Email Campaign Type '.$key], true);
+                }
+
+                return $content_data;
+                break;
+
+            case 'Schedule Time':
+                $_metadata = $this->get('Metadata');
+
+
+                date_default_timezone_set($_metadata['Schedule']['Timezone']);
+
+                return strftime('%R %Z', strtotime('2018-01-01 '.$_metadata['Schedule']['Time'].' '.$_metadata['Schedule']['Timezone']));
+
+                break;
 
             case 'Send Email Address':
-                $store=get_object('store',$this->get('Store Key'));
+                $store = get_object('store', $this->get('Store Key'));
+
                 return $store->get('Store Email');
             case 'Icon':
-                switch ($this->data['Email Campaign Type Code']){
+                switch ($this->data['Email Campaign Type Code']) {
                     case 'Newsletter':
-                        $icon='newspaper';
+                        $icon = 'newspaper';
                         break;
                     case 'Marketing':
-                        $icon='bullhorn';
+                        $icon = 'bullhorn';
                         break;
                     case 'AbandonedCart':
-                        $icon='basket';
+                        $icon = 'basket';
                         break;
                     case 'OOS Notification':
-                        $icon='dolly';
+                        $icon = 'dolly';
                         break;
                     case 'Registration':
-                        $icon='door-open';
+                        $icon = 'door-open';
                         break;
                     case 'Password Reminder':
-                        $icon='lock-open';
+                        $icon = 'lock-open';
                         break;
                     case 'Order Confirmation':
-                        $icon='shopping-cart';
+                        $icon = 'shopping-cart';
                         break;
                     case 'Delivery Confirmation':
-                        $icon='truck';
+                        $icon = 'truck';
                         break;
                     case 'GR Reminder':
-                        $icon='bell';
+                        $icon = 'bell';
                         break;
                     default:
-                        $icon='';
+                        $icon = '';
 
 
                 }
+
                 return $icon;
                 break;
 
             case 'Label':
 
-                switch ($this->data['Email Campaign Type Code']){
+                switch ($this->data['Email Campaign Type Code']) {
                     case 'Newsletter':
-                        $name=_('Newsletters');
+                        $name = _('Newsletters');
                         break;
                     case 'Marketing':
-                        $name=_('Mailshots');
+                        $name = _('Mailshots');
                         break;
                     case 'AbandonedCart':
-                        $name=_('Abandoned carts');
+                        $name = _('Abandoned carts');
                         break;
                     case 'OOS Notification':
-                        $name=_('Back in stock emails');
+                        $name = _('Back in stock emails');
                         break;
                     case 'Registration':
-                        $name=_('Welcome emails');
+                        $name = _('Welcome emails');
                         break;
                     case 'Password Reminder':
-                        $name=_('Password reset emails');
+                        $name = _('Password reset emails');
                         break;
                     case 'Order Confirmation':
-                        $name=_('Order confirmations');
+                        $name = _('Order confirmations');
                         break;
                     case 'GR Reminder':
-                        $name=_('Reorder reminders');
+                        $name = _('Reorder reminders');
                         break;
                     default:
-                        $name=$this->data['Email Campaign Type Code'];
+                        $name = $this->data['Email Campaign Type Code'];
 
 
                 }
+
                 return $name;
                 break;
 
@@ -202,6 +223,27 @@ class EmailCampaignType extends DB_Table {
 
         switch ($field) {
 
+            case 'Email Campaign Type Schedule Days Monday':
+            case 'Email Campaign Type Schedule Days Tuesday':
+            case 'Email Campaign Type Schedule Days Wednesday':
+            case 'Email Campaign Type Schedule Days Thursday':
+            case 'Email Campaign Type Schedule Days Friday':
+            case 'Email Campaign Type Schedule Days Saturday':
+            case 'Email Campaign Type Schedule Days Sunday':
+
+                $day                                = preg_replace('/^Email Campaign Type Schedule Days /', '', $field);
+                $metadata                           = $this->get('Metadata');
+                $metadata['Schedule']['Days'][$day] = $value;
+                $this->update_field('Email Campaign Type Metadata', json_encode($metadata), 'no_history');
+
+                break;
+            case 'Email Campaign Type Schedule Time':
+
+                $metadata                           = $this->get('Metadata');
+                $metadata['Schedule']['Time'] = $value;
+                $this->update_field('Email Campaign Type Metadata', json_encode($metadata), 'no_history');
+
+                break;
             case 'Email Campaign Type State':
 
                 $this->update_state($value);
@@ -243,7 +285,6 @@ class EmailCampaignType extends DB_Table {
     }
 
 
-
     function get_field_label($field) {
 
         switch ($field) {
@@ -261,7 +302,17 @@ class EmailCampaignType extends DB_Table {
 
     }
 
+    function suspend(){
 
+        $this->update_field_switcher('Email Campaign Type Status','Suspended');
+
+    }
+
+    function activate(){
+
+        $this->update_field_switcher('Email Campaign Type Status','Active');
+
+    }
 
 
 }
