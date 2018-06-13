@@ -2813,6 +2813,8 @@ function get_email_tracking_navigation($data, $smarty, $user, $db) {
 
                 $title =sprintf(_('Tracking email sent to %s'),'<span class="id">'.$data['_object']->get('Email Tracking Email').'</span>' );
 
+
+
                 break;
 
         }
@@ -3293,7 +3295,12 @@ function get_email_campaign_type_navigation($data, $smarty, $user, $db) {
 
 
     $title = '<span ><i class="fa far fa-'.$email_campaign_type->get('Icon').'"></i>   '.$email_campaign_type->get('Label').'</span>';
+    if($email_campaign_type->get('Email Campaign Type Email Template Key')==''){
+        $title.=' <span class="error small padding_left_10 email_template_not_set"> <i class="fa fa-exclamation-circle"></i> '._('Email template not set').'</span>';
+    }elseif($email_campaign_type->get('Email Campaign Type Status')=='Suspended'){
+        $title.=' <span class="error small padding_left_10 status_label"> <i class="fa fa-stop"></i> '._('Suspended').'</span>';
 
+    }
 
     $_content = array(
         'sections_class' => '',

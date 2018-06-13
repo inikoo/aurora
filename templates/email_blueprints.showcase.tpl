@@ -121,6 +121,8 @@
                 if (data.state == '200') {
 
                    change_view(state.request  + '{$email_template_redirect}')
+
+                    $('.email_template_not_set').addClass('hide')
                 } else if (data.state == '400') {
                     label.html(label.data('label'))
                     swal(data.msg);

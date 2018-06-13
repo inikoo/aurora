@@ -18,6 +18,12 @@ switch ($parameters['parent']) {
 
     case 'EmailCampaign':
     case 'EmailCampaignType':
+    $where = sprintf(
+        " where  `Email Blueprint Email Campaign Type Key`=%d",$parameters['parent_key']
+    );
+    break;
+
+        break;
     case 'Webpage':
         $where = sprintf(
             " where `Email Blueprint Scope`=%s and `Email Blueprint Scope Key`=%d", prepare_mysql($parameters['parent']),$parameters['parent_key']
@@ -56,6 +62,6 @@ if ($order == 'name') {
 
 
 $sql_totals = "select count(Distinct EB.`Email Blueprint Key`) as num from $table $where  ";
-
+//print $sql_totals;
 
 ?>

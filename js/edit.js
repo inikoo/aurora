@@ -1340,12 +1340,12 @@ function update_field(data) {
 
 
     var field = data.field
-    var type = $('#' + field + '_container').attr('field_type')
+    var type = $('#' + field + '_container').attr('c')
     //console.log(data)
 
 
     //console.log(data.render)
-    //console.log(field)
+    console.log(field)
 
     if (data.render) {
         $('#' + field + '_field').removeClass('hide')
@@ -1362,6 +1362,12 @@ function update_field(data) {
 
 
         $("#" + field).attr('placeholder', data.placeholder)
+    }
+
+    if (data.server_validation != undefined) {
+
+
+        $("#" + field+'_container').attr('server_validation', data.server_validation)
     }
 
 
@@ -2182,5 +2188,22 @@ function publish(element,type){
 
  }
 
+
+function toggle_field_value(element){
+
+    var icon=$(element).find('i')
+
+    if(icon.hasClass('fa-toggle-on')){
+        icon.removeClass('fa-toggle-on').addClass('fa-toggle-off').next('span').addClass('discreet')
+
+    }else if(icon.hasClass('fa-toggle-off')){
+        icon.removeClass('fa-toggle-off').addClass('fa-toggle-on').next('span').removeClass('discreet')
+    }
+
+
+
+
+
+}
 
 

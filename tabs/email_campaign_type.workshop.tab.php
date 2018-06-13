@@ -13,9 +13,7 @@
 $email_campaign_type = $state['_object'];
 
 
-
-
-$control_template = 'control.email_template.tpl';
+$control_template           = 'control.email_template.tpl';
 $control_blueprint_template = 'control.email_campaign.blueprints.tpl';
 
 
@@ -25,14 +23,9 @@ $smarty->assign('control_template', $control_template);
 $smarty->assign('control_blueprint_template', $control_blueprint_template);
 
 
+$email_template = get_object('Email_Template', $email_campaign_type->get('Email Campaign Type Email Template Key'));
 
-
-$email_template = get_object('Email_Template',$email_campaign_type->get('Email Campaign Type Email Template Key'));
-
-$smarty->assign('email_template_redirect', '&tab=email_campaign_type.email_template');
-
-
-
+$smarty->assign('email_template_redirect', '&tab=email_campaign_type.workshop');
 
 
 if ($email_template->id and !($email_template->get('Email Template Type') == 'HTML' and $email_template->get('Email Template Editing JSON') == '')) {
@@ -42,13 +35,9 @@ if ($email_template->id and !($email_template->get('Email Template Type') == 'HT
     $smarty->assign('email_template_key', $email_template->id);
 
 
-    if ($email_campaign_type->get('Email Campaign Published Email Template Key')) {
-        $smarty->assign('change_template_label', _('Reformat'));
 
-    } else {
-        $smarty->assign('change_template_label', _('Start again'));
 
-    }
+    $smarty->assign('blueprints_redirect', 'email_campaign_type.email_blueprints');
 
 
     $smarty->assign('email_template', $email_template);
@@ -77,9 +66,8 @@ if ($email_template->id and !($email_template->get('Email Template Type') == 'HT
     $smarty->assign('send_email_to', $send_email_to);
 
 
-    $html = $smarty->fetch('email_template.tpl');
+    $html = $smarty->fetch('email_template.workshop.tpl');
 } else {
-
 
 
     $tab     = 'email_campaign.email_blueprints';
@@ -101,7 +89,7 @@ if ($email_template->id and !($email_template->get('Email Template Type') == 'HT
     $parameters = array(
         'parent'     => 'EmailCampaignType',
         'parent_key' => $state['key'],
-        'redirect' => base64_url_encode('&tab=email_campaign_type.email_template'),
+        'redirect'   => base64_url_encode('&tab=email_campaign_type.workshop'),
 
 
     );

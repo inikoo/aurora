@@ -227,6 +227,11 @@ class Email_Template extends DB_Table {
         $data['Email Blueprint Scope']     = $this->get('Email Template Scope');
         $data['Email Blueprint Scope Key'] = $this->get('Email Template Scope Key');
 
+        $data['Email Blueprint Email Campaign Type Key'] = $this->get('Email Template Email Campaign Type Key');
+        $data['Email Blueprint Email Template Key'] = $this->id;
+
+
+
         $data['Email Blueprint Name'] = $this->get_unique_name($data['Email Blueprint Name'], 'Blueprint');
         $data['editor']               = $this->editor;
 

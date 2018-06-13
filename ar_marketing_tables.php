@@ -1015,6 +1015,12 @@ function transactional_emails_types($_data, $db, $user) {
             case 'GR Reminder':
                 $type=_('Reorder reminders');
                 break;
+            case 'Invite Mailshot':
+                $type=_('Invitation');
+                break;
+            case 'Invite':
+                $type=_('Personalized invitation');
+                break;
             default:
                 $type=$data['Email Campaign Type Code'];
 
