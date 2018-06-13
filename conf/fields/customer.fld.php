@@ -37,7 +37,7 @@ if (isset($options['new']) and $options['new']) {
     $new = false;
 }
 
-
+$edit=true;
 if ($new) {
 
     $customer_fields = array(
@@ -102,7 +102,6 @@ if ($new) {
 
             )
         ),
-
         array(
             'label'      => _('Email'),
             'show_title' => false,
@@ -116,7 +115,7 @@ if ($new) {
                     'server_validation' => json_encode(array('tipo' => 'check_for_duplicates')),
                     'label'             => ucfirst($object->get_field_label('Customer Main Plain Email')),
                     'invalid_msg'       => get_invalid_message('email'),
-                    'required'          => true,
+                    'required'          => false,
                     'type'              => 'value'
                 ),
 

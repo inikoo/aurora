@@ -62,7 +62,7 @@ class Subject extends DB_Table {
             return $unknown_name;
         }
         $greeting = $greeting_prefix.' '.$this->data[$this->table_name.' Main Contact Name'];
-        if ($this->data[$this->table_name.' Company Name'] != ''  and $this->data[$this->table_name.' Company Name'] !=$this->data[$this->table_name.' Main Contact Name']  ) {
+        if ($this->data[$this->table_name.' Company Name'] != '' and $this->data[$this->table_name.' Company Name'] != $this->data[$this->table_name.' Main Contact Name']) {
             $greeting .= ', '.$this->data[$this->table_name.' Name'];
         }
 
@@ -473,23 +473,17 @@ class Subject extends DB_Table {
             }
 
 
-
-
-
         }
-
-
 
 
         // todo remove when migrate the websites
         if ($this->table_name == 'Customer') {
 
 
+            if ($type == 'Contact' and $this->get('Customer Main Address Key') and !preg_match('/no_old_address/', $options)) {
 
-            if ($type == 'Contact' and $this->get('Customer Main Address Key')  and !preg_match('/no_old_address/',$options)) {
 
-
-               // print_r($fields);
+                // print_r($fields);
 
                 $_data = array(
                     'id'    => $this->get('Customer Main Address Key'),
@@ -499,9 +493,9 @@ class Subject extends DB_Table {
                         'use_contact'  => '',
                         'contact'      => '',
                         'key'          => $this->get('Customer Main Address Key'),
-                        'country'      =>  $fields['Address Country 2 Alpha Code'],
-                        'country_code' =>  $fields['Address Country 2 Alpha Code'],
-                        'country_d1'   =>  $fields['Address Administrative Area'],
+                        'country'      => $fields['Address Country 2 Alpha Code'],
+                        'country_code' => $fields['Address Country 2 Alpha Code'],
+                        'country_d1'   => $fields['Address Administrative Area'],
                         'country_d2'   => '',
                         'town'         => $fields['Address Locality'],
                         'postal_code'  => $fields['Address Postal Code'],
@@ -516,9 +510,9 @@ class Subject extends DB_Table {
 
                 );
 
-               // print_r($_data);
+                // print_r($_data);
 
-                 $this->to_remove_edit_old_address($_data);
+                $this->to_remove_edit_old_address($_data);
 
             }
 
@@ -526,6 +520,173 @@ class Subject extends DB_Table {
 
     }
 
+    function update_address_formatted_fields($type, $options) {
+
+        include_once 'utils/get_addressing.php';
+
+        $new_checksum = md5(
+            json_encode(
+                array(
+                    'Address Recipient'            => $this->get($type.' Address Recipient'),
+                    'Address Organization'         => $this->get($type.' Address Organization'),
+                    'Address Line 1'               => $this->get($type.' Address Line 1'),
+                    'Address Line 2'               => $this->get($type.' Address Line 2'),
+                    'Address Sorting Code'         => $this->get($type.' Address Sorting Code'),
+                    'Address Postal Code'          => $this->get($type.' Address Postal Code'),
+                    'Address Dependent Locality'   => $this->get($type.' Address Dependent Locality'),
+                    'Address Locality'             => $this->get($type.' Address Locality'),
+                    'Address Administrative Area'  => $this->get($type.' Address Administrative Area'),
+                    'Address Country 2 Alpha Code' => $this->get($type.' Address Country 2 Alpha Code'),
+                )
+            )
+        );
+
+
+        $this->update_field(
+            $this->table_name.' '.$type.' Address Checksum', $new_checksum, 'no_history'
+        );
+
+
+        if ($type == 'Delivery') {
+
+            $account = get_object('Account', '');
+            $country = $account->get('Account Country 2 Alpha Code');
+            $locale  = $account->get('Account Locale');
+        } else {
+
+            if ($this->get('Store Key')) {
+                $store   = get_object('Store', $this->get('Store Key'));
+                $country = $store->get('Store Home Country Code 2 Alpha');
+                $locale  = $store->get('Store Locale');
+            } else {
+                $account = get_object('Account', '');
+                $country = $account->get('Account Country 2 Alpha Code');
+                $locale  = $account->get('Account Locale');
+            }
+        }
+
+
+        list($address, $formatter, $postal_label_formatter) = get_address_formatter($country, $locale);
+
+
+        $address =
+            $address->withFamilyName($this->get($type.' Address Recipient'))->withOrganization($this->get($type.' Address Organization'))->withAddressLine1($this->get($type.' Address Line 1'))->withAddressLine2($this->get($type.' Address Line 2'))->withSortingCode(
+                $this->get($type.' Address Sorting Code')
+            )->withPostalCode($this->get($type.' Address Postal Code'))->withDependentLocality(
+                $this->get($type.' Address Dependent Locality')
+            )->withLocality($this->get($type.' Address Locality'))->withAdministrativeArea(
+                $this->get($type.' Address Administrative Area')
+            )->withCountryCode(
+                $this->get($type.' Address Country 2 Alpha Code')
+            );
+
+
+        $xhtml_address = $formatter->format($address);
+
+
+        if ($type == 'Contact') {
+
+            if ($this->get($type.' Address Recipient') == $this->get('Main Contact Name')) {
+                $xhtml_address = preg_replace('/(class="family-name">.+<\/span>)<br>/', '$1', $xhtml_address);
+            }
+
+            if ($this->get($type.' Address Organization') == $this->get('Company Name')) {
+                $xhtml_address = preg_replace('/(class="organization">.+<\/span>)<br>/', '$1', $xhtml_address);
+            }
+        }
+        $xhtml_address = preg_replace(
+            '/class="family-name"/', 'class="recipient fn '.($this->get($type.' Address Recipient') == $this->get('Main Contact Name') and $type == 'Contact' ? 'hide' : '').'"', $xhtml_address
+        );
+
+
+        $xhtml_address = preg_replace(
+            '/class="organization"/', 'class="organization org '.($this->get($type.' Address Organization') == $this->get('Company Name') and $type == 'Contact' ? 'hide' : '').'"', $xhtml_address
+        );
+        $xhtml_address = preg_replace('/class="address-line1"/', 'class="address-line1 street-address"', $xhtml_address);
+        $xhtml_address = preg_replace('/class="address-line2"/', 'class="address-line2 extended-address"', $xhtml_address);
+        $xhtml_address = preg_replace('/class="sort-code"/', 'class="sort-code postal-code"', $xhtml_address);
+        $xhtml_address = preg_replace('/class="country"/', 'class="country country-name"', $xhtml_address);
+
+
+        $xhtml_address = preg_replace('/(class="address-line1 street-address"><\/span>)<br>/', '$1', $xhtml_address);
+
+        //  print $xhtml_address;
+
+
+        $this->update_field($this->table_name.' '.$type.' Address Formatted', $xhtml_address, 'no_history');
+        $this->update_field($this->table_name.' '.$type.' Address Postal Label', $postal_label_formatter->format($address), 'no_history');
+
+        if ($this->table_name == 'Customer') {
+
+
+            if ($type == 'Invoice') {
+
+                $_value = $this->get('Customer Invoice Address');
+                if ($this->data['Customer Billing Address Link'] == 'Contact') {
+
+
+                    $metadata['no_propagate_addresses'] = true;
+                    $this->update_field_switcher('Customer Contact Address', $_value, 'no_history', $metadata);
+
+                    if ($this->data['Customer Delivery Address Link'] == 'Contact') {
+
+                        $this->update_field_switcher('Customer Delivery Address', $_value, 'no_history', $metadata);
+
+                    }
+
+
+                }
+                if ($this->data['Customer Delivery Address Link'] == 'Billing') {
+
+
+                    $metadata['no_propagate_addresses'] = true;
+
+                    $this->update_field_switcher('Customer Delivery Address', $_value, 'no_history', $metadata);
+                }
+
+            }
+
+            // print $type;
+
+            if ($type == 'Invoice') {
+                $sql = sprintf('SELECT `Order Key` FROM `Order Dimension` WHERE  `Order State` IN ("InBasket")   AND `Order Customer Key`=%d ', $this->id);
+                // print "$sql\n";
+                if ($result = $this->db->query($sql)) {
+                    foreach ($result as $row) {
+                        //  print_r($row);
+                        $order = get_object('Order', $row['Order Key']);
+
+                        $order->editor = $this->editor;
+
+
+                        $order->update(array('Order Invoice Address' => $this->get('Customer Invoice Address')), $options, array('no_propagate_customer' => true));
+                    }
+                } else {
+                    print_r($error_info = $this->db->errorInfo());
+                    print "$sql\n";
+                    exit;
+                }
+            } elseif ($type == 'Delivery') {
+                $sql = sprintf('SELECT `Order Key` FROM `Order Dimension` WHERE  `Order State` IN ("InBasket")   AND `Order Customer Key`=%d ', $this->id);
+                if ($result = $this->db->query($sql)) {
+                    foreach ($result as $row) {
+                        $order         = get_object('Order', $row['Order Key']);
+                        $order->editor = $this->editor;
+
+                        $order->update(array('Order Delivery Address' => $this->get('Customer Delivery Address')), $options, array('no_propagate_customer' => true));
+                    }
+                } else {
+                    print_r($error_info = $this->db->errorInfo());
+                    print "$sql\n";
+                    exit;
+                }
+            }
+
+
+        }
+
+
+    }
 
     function to_remove_edit_old_address($data) {
 
@@ -690,176 +851,6 @@ class Subject extends DB_Table {
 
 
     }
-
-    function update_address_formatted_fields($type, $options) {
-
-        include_once 'utils/get_addressing.php';
-
-        $new_checksum = md5(
-            json_encode(
-                array(
-                    'Address Recipient'            => $this->get($type.' Address Recipient'),
-                    'Address Organization'         => $this->get($type.' Address Organization'),
-                    'Address Line 1'               => $this->get($type.' Address Line 1'),
-                    'Address Line 2'               => $this->get($type.' Address Line 2'),
-                    'Address Sorting Code'         => $this->get($type.' Address Sorting Code'),
-                    'Address Postal Code'          => $this->get($type.' Address Postal Code'),
-                    'Address Dependent Locality'   => $this->get($type.' Address Dependent Locality'),
-                    'Address Locality'             => $this->get($type.' Address Locality'),
-                    'Address Administrative Area'  => $this->get($type.' Address Administrative Area'),
-                    'Address Country 2 Alpha Code' => $this->get($type.' Address Country 2 Alpha Code'),
-                )
-            )
-        );
-
-
-        $this->update_field(
-            $this->table_name.' '.$type.' Address Checksum', $new_checksum, 'no_history'
-        );
-
-
-        if ($type == 'Delivery') {
-
-            $account = get_object('Account', '');
-            $country = $account->get('Account Country 2 Alpha Code');
-            $locale  = $account->get('Account Locale');
-        } else {
-
-            if ($this->get('Store Key')) {
-                $store   = get_object('Store', $this->get('Store Key'));
-                $country = $store->get('Store Home Country Code 2 Alpha');
-                $locale  = $store->get('Store Locale');
-            } else {
-                $account = get_object('Account', '');
-                $country = $account->get('Account Country 2 Alpha Code');
-                $locale  = $account->get('Account Locale');
-            }
-        }
-
-
-        list($address, $formatter, $postal_label_formatter) = get_address_formatter($country, $locale);
-
-
-        $address =
-            $address->withFamilyName($this->get($type.' Address Recipient'))->withOrganization($this->get($type.' Address Organization'))->withAddressLine1($this->get($type.' Address Line 1'))->withAddressLine2($this->get($type.' Address Line 2'))->withSortingCode(
-                    $this->get($type.' Address Sorting Code')
-                )->withPostalCode($this->get($type.' Address Postal Code'))->withDependentLocality(
-                    $this->get($type.' Address Dependent Locality')
-                )->withLocality($this->get($type.' Address Locality'))->withAdministrativeArea(
-                    $this->get($type.' Address Administrative Area')
-                )->withCountryCode(
-                    $this->get($type.' Address Country 2 Alpha Code')
-                );
-
-
-        $xhtml_address = $formatter->format($address);
-
-
-        if ($type == 'Contact') {
-
-            if ($this->get($type.' Address Recipient') == $this->get('Main Contact Name')) {
-                $xhtml_address = preg_replace('/(class="family-name">.+<\/span>)<br>/', '$1', $xhtml_address);
-            }
-
-            if ($this->get($type.' Address Organization') == $this->get('Company Name')) {
-                $xhtml_address = preg_replace('/(class="organization">.+<\/span>)<br>/', '$1', $xhtml_address);
-            }
-        }
-        $xhtml_address = preg_replace(
-            '/class="family-name"/', 'class="recipient fn '.($this->get($type.' Address Recipient') == $this->get('Main Contact Name') and $type == 'Contact' ? 'hide' : '').'"', $xhtml_address
-        );
-
-
-        $xhtml_address = preg_replace(
-            '/class="organization"/', 'class="organization org '.($this->get($type.' Address Organization') == $this->get('Company Name') and $type == 'Contact' ? 'hide' : '').'"', $xhtml_address
-        );
-        $xhtml_address = preg_replace('/class="address-line1"/', 'class="address-line1 street-address"', $xhtml_address);
-        $xhtml_address = preg_replace('/class="address-line2"/', 'class="address-line2 extended-address"', $xhtml_address);
-        $xhtml_address = preg_replace('/class="sort-code"/', 'class="sort-code postal-code"', $xhtml_address);
-        $xhtml_address = preg_replace('/class="country"/', 'class="country country-name"', $xhtml_address);
-
-
-        $xhtml_address = preg_replace('/(class="address-line1 street-address"><\/span>)<br>/', '$1', $xhtml_address);
-
-        //  print $xhtml_address;
-
-
-        $this->update_field($this->table_name.' '.$type.' Address Formatted', $xhtml_address, 'no_history');
-        $this->update_field($this->table_name.' '.$type.' Address Postal Label', $postal_label_formatter->format($address), 'no_history');
-
-        if ($this->table_name == 'Customer') {
-
-
-            if ($type == 'Invoice') {
-
-                $_value = $this->get('Customer Invoice Address');
-                if ($this->data['Customer Billing Address Link'] == 'Contact') {
-
-
-                    $metadata['no_propagate_addresses'] = true;
-                    $this->update_field_switcher('Customer Contact Address', $_value, 'no_history', $metadata);
-
-                    if ($this->data['Customer Delivery Address Link'] == 'Contact') {
-
-                        $this->update_field_switcher('Customer Delivery Address', $_value, 'no_history', $metadata);
-
-                    }
-
-
-                }
-                if ($this->data['Customer Delivery Address Link'] == 'Billing') {
-
-
-                    $metadata['no_propagate_addresses'] = true;
-
-                    $this->update_field_switcher('Customer Delivery Address', $_value, 'no_history', $metadata);
-                }
-
-            }
-
-            // print $type;
-
-            if ($type == 'Invoice') {
-                $sql = sprintf('SELECT `Order Key` FROM `Order Dimension` WHERE  `Order State` IN ("InBasket")   AND `Order Customer Key`=%d ', $this->id);
-                // print "$sql\n";
-                if ($result = $this->db->query($sql)) {
-                    foreach ($result as $row) {
-                        //  print_r($row);
-                        $order = get_object('Order', $row['Order Key']);
-
-                        $order->editor = $this->editor;
-
-
-                        $order->update(array('Order Invoice Address' => $this->get('Customer Invoice Address')), $options, array('no_propagate_customer' => true));
-                    }
-                } else {
-                    print_r($error_info = $this->db->errorInfo());
-                    print "$sql\n";
-                    exit;
-                }
-            } elseif ($type == 'Delivery') {
-                $sql = sprintf('SELECT `Order Key` FROM `Order Dimension` WHERE  `Order State` IN ("InBasket")   AND `Order Customer Key`=%d ', $this->id);
-                if ($result = $this->db->query($sql)) {
-                    foreach ($result as $row) {
-                        $order         = get_object('Order', $row['Order Key']);
-                        $order->editor = $this->editor;
-
-                        $order->update(array('Order Delivery Address' => $this->get('Customer Delivery Address')), $options, array('no_propagate_customer' => true));
-                    }
-                } else {
-                    print_r($error_info = $this->db->errorInfo());
-                    print "$sql\n";
-                    exit;
-                }
-            }
-
-
-        }
-
-
-    }
-
-
 
     function update_subject_field_switcher($field, $value, $options = '', $metadata) {
 
@@ -1062,10 +1053,7 @@ class Subject extends DB_Table {
                 $this->update_field($field, $value, $options);
 
 
-
                 $this->update_field($this->table_name.' Preferred Contact Number Formatted Number', $this->get('Main XHTML '.$value), $options);
-
-
 
 
                 $this->other_fields_updated[$this->table_name.'_Main_Plain_Mobile'] = array(
@@ -1101,8 +1089,6 @@ class Subject extends DB_Table {
                                 'Set as main contact number'
                             ).'" class="far fa-star discreet button"></i>') : ''),
                 );
-
-
 
 
                 return true;
@@ -1638,6 +1624,27 @@ class Subject extends DB_Table {
 
 
             $this->update_field($field, $value, $options);
+
+
+            if ($this->table_name == 'Customer' and $this->get('Customer Website User Key') == '' and $this->get('Customer Main Plain Email') != '') {
+
+                $store = get_object('store', $this->get('Customer Store Key'));
+
+                $website = get_object('website', $store->get('Customer Store Key'));
+
+                $user_data['Website User Handle']       = $this->get('Customer Main Plain Email');
+                $user_data['Website User Customer Key'] = $this->id;
+                $website_user                           = $website->create_user($user_data);
+
+                $website->update_users_data();
+
+
+                $this->update(array('Customer Website User Key' => $website_user->id), 'no_history');
+
+
+            }
+
+
         }
 
 
@@ -2503,35 +2510,28 @@ class Subject extends DB_Table {
 
     }
 
-    function has_telephone(){
+    function has_telephone() {
 
 
-
-        if(!empty($this->data[$this->table_name.' Main Plain Telephone'])  or  !empty($this->data[$this->table_name.' Main Plain Mobile']) ){
+        if (!empty($this->data[$this->table_name.' Main Plain Telephone']) or !empty($this->data[$this->table_name.' Main Plain Mobile'])) {
             return true;
-        }else{
+        } else {
             return false;
         }
 
     }
 
-    function has_address(){
+    function has_address() {
 
-        if(
-            empty($this->data[$this->table_name.' Contact Address Line 1'])  and
-            empty($this->data[$this->table_name.' Contact Address Line 1']) and
-            empty($this->data[$this->table_name.' Postal Code'])   and
-            empty($this->data[$this->table_name.' Address Sorting Code'])
+        if (empty($this->data[$this->table_name.' Contact Address Line 1']) and empty($this->data[$this->table_name.' Contact Address Line 1']) and empty($this->data[$this->table_name.' Postal Code']) and empty($this->data[$this->table_name.' Address Sorting Code'])
 
-        ){
+        ) {
             return false;
-        }else{
+        } else {
             return true;
         }
 
     }
-
-
 
 
 }
