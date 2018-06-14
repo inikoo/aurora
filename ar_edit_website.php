@@ -1957,6 +1957,11 @@ function save_webpage_content($data, $editor, $smarty, $db) {
 
     $webpage->update(array('Page Store Content Data' => $data['content_data']), 'no_history');
 
+
+    if($webpage->id==8618){
+        exit('xx');
+    }
+
     if (isset($old_content_data['backup'])) {
         $webpage->update_content_data('backup', $old_content_data['backup']);
     }
