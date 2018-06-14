@@ -1881,7 +1881,7 @@ function save_webpage_content($data, $editor, $smarty, $db) {
     }
 
 
-    if (isset($data['discounts_data'])) {
+    if (isset($data['discounts_data']) and false) { //todo its takes ages to do dis has to be done in fork maybe
         $discounts_data = json_decode($data['discounts_data'], true);
 
         foreach ($discounts_data as $deal_component_key => $deal_component_data) {
@@ -1958,9 +1958,7 @@ function save_webpage_content($data, $editor, $smarty, $db) {
     $webpage->update(array('Page Store Content Data' => $data['content_data']), 'no_history');
 
 
-    if($webpage->id==8618){
-        exit('xx');
-    }
+
 
     if (isset($old_content_data['backup'])) {
         $webpage->update_content_data('backup', $old_content_data['backup']);
