@@ -85,7 +85,7 @@
 
 
             </td>
-                <td class="small"><span class="button" onclick="allow_duplicate_part_reference(this)"><i class="allow_duplicate_part_reference fal fa-square fa-fw " ></i> <span class="discreet">{t}Allow add to exiting part{/t}</span></span></td>
+                <td class="small"><span class="button" onclick="allow_duplicate_part_reference(this)"><i class="allow_duplicate_part_reference fal fa-square fa-fw " ></i> <span class="discreet">{t}Allow add to existing part{/t}</span></span></td>
             {else}
                 <td></td> <td></td><td></td>
             {/if}
