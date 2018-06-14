@@ -336,8 +336,6 @@ class Supplier extends SubjectSupplier {
     function update_field_switcher($field, $value, $options = '', $metadata = '') {
 
 
-
-
         if (is_string($value)) {
             $value = _trim($value);
         }
@@ -672,8 +670,7 @@ class Supplier extends SubjectSupplier {
 
     }
 
-    function create_supplier_part_record($data) {
-
+    function create_supplier_part_record($data,$allow_duplicate_part_reference='No') {
 
 
         $data['editor'] = $this->editor;
@@ -685,7 +682,6 @@ class Supplier extends SubjectSupplier {
             $data['Part Package Description'] = $data['Supplier Part Package Description'];
             unset($data['Supplier Part Package Description']);
         }
-
 
 
         if (isset($data['Supplier Part Unit Label']) and !isset($data['Part Unit Label'])) {
@@ -755,165 +751,231 @@ class Supplier extends SubjectSupplier {
             return;
         }
 
+        $part_exist = false;
 
         $sql = sprintf(
-            'SELECT count(*) AS num FROM `Part Dimension` WHERE `Part Reference`=%s ', prepare_mysql($data['Part Reference'])
+            'SELECT `Part SKU` FROM `Part Dimension` WHERE `Part Reference`=%s ', prepare_mysql($data['Part Reference'])
         );
 
 
-        if ($result = $this->db->query($sql)) {
-            if ($row = $result->fetch()) {
-                if ($row['num'] > 0) {
-                    $this->error      = true;
-                    $this->msg        = sprintf(_('Duplicated reference (%s)'), $data['Part Reference']);
-                    $this->error_code = 'duplicate_part_reference';
-                    $this->metadata   = $data['Part Reference'];
 
-                    return;
+        if($allow_duplicate_part_reference=='No'){
+
+            $this->error      = true;
+            $this->msg        = sprintf(_('Duplicated reference (%s)'), $data['Part Reference']);
+            $this->error_code = 'duplicate_part_reference';
+            $this->metadata   = $data['Part Reference'];
+
+            return;
+        }else{
+            if ($result = $this->db->query($sql)) {
+                if ($row = $result->fetch()) {
+
+
+
+                    $part_exist = true;
+                    $part       = get_object('Part', $row['Part SKU']);
+
+
+
+                    unset($data['Part Reference']);
+
+
                 }
+            } else {
+                print_r($error_info = $this->db->errorInfo());
+                exit;
             }
-        } else {
-            print_r($error_info = $this->db->errorInfo());
-            exit;
+
         }
 
-        $auto_part_barcode=false;
-
-        if(!empty($data['Part Barcode'])) {
 
 
-            if (preg_match('/^\s*(auto|automatic)\s*$/i', $data['Part Barcode'])) {
+        if (!$part_exist) {
+            $auto_part_barcode = false;
 
-                $auto_part_barcode=true;
-                unset($data['Part Barcode']);
-
-            } else {
+            if (!empty($data['Part Barcode'])) {
 
 
-                $barcode = $data['Part Barcode'];
-                $error   = '';
+                if (preg_match('/^\s*(auto|automatic)\s*$/i', $data['Part Barcode'])) {
 
-
-                if (!is_numeric($barcode)) {
-                    $error = 'No Numeric';
-                } elseif (strlen($barcode) != (12 + 1)) {
-                    $error = 'Size';
-                    if (strlen($barcode) == 12) {
-                        $error = 'Checksum_missing';
-                        $sql   = sprintf(
-                            'SELECT `Part SKU` FROM `Part Dimension` WHERE `Part Barcode Number` LIKE "%s%%" AND `Part SKU`!=%d', addslashes($barcode), $this->id
-                        );
-
-                        if ($result = $this->db->query($sql)) {
-                            foreach ($result as $row) {
-
-                                $error = 'Short_Duplicated';
-                            }
-
-                        } else {
-                            print_r($error_info = $this->db->errorInfo());
-                            print "$sql\n";
-                            exit;
-                        }
-
-                    }
-
+                    $auto_part_barcode = true;
+                    unset($data['Part Barcode']);
 
                 } else {
-                    $digits = substr($barcode, 0, 12);
 
-                    $digits         = (string)$digits;
-                    $even_sum       = $digits{1} + $digits{3} + $digits{5} + $digits{7} + $digits{9} + $digits{11};
-                    $even_sum_three = $even_sum * 3;
-                    $odd_sum        = $digits{0} + $digits{2} + $digits{4} + $digits{6} + $digits{8} + $digits{10};
-                    $total_sum      = $even_sum_three + $odd_sum;
-                    $next_ten       = (ceil($total_sum / 10)) * 10;
-                    $check_digit    = $next_ten - $total_sum;
 
-                    if ($check_digit != substr($barcode, -1)) {
-                        $error = 'Checksum';
-                    } else {
-                        $sql = sprintf(
-                            'SELECT `Part SKU` FROM `Part Dimension` WHERE `Part Barcode Number`=%s AND `Part SKU`!=%d', prepare_mysql($barcode), $this->id
-                        );
+                    $barcode = $data['Part Barcode'];
+                    $error   = '';
 
-                        if ($result = $this->db->query($sql)) {
-                            foreach ($result as $row) {
-                                $part = get_object('Part', $row['Part SKU']);
-                                $part->fast_update(array('Part Barcode Number Error' => 'Duplicated'));
-                                $error = 'Duplicated';
+
+                    if (!is_numeric($barcode)) {
+                        $error = 'No Numeric';
+                    } elseif (strlen($barcode) != (12 + 1)) {
+                        $error = 'Size';
+                        if (strlen($barcode) == 12) {
+                            $error = 'Checksum_missing';
+                            $sql   = sprintf(
+                                'SELECT `Part SKU` FROM `Part Dimension` WHERE `Part Barcode Number` LIKE "%s%%" AND `Part SKU`!=%d', addslashes($barcode), $this->id
+                            );
+
+                            if ($result = $this->db->query($sql)) {
+                                foreach ($result as $row) {
+
+                                    $error = 'Short_Duplicated';
+                                }
+
+                            } else {
+                                print_r($error_info = $this->db->errorInfo());
+                                print "$sql\n";
+                                exit;
                             }
 
+                        }
+
+
+                    } else {
+                        $digits = substr($barcode, 0, 12);
+
+                        $digits         = (string)$digits;
+                        $even_sum       = $digits{1} + $digits{3} + $digits{5} + $digits{7} + $digits{9} + $digits{11};
+                        $even_sum_three = $even_sum * 3;
+                        $odd_sum        = $digits{0} + $digits{2} + $digits{4} + $digits{6} + $digits{8} + $digits{10};
+                        $total_sum      = $even_sum_three + $odd_sum;
+                        $next_ten       = (ceil($total_sum / 10)) * 10;
+                        $check_digit    = $next_ten - $total_sum;
+
+                        if ($check_digit != substr($barcode, -1)) {
+                            $error = 'Checksum';
                         } else {
-                            print_r($error_info = $this->db->errorInfo());
-                            print "$sql\n";
-                            exit;
+                            $sql = sprintf(
+                                'SELECT `Part SKU` FROM `Part Dimension` WHERE `Part Barcode Number`=%s AND `Part SKU`!=%d', prepare_mysql($barcode), $this->id
+                            );
+
+                            if ($result = $this->db->query($sql)) {
+                                foreach ($result as $row) {
+                                    $part = get_object('Part', $row['Part SKU']);
+                                    $part->fast_update(array('Part Barcode Number Error' => 'Duplicated'));
+                                    $error = 'Duplicated';
+                                }
+
+                            } else {
+                                print_r($error_info = $this->db->errorInfo());
+                                print "$sql\n";
+                                exit;
+                            }
+
+
                         }
 
 
                     }
 
-
-                }
-
-                if ($error != '') {
+                    if ($error != '') {
 
 
-                    switch ($error) {
+                        switch ($error) {
 
-                        case 'Duplicated':
-                            $error_msg = _('Duplicated');
-                            break;
-                        case 'Size':
-                            $error_msg = _('Barcode should be 13 digits');
-                            break;
-                        case 'Short_Duplicated':
-                            $error_msg = _('Check digit missing, will duplicate');
-                            break;
-                        case 'Checksum_missing':
-                            $error_msg = _('Check digit missing');
-                            break;
-                        case 'Checksum':
-                            $error_msg = _('Invalid check digit');
-                            break;
-                        default:
-                            $error_msg = $error;
+                            case 'Duplicated':
+                                $error_msg = _('Duplicated');
+                                break;
+                            case 'Size':
+                                $error_msg = _('Barcode should be 13 digits');
+                                break;
+                            case 'Short_Duplicated':
+                                $error_msg = _('Check digit missing, will duplicate');
+                                break;
+                            case 'Checksum_missing':
+                                $error_msg = _('Check digit missing');
+                                break;
+                            case 'Checksum':
+                                $error_msg = _('Invalid check digit');
+                                break;
+                            default:
+                                $error_msg = $error;
+                        }
+
+
+                        $this->error      = true;
+                        $this->msg        = $error_msg;
+                        $this->error_code = 'Barcode '.$error;
+
+                        return;
                     }
 
 
+                }
+
+            }
+            if (!isset($data['Part Unit Label']) or $data['Part Unit Label'] == '') {
+
+
+                $this->error      = true;
+                $this->msg        = _('Unit label missing');
+                $this->error_code = 'part_unit_label_missing';
+
+                return;
+            }
+
+
+            if (!isset($data['Part Package Description']) or $data['Part Package Description'] == '') {
+
+
+                $this->error      = true;
+                $this->msg        = _('Outers (SKO) description missing');
+                $this->error_code = 'part_package_description_missing';
+
+                return;
+            }
+
+
+            if (!isset($data['Part Units Per Package']) or $data['Part Units Per Package'] == '') {
+                $this->error      = true;
+                $this->msg        = _('Units per SKO missing');
+                $this->error_code = 'part_unit_per_package_missing';
+
+                return;
+            }
+
+            if (!is_numeric($data['Part Units Per Package']) or $data['Part Units Per Package'] < 0) {
+                $this->error      = true;
+                $this->msg        = sprintf(
+                    _('Invalid units per SKO (%s)'), $data['Part Units Per Package']
+                );
+                $this->error_code = 'invalid_part_unit_per_package';
+                $this->metadata   = $data['Part Units Per Package'];
+
+                return;
+            }
+
+
+            if (isset($data['Part Unit Price']) and $data['Part Unit Price'] != '') {
+                if (!is_numeric($data['Part Unit Price']) or $data['Part Unit Price'] < 0) {
                     $this->error      = true;
-                    $this->msg        = $error_msg;
-                    $this->error_code = 'Barcode '.$error;
+                    $this->msg        = sprintf(
+                        _('Invalid unit recommended price (%s)'), $data['Part Unit Price']
+                    );
+                    $this->error_code = 'invalid_part_unit_price';
+                    $this->metadata   = $data['Part Unit Price'];
 
                     return;
                 }
+            }
+            if (isset($data['Part Unit RRP']) and $data['Part Unit RRP'] != '') {
+                if (!is_numeric($data['Part Unit RRP']) or $data['Part Unit RRP'] < 0) {
+                    $this->error      = true;
+                    $this->msg        = sprintf(
+                        _('Invalid unit recommended RRP (%s)'), $data['Part Unit RRP']
+                    );
+                    $this->error_code = 'invalid_part_unit_rrp';
+                    $this->metadata   = $data['Part Unit RRP'];
 
-
+                    return;
+                }
             }
 
         }
-        if (!isset($data['Part Unit Label']) or $data['Part Unit Label'] == '') {
 
-
-            $this->error      = true;
-            $this->msg        = _('Unit label missing');
-            $this->error_code = 'part_unit_label_missing';
-
-            return;
-        }
-
-
-
-
-        if (!isset($data['Part Package Description']) or $data['Part Package Description'] == '') {
-
-
-            $this->error      = true;
-            $this->msg        = _('Outers (SKO) description missing');
-            $this->error_code = 'part_package_description_missing';
-
-            return;
-        }
 
         if (!isset($data['Supplier Part Packages Per Carton']) or $data['Supplier Part Packages Per Carton'] == '') {
             $this->error      = true;
@@ -930,26 +992,6 @@ class Supplier extends SubjectSupplier {
             );
             $this->error_code = 'invalid_supplier_part_packages_per_carton';
             $this->metadata   = $data['Supplier Part Packages Per Carton'];
-
-            return;
-        }
-
-
-        if (!isset($data['Part Units Per Package']) or $data['Part Units Per Package'] == '') {
-            $this->error      = true;
-            $this->msg        = _('Units per SKO missing');
-            $this->error_code = 'part_unit_per_package_missing';
-
-            return;
-        }
-
-        if (!is_numeric($data['Part Units Per Package']) or $data['Part Units Per Package'] < 0) {
-            $this->error      = true;
-            $this->msg        = sprintf(
-                _('Invalid units per SKO (%s)'), $data['Part Units Per Package']
-            );
-            $this->error_code = 'invalid_part_unit_per_package';
-            $this->metadata   = $data['Part Units Per Package'];
 
             return;
         }
@@ -1013,30 +1055,6 @@ class Supplier extends SubjectSupplier {
 
         */
 
-        if (isset($data['Part Unit Price']) and $data['Part Unit Price'] != '') {
-            if (!is_numeric($data['Part Unit Price']) or $data['Part Unit Price'] < 0) {
-                $this->error      = true;
-                $this->msg        = sprintf(
-                    _('Invalid unit recommended price (%s)'), $data['Part Unit Price']
-                );
-                $this->error_code = 'invalid_part_unit_price';
-                $this->metadata   = $data['Part Unit Price'];
-
-                return;
-            }
-        }
-        if (isset($data['Part Unit RRP']) and $data['Part Unit RRP'] != '') {
-            if (!is_numeric($data['Part Unit RRP']) or $data['Part Unit RRP'] < 0) {
-                $this->error      = true;
-                $this->msg        = sprintf(
-                    _('Invalid unit recommended RRP (%s)'), $data['Part Unit RRP']
-                );
-                $this->error_code = 'invalid_part_unit_rrp';
-                $this->metadata   = $data['Part Unit RRP'];
-
-                return;
-            }
-        }
         if (isset($data['Supplier Part Carton CBM']) and $data['Supplier Part Carton CBM'] != '') {
             if (!is_numeric($data['Supplier Part Carton CBM']) or $data['Supplier Part Carton CBM'] < 0) {
                 $this->error      = true;
@@ -1143,111 +1161,119 @@ class Supplier extends SubjectSupplier {
 
 
                 if (!empty($data['Supplier Part Packages Per Carton'])) {
-                    $data['Part SKOs per Carton']=$data['Supplier Part Packages Per Carton'];
+                    $data['Part SKOs per Carton'] = $data['Supplier Part Packages Per Carton'];
 
                 }
 
 
+                if (!$part_exist) {
+
+                    $part = new Part('find', $data, 'create');
 
 
+                    if ($part->new) {
+
+                        $part->update(
+                            array(
+                                'Part Materials'          => $materials,
+                                'Part Package Dimensions' => $package_dimensions,
+                                'Part Unit Dimensions'    => $unit_dimensions,
+
+                            ), 'no_history'
+                        );
+
+                        if ($auto_part_barcode) {
 
 
-                $part = new Part('find', $data, 'create');
+                            $barcode_number = '';
+                            $sql            = sprintf("SELECT `Barcode Number` FROM `Barcode Dimension` WHERE `Barcode Status`='Available' ORDER BY `Barcode Number`");
+                            if ($result = $this->db->query($sql)) {
+                                if ($row = $result->fetch()) {
+                                    $barcode_number = $row['Barcode Number'];
+                                }
+                            } else {
+                                print_r($error_info = $this->db->errorInfo());
+                                exit;
+                            }
+
+                            if ($barcode_number != '') {
+                                $part->update(
+                                    array(
+                                        'Part Barcode' => $barcode_number,
 
 
-                if ($part->new) {
+                                    ), 'no_history'
+                                );
+                            }
 
-                    $part->update(
-                        array(
-                            'Part Materials'          => $materials,
-                            'Part Package Dimensions' => $package_dimensions,
-                            'Part Unit Dimensions'    => $unit_dimensions,
+                        }
 
-                        ), 'no_history'
-                    );
-
-                    if ($auto_part_barcode) {
+                        $supplier_part->update(array('Supplier Part Part SKU' => $part->sku));
+                        $supplier_part->get_data('id', $supplier_part->id);
 
 
-                        $barcode_number = '';
-                        $sql            = sprintf("SELECT `Barcode Number` FROM `Barcode Dimension` WHERE `Barcode Status`='Available' ORDER BY `Barcode Number`");
+                        $supplier_part->update_historic_object();
+                        $this->update_supplier_parts();
+                        $part->update_cost();
+                    }
+                    else {
+
+                        $this->error = true;
+                        if ($part->found) {
+
+                            $this->error_code     = 'duplicated_field';
+                            $this->error_metadata = json_encode(
+                                array($part->duplicated_field)
+                            );
+
+                            if ($part->duplicated_field == 'Part Reference') {
+                                $this->msg = _("Duplicated part reference");
+                            } else {
+                                $this->msg = 'Duplicated '.$part->duplicated_field;
+                            }
+
+
+                        } else {
+                            $this->msg = $part->msg;
+                        }
+
+                        $sql = sprintf(
+                            'DELETE FROM `Supplier Part Dimension` WHERE `Supplier Part Key`=%d', $supplier_part->id
+                        );
+                        $this->db->exec($sql);
+                        $sql = sprintf(
+                            'SELECT `History Key` FROM `Supplier Part History Bridge` WHERE `Supplier Part Key`=%d', $supplier_part->id
+                        );
                         if ($result = $this->db->query($sql)) {
-                            if ($row = $result->fetch()) {
-                                $barcode_number = $row['Barcode Number'];
+                            foreach ($result as $row) {
+                                $sql = sprintf(
+                                    'DELETE FROM `History Dimension` WHERE `History Key`=%d  ', $row['History Key']
+                                );
+                                $this->db->exec($sql);
                             }
                         } else {
                             print_r($error_info = $this->db->errorInfo());
                             exit;
                         }
 
-                        if ($barcode_number != '') {
-                            $part->update(
-                                array(
-                                    'Part Barcode' => $barcode_number,
-
-
-                                ), 'no_history'
-                            );
-                        }
+                        $sql = sprintf(
+                            'DELETE FROM `Supplier Part Dimension` WHERE `Supplier Part Key`=%d', $supplier_part->id
+                        );
+                        $this->db->exec($sql);
+                        $supplier_part = new SupplierPart(0);
 
                     }
-
-                    $supplier_part->update(
-                        array('Supplier Part Part SKU' => $part->sku)
-                    );
+                }else{
+                    $supplier_part->update(array('Supplier Part Part SKU' => $part->sku));
                     $supplier_part->get_data('id', $supplier_part->id);
 
 
                     $supplier_part->update_historic_object();
                     $this->update_supplier_parts();
                     $part->update_cost();
-                } else {
-
-                    $this->error = true;
-                    if ($part->found) {
-
-                        $this->error_code     = 'duplicated_field';
-                        $this->error_metadata = json_encode(
-                            array($part->duplicated_field)
-                        );
-
-                        if ($part->duplicated_field == 'Part Reference') {
-                            $this->msg = _("Duplicated part reference");
-                        } else {
-                            $this->msg = 'Duplicated '.$part->duplicated_field;
-                        }
-
-
-                    } else {
-                        $this->msg = $part->msg;
-                    }
-
-                    $sql = sprintf(
-                        'DELETE FROM `Supplier Part Dimension` WHERE `Supplier Part Key`=%d', $supplier_part->id
-                    );
-                    $this->db->exec($sql);
-                    $sql = sprintf(
-                        'SELECT `History Key` FROM `Supplier Part History Bridge` WHERE `Supplier Part Key`=%d', $supplier_part->id
-                    );
-                    if ($result = $this->db->query($sql)) {
-                        foreach ($result as $row) {
-                            $sql = sprintf(
-                                'DELETE FROM `History Dimension` WHERE `History Key`=%d  ', $row['History Key']
-                            );
-                            $this->db->exec($sql);
-                        }
-                    } else {
-                        print_r($error_info = $this->db->errorInfo());
-                        exit;
-                    }
-
-                    $sql = sprintf(
-                        'DELETE FROM `Supplier Part Dimension` WHERE `Supplier Part Key`=%d', $supplier_part->id
-                    );
-                    $this->db->exec($sql);
-                    $supplier_part = new SupplierPart(0);
-
                 }
+
+
 
 
             } else {
@@ -1417,7 +1443,6 @@ class Supplier extends SubjectSupplier {
         }
 
 
-
         //  print "$sql\n";
 
         if ($result = $this->db->query($sql)) {
@@ -1446,10 +1471,9 @@ class Supplier extends SubjectSupplier {
         $part_family_keys = '';
 
 
-            $sql = sprintf(
-                'SELECT `Part Family Category Key` FROM `Supplier Part Dimension` left join `Part Dimension` on (`Part SKU`=`Supplier Part Part SKU`) WHERE `Supplier Part Supplier Key`=%d group by `Part Family Category Key` ', $this->id
-            );
-
+        $sql = sprintf(
+            'SELECT `Part Family Category Key` FROM `Supplier Part Dimension` left join `Part Dimension` on (`Part SKU`=`Supplier Part Part SKU`) WHERE `Supplier Part Supplier Key`=%d group by `Part Family Category Key` ', $this->id
+        );
 
 
         //  print "$sql\n";
@@ -1473,8 +1497,7 @@ class Supplier extends SubjectSupplier {
         return $part_family_keys;
 
     }
-    
-    
+
 
     function get_categories($scope = 'keys') {
 
@@ -1825,7 +1848,6 @@ class Supplier extends SubjectSupplier {
         $timeseries = new Timeseries('find', $data, 'create');
 
 
-
         if ($timeseries->id) {
             require_once 'utils/date_functions.php';
 
@@ -1843,11 +1865,9 @@ class Supplier extends SubjectSupplier {
             }
 
 
-            $sql        = sprintf(
+            $sql = sprintf(
                 'DELETE FROM `Timeseries Record Dimension` WHERE `Timeseries Record Timeseries Key`=%d AND `Timeseries Record Date`<%s ', $timeseries->id, prepare_mysql($from)
             );
-
-
 
 
             $update_sql = $this->db->prepare($sql);
@@ -1891,10 +1911,6 @@ class Supplier extends SubjectSupplier {
         $dates = date_frequency_range($this->db, $timeseries->get('Timeseries Frequency'), $from, $to);
 
 
-
-
-
-
         if ($fork_key) {
 
             $sql = sprintf(
@@ -1904,11 +1920,6 @@ class Supplier extends SubjectSupplier {
             $this->db->exec($sql);
         }
         $index = 0;
-
-
-
-
-
 
 
         foreach ($dates as $date_frequency_period) {
@@ -1925,11 +1936,7 @@ class Supplier extends SubjectSupplier {
             $sales_data = $this->get_sales_data($date_frequency_period['from'], $date_frequency_period['to']);
 
 
-
-
-            $_date      = gmdate('Y-m-d', strtotime($date_frequency_period['from'].' +0:00'));
-
-
+            $_date = gmdate('Y-m-d', strtotime($date_frequency_period['from'].' +0:00'));
 
 
             if ($sales_data['deliveries'] > 0 or $sales_data['supplier_deliveries'] > 0 or $sales_data['dispatched'] > 0 or $sales_data['invoiced_amount'] != 0 or $sales_data['required'] != 0 or $sales_data['profit'] != 0 or $sales_data['purchased_amount'] != 0) {
@@ -1937,13 +1944,11 @@ class Supplier extends SubjectSupplier {
                 list($timeseries_record_key, $date) = $timeseries->create_record(array('Timeseries Record Date' => $_date));
 
 
-
                 $sql = sprintf(
                     'DELETE FROM `Timeseries Record Drill Down` WHERE `Timeseries Record Drill Down Timeseries Record Key`=%d  ', $timeseries_record_key
                 );
                 //print $sql;
                 $this->db->exec($sql);
-
 
 
                 $sql = sprintf(
@@ -1960,13 +1965,18 @@ class Supplier extends SubjectSupplier {
                 $update_sql->execute();
 
 
-
                 if ($update_sql->rowCount() or $date == date('Y-m-d')) {
                     $timeseries->fast_update(array('Timeseries Updated' => gmdate('Y-m-d H:i:s')));
                 }
 
 
-                if( in_array($timeseries->get('Timeseries Frequency'),array('Monthly','Quarterly','Yearly'))   ) {
+                if (in_array(
+                    $timeseries->get('Timeseries Frequency'), array(
+                    'Monthly',
+                    'Quarterly',
+                    'Yearly'
+                )
+                )) {
 
                     foreach (preg_split('/\,/', $this->get_part_family_keys()) as $family_key) {
 
@@ -1974,10 +1984,7 @@ class Supplier extends SubjectSupplier {
                         $part_skus = array();
 
 
-
-
-
-                        $sql       = sprintf('SELECT `Part SKU` FROM `Part Dimension`  left join `Supplier Part Dimension` on (`Part SKU`= `Supplier Part Part SKU`)    WHERE  `Supplier Part Supplier Key`=%d and  `Part Family Category Key`=%d ',$this->id, $family_key);
+                        $sql = sprintf('SELECT `Part SKU` FROM `Part Dimension`  left join `Supplier Part Dimension` on (`Part SKU`= `Supplier Part Part SKU`)    WHERE  `Supplier Part Supplier Key`=%d and  `Part Family Category Key`=%d ', $this->id, $family_key);
                         if ($result = $this->db->query($sql)) {
                             foreach ($result as $row) {
                                 $part_skus[$row['Part SKU']] = $row['Part SKU'];
@@ -1991,23 +1998,18 @@ class Supplier extends SubjectSupplier {
                         $part_skus = join(',', $part_skus);
 
 
-                       // print 'XXX:'.$part_skus;
+                        // print 'XXX:'.$part_skus;
                         //  exit;
 
                         $sales_data = $this->get_sales_data($date_frequency_period['from'], $date_frequency_period['to'], $part_skus);
-                        $from_1yb = date('Y-m-d H:i:s', strtotime($date_frequency_period['from'].' -1 year'));
-                        $to_1yb   = date('Y-m-d H:i:s', strtotime($date_frequency_period['to'].' -1 year'));
+                        $from_1yb   = date('Y-m-d H:i:s', strtotime($date_frequency_period['from'].' -1 year'));
+                        $to_1yb     = date('Y-m-d H:i:s', strtotime($date_frequency_period['to'].' -1 year'));
 
 
                         $sales_data_1yb = $this->get_sales_data($from_1yb, $to_1yb, $part_skus);
 
-                        if (
-                            $sales_data['deliveries'] > 0 or $sales_data['dispatched'] > 0 or $sales_data['invoiced_amount'] != 0 or $sales_data['required'] != 0 or $sales_data['profit'] != 0 or
-                            $sales_data_1yb['deliveries'] > 0 or $sales_data_1yb['dispatched'] > 0 or $sales_data_1yb['invoiced_amount'] != 0 or $sales_data_1yb['required'] != 0 or $sales_data_1yb['profit'] != 0
-                        ) {
-
-
-
+                        if ($sales_data['deliveries'] > 0 or $sales_data['dispatched'] > 0 or $sales_data['invoiced_amount'] != 0 or $sales_data['required'] != 0 or $sales_data['profit'] != 0 or $sales_data_1yb['deliveries'] > 0 or $sales_data_1yb['dispatched'] > 0
+                            or $sales_data_1yb['invoiced_amount'] != 0 or $sales_data_1yb['required'] != 0 or $sales_data_1yb['profit'] != 0) {
 
 
                             $sql = sprintf(
@@ -2033,19 +2035,16 @@ class Supplier extends SubjectSupplier {
                     foreach (preg_split('/\,/', $this->get_part_skus()) as $part_sku) {
 
                         $sales_data = $this->get_sales_data($date_frequency_period['from'], $date_frequency_period['to'], $part_sku);
-                        $from_1yb = date('Y-m-d H:i:s', strtotime($date_frequency_period['from'].' -1 year'));
-                        $to_1yb   = date('Y-m-d H:i:s', strtotime($date_frequency_period['to'].' -1 year'));
+                        $from_1yb   = date('Y-m-d H:i:s', strtotime($date_frequency_period['from'].' -1 year'));
+                        $to_1yb     = date('Y-m-d H:i:s', strtotime($date_frequency_period['to'].' -1 year'));
 
 
                         $sales_data_1yb = $this->get_sales_data($from_1yb, $to_1yb, $part_sku);
 
-                        if ($sales_data['deliveries'] > 0 or $sales_data['dispatched'] > 0 or $sales_data['invoiced_amount'] != 0 or $sales_data['required'] != 0 or $sales_data['profit'] != 0 or
-                            $sales_data_1yb['deliveries'] > 0 or $sales_data_1yb['dispatched'] > 0 or $sales_data_1yb['invoiced_amount'] != 0 or $sales_data_1yb['required'] != 0 or $sales_data_1yb['profit'] != 0
+                        if ($sales_data['deliveries'] > 0 or $sales_data['dispatched'] > 0 or $sales_data['invoiced_amount'] != 0 or $sales_data['required'] != 0 or $sales_data['profit'] != 0 or $sales_data_1yb['deliveries'] > 0 or $sales_data_1yb['dispatched'] > 0
+                            or $sales_data_1yb['invoiced_amount'] != 0 or $sales_data_1yb['required'] != 0 or $sales_data_1yb['profit'] != 0
 
                         ) {
-
-
-
 
 
                             $sql = sprintf(
@@ -2055,8 +2054,7 @@ class Supplier extends SubjectSupplier {
 )
                     VALUES (%d,%s,%d, %f,%f,%f,%f, %d,%d,%d,%d)', $timeseries_record_key, prepare_mysql('Part'), $part_sku,
 
-                                $sales_data['invoiced_amount'], $sales_data['profit'], $sales_data_1yb['invoiced_amount'], $sales_data_1yb['profit'],
-                                $sales_data['dispatched'], $sales_data['deliveries'], $sales_data_1yb['dispatched'], $sales_data_1yb['deliveries']
+                                $sales_data['invoiced_amount'], $sales_data['profit'], $sales_data_1yb['invoiced_amount'], $sales_data_1yb['profit'], $sales_data['dispatched'], $sales_data['deliveries'], $sales_data_1yb['dispatched'], $sales_data_1yb['deliveries']
 
 
                             );
@@ -2070,8 +2068,6 @@ class Supplier extends SubjectSupplier {
                 }
 
 
-
-
             } else {
 
 
@@ -2079,7 +2075,7 @@ class Supplier extends SubjectSupplier {
                     'select `Timeseries Record Key` FROM `Timeseries Record Dimension` WHERE `Timeseries Record Timeseries Key`=%d AND `Timeseries Record Date`=%s ', $timeseries->id, prepare_mysql($_date)
                 );
 
-                if ($result=$this->db->query($sql)) {
+                if ($result = $this->db->query($sql)) {
                     if ($row = $result->fetch()) {
                         $sql = sprintf(
                             'DELETE FROM `Timeseries Record Drill Down` WHERE `Timeseries Record Drill Down Timeseries Record Key`=%d  ', $row['Timeseries Record Key']
@@ -2088,20 +2084,16 @@ class Supplier extends SubjectSupplier {
                         $this->db->exec($sql);
 
                     }
-                }else {
-                	print_r($error_info=$this->db->errorInfo());
-                	print "$sql\n";
-                	exit;
+                } else {
+                    print_r($error_info = $this->db->errorInfo());
+                    print "$sql\n";
+                    exit;
                 }
-
-
-
 
 
                 $sql = sprintf(
                     'DELETE FROM `Timeseries Record Dimension` WHERE `Timeseries Record Timeseries Key`=%d AND `Timeseries Record Date`=%s ', $timeseries->id, prepare_mysql($_date)
                 );
-
 
 
                 $update_sql = $this->db->prepare($sql);
@@ -2126,12 +2118,6 @@ class Supplier extends SubjectSupplier {
 
             }
             $timeseries->update_stats();
-
-
-
-
-
-
 
 
         }

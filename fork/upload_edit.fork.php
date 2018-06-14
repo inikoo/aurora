@@ -241,6 +241,19 @@ function fork_upload_edit($job) {
                 );
 
 
+
+                if( $upload->get('Upload Object')=='supplier_part'){
+
+                    if(  isset($fork_data['allow_duplicate_part_reference'])){
+                        $_data['allow_duplicate_part_reference']=$fork_data['allow_duplicate_part_reference'];
+
+                    }else{
+                        $_data['allow_duplicate_part_reference']='No';
+                    }
+
+                }
+
+
                 $object_key = new_object(
                     $account, $db, $user, $editor, $_data, $upload, $fork_key
                 );
@@ -426,7 +439,6 @@ function new_object($account, $db, $user, $editor, $data, $upload, $fork_key) {
 
 
 
-
     $parent = get_object($data['parent'], $data['parent_key']);
 
 
@@ -494,8 +506,13 @@ function new_object($account, $db, $user, $editor, $data, $upload, $fork_key) {
         case 'Supplier Part':
 
             include_once 'class.SupplierPart.php';
+
+
+
+
+
             $object = $parent->create_supplier_part_record(
-                $data['fields_data']
+                $data['fields_data'],$data['allow_duplicate_part_reference']
             );
             if ($parent->error) {
                 $error          = $parent->error;

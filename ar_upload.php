@@ -62,6 +62,7 @@ switch ($tipo) {
                          'parent'     => array('type' => 'string'),
                          'parent_key' => array('type' => 'numeric'),
                          'objects'    => array('type' => 'string'),
+                         'allow_duplicate_part_reference'    => array('type' => 'string','optional'=>true),
 
                      )
         );
@@ -1438,13 +1439,13 @@ function edit_objects($account, $db, $user, $editor, $data, $smarty) {
                 $row_data = array();
                 $empty    = true;
                 for ($col = 0; $col <= $highestColumnIndex; ++$col) {
-                    $value          = $objWorksheet->getCellByColumnAndRow(
-                        $col, $row
-                    )->getCalculatedValue();
+                    $value          = $objWorksheet->getCellByColumnAndRow($col, $row)->getCalculatedValue();
                     $row_data[$col] = $value;
                     if ($value != '') {
                         $empty = false;
                     }
+
+
                 }
 
 
@@ -1471,6 +1472,12 @@ function edit_objects($account, $db, $user, $editor, $data, $smarty) {
             'upload_key' => $upload->id,
             'user_key'   => $user->id
         );
+
+
+        if(isset($data['allow_duplicate_part_reference'])){
+            $upload_data['allow_duplicate_part_reference']=$data['allow_duplicate_part_reference'];
+        }
+
 
         $upload->update(
             array('Upload Records' => $number_records), 'no_history'

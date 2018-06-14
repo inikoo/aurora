@@ -82,13 +82,29 @@
                     <label for="table_add_items_file_upload"> <i class="fa fa-upload button" aria-hidden="true"></i></label>
                 </form>
 
+
+
             </td>
+                <td class="small"><span class="button" onclick="allow_duplicate_part_reference(this)"><i class="allow_duplicate_part_reference fal fa-square fa-fw " ></i> <span class="discreet">{t}Allow add to exiting part{/t}</span></span></td>
             {else}
-                <td></td> <td></td>
+                <td></td> <td></td><td></td>
             {/if}
         </tr>
         {/if}
     </table>
+
+        <script>
+            function allow_duplicate_part_reference(element){
+
+                var icon=$(element).find('i')
+                if(icon.hasClass('fa-square')){
+                    icon.removeClass('fa-square').addClass('fa-check-square').next('span').removeClass('discreet')
+                }else{
+                    icon.addClass('fa-square').removeClass('fa-check-square').next('span').addClass('discreet')
+
+                }
+            }
+        </script>
 
 </div>
 
@@ -214,7 +230,10 @@
             ajaxData.append("objects",$(this).data('data').object)
 
 
-            console.log($(this).data('data'))
+            if($('.allow_duplicate_part_reference').length){
+                ajaxData.append("allow_duplicate_part_reference",($('.allow_duplicate_part_reference').hasClass('fa-check-square')?'Yes':'No'))
+
+            }
 
             $.ajax({
                 url: "/ar_upload.php", type: 'POST', data: ajaxData, dataType: 'json', cache: false, contentType: false, processData: false,
