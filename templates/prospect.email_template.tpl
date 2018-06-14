@@ -99,7 +99,7 @@
         //preventClose: false, // [optional, default:false] if true an alert is shown before browser closure
         onSave: open_save_email_template_dialog,
         onSaveAsTemplate:open_save_as_template_dialog,
-        onAutoSave:autosave_email_template,
+      //  onAutoSave:autosave_email_template,
         onSend: open_send_test_email_dialog,
         //onError: function(errorMessage) { /* Implements function to handle error messages */ } // [optional]
     };
