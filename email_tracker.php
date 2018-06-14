@@ -206,6 +206,8 @@ if ($validator->isValid($sns)) {
                         $db->exec($sql);
                     }
 
+                    $email_tracking->fast_update(array('Email Tracking Spam'=>'Yes'));
+
 
                 }
 

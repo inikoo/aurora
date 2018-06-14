@@ -29,17 +29,48 @@ cell: Backgrid.HtmlCell.extend({
 },
 {
 name: "sent",
-label: "{t}Send{/t}",
+label: "{t}Sent{/t}",
 editable: false,
 defaultOrder:1,
 sortType: "toggle",
-{if $sort_key=='send'}direction: '{if $sort_order==1}descending{else}ascending{/if}',{/if}
+{if $sort_key=='sent'}direction: '{if $sort_order==1}descending{else}ascending{/if}',{/if}
+cell: Backgrid.HtmlCell.extend({ className: "aright"} ),
+headerCell: integerHeaderCell
+},
+{
+name: "hard_bounces",
+label: "{t}Hard bounced{/t}",
+editable: false,
+defaultOrder:1,
+sortType: "toggle",
+{if $sort_key=='hard_bounces'}direction: '{if $sort_order==1}descending{else}ascending{/if}',{/if}
+cell: Backgrid.HtmlCell.extend({ className: "aright"} ),
+headerCell: integerHeaderCell
+},
+{
+name: "soft_bounces",
+label: "{t}Soft bounced{/t}",
+editable: false,
+defaultOrder:1,
+sortType: "toggle",
+{if $sort_key=='soft_bounces'}direction: '{if $sort_order==1}descending{else}ascending{/if}',{/if}
+cell: Backgrid.HtmlCell.extend({ className: "aright"} ),
+headerCell: integerHeaderCell
+},
+
+{
+name: "delivered",
+label: "{t}Delivered{/t}",
+editable: false,
+defaultOrder:1,
+sortType: "toggle",
+{if $sort_key=='delivered'}direction: '{if $sort_order==1}descending{else}ascending{/if}',{/if}
 cell: Backgrid.HtmlCell.extend({ className: "aright"} ),
 headerCell: integerHeaderCell
 },
 {
 name: "open",
-label: "{t}Open{/t}",
+label: "{t}Opened{/t}",
 editable: false,
 defaultOrder:1,
 sortType: "open",
@@ -55,6 +86,16 @@ editable: false,
 defaultOrder:1,
 sortType: "toggle",
 {if $sort_key=='clicked'}direction: '{if $sort_order==1}descending{else}ascending{/if}',{/if}
+cell: Backgrid.HtmlCell.extend({ className: "aright"} ),
+headerCell: integerHeaderCell
+},
+{
+name: "spam",
+label: "{t}Spam{/t}",
+editable: false,
+defaultOrder:1,
+sortType: "toggle",
+{if $sort_key=='spam'}direction: '{if $sort_order==1}descending{else}ascending{/if}',{/if}
 cell: Backgrid.HtmlCell.extend({ className: "aright"} ),
 headerCell: integerHeaderCell
 }

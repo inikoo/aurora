@@ -130,7 +130,7 @@ if ($result = $db->query($sql)) {
 
                 );
 
-                print_r($_metadata);
+               // print_r($_metadata);
 
 
                 $email_campaign_type->fast_update(array('Email Campaign Type Metadata' => json_encode($_metadata)));
@@ -158,7 +158,7 @@ if ($result = $db->query($sql)) {
 
                 );
 
-                print_r($_metadata);
+               // print_r($_metadata);
 
 
                 $email_campaign_type->fast_update(array('Email Campaign Type Metadata' => json_encode($_metadata)));
@@ -348,4 +348,20 @@ if ($result = $db->query($sql)) {
     print_r($error_info = $this->db->errorInfo());
     print "$sql\n";
     exit;
+}
+
+$sql = sprintf('select * from `Email Tracking Dimension` where `Email Tracking State`="Sent to SES"  and `Email Tracking Created Date`<"2018-06-09 00:00:00" ');
+if ($result=$db->query($sql)) {
+		foreach ($result as $row) {
+
+		    $sql=sprintf('delete from `Email Tracking Event Dimension` where `Email Tracking Event Tracking Key`=%d ',$row['Email Tracking Key']);
+		    $db->exec($sql);
+            $sql=sprintf('delete from `Email Tracking Dimension` where `Email Tracking Key`=%d ',$row['Email Tracking Key']);
+            $db->exec($sql);
+
+		}
+}else {
+		print_r($error_info=$this->db->errorInfo());
+		print "$sql\n";
+		exit;
 }

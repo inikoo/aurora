@@ -47,7 +47,7 @@ if ($order == 'type') {
     $order = '`Email Campaign Type Key`';
 }
 $table  = '`Email Campaign Type Dimension`  left join `Store Dimension` S on (S.`Store Key`=`Email Campaign Type Store Key`) ';
-$fields = "`Email Campaign Type Key`,`Email Campaign Type Code`,`Email Campaign Type Store Key`,S.`Store Code`,`Store Name`,`Email Campaign Type Sent`,`Email Campaign Type Open`,`Email Campaign Type Clicked`";
+$fields = "`Email Campaign Type Hard Bounces`,`Email Campaign Type Soft Bounces`,`Email Campaign Type Spams`,`Email Campaign Type Delivered`,`Email Campaign Type Key`,`Email Campaign Type Code`,`Email Campaign Type Store Key`,S.`Store Code`,`Store Name`,`Email Campaign Type Sent`,`Email Campaign Type Open`,`Email Campaign Type Clicked`";
 
 
 $sql_totals = "select count(*) as num from $table $where ";
