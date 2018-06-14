@@ -1038,8 +1038,17 @@ function transactional_emails_types($_data, $db, $user) {
 
             'type'    => $type,
             'sent'    => number($data['Email Campaign Type Sent']),
-            'open'    => number($data['Email Campaign Type Open']),
-            'clicked' => number($data['Email Campaign Type Clicked']),
+
+            'hard_bounces'    =>  sprintf('<span class="%s" title="%s">%s</span>',($data['Email Campaign Type Delivered']==0?'super_discreet': ($data['Email Campaign Type Hard Bounces']==0?'success super_discreet':'') ),number($data['Email Campaign Type Hard Bounces']),percentage($data['Email Campaign Type Hard Bounces'],$data['Email Campaign Type Sent']))  ,
+            'soft_bounces'    =>  sprintf('<span class="%s" title="%s">%s</span>',($data['Email Campaign Type Delivered']==0?'super_discreet': ($data['Email Campaign Type Soft Bounces']==0?'success super_discreet':'') ),number($data['Email Campaign Type Soft Bounces']),percentage($data['Email Campaign Type Soft Bounces'],$data['Email Campaign Type Sent']))  ,
+
+
+            'delivered'    => ($data['Email Campaign Type Sent']==0?'<span class="super_discreet">'._('NA').'</span>':number($data['Email Campaign Type Delivered'])),
+
+            'open'    =>  sprintf('<span class="%s" title="%s">%s</span>',($data['Email Campaign Type Delivered']==0?'super_discreet':''),number($data['Email Campaign Type Open']),percentage($data['Email Campaign Type Open'],$data['Email Campaign Type Delivered']))  ,
+            'clicked'    =>  sprintf('<span class="%s" title="%s">%s</span>',($data['Email Campaign Type Delivered']==0?'super_discreet':''),number($data['Email Campaign Type Clicked']),percentage($data['Email Campaign Type Clicked'],$data['Email Campaign Type Delivered']))  ,
+            'spam'    =>  sprintf('<span class="%s " title="%s">%s</span>',   ($data['Email Campaign Type Delivered']==0?'super_discreet': ($data['Email Campaign Type Spams']==0?'success super_discreet':'')  ),number($data['Email Campaign Type Spams']),  percentage($data['Email Campaign Type Spams'],$data['Email Campaign Type Delivered']))  ,
+
 
 
         );

@@ -858,6 +858,10 @@ ALTER TABLE `Email Tracking Dimension` ADD `Email Tracking Email` VARCHAR(255) N
 ALTER TABLE `Email Template Dimension` ADD `Email Template Email Campaign Type Key` MEDIUMINT UNSIGNED NULL DEFAULT NULL AFTER `Email Template Key`, ADD INDEX (`Email Template Email Campaign Type Key`);
 
 
+ALTER TABLE `Email Campaign Type Dimension` ADD `Email Campaign Type Delivered` MEDIUMINT UNSIGNED NOT NULL DEFAULT '0' AFTER `Email Campaign Type Sent`;
+ALTER TABLE `Email Campaign Type Dimension` ADD `Email Campaign Type Scheduled` MEDIUMINT UNSIGNED NOT NULL DEFAULT '0' AFTER `Email Campaign Type Mailshots`;
+ALTER TABLE `Email Campaign Type Dimension` ADD `Email Campaign Type Errors` MEDIUMINT UNSIGNED NOT NULL DEFAULT '0' AFTER `Email Campaign Type Clicked`, ADD `Email Campaign Type Hard Bounces` MEDIUMINT UNSIGNED NOT NULL DEFAULT '0' AFTER `Email Campaign Type Errors`, ADD `Email Campaign Type Soft Bounces` MEDIUMINT UNSIGNED NOT NULL DEFAULT '0' AFTER `Email Campaign Type Hard Bounces`, ADD `Email Campaign Type Spams` MEDIUMINT UNSIGNED NOT NULL DEFAULT '0' AFTER `Email Campaign Type Soft Bounces`;
+
 
 
 ======= fer migration ordering in dw and costa

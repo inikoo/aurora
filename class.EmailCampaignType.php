@@ -217,6 +217,28 @@ class EmailCampaignType extends DB_Table {
         return false;
     }
 
+    function get_field_label($field) {
+
+        switch ($field) {
+
+            case 'Email Campaign Type Name':
+                $label = _('name');
+                break;
+
+            default:
+                $label = $field;
+
+        }
+
+        return $label;
+
+    }
+
+    function suspend() {
+
+        $this->update_field_switcher('Email Campaign Type Status', 'Suspended');
+
+    }
 
     function update_field_switcher($field, $value, $options = '', $metadata = '') {
 
@@ -239,7 +261,7 @@ class EmailCampaignType extends DB_Table {
                 break;
             case 'Email Campaign Type Schedule Time':
 
-                $metadata                           = $this->get('Metadata');
+                $metadata                     = $this->get('Metadata');
                 $metadata['Schedule']['Time'] = $value;
                 $this->update_field('Email Campaign Type Metadata', json_encode($metadata), 'no_history');
 
@@ -284,33 +306,129 @@ class EmailCampaignType extends DB_Table {
         }
     }
 
+    function activate() {
 
-    function get_field_label($field) {
+        $this->update_field_switcher('Email Campaign Type Status', 'Active');
 
-        switch ($field) {
+    }
 
-            case 'Email Campaign Type Name':
-                $label = _('name');
-                break;
+    function update_sent_emails_totals() {
 
-            default:
-                $label = $field;
 
+        $open         = 0;
+        $scheduled    = 0;
+        $sent         = 0;
+        $clicked      = 0;
+        $mailshots    = 0;
+        $errors       = 0;
+        $delivered    = 0;
+        $hard_bounces  = 0;
+        $soft_bounces = 0;
+        $spam         = 0;
+
+
+        //'Send to SES',Send',Read
+        //'Sent','Sent to SES','Ready',,'Rejected by SES',','','Hard Bounce','Soft Bounce','Spam','Delivered','Opened','Clicked','Error'
+
+
+        //     'Ready','Sent to SES','Rejected by SES','Sent','Soft Bounce','Hard Bounce','Delivered','Spam','Opened','Clicked','Error'
+
+
+        $sql = sprintf('select count(*) as num ,`Email Tracking State` from `Email Tracking Dimension` where `Email Tracking Email Template Type Key`=%d group by `Email Tracking State` ', $this->id);
+        if ($result = $this->db->query($sql)) {
+            foreach ($result as $row) {
+
+                if ($row['Email Tracking State'] == 'Ready') {
+                    $scheduled = $row['num'];
+                }
+
+                if (in_array(
+                    $row['Email Tracking State'], array(
+                                                    'Sent',
+                                                    'Sent to SES',
+                                                    'Soft Bounce',
+                                                    'Hard Bounce',
+                                                    'Delivered',
+                                                    'Spam',
+                                                    'Opened',
+                                                    'Clicked'
+                                                )
+                )) {
+                    $sent += $row['num'];
+
+                }
+
+                if (in_array(
+                    $row['Email Tracking State'], array(
+                                                    'Delivered',
+                                                    'Spam',
+                                                    'Opened',
+                                                    'Clicked'
+                                                )
+                )) {
+                    $delivered += $row['num'];
+                }
+                if (in_array(
+                    $row['Email Tracking State'], array(
+                                                    'Opened',
+                                                    'Clicked'
+                                                )
+                )) {
+                    $open += $row['num'];
+                }
+                if ($row['Email Tracking State'] == 'Clicked') {
+                    $clicked = $row['num'];
+                }
+                if ($row['Email Tracking State'] == 'Rejected by SES') {
+                    $errors = $row['num'];
+                }
+                if ($row['Email Tracking State'] == 'Hard Bounce') {
+                    $hard_bounces = $row['num'];
+                }
+                if ($row['Email Tracking State'] == 'Soft Bounce') {
+                    $soft_bounces = $row['num'];
+                }
+
+
+            }
+        } else {
+            print_r($error_info = $this->db->errorInfo());
+            print "$sql\n";
+            exit;
         }
 
-        return $label;
 
-    }
+        $sql = sprintf('select count(*) as num  from `Email Tracking Dimension` where `Email Tracking Email Template Type Key`=%d and `Email Tracking Spam`="Yes" ', $this->id);
+        if ($result = $this->db->query($sql)) {
+            if ($row = $result->fetch()) {
+                $spam = $row['num'];
+            }
+        } else {
+            print_r($error_info = $this->db->errorInfo());
+            print "$sql\n";
+            exit;
+        }
 
-    function suspend(){
 
-        $this->update_field_switcher('Email Campaign Type Status','Suspended');
+        $this->fast_update(
+            array(
+                'Email Campaign Type Scheduled'=>$scheduled,
+                'Email Campaign Type Sent'      => $sent,
+                'Email Campaign Type Delivered' => $delivered,
 
-    }
+                'Email Campaign Type Open'    => $open,
+                'Email Campaign Type Clicked' => $clicked,
 
-    function activate(){
+                'Email Campaign Type Errors' => $errors,
+                'Email Campaign Type Hard Bounces' => $hard_bounces,
+                'Email Campaign Type Soft Bounces' => $soft_bounces,
+                'Email Campaign Type Spams' => $spam,
 
-        $this->update_field_switcher('Email Campaign Type Status','Active');
+
+            )
+
+        );
+
 
     }
 
