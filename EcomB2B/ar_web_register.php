@@ -368,6 +368,15 @@ function send_welcome_email($db, $website, $customer, $account) {
         );
     }
 
+
+    include_once 'utils/new_fork.php';
+    new_housekeeping_fork(
+        'au_housekeeping', array(
+        'type'     => 'update_email_template_data',
+        'email_template_key' => $email_template->id
+    ), $account->get('Account Code')
+    );
+
     return $response;
 
 

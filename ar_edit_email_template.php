@@ -233,7 +233,7 @@ function send_email($data, $editor, $smarty, $db) {
     $recipient = get_object($data['recipient'], $data['recipient_key']);
 
     include_once 'class.EmailCampaignType.php';
-    $email_campaign_type = new EmailCampaignType('code_store', 'Invite Mailshot', $recipient->get('Store Key'));
+    $email_campaign_type = new EmailCampaignType('code_store', 'Invite', $recipient->get('Store Key'));
 
 
     $recipient->send_email($published_template, $email_campaign_type->id, $email_campaign_type->id);

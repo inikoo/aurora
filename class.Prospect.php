@@ -702,6 +702,15 @@ class Prospect extends Subject {
 
         }
 
+
+        include_once 'utils/new_fork.php';
+        new_housekeeping_fork(
+            'au_housekeeping', array(
+            'type'     => 'update_email_template_data',
+            'email_template_key' => $published_email_template->get('Published Email Template Email Template Key')
+        ), $account->get('Account Code')
+        );
+
     }
 
     function update_status($value, $extra_args = false) {
