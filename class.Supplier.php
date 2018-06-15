@@ -761,12 +761,26 @@ class Supplier extends SubjectSupplier {
 
         if($allow_duplicate_part_reference=='No'){
 
-            $this->error      = true;
-            $this->msg        = sprintf(_('Duplicated reference (%s)'), $data['Part Reference']);
-            $this->error_code = 'duplicate_part_reference';
-            $this->metadata   = $data['Part Reference'];
 
-            return;
+            if ($result = $this->db->query($sql)) {
+                if ($row = $result->fetch()) {
+
+
+                    $this->error      = true;
+                    $this->msg        = sprintf(_('Duplicated reference (%s)'), $data['Part Reference']);
+                    $this->error_code = 'duplicate_part_reference';
+                    $this->metadata   = $data['Part Reference'];
+
+                    return;
+
+
+                }
+            } else {
+                print_r($error_info = $this->db->errorInfo());
+                exit;
+            }
+
+
         }else{
             if ($result = $this->db->query($sql)) {
                 if ($row = $result->fetch()) {
