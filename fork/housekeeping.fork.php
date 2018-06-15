@@ -684,6 +684,19 @@ function fork_housekeeping($job) {
             $poll = get_object('Customer_Poll_Query', $poll_option->get('Customer Poll Query Option Query Key'));
             $poll->update_answers();
             break;
+        case 'update_email_template_data':
+
+
+            $email_template = get_object('email_template', $data['email_template_key']);
+            $email_template_type = get_object('email_template_type', $email_template->get('Email Template Email Campaign Type Key'));
+
+
+            $email_template_type->update_sent_emails_totals();
+
+            break;
+
+
+
 
         default:
             break;

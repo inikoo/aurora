@@ -138,7 +138,8 @@ function send_order_confirmation_email($store, $website, $customer, $order, $sma
 
 
 
-    } catch (Exception $e) {
+    }
+    catch (Exception $e) {
 
         $sql = sprintf(
             'update `Email Tracking Dimension` set `Email Tracking State`="Error"   where `Email Tracking Key`=%d ', $email_tracking_key
@@ -163,6 +164,14 @@ function send_order_confirmation_email($store, $website, $customer, $order, $sma
 
     }
 
+
+    include_once 'utils/new_fork.php';
+    new_housekeeping_fork(
+        'au_housekeeping', array(
+        'type'     => 'update_email_template_data',
+        'email_template_key' => $email_template->id
+    ), $account->get('Account Code')
+    );
 
 }
 

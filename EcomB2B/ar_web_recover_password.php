@@ -181,9 +181,8 @@ function recover_password($db, $data, $editor, $website, $account) {
                     %s,%d,
                       %s,%d,
                     %d,%d,
-                    %s,%s,%s)',
-                prepare_mysql($data['recovery_email']),$email_template->get('Email Template Email Campaign Type Key'),
-                prepare_mysql('Password Reminder'), $website->id, $email_template->id, $published_email_template->id, prepare_mysql('Customer'), $customer->id, prepare_mysql(gmdate('Y-m-d H:i:s'))
+                    %s,%s,%s)', prepare_mysql($data['recovery_email']), $email_template->get('Email Template Email Campaign Type Key'), prepare_mysql('Password Reminder'), $website->id, $email_template->id, $published_email_template->id, prepare_mysql('Customer'),
+                $customer->id, prepare_mysql(gmdate('Y-m-d H:i:s'))
 
 
             );
@@ -209,7 +208,8 @@ function recover_password($db, $data, $editor, $website, $account) {
                 );
 
 
-            } catch (Exception $e) {
+            }
+            catch (Exception $e) {
                 // echo("The email was not sent. Error message: ");
                 // echo($e->getMessage()."\n");
 
@@ -224,15 +224,14 @@ function recover_password($db, $data, $editor, $website, $account) {
               `Email Tracking Event Tracking Key`,`Email Tracking Event Type`,
               `Email Tracking Event Date`,`Email Tracking Event Data`
      ) values (
-                    %d,%s,%s,%s)', $email_tracking_key, prepare_mysql('Send to SES Error'), prepare_mysql(gmdate('Y-m-d H:i:s')), prepare_mysql(json_encode(array('error'=>$e->getMessage())))
+                    %d,%s,%s,%s)', $email_tracking_key, prepare_mysql('Send to SES Error'), prepare_mysql(gmdate('Y-m-d H:i:s')), prepare_mysql(json_encode(array('error' => $e->getMessage())))
 
 
                 );
                 $db->exec($sql);
 
 
-
-              //  print $sql;
+                //  print $sql;
                 $response = array(
                     'state'      => 400,
                     'msg'        => "Error, email not send",
@@ -242,6 +241,14 @@ function recover_password($db, $data, $editor, $website, $account) {
 
                 );
             }
+
+            include_once 'utils/new_fork.php';
+            new_housekeeping_fork(
+                'au_housekeeping', array(
+                'type'     => 'update_email_template_data',
+                'email_template_key' => $email_template->id
+            ), $account->get('Account Code')
+            );
 
 
             echo json_encode($response);
