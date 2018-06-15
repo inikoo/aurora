@@ -172,6 +172,9 @@ if ($validator->isValid($sns)) {
                 $email_tracking = get_object('email_tracking', $row['Email Tracking Key']);
                 $email_tracking->update_state($event_type);
 
+
+
+
                 if ($event_type == 'Hard Bounce') {
 
 
@@ -210,6 +213,12 @@ if ($validator->isValid($sns)) {
 
 
                 }
+
+                $email_template_type = get_object('email_template_type', $email_tracking->get('Email Tracking Email Template Type Key'));
+
+
+                $email_template_type->update_sent_emails_totals();
+
 
 
                 //$_sql = sprintf('insert into atest  (`date`,`headers`,`request`) values (NOW(),"%s","%s")  ', $sql, 'xx');
