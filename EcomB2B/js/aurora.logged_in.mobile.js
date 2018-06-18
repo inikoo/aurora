@@ -10,41 +10,42 @@ $(function() {
 
 
 
-   
-    $('.reminder').click(function () {
+    $(document).on('click', '.reminder', function (e) {
+
+
+        console.log('hello')
 
         if ($(this).hasClass('lock')) return;
 
         $(this).addClass('lock')
 
-        var icon = $(this)
+        var icon =  $(this)
 
 
-        if (icon.hasClass('fa-envelope')) {
+        if (icon.hasClass('far')) {
 
-            icon.removeClass('fa-envelope').addClass('fa-envelope').addClass('marked').attr('title', '{t}Click to remove notification{/t}')
+            icon.removeClass('far').addClass('fas').attr('title',icon.data('label_remove_notification'))
 
 
-            var request = 'ar_reminders.php?tipo=send_reminder&pid=' + $(this).closest('.product_showcase').data('product_id')
+            var request = 'ar_web_out_of_stock_reminders.php?tipo=add_out_of_stock_reminder&pid=' + icon.data('product_id')
 
 
         } else {
 
 
-            icon.removeClass('fa-envelope').addClass('fa-envelope').removeClass('marked').attr('title', '{t}Click to be notified by email{/t}')
-            var request = 'ar_reminders.php?tipo=cancel_send_reminder&esr_key=' + $(this).data('reminder_key')
+            icon.removeClass('fas').addClass('far').attr('title',icon.data('label_add_notification'))
+            var request = 'ar_web_out_of_stock_reminders.php?tipo=remove_out_of_stock_reminder&out_of_stock_reminder_key=' +icon.data('out_of_stock_reminder_key')
 
         }
 
-        element = $(this)
 
-        console.log(request)
+
+
         $.getJSON(request, function (data) {
-            console.log(data)
 
             if (data.state == 200) {
-                element.removeClass('lock')
-                element.data('reminder_key', data.id)
+                icon.removeClass('lock')
+                icon.data('out_of_stock_reminder_key', data.out_of_stock_reminder_key)
 
             }
 
@@ -54,27 +55,24 @@ $(function() {
 
     });
 
-
-    $('.favourite').click(function () {
+        $(document).on('click', '.favourite', function (e) {
 
 
 
         var icon = $(this)
 
 
-        console.log(icon)
 
-
-        console.log(icon)
 
         if (icon.hasClass('far')) {
             console.log('add')
 
-           icon.removeClass('far').addClass('fa').addClass('marked')
+            icon.removeClass('far').addClass('fas').addClass('marked')
 
         } else {
             console.log('off')
-            icon.removeClass('fa').addClass('far').removeClass('marked')
+            console.log(icon)
+            icon.removeClass('fa fas').addClass('far').removeClass('marked')
 
 
 
@@ -83,7 +81,7 @@ $(function() {
 
 
 
-        var request = 'ar_web_basket.php?tipo=update_favourite&pid=' + $(this).data('product_id') + '&customer_key=' + $('#webpage_data').data('customer_key') + '&favourite_key=' + $(this).data('favourite_key')
+        var request = 'ar_web_favourites.php?tipo=update_favourite&pid=' + $(this).data('product_id') +'&favourite_key=' + $(this).data('favourite_key')
 
         console.log(request)
         $.getJSON(request, function (data) {
@@ -96,9 +94,6 @@ $(function() {
 
 
     });
-
-
-
 
 
     $('#logout').on("click", function () {

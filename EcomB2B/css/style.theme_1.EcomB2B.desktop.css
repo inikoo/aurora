@@ -1553,4 +1553,18 @@ a.real_link span {
   flex-grow: 1;
   padding-right: 20px; }
 
+.product_information {
+  padding: 0px 30px;
+  min-width: 500px;
+  flex-basis: auto;
+  flex-grow: 1; }
+  .product_information .favourite.marked {
+    color: #ff1493; }
+  .product_information .reminder {
+    position: relative;
+    top: 10px;
+    left: 10px;
+    font-size: 20px;
+    margin-left: 5px; }
+
 /*# sourceMappingURL=style.theme_1.EcomB2B.desktop.css.map */

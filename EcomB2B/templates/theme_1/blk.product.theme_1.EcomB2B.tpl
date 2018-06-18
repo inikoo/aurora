@@ -46,9 +46,7 @@
 
 
         </div>
-        <div class="information" style="padding: 0px 30px;min-width: 500px;flex-basis: auto;flex-grow: 1"
-
-        >
+        <div class="information product_information" style="">
             <h1 style="padding-top:5px;margin:2px 0;font-size:150%" itemprop="name">
                 {$product->get('Name')}
 
@@ -82,6 +80,12 @@
 
 
                         </div>
+
+                        <i data-product_id="{$product->id}"
+                           data-label_remove_notification="{if empty($labels.remove_notification)}{t}Click to remove notification{/t},{else}{$labels.remove_notification}{/if}"
+                           data-label_add_notification="{if empty($labels.add_notification)}{t}Click to be notified by email when back in stock{/t},{else}{$labels.add_notification}{/if}"   title="{if empty($labels.add_notification)}{t}Click to be notified by email when back in stock{/t},{else}{$labels.add_notification}{/if}"    class="far fa-envelope like_button reminder out_of_stock_reminders_{$product->id} margin_left_5" aria-hidden="true"></i>
+
+
                     {elseif  $product->get('Web State')=='For Sale'}
 
                         <div style="margin-left:10px;">

@@ -1259,3 +1259,15 @@ a.real_link span{
 	flex-grow:1;padding-left: 0px;;flex-basis: auto;flex-grow: 1;padding-right: 20px
 }
 
+.product_information {
+
+	.favourite.marked{
+		color:#ff1493;
+	}
+
+	padding: 0px 30px;min-width: 500px;flex-basis: auto;flex-grow: 1;
+	.reminder {
+		position:relative;top:10px;left:10px;font-size: 20px;margin-left:5px;
+	}
+
+}

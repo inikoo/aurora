@@ -70,7 +70,10 @@
                                 <div class="ordering log_in can_not_order  out_of_stock_row  out_of_stock ">
 
                                     <span class="product_footer label ">{if empty($labels.out_of_stock)}{t}Out of stock{/t}{else}{$labels.out_of_stock}{/if}</span>
-                                    <span class="product_footer reminder"><i class="fa fa-envelope hide" aria-hidden="true"></i>  </span>
+                                    <i data-product_id="{$item.product_id}"
+                                       data-label_remove_notification="{if empty($labels.remove_notification)}{t}Click to remove notification{/t},{else}{$labels.remove_notification}{/if}"
+                                       data-label_add_notification="{if empty($labels.add_notification)}{t}Click to be notified by email when back in stock{/t},{else}{$labels.add_notification}{/if}"   title="{if empty($labels.add_notification)}{t}Click to be notified by email when back in stock{/t},{else}{$labels.add_notification}{/if}"    class="far fa-envelope like_button reminder out_of_stock_reminders_{$item.product_id} margin_left_5" aria-hidden="true"></i>
+
 
 
                                 </div>
