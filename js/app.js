@@ -73,7 +73,7 @@ function change_browser_history_state(request) {
             ga('send', 'pageview');
         }
 
-
+        //console.log(request)
         window.top.history.pushState({request: request}, '', request)
 
         old_state_request = request
@@ -82,7 +82,7 @@ function change_browser_history_state(request) {
 
 window.addEventListener('popstate', function (event) {
 
-    console.log(event)
+  //  console.log(event)
 
     change_view(event.state.request)
 
@@ -120,7 +120,7 @@ function get_widget_details(element, widget, metadata) {
 
     var request = "/ar_views.php?tipo=widget_details&widget=" + widget + '&metadata=' + JSON.stringify(metadata)
 
-    console.log(request)
+    //console.log(request)
 
     $.getJSON(request, function (data) {
 
@@ -235,7 +235,7 @@ function change_view(_request, metadata) {
 
 
         if (typeof(data.structure) != "undefined" && data.structure !== null) {
-            console.log(data.structure)
+            //console.log(data.structure)
 
             structure = data.structure
         }
