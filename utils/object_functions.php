@@ -353,7 +353,7 @@ function get_object($object_name, $key, $load_other_data = false) {
             break;
         case 'timeseries_record':
         case 'timeseriesrecord':
-        require_once "class.TimeseriesRecord.php";
+            require_once "class.TimeseriesRecord.php";
             $object = new TimeseriesRecord($key);
             break;
 
@@ -391,6 +391,7 @@ function get_object($object_name, $key, $load_other_data = false) {
             break;
         case 'email_campaign_type':
         case 'emailcampaigntype':
+        case 'email_template_type':
         case 'email campaign type':
 
             require_once "class.EmailCampaignType.php";
@@ -408,7 +409,7 @@ function get_object($object_name, $key, $load_other_data = false) {
         case 'email_template':
         case 'emailtemplate':
 
-        include_once 'class.Email_Template.php';
+            include_once 'class.Email_Template.php';
             $object = new Email_Template('id', $key);
             break;
         default:
