@@ -15,7 +15,7 @@
     <span  onclick="change_view(state.request + '&subtab=webpage.email_template')"  class="button {if !$show_back_button}hide{/if}"  style="border:1px solid #ccc;padding:5px 10px;margin-left:20px"   >
          <i class="fa fa-arrow-left" aria-hidden="true"></i> {t}Email editor{/t}</span>
     <span id="create_text_only_email_template"  class=" {if $show_back_button}hide{/if}"     >
-        {t}Choose a HTML email template{/t} or <span class="marked_link">set the email as text only</span></span>
+        {t}Choose a HTML email template{/t}</span>
 
 
     <div style="clear:both"></div>

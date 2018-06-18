@@ -1119,7 +1119,7 @@ function get_orders_table( order_flow, metadata) {
     $('.order_flow').removeClass('selected')
     $('.blue').removeClass('blue')
 
-    console.log(order_flow)
+ //   console.log(order_flow)
 
     switch (order_flow){
 
@@ -1215,7 +1215,12 @@ function get_orders_table( order_flow, metadata) {
 
 
     if(current_order_flow!=order_flow) {
-        new_url = window.location.href.replace(/dashboard.*$/, '') + 'dashboard/' + order_flow
+        new_url = window.location.pathname.replace(/dashboard.*$/, '') + 'dashboard/' + order_flow
+
+
+        console.log(new_url)
+
+
         window.top.history.pushState({
             request: new_url}, null, new_url)
     }
@@ -1226,7 +1231,7 @@ function get_orders_table( order_flow, metadata) {
 
     var request = "/ar_views.php?tipo=widget_details&widget=" + widget + '&metadata=' + JSON.stringify(metadata)
 
-    console.log(request)
+    //console.log(request)
 
     $.getJSON(request, function (data) {
 
