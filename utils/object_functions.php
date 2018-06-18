@@ -393,6 +393,8 @@ function get_object($object_name, $key, $load_other_data = false) {
         case 'emailcampaigntype':
         case 'email_template_type':
         case 'email campaign type':
+        case 'email template type':
+        case 'emailtemplatetype':
 
             require_once "class.EmailCampaignType.php";
             $object = new EmailCampaignType($key);

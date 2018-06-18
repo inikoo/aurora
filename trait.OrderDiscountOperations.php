@@ -70,6 +70,8 @@ trait OrderDiscountOperations {
             $this->data['Order Store Key']
         );
 
+
+
         if ($result = $this->db->query($sql)) {
             foreach ($result as $row) {
                 $deals_component_data[$row['Deal Component Key']] = $row;
@@ -1601,20 +1603,27 @@ trait OrderDiscountOperations {
                         $this->id, prepare_mysql($_type)
                     );
 
-                    $res = mysql_query($sql);
-                    while ($row = mysql_fetch_assoc($res)) {
-                        //print_r($row);
-                        $sql = sprintf(
-                            "INSERT INTO `Order No Product Transaction Deal Bridge` (`Order No Product Transaction Fact Key`,`Order Key`,`Deal Campaign Key`,`Deal Key`,`Deal Component Key`,`Deal Info`,`Amount Discount`,`Fraction Discount`)
+                    if ($result=$this->db->query($sql)) {
+                    		foreach ($result as $row) {
+                                $sql = sprintf(
+                                    "INSERT INTO `Order No Product Transaction Deal Bridge` (`Order No Product Transaction Fact Key`,`Order Key`,`Deal Campaign Key`,`Deal Key`,`Deal Component Key`,`Deal Info`,`Amount Discount`,`Fraction Discount`)
 					VALUES (%d,%d,%d,%d,%d,%s,%f,%f)", $row['Order No Product Transaction Fact Key'], $this->id
 
 
-                            , $allowance_data['Deal Campaign Key'], $allowance_data['Deal Key'], $allowance_data['Deal Component Key']
+                                    , $allowance_data['Deal Campaign Key'], $allowance_data['Deal Key'], $allowance_data['Deal Component Key']
 
-                            , prepare_mysql($allowance_data['Deal Info']), $row['Transaction Gross Amount'] * $allowance_data['Percentage Off'], $allowance_data['Percentage Off']
-                        );
-                        $this->db->exec($sql);
+                                    , prepare_mysql($allowance_data['Deal Info']), $row['Transaction Gross Amount'] * $allowance_data['Percentage Off'], $allowance_data['Percentage Off']
+                                );
+                                $this->db->exec($sql);
+                    		}
+                    }else {
+                    		print_r($error_info=$this->db->errorInfo());
+                    		print "$sql\n";
+                    		exit;
                     }
+
+
+
                     break;
                 case 'Shipping':
                     //print_r($allowance_data);
