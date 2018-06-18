@@ -357,7 +357,7 @@
                 {/if}
 
                 {if $with_basket==1}
-                getScript('/js/mobile.logged_in.min.js', function () {
+                getScript('/js/mobile.logged_in.min.js?v=2', function () {
                     getScript('/js/mobile.forms.min.js', function () {
 
                         $.getJSON("ar_web_basket.php?tipo=get_basket_html&device_prefix=tablet", function (data) {
@@ -410,7 +410,7 @@
 
                 {/if}
                 {if $with_thanks==1}
-                getScript('/js/mobile.logged_in.min.js', function () {
+                getScript('/js/mobile.logged_in.min.js?v=2', function () {
 
                     var _args=document.location.href.split("?")[1];
 
@@ -439,7 +439,7 @@
 
                 {/if}
                 {if $with_checkout==1}
-                getScript('/js/mobile.logged_in.min.js', function () {
+                getScript('/js/mobile.logged_in.min.js?v=2', function () {
                     getScript('/js/mobile.forms.min.js', function () {
                         getScript('/js/mobile.checkout.min.js?v2', function () {
                             $.getJSON("ar_web_checkout.php?tipo=get_checkout_html&device_prefix=tablet", function (data) {
@@ -464,7 +464,9 @@
 
                 {/if}
                 {if $with_favourites==1}
-                getScript('/js/mobile.logged_in.min.js', function () {
+                getScript('/js/mobile.logged_in.min.js?v=2', function () {
+
+
 
                     $.getJSON("ar_web_favourites.php?tipo=get_favourites_html&device_prefix=tablet", function (data) {
 
@@ -484,6 +486,13 @@
                             $.each(data.favourite, function (index, value) {
                                 $('.favourite_' + index).removeClass('far').addClass('marked fas').data('favourite_key', value)
                             });
+
+                            $.each(data.out_of_stock_reminders, function (index, value) {
+
+                                var reminder_icon=$('.out_of_stock_reminders_' + index)
+                                reminder_icon.removeClass('far').addClass('fas').data('out_of_stock_reminder_key', value).attr('title', reminder_icon.data('label_remove_notification'))
+                            });
+
 
 
                         });
@@ -1085,7 +1094,8 @@
 
                 $.getJSON( "ar_web_customer_products.php?tipo=category_products&webpage_key={$webpage->id}", function( data ) {
 
-                   console.log(data)
+
+
 
 
 
@@ -1096,6 +1106,12 @@
 
                     $.each(data.favourite, function( index, value ) {
                         $('.favourite_'+index).removeClass('far').addClass('marked fas').data('favourite_key',value)
+                    });
+
+                    $.each(data.out_of_stock_reminders, function (index, value) {
+
+                        var reminder_icon=$('.out_of_stock_reminders_' + index)
+                        reminder_icon.removeClass('far').addClass('fas').data('out_of_stock_reminder_key', value).attr('title', reminder_icon.data('label_remove_notification'))
                     });
 
                     $('#header_order_totals').find('.ordered_products_number').html(data.items)
@@ -1121,7 +1137,7 @@
                 });
                 {/if}
 
-                getScript('/js/mobile.logged_in.min.js', function () {
+                getScript('/js/mobile.logged_in.min.js?v=2', function () {
                     $('#logout i').removeClass('fa-spinner fa-spin').addClass('fa-sign-out')
 
                 })

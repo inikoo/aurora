@@ -9,42 +9,41 @@
 $(function() {
 
 
+    $(document).on('click', '.reminder', function (e) {
 
    
-    $('.reminder').click(function () {
 
         if ($(this).hasClass('lock')) return;
 
         $(this).addClass('lock')
 
-        var icon = $(this)
+        var icon =  $(this)
 
 
-        if (icon.hasClass('fa-envelope')) {
+        if (icon.hasClass('far')) {
 
-            icon.removeClass('fa-envelope').addClass('fa-envelope').addClass('marked').attr('title', '{t}Click to remove notification{/t}')
+            icon.removeClass('far').addClass('fas').attr('title',icon.data('label_remove_notification'))
 
 
-            var request = 'ar_reminders.php?tipo=send_reminder&pid=' + $(this).closest('.product_showcase').data('product_id')
+            var request = 'ar_web_out_of_stock_reminders.php?tipo=add_out_of_stock_reminder&pid=' + icon.data('product_id')
 
 
         } else {
 
 
-            icon.removeClass('fa-envelope').addClass('fa-envelope').removeClass('marked').attr('title', '{t}Click to be notified by email{/t}')
-            var request = 'ar_reminders.php?tipo=cancel_send_reminder&esr_key=' + $(this).data('reminder_key')
+            icon.removeClass('fas').addClass('far').attr('title',icon.data('label_add_notification'))
+            var request = 'ar_web_out_of_stock_reminders.php?tipo=remove_out_of_stock_reminder&out_of_stock_reminder_key=' +icon.data('out_of_stock_reminder_key')
 
         }
 
-        element = $(this)
 
-        console.log(request)
+
+
         $.getJSON(request, function (data) {
-            console.log(data)
 
             if (data.state == 200) {
-                element.removeClass('lock')
-                element.data('reminder_key', data.id)
+                icon.removeClass('lock')
+                icon.data('out_of_stock_reminder_key', data.out_of_stock_reminder_key)
 
             }
 
@@ -55,7 +54,9 @@ $(function() {
     });
 
 
-    $('.favourite').click(function () {
+    $(document).on('click', '.favourite', function (e) {
+
+
 
 
 

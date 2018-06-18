@@ -1681,7 +1681,7 @@ class Product extends Asset {
                 $this->db->exec($sql);
 
             }
-
+// todo: remove after migration
 
             if ($web_availability == 'Yes') {
                 $sql = sprintf(
@@ -1694,7 +1694,38 @@ class Product extends Asset {
                 );
 
             }
+
             $this->db->exec($sql);
+
+            if ($web_availability=='Yes') {
+
+                /*
+                $sql=sprintf("update `Back in Stock Reminder Fact` set `Back in Stock Reminder Ready Date`=%s   where `Back in Stock Reminder State`='Ready' and  `Back in Stock Reminder Product ID`=%d",
+                             prepare_mysql(gmdate('Y-m-d H:i:s')), $this->id
+                );
+                $this->db->exec($sql);
+                */
+
+                $sql=sprintf("update `Back in Stock Reminder Fact` set `Back in Stock Reminder State`='Ready',`Back in Stock Reminder Ready Date`=%s where `Back in Stock Reminder State`='Waiting' and `Back in Stock Reminder Product ID`=%d ",
+                            prepare_mysql(gmdate('Y-m-d H:i:s')), $this->id
+                );
+                $this->db->exec($sql);
+
+
+
+            }else {
+                $sql=sprintf("update `Back in Stock Reminder Fact` set `Back in Stock Reminder State`='Waiting',`Back in Stock Reminder Ready Date`=NULL  where `Back in Stock Reminder State`='Ready' and  `Back in Stock Reminder Product ID`=%d",
+                             $this->id
+                );
+                $this->db->exec($sql);
+
+
+            }
+
+
+
+
+
 
 
         }

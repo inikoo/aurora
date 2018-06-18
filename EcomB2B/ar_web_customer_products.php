@@ -39,10 +39,19 @@ switch ($tipo) {
         category_products($db, $customer->id, $order);
         break;
 
+
+
     case 'total_basket':
 
         total_basket($order);
         break;
+    case 'out_of_stock_reminders':
+
+        out_of_stock_reminders($db, $customer->id, $order);
+
+
+        break;
+
     default:
         $response = array(
             'state' => 405,
@@ -124,6 +133,7 @@ function category_products($db, $customer_key, $order) {
 
 
     $favourite        = array();
+    $out_of_stock_reminders        = array();
     $ordered_products = array();
 
 
@@ -133,6 +143,20 @@ function category_products($db, $customer_key, $order) {
     if ($result = $db->query($sql)) {
         foreach ($result as $row) {
             $favourite[$row['Customer Favourite Product Product ID']] = $row['Customer Favourite Product Key'];
+        }
+    } else {
+        print_r($error_info = $db->errorInfo());
+        print "$sql\n";
+        exit;
+    }
+
+
+    $sql = sprintf(
+        'SELECT `Back in Stock Reminder Product ID`,`Back in Stock Reminder Key` FROM `Back in Stock Reminder Fact` WHERE `Back in Stock Reminder Customer Key`=%d ', $customer_key
+    );
+    if ($result = $db->query($sql)) {
+        foreach ($result as $row) {
+            $out_of_stock_reminders[$row['Back in Stock Reminder Product ID']] = $row['Back in Stock Reminder Key'];
         }
     } else {
         print_r($error_info = $db->errorInfo());
@@ -159,6 +183,8 @@ function category_products($db, $customer_key, $order) {
         array(
             'state'            => 200,
             'favourite'        => $favourite,
+            'out_of_stock_reminders'        => $out_of_stock_reminders,
+
             'ordered_products' => $ordered_products,
             'total' => $total,
             'items' => $items,

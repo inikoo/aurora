@@ -67,8 +67,15 @@
                         {if $product->get('Web State')=='Out of Stock'}
                             <div style="margin-top: 10px" class="notification-small  bg-red-light ">
                                 <strong class="bg-red-dark "><i class="fa fa-frown"></i></strong>
-                                <p style="line-height: 50px;">
+                                <p style="line-height: 50px;font-size: 120%">
                                     {if empty($labels.out_of_stock)}{t}Out of stock{/t}{else}{$labels.out_of_stock}{/if}
+
+                                    <i data-product_id="{$product->id}"
+                                       data-label_remove_notification="{if empty($labels.remove_notification)}{t}Click to remove notification{/t},{else}{$labels.remove_notification}{/if}"
+                                       data-label_add_notification="{if empty($labels.add_notification)}{t}Click to be notified by email when back in stock{/t},{else}{$labels.add_notification}{/if}"   title="{if empty($labels.add_notification)}{t}Click to be notified by email when back in stock{/t},{else}{$labels.add_notification}{/if}"    class="far fa-envelope like_button reminder out_of_stock_reminders_{$product->id} margin_left_5" aria-hidden="true"></i>
+
+
+
                                 </p>
                             </div>
                         {elseif $product->get('Web State')=='For Sale'}
