@@ -61,10 +61,10 @@ if ($email_template->id and !($email_template->get('Email Template Type') == 'HT
     $merge_contents = '';
 
 
-    if ($email_template->get('Email Template Role') == 'Reset_Password') {
+    if ($email_template->get('Email Template Role') == 'Password Reminder') {
         $merge_tags = ",{ name: '"._('Reset password URL')."',value: '[Reset_Password_URL]'}";
 
-    } elseif ($email_template->get('Email Template Role') == 'Order_Confirmation') {
+    } elseif ($email_template->get('Email Template Role') == 'Order Confirmation') {
         $merge_tags     = ",{ name: '"._('Order number')."',value: '[Order Number]'},{ name: '"._('Order Amount')."',value: '[Order Amount]'}";
         $merge_contents = "{ name: '"._('Payment information')."',value: '[Pay Info]'},{ name: '"._('Order')."',value: '[Order]'}";
 

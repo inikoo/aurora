@@ -126,15 +126,16 @@ $supplier_part_fields[] = array(
             'formatted_value'   => $object->get('Reference'),
             'label'             => ucfirst($object->get_field_label('Supplier Part Reference')),
             'required'          => true,
-            'server_validation' => json_encode(array('tipo' => 'check_for_duplicates')
+            'server_validation' => json_encode(
+                array('tipo' => 'check_for_duplicates')
             ),
             'type'              => 'value'
         ),
 
         array(
-            'id'   => 'Part_Reference',
-            'edit' => ($edit ? 'string' : ''),
-            'render'                   => (($new ) ? true : false),
+            'id'     => 'Part_Reference',
+            'edit'   => ($edit ? 'string' : ''),
+            'render' => (($new) ? true : false),
 
             'value'             => htmlspecialchars(
                 $object->get('Part Part Reference')
@@ -156,8 +157,8 @@ $supplier_part_fields[] = array(
         ),
 
         array(
-            'id'   => 'Supplier_Part_Package_Description',
-            'render'                   => (($new ) ? true : false),
+            'id'     => 'Supplier_Part_Package_Description',
+            'render' => (($new) ? true : false),
 
             'edit' => ($edit ? 'string' : ''),
 
@@ -170,8 +171,8 @@ $supplier_part_fields[] = array(
 
 
         array(
-            'id'   => 'Part_SKO_Barcode',
-            'render'                   => (($new ) ? true : false),
+            'id'     => 'Part_SKO_Barcode',
+            'render' => (($new) ? true : false),
 
             'edit' => ($edit ? 'string' : ''),
 
@@ -192,29 +193,19 @@ $supplier_part_fields[] = array(
         ),
 
         array(
-            'id'              => 'Part_Units_Per_Package',
-            'render'                   => (($new ) ? true : false),
+            'id'     => 'Part_Units_Per_Package',
+            'render' => (($new) ? true : false),
 
             'edit'            => 'smallint_unsigned',
-            'value'           => ($new
-                ? 1
-                : htmlspecialchars(
-                    $object->get('Part Part Units Per Package')
-                )),
-            'formatted_value' => ($new
-                ? 1
-                : $object->get(
-                    'Part Units Per Package'
-                )),
-            'label'           => ucfirst(
-                $object->get_field_label('Part Units Per Package')
-            ),
+            'value'           => ($new ? 1 : htmlspecialchars($object->get('Part Part Units Per Package'))),
+            'formatted_value' => ($new ? 1 : $object->get('Part Units Per Package')),
+            'label'           => ucfirst($object->get_field_label('Part Units Per Package')),
             'required'        => true,
             'type'            => 'value'
         ),
         array(
-            'id'   => 'Part_Barcode',
-            'render'                   => (($new ) ? true : false),
+            'id'     => 'Part_Barcode',
+            'render' => (($new) ? true : false),
 
             'edit' => ($edit ? 'barcode' : ''),
 
@@ -268,7 +259,7 @@ $supplier_part_fields[] = array(
             'type'            => 'value'
         ),
         array(
-            'id'   => 'Supplier_Part_Unit_Label',
+            'id' => 'Supplier_Part_Unit_Label',
 
             'edit' => ($edit ? 'string' : ''),
 
@@ -368,7 +359,9 @@ $supplier_part_fields[] = array(
             'edit'            => 'smallint_unsigned',
             'value'           => ($new ? 1 : htmlspecialchars($object->get('Supplier Part Packages Per Carton'))),
             'formatted_value' => ($new ? 1 : $object->get('Packages Per Carton')),
-            'label'           => ucfirst($object->get_field_label('Supplier Part Packages Per Carton')).'<div class="warning" style="line-height: normal;font-size: 80%;position: relative;top:-4px"> <i class="fa fa-exclamation-triangle yellow" title="'._("This field is independent of parts's SKOs per selling carton").'" aria-hidden="true"></i> '._("This field is independent of parts's SKOs per selling carton").'</div>',
+            'label'           => ucfirst($object->get_field_label('Supplier Part Packages Per Carton')).'<div class="warning" style="line-height: normal;font-size: 80%;position: relative;top:-4px"> <i class="fa fa-exclamation-triangle yellow" title="'._(
+                    "This field is independent of parts's SKOs per selling carton"
+                ).'" aria-hidden="true"></i> '._("This field is independent of parts's SKOs per selling carton").'</div>',
             'required'        => true,
             'type'            => 'value'
         ),
@@ -525,14 +518,10 @@ $supplier_part_fields[] = array(
         ),
 
 
-
-
-
-
     )
 );
 
-if($new) {
+if ($new) {
     $supplier_part_fields[] = array(
         'label' => _('Recommended product values').' ('._('for website').')',
 

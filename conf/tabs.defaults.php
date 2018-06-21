@@ -195,7 +195,7 @@ $tab_defaults = array(
         'f_field'     => 'id',
     ),
 
-    'transactional_emails_types' => array(
+    'email_template_types' => array(
         'view'        => 'overview',
         'sort_key'    => 'type',
         'sort_order'  => 1,

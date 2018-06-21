@@ -790,7 +790,7 @@ function get_customers_email_campaigns_navigation($data, $smarty, $user, $db) {
         );
         if ($result = $db->query($sql)) {
             if ($row = $result->fetch()) {
-                $prev_title = _("Email campaigns").' '.$row['Store Code'];
+                $prev_title = _("Email communications").' '.$row['Store Code'];
             } else {
                 $prev_title = '';
             }
@@ -804,7 +804,7 @@ function get_customers_email_campaigns_navigation($data, $smarty, $user, $db) {
         );
         if ($result = $db->query($sql)) {
             if ($row = $result->fetch()) {
-                $next_title = _("Email campaigns").' '.$row['Store Code'];
+                $next_title = _("Email communications").' '.$row['Store Code'];
             } else {
                 $next_title = '';
             }
@@ -842,7 +842,7 @@ function get_customers_email_campaigns_navigation($data, $smarty, $user, $db) {
         'sections'       => $sections,
         'left_buttons'   => $left_buttons,
         'right_buttons'  => $right_buttons,
-        'title'          => _("Email campaigns").' <span class="id">'.$store->get('Store Code').'</span>',
+        'title'          => _("Email communications").' <span class="id">'.$store->get('Store Code').'</span>',
         'search'         => array(
             'show'        => true,
             'placeholder' => _('Search customers')
@@ -2103,7 +2103,7 @@ function get_email_campaign_navigation($data, $smarty, $user, $db, $account) {
 
         $up_button = array(
             'icon'      => 'arrow-up',
-            'title'     => _("Email campaigns").' ('.$data['_parent']->get('Code').')',
+            'title'     => _("Email communications").' ('.$data['_parent']->get('Code').')',
             'reference' => 'customers/'.$data['_parent']->id.'/email_campaigns'
         );
 
@@ -3133,7 +3133,7 @@ function get_email_campaign_type_navigation($data, $smarty, $user, $db) {
 
         switch ($data['parent']) {
             case 'store':
-                $tab      = 'transactional_emails_types';
+                $tab      = 'email_template_types';
                 $_section = 'email_campaigns';
                 break;
 
@@ -3295,12 +3295,15 @@ function get_email_campaign_type_navigation($data, $smarty, $user, $db) {
 
 
     $title = '<span ><i class="fa far fa-'.$email_campaign_type->get('Icon').'"></i>   '.$email_campaign_type->get('Label').'</span>';
-    if($email_campaign_type->get('Email Campaign Type Email Template Key')==''){
-        $title.=' <span class="error small padding_left_10 email_template_not_set"> <i class="fa fa-exclamation-circle"></i> '._('Email template not set').'</span>';
-    }elseif($email_campaign_type->get('Email Campaign Type Status')=='Suspended'){
-        $title.=' <span class="error small padding_left_10 status_label"> <i class="fa fa-stop"></i> '._('Suspended').'</span>';
 
-    }
+    $title .='<span class="Status_Label padding_left_10 small">'.$email_campaign_type->get('Status Label').'</span>';
+
+
+
+
+
+
+
 
     $_content = array(
         'sections_class' => '',

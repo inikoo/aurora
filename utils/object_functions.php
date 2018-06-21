@@ -23,7 +23,7 @@ function get_object($object_name, $key, $load_other_data = false) {
     }
 
 
-    global $account, $db;
+    global $db;
 
 
     switch (strtolower($object_name.$load_other_data)) {
@@ -31,7 +31,7 @@ function get_object($object_name, $key, $load_other_data = false) {
             include_once 'class.Account.php';
             $object = new Account();
             break;
-            break;
+
         case 'customer':
             include_once 'class.Customer.php';
             $object = new Customer('id', $key);
@@ -399,6 +399,20 @@ function get_object($object_name, $key, $load_other_data = false) {
             require_once "class.EmailCampaignType.php";
             $object = new EmailCampaignType($key);
             break;
+
+
+
+
+        case 'email_template_type-code_store':
+            include_once 'class.EmailCampaignType.php';
+
+            $keys=preg_split('/\|/',$key);
+
+            $object = new EmailCampaignType('code_store', $keys[0],$keys[1]);
+            break;
+
+
+
         case 'prospect':
             include_once 'class.Prospect.php';
             $object = new Prospect('id', $key);

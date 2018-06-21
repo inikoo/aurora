@@ -42,6 +42,7 @@ $smarty->assign('scope_key', $email_template->id);
 $smarty->assign('role', $email_template->get('Email Template Role'));
 
 
+
 $smarty->assign('email_template_redirect', '&tab=email_campaign_type.workshop');
 $smarty->assign('table_top_template', 'email_blueprints.showcase.tpl');
 

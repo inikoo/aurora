@@ -201,6 +201,13 @@ class Public_Store {
                 return $this->data[$key];
                 break;
 
+            case 'Send Email Address':
+                return $this->data['Store Email'];
+                break;
+            case 'Name':
+                return $this->data['Store Name'];
+                break;
+
         }
 
 

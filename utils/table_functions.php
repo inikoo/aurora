@@ -481,6 +481,10 @@ function get_rtext($record_label, $total_records) {
         return sprintf(
             ngettext('%s refund', '%s refunds', $total_records), number($total_records)
         );
+    }elseif ($record_label == 'saved email template') {
+        return sprintf(
+            ngettext('%s saved email template', '%s saved email templates', $total_records), number($total_records)
+        );
     } else {
         return sprintf(
             ngettext('%s record', '%s records', $total_records), number($total_records)

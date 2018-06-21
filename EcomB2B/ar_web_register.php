@@ -9,7 +9,6 @@
 
 */
 
-use Aws\Ses\SesClient;
 
 
 include_once 'ar_web_common_logged_out.php';
@@ -131,7 +130,26 @@ function register($db, $website, $data, $editor,$account) {
 
 
             }
-            send_welcome_email($db, $website, $customer, $account);
+
+
+
+
+            $email_template_type=get_object('Email_Template_Type','Registration|'.$website->get('Website Store Key'),'code_store');
+            $email_template = get_object('email_template', $email_template_type->get('Email Campaign Type Email Template Key'));
+            $published_email_template = get_object('published_email_template', $email_template->get('Email Template Published Email Key'));
+
+
+            $send_data=array(
+                'Email_Template_Type'=>$email_template_type,
+                'Email_Template'=>$email_template,
+
+            );
+
+            $published_email_template->send($customer,$send_data);
+
+
+
+
 
             if ($website->get('Website Registration Type') != 'ApprovedOnly') {
 
@@ -185,6 +203,8 @@ function register($db, $website, $data, $editor,$account) {
                 }
 
             }
+
+
             echo json_encode(
                 array(
                     'state' => 200,
@@ -218,169 +238,6 @@ function register($db, $website, $data, $editor,$account) {
 
 }
 
-
-function send_welcome_email($db, $website, $customer, $account) {
-
-    require 'external_libs/aws.phar';
-
-
-    include_once 'class.Public_Email_Template.php';
-    include_once 'class.Public_Webpage.php';
-
-
-    $webpage = new Public_Webpage('website_code', $website->id, 'register.sys');
-
-    $scope_metadata = $webpage->get('Scope Metadata');
-
-
-    $email_template = get_object('email_template', $scope_metadata['emails']['welcome']['key']);
-
-    $published_email_template = get_object('published_email_template', $email_template->get('Email Template Published Email Key'));
-
-
-    if ($email_template->get('Email Template Subject') == '') {
-        $response = array(
-            'state'      => 400,
-            'msg'        => _('Empty email subject'),
-            'error_code' => 'unknown'
-        );
-        echo json_encode($response);
-        exit;
-    }
-
-
-    $sender_email_address = $webpage->get('Send Email Address');
-
-    if ($sender_email_address == '') {
-        $response = array(
-            'state'      => 400,
-            'msg'        => 'Sender email address not configured',
-            'error_code' => 'unknown'
-        );
-        echo json_encode($response);
-        exit;
-    }
-
-
-    $client = SesClient::factory(
-        array(
-            'version'     => 'latest',
-            'region'      => 'eu-west-1',
-            'credentials' => [
-                'key'    => AWS_ACCESS_KEY_ID,
-                'secret' => AWS_SECRET_ACCESS_KEY,
-            ],
-        )
-    );
-
-
-    $placeholders = array(
-        '[Greetings]'    => $customer->get_greetings(),
-        '[Name]'         => $customer->get('Name'),
-        '[Name,Company]' => preg_replace(
-            '/^, /', '', $customer->get('Customer Main Contact Name').($customer->get('Customer Company Name') == '' ? '' : ', '.$customer->get('Customer Company Name'))
-        ),
-        '[Signature]'    => $webpage->get('Signature'),
-    );
-
-
-    $request                                    = array();
-    $request['Source']                          = $sender_email_address;
-    $request['Destination']['ToAddresses']      = array($customer->get('Customer Main Plain Email'));
-    $request['Message']['Subject']['Data']      = $published_email_template->get('Published Email Template Subject');
-    $request['Message']['Body']['Text']['Data'] = strtr($published_email_template->get('Published Email Template Text'), $placeholders);
-    $request['ConfigurationSetName']            = $account->get('Account Code');
-
-
-    if ($email_template->get('Email Template Type') == 'HTML') {
-
-        $request['Message']['Body']['Html']['Data'] = strtr($published_email_template->get('Published Email Template HTML'), $placeholders);
-
-    }
-
-    $sql = sprintf(
-        'insert into `Email Tracking Dimension` (
-         `Email Tracking Email`,`Email Tracking Email Template Type Key`,
-              `Email Tracking Scope`,`Email Tracking Scope Key`,
-              `Email Tracking Email Template Key`,`Email Tracking Published Email Template Key`,
-              `Email Tracking Recipient`,`Email Tracking Recipient Key`,`Email Tracking Created Date`) values (
-               %s,%d,
-                    %s,%d,
-                    %d,%d,
-                    %s,%s,%s)',
-
-        prepare_mysql($customer->get('Customer Main Plain Email')),$email_template->get('Email Template Email Campaign Type Key'),
-
-        prepare_mysql('Registration'), $website->id, $email_template->id, $published_email_template->id, prepare_mysql('Customer'), $customer->id, prepare_mysql(gmdate('Y-m-d H:i:s'))
-
-
-    );
-
-
-    $db->exec($sql);
-    $email_tracking_key = $db->lastInsertId();
-
-    try {
-        $result = $client->sendEmail($request);
-
-
-        $messageId = $result->get('MessageId');
-
-
-        $sql = sprintf(
-            'update `Email Tracking Dimension` set `Email Tracking State`="Sent to SES" , `Email Tracking SES Id`=%s   where `Email Tracking Key`=%d ', prepare_mysql($messageId), $email_tracking_key
-        );
-        $db->exec($sql);
-
-
-        $response = array(
-            'state' => 200,
-            'scope' => 'send_email',
-            'msg'   => $messageId
-
-
-        );
-
-    } catch (Exception $e) {
-        // echo("The email was not sent. Error message: ");
-        // echo($e->getMessage()."\n");
-
-
-        $sql = sprintf(
-            'insert into `Email Tracking Event Dimension` (
-              `Email Tracking Event Tracking Key`,`Email Tracking Event Type`,
-              `Email Tracking Event Date`,`Email Tracking Event Data`
-     ) values (
-                    %d,%s,%s,%s)', $email_tracking_key, prepare_mysql('Send to SES Error'), prepare_mysql(gmdate('Y-m-d H:i:s')), prepare_mysql(json_encode(array('error' => $e->getMessage())))
-
-
-        );
-        $db->exec($sql);
-
-
-        $response = array(
-            'state'      => 400,
-            'msg'        => "Error, email not send",
-            'code'       => $e->getMessage(),
-            'error_code' => 'unknown'
-
-
-        );
-    }
-
-
-    include_once 'utils/new_fork.php';
-    new_housekeeping_fork(
-        'au_housekeeping', array(
-        'type'     => 'update_email_template_data',
-        'email_template_key' => $email_template->id
-    ), $account->get('Account Code')
-    );
-
-    return $response;
-
-
-}
 
 
 ?>

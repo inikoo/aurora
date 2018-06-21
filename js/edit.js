@@ -1110,10 +1110,7 @@ else
 
 
             for (var key in data.update_metadata.hide) {
-               // console.log(data.update_metadata.hide[key])
-               // console.log($('.' + data.update_metadata.hide[key]))
-
-                $('.' + data.update_metadata.hide[key]).addClass('hide')
+                      $('.' + data.update_metadata.hide[key]).addClass('hide')
             }
 
             for (var key in data.update_metadata.show) {

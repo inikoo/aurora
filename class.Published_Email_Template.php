@@ -11,9 +11,10 @@
 
 
 include_once 'class.DB_Table.php';
+include_once 'trait.Published_Email_Template.send_email.php';
 
 class Published_Email_Template extends DB_Table {
-
+    use Send_Email;
 
     function Published_Email_Template($a1, $a2 = false, $a3 = false) {
 
@@ -55,7 +56,6 @@ class Published_Email_Template extends DB_Table {
 
 
     function create($data) {
-
 
 
         $data['Published Email Template From']         = gmdate('Y-m-d H:i:s');
@@ -103,6 +103,42 @@ class Published_Email_Template extends DB_Table {
         }
     }
 
+    function update_field_switcher($field, $value, $options = '', $metadata = '') {
+
+
+        if ($this->deleted) {
+            return;
+        }
+
+        switch ($field) {
+            default:
+                $base_data = $this->base_data();
+                if (array_key_exists($field, $base_data)) {
+                    if ($value != $this->data[$field]) {
+                        $this->update_field($field, $value, $options);
+                    }
+                }
+
+
+        }
+    }
+
+    function get_field_label($field) {
+
+        switch ($field) {
+
+
+            default:
+
+
+                $label = $field;
+
+        }
+
+        return $label;
+
+    }
+
 
     function get($key, $data = false) {
 
@@ -128,44 +164,6 @@ class Published_Email_Template extends DB_Table {
         }
 
         return '';
-    }
-
-
-    function update_field_switcher($field, $value, $options = '', $metadata = '') {
-
-
-        if ($this->deleted) {
-            return;
-        }
-
-        switch ($field) {
-            default:
-                $base_data = $this->base_data();
-                if (array_key_exists($field, $base_data)) {
-                    if ($value != $this->data[$field]) {
-                        $this->update_field($field, $value, $options);
-                    }
-                }
-
-
-        }
-    }
-
-
-    function get_field_label($field) {
-
-        switch ($field) {
-
-
-            default:
-
-
-                $label = $field;
-
-        }
-
-        return $label;
-
     }
 
 

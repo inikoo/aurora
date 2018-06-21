@@ -16,18 +16,18 @@ $scope_metadata = $webpage->get('Scope Metadata');
 if ($webpage->get('Webpage Code') == 'register.sys') {
     //$content        = $webpage->get('Content Data');
     $email_template_key = $scope_metadata['emails']['welcome']['key'];
-    $role               = 'Welcome';
+    $role               = 'Registration';
     // $control_template = 'control.email_template.welcome.tpl';
     // $smarty->assign('control_template', $control_template);
 } elseif ($webpage->get('Webpage Code') == 'login.sys') {
 
     $email_template_key = $scope_metadata['emails']['reset_password']['key'];
-    $role               = 'Reset_Password';
+    $role               = 'Password Reminder';
 
 } elseif ($webpage->get('Webpage Code') == 'checkout.sys') {
 
     $email_template_key = $scope_metadata['emails']['order_confirmation']['key'];
-    $role               = 'Order_Confirmation';
+    $role               = 'Order Confirmation';
 
 } else {
     return;

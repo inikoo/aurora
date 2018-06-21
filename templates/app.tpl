@@ -49,7 +49,7 @@
 
 
 
-        <link href="/css/app.css?v180612p1" rel="stylesheet">
+        <link href="/css/app.css?v180621" rel="stylesheet">
         <script src="/js/libs/jquery-2.2.1.js"></script>
         <script src="/js/libs/jquery-ui.js"></script>
         <script src="/js/libs/moment-with-locales.js"></script>

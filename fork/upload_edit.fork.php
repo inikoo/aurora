@@ -226,7 +226,7 @@ function fork_upload_edit($job) {
                 foreach ($valid_indexes as $index => $field) {
 
 
-                    $fields_data[$field] = $record_data[$index];
+                    $fields_data[$field] = trim($record_data[$index]);
 
 
                 }
@@ -260,7 +260,8 @@ function fork_upload_edit($job) {
 
 
 
-            } else {
+            }
+            else {
                 if ($record_data[$key_index] == '') {
 
                     $sql = sprintf(
@@ -302,7 +303,7 @@ function fork_upload_edit($job) {
 
                         // print "$field ->".$record_data[$index]."  ".$object->get_object_name()." \n";
 
-                        $object->update(array($field => $record_data[$index]));
+                        $object->update(array($field => trim($record_data[$index])));
 
 
                         if ($object->updated) {

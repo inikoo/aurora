@@ -16,7 +16,15 @@ renderable: false
 
 
 },
-
+{
+name: "status",
+label: "",
+editable: false,
+sortable:false,
+cell: Backgrid.HtmlCell.extend({
+className: "width_30 align_center"
+})
+},
 {
 name: "type",
 label: "{t}Type{/t}",
@@ -39,23 +47,25 @@ headerCell: integerHeaderCell
 },
 {
 name: "hard_bounces",
-label: "{t}Hard bounced{/t}",
+title: '{t}Hard bounces{/t}',
+label: '{t}Hard{/t} <i class="fa error fa-arrow-alt-from-right"></i>',
+headerCell: rightHeaderHtmlCell,
 editable: false,
 defaultOrder:1,
 sortType: "toggle",
 {if $sort_key=='hard_bounces'}direction: '{if $sort_order==1}descending{else}ascending{/if}',{/if}
 cell: Backgrid.HtmlCell.extend({ className: "aright"} ),
-headerCell: integerHeaderCell
 },
 {
 name: "soft_bounces",
-label: "{t}Soft bounced{/t}",
+title: '{t}Soft bounces{/t}',
+label: '{t}Soft{/t} <i class="fa warning fa-arrow-alt-from-right"></i>',
 editable: false,
 defaultOrder:1,
 sortType: "toggle",
 {if $sort_key=='soft_bounces'}direction: '{if $sort_order==1}descending{else}ascending{/if}',{/if}
 cell: Backgrid.HtmlCell.extend({ className: "aright"} ),
-headerCell: integerHeaderCell
+headerCell: rightHeaderHtmlCell
 },
 
 {

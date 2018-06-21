@@ -2058,7 +2058,7 @@
             //this.$el.removeClass("ascending").removeClass("descending");
             // this.$el.find('.sort_caret').addClass('hide')
 
-            this.$el.find('.sort_caret').addClass('fa-sort  super_discreet').removeClass('fa-sort-asc fa-sort-desc');
+            this.$el.find('.sort_caret').addClass('fa-sort  super_discreet').removeClass('fa-sort-up fa-sort-down');
 
 
             this.column.set("direction", null);
@@ -2076,10 +2076,10 @@
             if (column.cid == this.column.cid) {
                 console.log(direction)
                 if (direction == 'ascending') {
-                    this.$el.find('.sort_caret').removeClass('fa-sort fa-sort-asc fa-sort-desc super_discreet').addClass('fa-sort-asc');
+                    this.$el.find('.sort_caret').removeClass('fa-sort fa-sort-up fa-sort-down super_discreet').addClass('fa-sort-up');
 
                 } else if (direction == 'descending') {
-                    this.$el.find('.sort_caret').removeClass('fa-sort fa-sort-asc fa-sort-desc super_discreet').addClass('fa-sort-desc');
+                    this.$el.find('.sort_caret').removeClass('fa-sort fa-sort-up fa-sort-down super_discreet').addClass('fa-sort-down');
 
                 }
 
@@ -2137,10 +2137,10 @@
 
             //console.log(column.get("direction"))
             if (column.get("direction") == 'ascending') {
-                this.$el.find('.sort_caret').removeClass('fa-sort fa-sort-asc fa-sort-desc super_discreet').addClass('fa-sort-asc');
+                this.$el.find('.sort_caret').removeClass('fa-sort fa-sort-up fa-sort-down super_discreet').addClass('fa-sort-up');
 
             } else if (column.get("direction") == 'descending') {
-                this.$el.find('.sort_caret').removeClass('fa-sort fa-sort-asc fa-sort-desc super_discreet').addClass('fa-sort-desc');
+                this.$el.find('.sort_caret').removeClass('fa-sort fa-sort-up fa-sort-down super_discreet').addClass('fa-sort-down');
 
             }
 
