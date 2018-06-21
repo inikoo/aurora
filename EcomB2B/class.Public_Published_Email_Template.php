@@ -9,10 +9,11 @@
 
 */
 
+include_once 'trait.Published_Email_Template.send_email.php';
 
 
 class Public_Published_Email_Template {
-
+    use Send_Email;
     public $id = 0;
 
     function Public_Published_Email_Template($a1, $a2 = false, $a3 = false) {
@@ -80,6 +81,8 @@ class Public_Published_Email_Template {
 
         return '';
     }
+
+
 
 
 

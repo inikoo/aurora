@@ -10,9 +10,9 @@
 */
 
 
-$tab     = 'transactional_emails_types';
+$tab     = 'email_template_types';
 $ar_file = 'ar_marketing_tables.php';
-$tipo    = 'transactional_emails_types';
+$tipo    = 'email_template_types';
 
 $default = $user->get_tab_defaults($tab);
 

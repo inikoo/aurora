@@ -863,6 +863,13 @@ ALTER TABLE `Email Campaign Type Dimension` ADD `Email Campaign Type Scheduled` 
 ALTER TABLE `Email Campaign Type Dimension` ADD `Email Campaign Type Errors` MEDIUMINT UNSIGNED NOT NULL DEFAULT '0' AFTER `Email Campaign Type Clicked`, ADD `Email Campaign Type Hard Bounces` MEDIUMINT UNSIGNED NOT NULL DEFAULT '0' AFTER `Email Campaign Type Errors`, ADD `Email Campaign Type Soft Bounces` MEDIUMINT UNSIGNED NOT NULL DEFAULT '0' AFTER `Email Campaign Type Hard Bounces`, ADD `Email Campaign Type Spams` MEDIUMINT UNSIGNED NOT NULL DEFAULT '0' AFTER `Email Campaign Type Soft Bounces`;
 
 
+ALTER TABLE `Email Campaign Type Dimension` CHANGE `Email Campaign Type Status` `Email Campaign Type Status` ENUM('Active','Suspended','InProcess') CHARACTER SET utf8 COLLATE utf8_unicode_ci NOT NULL DEFAULT 'InProcess';
+
+ALTER TABLE `Email Tracking Dimension`
+  DROP `Email Tracking Scope`,
+  DROP `Email Tracking Scope Key`;
+  ALTER TABLE `Email Tracking Dimension` ADD `Email Tracking Unsubscribed` ENUM('Yes','No') NOT NULL DEFAULT 'No' AFTER `Email Tracking Spam`;
+
 
 ======= fer migration ordering in dw and costa
 

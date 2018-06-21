@@ -554,6 +554,10 @@ class Email_Template extends DB_Table {
 
     }
 
+    function update_sent_emails_totals(){
+
+    }
+
 }
 
 

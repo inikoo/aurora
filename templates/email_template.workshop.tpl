@@ -93,15 +93,20 @@
 <script>
 
 
-    var mergeTags = [{
-        name: '{t}Greetings{/t}', value: '[Greetings]'
-    }, {
+    var mergeTags = [
+        {
+            name: '{t}Greetings{/t}', value: '[Greetings]'
+        },
+        {
+            name: '{t}Customer name{/t}', value: '[Customer Name]'
+        },
+         {
         name: '{t}Contact name, Company{/t}', value: '[Name,Company]'
     }, {
-        name: '{t}Customer name{/t}', value: '[Customer Name]'
-    }, {
         name: '{t}Contact name{/t}', value: '[Name]'
-    }
+    },{
+            name: '{t}Signature{/t}', value: '[Signature]'
+        }
         {$merge_tags}
 
     ];

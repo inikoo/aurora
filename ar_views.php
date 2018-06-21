@@ -3966,7 +3966,7 @@ function get_view_position($db, $state, $user, $smarty, $account) {
                     } elseif ($state['_parent']->get_object_name() == 'Email Campaign Type') {
 
                         $branch[] = array(
-                            'label'     => _("Emails").' '.$store->data['Store Code'],
+                            'label'     => _("Email communications").' '.$store->data['Store Code'],
                             'icon'      => 'paper-plane',
                             'reference' => 'customers/'.$store->id.'/email_campaigns/operations'
                         );
@@ -4097,14 +4097,14 @@ function get_view_position($db, $state, $user, $smarty, $account) {
                     break;
                 case 'email_campaigns':
                     $branch[] = array(
-                        'label'     => _("Emails").' <span class="id">'.$store->data['Store Code'].'</span>',
+                        'label'     => _("Email communications" ).' <span class="id">'.$store->data['Store Code'].'</span>',
                         'icon'      => 'paper-plane',
                         'reference' => 'customers/'.$store->id.'/email_campaigns'
                     );
                     break;
                 case 'email_campaign_type':
                     $branch[] = array(
-                        'label'     => _("Emails").' '.$store->data['Store Code'],
+                        'label'     => _("Email communications").' '.$store->data['Store Code'],
                         'icon'      => 'paper-plane',
                         'reference' => 'customers/'.$store->id.'/email_campaigns/operations'
                     );
@@ -4119,7 +4119,7 @@ function get_view_position($db, $state, $user, $smarty, $account) {
 
                 case 'newsletter':
                     $branch[] = array(
-                        'label'     => _("Email campaigns").' '.$store->data['Store Code'],
+                        'label'     => _("Email communications").' '.$store->data['Store Code'],
                         'icon'      => 'envelope',
                         'reference' => 'customers/'.$store->id.'/email_campaigns'
                     );

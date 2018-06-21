@@ -341,8 +341,11 @@ class Prospect extends Subject {
         }
 
 
+
+
         switch ($field) {
             case 'Send Invitation':
+
                 $this->send_invitation($value);
                 break;
             case 'Prospect Status':
@@ -508,13 +511,12 @@ class Prospect extends Subject {
     }
 
     function send_invitation($email_template_key) {
+        $email_template_type = get_object('Email_Template_Type', 'Invite Mailshot|'.$this->get('Prospect Store Key'), 'code_store');
 
 
-        include_once 'class.EmailCampaignType.php';
-        $email_campaign_type = new EmailCampaignType('code_store', 'Invite Mailshot', $this->get('Store Key'));
 
 
-        if (!$email_campaign_type->id) {
+        if (!$email_template_type->id) {
             $this->error = true;
             $this->msg   = 'EmailCampaignType Invite for this store not found';
 
@@ -531,10 +533,151 @@ class Prospect extends Subject {
         }
         $published_email_template = get_object('published_email_template', $email_template->get('Email Template Published Email Key'));
 
-        $this->send_email($published_email_template, $email_campaign_type->id);
+        //   $this->send_email($published_email_template, $email_campaign_type->id);
+
+
+        $send_data = array(
+            'Email_Template_Type' => $email_template_type,
+            'Email_Template'      => $email_template,
+
+
+        );
+
+
+
+        $published_email_template->send($this, $send_data);
+
+
+        if ($published_email_template->send) {
+
+
+
+        $history_data = array(
+            'History Abstract' => '<i class="fal fa-paper-plane fa-fw"></i> '._('Invitation email sent').' '.sprintf(
+                    '<span class="link" onclick="change_view(\'prospects/%d/%d/email/%d\')" >%s</span>', $this->get('Store Key'), $this->id, $published_email_template->email_tracking->id, $published_email_template->get('Published Email Template Subject')
+
+
+                ),
+            'History Details'  => '',
+            'Action'           => 'edited'
+        );
+
+
+        $this->add_subject_history(
+            $history_data, true, 'No', 'Emails', $this->get_object_name(), $this->id
+        );
+
+
+        if ($this->data['Prospect Status'] == 'NoContacted') {
+
+            $this->fast_update(
+                array(
+                    'Prospect Status'               => 'Contacted',
+                    'Prospect First Contacted Date' => gmdate('Y-m-d H:i:s'),
+                    'Prospect User Key'             => $this->editor['User Key']
+
+                )
+            );
+        }
+
+}
+        else{
+            print $published_email_template->msg;
+        }
+        $this->update_metadata = array(
+            'class_html' => array(
+                'Status_Label'   => $this->get('Status Label'),
+                'Contacted_Date' => $this->get('First Contacted Date')
+
+            ),
+            'hide'       => array(),
+            'show'       => array(
+                'contacted_date_tr',
+                'not_interested_button'
+            )
+        );
+
+
+
 
 
     }
+
+    function send_personalized_invitation($published_email_template) {
+
+
+        $email_template_type=get_object('Email_Template_Type','Invite|'.$this->get('Store Key'),'code_store');
+
+
+        if (!$email_template_type->id) {
+            $this->error = true;
+            $this->msg   = 'EmailCampaignType Invite for this store not found';
+
+            return;
+        }
+
+
+
+        $send_data = array(
+            'Email_Template_Type' => $email_template_type,
+
+        );
+
+        $published_email_template->send($this, $send_data);
+
+
+        if ($published_email_template->send) {
+
+
+
+            $history_data = array(
+                'History Abstract' => '<i class="fal fa-paper-plane fa-fw"></i> '._('Invitation email sent').' '.sprintf(
+                        '<span class="link" onclick="change_view(\'prospects/%d/%d/email/%d\')" >%s</span>', $this->get('Store Key'), $this->id, $published_email_template->email_tracking->id, $published_email_template->get('Published Email Template Subject')
+
+
+                    ),
+                'History Details'  => '',
+                'Action'           => 'edited'
+            );
+
+
+            $this->add_subject_history(
+                $history_data, true, 'No', 'Emails', $this->get_object_name(), $this->id
+            );
+
+
+            if ($this->data['Prospect Status'] == 'NoContacted') {
+
+                $this->fast_update(
+                    array(
+                        'Prospect Status'               => 'Contacted',
+                        'Prospect First Contacted Date' => gmdate('Y-m-d H:i:s'),
+                        'Prospect User Key'             => $this->editor['User Key']
+
+                    )
+                );
+            }
+
+        }
+        $this->update_metadata = array(
+            'class_html' => array(
+                'Status_Label'   => $this->get('Status Label'),
+                'Contacted_Date' => $this->get('First Contacted Date')
+
+            ),
+            'hide'       => array(),
+            'show'       => array(
+                'contacted_date_tr',
+                'not_interested_button'
+            )
+        );
+
+
+
+
+
+    }
+
 
     function send_email($published_email_template, $email_campaign_type_key) {
 

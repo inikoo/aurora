@@ -435,6 +435,23 @@ function send_test_email(){
                 }
 
 
+                for (var key in data.update_metadata.class_html) {
+                    $('.' + key).html(data.update_metadata.class_html[key])
+                }
+
+
+
+                for (var key in data.update_metadata.hide) {
+                    $('.' + data.update_metadata.hide[key]).addClass('hide')
+                }
+
+                for (var key in data.update_metadata.show) {
+
+                    $('.' + data.update_metadata.show[key]).removeClass('hide')
+                }
+
+
+
 
 
             } else if (data.state == '400') {
@@ -481,6 +498,23 @@ function save_email_template(jsonFile,htmlFile) {
                     $('#publish_email_template_from_text_controls').removeClass('super_discreet').addClass('button')
 
                 }
+
+                for (var key in data.update_metadata.class_html) {
+                    $('.' + key).html(data.update_metadata.class_html[key])
+                }
+
+
+
+                for (var key in data.update_metadata.hide) {
+                    $('.' + data.update_metadata.hide[key]).addClass('hide')
+                }
+
+                for (var key in data.update_metadata.show) {
+
+                    $('.' + data.update_metadata.show[key]).removeClass('hide')
+                }
+
+
 
             } else if (data.state == '400') {
 

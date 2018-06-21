@@ -128,6 +128,22 @@ function get_object($object_name, $key, $load_other_data = false) {
             $object = new Customer_Poll_Query_Option($key);
             break;
 
+
+        case 'email_template_type':
+            require_once "class.EmailCampaignType.php";
+            $object = new EmailCampaignType($key);
+            break;
+
+
+
+        case 'email_template_type-code_store':
+            include_once 'class.EmailCampaignType.php';
+
+            $keys=preg_split('/\|/',$key);
+
+            $object = new EmailCampaignType('code_store', $keys[0],$keys[1]);
+            break;
+
         default:
             exit('need to complete Pub  E1: >'.strtolower($object_name.' '.$load_other_data)."<\n");
             break;

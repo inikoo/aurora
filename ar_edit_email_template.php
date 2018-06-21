@@ -232,11 +232,12 @@ function send_email($data, $editor, $smarty, $db) {
 
     $recipient = get_object($data['recipient'], $data['recipient_key']);
 
-    include_once 'class.EmailCampaignType.php';
-    $email_campaign_type = new EmailCampaignType('code_store', 'Invite', $recipient->get('Store Key'));
+
+    $recipient->send_personalized_invitation($published_template);
 
 
-    $recipient->send_email($published_template, $email_campaign_type->id, $email_campaign_type->id);
+
+   // $recipient->send_email($published_template, $email_campaign_type->id, $email_campaign_type->id);
 
 
     $response = array(
@@ -303,13 +304,25 @@ function send_test_email($data, $editor, $smarty, $db) {
 
         '[Order Number]'       => '434534',
         '[Order Amount]'       => '£54.00',
+        '[Order Date]'         => strftime("%a, %e %b %Y", strtotime('now -11 days')),
         '[Reset_Password_URL]' => 'http://my.website.com/reset/'.md5(date('U')),
         '[Signature]'          => $scope_object->get('Signature'),
     );
 
-    if ($email_template->get('Email Template Role') == 'Order_Confirmation') {
+
+    if ($email_template->get('Email Template Role') == 'Order Confirmation') {
         $placeholders['[Pay Info]'] = get_mock_pay_info(($email_template->get('Email Template Scope Key')), $smarty);
         $placeholders['[Order]']    = get_mock_order_info();
+    } elseif ($email_template->get('Email Template Role') == 'GR Reminder') {
+
+
+        $_date=date('Y-m-d',strtotime('now -11 days'));
+
+        $placeholders['[Order Date + n days]']   = strftime("%a, %e %b %Y", strtotime($_date.' +30 days'));
+        $placeholders['[Order Date + n weeks]']  = strftime("%a, %e %b %Y", strtotime($_date.' +1 week'));
+        $placeholders['[Order Date + n months]'] = strftime("%a, %e %b %Y", strtotime($_date.' +1 month'));
+
+
     }
 
 
@@ -320,9 +333,46 @@ function send_test_email($data, $editor, $smarty, $db) {
     $request['Message']['Body']['Text']['Data'] = strtr($email_template->get('Email Template Text'), $placeholders);
 
 
+
     if ($email_template->get('Email Template Type') == 'HTML') {
         $request['Message']['Body']['Html']['Data'] = strtr($data['html'], $placeholders);
     }
+
+
+
+
+    if ($email_template->get('Email Template Role') == 'GR Reminder') {
+
+
+        $request['Message']['Body']['Text']['Data'] = preg_replace_callback(
+            '/\[Order Date \+\s*(\d+)\s*days\]/',
+            function($match_data) use ($_date) {
+                return strftime("%a, %e %b %Y", strtotime($_date.' +'.$match_data[1].' days'));
+            },
+            $request['Message']['Body']['Text']['Data']);
+        $request['Message']['Body']['Html']['Data'] = preg_replace_callback(
+            '/\[Order Date \+\s*(\d+)\s*days\]/',
+            function($match_data) use ($_date) {
+                return strftime("%a, %e %b %Y", strtotime($_date.' +'.$match_data[1].' days'));
+            },
+            $request['Message']['Body']['Html']['Data']);
+
+        $request['Message']['Body']['Text']['Data'] = preg_replace_callback(
+            '/\[Order Date \+\s*(\d+)\s*weeks\]/',
+            function($match_data) use ($_date) {
+                return strftime("%a, %e %b %Y", strtotime($_date.' +'.$match_data[1].' weeks'));
+            },
+            $request['Message']['Body']['Text']['Data']);
+        $request['Message']['Body']['Html']['Data'] = preg_replace_callback(
+            '/\[Order Date \+\s*(\d+)\s*months\]/',
+            function($match_data) use ($_date) {
+                return strftime("%a, %e %b %Y", strtotime($_date.' +'.$match_data[1].' months'));
+            },
+            $request['Message']['Body']['Html']['Data']);
+
+
+    }
+
 
 
     //print_r($request);
@@ -540,9 +590,8 @@ function save_email_template_editing_json($data, $editor, $smarty, $db) {
 function publish_email_template($data, $editor, $smarty, $db) {
 
 
-    include_once 'class.Email_Template.php';
 
-    $email_template         = new Email_Template($data['email_template_key']);
+    $email_template         = get_object('Email_Template',$data['email_template_key']);
     $email_template->editor = $editor;
 
     $publish_email_template_data = array(
@@ -567,6 +616,28 @@ function publish_email_template($data, $editor, $smarty, $db) {
                 'email_template_info' => $smarty->fetch('email_template.control.info.tpl'),
                 'published'           => ($email_template->get('Email Template Editing Checksum') == $email_template->get('Email Template Published Checksum') ? true : false),
                 'update_metadata'     => $email_campaign->get_update_metadata()
+
+            );
+
+
+            echo json_encode($response);
+
+
+        } elseif ($email_template->get('Email Template Scope') == 'EmailCampaignType') {
+
+            $email_template_type         = get_object('EmailCampaignType', $email_template->get('Email Template Scope Key'));
+            $email_template_type->editor = $editor;
+
+
+            $email_template_type->activate();
+
+            $smarty->assign('data', $email_template->get('Published Info'));
+
+            $response = array(
+                'state'               => 200,
+                'email_template_info' => $smarty->fetch('email_template.control.info.tpl'),
+                'published'           => ($email_template->get('Email Template Editing Checksum') == $email_template->get('Email Template Published Checksum') ? true : false),
+                'update_metadata'     => $email_template_type->get_update_metadata()
 
             );
 
@@ -685,6 +756,10 @@ function select_blueprint($data, $editor, $db) {
     $scope = get_object($data['scope'], $data['scope_key']);
 
 
+    //  print $scope->get_object_name();
+
+    $update_metadata=array();
+
     if ($scope->get_object_name() == 'Email Campaign') {
 
 
@@ -745,16 +820,24 @@ function select_blueprint($data, $editor, $db) {
         }
 
 
-    } elseif ($scope->get_object_name() == 'Email Campaign Type') {
+    }
+    elseif ($scope->get_object_name() == 'Email Campaign Type') {
 
 
         if ($scope->get('Email Campaign Type Email Template Key')) {
-            $email_template = get_object('Email_Template', $scope->get('Email Campaign Type Email Template Key'));
-            $email_template->update(
+            $email_template         = get_object('Email_Template', $scope->get('Email Campaign Type Email Template Key'));
+            $email_template->editor = $editor;
+
+            // print_r($email_template);
+
+            $email_template->fast_update(
                 array(
-                    'Email Template Editing JSON' => $blueprint_json,
-                    'Email Template Type'         => 'HTML'
-                ), 'no_history'
+                    'Email Template Editing JSON'            => $blueprint_json,
+                    'Email Template Email Campaign Type Key' => $scope->id,
+                    'Email Template Type'                    => 'HTML',
+                    'Email Template Last Edited'             => gmdate('Y-m-d H:i:s'),
+                    'Email Template Last Edited By'          => $editor['User Key']
+                )
             );
             $checksum = md5(
                 ($email_template->get('Email Template Type') == 'Text' ? '' : $email_template->get('Email Template Editing JSON')).'|'.$email_template->get('Email Template Text').'|'.$email_template->get(
@@ -763,13 +846,14 @@ function select_blueprint($data, $editor, $db) {
             );
 
 
-            $email_template->update(
+            $email_template->fast_update(
                 array(
                     'Email Template Editing Checksum' => $checksum,
-                ), 'no_history'
+                )
             );
 
-        } else {
+        }
+        else {
 
             $text    = (isset($email_templates_data[$data['role']]['text']) ? $email_templates_data[$data['role']]['text'] : '');
             $subject = (isset($email_templates_data[$data['role']]['subject']) ? $email_templates_data[$data['role']]['subject'] : $data['role']);
@@ -777,13 +861,14 @@ function select_blueprint($data, $editor, $db) {
 
 
             $email_template_data = array(
-                'Email Template Name'      => $name,
-                'Email Template Role Type' => 'Transactional',
-                'Email Template Role'      => $data['role'],
-                'Email Template Scope'     => $data['scope'],
-                'Email Template Scope Key' => $data['scope_key'],
-                'Email Template Text'      => $text,
-                'Email Template Subject'   => $subject,
+                'Email Template Name'                    => $name,
+                'Email Template Email Campaign Type Key' => $scope->id,
+                'Email Template Role Type'               => 'Transactional',
+                'Email Template Role'                    => $data['role'],
+                'Email Template Scope'                   => $data['scope'],
+                'Email Template Scope Key'               => $data['scope_key'],
+                'Email Template Text'                    => $text,
+                'Email Template Subject'                 => $subject,
 
 
                 'Email Template Editing JSON' => $blueprint_json
@@ -799,11 +884,16 @@ function select_blueprint($data, $editor, $db) {
                 )
             );
 
+            $scope->update_status('');
+
+
+
 
         }
 
 
-    } elseif ($scope->get_object_name() == 'Email Template') {
+    }
+    elseif ($scope->get_object_name() == 'Email Template') {
 
 
         if ($scope->id) {
@@ -854,7 +944,8 @@ function select_blueprint($data, $editor, $db) {
         }
 
 
-    } else {
+    }
+    else {
 
 
         if ($metadata['emails'][$key]['key'] > 0) {
@@ -917,11 +1008,12 @@ function select_blueprint($data, $editor, $db) {
 
     $response = array(
         'state' => 200,
-
+        'update_metadata'=>$scope->get_update_metadata()
 
     );
 
     echo json_encode($response);
+    exit;
 
 }
 

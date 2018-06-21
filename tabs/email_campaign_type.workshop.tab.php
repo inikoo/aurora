@@ -50,14 +50,29 @@ if ($email_template->id and !($email_template->get('Email Template Type') == 'HT
     $merge_contents = '';
 
 
-    if ($email_template->get('Email Template Role') == 'Reset_Password') {
+
+
+    if ($email_template->get('Email Template Role') == 'Password Reminder') {
         $merge_tags = ",{ name: '"._('Reset password URL')."',value: '[Reset_Password_URL]'}";
 
-    } elseif ($email_template->get('Email Template Role') == 'Order_Confirmation') {
+    } elseif ($email_template->get('Email Template Role') == 'Order Confirmation') {
         $merge_tags     = ",{ name: '"._('Order number')."',value: '[Order Number]'},{ name: '"._('Order Amount')."',value: '[Order Amount]'}";
         $merge_contents = "{ name: '"._('Payment information')."',value: '[Pay Info]'},{ name: '"._('Order')."',value: '[Order]'}";
 
+    }elseif ($email_template->get('Email Template Role') == 'OOS Notification') {
+        $merge_tags = ",{ name: '"._('Back in stock products')."',value: '[Products]'}";
+
+    }elseif ($email_template->get('Email Template Role') == 'GR Reminder') {
+        $merge_tags = ",{ name: '"._('Last order number')."',value: '[Order Number]'},{ name: '"._('Last order date')."',value: '[Order Date]'},
+                { name: '"._('Last order date + n days (Replace n for a number, default 30)')."',value: '[Order Date + n days]'},
+                 { name: '"._('Last order date + n weeks (Replace n for a number, default 1)')."',value: '[Order Date + n weeks]'},
+                  { name: '"._('Last order date + n months (Replace n for a number, default 1)')."',value: '[Order Date + n months]'}
+                ";
+
     }
+
+
+
 
 
     $smarty->assign('merge_tags', $merge_tags);
@@ -69,8 +84,17 @@ if ($email_template->id and !($email_template->get('Email Template Type') == 'HT
     $html = $smarty->fetch('email_template.workshop.tpl');
 } else {
 
+    $smarty->assign('show_back_button', false);
+    $smarty->assign('role', $email_campaign_type->get('Email Campaign Type Code'));
+    $smarty->assign('scope', 'EmailCampaignType');
+    $smarty->assign('scope_key', $state['key']);
 
-    $tab     = 'email_campaign.email_blueprints';
+    $html= $smarty->fetch('email_blueprints.showcase.tpl');
+
+
+    /*
+
+    $tab     = 'email_campaign_type.email_blueprints';
     $ar_file = 'ar_email_template_tables.php';
     $tipo    = 'email_blueprints';
 
@@ -83,7 +107,6 @@ if ($email_template->id and !($email_template->get('Email Template Type') == 'HT
     );
 
 
-    $smarty->assign('show_back_button', false);
 
 
     $parameters = array(
@@ -94,14 +117,10 @@ if ($email_template->id and !($email_template->get('Email Template Type') == 'HT
 
     );
 
-    $smarty->assign('role', $email_campaign_type->get('Email Campaign Type Code'));
-    $smarty->assign('scope', 'EmailCampaignType');
-    $smarty->assign('scope_key', $state['key']);
-
-
-    $smarty->assign('table_top_template', 'email_blueprints.showcase.tpl');
 
     include 'utils/get_table_html.php';
+
+    */
 
 }
 

@@ -110,7 +110,33 @@ $order->update(
 );
 
 
-send_order_confirmation_email($store, $website, $customer, $order, $smarty,$account,$db);
+
+
+
+
+$email_template_type=get_object('Email_Template_Type','Order Confirmation|'.$website->get('Website Store Key'),'code_store');
+$email_template = get_object('email_template', $email_template_type->get('Email Campaign Type Email Template Key'));
+$published_email_template = get_object('published_email_template', $email_template->get('Email Template Published Email Key'));
+
+
+$send_data=array(
+    'Email_Template_Type'=>$email_template_type,
+    'Email_Template'=>$email_template,
+    'Order'=>$order,
+    'Order Info'=>get_pay_info($order, $website, $smarty),
+    'Pay Info'=> get_order_info($order)
+
+);
+
+
+
+
+
+$published_email_template->send($customer,$send_data);
+
+
+
+
 
 header('Location: thanks.sys?order_key='.$order->id);
 exit;

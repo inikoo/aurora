@@ -688,9 +688,9 @@ function fork_housekeeping($job) {
 
 
             $email_template = get_object('email_template', $data['email_template_key']);
-            $email_template_type = get_object('email_template_type', $email_template->get('Email Template Email Campaign Type Key'));
+            $email_template_type = get_object('email_template_type', $data['email_template_type_key']);
 
-
+            $email_template->update_sent_emails_totals();
             $email_template_type->update_sent_emails_totals();
 
             break;

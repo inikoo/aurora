@@ -1,0 +1,1 @@
+../class.Published_Email_Template.php

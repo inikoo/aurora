@@ -45,29 +45,31 @@
 {/if}
 
 
+
 <div id="blueprints_repo">
 
-    {if $role=='Welcome'}
+    {if $role=='Registration'}
 
     <div blueprint='empty' class="blueprint_option">
         <img src="/conf/etemplates/empty.png"  />
         <div style="text-align: center">{t}Empty{/t}</div>
     </div>
+        <div blueprint='welcome_minimalistic' class="blueprint_option">
+            <img src="/conf/etemplates/welcome_minimalistic.png"  />
+            <div style="text-align: center">{t}Minimalistic{/t}</div>
+        </div>
     <div blueprint='welcome_default' class="blueprint_option">
         <img src="/conf/etemplates/welcome_default.png"   />
-        <div style="text-align: center">{t}Default{/t}</div>
+        <div style="text-align: center">{t}Light{/t}</div>
     </div>
-    <div blueprint='welcome_minimalistic' class="blueprint_option">
-        <img src="/conf/etemplates/welcome_minimalistic.png"  />
-        <div style="text-align: center">{t}Minimalistic{/t}</div>
-    </div>
+
 
     <div blueprint='welcome_simple' class="blueprint_option">
         <img src="/conf/etemplates/welcome_simple.png"  />
-        <div style="text-align: center">{t}Simple{/t}</div>
+        <div style="text-align: center">{t}Standard{/t}</div>
     </div>
 
-    {elseif $role=='Reset_Password'}
+    {elseif $role=='Password Reminder'}
 
         <div blueprint='empty' class="blueprint_option">
             <img src="/conf/etemplates/empty.png"  />
@@ -78,6 +80,34 @@
             <img src="/conf/etemplates/reset_password.png"  />
             <div style="text-align: center">{t}Reset password{/t}</div>
         </div>
+    {elseif $role=='OOS Notification'}
+        <div blueprint='empty' class="blueprint_option">
+            <img src="/conf/etemplates/empty.png"  />
+            <div style="text-align: center">{t}Empty{/t}</div>
+        </div>
+        <div blueprint='welcome_minimalistic' class="blueprint_option">
+            <img src="/conf/etemplates/welcome_minimalistic.png"  />
+            <div style="text-align: center">{t}Minimalistic{/t}</div>
+        </div>
+        <div blueprint='back_in_stock_notification_default' class="blueprint_option">
+            <img src="/conf/etemplates/back_in_stock_notification_default.png"  />
+            <div style="text-align: center">{t}Light{/t}</div>
+        </div>
+
+        <div blueprint='back_in_stock_notification_simple' class="blueprint_option">
+            <img src="/conf/etemplates/back_in_stock_notification_simple.png"   />
+            <div style="text-align: center">{t}Standard{/t}</div>
+        </div>
+    {elseif $role=='GR Reminder'}
+        <div blueprint='empty' class="blueprint_option">
+            <img src="/conf/etemplates/empty.png"  />
+            <div style="text-align: center">{t}Empty{/t}</div>
+        </div>
+        <div blueprint='welcome_minimalistic' class="blueprint_option">
+            <img src="/conf/etemplates/welcome_minimalistic.png"  />
+            <div style="text-align: center">{t}Minimalistic{/t}</div>
+        </div>
+
 
     {else}
         <div blueprint='empty' class="blueprint_option">
@@ -121,6 +151,23 @@
                 if (data.state == '200') {
 
                    change_view(state.request  + '{$email_template_redirect}')
+
+                    for (var key in data.update_metadata.class_html) {
+                        $('.' + key).html(data.update_metadata.class_html[key])
+                    }
+
+
+
+                    for (var key in data.update_metadata.hide) {
+                        $('.' + data.update_metadata.hide[key]).addClass('hide')
+                    }
+
+                    for (var key in data.update_metadata.show) {
+
+                        $('.' + data.update_metadata.show[key]).removeClass('hide')
+                    }
+
+
 
                     $('.email_template_not_set').addClass('hide')
                 } else if (data.state == '400') {

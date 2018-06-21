@@ -415,7 +415,7 @@ class Store extends DB_Table {
         switch ($key) {
 
             case 'Send Email Address':
-                  $this->data['Store Email'];
+                return $this->data['Store Email'];
             break;
             case $this->table_name.' Collect Address':
 

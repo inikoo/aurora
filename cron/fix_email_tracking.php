@@ -130,18 +130,18 @@ if ($result = $db->query($sql)) {
 
                 );
 
-               // print_r($_metadata);
+                // print_r($_metadata);
 
 
                 $email_campaign_type->fast_update(array('Email Campaign Type Metadata' => json_encode($_metadata)));
 
 
-            }elseif ($email_campaign_type->get('Email Campaign Type Code') == 'GR Reminder') {
+            } elseif ($email_campaign_type->get('Email Campaign Type Code') == 'GR Reminder') {
 
 
                 $_metadata = array(
-
-                    'Schedule' => array(
+                    'Send After' => 20,
+                    'Schedule'   => array(
 
                         'Days'     => array(
                             'Monday'    => 'Yes',
@@ -158,7 +158,7 @@ if ($result = $db->query($sql)) {
 
                 );
 
-               // print_r($_metadata);
+                // print_r($_metadata);
 
 
                 $email_campaign_type->fast_update(array('Email Campaign Type Metadata' => json_encode($_metadata)));
@@ -188,6 +188,12 @@ if ($result = $db->query($sql)) {
 
         }
 
+        // official roles
+        //'AbandonedCart','Delivery Confirmation','GR Reminder','Invite','Invite Mailshot','Marketing','Newsletter','OOS Notification','Order Confirmation','Password Reminder','Registration'
+
+        // old roles
+        //'Delivery Confirmation','GR Reminder','Invite Mailshot','OOS Notification','Order Confirmation','Order_Confirmation','Password Reminder','Registration','Reset_Password','Welcome'
+
         if ($email_template->get('Email Template Role') == 'Invitation Mailshot') {
             $email_template->fast_update(
                 array(
@@ -195,6 +201,32 @@ if ($result = $db->query($sql)) {
                 )
             );
         }
+
+
+        if ($email_template->get('Email Template Role') == 'Reset_Password') {
+            $email_template->fast_update(
+                array(
+                    'Email Template Role' => 'Password Reminder'
+                )
+            );
+        }
+        if ($email_template->get('Email Template Role') == 'Order_Confirmation') {
+            $email_template->fast_update(
+                array(
+                    'Email Template Role' => 'Order Confirmation'
+                )
+            );
+        }
+        if ($email_template->get('Email Template Role') == 'Welcome') {
+            $email_template->fast_update(
+                array(
+                    'Email Template Role' => 'Registration'
+                )
+            );
+        }
+
+
+
 
 
     }
@@ -297,23 +329,21 @@ if ($result = $db->query($sql)) {
         $parent          = get_object($email_blueprint->get('Email Blueprint Scope'), $email_blueprint->get('Email Blueprint Scope Key'));
 
 
-
-
         switch ($email_blueprint->get('Email Blueprint Scope')) {
             case 'Webpage':
 
-                switch ($parent->get('Webpage Code')){
+                switch ($parent->get('Webpage Code')) {
                     case 'register.sys':
-                        $scope_metadata    = $parent->get('Scope Metadata');
-                        $email_template=get_object('EmailTemplate',$scope_metadata['emails']['welcome']['key']);
+                        $scope_metadata = $parent->get('Scope Metadata');
+                        $email_template = get_object('EmailTemplate', $scope_metadata['emails']['welcome']['key']);
                         break;
                     case 'login.sys':
-                        $scope_metadata    = $parent->get('Scope Metadata');
-                        $email_template=get_object('EmailTemplate',$scope_metadata['emails']['reset_password']['key']);
+                        $scope_metadata = $parent->get('Scope Metadata');
+                        $email_template = get_object('EmailTemplate', $scope_metadata['emails']['reset_password']['key']);
                         break;
                     case 'checkout.sys':
-                        $scope_metadata    = $parent->get('Scope Metadata');
-                        $email_template=get_object('EmailTemplate',$scope_metadata['emails']['order_confirmation']['key']);
+                        $scope_metadata = $parent->get('Scope Metadata');
+                        $email_template = get_object('EmailTemplate', $scope_metadata['emails']['order_confirmation']['key']);
                         break;
 
 
@@ -351,17 +381,48 @@ if ($result = $db->query($sql)) {
 }
 
 $sql = sprintf('select * from `Email Tracking Dimension` where `Email Tracking State`="Sent to SES"  and `Email Tracking Created Date`<"2018-06-09 00:00:00" ');
+if ($result = $db->query($sql)) {
+    foreach ($result as $row) {
+
+        $sql = sprintf('delete from `Email Tracking Event Dimension` where `Email Tracking Event Tracking Key`=%d ', $row['Email Tracking Key']);
+        $db->exec($sql);
+        $sql = sprintf('delete from `Email Tracking Dimension` where `Email Tracking Key`=%d ', $row['Email Tracking Key']);
+        $db->exec($sql);
+
+    }
+} else {
+    print_r($error_info = $this->db->errorInfo());
+    print "$sql\n";
+    exit;
+}
+
+$sql = sprintf('select * from `Email Campaign Type Dimension`');
+
 if ($result=$db->query($sql)) {
 		foreach ($result as $row) {
 
-		    $sql=sprintf('delete from `Email Tracking Event Dimension` where `Email Tracking Event Tracking Key`=%d ',$row['Email Tracking Key']);
-		    $db->exec($sql);
-            $sql=sprintf('delete from `Email Tracking Dimension` where `Email Tracking Key`=%d ',$row['Email Tracking Key']);
-            $db->exec($sql);
+		    $email_campaign_type=get_object('email_campaign_type',$row['Email Campaign Type Key']);
+
+		    if($email_campaign_type->get('Email Campaign Type Email Template Key')==''){
+                $email_campaign_type->fast_update(array('Email Campaign Type Status'=>'InProcess'));
+            }else{
+
+		        $email_template=get_object('EmailTemplate',$email_campaign_type->get('Email Campaign Type Email Template Key'));
+
+		        if($email_template->get('Email Template Published Email Key')==''){
+                    $email_campaign_type->fast_update(array('Email Campaign Type Status'=>'InProcess'));
+
+                }
+
+
+            }
+
 
 		}
 }else {
-		print_r($error_info=$this->db->errorInfo());
+		print_r($error_info=$db->errorInfo());
 		print "$sql\n";
 		exit;
 }
+
+

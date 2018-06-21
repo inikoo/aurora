@@ -1913,14 +1913,16 @@ class User extends DB_Table {
 
     function get_staff_email() {
 
-        include_once 'class.Staff.php';
 
         $staff_email = '';
         $staff_key   = $this->get_staff_key();
 
 
         if ($staff_key) {
-            $staff       = new Staff($staff_key);
+            $staff       = get_object('Staff',$staff_key);
+
+
+
             $staff_email = $staff->get('Staff Email');
         }
 

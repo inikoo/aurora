@@ -22,10 +22,14 @@ class Email_Tracking extends DB_Table {
         $this->table_name    = 'Email Tracking';
         $this->ignore_fields = array(
             'Email Tracking Key',
-
         );
         if (is_numeric($arg1)) {
             $this->get_data('id', $arg1);
+
+            return;
+        }
+        if ($arg1 == 'new') {
+            $this->create($arg2);
 
             return;
         }
@@ -53,17 +57,60 @@ class Email_Tracking extends DB_Table {
     }
 
 
-    function update_state($event){
+    function create($data) {
+
+
+        $data['Email Tracking Created Date'] = gmdate('Y-m-d H:i:s');
+
+
+        $keys   = '';
+        $values = '';
+        foreach ($data as $key => $value) {
+            $keys .= ",`".$key."`";
+            if (in_array(
+                $key, array()
+            )) {
+                $values .= ','.prepare_mysql($value, true);
+            } else {
+                $values .= ','.prepare_mysql($value, false);
+            }
+        }
+        $values = preg_replace('/^,/', '', $values);
+        $keys   = preg_replace('/^,/', '', $keys);
+
+        $sql = "insert into `Email Tracking Dimension` ($keys) values ($values)";
+
+
+        if ($this->db->exec($sql)) {
+            $this->id = $this->db->lastInsertId();
+            $this->get_data('id', $this->id);
+
+            return $this;
+
+        } else {
+            $this->error = true;
+            $this->msg   = 'Error inserting email tracking record';
+        }
+
+    }
+
+
+    function update_state($event) {
 
         // Events: 'Rejected by SES','Send','Read','Hard Bounce','Soft Bounce','Spam','Delivered','Opened','Clicked','Send to SES Error'
-      // 'Ready','Send to SES','Rejected by SES','Send','Read','Hard Bounce','Soft Bounce','Spam','Delivered','Opened','Clicked','Error'
-        switch ($event){
+        // 'Ready','Send to SES','Rejected by SES','Send','Read','Hard Bounce','Soft Bounce','Spam','Delivered','Opened','Clicked','Error'
+        switch ($event) {
 
             case 'Sent':
 
-                if(in_array($this->data['Email Tracking State'],array('Ready','Sent to SES'))){
-                    $this->update_field('Email Tracking State','Sent','no_history');
-                    $this->update_field('Email Tracking Sent Date',gmdate('Y-m-d H:i:s'),'no_history');
+                if (in_array(
+                    $this->data['Email Tracking State'], array(
+                                                           'Ready',
+                                                           'Sent to SES'
+                                                       )
+                )) {
+                    $this->update_field('Email Tracking State', 'Sent', 'no_history');
+                    $this->update_field('Email Tracking Sent Date', gmdate('Y-m-d H:i:s'), 'no_history');
 
                 }
 
@@ -71,8 +118,15 @@ class Email_Tracking extends DB_Table {
 
             case 'Delivered':
 
-                if(in_array($this->data['Email Tracking State'],array('Ready','Sent to SES','Rejected by SES','Sent'))){
-                    $this->update_field('Email Tracking State','Delivered','no_history');
+                if (in_array(
+                    $this->data['Email Tracking State'], array(
+                                                           'Ready',
+                                                           'Sent to SES',
+                                                           'Rejected by SES',
+                                                           'Sent'
+                                                       )
+                )) {
+                    $this->update_field('Email Tracking State', 'Delivered', 'no_history');
 
                 }
 
@@ -80,27 +134,36 @@ class Email_Tracking extends DB_Table {
             case 'Opened':
 
 
+                if (in_array(
+                    $this->data['Email Tracking State'], array(
+                                                           'Ready',
+                                                           'Sent to SES',
+                                                           'Rejected by SES',
+                                                           'Sent',
+                                                           'Delivered',
+                                                           'Soft Bounce',
+                                                           'Hard Bounce',
+                                                           'Spam'
+                                                       )
+                )) {
 
-
-                if(in_array($this->data['Email Tracking State'],array('Ready','Sent to SES','Rejected by SES','Sent','Delivered','Soft Bounce','Hard Bounce','Spam'))){
-
-                    if($this->data['Email Tracking First Read Date']==''){
-                        $this->update_field('Email Tracking First Read Date',gmdate('Y-m-d H:i:s'),'no_history');
+                    if ($this->data['Email Tracking First Read Date'] == '') {
+                        $this->update_field('Email Tracking First Read Date', gmdate('Y-m-d H:i:s'), 'no_history');
 
                     }
 
-                    $this->update_field('Email Tracking State','Opened','no_history');
+                    $this->update_field('Email Tracking State', 'Opened', 'no_history');
 
-                    $this->update_field('Email Tracking Last Read Date',gmdate('Y-m-d H:i:s'),'no_history');
-                    $sql=sprintf('select count(*) as num from  `Email Tracking Event Dimension` where `Email Tracking Event Tracking Key`=%d and `Email Tracking Event Type`="Opened" ',$this->id);
+                    $this->update_field('Email Tracking Last Read Date', gmdate('Y-m-d H:i:s'), 'no_history');
+                    $sql = sprintf('select count(*) as num from  `Email Tracking Event Dimension` where `Email Tracking Event Tracking Key`=%d and `Email Tracking Event Type`="Opened" ', $this->id);
 
-                    if ($result=$this->db->query($sql)) {
+                    if ($result = $this->db->query($sql)) {
                         if ($row = $result->fetch()) {
-                            $this->update_field('Email Tracking Number Reads',$row['num'],'no_history');
+                            $this->update_field('Email Tracking Number Reads', $row['num'], 'no_history');
 
                         }
-                    }else {
-                        print_r($error_info=$this->db->errorInfo());
+                    } else {
+                        print_r($error_info = $this->db->errorInfo());
                         print "$sql\n";
                         exit;
                     }
@@ -108,33 +171,45 @@ class Email_Tracking extends DB_Table {
                 }
 
 
-
-
-
                 break;
             case 'Clicked':
 
-                if(in_array($this->data['Email Tracking State'],array('Ready','Sent to SES','Rejected by SES','Sent','Delivered','Soft Bounce','Hard Bounce','Spam','Opened','Clicked'))){
+                if (in_array(
+                    $this->data['Email Tracking State'], array(
+                                                           'Ready',
+                                                           'Sent to SES',
+                                                           'Rejected by SES',
+                                                           'Sent',
+                                                           'Delivered',
+                                                           'Soft Bounce',
+                                                           'Hard Bounce',
+                                                           'Spam',
+                                                           'Opened',
+                                                           'Clicked'
+                                                       )
+                )) {
 
-                    if($this->data['Email Tracking First Clicked Date']==''){
-                        $this->update_field('Email Tracking First Read Date',gmdate('Y-m-d H:i:s'),'no_history');
+                    if ($this->data['Email Tracking First Clicked Date'] == '') {
+                        $this->update_field('Email Tracking First Read Date', gmdate('Y-m-d H:i:s'), 'no_history');
 
                     }
-                    $this->update_field('Email Tracking State','Clicked','no_history');
+                    $this->update_field('Email Tracking State', 'Clicked', 'no_history');
 
-                    $this->update_field('Email Tracking Last Clicked Date',gmdate('Y-m-d H:i:s'),'no_history');
-                    $sql=sprintf('select count(*) as num from  `Email Tracking Event Dimension` where `Email Tracking Event Tracking Key`=%d and `Email Tracking Event Type`="Clicked" ',$this->id);
+                    $this->update_field('Email Tracking Last Clicked Date', gmdate('Y-m-d H:i:s'), 'no_history');
+                    $sql = sprintf('select count(*) as num from  `Email Tracking Event Dimension` where `Email Tracking Event Tracking Key`=%d and `Email Tracking Event Type`="Clicked" ', $this->id);
 
-                    if ($result=$this->db->query($sql)) {
+                    if ($result = $this->db->query($sql)) {
                         if ($row = $result->fetch()) {
-                            $this->update_field('Email Tracking Number Clicks
+                            $this->update_field(
+                                'Email Tracking Number Clicks
                             
                             
-                            ',$row['num'],'no_history');
+                            ', $row['num'], 'no_history'
+                            );
 
                         }
-                    }else {
-                        print_r($error_info=$this->db->errorInfo());
+                    } else {
+                        print_r($error_info = $this->db->errorInfo());
                         print "$sql\n";
                         exit;
                     }
@@ -147,20 +222,20 @@ class Email_Tracking extends DB_Table {
             case 'Hard Bounce':
 
 
-                    $this->update_field('Email Tracking State','Hard Bounce','no_history');
+                $this->update_field('Email Tracking State', 'Hard Bounce', 'no_history');
 
-                    break;
+                break;
             case 'Soft Bounce':
 
 
-                $this->update_field('Email Tracking State','Soft Bounce','no_history');
+                $this->update_field('Email Tracking State', 'Soft Bounce', 'no_history');
 
                 break;
 
             case 'Spam':
 
 
-                $this->update_field('Email Tracking State','Spam','no_history');
+                $this->update_field('Email Tracking State', 'Spam', 'no_history');
 
                 break;
 
@@ -193,7 +268,7 @@ class Email_Tracking extends DB_Table {
 
                         break;
                     default:
-                        $label=$this->data['Email Tracking State'];
+                        $label = $this->data['Email Tracking State'];
                 }
 
                 return $label;

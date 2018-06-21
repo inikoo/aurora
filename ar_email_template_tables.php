@@ -51,7 +51,7 @@ function email_blueprints($_data, $db, $user) {
 
     include_once 'utils/natural_language.php';
 
-    $rtext_label = 'email template';
+    $rtext_label = 'saved email template';
     include_once 'prepare_table/init.php';
 
 

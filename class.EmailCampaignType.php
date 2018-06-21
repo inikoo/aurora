@@ -115,6 +115,11 @@ class EmailCampaignType extends DB_Table {
                 return $content_data;
                 break;
 
+
+            case 'Send After':
+                $_metadata = $this->get('Metadata');
+                return sprintf(ngettext('%s day', '%s days', $_metadata['Send After']), number($_metadata['Send After']));
+
             case 'Schedule Time':
                 $_metadata = $this->get('Metadata');
 
@@ -203,6 +208,40 @@ class EmailCampaignType extends DB_Table {
                 return $name;
                 break;
 
+            case 'Status Label':
+
+                switch ($this->get('Email Campaign Type Status')){
+                    case 'InProcess':
+
+                        if($this->get('Email Campaign Type Email Template Key')==''){
+                            $label=' <span class="discreet "> <i class="far small fa-seedling"></i> '._('Email template not set').'</span>';
+
+                        }else{
+                            $label=' <span class="discreet "> <i class="far small fa-seedling"></i> '._('Email template not saved').'</span>';
+
+                        }
+
+                        break;
+                    case 'Active':
+                        $label=' <span class="success"> <i class="fa small fa-broadcast-tower"></i> '._('Live').'</span>';
+
+                        break;
+                    case 'Suspended':
+                        $label=' <span class="error"> <i class="fa small fa-stop"></i> '._('Suspended').'</span>';
+
+                        break;
+
+                }
+               return $label;
+
+                break;
+            case 'Signature':
+
+
+                $store=get_object('Store',$this->data['Email Campaign Type Store Key']);
+                return $store->get('Email Template Signature');
+
+                break;
 
             default:
                 if (isset($this->data[$key])) {
@@ -244,7 +283,15 @@ class EmailCampaignType extends DB_Table {
 
 
         switch ($field) {
+            case 'Email Campaign Type Send After':
 
+                $metadata                     = $this->get('Metadata');
+                $metadata['Send After'] = $value;
+
+
+                $this->update_field('Email Campaign Type Metadata', json_encode($metadata), 'no_history');
+
+                break;
             case 'Email Campaign Type Schedule Days Monday':
             case 'Email Campaign Type Schedule Days Tuesday':
             case 'Email Campaign Type Schedule Days Wednesday':
@@ -266,9 +313,9 @@ class EmailCampaignType extends DB_Table {
                 $this->update_field('Email Campaign Type Metadata', json_encode($metadata), 'no_history');
 
                 break;
-            case 'Email Campaign Type State':
+            case 'Email Campaign Type Status':
 
-                $this->update_state($value);
+                $this->update_status($value);
                 break;
 
             case 'Scope Metadata':
@@ -309,6 +356,43 @@ class EmailCampaignType extends DB_Table {
     function activate() {
 
         $this->update_field_switcher('Email Campaign Type Status', 'Active');
+
+    }
+
+    function update_status($value=''){
+
+
+
+        if($this->get('Email Campaign Type Email Template Key')==''){
+
+            $value='InProcess';
+        }else{
+            $email_template=get_object('Email Template',$this->data['Email Campaign Type Email Template Key']);
+
+            if(!$email_template->get('Email Template Published Email Key')>0){
+                $value='InProcess';
+            }
+
+        }
+
+        if($value==''){
+            $value='Active';
+        }
+
+
+        $this->update_field('Email Campaign Type Status',$value);
+
+
+        $this->update_metadata = array(
+            'class_html' => array(
+                'Status_Label'                => $this->get('Status Label'),
+
+            ),
+
+        );
+
+
+
 
     }
 

@@ -13,32 +13,32 @@
 $email_templates_data = array(
 
 
-    'Welcome'               => array(
-        'key'     => 'welcome',
+    'Registration'               => array(
+        'key'     => 'Registration',
         'name'    => _('Welcome'),
         'subject' => _('Welcome'),
         'sender'  => 'Store'
 
     ),
-    'Reset_Password'        => array(
-        'key'     => 'reset_password',
+    'Password Reminder'        => array(
+        'key'     => 'Password Reminder',
         'name'    => _('Password reset'),
         'subject' => _('Password reset'),
         'text'    => "[Greetings]\n\n We received request to reset the password associated with this email account.\n\nIf you did not request to have your password reset, you can safely ignore this email. We assure that yor customer account is safe.\n\nCopy and paste the following link to your browser's address window.\n\n[Reset_Password_URL]\n\n Once you have returned our page you will be asked to choose a new password\n\nThank you \n\n[Signature]",
         'sender'  => 'Store'
 
     ),
-    'Order_Confirmation'    => array(
-        'key'     => 'order_confirmation',
+    'Order Confirmation'    => array(
+        'key'     => 'Order Confirmation',
         'name'    => _('Order confirmation'),
         'subject' => _('Order confirmation'),
         'sender'  => 'Store'
 
     ),
-    'Dispatch_Confirmation' => array(
-        'key'     => 'dispatch_confirmation',
-        'name'    => _('Dispatch confirmation'),
-        'subject' => _('Dispatch confirmation'),
+    'Delivery Confirmation' => array(
+        'key'     => 'Delivery Confirmation',
+        'name'    => _('Delivery confirmation'),
+        'subject' => _('Delivery confirmation'),
         'sender'  => 'Store'
 
     ),
@@ -63,13 +63,21 @@ $email_templates_data = array(
         'sender'  => 'Store'
 
     ),
+    'GR Reminder'      => array(
+        'key'     => 'GR Reminder',
+        'name'    => _('Reorder reminder'),
+        'subject' => _('Reorder reminder'),
+        'sender'  => 'Store'
+
+    ),
     'Invite Mailshot'      => array(
         'key'     => 'Invitation',
         'name'    => _('Invitation'),
         'subject' => _('Hello'),
         'sender'  => 'Store'
 
-    )
+    ),
+
 
 
 );

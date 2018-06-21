@@ -412,7 +412,7 @@ $modules = array(
 
             'email_campaigns' => array(
                 'type'      => 'navigation',
-                'label'     => _('Emails'),
+                'label'     => _('Email Comms.'),
                 'icon'      => 'paper-plane',
                 'reference' => 'customers/%s/email_campaigns',
 
@@ -420,6 +420,8 @@ $modules = array(
 
 
                 'tabs'      => array(
+
+                    /*
                     'email_campaigns.newsletters' => array(
                         'label' => _('Newsletters'),
                         'icon'  => 'newspaper'
@@ -429,8 +431,8 @@ $modules = array(
                         'icon'  => 'bullhorn'
                     ),
 
-
-                    'transactional_emails_types' => array(
+*/
+                    'email_template_types' => array(
                         'label'   => _('Operations'),
                         'icon'    => 'handshake-alt',
 
@@ -3008,13 +3010,14 @@ $modules = array(
 
 
                     'webpage.details' => array(
-                        'label' => _(
-                            'Data'
-                        ),
+                        'label' => _('Data'),
                         'icon'  => 'database'
                     ),
-
-
+                    'webpage.preview' => array(
+                        'label' => _('Data'),
+                        'icon'  => 'wrench'
+                    ),
+/*
                     'webpage.workshop' => array(
                         'label' => _('Workshop'),
                         'icon'  => 'wrench',
@@ -3037,7 +3040,7 @@ $modules = array(
                         )
 
                     ),
-
+*/
                     'webpage.analytics' => array(
                         'label' => _('Analytics'),
                         'icon'  => 'line-chart',
