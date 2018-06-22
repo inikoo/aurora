@@ -17,7 +17,6 @@
 
 
 
-
     <i id="email_template_text_button" class="fa fa-fw fa-text-height button  {if $email_template->get('Email Template Type')=='Text'}hide{/if} {if $email_template->get('Email Template Text')==''}error very_discreet{/if} " aria-hidden="true" title="{t}Text version{/t}"></i>
     <i id="email_template_html_button" class="fab fa-fw fa-html5 hide button" aria-hidden="true" title="{t}HTML version{/t}"></i>
 
@@ -25,7 +24,7 @@
 
         <span id="change_template" onclick="change_view(state.request + '&tab={$blueprints_redirect}')" class="button  {if $email_template->get('Email Template Type')=='Text'}hide{/if}" style="border:1px solid #ccc;padding:5px 10px;margin-left:40px"
               title="{t}Start again{/t}, ({t}Saved templates lists{/t}) ">
-            <i class="fa fa-eraser padding_right_5" aria-hidden="true"></i> {t}Start over{/t} <small>({t}Templates{/t})</small>
+            <i class="fa fa-eraser padding_right_5" aria-hidden="true"></i> {t}Start over{/t} <small>({t}Change template{/t})</small>
     </span>
 
 

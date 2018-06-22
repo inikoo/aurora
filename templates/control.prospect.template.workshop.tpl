@@ -25,7 +25,7 @@
     <input style="margin-left:20px;width:500px" maxlength="70" id="email_template_subject" value="{$email_template->get('Email Template Subject')}" placeholder="{t}Email subject{/t}">
 
         <span id="change_template" onclick="change_view(state.request + '&tab=prospects.base_templates')" class="button  {if $email_template->get('Email Template Type')=='Text'}hide{/if}" style="border:1px solid #ccc;padding:5px 10px;margin-left:40px">
-      <i class="fa fa-chalkboard padding_right_5" aria-hidden="true"></i> {t}Templates{/t}
+      <i class="fa fa-eraser padding_right_5" aria-hidden="true"></i> {t}Start over{/t}
     </span>
 
    
