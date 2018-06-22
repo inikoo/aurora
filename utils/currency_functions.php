@@ -20,17 +20,12 @@ function currency_conversion($db, $currency_from, $currency_to, $update_interval
         return 1;
     }
 
-    //$reload        = false;
-    //$in_db         = false;
-    //$exchange_rate = 1;
+    $ok = false;
 
 
-    //get info from database;
     $sql = sprintf(
         "SELECT * FROM kbase.`Currency Exchange Dimension` WHERE `Currency Pair`=%s", prepare_mysql($currency_from.$currency_to)
     );
-
-
 
 
     if ($result = $db->query($sql)) {
@@ -40,13 +35,10 @@ function currency_conversion($db, $currency_from, $currency_to, $update_interval
             $date2 = gmdate("Y-m-d H:i:s", strtotime('now '.$update_interval));
 
             if (strtotime($date1) > strtotime($date2)) {
-               // $reload = true;
+                // $reload = true;
 
                 return $row['Exchange'];
             }
-
-
-
 
 
         } else {
@@ -96,8 +88,7 @@ function currency_conversion($db, $currency_from, $currency_to, $update_interval
 
     if (in_array($currency_from, $valid_currencies) and in_array(
             $currency_to, $valid_currencies
-        )
-    ) {
+        )) {
 
         $contents = json_decode(
             file_get_contents(
@@ -108,21 +99,47 @@ function currency_conversion($db, $currency_from, $currency_to, $update_interval
         );
 
 
-        $exchange = floatval($contents['rates'][$currency_to]);
+        if (!empty($contents['rates'][$currency_to])) {
+            $exchange = floatval($contents['rates'][$currency_to]);
 
 
-        $source = 'fixer.io';
+            $source = 'fixer.io';
+            $ok     = true;
+        }
 
 
-    } else {
-        $url = "http://quote.yahoo.com/d/quotes.csv?s=".$currency_from.$currency_to."=X&f=l1&e=.csv";
-
-        $handle   = fopen($url, "r");
-        $exchange = floatval(fread($handle, 2000));
-        fclose($handle);
+    }
 
 
-        $source = 'YAHOO';
+    if ($ok == false) {
+
+        $api_keys = array(
+            'raul@inikoo.com'      => '8158586024e345b2b798c26ee50b6987',
+            'exchange1@inikoo.com' => '21467cd6ca2847cf9fdbc913e616d6e9',
+            'exchange2@inikoo.com' => 'e328d66fafc94f6391d2a8e4fbab0389',
+            'exchange3@inikoo.com' => '271f126537a84a3f98599e66781f8bed',
+            'exchange4@inikoo.com' => '756b792276ba4c80807a85b031139d7e',
+            'exchange5@inikoo.com' => '4bc72747362a496c971c528fb1b1d219',
+
+
+        );
+        shuffle($api_keys);
+        $api_key = reset($api_keys);
+
+        $url  = 'http://openexchangerates.org/api/latest.json?app_id='.$api_key;
+        $data = json_decode(file_get_contents($url), true);
+
+
+        if (isset($data['rates'][$currency_from]) and isset($data['rates'][$currency_to])) {
+
+            $usd_cur1 = $data['rates'][$currency_from];
+            $usd_cur2 = $data['rates'][$currency_to];
+            $exchange = $usd_cur2 * (1 / $usd_cur1);
+
+
+            $source = 'openexchangerates';
+        }
+
 
     }
 
@@ -190,32 +207,43 @@ $exchange=get_currency($currency_from, $currency_to, 1000000)/1000000;
 }
 
 
-function get_currency($from_Currency, $to_Currency, $amount) {
-    $amount        = urlencode($amount);
-    $from_Currency = urlencode($from_Currency);
-    $to_Currency   = urlencode($to_Currency);
 
-    $url
-        = "http://www.google.com/finance/converter?a=$amount&from=$from_Currency&to=$to_Currency";
-    print $url;
 
-    $ch      = curl_init();
-    $timeout = 0;
-    curl_setopt($ch, CURLOPT_URL, $url);
-    curl_setopt($ch, CURLOPT_RETURNTRANSFER, 1);
+function get_historic_exchange($currency1,$currency2,$date) {
+    //https://openexchangerates.org
+    $exchange='';
 
-    curl_setopt(
-        $ch, CURLOPT_USERAGENT, "Mozilla/4.0 (compatible; MSIE 8.0; Windows NT 6.1)"
+    $api_keys = array(
+        'raul@inikoo.com'      => '8158586024e345b2b798c26ee50b6987',
+        'exchange1@inikoo.com' => '21467cd6ca2847cf9fdbc913e616d6e9',
+        'exchange2@inikoo.com' => 'e328d66fafc94f6391d2a8e4fbab0389',
+        'exchange3@inikoo.com' => '271f126537a84a3f98599e66781f8bed',
+        'exchange4@inikoo.com' => '756b792276ba4c80807a85b031139d7e',
+        'exchange5@inikoo.com' => '4bc72747362a496c971c528fb1b1d219',
+
+
     );
-    curl_setopt($ch, CURLOPT_CONNECTTIMEOUT, $timeout);
-    $rawdata = curl_exec($ch);
-    curl_close($ch);
-    $data = explode('bld>', $rawdata);
-    $data = explode($to_Currency, $data[1]);
+    shuffle($api_keys);
+    $api_key = reset($api_keys);
+
+    $url  = 'http://openexchangerates.org/api/historical/'.$date.'.json?app_id='.$api_key;
+    $data = json_decode(file_get_contents($url), true);
 
 
-    return $data[0];
+    if (isset($data['rates'][$currency1]) and isset($data['rates'][$currency2])) {
+
+        $usd_cur1       = $data['rates'][$this->currency1];
+        $usd_cur2       = $data['rates'][$this->currency2];
+        $exchange = $usd_cur2 * (1 / $usd_cur1);
+
+
+        //$source = 'openexchangerates';
+    }
+
+    return $exchange;
+
 }
+
 
 
 ?>

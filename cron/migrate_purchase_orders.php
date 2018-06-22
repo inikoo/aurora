@@ -25,10 +25,11 @@ if (!$db_selected) {
 mysql_set_charset('utf8');
 mysql_query("SET time_zone='+0:00'");
 
+include_once 'utils/currency_functions.php';
+
 
 require_once 'utils/get_addressing.php';
 require_once 'utils/parse_natural_language.php';
-include_once 'class.CurrencyExchange.php';
 require_once 'class.PurchaseOrder.php';
 require_once 'class.Account.php';
 
@@ -55,12 +56,10 @@ $sql = sprintf('SELECT * FROM `Purchase Order Dimension`  ');
 if ($result = $db->query($sql)) {
     foreach ($result as $row) {
         $purchase_order    = new PurchaseOrder($row['Purchase Order Key']);
-        $currency_exchange = new CurrencyExchange(
-            $row['Purchase Order Currency Code'].$account->get(
-                'Account Currency'
-            )
-        );
-        $exchange          = $currency_exchange->get_exchange();
+
+
+        $exchange=currency_conversion($db,$row['Purchase Order Currency Code'],$account->get('Account Currency'));
+
         $purchase_order->update(
             array(
                 'Purchase Order Currency Exchange'   => $exchange,

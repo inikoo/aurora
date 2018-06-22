@@ -231,12 +231,14 @@ class Country {
     }
 
     function exchange($currency_code, $date = false) {
-        include_once 'class.CurrencyExchange.php';
+        include_once 'utils/currency_functions.php';
 
-        $currency_exchange = new CurrencyExchange(
-            $currency_code.$this->data['Country Currency Code'], $date
-        );
-        $exchange          = $currency_exchange->get_exchange();
+
+        if(!$date){
+            $exchange= currency_conversion($currency_code,$this->data['Country Currency Code']);
+        }else{
+            $exchange=  get_historic_exchange($currency_code,$this->data['Country Currency Code'],$date);
+        }
 
         return $exchange;
 

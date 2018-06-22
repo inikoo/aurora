@@ -138,15 +138,8 @@ trait OrderBasketOperations {
 
         if ($this->data['Order Currency'] != $account->get('Currency Code')) {
 
-
-            $date_difference = date('U') - strtotime($this->data['Order Date'].' +0:00');
-            if ($date_difference > 3600) {
-                $currency_exchange = new CurrencyExchange($this->data['Order Currency'].$account->get('Currency Code'), $this->data['Order Date']);
-                $exchange          = $currency_exchange->get_exchange();
-            } else {
-                include_once 'utils/currency_functions.php';
-                $exchange = currency_conversion($this->db, $this->data['Order Currency'], $account->get('Currency Code'), 'now');
-            }
+            include_once 'utils/currency_functions.php';
+            $exchange = currency_conversion($this->db, $this->data['Order Currency'], $account->get('Currency Code'), '1 hour');
             $this->data['Order Currency Exchange'] = $exchange;
         }
 
