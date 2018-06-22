@@ -171,10 +171,11 @@
                         </div>
 
                             <div class="input_container caption hide column_{$stack_index % 4}  " style="">
-                                <input  value="{$product_data.data.caption}" >
+                                <input  value="{if !empty($product_data.data.caption)}{$product_data.data.caption}{/if}" placeholder="{t}Caption{/t}">
+
                             </div>
                             <div class="input_container link_url hide column_{$stack_index % 4}  " style="">
-                                <input  value="{$product_data.data.link}" placeholder="http://">
+                                <input  value="{if !empty($product_data.data.link)}{$product_data.data.link}{/if}" placeholder="http://">
                             </div>
                             </div>
                         </div>
@@ -222,10 +223,11 @@
 
 
                             <div class="input_container caption hide column_{$stack_index % 4}  " style="">
-                                <input  value="{$product_data.data.caption}" >
+                                <input  value="{if !empty($product_data.data.caption)}{$product_data.data.caption}{/if}" placeholder="{t}Caption{/t}">
+
                             </div>
                             <div class="input_container link_url hide column_{$stack_index % 4}  " style="">
-                                <input  value="{$product_data.data.link}" placeholder="http://">
+                                <input  value="{if !empty($product_data.data.link)}{$product_data.data.link}{/if}" placeholder="http://">
                             </div>
                         </div>
 
