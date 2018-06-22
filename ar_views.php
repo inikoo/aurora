@@ -679,29 +679,6 @@ function get_view($db, $smarty, $user, $account, $modules) {
             }
 
         }
-    } elseif ($state['module'] == 'products' and $state['section'] == 'webpage') {
-
-        //  print_r($state);
-
-        if (!in_array(
-            $state['_object']->get('Webpage Code'), array(
-                                                      'register.sys',
-                                                      'login.sys',
-                                                      'checkout.sys'
-                                                  )
-        )) {
-
-
-            if ($state['subtab'] == 'webpage.email_template' or $state['subtab'] == 'webpage.email_blueprints') {
-                $state['subtab'] = 'webpage.preview';
-            }
-
-            // print_r($state);
-
-
-        }
-
-
     } elseif ($state['module'] == 'orders') {
 
         if ($state['section'] == 'email_campaign') {

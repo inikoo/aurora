@@ -3493,14 +3493,7 @@ $tab_defaults = array(
         'f_field'     => 'note'
     ),
 
-    'webpage.email_blueprints'            => array(
-        'view'        => 'overview',
-        'sort_key'    => 'id',
-        'sort_order'  => 1,
-        'rpp'         => 100,
-        'rpp_options' => $default_rrp_options,
-        'f_field'     => 'name'
-    ),
+
     'supplier.timeseries_record.parts'    => array(
         'view'          => 'overview',
         'sort_key'      => 'reference',

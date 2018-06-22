@@ -59,7 +59,7 @@
     </span>
 
 
-    {if $email_template->get('Email Template Scope')=='Webpage'}
+    {if $email_template->get('Email Template Scope')=='EmailCampaignType'}
         <span id="publish_email_template_from_text_controls" onclick="publish_webpage_email_template()"
               class=" {if $email_template->get('Email Template Editing Checksum')==$email_template->get('Email Template Published Checksum')}super_discreet{else}button{/if}  "
               style="float:right;border:1px solid #ccc;padding:5px 10px;margin-right:0px">

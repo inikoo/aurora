@@ -2996,9 +2996,6 @@ $modules = array(
                     'webpage.footer.preview' => 'webpage.templates',
                     'webpage.header.preview' => 'webpage.templates',
 
-                    'webpage.preview'          => 'webpage.workshop',
-                    'webpage.email_template'   => 'webpage.workshop',
-                    'webpage.email_blueprints' => 'webpage.workshop',
 
 
                     'webpage.templates' => 'webpage.templates',
@@ -3017,30 +3014,7 @@ $modules = array(
                         'label' => _('Data'),
                         'icon'  => 'wrench'
                     ),
-/*
-                    'webpage.workshop' => array(
-                        'label' => _('Workshop'),
-                        'icon'  => 'wrench',
 
-                        'subtabs' => array(
-                            'webpage.preview'          => array(
-                                'label' => _('Webpage'),
-                                'icon'  => 'file-alt'
-                            ),
-                            'webpage.email_template'   => array(
-                                'label' => _('Email'),
-                                'icon'  => 'envelope'
-                            ),
-                            'webpage.email_blueprints' => array(
-                                'label'   => _('Email HTML templates'),
-                                'icon_v2' => 'fab fa-html5'
-                            )
-
-
-                        )
-
-                    ),
-*/
                     'webpage.analytics' => array(
                         'label' => _('Analytics'),
                         'icon'  => 'line-chart',
