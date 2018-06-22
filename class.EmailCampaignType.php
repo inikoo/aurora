@@ -64,6 +64,8 @@ class EmailCampaignType extends DB_Table {
         }
 
 
+       // print "$sql\n";
+
         if ($this->data = $this->db->query($sql)->fetch()) {
 
             $this->id = $this->data['Email Campaign Type Key'];
