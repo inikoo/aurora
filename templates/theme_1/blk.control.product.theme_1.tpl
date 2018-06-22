@@ -26,8 +26,10 @@
                                                                                                                                                       value="{if isset($block.bottom_margin)}{$block.bottom_margin}{else}0{/if}"
                                                                                                                                                       style="" placeholder="0">
 
-        <span onclick="toggle_product_properties(this)" class="toggle_product_properties padding_left_20 unselectable button"><i class="fa {if $block.show_properties}fa-toggle-on{else}fa-toggle-off{/if}"></i> {t}Properties{/t}</span>
 
+        {*
+        <span onclick="toggle_product_properties(this)" class="toggle_product_properties padding_left_20 unselectable button"><i class="fa {if $block.show_properties}fa-toggle-on{else}fa-toggle-off{/if}"></i> {t}Properties{/t}</span>
+*}
 
 
     </div>
