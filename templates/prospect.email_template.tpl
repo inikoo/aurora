@@ -176,52 +176,6 @@
     }
 
 
-    function publish_webpage_email_template() {
-
-        $('#save_email_template_dialog').addClass('hide')
-
-
-        var ajaxData = new FormData();
-
-        ajaxData.append("tipo", 'publish_email_template')
-        ajaxData.append("email_template_key", '{$email_template_key}')
-        ajaxData.append("json", $('#template_name2').data('jsonFile'))
-        ajaxData.append("html", $('#template_name2').data('htmlFile'))
-
-        //$('#save_email_template_dialog').closest('div').addClass('hide')
-
-
-
-        $.ajax({
-            url: "/ar_edit_email_template.php", type: 'POST', data: ajaxData, dataType: 'json', cache: false, contentType: false, processData: false,
-            complete: function () {
-            }, success: function (data) {
-
-                if (data.state == '200') {
-
-                    $('#email_template_info').html(data.email_template_info)
-                    if(data.published){
-                        $('#publish_email_template_from_text_controls').addClass('super_discreet').removeClass('button')
-                    }else{
-                        $('#publish_email_template_from_text_controls').removeClass('super_discreet').addClass('button')
-
-                    }
-
-                } else if (data.state == '400') {
-                    swal({
-                        title: data.title, text: data.msg, confirmButtonText: "OK"
-                    });
-                }
-
-
-
-            }, error: function () {
-
-            }
-        });
-
-    }
-
 
     $(".template_name").on('input propertychange', function(){
 

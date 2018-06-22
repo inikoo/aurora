@@ -77,6 +77,7 @@ if ($email_template->id and !($email_template->get('Email Template Type') == 'HT
     $parameters = array(
         'parent'     => 'EmailCampaignType',
         'parent_key' => $email_campaign_type->id,
+        'store_key' => $email_campaign_type->get('Store Key'),
         'redirect' => base64_url_encode('&tab=prospects.template.workshop'),
         'email_template_key' => $email_template->id,
 
