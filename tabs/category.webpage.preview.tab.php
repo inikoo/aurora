@@ -582,7 +582,7 @@ if($webpage->get('Webpage Template Filename')=='category_categories' or $webpage
                 //  $webpage->reindex_items();
 
 
-                $smarty->assign('sections', $content_data['sections']);
+                $smarty->assign('sections',  (isset($content_data['sections'])?$content_data['sections']:array()));
 
                 //  print_r($content_data['sections']);
 
