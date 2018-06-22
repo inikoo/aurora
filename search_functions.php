@@ -10,7 +10,6 @@
 */
 
 
-
 function search_suppliers($db, $account, $memcache_ip, $data) {
 
 
@@ -30,30 +29,30 @@ function search_suppliers($db, $account, $memcache_ip, $data) {
         return;
     }
 
-/*
-    $memcache_fingerprint = $account->get('Account Code').'SEARCH_SUPPLIERS'.md5($queries);
+    /*
+        $memcache_fingerprint = $account->get('Account Code').'SEARCH_SUPPLIERS'.md5($queries);
 
-    $cache = new Memcached();
-    $cache->addServer($memcache_ip, 11211);
-
-
-    if (strlen($queries) <= 2) {
-        $memcache_time = 295200;
-    }
-    if (strlen($queries) <= 3) {
-        $memcache_time = 86400;
-    }
-    if (strlen($queries) <= 4) {
-        $memcache_time = 3600;
-    } else {
-        $memcache_time = 300;
-
-    }
+        $cache = new Memcached();
+        $cache->addServer($memcache_ip, 11211);
 
 
-    $results_data = $cache->get($memcache_fingerprint);
-*/
-    $results_data=false;
+        if (strlen($queries) <= 2) {
+            $memcache_time = 295200;
+        }
+        if (strlen($queries) <= 3) {
+            $memcache_time = 86400;
+        }
+        if (strlen($queries) <= 4) {
+            $memcache_time = 3600;
+        } else {
+            $memcache_time = 300;
+
+        }
+
+
+        $results_data = $cache->get($memcache_fingerprint);
+    */
+    $results_data = false;
     if (!$results_data or true) {
 
 
@@ -541,8 +540,7 @@ function search_suppliers($db, $account, $memcache_ip, $data) {
 
         if ($number_supplier_parts_keys) {
             $sql = sprintf(
-                "SELECT `Supplier Part Key`,`Supplier Part Supplier Key`,`Supplier Part Reference`,`Supplier Part Description` FROM `Supplier Part Dimension`    WHERE `Supplier Part Key` IN (%s)",
-                $supplier_parts_keys
+                "SELECT `Supplier Part Key`,`Supplier Part Supplier Key`,`Supplier Part Reference`,`Supplier Part Description` FROM `Supplier Part Dimension`    WHERE `Supplier Part Key` IN (%s)", $supplier_parts_keys
             );
 
             if ($result = $db->query($sql)) {
@@ -679,7 +677,6 @@ function search_suppliers($db, $account, $memcache_ip, $data) {
             'n' => count($results),
             'd' => $results
         );
-        
 
 
     }
@@ -715,8 +712,6 @@ function search_inventory($db, $account, $data) {
     }
 
 
-
-
     if (strlen($queries) <= 2) {
         $memcache_time = 295200;
     }
@@ -730,302 +725,300 @@ function search_inventory($db, $account, $data) {
 
     }
 
-        $candidates = array();
+    $candidates = array();
 
-        $query_array    = preg_split('/\s+/', $queries);
-        $number_queries = count($query_array);
+    $query_array    = preg_split('/\s+/', $queries);
+    $number_queries = count($query_array);
 
 
-        foreach ($query_array as $q) {
+    foreach ($query_array as $q) {
 
 
-            $sql = sprintf(
-                "SELECT `Part SKU`,`Part Reference`,`Part Status` FROM `Part Dimension` WHERE `Part Reference` LIKE '%s%%' LIMIT 20 ", $q
-            );
-
-
-            if ($result = $db->query($sql)) {
-                foreach ($result as $row) {
-
-                    if ($row['Part Reference'] == $q) {
-                        if ($row['Part Status'] == 'In Use') {
-                            $candidates['P'.$row['Part SKU']] = 1000;
-                        } else {
-                            $candidates['P'.$row['Part SKU']] = 800;
-                        }
-                    } else {
-
-                        $len_name = strlen($row['Part Reference']);
-                        $len_q    = strlen($q);
-                        $factor   = $len_q / $len_name;
-                        if ($row['Part Status'] == 'In Use') {
-                            $candidates['P'.$row['Part SKU']] = 500 * $factor;
-                        } else {
-                            $candidates['P'.$row['Part SKU']] = 400 * $factor;
-                        }
-                    }
-
-                }
-            } else {
-                print_r($error_info = $db->errorInfo());
-                print $sql;
-                exit;
-            }
-
-
-            $sql = sprintf(
-                "SELECT `Part SKU`,`Part Reference`,`Part Package Description`,`Part Status` FROM `Part Dimension` WHERE `Part Package Description`  REGEXP '[[:<:]]%s' LIMIT 100 ", $q
-            );
-
-            if ($result = $db->query($sql)) {
-                foreach ($result as $row) {
-                    if ($row['Part Package Description'] == $q) {
-                        if ($row['Part Status'] == 'In Use') {
-
-                            if (isset($candidates['P'.$row['Part SKU']])) {
-                                $candidates['P'.$row['Part SKU']] += 55;
-
-                            } else {
-                                $candidates['P'.$row['Part SKU']] = 55;
-
-                            }
-
-                        } else {
-
-                            if (isset($candidates['P'.$row['Part SKU']])) {
-                                $candidates['P'.$row['Part SKU']] += 35;
-
-                            } else {
-                                $candidates['P'.$row['Part SKU']] = 35;
-
-                            }
-
-                        }
-                    } else {
-
-                        $len_name = strlen($row['Part Package Description']);
-                        $len_q    = strlen($q);
-                        $factor   = $len_q / $len_name;
-                        if ($row['Part Status'] == 'In Use') {
-                            if (isset($candidates['P'.$row['Part SKU']])) {
-                                $candidates['P'.$row['Part SKU']] += 50 * $factor;
-
-                            } else {
-                                $candidates['P'.$row['Part SKU']] = 50 * $factor;
-
-                            }
-                        } else {
-
-                            if (isset($candidates['P'.$row['Part SKU']])) {
-                                $candidates['P'.$row['Part SKU']] += 30 * $factor;
-
-                            } else {
-                                $candidates['P'.$row['Part SKU']] = 30 * $factor;
-
-                            }
-
-                        }
-                    }
-
-                }
-            } else {
-                print_r($error_info = $db->errorInfo());
-                print $sql;
-                exit;
-            }
-
-
-            $sql = sprintf(
-                "SELECT `Category Key`,`Category Code`,`Category Label` FROM `Category Dimension` WHERE `Category Scope`='Part'  AND `Category Code` LIKE '%s%%' LIMIT 20 ", $q
-            );
-
-            if ($result = $db->query($sql)) {
-                foreach ($result as $row) {
-
-                    if ($row['Category Code'] == $q) {
-
-                        $candidates['C'.$row['Category Key']] = 1000;
-                    } else {
-
-                        $len_name                             = strlen(
-                            $row['Category Code']
-                        );
-                        $len_q                                = strlen($q);
-                        $factor                               = $len_q / $len_name;
-                        $candidates['C'.$row['Category Key']] = 500 * $factor;
-                    }
-
-                }
-            } else {
-                print_r($error_info = $db->errorInfo());
-                exit;
-            }
-
-
-            $sql = sprintf(
-                "SELECT `Category Key`,`Category Code`,`Category Label` FROM `Category Dimension` WHERE `Category Scope`='Part'  AND `Category Label`  REGEXP '[[:<:]]%s' LIMIT 100 ", $q
-            );
-
-            if ($result = $db->query($sql)) {
-                foreach ($result as $row) {
-                    if ($row['Category Label'] == $q) {
-
-                        if (isset($candidates['C'.$row['Category Key']])) {
-                            $candidates['C'.$row['Category Key']] += 55;
-                        } else {
-                            $candidates['C'.$row['Category Key']] = 55;
-                        }
-
-                    } else {
-
-                        $len_name = strlen($row['Category Label']);
-                        $len_q    = strlen($q);
-                        $factor   = $len_q / $len_name;
-
-                        if (isset($candidates['C'.$row['Category Key']])) {
-                            $candidates['C'.$row['Category Key']] += 50 * $factor;
-                        } else {
-                            $candidates['C'.$row['Category Key']] = 50 * $factor;
-                        }
-
-                    }
-
-                }
-            } else {
-                print_r($error_info = $db->errorInfo());
-                exit;
-            }
-
-
-        }
-
-
-        arsort($candidates);
-
-
-        $total_candidates = count($candidates);
-
-        if ($total_candidates == 0) {
-            $response = array(
-                'state'   => 200,
-                'results' => 0,
-                'data'    => ''
-            );
-            echo json_encode($response);
-
-            return;
-        }
-
-        $counter       = 0;
-        $part_keys     = '';
-        $category_keys = '';
-
-
-        $results = array();
-
-        $number_parts_keys      = 0;
-        $number_categories_keys = 0;
-
-
-        foreach ($candidates as $_key => $val) {
-            $counter++;
-
-            if ($_key[0] == 'P') {
-                $key            = preg_replace('/^P/', '', $_key);
-                $part_keys      .= ','.$key;
-                $results[$_key] = '';
-                $number_parts_keys++;
-
-            } elseif ($_key[0] == 'C') {
-                $key            = preg_replace('/^C/', '', $_key);
-                $category_keys  .= ','.$key;
-                $results[$_key] = '';
-                $number_categories_keys++;
-
-            }
-
-            if ($counter > $max_results) {
-                break;
-            }
-        }
-        $part_keys     = preg_replace('/^,/', '', $part_keys);
-        $category_keys = preg_replace('/^,/', '', $category_keys);
-
-
-        if ($number_parts_keys) {
-            $sql = sprintf(
-                "SELECT P.`Part SKU`,`Part Reference`,`Part Package Description`,`Part Status` FROM `Part Dimension` P  WHERE P.`Part SKU` IN (%s)", $part_keys
-            );
-
-            if ($result = $db->query($sql)) {
-                foreach ($result as $row) {
-
-                    if ($row['Part Status'] == 'Not In Use') {
-                        $status = '<i class="fa fa-square fa-fw padding_right_5 very_discreet" aria-hidden="true"></i> ';
-
-                    } elseif ($row['Part Status'] == 'Discontinuing') {
-                        $status = '<i class="fa fa-square fa-fw padding_right_5 very_discreet" aria-hidden="true"></i> ';
-
-                    } else {
-                        $status = '<i class="fa fa-square fa-fw padding_right_5" aria-hidden="true"></i> ';
-                    }
-
-                    $results['P'.$row['Part SKU']] = array(
-                        'label'   => $status.highlightkeyword(sprintf('%s', $row['Part Reference']), $queries),
-                        'details' => highlightkeyword($row['Part Package Description'], $queries),
-                        'view'    => sprintf('part/%d', $row['Part SKU'])
-
-
-                    );
-
-                }
-            } else {
-                print_r($error_info = $db->errorInfo());
-                print $sql;
-                exit;
-            }
-
-        }
-
-        if ($number_categories_keys) {
-            $sql = sprintf(
-                "SELECT `Category Code`,`Category Store Key`,`Category Key`,`Category Code`,`Category Label` FROM `Category Dimension` WHERE `Category Key` IN (%s)", $category_keys
-            );
-
-            if ($result = $db->query($sql)) {
-                foreach ($result as $row) {
-
-
-                    $icon = '<i class="fa fa-sitemap fa-fw padding_right_5" aria-hidden="true" ></i> ';
-
-                    $results['C'.$row['Category Key']] = array(
-                        'label'   => $icon.highlightkeyword(
-                                sprintf('%s', $row['Category Code']), $queries
-                            ),
-                        'details' => highlightkeyword(
-                            $row['Category Label'], $queries
-                        ),
-                        'view'    => sprintf(
-                            'inventory/category/%d', $row['Category Key']
-                        )
-
-
-                    );
-                }
-            } else {
-                print_r($error_info = $db->errorInfo());
-                print $sql;
-                exit;
-            }
-        }
-
-
-        $results_data = array(
-            'n' => count($results),
-            'd' => $results
+        $sql = sprintf(
+            "SELECT `Part SKU`,`Part Reference`,`Part Status` FROM `Part Dimension` WHERE `Part Reference` LIKE '%s%%' LIMIT 20 ", $q
         );
-        
 
+
+        if ($result = $db->query($sql)) {
+            foreach ($result as $row) {
+
+                if ($row['Part Reference'] == $q) {
+                    if ($row['Part Status'] == 'In Use') {
+                        $candidates['P'.$row['Part SKU']] = 1000;
+                    } else {
+                        $candidates['P'.$row['Part SKU']] = 800;
+                    }
+                } else {
+
+                    $len_name = strlen($row['Part Reference']);
+                    $len_q    = strlen($q);
+                    $factor   = $len_q / $len_name;
+                    if ($row['Part Status'] == 'In Use') {
+                        $candidates['P'.$row['Part SKU']] = 500 * $factor;
+                    } else {
+                        $candidates['P'.$row['Part SKU']] = 400 * $factor;
+                    }
+                }
+
+            }
+        } else {
+            print_r($error_info = $db->errorInfo());
+            print $sql;
+            exit;
+        }
+
+
+        $sql = sprintf(
+            "SELECT `Part SKU`,`Part Reference`,`Part Package Description`,`Part Status` FROM `Part Dimension` WHERE `Part Package Description`  REGEXP '[[:<:]]%s' LIMIT 100 ", $q
+        );
+
+        if ($result = $db->query($sql)) {
+            foreach ($result as $row) {
+                if ($row['Part Package Description'] == $q) {
+                    if ($row['Part Status'] == 'In Use') {
+
+                        if (isset($candidates['P'.$row['Part SKU']])) {
+                            $candidates['P'.$row['Part SKU']] += 55;
+
+                        } else {
+                            $candidates['P'.$row['Part SKU']] = 55;
+
+                        }
+
+                    } else {
+
+                        if (isset($candidates['P'.$row['Part SKU']])) {
+                            $candidates['P'.$row['Part SKU']] += 35;
+
+                        } else {
+                            $candidates['P'.$row['Part SKU']] = 35;
+
+                        }
+
+                    }
+                } else {
+
+                    $len_name = strlen($row['Part Package Description']);
+                    $len_q    = strlen($q);
+                    $factor   = $len_q / $len_name;
+                    if ($row['Part Status'] == 'In Use') {
+                        if (isset($candidates['P'.$row['Part SKU']])) {
+                            $candidates['P'.$row['Part SKU']] += 50 * $factor;
+
+                        } else {
+                            $candidates['P'.$row['Part SKU']] = 50 * $factor;
+
+                        }
+                    } else {
+
+                        if (isset($candidates['P'.$row['Part SKU']])) {
+                            $candidates['P'.$row['Part SKU']] += 30 * $factor;
+
+                        } else {
+                            $candidates['P'.$row['Part SKU']] = 30 * $factor;
+
+                        }
+
+                    }
+                }
+
+            }
+        } else {
+            print_r($error_info = $db->errorInfo());
+            print $sql;
+            exit;
+        }
+
+
+        $sql = sprintf(
+            "SELECT `Category Key`,`Category Code`,`Category Label` FROM `Category Dimension` WHERE `Category Scope`='Part'  AND `Category Code` LIKE '%s%%' LIMIT 20 ", $q
+        );
+
+        if ($result = $db->query($sql)) {
+            foreach ($result as $row) {
+
+                if ($row['Category Code'] == $q) {
+
+                    $candidates['C'.$row['Category Key']] = 1000;
+                } else {
+
+                    $len_name                             = strlen(
+                        $row['Category Code']
+                    );
+                    $len_q                                = strlen($q);
+                    $factor                               = $len_q / $len_name;
+                    $candidates['C'.$row['Category Key']] = 500 * $factor;
+                }
+
+            }
+        } else {
+            print_r($error_info = $db->errorInfo());
+            exit;
+        }
+
+
+        $sql = sprintf(
+            "SELECT `Category Key`,`Category Code`,`Category Label` FROM `Category Dimension` WHERE `Category Scope`='Part'  AND `Category Label`  REGEXP '[[:<:]]%s' LIMIT 100 ", $q
+        );
+
+        if ($result = $db->query($sql)) {
+            foreach ($result as $row) {
+                if ($row['Category Label'] == $q) {
+
+                    if (isset($candidates['C'.$row['Category Key']])) {
+                        $candidates['C'.$row['Category Key']] += 55;
+                    } else {
+                        $candidates['C'.$row['Category Key']] = 55;
+                    }
+
+                } else {
+
+                    $len_name = strlen($row['Category Label']);
+                    $len_q    = strlen($q);
+                    $factor   = $len_q / $len_name;
+
+                    if (isset($candidates['C'.$row['Category Key']])) {
+                        $candidates['C'.$row['Category Key']] += 50 * $factor;
+                    } else {
+                        $candidates['C'.$row['Category Key']] = 50 * $factor;
+                    }
+
+                }
+
+            }
+        } else {
+            print_r($error_info = $db->errorInfo());
+            exit;
+        }
+
+
+    }
+
+
+    arsort($candidates);
+
+
+    $total_candidates = count($candidates);
+
+    if ($total_candidates == 0) {
+        $response = array(
+            'state'   => 200,
+            'results' => 0,
+            'data'    => ''
+        );
+        echo json_encode($response);
+
+        return;
+    }
+
+    $counter       = 0;
+    $part_keys     = '';
+    $category_keys = '';
+
+
+    $results = array();
+
+    $number_parts_keys      = 0;
+    $number_categories_keys = 0;
+
+
+    foreach ($candidates as $_key => $val) {
+        $counter++;
+
+        if ($_key[0] == 'P') {
+            $key            = preg_replace('/^P/', '', $_key);
+            $part_keys      .= ','.$key;
+            $results[$_key] = '';
+            $number_parts_keys++;
+
+        } elseif ($_key[0] == 'C') {
+            $key            = preg_replace('/^C/', '', $_key);
+            $category_keys  .= ','.$key;
+            $results[$_key] = '';
+            $number_categories_keys++;
+
+        }
+
+        if ($counter > $max_results) {
+            break;
+        }
+    }
+    $part_keys     = preg_replace('/^,/', '', $part_keys);
+    $category_keys = preg_replace('/^,/', '', $category_keys);
+
+
+    if ($number_parts_keys) {
+        $sql = sprintf(
+            "SELECT P.`Part SKU`,`Part Reference`,`Part Package Description`,`Part Status` FROM `Part Dimension` P  WHERE P.`Part SKU` IN (%s)", $part_keys
+        );
+
+        if ($result = $db->query($sql)) {
+            foreach ($result as $row) {
+
+                if ($row['Part Status'] == 'Not In Use') {
+                    $status = '<i class="fa fa-square fa-fw padding_right_5 very_discreet" aria-hidden="true"></i> ';
+
+                } elseif ($row['Part Status'] == 'Discontinuing') {
+                    $status = '<i class="fa fa-square fa-fw padding_right_5 very_discreet" aria-hidden="true"></i> ';
+
+                } else {
+                    $status = '<i class="fa fa-square fa-fw padding_right_5" aria-hidden="true"></i> ';
+                }
+
+                $results['P'.$row['Part SKU']] = array(
+                    'label'   => $status.highlightkeyword(sprintf('%s', $row['Part Reference']), $queries),
+                    'details' => highlightkeyword($row['Part Package Description'], $queries),
+                    'view'    => sprintf('part/%d', $row['Part SKU'])
+
+
+                );
+
+            }
+        } else {
+            print_r($error_info = $db->errorInfo());
+            print $sql;
+            exit;
+        }
+
+    }
+
+    if ($number_categories_keys) {
+        $sql = sprintf(
+            "SELECT `Category Code`,`Category Store Key`,`Category Key`,`Category Code`,`Category Label` FROM `Category Dimension` WHERE `Category Key` IN (%s)", $category_keys
+        );
+
+        if ($result = $db->query($sql)) {
+            foreach ($result as $row) {
+
+
+                $icon = '<i class="fa fa-sitemap fa-fw padding_right_5" aria-hidden="true" ></i> ';
+
+                $results['C'.$row['Category Key']] = array(
+                    'label'   => $icon.highlightkeyword(
+                            sprintf('%s', $row['Category Code']), $queries
+                        ),
+                    'details' => highlightkeyword(
+                        $row['Category Label'], $queries
+                    ),
+                    'view'    => sprintf(
+                        'inventory/category/%d', $row['Category Key']
+                    )
+
+
+                );
+            }
+        } else {
+            print_r($error_info = $db->errorInfo());
+            print $sql;
+            exit;
+        }
+    }
+
+
+    $results_data = array(
+        'n' => count($results),
+        'd' => $results
+    );
 
 
     $response = array(
@@ -1091,332 +1084,325 @@ function search_products($db, $account, $data) {
     }
 
 
+    $candidates = array();
+
+    $query_array    = preg_split('/\s+/', $queries);
+    $number_queries = count($query_array);
+
+    if ($number_queries == 1) {
+        $q = $queries;
+        if (is_numeric($q)) {
+            $sql = sprintf(
+                "select `Product ID`,`Product Code`,`Product Name` from `Product Dimension` where true $where_store and `Product ID`=%d", $q
+            );
 
 
-
-        $candidates = array();
-
-        $query_array    = preg_split('/\s+/', $queries);
-        $number_queries = count($query_array);
-
-        if ($number_queries == 1) {
-            $q = $queries;
-            if (is_numeric($q)) {
-                $sql = sprintf(
-                    "select `Product ID`,`Product Code`,`Product Name` from `Product Dimension` where true $where_store and `Product ID`=%d", $q
-                );
+            if ($result = $db->query($sql)) {
+                if ($row = $result->fetch()) {
+                    $candidates['P'.$row['Product ID']] = 2000;
+                }
+            } else {
+                print_r($error_info = $db->errorInfo());
+                exit;
+            }
 
 
-                if ($result = $db->query($sql)) {
-                    if ($row = $result->fetch()) {
-                        $candidates['P'.$row['Product ID']] = 2000;
+        }
+
+
+    }
+
+
+    foreach ($query_array as $q) {
+
+
+        $sql = sprintf(
+            "select `Product ID`,`Product Code`,`Product Name`,`Product Status` from `Product Dimension` where true $where_store and `Product Code` like '%s%%' limit 20 ", $q
+        );
+        if ($result = $db->query($sql)) {
+            foreach ($result as $row) {
+
+                if ($row['Product Code'] == $q) {
+                    if ($row['Product Status'] == 'Discontinued') {
+
+                        if (isset($candidates['P'.$row['Product ID']])) {
+                            $candidates['P'.$row['Product ID']] += 550;
+                        } else {
+                            $candidates['P'.$row['Product ID']] = 550;
+                        }
+
+
+                    } else {
+
+                        if (isset($candidates['P'.$row['Product ID']])) {
+                            $candidates['P'.$row['Product ID']] += 1000;
+                        } else {
+                            $candidates['P'.$row['Product ID']] = 1000;
+                        }
+
                     }
                 } else {
-                    print_r($error_info = $db->errorInfo());
-                    exit;
-                }
 
-
-            }
-
-
-        }
-
-
-        foreach ($query_array as $q) {
-
-
-            $sql = sprintf(
-                "select `Product ID`,`Product Code`,`Product Name`,`Product Status` from `Product Dimension` where true $where_store and `Product Code` like '%s%%' limit 20 ", $q
-            );
-            if ($result = $db->query($sql)) {
-                foreach ($result as $row) {
-
-                    if ($row['Product Code'] == $q) {
-                        if ($row['Product Status'] == 'Discontinued') {
-
-                            if (isset($candidates['P'.$row['Product ID']])) {
-                                $candidates['P'.$row['Product ID']] += 550;
-                            } else {
-                                $candidates['P'.$row['Product ID']] = 550;
-                            }
-
-
-                        } else {
-
-                            if (isset($candidates['P'.$row['Product ID']])) {
-                                $candidates['P'.$row['Product ID']] += 1000;
-                            } else {
-                                $candidates['P'.$row['Product ID']] = 1000;
-                            }
-
-                        }
-                    } else {
-
-                        $len_name = strlen($row['Product Code']);
-                        $len_q    = strlen($q);
-                        $factor   = $len_q / $len_name;
-                        if ($row['Product Status'] == 'Discontinued') {
-
-                            if (isset($candidates['P'.$row['Product ID']])) {
-                                $candidates['P'.$row['Product ID']] += 270 * $factor;
-                            } else {
-                                $candidates['P'.$row['Product ID']] = 270 * $factor;
-                            }
-
-                        } else {
-
-
-                            if (isset($candidates['P'.$row['Product ID']])) {
-                                $candidates['P'.$row['Product ID']] += 500 * $factor;
-                            } else {
-                                $candidates['P'.$row['Product ID']] = 500 * $factor;
-                            }
-                        }
-
-                    }
-
-                }
-            } else {
-                print_r($error_info = $db->errorInfo());
-                exit;
-            }
-
-            $sql = sprintf(
-                "select `Product ID`,`Product Code`,`Product Name` from `Product Dimension` where true $where_store and `Product Name`  REGEXP '[[:<:]]%s' limit 100 ", $q
-            );
-
-            if ($result = $db->query($sql)) {
-                foreach ($result as $row) {
-                    if ($row['Product Name'] == $q) {
-
-                        if (isset($candidates['P'.$row['Product ID']])) {
-                            $candidates['P'.$row['Product ID']] += 55;
-                        } else {
-                            $candidates['P'.$row['Product ID']] = 55;
-                        }
-
-                    } else {
-
-                        $len_name = strlen($row['Product Name']);
-                        $len_q    = strlen($q);
-                        $factor   = $len_q / $len_name;
-
-                        if (isset($candidates['P'.$row['Product ID']])) {
-                            $candidates['P'.$row['Product ID']] += 50 * $factor;
-                        } else {
-                            $candidates['P'.$row['Product ID']] = 50 * $factor;
-                        }
-
-                    }
-
-                }
-            } else {
-                print_r($error_info = $db->errorInfo());
-                exit;
-            }
-
-            $sql = sprintf(
-                "select `Category Key`,`Category Code`,`Category Label` from `Category Dimension` where `Category Scope`='Product'   $where_cat_store and `Category Code` like '%s%%' limit 20 ", $q
-            );
-
-            if ($result = $db->query($sql)) {
-                foreach ($result as $row) {
-
-                    if ($row['Category Code'] == $q) {
-
-                        $candidates['C'.$row['Category Key']] = 1000;
-                    } else {
-
-                        $len_name                             = strlen(
-                            $row['Category Code']
-                        );
-                        $len_q                                = strlen($q);
-                        $factor                               = $len_q / $len_name;
-                        $candidates['C'.$row['Category Key']] = 500 * $factor;
-                    }
-
-                }
-            } else {
-                print_r($error_info = $db->errorInfo());
-                exit;
-            }
-
-
-            $sql = sprintf(
-                "select `Category Key`,`Category Code`,`Category Label` from `Category Dimension` where `Category Scope`='Product'   $where_cat_store and  `Category Label`  REGEXP '[[:<:]]%s' limit 100 ", $q
-            );
-
-            if ($result = $db->query($sql)) {
-                foreach ($result as $row) {
-                    if ($row['Category Label'] == $q) {
-
-                        if (isset($candidates['C'.$row['Category Key']])) {
-                            $candidates['C'.$row['Category Key']] += 55;
-                        } else {
-                            $candidates['C'.$row['Category Key']] = 55;
-                        }
-
-                    } else {
-
-                        $len_name = strlen($row['Category Label']);
-                        $len_q    = strlen($q);
-                        $factor   = $len_q / $len_name;
-
-                        if (isset($candidates['C'.$row['Category Key']])) {
-                            $candidates['C'.$row['Category Key']] += 50 * $factor;
-                        } else {
-                            $candidates['C'.$row['Category Key']] = 50 * $factor;
-                        }
-
-                    }
-
-                }
-            } else {
-                print_r($error_info = $db->errorInfo());
-                exit;
-            }
-
-
-        }
-
-
-        // print_r($candidates);
-
-        arsort($candidates);
-
-        //print_r($candidates);
-
-        $total_candidates = count($candidates);
-
-        if ($total_candidates == 0) {
-            $response = array(
-                'state'   => 200,
-                'results' => 0,
-                'data'    => ''
-            );
-            echo json_encode($response);
-
-            return;
-        }
-
-        $counter       = 0;
-        $product_keys  = '';
-        $category_keys = '';
-
-        $results                = array();
-        $number_products_keys   = 0;
-        $number_categories_keys = 0;
-
-        foreach ($candidates as $_key => $val) {
-            $counter++;
-
-            if ($_key[0] == 'P') {
-                $key            = preg_replace('/^P/', '', $_key);
-                $product_keys   .= ','.$key;
-                $results[$_key] = '';
-                $number_products_keys++;
-
-            } elseif ($_key[0] == 'C') {
-                $key            = preg_replace('/^C/', '', $_key);
-                $category_keys  .= ','.$key;
-                $results[$_key] = '';
-                $number_categories_keys++;
-
-            }
-
-            if ($counter > $max_results) {
-                break;
-            }
-        }
-        $product_keys  = preg_replace('/^,/', '', $product_keys);
-        $category_keys = preg_replace('/^,/', '', $category_keys);
-
-
-        if ($number_products_keys) {
-            $sql = sprintf(
-                "SELECT `Product Status`,`Store Code`,`Store Key`,`Product ID`,`Product Code`,`Product Name` FROM `Product Dimension` LEFT JOIN `Store Dimension` S ON (`Product Store Key`=S.`Store Key`) WHERE `Product ID` IN (%s)", $product_keys
-            );
-
-            if ($result = $db->query($sql)) {
-                foreach ($result as $row) {
-
-
+                    $len_name = strlen($row['Product Code']);
+                    $len_q    = strlen($q);
+                    $factor   = $len_q / $len_name;
                     if ($row['Product Status'] == 'Discontinued') {
-                        $icon = '<i class="fa fa-cube fa-fw padding_right_5 error" aria-hidden="true" ></i> ';
 
-                    } elseif ($row['Product Status'] == 'Discontinued') {
-                        $icon = '<i class="fa fa-cube fa-fw padding_right_5 warning" aria-hidden="true" ></i> ';
+                        if (isset($candidates['P'.$row['Product ID']])) {
+                            $candidates['P'.$row['Product ID']] += 270 * $factor;
+                        } else {
+                            $candidates['P'.$row['Product ID']] = 270 * $factor;
+                        }
 
                     } else {
-                        $icon = '<i class="fa fa-cube fa-fw padding_right_5" aria-hidden="true" ></i> ';
+
+
+                        if (isset($candidates['P'.$row['Product ID']])) {
+                            $candidates['P'.$row['Product ID']] += 500 * $factor;
+                        } else {
+                            $candidates['P'.$row['Product ID']] = 500 * $factor;
+                        }
                     }
 
-                    $results['P'.$row['Product ID']] = array(
-                        'store'   => $row['Store Code'],
-                        'label'   => $icon.highlightkeyword(
-                                sprintf('%s', $row['Product Code']), $queries
-                            ),
-                        'details' => highlightkeyword(
-                            $row['Product Name'], $queries
-                        ),
-                        'view'    => sprintf(
-                            'products/%d/%d', $row['Store Key'], $row['Product ID']
-                        )
-
-
-                    );
                 }
-            } else {
-                print_r($error_info = $db->errorInfo());
-                print $sql;
-                exit;
+
             }
+        } else {
+            print_r($error_info = $db->errorInfo());
+            exit;
         }
 
-
-        if ($number_categories_keys) {
-            $sql = sprintf(
-                "SELECT `Category Code`,`Category Store Key`,`Category Key`,`Category Code`,`Category Label`,`Store Code` FROM `Category Dimension` LEFT JOIN `Store Dimension` S ON (`Category Store Key`=S.`Store Key`) WHERE `Category Key` IN (%s)", $category_keys
-            );
-
-            if ($result = $db->query($sql)) {
-                foreach ($result as $row) {
-
-
-                    $icon = '<i class="fa fa-sitemap fa-fw padding_right_5" aria-hidden="true" ></i> ';
-
-                    $results['C'.$row['Category Key']] = array(
-                        'store'   => $row['Store Code'],
-                        'label'   => $icon.highlightkeyword(
-                                sprintf('%s', $row['Category Code']), $queries
-                            ),
-                        'details' => highlightkeyword(
-                            $row['Category Label'], $queries
-                        ),
-                        'view'    => sprintf(
-                            'products/%d/category/%d', $row['Category Store Key'], $row['Category Key']
-                        )
-
-
-                    );
-                }
-            } else {
-                print_r($error_info = $db->errorInfo());
-                print $sql;
-                exit;
-            }
-        }
-
-
-        $results_data = array(
-            'n' => count($results),
-            'd' => $results
+        $sql = sprintf(
+            "select `Product ID`,`Product Code`,`Product Name` from `Product Dimension` where true $where_store and `Product Name`  REGEXP '[[:<:]]%s' limit 100 ", $q
         );
-        
+
+        if ($result = $db->query($sql)) {
+            foreach ($result as $row) {
+                if ($row['Product Name'] == $q) {
+
+                    if (isset($candidates['P'.$row['Product ID']])) {
+                        $candidates['P'.$row['Product ID']] += 55;
+                    } else {
+                        $candidates['P'.$row['Product ID']] = 55;
+                    }
+
+                } else {
+
+                    $len_name = strlen($row['Product Name']);
+                    $len_q    = strlen($q);
+                    $factor   = $len_q / $len_name;
+
+                    if (isset($candidates['P'.$row['Product ID']])) {
+                        $candidates['P'.$row['Product ID']] += 50 * $factor;
+                    } else {
+                        $candidates['P'.$row['Product ID']] = 50 * $factor;
+                    }
+
+                }
+
+            }
+        } else {
+            print_r($error_info = $db->errorInfo());
+            exit;
+        }
+
+        $sql = sprintf(
+            "select `Category Key`,`Category Code`,`Category Label` from `Category Dimension` where `Category Scope`='Product'   $where_cat_store and `Category Code` like '%s%%' limit 20 ", $q
+        );
+
+        if ($result = $db->query($sql)) {
+            foreach ($result as $row) {
+
+                if ($row['Category Code'] == $q) {
+
+                    $candidates['C'.$row['Category Key']] = 1000;
+                } else {
+
+                    $len_name                             = strlen(
+                        $row['Category Code']
+                    );
+                    $len_q                                = strlen($q);
+                    $factor                               = $len_q / $len_name;
+                    $candidates['C'.$row['Category Key']] = 500 * $factor;
+                }
+
+            }
+        } else {
+            print_r($error_info = $db->errorInfo());
+            exit;
+        }
 
 
+        $sql = sprintf(
+            "select `Category Key`,`Category Code`,`Category Label` from `Category Dimension` where `Category Scope`='Product'   $where_cat_store and  `Category Label`  REGEXP '[[:<:]]%s' limit 100 ", $q
+        );
 
+        if ($result = $db->query($sql)) {
+            foreach ($result as $row) {
+                if ($row['Category Label'] == $q) {
+
+                    if (isset($candidates['C'.$row['Category Key']])) {
+                        $candidates['C'.$row['Category Key']] += 55;
+                    } else {
+                        $candidates['C'.$row['Category Key']] = 55;
+                    }
+
+                } else {
+
+                    $len_name = strlen($row['Category Label']);
+                    $len_q    = strlen($q);
+                    $factor   = $len_q / $len_name;
+
+                    if (isset($candidates['C'.$row['Category Key']])) {
+                        $candidates['C'.$row['Category Key']] += 50 * $factor;
+                    } else {
+                        $candidates['C'.$row['Category Key']] = 50 * $factor;
+                    }
+
+                }
+
+            }
+        } else {
+            print_r($error_info = $db->errorInfo());
+            exit;
+        }
+
+
+    }
+
+
+    // print_r($candidates);
+
+    arsort($candidates);
+
+    //print_r($candidates);
+
+    $total_candidates = count($candidates);
+
+    if ($total_candidates == 0) {
+        $response = array(
+            'state'   => 200,
+            'results' => 0,
+            'data'    => ''
+        );
+        echo json_encode($response);
+
+        return;
+    }
+
+    $counter       = 0;
+    $product_keys  = '';
+    $category_keys = '';
+
+    $results                = array();
+    $number_products_keys   = 0;
+    $number_categories_keys = 0;
+
+    foreach ($candidates as $_key => $val) {
+        $counter++;
+
+        if ($_key[0] == 'P') {
+            $key            = preg_replace('/^P/', '', $_key);
+            $product_keys   .= ','.$key;
+            $results[$_key] = '';
+            $number_products_keys++;
+
+        } elseif ($_key[0] == 'C') {
+            $key            = preg_replace('/^C/', '', $_key);
+            $category_keys  .= ','.$key;
+            $results[$_key] = '';
+            $number_categories_keys++;
+
+        }
+
+        if ($counter > $max_results) {
+            break;
+        }
+    }
+    $product_keys  = preg_replace('/^,/', '', $product_keys);
+    $category_keys = preg_replace('/^,/', '', $category_keys);
+
+
+    if ($number_products_keys) {
+        $sql = sprintf(
+            "SELECT `Product Status`,`Store Code`,`Store Key`,`Product ID`,`Product Code`,`Product Name` FROM `Product Dimension` LEFT JOIN `Store Dimension` S ON (`Product Store Key`=S.`Store Key`) WHERE `Product ID` IN (%s)", $product_keys
+        );
+
+        if ($result = $db->query($sql)) {
+            foreach ($result as $row) {
+
+
+                if ($row['Product Status'] == 'Discontinued') {
+                    $icon = '<i class="fa fa-cube fa-fw padding_right_5 error" aria-hidden="true" ></i> ';
+
+                } elseif ($row['Product Status'] == 'Discontinued') {
+                    $icon = '<i class="fa fa-cube fa-fw padding_right_5 warning" aria-hidden="true" ></i> ';
+
+                } else {
+                    $icon = '<i class="fa fa-cube fa-fw padding_right_5" aria-hidden="true" ></i> ';
+                }
+
+                $results['P'.$row['Product ID']] = array(
+                    'store'   => $row['Store Code'],
+                    'label'   => $icon.highlightkeyword(
+                            sprintf('%s', $row['Product Code']), $queries
+                        ),
+                    'details' => highlightkeyword(
+                        $row['Product Name'], $queries
+                    ),
+                    'view'    => sprintf(
+                        'products/%d/%d', $row['Store Key'], $row['Product ID']
+                    )
+
+
+                );
+            }
+        } else {
+            print_r($error_info = $db->errorInfo());
+            print $sql;
+            exit;
+        }
+    }
+
+
+    if ($number_categories_keys) {
+        $sql = sprintf(
+            "SELECT `Category Code`,`Category Store Key`,`Category Key`,`Category Code`,`Category Label`,`Store Code` FROM `Category Dimension` LEFT JOIN `Store Dimension` S ON (`Category Store Key`=S.`Store Key`) WHERE `Category Key` IN (%s)", $category_keys
+        );
+
+        if ($result = $db->query($sql)) {
+            foreach ($result as $row) {
+
+
+                $icon = '<i class="fa fa-sitemap fa-fw padding_right_5" aria-hidden="true" ></i> ';
+
+                $results['C'.$row['Category Key']] = array(
+                    'store'   => $row['Store Code'],
+                    'label'   => $icon.highlightkeyword(
+                            sprintf('%s', $row['Category Code']), $queries
+                        ),
+                    'details' => highlightkeyword(
+                        $row['Category Label'], $queries
+                    ),
+                    'view'    => sprintf(
+                        'products/%d/category/%d', $row['Category Store Key'], $row['Category Key']
+                    )
+
+
+                );
+            }
+        } else {
+            print_r($error_info = $db->errorInfo());
+            print $sql;
+            exit;
+        }
+    }
+
+
+    $results_data = array(
+        'n' => count($results),
+        'd' => $results
+    );
 
 
     $response = array(
@@ -1473,111 +1459,18 @@ function search_customers($db, $account, $memcache_ip, $data) {
     }
 
 
+    $candidates = array();
 
-        $candidates = array();
+    $q = $queries;
 
-        $q = $queries;
-
-        if (is_numeric($q)) {
-            $sql = sprintf(
-                "select `Customer Key`,`Customer Name` from `Customer Dimension` where true $where_store and `Customer Key`=%d", $q
-            );
-
-            if ($result = $db->query($sql)) {
-                if ($row = $result->fetch()) {
-                    $candidates[$row['Customer Key']] = 2000;
-
-                }
-            } else {
-                print_r($error_info = $db->errorInfo());
-                exit;
-            }
-
-
-        }
-        $q_just_numbers = preg_replace('/[^\d]/', '', $q);
-        if (strlen($q_just_numbers) > 4 and strlen($q_just_numbers) <= 6) {
-
-            $sql = sprintf(
-                "select `Customer Key`,`Customer Name` from `Customer Dimension` where true $where_store and `Customer Main Plain Telephone` like '%s%%'", $q_just_numbers
-            );
-
-            if ($result = $db->query($sql)) {
-                foreach ($result as $row) {
-                    $candidates[$row['Customer Key']] = 100;
-                }
-            } else {
-                print_r($error_info = $db->errorInfo());
-                exit;
-            }
-
-
-            $sql = sprintf(
-                "select `Customer Key`,`Customer Name` from `Customer Dimension` where true $where_store and `Customer Main Plain Mobile` like '%s%%'", $q_just_numbers
-            );
-
-            if ($result = $db->query($sql)) {
-                foreach ($result as $row) {
-                    $candidates[$row['Customer Key']] = 100;
-                }
-            } else {
-                print_r($error_info = $db->errorInfo());
-                exit;
-            }
-
-
-        }
-        if (strlen($q_just_numbers) > 6) {
-
-            $sql = sprintf(
-                "select `Customer Key`,`Customer Name` from `Customer Dimension` where true $where_store and `Customer Main Plain Telephone` like '%%%s%%'", $q_just_numbers
-            );
-
-            if ($result = $db->query($sql)) {
-                foreach ($result as $row) {
-                    $candidates[$row['Customer Key']] = 100;
-                }
-            } else {
-                print_r($error_info = $db->errorInfo());
-                exit;
-            }
-
-
-            $sql = sprintf(
-                "select `Customer Key`,`Customer Name` from `Customer Dimension` where true $where_store and `Customer Main Plain Mobile` like '%%%s%%'", $q_just_numbers
-            );
-
-            if ($result = $db->query($sql)) {
-                if ($row = $result->fetch()) {
-                    $candidates[$row['Customer Key']] = 100;
-                }
-            } else {
-                print_r($error_info = $db->errorInfo());
-                exit;
-            }
-
-
-        }
-
-
+    if (is_numeric($q)) {
         $sql = sprintf(
-            "select `Customer Key`,`Customer Main Plain Email` from `Customer Dimension` where true $where_store and `Customer Main Plain Email` like '%s%%' limit 10 ", $q
+            "select `Customer Key`,`Customer Name` from `Customer Dimension` where true $where_store and `Customer Key`=%d", $q
         );
 
         if ($result = $db->query($sql)) {
-            foreach ($result as $row) {
-
-                if ($row['Customer Main Plain Email'] == $q) {
-                    $candidates[$row['Customer Key']] = 120;
-                } else {
-
-                    $len_name                         = strlen(
-                        $row['Customer Main Plain Email']
-                    );
-                    $len_q                            = strlen($q);
-                    $factor                           = $len_q / $len_name;
-                    $candidates[$row['Customer Key']] = 100 * $factor;
-                }
+            if ($row = $result->fetch()) {
+                $candidates[$row['Customer Key']] = 2000;
 
             }
         } else {
@@ -1586,21 +1479,143 @@ function search_customers($db, $account, $memcache_ip, $data) {
         }
 
 
+    }
+    $q_just_numbers = preg_replace('/[^\d]/', '', $q);
+    if (strlen($q_just_numbers) > 4 and strlen($q_just_numbers) <= 6) {
+
         $sql = sprintf(
-            "select `Customer Key`,`Customer Tax Number` from `Customer Dimension` where true $where_store and `Customer Tax Number` like '%s%%' limit 10 ", $q
+            "select `Customer Key`,`Customer Name` from `Customer Dimension` where true $where_store and `Customer Main Plain Telephone` like '%s%%'", $q_just_numbers
         );
 
         if ($result = $db->query($sql)) {
             foreach ($result as $row) {
+                $candidates[$row['Customer Key']] = 100;
+            }
+        } else {
+            print_r($error_info = $db->errorInfo());
+            exit;
+        }
 
-                if ($row['Customer Tax Number'] == $q) {
-                    $candidates[$row['Customer Key']] = 30;
+
+        $sql = sprintf(
+            "select `Customer Key`,`Customer Name` from `Customer Dimension` where true $where_store and `Customer Main Plain Mobile` like '%s%%'", $q_just_numbers
+        );
+
+        if ($result = $db->query($sql)) {
+            foreach ($result as $row) {
+                $candidates[$row['Customer Key']] = 100;
+            }
+        } else {
+            print_r($error_info = $db->errorInfo());
+            exit;
+        }
+
+
+    }
+    if (strlen($q_just_numbers) > 6) {
+
+        $sql = sprintf(
+            "select `Customer Key`,`Customer Name` from `Customer Dimension` where true $where_store and `Customer Main Plain Telephone` like '%%%s%%'", $q_just_numbers
+        );
+
+        if ($result = $db->query($sql)) {
+            foreach ($result as $row) {
+                $candidates[$row['Customer Key']] = 100;
+            }
+        } else {
+            print_r($error_info = $db->errorInfo());
+            exit;
+        }
+
+
+        $sql = sprintf(
+            "select `Customer Key`,`Customer Name` from `Customer Dimension` where true $where_store and `Customer Main Plain Mobile` like '%%%s%%'", $q_just_numbers
+        );
+
+        if ($result = $db->query($sql)) {
+            if ($row = $result->fetch()) {
+                $candidates[$row['Customer Key']] = 100;
+            }
+        } else {
+            print_r($error_info = $db->errorInfo());
+            exit;
+        }
+
+
+    }
+
+
+    $sql = sprintf(
+        "select `Customer Key`,`Customer Main Plain Email` from `Customer Dimension` where true $where_store and `Customer Main Plain Email` like '%s%%' limit 10 ", $q
+    );
+
+    if ($result = $db->query($sql)) {
+        foreach ($result as $row) {
+
+            if ($row['Customer Main Plain Email'] == $q) {
+                $candidates[$row['Customer Key']] = 120;
+            } else {
+
+                $len_name                         = strlen(
+                    $row['Customer Main Plain Email']
+                );
+                $len_q                            = strlen($q);
+                $factor                           = $len_q / $len_name;
+                $candidates[$row['Customer Key']] = 100 * $factor;
+            }
+
+        }
+    } else {
+        print_r($error_info = $db->errorInfo());
+        exit;
+    }
+
+
+    $sql = sprintf(
+        "select `Customer Key`,`Customer Tax Number` from `Customer Dimension` where true $where_store and `Customer Tax Number` like '%s%%' limit 10 ", $q
+    );
+
+    if ($result = $db->query($sql)) {
+        foreach ($result as $row) {
+
+            if ($row['Customer Tax Number'] == $q) {
+                $candidates[$row['Customer Key']] = 30;
+            } else {
+
+                $len_name                         = strlen(
+                    $row['Customer Tax Number']
+                );
+                $len_q                            = strlen($q);
+                $factor                           = $len_q / $len_name;
+                $candidates[$row['Customer Key']] = 20 * $factor;
+            }
+
+        }
+    } else {
+        print_r($error_info = $db->errorInfo());
+        exit;
+    }
+
+
+    $q_postal_code = preg_replace('/[^a-z^A-Z^\d]/', '', $q);
+    if ($q_postal_code != '') {
+        $sql = sprintf(
+            "select `Customer Key`,`Customer Main Plain Postal Code` from `Customer Dimension`where true $where_store and `Customer Main Plain Postal Code`!='' and `Customer Main Plain Postal Code` like '%s%%' limit 150", addslashes($q_postal_code)
+        );
+
+
+        if ($result = $db->query($sql)) {
+            foreach ($result as $row) {
+
+                if ($row['Customer Main Plain Postal Code'] == $q_postal_code) {
+                    $candidates[$row['Customer Key']] = 50;
                 } else {
-
                     $len_name                         = strlen(
-                        $row['Customer Tax Number']
+                        $row['Customer Main Plain Postal Code']
                     );
-                    $len_q                            = strlen($q);
+                    $len_q                            = strlen(
+                        $q_postal_code
+                    );
                     $factor                           = $len_q / $len_name;
                     $candidates[$row['Customer Key']] = 20 * $factor;
                 }
@@ -1611,199 +1626,167 @@ function search_customers($db, $account, $memcache_ip, $data) {
             exit;
         }
 
-
-        $q_postal_code = preg_replace('/[^a-z^A-Z^\d]/', '', $q);
-        if ($q_postal_code != '') {
-            $sql = sprintf(
-                "select `Customer Key`,`Customer Main Plain Postal Code` from `Customer Dimension`where true $where_store and `Customer Main Plain Postal Code`!='' and `Customer Main Plain Postal Code` like '%s%%' limit 150", addslashes($q_postal_code)
-            );
+    }
 
 
-            if ($result = $db->query($sql)) {
-                foreach ($result as $row) {
+    $sql = sprintf(
+        "select `Customer Key`,`Customer Name` from `Customer Dimension` where true $where_store and `Customer Name` like '%s%%' limit 50", $q
+    );
 
-                    if ($row['Customer Main Plain Postal Code'] == $q_postal_code) {
-                        $candidates[$row['Customer Key']] = 50;
-                    } else {
-                        $len_name                         = strlen(
-                            $row['Customer Main Plain Postal Code']
-                        );
-                        $len_q                            = strlen(
-                            $q_postal_code
-                        );
-                        $factor                           = $len_q / $len_name;
-                        $candidates[$row['Customer Key']] = 20 * $factor;
-                    }
+    if ($result = $db->query($sql)) {
+        foreach ($result as $row) {
 
-                }
+            if ($row['Customer Name'] == $q) {
+                $candidates[$row['Customer Key']] = 55;
             } else {
-                print_r($error_info = $db->errorInfo());
-                exit;
-            }
 
-        }
-
-
-        $sql = sprintf(
-            "select `Customer Key`,`Customer Name` from `Customer Dimension` where true $where_store and `Customer Name` like '%s%%' limit 50", $q
-        );
-
-        if ($result = $db->query($sql)) {
-            foreach ($result as $row) {
-
-                if ($row['Customer Name'] == $q) {
-                    $candidates[$row['Customer Key']] = 55;
-                } else {
-
-                    $len_name                         = strlen(
-                        $row['Customer Name']
-                    );
-                    $len_q                            = strlen($q);
-                    $factor                           = $len_q / $len_name;
-                    $candidates[$row['Customer Key']] = 50 * $factor;
-                }
-
-            }
-        } else {
-            print_r($error_info = $db->errorInfo());
-            exit;
-        }
-
-
-        $sql = sprintf(
-            "select `Customer Key`,`Customer Name` from `Customer Dimension` where true $where_store and `Customer Name`  REGEXP '[[:<:]]%s' limit 100 ", $q
-        );
-
-        if ($result = $db->query($sql)) {
-            foreach ($result as $row) {
-
-                if ($row['Customer Name'] == $q) {
-                    $candidates[$row['Customer Key']] = 55;
-                } else {
-
-                    $len_name                         = strlen(
-                        $row['Customer Name']
-                    );
-                    $len_q                            = strlen($q);
-                    $factor                           = $len_q / $len_name;
-                    $candidates[$row['Customer Key']] = 50 * $factor;
-                }
-
-            }
-        } else {
-            print_r($error_info = $db->errorInfo());
-            exit;
-        }
-
-
-        $sql = sprintf(
-            "select `Customer Key`,`Customer Main Contact Name` from `Customer Dimension` where true $where_store and `Customer Main Contact Name`  REGEXP '[[:<:]]%s' limit 100 ", $q
-        );
-
-        if ($result = $db->query($sql)) {
-            foreach ($result as $row) {
-
-                if ($row['Customer Main Contact Name'] == $q) {
-                    $candidates[$row['Customer Key']] = 35;
-                } else {
-
-                    $len_name                         = strlen(
-                        $row['Customer Main Contact Name']
-                    );
-                    $len_q                            = strlen($q);
-                    $factor                           = $len_q / $len_name;
-                    $candidates[$row['Customer Key']] = 30 * $factor;
-                }
-
-            }
-        } else {
-            print_r($error_info = $db->errorInfo());
-            exit;
-        }
-
-
-        arsort($candidates);
-
-
-        $total_candidates = count($candidates);
-
-        if ($total_candidates == 0) {
-            $response = array(
-                'state'   => 200,
-                'results' => 0,
-                'data'    => ''
-            );
-            echo json_encode($response);
-
-            return;
-        }
-
-        $counter       = 0;
-        $customer_keys = '';
-        $results       = array();
-
-        foreach ($candidates as $key => $val) {
-            $counter++;
-            $customer_keys .= ','.$key;
-            $results[$key] = '';
-            if ($counter > $max_results) {
-                break;
-            }
-        }
-        $customer_keys = preg_replace('/^,/', '', $customer_keys);
-
-        $sql = sprintf(
-            "SELECT `Store Code`,`Customer Store Key`, `Customer Main XHTML Telephone`,`Customer Main Postal Code`,`Customer Key`,`Customer Main Contact Name`,`Customer Name`,`Customer Type`,`Customer Main Plain Email`,`Customer Main Location`,`Customer Tax Number` FROM `Customer Dimension` LEFT JOIN `Store Dimension` ON (`Customer Store Key`=`Store Key`) WHERE `Customer Key` IN (%s)",
-            $customer_keys
-        );
-
-        if ($result = $db->query($sql)) {
-            foreach ($result as $row) {
-
-
-                $name = $row['Customer Name'];
-                if ($row['Customer Type'] == 'Company' and $row['Customer Main Contact Name'] != '') {
-                    $name .= ', '.$row['Customer Main Contact Name'];
-                }
-                /*
-			if ($row['Customer Tax Number']!='') {
-				$name.='<br/>'.$row['Customer Tax Number'];
-			}
-			if ($row['Customer Type']=='Company') {
-				$name.= '<br/>'.$row['Customer Main Contact Name'];
-			}
-
-			$address=$row['Customer Main Plain Email'];
-			$address.='<br/>'.$row['Customer Main Location'];
-			if ($row['Customer Main Postal Code'])$address.=', '.$row['Customer Main Postal Code'];
-			$address=preg_replace('/^\<br\/\>/', '', $address);
-			*/
-                $results[$row['Customer Key']] = array(
-                    'store'   => $row['Store Code'],
-                    'label'   => highlightkeyword(
-                        sprintf('%06d', $row['Customer Key']), $queries
-                    ),
-                    'details' => highlightkeyword($name, $queries),
-                    'view'    => sprintf(
-                        'customers/%d/%d', $row['Customer Store Key'], $row['Customer Key']
-                    )
-
-
+                $len_name                         = strlen(
+                    $row['Customer Name']
                 );
-
+                $len_q                            = strlen($q);
+                $factor                           = $len_q / $len_name;
+                $candidates[$row['Customer Key']] = 50 * $factor;
             }
-        } else {
-            print_r($error_info = $db->errorInfo());
-            exit;
+
+        }
+    } else {
+        print_r($error_info = $db->errorInfo());
+        exit;
+    }
+
+
+    $sql = sprintf(
+        "select `Customer Key`,`Customer Name` from `Customer Dimension` where true $where_store and `Customer Name`  REGEXP '[[:<:]]%s' limit 100 ", $q
+    );
+
+    if ($result = $db->query($sql)) {
+        foreach ($result as $row) {
+
+            if ($row['Customer Name'] == $q) {
+                $candidates[$row['Customer Key']] = 55;
+            } else {
+
+                $len_name                         = strlen(
+                    $row['Customer Name']
+                );
+                $len_q                            = strlen($q);
+                $factor                           = $len_q / $len_name;
+                $candidates[$row['Customer Key']] = 50 * $factor;
+            }
+
+        }
+    } else {
+        print_r($error_info = $db->errorInfo());
+        exit;
+    }
+
+
+    $sql = sprintf(
+        "select `Customer Key`,`Customer Main Contact Name` from `Customer Dimension` where true $where_store and `Customer Main Contact Name`  REGEXP '[[:<:]]%s' limit 100 ", $q
+    );
+
+    if ($result = $db->query($sql)) {
+        foreach ($result as $row) {
+
+            if ($row['Customer Main Contact Name'] == $q) {
+                $candidates[$row['Customer Key']] = 35;
+            } else {
+
+                $len_name                         = strlen(
+                    $row['Customer Main Contact Name']
+                );
+                $len_q                            = strlen($q);
+                $factor                           = $len_q / $len_name;
+                $candidates[$row['Customer Key']] = 30 * $factor;
+            }
+
+        }
+    } else {
+        print_r($error_info = $db->errorInfo());
+        exit;
+    }
+
+
+    arsort($candidates);
+
+
+    $total_candidates = count($candidates);
+
+    if ($total_candidates == 0) {
+        $response = array(
+            'state'   => 200,
+            'results' => 0,
+            'data'    => ''
+        );
+        echo json_encode($response);
+
+        return;
+    }
+
+    $counter       = 0;
+    $customer_keys = '';
+    $results       = array();
+
+    foreach ($candidates as $key => $val) {
+        $counter++;
+        $customer_keys .= ','.$key;
+        $results[$key] = '';
+        if ($counter > $max_results) {
+            break;
+        }
+    }
+    $customer_keys = preg_replace('/^,/', '', $customer_keys);
+
+    $sql = sprintf(
+        "SELECT `Store Code`,`Customer Store Key`, `Customer Main XHTML Telephone`,`Customer Main Postal Code`,`Customer Key`,`Customer Main Contact Name`,`Customer Name`,`Customer Type`,`Customer Main Plain Email`,`Customer Main Location`,`Customer Tax Number` FROM `Customer Dimension` LEFT JOIN `Store Dimension` ON (`Customer Store Key`=`Store Key`) WHERE `Customer Key` IN (%s)",
+        $customer_keys
+    );
+
+    if ($result = $db->query($sql)) {
+        foreach ($result as $row) {
+
+
+            $name = $row['Customer Name'];
+            if ($row['Customer Type'] == 'Company' and $row['Customer Main Contact Name'] != '') {
+                $name .= ', '.$row['Customer Main Contact Name'];
+            }
+            /*
+        if ($row['Customer Tax Number']!='') {
+            $name.='<br/>'.$row['Customer Tax Number'];
+        }
+        if ($row['Customer Type']=='Company') {
+            $name.= '<br/>'.$row['Customer Main Contact Name'];
         }
 
+        $address=$row['Customer Main Plain Email'];
+        $address.='<br/>'.$row['Customer Main Location'];
+        if ($row['Customer Main Postal Code'])$address.=', '.$row['Customer Main Postal Code'];
+        $address=preg_replace('/^\<br\/\>/', '', $address);
+        */
+            $results[$row['Customer Key']] = array(
+                'store'   => $row['Store Code'],
+                'label'   => highlightkeyword(
+                    sprintf('%06d', $row['Customer Key']), $queries
+                ),
+                'details' => highlightkeyword($name, $queries),
+                'view'    => sprintf(
+                    'customers/%d/%d', $row['Customer Store Key'], $row['Customer Key']
+                )
 
-        $results_data = array(
-            'n' => count($results),
-            'd' => $results
-        );
-        
 
+            );
+
+        }
+    } else {
+        print_r($error_info = $db->errorInfo());
+        exit;
+    }
+
+
+    $results_data = array(
+        'n' => count($results),
+        'd' => $results
+    );
 
 
     $response = array(
@@ -1858,148 +1841,146 @@ function search_orders($db, $account, $memcache_ip, $data) {
     }
 
 
-        $candidates = array();
+    $candidates = array();
 
-        $q = $queries;
-
-
-        $sql = sprintf(
-            "select `Order Key`,`Order Public ID` from `Order Dimension` where true $where_store and `Order Public ID` like '%s%%'  order by `Order Key` desc limit 10 ", $q
-        );
-
-        if ($result = $db->query($sql)) {
-            foreach ($result as $row) {
-
-                if ($row['Order Public ID'] == $q) {
-                    $candidates[$row['Order Key']] = 30;
-                } else {
-
-                    $len_name                      = strlen(
-                        $row['Order Public ID']
-                    );
-                    $len_q                         = strlen($q);
-                    $factor                        = $len_q / $len_name;
-                    $candidates[$row['Order Key']] = 20 * $factor;
-                }
-
-            }
-        } else {
-            print_r($error_info = $db->errorInfo());
-            exit;
-        }
+    $q = $queries;
 
 
-        arsort($candidates);
+    $sql = sprintf(
+        "select `Order Key`,`Order Public ID` from `Order Dimension` where true $where_store and `Order Public ID` like '%s%%'  order by `Order Key` desc limit 10 ", $q
+    );
 
+    if ($result = $db->query($sql)) {
+        foreach ($result as $row) {
 
-        $total_candidates = count($candidates);
+            if ($row['Order Public ID'] == $q) {
+                $candidates[$row['Order Key']] = 30;
+            } else {
 
-        if ($total_candidates == 0) {
-            $response = array(
-                'state'   => 200,
-                'results' => 0,
-                'data'    => ''
-            );
-            echo json_encode($response);
-
-            return;
-        }
-
-        $counter    = 0;
-        $order_keys = '';
-        $results    = array();
-
-        foreach ($candidates as $key => $val) {
-            $counter++;
-            $order_keys    .= ','.$key;
-            $results[$key] = '';
-            if ($counter > $max_results) {
-                break;
-            }
-        }
-        $order_keys = preg_replace('/^,/', '', $order_keys);
-
-        $sql = sprintf(
-            "SELECT `Order Key`,`Store Code`,`Order Store Key`,`Order Public ID`,`Order Current Dispatch State`,`Order Customer Name` FROM `Order Dimension` LEFT JOIN `Store Dimension` ON (`Order Store Key`=`Store Key`) WHERE `Order Key` IN (%s)", $order_keys
-        );
-
-        if ($result = $db->query($sql)) {
-            foreach ($result as $row) {
-
-
-                switch ($row['Order Current Dispatch State']) {
-                    case 'In Process':
-                        $details = _('In Process');
-                        break;
-
-                    case 'Submitted by Customer':
-                        $details = _('Submitted by Customer');
-                        break;
-                    case 'Ready to Pick':
-                        $details = _('Ready to Pick');
-                        break;
-                    case 'Picking & Packing':
-                        $details = _('Picking & Packing');
-                        break;
-                    case 'Packed Done':
-                        $details = _('Packed & Checked');
-                        break;
-                    case 'Ready to Ship':
-                        $details = _('Ready to Ship');
-                        break;
-                    case 'Dispatched':
-                        $details = _('Dispatched');
-                        break;
-                    case 'Unknown':
-                        $details = _('Unknown');
-                        break;
-                    case 'Packing':
-                        $details = _('Packing');
-                        break;
-                    case 'Cancelled':
-                        $details = _('Cancelled');
-                        break;
-                    case 'Suspended':
-                        $details = _('Suspended');
-                        break;
-
-                    default:
-                        $details = $row['Order Current Dispatch State'];
-                        break;
-                }
-
-                if ($data['scope'] != 'store') {
-                    $details = '<span style="float:left;min-width:40px">'.$row['Store Code'].'</span> <span style="float:left;min-width:90px">'.$details.'</span>';
-                }
-
-                $details .= ' <span style="">'.$row['Order Customer Name'].'</span>';
-
-                $results[$row['Order Key']] = array(
-                    'store'   => $row['Store Code'],
-                    'label'   => highlightkeyword(
-                        sprintf('%s', $row['Order Public ID']), $queries
-                    ),
-                    'details' => highlightkeyword($details, $queries),
-                    'view'    => sprintf(
-                        'orders/%d/%d', $row['Order Store Key'], $row['Order Key']
-                    )
-
-
+                $len_name                      = strlen(
+                    $row['Order Public ID']
                 );
-
+                $len_q                         = strlen($q);
+                $factor                        = $len_q / $len_name;
+                $candidates[$row['Order Key']] = 20 * $factor;
             }
-        } else {
-            print_r($error_info = $db->errorInfo());
-            exit;
+
         }
+    } else {
+        print_r($error_info = $db->errorInfo());
+        exit;
+    }
 
 
-        $results_data = array(
-            'n' => count($results),
-            'd' => $results
+    arsort($candidates);
+
+
+    $total_candidates = count($candidates);
+
+    if ($total_candidates == 0) {
+        $response = array(
+            'state'   => 200,
+            'results' => 0,
+            'data'    => ''
         );
-        
+        echo json_encode($response);
 
+        return;
+    }
+
+    $counter    = 0;
+    $order_keys = '';
+    $results    = array();
+
+    foreach ($candidates as $key => $val) {
+        $counter++;
+        $order_keys    .= ','.$key;
+        $results[$key] = '';
+        if ($counter > $max_results) {
+            break;
+        }
+    }
+    $order_keys = preg_replace('/^,/', '', $order_keys);
+
+    $sql = sprintf(
+        "SELECT `Order Key`,`Store Code`,`Order Store Key`,`Order Public ID`,`Order Current Dispatch State`,`Order Customer Name` FROM `Order Dimension` LEFT JOIN `Store Dimension` ON (`Order Store Key`=`Store Key`) WHERE `Order Key` IN (%s)", $order_keys
+    );
+
+    if ($result = $db->query($sql)) {
+        foreach ($result as $row) {
+
+
+            switch ($row['Order Current Dispatch State']) {
+                case 'In Process':
+                    $details = _('In Process');
+                    break;
+
+                case 'Submitted by Customer':
+                    $details = _('Submitted by Customer');
+                    break;
+                case 'Ready to Pick':
+                    $details = _('Ready to Pick');
+                    break;
+                case 'Picking & Packing':
+                    $details = _('Picking & Packing');
+                    break;
+                case 'Packed Done':
+                    $details = _('Packed & Checked');
+                    break;
+                case 'Ready to Ship':
+                    $details = _('Ready to Ship');
+                    break;
+                case 'Dispatched':
+                    $details = _('Dispatched');
+                    break;
+                case 'Unknown':
+                    $details = _('Unknown');
+                    break;
+                case 'Packing':
+                    $details = _('Packing');
+                    break;
+                case 'Cancelled':
+                    $details = _('Cancelled');
+                    break;
+                case 'Suspended':
+                    $details = _('Suspended');
+                    break;
+
+                default:
+                    $details = $row['Order Current Dispatch State'];
+                    break;
+            }
+
+            if ($data['scope'] != 'store') {
+                $details = '<span style="float:left;min-width:40px">'.$row['Store Code'].'</span> <span style="float:left;min-width:90px">'.$details.'</span>';
+            }
+
+            $details .= ' <span style="">'.$row['Order Customer Name'].'</span>';
+
+            $results[$row['Order Key']] = array(
+                'store'   => $row['Store Code'],
+                'label'   => highlightkeyword(
+                    sprintf('%s', $row['Order Public ID']), $queries
+                ),
+                'details' => highlightkeyword($details, $queries),
+                'view'    => sprintf(
+                    'orders/%d/%d', $row['Order Store Key'], $row['Order Key']
+                )
+
+
+            );
+
+        }
+    } else {
+        print_r($error_info = $db->errorInfo());
+        exit;
+    }
+
+
+    $results_data = array(
+        'n' => count($results),
+        'd' => $results
+    );
 
 
     $response = array(
@@ -2227,7 +2208,6 @@ function search_delivery_notes($db, $account, $memcache_ip, $data) {
             'n' => count($results),
             'd' => $results
         );
-        
 
 
     }
@@ -2421,7 +2401,6 @@ function search_invoices($db, $account, $memcache_ip, $data) {
             'n' => count($results),
             'd' => $results
         );
-        
 
 
     }
@@ -2517,13 +2496,13 @@ function search_hr($db, $account, $memcache_ip, $data) {
 
                 foreach ($result as $row) {
                     if ($row['Staff Alias'] == $q) {
-                        $candidates['S '.$row['Staff Key']] =  ($row['Staff Currently Working']=='Yes'?70:60);
+                        $candidates['S '.$row['Staff Key']] = ($row['Staff Currently Working'] == 'Yes' ? 70 : 60);
                     } else {
 
                         $len_name                           = strlen($row['Staff Alias']);
                         $len_q                              = strlen($q);
                         $factor                             = $len_q / $len_name;
-                        $candidates['S '.$row['Staff Key']] = ($row['Staff Currently Working']=='Yes'?60:50) * $factor;
+                        $candidates['S '.$row['Staff Key']] = ($row['Staff Currently Working'] == 'Yes' ? 60 : 50) * $factor;
                     }
                 }
             } else {
@@ -2541,7 +2520,7 @@ function search_hr($db, $account, $memcache_ip, $data) {
 
                 foreach ($result as $row) {
                     if ($row['Staff Name'] == $q) {
-                        $candidates['S '.$row['Staff Key']] = ($row['Staff Currently Working']=='Yes'?55:45);
+                        $candidates['S '.$row['Staff Key']] = ($row['Staff Currently Working'] == 'Yes' ? 55 : 45);
                     } else {
 
                         $len_name                           = strlen(
@@ -2549,7 +2528,7 @@ function search_hr($db, $account, $memcache_ip, $data) {
                         );
                         $len_q                              = strlen($q);
                         $factor                             = $len_q / $len_name;
-                        $candidates['S '.$row['Staff Key']] = ($row['Staff Currently Working']=='Yes'?60:50) * $factor;
+                        $candidates['S '.$row['Staff Key']] = ($row['Staff Currently Working'] == 'Yes' ? 60 : 50) * $factor;
                     }
                 }
             } else {
@@ -2595,7 +2574,7 @@ function search_hr($db, $account, $memcache_ip, $data) {
                     if ($row = $result->fetch()) {
                         $results[$row['Staff Key']] = array(
                             'label'   => highlightkeyword($row['Staff Alias'], $queries),
-                            'details' => highlightkeyword($row['Staff Name'], $queries).($row['Staff Currently Working']=='No'?' ('._('ex-employee').')':''),
+                            'details' => highlightkeyword($row['Staff Name'], $queries).($row['Staff Currently Working'] == 'No' ? ' ('._('ex-employee').')' : ''),
                             'view'    => sprintf('employee/%d', $row['Staff Key']),
                             'score'   => $val
                         );
@@ -2620,7 +2599,6 @@ function search_hr($db, $account, $memcache_ip, $data) {
             'n' => count($results),
             'd' => $results
         );
-        
 
 
     }
@@ -2635,9 +2613,7 @@ function search_hr($db, $account, $memcache_ip, $data) {
 }
 
 
-function search_locations($db, $account, $data,$response_type='echo') {
-
-
+function search_locations($db, $account, $data, $response_type = 'echo') {
 
 
     $cache       = false;
@@ -2646,23 +2622,22 @@ function search_locations($db, $account, $data,$response_type='echo') {
     $queries     = trim($data['query']);
 
 
-   // print_r($user);
+    // print_r($user);
 
 
     if ($queries == '') {
         $response = array(
-            'state'   => 200,
+            'state'          => 200,
             'number_results' => 0,
-            'results'    => array()
+            'results'        => array()
         );
 
 
-
-
-        if($response_type=='echo'){
+        if ($response_type == 'echo') {
             echo json_encode($response);
+
             return;
-        }else{
+        } else {
             return $response;
         }
 
@@ -2676,12 +2651,11 @@ function search_locations($db, $account, $data,$response_type='echo') {
                 ' and `Location Warehouse Key`=%d', $data['scope_key']
             );
         } else {
-            $warehouses='_';
+            $warehouses      = '_';
             $where_warehouse = ' and false';
         }
     } else {
-        if (count($user->warehouses) ==
-            $account->data['Account Warehouses']) {
+        if (count($user->warehouses) == $account->data['Account Warehouses']) {
             $where_warehouse = '';
         } else {
             $where_warehouse = sprintf(
@@ -2692,7 +2666,6 @@ function search_locations($db, $account, $data,$response_type='echo') {
         $warehouses = join(',', $user->stores);
     }
     $memcache_fingerprint = $account->get('Account Code').'SEARCH_LOC'.$warehouses.md5($queries);
-
 
 
     if (strlen($queries) <= 2) {
@@ -2709,110 +2682,108 @@ function search_locations($db, $account, $data,$response_type='echo') {
     }
 
 
+    //    $results_data = $cache->get($memcache_fingerprint);
 
-//    $results_data = $cache->get($memcache_fingerprint);
+    $candidates = array();
 
-        $candidates = array();
-
-        $q = $queries;
+    $q = $queries;
 
 
-        $sql = sprintf(
-            "select `Location Key`,`Location Code` from `Location Dimension` L   where true $where_warehouse and `Location Code`   like '%s%%' limit 20 ", $q
+    $sql = sprintf(
+        "select `Location Key`,`Location Code` from `Location Dimension` L   where true $where_warehouse and `Location Code`   like '%s%%' limit 20 ", $q
+    );
+
+    if ($result = $db->query($sql)) {
+        foreach ($result as $row) {
+
+            if ($row['Location Code'] == $q) {
+                $candidates[$row['Location Key']] = 30;
+            } else {
+
+                $len_name                         = strlen($row['Location Code']);
+                $len_q                            = strlen($q);
+                $factor                           = $len_q / $len_name;
+                $candidates[$row['Location Key']] = 20 * $factor;
+            }
+
+        }
+    } else {
+        print_r($error_info = $db->errorInfo());
+        exit;
+    }
+
+
+    arsort($candidates);
+
+
+    $total_candidates = count($candidates);
+
+    if ($total_candidates == 0) {
+        $response = array(
+            'state'          => 200,
+            'number_results' => 0,
+            'results'        => array()
         );
 
-        if ($result = $db->query($sql)) {
-            foreach ($result as $row) {
 
-                if ($row['Location Code'] == $q) {
-                    $candidates[$row['Location Key']] = 30;
-                } else {
+        if ($response_type == 'echo') {
+            echo json_encode($response);
 
-                    $len_name                         = strlen($row['Location Code']);
-                    $len_q                            = strlen($q);
-                    $factor                           = $len_q / $len_name;
-                    $candidates[$row['Location Key']] = 20 * $factor;
-                }
-
-            }
+            return;
         } else {
-            print_r($error_info = $db->errorInfo());
-            exit;
+            return $response;
         }
 
 
-        arsort($candidates);
+    }
+
+    $counter       = 0;
+    $customer_keys = '';
+    $results       = array();
+
+    foreach ($candidates as $key => $val) {
+        $counter++;
+        $customer_keys .= ','.$key;
+        $results[$key] = '';
+        if ($counter > $max_results) {
+            break;
+        }
+    }
+    $customer_keys = preg_replace('/^,/', '', $customer_keys);
+
+    $sql = sprintf(
+        "SELECT `Location Code`,`Location Warehouse Key`,`Location Key`, `Warehouse Flag Color`,`Warehouse Code` FROM `Location Dimension` L LEFT JOIN `Warehouse Dimension` ON (`Location Warehouse Key`=`Warehouse Key`) left join `Warehouse Flag Dimension`F  on (F.`Warehouse Flag Key`=L.`Location Warehouse Flag Key`) WHERE `Location Key` IN (%s)",
+        $customer_keys
+    );
+
+    if ($result = $db->query($sql)) {
+        foreach ($result as $row) {
 
 
-        $total_candidates = count($candidates);
+            $results[$row['Location Key']] = array(
+                'warehouse' => $row['Warehouse Code'],
+                'label'     => '<i class="fa fa-inventory padding_right_10" aria-hidden="true"></i> '.highlightkeyword($row['Location Code'], $queries),
+                'details'   => '',
+                'view'      => sprintf('locations/%d/%d', $row['Location Warehouse Key'], $row['Location Key']),
+                'key'       => $row['Location Key'],
+                'code'      => $row['Location Code'],
+                'flag'      => $row['Warehouse Flag Color']
 
-        if ($total_candidates == 0) {
-            $response = array(
-                'state'   => 200,
-                'number_results' => 0,
-                'results'    => array()
+
             );
 
-
-
-
-            if($response_type=='echo'){
-                echo json_encode($response);
-                return;
-            }else{
-                return $response;
-            }
-
-
-
         }
-
-        $counter       = 0;
-        $customer_keys = '';
-        $results       = array();
-
-        foreach ($candidates as $key => $val) {
-            $counter++;
-            $customer_keys .= ','.$key;
-            $results[$key] = '';
-            if ($counter > $max_results) {
-                break;
-            }
-        }
-        $customer_keys = preg_replace('/^,/', '', $customer_keys);
-
-        $sql = sprintf(
-            "SELECT `Location Code`,`Location Warehouse Key`,`Location Key`, `Warehouse Flag Color`,`Warehouse Code` FROM `Location Dimension` L LEFT JOIN `Warehouse Dimension` ON (`Location Warehouse Key`=`Warehouse Key`) left join `Warehouse Flag Dimension`F  on (F.`Warehouse Flag Key`=L.`Location Warehouse Flag Key`) WHERE `Location Key` IN (%s)", $customer_keys
-        );
-
-        if ($result = $db->query($sql)) {
-            foreach ($result as $row) {
+    } else {
+        print_r($error_info = $db->errorInfo());
+        exit;
+    }
 
 
-                $results[$row['Location Key']] = array(
-                    'warehouse' => $row['Warehouse Code'],
-                    'label'     => '<i class="fa fa-inventory padding_right_10" aria-hidden="true"></i> '.highlightkeyword($row['Location Code'], $queries),
-                    'details'   => '',
-                    'view'      => sprintf('locations/%d/%d', $row['Location Warehouse Key'], $row['Location Key']),
-                    'key'=>$row['Location Key'],
-                    'code'=>$row['Location Code'],
-                    'flag'=>$row['Warehouse Flag Color']
-
-
-                );
-
-            }
-        } else {
-            print_r($error_info = $db->errorInfo());
-            exit;
-        }
-
-
-        $results_data = array(
-            'n' => count($results),
-            'd' => $results
-        );
-    $response = array(
+    $results_data = array(
+        'n' => count($results),
+        'd' => $results
+    );
+    $response     = array(
         'state'          => 200,
         'number_results' => $results_data['n'],
         'results'        => $results_data['d'],
@@ -2820,13 +2791,12 @@ function search_locations($db, $account, $data,$response_type='echo') {
     );
 
 
-    if($response_type=='echo'){
+    if ($response_type == 'echo') {
         echo json_encode($response);
 
-    }else{
+    } else {
         return $response;
     }
-
 
 
 }
@@ -3092,8 +3062,7 @@ function agent_search($db, $account, $user, $memcache_ip, $data) {
 
         if ($number_supplier_parts_keys) {
             $sql = sprintf(
-                "SELECT `Supplier Part Key`,`Supplier Part Supplier Key`,`Supplier Part Reference`,`Supplier Part Description` FROM `Supplier Part Dimension`  WHERE `Supplier Part Key` IN (%s)",
-                $supplier_parts_keys
+                "SELECT `Supplier Part Key`,`Supplier Part Supplier Key`,`Supplier Part Reference`,`Supplier Part Description` FROM `Supplier Part Dimension`  WHERE `Supplier Part Key` IN (%s)", $supplier_parts_keys
             );
 
             if ($result = $db->query($sql)) {
@@ -3193,7 +3162,6 @@ function agent_search($db, $account, $user, $memcache_ip, $data) {
             'n' => count($results),
             'd' => $results
         );
-        
 
 
     }
@@ -3268,7 +3236,7 @@ function search_webpages($db, $account, $memcache_ip, $data) {
 
     $results_data = $cache->get($memcache_fingerprint);
 */
-    $results_data=false;
+    $results_data = false;
     if (!$results_data or true) {
 
 
@@ -3476,7 +3444,7 @@ function search_webpages($db, $account, $memcache_ip, $data) {
             'n' => count($results),
             'd' => $results
         );
-       // 
+        //
 
 
     }
@@ -3495,9 +3463,7 @@ function search_webpages($db, $account, $memcache_ip, $data) {
 }
 
 
-
-
-function search_parts($db, $account, $data,$response_type='echo') {
+function search_parts($db, $account, $data, $response_type = 'echo') {
 
 
     $cache       = false;
@@ -3511,10 +3477,11 @@ function search_parts($db, $account, $data,$response_type='echo') {
             'results' => 0,
             'data'    => ''
         );
-        if($response_type=='echo'){
+        if ($response_type == 'echo') {
             echo json_encode($response);
+
             return;
-        }else{
+        } else {
             return $response;
         }
 
@@ -3522,25 +3489,9 @@ function search_parts($db, $account, $data,$response_type='echo') {
     }
 
 
-
-
-    if (strlen($queries) <= 2) {
-        $memcache_time = 295200;
-    }
-    if (strlen($queries) <= 3) {
-        $memcache_time = 86400;
-    }
-    if (strlen($queries) <= 4) {
-        $memcache_time = 3600;
-    } else {
-        $memcache_time = 300;
-
-    }
-
     $candidates = array();
 
-    $query_array    = preg_split('/\s+/', $queries);
-    $number_queries = count($query_array);
+    $query_array = preg_split('/\s+/', $queries);
 
 
     foreach ($query_array as $q) {
@@ -3642,10 +3593,6 @@ function search_parts($db, $account, $data,$response_type='echo') {
         }
 
 
-
-
-
-
     }
 
 
@@ -3656,14 +3603,19 @@ function search_parts($db, $account, $data,$response_type='echo') {
 
     if ($total_candidates == 0) {
         $response = array(
-            'state'   => 200,
-            'results' => 0,
-            'data'    => ''
+            'state'          => 200,
+            'results'        => array(),
+            'data'           => '',
+            'q'              => $queries,
+            'number_results' => 0
         );
-        if($response_type=='echo'){
+
+
+        if ($response_type == 'echo') {
             echo json_encode($response);
+
             return;
-        }else{
+        } else {
             return $response;
         }
 
@@ -3725,11 +3677,11 @@ function search_parts($db, $account, $data,$response_type='echo') {
                 }
 
                 $results['P'.$row['Part SKU']] = array(
-                    'label'   => $status.highlightkeyword(sprintf('%s', $row['Part Reference']), $queries),
-                    'details' => highlightkeyword($row['Part Package Description'], $queries),
-                    'view'    => sprintf('part/%d', $row['Part SKU']),
-                    'sku'=>$row['Part SKU'],
-                    'reference'=>$row['Part Reference']
+                    'label'     => $status.highlightkeyword(sprintf('%s', $row['Part Reference']), $queries),
+                    'details'   => highlightkeyword($row['Part Package Description'], $queries),
+                    'view'      => sprintf('part/%d', $row['Part SKU']),
+                    'sku'       => $row['Part SKU'],
+                    'reference' => $row['Part Reference']
 
 
                 );
@@ -3758,12 +3710,8 @@ function search_parts($db, $account, $data,$response_type='echo') {
                     'label'   => $icon.highlightkeyword(
                             sprintf('%s', $row['Category Code']), $queries
                         ),
-                    'details' => highlightkeyword(
-                        $row['Category Label'], $queries
-                    ),
-                    'view'    => sprintf(
-                        'inventory/category/%d', $row['Category Key']
-                    )
+                    'details' => highlightkeyword($row['Category Label'], $queries),
+                    'view'    => sprintf('inventory/category/%d', $row['Category Key'])
 
 
                 );
@@ -3782,8 +3730,6 @@ function search_parts($db, $account, $data,$response_type='echo') {
     );
 
 
-
-
     $response = array(
         'state'          => 200,
         'number_results' => $results_data['n'],
@@ -3791,15 +3737,15 @@ function search_parts($db, $account, $data,$response_type='echo') {
         'q'              => $queries
     );
 
-    if($response_type=='echo'){
+    if ($response_type == 'echo') {
         echo json_encode($response);
+
         return;
-    }else{
+    } else {
         return $response;
     }
 
 }
-
 
 
 ?>
