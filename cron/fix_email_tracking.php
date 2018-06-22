@@ -225,8 +225,32 @@ if ($result = $db->query($sql)) {
             );
         }
 
+        if ($email_template->get('Email Template Scope') == 'Webpage') {
+
+            $webpage             = get_object('Webpage', $email_template->get('Email Template Scope Key'));
+            $website             = get_object('Website', $webpage->get('Webpage Website Key'));
+            $email_template_type = get_object('Email_Template_Type', $email_template->get('Email Template Role').'|'.$website->get('Website Store Key'), 'code_store');
+
+            if ($email_template_type->id) {
+                $email_template->fast_update(
+                    array(
+                        'Email Template Scope Key' => $email_template_type->id,
+                        'Email Template Scope' => 'EmailCampaignType'
+                    )
+                );
+            } else {
+
+               // print_r($website);
+
+                exit('email_template_type not found from role' .$email_template->get('Email Template Role'));
+            }
 
 
+
+
+
+
+        }
 
 
     }
@@ -250,6 +274,8 @@ if ($result = $db->query($sql)) {
 
         $db->exec($sql);
 
+
+        /*
 
         if ($row['Email Tracking Scope'] == 'Registration') {
 
@@ -311,6 +337,8 @@ if ($result = $db->query($sql)) {
             }
 
         }
+
+        */
 
     }
 } else {
@@ -398,31 +426,31 @@ if ($result = $db->query($sql)) {
 
 $sql = sprintf('select * from `Email Campaign Type Dimension`');
 
-if ($result=$db->query($sql)) {
-		foreach ($result as $row) {
+if ($result = $db->query($sql)) {
+    foreach ($result as $row) {
 
-		    $email_campaign_type=get_object('email_campaign_type',$row['Email Campaign Type Key']);
+        $email_campaign_type = get_object('email_campaign_type', $row['Email Campaign Type Key']);
 
-		    if($email_campaign_type->get('Email Campaign Type Email Template Key')==''){
-                $email_campaign_type->fast_update(array('Email Campaign Type Status'=>'InProcess'));
-            }else{
+        if ($email_campaign_type->get('Email Campaign Type Email Template Key') == '') {
+            $email_campaign_type->fast_update(array('Email Campaign Type Status' => 'InProcess'));
+        } else {
 
-		        $email_template=get_object('EmailTemplate',$email_campaign_type->get('Email Campaign Type Email Template Key'));
+            $email_template = get_object('EmailTemplate', $email_campaign_type->get('Email Campaign Type Email Template Key'));
 
-		        if($email_template->get('Email Template Published Email Key')==''){
-                    $email_campaign_type->fast_update(array('Email Campaign Type Status'=>'InProcess'));
-
-                }
-
+            if ($email_template->get('Email Template Published Email Key') == '') {
+                $email_campaign_type->fast_update(array('Email Campaign Type Status' => 'InProcess'));
 
             }
 
 
-		}
-}else {
-		print_r($error_info=$db->errorInfo());
-		print "$sql\n";
-		exit;
+        }
+
+
+    }
+} else {
+    print_r($error_info = $db->errorInfo());
+    print "$sql\n";
+    exit;
 }
 
 

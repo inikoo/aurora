@@ -339,12 +339,21 @@ class Email_Template extends DB_Table {
         return $suffix;
     }
 
-    function publish($data) {
+    function publish() {
 
-        include_once 'class.Published_Email_Template.php';
+include_once 'class.Published_Email_Template.php';
 
+        $data=array(
+            'Published Email Template JSON'    => $this->data['Email Template Editing JSON'],
+            'Published Email Template HTML'    => $this->data['Email Template HTML'],
+            'Published Email Template Subject' => $this->data['Email Template Subject'],
+            'Published Email Template Text'    =>$this->data['Email Template Text'],
+            'Published Email Template Email Template Key'=>$this->id
+        );
 
         $data['editor'] = $this->editor;
+
+
 
 
 
@@ -358,7 +367,7 @@ class Email_Template extends DB_Table {
         }
 
 
-        $current_published_template = new Published_Email_Template($this->get('Email Template Published Email Key'));
+        $current_published_template = get_object('Published_Email_Template',$this->get('Email Template Published Email Key'));
 
         if ($current_published_template->id) {
 
@@ -375,16 +384,11 @@ class Email_Template extends DB_Table {
 
         }
 
-        $text     = $this->get('Email Template Text');
-        $subject  = $this->get('Email Template Subject');
 
 
         $data['Published Email Template Checksum']           = $checksum;
-        $data['Published Email Template Text']               = $text;
-        $data['Published Email Template Subject']            = $subject;
-        $data['Published Email Template Email Template Key'] = $this->id;
 
-        $data['editor'] = $this->editor;
+
 
 
         // print_r($data);

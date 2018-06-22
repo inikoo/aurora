@@ -226,7 +226,9 @@ trait Send_Email {
             )) {
 
                 $sql = sprintf(
-                    'insert into `Email Tracking Email Copy` (`Email Tracking Email Copy Key`,`Email Tracking Email Copy HTML`) values (%d,%s)  ', $email_tracking->id,
+                    'insert into `Email Tracking Email Copy` (`Email Tracking Email Copy Key`,`Email Tracking Email Copy Subject`,`Email Tracking Email Copy Body`) values (%d,%s,%s)  ',
+                    $email_tracking->id,
+                    prepare_mysql($request['Message']['Subject']['Data']),
                     (isset($request['Message']['Body']['Html']['Data'])?prepare_mysql($request['Message']['Body']['Html']['Data']):prepare_mysql($request['Message']['Body']['Text']['Data'])
 
 
