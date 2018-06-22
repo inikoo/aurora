@@ -252,7 +252,8 @@
         ajaxData.append("json", json)
         ajaxData.append("html",html)
 
-        //$('#save_email_template_dialog').closest('div').addClass('hide')
+        ajaxData.append("subject",$("#email_template_subject").val())
+        ajaxData.append("text",$("#email_template_text").val())
 
 
 

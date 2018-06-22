@@ -95,7 +95,7 @@ trait Send_Email {
             '[Signature]'     => $sender->get('Signature'),
         );
 
-        switch ($email_template->get('Email Template Role')) {
+        switch ($email_template_type->get('Email Campaign Type Code')) {
 
             case 'Invite':
             case 'Invite Mailshot':
@@ -139,6 +139,7 @@ trait Send_Email {
 
 
 
+
         $from_name = base64_encode($sender->get('Name'));
         $sender_email_address=$sender->get('Send Email Address');
         $_source   = "=?utf-8?B?$from_name?= <$sender_email_address>";
@@ -158,7 +159,7 @@ trait Send_Email {
 
         }
 
-        if ($email_template->get('Email Template Role') == 'GR Reminder') {
+        if ($email_template_type->get('Email Campaign Type Code') == 'GR Reminder') {
 
 
             $request['Message']['Body']['Text']['Data'] = preg_replace_callback(
