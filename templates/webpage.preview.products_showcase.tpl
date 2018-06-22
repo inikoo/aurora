@@ -10,7 +10,6 @@
 *}
 
 
-<link rel="stylesheet" href="/website.color.css.php?website_key={$website->id}&theme=theme_1" type="text/css"/>
 
 
 <style>
