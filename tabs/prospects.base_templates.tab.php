@@ -20,7 +20,7 @@ $email_campaign_type=new EmailCampaignType('code_store','Invite Mailshot',$state
 
 $tab     = 'prospects.base_templates';
 $ar_file = 'ar_email_template_tables.php';
-$tipo    = 'base_templates';
+$tipo    = 'email_templates_for_overwrite';
 
 $default = $user->get_tab_defaults($tab);
 

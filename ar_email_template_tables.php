@@ -34,6 +34,10 @@ switch ($tipo) {
         base_templates(get_table_parameters(), $db, $user);
         break;
 
+    case 'email_templates_for_overwrite':
+        email_templates_for_overwrite(get_table_parameters(), $db, $user);
+        break;
+
 
     default:
         $response = array(
@@ -130,7 +134,7 @@ function email_blueprints($_data, $db, $user) {
     echo json_encode($response);
 }
 
-function base_templates($_data, $db, $user) {
+function email_templates_for_overwrite($_data, $db, $user) {
 
 
     include_once 'utils/natural_language.php';
@@ -157,7 +161,7 @@ function base_templates($_data, $db, $user) {
 
             if ($_data['parameters']['email_template_key'] != $data['Email Template Key']) {
                 $operations .= sprintf(
-                    '<span class="button" onClick="select_base_template_from_table(this,%d,\'%s\')"><i class="fal fa-copy fa-fw"></i> %s</span>', $data['Email Template Key'], base64_url_decode($_data['parameters']['redirect']), _('Clone me')
+                    '<span class="button" onClick="select_base_template_from_table(this,%d,\'%s\')"><i class="fal fa-eraser fa-fw"></i> %s</span>', $data['Email Template Key'], base64_url_decode($_data['parameters']['redirect']), _('Overwrite with me')
                 );
             } else {
                 $operations .= sprintf(
@@ -204,5 +208,82 @@ function base_templates($_data, $db, $user) {
     );
     echo json_encode($response);
 }
+
+
+function base_templates($_data, $db, $user) {
+
+
+    include_once 'utils/natural_language.php';
+
+    $rtext_label = 'email template';
+    include_once 'prepare_table/init.php';
+
+
+    $sql = "select $fields from $table $where $wheref order by $order $order_direction limit $start_from,$number_results";
+
+
+    //  print $sql;
+
+    $adata = array();
+
+
+    if ($result = $db->query($sql)) {
+
+        foreach ($result as $data) {
+
+
+            $operations = '';
+
+
+            if ($_data['parameters']['email_template_key'] != $data['Email Template Key']) {
+                $operations .= sprintf(
+                    '<span class="button" onClick="select_base_template_from_table(this,%d,\'%s\')"><i class="fal fa-copy fa-fw"></i> %s</span>', $data['Email Template Key'], base64_url_decode($_data['parameters']['redirect']), _('Clone me')
+                );
+            } else {
+
+                continue;
+            }
+
+
+            if ($data['Staff Alias'] != '') {
+                $author = sprintf('<span>%s</span>', $data['Staff Alias']);
+            } else {
+                $author = sprintf('<span class="discreet">%s</span>', _('Anonymous'));
+            }
+
+
+            $adata[] = array(
+                'id'         => (integer)$data['Email Template Key'],
+                'author'     => $author,
+                'name'       => $data['Email Template Name'],
+                'date'       => strftime("%a %e %b %Y", strtotime($data['Email Template Created'].' +0:00')),
+                'operations' => $operations,
+
+            );
+
+
+        }
+
+    } else {
+        print_r($error_info = $db->errorInfo());
+        exit;
+    }
+
+
+    $response = array(
+        'resultset' => array(
+            'state'         => 200,
+            'data'          => $adata,
+            'rtext'         => $rtext,
+            'sort_key'      => $_order,
+            'sort_dir'      => $_dir,
+            'total_records' => $total
+
+        )
+    );
+    echo json_encode($response);
+}
+
+
 
 ?>
