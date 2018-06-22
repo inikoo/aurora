@@ -5,7 +5,7 @@
                  class="tab {if isset($tab.class)}{$tab.class}{else}left{/if} {if isset($tab.selected) and $tab.selected}selected{/if}"
                  {if  isset($tab.reference)}onclick="change_view('{$tab.reference}')" {else}
                  onclick="change_tab('{$id}')"{/if} title="{if isset($tab.title)}{$tab.title}{/if}">
-                {if !empty($tab.icon)}<i class="far fa-{$tab.icon}"></i>{elseif !empty($tab.icon_v2)}<i class="{$tab.icon_v2}"></i>{/if} <span class="label"> {$tab.label} <span class=""></span></span>
+                {if !empty($tab.icon)}<i class="far fa-{$tab.icon}"></i>{elseif !empty($tab.icon_v2)}<i class="{$tab.icon_v2}"></i>{/if} <span class="label"> {if isset($tab.label)}{$tab.label}{else}{$id}{/if}   </span>
             </div>
         {/foreach}
 
