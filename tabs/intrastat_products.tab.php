@@ -49,7 +49,7 @@ $parameters = array(
 
 );
 
-
+include_once 'class.Country.php';
 $country = new Country('2alpha', $__data[0]);
 
 $smarty->assign('country', $country);
