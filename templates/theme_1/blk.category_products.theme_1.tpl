@@ -73,7 +73,7 @@
 
 
                     <div class="product_prices log_in " >
-                        <div class="product_price">{if empty($labels._product_price)}{t}Price{/t}{else}{$labels._product_price}{/if}: {$item.price}  <small>{$item.price_unit}</small> </div>
+                        <div class="product_price">{if empty($labels._product_price)}{t}Price{/t}{else}{$labels._product_price}{/if}: {$item.price}  {if empty($item.price_unit)}<small>{$item.price_unit}</small>{/if} </div>
                         {assign 'rrp' $item.rrp}
                         {if $rrp!=''}<div><small>{if empty($labels._product_rrp)}{t}RRP{/t}{else}{$labels._product_rrp}{/if}: {$rrp}</small></div>{/if}
                     </div>
