@@ -1409,7 +1409,7 @@ class SupplierDelivery extends DB_Table {
 
             $state = 'Placed';
             $sql   = sprintf(
-                'SELECT `Supplier Part Key`,`Purchase Order Transaction State`,`Supplier Delivery Quantity`,`Supplier Delivery Checked Quantity`,`Supplier Delivery Placed Quantity`  FROM  `Purchase Order Transaction Fact`  WHERE `Supplier Delivery Key` =%d', $this->id
+                'SELECT `Purchase Order Transaction Fact Key`,`Supplier Part Key`,`Purchase Order Transaction State`,`Supplier Delivery Quantity`,`Supplier Delivery Checked Quantity`,`Supplier Delivery Placed Quantity`  FROM  `Purchase Order Transaction Fact`  WHERE `Supplier Delivery Key` =%d', $this->id
             );
 
             if ($result = $this->db->query($sql)) {
@@ -1435,16 +1435,22 @@ class SupplierDelivery extends DB_Table {
                         } else {
 
 
-                            // print $row['Supplier Delivery Checked Quantity'].' ' ;
-                            // print $row['Supplier Delivery Placed Quantity']." \n" ;
 
                             if (round($row['Supplier Delivery Checked Quantity'], 2) > round($row['Supplier Delivery Placed Quantity'], 2)) {
                                 //exit;
                                 $state = 'Checked';
+
+                                //print_r($row);
+
+                                //print $row['Supplier Delivery Checked Quantity'].' ' ;
+                                //print $row['Supplier Delivery Placed Quantity']." " ;
+                                //print "Che \n";
                                 break;
                             } else {
 
                                 $state = 'Placed';
+
+                               // print "Pla \n";
                             }
 
 

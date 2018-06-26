@@ -2852,7 +2852,7 @@ class Part extends Asset {
         $running_stock_value=0;
         $running_cost_per_sko='';
 
-        $sql = sprintf('SELECT `Date`,`Note`,`Running Stock`,`Inventory Transaction Key`, `Inventory Transaction Quantity`,`Inventory Transaction Amount`,`Inventory Transaction Type`,`Location Key`,`Inventory Transaction Section`,`Running Cost per SKO`,`Running Stock Value`,`Running Cost per SKO` FROM `Inventory Transaction Fact` WHERE `Part SKU`=%d ORDER BY `Date`   and  `Inventory Transaction Type` not in ("Move Out","Move In","Move")   ', $this->id);
+        $sql = sprintf('SELECT `Date`,`Note`,`Running Stock`,`Inventory Transaction Key`, `Inventory Transaction Quantity`,`Inventory Transaction Amount`,`Inventory Transaction Type`,`Location Key`,`Inventory Transaction Section`,`Running Cost per SKO`,`Running Stock Value`,`Running Cost per SKO` FROM `Inventory Transaction Fact` WHERE `Part SKU`=%d   and  `Inventory Transaction Type` not in ("Move Out","Move In","Move") ORDER BY `Date`   ', $this->id);
 
       //  print "$sql\n";
 
@@ -2876,7 +2876,7 @@ class Part extends Asset {
                     $row['Inventory Transaction Amount']=$row['Inventory Transaction Quantity']*$running_cost_per_sko;
 
 
-                  //  print $running_cost_per_sko."\n";
+                   // print $running_cost_per_sko."\n";
 
 
                 }
