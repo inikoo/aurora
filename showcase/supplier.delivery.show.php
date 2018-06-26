@@ -24,7 +24,7 @@ function get_showcase($data, $smarty, $user, $db) {
 
     $data['_object']->get_state();
 
-    $data['_object']->update_state($data['_object']->get_state());
+   // $data['_object']->update_state($data['_object']->get_state());
 
 
     $_parent = get_object(
