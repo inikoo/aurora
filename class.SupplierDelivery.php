@@ -1419,11 +1419,11 @@ class SupplierDelivery extends DB_Table {
                 foreach ($result as $row) {
 
                     $items++;
-                    //print_r($row);
+                   // print_r($row);
 
                     if ($row['Supplier Delivery Checked Quantity'] == '') {
                         $state = 'Received';
-
+                       // print_r($row);
                         break;
                     } else {
                         if ($row['Supplier Delivery Checked Quantity'] == 0) {
@@ -1441,7 +1441,6 @@ class SupplierDelivery extends DB_Table {
                                 $state = 'Checked';
 
                                 //print_r($row);
-
                                 //print $row['Supplier Delivery Checked Quantity'].' ' ;
                                 //print $row['Supplier Delivery Placed Quantity']." " ;
                                 //print "Che \n";
@@ -1450,7 +1449,7 @@ class SupplierDelivery extends DB_Table {
 
                                 $state = 'Placed';
 
-                               // print "Pla \n";
+                              //  print "Pla \n";
                             }
 
 
@@ -1473,7 +1472,7 @@ class SupplierDelivery extends DB_Table {
 
 
         }
-     //   print $state."\n";
+      //  print $state."\n";
        // exit;
         return $state;
 
