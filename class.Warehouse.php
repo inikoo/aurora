@@ -930,7 +930,7 @@ class Warehouse extends DB_Table {
                     if ($row2 = $result2->fetch()) {
 
 
-                        print_r($row);
+                        print_r($row2);
 
                         $sql = sprintf(
                             "INSERT INTO `Inventory Warehouse Spanshot Fact` (`Date`,`Warehouse Key`,`Parts`,`Locations`,
