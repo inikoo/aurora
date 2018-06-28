@@ -587,11 +587,15 @@ class PartLocation extends DB_Table {
 
         $sql = sprintf(
             "SELECT sum(`Inventory Transaction Quantity`) AS stock ,sum(`Inventory Transaction Amount`) AS value
-			       FROM `Inventory Transaction Fact` WHERE  `Date`<=%s AND `Part SKU`=%d AND `Location Key`=%d", prepare_mysql($date), $this->part_sku, $this->location_key
+			       FROM `Inventory Transaction Fact` WHERE  `Date`<=%s AND `Part SKU`=%d AND `Location Key`=%d  and `Inventory Transaction Type` not in (\"Move Out\",\"Move In\",\"Move\") " , prepare_mysql($date), $this->part_sku, $this->location_key
         );
-
+//print "$sql\n";
         if ($result = $this->db->query($sql)) {
             if ($row = $result->fetch()) {
+
+               // print_r($row);
+
+
                 $stock = round($row['stock'], 3);
                 $value = $row['value'];
             } else {
@@ -1821,7 +1825,8 @@ class PartLocation extends DB_Table {
 			`Warehouse Key`=%d,`Quantity On Hand`=%f,`Value At Cost`=%.2f,`Sold Amount`=%.2f,`Value Commercial`=%.2f,`Value At Day Cost`=%.2f, `Storing Cost`=%.2f,`Quantity Sold`=%f,`Quantity In`=%f,`Quantity Lost`=%f,`Quantity Open`=%f,`Quantity High`=%f,`Quantity Low`=%f,
 			`Value At Cost Open`=%f,`Value At Cost High`=%f,`Value At Cost Low`=%f,
 			`Value At Day Cost Open`=%f,`Value At Day Cost High`=%f,`Value At Day Cost Low`=%f,
-			`Value Commercial Open`=%f,`Value Commercial High`=%f,`Value Commercial Low`=%f,`Location Type`=%s ,`Sold Amount`=%.2f ,`Dormant 1 Year`=%s", $sales_value, prepare_mysql($row['Date']), $this->part_sku, $warehouse_key, $this->location_key, $stock,
+			`Value Commercial Open`=%f,`Value Commercial High`=%f,`Value Commercial Low`=%f,`Location Type`=%s ,`Sold Amount`=%.2f ,`Dormant 1 Year`=%s", $sales_value, prepare_mysql($row['Date']),
+                    $this->part_sku, $warehouse_key, $this->location_key, $stock,
 
                     $value, $value_day_cost, $commercial_value, $storing_cost,
 
