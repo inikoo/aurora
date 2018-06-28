@@ -22,8 +22,17 @@ if ($parameters['parent'] == 'warehouse') {
 
 
 if ($parameters['frequency'] == 'annually') {
-    $group_by          = ' group by Year(`Date`) ';
+   // $group_by          = ' group by Year(`Date`) ';
+    $group_by    ='';
+    $where.=' and DATE_FORMAT(`Date`,"%m-%d")="12-31"  '   ;
+
     $sql_totals_fields = 'Year(`Date`)';
+} elseif ($parameters['frequency'] == 'quarterly') {
+    // $group_by          = ' group by Year(`Date`) ';
+    $group_by    ='';
+    $where.=' and ( DATE_FORMAT(`Date`,"%m-%d")="12-31" or DATE_FORMAT(`Date`,"%m-%d")="03-31"  or DATE_FORMAT(`Date`,"%m-%d")="06-31"  or DATE_FORMAT(`Date`,"%m-%d")="09-31"  )  '   ;
+
+    $sql_totals_fields = 'QUARTER(`Date`)';
 } elseif ($parameters['frequency'] == 'monthly') {
     //$group_by          = '  group by DATE_FORMAT(`Date`,"%Y-%m") ';
     $group_by    ='';

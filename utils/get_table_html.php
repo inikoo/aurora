@@ -175,7 +175,7 @@ if (array_key_exists('frequency', $parameters)) {
 
     $frequencies = array(
         'annually'  => _('Annually'),
-        'quarterly' => _('Quarterly'),
+       'quarterly' => _('Quarterly'),
         'monthly'    => _('Monthly'),
         'weekly'    => _('Weekly'),
         'daily'     => _('Daily'),
