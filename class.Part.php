@@ -2859,10 +2859,18 @@ class Part extends Asset {
         if ($result = $this->db->query($sql)) {
             foreach ($result as $row) {
 
-//print_r($row);
+//print "=========\n";
+                if(
+                    //!(
+                   // ($row['Inventory Transaction Type']=='Adjust' )
+                   // or
+                   // ($row['Inventory Transaction Section']=='In' and $row['Inventory Transaction Quantity']>0)
+                   // )
 
+                  !( $row['Inventory Transaction Section']=='In' and $row['Inventory Transaction Quantity']>0  ) and  $running_cost_per_sko!='' ){
 
-                if( !( ($row['Inventory Transaction Type']=='Adjust' and $row['Inventory Transaction Quantity']>0 and $row['Location Key']!=1) or ($row['Inventory Transaction Section']=='In' and $row['Inventory Transaction Quantity']>0) )  and  $running_cost_per_sko!='' ){
+                   // print $running_cost_per_sko."\n";
+                   // print_r($row);
 
                     $sql           = sprintf(
                         'UPDATE `Inventory Transaction Fact` SET `Inventory Transaction Amount`=%f  WHERE `Inventory Transaction Key`=%d ',
@@ -2870,8 +2878,8 @@ class Part extends Asset {
 
                         $row['Inventory Transaction Key']
                     );
-                    $this->db->exec($sql);
-                   // print "$sql\n";
+                   $this->db->exec($sql);
+                  //  print "$sql\n";
 
                     $row['Inventory Transaction Amount']=$row['Inventory Transaction Quantity']*$running_cost_per_sko;
 
@@ -2882,12 +2890,13 @@ class Part extends Asset {
                 }
 
 
+                // print_r($row);
 
 
                 $running_stock = $running_stock + $row['Inventory Transaction Quantity'];
                 $running_stock_value=$running_stock_value+$row['Inventory Transaction Amount'];
                 if($running_stock==0){
-                    $running_cost_per_sko='';
+                    //$running_cost_per_sko='';
                 }else{
                     $running_cost_per_sko=$running_stock_value/$running_stock;
                 }
@@ -2904,7 +2913,7 @@ class Part extends Asset {
               // print "$sql\n";
 
 
-              //  print "$running_cost_per_sko \n";
+               //print "RR: $running_cost_per_sko \n-------\n";
 
             }
 
