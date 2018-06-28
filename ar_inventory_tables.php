@@ -519,8 +519,8 @@ function inventory_stock_history($_data, $db, $user, $account) {
 
     $sql = "select $fields from $table $where $wheref $group_by order by $order $order_direction limit $start_from,$number_results";
 
-    //print $sql;
 
+//print $sql;
     $record_data = array();
 
     if ($result = $db->query($sql)) {

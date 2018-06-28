@@ -12,11 +12,23 @@
 $table = "`Inventory Warehouse Spanshot Fact` ";
 
 
+if ($parameters['parent'] == 'warehouse') {
+    $where = sprintf(" where `Warehouse Key`=%d", $parameters['parent_key']);
+} elseif ($parameters['parent'] == 'account') {
+    $where = sprintf(" where  true");
+} else {
+    exit("parent not found: ".$parameters['parent']);
+}
+
+
 if ($parameters['frequency'] == 'annually') {
     $group_by          = ' group by Year(`Date`) ';
     $sql_totals_fields = 'Year(`Date`)';
 } elseif ($parameters['frequency'] == 'monthly') {
-    $group_by          = '  group by DATE_FORMAT(`Date`,"%Y-%m") ';
+    //$group_by          = '  group by DATE_FORMAT(`Date`,"%Y-%m") ';
+    $group_by    ='';
+    $where.=' and `Date`=last_day(`Date`)';
+
     $sql_totals_fields = 'DATE_FORMAT(`Date`,"%Y-%m")';
 } elseif ($parameters['frequency'] == 'weekly') {
     $group_by          = ' group by Yearweek(`Date`,3) ';
@@ -33,13 +45,6 @@ $wheref     = '';
 
 $fields = '';
 
-if ($parameters['parent'] == 'warehouse') {
-    $where = sprintf(" where `Warehouse Key`=%d", $parameters['parent_key']);
-} elseif ($parameters['parent'] == 'account') {
-    $where = sprintf(" where  true");
-} else {
-    exit("parent not found: ".$parameters['parent']);
-}
 
 if (isset($extra_where)) {
     $where .= $extra_where;
