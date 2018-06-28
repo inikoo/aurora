@@ -31,7 +31,8 @@ if ($state['_object']->get('State Index') == 100) {
 
 } else {
 
-    exit;
+    $html='delivery not placed yet';
+    return;
 
     $tab  = 'supplier.delivery.items';
     $tipo = 'delivery.items';
