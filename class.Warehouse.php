@@ -925,6 +925,7 @@ class Warehouse extends DB_Table {
                 );
 
 
+
                 if ($result2 = $this->db->query($sql)) {
                     if ($row2 = $result2->fetch()) {
 
@@ -957,7 +958,7 @@ class Warehouse extends DB_Table {
                         );
                         $this->db->exec($sql);
 
-                     //    print "$sql\n";
+                        // print "$sql\n";
 
 
                     }

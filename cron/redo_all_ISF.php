@@ -22,7 +22,6 @@ require_once 'utils/date_functions.php';
 require_once 'utils/object_functions.php';
 
 
-
 $db->exec('truncate `Inventory Warehouse Spanshot Fact`; truncate `Inventory Spanshot Fact`');
 
 
@@ -35,6 +34,9 @@ $to   = date("Y-m-d", strtotime('now'));
 
 //$from=date("Y-m-d");
 //$to='2013-09-05';
+
+
+
 
 
 $sql = sprintf(
