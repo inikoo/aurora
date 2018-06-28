@@ -503,7 +503,11 @@ function inventory_stock_history($_data, $db, $user, $account) {
         $date_format = "%Y";
     } elseif ($_data['parameters']['frequency'] == 'monthly') {
         $rtext_label = 'month';
-        $date_format = "%b %Y";
+        $date_format = "%e %b %Y";
+
+    }  elseif ($_data['parameters']['frequency'] == 'quarterly') {
+        $rtext_label = 'quarter';
+        $date_format = "%e %b %Y";
 
     } elseif ($_data['parameters']['frequency'] == 'weekly') {
         $rtext_label = 'week';
