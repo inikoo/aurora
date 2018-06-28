@@ -55,6 +55,15 @@ table thead td,table tr.title td{ background-color: #EEEEEE;
     border-right: 0.1mm solid #000000;
 }
 
+.hide {
+	display:none
+}
+
+.family-name {
+	display:none
+}
+
+
 div.inline { float:left; }
 .clearBoth { clear:both; }
 {/literal}</style> 
