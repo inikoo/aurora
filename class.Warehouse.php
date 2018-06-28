@@ -924,11 +924,13 @@ class Warehouse extends DB_Table {
 
                 );
 
-
+                print "$sql\n";
 
                 if ($result2 = $this->db->query($sql)) {
                     if ($row2 = $result2->fetch()) {
 
+
+                        print_r($row);
 
                         $sql = sprintf(
                             "INSERT INTO `Inventory Warehouse Spanshot Fact` (`Date`,`Warehouse Key`,`Parts`,`Locations`,
@@ -958,7 +960,7 @@ class Warehouse extends DB_Table {
                         );
                         $this->db->exec($sql);
 
-                        // print "$sql\n";
+                         print "$sql\n";
 
 
                     }
