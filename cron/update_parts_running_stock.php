@@ -27,7 +27,7 @@ if ($result = $db->query($sql)) {
 
 
         $part->update_stock_run();
-//print $part->get('Reference')."\n";
+        print $part->get('Reference')."\r";
 
     }
 
@@ -35,7 +35,6 @@ if ($result = $db->query($sql)) {
     print_r($error_info = $db->errorInfo());
     exit;
 }
-
 
 
 ?>
