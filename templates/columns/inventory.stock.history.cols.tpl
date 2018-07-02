@@ -116,7 +116,40 @@ editable: false,
 sortable: false,
 cell: Backgrid.HtmlCell.extend({ className: "aright"} ),
 headerCell: integerHeaderCell
+},
+{
+name: "in_po",
+label: "{t}In PO{/t}",
+editable: false,
+sortable: false,
+cell: Backgrid.HtmlCell.extend({ className: "aright"} ),
+headerCell: integerHeaderCell
+},
+{
+name: "in_other",
+label: "{t}In Other{/t}",
+editable: false,
+sortable: false,
+cell: Backgrid.HtmlCell.extend({ className: "aright"} ),
+headerCell: integerHeaderCell
+},
+{
+name: "out_sales",
+label: "{t}Out sales{/t}",
+editable: false,
+sortable: false,
+cell: Backgrid.HtmlCell.extend({ className: "aright"} ),
+headerCell: integerHeaderCell
+},
+{
+name: "out_other",
+label: "{t}Out other{/t}",
+editable: false,
+sortable: false,
+cell: Backgrid.HtmlCell.extend({ className: "aright"} ),
+headerCell: integerHeaderCell
 }
+
 
 
 ]

@@ -1761,21 +1761,18 @@ class PartLocation extends DB_Table {
                 }
 
 
+
                 list($stock, $value, $in_process) = $this->get_stock($row['Date'].' 23:59:59');
-                list($sold, $sales_value) = $this->get_sales(
-                    $row['Date'].' 23:59:59'
-                );
+                list($sold, $sales_value) = $this->get_sales($row['Date'].' 23:59:59');
                 list($in, $in_value) = $this->get_in($row['Date'].' 23:59:59');
-                list($lost, $lost_value) = $this->get_lost(
-                    $row['Date'].' 23:59:59'
-                );
-                list(
-                    $open, $high, $low, $close, $value_open, $value_high, $value_low, $value_close
-                    ) = $this->get_ohlc($row['Date']);
+                list($lost, $lost_value) = $this->get_lost($row['Date'].' 23:59:59');
+
+                list($amount_in_po, $amount_in_other,$amount_out_sales,$amount_out_other) = $this->get_amount_deltas($row['Date']);
+
+                list($open, $high, $low, $close, $value_open, $value_high, $value_low, $value_close) = $this->get_ohlc($row['Date']);
 
 
                 $storing_cost = 0;
-
                 $location_type = "Unknown";
                 $warehouse_key = 1;
 
@@ -1813,7 +1810,11 @@ class PartLocation extends DB_Table {
 			`Value At Cost Open`,`Value At Cost High`,`Value At Cost Low`,
 			`Value At Day Cost Open`,`Value At Day Cost High`,`Value At Day Cost Low`,
 			`Value Commercial Open`,`Value Commercial High`,`Value Commercial Low`,
-			`Location Type`,`Dormant 1 Year`
+			`Location Type`,`Dormant 1 Year`,
+			`Inventory Spanshot Amount In PO`,
+			`Inventory Spanshot Amount In Other`,
+			`Inventory Spanshot Amount Out Sales`,
+			`Inventory Spanshot Amount Out Other`
 			) VALUES (
 			%.2f,%s,%d,%d,%d,%f,
 			%.2f ,%.2f,%.2f,%.2f ,
@@ -1821,11 +1822,18 @@ class PartLocation extends DB_Table {
 			%f,%f,%f,
 			%f,%f,%f,
 			%f,%f,%f,
-			%s,%s) ON DUPLICATE KEY UPDATE
+			%s,%s,
+			%.2f,%.2f,%.2f,%.2f
+			) ON DUPLICATE KEY UPDATE
 			`Warehouse Key`=%d,`Quantity On Hand`=%f,`Value At Cost`=%.2f,`Sold Amount`=%.2f,`Value Commercial`=%.2f,`Value At Day Cost`=%.2f, `Storing Cost`=%.2f,`Quantity Sold`=%f,`Quantity In`=%f,`Quantity Lost`=%f,`Quantity Open`=%f,`Quantity High`=%f,`Quantity Low`=%f,
 			`Value At Cost Open`=%f,`Value At Cost High`=%f,`Value At Cost Low`=%f,
 			`Value At Day Cost Open`=%f,`Value At Day Cost High`=%f,`Value At Day Cost Low`=%f,
-			`Value Commercial Open`=%f,`Value Commercial High`=%f,`Value Commercial Low`=%f,`Location Type`=%s ,`Sold Amount`=%.2f ,`Dormant 1 Year`=%s", $sales_value, prepare_mysql($row['Date']),
+			`Value Commercial Open`=%f,`Value Commercial High`=%f,`Value Commercial Low`=%f,`Location Type`=%s ,`Sold Amount`=%.2f ,`Dormant 1 Year`=%s,
+			`Inventory Spanshot Amount In PO`=%.2f,`Inventory Spanshot Amount In Other`=%.2f,`Inventory Spanshot Amount Out Sales`=%.2f,`Inventory Spanshot Amount Out Other`=%.2f
+			"
+
+
+                    , $sales_value, prepare_mysql($row['Date']),
                     $this->part_sku, $warehouse_key, $this->location_key, $stock,
 
                     $value, $value_day_cost, $commercial_value, $storing_cost,
@@ -1840,19 +1848,22 @@ class PartLocation extends DB_Table {
 
                     prepare_mysql($location_type), prepare_mysql($dormant_1year),
 
+                    $amount_in_po, $amount_in_other, $amount_out_sales, $amount_out_other,
+
+
                     $warehouse_key, $stock, $value,
 
                     $sales_value, $commercial_value, $value_day_cost, $storing_cost,
 
                     $sold, $in, $lost, $open, $high, $low, $value_open, $value_high, $value_low, $value_day_cost_open, $value_day_cost_high, $value_day_cost_low, $commercial_value_open, $commercial_value_high, $commercial_value_low, prepare_mysql($location_type),
-                    $sales_value, prepare_mysql($dormant_1year)
+                    $sales_value, prepare_mysql($dormant_1year), $amount_in_po, $amount_in_other, $amount_out_sales, $amount_out_other
 
 
                 );
                 $this->db->exec($sql);
 
 
-                //print "$sql\n";
+               // print "$sql\n";
                 //exit;
 
             }
@@ -1893,6 +1904,85 @@ class PartLocation extends DB_Table {
             $stock,
             $value
         );
+
+    }
+
+
+    function get_amount_deltas($date){
+
+        //Move', 'Order In Process', 'No Dispatched', 'Sale', 'Audit', 'In', 'Adjust', 'Broken', 'Lost', 'Not Found', 'Associate', 'Disassociate', 'Move In', 'Move Out', 'Other Out', 'Restock', 'FailSale', 'Production
+
+        $sql = sprintf(
+            "SELECT ifnull(sum(`Inventory Transaction Amount`),0) AS value FROM `Inventory Transaction Fact` WHERE  Date(`Date`)=%s AND `Part SKU`=%d AND `Location Key`=%d AND  `Inventory Transaction Type` ='In'   ",
+            prepare_mysql(date('Y-m-d', strtotime($date))), $this->part_sku, $this->location_key
+        );
+
+        if ($result = $this->db->query($sql)) {
+            if ($row = $result->fetch()) {
+                $amount_in_po = $row['value'];
+            } else {
+                $amount_in_po = 0;
+            }
+        } else {
+            print_r($error_info = $this->db->errorInfo());
+            print "$sql\n";
+            exit;
+        }
+
+        $sql = sprintf(
+            "SELECT ifnull(sum(`Inventory Transaction Amount`),0) AS value FROM `Inventory Transaction Fact` WHERE  Date(`Date`)=%s AND `Part SKU`=%d AND `Location Key`=%d AND  `Inventory Transaction Type` in ('Adjust','Restock') and  `Inventory Transaction Amount`>0  ",
+            prepare_mysql(date('Y-m-d', strtotime($date))), $this->part_sku, $this->location_key
+        );
+
+
+
+        if ($result = $this->db->query($sql)) {
+            if ($row = $result->fetch()) {
+                $amount_in_other = $row['value'];
+            } else {
+                $amount_in_other = 0;
+            }
+        } else {
+            print_r($error_info = $this->db->errorInfo());
+            print "$sql\n";
+            exit;
+        }
+
+        $sql = sprintf(
+            "SELECT ifnull(sum(`Inventory Transaction Amount`),0) AS value FROM `Inventory Transaction Fact` WHERE  Date(`Date`)=%s AND `Part SKU`=%d AND `Location Key`=%d AND  `Inventory Transaction Type` ='Sale'   ",
+            prepare_mysql(date('Y-m-d', strtotime($date))), $this->part_sku, $this->location_key
+        );
+
+        if ($result = $this->db->query($sql)) {
+            if ($row = $result->fetch()) {
+                $amount_out_sales = $row['value'];
+            } else {
+                $amount_out_sales = 0;
+            }
+        } else {
+            print_r($error_info = $this->db->errorInfo());
+            print "$sql\n";
+            exit;
+        }
+//'Move','Order In Process','No Dispatched','Sale','Audit','In','Adjust','Broken','Lost','Not Found','Associate','Disassociate','Move In','Move Out','Other Out','Restock','FailSale','Production'
+        $sql = sprintf(
+            "SELECT ifnull(sum(`Inventory Transaction Amount`),0) AS value FROM `Inventory Transaction Fact` WHERE  Date(`Date`)=%s AND `Part SKU`=%d AND `Location Key`=%d AND   `Inventory Transaction Type`  in ('Adjust','Other Out','Broken','Lost') and  `Inventory Transaction Amount`<0  ",
+            prepare_mysql(date('Y-m-d', strtotime($date))), $this->part_sku, $this->location_key
+        );
+
+        if ($result = $this->db->query($sql)) {
+            if ($row = $result->fetch()) {
+                $amount_out_other = $row['value'];
+            } else {
+                $amount_out_other = 0;
+            }
+        } else {
+            print_r($error_info = $this->db->errorInfo());
+            print "$sql\n";
+            exit;
+        }
+
+        return array($amount_in_po,$amount_in_other,$amount_out_sales,$amount_out_other);
 
     }
 

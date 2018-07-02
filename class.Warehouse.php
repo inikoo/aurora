@@ -475,10 +475,10 @@ class Warehouse extends DB_Table {
 
 
         $number_locations                  = 0;
-        $number_parts=0;
+        $number_parts                      = 0;
         $number_part_locations             = 0;
         $number_part_locations_with_errors = 0;
-        $number_part_locations_unknown=0;
+        $number_part_locations_unknown     = 0;
 
 
         $pending_orders                         = 0;
@@ -504,7 +504,7 @@ class Warehouse extends DB_Table {
             if ($row = $result->fetch()) {
                 $number_part_locations             = $row['number'];
                 $number_part_locations_with_errors = $row['errors'];
-                $number_parts = $row['parts'];
+                $number_parts                      = $row['parts'];
 
             }
         } else {
@@ -517,7 +517,7 @@ class Warehouse extends DB_Table {
 
         if ($result = $this->db->query($sql)) {
             if ($row = $result->fetch()) {
-                $number_part_locations_unknown             = $row['number'];
+                $number_part_locations_unknown = $row['number'];
                 //$number_part_locations_with_errors = $row['errors'];
                 //$stock_amount                      = $row['amount'];
             }
@@ -527,52 +527,18 @@ class Warehouse extends DB_Table {
         }
 
 
-
-
-
         $this->fast_update(
             array(
-                'Warehouse Number Locations'      => $number_locations,
-                'Warehouse Part Locations'        => $number_part_locations,
-                'Warehouse Part Locations Errors' => $number_part_locations_with_errors,
-                'Warehouse Part Location Unknown Locations'=>$number_part_locations_unknown,
-                'Warehouse Number Parts'        =>$number_parts
+                'Warehouse Number Locations'                => $number_locations,
+                'Warehouse Part Locations'                  => $number_part_locations,
+                'Warehouse Part Locations Errors'           => $number_part_locations_with_errors,
+                'Warehouse Part Location Unknown Locations' => $number_part_locations_unknown,
+                'Warehouse Number Parts'                    => $number_parts
             )
         );
 
 
     }
-
-
-    function update_stock_amount() {
-
-
-
-        $stock_amount                      = 0;
-
-        $sql = sprintf('SELECT sum(`Stock Value` ) AS amount FROM `Part Location Dimension` WHERE `Part Location Warehouse Key`=%d', $this->id);
-
-
-        if ($result = $this->db->query($sql)) {
-            if ($row = $result->fetch()) {
-
-                $stock_amount                      = $row['amount'];
-            }
-        } else {
-            print_r($error_info = $this->db->errorInfo());
-            exit;
-        }
-
-
-        $this->fast_update(
-            array(
-                'Warehouse Stock Amount'          => $stock_amount
-            )
-        );
-
-
-    }
-
 
     function get($key, $data = false) {
 
@@ -608,12 +574,9 @@ class Warehouse extends DB_Table {
             case('Leakage Timeseries From'):
                 if ($this->data['Warehouse Leakage Timeseries From'] == '') {
                     return '';
-                }else{
-                    return strftime("%a %e %b %Y", strtotime($this->data['Warehouse Leakage Timeseries From'] .' +0:00'));
+                } else {
+                    return strftime("%a %e %b %Y", strtotime($this->data['Warehouse Leakage Timeseries From'].' +0:00'));
                 }
-
-
-
 
 
                 break;
@@ -642,6 +605,34 @@ class Warehouse extends DB_Table {
         }
 
         return '';
+    }
+
+    function update_stock_amount() {
+
+
+        $stock_amount = 0;
+
+        $sql = sprintf('SELECT sum(`Stock Value` ) AS amount FROM `Part Location Dimension` WHERE `Part Location Warehouse Key`=%d', $this->id);
+
+
+        if ($result = $this->db->query($sql)) {
+            if ($row = $result->fetch()) {
+
+                $stock_amount = $row['amount'];
+            }
+        } else {
+            print_r($error_info = $this->db->errorInfo());
+            exit;
+        }
+
+
+        $this->fast_update(
+            array(
+                'Warehouse Stock Amount' => $stock_amount
+            )
+        );
+
+
     }
 
     function create_category($raw_data) {
@@ -853,10 +844,10 @@ class Warehouse extends DB_Table {
         }
     }
 
-    function update_inventory_snapshot($from='', $to = false) {
+    function update_inventory_snapshot($from = '', $to = false) {
 
-        if($from==''){
-            $from=gmdate('Y-m-d',strtotime($this->data['Warehouse Valid From'].' +0:00'));
+        if ($from == '') {
+            $from = gmdate('Y-m-d', strtotime($this->data['Warehouse Valid From'].' +0:00'));
         }
 
         if (!$to) {
@@ -919,48 +910,60 @@ class Warehouse extends DB_Table {
 			count(DISTINCT `Part SKU`) AS parts,`Date`, count(DISTINCT `Location Key`) AS locations,
 			sum(`Value At Cost Open`) AS open ,sum(`Value At Cost High`) AS high,sum(`Value At Cost Low`) AS low,sum(`Value At Cost`) AS close ,
 			sum(`Value At Day Cost Open`) AS open_value_at_day ,sum(`Value At Day Cost High`) AS high_value_at_day,sum(`Value At Day Cost Low`) AS low_value_at_day,sum(`Value At Day Cost`) AS close_value_at_day,
-			sum(`Value Commercial Open`) AS open_commercial_value ,sum(`Value Commercial High`) AS high_commercial_value,sum(`Value Commercial Low`) AS low_commercial_value,sum(`Value Commercial`) AS close_commercial_value
+			sum(`Value Commercial Open`) AS open_commercial_value ,sum(`Value Commercial High`) AS high_commercial_value,sum(`Value Commercial Low`) AS low_commercial_value,sum(`Value Commercial`) AS close_commercial_value,
+			
+			sum(`Inventory Spanshot Amount In PO`) AS amount_in_po,
+			sum(`Inventory Spanshot Amount In Other`) AS amount_in_other,
+			sum(`Inventory Spanshot Amount Out Sales`) AS amount_out_sales,
+			sum(`Inventory Spanshot Amount Out Other`) AS amount_out_other
+
+			
+			
+			
 			FROM `Inventory Spanshot Fact` WHERE `Warehouse Key`=%d AND `Date`=%s", $this->id, prepare_mysql($row['Date'])
 
                 );
 
-               // print "$sql\n";
+                // print "$sql\n";
 
                 if ($result2 = $this->db->query($sql)) {
                     if ($row2 = $result2->fetch()) {
 
 
-                     //   print_r($row2);
+                        //   print_r($row2);
 
                         $sql = sprintf(
                             "INSERT INTO `Inventory Warehouse Spanshot Fact` (`Date`,`Warehouse Key`,`Parts`,`Locations`,
 				`Value At Cost`,`Value At Day Cost`,`Value Commercial`,`Value At Cost Open`,`Value At Cost High`,`Value At Cost Low`,`Value At Day Cost Open`,`Value At Day Cost High`,`Value At Day Cost Low`,
-				`Value Commercial Open`,`Value Commercial High`,`Value Commercial Low`,`Dormant 1 Year Value At Day Cost`
+				`Value Commercial Open`,`Value Commercial High`,`Value Commercial Low`,`Dormant 1 Year Value At Day Cost`,
+				`Inventory Warehouse Spanshot In PO`,`Inventory Warehouse Spanshot In Other`,`Inventory Warehouse Spanshot Out Sales`,`Inventory Warehouse Spanshot Out Other`
 
-				) VALUES (%s,%d,%.2f,%.2f,%.2f, %f,%f,%f,%f,%f,%f,%f,%f,%f,%d,%d,%.2f) ON DUPLICATE KEY UPDATE
+				) VALUES (%s,%d,%.2f,%.2f,%.2f, %f,%f,%f,%f,%f,%f,%f,%f,%f,%d,%d,%.2f,%.2f,%.2f,%.2f,%.2f) ON DUPLICATE KEY UPDATE
 					`Value At Cost`=%.2f, `Value At Day Cost`=%.2f,`Value Commercial`=%.2f,
 			`Value At Cost Open`=%f,`Value At Cost High`=%f,`Value At Cost Low`=%f,
 			`Value At Day Cost Open`=%f,`Value At Day Cost High`=%f,`Value At Day Cost Low`=%f,
 			`Value Commercial Open`=%f,`Value Commercial High`=%f,`Value Commercial Low`=%f,
-			`Parts`=%d,`Locations`=%d,`Dormant 1 Year Value At Day Cost`=%.2f
+			`Parts`=%d,`Locations`=%d,`Dormant 1 Year Value At Day Cost`=%.2f,
+			`Inventory Warehouse Spanshot In PO`=%.2f,`Inventory Warehouse Spanshot In Other`=%.2f,`Inventory Warehouse Spanshot Out Sales`=%.2f,`Inventory Warehouse Spanshot Out Other`=%.2f
 			", prepare_mysql($row['Date']),
 
                             $this->id, $row2['parts'], $row2['locations'],
 
                             $row2['close'], $row2['close_value_at_day'], $row2['close_commercial_value'], $row2['open'], $row2['high'], $row2['low'],
 
-                            $row2['open_value_at_day'], $row2['high_value_at_day'], $row2['low_value_at_day'], $row2['open_commercial_value'], $row2['high_commercial_value'], $row2['low_commercial_value'], $dormant_1y_open_value_at_day,
+                            $row2['open_value_at_day'], $row2['high_value_at_day'], $row2['low_value_at_day'], $row2['open_commercial_value'], $row2['high_commercial_value'], $row2['low_commercial_value'], $dormant_1y_open_value_at_day, $row2['amount_in_po'],
+                            $row2['amount_in_other'], $row2['amount_out_sales'], $row2['amount_out_other'],
 
                             $row2['close'], $row2['close_value_at_day'], $row2['close_commercial_value'], $row2['open'], $row2['high'], $row2['low'],
 
                             $row2['open_value_at_day'], $row2['high_value_at_day'], $row2['low_value_at_day'], $row2['open_commercial_value'], $row2['high_commercial_value'], $row2['low_commercial_value'], $row2['parts'], $row2['locations'],
-                            $dormant_1y_open_value_at_day
+                            $dormant_1y_open_value_at_day, $row2['amount_in_po'], $row2['amount_in_other'], $row2['amount_out_sales'], $row2['amount_out_other']
 
 
                         );
                         $this->db->exec($sql);
 
-                       //  print "$sql\n";
+                        // print "$sql\n";
 
 
                     }
@@ -976,6 +979,7 @@ class Warehouse extends DB_Table {
             exit;
         }
 
+        //print "$from \n";
 
     }
 
@@ -1042,7 +1046,6 @@ class Warehouse extends DB_Table {
     function get_kpi($interval) {
 
         global $account;
-
 
 
         include_once 'utils/date_functions.php';
@@ -1162,7 +1165,6 @@ class Warehouse extends DB_Table {
         );
 
 
-
         $where = sprintf(
             " where `Inventory Transaction Type` = 'Adjust' and  `Inventory Transaction Quantity`>0  and `Inventory Transaction Section`='Audit'  AND `Warehouse Key`=%d %s %s  ", $this->id, ($from_date ? sprintf('and  `Date`>=%s', prepare_mysql($from_date)) : ''),
             ($to_date ? sprintf('and `Date`<%s', prepare_mysql($to_date)) : '')
@@ -1189,21 +1191,21 @@ class Warehouse extends DB_Table {
         }
 
 
-        $stock_found= array(
+        $stock_found = array(
             'stock_found_amount'       => $stock_found,
             'stock_found_transactions' => number($_stock_found_transactions)
         );
 
 
         $stock = array(
-            'stock_amount' => money($this->get('Warehouse Stock Amount'), $account->get('Account Currency'),false,'NO_FRACTION_DIGITS'),
+            'stock_amount' => money($this->get('Warehouse Stock Amount'), $account->get('Account Currency'), false, 'NO_FRACTION_DIGITS'),
             //'stock_leakage_down_transactions' => number($_stock_leakage_transactions)
         );
 
         return array(
 
             'stock_leakage' => $stock_leakage,
-            'stock_found' => $stock_found,
+            'stock_found'   => $stock_found,
             'wpm'           => $wpm,
             'stock'         => $stock,
 
@@ -1473,11 +1475,8 @@ class Warehouse extends DB_Table {
         $index = 0;
 
 
-
         foreach ($dates as $date_frequency_period) {
             $index++;
-
-
 
 
             $sales_data = $this->get_leakages_data($date_frequency_period['from'], $date_frequency_period['to']);
@@ -1485,7 +1484,7 @@ class Warehouse extends DB_Table {
             //print_r($date_frequency_period);
             //print_r($sales_data);
             //exit;
-            $_date      = gmdate('Y-m-d', strtotime($date_frequency_period['from'].' +0:00'));
+            $_date = gmdate('Y-m-d', strtotime($date_frequency_period['from'].' +0:00'));
 
 
             if ($sales_data['up_transactions'] > 0 or $sales_data['down_transactions'] > 0) {
@@ -1558,9 +1557,8 @@ class Warehouse extends DB_Table {
                         $sales_data = $this->get_sales_data($date_frequency_period['from'], $date_frequency_period['to'], $part_skus);
 
 
-
-                        $from_1yb   = date('Y-m-d H:i:s', strtotime($date_frequency_period['from'].' -1 year'));
-                        $to_1yb     = date('Y-m-d H:i:s', strtotime($date_frequency_period['to'].' -1 year'));
+                        $from_1yb = date('Y-m-d H:i:s', strtotime($date_frequency_period['from'].' -1 year'));
+                        $to_1yb   = date('Y-m-d H:i:s', strtotime($date_frequency_period['to'].' -1 year'));
 
 
                         $sales_data_1yb = $this->get_sales_data($from_1yb, $to_1yb, $part_skus);
@@ -1679,7 +1677,7 @@ class Warehouse extends DB_Table {
 
         }
 
-      //  exit("x--------------------z\n");
+        //  exit("x--------------------z\n");
 
         if ($fork_key) {
 

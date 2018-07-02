@@ -871,6 +871,14 @@ ALTER TABLE `Email Tracking Dimension`
   ALTER TABLE `Email Tracking Dimension` ADD `Email Tracking Unsubscribed` ENUM('Yes','No') NOT NULL DEFAULT 'No' AFTER `Email Tracking Spam`;
 
 
+ALTER TABLE `Inventory Spanshot Fact` ADD `Inventory Spanshot Amount In PO` DECIMAL(12,2) NOT NULL DEFAULT '0.00' AFTER `Value Commercial Low`, ADD `Inventory Spanshot Amount In Other` DECIMAL(12,2) NOT NULL DEFAULT '0.00' AFTER `Inventory Spanshot Amount In PO`, ADD `Inventory Spanshot Amount Out Sales` DECIMAL(12,2) NOT NULL DEFAULT '0.00' AFTER `Inventory Spanshot Amount In Other`, ADD `Inventory Spanshot Amount Out Other` DECIMAL(12,2) NOT NULL DEFAULT '0.00' AFTER `Inventory Spanshot Amount Out Sales`;
+
+ALTER TABLE `Inventory Warehouse Spanshot Fact` ADD `Inventory Warehouse Spanshot In PO` DECIMAL(12,2) NOT NULL DEFAULT '0.00' AFTER `Dormant 1 Year Value At Day Cost`, ADD `Inventory Warehouse Spanshot In Other` DECIMAL(12,2) NOT NULL DEFAULT '0.00' AFTER `Inventory Warehouse Spanshot In PO`, ADD `Inventory Warehouse Spanshot Out Sales` DECIMAL(12,2) NOT NULL DEFAULT '0.00' AFTER `Inventory Warehouse Spanshot In Other`, ADD `Inventory Warehouse Spanshot Out Other` DECIMAL(12,2) NOT NULL DEFAULT '0.00' AFTER `Inventory Warehouse Spanshot Out Sales`;
+
+
+
+
+
 ======= fer migration ordering in dw and costa
 
                     ALTER TABLE `Invoice Tax Dimension` ADD `Invoice Tax Key` INT UNSIGNED NOT NULL AUTO_INCREMENT FIRST, ADD PRIMARY KEY (`Invoice Tax Key`);
