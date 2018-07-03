@@ -496,6 +496,11 @@ $modules = array(
                         'icon'  => 'sliders-h',
                     ),
 
+                    'email_campaign_type.next_recipients' => array(
+                        'label' => _('Next recipients'),
+                        'title' => _('Next mailshot recipients'),
+                        'icon'  => 'user-clock'
+                    ),
                     'email_campaign_type.workshop' => array(
                         'label' => _('Workshop'),
                         'icon'  => 'wrench'
@@ -3011,7 +3016,7 @@ $modules = array(
                         'icon'  => 'database'
                     ),
                     'webpage.preview' => array(
-                        'label' => _('Data'),
+                        'label' => _('Workshop'),
                         'icon'  => 'wrench'
                     ),
 
