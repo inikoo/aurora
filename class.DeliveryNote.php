@@ -69,10 +69,10 @@ class DeliveryNote extends DB_Table {
 
         } else {
 
-         // print
+            // print
             return;
         }
-       //   print $sql;
+        //   print $sql;
 
 
         if ($this->data = $this->db->query($sql)->fetch()) {
@@ -828,9 +828,6 @@ class DeliveryNote extends DB_Table {
     function create_inventory_transaction_fact_item($product_id, $map_to_otf_key, $to_sell_quantity, $bonus_qty, $date, $supplier_metadata_array) {
 
 
-
-
-
         $product = new Product('id', $product_id);
 
         $part_list = $product->get_parts_data();
@@ -1479,6 +1476,22 @@ class DeliveryNote extends DB_Table {
 
 
                 $sql = sprintf(
+                    'SELECT * FROM `Inventory Transaction Fact`  WHERE  `Delivery Note Key`=%d  AND `Inventory Transaction Section`="OIP"  ', $this->id
+                );
+
+
+                if ($result = $this->db->query($sql)) {
+                    foreach ($result as $row) {
+
+                        $sql = sprintf('UPDATE `Inventory Transaction Fact`  SET `Inventory Transaction Type`="FailSale" , `Inventory Transaction Section`="Out"  WHERE `Inventory Transaction Key`=%d  ', $row['Inventory Transaction Key']);
+                        $this->db->exec($sql);
+
+
+                    }
+                }
+
+
+                $sql = sprintf(
                     'SELECT * FROM `Inventory Transaction Fact`  WHERE  `Delivery Note Key`=%d  AND `Inventory Transaction Type`="Sale" AND `Inventory Transaction Section`="Out"  ', $this->id
                 );
 
@@ -2049,7 +2062,7 @@ class DeliveryNote extends DB_Table {
 
     function delete() {
 
-        $customer         = get_object('Customer', $this->get('Delivery Note Customer Key'));
+        $customer = get_object('Customer', $this->get('Delivery Note Customer Key'));
 
 
         include_once 'class.PartLocation.php';
@@ -2134,7 +2147,6 @@ class DeliveryNote extends DB_Table {
 
 
         $customer->update_last_dispatched_order_key();
-
 
 
         return 'orders/'.$order->get('Order Store Key').'/'.$order->id;
@@ -2273,7 +2285,7 @@ class DeliveryNote extends DB_Table {
                 'Delivery_Note_Dispatched_Datetime'           => '&nbsp;'.$this->get('Dispatched Datetime').'&nbsp;',
 
                 'Delivery_Note_State' => $this->get('State'),
-                'Items_Cost' => $this->get('Items Cost')
+                'Items_Cost'          => $this->get('Items Cost')
 
 
             ),
