@@ -32,7 +32,7 @@ function send_periodic_email_mailshots($db, $account) {
                     date_default_timezone_set($metadata['Schedule']['Timezone']);
 
 
-                    if ($metadata['Schedule']['Time'] == date('H:i') ) {
+                    if ($metadata['Schedule']['Time'] == date('H:i:00') ) {
                         if (isset($metadata['Schedule']['Days'])) {
                             if ($metadata['Schedule']['Days'][iso_860_to_day_name(date('N'))] == 'Yes') {
 
