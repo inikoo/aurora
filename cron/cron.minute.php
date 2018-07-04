@@ -39,7 +39,7 @@ function send_periodic_email_mailshots($db, $account) {
 
 
 
-                              
+
 
                                new_housekeeping_fork(
                                     'au_housekeeping', array(
