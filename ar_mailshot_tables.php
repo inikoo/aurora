@@ -175,6 +175,8 @@ function email_tracking_events($_data, $db, $user) {
     foreach ($db->query($sql) as $data) {
 
 
+
+
         switch ($data['Email Tracking Event Type']) {
             case 'Opened':
                 $event = _('Opened');
@@ -191,9 +193,7 @@ function email_tracking_events($_data, $db, $user) {
 
         $adata[] = array(
             'id'   => (integer)$data['Email Tracking Event Key'],
-            'date' => strftime(
-                "%a %e %b %Y %H:%M %Z ", strtotime($data['Email Tracking Event Date']." +00:00")
-            ),
+            'date' => strftime("%a %e %b %Y %H:%M %Z ", strtotime($data['Email Tracking Event Date']." +00:00")),
 
             'note'  => $note,
             'event' => $event,
@@ -230,6 +230,8 @@ function sent_emails($_data, $db, $user) {
     $parent = get_object($_data['parameters']['parent'], $_data['parameters']['parent_key']);
     if ($_data['parameters']['parent'] == 'mailshot') {
         $email_campaign_type= get_object('email_campaign_type',$parent->get('Email Campaign Email Template Type Key'));
+    }elseif ($_data['parameters']['parent'] == 'customer') {
+        $_parent= get_object('customer',$_data['parameters']['parent_key']);
     }
 
     // print $sql;
@@ -239,6 +241,42 @@ function sent_emails($_data, $db, $user) {
     if ($result = $db->query($sql)) {
         foreach ($result as $data) {
 
+            switch ($data['Email Campaign Type Code']) {
+                case 'Newsletter':
+                    $_type  = _('Newsletter');
+                    break;
+                case 'Marketing':
+                    $_type  = _('Marketing mailshot');
+                    break;
+                case 'AbandonedCart':
+                    $_type  = _('Abandoned cart');
+                    break;
+                case 'OOS Notification':
+                    $_type = _('Back in stock email');
+                    break;
+                case 'Registration':
+                    $_type = _('Welcome email');
+                    break;
+                case 'Password Reminder':
+                    $_type = _('Password reset email');
+                    break;
+                case 'Order Confirmation':
+                    $_type = _('Order confirmation');
+                    break;
+                case 'GR Reminder':
+                    $_type = _('Reorder reminder');
+                    break;
+                case 'Invite Mailshot':
+                    $_type  = _('Invitation');
+                    break;
+                case 'Invite':
+                    $_type  = _('Personalized invitation');
+                    break;
+                default:
+                    $_type = $data['Email Campaign Type Code'];
+
+
+            }
 
             switch ($data['Email Tracking State']) {
                 case 'Ready':
@@ -277,13 +315,19 @@ function sent_emails($_data, $db, $user) {
 
             $customer = sprintf('<span class="link" onclick="change_view(\'customers/%d/%d\')"  >%s (%05d)</span>', $data['Customer Store Key'], $data['Customer Key'], $data['Customer Name'], $data['Customer Key']);
 
-
+            $subject='';
             if ($_data['parameters']['parent'] == 'email_campaign_type') {
                 $email = sprintf('<span class="link" onclick="change_view(\'email_campaign_type/%d/%d/tracking/%d\')"  >%s</span>', $parent->get('Store Key'), $parent->id, $data['Email Tracking Key'], $data['Email Tracking Email']);
             } elseif ($_data['parameters']['parent'] == 'mailshot') {
 
                 $email = sprintf(
                     '<span class="link" onclick="change_view(\'email_campaign_type/%d/%d/mailshot/%d/tracking/%d\')"  >%s</span>', $email_campaign_type->get('Store Key'),$email_campaign_type->id, $parent->id, $data['Email Tracking Key'], $data['Email Tracking Email']
+                );
+
+            } elseif ($_data['parameters']['parent'] == 'customer') {
+                $email='';
+                $subject = sprintf(
+                    '<span class="link" onclick="change_view(\'customers/%d/%d/email/%d\')"  >%s</span>', $_parent->get('Store Key'),$_parent->id, $data['Email Tracking Key'], $data['Published Email Template Subject']
                 );
 
             }
@@ -293,6 +337,9 @@ function sent_emails($_data, $db, $user) {
                 'id'       => (integer)$data['Email Tracking Key'],
                 'state'    => $state,
                 'email'    => $email,
+                'type'    => $_type,
+                'subject' => $subject,
+
                 'customer' => $customer,
                 'date'     => strftime("%a, %e %b %Y %R:%S", strtotime($data['Email Tracking Created Date']." +00:00")),
 

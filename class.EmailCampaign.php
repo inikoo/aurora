@@ -423,6 +423,7 @@ class EmailCampaign extends DB_Table {
                 case 'GR Reminder':
 
 
+
                     $metadata = $this->get('Metadata');
                     //print_r($metadata);
 

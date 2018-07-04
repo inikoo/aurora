@@ -1286,7 +1286,6 @@ function parse_request($_data, $db, $modules, $account = '', $user = '', $is_set
 
                     $key = $view_path[0];
 
-
                     if (isset($view_path[1])) {
                         if ($view_path[1] == 'order') {
 
@@ -1302,6 +1301,8 @@ function parse_request($_data, $db, $modules, $account = '', $user = '', $is_set
                                 }
                             }
                         }
+
+
 
 
                     }
@@ -2066,7 +2067,6 @@ function parse_request($_data, $db, $modules, $account = '', $user = '', $is_set
                     $section    = 'customers';
                     $parent     = 'store';
                     $parent_key = $arg1;
-
                     if (isset($view_path[0])) {
 
                         if (is_numeric($view_path[0])) {
@@ -2076,7 +2076,22 @@ function parse_request($_data, $db, $modules, $account = '', $user = '', $is_set
                             $parent_key = $arg1;
                             $object     = 'customer';
                             $key        = $view_path[0];
+                            if (isset($view_path[1])) {
+                                if ($view_path[1] == 'email') {
 
+
+                                    $module     = 'customers';
+                                    $section    = 'email_tracking';
+                                    $parent     = 'customer';
+                                    $parent_key = $key;
+                                    $object     = 'email_tracking';
+                                    if (isset($view_path[2])) {
+                                        if (is_numeric($view_path[2])) {
+                                            $key = $view_path[2];
+                                        }
+                                    }
+                                }
+                            }
 
                         } elseif ($view_path[0] == 'lists') {
                             $section = 'lists';

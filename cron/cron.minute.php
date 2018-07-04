@@ -33,26 +33,18 @@ function send_periodic_email_mailshots($db, $account) {
 
 
 
-                    print $metadata['Schedule']['Time'] .' '.date('H:i:00')."\n";
-
-                    if ($metadata['Schedule']['Time'] == date('H:i:00') ) {
+                    if ($metadata['Schedule']['Time'] == date('H:i:00')) {
                         if (isset($metadata['Schedule']['Days'])) {
                             if ($metadata['Schedule']['Days'][iso_860_to_day_name(date('N'))] == 'Yes') {
 
-
-
-
-print_r($row);
-
-                               new_housekeeping_fork(
+                                new_housekeeping_fork(
                                     'au_housekeeping', array(
-                                    'type'     => 'create_and_send_mailshot',
+                                    'type'                    => 'create_and_send_mailshot',
                                     'email_template_type_key' => $row['Email Campaign Type Key'],
 
                                 ), $account->get('Account Code')
                                 );
 
-                              // exit;
 
                             }
                         }

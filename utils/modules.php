@@ -670,6 +670,10 @@ $modules = array(
                         'label' => _('Insights'),
                         'icon'  => 'graduation-cap'
                     ),
+                    'customer.sent_emails'  => array(
+                        'label' => _('Sent emails'),
+                        'icon'  => 'paper-plane'
+                    ),
                     'customer.history'   => array(
                         'label' => _('History, notes'),
                         'icon'  => 'sticky-note'

@@ -26,7 +26,7 @@ if ($result=$db->query($sql)) {
 
 
 
-        $html='<div style="margin:auto;width: 700px;background-color: #fff;margin-top:20px;"><div style="border:1px solid #ccc;padding:10px 20px"><span class="discreet">'._('Subject').':</span> '.$published_email_template->get('Published Email Template Subject').'</div><div style="border:1px solid #ccc;border-top:none">'.$published_email_template->get('Published Email Template HTML').'</div></div>';
+        $html='<div style="margin:auto;width: 700px;background-color: #fff;margin-top:20px;"> <div class="very_discreet italic" style="margin-bottom: 2px">(Not actual copy archived, showing template)</div><div style="border:1px solid #ccc;padding:10px 20px"><span class="discreet">'._('Subject').':</span> '.$published_email_template->get('Published Email Template Subject').'</div><div style="border:1px solid #ccc;border-top:none">'.$published_email_template->get('Published Email Template HTML').'</div></div>';
 
     }
 }else {
