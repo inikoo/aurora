@@ -2826,14 +2826,14 @@ function get_tabs($data, $db, $account, $modules, $user, $smarty, $requested_tab
 
         if (in_array(
             $data['_object']->get('Email Campaign Type Code'), array(
-            'Registration',
-            'Password Reminder',
-            'Invite',
-            'Delivery Confirmation',
-            'Order Confirmation'
-        )
+                                                                 'Registration',
+                                                                 'Password Reminder',
+                                                                 'Invite',
+                                                                 'Delivery Confirmation',
+                                                                 'Order Confirmation'
+                                                             )
         )) {
-            $_content['tabs']['email_campaign_type.mailshots']['class'] = 'hide';
+            $_content['tabs']['email_campaign_type.mailshots']['class']       = 'hide';
             $_content['tabs']['email_campaign_type.next_recipients']['class'] = 'hide';
 
             if ($data['tab'] == 'email_campaign_type.mailshots') {
@@ -3805,7 +3805,6 @@ function get_view_position($db, $state, $user, $smarty, $account) {
             $state['current_store'] = $state['store']->id;
 
 
-
             switch ($state['parent']) {
                 case 'store':
                     $store                  = new Store($state['parent_key']);
@@ -3955,6 +3954,25 @@ function get_view_position($db, $state, $user, $smarty, $account) {
                             'reference' => ''
                         );
 
+                    } elseif ($state['_parent']->get_object_name() == 'Customer') {
+                        $branch[] = array(
+                            'label'     => _('Customers').' '.$store->data['Store Code'],
+                            'icon'      => 'users',
+                            'reference' => 'customers/'.$store->id
+                        );
+
+                        $branch[] = array(
+                            'label'     => '<span class="Customer_Name id">'.$state['_parent']->get('Name').'</span>',
+                            'icon'      => 'user',
+                            'reference' => 'customers/'.$store->id.'/'.$state['_parent']->id
+                        );
+
+                        $branch[] = array(
+                            'label'     => _('Sent email'),
+                            'icon'      => 'paper-plane',
+                            'reference' => ''
+                        );
+
                     } elseif ($state['_parent']->get_object_name() == 'Email Campaign Type') {
 
                         $branch[] = array(
@@ -3975,10 +3993,10 @@ function get_view_position($db, $state, $user, $smarty, $account) {
                             'reference' => ''
                         );
 
-                    }elseif ($state['_parent']->get_object_name() == 'Email Campaign') {
+                    } elseif ($state['_parent']->get_object_name() == 'Email Campaign') {
 
 
-                        $email_campaign_type= get_object('email_campaign_type',$state['_parent']->get('Email Campaign Email Template Type Key'));
+                        $email_campaign_type = get_object('email_campaign_type', $state['_parent']->get('Email Campaign Email Template Type Key'));
 
 
                         $branch[] = array(
@@ -4149,7 +4167,7 @@ function get_view_position($db, $state, $user, $smarty, $account) {
                     break;
                 case 'email_campaigns':
                     $branch[] = array(
-                        'label'     => _("Email communications" ).' <span class="id">'.$store->data['Store Code'].'</span>',
+                        'label'     => _("Email communications").' <span class="id">'.$store->data['Store Code'].'</span>',
                         'icon'      => 'paper-plane',
                         'reference' => 'customers/'.$store->id.'/email_campaigns'
                     );

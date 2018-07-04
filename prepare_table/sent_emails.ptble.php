@@ -22,6 +22,11 @@ switch ($parameters['parent']) {
             ' where `Email Tracking Email Mailshot Key`=%d', $parameters['parent_key']
         );
         break;
+    case('customer'):
+        $where = sprintf(
+            ' where `Email Tracking Recipient`="Customer" and `Email Tracking Recipient Key`=%d', $parameters['parent_key']
+        );
+        break;
 
     default:
         $where = 'where false';
@@ -49,8 +54,8 @@ if ($order == 'subject') {
 } else {
     $order = '`Email Tracking Created Date`';
 }
-$table  = '`Email Tracking Dimension`  left join `Published Email Template Dimension` S on (`Email Tracking Published Email Template Key`=`Published Email Template Key`)  left join `Customer Dimension` C on (C.`Customer Key`=`Email Tracking Recipient Key`)';
-$fields = "`Customer Key`,`Customer Name`,`Email Tracking Email`,`Published Email Template Subject`,`Email Tracking Key`,`Email Tracking State`,`Email Tracking Created Date`,`Customer Store Key`";
+$table  = '`Email Tracking Dimension`  left join `Email Campaign Type Dimension`  on (`Email Tracking Email Template Type Key`=`Email Campaign Type Key`)   left join `Published Email Template Dimension` S on (`Email Tracking Published Email Template Key`=`Published Email Template Key`)  left join `Customer Dimension` C on (C.`Customer Key`=`Email Tracking Recipient Key`)';
+$fields = "`Email Campaign Type Code`,`Customer Key`,`Customer Name`,`Email Tracking Email`,`Published Email Template Subject`,`Email Tracking Key`,`Email Tracking State`,`Email Tracking Created Date`,`Customer Store Key`";
 
 
 $sql_totals = "select count(*) as num from $table $where ";

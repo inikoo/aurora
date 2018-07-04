@@ -2662,6 +2662,10 @@ function get_email_tracking_navigation($data, $smarty, $user, $db) {
                 $tab      = 'mailshot.sent_emails';
                 $_section = 'emails';
                 break;
+            case 'customer':
+                $tab      = 'customer.sent_emails';
+                $_section = 'customers';
+                break;
 
         }
 
@@ -2772,6 +2776,57 @@ function get_email_tracking_navigation($data, $smarty, $user, $db) {
 
 
         switch ($data['parent']) {
+            case 'customer':
+
+                $receiver=$data['_parent'];
+                $placeholder = _('Search customers');
+                $sections    = get_sections('customers', $receiver->get('Store Key'));
+
+
+                $up_button = array(
+                    'icon'      => 'arrow-up',
+                    'title'     => $receiver->get('Name'),
+                    'reference' => strtolower($receiver->get_object_name()).'s/'.$receiver->get('Store Key').'/'.$receiver->id
+                );
+
+                if ($prev_key) {
+                    $left_buttons[] = array(
+                        'icon'      => 'arrow-left',
+                        'title'     => $prev_title,
+                        'reference' => strtolower($receiver->get_object_name()).'s/'.$receiver->get('Store Key').'/'.$receiver->id.'/email/'.$prev_key
+                    );
+
+                } else {
+                    $left_buttons[] = array(
+                        'icon'  => 'arrow-left disabled',
+                        'title' => '',
+                        'url'   => ''
+                    );
+
+                }
+                $left_buttons[] = $up_button;
+
+
+                if ($next_key) {
+                    $left_buttons[] = array(
+                        'icon'      => 'arrow-right',
+                        'title'     => $next_title,
+                        'reference' => strtolower($receiver->get_object_name()).'s/'.$receiver->get('Store Key').'/'.$receiver->id.'/email/'.$next_key
+                    );
+
+                } else {
+                    $left_buttons[] = array(
+                        'icon'  => 'arrow-right disabled',
+                        'title' => '',
+                        'url'   => ''
+                    );
+
+                }
+
+                $title =sprintf(_('Invitation email for %s'),'<span class="id">'.$receiver->get('Name').'</span>' );
+
+                break;
+
             case 'prospect':
 
                 $receiver=$data['_parent'];
@@ -2822,6 +2877,7 @@ function get_email_tracking_navigation($data, $smarty, $user, $db) {
                 $title =sprintf(_('Invitation email for %s'),'<span class="id">'.$receiver->get('Name').'</span>' );
 
                 break;
+
             case 'email_campaign_type':
 
                 $placeholder = _('Search emails');
