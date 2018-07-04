@@ -32,6 +32,9 @@ function send_periodic_email_mailshots($db, $account) {
                     date_default_timezone_set($metadata['Schedule']['Timezone']);
 
 
+
+                    print $metadata['Schedule']['Time'] .' '.date('H:i:00')."\n";
+
                     if ($metadata['Schedule']['Time'] == date('H:i:00') ) {
                         if (isset($metadata['Schedule']['Days'])) {
                             if ($metadata['Schedule']['Days'][iso_860_to_day_name(date('N'))] == 'Yes') {
@@ -39,7 +42,7 @@ function send_periodic_email_mailshots($db, $account) {
 
 
 
-
+print_r($row);
 
                                new_housekeeping_fork(
                                     'au_housekeeping', array(
