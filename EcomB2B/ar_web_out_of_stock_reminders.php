@@ -88,6 +88,9 @@ function add_out_of_stock_reminder($data, $customer, $website, $editor, $db) {
 
     );
 
+    //print $sql;
+
+
 
     $db->exec($sql);
 

@@ -1781,6 +1781,45 @@ function parse_request($_data, $db, $modules, $account = '', $user = '', $is_set
 
                                     }
 
+                                } elseif ($view_path[1] == 'mailshot') {
+
+                                    $store_key = $arg1;
+
+                                    $section = 'mailshot';
+
+                                    $parent     = 'email_campaign_type';
+                                    $parent_key = $key;
+
+                                    if (is_numeric($view_path[2])) {
+                                        $section = 'mailshot';
+                                        $object  = 'mailshot';
+                                        $key     = $view_path[2];
+                                        if (isset($view_path[3])) {
+
+
+                                            if ($view_path[3] == 'tracking') {
+
+
+                                                $section = 'email_tracking';
+
+                                                $parent     = 'mailshot';
+                                                $parent_key = $key;
+
+                                                if (is_numeric($view_path[4])) {
+                                                    $section = 'email_tracking';
+                                                    $object  = 'email_tracking';
+                                                    $key     = $view_path[4];
+
+
+                                                }
+
+                                            }
+                                        }
+
+
+
+                                    }
+
                                 }
 
 

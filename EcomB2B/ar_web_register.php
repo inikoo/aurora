@@ -37,7 +37,7 @@ switch ($tipo) {
                          'store_key' => array('type' => 'key')
                      )
         );
-        register($db, $website, $data, $editor,$account);
+        register($db, $website, $data, $editor);
         break;
 
 
@@ -51,7 +51,7 @@ switch ($tipo) {
         break;
 }
 
-function register($db, $website, $data, $editor,$account) {
+function register($db, $website, $data, $editor) {
 
 
     include_once 'class.Public_Store.php';
@@ -145,7 +145,7 @@ function register($db, $website, $data, $editor,$account) {
 
             );
 
-            $published_email_template->send($customer,$send_data);
+            $published_email_template->send($customer,$send_data,$smarty);
 
 
 

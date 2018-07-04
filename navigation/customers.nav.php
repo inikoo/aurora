@@ -1991,13 +1991,15 @@ function get_email_campaign_navigation($data, $smarty, $user, $db, $account) {
 
     $_section = 'email_campaigns';
 
-
     switch ($data['section']) {
 
         case 'newsletter':
             $tab = 'email_campaigns.newsletters';
             break;
 
+        case 'mailshot':
+            $tab = 'email_campaign_type.mailshots';
+            break;
 
     }
 
@@ -2101,6 +2103,8 @@ function get_email_campaign_navigation($data, $smarty, $user, $db, $account) {
 
     if ($data['section'] == 'newsletter') {
 
+        $title = _('Newsletter').' <span class="id Email_Campaign_Name">'.$object->get('Name').'</span>';
+
         $up_button = array(
             'icon'      => 'arrow-up',
             'title'     => _("Email communications").' ('.$data['_parent']->get('Code').')',
@@ -2146,6 +2150,56 @@ function get_email_campaign_navigation($data, $smarty, $user, $db, $account) {
 
 
         $title = _('Newsletter').' <span class="id Email_Campaign_Name">'.$object->get('Name').'</span>';
+
+    }
+    elseif ($data['section'] == 'mailshot') {
+
+        $title = _('Mailshot').' <span class="id Email_Campaign_Name">'.$object->get('Name').'</span>';
+
+        $up_button = array(
+            'icon'      => 'arrow-up',
+            'title'     => _("Email communications").' ('.$data['_parent']->get('Code').')',
+            'reference' => 'email_campaign_type/'.$data['_parent']->get('Store Key').'/'.$data['_parent']->id
+        );
+
+        if ($prev_key) {
+            $left_buttons[] = array(
+                'icon'      => 'arrow-left',
+                'title'     => $prev_title,
+                'reference' => 'email_campaign_type/'.$data['_parent']->get('Store Key').'/'.$data['_parent']->id.'/mailshot/'.$prev_key
+            );
+
+        } else {
+            $left_buttons[] = array(
+                'icon'  => 'arrow-left disabled',
+                'title' => '',
+                'url'   => ''
+            );
+
+        }
+        $left_buttons[] = $up_button;
+
+
+        if ($next_key) {
+            $left_buttons[] = array(
+                'icon'      => 'arrow-right',
+                'title'     => $next_title,
+                'reference' => 'email_campaign_type/'.$data['_parent']->get('Store Key').'/'.$data['_parent']->id.'/mailshot/'.$next_key
+            );
+
+        } else {
+            $left_buttons[] = array(
+                'icon'  => 'arrow-right disabled',
+                'title' => '',
+                'url'   => ''
+            );
+
+        }
+
+
+        $sections = get_sections('customers', $data['_parent']->id);
+
+
 
     }
 
@@ -2604,6 +2658,10 @@ function get_email_tracking_navigation($data, $smarty, $user, $db) {
                 $tab      = 'email_campaign_type.sent_emails';
                 $_section = 'emails';
                 break;
+            case 'mailshot':
+                $tab      = 'mailshot.sent_emails';
+                $_section = 'emails';
+                break;
 
         }
 
@@ -2799,6 +2857,61 @@ function get_email_tracking_navigation($data, $smarty, $user, $db) {
                         'icon'      => 'arrow-right',
                         'title'     => $next_title,
                         'reference' => 'email_campaign_type/'.$data['_parent']->get('Store Key').'/'.$data['_parent']->id.'/tracking/'.$next_key
+                    );
+
+                } else {
+                    $left_buttons[] = array(
+                        'icon'  => 'arrow-right disabled',
+                        'title' => '',
+                        'url'   => ''
+                    );
+
+                }
+
+
+                $title =sprintf(_('Tracking email sent to %s'),'<span class="id">'.$data['_object']->get('Email Tracking Email').'</span>' );
+
+
+
+                break;
+            case 'mailshot':
+
+                $email_campaign_type= get_object('email_campaign_type',$data['_parent']->get('Email Campaign Email Template Type Key'));
+
+
+                $placeholder = _('Search emails');
+                $sections    = get_sections('customers', $email_campaign_type->get('Store Key'));
+
+
+                $up_button = array(
+                    'icon'      => 'arrow-up',
+                    'title'     => $data['_parent']->get('Label'),
+                    'reference' => 'email_campaign_type/'.$email_campaign_type->get('Store Key').'/'.$email_campaign_type->id.'/mailshot/'.$data['_parent']->id
+                );
+
+                if ($prev_key) {
+                    $left_buttons[] = array(
+                        'icon'      => 'arrow-left',
+                        'title'     => $prev_title,
+                        'reference' => 'email_campaign_type/'.$email_campaign_type->get('Store Key').'/'.$email_campaign_type->id.'/mailshot/'.$data['_parent']->id.'/tracking/'.$prev_key
+                    );
+
+                } else {
+                    $left_buttons[] = array(
+                        'icon'  => 'arrow-left disabled',
+                        'title' => '',
+                        'url'   => ''
+                    );
+
+                }
+                $left_buttons[] = $up_button;
+
+
+                if ($next_key) {
+                    $left_buttons[] = array(
+                        'icon'      => 'arrow-right',
+                        'title'     => $next_title,
+                        'reference' => 'email_campaign_type/'.$email_campaign_type->get('Store Key').'/'.$email_campaign_type->id.'/mailshot/'.$data['_parent']->id.'/tracking/'.$next_key
                     );
 
                 } else {

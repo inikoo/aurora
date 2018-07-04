@@ -91,6 +91,37 @@ if (isset($is_homepage)) {
     $smarty->assign('form_error', $form_error);
 
 
+} elseif (isset($is_unsubscribe)) {
+    include_once 'utils/public_object_functions.php';
+    include_once 'utils/detect_agent.php';
+
+    $website = get_object('Website', $_SESSION['website_key']);
+
+    $webpage_key = $website->get_system_webpage_key('unsubscribe.sys');
+
+
+    include_once('class.WebAuth.php');
+    $auth = new WebAuth();
+
+    $unsubscribe_customer_key = $auth->get_customer_from_unsubscribe_link((isset($_REQUEST['s']) ? $_REQUEST['s'] : ''), (isset($_REQUEST['a']) ? $_REQUEST['a'] : ''));
+
+
+    if($unsubscribe_customer_key!='') {
+        $unsubscribe_customer = get_object('Customer', $unsubscribe_customer_key);
+        if (!$unsubscribe_customer->id) {
+            $unsubscribe_customer_key = '';
+        }else{
+            $smarty->assign('unsubscribe_customer', $unsubscribe_customer);
+
+        }
+    }
+    $smarty->assign('selector', (isset($_REQUEST['s']) ? $_REQUEST['s'] : ''));
+    $smarty->assign('authenticator',(isset($_REQUEST['a']) ? $_REQUEST['a'] : ''));
+
+    $smarty->assign('unsubscribe_customer_key', $unsubscribe_customer_key);
+
+
+
 }
 
 //https://www.awgifts.eu/reset.php?s=ZBTN9OVoYabB&a=OZz-bvClmCKb0h8-QIYgz_UsR5sxz8PCR_rcs2_gFQZO
@@ -100,17 +131,27 @@ $cache_id = $_SESSION['website_key'].'|'.$webpage_key.'|'.($logged_in ? 'in' : '
 $template = $theme.'/webpage_blocks.'.$theme.'.'.$website_type.$template_suffix.'.tpl';
 
 
-$smarty->setCaching(Smarty::CACHING_LIFETIME_CURRENT);
-$smarty->setCacheLifetime(-1);
-$smarty->setCompileCheck(true);
+if (!(isset($is_unsubscribe) or isset($is_reset))) {
 
 
-if (!$smarty->isCached($template, $cache_id) ) {
+    $smarty->setCaching(Smarty::CACHING_LIFETIME_CURRENT);
+    $smarty->setCacheLifetime(-1);
+    $smarty->setCompileCheck(true);
+
+
+
+}
+
+
+if (!$smarty->isCached($template, $cache_id) or isset($is_unsubscribe) or isset($is_reset)) {
+
+
 
 
     include_once 'utils/public_object_functions.php';
 
     include_once 'utils/natural_language.php';
+
 
 
     $webpage = get_object('Webpage', $webpage_key);
@@ -178,23 +219,18 @@ if (!$smarty->isCached($template, $cache_id) ) {
         $countries = get_countries($website->get('Website Locale'));
 
 
-        foreach($website->get_poll_queries($webpage) as $poll_query){
-            if($poll_query['Customer Poll Query Registration Required']=='Yes'){
-                $required_fields[]='poll_'.$poll_query['Customer Poll Query Key'];
+        foreach ($website->get_poll_queries($webpage) as $poll_query) {
+            if ($poll_query['Customer Poll Query Registration Required'] == 'Yes') {
+                $required_fields[] = 'poll_'.$poll_query['Customer Poll Query Key'];
             }
 
         }
-
 
 
         $smarty->assign('address_labels', $address_labels);
         $smarty->assign('used_address_fields', $used_fields);
         $smarty->assign('required_fields', $required_fields);
         $smarty->assign('no_required_fields', $no_required_fields);
-
-
-
-
 
 
         $smarty->assign('countries', $countries);

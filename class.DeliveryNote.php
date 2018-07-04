@@ -2049,6 +2049,9 @@ class DeliveryNote extends DB_Table {
 
     function delete() {
 
+        $customer         = get_object('Customer', $this->get('Delivery Note Customer Key'));
+
+
         include_once 'class.PartLocation.php';
         $parts_to_update_stock = array();
 
@@ -2128,6 +2131,10 @@ class DeliveryNote extends DB_Table {
 
 
         }
+
+
+        $customer->update_last_dispatched_order_key();
+
 
 
         return 'orders/'.$order->get('Order Store Key').'/'.$order->id;

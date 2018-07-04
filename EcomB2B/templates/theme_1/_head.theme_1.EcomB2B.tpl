@@ -116,9 +116,21 @@
                 {assign "with_register" 1} {assign "with_forms" 1}
             {/if}
 
-        {elseif $block.type=='reset_password'}
+        {elseif $block.type=='reset_password' }
             {assign "with_reset_password" 1}
             {assign "with_forms" 1}
+        {elseif $block.type=='unsubscribe'}
+            {assign "with_reset_password" 1}
+            {assign "with_forms" 1}
+
+
+
+            <script src="js/desktop.min.js"></script>
+
+            <script src="js/desktop.forms.min.js"></script>
+            <script src="js/sweetalert.min.js"></script>
+
+
 
         {else}
             {if $block.type=='search'   }{assign "with_search" 1}{/if}
@@ -133,6 +145,10 @@
         {/if}
         {/if}
     {/foreach}
+
+
+
+
 
     {if $with_forms==1}
         <link rel="stylesheet" href="css/forms.min.css?v2.0" type="text/css"/>
@@ -176,6 +192,10 @@
     {if $website->get('Website Text Font')!=''  and $logged_in}
         <link href="https://fonts.googleapis.com/css?family={$website->get('Website Text Font')}:400,700" rel="stylesheet">
     {/if}
+
+
+
+
     <style>
         {if $website->get('Website Text Font')!=''}
         body {

@@ -525,6 +525,27 @@ $modules = array(
                 )
             ),
 
+
+            'mailshot' => array(
+                'type' => 'object',
+                'tabs' => array(
+
+                    'mailshot.sent_emails' => array(
+                        'label' => _('Sent emails'),
+                        'icon'  => 'paper-plane'
+                    ),
+
+                    'mailshot.history' => array(
+                        'title' => _('History'),
+                        'label' => '',
+                        'icon'  => 'road',
+                        'class' => 'right icon_only'
+                    ),
+
+                )
+            ),
+
+
             'newsletter' => array(
                 'type' => 'object',
                 'tabs' => array(

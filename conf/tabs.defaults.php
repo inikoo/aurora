@@ -154,6 +154,38 @@ $tab_defaults = array(
     ),
 
 
+
+    'email_campaign_type.mailshots'      => array(
+        'view'        => 'overview',
+        'sort_key'    => 'date',
+        'sort_order'  => 1,
+        'rpp'         => 500,
+        'rpp_options' => $default_rrp_options,
+        'f_field'     => 'name',
+    ),
+
+
+
+
+     'oss_notification.next_recipients'      => array(
+        'view'        => 'overview',
+        'sort_key'    => 'name',
+        'sort_order'  => 1,
+        'rpp'         => 500,
+        'rpp_options' => $default_rrp_options,
+        'f_field'     => 'name',
+    ),
+
+
+    'gr_reminder.next_recipients'      => array(
+        'view'        => 'overview',
+        'sort_key'    => 'name',
+        'sort_order'  => 1,
+        'rpp'         => 500,
+        'rpp_options' => $default_rrp_options,
+        'f_field'     => 'name',
+    ),
+
     'email_campaigns.newsletters'      => array(
         'view'        => 'overview',
         'sort_key'    => 'id',
@@ -2154,7 +2186,7 @@ $tab_defaults = array(
         'view'        => 'overview',
         'sort_key'    => 'date',
         'sort_order'  => 1,
-        'rpp'         => 100,
+        'rpp'         => 5000,
         'rpp_options' => $default_rrp_options,
         'f_field'     => 'note',
         'frequency'   => 'monthly',
@@ -3567,6 +3599,17 @@ $tab_defaults = array(
 
 
     ),
+    'mailshot.sent_emails' => array(
+        'view'        => 'overview',
+        'sort_key'    => 'email',
+        'sort_order'  => 1,
+        'rpp'         => 100,
+        'rpp_options' => $default_rrp_options,
+        'f_field'     => 'email',
+
+
+    ),
+
     'prospect.send_emails'            => array(
         'view'        => 'overview',
         'sort_key'    => 'date',

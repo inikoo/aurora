@@ -26,8 +26,8 @@ $editor = array(
 include_once 'conf/website_system_webpages.php';
 
 
-$webpages_to_add = array('favourites.sys');
-
+//$webpages_to_add = array('favourites.sys');
+$webpages_to_add = array('unsubscribe.sys');
 $sql = sprintf('SELECT `Website Key` FROM `Website Dimension`');
 
 

@@ -37,8 +37,6 @@ if ($email_template->id and !($email_template->get('Email Template Type') == 'HT
     $smarty->assign('email_template_key', $email_template->id);
 
 
-
-
     $smarty->assign('blueprints_redirect', 'email_campaign_type.email_blueprints');
 
 
@@ -52,8 +50,6 @@ if ($email_template->id and !($email_template->get('Email Template Type') == 'HT
     $merge_contents = '';
 
 
-
-
     if ($email_template->get('Email Template Role') == 'Password Reminder') {
         $merge_tags = ",{ name: '"._('Reset password URL')."',value: '[Reset_Password_URL]'}";
 
@@ -61,20 +57,20 @@ if ($email_template->id and !($email_template->get('Email Template Type') == 'HT
         $merge_tags     = ",{ name: '"._('Order number')."',value: '[Order Number]'},{ name: '"._('Order Amount')."',value: '[Order Amount]'}";
         $merge_contents = "{ name: '"._('Payment information')."',value: '[Pay Info]'},{ name: '"._('Order')."',value: '[Order]'}";
 
-    }elseif ($email_template->get('Email Template Role') == 'OOS Notification') {
+    } elseif ($email_template->get('Email Template Role') == 'OOS Notification') {
         $merge_tags = ",{ name: '"._('Back in stock products')."',value: '[Products]'}";
 
-    }elseif ($email_template->get('Email Template Role') == 'GR Reminder') {
+    } elseif ($email_template->get('Email Template Role') == 'GR Reminder') {
         $merge_tags = ",{ name: '"._('Last order number')."',value: '[Order Number]'},{ name: '"._('Last order date')."',value: '[Order Date]'},
                 { name: '"._('Last order date + n days (Replace n for a number, default 30)')."',value: '[Order Date + n days]'},
                  { name: '"._('Last order date + n weeks (Replace n for a number, default 1)')."',value: '[Order Date + n weeks]'},
                   { name: '"._('Last order date + n months (Replace n for a number, default 1)')."',value: '[Order Date + n months]'}
                 ";
 
+        $merge_contents = "{ name: '"._('Unsubscribe')."',value: '[Unsubscribe]'}";
+
+
     }
-
-
-
 
 
     $smarty->assign('merge_tags', $merge_tags);
@@ -91,7 +87,7 @@ if ($email_template->id and !($email_template->get('Email Template Type') == 'HT
     $smarty->assign('scope', 'EmailCampaignType');
     $smarty->assign('scope_key', $state['key']);
 
-    $html= $smarty->fetch('email_blueprints.showcase.tpl');
+    $html = $smarty->fetch('email_blueprints.showcase.tpl');
 
 
     /*

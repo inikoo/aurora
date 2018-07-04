@@ -42,11 +42,10 @@ switch ($tipo) {
                      )
         );
 
-        get_profile_html($data, $customer,$db);
+        get_profile_html($data, $customer, $db);
 
 
         break;
-
     case 'contact_details':
         $data = prepare_values(
             $_REQUEST, array(
@@ -55,6 +54,18 @@ switch ($tipo) {
                      )
         );
         contact_details($db, $data, $customer, $editor);
+        break;
+
+    case 'unsubscribe':
+        $data = prepare_values(
+            $_REQUEST, array(
+                         'data'          => array('type' => 'json array'),
+                         'selector'      => array('type' => 'string'),
+                         'authenticator' => array('type' => 'string'),
+
+                     )
+        );
+        unsubscribe($db, $data, $editor);
         break;
 
     case 'invoice_address':
@@ -329,7 +340,7 @@ function update_poll($db, $data, $customer, $editor) {
         if (preg_match('/^poll_(\d+)/i', $_key, $matches)) {
 
             $poll_key = $matches[1];
-            $customer->update(array('Customer Poll Query '.$poll_key=>$value));
+            $customer->update(array('Customer Poll Query '.$poll_key => $value));
 
 
         }
@@ -344,8 +355,7 @@ function update_poll($db, $data, $customer, $editor) {
 }
 
 
-
-function get_profile_html($data, $customer,$db) {
+function get_profile_html($data, $customer, $db) {
 
     require_once 'external_libs/Smarty/Smarty.class.php';
 
@@ -398,8 +408,6 @@ function get_profile_html($data, $customer,$db) {
     $smarty->assign('order_key', $order->id);
 
 
-
-
     require_once 'utils/get_addressing.php';
     require_once 'utils/get_countries.php';
 
@@ -427,10 +435,7 @@ function get_profile_html($data, $customer,$db) {
     $smarty->assign('countries', $countries);
 
 
-
-    $smarty->assign('poll_queries', $website->get_poll_queries($webpage,$customer->id));
-
-
+    $smarty->assign('poll_queries', $website->get_poll_queries($webpage, $customer->id));
 
 
     $response = array(
@@ -443,6 +448,73 @@ function get_profile_html($data, $customer,$db) {
 
 }
 
+
+function unsubscribe($db, $data, $editor) {
+
+
+    include_once('class.WebAuth.php');
+    $auth = new WebAuth();
+
+    $unsubscribe_customer_key = $auth->get_customer_from_unsubscribe_link($data['selector'], $data['authenticator']);
+
+
+    if ($unsubscribe_customer_key != '') {
+        $unsubscribe_customer = get_object('Customer', $unsubscribe_customer_key);
+        if (!$unsubscribe_customer->id) {
+            echo json_encode(
+                array(
+                    'state'      => 400,
+                    'error_type' => 'Customer not found'
+                )
+            );
+            exit;
+        }
+    } else {
+        echo json_encode(
+            array(
+                'state'      => 400,
+                'error_type' => 'Customer not found'
+            )
+        );
+        exit;
+    }
+
+    $update_data = array();
+
+
+    foreach ($data['data'] as $key => $value) {
+
+        if ($key == 'newsletter') {
+            $key   = 'Customer Send Newsletter';
+            $value = ($value ? 'Yes' : 'No');
+        } elseif ($key == 'email_marketing') {
+            $key   = 'Customer Send Email Marketing';
+            $value = ($value ? 'Yes' : 'No');
+        } elseif ($key == 'postal_marketing') {
+            $key   = 'Customer Send Postal Marketing';
+            $value = ($value ? 'Yes' : 'No');
+        }
+        $update_data[$key] = $value;
+
+    }
+
+    //print_r($update_data);
+
+    $unsubscribe_customer->editor = $editor;
+    $unsubscribe_customer->update($update_data);
+
+
+    echo json_encode(
+        array(
+            'state'    => 200,
+            'metadata' => array(
+                'class_html' => array()
+            )
+        )
+    );
+
+
+}
 
 
 ?>
