@@ -214,10 +214,20 @@ if ($validator->isValid($sns)) {
 
                 }
 
-                $email_template_type = get_object('email_template_type', $email_tracking->get('Email Tracking Email Template Type Key'));
 
+                if($email_tracking->get('Email Tracking Email Template Type Key')>0){
+                    $email_template_type = get_object('email_template_type', $email_tracking->get('Email Tracking Email Template Type Key'));
+                    $email_template_type->update_sent_emails_totals();
+                }
+                if($email_tracking->get('Email Tracking Email Mailshot Key')>0){
+                    $email_campaign = get_object('email_campaign', $email_tracking->get('Email Tracking Email Mailshot Key'));
+                    $email_campaign->update_sent_emails_totals();
+                }
+                if($email_tracking->get('Email Tracking Email Template Key')>0){
+                    $email_template = get_object('email_template', $email_tracking->get('Email Tracking Email Template Key'));
+                    $email_template->update_sent_emails_totals();
+                }
 
-                $email_template_type->update_sent_emails_totals();
 
 
 

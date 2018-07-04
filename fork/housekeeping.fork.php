@@ -11,7 +11,7 @@
 function fork_housekeeping($job) {
 
 
-    // print "fork_housekeeping  original skypping\n";
+    //print "fork_housekeeping  original skypping\n";
 
     if (!$_data = get_fork_metadata($job)) {
         return true;
@@ -20,7 +20,10 @@ function fork_housekeeping($job) {
 
     list($account, $db, $data, $editor) = $_data;
 
-    //print_r($data);
+    print_r($data);
+
+    //return true;
+
 
     switch ($data['type']) {
 
@@ -395,7 +398,7 @@ function fork_housekeeping($job) {
         case 'customer_created_migration':
             //todo  delete when migrate
 
-            $customer     = get_object('Customer', $data['customer_key']);
+            $customer = get_object('Customer', $data['customer_key']);
 
 
             $sql = sprintf(
@@ -684,20 +687,44 @@ function fork_housekeeping($job) {
             $poll = get_object('Customer_Poll_Query', $poll_option->get('Customer Poll Query Option Query Key'));
             $poll->update_answers();
             break;
-        case 'update_email_template_data':
+        case 'update_sent_emails_data':
+            return false;
+            if (!empty($data['email_template_key'])) {
+                $email_template = get_object('email_template', $data['email_template_key']);
+                $email_template->update_sent_emails_totals();
+            }
+            if (!empty($data['email_template_type_key'])) {
+                $email_template_type = get_object('email_template_type', $data['email_template_type_key']);
+                $email_template_type->update_sent_emails_totals();
+            }
+            if (!empty($data['email_mailshot_key'])) {
+                $email_campaign = get_object('email_campaign', $data['email_mailshot_key']);
+                $email_campaign->update_sent_emails_totals();
+            }
 
-
-            $email_template = get_object('email_template', $data['email_template_key']);
-            $email_template_type = get_object('email_template_type', $data['email_template_type_key']);
-
-            $email_template->update_sent_emails_totals();
-            $email_template_type->update_sent_emails_totals();
 
             break;
 
+        case 'create_and_send_mailshot':
+
+            //$sql = 'truncate `Email Tracking Email Copy`; ';
+            //$db->exec($sql);
+            //$sql = 'truncate `Email Campaign Dimension`; ';
+            //$db->exec($sql);
+            //$sql = 'delete from `Email Tracking Dimension` where `Email Tracking Email Mailshot Key`>0; ';
+            //$db->exec($sql);
+            $email_template_type = get_object('email_template_type', $data['email_template_type_key']);
+            $email_campaign      = $email_template_type->create_mailshot();
+
+            if (is_object($email_campaign) and $email_campaign->id) {
+                $email_campaign->update_state('ComposingEmail');
+                $email_campaign->update_state('Ready');
+                $email_campaign->update_estimated_recipients();
+                $email_campaign->send_mailshot();
+            }
 
 
-
+            break;
         default:
             break;
 

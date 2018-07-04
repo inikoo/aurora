@@ -1058,6 +1058,7 @@ function get_object_showcase($showcase, $data, $smarty, $user, $db, $account) {
             $html = get_timeseries_record_showcase($data, $smarty, $user, $db, $account);
             break;
         case 'email_campaign':
+        case 'mailshot':
             include_once 'showcase/email_campaign.show.php';
             $html = get_email_campaign_showcase($data, $smarty, $user, $db, $account);
             break;
@@ -1408,8 +1409,15 @@ function get_navigation($user, $smarty, $data, $db, $account) {
                         $data, $smarty, $user, $db, $account
                     );
                     break;
+
+                case ('mailshot'):
+
+                    return get_email_campaign_navigation(
+                        $data, $smarty, $user, $db, $account
+                    );
+                    break;
+
                 case ('newsletter'):
-                case ('email_campaign'):
                     return get_email_campaign_navigation(
                         $data, $smarty, $user, $db, $account
                     );
@@ -2826,8 +2834,15 @@ function get_tabs($data, $db, $account, $modules, $user, $smarty, $requested_tab
         )
         )) {
             $_content['tabs']['email_campaign_type.mailshots']['class'] = 'hide';
+            $_content['tabs']['email_campaign_type.next_recipients']['class'] = 'hide';
 
             if ($data['tab'] == 'email_campaign_type.mailshots') {
+                $_content['tabs']['email_campaign_type.sent_emails']['selected'] = true;
+                $data['tab']                                                     = 'email_campaign_type.sent_emails';
+
+            }
+
+            if ($data['tab'] == 'email_campaign_type.next_recipients') {
                 $_content['tabs']['email_campaign_type.sent_emails']['selected'] = true;
                 $data['tab']                                                     = 'email_campaign_type.sent_emails';
 
@@ -3790,6 +3805,7 @@ function get_view_position($db, $state, $user, $smarty, $account) {
             $state['current_store'] = $state['store']->id;
 
 
+
             switch ($state['parent']) {
                 case 'store':
                     $store                  = new Store($state['parent_key']);
@@ -3810,7 +3826,6 @@ function get_view_position($db, $state, $user, $smarty, $account) {
                 );
 
             }
-
 
             switch ($state['section']) {
                 case 'list':
@@ -3957,6 +3972,66 @@ function get_view_position($db, $state, $user, $smarty, $account) {
                         $branch[] = array(
                             'label'     => _('Tracking').': <span class="id">'.$state['_object']->get('Email Tracking Email').'</span>',
                             'icon'      => '',
+                            'reference' => ''
+                        );
+
+                    }elseif ($state['_parent']->get_object_name() == 'Email Campaign') {
+
+
+                        $email_campaign_type= get_object('email_campaign_type',$state['_parent']->get('Email Campaign Email Template Type Key'));
+
+
+                        $branch[] = array(
+                            'label'     => _("Email communications").' '.$store->data['Store Code'],
+                            'icon'      => 'paper-plane',
+                            'reference' => 'customers/'.$store->id.'/email_campaigns/operations'
+                        );
+
+                        $branch[] = array(
+                            'label'     => $email_campaign_type->get('Label'),
+                            'icon'      => $email_campaign_type->get('Icon'),
+                            'reference' => 'email_campaign_type/'.$state['_parent']->get('Store Key').'/'.$email_campaign_type->id
+                        );
+
+                        $branch[] = array(
+                            'label'     => $state['_parent']->get('Name'),
+                            'icon'      => 'container-storage',
+                            'reference' => 'email_campaign_type/'.$state['_parent']->get('Store Key').'/'.$email_campaign_type->id.'/mailshot/'.$state['_parent']->id
+                        );
+
+                        $branch[] = array(
+                            'label'     => _('Tracking').': <span class="id">'.$state['_object']->get('Email Tracking Email').'</span>',
+                            'icon'      => '',
+                            'reference' => ''
+                        );
+
+                    }
+
+
+                    break;
+                case 'mailshot':
+
+
+                    $store = get_object('Store', $state['_parent']->get('Store Key'));
+
+
+                    if ($state['_parent']->get_object_name() == 'Email Campaign Type') {
+
+                        $branch[] = array(
+                            'label'     => _("Email communications").' '.$store->data['Store Code'],
+                            'icon'      => 'paper-plane',
+                            'reference' => 'customers/'.$store->id.'/email_campaigns/operations'
+                        );
+
+                        $branch[] = array(
+                            'label'     => $state['_parent']->get('Label'),
+                            'icon'      => $state['_parent']->get('Icon'),
+                            'reference' => 'email_campaign_type/'.$state['_parent']->get('Store Key').'/'.$state['_parent']->id
+                        );
+
+                        $branch[] = array(
+                            'label'     => _('Mailshot').': <span class="id">'.$state['_object']->get('Name').'</span>',
+                            'icon'      => 'container-storage"',
                             'reference' => ''
                         );
 

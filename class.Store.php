@@ -594,6 +594,12 @@ class Store extends DB_Table {
                 return $this->data[$key];
                 break;
 
+            case 'Website URL':
+                $website=get_object('Website',$this->data['Store Website Key']);
+                return $website->get('Website URL');
+                break;
+
+
         }
 
 

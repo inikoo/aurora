@@ -40,11 +40,9 @@ class Email_Template extends DB_Table {
     function get_data($key, $tag) {
 
 
-
-            $sql = sprintf(
-                "SELECT * FROM `Email Template Dimension` WHERE `Email Template Key`=%d", $tag
-            );
-
+        $sql = sprintf(
+            "SELECT * FROM `Email Template Dimension` WHERE `Email Template Key`=%d", $tag
+        );
 
 
         if ($this->data = $this->db->query($sql)->fetch()) {
@@ -67,9 +65,8 @@ class Email_Template extends DB_Table {
         }
 
 
-        $base_data['Email Template Created']=gmdate('Y-m-d H:i:s');
+        $base_data['Email Template Created'] = gmdate('Y-m-d H:i:s');
         //$base_data['Email Template Last Edited']=gmdate('Y-m-d H:i:s');
-
 
 
         $keys   = '(';
@@ -95,7 +92,7 @@ class Email_Template extends DB_Table {
             $this->new = true;
 
 
-            $checksum = md5(($this->get('Email Template Type') == 'Text'  ? '' : $this->get('Email Template Editing JSON')).'|'.$this->get('Email Template Text').'|'.$this->get('Email Template Subject'));
+            $checksum = md5(($this->get('Email Template Type') == 'Text' ? '' : $this->get('Email Template Editing JSON')).'|'.$this->get('Email Template Text').'|'.$this->get('Email Template Subject'));
 
 
             $this->update(
@@ -103,8 +100,6 @@ class Email_Template extends DB_Table {
                     'Email Template Editing Checksum' => $checksum,
                 ), 'no_history'
             );
-
-
 
 
             $history_data = array(
@@ -118,7 +113,6 @@ class Email_Template extends DB_Table {
             );
 
 
-
             return $this;
         } else {
             $this->msg = "Error can not create Email Template";
@@ -127,6 +121,54 @@ class Email_Template extends DB_Table {
             // print $sql;
             exit;
         }
+    }
+
+    function get($key, $data = false) {
+
+        if (!$this->id) {
+            return '';
+        }
+
+
+        switch ($key) {
+
+
+            case 'Published Info':
+                $data = array(
+                    'scope'       => $this->data['Email Template Scope'],
+                    'editing'     => ($this->data['Email Template Editing Checksum'] == $this->data['Email Template Published Checksum'] ? false : true),
+                    'published'   => ($this->data['Email Template Published Email Key'] ? true : false),
+                    'edited_date' => ($this->data['Email Template Last Edited'] == '' ? '' : strftime("%a %e %b %Y %H:%M:%S %Z", strtotime($this->data['Email Template Last Edited'].' +0:00')))
+
+                );
+
+                if ($data['published']) {
+                    include_once 'class.Published_Email_Template.php';
+                    $published_email_template = new Published_Email_Template($this->data['Email Template Published Email Key']);
+                    $data['published_date']   = ($published_email_template->data['Published Email Template From'] == ''
+                        ? ''
+                        : strftime(
+                            "%a %e %b %Y %H:%M:%S %Z", strtotime($published_email_template->data['Published Email Template From'].' +0:00')
+                        ));
+                }
+
+                return $data;
+                break;
+            default:
+
+
+                if (array_key_exists($key, $this->data)) {
+                    return $this->data[$key];
+                }
+
+                if (array_key_exists('Email Template '.$key, $this->data)) {
+                    return $this->data['Email Template '.$key];
+                }
+
+
+        }
+
+        return '';
     }
 
     function find($raw_data, $options) {
@@ -157,25 +199,22 @@ class Email_Template extends DB_Table {
         }
 
 
-
-        if($data['Email Template Role']=='Invite Mailshot'){
+        if ($data['Email Template Role'] == 'Invite Mailshot') {
             $sql = sprintf(
-                "SELECT `Email Template Key` FROM `Email Template Dimension` WHERE `Email Template Name`=%s AND  `Email Template Scope`=%s AND  `Email Template Scope Key`=%d ",
-                prepare_mysql($data['Email Template Name']), prepare_mysql($data['Email Template Scope']), $data['Email Template Scope Key']
+                "SELECT `Email Template Key` FROM `Email Template Dimension` WHERE `Email Template Name`=%s AND  `Email Template Scope`=%s AND  `Email Template Scope Key`=%d ", prepare_mysql($data['Email Template Name']), prepare_mysql($data['Email Template Scope']),
+                $data['Email Template Scope Key']
 
             );
 
-        }else{
+        } else {
             $sql = sprintf(
-                "SELECT `Email Template Key` FROM `Email Template Dimension` WHERE `Email Template Role`=%s AND  `Email Template Scope`=%s AND  `Email Template Scope Key`=%d ",
-                prepare_mysql($data['Email Template Role']), prepare_mysql($data['Email Template Scope']), $data['Email Template Scope Key']
+                "SELECT `Email Template Key` FROM `Email Template Dimension` WHERE `Email Template Role`=%s AND  `Email Template Scope`=%s AND  `Email Template Scope Key`=%d ", prepare_mysql($data['Email Template Role']), prepare_mysql($data['Email Template Scope']),
+                $data['Email Template Scope Key']
 
             );
         }
 
-//print $sql;
-
-
+        //print $sql;
 
 
         if ($result = $this->db->query($sql)) {
@@ -228,8 +267,7 @@ class Email_Template extends DB_Table {
         $data['Email Blueprint Scope Key'] = $this->get('Email Template Scope Key');
 
         $data['Email Blueprint Email Campaign Type Key'] = $this->get('Email Template Email Campaign Type Key');
-        $data['Email Blueprint Email Template Key'] = $this->id;
-
+        $data['Email Blueprint Email Template Key']      = $this->id;
 
 
         $data['Email Blueprint Name'] = $this->get_unique_name($data['Email Blueprint Name'], 'Blueprint');
@@ -248,58 +286,6 @@ class Email_Template extends DB_Table {
 
     }
 
-
-
-    function get($key, $data = false) {
-
-        if (!$this->id) {
-            return '';
-        }
-
-
-        switch ($key) {
-
-
-
-
-            case 'Published Info':
-                $data = array(
-                    'scope'=>$this->data['Email Template Scope'],
-                    'editing'     => ($this->data['Email Template Editing Checksum'] == $this->data['Email Template Published Checksum'] ? false : true),
-                    'published'   => ($this->data['Email Template Published Email Key'] ? true : false),
-                    'edited_date' => ($this->data['Email Template Last Edited'] == '' ? '' : strftime("%a %e %b %Y %H:%M:%S %Z", strtotime($this->data['Email Template Last Edited'].' +0:00')))
-
-                );
-
-                if ($data['published']) {
-                    include_once 'class.Published_Email_Template.php';
-                    $published_email_template = new Published_Email_Template($this->data['Email Template Published Email Key']);
-                    $data['published_date']   = ($published_email_template->data['Published Email Template From'] == ''
-                        ? ''
-                        : strftime(
-                            "%a %e %b %Y %H:%M:%S %Z", strtotime($published_email_template->data['Published Email Template From'].' +0:00')
-                        ));
-                }
-
-                return $data;
-                break;
-            default:
-
-
-                if (array_key_exists($key, $this->data)) {
-                    return $this->data[$key];
-                }
-
-                if (array_key_exists('Email Template '.$key, $this->data)) {
-                    return $this->data['Email Template '.$key];
-                }
-
-
-        }
-
-        return '';
-    }
-
     function get_unique_name($name, $type) {
 
 
@@ -315,8 +301,8 @@ class Email_Template extends DB_Table {
 
             if ($type == 'Blueprint') {
                 $sql = sprintf(
-                    "SELECT `Email Blueprint Key` FROM `Email Blueprint Dimension`  WHERE `Email Blueprint Role`=%s AND  `Email Blueprint Scope`=%s AND   `Email Blueprint Scope Key`=%s AND `Email Blueprint Name`=%s  ",
-                    prepare_mysql($this->get('Email Template Role')), prepare_mysql($this->get('Email Template Scope')), $this->get('Email Template Scope Key'),
+                    "SELECT `Email Blueprint Key` FROM `Email Blueprint Dimension`  WHERE `Email Blueprint Role`=%s AND  `Email Blueprint Scope`=%s AND   `Email Blueprint Scope Key`=%s AND `Email Blueprint Name`=%s  ", prepare_mysql($this->get('Email Template Role')),
+                    prepare_mysql($this->get('Email Template Scope')), $this->get('Email Template Scope Key'),
 
                     prepare_mysql($name.$suffix)
                 );
@@ -341,43 +327,36 @@ class Email_Template extends DB_Table {
 
     function publish() {
 
-include_once 'class.Published_Email_Template.php';
+        include_once 'class.Published_Email_Template.php';
 
-        $data=array(
-            'Published Email Template JSON'    => $this->data['Email Template Editing JSON'],
-            'Published Email Template HTML'    => $this->data['Email Template HTML'],
-            'Published Email Template Subject' => $this->data['Email Template Subject'],
-            'Published Email Template Text'    =>$this->data['Email Template Text'],
-            'Published Email Template Email Template Key'=>$this->id
+        $data = array(
+            'Published Email Template JSON'               => $this->data['Email Template Editing JSON'],
+            'Published Email Template HTML'               => $this->data['Email Template HTML'],
+            'Published Email Template Subject'            => $this->data['Email Template Subject'],
+            'Published Email Template Text'               => $this->data['Email Template Text'],
+            'Published Email Template Email Template Key' => $this->id
         );
 
         $data['editor'] = $this->editor;
 
 
-
-
-
-
-        if($this->get('Email Template Type')=='Text'){
-            $data['Published Email Template JSON']='';
-            $data['Published Email Template HTML']='';
-
+        if ($this->get('Email Template Type') == 'Text') {
+            $data['Published Email Template JSON'] = '';
+            $data['Published Email Template HTML'] = '';
 
 
         }
 
 
-        $current_published_template = get_object('Published_Email_Template',$this->get('Email Template Published Email Key'));
+        $current_published_template = get_object('Published_Email_Template', $this->get('Email Template Published Email Key'));
 
         if ($current_published_template->id) {
 
             $checksum = md5($data['Published Email Template JSON'].'|'.$this->get('Email Template Text').'|'.$this->get('Email Template Subject'));
 
 
-
-
             if ($checksum == $current_published_template->get('Published Email Template Checksum')) {
-                $published_template=$current_published_template;
+                $published_template = $current_published_template;
             }
         } else {
             $checksum = md5($data['Published Email Template JSON'].'|'.$this->get('Email Template Text').'|'.$this->get('Email Template Subject'));
@@ -385,19 +364,14 @@ include_once 'class.Published_Email_Template.php';
         }
 
 
-
-        $data['Published Email Template Checksum']           = $checksum;
-
-
+        $data['Published Email Template Checksum'] = $checksum;
 
 
         // print_r($data);
 
-        if(!isset($published_template)){
+        if (!isset($published_template)) {
             $published_template = new Published_Email_Template('new', $data);
         }
-
-
 
 
         if (!$published_template->id) {
@@ -419,10 +393,10 @@ include_once 'class.Published_Email_Template.php';
 
         $this->update(
             array(
-                'Email Template Editing JSON'            => $data['Published Email Template JSON'],
-                'Email Template Editing Checksum'   => $checksum,
-                'Email Template Published Checksum' => $checksum,
-                'Email Template Published Email Key'     => $published_template->id
+                'Email Template Editing JSON'        => $data['Published Email Template JSON'],
+                'Email Template Editing Checksum'    => $checksum,
+                'Email Template Published Checksum'  => $checksum,
+                'Email Template Published Email Key' => $published_template->id
             ), 'no_history'
         );
 
@@ -430,68 +404,6 @@ include_once 'class.Published_Email_Template.php';
         return $published_template;
 
 
-    }
-
-    function update_field_switcher($field, $value, $options = '', $metadata = '') {
-
-
-        if ($this->deleted) {
-            return;
-        }
-
-        switch ($field) {
-            case 'Email Template Subject':
-
-                $this->update_field($field,$value,$options);
-
-                if($this->updated){
-                    $checksum = md5(
-                        ($this->get('Email Template Type') == 'Text' ? '' : $this->get('Email Template Editing JSON')).'|'.$this->get('Email Template Text').'|'.$value
-                    );
-
-
-                    $update_data = array(
-                        'Email Template Last Edited'      => gmdate('Y-m-d H:i:s'),
-                        'Email Template Editing Checksum' => $checksum,
-                        'Email Template Last Edited By'   => $this->editor['Author Key']
-
-                    );
-
-                    $this->fast_update($update_data);
-
-
-                    if($this->data['Email Template Role']=='Invite Mailshot'){
-
-
-                        $published_template=get_object('published_email_template',$this->data['Email Template Published Email Key']);
-                        if($published_template->id){
-                            $published_template->editor=$this->editor;
-                            $published_template->fast_update(array('Published Email Template Subject'=>$value));
-                        }
-
-                    }
-
-
-                }
-
-
-
-
-
-                break;
-
-            default:
-                $base_data = $this->base_data();
-                if (array_key_exists($field, $base_data)) {
-                    if ($value != $this->data[$field]) {
-                        $this->update_field($field, $value, $options);
-                    }
-                }
-
-
-
-
-        }
     }
 
     function get_field_label($field) {
@@ -521,14 +433,12 @@ include_once 'class.Published_Email_Template.php';
         $this->deleted = false;
 
 
-        if ($this->data['Email Template Deliveries'] >0) {
+        if ($this->data['Email Template Sent'] > 0) {
 
             $this->error = true;
 
             return;
         }
-
-
 
 
         $sql = sprintf(
@@ -545,20 +455,189 @@ include_once 'class.Published_Email_Template.php';
         $this->deleted = true;
     }
 
+    function suspend() {
 
-    function suspend(){
-
-        $this->update_field_switcher('Email Template State','Suspended');
-
-    }
-
-    function activate(){
-
-        $this->update_field_switcher('Email Template State','Active');
+        $this->update_field_switcher('Email Template State', 'Suspended');
 
     }
 
-    function update_sent_emails_totals(){
+    function update_field_switcher($field, $value, $options = '', $metadata = '') {
+
+
+        if ($this->deleted) {
+            return;
+        }
+
+        switch ($field) {
+            case 'Email Template Subject':
+
+                $this->update_field($field, $value, $options);
+
+                if ($this->updated) {
+                    $checksum = md5(
+                        ($this->get('Email Template Type') == 'Text' ? '' : $this->get('Email Template Editing JSON')).'|'.$this->get('Email Template Text').'|'.$value
+                    );
+
+
+                    $update_data = array(
+                        'Email Template Last Edited'      => gmdate('Y-m-d H:i:s'),
+                        'Email Template Editing Checksum' => $checksum,
+                        'Email Template Last Edited By'   => $this->editor['Author Key']
+
+                    );
+
+                    $this->fast_update($update_data);
+
+
+                    if ($this->data['Email Template Role'] == 'Invite Mailshot') {
+
+
+                        $published_template = get_object('published_email_template', $this->data['Email Template Published Email Key']);
+                        if ($published_template->id) {
+                            $published_template->editor = $this->editor;
+                            $published_template->fast_update(array('Published Email Template Subject' => $value));
+                        }
+
+                    }
+
+
+                }
+
+
+                break;
+
+            default:
+                $base_data = $this->base_data();
+                if (array_key_exists($field, $base_data)) {
+                    if ($value != $this->data[$field]) {
+                        $this->update_field($field, $value, $options);
+                    }
+                }
+
+
+        }
+    }
+
+    function activate() {
+
+        $this->update_field_switcher('Email Template State', 'Active');
+
+    }
+
+    function update_sent_emails_totals() {
+
+        $unsubscribed = 0;
+        $open         = 0;
+        $sent         = 0;
+        $clicked      = 0;
+        $errors       = 0;
+        $delivered    = 0;
+        $hard_bounces = 0;
+        $soft_bounces = 0;
+        $spam         = 0;
+
+
+        $sql = sprintf('select count(*) as num ,`Email Tracking State` from `Email Tracking Dimension` where `Email Tracking Email Template Key`=%d group by `Email Tracking State` ', $this->id);
+        if ($result = $this->db->query($sql)) {
+            foreach ($result as $row) {
+
+                if (in_array(
+                    $row['Email Tracking State'], array(
+                                                    'Sent',
+                                                    'Sent to SES',
+                                                    'Soft Bounce',
+                                                    'Hard Bounce',
+                                                    'Delivered',
+                                                    'Spam',
+                                                    'Opened',
+                                                    'Clicked'
+                                                )
+                )) {
+                    $sent += $row['num'];
+
+                }
+
+                if (in_array(
+                    $row['Email Tracking State'], array(
+                                                    'Delivered',
+                                                    'Spam',
+                                                    'Opened',
+                                                    'Clicked'
+                                                )
+                )) {
+                    $delivered += $row['num'];
+                }
+                if (in_array(
+                    $row['Email Tracking State'], array(
+                                                    'Opened',
+                                                    'Clicked'
+                                                )
+                )) {
+                    $open += $row['num'];
+                }
+                if ($row['Email Tracking State'] == 'Clicked') {
+                    $clicked = $row['num'];
+                }
+                if ($row['Email Tracking State'] == 'Rejected by SES') {
+                    $errors = $row['num'];
+                }
+                if ($row['Email Tracking State'] == 'Hard Bounce') {
+                    $hard_bounces = $row['num'];
+                }
+                if ($row['Email Tracking State'] == 'Soft Bounce') {
+                    $soft_bounces = $row['num'];
+                }
+
+
+            }
+        } else {
+            print_r($error_info = $this->db->errorInfo());
+            print "$sql\n";
+            exit;
+        }
+
+
+        $sql = sprintf('select count(*) as num  from `Email Tracking Dimension` where `Email Tracking Email Template Key`=%d and `Email Tracking Spam`="Yes" ', $this->id);
+        if ($result = $this->db->query($sql)) {
+            if ($row = $result->fetch()) {
+                $spam = $row['num'];
+            }
+        } else {
+            print_r($error_info = $this->db->errorInfo());
+            print "$sql\n";
+            exit;
+        }
+
+
+        $sql = sprintf('select count(*) as num  from `Email Tracking Dimension` where `Email Tracking Email Template Key`=%d and `Email Tracking Unsubscribed`="Yes" ', $this->id);
+        if ($result = $this->db->query($sql)) {
+            if ($row = $result->fetch()) {
+                $unsubscribed = $row['num'];
+            }
+        } else {
+            print_r($error_info = $this->db->errorInfo());
+            print "$sql\n";
+            exit;
+        }
+
+
+        $this->fast_update(
+            array(
+                'Email Campaign Type Sent'         => $sent,
+                'Email Campaign Type Delivered'    => $delivered,
+                'Email Campaign Type Open'         => $open,
+                'Email Campaign Type Clicked'      => $clicked,
+                'Email Campaign Type Errors'       => $errors,
+                'Email Campaign Type Hard Bounces' => $hard_bounces,
+                'Email Campaign Type Soft Bounces' => $soft_bounces,
+                'Email Campaign Type Spams'        => $spam,
+                'Email Campaign Type Unsubscribed' => $unsubscribed,
+
+
+            )
+
+        );
+
 
     }
 

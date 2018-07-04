@@ -2153,10 +2153,9 @@ class Customer extends Subject {
 
         $sql = sprintf(
             "SELECT count(*) AS num ,
-		min(`Invoice Date`) AS first_order_date ,
+	    min(`Invoice Date`) AS first_order_date ,
 		max(`Invoice Date`) AS last_order_date
-
-		FROM `Invoice Dimension` WHERE `Invoice Type`='Invoice'  AND `Invoice Customer Key`=%d  ", $this->id
+        FROM `Invoice Dimension` WHERE `Invoice Type`='Invoice'  AND `Invoice Customer Key`=%d  ", $this->id
         );
 
 
@@ -3312,6 +3311,29 @@ class Customer extends Subject {
     function reject(){
 
         $this->update(array('Customer Type by Activity'=>'Rejected'));
+
+    }
+
+    function update_last_dispatched_order_key(){
+
+        $order_key='';
+        $sql = sprintf(
+            "SELECT `Order Key` from `Order Dimension` WHERE `Order Customer Key`=%d  AND `Order State`='Dispatched' order by `Order Dispatched Date` desc limit 1 ",
+            $this->id
+        );
+
+        if ($result=$this->db->query($sql)) {
+            if ($row = $result->fetch()) {
+                $order_key=$row['Order Key'];
+        	}
+        }else {
+        	print_r($error_info=$this->db->errorInfo());
+        	print "$sql\n";
+        	exit;
+        }
+
+        $this->fast_update(array('Customer Last Dispatched Order Key'=>$order_key));
+
 
     }
 

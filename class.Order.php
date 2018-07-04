@@ -436,6 +436,9 @@ class Order extends DB_Table {
 
                     $this->db->exec($sql);
 
+                    $customer=get_object('Customer',$this->data['Order Customer Key']);
+                    $customer->update_last_dispatched_order_key();
+
 
                     break;
 
@@ -842,6 +845,9 @@ class Order extends DB_Table {
 
                     $this->db->exec($sql);
 
+                    $customer=get_object('Customer',$this->data['Order Customer Key']);
+                    $customer->update_last_dispatched_order_key();
+
 
                     break;
 
@@ -878,6 +884,12 @@ class Order extends DB_Table {
                     );
 
                     $this->db->exec($sql);
+
+                    $customer=get_object('Customer',$this->data['Order Customer Key']);
+
+
+                    $customer->fast_update(array('Customer Last Dispatched Order Key'=>$this->id));
+
 
 
                     break;

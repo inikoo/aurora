@@ -14,7 +14,7 @@ use Aws\Ses\SesClient;
 
 
 trait Send_Email {
-    function send($recipient, $data) {
+    function send($recipient, $data, $smarty = false) {
 
         require_once 'external_libs/aws.phar';
 
@@ -46,10 +46,7 @@ trait Send_Email {
         }
 
 
-
         $sender = get_object('Store', $email_template_type->get('Store Key'));
-
-
 
 
         if ($sender->get('Send Email Address') == '') {
@@ -62,7 +59,6 @@ trait Send_Email {
 
 
         }
-
 
 
         if (empty($data['Email_Tracking'])) {
@@ -95,6 +91,7 @@ trait Send_Email {
             '[Signature]'     => $sender->get('Signature'),
         );
 
+
         switch ($email_template_type->get('Email Campaign Type Code')) {
 
             case 'Invite':
@@ -103,7 +100,64 @@ trait Send_Email {
                 $placeholders['[Prospect Name]'] = $recipient->get('Name');
 
                 break;
+            case 'OOS Notification':
 
+
+                $oos_notification_reminder_keys = array();
+                $products                       = '';
+
+                $sql = sprintf(
+                    'select `Back in Stock Reminder Product ID`,`Back in Stock Reminder Key` from `Back in Stock Reminder Fact` where `Back in Stock Reminder Customer Key`=%d and `Back in Stock Reminder State`="Ready"  ', $recipient->id
+                );
+
+
+                if ($result = $this->db->query($sql)) {
+                    foreach ($result as $row) {
+                        $product = get_object('Product', $row['Back in Stock Reminder Product ID']);
+                        $webpage = $product->get_webpage();
+
+
+                        if ($product->id and $product->get('Product Web State') == 'For Sale' and $webpage->id and $webpage->get('Webpage State') == 'Online') {
+                            $oos_notification_reminder_keys[] = $row['Back in Stock Reminder Key'];
+                            $products                         .= sprintf(
+                                '<a ses:tags="scope:product;scope_key:%d;webpage_key:%d;" href="%s"><b>%s</b> %s</a>, ', $product->id, $webpage->id, $webpage->get('Webpage URL'), $product->get('Code'), $product->get('Name')
+
+                            );
+
+
+                        }
+
+
+                    }
+
+
+                } else {
+                    print_r($error_info = $this->db->errorInfo());
+                    print "$sql\n";
+                    exit;
+                }
+
+
+                if (count($oos_notification_reminder_keys) == 0) {
+                    $email_tracking->fast_update(
+                        array(
+                            'Email Tracking State' => "Error",
+
+
+                        )
+                    );
+
+
+                    $this->error = true;
+                    $this->msg   = _('Error, email not send');
+
+                }
+
+                $products = preg_replace('/\, $/', '', $products);
+
+                $placeholders['[Products]'] = $products;
+
+                break;
             case 'Password Reminder':
 
 
@@ -115,21 +169,24 @@ trait Send_Email {
                 $order = get_object('Order', $data['Order Key']);
 
 
-                $placeholders['[Order Number]'] = $order->get('Public ID');
-                $placeholders['[Order Amount]'] = $order->get('Total');
-                $placeholders['[Order Date]']   = $order->get('Dispatched Date');
+                $placeholders['[Order Number]']          = $order->get('Public ID');
+                $placeholders['[Order Amount]']          = $order->get('Total');
+                $placeholders['[Order Date]']            = strftime("%a, %e %b %Y", strtotime($order->get('Order Dispatched Date').' +0:00'));
+                $placeholders['[Order Date + n days]']   = strftime("%a, %e %b %Y", strtotime($order->get('Order Dispatched Date').' +30 days  +0:00'));
+                $placeholders['[Order Date + n weeks]']  = strftime("%a, %e %b %Y", strtotime($order->get('Order Dispatched Date').' +1 week  +0:00'));
+                $placeholders['[Order Date + n months]'] = strftime("%a, %e %b %Y", strtotime($order->get('Order Dispatched Date').' +1 month  +0:00'));
 
                 break;
 
             case 'Order Confirmation':
 
-                $order=$data['Order'];
+                $order = $data['Order'];
 
                 $placeholders['[Order Number]'] = $order->get('Public ID');
                 $placeholders['[Order Amount]'] = $order->get('Total');
                 $placeholders['[Order Date]']   = $order->get('Dispatched Date');
-                $placeholders['[Pay Info]']   =$data['Pay Info'];
-                $placeholders['[Order]']   =$data['Order Info'];
+                $placeholders['[Pay Info]']     = $data['Pay Info'];
+                $placeholders['[Order]']        = $data['Order Info'];
 
 
             default:
@@ -138,11 +195,9 @@ trait Send_Email {
         }
 
 
-
-
-        $from_name = base64_encode($sender->get('Name'));
-        $sender_email_address=$sender->get('Send Email Address');
-        $_source   = "=?utf-8?B?$from_name?= <$sender_email_address>";
+        $from_name            = base64_encode($sender->get('Name'));
+        $sender_email_address = $sender->get('Send Email Address');
+        $_source              = "=?utf-8?B?$from_name?= <$sender_email_address>";
 
         $request                                    = array();
         $request['Source']                          = $_source;
@@ -150,7 +205,6 @@ trait Send_Email {
         $request['Message']['Subject']['Data']      = $this->get('Published Email Template Subject');
         $request['Message']['Body']['Text']['Data'] = strtr($this->get('Published Email Template Text'), $placeholders);
         $request['ConfigurationSetName']            = $account->get('Account Code');
-
 
 
         if ($this->get('Published Email Template HTML') != '') {
@@ -162,22 +216,35 @@ trait Send_Email {
         if ($email_template_type->get('Email Campaign Type Code') == 'GR Reminder') {
 
 
-            $request['Message']['Body']['Text']['Data'] = preg_replace_callback(
-                '/\[Order Date \+\s*(\d+)\s*days\]/', function ($match_data) use ($_date) {
-                return strftime("%a, %e %b %Y", strtotime($_date.' +'.$match_data[1].' days'));
-            }, $request['Message']['Body']['Text']['Data']
-            );
+            $_date = date('Y-m-d', strtotime($order->get('Order Dispatched Date')));
+
+
+            if ($request['Message']['Body']['Text']['Data'] != '') {
+                $request['Message']['Body']['Text']['Data'] = preg_replace_callback(
+                    '/\[Order Date \+\s*(\d+)\s*days\]/', function ($match_data) use ($_date) {
+                    return strftime("%a, %e %b %Y", strtotime($_date.' +'.$match_data[1].' days'));
+                }, $request['Message']['Body']['Text']['Data']
+                );
+
+
+                $request['Message']['Body']['Text']['Data'] = preg_replace_callback(
+                    '/\[Order Date \+\s*(\d+)\s*weeks\]/', function ($match_data) use ($_date) {
+                    return strftime("%a, %e %b %Y", strtotime($_date.' +'.$match_data[1].' weeks'));
+                }, $request['Message']['Body']['Text']['Data']
+                );
+
+
+            }
+
+
             $request['Message']['Body']['Html']['Data'] = preg_replace_callback(
                 '/\[Order Date \+\s*(\d+)\s*days\]/', function ($match_data) use ($_date) {
+
+
                 return strftime("%a, %e %b %Y", strtotime($_date.' +'.$match_data[1].' days'));
             }, $request['Message']['Body']['Html']['Data']
             );
 
-            $request['Message']['Body']['Text']['Data'] = preg_replace_callback(
-                '/\[Order Date \+\s*(\d+)\s*weeks\]/', function ($match_data) use ($_date) {
-                return strftime("%a, %e %b %Y", strtotime($_date.' +'.$match_data[1].' weeks'));
-            }, $request['Message']['Body']['Text']['Data']
-            );
             $request['Message']['Body']['Html']['Data'] = preg_replace_callback(
                 '/\[Order Date \+\s*(\d+)\s*months\]/', function ($match_data) use ($_date) {
                 return strftime("%a, %e %b %Y", strtotime($_date.' +'.$match_data[1].' months'));
@@ -186,6 +253,20 @@ trait Send_Email {
 
 
         }
+
+        $request['Message']['Body']['Html']['Data'] = preg_replace_callback(
+            '/\[Unsubscribe]/', function () use ($email_tracking, $recipient, $data, $smarty) {
+
+                if(isset($data['Unsubscribe URL'])){
+                    include_once 'keyring/key.php';
+                    $smarty->assign('link', $data['Unsubscribe URL'].'?s='.$email_tracking->id.'&a='.hash('sha256', IKEY.$recipient->id.$email_tracking->id));
+                    return $smarty->fetch('unsubscribe_marketing_email.placeholder.tpl');;
+
+                }
+
+
+        }, $request['Message']['Body']['Html']['Data']
+        );
 
 
         $client = SesClient::factory(
@@ -227,10 +308,8 @@ trait Send_Email {
             )) {
 
                 $sql = sprintf(
-                    'insert into `Email Tracking Email Copy` (`Email Tracking Email Copy Key`,`Email Tracking Email Copy Subject`,`Email Tracking Email Copy Body`) values (%d,%s,%s)  ',
-                    $email_tracking->id,
-                    prepare_mysql($request['Message']['Subject']['Data']),
-                    (isset($request['Message']['Body']['Html']['Data'])?prepare_mysql($request['Message']['Body']['Html']['Data']):prepare_mysql($request['Message']['Body']['Text']['Data'])
+                    'insert into `Email Tracking Email Copy` (`Email Tracking Email Copy Key`,`Email Tracking Email Copy Subject`,`Email Tracking Email Copy Body`) values (%d,%s,%s)  ', $email_tracking->id, prepare_mysql($request['Message']['Subject']['Data']),
+                    (isset($request['Message']['Body']['Html']['Data']) ? prepare_mysql($request['Message']['Body']['Html']['Data']) : prepare_mysql($request['Message']['Body']['Text']['Data'])
 
 
                     )
@@ -241,9 +320,9 @@ trait Send_Email {
 
             }
 
+            $this->send           = true;
+            $this->email_tracking = $email_tracking;
 
-            $this->send = true;
-            $this->email_tracking=$email_tracking;
 
         } catch (Exception $e) {
 
@@ -270,14 +349,28 @@ trait Send_Email {
             $this->error = true;
             $this->msg   = _('Error, email not send').' '.$e->getMessage();
 
+
         }
+
+        if (isset($oos_notification_reminder_keys)) {
+            foreach ($oos_notification_reminder_keys as $oos_notification_reminder_key) {
+                $sql = sprintf(
+                    'delete from `Back in Stock Reminder Fact` where `Back in Stock Reminder Key`=%d  ', $oos_notification_reminder_key
+                );
+
+                $this->db->exec($sql);
+            }
+        }
+
 
         include_once 'utils/new_fork.php';
         new_housekeeping_fork(
             'au_housekeeping', array(
-            'type'                    => 'update_email_template_data',
-            'email_template_key'      => $email_template->id,
-            'email_template_type_key' => $email_template_type->id,
+            'type'                    => 'update_sent_emails_data',
+            'email_template_key'      => $email_tracking->get('Email Tracking Email Template Key'),
+            'email_template_type_key' => $email_tracking->get('Email Tracking Email Template Type Key'),
+            'email_mailshot_key'      => $email_tracking->get('Email Tracking Email Mailshot Key'),
+
         ), $account->get('Account Code')
         );
 

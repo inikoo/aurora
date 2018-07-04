@@ -209,8 +209,6 @@ function send_email($data, $editor, $smarty, $db) {
     $recipient->send_personalized_invitation($published_template);
 
 
-
-
     $response = array(
         'state'    => 200,
         'redirect' => strtolower($data['recipient']).'s/'.$recipient->get('Store Key').'/'.$recipient->id
@@ -240,10 +238,14 @@ function send_test_email($data, $editor, $smarty, $db) {
     }
 
 
-    $scope_object = get_object($email_template->get('Email Template Scope'), $email_template->get('Email Template Scope Key'));
+    $email_template_type = get_object('EmailCampaignType', $email_template->get('Email Template Email Campaign Type Key'));
 
 
-    $sender_email_address = $scope_object->get('Send Email Address');
+    $store   = get_object('Store', $email_template_type->get('Store Key'));
+    $website = get_object('Website', $store->get('Store Website Key'));
+
+
+    $sender_email_address = $store->get('Send Email Address');
 
     if ($sender_email_address == '') {
         $response = array(
@@ -277,7 +279,7 @@ function send_test_email($data, $editor, $smarty, $db) {
         '[Order Amount]'       => '£54.00',
         '[Order Date]'         => strftime("%a, %e %b %Y", strtotime('now -11 days')),
         '[Reset_Password_URL]' => 'http://my.website.com/reset/'.md5(date('U')),
-        '[Signature]'          => $scope_object->get('Signature'),
+        '[Signature]'          => $store->get('Signature'),
     );
 
 
@@ -297,8 +299,12 @@ function send_test_email($data, $editor, $smarty, $db) {
     }
 
 
+    $from_name = base64_encode($store->get('Name'));
+    $_source   = "=?utf-8?B?$from_name?= <$sender_email_address>";
+
+
     $request                                    = array();
-    $request['Source']                          = $sender_email_address;
+    $request['Source']                          = $_source;
     $request['Destination']['ToAddresses']      = array($data['email']);
     $request['Message']['Subject']['Data']      = $email_template->get('Email Template Subject');
     $request['Message']['Body']['Text']['Data'] = strtr($email_template->get('Email Template Text'), $placeholders);
@@ -337,15 +343,34 @@ function send_test_email($data, $editor, $smarty, $db) {
 
     }
 
+    $request['Message']['Body']['Html']['Data'] = preg_replace_callback(
+        '/\[Unsubscribe]/', function () use ($website, $smarty) {
 
-    //print_r($request);
+
+
+
+          //  print $website->get('Website URL').'/unsubscribe.php';
+            $smarty->assign('link', $website->get('Website URL').'/unsubscribe.php');
+
+            return $smarty->fetch('unsubscribe_marketing_email.placeholder.tpl');;
+
+
+
+
+    }, $request['Message']['Body']['Html']['Data']
+    );
+
+
+
+   // print $request['Message']['Body']['Html']['Data'];
     //exit;
 
     try {
         $result    = $client->sendEmail($request);
         $messageId = $result->get('MessageId');
         $response  = array(
-            'state' => 200
+            'state' => 200,
+            'update_metadata'=>$email_template->get_update_metadata()
 
 
         );

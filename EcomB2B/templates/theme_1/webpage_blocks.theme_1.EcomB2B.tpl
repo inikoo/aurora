@@ -73,6 +73,7 @@
             {assign "with_gallery" false}
             {assign "with_product_order_input" false}
             {assign "with_reset_password" false}
+            {assign "with_unsubscribe" false}
 
             {foreach from=$content.blocks item=$block key=key}
                 {if $block.show}
@@ -103,6 +104,10 @@
                         {else}
                             {include file="theme_1/blk.forbidden.theme_1.EcomB2B.tpl" data=$block key=$key   }
                         {/if}
+
+
+
+
                     {elseif $block.type=='checkout'}
                         {if $logged_in}{assign "with_checkout" 1}
                             <div id="checkout">
@@ -162,7 +167,8 @@
                         {if $block.type=='iframe'   }{assign "with_iframe" 1}{/if}
                         {if $block.type=='product'   }{assign "with_gallery" 1}{/if}
 
-                        {if $block.type=='reset_password'}{assign "with_reset_password" 1}{/if}
+                        {if $block.type=='reset_password' }{assign "with_reset_password" 1}{/if}
+                        {if $block.type=='unsubscribe'}{assign "with_unsubscribe" 1}{/if}
 
                         {if $block.type=='category_products' or   $block.type=='products'  or   $block.type=='product' }{assign "with_product_order_input" 1}{/if}
 
@@ -295,6 +301,9 @@
             });
 
                 {/if}
+
+
+
 
             {if $with_reset_password==1}
             getScript('/js/desktop.logged_in.min.js?v=2', function () {

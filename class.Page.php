@@ -1350,6 +1350,7 @@ class Page extends DB_Table {
 
                 */
 
+        /*
         $mem = new Memcached();
         $mem->addServer($memcache_ip, 11211);
 
@@ -1357,6 +1358,37 @@ class Page extends DB_Table {
         $mem->set(
             'ECOMP'.md5($account_code.$this->get('Webpage Website Key').'/'.strtolower($this->get('Page Code'))), $this->id, 172800
         );
+*/
+
+
+        require_once 'external_libs/Smarty/Smarty.class.php';
+        $smarty_web               = new Smarty();
+        $smarty_web->template_dir = 'EcomB2B/templates';
+        $smarty_web->compile_dir  = 'EcomB2B/server_files/smarty/templates_c';
+        $smarty_web->cache_dir    = 'EcomB2B/server_files/smarty/cache';
+        $smarty_web->config_dir   = 'EcomB2B/server_files/smarty/configs';
+        $smarty_web->setCaching(Smarty::CACHING_LIFETIME_CURRENT);
+
+
+        $cache_id = $this->get('Webpage Website Key').'|'.$this->id;
+        $smarty_web->clearCache(null, $cache_id);
+
+
+        $redis = new Redis();
+        if ($redis->connect('127.0.0.1', 6379)) {
+
+
+            $url_cache_key = 'pwc|'.$this->get('Webpage Website Key').'_'.$this->get('Webpage Code');
+            $redis->set($url_cache_key, $this->id);
+            $url_cache_key = 'pwc|'.$this->get('Webpage Website Key').'_'.strtoupper($this->get('Webpage Code'));
+            $redis->set($url_cache_key, $this->id);
+            $url_cache_key = 'pwc|'.$this->get('Webpage Website Key').'_'.strtolower($this->get('Webpage Code'));
+            $redis->set($url_cache_key, $this->id);
+
+        }
+
+
+
 
         return $template_response;
 
@@ -3551,7 +3583,8 @@ class Page extends DB_Table {
             }
 
 
-        } elseif ($this->get('Webpage Scope') == 'Category Categories') {
+        }
+        elseif ($this->get('Webpage Scope') == 'Category Categories') {
 
 
             //  $category=get_object('Category',$this->get('Webpage Scope Key'));
@@ -3735,7 +3768,8 @@ class Page extends DB_Table {
             }
 
 
-        } elseif ($this->get('Webpage Scope') == 'Product') {
+        }
+        elseif ($this->get('Webpage Scope') == 'Product') {
 
 
             //  $category=get_object('Category',$this->get('Webpage Scope Key'));
@@ -3859,6 +3893,7 @@ class Page extends DB_Table {
             $website = new Website($this->get('Webpage Website Key'));
 
             $website_system_webpages = website_system_webpages_config($website->get('Website Type'));
+
 
 
             if (isset($website_system_webpages[$this->get('Webpage Code')]['Page Store Content Data'])) {

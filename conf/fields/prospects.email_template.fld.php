@@ -144,7 +144,7 @@ if ($new) {
 
 
 
-    if($object->get('Email Template Deliveries')==0 ){
+    if($object->get('Email Template Sent')==0 ){
         $object_fields[]= array(
             'label'      => _('Operations'),
             'show_title' => true,

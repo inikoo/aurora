@@ -1,18 +1,16 @@
 <?php
 date_default_timezone_set('UTC');
 
-if (
-    isset($website_user) and is_object($website_user)
-and isset($customer) and is_object($customer)
+if (isset($website_user) and is_object($website_user) and isset($customer) and is_object($customer)
 
 ) {
     $editor = array(
         'Author Name'  => $customer->get('Name'),
-        'Author Alias' =>$customer->get('Name'),
+        'Author Alias' => $customer->get('Name'),
         'Author Type'  => 'Customer',
         'Author Key'   => $customer->id,
-        'Subject'  => 'Customer',
-        'Subject Key'   => $customer->id,
+        'Subject'      => 'Customer',
+        'Subject Key'  => $customer->id,
         'User Key'     => 0,
         'Date'         => gmdate('Y-m-d H:i:s')
     );
@@ -62,16 +60,18 @@ function is_type($type, $value) {
 
 function prepare_values($data, $value_names) {
 
-    $parsed_data=array();
+    $parsed_data = array();
 
 
     if (!is_array($data)) {
-        exit(json_encode(
+        exit(
+        json_encode(
             array(
                 'state' => 400,
                 'msg'   => 'Error wrong value 1'
             )
-        ));
+        )
+        );
     }
 
     foreach ($value_names as $value_name => $extra_data) {
@@ -101,12 +101,14 @@ function prepare_values($data, $value_names) {
             case('key'):
             case('numeric'):
                 if (!is_type($spected_type, $data[$value_name])) {
-                    exit(json_encode(
+                    exit(
+                    json_encode(
                         array(
                             'state' => 400,
                             'msg'   => 'Error wrong value 3 '.$spected_type
                         )
-                    ));
+                    )
+                    );
                 }
 
                 $parsed_data[$value_name] = $data[$value_name];
@@ -114,14 +116,15 @@ function prepare_values($data, $value_names) {
             case('enum'):
                 if (!preg_match(
                     $extra_data['valid values regex'], $data[$value_name]
-                )
-                ) {
-                    exit(json_encode(
+                )) {
+                    exit(
+                    json_encode(
                         array(
                             'state' => 400,
                             'msg'   => "Error wroxng value 4 ".$extra_data['valid values regex']."  "
                         )
-                    ));
+                    )
+                    );
                 }
 
                 $parsed_data[$value_name] = $data[$value_name];
@@ -141,26 +144,29 @@ function prepare_values($data, $value_names) {
                     ) {
                         if (!isset($raw_data[$element_name]) or !is_type(
                                 $element_type, $raw_data[$element_name]
-                            )
-                        ) {
-                            exit(json_encode(
+                            )) {
+                            exit(
+                            json_encode(
                                 array(
                                     'state' => 400,
                                     'msg'   => "Error wrong 5 value  $element_name  "
                                 )
-                            ));
+                            )
+                            );
                         }
                     }
 
 
                     $parsed_data[$value_name] = $raw_data;
                 } else {
-                    exit(json_encode(
+                    exit(
+                    json_encode(
                         array(
                             'state' => 400,
                             'msg'   => 'Error wrong value json'
                         )
-                    ));
+                    )
+                    );
                 }
 
 
@@ -180,14 +186,15 @@ function prepare_values($data, $value_names) {
                     ) {
                         if (!isset($raw_data[$element_name]) or !is_type(
                                 $element_type, $raw_data[$element_name]
-                            )
-                        ) {
-                            exit(json_encode(
+                            )) {
+                            exit(
+                            json_encode(
                                 array(
                                     'state' => 400,
                                     'msg'   => "Error wrong 5 value  $element_name  "
                                 )
-                            ));
+                            )
+                            );
                         }
                     }
                     foreach ($raw_data as $key => $value) {
@@ -198,12 +205,14 @@ function prepare_values($data, $value_names) {
 
                     $parsed_data[$value_name] = $raw_data;
                 } else {
-                    exit(json_encode(
+                    exit(
+                    json_encode(
                         array(
                             'state' => 400,
                             'msg'   => 'Error wrong value json'
                         )
-                    ));
+                    )
+                    );
                 }
 
 

@@ -345,6 +345,30 @@ function website_system_webpages_config($website_type) {
                 )
             )
         ),
+
+        'unsubscribe.sys' => array(
+            'Webpage Scope'             => 'Unsubscribe',
+            'Webpage Scope Metadata'    => '',
+            'Webpage Template Filename' => 'unsubscribe',
+            'Webpage Type'              => 'Customer',
+            'Webpage Code'              => 'unsubscribe.sys',
+            'Webpage Browser Title'     => _('Unsubscribe'),
+            'Webpage Name'              => _('Unsubscribe'),
+            'Webpage Meta Description'  => '',
+            'Page Store Content Data'   => json_encode(
+                array(
+
+                    'blocks' => array(
+                        $blocks['unsubscribe']
+
+                    )
+
+
+                )
+            )
+        ),
+
+
         'profile.sys'   => array(
             'Webpage Scope'             => 'UserProfile',
             'Webpage Scope Metadata'    => '',
