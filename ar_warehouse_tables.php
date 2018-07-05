@@ -74,6 +74,9 @@ switch ($tipo) {
     case 'warehouse.parts_with_unknown_location':
         parts_with_unknown_location(get_table_parameters(), $db, $user, $account);
         break;
+    case 'shippers':
+        shippers(get_table_parameters(), $db, $user, $account);
+        break;
     default:
         $response = array(
             'state' => 405,
@@ -561,28 +564,28 @@ function part_locations_to_replenish_picking_location($_data, $db, $user) {
 
     foreach ($db->query($sql) as $data) {
 
-//print_r($data);
+        //print_r($data);
         $storing_locations = '';
-        if($data['storing_locations_data']!='') {
+        if ($data['storing_locations_data'] != '') {
             foreach (preg_split('/\,/', $data['storing_locations_data']) as $storing_locations_data_set) {
                 $storing_locations_data = preg_split('/\|/', $storing_locations_data_set);
 
-                if($storing_locations_data[1]==1){
-                    $storing_locations      .= ', '.sprintf(
+                if ($storing_locations_data[1] == 1) {
+                    $storing_locations .= ', '.sprintf(
                             '<span   >%s</span> <span class="discreet" title="'._('Stock').'">(%s)</span>', $storing_locations_data[2], number($storing_locations_data[3])
                         );
-                }else{
-                    $storing_locations      .= ', '.sprintf(
-                            '<span  class="link"  onclick="change_view(\'locations/%d/%d\')">%s</span> <span class="discreet" title="'._('Stock').'">(%s)</span>', $storing_locations_data[0], $storing_locations_data[1], $storing_locations_data[2], number($storing_locations_data[3])
+                } else {
+                    $storing_locations .= ', '.sprintf(
+                            '<span  class="link"  onclick="change_view(\'locations/%d/%d\')">%s</span> <span class="discreet" title="'._('Stock').'">(%s)</span>', $storing_locations_data[0], $storing_locations_data[1], $storing_locations_data[2],
+                            number($storing_locations_data[3])
                         );
                 }
-
 
 
             }
         }
 
-        $storing_locations=preg_replace('/^, /','',$storing_locations);
+        $storing_locations = preg_replace('/^, /', '', $storing_locations);
 
 
         $table_data[] = array(
@@ -1036,7 +1039,7 @@ function parts_with_unknown_location($_data, $db, $user, $account) {
     $sql   = "select $fields from $table $where $wheref order by $order $order_direction limit $start_from,$number_results";
     $adata = array();
 
-   //  print $sql;
+    //  print $sql;
 
 
     foreach ($db->query($sql) as $data) {
@@ -1113,6 +1116,77 @@ function parts_with_unknown_location($_data, $db, $user, $account) {
         'resultset' => array(
             'state'         => 200,
             'data'          => $adata,
+            'rtext'         => $rtext,
+            'sort_key'      => $_order,
+            'sort_dir'      => $_dir,
+            'total_records' => $total
+
+        )
+    );
+    echo json_encode($response);
+}
+
+
+function shippers($_data, $db, $user, $account) {
+
+
+    $rtext_label = 'shipping company';
+
+    include_once 'prepare_table/init.php';
+
+    $sql = "select $fields from $table $where $wheref order by $order $order_direction limit $start_from,$number_results";
+
+    //print $sql;
+
+
+    $record_data = array();
+
+    if ($result = $db->query($sql)) {
+        foreach ($result as $data) {
+
+
+            switch ($data['Shipper Status']){
+                case 'Active':
+                    $status=sprintf('<i class="fa fa-play success" title="%s"></i>',_('Active'));
+
+                    break;
+                case 'Active':
+                    $status=sprintf('<i class="fa fa-pause discreet error" title="%s"></i>',_('Suspended'));
+                    break;
+                default:
+                    $status='';
+            }
+
+
+            $code = sprintf('<span class="link" onclick="change_view(\'warehouse/%d/shipper/%d\')">%s</span>', $data['Shipper Warehouse Key'],$data['Shipper Key'], $data['Shipper Code']);
+
+
+            $record_data[] = array(
+                'id'               => (integer)$data['Shipper Key'],
+                'code'             => $code,
+                'status'             => $status,
+                'name'             => $data['Shipper Name'],
+                'consignments'     => number($data['Shipper Consignments']),
+                'parcels'          => number($data['Shipper Number Parcels']),
+                'weight'           => weight($data['Shipper Dispatched Weight']),
+                'last_consignment' => ($data['Shipper Last Consignment'] == '' ? '' : strftime("%a %e %b %Y %H:%M %Z", strtotime($data['Shipper Last Consignment'].' +0:00'))),
+
+
+            );
+
+
+        }
+    } else {
+        print_r($error_info = $db->errorInfo());
+        print $sql;
+        exit;
+    }
+
+
+    $response = array(
+        'resultset' => array(
+            'state'         => 200,
+            'data'          => $record_data,
             'rtext'         => $rtext,
             'sort_key'      => $_order,
             'sort_dir'      => $_dir,

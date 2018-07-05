@@ -1569,6 +1569,7 @@ $modules = array(
             ),
 
 
+
             'order'         => array(
                 'type' => 'object',
                 'tabs' => array(
@@ -1750,21 +1751,26 @@ $modules = array(
         'parent_type' => 'none',
         'section'     => 'orders',
         'sections'    => array(
+
+
             'delivery_notes' => array(
                 'type'  => 'navigation',
                 'icon'  => 'truck',
                 'label' => _('Delivery notes'),
+                'reference' => 'delivery_notes/all',
                 'tabs'  => array(
                     'delivery_notes_server' => array()
                 )
 
             ),
 
+
+
             'delivery_notes_by_store' => array(
                 'type'      => 'navigation',
                 'label'     => _('Group by store'),
                 'icon'      => 'compress',
-                'reference' => 'delivery_notes/by_store',
+                'reference' => 'delivery_notes/all/by_store',
                 'tabs'      => array(
                     'delivery_notes_group_by_store' => array()
                 )
@@ -5601,6 +5607,29 @@ $modules = array(
 
             ),
 
+
+            'shippers' => array(
+                'type'  => 'navigation',
+                'icon'  => 'truck-loading',
+                'label' => _('Shipping companies'),
+                'reference' => 'warehouse/%d/shippers',
+                'tabs'  => array(
+                    'shippers' => array()
+                )
+
+            ),
+
+            'shipper.new' => array(
+                'type' => 'new_object',
+                'tabs' => array(
+                    'shipper.new' => array(
+                        'label' => _('New shipping company')
+                    ),
+
+                )
+
+            ),
+
             'delivery_notes' => array(
 
                 'type'      => 'navigation',
@@ -5782,6 +5811,34 @@ $modules = array(
 
                 )
 
+
+            ),
+
+            'shipper'      => array(
+
+                'type'      => 'object',
+                'label'     => _('Shipping company'),
+                'icon'      => '',
+                'reference' => '',
+                'tabs'      => array(
+                    'shipper.details'            => array(
+                        'label' => _('Settings'),
+                        'title' => _('Settings'),
+                        'icon'  => 'slider-h'
+                    ),
+                    'shipper.consignments'              => array(
+                        'label' => _('Consignments'),
+                        'icon'  => 'truck'
+                    ),
+
+                    'shipper.history'            => array(
+                        'label' => _('History/Notes'),
+                        'title' => _('History/Notes'),
+                        'icon'  => 'road',
+                        'class' => 'right icon_only'
+                    ),
+
+                )
 
             ),
 

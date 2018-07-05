@@ -276,7 +276,7 @@
             <span style="float:left;padding-left:10px;padding-top:5px" class="Order_State"> {$order->get('State')} </span>
             <div id="forward_operations">
 
-                <div id="proforma_operations" class="order_operation {if  $order->get('State Index')<10 or  $order->get('State Index')>=90    or  $order->get('Order Number Items')==0 }hide{/if}">
+                <div id="proforma_operations" class="order_operation {if  $order->get('State Index')<10 or  $order->get('State Index')>=80    or  $order->get('Order Number Items')==0 }hide{/if}">
                     <div  class="square_button right  " title="{t}Proforma invoice{/t}">
                         <a class="" target='_blank' href="/pdf/proforma.pdf.php?id={$order->id}"><i class="fal fa-file-alt   " style="color:darkseagreen" aria-hidden="true" ></i></a>
 

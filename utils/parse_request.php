@@ -3065,6 +3065,25 @@ function parse_request($_data, $db, $modules, $account = '', $user = '', $is_set
 
                                 $parent     = 'warehouse';
                                 $parent_key = $key;
+                            }elseif ($view_path[1] == 'shippers') {
+
+
+                                $parent     = 'warehouse';
+                                $parent_key = $key;
+
+                                $section = 'shippers';
+                                if (isset($view_path[2])) {
+                                    if (is_numeric($view_path[2])) {
+                                        $section = 'shipper';
+                                        $object  = 'shipper';
+                                        $key     = $view_path[2];
+                                    }elseif ($view_path[2]=='new') {
+                                        $section = 'shipper.new';
+                                        $object  = 'shipper';
+                                        $key     = 0;
+                                    }
+                                }
+
 
 
                             } elseif ($view_path[1] == 'leakages') {
@@ -4592,6 +4611,7 @@ function parse_request($_data, $db, $modules, $account = '', $user = '', $is_set
                 }
 
                 break;
+
             case 'account':
 
 

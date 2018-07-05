@@ -1,3 +1,16 @@
+<style>
+    span.button.option {
+        border: 1px solid #ccc;
+        padding: 2px 10px 2px 10px;
+    }
+    span.button.option.selected {
+        border: 1px solid #000;
+        color:#000;
+    }
+
+
+
+</style>
 <div class="timeline_horizontal">
 
     <input type="hidden" id="Delivery_Note_State_Index" value="{$delivery_note->get('State Index')}">
@@ -106,7 +119,7 @@
     </ul>
 </div>
 
-<div id="delivery_note" class="order" data-object="{$object_data}" dn_key="{$delivery_note->id}" style="display: flex;">
+<div id="delivery_note" class="order" data-object="{$object_data}" data-number_shippers="{$number_shippers}" dn_key="{$delivery_note->id}" style="display: flex;">
     <div class="block" style="padding:10px 20px;position: relative">
 
 
@@ -220,8 +233,8 @@
                     <div id="dispatch_operation" class="square_button right  " title="{t}Dispatch{/t}">
 
 
-                        <i id="dispatch_save_buttons" class="fa button fa-paper-plane fa-fw   " data-data='{  "field": "Delivery Note State","value": "Dispatched","dialog_name":"dispatch"}' aria-hidden="true"
-                           onclick="save_order_operation(this)"></i>
+                        <i id="dispatch_save_buttons" class="fa button fa-paper-plane fa-fw {if $number_shippers>0 and  $delivery_note->get('Delivery Note Shipper Key')==''}very_discreet{/if}  " data-data='{  "field": "Delivery Note State","value": "Dispatched","dialog_name":"dispatch"}' aria-hidden="true"
+                           onclick="save_dispatch_dn(this)"></i>
 
 
                     </div>
@@ -235,21 +248,21 @@
         </div>
 
 
-        <div class="date" style="padding:10px;margin-bottom:0px;text-align: center;border-bottom: 1px solid #ccc">
+        <div class="date" style="padding:10px;margin-bottom:0px;text-align: center; border-bottom: 1px solid #ccc ">
             <span class="button" onclick="change_view('orders/{$order->get('Order Store Key')}/{$order->id}')"><i class="fa fa-shopping-cart" aria-hidden="true"></i> {$order->get('Public ID')}</span>
         </div>
-        <div class="" style="padding:5px 10px;margin-bottom:0px;border-bottom: 1px solid #ccc">
+        <div class="_items_cost" style="padding:5px 10px;margin-bottom:0px;{if  $delivery_note->get('State Index')!=100 }border-bottom: 1px solid #ccc{/if}">
             <table border="0" style="width: 100%;">
 
 
                 <tr>
-            <td class="label">{t}Items cost{/t}:</td>
-                    <td class="aright Items_Cost" >{$delivery_note->get('Items Cost')}</td>
+                    <td class="label">{t}Items cost{/t}:</td>
+                    <td class="aright Items_Cost">{$delivery_note->get('Items Cost')}</td>
                 </tr>
             </table>
         </div>
 
-        <div class="state" style="text-align: center;padding:5px 10px;border-bottom:none">
+        <div class="state info_block  {if  $delivery_note->get('State Index')==100 }hide{/if}" style="text-align: center;padding:5px 10px;border-bottom:none;">
             <table border="0" style="width: 100%;">
 
 
@@ -287,11 +300,11 @@
     <div class="block" style="padding:20px 10px 0px 10px">
 
 
-        <table border="0" class="info_block  {if $delivery_note->get('State Index')<70 or $delivery_note->get('State Index')>90 }hide{/if} ">
+        <table border="0" style="min-width:500px " class="info_block  {if $delivery_note->get('State Index')<70 or $delivery_note->get('State Index')>90   }hide{/if} ">
 
 
             <tr>
-                <td class="aright"> {t}Parcels{/t}:</td>
+                <td class="aleft" style="width: 80px">{t}Parcels{/t}:</td>
                 <td class="">
                     <input id="number_parcel_field" style="width:75px" value="{$delivery_note->get('Delivery Note Number Parcels')}" ovalue="{$delivery_note->get('Delivery Note Number Parcels')}"
                            placeholder="{t}number{/t}"> <i onCLick="save_number_parcels(this)" class="fa fa-plus button" aria-hidden="true"></i>
@@ -304,12 +317,87 @@
                 </td>
             </tr>
 
-            <tr id="edit_consignment_tr" class="hide">
-                <td class="aright"> {t}Courier{/t}:</td>
-                <td class="aright"><span id="formatted_consignment">{if $consignment==''}<span onclick="show_dialog_set_dn_data()"
-                                                                                               style="font-style:italic;color:#777;cursor:pointer">{t}Set consignment{/t}</span>{else}{$consignment}{/if}</span>
+            <tr id="edit_shipper_tr" class="{if $number_shippers==0}hide{/if}">
+                <td class="aleft">{t}Courier{/t}:</td>
+                <td class="aleft" colspan="3">
+                    <div id="shipper" class="{if $delivery_note->get('Delivery Note Shipper Key')==''}hide{/if}">
+                        {assign "shipper" $delivery_note->get('Shipper')}
+                        {if $shipper}
+                            <span class="Shipper_Code" title="{$shipper->get('Name')}">{$shipper->get('Code')}</span>
+                        {else}
+                            <span class="Shipper_Code" title=""></span>
+                        {/if}
+
+                        <i onclick="show_shipper_options()" class="fal fa-pen discreet button margin_left_10"></i>
+
+
+                    </div>
+
+                    <div id="shipper_options" class="{if $delivery_note->get('Delivery Note Shipper Key')>0}hide{/if}">
+                        {if $number_shippers<=5}
+                            {foreach from=$shippers item=shipper}
+                                <span id="shipper_option_{$shipper.key}" onclick="select_courier({$shipper.key})" class="button option {if $delivery_note->get('Delivery Note Shipper Key')==$shipper.key}selected{/if}" title="{$shipper.name}">{$shipper.code}</span>
+                            {/foreach}
+                            <span id="shipper_option_" onclick="select_courier('')" class="button option " title="{t}Skip set courier{/t}"><i class="error fa fa-ban"></i></span>
+                        {else}
+
+                        {/if}
+
+                    </div>
                 </td>
             </tr>
+            <tr id="edit_shipper_tracking_tr" class="{if !$delivery_note->get('Delivery Note Shipper Key')}hide{/if}">
+                <td class="aleft">{t}Tracking{/t}:</td>
+                <td class="aleft" colspan="3">
+                    <div class="{if $delivery_note->get('State Index')!=100}hide{/if}">
+
+                        {$delivery_note->get('Delivery Note Shipper Tracking')}
+
+                    </div>
+
+                    <div id="shipper_tracking_form" >
+                        <input id="tracking_field" style="width:275px" value="{$delivery_note->get('Delivery Note Shipper Tracking')}" ovalue="{$delivery_note->get('Delivery Note Shipper Tracking')}" placeholder="{t}Tracking code{/t}"> <i
+                                onClick="save_delivery_note_tracking(this)" class="fa fa-cloud button hide" aria-hidden="true"></i>
+
+                    </div>
+                </td>
+            </tr>
+
+        </table>
+
+
+        <table border="0"  class="final_info_block  {if  $delivery_note->get('State Index')!=100 }hide{/if} ">
+
+
+            <tr>
+
+
+                <td>
+                    <span style=""><i class="fa fa-square fa-fw discreet" aria-hidden="true"></i>
+                          <span class="Number_Ordered_Parts">{$delivery_note->get('Number Ordered Parts')}</span> (<span class="Number_Ordered_Items">{$delivery_note->get('Number Ordered Items')}</span>)
+
+               <span class="error {if $delivery_note->get('Order Number Items Out of Stock')==0}hide{/if}" style="padding-left:20px"><i class="fa fa-cube fa-fw  " aria-hidden="true"></i> <span
+                           class="Order_Number_Items_with_Out_of_Stock">{$delivery_note->get('Number Items Out of Stock')}</span></span>
+                    <span class="error {if $delivery_note->get('Order Number Items Returned')==0}hide{/if}" style="padding-left:20px"><i class="fa fa-thumbs-o-down fa-fw   " aria-hidden="true"></i> <span
+                                class="Order_Number_Items_with_Returned">{$delivery_note->get('Number Items Returned')}</span></span>
+                </td>
+
+                <td>
+                    <span style="padding-left:20px"><i class="fa fa-balance-scale fa-fw discreet " aria-hidden="true"></i> <span class="Weight_Details">{$delivery_note->get('Weight Details')}</span></span>
+                </td>
+                <td>
+
+                    <span style="padding-left:20px" class="Delivery_Note_Number_Parcels">
+                        {$delivery_note->get('Number Parcels')}
+                    </span>
+                </td>
+                <td>
+                    <span style="padding-left:20px"><i class="far fa-truck-loading fa-fw padding_right_5 " aria-hidden="true"></i> <span class="Consignment">{$delivery_note->get('Consignment')}</span></span>
+                </td
+
+            </tr>
+
+
 
         </table>
 
@@ -476,19 +564,12 @@
     function save_picking_offline(force_pick) {
 
 
-
-
-
-
-
-
         if ($('#save_picking_offline').hasClass('wait') || !$('#save_picking_offline').hasClass('valid')) {
             return
         }
 
 
-        if(force_pick===undefined){
-
+        if (force_pick === undefined) {
 
 
             var hard_no_pick = 0;
@@ -529,17 +610,18 @@
                 hard_no_pick_parts = hard_no_pick_parts.replace(/^, /i, '')
 
 
-                swal(hard_no_pick_parts,'{t}Not picked{/t}', "warning");
+                swal(hard_no_pick_parts, '{t}Not picked{/t}', "warning");
 
 
                 swal({
-                    title: hard_no_pick_parts,
-                    text:'{t}Not picked{/t}',
-                    icon:"error",
-                    buttons: ["{t}Ok, i will fix it{/t} :)", "{t}Continue anyway{/t}"],
-                    dangerMode: true
-                }).then((willDelete) => { if (willDelete) { save_picking_offline(true)}
-                });
+                    title: hard_no_pick_parts, text: '{t}Not picked{/t}', icon: "error", buttons: ["{t}Ok, i will fix it{/t} :)", "{t}Continue anyway{/t}"], dangerMode: true
+                }).then((willDelete) => {
+                    if(willDelete) {
+                        save_picking_offline(true)
+                    }
+                }
+            )
+                ;
 
                 return;
             }
@@ -552,12 +634,17 @@
                 // if(hard_no_pick==1){
                 swal({
                     title: soft_no_pick_parts,
-                    text:'{t}There is more stock in other locations, replenish picking location and try again{/t}',
-                    icon:"warning",
+                    text: '{t}There is more stock in other locations, replenish picking location and try again{/t}',
+                    icon: "warning",
                     buttons: ["{t}I will replenish the location{/t} :)", "{t}Continue anyway{/t}"],
                     dangerMode: true
-                }).then((willDelete) => { if (willDelete) { save_picking_offline(true)}
-                });
+                }).then((willDelete) => {
+                    if(willDelete) {
+                        save_picking_offline(true)
+                    }
+                }
+            )
+                ;
 
                 //}else{
                 //     swal('{t}There is some parts not picked{/t}', hard_no_pick_parts, "warning");
@@ -567,9 +654,8 @@
                 return;
             }
 
-          
-        }
 
+        }
 
 
         $('#save_picking_offline').addClass('wait')
@@ -859,6 +945,93 @@
     });
 
 
+    function select_courier(value) {
+
+
+        //  $(element).addClass('fa-spinner fa-spin');
+
+
+        var request = '/ar_edit.php?tipo=edit_field&object=DeliveryNote&key=' + $('#delivery_note').attr('dn_key') + '&field=Delivery_Note_Shipper_Key&value=' + value + '&metadata={}';
+        console.log(request)
+
+        var form_data = new FormData();
+
+        form_data.append("tipo", 'edit_field')
+        form_data.append("field", 'Delivery_Note_Shipper_Key')
+        form_data.append("object", 'DeliveryNote')
+        form_data.append("key", $('#delivery_note').attr('dn_key'))
+        form_data.append("value", value)
+        var request = $.ajax({
+
+            url: "/ar_edit.php", data: form_data, processData: false, contentType: false, type: 'POST', dataType: 'json'
+
+        })
+
+
+        request.done(function (data) {
+            //$(element).removeClass('fa-spinner fa-spin')
+            if (data.state == 200) {
+
+                console.log(data)
+                //input.attr('ovalue', data.value)
+                // icon.removeClass('fa-cloud').addClass('fa-plus')
+                $('#shipper_options').addClass('hide')
+                $('#shipper').removeClass('hide')
+
+                for (var key in data.update_metadata.class_html) {
+                    $('.' + key).html(data.update_metadata.class_html[key])
+                }
+
+
+
+                for (var key in data.update_metadata.title) {
+                    $('.' + key).attr('title',data.update_metadata.title[key])
+                }
+
+                $('#shipper_options .option').removeClass('selected')
+
+                $('#shipper_option_'+data.value).addClass('selected')
+                $('#dispatch_save_buttons').removeClass('very_discreet')
+                if(data.value>0){
+                    $('#edit_shipper_tracking_tr').removeClass('hide')
+
+
+
+
+                }else{
+                    $('#edit_shipper_tracking_tr').addClass('hide')
+
+
+
+
+
+                }
+
+
+
+
+
+
+                // $('.Shipper_Code').html(data.)
+
+            } else if (data.state == 400) {
+                sweetAlert(data.msg);
+                input.val(input.attr('ovalue'))
+            }
+
+        })
+
+
+        request.fail(function (jqXHR, textStatus) {
+            console.log(textStatus)
+
+            console.log(jqXHR.responseText)
+
+
+        });
+
+    }
+
     function select_dropdown_handler(type, element) {
 
 
@@ -993,6 +1166,25 @@
         } else {
             $(this).closest('td').find('i').removeClass('error').addClass('valid save changed')
         }
+
+
+    })
+
+    $(document).on('input propertychange', '#tracking_field', function () {
+
+
+
+        if ($(this).val() != $(this).attr('ovalue')) {
+            $(this).closest('td').find('i').removeClass('hide')
+        } else {
+            $(this).closest('td').find('i').addClass('hide')
+
+        }
+
+
+
+        $(this).closest('td').find('i').removeClass('error').addClass('valid save changed')
+
 
 
     })
@@ -1154,6 +1346,70 @@
 
     }
 
+    function save_delivery_note_tracking(element) {
+
+        var input = $(element).closest('td').find('input')
+        var icon = $(element)
+
+
+        if (!icon.hasClass('save') || icon.hasClass('wait')) {
+            return
+        }
+
+        $(element).addClass('fa-spinner fa-spin');
+
+
+
+
+
+        var request = '/ar_edit.php?tipo=edit_field&object=DeliveryNote&key=' + $('#delivery_note').attr('dn_key') + '&field=Delivery_Note_Weight&value=' + input.val() + '&metadata={}';
+        console.log(request)
+
+        var form_data = new FormData();
+
+        form_data.append("tipo", 'edit_field')
+        form_data.append("field", 'Delivery_Note_Shipper_Tracking')
+        form_data.append("object", 'DeliveryNote')
+        form_data.append("key", $('#delivery_note').attr('dn_key'))
+        form_data.append("value", input.val())
+        var request = $.ajax({
+
+            url: "/ar_edit.php", data: form_data, processData: false, contentType: false, type: 'POST', dataType: 'json'
+
+        })
+
+
+        request.done(function (data) {
+            $(element).removeClass('fa-spinner fa-spin wait')
+            if (data.state == 200) {
+                input.attr('ovalue', data.value)
+                icon.addClass('hide')
+
+
+                for (var key in data.update_metadata.class_html) {
+                    $('.' + key).html(data.update_metadata.class_html[key])
+                }
+
+
+            } else if (data.state == 400) {
+                sweetAlert(data.msg);
+                input.val(input.attr('ovalue'))
+            }
+
+        })
+
+
+        request.fail(function (jqXHR, textStatus) {
+            console.log(textStatus)
+
+            console.log(jqXHR.responseText)
+
+
+        });
+
+
+    }
+
     function dispatch_delivery_note() {
 
 
@@ -1194,6 +1450,211 @@
                 tempFrameWindow.print();
             });
         }
+
+
+    }
+
+
+    function show_shipper_options(){
+        $('#shipper_options').removeClass('hide')
+        $('#shipper').addClass('hide')
+
+    }
+
+
+    function save_dispatch_dn(element) {
+
+
+        if($(element).hasClass('very_discreet')){
+
+            swal('{t}Courier not set{/t}', '{t}Select a courier{/t}', "error");
+
+            return;
+        }
+
+
+        var data = $(element).data("data")
+
+        console.log(data)
+
+        var object_data = JSON.parse(atob($('#object_showcase div.order').data("object")))
+
+        var dialog_name = data.dialog_name
+        var field = data.field
+        var value = data.value
+        var object = object_data.object
+        var key = object_data.key
+
+
+        if (!$('#' + dialog_name + '_save_buttons').hasClass('button')) {
+            console.log('#' + dialog_name + '_save_buttons')
+            return;
+        }
+
+        $('#' + dialog_name + '_save_buttons').removeClass('button');
+        $('#' + dialog_name + '_save_buttons i').addClass('fa-spinner fa-spin')
+        $('#' + dialog_name + '_save_buttons .label').addClass('hide')
+
+
+        var metadata = {}
+
+            //console.log('#' + dialog_name + '_dialog')
+
+            $('#' + dialog_name + '_dialog  .option_input_field').each(function () {
+                var settings = $(this).data("settings")
+
+
+
+                if (settings.type == 'datetime') {
+                    metadata[settings.field] = $('#' + settings.id).val() + ' ' + $('#' + settings.id + '_time').val()
+
+                }
+
+
+            });
+
+        console.log(field)
+
+        if(field=='Replacement State'){
+            metadata['Delivery Note Key']=data.replacement_key;
+        }
+
+
+        var request = '/ar_edit.php?tipo=edit_field&object=' + object + '&key=' + key + '&field=' + field + '&value=' + value + '&metadata=' + JSON.stringify(metadata)
+
+
+
+        //console.log(request)
+        //  return;
+        //=====
+        var form_data = new FormData();
+
+        form_data.append("tipo", 'edit_field')
+        form_data.append("object", object)
+        form_data.append("key", key)
+        form_data.append("field", field)
+        form_data.append("value", value)
+        form_data.append("metadata", JSON.stringify(metadata))
+
+        var request = $.ajax({
+
+            url: "/ar_edit.php", data: form_data, processData: false, contentType: false, type: 'POST', dataType: 'json'
+
+        })
+
+
+        request.done(function (data) {
+
+            $('#' + dialog_name + '_save_buttons').addClass('button');
+            $('#' + dialog_name + '_save_buttons i').removeClass('fa-spinner fa-spin')
+            $('#' + dialog_name + '_save_buttons .label').removeClass('hide')
+
+
+            if (data.state == 200) {
+
+                close_dialog(dialog_name)
+
+
+
+
+                if (data.value == 'Cancelled') {
+                    change_view(state.request, {
+                        reload_showcase: true
+                    })
+                }
+
+
+                for (var key in data.update_metadata.class_html) {
+                    $('.' + key).html(data.update_metadata.class_html[key])
+                }
+
+
+                $('.order_operation').addClass('hide')
+                // $('.items_operation').addClass('hide')
+
+
+
+
+                for (var key in data.update_metadata.operations) {
+
+                    console.log('#' + data.update_metadata.operations[key])
+
+                    $('#' + data.update_metadata.operations[key]).removeClass('hide')
+                }
+
+
+
+
+                $('.timeline .li').removeClass('complete')
+
+
+
+
+
+
+
+                    $('#order_node').addClass('complete')
+
+
+
+                    if (data.update_metadata.state_index >= 20) {
+                        $('#start_picking_node').addClass('complete')
+                    }
+                    if (data.update_metadata.state_index >= 30) {
+                        $('#picked_node').addClass('complete')
+                    }
+                    if (data.update_metadata.state_index >= 70) {
+                        $('#packed_node').addClass('complete')
+                    }
+                    if (data.update_metadata.state_index >= 80) {
+                        $('#packed_done_node').addClass('complete')
+                    }
+                    if (data.update_metadata.state_index >= 90) {
+                        $('#dispatch_approved_node').addClass('complete')
+                    }
+                    if (data.update_metadata.state_index >= 100) {
+                        $('#dispatched_node').addClass('complete')
+                    }
+
+
+                    if(data.update_metadata.state_index > 10){
+                        $('.delivery_note_handling_fields').removeClass('hide')
+                    }else{
+                        $('.delivery_note_handling_fields').addClass('hide')
+
+                    }
+
+
+
+                    $('#Delivery_Note_State_Index').val(data.update_metadata.state_index)
+
+
+
+                $('.final_info_block').removeClass('hide')
+                $('.info_block').addClass('hide')
+                $('._items_cost').css('border-bottom','none')
+
+
+
+
+
+
+            } else if (data.state == 400) {
+
+
+                swal($('#_labels').data('labels').error, data.msg, "error")
+            }
+
+        })
+
+
+        request.fail(function (jqXHR, textStatus) {
+            console.log(textStatus)
+
+            console.log(jqXHR.responseText)
+
+
+        });
 
 
     }

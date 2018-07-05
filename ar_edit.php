@@ -1923,6 +1923,18 @@ function new_object($account, $db, $user, $editor, $data, $smarty) {
             }
 
             break;
+        case 'Shipper':
+
+            $data['fields_data']['user'] = $user;
+
+            $object = $parent->create_shipper($data['fields_data']);
+            if (!$parent->error) {
+                $smarty->assign('object', $object);
+
+                $pcard        = $smarty->fetch('presentation_cards/shipper.pcard.tpl');
+                $updated_data = array();
+            }
+            break;
 
         default:
             $response = array(

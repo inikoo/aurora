@@ -567,6 +567,13 @@ function get_object_fields($object, $db, $user, $smarty, $options = false) {
 
             }
             return $object_fields;
+
+
+        case 'Shipper':
+            include 'fields/shipper.fld.php';
+
+            return $object_fields;
+            break;
             break;
 
         default:

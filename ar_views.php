@@ -1582,6 +1582,7 @@ function get_navigation($user, $smarty, $data, $db, $account) {
                         $data, $smarty, $user, $db, $account
                     );
                     break;
+
             }
 
             break;
@@ -2175,6 +2176,16 @@ function get_navigation($user, $smarty, $data, $db, $account) {
                 case ('timeseries_record'):
                     return get_timeseries_record_navigation($data, $smarty, $user, $db, $account);
                     break;
+                case ('shippers'):
+                    return get_shippers_navigation($data, $smarty, $user, $db, $account);
+                    break;
+                case ('shipper'):
+                    return get_shipper_navigation($data, $smarty, $user, $db, $account);
+                    break;
+                case ('shipper.new'):
+                    return get_shipper_new_navigation($data, $smarty, $user, $db, $account);
+                    break;
+
 
             }
 
@@ -3825,7 +3836,6 @@ function get_view_position($db, $state, $user, $smarty, $account) {
                 );
 
             }
-
             switch ($state['section']) {
                 case 'list':
                     $list  = new SubjectList($state['key']);
@@ -4830,14 +4840,17 @@ function get_view_position($db, $state, $user, $smarty, $account) {
 
             if ($user->get_number_stores() > 1) {
                 $branch[] = array(
-                    'label'     => _('Delivery Notes').' ('._(
-                            'All stores'
-                        ).')',
+                    'label'     => _('Delivery Notes').' ('._('All stores').')',
                     'icon'      => '',
                     'reference' => 'delivery_notes/all'
                 );
             }
+
+
+
+
             break;
+
         case 'orders':
             $state['current_store'] = $state['store']->id;
             $branch[]               = array(
@@ -6279,7 +6292,7 @@ function get_view_position($db, $state, $user, $smarty, $account) {
 
             $branch[] = array(
                 'label'     => '('._('All warehouses').')',
-                'icon'      => 'alt-warehouse',
+                'icon'      => 'warehouse-alt',
                 'reference' => ''
             );
 
@@ -6310,19 +6323,24 @@ function get_view_position($db, $state, $user, $smarty, $account) {
                     );
                     $branch[] = array(
                         'label'     => '<span class="id Warehouse_Code">'.$state['warehouse']->get('Code').'</span>',
-                        'icon'      => 'alt-warehouse',
+                        'icon'      => 'warehouse-alt',
                         'reference' => ''
                     );
                     break;
                 case 'locations':
-                    $branch[] = array(
-                        'label'     => '('._('All warehouses').')',
-                        'icon'      => '',
-                        'reference' => 'warehouses'
-                    );
+
+                    if ($user->get_number_warehouses() > 1 or $user->can_create('warehouses')) {
+
+
+                        $branch[] = array(
+                            'label'     => '('._('All warehouses').')',
+                            'icon'      => '',
+                            'reference' => 'warehouses'
+                        );
+                    }
                     $branch[] = array(
                         'label'     => '<span class="id Warehouse_Code">'.$state['warehouse']->get('Code').'</span>',
-                        'icon'      => 'alt-warehouse',
+                        'icon'      => 'warehouse-alt',
                         'reference' => 'warehouse/'.$state['parent_key']
                     );
                     $branch[] = array(
@@ -6339,7 +6357,7 @@ function get_view_position($db, $state, $user, $smarty, $account) {
                     );
                     $branch[] = array(
                         'label'     => '<span class="id Warehouse_Code">'.$state['warehouse']->get('Code').'</span>',
-                        'icon'      => 'alt-warehouse',
+                        'icon'      => 'warehouse-alt',
                         'reference' => 'warehouse/'.$state['parent_key']
                     );
                     $branch[] = array(
@@ -6503,7 +6521,90 @@ function get_view_position($db, $state, $user, $smarty, $account) {
                         'reference' => ''
                     );
                     break;
+                case 'shippers':
 
+                    if ($user->get_number_warehouses() > 1 or $user->can_create('warehouses')) {
+
+                        $branch[] = array(
+                            'label'     => '('._('All warehouses').')',
+                            'icon'      => '',
+                            'reference' => 'inventory/all'
+                        );
+
+                    }
+
+                    $branch[] = array(
+                        'label'     => '<span class=" Warehouse_Code">'.$state['warehouse']->get('Code').'</span>',
+                        'icon'      => 'warehouse-alt',
+                        'reference' => 'warehouse/'.$state['parent_key']
+                    );
+
+                    $branch[] = array(
+                        'label'     => _('Shipping companies'),
+                        'icon'      => 'truck-loading',
+                        'reference' => ''
+                    );
+                    break;
+                case 'shipper.new':
+
+                    if ($user->get_number_warehouses() > 1 or $user->can_create('warehouses')) {
+
+                        $branch[] = array(
+                            'label'     => '('._('All warehouses').')',
+                            'icon'      => '',
+                            'reference' => 'inventory/all'
+                        );
+
+                    }
+
+                    $branch[] = array(
+                        'label'     => '<span class=" Warehouse_Code">'.$state['warehouse']->get('Code').'</span>',
+                        'icon'      => 'warehouse-alt',
+                        'reference' => 'warehouse/'.$state['parent_key']
+                    );
+
+                    $branch[] = array(
+                        'label'     => _('Shipping companies'),
+                        'icon'      => 'truck-loading',
+                        'reference' => 'warehouse/'.$state['parent_key'].'/shippers'
+                    );
+
+                    $branch[] = array(
+                        'label'     => _('Add shipping company'),
+                        'icon'      => '',
+                        'reference' => ''
+                    );
+                    break;
+                case 'shipper.new':
+
+                    if ($user->get_number_warehouses() > 1 or $user->can_create('warehouses')) {
+
+                        $branch[] = array(
+                            'label'     => '('._('All warehouses').')',
+                            'icon'      => '',
+                            'reference' => 'inventory/all'
+                        );
+
+                    }
+
+                    $branch[] = array(
+                        'label'     => '<span class=" Warehouse_Code">'.$state['warehouse']->get('Code').'</span>',
+                        'icon'      => 'warehouse-alt',
+                        'reference' => 'warehouse/'.$state['parent_key']
+                    );
+
+                    $branch[] = array(
+                        'label'     => _('Shipping companies'),
+                        'icon'      => 'truck-loading',
+                        'reference' => 'warehouse/'.$state['parent_key'].'/shippers'
+                    );
+
+                    $branch[] = array(
+                        'label'     => '<span class="Shipper_Code">'.$state['_object']->get('Code').'</span>',
+                        'icon'      => '',
+                        'reference' => ''
+                    );
+                    break;
 
             }
 

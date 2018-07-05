@@ -445,6 +445,110 @@ class Warehouse extends DB_Table {
 
     }
 
+    function create_shipper($data) {
+
+        include_once 'class.Shipper.php';
+
+        $this->new_shipper = false;
+
+        $data['editor'] = $this->editor;
+
+
+        //print_r($data);
+
+        if (empty($data['Shipper Code'])) {
+            $this->error      = true;
+            $this->msg        = _("Code missing");
+            $this->error_code = 'shipper_code_missing';
+            $this->metadata   = '';
+
+            return;
+        }
+
+        if (empty($data['Shipper Name'])) {
+            $this->error      = true;
+            $this->msg        = _("Name missing");
+            $this->error_code = 'shipper_name_missing';
+            $this->metadata   = '';
+
+            return;
+        }
+
+        $sql = sprintf(
+            'SELECT count(*) AS num FROM `Shipper Dimension` WHERE `Shipper Code`=%s AND `Shipper Warehouse Key`=%d  ', prepare_mysql($data['Shipper Code']), $this->id
+
+        );
+
+
+        if ($result = $this->db->query($sql)) {
+            if ($row = $result->fetch()) {
+                if ($row['num'] > 0) {
+                    $this->error      = true;
+                    $this->msg        = sprintf(_('Duplicated code (%s)'), $data['Shipper Code']);
+                    $this->error_code = 'duplicate_shipper_code';
+                    $this->metadata   = $data['Shipper Code'];
+
+                    return;
+                }
+            }
+        } else {
+            print_r($error_info = $this->db->errorInfo());
+            exit;
+        }
+
+
+
+
+
+        $data['Shipper Warehouse Key'] = $this->id;
+
+
+        $shipper = new Shipper('find', $data, 'create');
+
+
+        if ($shipper->id) {
+            $this->new_object_msg = $shipper->msg;
+
+            if ($shipper->new) {
+                $this->new_object    = true;
+                $this->new_shipper = true;
+
+
+                $this->update_children();
+
+
+            } else {
+
+                $this->error = true;
+                if ($shipper->found) {
+
+                    $this->error_code     = 'duplicated_field';
+                    $this->error_metadata = json_encode(
+                        array($shipper->duplicated_field)
+                    );
+
+                    if ($shipper->duplicated_field == 'Shipper Code') {
+                        $this->msg = _("Duplicated code");
+                    } else {
+                        $this->msg = 'Duplicated '.$shipper->duplicated_field;
+                    }
+
+
+                } else {
+                    $this->msg = $shipper->msg;
+                }
+            }
+
+            return $shipper;
+        } else {
+
+            $this->error = true;
+            $this->msg   = $shipper->msg;
+
+        }
+
+    }
+
     function update_location_flag_number($flag_key) {
         $num = 0;
         $sql = sprintf(
@@ -1768,6 +1872,52 @@ class Warehouse extends DB_Table {
         }
 
 
+    }
+
+    function get_shippers($scope = 'keys', $options = '') {
+
+
+        if ($options == 'Active') {
+            $where = sprintf(' where `Shipper Warehouse Key`=%s and `Shipper Status`="Active"', $this->id);
+
+        } else {
+            $where = sprintf(' where `Shipper Warehouse Key`=%d', $this->id);
+        }
+
+        $sql = sprintf(
+            "SELECT `Shipper Key`,`Shipper Code`,`Shipper Name` from `Shipper Dimension` %s ORDER BY `Shipper Code` ", $where
+        );
+
+        $shippers = array();
+
+
+        if ($result = $this->db->query($sql)) {
+            foreach ($result as $row) {
+
+                if ($scope == 'keys') {
+                    $shippers[$row['Shipper Key']] = $row['Shipper Key'];
+                } elseif ($scope == 'objects') {
+                    $shippers[$row['Shipper Key']] = get_object('Shipper', row['Shipper Key']);
+                } else {
+
+
+                    $shippers[$row['Shipper Key']] = array(
+                        'key'  => $row['Shipper Key'],
+                        'code' => $row['Shipper Code'],
+                        'name' => $row['Shipper Name']
+
+                    );
+
+                }
+
+            }
+        } else {
+            print_r($error_info = $this->db->errorInfo());
+            exit;
+        }
+
+
+        return $shippers;
     }
 
 }
