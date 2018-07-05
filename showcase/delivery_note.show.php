@@ -24,7 +24,7 @@ function get_delivery_note_showcase($data) {
     $delivery_note = $data['_object'];
 
 
-  //  $delivery_note->update_totals();
+    //  $delivery_note->update_totals();
 
 
     $order = new Order('id', $delivery_note->get('Delivery Note Order Key'));
@@ -36,10 +36,15 @@ function get_delivery_note_showcase($data) {
 
     $smarty->assign('parcels', $parcels);
     $smarty->assign('weight', ($weight ? $delivery_note->get('Weight') : ''));
-    $smarty->assign(
-        'consignment', ($consignment ? $delivery_note->get('Consignment') : '')
-    );
+    $smarty->assign('consignment', ($consignment ? $delivery_note->get('Consignment') : ''));
 
+
+    $warehouse = get_object('Warehouse', $delivery_note->get('Delivery Note Warehouse Key'));
+
+    $shippers = $warehouse->get_shippers('data', 'Active');
+
+    $smarty->assign('shippers', $shippers);
+    $smarty->assign('number_shippers', count($shippers));
 
 
     $smarty->assign(
@@ -59,8 +64,6 @@ function get_delivery_note_showcase($data) {
     $smarty->assign('order', $order);
 
     return $smarty->fetch('showcase/delivery_note.tpl');
-
-
 
 
 }

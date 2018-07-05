@@ -49,7 +49,6 @@ function get_orders_server_group_by_store_navigation($data, $smarty, $user, $db,
 }
 
 
-
 function get_orders_server_dashboard_navigation($data, $smarty, $user, $db, $account) {
 
 
@@ -90,7 +89,6 @@ function get_orders_server_dashboard_navigation($data, $smarty, $user, $db, $acc
 function get_dashboard_navigation($data, $smarty, $user, $db, $account) {
 
 
-
     $sections = get_sections('orders', $data['parent_key']);
 
 
@@ -124,7 +122,6 @@ function get_dashboard_navigation($data, $smarty, $user, $db, $account) {
     return $html;
 
 }
-
 
 
 function get_pending_orders_navigation($data, $smarty, $user, $db, $account) {
@@ -165,7 +162,6 @@ function get_pending_orders_navigation($data, $smarty, $user, $db, $account) {
 }
 
 
-
 function get_archived_orders_navigation($data, $smarty, $user, $db, $account) {
 
 
@@ -180,7 +176,6 @@ function get_archived_orders_navigation($data, $smarty, $user, $db, $account) {
     if (isset($sections[$data['section']])) {
         $sections[$data['section']]['selected'] = true;
     }
-
 
 
     $title = _("Archived orders").' <span class="id">'.$data['store']->get('Code').'</span>';
@@ -726,7 +721,6 @@ function get_orders_server_navigation($data, $smarty, $user, $db, $account) {
 function get_invoices_server_navigation($data, $smarty, $user, $db, $account) {
 
 
-
     $block_view = $data['section'];
 
 
@@ -881,8 +875,6 @@ function get_invoices_category_server_navigation($data, $smarty, $user, $db, $ac
 
 function get_delivery_notes_server_navigation($data, $smarty, $user, $db, $account) {
 
-    global $user, $smarty;
-
 
     $block_view = $data['section'];
 
@@ -939,7 +931,6 @@ function get_order_navigation($data, $smarty, $user, $db, $account) {
 
 
     $search_placeholder = _('Search orders');
-
 
 
     switch ($data['parent']) {
@@ -1035,8 +1026,7 @@ function get_order_navigation($data, $smarty, $user, $db, $account) {
 
                 $sql = sprintf(
                     "select `Order Public ID` object_name,O.`Order Key` as object_key from $table   $where $wheref
-	                and ($_order_field  > %s OR ($_order_field  = %s AND O.`Order Key` > %d))  order by $_order_field   , O.`Order Key`  limit 1", prepare_mysql($_order_field_value),
-                    prepare_mysql($_order_field_value), $object->id
+	                and ($_order_field  > %s OR ($_order_field  = %s AND O.`Order Key` > %d))  order by $_order_field   , O.`Order Key`  limit 1", prepare_mysql($_order_field_value), prepare_mysql($_order_field_value), $object->id
                 );
 
                 if ($result = $db->query($sql)) {
@@ -1131,15 +1121,11 @@ function get_order_navigation($data, $smarty, $user, $db, $account) {
         $store = new Store($data['parent_key']);
 
 
-
         $up_button = array(
             'icon'      => 'arrow-up',
             'title'     => _("Orders").' ('.$store->get('Store Code').')',
             'reference' => 'orders/'.$data['parent_key']
         );
-
-
-
 
 
         if ($prev_key) {
@@ -1284,8 +1270,7 @@ function get_order_navigation($data, $smarty, $user, $db, $account) {
 
         $search_placeholder = _('Search invoices');
 
-    }
-    elseif ($data['parent'] == 'account') {
+    } elseif ($data['parent'] == 'account') {
 
 
         $account = get_object('Account', 1);
@@ -1341,10 +1326,6 @@ function get_order_navigation($data, $smarty, $user, $db, $account) {
     if (isset($sections[$_section])) {
         $sections[$_section]['selected'] = true;
     }
-
-
-
-
 
 
     $title = _('Order').' <span class="id">'.$object->get('Order Public ID').'</span>';
@@ -1469,8 +1450,7 @@ function get_delivery_note_navigation($data, $smarty, $user, $db, $account) {
 
                     $sql = sprintf(
                         "select `Delivery Note ID` object_name,D.`Delivery Note Key` as object_key from $table   $where $wheref
-	                and ($_order_field  > %s OR ($_order_field  = %s AND D.`Delivery Note Key` > %d))  order by $_order_field   , D.`Delivery Note Key`  limit 1", prepare_mysql($_order_field_value),
-                        prepare_mysql($_order_field_value), $object->id
+	                and ($_order_field  > %s OR ($_order_field  = %s AND D.`Delivery Note Key` > %d))  order by $_order_field   , D.`Delivery Note Key`  limit 1", prepare_mysql($_order_field_value), prepare_mysql($_order_field_value), $object->id
                     );
 
                     if ($result = $db->query($sql)) {
@@ -1719,14 +1699,12 @@ function get_delivery_note_navigation($data, $smarty, $user, $db, $account) {
     }
 
 
-if($object->get('Delivery Note Type')=='Replacement'){
-    $title = _('Replacement').' <span class="id">'.$object->get('Delivery Note ID').'</span>';
-}else{
-    $title = _('Delivery Note').' <span class="id">'.$object->get('Delivery Note ID').'</span>';
+    if ($object->get('Delivery Note Type') == 'Replacement') {
+        $title = _('Replacement').' <span class="id">'.$object->get('Delivery Note ID').'</span>';
+    } else {
+        $title = _('Delivery Note').' <span class="id">'.$object->get('Delivery Note ID').'</span>';
 
-}
-
-
+    }
 
 
     $_content = array(
@@ -1745,7 +1723,6 @@ if($object->get('Delivery Note Type')=='Replacement'){
 
 
     $html = $smarty->fetch('navigation.tpl');
-
 
 
     return $html;
@@ -1846,8 +1823,7 @@ function get_invoice_navigation($data, $smarty, $user, $db, $account) {
 
                     $sql = sprintf(
                         "select `Invoice Public ID` object_name,I.`Invoice Key` as object_key from $table   $where $wheref
-	                and ($_order_field  > %s OR ($_order_field  = %s AND I.`Invoice Key` > %d))  order by $_order_field   , I.`Invoice Key`  limit 1", prepare_mysql($_order_field_value),
-                        prepare_mysql($_order_field_value), $object->id
+	                and ($_order_field  > %s OR ($_order_field  = %s AND I.`Invoice Key` > %d))  order by $_order_field   , I.`Invoice Key`  limit 1", prepare_mysql($_order_field_value), prepare_mysql($_order_field_value), $object->id
                     );
 
                     if ($result = $db->query($sql)) {
@@ -2094,13 +2070,13 @@ function get_invoice_navigation($data, $smarty, $user, $db, $account) {
         $sections[$_section]['selected'] = true;
     }
 
-if($object->get('Invoice Type')=='Refund'){
-    $title = _('Refund').' <span class="id Invoice_Public_ID">'.$object->get('Invoice Public ID').'</span>';
+    if ($object->get('Invoice Type') == 'Refund') {
+        $title = _('Refund').' <span class="id Invoice_Public_ID">'.$object->get('Invoice Public ID').'</span>';
 
-}else{
-    $title = _('Invoice').' <span class="id Invoice_Public_ID">'.$object->get('Invoice Public ID').'</span>';
+    } else {
+        $title = _('Invoice').' <span class="id Invoice_Public_ID">'.$object->get('Invoice Public ID').'</span>';
 
-}
+    }
 
 
     $_content = array(
@@ -2294,7 +2270,6 @@ function get_payment_navigation($data, $smarty, $user, $db, $account) {
                     );
 
 
-
                     if ($result = $db->query($sql)) {
                         if ($row = $result->fetch()) {
                             $prev_key   = $row['object_key'];
@@ -2311,8 +2286,7 @@ function get_payment_navigation($data, $smarty, $user, $db, $account) {
 
                     $sql = sprintf(
                         "select `Payment Transaction ID` object_name,`Email Campaign Key` as object_key from $table   $where $wheref
-	                and ($_order_field  > %s OR ($_order_field  = %s AND `Email Campaign Key` > %d))  order by $_order_field   , `Email Campaign Key`  limit 1", prepare_mysql($_order_field_value),
-                        prepare_mysql($_order_field_value), $object->id
+	                and ($_order_field  > %s OR ($_order_field  = %s AND `Email Campaign Key` > %d))  order by $_order_field   , `Email Campaign Key`  limit 1", prepare_mysql($_order_field_value), prepare_mysql($_order_field_value), $object->id
                     );
 
                     if ($result = $db->query($sql)) {
@@ -2479,8 +2453,6 @@ function get_payment_navigation($data, $smarty, $user, $db, $account) {
 function get_abandoned_card_email_navigation($data, $smarty, $user, $db, $account) {
 
 
-
-
     $object        = $data['_object'];
     $left_buttons  = array();
     $right_buttons = array();
@@ -2550,7 +2522,6 @@ function get_abandoned_card_email_navigation($data, $smarty, $user, $db, $accoun
                     );
 
 
-
                     if ($result = $db->query($sql)) {
                         if ($row = $result->fetch()) {
                             $prev_key   = $row['object_key'];
@@ -2567,8 +2538,7 @@ function get_abandoned_card_email_navigation($data, $smarty, $user, $db, $accoun
 
                     $sql = sprintf(
                         "select `Email Campaign Name` object_name,`Email Campaign Key` as object_key from $table   $where $wheref
-	                and ($_order_field  > %s OR ($_order_field  = %s AND `Email Campaign Key` > %d))  order by $_order_field   , `Email Campaign Key`  limit 1", prepare_mysql($_order_field_value),
-                        prepare_mysql($_order_field_value), $object->id
+	                and ($_order_field  > %s OR ($_order_field  = %s AND `Email Campaign Key` > %d))  order by $_order_field   , `Email Campaign Key`  limit 1", prepare_mysql($_order_field_value), prepare_mysql($_order_field_value), $object->id
                     );
 
                     if ($result = $db->query($sql)) {
@@ -2646,8 +2616,7 @@ function get_abandoned_card_email_navigation($data, $smarty, $user, $db, $accoun
             $sections = get_sections('orders', $data['_parent']->id);
 
 
-        }
-        elseif ($data['parent'] == 'account') {
+        } elseif ($data['parent'] == 'account') {
 
             $up_button = array(
                 'icon'      => 'arrow-up',
@@ -2731,7 +2700,6 @@ function get_abandoned_card_email_navigation($data, $smarty, $user, $db, $accoun
 }
 
 
-
 function get_refund_new_navigation($data, $smarty, $user, $db, $account) {
 
 
@@ -2751,7 +2719,7 @@ function get_refund_new_navigation($data, $smarty, $user, $db, $account) {
         $sections[$data['section']]['selected'] = true;
     }
 
-    $title = sprintf(_("New refund for order %s"),'<span class="button" onclick="change_view(\'orders/'.$data['_object']->get('Store Key').'/'.$data['_object']->id.'\')">'.$data['_object']->get('Public ID').'</span>');
+    $title = sprintf(_("New refund for order %s"), '<span class="button" onclick="change_view(\'orders/'.$data['_object']->get('Store Key').'/'.$data['_object']->id.'\')">'.$data['_object']->get('Public ID').'</span>');
 
     $_content = array(
         'sections_class' => '',
@@ -2792,7 +2760,7 @@ function get_replacement_new_navigation($data, $smarty, $user, $db, $account) {
         $sections[$data['section']]['selected'] = true;
     }
 
-    $title = sprintf(_("New replacement for order %s"),'<span class="button" onclick="change_view(\'orders/'.$data['_object']->get('Store Key').'/'.$data['_object']->id.'\')">'.$data['_object']->get('Public ID').'</span>');
+    $title = sprintf(_("New replacement for order %s"), '<span class="button" onclick="change_view(\'orders/'.$data['_object']->get('Store Key').'/'.$data['_object']->id.'\')">'.$data['_object']->get('Public ID').'</span>');
 
     $_content = array(
         'sections_class' => '',
@@ -2813,5 +2781,7 @@ function get_replacement_new_navigation($data, $smarty, $user, $db, $account) {
     return $html;
 
 }
+
+
 
 ?>

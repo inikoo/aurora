@@ -485,6 +485,13 @@ function get_rtext($record_label, $total_records) {
         return sprintf(
             ngettext('%s saved email template', '%s saved email templates', $total_records), number($total_records)
         );
+
+    }elseif ($record_label == 'shipping company') {
+        return sprintf(
+            ngettext('%s shipping company', '%s shipping companies', $total_records), number($total_records)
+        );
+
+
     } else {
         return sprintf(
             ngettext('%s record', '%s records', $total_records), number($total_records)
@@ -931,6 +938,12 @@ function get_rtext_with_filter($record_label, $total_with_filter, $total_no_filt
         return sprintf(
             ngettext(
                 '%s refund of %s', '%s refunds of %s', $total_with_filter
+            ), number($total_with_filter), number($total_no_filter)
+        );
+    }elseif ($record_label == 'shipping company') {
+        return sprintf(
+            ngettext(
+                '%s shipping company of %s', '%s shipping companies of %s', $total_with_filter
             ), number($total_with_filter), number($total_no_filter)
         );
     }

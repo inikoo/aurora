@@ -578,11 +578,20 @@ class DeliveryNote extends DB_Table {
 
 
             case('Consignment'):
-                $consignment = $this->data['Delivery Note Shipper Consignment'];
-                if ($this->data['Delivery Note Shipper Code'] != '') {
-                    $consignment .= sprintf(
-                        ' [<a href="shipper.php?code=%s">%s</a>]', $this->data['Delivery Note Shipper Code'], $this->data['Delivery Note Shipper Code']
+
+                if ($this->data['Delivery Note Shipper Key'] != '') {
+                    $shipper     = $this->get('Shipper');
+                    $consignment = sprintf(
+                        '<span class="link" onclick="change_view(\'warehouse/%d/shippers/%d\' title="%s")">%s</span>', $this->data['Delivery Note Warehouse Key'], $this->data['Delivery Note Shipper Key'], $shipper->get('Name'), $shipper->get('Code')
+
                     );
+
+                    if ($this->data['Delivery Note Shipper Tracking'] != '') {
+                        $consignment .=' '.$this->data['Delivery Note Shipper Tracking'];
+                    }
+
+                } else {
+                    $consignment = '<span class="discreet italic">'._('Courier not set').'</span>';
                 }
 
                 return $consignment;
@@ -636,6 +645,11 @@ class DeliveryNote extends DB_Table {
                 global $account;
 
                 return money($this->data['Delivery Note '.$key], $account->get('Currency Code')).$account->get('Currency Code');
+            case('Shipper'):
+
+                return ($this->data['Delivery Note Shipper Key'] > 0 ? get_object('Shipper', $this->data['Delivery Note Shipper Key']) : false);
+
+                break;
 
         }
 
@@ -1045,6 +1059,64 @@ class DeliveryNote extends DB_Table {
             case 'Delivery Note State':
 
                 $this->update_state($value);
+                break;
+
+            case 'Delivery Note Shipper Key':
+
+                $this->update_field($field, $value, $options);
+
+                $shipper = $this->get('Shipper');
+
+                if ($shipper) {
+                    $this->update_metadata = array(
+                        'class_html' => array(
+                            'Shipper_Code' => $shipper->get('Code'),
+                            'Shipper_Name' => $shipper->get('Name'),
+                            'Consignment'=>$this->get('Consignment')
+
+                        ),
+                        'title'      => array(
+                            'Shipper_Code' => $shipper->get('Name'),
+
+                        ),
+                    );
+                } else {
+
+                    $this->fast_update(array('Delivery Note Shipper Tracking' => ''));
+                    $this->update_metadata = array(
+                        'class_html' => array(
+                            'Shipper_Code' => _('Courier not set'),
+                            'Shipper_Name' => '',
+                            'Consignment'=>$this->get('Consignment')
+
+                        ),
+                        'title'      => array(
+                            'Shipper_Code' => ''
+
+                        ),
+                    );
+                }
+                break;
+            case 'Delivery Note Shipper Tracking':
+
+                $this->update_field($field, $value, $options);
+                $shipper = $this->get('Shipper');
+
+                if ($shipper) {
+                    $this->update_metadata = array(
+                        'class_html' => array(
+                            'Shipper_Code' => $shipper->get('Code'),
+                            'Shipper_Name' => $shipper->get('Name'),
+                            'Consignment'=>$this->get('Consignment')
+
+                        ),
+                        'title'      => array(
+                            'Shipper_Code' => $shipper->get('Name'),
+
+                        ),
+                    );
+                }
+
                 break;
 
             case 'Delivery Note Parcel Type':

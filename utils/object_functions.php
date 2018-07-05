@@ -429,6 +429,10 @@ function get_object($object_name, $key, $load_other_data = false) {
             include_once 'class.Email_Template.php';
             $object = new Email_Template('id', $key);
             break;
+        case 'shipper':
+            include_once 'class.Shipper.php';
+            $object = new Shipper('id', $key);
+            break;
         default:
             exit('need to complete E1: x>'.strtolower($object_name).'<<++>>'.$load_other_data."<\n");
             break;
