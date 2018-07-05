@@ -1897,7 +1897,7 @@ class Warehouse extends DB_Table {
                 if ($scope == 'keys') {
                     $shippers[$row['Shipper Key']] = $row['Shipper Key'];
                 } elseif ($scope == 'objects') {
-                    $shippers[$row['Shipper Key']] = get_object('Shipper', row['Shipper Key']);
+                    $shippers[$row['Shipper Key']] = get_object('Shipper', $row['Shipper Key']);
                 } else {
 
 
