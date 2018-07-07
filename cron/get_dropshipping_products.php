@@ -11,10 +11,8 @@ require_once 'class.Product.php';
 require_once 'class.Part.php';
 
 
-$mysql_host = 'bk3.inikoo.com';
-$mysql_user = 'inikoo';
 
-$con_drop = @mysql_connect($mysql_host, $mysql_user, 'E76hfjmPAFRJTy7z');
+$con_drop = @mysql_connect($dns_host, $dns_user, $dns_pwd);
 if (!$con_drop) {
     print "Error can not connect with dropshipping database server\n";
     exit;
