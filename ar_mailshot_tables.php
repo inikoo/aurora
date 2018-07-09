@@ -313,11 +313,16 @@ function sent_emails($_data, $db, $user) {
             }
 
 
-            $customer = sprintf('<span class="link" onclick="change_view(\'customers/%d/%d\')"  >%s (%05d)</span>', $data['Customer Store Key'], $data['Customer Key'], $data['Customer Name'], $data['Customer Key']);
+            $customer = sprintf('<span class="link" onclick="change_view(\'customers/%d/%d\')"  >%s (%05d)</span>', $data['store_key'], $data['recipient_key'], $data['recipient_name'], $data['recipient_key']);
+            $prospects= sprintf('<span class="link" onclick="change_view(\'prospects/%d/%d\')"  >%s (%05d)</span>', $data['store_key'], $data['recipient_key'], $data['recipient_name'], $data['recipient_key']);
 
             $subject='';
             if ($_data['parameters']['parent'] == 'email_campaign_type') {
                 $email = sprintf('<span class="link" onclick="change_view(\'email_campaign_type/%d/%d/tracking/%d\')"  >%s</span>', $parent->get('Store Key'), $parent->id, $data['Email Tracking Key'], $data['Email Tracking Email']);
+
+
+
+
             } elseif ($_data['parameters']['parent'] == 'mailshot') {
 
                 $email = sprintf(
@@ -330,6 +335,12 @@ function sent_emails($_data, $db, $user) {
                     '<span class="link" onclick="change_view(\'customers/%d/%d/email/%d\')"  >%s</span>', $_parent->get('Store Key'),$_parent->id, $data['Email Tracking Key'], $data['Published Email Template Subject']
                 );
 
+            }elseif ($_data['parameters']['parent'] == 'email_campaign') {
+                $subject='';
+                $email = sprintf(
+                    '<span class="link" onclick="change_view(\'orders/%d/dashboard/website/mailshots/%d/tracking/%d\')"  >%s</span>',$data['store_key'],$parent->id, $data['Email Tracking Key'], $data['Email Tracking Email']
+                );
+
             }
 
 
@@ -339,7 +350,7 @@ function sent_emails($_data, $db, $user) {
                 'email'    => $email,
                 'type'    => $_type,
                 'subject' => $subject,
-
+                'prospect' => $prospects,
                 'customer' => $customer,
                 'date'     => strftime("%a, %e %b %Y %R:%S", strtotime($data['Email Tracking Created Date']." +00:00")),
 
@@ -494,7 +505,20 @@ function gr_reminder_next_recipients($_data, $db, $user) {
 
 function mailshots($_data, $db, $user) {
 
-    $rtext_label = 'mailshot';
+
+
+    $email_template_type=get_object('email_template_type',$_data['parameters']['parent_key']);
+
+    if($email_template_type->get('Code')=='Newsletter'){
+        $rtext_label = 'newsletter';
+
+    }else{
+        $rtext_label = 'mailshot';
+
+    }
+
+
+
     include_once 'prepare_table/init.php';
 
     $sql   = "select $fields from $table $where $wheref $group order by $order $order_direction  limit $start_from,$number_results";

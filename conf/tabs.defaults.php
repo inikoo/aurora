@@ -3579,7 +3579,7 @@ $tab_defaults = array(
 
     ),
 
-    'email_campaign.send_emails'      => array(
+    'email_campaign.sent_emails'      => array(
         'view'        => 'overview',
         'sort_key'    => 'email',
         'sort_order'  => 1,
@@ -3619,7 +3619,7 @@ $tab_defaults = array(
 
     ),
 
-    'prospect.send_emails'            => array(
+    'prospect.sent_emails'            => array(
         'view'        => 'overview',
         'sort_key'    => 'date',
         'sort_order'  => 1,

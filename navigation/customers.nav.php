@@ -2651,7 +2651,7 @@ function get_email_tracking_navigation($data, $smarty, $user, $db) {
 
         switch ($data['parent']) {
             case 'prospect':
-                $tab      = 'prospect.send_emails';
+                $tab      = 'prospect.sent_emails';
                 $_section = 'prospects';
                 break;
             case 'email_campaign_type':

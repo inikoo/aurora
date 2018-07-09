@@ -391,13 +391,13 @@ class Email_Template extends DB_Table {
         }
 
 
-        $this->update(
+        $this->fast_update(
             array(
                 'Email Template Editing JSON'        => $data['Published Email Template JSON'],
                 'Email Template Editing Checksum'    => $checksum,
                 'Email Template Published Checksum'  => $checksum,
                 'Email Template Published Email Key' => $published_template->id
-            ), 'no_history'
+            )
         );
 
 

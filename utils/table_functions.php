@@ -492,6 +492,14 @@ function get_rtext($record_label, $total_records) {
         );
 
 
+    }elseif ($record_label == 'mailshot') {
+        return sprintf(
+            ngettext('%s mailshot', '%s mailshots', $total_records), number($total_records)
+        );
+    }elseif ($record_label == 'newsletter') {
+        return sprintf(
+            ngettext('%s newsletter', '%s newsletters', $total_records), number($total_records)
+        );
     } else {
         return sprintf(
             ngettext('%s record', '%s records', $total_records), number($total_records)
@@ -944,6 +952,18 @@ function get_rtext_with_filter($record_label, $total_with_filter, $total_no_filt
         return sprintf(
             ngettext(
                 '%s shipping company of %s', '%s shipping companies of %s', $total_with_filter
+            ), number($total_with_filter), number($total_no_filter)
+        );
+    }elseif ($record_label == 'mailshot') {
+        return sprintf(
+            ngettext(
+                '%s mailshot of %s', '%s mailshots of %s', $total_with_filter
+            ), number($total_with_filter), number($total_no_filter)
+        );
+    }elseif ($record_label == 'newsletter') {
+        return sprintf(
+            ngettext(
+                '%s newsletter of %s', '%s newsletters of %s', $total_with_filter
             ), number($total_with_filter), number($total_no_filter)
         );
     }

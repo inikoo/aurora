@@ -1,1 +1,1 @@
-webpage.email_blueprints.cols.tpl
+email_blueprints.cols.tpl

@@ -11,7 +11,6 @@ include_once 'utils/invalid_messages.php';
 include_once 'conf/object_fields.php';
 
 $email_campaign_type = $state['_object'];
-
 $object_fields = get_object_fields($email_campaign_type, $db, $user, $smarty);
 
 $smarty->assign('object_fields', $object_fields);

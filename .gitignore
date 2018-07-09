@@ -81,3 +81,5 @@ cron/amazon_costa.php
 locale/de_DE/LC_MESSAGES/aurora_de.bk.po
 
 cron/caca.php
+
+test.php

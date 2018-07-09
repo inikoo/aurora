@@ -93,20 +93,17 @@
 <script>
 
 
-    var mergeTags = [
-        {
-            name: '{t}Greetings{/t}', value: '[Greetings]'
-        },
-        {
-            name: '{t}Customer name{/t}', value: '[Customer Name]'
-        },
-         {
+    var mergeTags = [{
+        name: '{t}Greetings{/t}', value: '[Greetings]'
+    }, {
+        name: '{t}Customer name{/t}', value: '[Customer Name]'
+    }, {
         name: '{t}Contact name, Company{/t}', value: '[Name,Company]'
     }, {
         name: '{t}Contact name{/t}', value: '[Name]'
-    },{
-            name: '{t}Signature{/t}', value: '[Signature]'
-        }
+    }, {
+        name: '{t}Signature{/t}', value: '[Signature]'
+    }
         {$merge_tags}
 
     ];
@@ -124,9 +121,7 @@
         mergeTags: mergeTags, // [optional, default:[]] Array of Object to specify special merge Tags
         mergeContents: mergeContents, // [optional, default:[]] Array of Object to specify merge content
         //preventClose: false, // [optional, default:false] if true an alert is shown before browser closure
-        onSave: save_email_template,
-        onSaveAsTemplate: open_save_as_blueprint_dialog,
-        onSend: open_send_test_email_dialog, //onError: function(errorMessage) { /* Implements function to handle error messages */ } // [optional]
+        onSave: save_email_template, onSaveAsTemplate: open_save_as_blueprint_dialog, onSend: open_send_test_email_dialog, //onError: function(errorMessage) { /* Implements function to handle error messages */ } // [optional]
     };
 
     $.getJSON('/ar_edit_email_template.php?tipo=bee_token', function (data) {
@@ -151,62 +146,7 @@
     });
 
 
-    /*
 
-        function open_save_as_blueprint_dialog(jsonFile){
-
-
-
-            $('#save_as_blueprint_dialog').removeClass('hide')
-            $('#save_as_blueprint_dialog').find('input').val('').focus().data('jsonFile',jsonFile).data('htmlFile','')
-
-        }
-
-
-
-
-
-        function save_as_blueprint(element) {
-
-            var ajaxData = new FormData();
-
-            ajaxData.append("tipo", 'save_blueprint')
-            ajaxData.append("email_template_key", '{$email_template_key}')
-        ajaxData.append("json", element.data('jsonFile'))
-        ajaxData.append("html", element.data('htmlFile'))
-
-        ajaxData.append("name", element.val())
-
-       // element.closest('div').addClass('hide')
-
-        $.ajax({
-            url: "/ar_edit_email_template.php", type: 'POST', data: ajaxData, dataType: 'json', cache: false, contentType: false, processData: false,
-            complete: function () {
-            }, success: function (data) {
-
-                if (data.state == '200') {
-
-                    $('.save_as_blueprint_dialog').addClass('hide')
-
-
-
-                } else if (data.state == '400') {
-                    swal({
-                        title: data.title, text: data.msg, confirmButtonText: "OK"
-                    });
-                }
-
-
-
-            }, error: function () {
-
-            }
-        });
-
-    }
-
-
-*/
 
 
 </script>

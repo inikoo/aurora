@@ -9,7 +9,7 @@
 
  Copyright (c) 2009, Inikoo
 
- Version 2.0
+ Version 2.0 2018
 */
 include_once 'class.DB_Table.php';
 

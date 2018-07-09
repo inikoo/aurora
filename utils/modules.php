@@ -545,6 +545,17 @@ $modules = array(
                 )
             ),
 
+            'mailshot.new' => array(
+                'type' => 'new_object',
+                'tabs' => array(
+                    'mailshot.new' => array(
+                        'label' => 'new mailshot'
+                    ),
+
+                )
+
+            ),
+
 
             'newsletter' => array(
                 'type' => 'object',
@@ -568,7 +579,7 @@ $modules = array(
                         'icon_v2' => 'fab fa-html5'
                     ),
 
-                    'email_campaign.send_emails'     => array(
+                    'email_campaign.sent_emails'     => array(
                         'label' => _('Sent emails'),
                         'icon'  => 'paper-plane'
                     ),
@@ -872,7 +883,7 @@ $modules = array(
                         'icon'  => 'comment'
                     ),
 
-                    'prospect.send_emails' => array(
+                    'prospect.sent_emails' => array(
                         'label' => _('Sent emails'),
                         'icon'  => 'paper-plane'
                     ),
@@ -1213,13 +1224,9 @@ $modules = array(
                         'icon'  => 'users',
                     ),
 
-                    'email_campaign.email_template'   => array(
-                        'label' => _('Compose email'),
-                        'icon'  => 'edit'
-                    ),
-                    'email_campaign.email_blueprints' => array(
-                        'label'   => _('Email HTML templates'),
-                        'icon_v2' => 'fab fa-html5'
+                    'email_campaign.workshop'   => array(
+                        'label' => _('Workshop'),
+                        'icon'  => 'wrench'
                     ),
 
                     'email_campaign.published_email' => array(
@@ -1228,8 +1235,8 @@ $modules = array(
                     ),
 
 
-                    'email_campaign.send_emails' => array(
-                        'label' => _('Send emails'),
+                    'email_campaign.sent_emails' => array(
+                        'label' => _('Sent emails'),
                         'icon'  => 'paper-plane'
                     ),
 
@@ -1313,8 +1320,8 @@ $modules = array(
                         'icon'  => 'envelope'
                     ),
 
-                    'email_campaign.send_emails' => array(
-                        'label' => _('Send email'),
+                    'email_campaign.sent_emails' => array(
+                        'label' => _('Sent email'),
                         'icon'  => 'paper-plane'
                     ),
 
@@ -6282,9 +6289,7 @@ $modules = array(
                 'type' => 'new_object',
                 'tabs' => array(
                     'employee.new' => array(
-                        'label' => _(
-                            'new employee'
-                        )
+                        'label' => _('new employee')
                     ),
 
                 )

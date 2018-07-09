@@ -557,11 +557,11 @@ function get_object_fields($object, $db, $user, $smarty, $options = false) {
                 case 'Invite Mailshot':
                 case 'Invite':
                 case 'AbandonedCart':
-
+                case 'Newsletter':
                 $object_fields=array();
                     break;
                 default:
-                    print 'todo  Email Campaign Type '.$object->get('Email Campaign Type Code');
+                    print 'todo  Email Campaign Type -->> '.$object->get('Email Campaign Type Code');
                     exit;
                     break;
 

@@ -44,7 +44,35 @@ $table_filters = array(
 
 
 
+
 $table_buttons   = array();
+
+if($state['_object']->get('Code')=='Newsletter'){
+
+    $table_buttons[] = array(
+        'icon'      => 'plus',
+        'title'     => _('New newsletter'),
+        'reference' => sprintf("email_campaign_type/%d/%d/mailshot/new",$state['_object']->get('Store Key'),$state['_object']->id)
+    );
+}elseif($state['_object']->get('Code')=='Marketing') {
+
+    $table_buttons[] = array(
+        'icon'      => 'plus',
+        'title'     => _('New marketing mailshot'),
+        'reference' => sprintf("email_campaign_type/%d/%d/mailshot/new", $state['_object']->get('Store Key'), $state['_object']->id)
+    );
+}elseif($state['_object']->get('Code')=='AbandonedCart') {
+
+    $table_buttons[] = array(
+        'icon'      => 'plus',
+        'title'     => _('New abandoned cart mailshot'),
+        'reference' => sprintf("email_campaign_type/%d/%d/mailshot/new", $state['_object']->get('Store Key'), $state['_object']->id)
+    );
+}
+
+
+
+$smarty->assign('table_buttons', $table_buttons);
 
 include 'utils/get_table_html.php';
 
