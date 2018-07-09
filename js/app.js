@@ -49,7 +49,7 @@ $(document).ready(function () {
     });
 
 
-
+/*
     var conn = new ab.Session('ws://au.bali/ws',
         function() {
             conn.subscribe('real_time', function(topic, data) {
@@ -63,7 +63,7 @@ $(document).ready(function () {
         {'skipSubprotocolCheck': true}
     );
 
-
+*/
 })
 
 
