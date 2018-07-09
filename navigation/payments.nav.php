@@ -42,7 +42,7 @@ function get_payment_service_providers_navigation($data, $user, $smarty) {
 }
 
 
-function get_payments_navigation($data, $user) {
+function get_payments_navigation($data, $user, $smarty, $db) {
     global $smarty;
 
     $right_buttons = array();
@@ -79,20 +79,39 @@ function get_payments_navigation($data, $user) {
                 $sql = sprintf(
                     "SELECT `Store Code` FROM `Store Dimension` WHERE `Store Key`=%d", $prev_key
                 );
-                $res = mysql_query($sql);
-                if ($row = mysql_fetch_assoc($res)) {
-                    $prev_title = sprintf($button_label, $row['Store Code']);
+
+                if ($result = $db->query($sql)) {
+                    if ($row = $result->fetch()) {
+                        $prev_title = sprintf($button_label, $row['Store Code']);
+
+                    } else {
+                        $prev_title = '';
+
+                    }
                 } else {
-                    $prev_title = '';
+                    print_r($error_info = $db->errorInfo());
+                    print "$sql\n";
+                    exit;
                 }
+
+
                 $sql = sprintf(
                     "SELECT `Store Code` FROM `Store Dimension` WHERE `Store Key`=%d", $next_key
                 );
-                $res = mysql_query($sql);
-                if ($row = mysql_fetch_assoc($res)) {
-                    $next_title = sprintf($button_label, $row['Store Code']);
+
+
+                if ($result = $db->query($sql)) {
+                    if ($row = $result->fetch()) {
+                        $next_title = sprintf($button_label, $row['Store Code']);
+
+                    } else {
+                        $next_title = '';
+
+                    }
                 } else {
-                    $next_title = '';
+                    print_r($error_info = $db->errorInfo());
+                    print "$sql\n";
+                    exit;
                 }
 
 
@@ -110,10 +129,10 @@ function get_payments_navigation($data, $user) {
                 );
 
 
-                $title                            = _('Payments').' <span class="id" title="'.$store->get(
-                        'Name'
-                    ).'">'.$store->get('Code').'</span>';
-                $sections['payments']['selected'] = true;
+                $title = _('Payments').' <span class="id" title="'.$store->get('Name').'">'.$store->get('Code').'</span>';
+
+
+                sections['payments']['selected'] = true;
 
             }
 
@@ -223,8 +242,8 @@ function get_payment_service_provider_navigation($data, $user, $smarty, $db) {
 
                 $sql = sprintf(
                     "select `Payment Service Provider Name` object_name,PSP.`Payment Service Provider Key` as object_key from $table   $where $wheref
-	                and ($_order_field  > %s OR ($_order_field  = %s AND PSP.`Payment Service Provider Key` > %d))  order by $_order_field   , PSP.`Payment Service Provider Key`  limit 1",
-                    prepare_mysql($_order_field_value), prepare_mysql($_order_field_value), $object->id
+	                and ($_order_field  > %s OR ($_order_field  = %s AND PSP.`Payment Service Provider Key` > %d))  order by $_order_field   , PSP.`Payment Service Provider Key`  limit 1", prepare_mysql($_order_field_value), prepare_mysql($_order_field_value),
+                    $object->id
                 );
 
                 if ($result = $db->query($sql)) {
@@ -434,8 +453,7 @@ function get_payment_account_navigation($data, $user, $smarty, $db) {
 
                 $sql = sprintf(
                     "select `Payment Account Name` object_name,PA.`Payment Account Key` as object_key from $table   $where $wheref
-	                and ($_order_field  > %s OR ($_order_field  = %s AND PA.`Payment Account Key` > %d))  order by $_order_field   , PA.`Payment Account Key`  limit 1",
-                    prepare_mysql($_order_field_value), prepare_mysql($_order_field_value), $object->id
+	                and ($_order_field  > %s OR ($_order_field  = %s AND PA.`Payment Account Key` > %d))  order by $_order_field   , PA.`Payment Account Key`  limit 1", prepare_mysql($_order_field_value), prepare_mysql($_order_field_value), $object->id
                 );
 
                 if ($result = $db->query($sql)) {
@@ -875,61 +893,52 @@ function get_payment_navigation($data, $user, $smarty, $db) {
         $sql        = trim($sql_totals." $wheref");
 
 
-
-
-
-
-            $sql = sprintf(
-                "select `Payment Key` object_name,P.`Payment Key` as object_key from $table   $where $wheref
+        $sql = sprintf(
+            "select `Payment Key` object_name,P.`Payment Key` as object_key from $table   $where $wheref
 	                and ($_order_field < %s OR ($_order_field = %s AND P.`Payment Key` < %d))  order by $_order_field desc , P.`Payment Key` desc limit 1",
 
-                prepare_mysql($_order_field_value), prepare_mysql($_order_field_value), $object->id
-            );
+            prepare_mysql($_order_field_value), prepare_mysql($_order_field_value), $object->id
+        );
 
 
-            if ($result=$db->query($sql)) {
-                if ($row = $result->fetch()) {
-                    $prev_key   = $row['object_key'];
-                    $prev_title = _("Payment option").' '.$row['object_name'].' ('.$row['object_key'].')';
-            	}
-            }else {
-            	print_r($error_info=$db->errorInfo());
-            	print "$sql\n";
-            	exit;
+        if ($result = $db->query($sql)) {
+            if ($row = $result->fetch()) {
+                $prev_key   = $row['object_key'];
+                $prev_title = _("Payment option").' '.$row['object_name'].' ('.$row['object_key'].')';
             }
+        } else {
+            print_r($error_info = $db->errorInfo());
+            print "$sql\n";
+            exit;
+        }
 
 
-            $sql = sprintf(
-                "select `Payment Key` object_name,P.`Payment Key` as object_key from $table   $where $wheref
-	                and ($_order_field  > %s OR ($_order_field  = %s AND P.`Payment Key` > %d))  order by $_order_field   , P.`Payment Key`  limit 1", prepare_mysql($_order_field_value),
-                prepare_mysql($_order_field_value), $object->id
-            );
+        $sql = sprintf(
+            "select `Payment Key` object_name,P.`Payment Key` as object_key from $table   $where $wheref
+	                and ($_order_field  > %s OR ($_order_field  = %s AND P.`Payment Key` > %d))  order by $_order_field   , P.`Payment Key`  limit 1", prepare_mysql($_order_field_value), prepare_mysql($_order_field_value), $object->id
+        );
 
 
-            if ($result=$db->query($sql)) {
-                if ($row = $result->fetch()) {
-                    $next_key   = $row['object_key'];
-                    $next_title = _("Payment option").' '.$row['object_name'].' ('.$row['object_key'].')';
-            	}
-            }else {
-            	print_r($error_info=$db->errorInfo());
-            	print "$sql\n";
-            	exit;
+        if ($result = $db->query($sql)) {
+            if ($row = $result->fetch()) {
+                $next_key   = $row['object_key'];
+                $next_title = _("Payment option").' '.$row['object_name'].' ('.$row['object_key'].')';
             }
-
-          
-
-
-            if ($order_direction == 'desc') {
-                $_tmp1      = $prev_key;
-                $_tmp2      = $prev_title;
-                $prev_key   = $next_key;
-                $prev_title = $next_title;
-                $next_key   = $_tmp1;
-                $next_title = $_tmp2;
-            }
+        } else {
+            print_r($error_info = $db->errorInfo());
+            print "$sql\n";
+            exit;
+        }
 
 
+        if ($order_direction == 'desc') {
+            $_tmp1      = $prev_key;
+            $_tmp2      = $prev_title;
+            $prev_key   = $next_key;
+            $prev_title = $next_title;
+            $next_key   = $_tmp1;
+            $next_title = $_tmp2;
+        }
 
 
         if ($data['parent'] == 'account') {
@@ -1119,8 +1128,8 @@ function get_credits_navigation($data, $user) {
         case 'account':
 
 
-            $title                            = _('Credits').' ('._('All stores').')';
-            $sections                         = get_sections('payments_server', 'all');
+            $title                           = _('Credits').' ('._('All stores').')';
+            $sections                        = get_sections('payments_server', 'all');
             $sections['credits']['selected'] = true;
 
             break;
@@ -1219,8 +1228,8 @@ function get_payments_by_store_navigation($data, $user) {
         case 'account':
 
 
-            $title                            = _('Payments by store');
-            $sections                         = get_sections('payments_server', 'all');
+            $title                                     = _('Payments by store');
+            $sections                                  = get_sections('payments_server', 'all');
             $sections['payments_by_store']['selected'] = true;
 
             break;

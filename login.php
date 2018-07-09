@@ -30,6 +30,7 @@ include_once 'utils/i18n.php';
 include_once 'class.Account.php';
 
 
+
 include_once 'external_libs/Smarty/Smarty.class.php';
 $smarty               = new Smarty();
 $smarty->template_dir = 'templates';

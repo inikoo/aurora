@@ -48,6 +48,22 @@ $(document).ready(function () {
         scanned_barcode(value)
     });
 
+
+
+    var conn = new ab.Session('ws://au.bali/ws',
+        function() {
+            conn.subscribe('real_time', function(topic, data) {
+                // This is where you would add the new article to the DOM (beyond the scope of this tutorial)
+                console.log(data);
+            });
+        },
+        function() {
+            console.warn('WebSocket connection closed');
+        },
+        {'skipSubprotocolCheck': true}
+    );
+
+
 })
 
 
