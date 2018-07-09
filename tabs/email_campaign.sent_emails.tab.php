@@ -17,9 +17,9 @@ $parameters = array(
 );
 
 
-  $tab     = 'email_campaign.send_emails';
+  $tab     = 'email_campaign.sent_emails';
         $ar_file = 'ar_mailshot_tables.php';
-        $tipo    = 'send_emails';
+        $tipo    = 'sent_emails';
 
 
 

@@ -705,6 +705,27 @@ function fork_housekeeping($job) {
 
             break;
 
+        case 'send_mailshot':
+
+            $email_campaign = get_object('email_campaign', $data['mailshot_key']);
+
+            if ($email_campaign->id) {
+                $email_campaign->update_estimated_recipients();
+                $email_campaign->send_mailshot();
+            }
+            break;
+
+        case 'resume_mailshot':
+
+            $email_campaign = get_object('email_campaign', $data['mailshot_key']);
+
+            if ($email_campaign->id) {
+
+                // $email_campaign->resume_mailshot();
+            }
+            break;
+
+
         case 'create_and_send_mailshot':
 
             //$sql = 'truncate `Email Tracking Email Copy`; ';
@@ -720,6 +741,9 @@ function fork_housekeeping($job) {
                 $email_campaign->update_state('ComposingEmail');
                 $email_campaign->update_state('Ready');
                 $email_campaign->update_estimated_recipients();
+
+                $email_campaign->update_state('Sending');
+
                 $email_campaign->send_mailshot();
             }
 

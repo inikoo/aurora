@@ -55,8 +55,7 @@
 
 
 
-    <span id="change_template" onclick="change_view(state.request + '&tab={$blueprints_redirect}')" class="button  " style="border:1px solid #ccc;padding:5px 10px;margin-left:40px"
-          ">
+    <span id="change_template" onclick="change_view(state.request + '&tab={$blueprints_redirect}')" class="button  " style="border:1px solid #ccc;padding:5px 10px;margin-left:40px"">
             <i class="fa fa-arrow-alt-square-left padding_right_5" aria-hidden="true"></i> {t}Go back to workshop{/t}
     </span>
 

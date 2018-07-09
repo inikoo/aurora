@@ -3521,6 +3521,38 @@ class Store extends DB_Table {
 
     function create_email_campaign($data) {
 
+
+        $email_template_type=get_object('Email_Template_Type',$data['Email Campaign Type'].'|'.$this->id,'code_store');
+
+        if($email_template_type->id){
+            $mailshot=$email_template_type->create_mailshot();
+
+            return $mailshot;
+
+        }else{
+            $this->error=true;
+            $this->msg='invalid email campaign type';
+        }
+
+        /*
+
+        $email_campaign_type=get_object();
+
+        switch ($data['Email Campaign Type']) {
+            case 'AbandonedCart':
+                $data['Email Campaign Name'] = sprintf(_('%s %s'), $this->get('Code'), strftime('%x'));
+                break;
+            case 'Newsletter':
+                $data['Email Campaign Name']  = sprintf(_('%s %s'), $this->get('Code'), strftime('%x'));
+                $data['Email Campaign State'] = 'ComposingEmail';
+                break;
+            default:
+                break;
+        }
+
+
+
+
         $this->new_email_campaign = false;
         $this->new_website_user   = false;
 
@@ -3568,7 +3600,7 @@ class Store extends DB_Table {
                     'email_campaign_key'     => $email_campaign->id,
                 ), $account->get('Account Code')
                 );
-*/
+
 
             } else {
                 //$this->error = true;
@@ -3582,7 +3614,7 @@ class Store extends DB_Table {
             $this->msg   = 'E2'.$email_campaign->msg;
         }
 
-
+*/
     }
 
     function create_category($raw_data) {

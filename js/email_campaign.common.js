@@ -130,6 +130,75 @@ function send_mailshot_now(element){
 
 
 
+
+function resume_mailshot(element){
+
+    $(element).find('i').removeClass('fa-play').addClass('fa-spinner fa-spin')
+
+
+    var ajaxData = new FormData();
+
+    ajaxData.append("tipo", 'resume_mailshot')
+    ajaxData.append("key", $('#email_campaign').data('email_campaign_key'))
+
+
+
+
+
+
+
+    $.ajax({
+        url: "/ar_mailshot.php", type: 'POST', data: ajaxData, dataType: 'json', cache: false, contentType: false, processData: false, complete: function () {
+        }, success: function (data) {
+
+            if (data.state == '200') {
+
+                $('#email_campaign\\.published_email').removeClass('hide')
+                change_tab('email_campaign.published_email')
+
+
+                for (var key in data.update_metadata.class_html) {
+                    $('.' + key).html(data.update_metadata.class_html[key])
+                }
+
+
+                $('.email_campaign_operation').addClass('hide')
+
+                console.log(data.update_metadata.operations)
+
+                for (var key in data.update_metadata.operations) {
+                    $('#' + data.update_metadata.operations[key]).removeClass('hide')
+                }
+
+                $('#stopped_node').addClass('hide')
+
+
+
+                $('.timeline .li').removeClass('complete')
+
+                $('#setup_mail_list_node').addClass('complete')
+                $('#composed_email_node').addClass('complete')
+                $('#scheduled_node').addClass('complete')
+                $('#sending_node').addClass('complete')
+
+
+
+
+            } else if (data.state == '400') {
+                swal({
+                    title: data.title, text: data.msg, confirmButtonText: "OK"
+                });
+            }
+
+
+        }, error: function () {
+
+        }
+    });
+
+
+}
+
 function save_email_campaign_operation(element) {
 
     var data = $(element).data("data")
@@ -223,8 +292,8 @@ function save_email_campaign_operation(element) {
 
             switch (data.update_metadata.state){
                 case 'ComposingEmail':
-                    $('#email_campaign\\.email_template').removeClass('hide')
-                    change_tab('email_campaign.email_template')
+                    $('#email_campaign\\.workshop').removeClass('hide')
+                    change_tab('email_campaign.workshop')
                     break;
 
 
@@ -260,8 +329,8 @@ function save_email_campaign_operation(element) {
                 if (data.update_metadata.state_index >= 20) {
                     $('#setup_mail_list_node').addClass('complete')
                 }
-                if (data.update_metadata.state_index >= 40) {
-                    $('#in_warehouse_node').addClass('complete')
+                if (data.update_metadata.state_index >= 30) {
+                    $('#composed_email_node').addClass('complete')
                 }
                 if (data.update_metadata.state_index >= 80) {
                     $('#packed_done_node').addClass('complete')
@@ -418,6 +487,7 @@ function save_email_template(jsonFile,htmlFile) {
 
             if (data.state == '200') {
 
+                console.log(data)
 
                 $('#email_template_info').html(data.email_template_info)
                 if(data.published){
@@ -441,6 +511,28 @@ function save_email_template(jsonFile,htmlFile) {
 
                     $('.' + data.update_metadata.show[key]).removeClass('hide')
                 }
+
+                $('.email_campaign_operation').addClass('hide')
+
+                for (var key in data.update_metadata.operations) {
+                    $('#' + data.update_metadata.operations[key]).removeClass('hide')
+                }
+
+                // hack for email campaigns showcase
+                if(data.update_metadata.state_index==30){
+
+                    $('#email_campaign\\.workshop').addClass('hide')
+                    $('#email_campaign\\.published_email').removeClass('hide')
+
+                    change_tab('email_campaign.published_email')
+
+                    $('#composed_email_node').addClass('complete')
+
+
+
+                }
+
+
 
 
 

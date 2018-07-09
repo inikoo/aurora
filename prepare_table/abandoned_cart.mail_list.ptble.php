@@ -28,8 +28,13 @@ $table = '`Order Dimension` O  left join `Customer Dimension` on (`Order Custome
 
 if ($parameters['parent'] == 'email_campaign') {
 
+    $mailshot=get_object('mailshot',$parameters['parent_key']);
+
+    $metadata=$mailshot->get('Metadata');
 $days=0;
     $store_key=0;
+// todo
+    /*
 
     $sql=sprintf('select `Email Campaign Abandoned Cart Days Inactive in Basket`,`Email Campaign Store Key` from `Email Campaign Abandoned Cart Dimension` left join `Email Campaign Dimension` on (`Email Campaign Abandoned Cart Email Campaign Key`=`Email Campaign Key`)  where `Email Campaign Abandoned Cart Email Campaign Key`=%d ',
                  $parameters['parent_key']
@@ -46,9 +51,9 @@ $days=0;
     	print "$sql\n";
     	exit;
     }
+*/
 
-
-    $where.=sprintf(' and `Order Store Key`=%d  and `Order Last Updated Date`<= CURRENT_DATE - INTERVAL %d DAY ',$store_key,$days);
+    $where.=sprintf(' and `Order Store Key`=%d  and `Order Last Updated Date`<= CURRENT_DATE - INTERVAL %d DAY ',$mailshot->get('Store Key'),$metadata['Days Inactive in Basket']);
 
 
 } else{

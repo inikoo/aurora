@@ -2,8 +2,8 @@
 /*
  About:
  Author: Raul Perusquia <raul@inikoo.com>
- Created: 9 May 2018 at 16:21:00 CEST, 
- Copyright (c) 2016, Inikoo
+ Created: 9 May 2018 at 16:21:00 CEST, Mijas Costa Spain
+ Copyright (c) 2018, Inikoo
 
  Version 3
 
@@ -38,7 +38,14 @@ switch ($tipo) {
         );
         send_mailshot($data,$account,$editor,$db);
         break;
-
+    case 'resume_mailshot':
+        $data = prepare_values(
+            $_REQUEST, array(
+                         'key'   => array('type' => 'key')
+                     )
+        );
+        resume_mailshot($data,$account,$editor,$db);
+        break;
 
     default:
         $response = array(
@@ -68,17 +75,21 @@ function send_mailshot($data,$account,$editor,$db) {
 
 
 
+        new_housekeeping_fork(
+            'au_housekeeping', array(
+            'type'                    => 'send_mailshot',
+            'mailshot_key' => $mailshot->id,
 
-        list($fork_key, $msg) = new_fork(
-            'au_send_mailshot', array('key'=>$mailshot->id), $account->get('Account Code'), $db
+        ), $account->get('Account Code')
         );
+
+
 
 
 
         $response = array(
             'state' => 200,
-            'msg'=> $msg,
-            'fork_key'=> $fork_key,
+           // 'msg'=> $msg,
             'update_metadata'=>$mailshot->get_update_metadata()
 
 
@@ -96,11 +107,62 @@ function send_mailshot($data,$account,$editor,$db) {
         exit;
 
     }
-
-
-
-
-
 }
+
+
+
+
+function resume_mailshot($data,$account,$editor,$db) {
+
+
+    $mailshot =  get_object('Email_Campaign',$data['key']);
+
+    if($mailshot->get('Email Campaign State')=='Stopped'){
+
+
+        $mailshot->update_state('Sending');
+
+
+
+
+        include_once 'utils/new_fork.php';
+
+
+        /*
+        new_housekeeping_fork(
+            'au_housekeeping', array(
+            'type'                    => 'resume_mailshot',
+            'mailshot_key' => $mailshot->id,
+
+        ), $account->get('Account Code')
+        );
+
+*/
+
+
+
+        $response = array(
+            'state' => 200,
+           // 'msg'=> $msg,
+            'update_metadata'=>$mailshot->get_update_metadata()
+
+
+        );
+        echo json_encode($response);
+        exit;
+
+    }else{
+
+        $response = array(
+            'state' => 400,
+            'msg'=> 'Email Campaign state '.$mailshot->get('Email Campaign State')
+        );
+        echo json_encode($response);
+        exit;
+
+    }
+}
+
+
 
 ?>

@@ -46,7 +46,7 @@ function new_orders_in_website_mailshot(element) {
 
 
             change_view('orders/'+parent_key +  '/dashboard/website/mailshots/' + data.new_id
-                //, { tab: ''}
+                , { tab: 'email_campaign.details'}
                 )
 
         }

@@ -2835,33 +2835,64 @@ function get_tabs($data, $db, $account, $modules, $user, $smarty, $requested_tab
     } elseif ($data['section'] == 'email_campaign_type') {
 
 
-        if (in_array(
-            $data['_object']->get('Email Campaign Type Code'), array(
-                                                                 'Registration',
-                                                                 'Password Reminder',
-                                                                 'Invite',
-                                                                 'Delivery Confirmation',
-                                                                 'Order Confirmation'
-                                                             )
-        )) {
-            $_content['tabs']['email_campaign_type.mailshots']['class']       = 'hide';
+        if ($data['_object']->get('Email Campaign Type Code') == 'Newsletter') {
             $_content['tabs']['email_campaign_type.next_recipients']['class'] = 'hide';
+            $_content['tabs']['email_campaign_type.details']['class']         = 'hide';
+            $_content['tabs']['email_campaign_type.workshop']['class']        = 'hide';
+            $_content['tabs']['email_campaign_type.sent_emails']['class']        = 'hide';
 
-            if ($data['tab'] == 'email_campaign_type.mailshots') {
+            $_content['tabs']['email_campaign_type.mailshots']['label'] = _('Newsletters');
+            $_content['tabs']['email_campaign_type.mailshots']['icon'] = 'newspaper';
+
+
+            if ($data['tab'] == 'email_campaign_type.next_recipients' or
+                $data['tab'] == 'email_campaign_type.details' or
+                $data['tab'] == 'email_campaign_type.next_recipients' or
+                $data['tab'] == 'email_campaign_type.sent_emails'
+                ) {
                 $_content['tabs']['email_campaign_type.sent_emails']['selected'] = true;
-                $data['tab']                                                     = 'email_campaign_type.sent_emails';
 
-            }
-
-            if ($data['tab'] == 'email_campaign_type.next_recipients') {
-                $_content['tabs']['email_campaign_type.sent_emails']['selected'] = true;
-                $data['tab']                                                     = 'email_campaign_type.sent_emails';
+                $data['tab'] = 'email_campaign_type.mailshots';
 
             }
 
 
         } else {
-            $_content['tabs']['email_campaign_type.mailshots']['class'] = '';
+
+            $_content['tabs']['email_campaign_type.next_recipients']['class'] = '';
+            $_content['tabs']['email_campaign_type.details']['class']         = '';
+            $_content['tabs']['email_campaign_type.workshop']['class']        = '';
+            $_content['tabs']['email_campaign_type.sent_emails']['class']        = '';
+
+            if (in_array(
+                $data['_object']->get('Email Campaign Type Code'), array(
+                                                                     'Registration',
+                                                                     'Password Reminder',
+                                                                     'Invite',
+                                                                     'Delivery Confirmation',
+                                                                     'Order Confirmation'
+                                                                 )
+            )) {
+                $_content['tabs']['email_campaign_type.mailshots']['class'] = 'hide';
+                $_content['tabs']['email_campaign_type.next_recipients']['class'] = 'hide';
+
+                if ($data['tab'] == 'email_campaign_type.mailshots' or
+                    $data['tab'] == 'email_campaign_type.next_recipients'
+                    ) {
+                    $_content['tabs']['email_campaign_type.sent_emails']['selected'] = true;
+
+                    $data['tab'] = 'email_campaign_type.sent_emails';
+
+                }
+
+
+
+            } else {
+                $_content['tabs']['email_campaign_type.mailshots']['class'] = '';
+                $_content['tabs']['email_campaign_type.next_recipients']['class'] = '';
+
+            }
+
 
         }
 
@@ -2976,9 +3007,14 @@ function get_tabs($data, $db, $account, $modules, $user, $smarty, $requested_tab
 
             case 'InProcess':
                 $_content['tabs']['email_campaign.email_blueprints']['class'] = 'hide';
-                $_content['tabs']['email_campaign.email_template']['class']   = 'hide';
-                $_content['tabs']['email_campaign.send_emails']['class']      = 'hide';
+                $_content['tabs']['email_campaign.workshop']['class']   = 'hide';
+                $_content['tabs']['email_campaign.sent_emails']['class']      = 'hide';
                 $_content['tabs']['email_campaign.published_email']['class']  = 'hide';
+
+                //$_content['tabs']['email_campaign.details']['selected'] = true;
+                //$_content['tabs']['email_campaign.details']['selected'] = true;
+
+
 
 
                 break;
@@ -2988,14 +3024,22 @@ function get_tabs($data, $db, $account, $modules, $user, $smarty, $requested_tab
                 // $_content['tabs']['email_campaign.email_template']['class'] = 'hide';
 
                 $_content['tabs']['email_campaign.published_email']['class'] = 'hide';
-                $_content['tabs']['email_campaign.send_emails']['class']     = 'hide';
+                $_content['tabs']['email_campaign.sent_emails']['class']     = 'hide';
 
+                if ($data['tab'] == 'email_campaign.published_email') {
+                    $data['tab'] ='email_campaign.workshop';
+                }
                 break;
 
             case 'Ready':
                 $_content['tabs']['email_campaign.email_blueprints']['class'] = 'hide';
-                $_content['tabs']['email_campaign.email_template']['class']   = 'hide';
-                $_content['tabs']['email_campaign.send_emails']['class']      = 'hide';
+                $_content['tabs']['email_campaign.workshop']['class']   = 'hide';
+                $_content['tabs']['email_campaign.sent_emails']['class']      = 'hide';
+
+
+                if ($data['tab'] == 'email_campaign.workshop') {
+                    $data['tab'] ='email_campaign.published_email';
+                }
 
                 break;
 
@@ -4845,8 +4889,6 @@ function get_view_position($db, $state, $user, $smarty, $account) {
                     'reference' => 'delivery_notes/all'
                 );
             }
-
-
 
 
             break;

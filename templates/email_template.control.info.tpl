@@ -12,7 +12,7 @@
 
 
     {if $data.published}
-        {t}Ready for sending{/t}
+
         <br/>
 
     {elseif $data.edited_date!='' }

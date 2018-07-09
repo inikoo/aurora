@@ -1,7 +1,7 @@
 {*/*
  About:
  Author: Raul Perusquia <raul@inikoo.com>
- Created: 10 May 2018 at 10:09:39 CEST, Mijas Costa, Spain
+ Created: 9 July 2018 at 16:02:45 GMT+8, Kuala Lumpur, Malaysia
  Copyright (c) 2018, Inikoo
 
  Version 3
@@ -28,44 +28,39 @@ cell: Backgrid.HtmlCell.extend({
 
 })
 },
-
 {
-name: "{$recipient}",
-label: "{$recipient_label}",
-sortType: "toggle",
+name: "customer",
+label: "{t}Customer{/t}",
 editable: false,
-
-{if $sort_key=='{$recipient}'}direction: '{if $sort_order==1}descending{else}ascending{/if}',{/if}
-cell: Backgrid.HtmlCell.extend({ })
-},
-
- {
-name: "date",
-label: "{t}Sent date{/t}",
 sortType: "toggle",
-editable: false,
-
-{if $sort_key=='date'}direction: '{if $sort_order==1}descending{else}ascending{/if}',{/if}
+{if $sort_key=='customer'}direction: '{if $sort_order==1}descending{else}ascending{/if}',{/if}
 
 cell: Backgrid.HtmlCell.extend({
-className: "aright"
-}),
-headerCell: integerHeaderCell
+
+})
+},
+{
+name: "date",
+label: "{t}Date{/t}",
+editable: false,
+sortType: "toggle",
+{if $sort_key=='date'}direction: '{if $sort_order==1}descending{else}ascending{/if}',{/if}
+
+cell: Backgrid.HtmlCell.extend({ })
+
 
 },
-
 {
 name: "state",
 label: "{t}State{/t}",
+sortType: "toggle",
 editable: false,
 
-defaultOrder:1,
-sortType: "toggle",
 {if $sort_key=='state'}direction: '{if $sort_order==1}descending{else}ascending{/if}',{/if}
-cell: Backgrid.HtmlCell.extend({ className: "aright"} ),
+cell: Backgrid.HtmlCell.extend({ })
+},
 
-headerCell: integerHeaderCell
-}
+
 
 ]
 

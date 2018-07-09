@@ -222,7 +222,7 @@ function send_email($data, $editor, $smarty, $db) {
 function send_test_email($data, $editor, $smarty, $db) {
 
 
-    require 'external_libs/aws.phar';
+    //  require 'external_libs/aws.phar';
 
     include_once 'class.Email_Template.php';
 
@@ -347,30 +347,25 @@ function send_test_email($data, $editor, $smarty, $db) {
         '/\[Unsubscribe]/', function () use ($website, $smarty) {
 
 
+        //  print $website->get('Website URL').'/unsubscribe.php';
+        $smarty->assign('link', $website->get('Website URL').'/unsubscribe.php');
 
-
-          //  print $website->get('Website URL').'/unsubscribe.php';
-            $smarty->assign('link', $website->get('Website URL').'/unsubscribe.php');
-
-            return $smarty->fetch('unsubscribe_marketing_email.placeholder.tpl');;
-
-
+        return $smarty->fetch('unsubscribe_marketing_email.placeholder.tpl');;
 
 
     }, $request['Message']['Body']['Html']['Data']
     );
 
 
-
-   // print $request['Message']['Body']['Html']['Data'];
+    // print $request['Message']['Body']['Html']['Data'];
     //exit;
 
     try {
         $result    = $client->sendEmail($request);
         $messageId = $result->get('MessageId');
         $response  = array(
-            'state' => 200,
-            'update_metadata'=>$email_template->get_update_metadata()
+            'state'           => 200,
+            'update_metadata' => $email_template->get_update_metadata()
 
 
         );
@@ -470,6 +465,9 @@ function publish_email_template($data, $editor, $smarty, $db) {
 
     $publish_email_template = $email_template->publish();
 
+
+   // print_r($publish_email_template);
+
     if ($publish_email_template->id) {
         if ($email_template->get('Email Template Scope') == 'EmailCampaign') {
 
@@ -497,7 +495,7 @@ function publish_email_template($data, $editor, $smarty, $db) {
             $email_template_type->editor = $editor;
 
 
-            print_r($email_template_type);
+            // print_r($email_template_type);
 
 
             if ($email_template_type->get('Email Campaign Type Status') == 'InProcess') {
@@ -544,9 +542,7 @@ function publish_email_template($data, $editor, $smarty, $db) {
 function save_blueprint($data, $editor, $smarty, $db) {
 
 
-    include_once 'class.Email_Template.php';
-
-    $email_template         = new Email_Template($data['email_template_key']);
+    $email_template         = get_object('Email_Template', $data['email_template_key']);
     $email_template->editor = $editor;
 
     $blueprint_data = array(
@@ -632,16 +628,20 @@ function select_blueprint($data, $editor, $db) {
 
     $update_metadata = array();
 
+
     if ($scope->get_object_name() == 'Email Campaign') {
 
 
-        if ($scope->get('Email Campaign Email Template Key')) {
-            $email_template = get_object('Email_Template', $scope->get('Email Campaign Email Template Key'));
-            $email_template->update(
+        $email_template = get_object('Email_Template', $scope->get('Email Campaign Email Template Key'));
+
+
+        if ($email_template->id) {
+
+            $email_template->fast_update(
                 array(
                     'Email Template Editing JSON' => $blueprint_json,
                     'Email Template Type'         => 'HTML'
-                ), 'no_history'
+                )
             );
             $checksum = md5(
                 ($email_template->get('Email Template Type') == 'Text' ? '' : $email_template->get('Email Template Editing JSON')).'|'.$email_template->get('Email Template Text').'|'.$email_template->get(
@@ -650,11 +650,12 @@ function select_blueprint($data, $editor, $db) {
             );
 
 
-            $email_template->update(
+            $email_template->fast_update(
                 array(
                     'Email Template Editing Checksum' => $checksum,
-                ), 'no_history'
+                )
             );
+
 
         } else {
 
@@ -664,14 +665,14 @@ function select_blueprint($data, $editor, $db) {
 
 
             $email_template_data = array(
-                'Email Template Name'      => $name,
-                'Email Template Role Type' => 'Transactional',
-                'Email Template Role'      => $data['role'],
-                'Email Template Scope'     => $data['scope'],
-                'Email Template Scope Key' => $data['scope_key'],
-                'Email Template Text'      => $text,
-                'Email Template Subject'   => $subject,
-
+                'Email Template Name'                    => $name,
+                'Email Template Role Type'               => 'Marketing',
+                'Email Template Role'                    => $data['role'],
+                'Email Template Scope'                   => $data['scope'],
+                'Email Template Scope Key'               => $data['scope_key'],
+                'Email Template Text'                    => $text,
+                'Email Template Subject'                 => $subject,
+                'Email Template Email Campaign Type Key' => $scope->get('Email Campaign Email Template Type Key'),
 
                 'Email Template Editing JSON' => $blueprint_json
             );

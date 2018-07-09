@@ -14,6 +14,8 @@ $table
 
 $fields = "`Email Blueprint Name`,`Email Blueprint Created`,`Email Blueprint Key`,`Email Blueprint Image Key`,`Staff Alias`";
 
+
+
 switch ($parameters['parent']) {
 
     case 'EmailCampaign':

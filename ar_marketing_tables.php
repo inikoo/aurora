@@ -1039,7 +1039,7 @@ function email_template_types($_data, $db, $user) {
                 $status = '';
                 break;
             case 'Invite':
-                $_type  = _('Personalized invitation');
+                $_type  = _('Invitation (Personalized)');
                 $status = '';
                 break;
             default:

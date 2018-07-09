@@ -647,7 +647,7 @@ class DeliveryNote extends DB_Table {
                 return money($this->data['Delivery Note '.$key], $account->get('Currency Code')).$account->get('Currency Code');
             case('Shipper'):
 
-                return ($this->data['Delivery Note Shipper Key'] > 0 ? get_object('Shipper', $this->data['Delivery Note Shipper Key']) : false);
+                return (!empty($this->data['Delivery Note Shipper Key'] ) ? get_object('Shipper', $this->data['Delivery Note Shipper Key']) : false);
 
                 break;
 

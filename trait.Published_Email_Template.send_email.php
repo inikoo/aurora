@@ -16,6 +16,7 @@ use Aws\Ses\SesClient;
 trait Send_Email {
     function send($recipient, $data, $smarty = false) {
 
+
         require_once 'external_libs/aws.phar';
 
         $this->error = false;
@@ -48,7 +49,6 @@ trait Send_Email {
 
         $sender = get_object('Store', $email_template_type->get('Store Key'));
 
-
         if ($sender->get('Send Email Address') == '') {
 
             $this->error = true;
@@ -59,7 +59,6 @@ trait Send_Email {
 
 
         }
-
 
         if (empty($data['Email_Tracking'])) {
 
@@ -199,9 +198,19 @@ trait Send_Email {
         $sender_email_address = $sender->get('Send Email Address');
         $_source              = "=?utf-8?B?$from_name?= <$sender_email_address>";
 
+
+        //$to_address = 'raul@inikoo.com';
+
+
+        //
+        //
+        //
+           $to_address = $recipient->get('Main Plain Email');
+
+
         $request                                    = array();
         $request['Source']                          = $_source;
-        $request['Destination']['ToAddresses']      = array($recipient->get('Main Plain Email'));
+        $request['Destination']['ToAddresses']      = array($to_address);
         $request['Message']['Subject']['Data']      = $this->get('Published Email Template Subject');
         $request['Message']['Body']['Text']['Data'] = strtr($this->get('Published Email Template Text'), $placeholders);
         $request['ConfigurationSetName']            = $account->get('Account Code');
@@ -257,12 +266,13 @@ trait Send_Email {
         $request['Message']['Body']['Html']['Data'] = preg_replace_callback(
             '/\[Unsubscribe]/', function () use ($email_tracking, $recipient, $data, $smarty) {
 
-                if(isset($data['Unsubscribe URL'])){
-                    include_once 'keyring/key.php';
-                    $smarty->assign('link', $data['Unsubscribe URL'].'?s='.$email_tracking->id.'&a='.hash('sha256', IKEY.$recipient->id.$email_tracking->id));
-                    return $smarty->fetch('unsubscribe_marketing_email.placeholder.tpl');;
+            if (isset($data['Unsubscribe URL'])) {
+                include_once 'keyring/key.php';
+                $smarty->assign('link', $data['Unsubscribe URL'].'?s='.$email_tracking->id.'&a='.hash('sha256', IKEY.$recipient->id.$email_tracking->id));
 
-                }
+                return $smarty->fetch('unsubscribe_marketing_email.placeholder.tpl');;
+
+            }
 
 
         }, $request['Message']['Body']['Html']['Data']

@@ -9,6 +9,8 @@
 
 */
 
+
+
 $table
     = '`Email Blueprint Dimension` EB left join `Staff Dimension`  on (`Email Blueprint Created By`=`Staff Key`)';
 

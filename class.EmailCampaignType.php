@@ -213,6 +213,11 @@ class EmailCampaignType extends DB_Table {
 
             case 'Status Label':
 
+
+                if($this->get('Email Campaign Type Code')=='Newsletter' or $this->get('Email Campaign Type Code')=='Marketing'){
+                    return '';
+                }
+
                 switch ($this->get('Email Campaign Type Status')) {
                     case 'InProcess':
 
@@ -547,7 +552,7 @@ class EmailCampaignType extends DB_Table {
 
     function create_mailshot() {
 
-        if ($this->get_estimated_recipients() > 0) {
+        if ($this->get_estimated_recipients() > 0  or $this->data['Email Campaign Type Code'] =='create_mailshot' ) {
 
             include_once 'class.EmailCampaign.php';
             $email_campaign_data = array(
@@ -565,6 +570,10 @@ class EmailCampaignType extends DB_Table {
                 $metadata=$this->get('Metadata');
 
                 $email_campaign_data['Email Campaign Metadata']=json_encode(array('Send After'=>$metadata['Send After']));
+            }elseif($this->data['Email Campaign Type Code']=='AbandonedCart'){
+                $metadata=$this->get('Metadata');
+
+                $email_campaign_data['Email Campaign Metadata']=json_encode(array('Days Inactive in Basket'=>(isset($metadata['Days Inactive in Basket'])?$metadata['Days Inactive in Basket']:30)));
             }
 
             $email_campaign = new EmailCampaign('create', $email_campaign_data);
@@ -586,9 +595,12 @@ class EmailCampaignType extends DB_Table {
         switch ($this->get('Email Campaign Type Code')) {
             case 'AbandonedCart':
 
+                $metadata=$this->get('Metadata');
+
+
                 $sql = sprintf(
                     'SELECT count(DISTINCT O.`Order Key`) AS num FROM `Order Dimension` O LEFT JOIN `Customer Dimension` ON (`Order Customer Key`=`Customer Key`) WHERE `Order State`="InBasket" AND `Customer Main Plain Email`!="" AND `Customer Send Email Marketing`="Yes" AND `Order Store Key`=%d AND `Order Last Updated Date`<= CURRENT_DATE - INTERVAL %d DAY',
-                    $this->data['Email Campaign Store Key'], $this->data['Email Campaign Abandoned Cart Days Inactive in Basket']
+                    $this->data['Email Campaign Type Store Key'], (empty($metadata['Days Inactive in Basket'])?0:$metadata['Days Inactive in Basket'])
                 );
 
                 if ($result = $this->db->query($sql)) {

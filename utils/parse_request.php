@@ -1819,6 +1819,10 @@ function parse_request($_data, $db, $modules, $account = '', $user = '', $is_set
 
 
 
+                                    }elseif($view_path[2]=='new'){
+                                        $section = 'mailshot.new';
+                                        $object  = 'mailshot';
+                                        $key     = 0;
                                     }
 
                                 }

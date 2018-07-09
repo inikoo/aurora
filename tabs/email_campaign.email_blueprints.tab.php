@@ -10,30 +10,13 @@
 */
 
 
-$email_template_key=false;
+$email_template=get_object('EmailTemplate',$state['_object']->get('Email Campaign Email Template Key'));
+$email_template_type=get_object('EmailTemplateType',$state['_object']->get('Email Campaign Email Template Type Key'));
 
-$email_campaign        = $state['_object'];
-//$scope_metadata = $email_campaign->get('Scope Metadata');
-
-switch ($email_campaign->get('Email Campaign Type')){
-
-    case 'AbandonedCart':
-   //     $email_template_key = $scope_metadata['emails']['welcome']['key'];
-        $role               = 'AbandonedCart';
-        break;
-    case 'Newsletter':
-        //     $email_template_key = $scope_metadata['emails']['welcome']['key'];
-        $role               = 'Newsletter';
-        break;
-    default:
-        return;
-}
+//$control_blueprint_template = 'control.email_campaign_type.blueprints.tpl';
 
 
-$control_blueprint_template = 'control.email_campaign.blueprints.tpl';
-
-
-$tab     = 'email_campaign.email_blueprints';
+$tab     = 'email_campaign_type.email_blueprints';
 $ar_file = 'ar_email_template_tables.php';
 $tipo    = 'email_blueprints';
 
@@ -46,26 +29,22 @@ $table_filters = array(
 );
 
 $parameters = array(
-    'parent'     => 'EmailCampaign',
-    'parent_key' => $state['key'],
-    'redirect' => base64_url_encode('&tab=email_campaign.email_template'),
+    'parent'     => 'EmailCampaignType',
+    'parent_key' => $email_template_type->id,
+    'redirect' => base64_url_encode('email_campaign.workshop'),
 );
 
 
-$smarty->assign('role', $role);
-$smarty->assign('scope', 'EmailCampaign');
-$smarty->assign('scope_key', $state['key']);
+$smarty->assign('scope', 'EmailTemplate');
+$smarty->assign('scope_key', $email_template->id);
 
-if ($email_template_key) {
-    $show_back_button = true;
+$smarty->assign('role', $email_template->get('Email Template Role'));
 
-} else {
-    $show_back_button = false;
+$smarty->assign('blueprints_redirect', 'email_campaign.workshop');
 
-}
-$smarty->assign('show_back_button', $show_back_button);
 
-$smarty->assign('email_template_redirect', '&tab=email_campaign.email_template');
+
+$smarty->assign('email_template_redirect', '&tab=email_campaign.workshop');
 $smarty->assign('table_top_template', 'email_blueprints.showcase.tpl');
 
 $smarty->assign(

@@ -78,9 +78,20 @@
             <div class="dot"></div>
         </li>
 
+        <li  id="stopped_node"  class="li stopped_node cancelled {if $email_campaign->get('State Index')==60}complete{else}hide{/if} ">
+            <div class="label">
+                <span class="state">{t}Stopped{/t}</span>
+            </div>
+            <div class="timestamp">
+                <span>&nbsp;<span class="Email_Campaign_Stopped_Date">&nbsp;{$email_campaign->get('Start Stopped Date')}</span></span>
+            </div>
+            <div class="dot"></div>
+        </li>
+
+
         <li  id="send_node"  class="li  {if $email_campaign->get('State Index')>=100}complete{/if}">
             <div class="label">
-                <span class="state">{t}Send{/t}</span>
+                <span class="state">{t}Sent{/t}</span>
             </div>
             <div class="timestamp">
                 <span>&nbsp;<span class=""></span>
@@ -95,31 +106,6 @@
 </div>
 
 
-<div class="timeline_horizontal  {if $email_campaign->get('State Index')>0}hide{/if}">
-    <ul class="timeline" id="timeline">
-        <li id="submitted_node" class="li complete">
-            <div class="label">
-                <span class="state ">{t}Submitted{/t}</span>
-            </div>
-            <div class="timestamp">
-                <span class="Purchase_Order_Submitted_Date">&nbsp;{$email_campaign->get('Submitted Date')}</span> <span class="start_date">{$email_campaign->get('Created Date')} </span>
-            </div>
-            <div class="dot"></div>
-        </li>
-
-        <li id="send_node" class="li  cancelled">
-            <div class="label">
-                <span class="state ">{t}Cancelled{/t} <span></i></span></span>
-            </div>
-            <div class="timestamp">
-                <span class="Cancelled_Date">{$email_campaign->get('Cancelled Date')} </span>
-            </div>
-            <div class="dot"></div>
-        </li>
-
-
-    </ul>
-</div>
 
 <div id="email_campaign" class="order" style="display: flex;" data-object="{$object_data}" data-email_campaign_key="{$email_campaign->id}">
     <div class="block" style="padding:10px 20px; align-items: stretch;flex: 1">
@@ -127,8 +113,12 @@
 
             <div class="{if $email_campaign->get('State Index')>=50}hide{/if}">
                 <span class="hide Email_Campaign_Number_Estimated_Emails">{$email_campaign->get('Email Campaign Number Estimated Emails')}</span>
-            <span>{t}Estimated recipients{/t}</span> <span class="strong Number_Estimated_Emails">{$email_campaign->get('Number Estimated Emails')}</span>
+                 <span>{t}Estimated recipients{/t}</span> <span class="strong Number_Estimated_Emails">{$email_campaign->get('Number Estimated Emails')}</span>
             </div>
+
+        <div class="{if $email_campaign->get('State Index')<50}hide{/if}">
+            <span class="Sent_Emails_Info">{$email_campaign->get('Sent Emails Info')}</span>
+        </div>
 
         <div style="clear:both"></div>
     </div>
@@ -185,7 +175,7 @@
 
                 <div id="compose_email_operations" class="email_campaign_operation {if $email_campaign->get('State Index')!=10   or  $email_campaign->get('Email Campaign Number Estimated Emails')==0 }hide{/if}">
                     <div  class="square_button right  " title="{t}Compose email{/t}">
-                        <i class="fa fa-arrow-right button"  id="compose_email_save_buttons" aria-hidden="true"  data-data='{  "field": "Email Campaign State","value": "ComposingEmail","dialog_name":"compose_email"}'   onclick="save_email_campaign_operation(this)" ></i>
+                        <i class="fa fa-edit button discreet"  id="compose_email_save_buttons" aria-hidden="true"  data-data='{  "field": "Email Campaign State","value": "ComposingEmail","dialog_name":"compose_email"}'   onclick="save_email_campaign_operation(this)" ></i>
 
                     </div>
                 </div>
@@ -289,7 +279,12 @@
                     </div>
                 </div>
 
+                <div id="resume_operations" class="email_campaign_operation {if $email_campaign->get('State Index')!=60   }hide{/if}">
+                    <div  class="square_button right  " title="{t}Resume sending{/t}">
+                        <i class="fa  fa-play button success"  id="resume_save_buttons" aria-hidden="true"  data-data='{  "field": "Email Campaign State","value": "Resume","dialog_name":"resume"}'   onclick="resume_mailshot(this)" ></i>
 
+                    </div>
+                </div>
 
             </div>
         </div>
@@ -374,7 +369,7 @@
 
 <div style="clear:both"></div></div>
 <div class="block " style="align-items: stretch;flex: 1 ">
-    <table border="0" class="totals {if $email_campaign->get('State Index')<=30}hide{/if}" style="position:relative;top:-5px;margin-bottom:20px">
+    <table border="0" class="totals hide {if $email_campaign->get('State Index')<=30}hide{/if}" style="position:relative;top:-5px;margin-bottom:20px">
 
         <tr>
             <td class="label">{t}Send{/t}</td>
