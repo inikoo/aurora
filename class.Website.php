@@ -19,7 +19,7 @@ class Website extends DB_Table {
 
 
 
-    function Website($a1, $a2 = false, $a3 = false) {
+    function __construct($a1, $a2 = false, $a3 = false) {
 
 
         global $db;
