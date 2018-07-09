@@ -1706,7 +1706,7 @@ class DeliveryNote extends DB_Table {
 
 
         if ($this->get('State Index') == 10) {
-            $this->set_state('Picking');
+            $this->update_state('Picking');
         }
 
 
@@ -1784,7 +1784,7 @@ class DeliveryNote extends DB_Table {
 
         if ($this->get('Delivery Note Number Picked Items') == $this->get('Delivery Note Number To Pick Items')) {
             if ($this->get('State Index') == 20) {
-                $this->set_state('Picked');
+                $this->update_state('Picked');
             }
         }
 
@@ -1826,6 +1826,8 @@ class DeliveryNote extends DB_Table {
 
     }
 
+
+
     function update_item_out_of_stock_quantity($data) {
 
         include_once('class.Location.php');
@@ -1833,7 +1835,7 @@ class DeliveryNote extends DB_Table {
 
 
         if ($this->get('State Index') == 10) {
-            $this->set_state('Picking');
+            $this->update_state('Picking');
         }
 
 
@@ -1966,7 +1968,7 @@ class DeliveryNote extends DB_Table {
 
         if ($this->get('Delivery Note Number Packed Items') == $this->get('Delivery Note Number To Pick Items')) {
             if ($this->get('State Index') == 20) {
-                $this->set_state('Picked');
+                $this->update_state('Picked');
             }
         }
 
@@ -2001,7 +2003,7 @@ class DeliveryNote extends DB_Table {
 
 
         if ($this->get('State Index') == 30) {
-            $this->set_state('Packing');
+            $this->update_state('Packing');
         }
 
 
@@ -2095,10 +2097,10 @@ class DeliveryNote extends DB_Table {
 
         $this->update_totals();
 
-        $this->set_state('Packed');
+        $this->update_state('Packed');
         if ($this->get('Delivery Note Number Packed Items') == $this->get('Delivery Note Number To Pick Items')) {
             if ($this->get('State Index') < 70 and $this->get('State Index') > 10) {
-                $this->set_state('Packed');
+                $this->update_state('Packed');
             }
         }
 
