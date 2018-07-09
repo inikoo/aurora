@@ -21,7 +21,7 @@ class Public_Website {
         'Date'         => false
     );
 
-    function Public_Website($a1, $a2 = false, $a3 = false) {
+    function __construct($a1, $a2 = false, $a3 = false) {
 
         global $db;
         $this->db = $db;
