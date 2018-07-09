@@ -9,6 +9,14 @@
 */
 
 
+require_once 'vendor/autoload.php';
+use Symfony\Component\HttpFoundation\Session\Session;
+use Symfony\Component\HttpFoundation\Session\Storage\NativeSessionStorage;
+
+use Symfony\Component\HttpFoundation\Session\Storage\Handler\MemcachedSessionHandler;
+
+
+
 include_once 'keyring/dns.php';
 include_once 'keyring/key.php';
 
@@ -16,6 +24,8 @@ include_once 'external_libs/Smarty/Smarty.class.php';
 include_once 'class.Account.php';
 $smarty = new Smarty();
 
+$memcached = new Memcached();
+$memcached->addServer($memcache_ip, 11211);
 
 $smarty->template_dir = 'templates';
 $smarty->compile_dir  = 'server_files/smarty/templates_c';
@@ -32,7 +42,7 @@ $db = new PDO(
 );
 $db->setAttribute(PDO::ATTR_DEFAULT_FETCH_MODE, PDO::FETCH_ASSOC);
 
-
+/*
 if(function_exists('mysql_connect')) {
 
 
@@ -50,6 +60,7 @@ if(function_exists('mysql_connect')) {
     mysql_set_charset('utf8');
 
 }
+*/
 
 include_once 'utils/i18n.php';
 require_once 'utils/general_functions.php';
@@ -68,8 +79,13 @@ define("TIMEZONE", $account->data['Account Timezone']);
 include_once 'class.Auth.php';
 include_once 'class.User.php';
 
-session_start();
 
+$sessionStorage = new NativeSessionStorage(array(), new MemcachedSessionHandler($memcached));
+$session        = new Session($sessionStorage);
+
+
+//$session = new Session();
+$session->start();
 
 
 $auth   = new Auth(IKEY, SKEY);
@@ -89,9 +105,17 @@ if (!$sk and array_key_exists('mk', $_REQUEST)) {
 if ($auth->is_authenticated()) {
 
 
-    $_SESSION['logged_in']      = true;
-    $_SESSION['logged_in_page'] = 0;
-    $_SESSION['user_key']       = $auth->get_user_key();
+    //$_SESSION['logged_in']      = true;
+    //$_SESSION['logged_in_page'] = 0;
+
+
+
+    $session->set('logged_in',true);
+    $session->set('logged_in_page',0);
+    $session->set('user_key',$auth->get_user_key());
+
+
+   // $_SESSION['user_key']       = $auth->get_user_key();
     $user                       = new User($_SESSION['user_key']);
     $_SESSION['text_locale']    = $user->data['User Preferred Locale'];
 

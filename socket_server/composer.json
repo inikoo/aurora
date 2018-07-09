@@ -1,0 +1,12 @@
+{
+    "autoload": {
+
+        "psr-4": {
+            "App\\": "app"
+        }
+    },
+    "require": {
+        "cboden/ratchet": "^0.4.1",
+        "react/zmq": "0.2.*|0.3.*"
+    }
+}

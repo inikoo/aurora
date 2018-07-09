@@ -1,7 +1,12 @@
 SetEnv devel 1
 SetEnv preview 1
 
+
 RewriteEngine On
+
+RedirectMatch 403 ^/fork/.*$
+RedirectMatch 403 ^/socket_server/.*$
+
 
 RewriteRule ^api/ api.php [L]
 

@@ -138,6 +138,7 @@
         <script src="/js/libs/base64.js?v2"></script>
         <script src="/js/libs/jquery.formatCurrency-1.4.0.min.js"></script>
 
+        <script src="/js/libs/autobahn.js"></script>
 
 
 

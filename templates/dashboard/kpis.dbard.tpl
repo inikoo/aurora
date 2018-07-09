@@ -158,12 +158,12 @@
 
 
             var request = "/ar_dashboard.php?tipo=kpi&parent=" + $(obj).attr('parent') + '&parent_key=' + $(obj).attr('parent_key')+'&period='+period
-            console.log(request)
+           // console.log(request)
 
             $.getJSON(request, function (r) {
 
 
-               console.log(r.kpi)
+              // console.log(r.kpi)
                 for (var i in r.kpi) {
 
                     for (var j in r.kpi[i]) {

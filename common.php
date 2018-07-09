@@ -4,6 +4,13 @@ error_reporting(E_ALL ^ E_DEPRECATED);
 define("_DEVEL", isset($_SERVER['devel']));
 
 
+require_once 'vendor/autoload.php';
+
+use Symfony\Component\HttpFoundation\Session\Session;
+use Symfony\Component\HttpFoundation\Session\Storage\NativeSessionStorage;
+use Symfony\Component\HttpFoundation\Session\Storage\Handler\MemcachedSessionHandler;
+
+
 require_once 'keyring/dns.php';
 require_once 'keyring/key.php';
 
@@ -20,9 +27,15 @@ require_once "class.Auth.php";
 require_once "class.User.php";
 
 
-if (class_exists('Memcached')) {
-    $mem = new Memcached();
-    $mem->addServer($memcache_ip, 11211);
+$memcached = new Memcached();
+$memcached->addServer($memcache_ip, 11211);
+
+
+$redis = new Redis();
+if ($redis->connect('127.0.0.1', 6379)) {
+    $redis_on = true;
+} else {
+    $redis_on = false;
 }
 
 $db = new PDO(
@@ -30,7 +43,8 @@ $db = new PDO(
 );
 $db->setAttribute(PDO::ATTR_DEFAULT_FETCH_MODE, PDO::FETCH_ASSOC);
 
-if(function_exists('mysql_connect')) {
+/*
+if (function_exists('mysql_connect')) {
 
     $default_DB_link = mysql_connect($dns_host, $dns_user, $dns_pwd);
     if (!$default_DB_link) {
@@ -44,7 +58,7 @@ if(function_exists('mysql_connect')) {
     mysql_set_charset('utf8');
     mysql_query("SET time_zone='+0:00'");
 }
-
+*/
 $account = new Account($db);
 
 
@@ -72,9 +86,15 @@ if ($account->get('Timezone')) {
 
 require_once 'utils/modules.php';
 
-session_start();
+
+$sessionStorage = new NativeSessionStorage(array(), new MemcachedSessionHandler($memcached));
+$session        = new Session($sessionStorage);
 
 
+//$session = new Session();
+$session->start();
+
+$session->set('account',$account->get('Code'));
 
 require 'external_libs/Smarty/Smarty.class.php';
 $smarty               = new Smarty();
@@ -83,7 +103,6 @@ $smarty->compile_dir  = 'server_files/smarty/templates_c';
 $smarty->cache_dir    = 'server_files/smarty/cache';
 $smarty->config_dir   = 'server_files/smarty/configs';
 $smarty->assign('_DEVEL', _DEVEL);
-
 
 $is_already_logged_in = (isset($_SESSION['logged_in']) and $_SESSION['logged_in'] ? true : false);
 
@@ -138,7 +157,6 @@ if ($user->data['User Type'] == 'Supplier') {
     $user->read_suppliers();
 
 }
-
 
 
 $smarty->assign('user', $user);
