@@ -84,10 +84,10 @@ include_once 'class.User.php';
 //$session        = new Session($sessionStorage);
 
 
-//$session = new Session();
-//$session->start();
+$session = new Session();
+$session->start();
 
-session_start();
+//session_start();
 
 $auth   = new Auth(IKEY, SKEY);
 $handle = (array_key_exists('login__username', $_REQUEST)) ? $_REQUEST['login__username'] : false;
@@ -105,19 +105,21 @@ if (!$sk and array_key_exists('mk', $_REQUEST)) {
 
 if ($auth->is_authenticated()) {
 
+    $_user_key=$auth->get_user_key();
 
     $_SESSION['logged_in']      = true;
     $_SESSION['logged_in_page'] = 0;
 
 
 
-    //$session->set('logged_in',true);
-    //$session->set('logged_in_page',0);
-    //$session->set('user_key',$auth->get_user_key());
+    $session->set('logged_in',true);
+    $session->set('logged_in_page',0);
+    $session->set('user_key',$auth->get_user_key());
 
 
-   $_SESSION['user_key']       = $auth->get_user_key();
-    $user                       = new User($_SESSION['user_key']);
+
+   $_SESSION['user_key']       = $_user_key;
+    $user                       = new User($_user_key);
     $_SESSION['text_locale']    = $user->data['User Preferred Locale'];
 
 

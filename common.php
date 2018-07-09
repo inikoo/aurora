@@ -87,16 +87,16 @@ if ($account->get('Timezone')) {
 require_once 'utils/modules.php';
 
 
-//$sessionStorage = new NativeSessionStorage(array(), new MemcachedSessionHandler($memcached));
-//$session        = new Session($sessionStorage);
+$sessionStorage = new NativeSessionStorage(array(), new MemcachedSessionHandler($memcached));
+$session        = new Session($sessionStorage);
 
 
-//$session = new Session();
-//$session->start();
+$session = new Session();
+$session->start();
 
-session_start();
+//session_start();
 
-//$session->set('account',$account->get('Code'));
+$session->set('account',$account->get('Code'));
 
 require 'external_libs/Smarty/Smarty.class.php';
 $smarty               = new Smarty();
