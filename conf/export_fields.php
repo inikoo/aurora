@@ -59,35 +59,63 @@ $export_fields = array(
             'checked' => 0
         ),
         array(
-            'name'    => '`Customer Main Address Line 1`,`Customer Main Address Line 2`,`Customer Main Address Line 3`,`Customer Main Town`,`Customer Main Postal Code`,`Customer Main Country Second Division`,`Customer Main Country First Division`,`Customer Main Country Code`',
+            'name'    => '`Customer Contact Address Line 1`,`Customer Contact Address Line 2`,`Customer Contact Address Sorting Code`,`Customer Contact Address Postal Code`,`Customer Contact Address Dependent Locality`,`Customer Contact Address Locality`,`Customer Contact Address Administrative Area`,`Customer Contact Address Country 2 Alpha Code`',
             'label'   => _('Contact address (Separated fields)'),
-            'checked' => 0
-        ),
-        array(
-            'name'    => '`Customer Main Address Lines`',
-            'label'   => _('Contact address (Lines)'),
-            'checked' => 0
+            'checked' => 0,
+            'labels'=>array(
+                _('Contact address'),
+                _('Contact address line 2'),
+                _('Contact address sorting code'),
+                _('Contact address postal code'),
+                _('Contact address dependent locality'),
+                _('Contact address locality'),
+                _('Contact address administrative area'),
+                _('Contact address country'),
+
+            )
         ),
 
         array(
-            'name'    => 'REPLACE(`Customer XHTML Billing Address`,"<br/>","\n") as`Customer Billing Address`',
+            'name'    => 'REPLACE(`Customer Invoice Address Formatted`,"<br/>","\n") as`Customer Billing Address`',
             'label'   => _('Billing address'),
             'checked' => 0
         ),
         array(
-            'name'    => '`Customer Billing Address Lines`,`Customer Billing Address Town`,`Customer Billing Address Country Code`',
+            'name'    => '`Customer Invoice Address Line 1`,`Customer Invoice Address Line 2`,`Customer Invoice Address Sorting Code`,`Customer Invoice Address Postal Code`,`Customer Invoice Address Dependent Locality`,`Customer Invoice Address Locality`,`Customer Invoice Address Administrative Area`,`Customer Invoice Address Country 2 Alpha Code`',
             'label'   => _('Billing address (Separated fields)'),
-            'checked' => 0
+            'checked' => 0,
+            'labels'=>array(
+                _('Billing address'),
+                _('Billing address line 2'),
+                _('Billing address sorting code'),
+                _('Billing address postal code'),
+                _('Billing address dependent locality'),
+                _('Billing address locality'),
+                _('Billing address administrative area'),
+                _('Billing address country'),
+
+            )
         ),
         array(
-            'name'    => 'REPLACE(`Customer XHTML Main Delivery Address`,"<br/>","\n") as`Customer Delivery Address`',
+            'name'    => 'REPLACE(`Customer Delivery Address Formatted`,"<br/>","\n") as`Customer Delivery Address`',
             'label'   => _('Delivery address'),
             'checked' => 0
         ),
         array(
-            'name'    => '`Customer Main Delivery Address Lines`,`Customer Main Delivery Address Town`,`Customer Main Delivery Address Postal Code`,`Customer Main Delivery Address Region`,`Customer Main Delivery Address Country Code`',
+            'name'    => '`Customer Delivery Address Line 1`,`Customer Delivery Address Line 2`,`Customer Delivery Address Sorting Code`,`Customer Delivery Address Postal Code`,`Customer Delivery Address Dependent Locality`,`Customer Delivery Address Locality`,`Customer Delivery Address Administrative Area`,`Customer Delivery Address Country 2 Alpha Code`',
             'label'   => _('Delivery address (Separated fields)'),
-            'checked' => 0
+            'checked' => 0,
+            'labels'=>array(
+                _('Delivery address'),
+                _('Delivery address line 2'),
+                _('Delivery address sorting code'),
+                _('Delivery address postal code'),
+                _('Delivery address dependent locality'),
+                _('Delivery address locality'),
+                _('Delivery address administrative area'),
+                _('Delivery address country'),
+
+            )
         ),
         array(
             'name'    => '`Customer Last Order Date`',

@@ -166,8 +166,6 @@ $export_data = array(
 );
 
 
-//print_r($export_data);
-//exit;
 
 list($fork_key, $msg) = new_fork(
     'au_export', $export_data, $account->get('Account Code'), $db
