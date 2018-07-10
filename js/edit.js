@@ -183,8 +183,7 @@ function open_edit_field(object, key, field) {
             $('#' + field + '_save_button').removeClass('hide')
 
 
-
-            if($('#' + field + '_eraser').attr('display')=='yes' &&  $('#' + field+'_formatted' ).val()!='' ){
+            if ($('#' + field + '_eraser').attr('display') == 'yes' && $('#' + field + '_formatted').val() != '') {
                 $('#' + field + '_eraser').removeClass('hide')
             }
 
@@ -218,10 +217,7 @@ function open_edit_field(object, key, field) {
 
     }
     key_scope = {
-        type: type,
-        object: object,
-        key: key,
-        field: field
+        type: type, object: object, key: key, field: field
     };
 }
 
@@ -456,7 +452,6 @@ function close_edit_field(field) {
             $('#' + field + '_datepicker').datepicker("setDate", date);
 
 
-
             break;
         case 'working_hours':
             $('#working_hours').addClass('hide')
@@ -549,9 +544,6 @@ function on_changed_confirm_value(field, confirm_value) {
 function on_changed_value(field, new_value) {
 
 
-
-
-
     var object = $('#fields').attr('object');
 
     if ($('#' + object + '_save').hasClass('hide')) {
@@ -586,7 +578,6 @@ function on_changed_value(field, new_value) {
 
 
     var validation = validate(field, new_value)
-
 
 
     process_validation(validation, field, false)
@@ -785,13 +776,11 @@ function set_this_as_main(scope) {
 function set_as_main(object, key, field) {
 
 
-
     var request = '/ar_edit.php?tipo=set_as_main&object=' + object + '&key=' + key + '&field=' + field
 
 
-
     $.getJSON(request, function (data) {
-console.log(data)
+        console.log(data)
 
         //$('#' + field + '_save_button').addClass('fa-star').removeClass('fa-spinner fa-spin')
         if (data.state == 200) {
@@ -947,10 +936,7 @@ function save_field(object, key, field) {
                 var ratio = $(obj).find('.parts_per_product').val()
             }
             var part_data = {
-                'Key': $(obj).find('.product_part_key').val(),
-                'Part SKU': $(obj).find('.sku').val(),
-                'Ratio': ratio,
-                'Note': $(obj).find('.note').val(),
+                'Key': $(obj).find('.product_part_key').val(), 'Part SKU': $(obj).find('.sku').val(), 'Ratio': ratio, 'Note': $(obj).find('.note').val(),
 
             }
             part_list_data.push(part_data)
@@ -1008,126 +994,142 @@ function save_field(object, key, field) {
 
     }
 
-if($('#fields').attr('form_type')=='setup')
-    var request = '/ar_setup.php?tipo=edit_field&object=' + object + '&key=' + key + '&field=' + field + '&value=' + fixedEncodeURIComponent(value) + '&metadata=' + JSON.stringify(metadata)
+    if ($('#fields').attr('form_type') == 'setup') {
+        var request_file = '"/ar_upload.php"';
+        var request = '/ar_setup.php?tipo=edit_field&object=' + object + '&key=' + key + '&field=' + field + '&value=' + fixedEncodeURIComponent(value) + '&metadata=' + JSON.stringify(metadata)
 
-else
-    var request = '/ar_edit.php?tipo=edit_field&object=' + object + '&key=' + key + '&field=' + field + '&value=' + fixedEncodeURIComponent(value) + '&metadata=' + JSON.stringify(metadata)
+    } else {
 
+        var request_file = '"/ar_edit.php"';
+        var request = '/ar_edit.php?tipo=edit_field&object=' + object + '&key=' + key + '&field=' + field + '&value=' + fixedEncodeURIComponent(value) + '&metadata=' + JSON.stringify(metadata)
+    }
 
-      console.log(request)
-
-
-
-    $.getJSON(request, function (data) {
-
-
-        console.log(data)
-        $('#' + field + '_save_button').addClass('fa-cloud').removeClass('fa-spinner fa-spin')
-        if (data.state == 100) {
-            pre_save_actions(field, data)
-
-        }
-        if (data.state == 200) {
+   // console.log(request)
 
 
+    var ajaxData = new FormData();
+
+    ajaxData.append("tipo", 'edit_field')
+    ajaxData.append("object", object)
+    ajaxData.append("key", key)
+    ajaxData.append('field', field)
+    ajaxData.append('value', value)
+    ajaxData.append('metadata', JSON.stringify(metadata))
+
+    $.ajax({
+        url: request_file, type: 'POST', data: ajaxData, dataType: 'json', cache: false, contentType: false, processData: false,
 
 
-            $('#' + field + '_msg').html(data.msg).addClass('success').removeClass('hide')
-            $('#' + field + '_value').val(data.value)
+        complete: function () {
+
+        }, success: function (data) {
+            console.log(data)
+            $('#' + field + '_save_button').addClass('fa-cloud').removeClass('fa-spinner fa-spin')
+            if (data.state == 100) {
+                pre_save_actions(field, data)
+
+            }
+            if (data.state == 200) {
 
 
-            $("#" + field + '_field').removeClass('changed')
-            $("#" + field + '_field').removeClass('valid')
+                $('#' + field + '_msg').html(data.msg).addClass('success').removeClass('hide')
+                $('#' + field + '_value').val(data.value)
+
+
+                $("#" + field + '_field').removeClass('changed')
+                $("#" + field + '_field').removeClass('valid')
 
 
 //            console.log(data.formatted_value)
-            $('.' + field).html(data.formatted_value)
-            if (type == 'option') {
+                $('.' + field).html(data.formatted_value)
+                if (type == 'option') {
 
-                //   $('#' + field + '_options li .current_mark')
-                $('#' + field + '_options li i.current_mark').removeClass('current')
-                $('#' + field + '_options li.selected  i.current_mark').addClass('current')
+                    //   $('#' + field + '_options li .current_mark')
+                    $('#' + field + '_options li i.current_mark').removeClass('current')
+                    $('#' + field + '_options li.selected  i.current_mark').addClass('current')
 
-                // console.log('#' + field + '_option_' + value + ' .current_mark')
-                //  $('#' + field + '_option_' + value + ' .current_mark').addClass('current')
-            } else if (type == 'option_multiple_choices') {
-                $('#' + field + '_options li .current_mark').removeClass('current')
-                $('#' + field + '_option_' + value + ' .current_mark').addClass('current')
-            } else if (type == 'dropdown_select') {
-                //  $('#' + field + '').removeClass('current')
-                $('#' + field + '_msg').html(data.msg).addClass('success').removeClass('hide')
-            } else {
-                $('#' + field + '_msg').html(data.msg).addClass('success').removeClass('hide')
-            }
-
-            if (data.action == 'deleted') {
-                $('#' + field + '_edit_button').parent('.show_buttons').css('visibility', 'hidden')
-                $('#' + field + '_label').find('.button').addClass('hide')
-            }
-
-            if (data.directory_field != '') {
-                $('#' + data.directory_field + '_directory').html(data.directory)
-                if (data.items_in_directory == 0) {
-                    $('#' + data.directory_field + '_field').addClass('hide')
+                    // console.log('#' + field + '_option_' + value + ' .current_mark')
+                    //  $('#' + field + '_option_' + value + ' .current_mark').addClass('current')
+                } else if (type == 'option_multiple_choices') {
+                    $('#' + field + '_options li .current_mark').removeClass('current')
+                    $('#' + field + '_option_' + value + ' .current_mark').addClass('current')
+                } else if (type == 'dropdown_select') {
+                    //  $('#' + field + '').removeClass('current')
+                    $('#' + field + '_msg').html(data.msg).addClass('success').removeClass('hide')
                 } else {
-                    $('#' + data.directory_field + '_field').removeClass('hide')
+                    $('#' + field + '_msg').html(data.msg).addClass('success').removeClass('hide')
                 }
-            }
-            if (data.action == 'new_field') {
-                if (data.new_fields) {
-                    for (var key in data.new_fields) {
-                        create_new_field(data.new_fields[key])
+
+                if (data.action == 'deleted') {
+                    $('#' + field + '_edit_button').parent('.show_buttons').css('visibility', 'hidden')
+                    $('#' + field + '_label').find('.button').addClass('hide')
+                }
+
+                if (data.directory_field != '') {
+                    $('#' + data.directory_field + '_directory').html(data.directory)
+                    if (data.items_in_directory == 0) {
+                        $('#' + data.directory_field + '_field').addClass('hide')
+                    } else {
+                        $('#' + data.directory_field + '_field').removeClass('hide')
                     }
                 }
-            }
-
-
-            close_edit_field(field)
-
-
-
-
-            if (data.other_fields) {
-                for (var key in data.other_fields) {
-
-                 //   console.log(data.other_fields[key])
-
-                    update_field(data.other_fields[key])
+                if (data.action == 'new_field') {
+                    if (data.new_fields) {
+                        for (var key in data.new_fields) {
+                            create_new_field(data.new_fields[key])
+                        }
+                    }
                 }
-            }
 
-            if (data.deleted_fields) {
-                for (var key in data.deleted_fields) {
-                    delete_field(data.deleted_fields[key])
+
+                close_edit_field(field)
+
+
+                if (data.other_fields) {
+                    for (var key in data.other_fields) {
+
+                        //   console.log(data.other_fields[key])
+
+                        update_field(data.other_fields[key])
+                    }
                 }
+
+                if (data.deleted_fields) {
+                    for (var key in data.deleted_fields) {
+                        delete_field(data.deleted_fields[key])
+                    }
+                }
+
+                for (var key in data.update_metadata.class_html) {
+                    $('.' + key).html(data.update_metadata.class_html[key])
+                }
+
+
+                for (var key in data.update_metadata.hide) {
+                    $('.' + data.update_metadata.hide[key]).addClass('hide')
+                }
+
+                for (var key in data.update_metadata.show) {
+
+                    $('.' + data.update_metadata.show[key]).removeClass('hide')
+                }
+
+
+                post_save_actions(field, data)
+
+            } else if (data.state == 400) {
+                $('#' + field + '_editor').removeClass('valid potentially_valid').addClass('invalid')
+
+                $('#' + field + '_msg').html(data.msg).removeClass('hide')
+
             }
 
-            for (var key in data.update_metadata.class_html) {
-                $('.' + key).html(data.update_metadata.class_html[key])
-            }
-
-
-
-            for (var key in data.update_metadata.hide) {
-                      $('.' + data.update_metadata.hide[key]).addClass('hide')
-            }
-
-            for (var key in data.update_metadata.show) {
-
-                $('.' + data.update_metadata.show[key]).removeClass('hide')
-            }
-
-
-            post_save_actions(field, data)
-
-        } else if (data.state == 400) {
-            $('#' + field + '_editor').removeClass('valid potentially_valid').addClass('invalid')
-
-            $('#' + field + '_msg').html(data.msg).removeClass('hide')
+        }, error: function () {
 
         }
-    })
+    });
+
+
 }
 
 function pre_save_actions(field, data) {
@@ -1235,9 +1237,7 @@ function create_new_field(_data) {
 
 
         $("#" + clone_field).intlTelInput({
-            utilsScript: "/js/libs/telephone_utils.js",
-            defaultCountry: 'GB',
-            preferredCountries: ['GB', 'US']
+            utilsScript: "/js/libs/telephone_utils.js", defaultCountry: 'GB', preferredCountries: ['GB', 'US']
         });
         $("#" + clone_field).intlTelInput("setNumber", _data.value);
 
@@ -1277,8 +1277,7 @@ function create_new_field(_data) {
 
 
         $('#' + clone_field + '_country_select').intlTelInput({
-            initialCountry: initial_country,
-            preferredCountries: $('#preferred_countries').val().split(',')
+            initialCountry: initial_country, preferredCountries: $('#preferred_countries').val().split(',')
         });
 
         $('#' + clone_field + '_country_select').on("country-change", function (event, arg) {
@@ -1335,7 +1334,6 @@ function delete_field(data) {
 function update_field(data) {
 
 
-
     var field = data.field
     var type = $('#' + field + '_container').attr('c')
     //console.log(data)
@@ -1364,7 +1362,7 @@ function update_field(data) {
     if (data.server_validation != undefined) {
 
 
-        $("#" + field+'_container').attr('server_validation', data.server_validation)
+        $("#" + field + '_container').attr('server_validation', data.server_validation)
     }
 
 
@@ -1450,7 +1448,6 @@ function cancel_confirm_field(field) {
 
 
 }
-
 
 
 function addZero2dateComponent(i) {
@@ -1684,14 +1681,12 @@ function show_sticky_note_edit_dialog(anchor) {
 
 
             $('#edit_sticky_note_dialog').css({
-                'left': position.left - $('#edit_sticky_note_dialog').width(),
-                'top': position.top + $('#' + anchor).height()
+                'left': position.left - $('#edit_sticky_note_dialog').width(), 'top': position.top + $('#' + anchor).height()
             })
         } else {
             var position = $('#showcase_sticky_note .sticky_note').position();
             $('#edit_sticky_note_dialog').css({
-                'left': position.left,
-                'top': position.top
+                'left': position.left, 'top': position.top
             })
         }
 
@@ -1747,14 +1742,11 @@ function delayed_on_change_dropdown_select_field(object, timeout) {
     var field = object.attr('id');
 
 
-
-
     var field_element = $('#' + field);
     var new_value = field_element.val()
 
     key_scope = {
-        type: 'dropdown_select',
-        field: field_element.attr('field')
+        type: 'dropdown_select', field: field_element.attr('field')
     };
 
 
@@ -1769,7 +1761,6 @@ function delayed_on_change_dropdown_select_field(object, timeout) {
 function get_dropdown_select(dropdown_input, new_value) {
 
 
-
     var parent_key = $('#' + dropdown_input).attr('parent_key')
     var parent = $('#' + dropdown_input).attr('parent')
     var scope = $('#' + dropdown_input).attr('scope')
@@ -1777,25 +1768,17 @@ function get_dropdown_select(dropdown_input, new_value) {
     var metadata = $('#' + dropdown_input).data('metadata')
 
 
-
-
-
-
-
-
     console.log(metadata)
 
-    if(metadata==undefined){
-        metadata={}
+    if (metadata == undefined) {
+        metadata = {}
     }
 
-    var request = '/ar_find.php?tipo=find_objects&query=' + fixedEncodeURIComponent(new_value) + '&scope=' + scope + '&parent=' + parent + '&parent_key=' + parent_key + '&metadata=' + JSON.stringify(metadata)+ '&state=' + JSON.stringify(state)
+    var request = '/ar_find.php?tipo=find_objects&query=' + fixedEncodeURIComponent(new_value) + '&scope=' + scope + '&parent=' + parent + '&parent_key=' + parent_key + '&metadata=' + JSON.stringify(metadata) + '&state=' + JSON.stringify(state)
 
 
-
-
-    if($('#' + dropdown_input).attr('action')!=undefined){
-        request+='&action='+$('#' + dropdown_input).attr('action');
+    if ($('#' + dropdown_input).attr('action') != undefined) {
+        request += '&action=' + $('#' + dropdown_input).attr('action');
     }
 
 
@@ -1803,10 +1786,7 @@ function get_dropdown_select(dropdown_input, new_value) {
     $.getJSON(request, function (data) {
 
 
-
         if (data.number_results > 0) {
-
-
 
 
             $('#' + field + '_results_container').removeClass('hide').addClass('show')
@@ -1859,7 +1839,7 @@ function get_dropdown_select(dropdown_input, new_value) {
             clone.attr('formatted_value', data.results[result_key].formatted_value)
 
 
-             // console.log(data.results[result_key].metadata)
+            // console.log(data.results[result_key].metadata)
             clone.data('metadata', data.results[result_key].metadata)
 
 
@@ -1870,13 +1850,9 @@ function get_dropdown_select(dropdown_input, new_value) {
             }
 
 
-
-
             clone.children(".code").html(data.results[result_key].code)
 
             clone.children(".label").html(data.results[result_key].description)
-
-
 
 
             $("#" + field + "_results").append(clone)
@@ -1907,7 +1883,7 @@ function select_dropdown_option(element) {
 
     $('#' + field + '_results_container').addClass('hide').removeClass('show')
 
-        console.log(metadata)
+    console.log(metadata)
     if (metadata != undefined) {
 
         if (metadata.other_fields) {
@@ -1972,6 +1948,7 @@ function approve_object(element) {
 function reject_object(element) {
     save_object_operation('reject', element)
 }
+
 function suspend_object(element) {
     save_object_operation('suspend', element)
 }
@@ -2007,9 +1984,7 @@ function save_object_operation(type, element) {
     }
 
 
-    if (type == 'delete') var icon = 'fa-trash';
-    else if (type == 'archive') var icon = 'fa-archive';
-    else if (type == 'unarchive') var icon = 'fa-folder-open';
+    if (type == 'delete') var icon = 'fa-trash'; else if (type == 'archive') var icon = 'fa-archive'; else if (type == 'unarchive') var icon = 'fa-folder-open';
 
     if (!$(element).find('i.fa').removeClass(icon)) return;
 
@@ -2022,7 +1997,7 @@ function save_object_operation(type, element) {
             console.log(data)
 
             if (data.request != undefined) {
-               change_view(data.request)
+                change_view(data.request)
             } else {
                 change_view(state.request, {'reload_showcase': 1})
             }
@@ -2087,42 +2062,36 @@ $(document).on("click", "#exit_edit_table", function () {
 });
 
 
+function publish(element, type) {
 
 
-function publish(element,type){
+    var icon = $(element).find('i')
 
-
-    var icon=$(element).find('i')
-
-    if(icon.hasClass('fa-spin')) return;
+    if (icon.hasClass('fa-spin')) return;
 
 
     icon.addClass('fa-spinner fa-spin')
 
-    var request = '/ar_edit_website.php?tipo='+type+'&parent_key=' + $(element).attr('webpage_key')
+    var request = '/ar_edit_website.php?tipo=' + type + '&parent_key=' + $(element).attr('webpage_key')
     console.log(request)
     $.getJSON(request, function (data) {
 
 
-
-
-
-
-        if(type=='publish_webpage'){
+        if (type == 'publish_webpage') {
             icon.addClass('fa-rocket').removeClass('fa-spinner fa-spin')
 
             $('#publish').removeClass('changed valid')
 
 
-        }else if(type=='set_webpage_as_ready'){
+        } else if (type == 'set_webpage_as_ready') {
 
             icon.addClass('fa-check-circle').removeClass('fa-spinner fa-spin')
 
-        }else if(type=='set_webpage_as_not_ready'){
+        } else if (type == 'set_webpage_as_not_ready') {
 
             icon.addClass('fa-child').removeClass('fa-spinner fa-spin')
 
-        }else if(type=='unpublish_webpage'){
+        } else if (type == 'unpublish_webpage') {
 
 
             icon.addClass('fa-rocket').removeClass('fa-spinner fa-spin')
@@ -2170,35 +2139,32 @@ function publish(element,type){
         }
 
 
-
     })
 
 
 }
- function erase_date_field(field){
+
+function erase_date_field(field) {
 
     console.log(field)
 
-     $('#'+field).val('')
-     $('#'+field+'_formatted').val('')
-     on_changed_value(field, $('#'.field).val())
+    $('#' + field).val('')
+    $('#' + field + '_formatted').val('')
+    on_changed_value(field, $('#'.field).val())
 
- }
+}
 
 
-function toggle_field_value(element){
+function toggle_field_value(element) {
 
-    var icon=$(element).find('i')
+    var icon = $(element).find('i')
 
-    if(icon.hasClass('fa-toggle-on')){
+    if (icon.hasClass('fa-toggle-on')) {
         icon.removeClass('fa-toggle-on').addClass('fa-toggle-off').next('span').addClass('discreet')
 
-    }else if(icon.hasClass('fa-toggle-off')){
+    } else if (icon.hasClass('fa-toggle-off')) {
         icon.removeClass('fa-toggle-off').addClass('fa-toggle-on').next('span').removeClass('discreet')
     }
-
-
-
 
 
 }
