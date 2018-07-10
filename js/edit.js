@@ -995,12 +995,12 @@ function save_field(object, key, field) {
     }
 
     if ($('#fields').attr('form_type') == 'setup') {
-        var request_file = '"/ar_upload.php"';
+        var request_file = '/ar_upload.php';
         var request = '/ar_setup.php?tipo=edit_field&object=' + object + '&key=' + key + '&field=' + field + '&value=' + fixedEncodeURIComponent(value) + '&metadata=' + JSON.stringify(metadata)
 
     } else {
 
-        var request_file = '"/ar_edit.php"';
+        var request_file = '/ar_edit.php';
         var request = '/ar_edit.php?tipo=edit_field&object=' + object + '&key=' + key + '&field=' + field + '&value=' + fixedEncodeURIComponent(value) + '&metadata=' + JSON.stringify(metadata)
     }
 
