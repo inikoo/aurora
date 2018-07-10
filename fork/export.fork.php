@@ -110,7 +110,7 @@ function fork_export($job) {
             prepare_mysql('Error'), $fork_key
         );
 
-        print $sql;
+        //print $sql;
 
         $db->exec($sql);
 
@@ -118,6 +118,9 @@ function fork_export($job) {
     }
 
 
+
+
+   // print $sql_data;
     if ($result = $db->query($sql_data)) {
         foreach ($result as $row) {
 
@@ -141,11 +144,30 @@ function fork_export($job) {
                 $char_index = 1;
 
                 foreach ($fork_data['fields'] as $_key) {
-                    $char = number2alpha($char_index);
-                    $objPHPExcel->getActiveSheet()->setCellValue(
-                        $char.$row_index, strip_tags($fork_data['field_set'][$_key]['label'])
-                    );
-                    $char_index++;
+
+
+                    if(isset($fork_data['field_set'][$_key]['labels'])){
+
+                        foreach($fork_data['field_set'][$_key]['labels'] as $label){
+                            $char = number2alpha($char_index);
+                            $objPHPExcel->getActiveSheet()->setCellValue(
+                                $char.$row_index, strip_tags($label)
+                            );
+                            $char_index++;
+                        }
+
+
+
+                    }else{
+                        $char = number2alpha($char_index);
+                        $objPHPExcel->getActiveSheet()->setCellValue(
+                            $char.$row_index, strip_tags($fork_data['field_set'][$_key]['label'])
+                        );
+                        $char_index++;
+                    }
+
+
+
                 }
                 /*
                 foreach ($row as $_key=>$value) {
