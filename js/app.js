@@ -4,33 +4,24 @@
  Version 3.0*/
 
 function isMobile() {
-    try{ document.createEvent("TouchEvent"); return true; }
-    catch(e){ return false; }
+    try {
+        document.createEvent("TouchEvent");
+        return true;
+    } catch (e) {
+        return false;
+    }
 }
-
 
 
 var key_scope = false;
 var old_state_request = '';
 
 
-
-
-
 $(document).ready(function () {
 
 
-
-
-
-
     state = {
-        module: '',
-        section: '',
-        parent: '',
-        parent_key: '',
-        object: '',
-        key: ''
+        module: '', section: '', parent: '', parent_key: '', object: '', key: ''
     }
     structure = {}
 
@@ -42,66 +33,64 @@ $(document).ready(function () {
     });
 
 
-
-    $(document).scannerDetection(function(value){
+    $(document).scannerDetection(function (value) {
 
         scanned_barcode(value)
     });
 
 
+    // var conn = new ab.Session('ws://'+location.hostname+'/ws',
 
-    console.log('ws://'+location.hostname+'/ws')
-
-   // var conn = new ab.Session('ws://'+location.hostname+'/ws',
-
- //   var conn = new ab.Session('ws://'+location.hostname+':8081',
+    //   var conn = new ab.Session('ws://'+location.hostname+':8081',
 
 
-    var conn = new ab.Session('ws://'+location.hostname+'/ws',
-        function() {
-            conn.subscribe('real_time', function(topic, data) {
+    var conn = new ab.Session('ws://' + location.hostname + '/ws', function () {
+        conn.subscribe($('#account_name').data('account_code') + '_real_time', function (topic, data) {
+
+            console.log(state)
 
 
-                for (var i in data.objects) {
+            for (var i in data.objects) {
+                if (state.object == data.objects[i].object && state.key == data.objects[i].key) {
+                    for (var j in data.objects[i].update_metadata.class_html) {
+                        $('.' + j).html(data.objects[i].update_metadata.class_html[j])
+                    }
 
-                  //  console.log(data.objects[i].object)
-                  if(state.object==data.objects[i].object &&  state.key==data.objects[i].key){
+                    for (var key in  data.objects[i].update_metadata.hide) {
+                        $('.' + data.objects[i].update_metadata.hide[key]).addClass('hide')
+                    }
 
-                    //  console.log(data.objects[i].update_metadata.class_html)
+                    for (var key in data.objects[i].update_metadata.show) {
 
-                      for (var j in data.objects[i].update_metadata.class_html) {
-                          $('.' + j).html(data.objects[i].update_metadata.class_html[j])
-                      }
-
-                      for (var key in  data.objects[i].update_metadata.hide) {
-                          $('.' + data.objects[i].update_metadata.hide[key]).addClass('hide')
-                      }
-
-                      for (var key in data.objects[i].update_metadata.show) {
-
-                          $('.' + data.objects[i].update_metadata.show[key]).removeClass('hide')
-                      }
-
-                  }
-
-
-                    //  $('.' + key).html(data.update_metadata.class_html[key])
+                        $('.' + data.objects[i].update_metadata.show[key]).removeClass('hide')
+                    }
                 }
+            }
 
-                // This is where you would add the new article to the DOM (beyond the scope of this tutorial)
-                //console.log(data);
-                //console.log(state);
-            });
-        },
-        function() {
-            console.warn('WebSocket connection closed');
-        },
-        {'skipSubprotocolCheck': true}
-    );
+            for (var i in data.sections) {
+                if (state.section == data.sections[i].section ) {
+                    for (var j in data.sections[i].update_metadata.class_html) {
+                        $('.' + j).html(data.sections[i].update_metadata.class_html[j])
+                    }
+
+                    for (var key in  data.sections[i].update_metadata.hide) {
+                        $('.' + data.sections[i].update_metadata.hide[key]).addClass('hide')
+                    }
+
+                    for (var key in data.sections[i].update_metadata.show) {
+                        $('.' + data.sections[i].update_metadata.show[key]).removeClass('hide')
+                    }
+                }
+            }
+
+
+        });
+    }, function () {
+        console.warn('WebSocket connection closed');
+    }, {'skipSubprotocolCheck': true});
 
 
 })
-
 
 
 function change_browser_history_state(request) {
@@ -115,12 +104,12 @@ function change_browser_history_state(request) {
         request = '/' + request
     }
 
-   // console.log(old_state_request + ' _> ' + request)
+    // console.log(old_state_request + ' _> ' + request)
 
     if (old_state_request != request) {
 
 
-        if($('#_server_name').val()!='localhost') {
+        if ($('#_server_name').val() != 'au.bali') {
             ga('set', 'page', request);
             ga('send', 'pageview');
         }
@@ -134,16 +123,14 @@ function change_browser_history_state(request) {
 
 window.addEventListener('popstate', function (event) {
 
-  //  console.log(event)
+    //  console.log(event)
 
     change_view(event.state.request)
 
 });
 
 
-
 function change_tab(tab, metadata) {
-
 
 
     $('#maintabs .tab').removeClass('selected')
@@ -185,35 +172,28 @@ function get_widget_details(element, widget, metadata) {
 
 function change_view(_request, metadata) {
 
-/*
-    evt=window.event;
+    /*
+        evt=window.event;
 
-    if (evt.type=='click' && evt.metaKey){
+        if (evt.type=='click' && evt.metaKey){
 
 
 
-        window.open('/'+_request, '_blank');
-        return;
+            window.open('/'+_request, '_blank');
+            return;
 
-    }
-*/
+        }
+    */
 
     if (metadata == undefined) {
         metadata = {};
     }
 
 
-
     var request = "/ar_views.php?tipo=views&request=" + _request + '&metadata=' + JSON.stringify(metadata) + "&old_state=" + JSON.stringify(state)
 
 
-
-
-
-
 //console.log(request)
-
-
 
 
     if (metadata.tab != undefined) {
@@ -226,7 +206,6 @@ function change_view(_request, metadata) {
     $.getJSON(request, function (data) {
 
         //console.log(data);
-
 
 
         state = data.state;
@@ -280,8 +259,6 @@ function change_view(_request, metadata) {
         if (typeof(data.tab) != "undefined" && data.tab !== null) {
 
 
-
-
             $('#tab').html(data.tab);
         }
 
@@ -298,17 +275,16 @@ function change_view(_request, metadata) {
         }
 
 
+        // console.log(metadata)
 
-       // console.log(metadata)
 
-
-        if(metadata.post_operations=='delivery_note.fast_track_packing'){
+        if (metadata.post_operations == 'delivery_note.fast_track_packing') {
 
             $('#maintabs .tab').addClass('hide')
 
 
             $("div[id='tab_delivery_note.fast_track_packing']").removeClass('hide')
-        }else if(metadata.post_operations=='delivery_note.fast_track_packing_off'){
+        } else if (metadata.post_operations == 'delivery_note.fast_track_packing_off') {
 
             $('#maintabs .tab').removeClass('hide')
 
@@ -331,6 +307,7 @@ function logout() {
 function decodeEntities(a) {
     return a
 }
+
 /*
  var decodeEntities = (function() {
 
@@ -369,8 +346,7 @@ ArraySort = function (array, sortFunc) {
 
     for (var k in array) {
         if (array.hasOwnProperty(k)) tmp.push({
-            key: k,
-            value: array[k]
+            key: k, value: array[k]
         });
     }
 
@@ -399,13 +375,12 @@ function fixedEncodeURIComponent(str) {
     return encodeURIComponent(str).replace(/[!'()]/g, escape).replace(/\*/g, "%2A");
 }
 
-jQuery.fn.putCursorAtEnd = function() {
+jQuery.fn.putCursorAtEnd = function () {
 
-    return this.each(function() {
+    return this.each(function () {
 
         // Cache references
-        var $el = $(this),
-            el = this;
+        var $el = $(this), el = this;
 
         // Only focus if input isn't already
         if (!$el.is(":focus")) {
@@ -419,7 +394,7 @@ jQuery.fn.putCursorAtEnd = function() {
             var len = $el.val().length * 2;
 
             // Timeout seems to be required for Blink
-            setTimeout(function() {
+            setTimeout(function () {
                 el.setSelectionRange(len, len);
             }, 1);
 
@@ -439,4 +414,6 @@ jQuery.fn.putCursorAtEnd = function() {
 
 };
 
-function truncateWithEllipses(text, max) {return text.substr(0,max-1)+(text.length>max?'&hellip;':''); }
+function truncateWithEllipses(text, max) {
+    return text.substr(0, max - 1) + (text.length > max ? '&hellip;' : '');
+}

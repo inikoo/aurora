@@ -54,9 +54,8 @@
     <li class="flex-item">
 
         <span>{t}In basket{/t}</span>
-        <div class="title"><span class="Orders_In_Basket_Number button"  onclick="go_to_orders('website')"
-                    >{$object->get('Orders In Basket Number')}</span></div>
-        <div ><span class="Orders_In_Basket_Amount" title="{if $currency=='account'}{$object->get('DC Orders In Basket Amount')}{else}{$object->get('Orders In Basket Amount')}{/if}">{if $currency=='account'}{$object->get('DC Orders In Basket Amount Minify')}{else}{$object->get('Orders In Basket Amount Minify')}{/if}</span></div>
+        <div class="title"><span class="Orders_In_Basket_Number button"  onclick="go_to_orders('website')" title="{t}Number of orders in basket{/t}" >{$object->get('Orders In Basket Number')}</span></div>
+        <div ><span class="Orders_In_Basket_Amount" title="{t}Amount in basket{/t}">{if $currency=='account'}{$object->get('DC Orders In Basket Amount')}{else}{$object->get('Orders In Basket Amount')}{/if}</span></div>
 
     </li>
     <li class="flex-item">

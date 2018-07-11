@@ -160,7 +160,10 @@
 <body>
 <input type="hidden" id="_request" value="{$_request}">
 <input type="hidden" id="_server_name" value="{$_server_name}">
-{if $_server_name!='localhost'}
+
+
+
+{if $_server_name!='au.bali'}
 
     <script>
         (function(i,s,o,g,r,a,m){
@@ -186,6 +189,7 @@
     </div>
 </div>
 <input  type="hidden" id="_labels" data-labels='{ "error":"{t}Error{/t}"}' >
+
 <div class="grid">
     <section>
         <div id="app_leftmenu">
@@ -197,8 +201,7 @@
                     {$user->get('User Alias')}
                 </div>
             </div>
-            <div id="account_name" class="link Account_Name"
-                 onclick="change_view('account')">{$account->get('Account Name')}</div>
+            <div id="account_name" class="link Account_Name"  data-account_code="{$account->get('Account Code')}"  onclick="change_view('account')">{$account->get('Account Name')}</div>
 
             <div id="aurora_logo_small_screen">
                 <img src="/art/aurora_log_v2_orange_small.png"/>

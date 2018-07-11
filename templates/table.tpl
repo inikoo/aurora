@@ -891,7 +891,6 @@
 
     var Row = Backbone.Model.extend({});
 
-    console.log('{$sort_order}')
 
 
     var Rows = Backbone.PageableCollection.extend({
