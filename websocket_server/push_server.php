@@ -30,12 +30,12 @@ $pull->bind('tcp://127.0.0.1:5555'); // Binding to 127.0.0.1 means the only clie
 $pull->on(
     'message', array(
                  $pusher,
-                 'onBlogEntry'
+                 'onBlogEntry2'
              )
 );
 
 
-$webSock   = new React\Socket\Server('0.0.0.0:8080', $loop); // Binding to 0.0.0.0 means remotes can connect
+$webSock   = new React\Socket\Server('0.0.0.0:8081', $loop); // Binding to 0.0.0.0 means remotes can connect
 
 $webServer = new Ratchet\Server\IoServer(
 
@@ -53,6 +53,7 @@ $webServer = new Ratchet\Server\IoServer(
 
     , $webSock
 );
+
 
 $loop->run();
 
