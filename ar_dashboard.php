@@ -103,7 +103,7 @@ function pending_orders($data, $db, $user, $account) {
     $pending_orders_data = array(
         'Orders_In_Basket_Number' => array('value' => $object->get('Orders In Basket Number')),
         'Orders_In_Basket_Amount' => array(
-            'value' => ($data['currency'] == 'account' ? $object->get('DC Orders In Basket Amount Minify') : $object->get('Orders In Basket Amount Minify')),
+            'value' => ($data['currency'] == 'account' ? $object->get('DC Orders In Basket Amount') : $object->get('Orders In Basket Amount')),
             'title' => ($data['currency'] == 'account' ? $object->get('DC Orders In Basket Amount') : $object->get('Orders In Basket Amount'))
         ),
 

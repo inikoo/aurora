@@ -275,9 +275,7 @@ VALUES (%f,%s,%f,%s,%s,%s,%s,%s,%s,
                                           'InBasket'
                                       )
         )) {
-            $this->update_field(
-                'Order Date', gmdate('Y-m-d H:i:s'), 'no_history'
-            );
+            $this->update_field('Order Date', gmdate('Y-m-d H:i:s'), 'no_history');
 
 
         } else {
