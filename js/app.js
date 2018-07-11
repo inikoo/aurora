@@ -50,14 +50,14 @@ $(document).ready(function () {
 
 
 
-    console.log(location)
+    console.log('ws://'+location.hostname+'/ws')
 
    // var conn = new ab.Session('ws://'+location.hostname+'/ws',
 
  //   var conn = new ab.Session('ws://'+location.hostname+':8081',
 
-    /*
-    var conn = new ab.Session('ws://213.136.75.193:8081',
+
+    var conn = new ab.Session('ws://'+location.hostname+'/ws',
         function() {
             conn.subscribe('real_time', function(topic, data) {
 
@@ -98,7 +98,7 @@ $(document).ready(function () {
         },
         {'skipSubprotocolCheck': true}
     );
-*/
+
 
 })
 
