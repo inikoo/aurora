@@ -1,7 +1,7 @@
 <?php
 
-$context = new ZMQContext();
 
+$context = new ZMQContext();
 $socket = $context->getSocket(ZMQ::SOCKET_PUSH, 'my pusher');
 
 

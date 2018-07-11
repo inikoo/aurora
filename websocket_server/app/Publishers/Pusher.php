@@ -25,7 +25,7 @@ class Pusher implements WampServerInterface {
     /**
      * @param string JSON'ified string we'll receive from ZeroMQ
      */
-    public function onBlogEntry($entry) {
+    public function onBlogEntry2($entry) {
         $data = json_decode($entry, true);
 
 
@@ -50,10 +50,11 @@ class Pusher implements WampServerInterface {
         $cookies = $conn->httpRequest->getHeader('Cookie');
 
        print_r($cookies);
-        print_r($conn->Session->all());
+      //  print_r($conn->Session->all());
+      //  print 'caca';
         $handshake=array(
             'msg'=>'hello',
-            'user_key'=> $conn->Session->get('user_key')
+         //   'user_key'=> $conn->Session->get('user_key')
         );
         $conn->send(json_encode($handshake));
 

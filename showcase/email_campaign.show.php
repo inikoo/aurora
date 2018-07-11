@@ -24,6 +24,7 @@ function get_email_campaign_showcase($data, $smarty, $user, $db) {
         $email_campaign->update_estimated_recipients();
     }
 
+    $email_campaign->update_sent_emails_totals();
 
     $smarty->assign('email_campaign', $email_campaign);
 
