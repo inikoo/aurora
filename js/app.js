@@ -52,7 +52,9 @@ $(document).ready(function () {
 
     console.log(location)
 
-    var conn = new ab.Session('ws://'+location.hostname+'/ws',
+   // var conn = new ab.Session('ws://'+location.hostname+'/ws',
+
+    var conn = new ab.Session('ws://'+location.hostname+':8081',
         function() {
             conn.subscribe('real_time', function(topic, data) {
 
