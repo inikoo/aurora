@@ -49,12 +49,43 @@ $(document).ready(function () {
     });
 
 
-/*
-    var conn = new ab.Session('ws://au.bali/ws',
+
+    console.log(location)
+
+    var conn = new ab.Session('ws://'+location.hostname+'/ws',
         function() {
             conn.subscribe('real_time', function(topic, data) {
+
+
+                for (var i in data.objects) {
+
+                  //  console.log(data.objects[i].object)
+                  if(state.object==data.objects[i].object &&  state.key==data.objects[i].key){
+
+                    //  console.log(data.objects[i].update_metadata.class_html)
+
+                      for (var j in data.objects[i].update_metadata.class_html) {
+                          $('.' + j).html(data.objects[i].update_metadata.class_html[j])
+                      }
+
+                      for (var key in  data.objects[i].update_metadata.hide) {
+                          $('.' + data.objects[i].update_metadata.hide[key]).addClass('hide')
+                      }
+
+                      for (var key in data.objects[i].update_metadata.show) {
+
+                          $('.' + data.objects[i].update_metadata.show[key]).removeClass('hide')
+                      }
+
+                  }
+
+
+                    //  $('.' + key).html(data.update_metadata.class_html[key])
+                }
+
                 // This is where you would add the new article to the DOM (beyond the scope of this tutorial)
-                console.log(data);
+                //console.log(data);
+                //console.log(state);
             });
         },
         function() {
@@ -63,7 +94,7 @@ $(document).ready(function () {
         {'skipSubprotocolCheck': true}
     );
 
-*/
+
 })
 
 
