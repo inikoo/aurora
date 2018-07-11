@@ -10,7 +10,6 @@ use Symfony\Component\HttpFoundation\Session\Session;
 use Symfony\Component\HttpFoundation\Session\Storage\NativeSessionStorage;
 use Symfony\Component\HttpFoundation\Session\Storage\Handler\MemcachedSessionHandler;
 
-
 require_once 'keyring/dns.php';
 require_once 'keyring/key.php';
 
@@ -96,7 +95,7 @@ $session->start();
 
 //session_start();
 
-$session->set('account',$account->get('Code'));
+$session->set('account', $account->get('Code'));
 
 require 'external_libs/Smarty/Smarty.class.php';
 $smarty               = new Smarty();
