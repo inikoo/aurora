@@ -80,11 +80,11 @@ include_once 'class.Auth.php';
 include_once 'class.User.php';
 
 
-$sessionStorage = new NativeSessionStorage(array(), new MemcachedSessionHandler($memcached));
-$session        = new Session($sessionStorage);
+//$sessionStorage = new NativeSessionStorage(array(), new MemcachedSessionHandler($memcached));
+//$session        = new Session($sessionStorage);
 
 
-//$session = new Session();
+$session = new Session();
 $session->start();
 
 //session_start();
