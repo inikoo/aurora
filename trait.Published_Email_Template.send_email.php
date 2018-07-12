@@ -17,7 +17,7 @@ trait Send_Email {
     function send($recipient, $data, $smarty = false) {
 
 
-    //    require_once 'external_libs/aws.phar';
+    //   require_once 'external_libs/aws.phar';
 
         $this->error = false;
         $account     = get_object('Account', 1);
