@@ -17,7 +17,7 @@ trait Send_Email {
     function send($recipient, $data, $smarty = false) {
 
 
-        require_once 'external_libs/aws.phar';
+    //    require_once 'external_libs/aws.phar';
 
         $this->error = false;
         $account     = get_object('Account', 1);
@@ -205,7 +205,7 @@ trait Send_Email {
         //
         //
         //
-           $to_address = $recipient->get('Main Plain Email');
+        $to_address = $recipient->get('Main Plain Email');
 
 
         $request                                    = array();
@@ -290,6 +290,19 @@ trait Send_Email {
             )
         );
 
+/*
+        $email_tracking->fast_update(
+            array(
+                'Email Tracking State'  => "Sent to SES",
+                "Email Tracking SES Id" => 'xxxx'.date('U'),
+
+
+            )
+        );
+*/
+        // sleep(2);
+
+
 
         try {
             $result = $client->sendEmail($request);
@@ -334,7 +347,8 @@ trait Send_Email {
             $this->email_tracking = $email_tracking;
 
 
-        } catch (Exception $e) {
+        }
+        catch (Exception $e) {
 
 
             $email_tracking->fast_update(
@@ -362,6 +376,7 @@ trait Send_Email {
 
         }
 
+
         if (isset($oos_notification_reminder_keys)) {
             foreach ($oos_notification_reminder_keys as $oos_notification_reminder_key) {
                 $sql = sprintf(
@@ -373,16 +388,63 @@ trait Send_Email {
         }
 
 
-        include_once 'utils/new_fork.php';
-        new_housekeeping_fork(
-            'au_housekeeping', array(
-            'type'                    => 'update_sent_emails_data',
-            'email_template_key'      => $email_tracking->get('Email Tracking Email Template Key'),
-            'email_template_type_key' => $email_tracking->get('Email Tracking Email Template Type Key'),
-            'email_mailshot_key'      => $email_tracking->get('Email Tracking Email Mailshot Key'),
+        if ($email_tracking->get('Email Tracking Email Mailshot Key') > 0) {
 
-        ), $account->get('Account Code')
-        );
+            $email_template->update_sent_emails_totals();
+
+            $email_template_type->update_sent_emails_totals();
+
+            $email_campaign = get_object('email_campaign', $email_tracking->get('Email Tracking Email Mailshot Key'));
+            $email_campaign->update_sent_emails_totals();
+
+
+            if(isset($this->socket)){
+
+
+
+                $this->socket->send(
+                    json_encode(array(
+                                    'channel'=>$account->get('Account Code').'_real_time',
+                                    'objects' => array(
+                                        array(
+                                            'object' => 'email_campaign',
+                                            'key'    => $email_campaign->id,
+
+                                            'update_metadata' => array(
+                                                'class_html' => array(
+                                                    'Sent_Emails_Info' => $email_campaign->get('Sent Emails Info'),
+                                                    'Email_Campaign_Sent'=>$email_campaign->get('Sent'),
+                                                )
+                                            )
+
+                                        )
+
+                                    ),
+
+
+                                ))
+                );
+            }
+
+
+
+
+
+        }
+        else {
+            include_once 'utils/new_fork.php';
+            new_housekeeping_fork(
+                'au_housekeeping', array(
+                'type'                    => 'update_sent_emails_data',
+                'email_template_key'      => $email_tracking->get('Email Tracking Email Template Key'),
+                'email_template_type_key' => $email_tracking->get('Email Tracking Email Template Type Key'),
+                'email_mailshot_key'      => $email_tracking->get('Email Tracking Email Mailshot Key'),
+
+            ), $account->get('Account Code')
+            );
+        }
+
+
 
 
     }
