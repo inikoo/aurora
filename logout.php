@@ -11,12 +11,14 @@
 
 include_once 'common.php';
 $sql = sprintf(
-    "UPDATE `User Log Dimension` SET `Logout Date`=NOW()  WHERE `Session ID`=%s", prepare_mysql(session_id())
+    "UPDATE `User Log Dimension` SET `Logout Date`=NOW()  WHERE `Session ID`=%s", prepare_mysql($session->get('getId'))
 );
 $db->exec($sql);
 
-session_regenerate_id();
-session_destroy();
+$session->migrate();
+$session->invalidate();
+
+//session_destroy();
 unset($_SESSION);
 header('Location: login.php');
 exit;
