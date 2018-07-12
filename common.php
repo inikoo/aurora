@@ -90,7 +90,7 @@ $sessionStorage = new NativeSessionStorage(array(), new MemcachedSessionHandler(
 $session        = new Session($sessionStorage);
 
 
-$session = new Session();
+//$session = new Session();
 $session->start();
 
 //session_start();
@@ -125,8 +125,10 @@ if ($_SESSION['logged_in_page'] != 0) {
     );
     $db->exec($sql);
 
-    session_regenerate_id();
-    session_destroy();
+    $session->migrate();
+    $session->invalidate();
+    //session_regenerate_id();
+    //session_destroy();
     unset($_SESSION);
 
     header('Location: /login.php');

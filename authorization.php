@@ -80,14 +80,15 @@ include_once 'class.Auth.php';
 include_once 'class.User.php';
 
 
-//$sessionStorage = new NativeSessionStorage(array(), new MemcachedSessionHandler($memcached));
-//$session        = new Session($sessionStorage);
+$sessionStorage = new NativeSessionStorage(array(), new MemcachedSessionHandler($memcached));
+$session        = new Session($sessionStorage);
 
 
-$session = new Session();
+//$session = new Session();
 $session->start();
 
 //session_start();
+
 
 $auth   = new Auth(IKEY, SKEY);
 $handle = (array_key_exists('login__username', $_REQUEST)) ? $_REQUEST['login__username'] : false;
@@ -99,6 +100,9 @@ if (!$sk and array_key_exists('mk', $_REQUEST)) {
 } elseif ($handle) {
     $auth->authenticate($handle, $sk, 'system', 0);
 }
+
+
+
 
 
 if ($auth->is_authenticated()) {
@@ -125,7 +129,6 @@ if ($auth->is_authenticated()) {
 
 
     $_SESSION['state'] = array();
-
 
     if (isset($_REQUEST['url']) and $_REQUEST['url'] != '') {
 
