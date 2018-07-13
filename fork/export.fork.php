@@ -31,7 +31,7 @@ function fork_export($job) {
     $download_key  = $fork_data['download_key'];
 
 
-   // print_r($fork_data);
+    // print_r($fork_data);
 
     $creator     = 'aurora.systems';
     $title       = _('Report');
@@ -81,7 +81,6 @@ function fork_export($job) {
     $context = new ZMQContext();
     $socket  = $context->getSocket(ZMQ::SOCKET_PUSH, 'my pusher');
     $socket->connect("tcp://localhost:5555");
-
 
 
     $socket->send(
@@ -145,10 +144,28 @@ function fork_export($job) {
     }
 
 
+    if ($account->get('Account Add Stock Value Type') == 'Blockchain') {
+        $placeholders = array(
+            'inventory_stock_history_day_stock'       => 'sum(`Quantity On Hand`)',
+            'inventory_stock_history_day_stock_value' => 'sum(`Value At Cost`) '
+        );
+
+
+    } else {
+
+        $placeholders = array(
+            'inventory_stock_history_day_stock'       => 'sum(`Quantity On Hand`)',
+            'inventory_stock_history_day_stock_value' => 'sum(`Value At Day Cost`) '
+        );
+
+    }
+
+
+    $sql_data = strtr($sql_data, $placeholders);
     // print $sql_data;
+    // exit;
 
-
-    $show_feedback = (float) microtime(true) + .400;
+    $show_feedback = (float)microtime(true) + .250;
 
 
     if ($result = $db->query($sql_data)) {
@@ -227,7 +244,6 @@ function fork_export($job) {
             $row_index++;
 
 
-
             if (microtime(true) > $show_feedback) {
                 //print 'xx '.microtime(true) ." -> $show_feedback\n";
 
@@ -277,7 +293,7 @@ function fork_export($job) {
                 );
 
 
-                $show_feedback = (float) microtime(true) + .400;
+                $show_feedback = (float)microtime(true) + .400;
 
 
             }
@@ -361,14 +377,11 @@ function fork_export($job) {
 
 
     $sql = sprintf(
-        'update `Download Dimension` set `Download State`="Finish" , `Download Data`=%s   where `Download Key`=%d ',
-        prepare_mysql(file_get_contents($output_file)),
-        $download_key
+        'update `Download Dimension` set `Download State`="Finish" , `Download Data`=%s   where `Download Key`=%d ', prepare_mysql(file_get_contents($output_file)), $download_key
 
     );
 
     $db->exec($sql);
-
 
 
     $socket->send(
@@ -377,9 +390,9 @@ function fork_export($job) {
                 'channel'      => $account->get('Account Code').'_'.$user_key.'_real_time',
                 'progress_bar' => array(
                     array(
-                        'id'    => 'download_'.$download_key,
-                        'state' => 'Finish',
-                        'download_key'=>$download_key,
+                        'id'           => 'download_'.$download_key,
+                        'state'        => 'Finish',
+                        'download_key' => $download_key,
 
                         'progress_info' => _('Done'),
                         'progress'      => sprintf(
@@ -397,7 +410,6 @@ function fork_export($job) {
             )
         )
     );
-
 
 
     return false;

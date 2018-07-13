@@ -1109,6 +1109,31 @@ $export_fields = array(
 
     ),
 
+    'inventory_stock_history_day'=>array(
+        array(
+            'name'    => '`Part Reference`',
+            'label'   => _('Part'),
+            'checked' => 1
+        ),
+        array(
+            'name'    => '`Part Package Description`',
+            'label'   => _('Part SKO description'),
+            'checked' => 0
+        ),
+        array(
+            'name'    => 'inventory_stock_history_day_stock',
+            'label'   => _('Stock'),
+            'checked' => 1
+        ),
+        array(
+            'name'    => 'inventory_stock_history_day_stock_value',
+            'label'   => _('Stock value'),
+            'checked' => 1
+        ),
+
+
+    )
+
 
 );
 
