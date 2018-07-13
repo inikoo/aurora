@@ -415,31 +415,46 @@ function change_table_element(event, item) {
 }
 
 
-function show_export_dialog_left_button() {
-    if ($('#export_dialog').hasClass('hide')) {
-        $('#export_dialog').removeClass('hide')
+function show_export_dialog_left_button(element) {
 
-       // console.log($('#show_export_dialog').position().left)
-        $("#export_dialog").css('left', 0);
-        $("#export_dialog").css('top', $("#show_export_dialog").height());
+    var export_dialog =$(element).closest('div').next('.export_dialog_container').find('.export_dialog')
+    if (export_dialog.hasClass('hide')) {
+        export_dialog.removeClass('hide')
+        export_dialog.css('top', $(element).closest('.square_button').height());
     } else {
-        hide_export_dialog()
+        hide_export_dialog(export_dialog)
     }
-
 }
 
-function show_export_dialog() {
-    if ($('#export_dialog').hasClass('hide')) {
-        $('#export_dialog').removeClass('hide')
-        $("#export_dialog").css('left', -1 * $("#export_dialog").width());
-        $("#export_dialog").css('top', $("#show_export_dialog").height());
+
+function show_download_edit_items_dialog(element) {
+
+
+
+    var export_dialog =$(element).closest('div.edit_table_dialog').next('.export_dialog_container').find('.export_dialog')
+    var export_dialog_config =$(element).closest('div.edit_table_dialog').next('.export_dialog_container').find('.export_dialog_config')
+
+    if (export_dialog.hasClass('hide')) {
+        export_dialog.removeClass('hide')
+        export_dialog_config.removeClass('hide')
+
+        export_dialog.css('top', $(element).closest('.square_button').height());
+
+
+
+        export_dialog.offset({ top:  $('#edit_table_dialog').offset().top,
+            left:  $('#edit_table_dialog').offset().left + $('#edit_table_dialog').width()-export_dialog.width()  })
+
+        export_dialog_config.offset({ top:  $('#edit_table_dialog').offset().top, left:  export_dialog.offset().left -export_dialog_config.width() -30    })
+
+
+
     } else {
-        hide_export_dialog()
+        hide_export_dialog(export_dialog)
     }
 
-}
+/*
 
-function show_download_edit_items_dialog() {
     if ($('#download_edit_items_dialog').hasClass('hide')) {
 
 
@@ -461,6 +476,59 @@ function show_download_edit_items_dialog() {
 
     }
 
+    */
+
+}
+
+
+
+
+/*
+
+function show_export_dialog() {
+    if ($('#export_dialog').hasClass('hide')) {
+        $('#export_dialog').removeClass('hide')
+        $("#export_dialog").css('left', -1 * $("#export_dialog").width());
+        $("#export_dialog").css('top', $("#show_export_dialog").height());
+    } else {
+        hide_export_dialog()
+    }
+
+}
+*/
+
+
+
+
+
+
+
+
+
+function hide_export_dialog(export_dialog) {
+    $(export_dialog).addClass('hide')
+
+
+
+    hide_export_config_dialog($(export_dialog).closest('.export_dialog_container').find('.export_dialog_config'))
+
+
+
+    /*
+    var edit_table_dialog =$(export_dialog).closest('div.export_dialog_container').prev('div')
+
+    if(edit_table_dialog.hasClass('edit_table_dialog')){
+        edit_table_dialog.addClass('hide')
+    }
+
+*/
+
+    $(export_dialog).find('.export_download').addClass('hide').attr('title', '').click(function () {
+    })
+    $(export_dialog).find('.export_progress_bar_bg').addClass('hide').html('')
+    $(export_dialog).find('.export_progress_bar').css('width', '0px').removeClass('hide').attr('title', '').html('')
+
+
 }
 
 
@@ -468,11 +536,17 @@ function show_download_edit_items_dialog() {
 
 
 function show_edit_table_dialog() {
-//
+
 
     if ($('#edit_table_dialog').hasClass('hide')) {
         $('#edit_table_dialog').removeClass('hide')
-        $("#edit_table_dialog").offset({ top:  $('#show_edit_table_dialog_button').offset().top+$('#show_edit_table_dialog_button').height()-3, left:  $('#show_edit_table_dialog_button').offset().left-$('#edit_table_dialog').width()+20 })
+
+
+        var button=$('#show_edit_table_dialog_button').closest('div')
+
+        $("#edit_table_dialog").offset({
+            top: button.offset().top+button.height(),
+            left:  $('#show_edit_table_dialog_button').offset().left-$('#edit_table_dialog').width()+20 })
 
 
     } else {
@@ -504,20 +578,6 @@ function table_edit_view(){
 
 
 
-
-function hide_export_dialog() {
-    $('#export_dialog').addClass('hide')
-    hide_export_config_dialog()
-
-
-    $('.export_download').addClass('hide').attr('title', '').click(function () {
-    })
-    $('.export_progress_bar_bg').addClass('hide').html('')
-    $('.export_progress_bar').css('width', '0px').removeClass('hide').attr('title', '').html('')
-
-
-}
-
 function open_export_config() {
     if ($('#export_dialog_config').hasClass('hide')) {
         $('#export_dialog_config').removeClass('hide')
@@ -530,35 +590,44 @@ function open_export_config() {
     }
 }
 
-function open_export_config_left_button() {
-    if ($('#export_dialog_config').hasClass('hide')) {
-        $('#export_dialog_config').removeClass('hide')
-        $("#export_dialog_config").css('left', 20 + $("#export_dialog").width());
-        $("#export_dialog_config").css('top', $("#show_export_dialog").height());
+function open_export_config_left_button(export_dialog_config) {
+
+    var export_dialog=$(export_dialog_config).closest('.export_dialog_container').find('.export_dialog')
+
+    if ($(export_dialog_config).hasClass('hide')) {
+        $(export_dialog_config).removeClass('hide')
+        $(export_dialog_config).css('left',export_dialog.offset().left+export_dialog.width());
+        $(export_dialog_config).css('top', export_dialog.position().top);
     } else {
-        hide_export_config_dialog()
+        hide_export_config_dialog(export_dialog_config)
     }
 }
 
-function hide_export_config_dialog() {
-    $('#export_dialog_config').addClass('hide')
+function hide_export_config_dialog(export_dialog_config) {
+    $(export_dialog_config).addClass('hide')
 }
 
 
 function toggle_all_export_fields(element) {
+
+    var container=$(element).closest('table')
+
     if ($(element).hasClass('fa-check-square')) {
         $(element).removeClass('fa-check-square')
         $(element).addClass('fa-square')
 
-        $('#export_fields i').removeClass('fa-check-square')
-        $('#export_fields i').addClass('fa-square')
+
+
+
+        container.find('.export_fields i').removeClass('fa-check-square')
+        container.find('.export_fields i').addClass('fa-square')
 
 
     } else {
         $(element).addClass('fa-check-square')
         $(element).removeClass('fa-square')
-        $('#export_fields i').addClass('fa-check-square')
-        $('#export_fields i').removeClass('fa-square')
+        container.find('.export_fields i').addClass('fa-check-square')
+        container.find('.export_fields i').removeClass('fa-square')
     }
 
 
@@ -586,29 +655,130 @@ function toggle_export_field(element) {
     }
 }
 
-function export_table(type) {
+function export_table(element) {
 
-    $('#export_progress_bar_bg_' + type+'_export').removeClass('hide').html('&nbsp;' + $('#export_queued_msg').html())
 
-    $('#export_table_excel').removeClass('link').addClass('disabled')
-    $('#export_table_csv').removeClass('link').addClass('disabled')
-    $('.field_export').removeClass('button').addClass('disabled')
-    $('#stop_export_table_' + type+'_export').removeClass('hide')
-    $('#stop_export_table_' + type+'_export').attr('stop', 0);
+    var type=$(element).data('type')
+
+    var export_container=$(element).closest('.export_dialog_container')
+    $(element).removeClass('link').addClass('disabled')
+    export_container.find('.field_export').removeClass('button').addClass('disabled')
+    export_container.find('.stop_export').removeClass('hide').data('stop', 0);
+
+
 
     var fields = []
-    $('#export_dialog_config .field_export i').each(function (index, obj) {
+    export_container.find('.field_export i').each(function (index, obj) {
         if ($(obj).hasClass('fa-check-square')) fields.push($(obj).attr('key'))
     });
 
     var request = "/ar_export.php?ar_file=" + rows.ar_file + "&tipo=" + rows.tipo + "&parameters=" + rows.parameters + '&type=' + type + '&state=' + JSON.stringify(state) + '&fields=' + JSON.stringify(fields)
 
-     console.log(request)
     $.getJSON(request, function (data) {
         if (data.state == 200) {
-            get_export_process_bar(data.fork_key, data.tipo, type,'_export');
+            export_container.find('.export_progress_bar_bg').removeClass('hide').html('&nbsp;' + data.txt)
+            export_container.closest('.export_dialog_container').attr('id','download_'+data.download_key)
         }
     })
+
+}
+
+
+
+
+
+
+
+function get_editable_data(element) {
+
+
+    var type=$(element).data('type')
+
+    _data=$(element).data('data')
+
+
+
+    var export_container=$(element).closest('.export_dialog_container')
+    $(element).removeClass('link').addClass('disabled')
+    export_container.find('.field_export').removeClass('button').addClass('disabled')
+    export_container.find('.stop_export').removeClass('hide').data('stop', 0);
+
+    var fields = []
+    export_container.find('.export_fields .field_export i').each(function (index, obj) {
+        if ($(obj).hasClass('fa-check-square')) fields.push($(obj).attr('key'))
+    });
+
+
+
+    var metadata=$('#edit_table_dialog').data('metadata')
+
+
+
+    var request = "/ar_export_edit_template.php?parent="+_data.parent+"&parent_key="+_data.parent_key+"&parent_code="+_data.parent_code+"&objects="+_data.object+"&fields=" + JSON.stringify(fields) + '&type=' + type + '&metadata=' + JSON.stringify(metadata)
+
+
+
+    $.getJSON(request, function (data) {
+        if (data.state == 200) {
+            export_container.find('.export_progress_bar_bg').removeClass('hide').html('&nbsp;' + data.txt)
+            export_container.closest('.export_dialog_container').attr('id','download_'+data.download_key)
+        }
+    })
+
+
+    /*
+
+        $('#export_progress_bar_bg_' + type).removeClass('hide').html('&nbsp;' + $('#export_queued_msg').html())
+
+        $('#export_table_excel').removeClass('link').addClass('disabled')
+        $('#export_table_csv').removeClass('link').addClass('disabled')
+        $('.field_export').removeClass('button').addClass('disabled')
+        $('#stop_export_table_' + type).removeClass('hide')
+        $('#stop_export_table_' + type).attr('stop', 0);
+
+        var fields = []
+        $('#download_edit_items_dialog_config .field_export i.object_field').each(function (index, obj) {
+            if ($(obj).hasClass('fa-check-square')) fields.push($(obj).attr('key'))
+        });
+
+        var request = "/ar_export_edit_template.php?parent="+_data.parent+"&parent_key="+_data.parent_key+"&parent_code="+_data.parent_code+"&objects="+_data.object+"&fields=" + JSON.stringify(fields) + '&type=' + type + '&metadata=' + JSON.stringify({})
+
+        console.log(request)
+
+        $.getJSON(request, function (data) {
+            if (data.state == 200) {
+                get_export_process_bar(data.fork_key, data.tipo, type,'');
+            }
+        })
+
+        */
+
+}
+
+
+
+
+function change_export_as(element,type){
+
+    $(element).closest('.export_type_options').find('span').addClass('very_discreet')
+    $(element).removeClass('very_discreet')
+
+    var export_button= $(element).closest('.export_dialog_container').find('.export_button')
+    export_button.data('type',type)
+
+    console.log(type)
+
+    if(type=='Excel'){
+        export_button.find('i').addClass('fa-file-excel').removeClass('fa-table')
+        export_button.find('span.excel').removeClass('hide')
+        export_button.find('span.csv').addClass('hide')
+
+    }else{
+        export_button.find('i').removeClass('fa-file-excel').addClass('fa-table')
+        export_button.find('span.excel').addClass('hide')
+        export_button.find('span.csv').removeClass('hide')
+
+    }
 
 }
 
@@ -626,7 +796,7 @@ function get_export_process_bar(fork_key, tag, type,suffix) {
     $.getJSON(request, function (data) {
         if (data.state == 200) {
 
-
+/*
             if ($('#stop_export_table_' + type+suffix).attr('stop') == 1) {
 
                 $('.export_download').addClass('hide').attr('title', '').click(function () {
@@ -640,24 +810,27 @@ function get_export_process_bar(fork_key, tag, type,suffix) {
                 return;
 
             }
+            */
 
-            if (data.fork_state == 'Queued') {
+            if (data.state == 'In Progress') {
                 setTimeout(function () {
                     get_export_process_bar(data.fork_key, data.tag, type,suffix)
                 }, 100);
 
 
-            } else if (data.fork_state == 'In Process') {
+            }
+            else if (data.fork_state == 'In Process') {
 
                 $('#export_download_' + type+suffix).addClass('hide')
 
-                $('#export_progress_bar_bg_' + type+suffix).removeClass('hide').html('&nbsp;' + data.forks_info)
+                $('#export_progress_bar_bg_' + type+suffix).removeClass('hide').html('&nbsp;' + data.progress_info)
                 $('#export_progress_bar_' + type+suffix).css('width', data.percentage).removeClass('hide').attr('title', data.progress).html('&nbsp;' + data.forks_info);
                 setTimeout(function () {
                     get_export_process_bar(data.fork_key, data.tag, type,suffix)
                 }, 250);
 
-            } else if (data.fork_state == 'Finished') {
+            }
+            else if (data.fork_state == 'Finished') {
 
                 $('#download_' + type+suffix).attr('href', '/download.php?file=' + data.result)
                 $('#export_download_' + type+suffix).removeClass('hide').attr('title', data.result_info).click(function () {
@@ -675,7 +848,7 @@ function get_export_process_bar(fork_key, tag, type,suffix) {
                 $('#stop_export_table_' + type+suffix).addClass('hide')
 
 
-                console.log('cacacaca')
+
 
             }
 
@@ -686,8 +859,17 @@ function get_export_process_bar(fork_key, tag, type,suffix) {
 
 }
 
-function download_exported_file(type,suffix) {
+function download_exported_file(element) {
 
+    var export_container=$(element).closest('.export_dialog_container')
+
+    export_container.find('.download_export')[0].click();
+
+   // $("#download_" + type+suffix)[0].click();
+    //$('#table_edit_items_file_upload2_button').removeClass('disabled')
+
+
+    /*
 
     if(suffix=='_export'){
         $("#download_" + type+suffix)[0].click();
@@ -705,6 +887,8 @@ function download_exported_file(type,suffix) {
             }
             , 1000)
     }
+
+    */
 
 
 }
@@ -780,36 +964,3 @@ function post_table_rendered() {
 
 }
 
-
-
-
-function get_editable_data(element,type) {
-
-    console.log($(element).data('data'))
-
-    _data=$(element).data('data')
-
-    $('#export_progress_bar_bg_' + type).removeClass('hide').html('&nbsp;' + $('#export_queued_msg').html())
-
-    $('#export_table_excel').removeClass('link').addClass('disabled')
-    $('#export_table_csv').removeClass('link').addClass('disabled')
-    $('.field_export').removeClass('button').addClass('disabled')
-    $('#stop_export_table_' + type).removeClass('hide')
-    $('#stop_export_table_' + type).attr('stop', 0);
-
-    var fields = []
-    $('#download_edit_items_dialog_config .field_export i.object_field').each(function (index, obj) {
-        if ($(obj).hasClass('fa-check-square')) fields.push($(obj).attr('key'))
-    });
-
-    var request = "/ar_export_edit_template.php?parent="+_data.parent+"&parent_key="+_data.parent_key+"&parent_code="+_data.parent_code+"&objects="+_data.object+"&fields=" + JSON.stringify(fields) + '&type=' + type + '&metadata=' + JSON.stringify({})
-
-    console.log(request)
-
-    $.getJSON(request, function (data) {
-        if (data.state == 200) {
-            get_export_process_bar(data.fork_key, data.tipo, type,'');
-        }
-    })
-
-}

@@ -73,7 +73,7 @@
             <td class="aright padding_right_10">
                 <span id="go_to_email_editor" class="like_button unselectable hide" onclick="compose_personalized_email(this)"   title="{t}Click to start personalizing the invitation{/t}"> <span class="margin_right_10">{t}Go to editor{/t}</span> <i class="fa fa-pen-alt fa-fw"></i></span>
 
-                <span id="send_invitation"  class="like_button unselectable" onclick="send_invitation(this)"  title="{t}Send invitation email now{/t}"> <span class="margin_right_10">{t}Send{/t}</span> <i class="fa fa-paper-plane fa-fw"></i></span>
+                <span id="send_invitation"  class="like_button unselectable" onclick="send_invitation(this)"  title="{t}Send invitation email now{/t}"> <span class="">{t}Send{/t}</span> <i class="fa fa-paper-plane fa-fw"></i></span>
             </td>
         </tr>
 

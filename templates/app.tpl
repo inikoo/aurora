@@ -197,7 +197,7 @@
                 <div id="aurora_logo" class="link" onclick="help()">
                     <img src="/art/aurora_log_v2_orange_small.png"/>
                 </div>
-                <div id="hello_user" class="link" onclick="change_view('profile')">
+                <div id="hello_user" class="link"  data-user_key="{$user->id}"  onclick="change_view('profile')">
                     {$user->get('User Alias')}
                 </div>
             </div>

@@ -13,7 +13,7 @@ include_once 'class.DB_Table.php';
 class TaxCategory extends DB_Table {
 
 
-    function TaxCategory($a1, $a2 = false, $a3 = false) {
+    function __construct($a1, $a2 = false, $a3 = false) {
 
         global $db;
         $this->db = $db;

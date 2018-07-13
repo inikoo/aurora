@@ -5,7 +5,7 @@ SetEnv preview 1
 RewriteEngine On
 
 RedirectMatch 403 ^/fork/.*$
-RedirectMatch 403 ^/socket_server/.*$
+RedirectMatch 403 ^/websocket_server/.*$
 
 
 RewriteRule ^api/ api.php [L]

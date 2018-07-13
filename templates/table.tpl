@@ -27,11 +27,17 @@
     </div>
 {/if}
 {if isset($edit_table_dialog)}
-    <div id="edit_table_dialog" class="hide">
-    <table>
-        <tr>
+    <div id="edit_table_dialog" class="hide edit_table_dialog"  data-metadata="{ }" >
+        <div class="small button discreet" onclick="$('#edit_table_dialog').addClass('hide')" style="float:right;margin-left: 30px"><i class="fa fa-times"></i> {t}Close{/t}</div>
 
-            <td>{t}Edit items{/t}
+        <table border="0">
+
+            {if isset($edit_table_dialog.inline_edit) or isset($edit_table_dialog.spreadsheet_edit)}
+
+
+            <tr>
+
+            <td>{if isset($edit_table_dialog.spreadsheet_edit.label)} {$edit_table_dialog.spreadsheet_edit.label} {else}{t}Edit items{/t}{/if}
             </td>
             {if isset($edit_table_dialog.inline_edit)}
                 <td class="button" onclick="table_edit_view()" ><i class="fa  fa-fw fa-i-cursor" aria-hidden="true"></i> {t}inline{/t}</td>
@@ -39,7 +45,7 @@
                 <td></td>
             {/if}
             {if isset($edit_table_dialog.spreadsheet_edit)}
-            <td><i class="fa  fa-fw fa-table" aria-hidden="true"></i> {t}by{/t} <span onclick="show_download_edit_items_dialog()" class="marked_link">{t}spreadsheet{/t}</span></td>
+            <td><i class="fa  fa-fw fa-table" aria-hidden="true"></i> {t}by{/t} <span onclick="show_download_edit_items_dialog(this)" class="marked_link">{t}spreadsheet{/t}</span></td>
             <td>
 
                 <form method="post" action="/ar_edit.php" enctype="multipart/form-data" novalidate>
@@ -59,6 +65,8 @@
 
 
         </tr>
+         {/if}
+
         {if isset($edit_table_dialog.new_item) or isset($edit_table_dialog.upload_items)}
         <tr>
             <td>{t}Add items{/t}
@@ -85,13 +93,15 @@
 
 
             </td>
-                <td class="small"><span class="button" title="{t}Check if you want to add a new supplier to an existing part{/t}" onclick="allow_duplicate_part_reference(this)"><i class="allow_duplicate_part_reference fal fa-square fa-fw " ></i> <span class="discreet">{t}Allow add to existing part{/t}</span></span></td>
+                <td class="small {if $edit_table_dialog.upload_items.object!='supplier_part'}hide{/if}"><span class="button" title="{t}Check if you want to add a new supplier to an existing part{/t}" onclick="allow_duplicate_part_reference(this)"><i class="allow_duplicate_part_reference fal fa-square fa-fw " ></i> <span class="discreet">{t}Allow add to existing part{/t}</span></span></td>
             {else}
                 <td></td> <td></td><td></td>
             {/if}
         </tr>
         {/if}
     </table>
+
+
 
         <script>
             function allow_duplicate_part_reference(element){
@@ -105,90 +115,64 @@
                 }
             }
         </script>
+        </div>
 
-</div>
 
-    <div id="download_edit_items_dialog_container"  >
-        <span class="hide" id="export_queued_msg"><i class="fa background fa-spinner fa-spin"></i> {t}Queued{/t}</span>
-        <div id="download_edit_items_dialog" class="export_dialog hide" >
+    <div  style="position:absolute" class="export_dialog_container  ">
+
+
+        <div  class="export_dialog export_dialog_block hide" >
             <table border=0 style="width:100%">
                 <tr class="no_border">
-                    <td class="export_progress_bar_container" style="width: 100px" >
-                        <a href="" id="download_excel" download hidden></a>
-                        <span class="hide export_progress_bar_bg" id="export_progress_bar_bg_excel"></span>
-                        <div class="hide export_progress_bar" id="export_progress_bar_excel"></div>
-                        <div class="export_download hide" id="export_download_excel"> {t}Download{/t}</div>
+                    <td class="export_progress_bar_container">
+                        <a href="" class="download_export" download hidden></a>
+                        <span class="hide export_progress_bar_bg" ></span>
+                        <div class="hide export_progress_bar"></div>
+                        <div class="export_download hide"> {t}Download{/t}</div>
                     </td>
                     <td class="width_20">
-                        <i id="stop_export_table_excel" stop=0 onclick="stop_export('excel')" class="fa button fa-hand-stop-o error hide" title="{t}Stop{/t}"></i>
+                        <i  data-stop="0" onclick="stop_export(this)" class="stop_export fa button fa-hand-paper error hide" title="{t}Stop{/t}"></i>
                     </td>
-                    <td id="export_table_excel" class="link" onclick="get_editable_data(this,'excel')"
+                    <td class="export_button link"  data-type="excel" onclick="get_editable_data(this)"
+
                         data-data='{ "parent_code":"{$edit_table_dialog.spreadsheet_edit.parent_code}","parent":"{$edit_table_dialog.spreadsheet_edit.parent}","parent_key":"{$edit_table_dialog.spreadsheet_edit.parent_key}","object":"{$edit_table_dialog.spreadsheet_edit.object}" }'
 
 
-                    ><i class="fa fa-file-excel" title="Excel"></i>Excel
-                    </td>
+                    ><i class="fa fa-file-excel fa-fw" ></i><span class="excel">Excel</span><span class="csv hide">CSV</span</td>
                 </tr>
-                <tr>
-                    <td class="export_progress_bar_container"><a href="" id="download_csv" download hidden></a>
-                        <span class="hide export_progress_bar_bg" id="export_progress_bar_bg_csv"></span>
-                        <div class="hide export_progress_bar" id="export_progress_bar_csv"></div>
-                        <div class="export_download hide " id="export_download_csv"> {t}Download{/t}</div>
 
-                    </td>
-                    <td class="width_20"><i id="stop_export_table_csv" onclick="stop_export('csv')" class="fa button fa-hand-stop-o error hide" title="{t}Stop{/t}"></i></td>
-                    <td id="export_table_csv" class="link" onclick="get_editable_data(this,'csv')"
-                        data-data='{ "parent_code":"{$edit_table_dialog.spreadsheet_edit.parent_code}","parent":"{$edit_table_dialog.spreadsheet_edit.parent}","parent_key":"{$edit_table_dialog.spreadsheet_edit.parent_key}","object":"{$edit_table_dialog.spreadsheet_edit.object}" }'
-
-                    ><i class="fa fa-table" title="{t}Comma Separated Value{/t}"></i>CSV
-                    </td>
-                </tr>
                 <tr>
-                    <td colspan="2" class=""></i></td>
                     <td>
-
-
-                        <form method="post" action="/ar_edit.php" enctype="multipart/form-data" novalidate>
-
-                            <input style="display:none" type="file" name="upload" id="table_edit_items_file_upload" class="table_input_file"
-                                   data-data='{ "tipo":"{$edit_table_dialog.spreadsheet_edit.tipo}","parent":"{$edit_table_dialog.spreadsheet_edit.parent}","parent_key":"{$edit_table_dialog.spreadsheet_edit.parent_key}", "object":"{$edit_table_dialog.spreadsheet_edit.object}" }'
-                            />
-                            <label for="table_edit_items_file_upload">
-                                <div id="table_edit_items_file_upload2_button" class="button disabled"><i class="fa fa-upload" title="{t}Upload{/t}"></i>{t}Upload{/t}
-                                </div>
-                            </label>
-                        </form>
-
-
+                        <div onclick="hide_export_dialog($(this).closest('.export_dialog'))" class="button disabled"><i class="fa fa-times" title="{t}Close dialog{/t}"></i>{t}Close{/t}</div>
                     </td>
-                </tr>
-                <tr>
-                    <td colspan="2" class=""></td>
-                    <td>
-                        <div onclick="hide_export_dialog()" class="button disabled"><i class="fa fa-times" title="{t}Close dialog{/t}"></i>{t}Close{/t}
-                        </div>
-                    </td>
+                    <td colspan="2" class="aright"><i onclick="open_export_config_left_button($(this).closest('.export_dialog_container').find('.export_dialog_config'))" class="fa fa-cogs button"></i></td>
                 </tr>
             </table>
-
         </div>
-        <div id="download_edit_items_dialog_config" style="min-width: 400px" class="export_dialog hide">
+        <div  class="export_dialog_config export_dialog_block hide" >
+
+
+            <div class="export_type_options">
+                <span onclick="change_export_as(this,'Excel')" class="margin_right_20 button" title="{t}Export as spreadsheet{/t}"><i class="fa fa-fw fa-file-excel" ></i>Excel</span>
+                <span onclick="change_export_as(this,'CSV')" class="very_discreet button" title="{t}Export as CSV file{/t}"><i class="fa fa-fw fa-table" ></i>CSV</span>
+            </div>
+
             {if isset($edit_fields)}
                 <table>
                     <tr class="small_row ">
                         <td></td>
                         <td style="width_20" class="field_export ">
                             <i id="toggle_all_export_fields" onclick="toggle_all_export_fields(this)"
-                               class="button fa-fw fa fa-square"></i>
+                               class="button fa-fw far fa-square"></i>
                         </td>
                     </tr>
-                    <tbody id="export_fields">
+                    <tbody class="export_fields">
                     {foreach from=$edit_fields item=export_field key=_key}
                         <tr class="small_row">
                             <td>{$export_field.label}</td>
                             <td style="width_20" class="field_export">
                                 <i id="field_export_{$_key}" onclick="toggle_export_field(this)" key="{$_key}"
-                                   class="button fa-fw object_field far {if $export_field.checked }fa-check-square{else}fa-square{/if}"></i>
+                                   class="button fa-fw far {if $export_field.checked }fa-check-square{else}fa-square{/if}"></i>
                             </td>
                         </tr>
                     {/foreach}
@@ -197,6 +181,7 @@
             {/if}
         </div>
     </div>
+
 
 
     <script>
@@ -323,53 +308,44 @@
         <i class="fa fa-chevron-left fa-fw" style="position:absolute;left:2px;bottom:6px"></i> <i style="position:absolute;left:9px;bottom:6px" class="fa fa-chevron-left fa-fw"></i>
     </div>
     <div id="show_export_dialog" class="left square_button  {if !isset($export_fields)}hide{/if}  " title="{t}Export{/t}">
-        <i onclick="show_export_dialog_left_button()" class="fa fa-download fa-fw"></i>
+        <i onclick="show_export_dialog_left_button(this)" class="fa fa-download fa-fw"></i>
 
     </div>
 
-    <div id="export_dialog_container" style="position:absolute" class="  ">
-        <span class="hide" id="export_queued_msg"><i class="fa background fa-spinner fa-spin"></i> {t}Queued{/t}</span>
-        <div id="export_dialog" class="export_dialog hide" style="z-index: 2">
+    <div  style="position:absolute" class="export_dialog_container  ">
+
+
+        <div  class="export_dialog export_dialog_block hide" >
             <table border=0 style="width:100%">
                 <tr class="no_border">
                     <td class="export_progress_bar_container">
-                        <a href="" id="download_excel_export" download hidden></a>
-                        <span class="hide export_progress_bar_bg" id="export_progress_bar_bg_excel_export"></span>
-                        <div class="hide export_progress_bar" id="export_progress_bar_excel_export"></div>
-                        <div class="export_download hide" id="export_download_excel_export"> {t}Download{/t}</div>
+                        <a href="" class="download_export" download hidden></a>
+                        <span class="hide export_progress_bar_bg" ></span>
+                        <div class="hide export_progress_bar"></div>
+                        <div class="export_download hide"> {t}Download{/t}</div>
                     </td>
                     <td class="width_20">
-                        <i id="stop_export_table_excel_export" stop=0 onclick="stop_export('excel')"
-                           class="fa button fa-hand-stop-o error hide" title="{t}Stop{/t}"></i>
+                        <i  data-stop="0" onclick="stop_export(this)" class="stop_export fa button fa-hand-paper error hide" title="{t}Stop{/t}"></i>
                     </td>
-                    <td id="export_table_excel_export" class="link" onclick="export_table('excel')"><i
-                                class="fa fa-file-excel" title="Excel"></i>Excel
-                    </td>
+                    <td class="export_button link"  data-type="excel" onclick="export_table(this)"><i class="fa fa-file-excel fa-fw" ></i><span class="excel">Excel</span><span class="csv hide">CSV</span</td>
                 </tr>
-                <tr>
-                    <td class="export_progress_bar_container"><a href="" id="download_csv_export" download hidden></a>
-                        <span class="hide export_progress_bar_bg" id="export_progress_bar_bg_csv_export"></span>
-                        <div class="hide export_progress_bar" id="export_progress_bar_csv_export"></div>
-                        <div class="export_download hide " id="export_download_csv_export"> {t}Download{/t}</div>
-                    </td>
-                    <td class="width_20"><i id="stop_export_table_csv_export" onclick="stop_export('csv')"
-                                            class="fa button fa-hand-stop-o error hide" title="{t}Stop{/t}"></i></td>
-                    <td id="export_table_csv_export" class="link" onclick="export_table('csv')"><i class="fa fa-table"
-                                                                                                   title="{t}Comma Separated Value{/t}"></i>CSV
-                    </td>
-                </tr>
+
                 <tr>
                     <td>
-                        <div onclick="hide_export_dialog()" class="button disabled"><i class="fa fa-times"
-                                                                                       title="{t}Close dialog{/t}"></i>{t}Close{/t}
-                        </div>
+                        <div onclick="hide_export_dialog($(this).closest('.export_dialog'))" class="button disabled"><i class="fa fa-times" title="{t}Close dialog{/t}"></i>{t}Close{/t}</div>
                     </td>
-                    <td colspan="2" class="aright"><i onclick="open_export_config_left_button()"
-                                                      class="fa fa-cogs button"></i></td>
+                    <td colspan="2" class="aright"><i onclick="open_export_config_left_button($(this).closest('.export_dialog_container').find('.export_dialog_config'))" class="fa fa-cogs button"></i></td>
                 </tr>
             </table>
         </div>
-        <div id="export_dialog_config" class="export_dialog hide" style="z-index: 3">
+        <div  class="export_dialog_config export_dialog_block hide" >
+
+
+            <div class="export_type_options">
+                <span onclick="change_export_as(this,'Excel')" class="margin_right_20 button" title="{t}Export as spreadsheet{/t}"><i class="fa fa-fw fa-file-excel" ></i>Excel</span>
+                <span onclick="change_export_as(this,'CSV')" class="very_discreet button" title="{t}Export as CSV file{/t}"><i class="fa fa-fw fa-table" ></i>CSV</span>
+            </div>
+
             {if isset($export_fields)}
                 <table>
                     <tr class="small_row ">
@@ -441,12 +417,19 @@
         {if $button.icon=='edit_add'}
         <span id="show_edit_table_dialog_button" class="fa-stack" onclick="show_edit_table_dialog()" >
                                         <i class="fa fa-plus fa-stack-1x " style="font-size:70%; margin-right:-50%;margin-left:-25%;margin-top:-10%"></i>
-
-                    <i class="fa fa-pencil fa-stack-1x " style="margin-right:10%;margin-left:10%;"></i>
+            <i class="fa fa-pencil fa-stack-1x " style="margin-right:10%;margin-left:10%;"></i>
                 </span>
 
 
-        {else}
+
+    {elseif $button.icon=='edit'}
+    <span id="show_edit_table_dialog_button" onclick="show_edit_table_dialog()" >
+
+            <i class="fa fa-fw fa-edit "></i>
+                </span>
+
+
+    {else}
         <i {if isset($button.id) and $button.id }id="icon_{$button.id}"{/if} class=" fa fa-{$button.icon} fa-fw"></i>
         {/if}
 

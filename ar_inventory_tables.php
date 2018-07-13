@@ -449,7 +449,7 @@ function stock_history($_data, $db, $user, $account) {
     $sql = "select $fields from $table $where $wheref $group_by order by $order $order_direction limit $start_from,$number_results";
 
 
-  //  print $sql;
+    //  print $sql;
     $record_data = array();
 
     if ($result = $db->query($sql)) {
@@ -505,7 +505,7 @@ function inventory_stock_history($_data, $db, $user, $account) {
         $rtext_label = 'month';
         $date_format = "%e %b %Y";
 
-    }  elseif ($_data['parameters']['frequency'] == 'quarterly') {
+    } elseif ($_data['parameters']['frequency'] == 'quarterly') {
         $rtext_label = 'quarter';
         $date_format = "%e %b %Y";
 
@@ -524,7 +524,7 @@ function inventory_stock_history($_data, $db, $user, $account) {
     $sql = "select $fields from $table $where $wheref $group_by order by $order $order_direction limit $start_from,$number_results";
 
 
-//print $sql;
+    //print $sql;
     $record_data = array();
 
     if ($result = $db->query($sql)) {
@@ -541,22 +541,19 @@ function inventory_stock_history($_data, $db, $user, $account) {
             }
 
 
-            $value= money($data['Value'], $account->get('Currency Code'));
+            $value = money($data['Value'], $account->get('Currency Code'));
 
             $record_data[] = array(
 
-                'date' => $date,
-                'parts'     => number($data['Parts']),
-                'locations' => number($data['Locations']),
-                'value'            =>$value,
+                'date'             => $date,
+                'parts'            => number($data['Parts']),
+                'locations'        => number($data['Locations']),
+                'value'            => $value,
                 'commercial_value' => money($data['Value Commercial'], $account->get('Currency Code')),
-                'in_po' =>sprintf('<span class="%s">%s</span>',($data['in_po']==0?'super_discreet':''),money($data['in_po'], $account->get('Currency Code'))) ,
-                'in_other' =>sprintf('<span class="%s">%s</span>',($data['in_other']==0?'super_discreet':''),money($data['in_other'], $account->get('Currency Code'))) ,
-                'out_sales' =>sprintf('<span class="%s">%s</span>',($data['out_sales']==0?'super_discreet':''),money($data['out_sales'], $account->get('Currency Code'))) ,
-                'out_other' =>sprintf('<span class="%s">%s</span>',($data['out_other']==0?'super_discreet':''),money($data['out_other'], $account->get('Currency Code'))) ,
-
-
-
+                'in_po'            => sprintf('<span class="%s">%s</span>', ($data['in_po'] == 0 ? 'super_discreet' : ''), money($data['in_po'], $account->get('Currency Code'))),
+                'in_other'         => sprintf('<span class="%s">%s</span>', ($data['in_other'] == 0 ? 'super_discreet' : ''), money($data['in_other'], $account->get('Currency Code'))),
+                'out_sales'        => sprintf('<span class="%s">%s</span>', ($data['out_sales'] == 0 ? 'super_discreet' : ''), money($data['out_sales'], $account->get('Currency Code'))),
+                'out_other'        => sprintf('<span class="%s">%s</span>', ($data['out_other'] == 0 ? 'super_discreet' : ''), money($data['out_other'], $account->get('Currency Code'))),
 
 
             );
@@ -942,9 +939,9 @@ function supplier_parts($_data, $db, $user, $account) {
 
 
             //  if ($exchange < 0) {
-            $exchange = 1.0/currency_conversion(
-                $db, $account->get('Account Currency'),$data['Supplier Part Currency Code'], '- 1 hour'
-            );
+            $exchange = 1.0 / currency_conversion(
+                    $db, $account->get('Account Currency'), $data['Supplier Part Currency Code'], '- 1 hour'
+                );
             //    }
 
             if ($exchange != 1) {
@@ -1644,18 +1641,24 @@ function product_families($_data, $db, $user) {
             // print_r($data);
 
             if ($data['category_data'] == '') {
+
+                $label = sprintf(_('New family for %s'), $data['Store Code']);
+
+
                 $family          = '<span class="super_discreet">'._('Family not set').'</span>';
                 $number_products = '<span class="super_discreet">-</span>';
-                $operations      = (in_array($data['Store Key'], $user->stores) ? '<i class="fa fa-plus button" aria-hidden="true" onClick="open_new_product_family('.$data['Store Key'].')" ></i>' : '<i class="fa fa-lock "></i>');
+                $operations      =
+                    (in_array($data['Store Key'], $user->stores) ? '<i class="fa fa-plus button" aria-hidden="true" title="'._('Create family').'" onClick="open_new_product_family(this,'.$data['Store Key'].',\''.$label.'\')" ></i>' : '<i class="fa fa-lock "></i>');
                 $code            = sprintf('<span >%s</span>', $data['Store Code']).($data['Store Type'] == 'B2BC' ? ' <i class="fa fa-dropbox" aria-hidden="true" title="'._("Carton's store").'"  ></i>' : '');
 
             } else {
                 $family_data = preg_split('/,/', $data['category_data']);
 
-
+                $label           = sprintf(_('Adding missing products in %s'), $data['Store Code']);
                 $family          = sprintf('<span class="button" onClick="change_view(\'products/%d/category/%d\')">%s</span>', $data['Store Key'], $family_data[0], $family_data[1]);
                 $number_products = number($data['number_products']);
-                $operations      = (in_array($data['Store Key'], $user->stores) ? '<i class="fa fa-sync button" aria-hidden="true" onClick="open_new_product_family('.$data['Store Key'].')" )"></i>' : '<i class="fa fa-lock "></i>');
+                $operations      = (in_array($data['Store Key'], $user->stores) ? '<i class="fa fa-sync button" aria-hidden="true" title="'._('Add new parts to family').'" onClick="open_new_product_family(this,'.$data['Store Key'].',\''.$label.'\')" ></i>'
+                    : '<i class="fa fa-lock "></i>');
                 $code            =
                     sprintf('<span class="button" onClick="change_view(\'products/%d/category/%d\')">%s</span>', $data['Store Key'], $family_data[0], $data['Store Code']).($data['Store Type'] == 'B2BC' ? '<i class="fa fa-dropbox" title="'._("Carton's store")
                         .'"  aria-hidden="true"></i>' : '');
@@ -2165,17 +2168,14 @@ function stock_cost($_data, $db, $user, $account) {
                 $note = _('Stock audit').' '.$data['Note'];
             }
 
-            $note=$data['Note'];
+            $note = $data['Note'];
 
-            $cost=sprintf(
-                '<span  class="part_cost button"  data-itf_key="%d" data-cost="%s"  data-skos="%s"  data-currency_symbol="%s"  data-cost_per_sko="%s" onClick="open_edit_cost(this)">%s</span>',
-                 $data['Inventory Transaction Key'], $data['Inventory Transaction Amount'],$data['Inventory Transaction Quantity'],$account->get('Account Currency Symbol'),
-                money($cost_per_sko, $account->get('Account Currency Code')),
-               money($data['Inventory Transaction Amount'], $account->get('Account Currency Code'))
+            $cost     = sprintf(
+                '<span  class="part_cost button"  data-itf_key="%d" data-cost="%s"  data-skos="%s"  data-currency_symbol="%s"  data-cost_per_sko="%s" onClick="open_edit_cost(this)">%s</span>', $data['Inventory Transaction Key'], $data['Inventory Transaction Amount'],
+                $data['Inventory Transaction Quantity'], $account->get('Account Currency Symbol'), money($cost_per_sko, $account->get('Account Currency Code')), money($data['Inventory Transaction Amount'], $account->get('Account Currency Code'))
             );
-            $sko_cost=sprintf(
-                '<span  class="part_cost_per_sko "  >%s</span>',
-                money($cost_per_sko, $account->get('Account Currency Code'))
+            $sko_cost = sprintf(
+                '<span  class="part_cost_per_sko "  >%s</span>', money($cost_per_sko, $account->get('Account Currency Code'))
             );
 
             $record_data[] = array(

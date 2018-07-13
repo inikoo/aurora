@@ -14,22 +14,24 @@
 function fork_export($job) {
 
 
-    if (!$_data = get_fork_data($job)) {
+    if (!$_data = get_fork_metadata($job)) {
         return;
     }
 
-    //return 1;
+    list($account, $db, $fork_data, $editor) = $_data;
 
-    $db                  = $_data['db'];
-    $fork_data           = $_data['fork_data'];
-    $fork_key            = $_data['fork_key'];
-    $inikoo_account_code = $_data['inikoo_account_code'];
+
+    $inikoo_account_code = $account->get('Account Code');
 
     $output_type   = $fork_data['output'];
     $sql_count     = $fork_data['sql_count'];
     $sql_data      = $fork_data['sql_data'];
     $user_key      = $fork_data['user_key'];
     $download_type = $fork_data['table'];
+    $download_key  = $fork_data['download_key'];
+
+
+   // print_r($fork_data);
 
     $creator     = 'aurora.systems';
     $title       = _('Report');
@@ -37,14 +39,21 @@ function fork_export($job) {
     $description = '';
     $keywords    = '';
     $category    = '';
-    $filename    = 'output';
+    //$filename    = 'output';
 
-    $output_filename = 'export_'.$inikoo_account_code.'_'.$fork_key.'_'.$fork_data['table'];
 
+    $output_filename = 'export_'.$inikoo_account_code.'_'.$fork_data['table'].'_'.$download_key;
+
+
+    $sql = sprintf(
+        'update `Download Dimension` set `Download State`="In Process",`Download Filename`=%s where `Download Key`=%d  ', prepare_mysql($output_filename.'.'.$output_type), $download_key
+
+    );
+
+    $db->exec($sql);
 
 
     $number_rows = 0;
-
 
 
     if ($sql_count != '') {
@@ -55,13 +64,11 @@ function fork_export($job) {
             }
         } else {
             print_r($error_info = $db->errorInfo());
-          //  exit;
+            //  exit;
         }
 
     } else {
         $stmt = $db->prepare($sql_data);
-
-
 
 
         $stmt->execute();
@@ -71,14 +78,37 @@ function fork_export($job) {
     }
 
 
-    $sql = sprintf(
-        "UPDATE `Fork Dimension` SET `Fork State`='In Process' ,`Fork Operations Total Operations`=%d,`Fork Start Date`=NOW() WHERE `Fork Key`=%d ", $number_rows, $fork_key
+    $context = new ZMQContext();
+    $socket  = $context->getSocket(ZMQ::SOCKET_PUSH, 'my pusher');
+    $socket->connect("tcp://localhost:5555");
+
+
+
+    $socket->send(
+        json_encode(
+            array(
+                'channel'      => $account->get('Account Code').'_'.$user_key.'_real_time',
+                'progress_bar' => array(
+                    array(
+                        'id'    => 'download_'.$download_key,
+                        'state' => 'In Process',
+
+                        'progress_info' => percentage(0, $number_rows),
+                        'progress'      => sprintf(
+                            '%s/%s (%s)', number(0), number($number_rows), percentage(
+                                            0, $number_rows
+                                        )
+                        ),
+                        'percentage'    => percentage(0, $number_rows),
+
+                    )
+
+                ),
+
+
+            )
+        )
     );
-
-
-   // print "$sql\n";
-
-    $db->exec($sql);
 
 
     require_once 'external_libs/PHPExcel/Classes/PHPExcel.php';
@@ -90,42 +120,42 @@ function fork_export($job) {
 
 
     $objPHPExcel->getProperties()->setCreator($creator)->setLastModifiedBy($creator)->setTitle($title)->setSubject($subject)->setDescription($description)->setKeywords($keywords)->setCategory(
-            $category
-        );
+        $category
+    );
 
 
     $row_index = 1;
     //print "$sql_data\n";
-  //  return 1;
-//exit;
+    //  return 1;
+    //exit;
 
-  //  print_r($fork_data);
+    //  print_r($fork_data);
 
-    if(empty($fork_data['fields']) or $fork_data['fields']=='' ){
-
-
+    if (empty($fork_data['fields']) or $fork_data['fields'] == '') {
 
         $sql = sprintf(
-            "UPDATE `Fork Dimension` SET `Fork State`='Finished' ,`Fork Finished Date`=NOW(),`Fork Operations Done`=%d,`Fork Result`=%s WHERE `Fork Key`=%d ",0,
-            prepare_mysql('Error'), $fork_key
+            'update `Download Dimension` set `Download State`="Error" where `Download Key`=%d  ', download_key
+
         );
 
-        //print $sql;
-
         $db->exec($sql);
+
 
         return 1;
     }
 
 
+    // print $sql_data;
 
 
-   // print $sql_data;
+    $show_feedback = (float) microtime(true) + .400;
+
+
     if ($result = $db->query($sql_data)) {
         foreach ($result as $row) {
 
-           // print_r($row);
-
+            // print_r($row);
+            //usleep(10000);
 
             if ($row_index == 1) {
 
@@ -146,9 +176,9 @@ function fork_export($job) {
                 foreach ($fork_data['fields'] as $_key) {
 
 
-                    if(isset($fork_data['field_set'][$_key]['labels'])){
+                    if (isset($fork_data['field_set'][$_key]['labels'])) {
 
-                        foreach($fork_data['field_set'][$_key]['labels'] as $label){
+                        foreach ($fork_data['field_set'][$_key]['labels'] as $label) {
                             $char = number2alpha($char_index);
                             $objPHPExcel->getActiveSheet()->setCellValue(
                                 $char.$row_index, strip_tags($label)
@@ -157,15 +187,13 @@ function fork_export($job) {
                         }
 
 
-
-                    }else{
+                    } else {
                         $char = number2alpha($char_index);
                         $objPHPExcel->getActiveSheet()->setCellValue(
                             $char.$row_index, strip_tags($fork_data['field_set'][$_key]['label'])
                         );
                         $char_index++;
                     }
-
 
 
                 }
@@ -185,11 +213,10 @@ function fork_export($job) {
                 $char = number2alpha($char_index);
 
 
-
-                if(isset($fork_data['field_set'][$char_index-1]['html'])){
-                    $_value=$value;
-                }else{
-                    $_value=strip_tags($value);
+                if (isset($fork_data['field_set'][$char_index - 1]['html'])) {
+                    $_value = $value;
+                } else {
+                    $_value = strip_tags($value);
 
                 }
 
@@ -198,18 +225,68 @@ function fork_export($job) {
                 $char_index++;
             }
             $row_index++;
-            if ($row_index % 100 == 0) {
+
+
+
+            if (microtime(true) > $show_feedback) {
+                //print 'xx '.microtime(true) ." -> $show_feedback\n";
+
+
                 $sql = sprintf(
-                    "UPDATE `Fork Dimension` SET `Fork Operations Done`=%d  WHERE `Fork Key`=%d ", ($row_index - 2), $fork_key
+                    'select `Download State` from  `Download Dimension` where `Download Key`=%d  ', $download_key
+
                 );
-                $db->exec($sql);
+
+                if ($result = $db->query($sql)) {
+                    if ($row = $result->fetch()) {
+                        if ($row['Download State'] == 'Cancelled') {
+                            return 1;
+                        }
+                    }
+                } else {
+                    print_r($error_info = $db->errorInfo());
+                    print "$sql\n";
+                    exit;
+                }
+
+
+                $socket->send(
+                    json_encode(
+                        array(
+                            'channel'      => $account->get('Account Code').'_'.$user_key.'_real_time',
+                            'progress_bar' => array(
+                                array(
+                                    'id'    => 'download_'.$download_key,
+                                    'state' => 'In Process',
+
+                                    'progress_info' => percentage($row_index, $number_rows),
+                                    'progress'      => sprintf(
+                                        '%s/%s (%s)', number($row_index), number($number_rows), percentage(
+                                                        $row_index, $number_rows
+                                                    )
+                                    ),
+                                    'percentage'    => percentage($row_index, $number_rows),
+
+                                )
+
+                            ),
+
+
+                        )
+                    )
+                );
+
+
+                $show_feedback = (float) microtime(true) + .400;
+
+
             }
 
         }
     } else {
         print_r($error_info = $db->errorInfo());
         print "$sql_data\n";
-       // exit;
+        // exit;
     }
 
 
@@ -284,21 +361,44 @@ function fork_export($job) {
 
 
     $sql = sprintf(
-        "INSERT INTO `Download Dimension` (`Download Date`,`Download Type`,`Download Filename`,`Download User Key`,`Download Fork Key`,`Download Data`) VALUES (%s,%s,%s,%d,%d,%s) ",
-        prepare_mysql(gmdate('Y-m-d H:i:s')), prepare_mysql($download_type), prepare_mysql($output_filename.'.'.$output_type), $user_key, $fork_key, prepare_mysql(file_get_contents($output_file))
+        'update `Download Dimension` set `Download State`="Finish" , `Download Data`=%s   where `Download Key`=%d ',
+        prepare_mysql(file_get_contents($output_file)),
+        $download_key
+
     );
 
     $db->exec($sql);
 
-    $download_id = $db->lastInsertId();
 
 
-    $sql = sprintf(
-        "UPDATE `Fork Dimension` SET `Fork State`='Finished' ,`Fork Finished Date`=NOW(),`Fork Operations Done`=%d,`Fork Result`=%s WHERE `Fork Key`=%d ", ($row_index - 2),
-        prepare_mysql($download_id), $fork_key
+    $socket->send(
+        json_encode(
+            array(
+                'channel'      => $account->get('Account Code').'_'.$user_key.'_real_time',
+                'progress_bar' => array(
+                    array(
+                        'id'    => 'download_'.$download_key,
+                        'state' => 'Finish',
+                        'download_key'=>$download_key,
+
+                        'progress_info' => _('Done'),
+                        'progress'      => sprintf(
+                            '%s/%s (%s)', number($number_rows), number($number_rows), percentage(
+                                            $number_rows, $number_rows
+                                        )
+                        ),
+                        'percentage'    => percentage($number_rows, $number_rows),
+
+                    )
+
+                ),
+
+
+            )
+        )
     );
 
-    $db->exec($sql);
+
 
     return false;
 }

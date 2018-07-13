@@ -15,29 +15,31 @@ function fork_export_edit_template($job) {
     include_once 'conf/export_edit_template_fields.php';
 
 
-
-    if (!$_data = get_fork_data($job)) {
+    if (!$_data = get_fork_metadata($job)) {
         return;
     }
 
+    list($account, $db, $fork_data, $editor) = $_data;
+    $inikoo_account_code = $account->get('Account Code');
 
-   // print_r($_data);
+    // print_r($_data);
 
-    $db                  = $_data['db'];
-    $fork_data           = $_data['fork_data'];
-    $fork_key            = $_data['fork_key'];
-    $inikoo_account_code = $_data['inikoo_account_code'];
 
     $output_type = $fork_data['output'];
 
     $user_key = $fork_data['user_key'];
 
-    $parent      = $fork_data['parent'];
-    $parent_key  = $fork_data['parent_key'];
-    $parent_code = $fork_data['parent_code'];
-    $objects     = $fork_data['objects'];
-    $field_keys  = $fork_data['fields'];
-    $metadata    = $fork_data['metadata'];
+    $parent       = $fork_data['parent'];
+    $parent_key   = $fork_data['parent_key'];
+    $parent_code  = $fork_data['parent_code'];
+    $objects      = $fork_data['objects'];
+    $field_keys   = $fork_data['fields'];
+    $metadata     = $fork_data['metadata'];
+    $download_key = $fork_data['download_key'];
+
+
+
+
 
     $creator     = 'aurora.systems';
     $title       = _('Report');
@@ -47,8 +49,16 @@ function fork_export_edit_template($job) {
     $category    = '';
     $filename    = 'output';
 
-    $output_filename = 'edit_'.$inikoo_account_code.'_'.$fork_key.'_'.$parent_code.'_'.$objects;
+    $output_filename = 'edit_'.$inikoo_account_code.'_'.$download_key.'_'.$parent_code.'_'.$objects;
     $output_filename = preg_replace('/\s+/', '', $output_filename);
+
+
+    $sql = sprintf(
+        'update `Download Dimension` set `Download State`="In Process",`Download Filename`=%s where `Download Key`=%d  ', prepare_mysql($output_filename.'.'.$output_type), $download_key
+
+    );
+    $db->exec($sql);
+
 
     $number_rows = 0;
 
@@ -127,9 +137,6 @@ function fork_export_edit_template($job) {
             $download_type  = 'edit_products';
 
 
-
-
-
             switch ($parent) {
                 case 'part_category':
                     include_once 'class.Part.php';
@@ -146,8 +153,8 @@ function fork_export_edit_template($job) {
                     );
 
 
-                    $store = new Store($metadata['store_key']);
-                    $family = new Category($parent_key);
+                    $store    = new Store($metadata['store_key']);
+                    $family   = new Category($parent_key);
                     $exchange = currency_conversion($db, $account->get('Account Currency'), $store->get('Store Currency Code'));
 
 
@@ -198,9 +205,6 @@ function fork_export_edit_template($job) {
     }
 
 
-
-
-
     if ($result = $db->query($sql_count)) {
         if ($row = $result->fetch()) {
             $number_rows = $row['num'];
@@ -210,24 +214,51 @@ function fork_export_edit_template($job) {
         exit;
     }
 
+    $context = new ZMQContext();
+    $socket  = $context->getSocket(ZMQ::SOCKET_PUSH, 'my pusher');
+    $socket->connect("tcp://localhost:5555");
 
-  //  if($objects=='product'  and $store->get('Store Type')=='B2BC' ){
-  //      $_objects='product_b2bc';
-  //  }else{
-        $_objects=$objects;
-   // }
+
+    $socket->send(
+        json_encode(
+            array(
+                'channel'      => $account->get('Account Code').'_'.$user_key.'_real_time',
+                'progress_bar' => array(
+                    array(
+                        'id'    => 'download_'.$download_key,
+                        'state' => 'In Process',
+
+                        'progress_info' => percentage(0, $number_rows),
+                        'progress'      => sprintf(
+                            '%s/%s (%s)', number(0), number($number_rows), percentage(
+                                            0, $number_rows
+                                        )
+                        ),
+                        'percentage'    => percentage(0, $number_rows),
+
+                    )
+
+                ),
+
+
+            )
+        )
+    );
+
+
+    $_objects = $objects;
+
+    //print $_objects;
+    //print_r($export_edit_template_fields);
+    //print_r($field_keys);
 
     $fields = array();
     foreach ($field_keys as $field_key) {
-        $fields[] = $export_edit_template_fields[$_objects][$field_key];
+        if($field_key!=''){
+            $fields[] = $export_edit_template_fields[$_objects][$field_key];
+
+        }
     }
-
-
-
-    $sql = sprintf(
-        "UPDATE `Fork Dimension` SET `Fork State`='In Process' ,`Fork Operations Total Operations`=%d,`Fork Start Date`=NOW() WHERE `Fork Key`=%d ", $number_rows, $fork_key
-    );
-    $db->exec($sql);
 
 
     require_once 'external_libs/PHPExcel/Classes/PHPExcel.php';
@@ -244,11 +275,11 @@ function fork_export_edit_template($job) {
 
     $row_index = 1;
 
+    $show_feedback = (float)microtime(true) + .400;
 
 
     if ($result = $db->query($sql_data)) {
         foreach ($result as $row) {
-
 
 
             switch ($objects) {
@@ -297,9 +328,7 @@ function fork_export_edit_template($job) {
                 case 'part':
 
 
-
-
-                    $object = get_object('Part',$row['id']);
+                    $object = get_object('Part', $row['id']);
 
 
                     $data_rows = array();
@@ -311,12 +340,11 @@ function fork_export_edit_template($job) {
 
                     foreach ($fields as $field) {
 
-                        if($field['name']=='Part Barcode'){
-                            $_field_name='Part Barcode Number';
-                        }else{
-                            $_field_name=$field['name'];
+                        if ($field['name'] == 'Part Barcode') {
+                            $_field_name = 'Part Barcode Number';
+                        } else {
+                            $_field_name = $field['name'];
                         }
-
 
 
                         $data_rows[] = array(
@@ -331,14 +359,11 @@ function fork_export_edit_template($job) {
                 case 'product':
 
 
-
                     switch ($parent) {
 
 
                         case 'category':
                         case 'part_family':
-
-
 
 
                             $object = new Product($row['id']);
@@ -373,8 +398,7 @@ function fork_export_edit_template($job) {
 
 
                             $sql = sprintf(
-                                'SELECT `Product ID` FROM `Product Dimension` WHERE `Product Status`!="Discontinued" AND `Product Store Key`=%d AND `Product Code`=%s ', $store->id,
-                                prepare_mysql($object->get('Part Reference'))
+                                'SELECT `Product ID` FROM `Product Dimension` WHERE `Product Status`!="Discontinued" AND `Product Store Key`=%d AND `Product Code`=%s ', $store->id, prepare_mysql($object->get('Part Reference'))
                             );
 
 
@@ -382,7 +406,6 @@ function fork_export_edit_template($job) {
                                 if ($row = $result->fetch()) {
                                     continue 3;
                                 } else {
-
 
 
                                     $op = 'NEW';
@@ -413,11 +436,10 @@ function fork_export_edit_template($job) {
                                     );
 
 
-
-                                    if(is_numeric($object->get('Part Recommended Packages Per Selling Outer')) and $object->get('Part Recommended Packages Per Selling Outer')>0 ){
-                                        $skos_per_outer=$object->get('Part Recommended Packages Per Selling Outer');
-                                    }else{
-                                        $skos_per_outer=1;
+                                    if (is_numeric($object->get('Part Recommended Packages Per Selling Outer')) and $object->get('Part Recommended Packages Per Selling Outer') > 0) {
+                                        $skos_per_outer = $object->get('Part Recommended Packages Per Selling Outer');
+                                    } else {
+                                        $skos_per_outer = 1;
                                     }
 
                                     foreach ($fields as $field) {
@@ -457,14 +479,14 @@ function fork_export_edit_template($job) {
                                                 if ($object->get('Part Unit Price') == '') {
                                                     $value = '';
                                                 } else {
-                                                    $value = round($skos_per_outer*$exchange * $object->get('Part Unit Price') * $object->get('Part Units Per Package'), 2);
+                                                    $value = round($skos_per_outer * $exchange * $object->get('Part Unit Price') * $object->get('Part Units Per Package'), 2);
                                                 }
                                                 break;
                                             case 'Product Unit Price':
                                                 if ($object->get('Part Unit Price') == '') {
                                                     $value = '';
                                                 } else {
-                                                    $value = round($exchange * $object->get('Part Unit Price') , 2);
+                                                    $value = round($exchange * $object->get('Part Unit Price'), 2);
                                                 }
                                                 break;
                                             case 'Product Unit RRP':
@@ -477,7 +499,7 @@ function fork_export_edit_template($job) {
                                                 break;
 
                                             case 'Product Units Per Case':
-                                                $value=$object->get('Part Units Per Package')*$object->get('Part SKOs per Carton');
+                                                $value = $object->get('Part Units Per Package') * $object->get('Part SKOs per Carton');
                                                 break;
                                             default:
                                                 $value = $object->get($field['name']);
@@ -588,19 +610,67 @@ function fork_export_edit_template($job) {
             }
 
             $row_index++;
-            if ($row_index % 100 == 0) {
+
+            if (microtime(true) > $show_feedback) {
+                //  print 'xx '.microtime(true) ." -> $show_feedback\n";
+
+
                 $sql = sprintf(
-                    "UPDATE `Fork Dimension` SET `Fork Operations Done`=%d  WHERE `Fork Key`=%d ", ($row_index - 2), $fork_key
+                    'select `Download State` from  `Download Dimension` where `Download Key`=%d  ', $download_key
+
                 );
-                $db->exec($sql);
+
+                if ($result = $db->query($sql)) {
+                    if ($row = $result->fetch()) {
+                        if ($row['Download State'] == 'Cancelled') {
+                            return 1;
+                        }
+                    }
+                } else {
+                    print_r($error_info = $db->errorInfo());
+                    print "$sql\n";
+                    exit;
+                }
+
+
+                $socket->send(
+                    json_encode(
+                        array(
+                            'channel'      => $account->get('Account Code').'_'.$user_key.'_real_time',
+                            'progress_bar' => array(
+                                array(
+                                    'id'    => 'download_'.$download_key,
+                                    'state' => 'In Process',
+
+                                    'progress_info' => percentage($row_index, $number_rows),
+                                    'progress'      => sprintf(
+                                        '%s/%s (%s)', number($row_index), number($number_rows), percentage(
+                                                        $row_index, $number_rows
+                                                    )
+                                    ),
+                                    'percentage'    => percentage($row_index, $number_rows),
+
+                                )
+
+                            ),
+
+
+                        )
+                    )
+                );
+
+
+                $show_feedback = (float)microtime(true) + .400;
+
+
             }
+
 
         }
     } else {
         print_r($error_info = $db->errorInfo());
         exit;
     }
-
 
 
     $sheet        = $objPHPExcel->getActiveSheet();
@@ -676,6 +746,45 @@ function fork_export_edit_template($job) {
 
 
     $sql = sprintf(
+        'update `Download Dimension` set `Download State`="Finish" , `Download Data`=%s  ,`Download Filename`=%s where `Download Key`=%d ', prepare_mysql(file_get_contents($output_file)), prepare_mysql($output_filename.'.'.$output_type), $download_key
+
+    );
+
+    $db->exec($sql);
+
+
+    $socket->send(
+        json_encode(
+            array(
+                'channel'      => $account->get('Account Code').'_'.$user_key.'_real_time',
+                'progress_bar' => array(
+                    array(
+                        'id'           => 'download_'.$download_key,
+                        'state'        => 'Finish',
+                        'download_key' => $download_key,
+
+                        'progress_info' => _('Done'),
+                        'progress'      => sprintf(
+                            '%s/%s (%s)', number($number_rows), number($number_rows), percentage(
+                                            $number_rows, $number_rows
+                                        )
+                        ),
+                        'percentage'    => percentage($number_rows, $number_rows),
+
+                    )
+
+                ),
+
+
+            )
+        )
+    );
+
+
+    //$output_filename.'.'.$output_type
+
+    /*
+    $sql = sprintf(
         "INSERT INTO `Download Dimension` (`Download Date`,`Download Type`,`Download Filename`,`Download User Key`,`Download Fork Key`,`Download Data`) VALUES (%s,%s,%s,%d,%d,%s) ",
         prepare_mysql(gmdate('Y-m-d H:i:s')), prepare_mysql($download_type), prepare_mysql($output_filename.'.'.$output_type), $user_key, $fork_key, prepare_mysql(file_get_contents($output_file))
     );
@@ -692,6 +801,7 @@ function fork_export_edit_template($job) {
 
     $db->exec($sql);
 
+*/
 
     return false;
 }

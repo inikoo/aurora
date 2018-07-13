@@ -71,7 +71,7 @@ trait OrderCalculateTotals {
 		
 		FROM `Order Transaction Fact` WHERE `Order Key`=%d  ", $this->id
         );
-
+       // print $sql;
 
         if ($result = $this->db->query($sql)) {
             if ($row = $result->fetch()) {
@@ -105,6 +105,7 @@ trait OrderCalculateTotals {
             print_r($error_info = $this->db->errorInfo());
             exit;
         }
+
 
 
         $profit = $items_net_for_profit_calculation - $items_cost - $replacement_costs;

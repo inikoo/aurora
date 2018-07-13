@@ -26,7 +26,7 @@ class Category extends DB_Table {
     use PartCategory, SupplierCategory, InvoiceCategory, ProductCategory, LocationCategory;
 
 
-    function Category($a1, $a2 = false, $a3 = false, $_db = false) {
+    function __construct($a1, $a2 = false, $a3 = false, $_db = false) {
 
 
         if (!$_db) {

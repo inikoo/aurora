@@ -21,7 +21,7 @@ include_once 'class.DeliveryNote.php';
 
 class Invoice extends DB_Table {
 
-    function Invoice($arg1 = false, $arg2 = false, $arg3 = false, $arg4 = false) {
+    function __construct($arg1 = false, $arg2 = false, $arg3 = false, $arg4 = false) {
 
         $this->table_name      = 'Invoice';
         $this->ignore_fields   = array('Invoice Key');
