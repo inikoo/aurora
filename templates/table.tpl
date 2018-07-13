@@ -162,7 +162,7 @@
                     <tr class="small_row ">
                         <td></td>
                         <td style="width_20" class="field_export ">
-                            <i id="toggle_all_export_fields" onclick="toggle_all_export_fields(this)"
+                            <i  onclick="toggle_all_export_fields(this)"
                                class="button fa-fw far fa-square"></i>
                         </td>
                     </tr>
@@ -351,11 +351,11 @@
                     <tr class="small_row ">
                         <td></td>
                         <td style="width_20" class="field_export ">
-                            <i id="toggle_all_export_fields" onclick="toggle_all_export_fields(this)"
+                            <i  onclick="toggle_all_export_fields(this)"
                                class="button fa-fw far fa-square"></i>
                         </td>
                     </tr>
-                    <tbody id="export_fields">
+                    <tbody class="export_fields">
                     {foreach from=$export_fields item=export_field key=_key}
                         <tr class="small_row">
                             <td>{$export_field.label}</td>
