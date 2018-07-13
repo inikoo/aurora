@@ -81,7 +81,7 @@ if ($result = $db->query($sql)) {
 
         }
         $sql = sprintf('UPDATE `Order Transaction Fact` SET `Cost Supplier`=%f  WHERE  `Order Transaction Fact Key`=%d', $cost, $row['Order Transaction Fact Key']);
-        //print "$sql\n";
+      //  print "$sql\n";
         $db->exec($sql);
 
     }

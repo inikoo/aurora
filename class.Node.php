@@ -68,7 +68,7 @@ class nodes {
     var $sql_condition_where; // DON'T CHANGE THIS
     var $c_list = array();  // DON'T CHANGE THIS
 
-    function nodes($table_name = null) {
+    function __construct($table_name = null) {
 
         $this->table_name = $table_name;
         global $db;

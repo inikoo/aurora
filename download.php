@@ -160,7 +160,7 @@ if (is_file($file_path)) {
         $db->exec($sql);
 
         $sql = sprintf(
-            'UPDATE `Download Dimension` SET `Download Attempts`=`Download Attempts`+1 ,`Download Attempt Last Date`=%s WHERE `Download Key`=%d', prepare_mysql(gmdate('Y-m-d H:i:s')), $download_id
+            'UPDATE `Download Dimension` SET `Download Attempts`=`Download Attempts`+1 ,`Download Attempt Last Date`=%s ,`Download State`="Downloaded"  WHERE `Download Key`=%d', prepare_mysql(gmdate('Y-m-d H:i:s')), $download_id
         );
 
         $db->exec($sql);

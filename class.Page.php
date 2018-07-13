@@ -30,7 +30,7 @@ class Page extends DB_Table {
     var $set_currency_exchange = 1;
     var $deleted = false;
 
-    function Page($arg1 = false, $arg2 = false, $arg3 = false, $_db = false) {
+    function __construct($arg1 = false, $arg2 = false, $arg3 = false, $_db = false) {
 
         if (!$_db) {
             global $db;

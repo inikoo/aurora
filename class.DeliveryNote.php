@@ -19,7 +19,7 @@ class DeliveryNote extends DB_Table {
 
     var $update_stock = true;
 
-    function DeliveryNote($arg1 = false, $arg2 = false, $arg3 = false, $arg4 = false) {
+    function __construct($arg1 = false, $arg2 = false, $arg3 = false, $arg4 = false) {
 
 
         global $db;

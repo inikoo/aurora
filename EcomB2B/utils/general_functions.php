@@ -13,22 +13,17 @@
 //Copyright (c) 2009 LW
 
 
-if(!function_exists('hash_equals'))
-{
-    function hash_equals($str1, $str2)
-    {
-        if(strlen($str1) != strlen($str2))
-        {
+if (!function_exists('hash_equals')) {
+    function hash_equals($str1, $str2) {
+        if (strlen($str1) != strlen($str2)) {
             return false;
-        }
-        else
-        {
+        } else {
             $res = $str1 ^ $str2;
             $ret = 0;
-            for($i = strlen($res) - 1; $i >= 0; $i--)
-            {
+            for ($i = strlen($res) - 1; $i >= 0; $i--) {
                 $ret |= ord($res[$i]);
             }
+
             return !$ret;
         }
     }
@@ -61,15 +56,21 @@ function get_prev_next($pivot, $array) {
 }
 
 
-
-
-
-
 function delta($current_value, $old_value) {
+
+    if(!is_numeric($current_value)){
+        $current_value=0;
+    }
+    if(!is_numeric($old_value)){
+        $old_value=0;
+    }
 
     if ($current_value == $old_value) {
         return '--';
     }
+
+
+
 
     return percentage(
         $current_value - $old_value, $old_value, 1, 'NA', '%', true
@@ -77,16 +78,16 @@ function delta($current_value, $old_value) {
 }
 
 
-function delta_icon($_value, $_value_1yb,$inverse=false) {
+function delta_icon($_value, $_value_1yb, $inverse = false) {
 
-    if($inverse){
+    if ($inverse) {
         $up_arrow   = '<i title="%s" class="fa fa-fw fa-play fa-rotate-270 error" aria-hidden="true"></i>';
         $down_arrow = '<i title="%s" class="fa fa-fw fa-play fa-rotate-90 success" aria-hidden="true"></i>';
-    }else {
+    } else {
         $up_arrow   = '<i title="%s" class="fa fa-fw fa-play fa-rotate-270 success" aria-hidden="true"></i>';
         $down_arrow = '<i title="%s" class="fa fa-fw fa-play fa-rotate-90 error" aria-hidden="true"></i>';
     }
-        $no_change = '<i class="fa fa-fw fa-pause fa-rotate-90 super_discreet" aria-hidden="true"></i>';
+    $no_change = '<i class="fa fa-fw fa-pause fa-rotate-90 super_discreet" aria-hidden="true"></i>';
 
     $delta_icon = sprintf($no_change);
 
@@ -102,9 +103,9 @@ function delta_icon($_value, $_value_1yb,$inverse=false) {
             $delta_icon = sprintf($down_arrow, $delta);
 
         }
-    }elseif($_value_1yb==0 and $_value>0){
+    } elseif ($_value_1yb == 0 and $_value > 0) {
         $delta_icon = sprintf($up_arrow, '');
-    }elseif($_value_1yb==0 and $_value<0){
+    } elseif ($_value_1yb == 0 and $_value < 0) {
         $delta_icon = sprintf($down_arrow, '');
     }
 
@@ -135,6 +136,26 @@ function percentage($a, $b, $fixed = 1, $error_txt = 'NA', $psign = '%', $plus_s
 }
 
 
+function eta($done, $total, $start_datetime) {
+
+
+    if ($done >= $total or $total <= 0 or $done == 0 or $start_datetime == '') {
+        return '';
+    }
+
+    $start   = gmdate('U', strtotime($start_datetime.' +0:00'));
+    $now = gmdate('U');
+    if ($start > $now) {
+        return '';
+    }
+
+    $eta_seconds = ($total - $done) * (($now - $start) / $done);
+
+    return _('ETA').': '.seconds_to_natural_string($eta_seconds);
+
+}
+
+
 function ratio($a, $b) {
 
     if ($b == 0) {
@@ -144,7 +165,6 @@ function ratio($a, $b) {
     return $a / $b;
 
 }
-
 
 
 function ParseFloat($floatString) {
@@ -173,14 +193,11 @@ function endmonth($m, $y) {
 }
 
 
-
 function _trim($string) {
     $string = trim($string);
 
     return $string;
 }
-
-
 
 
 function capitalize($str, $encoding = 'UTF-8') {
@@ -194,7 +211,6 @@ function capitalize($str, $encoding = 'UTF-8') {
 function prepare_mysql($string, $null_if_empty = true) {
 
 
-
     if (is_numeric($string)) {
         return "'".$string."'";
     } elseif ($string == '' and $null_if_empty) {
@@ -205,7 +221,6 @@ function prepare_mysql($string, $null_if_empty = true) {
 
     }
 }
-
 
 
 function average($array) {
@@ -237,9 +252,6 @@ function deviation($array) {
 }
 
 
-
-
-
 function parse_number($value) {
     if (is_numeric($value)) {
         return $value;
@@ -260,8 +272,6 @@ function parse_number($value) {
 }
 
 
-
-
 function number2alpha($number) {
     $alpha = chr(65 + fmod($number - 1, 26));
     $pos   = floor(($number - 1) / 26);
@@ -273,12 +283,6 @@ function number2alpha($number) {
 
     return $prefix.$alpha;
 }
-
-
-
-
-
-
 
 
 function number($number, $fixed = 1, $force_fix = false, $locale = false) {

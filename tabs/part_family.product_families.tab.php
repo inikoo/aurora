@@ -37,6 +37,48 @@ $parameters = array(
 );
 
 
+include_once 'conf/export_edit_template_fields.php';
+
+$edit_table_dialog = array(
+
+
+    'spreadsheet_edit' => array(
+        'label'=>'<span class="spreadsheet_edit_label"></span>',
+        'tipo'       => 'edit_objects',
+        'parent'     => 'part_category',
+        'parent_key' => $state['key'],
+        'object'     => 'product',
+        'parent_code' => preg_replace("/[^A-Za-z0-9 ]/", '', $state['_object']->get('Code')),
+    ),
+
+);
+$smarty->assign('edit_table_dialog', $edit_table_dialog);
+
+$objects = 'product';
+
+
+$edit_fields = $export_edit_template_fields[$objects];
+
+foreach($edit_fields as $key=>$value){
+    $edit_fields[$key]['checked']=1;
+}
+
+
+
+$smarty->assign('edit_fields', $edit_fields);
+
+$table_buttons=array();
+
+$table_buttons[] = array(
+    'icon'  => 'edit',
+    'title' => _("Edit products"),
+    'id'    => 'edit_dialog'
+);
+
+$smarty->assign('table_buttons', $table_buttons);
+
+
+
 $smarty->assign(
     'js_code', 'js/injections/part_family.product_families.'.(_DEVEL ? '' : 'min.').'js'
 );

@@ -49,7 +49,7 @@ class Pusher implements WampServerInterface {
 
         $cookies = $conn->httpRequest->getHeader('Cookie');
 
-       print_r($cookies);
+      // print_r($cookies);
       //  print_r($conn->Session->all());
       //  print 'caca';
         $handshake=array(

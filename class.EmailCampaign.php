@@ -308,7 +308,17 @@ class EmailCampaign extends DB_Table {
                 break;
 
             case  'Sent Emails Info':
-                return sprintf(_('Sent %s of %s'), '<b>'.number($this->data['Email Campaign Sent']).'</b>', '<b>'.number($this->data['Email Campaign Number of Emails'])).'</b>';;
+                $sent_emails_info= sprintf(_('Sent %s of %s'), '<b>'.number($this->data['Email Campaign Sent']).'</b>', '<b>'.number($this->data['Email Campaign Number of Emails'])).'</b> ';
+
+                $sent_emails_info.=' <span class="discreet">('.percentage($this->data['Email Campaign Sent'],$this->data['Email Campaign Number of Emails']).')</span>';
+
+
+                $start_datetime=$this->data['Email Campaign Start Send Date'];
+
+                $sent_emails_info.=' <span class="discreet padding_left_5">'.eta($this->data['Email Campaign Sent'],$this->data['Email Campaign Number of Emails'],$start_datetime).'</span>';
+
+
+                return $sent_emails_info;
                 break;
 
 
@@ -829,7 +839,9 @@ class EmailCampaign extends DB_Table {
 
         $published_email_template = get_object('published_email_template', $email_template->get('Email Template Published Email Key'));
 
-
+        if(isset($this->socket)){
+            $published_email_template->socket=$this->socket;
+        }
 
         $recipient_type = 'Customer';
 
@@ -893,6 +905,19 @@ class EmailCampaign extends DB_Table {
             exit;
         }
 
+        $metadata=$this->get('Metadata');
+        if(!isset($metadata['sending'])){
+            $metadata['sending']=array();
+            $metadata['sending'][]=array(
+                'start'=>gmdate('Y-m-d H:i:s'),
+                'end'=>'',
+                'sent_before'=>$this->data['Email Campaign Sent']
+
+            );
+        }
+
+        $this->fast_update(array('Email Campaign Metadata'=>json_encode($metadata)));
+
 
         $sql = sprintf('select `Email Tracking Key`,`Email Tracking Recipient`,`Email Tracking Recipient Key` ,`Email Tracking Recipient Key` from `Email Tracking Dimension` where `Email Tracking Email Mailshot Key`=%d and `Email Tracking State`="Ready" ', $this->id);
 
@@ -918,6 +943,8 @@ class EmailCampaign extends DB_Table {
 
                // print_r($send_data);
 
+
+
                 $published_email_template->send(get_object($row['Email Tracking Recipient'], $row['Email Tracking Recipient Key']), $send_data, $smarty);
 
 
@@ -935,6 +962,31 @@ class EmailCampaign extends DB_Table {
 
        // exit('xxx');
         $this->update_state('Sent');
+
+        if(isset($this->socket)){
+
+
+
+            $this->socket->send(
+                json_encode(array(
+                                'channel'=>'real_time',
+                                'objects' => array(
+                                    array(
+                                        'object' => 'email_campaign',
+                                        'key'    => $this->id,
+
+                                        'update_metadata' => $this->get_update_metadata()
+
+                                    )
+
+                                ),
+
+
+                            ))
+            );
+        }
+
+
 
 
     }

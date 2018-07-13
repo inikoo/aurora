@@ -85,12 +85,74 @@ $(document).ready(function () {
 
 
         });
+
+        conn.subscribe($('#account_name').data('account_code') + '_'+ $('#hello_user').data('user_key') +'_real_time', function (topic, _data) {
+
+         //   console.log('hello')
+
+
+            for (var i in _data.progress_bar) {
+                var data=_data.progress_bar[i]
+
+                console.log(data)
+
+                if (data.state == 'In Process') {
+
+                    $('#'+data.id+' .export_download').addClass('hide')
+
+                    $('#'+data.id+' .export_progress_bar_bg').removeClass('hide').html('&nbsp;' + data.progress_info)
+                    $('#'+data.id+' .export_progress_bar').css('width', data.percentage).removeClass('hide').attr('title', data.progress).html('&nbsp;' + data.progress_info);
+
+
+                } else if (data.state == 'Finish') {
+
+                   // console.log('#'+data.id+' .download_export')
+
+
+                    $('#'+data.id+' .download_export').attr('href', '/download.php?file=' + data.download_key)
+                    $('#'+data.id+' .export_download').removeClass('hide').attr('title', data.result_info).click(function () {
+
+                        download_exported_file(this)
+
+                    });
+                    $('#'+data.id+' .export_progress_bar_bg').addClass('hide').html('')
+                    $('#'+data.id+' .export_progress_bar').css('width', '0px').removeClass('hide').attr('title', '').html('')
+
+
+                    $('#'+data.id+' .export_button').addClass('link').removeClass('disabled')
+
+
+                    $('#'+data.id+' .field_export').addClass('button').removeClass('disabled')
+                    $('#'+data.id+' .stop_export').addClass('hide')
+
+                }
+
+            }
+
+
+
+
+
+
+        });
+
+        hello_user
+
     }, function () {
         console.warn('WebSocket connection closed');
     }, {'skipSubprotocolCheck': true});
 
 
+
+
+
 })
+
+
+
+
+
+
 
 
 function change_browser_history_state(request) {

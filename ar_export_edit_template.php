@@ -28,7 +28,7 @@ $_data = prepare_values(
     )
 );
 
-$dont_save_table_state = true;
+$do_not_save_table_state = true;
 $_data['nr']           = 1000000;
 $_data['page']         = 1;
 include 'conf/export_fields.php';
@@ -40,7 +40,23 @@ if ($_data['type'] == 'excel') {
     $output = $_data['type'];
 }
 
+
+
+
+$_sql = sprintf(
+    "INSERT INTO `Download Dimension` (`Download Date`,`Download Type`,`Download User Key`) VALUES (%s,%s,%d) ",
+    prepare_mysql(gmdate('Y-m-d H:i:s')),
+    prepare_mysql($output),
+    $user->id
+);
+$db->exec($_sql);
+$download_key = $db->lastInsertId();
+
+
+
+
 $export_data = array(
+    'download_key'   => $download_key,
     'output'      => $output,
     'user_key'    => $user->id,
     'parent'      => $_data['parent'],
@@ -51,17 +67,19 @@ $export_data = array(
     'metadata'    => $_data['metadata'],
 );
 
-list($fork_key, $msg) = new_fork(
-    'au_export_edit_template', $export_data, $account->get('Account Code'), $db
+
+
+new_housekeeping_fork(
+    'au_export_edit_template', $export_data, $account->get('Account Code')
 );
 
 
 $response = array(
-    'state'    => 200,
-    'fork_key' => $fork_key,
-    'msg'      => $msg,
-    'type'     => $_data['type'],
-    'tipo'     => ''
+    'state'           => 200,
+    'download_key' => $download_key,
+    'txt'=>'<i class="fa background fa-spinner fa-spin"></i> '._('Queued').'</span>',
+
+
 );
 echo json_encode($response);
 

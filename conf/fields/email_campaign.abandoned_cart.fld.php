@@ -18,6 +18,8 @@ if (isset($options['new']) and $options['new']) {
 }
 
 
+
+
 $object_fields = array();
 
 $object_fields[] = array(
@@ -39,25 +41,28 @@ $object_fields[] = array(
     )
 );
 
+if($object->get('State Index')<50){
+    $object_fields[] = array(
+        'label'      => _('Recipients'),
+        'show_title' => true,
+        'fields'     => array(
+            array(
+                'edit'            => ($edit ? 'smallint_unsigned' : ''),
+                'id'              => 'Email_Campaign_Abandoned_Cart_Days_Inactive_in_Basket',
+                'value'           => $object->get('Email Campaign Abandoned Cart Days Inactive in Basket'),
+                'formatted_value' => $object->get('Abandoned Cart Days Inactive in Basket'),
 
-$object_fields[] = array(
-    'label'      => _('Recipients'),
-    'show_title' => true,
-    'fields'     => array(
-        array(
-            'edit'            => ($edit ? 'smallint_unsigned' : ''),
-            'id'              => 'Email_Campaign_Abandoned_Cart_Days_Inactive_in_Basket',
-            'value'           => $object->get('Email Campaign Abandoned Cart Days Inactive in Basket'),
-            'formatted_value' => $object->get('Abandoned Cart Days Inactive in Basket'),
+                'label'             => ucfirst($object->get_field_label('Email Campaign Abandoned Cart Days Inactive in Basket')),
+                'invalid_msg'       => get_invalid_message('smallint_unsigned'),
+                'required'          => true,
+                'type'              => 'value'
+            ),
+        )
 
-            'label'             => ucfirst($object->get_field_label('Email Campaign Abandoned Cart Days Inactive in Basket')),
-            'invalid_msg'       => get_invalid_message('smallint_unsigned'),
-            'required'          => true,
-            'type'              => 'value'
-        ),
-    )
+    );
+}
 
-);
+
 
 
 ?>

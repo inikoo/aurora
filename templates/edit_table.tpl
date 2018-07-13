@@ -56,7 +56,7 @@
                         <div class="export_download hide" id="export_download_excel"> {t}Download{/t}</div>
                     </td>
                     <td class="width_20">
-                        <i id="stop_export_table_excel" stop=0 onclick="stop_export('excel')" class="fa button fa-hand-stop-o error hide" title="{t}Stop{/t}"></i>
+                        <i id="stop_export_table_excel" stop=0 onclick="stop_export('excel')" class="fa button fa-hand-paper error hide" title="{t}Stop{/t}"></i>
                     </td>
                     <td id="export_table_excel" class="link" onclick="get_editable_data('excel')"><i class="fa fa-file-excel" title="Excel"></i>Excel
                     </td>
@@ -68,7 +68,7 @@
                         <div class="export_download hide " id="export_download_csv"> {t}Download{/t}</div>
 
                     </td>
-                    <td class="width_20"><i id="stop_export_table_csv" onclick="stop_export('csv')" class="fa button fa-hand-stop-o error hide" title="{t}Stop{/t}"></i></td>
+                    <td class="width_20"><i id="stop_export_table_csv" onclick="stop_export('csv')" class="fa button fa-hand-paper error hide" title="{t}Stop{/t}"></i></td>
                     <td id="export_table_csv" class="link" onclick="get_editable_data('csv')"><i class="fa fa-table" title="{t}Comma Separated Value{/t}"></i>CSV
                     </td>
                 </tr>

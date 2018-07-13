@@ -3003,10 +3003,11 @@ function get_tabs($data, $db, $account, $modules, $user, $smarty, $requested_tab
 
     } elseif ($data['section'] == 'email_campaign') {
 
+        $_content['tabs']['email_campaign.email_blueprints']['class'] = 'hide';
+
         switch ($data['_object']->get('Email Campaign State')) {
 
             case 'InProcess':
-                $_content['tabs']['email_campaign.email_blueprints']['class'] = 'hide';
                 $_content['tabs']['email_campaign.workshop']['class']   = 'hide';
                 $_content['tabs']['email_campaign.sent_emails']['class']      = 'hide';
                 $_content['tabs']['email_campaign.published_email']['class']  = 'hide';
@@ -3021,8 +3022,6 @@ function get_tabs($data, $db, $account, $modules, $user, $smarty, $requested_tab
 
             case 'ComposingEmail':
                 $_content['tabs']['email_campaign.email_blueprints']['class'] = 'hide';
-                // $_content['tabs']['email_campaign.email_template']['class'] = 'hide';
-
                 $_content['tabs']['email_campaign.published_email']['class'] = 'hide';
                 $_content['tabs']['email_campaign.sent_emails']['class']     = 'hide';
 
@@ -3039,6 +3038,18 @@ function get_tabs($data, $db, $account, $modules, $user, $smarty, $requested_tab
 
                 if ($data['tab'] == 'email_campaign.workshop') {
                     $data['tab'] ='email_campaign.published_email';
+                }
+            case 'Sent':
+            case 'Sending':
+                $_content['tabs']['email_campaign.email_blueprints']['class'] = 'hide';
+                $_content['tabs']['email_campaign.workshop']['class']   = 'hide';
+                $_content['tabs']['email_campaign.mail_list']['class']   = 'hide';
+
+                $_content['tabs']['email_campaign.sent_emails']['class']      = '';
+
+
+                if ($data['tab'] == 'email_campaign.workshop') {
+                    $data['tab'] ='email_campaign.sent_emails';
                 }
 
                 break;

@@ -51,13 +51,13 @@
   }
 }
 
-#edit_table_dialog{
+.edit_table_dialog{
   position:absolute;background-color: #fff;z-index:200;border: 1px solid #ccc;padding:10px;min-width: 450px;
 
   table td{padding:4px 16px}
 }
 
-.new_object, .presentation_card, .showcase, .export_dialog {
+.new_object, .presentation_card, .showcase, .export_dialog_block {
   table {
     width: 100%;
     .adr {
@@ -282,7 +282,7 @@ table {
 
 }
 
-.export_dialog {
+.export_dialog_block {
   position: absolute;
   z-index: 201;
   background: #fff;
@@ -291,13 +291,14 @@ table {
   .fa {
     margin-right: 5px;
   }
+
 }
 
-#export_dialog_config,#download_edit_items_dialog_config {
+.export_dialog_config,.download_edit_items_dialog_config {
   min-width: 400px;
 }
 
-#export_dialog,#download_edit_items_dialog {
+.export_dialog,.download_edit_items_dialog {
   min-width: 220px;
   .export_progress_bar_container {
     width: 120px;

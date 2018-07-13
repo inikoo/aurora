@@ -13,7 +13,7 @@ include_once 'class.DB_Table.php';
 
 class Account extends DB_Table {
 
-    function Account($_db = false) {
+    function __construct($_db = false) {
 
         if (!$_db) {
             global $db;

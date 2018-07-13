@@ -26,20 +26,19 @@ if (!isset($_REQUEST['tipo'])) {
 
 $_data = prepare_values(
     $_REQUEST, array(
-        'state'      => array('type' => 'json array'),
-        'type'       => array('type' => 'string'),
-        'ar_file'    => array('type' => 'string'),
-        'tipo'       => array('type' => 'string'),
-        'parameters' => array('type' => 'json array'),
-        'fields'     => array('type' => 'json array')
-    )
+                 'state'      => array('type' => 'json array'),
+                 'type'       => array('type' => 'string'),
+                 'ar_file'    => array('type' => 'string'),
+                 'tipo'       => array('type' => 'string'),
+                 'parameters' => array('type' => 'json array'),
+                 'fields'     => array('type' => 'json array')
+             )
 );
 
 $dont_save_table_state = true;
 $_data['nr']           = 1000000;
 $_data['page']         = 1;
 include 'conf/export_fields.php';
-
 
 
 if ($_data['tipo'] == 'timeserie_records') {
@@ -54,38 +53,30 @@ if ($_data['tipo'] == 'timeserie_records') {
         $field_set[2]['label'] .= ' '.$account->get('Currency Code');
         if ($timeseries->parent->get('Currency Code') == $account->get(
                 'Currency'
-            )
-        ) {
+            )) {
             unset($field_set[2]);
         }
     }
 
 
-}
-else {
-
+} else {
 
 
     if ($_data['tipo'] == 'billingregion_taxcategory.invoices' or $_data['tipo'] == 'billingregion_taxcategory.refunds') {
         $_tipo = 'invoices';
-    } elseif ($_data['tipo'] == 'in_process_parts' or $_data['tipo'] == 'active_parts' or $_data['tipo'] == 'discontinuing_parts' or $_data['tipo'] == 'discontinued_parts' ) {
+    } elseif ($_data['tipo'] == 'in_process_parts' or $_data['tipo'] == 'active_parts' or $_data['tipo'] == 'discontinuing_parts' or $_data['tipo'] == 'discontinued_parts') {
         $_tipo = 'parts';
-    } elseif ($_data['tipo'] == 'parts_barcode_errors'  ) {
+    } elseif ($_data['tipo'] == 'parts_barcode_errors') {
         $_tipo = 'part_barcode_errors';
-    } elseif ($_data['tipo'] == 'parts_to_replenish_picking_location'  ) {
+    } elseif ($_data['tipo'] == 'parts_to_replenish_picking_location') {
         $_tipo = 'warehouse_parts_to_replenish_picking_location';
-    }  elseif ($_data['tipo'] == 'abandoned_cart'  ) {
+    } elseif ($_data['tipo'] == 'abandoned_cart') {
         $_tipo = 'abandoned_cart.mail_list';
-    } elseif ($_data['tipo'] == 'newsletter_mail_list'  ) {
+    } elseif ($_data['tipo'] == 'newsletter_mail_list') {
         $_tipo = 'mail_list';
-    }
-
-
-
-    else {
+    } else {
         $_tipo = $_data['tipo'];
     }
-
 
 
     if (!isset($export_fields[$_tipo])) {
@@ -101,10 +92,8 @@ else {
 }
 
 
-
-
-$group_by = '';
-$_export_data=$_data;
+$group_by     = '';
+$_export_data = $_data;
 include_once 'prepare_table/init.php';
 
 
@@ -125,11 +114,11 @@ foreach ($_export_data['fields'] as $_key => $field_key) {
 
 $fields = trim(preg_replace('/,$/', '', $fields));
 
-if($fields=='')$fields='*';
+if ($fields == '') {
+    $fields = '*';
+}
 
-$sql
-    = "select $fields from $table $where $wheref  $group_by order by $order $order_direction ";
-
+$sql = "select $fields from $table $where $wheref  $group_by order by $order $order_direction ";
 
 
 if ($_export_data['type'] == 'excel') {
@@ -139,45 +128,59 @@ if ($_export_data['type'] == 'excel') {
 }
 
 
-if ($_export_data['tipo'] == 'products'  ) {
+if ($_export_data['tipo'] == 'products') {
 
-    $placeholders=array(
-        '[image_address]'=>$account->get('Account System Public URL').'/i.php?id='
+    $placeholders = array(
+        '[image_address]' => $account->get('Account System Public URL').'/i.php?id='
     );
 
 
-
-    $sql=strtr($sql, $placeholders);
+    $sql = strtr($sql, $placeholders);
 
 
 }
 
 
 
+$_sql = sprintf(
+    "INSERT INTO `Download Dimension` (`Download Date`,`Download Type`,`Download User Key`) VALUES (%s,%s,%d) ",
+    prepare_mysql(gmdate('Y-m-d H:i:s')),
+    prepare_mysql($_export_data['tipo']),
+    $user->id
+);
+$db->exec($_sql);
+
+
+//print "$sql\n";
+
+$download_key = $db->lastInsertId();
+
+
 $export_data = array(
     'table'      => $_export_data['tipo'],
+    'download_key'   => $download_key,
     'output'     => $output,
     'user_key'   => $user->id,
     'sql_count'  => $sql_totals,
     'sql_data'   => $sql,
     'fetch_type' => 'simple',
     'fields'     => $_export_data['fields'],
-    'field_set'  => $field_set
+    'field_set'  => $field_set,
 );
 
 
-
-list($fork_key, $msg) = new_fork(
-    'au_export', $export_data, $account->get('Account Code'), $db
+new_housekeeping_fork(
+    'au_export', $export_data, $account->get('Account Code')
 );
 
 
 $response = array(
-    'state'    => 200,
-    'fork_key' => $fork_key,
-    'msg'      => $msg,
-    'type'     => $_export_data['type'],
-    'tipo'     => $_export_data['tipo']
+    'state'           => 200,
+    'download_key' => $download_key,
+    'txt'=>'<i class="fa background fa-spinner fa-spin"></i> '._('Queued').'</span>',
+
+    'type' => $_export_data['type'],
+    'tipo' => $_export_data['tipo']
 );
 echo json_encode($response);
 

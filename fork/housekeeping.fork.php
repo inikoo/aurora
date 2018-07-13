@@ -192,6 +192,32 @@ function fork_housekeeping($job) {
             $store->update_orders_in_basket_data();
             $account->update_orders_in_basket_data();
 
+            $context = new ZMQContext();
+            $socket = $context->getSocket(ZMQ::SOCKET_PUSH, 'my pusher');
+            $socket->connect("tcp://localhost:5555");
+
+            $socket->send(
+                json_encode(array(
+                                'channel'=>$account->get('Account Code').'_real_time',
+                                'sections' => array(
+                                    array(
+                                        'section' => 'dashboard',
+
+                                        'update_metadata' => array(
+                                            'class_html' => array(
+                                                'Orders_In_Basket_Number' => $account->get('Orders In Basket Number'),
+                                                'Orders_In_Basket_Amount'=>$account->get('DC Orders In Basket Amount'),
+                                            )
+                                        )
+
+                                    )
+
+                                ),
+
+
+                            ))
+            );
+
             break;
         case 'order_items_changed':
             $order = get_object('Order', $data['order_key']);
@@ -233,6 +259,32 @@ function fork_housekeeping($job) {
                 default:
                     break;
             }
+
+            $context = new ZMQContext();
+            $socket = $context->getSocket(ZMQ::SOCKET_PUSH, 'my pusher');
+            $socket->connect("tcp://localhost:5555");
+
+            $socket->send(
+                json_encode(array(
+                                'channel'=>$account->get('Account Code').'_real_time',
+                                'sections' => array(
+                                    array(
+                                        'section' => 'dashboard',
+
+                                        'update_metadata' => array(
+                                            'class_html' => array(
+                                                'Orders_In_Basket_Number' => $account->get('Orders In Basket Number'),
+                                                'Orders_In_Basket_Amount'=>$account->get('DC Orders In Basket Amount'),
+                                            )
+                                        )
+
+                                    )
+
+                                ),
+
+
+                            ))
+            );
 
 
             break;
@@ -688,7 +740,7 @@ function fork_housekeeping($job) {
             $poll->update_answers();
             break;
         case 'update_sent_emails_data':
-            return false;
+
             if (!empty($data['email_template_key'])) {
                 $email_template = get_object('email_template', $data['email_template_key']);
                 $email_template->update_sent_emails_totals();
@@ -707,9 +759,14 @@ function fork_housekeeping($job) {
 
         case 'send_mailshot':
 
+            $context = new ZMQContext();
+            $socket = $context->getSocket(ZMQ::SOCKET_PUSH, 'my pusher');
+            $socket->connect("tcp://localhost:5555");
+
             $email_campaign = get_object('email_campaign', $data['mailshot_key']);
 
             if ($email_campaign->id) {
+                $email_campaign->socket=$socket;
                 $email_campaign->update_estimated_recipients();
                 $email_campaign->send_mailshot();
             }

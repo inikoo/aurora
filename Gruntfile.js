@@ -4,8 +4,9 @@ module.exports = function (grunt) {
         pkg: grunt.file.readJSON('package.json'), secret: grunt.file.readJSON('deployment.secret.json'),
 
         clean: {
-            app: ["build/app/*", "!build/app/keyring/**", "!build/app/server_files/**"], fork: ["build/fork/*", "!build/fork/keyring/**", "!build/fork/server_files/**"],
-
+            app: ["build/app/*", "!build/app/keyring/**", "!build/app/server_files/**"],
+            fork: ["build/fork/*", "!build/fork/keyring/**", "!build/fork/server_files/**"],
+            websocket: ["build/websocket/*"],
         }, concat: {
             js_libs: {
                 src: ['js/libs/jquery-2.2.1.js', 'js/libs/jquery-ui.js', 'js/libs/moment-with-locales.js', 'js/libs/chrono.js', 'js/libs/sha256.js', 'js/libs/underscore.js', 'js/libs/backbone.js', 'js/libs/backbone.paginator.js', 'js/libs/backgrid.js', 'js/libs/backgrid-filter.js', 'js/libs/intlTelInput.js', 'js/libs/d3.js', 'js/libs/d3fc.layout.js', 'js/libs/d3fc.js'],
@@ -266,7 +267,8 @@ module.exports = function (grunt) {
 
                 }
             }
-        }, copy: {
+        },
+        copy: {
 
             app: {
                 files: [{
@@ -296,6 +298,27 @@ module.exports = function (grunt) {
                     },
 
                 ],
+            },
+
+
+            websocket_stones: {
+                files: [{
+                    expand: true, cwd: 'websocket_server/', src: ['vendor/**'], dest: 'build/websocket/'
+                }
+
+                ]
+            },
+            websocket: {
+                files: [{
+                    expand: true, cwd: 'websocket_server/', src: ['app/**'], dest: 'build/websocket/'
+                },{
+                    expand: true,cwd: 'websocket_server/',  src: ['*.php'], dest: 'build/websocket/'
+                },{
+                    expand: true,cwd: 'websocket_server/',  src: ['composer*'], dest: 'build/websocket/'
+                }
+
+
+                ]
             },
 
             fork_stones: {
@@ -376,6 +399,19 @@ module.exports = function (grunt) {
                     debug: true,
                     releases_to_keep: '3'
                 }
+            },websocket: {
+                options: {
+                    local_path: 'build/websocket/',
+                    deploy_path: '/home/fork/websocket/',
+                    host: '<%= secret.fork.host %>',
+                    username: '<%= secret.fork.username %>',
+                    password: '<%= secret.fork.password %>',
+                    port: '<%= secret.fork.port %>',
+                    debug: true,
+                    releases_to_keep: '3',
+                    //exclude: ['keyring', 'external_libs', 'server_files'],
+                    after_deploy: 'cd /home/fork/websocket/current '
+                }
             }, ecom: {
                 options: {
                     local_path: 'ecom/',
@@ -436,6 +472,11 @@ module.exports = function (grunt) {
     grunt.registerTask('app', ['clean:app', 'imagemin', 'sass', 'concat', 'uglify', 'cssmin', 'copy:app']);
     grunt.registerTask('fork', ['clean:fork', 'copy:fork_stones', 'copy:fork']);
     grunt.registerTask('qfork', ['copy:fork']);
+
+    grunt.registerTask('ws', ['clean:websocket','copy:websocket', 'copy:websocket_stones']);
+    grunt.registerTask('qws', ['copy:websocket']);
+
+
     grunt.registerTask('pweb', ['sass:aurora_public', 'cssmin:pweb','uglify:pweb_mobile',
         'uglify:pweb_mobile',
         'uglify:pweb_mobile_logged_in',
@@ -452,6 +493,8 @@ module.exports = function (grunt) {
     ]);
     grunt.registerTask('deploy_fork', ['clean:fork', 'copy:fork_stones', 'copy:fork', 'ssh_deploy:fork_external_libs', 'ssh_deploy:fork']);
     grunt.registerTask('deploy_qfork', ['copy:fork', 'ssh_deploy:fork']);
+    grunt.registerTask('deploy_ws', ['clean:websocket', 'copy:websocket_stones', 'copy:websocket', 'ssh_deploy:websocket']);
+    grunt.registerTask('deploy_qws', ['copy:websocket', 'ssh_deploy:websocket']);
     grunt.registerTask('ecom', ['ssh_deploy:ecom']);
 
 };

@@ -700,7 +700,13 @@ trait ProductCategory {
         $this->update($update_data, 'no_history');
 
 
+        $this->get_data('id',$this->id);
+
         if ($old_active_products != $this->get('Product Category Active Products')) {
+
+
+
+
             $webpage = $this->get_webpage();
             if ($webpage->id) {
                 $webpage->reindex_items();
@@ -751,7 +757,17 @@ trait ProductCategory {
 
     function get_webpage() {
 
-        $this->webpage         = get_object('Webpage', $this->data['Product Category Webpage Key']);
+        if(isset($this->data['Product Category Webpage Key'])){
+            $webpage_key=$this->data['Product Category Webpage Key'];
+        }else{
+            $webpage_key=0;
+        }
+
+
+
+
+
+        $this->webpage         = get_object('Webpage', $webpage_key);
         $this->webpage->editor = $this->editor;
 
 

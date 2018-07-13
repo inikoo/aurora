@@ -60,11 +60,42 @@ if ($category->get('Category Scope') == 'Product') {
 
         );
 
+        //======
+
+        include_once 'conf/export_edit_template_fields.php';
+
+
+        $edit_table_dialog = array(
+
+
+            'spreadsheet_edit' => array(
+                'tipo'       => 'edit_objects',
+                'parent'     => $state['object'],
+                'parent_key' => $state['key'],
+                'object'     => 'product',
+                'parent_code' => preg_replace("/[^A-Za-z0-9 ]/", '', $state['_object']->get('Code')),
+            ),
+
+        );
+        $smarty->assign('edit_table_dialog', $edit_table_dialog);
+
+        $objects = 'product';
+
+
+        $edit_fields = $export_edit_template_fields[$objects];
+
+
+
+        $smarty->assign('edit_fields', $edit_fields);
+
+        //=====
+
+
 
         $table_buttons[] = array(
             'icon'  => 'edit',
             'title' => _("Edit products"),
-            'id'    => 'edit_table'
+            'id'    => 'edit_dialog'
         );
 
         $table_buttons[] = array(
