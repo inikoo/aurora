@@ -2846,115 +2846,125 @@ class Part extends Asset {
 
     function update_stock_run() {
 
+        // todo experimental stuff
         $account=get_object('Account',1);
 
-        $running_stock = 0;
-        $running_stock_value=0;
-        $running_cost_per_sko='';
+        if($account->get('Account Add Stock Value Type')=='Blockchain'){
 
-        $sql = sprintf('SELECT `Date`,`Note`,`Running Stock`,`Inventory Transaction Key`, `Inventory Transaction Quantity`,`Inventory Transaction Amount`,`Inventory Transaction Type`,`Location Key`,`Inventory Transaction Section`,`Running Cost per SKO`,`Running Stock Value`,`Running Cost per SKO` FROM `Inventory Transaction Fact` WHERE `Part SKU`=%d   and  `Inventory Transaction Type`  ORDER BY `Date`   ', $this->id);
+            $running_stock = 0;
+            $running_stock_value=0;
+            $running_cost_per_sko='';
 
-      //  print "$sql\n";
+            $sql = sprintf('SELECT `Date`,`Note`,`Running Stock`,`Inventory Transaction Key`, `Inventory Transaction Quantity`,`Inventory Transaction Amount`,`Inventory Transaction Type`,`Location Key`,`Inventory Transaction Section`,`Running Cost per SKO`,`Running Stock Value`,`Running Cost per SKO` FROM `Inventory Transaction Fact` WHERE `Part SKU`=%d   and  `Inventory Transaction Type`  ORDER BY `Date`   ', $this->id);
 
-        if ($result = $this->db->query($sql)) {
-            foreach ($result as $row) {
+            //  print "$sql\n";
 
-//print "=========\n";
-                if(
-                    //!(
-                   // ($row['Inventory Transaction Type']=='Adjust' )
-                   // or
-                   // ($row['Inventory Transaction Section']=='In' and $row['Inventory Transaction Quantity']>0)
-                   // )
+            if ($result = $this->db->query($sql)) {
+                foreach ($result as $row) {
 
-                  !( $row['Inventory Transaction Section']=='In' and $row['Inventory Transaction Quantity']>0  ) and  $running_cost_per_sko!='' ){
+                    //print "=========\n";
+                    if(
+                        //!(
+                        // ($row['Inventory Transaction Type']=='Adjust' )
+                        // or
+                        // ($row['Inventory Transaction Section']=='In' and $row['Inventory Transaction Quantity']>0)
+                        // )
 
-                   // print $running_cost_per_sko."\n";
-                   // print_r($row);
+                        !( $row['Inventory Transaction Section']=='In' and $row['Inventory Transaction Quantity']>0  ) and  $running_cost_per_sko!='' ){
+
+                        // print $running_cost_per_sko."\n";
+                        // print_r($row);
+
+                        $sql           = sprintf(
+                            'UPDATE `Inventory Transaction Fact` SET `Inventory Transaction Amount`=%f  WHERE `Inventory Transaction Key`=%d ',
+                            $row['Inventory Transaction Quantity']*$running_cost_per_sko,
+
+                            $row['Inventory Transaction Key']
+                        );
+                        $this->db->exec($sql);
+                        //  print "$sql\n";
+
+                        $row['Inventory Transaction Amount']=$row['Inventory Transaction Quantity']*$running_cost_per_sko;
+
+
+                        // print $running_cost_per_sko."\n";
+
+
+                    }
+
+
+                    // print_r($row);
+
+
+                    $running_stock = $running_stock + $row['Inventory Transaction Quantity'];
+                    $running_stock_value=$running_stock_value+$row['Inventory Transaction Amount'];
+                    if($running_stock==0){
+                        //$running_cost_per_sko='';
+                    }else{
+                        $running_cost_per_sko=$running_stock_value/$running_stock;
+                    }
+
 
                     $sql           = sprintf(
-                        'UPDATE `Inventory Transaction Fact` SET `Inventory Transaction Amount`=%f  WHERE `Inventory Transaction Key`=%d ',
-                        $row['Inventory Transaction Quantity']*$running_cost_per_sko,
-
+                        'UPDATE `Inventory Transaction Fact` SET `Running Stock`=%f,`Running Stock Value`=%f,`Running Cost per SKO`=%s  WHERE `Inventory Transaction Key`=%d ',
+                        $running_stock,
+                        $running_stock_value,
+                        prepare_mysql($running_cost_per_sko),
                         $row['Inventory Transaction Key']
                     );
-                   $this->db->exec($sql);
-                  //  print "$sql\n";
-
-                    $row['Inventory Transaction Amount']=$row['Inventory Transaction Quantity']*$running_cost_per_sko;
+                    $this->db->exec($sql);
+                    // print "$sql\n";
 
 
-                   // print $running_cost_per_sko."\n";
-
+                    //print "RR: $running_cost_per_sko \n-------\n";
 
                 }
 
 
-                // print_r($row);
 
 
-                $running_stock = $running_stock + $row['Inventory Transaction Quantity'];
-                $running_stock_value=$running_stock_value+$row['Inventory Transaction Amount'];
-                if($running_stock==0){
-                    //$running_cost_per_sko='';
-                }else{
-                    $running_cost_per_sko=$running_stock_value/$running_stock;
-                }
-
-
-                $sql           = sprintf(
-                    'UPDATE `Inventory Transaction Fact` SET `Running Stock`=%f,`Running Stock Value`=%f,`Running Cost per SKO`=%s  WHERE `Inventory Transaction Key`=%d ',
-                    $running_stock,
-                    $running_stock_value,
-                    prepare_mysql($running_cost_per_sko),
-                    $row['Inventory Transaction Key']
-                );
-                $this->db->exec($sql);
-              // print "$sql\n";
-
-
-               //print "RR: $running_cost_per_sko \n-------\n";
-
+            } else {
+                print_r($error_info = $this->db->errorInfo());
+                print "$sql\n";
+                exit;
             }
+            $this->update_field_switcher('Part Cost in Warehouse',$running_cost_per_sko,'no_history');
+
+        }else{
 
 
-            if($account->get('Account Add Stock Value Type')=='Blockchain'){
+            $sql=sprintf('select `Date`,(`Inventory Transaction Amount`/`Inventory Transaction Quantity`) as value_per_sko from  `Inventory Transaction Fact` ITF  where  `Inventory Transaction Amount`>0 and `Inventory Transaction Quantity`>0 and  ( `Inventory Transaction Section`=\'In\' or ( `Inventory Transaction Type`=\'Adjust\' and `Inventory Transaction Quantity`>0 and `Location Key`>1 )  )  and ITF.`Part SKU`=%d  order by `Date` desc, FIELD(`Inventory Transaction Type`, \'In\',\'Adjust\')  limit 1 ',$this->id);
 
+            print $sql;
 
-                $this->update_field_switcher('Part Cost in Warehouse',$running_cost_per_sko,'no_history');
+            if ($result=$this->db->query($sql)) {
+                foreach ($result as $row) {
 
-            }else{
+                    //  print_r($row);
 
-
-                $sql=sprintf('select `Date`,(`Inventory Transaction Amount`/`Inventory Transaction Quantity`) as value_per_sko from  `Inventory Transaction Fact` ITF  where  `Inventory Transaction Amount`>0 and `Inventory Transaction Quantity`>0 and  ( `Inventory Transaction Section`=\'In\' or ( `Inventory Transaction Type`=\'Adjust\' and `Inventory Transaction Quantity`>0 and `Location Key`>1 )  )  and ITF.`Part SKU`=%d  order by `Date` desc, FIELD(`Inventory Transaction Type`, \'In\',\'Adjust\')  limit 1 ',$this->id);
-
-                if ($result=$this->db->query($sql)) {
-                		foreach ($result as $row) {
-
-                		  //  print_r($row);
-
-                            $this->update_field_switcher('Part Cost in Warehouse',$row['value_per_sko'],'no_history');
-                		}
-                }else {
-                		print_r($error_info=$this->db->errorInfo());
-                		print "$sql\n";
-                		exit;
+                    $this->update_field_switcher('Part Cost in Warehouse',$row['value_per_sko'],'no_history');
                 }
-
-
-               // exit('caca');
-                //$this->update_field_switcher('Part Cost in Warehouse',$running_cost_per_sko,'no_history');
-
-
+            }else {
+                print_r($error_info=$this->db->errorInfo());
+                print "$sql\n";
+                exit;
             }
-
-
-
-        } else {
-            print_r($error_info = $this->db->errorInfo());
-            print "$sql\n";
-            exit;
         }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
     }
