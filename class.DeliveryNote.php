@@ -1803,7 +1803,7 @@ class DeliveryNote extends DB_Table {
         }
 
 
-        
+
 
         $this->update_state($state);
 
