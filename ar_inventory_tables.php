@@ -550,10 +550,10 @@ function inventory_stock_history($_data, $db, $user, $account) {
                 'locations'        => number($data['Locations']),
                 'value'            => $value,
                 'commercial_value' => money($data['Value Commercial'], $account->get('Currency Code')),
-                'in_po'            => sprintf('<span class="%s">%s</span>', ($data['in_po'] == 0 ? 'super_discreet' : ''), money($data['in_po'], $account->get('Currency Code'))),
-                'in_other'         => sprintf('<span class="%s">%s</span>', ($data['in_other'] == 0 ? 'super_discreet' : ''), money($data['in_other'], $account->get('Currency Code'))),
-                'out_sales'        => sprintf('<span class="%s">%s</span>', ($data['out_sales'] == 0 ? 'super_discreet' : ''), money($data['out_sales'], $account->get('Currency Code'))),
-                'out_other'        => sprintf('<span class="%s">%s</span>', ($data['out_other'] == 0 ? 'super_discreet' : ''), money($data['out_other'], $account->get('Currency Code'))),
+               // 'in_po'            => sprintf('<span class="%s">%s</span>', ($data['in_po'] == 0 ? 'super_discreet' : ''), money($data['in_po'], $account->get('Currency Code'))),
+               // 'in_other'         => sprintf('<span class="%s">%s</span>', ($data['in_other'] == 0 ? 'super_discreet' : ''), money($data['in_other'], $account->get('Currency Code'))),
+                //'out_sales'        => sprintf('<span class="%s">%s</span>', ($data['out_sales'] == 0 ? 'super_discreet' : ''), money($data['out_sales'], $account->get('Currency Code'))),
+                //'out_other'        => sprintf('<span class="%s">%s</span>', ($data['out_other'] == 0 ? 'super_discreet' : ''), money($data['out_other'], $account->get('Currency Code'))),
 
 
             );
