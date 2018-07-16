@@ -19,7 +19,6 @@ $smarty->template_dir = 'templates';
 $smarty->compile_dir  = 'server_files/smarty/templates_c';
 $smarty->cache_dir    = 'server_files/smarty/cache';
 $smarty->config_dir   = 'server_files/smarty/configs';
-$smarty->assign('_DEVEL', _DEVEL);
 
 if (empty($_REQUEST['action'])) {
     $response = log_api_key_access_failure(
