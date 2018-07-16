@@ -1798,7 +1798,7 @@ class DeliveryNote extends DB_Table {
 
         if ($this->get('Delivery Note Number Picked Items') == $this->get('Delivery Note Number To Pick Items')) {
 
-                $state('Picked');
+                $state='Picked';
 
         }
 
