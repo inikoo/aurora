@@ -243,86 +243,7 @@ switch ($_REQUEST['action']) {
 
     case 'pick_item':
 
-
-        if (!isset($_REQUEST['staff_key'])) {
-            $response = array(
-                'state' => 'Error',
-                'msg'   => 'staff_key needed'
-            );
-            echo json_encode($response);
-            exit;
-        }
-
-        if (!isset($_REQUEST['delivery_note_key'])) {
-            $response = array(
-                'state' => 'Error',
-                'msg'   => 'delivery_note_key needed'
-            );
-            echo json_encode($response);
-            exit;
-        }
-
-        if (!isset($_REQUEST['itf_key'])) {
-            $response = array(
-                'state' => 'Error',
-                'msg'   => 'itf_key needed'
-            );
-            echo json_encode($response);
-            exit;
-        }
-
-
-        if (!isset($_REQUEST['quantity'])) {
-            $response = array(
-                'state' => 'Error',
-                'msg'   => 'quantity needed'
-            );
-            echo json_encode($response);
-            exit;
-        }
-
-        if (!is_numeric($_REQUEST['delivery_note_key']) or $_REQUEST['delivery_note_key'] <= 0) {
-            $response = array(
-                'state' => 'Error',
-                'msg'   => 'invalid delivery_note_key: '.$_REQUEST['delivery_note_key']
-            );
-            echo json_encode($response);
-            exit;
-        }
-
-        if (!is_numeric($_REQUEST['staff_key']) or $_REQUEST['staff_key'] <= 0) {
-            $response = array(
-                'state' => 'Error',
-                'msg'   => 'invalid staff_key: '.$_REQUEST['staff_key']
-            );
-            echo json_encode($response);
-            exit;
-        }
-
-
-        if (!is_numeric($_REQUEST['itf_key']) or $_REQUEST['itf_key'] <= 0) {
-            $response = array(
-                'state' => 'Error',
-                'msg'   => 'invalid itf_key: '.$_REQUEST['itf_key']
-            );
-            echo json_encode($response);
-            exit;
-        }
-
-
-        $qty = intval($_REQUEST['quantity']);
-
-
-        if ($qty < 0) {
-            $response = array(
-                'state' => 'Error',
-                'msg'   => 'invalid quantity: '.$_REQUEST['quantity'].'=>',
-                $qty
-            );
-            echo json_encode($response);
-            exit;
-        }
-
+        include 'api.includes/parse_arguments_dn_item_operations.inc.php';
 
         $delivery_note = get_object('DeliveryNote', $_REQUEST['delivery_note_key']);
         $delivery_note->update_item_picked_quantity(
@@ -341,9 +262,49 @@ switch ($_REQUEST['action']) {
         echo json_encode($response);
         exit;
         break;
+    case 'pack_item':
 
+        include 'api.includes/parse_arguments_dn_item_operations.inc.php';
 
+        $delivery_note = get_object('DeliveryNote', $_REQUEST['delivery_note_key']);
+        $delivery_note->update_item_packed_quantity(
+            array(
+                'transaction_key' => $_REQUEST['itf_key'],
+                'qty'             => $qty,
+                'picker_key'      => $_REQUEST['staff_key'],
 
+            )
+        );
+
+        $response = array(
+            'state' => 'OK',
+            'data'  => $delivery_note->get_update_metadata()
+        );
+        echo json_encode($response);
+        exit;
+        break;
+
+    case 'set_as_out_of_stock_item':
+
+        include 'api.includes/parse_arguments_dn_item_operations.inc.php';
+
+        $delivery_note = get_object('DeliveryNote', $_REQUEST['delivery_note_key']);
+        $delivery_note->update_item_picked_quantity(
+            array(
+                'transaction_key' => $_REQUEST['itf_key'],
+                'qty'             => $qty,
+                'picker_key'      => $_REQUEST['staff_key'],
+
+            )
+        );
+
+        $response = array(
+            'state' => 'OK',
+            'data'  => $delivery_note->get_update_metadata()
+        );
+        echo json_encode($response);
+        exit;
+        break;
 
     case 'get_delivery_note_items':
 
@@ -425,5 +386,8 @@ switch ($_REQUEST['action']) {
         exit;
 
 }
+
+
+
 
 ?>
