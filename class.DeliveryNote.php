@@ -587,7 +587,7 @@ class DeliveryNote extends DB_Table {
                     );
 
                     if ($this->data['Delivery Note Shipper Tracking'] != '') {
-                        $consignment .=' '.$this->data['Delivery Note Shipper Tracking'];
+                        $consignment .= ' '.$this->data['Delivery Note Shipper Tracking'];
                     }
 
                 } else {
@@ -647,7 +647,7 @@ class DeliveryNote extends DB_Table {
                 return money($this->data['Delivery Note '.$key], $account->get('Currency Code')).$account->get('Currency Code');
             case('Shipper'):
 
-                return (!empty($this->data['Delivery Note Shipper Key'] ) ? get_object('Shipper', $this->data['Delivery Note Shipper Key']) : false);
+                return (!empty($this->data['Delivery Note Shipper Key']) ? get_object('Shipper', $this->data['Delivery Note Shipper Key']) : false);
 
                 break;
 
@@ -1072,7 +1072,7 @@ class DeliveryNote extends DB_Table {
                         'class_html' => array(
                             'Shipper_Code' => $shipper->get('Code'),
                             'Shipper_Name' => $shipper->get('Name'),
-                            'Consignment'=>$this->get('Consignment')
+                            'Consignment'  => $this->get('Consignment')
 
                         ),
                         'title'      => array(
@@ -1087,7 +1087,7 @@ class DeliveryNote extends DB_Table {
                         'class_html' => array(
                             'Shipper_Code' => _('Courier not set'),
                             'Shipper_Name' => '',
-                            'Consignment'=>$this->get('Consignment')
+                            'Consignment'  => $this->get('Consignment')
 
                         ),
                         'title'      => array(
@@ -1107,7 +1107,7 @@ class DeliveryNote extends DB_Table {
                         'class_html' => array(
                             'Shipper_Code' => $shipper->get('Code'),
                             'Shipper_Name' => $shipper->get('Name'),
-                            'Consignment'=>$this->get('Consignment')
+                            'Consignment'  => $this->get('Consignment')
 
                         ),
                         'title'      => array(
@@ -1203,13 +1203,20 @@ class DeliveryNote extends DB_Table {
                     return;
                 }
 
-                $this->update_field(
-                    'Delivery Note Date Start Picking', $date, 'no_history'
+
+                if ($this->get('Delivery Note Date Start Picking') == '') {
+                    $this->fast_update(
+                        array('Delivery Note Date Start Picking' => $date)
+                    );
+                }
+                $this->fast_update(
+                    array(
+                        'Delivery Note Date Finish Picking' => '',
+                        'Delivery Note State'               => $value
+
+                    )
                 );
-                //$this->update_field('Supplier Delivery Estimated Receiving Date', '', 'no_history');
-                $this->update_field(
-                    'Delivery Note State', $value, 'no_history'
-                );
+             
 
                 $operations = array(
                     'delete_operations',
@@ -1226,12 +1233,13 @@ class DeliveryNote extends DB_Table {
                     return;
                 }
 
-                $this->update_field(
-                    'Delivery Note Date Finish Picking', $date, 'no_history'
-                );
-                //$this->update_field('Supplier Delivery Estimated Receiving Date', '', 'no_history');
-                $this->update_field(
-                    'Delivery Note State', $value, 'no_history'
+                $this->fast_update(
+
+                    array(
+                        'Delivery Note Date Finish Picking' => $date,
+                        'Delivery Note State'               => $value
+                    )
+
                 );
 
 
@@ -1825,7 +1833,6 @@ class DeliveryNote extends DB_Table {
 
 
     }
-
 
 
     function update_item_out_of_stock_quantity($data) {
