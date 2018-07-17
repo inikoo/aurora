@@ -2161,25 +2161,25 @@ function delivery_note_items($_data, $db, $user) {
 
             if ($data['Picked'] == $data['Required']) {
 
-                $state_picking = sprintf('<i class="fa-dolly-flatbed-alt fa success discreet" title="%s"></i>', _('Picked'));
+                $state_picking = sprintf('<i class="fa-dolly-flatbed-alt fa success discreet fa-fw " title="%s"></i>', _('Picked'));
             } elseif($data['Picked']>0) {
-                $state_picking = sprintf('<i class="fa-dolly-flatbed-alt fa discreet" title="%s"></i>', _('Picking'));
+                $state_picking = sprintf('<i class="fa-dolly-flatbed-alt fa discreet fa-fw " title="%s"></i>', _('Picking'));
 
             }else {
-                $state_picking = sprintf('<i class="fa-dolly-flatbed-empty fa discreet" title="%s"></i>', _('To be picked'));
+                $state_picking = sprintf('<i class="fa-dolly-flatbed-empty fa discreet fa-fw " title="%s"></i>', _('To be picked'));
 
             }
 
 
             if ($data['Packed'] == $data['Required']) {
 
-                $state_packing = sprintf('<i class="fa-check-circle fa success" title="%s"></i>', _('Packed'));
+                $state_packing = sprintf('<i class="fa-check-circle fa success fa-fw " title="%s"></i>', _('Packed'));
                 $state_picking='';
             } elseif($data['Packed']>0) {
-                $state_packing = sprintf('<i class="fa-arrow-alt-circle-down discreet fa " title="%s"></i>', _('Packing'));
+                $state_packing = sprintf('<i class="fa-arrow-alt-circle-down discreet fa fa-fw " title="%s"></i>', _('Packing'));
 
             }else {
-                $state_packing = sprintf('<i class="fa-arrow-circle  super_discreet fa " title="%s"></i>', _('To be picked'));
+                $state_packing = sprintf('<i class="fa-arrow-circle  super_discreet fa fa-fw " title="%s"></i>', _('To be picked'));
 
             }
 
