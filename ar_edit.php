@@ -1689,18 +1689,35 @@ function new_object($account, $db, $user, $editor, $data, $smarty) {
             break;
         case 'Customer':
             include_once 'class.Customer.php';
-            if (!$parent->error) {
-                list($customer, $website_user) = $parent->create_customer($data['fields_data']);
+
+
+            list($customer, $website_user) = $parent->create_customer($data['fields_data']);
+
+            if ($parent->new_customer) {
+
+
                 $object = $customer;
                 $smarty->assign('account', $account);
                 $smarty->assign('customer', $customer);
                 $smarty->assign('website_user', $website_user);
 
-                $pcard        = $smarty->fetch(
-                    'presentation_cards/customer.pcard.tpl'
-                );
+
+                $pcard        = $smarty->fetch('presentation_cards/customer.pcard.tpl');
                 $updated_data = array();
+            } else {
+                $response = array(
+                    'state' => 400,
+                    'msg'   => $parent->msg
+
+                );
+                echo json_encode($response);
+                exit;
+
             }
+
+
+
+
             break;
         case 'Prospect':
             include_once 'class.Prospect.php';
@@ -1788,7 +1805,7 @@ function new_object($account, $db, $user, $editor, $data, $smarty) {
         case 'Supplier Part':
         case 'Supplier_Part':
 
-        include_once 'class.SupplierPart.php';
+            include_once 'class.SupplierPart.php';
             $object = $parent->create_supplier_part_record(
                 $data['fields_data']
             );
