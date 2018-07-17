@@ -16,7 +16,7 @@ function fork_export_edit_template($job) {
 
 
 
-    return 1;
+
 
     if (!$_data = get_fork_metadata($job)) {
         return;
