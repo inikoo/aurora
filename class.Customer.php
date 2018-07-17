@@ -163,23 +163,46 @@ class Customer extends Subject {
 
     function create($raw_data, $address_raw_data, $args = '') {
 
-
+/*
         $this->data = $this->base_data();
         foreach ($raw_data as $key => $value) {
             if (array_key_exists($key, $this->data)) {
                 $this->data[$key] = _trim($value);
             }
         }
-        $this->editor = $raw_data['editor'];
 
-        if ($this->data['Customer First Contacted Date'] == '') {
-            $this->data['Customer First Contacted Date'] = gmdate('Y-m-d H:i:s');
-        }
+*/
+        $this->editor = $raw_data['editor'];
+        unset($raw_data['editor']);
+        //if ($this->data['Customer First Contacted Date'] == '') {
+        //    $this->data['Customer First Contacted Date'] = gmdate('Y-m-d H:i:s');
+       // }
+
+        $raw_data['Customer First Contacted Date']=gmdate('Y-m-d H:i:s');
+        $raw_data['Customer Sticky Note']='';
+
+
+
+        /*
+        //todo remove this in the DB after migration
+        unset($this->data['Customer Main Country Key']);
+        unset($this->data['Customer Main Delivery Address Country Key']);
+        unset($this->data['Customer Main Billing Address Country Key']);
+        unset($this->data['Customer Last Ship To Key']);
+        unset($this->data['Customer Active Ship To Records']);
+        unset($this->data['Customer Total Ship To Records']);
+        unset($this->data['Customer Last Billing To Key']);
+        unset($this->data['Customer Active Billing To Records']);
+        unset($this->data['Customer Total Billing To Records']);
+        unset($this->data['Customer Company Key']);
+*/
+
+
 
 
         $keys   = '';
         $values = '';
-        foreach ($this->data as $key => $value) {
+        foreach ($raw_data as $key => $value) {
             $keys .= ",`".$key."`";
             if (in_array(
                 $key, array(
@@ -202,6 +225,8 @@ class Customer extends Subject {
         $keys   = preg_replace('/^,/', '', $keys);
 
         $sql = "insert into `Customer Dimension` ($keys) values ($values)";
+
+
 
 
         if ($this->db->exec($sql)) {

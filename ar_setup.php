@@ -273,7 +273,11 @@ function get_tab($db, $smarty, $user, $account, $tab, $subtab, $state = false, $
     if (is_array($state)) {
 
 
-        $_SESSION['state'][$state['module']][$state['section']]['tab'] = $_tab;
+        //$_SESSION['state'][$state['module']][$state['section']]['tab'] = $_tab;
+
+
+        $session->set('state/'.$state['module'].'/'.$state['section'].'/tab',$_tab);
+
         if ($_subtab != '') {
             $_SESSION['tab_state'][$_tab] = $_subtab;
         }

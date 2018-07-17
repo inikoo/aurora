@@ -132,7 +132,7 @@ function get_payments_navigation($data, $user, $smarty, $db) {
                 $title = _('Payments').' <span class="id" title="'.$store->get('Name').'">'.$store->get('Code').'</span>';
 
 
-                sections['payments']['selected'] = true;
+                $sections['payments']['selected'] = true;
 
             }
 

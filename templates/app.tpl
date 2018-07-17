@@ -75,7 +75,7 @@
 
 
         <script src="/js/help.js?v180124v4"></script>
-        <script src="/js/app.js?v181711v9"></script>
+        <script src="/js/app.js?v180718v1"></script>
         <script src="/js/keyboard_shortcuts.js"></script>
         <script src="/js/barcode_scanner.js?v1712v2"></script>
         <script src="/js/search.js"></script>
@@ -138,7 +138,7 @@
         <script src="/js/libs/base64.js?v2"></script>
         <script src="/js/libs/jquery.formatCurrency-1.4.0.min.js"></script>
 
-        <script src="/js/libs/autobahn.js"></script>
+        <script src="/js/libs/autobahn.v1.js"></script>
 
 
 

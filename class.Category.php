@@ -1732,6 +1732,9 @@ class Category extends DB_Table {
 
                     if (function_exists('mysql_query') and $account->get('Account Code') == 'AW') {
 
+
+
+
                         $fam_data = array(
 
                             'Product Family Code'                   => $code,

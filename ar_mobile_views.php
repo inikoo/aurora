@@ -104,9 +104,10 @@ function get_view($db, $smarty, $user, $account, $modules) {
     $state = parse_request($data, $db, $modules, $account, $user);
 
 
-    $state['current_store']     = $_SESSION['current_store'];
-    $state['current_website']   = $_SESSION['current_website'];
-    $state['current_warehouse'] = $_SESSION['current_warehouse'];
+
+
+    $state['current_warehouse'] = $session->get('current_warehouse');
+    $state['current_store'] = $session->get('current_store');
 
 
     $store     = '';
@@ -163,7 +164,7 @@ function get_view($db, $smarty, $user, $account, $modules) {
                 'Website', $state['parent_key']
             );
             $website                  = $_parent;
-            $state['current_website'] = $_parent->id;
+            //$state['current_website'] = $_parent->id;
             $website                  = $_parent;
 
             break;
@@ -174,7 +175,7 @@ function get_view($db, $smarty, $user, $account, $modules) {
             $website                  = get_object(
                 'Website', $_parent->get('Website Node Website Key')
             );
-            $state['current_website'] = $website->id;
+            //$state['current_website'] = $website->id;
 
 
             break;
@@ -453,13 +454,14 @@ function get_view($db, $smarty, $user, $account, $modules) {
 
 
     if (isset($state['current_store'])) {
-        $_SESSION['current_store'] = $state['current_store'];
+        $session->get('current_store',$state['current_store']);
+
     }
-    if (isset($state['current_website'])) {
-        $_SESSION['current_website'] = $state['current_website'];
-    }
+    //if (isset($state['current_website'])) {
+    //    $_SESSION['current_website'] = $state['current_website'];
+    //}
     if (isset($state['current_warehouse'])) {
-        $_SESSION['current_warehouse'] = $state['current_warehouse'];
+        $session->get('current_warehouse',$state['current_warehouse']);
     }
 
     $response = array('state' => array());
