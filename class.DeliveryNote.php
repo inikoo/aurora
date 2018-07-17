@@ -1984,9 +1984,21 @@ class DeliveryNote extends DB_Table {
         $this->update_metadata = array(
             'state_index'                => $this->get('State Index'),
             'picked_quantity_components' => get_item_picked(
-                $pending_picking, $part_location->get('Quantity On Hand'), $row['Inventory Transaction Key'], $row['Part SKU'], $picked, $part_location->part->get('Part Current On Hand Stock')
+                $pending_picking,
+                $part_location->get('Quantity On Hand'),
+                $row['Inventory Transaction Key'],
+                $row['Part SKU'],
+                $picked,
+                $part_location->part->get('Part Current On Hand Stock'),
+                $part_location->part->get('Part SKO Barcode'),
+                $part_location->part->get('Part Reference'),
+                $part_location->part->get('Part Package Description'),
+                $part_location->part->get('Part Main Image Key')
+
+
             ),
-            'packed_quantity_components' => get_item_packed($pending, $row['Inventory Transaction Key'], $row['Part SKU'], $packed),
+            'packed_quantity_components' => get_item_packed(
+                $pending, $row['Inventory Transaction Key'], $row['Part SKU'], $packed),
             'location_components'        => get_item_location(
                 $pending, $part_location->get('Quantity On Hand'), $date, $part_location->location->id, $part_location->location->get('Code'), $part_location->part->get('Part Current On Hand Stock')
             ),
