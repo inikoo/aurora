@@ -12,6 +12,9 @@
 
 error_reporting(E_ALL ^ E_DEPRECATED);
 
+require_once 'vendor/autoload.php';
+
+
 include 'utils/aes.php';
 include 'utils/general_functions.php';
 include 'utils/system_functions.php';

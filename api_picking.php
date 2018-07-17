@@ -331,7 +331,7 @@ switch ($_REQUEST['action']) {
         }
 
         $delivery_note = get_object('DeliveryNote', $_REQUEST['delivery_note_key']);
-        $delivery_note->update_item_picked_quantity2(
+        $delivery_note->update_item_picked_quantity(
             array(
                 'transaction_key' => $_REQUEST['itf_key'],
                 'qty'             => $qty,

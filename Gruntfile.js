@@ -324,6 +324,8 @@ module.exports = function (grunt) {
             fork_stones: {
                 files: [{
                     expand: true, src: ['external_libs/**'], dest: 'build/fork/'
+                },{
+                    expand: true, src: ['vendor/**'], dest: 'build/fork/'
                 }, {
                     expand: true, src: ['locale/**'], dest: 'build/fork/'
                 }, {

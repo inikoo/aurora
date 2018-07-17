@@ -26,6 +26,7 @@ require_once 'class.Category.php';
 
 
 
+
             $part->update_products_data();
             $part->update_commercial_value();
 
@@ -33,7 +34,7 @@ require_once 'class.Category.php';
 
             $part->update_cost();
             if($part->get('Part Status')=='In Process' and count($part->get_locations())==0 ){
-                $part->update(array('Part Cost in Warehouse'=>''),'no_history');
+              //  $part->update(array('Part Cost in Warehouse'=>''),'no_history');
             }else{
                 $part->update(array('Part Cost in Warehouse'=>$part->get('Part Cost')),'no_history');
 
