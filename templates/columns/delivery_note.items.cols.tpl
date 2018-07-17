@@ -88,8 +88,8 @@ defaultOrder:1,
 editable: false,
 sortType: "toggle",
 {if $sort_key=='overview_state'}direction: '{if $sort_order==1}descending{else}ascending{/if}',{/if}
-cell: Backgrid.HtmlCell.extend({ className: "aright"} ),
-headerCell: integerHeaderCell
+cell: Backgrid.HtmlCell.extend({ className: "acenter"} ),
+
 },
 
 

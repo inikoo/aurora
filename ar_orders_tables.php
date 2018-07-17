@@ -2155,35 +2155,39 @@ function delivery_note_items($_data, $db, $user) {
         }
 
 
-        $state = '';
+        $state_picking = '';
+        $state_packing='';
         if ($data['Required'] > 0) {
+
+            if ($data['Picked'] == $data['Required']) {
+
+                $state_picking = sprintf('<i class="fa-dolly-flatbed-alt fa success" title="%s"></i>', _('Picked'));
+            } elseif($data['Picked']>0) {
+                $state_picking = sprintf('<i class="fa-dolly-flatbed-alt fa " title="%s"></i>', _('Picking'));
+
+            }else {
+                $state_picking = sprintf('<i class="fa-dolly-flatbed-empty fa " title="%s"></i>', _('To be picked'));
+
+            }
+
 
             if ($data['Packed'] == $data['Required']) {
 
-                $state = sprintf('<i class="fa-check-circle fa success" title="%s"></i>', _('Packed'));
+                $state_packing = sprintf('<i class="fa-check-circle fa success" title="%s"></i>', _('Packed'));
+                $state_picking='';
+            } elseif($data['Packed']>0) {
+                $state_packing = sprintf('<i class="fa-check-circle  discreet fa " title="%s"></i>', _('Packing'));
 
-
-            } else {
-
-                if ($data['Packed'] == 0) {
-
-                    if ($data['Picked'] == $data['Required']) {
-
-                        $state = sprintf('<i class="fa-dolly-flatbed-alt fa success" title="%s"></i>', _('Picked'));
-                    } elseif($data['Picked']>0) {
-                        $state = sprintf('<i class="fa-dolly-flatbed-alt fa " title="%s"></i>', _('Picking'));
-
-                    }else {
-                        $state = sprintf('<i class="fa-dolly-flatbed-empty fa " title="%s"></i>', _('To be picked'));
-
-                    }
-                } else {
-
-                }
-
+            }else {
+                $state_packing = sprintf('<i class="fa-check-circle  super_discreet fa " title="%s"></i>', _('To be picked'));
 
             }
+
+
+
         }
+
+        $state='<span class="padding_left_20">'.$state_picking.' '.$state_packing.'</span>';
 
         $picked_offline_input = '<div class="picked_quantity_components">'.get_picked_offline_input(
                 $data['quantity'], $data['pending'], $data['Quantity On Hand'], $data['Inventory Transaction Key'], $data['Part SKU'], $data['Picked'], $data['Part Current On Hand Stock'], $data['Part SKO Barcode'], $data['Part Reference'],
