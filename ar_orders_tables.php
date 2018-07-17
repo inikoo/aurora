@@ -2176,10 +2176,10 @@ function delivery_note_items($_data, $db, $user) {
                 $state_packing = sprintf('<i class="fa-check-circle fa success" title="%s"></i>', _('Packed'));
                 $state_picking='';
             } elseif($data['Packed']>0) {
-                $state_packing = sprintf('<i class="fa-check-circle  discreet fa " title="%s"></i>', _('Packing'));
+                $state_packing = sprintf('<i class="arrow-alt-circle-down discreet fa " title="%s"></i>', _('Packing'));
 
             }else {
-                $state_packing = sprintf('<i class="fa-check-circle  super_discreet fa " title="%s"></i>', _('To be picked'));
+                $state_packing = sprintf('<i class="arrow-circle  super_discreet fa " title="%s"></i>', _('To be picked'));
 
             }
 
