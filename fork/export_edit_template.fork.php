@@ -222,7 +222,7 @@ function fork_export_edit_template($job) {
     $socket->send(
         json_encode(
             array(
-                'channel'      => $account->get('Account Code').'_'.$user_key.'_real_time',
+                'channel'      => 'real_time.'.strtolower($account->get('Account Code')).'.'.$user_key,
                 'progress_bar' => array(
                     array(
                         'id'    => 'download_'.$download_key,
@@ -636,7 +636,7 @@ function fork_export_edit_template($job) {
                 $socket->send(
                     json_encode(
                         array(
-                            'channel'      => $account->get('Account Code').'_'.$user_key.'_real_time',
+                            'channel'      => 'real_time.'.strtolower($account->get('Account Code')).'.'.$user_key,
                             'progress_bar' => array(
                                 array(
                                     'id'    => 'download_'.$download_key,
@@ -756,7 +756,7 @@ function fork_export_edit_template($job) {
     $socket->send(
         json_encode(
             array(
-                'channel'      => $account->get('Account Code').'_'.$user_key.'_real_time',
+                'channel'      => 'real_time.'.strtolower($account->get('Account Code')).'.'.$user_key,
                 'progress_bar' => array(
                     array(
                         'id'           => 'download_'.$download_key,

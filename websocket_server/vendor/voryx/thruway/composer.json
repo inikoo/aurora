@@ -1,0 +1,45 @@
+{
+    "name": "thruway/router",
+    "description": "Thruway WAMP router core",
+    "license": "MIT",
+    "keywords": [
+        "WebSockets",
+        "Server",
+        "Client",
+        "WAMP",
+        "WAMP2",
+        "Autobahn",
+        "Sockets"
+    ],
+    "authors": [
+        {
+            "name": "Matt Bonneau", "email": "matt@bonneau.net", "role": "Developer"
+        },
+
+        {
+            "name": "David Dan", "email": "davidwdan@gmail.com", "role": "Developer"
+        }
+    ],
+    "autoload": {
+        "psr-4": {
+            "Thruway\\": "src/"
+        }
+    },
+    "bin": [
+        "bin/thruway"
+    ],
+    "require": {
+        "php": ">=5.6",
+        "symfony/event-dispatcher": "^2.7|^3.0|^4.0",
+        "voryx/thruway-common": "^1.0.3",
+        "thruway/client": "^0.5.0",
+        "react/event-loop": "^1.0 || ^0.5 || ^0.4.3",
+        "react/promise": "^2.3.0",
+        "thruway/ratchet-transport": "^0.5.0"
+    },
+    "require-dev": {
+        "phpunit/phpunit": "^5.5.4",
+        "thruway/pawl-transport": "^0.5.0",
+        "thruway/raw-socket-transport": "^0.5.0"
+    }
+}

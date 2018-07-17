@@ -1,61 +1,54 @@
 <?php
+
 require 'vendor/autoload.php';
 
-use Ratchet\Session\SessionProvider;
-
-use Symfony\Component\HttpFoundation\Session\Session;
-use Symfony\Component\HttpFoundation\Session\Storage\NativeSessionStorage;
-use Symfony\Component\HttpFoundation\Session\Storage\Handler\MemcachedSessionHandler;
-
-use Symfony\Component\HttpFoundation\Session\Storage\Handler;
-
-$memcache_ip = '127.0.0.1';
-$memcached   = new Memcached();
-$memcached->addServer($memcache_ip, 11211);
+use Thruway\Peer\Router;
+use Thruway\Transport\RatchetTransportProvider;
+use React\ZMQ\Context;
 
 
+class Pusher extends Thruway\Peer\Client {
+    public function onSessionStart($session, $transport) {
 
-$storage = new NativeSessionStorage(array(), new MemcachedSessionHandler($memcached));
-//$session = new Session($storage);
-//$session->start();
+        $context = new React\ZMQ\Context($this->getLoop());
+        $pull    = $context->getSocket(ZMQ::SOCKET_PULL);
+        $pull->bind('tcp://127.0.0.1:5555');
+        $pull->on(
+            'message', [
+                         $this,
+                         'receiver'
+                     ]
+        );
 
+    }
 
+    public function receiver($entry) {
 
-$loop   = React\EventLoop\Factory::create();
-$pusher = new App\Publishers\Pusher;
-
-$context = new React\ZMQ\Context($loop);
-$pull    = $context->getSocket(ZMQ::SOCKET_PULL);
-$pull->bind('tcp://127.0.0.1:5555'); // Binding to 127.0.0.1 means the only client that can connect is itself
-$pull->on(
-    'message', array(
-                 $pusher,
-                 'onBlogEntry2'
-             )
-);
-
-
-$webSock   = new React\Socket\Server('0.0.0.0:8081', $loop); // Binding to 0.0.0.0 means remotes can connect
-
-$webServer = new Ratchet\Server\IoServer(
+        $entryData = json_decode($entry, true);
 
 
+        if (!isset($entryData['channel'])) {
+            return;
+        }
 
-    new Ratchet\Http\HttpServer(
-        new Ratchet\Session\SessionProvider(
-            new Ratchet\WebSocket\WsServer(new Ratchet\Wamp\WampServer($pusher)),
-            new Handler\MemcachedSessionHandler($memcached)
-        )
-    )
+
+        $this->getSession()->publish($entryData['channel'], [$entryData]);
+
+    }
 
 
 
 
-    , $webSock
-);
+}
 
 
-$loop->run();
+$router = new Router();
+$realm  = "aurora";
+
+$router->addInternalClient(new Pusher($realm, $router->getLoop()));
+$router->addTransportProvider(new RatchetTransportProvider("0.0.0.0", 8081));
+$router->start();
+
 
 
 ?>

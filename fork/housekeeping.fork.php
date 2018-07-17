@@ -198,7 +198,7 @@ function fork_housekeeping($job) {
 
             $socket->send(
                 json_encode(array(
-                                'channel'=>$account->get('Account Code').'_real_time',
+                                'channel'      => 'real_time.'.strtolower($account->get('Account Code')),
                                 'sections' => array(
                                     array(
                                         'section' => 'dashboard',
@@ -266,7 +266,7 @@ function fork_housekeeping($job) {
 
             $socket->send(
                 json_encode(array(
-                                'channel'=>$account->get('Account Code').'_real_time',
+                                'channel'      => 'real_time.'.strtolower($account->get('Account Code')),
                                 'sections' => array(
                                     array(
                                         'section' => 'dashboard',
