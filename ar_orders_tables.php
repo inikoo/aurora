@@ -2177,9 +2177,9 @@ function delivery_note_items($_data, $db, $user) {
                 $state_picking='';
             } elseif($data['Packed']>0) {
                 $state_packing = sprintf('<i class="fa-arrow-alt-circle-down discreet fa fa-fw " title="%s"></i>', _('Packing'));
-
+                $state_picking='';
             }else {
-                $state_packing = sprintf('<i class="fa-arrow-circle  super_discreet fa fa-fw " title="%s"></i>', _('To be picked'));
+                $state_packing = '';
 
             }
 
