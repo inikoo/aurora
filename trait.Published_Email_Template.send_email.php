@@ -10,7 +10,7 @@
 
 */
 
-//use Aws\Ses\SesClient;
+use Aws\Ses\SesClient;
 
 
 trait Send_Email {
