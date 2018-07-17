@@ -42,9 +42,13 @@ $(document).ready(function () {
 
 
 
+if(document.location.hostname=='au.bali'){
+    var    wsuri = (document.location.protocol === "http:" ? "ws:" : "wss:") + "//au.bali/ws";
 
+}else{
+    var    wsuri = (document.location.protocol === "http:" ? "ws:" : "wss:") + "//websocket.inikoo.com:8081";
 
-    var    wsuri = (document.location.protocol === "http:" ? "ws:" : "wss:") + "//" + document.location.host + "/ws2";
+}
 
     var connection = new autobahn.Connection({
         url: wsuri,
