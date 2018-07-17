@@ -313,9 +313,12 @@ $_SESSION['text_locale']    = $user->get('User Preferred Locale');
 $smarty->assign('locale',$user->get('User Preferred Locale'));
 
 
-$_SESSION['current_store']     = '';
-$_SESSION['current_website']   = '';
-$_SESSION['current_warehouse'] = '';
+
+$session->set('current_store','');
+//$session->set('current_website','');
+$session->set('current_warehouse','');
+$session->set('current_production','');
+
 
 $request = 'account/setup/state';
 foreach ($setup_data['steps'] as $step_code => $step_data) {

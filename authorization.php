@@ -123,12 +123,57 @@ if ($auth->is_authenticated()) {
     $_SESSION['text_locale'] = $user->data['User Preferred Locale'];
 
 
-    $_SESSION['current_store']     = '';
-    $_SESSION['current_website']   = '';
-    $_SESSION['current_warehouse'] = '';
 
 
-    $_SESSION['state'] = array();
+    $session->set('state',array());
+
+    $warehouse_key='';
+
+    $sql = sprintf('SELECT `Warehouse Key`,count(*) as num FROM `Warehouse Dimension` WHERE `Warehouse State`="Active" ');
+
+    if ($result = $db->query($sql)) {
+        if ($row = $result->fetch() and $row['num']==1) {
+            $warehouse_key = $row['Warehouse Key'];
+        }
+    } else {
+        print_r($error_info = $db->errorInfo());
+        print "$sql\n";
+        exit;
+    }
+    $session->set('current_warehouse', $warehouse_key);
+
+    $store_key='';
+
+    $sql = sprintf('SELECT `Store Key`,count(*) as num FROM `Store Dimension` WHERE `Store State`="Normal" ');
+
+    if ($result = $db->query($sql)) {
+        if ($row = $result->fetch() and $row['num']==1) {
+            $store_key = $row['Store Key'];
+        }
+    } else {
+        print_r($error_info = $db->errorInfo());
+        print "$sql\n";
+        exit;
+    }
+    $session->set('current_store', $store_key);
+
+
+    $production_key='';
+    $sql = sprintf('SELECT `Supplier Production Supplier Key`,count(*) as num FROM `Supplier Production Dimension`  ');
+
+    if ($result = $db->query($sql)) {
+        if ($row = $result->fetch() and $row['num']==1) {
+            $production_key = $row['Supplier Production Supplier Key'];
+        }
+    } else {
+        print_r($error_info = $db->errorInfo());
+        print "$sql\n";
+        exit;
+    }
+    $session->set('current_production', $production_key);
+
+
+
 
     if (isset($_REQUEST['url']) and $_REQUEST['url'] != '') {
 

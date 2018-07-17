@@ -22,7 +22,7 @@
         </tr>
 
 
-        {if $website_user}
+        {if $website_user->id}
 
 
         <tr class="title">

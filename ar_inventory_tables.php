@@ -1738,7 +1738,7 @@ function sales_history($_data, $db, $user, $account) {
             $part       = new Part($_data['parameters']['parent_key']);
             $currency   = $account->get('Account Currency');
             $from       = $part->get('Part Valid From');
-            $to         = ($part->get('Part Status') == 'Not In Use' ? $product->get('Part Valid To') : gmdate('Y-m-d'));
+            $to         = ($part->get('Part Status') == 'Not In Use' ? $part->get('Part Valid To') : gmdate('Y-m-d'));
             $date_field = '`Date`';
             break;
         case 'category':
@@ -1746,7 +1746,7 @@ function sales_history($_data, $db, $user, $account) {
             $category   = new Category($_data['parameters']['parent_key']);
             $currency   = $account->get('Account Currency');
             $from       = $category->get('Part Category Valid From');
-            $to         = ($category->get('Part Category Status') == 'NotInUse' ? $product->get('Part Category Valid To') : gmdate('Y-m-d'));
+            $to         = ($category->get('Part Category Status') == 'NotInUse' ? $category->get('Part Category Valid To') : gmdate('Y-m-d'));
             $date_field = '`Timeseries Record Date`';
             break;
         default:

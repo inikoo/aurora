@@ -1,5 +1,7 @@
 <?php
 
+global $session;
+
 $stores = join(',', $user->stores);
 
 $where  = 'where true';
@@ -12,12 +14,14 @@ $date_interval = prepare_mysql_dates(
 );
 if ($date_interval['error']) {
     $date_interval = prepare_mysql_dates(
-        $_SESSION['state']['report_sales_with_no_tax']['from'], $_SESSION['state']['report_sales_with_no_tax']['to']
+        $session->get('state/report_sales_with_no_tax/from'),$session->get('state/report_sales_with_no_tax/to')
     );
 } else {
-    $_SESSION['state']['report_sales_with_no_tax']['from']
-                                                         = $date_interval['from'];
-    $_SESSION['state']['report_sales_with_no_tax']['to'] = $date_interval['to'];
+
+    $session->set('state/report_sales_with_no_tax/from',$date_interval['from']);
+    $session->set('state/report_sales_with_no_tax/to',$date_interval['to']);
+
+
 }
 
 $where = sprintf(' where  `Invoice Store Key` in (%s) ', $stores);

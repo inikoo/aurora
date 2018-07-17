@@ -10,6 +10,8 @@ use Symfony\Component\HttpFoundation\Session\Session;
 use Symfony\Component\HttpFoundation\Session\Storage\NativeSessionStorage;
 use Symfony\Component\HttpFoundation\Session\Storage\Handler\MemcachedSessionHandler;
 
+
+
 require_once 'keyring/dns.php';
 require_once 'keyring/key.php';
 
@@ -42,8 +44,11 @@ $db = new PDO(
 );
 $db->setAttribute(PDO::ATTR_DEFAULT_FETCH_MODE, PDO::FETCH_ASSOC);
 
-/*
-if (function_exists('mysql_connect')) {
+
+$account = new Account($db);
+
+
+if (function_exists('mysql_connect') and $account->get('Account Code') == 'AW') {
 
     $default_DB_link = mysql_connect($dns_host, $dns_user, $dns_pwd);
     if (!$default_DB_link) {
@@ -57,8 +62,7 @@ if (function_exists('mysql_connect')) {
     mysql_set_charset('utf8');
     mysql_query("SET time_zone='+0:00'");
 }
-*/
-$account = new Account($db);
+
 
 
 if ($account->get('Account State') != 'Active') {
@@ -88,6 +92,8 @@ require_once 'utils/modules.php';
 
 $sessionStorage = new NativeSessionStorage(array(), new MemcachedSessionHandler($memcached));
 $session        = new Session($sessionStorage);
+
+
 
 
 //$session = new Session();

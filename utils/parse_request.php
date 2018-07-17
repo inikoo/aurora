@@ -5199,6 +5199,7 @@ function parse_request($_data, $db, $modules, $account = '', $user = '', $is_set
 
 function parse_tabs($module, $section, $_data, $modules) {
 
+    global $session;
 
     $subtab = '';
     if (isset($_data['subtab'])) {
@@ -5214,6 +5215,35 @@ function parse_tabs($module, $section, $_data, $modules) {
         $subtab = parse_subtab($module, $section, $tab, $modules);
     } else {
 
+
+
+        $tmp=$session->get('state');
+
+
+        if(!empty($tmp[$module][$section]['tab'])){
+            $tab = $tmp[$module][$section]['tab'];
+
+
+            if ($module == 'suppliers') {
+                if ($section == 'order') {
+                    if ($tab == 'supplier.order.all_supplier_parts') {
+                        $tab = 'supplier.order.items';
+                    }
+                }
+            }
+        }else {
+
+
+            if (!isset($modules[$module]['sections'][$section]['tabs']) or !is_array($modules[$module]['sections'][$section]['tabs']) or count($modules[$module]['sections'][$section]['tabs']) == 0) {
+                print "problem with M: $module S: $section";
+            }
+
+
+            $tab = each($modules[$module]['sections'][$section]['tabs'])['key'];
+        }
+
+
+        /*
 
         if (!empty ($_SESSION['state'][$module][$section]['tab'])) {
 
@@ -5239,6 +5269,8 @@ function parse_tabs($module, $section, $_data, $modules) {
 
             $tab = each($modules[$module]['sections'][$section]['tabs'])['key'];
         }
+        */
+
         $subtab = parse_subtab($module, $section, $tab, $modules);
     }
 
