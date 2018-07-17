@@ -2161,12 +2161,12 @@ function delivery_note_items($_data, $db, $user) {
 
             if ($data['Picked'] == $data['Required']) {
 
-                $state_picking = sprintf('<i class="fa-dolly-flatbed-alt fa success" title="%s"></i>', _('Picked'));
+                $state_picking = sprintf('<i class="fa-dolly-flatbed-alt fa success discreet" title="%s"></i>', _('Picked'));
             } elseif($data['Picked']>0) {
-                $state_picking = sprintf('<i class="fa-dolly-flatbed-alt fa " title="%s"></i>', _('Picking'));
+                $state_picking = sprintf('<i class="fa-dolly-flatbed-alt fa discreet" title="%s"></i>', _('Picking'));
 
             }else {
-                $state_picking = sprintf('<i class="fa-dolly-flatbed-empty fa " title="%s"></i>', _('To be picked'));
+                $state_picking = sprintf('<i class="fa-dolly-flatbed-empty fa discreet" title="%s"></i>', _('To be picked'));
 
             }
 
