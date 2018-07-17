@@ -434,7 +434,7 @@ switch ($_REQUEST['action']) {
             array(
                 'transaction_key' => $_REQUEST['itf_key'],
                 'qty'             => $qty,
-                'picker_key'      => $_REQUEST['staff_key'],
+                'packer_key'      => $_REQUEST['staff_key'],
 
             )
         );
