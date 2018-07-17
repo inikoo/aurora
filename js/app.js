@@ -44,8 +44,7 @@ $(document).ready(function () {
 
 
 
-    var    wsuri = (document.location.protocol === "http:" ? "ws:" : "wss:") + "//" +
-            document.location.host + "/ws";
+    var    wsuri = (document.location.protocol === "http:" ? "ws:" : "wss:") + "//" + document.location.host + "/ws2";
 
     var connection = new autobahn.Connection({
         url: wsuri,
@@ -164,7 +163,7 @@ $(document).ready(function () {
     connection.onclose = function (reason, details) {
         console.log("Connection lost: " + reason);
 
-        setTimeout(connection.open(), 1000);
+       // setTimeout(connection.open(), 1000);
     }
 
     connection.open();
@@ -252,6 +251,90 @@ function get_widget_details(element, widget, metadata) {
     });
 
 }
+
+function change_menu_view(module){
+    switch (module){
+        case '_dashboard':
+            change_view('/dashboard')
+            break;
+        case 'customers':
+            if(state.current_store){
+                change_view('customers/'+state.current_store+'/dashboard')
+            }else{
+                change_view('customers/all')
+            }
+            break;
+        case 'orders':
+            if(state.current_store){
+                change_view('orders/'+state.current_store+'/dashboard')
+            }else{
+                change_view('orders/all/dashboard')
+            }
+            break;
+        case 'delivery_notes':
+            if(state.current_store){
+                change_view('delivery_notes/'+state.current_store)
+            }else{
+                change_view('delivery_notes/all')
+            }
+            break;
+        case 'payments':
+            if(state.current_store){
+                change_view('payments/'+state.current_store)
+            }else{
+                change_view('payments/all')
+            }
+            break;
+        case 'products':
+            if(state.current_store){
+                change_view('store/'+state.current_store)
+            }else{
+                change_view('stores')
+            }
+            break;
+        case 'warehouses':
+            if(state.current_warehouse){
+                change_view('warehouse/'+state.current_warehouse+'/dashboard')
+            }else{
+                change_view('warehouses')
+            }
+            break;
+        case 'inventory':
+            change_view('inventory/dashboard')
+            break;
+        case 'suppliers':
+            change_view('suppliers')
+            break;
+        case 'production':
+            if(state.current_store){
+                change_view('production/'+state.current_production)
+            }else{
+                change_view('production/all')
+            }
+            break;
+        case 'hr':
+        case 'reports':
+        case 'profile':
+        case 'account':
+        case 'agent_parts':
+            change_view(module)
+            break;
+        case 'agent_client_orders':
+            change_view('orders')
+            break;
+        case 'agent_client_deliveries':
+            change_view('agent_deliveries')
+            break;
+        case 'agent_suppliers':
+            change_view('suppliers')
+            break;
+        case 'agent_profile':
+            change_view('profile')
+            break;
+
+    }
+}
+
 
 function change_view(_request, metadata) {
 
