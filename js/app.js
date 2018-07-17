@@ -39,153 +39,142 @@ $(document).ready(function () {
     });
 
 
-    // var conn = new ab.Session('ws://'+location.hostname+'/ws',
-
-    //   var conn = new ab.Session('ws://'+location.hostname+':8081',
 
 
 
 
 
+    var    wsuri = (document.location.protocol === "http:" ? "ws:" : "wss:") + "//" +
+            document.location.host + "/ws";
 
-    connect_websocket();
+    var connection = new autobahn.Connection({
+        url: wsuri,
+        realm: "aurora"
+    });
+
+    connection.onopen = function (session, details) {
+
+        function real_time (args) {
+
+            var data=args[0]
+            for (var i in data.objects) {
+                if (state.object == data.objects[i].object && state.key == data.objects[i].key) {
+                    for (var j in data.objects[i].update_metadata.class_html) {
+                        $('.' + j).html(data.objects[i].update_metadata.class_html[j])
+                    }
+
+                    for (var key in  data.objects[i].update_metadata.hide) {
+                        $('.' + data.objects[i].update_metadata.hide[key]).addClass('hide')
+                    }
+
+                    for (var key in data.objects[i].update_metadata.show) {
+
+                        $('.' + data.objects[i].update_metadata.show[key]).removeClass('hide')
+                    }
+                }
+            }
+
+            for (var i in data.sections) {
+                if (state.section == data.sections[i].section ) {
+                    for (var j in data.sections[i].update_metadata.class_html) {
+                        $('.' + j).html(data.sections[i].update_metadata.class_html[j])
+                    }
+
+                    for (var key in  data.sections[i].update_metadata.hide) {
+                        $('.' + data.sections[i].update_metadata.hide[key]).addClass('hide')
+                    }
+
+                    for (var key in data.sections[i].update_metadata.show) {
+                        $('.' + data.sections[i].update_metadata.show[key]).removeClass('hide')
+                    }
+                }
+            }
+        }
+
+        function real_time_private (args) {
+
+            var _data=args[0]
+
+            for (var i in _data.progress_bar) {
+                var data = _data.progress_bar[i]
+
+                console.log(data)
+
+                if (data.state == 'In Process') {
+
+                    $('#' + data.id + ' .export_download').addClass('hide')
+
+                    $('#' + data.id + ' .export_progress_bar_bg').removeClass('hide').html('&nbsp;' + data.progress_info)
+                    $('#' + data.id + ' .export_progress_bar').css('width', data.percentage).removeClass('hide').attr('title', data.progress).html('&nbsp;' + data.progress_info);
+
+
+                } else if (data.state == 'Finish') {
+
+                    // console.log('#'+data.id+' .download_export')
+
+
+                    $('#' + data.id + ' .download_export').attr('href', '/download.php?file=' + data.download_key)
+                    $('#' + data.id + ' .export_download').removeClass('hide').attr('title', data.result_info).click(function () {
+
+                        download_exported_file(this)
+
+                    });
+                    $('#' + data.id + ' .export_progress_bar_bg').addClass('hide').html('')
+                    $('#' + data.id + ' .export_progress_bar').css('width', '0px').removeClass('hide').attr('title', '').html('')
+
+
+                    $('#' + data.id + ' .export_button').addClass('link').removeClass('disabled')
+
+
+                    $('#' + data.id + ' .field_export').addClass('button').removeClass('disabled')
+                    $('#' + data.id + ' .stop_export').addClass('hide')
+
+                }
+
+            }
+
+        }
+
+
+        session.subscribe('real_time.'+$('#account_name').data('account_code').toLowerCase(), real_time).then(
+            function (sub) {
+                console.log('subscribed to topic');
+            },
+            function (err) {
+                console.log('failed to subscribe to topic', err);
+            }
+        );
+
+
+
+        session.subscribe('real_time.'+$('#account_name').data('account_code').toLowerCase()+'.'+$('#hello_user').data('user_key'), real_time_private).then(
+            function (sub) {
+                console.log('subscribed to topic');
+            },
+            function (err) {
+                console.log('failed to subscribe to topic', err);
+            }
+        );
+
+
+
+
+    };
+
+    connection.onclose = function (reason, details) {
+        console.log("Connection lost: " + reason);
+
+        setTimeout(connection.open(), 1000);
+    }
+
+    connection.open();
+
+
+
 
 
 
 })
-
-
-function connect_websocket(){
-
-
-     websocket_conn = new ab.Session('ws://' + location.hostname + '/ws',
-        function () {
-
-
-
-
-
-            websocket_conn.subscribe($('#account_name').data('account_code') + '_real_time', function (topic, data) {
-
-                console.log(state)
-
-
-                for (var i in data.objects) {
-                    if (state.object == data.objects[i].object && state.key == data.objects[i].key) {
-                        for (var j in data.objects[i].update_metadata.class_html) {
-                            $('.' + j).html(data.objects[i].update_metadata.class_html[j])
-                        }
-
-                        for (var key in  data.objects[i].update_metadata.hide) {
-                            $('.' + data.objects[i].update_metadata.hide[key]).addClass('hide')
-                        }
-
-                        for (var key in data.objects[i].update_metadata.show) {
-
-                            $('.' + data.objects[i].update_metadata.show[key]).removeClass('hide')
-                        }
-                    }
-                }
-
-                for (var i in data.sections) {
-                    if (state.section == data.sections[i].section ) {
-                        for (var j in data.sections[i].update_metadata.class_html) {
-                            $('.' + j).html(data.sections[i].update_metadata.class_html[j])
-                        }
-
-                        for (var key in  data.sections[i].update_metadata.hide) {
-                            $('.' + data.sections[i].update_metadata.hide[key]).addClass('hide')
-                        }
-
-                        for (var key in data.sections[i].update_metadata.show) {
-                            $('.' + data.sections[i].update_metadata.show[key]).removeClass('hide')
-                        }
-                    }
-                }
-
-
-            });
-
-            websocket_conn.subscribe($('#account_name').data('account_code') + '_'+ $('#hello_user').data('user_key') +'_real_time', function (topic, _data) {
-
-                //   console.log('hello')
-
-
-                for (var i in _data.progress_bar) {
-                    var data=_data.progress_bar[i]
-
-                    console.log(data)
-
-                    if (data.state == 'In Process') {
-
-                        $('#'+data.id+' .export_download').addClass('hide')
-
-                        $('#'+data.id+' .export_progress_bar_bg').removeClass('hide').html('&nbsp;' + data.progress_info)
-                        $('#'+data.id+' .export_progress_bar').css('width', data.percentage).removeClass('hide').attr('title', data.progress).html('&nbsp;' + data.progress_info);
-
-
-                    } else if (data.state == 'Finish') {
-
-                        // console.log('#'+data.id+' .download_export')
-
-
-                        $('#'+data.id+' .download_export').attr('href', '/download.php?file=' + data.download_key)
-                        $('#'+data.id+' .export_download').removeClass('hide').attr('title', data.result_info).click(function () {
-
-                            download_exported_file(this)
-
-                        });
-                        $('#'+data.id+' .export_progress_bar_bg').addClass('hide').html('')
-                        $('#'+data.id+' .export_progress_bar').css('width', '0px').removeClass('hide').attr('title', '').html('')
-
-
-                        $('#'+data.id+' .export_button').addClass('link').removeClass('disabled')
-
-
-                        $('#'+data.id+' .field_export').addClass('button').removeClass('disabled')
-                        $('#'+data.id+' .stop_export').addClass('hide')
-
-                    }
-
-                }
-
-
-
-
-
-
-            });
-
-
-        //
-
-
-/*
-            websocket_ping_timer = setInterval(function () {
-                websocket_conn.publish('com.example.onhello', ['Hello from JavaScript (browser)']);
-                console.log("published to topic 'com.example.onhello'");
-            }, 1000);
-
-*/
-
-
-
-        }, function () {
-            console.warn('WebSocket connection closed');
-
-
-
-
-            setTimeout(connect_websocket(), 1000);
-
-        }, {'skipSubprotocolCheck': true});
-
-
-
-
-
-}
-
 
 function change_browser_history_state(request) {
 

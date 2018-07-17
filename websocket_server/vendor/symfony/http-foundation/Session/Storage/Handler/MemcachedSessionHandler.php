@@ -80,11 +80,8 @@ class MemcachedSessionHandler extends AbstractSessionHandler
      */
     public function updateTimestamp($sessionId, $data)
     {
-        try {
-            $this->memcached->touch($this->prefix.$sessionId, time() + $this->ttl);
-        }catch (Exception $e) {
+        $this->memcached->touch($this->prefix.$sessionId, time() + $this->ttl);
 
-        }
         return true;
     }
 

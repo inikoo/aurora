@@ -86,7 +86,8 @@ function fork_export($job) {
     $socket->send(
         json_encode(
             array(
-                'channel'      => $account->get('Account Code').'_'.$user_key.'_real_time',
+                'channel'      => 'real_time.'.strtolower($account->get('Account Code')).'.'.$user_key,
+
                 'progress_bar' => array(
                     array(
                         'id'    => 'download_'.$download_key,
@@ -138,7 +139,6 @@ function fork_export($job) {
         );
 
         $db->exec($sql);
-
 
         return 1;
     }
@@ -269,7 +269,7 @@ function fork_export($job) {
                 $socket->send(
                     json_encode(
                         array(
-                            'channel'      => $account->get('Account Code').'_'.$user_key.'_real_time',
+                            'channel'      => 'real_time.'.strtolower($account->get('Account Code')).'.'.$user_key,
                             'progress_bar' => array(
                                 array(
                                     'id'    => 'download_'.$download_key,
@@ -387,7 +387,7 @@ function fork_export($job) {
     $socket->send(
         json_encode(
             array(
-                'channel'      => $account->get('Account Code').'_'.$user_key.'_real_time',
+                'channel'      => 'real_time.'.strtolower($account->get('Account Code')).'.'.$user_key,
                 'progress_bar' => array(
                     array(
                         'id'           => 'download_'.$download_key,

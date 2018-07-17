@@ -9,7 +9,8 @@ $socket = $context->getSocket(ZMQ::SOCKET_PUSH, 'my pusher');
 $socket->connect("tcp://localhost:5555");
 
 $data=array(
-    'channel'=>'AWEU_real_time'
+    'channel'=>'real_time.aweu',
+    'zzzzz'=>'qqqq'
 
 );
 
