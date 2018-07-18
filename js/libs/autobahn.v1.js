@@ -601,6 +601,9 @@ ab.Session.prototype.close = function () {
 ab.Session.prototype.sessionid = function () {
 
    var self = this;
+
+   console.log(self._session_id)
+
    return self._session_id;
 };
 
@@ -641,6 +644,11 @@ ab.Session.prototype.prefix = function (prefix, uri) {
    self._send(msg);
 };
 
+
+ab.Session.prototype.is_connected = function () {
+   console.log(this)
+ return this._session_id;
+}
 
 ab.Session.prototype.call = function () {
 
