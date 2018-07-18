@@ -785,6 +785,8 @@ function get_view($db, $smarty, $user, $account, $modules) {
     unset($state['store']);
     unset($state['website']);
     unset($state['warehouse']);
+    unset($state['production']);
+
     $response['state'] = $state;
 
 
