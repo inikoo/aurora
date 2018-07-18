@@ -207,18 +207,28 @@
                 <img src="/art/aurora_log_v2_orange_small.png"/>
             </div>
 
+
+
             <div id="menu">
             </div>
-            {if $user->get('User Type')=='Staff' }
+            {if $user->get('User Type')=='Staff' or $user->get('User Type')=='Contractor' }
                 <ul style="margin-top:5px">
                     <li onclick="change_view('/fire')"><i class="fa fa-fire fa-fw" style="color:orange;opacity:.8"></i><span id="fire_label" class="label"> {t}Fire{/t}</span>
                     </li>
+                    <li ><a href="https://get.teamviewer.com/txww6bm" target="_blank"><i class="fa fa-hands-helping fa-fw" style="color:cornflowerblue;opacity:.75"></i><span id="fire_label" class="label"> {t}Remote help{/t}</span></a>
+                    </li>
                 </ul>
+
             {/if}
+
+
+
             <ul style="margin-top:20px">
                 <li onclick="logout()"><i title="{t}Logout{/t}" class="fa fa-sign-out fa-fw fa-flip-horizontal"></i><span id="logout_label" class="label" > {t}Logout{/t}</span>
                 </li>
+
             </ul>
+
         </div>
         <div id="app_main">
             <div id="navigation">
@@ -237,7 +247,7 @@
         <div class="top_buttons">
 
             <div id="whiteboard_button" onclick="show_side_content('whiteboard')" class="side_content_icon square_button {if $_side_block='whiteboard'}selected{/if}" title="{t}Whiteboard{/t}">
-                <i class="fa fa-pencil-square fa-fw  "></i>
+                <i class="fa fa-edit fa-fw  "></i>
             </div>
             <div id="help_button" onclick="show_side_content('help')" class="side_content_icon square_button {if $_side_block=='help'}selected{/if}" title="{t}Help{/t}">
                 <i class="fa fa-question-circle fa-fw  "></i>
