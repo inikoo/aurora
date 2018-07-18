@@ -280,6 +280,7 @@ function get_view($db, $smarty, $user, $account, $modules) {
                 break;
 
             default:
+                $_parent = get_object($state['parent'], $state['parent_key']);
 
 
     }
