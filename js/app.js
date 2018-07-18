@@ -189,7 +189,7 @@ $(document).ready(function () {
             ws_connection.publish('ping','hi')
         }
 
-    }, 100000);
+    }, 60000);
 
 
 })
