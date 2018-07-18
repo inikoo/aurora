@@ -43,7 +43,6 @@ function fork_export_edit_template($job) {
 
 
 
-
     $creator     = 'aurora.systems';
     $title       = _('Report');
     $subject     = _('Report');
@@ -279,6 +278,7 @@ function fork_export_edit_template($job) {
     $row_index = 1;
 
     $show_feedback = (float)microtime(true) + .400;
+
 
 
     if ($result = $db->query($sql_data)) {
