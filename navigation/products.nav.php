@@ -939,8 +939,13 @@ function get_product_navigation($data, $smarty, $user, $db, $account) {
 
 
                 $sql = sprintf(
-                    "select P.`Product Code` object_name,P.`Product ID` as object_key %s from $table   $where $wheref
-	                and ($_order_field < %s OR ($_order_field = %s AND P.`Product ID` < %d))  order by $_order_field desc , P.`Product ID` desc limit 1", $extra_field, prepare_mysql($_order_field_value), prepare_mysql($_order_field_value), $object->id
+                    "select P.`Product Code` object_name,P.`Product ID` as object_key %s from %s
+	                and ($_order_field < %s OR ($_order_field = %s AND P.`Product ID` < %d))  order by $_order_field desc , P.`Product ID` desc limit 1",
+                    $extra_field,
+                    " $table   $where $wheref " ,
+                    prepare_mysql($_order_field_value),
+                    prepare_mysql($_order_field_value),
+                    $object->id
                 );
 
 
@@ -959,8 +964,10 @@ function get_product_navigation($data, $smarty, $user, $db, $account) {
 
 
                 $sql = sprintf(
-                    "select P.`Product Code` object_name,P.`Product ID` as object_key %s from $table   $where $wheref
-	                and ($_order_field  > %s OR ($_order_field  = %s AND P.`Product ID` > %d))  order by $_order_field   , P.`Product ID`  limit 1", $extra_field, prepare_mysql($_order_field_value), prepare_mysql($_order_field_value), $object->id
+                    "select P.`Product Code` object_name,P.`Product ID` as object_key %s from %s
+	                and ($_order_field  > %s OR ($_order_field  = %s AND P.`Product ID` > %d))  order by $_order_field   , P.`Product ID`  limit 1",
+                    $extra_field," $table   $where $wheref " ,
+                    prepare_mysql($_order_field_value), prepare_mysql($_order_field_value), $object->id
                 );
 
 
