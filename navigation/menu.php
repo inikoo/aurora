@@ -558,6 +558,10 @@ if ($current_item == 'production_server') {
     $current_item = 'production';
 }
 
+if ($current_item == 'payments_server') {
+    $current_item = 'payments';
+}
+
 if ($data['object'] == 'order') {
     if ($data['parent'] == 'customer') {
         $current_item = 'customers';

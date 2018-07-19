@@ -53,7 +53,7 @@ switch ($tipo) {
         break;
     case 'payments_group_by_store':
 
-        payments_group_by_store(get_table_parameters(), $db, $user);
+        payments_group_by_store(get_table_parameters(), $db, $user,$account);
         break;
     default:
         $response = array(
@@ -491,31 +491,64 @@ function credits($_data, $db, $user) {
 }
 
 
-function payments_group_by_store($_data, $db, $user) {
+function payments_group_by_store($_data, $db, $user,$account) {
 
     $rtext_label = 'store';
     include_once 'prepare_table/init.php';
+    include_once 'utils/currency_functions.php';
 
     $sql = "select $fields from $table $where $wheref order by $order $order_direction limit $start_from,$number_results";
 
-    $total_orders         = 0;
-    $total_invoices       = 0;
-    $total_delivery_notes = 0;
-    $total_payments       = 0;
+    //print $sql;
 
+    $total_payments       = 0;
+    $total_payments_amount       = 0;
+    $total_credits=0;
+    $total_credits_amount=0;
+
+    $mix_currencies=false;
 
     if ($result = $db->query($sql)) {
 
         foreach ($result as $data) {
 
-            $total_payments += $data['payments'];
+
+
+            if ($data['Store Currency Code'] != $account->get('Account Currency')) {
+
+                $exchange = currency_conversion(
+                    $db,$data['Store Currency Code'], $account->get('Account Currency'), '- 6 hours'
+                );
+
+               if($data['Store Total Acc Credits Amount']!=0){
+                   $mix_currencies=true;
+               }
+                $total_credits_amount += $exchange*$data['Store Total Acc Credits Amount'];
+
+            } else {
+
+                $total_credits_amount += $data['Store Total Acc Credits Amount'];
+
+            }
+
+
+
+            $total_payments += $data['Store Total Acc Payments'];
+            $total_payments_amount += $data['Store Total Acc Payments Amount'];
+            $total_credits += $data['Store Total Acc Credits'];
 
 
             $adata[] = array(
                 'store_key' => $data['Store Key'],
                 'code'      => sprintf('<span class="link" onclick="change_view(\'orders/%d\')">%s</span>', $data['Store Key'], $data['Store Code']),
                 'name'      => sprintf('<span class="link" onclick="change_view(\'orders/%d\')">%s</span>', $data['Store Key'], $data['Store Name']),
-                'payments'  => number($data['payments']),
+                'payments'  => sprintf('<span class=" %s">%s</span>',($data['Store Total Acc Payments']==0?'super_discreet':''),number($data['Store Total Acc Payments'])),
+                'payments_amount'  => sprintf('<span class=" %s">%s</span>',($data['Store Total Acc Payments']==0?'super_discreet':''),money($data['Store Total Acc Payments Amount'],$data['Store Currency Code'])),
+
+                'credits'  => sprintf('<span class=" %s">%s</span>',($data['Store Total Acc Credits']==0?'super_discreet':''),number($data['Store Total Acc Credits'])),
+                'credits_amount'  => sprintf('<span class=" %s">%s</span>',($data['Store Total Acc Credits']==0?'super_discreet':''),money($data['Store Total Acc Credits Amount'],$data['Store Currency Code'])),
+
+
 
             );
 
@@ -533,7 +566,9 @@ function payments_group_by_store($_data, $db, $user) {
         'code'      => _('Total').($filtered > 0 ? ' '.'<i class="fa fa-filter fa-fw"></i>' : ''),
 
         'payments' => number($total_payments),
-
+        'payments_amount' => sprintf('<span class=" %s">%s</span>',($mix_currencies?'italic discreet':''),money($total_payments_amount,$account->get('Currency Code'))),
+        'credits' => number($total_credits),
+        'credits_amount'  => sprintf('<span class=" %s">%s</span>',($mix_currencies?'italic discreet':''),money($total_credits_amount,$account->get('Currency Code'))),
 
     );
 

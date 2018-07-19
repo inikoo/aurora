@@ -16,7 +16,7 @@ include_once 'class.DB_Table.php';
 class Store extends DB_Table {
 
 
-    function Store($a1, $a2 = false, $a3 = false, $_db = false) {
+    function __construct($a1, $a2 = false, $a3 = false, $_db = false) {
 
         if (!$_db) {
             global $db;
@@ -1632,6 +1632,7 @@ class Store extends DB_Table {
 
     function update_orders() {
 
+
         $this->update_orders_in_basket_data();
         $this->update_orders_in_process_data();
         $this->update_orders_in_warehouse_data();
@@ -1642,12 +1643,12 @@ class Store extends DB_Table {
 
         $this->update_orders_cancelled();
 
-
+// todo delete after migation
         $this->data['Store Total Acc Orders']  = 0;
         $this->data['Store Dispatched Orders'] = 0;
         $this->data['Store Cancelled Orders']  = 0;
         $this->data['Store Orders In Process'] = 0;
-
+//======
         $this->data['Store Total Acc Invoices']      = 0;
         $this->data['Store Invoices']                = 0;
         $this->data['Store Refunds']                 = 0;
@@ -1672,6 +1673,8 @@ class Store extends DB_Table {
         $this->data['Store Delivery Notes For Shortages']    = 0;
 
 
+        //=================== todo delete this after migration
+
         $sql =
             "SELECT count(*) AS `Store Total Acc Orders`,sum(IF(`Order Current Dispatch State`='Dispatched',1,0 )) AS `Store Dispatched Orders` ,sum(IF(`Order Current Dispatch State`='Cancelled',1,0 )) AS `Store Cancelled Orders` FROM `Order Dimension`   WHERE `Order Store Key`="
             .$this->id;
@@ -1689,6 +1692,8 @@ class Store extends DB_Table {
             print_r($error_info = $this->db->errorInfo());
             exit;
         }
+
+        //=================
 
         $sql =
             "SELECT count(*) AS `Store Total Invoices`,sum(IF(`Invoice Type`='Invoice',1,0 )) AS `Store Invoices`,sum(IF(`Invoice Type`!='Invoice',1,0 )) AS `Store Refunds` ,sum(IF(`Invoice Paid`='Yes' AND `Invoice Type`='Invoice',1,0 )) AS `Store Paid Invoices`,sum(IF(`Invoice Paid`='Partially' AND `Invoice Type`='Invoice',1,0 )) AS `Store Partially Paid Invoices`,sum(IF(`Invoice Paid`='Yes' AND `Invoice Type`!='Invoice',1,0 )) AS `Store Paid Refunds`,sum(IF(`Invoice Paid`='Partially' AND `Invoice Type`!='Invoice',1,0 )) AS `Store Partially Paid Refunds` FROM `Invoice Dimension`   WHERE `Invoice Store Key`="
@@ -1747,7 +1752,7 @@ class Store extends DB_Table {
             exit;
         }
 
-
+        // todo carefully Store Cancelled Orders,Store Dispatched Orders after migration
         $sql = sprintf(
             "UPDATE `Store Dimension` SET `Store Dispatched Orders`=%d,`Store Cancelled Orders`=%d
                     ,`Store Invoices`=%d ,`Store Refunds`=%d ,`Store Paid Invoices`=%d ,`Store Paid Refunds`=%d ,`Store Partially Paid Invoices`=%d ,`Store Partially Paid Refunds`=%d
@@ -1770,6 +1775,7 @@ class Store extends DB_Table {
     }
 
     function update_orders_in_basket_data() {
+        $this->load_acc_data();
 
         $data = array(
             'in_basket' => array(
@@ -1801,6 +1807,7 @@ class Store extends DB_Table {
         }
 
 
+
         $data_to_update = array(
             'Store Orders In Basket Number' => $data['in_basket']['number'],
             'Store Orders In Basket Amount' => round($data['in_basket']['amount'], 2)
@@ -1813,11 +1820,14 @@ class Store extends DB_Table {
             'Store DC Orders In Basket Amount' => round($data['in_basket']['dc_amount'], 2),
         );
         $this->fast_update($data_to_update, 'Store DC Data');
+        $this->load_acc_data();
 
 
     }
 
     function update_orders_in_process_data() {
+
+        $this->load_acc_data();
 
         $data = array(
 
@@ -1876,6 +1886,9 @@ class Store extends DB_Table {
         }
 
 
+
+
+
         $data_to_update = array(
             'Store Orders In Process Paid Number'     => $data['in_process_paid']['number'],
             'Store Orders In Process Paid Amount'     => round($data['in_process_paid']['amount'], 2),
@@ -1894,7 +1907,6 @@ class Store extends DB_Table {
 
         );
         $this->fast_update($data_to_update, 'Store DC Data');
-
 
     }
 
@@ -2188,6 +2200,7 @@ class Store extends DB_Table {
         }
 
 
+
         $data_to_update = array(
             'Store Orders Dispatched Number' => $data['dispatched']['number'],
             'Store Orders Dispatched Amount' => round($data['dispatched']['amount'], 2)
@@ -2259,6 +2272,7 @@ class Store extends DB_Table {
         }
 
 
+
         $data_to_update = array(
             'Store Orders Dispatched Today Number' => $data['dispatched_today']['number'],
             'Store Orders Dispatched Today Amount' => round($data['dispatched_today']['amount'], 2)
@@ -2296,7 +2310,6 @@ class Store extends DB_Table {
         if ($result = $this->db->query($sql)) {
             foreach ($result as $row) {
 
-
                 $data['cancelled']['number']    = $row['num'];
                 $data['cancelled']['amount']    = $row['amount'];
                 $data['cancelled']['dc_amount'] = $row['dc_amount'];
@@ -2307,6 +2320,9 @@ class Store extends DB_Table {
             print_r($error_info = $this->db->errorInfo());
             exit;
         }
+
+
+
 
 
         $data_to_update = array(
@@ -2322,6 +2338,83 @@ class Store extends DB_Table {
 
         );
         $this->fast_update($data_to_update, 'Store DC Data');
+    }
+
+    function update_payments() {
+
+        $data = array(
+
+            'payments' => array(
+                'number'    => 0,
+                'amount'    => 0,
+                'dc_amount' => 0
+            ),
+            'credits' => array(
+                'number'    => 0,
+                'amount'    => 0,
+            ),
+        );
+
+        $sql = sprintf(
+            "SELECT count(*) AS num,ifnull(sum(`Payment Transaction Amount`),0) AS amount,ifnull(sum(`Payment Transaction Amount`*`Payment Currency Exchange Rate`),0) AS dc_amount FROM `Payment Dimension`  WHERE  `Payment Store Key`=%d  AND   `Payment Transaction Status` ='Completed' ",
+            $this->id
+        );
+
+
+        if ($result = $this->db->query($sql)) {
+            foreach ($result as $row) {
+
+                $data['payments']['number']    = $row['num'];
+                $data['payments']['amount']    = $row['amount'];
+                $data['payments']['dc_amount'] = $row['dc_amount'];
+
+
+            }
+        } else {
+            print_r($error_info = $this->db->errorInfo());
+            exit;
+        }
+
+
+        $sql = sprintf(
+            "SELECT count(*) AS num,ifnull(sum(`Customer Account Balance`),0) AS amount FROM `Customer Dimension`  WHERE  `Customer Store Key`=%d  AND   `Customer Account Balance`!=0 ",
+            $this->id
+        );
+
+
+        if ($result = $this->db->query($sql)) {
+            foreach ($result as $row) {
+
+                $data['credits']['number']    = $row['num'];
+                $data['credits']['amount']    = $row['amount'];
+
+
+            }
+        } else {
+            print_r($error_info = $this->db->errorInfo());
+            exit;
+        }
+
+
+        $data_to_update = array(
+            'Store Total Acc Payments' => $data['payments']['number'],
+            'Store Total Acc Payments Amount' => round($data['payments']['amount'], 2),
+            'Store Total Acc Credits' => $data['credits']['number'],
+            'Store Total Acc Credits Amount' => round($data['credits']['amount'], 2)
+
+        );
+
+
+        $this->fast_update($data_to_update, 'Store Data');
+
+
+
+        $data_to_update = array(
+            'Store DC Total Acc Payments Amount' => round($data['payments']['dc_amount'], 2)
+
+        );
+        $this->fast_update($data_to_update, 'Store DC Data');
+
     }
 
 

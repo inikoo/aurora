@@ -14,7 +14,7 @@ if (count($user->stores) == 0) {
     $where = "where false";
 } else {
 
-    $where = sprintf("where `Store Key` in (%s)", join(',', $user->stores));
+    $where = sprintf("where S.`Store Key` in (%s)", join(',', $user->stores));
 }
 
 $wheref = '';
@@ -42,14 +42,18 @@ if ($order == 'code') {
 } elseif ($order == 'credits_amount') {
     $order = '`Store Total Acc Credits Amount`';
 } else {
-    $order = '`Store Key`';
+    $order = 'S.`Store Key`';
 }
 
 
-$table = '`Store Dimension`';
+$table = '`Store Dimension` S left join `Store Data` D on (D.`Store Key`=S.`Store Key`)';
 $fields
-       = "`Store Key`,`Store Name`,`Store Code`,
-       `Store Total Acc Payments Amount`,`Store Total Acc Payments`,`Store Total Acc Credits Amount`,`Store Total Acc Credits`
+       = "S.`Store Key`,`Store Name`,`Store Code`,
+       `Store Total Acc Payments Amount`,
+       `Store Total Acc Payments`,
+       `Store Total Acc Credits Amount`,
+       `Store Total Acc Credits`,
+       `Store Currency Code`
 
 
 

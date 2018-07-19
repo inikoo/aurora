@@ -819,7 +819,6 @@
 
 
         if (value == 0) {
-            console.log('cacacaca')
 
 
             return;

@@ -1303,8 +1303,6 @@ function parse_request($_data, $db, $modules, $account = '', $user = '', $is_set
                         }
 
 
-
-
                     }
 
 
@@ -1750,7 +1748,6 @@ function parse_request($_data, $db, $modules, $account = '', $user = '', $is_set
                     $parent_key = $arg1;
 
 
-
                     if (isset($view_path[0])) {
 
                         if (is_numeric($view_path[0])) {
@@ -1818,8 +1815,7 @@ function parse_request($_data, $db, $modules, $account = '', $user = '', $is_set
                                         }
 
 
-
-                                    }elseif($view_path[2]=='new'){
+                                    } elseif ($view_path[2] == 'new') {
                                         $section = 'mailshot.new';
                                         $object  = 'mailshot';
                                         $key     = 0;
@@ -1831,13 +1827,10 @@ function parse_request($_data, $db, $modules, $account = '', $user = '', $is_set
                             }
 
 
-
-                        }
-                        elseif ($view_path[0] == 'new') {
+                        } elseif ($view_path[0] == 'new') {
                             $section = 'prospect.new';
                             $object  = '';
-                        }elseif ($view_path[0] == 'template') {
-
+                        } elseif ($view_path[0] == 'template') {
 
 
                             if (is_numeric($view_path[1])) {
@@ -1848,7 +1841,7 @@ function parse_request($_data, $db, $modules, $account = '', $user = '', $is_set
 
                             } elseif ($view_path[1] == 'new') {
                                 $object  = 'email_template';
-                                $key     =0;
+                                $key     = 0;
                                 $section = 'prospects.template.new';
 
                             }
@@ -1894,7 +1887,6 @@ function parse_request($_data, $db, $modules, $account = '', $user = '', $is_set
                     $parent_key = $arg1;
 
 
-
                     if (isset($view_path[0])) {
 
                         if (is_numeric($view_path[0])) {
@@ -1907,7 +1899,6 @@ function parse_request($_data, $db, $modules, $account = '', $user = '', $is_set
 
 
                             if (isset($view_path[1])) {
-
 
 
                                 if ($view_path[1] == 'email') {
@@ -1927,20 +1918,19 @@ function parse_request($_data, $db, $modules, $account = '', $user = '', $is_set
 
                                     }
 
-                                }elseif ($view_path[1] == 'compose') {
+                                } elseif ($view_path[1] == 'compose') {
 
 
-                                    if (isset($view_path[2])  and is_numeric($view_path[2]) ) {
+                                    if (isset($view_path[2]) and is_numeric($view_path[2])) {
 
-                                        $parent='prospect';
-                                        $parent_key =$key;
-                                        $object = 'email_template';
-                                        $key=$view_path[2];
+                                        $parent     = 'prospect';
+                                        $parent_key = $key;
+                                        $object     = 'email_template';
+                                        $key        = $view_path[2];
 
                                         $section = 'prospect.compose_email';
 
                                     }
-
 
 
                                 }
@@ -1949,13 +1939,10 @@ function parse_request($_data, $db, $modules, $account = '', $user = '', $is_set
                             }
 
 
-
-                        }
-                        elseif ($view_path[0] == 'new') {
+                        } elseif ($view_path[0] == 'new') {
                             $section = 'prospect.new';
                             $object  = '';
-                        }elseif ($view_path[0] == 'template') {
-
+                        } elseif ($view_path[0] == 'template') {
 
 
                             if (is_numeric($view_path[1])) {
@@ -1966,7 +1953,7 @@ function parse_request($_data, $db, $modules, $account = '', $user = '', $is_set
 
                             } elseif ($view_path[1] == 'new') {
                                 $object  = 'email_template';
-                                $key     =0;
+                                $key     = 0;
                                 $section = 'prospects.template.new';
 
                             }
@@ -2529,11 +2516,22 @@ function parse_request($_data, $db, $modules, $account = '', $user = '', $is_set
 
                 }
                 $arg1 = array_shift($view_path);
+
                 if ($arg1 == 'all') {
                     $module     = 'delivery_notes_server';
                     $section    = 'delivery_notes';
                     $parent     = 'account';
                     $parent_key = 1;
+
+
+
+                    if(isset($view_path[0]) and $view_path[0]=='by_store'){
+                        $module     = 'delivery_notes_server';
+                        $section    = 'group_by_store';
+                        $parent     = 'account';
+                        $parent_key = 1;
+                    }
+
 
                 } elseif (is_numeric($arg1)) {
                     $section    = 'delivery_notes';
@@ -3069,7 +3067,7 @@ function parse_request($_data, $db, $modules, $account = '', $user = '', $is_set
 
                                 $parent     = 'warehouse';
                                 $parent_key = $key;
-                            }elseif ($view_path[1] == 'shippers') {
+                            } elseif ($view_path[1] == 'shippers') {
 
 
                                 $parent     = 'warehouse';
@@ -3081,13 +3079,12 @@ function parse_request($_data, $db, $modules, $account = '', $user = '', $is_set
                                         $section = 'shipper';
                                         $object  = 'shipper';
                                         $key     = $view_path[2];
-                                    }elseif ($view_path[2]=='new') {
+                                    } elseif ($view_path[2] == 'new') {
                                         $section = 'shipper.new';
                                         $object  = 'shipper';
                                         $key     = 0;
                                     }
                                 }
-
 
 
                             } elseif ($view_path[1] == 'leakages') {
@@ -5191,7 +5188,6 @@ function parse_request($_data, $db, $modules, $account = '', $user = '', $is_set
     }
 
 
-
     return $state;
 
 }
@@ -5216,11 +5212,10 @@ function parse_tabs($module, $section, $_data, $modules) {
     } else {
 
 
+        $tmp = $session->get('state');
 
-        $tmp=$session->get('state');
 
-
-        if(!empty($tmp[$module][$section]['tab'])){
+        if (!empty($tmp[$module][$section]['tab'])) {
             $tab = $tmp[$module][$section]['tab'];
 
 
@@ -5231,7 +5226,7 @@ function parse_tabs($module, $section, $_data, $modules) {
                     }
                 }
             }
-        }else {
+        } else {
 
 
             if (!isset($modules[$module]['sections'][$section]['tabs']) or !is_array($modules[$module]['sections'][$section]['tabs']) or count($modules[$module]['sections'][$section]['tabs']) == 0) {

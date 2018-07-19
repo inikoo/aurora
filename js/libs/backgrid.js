@@ -2133,7 +2133,6 @@
             // this.$el.addClass(column.get("direction"));
 
 
-            // console.log('cacacacac')
 
             //console.log(column.get("direction"))
             if (column.get("direction") == 'ascending') {

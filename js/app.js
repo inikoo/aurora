@@ -392,6 +392,8 @@ function get_widget_details(element, widget, metadata) {
 }
 
 function change_menu_view(module){
+
+
     switch (module){
         case '_dashboard':
             change_view('/dashboard')
@@ -407,21 +409,21 @@ function change_menu_view(module){
             if(state.current_store){
                 change_view('orders/'+state.current_store+'/dashboard')
             }else{
-                change_view('orders/all/dashboard')
+                change_view('orders/all/by_store')
             }
             break;
         case 'delivery_notes':
             if(state.current_store){
                 change_view('delivery_notes/'+state.current_store)
             }else{
-                change_view('delivery_notes/all')
+                change_view('delivery_notes/all/by_store')
             }
             break;
         case 'payments':
             if(state.current_store){
                 change_view('payments/'+state.current_store)
             }else{
-                change_view('payments/all')
+                change_view('payments/by_store')
             }
             break;
         case 'products':

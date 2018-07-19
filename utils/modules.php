@@ -1259,6 +1259,18 @@ $modules = array(
         'section'     => 'orders',
         'sections'    => array(
 
+
+            'group_by_store' => array(
+                'type'      => 'navigation',
+                'label'     => _('Group by store'),
+                'icon'      => 'compress',
+                'reference' => 'orders/all/by_store',
+                'tabs'      => array(
+                    'orders_group_by_store' => array()
+                )
+
+            ),
+
             'dashboard'      => array(
                 'type'      => 'navigation',
                 'label'     => _('Control panel'),
@@ -1289,16 +1301,7 @@ $modules = array(
                 )
 
             ),
-            'group_by_store' => array(
-                'type'      => 'navigation',
-                'label'     => _('Group by store'),
-                'icon'      => 'compress',
-                'reference' => 'orders/all/by_store',
-                'tabs'      => array(
-                    'orders_group_by_store' => array()
-                )
 
-            ),
             'email_campaign' => array(
                 'type' => 'object',
                 'tabs' => array(
@@ -1756,24 +1759,10 @@ $modules = array(
 
         'parent'      => 'none',
         'parent_type' => 'none',
-        'section'     => 'orders',
+        'section'     => 'delivery_notes_server',
         'sections'    => array(
 
-
-            'delivery_notes' => array(
-                'type'  => 'navigation',
-                'icon'  => 'truck',
-                'label' => _('Delivery notes'),
-                'reference' => 'delivery_notes/all',
-                'tabs'  => array(
-                    'delivery_notes_server' => array()
-                )
-
-            ),
-
-
-
-            'delivery_notes_by_store' => array(
+            'group_by_store' => array(
                 'type'      => 'navigation',
                 'label'     => _('Group by store'),
                 'icon'      => 'compress',
@@ -1783,6 +1772,21 @@ $modules = array(
                 )
 
             ),
+
+
+            'delivery_notes' => array(
+                'type'  => 'navigation',
+                'icon'  => 'truck',
+                'label' => _('Delivery notes').' ('._('All stores').')',
+                'reference' => 'delivery_notes/all',
+                'tabs'  => array(
+                    'delivery_notes_server' => array()
+                )
+
+            ),
+
+
+
 
 
         )
@@ -1797,15 +1801,15 @@ $modules = array(
         'sections'    => array(
 
 
-            'payment_accounts' => array(
+            'payments_by_store' => array(
                 'type'      => 'navigation',
-                'label'     => _("Payment accounts"),
-                'icon'      => 'cc',
-                'reference' => 'payment_accounts/%s',
-                'class'     => 'left',
+                'label'     => _('Group by store'),
+                'icon'      => 'compress',
+                'reference' => 'payments/by_store',
                 'tabs'      => array(
-                    'payment_accounts' => array(),
+                    'payments_group_by_store' => array()
                 )
+
             ),
 
             'payment_service_providers' => array(
@@ -1813,7 +1817,6 @@ $modules = array(
                 'label'     => _('Payment Service Providers'),
                 'icon'      => 'university',
                 'reference' => 'payment_service_providers',
-                'class'     => 'left',
                 'tabs'      => array(
                     'payment_service_providers' => array(
                         'label' => _('Payment Service Providers'),
@@ -1823,11 +1826,23 @@ $modules = array(
                 )
             ),
 
+            'payment_accounts' => array(
+                'type'      => 'navigation',
+                'label'     => _("Payment accounts"),
+                'icon'      => 'money-check-alt',
+                'reference' => 'payment_accounts/%s',
+                'tabs'      => array(
+                    'payment_accounts' => array(),
+                )
+            ),
+
+
+
 
             'credits' => array(
                 'type'      => 'navigation',
                 'label'     => _('Credit vault'),
-                'icon'      => 'university',
+                'html_icon'      => '<i class="fa fa-piggy-bank"></i>',
                 'reference' => 'credits/all',
                 'tabs'      => array(
                     'account.credits' => array(
@@ -1848,16 +1863,6 @@ $modules = array(
                 )
             ),
 
-            'payments_by_store' => array(
-                'type'      => 'navigation',
-                'label'     => _('Group by store'),
-                'icon'      => 'compress',
-                'reference' => 'payments/by_store',
-                'tabs'      => array(
-                    'payments_group_by_store' => array()
-                )
-
-            ),
 
             'payment_service_provider' => array(
                 'type' => 'object',

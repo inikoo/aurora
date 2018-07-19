@@ -32,33 +32,85 @@ cell: Backgrid.HtmlCell.extend({ className: "aright"} ),
 headerCell: integerHeaderCell
 },
 
+{
+name: "in_basket",
+label:"{t}In basket{/t}",
+editable: false,
+defaultOrder:1,
+sortType: "toggle",
+{if $sort_key=='in_basket'}direction: '{if $sort_order==1}descending{else}ascending{/if}',{/if}
+cell: Backgrid.HtmlCell.extend({
+className: " aright"}),
+headerCell: integerHeaderCell
+},
+{
+name: "in_process",
+label:"{t}In process{/t}",
+editable: false,
+defaultOrder:1,
+sortType: "toggle",
+{if $sort_key=='in_process'}direction: '{if $sort_order==1}descending{else}ascending{/if}',{/if}
+cell: Backgrid.HtmlCell.extend({
+className: " aright"}),
+headerCell: integerHeaderCell
+},
+{
+name: "sent",
+label:"{t}Dispatched{/t}",
+editable: false,
+defaultOrder:1,
+sortType: "toggle",
+{if $sort_key=='sent'}direction: '{if $sort_order==1}descending{else}ascending{/if}',{/if}
+cell: Backgrid.HtmlCell.extend({
+className: " aright"}),
+headerCell: integerHeaderCell
+},
+{
+name: "cancelled",
+label:"{t}Cancelled{/t}",
+editable: false,
+defaultOrder:1,
+sortType: "toggle",
+{if $sort_key=='cancelled'}direction: '{if $sort_order==1}descending{else}ascending{/if}',{/if}
+cell: Backgrid.HtmlCell.extend({
+className: " aright"}),
+headerCell: integerHeaderCell
+},
 
 {
 name: "orders",
-label:"{t}All orders{/t}",
+label:"&Sigma; {t}Orders{/t}",
+title:"{t}Sum orders{/t}",
+
+
 editable: false,
 defaultOrder:1,
 sortType: "toggle",
 {if $sort_key=='orders'}direction: '{if $sort_order==1}descending{else}ascending{/if}',{/if}
 cell: Backgrid.HtmlCell.extend({
-className: " aright",
-
-}),
-headerCell: integerHeaderCell
-
-}, {
+className: " aright"}),
+headerCell: rightHeaderHtmlCell
+},
+{
 name: "invoices",
-label:"{t}All invoices{/t}",
+label:"{t}Invoices{/t}",
 editable: false,
 defaultOrder:1,
 sortType: "toggle",
 {if $sort_key=='invoices'}direction: '{if $sort_order==1}descending{else}ascending{/if}',{/if}
 cell: Backgrid.HtmlCell.extend({
-className: " aright",
-
-}),
+className: " aright"}),
 headerCell: integerHeaderCell
-
+}, {
+name: "refunds",
+label:"{t}Refunds{/t}",
+editable: false,
+defaultOrder:1,
+sortType: "toggle",
+{if $sort_key=='refunds'}direction: '{if $sort_order==1}descending{else}ascending{/if}',{/if}
+cell: Backgrid.HtmlCell.extend({
+className: " aright"}),
+headerCell: integerHeaderCell
 },
 
 ]

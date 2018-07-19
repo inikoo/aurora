@@ -2784,4 +2784,39 @@ function get_replacement_new_navigation($data, $smarty, $user, $db, $account) {
 
 
 
+function get_delivery_notes_server_group_by_store_navigation($data, $smarty, $user, $db, $account) {
+
+
+    $sections = get_sections('delivery_notes_server');
+
+    $left_buttons = array();
+    $right_buttons = array();
+
+    if (isset($sections[$data['section']])) {
+        $sections[$data['section']]['selected'] = true;
+    }
+
+    $title = _("Delivery notes grouped by store");
+
+    $_content = array(
+        'sections_class' => '',
+        'sections'       => $sections,
+        'left_buttons'   => $left_buttons,
+        'right_buttons'  => $right_buttons,
+        'title'          => $title,
+        'search'         => array(
+            'show'        => true,
+            'placeholder' => _('Search delivery notes')
+        )
+
+    );
+    $smarty->assign('_content', $_content);
+
+    $html = $smarty->fetch('navigation.tpl');
+
+    return $html;
+
+}
+
+
 ?>

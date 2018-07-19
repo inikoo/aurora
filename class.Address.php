@@ -638,10 +638,7 @@ class _Address extends DB_Table {
                     $data['Address Postal Code'], 'GBR'
                 )
                 ) {
-                    //   print "cacacaca";
-                    $data['Address Country First Division'] = _trim(
-                        $data['Address Country First Division'].' '.$data['Address Country Name']
-                    );
+                    $data['Address Country First Division'] = _trim($data['Address Country First Division'].' '.$data['Address Country Name']);
                     $data['Address Country Name']           = 'United Kingdom';
 
                 } elseif (Address::is_valid_postcode(
