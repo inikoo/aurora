@@ -2347,7 +2347,6 @@
     })
 
     $(document).on('click', '  .video', function (e) {
-        console.log('cacaca')
         open_video_control_panel(this);
     })
 

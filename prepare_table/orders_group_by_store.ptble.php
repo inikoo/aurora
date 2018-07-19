@@ -14,7 +14,7 @@ if (count($user->stores) == 0) {
     $where = "where false";
 } else {
 
-    $where = sprintf("where `Store Key` in (%s)", join(',', $user->stores));
+    $where = sprintf("where S.`Store Key` in (%s)", join(',', $user->stores));
 }
 
 $wheref = '';
@@ -35,20 +35,34 @@ if ($order == 'code') {
     $order = '`Store Name`';
 } elseif ($order == 'orders') {
     $order = 'orders';
-} elseif ($order == 'delivery_notes') {
-    $order = 'delivery_notes';
-} else {
-    $order = '`Store Key`';
+} elseif ($order == 'Store Invoices') {
+    $order = '`Store Invoices`';
+} elseif ($order == 'Store Refunds') {
+    $order = '`Store Refunds`';
+} elseif ($order == 'in_basket') {
+    $order ='in_basket';
+} elseif ($order == 'in_process') {
+    $order ='in_process';
+} elseif ($order == 'sent') {
+    $order ='sent';
+} elseif ($order == 'cancelled') {
+    $order ='cancelled';
+}  else {
+    $order = 'S.`Store Key`';
 }
 
 
-$table = '`Store Dimension`';
+$table = '`Store Dimension` S left join `Store Data` D on (D.`Store Key`=S.`Store Key`)';
 $fields
-       = "`Store Key`,`Store Name`,`Store Code`,`Store Contacts`,
-(`Store Orders In Process`+`Store Dispatched Orders`+`Store Cancelled Orders`+`Store Suspended Orders`) as orders,
-(`Store Delivery Notes For Orders`+`Store Delivery Notes For Replacements`+`Store Delivery Notes For Shortages`+`Store Delivery Notes For Samples`+`Store Delivery Notes For Donations`) as delivery_notes,
-(`Store Invoices`+`Store Refunds`) as invoices,
-(`Store Invoices`+`Store Refunds`) as payments
+       = "S.`Store Key`,`Store Name`,`Store Code`,`Store Contacts`,
+            (`Store Orders In Basket Number`) in_basket,
+
+     (`Store Orders In Process Not Paid Number`+`Store Orders In Process Paid Number`+`Store Orders In Warehouse Number`+`Store Orders Dispatch Approved Number`) in_process,
+            (`Store Orders Dispatched Number`) sent,
+     (`Store Orders Cancelled Number`) cancelled,
+       
+(`Store Orders In Basket Number`+`Store Orders In Process Not Paid Number`+`Store Orders In Process Paid Number`+`Store Orders In Warehouse Number`+`Store Orders Dispatch Approved Number`+`Store Orders Dispatched Number`+`Store Orders Cancelled Number`) as orders,
+`Store Invoices`,`Store Refunds`
 
 ";
 

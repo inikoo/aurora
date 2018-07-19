@@ -397,7 +397,6 @@ function select_dropdown_item(element) {
     value = $(element).attr('value')
 
     if(value==0){
-        console.log('cacacaca')
 
 
         return;

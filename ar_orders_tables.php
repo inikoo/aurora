@@ -96,7 +96,9 @@ switch ($tipo) {
     case 'orders_group_by_store':
         orders_group_by_store(get_table_parameters(), $db, $user);
         break;
-
+    case 'delivery_notes_group_by_store':
+        delivery_notes_group_by_store(get_table_parameters(), $db, $user);
+        break;
     case 'invoice_categories':
         invoice_categories(get_table_parameters(), $db, $user);
         break;
@@ -1535,29 +1537,42 @@ function orders_group_by_store($_data, $db, $user) {
 
     $sql = "select $fields from $table $where $wheref order by $order $order_direction limit $start_from,$number_results";
 
-    $total_orders         = 0;
-    $total_invoices       = 0;
-    $total_delivery_notes = 0;
-    $total_payments       = 0;
+    $total_orders    = 0;
+    $total_invoices  = 0;
+    $total_refunds   = 0;
+    $total_in_basket = 0;
+    $total_in_process=0;
+    $total_sent      = 0;
+    $total_cancelled = 0;
 
 
     if ($result = $db->query($sql)) {
 
         foreach ($result as $data) {
 
-            $total_orders         += $data['orders'];
-            $total_invoices       += $data['invoices'];
-            $total_delivery_notes += $data['delivery_notes'];
-            $total_payments       += $data['payments'];
+            $total_orders    += $data['orders'];
+            $total_invoices  += $data['Store Invoices'];
+            $total_refunds   += $data['Store Refunds'];
+            $total_in_basket += $data['in_basket'];
+            $total_in_process += $data['in_process'];
+
+            $total_sent      += $data['sent'];
+            $total_cancelled += $data['cancelled'];
 
             $adata[] = array(
-                'store_key'      => $data['Store Key'],
-                'code'           => sprintf('<span class="link" onclick="change_view(\'orders/%d\')">%s</span>', $data['Store Key'], $data['Store Code']),
-                'name'           => sprintf('<span class="link" onclick="change_view(\'orders/%d\')">%s</span>', $data['Store Key'], $data['Store Name']),
-                'orders'         => number($data['orders']),
-                'delivery_notes' => number($data['delivery_notes']),
-                'invoices'       => sprintf('<span class="link" onclick="change_view(\'invoices/%d\')">%s</span>', $data['Store Key'], number($data['invoices'])),
-                'payments'       => number($data['payments']),
+                'store_key' => $data['Store Key'],
+                'code'      => sprintf('<span class="link" onclick="change_view(\'orders/%d\')">%s</span>', $data['Store Key'], $data['Store Code']),
+                'name'      => sprintf('<span class="link" onclick="change_view(\'orders/%d\')">%s</span>', $data['Store Key'], $data['Store Name']),
+                'orders'    => number($data['orders']),
+                'invoices'  => sprintf('<span class="link" onclick="change_view(\'invoices/%d\')">%s</span>', $data['Store Key'], number($data['Store Invoices'])),
+                'refunds'   => sprintf('<span class="link" onclick="change_view(\'invoices/%d\')">%s</span>', $data['Store Key'], number($data['Store Refunds'])),
+
+                'in_basket' => sprintf('<span class="link" onclick="change_view(\'orders/%d\')">%s</span>', $data['Store Key'], number($data['in_basket'])),
+                'in_process' => sprintf('<span class="link" onclick="change_view(\'orders/%d\')">%s</span>', $data['Store Key'], number($data['in_process'])),
+
+                'sent'      => sprintf('<span class="link" onclick="change_view(\'orders/%d\')">%s</span>', $data['Store Key'], number($data['sent'])),
+                'cancelled' => sprintf('<span class="link" onclick="change_view(\'orders/%d\')">%s</span>', $data['Store Key'], number($data['cancelled'])),
+
             );
 
         }
@@ -1573,10 +1588,91 @@ function orders_group_by_store($_data, $db, $user) {
         'name'      => '',
         'code'      => _('Total').($filtered > 0 ? ' '.'<i class="fa fa-filter fa-fw"></i>' : ''),
 
-        'orders'         => number($total_orders),
-        'delivery_notes' => number($total_delivery_notes),
-        'invoices'       => number($total_invoices),
-        'payments'       => number($total_payments),
+        'orders'   => number($total_orders),
+        'invoices' => number($total_invoices),
+        'refunds'  => number($total_refunds),
+
+        'in_basket' => number($total_in_basket),
+        'in_process' => number($total_in_process),
+
+        'sent'      => number($total_sent),
+        'cancelled' => number($total_cancelled),
+
+    );
+
+
+    $response = array(
+        'resultset' => array(
+            'state'         => 200,
+            'data'          => $adata,
+            'rtext'         => $rtext,
+            'sort_key'      => $_order,
+            'sort_dir'      => $_dir,
+            'total_records' => $total
+        )
+    );
+    echo json_encode($response);
+}
+
+
+function delivery_notes_group_by_store($_data, $db, $user) {
+
+    $rtext_label = 'store';
+    include_once 'prepare_table/init.php';
+
+    $sql = "select $fields from $table $where $wheref order by $order $order_direction limit $start_from,$number_results";
+
+
+    $total_deliveries   = 0;
+    $total_replacements = 0;
+    $total_in_warehouse = 0;
+    $total_sent         = 0;
+    $total_returned     = 0;
+
+    if ($result = $db->query($sql)) {
+
+        foreach ($result as $data) {
+
+
+            $total_deliveries   += $data['deliveries'];
+            $total_replacements += $data['replacements'];
+            $total_in_warehouse += $data['in_warehouse'];
+            $total_sent         += $data['sent'];
+            $total_returned     += $data['returned'];
+
+            $adata[] = array(
+                'store_key' => $data['Store Key'],
+                'code'      => sprintf('<span class="link" onclick="change_view(\'delivery_notes/%d\')">%s</span>', $data['Store Key'], $data['Store Code']),
+                'name'      => sprintf('<span class="link" onclick="change_view(\'delivery_notes/%d\')">%s</span>', $data['Store Key'], $data['Store Name']),
+
+                'deliveries'   => number($data['deliveries']),
+                'replacements' => number($data['replacements']),
+
+                'in_warehouse' => number($data['in_warehouse']),
+                'sent'         => number($data['sent']),
+                'returned'     => number($data['returned']),
+
+            );
+
+        }
+
+    } else {
+        print_r($error_info = $db->errorInfo());
+        exit;
+    }
+
+
+    $adata[] = array(
+        'store_key' => '',
+        'name'      => '',
+        'code'      => _('Total').($filtered > 0 ? ' '.'<i class="fa fa-filter fa-fw"></i>' : ''),
+
+        'deliveries'   => number($total_deliveries),
+        'replacements' => number($total_replacements),
+        'in_warehouse' => number($total_in_warehouse),
+        'sent'         => number($total_sent),
+        'returned'     => number($total_returned),
+
 
     );
 
@@ -2156,16 +2252,16 @@ function delivery_note_items($_data, $db, $user) {
 
 
         $state_picking = '';
-        $state_packing='';
+        $state_packing = '';
         if ($data['Required'] > 0) {
 
             if ($data['Picked'] == $data['Required']) {
 
                 $state_picking = sprintf('<i class="fa-dolly-flatbed-alt fa success discreet fa-fw " title="%s"></i>', _('Picked'));
-            } elseif($data['Picked']>0) {
+            } elseif ($data['Picked'] > 0) {
                 $state_picking = sprintf('<i class="fa-dolly-flatbed-alt fa discreet fa-fw " title="%s"></i>', _('Picking'));
 
-            }else {
+            } else {
                 $state_picking = sprintf('<i class="fa-dolly-flatbed-empty fa discreet fa-fw " title="%s"></i>', _('To be picked'));
 
             }
@@ -2174,20 +2270,19 @@ function delivery_note_items($_data, $db, $user) {
             if ($data['Packed'] == $data['Required']) {
 
                 $state_packing = sprintf('<i class="fa-check-circle fa success fa-fw " title="%s"></i>', _('Packed'));
-                $state_picking='';
-            } elseif($data['Packed']>0) {
+                $state_picking = '';
+            } elseif ($data['Packed'] > 0) {
                 $state_packing = sprintf('<i class="fa-arrow-alt-circle-down discreet fa fa-fw " title="%s"></i>', _('Packing'));
-                $state_picking='';
-            }else {
+                $state_picking = '';
+            } else {
                 $state_packing = '';
 
             }
 
 
-
         }
 
-        $state='<span class="padding_left_20">'.$state_picking.' '.$state_packing.'</span>';
+        $state = '<span class="padding_left_20">'.$state_picking.' '.$state_packing.'</span>';
 
         $picked_offline_input = '<div class="picked_quantity_components">'.get_picked_offline_input(
                 $data['quantity'], $data['pending'], $data['Quantity On Hand'], $data['Inventory Transaction Key'], $data['Part SKU'], $data['Picked'], $data['Part Current On Hand Stock'], $data['Part SKO Barcode'], $data['Part Reference'],

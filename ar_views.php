@@ -135,16 +135,15 @@ function get_view($db, $smarty, $user, $account, $modules) {
     $state = parse_request($data, $db, $modules, $account, $user);
 
 
-
     //$state['current_website']   = $_SESSION['current_website'];
-    $state['current_store']     = $session->get('current_website');
-    $state['current_warehouse'] = $session->get('current_warehouse');
-    $state['current_production'] = (!empty($session->get('current_production'))?$session->get('current_production'):'');
+    $state['current_store']      = $session->get('current_website');
+    $state['current_warehouse']  = $session->get('current_warehouse');
+    $state['current_production'] = (!empty($session->get('current_production')) ? $session->get('current_production') : '');
 
 
-    $store     = '';
-    $website   = '';
-    $warehouse = '';
+    $store      = '';
+    $website    = '';
+    $warehouse  = '';
     $production = '';
 
     if (!empty($state['store_key'])) {
@@ -198,8 +197,8 @@ function get_view($db, $smarty, $user, $account, $modules) {
             include_once 'class.Store.php';
 
 
-            $_parent                  = get_object('Website', $state['parent_key']);
-            $website                  = $_parent;
+            $_parent = get_object('Website', $state['parent_key']);
+            $website = $_parent;
             //$state['current_website'] = $_parent->id;
 
 
@@ -209,17 +208,17 @@ function get_view($db, $smarty, $user, $account, $modules) {
 
             break;
         case 'page':
-            $_parent                  = get_object('Webpage', $state['parent_key']);
-            $website                  = get_object('Website', $_parent->get('Webpage Website Key'));
+            $_parent = get_object('Webpage', $state['parent_key']);
+            $website = get_object('Website', $_parent->get('Webpage Website Key'));
             //$state['current_website'] = $website->id;
-            $website                  = $website;
+            $website = $website;
 
             break;
         case 'node':
-            $_parent                  = get_object(
+            $_parent = get_object(
                 'WebsiteNode', $state['parent_key']
             );
-            $website                  = get_object('Website', $_parent->get('Website Node Website Key'));
+            $website = get_object('Website', $_parent->get('Website Node Website Key'));
             //$state['current_website'] = $website->id;
 
 
@@ -266,26 +265,30 @@ function get_view($db, $smarty, $user, $account, $modules) {
             //print_r($state);
             $_parent = get_object($state['parent'], $state['parent_key']);
 
-            if(in_array($state['module'],array('customers_server','orders_server'))){
-                $state['current_store']='';
+            if (in_array(
+                $state['module'], array(
+                                    'customers_server',
+                                    'orders_server'
+                                )
+            )) {
+                $state['current_store'] = '';
             }
-            if(in_array($state['module'],array('warehouses_server'))){
-                $state['current_warehouse']='';
+            if (in_array($state['module'], array('warehouses_server'))) {
+                $state['current_warehouse'] = '';
             }
-            if(in_array($state['module'],array('production_server'))) {
-                $state['current_production']='';
+            if (in_array($state['module'], array('production_server'))) {
+                $state['current_production'] = '';
 
             }
 
-                break;
+            break;
 
-            default:
-                $_parent = get_object($state['parent'], $state['parent_key']);
+        default:
+            $_parent = get_object($state['parent'], $state['parent_key']);
 
 
     }
     $state['_parent'] = $_parent;
-
 
 
     if ($state['object'] != '') {
@@ -318,7 +321,7 @@ function get_view($db, $smarty, $user, $account, $modules) {
 
 
             include_once 'class.Website.php';
-            $website                  = new Website($_object->get('Website Key'));
+            $website = new Website($_object->get('Website Key'));
             //$state['current_website'] = $website->id;
         }
 
@@ -610,27 +613,25 @@ function get_view($db, $smarty, $user, $account, $modules) {
         }
     }
 
-    if($state['module']=='production'){
-        $production=$state['_object'];
+    if ($state['module'] == 'production') {
+        $production = $state['_object'];
     }
 
 
-    $state['store']     = $store;
-    $state['website']   = $website;
-    $state['warehouse'] = $warehouse;
+    $state['store']      = $store;
+    $state['website']    = $website;
+    $state['warehouse']  = $warehouse;
     $state['production'] = $production;
 
-    if(is_object($store) and $store->id){
-        $state['current_store']=$store->id;
+    if (is_object($store) and $store->id) {
+        $state['current_store'] = $store->id;
     }
-    if(is_object($warehouse) and $warehouse->id){
-        $state['current_warehouse']=$warehouse->id;
+    if (is_object($warehouse) and $warehouse->id) {
+        $state['current_warehouse'] = $warehouse->id;
     }
-    if(is_object($production) and $production->id){
-        $state['current_production']=$production->id;
+    if (is_object($production) and $production->id) {
+        $state['current_production'] = $production->id;
     }
-
-
 
 
     $sql = sprintf(
@@ -646,17 +647,17 @@ function get_view($db, $smarty, $user, $account, $modules) {
 
 
     if (isset($state['current_store'])) {
-        $session->set('current_store',$state['current_store']);
+        $session->set('current_store', $state['current_store']);
 
     }
     //if (isset($state['current_website'])) {
     //    $_SESSION['current_website'] = $state['current_website'];
     //}
     if (isset($state['current_warehouse'])) {
-        $session->set('current_warehouse',$state['current_warehouse']);
+        $session->set('current_warehouse', $state['current_warehouse']);
     }
     if (isset($state['current_production'])) {
-        $session->set('current_production',$state['current_production']);
+        $session->set('current_production', $state['current_production']);
     }
 
     $response = array('state' => array());
@@ -825,22 +826,21 @@ function get_tab($db, $smarty, $user, $account, $tab, $subtab, $state = false, $
     }
 
 
-    if (is_array($state) and !(preg_match('/\_edit$/', $tab) or preg_match('/\.wget$/', $_tab) )) {
+    if (is_array($state) and !(preg_match('/\_edit$/', $tab) or preg_match('/\.wget$/', $_tab))) {
 
 
+        // $_SESSION['state'][ $state['module']  ][ $state['section']  ]  ['tab'] = $_tab;
 
-       // $_SESSION['state'][ $state['module']  ][ $state['section']  ]  ['tab'] = $_tab;
-
-        $tmp=$session->get('state');
-        $tmp[ $state['module']  ][ $state['section']  ]  ['tab'] = $_tab;
-        $session->set('state',$tmp);
+        $tmp                                               = $session->get('state');
+        $tmp[$state['module']][$state['section']]  ['tab'] = $_tab;
+        $session->set('state', $tmp);
 
 
         if ($_subtab != '') {
 
-            $tmp=$session->get('tab_state');
-            $tmp[$_tab]=$_subtabl;
-            $session->set('tab_state',$tmp);
+            $tmp        = $session->get('tab_state');
+            $tmp[$_tab] = $_subtabl;
+            $session->set('tab_state', $tmp);
 
 
         }
@@ -1634,6 +1634,10 @@ function get_navigation($user, $smarty, $data, $db, $account) {
                         $data, $smarty, $user, $db, $account
                     );
                     break;
+                case ('group_by_store'):
+                    return get_delivery_notes_server_group_by_store_navigation($data, $smarty, $user, $db, $account);
+                    break;
+
 
             }
 
@@ -4900,28 +4904,24 @@ function get_view_position($db, $state, $user, $smarty, $account) {
                 );
 
 
-            } else {
-                if ($state['section'] == 'invoices') {
+            } elseif ($state['section'] == 'invoices') {
 
-                    $branch[] = array(
-                        'label'     => _('Invoices').' ('._('All stores').')',
-                        'icon'      => '',
-                        'reference' => ''
-                    );
-
-
-                } else {
-                    if ($state['section'] == 'group_by_store') {
-
-                        $branch[] = array(
-                            'label'     => _('Orders grouped by store'),
-                            'icon'      => 'compress',
-                            'reference' => ''
-                        );
+                $branch[] = array(
+                    'label'     => _('Invoices').' ('._('All stores').')',
+                    'icon'      => '',
+                    'reference' => ''
+                );
 
 
-                    }
-                }
+            } elseif ($state['section'] == 'group_by_store') {
+
+                $branch[] = array(
+                    'label'     => _('Orders grouped by store'),
+                    'icon'      => 'compress',
+                    'reference' => ''
+                );
+
+
             }
 
 
@@ -4935,13 +4935,30 @@ function get_view_position($db, $state, $user, $smarty, $account) {
                 'reference' => 'receipts'
             );
 
-            if ($user->get_number_stores() > 1) {
+            if ($state['section'] == 'delivery_notes') {
+
+
+                if ($user->get_number_stores() > 1) {
+                    $branch[] = array(
+                        'label'     => _('Delivery Notes').' ('._('All stores').')',
+                        'icon'      => '',
+                        'reference' => 'delivery_notes/all'
+                    );
+                }
+
+
+
+            } elseif ($state['section'] == 'group_by_store') {
+
                 $branch[] = array(
-                    'label'     => _('Delivery Notes').' ('._('All stores').')',
-                    'icon'      => '',
-                    'reference' => 'delivery_notes/all'
+                    'label'     => _('Delivery notes grouped by store'),
+                    'icon'      => 'compress',
+                    'reference' => ''
                 );
+
+
             }
+
 
 
             break;
