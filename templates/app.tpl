@@ -208,7 +208,6 @@
             </div>
 
 
-
             <div id="menu">
             </div>
             {if $user->get('User Type')=='Staff' or $user->get('User Type')=='Contractor' }
