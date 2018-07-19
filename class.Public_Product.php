@@ -605,7 +605,7 @@ class Public_Product {
                                     )
                                 ).' ('.$data['units'].')';
                             $dimensions .= '<span class="discreet volume">, '.volume($data['vol']).'</span>';
-                            if ($this->data[$this->table_name." $tag Weight"] > 0) {
+                            if ($this->data[$this->table_name." $tag Weight"] > 0 and $data['vol']>0) {
 
                                 $dimensions .= '<span class="discreet density">, '.number(
                                         $this->data[$this->table_name." $tag Weight"] / $data['vol'], 3
@@ -637,7 +637,7 @@ class Public_Product {
                                     )
                                 ).' ('.$data['units'].')';
                             $dimensions .= '<span class="discreet volume">, '.volume($data['vol']).'</span>';
-                            if ($this->data[$this->table_name." $tag Weight"] > 0) {
+                            if ($this->data[$this->table_name." $tag Weight"] > 0 and $data['vol']) {
                                 $dimensions .= '<span class="discreet density">, '.number(
                                         $this->data[$this->table_name." $tag Weight"] / $data['vol']
                                     ).'Kg/L</span>';
@@ -667,7 +667,7 @@ class Public_Product {
                             $dimensions .= ', <span class="discreet">'.volume(
                                     $data['vol']
                                 ).'</span>';
-                            if ($this->data[$this->table_name." $tag Weight"] > 0) {
+                            if ($this->data[$this->table_name." $tag Weight"] > 0 and $data['vol']>0) {
                                 $dimensions .= '<span class="discreet">, '.number(
                                         $this->data[$this->table_name." $tag Weight"] / $data['vol']
                                     ).'Kg/L</span>';
@@ -795,7 +795,7 @@ class Public_Product {
                                     )
                                 ).$data['units'];
 
-
+                        break;
                         case 'String':
                             $dimensions = number(
                                     convert_units(

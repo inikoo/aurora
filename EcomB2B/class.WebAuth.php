@@ -13,7 +13,7 @@
 class WebAuth {
 
 
-    function WebAuth() {
+    function __construct() {
 
         global $db;
         $this->db = $db;
