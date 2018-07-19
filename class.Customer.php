@@ -163,24 +163,23 @@ class Customer extends Subject {
 
     function create($raw_data, $address_raw_data, $args = '') {
 
-/*
-        $this->data = $this->base_data();
-        foreach ($raw_data as $key => $value) {
-            if (array_key_exists($key, $this->data)) {
-                $this->data[$key] = _trim($value);
-            }
-        }
+        /*
+                $this->data = $this->base_data();
+                foreach ($raw_data as $key => $value) {
+                    if (array_key_exists($key, $this->data)) {
+                        $this->data[$key] = _trim($value);
+                    }
+                }
 
-*/
+        */
         $this->editor = $raw_data['editor'];
         unset($raw_data['editor']);
         //if ($this->data['Customer First Contacted Date'] == '') {
         //    $this->data['Customer First Contacted Date'] = gmdate('Y-m-d H:i:s');
-       // }
+        // }
 
-        $raw_data['Customer First Contacted Date']=gmdate('Y-m-d H:i:s');
-        $raw_data['Customer Sticky Note']='';
-
+        $raw_data['Customer First Contacted Date'] = gmdate('Y-m-d H:i:s');
+        $raw_data['Customer Sticky Note']          = '';
 
 
         /*
@@ -196,8 +195,6 @@ class Customer extends Subject {
         unset($this->data['Customer Total Billing To Records']);
         unset($this->data['Customer Company Key']);
 */
-
-
 
 
         $keys   = '';
@@ -225,8 +222,6 @@ class Customer extends Subject {
         $keys   = preg_replace('/^,/', '', $keys);
 
         $sql = "insert into `Customer Dimension` ($keys) values ($values)";
-
-
 
 
         if ($this->db->exec($sql)) {
@@ -587,8 +582,8 @@ class Customer extends Subject {
 
                 if (preg_match('/^Poll Query (\d+)/i', $key, $matches)) {
 
-                    $poll_key = $matches[1];
-                    $poll_query=get_object('Customer_Poll_Query',$poll_key);
+                    $poll_key   = $matches[1];
+                    $poll_query = get_object('Customer_Poll_Query', $poll_key);
 
                     list($answer_code, $answer_label, $answer_key) = $poll_query->get_answer($this->id);
 
@@ -599,8 +594,8 @@ class Customer extends Subject {
 
                 if (preg_match('/^Customer Poll Query (\d+)/i', $key, $matches)) {
 
-                    $poll_key = $matches[1];
-                    $poll_query=get_object('Customer_Poll_Query',$poll_key);
+                    $poll_key   = $matches[1];
+                    $poll_query = get_object('Customer_Poll_Query', $poll_key);
 
                     list($answer_code, $answer_label, $answer_key) = $poll_query->get_answer($this->id);
 
@@ -1387,12 +1382,7 @@ class Customer extends Subject {
         include_once 'utils/validate_tax_number.php';
 
 
-
-
-
-
         if ($value == 'Auto') {
-
 
 
             $tax_validation_data = validate_tax_number(
@@ -1401,18 +1391,16 @@ class Customer extends Subject {
 
             $this->update(
                 array(
-                    'Customer Tax Number Valid'              => $tax_validation_data['Tax Number Valid'],
+                    'Customer Tax Number Valid' => $tax_validation_data['Tax Number Valid'],
 
                     'Customer Tax Number Details Match'      => $tax_validation_data['Tax Number Details Match'],
-                    'Customer Tax Number Validation Date'    => ($tax_validation_data['Tax Number Validation Date']==''?gmdate('Y-m-d H:i:s'):$tax_validation_data['Tax Number Validation Date']),
+                    'Customer Tax Number Validation Date'    => ($tax_validation_data['Tax Number Validation Date'] == '' ? gmdate('Y-m-d H:i:s') : $tax_validation_data['Tax Number Validation Date']),
                     'Customer Tax Number Validation Source'  => 'Online',
                     'Customer Tax Number Validation Message' => $tax_validation_data['Tax Number Validation Message'],
                 ), 'no_history'
             );
 
         } else {
-
-
 
 
             $this->update(
@@ -1427,8 +1415,7 @@ class Customer extends Subject {
         }
 
 
-
-       // print_r($this->data);
+        // print_r($this->data);
 
         $this->other_fields_updated = array(
             'Customer_Tax_Number' => array(
@@ -1662,6 +1649,14 @@ class Customer extends Subject {
 
 
         }
+
+
+    }
+
+    function update_poll_answer($poll_key, $value, $options) {
+
+        $poll = get_object('Customer_Poll_Query', $poll_key);
+        $poll->add_customer($this, $value, $options);
 
 
     }
@@ -2313,7 +2308,6 @@ class Customer extends Subject {
 
     }
 
-
     public function update_invoices() {
 
 
@@ -2452,7 +2446,7 @@ class Customer extends Subject {
     public function update_activity() {
 
 
-        if($this->data['Customer Type by Activity']=='ToApprove' or  $this->data['Customer Type by Activity']=='Rejected' ){
+        if ($this->data['Customer Type by Activity'] == 'ToApprove' or $this->data['Customer Type by Activity'] == 'Rejected') {
             return;
         }
 
@@ -2461,7 +2455,7 @@ class Customer extends Subject {
 
         $orders = $this->data['Customer Orders'];
 
-        $store = get_object('store',$this->data['Customer Store Key']);
+        $store = get_object('store', $this->data['Customer Store Key']);
 
         if ($orders == 0) {
             $this->data['Customer Type by Activity'] = 'Active';
@@ -2560,8 +2554,23 @@ class Customer extends Subject {
 
         $this->deleted = false;
 
+
+        $sql = "SELECT `Order Key`  FROM `Order Dimension` WHERE `Order State` in  ('InBasket','InProcess') and  `Order Customer Key`=".$this->id;
+
+        if ($result = $this->db->query($sql)) {
+            foreach ($result as $row) {
+                $order = get_object('Order', $row['Order Key']);
+                $order->cancel(_('Cancelled because customer was deleted'));
+            }
+        } else {
+            print_r($error_info = $this->db->errorInfo());
+            print "$sql\n";
+            exit;
+        }
+
+
         $has_orders = false;
-        $sql        = "SELECT count(*) AS total  FROM `Order Dimension` WHERE `Order Customer Key`=".$this->id;
+        $sql        = "SELECT count(*) AS total  FROM `Order Dimension` WHERE `Order State`!='Cancelled' and  `Order Customer Key`=".$this->id;
 
         if ($result = $this->db->query($sql)) {
             if ($row = $result->fetch()) {
@@ -2577,7 +2586,8 @@ class Customer extends Subject {
 
 
         if ($has_orders) {
-            $this->msg = _("Customer can't be deleted");
+            $this->msg   = _("Customer can't be deleted because has orders");
+            $this->error = true;
 
             return;
         }
@@ -3172,7 +3182,6 @@ class Customer extends Subject {
 
     }
 
-
     function update_part_bridge() {
 
 
@@ -3230,7 +3239,6 @@ class Customer extends Subject {
         }
 
     }
-
 
     function update_category_part_bridge() {
 
@@ -3298,7 +3306,6 @@ class Customer extends Subject {
 
     }
 
-
     function update_account_balance() {
         $balance = 0;
         $sql     = sprintf(
@@ -3318,46 +3325,36 @@ class Customer extends Subject {
 
     }
 
+    function approve() {
 
-    function update_poll_answer($poll_key, $value, $options) {
-
-        $poll = get_object('Customer_Poll_Query', $poll_key);
-        $poll->add_customer($this, $value,$options);
-
+        $this->update(array('Customer Type by Activity' => 'Active'));
 
     }
 
-    function approve(){
+    function reject() {
 
-        $this->update(array('Customer Type by Activity'=>'Active'));
-
-    }
-
-    function reject(){
-
-        $this->update(array('Customer Type by Activity'=>'Rejected'));
+        $this->update(array('Customer Type by Activity' => 'Rejected'));
 
     }
 
-    function update_last_dispatched_order_key(){
+    function update_last_dispatched_order_key() {
 
-        $order_key='';
-        $sql = sprintf(
-            "SELECT `Order Key` from `Order Dimension` WHERE `Order Customer Key`=%d  AND `Order State`='Dispatched' order by `Order Dispatched Date` desc limit 1 ",
-            $this->id
+        $order_key = '';
+        $sql       = sprintf(
+            "SELECT `Order Key` from `Order Dimension` WHERE `Order Customer Key`=%d  AND `Order State`='Dispatched' order by `Order Dispatched Date` desc limit 1 ", $this->id
         );
 
-        if ($result=$this->db->query($sql)) {
+        if ($result = $this->db->query($sql)) {
             if ($row = $result->fetch()) {
-                $order_key=$row['Order Key'];
-        	}
-        }else {
-        	print_r($error_info=$this->db->errorInfo());
-        	print "$sql\n";
-        	exit;
+                $order_key = $row['Order Key'];
+            }
+        } else {
+            print_r($error_info = $this->db->errorInfo());
+            print "$sql\n";
+            exit;
         }
 
-        $this->fast_update(array('Customer Last Dispatched Order Key'=>$order_key));
+        $this->fast_update(array('Customer Last Dispatched Order Key' => $order_key));
 
 
     }
