@@ -516,14 +516,23 @@ function payments_group_by_store($_data, $db, $user,$account) {
 
             if ($data['Store Currency Code'] != $account->get('Account Currency')) {
 
-                $exchange = currency_conversion(
-                    $db,$data['Store Currency Code'], $account->get('Account Currency'), '- 6 hours'
-                );
+
 
                if($data['Store Total Acc Credits Amount']!=0){
+                   $exchange = currency_conversion(
+                       $db,$data['Store Currency Code'], $account->get('Account Currency'), '- 6 hours'
+                   );
+
                    $mix_currencies=true;
+                   $total_credits_amount += $exchange*$data['Store Total Acc Credits Amount'];
+
+
                }
-                $total_credits_amount += $exchange*$data['Store Total Acc Credits Amount'];
+
+
+
+
+
 
             } else {
 
