@@ -203,7 +203,7 @@ function connect_websocket(){
         var wsuri='ws://'+location.hostname+'/ws';
 
     }else{
-        var wsuri='ws://'+location.hostname+'/ws180718';
+        var wsuri=   (document.location.protocol === "http:" ? "ws:" : "wss:") +   '//'+location.hostname+'/ws180718';
 
     }
 
