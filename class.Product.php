@@ -80,7 +80,7 @@ class Product extends Asset {
             }
         } elseif ($key == 'historic_key') {
             $sql = sprintf(
-                "SELECT * FROM `Product History Dimension` WHERE `Product Key`=%s", $id
+                "SELECT * FROM `Product History Dimension` WHERE `Product Key`=%d", $id
             );
             if ($this->data = $this->db->query($sql)->fetch()) {
                 $this->historic_id = $this->data['Product Key'];
