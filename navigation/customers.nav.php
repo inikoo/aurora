@@ -2196,7 +2196,7 @@ function get_email_campaign_navigation($data, $smarty, $user, $db, $account) {
         }
 
 
-        $sections = get_sections('customers', $data['_parent']->id);
+        $sections = get_sections('customers', $data['_parent']->get('Store Key'));
 
 
 

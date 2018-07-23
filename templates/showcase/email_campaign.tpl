@@ -45,7 +45,7 @@
                         <span class="state ">{t}Compose newsletter{/t}</span>
                     </div>
                     <div class="timestamp">
-                        <span class="">&nbsp;</span> <span class="start_date">{$email_campaign->get('Creation Date')}</span>
+                        <span class="Email_Campaign_Composed_Date">{$email_campaign->get('Composed Date')} &nbsp;</span> <span class="start_date">{$email_campaign->get('Creation Date')}</span>
                     </div>
                     <div class="dot"></div>
                 </li>

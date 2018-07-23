@@ -53,7 +53,7 @@ $smarty->assign('table_buttons', $table_buttons);
 
 
 $smarty->assign(
-    'js_code', 'js/injections/orders.website.mailshots.'.(_DEVEL ? '' : 'min.').'js'
+    'js_code', 'js/injections/new_abandoned_cart_mailshot.'.(_DEVEL ? '' : 'min.').'js'
 );
 
 
