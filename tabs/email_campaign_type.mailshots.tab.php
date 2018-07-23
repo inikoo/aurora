@@ -49,11 +49,25 @@ $table_buttons   = array();
 
 if($state['_object']->get('Code')=='Newsletter'){
 
+
+
     $table_buttons[] = array(
         'icon'      => 'plus',
         'title'     => _('New newsletter'),
-        'reference' => sprintf("email_campaign_type/%d/%d/mailshot/new",$state['_object']->get('Store Key'),$state['_object']->id)
+        'id'=>'new_newsletter',
+        'attr'=>array(
+            'parent'=>'Store',
+            'parent_key'=>$state['_object']->get('Store Key'),
+
+        )
+
     );
+
+    $smarty->assign(
+        'js_code', 'js/injections/new_newsletter.'.(_DEVEL ? '' : 'min.').'js'
+    );
+
+
 }elseif($state['_object']->get('Code')=='Marketing') {
 
     $table_buttons[] = array(
@@ -61,6 +75,27 @@ if($state['_object']->get('Code')=='Newsletter'){
         'title'     => _('New marketing mailshot'),
         'reference' => sprintf("email_campaign_type/%d/%d/mailshot/new", $state['_object']->get('Store Key'), $state['_object']->id)
     );
+
+
+    $table_buttons[] = array(
+        'icon'      => 'plus',
+        'title'     => _('New marketing mailshot'),
+        'id'=>'new_mailshot',
+        'attr'=>array(
+            'parent'=>'Store',
+            'parent_key'=>$state['_object']->get('Store Key'),
+
+        )
+
+    );
+
+    $smarty->assign(
+        'js_code', 'js/injections/new_marketing_mailshot.'.(_DEVEL ? '' : 'min.').'js'
+    );
+
+
+
+
 }elseif($state['_object']->get('Code')=='AbandonedCart') {
 
     $table_buttons[] = array(
@@ -76,7 +111,7 @@ if($state['_object']->get('Code')=='Newsletter'){
     );
 
     $smarty->assign(
-        'js_code', 'js/injections/orders.website.mailshots.'.(_DEVEL ? '' : 'min.').'js'
+        'js_code', 'js/injections/new_abandoned_cart_mailshot.'.(_DEVEL ? '' : 'min.').'js'
     );
 
 }

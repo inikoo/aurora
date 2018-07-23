@@ -551,42 +551,29 @@ class EmailCampaignType extends DB_Table {
 
 
     function create_mailshot() {
-
         if ($this->get_estimated_recipients() > 0  or $this->data['Email Campaign Type Code'] =='create_mailshot' ) {
-
             include_once 'class.EmailCampaign.php';
             $email_campaign_data = array(
                 'Email Campaign Store Key'               => $this->data['Email Campaign Type Store Key'],
                 'Email Campaign Name'                    => date('Y.m.d'),
                 'Email Campaign Type'                    => $this->data['Email Campaign Type Code'],
                 'Email Campaign Email Template Type Key' => $this->id,
-
-
             );
-
-
             if($this->data['Email Campaign Type Code']=='GR Reminder'){
                 $metadata=$this->get('Metadata');
-
                 $email_campaign_data['Email Campaign Metadata']=json_encode(array('Send After'=>$metadata['Send After']));
                 $email_campaign_data['Email Campaign Email Template Key']= $this->data['Email Campaign Type Email Template Key'];
-
             }if($this->data['Email Campaign Type Code']=='OOS Notification'){
-
                 $email_campaign_data['Email Campaign Email Template Key']= $this->data['Email Campaign Type Email Template Key'];
             }elseif($this->data['Email Campaign Type Code']=='AbandonedCart'){
                 $metadata=$this->get('Metadata');
-
                 $email_campaign_data['Email Campaign Metadata']=json_encode(array('Days Inactive in Basket'=>(isset($metadata['Days Inactive in Basket'])?$metadata['Days Inactive in Basket']:30)));
             }
-
             $email_campaign = new EmailCampaign('create', $email_campaign_data);
             return $email_campaign;
-
         }else{
             return false;
         }
-
     }
 
     function get_estimated_recipients() {
@@ -620,7 +607,7 @@ class EmailCampaignType extends DB_Table {
                 break;
 
             case 'Newsletter':
-                $sql = sprintf('select count(*)  as num from `Customer Dimension` where `Customer Store Key`=%d and `Customer Main Plain Email`!="" and `Customer Send Newsletter`="Yes" ', $this->get('Store Key'));
+                $sql = sprintf('select count(*)  as num from `Customer Dimension` where `Customer Store Key`=%d and `Customer Main Plain Email`!="" and `Customer Send Newsletter`="Yes" and  `Customer Type by Activity` not in ("Rejected", "ToApprove") ', $this->get('Store Key'));
                 if ($result = $this->db->query($sql)) {
                     if ($row = $result->fetch()) {
                         $estimated_recipients = $row['num'];

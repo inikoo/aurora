@@ -305,8 +305,8 @@ trait Send_Email {
                 )
             );
 
-          /*
 
+/*
 
             $email_tracking->fast_update(
                 array(
@@ -317,7 +317,7 @@ trait Send_Email {
                 )
             );
 
-            sleep(2);
+           // sleep(2);
 */
 
             if (in_array(

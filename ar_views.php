@@ -3107,6 +3107,7 @@ function get_tabs($data, $db, $account, $modules, $user, $smarty, $requested_tab
                 break;
             case 'Sent':
             case 'Sending':
+            case 'Stopped':
                 $_content['tabs']['email_campaign.email_blueprints']['class'] = 'hide';
                 $_content['tabs']['email_campaign.workshop']['class']         = 'hide';
                 $_content['tabs']['email_campaign.mail_list']['class']        = 'hide';
