@@ -4,8 +4,43 @@ function seconds_to_natural_string($seconds, $short = false) {
 
 
     if ($seconds == 0) {
-        return _('Instantaneity');
+        return '';
     }
+
+    if ($seconds < 120) {
+
+        if ($short) {
+            return sprintf(_('%ss'), floor($seconds));
+        } else {
+            return sprintf("%d %s", $seconds, ngettext("second", "seconds", $seconds));
+
+        }
+
+    }elseif ($seconds < 5400) {
+
+        if ($short) {
+            return sprintf(_('%sm'), floor($seconds/60));
+        } else {
+            return sprintf("%d %s", $seconds/60, ngettext("minute", "minutes", $seconds/60));
+
+        }
+
+    }elseif ($seconds < 86400) {
+
+        if ($short) {
+            return sprintf(_('%sm'), floor($seconds/3600));
+        } else {
+            return sprintf("%d %s", $seconds/3600, ngettext("hour", "hours", $seconds/3600));
+
+        }
+
+    }
+
+
+
+
+
+
 
     $days = round($seconds / 86400);
 
@@ -61,7 +96,7 @@ function seconds_to_natural_string($seconds, $short = false) {
             return sprintf(_('%sy'), $years);
         } else {
             return sprintf(
-                "%d %s", $years, ngettext("year", "yers", intval($years))
+                "%d %s", $years, ngettext("year", "years", intval($years))
             );
 
         }

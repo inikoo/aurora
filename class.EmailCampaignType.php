@@ -560,7 +560,6 @@ class EmailCampaignType extends DB_Table {
                 'Email Campaign Name'                    => date('Y.m.d'),
                 'Email Campaign Type'                    => $this->data['Email Campaign Type Code'],
                 'Email Campaign Email Template Type Key' => $this->id,
-                'Email Campaign Email Template Key'      => $this->data['Email Campaign Type Email Template Key'],
 
 
             );
@@ -570,6 +569,11 @@ class EmailCampaignType extends DB_Table {
                 $metadata=$this->get('Metadata');
 
                 $email_campaign_data['Email Campaign Metadata']=json_encode(array('Send After'=>$metadata['Send After']));
+                $email_campaign_data['Email Campaign Email Template Key']= $this->data['Email Campaign Type Email Template Key'];
+
+            }if($this->data['Email Campaign Type Code']=='OOS Notification'){
+
+                $email_campaign_data['Email Campaign Email Template Key']= $this->data['Email Campaign Type Email Template Key'];
             }elseif($this->data['Email Campaign Type Code']=='AbandonedCart'){
                 $metadata=$this->get('Metadata');
 

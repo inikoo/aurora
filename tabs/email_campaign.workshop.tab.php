@@ -50,14 +50,7 @@ if ($email_template->id and !($email_template->get('Email Template Type') == 'HT
     $merge_contents = '';
 
 
-    if ($email_template->get('Email Template Role') == 'Password Reminder') {
-        $merge_tags = ",{ name: '"._('Reset password URL')."',value: '[Reset_Password_URL]'}";
-
-    } elseif ($email_template->get('Email Template Role') == 'Order Confirmation') {
-        $merge_tags     = ",{ name: '"._('Order number')."',value: '[Order Number]'},{ name: '"._('Order Amount')."',value: '[Order Amount]'}";
-        $merge_contents = "{ name: '"._('Payment information')."',value: '[Pay Info]'},{ name: '"._('Order')."',value: '[Order]'}";
-
-    } elseif ($email_template->get('Email Template Role') == 'OOS Notification') {
+  if ($email_template->get('Email Template Role') == 'OOS Notification') {
         $merge_tags = ",{ name: '"._('Back in stock products')."',value: '[Products]'}";
 
     } elseif ($email_template->get('Email Template Role') == 'GR Reminder') {
@@ -71,7 +64,6 @@ if ($email_template->id and !($email_template->get('Email Template Type') == 'HT
 
 
     }
-    //http://aw.inikoo.com/order.php?id=2287930
 
     $smarty->assign('merge_tags', $merge_tags);
     $smarty->assign('merge_contents', $merge_contents);
