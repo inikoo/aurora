@@ -839,7 +839,7 @@ function get_tab($db, $smarty, $user, $account, $tab, $subtab, $state = false, $
         if (!empty($_subtab)) {
 
             $tmp        = $session->get('tab_state');
-            $tmp[$_tab] = $_subtabl;
+            $tmp[$_tab] = $_subtab;
             $session->set('tab_state', $tmp);
 
 
