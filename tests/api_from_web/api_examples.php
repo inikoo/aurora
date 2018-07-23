@@ -59,7 +59,7 @@
                 Url
             </td>
             <td>
-                <input id="api_url" value="http://au.bali/api/picking" style="width:400px">
+                <input id="api_url" value="" style="width:400px">
             </td>
         </tr>
         <tr>
@@ -67,7 +67,7 @@
                 Handle
             </td>
             <td>
-                <input id="api_handle" value="30bf6b09" style="width:400px">
+                <input id="api_handle" value="" style="width:400px">
             </td>
         </tr>
         <tr>
@@ -75,7 +75,7 @@
                 Key
             </td>
             <td>
-                <input id="api_key" value="UDN0QUs2UDN4aWc4aDlTN3lpanVQRXN1YzJiYUIyYjNWOWthUFVWZQ==" style="width:400px">
+                <input id="api_key" value="" style="width:400px">
             </td>
         </tr>
         <tr>
