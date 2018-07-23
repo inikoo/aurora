@@ -836,7 +836,7 @@ function get_tab($db, $smarty, $user, $account, $tab, $subtab, $state = false, $
         $session->set('state', $tmp);
 
 
-        if ($_subtab != '') {
+        if (!empty($_subtab)) {
 
             $tmp        = $session->get('tab_state');
             $tmp[$_tab] = $_subtabl;
@@ -2909,7 +2909,7 @@ function get_tabs($data, $db, $account, $modules, $user, $smarty, $requested_tab
             }
 
 
-        }  elseif ($data['_object']->get('Email Campaign Type Code') == 'AbandonedCart') {
+        }  elseif ($data['_object']->get('Email Campaign Type Code') == 'AbandonedCart' or $data['_object']->get('Email Campaign Type Code') == 'Marketing') {
             $_content['tabs']['email_campaign_type.next_recipients']['class'] = 'hide';
             $_content['tabs']['email_campaign_type.details']['class']         = 'hide';
             $_content['tabs']['email_campaign_type.workshop']['class']        = 'hide';
