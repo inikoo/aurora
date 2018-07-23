@@ -35,7 +35,7 @@
 
     <div class="timeline_horizontal with_time     ">
 
-        <ul class="timeline">{$email_campaign->get('State Index')}
+        <ul class="timeline">
 
 
 
@@ -102,7 +102,7 @@
             </li>
 
 
-            <li id="sent_node" class="li  {if $email_campaign->get('State Index')>=100}complete{/if}">
+            <li id="sent_node" class="li sent_node {if $email_campaign->get('State Index')>=100}complete{/if}">
                 <div class="label">
                     <span class="state">{t}Sent{/t}</span>
                 </div>
@@ -118,21 +118,21 @@
 
     </div>
     <div class="order control_panel  {if $email_campaign->get('State Index')==100}hide{/if}">
-        <div class="block" style="padding:10px 20px; align-items: stretch;flex: 1">
+        <div class="block estimated_recipients" style="padding:10px 20px; align-items: stretch;flex: 1">
 
 
-            <div class="{if $email_campaign->get('State Index')>=50}hide{/if}">
+            <div class="estimated_recipients_pre_sent   {if $email_campaign->get('State Index')>=50}hide{/if}">
                 <span class="hide Email_Campaign_Number_Estimated_Emails">{$email_campaign->get('Email Campaign Number Estimated Emails')}</span>
                 <span>{t}Estimated recipients{/t}</span> <span class="strong Number_Estimated_Emails">{$email_campaign->get('Number Estimated Emails')}</span>
             </div>
 
-            <div class="{if $email_campaign->get('State Index')<50}hide{/if}">
+            <div class="estimated_recipients_post_sent   {if $email_campaign->get('State Index')<50}hide{/if}">
                 <span class="Sent_Emails_Info">{$email_campaign->get('Sent Emails Info')}</span>
             </div>
 
             <div style="clear:both"></div>
         </div>
-        <div class="block " style="align-items: stretch;flex: 1;">
+        <div class="block email_campaign_operations" style="align-items: stretch;flex: 1;">
             <div class="state" style="height:30px;margin-bottom:10px;position:relative;top:-5px">
                 <div id="back_operations">
 

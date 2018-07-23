@@ -3054,6 +3054,7 @@ function get_tabs($data, $db, $account, $modules, $user, $smarty, $requested_tab
 
         $_content['tabs']['email_campaign.email_blueprints']['class'] = 'hide';
 
+
         switch ($data['_object']->get('Email Campaign State')) {
 
             case 'InProcess':
@@ -3086,6 +3087,7 @@ function get_tabs($data, $db, $account, $modules, $user, $smarty, $requested_tab
                 if ($data['tab'] == 'email_campaign.workshop') {
                     $data['tab'] = 'email_campaign.published_email';
                 }
+                break;
             case 'Sent':
             case 'Sending':
                 $_content['tabs']['email_campaign.email_blueprints']['class'] = 'hide';

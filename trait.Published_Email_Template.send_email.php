@@ -17,7 +17,7 @@ trait Send_Email {
     function send($recipient, $data, $smarty = false) {
 
 
-    //   require_once 'external_libs/aws.phar';
+        //   require_once 'external_libs/aws.phar';
 
         $this->error = false;
         $account     = get_object('Account', 1);
@@ -290,24 +290,12 @@ trait Send_Email {
             )
         );
 
-/*
-        $email_tracking->fast_update(
-            array(
-                'Email Tracking State'  => "Sent to SES",
-                "Email Tracking SES Id" => 'xxxx'.date('U'),
-
-
-            )
-        );
-*/
-        // sleep(2);
-
-
 
         try {
+
+
+         
             $result = $client->sendEmail($request);
-
-
             $email_tracking->fast_update(
                 array(
                     'Email Tracking State'  => "Sent to SES",
@@ -316,6 +304,21 @@ trait Send_Email {
 
                 )
             );
+
+
+            /*
+
+            $email_tracking->fast_update(
+                array(
+                    'Email Tracking State'  => "Sent to SES",
+                    "Email Tracking SES Id" => 'xxxx'.date('U'),
+
+
+                )
+            );
+
+            sleep(2);
+*/
 
             if (in_array(
                 $email_template_type->get('Email Campaign Type Code'), array(
@@ -326,7 +329,8 @@ trait Send_Email {
                                                                          'Invite',
                                                                          'Invite Mailshot',
                                                                          'GR Reminder',
-                                                                         'Registration'
+                                                                         'Registration',
+                                                                         'AbandonedCart'
                                                                      )
             )) {
 
@@ -347,8 +351,7 @@ trait Send_Email {
             $this->email_tracking = $email_tracking;
 
 
-        }
-        catch (Exception $e) {
+        } catch (Exception $e) {
 
 
             $email_tracking->fast_update(
@@ -398,40 +401,39 @@ trait Send_Email {
             $email_campaign->update_sent_emails_totals();
 
 
-            if(isset($this->socket)){
+
+            if (isset($this->socket)) {
 
 
 
                 $this->socket->send(
-                    json_encode(array(
-                                    'channel'=>$account->get('Account Code').'_real_time',
-                                    'objects' => array(
-                                        array(
-                                            'object' => 'email_campaign',
-                                            'key'    => $email_campaign->id,
+                    json_encode(
+                        array(
+                            'channel' => 'real_time.'.strtolower($account->get('Account Code')),
+                            'objects' => array(
+                                array(
+                                    'object' => 'email_campaign',
+                                    'key'    => $email_campaign->id,
 
-                                            'update_metadata' => array(
-                                                'class_html' => array(
-                                                    'Sent_Emails_Info' => $email_campaign->get('Sent Emails Info'),
-                                                    'Email_Campaign_Sent'=>$email_campaign->get('Sent'),
-                                                )
-                                            )
-
+                                    'update_metadata' => array(
+                                        'class_html' => array(
+                                            'Sent_Emails_Info'    => $email_campaign->get('Sent Emails Info'),
+                                            'Email_Campaign_Sent' => $email_campaign->get('Sent'),
                                         )
+                                    )
 
-                                    ),
+                                )
+
+                            ),
 
 
-                                ))
+                        )
+                    )
                 );
             }
 
 
-
-
-
-        }
-        else {
+        } else {
             include_once 'utils/new_fork.php';
             new_housekeeping_fork(
                 'au_housekeeping', array(
@@ -443,8 +445,6 @@ trait Send_Email {
             ), $account->get('Account Code')
             );
         }
-
-
 
 
     }

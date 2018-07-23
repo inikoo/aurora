@@ -466,7 +466,8 @@ function publish_email_template($data, $editor, $smarty, $db) {
     $publish_email_template = $email_template->publish();
 
 
-   // print_r($publish_email_template);
+
+
 
     if ($publish_email_template->id) {
         if ($email_template->get('Email Template Scope') == 'EmailCampaign') {

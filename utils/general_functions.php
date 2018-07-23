@@ -151,7 +151,7 @@ function eta($done, $total, $start_datetime) {
 
     $eta_seconds = ($total - $done) * (($now - $start) / $done);
 
-    return _('ETA').': '.seconds_to_natural_string($eta_seconds);
+    return _('ETA').': '.seconds_to_natural_string($eta_seconds,true);
 
 }
 

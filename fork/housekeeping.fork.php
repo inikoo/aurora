@@ -779,11 +779,16 @@ function fork_housekeeping($job) {
 
         case 'resume_mailshot':
 
+            $context = new ZMQContext();
+            $socket  = $context->getSocket(ZMQ::SOCKET_PUSH, 'my pusher');
+            $socket->connect("tcp://localhost:5555");
+
             $email_campaign = get_object('email_campaign', $data['mailshot_key']);
 
             if ($email_campaign->id) {
+                $email_campaign->socket = $socket;
 
-                // $email_campaign->resume_mailshot();
+                 $email_campaign->resume_mailshot();
             }
             break;
 

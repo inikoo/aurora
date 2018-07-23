@@ -678,7 +678,13 @@ function fork_export_edit_template($job) {
 
     $sheet        = $objPHPExcel->getActiveSheet();
     $cellIterator = $sheet->getRowIterator()->current()->getCellIterator();
+
+try {
     $cellIterator->setIterateOnlyExistingCells(true);
+}catch(PHPExcel_Exception $e) {
+
+}
+
     /** @var PHPExcel_Cell $cell */
     foreach ($cellIterator as $cell) {
         $sheet->getColumnDimension($cell->getColumn())->setAutoSize(true);

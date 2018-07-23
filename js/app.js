@@ -219,7 +219,13 @@ function connect_websocket(){
             ws_connection.subscribe('real_time.'+$('#account_name').data('account_code').toLowerCase(), function(topic, data) {
 
                 for (var i in data.objects) {
+
+
+
+
                     if (state.object == data.objects[i].object && state.key == data.objects[i].key) {
+
+
                         for (var j in data.objects[i].update_metadata.class_html) {
                             $('.' + j).html(data.objects[i].update_metadata.class_html[j])
                         }
@@ -229,8 +235,14 @@ function connect_websocket(){
                         }
 
                         for (var key in data.objects[i].update_metadata.show) {
-
                             $('.' + data.objects[i].update_metadata.show[key]).removeClass('hide')
+                        }
+
+                        for (var j in data.objects[i].update_metadata.add_class) {
+                            console.log(j)
+                            console.log(data.objects[i].update_metadata.add_class[j])
+
+                            $('.' + j).addClass(data.objects[i].update_metadata.add_class[j])
                         }
                     }
                 }
@@ -247,6 +259,10 @@ function connect_websocket(){
 
                         for (var key in data.sections[i].update_metadata.show) {
                             $('.' + data.sections[i].update_metadata.show[key]).removeClass('hide')
+                        }
+
+                        for (var j in data.objects[i].update_metadata.add_class) {
+                            $('.' + j).addClass(data.objects[i].update_metadata.add_class[j])
                         }
                     }
                 }

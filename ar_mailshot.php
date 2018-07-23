@@ -85,7 +85,7 @@ function send_mailshot($data,$account,$editor,$db) {
 
 
 
-
+//print_r($mailshot);
 
         $response = array(
             'state' => 200,
@@ -101,7 +101,7 @@ function send_mailshot($data,$account,$editor,$db) {
 
         $response = array(
             'state' => 400,
-            'msg'=> 'Email Campaign state '.$mailshot->get('Email Campaign State')
+            'msg'=> 'Email Campaign State '.$mailshot->get('Email Campaign State')
         );
         echo json_encode($response);
         exit;
@@ -128,7 +128,7 @@ function resume_mailshot($data,$account,$editor,$db) {
         include_once 'utils/new_fork.php';
 
 
-        /*
+
         new_housekeeping_fork(
             'au_housekeeping', array(
             'type'                    => 'resume_mailshot',
@@ -137,7 +137,7 @@ function resume_mailshot($data,$account,$editor,$db) {
         ), $account->get('Account Code')
         );
 
-*/
+
 
 
 

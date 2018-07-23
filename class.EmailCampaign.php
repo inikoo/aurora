@@ -308,15 +308,39 @@ class EmailCampaign extends DB_Table {
                 break;
 
             case  'Sent Emails Info':
-                $sent_emails_info= sprintf(_('Sent %s of %s'), '<b>'.number($this->data['Email Campaign Sent']).'</b>', '<b>'.number($this->data['Email Campaign Number of Emails'])).'</b> ';
-
-                $sent_emails_info.=' <span class="discreet">('.percentage($this->data['Email Campaign Sent'],$this->data['Email Campaign Number of Emails']).')</span>';
 
 
-                $start_datetime=$this->data['Email Campaign Start Send Date'];
+                if (!$this->data['Email Campaign Number of Emails'] >0) {
 
-                $sent_emails_info.=' <span class="discreet padding_left_5">'.eta($this->data['Email Campaign Sent'],$this->data['Email Campaign Number of Emails'],$start_datetime).'</span>';
 
+                   if($this->data['Email Campaign State']=='Sending'){
+                       return '<span class="very_discreet"><i class="fa fa-spin fa-spinner"></i> '._('Initializing launch').'</span>';
+                   }else{
+                       return '';
+                   }
+
+                }
+
+                $sent_emails_info = sprintf(_('Sent %s of %s'), '<b>'.number($this->data['Email Campaign Sent']).'</b>', '<b>'.number($this->data['Email Campaign Number of Emails'])).'</b> ';
+
+
+                if ($this->data['Email Campaign Number of Emails'] > 0) {
+                    $sent_emails_info .= ' <span class="discreet">('.percentage($this->data['Email Campaign Sent'], $this->data['Email Campaign Number of Emails']).')</span>';
+
+
+                    if(isset($this->start_send)){
+                        $start_datetime =$this->start_send;
+                    }else{
+                        $start_datetime = $this->data['Email Campaign Start Send Date'];
+                    }
+
+
+
+                    $offset=(isset($this->sent)?$this->sent:0);
+
+
+                    $sent_emails_info .= ' <span class="discreet padding_left_5">'.eta($this->data['Email Campaign Sent']-$offset, $this->data['Email Campaign Number of Emails']-$offset, $start_datetime).'</span>';
+                }
 
                 return $sent_emails_info;
                 break;
@@ -793,6 +817,22 @@ class EmailCampaign extends DB_Table {
         );
 
 
+        switch ($this->data['Email Campaign State']) {
+            case 'Sending':
+                $this->update_metadata['hide'] = array('estimated_recipients_pre_sent');
+                $this->update_metadata['show'] = array('estimated_recipients_post_sent');
+                $this->update_metadata['class_html']['Sent_Emails_Info']=$this->get('Sent Emails Info');
+
+
+
+                break;
+            case 'Sent':
+                $this->update_metadata['add_class'] = array('sent_node'=>'complete');
+                break;
+
+        }
+
+
     }
 
 
@@ -839,8 +879,8 @@ class EmailCampaign extends DB_Table {
 
         $published_email_template = get_object('published_email_template', $email_template->get('Email Template Published Email Key'));
 
-        if(isset($this->socket)){
-            $published_email_template->socket=$this->socket;
+        if (isset($this->socket)) {
+            $published_email_template->socket = $this->socket;
         }
 
         $recipient_type = 'Customer';
@@ -905,23 +945,23 @@ class EmailCampaign extends DB_Table {
             exit;
         }
 
-        $metadata=$this->get('Metadata');
-        if(!isset($metadata['sending'])){
-            $metadata['sending']=array();
-            $metadata['sending'][]=array(
-                'start'=>gmdate('Y-m-d H:i:s'),
-                'end'=>'',
-                'sent_before'=>$this->data['Email Campaign Sent']
+        $metadata = $this->get('Metadata');
+        if (!isset($metadata['sending'])) {
+            $metadata['sending']   = array();
+            $metadata['sending'][] = array(
+                'start'       => gmdate('Y-m-d H:i:s'),
+                'end'         => '',
+                'sent_before' => $this->data['Email Campaign Sent']
 
             );
         }
 
-        $this->fast_update(array('Email Campaign Metadata'=>json_encode($metadata)));
+        $this->fast_update(array('Email Campaign Metadata' => json_encode($metadata)));
 
 
         $sql = sprintf('select `Email Tracking Key`,`Email Tracking Recipient`,`Email Tracking Recipient Key` ,`Email Tracking Recipient Key` from `Email Tracking Dimension` where `Email Tracking Email Mailshot Key`=%d and `Email Tracking State`="Ready" ', $this->id);
 
-       // print $sql;
+        // print $sql;
 
 
         if ($result = $this->db->query($sql)) {
@@ -941,8 +981,20 @@ class EmailCampaign extends DB_Table {
                 }
 
 
-               // print_r($send_data);
+                // print_r($send_data);
 
+                $sql=sprintf('select `Email Campaign State` from `Email Campaign Dimension` where `Email Campaign Key`=%d ',$this->id);
+                if ($result2=$this->db->query($sql)) {
+                    if ($row2 = $result2->fetch()) {
+                        if($row2['Email Campaign State']=='Stopped'){
+                            return;
+                        }
+                	}
+                }else {
+                	print_r($error_info=$this->db->errorInfo());
+                	print "$sql\n";
+                	exit;
+                }
 
 
                 $published_email_template->send(get_object($row['Email Tracking Recipient'], $row['Email Tracking Recipient Key']), $send_data, $smarty);
@@ -960,33 +1012,152 @@ class EmailCampaign extends DB_Table {
             exit;
         }
 
-       // exit('xxx');
+        // exit('xxx');
         $this->update_state('Sent');
 
-        if(isset($this->socket)){
+        if (isset($this->socket)) {
 
+            $account = get_object('Account', 1);
+
+            $this->update_metadata['hide'] = array(
+                'estimated_recipients',
+                'email_campaign_operations'
+            );
 
 
             $this->socket->send(
-                json_encode(array(
-                                'channel'=>'real_time',
-                                'objects' => array(
-                                    array(
-                                        'object' => 'email_campaign',
-                                        'key'    => $this->id,
+                json_encode(
+                    array(
+                        'channel' => 'real_time.'.strtolower($account->get('Account Code')),
+                        'objects' => array(
+                            array(
+                                'object' => 'email_campaign',
+                                'key'    => $this->id,
 
-                                        'update_metadata' => $this->get_update_metadata()
+                                'update_metadata' => $this->get_update_metadata()
 
-                                    )
+                            )
 
-                                ),
+                        ),
 
 
-                            ))
+                    )
+                )
             );
         }
 
 
+    }
+
+    function resume_mailshot() {
+
+        include_once 'class.Email_Tracking.php';
+
+
+        require_once 'external_libs/Smarty/Smarty.class.php';
+        $smarty               = new Smarty();
+        $smarty->template_dir = 'templates';
+        $smarty->compile_dir  = 'server_files/smarty/templates_c';
+        $smarty->cache_dir    = 'server_files/smarty/cache';
+        $smarty->config_dir   = 'server_files/smarty/configs';
+
+
+        $store   = get_object('Store', $this->data['Email Campaign Store Key']);
+        $website = get_object('Website', $store->get('Store Website Key'));
+
+
+        $email_template_type = get_object('email_template_type', $this->data['Email Campaign Email Template Type Key']);
+        $email_template      = get_object('email_template', $email_template_type->data['Email Campaign Type Email Template Key']);
+
+        $published_email_template = get_object('published_email_template', $email_template->get('Email Template Published Email Key'));
+        if (isset($this->socket)) {
+            $published_email_template->socket = $this->socket;
+        }
+
+
+
+        $this->sent=$this->get('Email Campaign Sent');
+        $this->start_send=gmdate('Y-m-d H:i:s');
+
+        $sql = sprintf('select `Email Tracking Key`,`Email Tracking Recipient`,`Email Tracking Recipient Key` ,`Email Tracking Recipient Key` from `Email Tracking Dimension` where `Email Tracking Email Mailshot Key`=%d and `Email Tracking State`="Ready" ', $this->id);
+
+        if ($result = $this->db->query($sql)) {
+            foreach ($result as $row) {
+                $send_data = array(
+                    'Email_Template_Type' => $email_template_type,
+                    'Email_Template'      => $email_template,
+                    'Email_Tracking'      => get_object('Email_Tracking', $row['Email Tracking Key']),
+                    'Unsubscribe URL'     => $website->get('Website URL').'/unsubscribe.php'
+                );
+
+                if ($this->data['Email Campaign Type'] == 'GR Reminder') {
+                    $customer               = get_object('Customer', $row['Email Tracking Recipient Key']);
+                    $send_data['Order Key'] = $customer->get('Customer Last Dispatched Order Key');
+                }
+
+
+
+                $sql=sprintf('select `Email Campaign State` from `Email Campaign Dimension` where `Email Campaign Key`=%d ',$this->id);
+                if ($result2=$this->db->query($sql)) {
+                    if ($row2 = $result2->fetch()) {
+                        if($row2['Email Campaign State']=='Stopped'){
+                            return;
+                        }
+                    }
+                }else {
+                    print_r($error_info=$this->db->errorInfo());
+                    print "$sql\n";
+                    exit;
+                }
+
+                $published_email_template->send(get_object($row['Email Tracking Recipient'], $row['Email Tracking Recipient Key']), $send_data, $smarty);
+
+
+                //  print_r($published_email_template);
+
+
+                // print_r($published_email_template);
+
+            }
+        } else {
+            print_r($error_info = $this->db->errorInfo());
+            print "$sql\n";
+            exit;
+        }
+
+
+        $this->update_state('Sent');
+
+        if (isset($this->socket)) {
+
+            $account = get_object('Account', 1);
+
+            $this->update_metadata['hide'] = array(
+                'estimated_recipients',
+                'email_campaign_operations'
+            );
+
+
+            $this->socket->send(
+                json_encode(
+                    array(
+                        'channel' => 'real_time.'.strtolower($account->get('Account Code')),
+                        'objects' => array(
+                            array(
+                                'object' => 'email_campaign',
+                                'key'    => $this->id,
+
+                                'update_metadata' => $this->get_update_metadata()
+
+                            )
+
+                        ),
+
+
+                    )
+                )
+            );
+        }
 
 
     }
@@ -1041,69 +1212,7 @@ class EmailCampaign extends DB_Table {
         }
     }
 
-    function resume_mailshot() {
 
-        include_once 'class.Email_Tracking.php';
-
-
-        require_once 'external_libs/Smarty/Smarty.class.php';
-        $smarty               = new Smarty();
-        $smarty->template_dir = 'templates';
-        $smarty->compile_dir  = 'server_files/smarty/templates_c';
-        $smarty->cache_dir    = 'server_files/smarty/cache';
-        $smarty->config_dir   = 'server_files/smarty/configs';
-
-
-        $store   = get_object('Store', $this->data['Email Campaign Store Key']);
-        $website = get_object('Website', $store->get('Store Website Key'));
-
-
-        $email_template_type = get_object('email_template_type', $this->data['Email Campaign Email Template Type Key']);
-        $email_template      = get_object('email_template', $email_template_type->data['Email Campaign Type Email Template Key']);
-
-        $published_email_template = get_object('published_email_template', $email_template->get('Email Template Published Email Key'));
-
-
-        $sql = sprintf('select `Email Tracking Key`,`Email Tracking Recipient`,`Email Tracking Recipient Key` ,`Email Tracking Recipient Key` from `Email Tracking Dimension` where `Email Tracking Email Mailshot Key`=%d and `Email Tracking State`="Ready" ', $this->id);
-
-        if ($result = $this->db->query($sql)) {
-            foreach ($result as $row) {
-                $send_data = array(
-                    'Email_Template_Type' => $email_template_type,
-                    'Email_Template'      => $email_template,
-                    'Email_Tracking'      => get_object('Email_Tracking', $row['Email Tracking Key']),
-                    'Unsubscribe URL'     => $website->get('Website URL').'/unsubscribe.php'
-                );
-
-                if ($this->data['Email Campaign Type'] == 'GR Reminder') {
-                    $customer               = get_object('Customer', $row['Email Tracking Recipient Key']);
-                    $send_data['Order Key'] = $customer->get('Customer Last Dispatched Order Key');
-                }
-
-
-                // print_r($row);
-
-
-                $published_email_template->send(get_object($row['Email Tracking Recipient'], $row['Email Tracking Recipient Key']), $send_data, $smarty);
-
-
-                //  print_r($published_email_template);
-
-
-                // print_r($published_email_template);
-
-            }
-        } else {
-            print_r($error_info = $this->db->errorInfo());
-            print "$sql\n";
-            exit;
-        }
-
-
-        $this->update_state('Sent');
-
-
-    }
 
     function update_sent_emails_totals() {
 
