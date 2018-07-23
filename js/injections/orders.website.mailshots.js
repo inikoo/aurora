@@ -16,11 +16,12 @@ function new_orders_in_website_mailshot(element) {
     var parent_key = $(element).attr('parent_key')
     var fields_data = {
         'Email Campaign Type': 'AbandonedCart'
-     };
+    };
 
 
-    var request = '/ar_edit.php?tipo=new_object&object=' + object + '&parent=' + parent + '&parent_key=' + parent_key + '&fields_data=' + JSON.stringify(fields_data)
-    console.log(request)
+    //var request = '/ar_edit.php?tipo=new_object&object=' + object + '&parent=' + parent + '&parent_key=' + parent_key + '&fields_data=' + JSON.stringify(fields_data)
+
+
     var form_data = new FormData();
     form_data.append("tipo", 'new_object')
     form_data.append("object", object)
@@ -29,12 +30,7 @@ function new_orders_in_website_mailshot(element) {
     form_data.append("fields_data", JSON.stringify(fields_data))
 
     var request = $.ajax({
-        url: "/ar_edit.php",
-        data: form_data,
-        processData: false,
-        contentType: false,
-        type: 'POST',
-        dataType: 'json'
+        url: "/ar_edit.php", data: form_data, processData: false, contentType: false, type: 'POST', dataType: 'json'
     })
 
     request.done(function (data) {
@@ -44,19 +40,20 @@ function new_orders_in_website_mailshot(element) {
         //console.log(data)
         if (data.state == 200) {
 
+            if (state.module == 'customers') {
+                change_view('email_campaign_type/' + data.updated_data.store_key + '/' + data.updated_data.email_template_type_key + '/mailshot/' + data.new_id, {
+                    tab: 'email_campaign.details'})
 
-            change_view('orders/'+parent_key +  '/dashboard/website/mailshots/' + data.new_id
-                , { tab: 'email_campaign.details'}
-                )
+            } else {
+                change_view('orders/' + parent_key + '/dashboard/website/mailshots/' + data.new_id, {
+                    tab: 'email_campaign.details'})
 
-        }
-        else if (data.state == 400) {
+            }
 
-            swal(
-                'Oops...',
-                data.msg,
-                'error'
-            )
+
+        } else if (data.state == 400) {
+
+            swal('Oops...', data.msg, 'error')
         }
     })
 

@@ -487,6 +487,7 @@ class EmailCampaign extends DB_Table {
 
 
             $store = get_object('Store', $this->data['Email Campaign Store Key']);
+            $email_template_type = get_object('Email_Template_Type', $this->data['Email Campaign Email Template Type Key']);
 
             $sql = sprintf('SELECT `History Key` FROM `Email Campaign History Bridge` WHERE `Email Campaign Key`=%d ', $this->id);
 
@@ -512,14 +513,22 @@ class EmailCampaign extends DB_Table {
             $this->db->exec($sql);
 
             $store->update_email_campaign_data();
-
+            $email_template_type->update_sent_emails_totals();
 
             $this->updated = true;
             $this->deleted = true;
 
             switch ($this->get('Email Campaign Type')) {
                 case 'AbandonedCart':
-                    return sprintf('orders/%d/dashboard/website/mailshots', $store->id);
+
+                    if($this->web_state['module']=='customers'){
+                        return sprintf('email_campaign_type/%d/%d', $store->id,$email_template_type->id);
+
+                    }else{
+                        return sprintf('orders/%d/dashboard/website/mailshots', $store->id);
+
+                    }
+
 
                     break;
                 case 'Newsletter':

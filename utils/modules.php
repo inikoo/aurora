@@ -526,16 +526,36 @@ $modules = array(
             ),
 
 
-            'mailshot' => array(
+            'email_campaign' => array(
                 'type' => 'object',
                 'tabs' => array(
+                    'email_campaign.details'   => array(
+                        'label' => _('Data'),
+                        'icon'  => 'database',
+                        'title' => _('Details')
+                    ),
+                    'email_campaign.mail_list' => array(
+                        'label' => _('Recipients'),
+                        'icon'  => 'users',
+                    ),
 
-                    'mailshot.sent_emails' => array(
+                    'email_campaign.workshop'   => array(
+                        'label' => _('Workshop'),
+                        'icon'  => 'wrench'
+                    ),
+
+                    'email_campaign.published_email' => array(
+                        'label' => _('Email'),
+                        'icon'  => 'envelope'
+                    ),
+
+
+                    'email_campaign.sent_emails' => array(
                         'label' => _('Sent emails'),
                         'icon'  => 'paper-plane'
                     ),
 
-                    'mailshot.history' => array(
+                    'email_campaign.history' => array(
                         'title' => _('History'),
                         'label' => '',
                         'icon'  => 'road',

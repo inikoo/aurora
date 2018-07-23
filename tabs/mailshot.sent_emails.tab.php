@@ -11,15 +11,15 @@
 
 
 $parameters = array(
-    'parent'     =>$state['object'],
+    'parent'     => $state['object'],
     'parent_key' => $state['key'],
 
 );
 
 
-  $tab     = 'mailshot.sent_emails';
-        $ar_file = 'ar_mailshot_tables.php';
-        $tipo    = 'sent_emails';
+$tab     = 'mailshot.sent_emails';
+$ar_file = 'ar_mailshot_tables.php';
+$tipo    = 'sent_emails';
 
 
 
@@ -35,11 +35,11 @@ $table_views = array(
 );
 
 $table_filters = array(
-    'name'         => array(
+    'name'  => array(
         'label' => _('Name'),
         'title' => _('Customer name')
     ),
-    'email'        => array(
+    'email' => array(
         'label' => _('Email'),
         'title' => _('Customer email')
     )
@@ -47,8 +47,7 @@ $table_filters = array(
 );
 
 
-
-$table_buttons   = array();
+$table_buttons = array();
 
 include 'utils/get_table_html.php';
 

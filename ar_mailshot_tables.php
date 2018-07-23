@@ -227,6 +227,7 @@ function sent_emails($_data, $db, $user) {
     $adata = array();
 
 
+
     $parent = get_object($_data['parameters']['parent'], $_data['parameters']['parent_key']);
     if ($_data['parameters']['parent'] == 'mailshot') {
         $email_campaign_type= get_object('email_campaign_type',$parent->get('Email Campaign Email Template Type Key'));
@@ -234,7 +235,6 @@ function sent_emails($_data, $db, $user) {
         $_parent= get_object('customer',$_data['parameters']['parent_key']);
     }
 
-    // print $sql;
     //'Ready','Send to SES','Rejected by SES','Send','Read','Hard Bounce','Soft Bounce','Spam','Delivered','Opened','Clicked','Error'
 
 

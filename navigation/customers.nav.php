@@ -1996,8 +1996,7 @@ function get_email_campaign_navigation($data, $smarty, $user, $db, $account) {
         case 'newsletter':
             $tab = 'email_campaigns.newsletters';
             break;
-
-        case 'mailshot':
+        case 'email_campaign':
             $tab = 'email_campaign_type.mailshots';
             break;
 
@@ -2152,7 +2151,7 @@ function get_email_campaign_navigation($data, $smarty, $user, $db, $account) {
         $title = _('Newsletter').' <span class="id Email_Campaign_Name">'.$object->get('Name').'</span>';
 
     }
-    elseif ($data['section'] == 'mailshot') {
+    elseif ($data['section'] == 'email_campaign') {
 
         $title = _('Mailshot').' <span class="id Email_Campaign_Name">'.$object->get('Name').'</span>';
 
@@ -2202,7 +2201,6 @@ function get_email_campaign_navigation($data, $smarty, $user, $db, $account) {
 
 
     }
-
 
     if (isset($sections[$_section])) {
         $sections[$_section]['selected'] = true;
