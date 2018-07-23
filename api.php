@@ -140,14 +140,17 @@ function parse_scope($request) {
 
 function authenticate($db) {
 
-   // print_r($_SERVER);
-   // print_r(apache_request_headers());
+    print_r($_SERVER);
+    print_r(apache_request_headers());
 
     $_headers=apache_request_headers();
 
         if(!isset($_SERVER['HTTP_X_AUTH_KEY']) and isset($_headers['HTTP_X_AUTH_KEY'])){
             $_SERVER['HTTP_X_AUTH_KEY']=$_headers['HTTP_X_AUTH_KEY'];
         }
+
+
+
 
 
 
