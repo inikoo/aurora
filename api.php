@@ -37,12 +37,9 @@ list($user_key, $api_key_key, $scope) = authenticate($db);
 authorization($db, $user_key, $api_key_key, $scope);
 
 
-
-
 function authorization($db, $user_key, $api_key_key, $scope) {
     $method       = $_SERVER['REQUEST_METHOD'];
     $parsed_scope = parse_scope($_SERVER['REDIRECT_URL']);
-
 
 
     if (!$scope) {
@@ -127,9 +124,9 @@ function parse_scope($request) {
 
     if ($request == '/api/timesheet_record') {
         return 'Timesheet';
-    }elseif ($request == '/api/stock') {
+    } elseif ($request == '/api/stock') {
         return 'Stock';
-    }elseif ($request == '/api/picking') {
+    } elseif ($request == '/api/picking') {
         return 'Picking';
     }
 
@@ -140,20 +137,19 @@ function parse_scope($request) {
 
 function authenticate($db) {
 
-    print_r($_SERVER);
-    print_r(apache_request_headers());
+    //print_r($_SERVER);
+    //print_r(apache_request_headers());
 
-    $_headers=apache_request_headers();
+    $_headers = apache_request_headers();
 
-        if(!isset($_SERVER['HTTP_X_AUTH_KEY']) and isset($_headers['HTTP_X_AUTH_KEY'])){
-            $_SERVER['HTTP_X_AUTH_KEY']=$_headers['HTTP_X_AUTH_KEY'];
-        }
+    if (!isset($_SERVER['HTTP_X_AUTH_KEY']) and isset($_headers['HTTP_X_AUTH_KEY'])) {
+        $_SERVER['HTTP_X_AUTH_KEY'] = $_headers['HTTP_X_AUTH_KEY'];
+    }
 
+    if (!isset($_SERVER['HTTP_X_AUTH_KEY']) and isset($_headers['http_x_auth_key'])) {
+        $_SERVER['HTTP_X_AUTH_KEY'] = $_headers['http_x_auth_key'];
 
-
-
-
-
+    }
 
 
     if (!isset($_SERVER['HTTP_X_AUTH_KEY'])) {
@@ -168,25 +164,23 @@ function authenticate($db) {
         $api_key = $_SERVER['HTTP_X_AUTH_KEY'];
 
 
-
         if (preg_match('/^([a-z0-9]{8})(.+)$/', $api_key, $matches)) {
 
-           // print_r($matches);
+            // print_r($matches);
 
-            $api_key_code   = $matches[1];
+            $api_key_code = $matches[1];
 
-            $_tmp=preg_replace('/^\./','',$matches[2]);
+            $_tmp = preg_replace('/^\./', '', $matches[2]);
 
-//print $_tmp;
+            //print $_tmp;
 
             $api_key_secret = base64_decode($_tmp);
-          // print $api_key_secret;
-           // exit;
+            // print $api_key_secret;
+            // exit;
             $sql = sprintf(
                 'SELECT `API Key Scope`,`User Key`,`User Active`,`API Key Key`,`API Key Active`,`API Key User Key`,`API Key Hash` FROM `API Key Dimension` LEFT JOIN `User Dimension` ON (`API Key User Key`=`User Key`) WHERE `API Key Code`=%s',
                 prepare_mysql($api_key_code)
             );
-
 
 
             if ($row = $db->query($sql)->fetch()) {
@@ -203,7 +197,7 @@ function authenticate($db) {
                     exit;
                 }
 
-              //  print $api_key_secret;
+                //  print $api_key_secret;
 
 
                 if (!password_verify($api_key_secret, $row['API Key Hash'])) {
@@ -289,8 +283,8 @@ function log_api_key_access_failure($db, $api_key_key, $fail_type, $fail_reason)
     $fail_code = hash('crc32', $fail_reason, false);
     $method    = $_SERVER['REQUEST_METHOD'];
     $sql       = sprintf(
-        'INSERT INTO `API Request Dimension` (`API Key Key`,`Date`,`Response`,`Response Code`,`IP`,`HTTP Method`) VALUES(%d,%s,%s,%s,%s,%s)', $api_key_key, prepare_mysql(gmdate('Y-m-d H:i:s')),
-        prepare_mysql($fail_type), prepare_mysql($fail_code), prepare_mysql(ip()), prepare_mysql($method)
+        'INSERT INTO `API Request Dimension` (`API Key Key`,`Date`,`Response`,`Response Code`,`IP`,`HTTP Method`) VALUES(%d,%s,%s,%s,%s,%s)', $api_key_key, prepare_mysql(gmdate('Y-m-d H:i:s')), prepare_mysql($fail_type), prepare_mysql($fail_code), prepare_mysql(ip()),
+        prepare_mysql($method)
     );
 
     $db->exec($sql);
@@ -313,8 +307,8 @@ function log_api_key_access_success($db, $api_key_key, $success_reason, $debug =
     $method = $_SERVER['REQUEST_METHOD'];
 
     $sql = sprintf(
-        'INSERT INTO `API Request Dimension` (`API Key Key`,`Date`,`Response`,`Response Code`,`IP`,`HTTP Method`,`Debug`) VALUES(%d,%s,%s,%s,%s,%s,%s)', $api_key_key,
-        prepare_mysql(gmdate('Y-m-d H:i:s')), prepare_mysql('OK'), prepare_mysql($success_code), prepare_mysql(ip()), prepare_mysql($method), prepare_mysql($debug)
+        'INSERT INTO `API Request Dimension` (`API Key Key`,`Date`,`Response`,`Response Code`,`IP`,`HTTP Method`,`Debug`) VALUES(%d,%s,%s,%s,%s,%s,%s)', $api_key_key, prepare_mysql(gmdate('Y-m-d H:i:s')), prepare_mysql('OK'), prepare_mysql($success_code),
+        prepare_mysql(ip()), prepare_mysql($method), prepare_mysql($debug)
 
     );
 
