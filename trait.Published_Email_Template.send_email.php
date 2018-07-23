@@ -294,7 +294,7 @@ trait Send_Email {
         try {
 
 
-         
+
             $result = $client->sendEmail($request);
             $email_tracking->fast_update(
                 array(
@@ -305,8 +305,8 @@ trait Send_Email {
                 )
             );
 
+          /*
 
-            /*
 
             $email_tracking->fast_update(
                 array(

@@ -124,6 +124,10 @@ switch ($tipo) {
                          'metadata'  => array(
                              'type'     => 'json array',
                              'optional' => true
+                         ),
+                         'state'  => array(
+                             'type'     => 'json array',
+                             'optional' => true
                          )
 
                      )
@@ -829,6 +833,13 @@ function object_operation($account, $db, $user, $editor, $data, $smarty) {
 
 
     $object->editor = $editor;
+
+    if(isset($data['state'])){
+        $object->web_state = $data['state'];
+
+    }
+
+
 
     if (!$object->id) {
         $response = array(
@@ -1823,7 +1834,10 @@ function new_object($account, $db, $user, $editor, $data, $smarty) {
             $object = $parent->create_email_campaign($data['fields_data']);
             if (!$parent->error) {
                 $pcard        = '';
-                $updated_data = array();
+                $updated_data = array(
+                    'store_key'=>$object->get('Email Campaign Store Key'),
+                    'email_template_type_key'=>$object->get('Email Campaign Email Template Type Key'),
+                );
             }
             break;
         case 'Customer Poll Query':

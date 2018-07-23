@@ -1462,8 +1462,7 @@ function get_navigation($user, $smarty, $data, $db, $account) {
                     );
                     break;
 
-                case ('mailshot'):
-
+                case ('email_campaign'):
                     return get_email_campaign_navigation(
                         $data, $smarty, $user, $db, $account
                     );
@@ -2756,6 +2755,7 @@ function get_tabs($data, $db, $account, $modules, $user, $smarty, $requested_tab
     );
 
 
+
     if ($data['section'] == 'category') {
 
         if ($data['_object']->get('Category Scope') == 'Product') {
@@ -2909,6 +2909,24 @@ function get_tabs($data, $db, $account, $modules, $user, $smarty, $requested_tab
             }
 
 
+        }  elseif ($data['_object']->get('Email Campaign Type Code') == 'AbandonedCart') {
+            $_content['tabs']['email_campaign_type.next_recipients']['class'] = 'hide';
+            $_content['tabs']['email_campaign_type.details']['class']         = 'hide';
+            $_content['tabs']['email_campaign_type.workshop']['class']        = 'hide';
+            $_content['tabs']['email_campaign_type.sent_emails']['class']     = 'hide';
+
+            //$_content['tabs']['email_campaign_type.mailshots']['label'] = _('Newsletters');
+            //$_content['tabs']['email_campaign_type.mailshots']['icon']  = 'newspaper';
+
+
+            if ($data['tab'] == 'email_campaign_type.next_recipients' or $data['tab'] == 'email_campaign_type.details' or $data['tab'] == 'email_campaign_type.next_recipients' or $data['tab'] == 'email_campaign_type.sent_emails') {
+                $_content['tabs']['email_campaign_type.sent_emails']['selected'] = true;
+
+                $data['tab'] = 'email_campaign_type.mailshots';
+
+            }
+
+
         } else {
 
             $_content['tabs']['email_campaign_type.next_recipients']['class'] = '';
@@ -3050,10 +3068,9 @@ function get_tabs($data, $db, $account, $modules, $user, $smarty, $requested_tab
         }
 
 
-    } elseif ($data['section'] == 'email_campaign') {
-
+    }
+    elseif ($data['section'] == 'email_campaign'  ) {
         $_content['tabs']['email_campaign.email_blueprints']['class'] = 'hide';
-
 
         switch ($data['_object']->get('Email Campaign State')) {
 
@@ -4140,7 +4157,7 @@ function get_view_position($db, $state, $user, $smarty, $account) {
 
 
                     break;
-                case 'mailshot':
+                case 'email_campaign':
 
 
                     $store = get_object('Store', $state['_parent']->get('Store Key'));

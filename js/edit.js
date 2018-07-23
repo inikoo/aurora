@@ -1990,7 +1990,7 @@ function save_object_operation(type, element) {
 
     $(element).find('i.fa').removeClass(icon).addClass('fa-spinner fa-spin')
 
-    var request = '/ar_edit.php?tipo=object_operation&operation=' + type + '&object=' + $(element).data('data').object + '&key=' + $(element).data('data').key
+    var request = '/ar_edit.php?tipo=object_operation&operation=' + type + '&object=' + $(element).data('data').object + '&key=' + $(element).data('data').key+'&state='+JSON.stringify(state)
     $.getJSON(request, function (data) {
         if (data.state == 200) {
 

@@ -9,6 +9,7 @@
 
 */
 
+
 if($parameters['parent']=='prospect'){
 
 
@@ -37,6 +38,7 @@ switch ($parameters['parent']) {
         );
         break;
     case 'email_campaign':
+    case 'mailshot':
         $where = sprintf(
             ' where   `Email Tracking Email Mailshot Key`=%d', $parameters['parent_key']
         );

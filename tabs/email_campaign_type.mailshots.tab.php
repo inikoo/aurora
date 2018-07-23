@@ -66,13 +66,27 @@ if($state['_object']->get('Code')=='Newsletter'){
     $table_buttons[] = array(
         'icon'      => 'plus',
         'title'     => _('New abandoned cart mailshot'),
-        'reference' => sprintf("email_campaign_type/%d/%d/mailshot/new", $state['_object']->get('Store Key'), $state['_object']->id)
+        'id'=>'new_orders_in_website_mailshot',
+        'attr'=>array(
+            'parent'=>'Store',
+            'parent_key'=>$state['_object']->get('Store Key'),
+
+        )
+
     );
+
+    $smarty->assign(
+        'js_code', 'js/injections/orders.website.mailshots.'.(_DEVEL ? '' : 'min.').'js'
+    );
+
 }
 
 
 
 $smarty->assign('table_buttons', $table_buttons);
+
+
+
 
 include 'utils/get_table_html.php';
 
