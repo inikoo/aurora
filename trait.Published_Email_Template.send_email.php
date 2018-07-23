@@ -320,6 +320,7 @@ trait Send_Email {
            // sleep(2);
 */
 
+
             if (in_array(
                 $email_template_type->get('Email Campaign Type Code'), array(
                                                                          'Order Confirmation',
