@@ -26,7 +26,12 @@
 
         <span>{t}Total customers{/t}</span>
         <div class="title"><span class="Contacts button"  onclick="go_to_orders('website')" title="{t}Number of customers{/t}" >{$object->get('Contacts')}</span></div>
-        <div > <span title="{t}New customers last 7 days{/t}"><i class="fa fa-seedling"></i> <span class="New_Contacts" >{$object->get('New Contacts')}</span></span></div>
+        <div >
+            <i class="fa fa-seedling" title="{t}New customers last 7 days{/t}"></i> <span class="New_Contacts " title="{t}New customers last 7 days{/t}">{$object->get('New Contacts')}</span>
+
+            | <span class="New_Contacts_With_Orders" title="{t}New contacts with orders{/t}">{$object->get('New Contacts With Orders')}</span>
+
+        </div>
 
     </li>
 
