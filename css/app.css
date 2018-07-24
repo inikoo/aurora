@@ -8416,4 +8416,11 @@ table.filter {
   color: #08728b;
   border-color: #08728b; }
 
+h2.dashboard {
+  font-family: "Ubuntu", "Lucida Grande", "Lucida Sans Unicode", Verdana, Arial, sans-serif;
+  font-weight: 300;
+  font-size: 12px;
+  padding: 0px 0px 0px 20px;
+  margin: 0px; }
+
 /*# sourceMappingURL=app.css.map */

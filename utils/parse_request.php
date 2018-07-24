@@ -1784,6 +1784,7 @@ function parse_request($_data, $db, $modules, $account = '', $user = '', $is_set
                                     $store_key = $arg1;
 
                                     $section = 'email_campaign';
+                                    $section = 'email_campaign';
 
                                     $parent     = 'email_campaign_type';
                                     $parent_key = $key;
@@ -4101,6 +4102,12 @@ function parse_request($_data, $db, $modules, $account = '', $user = '', $is_set
                         if (!isset($_data['tab'])) {
                             $_data['tab'] = 'contractors';
                         }
+
+                    }  elseif ($view_path[0] == 'salesmen') {
+
+                        $section = 'salesmen';
+
+
 
                     } elseif ($view_path[0] == 'deleted_employees') {
                         $section = 'employees';

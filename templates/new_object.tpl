@@ -481,12 +481,7 @@ function input_barcode_to_new_object(field) {
 		<input id="{$field.id}_formatted_To" class="option_input_field "  value="{$field.formatted_value['To']}" />
 		<span id="{$field.id}_msg_To" class="msg"></span> 
 		<div id="{$field.id}_To_datepicker" class="hide datepicker"></div>
-
-
-
-
-
-		<script>
+        <script>
 
 		    $(function() {
 		        $("#{$field.id}_From_datepicker").datepicker({

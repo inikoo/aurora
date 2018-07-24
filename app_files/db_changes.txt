@@ -876,6 +876,20 @@ ALTER TABLE `Inventory Spanshot Fact` ADD `Inventory Spanshot Amount In PO` DECI
 ALTER TABLE `Inventory Warehouse Spanshot Fact` ADD `Inventory Warehouse Spanshot In PO` DECIMAL(12,2) NOT NULL DEFAULT '0.00' AFTER `Dormant 1 Year Value At Day Cost`, ADD `Inventory Warehouse Spanshot In Other` DECIMAL(12,2) NOT NULL DEFAULT '0.00' AFTER `Inventory Warehouse Spanshot In PO`, ADD `Inventory Warehouse Spanshot Out Sales` DECIMAL(12,2) NOT NULL DEFAULT '0.00' AFTER `Inventory Warehouse Spanshot In Other`, ADD `Inventory Warehouse Spanshot Out Other` DECIMAL(12,2) NOT NULL DEFAULT '0.00' AFTER `Inventory Warehouse Spanshot Out Sales`;
 
 
+ALTER TABLE `Account Data` ADD `Account Active Contacts` MEDIUMINT UNSIGNED NOT NULL DEFAULT '0' AFTER `Account Key`;
+ALTER TABLE `Account Data` ADD `Account Losing Contacts` MEDIUMINT UNSIGNED NOT NULL DEFAULT '0' AFTER `Account Key`;
+ALTER TABLE `Account Data` ADD `Account Lost Contacts` MEDIUMINT UNSIGNED NOT NULL DEFAULT '0' AFTER `Account Key`;
+ALTER TABLE `Account Data` ADD `Account Contacts With Orders` MEDIUMINT UNSIGNED NOT NULL DEFAULT '0' AFTER `Account Key`;
+ALTER TABLE `Account Data` ADD `Account New Contacts With Orders` MEDIUMINT UNSIGNED NOT NULL DEFAULT '0' AFTER `Account Key`;
+ALTER TABLE `Account Data` ADD `Account Active Contacts With Orders` MEDIUMINT UNSIGNED NOT NULL DEFAULT '0' AFTER `Account Key`;
+ALTER TABLE `Account Data` ADD `Account Lost Contacts With Orders` MEDIUMINT UNSIGNED NOT NULL DEFAULT '0' AFTER `Account Key`;
+ALTER TABLE `Account Data` ADD `Account Losing Contacts With Orders` MEDIUMINT UNSIGNED NOT NULL DEFAULT '0' AFTER `Account Key`;
+ALTER TABLE `Account Data` ADD `Account Contacts Who Visit Website` MEDIUMINT UNSIGNED NOT NULL DEFAULT '0' AFTER `Account Key`;
+ALTER TABLE `Account Data` ADD `Account New Contacts` MEDIUMINT UNSIGNED NOT NULL DEFAULT '0' AFTER `Account Key`;
+ALTER TABLE `Account Data` ADD `Account Contacts` MEDIUMINT UNSIGNED NOT NULL DEFAULT '0' AFTER `Account Key`;
+
+
+
 
 
 

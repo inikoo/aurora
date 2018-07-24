@@ -416,7 +416,7 @@ class Store extends DB_Table {
 
             case 'Send Email Address':
                 return $this->data['Store Email'];
-            break;
+                break;
             case $this->table_name.' Collect Address':
 
                 $type = 'Collect';
@@ -595,7 +595,8 @@ class Store extends DB_Table {
                 break;
 
             case 'Website URL':
-                $website=get_object('Website',$this->data['Store Website Key']);
+                $website = get_object('Website', $this->data['Store Website Key']);
+
                 return $website->get('Website URL');
                 break;
 
@@ -1308,38 +1309,6 @@ class Store extends DB_Table {
 
     }
 
-    function load_acc_data() {
-
-        $sql = sprintf("SELECT * FROM `Store Data`  WHERE `Store Key`=%d", $this->id);
-
-
-        if ($result = $this->db->query($sql)) {
-            if ($row = $result->fetch()) {
-                foreach ($row as $key => $value) {
-                    $this->data[$key] = $value;
-                }
-            }
-        } else {
-            print_r($error_info = $this->db->errorInfo());
-            exit;
-        }
-
-        $sql = sprintf("SELECT * FROM `Store DC Data`  WHERE `Store Key`=%d", $this->id);
-
-        if ($result = $this->db->query($sql)) {
-            if ($row = $result->fetch()) {
-                foreach ($row as $key => $value) {
-                    $this->data[$key] = $value;
-                }
-            }
-        } else {
-            print_r($error_info = $this->db->errorInfo());
-            exit;
-        }
-
-
-    }
-
     function delete() {
         $this->deleted = false;
         $this->update_customers_data();
@@ -1412,6 +1381,62 @@ class Store extends DB_Table {
         }
     }
 
+
+    function update_new_customers(){
+        $this->data['Store New Contacts']                = 0;
+
+        $sql = sprintf(
+            "SELECT count(*) AS num FROM  `Customer Dimension`    WHERE   `Customer First Contacted Date`>%s  AND `Customer Store Key`=%d  ", prepare_mysql(gmdate('Y-m-d H:i:s'), strtotime('now - 1 week')), $this->id
+        );
+
+
+        if ($result = $this->db->query($sql)) {
+            if ($row = $result->fetch()) {
+                $this->data['Store New Contacts'] = $row['num'];
+            }
+        } else {
+            print_r($error_info = $this->db->errorInfo());
+            print "$sql\n";
+            exit;
+        }
+
+        $sql = sprintf(
+            "UPDATE `Store Dimension` SET `Store New Contacts`=%d WHERE `Store Key`=%d  ",  $this->data['Store New Contacts'] ,$this->id);
+
+        $this->db->exec($sql);
+
+
+        $account_new_customers=0;
+
+        $sql = sprintf(
+            "SELECT  
+                sum(`Store New Contacts`) as new_contacts from  `Store Dimension` "
+        );
+
+
+        if ($result = $this->db->query($sql)) {
+            if ($row = $result->fetch()) {
+                $account_new_customers=    $row['new_contacts'];
+
+
+
+            }
+        } else {
+            print_r($error_info = $this->db->errorInfo());
+            exit;
+        }
+
+
+        $sql = sprintf(
+            "UPDATE `Account Data` SET `Account New Contacts`=%d WHERE `Account Key`=1  ",$account_new_customers
+            );
+
+        $this->db->exec($sql);
+
+
+
+    }
+
     function update_customers_data() {
 
         $this->data['Store Contacts']                    = 0;
@@ -1442,12 +1467,31 @@ class Store extends DB_Table {
             }
         } else {
             print_r($error_info = $this->db->errorInfo());
+            print "$sql\n";
             exit;
         }
 
 
         $sql = sprintf(
-            "SELECT count(*) AS num ,sum(IF(`Customer New`='Yes',1,0)) AS new,  sum(IF(`Customer Type by Activity`='Active'   ,1,0)) AS active, sum(IF(`Customer Type by Activity`='Losing',1,0)) AS losing, sum(IF(`Customer Type by Activity`='Lost',1,0)) AS lost  FROM   `Customer Dimension` WHERE `Customer Store Key`=%d ",
+            "SELECT count(*) AS num FROM  `Customer Dimension`    WHERE   `Customer First Contacted Date`>%s  AND `Customer Store Key`=%d  ", prepare_mysql(gmdate('Y-m-d H:i:s'), strtotime('now - 1 week')), $this->id
+        );
+
+
+        if ($result = $this->db->query($sql)) {
+            if ($row = $result->fetch()) {
+                $this->data['Store New Contacts'] = $row['num'];
+            }
+        } else {
+            print_r($error_info = $this->db->errorInfo());
+            print "$sql\n";
+            exit;
+        }
+
+
+
+
+        $sql = sprintf(
+            "SELECT count(*) AS num ,  sum(IF(`Customer Type by Activity`='Active'   ,1,0)) AS active, sum(IF(`Customer Type by Activity`='Losing',1,0)) AS losing, sum(IF(`Customer Type by Activity`='Lost',1,0)) AS lost  FROM   `Customer Dimension` WHERE `Customer Store Key`=%d ",
             $this->id
         );
 
@@ -1455,7 +1499,6 @@ class Store extends DB_Table {
         if ($result = $this->db->query($sql)) {
             if ($row = $result->fetch()) {
                 $this->data['Store Contacts']        = $row['num'];
-                $this->data['Store New Contacts']    = $row['new'];
                 $this->data['Store Active Contacts'] = $row['active'];
                 $this->data['Store Losing Contacts'] = $row['losing'];
                 $this->data['Store Lost Contacts']   = $row['lost'];
@@ -1463,6 +1506,7 @@ class Store extends DB_Table {
             }
         } else {
             print_r($error_info = $this->db->errorInfo());
+            print "$sql\n";
             exit;
         }
 
@@ -1481,6 +1525,7 @@ class Store extends DB_Table {
             }
         } else {
             print_r($error_info = $this->db->errorInfo());
+            print "$sql\n";
             exit;
         }
 
@@ -1509,7 +1554,13 @@ class Store extends DB_Table {
 
         $this->db->exec($sql);
 
+
+
+        $account = get_object('Account', 1);
+        $account->update_customers_data();
+
     }
+
 
     function update_children_data() {
         $this->update_product_data();
@@ -1643,12 +1694,12 @@ class Store extends DB_Table {
 
         $this->update_orders_cancelled();
 
-// todo delete after migation
+        // todo delete after migation
         $this->data['Store Total Acc Orders']  = 0;
         $this->data['Store Dispatched Orders'] = 0;
         $this->data['Store Cancelled Orders']  = 0;
         $this->data['Store Orders In Process'] = 0;
-//======
+        //======
         $this->data['Store Total Acc Invoices']      = 0;
         $this->data['Store Invoices']                = 0;
         $this->data['Store Refunds']                 = 0;
@@ -1807,7 +1858,6 @@ class Store extends DB_Table {
         }
 
 
-
         $data_to_update = array(
             'Store Orders In Basket Number' => $data['in_basket']['number'],
             'Store Orders In Basket Amount' => round($data['in_basket']['amount'], 2)
@@ -1821,6 +1871,38 @@ class Store extends DB_Table {
         );
         $this->fast_update($data_to_update, 'Store DC Data');
         $this->load_acc_data();
+
+
+    }
+
+    function load_acc_data() {
+
+        $sql = sprintf("SELECT * FROM `Store Data`  WHERE `Store Key`=%d", $this->id);
+
+
+        if ($result = $this->db->query($sql)) {
+            if ($row = $result->fetch()) {
+                foreach ($row as $key => $value) {
+                    $this->data[$key] = $value;
+                }
+            }
+        } else {
+            print_r($error_info = $this->db->errorInfo());
+            exit;
+        }
+
+        $sql = sprintf("SELECT * FROM `Store DC Data`  WHERE `Store Key`=%d", $this->id);
+
+        if ($result = $this->db->query($sql)) {
+            if ($row = $result->fetch()) {
+                foreach ($row as $key => $value) {
+                    $this->data[$key] = $value;
+                }
+            }
+        } else {
+            print_r($error_info = $this->db->errorInfo());
+            exit;
+        }
 
 
     }
@@ -1884,9 +1966,6 @@ class Store extends DB_Table {
             print_r($error_info = $this->db->errorInfo());
             exit;
         }
-
-
-
 
 
         $data_to_update = array(
@@ -2200,7 +2279,6 @@ class Store extends DB_Table {
         }
 
 
-
         $data_to_update = array(
             'Store Orders Dispatched Number' => $data['dispatched']['number'],
             'Store Orders Dispatched Amount' => round($data['dispatched']['amount'], 2)
@@ -2272,7 +2350,6 @@ class Store extends DB_Table {
         }
 
 
-
         $data_to_update = array(
             'Store Orders Dispatched Today Number' => $data['dispatched_today']['number'],
             'Store Orders Dispatched Today Amount' => round($data['dispatched_today']['amount'], 2)
@@ -2322,9 +2399,6 @@ class Store extends DB_Table {
         }
 
 
-
-
-
         $data_to_update = array(
 
             'Store Orders Cancelled Number' => $data['cancelled']['number'],
@@ -2349,9 +2423,9 @@ class Store extends DB_Table {
                 'amount'    => 0,
                 'dc_amount' => 0
             ),
-            'credits' => array(
-                'number'    => 0,
-                'amount'    => 0,
+            'credits'  => array(
+                'number' => 0,
+                'amount' => 0,
             ),
         );
 
@@ -2377,16 +2451,15 @@ class Store extends DB_Table {
 
 
         $sql = sprintf(
-            "SELECT count(*) AS num,ifnull(sum(`Customer Account Balance`),0) AS amount FROM `Customer Dimension`  WHERE  `Customer Store Key`=%d  AND   `Customer Account Balance`!=0 ",
-            $this->id
+            "SELECT count(*) AS num,ifnull(sum(`Customer Account Balance`),0) AS amount FROM `Customer Dimension`  WHERE  `Customer Store Key`=%d  AND   `Customer Account Balance`!=0 ", $this->id
         );
 
 
         if ($result = $this->db->query($sql)) {
             foreach ($result as $row) {
 
-                $data['credits']['number']    = $row['num'];
-                $data['credits']['amount']    = $row['amount'];
+                $data['credits']['number'] = $row['num'];
+                $data['credits']['amount'] = $row['amount'];
 
 
             }
@@ -2397,16 +2470,15 @@ class Store extends DB_Table {
 
 
         $data_to_update = array(
-            'Store Total Acc Payments' => $data['payments']['number'],
+            'Store Total Acc Payments'        => $data['payments']['number'],
             'Store Total Acc Payments Amount' => round($data['payments']['amount'], 2),
-            'Store Total Acc Credits' => $data['credits']['number'],
-            'Store Total Acc Credits Amount' => round($data['credits']['amount'], 2)
+            'Store Total Acc Credits'         => $data['credits']['number'],
+            'Store Total Acc Credits Amount'  => round($data['credits']['amount'], 2)
 
         );
 
 
         $this->fast_update($data_to_update, 'Store Data');
-
 
 
         $data_to_update = array(
@@ -2998,17 +3070,13 @@ class Store extends DB_Table {
 
     function create_prospect($data) {
 
-        $this->new_prospect     = false;
+        $this->new_prospect = false;
 
         $data['editor']             = $this->editor;
         $data['Prospect Store Key'] = $this->id;
 
 
-
-
-
-
-        $data['Prospect User Key']=$this->editor['User Key'];
+        $data['Prospect User Key'] = $this->editor['User Key'];
 
         $address_fields = array(
             'Address Recipient'            => $data['Prospect Main Contact Name'],
@@ -3062,8 +3130,7 @@ class Store extends DB_Table {
 
         //exit;
 
-        $prospect         = new Prospect('new', $data, $address_fields);
-
+        $prospect = new Prospect('new', $data, $address_fields);
 
 
         if ($prospect->id) {
@@ -3071,7 +3138,6 @@ class Store extends DB_Table {
 
             if ($prospect->new) {
                 $this->new_prospect = true;
-
 
 
             } else {
@@ -3615,99 +3681,26 @@ class Store extends DB_Table {
     function create_email_campaign($data) {
 
 
-        $email_template_type=get_object('Email_Template_Type',$data['Email Campaign Type'].'|'.$this->id,'code_store');
+        $email_template_type = get_object('Email_Template_Type', $data['Email Campaign Type'].'|'.$this->id, 'code_store');
 
-        if($email_template_type->id){
-            $mailshot=$email_template_type->create_mailshot();
+        if ($email_template_type->id) {
+            $mailshot = $email_template_type->create_mailshot();
 
-            return $mailshot;
-
-        }else{
-            $this->error=true;
-            $this->msg='invalid email campaign type';
-        }
-
-        /*
-
-        $email_campaign_type=get_object();
-
-        switch ($data['Email Campaign Type']) {
-            case 'AbandonedCart':
-                $data['Email Campaign Name'] = sprintf(_('%s %s'), $this->get('Code'), strftime('%x'));
-                break;
-            case 'Newsletter':
-                $data['Email Campaign Name']  = sprintf(_('%s %s'), $this->get('Code'), strftime('%x'));
-                $data['Email Campaign State'] = 'ComposingEmail';
-                break;
-            default:
-                break;
-        }
-
-
-
-
-        $this->new_email_campaign = false;
-        $this->new_website_user   = false;
-
-        $data['editor']                           = $this->editor;
-        $data['Email Campaign Store Key']         = $this->id;
-        $data['Email Campaign Creation Date']     = gmdate('Y-m-d H:i:s');
-        $data['Email Campaign Last Updated Date'] = gmdate('Y-m-d H:i:s');
-
-
-        if (empty($data['Email Campaign Name'])) {
-
-            switch ($data['Email Campaign Type']) {
-                case 'AbandonedCart':
-                    $data['Email Campaign Name'] = sprintf(_('%s %s'), $this->get('Code'), strftime('%x'));
-                    break;
-                case 'Newsletter':
-                    $data['Email Campaign Name']  = sprintf(_('%s %s'), $this->get('Code'), strftime('%x'));
-                    $data['Email Campaign State'] = 'ComposingEmail';
-                    break;
-                default:
-                    break;
-            }
-
-
-        }
-
-
-        $email_campaign = new EmailCampaign('new', $data);
-
-
-        if ($email_campaign->id) {
-            $this->new_email_campaign_msg = $email_campaign->msg;
-
-            if ($email_campaign->new) {
-                $this->new_email_campaign = true;
-
-
-                /*
-                include_once 'utils/new_fork.php';
-                global $account;
-
-                new_housekeeping_fork(
-                    'au_housekeeping', array(
-                    'type'             => 'email_campaign_created',
-                    'email_campaign_key'     => $email_campaign->id,
-                ), $account->get('Account Code')
-                );
-
+            if (is_object($mailshot) and $mailshot->id) {
+                return $mailshot;
 
             } else {
-                //$this->error = true;
-                //$this->msg   = $email_campaign->msg;
-
+                $this->error = true;
+                $this->msg   = $email_template_type->msg;
             }
 
-            return $email_campaign;
+
         } else {
             $this->error = true;
-            $this->msg   = 'E2'.$email_campaign->msg;
+            $this->msg   = 'invalid email campaign type';
         }
 
-*/
+
     }
 
     function create_category($raw_data) {

@@ -70,11 +70,7 @@ if($state['_object']->get('Code')=='Newsletter'){
 
 }elseif($state['_object']->get('Code')=='Marketing') {
 
-    $table_buttons[] = array(
-        'icon'      => 'plus',
-        'title'     => _('New marketing mailshot'),
-        'reference' => sprintf("email_campaign_type/%d/%d/mailshot/new", $state['_object']->get('Store Key'), $state['_object']->id)
-    );
+
 
 
     $table_buttons[] = array(

@@ -526,6 +526,9 @@ $modules = array(
             ),
 
 
+
+
+
             'email_campaign' => array(
                 'type' => 'object',
                 'tabs' => array(
@@ -534,6 +537,11 @@ $modules = array(
                         'icon'  => 'database',
                         'title' => _('Details')
                     ),
+                    'email_campaign.set_mail_list' => array(
+                        'label' => _('Set recipients'),
+                        'icon'  => 'users',
+                    ),
+
                     'email_campaign.mail_list' => array(
                         'label' => _('Recipients'),
                         'icon'  => 'users',
@@ -6200,6 +6208,22 @@ $modules = array(
 
 
             ),
+
+            'salesmen'      => array(
+                'type'      => 'navigation',
+                'label'     => _('Account managers'),
+                'icon'      => 'handshake',
+                'reference' => 'hr/salesmen',
+                'tabs'      => array(
+                    'salesmen'         => array('label' => _('Account managers')),
+
+
+                )
+
+
+            ),
+
+
             'overtimes'        => array(
                 'type'      => 'navigation',
                 'label'     => _('Overtimes'),

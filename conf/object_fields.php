@@ -30,6 +30,9 @@ function get_object_fields($object, $db, $user, $smarty, $options = false) {
                 case 'AbandonedCart':
                     include 'fields/email_campaign.abandoned_cart.fld.php';
                     break;
+                case 'Marketing':
+                    include 'fields/email_campaign.marketing.fld.php';
+                    break;
                 default:
                     include 'fields/email_campaign.fld.php';
             }

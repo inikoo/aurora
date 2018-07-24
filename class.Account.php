@@ -411,6 +411,14 @@ class Account extends DB_Table {
 
 
                 return number($number);
+            case 'Contacts':
+            case 'New Contacts':
+            case 'Contacts With Orders':
+            case 'Active Contacts':
+            case 'Losing Contacts':
+            case 'Lost Contacts':
+            return number($this->data['Account '.$key]);
+                break;
 
             default:
 
@@ -768,7 +776,6 @@ class Account extends DB_Table {
         if ($row = $this->db->query($sql)->fetch()) {
             $number_parts_with_barcode = $row['num'];
         }
-
 
 
         $this->fast_update(
@@ -1788,7 +1795,7 @@ class Account extends DB_Table {
         if ($result = $this->db->query($sql)) {
             foreach ($result as $row) {
 
-                $data['warehouse']['number']    += $row['num'];
+                $data['warehouse']['number'] += $row['num'];
 
 
             }
@@ -1796,7 +1803,6 @@ class Account extends DB_Table {
             print_r($error_info = $this->db->errorInfo());
             exit;
         }
-
 
 
         $sql = sprintf(
@@ -1819,7 +1825,6 @@ class Account extends DB_Table {
         }
 
 
-
         $sql = sprintf(
             "SELECT count(*) AS num FROM `Order Dimension` WHERE   `Order Replacement State` ='InWarehouse' AND `Order Delivery Note Alert`='Yes'  "
         );
@@ -1832,13 +1837,11 @@ class Account extends DB_Table {
                 $data['warehouse_with_alerts']['number'] += $row['num'];
 
 
-
             }
         } else {
             print_r($error_info = $this->db->errorInfo());
             exit;
         }
-
 
 
         $data['warehouse_no_alerts']['number']    = $data['warehouse']['number'] - $data['warehouse_with_alerts']['number'];
@@ -1891,7 +1894,6 @@ class Account extends DB_Table {
         }
 
 
-
         $sql = sprintf(
             "SELECT count(*) AS num FROM `Order Dimension` WHERE `Order Replacement State` ='PackedDone'  "
         );
@@ -1901,7 +1903,7 @@ class Account extends DB_Table {
             foreach ($result as $row) {
 
 
-                $data['packed']['number']    += $row['num'];
+                $data['packed']['number'] += $row['num'];
 
 
             }
@@ -2042,7 +2044,7 @@ class Account extends DB_Table {
         if ($result = $this->db->query($sql)) {
             foreach ($result as $row) {
 
-                $data['dispatched_today']['number']    += $row['num'];
+                $data['dispatched_today']['number'] += $row['num'];
 
 
             }
@@ -2102,6 +2104,92 @@ class Account extends DB_Table {
         $this->fast_update($data_to_update, 'Account Data');
     }
 
+    function update_customers_data() {
+
+        $this->data['Account Contacts']                    = 0;
+        $this->data['Account New Contacts']                = 0;
+        $this->data['Account Contacts With Orders']        = 0;
+        $this->data['Account Active Contacts']             = 0;
+        $this->data['Account Losing Contacts']             = 0;
+        $this->data['Account Lost Contacts']               = 0;
+        $this->data['Account New Contacts With Orders']    = 0;
+        $this->data['Account Active Contacts With Orders'] = 0;
+        $this->data['Account Losing Contacts With Orders'] = 0;
+        $this->data['Account Lost Contacts With Orders']   = 0;
+        $this->data['Account Contacts Who Visit Website']  = 0;
+
+
+        $sql = sprintf(
+            "SELECT  sum(`Store Contacts`) as contacts, 
+                sum(`Store New Contacts`) as new_contacts, 
+                sum(`Store Contacts With Orders`) as contacts_with_orders, 
+                sum(`Store Active Contacts`) as active, 
+                sum(`Store Losing Contacts`) as losing, 
+                sum(`Store Lost Contacts`) as lost, 
+                sum(`Store New Contacts With Orders`) as new_contacts_with_orders, 
+                sum(`Store Active Contacts With Orders`) as active_with_orders, 
+                sum(`Store Losing Contacts With Orders`) as losing_with_orders, 
+                sum(`Store Lost Contacts With Orders`) as lost_with_orders, 
+                sum(`Store Contacts Who Visit Website`) as visitors
+
+               
+               from `Store Dimension`  "
+        );
+
+
+        if ($result = $this->db->query($sql)) {
+            if ($row = $result->fetch()) {
+                $this->data['Account Contacts']        = $row['contacts'];
+                $this->data['Account New Contacts']    = $row['new_contacts'];
+                $this->data['Account Contacts With Orders']    = $row['contacts_with_orders'];
+
+                $this->data['Account Active Contacts'] = $row['active'];
+                $this->data['Account Losing Contacts'] = $row['losing'];
+                $this->data['Account Lost Contacts']   = $row['lost'];
+
+                $this->data['Account New Contacts With Orders']    = $row['new_contacts_with_orders'];
+                $this->data['Account Active Contacts With Orders'] = $row['active_with_orders'];
+                $this->data['Account Losing Contacts With Orders'] = $row['losing_with_orders'];
+                $this->data['Account Lost Contacts With Orders']   = $row['lost_with_orders'];
+                $this->data['Account Contacts Who Visit Website']    = $row['visitors'];
+
+
+
+            }
+        } else {
+            print_r($error_info = $this->db->errorInfo());
+            exit;
+        }
+
+
+        $sql = sprintf(
+            "UPDATE `Account Data` SET
+                     `Account Contacts`=%d,
+                     `Account New Contacts`=%d,
+                     `Account Active Contacts`=%d ,
+                     `Account Losing Contacts`=%d ,
+                     `Account Lost Contacts`=%d ,
+
+                     `Account Contacts With Orders`=%d,
+                     `Account New Contacts With Orders`=%d,
+                     `Account Active Contacts With Orders`=%d,
+                     `Account Losing Contacts With Orders`=%d,
+                     `Account Lost Contacts With Orders`=%d,
+                     `Account Contacts Who Visit Website`=%d
+                     WHERE `Account Key`=%d  ", $this->data['Account Contacts'], $this->data['Account New Contacts'], $this->data['Account Active Contacts'], $this->data['Account Losing Contacts'], $this->data['Account Lost Contacts'],
+
+            $this->data['Account Contacts With Orders'], $this->data['Account New Contacts With Orders'], $this->data['Account Active Contacts With Orders'], $this->data['Account Losing Contacts With Orders'], $this->data['Account Lost Contacts With Orders'],
+            $this->data['Account Contacts Who Visit Website'],
+
+            $this->id
+        );
+
+        print "$sql\n";
+
+
+        $this->db->exec($sql);
+
+    }
 
     protected function update_field_switcher($field, $value, $options = '', $metadata = '') {
 
@@ -2158,7 +2246,6 @@ class Account extends DB_Table {
                 break;
         }
     }
-
 
 }
 

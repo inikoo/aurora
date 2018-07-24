@@ -12,8 +12,8 @@
 
 function get_email_campaign_showcase($data, $smarty, $user, $db) {
 
+
     if (!$data['_object']->id) {
-        return "";
     }
 
 
@@ -24,7 +24,7 @@ function get_email_campaign_showcase($data, $smarty, $user, $db) {
         $email_campaign->update_estimated_recipients();
     }
 
-    $email_campaign->update_sent_emails_totals();
+    //$email_campaign->update_sent_emails_totals();
 
     $smarty->assign('email_campaign', $email_campaign);
 
@@ -48,6 +48,7 @@ function get_email_campaign_showcase($data, $smarty, $user, $db) {
     switch ($email_campaign->get('Email Campaign Type')) {
         case 'AbandonedCart':
         case 'Newsletter':
+        case 'Marketing':
             return $smarty->fetch('showcase/email_campaign.tpl');
             break;
 

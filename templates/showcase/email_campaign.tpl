@@ -31,6 +31,8 @@
 
 </style>
 
+
+
 <div id="email_campaign" data-object="{$object_data}" data-email_campaign_key="{$email_campaign->id}">
 
     <div class="timeline_horizontal with_time     ">
@@ -182,6 +184,16 @@
                 </div>
                 <span style="float:left;padding-left:10px;padding-top:5px" class="Email_Campaign_State"> {$email_campaign->get('State')} </span>
                 <div id="forward_operations">
+
+
+                    <div id="set_recipients_email_operations" class="email_campaign_operation {if $email_campaign->get('State Index')!=10    }hide{/if}">
+                        <div class="square_button right  " title="{t}Set mailing list{/t}">
+                            <i class="fa fa-users button discreet" id="compose_email_save_buttons" aria-hidden="true" data-data='{  "field": "Email Campaign State","value": "ComposingEmail","dialog_name":"compose_email"}'
+                               onclick="set_up+mailing_list(this)"></i>
+
+                        </div>
+                    </div>
+
 
 
                     <div id="compose_email_operations" class="email_campaign_operation {if $email_campaign->get('State Index')!=10   or  $email_campaign->get('Email Campaign Number Estimated Emails')==0 }hide{/if}">

@@ -2891,6 +2891,10 @@ function get_tabs($data, $db, $account, $modules, $user, $smarty, $requested_tab
     } elseif ($data['section'] == 'email_campaign_type') {
 
 
+
+
+
+
         if ($data['_object']->get('Email Campaign Type Code') == 'Newsletter') {
             $_content['tabs']['email_campaign_type.next_recipients']['class'] = 'hide';
             $_content['tabs']['email_campaign_type.details']['class']         = 'hide';
@@ -2909,7 +2913,7 @@ function get_tabs($data, $db, $account, $modules, $user, $smarty, $requested_tab
             }
 
 
-        }  elseif ($data['_object']->get('Email Campaign Type Code') == 'AbandonedCart' or $data['_object']->get('Email Campaign Type Code') == 'Marketing') {
+        }  elseif ($data['_object']->get('Email Campaign Type Code') == 'AbandonedCart'   or $data['_object']->get('Email Campaign Type Code') == 'Marketing'  ) {
             $_content['tabs']['email_campaign_type.next_recipients']['class'] = 'hide';
             $_content['tabs']['email_campaign_type.details']['class']         = 'hide';
             $_content['tabs']['email_campaign_type.workshop']['class']        = 'hide';
@@ -3072,6 +3076,9 @@ function get_tabs($data, $db, $account, $modules, $user, $smarty, $requested_tab
     elseif ($data['section'] == 'email_campaign'  ) {
         $_content['tabs']['email_campaign.email_blueprints']['class'] = 'hide';
 
+        $_content['tabs']['email_campaign.set_mail_list']['class']        = 'hide';
+
+
         switch ($data['_object']->get('Email Campaign State')) {
 
             case 'InProcess':
@@ -3081,6 +3088,22 @@ function get_tabs($data, $db, $account, $modules, $user, $smarty, $requested_tab
 
                 //$_content['tabs']['email_campaign.details']['selected'] = true;
                 //$_content['tabs']['email_campaign.details']['selected'] = true;
+
+
+                break;
+            case 'SetRecipients':
+                $_content['tabs']['email_campaign.workshop']['class']        = 'hide';
+                $_content['tabs']['email_campaign.sent_emails']['class']     = 'hide';
+                $_content['tabs']['email_campaign.published_email']['class'] = 'hide';
+                $_content['tabs']['email_campaign.set_mail_list']['class']        = '';
+                $_content['tabs']['email_campaign.mail_list']['class']        = 'hide';
+
+                //$_content['tabs']['email_campaign.details']['selected'] = true;
+                //$_content['tabs']['email_campaign.details']['selected'] = true;
+
+                if ($data['tab'] == 'email_campaign.mail_list') {
+                    $data['tab'] = 'email_campaign.set_mail_list';
+                }
 
 
                 break;
