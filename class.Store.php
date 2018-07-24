@@ -1473,8 +1473,9 @@ class Store extends DB_Table {
 
 
         $sql = sprintf(
-            "SELECT count(*) AS num FROM  `Customer Dimension`    WHERE   `Customer First Contacted Date`>%s  AND `Customer Store Key`=%d  ", prepare_mysql(gmdate('Y-m-d H:i:s'), strtotime('now - 1 week')), $this->id
+            "SELECT count(*) AS num FROM  `Customer Dimension`    WHERE   `Customer First Contacted Date`>%s  AND `Customer Store Key`=%d  ", prepare_mysql(gmdate('Y-m-d H:i:s',strtotime('now -1 week'))), $this->id
         );
+
 
 
         if ($result = $this->db->query($sql)) {

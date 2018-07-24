@@ -46,8 +46,8 @@ if ($result = $db->query($sql)) {
         $store = new Store('id', $row['Store Key']);
         $store->update_customers_data();
 
-        //$store->update_orders();
-        //$store->update_payments();
+        $store->update_orders();
+        $store->update_payments();
 
 
 
