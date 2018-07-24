@@ -210,6 +210,8 @@ function customers($data, $db, $user, $account) {
         'Active_Contacts' => array('value' => $object->get('Active Contacts')),
         'Losing_Contacts' => array('value' => $object->get('Losing Contacts')),
         'Lost_Contacts' => array('value' => $object->get('Lost Contacts')),
+        'Percentage_Active_Contacts' => array('value' => $object->get('Percentage Active Contacts')),
+        'Percentage_Contacts_With_Order' => array('value' => $object->get('Percentage Contacts With Orders')),
 
 
     );
