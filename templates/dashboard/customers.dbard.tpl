@@ -26,7 +26,7 @@
 
         <span>{t}Total customers{/t}</span>
         <div class="title"><span class="Contacts button"  onclick="go_to_orders('website')" title="{t}Number of customers{/t}" >{$object->get('Contacts')}</span></div>
-        <div > <i class="fa fa-seedling"></i> <span class="New_Contacts" title="{t}Amount in basket{/t}">{$object->get('New Contacts')}</span></div>
+        <div > <i class="fa fa-seedling"></i> <span class="New_Contacts" title="{t}New customers last 7 days{/t}">{$object->get('New Contacts')}</span></div>
 
     </li>
     <li class="flex-item">
