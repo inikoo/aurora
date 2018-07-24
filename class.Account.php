@@ -2184,7 +2184,7 @@ class Account extends DB_Table {
             $this->id
         );
 
-        print "$sql\n";
+      //  print "$sql\n";
 
 
         $this->db->exec($sql);
