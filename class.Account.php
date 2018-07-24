@@ -419,7 +419,10 @@ class Account extends DB_Table {
             case 'Lost Contacts':
             return number($this->data['Account '.$key]);
                 break;
-
+            case 'Percentage Contacts With Orders':
+            case 'Percentage Active Contacts':
+                return percentage($this->data['Account '.preg_replace('/^Percentage /','',$key)],$this->data['Account Contacts']);
+                break;
             default:
 
 
