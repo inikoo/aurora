@@ -34,7 +34,7 @@
 
         <span>{t}Active customers{/t}</span>
         <div class="title"><span class="Active_Contacts button"  title="{t}Number of active customers{/t}" >{$object->get('Active Contacts')}</span></div>
-        <div >  <span class="Percentage_CActive_Contacts" title="{t}Percentage active ever total customers{/t}">{$object->get('Percentage Active Contacts')}</span></div>
+        <div >  <span class="Percentage_Active_Contacts" title="{t}Percentage active ever total customers{/t}">{$object->get('Percentage Active Contacts')}</span></div>
 
     </li>
 
