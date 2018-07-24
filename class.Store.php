@@ -518,6 +518,9 @@ class Store extends DB_Table {
             case 'Percentage Active Contacts':
                 return percentage($this->data['Store '.preg_replace('/^Percentage /','',$key)],$this->data['Store Contacts']);
                 break;
+            case 'Percentage New Contacts With Orders':
+                return ($this->data['Store New Contacts']==0?'':percentage($this->data['Store '.preg_replace('/^Percentage /','',$key)],$this->data['Store New Contacts']));
+                break;
 
             case 'Percentage Active Web Out of Stock':
                 return percentage($this->data['Store Active Web Out of Stock'], $this->data['Store Active Products']);
