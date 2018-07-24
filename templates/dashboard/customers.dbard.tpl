@@ -26,7 +26,7 @@
 
         <span>{t}Total customers{/t}</span>
         <div class="title"><span class="Contacts button"  onclick="go_to_orders('website')" title="{t}Number of customers{/t}" >{$object->get('Contacts')}</span></div>
-        <div > <i class="fa fa-seedling"></i> <span class="New_Contacts" title="{t}New customers last 7 days{/t}">{$object->get('New Contacts')}</span></div>
+        <div > <span title="{t}New customers last 7 days{/t}"><i class="fa fa-seedling"></i> <span class="New_Contacts" >{$object->get('New Contacts')}</span></span></div>
 
     </li>
 
@@ -34,7 +34,7 @@
 
         <span>{t}Active customers{/t}</span>
         <div class="title"><span class="Active_Contacts button"  title="{t}Number of active customers{/t}" >{$object->get('Active Contacts')}</span></div>
-        <div >  <span class="Percentage_Active_Contacts" title="{t}Percentage active ever total customers{/t}">{$object->get('Percentage Active Contacts')}</span></div>
+        <div >  <span class="Percentage_Active_Contacts" title="{t}Percentage of total customers{/t}">{$object->get('Percentage Active Contacts')}</span></div>
 
     </li>
 
@@ -42,7 +42,7 @@
 
         <span>{t}Customers with orders{/t}</span>
         <div class="title"><span class="Contacts_With_Orders button"   title="{t}Number of customers with orders{/t}" >{$object->get('Contacts With Orders')}</span></div>
-        <div >  <span class="Percentage_Contacts_With_Order" title="{t}Percentage customer with orders over total customers{/t}">{$object->get('Percentage Contacts With Orders')}</span></div>
+        <div >  <span class="Percentage_Contacts_With_Order" title="{t}Percentage of total customers{/t}">{$object->get('Percentage Contacts With Orders')}</span></div>
 
 
     </li>
