@@ -216,6 +216,8 @@
                     </li>
                     <li ><a href="https://get.teamviewer.com/txww6bm" target="_blank"><i class="fa fa-hands-helping fa-fw" style="color:cornflowerblue;opacity:.75"></i><span id="fire_label" class="label"> {t}Remote help{/t}</span></a>
                     </li>
+                    <li ><a href="https://inikoo.atlassian.net/servicedesk/customer/portal/6" target="_blank"><i class="fa fa-medkit fa-fw" style="color:cornflowerblue;opacity:.75"></i><span id="fire_label" class="label"> {t}Service desk{/t}</span></a>
+                    </li>
                 </ul>
 
             {/if}
