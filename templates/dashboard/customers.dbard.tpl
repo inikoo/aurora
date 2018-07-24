@@ -30,7 +30,7 @@
             <i class="fa fa-seedling" title="{t}New customers last 7 days{/t}"></i> <span class="New_Contacts " title="{t}New customers last 7 days{/t}">{$object->get('New Contacts')}</span>
 
             | <span class="New_Contacts_With_Orders" title="{t}New contacts with orders{/t}">{$object->get('New Contacts With Orders')}</span>
-            <span class="Percentage_New_Contacts_With_orders very_discreet">{$object->get('Percentage New Contacts With Orders')}</span>
+            <span class="Percentage_New_Contacts_With_Orders very_discreet">{$object->get('Percentage New Contacts With Orders')}</span>
 
         </div>
 
