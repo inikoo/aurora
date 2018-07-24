@@ -2637,6 +2637,7 @@ class User extends DB_Table {
 
             $dashboard_items[] = 'pending_orders';
             $dashboard_items[] = 'sales_overview';
+            $dashboard_items[] = 'customers';
 
 
         } else {
@@ -2645,6 +2646,7 @@ class User extends DB_Table {
                 $dashboard_items[] = 'kpis';
                 $dashboard_items[] = 'pending_orders';
                 $dashboard_items[] = 'sales_overview';
+                $dashboard_items[] = 'customers';
 
 
 

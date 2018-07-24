@@ -65,6 +65,7 @@ foreach ($user->get_dashboard_items() as $item) {
         $period = '1y';
 
         include_once 'widgets/pending_orders.wget.php';
+        include_once 'widgets/customers.wget.php';
 
         if (isset($_SESSION['dashboard_state']['pending_orders']['parent'])) {
             $parent = $_SESSION['dashboard_state']['pending_orders']['parent'];
@@ -82,8 +83,10 @@ foreach ($user->get_dashboard_items() as $item) {
 
 
         $html .= get_dashboard_pending_orders($db, $account, $user, $smarty, $parent,$currency, $_SESSION['display_device_version']);
+        $html .= get_dashboard_customers($db, $account, $user, $smarty, $parent,$currency, $_SESSION['display_device_version']);
 
     }
+
     elseif ($item == 'kpis') {
 
         $period = '1y';

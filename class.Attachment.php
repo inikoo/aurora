@@ -18,7 +18,7 @@ class Attachment extends DB_Table {
     var $locations = false;
     var $compress = true;
 
-    function Attachment($arg1 = false, $arg2 = false, $arg3 = false, $_db = false) {
+    function __construct($arg1 = false, $arg2 = false, $arg3 = false, $_db = false) {
 
         if (!$_db) {
             global $db;

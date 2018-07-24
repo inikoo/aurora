@@ -64,6 +64,20 @@ switch ($tipo) {
         );
         pending_orders($data, $db, $user, $account);
         break;
+
+    case 'customers':
+        $data = prepare_values(
+            $_REQUEST, array(
+                         'parent'   => array('type' => 'string'),
+                         'currency' => array('type' => 'currency'),
+
+
+                     )
+        );
+        customers($data, $db, $user, $account);
+        break;
+
+
     default:
         $response = array(
             'state' => 405,
@@ -161,6 +175,57 @@ function pending_orders($data, $db, $user, $account) {
     echo json_encode($response);
 
 }
+
+
+
+function customers($data, $db, $user, $account) {
+
+
+    $_SESSION['dashboard_state']['customers'] = array(
+        'parent'   => $data['parent'],
+        'currency' => $data['currency'],
+
+    );
+
+
+    if ($data['parent'] != '') {
+        include_once 'class.Store.php';
+
+        $object = new Store($data['parent']);
+        $object->load_acc_data();
+
+        $title = $object->get('Code');
+
+    } else {
+        $object = new Account();
+        $object->load_acc_data();
+        $title = $object->get('Code');
+    }
+
+
+    $customers_data = array(
+        'Contacts' => array('value' => $object->get('Contacts')),
+        'New_Contacts' => array('value' => $object->get('New Contacts')),
+        'Contacts_With_Orders' => array('value' => $object->get('Contacts With Orders')),
+        'Active_Contacts' => array('value' => $object->get('Active Contacts')),
+        'Losing_Contacts' => array('value' => $object->get('Losing Contacts')),
+        'Lost_Contacts' => array('value' => $object->get('Lost Contacts')),
+
+
+    );
+
+
+    $response = array(
+        'state' => 200,
+        'title' => $title,
+        'data'  => $customers_data,
+    );
+
+    echo json_encode($response);
+
+}
+
+
 
 function sales_overview($_data, $db, $user, $account) {
 

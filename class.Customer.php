@@ -2523,29 +2523,13 @@ class Customer extends Subject {
 
         $this->db->exec($sql);
 
+        $store=get_object('store',$this->data['Customer Store Key']);
+        $store->update_customers_data();
+
+
 
     }
 
-    function update_is_new($new_interval = 604800) {
-
-        $interval = gmdate('U') - strtotime(
-                $this->data['Customer First Contacted Date']
-            );
-
-        if ($interval < $new_interval//        or $this->data['Customer Type by Activity']=='Lost'
-        ) {
-            $this->data['Customer New'] = 'Yes';
-        } else {
-            $this->data['Customer New'] = 'No';
-        }
-
-        $sql = sprintf(
-            "UPDATE `Customer Dimension` SET `Customer New`=%s WHERE `Customer Key`=%d", prepare_mysql($this->data['Customer New']), $this->id
-        );
-        $this->db->exec($sql);
-
-
-    }
 
     function delete($note = '') {
 

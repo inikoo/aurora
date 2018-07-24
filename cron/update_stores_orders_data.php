@@ -44,9 +44,10 @@ $sql = sprintf("SELECT `Store Key` FROM `Store Dimension`");
 if ($result = $db->query($sql)) {
     foreach ($result as $row) {
         $store = new Store('id', $row['Store Key']);
+        $store->update_customers_data();
 
-        $store->update_orders();
-        $store->update_payments();
+        //$store->update_orders();
+        //$store->update_payments();
 
 
 

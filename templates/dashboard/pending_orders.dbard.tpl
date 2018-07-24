@@ -49,6 +49,10 @@
     </tr>
  </table>
 </div>
+
+
+<h2 class="hide dashboard" style="margin-top: 10px">Orders in process</h2>
+
 <ul class="flex-container">
 
     <li class="flex-item">
@@ -136,21 +140,22 @@
         $('.widget_types .widget').removeClass('selected')
         $('#store_' + parent).addClass('selected')
 
-if(parent==''){
-    $('#pending_orders_currency_container').addClass('hide')
+        if (parent == '') {
+            $('#pending_orders_currency_container').addClass('hide')
 
-}else{
-    $('#pending_orders_currency_container').removeClass('hide')
+        } else {
+            $('#pending_orders_currency_container').removeClass('hide')
 
-}
+        }
 
-        get_pending_orders_data(parent, $('#pending_orders_currency').val())
+        get_dashboard_pending_orders_data(parent, $('#pending_orders_currency').val())
+        get_dashboard_customers_data(parent, $('#pending_orders_currency').val())
 
 
     }
 
 
-    function get_pending_orders_data(parent,  currency) {
+    function get_dashboard_pending_orders_data(parent,  currency) {
 
         var request = "/ar_dashboard.php?tipo=pending_orders&parent=" + parent + '&currency=' + currency
         console.log(request)
