@@ -511,6 +511,14 @@ class Store extends DB_Table {
             case('Active Web Offline'):
             case 'Orders In Basket Number':
                 return number($this->data['Store '.$key]);
+
+
+
+            case 'Percentage Contacts With Orders':
+            case 'Percentage Active Contacts':
+                return percentage($this->data['Store '.preg_replace('/^Percentage /','',$key)],$this->data['Store Contacts']);
+                break;
+
             case 'Percentage Active Web Out of Stock':
                 return percentage($this->data['Store Active Web Out of Stock'], $this->data['Store Active Products']);
             case 'Percentage Active Web Offline':
