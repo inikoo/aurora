@@ -1306,6 +1306,8 @@ class Warehouse extends DB_Table {
             //'stock_leakage_down_transactions' => number($_stock_leakage_transactions)
         );
 
+
+
         return array(
 
             'stock_leakage' => $stock_leakage,
