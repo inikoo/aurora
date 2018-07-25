@@ -13,6 +13,9 @@
 $account->load_acc_data();
 
 $warehouse=$state['_object'];
+
+$warehouse->update_stock_amount();
+
 $warehouse->update_children();
 $warehouse->update_warehouse_paid_ordered_parts();
 $warehouse->update_warehouse_part_locations_to_replenish();
