@@ -160,6 +160,35 @@ function toggle_subscription(element){
 
                 }
 
+                if (data.other_fields) {
+                    for (var key in data.other_fields) {
+
+                        //   console.log(data.other_fields[key])
+
+                        update_field(data.other_fields[key])
+                    }
+                }
+
+                if (data.deleted_fields) {
+                    for (var key in data.deleted_fields) {
+                        delete_field(data.deleted_fields[key])
+                    }
+                }
+
+                for (var key in data.update_metadata.class_html) {
+                    $('.' + key).html(data.update_metadata.class_html[key])
+                }
+
+
+                for (var key in data.update_metadata.hide) {
+                    $('.' + data.update_metadata.hide[key]).addClass('hide')
+                }
+
+                for (var key in data.update_metadata.show) {
+
+                    $('.' + data.update_metadata.show[key]).removeClass('hide')
+                }
+
               //  $('#save_button', window.parent.document).removeClass('save').find('i').removeClass('fa-spinner fa-spin')
 
             } else if (data.state == '400') {

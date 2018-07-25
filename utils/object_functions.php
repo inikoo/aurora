@@ -433,6 +433,11 @@ function get_object($object_name, $key, $load_other_data = false) {
             include_once 'class.Shipper.php';
             $object = new Shipper('id', $key);
             break;
+        case 'sales_representative':
+        case 'salesrepresentative':
+            include_once 'class.Sales_Representative.php';
+            $object = new Sales_Representative('id', $key);
+            break;
         default:
             exit('need to complete E1: x>'.strtolower($object_name).'<<++>>'.$load_other_data."<\n");
             break;

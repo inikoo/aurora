@@ -1365,6 +1365,12 @@ function update_field(data) {
         $("#" + field + '_container').attr('server_validation', data.server_validation)
     }
 
+    if (data.options != undefined) {
+
+
+        $("#" + field + '_options ul ').html(data.options)
+    }
+
 
     if (data.locked != undefined) {
 

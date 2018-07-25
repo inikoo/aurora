@@ -1164,6 +1164,7 @@ class Public_Customer extends DBW_Table {
         $order_data['Order Tax Number Registered Name']    = $this->data['Customer Tax Number Registered Name'];
         $order_data['Order Tax Number Registered Address'] = $this->data['Customer Tax Number Registered Address'];
         $order_data['Order Available Credit Amount']       = $this->data['Customer Account Balance'];
+        $order_data['Order Sales Representative Key']       = $this->data['Customer Sales Representative Key'];
 
         $order_data['Order Customer Fiscal Name'] = $this->get('Fiscal Name');
         $order_data['Order Email']                = $this->data['Customer Main Plain Email'];

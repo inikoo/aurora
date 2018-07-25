@@ -78,6 +78,9 @@ switch ($tipo) {
     case 'deleted.contractors':
         deleted_contractors(get_table_parameters(), $db, $user, 'current');
         break;
+    case 'salesmen':
+        salesmen(get_table_parameters(), $db, $user, 'current');
+        break;
     default:
         $response = array(
             'state' => 405,
@@ -1309,6 +1312,143 @@ function positions($_data, $db, $user) {
             'rtext'         => $rtext,
             'sort_key'      => $order,
             'sort_dir'      => $order_direction,
+            'total_records' => $total
+
+        )
+    );
+    echo json_encode($response);
+}
+
+
+function salesmen($_data, $db, $user, $type = '') {
+
+    if ($type == 'current') {
+        $extra_where = ' and `Staff Currently Working`="Yes"';
+        $rtext_label = 'employee';
+
+    } elseif ($type == 'ex') {
+        $extra_where = ' and `Staff Currently Working`="No"';
+        $rtext_label = 'ex employee';
+
+    }
+
+    include_once 'prepare_table/init.php';
+    $sql = "select $fields from $table $where $wheref order by $order $order_direction limit $start_from,$number_results";
+
+    //print $sql;
+    // exit;
+
+
+    $adata = array();
+    if ($result = $db->query($sql)) {
+        foreach ($result as $data) {
+
+
+            switch ($data['User Active']) {
+                case 'Yes':
+                    $user_active = _('Active');
+                    break;
+                case 'No':
+                    $user_active = _('Suspended');
+                    break;
+                case '':
+                    $user_active = _("Don't set up");
+                    break;
+                default:
+                    $user_active = $data['User Active'];
+                    break;
+            }
+
+            switch ($data['Staff Type']) {
+                case 'Employee':
+                    $type = _('Employee');
+                    break;
+                case 'Volunteer':
+                    $type = _('Volunteer');
+                    break;
+                case 'TemporalWorker':
+                    $type = _("Temporal worker");
+                    break;
+                case 'WorkExperience':
+                    $type = _("Work experience");
+                    break;
+                default:
+                    $type = $data['Staff Type'];
+                    break;
+            }
+
+            $adata[] = array(
+                'id'           => (integer)$data['Staff Key'],
+                'formatted_id' => sprintf("%04d", $data['Staff Key']),
+                'payroll_id'   => $data['Staff ID'],
+                'name'         => $data['Staff Name'],
+                'code'         => sprintf('<span class="link" onCLick="change_view(\'employee/%d\')">%s</span>',$data['Staff Key'],$data['Staff Alias']),
+                'code_link'    => $data['Staff Alias'],
+
+
+                'birthday' => (($data['Staff Birthday'] == '' or $data['Staff Birthday'] == '0000-00-00 00:00:00')
+                    ? ''
+                    : strftime(
+                        "%e %b %Y", strtotime($data['Staff Birthday'].' +0:00')
+                    )),
+
+                'official_id'  => $data['Staff Official ID'],
+                'email'        => $data['Staff Email'],
+                'telephone'    => $data['Staff Telephone Formatted'],
+                'next_of_kind' => $data['Staff Next of Kind'],
+                'from'         => (($data['Staff Valid From'] == '' or $data['Staff Valid From'] == '0000-00-00 00:00:00')
+                    ? ''
+                    : strftime(
+                        "%e %b %Y", strtotime($data['Staff Valid From'].' +0:00')
+                    )),
+
+                'until' => (($data['Staff Valid To'] == '' or $data['Staff Valid To'] == '0000-00-00 00:00:00')
+                    ? ''
+                    : strftime(
+                        "%e %b %Y", strtotime($data['Staff Valid To'].' +0:00')
+                    )),
+                'type'  => $type,
+
+
+                'supervisors' => $data['supervisors'],
+
+                'job_title'          => $data['Staff Job Title'],
+                'user_login'         => $data['User Handle'],
+
+                'user_login'         => sprintf('<span class="link" onCLick="change_view(\'account/user/%d\')">%s</span>',$data['User Key'],$data['User Handle']),
+                'user_name_bis'         => sprintf('<span class="link" onCLick="change_view(\'account/user/%d\')">%s</span>',$data['User Key'],$data['User Handle']),
+
+
+
+
+                'user_active'        => $user_active,
+                'user_last_login'    => ($data['User Last Login'] == ''
+                    ? ''
+                    : strftime(
+                        "%a %e %b %Y %H:%M %Z", strtotime($data['User Last Login'].' +0:00')
+                    )),
+                'user_number_logins' => ($data['User Active'] == '' ? '' : number($data['User Login Count'])),
+
+
+                'roles' => $data['roles']
+            );
+
+
+        }
+    } else {
+        print_r($error_info = $db->errorInfo());
+        print $sql;
+        exit;
+    }
+
+
+    $response = array(
+        'resultset' => array(
+            'state'         => 200,
+            'data'          => $adata,
+            'rtext'         => $rtext,
+            'sort_key'      => $_order,
+            'sort_dir'      => $_dir,
             'total_records' => $total
 
         )

@@ -534,7 +534,34 @@ class Customer extends Subject {
                 return '<i class="fa fa-asterisk" aria-hidden="true"></i><i class="fa fa-asterisk" aria-hidden="true"></i><i class="fa fa-asterisk" aria-hidden="true"></i><i class="fa fa-asterisk" aria-hidden="true"></i><i class="fa fa-asterisk" aria-hidden="true"></i>
 ';
                 break;
+            case('Sales Representative'):
+                if ($this->data['Customer Sales Representative Key'] != '') {
 
+                    $sales_representative = get_object('Sales_Representative', $this->data['Customer Sales Representative Key']);
+                    if ($sales_representative->id) {
+                        return $sales_representative->staff->get('Name');
+                    }
+                } else {
+                    return '<span class="very_discreet italic">'._('No account manager').'</span>';
+                }
+                break;
+
+            case 'Level Type Icon':
+                switch ($this->get('Customer Level Type')) {
+                    case 'Partner':
+
+                        return '<i class="fa fa-dove blue margin_right_5" title="'._('Partner').'" ></i>';
+
+                        break;
+                    case 'VIP':
+
+                        return '<i class="fa fa-badge-check success margin_right_5" title="'._('VIP customer').'" ></i>';
+
+                        break;
+                    default:
+                        return '';
+                }
+                break;
             default:
 
 
@@ -820,6 +847,7 @@ class Customer extends Subject {
         $order_data['Order Tax Number Registered Name']    = $this->data['Customer Tax Number Registered Name'];
         $order_data['Order Tax Number Registered Address'] = $this->data['Customer Tax Number Registered Address'];
         $order_data['Order Available Credit Amount']       = $this->data['Customer Account Balance'];
+        $order_data['Order Sales Representative Key']       = $this->data['Customer Sales Representative Key'];
 
 
         $order_data['Order Customer Fiscal Name'] = $this->get('Fiscal Name');
@@ -1135,6 +1163,187 @@ class Customer extends Subject {
                 break;
             case('Attach'):
                 $this->add_attach($value);
+                break;
+
+            case 'Customer Level Type Partner':
+
+                $old_value = $this->data['Customer Level Type'];
+                if ($value == 'Yes') {
+                    $value = 'Partner';
+                } else {
+                    $value = 'Normal';
+
+                }
+                $this->fast_update(
+                    array(
+                        'Customer Level Type' => $value
+                    )
+                );
+
+                if ($value == 'Normal') {
+                    $this->fast_update(
+                        array(
+                            'Customer Sales Representative Key' => ''
+                        )
+                    );
+                }
+
+
+                $this->update_level_type($old_value);
+
+
+                $this->update_metadata = array(
+
+                    'class_html' => array(
+                        'Customer_Level_Type_Icon' => $this->get('Level Type Icon'),
+                        'Sales_Representative'     => $this->get('Sales Representative')
+
+
+                    )
+                );
+
+                if ($this->get('Customer Sales Representative Key')) {
+                    $this->update_metadata['show'] = array('Customer_Sales_Representative_tr');
+                } else {
+                    $this->update_metadata['hide'] = array('Customer_Sales_Representative_tr');
+
+                }
+
+
+                $options_sales_representative = array();
+                $sql                          = sprintf(
+                    'SELECT `Staff Name`,S.`Staff Key`,`Staff Alias` FROM `Staff Dimension` S LEFT JOIN `Staff Role Bridge` B ON (B.`Staff Key`=S.`Staff Key`) WHERE `Role Code` IN ("CUS")    and `Staff Currently Working`="Yes"  order by `Staff Name`  '
+                );
+
+
+                foreach ($this->db->query($sql) as $row) {
+                    $options_sales_representative[$row['Staff Key']] = array(
+                        'label'    => $row['Staff Alias'],
+                        'label2'   => $row['Staff Name'].' ('.sprintf('%03d', $row['Staff Key']).')',
+                        'selected' => false
+                    );
+                }
+
+                $_options_sales_representative = '';
+                foreach ($options_sales_representative as $_key => $_option) {
+                    $_options_sales_representative .= sprintf(
+                        '  <li id="Customer_Sales_Representative_option_%d" label="%s"
+                                                    value="%d" is_selected="%s"
+                                                    onclick="select_option_multiple_choices(\'Customer_Sales_Representative\',\'%d\',\'%s\' )">
+                                                    <i class="far fa-fw checkbox %s"></i> %s
+                                                    <i class="fa fa-circle fw current_mark %s"></i>
+                                                </li>', $_key, $_option['label'], $_key, $_option['selected'], $_key, $_option['label'], ($_option['selected'] ? 'fa-check-square' : 'fa-square'), $_option['label'], ($_option['selected'] ? 'current' : '')
+
+                    );
+                }
+
+                $this->other_fields_updated = array(
+                    'Part_Unit_Price' => array(
+                        'field'           => 'Customer_Sales_Representative',
+                        'render'          => ($this->get('Customer Level Type') == 'Partner' ? false : true),
+                        'value'           => $this->get('Customer Sales Representative'),
+                        'formatted_value' => $this->get('Sales Representative'),
+                        'options'         => $_options_sales_representative
+
+                    )
+                );
+
+
+                break;
+
+            case 'Customer Sales Representative':
+
+                if ($value == 0) {
+                    $this->fast_update(array('Customer Sales Representative Key' => ''));
+
+                } else {
+                    include_once('class.Sales_Representative.php');
+                    $sales_representative = new Sales_Representative(
+                        'find', array(
+                                  'Sales Representative Staff Key' => $value,
+                                  'editor'                         => $this->editor
+                              )
+                    );
+
+
+                    $this->fast_update(
+                        array(
+                            'Customer Sales Representative Key' => $sales_representative->id
+                        )
+                    );
+
+
+                }
+
+
+                $this->update_level_type();
+
+                $this->update_metadata = array(
+
+                    'class_html' => array(
+                        'Customer_Level_Type_Icon' => $this->get('Level Type Icon'),
+                        'Sales_Representative'     => $this->get('Sales Representative')
+
+
+                    )
+                );
+
+                if ($this->get('Customer Sales Representative Key')) {
+                    $this->update_metadata['show'] = array('Customer_Sales_Representative_tr');
+                } else {
+                    $this->update_metadata['hide'] = array('Customer_Sales_Representative_tr');
+
+                }
+
+
+                $options_sales_representative = array();
+                $sql                          = sprintf(
+                    'SELECT `Staff Name`,S.`Staff Key`,`Staff Alias` FROM `Staff Dimension` S LEFT JOIN `Staff Role Bridge` B ON (B.`Staff Key`=S.`Staff Key`) WHERE `Role Code` IN ("CUS")    and `Staff Currently Working`="Yes"  order by `Staff Name`  '
+                );
+
+                if ($this->get('Customer Sales Representative Key')) {
+                    $options_sales_representative[0] = array(
+                        'label'    => _('Remove account manager'),
+                        'label2'   => _('Remove account manager'),
+                        'selected' => false
+                    );
+                }
+
+
+                foreach ($this->db->query($sql) as $row) {
+                    $options_sales_representative[$row['Staff Key']] = array(
+                        'label'    => $row['Staff Alias'],
+                        'label2'   => $row['Staff Name'].' ('.sprintf('%03d', $row['Staff Key']).')',
+                        'selected' => false
+                    );
+                }
+
+                $_options_sales_representative = '';
+                foreach ($options_sales_representative as $_key => $_option) {
+                    $_options_sales_representative .= sprintf(
+                        '  <li id="Customer_Sales_Representative_option_%d" label="%s"
+                                                    value="%d" is_selected="%s"
+                                                    onclick="select_option_multiple_choices(\'Customer_Sales_Representative\',\'%d\',\'%s\' )">
+                                                    <i class="far fa-fw checkbox %s"></i> %s
+                                                    <i class="fa fa-circle fw current_mark %s"></i>
+                                                </li>', $_key, $_option['label'], $_key, $_option['selected'], $_key, $_option['label'], ($_option['selected'] ? 'fa-check-square' : 'fa-square'), $_option['label'], ($_option['selected'] ? 'current' : '')
+
+                    );
+                }
+
+
+                $this->other_fields_updated = array(
+                    'Part_Unit_Price' => array(
+                        'field'           => 'Customer_Sales_Representative',
+                        'render'          => ($this->get('Customer Level Type') == 'Partner' ? false : true),
+                        'value'           => $this->get('Customer Sales Representative'),
+                        'formatted_value' => $this->get('Sales Representative'),
+                        'options'         => $_options_sales_representative,
+
+                    )
+                );
+
+
                 break;
 
 
@@ -1519,6 +1728,88 @@ class Customer extends Subject {
         }
 
         return $label;
+
+    }
+
+    function update_level_type($old_value = '') {
+
+        if (!$old_value) {
+            $old_value = $this->data['Customer Level Type'];
+        }
+
+
+        if ($this->data['Customer Level Type'] != 'Partner') {
+
+
+            if ($this->data['Customer Sales Representative Key'] != '') {
+                $value = 'VIP';
+            } else {
+                $value = 'Normal';
+            }
+
+            $this->fast_update(
+                array(
+                    'Customer Level Type' => $value
+                )
+            );
+            $this->data['Customer Level Type'] = $value;
+
+
+        }
+
+        if ($old_value != $this->data['Customer Level Type']) {
+
+            switch ($this->data['Customer Level Type']) {
+                case 'Partner':
+                    $history_data = array(
+                        'History Abstract' => sprintf(_('Customer set up as partner')),
+                        'History Details'  => '',
+                        'Action'           => 'edited'
+                    );
+                    break;
+                case 'VIP':
+
+                    $sales_representative = get_object('Sales_Representative', $this->data['Customer Sales Representative Key']);
+
+                    $history_data = array(
+                        'History Abstract' => sprintf(_('Customer set up as VIP with %s as account manager'), $sales_representative->staff->get('Name')),
+                        'History Details'  => '',
+                        'Action'           => 'edited'
+                    );
+                    break;
+                case 'Normal':
+
+                    if ($old_value == 'Partner') {
+                        $history_data = array(
+                            'History Abstract' => sprintf(_('Customer is not longer set up as partner')),
+                            'History Details'  => '',
+                            'Action'           => 'edited'
+                        );
+                    } elseif ($old_value == 'Partner') {
+                        $history_data = array(
+                            'History Abstract' => sprintf(_('Customer is not longer a VIP')),
+                            'History Details'  => '',
+                            'Action'           => 'edited'
+                        );
+                    } else {
+                        $history_data = array(
+                            'History Abstract' => sprintf(_('Set up as normal customer')),
+                            'History Details'  => '',
+                            'Action'           => 'edited'
+                        );
+                    }
+
+
+            }
+
+
+            $this->add_subject_history(
+                $history_data, true, 'No', 'Changes', $this->get_object_name(), $this->id
+            );
+
+
+        }
+
 
     }
 
@@ -2523,9 +2814,8 @@ class Customer extends Subject {
 
         $this->db->exec($sql);
 
-        $store=get_object('store',$this->data['Customer Store Key']);
+        $store = get_object('store', $this->data['Customer Store Key']);
         $store->update_customers_data();
-
 
 
     }
