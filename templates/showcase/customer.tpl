@@ -97,7 +97,7 @@
             <table border="0" class="overview">
 
                 <tr class="Customer_Sales_Representative_tr {if !$customer->get('Customer Sales Representative Key')>0}hide{/if}" >
-                    <td>{t}Sales representative{/t} </td>
+                    <td>{t}Account manager{/t} </td>
                     <td class="Sales_Representative aright">{$customer->get('Sales Representative')}</td>
                 </tr>
 
