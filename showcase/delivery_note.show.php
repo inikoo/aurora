@@ -30,7 +30,7 @@ function get_delivery_note_showcase($data) {
     $order = new Order('id', $delivery_note->get('Delivery Note Order Key'));
 
 
-    $store = new Order('id', $delivery_note->get('Delivery Note Store Key'));
+    $store = new Store('id', $delivery_note->get('Delivery Note Store Key'));
 
 
     $parcels     = $delivery_note->get('Parcels');
@@ -67,6 +67,8 @@ function get_delivery_note_showcase($data) {
 
     $smarty->assign('order', $order);
     $smarty->assign('store', $store);
+
+
 
     return $smarty->fetch('showcase/delivery_note.tpl');
 
