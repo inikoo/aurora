@@ -720,10 +720,10 @@ class Warehouse extends DB_Table {
 
 
         if($account->get('Account Add Stock Value Type')=='Blockchain'){
-            $sql = sprintf('SELECT sum(`Quantity On Hand`*`Part Cost in Warehouse` ) AS amount FROM `Part Location Dimension`  PL left join `Part Dimension` P on (P.`Part SKU`=PL.`Part SKU`)  WHERE `Part Location Warehouse Key`=%d', $this->id);
+            $sql = sprintf('SELECT sum(`Stock Value` ) AS amount FROM `Part Location Dimension` WHERE `Part Location Warehouse Key`=%d', $this->id);
 
         }else{
-            $sql = sprintf('SELECT sum(`Stock Value` ) AS amount FROM `Part Location Dimension` WHERE `Part Location Warehouse Key`=%d', $this->id);
+            $sql = sprintf('SELECT sum(`Quantity On Hand`*`Part Cost in Warehouse` ) AS amount FROM `Part Location Dimension`  PL left join `Part Dimension` P on (P.`Part SKU`=PL.`Part SKU`)  WHERE `Part Location Warehouse Key`=%d', $this->id);
 
         }
 
