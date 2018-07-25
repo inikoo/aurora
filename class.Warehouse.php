@@ -1241,8 +1241,8 @@ class Warehouse extends DB_Table {
             'wpm_hrs'                    => $hrs,
             'wpm_formatted_kpi'          => $formatted_kpi,
             'wpm_formatted_amount'       => money($amount, $account->get('Account Currency')),
-            'wpm_formatted_hrs'          => sprintf('%d hours', number($hrs, 1)),
-            'wpm_formatted_aux_kpi_data' => sprintf('%d hours', number($hrs, 1)),
+            'wpm_formatted_hrs'          => sprintf('%s hours', number($hrs, 1)),
+            'wpm_formatted_aux_kpi_data' => sprintf('%s hours', number($hrs, 1)),
 
         );
 
