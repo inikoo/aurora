@@ -1286,11 +1286,15 @@ function get_customer_navigation($data, $smarty, $user, $db) {
     //$right_buttons[]=array('icon'=>'edit', 'title'=>_('Edit customer'), 'url'=>'edit_customer.php?id='.$customer->id);
     //$right_buttons[]=array('icon'=>'sticky-note', 'title'=>_('History note'), 'id'=>'note');
     //$right_buttons[]=array('icon'=>'paperclip', 'title'=>_('Attachement'), 'id'=>'attach');
-    $right_buttons[] = array(
-        'icon'  => 'shopping-cart',
-        'title' => _('New order'),
-        'id'    => 'take_order'
-    );
+    if($store->get('Store Version')>=2){
+        $right_buttons[] = array(
+            'icon'  => 'shopping-cart',
+            'title' => _('New order'),
+            'id'    => 'take_order'
+        );
+    }
+
+
     $right_buttons[] = array(
         'icon'  => 'sticky-note',
         'title' => _('Sticky note'),
@@ -1305,11 +1309,13 @@ function get_customer_navigation($data, $smarty, $user, $db) {
 
 
     //  {if $customer->get_image_src()} <img id="avatar" src="{$customer->get_image_src()}" style="cursor:pointer;border:1px solid #eee;height:45px;max-width:100px"> {else} <img id="avatar" src="/art/avatar.jpg" style="cursor:pointer;"> {/if} {if $customer->get('Customer Level Type')=='VIP'}<img src="/art/icons/shield.png" style="position:absolute;xtop:-36px;left:40px">{/if} {if $customer->get('Customer Level Type')=='Partner'}<img src="/art/icons/group.png" style="position:absolute;xtop:-36px;left:40px">{/if}
-    $avatar = '<div class="square_button"></div>';
-    $avatar = '<div class="square_button left"><img id="avatar" style="height:100%" src="/art/avatar.jpg" style="cursor:pointer;"> </div> ';
+   // $avatar = '<div class="square_button"></div>';
+   // $avatar = '<div class="square_button left"><img id="avatar" style="height:100%" src="/art/avatar.jpg" style="cursor:pointer;"> </div> ';
     $avatar = '';
 
-    $title = '<span class="id"><span class="Customer_Name">'.$customer->get('Customer Name').'</span> ('.$customer->get_formatted_id().')</span>';
+
+    $title='<span class="Customer_Level_Type_Icon">'.$customer->get('Level Type Icon').'</span>';
+    $title .= '<span class="id"><span class="Customer_Name">'.$customer->get('Customer Name').'</span> ('.$customer->get_formatted_id().')</span>';
     if ($customer->get('Customer Type by Activity') == 'ToApprove') {
         $title .= ' <span class="error padding_left_10"><i class="far fa-exclamation-circle"></i> '._('To be approved').'</span>';
     } elseif ($customer->get('Customer Type by Activity') == 'Rejected') {

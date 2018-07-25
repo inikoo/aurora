@@ -466,6 +466,24 @@ function edit_field($account, $db, $user, $editor, $data, $smarty) {
 
                 $update_metadata['webpage_related_products_editor'] = $smarty->fetch('webpage_related_products.edit.tpl');
 
+            } elseif ($field == 'Part Cost in Warehouse') {
+
+
+                include_once 'utils/new_fork.php';
+                $parts_data=array(
+                    $object->id=>$object->get('Part Valid From')
+
+                );
+
+                new_housekeeping_fork(
+                    'au_housekeeping', array(
+                    'type'                => 'update_parts_inventory_snapshot_fact',
+                    'parts_data'           => $parts_data,
+                    'all_parts_min_date' => $object->get('Part Valid From'),
+                ), $account->get('Account Code')
+                );
+
+
             } elseif ($field == 'Product Price') {
 
 

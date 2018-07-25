@@ -1452,6 +1452,9 @@ class Part extends Asset {
                     $product->update_cost();
                 }
 
+
+
+
                 $hide = array();
                 $show = array();
 

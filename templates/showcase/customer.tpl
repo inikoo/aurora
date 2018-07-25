@@ -95,13 +95,13 @@
 
             </table>
             <table border="0" class="overview">
-                {if $customer->get('Customer Level Type')=='VIP'}
-                    <td></td>
-                    <td class="highlight">{t}VIP Customer{/t}</td>
-                {/if} {if $customer->get('Customer Level Type')=='Partner'}
-                    <td></td>
-                    <td class="highlight">{t}Partner Customer{/t}</td>
-                {/if} {if $customer->get('Customer Type by Activity')=='Losing'}
+
+                <tr class="Customer_Sales_Representative_tr {if !$customer->get('Customer Sales Representative Key')>0}hide{/if}" >
+                    <td>{t}Sales representative{/t} </td>
+                    <td class="Sales_Representative aright">{$customer->get('Sales Representative')}</td>
+                </tr>
+
+                {if $customer->get('Customer Type by Activity')=='Losing'}
                     <tr>
                         <td colspan="2">{t}Losing Customer{/t}</td>
                     </tr>

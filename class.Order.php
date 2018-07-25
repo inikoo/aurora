@@ -387,7 +387,7 @@ class Order extends DB_Table {
                 case 'Delivery Note Cancelled':
 
 
-                    if($this->data['Order State']=='Cancelled'){
+                    if ($this->data['Order State'] == 'Cancelled') {
                         return;
                     }
 
@@ -436,7 +436,7 @@ class Order extends DB_Table {
 
                     $this->db->exec($sql);
 
-                    $customer=get_object('Customer',$this->data['Order Customer Key']);
+                    $customer = get_object('Customer', $this->data['Order Customer Key']);
                     $customer->update_last_dispatched_order_key();
 
 
@@ -719,6 +719,7 @@ class Order extends DB_Table {
                         'Invoice Net Amount Off'                => $this->data['Order Deal Amount Off'],
                         'Invoice Customer Contact Name'         => $this->data['Order Customer Contact Name'],
                         'Invoice Customer Name'                 => $this->data['Order Customer Name'],
+                        'Invoice Sales Representative Key'      => $this->data['Order Sales Representative Key'],
 
                         //   'Invoice Telephone'                    => $this->data['Order Telephone'],
                         //     'Invoice Email'                        => $this->data['Order Email'],
@@ -845,7 +846,7 @@ class Order extends DB_Table {
 
                     $this->db->exec($sql);
 
-                    $customer=get_object('Customer',$this->data['Order Customer Key']);
+                    $customer = get_object('Customer', $this->data['Order Customer Key']);
                     $customer->update_last_dispatched_order_key();
 
 
@@ -885,11 +886,10 @@ class Order extends DB_Table {
 
                     $this->db->exec($sql);
 
-                    $customer=get_object('Customer',$this->data['Order Customer Key']);
+                    $customer = get_object('Customer', $this->data['Order Customer Key']);
 
 
-                    $customer->fast_update(array('Customer Last Dispatched Order Key'=>$this->id));
-
+                    $customer->fast_update(array('Customer Last Dispatched Order Key' => $this->id));
 
 
                     break;
@@ -1493,14 +1493,13 @@ class Order extends DB_Table {
 				,`Order Invoiced Balance Net Amount`=0,`Order Invoiced Balance Tax Amount`=0,`Order Invoiced Balance Total Amount`=0 ,`Order Invoiced Outstanding Balance Net Amount`=0,`Order Invoiced Outstanding Balance Tax Amount`=0,`Order Invoiced Outstanding Balance Total Amount`=0,`Order Invoiced Profit Amount`=0,`Order Cancel Note`=%s
 				,`Order Balance Net Amount`=0,`Order Balance tax Amount`=0,`Order Balance Total Amount`=0,`Order To Pay Amount`=%.2f,`Order Items Cost`=0
 				WHERE `Order Key`=%d"//     ,$no_shipped
-            , prepare_mysql($this->data['Order Cancelled Date']),
-            prepare_mysql($this->data['Order Payment State']), prepare_mysql($this->data['Order State']), prepare_mysql(
+            , prepare_mysql($this->data['Order Cancelled Date']), prepare_mysql($this->data['Order Payment State']), prepare_mysql($this->data['Order State']), prepare_mysql(
                 $this->data['Order Current XHTML Dispatch State']
             ), prepare_mysql($this->data['Order Current XHTML Payment State']), prepare_mysql($this->data['Order Cancel Note']), $this->data['Order To Pay Amount'],
 
             $this->id
         );
-//print $sql;
+        //print $sql;
         $this->db->exec($sql);
 
 
@@ -1641,9 +1640,7 @@ class Order extends DB_Table {
 
     function get_invoices($scope = 'keys') {
 
-        if ($scope == 'objects') {
-            include_once 'class.Invoice.php';
-        }
+
 
 
         $invoices = array();
@@ -1659,9 +1656,7 @@ class Order extends DB_Table {
 
                 if ($scope == 'objects') {
 
-                    $invoices[$row['Invoice Key']] = new Invoice(
-                        $row['Invoice Key']
-                    );
+                    $invoices[$row['Invoice Key']] = get_object('Invoice', $row['Invoice Key']);
 
                 } else {
                     $invoices[$row['Invoice Key']] = $row['Invoice Key'];
@@ -2328,8 +2323,6 @@ class Order extends DB_Table {
         $this->db->exec($sql);
 
     }
-
-
 
 
     function get_notes() {
@@ -3165,6 +3158,7 @@ class Order extends DB_Table {
             'Invoice Net Amount Off'                => 0,
             'Invoice Customer Contact Name'         => $this->data['Order Customer Contact Name'],
             'Invoice Customer Name'                 => $this->data['Order Customer Name'],
+            'Invoice Sales Representative Key'      => $this->data['Order Sales Representative Key'],
 
             //   'Invoice Telephone'                    => $this->data['Order Telephone'],
             //     'Invoice Email'                        => $this->data['Order Email'],
@@ -3248,10 +3242,10 @@ class Order extends DB_Table {
 
         if (in_array(
             $this->data['Order Replacement State'], array(
-            'InWarehouse',
-            'PackedDone',
-            'Approved'
-        )
+                                                      'InWarehouse',
+                                                      'PackedDone',
+                                                      'Approved'
+                                                  )
         )) {
             $this->error = true;
             $this->msg   = _("This order has a replacement in progress");
