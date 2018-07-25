@@ -369,5 +369,4 @@ class Public_Order extends DBW_Table {
 
 }
 
-
 ?>

@@ -1212,9 +1212,8 @@ class Customer extends Subject {
 
                 $options_sales_representative = array();
                 $sql                          = sprintf(
-                    'SELECT `Staff Name`,S.`Staff Key`,`Staff Alias` FROM `Staff Dimension` S LEFT JOIN `Staff Role Bridge` B ON (B.`Staff Key`=S.`Staff Key`) WHERE `Role Code` IN ("CUS")    and `Staff Currently Working`="Yes"  order by `Staff Name`  '
+                    'SELECT `Staff Name`,S.`Staff Key`,`Staff Alias` FROM `Staff Dimension` S LEFT JOIN `User Dimension` U ON (S.`Staff Key`=U.`User Parent Key`) LEFT JOIN `User Group User Bridge` B ON (U.`User Key`=B.`User Key`) WHERE  `User Type` in  ("Staff","Contractor")  and `User Group Key`=2     and `Staff Currently Working`="Yes"  group by S.`Staff Key` order by `Staff Name`  '
                 );
-
 
                 foreach ($this->db->query($sql) as $row) {
                     $options_sales_representative[$row['Staff Key']] = array(
@@ -1298,7 +1297,7 @@ class Customer extends Subject {
 
                 $options_sales_representative = array();
                 $sql                          = sprintf(
-                    'SELECT `Staff Name`,S.`Staff Key`,`Staff Alias` FROM `Staff Dimension` S LEFT JOIN `Staff Role Bridge` B ON (B.`Staff Key`=S.`Staff Key`) WHERE `Role Code` IN ("CUS")    and `Staff Currently Working`="Yes"  order by `Staff Name`  '
+                    'SELECT `Staff Name`,S.`Staff Key`,`Staff Alias` FROM `Staff Dimension` S LEFT JOIN `User Dimension` U ON (S.`Staff Key`=U.`User Parent Key`) LEFT JOIN `User Group User Bridge` B ON (U.`User Key`=B.`User Key`) WHERE  `User Type` in  ("Staff","Contractor")  and `User Group Key`=2     and `Staff Currently Working`="Yes"  group by S.`Staff Key` order by `Staff Name`  '
                 );
 
                 if ($this->get('Customer Sales Representative Key')) {
