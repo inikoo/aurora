@@ -699,12 +699,48 @@ $modules = array(
                     'customer.marketing.favourites' => 'customer.marketing',
                     'customer.marketing.search'     => 'customer.marketing',
 
+                    'customer.sales.plot'      => 'customer.sales',
+                    'customer.sales.history'   => 'customer.sales',
+                    'customer.sales.calendar'  => 'customer.sales',
+                    'customer.sales.dashboard' => 'customer.sales',
+                    'customer.sales.info' => 'customer.sales',
+
                 ),
                 'tabs'           => array(
                     'customer.details'   => array(
                         'label' => _('Data'),
                         'icon'  => 'database'
                     ),
+                    'customer.sales' => array(
+                        'label'   => _('Sales'),
+                        'icon'=>'money-bill',
+                        'subtabs' => array(
+                            'customer.sales.dashboard' => array(
+                                'label' => _('Dashboard')
+                            ),
+                            'customer.sales.plot'      => array(
+                                'label' => _('Plot')
+                            ),
+                            'customer.sales.history'   => array(
+                                'label' => _('Sales history')
+                            ),
+                            'customer.sales.calendar'  => array(
+                                'label' => _('Calendar')
+                            ),
+                            'customer.sales.info' => array(
+                                'label' => '',
+                                'title' => _('Info'),
+                                'icon'  => 'info',
+                                'class' => 'right icon_only'
+                            ),
+
+
+
+
+
+                        )
+                    ),
+
                     'customer.insights'  => array(
                         'label' => _('Insights'),
                         'icon'  => 'graduation-cap'
@@ -760,6 +796,9 @@ $modules = array(
                         'label' => _('Discounts'),
                         'icon'  => 'tags'
                     ),
+
+
+
 
                 )
             ),
@@ -4516,6 +4555,7 @@ $modules = array(
 
                     'supplier.sales' => array(
                         'label'   => _('Purchases/Sales'),
+                        'icon'=>'money-bill',
                         'subtabs' => array(
                             'supplier.sales.dashboard' => array(
                                 'label' => _(

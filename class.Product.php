@@ -915,9 +915,7 @@ class Product extends Asset {
                         $this->data[$amount], $this->get('Product Currency')
                     );
                 }
-                if (preg_match(
-                    '/^(Last|Yesterday|Total|1|10|6|3|4|2|Year To|Quarter To|Month To|Today|Week To).*(Amount|Profit) Minify$/', $key
-                )) {
+                if (preg_match('/^(Last|Yesterday|Total|1|10|6|3|4|2|Year To|Quarter To|Month To|Today|Week To).*(Amount|Profit) Minify$/', $key)) {
 
                     $field = 'Product '.preg_replace('/ Minify$/', '', $key);
 

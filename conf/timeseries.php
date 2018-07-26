@@ -123,6 +123,44 @@ function get_time_series_config() {
 
 
         ),
+        'Customer'        => array(
+            array(
+                'Timeseries Type'      => 'CustomerSales',
+                'Timeseries Frequency' => 'Daily',
+                'Timeseries Scope'     => 'Sales',
+                'Timeseries Parent'    => 'Customer'
+            ),
+            array(
+                'Timeseries Type'      => 'CustomerSales',
+                'Timeseries Frequency' => 'Weekly',
+                'Timeseries Scope'     => 'Sales',
+                'Timeseries Parent'    => 'Customer'
+            ),
+            array(
+                'Timeseries Type'      => 'CustomerSales',
+                'Timeseries Frequency' => 'Monthly',
+                'Timeseries Scope'     => 'Sales',
+                'Timeseries Parent'    => 'Customer'
+            ),
+            array(
+                'Timeseries Type'      => 'CustomerSales',
+                'Timeseries Frequency' => 'Quarterly',
+                'Timeseries Scope'     => 'Sales',
+                'Timeseries Parent'    => 'Customer'
+            ),
+            array(
+                'Timeseries Type'      => 'CustomerSales',
+                'Timeseries Frequency' => 'Yearly',
+                'Timeseries Scope'     => 'Sales',
+                'Timeseries Parent'    => 'Customer'
+            ),
+
+
+
+
+
+
+        ),
         'ProductCategory' => array(
 
 

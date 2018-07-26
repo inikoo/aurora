@@ -15,7 +15,7 @@
 class Data_Sets extends DB_Table {
 
 
-    function Data_Sets($arg1 = false, $arg2 = false, $arg3 = false) {
+    function __construct($arg1 = false, $arg2 = false, $arg3 = false) {
         global $db;
 
         $this->db            = $db;

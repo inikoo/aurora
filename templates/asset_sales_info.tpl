@@ -53,7 +53,8 @@
 
             </tr>
         {/foreach}
-        <tr class="strong top ceiling">
+        <tbody class="{if $object->get_object_name()=='Customer'}hide {/if}">
+        <tr class="strong top ceiling   "   >
             <td colspan="4">{t}Sales precomputed sales values{/t}</td>
 
         </tr>
@@ -125,6 +126,7 @@
                 </span>
             </td>
         </tr>
+        </tbody>
     </table>
 
 </div>
