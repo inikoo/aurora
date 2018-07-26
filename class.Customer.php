@@ -481,6 +481,7 @@ class Customer extends Subject {
                     $store = get_object('Store', $this->data['Customer Store Key']);
                 }
 
+
                 return money(
                     $this->data['Customer '.$key], $store->get('Store Currency Code')
                 );
@@ -500,8 +501,36 @@ class Customer extends Subject {
                     return _('ND');
                 }
                 break;
+            case 'Invoiced Amount Soft Minify':
+                if (!isset($this->store)) {
+                    $store       = get_object('Store', $this->data['Customer Store Key']);
+                    $this->store = $store;
+                }
+                $field = 'Customer '.preg_replace('/ Soft Minify$/', '', $key);
 
 
+                $suffix          = '';
+                $fraction_digits = 'NO_FRACTION_DIGITS';
+                $_amount         = $this->data[$field];
+
+                $amount = money($_amount,$this->store->get('Store Currency Code'), $locale = false, $fraction_digits).$suffix;
+
+                return $amount;
+
+
+                break;
+            case 'Number Invoices Soft Minify':
+            case 'Number Refunds Soft Minify':
+
+                $field = 'Customer '.preg_replace('/ Soft Minify$/', '', $key);
+
+                $suffix          = '';
+                $fraction_digits = 0;
+                $_number         = $this->data[$field];
+
+                return number($_number, $fraction_digits).$suffix;
+
+                break;
             case('Order Interval'):
                 $order_interval = $this->get('Customer Order Interval') / 24 / 3600;
 
@@ -631,6 +660,56 @@ class Customer extends Subject {
 
                 }
 
+                if (preg_match('/^(Last|Yesterday|Total|1|10|6|3|4|2|Year To|Quarter To|Month To|Today|Week To).*(Amount|Profit) Minify$/', $key)) {
+
+
+                    if (!isset($this->store)) {
+                        $store       = get_object('Store', $this->data['Customer Store Key']);
+                        $this->store = $store;
+                    }
+
+                    $field = 'Customer '.preg_replace('/ Minify$/', '', $key);
+
+                    $suffix          = '';
+                    $fraction_digits = 'NO_FRACTION_DIGITS';
+                    if ($this->data[$field] >= 10000) {
+                        $suffix  = 'K';
+                        $_amount = $this->data[$field] / 1000;
+                    } elseif ($this->data[$field] > 100) {
+                        $fraction_digits = 'SINGLE_FRACTION_DIGITS';
+                        $suffix          = 'K';
+                        $_amount         = $this->data[$field] / 1000;
+                    } else {
+                        $_amount = $this->data[$field];
+                    }
+
+                    $amount = money(
+                            $_amount,$this->store->get('Store Currency Code'), $locale = false, $fraction_digits
+                        ).$suffix;
+
+                    return $amount;
+                }
+                if (preg_match(
+                        '/^(Last|Yesterday|Total|1|10|6|3|2|4|Year To|Quarter To|Month To|Today|Week To).*(Invoices|Refunds) Minify$/', $key
+                    ) ) {
+
+                    $field = 'Customer '.preg_replace('/ Minify$/', '', $key);
+
+                    $suffix          = '';
+                    $fraction_digits = 0;
+                    if ($this->data[$field] >= 10000) {
+                        $suffix  = 'K';
+                        $_number = $this->data[$field] / 1000;
+                    } elseif ($this->data[$field] > 100) {
+                        $fraction_digits = 1;
+                        $suffix          = 'K';
+                        $_number         = $this->data[$field] / 1000;
+                    } else {
+                        $_number = $this->data[$field];
+                    }
+
+                    return number($_number, $fraction_digits).$suffix;
+                }
 
         }
 
@@ -847,7 +926,7 @@ class Customer extends Subject {
         $order_data['Order Tax Number Registered Name']    = $this->data['Customer Tax Number Registered Name'];
         $order_data['Order Tax Number Registered Address'] = $this->data['Customer Tax Number Registered Address'];
         $order_data['Order Available Credit Amount']       = $this->data['Customer Account Balance'];
-        $order_data['Order Sales Representative Key']       = $this->data['Customer Sales Representative Key'];
+        $order_data['Order Sales Representative Key']      = $this->data['Customer Sales Representative Key'];
 
 
         $order_data['Order Customer Fiscal Name'] = $this->get('Fiscal Name');
@@ -2445,6 +2524,8 @@ class Customer extends Subject {
 
 
         $customer_orders            = 0;
+        $customer_invoices          = 0;
+        $customer_refunds           = 0;
         $orders_cancelled           = 0;
         $orders_invoiced            = 0;
         $orders_invoiced_first_date = '';
@@ -2472,6 +2553,7 @@ class Customer extends Subject {
         if ($result = $this->db->query($sql)) {
             if ($row = $result->fetch()) {
                 $orders_invoiced            = $row['num'];
+                $customer_invoices          = $row['num'];
                 $orders_invoiced_first_date = $row['first_order_date'];
                 $orders_invoiced_last_date  = $row['last_order_date'];
             }
@@ -2483,7 +2565,7 @@ class Customer extends Subject {
 
 
         $sql = sprintf(
-            "SELECT sum(`Invoice Total Amount`) AS total ,sum(`Invoice Total Net Amount`) AS net FROM `Invoice Dimension` WHERE   `Invoice Customer Key`=%d  ", $this->id
+            "SELECT count(*) AS num , sum(`Invoice Total Amount`) AS total ,sum(`Invoice Total Net Amount`) AS net FROM `Invoice Dimension` WHERE   `Invoice Customer Key`=%d  ", $this->id
         );
 
 
@@ -2491,7 +2573,7 @@ class Customer extends Subject {
             if ($row = $result->fetch()) {
                 $invoiced_amount     = $row['total'];
                 $invoiced_net_amount = $row['net'];
-
+                $customer_refunds    = $row['num'] - $customer_invoices;
             }
         } else {
             print_r($error_info = $this->db->errorInfo());
@@ -2589,6 +2671,8 @@ class Customer extends Subject {
             'Customer Payments Amount'           => $payments,
             'Customer Sales Amount'              => $invoiced_amount,
             'Customer Total Sales Amount'        => $invoiced_net_amount,
+            'Customer Number Invoices'           => $customer_invoices,
+            'Customer Number Refunds'            => $customer_refunds,
 
         );
 
@@ -3629,6 +3713,366 @@ class Customer extends Subject {
 
         $this->fast_update(array('Customer Last Dispatched Order Key' => $order_key));
 
+
+    }
+
+
+    function get_sales_data($from_date, $to_date) {
+
+        $sales_data = array(
+            'balance_amount'  => 0,
+            'invoiced_amount' => 0,
+            'refunded_amount' => 0,
+            'profit'          => 0,
+            'invoices'        => 0,
+            'refunds'         => 0,
+
+
+        );
+
+
+        $sql = sprintf(
+            "select count(*) as num , sum(`Invoice Total Net Amount`) as amount from `Invoice Dimension` where `Invoice Type`='Invoice' and  `Invoice Customer Key`=%d  %s %s", $this->id, ($from_date ? sprintf('and  `Invoice Date`>=%s', prepare_mysql($from_date)) : ''),
+            ($to_date ? sprintf('and `Invoice Date`<%s', prepare_mysql($to_date)) : '')
+        );
+
+
+        if ($result = $this->db->query($sql)) {
+            if ($row = $result->fetch()) {
+                $sales_data['invoiced_amount'] = $row['amount'];
+                $sales_data['invoices']        = $row['num'];
+
+            }
+        } else {
+            print_r($error_info = $this->db->errorInfo());
+            exit;
+        }
+
+        $sql = sprintf(
+            "select count(*) as num , sum(`Invoice Total Net Amount`) as amount from `Invoice Dimension` where `Invoice Type`='Refund' and  `Invoice Customer Key`=%d  %s %s", $this->id, ($from_date ? sprintf('and  `Invoice Date`>=%s', prepare_mysql($from_date)) : ''),
+            ($to_date ? sprintf('and `Invoice Date`<%s', prepare_mysql($to_date)) : '')
+        );
+
+
+        if ($result = $this->db->query($sql)) {
+            if ($row = $result->fetch()) {
+                $sales_data['refunded_amount'] = $row['amount'];
+                $sales_data['refunds']         = $row['num'];
+
+            }
+        } else {
+            print_r($error_info = $this->db->errorInfo());
+            exit;
+        }
+
+        $sales_data['balance_amount']=$sales_data['invoiced_amount']-$sales_data['refunded_amount'];
+        return $sales_data;
+
+    }
+
+
+    function load_previous_years_data() {
+
+
+        foreach (range(1, 5) as $i) {
+            $data_iy_ago = $this->get_sales_data(
+                date('Y-01-01 00:00:00', strtotime('-'.$i.' year')), date('Y-01-01 00:00:00', strtotime('-'.($i - 1).' year'))
+            );
+
+
+            $data_to_update = array(
+                $this->table_name." $i Year Ago Invoices"        => $data_iy_ago['invoices'],
+                $this->table_name." $i Year Ago Refunds"         => $data_iy_ago['refunds'],
+                $this->table_name." $i Year Ago Invoiced Amount" => $data_iy_ago['invoiced_amount'],
+                $this->table_name." $i Year Ago Refunded Amount" => $data_iy_ago['refunded_amount'],
+
+            );
+
+
+            foreach ($data_to_update as $key => $value) {
+                $this->data[$key] = $value;
+            }
+
+        }
+
+
+    }
+
+    function load_previous_quarters_data() {
+
+
+        include_once 'utils/date_functions.php';
+
+
+        foreach (range(1, 4) as $i) {
+            $dates     = get_previous_quarters_dates($i);
+            $dates_1yb = get_previous_quarters_dates($i + 4);
+
+
+            $sales_data     = $this->get_sales_data($dates['start'], $dates['end']);
+            $sales_data_1yb = $this->get_sales_data($dates_1yb['start'], $dates_1yb['end']);
+
+            $data_to_update = array(
+                $this->table_name." $i Quarter Ago Invoices"        => $sales_data['invoices'],
+                $this->table_name." $i Quarter Ago Refunds"         => $sales_data['refunds'],
+                $this->table_name." $i Quarter Ago Invoiced Amount" => $sales_data['invoiced_amount'],
+                $this->table_name." $i Quarter Ago Refunded Amount" => $sales_data['refunded_amount'],
+
+                $this->table_name." $i Quarter Ago 1YB Invoices"        => $sales_data_1yb['invoices'],
+                $this->table_name." $i Quarter Ago 1YB Refunds"         => $sales_data_1yb['refunds'],
+                $this->table_name." $i Quarter Ago 1YB Invoiced Amount" => $sales_data_1yb['invoiced_amount'],
+                $this->table_name." $i Quarter Ago 1YB Refunded Amount" => $sales_data_1yb['refunded_amount'],
+
+
+            );
+            foreach ($data_to_update as $key => $value) {
+                $this->data[$key] = $value;
+            }
+        }
+
+
+    }
+
+    function load_sales_data($interval, $this_year = true, $last_year = true) {
+
+        include_once 'utils/date_functions.php';
+        list($db_interval, $from_date, $to_date, $from_date_1yb, $to_date_1yb) = calculate_interval_dates($this->db, $interval);
+
+        if ($this_year) {
+
+            $sales_data = $this->get_sales_data($from_date, $to_date);
+
+
+            $data_to_update = array(
+                $this->table_name." $db_interval Acc Invoices"        => $sales_data['invoices'],
+                $this->table_name." $db_interval Acc Refunds"        => $sales_data['refunds'],
+                $this->table_name." $db_interval Acc Invoiced Amount"        => $sales_data['invoiced_amount'],
+                $this->table_name." $db_interval Acc Refunded Amount"        => $sales_data['refunded_amount'],
+
+            );
+            foreach ($data_to_update as $key => $value) {
+                $this->data[$key] = $value;
+            }
+
+        }
+
+        if ($from_date_1yb and $last_year) {
+
+
+            $sales_data = $this->get_sales_data($from_date_1yb, $to_date_1yb);
+
+
+            $data_to_update = array(
+                $this->table_name." $db_interval Acc 1YB Invoices"        => $sales_data['invoices'],
+                $this->table_name." $db_interval Acc 1YB Refunds"        => $sales_data['refunds'],
+                $this->table_name." $db_interval Acc 1YB Invoiced Amount"        => $sales_data['invoiced_amount'],
+                $this->table_name." $db_interval Acc 1YB Refunded Amount"        => $sales_data['refunded_amount'],
+
+
+
+            );
+            foreach ($data_to_update as $key => $value) {
+                $this->data[$key] = $value;
+            }
+
+        }
+
+
+
+
+    }
+
+
+    function create_timeseries($data, $fork_key = 0) {
+
+
+        include_once 'class.Timeserie.php';
+
+        $data['Timeseries Parent']     = 'Customer';
+        $data['Timeseries Parent Key'] = $this->id;
+
+
+        $data['editor'] = $this->editor;
+
+        $timeseries = new Timeseries('find', $data, 'create');
+
+
+        if ($timeseries->id) {
+            require_once 'utils/date_functions.php';
+
+            if ($this->data['Customer First Contacted Date'] != '') {
+                $from = date('Y-m-d', strtotime($this->get('Customer First Contacted Date')));
+
+            } else {
+                $from = '';
+            }
+
+
+            $to = date('Y-m-d');
+
+
+
+            $sql = sprintf(
+                'DELETE FROM `Timeseries Record Dimension` WHERE `Timeseries Record Timeseries Key`=%d AND `Timeseries Record Date`<%s ', $timeseries->id, prepare_mysql($from)
+            );
+
+
+            $update_sql = $this->db->prepare($sql);
+            $update_sql->execute();
+            if ($update_sql->rowCount()) {
+                $timeseries->update(
+                    array('Timeseries Updated' => gmdate('Y-m-d H:i:s')), 'no_history'
+                );
+            }
+
+            $sql        = sprintf(
+                'DELETE FROM `Timeseries Record Dimension` WHERE `Timeseries Record Timeseries Key`=%d AND `Timeseries Record Date`>%s ', $timeseries->id, prepare_mysql($to)
+            );
+            $update_sql = $this->db->prepare($sql);
+            $update_sql->execute();
+            if ($update_sql->rowCount()) {
+                $timeseries->update(
+                    array('Timeseries Updated' => gmdate('Y-m-d H:i:s')), 'no_history'
+                );
+            }
+
+            if ($from and $to) {
+                $this->update_timeseries_record($timeseries, $from, $to, $fork_key);
+            }
+
+
+            if ($timeseries->get('Timeseries Number Records') == 0) {
+                $timeseries->update(
+                    array('Timeseries Updated' => gmdate('Y-m-d H:i:s')), 'no_history'
+                );
+            }
+
+
+        }
+
+    }
+
+    function update_timeseries_record($timeseries, $from, $to, $fork_key = false) {
+
+
+        $dates = date_frequency_range($this->db, $timeseries->get('Timeseries Frequency'), $from, $to);
+
+
+        if ($fork_key) {
+
+            $sql = sprintf(
+                "UPDATE `Fork Dimension` SET `Fork State`='In Process' ,`Fork Operations Total Operations`=%d,`Fork Start Date`=NOW(),`Fork Result`=%d  WHERE `Fork Key`=%d ", count($dates), $timeseries->id, $fork_key
+            );
+
+            $this->db->exec($sql);
+        }
+        $index = 0;
+
+
+        foreach ($dates as $date_frequency_period) {
+            $index++;
+
+
+
+
+            $sales_data = $this->get_sales_data($date_frequency_period['from'], $date_frequency_period['to']);
+
+
+            $_date = gmdate('Y-m-d', strtotime($date_frequency_period['from'].' +0:00'));
+
+
+
+            if ($sales_data['invoices'] > 0 or $sales_data['refunds'] > 0 ) {
+
+
+                list($timeseries_record_key, $date) = $timeseries->create_record(array('Timeseries Record Date' => $_date));
+
+
+
+
+                $sql = sprintf(
+                    'UPDATE `Timeseries Record Dimension` SET 
+                              `Timeseries Record Integer A`=%d ,`Timeseries Record Integer B`=%d ,
+                              `Timeseries Record Float A`=%.2f ,  `Timeseries Record Float B`=%f ,`Timeseries Record Float C`=%f ,
+                              `Timeseries Record Type`=%s WHERE `Timeseries Record Key`=%d', $sales_data['invoices'], $sales_data['refunds'] ,$sales_data['invoiced_amount'], $sales_data['refunded_amount'], $sales_data['profit'],
+                   prepare_mysql('Data'), $timeseries_record_key
+
+                );
+
+             //   print "$sql\n";
+                $update_sql = $this->db->prepare($sql);
+                $update_sql->execute();
+
+
+                if ($update_sql->rowCount() or $date == date('Y-m-d')) {
+                    $timeseries->fast_update(array('Timeseries Updated' => gmdate('Y-m-d H:i:s')));
+                }
+
+
+
+            } else {
+
+
+                $sql = sprintf(
+                    'select `Timeseries Record Key` FROM `Timeseries Record Dimension` WHERE `Timeseries Record Timeseries Key`=%d AND `Timeseries Record Date`=%s ', $timeseries->id, prepare_mysql($_date)
+                );
+
+                if ($result = $this->db->query($sql)) {
+                    if ($row = $result->fetch()) {
+                        $sql = sprintf(
+                            'DELETE FROM `Timeseries Record Drill Down` WHERE `Timeseries Record Drill Down Timeseries Record Key`=%d  ', $row['Timeseries Record Key']
+                        );
+                        //print $sql;
+                        $this->db->exec($sql);
+
+                    }
+                } else {
+                    print_r($error_info = $this->db->errorInfo());
+                    print "$sql\n";
+                    exit;
+                }
+
+
+                $sql = sprintf(
+                    'DELETE FROM `Timeseries Record Dimension` WHERE `Timeseries Record Timeseries Key`=%d AND `Timeseries Record Date`=%s ', $timeseries->id, prepare_mysql($_date)
+                );
+
+
+                $update_sql = $this->db->prepare($sql);
+                $update_sql->execute();
+                if ($update_sql->rowCount()) {
+                    $timeseries->fast_update(
+                        array('Timeseries Updated' => gmdate('Y-m-d H:i:s'))
+                    );
+
+                }
+
+            }
+            if ($fork_key) {
+                $skip_every = 1;
+                if ($index % $skip_every == 0) {
+                    $sql = sprintf(
+                        "UPDATE `Fork Dimension` SET `Fork Operations Done`=%d  WHERE `Fork Key`=%d ", $index, $fork_key
+                    );
+                    $this->db->exec($sql);
+
+                }
+
+            }
+            $timeseries->update_stats();
+
+
+        }
+
+        if ($fork_key) {
+
+            $sql = sprintf(
+                "UPDATE `Fork Dimension` SET `Fork State`='Finished' ,`Fork Finished Date`=NOW(),`Fork Operations Done`=%d,`Fork Result`=%d WHERE `Fork Key`=%d ", $index, $timeseries->id, $fork_key
+            );
+
+            $this->db->exec($sql);
+
+        }
 
     }
 

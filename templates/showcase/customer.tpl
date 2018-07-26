@@ -46,8 +46,7 @@
             {else}
                 <div id="Customer_Main_Plain_Telephone_display"
                      class="data_field {if !$customer->get('Customer Main Plain Telephone')}hide{/if}">
-                    <i title="Telephone" class="fa fa-fw fa-phone"></i> <span
-                            class="Customer_Main_Plain_Telephone">{$customer->get('Main XHTML Telephone')}</span>
+                    <i title="Telephone" class="fa fa-fw fa-phone"></i> <span  class="Customer_Main_Plain_Telephone">{$customer->get('Main XHTML Telephone')}</span>
                 </div>
                 <div id="Customer_Main_Plain_Mobile_display"
                      class="data_field {if !$customer->get('Customer Main Plain Mobile')}hide{/if}">
@@ -108,7 +107,7 @@
                 {elseif $customer->get('Customer Type by Activity')=='Lost'}
                     <tr>
                         <td>{t}Lost Customer{/t}</td>
-                        <td>{$customer->get('Lost Date')}</td>
+                        <td class="aright">{$customer->get('Lost Date')}</td>
                     </tr>
                 {/if}
                 <tr>

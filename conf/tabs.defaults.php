@@ -307,6 +307,18 @@ $tab_defaults = array(
 
     ),
 
+    'customer.sales.history' => array(
+        'view'        => 'overview',
+        'sort_key'    => 'id',
+        'sort_order'  => 1,
+        'rpp'         => 100,
+        'rpp_options' => $default_rrp_options,
+        'frequency'   => 'monthly',
+        'f_field'     => '',
+        //  'export_fields'=>$export_fields['timeserie_records']
+
+    ),
+
     'prospect.history' => array(
         'view'          => 'overview',
         'sort_key'      => 'date',

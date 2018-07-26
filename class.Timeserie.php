@@ -16,7 +16,7 @@ include_once 'class.DB_Table.php';
 class Timeseries extends DB_Table {
 
 
-    function Timeseries($arg1 = false, $arg2 = false, $arg3 = false) {
+    function __construct($arg1 = false, $arg2 = false, $arg3 = false) {
         global $db;
 
         $this->db            = $db;
