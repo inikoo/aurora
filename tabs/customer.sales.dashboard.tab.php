@@ -243,7 +243,7 @@ $smarty->assign(
 
 
 $smarty->assign('customer', $customer);
-$smarty->assign('header_total_sales', sprintf(_('All customer since: %s'), $customer->get('First Contacted Date')));
+$smarty->assign('header_total_sales', sprintf(_('Customer since: %s'), $customer->get('First Contacted Date')));
 
 
 $html = $smarty->fetch('dashboard/customer.sales.tpl');

@@ -501,36 +501,7 @@ class Customer extends Subject {
                     return _('ND');
                 }
                 break;
-            case 'Invoiced Amount Soft Minify':
-                if (!isset($this->store)) {
-                    $store       = get_object('Store', $this->data['Customer Store Key']);
-                    $this->store = $store;
-                }
-                $field = 'Customer '.preg_replace('/ Soft Minify$/', '', $key);
 
-
-                $suffix          = '';
-                $fraction_digits = 'NO_FRACTION_DIGITS';
-                $_amount         = $this->data[$field];
-
-                $amount = money($_amount,$this->store->get('Store Currency Code'), $locale = false, $fraction_digits).$suffix;
-
-                return $amount;
-
-
-                break;
-            case 'Number Invoices Soft Minify':
-            case 'Number Refunds Soft Minify':
-
-                $field = 'Customer '.preg_replace('/ Soft Minify$/', '', $key);
-
-                $suffix          = '';
-                $fraction_digits = 0;
-                $_number         = $this->data[$field];
-
-                return number($_number, $fraction_digits).$suffix;
-
-                break;
             case('Order Interval'):
                 $order_interval = $this->get('Customer Order Interval') / 24 / 3600;
 
@@ -591,11 +562,40 @@ class Customer extends Subject {
                         return '';
                 }
                 break;
+            case 'Absolute Refunded Net Amount':
+                if (!isset($this->store)) {
+                    $store       = get_object('Store', $this->data['Customer Store Key']);
+                    $this->store = $store;
+                }
+
+
+                return money(
+                    -1*$this->data['Customer Refunded Net Amount'],  $this->store->get('Store Currency Code')
+                );
+                break;
+
             default:
 
 
                 if (array_key_exists($key, $this->data)) {
                     return $this->data[$key];
+                }
+
+
+                if (preg_match(
+                    '/^(Last|Yesterday|Total|1|10|6|3|Year To|Quarter To|Month To|Today|Week To).*(Amount|Profit)$/', $key
+                ) or in_array($key,array('Net Amount','Refunded Net Amount'))  ) {
+
+                    if (!isset($this->store)) {
+                        $store       = get_object('Store', $this->data['Customer Store Key']);
+                        $this->store = $store;
+                    }
+
+                    $amount = 'Customer '.$key;
+
+                    return money(
+                        $this->data[$amount],  $this->store->get('Store Currency Code')
+                    );
                 }
 
                 if (array_key_exists('Customer '.$key, $this->data)) {
@@ -660,6 +660,33 @@ class Customer extends Subject {
 
                 }
 
+
+                if (preg_match(
+                    '/^(Last|Yesterday|Total|1|10|6|3|4|2|Year To|Quarter To|Month To|Today|Week To).*(Amount|Profit) Soft Minify$/', $key
+                )) {
+
+
+
+
+                    if (!isset($this->store)) {
+                        $store       = get_object('Store', $this->data['Customer Store Key']);
+                        $this->store = $store;
+                    }
+
+                    $field = 'Customer '.preg_replace('/ Soft Minify$/', '', $key);
+
+
+                    $suffix          = '';
+                    $fraction_digits = 'NO_FRACTION_DIGITS';
+                    $_amount         = $this->data[$field];
+
+                    $amount = money(
+                            $_amount, $this->store->get('Store Currency Code'), $locale = false, $fraction_digits
+                        ).$suffix;
+
+                    return $amount;
+                }
+
                 if (preg_match('/^(Last|Yesterday|Total|1|10|6|3|4|2|Year To|Quarter To|Month To|Today|Week To).*(Amount|Profit) Minify$/', $key)) {
 
 
@@ -684,14 +711,19 @@ class Customer extends Subject {
                     }
 
                     $amount = money(
-                            $_amount,$this->store->get('Store Currency Code'), $locale = false, $fraction_digits
+                            $_amount, $this->store->get('Store Currency Code'), $locale = false, $fraction_digits
                         ).$suffix;
 
                     return $amount;
                 }
+
+
+
+
+
                 if (preg_match(
-                        '/^(Last|Yesterday|Total|1|10|6|3|2|4|Year To|Quarter To|Month To|Today|Week To).*(Invoices|Refunds) Minify$/', $key
-                    ) ) {
+                    '/^(Last|Yesterday|Total|1|10|6|3|2|4|Year To|Quarter To|Month To|Today|Week To).*(Invoices|Refunds) Minify$/', $key
+                )) {
 
                     $field = 'Customer '.preg_replace('/ Minify$/', '', $key);
 
@@ -710,6 +742,20 @@ class Customer extends Subject {
 
                     return number($_number, $fraction_digits).$suffix;
                 }
+
+                if (preg_match(
+                        '/^(Last|Yesterday|Total|1|10|6|3|2|4|Year To|Quarter To|Month To|Today|Week To|Number).*(Invoices|Refunds) Soft Minify$/', $key
+                    ) ) {
+
+                    $field = 'Customer '.preg_replace('/ Soft Minify$/', '', $key);
+
+                    $suffix          = '';
+                    $fraction_digits = 0;
+                    $_number         = $this->data[$field];
+
+                    return number($_number, $fraction_digits).$suffix;
+                }
+
 
         }
 
@@ -2523,9 +2569,9 @@ class Customer extends Subject {
     public function update_orders() {
 
 
-        $customer_orders            = 0;
-        $customer_invoices          = 0;
-        $customer_refunds           = 0;
+        $customer_orders = 0;
+
+
         $orders_cancelled           = 0;
         $orders_invoiced            = 0;
         $orders_invoiced_first_date = '';
@@ -2541,46 +2587,47 @@ class Customer extends Subject {
         $invoiced_amount     = 0;
         $invoiced_net_amount = 0;
 
-
-        $sql = sprintf(
-            "SELECT count(*) AS num ,
-	    min(`Invoice Date`) AS first_order_date ,
-		max(`Invoice Date`) AS last_order_date
-        FROM `Invoice Dimension` WHERE `Invoice Type`='Invoice'  AND `Invoice Customer Key`=%d  ", $this->id
-        );
-
-
-        if ($result = $this->db->query($sql)) {
-            if ($row = $result->fetch()) {
-                $orders_invoiced            = $row['num'];
-                $customer_invoices          = $row['num'];
-                $orders_invoiced_first_date = $row['first_order_date'];
-                $orders_invoiced_last_date  = $row['last_order_date'];
-            }
-        } else {
-            print_r($error_info = $this->db->errorInfo());
-            print "$sql\n";
-            exit;
-        }
+        /*
+                $sql = sprintf(
+                    "SELECT count(*) AS num ,
+                min(`Invoice Date`) AS first_order_date ,
+                max(`Invoice Date`) AS last_order_date
+                FROM `Invoice Dimension` WHERE `Invoice Type`='Invoice'  AND `Invoice Customer Key`=%d  ", $this->id
+                );
 
 
-        $sql = sprintf(
-            "SELECT count(*) AS num , sum(`Invoice Total Amount`) AS total ,sum(`Invoice Total Net Amount`) AS net FROM `Invoice Dimension` WHERE   `Invoice Customer Key`=%d  ", $this->id
-        );
+                if ($result = $this->db->query($sql)) {
+                    if ($row = $result->fetch()) {
+                        $orders_invoiced            = $row['num'];
+                        $customer_invoices          = $row['num'];
+                        $orders_invoiced_first_date = $row['first_order_date'];
+                        $orders_invoiced_last_date  = $row['last_order_date'];
+                    }
+                } else {
+                    print_r($error_info = $this->db->errorInfo());
+                    print "$sql\n";
+                    exit;
+                }
+        */
+
+        /*
+                $sql = sprintf(
+                    "SELECT count(*) AS num , sum(`Invoice Total Amount`) AS total ,sum(`Invoice Total Net Amount`) AS net FROM `Invoice Dimension` WHERE   `Invoice Customer Key`=%d  ", $this->id
+                );
 
 
-        if ($result = $this->db->query($sql)) {
-            if ($row = $result->fetch()) {
-                $invoiced_amount     = $row['total'];
-                $invoiced_net_amount = $row['net'];
-                $customer_refunds    = $row['num'] - $customer_invoices;
-            }
-        } else {
-            print_r($error_info = $this->db->errorInfo());
-            print "$sql\n";
-            exit;
-        }
-
+                if ($result = $this->db->query($sql)) {
+                    if ($row = $result->fetch()) {
+                        $invoiced_amount     = $row['total'];
+                        $invoiced_net_amount = $row['net'];
+                        $customer_refunds    = $row['num'] - $customer_invoices;
+                    }
+                } else {
+                    print_r($error_info = $this->db->errorInfo());
+                    print "$sql\n";
+                    exit;
+                }
+        */
 
         $sql = sprintf(
             "SELECT sum(`Payment Transaction Amount`) AS payments FROM `Payment Dimension` WHERE   `Payment Customer Key`=%d  AND `Payment Transaction Status`='Completed' ", $this->id
@@ -2596,36 +2643,6 @@ class Customer extends Subject {
             print_r($error_info = $this->db->errorInfo());
             print "$sql\n";
             exit;
-        }
-
-
-        if ($orders_invoiced > 1) {
-            $sql        = "SELECT `Invoice Date` AS date FROM `Invoice Dimension` WHERE `Invoice Type`='Invoice'  AND `Invoice Customer Key`=".$this->id." ORDER BY `Invoice Date`";
-            $last_order = false;
-            $last_date  = false;
-            $intervals  = array();
-
-
-            if ($result = $this->db->query($sql)) {
-                foreach ($result as $row) {
-                    $this_date = gmdate('U', strtotime($row['date']));
-                    if ($last_order) {
-                        $intervals[] = ($this_date - $last_date);
-                    }
-
-                    $last_date  = $this_date;
-                    $last_order = true;
-                }
-            } else {
-                print_r($error_info = $this->db->errorInfo());
-                print "$sql\n";
-                exit;
-            }
-
-
-            $order_interval     = average($intervals);
-            $order_interval_std = deviation($intervals);
-
         }
 
 
@@ -2657,76 +2674,19 @@ class Customer extends Subject {
         }
 
 
-        $update_data = array(
-            'Customer Orders'                    => $customer_orders,
-            'Customer Orders Cancelled'          => $orders_cancelled,
-            'Customer Orders Invoiced'           => $orders_invoiced,
-            'Customer First Invoiced Order Date' => $orders_invoiced_first_date,
-            'Customer Last Invoiced Order Date'  => $orders_invoiced_last_date,
-            'Customer First Order Date'          => $first_order,
-            'Customer Last Order Date'           => $last_order,
-            'Customer Order Interval'            => $order_interval,
-            'Customer Order Interval STD'        => $order_interval_std,
-            'Customer With Orders'               => $customer_with_orders,
-            'Customer Payments Amount'           => $payments,
-            'Customer Sales Amount'              => $invoiced_amount,
-            'Customer Total Sales Amount'        => $invoiced_net_amount,
-            'Customer Number Invoices'           => $customer_invoices,
-            'Customer Number Refunds'            => $customer_refunds,
-
-        );
-
-
-        $this->fast_update($update_data);
-
-
-    }
-
-    public function update_invoices() {
-
-
-        $orders_invoiced            = 0;
-        $orders_invoiced_first_date = '';
-        $orders_invoiced_last_date  = '';
-        $order_interval             = '';
-        $order_interval_std         = '';
-
-
-        $invoiced_amount     = 0;
-        $invoiced_net_amount = 0;
-
-
         $sql = sprintf(
-            "SELECT count(*) AS num ,
-		min(`Invoice Date`) AS first_order_date ,
-		max(`Invoice Date`) AS last_order_date
-
-		FROM `Invoice Dimension` WHERE `Invoice Type`='Invoice'  AND `Invoice Customer Key`=%d  ", $this->id
+            "SELECT
+	
+		count(*) AS orders
+		FROM `Order Dimension` WHERE `Order Customer Key`=%d  AND `Order State`  IN ('Cancelled') ", $this->id
         );
 
 
         if ($result = $this->db->query($sql)) {
             if ($row = $result->fetch()) {
-                $orders_invoiced            = $row['num'];
-                $orders_invoiced_first_date = $row['first_order_date'];
-                $orders_invoiced_last_date  = $row['last_order_date'];
-            }
-        } else {
-            print_r($error_info = $this->db->errorInfo());
-            print "$sql\n";
-            exit;
-        }
 
+                $orders_cancelled = $row['orders'];
 
-        $sql = sprintf(
-            "SELECT sum(`Invoice Total Amount`) AS total ,sum(`Invoice Total Net Amount`) AS net FROM `Invoice Dimension` WHERE   `Invoice Customer Key`=%d  ", $this->id
-        );
-
-
-        if ($result = $this->db->query($sql)) {
-            if ($row = $result->fetch()) {
-                $invoiced_amount     = $row['total'];
-                $invoiced_net_amount = $row['net'];
 
             }
         } else {
@@ -2736,8 +2696,8 @@ class Customer extends Subject {
         }
 
 
-        if ($orders_invoiced > 1) {
-            $sql        = "SELECT `Invoice Date` AS date FROM `Invoice Dimension` WHERE `Invoice Type`='Invoice'  AND `Invoice Customer Key`=".$this->id." ORDER BY `Invoice Date`";
+        if (($orders_cancelled + $customer_orders) > 1) {
+            $sql        = "SELECT `Order Date` AS date FROM `Order Dimension` WHERE  `Order State`  NOT IN ('InBasket')  AND `Order Customer Key`=".$this->id." ORDER BY `Order Date`";
             $last_order = false;
             $last_date  = false;
             $intervals  = array();
@@ -2767,13 +2727,150 @@ class Customer extends Subject {
 
 
         $update_data = array(
-            'Customer Orders Invoiced'           => $orders_invoiced,
-            'Customer First Invoiced Order Date' => $orders_invoiced_first_date,
-            'Customer Last Invoiced Order Date'  => $orders_invoiced_last_date,
-            'Customer Order Interval'            => $order_interval,
-            'Customer Order Interval STD'        => $order_interval_std,
+            'Customer Orders'           => $customer_orders,
+            'Customer Orders Cancelled' => $orders_cancelled,
+
+            'Customer First Order Date' => $first_order,
+            'Customer Last Order Date'  => $last_order,
+
+            'Customer Order Interval'     => $order_interval,
+            'Customer Order Interval STD' => $order_interval_std,
+            'Customer With Orders'        => $customer_with_orders,
+            'Customer Payments Amount'    => $payments,
+            //'Customer Sales Amount'              => $invoiced_amount,
+            //'Customer Total Sales Amount'        => $invoiced_net_amount,
+
+
+        );
+
+
+        $this->fast_update($update_data);
+
+
+    }
+
+    public function update_invoices() {
+
+
+        $first_invoiced_date  = '';
+        $last_invoiced_date   = '';
+        $invoice_interval     = '';
+        $invoice_interval_std = '';
+
+
+        $invoiced_amount     = 0;
+        $invoiced_net_amount = 0;
+        $refunded_net_amount = 0;
+
+        $customer_invoices = 0;
+        $customer_refunds  = 0;
+
+
+        $sql = sprintf(
+            "SELECT count(*) AS num ,
+		min(`Invoice Date`) AS first_invoiced_date ,
+		max(`Invoice Date`) AS last_invoiced_date,
+        sum(`Invoice Total Net Amount`) AS net 
+		
+		FROM `Invoice Dimension` WHERE `Invoice Type`='Invoice'  AND `Invoice Customer Key`=%d  ", $this->id
+        );
+
+
+        if ($result = $this->db->query($sql)) {
+            if ($row = $result->fetch()) {
+                $customer_invoices   = $row['num'];
+                $invoiced_net_amount = $row['net'];
+                $first_invoiced_date = $row['first_invoiced_date'];
+                $last_invoiced_date  = $row['last_invoiced_date'];
+            }
+        } else {
+            print_r($error_info = $this->db->errorInfo());
+            print "$sql\n";
+            exit;
+        }
+
+
+        $sql = sprintf(
+            "SELECT count(*) AS num ,sum(`Invoice Total Net Amount`) AS net FROM `Invoice Dimension` WHERE `Invoice Type`='Refund' and  `Invoice Customer Key`=%d  ", $this->id
+        );
+
+
+        if ($result = $this->db->query($sql)) {
+            if ($row = $result->fetch()) {
+                // $invoiced_amount     = $row['total'];
+                $customer_refunds    = $row['num'];
+                $refunded_net_amount = $row['net'];
+
+            }
+        } else {
+            print_r($error_info = $this->db->errorInfo());
+            print "$sql\n";
+            exit;
+        }
+
+
+        $sql = sprintf(
+            "SELECT sum(`Invoice Total Amount`) AS amount FROM `Invoice Dimension` WHERE  `Invoice Customer Key`=%d  ", $this->id
+        );
+
+
+        if ($result = $this->db->query($sql)) {
+            if ($row = $result->fetch()) {
+                $invoiced_amount = $row['amount'];
+
+            }
+        } else {
+            print_r($error_info = $this->db->errorInfo());
+            print "$sql\n";
+            exit;
+        }
+
+
+        if ($customer_invoices > 1) {
+            $sql        = "SELECT `Invoice Date` AS date FROM `Invoice Dimension` WHERE `Invoice Type`='Invoice'  AND `Invoice Customer Key`=".$this->id." ORDER BY `Invoice Date`";
+            $last_order = false;
+            $last_date  = false;
+            $intervals  = array();
+
+
+            if ($result = $this->db->query($sql)) {
+                foreach ($result as $row) {
+                    $this_date = gmdate('U', strtotime($row['date']));
+                    if ($last_order) {
+                        $intervals[] = ($this_date - $last_date);
+                    }
+
+                    $last_date  = $this_date;
+                    $last_order = true;
+                }
+            } else {
+                print_r($error_info = $this->db->errorInfo());
+                print "$sql\n";
+                exit;
+            }
+
+
+            $invoice_interval     = average($intervals);
+            $invoice_interval_std = deviation($intervals);
+
+        }
+
+
+        $update_data = array(
+            //'Customer Orders Invoiced'           => $orders_invoiced,
+            'Customer First Invoiced Order Date' => $first_invoiced_date,
+            'Customer Last Invoiced Order Date'  => $last_invoiced_date,
+            'Customer Order Interval'            => $invoice_interval,
+            'Customer Order Interval STD'        => $invoice_interval_std,
             'Customer Invoiced Amount'           => $invoiced_amount,
-            'Customer Invoiced Net Amount'       => $invoiced_net_amount,
+
+            'Customer Invoiced Net Amount' => $invoiced_net_amount,
+            'Customer Refunded Net Amount' => $refunded_net_amount,
+            'Customer Net Amount'          => $invoiced_net_amount + $refunded_net_amount,
+
+            'Customer Number Invoices' => $customer_invoices,
+            'Customer Number Refunds'  => $customer_refunds,
+
         );
 
 
@@ -3716,6 +3813,33 @@ class Customer extends Subject {
 
     }
 
+    function load_previous_years_data() {
+
+
+        foreach (range(1, 5) as $i) {
+            $data_iy_ago = $this->get_sales_data(
+                date('Y-01-01 00:00:00', strtotime('-'.$i.' year')), date('Y-01-01 00:00:00', strtotime('-'.($i - 1).' year'))
+            );
+
+
+            $data_to_update = array(
+                $this->table_name." $i Year Ago Invoices"        => $data_iy_ago['invoices'],
+                $this->table_name." $i Year Ago Refunds"         => $data_iy_ago['refunds'],
+                $this->table_name." $i Year Ago Invoiced Net Amount" => $data_iy_ago['invoiced_amount'],
+                $this->table_name." $i Year Ago Refunded Net Amount" => $data_iy_ago['refunded_amount'],
+                $this->table_name." $i Year Ago Net Amount" => $data_iy_ago['balance_amount'],
+
+            );
+
+
+            foreach ($data_to_update as $key => $value) {
+                $this->data[$key] = $value;
+            }
+
+        }
+
+
+    }
 
     function get_sales_data($from_date, $to_date) {
 
@@ -3765,36 +3889,9 @@ class Customer extends Subject {
             exit;
         }
 
-        $sales_data['balance_amount']=$sales_data['invoiced_amount']-$sales_data['refunded_amount'];
+        $sales_data['balance_amount'] = $sales_data['invoiced_amount'] - $sales_data['refunded_amount'];
+
         return $sales_data;
-
-    }
-
-
-    function load_previous_years_data() {
-
-
-        foreach (range(1, 5) as $i) {
-            $data_iy_ago = $this->get_sales_data(
-                date('Y-01-01 00:00:00', strtotime('-'.$i.' year')), date('Y-01-01 00:00:00', strtotime('-'.($i - 1).' year'))
-            );
-
-
-            $data_to_update = array(
-                $this->table_name." $i Year Ago Invoices"        => $data_iy_ago['invoices'],
-                $this->table_name." $i Year Ago Refunds"         => $data_iy_ago['refunds'],
-                $this->table_name." $i Year Ago Invoiced Amount" => $data_iy_ago['invoiced_amount'],
-                $this->table_name." $i Year Ago Refunded Amount" => $data_iy_ago['refunded_amount'],
-
-            );
-
-
-            foreach ($data_to_update as $key => $value) {
-                $this->data[$key] = $value;
-            }
-
-        }
-
 
     }
 
@@ -3813,15 +3910,17 @@ class Customer extends Subject {
             $sales_data_1yb = $this->get_sales_data($dates_1yb['start'], $dates_1yb['end']);
 
             $data_to_update = array(
-                $this->table_name." $i Quarter Ago Invoices"        => $sales_data['invoices'],
-                $this->table_name." $i Quarter Ago Refunds"         => $sales_data['refunds'],
-                $this->table_name." $i Quarter Ago Invoiced Amount" => $sales_data['invoiced_amount'],
-                $this->table_name." $i Quarter Ago Refunded Amount" => $sales_data['refunded_amount'],
+                $this->table_name." $i Quarter Ago Invoices"            => $sales_data['invoices'],
+                $this->table_name." $i Quarter Ago Refunds"             => $sales_data['refunds'],
+                $this->table_name." $i Quarter Ago Invoiced Net Amount" => $sales_data['invoiced_amount'],
+                $this->table_name." $i Quarter Ago Refunded Net Amount" => $sales_data['refunded_amount'],
+                $this->table_name." $i Quarter Ago Net Amount"          => $sales_data['balance_amount'],
 
-                $this->table_name." $i Quarter Ago 1YB Invoices"        => $sales_data_1yb['invoices'],
-                $this->table_name." $i Quarter Ago 1YB Refunds"         => $sales_data_1yb['refunds'],
-                $this->table_name." $i Quarter Ago 1YB Invoiced Amount" => $sales_data_1yb['invoiced_amount'],
-                $this->table_name." $i Quarter Ago 1YB Refunded Amount" => $sales_data_1yb['refunded_amount'],
+                $this->table_name." $i Quarter Ago 1YB Invoices"            => $sales_data_1yb['invoices'],
+                $this->table_name." $i Quarter Ago 1YB Refunds"             => $sales_data_1yb['refunds'],
+                $this->table_name." $i Quarter Ago 1YB Invoiced Net Amount" => $sales_data_1yb['invoiced_amount'],
+                $this->table_name." $i Quarter Ago 1YB Refunded Net Amount" => $sales_data_1yb['refunded_amount'],
+                $this->table_name." $i Quarter Ago 1YB Net Amount"          => $sales_data_1yb['balance_amount'],
 
 
             );
@@ -3844,10 +3943,11 @@ class Customer extends Subject {
 
 
             $data_to_update = array(
-                $this->table_name." $db_interval Acc Invoices"        => $sales_data['invoices'],
-                $this->table_name." $db_interval Acc Refunds"        => $sales_data['refunds'],
-                $this->table_name." $db_interval Acc Invoiced Amount"        => $sales_data['invoiced_amount'],
-                $this->table_name." $db_interval Acc Refunded Amount"        => $sales_data['refunded_amount'],
+                $this->table_name." $db_interval Acc Invoices"            => $sales_data['invoices'],
+                $this->table_name." $db_interval Acc Refunds"             => $sales_data['refunds'],
+                $this->table_name." $db_interval Acc Invoiced Net Amount" => $sales_data['invoiced_amount'],
+                $this->table_name." $db_interval Acc Refunded Net Amount" => $sales_data['refunded_amount'],
+                $this->table_name." $db_interval Acc Net Amount"          => $sales_data['balance_amount'],
 
             );
             foreach ($data_to_update as $key => $value) {
@@ -3863,11 +3963,11 @@ class Customer extends Subject {
 
 
             $data_to_update = array(
-                $this->table_name." $db_interval Acc 1YB Invoices"        => $sales_data['invoices'],
-                $this->table_name." $db_interval Acc 1YB Refunds"        => $sales_data['refunds'],
-                $this->table_name." $db_interval Acc 1YB Invoiced Amount"        => $sales_data['invoiced_amount'],
-                $this->table_name." $db_interval Acc 1YB Refunded Amount"        => $sales_data['refunded_amount'],
-
+                $this->table_name." $db_interval Acc 1YB Invoices"            => $sales_data['invoices'],
+                $this->table_name." $db_interval Acc 1YB Refunds"             => $sales_data['refunds'],
+                $this->table_name." $db_interval Acc 1YB Invoiced Net Amount" => $sales_data['invoiced_amount'],
+                $this->table_name." $db_interval Acc 1YB Refunded Net Amount" => $sales_data['refunded_amount'],
+                $this->table_name." $db_interval Acc 1YB Net Amount"          => $sales_data['balance_amount'],
 
 
             );
@@ -3876,8 +3976,6 @@ class Customer extends Subject {
             }
 
         }
-
-
 
 
     }
@@ -3909,7 +4007,6 @@ class Customer extends Subject {
 
 
             $to = date('Y-m-d');
-
 
 
             $sql = sprintf(
@@ -3973,33 +4070,28 @@ class Customer extends Subject {
             $index++;
 
 
-
-
             $sales_data = $this->get_sales_data($date_frequency_period['from'], $date_frequency_period['to']);
 
 
             $_date = gmdate('Y-m-d', strtotime($date_frequency_period['from'].' +0:00'));
 
 
-
-            if ($sales_data['invoices'] > 0 or $sales_data['refunds'] > 0 ) {
+            if ($sales_data['invoices'] > 0 or $sales_data['refunds'] > 0) {
 
 
                 list($timeseries_record_key, $date) = $timeseries->create_record(array('Timeseries Record Date' => $_date));
-
-
 
 
                 $sql = sprintf(
                     'UPDATE `Timeseries Record Dimension` SET 
                               `Timeseries Record Integer A`=%d ,`Timeseries Record Integer B`=%d ,
                               `Timeseries Record Float A`=%.2f ,  `Timeseries Record Float B`=%f ,`Timeseries Record Float C`=%f ,
-                              `Timeseries Record Type`=%s WHERE `Timeseries Record Key`=%d', $sales_data['invoices'], $sales_data['refunds'] ,$sales_data['invoiced_amount'], $sales_data['refunded_amount'], $sales_data['profit'],
-                   prepare_mysql('Data'), $timeseries_record_key
+                              `Timeseries Record Type`=%s WHERE `Timeseries Record Key`=%d', $sales_data['invoices'], $sales_data['refunds'], $sales_data['invoiced_amount'], $sales_data['refunded_amount'], $sales_data['profit'], prepare_mysql('Data'),
+                    $timeseries_record_key
 
                 );
 
-             //   print "$sql\n";
+                //   print "$sql\n";
                 $update_sql = $this->db->prepare($sql);
                 $update_sql->execute();
 
@@ -4007,7 +4099,6 @@ class Customer extends Subject {
                 if ($update_sql->rowCount() or $date == date('Y-m-d')) {
                     $timeseries->fast_update(array('Timeseries Updated' => gmdate('Y-m-d H:i:s')));
                 }
-
 
 
             } else {

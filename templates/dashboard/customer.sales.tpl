@@ -20,8 +20,8 @@
                 <td colspan=3>{$header_total_sales}</td>
             </tr>
             <tr class="total_sales">
-                <td>{$customer->get('Invoiced Amount Soft Minify')}</td>
-                <td>{$customer->get('Number Invoices Soft Minify')} <span class="very_discreet error">({$customer->get('Number Refunds Soft Minify')})</td>
+                <td title="{t}Invoiced amount{/t} {$customer->get('Invoiced Net Amount')}  , {t}Refunds{/t} {$customer->get('Refunded Net Amount')} ">{$customer->get('Net Amount')}</td>
+                <td><span title="{t}Invoices{/t}">{$customer->get('Number Invoices Soft Minify')}</span> <span class="very_discreet error" title="{t}Refunds{/t}" >({$customer->get('Number Refunds Soft Minify')})</td>
                 <td></td>
             </tr>
         </table>
@@ -36,23 +36,23 @@
             </tr>
             <tr>
                 <td>
-                    <span title="{$customer->get('Year To Day Acc Invoiced Amount')}">{$customer->get('Year To Day Acc Invoiced Amount Minify')}</span>
+                    <span title="{$customer->get('Year To Day Acc Net Amount')}">{$customer->get('Year To Day Acc Net Amount Minify')}</span>
                     <span title="{$year_data.0.invoiced_amount_delta_title}">{$year_data.0.invoiced_amount_delta}</span>
                 </td>
                 <td>
-                    <span title="{$customer->get('1 Year Ago Invoiced Amount')}">{$customer->get('1 Year Ago Invoiced Amount Minify')}</span>
+                    <span title="{$customer->get('1 Year Ago Net Amount')}">{$customer->get('1 Year Ago Net Amount Minify')}</span>
                     <span title="{$year_data.1.invoiced_amount_delta_title}">{$year_data.1.invoiced_amount_delta}</span>
                 </td>
                 <td>
-                    <span title="{$customer->get('2 Year Ago Invoiced Amount')}">{$customer->get('2 Year Ago Invoiced Amount Minify')}</span>
+                    <span title="{$customer->get('2 Year Ago Net Amount')}">{$customer->get('2 Year Ago Net Amount Minify')}</span>
                     <span title="{$year_data.2.invoiced_amount_delta_title}">{$year_data.2.invoiced_amount_delta}</span>
                 </td>
                 <td>
-                    <span title="{$customer->get('3 Year Ago Invoiced Amount')}">{$customer->get('3 Year Ago Invoiced Amount Minify')}</span>
+                    <span title="{$customer->get('3 Year Ago Net Amount')}">{$customer->get('3 Year Ago Net Amount Minify')}</span>
                     <span title="{$year_data.3.invoiced_amount_delta_title}">{$year_data.3.invoiced_amount_delta}</span>
                 </td>
                 <td>
-                    <span title="{$customer->get('4 Year Ago Invoiced Amount')}">{$customer->get('4 Year Ago Invoiced Amount Minify')}</span>
+                    <span title="{$customer->get('4 Year Ago Net Amount')}">{$customer->get('4 Year Ago Net Amount Minify')}</span>
                     <span title="{$year_data.4.invoiced_amount_delta_title}">{$year_data.4.invoiced_amount_delta}</span>
                 </td>
             </tr>
@@ -85,23 +85,23 @@
             </tr>
             <tr>
                 <td>
-                    <span title="{$customer->get('Quarter To Day Acc Invoiced Amount')}">{$customer->get('Quarter To Day Acc Invoiced Amount Minify')}</span>
+                    <span title="{$customer->get('Quarter To Day Acc Net Amount')}">{$customer->get('Quarter To Day Acc Net Amount Minify')}</span>
                     <span title="{$quarter_data.0.invoiced_amount_delta_title}">{$quarter_data.0.invoiced_amount_delta}</span>
                 </td>
                 <td>
-                    <span title="{$customer->get('1 Quarter Ago Invoiced Amount')}">{$customer->get('1 Quarter Ago Invoiced Amount Minify')}</span>
+                    <span title="{$customer->get('1 Quarter Ago Net Amount')}">{$customer->get('1 Quarter Ago Net Amount Minify')}</span>
                     <span title="{$quarter_data.1.invoiced_amount_delta_title}">{$quarter_data.1.invoiced_amount_delta}</span>
                 </td>
                 <td>
-                    <span title="{$customer->get('2 Quarter Ago Invoiced Amount')}">{$customer->get('2 Quarter Ago Invoiced Amount Minify')}</span>
+                    <span title="{$customer->get('2 Quarter Ago Net Amount')}">{$customer->get('2 Quarter Ago Net Amount Minify')}</span>
                     <span title="{$quarter_data.2.invoiced_amount_delta_title}">{$quarter_data.2.invoiced_amount_delta}</span>
                 </td>
                 <td>
-                    <span title="{$customer->get('3 Quarter Ago Invoiced Amount')}">{$customer->get('3 Quarter Ago Invoiced Amount Minify')}</span>
+                    <span title="{$customer->get('3 Quarter Ago Net Amount')}">{$customer->get('3 Quarter Ago Net Amount Minify')}</span>
                     <span title="{$quarter_data.3.invoiced_amount_delta_title}">{$quarter_data.3.invoiced_amount_delta}</span>
                 </td>
                 <td>
-                    <span title="{$customer->get('4 Quarter Ago Invoiced Amount')}">{$customer->get('4 Quarter Ago Invoiced Amount Minify')}</span>
+                    <span title="{$customer->get('4 Quarter Ago Net Amount')}">{$customer->get('4 Quarter Ago Net Amount Minify')}</span>
                     <span title="{$quarter_data.4.invoiced_amount_delta_title}">{$quarter_data.4.invoiced_amount_delta}</span>
                 </td>
             </tr>
