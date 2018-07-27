@@ -2201,7 +2201,7 @@ class DeliveryNote extends DB_Table {
 
         $order         = get_object('Order', $this->get('Delivery Note Order Key'));
         $order->editor = $this->editor;
-        // $invoices=$this->get_invoices_objects();
+
 
 
         $sql = sprintf(

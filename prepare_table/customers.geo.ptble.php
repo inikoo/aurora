@@ -54,7 +54,7 @@ if ($order == 'country') {
 
 
 $table  = '`Customer Dimension` C left join kbase.`Country Dimension` Co on (C.`Customer Contact Address Country 2 Alpha Code`=Co.`Country 2 Alpha Code`)  ';
-$fields = "`Country Key`,`Country Name`,`Country 2 Alpha Code`,count(*) as customers,sum(`Customer Invoiced Net Amount`) as sales,sum(`Customer Orders Invoiced`) as invoices,  sum(`Customer Invoiced Amount`)/count(*) as sales_per_registration" ;
+$fields = "`Country Key`,`Country Name`,`Country 2 Alpha Code`,count(*) as customers,sum(`Customer Invoiced Net Amount`) as sales,sum(`Customer Number Invoices`) as invoices,  sum(`Customer Invoiced Amount`)/count(*) as sales_per_registration" ;
 $group_by=' group by `Customer Contact Address Country 2 Alpha Code` ';
 
 $sql_totals = "select count(Distinct `Customer Contact Address Country 2 Alpha Code`) as num from $table $where ";

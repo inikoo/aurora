@@ -742,6 +742,24 @@ function fork_housekeeping($job) {
             $customer = get_object('Customer', $data['customer_key']);
             $customer->update_invoices();
 
+            require_once 'conf/timeseries.php';
+            require_once 'class.Timeserie.php';
+
+            $timeseries = get_time_series_config();
+            $timeseries_data = $timeseries['Customer'];
+            foreach ($timeseries_data as $time_series_data) {
+
+
+                $time_series_data['Timeseries Parent']     = 'Customer';
+                $time_series_data['Timeseries Parent Key'] = $customer->id;
+
+
+
+                $object_timeseries = new Timeseries('find', $time_series_data, 'create');
+                $customer->update_timeseries_record($object_timeseries, gmdate('Y-m-d'), gmdate('Y-m-d'));
+
+
+            }
             break;
 
         case 'update_warehouse_leakages':

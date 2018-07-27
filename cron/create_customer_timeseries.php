@@ -48,24 +48,52 @@ $lap_time0 = date('U');
 $contador  = 0;
 
 
-
-$timeseries = get_time_series_config();
-
-
-$sql = sprintf('SELECT `Customer Key` FROM `Customer Dimension` order by `Customer Key` desc ');
+$sql = sprintf('SELECT `Timeseries Key` FROM `Timeseries Dimension`  where `Timeseries Type`="CustomerSales"');
 
 if ($result = $db->query($sql)) {
     foreach ($result as $row) {
 
-        $customer = get_object('Customer',$row['Customer Key']);
+        $sql = sprintf(
+            'delete from `Timeseries Record Dimension` where `Timeseries Record Timeseries Key`=%d ', $row['Timeseries Key']
+        );
+        $db->exec($sql);
+    }
+} else {
+    print_r($error_info = $db->errorInfo());
+    print "$sql\n";
+    exit;
+}
+$sql = sprintf('delete FROM `Timeseries Dimension`  where `Timeseries Type`="CustomerSales"');
+$db->exec($sql);
+
+
+$timeseries = get_time_series_config();
+
+
+$sql = sprintf('SELECT `Customer Key` FROM `Customer Dimension`   order by `Customer Key` desc ');
+
+if ($result = $db->query($sql)) {
+    foreach ($result as $row) {
+
+        $customer = get_object('Customer', $row['Customer Key']);
+
+        $customer->update_invoices();
+
 
         $timeseries_data = $timeseries['Customer'];
 
         foreach ($timeseries_data as $time_series_data) {
 
-            $editor['Date']             = gmdate('Y-m-d H:i:s');
-            $time_series_data['editor'] = $editor;
-            $customer->create_timeseries($time_series_data);
+
+                $editor['Date']             = gmdate('Y-m-d H:i:s');
+                $time_series_data['editor'] = $editor;
+
+              //  print_r($time_series_data);
+
+                $customer->create_timeseries($time_series_data);
+
+
+
 
         }
 

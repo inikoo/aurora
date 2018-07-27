@@ -321,7 +321,6 @@ class Timeseries extends DB_Table {
                 'INSERT INTO `Timeseries Record Dimension` (`Timeseries Record Timeseries Key`, `Timeseries Record Date`) VALUES (%d,%s)', $this->id, prepare_mysql($data['Timeseries Record Date'])
             );
 
-
             if ($this->db->exec($sql)) {
 
                 $record_key = $this->db->lastInsertId();
@@ -340,8 +339,14 @@ class Timeseries extends DB_Table {
         if($this->get('Timeseries Frequency')=='Monthly'  ){
 
 
+
+
+
             $sql=sprintf('delete from `Timeseries Record Dimension` where  `Timeseries Record Timeseries Key`=%d   and DATE_FORMAT(`Timeseries Record Date`,\'%%e\')!=1;',$this->id);
             $this->db->exec($sql);
+
+
+
 
 
         }

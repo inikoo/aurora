@@ -487,7 +487,7 @@ class Customer extends Subject {
                 );
                 break;
             case('Total Net Per Order'):
-                if ($this->data['Customer Orders Invoiced'] > 0) {
+                if ($this->data['Customer Number Invoices'] > 0) {
 
                     if (is_object($arg1)) {
                         $store = $arg1;
@@ -496,7 +496,7 @@ class Customer extends Subject {
                     }
 
 
-                    return money($this->data['Customer Invoiced Net Amount'] / $this->data['Customer Orders Invoiced'], $store->data['Store Currency Code']);
+                    return money($this->data['Customer Invoiced Net Amount'] / $this->data['Customer Number Invoices'], $store->data['Store Currency Code']);
                 } else {
                     return _('ND');
                 }
@@ -2701,7 +2701,6 @@ class Customer extends Subject {
 
         );
 
-        
         $this->fast_update($update_data);
 
 
@@ -2783,7 +2782,7 @@ class Customer extends Subject {
             exit;
         }
 
-
+/*
         if ($customer_invoices > 1) {
             $sql        = "SELECT `Invoice Date` AS date FROM `Invoice Dimension` WHERE `Invoice Type`='Invoice'  AND `Invoice Customer Key`=".$this->id." ORDER BY `Invoice Date`";
             $last_order = false;
@@ -2813,13 +2812,13 @@ class Customer extends Subject {
 
         }
 
-
+*/
         $update_data = array(
-            //'Customer Orders Invoiced'           => $orders_invoiced,
+            //'Customer Number Invoices'           => $orders_invoiced,
             'Customer First Invoiced Order Date' => $first_invoiced_date,
             'Customer Last Invoiced Order Date'  => $last_invoiced_date,
-            'Customer Order Interval'            => $invoice_interval,
-            'Customer Order Interval STD'        => $invoice_interval_std,
+           // 'Customer Order Interval'            => $invoice_interval,
+           // 'Customer Order Interval STD'        => $invoice_interval_std,
             'Customer Invoiced Amount'           => $invoiced_amount,
 
             'Customer Invoiced Net Amount' => $invoiced_net_amount,
@@ -2831,9 +2830,7 @@ class Customer extends Subject {
 
         );
 
-
         $this->fast_update($update_data);
-
 
     }
 
@@ -3214,7 +3211,7 @@ class Customer extends Subject {
 
 
         $sql = sprintf(
-            "SELECT count(*) AS customers FROM `Customer Dimension` USE INDEX (`Customer Orders Invoiced`)  WHERE `Customer Store Key`=%d AND `Customer Orders Invoiced`<%d", $this->data['Customer Store Key'], $this->data['Customer Orders Invoiced']
+            "SELECT count(*) AS customers FROM `Customer Dimension`   WHERE `Customer Store Key`=%d AND `Customer Number Invoices`<%d", $this->data['Customer Store Key'], $this->data['Customer Number Invoices']
 
         );
 
@@ -3943,29 +3940,33 @@ class Customer extends Subject {
     function create_timeseries($data, $fork_key = 0) {
 
 
+
+        if(($this->data['Customer Number Invoices']+$this->data['Customer Number Invoices'])==0 ){
+            return;
+        }
+
         include_once 'class.Timeserie.php';
 
         $data['Timeseries Parent']     = 'Customer';
         $data['Timeseries Parent Key'] = $this->id;
-
-
         $data['editor'] = $this->editor;
 
         $timeseries = new Timeseries('find', $data, 'create');
 
-
+       // print_r($timeseries);
         if ($timeseries->id) {
+
+
+
+
+
             require_once 'utils/date_functions.php';
 
-            if ($this->data['Customer First Contacted Date'] != '') {
-                $from = date('Y-m-d', strtotime($this->get('Customer First Contacted Date')));
-
-            } else {
-                $from = '';
-            }
 
 
-            $to = date('Y-m-d');
+            $from = date('Y-m-d',strtotime($this->data['Customer First Invoiced Order Date']));
+
+            $to = date('Y-m-d',strtotime($this->data['Customer Last Invoiced Order Date']));
 
 
             $sql = sprintf(
@@ -3992,6 +3993,7 @@ class Customer extends Subject {
                 );
             }
 
+
             if ($from and $to) {
                 $this->update_timeseries_record($timeseries, $from, $to, $fork_key);
             }
@@ -4012,7 +4014,9 @@ class Customer extends Subject {
 
 
         $dates = date_frequency_range($this->db, $timeseries->get('Timeseries Frequency'), $from, $to);
-
+       // print $timeseries->id."\n";
+       // print $timeseries->get('Timeseries Frequency')."\n";
+       //print_r($dates);
 
         if ($fork_key) {
 
@@ -4030,6 +4034,7 @@ class Customer extends Subject {
 
 
             $sales_data = $this->get_sales_data($date_frequency_period['from'], $date_frequency_period['to']);
+           // print_r($sales_data);
 
 
             $_date = gmdate('Y-m-d', strtotime($date_frequency_period['from'].' +0:00'));
@@ -4050,7 +4055,7 @@ class Customer extends Subject {
 
                 );
 
-                //   print "$sql\n";
+                 //  print "$sql\n";
                 $update_sql = $this->db->prepare($sql);
                 $update_sql->execute();
 

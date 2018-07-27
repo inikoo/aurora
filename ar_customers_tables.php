@@ -129,7 +129,7 @@ function customers($_data, $db, $user) {
                 );
             }
 
-            if ($data['Customer Orders Invoiced'] == 0 or $data['Customer Last Invoiced Order Date'] == '') {
+            if ($data['Customer Number Invoices'] == 0 or $data['Customer Last Invoiced Order Date'] == '') {
                 $last_invoice_date = '';
             } else {
                 $last_invoice_date = strftime(
@@ -205,7 +205,7 @@ function customers($_data, $db, $user) {
 
                 'location' => $data['Customer Location'],
 
-                'invoices'  => (integer)$data['Customer Orders Invoiced'],
+                'invoices'  => (integer)$data['Customer Number Invoices'],
                 'email'     => $data['Customer Main Plain Email'],
                 'telephone' => $data['Customer Main XHTML Telephone'],
                 'mobile'    => $data['Customer Main XHTML Mobile'],

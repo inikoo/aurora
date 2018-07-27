@@ -21,7 +21,7 @@ function fork_asset_sales($job) {
 
     list($account, $db, $data,$editor) = $_data;
 
-
+    print_r($data);
 
     switch ($data['type']) {
 
@@ -642,6 +642,9 @@ function fork_asset_sales($job) {
             update_deleted_invoice_products_sales_data($db, $data, $account);
 
 
+
+
+
             break;
 
     }
@@ -672,7 +675,7 @@ function update_invoice_products_sales_data($db, $account, $data) {
     $categories_bis = array();
     //  print_r($data);
 
-    $customer = new Customer($data['customer_key']);
+    $customer = get_object('Customer',$data['customer_key']);
     $customer->update_product_bridge();
 
 
@@ -776,7 +779,9 @@ function update_invoice_products_sales_data($db, $account, $data) {
 
 
     }
-    // exit('hola');
+
+
+
 
 }
 
@@ -938,6 +943,27 @@ function update_deleted_invoice_products_sales_data($db, $data) {
 
         $categories_bis = $categories_bis + $category->get_categories();
 
+
+
+        require_once 'conf/timeseries.php';
+        require_once 'class.Timeserie.php';
+
+
+        $timeseries = get_time_series_config();
+        $timeseries_data = $timeseries['Customer'];
+        foreach ($timeseries_data as $time_series_data) {
+
+
+            $time_series_data['Timeseries Parent']     = 'Customer';
+            $time_series_data['Timeseries Parent Key'] = $customer->id;
+
+
+
+            $object_timeseries = new Timeseries('find', $time_series_data, 'create');
+            $customer->update_timeseries_record($object_timeseries, $data['invoice_date'], $data['invoice_date']);
+
+
+        }
 
     }
 
