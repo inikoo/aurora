@@ -1023,4 +1023,7 @@ ALTER TABLE `Supplier Delivery Dimension`
 
 
 
-
+update `Shipping Dimension` set `Shipping Metadata`='0,100,2.95;100,,0' where `Shipping Metadata`='0,150,4.95;150,,0';
+update `Shipping Dimension` set `Shipping Metadata`='0,150,4.95;150,,0' where `Shipping Metadata`='0,250,9.95;250,,0';
+update `Shipping Dimension` set `Shipping Metadata`='0,250,7.95;250,,0' where `Shipping Metadata`='0,350,14.95;350,,0';
+update `Shipping Dimension` set `Shipping Metadata`='0,500,14.95;500,,0' where `Shipping Metadata`='0,795,29.95;795,,0';
