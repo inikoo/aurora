@@ -52,7 +52,7 @@ $contador  = 0;
 $timeseries = get_time_series_config();
 
 
-$sql = sprintf('SELECT `Customer Key` FROM `Customer Dimension` ');
+$sql = sprintf('SELECT `Customer Key` FROM `Customer Dimension` order by `Customer Key` desc ');
 
 if ($result = $db->query($sql)) {
     foreach ($result as $row) {
