@@ -803,14 +803,6 @@ class Order extends DB_Table {
 
                     $this->db->exec($sql);
 
-                    new_housekeeping_fork(
-                        'au_housekeeping', array(
-                        'type'         => 'invoice_created',
-                        'invoice_key'  => $invoice->id,
-                        'customer_key' => $invoice->get('Invoice Customer Key'),
-                        'store_key'    => $invoice->get('Invoice Store Key')
-                    ), $account->get('Account Code')
-                    );
 
                     break;
                 case 'un_dispatch':

@@ -149,11 +149,11 @@
                         </tr>
                     {/if}
                     <tr>
-                        <td class="text"> {if $customer->get('Customer Orders Invoiced')==1}
+                        <td class="text"> {if $customer->get('Customer Number Invoices')==1}
                             <p>
                                 {$customer->get('Name')} {t}has been invoiced once{/t}.
                             </p>
-                            {elseif $customer->get('Customer Orders Invoiced')>1 } {$customer->get('Name')} {t}has been invoiced{/t}
+                            {elseif $customer->get('Customer Number Invoices')>1 } {$customer->get('Name')} {t}has been invoiced{/t}
                             <b>{$customer->get('Orders Invoiced')}</b> {if $customer->get('Customer Type by Activity')=='Lost'}{t}times{/t}{else}{t}times so far{/t}{/if}, {t}which amounts to a total of{/t} <b>{$customer->get('Invoiced Net Amount')}</b> <span class="very_discreet error {if $customer->get('Customer Refunded Net Amount')==0}hide{/if} ">({$customer->get('Absolute Refunded Net Amount')} {t}refunded{/t})</span> {t}plus tax{/t}
                             ({t}an average of{/t} {$customer->get('Total Net Per Order')} {t}per order{/t}
                             ). {if $customer->get('Customer Orders')}

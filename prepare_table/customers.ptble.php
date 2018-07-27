@@ -397,7 +397,7 @@ elseif ($order == 'ship_town') {
 } elseif ($order == 'requests') {
     $order = '`Customer Number Web Requests`';
 } elseif ($order == 'invoices') {
-    $order = '`Customer Orders Invoiced`';
+    $order = '`Customer Number Invoices`';
 } else {
     $order = '`Customer File As`';
 }

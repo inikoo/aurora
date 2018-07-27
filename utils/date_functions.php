@@ -22,14 +22,11 @@ function date_range($first, $last, $step = '+1 day', $output_format = 'Y-m-d') {
     }
 
 
-
     return $dates;
 }
 
 
 function date_frequency_range($db, $frequency, $first, $last) {
-
-
 
 
     $dates = array();
@@ -45,13 +42,10 @@ function date_frequency_range($db, $frequency, $first, $last) {
 
             if ($result = $db->query($sql)) {
                 foreach ($result as $row) {
-                    $dates[$row['date_index']]
-                        = array(
+                    $dates[$row['date_index']] = array(
                         'from' => $row['date_index']." 00:00:00",
                         'to'   => $row['date_index']." 23:59:59"
                     );
-
-
 
 
                 }
@@ -70,26 +64,23 @@ function date_frequency_range($db, $frequency, $first, $last) {
 
             if ($result = $db->query($sql)) {
                 foreach ($result as $row) {
-                    $dates[$row['date_index']]
-                        = array(
+                    $dates[$row['date_index']] = array(
                         'from' => $row['date_index']."-01-01 00:00:00",
                         'to'   => $row['date_index']."-12-31 23:59:59"
                     );
 
+                /*
+
+                    if (strtotime($row['date_index']."-01-01 00:00:00") < strtotime($first." 00:00:00")) {
+                        $dates[$row['date_index']]['from'] = $first." 00:00:00";
+                    }
 
 
-                        if(strtotime($row['date_index']."-01-01 00:00:00")<strtotime($first." 00:00:00")){
-                            $dates[$row['date_index']]['from']=$first." 00:00:00";
-                        }
+                    if (strtotime($row['date_index']."-12-31 23:59:59") > strtotime($last." 23:59:59")) {
+                        $dates[$row['date_index']]['to'] = $last." 23:59:59";
+                    }
 
-
-
-
-
-                        if (strtotime($row['date_index']."-12-31 23:59:59") > strtotime($last." 23:59:59")) {
-                            $dates[$row['date_index']]['to'] = $last." 23:59:59";
-                        }
-
+                */
 
                 }
             } else {
@@ -100,35 +91,31 @@ function date_frequency_range($db, $frequency, $first, $last) {
         case 'Monthly':
 
             $sql = sprintf(
-                "SELECT DATE_FORMAT(`Date`,'%%Y-%%m') AS date_index ,DATE_FORMAT(Last_day(`Date`),'%%Y-%%m-%%d') AS last_day  FROM kbase.`Date Dimension` WHERE `Date`>=date(%s) AND `Date`<=DATE(%s)  GROUP BY DATE_FORMAT(`Date`,'%%Y-%%m')",
-                prepare_mysql($first), prepare_mysql($last)
+                "SELECT DATE_FORMAT(`Date`,'%%Y-%%m') AS date_index ,DATE_FORMAT(Last_day(`Date`),'%%Y-%%m-%%d') AS last_day  FROM kbase.`Date Dimension` WHERE `Date`>=date(%s) AND `Date`<=DATE(%s)  GROUP BY DATE_FORMAT(`Date`,'%%Y-%%m')", prepare_mysql($first),
+                prepare_mysql($last)
             );
-
-
-
 
 
             if ($result = $db->query($sql)) {
                 foreach ($result as $row) {
 
 
-
-                    $dates[$row['date_index']]
-                        = array(
+                    $dates[$row['date_index']] = array(
                         'from' => $row['date_index']."-01 00:00:00",
                         'to'   => $row['last_day']." 23:59:59"
                     );
 
-
-
-
-                    if(strtotime($row['date_index']."-01 00:00:00")<strtotime($first." 00:00:00")){
-                        $dates[$row['date_index']]['from']=$first." 00:00:00";
+/*
+                    if (strtotime($row['date_index']."-01 00:00:00") < strtotime($first." 00:00:00")) {
+                        $dates[$row['date_index']]['from'] = $first." 00:00:00";
                     }
 
-                    if(strtotime($row['last_day']." 23:59:59")>strtotime($last." 23:59:59")){
-                        $dates[$row['date_index']]['to']=$last." 23:59:59";
+                    if (strtotime($row['last_day']." 23:59:59") > strtotime($last." 23:59:59")) {
+                        $dates[$row['date_index']]['to'] = $last." 23:59:59";
                     }
+
+
+*/
 
                 }
             } else {
@@ -144,9 +131,6 @@ function date_frequency_range($db, $frequency, $first, $last) {
             );
 
 
-
-
-
             if ($result = $db->query($sql)) {
                 foreach ($result as $row) {
                     $dates[$row['date_index']] = array(
@@ -154,20 +138,18 @@ function date_frequency_range($db, $frequency, $first, $last) {
                         'to'   => $row['end']." 23:59:59"
                     );
                     //print_r($dates);
-
-                    if(strtotime($row['start']." 00:00:00")<strtotime($first." 00:00:00")){
-                        $dates[$row['date_index']]['from']=$first." 00:00:00";
+/*
+                    if (strtotime($row['start']." 00:00:00") < strtotime($first." 00:00:00")) {
+                        $dates[$row['date_index']]['from'] = $first." 00:00:00";
                     }
 
 
-
-
-                    if(strtotime($row['end']." 23:59:59")>strtotime($last." 23:59:59")){
-                        $dates[$row['date_index']]['to']=$last." 23:59:59";
+                    if (strtotime($row['end']." 23:59:59") > strtotime($last." 23:59:59")) {
+                        $dates[$row['date_index']]['to'] = $last." 23:59:59";
                     }
-
+*/
                     //print_r($dates);
-                   // exit;
+                    // exit;
 
                 }
             } else {
@@ -189,14 +171,17 @@ function date_frequency_range($db, $frequency, $first, $last) {
                         'from' => $row['start']." 00:00:00",
                         'to'   => $row['end']." 23:59:59"
                     );
+                    /*
 
-                    if(strtotime($row['start']." 00:00:00")<strtotime($first." 00:00:00")){
-                        $dates[$row['date_index']]['from']=$first." 00:00:00";
+                    if (strtotime($row['start']." 00:00:00") < strtotime($first." 00:00:00")) {
+                        $dates[$row['date_index']]['from'] = $first." 00:00:00";
                     }
 
-                    if(strtotime($row['end']." 23:59:59")>strtotime($last." 23:59:59")){
-                        $dates[$row['date_index']]['to']=$last." 23:59:59";
+                    if (strtotime($row['end']." 23:59:59") > strtotime($last." 23:59:59")) {
+                        $dates[$row['date_index']]['to'] = $last." 23:59:59";
                     }
+
+                    */
                 }
             } else {
                 print_r($error_info = $db->errorInfo());
@@ -209,8 +194,6 @@ function date_frequency_range($db, $frequency, $first, $last) {
 
             break;
     }
-
-
 
 
     return $dates;
@@ -321,13 +304,11 @@ function prepare_mysql_dates($date1 = '', $date2 = '', $date_field = 'date', $op
         $d_option = 'date';
 
 
-       // $date_only = true;
+        // $date_only = true;
     } else {
-        $d_option  = 'datetime';
+        $d_option = 'datetime';
         //$date_only = false;
     }
-
-
 
 
     $tmp = prepare_mysql_datetime($date1, $d_option.$start);
@@ -369,11 +350,11 @@ function prepare_mysql_dates($date1 = '', $date2 = '', $date_field = 'date', $op
         $mysql_date2 = ($mysql_date2 == '' ? '' : $mysql_date2.' 23:59:59');
 
     }
-    if($options=='only dates'){
+    if ($options == 'only dates') {
 
 
-        $mysql_date1=preg_replace('/\s\d{2}:\d{2}:\d{2}/','',$mysql_date1);
-        $mysql_date2=preg_replace('/\s\d{2}:\d{2}:\d{2}/','',$mysql_date2);
+        $mysql_date1 = preg_replace('/\s\d{2}:\d{2}:\d{2}/', '', $mysql_date1);
+        $mysql_date2 = preg_replace('/\s\d{2}:\d{2}:\d{2}/', '', $mysql_date2);
 
     }
 
@@ -387,8 +368,6 @@ function prepare_mysql_dates($date1 = '', $date2 = '', $date_field = 'date', $op
     } else {
         $mysql_interval = " and $date_field1>='$mysql_date1' ";
     }
-
-
 
 
     return array(
@@ -442,8 +421,7 @@ function prepare_mysql_datetime($datetime, $tipo = 'datetime') {
 
         if (!preg_match(
             '/^[12]\d{3}[\-\/][01]\d[\-\/][0123]\d\s[012]\d:[0123456]\d:[0123456]\d$/', $datetime
-        )
-        ) {
+        )) {
             return array(
                 'mysql_date' => '',
                 'status'     => "Error, date time not recognised $datetime",
@@ -642,8 +620,6 @@ function calculate_interval_dates($db, $interval, $from = '', $to = '') {
     $to_1yb        = false;
 
 
-
-
     switch ($interval) {
 
 
@@ -666,7 +642,6 @@ function calculate_interval_dates($db, $interval, $from = '', $to = '') {
 
             $from_date_1yb = date('Y-m-d H:i:s', strtotime("$from_date -1 year"));
             $to_1yb        = date('Y-m-t H:i:s', strtotime("$to_date -1 year"));
-
 
 
             //print "$interval\t\t $from_date\t\t $to_date\t\t $from_date_1yb\t\t $to_1yb\n";
@@ -761,8 +736,8 @@ function calculate_interval_dates($db, $interval, $from = '', $to = '') {
             }
 
 
-        $from_date_1yb = date('Y-m-d H:i:s', strtotime("$from_date -1 year"));
-        $to_1yb        = date('Y-m-d H:i:s', strtotime("$to_date  -1 year"));
+            $from_date_1yb = date('Y-m-d H:i:s', strtotime("$from_date -1 year"));
+            $to_1yb        = date('Y-m-d H:i:s', strtotime("$to_date  -1 year"));
 
 
             break;
