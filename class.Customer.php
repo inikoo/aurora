@@ -2573,9 +2573,7 @@ class Customer extends Subject {
 
 
         $orders_cancelled           = 0;
-        $orders_invoiced            = 0;
-        $orders_invoiced_first_date = '';
-        $orders_invoiced_last_date  = '';
+
         $order_interval             = '';
         $order_interval_std         = '';
 
@@ -2584,50 +2582,8 @@ class Customer extends Subject {
         $last_order           = '';
 
         $payments            = 0;
-        $invoiced_amount     = 0;
-        $invoiced_net_amount = 0;
-
-        /*
-                $sql = sprintf(
-                    "SELECT count(*) AS num ,
-                min(`Invoice Date`) AS first_order_date ,
-                max(`Invoice Date`) AS last_order_date
-                FROM `Invoice Dimension` WHERE `Invoice Type`='Invoice'  AND `Invoice Customer Key`=%d  ", $this->id
-                );
 
 
-                if ($result = $this->db->query($sql)) {
-                    if ($row = $result->fetch()) {
-                        $orders_invoiced            = $row['num'];
-                        $customer_invoices          = $row['num'];
-                        $orders_invoiced_first_date = $row['first_order_date'];
-                        $orders_invoiced_last_date  = $row['last_order_date'];
-                    }
-                } else {
-                    print_r($error_info = $this->db->errorInfo());
-                    print "$sql\n";
-                    exit;
-                }
-        */
-
-        /*
-                $sql = sprintf(
-                    "SELECT count(*) AS num , sum(`Invoice Total Amount`) AS total ,sum(`Invoice Total Net Amount`) AS net FROM `Invoice Dimension` WHERE   `Invoice Customer Key`=%d  ", $this->id
-                );
-
-
-                if ($result = $this->db->query($sql)) {
-                    if ($row = $result->fetch()) {
-                        $invoiced_amount     = $row['total'];
-                        $invoiced_net_amount = $row['net'];
-                        $customer_refunds    = $row['num'] - $customer_invoices;
-                    }
-                } else {
-                    print_r($error_info = $this->db->errorInfo());
-                    print "$sql\n";
-                    exit;
-                }
-        */
 
         $sql = sprintf(
             "SELECT sum(`Payment Transaction Amount`) AS payments FROM `Payment Dimension` WHERE   `Payment Customer Key`=%d  AND `Payment Transaction Status`='Completed' ", $this->id
@@ -2657,6 +2613,8 @@ class Customer extends Subject {
 
         if ($result = $this->db->query($sql)) {
             if ($row = $result->fetch()) {
+
+
 
                 $customer_orders = $row['orders'];
 
@@ -2698,20 +2656,20 @@ class Customer extends Subject {
 
         if (($orders_cancelled + $customer_orders) > 1) {
             $sql        = "SELECT `Order Date` AS date FROM `Order Dimension` WHERE  `Order State`  NOT IN ('InBasket')  AND `Order Customer Key`=".$this->id." ORDER BY `Order Date`";
-            $last_order = false;
-            $last_date  = false;
+            $_last_order = false;
+            $_last_date  = false;
             $intervals  = array();
 
 
             if ($result = $this->db->query($sql)) {
                 foreach ($result as $row) {
                     $this_date = gmdate('U', strtotime($row['date']));
-                    if ($last_order) {
-                        $intervals[] = ($this_date - $last_date);
+                    if ($_last_order) {
+                        $intervals[] = ($this_date - $_last_date);
                     }
 
-                    $last_date  = $this_date;
-                    $last_order = true;
+                    $_last_date  = $this_date;
+                    $_last_order = true;
                 }
             } else {
                 print_r($error_info = $this->db->errorInfo());
@@ -2743,7 +2701,7 @@ class Customer extends Subject {
 
         );
 
-
+        
         $this->fast_update($update_data);
 
 
@@ -2926,6 +2884,8 @@ class Customer extends Subject {
 
         $orders = $this->data['Customer Orders'];
 
+
+
         $store = get_object('store', $this->data['Customer Store Key']);
 
         if ($orders == 0) {
@@ -2965,16 +2925,15 @@ class Customer extends Subject {
             $lost_interval   = ceil($lost_interval);
             $losing_interval = ceil($losing_interval);
 
+
+
+
             $this->data['Customer Type by Activity'] = 'Active';
             $this->data['Customer Active']           = 'Yes';
-            if (strtotime('now') - strtotime(
-                    $this->data['Customer Last Order Date']
-                ) > $losing_interval) {
+            if (strtotime('now') - strtotime($this->data['Customer Last Order Date']) > $losing_interval) {
                 $this->data['Customer Type by Activity'] = 'Losing';
             }
-            if (strtotime('now') - strtotime(
-                    $this->data['Customer Last Order Date']
-                ) > $lost_interval) {
+            if (strtotime('now') - strtotime($this->data['Customer Last Order Date']) > $lost_interval) {
                 $this->data['Customer Type by Activity'] = 'Lost';
                 $this->data['Customer Active']           = 'No';
             }
