@@ -9,6 +9,12 @@
 
 */
 
+require_once 'vendor/autoload.php';
+
+
+
+
+
 
 use CommerceGuys\Addressing\Address;
 use CommerceGuys\Addressing\Formatter\DefaultFormatter;
@@ -19,61 +25,15 @@ use CommerceGuys\Addressing\Subdivision\SubdivisionRepository;
 
 
 
-//use CommerceGuys\Addressing\Formatter\DefaultFormatter;
-//use CommerceGuys\Addressing\Formatter\PostalLabelFormatter;
-//use CommerceGuys\Addressing\Model\Address;
-//use CommerceGuys\Addressing\Repository\AddressFormatRepository;
-//use CommerceGuys\Addressing\Repository\CountryRepository;
-//use CommerceGuys\Addressing\Repository\SubdivisionRepository;
-
-
-spl_autoload_register(
-    function ($className) {
-        //include_once 'external_libs/CommerceGuys/Addressing/AddressFormat/AddressFormatRepository.php';
-        //include_once 'external_libs/CommerceGuys/Addressing/AddressFormat/AddressFormatRepositoryInterface.php';
-
-        if (!preg_match('/CommerceGuys/', $className)) {
-            return;
-        }
-
-        $className = str_replace("_", "\\", $className);
-        $className = ltrim($className, '\\');
-        $fileName  = '';
-        $namespace = '';
-        if ($lastNsPos = strripos($className, '\\')) {
-            $namespace = substr($className, 0, $lastNsPos);
-            $className = substr($className, $lastNsPos + 1);
-            $fileName  = str_replace('\\', DIRECTORY_SEPARATOR, $namespace).DIRECTORY_SEPARATOR;
-        }
-        $fileName .= str_replace('_', DIRECTORY_SEPARATOR, $className).'.php';
-
-
-        include_once 'external_libs/'.$fileName;
-
-
-    }
-);
-
-
-
 
 function get_address_format($country_code) {
 
 
-    //require_once 'external_libs/CommerceGuys/Enum/AbstractEnum.php';
-    //require_once 'external_libs/CommerceGuys/Addressing/Model/FormatStringTrait.php';
-    //require_once 'external_libs/CommerceGuys/Addressing/Model/AddressFormatInterface.php';
-    //require_once 'external_libs/CommerceGuys/Addressing/Model/AddressFormatEntityInterface.php';
-    //require_once 'external_libs/CommerceGuys/Addressing/Model/AddressFormat.php';
-    //require_once 'external_libs/CommerceGuys/Addressing/Repository/AddressFormatRepositoryInterface.php';
-    //require_once 'external_libs/CommerceGuys/Addressing/Repository/DefinitionTranslatorTrait.php';
-    //require_once 'external_libs/CommerceGuys/Addressing/Repository/AddressFormatRepository.php';
-    //require_once 'external_libs/CommerceGuys/Addressing/Enum/AddressField.php';
 
 
-    $AddressFormatRepository_definitionPath = 'external_libs/CommerceGuys/Addressing/resources/address_format/';
-    $addressFormatRepository                = new AddressFormatRepository($AddressFormatRepository_definitionPath);
-
+   // $AddressFormatRepository_definitionPath = 'external_libs/CommerceGuys/Addressing/resources/address_format/';
+    //$addressFormatRepository                = new AddressFormatRepository($AddressFormatRepository_definitionPath);
+    $addressFormatRepository = new AddressFormatRepository();
 
     return $addressFormatRepository->get($country_code);
 }
@@ -81,26 +41,7 @@ function get_address_format($country_code) {
 
 function get_address_subdivisions($country_code, $locale = null) {
 
-    /*
-        require_once 'external_libs/CommerceGuys/Enum/AbstractEnum.php';
-        require_once 'external_libs/CommerceGuys/Collections/Collection.php';
-        require_once 'external_libs/CommerceGuys/Collections/Selectable.php';
-        require_once 'external_libs/CommerceGuys/Collections/AbstractLazyCollection.php';
-        require_once 'external_libs/CommerceGuys/Collections/ArrayCollection.php';
-        require_once 'external_libs/CommerceGuys/Addressing/Collection/LazySubdivisionCollection.php';
-        require_once 'external_libs/CommerceGuys/Addressing/Enum/PatternType.php';
-        require_once 'external_libs/CommerceGuys/Addressing/Model/SubdivisionInterface.php';
-        require_once 'external_libs/CommerceGuys/Addressing/Model/SubdivisionEntityInterface.php';
-        require_once 'external_libs/CommerceGuys/Addressing/Model/FormatStringTrait.php';
-        require_once 'external_libs/CommerceGuys/Addressing/Model/AddressFormatInterface.php';
-        require_once 'external_libs/CommerceGuys/Addressing/Model/AddressFormatEntityInterface.php';
-        require_once 'external_libs/CommerceGuys/Addressing/Model/Subdivision.php';
-        require_once 'external_libs/CommerceGuys/Addressing/Repository/AddressFormatRepositoryInterface.php';
-        require_once 'external_libs/CommerceGuys/Addressing/Repository/DefinitionTranslatorTrait.php';
-        require_once 'external_libs/CommerceGuys/Addressing/Repository/SubdivisionRepositoryInterface.php';
-        require_once 'external_libs/CommerceGuys/Addressing/Repository/SubdivisionRepository.php';
-    */
-    // $subdivisionRepository_definitionPath = 'external_libs/CommerceGuys/Addressing/resources/subdivision/';
+
     $subdivisionRepository = new SubdivisionRepository();
 
     return $subdivisionRepository->getAll([$country_code]);
@@ -111,8 +52,6 @@ function get_address_subdivisions($country_code, $locale = null) {
 function get_address_formatter($origin_country = null, $locale = null) {
 
 
-
-
     $address = new Address();
 
 
@@ -120,14 +59,19 @@ function get_address_formatter($origin_country = null, $locale = null) {
     $countryRepository       = new CountryRepository();
     $subdivisionRepository   = new SubdivisionRepository();
     $formatter               = new DefaultFormatter(
-        $addressFormatRepository, $countryRepository, $subdivisionRepository, $locale, array(
-        'html_tag'        => 'div',
-        'html_attributes' => array('class' => "adr")
-    )
+        $addressFormatRepository, $countryRepository, $subdivisionRepository, array(
+                                    'locale'          => $locale,
+                                    'html_tag'        => 'div',
+                                    'html_attributes' => array('class' => "adr")
+                                )
     );
 
-    $postal_label = new PostalLabelFormatter($addressFormatRepository, $countryRepository, $subdivisionRepository, $origin_country, $locale);
+    $postal_label = new PostalLabelFormatter($addressFormatRepository, $countryRepository, $subdivisionRepository,
 
+         array(
+             'locale'          => $locale,
+             'origin_country'=>$origin_country
+         ));
 
 
     return array(

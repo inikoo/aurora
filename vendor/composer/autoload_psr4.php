@@ -17,6 +17,7 @@ return array(
     'GuzzleHttp\\Promise\\' => array($vendorDir . '/guzzlehttp/promises/src'),
     'GuzzleHttp\\' => array($vendorDir . '/guzzlehttp/guzzle/src'),
     'DeepCopy\\' => array($vendorDir . '/myclabs/deep-copy/src/DeepCopy'),
+    'CommerceGuys\\Addressing\\' => array($vendorDir . '/commerceguys/addressing/src'),
     'Aws\\Sns\\' => array($vendorDir . '/aws/aws-php-sns-message-validator/src'),
     'Aws\\' => array($vendorDir . '/aws/aws-sdk-php/src'),
 );

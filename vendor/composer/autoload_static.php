@@ -48,6 +48,10 @@ class ComposerStaticInitc3d033a2dccd672af6cc5e1bcddee956
         array (
             'DeepCopy\\' => 9,
         ),
+        'C' => 
+        array (
+            'CommerceGuys\\Addressing\\' => 24,
+        ),
         'A' => 
         array (
             'Aws\\Sns\\' => 8,
@@ -100,6 +104,10 @@ class ComposerStaticInitc3d033a2dccd672af6cc5e1bcddee956
         array (
             0 => __DIR__ . '/..' . '/myclabs/deep-copy/src/DeepCopy',
         ),
+        'CommerceGuys\\Addressing\\' => 
+        array (
+            0 => __DIR__ . '/..' . '/commerceguys/addressing/src',
+        ),
         'Aws\\Sns\\' => 
         array (
             0 => __DIR__ . '/..' . '/aws/aws-php-sns-message-validator/src',
@@ -107,6 +115,16 @@ class ComposerStaticInitc3d033a2dccd672af6cc5e1bcddee956
         'Aws\\' => 
         array (
             0 => __DIR__ . '/..' . '/aws/aws-sdk-php/src',
+        ),
+    );
+
+    public static $prefixesPsr0 = array (
+        'D' => 
+        array (
+            'Doctrine\\Common\\Collections\\' => 
+            array (
+                0 => __DIR__ . '/..' . '/doctrine/collections/lib',
+            ),
         ),
     );
 
@@ -132,6 +150,7 @@ class ComposerStaticInitc3d033a2dccd672af6cc5e1bcddee956
         return \Closure::bind(function () use ($loader) {
             $loader->prefixLengthsPsr4 = ComposerStaticInitc3d033a2dccd672af6cc5e1bcddee956::$prefixLengthsPsr4;
             $loader->prefixDirsPsr4 = ComposerStaticInitc3d033a2dccd672af6cc5e1bcddee956::$prefixDirsPsr4;
+            $loader->prefixesPsr0 = ComposerStaticInitc3d033a2dccd672af6cc5e1bcddee956::$prefixesPsr0;
             $loader->classMap = ComposerStaticInitc3d033a2dccd672af6cc5e1bcddee956::$classMap;
 
         }, null, ClassLoader::class);

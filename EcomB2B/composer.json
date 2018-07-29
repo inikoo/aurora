@@ -1,0 +1,6 @@
+{
+    "require": {
+        "aws/aws-sdk-php": "^3.64",
+        "commerceguys/addressing": "^1.0"
+    }
+}
