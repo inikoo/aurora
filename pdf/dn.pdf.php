@@ -1,7 +1,7 @@
 <?php
 /*
  About:
- Autor: Raul Perusquia <raul@inikoo.com>
+ Author: Raul Perusquia <raul@inikoo.com>
  Created: 13 September 2017 at 00:42:19 GMT+8, Kuala Lumpur, Malaysia
 
  Copyright (c) 2017, Inikoo
@@ -9,25 +9,23 @@
  Version 2.0
 */
 chdir('../');
+require_once __DIR__.'/../vendor/autoload.php';
 
 require_once('common.php');
-require_once('class.Store.php');
-require_once('class.Customer.php');
-
-require_once('class.Invoice.php');
-require_once('class.DeliveryNote.php');
+require_once 'utils/object_functions.php';
 
 
 $id = isset($_REQUEST['id']) ? $_REQUEST['id'] : '';
 if (!$id) {
     exit("no id");
 }
-$delivery_note = new DeliveryNote($id);
+$delivery_note = get_object('DeliveryNote',$id);
 if (!$delivery_note->id) {
     exit("no dn");
 }
-$store    = new Store($delivery_note->data['Delivery Note Store Key']);
-$customer = new Customer($delivery_note->data['Delivery Note Customer Key']);
+
+$store    = get_object('Store', $delivery_note->get('Delivery Note Store Key'));
+$customer = get_object('Customer', $delivery_note->get('Delivery Note Customer Key'));
 
 
 $parcels     = $delivery_note->get_formatted_parcels();
@@ -36,9 +34,7 @@ $consignment = $delivery_note->data['Delivery Note Shipper Consignment'];
 
 $smarty->assign('parcels', $parcels);
 $smarty->assign('weight', ($weight ? $delivery_note->get('Weight') : ''));
-$smarty->assign(
-    'consignment', ($consignment ? $delivery_note->get('Consignment') : '')
-);
+$smarty->assign('consignment', ($consignment ? $delivery_note->get('Consignment') : ''));
 
 
 $shipper_data = array();
@@ -66,15 +62,38 @@ if ($result=$db->query($sql)) {
 $smarty->assign('shipper_data', $shipper_data);
 
 
-putenv('LC_ALL='.$store->data['Store Locale'].'.UTF-8');
-setlocale(LC_ALL, $store->data['Store Locale'].'.UTF-8');
+
+
+if(!empty($_REQUEST['locale'])){
+    $_locale=$_REQUEST['locale'];
+}else{
+    $_locale=$store->get('Store Locale');
+
+}
+
+
+
+
+putenv('LC_ALL='.$_locale.'.UTF-8');
+setlocale(LC_ALL, $_locale.'.UTF-8');
 bindtextdomain("inikoo", "./locales");
 textdomain("inikoo");
 
 
-include("external_libs/mpdf/mpdf.php");
 
-$mpdf = new mPDF('win-1252', 'A4', '', '', 20, 15, 38, 25, 10, 10);
+$mpdf = new \Mpdf\Mpdf(
+    [
+        'tempDir'       => __DIR__.'/../server_files/pdf_tmp',
+        'mode'          => 'utf-8',
+        'margin_left'   => 20,
+        'margin_right'  => 15,
+        'margin_top'    => 38,
+        'margin_bottom' => 25,
+        'margin_header' => 10,
+        'margin_footer' => 10
+    ]
+);
+
 
 $mpdf->useOnlyCoreFonts = true;    // false is default
 $mpdf->SetTitle(
@@ -114,9 +133,7 @@ if ($result=$db->query($sql)) {
             }
             $row['Ordered']      = $row['Order Quantity']+$row['Order Bonus Quantity'];
             $row['notes']      = $notes;
-            $row['RRP']        = money(
-                $row['Product RRP'], $store->data['Store Currency Code']
-            );
+            $row['RRP']        = money($row['Product RRP'], $store->data['Store Currency Code']);
             $row['Product Description']=$row['Product Units Per Case'].'x '.$row['Product Name'];
 
 

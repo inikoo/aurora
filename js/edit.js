@@ -2163,6 +2163,8 @@ function erase_date_field(field) {
 
 function toggle_field_value(element) {
 
+
+
     var icon = $(element).find('i')
 
     if (icon.hasClass('fa-toggle-on')) {
@@ -2175,4 +2177,19 @@ function toggle_field_value(element) {
 
 }
 
+function check_field_value(element) {
+
+
+
+    var icon = $(element).find('i')
+
+    if (icon.hasClass('fa-check-square')) {
+        icon.removeClass('fa-check-square').addClass('fa-square').next('span').addClass('discreet')
+
+    } else if (icon.hasClass('fa-square')) {
+        icon.removeClass('fa-square').addClass('fa-check-square').next('span').removeClass('discreet')
+    }
+
+
+}
 

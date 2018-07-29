@@ -122,6 +122,10 @@ div.inline { float:left; }
 
 		</tr>
 	</table>
+
+
+
+
 	<table width="100%" style="font-family: sans-serif;" cellpadding="10">
 		<tr>
 			<td width="45%" style="border: 0.1mm solid #888888;"> <span style="font-size: 7pt; color: #555555; font-family: sans-serif;">{t}Delivery address{/t}:</span> 
@@ -147,9 +151,8 @@ div.inline { float:left; }
 	<table class="items" width="100%" style="font-size: 9pt; border-collapse: collapse;" cellpadding="8">
 		<thead>
 			<tr>
-				<td style="width:8%;text-align:left">{t}Code{/t}</td>
+				<td style="width:15%;text-align:left">{t}Code{/t}</td>
 				<td style="text-align:left">{t}Description{/t}</td>
-
 				<td style="width:8%;text-align:right">{t}Required{/t}</td>
 				<td style="width:8%;text-align:right">{t}Dispatched{/t}</td>
 			</tr>
@@ -157,7 +160,11 @@ div.inline { float:left; }
 		<tbody>
 			{foreach from=$transactions item=transaction name=products} 
 			<tr class="{if $smarty.foreach.products.last}last{/if}">
-				<td style="width:8%;text-align:left">{$transaction['Part Reference']}{if $transaction['Part SKO Barcode']!=''}<br>{$transaction['Part SKO Barcode']}{/if}</td>
+				<td style="width:15%;text-align:left">{$transaction['Part Reference']}
+					{if $transaction['Part SKO Barcode']!='' and false}
+						<barcode code="{$transaction['Part SKO Barcode']}" type="C128A" class="barcode" />
+					{/if}
+				</td>
 				<td style="text-align:left">{$transaction['Part Package Description']}<br/><small>{t}From product{/t}: <b>{$transaction['Product Code']}</b> {$transaction['Product Description']}  ({t}Ordered{/t}:{$transaction['Ordered']})</small> </td>
 
 				<td style="width:8%;text-align:right">{$transaction['Required']}</td>

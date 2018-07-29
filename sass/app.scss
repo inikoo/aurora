@@ -1312,3 +1312,35 @@ h2.dashboard{
   font-size: 12px;
   padding:0px 0px 0px 20px;margin:0px;
 }
+
+
+.options_dialog{
+
+  color:#777;
+  font-size: 12px;
+  h2{
+    font-family: "Ubuntu", "Lucida Grande", "Lucida Sans Unicode", Verdana, Arial, sans-serif;
+    font-weight: 300;
+    font-size: 14px;
+    padding:0px 0px 0px 0px;margin:0px;
+    margin-bottom:10px;
+  }
+
+  position:absolute;
+  background-color: white;
+  border:1px solid #ccc;
+  padding: 10px;
+  z-index: 2000;
+
+
+
+  tr{
+    height: auto;
+  }
+  .options td{
+    padding:2px 15px;border:1px solid #ccc;cursor:pointer;color: dimgrey;
+  }
+  .options td:hover {
+    color: #333
+  }
+}

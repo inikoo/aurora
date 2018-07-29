@@ -2754,7 +2754,6 @@ class Part extends Asset {
         list($stock, $value, $in_process) = $this->get_current_stock();
         //print $stock;
 
-
         $this->fast_update(
             array(
                 'Part Current Stock'            => $stock + $picked,

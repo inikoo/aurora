@@ -211,54 +211,63 @@ div.inline { float:left; }
 		</tbody>
 		<tbody class="totals">
 			<tr>
-				<td style="border:none" colspan="2" rowspan="10"></td>
+				<td style="border:none" colspan="2" ></td>
 				<td colspan="2">{t}Items Net{/t}</td>
 				<td>{$invoice->get('Items Net Amount')}</td>
 			</tr>
-			{if $invoice->get('Invoice Net Amount Off')!=0 } 
+			{if $invoice->get('Invoice Net Amount Off')!=0 }
 			<tr>
+				<td style="border:none" colspan="2" ></td>
 				<td colspan="2">{t}Amount Off{/t}</td>
 				<td>{$invoice->get('Net Amount Off')}</td>
 			</tr>
 			{/if}
-			
-			{if $invoice->get('Invoice Refund Net Amount')!=0 } 
+
+			{if $invoice->get('Invoice Refund Net Amount')!=0 }
 			<tr>
+				<td style="border:none" colspan="2" ></td>
 				<td colspan="2">{t}Refunds{/t}</td>
 				<td>{$invoice->get('Refund Net Amount')}</td>
 			</tr>
-			{/if} 
+			{/if}
 			<tr>
+				<td style="border:none" colspan="2" ></td>
 				<td colspan="2">{t}Shipping{/t}</td>
 				<td>{$invoice->get('Shipping Net Amount')}</td>
 			</tr>
-			{if $invoice->get('Invoice Charges Net Amount')!=0} 
+			{if $invoice->get('Invoice Charges Net Amount')!=0}
 			<tr>
+				<td style="border:none" colspan="2" ></td>
 				<td colspan="2">{t}Charges{/t}</td>
 				<td>{$invoice->get('Charges Net Amount')}</td>
 			</tr>
-			{/if} {if $invoice->get('Invoice Insurance Net Amount')!=0} 
+			{/if} {if $invoice->get('Invoice Insurance Net Amount')!=0}
 			<tr>
+				<td style="border:none" colspan="2" ></td>
 				<td colspan="2">{t}Insurance{/t}</td>
 				<td>{$invoice->get('Insurance Net Amount')}</td>
 			</tr>
-			{/if} {if $invoice->get('Invoice Total Net Adjust Amount')!=0} 
+			{/if} {if $invoice->get('Invoice Total Net Adjust Amount')!=0}
 			<tr>
+				<td style="border:none" colspan="2" ></td>
 				<td colspan="2">{t}Adjusts{/t}</td>
 				<td>{$invoice->get('Total Net Adjust Amount')}</td>
 			</tr>
-			{/if} 
+			{/if}
 			<tr class="total_net">
+				<td style="border:none" colspan="2" ></td>
 				<td colspan="2">{t}Total Net{/t}</td>
 				<td>{$invoice->get('Total Net Amount')}</td>
 			</tr>
-			{foreach from=$tax_data item=tax } 
+			{foreach from=$tax_data item=tax }
 			<tr>
+				<td style="border:none" colspan="2" ></td>
 				<td class="totals" colspan="2">{t}Tax{/t} ({$tax.name})</td>
 				<td class="totals">{$tax.amount}</td>
 			</tr>
-			{/foreach} 
+			{/foreach}
 			<tr class="total">
+				<td style="border:none" colspan="2" ></td>
 				<td colspan="2"><b>{t}Total{/t}</b></td>
 				<td>{$invoice->get('Total Amount')}</td>
 			</tr>
