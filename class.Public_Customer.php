@@ -96,8 +96,7 @@ class Public_Customer extends DBW_Table {
 
 
         $sql = sprintf(
-            'SELECT `Customer Key` FROM `Customer Dimension` WHERE `Customer Store Key`=%d AND `Customer Main Plain Email`=%s ', $raw_data['Customer Store Key'],
-            prepare_mysql($raw_data['Customer Main Plain Email'])
+            'SELECT `Customer Key` FROM `Customer Dimension` WHERE `Customer Store Key`=%d AND `Customer Main Plain Email`=%s ', $raw_data['Customer Store Key'], prepare_mysql($raw_data['Customer Main Plain Email'])
         );
 
         if ($result = $this->db->query($sql)) {
@@ -484,11 +483,12 @@ class Public_Customer extends DBW_Table {
         list($address, $formatter, $postal_label_formatter) = get_address_formatter($country, $locale);
 
 
-        $address = $address->withFamilyName($this->get($type.' Address Recipient'))->withOrganization($this->get($type.' Address Organization'))->withAddressLine1($this->get($type.' Address Line 1'))
-            ->withAddressLine2($this->get($type.' Address Line 2'))->withSortingCode($this->get($type.' Address Sorting Code'))->withPostalCode($this->get($type.' Address Postal Code'))
-            ->withDependentLocality($this->get($type.' Address Dependent Locality'))->withLocality($this->get($type.' Address Locality'))->withAdministrativeArea(
-                $this->get($type.' Address Administrative Area')
-            )->withCountryCode($this->get($type.' Address Country 2 Alpha Code'));
+        $address =
+            $address->withFamilyName($this->get($type.' Address Recipient'))->withOrganization($this->get($type.' Address Organization'))->withAddressLine1($this->get($type.' Address Line 1'))->withAddressLine2($this->get($type.' Address Line 2'))->withSortingCode(
+                    $this->get($type.' Address Sorting Code')
+                )->withPostalCode($this->get($type.' Address Postal Code'))->withDependentLocality($this->get($type.' Address Dependent Locality'))->withLocality($this->get($type.' Address Locality'))->withAdministrativeArea(
+                    $this->get($type.' Address Administrative Area')
+                )->withCountryCode($this->get($type.' Address Country 2 Alpha Code'));
 
 
         $xhtml_address = $formatter->format($address);
@@ -547,12 +547,15 @@ class Public_Customer extends DBW_Table {
         return $order_key;
     }
 
-    function update_field_switcher($field, $value, $options = '', $metadata = '') {
+    function update_field_switcher($field, $value, $options = '', $metadata = array()) {
 
 
         if (is_string($value)) {
             $value = _trim($value);
         }
+
+
+
 
 
         switch ($field) {
@@ -566,6 +569,7 @@ class Public_Customer extends DBW_Table {
             case 'Customer Contact Address':
 
                 $this->update_address('Contact', json_decode($value, true), $options);
+
 
 
                 if (empty($metadata['no_propagate_addresses'])) {
@@ -604,23 +608,23 @@ class Public_Customer extends DBW_Table {
 
                     if ($this->data['Customer Billing Address Link'] == 'Contact') {
 
-                        $metadata['no_propagate_addresses'] = true;
-                        $this->update_field_switcher('Customer Contact Address', $value, $options, $metadata);
+
+                        $this->update_field_switcher('Customer Contact Address', $value, $options, array('no_propagate_addresses' => true));
 
                         if ($this->data['Customer Delivery Address Link'] == 'Contact') {
 
-                            $this->update_field_switcher('Customer Delivery Address', $value, $options, $metadata);
+                            $this->update_field_switcher('Customer Delivery Address', $value, $options, array('no_propagate_addresses' => true));
 
                         }
 
 
                     }
+
+
                     if ($this->data['Customer Delivery Address Link'] == 'Billing') {
 
 
-                        $metadata['no_propagate_addresses'] = true;
-
-                        $this->update_field_switcher('Customer Delivery Address', $value, $options, $metadata);
+                        $this->update_field_switcher('Customer Delivery Address', $value, $options, array('no_propagate_addresses' => true));
                     }
 
                 }
@@ -645,7 +649,7 @@ class Public_Customer extends DBW_Table {
                 break;
             case 'Customer Delivery Address':
 
-
+              
                 $this->update_address('Delivery', json_decode($value, true));
 
                 $sql = sprintf('SELECT `Order Key` FROM `Order Dimension` WHERE  `Order State` IN ("InBasket")   AND `Order Customer Key`=%d ', $this->id);
@@ -846,7 +850,7 @@ class Public_Customer extends DBW_Table {
 
                 break;
             case 'Customer Main Contact Name':
-              //  $old_value = $this->get('Main Contact Name');
+                //  $old_value = $this->get('Main Contact Name');
 
                 if ($value == '' and $this->data[$this->table_name.' Company Name'] == '') {
                     $this->msg   = _("Contact name can't be empty if the company name is empty");
@@ -911,9 +915,8 @@ class Public_Customer extends DBW_Table {
                 }
 
                 $sql = sprintf(
-                    'SELECT `%s Key`,`%s Name` FROM `%s Dimension`  WHERE `%s Main Plain Email`=%s AND `%s Store Key`=%d AND `%s Key`!=%d ', addslashes($this->table_name),
-                    addslashes($this->table_name), addslashes($this->table_name), addslashes($this->table_name), prepare_mysql($value), addslashes($this->table_name), $this->get('Store Key'),
-                    addslashes($this->table_name), $this->id
+                    'SELECT `%s Key`,`%s Name` FROM `%s Dimension`  WHERE `%s Main Plain Email`=%s AND `%s Store Key`=%d AND `%s Key`!=%d ', addslashes($this->table_name), addslashes($this->table_name), addslashes($this->table_name), addslashes($this->table_name),
+                    prepare_mysql($value), addslashes($this->table_name), $this->get('Store Key'), addslashes($this->table_name), $this->id
                 );
 
                 if ($result = $this->db->query($sql)) {
@@ -937,9 +940,9 @@ class Public_Customer extends DBW_Table {
                 }
 
                 $sql = sprintf(
-                    'SELECT `%s Key`,`%s Name` FROM `%s Other Email Dimension` LEFT JOIN `%s Dimension` ON (`%s Key`=`%s Other Email %s Key`) WHERE `%s Other Email Email`=%s AND `%s Other Email Store Key`=%d ',
-                    addslashes($this->table_name), addslashes($this->table_name), addslashes($this->table_name), addslashes($this->table_name), addslashes($this->table_name),
-                    addslashes($this->table_name), addslashes($this->table_name), addslashes($this->table_name), prepare_mysql($value), addslashes($this->table_name), $this->get('Store Key')
+                    'SELECT `%s Key`,`%s Name` FROM `%s Other Email Dimension` LEFT JOIN `%s Dimension` ON (`%s Key`=`%s Other Email %s Key`) WHERE `%s Other Email Email`=%s AND `%s Other Email Store Key`=%d ', addslashes($this->table_name),
+                    addslashes($this->table_name), addslashes($this->table_name), addslashes($this->table_name), addslashes($this->table_name), addslashes($this->table_name), addslashes($this->table_name), addslashes($this->table_name), prepare_mysql($value),
+                    addslashes($this->table_name), $this->get('Store Key')
                 );
                 //print "$sql\n";
                 if ($result = $this->db->query($sql)) {
@@ -988,7 +991,6 @@ class Public_Customer extends DBW_Table {
                 }
 
 
-
                 break;
             case 'Customer Registration Number':
             case 'Customer Location':
@@ -1009,8 +1011,7 @@ class Public_Customer extends DBW_Table {
             case 'Customer Tax Number':
                 $this->update_tax_number($value);
 
-                $sql =
-                    sprintf('SELECT `Order Key` FROM `Order Dimension` WHERE  `Order State` IN (\'InBasket\',\'InProcess\',\'InWarehouse\',\'PackedDone\')  AND `Order Customer Key`=%d ', $this->id);
+                $sql = sprintf('SELECT `Order Key` FROM `Order Dimension` WHERE  `Order State` IN (\'InBasket\',\'InProcess\',\'InWarehouse\',\'PackedDone\')  AND `Order Customer Key`=%d ', $this->id);
                 if ($result = $this->db->query($sql)) {
                     foreach ($result as $row) {
                         $order = get_object('Order', $row['Order Key']);
@@ -1027,7 +1028,6 @@ class Public_Customer extends DBW_Table {
             default:
 
 
-
                 if (preg_match('/^Customer Poll Query (\d+)/i', $field, $matches)) {
                     $poll_key = $matches[1];
                     $this->update_poll_answer($poll_key, $value, $options);
@@ -1035,7 +1035,7 @@ class Public_Customer extends DBW_Table {
                     return;
                 }
 
-                // print ">>>".$field."\n";
+            // print ">>>".$field."\n";
 
         }
     }
@@ -1104,6 +1104,14 @@ class Public_Customer extends DBW_Table {
 
     }
 
+    function update_poll_answer($poll_key, $value, $options) {
+
+        $poll = get_object('Customer_Poll_Query', $poll_key);
+
+        $poll->add_customer($this, $value, $options);
+
+
+    }
 
     function get_greetings($locale = false) {
 
@@ -1124,14 +1132,13 @@ class Public_Customer extends DBW_Table {
             return $unknown_name;
         }
         $greeting = $greeting_prefix.' '.$this->data[$this->table_name.' Main Contact Name'];
-        if ($this->data[$this->table_name.' Company Name'] != ''  and $this->data[$this->table_name.' Company Name'] !=$this->data[$this->table_name.' Main Contact Name']  ) {
+        if ($this->data[$this->table_name.' Company Name'] != '' and $this->data[$this->table_name.' Company Name'] != $this->data[$this->table_name.' Main Contact Name']) {
             $greeting .= ', '.$this->data[$this->table_name.' Name'];
         }
 
         return $greeting;
 
     }
-
 
     function create_order() {
 
@@ -1164,8 +1171,8 @@ class Public_Customer extends DBW_Table {
         $order_data['Order Tax Number Registered Name']    = $this->data['Customer Tax Number Registered Name'];
         $order_data['Order Tax Number Registered Address'] = $this->data['Customer Tax Number Registered Address'];
         $order_data['Order Available Credit Amount']       = $this->data['Customer Account Balance'];
-        $order_data['Order Sales Representative Key']       = $this->data['Customer Sales Representative Key'];
-        
+        $order_data['Order Sales Representative Key']      = $this->data['Customer Sales Representative Key'];
+
         $order_data['Order Customer Fiscal Name'] = $this->get('Fiscal Name');
         $order_data['Order Email']                = $this->data['Customer Main Plain Email'];
         $order_data['Order Telephone']            = $this->data['Customer Preferred Contact Number Formatted Number'];
@@ -1237,7 +1244,6 @@ class Public_Customer extends DBW_Table {
 
     }
 
-
     function get_number_of_orders() {
         $sql    = sprintf(
             "SELECT count(*) AS number FROM `Order Dimension` WHERE `Order Customer Key`=%d ", $this->id
@@ -1259,7 +1265,6 @@ class Public_Customer extends DBW_Table {
 
 
     }
-
 
     function save_credit_card($vault, $card_info, $delivery_address_checksum, $invoice_address_checksum) {
         include_once 'utils/aes.php';
@@ -1284,11 +1289,10 @@ class Public_Customer extends DBW_Table {
         $sql = sprintf(
             "INSERT INTO `Customer Credit Card Dimension` (`Customer Credit Card Customer Key`,`Customer Credit Card Invoice Address Checksum`,`Customer Credit Card Delivery Address Checksum`,`Customer Credit Card CCUI`,`Customer Credit Card Metadata`,`Customer Credit Card Created`,`Customer Credit Card Updated`,`Customer Credit Card Valid Until`,`Customer Credit Card Vault`) 
               VALUES (%d,%s,%s,%s,%s,%s,%s,%s,%s)
-		      ON DUPLICATE KEY UPDATE `Customer Credit Card Metadata`=%s , `Customer Credit Card Updated`=%s,`Customer Credit Card Valid Until`=%s", $this->id,
-            prepare_mysql($invoice_address_checksum), prepare_mysql($delivery_address_checksum), prepare_mysql($card_info['uniqueNumberIdentifier']), prepare_mysql($card_data),
-            prepare_mysql(gmdate('Y-m-d H:i:s')), prepare_mysql(gmdate('Y-m-d H:i:s')),
-            prepare_mysql(gmdate('Y-m-d H:i:s', strtotime($card_info['expirationYear'].'-'.$card_info['expirationMonth'].'-01 +1 month'))), prepare_mysql($vault), prepare_mysql($card_data),
-            prepare_mysql(gmdate('Y-m-d H:i:s')), prepare_mysql(gmdate('Y-m-d H:i:s', strtotime($card_info['expirationYear'].'-'.$card_info['expirationMonth'].'-01 +1 month')))
+		      ON DUPLICATE KEY UPDATE `Customer Credit Card Metadata`=%s , `Customer Credit Card Updated`=%s,`Customer Credit Card Valid Until`=%s", $this->id, prepare_mysql($invoice_address_checksum), prepare_mysql($delivery_address_checksum),
+            prepare_mysql($card_info['uniqueNumberIdentifier']), prepare_mysql($card_data), prepare_mysql(gmdate('Y-m-d H:i:s')), prepare_mysql(gmdate('Y-m-d H:i:s')),
+            prepare_mysql(gmdate('Y-m-d H:i:s', strtotime($card_info['expirationYear'].'-'.$card_info['expirationMonth'].'-01 +1 month'))), prepare_mysql($vault), prepare_mysql($card_data), prepare_mysql(gmdate('Y-m-d H:i:s')),
+            prepare_mysql(gmdate('Y-m-d H:i:s', strtotime($card_info['expirationYear'].'-'.$card_info['expirationMonth'].'-01 +1 month')))
 
         );
 
@@ -1518,8 +1522,6 @@ class Public_Customer extends DBW_Table {
 
     }
 
-
-
     function update_account_balance() {
         $balance = 0;
         $sql     = sprintf(
@@ -1536,15 +1538,6 @@ class Public_Customer extends DBW_Table {
         }
 
         $this->fast_update(array('Customer Account Balance' => $balance));
-
-    }
-
-    function update_poll_answer($poll_key, $value, $options) {
-
-        $poll = get_object('Customer_Poll_Query', $poll_key);
-
-        $poll->add_customer($this, $value,$options);
-
 
     }
 

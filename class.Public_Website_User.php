@@ -205,7 +205,7 @@ class Public_Website_User extends DBW_Table {
                 break;
 
 
-            default:
+          break;
 
             case 'Website User Handle':
 
