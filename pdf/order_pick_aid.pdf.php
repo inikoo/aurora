@@ -1,5 +1,9 @@
 <?php
 chdir('../');
+require_once __DIR__.'/../vendor/autoload.php';
+
+
+
 require_once 'utils/object_functions.php';
 
 require_once 'common.php';
@@ -18,11 +22,22 @@ $customer    = get_object('Customer',$delivery_note->get('Delivery Note Customer
 
 
 
-include "external_libs/mpdf/mpdf.php";
 
-$mpdf                   = new mPDF(
-    'win-1252', 'A4', '', '', 15, 15, 22, 25, 10, 10
+
+$mpdf = new \Mpdf\Mpdf(
+    [
+        'tempDir'       => __DIR__.'/../server_files/pdf_tmp',
+        'mode'          => 'utf-8',
+        'margin_left'   => 15,
+        'margin_right'  => 15,
+        'margin_top'    => 22,
+        'margin_bottom' => 25,
+        'margin_header' => 10,
+        'margin_footer' => 10
+    ]
 );
+
+
 $mpdf->useOnlyCoreFonts = true;    // false is default
 $mpdf->SetTitle(_('Picking Aid').' '.$delivery_note->data['Delivery Note ID']);
 $mpdf->SetAuthor($store->data['Store Name']);
@@ -57,6 +72,8 @@ if ($result=$db->query($sql)) {
             $total_stock      = $row['total_stock'];
 
             $row['stock']   = sprintf("[<b>%d</b>,%d]", $stock_in_picking, $total_stock);
+            $row['description_note']='';
+            $row['images']='';
             $transactions[] = $row;
 		}
 }else {

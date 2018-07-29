@@ -8,6 +8,7 @@
  Version 3
 
 */
+require_once __DIR__.'/vendor/autoload.php';
 
 include_once 'common.php';
 include_once 'utils/object_functions.php';
@@ -45,14 +46,25 @@ $w = 50;
 $h = 23;
 
 
-include "external_libs/mpdf/mpdf.php";
 
-$mpdf = new mPDF(
-    'utf-8', array(
-    $w,
-    $h
-), '', '', 0, 0, 0, 0, 0, 0
+$mpdf = new \Mpdf\Mpdf(
+    [
+        'tempDir'       => __DIR__.'/server_files/pdf_tmp',
+        'mode'          => 'utf-8',
+        'format'        => [
+            $w,
+            $h
+        ],
+        'margin_left'   => 0,
+        'margin_right'  => 0,
+        'margin_top'    => 0,
+        'margin_bottom' => 0,
+        'margin_header' => 0,
+        'margin_footer' => 0
+    ]
 );
+
+
 $mpdf->SetTitle('Label '.$object->get_name().' '.$object->id);
 $mpdf->SetAuthor('Aurora Systems');
 

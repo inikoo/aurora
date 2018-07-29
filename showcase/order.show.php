@@ -12,9 +12,7 @@
 
 function get_order_showcase($data, $smarty, $user, $db) {
 
-
-
-
+    require_once 'utils/geography_functions.php';
 
     if (!$data['_object']->id) {
         return "";
@@ -22,48 +20,68 @@ function get_order_showcase($data, $smarty, $user, $db) {
 
 
     $order = $data['_object'];
-    $store=get_object('store',$order->get('Store Key'));
+    $store = get_object('store', $order->get('Store Key'));
 
 
-  // $order->update_totals();
+    // $order->update_totals();
 
-    $smarty->assign('order',$order);
+    $smarty->assign('order', $order);
     $smarty->assign('store', $store);
-    $smarty->assign('customer', get_object('customer',$order->get('Customer Key')));
-
+    $smarty->assign('customer', get_object('customer', $order->get('Customer Key')));
 
 
     $smarty->assign(
         'object_data', base64_encode(
-            json_encode(
-                array(
-                    'object' => $data['object'],
-                    'key'    => $data['key'],
-                    'symbol'=>currency_symbol($order->get('Order Currency')),
-                    'tax_rate'=>$order->get('Order Tax Rate'),
-                    'available_to_refund'=>$order->get('Order Total Amount'),
-                    'tab' => $data['tab'],
-                    'order_type'=>'Order'
-                )
-            )
-        )
+                         json_encode(
+                             array(
+                                 'object'              => $data['object'],
+                                 'key'                 => $data['key'],
+                                 'symbol'              => currency_symbol($order->get('Order Currency')),
+                                 'tax_rate'            => $order->get('Order Tax Rate'),
+                                 'available_to_refund' => $order->get('Order Total Amount'),
+                                 'tab'                 => $data['tab'],
+                                 'order_type'          => 'Order'
+                             )
+                         )
+                     )
     );
 
 
+    if (in_array(
+        $order->get('Order Delivery Address Country 2 Alpha Code'), get_countries_EC_Fiscal_VAT_area($db)
+    )) {
+        $pdf_with_commodity = false;
+    } else {
+        $pdf_with_commodity = true;
+    }
+    $smarty->assign('pdf_with_commodity', $pdf_with_commodity);
 
-    if($data['section']=='refund.new'){
-        $smarty->assign('zero_amount',money(0,$store->get('Store Currency Code')));
+    if($store->get('Store Locale')!='en_GB'){
+        $pdf_show_locale_option = true;
+    }else{
+        $pdf_show_locale_option = false;
+
+    }
+    $smarty->assign('pdf_show_locale_option', $pdf_show_locale_option);
+
+    $pdf_with_rrp=true;
+    $smarty->assign('pdf_with_rrp', $pdf_with_rrp);
+
+
+    if ($data['section'] == 'refund.new') {
+        $smarty->assign('zero_amount', money(0, $store->get('Store Currency Code')));
+
         return $smarty->fetch('showcase/refund.new.tpl');
 
-    }elseif($data['section']=='replacement.new'){
-        $smarty->assign('zero_amount',money(0,$store->get('Store Currency Code')));
+    } elseif ($data['section'] == 'replacement.new') {
+        $smarty->assign('zero_amount', money(0, $store->get('Store Currency Code')));
+
         return $smarty->fetch('showcase/replacement.new.tpl');
 
-    }else{
+    } else {
         return $smarty->fetch('showcase/order.tpl');
 
     }
-
 
 
 }

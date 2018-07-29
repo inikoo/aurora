@@ -184,12 +184,13 @@ div.inline { float:left; }
 
 		<tbody class="totals">
 			<tr>
-				<td style="border:none" colspan="2" rowspan="10"></td>
+				<td style="border:none" colspan="2" ></td>
 				<td colspan="2">{t}Items Net{/t}</td>
 				<td>{$order->get('Items Net Amount')}</td>
 			</tr>
 			{if $order->get('Order Net Amount Off')!=0 } 
 			<tr>
+				<td style="border:none" colspan="2" ></td>
 				<td colspan="2">{t}Amount Off{/t}</td>
 				<td>{$order->get('Net Amount Off')}</td>
 			</tr>
@@ -197,39 +198,47 @@ div.inline { float:left; }
 			
 			{if $order->get('Order Refund Net Amount')!=0 } 
 			<tr>
+				<td style="border:none" colspan="2" ></td>
 				<td colspan="2">{t}Refunds{/t}</td>
 				<td>{$order->get('Refund Net Amount')}</td>
 			</tr>
 			{/if} 
 			<tr>
+				<td style="border:none" colspan="2" ></td>
 				<td colspan="2">{t}Shipping{/t}</td>
 				<td>{$order->get('Shipping Net Amount')}</td>
 			</tr>
 			{if $order->get('Order Charges Net Amount')!=0} 
 			<tr>
+				<td style="border:none" colspan="2" ></td>
 				<td colspan="2">{t}Charges{/t}</td>
 				<td>{$order->get('Charges Net Amount')}</td>
 			</tr>
 			{/if} {if $order->get('Order Insurance Net Amount')!=0} 
 			<tr>
+				<td style="border:none" colspan="2" ></td>
 				<td colspan="2">{t}Insurance{/t}</td>
 				<td>{$order->get('Insurance Net Amount')}</td>
 			</tr>
 			{/if} {if $order->get('Order Total Net Adjust Amount')!=0} 
 			<tr>
+				<td style="border:none" colspan="2" ></td>
 				<td colspan="2">{t}Adjusts{/t}</td>
 				<td>{$order->get('Total Net Adjust Amount')}</td>
 			</tr>
 			{/if} 
 			<tr class="total_net">
+				<td style="border:none" colspan="2" ></td>
 				<td colspan="2">{t}Total Net{/t}</td>
 				<td>{$order->get('Total Net Amount')}</td>
 			</tr>
 			<tr class="total_tsx">
+				<td style="border:none" colspan="2" ></td>
 				<td colspan="2">{t}Tax{/t}</td>
 				<td>{$order->get('Total Tax Amount')}</td>
 			</tr>
 			<tr class="total">
+				<td style="border:none" colspan="2" ></td>
 				<td colspan="2"><b>{t}Total{/t}</b></td>
 				<td>{$order->get('Total Amount')}</td>
 			</tr>

@@ -26,6 +26,7 @@
             border-bottom: 0.1mm solid #cfcfcf;
             padding-bottom: 4px;
             padding-top: 5px;
+            font-size: 8pt;
         }
 
         .items tbody.out_of_stock td {
@@ -189,7 +190,6 @@
     </tr>
 </table>
 
-
 <table width="100%" style="font-family: sans-serif;" cellpadding="0">
     <tr>
         <td width="45%" style="border: 0.1mm solid #888888;padding:5pt 5pt 10pt 10pt"><span
@@ -211,30 +211,30 @@
 <table class="items" width="100%" style="font-size: 9pt; border-collapse: collapse;" cellpadding="8">
     <thead>
     <tr>
-        <td style="width:8%;text-align:left">{t}Reference{/t}</td>
+        <td style="width:12%;text-align:left">{t}Reference{/t}</td>
         <td style="text-align:left">{t}Unit description{/t}</td>
         <td style="width:12%;text-align:right">{t}Units{/t}</td>
         <td style="width:8%;text-align:right">{t}Cartons{/t}</td>
-        <td style="width:8%;text-align:right">{t}Amount{/t}</td>
+        <td style="width:12%;text-align:right">{t}Amount{/t}</td>
 
     </tr>
     </thead>
     <tbody>
     {foreach from=$transactions item=transaction name=products}
         <tr class="{if $smarty.foreach.products.last}last{/if}">
-            <td style="width:8%;text-align:left">{$transaction.reference}</td>
+            <td style="text-align:left">{$transaction.reference}</td>
             <td style="text-align:left">{$transaction.description}</td>
-            <td style="width:8%;text-align:right;font-size:95%">{$transaction.subtotals}</td>
+            <td style="text-align:right;font-size:95%">{$transaction.subtotals}</td>
 
-            <td style="width:8%;text-align:right">{$transaction.ordered}</td>
-            <td style="width:8%;text-align:right">{$transaction.amount}</td>
+            <td style="text-align:right">{$transaction.ordered}</td>
+            <td style="text-align:right">{$transaction.amount}</td>
         </tr>
     {/foreach}
     </tbody>
 
     <tbody class="totals">
     <tr>
-        <td style="border:none" colspan="2" rowspan="10"></td>
+        <td style="border:none" colspan="2" "></td>
         <td colspan="2">{t}Items Net{/t}</td>
         <td>{$purchase_order->get('Items Net Amount')}</td>
     </tr>
@@ -242,6 +242,7 @@
 
     {if $purchase_order->get('Invoice Net Amount Off')!=0 }
         <tr>
+            <td style="border:none" colspan="2" "></td>
             <td colspan="2">{t}Amount Off{/t}</td>
             <td>{$purchase_order->get('Net Amount Off')}</td>
         </tr>
@@ -249,41 +250,49 @@
 
     {if $purchase_order->get('Invoice Refund Net Amount')!=0 }
         <tr>
+            <td style="border:none" colspan="2" "></td>
             <td colspan="2">{t}Refunds{/t}</td>
             <td>{$purchase_order->get('Refund Net Amount')}</td>
         </tr>
     {/if}
     <tr>
+        <td style="border:none" colspan="2" "></td>
         <td colspan="2">{t}Shipping{/t}</td>
         <td>{$purchase_order->get('Shipping Net Amount')}</td>
     </tr>
     {if $purchase_order->get('Invoice Charges Net Amount')!=0}
         <tr>
+            <td style="border:none" colspan="2" "></td>
             <td colspan="2">{t}Charges{/t}</td>
             <td>{$purchase_order->get('Charges Net Amount')}</td>
         </tr>
     {/if} {if $purchase_order->get('Invoice Insurance Net Amount')!=0}
         <tr>
+            <td style="border:none" colspan="2" "></td>
             <td colspan="2">{t}Insurance{/t}</td>
             <td>{$purchase_order->get('Insurance Net Amount')}</td>
         </tr>
     {/if} {if $purchase_order->get('Invoice Total Net Adjust Amount')!=0}
         <tr>
+            <td style="border:none" colspan="2" "></td>
             <td colspan="2">{t}Adjusts{/t}</td>
             <td>{$purchase_order->get('Total Net Adjust Amount')}</td>
         </tr>
     {/if}
     <tr class="total_net">
+        <td style="border:none" colspan="2" "></td>
         <td colspan="2">{t}Total Net{/t}</td>
         <td>{$purchase_order->get('Total Net Amount')}</td>
     </tr>
     {foreach from=$tax_data item=tax }
         <tr>
+            <td style="border:none" colspan="2" "></td>
             <td class="totals" colspan="2">{$tax.name}</td>
             <td class="totals">{$tax.amount}</td>
         </tr>
     {/foreach}
     <tr class="total">
+        <td style="border:none" colspan="2" "></td>
         <td colspan="2"><b>{t}Total{/t}</b></td>
         <td>{$purchase_order->get('Total Amount')}</td>
     </tr>
