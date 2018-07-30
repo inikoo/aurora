@@ -24,6 +24,9 @@ if (!isset($_REQUEST['tipo'])) {
 }
 
 
+
+
+
 $tipo = $_REQUEST['tipo'];
 
 switch ($tipo) {
@@ -99,6 +102,7 @@ function pending_orders($data, $db, $user, $account) {
     );
 
 
+
     if ($data['parent'] != '') {
         include_once 'class.Store.php';
 
@@ -112,6 +116,7 @@ function pending_orders($data, $db, $user, $account) {
         $object->load_acc_data();
         $title = $object->get('Code');
     }
+
 
 
     $pending_orders_data = array(
@@ -165,6 +170,9 @@ function pending_orders($data, $db, $user, $account) {
 
     );
 
+
+
+  //  print_r($pending_orders_data);
 
     $response = array(
         'state' => 200,
