@@ -293,9 +293,13 @@ function get_rtext($record_label, $total_records) {
         return sprintf(
             ngettext('%s data set', '%s data sets', $total_records), number($total_records)
         );
-    } elseif ($record_label == 'time serie') {
+    } elseif ($record_label == 'time series') {
         return sprintf(
-            ngettext('%s time serie', '%s time series', $total_records), number($total_records)
+            ngettext('%s time series', '%s time series', $total_records), number($total_records)
+        );
+    } elseif ($record_label == 'time series type') {
+        return sprintf(
+            ngettext('%s time series type', '%s time series types', $total_records), number($total_records)
         );
     } elseif ($record_label == 'image') {
         return sprintf(
@@ -717,10 +721,16 @@ function get_rtext_with_filter($record_label, $total_with_filter, $total_no_filt
                 '%s operative of %s', '%s operatives of %s', $total_with_filter
             ), number($total_with_filter), number($total_no_filter)
         );
-    } elseif ($record_label == 'time serie') {
+    } elseif ($record_label == 'time series') {
         return sprintf(
             ngettext(
-                '%s time serie of %s', '%s time series of %s', $total_with_filter
+                '%s time series of %s', '%s time series of %s', $total_with_filter
+            ), number($total_with_filter), number($total_no_filter)
+        );
+    }elseif ($record_label == 'time series type') {
+        return sprintf(
+            ngettext(
+                '%s time series type of %s', '%s time series types of %s', $total_with_filter
             ), number($total_with_filter), number($total_no_filter)
         );
     } elseif ($record_label == 'data set') {

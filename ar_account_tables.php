@@ -32,6 +32,9 @@ switch ($tipo) {
 
         data_sets(get_table_parameters(), $db, $user, $account);
         break;
+    case 'timeseries_types':
+        timeseries_types(get_table_parameters(), $db, $user, $account);
+        break;
     case 'timeseries':
         timeseries(get_table_parameters(), $db, $user, $account);
         break;
@@ -147,9 +150,82 @@ function data_sets($_data, $db, $user, $account) {
 }
 
 
+function timeseries_types($_data, $db, $user, $account) {
+
+    $rtext_label = 'time series type';
+    include_once 'prepare_table/init.php';
+    include_once 'utils/natural_language.php';
+
+    $sql
+        = "select $fields from $table $where $wheref $group_by order by $order $order_direction limit $start_from,$number_results";
+
+    $adata = array();
+
+    if ($result = $db->query($sql)) {
+
+        foreach ($result as $data) {
+
+            switch ($data['Timeseries Type']) {
+                case 'StoreSales':
+
+                    $type   = _('Store sales');
+                    break;
+                case 'CustomerSales':
+
+                    $type   = _('Customer sales');
+                    break;
+                case 'SupplierSales':
+
+                    $type   = _('Supplier sales');
+                    break;
+                default:
+                    $type   = $data['Timeseries Type'];
+
+                    break;
+            }
+
+
+            $adata[] = array(
+                'id'           => (integer)$data['Timeseries Key'],
+
+                'type'         => $type,
+                'timeseries'      => number($data['timeseries']),
+                'records'      => number($data['records']),
+                'from'         => strftime("%e %b %Y", strtotime($data['Timeseries From'].' +0:00')),
+                'to'           => strftime("%e %b %Y", strtotime($data['Timeseries To'].' +0:00')),
+                'last_updated' => strftime(
+                    "%a %e %b %Y %H:%M %Z", strtotime($data['Timeseries Updated'].' +0:00')
+                ),
+
+            );
+
+        }
+
+    } else {
+        print_r($error_info = $db->errorInfo());
+        exit;
+    }
+
+
+    $response = array(
+        'resultset' => array(
+            'state'         => 200,
+            'data'          => $adata,
+            'rtext'         => $rtext,
+            'sort_key'      => $_order,
+            'sort_dir'      => $_dir,
+            'total_records' => $total
+
+        )
+    );
+    echo json_encode($response);
+}
+
+
+
 function timeseries($_data, $db, $user, $account) {
 
-    $rtext_label = 'time serie';
+    $rtext_label = 'time series';
     include_once 'prepare_table/init.php';
     include_once 'utils/natural_language.php';
 
