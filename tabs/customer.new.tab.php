@@ -22,6 +22,7 @@ $customer = new Customer(0);
 $object_fields = get_object_fields(
     $customer, $db, $user, $smarty, array(
                  'new'            => true,
+                 'store_key'            => $state['parent_key']
              )
 );
 

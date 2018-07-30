@@ -12,7 +12,10 @@
 
 include_once 'utils/static_data.php';
 
-$store=get_object('Store',$object->get('Store Key'));
+
+
+
+
 $smarty->assign('customer', $object);
 
 $countries = get_countries($db);
@@ -56,8 +59,12 @@ foreach ($db->query($sql) as $row) {
 
 if (isset($options['new']) and $options['new']) {
     $new = true;
+    $store=get_object('Store',$options['store_key']);
+
 } else {
     $new = false;
+    $store=get_object('Store',$object->get('Store Key'));
+
 }
 
 $edit = true;
