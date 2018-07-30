@@ -1940,12 +1940,6 @@ class Supplier extends SubjectSupplier {
             $index++;
 
 
-            //
-            //
-            //
-            //
-            //
-            //print_r($date_frequency_period);
 
             $sales_data = $this->get_sales_data($date_frequency_period['from'], $date_frequency_period['to']);
 

@@ -51,7 +51,7 @@ if ($result = $db->query($sql)) {
     if ($row = $result->fetch()) {
         $timeseries_key = $row['Timeseries Key'];
     } else {
-        exit('error a');
+        exit('error, no time series');
     }
 } else {
     print_r($error_info = $db->errorInfo());
