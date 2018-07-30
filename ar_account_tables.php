@@ -178,6 +178,12 @@ function timeseries_types($_data, $db, $user, $account) {
 
                     $type   = _('Supplier sales');
                     break;
+                case 'PartCategorySales':
+                    $type   = _('Part categories sales');
+                    break;
+                case 'ProductCategorySales':
+                    $type   = _('Product categories sales');
+                    break;
                 default:
                     $type   = $data['Timeseries Type'];
 

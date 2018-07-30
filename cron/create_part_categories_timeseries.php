@@ -30,9 +30,10 @@ $editor = array(
     'Date'         => gmdate('Y-m-d H:i:s')
 );
 
+
 $print_est=true;
-$where='';
-$sql = sprintf("select count(*) as num from `Supplier Dimension` $where");
+
+$sql = sprintf('select count(*) as num from `Category Dimension` where `Category Scope`="Part" ');
 if ($result = $db->query($sql)) {
     if ($row = $result->fetch()) {
         $total = $row['num'];
@@ -49,10 +50,11 @@ $contador  = 0;
 
 
 
+
 $timeseries = get_time_series_config();
 
 
-$sql = sprintf('SELECT `Timeseries Key` FROM `Timeseries Dimension`  where `Timeseries Type`="SupplierSales"');
+$sql = sprintf('SELECT `Timeseries Key` FROM `Timeseries Dimension`  where `Timeseries Type`="PartCategorySales"');
 
 if ($result = $db->query($sql)) {
     foreach ($result as $row) {
@@ -67,44 +69,56 @@ if ($result = $db->query($sql)) {
     print "$sql\n";
     exit;
 }
-$sql = sprintf('delete FROM `Timeseries Dimension`  where `Timeseries Type`="SupplierSales"');
+$sql = sprintf('delete FROM `Timeseries Dimension`  where `Timeseries Type`="PartCategorySales"');
 $db->exec($sql);
 
 
-$sql = sprintf('SELECT `Supplier Key` FROM `Supplier Dimension` order by `Supplier Code` ');
+global $db, $editor, $timeseries;
+
+//$sql = sprintf('SELECT `Category Key` FROM `Category Dimension` WHERE `Category Scope`="Part" AND `Category Key`=27832  ');
+$sql = sprintf('select `Category Key` from `Category Dimension` where `Category Scope`="Part" order by  `Category Key` desc');
 
 if ($result = $db->query($sql)) {
     foreach ($result as $row) {
 
-        $supplier = new Supplier($row['Supplier Key']);
+        $category = new Category($row['Category Key']);
 
 
-        $timeseries_data = $timeseries['Supplier'];
+        if (!array_key_exists(
+            $category->get('Category Scope').'Category', $timeseries
+        )) {
+            continue;
+        }
 
+        $timeseries_data = $timeseries[$category->get('Category Scope').'Category'];
+        //print "creating ".$category->id." ".$category->get('Code')." category \n";
         foreach ($timeseries_data as $time_series_data) {
 
             $editor['Date']             = gmdate('Y-m-d H:i:s');
             $time_series_data['editor'] = $editor;
-            $supplier->create_timeseries($time_series_data);
 
 
+            $category->create_timeseries($time_series_data);
 
 
         }
+
 
         $contador++;
         $lap_time1 = date('U');
 
         if ($print_est) {
-            print $supplier->get('Code').'   '.percentage($contador, $total, 3)."  lap time ".sprintf("%.4f", ($lap_time1 - $lap_time0) / $contador)." EST  ".sprintf(
+            print $category->get('Code').'   '.percentage($contador, $total, 3)."  lap time ".sprintf("%.4f", ($lap_time1 - $lap_time0) / $contador)." EST  ".sprintf(
                     "%.4f", (($lap_time1 - $lap_time0) / $contador) * ($total - $contador) / 60
                 )."m  ($contador/$total) \r";
         }
+
     }
 
 } else {
     print_r($error_info = $db->errorInfo());
-    exit($sql);
+    print $sql;
+    exit;
 }
 
 
