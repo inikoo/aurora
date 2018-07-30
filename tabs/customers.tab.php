@@ -66,9 +66,7 @@ $parameters = array(
 
 $table_buttons   = array();
 
-
-
-if(!$state['store']->get('Store Version')==1){
+if($state['store']->get('Store Version')!=1){
     $table_buttons[] = array(
         'icon'      => 'plus',
         'title'     => _('New customer'),
