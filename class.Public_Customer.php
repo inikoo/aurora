@@ -649,7 +649,7 @@ class Public_Customer extends DBW_Table {
                 break;
             case 'Customer Delivery Address':
 
-              
+
                 $this->update_address('Delivery', json_decode($value, true));
 
                 $sql = sprintf('SELECT `Order Key` FROM `Order Dimension` WHERE  `Order State` IN ("InBasket")   AND `Order Customer Key`=%d ', $this->id);
