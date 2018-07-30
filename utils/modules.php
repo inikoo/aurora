@@ -6905,10 +6905,13 @@ $modules = array(
             'timeseries'   => array(
                 'type' => '',
                 'tabs' => array(
+                    'timeseries_types' => array(
+                        'icon'=>'layer-group',
+                        'label' => _('Timeseries type')
+                    ),
                     'timeseries' => array(
-                        'label' => _(
-                            'Timeseries'
-                        )
+                        'icon'=>'chart-line',
+                        'label' => _('Timeseries')
                     ),
                 )
             ),

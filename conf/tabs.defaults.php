@@ -2673,7 +2673,14 @@ $tab_defaults = array(
         'rpp_options' => $default_rrp_options,
         'f_field'     => '',
     ),
-
+    'timeseries_types'        => array(
+        'view'        => 'overview',
+        'sort_key'    => 'id',
+        'sort_order'  => 1,
+        'rpp'         => 100,
+        'rpp_options' => $default_rrp_options,
+        'f_field'     => '',
+    ),
     'timeseries'        => array(
         'view'        => 'overview',
         'sort_key'    => 'id',
