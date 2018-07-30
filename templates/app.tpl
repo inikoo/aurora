@@ -81,8 +81,8 @@
         <script src="/js/search.js"></script>
         <script src="/js/table.js?v20180607v3"></script>
         <script src="/js/validation.js?v171206v5"></script>
-        <script src="/js/edit.js?v1800612"></script>
-        <script src="/js/pdf.js?v1800612"></script>
+        <script src="/js/edit.js?v1800612v2"></script>
+        <script src="/js/pdf.js?v1800612v2"></script>
 
         <script src="/js/edit_webpage_edit.js?v180411v1"></script>
 

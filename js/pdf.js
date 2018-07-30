@@ -63,6 +63,7 @@ function download_pdf(element) {
 
     })
 
+  
 
     switch (data.type) {
         case 'proforma':
@@ -70,7 +71,7 @@ function download_pdf(element) {
 
             break;
         case 'invoice':
-            window.open('/pdf/invoice.pdf.php?id=' + dialog.invoice_key + args, '_blank');
+            window.open('/pdf/invoice.pdf.php?id=' + data.invoice_key + args, '_blank');
 
             break;
         case 'invoice_from_list':
