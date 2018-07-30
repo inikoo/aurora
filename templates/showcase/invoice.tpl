@@ -196,8 +196,50 @@
             </tr>
 
             <tr class="date">
-                <td><a class="pdf_link" target='_blank' href="/pdf/invoice.pdf.php?id={$invoice->id}"> <img style="width: 50px;height:16px" src="/art/pdf.gif"></a></td>
+                <td>
+                    <img class="button pdf_link" onclick="download_pdf($('.pdf_invoice_dialog img'))" style="width: 50px;height:16px;position: relative;top:2px" src="/art/pdf.gif"> <i onclick="show_pdf_invoice_dialog(this)" title="{t}PDF invoice display settings{/t}" class="far very_discreet fa-sliders-h-square button"></i>
 
+                    <div class="pdf_invoice_dialog options_dialog  hide" style="min-width: 150px;text-align: left" data-data='{ "type":"invoice","invoice_key":{$invoice->id}}'>
+                        <i onclick="$('.pdf_invoice_dialog').addClass('hide')" style="float: right;margin-left: 10px" class="fa fa-window-close button"></i>
+                        <h2 class="unselectable">{t}PDF Invoice{/t}</h2>
+
+                        <table>
+                            <tbody>
+                            <tr data-field='rrp' class="button pdf_option" onclick="check_field_value(this)">
+                                <td>
+                                    <i class="far {if $pdf_with_rrp}fa-check-square{else}fa-square{/if} margin_right_10"></i> <span {if !$pdf_with_rrp}class="discreet"{/if}>{t}Recommended retail prices{/t}</span>
+                                </td>
+
+                            </tr>
+                            <tr data-field='commodity' class="button pdf_option" onclick="check_field_value(this)">
+                                <td>
+                                    <i class="far {if $pdf_with_commodity}fa-check-square{else}fa-square{/if} margin_right_10"></i> <span {if !$pdf_with_commodity}class="discreet"{/if}>{t}Commodity codes{/t}</span>
+                                </td>
+
+                            </tr>
+                            <tr data-field='weight' class="button pdf_option" onclick="check_field_value(this)">
+                                <td>
+                                    <i class="far fa-square  margin_right_10"></i> <span class="discreet">{t}Weight{/t}</span>
+                                </td>
+                            </tr>
+                            <tr data-field='locale' class="button pdf_option {if !$pdf_show_locale_option}hide{/if}" onclick="check_field_value(this)">
+                                <td>
+                                    <i class="far fa-square margin_right_10" data-value="en_GB"></i> <span class="discreet">{t}English{/t}</span>
+                                </td>
+                            </tr>
+                            </tbody>
+                            <tr>
+                                <td>
+                                    <img class="button" onclick="download_pdf(this)" style="width: 50px;height:16px;margin-top:10px" src="/art/pdf.gif">
+                                </td>
+
+                            </tr>
+                        </table>
+
+
+                    </div>
+
+                </td>
             </tr>
 
         </table>

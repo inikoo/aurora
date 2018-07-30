@@ -11,6 +11,7 @@
 */
 
 function get_invoice_showcase($data, $smarty, $user, $db) {
+    require_once 'utils/geography_functions.php';
 
     global $account;
 
@@ -71,6 +72,28 @@ function get_invoice_showcase($data, $smarty, $user, $db) {
 
 
     $smarty->assign('tax_data', $tax_data);
+
+
+
+    if (in_array(
+        $invoice->get('Invoice Address Country 2 Alpha Code'), get_countries_EC_Fiscal_VAT_area($db)
+    )) {
+        $pdf_with_commodity = false;
+    } else {
+        $pdf_with_commodity = true;
+    }
+    $smarty->assign('pdf_with_commodity', $pdf_with_commodity);
+
+    if($store->get('Store Locale')!='en_GB'){
+        $pdf_show_locale_option = true;
+    }else{
+        $pdf_show_locale_option = false;
+
+    }
+    $smarty->assign('pdf_show_locale_option', $pdf_show_locale_option);
+
+    $pdf_with_rrp=true;
+    $smarty->assign('pdf_with_rrp', $pdf_with_rrp);
 
 
     if ($data['_object']->get('Invoice Type') == 'Refund') {

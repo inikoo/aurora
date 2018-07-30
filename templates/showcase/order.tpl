@@ -519,7 +519,7 @@
 
 
 
-                    <div class="pdf_invoice_dialog options_dialog  hide" style="min-width: 150px" data-data='{ "type":"invoice","invoice_key":{$invoice->id}}'>
+                            <div class="pdf_invoice_dialog options_dialog  hide" style="min-width: 150px" data-data='{ "type":"invoice","invoice_key":{$invoice->id}}'>
                         <i onclick="$('.pdf_invoice_dialog').addClass('hide')" style="float: right;margin-left: 10px" class="fa fa-window-close button"></i>
                         <h2 class="unselectable">{t}PDF Invoice{/t}</h2>
 
