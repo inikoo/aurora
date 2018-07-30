@@ -863,15 +863,30 @@ class Order extends DB_Table {
             $invoices_xhtml .= sprintf(
                 ' <div class="node" id="invoice_%d">
                     <span class="node_label" >
-                        <i class="fal fa-file-alt fa-fw " aria-hidden="true"></i>
-                        <span class="link" onClick="change_view(\'%s\')">%s</span>
-                        <a class="pdf_link" target=\'_blank\' href="/pdf/invoice.pdf.php?id={$invoice->id}"> <img style="width: 50px;height:16px;position: relative;top:2px" src="/art/pdf.gif"></a>
+                        <i class="fal fa-file-alt fa-fw %s" aria-hidden="true"></i>
+                        <span class="link %s" onClick="change_view(\'%s\')">%s</span>
+                        <img class="button pdf_link" onclick="download_pdf_from_list(%d,$(\'.pdf_invoice_dialog img\'))" style="width: 50px;height:16px;position: relative;top:2px" src="/art/pdf.gif">
+                        <i onclick="show_pdf_invoice_dialog(this,%d)" title="%s" class="far very_discreet fa-sliders-h-square button"></i>
                     </span>
-                </div>', $invoice->id, 'invoices/'.$invoice->get('Invoice Store Key').'/'.$invoice->id, $invoice->get('Invoice Public ID'), $invoice->id
+                    <div class="red" style="float: right;padding-right: 10px;padding-top: 5px">%s
+                    </div>
+                </div>', $invoice->id,
+                ($invoice->get('Invoice Type')=='Refund'?'error':''),
+                ($invoice->get('Invoice Type')=='Refund'?'error':''),
+                'invoices/'.$invoice->get('Invoice Store Key').'/'.$invoice->id, $invoice->get('Invoice Public ID'),
+                $invoice->id,
+                $invoice->id,_('PDF invoice display settings'),
+                ($invoice->get('Invoice Type')=='Refund'? $invoice->get('Refund Total Amount').' '.($invoice->get('Invoice Paid')!='Yes'?'<i class="fa fa-exclamation-triangle warning fa-fw" aria-hidden="true" title="'._('Return payment pending').'"></i>':'') :'')
 
             );
 
         }
+
+
+
+
+
+
 
 
         $this->update_metadata = array(

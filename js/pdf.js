@@ -13,21 +13,25 @@ $(document).on('mousedown', '.proforma_button', function (evt) {
 })
 
 
-function show_pdf_invoice_dialog(element){
+function show_pdf_invoice_dialog(element,invoice_key){
     var anchor_x=$(element).prev('.pdf_link')
     var anchor_y=$(element).closest('.node')
     $('.pdf_invoice_dialog').removeClass('hide').offset({
         top: $(anchor_y).offset().top-1, left: $(anchor_x).offset().left
-    })
+    }).data('invoice_key',invoice_key)
 }
 
 
+function download_pdf_from_list(invoice_key,element){
+
+    $(element).closest('.options_dialog').data('invoice_key',invoice_key)
+    download_pdf(element)
+}
 
 function download_pdf(element) {
 
     var dialog = $(element).closest('.options_dialog')
     var data = dialog.data('data')
-
 
     var args = '';
     $('.pdf_option', dialog).each(function (i, obj) {
@@ -66,7 +70,11 @@ function download_pdf(element) {
 
             break;
         case 'invoice':
-            window.open('/pdf/invoice.pdf.php?id=' + data.invoice_key + args, '_blank');
+            window.open('/pdf/invoice.pdf.php?id=' + dialog.invoice_key + args, '_blank');
+
+            break;
+        case 'invoice_from_list':
+            window.open('/pdf/invoice.pdf.php?id=' + dialog.data('invoice_key') + args, '_blank');
 
             break;
     }

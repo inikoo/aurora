@@ -1464,7 +1464,6 @@ table.totals .total td {
       margin-bottom: 20px;
       border-top: 1px solid #ccc;
       position: relative;
-      top: -5px;
       border-top: none; }
     .order .block .node_label {
       float: left;
