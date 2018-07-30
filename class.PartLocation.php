@@ -162,11 +162,12 @@ class PartLocation extends DB_Table {
             $this->ok      = true;
             $this->id      = true;
             $this->current = true;
-        }
 
+        }
 
         $this->part     = new Part($this->part_sku);
         $this->location = new Location($this->location_key);
+
 
     }
 
