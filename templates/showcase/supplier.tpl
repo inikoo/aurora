@@ -66,9 +66,9 @@
                 <i class="fa fa-fw fa-at discreet"></i> <span class="Supplier_Other_Email_mailto"></span>
             </div>
             <span id="display_telephones"></span> {if $supplier->get('Supplier Preferred Contact Number')=='Mobile'}
-                <div id="Supplier_Main_Plain_Mobile_display"
+                <div id="Supplier_Main_Plain_Mobile_display" title="{t}Mobile{/t}"
                      class="data_field {if !$supplier->get('Supplier Main Plain Mobile')}hide{/if}">
-                    <i class="fa fa-fw fa-mobile"></i> <span
+                    <i class="far fa-fw fa-mobile"></i> <span
                             class="Supplier_Main_Plain_Mobile">{$supplier->get('Main Plain Mobile')}</span>
                 </div>
                 <div id="Supplier_Main_Plain_Telephone_display"
@@ -92,7 +92,7 @@
 
             <div id="Supplier_QQ_display"
                  class="data_field {if !$supplier->get('Supplier QQ')}hide{/if}">
-                <i title="Fax" class="fa fa-fw fa-qq"></i> <span class="Supplier_QQ">{$supplier->get('QQ')}</span>
+                <i title="QQ" class="fab fa-fw fa-qq"></i> <span class="Supplier_QQ">{$supplier->get('QQ')}</span>
             </div>
 
             <div id="Supplier_Main_Plain_FAX_display"

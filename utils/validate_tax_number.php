@@ -64,15 +64,14 @@ function validate_tax_number($tax_number, $country_2alpha_code) {
         $tax_number = preg_replace('/[^a-z^0-9]/i', '', $tax_number);
 
 
-
-//        return check_european_tax_number($country_2alpha_code, $tax_number);
-
+       return check_european_tax_number($country_2alpha_code, $tax_number);
 
 
-    return json_decode(file_get_contents('http://www.inikoo.com/vies.php?45798437589347=1&c='.$country_2alpha_code.'&t='.$tax_number),true);
+
+    //return json_decode(file_get_contents('http://www.inikoo.com/vies.php?45798437589347=1&c='.$country_2alpha_code.'&t='.$tax_number),true);
 
 
-        ;
+
 
 
     } else {

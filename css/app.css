@@ -260,6 +260,8 @@ input {
           padding: 2px 0px; }
   #notifications .side_content .link {
     text-decoration: underline; }
+  #notifications .side_content .think {
+    color: #0f3c4b; }
 
 .square_button {
   height: 30px;
