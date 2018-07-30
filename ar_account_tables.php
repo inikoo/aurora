@@ -166,9 +166,18 @@ function timeseries($_data, $db, $user, $account) {
                 case 'StoreSales':
 
                     $type   = _('Store sales');
-                    $parent = $data['Store Code'];
+                    $parent = sprintf('<span class="link" onclick="change_view(\'store/%d\')"><i class="far fa-store"></i> %s</span>',$data['Timeseries Parent Key'],_('Store'));
                     break;
+                case 'CustomerSales':
 
+                    $type   = _('Customer sales');
+                    $parent =sprintf('<span class="link" onclick="change_view(\'customer/%d\')"><i class="fa fa-user"></i> %s</span>',$data['Timeseries Parent Key'],_('Customer'));
+                    break;
+                case 'SupplierSales':
+
+                    $type   = _('Supplier sales');
+                    $parent = sprintf('<span class="link" onclick="change_view(\'supplier/%d\')"><i class="far fa-hand-holding-box"></i> %s</span>',$data['Timeseries Parent Key'],_('Supplier'));
+                    break;
                 default:
                     $type   = $data['Timeseries Type'];
                     $parent = '';

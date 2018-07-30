@@ -36,9 +36,7 @@ label: "{t}Parent{/t}",
 editable: false,
 sortable: false,
 cell: Backgrid.HtmlCell.extend({
-className: "aright"
 }),
-headerCell: integerHeaderCell
 },
 {
 name: "records",

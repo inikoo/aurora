@@ -11,7 +11,7 @@
 
 
 $table
-       = '`Timeseries Dimension` TS left join `Store Dimension` on (`Timeseries Parent Key`=`Store Key`) ';
+       = '`Timeseries Dimension` TS  ';
 $where = ' where true';
 
 $wheref = '';
@@ -39,6 +39,6 @@ $sql_totals
     = "select count(Distinct TS.`Timeseries Key`) as num from $table $where  ";
 
 $fields
-    = "`Timeseries Key`,`Timeseries Type`,`Store Code`,`Timeseries Parent Key`,`Timeseries Parent`,`Timeseries Number Records`,`Timeseries From`,`Timeseries To`,`Timeseries Updated`";
+    = "`Timeseries Key`,`Timeseries Type`,`Timeseries Parent Key`,`Timeseries Parent`,`Timeseries Number Records`,`Timeseries From`,`Timeseries To`,`Timeseries Updated`";
 
 ?>
