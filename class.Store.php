@@ -615,6 +615,7 @@ class Store extends DB_Table {
         }
 
 
+
         if (preg_match('/^(DC Orders).*(Amount) Soft Minify$/', $key)) {
 
             $field = 'Store '.preg_replace('/ Soft Minify$/', '', $key);
@@ -628,6 +629,11 @@ class Store extends DB_Table {
 
             return $amount;
         }
+
+
+
+
+
         if (preg_match('/^(DC Orders).*(Amount|Profit)$/', $key)) {
 
             $field = 'Store '.$key;
@@ -694,9 +700,7 @@ class Store extends DB_Table {
             return $this->data[$key];
         }
 
-        if (array_key_exists('Store '.$key, $this->data)) {
-            return $this->data['Store '.$key];
-        }
+
 
         if (preg_match('/^(Orders|Last|Yesterday|Total|1|10|6|3|4|2|Year To|Quarter To|Month To|Today|Week To).*(Amount|Profit) Soft Minify$/', $key)) {
 
@@ -773,6 +777,10 @@ class Store extends DB_Table {
             $amount = 'Store '.$key;
 
             return number($this->data[$amount]);
+        }
+
+        if (array_key_exists('Store '.$key, $this->data)) {
+            return $this->data['Store '.$key];
         }
 
 

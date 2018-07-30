@@ -129,7 +129,7 @@
         }
         $('#pending_orders_currency').val(currency)
 
-        get_pending_orders_data($('#pending_orders_parent').val(), $('#pending_orders_currency').val())
+        get_dashboard_pending_orders_data($('#pending_orders_parent').val(), $('#pending_orders_currency').val())
 
     }
 
