@@ -324,12 +324,12 @@ module.exports = function (grunt) {
             fork_stones: {
                 files: [{
                     expand: true, src: ['external_libs/**'], dest: 'build/fork/'
-                },{
-                    expand: true, src: ['vendor/**'], dest: 'build/fork/'
                 }, {
                     expand: true, src: ['locale/**'], dest: 'build/fork/'
                 }, {
                     expand: true, cwd: 'fork/', src: ['*.php'], dest: 'build/fork/'
+                }, {
+                    expand: true, src: ['composer.json'], dest: 'build/fork/composer'
                 }
 
                 ]
@@ -387,8 +387,8 @@ module.exports = function (grunt) {
                     port: '<%= secret.fork.port %>',
                     debug: true,
                     releases_to_keep: '3',
-                    exclude: ['keyring', 'external_libs', 'server_files'],
-                    after_deploy: 'cd /home/fork/fork/current && ln -s /home/fork/external_libs/current/ external_libs && ln -s /home/fork/keyring/ keyring && sudo service supervisor restart'
+                    exclude: ['keyring', 'external_libs', 'server_files','vendor'],
+                    after_deploy: 'cd /home/fork/fork/current && ln -s /home/fork/composer/current/vendor vendor && ln -s /home/fork/external_libs/current/ external_libs && ln -s /home/fork/keyring/ keyring && sudo service supervisor restart'
                 }
             }, fork_external_libs: {
                 options: {
@@ -399,6 +399,19 @@ module.exports = function (grunt) {
                     password: '<%= secret.fork.password %>',
                     port: '<%= secret.fork.port %>',
                     debug: true,
+                    releases_to_keep: '3'
+                }
+            }, fork_composer: {
+                options: {
+                    local_path: 'build/fork/composer',
+                    deploy_path: '/home/fork/composer',
+                    host: '<%= secret.fork.host %>',
+                    username: '<%= secret.fork.username %>',
+                    password: '<%= secret.fork.password %>',
+                    port: '<%= secret.fork.port %>',
+                    debug: true,
+                    after_deploy: 'cd /home/fork/composer/current && composer update',
+
                     releases_to_keep: '3'
                 }
             },websocket: {
@@ -493,7 +506,9 @@ module.exports = function (grunt) {
         'uglify:pweb_desktop_checkout',
         'uglify:pweb_desktop_image_gallery'
     ]);
-    grunt.registerTask('deploy_fork', ['clean:fork', 'copy:fork_stones', 'copy:fork', 'ssh_deploy:fork_external_libs', 'ssh_deploy:fork']);
+    grunt.registerTask('deploy_fork_stones', ['clean:fork', 'copy:fork_stones', 'copy:fork', 'ssh_deploy:fork_external_libs']);
+    grunt.registerTask('deploy_fork_composer', ['clean:fork', 'copy:fork_stones', 'copy:fork', 'ssh_deploy:fork_composer']);
+
     grunt.registerTask('deploy_qfork', ['copy:fork', 'ssh_deploy:fork']);
     grunt.registerTask('deploy_ws', ['clean:websocket', 'copy:websocket_stones', 'copy:websocket', 'ssh_deploy:websocket']);
     grunt.registerTask('deploy_qws', ['copy:websocket', 'ssh_deploy:websocket']);
