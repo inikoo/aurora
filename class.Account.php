@@ -1534,7 +1534,7 @@ class Account extends DB_Table {
 
     }
 
-    function update_timeseries_record($timeseries, $from, $to, $fork_key) {
+    function update_timeseries_record($timeseries, $from, $to, $fork_key= false) {
 
         if ($timeseries->get('Type') == 'AccountSales') {
 

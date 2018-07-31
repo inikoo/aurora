@@ -657,6 +657,11 @@ function fork_asset_sales($job) {
 
 function update_invoice_products_sales_data($db, $account, $data) {
 
+    global $editor;
+
+    require_once 'conf/timeseries.php';
+    require_once 'class.Timeserie.php';
+
     include_once 'class.Product.php';
     include_once 'class.Customer.php';
     include_once 'class.Category.php';
@@ -670,6 +675,24 @@ function update_invoice_products_sales_data($db, $account, $data) {
     $account->update_sales_from_invoices('Quarter To Day', true, false);
     $account->update_sales_from_invoices('Year To Day', true, false);
     $account->update_sales_from_invoices('Today', true, false);
+
+
+
+    $timeseries      = get_time_series_config();
+    $timeseries_data = $timeseries['Account'];
+    foreach ($timeseries_data as $time_series_data) {
+
+
+        $time_series_data['Timeseries Parent']     = 'Account';
+        $time_series_data['Timeseries Parent Key'] = 1;
+        $time_series_data['editor']                = $editor;
+
+
+        $object_timeseries = new Timeseries('find', $time_series_data, 'create');
+        $account->update_timeseries_record($object_timeseries, gmdate('Y-m-d'), gmdate('Y-m-d'));
+
+
+    }
 
 
     $categories     = array();
@@ -688,6 +711,24 @@ function update_invoice_products_sales_data($db, $account, $data) {
     $store->update_sales_from_invoices('Quarter To Day', true, false);
     $store->update_sales_from_invoices('Year To Day', true, false);
     $store->update_sales_from_invoices('Today', true, false);
+
+
+    $timeseries      = get_time_series_config();
+    $timeseries_data = $timeseries['Store'];
+    foreach ($timeseries_data as $time_series_data) {
+
+
+        $time_series_data['Timeseries Parent']     = 'Store';
+        $time_series_data['Timeseries Parent Key'] = $store->id;
+        $time_series_data['editor']                = $editor;
+
+
+        $object_timeseries = new Timeseries('find', $time_series_data, 'create');
+        $store->update_timeseries_record($object_timeseries, gmdate('Y-m-d'), gmdate('Y-m-d'));
+
+
+    }
+
 
 
     if(!empty($data['invoice_key'])) {
@@ -761,6 +802,25 @@ function update_invoice_products_sales_data($db, $account, $data) {
         $categories_bis = $categories_bis + $category->get_categories();
 
 
+
+
+        $timeseries      = get_time_series_config();
+        $timeseries_data = $timeseries['ProductCategory'];
+        foreach ($timeseries_data as $time_series_data) {
+
+
+            $time_series_data['Timeseries Parent']     = 'Category';
+            $time_series_data['Timeseries Parent Key'] = $category->id;
+            $time_series_data['editor']                = $editor;
+
+
+            $object_timeseries = new Timeseries('find', $time_series_data, 'create');
+            $category->update_product_timeseries_record($object_timeseries, gmdate('Y-m-d'), gmdate('Y-m-d'));
+
+
+        }
+
+
     }
 
     foreach ($categories_bis as $category_key) {
@@ -779,6 +839,24 @@ function update_invoice_products_sales_data($db, $account, $data) {
         $category->update_product_category_sales('Today', true, false);
 
 
+        $timeseries      = get_time_series_config();
+        $timeseries_data = $timeseries['ProductCategory'];
+        foreach ($timeseries_data as $time_series_data) {
+
+
+            $time_series_data['Timeseries Parent']     = 'Category';
+            $time_series_data['Timeseries Parent Key'] = $category->id;
+            $time_series_data['editor']                = $editor;
+
+
+            $object_timeseries = new Timeseries('find', $time_series_data, 'create');
+            $category->update_product_timeseries_record($object_timeseries, gmdate('Y-m-d'), gmdate('Y-m-d'));
+
+
+        }
+
+
+
     }
 
 
@@ -788,6 +866,12 @@ function update_invoice_products_sales_data($db, $account, $data) {
 
 
 function update_deleted_invoice_products_sales_data($db, $data) {
+
+    global $editor;
+
+    require_once 'conf/timeseries.php';
+    require_once 'class.Timeserie.php';
+
 
     include_once 'class.Product.php';
     include_once 'class.Customer.php';
@@ -820,6 +904,27 @@ function update_deleted_invoice_products_sales_data($db, $data) {
 
     $account->update_previous_years_data();
     $account->update_previous_quarters_data();
+
+
+
+
+
+    $timeseries      = get_time_series_config();
+    $timeseries_data = $timeseries['Account'];
+    foreach ($timeseries_data as $time_series_data) {
+
+
+        $time_series_data['Timeseries Parent']     = 'Account';
+        $time_series_data['Timeseries Parent Key'] = 1;
+        $time_series_data['editor']                = $editor;
+
+
+        $object_timeseries = new Timeseries('find', $time_series_data, 'create');
+        $account->update_timeseries_record($object_timeseries, $data['invoice_date'], gmdate('Y-m-d'));
+
+
+    }
+
 
 
     $categories     = array();
@@ -856,6 +961,23 @@ function update_deleted_invoice_products_sales_data($db, $data) {
     $store->update_previous_quarters_data();
 
     //------
+
+    $timeseries      = get_time_series_config();
+    $timeseries_data = $timeseries['Store'];
+    foreach ($timeseries_data as $time_series_data) {
+
+
+        $time_series_data['Timeseries Parent']     = 'Store';
+        $time_series_data['Timeseries Parent Key'] = $store->id;
+        $time_series_data['editor']                = $editor;
+
+
+        $object_timeseries = new Timeseries('find', $time_series_data, 'create');
+        $store->update_timeseries_record($object_timeseries, $data['invoice_date'], gmdate('Y-m-d'));
+
+
+    }
+
 
 
     $invoice_category = new Category($data['invoice_category_key']);
@@ -946,25 +1068,23 @@ function update_deleted_invoice_products_sales_data($db, $data) {
 
 
 
-        require_once 'conf/timeseries.php';
-        require_once 'class.Timeserie.php';
-
-
-        $timeseries = get_time_series_config();
-        $timeseries_data = $timeseries['Customer'];
+        $timeseries      = get_time_series_config();
+        $timeseries_data = $timeseries['ProductCategory'];
         foreach ($timeseries_data as $time_series_data) {
 
 
-            $time_series_data['Timeseries Parent']     = 'Customer';
-            $time_series_data['Timeseries Parent Key'] = $customer->id;
-
+            $time_series_data['Timeseries Parent']     = 'Category';
+            $time_series_data['Timeseries Parent Key'] = $category->id;
+            $time_series_data['editor']                = $editor;
 
 
             $object_timeseries = new Timeseries('find', $time_series_data, 'create');
-            $customer->update_timeseries_record($object_timeseries, $data['invoice_date'], $data['invoice_date']);
+            $category->update_product_timeseries_record($object_timeseries, $data['invoice_date'], gmdate('Y-m-d'));
 
 
         }
+
+
 
     }
 
@@ -995,6 +1115,23 @@ function update_deleted_invoice_products_sales_data($db, $data) {
         $category->update_product_category_previous_quarters_data();
         $category->update_product_category_previous_years_data();
         //------
+
+        $timeseries      = get_time_series_config();
+        $timeseries_data = $timeseries['ProductCategory'];
+        foreach ($timeseries_data as $time_series_data) {
+
+
+            $time_series_data['Timeseries Parent']     = 'Category';
+            $time_series_data['Timeseries Parent Key'] = $category->id;
+            $time_series_data['editor']                = $editor;
+
+
+            $object_timeseries = new Timeseries('find', $time_series_data, 'create');
+            $category->update_product_timeseries_record($object_timeseries, $data['invoice_date'], gmdate('Y-m-d'));
+
+
+        }
+
 
     }
 
