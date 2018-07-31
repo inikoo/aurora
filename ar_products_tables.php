@@ -651,7 +651,6 @@ function sales_history($_data, $db, $user, $account) {
 
     include_once 'prepare_table/init.php';
     include_once 'utils/natural_language.php';
-    include_once 'class.Store.php';
 
 
     if ($_data['parameters']['frequency'] == 'annually') {
@@ -677,43 +676,51 @@ function sales_history($_data, $db, $user, $account) {
         $sql_totals_fields = '`Date`';
     }
 
+
     switch ($_data['parameters']['parent']) {
         case 'product':
-            include_once 'class.Product.php';
-            $product    = new Product($_data['parameters']['parent_key']);
+            $product    = get_object('Product', $_data['parameters']['parent_key']);
+            //$store      = get_object('Store', $product->get('Product Store Key'));
             $currency   = $product->get('Product Currency');
             $from       = $product->get('Product Valid From');
             $to         = ($product->get('Product Status') == 'Discontinued' ? $product->get('Product Valid To') : gmdate('Y-m-d'));
             $date_field = '`Invoice Date`';
             break;
         case 'category':
-            include_once 'class.Category.php';
-            $category   = new Category($_data['parameters']['parent_key']);
+            $category = get_object('Category', $_data['parameters']['parent_key']);
+            //$store    = get_object('Store', $category->get('Store Key'));
+
             $currency   = $category->get('Product Category Currency Code');
             $from       = $category->get('Product Category Valid From');
             $to         = ($category->get('Product Category Status') == 'Discontinued' ? $product->get('Product Category Valid To') : gmdate('Y-m-d'));
             $date_field = '`Timeseries Record Date`';
             break;
         case 'store':
-            include_once 'class.Store.php';
-            $store      = new Store($_data['parameters']['parent_key']);
+            $store = get_object('Store', $_data['parameters']['parent_key']);
+
             $currency   = $store->get('Store Currency Code');
             $from       = $store->get('Store Valid From');
             $to         = ($store->get('Product State') == 'Closed' ? $store->get('Store Valid To') : gmdate('Y-m-d'));
             $date_field = '`Timeseries Record Date`';
+
+
             break;
         case 'account':
-            include_once 'class.Account.php';
+
             $currency   = $account->get('Account Currency');
             $from       = $account->get('Account Valid From');
             $to         = gmdate('Y-m-d');
             $date_field = '`Timeseries Record Date`';
+
+            $version = 2;
             break;
         default:
             print_r($_data);
             exit('parent not configured');
             break;
     }
+
+
 
 
     $sql_totals = sprintf(
@@ -829,9 +836,11 @@ function sales_history($_data, $db, $user, $account) {
     }
 
 
-    $sql            = sprintf(
+    $sql = sprintf(
         "select $fields from $table $where $wheref and %s>=%s and  %s<=%s %s order by $date_field    ", $date_field, prepare_mysql($from_date), $date_field, prepare_mysql($to_date), " $group_by "
     );
+
+
     $last_year_data = array();
 
 
@@ -1285,8 +1294,8 @@ function product_categories_products($_data, $db, $user) {
             '<span class="link" onClick="change_view(\'products/%d/category/%d>%d\')">%s</span>', $data['Category Store Key'], $parent->id, $data['Product Category Key'], $data['Category Code']
         );
 
-        $remove = sprintf(
-            '<span class="button" onClick="disassociate_category_from_table(this,%s,%d)"> <i class="fa fas padding_left_5 fa-unlink"></i> %s</span>', $parent->id,  $data['Product Category Key'],_('Unlink')
+        $remove        = sprintf(
+            '<span class="button" onClick="disassociate_category_from_table(this,%s,%d)"> <i class="fa fas padding_left_5 fa-unlink"></i> %s</span>', $parent->id, $data['Product Category Key'], _('Unlink')
         );
         $record_data[] = array(
             'id'                      => (integer)$data['Product Category Key'],
@@ -1310,7 +1319,7 @@ function product_categories_products($_data, $db, $user) {
             'percentage_out_of_stock' => ($data['Product Category Public'] == 'Yes' ? percentage($data['Product Category Active Web Out of Stock'], $data['online']) : ''),
             'webpage'                 => $webpage,
             'webpage_state'           => $webpage_state,
-            'remove'=>$remove,
+            'remove'                  => $remove,
 
             'sales_year0' => sprintf(
                 '<span>%s</span> %s', money($data['Product Category Year To Day Acc Invoiced Amount'], $data['Product Category Currency Code']),
@@ -1409,12 +1418,12 @@ function charges($_data, $db, $user) {
 
 
         $record_data[] = array(
-            'id'     => (integer)$data['Charge Key'],
-            'code'   => sprintf('<span class="link" onClick="change_view(\'store/%d/charge/%d\')" >%s</span>', $data['Charge Store Key'], $data['Charge Key'], $data['Charge Name']),
-            'name'   => sprintf('<span class="link" onClick="change_view(\'store/%d/charge/%d\')" >%s</span>', $data['Charge Store Key'], $data['Charge Key'], $data['Charge Description']),
-            'orders' => number($data['Charge Total Acc Orders']),
+            'id'        => (integer)$data['Charge Key'],
+            'code'      => sprintf('<span class="link" onClick="change_view(\'store/%d/charge/%d\')" >%s</span>', $data['Charge Store Key'], $data['Charge Key'], $data['Charge Name']),
+            'name'      => sprintf('<span class="link" onClick="change_view(\'store/%d/charge/%d\')" >%s</span>', $data['Charge Store Key'], $data['Charge Key'], $data['Charge Description']),
+            'orders'    => number($data['Charge Total Acc Orders']),
             'customers' => number($data['Charge Total Acc Customers']),
-            'amount' => money($data['Charge Total Acc Amount'],$data['Store Currency Code'])
+            'amount'    => money($data['Charge Total Acc Amount'], $data['Store Currency Code'])
 
         );
 

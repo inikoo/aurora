@@ -275,6 +275,9 @@ class PartLocation extends DB_Table {
 
     function audit($qty, $note = '', $date = false, $include_current = false, $parent = '') {
 
+
+
+        
         if (!$date) {
             $date = gmdate('Y-m-d H:i:s');
         }
@@ -370,7 +373,7 @@ class PartLocation extends DB_Table {
         $audit_key = $this->db->lastInsertId();
 
 
-        //print "$qty_change $value_change  \n";
+      //  print "changes $qty_change $value_change  \n";
 
         if ($qty_change != 0 or $value_change != 0) {
 
@@ -512,12 +515,11 @@ class PartLocation extends DB_Table {
 
     function update_stock() {
 
+
+        $old_stock=$this->data['Quantity On Hand'];
+        $old_value=$this->data['Stock Value'];
+
         list($stock, $value, $in_process) = $this->get_stock();
-
-
-
-       // print $stock;
-
 
 
         $value=$stock * $this->part->get('Part Cost in Warehouse');
@@ -538,21 +540,42 @@ class PartLocation extends DB_Table {
 
 
         $this->part->update_stock();
-        $this->update_stock_value();
+        $this->location->update_stock_value();
+
 
 
         if ($this->location->id == 1) {
             $this->part->update_unknown_location();
         }
 
-        foreach (
-            $this->part->get_production_suppliers('objects') as $production
-        ) {
+        foreach ($this->part->get_production_suppliers('objects') as $production) {
             $production->update_locations_with_errors();
         }
 
         $warehouse = get_object('Warehouse', $this->get('Part Location Warehouse Key'));
         $warehouse->update_stock_amount();
+
+
+        if($old_stock!=$stock or $old_value!=$value){
+
+            include_once 'utils/new_fork.php';
+
+            $account=get_object('Account',1);
+
+           // print "diff: $old_stock -> $stock , $old_value -> $value\n";
+
+            new_housekeeping_fork(
+                'au_housekeeping', array(
+                'type'          => 'update_ISF',
+                'part_sku' => $this->part->id,
+                'location_key' => $this->location->id,
+                'debug'=>"diff: $old_stock -> $stock , $old_value -> $value\n"
+            ), $account->get('Account Code')
+            );
+
+
+
+        }
 
 
     }
@@ -1363,9 +1386,14 @@ class PartLocation extends DB_Table {
 
     function update_stock_value() {
 
+
+        $old_value=$this->data['Stock Value'];
+
+        $value= $this->get('Quantity On Hand') * $this->part->get('Part Cost in Warehouse');
+
         $sql = sprintf(
             "UPDATE `Part Location Dimension` SET `Stock Value`=%.3f WHERE `Part SKU`=%d AND `Location Key`=%d ",
-            $this->get('Quantity On Hand') * $this->part->get('Part Cost in Warehouse'),
+           $value,
             $this->part_sku,
             $this->location_key
         );
@@ -1380,6 +1408,27 @@ class PartLocation extends DB_Table {
             $warehouse->update_stock_amount();
         }
 
+
+
+        if($old_value!=$value){
+
+            include_once 'utils/new_fork.php';
+
+            $account=get_object('Account',1);
+
+
+            new_housekeeping_fork(
+                'au_housekeeping', array(
+                'type'          => 'update_ISF',
+                'part_sku' => $this->part->id,
+                'location_key' => $this->location->id,
+                'debug'=>"diff:  $old_value -> $value\n"
+            ), $account->get('Account Code')
+            );
+
+
+
+        }
 
 
     }
@@ -1805,7 +1854,11 @@ class PartLocation extends DB_Table {
 
                 $sql = sprintf(
                     "INSERT INTO `Inventory Spanshot Fact` (
-			`Sold Amount`,`Date`,`Part SKU`,`Warehouse Key`,`Location Key`,`Quantity On Hand`,
+			`Sold Amount`,
+			`Date`,
+			`Part SKU`,
+			`Warehouse Key`,`Location Key`,
+			`Quantity On Hand`,
 			`Value At Cost`,`Value At Day Cost`,`Value Commercial`,`Storing Cost`,
 			`Quantity Sold`,`Quantity In`,`Quantity Lost`,`Quantity Open`,`Quantity High`,`Quantity Low`,
 			`Value At Cost Open`,`Value At Cost High`,`Value At Cost Low`,

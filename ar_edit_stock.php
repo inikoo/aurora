@@ -562,6 +562,7 @@ function edit_stock($account, $db, $user, $editor, $data, $smarty) {
     }
 
 
+
     foreach ($parts_locations_data as $key => $part_locations_data) {
 
         $part_location         = new PartLocation($part_locations_data['part_sku'], $part_locations_data['location_key']);
@@ -1088,6 +1089,9 @@ function itf_cost($account, $db, $user, $editor, $data, $smarty) {
 
             $db->exec($sql);
             $part = get_object('Part', $row['Part SKU']);
+
+
+
             $part->update_stock_run();
 
 

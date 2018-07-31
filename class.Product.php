@@ -1274,58 +1274,7 @@ class Product extends Asset {
 
     }
 
-    function create_time_series($date = false) {
-        if (!$date) {
-            $date = gmdate("Y-m-d");
-        }
-        $sql       = sprintf(
-            "SELECT sum(`Invoice Quantity`) AS outers,sum(`Invoice Transaction Gross Amount`-`Invoice Transaction Total Discount Amount`) AS sales,  sum(`Invoice Currency Exchange Rate`*(`Invoice Transaction Gross Amount`-`Invoice Transaction Total Discount Amount`)) AS dc_sales, count(DISTINCT `Customer Key`) AS customers , count(DISTINCT `Invoice Key`) AS invoices FROM `Order Transaction Fact` WHERE `Product ID`=%d AND `Current Dispatching State`='Dispatched' AND `Invoice Date`>=%s  AND `Invoice Date`<=%s   ",
-            $this->id, prepare_mysql($date.' 00:00:00'), prepare_mysql($date.' 23:59:59')
 
-        );
-        $outers    = 0;
-        $sales     = 0;
-        $dc_sales  = 0;
-        $customers = 0;
-        $invoices  = 0;
-
-
-        if ($result = $this->db->query($sql)) {
-            if ($row = $result->fetch()) {
-
-                $sales     = $row['sales'];
-                $dc_sales  = $row['dc_sales'];
-                $customers = $row['customers'];
-                $invoices  = $row['invoices'];
-                $outers    = $row['outers'];
-
-
-            }
-        } else {
-            print_r($error_info = $this->db->errorInfo());
-            exit;
-        }
-
-
-        if ($invoices != 0 and $customers != 0 and $sales != 0 and $outers != 0) {
-
-
-            $sql = sprintf(
-                "INSERT INTO `Order Spanshot Fact`(`Date`, `Product ID`, `Availability`, `Outers Out`, `Sales`, `Sales DC`, `Customers`, `Invoices`) VALUES (%s,%d   ,%f,%f, %.2f,%.2f,  %d,%d) ON DUPLICATE KEY UPDATE `Outers Out`=%f,`Sales`=%.2f,`Sales DC`=%.2f,`Customers`=%d,`Invoices`=%d ",
-                prepare_mysql($date),
-
-                $this->id, 1, $outers, $sales, $dc_sales, $customers, $invoices,
-
-                $outers, $sales, $dc_sales, $customers, $invoices
-
-
-            );
-            $this->db->exec($sql);
-
-
-        }
-
-    }
 
     function update_pages_numbers() {
 

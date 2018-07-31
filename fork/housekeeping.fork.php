@@ -745,14 +745,14 @@ function fork_housekeeping($job) {
             require_once 'conf/timeseries.php';
             require_once 'class.Timeserie.php';
 
-            $timeseries = get_time_series_config();
+            $timeseries      = get_time_series_config();
             $timeseries_data = $timeseries['Customer'];
             foreach ($timeseries_data as $time_series_data) {
 
 
                 $time_series_data['Timeseries Parent']     = 'Customer';
                 $time_series_data['Timeseries Parent Key'] = $customer->id;
-
+                $time_series_data['editor']                = $editor;
 
 
                 $object_timeseries = new Timeseries('find', $time_series_data, 'create');
@@ -826,7 +826,7 @@ function fork_housekeeping($job) {
             if ($email_campaign->id) {
                 $email_campaign->socket = $socket;
 
-                 $email_campaign->resume_mailshot();
+                $email_campaign->resume_mailshot();
             }
             break;
 
@@ -854,6 +854,203 @@ function fork_housekeeping($job) {
 
 
             break;
+
+        case 'delivery_note_packed_done':
+
+            $intervals = array(
+                'Total',
+                'Year To Day',
+                'Quarter To Day',
+                'Month To Day',
+                'Week To Day',
+                'Today',
+                '1 Year',
+                '1 Month',
+                '1 Week',
+            );
+
+            require_once 'conf/timeseries.php';
+            require_once 'class.Timeserie.php';
+
+            $timeseries      = get_time_series_config();
+
+
+
+
+            $suppliers          = array();
+            $suppliers_categories = array();
+            $part_categories    = array();
+
+            $sql = sprintf('select `Part SKU`  FROM `Inventory Transaction Fact` WHERE  `Delivery Note Key`=%d  and `Inventory Transaction Type`="Sale" ', $data['delivery_note_key']);
+            if ($result = $db->query($sql)) {
+                foreach ($result as $row) {
+                    $part = get_object('Part', $row['Part SKU']);
+
+
+                    foreach ($intervals as $interval) {
+                        $part->update_sales_from_invoices($interval, true, false);
+                    }
+
+                    foreach ($part->get_suppliers() as $suppliers_key) {
+                        $suppliers[$suppliers_key] = $suppliers_key;
+                    }
+                    foreach ($part->get_categories() as $part_category_key) {
+                        $part_categories[$part_category_key] = $part_category_key;
+                    }
+
+
+                }
+            } else {
+                print_r($error_info = $db->errorInfo());
+                print "$sql\n";
+                exit;
+            }
+
+            foreach ($part_categories as $part_category_key) {
+                $category = get_object('Category', $part_category_key);
+                if ($category->get('Category Branch Type') != 'Root') {
+                    foreach ($intervals as $interval) {
+                        $category->update_sales_from_invoices($interval, true, false);
+                    }
+                }
+
+
+                $timeseries_data = $timeseries['PartCategory'];
+                foreach ($timeseries_data as $time_series_data) {
+
+
+                    $time_series_data['Timeseries Parent']     = 'Category';
+                    $time_series_data['Timeseries Parent Key'] = $category->id;
+                    $time_series_data['editor']                = $editor;
+
+
+                    $object_timeseries = new Timeseries('find', $time_series_data, 'create');
+                    $category->update_part_timeseries_record($object_timeseries, gmdate('Y-m-d'), gmdate('Y-m-d'));
+
+
+                }
+
+            }
+
+
+
+            foreach ($suppliers as $supplier_key) {
+                $supplier = get_object('Supplier', $supplier_key);
+
+
+                $timeseries_data = $timeseries['Supplier'];
+                foreach ($timeseries_data as $time_series_data) {
+
+
+                    $time_series_data['Timeseries Parent']     = 'Category';
+                    $time_series_data['Timeseries Parent Key'] = $supplier->id;
+                    $time_series_data['editor']                = $editor;
+
+
+                    $object_timeseries = new Timeseries('find', $time_series_data, 'create');
+                    $supplier->update_timeseries_record($object_timeseries, gmdate('Y-m-d'), gmdate('Y-m-d'));
+
+
+                }
+
+
+                foreach ($intervals as $interval) {
+                    $supplier->update_sales_from_invoices($interval, true, false);
+                }
+                foreach ($supplier->get_categories() as $supplier_category_key) {
+                    $suppliers_categories[$supplier_category_key] = $supplier_category_key;
+                }
+
+            }
+
+            foreach ($suppliers_categories as $supplier_category_key) {
+                $category = get_object('Category', $supplier_category_key);
+                if ($category->get('Category Branch Type') != 'Root') {
+                    foreach ($intervals as $interval) {
+                        $category->update_sales_from_invoices($interval, true, false);
+                    }
+                }
+
+                // todo supplier categories timeseries still not done
+                /*
+                $timeseries_data = $timeseries['PartCategory'];
+                foreach ($timeseries_data as $time_series_data) {
+
+
+                    $time_series_data['Timeseries Parent']     = 'Category';
+                    $time_series_data['Timeseries Parent Key'] = $category->id;
+                    $time_series_data['editor']                = $editor;
+
+
+                    $object_timeseries = new Timeseries('find', $time_series_data, 'create');
+                    $category->update_supplier_timeseries_record($object_timeseries, gmdate('Y-m-d'), gmdate('Y-m-d'));
+
+
+                }
+                */
+            }
+
+
+            //print_r($part_categories);
+            //print_r($suppliers);
+            //print_r($suppliers_categories);
+
+            break;
+
+        case 'update_ISF':
+
+            include_once 'class.PartLocation.php';
+
+            $part_location = new PartLocation(
+                $data['part_sku'].'_'.$data['location_key']
+            );
+
+            $date=gmdate('Y-m-d');
+
+            $part_location->update_stock_history_date($date);
+
+
+            $warehouse = get_object('Warehouse',$part_location->location->get('Location Warehouse Key'));
+            $warehouse->update_inventory_snapshot($date);
+
+
+            break;
+
+        case 'create_today_ISF':
+
+            include_once 'class.PartLocation.php';
+
+
+
+            $sql = sprintf(
+                "SELECT `Part SKU`,`Location Key` from `Part Location Dimension`"
+            );
+
+
+            if ($result = $db->query($sql)) {
+                foreach ($result as $row) {
+
+                    $part_location = new PartLocation($row['Part SKU'].'_'.$row['Location Key']);
+                    $part_location->update_stock_history_date(date("Y-m-d"));
+
+                }
+            }
+
+            $sql = sprintf('SELECT `Warehouse Key` FROM `Warehouse Dimension`');
+            if ($result = $db->query($sql)) {
+                foreach ($result as $row) {
+                    $warehouse = get_object('Warehouse',$row['Warehouse Key']);
+                    $warehouse->update_inventory_snapshot(date("Y-m-d"));
+                }
+            } else {
+                print_r($error_info = $db->errorInfo());
+                exit;
+            }
+
+
+
+            break;
+
         default:
             break;
 

@@ -63,7 +63,7 @@ function download_pdf(element) {
 
     })
 
-  
+
 
     switch (data.type) {
         case 'proforma':

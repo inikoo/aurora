@@ -1353,6 +1353,15 @@ class DeliveryNote extends DB_Table {
 
                 $order->update_totals();
 
+
+                new_housekeeping_fork(
+                    'au_housekeeping', array(
+                    'type'      => 'delivery_note_packed_done',
+                    'delivery_note_key' => $this->id,
+                ), $account->get('Account Code')
+                );
+
+
                 break;
 
 

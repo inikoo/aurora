@@ -2729,6 +2729,13 @@ class Part extends Asset {
     function update_stock() {
 
 
+
+        $old_stock=$this->data['Part Current Stock'];
+        $old_value=$this->data['Part Current Value'];
+        $old_stock_in_progress=$this->data['Part Current Stock In Process'];
+        $old_stock_picked=$this->data['Part Current Stock Picked'];
+        $old_stock_on_hand=$this->data['Part Current On Hand Stock'];
+
         $picked   = 0;
         $required = 0;
 
@@ -2766,27 +2773,38 @@ class Part extends Asset {
         );
 
 
-        $this->activate();
-        $this->discontinue_trigger();
-        $this->update_stock_status();
+        if(
+            $old_stock!=$this->data['Part Current Stock'] or
+            $old_value!=$this->data['Part Current Value'] or
+            $old_stock_in_progress!=$this->data['Part Current Stock In Process'] or
+            $old_stock_picked!=$this->data['Part Current Stock Picked'] or
+            $old_stock_on_hand!=$this->data['Part Current On Hand Stock']
 
-        // todo find a way do it more efficient in aw
-        $account=get_object('Account',1);
-        if ($account->get('Code') == 'AWEU') {
-            $this->update_stock_run();
+        ){
+            $this->activate();
+            $this->discontinue_trigger();
+            $this->update_stock_status();
+
+            //todo find a way do it more efficient
+            $account=get_object('Account',1);
+            if ($account->get('Account Add Stock Value Type') == 'Blockchain') {
+                $this->update_stock_run();
+            }
+
+
+            include_once 'utils/new_fork.php';
+            $account=get_object('Account',1);
+
+
+            new_housekeeping_fork(
+                'au_housekeeping', array(
+                'type'     => 'update_part_products_availability',
+                'part_sku' => $this->id
+            ), $account->get('Account Code')
+            );
         }
 
 
-        include_once 'utils/new_fork.php';
-         $account=get_object('Account',1);
-
-
-        new_housekeeping_fork(
-            'au_housekeeping', array(
-            'type'     => 'update_part_products_availability',
-            'part_sku' => $this->id
-        ), $account->get('Account Code')
-        );
 
 
     }
@@ -2934,6 +2952,8 @@ class Part extends Asset {
 
         }else{
 
+            /*
+
 
             $sql=sprintf('select `Date`,(`Inventory Transaction Amount`/`Inventory Transaction Quantity`) as value_per_sko from  `Inventory Transaction Fact` ITF  where  `Inventory Transaction Amount`>0 and `Inventory Transaction Quantity`>0 and  ( `Inventory Transaction Section`=\'In\' or ( `Inventory Transaction Type`=\'Adjust\' and `Inventory Transaction Quantity`>0 and `Location Key`>1 )  )  and ITF.`Part SKU`=%d  order by `Date` desc, FIELD(`Inventory Transaction Type`, \'In\',\'Adjust\')  limit 1 ',$this->id);
 
@@ -2951,6 +2971,8 @@ class Part extends Asset {
                 print "$sql\n";
                 exit;
             }
+
+            */
         }
 
 

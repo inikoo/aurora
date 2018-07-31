@@ -87,3 +87,7 @@ test.php
 
 vendor/*
 EcomB2B/vendor/*
+
+composer.lock
+
+EcomB2B/composer.lock

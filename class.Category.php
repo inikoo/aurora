@@ -3512,9 +3512,11 @@ VALUES (%d,%s, %d, %d, %s,%s, %d, %d, %s, %s, %s,%d,NOW())", $this->id,
                 $this->create_product_timeseries($data, $fork_key);
                 break;
             case('Invoice'):
+                // todo
                 $this->create_invoice_timeseries($data, $fork_key);
                 break;
             case('Supplier'):
+                // todo
                 $this->create_supplier_timeseries($data, $fork_key);
                 break;
 
