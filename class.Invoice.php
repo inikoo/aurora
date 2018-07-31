@@ -373,7 +373,7 @@ class Invoice extends DB_Table {
             //$this->distribute_insurance_over_the_otf();
 
 
-            $customer = get_object('Customer', $this - get('Invoice Customer Key'));
+            $customer = get_object('Customer', $this->get('Invoice Customer Key'));
             $customer->update_invoices();
 
 
