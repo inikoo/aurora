@@ -942,7 +942,7 @@ function fork_housekeeping($job) {
                 foreach ($timeseries_data as $time_series_data) {
 
 
-                    $time_series_data['Timeseries Parent']     = 'Category';
+                    $time_series_data['Timeseries Parent']     = 'Supplier';
                     $time_series_data['Timeseries Parent Key'] = $supplier->id;
                     $time_series_data['editor']                = $editor;
 
