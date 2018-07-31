@@ -3,6 +3,7 @@ server_files/
 .sass-cache/
 *.csv
 
+
 cron/tmp/
 
 keyring/dns.php
@@ -83,3 +84,6 @@ locale/de_DE/LC_MESSAGES/aurora_de.bk.po
 cron/caca.php
 
 test.php
+
+vendor/*
+EcomB2B/vendor/*
