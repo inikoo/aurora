@@ -300,32 +300,6 @@ class Data_Sets extends DB_Table {
             }
 
 
-        } elseif ($this->data['Data Sets Code'] == 'OSF') {
-            $tables = '"Order Spanshot Fact"';
-            $sql    = sprintf(
-                'SELECT count(*) AS num  FROM `Order Spanshot Fact`', $this->id
-            );
-            if ($result = $this->db->query($sql)) {
-                if ($row = $result->fetch()) {
-                    $num = $row['num'];
-
-                } else {
-                    $num = 0;
-
-                }
-                $this->update(
-                    array(
-                        'Data Sets Number Sets'  => 1,
-                        'Data Sets Number Items' => $num
-                    ), 'no_history'
-                );
-
-            } else {
-                print_r($error_info = $this->db->errorInfo());
-                exit;
-            }
-
-
         } elseif ($this->data['Data Sets Code'] == 'ISF') {
             $tables = '"Inventory Spanshot Fact"';
             $sql    = sprintf(

@@ -4141,19 +4141,7 @@ class Store extends DB_Table {
 
     }
 
-    function get_sales_timeseries_sql() {
 
-        $table = '`Order Spanshot Fact` TR ';
-        $where = sprintf(' where `Store Key`=%d', $this->id);
-
-        $order  = '`Date`';
-        $fields = "`Sales`,`Sales DC`,`Availability`,`Customers`,`Invoices`";
-
-        $sql = "select $fields from $table $where  order by $order ";
-
-        return $sql;
-
-    }
 
 
 }

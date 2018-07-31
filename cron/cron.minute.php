@@ -13,8 +13,24 @@ require_once 'common.php';
 require_once 'utils/new_fork.php';
 
 
+if(date('H:i')=='00:00' ){
+
+    create_today_ISF($account);
+
+}
+
 send_periodic_email_mailshots($db, $account);
 
+
+
+function create_today_ISF($account){
+    new_housekeeping_fork(
+        'au_housekeeping', array(
+        'type'                    => 'create_today_ISF',
+
+    ), $account->get('Account Code')
+    );
+}
 
 function send_periodic_email_mailshots($db, $account) {
 

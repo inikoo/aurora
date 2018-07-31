@@ -9,13 +9,16 @@
 
 */
 
+include_once 'utils/object_functions.php';
 
 $table = '`Order Transaction Fact` TR ';
 
 switch ($parameters['parent']) {
     case 'product':
         $where = sprintf(' where `Product ID`=%d', $parameters['parent_key']);
-
+        // todo remove this after migration
+        $product = get_object('Product', $parameters['parent_key']);
+        $store   = get_object('Store', $product->get('Product Store Key'));
         break;
     default:
         exit('parent not configured');
@@ -51,15 +54,21 @@ if ($order == 'date') {
 }
 
 
-$sql_totals
-    = "select count(Distinct $sql_totals_fields) as num from $table  $where  ";
+$sql_totals = "select count(Distinct $sql_totals_fields) as num from $table  $where  ";
 
-$fields
-    = "`Invoice Date` as `Date`,
+if ($store->get('Store Version') == 1) {
+    $fields = "`Invoice Date` as `Date`,
 sum(`Invoice Transaction Gross Amount`-`Invoice Transaction Total Discount Amount`) as sales,
 count(distinct `Invoice Key`) as invoices,
 count(distinct `Customer Key`) as customers
 ";
+} else {
+    $fields = "`Invoice Date` as `Date`,
+sum(`Order Transaction Gross Amount`-`Order Transaction Total Discount Amount`) as sales,
+count(distinct `Invoice Key`) as invoices,
+count(distinct `Customer Key`) as customers
+";
+}
 
 
 ?>

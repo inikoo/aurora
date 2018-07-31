@@ -20,8 +20,9 @@ function fork_asset_sales($job) {
 
 
     list($account, $db, $data,$editor) = $_data;
-
     print_r($data);
+   //return true;
+
 
     switch ($data['type']) {
 
