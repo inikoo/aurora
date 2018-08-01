@@ -263,7 +263,6 @@ class Order extends DB_Table {
                     $this->update_field('Order State', $value, 'no_history');
                     $this->update_field('Order Submitted by Customer Date', '', 'no_history');
                     $this->update_field('Order Date', $date, 'no_history');
-                    $this->update_field('Order Class', 'InWebsite', 'no_history');
 
 
                     $history_data = array(
@@ -307,7 +306,6 @@ class Order extends DB_Table {
                     $this->update_field('Order State', $value, 'no_history');
                     $this->update_field('Order Submitted by Customer Date', $date, 'no_history');
                     $this->update_field('Order Date', $date, 'no_history');
-                    $this->update_field('Order Class', 'InProcess', 'no_history');
 
 
                     $history_data = array(
@@ -353,7 +351,6 @@ class Order extends DB_Table {
 
                     $this->update_field('Order State', $value, 'no_history');
                     $this->update_field('Order Date', $date, 'no_history');
-                    $this->update_field('Order Class', 'InProcess', 'no_history');
 
 
                     $this->update_field('Order Send to Warehouse Date', '', 'no_history');
@@ -472,7 +469,6 @@ class Order extends DB_Table {
                         $this->update_field('Order Submitted by Customer Date', $date);
 
                     }
-                    $this->update_field('Order Class', 'InProcess', 'no_history');
                     $this->update_field('Order State', $value, 'no_history');
                     $this->update_field('Order Send to Warehouse Date', $date, 'no_history');
                     $this->update_field('Order Date', $date, 'no_history');
@@ -769,7 +765,6 @@ class Order extends DB_Table {
 
                     $this->update_field('Order State', $value, 'no_history');
                     $this->update_field('Order Dispatched Date', '', 'no_history');
-                    $this->update_field('Order Class', 'InProcess', 'no_history');
 
 
                     $history_data = array(
@@ -808,7 +803,6 @@ class Order extends DB_Table {
 
                     $this->update_field('Order State', $value, 'no_history');
                     $this->update_field('Order Dispatched Date', $date, 'no_history');
-                    $this->update_field('Order Class', 'Archived', 'no_history');
 
 
                     $history_data = array(
@@ -1460,7 +1454,6 @@ class Order extends DB_Table {
         $this->db->exec($sql);
 
 
-        $this->update(array('Order Class' => 'Archived'), 'no_history');
 
 
         $sql = sprintf(

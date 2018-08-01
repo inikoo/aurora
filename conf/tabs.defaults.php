@@ -450,22 +450,6 @@ $tab_defaults = array(
         'f_field'     => 'number',
     ),
 
-    'orders.archived' => array(
-        'view'          => 'overview',
-        'sort_key'      => 'id',
-        'sort_order'    => 1,
-        'rpp'           => 20,
-        'rpp_options'   => $default_rrp_options,
-        'f_field'       => 'number',
-        'from'          => '',
-        'to'            => '',
-        'period'        => 'mtd',
-        'elements_type' => 'state',
-        'elements'      => $elements_options['orders_archived'],
-        'export_fields' => $export_fields['orders']
-
-    ),
-
     'orders' => array(
         'view'          => 'overview',
         'sort_key'      => 'id',

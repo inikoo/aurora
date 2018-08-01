@@ -571,14 +571,14 @@ class Subject extends DB_Table {
 
         $address =
             $address->withFamilyName($this->get($type.' Address Recipient'))->withOrganization($this->get($type.' Address Organization'))->withAddressLine1($this->get($type.' Address Line 1'))->withAddressLine2($this->get($type.' Address Line 2'))->withSortingCode(
-                $this->get($type.' Address Sorting Code')
-            )->withPostalCode($this->get($type.' Address Postal Code'))->withDependentLocality(
-                $this->get($type.' Address Dependent Locality')
-            )->withLocality($this->get($type.' Address Locality'))->withAdministrativeArea(
-                $this->get($type.' Address Administrative Area')
-            )->withCountryCode(
-                $this->get($type.' Address Country 2 Alpha Code')
-            );
+                    $this->get($type.' Address Sorting Code')
+                )->withPostalCode($this->get($type.' Address Postal Code'))->withDependentLocality(
+                    $this->get($type.' Address Dependent Locality')
+                )->withLocality($this->get($type.' Address Locality'))->withAdministrativeArea(
+                    $this->get($type.' Address Administrative Area')
+                )->withCountryCode(
+                    $this->get($type.' Address Country 2 Alpha Code')
+                );
 
 
         $xhtml_address = $formatter->format($address);

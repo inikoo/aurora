@@ -15,7 +15,10 @@
 class Billing_To extends DB_Table {
 
 
-    function Billing_To($arg1 = false, $arg2 = false) {
+    function __construct($arg1 = false, $arg2 = false) {
+
+        global $db;
+        $this->db = $db;
 
         $this->table_name    = 'Billing To';
         $this->ignore_fields = array('Billing To Key');
@@ -52,147 +55,17 @@ class Billing_To extends DB_Table {
             return;
         }
 
-        // print $sql;
-        $result = mysql_query($sql);
-        if ($this->data = mysql_fetch_array($result, MYSQL_ASSOC)) {
+        if ($this->data = $this->db->query($sql)->fetch()) {
             $this->id = $this->data['Billing To Key'];
         }
 
 
-    }
 
-
-    function find($raw_data, $options) {
-
-        $create = '';
-        $update = '';
-        if (preg_match('/create/i', $options)) {
-            $create = 'create';
-        }
-        if (preg_match('/update/i', $options)) {
-            $update = 'update';
-        }
-
-        $data = $this->base_data();
-
-
-        foreach ($raw_data as $key => $value) {
-            if (array_key_exists($key, $data)) {
-                $data[$key] = $value;
-            }
-
-        }
-
-        // print_r($raw_data);
-        //  print_r($data);
-        //  exit("s");
-
-
-        $fields = array(
-            'Billing To Email',
-            'Billing To Telephone',
-            'Billing To Company Name',
-            'Billing To Contact Name',
-            'Billing To Country Code',
-            'Billing To Postal Code',
-            'Billing To Town',
-            'Billing To Line 1',
-            'Billing To Line 2',
-            'Billing To Line 3',
-            'Billing To Line 4'
-        );
-
-        $sql = sprintf("SELECT * FROM `Billing To Dimension` WHERE TRUE  ");
-        foreach ($fields as $field) {
-            $sql .= sprintf(
-                ' and `%s`=%s COLLATE utf8_bin', $field, prepare_mysql($data[$field], false)
-            );
-        }
-        //print $sql;
-
-        $result      = mysql_query($sql);
-        $num_results = mysql_num_rows($result);
-        if ($num_results == 0) {
-            // address not found
-            $this->found = false;
-
-
-        } else {
-            if ($num_results == 1) {
-                $row = mysql_fetch_array($result, MYSQL_ASSOC);
-
-                $this->get_data('id', $row['Billing To Key']);
-                $this->found     = true;
-                $this->found_key = $row['Billing To Key'];
-
-            } else {// Found in mora than one
-                print("Warning to shipping addresses $sql\n");
-                $row = mysql_fetch_array($result, MYSQL_ASSOC);
-
-                $this->get_data('id', $row['Billing To Key']);
-                $this->found     = true;
-                $this->found_key = $row['Billing To Key'];
-
-
-            }
-        }
-
-        if (!$this->found and $create) {
-            $this->create($data);
-
-        }
 
 
     }
 
-    function create($data) {
 
-        $this->data = $data;
-
-        $keys   = '';
-        $values = '';
-
-        foreach ($this->data as $key => $value) {
-            if ($key == 'Billing To XHTML Address') {
-                continue;
-            }
-            //  if(preg_match('/Address Data Creation/i',$key) ){
-            // $keys.=",`".$key."`";
-            // $values.=', Now()';
-            //}else{
-            $keys .= ",`".$key."`";
-            $values .= ','.prepare_mysql($value, false);
-            // }
-
-        }
-
-
-        $values = preg_replace('/^,/', '', $values);
-        $keys   = preg_replace('/^,/', '', $keys);
-
-        $sql = "insert into `Billing To Dimension` ($keys) values ($values)";
-        //print $sql;
-        if (mysql_query($sql)) {
-            $this->id                  = mysql_insert_id();
-            $this->data['Address Key'] = $this->id;
-            $this->new                 = true;
-            $this->get_data('id', $this->id);
-            $this->data['Billing To XHTML Address'] = $this->get_xhtml_address();
-            $sql                                    = sprintf(
-                "UPDATE `Billing To Dimension` SET `Billing To XHTML Address`=%s WHERE `Billing To Key`=%d", prepare_mysql($this->data['Billing To XHTML Address']), $this->id
-            );
-            mysql_query($sql);
-        } else {
-            print "Error can not create address\n";
-            exit;
-
-        }
-    }
-
-    function get_xhtml_address() {
-        return $this->display('xhtml');
-
-    }
 
     function display($tipo) {
 
