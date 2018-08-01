@@ -558,7 +558,7 @@ function fork_asset_sales($job) {
             break;
 
 
-       
+
 
         case 'update_invoice_products_sales_data':
             update_invoice_products_sales_data($db, $account, $data);
