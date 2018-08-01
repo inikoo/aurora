@@ -171,7 +171,6 @@ class Public_Order extends DBW_Table {
                     $this->update_field('Order State', $value, 'no_history');
                     $this->update_field('Order Submitted by Customer Date', $date, 'no_history');
                     $this->update_field('Order Date', $date, 'no_history');
-                    $this->update_field('Order Class', 'InProcess', 'no_history');
 
 
                     $history_data = array(

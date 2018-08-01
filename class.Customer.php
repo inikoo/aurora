@@ -956,7 +956,6 @@ class Customer extends Subject {
         );
 
 
-        $order_data['Order Class'] = 'InWebsite';
 
 
         $order_data['Order Customer Key']          = $this->id;

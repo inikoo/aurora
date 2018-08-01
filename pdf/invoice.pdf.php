@@ -83,11 +83,10 @@ if ($number_orders == 1) {
 }
 
 
-$number_dns = 1;
-if ($number_dns == 1) {
+
     $delivery_note = get_object('Delivery_Note', $order->get('Order Delivery Note Key'));
     $smarty->assign('delivery_note', $delivery_note);
-}
+
 
 
 $smarty->assign('number_orders', $number_orders);

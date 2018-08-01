@@ -1155,7 +1155,6 @@ class Public_Customer extends DBW_Table {
         );
 
 
-        $order_data['Order Class'] = 'InWebsite';
 
 
         $order_data['Order Customer Key']          = $this->id;
