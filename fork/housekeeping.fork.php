@@ -585,6 +585,7 @@ function fork_housekeeping($job) {
 
 
         case 'full_after_part_stock_update':
+            // todo remove after migration
             // for use in pre migration inikoo
 
             $part = get_object('Part', $data['part_sku']);
@@ -617,8 +618,7 @@ function fork_housekeeping($job) {
 
         case 'update_part_products_availability':
 
-            include_once 'class.Part.php';
-            $part = new Part($data['part_sku']);
+            $part = get_object('Part', $data['part_sku']);
 
             if (isset($data['editor'])) {
                 $data['editor']['Date'] = gmdate('Y-m-d H:i:s');
@@ -643,26 +643,7 @@ function fork_housekeeping($job) {
 
             break;
 
-        case 'part_location_changed':
-            include_once 'class.PartLocation.php';
-            include_once 'class.Supplier_Production.php';
-
-            $part_location = new PartLocation(
-                $data['part_sku'].'_'.$data['location_key']
-            );
-
-            if ($part_location->get('Quantity On Hand') < 0) {
-
-                $suppliers = $part_location->part->get_suppliers();
-                foreach ($suppliers as $supplier_key) {
-                    $supplier_production = new Supplier_Production($supplier_key);
-
-                    if ($supplier_production->id) {
-                        $supplier_production->update_locations_with_errors();
-                    }
-                }
-            }
-            break;
+        
 
         case 'order_payment_changed': // this can be removed after all inikoo gone
 
@@ -1213,6 +1194,19 @@ function fork_housekeeping($job) {
 
             $warehouse = get_object('Warehouse', $part_location->location->get('Location Warehouse Key'));
             $warehouse->update_inventory_snapshot($date);
+
+
+            if ($part_location->get('Quantity On Hand') < 0) {
+
+                $suppliers = $part_location->part->get_suppliers();
+                foreach ($suppliers as $supplier_key) {
+                    $supplier_production = get_object('Supplier_Production',$supplier_key);
+
+                    if ($supplier_production->id) {
+                        $supplier_production->update_locations_with_errors();
+                    }
+                }
+            }
 
 
             break;
