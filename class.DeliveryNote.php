@@ -1549,6 +1549,11 @@ class DeliveryNote extends DB_Table {
             case 'Cancelled':
 
 
+                // todo before cancel the picked stock has to go some cleaver way back to locations, (making fork update_cancelled_delivery_note_products_sales_data obsolete? )
+
+
+                $returned_part_locations=array();
+
                 $order = get_object('Order', $this->data['Delivery Note Order Key']);
                 if ($order->get('Order State') >= 90) {
                     return;
@@ -1640,10 +1645,8 @@ class DeliveryNote extends DB_Table {
 
                         $this->db->exec($sql);
 
-                        // todo: fork this
-                        $part_location = get_object('Part_Location', $row['Part SKU'].'_'.$row['Location Key']);
-                        $part_location->update_stock();
 
+                        $returned_part_locations[]=$row['Part SKU'].'_'.$row['Location Key'];
 
                     }
                 } else {
@@ -1656,11 +1659,26 @@ class DeliveryNote extends DB_Table {
                 $order->update(array('Order State' => 'Delivery Note Cancelled'));
 
 
+                $date=$this->data['Delivery Note Date Start Picking'];
+                if($date==''){
+                    $date=$this->data['Delivery Note Date Created'];
+                }
+                if($date==''){
+                    $date=gmdate('Y-m-d H:i:s');
+
+
+                }
+
+
+
                 include_once 'utils/new_fork.php';
                 new_housekeeping_fork(
-                    'au_asset_sales', array(
+                    'au_housekeeping', array(
                     'type'              => 'update_cancelled_delivery_note_products_sales_data',
-                    'delivery_note_key' => $this->id,
+                    'date' => gmdate('Y-m-d',strtotime($date.' +0:00')),
+
+                    'returned_part_locations'=>$returned_part_locations,
+                    'customer_key'=>$this->get('Delivery Note Customer Key')
 
                 ), $account->get('Account Code')
                 );

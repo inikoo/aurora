@@ -858,7 +858,7 @@ function fork_housekeeping($job) {
         case 'delivery_note_packed_done':
 
 
-            $customer = get_object('Customer',$data['customer_key']);
+            $customer = get_object('Customer', $data['customer_key']);
             $customer->update_part_bridge();
 
 
@@ -877,14 +877,12 @@ function fork_housekeeping($job) {
             require_once 'conf/timeseries.php';
             require_once 'class.Timeserie.php';
 
-            $timeseries      = get_time_series_config();
+            $timeseries = get_time_series_config();
 
 
-
-
-            $suppliers          = array();
+            $suppliers            = array();
             $suppliers_categories = array();
-            $part_categories    = array();
+            $part_categories      = array();
 
             $sql = sprintf('select `Part SKU`  FROM `Inventory Transaction Fact` WHERE  `Delivery Note Key`=%d  and `Inventory Transaction Type`="Sale" ', $data['delivery_note_key']);
             if ($result = $db->query($sql)) {
@@ -936,7 +934,6 @@ function fork_housekeeping($job) {
                 }
 
             }
-
 
 
             foreach ($suppliers as $supplier_key) {
@@ -1002,6 +999,205 @@ function fork_housekeeping($job) {
 
             break;
 
+
+        case 'update_cancelled_delivery_note_products_sales_data':
+
+            include_once 'class.PartLocation.php';
+
+            $returned_parts = array();
+
+            foreach ($data['returned_part_locations'] as $returned_part_locations) {
+                $part_location = get_object('Part_Location', $returned_part_locations);
+                $part_location->update_stock();
+
+                $returned_parts[$part_location->part->id]=$part_location->part->id;
+
+            }
+
+            if (count($returned_parts) > 0) {
+                $customer = get_object('Customer', $data['customer_key']);
+                $customer->update_part_bridge();
+
+
+
+                if($data['date']==gmdate('Y-m-d')){
+                    $intervals = array(
+                        'Total',
+                        'Year To Day',
+                        'Quarter To Day',
+                        'Month To Day',
+                        'Week To Day',
+                        'Today',
+                        '1 Year',
+                        '1 Month',
+                        '1 Week',
+
+
+                    );
+                }else{
+                    $intervals = array(
+                        'Total',
+                        'Year To Day',
+                        'Quarter To Day',
+                        'Month To Day',
+                        'Week To Day',
+                        'Today',
+                        '1 Year',
+                        '1 Month',
+                        '1 Week',
+                        'Yesterday',  //todo don't calculate the ones not applicable
+                        'Last Week',  //todo don't calculate the ones not applicable
+                        'Last Month'  //todo don't calculate the ones not applicable
+
+                    );
+                }
+
+
+
+
+                require_once 'conf/timeseries.php';
+                require_once 'class.Timeserie.php';
+
+                $timeseries = get_time_series_config();
+
+
+                $suppliers            = array();
+                $suppliers_categories = array();
+                $part_categories      = array();
+
+
+
+                foreach($returned_parts as $part_sku) {
+
+                    $part = get_object('Part', $part_sku);
+
+
+                    foreach ($intervals as $interval) {
+                        $part->update_sales_from_invoices($interval, true, false);
+                    }
+
+                    if($data['date']!=gmdate('Y-m-d')) {
+                        //todo don't calculate the ones not applicable
+                        $part->update_previous_quarters_data();
+                        $part->update_previous_years_data();
+                    }
+
+                    foreach ($part->get_suppliers() as $suppliers_key) {
+                        $suppliers[$suppliers_key] = $suppliers_key;
+                    }
+                    foreach ($part->get_categories() as $part_category_key) {
+                        $part_categories[$part_category_key] = $part_category_key;
+                    }
+                }
+
+
+                foreach ($part_categories as $part_category_key) {
+                    $category = get_object('Category', $part_category_key);
+                    if ($category->get('Category Branch Type') != 'Root') {
+                        foreach ($intervals as $interval) {
+                            $category->update_sales_from_invoices($interval, true, false);
+                        }
+                    }
+
+                    if($data['date']!=gmdate('Y-m-d')) {
+                        //todo don't calculate the ones not applicable
+                        $category->update_part_category_previous_quarters_data();
+                        $category->update_part_category_previous_years_data();
+                    }
+
+                    $timeseries_data = $timeseries['PartCategory'];
+                    foreach ($timeseries_data as $time_series_data) {
+
+
+                        $time_series_data['Timeseries Parent']     = 'Category';
+                        $time_series_data['Timeseries Parent Key'] = $category->id;
+                        $time_series_data['editor']                = $editor;
+
+
+                        $object_timeseries = new Timeseries('find', $time_series_data, 'create');
+                        $category->update_part_timeseries_record($object_timeseries, $data['date'], gmdate('Y-m-d'));
+
+
+                    }
+
+                }
+
+
+                foreach ($suppliers as $supplier_key) {
+                    $supplier = get_object('Supplier', $supplier_key);
+
+
+                    $timeseries_data = $timeseries['Supplier'];
+                    foreach ($timeseries_data as $time_series_data) {
+
+
+                        $time_series_data['Timeseries Parent']     = 'Supplier';
+                        $time_series_data['Timeseries Parent Key'] = $supplier->id;
+                        $time_series_data['editor']                = $editor;
+
+
+                        $object_timeseries = new Timeseries('find', $time_series_data, 'create');
+                        $supplier->update_timeseries_record($object_timeseries, $data['date'], gmdate('Y-m-d'));
+
+
+                    }
+
+
+                    foreach ($intervals as $interval) {
+                        $supplier->update_sales_from_invoices($interval, true, false);
+
+                        if($data['date']!=gmdate('Y-m-d')) {
+                            //todo don't calculate the ones not applicable
+                            $supplier->update_previous_quarters_data();
+                            $supplier->update_previous_years_data();
+                        }
+
+                    }
+                    foreach ($supplier->get_categories() as $supplier_category_key) {
+                        $suppliers_categories[$supplier_category_key] = $supplier_category_key;
+                    }
+
+                }
+
+                foreach ($suppliers_categories as $supplier_category_key) {
+                    $category = get_object('Category', $supplier_category_key);
+                    if ($category->get('Category Branch Type') != 'Root') {
+                        foreach ($intervals as $interval) {
+                            $category->update_sales_from_invoices($interval, true, false);
+                        }
+                        if($data['date']!=gmdate('Y-m-d')) {
+                            //todo don't calculate the ones not applicable
+                            $category->update_part_category_previous_quarters_data();
+                            $category->update_part_category_previous_years_data();
+                        }
+                    }
+
+                    // todo supplier categories timeseries still not done
+                    /*
+                    $timeseries_data = $timeseries['PartCategory'];
+                    foreach ($timeseries_data as $time_series_data) {
+
+
+                        $time_series_data['Timeseries Parent']     = 'Category';
+                        $time_series_data['Timeseries Parent Key'] = $category->id;
+                        $time_series_data['editor']                = $editor;
+
+
+                        $object_timeseries = new Timeseries('find', $time_series_data, 'create');
+                        $category->update_supplier_timeseries_record($object_timeseries, gmdate('Y-m-d'), gmdate('Y-m-d'));
+
+
+                    }
+                    */
+                }
+
+
+
+
+            }
+
+
+            break;
         case 'update_ISF':
 
             include_once 'class.PartLocation.php';
@@ -1010,12 +1206,12 @@ function fork_housekeeping($job) {
                 $data['part_sku'].'_'.$data['location_key']
             );
 
-            $date=gmdate('Y-m-d');
+            $date = gmdate('Y-m-d');
 
             $part_location->update_stock_history_date($date);
 
 
-            $warehouse = get_object('Warehouse',$part_location->location->get('Location Warehouse Key'));
+            $warehouse = get_object('Warehouse', $part_location->location->get('Location Warehouse Key'));
             $warehouse->update_inventory_snapshot($date);
 
 
@@ -1024,7 +1220,6 @@ function fork_housekeeping($job) {
         case 'create_today_ISF':
 
             include_once 'class.PartLocation.php';
-
 
 
             $sql = sprintf(
@@ -1044,14 +1239,13 @@ function fork_housekeeping($job) {
             $sql = sprintf('SELECT `Warehouse Key` FROM `Warehouse Dimension`');
             if ($result = $db->query($sql)) {
                 foreach ($result as $row) {
-                    $warehouse = get_object('Warehouse',$row['Warehouse Key']);
+                    $warehouse = get_object('Warehouse', $row['Warehouse Key']);
                     $warehouse->update_inventory_snapshot(date("Y-m-d"));
                 }
             } else {
                 print_r($error_info = $db->errorInfo());
                 exit;
             }
-
 
 
             break;
