@@ -1356,8 +1356,9 @@ class DeliveryNote extends DB_Table {
 
                 new_housekeeping_fork(
                     'au_housekeeping', array(
-                    'type'      => 'delivery_note_packed_done',
+                    'type'              => 'delivery_note_packed_done',
                     'delivery_note_key' => $this->id,
+                    'customer_key' => $this->get('Delivery Note Customer Key'),
                 ), $account->get('Account Code')
                 );
 
@@ -1554,12 +1555,13 @@ class DeliveryNote extends DB_Table {
                 }
 
 
-                $this->update_field(
-                    'Delivery Note Date Cancelled', $date, 'no_history'
+                $this->fast_update(
+                    array(
+                        'Delivery Note Date Cancelled' => $date,
+                        'Delivery Note State'          => $value
+                    )
                 );
-                $this->update_field(
-                    'Delivery Note State', $value, 'no_history'
-                );
+
 
                 // todo: Manually choose where the stock will go
 
@@ -1654,6 +1656,16 @@ class DeliveryNote extends DB_Table {
                 $order->update(array('Order State' => 'Delivery Note Cancelled'));
 
 
+                include_once 'utils/new_fork.php';
+                new_housekeeping_fork(
+                    'au_asset_sales', array(
+                    'type'              => 'update_cancelled_delivery_note_products_sales_data',
+                    'delivery_note_key' => $this->id,
+
+                ), $account->get('Account Code')
+                );
+
+
                 break;
 
             default:
@@ -1710,6 +1722,143 @@ class DeliveryNote extends DB_Table {
 
                 break;
         }
+
+
+    }
+
+    function update_item_picked_quantity($data) {
+
+
+        include_once('class.Location.php');
+        include_once('class.PartLocation.php');
+        include_once('utils/order_handing_functions.php');
+
+
+        if ($this->get('State Index') >= 70) {
+            $this->error = true;
+            $this->msg   = 'delivery packed';
+
+            return;
+        }
+
+
+        //  print_r($data);
+
+        $date = gmdate('Y-m-d H:i:s');
+
+        //$item_key        = $data['item_key'];
+        $qty             = $data['qty'];
+        $transaction_key = $data['transaction_key'];
+
+        $sql = sprintf(
+            'SELECT `Part Cost`,`Inventory Transaction Key`,ITF.`Part SKU`,`Picked`,`Required`,`Given`,`Location Key`,`Required`+`Given`-`Picked`-`Out of Stock`-`No Authorized`-`Not Found`-`No Picked Other` AS pending,(`Required`+`Given`) AS quantity FROM `Inventory Transaction Fact` ITF LEFT JOIN `Part Dimension` P ON (P.`Part SKU`=ITF.`Part SKU`)  WHERE `Inventory Transaction Key`=%d',
+            $data['transaction_key']
+        );
+
+        //   print "$sql";
+
+
+        if ($result = $this->db->query($sql)) {
+            if ($row = $result->fetch()) {
+
+                // print_r($row);
+
+
+                $transaction_value = $row['Part Cost'] * $qty;
+
+                $to_pick = $row['pending'] + $row['Picked'];
+
+
+                // $pending = $row['pending'];
+
+
+                if ($qty <= $to_pick) {
+
+                    //   $location = new Location($row['Location Key']);
+
+                    // $qty = $row['Picked'] + $qty;
+
+                    $sql = sprintf(
+                        "UPDATE `Inventory Transaction Fact` SET  `Inventory Transaction Type`='Sale' ,`Inventory Transaction Section`='Out',`Picked`=%f,`Inventory Transaction Quantity`=%f,`Inventory Transaction Amount`=%f,`Date Picked`=%s,`Date`=%s ,`Picker Key`=%s WHERE `Inventory Transaction Key`=%d  ",
+                        $qty, -1 * $qty, $transaction_value, prepare_mysql($date), prepare_mysql($date), prepare_mysql($data['picker_key']), $data['transaction_key']
+                    );
+
+                    $this->db->exec($sql);
+
+
+                    //   print $_pending;
+
+
+                } else {
+                    $this->error = true;
+                    $this->msg   = 'Error, trying to pick more items than required';
+
+                    return;
+
+                }
+
+                $part_location = new PartLocation($row['Part SKU'].'_'.$row['Location Key']);
+                $part_location->update_stock();
+
+                $pending = $to_pick - $qty;
+                $picked  = $qty;
+
+            }
+        } else {
+            print_r($error_info = $this->db->errorInfo());
+            print "$sql\n";
+            exit;
+        }
+
+
+        $this->update_totals();
+
+
+        $state = 'Picking';
+
+        if ($this->get('Delivery Note Number Picked Items') == $this->get('Delivery Note Number To Pick Items')) {
+
+            $state = 'Picked';
+
+        }
+
+
+        $this->update_state($state);
+
+
+        $this->update_metadata = array(
+            'state_index'                => $this->get('State Index'),
+            'picked_quantity_components' => get_item_picked(
+                $pending, $part_location->get('Quantity On Hand'), $row['Inventory Transaction Key'], $row['Part SKU'], $picked, $part_location->part->get('Part Current On Hand Stock'), $part_location->part->get('Part SKO Barcode'),
+                $part_location->part->get('Part Reference'), $part_location->part->get('Part Reference'), $part_location->part->get('Part Reference'), base64_encode(
+                    $part_location->part->get('Part Package Description').($part_location->part->get('Picking Note') != '' ? ' <span>('.$part_location->part->get('Picking Note').'</span>' : '')
+                ), $part_location->part->get('Part Main Image Key')
+            ),
+            'location_components'        => get_item_location(
+                $pending, $part_location->get('Quantity On Hand'), $date, $part_location->location->id, $part_location->location->get('Code'), $part_location->part->get('Part Current On Hand Stock')
+            ),
+            'pending'                    => $pending,
+
+            'class_html' => array(
+                'Delivery_Note_Picked_Label'                  => ($this->get('State Index') == 20 ? _('Picking') : _('Picked')),
+                'Delivery_Note_Picked_Percentage_or_Datetime' => '&nbsp;'.$this->get('Picked Percentage or Datetime').'&nbsp;',
+                'Delivery_Note_Packed_Percentage_or_Datetime' => '&nbsp;'.$this->get('Packed Percentage or Datetime').'&nbsp;',
+                'Delivery_Note_State'                         => $this->get('State')
+            )
+        );
+
+
+        if ($this->get('State Index') >= 30) {
+            global $smarty;
+            $smarty->assign('dn', $this);
+            $this->update_metadata['class_html']['picking_options'] = $smarty->fetch('delivery_note.options.picking.tpl');
+        }
+
+
+        return array(
+            'transaction_key' => $transaction_key,
+            'qty'             => $qty + 0
+        );
 
 
     }
@@ -1993,21 +2142,14 @@ class DeliveryNote extends DB_Table {
         $this->update_metadata = array(
             'state_index'                => $this->get('State Index'),
             'picked_quantity_components' => get_item_picked(
-                $pending_picking,
-                $part_location->get('Quantity On Hand'),
-                $row['Inventory Transaction Key'],
-                $row['Part SKU'],
-                $picked,
-                $part_location->part->get('Part Current On Hand Stock'),
-                $part_location->part->get('Part SKO Barcode'),
-                $part_location->part->get('Part Reference'),
-                $part_location->part->get('Part Package Description'),
-                $part_location->part->get('Part Main Image Key')
+                $pending_picking, $part_location->get('Quantity On Hand'), $row['Inventory Transaction Key'], $row['Part SKU'], $picked, $part_location->part->get('Part Current On Hand Stock'), $part_location->part->get('Part SKO Barcode'),
+                $part_location->part->get('Part Reference'), $part_location->part->get('Part Package Description'), $part_location->part->get('Part Main Image Key')
 
 
             ),
             'packed_quantity_components' => get_item_packed(
-                $pending, $row['Inventory Transaction Key'], $row['Part SKU'], $packed),
+                $pending, $row['Inventory Transaction Key'], $row['Part SKU'], $packed
+            ),
             'location_components'        => get_item_location(
                 $pending, $part_location->get('Quantity On Hand'), $date, $part_location->location->id, $part_location->location->get('Code'), $part_location->part->get('Part Current On Hand Stock')
             ),
@@ -2021,143 +2163,6 @@ class DeliveryNote extends DB_Table {
 
             )
         );
-
-
-        return array(
-            'transaction_key' => $transaction_key,
-            'qty'             => $qty + 0
-        );
-
-
-    }
-
-    function update_item_picked_quantity($data) {
-
-
-        include_once('class.Location.php');
-        include_once('class.PartLocation.php');
-        include_once('utils/order_handing_functions.php');
-
-
-        if ($this->get('State Index') >= 70) {
-            $this->error = true;
-            $this->msg   = 'delivery packed';
-
-            return;
-        }
-
-
-        //  print_r($data);
-
-        $date = gmdate('Y-m-d H:i:s');
-
-        //$item_key        = $data['item_key'];
-        $qty             = $data['qty'];
-        $transaction_key = $data['transaction_key'];
-
-        $sql = sprintf(
-            'SELECT `Part Cost`,`Inventory Transaction Key`,ITF.`Part SKU`,`Picked`,`Required`,`Given`,`Location Key`,`Required`+`Given`-`Picked`-`Out of Stock`-`No Authorized`-`Not Found`-`No Picked Other` AS pending,(`Required`+`Given`) AS quantity FROM `Inventory Transaction Fact` ITF LEFT JOIN `Part Dimension` P ON (P.`Part SKU`=ITF.`Part SKU`)  WHERE `Inventory Transaction Key`=%d',
-            $data['transaction_key']
-        );
-
-        //   print "$sql";
-
-
-        if ($result = $this->db->query($sql)) {
-            if ($row = $result->fetch()) {
-
-                // print_r($row);
-
-
-                $transaction_value = $row['Part Cost'] * $qty;
-
-                $to_pick = $row['pending'] + $row['Picked'];
-
-
-                // $pending = $row['pending'];
-
-
-                if ($qty <= $to_pick) {
-
-                    //   $location = new Location($row['Location Key']);
-
-                    // $qty = $row['Picked'] + $qty;
-
-                    $sql = sprintf(
-                        "UPDATE `Inventory Transaction Fact` SET  `Inventory Transaction Type`='Sale' ,`Inventory Transaction Section`='Out',`Picked`=%f,`Inventory Transaction Quantity`=%f,`Inventory Transaction Amount`=%f,`Date Picked`=%s,`Date`=%s ,`Picker Key`=%s WHERE `Inventory Transaction Key`=%d  ",
-                        $qty, -1 * $qty, $transaction_value, prepare_mysql($date), prepare_mysql($date), prepare_mysql($data['picker_key']), $data['transaction_key']
-                    );
-
-                    $this->db->exec($sql);
-
-
-                    //   print $_pending;
-
-
-                } else {
-                    $this->error = true;
-                    $this->msg   = 'Error, trying to pick more items than required';
-
-                    return;
-
-                }
-
-                $part_location = new PartLocation($row['Part SKU'].'_'.$row['Location Key']);
-                $part_location->update_stock();
-
-                $pending = $to_pick - $qty;
-                $picked  = $qty;
-
-            }
-        } else {
-            print_r($error_info = $this->db->errorInfo());
-            print "$sql\n";
-            exit;
-        }
-
-
-        $this->update_totals();
-
-
-        $state = 'Picking';
-
-        if ($this->get('Delivery Note Number Picked Items') == $this->get('Delivery Note Number To Pick Items')) {
-
-            $state = 'Picked';
-
-        }
-
-
-        $this->update_state($state);
-
-
-        $this->update_metadata = array(
-            'state_index'                => $this->get('State Index'),
-            'picked_quantity_components' => get_item_picked(
-                $pending, $part_location->get('Quantity On Hand'), $row['Inventory Transaction Key'], $row['Part SKU'], $picked, $part_location->part->get('Part Current On Hand Stock'), $part_location->part->get('Part SKO Barcode'),
-                $part_location->part->get('Part Reference'), $part_location->part->get('Part Reference'), $part_location->part->get('Part Reference'), base64_encode(
-                    $part_location->part->get('Part Package Description').($part_location->part->get('Picking Note') != '' ? ' <span>('.$part_location->part->get('Picking Note').'</span>' : '')
-                ), $part_location->part->get('Part Main Image Key')
-            ),
-            'location_components'        => get_item_location(
-                $pending, $part_location->get('Quantity On Hand'), $date, $part_location->location->id, $part_location->location->get('Code'), $part_location->part->get('Part Current On Hand Stock')
-            ),
-            'pending'                    => $pending,
-
-            'class_html' => array(
-                'Delivery_Note_Picked_Label'                  => ($this->get('State Index') == 20 ? _('Picking') : _('Picked')),
-                'Delivery_Note_Picked_Percentage_or_Datetime' => '&nbsp;'.$this->get('Picked Percentage or Datetime').'&nbsp;',
-                'Delivery_Note_Packed_Percentage_or_Datetime' => '&nbsp;'.$this->get('Packed Percentage or Datetime').'&nbsp;',
-                'Delivery_Note_State'                         => $this->get('State')
-            )
-        );
-
-
-        if ($this->get('State Index') >= 30) {
-            global $smarty;
-            $smarty->assign('dn', $this);
-            $this->update_metadata['class_html']['picking_options'] = $smarty->fetch('delivery_note.options.picking.tpl');
-        }
 
 
         return array(
@@ -2210,7 +2215,6 @@ class DeliveryNote extends DB_Table {
 
         $order         = get_object('Order', $this->get('Delivery Note Order Key'));
         $order->editor = $this->editor;
-
 
 
         $sql = sprintf(

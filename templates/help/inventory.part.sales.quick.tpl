@@ -15,7 +15,7 @@ About:
     </div>
     <div class="answer hide">
         <p>
-            When a part is packed the status of that transaction (ITF) is updated from  <em>Order in progress (OIP)</em> to  <em>Sale</em>.
+            When a part is <b>picked</b> the status of that transaction (ITF) is updated from  <em>Order in progress (OIP)</em> to  <em>Sale</em>.
 
         </p>
         <p>
