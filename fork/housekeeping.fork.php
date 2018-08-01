@@ -857,6 +857,11 @@ function fork_housekeeping($job) {
 
         case 'delivery_note_packed_done':
 
+
+            $customer = get_object('Customer',$data['customer_key']);
+            $customer->update_part_bridge();
+
+
             $intervals = array(
                 'Total',
                 'Year To Day',
