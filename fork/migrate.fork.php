@@ -1354,12 +1354,12 @@ function parse_old_dn_address_fields($store, $address, $recipient, $organization
 
     //  print $xhtml_address;
 
-    $_address_fields['Delivery Note Address Postal Label'] = $xhtml_address;
+    $_address_fields['Delivery Note Address Postal Label'] = $postal_label_formatter->format($address);
 
 
 
 
-    $_address_fields['Delivery Note Address Formatted'] = $postal_label_formatter->format($address);
+    $_address_fields['Delivery Note Address Formatted'] = $xhtml_address;
 
 
 

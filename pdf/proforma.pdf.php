@@ -64,6 +64,14 @@ if(!empty($_REQUEST['weight'])){
 
 
 
+if (!empty($_REQUEST['origin'])) {
+    $print_origin = true;
+    include_once 'class.Country.php';
+    $countryRepository = new CountryRepository();
+} else {
+    $print_origin = false;
+}
+
 
 
 
@@ -115,7 +123,7 @@ $smarty->assign('label_title_no', _('Proforma No.'));
 
 $transactions = array();
 $sql          = sprintf(
-    "SELECT `Product Unit Weight`,`Order Transaction Amount`,`Order Quantity`,`Order Transaction Total Discount Amount`,`Order Transaction Out of Stock Amount`,`Order Currency Code`,`Order Transaction Gross Amount`,
+    "SELECT `Product Origin Country Code`,`Product Unit Weight`,`Order Transaction Amount`,`Order Quantity`,`Order Transaction Total Discount Amount`,`Order Transaction Out of Stock Amount`,`Order Currency Code`,`Order Transaction Gross Amount`,
 `Product Currency`,`Product History Name`,`Product History Price`,`Product Units Per Case`,`Product History XHTML Short Description`,`Product Name`,`Product RRP`,`Product Tariff Code`,`Product Tariff Code`,`Product XHTML Short Description`,P.`Product ID`,O.`Product Code`
  FROM `Order Transaction Fact` O  LEFT JOIN `Product History Dimension` PH ON (O.`Product Key`=PH.`Product Key`) LEFT JOIN
   `Product Dimension` P ON (PH.`Product ID`=P.`Product ID`) WHERE `Order Key`=%d ORDER BY `Product Code`", $order->id
@@ -167,6 +175,17 @@ if ($result = $db->query($sql)) {
         if ($row['Product Unit Weight'] != 0 and $print_weight) {
             $description .= ' <br>'._('Weight').': '.weight($row['Product Unit Weight']*$row['Product Units Per Case']);
         }
+
+        if ($row['Product Origin Country Code'] != '' and $print_origin) {
+
+            $_country=new Country('code',$row['Product Origin Country Code']);
+
+
+            $country=$countryRepository->get($_country->get('Country 2 Alpha Code'));
+
+            $description .= ' <br>'._('Origin').': '.$country->getName().' ('.$country->getThreeLetterCode().')';
+        }
+
 
         if ($print_tariff_code and $row['Product Tariff Code'] != '') {
             $description .= '<br>'._('Tariff Code').': '.$row['Product Tariff Code'];
