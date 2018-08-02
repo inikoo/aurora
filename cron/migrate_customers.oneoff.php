@@ -11,6 +11,7 @@
 */
 
 require_once 'common.php';
+require_once 'vendor/autoload.php';
 
 
 $default_DB_link = @mysql_connect($dns_host, $dns_user, $dns_pwd);
@@ -32,16 +33,49 @@ require_once 'class.Customer.php';
 require_once 'class.Store.php';
 require_once 'class.Address.php';
 
+$editor = array(
+    'Author Name'  => '',
+    'Author Alias' => '',
+    'Author Type'  => '',
+    'Author Key'   => '',
+    'User Key'     => 0,
+    'Date'         => gmdate('Y-m-d H:i:s'),
+    'Subject'      => 'System',
+    'Subject Key'  => 0,
+    'Author Name'  => 'Script (migration to aurora)'
+);
+
+$print_est = true;
+$sql = sprintf("select count(*) as num FROM `Customer Dimension` O left join `Store Dimension` on (`Store Key`=`Customer Store Key`)  where `Store Version`=1 ");
+if ($result = $db->query($sql)) {
+    if ($row = $result->fetch()) {
+        $total = $row['num'];
+    } else {
+        $total = 0;
+    }
+} else {
+    print_r($error_info = $db->errorInfo());
+    exit;
+}
+
+$lap_time0 = date('U');
+$contador  = 0;
+
 
 $sql = sprintf(
-    'SELECT `Customer Key` FROM `Customer Dimension` WHERE `Customer Key`=287194 ORDER BY `Customer Key` DESC '
+    'SELECT `Customer Key` FROM `Customer Dimension` WHERE `Customer Key`=71245 ORDER BY `Customer Key` DESC '
 );
-$sql = sprintf('SELECT `Customer Key` FROM `Customer Dimension` ORDER BY `Customer Key` DESC ');
+$sql = sprintf('SELECT `Customer Key` FROM `Customer Dimension`  left join `Store Dimension` on (`Store Key`=`Customer Note Store Key`) where `Store Version`=1   ORDER BY `Customer Key` DESC ');
 
 if ($result = $db->query($sql)) {
     foreach ($result as $row) {
-        $customer = new Customer($row['Customer Key']);
 
+
+
+
+        $customer = new Customer($row['Customer Key']);
+        $editor['Date']= gmdate('Y-m-d H:i:s');
+        $customer->editor=$editor;
 
         $other_emails = get_other_emails_data($db, $customer);
         if (count($other_emails) > 0) {
@@ -203,17 +237,10 @@ if ($result = $db->query($sql)) {
                 $customer->get('Customer Billing Address Key')
             );
             if ($address->data['Address Contact'] != '') {
-                $address_contact = trim(
-                    preg_replace(
-                        '/\s+/', ' ', $address->data['Address Contact']
-                    )
-                );
+                $address_contact = trim(preg_replace('/\s+/', ' ', $address->data['Address Contact']));
                 if (strtolower($address_contact) == strtolower($recipient)) {
 
-                } elseif (strtolower($address_contact) == strtolower(
-                        $organization
-                    )
-                ) {
+                } elseif (strtolower($address_contact) == strtolower($organization)) {
 
                 } else {
                     print $customer->id."==================\n";
@@ -316,13 +343,21 @@ if ($result = $db->query($sql)) {
         add_other_telephone(get_other_telecoms_data($db, 'FAX', $customer), $customer);
 
         if($customer->get('Customer Tax Number')!='' and  $customer->get('Customer Tax Number Validation Source')!='Manual' and( $customer->get('Customer Tax Number Valid')=='Unknown'  or $customer->get('Customer Tax Number Validation Date')=='0000-00-00 00:00:00' )){
-            $customer->update_tax_number_valid('Auto');
+            //$customer->update_tax_number_valid('Auto');
+            // todo make own script to do this after
 
         }
 
 
 
+        $contador++;
+        $lap_time1 = date('U');
 
+        if ($print_est) {
+            print 'P   '.percentage($contador, $total, 3)."  lap time ".sprintf("%.4f", ($lap_time1 - $lap_time0) / $contador)." EST  ".sprintf(
+                    "%.4f", (($lap_time1 - $lap_time0) / $contador) * ($total - $contador) / 60
+                )."m  ($contador/$total) \r";
+        }
 
 
     }
