@@ -314,12 +314,21 @@ function set_delivery_costing($account, $db, $user, $editor, $data, $smarty) {
                             );
                             $db->exec($sql);
 
+
+
                         }
+
+
+
                     }
 
                 }
 
             }
+
+
+
+
 
 
         }
@@ -335,6 +344,9 @@ function set_delivery_costing($account, $db, $user, $editor, $data, $smarty) {
 
 
     $delivery->update_totals();
+
+
+
 
 
     include_once 'utils/new_fork.php';
