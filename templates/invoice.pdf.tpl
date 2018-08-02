@@ -178,7 +178,7 @@ div.inline { float:left; }
 				<td style="width:14%;text-align:left">{t}Code{/t}</td>
 				<td style="text-align:left">{t}Description{/t}</td>
 				<td style="width:10%;text-align:right">{if $invoice->get('Invoice Type')=='Invoice'}{t}Discount{/t}{/if}</td>
-				<td style="width:10%;text-align:right">{t}Quantity{/t}</td>
+				<td style="width:11%;text-align:right">{t}Quantity{/t}</td>
 				<td style="width:10%;text-align:right">{t}Amount{/t}</td>
 			</tr>
 		</thead>
@@ -189,7 +189,7 @@ div.inline { float:left; }
 				<td style="text-align:left">{$transaction['Product XHTML Short Description']}</td>
 				<td style="width:10%;text-align:right">{$transaction['Discount']}</td>
 				
-				<td style="width:10%;text-align:right">{$transaction['Delivery Note Quantity']}</td>
+				<td style="width:11%;text-align:right">{$transaction['Delivery Note Quantity']}</td>
 				<td style="width:10%;text-align:right">{$transaction['Amount']}</td>
 			</tr>
 			{/foreach} 
