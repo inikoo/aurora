@@ -19,7 +19,7 @@
         </div>
         <div id="billing_address_container" class="data_container" style="">
             <div style="min-height:80px;float:left;width:16px">
-                <i style="position: relative;top:3px" class="fa fa-inventory"></i>
+                <i style="position: relative;top:3px" class="fa fa-map-marker"></i>
             </div>
             <div style="min-width:150px;max-width:220px;margin-left: 25px">
                 {$invoice->get('Invoice Address Formatted')}

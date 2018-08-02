@@ -18,7 +18,7 @@ include_once 'class.DB_Table.php';
 class Payment extends DB_Table {
 
 
-    function Payment($arg1 = false, $arg2 = false) {
+    function __construct($arg1 = false, $arg2 = false) {
 
         global $db;
         $this->db = $db;

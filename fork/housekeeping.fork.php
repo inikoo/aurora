@@ -347,17 +347,7 @@ function fork_housekeeping($job) {
 
 
             break;
-        case 'replacement_created':
-            $order   = get_object('Order', $data['order_key']);
-            $account = get_object('Account', '');
-            $store   = get_object('Store', $order->get('Store Key'));
 
-
-            $store->update_orders();
-            $account->update_orders();
-
-
-            break;
 
         case 'order_created':
             include_once 'class.Order.php';
@@ -643,7 +633,7 @@ function fork_housekeeping($job) {
 
             break;
 
-        
+
 
         case 'order_payment_changed': // this can be removed after all inikoo gone
 
@@ -717,6 +707,20 @@ function fork_housekeeping($job) {
                 exit;
             }
             break;
+
+        case 'replacement_created':
+            $order   = get_object('Order', $data['order_key']);
+            $account = get_object('Account', '');
+            $store   = get_object('Store', $order->get('Store Key'));
+
+            // todo review if other operations has to be done
+
+            $store->update_orders();
+            $account->update_orders();
+
+
+            break;
+
         case 'invoice_created':
 
             update_invoice_products_sales_data($db, $account, $data);
