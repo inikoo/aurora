@@ -229,7 +229,7 @@ class _Address extends DB_Table {
             $subject_key    = preg_replace('/[^\d]/', '', $match[0]);
             $subject_type   = 'Company';
             $subject_object = new Company($subject_key);
-            $in_contact     = $subject_object->get_contact_keys();
+            $in_contact     = array();//$subject_object->get_contact_keys();
 
 
         }
@@ -3745,7 +3745,7 @@ class _Address extends DB_Table {
                 $this->found     = true;
                 $this->found_key = $address_key;
                 $this->get_data('id', $address_key);
-                $subject_contact_keys = $subject_object->get_contact_keys();
+                $subject_contact_keys =array();
                 foreach ($subject_contact_keys as $contact_key) {
                     $this->candidate[$contact_key] = 110;
                 }
