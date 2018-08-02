@@ -232,7 +232,7 @@ function set_delivery_costing($account, $db, $user, $editor, $data, $smarty) {
     //print_r($data);
 
 
-    $delivery  = get_object('SupplierDelivery', $data['key']);
+    $delivery   = get_object('SupplierDelivery', $data['key']);
     $parts_data = array();
 
 
@@ -315,9 +315,7 @@ function set_delivery_costing($account, $db, $user, $editor, $data, $smarty) {
                             $db->exec($sql);
 
 
-
                         }
-
 
 
                     }
@@ -325,10 +323,6 @@ function set_delivery_costing($account, $db, $user, $editor, $data, $smarty) {
                 }
 
             }
-
-
-
-
 
 
         }
@@ -346,22 +340,16 @@ function set_delivery_costing($account, $db, $user, $editor, $data, $smarty) {
     $delivery->update_totals();
 
 
-
-
-
     include_once 'utils/new_fork.php';
 
 
     new_housekeeping_fork(
         'au_housekeeping', array(
-        'type'                => 'update_parts_stock_run',
-        'parts_data'           => $parts_data,
+        'type'               => 'update_parts_stock_run',
+        'parts_data'         => $parts_data,
         'all_parts_min_date' => ($all_parts_min_date != '' ? gmdate('Y-m-d', $all_parts_min_date) : ''),
     ), $account->get('Account Code')
     );
-
-
-
 
 
     $response = array(
@@ -574,7 +562,6 @@ function edit_stock($account, $db, $user, $editor, $data, $smarty) {
     }
 
 
-
     foreach ($parts_locations_data as $key => $part_locations_data) {
 
         $part_location         = new PartLocation($part_locations_data['part_sku'], $part_locations_data['location_key']);
@@ -712,8 +699,13 @@ LEFT JOIN `Supplier Part Historic Dimension` SPH ON (POTF.`Supplier Part Histori
                 exit;
             }
 
+            // $data['qty'] <--- SKOs
+            //
 
-            if (round($data['qty'] / $row['Supplier Part Packages Per Carton'], 2) > round($row['Supplier Delivery Checked Quantity'] - $row['Supplier Delivery Placed Quantity'], 2)) {
+            $cartons_qty_placed=$data['qty'] / $row['Supplier Part Packages Per Carton'];
+
+
+            if (round($cartons_qty_placed, 2) > round($row['Supplier Delivery Checked Quantity'] - $row['Supplier Delivery Placed Quantity'], 2)) {
                 $response = array(
                     'state' => 400,
                     'msg'   => _('Placement quantity greater than the checked quantity')
@@ -723,16 +715,21 @@ LEFT JOIN `Supplier Part Historic Dimension` SPH ON (POTF.`Supplier Part Histori
             }
 
 
+            // todo Supplier Delivery Quantity <-- that is Cartons!! it should be units but refactoring will be epic
+
             $exchange = $object->get('Supplier Delivery Currency Exchange');
 
-            $amount_per_sko = round(($exchange * ($row['Supplier Delivery Net Amount'] + $row['Supplier Delivery Extra Cost Amount']) + $row['Supplier Delivery Extra Cost Account Currency Amount']) / $row['Supplier Delivery Quantity']/$row['Part Units Per Package'], 4);
+            $amount_per_sko = round(
+                    ($exchange * ($row['Supplier Delivery Net Amount'] + $row['Supplier Delivery Extra Cost Amount']) + $row['Supplier Delivery Extra Cost Account Currency Amount'])
+                    / $row['Supplier Delivery Quantity'] / $row['Supplier Part Packages Per Carton'] /
+                    $row['Part Units Per Package'], 4
+            );
 
 
             if ($account->get('Account Add Stock Value Type') == 'Last Price') {
 
 
-                $part_location->part->update(array('Part Cost in Warehouse' => $amount_per_sko),'no_history');
-
+                $part_location->part->update(array('Part Cost in Warehouse' => $amount_per_sko), 'no_history');
 
 
                 if ($old_value != $amount_per_sko) {
@@ -757,8 +754,7 @@ LEFT JOIN `Supplier Part Historic Dimension` SPH ON (POTF.`Supplier Part Histori
                     ), gmdate('Y-m-d H:i:s')
                 );
 
-            }
-            else {
+            } else {
 
 
                 $oif_key = $part_location->add_stock(
@@ -1103,7 +1099,6 @@ function itf_cost($account, $db, $user, $editor, $data, $smarty) {
             $part = get_object('Part', $row['Part SKU']);
 
 
-
             $part->update_stock_run();
 
 
@@ -1117,7 +1112,7 @@ function itf_cost($account, $db, $user, $editor, $data, $smarty) {
                 '<span  class="part_cost_per_sko "  >%s</span>', money($cost_per_sko, $account->get('Account Currency Code'))
             );
 
-           // $part->redo_inventory_snapshot_fact();
+            // $part->redo_inventory_snapshot_fact();
 
             $response = array(
                 'state'                  => 200,
