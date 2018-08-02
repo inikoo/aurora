@@ -195,19 +195,26 @@ function fork_migration($job) {
                     $data_to_update['Delivery Note Order Key'] = $row2['Order Key'];
 
 
-                    $ship_to = new Ship_To($order->get('Order Ship To Key To Deliver'));
 
-                    $recipient    = $ship_to->get('Ship To Contact Name');
-                    $organization = $ship_to->get('Ship To Company Name');
+                    $ship_to = new Ship_To($dn->get('Delivery Note Ship To Key'));
 
 
-                    if ($organization == $recipient) {
-                        $organization = '';
+                    if ($ship_to->id) {
+                        $recipient    = $ship_to->get('Ship To Contact Name');
+                        $organization = $ship_to->get('Ship To Company Name');
+
+
+                        if ($organization == $recipient) {
+                            $organization = '';
+                        }
+                        $store           = new Store($dn->get('Store Key'));
+                        $default_country = $store->get('Store Home Country Code 2 Alpha');
+
+                        $address_fields_to_update = parse_old_dn_address_fields($store, $ship_to, $recipient, $organization, $default_country);
                     }
-                    $store           = new Store($dn->get('Store Key'));
-                    $default_country = $store->get('Store Home Country Code 2 Alpha');
 
-                    $address_fields_to_update = parse_old_dn_address_fields($store, $ship_to, $recipient, $organization, $default_country);
+
+
 
                 }
             }else {
@@ -859,6 +866,11 @@ function parse_old_invoice_address_fields($store, $address_key, $recipient, $org
     if ($address->id > 0) {
 
 
+        if($address->data['Billing To Country 2 Alpha Code'] == 'XX' or $address->data['Billing To Country 2 Alpha Code'] == '' ){
+            $address->data['Billing To Country 2 Alpha Code'] =$default_country;
+        }
+
+
         $address_format = get_address_format(
             (  ( $address->data['Billing To Country 2 Alpha Code'] == 'XX' or $address->data['Billing To Country 2 Alpha Code'] == '' )  ? $default_country : $address->data['Billing To Country 2 Alpha Code'])
         );
@@ -1115,6 +1127,10 @@ function parse_old_dn_address_fields($store, $address, $recipient, $organization
 
     if ($address->id > 0) {
 
+
+        if($address->data['Ship To Country 2 Alpha Code'] == 'XX' or $address->data['Ship To Country 2 Alpha Code'] == '' ){
+            $address->data['Ship To Country 2 Alpha Code'] =$default_country;
+        }
 
         $address_format = get_address_format(
             ( ($address->data['Ship To Country 2 Alpha Code'] == 'XX' or  $address->data['Ship To Country 2 Alpha Code'] == '') ? $default_country : $address->data['Ship To Country 2 Alpha Code'])
