@@ -160,6 +160,11 @@ function parse_old_invoice_address_fields($store, $address_key, $recipient, $org
     if ($address->id > 0) {
 
 
+        if($address->data['Billing To Country 2 Alpha Code'] == 'XX' or $address->data['Billing To Country 2 Alpha Code'] == '' ){
+            $address->data['Billing To Country 2 Alpha Code'] =$default_country;
+        }
+
+
         $address_format = get_address_format(
             (  ( $address->data['Billing To Country 2 Alpha Code'] == 'XX' or $address->data['Billing To Country 2 Alpha Code'] == '' )  ? $default_country : $address->data['Billing To Country 2 Alpha Code'])
         );
@@ -366,6 +371,7 @@ function parse_old_invoice_address_fields($store, $address_key, $recipient, $org
         $_address_fields['Invoice Address Administrative Area']
     )->withCountryCode(
         $_address_fields['Invoice Address Country 2 Alpha Code']
+
     );
 
 
