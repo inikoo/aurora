@@ -153,7 +153,7 @@ if ($invoice->get('Invoice Version') == 2) {
         "SELECT `Invoice Transaction Gross Amount`,`Invoice Transaction Total Discount Amount`,`Invoice Transaction Total Discount Amount`,`Invoice Quantity` as Qty, (`Invoice Transaction Gross Amount`-`Invoice Transaction Total Discount Amount`+`Invoice Transaction Item Tax Amount`) as Amount, `Product Unit Weight`,`Invoice Currency Code`,`Order Transaction Amount`,`Delivery Note Quantity`,`Order Transaction Total Discount Amount`,`Order Transaction Out of Stock Amount`,`Order Currency Code`,`Order Transaction Gross Amount`,
 `Product Currency`,`Product History Name`,`Product History Price`,`Product Units Per Case`,`Product History XHTML Short Description`,`Product Name`,`Product RRP`,`Product Tariff Code`,`Product Tariff Code`,`Product XHTML Short Description`,P.`Product ID`,O.`Product Code`
  FROM `Order Transaction Fact` O  LEFT JOIN `Product History Dimension` PH ON (O.`Product Key`=PH.`Product Key`) LEFT JOIN
-  `Product Dimension` P ON (PH.`Product ID`=P.`Product ID`) WHERE `Invoice Key`=%d  and `Current Dispatching State` not in ('Out of Stock in Basket')  and (`Order Transaction Amount`!=0 or `Delivery Note Quantity`!=0)  ORDER BY `Product Code`", $invoice->id
+  `Product Dimension` P ON (PH.`Product ID`=P.`Product ID`) WHERE `Invoice Key`=%d  and `Current Dispatching State` not in ('Out of Stock in Basket')  and (`Amount`!=0 or `Invoice Quantity`!=0)  ORDER BY `Product Code`", $invoice->id
     );
 }
 
