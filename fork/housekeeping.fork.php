@@ -62,19 +62,19 @@ function fork_housekeeping($job) {
 
 
                     $sql=sprintf('select `Date`,(`Inventory Transaction Amount`/`Inventory Transaction Quantity`) as value_per_sko from  `Inventory Transaction Fact` ITF  where  `Inventory Transaction Amount`>0 and `Inventory Transaction Quantity`>0 and  ( `Inventory Transaction Section`=\'In\' or ( `Inventory Transaction Type`=\'Adjust\' and `Inventory Transaction Quantity`>0 and `Location Key`>1 )  )  and ITF.`Part SKU`=%d  order by `Date` desc, FIELD(`Inventory Transaction Type`, \'In\',\'Adjust\')  limit 1 ',
-                                 $this->id);
+                                 $part->id);
 
                     // print $sql;
 
-                    if ($result=$this->db->query($sql)) {
+                    if ($result=$db->query($sql)) {
                         foreach ($result as $row) {
 
                             //  print_r($row);
 
-                            $this->update_field_switcher('Part Cost in Warehouse',$row['value_per_sko'],'no_history');
+                            $part->update_field_switcher('Part Cost in Warehouse',$row['value_per_sko'],'no_history');
                         }
                     }else {
-                        print_r($error_info=$this->db->errorInfo());
+                        print_r($error_info=$db->errorInfo());
                         print "$sql\n";
                         exit;
                     }
