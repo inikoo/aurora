@@ -33,9 +33,6 @@ $editor = array(
 $account = new Account();
 
 $print_est = true;
-
-
-
 $sql = sprintf("select count(*) as num FROM `Order Dimension` O left join `Store Dimension` on (`Store Key`=`Order Store Key`)  where `Store Version`=1 ");
 if ($result = $db->query($sql)) {
     if ($row = $result->fetch()) {
@@ -167,7 +164,7 @@ function parse_old_order_billing_address_fields($store, $address_key, $recipient
 
 
         $address_format = get_address_format(
-            ($address->data['Billing To Country 2 Alpha Code'] == 'XX' ? $default_country : $address->data['Billing To Country 2 Alpha Code'])
+            (  ( $address->data['Billing To Country 2 Alpha Code'] == 'XX' or $address->data['Billing To Country 2 Alpha Code'] == '' )  ? $default_country : $address->data['Billing To Country 2 Alpha Code'])
         );
 
 
@@ -261,9 +258,9 @@ function parse_old_order_billing_address_fields($store, $address_key, $recipient
 
         }
 
-        if (!in_array('locality', $used_fields) and ($address->display(
-                    'Address Locality'
-                ) != '' or $address->display('Address Dependent Locality') != '')) {
+        if (!in_array('locality', $used_fields) and ($address->get(
+                    'Billing To Town'
+                ) != '' or $address->get('Billing To Line 4') != '')) {
 
 
             //$address_fields['Address Locality']='';
@@ -420,10 +417,10 @@ function parse_old_order_shipping_address_fields($store, $address, $recipient, $
     if ($address->id > 0) {
 
 
-        $address_format = get_address_format(
-            ($address->data['Ship To Country 2 Alpha Code'] == 'XX' ? $default_country : $address->data['Ship To Country 2 Alpha Code'])
-        );
 
+        $address_format = get_address_format(
+            ( ($address->data['Ship To Country 2 Alpha Code'] == 'XX' or  $address->data['Ship To Country 2 Alpha Code'] == '') ? $default_country : $address->data['Ship To Country 2 Alpha Code'])
+        );
 
         $_tmp = preg_replace('/,/', '', $address_format->getFormat());
 
@@ -519,9 +516,9 @@ function parse_old_order_shipping_address_fields($store, $address, $recipient, $
 
         }
 
-        if (!in_array('locality', $used_fields) and ($address->display(
-                    'Address Locality'
-                ) != '' or $address->display('Address Dependent Locality') != '')) {
+        if (!in_array('locality', $used_fields) and ($address->get(
+                    'Ship To Town'
+                ) != '' or $address->get('Ship To Line 4') != '')) {
 
 
             //$address_fields['Address Locality']='';
@@ -638,7 +635,7 @@ function parse_old_order_shipping_address_fields($store, $address, $recipient, $
     $xhtml_address = preg_replace('/class="country"/', 'class="country country-name"', $xhtml_address);
 
 
-   // $xhtml_address = preg_replace('/(class="address-line1 street-address"><\/span>)<br>/', '$1', $xhtml_address);
+    $xhtml_address = preg_replace('/(class="address-line1 street-address"><\/span>)<br>/', '$1', $xhtml_address);
 
     //  print $xhtml_address;
 
