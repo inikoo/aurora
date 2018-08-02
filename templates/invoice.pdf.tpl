@@ -177,8 +177,8 @@ div.inline { float:left; }
 			<tr>
 				<td style="width:14%;text-align:left">{t}Code{/t}</td>
 				<td style="text-align:left">{t}Description{/t}</td>
-				<td style="width:8%;text-align:right">{if $invoice->get('Invoice Type')=='Invoice'}{t}Discount{/t}{/if}</td>
-				<td style="width:8%;text-align:right">{t}Quantity{/t}</td>
+				<td style="width:10%;text-align:right">{if $invoice->get('Invoice Type')=='Invoice'}{t}Discount{/t}{/if}</td>
+				<td style="width:10%;text-align:right">{t}Quantity{/t}</td>
 				<td style="width:10%;text-align:right">{t}Amount{/t}</td>
 			</tr>
 		</thead>
@@ -187,9 +187,9 @@ div.inline { float:left; }
 			<tr class="{if $smarty.foreach.products.last}last{/if}">
 				<td style="width:14%;text-align:left">{$transaction['Product Code']}</td>
 				<td style="text-align:left">{$transaction['Product XHTML Short Description']}</td>
-				<td style="width:8%;text-align:right">{$transaction['Discount']}</td>
+				<td style="width:10%;text-align:right">{$transaction['Discount']}</td>
 				
-				<td style="width:8%;text-align:right">{$transaction['Delivery Note Quantity']}</td>
+				<td style="width:10%;text-align:right">{$transaction['Delivery Note Quantity']}</td>
 				<td style="width:10%;text-align:right">{$transaction['Amount']}</td>
 			</tr>
 			{/foreach} 
@@ -202,7 +202,7 @@ div.inline { float:left; }
 		<tbody class="out_of_stock">
 			{foreach from=$transactions_out_of_stock item=transaction name=products} 
 			<tr class="{if $smarty.foreach.products.last}last{/if}">
-				<td style="width:8%;text-align:left">{$transaction['Product Code']}</td>
+				<td style="width:14%;text-align:left">{$transaction['Product Code']}</td>
 				<td style="text-align:left">{$transaction['Product XHTML Short Description']}</td>
 				<td colspan="2" style="width:16%;text-align:right"><span>{t}Out of Stock{/t}</span> {$transaction['Quantity']}</td>
 				<td style="width:10%;text-align:right">{$transaction['Amount']}</td>
