@@ -163,6 +163,11 @@ function parse_old_order_billing_address_fields($store, $address_key, $recipient
     if ($address->id > 0) {
 
 
+        if($address->data['Billing To Country 2 Alpha Code'] == 'XX' or $address->data['Billing To Country 2 Alpha Code'] == '' ){
+            $address->data['Billing To Country 2 Alpha Code'] =$default_country;
+        }
+
+
         $address_format = get_address_format(
             (  ( $address->data['Billing To Country 2 Alpha Code'] == 'XX' or $address->data['Billing To Country 2 Alpha Code'] == '' )  ? $default_country : $address->data['Billing To Country 2 Alpha Code'])
         );
@@ -416,6 +421,10 @@ function parse_old_order_shipping_address_fields($store, $address, $recipient, $
 
     if ($address->id > 0) {
 
+
+        if($address->data['Ship To Country 2 Alpha Code'] == 'XX' or $address->data['Ship To Country 2 Alpha Code'] == '' ){
+            $address->data['Ship To Country 2 Alpha Code'] =$default_country;
+        }
 
 
         $address_format = get_address_format(
