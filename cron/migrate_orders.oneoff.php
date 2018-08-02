@@ -49,7 +49,7 @@ $lap_time0 = date('U');
 $contador  = 0;
 
 
-$sql = sprintf('SELECT `Order Key` FROM `Order Dimension` O left join `Store Dimension` on (`Store Key`=`Order Store Key`)  where `Store Version`=1   order by O.`Order Key` desc ');
+$sql = sprintf('SELECT `Order Key` FROM `Order Dimension` O left join `Store Dimension` on (`Store Key`=`Order Store Key`)  where `Store Version`=1  order by O.`Order Key` desc ');
 
 if ($result = $db->query($sql)) {
     foreach ($result as $row) {

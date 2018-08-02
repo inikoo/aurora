@@ -157,6 +157,15 @@ function fork_migration($job) {
                         //print "$sql\n";
                         $db->exec($sql);
 
+                        $sql = sprintf(
+                            'Insert into `Order Payment Bridge` values  (%d,%d,%d,%d,%d,%.2f,%s) ', $order->id, $invoice->id, $row2['Payment Key'], $row2['Payment Account Key'], $row2['Payment Service Provider Key'], $row2['Amount'], prepare_mysql('No')
+
+
+                        );
+                        // print "$sql\n";
+
+                        $db->exec($sql);
+
                     }
                 } else {
                     print_r($error_info = $db->errorInfo());

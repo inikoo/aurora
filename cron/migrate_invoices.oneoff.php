@@ -36,8 +36,6 @@ $editor = array(
 );
 
 
-
-
 $print_est = true;
 
 $sql = sprintf("select count(*) as num FROM `Invoice Dimension` O left join `Store Dimension` on (`Store Key`=`Invoice Store Key`)  where `Store Version`=1 ");
@@ -56,7 +54,7 @@ $lap_time0 = date('U');
 $contador  = 0;
 
 
-$sql = sprintf('SELECT `Invoice Key` FROM `Invoice Dimension`  where `Invoice Key`=1880046 order by `Invoice Key` desc ');
+$sql = sprintf('SELECT `Invoice Key` FROM `Invoice Dimension`  where `Invoice Key`=1880040 order by `Invoice Key` desc ');
 $sql = sprintf('SELECT `Invoice Key` FROM `Invoice Dimension` left join `Store Dimension` on (`Store Key`=`Invoice Store Key`)  where `Store Version`=1 order by `Invoice Key` desc ');
 
 if ($result = $db->query($sql)) {
@@ -90,27 +88,31 @@ if ($result = $db->query($sql)) {
                 $address_fields_to_update = parse_old_invoice_address_fields($store, $order->get('Order Billing To Key To Bill'), $recipient, $organization, $default_country);
 
 
+                $sql = sprintf('select * from `Invoice Payment Bridge`  where `Invoice Key`=%d', $invoice->id);
+                if ($result3 = $db->query($sql)) {
+                    foreach ($result3 as $row3) {
+                        //print_r($row3);
 
-
-                $sql=sprintf('select * from `Invoice Payment Bridge`  where `Invoice Key`=%d',$invoice->id);
-                if ($result2=$db->query($sql)) {
-                    foreach ($result2 as $row2) {
-
-
-                        $sql=sprintf('update `Order Payment Bridge` set `Invoice Key`=%d where `Order Key`=%d and `Payment Key`=%d ',
-                                     $invoice->id,
-                                     $order->id,
-                                     $row2['Payment Key']
-
+                        $sql = sprintf(
+                            'update `Order Payment Bridge` set `Invoice Key`=%d where `Order Key`=%d and `Payment Key`=%d ', $invoice->id, $order->id, $row3['Payment Key']
 
 
                         );
                         //print "$sql\n";
                         $db->exec($sql);
 
+                        $sql = sprintf(
+                            'Insert into `Order Payment Bridge` values  (%d,%d,%d,%d,%d,%.2f,%s) ', $order->id, $invoice->id, $row3['Payment Key'], $row3['Payment Account Key'], $row3['Payment Service Provider Key'], $row3['Amount'], prepare_mysql('No')
+
+
+                        );
+                       // print "$sql\n";
+
+                        $db->exec($sql);
+
                     }
-                }else {
-                    print_r($error_info=$db->errorInfo());
+                } else {
+                    print_r($error_info = $db->errorInfo());
                     print "$sql\n";
                     exit;
                 }
@@ -125,11 +127,6 @@ if ($result = $db->query($sql)) {
 
         $invoice->fast_update($data_to_update);
         $invoice->fast_update($address_fields_to_update);
-
-
-
-
-
 
 
         //print_r($data_to_update);
@@ -160,13 +157,13 @@ function parse_old_invoice_address_fields($store, $address_key, $recipient, $org
     if ($address->id > 0) {
 
 
-        if($address->data['Billing To Country 2 Alpha Code'] == 'XX' or $address->data['Billing To Country 2 Alpha Code'] == '' ){
-            $address->data['Billing To Country 2 Alpha Code'] =$default_country;
+        if ($address->data['Billing To Country 2 Alpha Code'] == 'XX' or $address->data['Billing To Country 2 Alpha Code'] == '') {
+            $address->data['Billing To Country 2 Alpha Code'] = $default_country;
         }
 
 
         $address_format = get_address_format(
-            (  ( $address->data['Billing To Country 2 Alpha Code'] == 'XX' or $address->data['Billing To Country 2 Alpha Code'] == '' )  ? $default_country : $address->data['Billing To Country 2 Alpha Code'])
+            (($address->data['Billing To Country 2 Alpha Code'] == 'XX' or $address->data['Billing To Country 2 Alpha Code'] == '') ? $default_country : $address->data['Billing To Country 2 Alpha Code'])
         );
 
 
@@ -261,9 +258,9 @@ function parse_old_invoice_address_fields($store, $address_key, $recipient, $org
         }
 
 
-            if (!in_array('locality', $used_fields) and ($address->get(
-                        'Billing To Town'
-                    ) != '' or $address->get('Billing To Line 4') != '')) {
+        if (!in_array('locality', $used_fields) and ($address->get(
+                    'Billing To Town'
+                ) != '' or $address->get('Billing To Line 4') != '')) {
 
 
             //$address_fields['Address Locality']='';
@@ -384,7 +381,7 @@ function parse_old_invoice_address_fields($store, $address_key, $recipient, $org
     $xhtml_address = preg_replace('/class="country"/', 'class="country country-name"', $xhtml_address);
 
 
-   $xhtml_address = preg_replace('/(class="address-line1 street-address"><\/span>)<br>/', '$1', $xhtml_address);
+    $xhtml_address = preg_replace('/(class="address-line1 street-address"><\/span>)<br>/', '$1', $xhtml_address);
 
     //  print $xhtml_address;
 
