@@ -19,11 +19,11 @@ function get_customer_showcase($data, $smarty) {
     }
 
 
-    $customer->update_orders();
-    $customer->update_last_dispatched_order_key();
-    $customer->update_invoices();
-    $customer->update_payments();
-    $customer->update_activity();
+    //$customer->update_orders();
+    //$customer->update_last_dispatched_order_key();
+    //$customer->update_invoices();
+    //$customer->update_payments();
+    //$customer->update_activity();
 
 
     $smarty->assign('customer', $customer);
