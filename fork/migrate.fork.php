@@ -954,9 +954,11 @@ function parse_old_invoice_address_fields($store, $address_key, $recipient, $org
 
         }
 
-        if (!in_array('locality', $used_fields) and ($address->display(
-                    'Address Locality'
-                ) != '' or $address->display('Address Dependent Locality') != '')) {
+
+
+            if (!in_array('locality', $used_fields) and ($address->get(
+                        'Billing To Town'
+                    ) != '' or $address->get('Billing To Line 4') != '')) {
 
 
             //$address_fields['Address Locality']='';
@@ -1211,9 +1213,9 @@ function parse_old_dn_address_fields($store, $address, $recipient, $organization
 
         }
 
-        if (!in_array('locality', $used_fields) and ($address->display(
-                    'Address Locality'
-                ) != '' or $address->display('Address Dependent Locality') != '')) {
+        if (!in_array('locality', $used_fields) and ($address->get(
+                    'Ship To Town'
+                ) != '' or $address->get('Ship To Line 4') != '')) {
 
 
             //$address_fields['Address Locality']='';
