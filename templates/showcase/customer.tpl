@@ -114,11 +114,7 @@
                     <td>{t}Contact since{/t}:</td>
                     <td class="aright">{$customer->get('First Contacted Date')}</td>
                 </tr>
-                {assign var="correlation_msg" value=$customer->get_correlation_info()} {if $correlation_msg}
-                    <tr>
-                        <td>{$correlation_msg}</td>
-                    </tr>
-                {/if} {foreach from=$customer->get_category_data() item=item key=key}
+                {foreach from=$customer->get_category_data() item=item key=key}
                     <tr>
                         <td>{$item.root_label}:</td>
                         <td>{$item.value}</td>

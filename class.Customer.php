@@ -39,8 +39,6 @@ class Customer extends Subject {
             'Customer Has More Orders Than',
             'Customer Has More  Invoices Than',
             'Customer Has Better Balance Than',
-            'Customer Is More Profiteable Than',
-            'Customer Order More Frecuently Than',
             'Customer Older Than',
             'Customer Orders Position',
             'Customer Invoices Position',
@@ -73,31 +71,22 @@ class Customer extends Subject {
         }
 
 
-        $this->get_data($arg1, $arg2, $arg3);
+        $this->get_data($arg1, $arg2);
 
 
     }
 
-    function get_data($tag, $id, $id2 = false) {
-        if ($tag == 'id') {
-            $sql = sprintf(
-                "SELECT * FROM `Customer Dimension` WHERE `Customer Key`=%s", prepare_mysql($id)
-            );
-        } elseif ($tag == 'email') {
+    function get_data($tag, $id) {
+
+
+        if ($tag == 'email') {
             $sql = sprintf(
                 "SELECT * FROM `Customer Dimension` WHERE `Customer Main Plain Email`=%s", prepare_mysql($id)
             );
-        } elseif ($tag == 'old_id') {
-            $sql = sprintf(
-                "SELECT * FROM `Customer Dimension` WHERE `Customer Old ID`=%s AND `Customer Store Key`=%d", prepare_mysql($id), $id2
-
-            );
-        } elseif ($tag == 'all') {
-            $this->find($id);
-
-            return true;
         } else {
-            return false;
+            $sql = sprintf(
+                "SELECT * FROM `Customer Dimension` WHERE `Customer Key`=%s", prepare_mysql($id)
+            );
         }
 
 
@@ -161,7 +150,7 @@ class Customer extends Subject {
 
     }
 
-    function create($raw_data, $address_raw_data, $args = '') {
+    function create($raw_data, $address_raw_data) {
 
         /*
                 $this->data = $this->base_data();
@@ -174,9 +163,7 @@ class Customer extends Subject {
         */
         $this->editor = $raw_data['editor'];
         unset($raw_data['editor']);
-        //if ($this->data['Customer First Contacted Date'] == '') {
-        //    $this->data['Customer First Contacted Date'] = gmdate('Y-m-d H:i:s');
-        // }
+
 
         $raw_data['Customer First Contacted Date'] = gmdate('Y-m-d H:i:s');
         $raw_data['Customer Sticky Note']          = '';
@@ -422,7 +409,6 @@ class Customer extends Subject {
             case('Last Order Date'):
             case('First Order Date'):
             case('First Contacted Date'):
-            case('Last Order Date'):
             case('Tax Number Validation Date'):
                 if ($this->data['Customer '.$key] == '') {
                     return '';
@@ -570,7 +556,7 @@ class Customer extends Subject {
 
 
                 return money(
-                    -1*$this->data['Customer Refunded Net Amount'],  $this->store->get('Store Currency Code')
+                    -1 * $this->data['Customer Refunded Net Amount'], $this->store->get('Store Currency Code')
                 );
                 break;
 
@@ -583,8 +569,13 @@ class Customer extends Subject {
 
 
                 if (preg_match(
-                    '/^(Last|Yesterday|Total|1|10|6|3|Year To|Quarter To|Month To|Today|Week To).*(Amount|Profit)$/', $key
-                ) or in_array($key,array('Net Amount','Refunded Net Amount'))  ) {
+                        '/^(Last|Yesterday|Total|1|10|6|3|Year To|Quarter To|Month To|Today|Week To).*(Amount|Profit)$/', $key
+                    ) or in_array(
+                        $key, array(
+                                'Net Amount',
+                                'Refunded Net Amount'
+                            )
+                    )) {
 
                     if (!isset($this->store)) {
                         $store       = get_object('Store', $this->data['Customer Store Key']);
@@ -594,7 +585,7 @@ class Customer extends Subject {
                     $amount = 'Customer '.$key;
 
                     return money(
-                        $this->data[$amount],  $this->store->get('Store Currency Code')
+                        $this->data[$amount], $this->store->get('Store Currency Code')
                     );
                 }
 
@@ -666,8 +657,6 @@ class Customer extends Subject {
                 )) {
 
 
-
-
                     if (!isset($this->store)) {
                         $store       = get_object('Store', $this->data['Customer Store Key']);
                         $this->store = $store;
@@ -718,9 +707,6 @@ class Customer extends Subject {
                 }
 
 
-
-
-
                 if (preg_match(
                     '/^(Last|Yesterday|Total|1|10|6|3|2|4|Year To|Quarter To|Month To|Today|Week To).*(Invoices|Refunds) Minify$/', $key
                 )) {
@@ -744,8 +730,8 @@ class Customer extends Subject {
                 }
 
                 if (preg_match(
-                        '/^(Last|Yesterday|Total|1|10|6|3|2|4|Year To|Quarter To|Month To|Today|Week To|Number).*(Invoices|Refunds) Soft Minify$/', $key
-                    ) ) {
+                    '/^(Last|Yesterday|Total|1|10|6|3|2|4|Year To|Quarter To|Month To|Today|Week To|Number).*(Invoices|Refunds) Soft Minify$/', $key
+                )) {
 
                     $field = 'Customer '.preg_replace('/ Soft Minify$/', '', $key);
 
@@ -954,8 +940,6 @@ class Customer extends Subject {
 
 
         );
-
-
 
 
         $order_data['Order Customer Key']          = $this->id;
@@ -2571,17 +2555,16 @@ class Customer extends Subject {
         $customer_orders = 0;
 
 
-        $orders_cancelled           = 0;
+        $orders_cancelled = 0;
 
-        $order_interval             = '';
-        $order_interval_std         = '';
+        $order_interval     = '';
+        $order_interval_std = '';
 
         $customer_with_orders = 'No';
         $first_order          = '';
         $last_order           = '';
 
-        $payments            = 0;
-
+        $payments = 0;
 
 
         $sql = sprintf(
@@ -2612,7 +2595,6 @@ class Customer extends Subject {
 
         if ($result = $this->db->query($sql)) {
             if ($row = $result->fetch()) {
-
 
 
                 $customer_orders = $row['orders'];
@@ -2654,10 +2636,10 @@ class Customer extends Subject {
 
 
         if (($orders_cancelled + $customer_orders) > 1) {
-            $sql        = "SELECT `Order Date` AS date FROM `Order Dimension` WHERE  `Order State`  NOT IN ('InBasket')  AND `Order Customer Key`=".$this->id." ORDER BY `Order Date`";
+            $sql         = "SELECT `Order Date` AS date FROM `Order Dimension` WHERE  `Order State`  NOT IN ('InBasket')  AND `Order Customer Key`=".$this->id." ORDER BY `Order Date`";
             $_last_order = false;
             $_last_date  = false;
-            $intervals  = array();
+            $intervals   = array();
 
 
             if ($result = $this->db->query($sql)) {
@@ -2781,43 +2763,43 @@ class Customer extends Subject {
             exit;
         }
 
-/*
-        if ($customer_invoices > 1) {
-            $sql        = "SELECT `Invoice Date` AS date FROM `Invoice Dimension` WHERE `Invoice Type`='Invoice'  AND `Invoice Customer Key`=".$this->id." ORDER BY `Invoice Date`";
-            $last_order = false;
-            $last_date  = false;
-            $intervals  = array();
+        /*
+                if ($customer_invoices > 1) {
+                    $sql        = "SELECT `Invoice Date` AS date FROM `Invoice Dimension` WHERE `Invoice Type`='Invoice'  AND `Invoice Customer Key`=".$this->id." ORDER BY `Invoice Date`";
+                    $last_order = false;
+                    $last_date  = false;
+                    $intervals  = array();
 
 
-            if ($result = $this->db->query($sql)) {
-                foreach ($result as $row) {
-                    $this_date = gmdate('U', strtotime($row['date']));
-                    if ($last_order) {
-                        $intervals[] = ($this_date - $last_date);
+                    if ($result = $this->db->query($sql)) {
+                        foreach ($result as $row) {
+                            $this_date = gmdate('U', strtotime($row['date']));
+                            if ($last_order) {
+                                $intervals[] = ($this_date - $last_date);
+                            }
+
+                            $last_date  = $this_date;
+                            $last_order = true;
+                        }
+                    } else {
+                        print_r($error_info = $this->db->errorInfo());
+                        print "$sql\n";
+                        exit;
                     }
 
-                    $last_date  = $this_date;
-                    $last_order = true;
+
+                    $invoice_interval     = average($intervals);
+                    $invoice_interval_std = deviation($intervals);
+
                 }
-            } else {
-                print_r($error_info = $this->db->errorInfo());
-                print "$sql\n";
-                exit;
-            }
 
-
-            $invoice_interval     = average($intervals);
-            $invoice_interval_std = deviation($intervals);
-
-        }
-
-*/
+        */
         $update_data = array(
             //'Customer Number Invoices'           => $orders_invoiced,
             'Customer First Invoiced Order Date' => $first_invoiced_date,
             'Customer Last Invoiced Order Date'  => $last_invoiced_date,
-           // 'Customer Order Interval'            => $invoice_interval,
-           // 'Customer Order Interval STD'        => $invoice_interval_std,
+            // 'Customer Order Interval'            => $invoice_interval,
+            // 'Customer Order Interval STD'        => $invoice_interval_std,
             'Customer Invoiced Amount'           => $invoiced_amount,
 
             'Customer Invoiced Net Amount' => $invoiced_net_amount,
@@ -2881,7 +2863,6 @@ class Customer extends Subject {
         $orders = $this->data['Customer Orders'];
 
 
-
         $store = get_object('store', $this->data['Customer Store Key']);
 
         if ($orders == 0) {
@@ -2920,8 +2901,6 @@ class Customer extends Subject {
 
             $lost_interval   = ceil($lost_interval);
             $losing_interval = ceil($losing_interval);
-
-
 
 
             $this->data['Customer Type by Activity'] = 'Active';
@@ -3447,92 +3426,6 @@ class Customer extends Subject {
 
     }
 
-    function get_custmon_fields() {
-
-        $custom_field = array();
-        $sql          = sprintf(
-            "SELECT * FROM `Custom Field Dimension` WHERE `Custom Field In Showcase`='Yes' AND `Custom Field Table`='Customer'"
-        );
-
-        if ($result = $this->db->query($sql)) {
-            foreach ($result as $row) {
-                $custom_field[$row['Custom Field Key']] = $row['Custom Field Name'];
-            }
-        } else {
-            print_r($error_info = $this->db->errorInfo());
-            print "$sql\n";
-            exit;
-        }
-
-
-        $show_case = array();
-        $sql       = sprintf("SELECT * FROM `Customer Custom Field Dimension` WHERE `Customer Key`=%d", $this->id);
-
-
-        if ($result = $this->db->query($sql)) {
-            foreach ($result as $row) {
-                foreach ($custom_field as $key => $value) {
-                    $show_case[$value] = $row[$key];
-                }
-            }
-        } else {
-            print_r($error_info = $this->db->errorInfo());
-            print "$sql\n";
-            exit;
-        }
-
-
-        return $show_case;
-
-    }
-
-    function get_correlation_info() {
-        $correlation_msg = '';
-        $msg             = '';
-        $sql             = sprintf(
-            "SELECT * FROM `Customer Correlation` WHERE `Customer A Key`=%d AND `Correlation`>200", $this->id
-        );
-
-        if ($result = $this->db->query($sql)) {
-            foreach ($result as $row) {
-                $msg .= ','.sprintf(
-                        "<a style='color:SteelBlue' href='customer_split_view.php?id_a=%d&id_b=%d'>%s</a>", $this->id, $row2['Customer B Key'], sprintf("%05d", $row2['Customer B Key'])
-                    );
-
-            }
-        } else {
-            print_r($error_info = $db->errorInfo());
-            exit;
-        }
-
-
-        $sql = sprintf(
-            "SELECT * FROM `Customer Correlation` WHERE `Customer B Key`=%d AND `Correlation`>200", $this->id
-        );
-
-
-        if ($result = $this->db->query($sql)) {
-            foreach ($result as $row) {
-                $msg .= ','.sprintf(
-                        "<a style='color:SteelBlue' href='customer_split_view.php?id_a=%d&id_b=%d'>%s</a>", $this->id, $row2['Customer A Key'], sprintf("%05d", $row2['Customer A Key'])
-                    );
-
-            }
-        } else {
-            print_r($error_info = $db->errorInfo());
-            exit;
-        }
-
-
-        $msg = preg_replace('/^,/', '', $msg);
-        if ($msg != '') {
-            $correlation_msg = '<p>'._('Potential duplicates').': '.$msg.'</p>';
-
-        }
-
-        return $correlation_msg;
-
-    }
 
     function update_product_bridge() {
 
@@ -3778,11 +3671,11 @@ class Customer extends Subject {
 
 
             $data_to_update = array(
-                $this->table_name." $i Year Ago Invoices"        => $data_iy_ago['invoices'],
-                $this->table_name." $i Year Ago Refunds"         => $data_iy_ago['refunds'],
+                $this->table_name." $i Year Ago Invoices"            => $data_iy_ago['invoices'],
+                $this->table_name." $i Year Ago Refunds"             => $data_iy_ago['refunds'],
                 $this->table_name." $i Year Ago Invoiced Net Amount" => $data_iy_ago['invoiced_amount'],
                 $this->table_name." $i Year Ago Refunded Net Amount" => $data_iy_ago['refunded_amount'],
-                $this->table_name." $i Year Ago Net Amount" => $data_iy_ago['balance_amount'],
+                $this->table_name." $i Year Ago Net Amount"          => $data_iy_ago['balance_amount'],
 
             );
 
@@ -3939,8 +3832,7 @@ class Customer extends Subject {
     function create_timeseries($data, $fork_key = 0) {
 
 
-
-        if(($this->data['Customer Number Invoices']+$this->data['Customer Number Invoices'])==0 ){
+        if (($this->data['Customer Number Invoices'] + $this->data['Customer Number Invoices']) == 0) {
             return;
         }
 
@@ -3948,24 +3840,20 @@ class Customer extends Subject {
 
         $data['Timeseries Parent']     = 'Customer';
         $data['Timeseries Parent Key'] = $this->id;
-        $data['editor'] = $this->editor;
+        $data['editor']                = $this->editor;
 
         $timeseries = new Timeseries('find', $data, 'create');
 
-       // print_r($timeseries);
+        // print_r($timeseries);
         if ($timeseries->id) {
-
-
-
 
 
             require_once 'utils/date_functions.php';
 
 
+            $from = date('Y-m-d', strtotime($this->data['Customer First Invoiced Order Date']));
 
-            $from = date('Y-m-d',strtotime($this->data['Customer First Invoiced Order Date']));
-
-            $to = date('Y-m-d',strtotime($this->data['Customer Last Invoiced Order Date']));
+            $to = date('Y-m-d', strtotime($this->data['Customer Last Invoiced Order Date']));
 
 
             $sql = sprintf(
@@ -4013,9 +3901,9 @@ class Customer extends Subject {
 
 
         $dates = date_frequency_range($this->db, $timeseries->get('Timeseries Frequency'), $from, $to);
-       // print $timeseries->id."\n";
-       // print $timeseries->get('Timeseries Frequency')."\n";
-       //print_r($dates);
+        // print $timeseries->id."\n";
+        // print $timeseries->get('Timeseries Frequency')."\n";
+        //print_r($dates);
 
         if ($fork_key) {
 
@@ -4033,7 +3921,7 @@ class Customer extends Subject {
 
 
             $sales_data = $this->get_sales_data($date_frequency_period['from'], $date_frequency_period['to']);
-           // print_r($sales_data);
+            // print_r($sales_data);
 
 
             $_date = gmdate('Y-m-d', strtotime($date_frequency_period['from'].' +0:00'));
@@ -4054,7 +3942,7 @@ class Customer extends Subject {
 
                 );
 
-                 //  print "$sql\n";
+                //  print "$sql\n";
                 $update_sql = $this->db->prepare($sql);
                 $update_sql->execute();
 
