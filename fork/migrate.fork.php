@@ -860,8 +860,10 @@ function parse_old_invoice_address_fields($store, $address_key, $recipient, $org
 
 
         $address_format = get_address_format(
-            ($address->data['Billing To Country 2 Alpha Code'] == 'XX' ? $default_country : $address->data['Billing To Country 2 Alpha Code'])
+            (  ( $address->data['Billing To Country 2 Alpha Code'] == 'XX' or $address->data['Billing To Country 2 Alpha Code'] == '' )  ? $default_country : $address->data['Billing To Country 2 Alpha Code'])
         );
+
+
 
 
         $_tmp = preg_replace('/,/', '', $address_format->getFormat());
@@ -1115,7 +1117,7 @@ function parse_old_dn_address_fields($store, $address, $recipient, $organization
 
 
         $address_format = get_address_format(
-            ($address->data['Ship To Country 2 Alpha Code'] == 'XX' ? $default_country : $address->data['Ship To Country 2 Alpha Code'])
+            ( ($address->data['Ship To Country 2 Alpha Code'] == 'XX' or  $address->data['Ship To Country 2 Alpha Code'] == '') ? $default_country : $address->data['Ship To Country 2 Alpha Code'])
         );
 
 
