@@ -25,7 +25,7 @@ $id = isset($_REQUEST['id']) ? $_REQUEST['id'] : '';
 if (!$id) {
     exit;
 }
-$invoice = get_object('Invoice',$id);
+$invoice = get_object('Invoice', $id);
 if (!$invoice->id) {
     exit;
 }
@@ -34,35 +34,30 @@ $store    = get_object('Store', $invoice->get('Invoice Store Key'));
 $customer = get_object('Customer', $invoice->get('Invoice Customer Key'));
 
 
-
-
-
-
-if(!empty($_REQUEST['locale'])){
-    $_locale=$_REQUEST['locale'];
-}else{
-    $_locale=$store->get('Store Locale');
+if (!empty($_REQUEST['locale'])) {
+    $_locale = $_REQUEST['locale'];
+} else {
+    $_locale = $store->get('Store Locale');
 
 }
 
-if(!empty($_REQUEST['commodity'])){
+if (!empty($_REQUEST['commodity'])) {
     $print_tariff_code = true;
-}else{
+} else {
     $print_tariff_code = false;
 }
 
-if(!empty($_REQUEST['rrp'])){
+if (!empty($_REQUEST['rrp'])) {
     $print_rrp = true;
-}else{
+} else {
     $print_rrp = false;
 }
 
-if(!empty($_REQUEST['weight'])){
+if (!empty($_REQUEST['weight'])) {
     $print_weight = true;
-}else{
+} else {
     $print_weight = false;
 }
-
 
 
 putenv('LC_ALL='.$_locale.'.UTF-8');
@@ -83,15 +78,13 @@ if ($number_orders == 1) {
 }
 
 
+$delivery_note = get_object('Delivery_Note', $order->get('Order Delivery Note Key'));
+$smarty->assign('delivery_note', $delivery_note);
 
-    $delivery_note = get_object('Delivery_Note', $order->get('Order Delivery Note Key'));
-    $smarty->assign('delivery_note', $delivery_note);
-
-
+$number_dns=1;
 
 $smarty->assign('number_orders', $number_orders);
 $smarty->assign('number_dns', $number_dns);
-
 
 
 $mpdf = new \Mpdf\Mpdf(
@@ -145,15 +138,28 @@ if ($invoice->data['Invoice Type'] == 'Invoice') {
 }
 
 
-
 $transactions = array();
-$sql          = sprintf(
-    "SELECT `Product Unit Weight`,`Invoice Currency Code`,`Order Transaction Amount`,`Delivery Note Quantity`,`Order Transaction Total Discount Amount`,`Order Transaction Out of Stock Amount`,`Order Currency Code`,`Order Transaction Gross Amount`,
+
+if ($invoice->get('Invoice Version') == 2) {
+    $sql = sprintf(
+        "SELECT  `Delivery Note Quantity` as Qty, `Order Transaction Amount` as Amount, `Product Unit Weight`,`Invoice Currency Code`,`Order Transaction Amount`,`Delivery Note Quantity`,`Order Transaction Total Discount Amount`,`Order Transaction Out of Stock Amount`,`Order Currency Code`,`Order Transaction Gross Amount`,
+`Product Currency`,`Product History Name`,`Product History Price`,`Product Units Per Case`,`Product History XHTML Short Description`,`Product Name`,`Product RRP`,`Product Tariff Code`,`Product Tariff Code`,`Product XHTML Short Description`,P.`Product ID`,O.`Product Code`
+ FROM `Order Transaction Fact` O  LEFT JOIN `Product History Dimension` PH ON (O.`Product Key`=PH.`Product Key`) LEFT JOIN
+  `Product Dimension` P ON (PH.`Product ID`=P.`Product ID`) WHERE `Invoice Key`=%d  and `Current Dispatching State`   and (`Order Transaction Amount`!=0 or `Delivery Note Quantity`!=0)  ORDER BY `Product Code`", $invoice->id
+    );
+} else {
+
+    $sql = sprintf(
+        "SELECT `Invoice Transaction Gross Amount`,`Invoice Transaction Total Discount Amount`,`Invoice Transaction Total Discount Amount`,`Invoice Quantity` as Qty, (`Invoice Transaction Gross Amount`-`Invoice Transaction Total Discount Amount`+`Invoice Transaction Item Tax Amount`) as Amount, `Product Unit Weight`,`Invoice Currency Code`,`Order Transaction Amount`,`Delivery Note Quantity`,`Order Transaction Total Discount Amount`,`Order Transaction Out of Stock Amount`,`Order Currency Code`,`Order Transaction Gross Amount`,
 `Product Currency`,`Product History Name`,`Product History Price`,`Product Units Per Case`,`Product History XHTML Short Description`,`Product Name`,`Product RRP`,`Product Tariff Code`,`Product Tariff Code`,`Product XHTML Short Description`,P.`Product ID`,O.`Product Code`
  FROM `Order Transaction Fact` O  LEFT JOIN `Product History Dimension` PH ON (O.`Product Key`=PH.`Product Key`) LEFT JOIN
   `Product Dimension` P ON (PH.`Product ID`=P.`Product ID`) WHERE `Invoice Key`=%d  and `Current Dispatching State` not in ('Out of Stock in Basket')  and (`Order Transaction Amount`!=0 or `Delivery Note Quantity`!=0)  ORDER BY `Product Code`", $invoice->id
-);
+    );
+}
+
 //print $sql;exit;
+
+
 
 
 if ($result = $db->query($sql)) {
@@ -161,15 +167,20 @@ if ($result = $db->query($sql)) {
 
 
         $row['Amount'] = money(
-            ($row['Order Transaction Amount']), $row['Order Currency Code']
+            ($row['Amount']), $row['Order Currency Code']
         );
 
+        if ($invoice->get('Invoice Version') == 2) {
+            $discount = ($row['Order Transaction Total Discount Amount'] == 0
+                ? ''
+                : percentage(
+                    $row['Order Transaction Total Discount Amount'], $row['Order Transaction Gross Amount'] - floatval($row['Order Transaction Out of Stock Amount']), 0
+                ));
 
-        $discount = ($row['Order Transaction Total Discount Amount'] == 0
-            ? ''
-            : percentage(
-                $row['Order Transaction Total Discount Amount'], $row['Order Transaction Gross Amount'] - floatval($row['Order Transaction Out of Stock Amount']), 0
-            ));
+        } else {
+            $discount = ($row['Invoice Transaction Total Discount Amount'] == 0 ? '' : percentage($row['Invoice Transaction Total Discount Amount'], $row['Invoice Transaction Gross Amount'], 0));
+
+        }
 
 
         $units    = $row['Product Units Per Case'];
@@ -190,16 +201,12 @@ if ($result = $db->query($sql)) {
         $description = $desc;
 
 
-
-
-
-
         if ($row['Product RRP'] != 0 and $print_rrp) {
             $description .= ' <br>'._('RRP').': '.money($row['Product RRP'], $row['Order Currency Code']);
         }
 
         if ($row['Product Unit Weight'] != 0 and $print_weight) {
-            $description .= ' <br>'._('Weight').': '.weight($row['Product Unit Weight']*$row['Product Units Per Case']);
+            $description .= ' <br>'._('Weight').': '.weight($row['Product Unit Weight'] * $row['Product Units Per Case']);
         }
 
         if ($print_tariff_code and $row['Product Tariff Code'] != '') {
