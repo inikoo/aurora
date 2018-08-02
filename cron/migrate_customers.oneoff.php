@@ -65,7 +65,7 @@ $contador  = 0;
 $sql = sprintf(
     'SELECT `Customer Key` FROM `Customer Dimension` WHERE `Customer Key`=71245 ORDER BY `Customer Key` DESC '
 );
-$sql = sprintf('SELECT `Customer Key` FROM `Customer Dimension`  left join `Store Dimension` on (`Store Key`=`Customer Note Store Key`) where `Store Version`=1   ORDER BY `Customer Key` DESC ');
+$sql = sprintf('SELECT `Customer Key` FROM `Customer Dimension`  left join `Store Dimension` on (`Store Key`=`Customer Store Key`) where `Store Version`=1   ORDER BY `Customer Key` DESC ');
 
 if ($result = $db->query($sql)) {
     foreach ($result as $row) {
