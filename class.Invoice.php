@@ -392,7 +392,9 @@ class Invoice extends DB_Table {
                 print_r($error_info = $this->db->errorInfo());
                 exit;
             }
-            $this->fast_update(array('Invoice Total Profit' => $profit));
+            $this->fast_update(array('Invoice Version'=>2,'Invoice Total Profit' => $profit));
+
+
 
             $this->update_billing_region();
 
@@ -994,7 +996,7 @@ class Invoice extends DB_Table {
                 print_r($error_info = $this->db->errorInfo());
                 exit;
             }
-            $this->fast_update(array('Invoice Total Profit' => $profit));
+            $this->fast_update(array('Invoice Version'=>2,'Invoice Total Profit' => $profit));
 
 
             $this->update_billing_region();
