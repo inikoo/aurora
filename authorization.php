@@ -34,7 +34,6 @@ $smarty->cache_dir    = 'server_files/smarty/cache';
 $smarty->config_dir   = 'server_files/smarty/configs';
 
 
-
 date_default_timezone_set('UTC');
 
 $db = new PDO(
@@ -102,9 +101,6 @@ if (!$sk and array_key_exists('mk', $_REQUEST)) {
 }
 
 
-
-
-
 if ($auth->is_authenticated()) {
 
     $_user_key = $auth->get_user_key();
@@ -123,16 +119,14 @@ if ($auth->is_authenticated()) {
     $_SESSION['text_locale'] = $user->data['User Preferred Locale'];
 
 
+    $session->set('state', array());
 
-
-    $session->set('state',array());
-
-    $warehouse_key='';
+    $warehouse_key = '';
 
     $sql = sprintf('SELECT `Warehouse Key`,count(*) as num FROM `Warehouse Dimension` WHERE `Warehouse State`="Active" ');
 
     if ($result = $db->query($sql)) {
-        if ($row = $result->fetch() and $row['num']==1) {
+        if ($row = $result->fetch() and $row['num'] == 1) {
             $warehouse_key = $row['Warehouse Key'];
         }
     } else {
@@ -142,12 +136,12 @@ if ($auth->is_authenticated()) {
     }
     $session->set('current_warehouse', $warehouse_key);
 
-    $store_key='';
+    $store_key = '';
 
     $sql = sprintf('SELECT `Store Key`,count(*) as num FROM `Store Dimension` WHERE `Store State`="Normal" ');
 
     if ($result = $db->query($sql)) {
-        if ($row = $result->fetch() and $row['num']==1) {
+        if ($row = $result->fetch() and $row['num'] == 1) {
             $store_key = $row['Store Key'];
         }
     } else {
@@ -158,11 +152,11 @@ if ($auth->is_authenticated()) {
     $session->set('current_store', $store_key);
 
 
-    $production_key='';
-    $sql = sprintf('SELECT `Supplier Production Supplier Key`,count(*) as num FROM `Supplier Production Dimension`  ');
+    $production_key = '';
+    $sql            = sprintf('SELECT `Supplier Production Supplier Key`,count(*) as num FROM `Supplier Production Dimension`  ');
 
     if ($result = $db->query($sql)) {
-        if ($row = $result->fetch() and $row['num']==1) {
+        if ($row = $result->fetch() and $row['num'] == 1) {
             $production_key = $row['Supplier Production Supplier Key'];
         }
     } else {
@@ -171,8 +165,6 @@ if ($auth->is_authenticated()) {
         exit;
     }
     $session->set('current_production', $production_key);
-
-
 
 
     if (isset($_REQUEST['url']) and $_REQUEST['url'] != '') {
