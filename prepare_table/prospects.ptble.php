@@ -78,11 +78,15 @@ if (($parameters['f_field'] == 'name') and $f_value != '') {
 $_order = $order;
 $_dir   = $order_direction;
 if ($order == 'name') {
-    $order = '`Prospect File As`';
+    $order = '`Prospect Name`';
 } elseif ($order == 'location') {
     $order = '`Prospect Location`';
 }elseif ($order == 'email') {
     $order = '`Prospect Main Plain Email`';
+} elseif ($order == 'contact_since') {
+    $order = '`Prospect First Contacted Date`';
+} elseif ($order == 'Status') {
+    $order = '`Prospect Status`';
 } elseif ($order == 'telephone') {
     $order = '`Prospect Main Plain Telephone`';
 } elseif ($order == 'mobile') {
@@ -102,7 +106,7 @@ if ($order == 'name') {
 } elseif ($order == 'country') {
     $order = '`Prospect Main Country`';
 } else {
-    $order = '`Prospect File As`';
+    $order = '`Prospect Key`';
 }
 
 
