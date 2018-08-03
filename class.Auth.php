@@ -26,7 +26,7 @@ class Auth {
     private $status = false;
     private $use_cookies = false;
 
-    function Auth($ikey = false, $skey = false, $options = '') {
+    function __construct($ikey = false, $skey = false, $options = '') {
 
         global $db;
 
