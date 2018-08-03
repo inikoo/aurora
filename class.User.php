@@ -21,7 +21,7 @@ class User extends DB_Table {
     private $rights_read = false;
 
 
-    function User($a1 = 'id', $a2 = false, $a3 = false) {
+    function __construct($a1 = 'id', $a2 = false, $a3 = false) {
         global $db;
         $this->db = $db;
 
