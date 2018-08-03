@@ -7,6 +7,7 @@
 
  Version 2.0
 */
+error_reporting(E_ALL);
 
 
 require_once 'vendor/autoload.php';
@@ -33,7 +34,6 @@ $smarty->cache_dir    = 'server_files/smarty/cache';
 $smarty->config_dir   = 'server_files/smarty/configs';
 
 
-error_reporting(E_ALL);
 
 date_default_timezone_set('UTC');
 
