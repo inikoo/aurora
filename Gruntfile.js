@@ -301,20 +301,14 @@ module.exports = function (grunt) {
             },
 
 
-            websocket_stones: {
-                files: [{
-                    expand: true, cwd: 'websocket_server/', src: ['vendor/**'], dest: 'build/websocket/'
-                }
 
-                ]
-            },
             websocket: {
                 files: [{
                     expand: true, cwd: 'websocket_server/', src: ['app/**'], dest: 'build/websocket/'
                 },{
                     expand: true,cwd: 'websocket_server/',  src: ['*.php'], dest: 'build/websocket/'
                 },{
-                    expand: true,cwd: 'websocket_server/',  src: ['composer*'], dest: 'build/websocket/'
+                    expand: true,cwd: 'websocket_server/',  src: ['composer.json'], dest: 'build/websocket/'
                 }
 
 
@@ -388,7 +382,7 @@ module.exports = function (grunt) {
                     debug: true,
                     releases_to_keep: '3',
                     exclude: ['keyring', 'external_libs', 'server_files','vendor'],
-                    after_deploy: 'cd /home/fork/fork/current && ln -s /home/fork/composer/current/vendor vendor && ln -s /home/fork/external_libs/current/ external_libs && ln -s /home/fork/keyring/ keyring && sudo service supervisor restart'
+                    after_deploy: 'cd /home/fork/fork/current && ln -s /home/fork/composer/current/vendor vendor && ln -s /home/fork/external_libs/current/ external_libs && ln -s /home/fork/keyring/ keyring && sudo systemctl restart supervisor'
                 }
             }, fork_external_libs: {
                 options: {
@@ -414,6 +408,20 @@ module.exports = function (grunt) {
 
                     releases_to_keep: '3'
                 }
+            }, websocket_composer: {
+                options: {
+                    local_path: 'build/websocket_composer',
+                    deploy_path: '/home/fork/websocket_composer',
+                    host: '<%= secret.fork.host %>',
+                    username: '<%= secret.fork.username %>',
+                    password: '<%= secret.fork.password %>',
+                    port: '<%= secret.fork.port %>',
+                    debug: true,
+                    after_deploy: 'cd /home/fork/websocket_composer/current && composer install',
+
+                    // after_deploy: 'cd /home/fork/websocket_composer/current && composer install && sudo kill $(ps -aef | grep "push_server.v1.php" | grep -v "grep" | awk \'{print $2}\')',
+                    releases_to_keep: '1'
+                }
             },websocket: {
                 options: {
                     local_path: 'build/websocket/',
@@ -425,7 +433,7 @@ module.exports = function (grunt) {
                     debug: true,
                     releases_to_keep: '3',
                     //exclude: ['keyring', 'external_libs', 'server_files'],
-                    after_deploy: 'cd /home/fork/websocket/current '
+                    after_deploy: 'cd /home/fork/websocket/current && composer install '
                 }
             }, ecom: {
                 options: {
@@ -510,8 +518,8 @@ module.exports = function (grunt) {
     grunt.registerTask('deploy_fork_composer', ['clean:fork', 'copy:fork_stones', 'copy:fork', 'ssh_deploy:fork_composer']);
 
     grunt.registerTask('deploy_qfork', ['copy:fork', 'ssh_deploy:fork']);
-    grunt.registerTask('deploy_ws', ['clean:websocket', 'copy:websocket_stones', 'copy:websocket', 'ssh_deploy:websocket']);
-    grunt.registerTask('deploy_qws', ['copy:websocket', 'ssh_deploy:websocket']);
+    grunt.registerTask('deploy_websocket_composer', ['clean:websocket',  'copy:websocket', 'ssh_deploy:websocket_composer']);
+    grunt.registerTask('deploy_websocket', ['clean:websocket',  'copy:websocket', 'ssh_deploy:websocket']);
     grunt.registerTask('ecom', ['ssh_deploy:ecom']);
 
 };
