@@ -1,9 +1,9 @@
-server_files/
 .idea/
 .sass-cache/
 *.csv
 
-
+web/
+wcpcache/
 cron/tmp/
 
 keyring/dns.php

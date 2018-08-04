@@ -1,7 +1,0 @@
-{
-"version": 3,
-"mappings": "AACA,OAAQ;EACN,UAAU,EAAE,gBAAgB;;AAG9B,QAAS;EACP,UAAU,EAAE,MAAM;;AAGpB,UAAW;EACT,UAAU,EAAE,MAAM;;AAGpB,QAAS;EACP,UAAU,EAAE,OAAO;;AAGrB,KAAM;EACJ,OAAO,EAAE,IAAI",
-"sources": ["../sass/aurora.scss"],
-"names": [],
-"file": "aurora.css"
-}
