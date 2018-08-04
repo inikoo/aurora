@@ -416,7 +416,13 @@ class ImageCache {
         $image_size       = getimagesize($this->image_src);
         $image_width      = $image_size[0];
         $image_height     = $image_size[1];
-        $file_mime_as_ext = end(@explode('/', $this->file_mime_type));
+        //$file_mime_as_ext = end(@explode('/', $this->file_mime_type));
+
+        $tmp = explode('/', $this->file_mime_type);
+        $file_mime_as_ext = end($tmp);
+
+
+
         $image_dest_func  = 'imagecreate';
         if ($this->gd_version >= 2) {
             $image_dest_func = 'imagecreatetruecolor';
