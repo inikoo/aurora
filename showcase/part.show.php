@@ -27,6 +27,8 @@ function get_part_showcase($data, $smarty, $user, $db) {
    // $part->update_next_deliveries_data();
    // $part->update_next_deliveries_data();
 
+    $update_stock_run();
+
     $part->update_stock();
   //  $part->validate_barcode();
 
