@@ -2952,6 +2952,86 @@ class Part extends Asset {
 
         }else{
 
+            $running_stock = 0;
+            $running_stock_value=0;
+            $running_cost_per_sko='';
+
+            $sql = sprintf('SELECT `Date`,`Note`,`Running Stock`,`Inventory Transaction Key`, `Inventory Transaction Quantity`,`Inventory Transaction Amount`,`Inventory Transaction Type`,`Location Key`,`Inventory Transaction Section`,`Running Cost per SKO`,`Running Stock Value`,`Running Cost per SKO` FROM `Inventory Transaction Fact` WHERE `Part SKU`=%d   and  `Inventory Transaction Type`  ORDER BY `Date`   ', $this->id);
+
+            //  print "$sql\n";
+
+            if ($result = $this->db->query($sql)) {
+                foreach ($result as $row) {
+
+                    //print "=========\n";
+                    if(
+                        //!(
+                        // ($row['Inventory Transaction Type']=='Adjust' )
+                        // or
+                        // ($row['Inventory Transaction Section']=='In' and $row['Inventory Transaction Quantity']>0)
+                        // )
+
+                        !( $row['Inventory Transaction Section']=='In' and $row['Inventory Transaction Quantity']>0  ) and  $running_cost_per_sko!='' ){
+
+                        // print $running_cost_per_sko."\n";
+                        // print_r($row);
+/*
+                        $sql           = sprintf(
+                            'UPDATE `Inventory Transaction Fact` SET `Inventory Transaction Amount`=%f  WHERE `Inventory Transaction Key`=%d ',
+                            $row['Inventory Transaction Quantity']*$running_cost_per_sko,
+
+                            $row['Inventory Transaction Key']
+                        );
+                        $this->db->exec($sql);
+                        //  print "$sql\n";
+*/
+                        $row['Inventory Transaction Amount']=$row['Inventory Transaction Quantity']*$running_cost_per_sko;
+
+
+                        // print $running_cost_per_sko."\n";
+
+
+                    }
+
+
+                    // print_r($row);
+
+
+                    $running_stock = $running_stock + $row['Inventory Transaction Quantity'];
+                    $running_stock_value=$running_stock_value+$row['Inventory Transaction Amount'];
+                    if($running_stock==0){
+                        //$running_cost_per_sko='';
+                    }else{
+                        $running_cost_per_sko=$running_stock_value/$running_stock;
+                    }
+
+
+                    $sql           = sprintf(
+                        'UPDATE `Inventory Transaction Fact` SET `Running Stock`=%f  WHERE `Inventory Transaction Key`=%d ',
+                        $running_stock,
+
+                        $row['Inventory Transaction Key']
+                    );
+                    $this->db->exec($sql);
+                    // print "$sql\n";
+
+
+                    //print "RR: $running_cost_per_sko \n-------\n";
+
+                }
+
+
+
+
+            } else {
+                print_r($error_info = $this->db->errorInfo());
+                print "$sql\n";
+                exit;
+            }
+
+
+
+
             /*
 
 
