@@ -150,7 +150,7 @@
 
     .item_overlay{
         position:absolute;top:0px;left:0px; border:1px solid #ccc;
-        background-color: rgba(255,255,255,.9);z-index: 1000;
+        background-color: rgba(255,255,255,.5);z-index: 1000;
 
 
     }
