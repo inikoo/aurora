@@ -43,7 +43,7 @@ $object = get_object($object_name, $key);
 
 //============
 $w = 50;
-$h = 23;
+$h = 25;
 
 
 
