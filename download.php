@@ -18,7 +18,7 @@ require_once 'common.php';
 //@ini_set('error_reporting', E_ALL & ~ E_NOTICE);
 
 //- turn off compression on the server
-apache_setenv('no-gzip', 1);
+//apache_setenv('no-gzip', 1);
 ini_set('zlib.output_compression', 'Off');
 
 if (!isset($_REQUEST['file']) || empty($_REQUEST['file'])) {
