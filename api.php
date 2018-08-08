@@ -134,9 +134,9 @@ function parse_scope($request) {
 
 }
 
-if( !function_exists('apache_request_headers') ) {
+
     ///
-    function apache_request_headers() {
+    function _apache_request_headers() {
         $arh = array();
         $rx_http = '/\AHTTP_/';
         foreach($_SERVER as $key => $val) {
@@ -156,14 +156,13 @@ if( !function_exists('apache_request_headers') ) {
         return( $arh );
     }
     ///
-}
+
 
 function authenticate($db) {
 
-    //print_r($_SERVER);
-    //print_r(apache_request_headers());
 
-    $_headers = apache_request_headers();
+
+    $_headers = _apache_request_headers();
 
     if (!isset($_SERVER['HTTP_X_AUTH_KEY']) and isset($_headers['HTTP_X_AUTH_KEY'])) {
         $_SERVER['HTTP_X_AUTH_KEY'] = $_headers['HTTP_X_AUTH_KEY'];
