@@ -297,7 +297,7 @@ class Public_Webpage {
                         }
 
                         return array(
-                            'show'=>count($deals==0?false:true),
+                            'show'=>(count($deals==0)?false:true),
                             'deals'=>$deals
                         );
 
