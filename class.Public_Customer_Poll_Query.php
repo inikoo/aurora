@@ -55,7 +55,7 @@ class Customer_Poll_Query extends DBW_Table {
     function add_customer($customer, $value) {
 
 
-        global $account;
+         $account=get_object('Account',1);
 
         if ($customer->get('Customer Store Key') != $this->get('Store Key')) {
 
