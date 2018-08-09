@@ -481,7 +481,6 @@
 
         var ajaxData = new FormData();
         ajaxData.append("action", action)
-        ajaxData.append("AUTH_KEY", $('#api_handle').val() + '.' + $('#api_key').val())
         ajaxData.append("arguments", JSON.stringify(arguments))
 
         $.ajax({
@@ -495,9 +494,6 @@
 
 
     }
-
-
-
 
 
 
