@@ -507,7 +507,7 @@
         // You do this only once when read the credentials (qCode)
         $.ajaxSetup({
             headers: {
-                'HTTP_X_AUTH_KEY': $('#api_handle').val() + '.' + $('#api_key').val()
+                'AUTH_KEY': $('#api_handle').val() + '.' + $('#api_key').val()
             }
         });
 
