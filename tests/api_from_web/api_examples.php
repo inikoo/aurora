@@ -481,6 +481,7 @@
 
         var ajaxData = new FormData();
         ajaxData.append("action", action)
+        ajaxData.append("AUTH_KEY", $('#api_handle').val() + '.' + $('#api_key').val())
         ajaxData.append("arguments", JSON.stringify(arguments))
 
         $.ajax({
@@ -506,9 +507,9 @@
     function set_up_credentials() {
         // You do this only once when read the credentials (qCode)
         $.ajaxSetup({
-            headers: {
-                'AUTH_KEY': $('#api_handle').val() + '.' + $('#api_key').val()
-            }
+            data: {
+                AUTH_KEY: $('#api_handle').val() + '.' + $('#api_key').val()
+            },
         });
 
         api_url = $('#api_url').val()
