@@ -818,7 +818,7 @@ class Page extends DB_Table {
                     //$link='<a href="http://'.$site_url.'/'.$see_also_page->data['Page URL'].'">'.$see_also_page->data['Page Short Title'].'</a>';
 
                     //else
-                    $link = '<a href="http://'.$see_also_page->data['Page URL'].'">'.$see_also_page->data['Page Short Title'].'</a>';
+                    $link = '<a href="https://'.$see_also_page->data['Page URL'].'">'.$see_also_page->data['Page Short Title'].'</a>';
 
                     $see_also[] = array(
                         'link'                        => $link,
@@ -1726,7 +1726,7 @@ class Page extends DB_Table {
             $found_in_page = new Page($row['Page Store Found In Key']);
             if ($found_in_page->id) {
 
-                $link = '<a class="found_in" href="http://'.$found_in_page->data['Page URL'].'">'.$found_in_page->data['Page Short Title'].'</a>';
+                $link = '<a class="found_in" href="https://'.$found_in_page->data['Page URL'].'">'.$found_in_page->data['Page Short Title'].'</a>';
 
                 $found_in[] = array(
                     'link'           => $link,
@@ -1760,7 +1760,7 @@ class Page extends DB_Table {
                 if ($related_products_page->id) {
 
 
-                    $link = '<a href="http://'.$related_products_page->data['Page URL'].'">'.$related_products_page->data['Page Short Title'].'</a>';
+                    $link = '<a href="https://'.$related_products_page->data['Page URL'].'">'.$related_products_page->data['Page Short Title'].'</a>';
 
                     $related_products[] = array(
                         'link'       => $link,
@@ -5584,10 +5584,10 @@ class Page extends DB_Table {
                     }
                 }
                 //if ($site_url)
-                //$link='<a href="http://'.$site_url.'/'.$see_also_page->data['Page URL'].'">'.$see_also_page->data['Page Short Title'].'</a>';
+                //$link='<a href="https://'.$site_url.'/'.$see_also_page->data['Page URL'].'">'.$see_also_page->data['Page Short Title'].'</a>';
 
                 //else
-                $link = '<a href="http://'.$see_also_page->data['Page URL'].'">'.$see_also_page->data['Page Short Title'].'</a>';
+                $link = '<a href="https://'.$see_also_page->data['Page URL'].'">'.$see_also_page->data['Page Short Title'].'</a>';
 
                 $see_also[] = array(
                     'link'                                 => $link,

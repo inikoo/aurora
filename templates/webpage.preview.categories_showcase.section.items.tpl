@@ -152,7 +152,7 @@
                                 <input  value="{$category_data.data.caption}" >
                             </div>
                             <div class="input_container link_url hide column_{$stack_index % 4}  " style="">
-                                <input  value="{$category_data.data.link}" placeholder="http://">
+                                <input  value="{$category_data.data.link}" placeholder="https://">
                             </div>
                             </div>
                         </div>
@@ -190,7 +190,7 @@
                                 <input  value="{$category_data.data.caption}" >
                             </div>
                             <div class="input_container link_url hide column_{$stack_index % 4}  " style="">
-                                <input  value="{$category_data.data.link}" placeholder="http://">
+                                <input  value="{$category_data.data.link}" placeholder="https://">
                             </div>
                         </div>
 

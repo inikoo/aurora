@@ -59,7 +59,7 @@
             <a href="https://www.facebook.com/froala" class="network-icon facebook-hover text-small" title="Facebook" target="_blank"><i class="fa fa-facebook"></i></a>
             <a href="https://twitter.com/froala_labs" class="network-icon twitter-hover text-small" title="Twitter" target="_blank"><i class="fa fa-twitter"></i></a>
             <a href="https://plus.google.com/+Froala" class="network-icon google-plus-hover text-small" title="Google Plus" target="_blank"><i class="fa fa-google-plus"></i></a>
-            <a href="http://www.pinterest.com/froala/" class="network-icon pinterest-hover text-small" title="Pinterest" target="_blank"><i class="fa fa-pinterest-p"></i></a>
+            <a href="https://www.pinterest.com/froala/" class="network-icon pinterest-hover text-small" title="Pinterest" target="_blank"><i class="fa fa-pinterest-p"></i></a>
           </div>
         </div>
       </div>

@@ -149,7 +149,7 @@
 
 
           <div id="input_container_link" class="input_container link_url hide  " style="">
-              <input  value="" placeholder="{t}http://... or webpage code{/t}">
+              <input  value="" placeholder="{t}https://... or webpage code{/t}">
           </div>
 
           <div id="copyright_bundle_control_center" class="input_container link_url  hide " style="">
