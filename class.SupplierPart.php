@@ -1662,11 +1662,15 @@ class SupplierPart extends DB_Table {
 						 `Purchase Order CBM`=%f,
 						 `Purchase Order Weight`=%f,
 						 `Purchase Order Net Amount`=%.2f
-						  WHERE `Purchase Order Transaction Fact Key`=%d', $this->get('Supplier Part Historic Key'), $row['Purchase Order Quantity'] * $this->get(
-                                                                                                     'Supplier Part Carton CBM'
-                                                                                                 ), $row['Purchase Order Quantity'] * $this->get(
-                                                                                                     'Supplier Part Packages Per Carton'
-                                                                                                 ) * $this->get('Part Package Weight'), $row['Purchase Order Quantity'] * $units_per_carton * $this->get('Supplier Part Unit Cost'),
+						  WHERE `Purchase Order Transaction Fact Key`=%d', $this->get('Supplier Part Historic Key'), $row['Purchase Order Quantity'] *
+                        $this->get('Supplier Part Carton CBM'),
+                        $row['Purchase Order Quantity'] *
+                        $this->get('Supplier Part Packages Per Carton') *
+                        floatval($this->get('Part Package Weight')),
+                        $row['Purchase Order Quantity'] *
+                        $units_per_carton *
+                        $this->get('Supplier Part Unit Cost'
+                        ),
 
                         $row['Purchase Order Transaction Fact Key']
                     );

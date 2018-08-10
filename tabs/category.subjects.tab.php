@@ -232,7 +232,8 @@ if ($category->get('Category Scope') == 'Product') {
     }
 
 
-} elseif ($category->get('Category Scope') == 'Part') {
+}
+elseif ($category->get('Category Scope') == 'Part') {
 
 
     $tab     = 'category.parts';
@@ -273,17 +274,43 @@ if ($category->get('Category Scope') == 'Product') {
     );
 
 
+
+
+    include_once 'conf/export_edit_template_fields.php';
+
+
+    $edit_table_dialog = array(
+
+
+        'spreadsheet_edit' => array(
+            'tipo'       => 'edit_objects',
+            'parent'     => $state['object'],
+            'parent_key' => $state['key'],
+            'object'     => 'part',
+            'parent_code' => preg_replace("/[^A-Za-z0-9 ]/", '', $state['_object']->get('Code')),
+        ),
+
+    );
+    $smarty->assign('edit_table_dialog', $edit_table_dialog);
+
+    $objects = 'part';
+
+
+    $edit_fields = $export_edit_template_fields[$objects];
+
+
+
+
+
+    $smarty->assign('edit_fields', $edit_fields);
+
+
     $table_buttons[] = array(
         'icon'  => 'edit',
-        'title' => _("Edit supplier's parts"),
-        'id'    => 'edit_table'
+        'title' => _("Edit parts"),
+        'id'    => 'edit_dialog'
     );
-    $table_buttons[] = array(
-        'icon'       => 'square',
-        'title'      => _('All parts'),
-        'change_tab' => 'category.all_subjects',
-        'class'      => 'move_left'
-    );
+
 
 
     $table_buttons[] = array(
@@ -314,10 +341,12 @@ if ($category->get('Category Scope') == 'Product') {
     );
 
 
+
     $smarty->assign('table_buttons', $table_buttons);
 
 
-} elseif ($category->get('Category Scope') == 'Supplier') {
+}
+elseif ($category->get('Category Scope') == 'Supplier') {
 
 
     $tab     = 'category.suppliers';
@@ -393,6 +422,44 @@ if ($category->get('Category Scope') == 'Product') {
 
     );
     $smarty->assign('table_buttons', $table_buttons);
+
+
+}
+elseif ($category->get('Category Scope') == 'Invoice') {
+
+
+    $tab     = 'category.invoices';
+    $ar_file = 'ar_orders_tables.php';
+    $tipo    = 'invoices';
+
+    $default = $user->get_tab_defaults($tab);
+
+    $table_views = array();
+
+
+    $table_filters = array(
+        'customer' => array(
+            'label' => _('Customer'),
+            'title' => _('Customer name')
+        ),
+        'number'   => array(
+            'label' => _('Number'),
+            'title' => _('Invoice number')
+        ),
+
+    );
+
+    $parameters = array(
+        'parent'     => $state['object'],
+        'parent_key' => $state['key'],
+
+    );
+
+
+    $table_buttons   = array();
+
+    $smarty->assign('table_buttons', $table_buttons);
+
 
 
 }
