@@ -10,19 +10,6 @@
 */
 
 
-
-
-
-
-
-require 'keyring/dns.php';
-
-$db = new PDO(
-    "mysql:host=$dns_host;dbname=$dns_db;charset=utf8", $dns_user, $dns_pwd, array(\PDO::MYSQL_ATTR_INIT_COMMAND => "SET time_zone = '+0:00';")
-);
-$db->setAttribute(PDO::ATTR_DEFAULT_FETCH_MODE, PDO::FETCH_ASSOC);
-
-
 if (!isset($_REQUEST['id'])) {
     $image_key = -1;
 } else {
@@ -36,18 +23,78 @@ if (isset($_REQUEST['size']) and preg_match('/^large|small|thumbnail|tiny$/', $_
     $size = 'original';
 }
 
-if(isset($_REQUEST['r'])){
+if (isset($_REQUEST['r'])) {
+    $size_r = $_REQUEST['r'];
+} else {
+    $size_r = '';
+}
+
+$redis = new Redis();
+if ($redis->connect('127.0.0.1', 6379)) {
+    $redis_on = true;
+} else {
+    $redis_on = false;
+}
+
+$cache_file = 'image_cache/'.$image_key.'_'.$size.($size_r!=''?'_'.$size_r:'');
+
+$image_code = 'AWi'.$image_key.'_'.$size.($size_r!=''?'_'.$size_r:'');
+
+
+if ($redis->exists($image_code)) {
+
+
+    $image_filename = $redis->get($image_code);
+
+    if (file_exists($image_filename)) {
+
+        $imginfo = getimagesize($image_filename);
+        header("Content-type: {$imginfo['mime']}");
+        $seconds_to_cache = 3600 * 24 * 500;
+        $ts               = gmdate("D, d M Y H:i:s", time() + $seconds_to_cache)." GMT";
+        header("Expires: $ts");
+        header("Pragma: cache");
+        header("Cache-Control: max-age=$seconds_to_cache");
+        readfile($image_filename);
+
+
+
+        exit();
+    }
+}
+
+require 'keyring/dns.php';
+
+$db = new PDO(
+    "mysql:host=$dns_host;dbname=$dns_db;charset=utf8", $dns_user, $dns_pwd, array(\PDO::MYSQL_ATTR_INIT_COMMAND => "SET time_zone = '+0:00';")
+);
+$db->setAttribute(PDO::ATTR_DEFAULT_FETCH_MODE, PDO::FETCH_ASSOC);
+
+
+if ($size_r != '') {
 
     include_once 'class.Image.php';
-    $image=new Image($image_key);
+    $image = new Image($image_key);
 
 
-    list($w,$h)=preg_split('/x/',$_REQUEST['r']);
+    list($w, $h) = preg_split('/x/', $size_r);
 
-    $new_image=$image->fit_to_canvas($w,$h);
+    $new_image = $image->fit_to_canvas($w, $h);
     header('Content-type: image/'.$image->get('Image File Format'));
+
     header('Content-Disposition: inline; filename='.$image->get('Image Filename'));
+    $seconds_to_cache = 3600 * 24 * 500;
+    $ts               = gmdate("D, d M Y H:i:s", time() + $seconds_to_cache)." GMT";
+    header("Expires: $ts");
+    header("Pragma: cache");
+    header("Cache-Control: max-age=$seconds_to_cache");
+
+
     ImagePNG($new_image);
+
+    ImagePNG($new_image,$cache_file.'.'.$image->get('Image File Format'));
+    $redis->set($image_code,$cache_file.'.'.$image->get('Image File Format'));
+    imagedestroy($new_image);
     exit;
 }
 
@@ -57,9 +104,6 @@ $sql = sprintf(
 );
 
 
-
-
-
 if ($result = $db->query($sql)) {
 
     if ($row = $result->fetch()) {
@@ -67,32 +111,40 @@ if ($result = $db->query($sql)) {
 
         header('Content-type: image/'.$row['Image File Format']);
         header('Content-Disposition: inline; filename='.$row['Image Filename']);
-
+        $seconds_to_cache = 3600 * 24 * 500;
+        $ts               = gmdate("D, d M Y H:i:s", time() + $seconds_to_cache)." GMT";
+        header("Expires: $ts");
+        header("Pragma: cache");
+        header("Cache-Control: max-age=$seconds_to_cache");
         if ($size == 'original') {
-            echo $row['Image Data'];
+            $_image= $row['Image Data'];
         } elseif ($size == 'large') {
             if (!$row['Image Large Data']) {
-                echo $row['Image Data'];
+                $_image= $row['Image Data'];
             } else {
-                echo $row['Image Large Data'];
+                $_image= $row['Image Large Data'];
             }
         } elseif ($size == 'small') {
             if (!$row['Image Small Data']) {
-                echo $row['Image Data'];
+                $_image= $row['Image Data'];
             } else {
-                echo $row['Image Small Data'];
+                $_image= $row['Image Small Data'];
             }
         } elseif ($size == 'thumbnail' or $size == 'tiny') {
             if ($row['Image Thumbnail Data']) {
-                echo $row['Image Thumbnail Data'];
+                $_image= $row['Image Thumbnail Data'];
             } elseif ($row['Image Small Data']) {
-                echo $row['Image Small Data'];
+                $_image= $row['Image Small Data'];
             } else {
-                echo $row['Image Data'];
+                $_image= $row['Image Data'];
             }
         } else {
-            echo $row['Image Data'];
+            $_image= $row['Image Data'];
         }
+
+        file_put_contents($cache_file.'.'.$row['Image File Format'],$_image);
+        $redis->set($image_code,$cache_file.'.'.$row['Image File Format']);
+        echo $_image;
 
 
     } else {
