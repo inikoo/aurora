@@ -3154,23 +3154,23 @@ console.log('caca')
 
             switch(size){
                 case 1:
-                    panel=$('<div class="'+item_class+'" data-type="image"><img class="panel panel_1" size_class="panel_1" alt="" link="" data-image_website="" data-height="'+height+'" data-src="https://via.placeholder.com/226x'+height+'" src="http://via.placeholder.com/226x'+height+'"  /></div>')
+                    panel=$('<div class="'+item_class+'" data-type="image"><img class="panel panel_1" size_class="panel_1" alt="" link="" data-image_website="" data-height="'+height+'" data-src="https://via.placeholder.com/226x'+height+'" src="https://via.placeholder.com/226x'+height+'"  /></div>')
 
                     break;
                 case 2:
-                    panel=$('<div class="'+item_class+'" data-type="image"><img class="panel  panel_2"  size_class="panel_2" alt="" link="" data-image_website=""  data-height="'+height+'" data-src="https://via.placeholder.com/470x'+height+'"  src="http://via.placeholder.com/470x'+height+'"  /></div>')
+                    panel=$('<div class="'+item_class+'" data-type="image"><img class="panel  panel_2"  size_class="panel_2" alt="" link="" data-image_website=""  data-height="'+height+'" data-src="https://via.placeholder.com/470x'+height+'"  src="https://via.placeholder.com/470x'+height+'"  /></div>')
 
                     break;
                 case 3:
-                    panel=$('<div class="'+item_class+'" data-type="image""><img class="panel panel_3"   size_class="panel_3" alt="" link="" data-image_website=""  data-height="'+height+'" data-src="https://via.placeholder.com/714x'+height+'"  src="http://via.placeholder.com/714x'+height+'"  /></div>')
+                    panel=$('<div class="'+item_class+'" data-type="image""><img class="panel panel_3"   size_class="panel_3" alt="" link="" data-image_website=""  data-height="'+height+'" data-src="https://via.placeholder.com/714x'+height+'"  src="https://via.placeholder.com/714x'+height+'"  /></div>')
 
                     break;
                 case 4:
-                    panel=$('<div class="'+item_class+'" data-type="image"><img class="panel  panel_4"   size_class="panel_4" alt="" link="" data-image_website=""  data-height="'+height+'" data-src="https://via.placeholder.com/958x'+height+'"  src="http://via.placeholder.com/958x'+height+'"  /></div>')
+                    panel=$('<div class="'+item_class+'" data-type="image"><img class="panel  panel_4"   size_class="panel_4" alt="" link="" data-image_website=""  data-height="'+height+'" data-src="https://via.placeholder.com/958x'+height+'"  src="https://via.placeholder.com/958x'+height+'"  /></div>')
 
                     break;
                 case 5:
-                    panel=$('<div class="'+item_class+'" data-type="image"><img class="panel  panel_5"   size_class="panel_5" alt="" link=""  data-image_website="" data-height="'+height+'"  data-src="https://via.placeholder.com/1202x'+height+'"  src="http://via.placeholder.com/1202x'+height+'"  /></div>')
+                    panel=$('<div class="'+item_class+'" data-type="image"><img class="panel  panel_5"   size_class="panel_5" alt="" link=""  data-image_website="" data-height="'+height+'"  data-src="https://via.placeholder.com/1202x'+height+'"  src="https://via.placeholder.com/1202x'+height+'"  /></div>')
 
                     break;
 

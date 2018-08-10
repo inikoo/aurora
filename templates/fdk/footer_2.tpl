@@ -38,7 +38,7 @@
 
         <div class="clearfix visible-xs-block"></div>
 
-        <a href="http://www.pinterest.com/froala/" class="network-icon pinterest text-small" title="Pinterest" target="_blank"><i class="fa fa-pinterest-p"></i></a>
+        <a href="https://www.pinterest.com/froala/" class="network-icon pinterest text-small" title="Pinterest" target="_blank"><i class="fa fa-pinterest-p"></i></a>
         <a href="https://www.linkedin.com/company/froala" class="network-icon linkedin text-small" title="Linkedin" target="_blank"><i class="fa fa-linkedin"></i></a>
         <a href="https://www.github.com/froala" class="network-icon github text-small" title="GitHub" target="_blank"><i class="fa fa-github"></i></a>
       </div>

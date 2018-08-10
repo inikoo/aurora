@@ -175,7 +175,7 @@
 
                             </div>
                             <div class="input_container link_url hide column_{$stack_index % 4}  " style="">
-                                <input  value="{if !empty($product_data.data.link)}{$product_data.data.link}{/if}" placeholder="http://">
+                                <input  value="{if !empty($product_data.data.link)}{$product_data.data.link}{/if}" placeholder="https://">
                             </div>
                             </div>
                         </div>
@@ -227,7 +227,7 @@
 
                             </div>
                             <div class="input_container link_url hide column_{$stack_index % 4}  " style="">
-                                <input  value="{if !empty($product_data.data.link)}{$product_data.data.link}{/if}" placeholder="http://">
+                                <input  value="{if !empty($product_data.data.link)}{$product_data.data.link}{/if}" placeholder="https://">
                             </div>
                         </div>
 
