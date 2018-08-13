@@ -676,6 +676,25 @@ $tab_defaults = array(
         'export_fields' => $export_fields['invoices']
 
     ),
+
+
+    'category.invoices'                   => array(
+        'view'          => 'overview',
+        'sort_key'      => 'id',
+        'sort_order'    => 1,
+        'rpp'           => 100,
+        'rpp_options'   => $default_rrp_options,
+        'f_field'       => 'customer',
+        'from'          => '',
+        'to'            => '',
+        'period'        => 'all',
+        'elements_type' => each($elements_options['invoices'])['key'],
+        'elements'      => $elements_options['invoices'],
+        'export_fields' => $export_fields['invoices']
+
+    ),
+
+
     'invoices.categories'        => array(
         'view'        => 'overview',
         'sort_key'    => 'code',
@@ -684,6 +703,19 @@ $tab_defaults = array(
         'rpp_options' => $default_rrp_options,
         'f_field'     => 'code'
     ),
+    'category.invoice_categories'      => array(
+        'view'        => 'overview',
+        'sort_key'    => 'code',
+        'sort_order'  => 1,
+        'rpp'         => 100,
+        'rpp_options' => $default_rrp_options,
+        'f_field'     => 'label',
+        'f_period'    => 'ytd',
+        //  'elements_type'=>each($elements_options['suppliers'])['key'],
+        //  'elements'=>$elements_options['suppliers']
+
+    ),
+
     'invoices_server'            => array(
         'view'          => 'overview',
         'sort_key'      => 'id',
@@ -1422,6 +1454,10 @@ $tab_defaults = array(
         'rpp_options' => $default_rrp_options,
         'f_field'     => 'code'
     ),
+
+
+
+
     'suppliers.orders'        => array(
         'view'          => 'overview',
         'sort_key'      => 'id',

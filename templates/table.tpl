@@ -4,7 +4,7 @@
     {include file=$table_top_template  }
 {/if}
 
-<section id="table_block" class="">
+<section  class="table_block ">
 
 {if isset($period)  and   !isset($hide_period) }
     {include file="utils/date_chooser.tpl" period=$period from=$from to=$to from_mmddyy=$from_mmddyy  to_mmddyy=$to_mmddyy from_locale=$from_locale  to_locale=$to_locale  }
@@ -30,7 +30,7 @@
     <div id="edit_table_dialog" class="hide edit_table_dialog"  data-metadata="{ }" >
         <div class="small button discreet" onclick="$('#edit_table_dialog').addClass('hide')" style="float:right;margin-left: 30px"><i class="fa fa-times"></i> {t}Close{/t}</div>
 
-        <table border="0">
+        <table border="0"   >
 
             {if isset($edit_table_dialog.inline_edit) or isset($edit_table_dialog.spreadsheet_edit)}
 
@@ -723,9 +723,10 @@
     <div style="float:left;margin-left:20px"><span id="selected_checkboxes" data-keys=""></span></div>
     <div style="clear:both"></div>
 </div>
-
 {if  (isset($table_views) and count($table_views)>1) or  isset($f_period)  or  isset($frequency) }
     <div class="table_views tabs ">
+
+
         {foreach from=$table_views item=view key=id}
             <div id="view_{$id}" class="view tab left {if isset($view.selected) and $view.selected}selected{/if}" onclick="change_table_view('{$id}',true)"
                  title="{if isset($view.title)}{$view.title}{else}{$view.label}{/if}">
@@ -746,7 +747,7 @@
 
     </div>
 {/if}
-<div class="table" id="table" data-metadata="{if isset($table_metadata)}{$table_metadata}{/if}"></div>
+<div class="table {if !empty($table_class)}{$table_class}{/if}   " id="table" data-metadata="{if isset($table_metadata)}{$table_metadata}{/if}"></div>
 <script>
 
 
@@ -759,120 +760,14 @@
     $('#view_position').html("{$view_position}")
     {/if}
 
-    var HtmlCell = Backgrid.HtmlCell = Backgrid.Cell.extend({
 
-        /** @property */
-        className: "html-cell",
-
-        initialize: function () {
-            Backgrid.Cell.prototype.initialize.apply(this, arguments);
-        },
-
-        render: function () {
-            this.$el.empty();
-
-
-            var rawValue = this.model.get(this.column.get("name"));
-            var formattedValue = this.formatter.fromRaw(rawValue, this.model);
-            this.$el.append(formattedValue);
-            this.delegateEvents();
-            return this;
-        }
-    });
-
-    var HeaderHtmlCell = Backgrid.HeaderCell.extend({
-
-        /** @property */
-        className: "html-cell",
-
-
-        render: function () {
-            this.$el.empty();
-
-
-            if (this.column.get('title')) {
-                this.$el.attr('title', this.column.get('title'))
-
-            }
-            if (this.column.get('headerClass')) {
-                this.$el.addClass(this.column.get('headerClass'));
-            }
-
-
-            this.$el.append(this.column.get("label"))
-
-
-            this.delegateEvents();
-            return this;
-        }
-    });
-
-    var rightHeaderHtmlCell = Backgrid.HeaderCell.extend({
-
-        /** @property */
-        className: "html-cell align-right",
-
-
-        render: function () {
-            this.$el.empty();
-
-
-            if (this.column.get('title')) {
-                this.$el.attr('title', this.column.get('title'))
-
-            }
-            if (this.column.get('headerClass')) {
-                this.$el.addClass(this.column.get('headerClass'));
-            }
-
-
-            this.$el.append(this.column.get("label"))
-
-
-            this.delegateEvents();
-            return this;
-        }
-    });
-
-
-    var integerHeaderCell = Backgrid.HeaderCell.extend({
-        className: "align-right",
-
-
-        render: function () {
-
-            this.constructor.__super__.render.apply(this, arguments);
-            this.$el.addClass('align-right');
-            return this;
-        }
-    });
-
-
-    /*
-     Backgrid.HeaderRow = Backgrid.HeaderRow.extend({
-     render: function() {
-     var that = this;
-     Backgrid.HeaderRow.__super__.render.call(this, arguments);
-     _.each(this.columns.models, function(modelValue) {
-
-     // that.$el.find('.' + modelValue.get('name')).html(modelValue.get('label'))
-
-     if (modelValue.get('title')) {
-     that.$el.find('.' + modelValue.get('name')).attr('title', modelValue.get('title'))
-
-     }
-
-     });
-     return this;
-     }
-     });
-
-     */
 
     {include file="columns/`$tab`.cols.tpl" }
 
 
-    var Row = Backbone.Model.extend({});
+    var Row = Backbone.Model.extend({
+
+    });
 
 
 

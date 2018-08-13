@@ -82,7 +82,9 @@ $account->load_acc_data();
 $account->update_orders();
 
 $account->update(
-    array('Account Today Start Orders In Warehouse Number' => $account->get('Account Orders In Warehouse Number') + $account->get('Account Orders Packed Number') + $account->get('Account Orders Dispatch Approved Number'))
+    array(
+        'Account Today Start Orders In Warehouse Number' => $account->get('Account Orders In Warehouse Number') + $account->get('Account Orders Packed Number') + $account->get('Account Orders Dispatch Approved Number')
+    )
 
 );
 

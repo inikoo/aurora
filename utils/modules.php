@@ -1068,6 +1068,8 @@ $modules = array(
             ),
 
 
+
+
             'order'         => array(
                 'type' => 'object',
                 'tabs' => array(
@@ -1374,6 +1376,43 @@ $modules = array(
                 )
 
             ),
+
+
+            'categories' => array(
+                'type'      => 'navigation',
+                'label'     => _('Invoices categories'),
+                'icon'      => 'sitemap',
+                'reference' => 'invoices/all/categories',
+                'tabs'      => array(
+                    'invoices.categories' => array()
+                )
+
+            ),
+
+            'category'  => array(
+                'type' => 'object',
+
+                'tabs' => array(
+                    'category.details'    => array(
+                        'label' => _('Data'),
+                        'icon'  => 'database',
+                        'title' => _('Details')
+                    ),
+
+                    'category.subjects'   => array('label' => _('Invoices')),
+                    'category.categories' => array('label' => _('Categories')
+                    ),
+                    'category.history'    => array(
+                        'title' => _('History'),
+                        'label' => '',
+                        'icon'  => 'road',
+                        'class' => 'right icon_only'
+                    ),
+
+                )
+
+            ),
+
 
             'email_campaign' => array(
                 'type' => 'object',

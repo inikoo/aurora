@@ -249,6 +249,8 @@ switch ($tab) {
     case 'invoices_server':
     case 'invoices':
     case 'customer.invoices':
+    case 'category.invoices':
+
         $data = prepare_values(
             $_REQUEST, array(
                          'parameters' => array('type' => 'json array')
@@ -1791,7 +1793,7 @@ function get_invoices_element_numbers($db, $parameters) {
 
 
     } elseif ($parameters['parent'] == 'category') {
-        $category = new Category($parameters['parent_key']);
+        $category = get_object('Category',$parameters['parent_key']);
 
 
         $where      = sprintf(

@@ -301,7 +301,7 @@ function sales_overview($_data, $db, $user, $account) {
                         ";
 
 
-        if ($period_tag == '3 Year' or $period_tag == 'All') {
+        if ($period_tag == '3 Year' or $period_tag == 'All' or $period_tag == 'Total') {
 
             $fields .= "
 	    0 as refunds_1yb,

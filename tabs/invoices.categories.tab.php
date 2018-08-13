@@ -2,8 +2,8 @@
 /*
  About:
  Author: Raul Perusquia <raul@inikoo.com>
- Created: 28 December 2015 at 11:18:54 GMT+8, Kuala Lumpur, Malaysia
- Copyright (c) 2015, Inikoo
+ Created: 6 August 2018 at 11:40:40 GMT+8, Kuala Lumpur, Malaysia
+ Copyright (c) 2018, Inikoo
 
  Version 3
 
@@ -32,10 +32,21 @@ $table_filters = array(
 );
 
 $parameters = array(
-    'parent'     => 'store',
+    'parent'     => $state['parent'],
     'parent_key' => $state['parent_key'],
     'subject'    => 'invoice',
 );
+
+$table_buttons   = array();
+
+/*
+$table_buttons[] = array(
+    'icon'      => 'plus',
+    'title'     => _('New category'),
+    'reference' => "suppliers/category/new"
+);
+*/
+$smarty->assign('table_buttons', $table_buttons);
 
 
 include('utils/get_table_html.php');

@@ -172,20 +172,12 @@ module.exports = function (grunt) {
 
                 }
             },
-
+/*
             web: {
                 options: {
                     // style: 'compressed'
                 }, files: {
                     'web/css/aurora.css': 'web/sass/aurora.scss'
-                }
-            }, /*
-            ecom: {
-                options: {
-                    // style: 'compressed'
-                },
-                files: {
-                    'ecom/css/app.css': 'ecom/sass/app.scss'
                 }
             },
             */
@@ -382,7 +374,7 @@ module.exports = function (grunt) {
                     debug: true,
                     releases_to_keep: '3',
                     exclude: ['keyring', 'external_libs', 'server_files','vendor'],
-                    after_deploy: 'cd /home/fork/fork/current && ln -s /home/fork/composer/current/vendor vendor && ln -s /home/fork/external_libs/current/ external_libs && ln -s /home/fork/keyring/ keyring && sudo systemctl restart supervisor'
+                    after_deploy: 'cd /home/fork/fork/current && ln -s /home/fork/composer/current/vendor vendor && ln -s /home/fork/external_libs/current/ external_libs && ln -s /home/fork/keyring/ keyring '
                 }
             }, fork_external_libs: {
                 options: {
