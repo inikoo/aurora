@@ -49,8 +49,8 @@ class Pusher implements WampServerInterface {
     public function onPublish(ConnectionInterface $conn, $topic, $event, array $exclude, array $eligible) {
         // In this application if clients send data it's because the user hacked around in console
        // $conn->close();
-        print_r($topic);
-        print_r($event);
+        //print_r($topic);
+        //print_r($event);
     }
     public function onError(ConnectionInterface $conn, \Exception $e) {
     }

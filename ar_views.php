@@ -2827,7 +2827,8 @@ function get_tabs($data, $db, $account, $modules, $user, $smarty, $requested_tab
                 }
 
             }
-        } elseif ($data['_object']->get('Category Scope') == 'Part') {
+        }
+        elseif ($data['_object']->get('Category Scope') == 'Part') {
 
             $_content['tabs']['category.customers']['class'] = 'hide';
 
@@ -2853,7 +2854,24 @@ function get_tabs($data, $db, $account, $modules, $user, $smarty, $requested_tab
             }
 
 
-        } else {
+        }
+        elseif ($data['_object']->get('Category Scope') == 'Invoice') {
+
+            if($data['_object']->get('Category Branch Type')=='Root'){
+                $_content['tabs']['category.details']['class']                     = 'hide';
+
+                if ($data['tab'] == 'category.details' ) {
+                    $_content['tabs']['category.categories']['selected'] = true;
+
+                    $data['tab'] = 'category.categories';
+
+                }
+
+            }
+
+
+        }
+        else {
             $_content['tabs']['category.customers']['class'] = 'hide';
         }
 
