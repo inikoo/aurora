@@ -911,6 +911,7 @@ function parse_request($_data, $db, $modules, $account = '', $user = '', $is_set
                     $parent     = 'category';
                     $parent_key = $category->get('Category Parent Key');
 
+
                     switch ($category->get('Category Scope')) {
                         case 'Customer':
                             $module  = 'customers';
@@ -940,14 +941,12 @@ function parse_request($_data, $db, $modules, $account = '', $user = '', $is_set
                             }
                             break;
                         case 'Invoice':
-                            $module  = 'invoices';
+                            $module  = 'orders_server';
                             $section = 'category';
 
                             if ($category->get('Category Branch Type') == 'Root') {
-                                $parent     = 'store';
-                                $parent_key = $category->get(
-                                    'Category Store Key'
-                                );
+                                $parent     = 'account';
+                                $parent_key = 1;
                             }
                             break;
                         case 'Part':
@@ -2442,7 +2441,20 @@ function parse_request($_data, $db, $modules, $account = '', $user = '', $is_set
                         if (isset($view_path[0])) {
 
                             if ($view_path[0] == 'categories') {
-                                $section = 'categories';
+
+                                $section = 'category';
+
+                                $object = 'category';
+
+                                $sql = sprintf('select `Category Key` from `Category Dimension` where  `Category Scope`="Invoice" and `Category Branch Type`="Root"  ');
+
+                                if ($result = $db->query($sql)) {
+                                    if ($row = $result->fetch()) {
+                                        $key = $row['Category Key'];
+
+                                    }
+                                }
+
 
                             } elseif ($view_path[0] == 'category') {
 
@@ -2459,9 +2471,7 @@ function parse_request($_data, $db, $modules, $account = '', $user = '', $is_set
                                     $category = new Category($key);
 
                                     $parent     = 'category';
-                                    $parent_key = $category->get(
-                                        'Category Parent Key'
-                                    );
+                                    $parent_key = $category->get('Category Parent Key');
 
                                     if ($category->get('Category Branch Type') == 'Root') {
 
@@ -2525,8 +2535,7 @@ function parse_request($_data, $db, $modules, $account = '', $user = '', $is_set
                     $parent_key = 1;
 
 
-
-                    if(isset($view_path[0]) and $view_path[0]=='by_store'){
+                    if (isset($view_path[0]) and $view_path[0] == 'by_store') {
                         $module     = 'delivery_notes_server';
                         $section    = 'group_by_store';
                         $parent     = 'account';
@@ -4103,10 +4112,9 @@ function parse_request($_data, $db, $modules, $account = '', $user = '', $is_set
                             $_data['tab'] = 'contractors';
                         }
 
-                    }  elseif ($view_path[0] == 'salesmen') {
+                    } elseif ($view_path[0] == 'salesmen') {
 
                         $section = 'salesmen';
-
 
 
                     } elseif ($view_path[0] == 'deleted_employees') {

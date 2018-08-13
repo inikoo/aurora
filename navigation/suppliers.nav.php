@@ -215,9 +215,7 @@ function get_suppliers_category_navigation($data, $smarty, $user, $db, $account)
 
             $up_button         = array(
                 'icon'      => 'arrow-up',
-                'title'     => _(
-                    "Supplier's categories"
-                ),
+                'title'     => _("Supplier's categories"),
                 'reference' => 'suppliers/categories'
             );
             $tab               = 'parts.categories';

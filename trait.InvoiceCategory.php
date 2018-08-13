@@ -35,13 +35,30 @@ trait InvoiceCategory {
                 "Invoice Category $db_interval Acc Refunds"         => $sales_data['refunds'],
 
                 "Invoice Category $db_interval Acc Profit"             => $sales_data['profit'],
+
+            );
+
+
+            //print_r($data_to_update);
+
+
+
+            $this->fast_update($data_to_update, 'Invoice Category Data');
+
+
+
+            $data_to_update = array(
+
                 "Invoice Category DC $db_interval Acc Amount"          => $sales_data['dc_amount'],
                 "Invoice Category DC $db_interval Acc Refunded Amount" => $sales_data['dc_amount_refunded'],
                 "Invoice Category DC $db_interval Acc Discount Amount" => $sales_data['dc_discount_amount'],
                 "Invoice Category DC $db_interval Acc Profit"          => $sales_data['dc_profit']
             );
 
-            $this->update($data_to_update, 'no_history');
+
+
+            $this->fast_update($data_to_update, 'Invoice Category DC Data');
+
 
         }
 
@@ -52,6 +69,7 @@ trait InvoiceCategory {
                 $from_date_1yb, $to_date_1yb
             );
 
+
             $data_to_update = array(
                 "Invoice Category $db_interval Acc 1YB Discount Amount" => $sales_data['discount_amount'],
                 "Invoice Category $db_interval Acc 1YB Amount"          => $sales_data['amount'],
@@ -60,13 +78,20 @@ trait InvoiceCategory {
                 "Invoice Category $db_interval Acc 1YB Refunds"         => $sales_data['refunds'],
 
                 "Invoice Category $db_interval Acc 1YB Profit"             => $sales_data['profit'],
+
+            );
+
+            $this->fast_update($data_to_update, 'Invoice Category Data');
+
+            $data_to_update = array(
+
                 "Invoice Category DC $db_interval Acc 1YB Amount"          => $sales_data['dc_amount'],
                 "Invoice Category DC $db_interval Acc 1YB Refunded Amount" => $sales_data['dc_amount_refunded'],
                 "Invoice Category DC $db_interval Acc 1YB Discount Amount" => $sales_data['dc_discount_amount'],
                 "Invoice Category DC $db_interval Acc 1YB Profit"          => $sales_data['dc_profit']
             );
 
-            $this->update($data_to_update, 'no_history');
+            $this->fast_update($data_to_update, 'Invoice Category DC Data');
 
 
         }
@@ -104,18 +129,21 @@ trait InvoiceCategory {
 
 		IFNULL(sum( if(`Invoice Type`!='Invoice',  `Invoice Total Net Amount`,0)  ),0) refund_net ,
 		IFNULL(sum(  if(`Invoice Type`!='Invoice', `Invoice Total Net Amount`,0)  *`Invoice Currency Exchange`),0) dc_refund_net
-		 FROM `Category Bridge` B LEFT JOIN  `Invoice Dimension` I  ON ( `Subject Key`=`Invoice Key`)  WHERE `Subject`='Invoice' AND `Category Key`=%d AND  `Invoice Store Key`=%d %s %s", $this->id,
-            $this->data['Category Store Key'], ($from_date ? sprintf(
+		 FROM `Category Bridge` B LEFT JOIN  `Invoice Dimension` I  ON ( `Subject Key`=`Invoice Key`)  WHERE `Subject`='Invoice' AND `Category Key`=%d  %s %s", $this->id,
+             ($from_date ? sprintf(
             'and `Invoice Date`>%s', prepare_mysql($from_date)
         ) : ''), ($to_date ? sprintf(
             'and `Invoice Date`<%s', prepare_mysql($to_date)
         ) : '')
         );
 
-      //  print "$sql\n";
+       // print "$sql\n";
 
         if ($result = $this->db->query($sql)) {
             if ($row = $result->fetch()) {
+
+
+
                 $sales_data['discount_amount'] = $row['discounts'];
                 $sales_data['amount']          = $row['net'];
                 $sales_data['amount_refunded'] = $row['refund_net'];

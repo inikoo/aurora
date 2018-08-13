@@ -37,6 +37,9 @@ $table_views = array(
 );
 
 
+
+
+
 $table_filters = array(
     'reference' => array(
         'label' => _('Reference'),
@@ -55,18 +58,7 @@ $parameters = array(
 
 $table_buttons = array();
 
-/*
-$table_buttons[]=array('icon'=>'plus', 'title'=>_('New part'), 'reference'=>"part/new");
-$smarty->assign('table_buttons', $table_buttons);
-$smarty->assign('upload_file', array(
-'tipo'=>'upload_objects',
-'parent'=>'account',
-'parent_key'=>1,
-'object'=>'part',
-'label'=>_("Upload parts")
 
-));
-*/
 include 'utils/get_table_html.php';
 
 

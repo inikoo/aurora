@@ -4,6 +4,99 @@
  Version 3.0*/
 
 
+
+var HtmlCell = Backgrid.HtmlCell = Backgrid.Cell.extend({
+
+    /** @property */
+    className: "html-cell",
+
+    initialize: function () {
+        Backgrid.Cell.prototype.initialize.apply(this, arguments);
+    },
+
+    render: function () {
+        this.$el.empty();
+
+
+        var rawValue = this.model.get(this.column.get("name"));
+        var formattedValue = this.formatter.fromRaw(rawValue, this.model);
+        this.$el.append(formattedValue);
+        this.delegateEvents();
+        return this;
+    }
+});
+
+var HeaderHtmlCell = Backgrid.HeaderCell.extend({
+
+    /** @property */
+    className: "html-cell",
+
+
+    render: function () {
+        this.$el.empty();
+
+
+        if (this.column.get('title')) {
+            this.$el.attr('title', this.column.get('title'))
+
+        }
+        if (this.column.get('headerClass')) {
+            this.$el.addClass(this.column.get('headerClass'));
+        }
+
+
+        this.$el.append(this.column.get("label"))
+
+
+        this.delegateEvents();
+        return this;
+    }
+});
+
+var rightHeaderHtmlCell = Backgrid.HeaderCell.extend({
+
+    /** @property */
+    className: "html-cell align-right",
+
+
+    render: function () {
+        this.$el.empty();
+
+
+        if (this.column.get('title')) {
+            this.$el.attr('title', this.column.get('title'))
+
+        }
+        if (this.column.get('headerClass')) {
+            this.$el.addClass(this.column.get('headerClass'));
+        }
+
+
+        this.$el.append(this.column.get("label"))
+
+
+        this.delegateEvents();
+        return this;
+    }
+});
+
+
+var integerHeaderCell = Backgrid.HeaderCell.extend({
+    className: "align-right",
+
+
+    render: function () {
+
+        this.constructor.__super__.render.apply(this, arguments);
+        this.$el.addClass('align-right');
+        return this;
+    }
+});
+
+
+
+
+
 function show_filter() {
     $('#show_filter').addClass('hide')
     $('.filter').removeClass('hide')

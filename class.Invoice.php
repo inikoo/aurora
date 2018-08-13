@@ -1030,38 +1030,80 @@ class Invoice extends DB_Table {
 
     function categorize($skip_update_sales = false) {
 
-
-        $sql = sprintf(
-            "SELECT * FROM `Category Dimension` WHERE `Category Subject`='Invoice' AND `Category Store Key`=%d ORDER BY `Category Function Order`, `Category Key` ", $this->data['Invoice Store Key']
-        );
-        // print $sql;
-        $function_code = '';
+        $category_key =0;
 
 
-        if ($result = $this->db->query($sql)) {
-            foreach ($result as $row) {
-                if ($row['Category Function'] != '') {
-                    $function_code .= sprintf(
-                        "%s return %d;", $row['Category Function'], $row['Category Key']
-                    );
+
+        $account=get_object('Account',1);
+
+        // Tod remove after migration
+        if($account->get('Account Code')=='AW'){
+            $sql = sprintf(
+                "SELECT * FROM `Category Dimension` WHERE `Category Subject`='Invoice' AND `Category Store Key`=%d ORDER BY `Category Function Order`, `Category Key` ", $this->data['Invoice Store Key']
+            );
+            // print $sql;
+            $function_code = '';
+
+
+            if ($result = $this->db->query($sql)) {
+                foreach ($result as $row) {
+                    if ($row['Category Function'] != '') {
+                        $function_code .= sprintf(
+                            "%s return %d;", $row['Category Function'], $row['Category Key']
+                        );
+                    }
                 }
+            } else {
+                print_r($error_info = $this->db->errorInfo());
+                print "$sql\n";
+                exit;
             }
-        } else {
-            print_r($error_info = $this->db->errorInfo());
-            print "$sql\n";
-            exit;
+
+
+            $function_code .= "return 0;";
+            //print $function_code."\n";exit;
+            $new_function = create_function('$data', $function_code);
+
+            // $this->data['Invoice Customer Level Type'];
+
+            $category_key = $new_function($this->data);
+        }else{
+
+            include 'conf/invoice_categorize_functions.php';
+            $sql = sprintf(
+                "SELECT `Invoice Category Key`,`Invoice Category Function Code`,`Invoice Category Function Argument` FROM `Invoice Category Dimension` WHERE `Invoice Category Function Code` is not null ORDER BY `Invoice Category Function Order` desc "
+            );
+
+            if ($result=$this->db->query($sql)) {
+            		foreach ($result as $row) {
+
+
+
+                       if(isset($categorize_invoices_functions[$row['Invoice Category Function Code']])){
+
+                          if( $categorize_invoices_functions[$row['Invoice Category Function Code']]($this->data,$row['Invoice Category Function Argument'])){
+                              $category_key=$row['Invoice Category Key'];
+                              break;
+                          }
+
+
+                       }
+
+            		}
+            }else {
+            		print_r($error_info=$this->db->errorInfo());
+            		print "$sql\n";
+            		exit;
+            }
+
+
+
         }
 
 
-        $function_code .= "return 0;";
-        //print $function_code."\n";exit;
-        $new_function = create_function('$data', $function_code);
 
-        // $this->data['Invoice Customer Level Type'];
 
-        $category_key = $new_function($this->data);
-
-        //print "Cat $category_key\n";
+     //   print "Cat $category_key\n";
 
         if ($category_key) {
             $category                    = new Category($category_key);

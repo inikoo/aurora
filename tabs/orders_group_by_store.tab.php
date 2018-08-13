@@ -36,6 +36,7 @@ $parameters = array(
     'parent_key' => '',
 );
 
+$smarty->assign('table_class','with_totals');
 
 include('utils/get_table_html.php');
 

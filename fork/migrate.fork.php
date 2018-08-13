@@ -29,75 +29,77 @@ function fork_migration($job) {
 
         case 'update_other_telephones':
 
+            if($data['customer_key']) {
+                $customer         = get_object('Customer', $data['customer_key']);
+                $customer->editor = $data['editor'];
 
-            $customer         = get_object('Customer', $data['customer_key']);
-            $customer->editor = $data['editor'];
-
-            add_other_telephone(get_other_telecoms_data($db, 'Telephone', $customer), $customer);
-            add_other_telephone(get_other_telecoms_data($db, 'Mobile', $customer), $customer);
-            add_other_telephone(get_other_telecoms_data($db, 'FAX', $customer), $customer);
+                add_other_telephone(get_other_telecoms_data($db, 'Telephone', $customer), $customer);
+                add_other_telephone(get_other_telecoms_data($db, 'Mobile', $customer), $customer);
+                add_other_telephone(get_other_telecoms_data($db, 'FAX', $customer), $customer);
 
 
-            $customer->update_full_search();
-            $customer->update_location_type();
-
+                $customer->update_full_search();
+                $customer->update_location_type();
+            }
 
             break;
 
 
         case 'customer_updated_migration':
+            if($data['customer_key']) {
 
-            migrate_customer_data($data['customer_key'], $db);
+                migrate_customer_data($data['customer_key'], $db);
 
-            $customer         = get_object('Customer', $data['customer_key']);
-            $customer->editor = $data['editor'];
-
-
-            $customer->update_full_search();
-            $customer->update_location_type();
+                $customer         = get_object('Customer', $data['customer_key']);
+                $customer->editor = $data['editor'];
 
 
+                $customer->update_full_search();
+                $customer->update_location_type();
+
+            }
             break;
         case 'customer_created_migration':
 
-
-            migrate_customer_data($data['customer_key'], $db);
-
-
-            $customer         = get_object('Customer', $data['customer_key']);
-            $store            = get_object('Store', $customer->get('Customer Store Key'));
-            $customer->editor = $data['editor'];
-            $store->editor    = $data['editor'];
+            if($data['customer_key']) {
+                migrate_customer_data($data['customer_key'], $db);
 
 
-            $customer->update_full_search();
-            $customer->update_location_type();
-            $store->update_customers_data();
+                $customer         = get_object('Customer', $data['customer_key']);
+                $store            = get_object('Store', $customer->get('Customer Store Key'));
+                $customer->editor = $data['editor'];
+                $store->editor    = $data['editor'];
 
 
-            $sql = sprintf(
-                'select `Prospect Key` from `Prospect Dimension`  where `Prospect Store Key`=%d and `Prospect Main Plain Email`=%s and `Prospect Customer Key` is  NULL ', $customer->get('Store Key'), prepare_mysql($customer->get('Customer Main Plain Email'))
+                $customer->update_full_search();
+                $customer->update_location_type();
+                $store->update_customers_data();
 
-            );
-            if ($result = $db->query($sql)) {
-                if ($row = $result->fetch()) {
 
-                    $prospect         = get_object('Prospect', $row['Prospect Key']);
-                    $prospect->editor = $data['editor'];
-                    if ($prospect->id) {
-                        $sql = sprintf('select `History Key`,`Type`,`Deletable`,`Strikethrough` from `Prospect History Bridge` where `Prospect Key`=%d ', $prospect->id);
-                        if ($result2 = $db->query($sql)) {
-                            foreach ($result2 as $row2) {
-                                $sql = sprintf(
-                                    "INSERT INTO `Customer History Bridge` VALUES (%d,%d,%s,%s,%s)", $customer->id, $row2['History Key'], prepare_mysql($row2['Deletable']), prepare_mysql($row2['Strikethrough']), prepare_mysql($row2['Type'])
-                                );
-                                //print "$sql\n";
-                                $db->exec($sql);
+                $sql = sprintf(
+                    'select `Prospect Key` from `Prospect Dimension`  where `Prospect Store Key`=%d and `Prospect Main Plain Email`=%s and `Prospect Customer Key` is  NULL ', $customer->get('Store Key'), prepare_mysql($customer->get('Customer Main Plain Email'))
+
+                );
+                if ($result = $db->query($sql)) {
+                    if ($row = $result->fetch()) {
+
+                        $prospect         = get_object('Prospect', $row['Prospect Key']);
+                        $prospect->editor = $data['editor'];
+                        if ($prospect->id) {
+                            $sql = sprintf('select `History Key`,`Type`,`Deletable`,`Strikethrough` from `Prospect History Bridge` where `Prospect Key`=%d ', $prospect->id);
+                            if ($result2 = $db->query($sql)) {
+                                foreach ($result2 as $row2) {
+                                    $sql = sprintf(
+                                        "INSERT INTO `Customer History Bridge` VALUES (%d,%d,%s,%s,%s)", $customer->id, $row2['History Key'], prepare_mysql($row2['Deletable']), prepare_mysql($row2['Strikethrough']), prepare_mysql($row2['Type'])
+                                    );
+                                    //print "$sql\n";
+                                    $db->exec($sql);
+                                }
                             }
+
+
+                            $prospect->update_status('Registered', $customer);
                         }
-
-
-                        $prospect->update_status('Registered', $customer);
                     }
                 }
             }

@@ -43,6 +43,7 @@ $parameters = array(
 
 
 //$smarty->assign('hide_period',true);
+$smarty->assign('table_class','with_totals');
 
 include 'utils/get_table_html.php';
 

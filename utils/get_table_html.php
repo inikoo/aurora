@@ -147,6 +147,7 @@ $smarty->assign('f_options', $table_filters);
 $table_view = $parameters['view'];
 $smarty->assign('table_view', $parameters['view']);
 
+
 if (array_key_exists('f_period', $parameters)) {
     $smarty->assign('f_period', $parameters['f_period']);
     $smarty->assign('f_period_label', get_interval_db_name($parameters['f_period']));
@@ -164,7 +165,6 @@ if (array_key_exists('f_period', $parameters)) {
 
     );
     $smarty->assign('f_periods', $f_periods);
-
 
 }else{
     $smarty->assign('f_periods',array());

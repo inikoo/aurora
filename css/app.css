@@ -1378,6 +1378,12 @@ tr.deleting_tr {
   .mesh td:last-child {
     border-right: 1px solid #ccc; }
 
+div.table.with_totals table.backgrid tr:nth-last-child(2) td {
+  border-bottom-color: #aaa; }
+div.table.with_totals table.backgrid tr:last-child td {
+  border-bottom-color: #ccc;
+  color: #333; }
+
 .subject_profile {
   padding: 20px; }
   .subject_profile #contact_data {

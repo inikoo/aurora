@@ -98,9 +98,7 @@ $product_fields = array(
                 'edit'   => ($edit ? 'option' : ''),
 
                 'options'         => $options_status,
-                'value'           => htmlspecialchars(
-                    $object->get('Product Status')
-                ),
+                'value'           => htmlspecialchars($object->get('Product Status')),
                 'formatted_value' => $object->get('Status'),
                 'label'           => ucfirst(
                     $object->get_field_label('Product Status')
@@ -114,9 +112,7 @@ $product_fields = array(
                 'edit'   => ($edit ? 'option' : ''),
 
                 'options'         => $options_web_configuration,
-                'value'           => htmlspecialchars(
-                    $object->get('Product Web Configuration')
-                ),
+                'value'           => htmlspecialchars($object->get('Product Web Configuration')),
                 'formatted_value' => $object->get('Web Configuration'),
                 'label'           => ucfirst(
                     $object->get_field_label('Web Configuration')
@@ -141,9 +137,7 @@ $product_fields = array(
                     $object->get('Product Code')
                 ),
                 'formatted_value'   => $object->get('Code'),
-                'label'             => ucfirst(
-                    $object->get_field_label('Product Code')
-                ),
+                'label'             => ucfirst($object->get_field_label('Product Code')),
                 'required'          => true,
                 'server_validation' => json_encode(
                     array(
@@ -204,14 +198,8 @@ $product_fields = array(
                 'edit'                     => 'dropdown_select',
                 'scope'                    => 'families',
                 'parent'                   => 'store',
-                'parent_key'               => ($new
-                    ? $options['store_key']
-                    : $object->get(
-                        'Product Store Key'
-                    )),
-                'value'                    => htmlspecialchars(
-                    $object->get('Product Family Category Key')
-                ),
+                'parent_key'               => ($new ? $options['store_key'] : $object->get('Product Store Key')),
+                'value'                    => htmlspecialchars($object->get('Product Family Category Key')),
                 'formatted_value'          => $object->get('Family Category Key'),
                 'stripped_formatted_value' => '',
                 'label'                    => _('Family'),

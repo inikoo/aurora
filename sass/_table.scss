@@ -476,3 +476,18 @@ tr.deleting_tr {
   }
 
 }
+
+div.table{
+
+  &.with_totals{
+
+    table.backgrid{
+
+      tr:nth-last-child(2) td{border-bottom-color: #aaa};
+
+      tr:last-child td{ ;border-bottom-color: #ccc;color:#333}
+    }
+
+  }
+
+}

@@ -45,7 +45,8 @@ if ($result = $db->query($sql)) {
         $invoice = new Invoice('id', $row['Invoice Key']);
 
         $invoice->update_billing_region();
-
+        $invoice->categorize();
+      //  exit;
     }
 
 } else {

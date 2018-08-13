@@ -221,7 +221,8 @@ elseif ($state['module'] == 'products') {
 
     $smarty->assign('table_buttons', $table_buttons);
 
-} elseif ($state['module'] == 'suppliers') {
+}
+elseif ($state['module'] == 'suppliers') {
     $tab     = 'category.supplier_categories';
     $ar_file = 'ar_suppliers_tables.php';
     $tipo    = 'supplier_categories';
@@ -277,7 +278,49 @@ elseif ($state['module'] == 'products') {
 
     $smarty->assign('table_buttons', $table_buttons);
 
-} else {
+}
+elseif ($state['module'] == 'orders_server') {
+    $tab     = 'category.invoice_categories';
+    $ar_file = 'ar_orders_tables.php';
+    $tipo    = 'invoice_categories';
+
+
+    $default = $user->get_tab_defaults($tab);
+
+
+
+
+    $table_views = array(
+        'overview'     => array('label' => _('Overview')),
+
+
+
+    );
+
+    $table_filters = array(
+        'label' => array('label' => _('Label')),
+        'code'  => array('label' => _('Code')),
+
+    );
+
+
+    $parameters = array(
+        'parent'     => $state['object'],
+        'parent_key' => $state['key'],
+
+    );
+
+
+    $table_buttons = array();
+
+    $smarty->assign('table_buttons', $table_buttons);
+    $smarty->assign('table_class','with_totals');
+
+
+
+
+}
+else {
 
     $tab     = 'category.categories';
     $ar_file = 'ar_categories_tables.php';

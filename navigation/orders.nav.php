@@ -781,7 +781,7 @@ function get_invoices_categories_server_navigation($data, $smarty, $user, $db, $
     $block_view = $data['section'];
 
 
-    $sections = get_sections('invoices_server');
+    $sections = get_sections('orders_server');
 
     $sections_class = '';
     $title          = _("Invoice's categories").' ('._('All stores').')';
@@ -823,33 +823,46 @@ function get_invoices_categories_server_navigation($data, $smarty, $user, $db, $
 
 function get_invoices_category_server_navigation($data, $smarty, $user, $db, $account) {
 
-    global $user, $smarty;
 
 
-    $block_view = $data['section'];
-
-
-    $sections = get_sections('invoices_server');
-
-    $sections_class = '';
-    $title          = ' <span class="Category_Label">'.$data['_object']->get(
-            'Label'
-        ).'</span> <span class="Category_Code id">'.$data['_object']->get(
-            'Code'
-        ).'</span>';
-
-    $button_label = _('Payments %s');
-
-
-    // $up_button=array('icon'=>'arrow-up', 'title'=>_("Order's index"), 'reference'=>'account/orders');
     $left_buttons = array();
 
 
     $right_buttons = array();
 
-    if (isset($sections[$data['section']])) {
-        $sections[$data['section']]['selected'] = true;
+
+    $sections = get_sections('orders_server');
+
+    $sections_class = '';
+
+    if($data['_object']->get('Category Branch Type')=='Root'){
+        $title=_("Invoice's categories");
+    }else{
+
+
+        $up_button = array(
+            'icon'      => 'arrow-up',
+            'title'     => _("Invoice's categories"),
+            'reference' => 'invoices/all/categories'
+        );
+
+
+        $title          = _("Invoice's category").' <span class="Category_Label id">'.$data['_object']->get('Label').'</span>';
+
+
+
+        $left_buttons[] = $up_button;
+
     }
+
+
+
+
+    // $up_button=array('icon'=>'arrow-up', 'title'=>_("Order's index"), 'reference'=>'account/orders');
+
+
+
+    $sections['categories']['selected'] = true;
 
 
     $_content = array(
@@ -2783,13 +2796,12 @@ function get_replacement_new_navigation($data, $smarty, $user, $db, $account) {
 }
 
 
-
 function get_delivery_notes_server_group_by_store_navigation($data, $smarty, $user, $db, $account) {
 
 
     $sections = get_sections('delivery_notes_server');
 
-    $left_buttons = array();
+    $left_buttons  = array();
     $right_buttons = array();
 
     if (isset($sections[$data['section']])) {

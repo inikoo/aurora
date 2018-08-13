@@ -34,6 +34,60 @@ $print_est = true;
 
 print date('l jS \of F Y h:i:s A')."\n";
 
+
+
+$sql = sprintf(
+    'SELECT `Category Key` FROM `Category Dimension` WHERE `Category Scope`="Invoice"  '
+);
+
+if ($result = $db->query($sql)) {
+    foreach ($result as $row) {
+
+
+
+
+
+        $category = new Category($row['Category Key']);
+
+        if($category->get('Category Branch Type')!='Root'){
+
+            $category->update_invoice_category_sales('Total');
+
+
+            $category->update_invoice_category_sales('Year To Day');
+            $category->update_invoice_category_sales('Quarter To Day');
+            $category->update_invoice_category_sales('Month To Day');
+            $category->update_invoice_category_sales('Week To Day');
+
+            $category->update_invoice_category_sales('Last Month');
+            $category->update_invoice_category_sales('Last Week');
+
+            $category->update_invoice_category_sales('Yesterday');
+            $category->update_invoice_category_sales('Today');
+
+            $category->update_invoice_previous_years_data();
+            $category->update_invoice_previous_quarters_data();
+        }
+
+
+        //$category->update_invoice_category_sales('Today');
+        //continue;
+
+
+
+
+    }
+
+} else {
+    print_r($error_info = $db->errorInfo());
+    exit;
+}
+
+
+exit;
+
+
+
 update_sales($db, $print_est);
 
 update_products($db, $print_est);

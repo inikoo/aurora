@@ -300,7 +300,7 @@ elseif ($category->get('Category Scope') == 'Part') {
 
 
 
-
+    
 
     $smarty->assign('edit_fields', $edit_fields);
 
