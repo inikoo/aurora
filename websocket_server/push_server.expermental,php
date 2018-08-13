@@ -1,5 +1,6 @@
 <?php
-
+// Didnt work
+// needs wamp version 2 and autobahn dont support it
 require 'vendor/autoload.php';
 
 use Thruway\Peer\Router;
