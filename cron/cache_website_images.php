@@ -31,7 +31,7 @@ if ($result = $db->query($sql)) {
 
 
             $_size_image_product_webpage = '340_214';
-            $image_format = 'jpeg';
+            $image_format                = 'jpeg';
             if (!file_exists('EcomB2B/server_files/cached_images/'.md5($image_key.'_'.$_size_image_product_webpage.'.'.$image_format).'.'.$image_format)) {
 
                 $image          = get_object('Image', $image_key);
@@ -56,7 +56,7 @@ if ($result = $db->query($sql)) {
 
 
             $_size_image_product_webpage = '120_120';
-            $image_format = 'jpeg';
+            $image_format                = 'jpeg';
             if (!file_exists('EcomB2B/server_files/cached_images/'.md5($image_key.'_'.$_size_image_product_webpage.'.'.$image_format).'.'.$image_format)) {
 
                 $image          = get_object('Image', $image_key);
@@ -80,9 +80,6 @@ if ($result = $db->query($sql)) {
             }
 
         }
-
-
-
 
 
         $sql = sprintf(
@@ -102,38 +99,35 @@ if ($result = $db->query($sql)) {
 
                 if ($row2['Image Key']) {
 
-                    $image_format='jpeg';
+                    $image_format = 'jpeg';
 
                     $image_key = $row2['Image Key'];
 
                     $_size_image_product_webpage = '600_375';
 
 
+                    if (!file_exists('EcomB2B/server_files/cached_images/'.md5($image_key.'_'.$_size_image_product_webpage.'.'.$image_format).'.'.$image_format)) {
 
-                        if (!file_exists('EcomB2B/server_files/cached_images/'.md5($image_key.'_'.$_size_image_product_webpage.'.'.$image_format).'.'.$image_format)) {
+                        $image = get_object('Image', $image_key);
 
-                            $image          = get_object('Image', $image_key);
+                        $image_filename = 'EcomB2B/server_files/tmp/'.$image_key.'_'.$_size_image_product_webpage.'.'.$image_format;
 
-                            $image_filename = 'EcomB2B/server_files/tmp/'.$image_key.'_'.$_size_image_product_webpage.'.'.$image_format;
+                        if (!file_exists($image_filename)) {
 
-                            if (!file_exists($image_filename)) {
+                            $_image = $image->fit_to_canvas(600, 375);
 
-                                $_image=$image->fit_to_canvas(600, 375);
-
-                                if($image->get('Image File Format')=='png'){
-                                    $image->save_image_to_file_as_jpeg('EcomB2B/server_files/tmp', $image_key.'_'.$_size_image_product_webpage,$_image, $image_format);
-                                }else{
-                                    $image->save_image_to_file('EcomB2B/server_files/tmp', $image_key.'_'.$_size_image_product_webpage,$_image, $image_format);
-
-                                }
-
+                            if ($image->get('Image File Format') == 'png') {
+                                $image->save_image_to_file_as_jpeg('EcomB2B/server_files/tmp', $image_key.'_'.$_size_image_product_webpage, $_image, $image_format);
+                            } else {
+                                $image->save_image_to_file('EcomB2B/server_files/tmp', $image_key.'_'.$_size_image_product_webpage, $_image, $image_format);
 
                             }
-                            $image_product_webpage = $imagecache->cache($image_filename);
-                            unlink($image_filename);
+
+
                         }
-
-
+                        $image_product_webpage = $imagecache->cache($image_filename);
+                        unlink($image_filename);
+                    }
 
 
                 }
@@ -144,7 +138,6 @@ if ($result = $db->query($sql)) {
             print "$sql";
             exit;
         }
-
 
 
     }
@@ -161,7 +154,7 @@ if ($result = $db->query($sql)) {
 
 
             $_size_image_product_webpage = '120_120';
-            $image_format = 'jpeg';
+            $image_format                = 'jpeg';
             if (!file_exists('EcomB2B/server_files/cached_images/'.md5($image_key.'_'.$_size_image_product_webpage.'.'.$image_format).'.'.$image_format)) {
 
                 $image          = get_object('Image', $image_key);
@@ -185,10 +178,6 @@ if ($result = $db->query($sql)) {
             }
 
         }
-
-
-
-
 
 
     }
