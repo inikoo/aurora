@@ -1036,7 +1036,7 @@ class Invoice extends DB_Table {
 
         $account=get_object('Account',1);
 
-        // Tod remove after migration
+        // Todo remove after migration
         if($account->get('Account Code')=='AW'){
             $sql = sprintf(
                 "SELECT * FROM `Category Dimension` WHERE `Category Subject`='Invoice' AND `Category Store Key`=%d ORDER BY `Category Function Order`, `Category Key` ", $this->data['Invoice Store Key']
@@ -1067,7 +1067,8 @@ class Invoice extends DB_Table {
             // $this->data['Invoice Customer Level Type'];
 
             $category_key = $new_function($this->data);
-        }else{
+        }
+        else{
 
             include 'conf/invoice_categorize_functions.php';
             $sql = sprintf(

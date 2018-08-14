@@ -137,7 +137,7 @@ trait InvoiceCategory {
         ) : '')
         );
 
-        print "$sql\n";
+       // print "$sql\n";
 
         if ($result = $this->db->query($sql)) {
             if ($row = $result->fetch()) {
@@ -166,7 +166,7 @@ trait InvoiceCategory {
             exit;
         }
 
-print_r($sales_data);
+//print_r($sales_data);
 
         return $sales_data;
 
