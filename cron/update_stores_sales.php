@@ -34,7 +34,7 @@ $print_est = true;
 
 print date('l jS \of F Y h:i:s A')."\n";
 
-
+/*
 
 $sql = sprintf(
     'SELECT `Category Key` FROM `Category Dimension` WHERE `Category Scope`="Invoice"  '
@@ -84,7 +84,7 @@ if ($result = $db->query($sql)) {
 }
 
 
-exit;
+*/
 
 
 
