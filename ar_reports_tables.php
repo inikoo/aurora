@@ -44,6 +44,10 @@ switch ($tipo) {
     case 'packers':
         packers(get_table_parameters(), $db, $user, $account);
         break;
+    case 'sales_representatives':
+
+        sales_representatives(get_table_parameters(), $db, $user, $account);
+        break;
     case 'sales':
         sales(get_table_parameters(), $db, $user, $account);
         break;
@@ -1365,6 +1369,115 @@ function intrastat_products($_data, $db, $user, $account) {
     echo json_encode($response);
 }
 
+
+
+function sales_representatives($_data, $db, $user, $account) {
+
+    $rtext_label = 'sales representative';
+
+    /*
+
+    foreach ($_data['parameters'] as $parameter => $parameter_value) {
+        $_SESSION['table_state']['sales_representative'][$parameter] = $parameter_value;
+
+    }
+*/
+
+
+
+
+$sql   = "select `Staff Name`,`Staff Key`,`Sales Representative Key` from `Sales Representative Dimension` SRD left join `Staff Dimension` S on (S.`Staff Key`=`Sales Representative Staff Key`) ";
+
+$_adata = array();
+
+
+if ($result = $db->query($sql)) {
+    foreach ($result as $data) {
+        $_adata[$data['Staff Key']] = array(
+            'name' => sprintf('<span class="link" onclick="change_view(\'report/sales_representatives/%d\',{ tab:\'sales_representative.customers\'} ,  )">%s</span>',$data['Sales Representative Key'],$data['Staff Name']),
+            'refunds'=>sprintf('<span class="link very_discreet" onclick="change_view(\'report/sales_representatives/%d\',{ tab:\'sales_representative.invoices\' , parameters:{ period:\'%s\',from:\'%s\',to:\'%s\',elements_type:\'type\' } ,element:{ type:{ Invoice:\'\',Refund:1}}  }  )">%s</span>',$data['Sales Representative Key'],$_data['parameters']['period'],$_data['parameters']['from'],$_data['parameters']['to'],0),
+            'invoices'=>sprintf('<span class="link very_discreet" onclick="change_view(\'report/sales_representatives/%d\',{ tab:\'sales_representative.invoices\',  parameters:{ period:\'%s\',from:\'%s\',to:\'%s\',elements_type:\'type\' } ,element:{ type:{ Invoice:1,Refund:\'\'}}}  )">%s</span>',$data['Sales Representative Key'],$_data['parameters']['period'],$_data['parameters']['from'],$_data['parameters']['to'],0),
+            'sales'=>sprintf('<span class="link very_discreet" onclick="change_view(\'report/sales_representatives/%d\',{ tab:\'sales_representative.invoices\',  parameters:{ period:\'%s\',from:\'%s\',to:\'%s\',elements_type:\'type\' } ,element:{ type:{ Invoice:1,Refund:1}}}  )">%s</span>',$data['Sales Representative Key'],$_data['parameters']['period'],$_data['parameters']['from'],$_data['parameters']['to'],money(0,$account->get('Account Currency'))),
+
+
+        );
+    }
+}
+
+//print_r($_adata);
+    include_once 'prepare_table/init.php';
+
+
+
+
+
+
+
+    $sql   = "select $fields from $table $where $wheref $group_by order by $order $order_direction limit $start_from,$number_results";
+
+//print $sql;
+
+
+
+    if ($result = $db->query($sql)) {
+
+        foreach ($result as $data) {
+
+
+    //        print_r($data);
+
+            $_adata[$data['Staff Key']]['invoices']=sprintf('<span class="link " onclick="change_view(\'report/sales_representatives/%d\',{ tab:\'sales_representative.invoices\' , parameters:{ period:\'%s\',from:\'%s\',to:\'%s\',elements_type:\'type\' } ,element:{ type:{ Invoice:1,Refund:\'\'}}  }  )">%s</span>',$data['Sales Representative Key'],$_data['parameters']['period'],$_data['parameters']['from'],$_data['parameters']['to'],number($data['invoices']));
+            $_adata[$data['Staff Key']]['refunds']=sprintf('<span class="link " onclick="change_view(\'report/sales_representatives/%d\',{ tab:\'sales_representative.invoices\' , parameters:{ period:\'%s\',from:\'%s\',to:\'%s\',elements_type:\'type\' } ,element:{ type:{ Invoice:\'\',Refund:1}}  }  )">%s</span>',$data['Sales Representative Key'],$_data['parameters']['period'],$_data['parameters']['from'],$_data['parameters']['to'],number($data['refunds']));
+            $_adata[$data['Staff Key']]['sales']=sprintf('<span class="link " onclick="change_view(\'report/sales_representatives/%d\',{ tab:\'sales_representative.invoices\' , parameters:{ period:\'%s\',from:\'%s\',to:\'%s\',elements_type:\'type\' } ,element:{ type:{ Invoice:1,Refund:1}}  }  )">%s</span>',$data['Sales Representative Key'],$_data['parameters']['period'],$_data['parameters']['from'],$_data['parameters']['to'],money($data['sales'],$account->get('Account Currency')));
+            $_adata[$data['Staff Key']]['customers']= number($data['customers']);
+
+
+
+
+              //  'name'                              => $data['Staff Name'],
+
+/*
+                'deliveries'                        => number($data['deliveries']),
+                'deliveries_with_errors'            => number($data['deliveries_with_errors']),
+                'deliveries_with_errors_percentage' => percentage($data['deliveries_with_errors'], $data['deliveries']),
+                'picks_with_errors'                 => number($data['picks_with_errors']),
+                'picks_with_errors_percentage'      => percentage($data['picks_with_errors_percentage'], 1),
+                'picked'                            => number($data['picked'], 0),
+                'dp'                                => number($data['dp']),
+                'dp_percentage'                     => percentage($data['dp'], $total_dp),
+                'hrs'                               => number($data['hrs'], 1, true),
+                'dp_per_hour'                       => ($data['dp_per_hour'] == '' ? '' : number($data['dp_per_hour'], 1, true)),
+*/
+
+
+        }
+    } else {
+        print_r($error_info = $db->errorInfo());
+        exit;
+    }
+
+
+    $adata=array();
+foreach ($_adata as $values){
+    $adata[]=$values;
+}
+
+
+    $number_records=count($adata);
+
+    $response = array(
+        'resultset' => array(
+            'state'         => 200,
+            'data'          => $adata,
+            'rtext' => sprintf(ngettext('%s sales representative', '%s sales representatives', $number_records), number($number_records)),
+            'sort_key'      => $_order,
+            'sort_dir'      => $_dir,
+            'total_records' => $total
+
+        )
+    );
+    echo json_encode($response);
+}
 
 function pickers($_data, $db, $user, $account) {
 

@@ -155,9 +155,9 @@
         {foreach from=$sales_overview item=record}
             <tbody class="data">
             <tr class="{$record.class} small_row">
-                <td class="label {if isset($record.label.view) and $record.label.view!='' }link{/if}"
-                    {if isset($record.label.view) and $record.label.view!='' }onclick="change_view('{$record.label.view}')" {/if}
-                    title="{if isset($record.label.title)}{$record.label.title}{else}{$record.label.label}{/if}  ">{$record.label.label}</td>
+                <td class="label" ><span class=" {if isset($record.label.view) and $record.label.view!='' }link{/if}"
+                            {if isset($record.label.view) and $record.label.view!='' }onclick="change_view('{$record.label.view}')" {/if}
+                                         title="{if isset($record.label.title)}{$record.label.title}{else}{$record.label.label}{/if} ">{$record.label.label}</span>  {if !empty($record.label.representatives_link_label)}<span id="representatives_link_{$record.id}" title="{t}Sales representative reports{/t}" class=" margin_left_10">{$record.label.representatives_link_label}</span>{/if} </td>
 
 
                 <td id="orders_overview_refunds_{$record.id}"

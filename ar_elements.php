@@ -171,6 +171,7 @@ switch ($tab) {
     case 'product.customers':
     case 'product.customers.favored':
     case 'poll_query_option.customers':
+    case 'sales_representative.customers':
 
         $data = prepare_values(
             $_REQUEST, array(
@@ -250,6 +251,7 @@ switch ($tab) {
     case 'invoices':
     case 'customer.invoices':
     case 'category.invoices':
+    case 'sales_representative.invoices':
 
         $data = prepare_values(
             $_REQUEST, array(
@@ -1195,9 +1197,10 @@ function get_customers_element_numbers($db, $data) {
 
     switch ($data['parent']) {
         case 'store':
-            $where = sprintf(
-                ' where `Customer Store Key`=%d  ', $data['parent_key']
-            );
+            $where = sprintf(' where `Customer Store Key`=%d  ', $data['parent_key']);
+            break;
+        case 'sales_representative':
+            $where = sprintf(' where `Customer Sales Representative Key`=%d  ', $data['parent_key']);
             break;
         case 'category':
             $tab = 'customer.categories';
@@ -1885,6 +1888,13 @@ function get_invoices_element_numbers($db, $parameters) {
 
         $where = sprintf(
             'where `Invoice Customer Key`=%d  ', $parameters['parent_key']
+        );
+
+    } elseif ($parameters['parent'] == 'sales_representative') {
+        $table = '`Invoice Dimension` I  ';
+
+        $where = sprintf(
+            'where `Invoice Sales Representative Key`=%d  ', $parameters['parent_key']
         );
 
     } elseif ($parameters['parent'] == 'billingregion_taxcategory.invoices') {

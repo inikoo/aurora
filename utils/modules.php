@@ -326,14 +326,14 @@ $modules = array(
                 'reference' => 'prospects/%d',
                 'tabs'      => array(
 
-                    'prospects.dashboard'                 => array(
+                    'prospects.dashboard' => array(
                         'label' => _('Dashboard')
                     ),
-                    'prospects'                 => array(
+                    'prospects'           => array(
                         'label' => _('Prospects')
                     ),
 
-                    'prospects.agents'                 => array(
+                    'prospects.agents'          => array(
                         'label' => _('Agents')
                     ),
                     'prospects.email_templates' => array(
@@ -423,9 +423,7 @@ $modules = array(
                 'reference' => 'customers/%s/email_campaigns',
 
 
-
-
-                'tabs'      => array(
+                'tabs' => array(
 
                     /*
                     'email_campaigns.newsletters' => array(
@@ -439,34 +437,34 @@ $modules = array(
 
 */
                     'email_template_types' => array(
-                        'label'   => _('Operations'),
-                        'icon'    => 'handshake-alt',
+                        'label' => _('Operations'),
+                        'icon'  => 'handshake-alt',
 
-                      /*
-                        'subtabs' => array(
+                        /*
+                          'subtabs' => array(
 
-                            'sent_emails.welcome' => array(
-                                'label' => _('Welcome'),
-                                'icon'  => 'door-open'
-                            ),
-                            'sent_emails.order_notification' => array(
-                                'label' => _('Order notification'),
-                                'icon'  => 'shopping-cart'
-                            ),
-                            'sent_emails.dispatched_order' => array(
-                                'label' => _('Dispatched'),
-                                'icon'  => 'truck'
-                            ),
-                            'send_email.reminders'   => array(
-                                'label' => _('Deal reminders'),
-                                'icon'  => 'bell'
-                            ),
-                            'send_email.back_in_stock'   => array(
-                                'label' => _('Back in stock'),
-                                'icon'  => 'dolly'
-                            ),
-  )
-*/
+                              'sent_emails.welcome' => array(
+                                  'label' => _('Welcome'),
+                                  'icon'  => 'door-open'
+                              ),
+                              'sent_emails.order_notification' => array(
+                                  'label' => _('Order notification'),
+                                  'icon'  => 'shopping-cart'
+                              ),
+                              'sent_emails.dispatched_order' => array(
+                                  'label' => _('Dispatched'),
+                                  'icon'  => 'truck'
+                              ),
+                              'send_email.reminders'   => array(
+                                  'label' => _('Deal reminders'),
+                                  'icon'  => 'bell'
+                              ),
+                              'send_email.back_in_stock'   => array(
+                                  'label' => _('Back in stock'),
+                                  'icon'  => 'dolly'
+                              ),
+    )
+  */
 
                     ),
 
@@ -507,12 +505,12 @@ $modules = array(
                         'title' => _('Next mailshot recipients'),
                         'icon'  => 'user-clock'
                     ),
-                    'email_campaign_type.workshop' => array(
+                    'email_campaign_type.workshop'        => array(
                         'label' => _('Workshop'),
                         'icon'  => 'wrench'
                     ),
 
-                    'email_campaign_type.mailshots' => array(
+                    'email_campaign_type.mailshots'   => array(
                         'label' => _('Mailshots'),
                         'icon'  => 'container-storage'
                     ),
@@ -532,13 +530,10 @@ $modules = array(
             ),
 
 
-
-
-
             'email_campaign' => array(
                 'type' => 'object',
                 'tabs' => array(
-                    'email_campaign.details'   => array(
+                    'email_campaign.details'       => array(
                         'label' => _('Data'),
                         'icon'  => 'database',
                         'title' => _('Details')
@@ -553,7 +548,7 @@ $modules = array(
                         'icon'  => 'users',
                     ),
 
-                    'email_campaign.workshop'   => array(
+                    'email_campaign.workshop' => array(
                         'label' => _('Workshop'),
                         'icon'  => 'wrench'
                     ),
@@ -709,17 +704,17 @@ $modules = array(
                     'customer.sales.history'   => 'customer.sales',
                     'customer.sales.calendar'  => 'customer.sales',
                     'customer.sales.dashboard' => 'customer.sales',
-                    'customer.sales.info' => 'customer.sales',
+                    'customer.sales.info'      => 'customer.sales',
 
                 ),
                 'tabs'           => array(
-                    'customer.details'   => array(
+                    'customer.details' => array(
                         'label' => _('Data'),
                         'icon'  => 'database'
                     ),
-                    'customer.sales' => array(
+                    'customer.sales'   => array(
                         'label'   => _('Sales'),
-                        'icon'=>'money-bill',
+                        'icon'    => 'money-bill',
                         'subtabs' => array(
                             'customer.sales.dashboard' => array(
                                 'label' => _('Dashboard')
@@ -733,7 +728,7 @@ $modules = array(
                             'customer.sales.calendar'  => array(
                                 'label' => _('Calendar')
                             ),
-                            'customer.sales.info' => array(
+                            'customer.sales.info'      => array(
                                 'label' => '',
                                 'title' => _('Info'),
                                 'icon'  => 'info',
@@ -741,31 +736,28 @@ $modules = array(
                             ),
 
 
-
-
-
                         )
                     ),
 
-                    'customer.insights'  => array(
+                    'customer.insights'    => array(
                         'label' => _('Insights'),
                         'icon'  => 'graduation-cap'
                     ),
-                    'customer.sent_emails'  => array(
+                    'customer.sent_emails' => array(
                         'label' => _('Sent emails'),
                         'icon'  => 'paper-plane'
                     ),
-                    'customer.history'   => array(
+                    'customer.history'     => array(
                         'label' => _('History, notes'),
                         'icon'  => 'sticky-note'
                     ),
-                    'customer.orders'    => array(
+                    'customer.orders'      => array(
                         'label' => _('Orders'),
                         'icon'  => 'shopping-cart'
 
                     ),
-                    'customer.invoices'  => array('label' => _('Invoices')),
-                    'customer.marketing' => array(
+                    'customer.invoices'    => array('label' => _('Invoices')),
+                    'customer.marketing'   => array(
                         'label'   => _('Interests'),
                         'title'   => _("Customer's interests"),
                         'subtabs' => array(
@@ -798,12 +790,10 @@ $modules = array(
                         )
 
                     ),
-                    'customer.discounts' => array(
+                    'customer.discounts'   => array(
                         'label' => _('Discounts'),
                         'icon'  => 'tags'
                     ),
-
-
 
 
                 )
@@ -1068,8 +1058,6 @@ $modules = array(
             ),
 
 
-
-
             'order'         => array(
                 'type' => 'object',
                 'tabs' => array(
@@ -1299,7 +1287,7 @@ $modules = array(
                         'icon'  => 'users',
                     ),
 
-                    'email_campaign.workshop'   => array(
+                    'email_campaign.workshop' => array(
                         'label' => _('Workshop'),
                         'icon'  => 'wrench'
                     ),
@@ -1346,7 +1334,7 @@ $modules = array(
 
             ),
 
-            'dashboard'      => array(
+            'dashboard' => array(
                 'type'      => 'navigation',
                 'label'     => _('Control panel'),
                 'icon'      => 'angle-double-right',
@@ -1356,7 +1344,7 @@ $modules = array(
 
                 )
             ),
-            'orders'         => array(
+            'orders'    => array(
                 'type'      => 'navigation',
                 'label'     => _('Orders'),
                 'icon'      => 'shopping-cart',
@@ -1366,7 +1354,7 @@ $modules = array(
                 )
 
             ),
-            'invoices'       => array(
+            'invoices'  => array(
                 'type'      => 'navigation',
                 'label'     => _('Invoices'),
                 'icon'      => 'file-alt',
@@ -1389,18 +1377,19 @@ $modules = array(
 
             ),
 
-            'category'  => array(
+            'category' => array(
                 'type' => 'object',
 
                 'tabs' => array(
-                    'category.details'    => array(
+                    'category.details' => array(
                         'label' => _('Data'),
                         'icon'  => 'database',
                         'title' => _('Details')
                     ),
 
                     'category.subjects'   => array('label' => _('Invoices')),
-                    'category.categories' => array('label' => _('Categories')
+                    'category.categories' => array(
+                        'label' => _('Categories')
                     ),
                     'category.history'    => array(
                         'title' => _('History'),
@@ -1691,7 +1680,6 @@ $modules = array(
             ),
 
 
-
             'order'         => array(
                 'type' => 'object',
                 'tabs' => array(
@@ -1887,18 +1875,15 @@ $modules = array(
 
 
             'delivery_notes' => array(
-                'type'  => 'navigation',
-                'icon'  => 'truck',
-                'label' => _('Delivery notes').' ('._('All stores').')',
+                'type'      => 'navigation',
+                'icon'      => 'truck',
+                'label'     => _('Delivery notes').' ('._('All stores').')',
                 'reference' => 'delivery_notes/all',
-                'tabs'  => array(
+                'tabs'      => array(
                     'delivery_notes_server' => array()
                 )
 
             ),
-
-
-
 
 
         )
@@ -1949,12 +1934,10 @@ $modules = array(
             ),
 
 
-
-
             'credits' => array(
                 'type'      => 'navigation',
                 'label'     => _('Credit vault'),
-                'html_icon'      => '<i class="fa fa-piggy-bank"></i>',
+                'html_icon' => '<i class="fa fa-piggy-bank"></i>',
                 'reference' => 'credits/all',
                 'tabs'      => array(
                     'account.credits' => array(
@@ -3155,7 +3138,6 @@ $modules = array(
 
                     'webpage.footer.preview' => 'webpage.templates',
                     'webpage.header.preview' => 'webpage.templates',
-
 
 
                     'webpage.templates' => 'webpage.templates',
@@ -4600,7 +4582,7 @@ $modules = array(
 
                     'supplier.sales' => array(
                         'label'   => _('Purchases/Sales'),
-                        'icon'=>'money-bill',
+                        'icon'    => 'money-bill',
                         'subtabs' => array(
                             'supplier.sales.dashboard' => array(
                                 'label' => _(
@@ -5734,11 +5716,11 @@ $modules = array(
 
 
             'shippers' => array(
-                'type'  => 'navigation',
-                'icon'  => 'truck-loading',
-                'label' => _('Shipping companies'),
+                'type'      => 'navigation',
+                'icon'      => 'truck-loading',
+                'label'     => _('Shipping companies'),
                 'reference' => 'warehouse/%d/shippers',
-                'tabs'  => array(
+                'tabs'      => array(
                     'shippers' => array()
                 )
 
@@ -5939,24 +5921,24 @@ $modules = array(
 
             ),
 
-            'shipper'      => array(
+            'shipper' => array(
 
                 'type'      => 'object',
                 'label'     => _('Shipping company'),
                 'icon'      => '',
                 'reference' => '',
                 'tabs'      => array(
-                    'shipper.details'            => array(
+                    'shipper.details'      => array(
                         'label' => _('Settings'),
                         'title' => _('Settings'),
                         'icon'  => 'slider-h'
                     ),
-                    'shipper.consignments'              => array(
+                    'shipper.consignments' => array(
                         'label' => _('Consignments'),
                         'icon'  => 'truck'
                     ),
 
-                    'shipper.history'            => array(
+                    'shipper.history' => array(
                         'label' => _('History/Notes'),
                         'title' => _('History/Notes'),
                         'icon'  => 'road',
@@ -6072,7 +6054,7 @@ $modules = array(
 
             ),
 
-            'pickers' => array(
+            'pickers'               => array(
                 'type' => '',
                 'tabs' => array(
                     'pickers' => array(),
@@ -6080,10 +6062,18 @@ $modules = array(
                 )
 
             ),
-            'packers' => array(
+            'packers'               => array(
                 'type' => '',
                 'tabs' => array(
                     'packers' => array(),
+
+                )
+
+            ),
+            'sales_representatives' => array(
+                'type' => '',
+                'tabs' => array(
+                    'sales_representatives' => array(),
 
                 )
 
@@ -6223,7 +6213,30 @@ $modules = array(
 
                 )
 
-            )
+            ),
+
+            'sales_representative' => array(
+                'type' => 'object',
+
+
+                'tabs' => array(
+
+                    'sales_representative.customers' => array(
+                        'label' => _('Customers')
+                    ),
+                    'sales_representative.invoices'  => array(
+                        'label' => _('Invoices')
+                    ),
+                    /*
+                    'sales_representative.prospects' => array(
+                        'label' => _('Prospects')
+                    ),
+                    */
+
+
+                )
+
+            ),
 
 
         )
@@ -6294,21 +6307,22 @@ $modules = array(
 
             ),
 
-            'salesmen'      => array(
-                'type'      => 'navigation',
-                'label'     => _('Account managers'),
-                'icon'      => 'handshake',
-                'reference' => 'hr/salesmen',
-                'tabs'      => array(
-                    'salesmen'         => array('label' => _('Account managers')),
+            /*
+              'salesmen'      => array(
+                  'type'      => 'navigation',
+                  'label'     => _('Account managers'),
+                  'icon'      => 'handshake',
+                  'reference' => 'hr/salesmen',
+                  'tabs'      => array(
+                      'salesmen'         => array('label' => _('Account managers')),
 
 
-                )
+                  )
 
 
-            ),
+              ),
 
-
+  */
             'overtimes'        => array(
                 'type'      => 'navigation',
                 'label'     => _('Overtimes'),
@@ -6689,6 +6703,29 @@ $modules = array(
 
             ),
 
+
+            'sales_representative' => array(
+                'type' => 'object',
+
+
+                'sales_representative' => array(
+
+                    'sales_representative.customers' => array(
+                        'label' => _('Customers')
+                    ),
+                    'sales_representative.invoices'  => array(
+                        'label' => _('Invoices')
+                    ),
+                    'sales_representative.prospects' => array(
+                        'label' => _('Prospects')
+                    ),
+
+
+                )
+
+            ),
+
+
         )
     ),
     'profile'         => array(
@@ -6951,11 +6988,11 @@ $modules = array(
                 'type' => '',
                 'tabs' => array(
                     'timeseries_types' => array(
-                        'icon'=>'layer-group',
+                        'icon'  => 'layer-group',
                         'label' => _('Timeseries type')
                     ),
-                    'timeseries' => array(
-                        'icon'=>'chart-line',
+                    'timeseries'       => array(
+                        'icon'  => 'chart-line',
                         'label' => _('Timeseries')
                     ),
                 )

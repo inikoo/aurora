@@ -321,7 +321,7 @@ function get_dashboard_sales_overview($db, $account, $user, $smarty, $type,$sub_
 
 
     $sql =
-        "select  C.`Category Key`,`Category Label`, `Category Store Key`,`Store Currency Code` currency, $fields from `Invoice Category Dimension` IC  left join `Invoice Category Data` ICD on (IC.`Invoice Category Key`=ICD.`Invoice Category Key`)  left join `Invoice Category DC Data` ICSCD on (IC.`Invoice Category Key`=ICSCD.`Invoice Category Key`)   left join `Category Dimension` C on (C.`Category Key`=IC.`Invoice Category Key`) left join `Store Dimension` S on (S.`Store Key`=C.`Category Store Key`) where `Category Branch Type`='Head' order by C.`Category Store Key` ,`Category Function Order`";
+        "select  C.`Category Code`,C.`Category Key`,`Category Label`, `Category Store Key`,`Store Currency Code` currency, $fields from `Invoice Category Dimension` IC  left join `Invoice Category Data` ICD on (IC.`Invoice Category Key`=ICD.`Invoice Category Key`)  left join `Invoice Category DC Data` ICSCD on (IC.`Invoice Category Key`=ICSCD.`Invoice Category Key`)   left join `Category Dimension` C on (C.`Category Key`=IC.`Invoice Category Key`) left join `Store Dimension` S on (S.`Store Key`=C.`Category Store Key`) where `Category Branch Type`='Head' order by C.`Category Store Key` ,`Category Function Order`";
 
     if ($result = $db->query($sql)) {
 
@@ -353,7 +353,8 @@ function get_dashboard_sales_overview($db, $account, $user, $smarty, $type,$sub_
                     'label' => $row['Category Label'],
                     'title' => $row['Category Label'],
                     'short_label' => $row['Category Label'],
-                    'view'  => 'invoices/all/category/'.$row['Category Key']
+                    'view'  => 'invoices/all/category/'.$row['Category Key'],
+                    'representatives_link_label'=>($row['Category Code']=='VIPs'?'<i onclick="change_view(\'report/sales_representatives\', { parameters:{ period:\''.$period.'\'}} )"  class="far button fa-chart-line fa-fw"></i>':''),
                 ),
 
 
