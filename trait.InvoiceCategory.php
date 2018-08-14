@@ -167,6 +167,7 @@ trait InvoiceCategory {
         }
 
 //print_r($sales_data);
+        
 
         return $sales_data;
 
