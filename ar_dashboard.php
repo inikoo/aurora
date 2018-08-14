@@ -353,7 +353,7 @@ function sales_overview($_data, $db, $user, $account) {
     }
 
 
-
+//print $sql;
 
 
     $sum_invoices = 0;
@@ -394,6 +394,9 @@ function sales_overview($_data, $db, $user, $account) {
             $sum_delivery_notes += $row['delivery_notes'];
             $sum_dc_sales += $row['dc_sales'];
 
+
+
+            print " $sum_dc_sales ";
 
             $sum_refunds_1yb += $row['refunds_1yb'];
             $sum_replacements_1yb += $row['replacements_1yb'];
@@ -628,7 +631,7 @@ function sales_overview($_data, $db, $user, $account) {
         exit;
     }
 
-
+print "** $sum_dc_sales **";
     $data['orders_overview_sales_totals']       = ($currency == 'store'
         ? array('value' => '')
         : array(
