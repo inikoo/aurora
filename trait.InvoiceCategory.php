@@ -125,7 +125,8 @@ trait InvoiceCategory {
 
 
         $sql = sprintf(
-            "SELECT sum(if(`Invoice Paid`='Yes',1,0)) AS paid  ,sum(if(`Invoice Paid`='No',1,0)) AS to_pay  , sum(if(`Invoice Type`='Invoice',1,0)) AS invoices  ,sum(if(`Invoice Type`!='Invoice'  ,1,0)) AS refunds  ,IFNULL(sum(`Invoice Items Discount Amount`),0) AS discounts,IFNULL(sum(`Invoice Total Net Amount`),0) net  ,IFNULL(sum(`Invoice Total Profit`),0) AS profit ,IFNULL(sum(`Invoice Items Discount Amount`*`Invoice Currency Exchange`),0) AS dc_discounts,IFNULL(sum(`Invoice Total Net Amount`*`Invoice Currency Exchange`),0) dc_net  ,IFNULL(sum(`Invoice Total Profit`*`Invoice Currency Exchange`),0) AS dc_profit,
+            "SELECT sum(if(`Invoice Paid`='Yes',1,0)) AS paid  ,sum(if(`Invoice Paid`='No',1,0)) AS to_pay  , sum(if(`Invoice Type`='Invoice',1,0)) AS invoices  ,sum(if(`Invoice Type`!='Invoice'  ,1,0)) AS refunds  ,IFNULL(sum(`Invoice Items Discount Amount`),0) AS discounts,IFNULL(sum(`Invoice Total Net Amount`),0) net  ,IFNULL(sum(`Invoice Total Profit`),0) AS profit ,IFNULL(sum(`Invoice Items Discount Amount`*`Invoice Currency Exchange`),0) AS dc_discounts,
+        IFNULL(sum(`Invoice Total Net Amount`*`Invoice Currency Exchange`),0) dc_net  ,IFNULL(sum(`Invoice Total Profit`*`Invoice Currency Exchange`),0) AS dc_profit,
 
 		IFNULL(sum( if(`Invoice Type`!='Invoice',  `Invoice Total Net Amount`,0)  ),0) refund_net ,
 		IFNULL(sum(  if(`Invoice Type`!='Invoice', `Invoice Total Net Amount`,0)  *`Invoice Currency Exchange`),0) dc_refund_net
@@ -167,7 +168,7 @@ trait InvoiceCategory {
         }
 
 //print_r($sales_data);
-        
+
 
         return $sales_data;
 

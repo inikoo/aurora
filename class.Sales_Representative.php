@@ -55,11 +55,7 @@ class Sales_Representative extends DB_Table {
             $sql = sprintf(
                 "SELECT * FROM `Sales Representative Dimension` WHERE  `Sales Representative Key`=%d", $tag
             );
-        } elseif ($tipo == 'code_store') {
-            $sql = sprintf(
-                "SELECT * FROM `Sales Representative Dimension` WHERE  `Sales Representative Code`=%s and `Sales Representative Store Key`=%d ", prepare_mysql($tag), $tag2
-            );
-        } else {
+        }  else {
             return;
         }
 

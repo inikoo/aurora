@@ -312,7 +312,7 @@ class Part extends Asset {
             if ($result = $this->db->query($sql)) {
                 foreach ($result as $row) {
 
-
+                    //print_r($row);
                     $qty = $row['qty'] - $row['placed'];
                     if ($qty > 0) {
 

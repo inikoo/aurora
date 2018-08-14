@@ -149,6 +149,11 @@ if (isset($parameters['awhere']) and $parameters['awhere']) {
     $where = sprintf(' where  `Product ID`=%d ', $parameters['parent_key']);
 
 
+} elseif ($parameters['parent'] == 'sales_representative') {
+
+    $where = sprintf(' where  `Customer Sales Representative Key`=%d ', $parameters['parent_key']);
+
+
 } elseif ($parameters['parent'] == 'charge') {
     $table = '`Order No Product Transaction Fact` OTF left join     `Order Dimension` O   on (OTF.`Order Key`=O.`Order Key`)  left join `Customer Dimension` C on (`Order Customer Key`=C.`Customer Key`)  ';
 

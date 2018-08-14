@@ -191,26 +191,14 @@
             for (var record in r.data) {
 
                 $('#' + record).html(r.data[record].value)
-                /*
-                 if (r.data[record].request != undefined) {
-
-                 if (r.data[record].special_type != undefined) {
-                 if (r.data[record].special_type == 'invoice') {
-                 $('#' + record).attr("onclick", "change_view('" + r.data[record].request + "',{ parameters:{ period:'" + period + "',elements_type:'type' } ,element:{ type:{ Refund:'',Invoice:1}} })")
-                 } else {
-                 $('#' + record).attr("onclick", "change_view('" + r.data[record].request + "',{ parameters:{ period:'" + period + "',elements_type:'type' } ,element:{ type:{ Refund:1,Invoice:''}} })")
-                 }
-                 } else {
-                 $('#' + record).attr("onclick", "change_view('" + r.data[record].request + "',{ parameters:{ period:'" + period + "' }})")
-                 }
-                 }
-                 */
 
 
                 if (r.data[record].title != undefined) {
                     $('#' + record).attr('title', r.data[record].title)
 
                 }
+
+
 
 
             }

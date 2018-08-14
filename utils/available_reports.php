@@ -11,6 +11,12 @@
 */
 
 $available_reports = array(
+    'sales_representatives' => array(
+        'Label'      => _('Sales representatives'),
+        'Group'      => 'productivity',
+        'GroupLabel' => _('Productivity'),
+
+    ),
     'pickers' => array(
         'Label'      => _('Pickers'),
         'Group'      => 'productivity',

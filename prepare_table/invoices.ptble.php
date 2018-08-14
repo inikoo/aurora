@@ -170,6 +170,12 @@ if (isset($parameters['awhere']) and $parameters['awhere']) {
         'where `Invoice Customer Key`=%d  ', $parameters['parent_key']
     );
 
+}  elseif ($parameters['parent'] == 'sales_representative') {
+
+    $where = sprintf(
+        'where `Invoice Sales Representative Key`=%d  ', $parameters['parent_key']
+    );
+
 } else {
 
     exit("unknown parent ".$parameters['parent']." \n");

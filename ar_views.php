@@ -858,7 +858,6 @@ function get_object_showcase($showcase, $data, $smarty, $user, $db, $account) {
         return '';
     }
 
-
     switch ($showcase) {
         case 'material':
             include_once 'showcase/material.show.php';
@@ -1065,6 +1064,12 @@ function get_object_showcase($showcase, $data, $smarty, $user, $db, $account) {
                     $data, $smarty, $user, $db
                 );
 
+            }elseif ($data['_object']->get('Category Scope') == 'Invoice') {
+                include_once 'showcase/invoice_category_showcase.show.php';
+                $html = get_invoice_category_showcase(
+                    $data, $smarty, $user, $db
+                );
+
             } else {
                 return '_';
             }
@@ -1153,7 +1158,10 @@ function get_object_showcase($showcase, $data, $smarty, $user, $db, $account) {
             include_once 'showcase/email_template.show.php';
             $html = get_email_template_showcase($data, $smarty, $user, $db);
             break;
-
+        case 'sales_representative':
+            include_once 'showcase/sales_representative.show.php';
+            $html = get_sales_representative_showcase($data, $smarty, $user, $db);
+            break;
 
         default:
             $html = $data['object'].' -> '.$data['key'];
@@ -1776,6 +1784,12 @@ function get_navigation($user, $smarty, $data, $db, $account) {
                     break;
                 case ('packers'):
                     return get_packers_navigation($user, $smarty, $data);
+                    break;
+                case ('sales_representatives'):
+                    return get_sales_representatives_navigation($user, $smarty, $data);
+                    break;
+                case ('sales_representative'):
+                    return get_sales_representative_navigation($user, $smarty, $data);
                     break;
                 case ('lost_stock'):
                     return get_lost_stock_navigation($user, $smarty, $data);
@@ -8171,7 +8185,26 @@ function get_view_position($db, $state, $user, $smarty, $account) {
                     'reference' => ''
                 );
 
-            } elseif ($state['section'] == 'lost_stock') {
+            } elseif ($state['section'] == 'sales_representatives') {
+                $branch[] = array(
+                    'label'     => _('Sales representatives productivity'),
+                    'icon'      => '',
+                    'reference' => ''
+                );
+
+            } elseif ($state['section'] == 'sales_representative') {
+                $branch[] = array(
+                    'label'     => _('Sales representatives productivity'),
+                    'icon'      => '',
+                    'reference' => 'report/sales_representatives'
+                );
+                $branch[] = array(
+                    'label'     => $state['_object']->staff->get('Name'),
+                    'icon'      => '',
+                    'reference' => ''
+                );
+
+            }  elseif ($state['section'] == 'lost_stock') {
                 $branch[] = array(
                     'label'     => _('Lost/Damaged stock'),
                     'icon'      => '',

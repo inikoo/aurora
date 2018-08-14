@@ -664,4 +664,99 @@ function get_intrastat_orders_navigation($user, $smarty, $data) {
 }
 
 
+
+function get_sales_representatives_navigation($user, $smarty, $data) {
+
+
+    $left_buttons  = array();
+    $right_buttons = array();
+    $sections      = array();
+
+/*
+    $right_buttons[]
+        = array(
+        'icon'  => 'arrow-right',
+        'title' => '',
+        'click'=>"change_view('/report/packers')",
+        'pre_text'=>_('Packers'),
+        'class'=>'text'
+    );
+*/
+    if (isset($sections[$data['section']])) {
+        $sections[$data['section']]['selected'] = true;
+    }
+
+    $title = _('Sales representatives productivity');
+
+    $_content = array(
+        'sections_class' => '',
+        'sections'       => $sections,
+        'left_buttons'   => $left_buttons,
+        'right_buttons'  => $right_buttons,
+        'title'          => $title,
+        'search'         => array(
+            'show'        => true,
+            'placeholder' => _('Search reports')
+        )
+    );
+    $smarty->assign('_content', $_content);
+    $html = $smarty->fetch('navigation.tpl');
+
+    return $html;
+
+}
+
+
+
+function get_sales_representative_navigation($user, $smarty, $data) {
+
+
+    $left_buttons  = array();
+    $right_buttons = array();
+    $sections      = array();
+
+    /*
+        $right_buttons[]
+            = array(
+            'icon'  => 'arrow-right',
+            'title' => '',
+            'click'=>"change_view('/report/packers')",
+            'pre_text'=>_('Packers'),
+            'class'=>'text'
+        );
+    */
+
+
+    $up_button = array(
+        'icon'      => 'arrow-up',
+        'title'     => _("Sales representatives report"),
+        'reference' => 'report/sales_representatives'
+    );
+
+    $left_buttons  = array($up_button);
+
+    if (isset($sections[$data['section']])) {
+        $sections[$data['section']]['selected'] = true;
+    }
+
+    $title = $data['_object']->staff->get('Name');
+
+    $_content = array(
+        'sections_class' => '',
+        'sections'       => $sections,
+        'left_buttons'   => $left_buttons,
+        'right_buttons'  => $right_buttons,
+        'title'          => $title,
+        'search'         => array(
+            'show'        => true,
+            'placeholder' => _('Search reports')
+        )
+    );
+    $smarty->assign('_content', $_content);
+    $html = $smarty->fetch('navigation.tpl');
+
+    return $html;
+
+}
+
 ?>
