@@ -204,6 +204,7 @@ function send_email($data, $editor, $smarty, $db) {
 
 
     $recipient = get_object($data['recipient'], $data['recipient_key']);
+    $recipient->editor=$editor;
 
 
     $recipient->send_personalized_invitation($published_template);

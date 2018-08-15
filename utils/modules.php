@@ -325,17 +325,19 @@ $modules = array(
                 'icon'      => 'user-friends',
                 'reference' => 'prospects/%d',
                 'tabs'      => array(
-
+/*
                     'prospects.dashboard' => array(
                         'label' => _('Dashboard')
                     ),
+*/
                     'prospects'           => array(
                         'label' => _('Prospects')
                     ),
-
+/*
                     'prospects.agents'          => array(
                         'label' => _('Agents')
                     ),
+*/
                     'prospects.email_templates' => array(
                         'label' => _('Email templates')
                     ),
