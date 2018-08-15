@@ -18,7 +18,7 @@ $wheref   = '';
 $currency = '';
 
 
-$where = 'where `Order State`="InProcess"  and `Order To Pay Amount`=0 ';
+$where = 'where `Order State`="InProcess"  and `Order To Pay Amount`<=0 ';
 $table = '`Order Dimension` O left join `Payment Account Dimension` P on (P.`Payment Account Key`=O.`Order Payment Account Key`)';
 
 
