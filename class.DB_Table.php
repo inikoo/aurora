@@ -279,9 +279,14 @@ abstract class DB_Table extends stdClass {
             }
 
 
+          //  print $table_name;
+
             if (preg_match(
-                    '/deal|charge|deal campaign|attachment bridge|location|site|page|part|barcode|agent|customer|contact|company|order|staff|supplier|address|user|store|product|company area|company department|position|category|customer poll query|customer poll query option|api key|email campaign|email template|list|sales representative/i', $table_name
+                    '/prospect|deal|charge|deal campaign|attachment bridge|location|site|page|part|barcode|agent|customer|contact|company|order|staff|supplier|address|user|store|product|company area|company department|position|category|customer poll query|customer poll query option|api key|email campaign|email template|list|sales representative/i', $table_name
                 ) and !$this->new and $save_history) {
+
+
+
 
 
                 //$old_formatted_value = htmlentities($old_formatted_value);
@@ -334,7 +339,7 @@ abstract class DB_Table extends stdClass {
 
     function add_table_history($raw_data, $force, $post_arg1, $options = '', $table_name, $table_key) {
 
-        global $account;
+
 
         //print_r($raw_data);
 
@@ -559,7 +564,7 @@ abstract class DB_Table extends stdClass {
         );
 
 
-
+//print $sql;
 
         $this->db->exec($sql);
 

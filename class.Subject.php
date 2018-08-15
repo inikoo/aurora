@@ -965,6 +965,9 @@ class Subject extends DB_Table {
                 break;
             case $this->table_name.' Main Contact Name':
 
+
+
+
                 $old_value = $this->get('Main Contact Name');
 
                 if ($value == '' and $this->data[$this->table_name.' Company Name'] == '') {
