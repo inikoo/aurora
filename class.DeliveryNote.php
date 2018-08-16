@@ -1247,18 +1247,16 @@ class DeliveryNote extends DB_Table {
 
             case 'Packing':
 
-                if ($this->get('State Index') >= 40) {
-                    return;
-                }
+
+                if ($this->get('State Index') >= 20 or $this->get('State Index') <= 70) {
+
+                    if ($this->data['Delivery Note Date Start Packing'] == '') {
+                        $this->update_field(
+                            'Delivery Note Date Start Packing', $date, 'no_history'
+                        );
+                    }
 
 
-                if($this->data['Delivery Note Date Start Packing']=='') {
-                    $this->update_field(
-                        'Delivery Note Date Start Packing', $date, 'no_history'
-                    );
-                }
-
-                if ($this->get('State Index') >= 30 or $this->get('State Index') <=70) {
                     $this->update_field(
                         'Delivery Note State', $value, 'no_history'
                     );
@@ -1758,9 +1756,6 @@ class DeliveryNote extends DB_Table {
     }
 
 
-
-
-
     function update_item_picked_quantity($data) {
 
 
@@ -1804,15 +1799,14 @@ class DeliveryNote extends DB_Table {
                 $to_pick = $row['pending'] + $row['Picked'];
 
 
-
-                if($qty > $to_pick){
+                if ($qty > $to_pick) {
                     $this->error = true;
                     $this->msg   = 'Error, trying to pick more items than required';
 
                     return;
                 }
 
-                if( ($qty -$row['Picked']) and  ( $qty>($row['Picked']-$row['Packed']))  ){
+                if (($qty - $row['Picked']) and ($qty > ($row['Picked'] - $row['Packed']))) {
                     $this->error = true;
                     $this->msg   = 'Error, trying to unpick more items than picked-packed';
 
@@ -1820,23 +1814,19 @@ class DeliveryNote extends DB_Table {
                 }
 
 
+                //   $location = new Location($row['Location Key']);
+
+                // $qty = $row['Picked'] + $qty;
+
+                $sql = sprintf(
+                    "UPDATE `Inventory Transaction Fact` SET  `Inventory Transaction Type`='Sale' ,`Inventory Transaction Section`='Out',`Picked`=%f,`Inventory Transaction Quantity`=%f,`Inventory Transaction Amount`=%f,`Date Picked`=%s,`Date`=%s ,`Picker Key`=%s WHERE `Inventory Transaction Key`=%d  ",
+                    $qty, -1 * $qty, $transaction_value, prepare_mysql($date), prepare_mysql($date), prepare_mysql($data['picker_key']), $data['transaction_key']
+                );
+
+                $this->db->exec($sql);
 
 
-                    //   $location = new Location($row['Location Key']);
-
-                    // $qty = $row['Picked'] + $qty;
-
-                    $sql = sprintf(
-                        "UPDATE `Inventory Transaction Fact` SET  `Inventory Transaction Type`='Sale' ,`Inventory Transaction Section`='Out',`Picked`=%f,`Inventory Transaction Quantity`=%f,`Inventory Transaction Amount`=%f,`Date Picked`=%s,`Date`=%s ,`Picker Key`=%s WHERE `Inventory Transaction Key`=%d  ",
-                        $qty, -1 * $qty, $transaction_value, prepare_mysql($date), prepare_mysql($date), prepare_mysql($data['picker_key']), $data['transaction_key']
-                    );
-
-                    $this->db->exec($sql);
-
-
-                    //   print $_pending;
-
-
+                //   print $_pending;
 
 
                 $part_location = new PartLocation($row['Part SKU'].'_'.$row['Location Key']);
