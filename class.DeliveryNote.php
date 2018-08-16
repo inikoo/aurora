@@ -1358,7 +1358,7 @@ class DeliveryNote extends DB_Table {
                     'au_housekeeping', array(
                     'type'              => 'delivery_note_packed_done',
                     'delivery_note_key' => $this->id,
-                    'customer_key' => $this->get('Delivery Note Customer Key'),
+                    'customer_key'      => $this->get('Delivery Note Customer Key'),
                 ), $account->get('Account Code')
                 );
 
@@ -1552,7 +1552,7 @@ class DeliveryNote extends DB_Table {
                 // todo before cancel the picked stock has to go some cleaver way back to locations, (making fork update_cancelled_delivery_note_products_sales_data obsolete? )
 
 
-                $returned_part_locations=array();
+                $returned_part_locations = array();
 
                 $order = get_object('Order', $this->data['Delivery Note Order Key']);
                 if ($order->get('Order State') >= 90) {
@@ -1646,7 +1646,7 @@ class DeliveryNote extends DB_Table {
                         $this->db->exec($sql);
 
 
-                        $returned_part_locations[]=$row['Part SKU'].'_'.$row['Location Key'];
+                        $returned_part_locations[] = $row['Part SKU'].'_'.$row['Location Key'];
 
                     }
                 } else {
@@ -1656,29 +1656,40 @@ class DeliveryNote extends DB_Table {
                 }
 
 
-                $order->update(array('Order State' => 'Delivery Note Cancelled'));
+                if (in_array(
+                    $this->data['Delivery Note Type'], array(
+                                                         'Replacement & Shortages',
+                                                         'Replacement',
+                                                         'Shortages'
+                                                     )
+                )) {
+
+                    $order->fast_update(array('Order Replacement State' => 'NA'));
+
+                } else {
+
+                    $order->update(array('Order State' => 'Delivery Note Cancelled'));
+
+                    $date = $this->data['Delivery Note Date Start Picking'];
+                    if ($date == '') {
+                        $date = $this->data['Delivery Note Date Created'];
+                    }
+                    if ($date == '') {
+                        $date = gmdate('Y-m-d H:i:s');
 
 
-                $date=$this->data['Delivery Note Date Start Picking'];
-                if($date==''){
-                    $date=$this->data['Delivery Note Date Created'];
+                    }
                 }
-                if($date==''){
-                    $date=gmdate('Y-m-d H:i:s');
-
-
-                }
-
 
 
                 include_once 'utils/new_fork.php';
                 new_housekeeping_fork(
                     'au_housekeeping', array(
-                    'type'              => 'update_cancelled_delivery_note_products_sales_data',
-                    'date' => gmdate('Y-m-d',strtotime($date.' +0:00')),
+                    'type' => 'update_cancelled_delivery_note_products_sales_data',
+                    'date' => gmdate('Y-m-d', strtotime($date.' +0:00')),
 
-                    'returned_part_locations'=>$returned_part_locations,
-                    'customer_key'=>$this->get('Delivery Note Customer Key')
+                    'returned_part_locations' => $returned_part_locations,
+                    'customer_key'            => $this->get('Delivery Note Customer Key')
 
                 ), $account->get('Account Code')
                 );
@@ -2260,6 +2271,9 @@ class DeliveryNote extends DB_Table {
 
             $sql = sprintf("DELETE FROM `Order Transaction Fact` WHERE `Delivery Note Key`=%d AND `Order Transaction Type`='Resend'", $this->id);
             $this->db->exec($sql);
+
+
+            $order->fast_update(array('Order Replacement State' => 'NA'));
 
         } else {
 
