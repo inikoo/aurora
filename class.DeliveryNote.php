@@ -1251,12 +1251,14 @@ class DeliveryNote extends DB_Table {
                     return;
                 }
 
-                $this->update_field(
-                    'Delivery Note Date Start Packing', $date, 'no_history'
-                );
 
+                if($this->data['Delivery Note Date Start Packing']=='') {
+                    $this->update_field(
+                        'Delivery Note Date Start Packing', $date, 'no_history'
+                    );
+                }
 
-                if ($this->get('State Index') == 30) {
+                if ($this->get('State Index') >= 30 or $this->get('State Index') <=70) {
                     $this->update_field(
                         'Delivery Note State', $value, 'no_history'
                     );
@@ -2169,7 +2171,7 @@ class DeliveryNote extends DB_Table {
 
         $state = 'Packing';
 
-        $this->update_state('Packed');
+
         if ($this->get('Delivery Note Number Packed Items') == $this->get('Delivery Note Number To Pick Items')) {
             $state = 'Packed';
 
