@@ -1947,6 +1947,39 @@ trait ProductCategory {
 
     }
 
+    function update_product_category_history_records_data() {
+
+
+        $table = 'Product Category History Bridge';
+
+        $where_field = 'Category Key';
+
+
+        $sql = sprintf(
+            'SELECT count(*) AS num FROM `%s` WHERE  `%s`=%d ', $table, $where_field, $this->id
+        );
+
+
+        $number = 0;
+
+        if ($result = $this->db->query($sql)) {
+            if ($row = $result->fetch()) {
+                $number = $row['num'];
+            }
+        } else {
+            print_r($error_info = $this->db->errorInfo());
+            print "$sql\n";
+            exit;
+        }
+
+        $this->fast_update(
+            array('Product Category Number History Records' => $number),'Product Category Dimension'
+        );
+
+
+
+    }
+
 
 }
 

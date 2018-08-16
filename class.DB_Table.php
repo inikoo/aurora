@@ -114,7 +114,7 @@ abstract class DB_Table extends stdClass {
 
     protected function update_field($field, $value, $options = '') {
 
-
+        $this->last_history_key = false;
         $this->update_table_field($field, $value, $options, $this->table_name, $this->table_name.' Dimension', $this->id);
 
     }
@@ -137,7 +137,7 @@ abstract class DB_Table extends stdClass {
         $value = _trim($value);
 
 
-        $formatted_field = preg_replace('/'.$this->table_name.' /', '', $field);
+        $formatted_field = preg_replace('/^'.$this->table_name.' /', '', $field);
 
 
         //$old_value=_('Unknown');
@@ -279,19 +279,18 @@ abstract class DB_Table extends stdClass {
             }
 
 
-          //  print $table_name;
-
             if (preg_match(
-                    '/prospect|deal|charge|deal campaign|attachment bridge|location|site|page|part|barcode|agent|customer|contact|company|order|staff|supplier|address|user|store|product|company area|company department|position|category|customer poll query|customer poll query option|api key|email campaign|email template|list|sales representative/i', $table_name
+                    '/product category|prospect|deal|charge|deal campaign|attachment bridge|location|site|page|part|barcode|agent|customer|contact|company|order|staff|supplier|address|user|store|product|company area|company department|position|category|customer poll query|customer poll query option|api key|email campaign|email template|list|sales representative/i',
+                    $table_name
                 ) and !$this->new and $save_history) {
-
-
-
 
 
                 //$old_formatted_value = htmlentities($old_formatted_value);
                 //$new_formatted_value = htmlentities($this->get($formatted_field));
                 $new_formatted_value = $this->get($formatted_field);
+
+                //print  "xx  $formatted_field x";
+
 
                 $this->add_changelog_record($field, $old_formatted_value, $new_formatted_value, $options, $table_name, $table_key);
 
@@ -312,22 +311,29 @@ abstract class DB_Table extends stdClass {
 
         );
 
-        $history_key = $this->add_history($history_data, false, false, $options);
+        $history_key            = $this->add_history($history_data, false, false, $options);
+        $this->last_history_key = $history_key;
 
 
-        if (!in_array($table_name, array())) {
+        if (in_array($table_name, array('Product Category'))) {
 
 
+
+            $this->post_add_history($history_key);
+        } else {
             $sql = sprintf(
                 "INSERT INTO `%s History Bridge` VALUES (%d,%d,'No','No','Changes')", $table_name, $table_key, $history_key
             );
-            // print "$sql\n";
+
             $this->db->exec($sql);
 
 
             $this->update_history_records_data();
-
         }
+
+
+        // }
+
 
     }
 
@@ -338,7 +344,6 @@ abstract class DB_Table extends stdClass {
     }
 
     function add_table_history($raw_data, $force, $post_arg1, $options = '', $table_name, $table_key) {
-
 
 
         //print_r($raw_data);
@@ -391,7 +396,7 @@ abstract class DB_Table extends stdClass {
             $user = new User($data['User Key']);
             if ($user->id) {
 
-                $data['Subject']     = ($user->data['User Type']=='Contractor'?'Staff':$user->data['User Type']);
+                $data['Subject']     = ($user->data['User Type'] == 'Contractor' ? 'Staff' : $user->data['User Type']);
                 $data['Subject Key'] = $user->data['User Parent Key'];
                 $data['Author Name'] = $user->data['User Alias'];
             } else {
@@ -564,7 +569,7 @@ abstract class DB_Table extends stdClass {
         );
 
 
-//print $sql;
+        //print $sql;
 
         $this->db->exec($sql);
 
@@ -630,6 +635,10 @@ abstract class DB_Table extends stdClass {
 
     }
 
+    function post_add_history($history_key, $type = false) {
+        return false;
+    }
+
     function update_history_records_data() {
 
 
@@ -676,9 +685,8 @@ abstract class DB_Table extends stdClass {
             exit;
         }
 
-
         $this->fast_update(
-            array(($this->get_object_name() == 'Category' ? $this->subject_table_name : $this->get_object_name()).' Number History Records' => $number)
+            array($this->get_object_name().' Number History Records' => $number)
         );
 
 
@@ -718,7 +726,7 @@ abstract class DB_Table extends stdClass {
         } elseif ($table_full_name == 'Product Category Data' or $table_full_name == 'Product Category DC Data' or $table_full_name == 'Product Category Dimension') {
             $key_field = 'Product Category Key';
 
-        }elseif ($table_full_name == 'Invoice Category Data' or $table_full_name == 'Invoice Category DC Data' or $table_full_name == 'Invoice Category Dimension') {
+        } elseif ($table_full_name == 'Invoice Category Data' or $table_full_name == 'Invoice Category DC Data' or $table_full_name == 'Invoice Category Dimension') {
             $key_field = 'Invoice Category Key';
 
         } else {
@@ -742,10 +750,6 @@ abstract class DB_Table extends stdClass {
         }
 
 
-    }
-
-    function post_add_history($history_key, $type = false) {
-        return false;
     }
 
     function set_editor($raw_data) {
@@ -782,8 +786,8 @@ abstract class DB_Table extends stdClass {
         $history_key = $this->add_table_history($history_data, $force_save, '', '', $table_name, $table_key);
 
 
-        if($table_name=='Page'){
-            $table_name='Webpage';
+        if ($table_name == 'Page') {
+            $table_name = 'Webpage';
         }
 
         $sql = sprintf(

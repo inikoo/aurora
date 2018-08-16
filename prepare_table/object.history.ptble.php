@@ -138,6 +138,15 @@ if ($parameters['parent'] == 'customer' or $parameters['parent'] == 'order_custo
         ' where   B.`Category Key`=%d   ', $parameters['parent_key']
     );
     $subject = 'Category';
+
+
+} elseif ($parameters['parent'] == 'Product Category') {
+    $where   = sprintf(
+        ' where   B.`Category Key`=%d   ', $parameters['parent_key']
+    );
+    $subject = 'Product Category';
+
+
 } elseif ($parameters['parent'] == 'supplier_part') {
     $where   = sprintf(
         ' where   B.`Supplier Part Key`=%d   ', $parameters['parent_key']

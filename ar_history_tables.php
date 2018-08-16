@@ -55,7 +55,7 @@ function object_history($_data, $db, $user) {
 
     $adata = array();
 
-
+//print $sql;
     foreach ($db->query($sql) as $data) {
 
 
