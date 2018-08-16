@@ -1755,6 +1755,10 @@ class DeliveryNote extends DB_Table {
 
     }
 
+
+
+
+
     function update_item_picked_quantity($data) {
 
 
@@ -1780,7 +1784,7 @@ class DeliveryNote extends DB_Table {
         $transaction_key = $data['transaction_key'];
 
         $sql = sprintf(
-            'SELECT `Part Cost`,`Inventory Transaction Key`,ITF.`Part SKU`,`Picked`,`Required`,`Given`,`Location Key`,`Required`+`Given`-`Picked`-`Out of Stock`-`No Authorized`-`Not Found`-`No Picked Other` AS pending,(`Required`+`Given`) AS quantity FROM `Inventory Transaction Fact` ITF LEFT JOIN `Part Dimension` P ON (P.`Part SKU`=ITF.`Part SKU`)  WHERE `Inventory Transaction Key`=%d',
+            'SELECT `Part Cost`,`Inventory Transaction Key`,ITF.`Part SKU`,`Picked`,`Packed`,Required`,`Given`,`Location Key`,`Required`+`Given`-`Picked`-`Out of Stock`-`No Authorized`-`Not Found`-`No Picked Other` AS pending,(`Required`+`Given`) AS quantity FROM `Inventory Transaction Fact` ITF LEFT JOIN `Part Dimension` P ON (P.`Part SKU`=ITF.`Part SKU`)  WHERE `Inventory Transaction Key`=%d',
             $data['transaction_key']
         );
 
@@ -1798,10 +1802,23 @@ class DeliveryNote extends DB_Table {
                 $to_pick = $row['pending'] + $row['Picked'];
 
 
-                // $pending = $row['pending'];
+
+                if($qty > $to_pick){
+                    $this->error = true;
+                    $this->msg   = 'Error, trying to pick more items than required';
+
+                    return;
+                }
+
+                if( ($qty -$row['Picked']) and  ( $qty>($row['Picked']-$row['Packed']))  ){
+                    $this->error = true;
+                    $this->msg   = 'Error, trying to unpick more items than picked-packed';
+
+                    return;
+                }
 
 
-                if ($qty <= $to_pick) {
+
 
                     //   $location = new Location($row['Location Key']);
 
@@ -1818,13 +1835,7 @@ class DeliveryNote extends DB_Table {
                     //   print $_pending;
 
 
-                } else {
-                    $this->error = true;
-                    $this->msg   = 'Error, trying to pick more items than required';
 
-                    return;
-
-                }
 
                 $part_location = new PartLocation($row['Part SKU'].'_'.$row['Location Key']);
                 $part_location->update_stock();

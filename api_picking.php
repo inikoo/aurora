@@ -239,10 +239,18 @@ switch ($_REQUEST['action']) {
         $delivery_note = get_object('DeliveryNote', $_REQUEST['delivery_note_key']);
         $delivery_note->update_state('Picking');
 
-        $response = array(
-            'state' => 'OK',
-            'data'  => $delivery_note->get_update_metadata()
-        );
+        if($delivery_note->error){
+            $response = array(
+                'state' => 'Error',
+                'msg'  => $delivery_note->msg
+            );
+        }else{
+            $response = array(
+                'state' => 'OK',
+                'data'  => $delivery_note->get_update_metadata()
+            );
+        }
+
         echo json_encode($response);
         exit;
         break;
