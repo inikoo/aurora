@@ -348,10 +348,19 @@ switch ($_REQUEST['action']) {
             )
         );
 
-        $response = array(
-            'state' => 'OK',
-            'data'  => $delivery_note->get_update_metadata()
-        );
+        if($delivery_note->error){
+
+            $response = array(
+                'state' => 'Error',
+                'data'  => $delivery_note->msg
+            );
+        }else{
+            $response = array(
+                'state' => 'OK',
+                'data'  => $delivery_note->get_update_metadata()
+            );
+        }
+
         echo json_encode($response);
         exit;
         break;
