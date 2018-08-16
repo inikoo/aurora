@@ -809,6 +809,10 @@ class User extends DB_Table {
 
     function get_staff_key() {
 
+        if(!$this->id){
+            return 0;
+        }
+
         if ($this->data['User Type'] == 'Staff' or $this->data['User Type'] == 'Contractor') {
             $staff_key = $this->data['User Parent Key'];
         } else {

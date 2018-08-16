@@ -50,7 +50,7 @@ $_dir   = $order_direction;
 
 
 if ($order == 'name') {
-    $order = '`Staff Name`';
+    $order = '`User Alias`';
 }else{
 
     $order='`Sales Representative Key`';
@@ -60,9 +60,9 @@ if ($order == 'name') {
 $group_by
     = 'group by `Sales Representative Key`';
 
-$table = ' `Sales Representative Dimension` SRD  left join `Invoice Dimension` I  on (I.`Invoice Sales Representative Key`=`Sales Representative Key`)   left join `Staff Dimension` S on (S.`Staff Key`=`Sales Representative Staff Key`) ';
+$table = ' `Sales Representative Dimension` SRD  left join `Invoice Dimension` I  on (I.`Invoice Sales Representative Key`=`Sales Representative Key`)   left join `User Dimension` S on (S.`User Key`=`Sales Representative User Key`) ';
 
-$fields = "`Sales Representative Key`,`Staff Name`,`Staff Key`,sum(if(`Invoice Type`='Invoice',1,0))  AS invoices, sum(if(`Invoice Type`='Refund',1,0))  AS refunds, count(Distinct `Invoice Customer Key`)  AS customers,
+$fields = "`Sales Representative Key`,`User Alias`,`User Key`,sum(if(`Invoice Type`='Invoice',1,0))  AS invoices, sum(if(`Invoice Type`='Refund',1,0))  AS refunds, count(Distinct `Invoice Customer Key`)  AS customers,
 IFNULL(sum(`Invoice Total Net Amount`*`Invoice Currency Exchange`),0) sales  
 
 ";

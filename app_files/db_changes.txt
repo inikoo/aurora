@@ -905,6 +905,19 @@ ALTER TABLE `Sales Representative History Bridge`
   ADD KEY `Type` (`Type`);
 
 
+
+
+ALTER TABLE `Sales Representative Dimension` ADD `Sales Representative User Key` MEDIUMINT UNSIGNED NULL DEFAULT NULL AFTER `Sales Representative Key`, ADD INDEX (`Sales Representative User Key`);
+ALTER TABLE `Sales Representative Dimension` DROP `Sales Representative Staff Key`;
+ALTER TABLE `Sales Representative Dimension` CHANGE `Sales Representative Customer Agent` `Sales Representative Customer Agent` ENUM('Yes','No') CHARACTER SET utf8 COLLATE utf8_unicode_ci NOT NULL DEFAULT 'No';
+ALTER TABLE `Prospect Dimension` ADD `Prospect Calls Number` SMALLINT NOT NULL DEFAULT '0' AFTER `Prospect Spam`, ADD `Prospect Emails Sent Number` MEDIUMINT NOT NULL DEFAULT '0' AFTER `Prospect Calls Number`, ADD `Prospect Emails Open Number` MEDIUMINT NOT NULL DEFAULT '0' AFTER `Prospect Emails Sent Number`, ADD `Prospect Emails Clicked Number` MEDIUMINT NOT NULL DEFAULT '0' AFTER `Prospect Emails Open Number`, ADD `Prospect Emails Registered Number` MEDIUMINT NOT NULL DEFAULT '0' AFTER `Prospect Emails Clicked Number`, ADD `Prospect Emails Invoiced Number` MEDIUMINT NOT NULL DEFAULT '0' AFTER `Prospect Emails Registered Number`;
+
+
+ALTER TABLE `Product Category History Bridge` ADD `Deletable` ENUM('Yes','No') NOT NULL DEFAULT 'No' AFTER `History Key`, ADD `Strikethrough` ENUM('Yes','No') NOT NULL DEFAULT 'No' AFTER `Deletable`;
+ALTER TABLE `Product Category History Bridge` CHANGE `Type` `Type` ENUM('Changes','Assign','Note') CHARACTER SET utf8 COLLATE utf8_general_ci NOT NULL DEFAULT 'Changes';
+ALTER TABLE `Category Dimension` ADD `Category Number History Records` MEDIUMINT UNSIGNED NOT NULL DEFAULT '0' AFTER `Category Main Image Key`;
+
+
 ======= fer migration ordering in dw and costa
 
                     ALTER TABLE `Invoice Tax Dimension` ADD `Invoice Tax Key` INT UNSIGNED NOT NULL AUTO_INCREMENT FIRST, ADD PRIMARY KEY (`Invoice Tax Key`);

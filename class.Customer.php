@@ -525,7 +525,7 @@ class Customer extends Subject {
 
                     $sales_representative = get_object('Sales_Representative', $this->data['Customer Sales Representative Key']);
                     if ($sales_representative->id) {
-                        return $sales_representative->staff->get('Name');
+                        return $sales_representative->user->get('Alias');
                     }
                 } else {
                     return '<span class="very_discreet italic">'._('No account manager').'</span>';
@@ -1364,13 +1364,18 @@ class Customer extends Subject {
                     $this->fast_update(array('Customer Sales Representative Key' => ''));
 
                 } else {
+
+
+
+
                     include_once('class.Sales_Representative.php');
                     $sales_representative = new Sales_Representative(
                         'find', array(
-                                  'Sales Representative Staff Key' => $value,
+                                  'Sales Representative User Key' => $value,
                                   'editor'                         => $this->editor
                               )
                     );
+                    $sales_representative->fast_update(array('Sales Representative Customer Agent'=>'Yes'));
 
 
                     $this->fast_update(
@@ -1879,7 +1884,7 @@ class Customer extends Subject {
                     $sales_representative = get_object('Sales_Representative', $this->data['Customer Sales Representative Key']);
 
                     $history_data = array(
-                        'History Abstract' => sprintf(_('Customer set up as VIP with %s as account manager'), $sales_representative->staff->get('Name')),
+                        'History Abstract' => sprintf(_('Customer set up as VIP with %s as account manager'), $sales_representative->user->get('Alias')),
                         'History Details'  => '',
                         'Action'           => 'edited'
                     );

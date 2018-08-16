@@ -17,6 +17,12 @@ $available_reports = array(
         'GroupLabel' => _('Productivity'),
 
     ),
+    'prospect_agents' => array(
+        'Label'      => _("Prospect's agents"),
+        'Group'      => 'productivity',
+        'GroupLabel' => _('Productivity'),
+
+    ),
     'pickers' => array(
         'Label'      => _('Pickers'),
         'Group'      => 'productivity',

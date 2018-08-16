@@ -4534,6 +4534,19 @@ if ($count_view_path > 0) {
 
 
                     }
+                }elseif ($view_path[0] == 'prospect_agents') {
+                    $section = 'prospect_agents';
+
+                    if (isset($view_path[1])) {
+                        if (is_numeric($view_path[1])) {
+
+                            $section = 'sales_representative';
+                            $object  = 'sales_representative';
+                            $key     = $view_path[1];
+                        }
+
+
+                    }
                 }
                     elseif ($view_path[0] == 'intrastat') {
                         $section = 'intrastat';

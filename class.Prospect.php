@@ -341,8 +341,6 @@ class Prospect extends Subject {
         }
 
 
-
-
         switch ($field) {
             case 'Send Invitation':
 
@@ -369,14 +367,28 @@ class Prospect extends Subject {
 
                 if ($this->data['Prospect Status'] == 'NoContacted') {
 
+
+                    include_once('class.Sales_Representative.php');
+                    $sales_representative = new Sales_Representative(
+                        'find', array(
+                                  'Sales Representative User Key' => $this->editor['User Key'],
+                                  'editor'                        => $this->editor
+                              )
+                    );
+                    $sales_representative->fast_update(array('Sales Representative Prospect Agent' => 'Yes'));
+
+
                     $this->fast_update(
                         array(
-                            'Prospect Status'               => 'Contacted',
-                            'Prospect First Contacted Date' => gmdate('Y-m-d H:i:s'),
-                            'Prospect User Key'             => $this->editor['User Key']
+                            'Prospect Status'                   => 'Contacted',
+                            'Prospect First Contacted Date'     => gmdate('Y-m-d H:i:s'),
+                            'Prospect User Key'                 => $this->editor['User Key'],
+                            'Prospect Sales Representative Key' => $sales_representative->id
 
                         )
                     );
+
+
                 }
 
 
@@ -410,13 +422,34 @@ class Prospect extends Subject {
 
 
                 if ($this->data['Prospect Status'] == 'NoContacted') {
-
                     $this->fast_update(
                         array(
                             'Prospect Status'               => 'Contacted',
-                            'Prospect First Contacted Date' => gmdate('Y-m-d H:i:s')
+                            'Prospect First Contacted Date' => gmdate('Y-m-d H:i:s'),
+
                         )
                     );
+                    if ($this->editor['User Key']) {
+
+
+                        include_once('class.Sales_Representative.php');
+                        $sales_representative = new Sales_Representative(
+                            'find', array(
+                                      'Sales Representative User Key' => $this->editor['User Key'],
+                                      'editor'                        => $this->editor
+                                  )
+                        );
+                        $sales_representative->fast_update(array('Sales Representative Prospect Agent' => 'Yes'));
+
+                        $this->fast_update(
+                            array(
+
+                                'Prospect User Key'                 => $this->editor['User Key'],
+                                'Prospect Sales Representative Key' => $sales_representative->id
+
+                            )
+                        );
+                    }
                 }
 
                 $this->update_metadata = array(
@@ -455,9 +488,30 @@ class Prospect extends Subject {
                         array(
                             'Prospect Status'               => 'Contacted',
                             'Prospect First Contacted Date' => gmdate('Y-m-d H:i:s'),
-                            'Prospect User Key'             => $this->editor['User Key']
+
                         )
                     );
+                    if ($this->editor['User Key']) {
+
+
+                        include_once('class.Sales_Representative.php');
+                        $sales_representative = new Sales_Representative(
+                            'find', array(
+                                      'Sales Representative User Key' => $this->editor['User Key'],
+                                      'editor'                        => $this->editor
+                                  )
+                        );
+                        $sales_representative->fast_update(array('Sales Representative Prospect Agent' => 'Yes'));
+
+                        $this->fast_update(
+                            array(
+
+                                'Prospect User Key'                 => $this->editor['User Key'],
+                                'Prospect Sales Representative Key' => $sales_representative->id
+
+                            )
+                        );
+                    }
                 }
 
                 $this->update_metadata = array(
@@ -496,8 +550,75 @@ class Prospect extends Subject {
             case('Attach'):
                 $this->add_attach($value);
                 break;
+            case 'Prospect Customer Key':
+
+                $customer = get_object('Customer', $value);
+                if (!$customer->id) {
+
+                    $this->error = true;
+                    $this->msg   = 'Customer not found';
+
+                    return;
+                }
+
+                if ($customer->get('Store Key') != $this->get('Store Key')) {
+                    $this->error = true;
+                    $this->msg   = 'Customer different store';
+
+                    return;
+
+                }
+
+                if (strtotime($customer->get('Customer First Contacted Date')) > strtotime($this->get('Prospect Created Date'))) {
+                    $this->error = true;
+                    $this->msg   = _("Can't link this customer because, he registered before the prospect was created");
+
+                    return;
+
+                }
 
 
+                $sql = sprintf('select `History Key`,`Type`,`Deletable`,`Strikethrough` from `Prospect History Bridge` where `Prospect Key`=%d ', $this->id);
+                if ($result2 = $this->db->query($sql)) {
+                    foreach ($result2 as $row2) {
+                        $sql = sprintf(
+                            "INSERT INTO `Customer History Bridge` VALUES (%d,%d,%s,%s,%s)", $customer->id, $row2['History Key'], prepare_mysql($row2['Deletable']), prepare_mysql($row2['Strikethrough']), prepare_mysql($row2['Type'])
+                        );
+                        //print "$sql\n";
+                        $this->db->exec($sql);
+                    }
+                }
+
+
+                $this->fast_update(
+                    array(
+                        'Prospect Status'            => 'Registered',
+                        'Prospect Registration Date' => gmdate('Y-m-d H:i:s'),
+                        'Prospect Customer Key'      => $customer->id
+
+                    )
+                );
+
+
+                $history_data = array(
+                    'History Abstract' => sprintf(
+                        _('Prospect registered as a customer %s'),
+                        '<span class="button padding_left_5" onClick="change_view(\'customers/'.$this->customer->get('Store Key').'/'.$this->customer->id.'\')"><i class="fa fa-user "></i> <span class="link">'.$this->customer->get('Name').'</span> (<span class="link">'
+                        .$this->customer->get_formatted_id().'</span>)</span>'
+                    ),
+
+
+                    'History Details' => '',
+                    'Action'          => 'edited'
+                );
+
+
+                $this->add_subject_history(
+                    $history_data, true, 'No', 'Changes', $this->get_object_name(), $this->id
+                );
+
+
+                break;
             default:
 
 
@@ -512,8 +633,6 @@ class Prospect extends Subject {
 
     function send_invitation($email_template_key) {
         $email_template_type = get_object('Email_Template_Type', 'Invite Mailshot|'.$this->get('Prospect Store Key'), 'code_store');
-
-
 
 
         if (!$email_template_type->id) {
@@ -534,7 +653,6 @@ class Prospect extends Subject {
         $published_email_template = get_object('published_email_template', $email_template->get('Email Template Published Email Key'));
 
 
-
         $send_data = array(
             'Email_Template_Type' => $email_template_type,
             'Email_Template'      => $email_template,
@@ -543,90 +661,10 @@ class Prospect extends Subject {
         );
 
 
-
         $published_email_template->send($this, $send_data);
 
 
         if ($published_email_template->send) {
-
-
-
-        $history_data = array(
-            'History Abstract' => '<i class="fal fa-paper-plane fa-fw"></i> '._('Invitation email sent').' '.sprintf(
-                    '<span class="link" onclick="change_view(\'prospects/%d/%d/email/%d\')" >%s</span>', $this->get('Store Key'), $this->id, $published_email_template->email_tracking->id, $published_email_template->get('Published Email Template Subject')
-
-
-                ),
-            'History Details'  => '',
-            'Action'           => 'edited'
-        );
-
-
-        $this->add_subject_history(
-            $history_data, true, 'No', 'Emails', $this->get_object_name(), $this->id
-        );
-
-
-        if ($this->data['Prospect Status'] == 'NoContacted') {
-
-            $this->fast_update(
-                array(
-                    'Prospect Status'               => 'Contacted',
-                    'Prospect First Contacted Date' => gmdate('Y-m-d H:i:s'),
-                    'Prospect User Key'             => $this->editor['User Key']
-
-                )
-            );
-        }
-
-}
-        else{
-            print $published_email_template->msg;
-        }
-        $this->update_metadata = array(
-            'class_html' => array(
-                'Status_Label'   => $this->get('Status Label'),
-                'Contacted_Date' => $this->get('First Contacted Date')
-
-            ),
-            'hide'       => array(),
-            'show'       => array(
-                'contacted_date_tr',
-                'not_interested_button'
-            )
-        );
-
-
-
-
-
-    }
-
-    function send_personalized_invitation($published_email_template) {
-
-
-        $email_template_type=get_object('Email_Template_Type','Invite|'.$this->get('Store Key'),'code_store');
-
-
-        if (!$email_template_type->id) {
-            $this->error = true;
-            $this->msg   = 'EmailCampaignType Invite for this store not found';
-
-            return;
-        }
-
-
-
-        $send_data = array(
-            'Email_Template_Type' => $email_template_type,
-
-        );
-
-        $published_email_template->send($this, $send_data);
-
-
-        if ($published_email_template->send) {
-
 
 
             $history_data = array(
@@ -647,16 +685,40 @@ class Prospect extends Subject {
 
             if ($this->data['Prospect Status'] == 'NoContacted') {
 
+
                 $this->fast_update(
                     array(
                         'Prospect Status'               => 'Contacted',
                         'Prospect First Contacted Date' => gmdate('Y-m-d H:i:s'),
-                        'Prospect User Key'             => $this->editor['User Key']
 
                     )
                 );
+                if ($this->editor['User Key']) {
+
+
+                    include_once('class.Sales_Representative.php');
+                    $sales_representative = new Sales_Representative(
+                        'find', array(
+                                  'Sales Representative User Key' => $this->editor['User Key'],
+                                  'editor'                        => $this->editor
+                              )
+                    );
+                    $sales_representative->fast_update(array('Sales Representative Prospect Agent' => 'Yes'));
+
+                    $this->fast_update(
+                        array(
+
+                            'Prospect User Key'                 => $this->editor['User Key'],
+                            'Prospect Sales Representative Key' => $sales_representative->id
+
+                        )
+                    );
+                }
+
             }
 
+        } else {
+            print $published_email_template->msg;
         }
         $this->update_metadata = array(
             'class_html' => array(
@@ -670,9 +732,6 @@ class Prospect extends Subject {
                 'not_interested_button'
             )
         );
-
-
-
 
 
     }
@@ -805,6 +864,97 @@ class Prospect extends Subject {
 
 
         }
+
+    }
+
+    function send_personalized_invitation($published_email_template) {
+
+
+        $email_template_type = get_object('Email_Template_Type', 'Invite|'.$this->get('Store Key'), 'code_store');
+
+
+        if (!$email_template_type->id) {
+            $this->error = true;
+            $this->msg   = 'EmailCampaignType Invite for this store not found';
+
+            return;
+        }
+
+
+        $send_data = array(
+            'Email_Template_Type' => $email_template_type,
+
+        );
+
+        $published_email_template->send($this, $send_data);
+
+
+        if ($published_email_template->send) {
+
+
+            $history_data = array(
+                'History Abstract' => '<i class="fal fa-paper-plane fa-fw"></i> '._('Invitation email sent').' '.sprintf(
+                        '<span class="link" onclick="change_view(\'prospects/%d/%d/email/%d\')" >%s</span>', $this->get('Store Key'), $this->id, $published_email_template->email_tracking->id, $published_email_template->get('Published Email Template Subject')
+
+
+                    ),
+                'History Details'  => '',
+                'Action'           => 'edited'
+            );
+
+
+            $this->add_subject_history(
+                $history_data, true, 'No', 'Emails', $this->get_object_name(), $this->id
+            );
+
+
+            if ($this->data['Prospect Status'] == 'NoContacted') {
+
+                $this->fast_update(
+                    array(
+                        'Prospect Status'               => 'Contacted',
+                        'Prospect First Contacted Date' => gmdate('Y-m-d H:i:s'),
+
+                    )
+                );
+                if ($this->editor['User Key']) {
+
+
+                    include_once('class.Sales_Representative.php');
+                    $sales_representative = new Sales_Representative(
+                        'find', array(
+                                  'Sales Representative User Key' => $this->editor['User Key'],
+                                  'editor'                        => $this->editor
+                              )
+                    );
+                    $sales_representative->fast_update(array('Sales Representative Prospect Agent' => 'Yes'));
+
+                    $this->fast_update(
+                        array(
+
+                            'Prospect User Key'                 => $this->editor['User Key'],
+                            'Prospect Sales Representative Key' => $sales_representative->id
+
+                        )
+                    );
+                }
+
+            }
+
+        }
+        $this->update_metadata = array(
+            'class_html' => array(
+                'Status_Label'   => $this->get('Status Label'),
+                'Contacted_Date' => $this->get('First Contacted Date')
+
+            ),
+            'hide'       => array(),
+            'show'       => array(
+                'contacted_date_tr',
+                'not_interested_button'
+            )
+        );
+
 
     }
 
@@ -991,6 +1141,49 @@ class Prospect extends Subject {
         }
 
         return $templates;
+    }
+
+
+    function update_prospect_data(){
+
+        $calls=0;
+        $emails_sent=0;
+        $emails_open=0;
+        $emails_clicked=0;
+        $registered=0;
+        $invoiced=0;
+
+
+        $sql=sprintf('select count(*) as emails_sent , sum(if(`Email Tracking Number Reads`>0,1,0))  open,  sum(if(`Email Tracking Number Clicks`>0,1,0))  clicked where `Email Tracking Recipient`="Prospect" and `Email Tracking Recipient Key`=%d   ',$this->id);
+
+        if ($result=$this->db->query($sql)) {
+        		foreach ($result as $row) {
+                    $emails_sent=$row['emails_sent'];
+                    $emails_open=$row['open'];
+                    $emails_clicked=$row['clicked'];
+        		}
+        }else {
+        		print_r($error_info=$this->db->errorInfo());
+        		print "$sql\n";
+        		exit;
+        }
+
+
+
+        $this->fast_update(
+            array(
+            'Prospect Calls Number'=>$calls,
+            'Prospect Emails Sent Number'=>$emails_sent,
+            'Prospect Emails Open Number'=>$emails_open,
+            'Prospect Emails Clicked Number'=>$emails_clicked,
+            'Prospect Registered Number'=>$registered,
+            'Prospect Invoiced Number'=>$invoiced,
+
+
+            )
+
+        );
+
     }
 
 }

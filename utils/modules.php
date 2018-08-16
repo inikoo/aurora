@@ -6080,6 +6080,14 @@ $modules = array(
                 )
 
             ),
+            'prospect_agents' => array(
+                'type' => '',
+                'tabs' => array(
+                    'prospect_agents' => array(),
+
+                )
+
+            ),
 
             'sales'            => array(
                 'type' => '',

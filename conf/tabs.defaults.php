@@ -3213,6 +3213,18 @@ $tab_defaults = array(
         'period'      => 'last_w'
 
     ),
+    'prospect_agents'    => array(
+        'view'        => 'overview',
+        'sort_key'    => 'name',
+        'sort_order'  => -1,
+        'rpp'         => 500,
+        'rpp_options' => $default_rrp_options,
+        'f_field'     => 'name',
+        'from'        => '',
+        'to'          => '',
+        'period'      => 'last_w'
+
+    ),
     'lost_stock'               => array(
         'view'          => 'overview',
         'sort_key'      => 'date',

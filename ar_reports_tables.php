@@ -45,8 +45,10 @@ switch ($tipo) {
         packers(get_table_parameters(), $db, $user, $account);
         break;
     case 'sales_representatives':
-
         sales_representatives(get_table_parameters(), $db, $user, $account);
+        break;
+    case 'prospect_agents':
+        prospect_agents(get_table_parameters(), $db, $user, $account);
         break;
     case 'sales':
         sales(get_table_parameters(), $db, $user, $account);
@@ -1386,15 +1388,15 @@ function sales_representatives($_data, $db, $user, $account) {
 
 
 
-$sql   = "select `Staff Name`,`Staff Key`,`Sales Representative Key` from `Sales Representative Dimension` SRD left join `Staff Dimension` S on (S.`Staff Key`=`Sales Representative Staff Key`) ";
+$sql   = "select `User Alias`,`User Key`,`Sales Representative Key` from `Sales Representative Dimension` SRD left join `User Dimension` S on (S.`User Key`=`Sales Representative User Key`) ";
 
 $_adata = array();
 
 
 if ($result = $db->query($sql)) {
     foreach ($result as $data) {
-        $_adata[$data['Staff Key']] = array(
-            'name' => sprintf('<span class="link" onclick="change_view(\'report/sales_representatives/%d\',{ tab:\'sales_representative.customers\'} ,  )">%s</span>',$data['Sales Representative Key'],$data['Staff Name']),
+        $_adata[$data['User Key']] = array(
+            'name' => sprintf('<span class="link" onclick="change_view(\'report/sales_representatives/%d\',{ tab:\'sales_representative.customers\'} ,  )">%s</span>',$data['Sales Representative Key'],$data['User Alias']),
             'refunds'=>sprintf('<span class="link very_discreet" onclick="change_view(\'report/sales_representatives/%d\',{ tab:\'sales_representative.invoices\' , parameters:{ period:\'%s\',from:\'%s\',to:\'%s\',elements_type:\'type\' } ,element:{ type:{ Invoice:\'\',Refund:1}}  }  )">%s</span>',$data['Sales Representative Key'],$_data['parameters']['period'],$_data['parameters']['from'],$_data['parameters']['to'],0),
             'invoices'=>sprintf('<span class="link very_discreet" onclick="change_view(\'report/sales_representatives/%d\',{ tab:\'sales_representative.invoices\',  parameters:{ period:\'%s\',from:\'%s\',to:\'%s\',elements_type:\'type\' } ,element:{ type:{ Invoice:1,Refund:\'\'}}}  )">%s</span>',$data['Sales Representative Key'],$_data['parameters']['period'],$_data['parameters']['from'],$_data['parameters']['to'],0),
             'sales'=>sprintf('<span class="link very_discreet" onclick="change_view(\'report/sales_representatives/%d\',{ tab:\'sales_representative.invoices\',  parameters:{ period:\'%s\',from:\'%s\',to:\'%s\',elements_type:\'type\' } ,element:{ type:{ Invoice:1,Refund:1}}}  )">%s</span>',$data['Sales Representative Key'],$_data['parameters']['period'],$_data['parameters']['from'],$_data['parameters']['to'],money(0,$account->get('Account Currency'))),
@@ -1408,14 +1410,9 @@ if ($result = $db->query($sql)) {
     include_once 'prepare_table/init.php';
 
 
+    $sql = "select $fields from $table $where $wheref $group_by order by $order $order_direction limit $start_from,$number_results";
 
-
-
-
-
-    $sql   = "select $fields from $table $where $wheref $group_by order by $order $order_direction limit $start_from,$number_results";
-
-//print $sql;
+    //print $sql;
 
 
 
@@ -1426,10 +1423,10 @@ if ($result = $db->query($sql)) {
 
     //        print_r($data);
 
-            $_adata[$data['Staff Key']]['invoices']=sprintf('<span class="link " onclick="change_view(\'report/sales_representatives/%d\',{ tab:\'sales_representative.invoices\' , parameters:{ period:\'%s\',from:\'%s\',to:\'%s\',elements_type:\'type\' } ,element:{ type:{ Invoice:1,Refund:\'\'}}  }  )">%s</span>',$data['Sales Representative Key'],$_data['parameters']['period'],$_data['parameters']['from'],$_data['parameters']['to'],number($data['invoices']));
-            $_adata[$data['Staff Key']]['refunds']=sprintf('<span class="link " onclick="change_view(\'report/sales_representatives/%d\',{ tab:\'sales_representative.invoices\' , parameters:{ period:\'%s\',from:\'%s\',to:\'%s\',elements_type:\'type\' } ,element:{ type:{ Invoice:\'\',Refund:1}}  }  )">%s</span>',$data['Sales Representative Key'],$_data['parameters']['period'],$_data['parameters']['from'],$_data['parameters']['to'],number($data['refunds']));
-            $_adata[$data['Staff Key']]['sales']=sprintf('<span class="link " onclick="change_view(\'report/sales_representatives/%d\',{ tab:\'sales_representative.invoices\' , parameters:{ period:\'%s\',from:\'%s\',to:\'%s\',elements_type:\'type\' } ,element:{ type:{ Invoice:1,Refund:1}}  }  )">%s</span>',$data['Sales Representative Key'],$_data['parameters']['period'],$_data['parameters']['from'],$_data['parameters']['to'],money($data['sales'],$account->get('Account Currency')));
-            $_adata[$data['Staff Key']]['customers']= number($data['customers']);
+            $_adata[$data['User Key']]['invoices']=sprintf('<span class="link " onclick="change_view(\'report/sales_representatives/%d\',{ tab:\'sales_representative.invoices\' , parameters:{ period:\'%s\',from:\'%s\',to:\'%s\',elements_type:\'type\' } ,element:{ type:{ Invoice:1,Refund:\'\'}}  }  )">%s</span>',$data['Sales Representative Key'],$_data['parameters']['period'],$_data['parameters']['from'],$_data['parameters']['to'],number($data['invoices']));
+            $_adata[$data['User Key']]['refunds']=sprintf('<span class="link " onclick="change_view(\'report/sales_representatives/%d\',{ tab:\'sales_representative.invoices\' , parameters:{ period:\'%s\',from:\'%s\',to:\'%s\',elements_type:\'type\' } ,element:{ type:{ Invoice:\'\',Refund:1}}  }  )">%s</span>',$data['Sales Representative Key'],$_data['parameters']['period'],$_data['parameters']['from'],$_data['parameters']['to'],number($data['refunds']));
+            $_adata[$data['User Key']]['sales']=sprintf('<span class="link " onclick="change_view(\'report/sales_representatives/%d\',{ tab:\'sales_representative.invoices\' , parameters:{ period:\'%s\',from:\'%s\',to:\'%s\',elements_type:\'type\' } ,element:{ type:{ Invoice:1,Refund:1}}  }  )">%s</span>',$data['Sales Representative Key'],$_data['parameters']['period'],$_data['parameters']['from'],$_data['parameters']['to'],money($data['sales'],$account->get('Account Currency')));
+            $_adata[$data['User Key']]['customers']= number($data['customers']);
 
 
 
@@ -1461,6 +1458,86 @@ if ($result = $db->query($sql)) {
 foreach ($_adata as $values){
     $adata[]=$values;
 }
+
+
+    $number_records=count($adata);
+
+    $response = array(
+        'resultset' => array(
+            'state'         => 200,
+            'data'          => $adata,
+            'rtext' => sprintf(ngettext('%s sales representative', '%s sales representatives', $number_records), number($number_records)),
+            'sort_key'      => $_order,
+            'sort_dir'      => $_dir,
+            'total_records' => $total
+
+        )
+    );
+    echo json_encode($response);
+}
+
+
+function prospect_agents($_data, $db, $user, $account) {
+
+    $rtext_label = 'sales representative';
+
+    /*
+
+    foreach ($_data['parameters'] as $parameter => $parameter_value) {
+        $_SESSION['table_state']['sales_representative'][$parameter] = $parameter_value;
+
+    }
+*/
+
+
+
+
+    $sql   = "select `User Alias`,`User Key`,`Sales Representative Key` from `Sales Representative Dimension` SRD left join `User Dimension` S on (S.`User Key`=`Sales Representative User Key`) ";
+
+    $_adata = array();
+
+
+    if ($result = $db->query($sql)) {
+        foreach ($result as $data) {
+            $_adata[$data['Sales Representative Key']] = array(
+                'name' => sprintf('<span class="link" onclick="change_view(\'report/prospect_agent/%d\',{ tab:\'sales_representative.customers\'} ,  )">%s</span>',$data['Sales Representative Key'],$data['User Alias']),
+                'new_prospects'=>sprintf('<span class="link very_discreet" onclick="change_view(\'report/prospect_agent/%d\',{ tab:\'sales_representative.invoices\' , parameters:{ period:\'%s\',from:\'%s\',to:\'%s\',elements_type:\'type\' } ,element:{ type:{ Invoice:\'\',Refund:1}}  }  )">%s</span>',$data['Sales Representative Key'],$_data['parameters']['period'],$_data['parameters']['from'],$_data['parameters']['to'],0),
+                //'invoices'=>sprintf('<span class="link very_discreet" onclick="change_view(\'report/sales_representatives/%d\',{ tab:\'sales_representative.invoices\',  parameters:{ period:\'%s\',from:\'%s\',to:\'%s\',elements_type:\'type\' } ,element:{ type:{ Invoice:1,Refund:\'\'}}}  )">%s</span>',$data['Sales Representative Key'],$_data['parameters']['period'],$_data['parameters']['from'],$_data['parameters']['to'],0),
+                //'sales'=>sprintf('<span class="link very_discreet" onclick="change_view(\'report/sales_representatives/%d\',{ tab:\'sales_representative.invoices\',  parameters:{ period:\'%s\',from:\'%s\',to:\'%s\',elements_type:\'type\' } ,element:{ type:{ Invoice:1,Refund:1}}}  )">%s</span>',$data['Sales Representative Key'],$_data['parameters']['period'],$_data['parameters']['from'],$_data['parameters']['to'],money(0,$account->get('Account Currency'))),
+
+
+            );
+        }
+    }
+
+    include_once 'prepare_table/init.php';
+    $sql   = "select $fields from $table $where $wheref $group_by  limit $start_from,$number_results";
+
+
+
+    if ($result = $db->query($sql)) {
+
+        foreach ($result as $data) {
+
+
+            //        print_r($data);
+
+            $_adata[$data['Prospect Sales Representative Key']]['new_prospects']=sprintf('<span class="link " onclick="change_view(\'report/prospect_agent/%d\',{ tab:\'prospect_agent.invoices\' , parameters:{ period:\'%s\',from:\'%s\',to:\'%s\',elements_type:\'type\' } ,element:{ type:{ Invoice:1,Refund:\'\'}}  }  )">%s</span>',$data['Prospect Sales Representative Key'],$_data['parameters']['period'],$_data['parameters']['from'],$_data['parameters']['to'],number($data['new_prospects']));
+            $_adata[$data['Prospect Sales Representative Key']]['calls']=sprintf('<span class="link " onclick="change_view(\'report/prospect_agent/%d\',{ tab:\'prospect_agent.invoices\' , parameters:{ period:\'%s\',from:\'%s\',to:\'%s\',elements_type:\'type\' } ,element:{ type:{ Invoice:1,Refund:\'\'}}  }  )">%s</span>',$data['Prospect Sales Representative Key'],$_data['parameters']['period'],$_data['parameters']['from'],$_data['parameters']['to'],number($data['calls']));
+            $_adata[$data['Prospect Sales Representative Key']]['emails_sent']=sprintf('<span class="link " onclick="change_view(\'report/prospect_agent/%d\',{ tab:\'prospect_agent.invoices\' , parameters:{ period:\'%s\',from:\'%s\',to:\'%s\',elements_type:\'type\' } ,element:{ type:{ Invoice:1,Refund:\'\'}}  }  )">%s</span>',$data['Prospect Sales Representative Key'],$_data['parameters']['period'],$_data['parameters']['from'],$_data['parameters']['to'],number($data['emails_sent']));
+
+
+        }
+    } else {
+        print_r($error_info = $db->errorInfo());
+        exit;
+    }
+
+
+    $adata=array();
+    foreach ($_adata as $values){
+        $adata[]=$values;
+    }
 
 
     $number_records=count($adata);
