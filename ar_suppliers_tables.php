@@ -1742,15 +1742,13 @@ function delivery_items($_data, $db, $user) {
 
                 'id'                => (integer)$data['Purchase Order Transaction Fact Key'],
                 'supplier_part_key' => (integer)$data['Supplier Part Key'],
-                'checkbox'          => sprintf(
-                    '<i key="%d" class="far fa-square fa-fw button" aria-hidden="true"></i>', $data['Purchase Order Transaction Fact Key']
-                ),
+                'checkbox'          => sprintf('<i key="%d" class="far fa-square fa-fw button" aria-hidden="true"></i>', $data['Purchase Order Transaction Fact Key']),
 
                 'operations' => sprintf(
                     '<i key="%d" class="fa fa-fw fa-truck fa-flip-horizontal button" aria-hidden="true" onClick="change_on_delivery(this)"></i>', $data['Purchase Order Transaction Fact Key']
                 ),
 
-                'reference'   => $data['Supplier Part Reference'],
+                'reference'   => sprintf('<span class="link" onclick="change_view(\'supplier/%d/part/%d\')">%s</span>',$data['Supplier Part Supplier Key'],$data['Supplier Part Key'],$data['Supplier Part Reference']),
                 'description' => $data['Supplier Part Description'].' ('.number($units_per_carton).'/C)',
 
                 'quantity'  => $delivery_quantity,

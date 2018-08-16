@@ -9,6 +9,30 @@
 
 */
 
+
+
+
+switch ($state['_object']->get('Category Scope')) {
+    case 'Product':
+        $parameters = array(
+            'parent'     => 'Product Category',
+            'parent_key' => $state['key'],
+
+        );
+
+
+        break;
+    default:
+        $parameters = array(
+            'parent'     => $state['object'],
+            'parent_key' => $state['key'],
+
+        );
+
+
+        break;
+}
+
 $tab     = 'category.history';
 $ar_file = 'ar_history_tables.php';
 $tipo    = 'object_history';
@@ -17,15 +41,7 @@ $default = $user->get_tab_defaults($tab);
 
 $table_views = array();
 
-$table_filters
-    = array(//	'note'=>array('label'=>_('Notes'),'title'=>_('Notes')),
-);
-
-$parameters = array(
-    'parent'     => $state['object'],
-    'parent_key' => $state['key'],
-
-);
+$table_filters = array();
 
 
 
@@ -38,16 +54,13 @@ $table_buttons[] = array(
 $smarty->assign('table_buttons', $table_buttons);
 
 
+$smarty->assign(
+    'history_notes_data', array(
 
-$smarty->assign('history_notes_data',
-                array(
-
-                    'object'=>'category',
-                    'key'=>$state['_object']->id
-                )
+                            'object' => 'category',
+                            'key'    => $state['_object']->id
+                        )
 );
-
-
 
 
 $smarty->assign('aux_templates', array('history_notes.tpl'));
