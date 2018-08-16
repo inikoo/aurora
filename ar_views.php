@@ -1788,6 +1788,9 @@ function get_navigation($user, $smarty, $data, $db, $account) {
                 case ('sales_representatives'):
                     return get_sales_representatives_navigation($user, $smarty, $data);
                     break;
+                case ('prospect_agents'):
+                    return get_prospect_agents_navigation($user, $smarty, $data);
+                    break;
                 case ('sales_representative'):
                     return get_sales_representative_navigation($user, $smarty, $data);
                     break;
@@ -8199,12 +8202,19 @@ function get_view_position($db, $state, $user, $smarty, $account) {
                     'reference' => 'report/sales_representatives'
                 );
                 $branch[] = array(
-                    'label'     => $state['_object']->staff->get('Name'),
+                    'label'     => $state['_object']->user->get('Alias'),
                     'icon'      => '',
                     'reference' => ''
                 );
 
-            }  elseif ($state['section'] == 'lost_stock') {
+            } elseif ($state['section'] == 'prospect_agents') {
+                $branch[] = array(
+                    'label'     => _("Prospect's agents"),
+                    'icon'      => '',
+                    'reference' => ''
+                );
+
+            } elseif ($state['section'] == 'lost_stock') {
                 $branch[] = array(
                     'label'     => _('Lost/Damaged stock'),
                     'icon'      => '',

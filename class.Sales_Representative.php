@@ -17,7 +17,7 @@ class Sales_Representative extends DB_Table {
     var $new = false;
     var $updated_data = array();
 
-    function Sales_Representative($arg1 = false, $arg2 = false, $arg3 = false) {
+    function __construct($arg1 = false, $arg2 = false, $arg3 = false) {
 
 
         global $db;
@@ -65,7 +65,7 @@ class Sales_Representative extends DB_Table {
         if ($this->data = $this->db->query($sql)->fetch()) {
 
             $this->id    = $this->data['Sales Representative Key'];
-            $this->staff = get_object('Staff', $this->data['Sales Representative Staff Key']);
+            $this->user = get_object('User', $this->data['Sales Representative User Key']);
 
         }
 
@@ -90,7 +90,7 @@ class Sales_Representative extends DB_Table {
 
 
         $sql = sprintf(
-            "SELECT `Sales Representative Key` FROM `Sales Representative Dimension` WHERE  `Sales Representative Staff Key`=%d", $raw_data['Sales Representative Staff Key']
+            "SELECT `Sales Representative Key` FROM `Sales Representative Dimension` WHERE  `Sales Representative User Key`=%d", $raw_data['Sales Representative User Key']
         );
 
 
@@ -154,7 +154,7 @@ class Sales_Representative extends DB_Table {
             $this->new = true;
 
 
-            $history_abstract = sprintf(_('%s promoted as sales representative'), $this->staff->get('Name'));
+            $history_abstract = sprintf(_('%s promoted as sales representative'), $this->user->get('Alias'));
 
 
             $history_data = array(
@@ -173,9 +173,17 @@ class Sales_Representative extends DB_Table {
                 'Action'           => 'edited'
             );
 
-            $this->staff->add_subject_history(
-                $history_data, true, 'No', 'Changes', $this->staff->get_object_name(), $this->staff->id
+            $this->user->add_subject_history(
+                $history_data, true, 'No', 'Changes', $this->user->get_object_name(), $this->user->id
             );
+
+            if($this->user->get_staff_key()>0){
+                $staff=get_object('Staff',$this->user->get_staff_key());
+
+                $staff->add_subject_history(
+                    $history_data, true, 'No', 'Changes', $this->user->get_object_name(), $this->user->id
+                );
+            }
 
 
         } else {

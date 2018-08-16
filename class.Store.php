@@ -3136,6 +3136,20 @@ class Store extends DB_Table {
 
         $data['Prospect User Key'] = $this->editor['User Key'];
 
+
+
+        include_once('class.Sales_Representative.php');
+        $sales_representative = new Sales_Representative(
+            'find', array(
+                      'Sales Representative User Key' => $this->editor['User Key'],
+                      'editor'                         => $this->editor
+                  )
+        );
+        $sales_representative->fast_update(array('Sales Representative Prospect Agent'=>'Yes'));
+
+
+        $data['Prospect Sales Representative Key'] = $sales_representative->id;
+
         $address_fields = array(
             'Address Recipient'            => $data['Prospect Main Contact Name'],
             'Address Organization'         => $data['Prospect Company Name'],

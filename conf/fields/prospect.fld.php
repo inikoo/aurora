@@ -414,9 +414,15 @@ if ($new) {
         )
     );
 
+
+
+
+
+
+
     $with_operations = false;
 
-    if ($object->get('Prospect Status') == 'NoContacted') {
+    if ($object->get('Prospect Status') == 'NoContacted'  or $object->get('Prospect Status') == 'Contacted'  ) {
         $with_operations = true;
     }
 
@@ -427,6 +433,22 @@ if ($new) {
         'class'      => 'edit_fields '.($with_operations ? '' : 'hide'),
 
         'fields' => array(
+
+                array(
+                    'id'                       => 'Prospect_Customer_Key',
+                    'edit'                     => 'dropdown_select',
+                    'scope'                    => 'customers',
+                    'parent'                   => 'store',
+                    'parent_key'               => ($new ? $options['store_key'] : $object->get('Prospect Store Key')),
+                    'value'                    => htmlspecialchars($object->get('Prospect Customer Key')),
+                    'formatted_value'          => $object->get('Category Key'),
+                    'stripped_formatted_value' => '',
+                    'label'                    => _('Link to customer'),
+                    'required'                 => true,
+                    'type'                     => 'value'
+
+
+                ),
 
             array(
 

@@ -36,8 +36,9 @@ $options_delivery_address_link = array(
 
 $options_sales_representative = array();
 $sql                          = sprintf(
-    'SELECT `Staff Name`,S.`Staff Key`,`Staff Alias` FROM `Staff Dimension` S LEFT JOIN `User Dimension` U ON (S.`Staff Key`=U.`User Parent Key`) LEFT JOIN `User Group User Bridge` B ON (U.`User Key`=B.`User Key`) WHERE  `User Type` in  ("Staff","Contractor")  and `User Group Key`=2     and `Staff Currently Working`="Yes"  group by S.`Staff Key` order by `Staff Name`  '
+    'SELECT `User Alias`,U.`User Key`,`User Handle` from `User Dimension` U LEFT JOIN `User Group User Bridge` B ON (U.`User Key`=B.`User Key`) WHERE  `User Type` in  ("Staff","Contractor")  and `User Group Key`=2     and `User Active`="Yes"  group by U.`User Key` order by `User Alias`  '
 );
+
 
 if($object->get('Customer Sales Representative Key')){
     $options_sales_representative[0] = array(
@@ -49,9 +50,9 @@ if($object->get('Customer Sales Representative Key')){
 
 
 foreach ($db->query($sql) as $row) {
-    $options_sales_representative[$row['Staff Key']] = array(
-        'label' => $row['Staff Name'],
-        'label2'   => $row['Staff Name'].' ('.sprintf('%03d', $row['Staff Key']).')',
+    $options_sales_representative[$row['User Key']] = array(
+        'label' =>$row['User Alias'].' ('.$row['User Handle'].')',
+        'label2'   => $row['User Alias'].' ('.sprintf('%03d', $row['User Key']).')',
         'selected' => false
     );
 }
