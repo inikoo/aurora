@@ -1808,7 +1808,7 @@ class DeliveryNote extends DB_Table {
 
                 if ( ($qty < $row['Picked']) and ($qty > ($row['Picked'] - $row['Packed']))) {
                     $this->error = true;
-                    $this->msg   = 'Error, trying to unpick '.$qty.' more items than picked '.$row['Picked'].' -packed '.$row['Packed'];
+                    $this->msg   = 'Error, trying to unpick '.$qty.' more items than picked '.$row['Picked'].' - packed '.$row['Packed'].'; only '($row['Picked'] - $row['Packed']).' can be unpicked';
 
                     return;
                 }
