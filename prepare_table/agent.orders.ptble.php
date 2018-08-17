@@ -32,7 +32,7 @@ if ($parameters['parent'] == 'account') {
     );
 } elseif ($parameters['parent'] == 'agent') {
     $where = sprintf(
-        'where  `Purchase Order Agent Key`=%d  ', $parameters['parent_key']
+        'where  `Purchase Order Parent`="Agent" and `Purchase Order Parent Key`=%d    ', $parameters['parent_key']
     );
 } elseif ($parameters['parent'] == 'supplier_part') {
     $table

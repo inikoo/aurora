@@ -95,33 +95,28 @@ function users($_data, $db, $user) {
 
     foreach ($db->query($sql) as $data) {
         if ($data['User Active'] == 'Yes') {
-            $is_active = _('Yes');
+            $active = _('Yes');
+            $active_icon=sprintf('<a class="fas fa-check-circle success" title="%s"></a>',_('Active'));
         } else {
-            $is_active = _('No');
+            $active = _('No');
+            $active_icon=sprintf('<a class="fas fa-times-circle error" title="%s"></a>',_('Inactive'));
         }
 
-        $groups     = preg_split('/,/', $data['Groups']);
+        // $groups     = preg_split('/,/', $data['Groups']);
         $stores     = preg_split('/,/', $data['Stores']);
         $warehouses = preg_split('/,/', $data['Warehouses']);
-        $sites      = preg_split('/,/', $data['Sites']);
+        //$sites      = preg_split('/,/', $data['Sites']);
 
         $adata[] = array(
             'id'              => (integer)$data['User Key'],
-            'handle'          => $data['User Handle'],
+            'handle'          =>sprintf('<span class="link" onclick="change_view(\'account/user/%d\')">%s</span>', $data['User Key'],$data['User Handle']),
             'name'            => $data['User Alias'],
-            'active'          => $is_active,
+            'active_icon'          => $active_icon,
+            'active'          => $active, //todo remove this after update the vcols files
             'logins'          => number($data['User Login Count']),
-            'last_login'      => ($data ['User Last Login'] == ''
-                ? ''
-                : strftime(
-                    "%e %b %Y %H:%M %Z", strtotime($data ['User Last Login']." +00:00")
-                )),
+            'last_login'      => ($data ['User Last Login'] == '' ? '' : strftime("%e %b %Y %H:%M %Z", strtotime($data ['User Last Login']." +00:00"))),
             'fail_logins'     => number($data['User Failed Login Count']),
-            'fail_last_login' => ($data ['User Last Failed Login'] == ''
-                ? ''
-                : strftime(
-                    "%e %b %Y %H:%M %Z", strtotime($data ['User Last Failed Login']." +00:00")
-                )),
+            'fail_last_login' => ($data ['User Last Failed Login'] == '' ? '' : strftime("%e %b %Y %H:%M %Z", strtotime($data ['User Last Failed Login']." +00:00"))),
 
             'groups'     => $data['Groups'],
             'stores'     => $stores,
@@ -219,38 +214,24 @@ function agents($_data, $db, $user) {
 
     foreach ($db->query($sql) as $data) {
         if ($data['User Active'] == 'Yes') {
-            $is_active = _('Yes');
+            $active_icon=sprintf('<a class="fas fa-check-circle success" title="%s"></a>',_('Active'));
         } else {
-            $is_active = _('No');
+            $active_icon=sprintf('<a class="fas fa-times-circle error" title="%s"></a>',_('Inactive'));
         }
 
-        $groups     = preg_split('/,/', $data['Groups']);
-        $stores     = preg_split('/,/', $data['Stores']);
-        $warehouses = preg_split('/,/', $data['Warehouses']);
-        $sites      = preg_split('/,/', $data['Sites']);
 
         $adata[] = array(
             'id'              => (integer)$data['User Key'],
-            'handle'          => $data['User Handle'],
+            'handle'          =>sprintf('<span class="link" onclick="change_view(\'account/user/%d\')">%s</span>', $data['User Key'],$data['User Handle']),
             'name'            => $data['User Alias'],
-            'active'          => $is_active,
+            'active_icon'          => $active_icon,
             'logins'          => number($data['User Login Count']),
-            'last_login'      => ($data ['User Last Login'] == ''
-                ? ''
-                : strftime(
-                    "%e %b %Y %H:%M %Z", strtotime($data ['User Last Login']." +00:00")
-                )),
+            'last_login'      => ($data ['User Last Login'] == '' ? '' : strftime("%e %b %Y %H:%M %Z", strtotime($data ['User Last Login']." +00:00"))),
             'fail_logins'     => number($data['User Failed Login Count']),
-            'fail_last_login' => ($data ['User Last Failed Login'] == ''
-                ? ''
-                : strftime(
-                    "%e %b %Y %H:%M %Z", strtotime($data ['User Last Failed Login']." +00:00")
-                )),
+            'fail_last_login' => ($data ['User Last Failed Login'] == '' ? '' : strftime("%e %b %Y %H:%M %Z", strtotime($data ['User Last Failed Login']." +00:00"))),
 
             'groups'     => $data['Groups'],
-            'stores'     => $stores,
-            'warehouses' => $warehouses,
-            'websites'   => $data['Sites'],
+
         );
 
     }
@@ -478,7 +459,6 @@ function api_keys($_data, $db, $user) {
     $sql = "select $fields from $table $where $wheref order by $order $order_direction limit $start_from,$number_results";
 
 
-
     $adata = array();
 
     foreach ($db->query($sql) as $data) {
@@ -494,13 +474,13 @@ function api_keys($_data, $db, $user) {
 
         switch ($data['API Key Scope']) {
             case 'Timesheet':
-                $scope =  _('Timesheet machine');
+                $scope = _('Timesheet machine');
                 break;
             case 'Stock':
-                $scope =  _('Stock control app');
+                $scope = _('Stock control app');
                 break;
             case 'Picking':
-                $scope =  _('Picking app');
+                $scope = _('Picking app');
                 break;
             default:
                 $scope = $data['API Key Scope'];
@@ -512,14 +492,11 @@ function api_keys($_data, $db, $user) {
             'active' => $active,
             'scope'  => $scope,
 
-            'from'  => strftime("%a %e %b %Y %H:%M %Z", strtotime($data['API Key Valid From'])),
+            'from' => strftime("%a %e %b %Y %H:%M %Z", strtotime($data['API Key Valid From'])),
         );
 
 
     }
-
-
-
 
 
     $response = array(
@@ -545,40 +522,34 @@ function deleted_api_keys($_data, $db, $user) {
     $sql = "select $fields from $table $where $wheref order by $order $order_direction limit $start_from,$number_results";
 
 
-
     $adata = array();
 
     foreach ($db->query($sql) as $data) {
 
 
-
-
         switch ($data['API Key Deleted Scope']) {
             case 'Timesheet':
-                $scope =  _('Timesheet machine');
+                $scope = _('Timesheet machine');
                 break;
             case 'Stock':
-                $scope =  _('Stock control app');
+                $scope = _('Stock control app');
                 break;
             case 'Picking':
-                $scope =  _('Picking app');
+                $scope = _('Picking app');
                 break;
             default:
                 $scope = $data['API Key Deleted Scope'];
         }
 
         $adata[] = array(
-            'id'     => (integer)$data['API Key Deleted Key'],
-            'code'   => sprintf('<span class="link" onclick="change_view(\'account/user/%d/api_key/%d\')">%s</span>', $data['API Key Deleted User Key'], $data['API Key Deleted Key'], $data['API Key Deleted Code']),
-            'scope'  => $scope,
-            'deleted_date'  => strftime("%a %e %b %Y %H:%M %Z", strtotime($data['API Key Deleted Date'])),
+            'id'           => (integer)$data['API Key Deleted Key'],
+            'code'         => sprintf('<span class="link" onclick="change_view(\'account/user/%d/api_key/%d\')">%s</span>', $data['API Key Deleted User Key'], $data['API Key Deleted Key'], $data['API Key Deleted Code']),
+            'scope'        => $scope,
+            'deleted_date' => strftime("%a %e %b %Y %H:%M %Z", strtotime($data['API Key Deleted Date'])),
         );
 
 
     }
-
-
-
 
 
     $response = array(
@@ -594,7 +565,6 @@ function deleted_api_keys($_data, $db, $user) {
     );
     echo json_encode($response);
 }
-
 
 
 function api_requests($_data, $db, $user) {

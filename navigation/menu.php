@@ -463,7 +463,7 @@ if ($user->get('User Type') == 'Agent') {
     );
 
     $nav_menu[] = array(
-        '<i class="button far fa-stop fa-fw"></i>',
+        '<i class="button far fa-box fa-fw"></i>',
         _('Products'),
         'agent_parts',
         'agent_parts',

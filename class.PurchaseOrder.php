@@ -1302,7 +1302,7 @@ sum(`Purchase Order Net Amount`) AS items_net, sum(`Purchase Order Extra Cost Am
 
             $amount = $qty * $supplier_part->get('Supplier Part Unit Cost') * $supplier_part->part->get('Part Units Per Package') * $supplier_part->get('Supplier Part Packages Per Carton');
 
-            $extra_amount=round($amount*   $supplier_part->get('Supplier Part Unit Extra Cost Percentage')/100,2) ;
+            $extra_amount=round($amount*  floatval($supplier_part->get('Supplier Part Unit Extra Cost Percentage'))/100,2) ;
             if (is_numeric($supplier_part->get('Supplier Part Carton CBM'))) {
                 $cbm = $qty * $supplier_part->get('Supplier Part Carton CBM');
             } else {

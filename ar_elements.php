@@ -339,7 +339,7 @@ switch ($tab) {
         break;
     case 'ec_sales_list':
         $data = prepare_values($_REQUEST, array('parameters' => array('type' => 'json array')));
-        get_ec_sales_list_elements($db, $data['parameters'], $account,$user);
+        get_ec_sales_list_elements($db, $data['parameters'], $account, $user);
         break;
 
     case 'warehouse.leakages.transactions':
@@ -1475,7 +1475,6 @@ function get_history_elements($db, $data) {
 }
 
 
-
 function get_orders_element_numbers($db, $data, $user) {
 
 
@@ -1796,7 +1795,7 @@ function get_invoices_element_numbers($db, $parameters) {
 
 
     } elseif ($parameters['parent'] == 'category') {
-        $category = get_object('Category',$parameters['parent_key']);
+        $category = get_object('Category', $parameters['parent_key']);
 
 
         $where      = sprintf(
@@ -2206,7 +2205,7 @@ function get_agent_orders_elements($db, $data) {
             break;
         case 'agent':
             $table = '`Purchase Order Dimension` O';
-            $where = sprintf('where  `Purchase Order Agent Key`=%d', $parent_key);
+            $where = sprintf('where  `Purchase Order Parent`="Agent" and `Purchase Order Parent Key`=%d', $parent_key);
             break;
         case 'account':
             $table = '`Purchase Order Dimension` O';
@@ -2223,8 +2222,9 @@ function get_agent_orders_elements($db, $data) {
 
     $elements_numbers = array(
         'state' => array(
+            'InProcess'                   => 0,
             'SubmittedAgent'              => 0,
-            'SubmittedInputtedDispatched' => 0,
+            'InTransit' => 0,
             'ReceivedChecked'             => 0,
             'Placed'                      => 0,
             'Cancelled'                   => 0
@@ -2234,16 +2234,18 @@ function get_agent_orders_elements($db, $data) {
 
     //USE INDEX (`Main Source Type Store Key`)
     $sql = sprintf(
-        "SELECT count(*) AS number,`Purchase Order State` AS element FROM %s    %s  %s GROUP BY `Purchase Order State` ", $table, $where, $where_interval
+        "SELECT count(*) AS number,`Purchase Order State` AS element FROM %s GROUP BY `Purchase Order State` ", $table.' '.$where.' '.$where_interval
     );
+
 
     if ($result = $db->query($sql)) {
         foreach ($result as $row) {
 
-
-            if ($row['element'] == 'Submitted' or $row['element'] == 'Inputted' or $row['element'] == 'Dispatched') {
-                $element = 'SubmittedInputtedDispatched';
-            } elseif ($row['element'] == 'Received' or $row['element'] == 'Checked') {
+            if ($row['element'] == 'Submitted' or $row['element'] == 'SubmittedAgent' ) {
+                $element = 'SubmittedAgent';
+            } elseif ($row['element'] == 'Dispatched' ) {
+                $element = 'InTransit';
+            }elseif ($row['element'] == 'Received' or $row['element'] == 'Checked') {
                 $element = 'ReceivedChecked';
             } else {
                 $element = $row['element'];
@@ -2474,7 +2476,7 @@ function get_category_root_all_parts_elements($db, $data) {
 }
 
 
-function get_ec_sales_list_elements($db, $parameters,$account) {
+function get_ec_sales_list_elements($db, $parameters, $account) {
 
     list(
         $db_interval, $from, $to, $from_date_1yb, $to_1yb
@@ -2497,22 +2499,46 @@ function get_ec_sales_list_elements($db, $parameters,$account) {
 
     include_once('class.Country.php');
 
-    $account_country=new Country('code',$account->get('Account Country Code'));
+    $account_country = new Country('code', $account->get('Account Country Code'));
 
 
+    $european_union_2alpha = array(
+        'NL',
+        'BE',
+        'GB',
+        'BG',
+        'ES',
+        'IE',
+        'IT',
+        'AT',
+        'GR',
+        'CY',
+        'LV',
+        'LT',
+        'LU',
+        'MT',
+        'PT',
+        'PL',
+        'FR',
+        'RO',
+        'SE',
+        'DE',
+        'SK',
+        'SI',
+        'FI',
+        'DK',
+        'CZ',
+        'HU',
+        'EE'
+    );
 
-    $european_union_2alpha=array('NL', 'BE', 'GB', 'BG', 'ES', 'IE', 'IT', 'AT', 'GR', 'CY', 'LV', 'LT', 'LU', 'MT', 'PT', 'PL', 'FR', 'RO', 'SE', 'DE', 'SK', 'SI', 'FI', 'DK', 'CZ', 'HU', 'EE');
+
+    $european_union_2alpha = "'".implode("','", $european_union_2alpha)."'";
 
 
+    $european_union_2alpha = preg_replace('/,?\''.$account_country->get('Country 2 Alpha Code').'\'/', '', $european_union_2alpha);
 
-
-    $european_union_2alpha= "'" . implode("','", $european_union_2alpha) . "'";
-
-
-    $european_union_2alpha=preg_replace('/,?\''.$account_country->get('Country 2 Alpha Code').'\'/','',$european_union_2alpha);
-
-    $european_union_2alpha=preg_replace('/^,/','',$european_union_2alpha);
-
+    $european_union_2alpha = preg_replace('/^,/', '', $european_union_2alpha);
 
 
     $where = ' where `Invoice Address Country 2 Alpha Code` in ('.$european_union_2alpha.')';

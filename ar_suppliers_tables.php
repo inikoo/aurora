@@ -871,6 +871,7 @@ function agent_orders($_data, $db, $user) {
     include_once 'prepare_table/init.php';
 
     $sql        = "select $fields from $table $where $wheref order by $order $order_direction limit $start_from,$number_results";
+   //print $sql;
     $table_data = array();
 
     if ($result = $db->query($sql)) {
@@ -908,7 +909,7 @@ function agent_orders($_data, $db, $user) {
                 'id'          => (integer)$data['Purchase Order Key'],
 
 
-                'public_id' => sprintf('<span class="link" onclick="change_view(\'agent/%d/order/%d\')">%s</span>',$data['Purchase Order Agent Key'],$data['Purchase Order Key'],$data['Purchase Order Public ID']),
+                'public_id' => sprintf('<span class="link" onclick="change_view(\'agent/%d/order/%d\')">%s</span>',$data['Purchase Order Parent Key'],$data['Purchase Order Key'],$data['Purchase Order Public ID']),
                 'date'      => strftime("%e %b %Y", strtotime($data['Purchase Order Creation Date'].' +0:00')),
                 'last_date' => strftime("%a %e %b %Y %H:%M %Z", strtotime($data['Purchase Order Last Updated Date'].' +0:00')),
                 'state'     => $state,
