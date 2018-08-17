@@ -26,15 +26,11 @@ if ($parameters['parent'] == 'account') {
     );
 
 
-} elseif ($parameters['parent'] == 'xsupplier') {
-    $where = sprintf(
-        'where  `Supplier Delivery Parent`="Supplier" and `Supplier Delivery Parent Key`=%d  ', $parameters['parent_key']
-    );
-} elseif ($parameters['parent'] == 'xagent') {
+} if ($parameters['parent'] == 'agent') {
     $where = sprintf(
         'where  `Supplier Delivery Parent`="Agent" and `Supplier Delivery Parent Key`=%d  ', $parameters['parent_key']
     );
-} elseif ($parameters['parent'] == 'xsupplier_part') {
+} elseif ($parameters['parent'] == 'supplier_part') {
 
     $table
            = ' `Purchase Order Transaction Fact` POTF  left join  `Supplier Delivery Dimension` D on (POTF.`Supplier Delivery Key`=D.`Supplier Delivery Key`) ';
@@ -42,19 +38,7 @@ if ($parameters['parent'] == 'account') {
         'where `Supplier Part Key`=%d  ', $parameters['parent_key']
     );
 
-} elseif ($parameters['parent'] == 'xpart') {
-
-    $table
-           = ' `Purchase Order Transaction Fact` POTF  left join  `Supplier Delivery Dimension` D on (POTF.`Supplier Delivery Key`=D.`Supplier Delivery Key`) 
- left join  `Supplier Part Dimension` SP on (POTF.`Supplier Part Key`=SP.`Supplier Part Key`)
-
-	 left join  `Part Dimension` P on (P.`Part SKU`=SP.`Supplier Part Part SKU`)
-
-	
-	';
-    $where = sprintf('where `Part SKU`=%d  ', $parameters['parent_key']);
-
-} else {
+}  else {
     exit("unknown parent: ".$parameters['parent']." \n");
 }
 

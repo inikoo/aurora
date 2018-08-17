@@ -1588,9 +1588,7 @@ if ($count_view_path > 0) {
                 if (is_numeric($view_path[0])) {
                     $key = $view_path[0];
 
-                    if ($user->get('User Type') == 'Agent' and $user->get(
-                            'User Parent Key'
-                        ) != $key) {
+                    if ($user->get('User Type') == 'Agent' and $user->get('User Parent Key') != $key) {
                         $module  = 'utils';
                         $section = 'forbidden';
                         break;

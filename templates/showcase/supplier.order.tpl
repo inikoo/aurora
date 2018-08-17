@@ -177,7 +177,7 @@
                       class="{if $smarty.foreach.deliveries.index != 0}hide{/if} index_{$smarty.foreach.deliveries.index}">{$dn->get('Public ID')}</span>
                 {/foreach}&nbsp;</span>
             </div>
-            <div class="truck">
+            <div class="dot">
             </div>
         </li>
 

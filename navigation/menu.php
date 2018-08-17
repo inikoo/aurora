@@ -247,7 +247,7 @@ if ($user->can_view('stores')) {
 
     if ($user->get('User Hooked Store Key')) {
         $nav_menu[] = array(
-            '<i class="button far fa-cube fa-fw"></i>',
+            '<i class="button far fa-store fa-fw"></i>',
             _('Products'),
             'store/'.$user->get('User Hooked Store Key'),
             'products',
@@ -257,7 +257,7 @@ if ($user->can_view('stores')) {
 
     } else {
         $nav_menu[] = array(
-            '<i class="button far fa-cube fa-fw"></i>',
+            '<i class="button far fa-store fa-fw"></i>',
             _('Stores'),
             'stores',
             'products',
@@ -332,7 +332,7 @@ if ($user->can_view('parts')) {
 
 
     $nav_menu[] = array(
-        '<i class="button far fa-boxes fa-fw"></i>',
+        '<i class="button far fa-box fa-fw"></i>',
         _('Inventory'),
         'inventory/dashboard',
         'inventory',
@@ -409,7 +409,7 @@ if ($user->can_view('production') and $account->get('Account Manufacturers') > 0
 
 if ($user->can_view('staff')) {
     $nav_menu[] = array(
-        '<i class="button far fa-address-card fa-fw"></i>',
+        '<i class="button far fa-sitemap fa-fw"></i>',
         _('Manpower'),
         'hr',
         'hr',
@@ -514,7 +514,7 @@ if ($user->can_view('account')) {
 
 
     $nav_menu[] = array(
-        '<i class="button far fa-cogs fa-fw"></i>',
+        '<i class="button far fa-toolbox fa-fw"></i>',
         _('Account'),
         '/account',
         'account',

@@ -906,21 +906,11 @@ function agent_orders($_data, $db, $user) {
 
             $table_data[] = array(
                 'id'          => (integer)$data['Purchase Order Key'],
-                'parent_key'  => (integer)$data['Purchase Order Parent Key'],
-                'parent_type' => strtolower($data['Purchase Order Parent']),
-                'parent'      => strtolower(
-                    $data['Purchase Order Parent Name']
-                ),
 
-                'public_id' => $data['Purchase Order Public ID'],
-                'date'      => strftime(
-                    "%e %b %Y", strtotime($data['Purchase Order Creation Date'].' +0:00')
-                ),
-                'last_date' => strftime(
-                    "%a %e %b %Y %H:%M %Z", strtotime(
-                                              $data['Purchase Order Last Updated Date'].' +0:00'
-                                          )
-                ),
+
+                'public_id' => sprintf('<span class="link" onclick="change_view(\'agent/%d/order/%d\')">%s</span>',$data['Purchase Order Agent Key'],$data['Purchase Order Key'],$data['Purchase Order Public ID']),
+                'date'      => strftime("%e %b %Y", strtotime($data['Purchase Order Creation Date'].' +0:00')),
+                'last_date' => strftime("%a %e %b %Y %H:%M %Z", strtotime($data['Purchase Order Last Updated Date'].' +0:00')),
                 'state'     => $state,
 
                 'total_amount' => money(
@@ -1057,6 +1047,7 @@ function agent_client_orders($_data, $db, $user) {
 
 function agent_deliveries($_data, $db, $user) {
 
+/*
     if ($user->get('User Type') != 'Agent') {
         echo json_encode(
             array(
@@ -1067,8 +1058,9 @@ function agent_deliveries($_data, $db, $user) {
         exit;
     }
 
-    $_data['parameters']['agent_key'] = $user->get('User Parent Key');
 
+    $_data['parameters']['agent_key'] = $user->get('User Parent Key');
+*/
 
     $rtext_label = 'delivery';
 
@@ -1110,7 +1102,7 @@ function agent_deliveries($_data, $db, $user) {
 
             $table_data[] = array(
                 'id'        => (integer)$data['Supplier Delivery Key'],
-                'public_id' => sprintf('<span class="link" onClick="change_view(\'agent_delivery/%d\')">%s</span>', $data['Supplier Delivery Key'], $data['Supplier Delivery Public ID']),
+                'public_id' => sprintf('<span class="link" onClick="change_view(\'agent/%d/delivery/%d\')">%s</span>',$data['Supplier Delivery Parent Key'], $data['Supplier Delivery Key'], $data['Supplier Delivery Public ID']),
                 'date'      => strftime("%e %b %Y", strtotime($data['Supplier Delivery Creation Date'].' +0:00')),
                 'last_date' => strftime("%a %e %b %Y %H:%M %Z", strtotime($data['Supplier Delivery Last Updated Date'].' +0:00')),
                 'state'     => $state,
@@ -1734,8 +1726,12 @@ function delivery_items($_data, $db, $user) {
 
             $delivery_quantity = sprintf(
                 '<span class="delivery_quantity" id="delivery_quantity_%d" key="%d" item_key="%d" item_historic_key=%d on="1" ><input class="order_qty width_50" value="%s" ovalue="%s"> <i onClick="save_item_qty_change(this)" class="fa  fa-minus fa-fw button" aria-hidden="true"></i></span>',
-                $data['Purchase Order Transaction Fact Key'], $data['Purchase Order Transaction Fact Key'], $data['Supplier Part Key'], $data['Supplier Part Historic Key'], $quantity + 0, $quantity + 0
+                $data['Purchase Order Transaction Fact Key'], $data['Purchase Order Transaction Fact Key'], $data['Supplier Part Key'], $data['Supplier Part Historic Key'],
+                $quantity ,
+                $quantity
             );
+
+
 
 
             $table_data[] = array(

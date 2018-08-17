@@ -23,12 +23,10 @@ $table_filters = array(
 );
 
 $parameters = array(
-    'parent'     => 'account',
-    'parent_key' => ''
+    'parent'     => $state['object'],
+    'parent_key' => $state['key'],
 
 );
-
-
 
 $table_buttons[] = array(
     'icon'  => 'plus',
