@@ -62,7 +62,7 @@ $('#view_'+view).addClass('selected');
 
 grid.columns.findWhere({ name: 'name'} ).set("renderable", false)
 
-if(view=='privilegies'){
+if(view=='privileges'){
 grid.columns.findWhere({ name: 'name'} ).set("renderable", true)
 
 }else if(view=='groups'){

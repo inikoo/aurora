@@ -18,7 +18,7 @@ $default = $user->get_tab_defaults($tab);
 
 
 $table_views = array(
-    'privilegies' => array('label' => _('Overview')),
+    'privileges' => array('label' => _('Overview')),
     'groups'      => array('label' => _('Permissions')),
     'weblog'      => array('label' => _('Syslog')),
 
