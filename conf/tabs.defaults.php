@@ -2935,7 +2935,7 @@ $tab_defaults = array(
         'f_field'     => 'code'
     ),
     'account.users.staff' => array(
-        'view'        => 'privilegies',
+        'view'        => 'privileges',
         'sort_key'    => 'id',
         'sort_order'  => 1,
         'rpp'         => 100,
@@ -3060,7 +3060,7 @@ $tab_defaults = array(
     ),
 
     'account.users.suppliers'   => array(
-        'view'        => 'privilegies',
+        'view'        => 'privileges',
         'sort_key'    => 'id',
         'sort_order'  => 1,
         'rpp'         => 100,
@@ -3068,7 +3068,7 @@ $tab_defaults = array(
         'f_field'     => 'handle'
     ),
     'account.users.contractors' => array(
-        'view'        => 'privilegies',
+        'view'        => 'privileges',
         'sort_key'    => 'id',
         'sort_order'  => 1,
         'rpp'         => 100,
@@ -3076,7 +3076,7 @@ $tab_defaults = array(
         'f_field'     => 'handle'
     ),
     'account.users.agents'      => array(
-        'view'        => 'privilegies',
+        'view'        => 'privileges',
         'sort_key'    => 'id',
         'sort_order'  => 1,
         'rpp'         => 100,
@@ -3084,7 +3084,7 @@ $tab_defaults = array(
         'f_field'     => 'handle'
     ),
     'account.deleted.users'     => array(
-        'view'        => 'privilegies',
+        'view'        => 'privileges',
         'sort_key'    => 'id',
         'sort_order'  => 1,
         'rpp'         => 100,

@@ -95,7 +95,7 @@ grid.columns.findWhere({ name: 'websites'} ).set("renderable", false)
 
 grid.columns.findWhere({ name: 'name'} ).set("renderable", false)
 
-if(view=='privilegies'){
+if(view=='privileges'){
 grid.columns.findWhere({ name: 'stores'} ).set("renderable", true)
 grid.columns.findWhere({ name: 'warehouses'} ).set("renderable", true)
 grid.columns.findWhere({ name: 'websites'} ).set("renderable", true)
