@@ -4517,18 +4517,19 @@ $modules = array(
                         'icon'  => 'hand-receiving'
                     ),
                     'agent.orders'         => array(
-                        'label' => _('Orders'),
+                        'label' => _('Purchase orders'),
                         'icon'  => 'clipboard'
                     ),
                     'agent.deliveries'     => array(
                         'label' => _('Deliveries'),
                         'icon'  => 'truck'
                     ),
+                    /*
                     'agent.agent_orders'   => array(
                         'label' => _("Agent's PO"),
                         'icon'  => 'clipboard fa-flip-horizontal'
                     ),
-
+*/
                     'agent.history' => array(
                         'label' => _('History/Notes'),
                         'icon'  => 'road',
@@ -7386,13 +7387,14 @@ $modules = array(
                         ),
                         'icon'  => 'truck'
                     ),
+                    /*
                     'agent.agent_orders'   => array(
                         'label' => _(
                             "Agent's PO"
                         ),
                         'icon'  => 'clipboard fa-flip-horizontal'
                     ),
-
+*/
                     'agent.history' => array(
                         'label' => _('History/Notes'),
                         'icon'  => 'road',

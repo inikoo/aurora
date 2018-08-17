@@ -23,13 +23,11 @@ function get_part_showcase($data, $smarty, $user, $db) {
   ///  foreach($part->get_locations('part_location_object') as $pl){
    //    $pl->update_stock();
    //
-
-   // $part->update_next_deliveries_data();
    // $part->update_next_deliveries_data();
 
    // $part->update_stock_run();
 
-    $part->update_stock();
+  //  $part->update_stock();
   //  $part->validate_barcode();
 
     //$part->update_available_forecast();

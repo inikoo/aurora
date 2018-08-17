@@ -6,7 +6,7 @@ include_once 'class.Supplier.php';
 
 class PurchaseOrder extends DB_Table {
 
-    function PurchaseOrder($arg1 = false, $arg2 = false) {
+    function __construct($arg1 = false, $arg2 = false) {
 
         global $db;
         $this->db = $db;
@@ -866,13 +866,9 @@ sum(`Purchase Order Net Amount`) AS items_net, sum(`Purchase Order Extra Cost Am
         } else {
 
 
-            if ($this->get('Purchase Order State') == 'Submitted') {
+            if ($this->get('Purchase Order State') == 'Submitted' or  $this->get('Purchase Order State') == 'SubmittedAgent') {
 
-                $pending_items_delivery = $this->get(
-                        'Purchase Order Ordered Number Items'
-                    ) - $this->get(
-                        'Purchase Order Number Supplier Delivery Items'
-                    );
+                $pending_items_delivery = $this->get('Purchase Order Ordered Number Items') - $this->get('Purchase Order Number Supplier Delivery Items');
                 if (!$pending_items_delivery > 0) {
 
                     $this->update_state('Inputted');
@@ -900,30 +896,28 @@ sum(`Purchase Order Net Amount`) AS items_net, sum(`Purchase Order Extra Cost Am
 
                 if ($index > $max_index) {
                     $max_index          = $index;
-                    $max_delivery_state = $delivery->get(
-                        'Supplier Delivery State'
-                    );
+                    $max_delivery_state = $delivery->get('Supplier Delivery State');
                 }
 
                 if ($index <= $min_index) {
 
 
                     $min_index          = $index;
-                    $min_delivery_state = $delivery->get(
-                        'Supplier Delivery State'
-                    );
+                    $min_delivery_state = $delivery->get('Supplier Delivery State');
                 }
 
 
             }
 
 
-            $this->update(
+            $this->fast_update(
                 array(
                     'Purchase Order Max Supplier Delivery State' => $max_delivery_state,
-                ), 'no_history'
+                )
             );
 
+
+          //  print $this->get('State Index').' '.$min_delivery_state;
 
             if ($this->get('State Index') >= 60) {
                 if ($min_delivery_state == 'InProcess') {
