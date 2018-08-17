@@ -1,5 +1,5 @@
 {assign deliveries $order->get_deliveries('objects')}
-<div style="padding:20px;border-bottom:1px solid #ccc" class="{if !$order->get('Purchase Order Agent Key')}hide{/if}">
+<div style="padding:20px;border-bottom:1px solid #ccc" class="{if !$order->get('Purchase Order Agent Key')}hide{/if} hide">
 
 <span class="fulfilled_by">
     {if $order->get('State Index')==10} {t}This purchase order will be fulfilled by{/t} <span class="button" onClick="change_view('/agent/{$order->get('Purchase Order Agent Key')}')">{$order->get('Agent Name')} <i class="fa fa-user-secret" aria-hidden="true"></i></span>
@@ -236,10 +236,33 @@
         <div style="clear:both">
         </div>
     </div>
+    <div style=" align-items: stretch;flex: 1" class="block {if !$order->get('Purchase Order Agent Key')}hide{/if}">
+        <div class="data_container" style="padding:5px 10px">
+            <div class="data_field">
+                <i class="fa fa-user-secret fa-fw" aria-hidden="true" title="{t}Agent{/t}"></i> <span
+                        onclick="change_view('/agent/{$order->get('Purchase Order Agent Key')}')"
+                        class="link Agent_Name">{$order->get('Agent Name')}</span>
+            </div>
+            <div class="data_field">
+                <i class="fa fa-share fa-fw" aria-hidden="true" title="Incoterm"></i> <span
+                        class="Purchase_Order_Incoterm">{$order->get('Purchase Order Incoterm')}</span>
+            </div>
+            <div class="data_field">
+                <i class="fa fa-arrow-circle-right fa-fw" aria-hidden="true" title="{t}Port of export{/t}"></i> <span
+                        class="Purchase_Order_Port_of_Export">{$order->get('Port of Export')}</span>
+            </div>
+            <div class="data_field">
+                <i class="fa fa-arrow-circle-left fa-fw" aria-hidden="true" title="{t}Port of import{/t}"></i> <span
+                        class="Purchase_Order_Port_of_Import">{$order->get('Port of Import')}</span>
+            </div>
+        </div>
+        <div style="clear:both">
+        </div>
+    </div>
 
 
     <div class="block " style="align-items: stretch;flex: 1;">
-        <div class="state" style="height:30px;margin-bottom:10px;position:relative;top:-5px">
+        <div class="state" style="height:30px;margin-bottom:0px">
             <div id="back_operations">
                 <div id="delete_operations"
                      class="order_operation {if $order->get('State Index')!=10    }hide{/if}">
@@ -355,9 +378,47 @@
 
             </div>
         </div>
+
+
+        <table border="0" class=" ">
+
+            <tr style="    border-bottom: 1px solid #ccc;">
+                <td style="text-align: center;padding: 0px" colspan="2">
+                    <a href="/pdf/supplier.order.pdf.php?id={$order->id}" target="_blank"><img class="button pdf_link"  style="width: 50px;height:16px;position: relative;top:2px" src="/art/pdf.gif"></a>
+
+
+
+                </td>
+            </tr>
+
+
+            <tr>
+                <td style="text-align: center" colspan="2">
+                    <span style=""><i class="fa fa-stop fa-fw discreet" aria-hidden="true"></i> <span class="Purchase_Order_Number_Items">{$order->get('Number Items')}</span></span>
+                    <span class="{if $order->get('State Index')<60}super_discreet{/if}" style="padding-left:20px"><i
+                                class="fa fa-arrow-circle-down  fa-fw discreet" aria-hidden="true"></i> <span
+                                class="Purchase_Order_Number_Supplier_Delivery_Items">{$order->get('Number Supplier Delivery Items')}</span></span>
+                    <span class="{if $order->get('State Index')<80}super_discreet{/if}" style="padding-left:20px"><i
+                                class="fa fa-inventory fa-fw discreet" aria-hidden="true"></i> <span
+                                class="Purchase_Order_Number_Placed_Items">{$order->get('Number Placed Items')}</span></span>
+                </td>
+            </tr>
+            <tr>
+
+                    <td  style="text-align: center" class=" Purchase_Order_Weight" title="{t}Weight{/t}">{$order->get('Weight')}</td>
+                    <td style="text-align: center" class="Purchase_Order_CBM" title="{t}CBM{/t}">{$order->get('CBM')}</td>
+
+
+            </tr>
+
+        </table>
+
+    </div>
+    <div class="block " style="align-items: stretch;flex: 1 ;padding-top: 0px">
+
         <div id="create_delivery"
              class="delivery_node {if ({$order->get('State Index')|intval} < 20 or ($order->get('Purchase Order Ordered Number Items')-$order->get('Purchase Order Number Supplier Delivery Items'))==0) or $parent->get('Parent Skip Inputting')=='Yes' }hide{/if}"
-             style="height:30px;clear:both;border-top:1px solid #ccc;border-bottom:1px solid #ccc">
+             style="height:30px;clear:both;border-bottom:1px solid #ccc">
             <div id="back_operations">
             </div>
             <span style="float:left;padding-left:10px;padding-top:5px" class="very_discreet italic"><i
@@ -383,28 +444,10 @@
                 </div>
             {/foreach}
         </div>
-    </div>
-    <div class="block " style="align-items: stretch;flex: 1 ">
-        <table border="0" class="info_block acenter">
-            <tr>
-                <td style="text-align: center" >
-                    <span style=""><i class="fa fa-stop fa-fw discreet" aria-hidden="true"></i> <span class="Purchase_Order_Number_Items">{$order->get('Number Items')}</span></span>
-                    <span class="{if $order->get('State Index')<60}super_discreet{/if}" style="padding-left:20px"><i
-                                class="fa fa-arrow-circle-down  fa-fw discreet" aria-hidden="true"></i> <span
-                                class="Purchase_Order_Number_Supplier_Delivery_Items">{$order->get('Number Supplier Delivery Items')}</span></span>
-                    <span class="{if $order->get('State Index')<80}super_discreet{/if}" style="padding-left:20px"><i
-                                class="fa fa-inventory fa-fw discreet" aria-hidden="true"></i> <span
-                                class="Purchase_Order_Number_Placed_Items">{$order->get('Number Placed Items')}</span></span>
-                </td>
-            </tr>
-            <tr>
-                <td  style="text-align: center" class=" Purchase_Order_Weight" title="{t}Weight{/t}">{$order->get('Weight')}</td>
-            </tr>
-            <tr>
-                <td style="text-align: center" class="Purchase_Order_CBM" title="{t}CBM{/t}">{$order->get('CBM')}</td>
-            </tr>
-        </table>
-        <div style="clear:both">
+
+
+
+            <div style="clear:both">
         </div>
     </div>
     <div class="block " style="align-items: stretch;flex: 1 ">
@@ -448,10 +491,7 @@
 <script>
 
 
-    $('#purchase_order_pdf').click(function () {
 
-        window.open('/pdf/supplier.order.pdf.php?id={$order->id}');
-    });
 
 
     $('#new_delivery').on('input propertychange', '.new_delivery_field', function (evt) {

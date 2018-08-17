@@ -197,7 +197,7 @@
 
             <tr class="date">
                 <td>
-                    <img class="button pdf_link" onclick="download_pdf($('.pdf_invoice_dialog img'))" style="width: 50px;height:16px;position: relative;top:2px" src="/art/pdf.gif"> <i onclick="show_pdf_invoice_dialog_in_invoce_showcase(this)" title="{t}PDF invoice display settings{/t}" class="far very_discreet fa-sliders-h-square button"></i>
+                    <img class="button pdf_link" onclick="download_pdf($('.pdf_invoice_dialog img'))" style="width: 50px;height:16px;position: relative;top:2px" src="/art/pdf.gif"> <i onclick="show_pdf_invoice_dialog_in_invoice_showcase(this)" title="{t}PDF invoice display settings{/t}" class="far very_discreet fa-sliders-h-square button"></i>
 
                     <div class="pdf_invoice_dialog options_dialog  hide" style="min-width: 150px;text-align: left" data-data='{ "type":"invoice","invoice_key":{$invoice->id}}'>
                         <i onclick="$('.pdf_invoice_dialog').addClass('hide')" style="float: right;margin-left: 10px" class="fa fa-window-close button"></i>
@@ -265,7 +265,7 @@
     $('#totals').height($('#object_showcase').height())
     $('#dates').height($('#object_showcase').height())
 
-    function show_pdf_invoice_dialog_in_invoce_showcase(element){
+    function show_pdf_invoice_dialog_in_invoice_showcase(element){
         var anchor_x=$(element).prev('.pdf_link')
         var anchor_y=$(element).closest('tr')
         $('.pdf_invoice_dialog').removeClass('hide').offset({

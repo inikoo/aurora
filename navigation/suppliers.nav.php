@@ -1711,18 +1711,6 @@ function get_purchase_order_navigation($data, $smarty, $user, $db, $account) {
     }
 
 
-    $right_buttons[] = array(
-        'icon'  => 'share-alt',
-        'title' => '{t}Share{/t}',
-        'id'    => 'share_purchase_order'
-    );
-
-    $right_buttons[] = array(
-        'icon'  => 'print',
-        'title' => '{t}Print{/t}',
-        'id'    => 'purchase_order_pdf'
-    );
-
 
     $title = _('Purchase Order').' <span class="Purchase_Order_Public_ID id">'.$object->get('Public ID').'</span>';
 
