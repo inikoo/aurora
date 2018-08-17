@@ -1242,30 +1242,25 @@ $elements_options = array(
         'state' => array(
             'label' => _('State'),
             'items' => array(
-
-
-                'SubmittedAgent'                   => array(
-                    'label'    => _(
-                        'Submitted to agent'
-                    ),
+                'InProcess'                   => array(
+                    'label'    => _('In process'),
                     'selected' => true
                 ),
-                'SubmittedInputtedDispatched' => array(
-                    'label'    => _(
-                        'Submitted, in transit'
-                    ),
+
+                'SubmittedAgent'                   => array(
+                    'label'    => _('Submitted to agent'),
+                    'selected' => true
+                ),
+                'InTransit'                   => array(
+                    'label'    => _('In transit'),
                     'selected' => true
                 ),
                 'ReceivedChecked'             => array(
-                    'label'    => _(
-                        'In warehouse'
-                    ),
+                    'label'    => _('In warehouse'),
                     'selected' => true
                 ),
                 'Placed'                      => array(
-                    'label'    => _(
-                        'Placed'
-                    ),
+                    'label'    => _('Placed'),
                     'selected' => true
                 ),
                 'Cancelled'                   => array(

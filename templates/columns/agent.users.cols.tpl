@@ -15,12 +15,12 @@ cell: "string",
 
 },
 {
-name: "active",
+name: "active_icon",
 label: "{t}Active{/t}",
 editable: false,
 sortType: "active",
-{if $sort_key=='active'}direction: '{if $sort_order==1}descending{else}ascending{/if}',{/if}
-cell: "string"
+{if $sort_key=='active_icon'}direction: '{if $sort_order==1}descending{else}ascending{/if}',{/if}
+cell: "Html"
 },
 {
 name: "handle",
@@ -29,27 +29,13 @@ editable: false,
 sortType: "toggle",
 {if $sort_key=='handle'}direction: '{if $sort_order==1}descending{else}ascending{/if}',{/if}
 
-cell: Backgrid.HtmlCell.extend({
-events: {
-"click": function() {
-change_view('account/user/' +this.model.get("id"))
-}
-},
-className: "link"
-
-})
+cell: Backgrid.HtmlCell.extend({ })
 
 }, {
 name: "name",
 label: "{t}Name{/t}",
 sortType: "toggle",
-cell: Backgrid.HtmlCell.extend({
-events: {
-"click": function() {
-change_view('employee/' + +this.model.get("employee_key"))
-}
-}
-})
+cell: Backgrid.HtmlCell.extend({ })
 }
 
 ]
@@ -61,11 +47,9 @@ $('#view_'+view).addClass('selected');
 
 
 grid.columns.findWhere({ name: 'name'} ).set("renderable", false)
-
-if(view=='privileges'){
+if(view=='overview'){
 grid.columns.findWhere({ name: 'name'} ).set("renderable", true)
 
-}else if(view=='groups'){
 }else if(view=='weblog'){
 
 
