@@ -534,7 +534,7 @@ function agents($_data, $db, $user, $account) {
 
             $table_data[] = array(
                 'id'             => (integer)$data['Agent Key'],
-                'code'           => $data['Agent Code'],
+                'code'           => sprintf('<span class="link" onclick="change_view(\'agent/%d\')">%s</span>',$data['Agent Key'],$data['Agent Code']),
                 'name'           => $data['Agent Name'],
                 'suppliers'      => number($data['Agent Number Suppliers']),
                 'supplier_parts' => number($data['Agent Number Parts']),

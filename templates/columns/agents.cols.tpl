@@ -13,16 +13,8 @@ editable: false,
 sortType: "toggle",
 {if $sort_key=='id'}direction: '{if $sort_order==1}descending{else}ascending{/if}',{/if}
 
-cell: Backgrid.HtmlCell.extend({
-orderSeparator: '',
-events: {
-"click": function() {
-change_view('agent/' + this.model.get("id"))
-}
-},
-className: "link"
+cell: Backgrid.HtmlCell.extend({ })
 
-})
 
 }, {
 name: "name",

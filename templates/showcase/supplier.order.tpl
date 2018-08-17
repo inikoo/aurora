@@ -421,8 +421,7 @@
              style="height:30px;clear:both;border-bottom:1px solid #ccc">
             <div id="back_operations">
             </div>
-            <span style="float:left;padding-left:10px;padding-top:5px" class="very_discreet italic"><i
-                        class="fa fa-truck" aria-hidden="true"></i> {t}Delivery{/t}</span>
+            <span style="float:left;padding-left:10px;padding-top:5px" class="very_discreet italic"><i class="fa fa-truck" aria-hidden="true"></i> {t}Delivery{/t}</span>
             <div id="forward_operations">
                 <div id="received_operations"
                      class="order_operation {if !(   $order->get('Purchase Order State')=='Submitted' or  $order->get('Purchase Order State')=='SubmittedAgent' or  $order->get('Purchase Order State')=='Send') }hide{/if}">
@@ -435,12 +434,9 @@
         </div>
         <div>
             {foreach from=$deliveries item=dn}
-                <div class="delivery_node"
-                     style="height:30px;clear:both;border-top:1px solid #ccc;border-bottom:1px solid #ccc">
-                    <span style="float:left;padding-left:10px;padding-top:5px"> <span class="button"
-                                                                                      onclick="change_view('{$order->get('Purchase Order Parent')|lower}/{$order->get('Purchase Order Parent Key')}/delivery/{$dn->id}')"> <i
-                                    class="fa fa-truck  "
-                                    aria-hidden="true"></i> {$dn->get('Public ID')}</span> ({$dn->get('State')}) </span>
+                <div class="delivery_node" style="height:30px;clear:both;border-bottom:1px solid #ccc">
+                    <span style="float:left;padding-left:10px;padding-top:5px"> <span class="button" onclick="change_view('{$order->get('Purchase Order Parent')|lower}/{$order->get('Purchase Order Parent Key')}/delivery/{$dn->id}')">
+                            <i class="fa fa-truck"></i> {$dn->get('Public ID')}</span> ({$dn->get('State')}) </span>
                 </div>
             {/foreach}
         </div>
