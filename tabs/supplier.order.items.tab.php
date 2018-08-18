@@ -38,7 +38,8 @@ $parameters = array(
 
 $table_buttons   = array();
 $table_buttons[] = array(
-    'icon'       => 'stop',
+    'icon_classes'       => 'far fa-th-list fa-fw',
+    'icon'       => 'th-list',
     'id'         => 'all_available_items',
     'class'      => 'items_operation'.($state['_object']->get('Purchase Order State') != 'InProcess' ? ' hide' : ''),
     'title'      => _("All supplier's parts"),

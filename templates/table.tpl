@@ -430,7 +430,7 @@
 
 
     {else}
-        <i {if isset($button.id) and $button.id }id="icon_{$button.id}"{/if} class=" fa fa-{$button.icon} fa-fw"></i>
+        <i {if isset($button.id) and $button.id }id="icon_{$button.id}"{/if} class="{if isset($button.icon_classes)}{$button.icon_classes}{else}fa fa-{$button.icon} fa-fw{/if}"></i>
         {/if}
 
         </div>
