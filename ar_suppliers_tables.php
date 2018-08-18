@@ -1465,6 +1465,30 @@ function order_items($_data, $db, $user, $account) {
                 $image = '';
             }
 
+
+
+
+
+            $info='';
+
+            if ($data['Part Next Deliveries Data'] == '') {
+                $next_deliveries= array();
+            } else {
+                $next_deliveries= json_decode($data['Part Next Deliveries Data'], true);
+            }
+
+            $info.='<div border="0" style="font-size: small" class="as_table">';
+
+            foreach($next_deliveries as $next_delivery){
+                if($next_delivery['po_key']!=$data['Purchase Order Key']){
+                    $info.='<div class="as_row "><div class="as_cell" >'.$next_delivery['formatted_link'].'</div><div class="padding_left_20 as_cell strong" title="'._('Cartorns ordered').'">+'.number($next_delivery['raw_qty']).'</div></div>';
+                }
+            }
+
+
+            $info.='</div>';
+
+
          //   $image = '';
             $table_data[] = array(
 
@@ -1480,7 +1504,7 @@ function order_items($_data, $db, $user, $account) {
 
 
                 'reference' => $reference,
-
+                'info' => $info,
 
                 'description'       => $description,
                 'description_sales' => $description_sales,
@@ -2729,6 +2753,27 @@ function order_supplier_all_parts($_data, $db, $user, $account) {
                 $image = '';
             }
 
+
+
+            $info='';
+
+            if ($data['Part Next Deliveries Data'] == '') {
+                $next_deliveries= array();
+            } else {
+                $next_deliveries= json_decode($data['Part Next Deliveries Data'], true);
+            }
+
+            $info.='<div border="0" style="font-size: small" class="as_table">';
+
+            foreach($next_deliveries as $next_delivery){
+                if($next_delivery['po_key']!=$purchase_order->id){
+                    $info.='<div class="as_row "><div class="as_cell" >'.$next_delivery['formatted_link'].'</div><div class="padding_left_20 as_cell strong" title="'._('Cartorns ordered').'">+'.number($next_delivery['raw_qty']).'</div></div>';
+                }
+            }
+
+
+            $info.='</div>';
+
             $table_data[] = array(
                 'id'               => (integer)$data['Supplier Part Key'],
                 'supplier_key'     => (integer)$data['Supplier Part Supplier Key'],
@@ -2747,7 +2792,7 @@ function order_supplier_all_parts($_data, $db, $user, $account) {
 
                 'description'       => $description,
                 'description_sales' => $description_sales,
-
+                'info' => $info,
 
                 'status'    => $status,
                 'cost'      => money(

@@ -304,7 +304,11 @@ class Part extends Asset {
 
 
             $sql = sprintf(
-                'SELECT  `Purchase Order Transaction State`,`Supplier Delivery Parent`,`Supplier Delivery Parent Key`,ifnull(`Supplier Delivery Quantity`,0) AS qty ,ifnull(`Supplier Delivery Placed Quantity`,0) AS placed,POTF.`Supplier Delivery Key`,`Supplier Delivery Public ID` FROM `Purchase Order Transaction Fact` POTF LEFT JOIN `Supplier Delivery Dimension` PO  ON (PO.`Supplier Delivery Key`=POTF.`Supplier Delivery Key`)  WHERE POTF.`Supplier Part Key` IN (%s)  AND  POTF.`Supplier Delivery Key` IS NOT NULL AND  (`Supplier Delivery Transaction Placed`!="Yes"  OR `Supplier Delivery Transaction Placed` IS NULL)   ',
+                'SELECT  `Supplier Part Packages Per Carton`,`Purchase Order Key`,`Purchase Order Transaction State`,`Supplier Delivery Parent`,`Supplier Delivery Parent Key`,ifnull(`Supplier Delivery Quantity`,0) AS qty ,ifnull(`Supplier Delivery Placed Quantity`,0) AS placed,POTF.`Supplier Delivery Key`,`Supplier Delivery Public ID` FROM 
+                `Purchase Order Transaction Fact` POTF LEFT JOIN 
+                `Supplier Delivery Dimension` PO  ON (PO.`Supplier Delivery Key`=POTF.`Supplier Delivery Key`)  
+                 left join  `Supplier Part Dimension` SP on (POTF.`Supplier Part Key`=SP.`Supplier Part Key`)
+                WHERE POTF.`Supplier Part Key` IN (%s)  AND  POTF.`Supplier Delivery Key` IS NOT NULL AND  (`Supplier Delivery Transaction Placed`!="Yes"  OR `Supplier Delivery Transaction Placed` IS NULL)   ',
                 join($supplier_parts, ',')
             );
 
@@ -322,14 +326,17 @@ class Part extends Asset {
                         $next_deliveries_data[] = array(
                             'type'           => 'delivery',
                             'qty'            => $qty,
+                            'raw_qty'            => $qty,
+                            'qty_sko'            => $qty*$row['Supplier Part Packages Per Carton'],
                             'date'           => '',
                             'formatted_link' => sprintf(
-                                '<span class="link" onclick="change_view(\'%s/%d/delivery/%d\')"><i class="fa fa-truck" aria-hidden="true"></i> %s</span>', strtolower($row['Supplier Delivery Parent']), $row['Supplier Delivery Parent Key'], $row['Supplier Delivery Key'],
+                                '<i class="fal fa-truck fa-fw" ></i> <i style="visibility: hidden" class="fal fa-truck fa-fw" ></i> <span class="link" onclick="change_view(\'%s/%d/delivery/%d\')"> %s</span>', strtolower($row['Supplier Delivery Parent']), $row['Supplier Delivery Parent Key'], $row['Supplier Delivery Key'],
                                 $row['Supplier Delivery Public ID']
                             ),
                             'link'           => sprintf('%s/%d/delivery/%d', strtolower($row['Supplier Delivery Parent']), $row['Supplier Delivery Parent Key'], $row['Supplier Delivery Key']),
                             'order_id'       => $row['Supplier Delivery Public ID'],
-                            'state'          => $row['Purchase Order Transaction State']
+                            'state'          => $row['Purchase Order Transaction State'],
+                            'po_key'         => $row['Purchase Order Key']
                         );
 
 
@@ -347,28 +354,35 @@ class Part extends Asset {
 
 
             $sql = sprintf(
-                'SELECT POTF.`Purchase Order Transaction State`,`Purchase Order Quantity`,`Supplier Delivery Key` ,`Purchase Order Estimated Receiving Date`,`Purchase Order Public ID`,POTF.`Purchase Order Key` FROM `Purchase Order Transaction Fact` POTF LEFT JOIN `Purchase Order Dimension` PO  ON (PO.`Purchase Order Key`=POTF.`Purchase Order Key`)  WHERE `Supplier Part Key`IN (%s) AND  POTF.`Supplier Delivery Key` IS NULL AND POTF.`Purchase Order Transaction State` NOT IN ("Placed","Cancelled") ',
+                'SELECT `Supplier Part Packages Per Carton`,POTF.`Purchase Order Transaction State`,`Purchase Order Quantity`,`Supplier Delivery Key` ,`Purchase Order Estimated Receiving Date`,`Purchase Order Public ID`,POTF.`Purchase Order Key` 
+        FROM `Purchase Order Transaction Fact` POTF LEFT JOIN `Purchase Order Dimension` PO  ON (PO.`Purchase Order Key`=POTF.`Purchase Order Key`)  
+          left join  `Supplier Part Dimension` SP on (POTF.`Supplier Part Key`=SP.`Supplier Part Key`)
+        
+        WHERE POTF.`Supplier Part Key`IN (%s) AND  POTF.`Supplier Delivery Key` IS NULL AND POTF.`Purchase Order Transaction State` NOT IN ("Placed","Cancelled") ',
                 join($supplier_parts, ',')
             );
 
             if ($result = $this->db->query($sql)) {
                 foreach ($result as $row) {
 
-                    $qty = $row['Purchase Order Quantity'];
+                    $raw_qty = $row['Purchase Order Quantity'];
 
 
                     if ($row['Purchase Order Transaction State'] == 'InProcess') {
                         $_next_delivery_time = 0;
                         $date                = '<span class="very_discreet italic">'._('Draft').'</span>';
-                        $link                = sprintf('<span class="link discreet" onclick="change_view(\'suppliers/order/%d\')"><i class="fa fa-clipboard" aria-hidden="true"></i> %s</span>', $row['Purchase Order Key'], $row['Purchase Order Public ID']);
+                        $link                = sprintf('<i class="fal fa-fw  fa-clipboard" ></i> <i class="fal fa-fw  fa-seedling" title="%s" ></i> <span class="link discreet" onclick="change_view(\'suppliers/order/%d\')"> %s</span>',
+                                                       _('In process'),
+                                                       $row['Purchase Order Key'], $row['Purchase Order Public ID']);
                         $qty                 = '<span class="very_discreet italic">+'.number($row['Purchase Order Quantity']).'</span>';
 
                     } else {
                         $_next_delivery_time = strtotime($row['Purchase Order Estimated Receiving Date'].' +0:00');
                         $date                = strftime("%e %b %y", strtotime($row['Purchase Order Estimated Receiving Date'].' +0:00'));
                         $link                = sprintf(
-                            '<span class="link" onclick="change_view(\'suppliers/order/%d\')"><i class="fa fa-clipboard" aria-hidden="true"></i> %s</span> <i class="fa fa-paper-plane" aria-hidden="true"></i>', $row['Purchase Order Key'],
-                            $row['Purchase Order Public ID']
+                            '<i class="fal fa-fw  fa-clipboard" ></i> <i class="fal fa-fw  fa-paper-plane" title="%s" ></i> <span class="link" onclick="change_view(\'suppliers/order/%d\')">  %s</span>',
+                            _('Submitted'),
+                            $row['Purchase Order Key'], $row['Purchase Order Public ID']
                         );
                         $qty                 = '+'.number($row['Purchase Order Quantity']);
                     }
@@ -377,11 +391,15 @@ class Part extends Asset {
                     $next_deliveries_data[] = array(
                         'type'           => 'po',
                         'qty'            => $qty,
+                        'raw_qty'            => $raw_qty,
+                        'qty_sko'            => $raw_qty*$row['Supplier Part Packages Per Carton'],
+
                         'date'           => $date,
                         'formatted_link' => $link,
                         'link'           => sprintf('suppliers/order/%d', $row['Purchase Order Key']),
                         'order_id'       => $row['Purchase Order Public ID'],
-                        'state'          => $row['Purchase Order Transaction State']
+                        'state'          => $row['Purchase Order Transaction State'],
+                        'po_key'         => $row['Purchase Order Key']
                     );
 
 
@@ -615,23 +633,23 @@ class Part extends Asset {
 
                 switch ($this->data[$this->table_name.' Stock Status']) {
                     case 'Surplus':
-                        $stock_status = '<i class="fa  fa-plus-circle fa-fw" aria-hidden="true" title="'._('Surplus stock').'"></i>';
+                        $stock_status = '<i class="fa  fa-plus-circle fa-fw"  title="'._('Surplus stock').'"></i>';
                         break;
                     case 'Optimal':
-                        $stock_status = '<i class="fa fa-check-circle fa-fw" aria-hidden="true" title="'._('Optimal stock').'"></i>';
+                        $stock_status = '<i class="fa fa-check-circle fa-fw"  title="'._('Optimal stock').'"></i>';
                         break;
                     case 'Low':
-                        $stock_status = '<i class="fa fa-minus-circle fa-fw" aria-hidden="true" title="'._('Low stock').'"></i>';
+                        $stock_status = '<i class="fa fa-minus-circle fa-fw"  title="'._('Low stock').'"></i>';
                         break;
                     case 'Critical':
-                        $stock_status = '<i class="fa error fa-minus-circle fa-fw" aria-hidden="true"  title="'._('Critical stock').'"></i>';
+                        $stock_status = '<i class="fa error fa-minus-circle fa-fw"   title="'._('Critical stock').'"></i>';
                         break;
                     case 'Out_Of_Stock':
                     case 'Out_of_Stock':
-                        $stock_status = '<i class="fa error fa-ban fa-fw" aria-hidden="true"  title="'._('Out of stock').'"></i>';
+                        $stock_status = '<i class="fa error fa-ban fa-fw"   title="'._('Out of stock').'"></i>';
                         break;
                     case 'Error':
-                        $stock_status = '<i class="fa fa-question-circle fa-fw" aria-hidden="true"  title="'._('Error').'"></i>';
+                        $stock_status = '<i class="fa fa-question-circle fa-fw"   title="'._('Error').'"></i>';
                         break;
                     default:
                         $stock_status = $this->data[$this->table_name.' Stock Status'];
@@ -665,9 +683,9 @@ class Part extends Asset {
                 if ($this->data['Part Status'] == 'Not In Use') {
 
                     if ($this->data['Part Products Web Status'] == 'Online') {
-                        return '<i class="fa fa-exclamation-circle error" aria-hidden="true"></i> '._('Online');
+                        return '<i class="fa fa-exclamation-circle error" ></i> '._('Online');
                     } elseif ($this->data['Part Products Web Status'] == 'Out of Stock') {
-                        return '<i class="fa fa-exclamation-circle warning" aria-hidden="true"></i> '._('Out of stock');
+                        return '<i class="fa fa-exclamation-circle warning" ></i> '._('Out of stock');
                     }
 
 
@@ -675,13 +693,13 @@ class Part extends Asset {
 
 
                     if ($this->data['Part Products Web Status'] == 'Offline') {
-                        return '<span class="warning"><i class="fa fa-exclamation-circle" aria-hidden="true"></i> '._('Offline').'</span>';
+                        return '<span class="warning"><i class="fa fa-exclamation-circle" ></i> '._('Offline').'</span>';
                     } elseif ($this->data['Part Products Web Status'] == 'No Products') {
                         return _('No products associated');
                     } elseif ($this->data['Part Products Web Status'] == 'Online') {
 
                         if ($this->data['Part Stock Status'] == 'Out_Of_Stock' or $this->data['Part Stock Status'] == 'Error') {
-                            return '<span class="error"><i class="fa fa-exclamation-circle" aria-hidden="true"></i> '._('Online').'</span>';
+                            return '<span class="error"><i class="fa fa-exclamation-circle" ></i> '._('Online').'</span>';
 
                         } else {
 
@@ -744,7 +762,7 @@ class Part extends Asset {
                 $total_value = $this->data['Part Cost in Warehouse'] * $this->get('Part Current On Hand Stock');
 
                 if ($total_value > 0) {
-                    $total_value = sprintf('<span class="hide_in_history" >%s %s</span>',    money($total_value, $account->get('Account Currency')  ) ,_('total stock value')  );
+                    $total_value = sprintf('<span class="hide_in_history" >%s %s</span>', money($total_value, $account->get('Account Currency')), _('total stock value'));
                 } else {
                     $total_value = '';
                 }
@@ -756,7 +774,7 @@ class Part extends Asset {
 
 
                 if ($this->data['Part Cost in Warehouse'] == '') {
-                    $sko_cost = '<i class="fa fa-exclamation-circle error" aria-hidden="true"></i> '._('SKO stock value no set up yet');
+                    $sko_cost = '<i class="fa fa-exclamation-circle error" ></i> '._('SKO stock value no set up yet');
                 } else {
                     $sko_cost = sprintf(
                         _('SKO stock value %s'), money($this->data['Part Cost in Warehouse'], $account->get('Account Currency'))
@@ -908,9 +926,9 @@ class Part extends Asset {
                         ).'</span>';
 
                     if ($this->data['Part Fresh'] == 'No') {
-                        $available_forecast .= ' <i class="fa fa-fighter-jet padding_left_5" aria-hidden="true" title="'._('On demand').'"></i>';
+                        $available_forecast .= ' <i class="fa fa-fighter-jet padding_left_5"  title="'._('On demand').'"></i>';
                     } else {
-                        $available_forecast = ' <i class="far fa-lemon padding_left_5" aria-hidden="true" title="'._('On demand').'"></i>';
+                        $available_forecast = ' <i class="far fa-lemon padding_left_5"  title="'._('On demand').'"></i>';
                     }
                 } else {
                     $available_forecast = '<span >'.sprintf(
@@ -1095,7 +1113,7 @@ class Part extends Asset {
                 }
 
 
-                return '<i class="fa fa-exclamation-circle error" aria-hidden="true"></i> '.$error;
+                return '<i class="fa fa-exclamation-circle error" ></i> '.$error;
 
                 break;
 
@@ -1451,8 +1469,6 @@ class Part extends Asset {
                     $product->editor = $this->editor;
                     $product->update_cost();
                 }
-
-
 
 
                 $hide = array();
@@ -2381,7 +2397,7 @@ class Part extends Asset {
                 $exchange = 1;
             }
 
-            $_cost =   ($supplier_part->get('Supplier Part Unit Cost') + $supplier_part->get('Supplier Part Unit Extra Cost'))/$exchange;
+            $_cost = ($supplier_part->get('Supplier Part Unit Cost') + $supplier_part->get('Supplier Part Unit Extra Cost')) / $exchange;
 
 
             if ($supplier_part->get('Supplier Part Status') == 'Available') {
@@ -2511,24 +2527,24 @@ class Part extends Asset {
                                         switch ($row['Location Mainly Used For']) {
                                             case 'Picking':
                                                 $used_for = sprintf(
-                                                    '<i class="fa fa-fw fa-shopping-basket" aria-hidden="true" title="%s" ></i>', _('Picking')
+                                                    '<i class="fa fa-fw fa-shopping-basket"  title="%s" ></i>', _('Picking')
                                                 );
                                                 break;
                                             case 'Storing':
                                                 $used_for = sprintf(
-                                                    '<i class="fa fa-fw  fa-hdd" aria-hidden="true" title="%s"></i>', _('Storing')
+                                                    '<i class="fa fa-fw  fa-hdd"  title="%s"></i>', _('Storing')
                                                 );
                                                 break;
                                             default:
                                                 $used_for = sprintf(
-                                                    '<i class="fa fa-fw  fa-map-maker" aria-hidden="true" title="%s"></i>', $row['Location Mainly Used For']
+                                                    '<i class="fa fa-fw  fa-map-maker"  title="%s"></i>', $row['Location Mainly Used For']
                                                 );
                                         }
                     */
 
 
                     $picking_location_icon = sprintf(
-                        '<i onclick="set_as_picking_location(%d,%d)" class="fa fa-fw fa-shopping-basket %s" aria-hidden="true" title="%s" ></i></span>', $this->id, $row['Location Key'], ($row['Can Pick'] == 'Yes' ? '' : 'super_discreet_on_hover button'),
+                        '<i onclick="set_as_picking_location(%d,%d)" class="fa fa-fw fa-shopping-basket %s"  title="%s" ></i></span>', $this->id, $row['Location Key'], ($row['Can Pick'] == 'Yes' ? '' : 'super_discreet_on_hover button'),
                         ($row['Can Pick'] == 'Yes' ? _('Picking location') : _('Set as picking location'))
 
                     );
@@ -2558,11 +2574,11 @@ class Part extends Asset {
                         'can_pick'        => $row['Can Pick'],
                         'label'           => ($row['Can Pick'] == 'Yes' ? _('Picking location') : _('Set as picking location')),
                         'days_last_audit' => ($row['days_last_audit'] == ''
-                            ? '<span title="'._('Never been audited').'">-</span> <i class="far fa-clock padding_right_10" aria-hidden="true"></i> '
+                            ? '<span title="'._('Never been audited').'">-</span> <i class="far fa-clock padding_right_10" ></i> '
                             : sprintf(
                                 '<span title="%s">%s</span>', sprintf(_('Last audit %s'), strftime("%a %e %b %Y %H:%M %Z", strtotime($row['Part Location Last Audit'].' +0:00')), $row['Part Location Last Audit']),
                                 ($row['days_last_audit'] > 999 ? '<span class="error">+999</span>' : number($row['days_last_audit']))
-                            ).' <i class="far fa-clock padding_right_10" aria-hidden="true"></i>')
+                            ).' <i class="far fa-clock padding_right_10" ></i>')
 
 
                     );
@@ -2729,12 +2745,11 @@ class Part extends Asset {
     function update_stock() {
 
 
-
-        $old_stock=$this->data['Part Current Stock'];
-        $old_value=$this->data['Part Current Value'];
-        $old_stock_in_progress=$this->data['Part Current Stock In Process'];
-        $old_stock_picked=$this->data['Part Current Stock Picked'];
-        $old_stock_on_hand=$this->data['Part Current On Hand Stock'];
+        $old_stock             = $this->data['Part Current Stock'];
+        $old_value             = $this->data['Part Current Value'];
+        $old_stock_in_progress = $this->data['Part Current Stock In Process'];
+        $old_stock_picked      = $this->data['Part Current Stock Picked'];
+        $old_stock_on_hand     = $this->data['Part Current On Hand Stock'];
 
         $picked   = 0;
         $required = 0;
@@ -2773,27 +2788,23 @@ class Part extends Asset {
         );
 
 
-        if(
-            $old_stock!=$this->data['Part Current Stock'] or
-            $old_value!=$this->data['Part Current Value'] or
-            $old_stock_in_progress!=$this->data['Part Current Stock In Process'] or
-            $old_stock_picked!=$this->data['Part Current Stock Picked'] or
-            $old_stock_on_hand!=$this->data['Part Current On Hand Stock']
+        if ($old_stock != $this->data['Part Current Stock'] or $old_value != $this->data['Part Current Value'] or $old_stock_in_progress != $this->data['Part Current Stock In Process'] or $old_stock_picked != $this->data['Part Current Stock Picked']
+            or $old_stock_on_hand != $this->data['Part Current On Hand Stock']
 
-        ){
+        ) {
             $this->activate();
             $this->discontinue_trigger();
             $this->update_stock_status();
 
             //todo find a way do it more efficient
-            $account=get_object('Account',1);
+            $account = get_object('Account', 1);
             if ($account->get('Account Add Stock Value Type') == 'Blockchain') {
                 $this->update_stock_run();
             }
 
 
             include_once 'utils/new_fork.php';
-            $account=get_object('Account',1);
+            $account = get_object('Account', 1);
 
 
             new_housekeeping_fork(
@@ -2803,8 +2814,6 @@ class Part extends Asset {
             ), $account->get('Account Code')
             );
         }
-
-
 
 
     }
@@ -2860,215 +2869,6 @@ class Part extends Asset {
 
 
         }
-
-
-    }
-
-    function update_stock_run() {
-
-        // todo experimental stuff
-        $account=get_object('Account',1);
-
-        if($account->get('Account Add Stock Value Type')=='Blockchain'){
-
-            $running_stock = 0;
-            $running_stock_value=0;
-            $running_cost_per_sko='';
-
-            $sql = sprintf('SELECT `Date`,`Note`,`Running Stock`,`Inventory Transaction Key`, `Inventory Transaction Quantity`,`Inventory Transaction Amount`,`Inventory Transaction Type`,`Location Key`,`Inventory Transaction Section`,`Running Cost per SKO`,`Running Stock Value`,`Running Cost per SKO` FROM `Inventory Transaction Fact` WHERE `Part SKU`=%d   and  `Inventory Transaction Type`  ORDER BY `Date`   ', $this->id);
-
-            //  print "$sql\n";
-
-            if ($result = $this->db->query($sql)) {
-                foreach ($result as $row) {
-
-                    //print "=========\n";
-                    if(
-                        //!(
-                        // ($row['Inventory Transaction Type']=='Adjust' )
-                        // or
-                        // ($row['Inventory Transaction Section']=='In' and $row['Inventory Transaction Quantity']>0)
-                        // )
-
-                        !( $row['Inventory Transaction Section']=='In' and $row['Inventory Transaction Quantity']>0  ) and  $running_cost_per_sko!='' ){
-
-                        // print $running_cost_per_sko."\n";
-                        // print_r($row);
-
-                        $sql           = sprintf(
-                            'UPDATE `Inventory Transaction Fact` SET `Inventory Transaction Amount`=%f  WHERE `Inventory Transaction Key`=%d ',
-                            $row['Inventory Transaction Quantity']*$running_cost_per_sko,
-
-                            $row['Inventory Transaction Key']
-                        );
-                        $this->db->exec($sql);
-                        //  print "$sql\n";
-
-                        $row['Inventory Transaction Amount']=$row['Inventory Transaction Quantity']*$running_cost_per_sko;
-
-
-                        // print $running_cost_per_sko."\n";
-
-
-                    }
-
-
-                    // print_r($row);
-
-
-                    $running_stock = $running_stock + $row['Inventory Transaction Quantity'];
-                    $running_stock_value=$running_stock_value+$row['Inventory Transaction Amount'];
-                    if($running_stock==0){
-                        //$running_cost_per_sko='';
-                    }else{
-                        $running_cost_per_sko=$running_stock_value/$running_stock;
-                    }
-
-
-                    $sql           = sprintf(
-                        'UPDATE `Inventory Transaction Fact` SET `Running Stock`=%f,`Running Stock Value`=%f,`Running Cost per SKO`=%s  WHERE `Inventory Transaction Key`=%d ',
-                        $running_stock,
-                        $running_stock_value,
-                        prepare_mysql($running_cost_per_sko),
-                        $row['Inventory Transaction Key']
-                    );
-                    $this->db->exec($sql);
-                    // print "$sql\n";
-
-
-                    //print "RR: $running_cost_per_sko \n-------\n";
-
-                }
-
-
-
-
-            } else {
-                print_r($error_info = $this->db->errorInfo());
-                print "$sql\n";
-                exit;
-            }
-            $this->update_field_switcher('Part Cost in Warehouse',$running_cost_per_sko,'no_history');
-
-        }else{
-
-            $running_stock = 0;
-            $running_stock_value=0;
-            $running_cost_per_sko='';
-
-            $sql = sprintf('SELECT `Date`,`Note`,`Running Stock`,`Inventory Transaction Key`, `Inventory Transaction Quantity`,`Inventory Transaction Amount`,`Inventory Transaction Type`,`Location Key`,`Inventory Transaction Section`,`Running Cost per SKO`,`Running Stock Value`,`Running Cost per SKO` FROM `Inventory Transaction Fact` WHERE `Part SKU`=%d   and  `Inventory Transaction Type`  ORDER BY `Date`   ', $this->id);
-
-            //  print "$sql\n";
-
-            if ($result = $this->db->query($sql)) {
-                foreach ($result as $row) {
-
-                    //print "=========\n";
-                    if(
-                        //!(
-                        // ($row['Inventory Transaction Type']=='Adjust' )
-                        // or
-                        // ($row['Inventory Transaction Section']=='In' and $row['Inventory Transaction Quantity']>0)
-                        // )
-
-                        !( $row['Inventory Transaction Section']=='In' and $row['Inventory Transaction Quantity']>0  ) and  $running_cost_per_sko!='' ){
-
-                        // print $running_cost_per_sko."\n";
-                        // print_r($row);
-/*
-                        $sql           = sprintf(
-                            'UPDATE `Inventory Transaction Fact` SET `Inventory Transaction Amount`=%f  WHERE `Inventory Transaction Key`=%d ',
-                            $row['Inventory Transaction Quantity']*$running_cost_per_sko,
-
-                            $row['Inventory Transaction Key']
-                        );
-                        $this->db->exec($sql);
-                        //  print "$sql\n";
-*/
-                        $row['Inventory Transaction Amount']=$row['Inventory Transaction Quantity']*$running_cost_per_sko;
-
-
-                        // print $running_cost_per_sko."\n";
-
-
-                    }
-
-
-                    // print_r($row);
-
-
-                    $running_stock = $running_stock + $row['Inventory Transaction Quantity'];
-                    $running_stock_value=$running_stock_value+$row['Inventory Transaction Amount'];
-                    if($running_stock==0){
-                        //$running_cost_per_sko='';
-                    }else{
-                        $running_cost_per_sko=$running_stock_value/$running_stock;
-                    }
-
-
-                    $sql           = sprintf(
-                        'UPDATE `Inventory Transaction Fact` SET `Running Stock`=%f  WHERE `Inventory Transaction Key`=%d ',
-                        $running_stock,
-
-                        $row['Inventory Transaction Key']
-                    );
-                    $this->db->exec($sql);
-                    // print "$sql\n";
-
-
-                    //print "RR: $running_cost_per_sko \n-------\n";
-
-                }
-
-
-
-
-            } else {
-                print_r($error_info = $this->db->errorInfo());
-                print "$sql\n";
-                exit;
-            }
-
-
-
-
-            /*
-
-
-            $sql=sprintf('select `Date`,(`Inventory Transaction Amount`/`Inventory Transaction Quantity`) as value_per_sko from  `Inventory Transaction Fact` ITF  where  `Inventory Transaction Amount`>0 and `Inventory Transaction Quantity`>0 and  ( `Inventory Transaction Section`=\'In\' or ( `Inventory Transaction Type`=\'Adjust\' and `Inventory Transaction Quantity`>0 and `Location Key`>1 )  )  and ITF.`Part SKU`=%d  order by `Date` desc, FIELD(`Inventory Transaction Type`, \'In\',\'Adjust\')  limit 1 ',$this->id);
-
-           // print $sql;
-
-            if ($result=$this->db->query($sql)) {
-                foreach ($result as $row) {
-
-                    //  print_r($row);
-
-                    $this->update_field_switcher('Part Cost in Warehouse',$row['value_per_sko'],'no_history');
-                }
-            }else {
-                print_r($error_info=$this->db->errorInfo());
-                print "$sql\n";
-                exit;
-            }
-
-            */
-        }
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 
 
     }
@@ -3134,6 +2934,193 @@ class Part extends Asset {
                 'Part Stock Status' => $stock_state
             )
         );
+
+
+    }
+
+    function update_stock_run() {
+
+        // todo experimental stuff
+        $account = get_object('Account', 1);
+
+        if ($account->get('Account Add Stock Value Type') == 'Blockchain') {
+
+            $running_stock        = 0;
+            $running_stock_value  = 0;
+            $running_cost_per_sko = '';
+
+            $sql = sprintf(
+                'SELECT `Date`,`Note`,`Running Stock`,`Inventory Transaction Key`, `Inventory Transaction Quantity`,`Inventory Transaction Amount`,`Inventory Transaction Type`,`Location Key`,`Inventory Transaction Section`,`Running Cost per SKO`,`Running Stock Value`,`Running Cost per SKO` FROM `Inventory Transaction Fact` WHERE `Part SKU`=%d   and  `Inventory Transaction Type`  ORDER BY `Date`   ',
+                $this->id
+            );
+
+            //  print "$sql\n";
+
+            if ($result = $this->db->query($sql)) {
+                foreach ($result as $row) {
+
+                    //print "=========\n";
+                    if (//!(
+                        // ($row['Inventory Transaction Type']=='Adjust' )
+                        // or
+                        // ($row['Inventory Transaction Section']=='In' and $row['Inventory Transaction Quantity']>0)
+                        // )
+
+                        !($row['Inventory Transaction Section'] == 'In' and $row['Inventory Transaction Quantity'] > 0) and $running_cost_per_sko != '') {
+
+                        // print $running_cost_per_sko."\n";
+                        // print_r($row);
+
+                        $sql = sprintf(
+                            'UPDATE `Inventory Transaction Fact` SET `Inventory Transaction Amount`=%f  WHERE `Inventory Transaction Key`=%d ', $row['Inventory Transaction Quantity'] * $running_cost_per_sko,
+
+                            $row['Inventory Transaction Key']
+                        );
+                        $this->db->exec($sql);
+                        //  print "$sql\n";
+
+                        $row['Inventory Transaction Amount'] = $row['Inventory Transaction Quantity'] * $running_cost_per_sko;
+
+
+                        // print $running_cost_per_sko."\n";
+
+
+                    }
+
+
+                    // print_r($row);
+
+
+                    $running_stock       = $running_stock + $row['Inventory Transaction Quantity'];
+                    $running_stock_value = $running_stock_value + $row['Inventory Transaction Amount'];
+                    if ($running_stock == 0) {
+                        //$running_cost_per_sko='';
+                    } else {
+                        $running_cost_per_sko = $running_stock_value / $running_stock;
+                    }
+
+
+                    $sql = sprintf(
+                        'UPDATE `Inventory Transaction Fact` SET `Running Stock`=%f,`Running Stock Value`=%f,`Running Cost per SKO`=%s  WHERE `Inventory Transaction Key`=%d ', $running_stock, $running_stock_value, prepare_mysql($running_cost_per_sko),
+                        $row['Inventory Transaction Key']
+                    );
+                    $this->db->exec($sql);
+                    // print "$sql\n";
+
+
+                    //print "RR: $running_cost_per_sko \n-------\n";
+
+                }
+
+
+            } else {
+                print_r($error_info = $this->db->errorInfo());
+                print "$sql\n";
+                exit;
+            }
+            $this->update_field_switcher('Part Cost in Warehouse', $running_cost_per_sko, 'no_history');
+
+        } else {
+
+            $running_stock        = 0;
+            $running_stock_value  = 0;
+            $running_cost_per_sko = '';
+
+            $sql = sprintf(
+                'SELECT `Date`,`Note`,`Running Stock`,`Inventory Transaction Key`, `Inventory Transaction Quantity`,`Inventory Transaction Amount`,`Inventory Transaction Type`,`Location Key`,`Inventory Transaction Section`,`Running Cost per SKO`,`Running Stock Value`,`Running Cost per SKO` FROM `Inventory Transaction Fact` WHERE `Part SKU`=%d   and  `Inventory Transaction Type`  ORDER BY `Date`   ',
+                $this->id
+            );
+
+            //  print "$sql\n";
+
+            if ($result = $this->db->query($sql)) {
+                foreach ($result as $row) {
+
+                    //print "=========\n";
+                    if (//!(
+                        // ($row['Inventory Transaction Type']=='Adjust' )
+                        // or
+                        // ($row['Inventory Transaction Section']=='In' and $row['Inventory Transaction Quantity']>0)
+                        // )
+
+                        !($row['Inventory Transaction Section'] == 'In' and $row['Inventory Transaction Quantity'] > 0) and $running_cost_per_sko != '') {
+
+                        // print $running_cost_per_sko."\n";
+                        // print_r($row);
+                        /*
+                                                $sql           = sprintf(
+                                                    'UPDATE `Inventory Transaction Fact` SET `Inventory Transaction Amount`=%f  WHERE `Inventory Transaction Key`=%d ',
+                                                    $row['Inventory Transaction Quantity']*$running_cost_per_sko,
+
+                                                    $row['Inventory Transaction Key']
+                                                );
+                                                $this->db->exec($sql);
+                                                //  print "$sql\n";
+                        */
+                        $row['Inventory Transaction Amount'] = $row['Inventory Transaction Quantity'] * $running_cost_per_sko;
+
+
+                        // print $running_cost_per_sko."\n";
+
+
+                    }
+
+
+                    // print_r($row);
+
+
+                    $running_stock       = $running_stock + $row['Inventory Transaction Quantity'];
+                    $running_stock_value = $running_stock_value + $row['Inventory Transaction Amount'];
+                    if ($running_stock == 0) {
+                        //$running_cost_per_sko='';
+                    } else {
+                        $running_cost_per_sko = $running_stock_value / $running_stock;
+                    }
+
+
+                    $sql = sprintf(
+                        'UPDATE `Inventory Transaction Fact` SET `Running Stock`=%f  WHERE `Inventory Transaction Key`=%d ', $running_stock,
+
+                        $row['Inventory Transaction Key']
+                    );
+                    $this->db->exec($sql);
+                    // print "$sql\n";
+
+
+                    //print "RR: $running_cost_per_sko \n-------\n";
+
+                }
+
+
+            } else {
+                print_r($error_info = $this->db->errorInfo());
+                print "$sql\n";
+                exit;
+            }
+
+
+            /*
+
+
+            $sql=sprintf('select `Date`,(`Inventory Transaction Amount`/`Inventory Transaction Quantity`) as value_per_sko from  `Inventory Transaction Fact` ITF  where  `Inventory Transaction Amount`>0 and `Inventory Transaction Quantity`>0 and  ( `Inventory Transaction Section`=\'In\' or ( `Inventory Transaction Type`=\'Adjust\' and `Inventory Transaction Quantity`>0 and `Location Key`>1 )  )  and ITF.`Part SKU`=%d  order by `Date` desc, FIELD(`Inventory Transaction Type`, \'In\',\'Adjust\')  limit 1 ',$this->id);
+
+           // print $sql;
+
+            if ($result=$this->db->query($sql)) {
+                foreach ($result as $row) {
+
+                    //  print_r($row);
+
+                    $this->update_field_switcher('Part Cost in Warehouse',$row['value_per_sko'],'no_history');
+                }
+            }else {
+                print_r($error_info=$this->db->errorInfo());
+                print "$sql\n";
+                exit;
+            }
+
+            */
+        }
 
 
     }
@@ -3848,7 +3835,7 @@ class Part extends Asset {
     function update_stock_in_paid_orders() {
 
 
-        $old_value=$this->get('Part Current Stock Ordered Paid');
+        $old_value = $this->get('Part Current Stock Ordered Paid');
 
         $stock_in_paid_orders = 0;
 
@@ -3878,7 +3865,7 @@ class Part extends Asset {
             )
         );
 
-        if ($old_value!=$stock_in_paid_orders) {
+        if ($old_value != $stock_in_paid_orders) {
             $this->update_stock();
         }
     }
@@ -4700,7 +4687,7 @@ class Part extends Asset {
 
                 // print $product->get('Product 1 Year Acc Quantity Invoiced');
 
-                $exchange = 1/currency_conversion($this->db,  $account->get('Account Currency'),$product->get('Product Currency'));
+                $exchange = 1 / currency_conversion($this->db, $account->get('Account Currency'), $product->get('Product Currency'));
 
                 if ($sales > 0) {
                     $num_products_with_sales++;
@@ -4792,16 +4779,16 @@ class Part extends Asset {
 
     }
 
-    function redo_inventory_snapshot_fact($from=''){
+    function redo_inventory_snapshot_fact($from = '') {
 
         include_once "class.PartLocation.php";
 
 
-        if($from==''){
+        if ($from == '') {
             $from = $this->get('Part Valid From');
         }
 
-        $to   = ($this->get('Part Status') == 'Not In Use' ? $this->get('Part Valid To') : gmdate('Y-m-d H:i:s'));
+        $to = ($this->get('Part Status') == 'Not In Use' ? $this->get('Part Valid To') : gmdate('Y-m-d H:i:s'));
 
 
         $sql = sprintf(
@@ -4822,14 +4809,13 @@ class Part extends Asset {
 
 
                 $sql = sprintf(
-                    "SELECT `Location Key`  FROM `Inventory Transaction Fact` WHERE  `Inventory Transaction Type` LIKE 'Associate' AND  `Part SKU`=%d AND `Date`<=%s GROUP BY `Location Key`",
-                    $this->id, prepare_mysql($row['Date'].' 23:59:59')
+                    "SELECT `Location Key`  FROM `Inventory Transaction Fact` WHERE  `Inventory Transaction Type` LIKE 'Associate' AND  `Part SKU`=%d AND `Date`<=%s GROUP BY `Location Key`", $this->id, prepare_mysql($row['Date'].' 23:59:59')
                 );
 
 
                 if ($result3 = $this->db->query($sql)) {
                     foreach ($result3 as $row3) {
-                       // print $row['Date'].' '.$this->id.'_'.$row3['Location Key']."\r";
+                        // print $row['Date'].' '.$this->id.'_'.$row3['Location Key']."\r";
 
                         $part_location = new PartLocation(
                             $this->id.'_'.$row3['Location Key']
@@ -4844,17 +4830,11 @@ class Part extends Asset {
                 }
 
 
-
-
-
-
-
             }
         } else {
             print_r($error_info = $this->db->errorInfo());
             exit;
         }
-
 
 
     }
