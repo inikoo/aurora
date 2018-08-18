@@ -12,14 +12,7 @@ label: "{t}Number{/t}",
 editable: false,
 sortType: "toggle",
 cell: Backgrid.HtmlCell.extend({
-events: {
-"click": function() {
-change_view("client_order/" + this.model.get("id")  )
 
-
-}
-},
-className: "link",
 })
 },
 

@@ -1312,6 +1312,8 @@ $elements_options = array(
 
     ),
 
+    //'InProcess','SubmittedAgent','Submitted','Inputted','Dispatched','Received','Checked','Placed','Cancelled'
+
     'agent_client_orders'     => array(
         'state_agent' => array(
             'label' => _('State'),
@@ -1320,34 +1322,18 @@ $elements_options = array(
 
 
 
-                'SubmittedAgent'                   => array(
-                    'label'    => _(
-                        'Submitted to agent'
-                    ),
+                'Submitted'                   => array(
+                    'label'    => _('To do'),
                     'selected' => true
                 ),
-                'SubmittedInputtedDispatched' => array(
-                    'label'    => _(
-                        'Submitted, in transit'
-                    ),
-                    'selected' => true
-                ),
-                'ReceivedChecked'             => array(
-                    'label'    => _(
-                        'In warehouse'
-                    ),
-                    'selected' => true
-                ),
-                'Placed'                      => array(
-                    'label'    => _(
-                        'Placed'
-                    ),
+
+
+                'Dispatched'                      => array(
+                    'label'    => _('Dispatched'),
                     'selected' => true
                 ),
                 'Cancelled'                   => array(
-                    'label'    => _(
-                        'Cancelled'
-                    ),
+                    'label'    => _('Cancelled'),
                     'selected' => false
                 ),
             ),

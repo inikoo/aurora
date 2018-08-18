@@ -23,6 +23,10 @@ if ($parameters['parent'] == 'supplier') {
     $where = sprintf(
         'where  `Purchase Order Parent`="Supplier" and `Purchase Order Parent Key`=%d and `Purchase Order Agent Key`=%d ', $parameters['parent_key'],$parameters['agent_key']
     );
+}elseif ($parameters['parent'] == 'agent') {
+    $where = sprintf(
+        'where  `Purchase Order Parent`="Agent" and `Purchase Order Parent Key`=%d ', $parameters['parent_key'],$parameters['agent_key']
+    );
 } elseif ($parameters['parent'] == 'account') {
     $where = sprintf(
         'where `Purchase Order Agent Key`=%d ', $parameters['agent_key']
@@ -60,7 +64,6 @@ if (isset($parameters['period'])) {
 
 
 if (isset($parameters['elements_type'])) {
-
 
     switch ($parameters['elements_type']) {
         case('state'):

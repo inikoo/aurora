@@ -146,7 +146,7 @@
                                 <td><i class="fa fa-sign-out fa-flip-horizontal button" aria-hidden="true"
                                        onclick="close_dialog('create_spo')"></i></td>
                                 <td class="aright"><span
-                                            data-data='{  "field": "Purchase Order Agent State","value": "Submitted","dialog_name":"create_spo"}'
+                                            data-data='{  "field": "Create Agent Supplier Orders","value": "1","dialog_name":"create_spo"}'
                                             id="create_spo_save_buttons" class="valid save button"
                                             onclick="save_order_operation(this)"><span class="label">{t}Save{/t}</span> <i
                                                 class="fa fa-cloud fa-fw  " aria-hidden="true"></i></span></td>

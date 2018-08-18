@@ -1774,6 +1774,13 @@ sum(`Purchase Order Net Amount`) AS items_net, sum(`Purchase Order Extra Cost Am
 
     function update_field_switcher($field, $value, $options = '', $metadata = '') {
         switch ($field) {
+
+            case 'Create Agent Supplier Orders':
+
+               $this->create_agent_supplier_orders();
+
+
+            break;
             case 'Purchase Order State':
                 $this->update_state(
                     $value, $options, $metadata

@@ -3,9 +3,9 @@
 
  About:
  Author: Raul Perusquia <raul@inikoo.com>
- Created: 13 May 2016 at 14:15:15 GMT+8, Kuala Lumpur, Malaysia
+ Created: 17 August 2018 at 20:49:12 GMT+8, Sanur , Bli, Indonesia
 
- Copyright (c) 2015, Inikoo
+ Copyright (c) 2018, Inikoo
 
  Version 2.0
 */
@@ -61,7 +61,7 @@ $fields
 `Part 1 Quarter Ago 1YB Dispatched`,`Part 2 Quarter Ago 1YB Dispatched`,`Part 3 Quarter Ago 1YB Dispatched`,`Part 4 Quarter Ago 1YB Dispatched`,
 `Part 1 Quarter Ago 1YB Invoiced Amount`,`Part 2 Quarter Ago 1YB Invoiced Amount`,`Part 3 Quarter Ago 1YB Invoiced Amount`,`Part 4 Quarter Ago 1YB Invoiced Amount`,
 `Part Quarter To Day Acc Dispatched`,`Part Stock Status`,`Part Current On Hand Stock`,`Part Reference`,`Part Total Acc Dispatched`,
-`Part Products Web Status`,`Part On Demand`,`Part Days Available Forecast`,`Part Fresh`,P.`Part SKU`,`Part 1 Year Acc Dispatched`,`Part Main Image Key`
+`Part Products Web Status`,`Part On Demand`,`Part Days Available Forecast`,`Part Fresh`
 
 
 ";
