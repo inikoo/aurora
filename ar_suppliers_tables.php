@@ -1457,7 +1457,7 @@ function order_items($_data, $db, $user, $account) {
             }
 
             if ($data['Part Main Image Key'] != 0) {
-                $image = sprintf('<img src="/image_root.php?id=%d&size=thumbnail" style="display: block;
+                $image = sprintf('<img src="/image_root.php?id=%d&r=50x50" style="display: block;
   max-width:50px;
   max-height:50px;
   width: auto;
@@ -1466,7 +1466,7 @@ function order_items($_data, $db, $user, $account) {
                 $image = '';
             }
 
-            $image = '';
+         //   $image = '';
             $table_data[] = array(
 
                 'id'                => (integer)$data['Purchase Order Transaction Fact Key'],
@@ -2453,6 +2453,9 @@ function order_supplier_all_parts($_data, $db, $user, $account) {
     include_once 'prepare_table/init.php';
 
 
+
+
+
     $sql = "select $fields from $table $where $wheref order by $order $order_direction limit $start_from,$number_results";
 
 
@@ -2701,6 +2704,15 @@ function order_supplier_all_parts($_data, $db, $user, $account) {
 
             );
 
+            if ($data['Part Main Image Key'] != 0) {
+                $image = sprintf('<img src="/image_root.php?id=%d&r=50x50" style="display: block;
+  max-width:50px;
+  max-height:50px;
+  width: auto;
+  height: auto;">', $data['Part Main Image Key']);
+            } else {
+                $image = '';
+            }
 
             $table_data[] = array(
                 'id'               => (integer)$data['Supplier Part Key'],
@@ -2738,7 +2750,8 @@ function order_supplier_all_parts($_data, $db, $user, $account) {
                     $transaction_key, $data['Supplier Part Key'], $data['Supplier Part Historic Key'], ($data['Purchase Order Quantity'] == 0 ? '' : $data['Purchase Order Quantity'] + 0),
                     ($data['Purchase Order Quantity'] == 0 ? '' : $data['Purchase Order Quantity'] + 0)
                 ),
-                'subtotals' => $subtotals
+                'subtotals' => $subtotals,
+                'image' => $image
 
 
             );
