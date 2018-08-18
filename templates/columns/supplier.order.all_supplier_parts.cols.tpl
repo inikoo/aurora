@@ -32,6 +32,13 @@ cell: "html"
 
 },
 {
+name: "info",
+label: "{t}Info{/t}",
+editable: false,
+cell: "html"
+
+},
+{
 name: "description_sales",
 label: "{t}Carton description{/t}",
 editable: false,

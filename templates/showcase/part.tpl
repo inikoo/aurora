@@ -440,7 +440,7 @@
                     <tr class="main ">
                         <td>{$next_delivery.formatted_link}</td>
                         <td>{$next_delivery.date}</td>
-                        <td class="aright highlight">+{$next_delivery.qty}</td>
+                        <td class="aright highlight">{$next_delivery.qty}</td>
                     </tr>
                 {/foreach}
             </table>
