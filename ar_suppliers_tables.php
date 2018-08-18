@@ -1457,7 +1457,7 @@ function order_items($_data, $db, $user, $account) {
             }
 
             if ($data['Part Main Image Key'] != 0) {
-                $image = sprintf('<img src="/image_root.php?id=%d" style="display: block;
+                $image = sprintf('<img src="/image_root.php?id=%d&size=thumbnail" style="display: block;
   max-width:50px;
   max-height:50px;
   width: auto;
@@ -1466,7 +1466,7 @@ function order_items($_data, $db, $user, $account) {
                 $image = '';
             }
 
-
+            $image = '';
             $table_data[] = array(
 
                 'id'                => (integer)$data['Purchase Order Transaction Fact Key'],
