@@ -16,6 +16,15 @@ cell: Backgrid.HtmlCell.extend({
 })
 },
 {
+name: "image",
+label: "{t}Image{/t}",
+editable: false,
+sortable: false,
+
+cell: "html"
+
+},
+{
 name: "description",
 label: "{t}Carton description{/t}",
 editable: false,

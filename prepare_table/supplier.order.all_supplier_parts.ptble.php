@@ -15,7 +15,6 @@ $where
 $table
     = "`Supplier Part Dimension` SP  left join `Part Dimension` P on (P.`Part SKU`=SP.`Supplier Part Part SKU`)  left join `Part Data` PD on (PD.`Part SKU`=SP.`Supplier Part Part SKU`) left join `Supplier Dimension` S on (SP.`Supplier Part Supplier Key`=S.`Supplier Key`)  ";
 
-
 $fields
     = '`Supplier Part Description`,`Supplier Part Historic Key`,`Supplier Code`,`Supplier Part Key`,`Supplier Part Part SKU`,`Part Reference`,`Supplier Part Description`,`Supplier Part Supplier Key`,`Supplier Part Reference`,`Supplier Part Status`,`Supplier Part From`,`Supplier Part To`,`Supplier Part Unit Cost`,`Supplier Part Currency Code`,`Part Units Per Package`,`Supplier Part Packages Per Carton`,`Supplier Part Carton CBM`,`Supplier Part Minimum Carton Order`,
 `Part Current Stock`,`Part Stock Status`,`Part Status`,`Part Package Weight`,
@@ -24,10 +23,11 @@ $fields
 `Part 1 Quarter Ago 1YB Dispatched`,`Part 2 Quarter Ago 1YB Dispatched`,`Part 3 Quarter Ago 1YB Dispatched`,`Part 4 Quarter Ago 1YB Dispatched`,
 `Part 1 Quarter Ago 1YB Invoiced Amount`,`Part 2 Quarter Ago 1YB Invoiced Amount`,`Part 3 Quarter Ago 1YB Invoiced Amount`,`Part 4 Quarter Ago 1YB Invoiced Amount`,
 `Part Quarter To Day Acc Dispatched`,`Part Stock Status`,`Part Current On Hand Stock`,`Part Reference`,`Part Total Acc Dispatched`,
-`Part Days Available Forecast`,`Part 1 Quarter Acc Dispatched`,`Part Products Web Status`,`Part On Demand`,`Part Fresh`,`Part Package Description`
+`Part Days Available Forecast`,`Part 1 Quarter Acc Dispatched`,`Part Products Web Status`,`Part On Demand`,`Part Fresh`,`Part Package Description`,`Part Main Image Key`
 
 
 ';
+
 
 $filter_msg = '';
 $sql_type   = 'part';
@@ -148,7 +148,5 @@ if ($order == 'description') {
 $sql_totals
     = "select count(Distinct SP.`Supplier Part Key`) as num from $table  $where  ";
 
-
-//print $sql_totals;
 
 ?>

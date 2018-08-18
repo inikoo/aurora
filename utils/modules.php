@@ -4383,31 +4383,28 @@ $modules = array(
             'order' => array(
                 'type' => 'object',
                 'tabs' => array(
-                    'supplier.order.items'   => array(
-                        'label' => _(
-                            'Items'
-                        ),
-                        'icon'  => 'bars'
-                    ),
                     'supplier.order.details' => array(
-                        'label' => _(
-                            'Data'
-                        ),
+                        'label' => _('Data'),
                         'icon'  => 'database'
                     ),
 
+                    'supplier.order.items'   => array(
+                        'label' => _('Items'),
+                        'icon'  => 'bars'
+                    ),
+
+                    'supplier.order.all_supplier_parts'   => array(
+                        'label' => _("All supplier's products"),
+                        'icon'  => 'th-list'
+                    ),
 
                     'supplier.order.tac.editor' => array(
-                        'label' => _(
-                            'Terms and conditions'
-                        ),
+                        'label' => _('Terms and conditions'),
                         'icon'  => 'gavel',
                         'class' => ''
                     ),
                     'supplier.order.history'    => array(
-                        'label' => _(
-                            'History/Notes'
-                        ),
+                        'label' => _('History/Notes'),
                         'icon'  => 'road',
                         'class' => 'right icon_only'
                     ),

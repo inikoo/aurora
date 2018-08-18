@@ -156,7 +156,7 @@ $sql_totals
 
 $fields
     = " $associated_field
-S.`Supplier Key`,`Supplier Code`,`Supplier Name`,
+S.`Supplier Key`,`Supplier Code`,`Supplier Name`,`Part Main Image Key`,
 `Supplier Location`,`Supplier Main Plain Email`,`Supplier Preferred Contact Number`,`Supplier Preferred Contact Number Formatted Number`,`Supplier Main Contact Name`,`Supplier Company Name`,
 `Supplier Number Parts`,`Supplier Number Surplus Parts`,`Supplier Number Optimal Parts`,`Supplier Number Low Parts`,`Supplier Number Critical Parts`,`Supplier Number Critical Parts`,`Supplier Number Out Of Stock Parts`,
 `Supplier $db_period Acc Parts Sold Amount` as revenue,$fields_1yb,

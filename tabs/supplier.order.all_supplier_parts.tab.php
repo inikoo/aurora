@@ -43,11 +43,7 @@ $parameters = array(
 
 
 $table_buttons   = array();
-$table_buttons[] = array(
-    'icon'       => 'sign-out fa-flip-horizontal',
-    'title'      => _("Purchase order items"),
-    'change_tab' => 'supplier.order.items'
-);
+
 $smarty->assign('table_buttons', $table_buttons);
 
 $smarty->assign(
