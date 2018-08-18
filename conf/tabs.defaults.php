@@ -1632,6 +1632,8 @@ $tab_defaults = array(
         'rpp'         => 1000,
         'rpp_options' => $default_rrp_options,
         'f_field'     => 'code',
+        'export_fields' => $export_fields['client_order_items']
+
 
     ),
     'client_order.suppliers'                => array(

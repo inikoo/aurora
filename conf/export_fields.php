@@ -12,7 +12,7 @@
 global $account;
 
 $export_fields = array(
-    'customers'                    => array(
+    'customers' => array(
         array(
             'name'    => 'C.`Customer Key`',
             'label'   => _('ID'),
@@ -62,7 +62,7 @@ $export_fields = array(
             'name'    => '`Customer Contact Address Line 1`,`Customer Contact Address Line 2`,`Customer Contact Address Sorting Code`,`Customer Contact Address Postal Code`,`Customer Contact Address Dependent Locality`,`Customer Contact Address Locality`,`Customer Contact Address Administrative Area`,`Customer Contact Address Country 2 Alpha Code`',
             'label'   => _('Contact address (Separated fields)'),
             'checked' => 0,
-            'labels'=>array(
+            'labels'  => array(
                 _('Contact address'),
                 _('Contact address line 2'),
                 _('Contact address sorting code'),
@@ -84,7 +84,7 @@ $export_fields = array(
             'name'    => '`Customer Invoice Address Line 1`,`Customer Invoice Address Line 2`,`Customer Invoice Address Sorting Code`,`Customer Invoice Address Postal Code`,`Customer Invoice Address Dependent Locality`,`Customer Invoice Address Locality`,`Customer Invoice Address Administrative Area`,`Customer Invoice Address Country 2 Alpha Code`',
             'label'   => _('Billing address (Separated fields)'),
             'checked' => 0,
-            'labels'=>array(
+            'labels'  => array(
                 _('Billing address'),
                 _('Billing address line 2'),
                 _('Billing address sorting code'),
@@ -105,7 +105,7 @@ $export_fields = array(
             'name'    => '`Customer Delivery Address Line 1`,`Customer Delivery Address Line 2`,`Customer Delivery Address Sorting Code`,`Customer Delivery Address Postal Code`,`Customer Delivery Address Dependent Locality`,`Customer Delivery Address Locality`,`Customer Delivery Address Administrative Area`,`Customer Delivery Address Country 2 Alpha Code`',
             'label'   => _('Delivery address (Separated fields)'),
             'checked' => 0,
-            'labels'=>array(
+            'labels'  => array(
                 _('Delivery address'),
                 _('Delivery address line 2'),
                 _('Delivery address sorting code'),
@@ -130,7 +130,7 @@ $export_fields = array(
 
     ),
 
-    'prospects'                    => array(
+    'prospects' => array(
 
         array(
             'name'    => '`Prospect Name`',
@@ -185,7 +185,7 @@ $export_fields = array(
 
 
     ),
-    
+
     'orders'                       => array(
         array(
             'name'    => '`Order Public ID`',
@@ -288,7 +288,7 @@ $export_fields = array(
             'checked' => 1
         ),
 
-         array(
+        array(
             'name'    => '`Invoice Items Net Amount`',
             'label'   => _('Items net'),
             'checked' => 1
@@ -1013,7 +1013,8 @@ $export_fields = array(
             'checked' => 1
         ),
         array(
-            'name'    => ($account->get('Account Code')=='AWEU'? 'sum(`Invoice Currency Exchange Rate`*`Order Transaction Amount`) '  :  'sum(`Invoice Currency Exchange Rate`*(`Invoice Transaction Gross Amount`-`Invoice Transaction Total Discount Amount`+`Invoice Transaction Shipping Amount`+`Invoice Transaction Charges Amount`+`Invoice Transaction Insurance Amount`))' ),
+            'name'    => ($account->get('Account Code') == 'AWEU' ? 'sum(`Invoice Currency Exchange Rate`*`Order Transaction Amount`) '
+                : 'sum(`Invoice Currency Exchange Rate`*(`Invoice Transaction Gross Amount`-`Invoice Transaction Total Discount Amount`+`Invoice Transaction Shipping Amount`+`Invoice Transaction Charges Amount`+`Invoice Transaction Insurance Amount`))'),
             'label'   => _('Amount').' ('.$account->get('Account Currency Code').')',
             'checked' => 1
         ),
@@ -1038,7 +1039,6 @@ $export_fields = array(
             'checked' => 1
         ),
     ),
-
 
 
     'abandoned_cart.mail_list' => array(
@@ -1080,7 +1080,7 @@ $export_fields = array(
         ),
     ),
 
-    'mail_list'=>array(
+    'mail_list' => array(
         array(
             'name'    => '`Customer Main Plain Email`',
             'label'   => _('Email'),
@@ -1109,7 +1109,7 @@ $export_fields = array(
 
     ),
 
-    'inventory_stock_history_day'=>array(
+    'inventory_stock_history_day' => array(
         array(
             'name'    => '`Part Reference`',
             'label'   => _('Part'),
@@ -1130,6 +1130,71 @@ $export_fields = array(
             'label'   => _('Stock value'),
             'checked' => 1
         ),
+
+
+    ),
+    'client_order_items'=>array(
+    array(
+        'name'    => '`Supplier Code`',
+        'label'   => _('Supplier code'),
+        'checked' => 1
+    ),
+    array(
+        'name'    => '`Suppler Name`',
+        'label'   => _('Supplier name'),
+        'checked' => 0
+    ),
+    array(
+        'name'    => '`Supplier Part Reference`',
+        'label'   => _('Product Code'),
+        'checked' => 1
+    ),
+    array(
+        'name'    => '`Supplier Part Description`',
+        'label'   => _('Unit description'),
+        'checked' => 1
+    ),
+       array(
+        'name'    => '`Supplier Part Unit Cost`',
+        'label'   => _('Unit cost'),
+        'checked' => 1
+    ),
+    array(
+        'name'    => '`Part Units Per Package`',
+        'label'   => _('Packed in'),
+        'checked' => 1
+    ),
+    array(
+        'name'    => '`Part Units Per Package`*`Supplier Part Packages Per Carton`',
+        'label'   => _('Units per carton'),
+        'checked' => 1
+    ),
+    array(
+        'name'    => '`Supplier Part Packages Per Carton`',
+        'label'   => _('Packs per carton'),
+        'checked' => 1
+    ),
+    array(
+        'name'    => '`Purchase Order Quantity`*`Part Units Per Package`*`Supplier Part Packages Per Carton`',
+        'label'   => _('Ordered units'),
+        'checked' => 1
+    ),
+    array(
+        'name'    => '`Purchase Order Quantity`*`Supplier Part Packages Per Carton`',
+        'label'   => _('Ordered packs'),
+        'checked' => 1
+    ),
+    array(
+        'name'    => '`Purchase Order Quantity`',
+        'label'   => _('Ordered cartons'),
+        'checked' => 1
+    ),
+    array(
+        'name'    => '`Supplier Part Unit Cost`*`Purchase Order Quantity`*`Part Units Per Package`*`Supplier Part Packages Per Carton`',
+        'label'   => _('Amount'),
+        'checked' => 1
+    ),
+
 
 
     )

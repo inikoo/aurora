@@ -8,13 +8,13 @@
  Version 3
 -->
 *}
-{$order->get('State Index')}
+
 {assign deliveries $order->get_deliveries('objects')}
 <div class="timeline_horizontal {if $order->get('Purchase Order State')=='Cancelled'}hide{/if}">
     <ul class="timeline" id="timeline">
         <li id="submitted_node" class="li {if $order->get('State Index')>=30}complete{/if}">
             <div class="label">
-                <span class="state" title="{t}Client's order received{/t}">{t}CO received{/t}</span>
+                <span class="state" title="{t}Client's order received{/t}">{t}Order received{/t}</span>
             </div>
             <div class="timestamp">
                 <span class="Purchase_Order_Submitted_Date">&nbsp;{$order->get('Submitted Date')}</span> <span
@@ -63,7 +63,7 @@
                       class="{if $smarty.foreach.deliveries.index != 0}hide{/if} index_{$smarty.foreach.deliveries.index}">{$dn->get('Public ID')}</span>
                 {/foreach}&nbsp;</span>
             </div>
-            <div class="truck">
+            <div class="dot">
             </div>
         </li>
 
@@ -118,13 +118,13 @@
         <div style="clear:both">
         </div>
     </div>
-    <div class="block " style="align-items: stretch;flex: 1;">
-        <div class="state" style="height:30px;margin-bottom:10px;position:relative;top:-5px">
+    <div class="block " style="align-items: stretch;flex: 1;padding-top: 0px">
+        <div class="state" style="height:30px;">
             <div id="back_operations">
 
 
             </div>
-            <span style="float:left;padding-left:10px;padding-top:5px"
+            <span style="float:left;padding-left:10px;padding-top: 5px"
                   class="Purchase_Order_State"> {$order->get('Agent State')} </span>
 
 
@@ -156,6 +156,18 @@
                 </div>
             </div>
         </div>
+
+        <table border="0" class=" ">
+        <tr style="    border-bottom: 1px solid #ccc;">
+            <td style="text-align: center;padding: 0px" colspan="2">
+                <a href="/pdf/supplier.order.pdf.php?id={$order->id}" target="_blank"><img class="button pdf_link"  style="width: 50px;height:16px;position: relative;top:2px" src="/art/pdf.gif"></a>
+
+
+
+            </td>
+        </tr>
+        </table>
+
         <div id="crete_delivery"
              class="delivery_node {if ({$order->get('State Index')|intval} < 35 or ($order->get('Purchase Order Ordered Number Items')-$order->get('Purchase Order Number Supplier Delivery Items'))==0)  }hide{/if}"
              style="height:30px;clear:both;border-top:1px solid #ccc;border-bottom:1px solid #ccc">

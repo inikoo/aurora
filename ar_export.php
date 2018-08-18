@@ -76,7 +76,11 @@ if ($_data['tipo'] == 'timeserie_records') {
         $_tipo = 'mail_list';
     } elseif ($_data['tipo'] == 'stock.history.day') {
         $_tipo = 'inventory_stock_history_day';
+    }elseif ($_data['tipo'] == 'client_order.items') {
+        $_tipo = 'client_order_items';
     }
+
+
 
     else {
         $_tipo = $_data['tipo'];
