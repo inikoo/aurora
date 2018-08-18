@@ -10,7 +10,7 @@
 */
 
 $tab     = 'client_order.suppliers';
-$ar_file = 'ar_suppliers_tables.php';
+$ar_file = 'ar_agents_tables.php';
 $tipo    = 'client_order.suppliers';
 
 $default = $user->get_tab_defaults($tab);

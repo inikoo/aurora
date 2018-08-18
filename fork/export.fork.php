@@ -237,6 +237,8 @@ function fork_export($job) {
 
                 }
 
+                //print "$_value\n";
+
 
                 $objPHPExcel->getActiveSheet()->setCellValue($char.$row_index, $_value);
                 $char_index++;

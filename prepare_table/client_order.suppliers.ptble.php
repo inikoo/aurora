@@ -11,12 +11,14 @@
 */
 
 
+$group_by=' group by `Supplier Part Supplier Key` ';
+
 $where  = sprintf(
     ' where POTF.`Purchase Order Key`=%d', $parameters['parent_key']
 );
 $wheref = '';
 if ($parameters['f_field'] == 'code' and $f_value != '') {
-    $wheref .= " and `Supplier Part Reference` like '".addslashes($f_value)."%'";
+    $wheref .= " and `Supplier Code` like '".addslashes($f_value)."%'";
 }
 
 $_order = $order;
@@ -44,27 +46,20 @@ left join `Supplier Part Historic Dimension` SPH on (POTF.`Supplier Part Histori
  left join  `Part Dimension` P on (P.`Part SKU`=SP.`Supplier Part Part SKU`)
  left join  `Part Data` PD on (PD.`Part SKU`=SP.`Supplier Part Part SKU`)
  left join `Supplier Dimension` S on (`Supplier Part Supplier Key`=S.`Supplier Key`)
-
+left join `Purchase Order Dimension` PO on (POTF.`Purchase Order Key`=PO.`Purchase Order Key`)
 ";
 
 $sql_totals
-    = "select count(distinct  `Purchase Order Transaction Fact Key`) as num from $table $where";
-
+    = "select count(distinct  S.`Supplier Key`) as num from $table $where";
 
 $fields
-    = "`Supplier Delivery Quantity`,`Supplier Delivery Key`,`Purchase Order Item Index`,`Supplier Part Currency Code`,`Supplier Part Historic Unit Cost`,
-`Purchase Order Transaction Fact Key`,`Purchase Order Quantity`,POTF.`Supplier Part Key`,`Supplier Part Reference`,POTF.`Supplier Part Historic Key`,
-`Supplier Part Description`,`Part Units Per Package`,`Supplier Part Packages Per Carton`,`Supplier Part Carton CBM`,
-`Supplier Part Unit Cost`,`Part Package Weight`,`Purchase Order CBM`,`Purchase Order Weight`,S.`Supplier Key`,`Supplier Code`,`Supplier Part Minimum Carton Order`,
-`Part 1 Quarter Ago Dispatched`,`Part 2 Quarter Ago Dispatched`,`Part 3 Quarter Ago Dispatched`,`Part 4 Quarter Ago Dispatched`,
-`Part 1 Quarter Ago Invoiced Amount`,`Part 2 Quarter Ago Invoiced Amount`,`Part 3 Quarter Ago Invoiced Amount`,`Part 4 Quarter Ago Invoiced Amount`,
-`Part 1 Quarter Ago 1YB Dispatched`,`Part 2 Quarter Ago 1YB Dispatched`,`Part 3 Quarter Ago 1YB Dispatched`,`Part 4 Quarter Ago 1YB Dispatched`,
-`Part 1 Quarter Ago 1YB Invoiced Amount`,`Part 2 Quarter Ago 1YB Invoiced Amount`,`Part 3 Quarter Ago 1YB Invoiced Amount`,`Part 4 Quarter Ago 1YB Invoiced Amount`,
-`Part Quarter To Day Acc Dispatched`,`Part Stock Status`,`Part Current On Hand Stock`,`Part Reference`,`Part Total Acc Dispatched`,
-`Part Products Web Status`,`Part On Demand`,`Part Days Available Forecast`,`Part Fresh`
-
+    = "S.`Supplier Key`,`Supplier Code`,`Supplier Name`,POTF.`Purchase Order Key`,`Purchase Order Currency Code`,
+    sum(`Supplier Part Unit Cost`*`Purchase Order Quantity`*`Part Units Per Package`*`Supplier Part Packages Per Carton`) as amount,
+count(distinct P.`Part SKU`) as products
 
 ";
 
 
 ?>
+
+

@@ -61,12 +61,21 @@ cell: Backgrid.HtmlCell.extend({
 }),
 },
 {
+name: "image",
+label: "{t}Image{/t}",
+editable: false,
+sortable: false,
+cell: Backgrid.HtmlCell.extend({
+}),
+},
+{
 name: "reference",
-label: "{t}S. Code{/t}",
+label: "{t}Code{/t}",
 editable: false,
 cell: Backgrid.HtmlCell.extend({
 }),
 },
+
 {
 name: "description",
 label: "{t}Unit description{/t}",

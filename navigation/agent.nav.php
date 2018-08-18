@@ -944,15 +944,6 @@ function get_agent_client_order_navigation($data, $smarty, $user, $db, $account)
     }
 
 
-    $right_buttons[] = array(
-        'icon'  => 'share-alt',
-        'title' => '{t}Share{/t}'
-    );
-
-    $right_buttons[] = array(
-        'icon'  => 'print',
-        'title' => '{t}Print{/t}'
-    );
 
 
     $title = _("Client's order").' <span class="Purchase_Order_Public_ID id">'.$object->get('Public ID').'</span>';
