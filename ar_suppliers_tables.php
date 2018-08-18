@@ -1324,7 +1324,7 @@ function order_items($_data, $db, $user, $account) {
             if ($purchase_order->get('State Index') < 30) {
 
 
-                $available_forecast = '';
+
 
 
                 if ($data['Part On Demand'] == 'Yes') {
@@ -1371,9 +1371,8 @@ function order_items($_data, $db, $user, $account) {
 
                 $description_sales = $description.'<div style="margin-top:10px" >
      
-                        <span style="display: inline-block; min-width: 50px;color:black" class="strong padding_right_10" title="'._('Stock (cartons)').'">'.number(
-                        $data['Part Current On Hand Stock'] / $data['Supplier Part Packages Per Carton']
-                    ).'</span> '.$stock_status.'
+                        <span style="display: inline-block; min-width: 50px;color:black" class="strong padding_right_10" title="'._('Stock (cartons)').'">'.
+                    number($data['Part Current On Hand Stock'] / $data['Supplier Part Packages Per Carton']).'</span> '.$stock_status.'
                         <span>'.$available_forecast.'</span>
                          <span class="discreet padding_left_10" title="'._('Cartons dispatched by year').'">'.$average_sales_per_year.'</span>
                     </div>
@@ -2642,14 +2641,16 @@ function order_supplier_all_parts($_data, $db, $user, $account) {
 
                 }
             }
+            $average_sales_per_year = '&lang;'.number($data['Part 1 Year Acc Dispatched'] / $data['Supplier Part Packages Per Carton']).' C/y&rang;';
 
 
             $description_sales = $description.'<div style="margin-top:10px" >
-                        <span class="no_discreet" style="margin-right:5px"><i class="fa fa-square" aria-hidden="true"></i> '.$data['Part Reference'].'</span>
-                        <span title="'._('Stock (cartons)').'">'.number(
-                    $data['Part Current On Hand Stock'] / $data['Supplier Part Packages Per Carton']
+                       
+                       <span style="display: inline-block; min-width: 50px;color:black" class="strong padding_right_10" title="'._('Stock (cartons)').'">'.
+                number($data['Part Current On Hand Stock'] / $data['Supplier Part Packages Per Carton']
                 ).'</span> '.$stock_status.'
                         <span>'.$available_forecast.'</span>
+                        <span class="discreet padding_left_10" title="'._('Cartons dispatched by year').'">'.$average_sales_per_year.'</span>
                     </div>
                     <div class="as_table asset_sales">
                         <div class="as_row header">
@@ -2704,6 +2705,20 @@ function order_supplier_all_parts($_data, $db, $user, $account) {
 
             );
 
+            $reference = sprintf(
+                '<span class="link" onclick="change_view(\'/supplier/%d/part/%d\')" title="%s" >%s</span>', $data['Supplier Part Supplier Key'], $data['Supplier Part Key'], _('Supplier product code'), $data['Supplier Part Reference']
+            );
+            if ($data['Part Reference'] != $data['Supplier Part Reference']) {
+                $reference .= sprintf(
+                    '<br ><span class="small link" onclick="change_view(\'part/%d\')" title="%s"><i class="far fa-box"></i> %s</span>', $data['Part SKU'], _('Part reference'), $data['Part Reference']
+                );
+            } else {
+                $reference .= sprintf(
+                    ', <span class="small link" onclick="change_view(\'part/%d\')" ><i class="far fa-box" title="%s"></i> </span>', $data['Part SKU'], _('Part reference is same as supplier product code')
+                );
+            }
+
+
             if ($data['Part Main Image Key'] != 0) {
                 $image = sprintf('<img src="/image_root.php?id=%d&r=50x50" style="display: block;
   max-width:50px;
@@ -2720,13 +2735,11 @@ function order_supplier_all_parts($_data, $db, $user, $account) {
                 'supplier_code'    => $data['Supplier Code'],
                 'part_key'         => (integer)$data['Supplier Part Part SKU'],
                 'part_reference'   => $data['Part Reference'],
-                'parent_key'       => $purchase_order->get(
-                    'Purchase Order Parent Key'
-                ),
+                'parent_key'       => $purchase_order->get('Purchase Order Parent Key'),
                 'parent_type'      => strtolower(
                     $purchase_order->get('Purchase Order Parent')
                 ),
-                'reference'        => $data['Supplier Part Reference'],
+                'reference' => $reference,
                 'formatted_sku'    => sprintf(
                     "SKU%05d", $data['Supplier Part Part SKU']
                 ),
