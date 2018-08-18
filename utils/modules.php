@@ -4506,9 +4506,7 @@ $modules = array(
                         'title' => _('Details')
                     ),
                     'agent.suppliers' => array(
-                        'label' => _(
-                            "Agent's suppliers"
-                        ),
+                        'label' => _("Agent's suppliers"),
                         'icon'  => 'hand-holding-box'
                     ),
 
@@ -7855,17 +7853,24 @@ $modules = array(
             'client_order' => array(
                 'type' => 'object',
                 'tabs' => array(
+
+                    /*
+                    'client_order.details' => array(
+                        'label' => _('Data'),
+                        'icon'  => 'database'
+                    ),
+                    */
                     'client_order.items'   => array(
                         'label' => _(
                             'Items'
                         ),
                         'icon'  => 'bars'
                     ),
-                    'client_order.details' => array(
-                        'label' => _('Data'),
-                        'icon'  => 'database'
-                    ),
 
+                    'client_order.suppliers' => array(
+                        'label' => _('Suppliers'),
+                        'icon'  => 'ship'
+                    ),
 
                     'client_order.history' => array(
                         'label' => _(

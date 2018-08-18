@@ -114,11 +114,11 @@ if (isset($parameters['elements_type'])) {
                 if ($_value) {
                     $num_elements_checked++;
 
-                    if ($_key == 'InProcessbyClient') {
-                        $_elements .= ",'InProcess'";
-                    } elseif ($_key == 'InProcess') {
+                    if ($_key == 'Submitted') {
                         $_elements .= ",'Submitted'";
-                    } elseif ($_key == 'Send') {
+                    } elseif ($_key == 'Cancelled') {
+                        $_elements .= ",'Cancelled'";
+                    } elseif ($_key == 'Dispatched') {
                         $_elements .= ",'Dispatched','Received','Checked','Placed'";
                     } else {
 

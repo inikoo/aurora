@@ -2222,12 +2222,12 @@ function get_agent_orders_elements($db, $data) {
 
     $elements_numbers = array(
         'state' => array(
-            'InProcess'                   => 0,
-            'SubmittedAgent'              => 0,
-            'InTransit' => 0,
-            'ReceivedChecked'             => 0,
-            'Placed'                      => 0,
-            'Cancelled'                   => 0
+            'InProcess'       => 0,
+            'SubmittedAgent'  => 0,
+            'InTransit'       => 0,
+            'ReceivedChecked' => 0,
+            'Placed'          => 0,
+            'Cancelled'       => 0
         ),
     );
 
@@ -2241,11 +2241,11 @@ function get_agent_orders_elements($db, $data) {
     if ($result = $db->query($sql)) {
         foreach ($result as $row) {
 
-            if ($row['element'] == 'Submitted' or $row['element'] == 'SubmittedAgent' ) {
+            if ($row['element'] == 'Submitted' or $row['element'] == 'SubmittedAgent') {
                 $element = 'SubmittedAgent';
-            } elseif ($row['element'] == 'Dispatched' ) {
+            } elseif ($row['element'] == 'Dispatched') {
                 $element = 'InTransit';
-            }elseif ($row['element'] == 'Received' or $row['element'] == 'Checked') {
+            } elseif ($row['element'] == 'Received' or $row['element'] == 'Checked') {
                 $element = 'ReceivedChecked';
             } else {
                 $element = $row['element'];
@@ -2297,7 +2297,10 @@ function get_agent_client_orders_elements($db, $data, $user) {
             $table = '`Purchase Order Dimension` O';
             $where = sprintf('where  `Purchase Order Parent`="Supplier" and `Purchase Order Parent Key`=%d and `Purchase Order Agent Key`=%d', $parent_key, $agent_key);
             break;
-
+        case 'agent':
+            $table = '`Purchase Order Dimension` O';
+            $where = sprintf('where  `Purchase Order Parent`="Agent" and `Purchase Order Parent Key`=%d ', $parent_key, $agent_key);
+            break;
         case 'account':
             $table = '`Purchase Order Dimension` O';
             $where = sprintf('where  `Purchase Order Agent Key`=%d', $agent_key);
@@ -2313,11 +2316,9 @@ function get_agent_client_orders_elements($db, $data, $user) {
 
     $elements_numbers = array(
         'state' => array(
-            'SubmittedAgent'              => 0,
-            'SubmittedInputtedDispatched' => 0,
-            'ReceivedChecked'             => 0,
-            'Placed'                      => 0,
-            'Cancelled'                   => 0
+            'Submitted'  => 0,
+            'Dispatched' => 0,
+            'Cancelled'  => 0
         ),
     );
 
@@ -2326,18 +2327,13 @@ function get_agent_client_orders_elements($db, $data, $user) {
     $sql = sprintf(
         "SELECT count(*) AS number,`Purchase Order State` AS element FROM %s    %s  %s GROUP BY `Purchase Order State` ", $table, $where, $where_interval
     );
+    //  print $sql;
 
     if ($result = $db->query($sql)) {
         foreach ($result as $row) {
 
 
-            if ($row['element'] == 'Submitted' or $row['element'] == 'Inputted' or $row['element'] == 'Dispatched') {
-                $element = 'SubmittedInputtedDispatched';
-            } elseif ($row['element'] == 'Received' or $row['element'] == 'Checked') {
-                $element = 'ReceivedChecked';
-            } else {
-                $element = $row['element'];
-            }
+            $element = $row['element'];
             if (isset($elements_numbers['state'][$element])) {
                 $elements_numbers['state'][$element] += $row['number'];
             }

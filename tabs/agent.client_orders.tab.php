@@ -25,8 +25,8 @@ $table_filters = array(
 );
 
 $parameters = array(
-    'parent'     => 'account',
-    'parent_key' => ''
+    'parent'     => 'agent',
+    'parent_key' => $user->get('User Parent Key')
 
 );
 

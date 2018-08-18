@@ -269,7 +269,7 @@ function get_rtext($record_label, $total_records) {
         return sprintf(
             ngettext('%s day', '%s days', $total_records), number($total_records)
         );
-    }  elseif ($record_label == 'picker') {
+    } elseif ($record_label == 'picker') {
         return sprintf(
             ngettext('%s picker', '%s pickers', $total_records), number($total_records)
         );
@@ -281,11 +281,11 @@ function get_rtext($record_label, $total_records) {
         return sprintf(
             ngettext('%s operative', '%s operatives', $total_records), number($total_records)
         );
-    }  elseif ($record_label == 'charge') {
+    } elseif ($record_label == 'charge') {
         return sprintf(
             ngettext('%s charge', '%s charges', $total_records), number($total_records)
         );
-    }elseif ($record_label == 'shipping zone') {
+    } elseif ($record_label == 'shipping zone') {
         return sprintf(
             ngettext('%s shipping zone', '%s shipping zones', $total_records), number($total_records)
         );
@@ -341,11 +341,11 @@ function get_rtext($record_label, $total_records) {
         return sprintf(
             ngettext('%s delivery', '%s deliveries', $total_records), number($total_records)
         );
-    }elseif ($record_label == 'payment') {
+    } elseif ($record_label == 'payment') {
         return sprintf(
             ngettext('%s payment', '%s payments', $total_records), number($total_records)
         );
-    }  elseif ($record_label == 'deleted employee') {
+    } elseif ($record_label == 'deleted employee') {
         return sprintf(
             ngettext(
                 '%s deleted employee', '%s deleted employees', $total_records
@@ -393,7 +393,7 @@ function get_rtext($record_label, $total_records) {
         return sprintf(
             ngettext('%s replenishment', '%s replenishments', $total_records), number($total_records)
         );
-    }elseif ($record_label == 'order in basket') {
+    } elseif ($record_label == 'order in basket') {
         return sprintf(
             ngettext('%s order in basket', '%s orders in basket', $total_records), number($total_records)
         );
@@ -405,39 +405,39 @@ function get_rtext($record_label, $total_records) {
         return sprintf(
             ngettext('%s order submitted (Paid)', '%s orders submitted (Paid)', $total_records), number($total_records)
         );
-    }  elseif ($record_label == 'order warehouse') {
+    } elseif ($record_label == 'order warehouse') {
         return sprintf(
             ngettext('%s order in warehouse', '%s orders in warehouse', $total_records), number($total_records)
         );
-    }  elseif ($record_label == 'order warehouse with alerts') {
+    } elseif ($record_label == 'order warehouse with alerts') {
         return sprintf(
             ngettext('%s order in warehouse (With Alerts)', '%s orders in warehouse (with Alerts)', $total_records), number($total_records)
         );
-    }  elseif ($record_label == 'order approved') {
+    } elseif ($record_label == 'order approved') {
         return sprintf(
             ngettext('%s order invoiced', '%s orders invoiced', $total_records), number($total_records)
         );
-    }  elseif ($record_label == 'order packed done') {
+    } elseif ($record_label == 'order packed done') {
         return sprintf(
             ngettext('%s order packed and sealed', '%s packed and sealed', $total_records), number($total_records)
         );
-    }  elseif ($record_label == 'order dispatched today') {
+    } elseif ($record_label == 'order dispatched today') {
         return sprintf(
             ngettext('%s order dispatched today', '%s orders dispatched today', $total_records), number($total_records)
         );
-    }  elseif ($record_label == 'part with excess stock') {
+    } elseif ($record_label == 'part with excess stock') {
         return sprintf(
             ngettext('%s part with excess stock', '%s parts with excess stock', $total_records), number($total_records)
         );
-    }elseif ($record_label == 'part with critical stock or out of stock') {
+    } elseif ($record_label == 'part with critical stock or out of stock') {
         return sprintf(
             ngettext('%s part with critical stock or out of stock', '%s parts with critical stock or out of stock', $total_records), number($total_records)
         );
-    }elseif ($record_label == 'part to produce as soon as possible') {
+    } elseif ($record_label == 'part to produce as soon as possible') {
         return sprintf(
             ngettext('%s part to produce as soon as possible', '%s parts to produce as soon as possible', $total_records), number($total_records)
         );
-    }elseif ($record_label == 'customer with credit') {
+    } elseif ($record_label == 'customer with credit') {
         return sprintf(
             ngettext('%s customer with credit', '%s customers with credit', $total_records), number($total_records)
         );
@@ -477,32 +477,36 @@ function get_rtext($record_label, $total_records) {
         return sprintf(
             ngettext('%s incident', '%s incidents', $total_records), number($total_records)
         );
-    }elseif ($record_label == 'email') {
+    } elseif ($record_label == 'email') {
         return sprintf(
             ngettext('%s email', '%s emails', $total_records), number($total_records)
         );
-    }elseif ($record_label == 'refund') {
+    } elseif ($record_label == 'refund') {
         return sprintf(
             ngettext('%s refund', '%s refunds', $total_records), number($total_records)
         );
-    }elseif ($record_label == 'saved email template') {
+    } elseif ($record_label == 'saved email template') {
         return sprintf(
             ngettext('%s saved email template', '%s saved email templates', $total_records), number($total_records)
         );
 
-    }elseif ($record_label == 'shipping company') {
+    } elseif ($record_label == 'shipping company') {
         return sprintf(
             ngettext('%s shipping company', '%s shipping companies', $total_records), number($total_records)
         );
 
 
-    }elseif ($record_label == 'mailshot') {
+    } elseif ($record_label == 'mailshot') {
         return sprintf(
             ngettext('%s mailshot', '%s mailshots', $total_records), number($total_records)
         );
-    }elseif ($record_label == 'newsletter') {
+    } elseif ($record_label == 'newsletter') {
         return sprintf(
             ngettext('%s newsletter', '%s newsletters', $total_records), number($total_records)
+        );
+    } elseif ($record_label == 'client order') {
+        return sprintf(
+            ngettext('%s client order', '%s client orders', $total_records), number($total_records)
         );
     } else {
         return sprintf(
@@ -727,7 +731,7 @@ function get_rtext_with_filter($record_label, $total_with_filter, $total_no_filt
                 '%s time series of %s', '%s time series of %s', $total_with_filter
             ), number($total_with_filter), number($total_no_filter)
         );
-    }elseif ($record_label == 'time series type') {
+    } elseif ($record_label == 'time series type') {
         return sprintf(
             ngettext(
                 '%s time series type of %s', '%s time series types of %s', $total_with_filter
@@ -759,7 +763,7 @@ function get_rtext_with_filter($record_label, $total_with_filter, $total_no_filt
         return sprintf(
             ngettext('%s offer of %s', '%s offers of %s', $total_with_filter), number($total_with_filter), number($total_no_filter)
         );
-    }elseif ($record_label == 'allowance') {
+    } elseif ($record_label == 'allowance') {
         return sprintf(
             ngettext('%s allowance of %s', '%s allowances of %s', $total_with_filter), number($total_with_filter), number($total_no_filter)
         );
@@ -897,14 +901,13 @@ function get_rtext_with_filter($record_label, $total_with_filter, $total_no_filt
                 '%s picker of %s', '%s pickers of %s', $total_with_filter
             ), number($total_with_filter), number($total_no_filter)
         );
-    }
-    elseif ($record_label == 'packer') {
+    } elseif ($record_label == 'packer') {
         return sprintf(
             ngettext(
                 '%s packer of %s', '%s packers of %s', $total_with_filter
             ), number($total_with_filter), number($total_no_filter)
         );
-    }  elseif ($record_label == 'api key') {
+    } elseif ($record_label == 'api key') {
         return sprintf(
             ngettext(
                 '%s API key of %s', '%s API keys of %s', $total_with_filter
@@ -922,69 +925,72 @@ function get_rtext_with_filter($record_label, $total_with_filter, $total_no_filt
                 '%s recipient of %s', '%s recipients of %s', $total_with_filter
             ), number($total_with_filter), number($total_no_filter)
         );
-    }elseif ($record_label == 'poll query') {
+    } elseif ($record_label == 'poll query') {
         return sprintf(
             ngettext(
                 '%s poll query of %s', '%s poll queries of %s', $total_with_filter
             ), number($total_with_filter), number($total_no_filter)
         );
-    }elseif ($record_label == 'poll option') {
+    } elseif ($record_label == 'poll option') {
         return sprintf(
             ngettext(
                 '%s poll option of %s', '%s poll options of %s', $total_with_filter
             ), number($total_with_filter), number($total_no_filter)
         );
-    }elseif ($record_label == 'newsletter') {
+    } elseif ($record_label == 'newsletter') {
         return sprintf(
             ngettext(
                 '%s newsletter of %s', '%s newsletters of %s', $total_with_filter
             ), number($total_with_filter), number($total_no_filter)
         );
-    }elseif ($record_label == 'incident') {
+    } elseif ($record_label == 'incident') {
         return sprintf(
             ngettext(
                 '%s incident of %s', '%s incidents of %s', $total_with_filter
             ), number($total_with_filter), number($total_no_filter)
         );
-    }elseif ($record_label == 'email') {
+    } elseif ($record_label == 'email') {
         return sprintf(
             ngettext(
                 '%s email of %s', '%s emails of %s', $total_with_filter
             ), number($total_with_filter), number($total_no_filter)
         );
-    }elseif ($record_label == 'refund') {
+    } elseif ($record_label == 'refund') {
         return sprintf(
             ngettext(
                 '%s refund of %s', '%s refunds of %s', $total_with_filter
             ), number($total_with_filter), number($total_no_filter)
         );
-    }elseif ($record_label == 'shipping company') {
+    } elseif ($record_label == 'shipping company') {
         return sprintf(
             ngettext(
                 '%s shipping company of %s', '%s shipping companies of %s', $total_with_filter
             ), number($total_with_filter), number($total_no_filter)
         );
-    }elseif ($record_label == 'mailshot') {
+    } elseif ($record_label == 'mailshot') {
         return sprintf(
             ngettext(
                 '%s mailshot of %s', '%s mailshots of %s', $total_with_filter
             ), number($total_with_filter), number($total_no_filter)
         );
-    }elseif ($record_label == 'newsletter') {
+    } elseif ($record_label == 'newsletter') {
         return sprintf(
             ngettext(
                 '%s newsletter of %s', '%s newsletters of %s', $total_with_filter
             ), number($total_with_filter), number($total_no_filter)
         );
-    }
-    else {
+    }elseif ($record_label == 'client order') {
+        return sprintf(
+            ngettext(
+                '%s client order of %s', '%s client orders of %s', $total_with_filter
+            ), number($total_with_filter), number($total_no_filter)
+        );
+    } else {
         return sprintf(
             ngettext('%s record of %s', '%s records of %s', $total_with_filter), number($total_with_filter), number($total_no_filter)
         );
     }
 }
-
-
 
 
 ?>

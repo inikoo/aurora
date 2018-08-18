@@ -537,7 +537,7 @@ function agents($_data, $db, $user, $account) {
 
             $table_data[] = array(
                 'id'             => (integer)$data['Agent Key'],
-                'code'           => sprintf('<span class="link" onclick="change_view(\'agent/%d\')">%s</span>', $data['Agent Key'], $data['Agent Code']),
+                'code'           => sprintf('<span class="link" onclick="change_view(\'agent/%d\')">%s</span>',$data['Agent Key'],$data['Agent Code']),
                 'name'           => $data['Agent Name'],
                 'suppliers'      => number($data['Agent Number Suppliers']),
                 'supplier_parts' => number($data['Agent Number Parts']),
@@ -873,8 +873,8 @@ function agent_orders($_data, $db, $user) {
 
     include_once 'prepare_table/init.php';
 
-    $sql = "select $fields from $table $where $wheref order by $order $order_direction limit $start_from,$number_results";
-    //print $sql;
+    $sql        = "select $fields from $table $where $wheref order by $order $order_direction limit $start_from,$number_results";
+   //print $sql;
     $table_data = array();
 
     if ($result = $db->query($sql)) {
@@ -909,10 +909,10 @@ function agent_orders($_data, $db, $user) {
             }
 
             $table_data[] = array(
-                'id' => (integer)$data['Purchase Order Key'],
+                'id'          => (integer)$data['Purchase Order Key'],
 
 
-                'public_id' => sprintf('<span class="link" onclick="change_view(\'agent/%d/order/%d\')">%s</span>', $data['Purchase Order Parent Key'], $data['Purchase Order Key'], $data['Purchase Order Public ID']),
+                'public_id' => sprintf('<span class="link" onclick="change_view(\'agent/%d/order/%d\')">%s</span>',$data['Purchase Order Parent Key'],$data['Purchase Order Key'],$data['Purchase Order Public ID']),
                 'date'      => strftime("%e %b %Y", strtotime($data['Purchase Order Creation Date'].' +0:00')),
                 'last_date' => strftime("%a %e %b %Y %H:%M %Z", strtotime($data['Purchase Order Last Updated Date'].' +0:00')),
                 'state'     => $state,
@@ -1001,10 +1001,10 @@ function agent_client_orders($_data, $db, $user) {
             }
 
             $table_data[] = array(
-                'id' => (integer)$data['Purchase Order Key'],
+                'id'          => (integer)$data['Purchase Order Key'],
 
 
-                'public_id' => sprintf('<span class="link" onclick="change_view(\'client_order/%d\')">%s</span>', $data['Purchase Order Key'], $data['Purchase Order Public ID']),
+                'public_id' => sprintf('<span class="link" onclick="change_view(\'client_order/%d\')">%s</span>',$data['Purchase Order Key'],$data['Purchase Order Public ID']),
                 'date'      => strftime("%e %b %Y", strtotime($data['Purchase Order Creation Date'].' +0:00')),
                 'last_date' => strftime("%a %e %b %Y %H:%M %Z", strtotime($data['Purchase Order Last Updated Date'].' +0:00')),
                 'state'     => $state,
@@ -1041,20 +1041,20 @@ function agent_client_orders($_data, $db, $user) {
 
 function agent_deliveries($_data, $db, $user) {
 
-    /*
-        if ($user->get('User Type') != 'Agent') {
-            echo json_encode(
-                array(
-                    'state' => 405,
-                    'resp'  => 'Forbidden'
-                )
-            );
-            exit;
-        }
+/*
+    if ($user->get('User Type') != 'Agent') {
+        echo json_encode(
+            array(
+                'state' => 405,
+                'resp'  => 'Forbidden'
+            )
+        );
+        exit;
+    }
 
 
-        $_data['parameters']['agent_key'] = $user->get('User Parent Key');
-    */
+    $_data['parameters']['agent_key'] = $user->get('User Parent Key');
+*/
 
     $rtext_label = 'delivery';
 
@@ -1096,7 +1096,7 @@ function agent_deliveries($_data, $db, $user) {
 
             $table_data[] = array(
                 'id'        => (integer)$data['Supplier Delivery Key'],
-                'public_id' => sprintf('<span class="link" onClick="change_view(\'agent/%d/delivery/%d\')">%s</span>', $data['Supplier Delivery Parent Key'], $data['Supplier Delivery Key'], $data['Supplier Delivery Public ID']),
+                'public_id' => sprintf('<span class="link" onClick="change_view(\'agent/%d/delivery/%d\')">%s</span>',$data['Supplier Delivery Parent Key'], $data['Supplier Delivery Key'], $data['Supplier Delivery Public ID']),
                 'date'      => strftime("%e %b %Y", strtotime($data['Supplier Delivery Creation Date'].' +0:00')),
                 'last_date' => strftime("%a %e %b %Y %H:%M %Z", strtotime($data['Supplier Delivery Last Updated Date'].' +0:00')),
                 'state'     => $state,
@@ -1307,7 +1307,7 @@ function order_items($_data, $db, $user, $account) {
 
             }
 
-            $description = '<div style="font-size:90%" >';
+            $description = '<div style="font-size:90%" >'.($data['Supplier Part Reference'] != $data['Part Reference'] ? $data['Part Reference'].', ' : '');
 
 
             $description .= '<span class="">'.$units_per_carton.'</span><span class="discreet ">x</span> '.$data['Supplier Part Description'].'<br/> 
@@ -1366,16 +1366,12 @@ function order_items($_data, $db, $user, $account) {
 
                 }
 
-
-                $average_sales_per_year = '&lang;'.number($data['Part 1 Year Acc Dispatched'] / $data['Supplier Part Packages Per Carton']).' C/y&rang;';
-
                 $description_sales = $description.'<div style="margin-top:10px" >
-     
-                        <span style="display: inline-block; min-width: 50px;color:black" class="strong padding_right_10" title="'._('Stock (cartons)').'">'.number(
+                        <span class="no_discreet"><i class="fa fa-square" aria-hidden="true"></i> '.$data['Part Reference'].'</span>
+                        <span title="'._('Stock (cartons)').'">'.number(
                         $data['Part Current On Hand Stock'] / $data['Supplier Part Packages Per Carton']
                     ).'</span> '.$stock_status.'
                         <span>'.$available_forecast.'</span>
-                         <span class="discreet padding_left_10" title="'._('Cartons dispatched by year').'">'.$average_sales_per_year.'</span>
                     </div>
                     <div class="as_table asset_sales">
                         <div class="as_row header">
@@ -1442,31 +1438,6 @@ function order_items($_data, $db, $user, $account) {
                 $data['Purchase Order Quantity'] + 0, $data['Purchase Order Quantity'] + 0
             );
 
-
-            $reference = sprintf(
-                '<span class="link" onclick="change_view(\'/supplier/%d/part/%d\')" title="%s" >%s</span>', $data['Supplier Key'], $data['Supplier Part Key'], _('Supplier product code'), $data['Supplier Part Reference']
-            );
-            if ($data['Part Reference'] != $data['Supplier Part Reference']) {
-                $reference .= sprintf(
-                    '<br ><span class="small link" onclick="change_view(\'part/%d\')" title="%s"><i class="far fa-box"></i> %s</span>', $data['Part SKU'], _('Part reference'), $data['Part Reference']
-                );
-            } else {
-                $reference .= sprintf(
-                    ', <span class="small link" onclick="change_view(\'part/%d\')" ><i class="far fa-box" title="%s"></i> </span>', $data['Part SKU'], _('Part reference is same as supplier product code')
-                );
-            }
-
-            if ($data['Part Main Image Key'] != 0) {
-                $image = sprintf('<img src="/image_root.php?id=%d" style="display: block;
-  max-width:50px;
-  max-height:50px;
-  width: auto;
-  height: auto;">', $data['Part Main Image Key']);
-            } else {
-                $image = '';
-            }
-
-
             $table_data[] = array(
 
                 'id'                => (integer)$data['Purchase Order Transaction Fact Key'],
@@ -1480,7 +1451,9 @@ function order_items($_data, $db, $user, $account) {
                 'reference'         => $data['Supplier Part Reference'],
 
 
-                'reference' => $reference,
+                'reference' => sprintf(
+                    '<span class="link" onclick="change_view(\'/%s/%d/part/%d\')" >%s</span>  ', strtolower($purchase_order->get('Purchase Order Parent')), $purchase_order->get('Purchase Order Parent Key'), $data['Supplier Part Key'], $data['Supplier Part Reference']
+                ),
 
 
                 'description'       => $description,
@@ -1492,7 +1465,6 @@ function order_items($_data, $db, $user, $account) {
                 'supplier_key'      => $data['Supplier Key'],
                 'supplier'          => $data['Supplier Code'],
                 'unit'              => $data['Supplier Part Description'],
-                'image'             => $image
 
 
             );
@@ -1707,6 +1679,8 @@ function agent_order_items($_data, $db, $user, $account) {
 }
 
 
+
+
 function client_order_items($_data, $db, $user, $account) {
 
 
@@ -1847,7 +1821,7 @@ function client_order_items($_data, $db, $user, $account) {
 
 
                 'reference' => sprintf(
-                    '<span class="link" onclick="change_view(\'/supplier/%d/part/%d\')" >%s</span>  ', $data['Supplier Key'], $data['Supplier Part Key'], $data['Supplier Part Reference']
+                    '<span class="link" onclick="change_view(\'/supplier/%d/part/%d\')" >%s</span>  ',$data['Supplier Key'], $data['Supplier Part Key'], $data['Supplier Part Reference']
                 ),
 
                 'packing' => $packing,
@@ -1861,7 +1835,7 @@ function client_order_items($_data, $db, $user, $account) {
                 'delivery_quantity' => $delivery_quantity,
                 'subtotals'         => $subtotals,
                 'ordered'           => number($data['Purchase Order Quantity']),
-                'supplier'          => sprintf('<span class="link" onclick="change_view(\'supplier/%d\')">%s</span>', $data['Supplier Key'], $data['Supplier Code']),
+                'supplier'          => sprintf('<span class="link" onclick="change_view(\'supplier/%d\')">%s</span>',$data['Supplier Key'],$data['Supplier Code']),
                 'unit_cost'         => money($data['Supplier Part Unit Cost'], $purchase_order->get('Purchase Order Currency Code')),
                 'qty_units'         => number($units_per_carton * $data['Purchase Order Quantity']),
                 'qty_cartons'       => number($data['Purchase Order Quantity']),
@@ -1932,8 +1906,12 @@ function delivery_items($_data, $db, $user) {
 
             $delivery_quantity = sprintf(
                 '<span class="delivery_quantity" id="delivery_quantity_%d" key="%d" item_key="%d" item_historic_key=%d on="1" ><input class="order_qty width_50" value="%s" ovalue="%s"> <i onClick="save_item_qty_change(this)" class="fa  fa-minus fa-fw button" aria-hidden="true"></i></span>',
-                $data['Purchase Order Transaction Fact Key'], $data['Purchase Order Transaction Fact Key'], $data['Supplier Part Key'], $data['Supplier Part Historic Key'], $quantity, $quantity
+                $data['Purchase Order Transaction Fact Key'], $data['Purchase Order Transaction Fact Key'], $data['Supplier Part Key'], $data['Supplier Part Historic Key'],
+                $quantity ,
+                $quantity
             );
+
+
 
 
             $table_data[] = array(
@@ -1946,7 +1924,7 @@ function delivery_items($_data, $db, $user) {
                     '<i key="%d" class="fa fa-fw fa-truck fa-flip-horizontal button" aria-hidden="true" onClick="change_on_delivery(this)"></i>', $data['Purchase Order Transaction Fact Key']
                 ),
 
-                'reference'   => sprintf('<span class="link" onclick="change_view(\'supplier/%d/part/%d\')">%s</span>', $data['Supplier Part Supplier Key'], $data['Supplier Part Key'], $data['Supplier Part Reference']),
+                'reference'   => sprintf('<span class="link" onclick="change_view(\'supplier/%d/part/%d\')">%s</span>',$data['Supplier Part Supplier Key'],$data['Supplier Part Key'],$data['Supplier Part Reference']),
                 'description' => $data['Supplier Part Description'].' ('.number($units_per_carton).'/C)',
 
                 'quantity'  => $delivery_quantity,
@@ -4158,24 +4136,21 @@ function delivery_costing($_data, $db, $user) {
         foreach ($result as $data) {
 
 
-            $items_amount = sprintf(
-                '<input id="items_amount_%d" data-sku="%d" class="items_amount width_100" value="%s" ovalue="%s">',
+            $items_amount = sprintf('<input id="items_amount_%d" data-sku="%d" class="items_amount width_100" value="%s" ovalue="%s">',
 
                 $data['Part SKU'], $data['Part SKU'],
 
                 format_money_paid($data['items_amount']), $data['items_amount']
             );
 
-            $extra_amount = sprintf(
-                '<input class="extra_amount width_100" id="extra_amount_%d" data-sku="%d" value="%s" ovalue="%s"/>',
+            $extra_amount = sprintf('<input class="extra_amount width_100" id="extra_amount_%d" data-sku="%d" value="%s" ovalue="%s"/>',
 
                 $data['Part SKU'], $data['Part SKU'],
 
                 format_money_paid($data['extra_amount']), $data['extra_amount']
             );
 
-            $extra_amount_account_currency = sprintf(
-                '<input id="extra_amount_account_currency_%d" data-sku="%d" class="extra_amount_account_currency width_100" value="%s" ovalue="%s"/>',
+            $extra_amount_account_currency = sprintf('<input id="extra_amount_account_currency_%d" data-sku="%d" class="extra_amount_account_currency width_100" value="%s" ovalue="%s"/>',
 
                 $data['Part SKU'], $data['Part SKU'],
 
@@ -4183,17 +4158,25 @@ function delivery_costing($_data, $db, $user) {
             );
 
             if ($data['skos_in'] != 0) {
-                $sko_cost = sprintf('<span id="sko_cost_%d"  class="sko_cost" >%s/sko</span>', $data['Part SKU'], money($data['paid_amount'] / $data['skos_in'], $account->get('Currency Code')));
+                $sko_cost =sprintf('<span id="sko_cost_%d"  class="sko_cost" >%s/sko</span>',$data['Part SKU'], money($data['paid_amount'] / $data['skos_in'], $account->get('Currency Code')));
             } else {
-                $sko_cost = sprintf('<span id="sko_cost_%d"  class="sko_cost" ></span>', $data['Part SKU']);
+                $sko_cost = sprintf('<span id="sko_cost_%d"  class="sko_cost" ></span>',$data['Part SKU']);
             }
 
             $total_paid = sprintf(
-                '<span id="total_paid_%d" class="total_paid_amount" data-sku="%d" data-sko_in="%f" data-exchange="%f" data-items_amount="%f" data-extra_amount="%f" data-extra_amount_account_currency="%f"  data-changed=false >%s</span>', $data['Part SKU'],
-                $data['Part SKU'], $data['skos_in'], 1 / $supplier_delivery->get('Supplier Delivery Currency Exchange'), $data['items_amount'], $data['extra_amount'], $data['extra_amount_account_currency'],
+                '<span id="total_paid_%d" class="total_paid_amount" data-sku="%d" data-sko_in="%f" data-exchange="%f" data-items_amount="%f" data-extra_amount="%f" data-extra_amount_account_currency="%f"  data-changed=false >%s</span>',
+                $data['Part SKU'],
+                $data['Part SKU'],
+                $data['skos_in'],
+                1/$supplier_delivery->get('Supplier Delivery Currency Exchange'),
+                $data['items_amount'],
+                $data['extra_amount'],
+                $data['extra_amount_account_currency'],
 
                 money($data['paid_amount'], $account->get('Currency Code'))
             );
+
+
 
 
             $table_data[] = array(
