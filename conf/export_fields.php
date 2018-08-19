@@ -472,7 +472,8 @@ $export_fields = array(
         array(
             'name'    => '`Part Barcode Number`',
             'label'   => _('Unit barcode').' (for website)',
-            'checked' => 1
+            'checked' => 1,
+            'type'=>'text'
         ),
 
     ),
@@ -553,7 +554,8 @@ $export_fields = array(
         array(
             'name'    => '`Part Barcode Number`',
             'label'   => _('Unit barcode').' (for website)',
-            'checked' => 1
+            'checked' => 1,
+            'type'=>'text'
         ),
 
     ),
@@ -821,7 +823,8 @@ $export_fields = array(
         array(
             'name'    => '`Part Barcode Number`',
             'label'   => _('Unit barcode'),
-            'checked' => 1
+            'checked' => 1,
+            'type'=>'text'
         ),
 
         array(
@@ -928,7 +931,7 @@ $export_fields = array(
             'name'    => '`Product Published Webpage Description`',
             'label'   => _('Webpage description (html)'),
             'checked' => 0,
-            'html'    => 1
+            'type'    => 'html'
         ),
 
         array(
@@ -1148,6 +1151,12 @@ $export_fields = array(
         'name'    => '`Supplier Part Reference`',
         'label'   => _('Product Code'),
         'checked' => 1
+    ),
+    array(
+        'name'    => '`Part Barcode Number`',
+        'label'   => _('Unit barcode'),
+        'checked' => 1,
+        'type'=>'text'
     ),
     array(
         'name'    => '`Supplier Part Description`',
