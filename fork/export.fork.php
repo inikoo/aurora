@@ -133,11 +133,7 @@ function fork_export($job) {
 
     if (empty($fork_data['fields']) or $fork_data['fields'] == '') {
 
-        $sql = sprintf(
-            'update `Download Dimension` set `Download State`="Error" where `Download Key`=%d  ', download_key
-
-        );
-
+        $sql = sprintf('update `Download Dimension` set `Download State`="Error" where `Download Key`=%d  ', download_key);
         $db->exec($sql);
 
         return 1;
@@ -229,8 +225,10 @@ function fork_export($job) {
             foreach ($row as $value) {
                 $char = number2alpha($char_index);
 
+                $type=(empty($fork_data['field_set'][$char_index ]['type'])? '':$fork_data['field_set'][$char_index ]['type'] );
 
-                if (isset($fork_data['field_set'][$char_index - 1]['html'])) {
+
+                if ( $type=='html' ) {
                     $_value = $value;
                 } else {
                     $_value = strip_tags($value);
@@ -239,8 +237,19 @@ function fork_export($job) {
 
                 //print "$_value\n";
 
+              //  print_r($fork_data['field_set'][$char_index - 1]);
 
-                $objPHPExcel->getActiveSheet()->setCellValue($char.$row_index, $_value);
+               // $objPHPExcel->getActiveSheet()->setCellValue($char.$row_index, $_value);
+
+                if($type=='text'){
+
+                    $objPHPExcel->getActiveSheet()->setCellValueExplicit($char.$row_index, $_value,PHPExcel_Cell_DataType::TYPE_STRING);
+
+                }else{
+                    $objPHPExcel->getActiveSheet()->setCellValue($char.$row_index, $_value);
+                }
+
+
                 $char_index++;
             }
             $row_index++;
