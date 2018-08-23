@@ -261,14 +261,14 @@
     </div>
 
 
-    <div class="block " style="align-items: stretch;flex: 1;">
+    <div class="block " style="align-items: stretch;flex: 1;padding-top: 0px">
         <div class="state" style="height:30px;margin-bottom:0px">
             <div id="back_operations">
                 <div id="delete_operations"
                      class="order_operation {if $order->get('State Index')!=10    }hide{/if}">
                     <div class="square_button left"
                          title="{t}delete{/t}">
-                        <i class="fa fa-trash very_discreet " aria-hidden="true"
+                        <i class="far fa-trash-alt very_discreet " aria-hidden="true"
                            onclick="toggle_order_operation_dialog('delete')"></i>
                         <table id="delete_dialog" border="0" class="order_operation_dialog hide">
                             <tr class="top">
@@ -282,7 +282,7 @@
                                                          id="delete_save_buttons" class="error save button"
                                                          onclick="delete_object(this)">
                                         <span class="label">{t}Delete{/t}</span>
-                                        <i class="fa fa-trash fa-fw  " aria-hidden="true"></i>
+                                        <i class="far fa-trash-alt fa-fw  " aria-hidden="true"></i>
                                     </span>
                                 </td>
                             </tr>
@@ -316,7 +316,7 @@
                     </div>
                 </div>
                 <div id="undo_submit_operations"
-                     class="order_operation {if   $order->get('State Index')>30  or  $order->get('State Index')<20   }hide{/if}">
+                     class="order_operation {if   $order->get('State Index')!=30 or $order->get('Purchase Order Parent')=='Agent'  }hide{/if}">
                     <div class="square_button left" title="{t}Undo submit{/t}">
                         <span class="fa-stack" onclick="toggle_order_operation_dialog('undo_submit')"> <i
                                     class="fa fa-paper-plane discreet " aria-hidden="true"></i> <i
@@ -417,7 +417,7 @@
     <div class="block " style="align-items: stretch;flex: 1 ;padding-top: 0px">
 
         <div id="create_delivery"
-             class="delivery_node {if ({$order->get('State Index')|intval} < 20 or ($order->get('Purchase Order Ordered Number Items')-$order->get('Purchase Order Number Supplier Delivery Items'))==0) or $parent->get('Parent Skip Inputting')=='Yes' }hide{/if}"
+             class="delivery_node {if  $order->get('Purchase Order Parent')=='Agent' or   ({$order->get('State Index')|intval} < 20 or ($order->get('Purchase Order Ordered Number Items')-$order->get('Purchase Order Number Supplier Delivery Items'))==0) or $parent->get('Parent Skip Inputting')=='Yes' }hide{/if}"
              style="height:30px;clear:both;border-bottom:1px solid #ccc">
             <div id="back_operations">
             </div>
@@ -449,12 +449,12 @@
     <div class="block " style="align-items: stretch;flex: 1 ">
         <table border="0" class="info_block">
             <tr>
-                <td class="label">{t}Cost{/t} ({$order->get('Purchase Order Currency Code')})</td>
-                <td class="aright Purchase_Order_Total_Amount">{$order->get('Total Amount')}</td>
+                <td class="label">{t}Items cost{/t} ({$order->get('Purchase Order Currency Code')})</td>
+                <td class="aright Purchase_Order_Items_Net_Amount">{$order->get('Items Net Amount')}</td>
             </tr>
             <tr class="{if $account->get('Account Currency')==$order->get('Purchase Order Currency Code')}hide{/if}">
                 <td colspan="2"
-                    class="Purchase_Order_Total_Amount_Account_Currency aright ">{$order->get('Total Amount Account Currency')}</td>
+                    class="Purchase_Order_Items_Net_Amount_Account_Currency aright ">{$order->get('Items Net Amount Account Currency')}</td>
             </tr>
         </table>
         <div style="clear:both">
