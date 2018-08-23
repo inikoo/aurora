@@ -214,8 +214,8 @@
         <td style="width:12%;text-align:left">{t}Reference{/t}</td>
         <td style="text-align:left">{t}Unit description{/t}</td>
         <td style="width:12%;text-align:right">{t}Units{/t}</td>
-        <td style="width:8%;text-align:right">{t}Cartons{/t}</td>
-        <td style="width:12%;text-align:right">{t}Amount{/t}</td>
+        <td style="width:12%;text-align:right">{t}Cartons{/t}</td>
+        <td style="width:16%;text-align:right">{t}Amount{/t}</td>
 
     </tr>
     </thead>
@@ -233,68 +233,12 @@
     </tbody>
 
     <tbody class="totals">
-    <tr>
-        <td style="border:none" colspan="2" "></td>
-        <td colspan="2">{t}Items Net{/t}</td>
-        <td>{$purchase_order->get('Items Net Amount')}</td>
-    </tr>
 
 
-    {if $purchase_order->get('Invoice Net Amount Off')!=0 }
-        <tr>
-            <td style="border:none" colspan="2" "></td>
-            <td colspan="2">{t}Amount Off{/t}</td>
-            <td>{$purchase_order->get('Net Amount Off')}</td>
-        </tr>
-    {/if}
-
-    {if $purchase_order->get('Invoice Refund Net Amount')!=0 }
-        <tr>
-            <td style="border:none" colspan="2" "></td>
-            <td colspan="2">{t}Refunds{/t}</td>
-            <td>{$purchase_order->get('Refund Net Amount')}</td>
-        </tr>
-    {/if}
-    <tr>
-        <td style="border:none" colspan="2" "></td>
-        <td colspan="2">{t}Shipping{/t}</td>
-        <td>{$purchase_order->get('Shipping Net Amount')}</td>
-    </tr>
-    {if $purchase_order->get('Invoice Charges Net Amount')!=0}
-        <tr>
-            <td style="border:none" colspan="2" "></td>
-            <td colspan="2">{t}Charges{/t}</td>
-            <td>{$purchase_order->get('Charges Net Amount')}</td>
-        </tr>
-    {/if} {if $purchase_order->get('Invoice Insurance Net Amount')!=0}
-        <tr>
-            <td style="border:none" colspan="2" "></td>
-            <td colspan="2">{t}Insurance{/t}</td>
-            <td>{$purchase_order->get('Insurance Net Amount')}</td>
-        </tr>
-    {/if} {if $purchase_order->get('Invoice Total Net Adjust Amount')!=0}
-        <tr>
-            <td style="border:none" colspan="2" "></td>
-            <td colspan="2">{t}Adjusts{/t}</td>
-            <td>{$purchase_order->get('Total Net Adjust Amount')}</td>
-        </tr>
-    {/if}
-    <tr class="total_net">
-        <td style="border:none" colspan="2" "></td>
-        <td colspan="2">{t}Total Net{/t}</td>
-        <td>{$purchase_order->get('Total Net Amount')}</td>
-    </tr>
-    {foreach from=$tax_data item=tax }
-        <tr>
-            <td style="border:none" colspan="2" "></td>
-            <td class="totals" colspan="2">{$tax.name}</td>
-            <td class="totals">{$tax.amount}</td>
-        </tr>
-    {/foreach}
     <tr class="total">
-        <td style="border:none" colspan="2" "></td>
-        <td colspan="2"><b>{t}Total{/t}</b></td>
-        <td>{$purchase_order->get('Total Amount')}</td>
+        <td style="border:none" colspan="2" ></td>
+        <td colspan="2"><b>{t}Total items{/t}</b></td>
+        <td><b>{$purchase_order->get('Items Net Amount')}</b></td>
     </tr>
 
     </tbody>
