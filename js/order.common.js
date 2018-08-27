@@ -229,11 +229,19 @@ function toggle_order_operation_dialog(dialog_name) {
 
         $('.order_operation_dialog').addClass('hide')
 
-       //  console.log($('#' + dialog_name + '_operations').parents('#back_operations').length)
+         console.log($('#' + dialog_name + '_operations').parents('#back_operations').length)
+
+
+
         if ($('#' + dialog_name + '_operations').parent('div#back_operations').length) {
-            $('#' + dialog_name + '_dialog').removeClass('hide').css({
-                'left': -2
-            });
+
+            var offset=  $('#' + dialog_name + '_dialog').closest('.block').position();
+
+
+            $('#' + dialog_name + '_dialog').removeClass('hide').offset({ left:offset.left })
+
+
+
         } else {
 
 
@@ -505,22 +513,22 @@ function save_order_operation(element) {
                 if (field == 'Purchase Order State') {
 
                     console.log(state.tab)
-
+                    'InProcess','SubmittedAgent','Submitted', 'Editing_Submitted', 'Inputted','Dispatched','Received','Checked','Placed','Cancelled'
 
                     if (data.value == 'InProcess') {
                         $('#create_delivery').addClass('hide')
 
                         $('#all_available_items,#new_item').removeClass('hide')
 
-
+                        change_tab('supplier.order.items_in_process')
                     } else if (data.value == 'Submitted') {
                         $('#all_available_items,#new_item').addClass('hide')
 
 
-                        if (state.tab == 'supplier.order.all_supplier_parts') {
+                       // if (state.tab == 'supplier.order.all_supplier_parts') {
                             change_tab('supplier.order.items')
 
-                        }
+
 
 
 

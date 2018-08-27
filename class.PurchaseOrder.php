@@ -55,8 +55,8 @@ class PurchaseOrder extends DB_Table {
 
 
         $sql = sprintf(
-            "UPDATE `Supplier Dimension` SET `%s Order Last Order ID` = LAST_INSERT_ID(`%s Order Last Order ID` + 1) WHERE `%s Key`=%d", addslashes($data['Purchase Order Parent']), addslashes($data['Purchase Order Parent']), addslashes($data['Purchase Order Parent']),
-            $data['Purchase Order Parent Key']
+            "UPDATE `%s Dimension` SET `%s Order Last Order ID` = LAST_INSERT_ID(`%s Order Last Order ID` + 1) WHERE `%s Key`=%d", addslashes($data['Purchase Order Parent']), addslashes($data['Purchase Order Parent']), addslashes($data['Purchase Order Parent']),
+            addslashes($data['Purchase Order Parent']), $data['Purchase Order Parent Key']
         );
 
         $this->db->exec($sql);
@@ -759,21 +759,20 @@ class PurchaseOrder extends DB_Table {
                     if ($row = $result->fetch()) {
 
                         if ($row['Purchase Order Quantity'] != 0) {
-                            $net = $qty * $row['Purchase Order Net Amount'] / $row['Purchase Order Quantity'];
+                            $net   = $qty * $row['Purchase Order Net Amount'] / $row['Purchase Order Quantity'];
                             $extra = $qty * $row['Purchase Order Extra Cost Amount'] / $row['Purchase Order Quantity'];
                         } else {
-                            $net = 0;
+                            $net   = 0;
                             $extra = 0;
                         }
                         $sql = sprintf(
                             'UPDATE `Purchase Order Transaction Fact` SET `Supplier Delivery Net Amount`=%f,
                                 `Supplier Delivery Extra Cost Amount`=%f,
                                 `Supplier Delivery Quantity`=%f,
-                                `Supplier Delivery Key`=%d,`Supplier Delivery Transaction State`=%s  ,`Supplier Delivery Transaction Placed`="No" WHERE `Purchase Order Transaction Fact Key`=%d',
-                            $net, $extra, $qty, $delivery->id, prepare_mysql('InProcess'), $potf_key
+                                `Supplier Delivery Key`=%d,`Supplier Delivery Transaction State`=%s  ,`Supplier Delivery Transaction Placed`="No" WHERE `Purchase Order Transaction Fact Key`=%d', $net, $extra, $qty, $delivery->id, prepare_mysql('InProcess'), $potf_key
                         );
 
-                     //   print $sql;
+                        //   print $sql;
 
                         $this->db->exec($sql);
                     }
@@ -807,25 +806,24 @@ class PurchaseOrder extends DB_Table {
 
         $sql = sprintf(
             "SELECT sum(`Purchase Order Weight`) AS  weight,sum(if(isNULL(`Purchase Order Weight`),1,0) )AS missing_weights ,sum(if(isNULL(`Purchase Order CBM`),1,0) )AS missing_cbms , sum(`Purchase Order CBM` )AS cbm ,count(DISTINCT `Supplier Key`) AS num_suppliers ,count(*) AS num_items ,sum(if(`Purchase Order Quantity`>0,1,0)) AS num_ordered_items ,
-sum(`Purchase Order Net Amount`) AS items_net, sum(`Purchase Order Extra Cost Amount`) AS extra_cost FROM `Purchase Order Transaction Fact` WHERE `Purchase Order Key`=%d",
-            $this->id
+sum(`Purchase Order Net Amount`) AS items_net, sum(`Purchase Order Extra Cost Amount`) AS extra_cost FROM `Purchase Order Transaction Fact` WHERE `Purchase Order Key`=%d", $this->id
         );
         if ($result = $this->db->query($sql)) {
             if ($row = $result->fetch()) {
 
 
-                $total_net = $row['items_net'] ;
+                $total_net  = $row['items_net'];
                 $extra_cost = $row['extra_cost'];
-                $total     = $total_net + $extra_cost;
+                $total      = $total_net + $extra_cost;
 
                 //print $sql;
 
 
                 $this->update(
                     array(
-                        'Purchase Order Items Net Amount'     => $row['items_net'],
+                        'Purchase Order Items Net Amount' => $row['items_net'],
 
-                        'Purchase Order Extra Cost Amount'     => $row['extra_cost'],
+                        'Purchase Order Extra Cost Amount'    => $row['extra_cost'],
                         'Purchase Order Number Suppliers'     => $row['num_suppliers'],
                         'Purchase Order Number Items'         => $row['num_items'],
                         'Purchase Order Ordered Number Items' => $row['num_ordered_items'],
@@ -833,7 +831,7 @@ sum(`Purchase Order Net Amount`) AS items_net, sum(`Purchase Order Extra Cost Am
                         'Purchase Order CBM'                  => $row['cbm'],
                         'Purchase Order Missing Weights'      => $row['missing_weights'],
                         'Purchase Order Missing CBMs'         => $row['missing_cbms'],
-                       // 'Purchase Order Total Net Amount'     => $total_net,
+                        // 'Purchase Order Total Net Amount'     => $total_net,
                         'Purchase Order Total Amount'         => $total
                     ), 'no_history'
                 );
@@ -860,75 +858,108 @@ sum(`Purchase Order Net Amount`) AS items_net, sum(`Purchase Order Extra Cost Am
             exit;
         }
 
-
         if ($this->get('Purchase Order State') == 'InProcess') {
+            return;
 
-        } else {
-
-
-            if ($this->get('Purchase Order State') == 'Submitted' or  $this->get('Purchase Order State') == 'SubmittedAgent') {
-
-                $pending_items_delivery = $this->get('Purchase Order Ordered Number Items') - $this->get('Purchase Order Number Supplier Delivery Items');
-                if (!$pending_items_delivery > 0) {
-
-                    $this->update_state('Inputted');
-
-                }
-            }
+        }
 
 
-            $max_index          = 0;
-            $max_delivery_state = 'NA';
+        if ($this->get('Purchase Order State') == 'Submitted') {
 
-            $min_index = 100;
+            if ($this->get('Purchase Order Number Supplier Delivery Items') == 0) {
 
-
-            $min_delivery_state = 'Inputted';
-
-
-            foreach ($this->get_deliveries('objects') as $delivery) {
-                $index = $delivery->get('State Index');
-
-
-                if ($index < 0) {
-                    continue;
-                }
-
-                if ($index > $max_index) {
-                    $max_index          = $index;
-                    $max_delivery_state = $delivery->get('Supplier Delivery State');
-                }
-
-                if ($index <= $min_index) {
-
-
-                    $min_index          = $index;
-                    $min_delivery_state = $delivery->get('Supplier Delivery State');
-                }
-
+                return;
 
             }
+        }
 
 
-            $this->fast_update(
-                array(
-                    'Purchase Order Max Supplier Delivery State' => $max_delivery_state,
-                )
-            );
+        $max_index          = 0;
+        $max_delivery_state = 'NA';
+
+        $min_index = 100;
 
 
-          //  print $this->get('State Index').' '.$min_delivery_state;
+        $min_delivery_state = 'Inputted';
 
-            if ($this->get('State Index') >= 60) {
-                if ($min_delivery_state == 'InProcess') {
-                    $min_delivery_state = 'Inputted';
-                }
 
-                $this->update_state($min_delivery_state);
+        foreach ($this->get_deliveries('objects') as $delivery) {
+            $index = $delivery->get('State Index');
+
+
+            if ($index < 0) {
+                continue;
+            }
+
+            if ($index > $max_index) {
+                $max_index          = $index;
+                $max_delivery_state = $delivery->get('Supplier Delivery State');
+            }
+
+            if ($index <= $min_index) {
+
+
+                $min_index          = $index;
+                $min_delivery_state = $delivery->get('Supplier Delivery State');
             }
 
 
         }
+
+
+        $this->fast_update(
+            array(
+                'Purchase Order Max Supplier Delivery State' => $max_delivery_state,
+            )
+        );
+
+
+        //  print $this->get('State Index').' '.$min_delivery_state;
+
+        if ($this->get('State Index') >= 60) {
+            if ($min_delivery_state == 'InProcess') {
+                $min_delivery_state = 'Inputted';
+            }
+
+            $this->update_state($min_delivery_state);
+        }
+
+
+    }
+
+    function get_deliveries($scope = 'keys') {
+
+        if ($scope == 'objects') {
+            include_once 'class.SupplierDelivery.php';
+        }
+
+
+        $deliveries = array();
+        $sql        = sprintf(
+            "SELECT `Supplier Delivery Key` FROM `Purchase Order Transaction Fact` WHERE `Purchase Order Key`=%d  GROUP BY `Supplier Delivery Key`", $this->id
+        );
+
+        if ($result = $this->db->query($sql)) {
+            foreach ($result as $row) {
+                if ($row['Supplier Delivery Key'] == '') {
+                    continue;
+                }
+
+                if ($scope == 'objects') {
+
+                    $deliveries[$row['Supplier Delivery Key']] = new SupplierDelivery($row['Supplier Delivery Key']);
+
+                } else {
+                    $deliveries[$row['Supplier Delivery Key']] = $row['Supplier Delivery Key'];
+                }
+            }
+        } else {
+            print_r($error_info = $this->db->errorInfo());
+            exit;
+        }
+
+
+        return $deliveries;
 
     }
 
@@ -940,6 +971,7 @@ sum(`Purchase Order Net Amount`) AS items_net, sum(`Purchase Order Extra Cost Am
         $operations = array();
 
 
+        /*
         if ($value == 'Submitted' and $this->get('Purchase Order Agent Key')) {
             if ($old_value == 'InProcess') {
                 $value = 'SubmittedAgent';
@@ -947,6 +979,7 @@ sum(`Purchase Order Net Amount`) AS items_net, sum(`Purchase Order Extra Cost Am
             }
 
         }
+        */
 
 
         if ($old_value != $value) {
@@ -984,7 +1017,7 @@ sum(`Purchase Order Net Amount`) AS items_net, sum(`Purchase Order Extra Cost Am
 
                     break;
                 case 'SubmittedAgent':
-
+                    // todo remove, no longer used
 
                     $this->update_field(
                         'Purchase Order Submitted Agent Date', $date, 'no_history'
@@ -1009,6 +1042,11 @@ sum(`Purchase Order Net Amount`) AS items_net, sum(`Purchase Order Extra Cost Am
                     if ($old_value != 'Submitted') {
                         if ($this->get('State Index') <= 20) {
                             $history_abstract = _('Purchase order submitted');
+
+
+                            $this->create_agent_supplier_purchase_orders();
+
+
                         } else {
                             $history_abstract = _('Purchase order set back as submitted to agent');
 
@@ -1048,10 +1086,14 @@ sum(`Purchase Order Net Amount`) AS items_net, sum(`Purchase Order Extra Cost Am
                     if ($old_value != 'Submitted') {
                         if ($this->get('State Index') <= 30) {
                             $history_abstract = _('Purchase order submitted');
+
+                            if ($this->data['Purchase Order Parent'] == 'Agent') {
+                                $this->create_agent_supplier_purchase_orders();
+                            }
+
+
                         } else {
-                            $history_abstract = _(
-                                'Purchase order set back as submitted'
-                            );
+                            $history_abstract = _('Purchase order set back as submitted');
 
                         }
 
@@ -1118,7 +1160,7 @@ sum(`Purchase Order Net Amount`) AS items_net, sum(`Purchase Order Extra Cost Am
 
                     break;
 
-                case 'Inputted':
+                //case 'Inputted':
                 case 'Dispatched':
                 case 'Received':
                 case 'Placed':
@@ -1182,6 +1224,44 @@ sum(`Purchase Order Net Amount`) AS items_net, sum(`Purchase Order Extra Cost Am
 
     }
 
+    function create_agent_supplier_purchase_orders() {
+
+
+        include_once 'class.Agent_Supplier_Purchase_Order.php';
+
+        $sql = sprintf('select S.`Supplier Key`,S.`Supplier Code` from `Purchase Order Transaction Fact` POTF left join `Supplier Dimension` S on (S.`Supplier Key`=POTF.`Supplier Key`) where `Purchase Order Key`=%d group by `Supplier Key`', $this->id);
+
+        if ($result = $this->db->query($sql)) {
+            foreach ($result as $row) {
+                $order_data = array(
+                    'Agent Supplier Purchase Order Supplier Key'       => $row['Supplier Key'],
+                    'Agent Supplier Purchase Order Public ID'          => $this->data['Purchase Order Public ID'].'.'.$row['Supplier Code'],
+                    'Agent Supplier Purchase Order Purchase Order Key' => $this->id,
+                    'Agent Supplier Purchase Order Currency Code'      => $this->data['Purchase Order Currency Code'],
+                    'editor'                                           => $this->editor
+                );
+
+
+                $agent_supplier_purchase_order = new AgentSupplierPurchaseOrder('new', $order_data);
+
+
+                if ($agent_supplier_purchase_order->error) {
+                    $this->error = true;
+                    $this->msg   = $order->msg;
+
+                }
+
+
+            }
+        } else {
+            print_r($error_info = $this->db->errorInfo());
+            print "$sql\n";
+            exit;
+        }
+
+
+    }
+
     function update_affected_parts() {
 
 
@@ -1203,42 +1283,6 @@ sum(`Purchase Order Net Amount`) AS items_net, sum(`Purchase Order Extra Cost Am
             exit;
         }
 
-
-    }
-
-    function get_deliveries($scope = 'keys') {
-
-        if ($scope == 'objects') {
-            include_once 'class.SupplierDelivery.php';
-        }
-
-
-        $deliveries = array();
-        $sql        = sprintf(
-            "SELECT `Supplier Delivery Key` FROM `Purchase Order Transaction Fact` WHERE `Purchase Order Key`=%d  GROUP BY `Supplier Delivery Key`", $this->id
-        );
-
-        if ($result = $this->db->query($sql)) {
-            foreach ($result as $row) {
-                if ($row['Supplier Delivery Key'] == '') {
-                    continue;
-                }
-
-                if ($scope == 'objects') {
-
-                    $deliveries[$row['Supplier Delivery Key']] = new SupplierDelivery($row['Supplier Delivery Key']);
-
-                } else {
-                    $deliveries[$row['Supplier Delivery Key']] = $row['Supplier Delivery Key'];
-                }
-            }
-        } else {
-            print_r($error_info = $this->db->errorInfo());
-            exit;
-        }
-
-
-        return $deliveries;
 
     }
 
@@ -1266,8 +1310,8 @@ sum(`Purchase Order Net Amount`) AS items_net, sum(`Purchase Order Extra Cost Am
         $item_historic_key = $data['item_historic_key'];
         $qty               = $data['qty'];
 
-        include_once 'class.SupplierPart.php';
-        $supplier_part = new SupplierPart($item_key);
+
+        $supplier_part = get_object('SupplierPart', $item_key);
 
 
         $date            = gmdate('Y-m-d H:i:s');
@@ -1302,7 +1346,7 @@ sum(`Purchase Order Net Amount`) AS items_net, sum(`Purchase Order Extra Cost Am
 
             $amount = $qty * $supplier_part->get('Supplier Part Unit Cost') * $supplier_part->part->get('Part Units Per Package') * $supplier_part->get('Supplier Part Packages Per Carton');
 
-            $extra_amount=round($amount*  floatval($supplier_part->get('Supplier Part Unit Extra Cost Percentage'))/100,2) ;
+            $extra_amount = round($amount * floatval($supplier_part->get('Supplier Part Unit Extra Cost Percentage')) / 100, 2);
             if (is_numeric($supplier_part->get('Supplier Part Carton CBM'))) {
                 $cbm = $qty * $supplier_part->get('Supplier Part Carton CBM');
             } else {
@@ -1321,8 +1365,6 @@ sum(`Purchase Order Net Amount`) AS items_net, sum(`Purchase Order Extra Cost Am
             }
 
 
-
-
             $sql = sprintf(
                 "SELECT `Purchase Order Transaction Fact Key`,`Note to Supplier Locked` FROM `Purchase Order Transaction Fact` WHERE `Purchase Order Key`=%d AND `Supplier Part Key`=%d ", $this->id, $item_key
             );
@@ -1334,8 +1376,7 @@ sum(`Purchase Order Net Amount`) AS items_net, sum(`Purchase Order Extra Cost Am
                         "update`Purchase Order Transaction Fact` set  `Purchase Order Quantity`=%f,`Purchase Order Last Updated Date`=%s,
                         `Purchase Order Net Amount`=%f ,
                         `Purchase Order Extra Cost Amount`=%f ,
-                        `Purchase Order CBM`=%s,`Purchase Order Weight`=%s  where  `Purchase Order Transaction Fact Key`=%d ",
-                        $qty, prepare_mysql($date), $amount, $extra_amount, $cbm, $weight, $row['Purchase Order Transaction Fact Key']
+                        `Purchase Order CBM`=%s,`Purchase Order Weight`=%s  where  `Purchase Order Transaction Fact Key`=%d ", $qty, prepare_mysql($date), $amount, $extra_amount, $cbm, $weight, $row['Purchase Order Transaction Fact Key']
                     );
                     $this->db->exec($sql);
                     /*
@@ -1350,6 +1391,8 @@ sum(`Purchase Order Net Amount`) AS items_net, sum(`Purchase Order Extra Cost Am
                     }
     */
                     $transaction_key = $row['Purchase Order Transaction Fact Key'];
+
+
                 } else {
 
 
@@ -1450,6 +1493,8 @@ sum(`Purchase Order Net Amount`) AS items_net, sum(`Purchase Order Extra Cost Am
 
 
         }
+
+
         $supplier_part->part->update_next_deliveries_data();
         $this->update_totals();
         $operations = array();
@@ -1470,6 +1515,72 @@ sum(`Purchase Order Net Amount`) AS items_net, sum(`Purchase Order Extra Cost Am
 
 
         }
+
+
+        if ($this->data['Purchase Order Parent'] == 'Agent' and $this->get('State Index') >= 20) {
+            $supplier_part->get('Supplier Part Supplier Key');
+
+            $sql = sprintf(
+                'select `Agent Supplier Purchase Order Key` from `Agent Supplier Purchase Order Dimension` where `Agent Supplier Purchase Order Purchase Order Key`=%d and `Agent Supplier Purchase Order Supplier Key`=%d  ', $this->id,
+                $supplier_part->get('Supplier Part Supplier Key')
+            );
+
+            //    print $sql;
+            if ($result = $this->db->query($sql)) {
+
+
+                if ($row = $result->fetch()) {
+
+
+                    $agent_supplier_purchase_order = get_object('AgentSupplierPurchaseOrder', $row['Agent Supplier Purchase Order Key']);
+
+                } else {
+
+
+                    include_once 'class.Agent_Supplier_Purchase_Order.php';
+
+
+                    $supplier = get_object('Supplier', $supplier_part->get('Supplier Part Supplier Key'));
+
+                    $order_data = array(
+                        'Agent Supplier Purchase Order Supplier Key'       => $supplier->id,
+                        'Agent Supplier Purchase Order Public ID'          => preg_replace('/\s/', '', $this->data['Purchase Order Public ID'].'.'.$supplier->get('Supplier Code')),
+                        'Agent Supplier Purchase Order Purchase Order Key' => $this->id,
+                        'Agent Supplier Purchase Order Currency Code'      => $this->data['Purchase Order Currency Code'],
+                        'editor'                                           => $this->editor
+                    );
+
+                    //print_r($order_data);
+                    $agent_supplier_purchase_order = new AgentSupplierPurchaseOrder('new', $order_data);
+
+
+                }
+
+                //print $transaction_key;
+
+                if ($transaction_key > 0) {
+
+                    $sql = sprintf(
+                        "update`Purchase Order Transaction Fact` set  `Agent Supplier Purchase Order Key`=%s  where  `Purchase Order Transaction Fact Key`=%d ", $agent_supplier_purchase_order->id, $transaction_key
+                    );
+
+                    // print $sql;
+                    $this->db->exec($sql);
+
+                }
+
+                $agent_supplier_purchase_order->update_totals();
+
+
+            } else {
+                print_r($error_info = $this->db->errorInfo());
+                print "$sql\n";
+                exit;
+            }
+
+
+        }
+
 
         /*
         elseif ($this->get('Order State') == 'InProcess') {
@@ -1504,6 +1615,8 @@ sum(`Purchase Order Net Amount`) AS items_net, sum(`Purchase Order Extra Cost Am
             'class_html' => array(
                 'Purchase_Order_Total_Amount'                  => $this->get('Total Amount'),
                 'Purchase_Order_Total_Amount_Account_Currency' => $this->get('Total Amount Account Currency'),
+                'Purchase_Order_Items_Net_Amount'                  => $this->get('Items Net Amount'),
+                'Purchase_Order_Items_Net_Amount_Account_Currency' => $this->get('Items Net Amount Account Currency'),
                 'Purchase_Order_Weight'                        => $this->get('Weight'),
                 'Purchase_Order_CBM'                           => $this->get('CBM'),
                 'Purchase_Order_Number_Items'                  => $this->get('Number Items'),
@@ -1530,10 +1643,6 @@ sum(`Purchase Order Net Amount`) AS items_net, sum(`Purchase Order Extra Cost Am
 
 
     }
-
-
-
-
 
     function delete() {
 
@@ -1771,16 +1880,10 @@ sum(`Purchase Order Net Amount`) AS items_net, sum(`Purchase Order Extra Cost Am
 
     }
 
-
     function update_field_switcher($field, $value, $options = '', $metadata = '') {
         switch ($field) {
 
-            case 'Create Agent Supplier Orders':
 
-               $this->create_agent_supplier_orders();
-
-
-            break;
             case 'Purchase Order State':
                 $this->update_state(
                     $value, $options, $metadata
@@ -1819,7 +1922,6 @@ sum(`Purchase Order Net Amount`) AS items_net, sum(`Purchase Order Extra Cost Am
 
 
     }
-
 
     function get_field_label($field) {
 

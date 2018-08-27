@@ -83,6 +83,9 @@ switch ($tipo) {
     case 'sales_history':
         sales_history(get_table_parameters(), $db, $user, $account);
         break;
+    case 'products':
+        products(get_table_parameters(), $db, $user, $account);
+        break;
     default:
         $response = array(
             'state' => 405,
@@ -92,6 +95,96 @@ switch ($tipo) {
         exit;
         break;
 }
+
+
+function products($_data, $db, $user, $account) {
+
+
+    include_once 'utils/currency_functions.php';
+
+    $rtext_label = 'product';
+
+
+    include_once 'prepare_table/init.php';
+
+    $sql         = "select $fields from $table $where $wheref $group_by order by $order $order_direction limit $start_from,$number_results";
+    $record_data = array();
+
+    $record_data = array();
+    if ($result = $db->query($sql)) {
+
+        foreach ($result as $data) {
+
+
+            switch ($data['Product Status']) {
+                case 'Active':
+                    $status = sprintf('<i class="fa fa-cube" aria-hidden="true" title="%s"></i>', _('Active'));
+                    break;
+                case 'Suspended':
+                    $status = sprintf('<i class="fa fa-cube warning" aria-hidden="true" title="%s"></i>', _('Suspended'));
+                    break;
+                case 'Discontinuing':
+                    $status = sprintf('<i class="fa fa-cube warning very_discreet" aria-hidden="true" title="%s"></i>', _('Discontinuing'));
+                    break;
+                case 'Discontinued':
+                    $status = sprintf('<i class="fa fa-cube very_discreet" aria-hidden="true" title="%s"></i>', _('Discontinued'));
+                    break;
+                case 'Suspended':
+                    $status = sprintf('<i class="fa fa-cube error" aria-hidden="true" title="%s"></i>', _('Suspended'));
+                    break;
+                default:
+                    $status = $data['Product Status'];
+                    break;
+            }
+
+
+
+            $name = '<span >'.$data['Product Units Per Case'].'</span>x <span>'.$data['Product Name'].'</span>';
+
+            $code = sprintf('<span class="link" onClick="change_view(\'products/%d/%d\')" title="%s">%s</span>', $data['Store Key'], $data['Product ID'], $name, $data['Product Code']);
+
+
+            $record_data[] = array(
+
+                'id'          => (integer)$data['Product ID'],
+                'code'        => $code,
+                'name'        => $name,
+                'status'      => $status,
+                'amount'      => sprintf('<span>%s</span>', money($data['amount'], $data['Store Currency Code'])),
+                'invoices'    => sprintf('<span class="link" onclick="change_view(\'customers/%d/%d/product/%d\',{ })">%s</span>',
+                                         $data['Store Key'],
+                                         $data['Customer Key'],
+                                         $data['Product ID'],
+                                         number($data['invoices'])),
+                'qty' => sprintf('<span>%s</span>', number($data['qty']))
+
+
+            );
+
+
+        }
+
+    } else {
+        print "$sql\n";
+        print_r($error_info = $db->errorInfo());
+        exit;
+    }
+
+
+    $response = array(
+        'resultset' => array(
+            'state'         => 200,
+            'data'          => $record_data,
+            'rtext'         => $rtext,
+            'sort_key'      => $_order,
+            'sort_dir'      => $_dir,
+            'total_records' => $total
+
+        )
+    );
+    echo json_encode($response);
+}
+
 
 function customers($_data, $db, $user) {
 
@@ -1209,23 +1302,23 @@ function prospects_email_templates($_data, $db, $user) {
                 $author = sprintf('<span class="discreet">%s</span>', _('Anonymous'));
             }
 
-            switch ($data['Email Template State']){
+            switch ($data['Email Template State']) {
                 case 'Active':
-                    $state='<i class="fa success fa-play fa-fw"></i> '.('Active');
+                    $state = '<i class="fa success fa-play fa-fw"></i> '.('Active');
                     break;
                 case 'Suspended':
-                    $state='<i class="fa error fa-stop fa-fw"></i> '._('Suspended');
+                    $state = '<i class="fa error fa-stop fa-fw"></i> '._('Suspended');
                     break;
             }
 
             $adata[] = array(
-                'id'     => (integer)$data['Email Template Key'],
-                'author' => $author,
-                'state' => $state,
+                'id'      => (integer)$data['Email Template Key'],
+                'author'  => $author,
+                'state'   => $state,
                 'subject' => $data['Email Template Subject'],
 
-                'name'   => sprintf('<span class="link" onclick="change_view(\'prospects/%d/template/%d\')">%s</span>',$_data['parameters']['store_key'],$data['Email Template Key'],$data['Email Template Name']),
-                'date'   => strftime("%a %e %b %Y", strtotime($data['Email Template Created'].' +0:00')),
+                'name' => sprintf('<span class="link" onclick="change_view(\'prospects/%d/template/%d\')">%s</span>', $_data['parameters']['store_key'], $data['Email Template Key'], $data['Email Template Name']),
+                'date' => strftime("%a %e %b %Y", strtotime($data['Email Template Created'].' +0:00')),
 
             );
 
@@ -1290,24 +1383,24 @@ function sales_history($_data, $db, $user, $account) {
 
     switch ($_data['parameters']['parent']) {
         case 'customer':
-            $customer   = get_object('Customer',$_data['parameters']['parent_key']);
-            $store   = get_object('Store',$customer->get('Customer Store Key'));
+            $customer = get_object('Customer', $_data['parameters']['parent_key']);
+            $store    = get_object('Store', $customer->get('Customer Store Key'));
 
             $currency   = $store->get('Store Currency Code');
             $from       = $customer->get('Customer First Contacted Date');
             $to         = gmdate('Y-m-d');
             $date_field = '`Timeseries Record Date`';
             break;
-            /*
-        case 'category':
-            include_once 'class.Category.php';
-            $category   = new Category($_data['parameters']['parent_key']);
-            $currency   = $account->get('Account Currency');
-            $from       = $category->get('Part Category Valid From');
-            $to         = ($category->get('Part Category Status') == 'NotInUse' ? $product->get('Part Category Valid To') : gmdate('Y-m-d'));
-            $date_field = '`Timeseries Record Date`';
-            break;
-            */
+        /*
+    case 'category':
+        include_once 'class.Category.php';
+        $category   = new Category($_data['parameters']['parent_key']);
+        $currency   = $account->get('Account Currency');
+        $from       = $category->get('Part Category Valid From');
+        $to         = ($category->get('Part Category Status') == 'NotInUse' ? $product->get('Part Category Valid To') : gmdate('Y-m-d'));
+        $date_field = '`Timeseries Record Date`';
+        break;
+        */
         default:
             print_r($_data);
             exit('parent not configured '.$_data['parameters']['parent']);
@@ -1370,13 +1463,13 @@ function sales_history($_data, $db, $user, $account) {
 
 
             $record_data[$_date] = array(
-                'sales'               => '<span class="very_discreet">'.money(0, $currency).'</span>',
-                'profit'               => '<span class="very_discreet">'.money(0, $currency).'</span>',
-                'invoices'          => '<span class="very_discreet">'.number(0).'</span>',
-                'refunds'          => '<span class="very_discreet">'.number(0).'</span>',
+                'sales'    => '<span class="very_discreet">'.money(0, $currency).'</span>',
+                'profit'   => '<span class="very_discreet">'.money(0, $currency).'</span>',
+                'invoices' => '<span class="very_discreet">'.number(0).'</span>',
+                'refunds'  => '<span class="very_discreet">'.number(0).'</span>',
 
                 'invoiced_amount' => '<span class="very_discreet">'.money(0, $currency).'</span>',
-                'refunded_amount' =>'<span class="very_discreet">'.money(0, $currency).'</span>',
+                'refunded_amount' => '<span class="very_discreet">'.money(0, $currency).'</span>',
 
 
                 'date' => $date
@@ -1492,9 +1585,9 @@ function sales_history($_data, $db, $user, $account) {
 
 
                 } else {
-                    $invoices       = number($data['invoices']);
-                    $refunds       = number($data['refunds']);
-                    $sales = money($data['sales'], $currency);
+                    $invoices        = number($data['invoices']);
+                    $refunds         = number($data['refunds']);
+                    $sales           = money($data['sales'], $currency);
                     $invoiced_amount = money($data['invoiced_amount'], $currency);
                     $refunded_amount = money($data['refunded_amount'], $currency);
 
@@ -1503,12 +1596,12 @@ function sales_history($_data, $db, $user, $account) {
 
 
                 $record_data[$_date] = array(
-                    'sales' => $sales,
-                    'invoices' => $invoices,
-                    'refunds' => $refunds,
+                    'sales'           => $sales,
+                    'invoices'        => $invoices,
+                    'refunds'         => $refunds,
                     'invoiced_amount' => $invoiced_amount,
                     'refunded_amount' => $refunded_amount,
-                    'date'                => $record_data[$_date]['date']
+                    'date'            => $record_data[$_date]['date']
 
 
                 );

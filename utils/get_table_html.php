@@ -145,6 +145,9 @@ $smarty->assign('f_options', $table_filters);
 
 
 $table_view = $parameters['view'];
+
+
+
 $smarty->assign('table_view', $parameters['view']);
 
 

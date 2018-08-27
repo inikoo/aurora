@@ -31,13 +31,7 @@ editable: false,
 cell: "html"
 
 },
-{
-name: "info",
-label: "{t}Info{/t}",
-editable: false,
-cell: "html"
 
-},
 {
 name: "description_sales",
 label: "{t}Carton description{/t}",
@@ -45,7 +39,13 @@ editable: false,
 cell: "html"
 
 },
+{
+name: "info",
+label: "{t}Info{/t}",
+editable: false,
+cell: "html"
 
+},
 {
 name: "unit",
 label: "{t}Unit description{/t}",
@@ -101,7 +101,7 @@ grid.columns.findWhere({ name: 'unit_cost'} ).set("renderable", false)
 
 
 if(view=='overview'){
-grid.columns.findWhere({ name: 'description'} ).set("renderable", true)
+grid.columns.findWhere({ name: 'description_sales'} ).set("renderable", true)
 
 }else if(view=='sales'){
 grid.columns.findWhere({ name: 'description_sales'} ).set("renderable", true)

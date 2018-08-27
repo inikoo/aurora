@@ -15,9 +15,9 @@
     <ul class="timeline" id="timeline">
 
 
-            <li id="agent_received_node" class="li complete">
+            <li id="agent_received_node" class="li {if $delivery->get('State Index')>=20}complete{/if}">
                 <div class="label">
-                    <span class="state "><i class="fa fa-clipboard fa-fw"></i> {t}Received{/t}</span>
+                    <span class="state ">{t}Consolidated{/t}</span>
                 </div>
                 <div class="timestamp">
                     <span class="Purchase_Order_Submitted_Date">&nbsp;{$delivery->get('Agent Received Date')}</span> <span
@@ -28,9 +28,9 @@
             </li>
 
 
-            <li id="inputted_node" class="li  complete">
+            <li id="inputted_node" class="li  {if $delivery->get('State Index')>=30}complete{/if}">
                 <div class="label">
-                    <span class="state"><i class="fa fa-delicious" aria-hidden="true"></i> <span>{t}Consolidated{/t}</span></span>
+                    <span class="state"><span>{t}Dispatched{/t}</span></span>
                 </div>
                 <div class="timestamp">
                     <span class="Supplier_Delivery_Creation_Date">&nbsp;{$delivery->get('Agent Checked Date')}</span>
@@ -57,7 +57,7 @@
         <li id="dispatched_node"
             class="li  {if $delivery->get('State Index')>=30 or ($delivery->get('State Index')<0 and ($delivery->get('Dispatched Date')!=''  or $delivery->get('Received Date')!=''))  }complete{/if}">
             <div class="label">
-                <span class="state ">{t}Dispatched{/t} <span></i></span></span>
+                <span class="state ">{t}Received by client{/t} <span></i></span></span>
             </div>
             <div class="timestamp">
                 <span class="Supplier_Delivery_Dispatched_Date">&nbsp;{$delivery->get('Dispatched Date')}</span>
@@ -101,7 +101,7 @@
                      class="order_operation {if $delivery->get('Supplier Delivery State')!='InProcess'}hide{/if}">
                     <div class="square_button left" xstyle="padding:0;margin:0;position:relative;top:-5px"
                          title="{t}delete{/t}">
-                        <i class="fa fa-trash very_discreet " aria-hidden="true"
+                        <i class="far fa-trash-alt very_discreet " aria-hidden="true"
                            onclick="toggle_order_operation_dialog('delete')"></i>
                         <table id="delete_dialog" border="0" class="order_operation_dialog hide">
                             <tr class="top">
@@ -114,7 +114,7 @@
                                             data-data='{ "object": "SupplierDelivery", "key":"{$delivery->id}"}'
                                             id="received_save_buttons" class="error save button"
                                             onClick="delete_object(this)"><span class="label">{t}Delete{/t}</span> <i
-                                                class="fa fa-trash fa-fw  " aria-hidden="true"></i></span></td>
+                                                class="far fa-trash-alt fa-fw  " aria-hidden="true"></i></span></td>
                             </tr>
                         </table>
                     </div>
@@ -193,44 +193,25 @@
                 </div>
             </div>
             <span style="float:left;padding-left:10px;padding-top:5px"
-                  class="Supplier_Delivery_State"> {$delivery->get('State')} </span>
+                  class="Agent_State"> {$delivery->get('Agent State')} </span>
             <div id="forward_operations">
 
-                <div id="received_operations"
-                     class=" order_operation {if !($delivery->get('Supplier Delivery State')=='InProcess' or  $delivery->get('Supplier Delivery State')=='Dispatched') }hide{/if}">
-                    <div class="square_button right" title="{t}Mark delivery as received{/t}">
-                        <i class="fa fa-arrow-circle-down fa-fw" aria-hidden="true"
-                           onclick="toggle_order_operation_dialog('received')"></i>
-                        <table id="received_dialog" border="0" class="order_operation_dialog hide">
+                <div id="consolidated_operations"
+                     class=" order_operation {if !($delivery->get('Supplier Delivery State')=='InProcess' and  $delivery->get('Supplier Delivery Number Items')>0) }hide{/if}">
+                    <div class="square_button right" title="{t}Mark delivery as consolidated{/t}">
+                        <i class="fa fa-lock-alt fa-fw" aria-hidden="true"
+                           onclick="toggle_order_operation_dialog('consolidated')"></i>
+                        <table id="consolidated_dialog" border="0" class="order_operation_dialog hide">
                             <tr class="top">
-                                <td class="label" colspan="2">{t}Mark delivery as received{/t}</td>
+                                <td class="label" colspan="2">{t}Mark delivery as consolidated{/t}</td>
                             </tr>
-                            <tr class="top">
-                                <td class="label">{t}Date{/t}</td>
-                                <td>
-                                    <input id="received_date" type="hidden" value="{$smarty.now|date_format:'%Y-%m-%d'}"
-                                           ovalue="{$smarty.now|date_format:'%Y-%m-%d'}" has_been_valid="0"/>
-                                    <input id="received_date_time" type="hidden"
-                                           value="{$smarty.now|date_format:'%H:%M:%S'}"/>
-                                    <input id="received_date_formatted" class="option_input_field"
-                                           data-settings='{ "type": "datetime","id":"received_date", "field": "Supplier Delivery Received Date"}'
-                                           style="width:8em" value="{$smarty.now|date_format:'%d/%m/%Y'}"/>
-                                    <span id="received_date_msg" class="msg"></span>
 
-                                </td>
-                            </tr>
-                            <tr>
-                                <td colspan="2">
-                                    <div id="received_date_datepicker" class="hide datepicker">
-                                    </div>
-                                </td>
-                            </tr>
                             <tr class="changed buttons">
                                 <td><i class="fa fa-sign-out fa-flip-horizontal button" aria-hidden="true"
-                                       onclick="close_dialog('received')"></i></td>
+                                       onclick="close_dialog('consolidated')"></i></td>
                                 <td class="aright"><span
-                                            data-data='{  "field": "Supplier Delivery State","value": "Received","dialog_name":"received"}'
-                                            id="received_save_buttons" class="valid save button"
+                                            data-data='{  "field": "Supplier Delivery State","value": "consolidated","dialog_name":"consolidated"}'
+                                            id="consolidated_save_buttons" class="valid save button"
                                             onclick="save_order_operation(this)"><span class="label">{t}Save{/t}</span> <i
                                                 class="fa fa-cloud fa-fw  " aria-hidden="true"></i></span></td>
                             </tr>
@@ -239,38 +220,17 @@
                 </div>
 
                 <div id="dispatched_operations"
-                     class="order_operation {if $delivery->get('Supplier Delivery State')!='InProcess'}hide{/if}">
+                     class="order_operation {if $delivery->get('Supplier Delivery State')!='Consolidated'}hide{/if}">
                     <div class="square_button right" title="{t}Mark as dispatched{/t}">
 
-                        <i class="fa fa-arrow-circle-right fa-fw" aria-hidden="true"
+                        <i class="fa fa-truck-container fa-fw" aria-hidden="true"
                            onclick="toggle_order_operation_dialog('dispatched')"></i>
 
 
                         <table id="dispatched_dialog" border="0" class="order_operation_dialog hide">
                             <tr class="top">
                                 <td class="label"
-                                    colspan="2">{if $delivery->get('Supplier Delivery Parent')=='Supplier'}{t}Delivery dispatched by supplier{/t}{else}Delivery dispatched by agent{/if}</td>
-                            </tr>
-                            <tr class="top">
-                                <td class="label">{t}Date{/t}</td>
-                                <td>
-                                    <input id="dispatched_date" type="hidden"
-                                           value="{$smarty.now|date_format:'%Y-%m-%d'}"
-                                           ovalue="{$smarty.now|date_format:'%Y-%m-%d'}" has_been_valid="0"/>
-                                    <input id="dispatched_date_time" type="hidden"
-                                           value="{$smarty.now|date_format:'%H:%M:%S'}"/>
-                                    <input id="dispatched_date_formatted" class="option_input_field"
-                                           data-settings='{ "type": "datetime","id":"dispatched_date", "field": "Supplier Delivery Dispatched Date"}'
-                                           style="width:8em" value="{$smarty.now|date_format:'%d/%m/%Y'}"/>
-                                    <span id="dispatched_date_msg" class="msg"></span>
-                                    <script></script>
-                                </td>
-                            </tr>
-                            <tr>
-                                <td colspan="2">
-                                    <div id="dispatched_date_datepicker" class="hide datepicker">
-                                    </div>
-                                </td>
+                                    colspan="2">Delivery dispatched by agent</td>
                             </tr>
 
 

@@ -125,7 +125,7 @@ switch ($tipo) {
                              'type'     => 'json array',
                              'optional' => true
                          ),
-                         'state'  => array(
+                         'state'     => array(
                              'type'     => 'json array',
                              'optional' => true
                          )
@@ -470,15 +470,15 @@ function edit_field($account, $db, $user, $editor, $data, $smarty) {
 
 
                 include_once 'utils/new_fork.php';
-                $parts_data=array(
-                    $object->id=>$object->get('Part Valid From')
+                $parts_data = array(
+                    $object->id => $object->get('Part Valid From')
 
                 );
 
                 new_housekeeping_fork(
                     'au_housekeeping', array(
-                    'type'                => 'update_parts_inventory_snapshot_fact',
-                    'parts_data'           => $parts_data,
+                    'type'               => 'update_parts_inventory_snapshot_fact',
+                    'parts_data'         => $parts_data,
                     'all_parts_min_date' => $object->get('Part Valid From'),
                 ), $account->get('Account Code')
                 );
@@ -852,11 +852,10 @@ function object_operation($account, $db, $user, $editor, $data, $smarty) {
 
     $object->editor = $editor;
 
-    if(isset($data['state'])){
+    if (isset($data['state'])) {
         $object->web_state = $data['state'];
 
     }
-
 
 
     if (!$object->id) {
@@ -943,19 +942,30 @@ function object_operation($account, $db, $user, $editor, $data, $smarty) {
                 }
             }
 
-        } else {
-            if ($object->get_object_name() == 'Deal Campaign') {
+        } elseif ($object->get_object_name() == 'Deal Campaign') {
 
-                $response['request'] = sprintf('campaigns/%d', $object->get('Deal Campaign Store Key'));
+            $response['request'] = sprintf('campaigns/%d', $object->get('Deal Campaign Store Key'));
+
+        } elseif ($object->get_object_name() == 'Supplier Delivery') {
+
+            if ($user->get('User Type') == 'Agent') {
+                $response['request'] = 'agent_deliveries';
 
             } else {
 
-                if (is_string($request) and $request != '') {
-                    $response['request'] = $request;
-                }
+
+                $response['request'] = $request;
 
             }
+
+        } else {
+
+            if (is_string($request) and $request != '') {
+                $response['request'] = $request;
+            }
+
         }
+
 
     } else {
         $response = array(
@@ -1745,8 +1755,6 @@ function new_object($account, $db, $user, $editor, $data, $smarty) {
             }
 
 
-
-
             break;
         case 'Prospect':
             include_once 'class.Prospect.php';
@@ -1852,12 +1860,11 @@ function new_object($account, $db, $user, $editor, $data, $smarty) {
             $object = $parent->create_email_campaign($data['fields_data']);
 
 
-
             if (!$parent->error) {
                 $pcard        = '';
                 $updated_data = array(
-                    'store_key'=>$object->get('Email Campaign Store Key'),
-                    'email_template_type_key'=>$object->get('Email Campaign Email Template Type Key'),
+                    'store_key'               => $object->get('Email Campaign Store Key'),
+                    'email_template_type_key' => $object->get('Email Campaign Email Template Type Key'),
                 );
             }
             break;

@@ -20,8 +20,9 @@ function currency_conversion($db, $currency_from, $currency_to, $update_interval
         return 1;
     }
 
-    $ok = false;
-
+    $ok       = false;
+    $exchange = '1';// <-- recipe for disaster is just a fail over if is not internet during development
+    $source   = 'FailOver';
 
     $sql = sprintf(
         "SELECT * FROM kbase.`Currency Exchange Dimension` WHERE `Currency Pair`=%s", prepare_mysql($currency_from.$currency_to)
@@ -207,11 +208,9 @@ $exchange=get_currency($currency_from, $currency_to, 1000000)/1000000;
 }
 
 
-
-
-function get_historic_exchange($currency1,$currency2,$date) {
+function get_historic_exchange($currency1, $currency2, $date) {
     //https://openexchangerates.org
-    $exchange='';
+    $exchange = '';
 
     $api_keys = array(
         'raul@inikoo.com'      => '8158586024e345b2b798c26ee50b6987',
@@ -232,8 +231,8 @@ function get_historic_exchange($currency1,$currency2,$date) {
 
     if (isset($data['rates'][$currency1]) and isset($data['rates'][$currency2])) {
 
-        $usd_cur1       = $data['rates'][$this->currency1];
-        $usd_cur2       = $data['rates'][$this->currency2];
+        $usd_cur1 = $data['rates'][$this->currency1];
+        $usd_cur2 = $data['rates'][$this->currency2];
         $exchange = $usd_cur2 * (1 / $usd_cur1);
 
 
@@ -243,7 +242,6 @@ function get_historic_exchange($currency1,$currency2,$date) {
     return $exchange;
 
 }
-
 
 
 ?>
