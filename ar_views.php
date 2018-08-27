@@ -1953,6 +1953,7 @@ function get_navigation($user, $smarty, $data, $db, $account) {
             break;
         case ('suppliers'):
             require_once 'navigation/suppliers.nav.php';
+
             switch ($data['section']) {
                 case ('settings'):
                     return get_settings_navigation(
@@ -2081,6 +2082,12 @@ function get_navigation($user, $smarty, $data, $db, $account) {
                     break;
                 case ('timeseries_record'):
                     return get_timeseries_record_navigation($data, $smarty, $user, $db, $account);
+                    break;
+                case ('supplier_delivery.attachment.new'):
+                    return get_supplier_delivery_attachment_new_navigation($data, $smarty, $user, $db, $account);
+                    break;
+                case ('supplier_delivery.attachment'):
+                    return get_supplier_delivery_attachment_navigation($data, $smarty, $user, $db, $account);
                     break;
             }
 
@@ -4981,6 +4988,56 @@ function get_view_position($db, $state, $user, $smarty, $account) {
                 $branch[] = array(
                     'label'     => '<span class="id">'.$state['_object']->get('Code').'</span>',
                     'icon'      => 'table',
+                    'reference' => ''
+                );
+
+            }elseif ($state['section'] == 'supplier_delivery.attachment.new') {
+                $branch[] = array(
+                    'label'     => _('Suppliers'),
+                    'icon'      => '',
+                    'reference' => 'suppliers'
+                );
+
+
+
+
+                $supplier=get_object('Supplier',$state['_parent']->get('Parent Key'));
+
+              //  print_r($state['_parent']);
+
+                $branch[] = array(
+                    'label'     => '<span class="id Supplier_Code">'.$supplier->get('Code').'</span>',
+                    'icon'      => 'hand-holding-box',
+                    'reference' => 'supplier/'.$supplier->id
+                );
+
+                $branch[] = array(
+                    'label'     => '<span class="Supplier_Delivery_Public_ID">'.$state['_parent']->get('Public ID').'</span>',
+                    'icon'      => 'truck',
+                    'reference' => ''
+                );
+
+
+                $branch[] = array(
+                    'label'     => _('Upload attachment'),
+                    'icon'      => 'paperclip',
+                    'reference' => ''
+                );
+
+            } elseif ($state['section'] == 'supplier_delivery.attachment') {
+                $branch[] = array(
+                    'label'     => _('Suppliers'),
+                    'icon'      => '',
+                    'reference' => 'suppliers'
+                );
+                $branch[] = array(
+                    'label'     => '<span class="id Supplier_Code">'.$state['_parent']->get('Code').'</span>',
+                    'icon'      => 'hand-holding-box',
+                    'reference' => 'supplier/'.$state['parent_key']
+                );
+                $branch[] = array(
+                    'label'     => '<span class="id Attachment_Caption">'.$state['_object']->get('Caption').'</span>',
+                    'icon'      => 'paperclip',
                     'reference' => ''
                 );
 

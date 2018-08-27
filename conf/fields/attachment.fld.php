@@ -22,9 +22,10 @@ $options_yn = array(
     'Yes' => _('Yes'),
     'No'  => _('No')
 );
+
+
 asort($options_Attachment_Subject_Type);
 asort($options_yn);
-
 $object_fields = array(
     array(
         'label'      => _('Description'),
@@ -37,8 +38,8 @@ $object_fields = array(
                 'id'   => 'Attachment_Subject_Type',
                 'edit' => 'option',
 
-                'value'           => ($new ? 'Other' : $object->get('Attachment Subject Type')),
-                'formatted_value' => ($new ? _('Other') : $object->get('Subject Type')),
+                'value'           => ($new ? $options_Attachment_Subject_Type_default_value : $object->get('Attachment Subject Type')),
+                'formatted_value' => ($new ? $options_Attachment_Subject_Type[$options_Attachment_Subject_Type_default_value] : $object->get('Subject Type')),
 
                 'options'  => $options_Attachment_Subject_Type,
                 'label'    => ucfirst($object->get_field_label('Attachment Subject Type')),
@@ -72,7 +73,7 @@ $object_fields = array(
         'fields'     => array(
 
             array(
-                'render' => ($options['type'] == 'supplier' ? false : true),
+                'render' => ( in_array($options['type'] ,array('supplier','supplier_delivery'))  ? false : true),
 
                 'id'              => 'Attachment_Public',
                 'edit'            => 'option',
@@ -143,7 +144,7 @@ if ($new) {
                 'label'     => '<i class="fa fa-fw fa-lock button" onClick="toggle_unlock_delete_object(this)" style="margin-right:20px"></i> <span data-data=\'{  "attachment_bridge_key":"'
                     .$object->get(
                         'Attachment Bridge Key'
-                    ).'"}\' onClick="delete_attachment(this)" class="delete_object disabled">'._("Delete attachment").' <i class="fa fa-trash new_button link"></i></span>',
+                    ).'"}\' onClick="delete_attachment(this)" class="delete_object disabled">'._("Delete attachment").' <i class="far fa-trash-alt new_button link"></i></span>',
                 'reference' => '',
                 'type'      => 'operation'
             ),

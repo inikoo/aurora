@@ -40,6 +40,9 @@ trait AttachmentSubject {
 
 
             );
+
+
+            //print $sql;
             $this->db->exec($sql);
 
             $subject_bridge_key = $this->db->lastInsertId();

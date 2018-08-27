@@ -19,14 +19,9 @@ name: "caption",
 label: "{t}Caption{/t}",
 editable: false,
 cell: Backgrid.HtmlCell.extend({
-events: {
-"click": function() {
-change_view('/{$data['object']}/{$data['key']}/attachment/'+this.model.get("id"))
-}
-},
 
-className: "link"
-}),
+})
+
 },{
 name: "type",
 label: "{t}Type{/t}",

@@ -2853,7 +2853,16 @@ $modules = array(
                 'icon'      => 'cube',
                 'reference' => 'products/%d',
                 'tabs'      => array(
-                    'products' => array()
+                    'products'       => array(
+                        'label' => _('Products'),
+                        'icon'  => 'cube',
+
+                    ),
+                    'back_to_stock_notification_request'       => array(
+                        'label' => _('Back in stock notification requests'),
+                        'icon'  => 'envelope',
+
+                    ),
                 )
 
 
@@ -4507,13 +4516,44 @@ $modules = array(
                         'label' => _('Costing'),
                         'icon'  => 'box-usd'
                     ),
+
                     'supplier.delivery.history' => array(
                         'label' => '',
-                        'title' => _(
-                            'History/Notes'
-                        ),
+                        'title' => _('History/Notes'),
                         'icon'  => 'road',
                         'class' => 'right icon_only'
+                    ),
+                    'supplier.delivery.attachments' => array(
+                        'label' => '',
+                        'title' => _('Attachments'),
+                        'icon'  => 'paperclip',
+                        'class' => 'right icon_only'
+                    ),
+                )
+
+            ),
+
+
+            'supplier_delivery.attachment.new' => array(
+                'type' => 'new_object',
+                'tabs' => array(
+                    'supplier_delivery.attachment.new' => array(
+                        'label' => _('New attachment')
+                    ),
+
+                )
+
+            ),
+            'supplier_delivery.attachment'     => array(
+                'type' => 'object',
+                'tabs' => array(
+                    'supplier_delivery.attachment.details' => array(
+                        'label' => _('Data'),
+                        'icon'  => 'database'
+                    ),
+                    'supplier_delivery.attachment.history' => array(
+                        'label' => _('History'),
+                        'icon'  => 'clock'
                     ),
 
                 )

@@ -1790,6 +1790,27 @@ $tab_defaults = array(
         'f_field'     => 'note'
     ),
 
+
+     'supplier.delivery.attachments'             => array(
+        'view'        => 'overview',
+        'sort_key'    => 'date',
+        'sort_order'  => 1,
+        'rpp'         => 100,
+        'rpp_options' => $default_rrp_options,
+        'f_field'     => 'caption'
+    ),
+
+    'supplier_delivery.attachment.history' => array(
+        'view'        => 'overview',
+        'sort_key'    => 'date',
+        'sort_order'  => 1,
+        'rpp'         => 100,
+        'rpp_options' => $default_rrp_options,
+        'f_field'     => 'note'
+    ),
+
+
+
     'supplier.sales.history' => array(
         'view'        => 'overview',
         'sort_key'    => 'id',
