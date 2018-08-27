@@ -61,15 +61,6 @@ if (isset($_data['parameters']['invoices_null']) ) {
     $_SESSION['table_state'][$_data['parameters']['tab']]['invoices_null'] =  $_data['parameters']['invoices_null'];
 }
 
-//print 'prepare_table/'.$_data['parameters']['tab'].'.ptble.php';
-
-//print_r('prepare_table/'.$_data['parameters']['tab'].'.ptble.php');
-
-//print_r($_data['parameters']);
-
-//print_r($_SESSION['table_state']['intrastat']);
-
-
 include_once 'prepare_table/'.$_data['parameters']['tab'].'.ptble.php';
 
 

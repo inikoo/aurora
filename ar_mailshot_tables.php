@@ -385,7 +385,7 @@ function oss_notification_next_recipients($_data, $db, $user) {
     $rtext_label = 'customer';
     include_once 'prepare_table/init.php';
 
-    $sql   = "select $fields from $table $where $wheref $group order by $order $order_direction  limit $start_from,$number_results";
+    $sql   = "select $fields from $table $where $wheref $group_by order by $order $order_direction  limit $start_from,$number_results";
     $adata = array();
 
 
@@ -397,9 +397,6 @@ function oss_notification_next_recipients($_data, $db, $user) {
         foreach ($result as $data) {
 
 
-           if($data['Back in Stock Reminder Key']==''){
-               continue;
-           }
 
 
             $customer = sprintf('<span class="link" onclick="change_view(\'customers/%d/%d\')"  >%s (%05d)</span>', $data['Customer Store Key'], $data['Customer Key'], $data['Customer Name'], $data['Customer Key']);
@@ -416,7 +413,7 @@ function oss_notification_next_recipients($_data, $db, $user) {
             $products = preg_replace('/, $/', '', $products);
 
             $adata[] = array(
-                'id' => (integer)$data['Back in Stock Reminder Key'],
+                'id' => (integer)$data['Back in Stock Reminder Customer Key'],
 
                 'customer' => $customer,
                 'products' => $products,

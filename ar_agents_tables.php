@@ -88,9 +88,7 @@ function agent_client_orders($_data, $db, $user) {
                 case 'InProcess':
                     $state = sprintf('%s', _('In Process'));
                     break;
-                case 'SubmittedAgent':
-                    $state = sprintf('%s', _('Submitted to agent'));
-                    break;
+
                 case 'Submitted':
                     $state = sprintf('%s', _('Submitted'));
                     break;

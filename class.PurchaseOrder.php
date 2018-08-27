@@ -143,14 +143,7 @@ class PurchaseOrder extends DB_Table {
             $parent->update_purchase_orders();
 
 
-            if ($this->get('Purchase Order Parent') == 'Agent') {
-                $sql = sprintf(
-                    'INSERT INTO `Purchase Order Agent Coda` (`Purchase Order Key`,`Purchase Order Agent Key`,`Purchase Order Agent Last Updated Date`) VALUES (%d, %d, %s) ', $this->id, $this->get('Purchase Order Parent Key'),
-                    prepare_mysql($this->get('Purchase Order Last Updated Date'))
-                );
-                $this->db->exec($sql);
 
-            }
 
         } else {
             // print "Error can not create supplier $sql\n";
@@ -366,9 +359,7 @@ class PurchaseOrder extends DB_Table {
                     case 'InProcess':
                         return 10;
                         break;
-                    case 'SubmittedAgent':
-                        return 20;
-                        break;
+
                     case 'Submitted':
                         return 30;
                         break;
@@ -527,9 +518,7 @@ class PurchaseOrder extends DB_Table {
                     case 'Submitted':
                         return _('Submitted');
                         break;
-                    case 'SubmittedAgent':
-                        return _('Submitted to Agent');
-                        break;
+
                     case 'Confirmed':
                         return _('Confirmed');
                         break;
@@ -971,15 +960,6 @@ sum(`Purchase Order Net Amount`) AS items_net, sum(`Purchase Order Extra Cost Am
         $operations = array();
 
 
-        /*
-        if ($value == 'Submitted' and $this->get('Purchase Order Agent Key')) {
-            if ($old_value == 'InProcess') {
-                $value = 'SubmittedAgent';
-
-            }
-
-        }
-        */
 
 
         if ($old_value != $value) {
@@ -1016,53 +996,7 @@ sum(`Purchase Order Net Amount`) AS items_net, sum(`Purchase Order Extra Cost Am
 
 
                     break;
-                case 'SubmittedAgent':
-                    // todo remove, no longer used
 
-                    $this->update_field(
-                        'Purchase Order Submitted Agent Date', $date, 'no_history'
-                    );
-
-                    $this->update_field(
-                        'Purchase Order Submitted Date', '', 'no_history'
-                    );
-                    $this->update_field(
-                        'Purchase Order Send Date', '', 'no_history'
-                    );
-
-                    $this->update_field(
-                        'Purchase Order State', $value, 'no_history'
-                    );
-                    $operations = array(
-                        'cancel_operations',
-                        'undo_submit_operations',
-                        'received_operations'
-                    );
-
-                    if ($old_value != 'Submitted') {
-                        if ($this->get('State Index') <= 20) {
-                            $history_abstract = _('Purchase order submitted');
-
-
-                            $this->create_agent_supplier_purchase_orders();
-
-
-                        } else {
-                            $history_abstract = _('Purchase order set back as submitted to agent');
-
-                        }
-
-
-                        $history_data = array(
-                            'History Abstract' => $history_abstract,
-                            'History Details'  => '',
-                            'Action'           => 'created'
-                        );
-                        $this->add_subject_history($history_data, true, 'No', 'Changes', $this->get_object_name(), $this->id);
-
-                    }
-
-                    break;
 
                 case 'Submitted':
 

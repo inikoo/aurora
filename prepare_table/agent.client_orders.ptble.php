@@ -19,11 +19,7 @@ $currency = '';
 $where = 'where true ';
 $table = '`Purchase Order Dimension` O';
 
-if ($parameters['parent'] == 'supplier') {
-    $where = sprintf(
-        'where  `Purchase Order Parent`="Supplier" and `Purchase Order Parent Key`=%d and `Purchase Order Agent Key`=%d ', $parameters['parent_key'],$parameters['agent_key']
-    );
-}elseif ($parameters['parent'] == 'Agent') {
+if ($parameters['parent'] == 'Agent') {
     $where = sprintf(
         'where  `Purchase Order Parent`="Agent" and `Purchase Order Parent Key`=%d ', $parameters['parent_key']
     );
@@ -35,7 +31,7 @@ if ($parameters['parent'] == 'supplier') {
     $table
            = ' `Purchase Order Transaction Fact` POTF  left join  `Purchase Order Dimension` O on (POTF.`Purchase Order Key`=O.`Purchase Order Key`) ';
     $where = sprintf(
-        'where `Supplier Part Key`=%d  and `Purchase Order Agent Key`=%d', $parameters['parent_key'],$parameters['agent_key']
+        'where `Supplier Part Key`=%d  and   `Purchase Order Parent`="Agent" ', $parameters['parent_key']
     );
 } elseif ($parameters['parent'] == 'part') {
     $table
@@ -45,7 +41,7 @@ if ($parameters['parent'] == 'supplier') {
 	 left join  `Part Dimension` P on (P.`Part SKU`=SP.`Supplier Part Part SKU`)
 
 	 ';
-    $where = sprintf('where `Part SKU`=%d and `Purchase Order Agent Key`=%d ', $parameters['parent_key'],$parameters['agent_key']);
+    $where = sprintf('where `Part SKU`=%d and  `Purchase Order Parent`="Agent"', $parameters['parent_key']);
 } else {
     exit("unknown parent :".$parameters['parent']." \n");
 }

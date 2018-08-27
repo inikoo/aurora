@@ -2,8 +2,8 @@
 /*
  About:
  Author: Raul Perusquia <raul@inikoo.com>
- Created: 3 July 2018 at 10:31:57 GMT+8, Kuala Lumpur, Malaysia
- Copyright (c) 2017, Inikoo
+ Created: 27 August 2018 at 22:05:00 GMT+8, Kuala Lumpur, Malaysia
+ Copyright (c) 2018, Inikoo
 
  Version 3
 
@@ -12,17 +12,19 @@
 
 $filter_msg = '';
 
-$parent = get_object($_data['parameters']['parent'], $_data['parameters']['parent_key']);
 
 
-$where = sprintf("where  `Back in Stock Reminder State`='Ready' and `Back in Stock Reminder Store Key`=%d",$parent->get('Store Key'));
+$where = sprintf("where   `Back in Stock Reminder Product ID`=%d",$_data['parameters']['parent_key']);
 
-$group_by = 'group by `Back in Stock Reminder Customer Key`';
+
 
 $wheref = '';
 if ($parameters['f_field'] == 'name' and $f_value != '') {
     $wheref .= " and  C.`Customer Name` like '".addslashes($f_value)."%'";
 }
+
+
+$group_by='  ';
 
 $_order = $order;
 $_dir   = $order_direction;
@@ -42,8 +44,9 @@ $sql_totals = "select count(distinct `Back in Stock Reminder Customer Key`) as n
 //print $sql_totals;
 
 $fields
-            = "`Back in Stock Reminder Key`,`Customer Store Key`,`Customer Name`,`Customer Key`,`Back in Stock Reminder Customer Key`,
-            group_concat(CONCAT_WS('|',`Product ID`,`Product Code`)) as products
+            = "`Back in Stock Reminder Key`,`Customer Store Key`,`Customer Name`,`Customer Key`,`Back in Stock Reminder Customer Key`,`Customer Type by Activity`,`Customer Location`,
+            `Back in Stock Reminder State`,`Back in Stock Reminder Creation Date`
+          
             
             ";
 

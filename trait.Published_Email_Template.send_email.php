@@ -207,6 +207,9 @@ trait Send_Email {
         //
         $to_address = $recipient->get('Main Plain Email');
 
+       // $to_address='raul@inikoo.com';
+
+
 
         $request                                    = array();
         $request['Source']                          = $_source;
