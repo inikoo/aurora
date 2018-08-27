@@ -13,13 +13,306 @@ require_once 'common.php';
 require_once 'utils/new_fork.php';
 
 
-if(date('H:i')=='00:00' ){
+
+$time=date('H:i');
+
+if($time=='00:00'  ){
 
     create_today_ISF($account);
 
+    $account->load_acc_data();
+    $account->update_orders();
+
+    $account->update(
+        array(
+            'Account Today Start Orders In Warehouse Number' => $account->get('Account Orders In Warehouse Number') + $account->get('Account Orders Packed Number') + $account->get('Account Orders Dispatch Approved Number')
+        )
+
+    );
+
+
+    $sql = sprintf("SELECT `Store Key` FROM `Store Dimension`");
+    if ($result = $db->query($sql)) {
+        foreach ($result as $row) {
+            $store = get_object('Store', $row['Store Key']);
+
+            $store->load_acc_data();
+
+            $store->update_orders();
+
+
+            $store->update(
+                array('Store Today Start Orders In Warehouse Number' => $store->get('Store Orders In Warehouse Number') + $store->get('Store Orders Packed Number') + $store->get('Store Orders Dispatch Approved Number'))
+
+            );
+
+            $store->update_new_products();
+
+        }
+    } else {
+        print_r($error_info = $db->errorInfo());
+        exit;
+    }
+
+    $msg = new_housekeeping_fork(
+        'au_asset_sales', array(
+        'type'     => 'update_stores_sales_data',
+        'interval' => 'Today',
+        'mode'     => array(
+            true,
+            true
+        )
+    ), $account->get('Account Code')
+    );
+
+    $msg = new_housekeeping_fork(
+        'au_asset_sales', array(
+        'type'     => 'update_invoices_categories_sales_data',
+        'interval' => 'Today',
+        'mode'     => array(
+            true,
+            true
+        )
+    ), $account->get('Account Code')
+    );
+
+
+    $msg = new_housekeeping_fork(
+        'au_asset_sales', array(
+        'type'     => 'update_stores_sales_data',
+        'interval' => 'Yesterday',
+        'mode'     => array(
+            true,
+            true
+        )
+    ), $account->get('Account Code')
+    );
+
+    $msg = new_housekeeping_fork(
+        'au_asset_sales', array(
+        'type'     => 'update_invoices_categories_sales_data',
+        'interval' => 'Yesterday',
+        'mode'     => array(
+            true,
+            true
+        )
+    ), $account->get('Account Code')
+    );
+
+
+    $intervals = array(
+        'Year To Day',
+        'Quarter To Day',
+        'Month To Day',
+        'Week To Day',
+
+    );
+    foreach ($intervals as $interval) {
+
+
+        $msg = new_housekeeping_fork(
+            'au_asset_sales', array(
+            'type'     => 'update_stores_sales_data',
+            'interval' => $interval,
+            'mode'     => array(
+                false,
+                true
+            )
+        ), $account->get('Account Code')
+        );
+
+        $msg = new_housekeeping_fork(
+            'au_asset_sales', array(
+            'type'     => 'update_invoices_categories_sales_data',
+            'interval' => $interval,
+            'mode'     => array(
+                false,
+                true
+            )
+        ), $account->get('Account Code')
+        );
+
+
+        $msg = new_housekeeping_fork(
+            'au_asset_sales', array(
+            'type'     => 'update_products_sales_data',
+            'interval' => $interval,
+            'mode'     => array(
+                false,
+                true
+            )
+        ), $account->get('Account Code')
+        );
+
+        $msg = new_housekeeping_fork(
+            'au_asset_sales', array(
+            'type'     => 'update_parts_sales_data',
+            'interval' => $interval,
+            'mode'     => array(
+                false,
+                true
+            )
+        ), $account->get('Account Code')
+        );
+
+        $msg = new_housekeeping_fork(
+            'au_asset_sales', array(
+            'type'     => 'update_part_categories_sales_data',
+            'interval' => $interval,
+            'mode'     => array(
+                false,
+                true
+            )
+        ), $account->get('Account Code')
+        );
+
+        $msg = new_housekeeping_fork(
+            'au_asset_sales', array(
+            'type'     => 'update_product_categories_sales_data',
+            'interval' => $interval,
+            'mode'     => array(
+                false,
+                true
+            )
+        ), $account->get('Account Code')
+        );
+
+
+        $msg = new_housekeeping_fork(
+            'au_asset_sales', array(
+            'type'     => 'update_suppliers_data',
+            'interval' => $interval,
+            'mode'     => array(
+                false,
+                true
+            )
+        ), $account->get('Account Code')
+        );
+
+
+        $msg = new_housekeeping_fork(
+            'au_asset_sales', array(
+            'type'     => 'update_supplier_categories_sales_data',
+            'interval' => $interval,
+            'mode'     => array(
+                false,
+                true
+            )
+        ), $account->get('Account Code')
+        );
+
+
+    }
+
+
+    $intervals = array(
+
+        '1 Year',
+        '1 Quarter',
+        '1 Month',
+        '1 Week'
+    );
+    foreach ($intervals as $interval) {
+
+
+        $msg = new_housekeeping_fork(
+            'au_asset_sales', array(
+            'type'     => 'update_stores_sales_data',
+            'interval' => $interval,
+            'mode'     => array(
+                true,
+                true
+            )
+        ), $account->get('Account Code')
+        );
+
+        $msg = new_housekeeping_fork(
+            'au_asset_sales', array(
+            'type'     => 'update_invoices_categories_sales_data',
+            'interval' => $interval,
+            'mode'     => array(
+                true,
+                true
+            )
+        ), $account->get('Account Code')
+        );
+
+
+        $msg = new_housekeeping_fork(
+            'au_asset_sales', array(
+            'type'     => 'update_products_sales_data',
+            'interval' => $interval,
+            'mode'     => array(
+                true,
+                true
+            )
+        ), $account->get('Account Code')
+        );
+
+        $msg = new_housekeeping_fork(
+            'au_asset_sales', array(
+            'type'     => 'update_parts_sales_data',
+            'interval' => $interval,
+            'mode'     => array(
+                true,
+                true
+            )
+        ), $account->get('Account Code')
+        );
+
+        $msg = new_housekeeping_fork(
+            'au_asset_sales', array(
+            'type'     => 'update_part_categories_sales_data',
+            'interval' => $interval,
+            'mode'     => array(
+                true,
+                true
+            )
+        ), $account->get('Account Code')
+        );
+
+        $msg = new_housekeeping_fork(
+            'au_asset_sales', array(
+            'type'     => 'update_product_categories_sales_data',
+            'interval' => $interval,
+            'mode'     => array(
+                true,
+                true
+            )
+        ), $account->get('Account Code')
+        );
+
+
+        $msg = new_housekeeping_fork(
+            'au_asset_sales', array(
+            'type'     => 'update_suppliers_data',
+            'interval' => $interval,
+            'mode'     => array(
+                true,
+                true
+            )
+        ), $account->get('Account Code')
+        );
+
+
+        $msg = new_housekeeping_fork(
+            'au_asset_sales', array(
+            'type'     => 'update_supplier_categories_sales_data',
+            'interval' => $interval,
+            'mode'     => array(
+                false,
+                true
+            )
+        ), $account->get('Account Code')
+        );
+
+
+    }
+
+
 }
 
-send_periodic_email_mailshots($db, $account);
+send_periodic_email_mailshots($time,$db, $account);
 
 
 
@@ -32,7 +325,7 @@ function create_today_ISF($account){
     );
 }
 
-function send_periodic_email_mailshots($db, $account) {
+function send_periodic_email_mailshots($time,$db, $account) {
 
 
     $sql = sprintf('select `Email Campaign Type Code`,`Email Campaign Type Metadata`,`Email Campaign Type Key` from `Email Campaign Type Dimension` where `Email Campaign Type Status`="Active" ');
@@ -49,7 +342,7 @@ function send_periodic_email_mailshots($db, $account) {
 
 
 
-                    if ($metadata['Schedule']['Time'] == date('H:i:00')) {
+                    if ($metadata['Schedule']['Time'] == $time.':00') {
                         if (isset($metadata['Schedule']['Days'])) {
                             if ($metadata['Schedule']['Days'][iso_860_to_day_name(date('N'))] == 'Yes') {
 
