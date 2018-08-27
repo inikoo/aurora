@@ -25,12 +25,16 @@ switch ($parameters['parent']) {
         $where = sprintf(
             " where `Subject`='Part' and `Subject Key`=%d ", $parameters['parent_key']
         );
+    case 'supplierdelivery':
+        $where = sprintf(
+            " where `Subject`='Supplier Delivery' and `Subject Key`=%d ", $parameters['parent_key']
+        );
         break;
     default:
         exit('error parent not set up '.$parameters['parent']);
         break;
 }
-
+//'Part','Staff','Customer Communications','Customer History Attachment','Product History Attachment','Part History Attachment','Part MSDS','Product MSDS','Supplier Product MSDS','Product Info Sheet','Purchase Order History Attachment','Purchase Order','Supplier Delivery Note History Attachment','Supplier Delivery Note','Supplier Invoice History Attachment','Supplier Invoice','Order Note History Attachment','Delivery Note History Attachment','Invoice History Attachment','Supplier'
 
 $wheref = '';
 if ($parameters['f_field'] == 'caption' and $f_value != '') {

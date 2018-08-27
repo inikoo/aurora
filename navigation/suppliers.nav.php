@@ -2806,4 +2806,117 @@ function get_timeseries_record_navigation($data, $smarty, $user, $db, $account) 
 }
 
 
+
+function get_supplier_delivery_attachment_new_navigation($data, $smarty, $user, $db) {
+
+
+    $left_buttons  = array();
+    $right_buttons = array();
+
+
+    $sections = get_sections('suppliers', '');
+
+    $_section = 'suppliers';
+    if (isset($sections[$_section])) {
+        $sections[$_section]['selected'] = true;
+    }
+
+
+   // print_r($data['_object']);
+
+    $supplier_delivery = $data['_parent'];
+
+    $up_button = array(
+        'icon'      => 'arrow-up',
+        'title'     => _("Supplier's delivery").' '.$supplier_delivery->get('Public ID'),
+        'reference' => strtolower($supplier_delivery->get('Supplier Delivery Parent')).'/'.$supplier_delivery->get('Supplier Delivery Parent Key').'/delivery/'.$supplier_delivery->id
+    );
+
+
+    $left_buttons[] = $up_button;
+
+
+    $title = '<span>'.sprintf(
+            _('New attachment for supplier delivery %s'), '<span onClick="change_view(\''.strtolower($supplier_delivery->get('Supplier Delivery Parent')).'/'.$supplier_delivery->get('Supplier Delivery Parent Key').'/delivery/'.$supplier_delivery->id.'\')" class="button id">'.$supplier_delivery->get('Public ID').'</span>'
+        ).'</span>';
+
+
+    $_content = array(
+        'sections_class' => '',
+        'sections'       => $sections,
+        'left_buttons'   => $left_buttons,
+        'right_buttons'  => $right_buttons,
+        'title'          => $title,
+        'search'         => array(
+            'show'        => true,
+            'placeholder' => _('Search suppliers')
+        )
+
+    );
+    $smarty->assign('_content', $_content);
+
+
+    $html = $smarty->fetch('navigation.tpl');
+
+    return $html;
+
+}
+
+
+function get_supplier_delivery_attachment_navigation($data, $smarty, $user, $db) {
+
+
+    $left_buttons  = array();
+    $right_buttons = array();
+
+
+    $sections = get_sections('suppliers', '');
+
+    $_section = 'suppliers';
+    if (isset($sections[$_section])) {
+        $sections[$_section]['selected'] = true;
+    }
+
+    $supplier_delivery = $data['_parent'];
+
+
+    $up_button = array(
+        'icon'      => 'arrow-up',
+        'title'     => _("Supplier's delivery").' '.$supplier_delivery->get('Public ID'),
+
+        'reference' => strtolower($supplier_delivery->get('Supplier Delivery Parent')).'/'.$supplier_delivery->get('Supplier Delivery Parent Key').'/delivery/'.$supplier_delivery->id
+    );
+
+    $right_buttons[] = array(
+        'icon'  => 'download',
+        'title' => _('Download'),
+        'id'    => 'download_button'
+    );
+    $left_buttons[]  = $up_button;
+
+    $title = _('Attachment').' <span class="id Attachment_Caption">'.$data['_object']->get('Caption').'</span>';
+
+
+    $_content = array(
+        'sections_class' => '',
+        'sections'       => $sections,
+        'left_buttons'   => $left_buttons,
+        'right_buttons'  => $right_buttons,
+        'title'          => $title,
+        'search'         => array(
+            'show'        => true,
+            'placeholder' => _('Search suppliers')
+        )
+
+    );
+    $smarty->assign('_content', $_content);
+
+
+    $html = $smarty->fetch('navigation.tpl');
+
+    return $html;
+
+}
+
+
 ?>

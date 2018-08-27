@@ -108,7 +108,7 @@ function get_object_fields($object, $db, $user, $smarty, $options = false) {
                     'Other'    => _('Other'),
 
                 );
-
+                $options_Attachment_Subject_Type_default_value='Contract';
             } elseif ($options['type'] == 'supplier') {
                 $options_Attachment_Subject_Type = array(
                     'Invoice'       => _('Invoice'),
@@ -117,8 +117,8 @@ function get_object_fields($object, $db, $user, $smarty, $options = false) {
                     'Image'         => _('Image'),
                     'Contact Card'  => _('Contact card'),
                     'Other'         => _('Other'),
-
                 );
+                $options_Attachment_Subject_Type_default_value='Contact Card';
 
             } elseif ($options['type'] == 'part') {
                 $options_Attachment_Subject_Type = array(
@@ -127,6 +127,16 @@ function get_object_fields($object, $db, $user, $smarty, $options = false) {
 
 
                 );
+                $options_Attachment_Subject_Type_default_value='MSDS';
+            }elseif ($options['type'] == 'supplier_delivery') {
+                $options_Attachment_Subject_Type = array(
+                    'Delivery Paperwork'  => _('Delivery paperwork'),
+                    'Invoice'  => _('Invoice'),
+                    'Other' => _('Other'),
+
+                );
+
+                $options_Attachment_Subject_Type_default_value='Delivery Paperwork';
 
             }
 

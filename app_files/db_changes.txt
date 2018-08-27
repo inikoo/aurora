@@ -922,6 +922,10 @@ ALTER TABLE `Supplier Delivery Dimension` CHANGE `Supplier Delivery State` `Supp
 ALTER TABLE `Supplier Delivery Dimension` ADD `Supplier Delivery Consolidated Date` DATETIME NULL DEFAULT NULL AFTER `Supplier Delivery Creation Date`;
 
 
+ALTER TABLE `Attachment Bridge` CHANGE `Subject` `Subject` ENUM('Part','Staff','Customer Communications','Customer History Attachment','Product History Attachment','Part History Attachment','Part MSDS','Product MSDS','Supplier Product MSDS','Product Info Sheet','Purchase Order History Attachment','Purchase Order','Supplier Delivery Note History Attachment','Supplier Delivery Note','Supplier Invoice History Attachment','Supplier Invoice','Order Note History Attachment','Delivery Note History Attachment','Invoice History Attachment','Supplier','Supplier Delivery') CHARACTER SET utf8 COLLATE utf8_general_ci NOT NULL;
+ALTER TABLE `Attachment Bridge` CHANGE `Attachment Subject Type` `Attachment Subject Type` ENUM('Other','CV','Contract','Invoice','PurchaseOrder','Catalogue','MSDS','Image','Contact Card','Delivery Paperwork') CHARACTER SET utf8 COLLATE utf8_general_ci NOT NULL DEFAULT 'Other';
+
+
 ======= fer migration ordering in dw and costa
 
                     ALTER TABLE `Invoice Tax Dimension` ADD `Invoice Tax Key` INT UNSIGNED NOT NULL AUTO_INCREMENT FIRST, ADD PRIMARY KEY (`Invoice Tax Key`);

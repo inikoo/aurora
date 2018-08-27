@@ -45,15 +45,18 @@ switch ($tipo) {
 function attachments($_data, $db, $user) {
 
 
-
-
     include_once 'utils/natural_language.php';
+    include_once 'utils/object_functions.php';
 
     $rtext_label = 'attachment';
     include_once 'prepare_table/init.php';
 
-    $sql
-           = "select $fields from $table $where $wheref order by $order $order_direction limit $start_from,$number_results";
+    if ($_data['parameters']['parent'] == 'supplierdelivery') {
+
+        $delivery = get_object('SupplierDelivery', $_data['parameters']['parent_key']);
+    }
+
+    $sql   = "select $fields from $table $where $wheref order by $order $order_direction limit $start_from,$number_results";
     $adata = array();
 
     foreach ($db->query($sql) as $data) {
@@ -67,9 +70,6 @@ function attachments($_data, $db, $user) {
                 '<i title="%s" class="fa fa-eye-slash"></i>', _('Private')
             );
         }
-
-
-
 
 
         switch ($data['Attachment Subject Type']) {
@@ -104,14 +104,6 @@ function attachments($_data, $db, $user) {
                 $type = $data['Attachment Subject Type'];
                 break;
         }
-
-
-
-
-
-
-
-
 
 
         switch ($data['Attachment Type']) {
@@ -153,25 +145,45 @@ function attachments($_data, $db, $user) {
                 break;
         }
 
+        if ($data['Attachment Thumbnail Image Key'] > 0) {
+            $preview = sprintf(
+                '<a href="/image_root.php?id=%d&size=original" data-type="image"  data-fancybox="group" data-caption="%s">
+                    <img  src="/image_root.php?id=%d&size=small"  style="max-width:100px;height-width:50px"  />
+                 </a>', $data['Attachment Thumbnail Image Key'], $data['Attachment File Original Name'].' '.$data['Attachment Caption'], $data['Attachment Thumbnail Image Key']
+            );
+        } else {
+            $preview = '';
+        }
+
+
+       // print_r($_data);
+
+        if ($_data['parameters']['parent'] == 'supplierdelivery') {
+            $caption = sprintf(
+                '<span class="link" onclick="change_view(\'%s/%d/delivery/%d/attachment/%d\')">%s</span>',
+                strtolower($delivery->get('Supplier Delivery Parent')), $delivery->get('Supplier Delivery Parent Key'), $_data['parameters']['parent_key'],
+                $data['Attachment Bridge Key'], $data['Attachment Caption']
+            );
+        } else {
+            $caption = sprintf(
+                '<span class="link" onclick="change_view(\'%s/%d/attachment/%d\')">%s</span>', $_data['parameters']['parent'], $_data['parameters']['parent_key'], $data['Attachment Bridge Key'], $data['Attachment Caption']
+            );
+        }
+
+
         $adata[] = array(
             'id'         => (integer)$data['Attachment Bridge Key'],
-            'caption'    => $data['Attachment Caption'],
+            'caption'    => $caption,
             'size'       => file_size($data['Attachment File Size']),
             'visibility' => $visibility,
             'type'       => $type,
             'file_type'  => $file_type,
-            'preview'       => sprintf(
-                '<a href="/image_root.php?id=%d&size=original" data-type="image"  data-fancybox="group" data-caption="%s">
-                    <img  src="/image_root.php?id=%d&size=small"  style="max-width:100px;height-width:50px"  />
-                 </a>',
-                $data['Attachment Thumbnail Image Key'],   $data['Attachment File Original Name'].' '.$data['Attachment Caption'],$data['Attachment Thumbnail Image Key']
-            ),
+            'preview'    => $preview,
             'file'       => sprintf(
-                '<a href="/attachment.php?id=%d" download><i class="fa fa-download"></i></a>  <a href="/attachment.php?id=%d" >%s</a>', $data['Attachment Bridge Key'], $data['Attachment Bridge Key'],
-                $data['Attachment File Original Name']
+                '<a href="/attachment.php?id=%d" download><i class="fa fa-download"></i></a>  <a href="/attachment.php?id=%d" >%s</a>', $data['Attachment Bridge Key'], $data['Attachment Bridge Key'], $data['Attachment File Original Name']
             ),
 
-            'download'       => sprintf(
+            'download' => sprintf(
                 '<a href="/attachment.php?id=%d" download title="%s"><i class="fa fa-download"></i></a>', $data['Attachment Bridge Key'], $data['Attachment File Original Name']
             ),
         );

@@ -11,9 +11,11 @@
 */
 
 include_once 'class.DB_Table.php';
-
+include_once 'trait.AttachmentSubject.php';
+include_once 'trait.NotesSubject.php';
 
 class SupplierDelivery extends DB_Table {
+    use  NotesSubject, AttachmentSubject;
 
     function __construct($arg1 = false, $arg2 = false, $arg3 = false) {
 
