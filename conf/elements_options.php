@@ -1247,7 +1247,7 @@ $elements_options = array(
                     'selected' => true
                 ),
 
-                'SubmittedAgent'                   => array(
+                'Submitted'                   => array(
                     'label'    => _('Submitted to agent'),
                     'selected' => true
                 ),

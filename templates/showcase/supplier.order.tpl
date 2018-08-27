@@ -1,13 +1,6 @@
 {assign deliveries $order->get_deliveries('objects')}
-<div style="padding:20px;border-bottom:1px solid #ccc" class="{if !$order->get('Purchase Order Agent Key')}hide{/if} hide">
 
-<span class="fulfilled_by">
-    {if $order->get('State Index')==10} {t}This purchase order will be fulfilled by{/t} <span class="button" onClick="change_view('/agent/{$order->get('Purchase Order Agent Key')}')">{$order->get('Agent Name')} <i class="fa fa-user-secret" aria-hidden="true"></i></span>
-    {else $order->get('State Index')>10} {t}This purchase order is been fulfilled by{/t} <span class="button" onClick="change_view('/agent/{$order->get('Purchase Order Agent Key')}')">{$order->get('Agent Name')} <i class="fa fa-user-secret" aria-hidden="true"></i></span>
-{/if}
-</span>
-</div>
-<div class="timeline_horizontal {if $order->get('Purchase Order State')=='Cancelled'  or $order->get('Purchase Order Agent Key') }hide{/if}">
+<div class="timeline_horizontal {if $order->get('Purchase Order State')=='Cancelled'   }hide{/if}">
 
 
     <ul class="timeline" id="timeline">
@@ -130,59 +123,7 @@
 
     </ul>
 </div>
-<div class="timeline_horizontal {if $order->get('Purchase Order State')=='Cancelled' or !$order->get('Purchase Order Agent Key') }hide{/if}">
-    <ul class="timeline" id="timeline">
-        <li id="submitted_node" class="li {if $order->get('State Index')>=20}complete{/if}">
-            <div class="label">
-                <span class="state " title="{t}Submitted to agent{/t}"><i class="fa fa-paper-plane" aria-hidden="true"></i> {t}Agent{/t}</span>
-            </div>
-            <div class="timestamp">
-                <span class="Purchase_Order_Submitted_Date">&nbsp;{$order->get('Submitted Date')}</span> <span
-                        class="start_date">{$order->get('Creation Date')} </span>
-            </div>
-            <div class="dot">
-            </div>
-        </li>
-        <li id="submitted_node" class="li {if $order->get('State Index')>=30}complete{/if}">
-            <div class="label">
-                <span class="state " title="{t}Submitted to agent{/t}"><i class="fa fa-paper-plane" aria-hidden="true"></i> {t}Supplier{/t}</span></span>
-            </div>
-            <div class="timestamp">
-                <span class="Purchase_Order_Submitted_Date">&nbsp;{$order->get('Submitted Date')}</span>
-            </div>
-            <div class="dot">
-            </div>
-        </li>
 
-        <li class="li {if $order->get('State Index')>=35}complete{/if}">
-            <div class="label">
-                <span class="state ">{t}Received by agent{/t}</span>
-            </div>
-            <div class="timestamp">
-			
-			&nbsp;<span class="Purchase_Order_Agent_Received_Date">{$order->get('Agent Received Date')}</span>
-
-            </div>
-            <div class="dot">
-            </div>
-        </li>
-        <li id="send_node" class="li  {if $order->get('State Index')>=60}complete{/if} ">
-            <div class="label">
-                <span class="state" style="position:relative;left:5px">{t}Delivery{/t} <span></i></span></span>
-            </div>
-            <div class="timestamp">
-			<span class="Deliveries_Public_IDs"
-                  style="position:relative;left:5px">&nbsp;{foreach from=$deliveries item=dn name=deliveries}
-                <span i
-                      class="{if $smarty.foreach.deliveries.index != 0}hide{/if} index_{$smarty.foreach.deliveries.index}">{$dn->get('Public ID')}</span>
-                {/foreach}&nbsp;</span>
-            </div>
-            <div class="dot">
-            </div>
-        </li>
-
-    </ul>
-</div>
 <div class="timeline_horizontal  {if $order->get('Purchase Order State')!='Cancelled'}hide{/if}">
     <ul class="timeline" id="timeline">
         <li id="submitted_node" class="li complete">
@@ -213,7 +154,7 @@
 </div>
 
 <div class="order" style="display: flex;" data-object="{$object_data}">
-    <div style=" align-items: stretch;flex: 1" class="block {if $order->get('Purchase Order Agent Key')}hide{/if}">
+    <div style=" align-items: stretch;flex: 1" class="block ">
         <div class="data_container" style="padding:5px 10px">
             <div class="data_field">
                 <i class="fa fa-ship fa-fw" aria-hidden="true" title="{t}Supplier{/t}"></i> <span
@@ -236,29 +177,7 @@
         <div style="clear:both">
         </div>
     </div>
-    <div style=" align-items: stretch;flex: 1" class="block {if !$order->get('Purchase Order Agent Key')}hide{/if}">
-        <div class="data_container" style="padding:5px 10px">
-            <div class="data_field">
-                <i class="fa fa-user-secret fa-fw" aria-hidden="true" title="{t}Agent{/t}"></i> <span
-                        onclick="change_view('/agent/{$order->get('Purchase Order Agent Key')}')"
-                        class="link Agent_Name">{$order->get('Agent Name')}</span>
-            </div>
-            <div class="data_field">
-                <i class="fa fa-share fa-fw" aria-hidden="true" title="Incoterm"></i> <span
-                        class="Purchase_Order_Incoterm">{$order->get('Purchase Order Incoterm')}</span>
-            </div>
-            <div class="data_field">
-                <i class="fa fa-arrow-circle-right fa-fw" aria-hidden="true" title="{t}Port of export{/t}"></i> <span
-                        class="Purchase_Order_Port_of_Export">{$order->get('Port of Export')}</span>
-            </div>
-            <div class="data_field">
-                <i class="fa fa-arrow-circle-left fa-fw" aria-hidden="true" title="{t}Port of import{/t}"></i> <span
-                        class="Purchase_Order_Port_of_Import">{$order->get('Port of Import')}</span>
-            </div>
-        </div>
-        <div style="clear:both">
-        </div>
-    </div>
+
 
 
     <div class="block " style="align-items: stretch;flex: 1;padding-top: 0px">
@@ -424,7 +343,7 @@
             <span style="float:left;padding-left:10px;padding-top:5px" class="very_discreet italic"><i class="fa fa-truck" aria-hidden="true"></i> {t}Delivery{/t}</span>
             <div id="forward_operations">
                 <div id="received_operations"
-                     class="order_operation {if !(   $order->get('Purchase Order State')=='Submitted' or  $order->get('Purchase Order State')=='SubmittedAgent' or  $order->get('Purchase Order State')=='Send') }hide{/if}">
+                     class="order_operation {if !(   $order->get('Purchase Order State')=='Submitted'  or  $order->get('Purchase Order State')=='Send') }hide{/if}">
                     <div class="square_button right" style="padding:0;margin:0;position:relative;top:0px"
                          title="{t}Input delivery note{/t}">
                         <i class="fa fa-plus" aria-hidden="true" onclick="show_create_delivery()"></i>

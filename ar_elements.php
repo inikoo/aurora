@@ -2161,7 +2161,7 @@ function get_supplier_orders_elements($db, $data) {
         foreach ($result as $row) {
 
 
-            if ($row['element'] == 'Submitted' or $row['element'] == 'SubmittedAgent' or $row['element'] == 'Inputted' or $row['element'] == 'Dispatched') {
+            if ($row['element'] == 'Submitted'  or $row['element'] == 'Inputted' or $row['element'] == 'Dispatched') {
                 $element = 'SubmittedInputtedDispatched';
             } elseif ($row['element'] == 'Received' or $row['element'] == 'Checked') {
                 $element = 'ReceivedChecked';
@@ -2200,17 +2200,12 @@ function get_agent_orders_elements($db, $data) {
 
     switch ($data['parent']) {
         case 'supplier':
-            $table = '`Purchase Order Dimension` O';
-            $where = sprintf('where  `Purchase Order Parent`="Supplier" and `Purchase Order Parent Key`=%d and `Purchase Order Agent Key`>0', $parent_key);
-            break;
+
         case 'agent':
             $table = '`Purchase Order Dimension` O';
             $where = sprintf('where  `Purchase Order Parent`="Agent" and `Purchase Order Parent Key`=%d', $parent_key);
             break;
-        case 'account':
-            $table = '`Purchase Order Dimension` O';
-            $where = sprintf('where  `Purchase Order Agent Key`>0');
-            break;
+
         default:
             exit ($data['parent']);
             break;
@@ -2223,7 +2218,7 @@ function get_agent_orders_elements($db, $data) {
     $elements_numbers = array(
         'state' => array(
             'InProcess'       => 0,
-            'SubmittedAgent'  => 0,
+            'Submitted'  => 0,
             'InTransit'       => 0,
             'ReceivedChecked' => 0,
             'Placed'          => 0,
@@ -2241,8 +2236,8 @@ function get_agent_orders_elements($db, $data) {
     if ($result = $db->query($sql)) {
         foreach ($result as $row) {
 
-            if ($row['element'] == 'Submitted' or $row['element'] == 'SubmittedAgent') {
-                $element = 'SubmittedAgent';
+            if ($row['element'] == 'Submitted' ) {
+                $element = 'Submitted';
             } elseif ($row['element'] == 'Dispatched') {
                 $element = 'InTransit';
             } elseif ($row['element'] == 'Received' or $row['element'] == 'Checked') {
@@ -2293,18 +2288,12 @@ function get_agent_client_orders_elements($db, $data, $user) {
 
 
     switch ($data['parent']) {
-        case 'supplier':
-            $table = '`Purchase Order Dimension` O';
-            $where = sprintf('where  `Purchase Order Parent`="Supplier" and `Purchase Order Parent Key`=%d and `Purchase Order Agent Key`=%d', $parent_key, $agent_key);
-            break;
+
         case 'Agent':
             $table = '`Purchase Order Dimension` O';
             $where = sprintf('where  `Purchase Order Parent`="Agent" and `Purchase Order Parent Key`=%d ', $parent_key, $agent_key);
             break;
-        case 'account':
-            $table = '`Purchase Order Dimension` O';
-            $where = sprintf('where  `Purchase Order Agent Key`=%d', $agent_key);
-            break;
+
         default:
             exit ($data['parent']);
             break;

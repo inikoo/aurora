@@ -20,6 +20,7 @@ $_product = array(
         'product.sales.info'        => 'product.sales',
         'product.customers'         => 'product.customers',
         'product.customers.favored' => 'product.customers',
+        'product.back_to_stock_notification_request.customers'=> 'product.customers',
         'product.webpage.settings'  => 'product.webpage',
         'webpage.preview'           => 'product.webpage',
         //  'product.webpage.analytics'      => 'product.webpage',
@@ -110,6 +111,7 @@ $_product = array(
             'subtabs'       => array(
                 'product.customers'         => array(
                     'label'         => _('Customers'),
+                    'icon'=>'user',
                     'quantity_data' => array(
                         'object' => '_object',
                         'field'  => 'Number Customers'
@@ -117,9 +119,19 @@ $_product = array(
                 ),
                 'product.customers.favored' => array(
                     'label'         => _('Customers who favored'),
+                    'icon'=>'heart',
                     'quantity_data' => array(
                         'object' => '_object',
                         'field'  => 'Number Customers Favored'
+                    ),
+
+                ),
+                'product.back_to_stock_notification_request.customers' => array(
+                    'label'         => _('Back to stock notification requests'),
+                    'icon'=>'dolly',
+                    'quantity_data' => array(
+                        'object' => '_object',
+                        'field'  => 'Number Customers OOS Notification'
                     ),
 
                 ),
@@ -2858,9 +2870,9 @@ $modules = array(
                         'icon'  => 'cube',
 
                     ),
-                    'back_to_stock_notification_request'       => array(
+                    'back_to_stock_notification_request.products'       => array(
                         'label' => _('Back in stock notification requests'),
-                        'icon'  => 'envelope',
+                        'icon'  => 'dolly',
 
                     ),
                 )

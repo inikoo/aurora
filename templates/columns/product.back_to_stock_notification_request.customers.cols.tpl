@@ -1,7 +1,7 @@
 {*/*
  About:
  Author: Raul Perusquia <raul@inikoo.com>
- Created: 27 August 2018 at 21:35:20 GMT+8, Kuala Lumpur, Malaysia
+ Created: 27 August 2018 at 21:59:18 GMT+8, Kuala Lumpur, Malaysia
  Copyright (c) 2018, Inikoo
 
  Version 3
@@ -25,7 +25,19 @@ sortType: "toggle",
 cell: Backgrid.HtmlCell.extend({ })
 
 
-},  {
+}, 
+
+{
+name: "activity",
+label: "{t}Status{/t}",
+editable: false,
+sortType: "toggle",
+{if $sort_key=='activity'}direction: '{if $sort_order==1}descending{else}ascending{/if}',{/if}
+
+cell: "string"
+}
+,
+ {
 name: "name",
 label: "{t}Name{/t}",
 sortType: "toggle",
@@ -45,51 +57,17 @@ sortType: "toggle",
 editable: false,
 
 cell: "html"
-}, {
-name: "activity",
-label: "{t}Status{/t}",
-editable: false,
-sortType: "toggle",
-{if $sort_key=='activity'}direction: '{if $sort_order==1}descending{else}ascending{/if}',{/if}
-
-cell: "string"
-}, {
-name: "orders",
-label: "{t}Orders{/t}",
-editable: false,
-defaultOrder:1,
-sortType: "toggle",
-{if $sort_key=='orders'}direction: '{if $sort_order==1}descending{else}ascending{/if}',{/if}
-
-cell: Backgrid.HtmlCell.extend({ className: "aright"} ),
-headerCell: integerHeaderCell
-
-},
- {
-name: "invoices",
-label: "{t}Invoices{/t}",
-editable: false,
-defaultOrder:1,
-sortType: "toggle",
-{if $sort_key=='invoices'}direction: '{if $sort_order==1}descending{else}ascending{/if}',{/if}
-
-cell: Backgrid.HtmlCell.extend({ className: "aright"} ),
-headerCell: integerHeaderCell
-
 },
 {
-name: "amount",
-label: "{t}Amount{/t}",
+name: "date",
+label: "{t}Requested date{/t}",
 editable: false,
 defaultOrder:1,
 sortType: "toggle",
-{if $sort_key=='invoices'}direction: '{if $sort_order==1}descending{else}ascending{/if}',{/if}
-
+{if $sort_key=='date'}direction: '{if $sort_order==1}descending{else}ascending{/if}',{/if}
 cell: Backgrid.HtmlCell.extend({ className: "aright"} ),
 headerCell: integerHeaderCell
-
 }
-
 
 ]
 

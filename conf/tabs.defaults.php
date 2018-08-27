@@ -915,6 +915,16 @@ $tab_defaults = array(
         'export_fields' => $export_fields['products']
 
     ),
+    'back_to_stock_notification_request.products' => array(
+        'view'          => 'overview',
+        'sort_key'      => 'id',
+        'sort_order'    => 1,
+        'rpp'           => 100,
+        'rpp_options'   => $default_rrp_options,
+        'f_field'       => 'code',
+
+
+    ),
 
     'store.services'        => array(
         'view'          => 'overview',
@@ -1020,8 +1030,18 @@ $tab_defaults = array(
         'rpp'           => 100,
         'rpp_options'   => $default_rrp_options,
         'f_field'       => 'name',
-        'elements_type' => each($elements_options['customers']) ['key'],
-        'elements'      => $elements_options['customers'],
+
+        'export_fields' => $export_fields['customers']
+
+    ),
+    'product.back_to_stock_notification_request.customers' => array(
+        'view'          => 'overview',
+        'sort_key'      => 'formatted_id',
+        'sort_order'    => 1,
+        'rpp'           => 100,
+        'rpp_options'   => $default_rrp_options,
+        'f_field'       => 'name',
+
         'export_fields' => $export_fields['customers']
 
     ),

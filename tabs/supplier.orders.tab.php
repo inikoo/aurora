@@ -42,22 +42,6 @@ if ($state['_object']->get('Supplier Type') != 'Archived') {
 
     if($state['_object']->get('Supplier Has Agent')=='Yes'){
 
-        foreach($state['_object']->get_agents_data() as $agent_data){
-            $table_buttons[] = array(
-                'icon'  => 'plus',
-                'title' => sprintf(_('New purchase order using %s agent'),$agent_data['Agent Name']),
-                'id'    => 'new_purchase_order',
-                'attr'  => array(
-                    'parent'     => $state['object'],
-                    'parent_key' => $state['key'],
-
-                    'agent_key' => $agent_data['Agent Key'])
-                );
-
-
-
-        }
-
 
     }else{
         $table_buttons[] = array(

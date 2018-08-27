@@ -46,6 +46,12 @@ switch ($tipo) {
     case 'products':
         products(get_table_parameters(), $db, $user, $account);
         break;
+    case 'back_to_stock_notification_request.products':
+        back_to_stock_notification_request_products(get_table_parameters(), $db, $user, $account);
+        break;
+    case 'back_to_stock_notification_request.customers':
+        back_to_stock_notification_request_customers(get_table_parameters(), $db, $user, $account);
+        break;
     case 'services':
         services(get_table_parameters(), $db, $user);
         break;
@@ -77,6 +83,10 @@ switch ($tipo) {
     case 'shipping_options':
         shipping_options(get_table_parameters(), $db, $user);
         break;
+    case 'customers':
+        customers(get_table_parameters(), $db, $user);
+        break;
+
     default:
         $response = array(
             'state' => 405,
@@ -679,7 +689,7 @@ function sales_history($_data, $db, $user, $account) {
 
     switch ($_data['parameters']['parent']) {
         case 'product':
-            $product    = get_object('Product', $_data['parameters']['parent_key']);
+            $product = get_object('Product', $_data['parameters']['parent_key']);
             //$store      = get_object('Store', $product->get('Product Store Key'));
             $currency   = $product->get('Product Currency');
             $from       = $product->get('Product Valid From');
@@ -719,8 +729,6 @@ function sales_history($_data, $db, $user, $account) {
             exit('parent not configured');
             break;
     }
-
-
 
 
     $sql_totals = sprintf(
@@ -1482,5 +1490,291 @@ function shipping_zones($_data, $db, $user) {
     echo json_encode($response);
 }
 
+
+function back_to_stock_notification_request_products($_data, $db, $user, $account) {
+
+
+    include_once 'utils/currency_functions.php';
+
+    $rtext_label = 'product';
+
+
+    include_once 'prepare_table/init.php';
+
+    $sql         = "select $fields from $table $where $wheref $group_by order by $order $order_direction limit $start_from,$number_results";
+    $record_data = array();
+
+    $record_data = array();
+    if ($result = $db->query($sql)) {
+
+        foreach ($result as $data) {
+
+            switch ($data['Product Web State']) {
+                case 'For Sale':
+                    $web_state = '<span class="'.(($data['Product Availability'] <= 0 and $data['Product Number of Parts'] > 0) ? 'error' : '').'">'._('Online').'</span>'.($data['Product Web Configuration'] == 'Online Force For Sale'
+                            ? ' <i class="fa fa-thumb-tack padding_left_5" aria-hidden="true"></i>' : '');
+                    break;
+                case 'Out of Stock':
+
+
+                        $web_state = '<span  class="'.(($data['Product Availability'] > 0 and $data['Product Number of Parts'] > 0) ? 'error' : '').'">'._('Out of Stock').'</span>'.($data['Product Web Configuration'] == 'Online Force Out of Stock'
+                                ? ' <i class="fa fa-thumb-tack padding_left_5" aria-hidden="true"></i>' : '');
+
+
+
+                    break;
+                case 'Discontinued':
+                    $web_state = _('Discontinued');
+                    break;
+                case 'Offline':
+
+                    if ($data['Product Status'] != 'Active') {
+                        $web_state = _('Offline');
+                    } else {
+
+                        $web_state = '<span class="'.(($data['Product Availability'] > 0 and $data['Product Number of Parts'] > 0) ? 'error' : '').'">'._('Offline').'</span>'.($data['Product Status'] == 'Active'
+                                ? ' <i class="fa fa-thumb-tack padding_left_5" aria-hidden="true"></i>' : '');
+                    }
+                    break;
+                default:
+                    $web_state = $data['Product Web State'];
+                    break;
+            }
+
+
+            switch ($data['Product Status']) {
+                case 'Active':
+                    $status = sprintf('<i class="fa fa-cube" aria-hidden="true" title="%s"></i>', _('Active'));
+                    break;
+                case 'Suspended':
+                    $status = sprintf('<i class="fa fa-cube warning" aria-hidden="true" title="%s"></i>', _('Suspended'));
+                    break;
+                case 'Discontinuing':
+                    $status = sprintf('<i class="fa fa-cube warning very_discreet" aria-hidden="true" title="%s"></i>', _('Discontinuing'));
+                    break;
+                case 'Discontinued':
+                    $status = sprintf('<i class="fa fa-cube very_discreet" aria-hidden="true" title="%s"></i>', _('Discontinued'));
+                    break;
+                case 'Suspended':
+                    $status = sprintf('<i class="fa fa-cube error" aria-hidden="true" title="%s"></i>', _('Suspended'));
+                    break;
+                default:
+                    $status = $data['Product Status'];
+                    break;
+            }
+
+
+            $name = '<span >'.$data['Product Units Per Case'].'</span>x <span>'.$data['Product Name'].'</span>';
+
+            $code = sprintf('<span class="link" onClick="change_view(\'products/%d/%d\')" title="%s">%s</span>', $data['Store Key'], $data['Product ID'], $name, $data['Product Code']);
+
+
+            $record_data[] = array(
+
+                'id'     => (integer)$data['Product ID'],
+                'code'   => $code,
+                'name'   => $name,
+                'status' => $status,
+                'web_state' => $web_state,
+                'customers' => sprintf('<span>%s</span>', number($data['customers']))
+
+
+            );
+
+
+        }
+
+    } else {
+        print "$sql\n";
+        print_r($error_info = $db->errorInfo());
+        exit;
+    }
+
+
+    $response = array(
+        'resultset' => array(
+            'state'         => 200,
+            'data'          => $record_data,
+            'rtext'         => $rtext,
+            'sort_key'      => $_order,
+            'sort_dir'      => $_dir,
+            'total_records' => $total
+
+        )
+    );
+    echo json_encode($response);
+}
+
+
+function customers($_data, $db, $user) {
+
+    $rtext_label = 'customer';
+
+
+    include_once 'prepare_table/init.php';
+
+    $sql = "select  $fields from $table $where $wheref $group_by order by $order $order_direction limit $start_from,$number_results";
+
+
+    $adata = array();
+
+    if ($result = $db->query($sql)) {
+
+        foreach ($result as $data) {
+
+
+            switch ($data['Customer Type by Activity']) {
+                case 'ToApprove':
+                    $activity = _('To be approved');
+                    break;
+                case 'Inactive':
+                    $activity = _('Lost');
+                    break;
+                case 'Active':
+                    $activity = _('Active');
+                    break;
+                case 'Prospect':
+                    $activity = _('Prospect');
+                    break;
+                default:
+                    $activity = $data['Customer Type by Activity'];
+                    break;
+            }
+
+
+            $link_format = '/'.$parameters['parent'].'/%d/customer/%d';
+
+            $formatted_id = sprintf('<span class="link" onClick="change_view(\''.$link_format.'\')">%06d</span>', $parameters['parent_key'], $data['Customer Key'], $data['Customer Key']);
+
+
+            $adata[] = array(
+                'id'           => (integer)$data['Customer Key'],
+                'store_key'    => $data['Customer Store Key'],
+                'formatted_id' => $formatted_id,
+
+                'name' => $data['Customer Name'],
+
+                'location' => $data['Customer Location'],
+                'activity' => $activity,
+                'invoices' => number($data['invoices']),
+                'orders'   => number($data['orders']),
+                'amount'   => money($data['amount'], $data['Store Currency Code'])
+
+
+            );
+        }
+
+    } else {
+        print_r($error_info = $db->errorInfo());
+        print "$sql\n";
+        exit;
+    }
+
+
+    $response = array(
+        'resultset' => array(
+            'state'         => 200,
+            'data'          => $adata,
+            'rtext'         => $rtext,
+            'sort_key'      => $_order,
+            'sort_dir'      => $_dir,
+            'total_records' => $total
+
+        )
+    );
+    echo json_encode($response);
+}
+
+
+function back_to_stock_notification_request_customers($_data, $db, $user) {
+
+    $rtext_label = 'back to stock request';
+
+
+    include_once 'prepare_table/init.php';
+
+    $sql = "select  $fields from $table $where $wheref $group_by order by $order $order_direction limit $start_from,$number_results";
+
+
+    $adata = array();
+
+    if ($result = $db->query($sql)) {
+
+        foreach ($result as $data) {
+
+
+            switch ($data['Back in Stock Reminder State']) {
+                case 'Waiting':
+                    $state = _('Waiting');
+                    break;
+                case 'Ready':
+                    $state = _('Ready');
+                    break;
+
+                default:
+                    $state = $data['Back in Stock Reminder State'];
+                    break;
+            }
+
+
+            switch ($data['Customer Type by Activity']) {
+                case 'ToApprove':
+                    $activity = _('To be approved');
+                    break;
+                case 'Inactive':
+                    $activity = _('Lost');
+                    break;
+                case 'Active':
+                    $activity = _('Active');
+                    break;
+                case 'Prospect':
+                    $activity = _('Prospect');
+                    break;
+                default:
+                    $activity = $data['Customer Type by Activity'];
+                    break;
+            }
+
+
+            $link_format = '/'.$parameters['parent'].'/%d/customer/%d';
+
+            $formatted_id = sprintf('<span class="link" onClick="change_view(\''.$link_format.'\')">%06d</span>', $parameters['parent_key'], $data['Customer Key'], $data['Customer Key']);
+
+
+            $adata[] = array(
+                'id'           => (integer)$data['Customer Key'],
+                'store_key'    => $data['Customer Store Key'],
+                'formatted_id' => $formatted_id,
+
+                'name' => $data['Customer Name'],
+
+                'location' => $data['Customer Location'],
+                'activity' => $activity,
+                'date'     => strftime("%a %e %b %Y %H:%M %Z", strtotime($data['Back in Stock Reminder Creation Date'].' +0:00')),
+                'state'    => $state,
+
+            );
+        }
+
+    } else {
+        print_r($error_info = $db->errorInfo());
+        print "$sql\n";
+        exit;
+    }
+
+
+    $response = array(
+        'resultset' => array(
+            'state'         => 200,
+            'data'          => $adata,
+            'rtext'         => $rtext,
+            'sort_key'      => $_order,
+            'sort_dir'      => $_dir,
+            'total_records' => $total
+
+        )
+    );
+    echo json_encode($response);
+}
 
 ?>

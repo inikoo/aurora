@@ -59,32 +59,7 @@ class SubjectSupplier extends Subject {
 
         );
 
-        if (array_key_exists('agent_key', $_data) and $_data['agent_key']) {
-            include_once 'class.Agent.php';
-            $agent = new Agent($_data['agent_key']);
-            if ($agent->id) {
-                $order_data['Purchase Order Agent Key']  = $agent->id;
-                $order_data['Purchase Order Agent Data'] = json_encode(
-                    array(
-                        'Agent Name'         => $agent->get('Name'),
-                        'Agent Code'         => $agent->get('Code'),
-                        'Agent Contact Name' => $agent->get('Main Contact Name'),
-                        'Agent Email'        => $agent->get('Main Plain Email'),
-                        'Agent Telephone'    => $agent->get('Preferred Contact Number Formatted Number'),
-                        'Agent Address'      => $agent->get('Contact Address Formatted'),
 
-                    )
-
-                );
-
-            } else {
-                $this->error = true;
-                $this->msg   = _('Agent not found');
-
-            }
-
-
-        }
 
 
         if ($this->get('Show Warehouse TC in PO') == 'Yes') {

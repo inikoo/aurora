@@ -11,6 +11,7 @@ function show_create_delivery() {
 
 
         if (state.tab == 'supplier.order.items') {
+
             grid.columns.findWhere({
                 name: 'checkbox'
             }).set("renderable", true)
@@ -22,6 +23,8 @@ function show_create_delivery() {
             grid.columns.findWhere({
                 name: 'delivery_quantity'
             }).set("renderable", true)
+
+
         } else {
 
             change_tab('supplier.order.items', {

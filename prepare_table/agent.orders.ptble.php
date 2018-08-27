@@ -19,18 +19,7 @@ $currency = '';
 $where = 'where true ';
 $table = '`Purchase Order Dimension` O';
 
-if ($parameters['parent'] == 'account') {
-
-    $where = sprintf(
-        'where  `Purchase Order Agent Key`>0  '
-    );
-
-
-} elseif ($parameters['parent'] == 'supplier') {
-    $where = sprintf(
-        'where  `Purchase Order Parent`="Supplier" and `Purchase Order Parent Key`=%d and  `Purchase Order Agent Key`>0  ', $parameters['parent_key']
-    );
-} elseif ($parameters['parent'] == 'agent') {
+if ($parameters['parent'] == 'agent') {
     $where = sprintf(
         'where  `Purchase Order Parent`="Agent" and `Purchase Order Parent Key`=%d    ', $parameters['parent_key']
     );
@@ -38,7 +27,7 @@ if ($parameters['parent'] == 'account') {
     $table
            = ' `Purchase Order Transaction Fact` POTF  left join  `Purchase Order Dimension` O on (POTF.`Purchase Order Key`=O.`Purchase Order Key`) ';
     $where = sprintf(
-        'where `Supplier Part Key`=%d and  `Purchase Order Agent Key`>0  ', $parameters['parent_key']
+        'where `Supplier Part Key`=%d and   `Purchase Order Parent`="Agent" ', $parameters['parent_key']
     );
 } elseif ($parameters['parent'] == 'part') {
     $table
@@ -48,7 +37,7 @@ if ($parameters['parent'] == 'account') {
 	 left join  `Part Dimension` P on (P.`Part SKU`=SP.`Supplier Part Part SKU`)
 
 	 ';
-    $where = sprintf('where `Part SKU`=%d and  `Purchase Order Agent Key`>0  ', $parameters['parent_key']);
+    $where = sprintf('where `Part SKU`=%d and   `Purchase Order Parent`="Agent"  ', $parameters['parent_key']);
 } else {
     exit("unknown parent :".$parameters['parent']." \n");
 }
@@ -83,7 +72,7 @@ if (isset($parameters['elements_type'])) {
 
 
                     if ($_key == 'SubmittedInputtedDispatched') {
-                        $_elements .= ",'Submitted','SubmittedAgent','Inputted','Dispatched'";
+                        $_elements .= ",'Submitted','Inputted','Dispatched'";
                     } elseif ($_key == 'ReceivedChecked') {
                         $_elements .= ",'Received','Checked'";
                     } else {
@@ -173,7 +162,7 @@ if ($order == 'public_id') {
 }
 
 $fields
-    = '`Purchase Order Agent Key`,`Purchase Order Parent`,`Purchase Order Parent Key`,O.`Purchase Order Key`,`Purchase Order State`,`Purchase Order Public ID`,O.`Purchase Order Last Updated Date`,`Purchase Order Creation Date`,
+    = '`Purchase Order Parent`,`Purchase Order Parent Key`,O.`Purchase Order Key`,`Purchase Order State`,`Purchase Order Public ID`,O.`Purchase Order Last Updated Date`,`Purchase Order Creation Date`,
 `Purchase Order Parent Code`,`Purchase Order Parent Name`,`Purchase Order Total Amount`,`Purchase Order Currency Code`
 ';
 

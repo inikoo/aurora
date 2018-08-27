@@ -7,6 +7,21 @@ cell: "integer",
 renderable: false
 
 
+}
+,{
+name: "checkbox",
+renderable:false,
+label: "",
+editable: false,
+cell: Backgrid.HtmlCell.extend({ className: "width_20"} ),
+
+},{
+name: "operations",
+renderable:false,
+label: "",
+editable: false,
+cell: Backgrid.HtmlCell.extend({ className: "width_20"} ),
+
 },
 {
 name: "reference",
@@ -172,6 +187,16 @@ defaultOrder:1,
 editable: false,
 sortType: "state",
 {if $sort_key=='amount'}direction: '{if $sort_order==1}descending{else}ascending{/if}',{/if}
+cell: Backgrid.HtmlCell.extend({ className: "aright"} ),
+headerCell: integerHeaderCell
+}, {
+name: "delivery_quantity",
+label: "{t}Delivery{/t}",
+renderable: false,
+defaultOrder:1,
+editable: false,
+sortType: "toggle",
+{if $sort_key=='delivery_quantity'}direction: '{if $sort_order==1}descending{else}ascending{/if}',{/if}
 cell: Backgrid.HtmlCell.extend({ className: "aright"} ),
 headerCell: integerHeaderCell
 }

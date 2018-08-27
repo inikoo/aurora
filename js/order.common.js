@@ -513,7 +513,6 @@ function save_order_operation(element) {
                 if (field == 'Purchase Order State') {
 
                     console.log(state.tab)
-                    'InProcess','SubmittedAgent','Submitted', 'Editing_Submitted', 'Inputted','Dispatched','Received','Checked','Placed','Cancelled'
 
                     if (data.value == 'InProcess') {
                         $('#create_delivery').addClass('hide')

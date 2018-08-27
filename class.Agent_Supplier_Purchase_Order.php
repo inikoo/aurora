@@ -276,13 +276,7 @@ left join `Supplier Part Historic Dimension` SPH on (POTF.`Supplier Part Histori
         $operations = array();
 
 
-        if ($value == 'Submitted' and $this->get('Agent Supplier Purchase Order Agent Key')) {
-            if ($old_value == 'InProcess') {
-                $value = 'SubmittedAgent';
 
-            }
-
-        }
 
 
         if ($old_value != $value) {

@@ -2,17 +2,17 @@
 /*
  About:
  Author: Raul Perusquia <raul@inikoo.com>
- Created: 18 April 2017 at 12:08:23 GMT+8, Cyberjaya, Malaysia
- Copyright (c) 2015, Inikoo
+ Created: 27 August 2018 at 21:56:30 GMT+8, Kuala Lumper, Malaysia
+ Copyright (c) 2018, Inikoo
 
  Version 3
 
 */
 
 
-$tab     = 'product.customers';
+$tab     = 'product.back_to_stock_notification_request.customers';
 $ar_file = 'ar_products_tables.php';
-$tipo    = 'customers';
+$tipo    = 'back_to_stock_notification_request.customers';
 
 $default = $user->get_tab_defaults($tab);
 
