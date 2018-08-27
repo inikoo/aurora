@@ -4527,7 +4527,11 @@ $modules = array(
                         'label' => '',
                         'title' => _('Attachments'),
                         'icon'  => 'paperclip',
-                        'class' => 'right icon_only'
+                        'class' => 'right icon_only',
+                        'quantity_data' => array(
+                            'object' => '_object',
+                            'field'  => 'Number Attachments'
+                        ),
                     ),
                 )
 
@@ -6509,7 +6513,11 @@ $modules = array(
                             'Attachments'
                         ),
                         'icon'  => 'paperclip',
-                        'class' => 'right icon_only'
+                        'class' => 'right icon_only',
+                        'quantity_data' => array(
+                            'object' => '_object',
+                            'field'  => 'Number Attachments'
+                        ),
                     ),
 
 
@@ -7638,7 +7646,11 @@ $modules = array(
                     'supplier.attachments' => array(
                         'label' => _('Attachments'),
                         'icon'  => 'paperclip',
-                        'class' => 'right icon_only'
+                        'class' => 'right icon_only',
+                        'quantity_data' => array(
+                            'object' => '_object',
+                            'field'  => 'Number Attachments'
+                        ),
                     ),
 
                 )
