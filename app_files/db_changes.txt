@@ -918,6 +918,10 @@ ALTER TABLE `Product Category History Bridge` CHANGE `Type` `Type` ENUM('Changes
 ALTER TABLE `Category Dimension` ADD `Category Number History Records` MEDIUMINT UNSIGNED NOT NULL DEFAULT '0' AFTER `Category Main Image Key`;
 
 
+ALTER TABLE `Supplier Delivery Dimension` CHANGE `Supplier Delivery State` `Supplier Delivery State` ENUM('InProcess','Consolidated','Dispatched','Received','Checked','Placed','Cancelled') CHARACTER SET utf8 COLLATE utf8_general_ci NOT NULL DEFAULT 'InProcess';
+ALTER TABLE `Supplier Delivery Dimension` ADD `Supplier Delivery Consolidated Date` DATETIME NULL DEFAULT NULL AFTER `Supplier Delivery Creation Date`;
+
+
 ======= fer migration ordering in dw and costa
 
                     ALTER TABLE `Invoice Tax Dimension` ADD `Invoice Tax Key` INT UNSIGNED NOT NULL AUTO_INCREMENT FIRST, ADD PRIMARY KEY (`Invoice Tax Key`);

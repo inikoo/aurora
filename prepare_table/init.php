@@ -69,7 +69,9 @@ if (isset($_data['parameters']['invoices_null']) ) {
 
 //print_r($_SESSION['table_state']['intrastat']);
 
+
 include_once 'prepare_table/'.$_data['parameters']['tab'].'.ptble.php';
+
 
 
 if (!isset($skip_get_table_totals)) {

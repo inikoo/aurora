@@ -77,6 +77,8 @@ function get_supplier_order_showcase($data, $smarty, $user, $db) {
         if ($user->get('User Type') == 'Staff' or $user->get('User Type') == 'Contractor') {
             return $smarty->fetch('showcase/supplier.order.tpl');
         } elseif ($user->get('User Type') == 'Agent') {
+
+           // $data['_object']->create_agent_supplier_purchase_orders();
             return $smarty->fetch('showcase/client_order.tpl');
         }
     }

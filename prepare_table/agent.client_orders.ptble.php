@@ -23,13 +23,13 @@ if ($parameters['parent'] == 'supplier') {
     $where = sprintf(
         'where  `Purchase Order Parent`="Supplier" and `Purchase Order Parent Key`=%d and `Purchase Order Agent Key`=%d ', $parameters['parent_key'],$parameters['agent_key']
     );
-}elseif ($parameters['parent'] == 'agent') {
+}elseif ($parameters['parent'] == 'Agent') {
     $where = sprintf(
-        'where  `Purchase Order Parent`="Agent" and `Purchase Order Parent Key`=%d ', $parameters['parent_key'],$parameters['agent_key']
+        'where  `Purchase Order Parent`="Agent" and `Purchase Order Parent Key`=%d ', $parameters['parent_key']
     );
 } elseif ($parameters['parent'] == 'account') {
     $where = sprintf(
-        'where `Purchase Order Agent Key`=%d ', $parameters['agent_key']
+        'where  `Purchase Order Parent`="Agent" and `Purchase Order Parent Key`=%d ', $parameters['parent_key']
     );
 } elseif ($parameters['parent'] == 'supplier_part') {
     $table
@@ -164,13 +164,17 @@ if ($order == 'public_id') {
     $order = 'O.`Purchase Order State`';
 } elseif ($order == 'total_amount') {
     $order = 'O.`Purchase Order Total Amount`';
-} else {
+} elseif ($order == 'items') {
+    $order = 'O.`Purchase Order Number Items`';
+}  elseif ($order == 'suppliers') {
+    $order = 'O.`Purchase Order Number Suppliers`';
+}  else {
     $order = 'O.`Purchase Order Key`';
 }
 
 $fields
     = '`Purchase Order Parent`,`Purchase Order Parent Key`,O.`Purchase Order Key`,`Purchase Order State`,`Purchase Order Public ID`,O.`Purchase Order Last Updated Date`,`Purchase Order Creation Date`,
-`Purchase Order Parent Code`,`Purchase Order Parent Name`,`Purchase Order Total Amount`,`Purchase Order Currency Code`
+`Purchase Order Parent Code`,`Purchase Order Parent Name`,`Purchase Order Total Amount`,`Purchase Order Currency Code`,`Purchase Order Number Items`,`Purchase Order Number Suppliers`
 ';
 
 $sql_totals

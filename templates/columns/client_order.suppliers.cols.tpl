@@ -20,15 +20,23 @@ renderable: false
 
 },
 {
-name: "code",
-label: "{t}Code{/t}",
+name: "order",
+label: "{t}Order{/t}",
 editable: false,
 cell: Backgrid.HtmlCell.extend({
 }),
 },
 {
-name: "name",
-label: "{t}Name{/t}",
+name: "supplier",
+label: "{t}Supplier{/t}",
+editable: false,
+cell: Backgrid.HtmlCell.extend({
+}),
+},
+
+{
+name: "state",
+label: "{t}State{/t}",
 editable: false,
 cell: Backgrid.HtmlCell.extend({
 }),
@@ -49,6 +57,19 @@ headerCell: integerHeaderCell
 
 
 {
+name: "problems",
+label: '<i class="fa fa-exclamation-circle error" ></i>',
+title: '{t}Items with problems{/t}',
+defaultOrder:1,
+editable: false,
+sortType: "toggle",
+{if $sort_key=='problems'}direction: '{if $sort_order==1}descending{else}ascending{/if}',{/if}
+cell: Backgrid.HtmlCell.extend({ className: "aright"} ),
+headerCell: rightHeaderHtmlCell,
+
+},
+
+{
 name: "amount",
 label: "{t}Total{/t}",
 defaultOrder:1,
@@ -57,7 +78,8 @@ sortType: "toggle",
 {if $sort_key=='amount'}direction: '{if $sort_order==1}descending{else}ascending{/if}',{/if}
 cell: Backgrid.HtmlCell.extend({ className: "aright"} ),
 headerCell: integerHeaderCell
-}
+},
+
 
 ]
 

@@ -10,7 +10,7 @@
 */
 
 $tab     = 'customer.marketing.products';
-$ar_file = 'ar_products_tables.php';
+$ar_file = 'ar_customers_tables.php';
 $tipo    = 'products';
 
 $default = $user->get_tab_defaults($tab);
@@ -18,13 +18,8 @@ $default = $user->get_tab_defaults($tab);
 
 $table_views = array(
     'overview' => array(
-        'label' => _('Overview'),
-        'title' => _('Overview')
-    ),
-    'sales'    => array(
-        'label' => _('Sales'),
-        'title' => _('Sales')
-    ),
+        'label' => _('Overview')),
+
 
 );
 

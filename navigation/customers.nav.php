@@ -24,8 +24,6 @@ function get_customers_navigation($data, $smarty, $user, $db) {
             break;
     }
 
-    $block_view = $data['section'];
-
 
     $left_buttons = array();
     if ($user->stores > 1) {
@@ -923,9 +921,6 @@ function get_customer_navigation($data, $smarty, $user, $db) {
     }
 
 
-    $block_view = $data['section'];
-
-
     $left_buttons  = array();
     $right_buttons = array();
 
@@ -1286,7 +1281,7 @@ function get_customer_navigation($data, $smarty, $user, $db) {
     //$right_buttons[]=array('icon'=>'edit', 'title'=>_('Edit customer'), 'url'=>'edit_customer.php?id='.$customer->id);
     //$right_buttons[]=array('icon'=>'sticky-note', 'title'=>_('History note'), 'id'=>'note');
     //$right_buttons[]=array('icon'=>'paperclip', 'title'=>_('Attachement'), 'id'=>'attach');
-    if($store->get('Store Version')>=2){
+    if ($store->get('Store Version') >= 2) {
         $right_buttons[] = array(
             'icon'  => 'shopping-cart',
             'title' => _('New order'),
@@ -1309,12 +1304,12 @@ function get_customer_navigation($data, $smarty, $user, $db) {
 
 
     //  {if $customer->get_image_src()} <img id="avatar" src="{$customer->get_image_src()}" style="cursor:pointer;border:1px solid #eee;height:45px;max-width:100px"> {else} <img id="avatar" src="/art/avatar.jpg" style="cursor:pointer;"> {/if} {if $customer->get('Customer Level Type')=='VIP'}<img src="/art/icons/shield.png" style="position:absolute;xtop:-36px;left:40px">{/if} {if $customer->get('Customer Level Type')=='Partner'}<img src="/art/icons/group.png" style="position:absolute;xtop:-36px;left:40px">{/if}
-   // $avatar = '<div class="square_button"></div>';
-   // $avatar = '<div class="square_button left"><img id="avatar" style="height:100%" src="/art/avatar.jpg" style="cursor:pointer;"> </div> ';
+    // $avatar = '<div class="square_button"></div>';
+    // $avatar = '<div class="square_button left"><img id="avatar" style="height:100%" src="/art/avatar.jpg" style="cursor:pointer;"> </div> ';
     $avatar = '';
 
 
-    $title='<span class="Customer_Level_Type_Icon">'.$customer->get('Level Type Icon').'</span>';
+    $title = '<span class="Customer_Level_Type_Icon">'.$customer->get('Level Type Icon').'</span>';
     $title .= '<span class="id"><span class="Customer_Name">'.$customer->get('Customer Name').'</span> ('.$customer->get_formatted_id().')</span>';
     if ($customer->get('Customer Type by Activity') == 'ToApprove') {
         $title .= ' <span class="error padding_left_10"><i class="far fa-exclamation-circle"></i> '._('To be approved').'</span>';
@@ -2156,8 +2151,7 @@ function get_email_campaign_navigation($data, $smarty, $user, $db, $account) {
 
         $title = _('Newsletter').' <span class="id Email_Campaign_Name">'.$object->get('Name').'</span>';
 
-    }
-    elseif ($data['section'] == 'email_campaign') {
+    } elseif ($data['section'] == 'email_campaign') {
 
         $title = _('Mailshot').' <span class="id Email_Campaign_Name">'.$object->get('Name').'</span>';
 
@@ -2203,7 +2197,6 @@ function get_email_campaign_navigation($data, $smarty, $user, $db, $account) {
 
 
         $sections = get_sections('customers', $data['_parent']->get('Store Key'));
-
 
 
     }
@@ -2587,7 +2580,6 @@ function get_new_prospect_navigation($data, $smarty, $user, $db) {
 }
 
 
-
 function get_new_prospect_compose_email_navigation($data, $smarty, $user, $db) {
 
 
@@ -2612,8 +2604,7 @@ function get_new_prospect_compose_email_navigation($data, $smarty, $user, $db) {
     $left_buttons[] = $up_button;
 
 
-
-    $title =  sprintf(_('New invitation for %s') ,'<span class="id">'.$data['_parent']->get('Name').'</span>');
+    $title = sprintf(_('New invitation for %s'), '<span class="id">'.$data['_parent']->get('Name').'</span>');
 
 
     $_content = array(
@@ -2638,9 +2629,7 @@ function get_new_prospect_compose_email_navigation($data, $smarty, $user, $db) {
 }
 
 
-
 function get_email_tracking_navigation($data, $smarty, $user, $db) {
-
 
 
     if (!$data['_parent']->id) {
@@ -2703,8 +2692,6 @@ function get_email_tracking_navigation($data, $smarty, $user, $db) {
         $_order_field_value = $data['_object']->get($order);
 
 
-
-
         $prev_title = '';
         $next_title = '';
         $prev_key   = 0;
@@ -2721,7 +2708,6 @@ function get_email_tracking_navigation($data, $smarty, $user, $db) {
 
                     prepare_mysql($_order_field_value), prepare_mysql($_order_field_value), $data['_object']->id
                 );
-
 
 
                 if ($result = $db->query($sql)) {
@@ -2741,8 +2727,7 @@ function get_email_tracking_navigation($data, $smarty, $user, $db) {
 	                and ($_order_field  > %s OR ($_order_field  = %s AND `Email Tracking Key` > %d))  order by $_order_field   , `Email Tracking Key`  limit 1", prepare_mysql($_order_field_value), prepare_mysql($_order_field_value), $data['_object']->id
                 );
 
-               // print $sql;
-
+                // print $sql;
 
 
                 if ($result = $db->query($sql)) {
@@ -2757,8 +2742,6 @@ function get_email_tracking_navigation($data, $smarty, $user, $db) {
                 }
 
 
-
-
                 if ($order_direction == 'desc') {
                     $_tmp1      = $prev_key;
                     $_tmp2      = $prev_title;
@@ -2769,8 +2752,6 @@ function get_email_tracking_navigation($data, $smarty, $user, $db) {
                 }
 
 
-
-
             }
         } else {
             print_r($error_info = $db->errorInfo());
@@ -2778,11 +2759,10 @@ function get_email_tracking_navigation($data, $smarty, $user, $db) {
         }
 
 
-
         switch ($data['parent']) {
             case 'customer':
 
-                $receiver=$data['_parent'];
+                $receiver    = $data['_parent'];
                 $placeholder = _('Search customers');
                 $sections    = get_sections('customers', $receiver->get('Store Key'));
 
@@ -2827,13 +2807,13 @@ function get_email_tracking_navigation($data, $smarty, $user, $db) {
 
                 }
 
-                $title =sprintf(_('Invitation email for %s'),'<span class="id">'.$receiver->get('Name').'</span>' );
+                $title = sprintf(_('Invitation email for %s'), '<span class="id">'.$receiver->get('Name').'</span>');
 
                 break;
 
             case 'prospect':
 
-                $receiver=$data['_parent'];
+                $receiver    = $data['_parent'];
                 $placeholder = _('Search prospects');
                 $sections    = get_sections('customers', $receiver->get('Store Key'));
 
@@ -2878,7 +2858,7 @@ function get_email_tracking_navigation($data, $smarty, $user, $db) {
 
                 }
 
-                $title =sprintf(_('Invitation email for %s'),'<span class="id">'.$receiver->get('Name').'</span>' );
+                $title = sprintf(_('Invitation email for %s'), '<span class="id">'.$receiver->get('Name').'</span>');
 
                 break;
 
@@ -2929,14 +2909,13 @@ function get_email_tracking_navigation($data, $smarty, $user, $db) {
                 }
 
 
-                $title =sprintf(_('Tracking email sent to %s'),'<span class="id">'.$data['_object']->get('Email Tracking Email').'</span>' );
-
+                $title = sprintf(_('Tracking email sent to %s'), '<span class="id">'.$data['_object']->get('Email Tracking Email').'</span>');
 
 
                 break;
             case 'mailshot':
 
-                $email_campaign_type= get_object('email_campaign_type',$data['_parent']->get('Email Campaign Email Template Type Key'));
+                $email_campaign_type = get_object('email_campaign_type', $data['_parent']->get('Email Campaign Email Template Type Key'));
 
 
                 $placeholder = _('Search emails');
@@ -2984,8 +2963,7 @@ function get_email_tracking_navigation($data, $smarty, $user, $db) {
                 }
 
 
-                $title =sprintf(_('Tracking email sent to %s'),'<span class="id">'.$data['_object']->get('Email Tracking Email').'</span>' );
-
+                $title = sprintf(_('Tracking email sent to %s'), '<span class="id">'.$data['_object']->get('Email Tracking Email').'</span>');
 
 
                 break;
@@ -2993,24 +2971,12 @@ function get_email_tracking_navigation($data, $smarty, $user, $db) {
         }
 
 
-
-
-
     }
-
-
 
 
     if (isset($sections[$_section])) {
         $sections[$_section]['selected'] = true;
     }
-
-
-
-
-
-
-
 
 
     $_content = array(
@@ -3033,8 +2999,6 @@ function get_email_tracking_navigation($data, $smarty, $user, $db) {
     return $html;
 
 }
-
-
 
 
 function get_prospects_new_template_navigation($data, $smarty, $user, $db) {
@@ -3085,7 +3049,7 @@ function get_prospects_new_template_navigation($data, $smarty, $user, $db) {
 
 }
 
-function get_prospects_email_template_navigation($data, $smarty, $user, $db){
+function get_prospects_email_template_navigation($data, $smarty, $user, $db) {
 
 
     $email_template = $data['_object'];
@@ -3252,7 +3216,6 @@ function get_prospects_email_template_navigation($data, $smarty, $user, $db){
     }
 
 
-
     if (isset($sections[$_section])) {
         $sections[$_section]['selected'] = true;
     }
@@ -3261,8 +3224,8 @@ function get_prospects_email_template_navigation($data, $smarty, $user, $db){
     $title = '<span class="id"><span class="Email Template_Name">'.$email_template->get('Email Template Name').'</span> </span>';
 
 
-    if($email_template->get('Email Template State')=='Suspended'){
-        $title.=' <span class="error small margin_left_10"><i class="fa fa-stop "></i> '._('Suspended').'</span>';
+    if ($email_template->get('Email Template State') == 'Suspended') {
+        $title .= ' <span class="error small margin_left_10"><i class="fa fa-stop "></i> '._('Suspended').'</span>';
     }
 
     $_content = array(
@@ -3285,8 +3248,6 @@ function get_prospects_email_template_navigation($data, $smarty, $user, $db){
     return $html;
 
 }
-
-
 
 
 function get_email_campaign_type_navigation($data, $smarty, $user, $db) {
@@ -3360,7 +3321,7 @@ function get_email_campaign_type_navigation($data, $smarty, $user, $db) {
                 if ($result = $db->query($sql)) {
                     if ($row = $result->fetch()) {
 
-//print $sql;
+                        //print $sql;
 
 
                         $prev_key   = $row['object_key'];
@@ -3460,8 +3421,6 @@ function get_email_campaign_type_navigation($data, $smarty, $user, $db) {
     }
 
 
-
-
     if (isset($sections[$_section])) {
         $sections[$_section]['selected'] = true;
     }
@@ -3469,13 +3428,7 @@ function get_email_campaign_type_navigation($data, $smarty, $user, $db) {
 
     $title = '<span ><i class="fa far fa-'.$email_campaign_type->get('Icon').'"></i>   '.$email_campaign_type->get('Label').'</span>';
 
-    $title .='<span class="Status_Label padding_left_10 small">'.$email_campaign_type->get('Status Label').'</span>';
-
-
-
-
-
-
+    $title .= '<span class="Status_Label padding_left_10 small">'.$email_campaign_type->get('Status Label').'</span>';
 
 
     $_content = array(
@@ -3500,6 +3453,228 @@ function get_email_campaign_type_navigation($data, $smarty, $user, $db) {
 }
 
 
+function get_product_navigation($data, $smarty, $user, $db) {
+
+
+    $customer = $data['_parent'];
+    $product = $data['_object'];
+    $store=get_object('Store',$customer->get('Store Key'));
+    if (!$customer->id) {
+        return;
+    }
+
+
+    $left_buttons  = array();
+    $right_buttons = array();
+
+
+    switch ($data['parent']) {
+        case 'customer':
+            $tab      = 'customer.marketing.products';
+            $_section = 'customers';
+            break;
+
+
+    }
+
+
+    if (isset($_SESSION['table_state'][$tab])) {
+        $number_results  = $_SESSION['table_state'][$tab]['nr'];
+        $start_from      = 0;
+        $order           = $_SESSION['table_state'][$tab]['o'];
+        $order_direction = ($_SESSION['table_state'][$tab]['od'] == 1 ? 'desc' : '');
+        $f_value         = $_SESSION['table_state'][$tab]['f_value'];
+        $parameters      = $_SESSION['table_state'][$tab];
+    } else {
+
+        $default                  = $user->get_tab_defaults($tab);
+        $number_results           = $default['rpp'];
+        $start_from               = 0;
+        $order                    = $default['sort_key'];
+        $order_direction          = ($default['sort_order'] == 1 ? 'desc' : '');
+        $f_value                  = '';
+        $parameters               = $default;
+        $parameters['parent']     = $data['parent'];
+        $parameters['parent_key'] = $data['parent_key'];
+    }
+
+    include_once 'prepare_table/'.$tab.'.ptble.php';
+
+
+    // todo find way to do this
+    if($order=='amount' or $order=='qty' or $order=='invoices') {
+        $order='P.`Product Code`';
+    }
+
+
+    $_order_field       = $order;
+    $order              = preg_replace('/^.*\.`/', '', $order);
+    $order              = preg_replace('/^`/', '', $order);
+    $order              = preg_replace('/`$/', '', $order);
+
+
+
+
+
+
+
+        $_order_field_value = $product->get($order);
+
+
+
+
+
+    $prev_title = '';
+    $next_title = '';
+    $prev_key   = 0;
+    $next_key   = 0;
+    $sql        = trim($sql_totals." $wheref");
+
+
+
+
+
+    if ($result2 = $db->query($sql)) {
+        if ($row2 = $result2->fetch() and $row2['num'] > 1) {
+
+
+            $sql = sprintf(
+                "select P.`Product Code` object_name,P.`Product ID` as object_key from $table   $where $wheref
+	                and ($_order_field < %s OR ($_order_field = %s AND P.`Product ID` < %d))  group by P.`Product ID` order by $_order_field desc , P.`Product ID`desc limit 1",
+
+                prepare_mysql($_order_field_value), prepare_mysql($_order_field_value), $product->id
+            );
+
+
+           // print $sql;
+
+            if ($result = $db->query($sql)) {
+                if ($row = $result->fetch()) {
+                   // print_r($row);
+
+                    $prev_key   = $row['object_key'];
+                    $prev_title = _("Product").' '.$row['object_name'];
+
+                }
+            } else {
+                print_r($error_info = $db->errorInfo());
+                exit;
+            }
+
+
+            $sql = sprintf(
+                "select P.`Product Code` object_name,P.`Product ID` as object_key from $table   $where $wheref
+	                and ($_order_field  > %s OR ($_order_field  = %s AND P.`Product ID` > %d))  group by P.`Product ID` order by $_order_field   , P.`Product ID`  limit 1", prepare_mysql($_order_field_value), prepare_mysql($_order_field_value), $product->id
+            );
+            //print $sql;
+            if ($result = $db->query($sql)) {
+                if ($row = $result->fetch()) {
+                    //print_r($row);
+                    $next_key   = $row['object_key'];
+                    $next_title = _("Product").' '.$row['object_name'];
+
+                }
+            } else {
+                print_r($error_info = $db->errorInfo());
+                exit;
+            }
+
+
+            if ($order_direction == 'desc') {
+                $_tmp1      = $prev_key;
+                $_tmp2      = $prev_title;
+                $prev_key   = $next_key;
+                $prev_title = $next_title;
+                $next_key   = $_tmp1;
+                $next_title = $_tmp2;
+            }
+
+
+        }
+    } else {
+        print_r($error_info = $db->errorInfo());
+        exit;
+    }
+
+
+    $placeholder = _('Search customers');
+    $sections    = get_sections('customers', $customer->data['Customer Store Key']);
+
+
+    $up_button = array(
+        'icon'      => 'arrow-up',
+        'title'     => _("Customer").' '.$customer->get('Customer Name'),
+        'reference' => 'customers/'.$store->id.'/'.$customer->id
+    );
+
+    if ($prev_key) {
+        $left_buttons[] = array(
+            'icon'      => 'arrow-left',
+            'title'     => $prev_title,
+            'reference' => 'customers/'.$store->id.'/'.$data['parent_key'].'/product/'.$prev_key
+        );
+
+    } else {
+        $left_buttons[] = array(
+            'icon'  => 'arrow-left disabled',
+            'title' => '',
+            'url'   => ''
+        );
+
+    }
+    $left_buttons[] = $up_button;
+
+
+    if ($next_key) {
+        $left_buttons[] = array(
+            'icon'      => 'arrow-right',
+            'title'     => $next_title,
+            'reference' => 'customers/'.$store->id.'/'.$data['parent_key'].'/product/'.$next_key
+        );
+
+    } else {
+        $left_buttons[] = array(
+            'icon'  => 'arrow-right disabled',
+            'title' => '',
+            'url'   => ''
+        );
+
+    }
+
+
+    if (isset($sections[$_section])) {
+        $sections[$_section]['selected'] = true;
+    }
+
+    $avatar = '';
+
+
+    $title = '<span class="Customer_Level_Type_Icon">'.$customer->get('Level Type Icon').'</span>';
+    $title .= '<span class=""><span class="Customer_Name">'.$customer->get('Customer Name').'</span> ('.$customer->get_formatted_id().')</span>';
+    $title .= '<span class="id Product_Code margin_left_10">'.$product->get('Code').'</span>';
+
+
+    $_content = array(
+        'sections_class' => '',
+        'sections'       => $sections,
+        'left_buttons'   => $left_buttons,
+        'right_buttons'  => $right_buttons,
+        'avatar'         => $avatar,
+        'title'          => $title,
+        'search'         => array(
+            'show'        => true,
+            'placeholder' => $placeholder
+        )
+
+    );
+    $smarty->assign('_content', $_content);
+
+
+    $html = $smarty->fetch('navigation.tpl');
+
+    return $html;
+
+}
 
 
 ?>

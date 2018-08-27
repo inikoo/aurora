@@ -245,19 +245,80 @@ class SupplierDelivery extends DB_Table {
 
 
         switch ($key) {
+            case ('State'):
+                switch ($this->data['Supplier Delivery State']) {
+
+
+                    // //'InProcess','Consolidated','Dispatched','Received','Checked','Placed','Cancelled'
+
+                    case 'InProcess':
+                        return _('Inputted');
+                        break;
+                    case 'Consolidated':
+                        return _('Consolidated');
+                        break;
+                    case 'Dispatched':
+                        return _('Dispatched');
+                        break;
+
+                    case 'Received':
+                        return _('Received');
+                        break;
+                    case 'Checked':
+                        return _('Checked');
+                        break;
+                    case 'Placed':
+                        return _('Placed');
+                        break;
+                    case 'Cancelled':
+                        return _('Cancelled');
+                        break;
+                    default:
+                        break;
+                }
+
+                break;
+            case ('Agent State'):
+                switch ($this->data['Supplier Delivery State']) {
+                    case 'InProcess':
+                        return _('In process');
+                        break;
+                    case 'Consolidated':
+                        return _('Consolidated');
+                        break;
+                    case 'Dispatched':
+                        return _('Dispatched');
+                        break;
+                    case 'Received':
+                        return _('Received by client');
+                        break;
+                    case 'Checked':
+                        return _('Received by client').' ('._('checked').')';
+                        break;
+                    case 'Placed':
+                        return _('Received by client').' ('._('placed').')';
+                        break;
+                    case 'Cancelled':
+                        return _('Cancelled');
+                        break;
+                    default:
+                        break;
+                }
+
+                break;
             case 'State Index':
+
+
+
                 switch ($this->data['Supplier Delivery State']) {
                     case 'InProcess':
                         return 10;
                         break;
 
-                    case 'AgentReceived':
+                    case 'Consolidated':
                         return 20;
                         break;
 
-                    case 'AgentChecked':
-                        return 25;
-                        break;
 
                     case 'Dispatched':
                         return 30;
@@ -538,31 +599,7 @@ class SupplierDelivery extends DB_Table {
                 return number($this->data ['Supplier Delivery '.$key]);
                 break;
 
-            case ('State'):
-                switch ($this->data['Supplier Delivery State']) {
-                    case 'InProcess':
-                        return _('Inputted');
-                        break;
-                    case 'Dispatched':
-                        return _('Dispatched');
-                        break;
-                    case 'Confirmed':
-                        return _('Confirmed');
-                        break;
-                    case 'Received':
-                        return _('Received');
-                        break;
-                    case 'Placed':
-                        return _('Placed');
-                        break;
-                    case 'Cancelled':
-                        return _('Cancelled');
-                        break;
-                    default:
-                        break;
-                }
 
-                break;
         }
 
 

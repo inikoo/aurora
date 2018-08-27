@@ -10,7 +10,7 @@
 */
 
 $tab     = 'agent.deliveries';
-$ar_file = 'ar_suppliers_tables.php';
+$ar_file = 'ar_agents_tables.php';
 $tipo    = 'agent_deliveries';
 
 $default = $user->get_tab_defaults($tab);
@@ -23,8 +23,8 @@ $table_filters = array(
 );
 
 $parameters = array(
-    'parent'     => $state['object'],
-    'parent_key' => $state['key'],
+    'parent'     => 'Agent',
+    'parent_key' => $user->get('User Parent Key'),
 
 );
 
@@ -33,7 +33,7 @@ $table_buttons[] = array(
     'title' => _('New delivery'),
     'id'    => 'new_agent_delivery',
     'attr'  => array(
-        'parent'     => 'agent',
+        'parent'     => 'Agent',
         'parent_key' => $user->get('User Parent Key')
 
 )

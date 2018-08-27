@@ -239,8 +239,8 @@ function connect_websocket(){
                         }
 
                         for (var j in data.objects[i].update_metadata.add_class) {
-                            console.log(j)
-                            console.log(data.objects[i].update_metadata.add_class[j])
+                            //console.log(j)
+                            //console.log(data.objects[i].update_metadata.add_class[j])
 
                             $('.' + j).addClass(data.objects[i].update_metadata.add_class[j])
                         }
@@ -276,7 +276,7 @@ function connect_websocket(){
                 for (var i in _data.progress_bar) {
                     var data = _data.progress_bar[i]
 
-                    console.log(data)
+                    //console.log(data)
 
                     if (data.state == 'In Process') {
 
@@ -508,7 +508,7 @@ function change_view(_request, metadata) {
         }
     */
 
-    console.log(websocket_connected)
+    //console.log(websocket_connected)
 
 
     if (metadata == undefined) {
@@ -519,7 +519,6 @@ function change_view(_request, metadata) {
     var request = "/ar_views.php?tipo=views&request=" + _request + '&metadata=' + JSON.stringify(metadata) + "&old_state=" + JSON.stringify(state)
 
 
-//console.log(request)
 
 
     if (metadata.tab != undefined) {

@@ -78,9 +78,7 @@ switch ($tipo) {
     case 'agent_deliveries':
         agent_deliveries(get_table_parameters(), $db, $user, $account);
         break;
-    case 'agent_client_orders':
-        agent_client_orders(get_table_parameters(), $db, $user, $account);
-        break;
+
     case 'deliveries':
         deliveries(get_table_parameters(), $db, $user, $account);
         break;
@@ -947,97 +945,6 @@ function agent_orders($_data, $db, $user) {
 }
 
 
-function agent_client_orders($_data, $db, $user) {
-
-    if ($user->get('User Type') != 'Agent') {
-        echo json_encode(
-            array(
-                'state' => 405,
-                'resp'  => 'Forbidden'
-            )
-        );
-        exit;
-    }
-    $_data['parameters']['agent_key'] = $user->get('User Parent Key');
-
-
-    $rtext_label = 'client order';
-
-
-    include_once 'prepare_table/init.php';
-
-    $sql        = "select $fields from $table $where $wheref order by $order $order_direction limit $start_from,$number_results";
-    $table_data = array();
-
-    if ($result = $db->query($sql)) {
-        foreach ($result as $data) {
-
-            switch ($data['Purchase Order State']) {
-                case 'InProcess':
-                    $state = sprintf('%s', _('In Process'));
-                    break;
-                case 'SubmittedAgent':
-                    $state = sprintf('%s', _('Submitted to agent'));
-                    break;
-                case 'Submitted':
-                    $state = sprintf('%s', _('Submitted'));
-                    break;
-                case 'Confirmed':
-                    $state = sprintf('%s', _('Confirmed'));
-                    break;
-                case 'In Warehouse':
-                    $state = sprintf('%s', _('In Warehouse'));
-                    break;
-                case 'Done':
-                    $state = sprintf('%s', _('Done'));
-                    break;
-                case 'Cancelled':
-                    $state = sprintf('%s', _('Cancelled'));
-                    break;
-
-                default:
-                    $state = $data['Purchase Order State'];
-                    break;
-            }
-
-            $table_data[] = array(
-                'id' => (integer)$data['Purchase Order Key'],
-
-
-                'public_id' => sprintf('<span class="link" onclick="change_view(\'client_order/%d\')">%s</span>', $data['Purchase Order Key'], $data['Purchase Order Public ID']),
-                'date'      => strftime("%e %b %Y", strtotime($data['Purchase Order Creation Date'].' +0:00')),
-                'last_date' => strftime("%a %e %b %Y %H:%M %Z", strtotime($data['Purchase Order Last Updated Date'].' +0:00')),
-                'state'     => $state,
-
-                'total_amount' => money(
-                    $data['Purchase Order Total Amount'], $data['Purchase Order Currency Code']
-                )
-
-
-            );
-
-
-        }
-    } else {
-        print_r($error_info = $db->errorInfo());
-        exit;
-    }
-
-
-    $response = array(
-        'resultset' => array(
-            'state'         => 200,
-            'data'          => $table_data,
-            'rtext'         => $rtext,
-            'sort_key'      => $_order,
-            'sort_dir'      => $_dir,
-            'total_records' => $total
-
-        )
-    );
-    echo json_encode($response);
-}
-
 
 function agent_deliveries($_data, $db, $user) {
 
@@ -1227,6 +1134,50 @@ function order_items($_data, $db, $user, $account) {
     if ($result = $db->query($sql)) {
         foreach ($result as $data) {
 
+//'InProcess','Submitted', 'ProblemSupplier','Confirmed','ReceivedAgent','InDelivery','Inputted','Dispatched','Received','Checked','Placed','Cancelled'
+
+            switch($data['Purchase Order Transaction State']) {
+            case 'InProcess':
+                $state=_('In process');
+                break;
+                case 'Submitted':
+                    $state=_('Submitted');
+                    break;
+                case 'ProblemSupplier':
+                    $state=sprintf('<i class="fa fa-exclamation-circle error fa-fw"></i>');
+                    break;
+                case 'Confirmed':
+                    $state=_('Confirmed');
+                    break;
+                case 'ReceivedAgent':
+                    $state=_('In agent warehouse');
+                    break;
+                case 'InDelivery':
+                    $state=_('Loading Delivery');
+                    break;
+                case 'Inputted':
+                    $state=_('Delivery inputted');
+                    break;
+                case 'Dispatched':
+                    $state=_('In transit');
+                    break;
+                case 'Received':
+                    $state=_('Received');
+                    break;
+                case 'Checked':
+                    $state=_('Checked');
+                    break;
+                case 'Placed':
+                    $state=_('Placed');
+                    break;
+                case 'Cancelled':
+                    $state=_('Cancelled');
+                    break;
+            default:
+                $state=$data['Purchase Order Transaction State'];
+                break;
+            }
+
 
             switch ($data['Part Stock Status']) {
                 case 'Surplus':
@@ -1307,24 +1258,21 @@ function order_items($_data, $db, $user, $account) {
 
             }
 
-            $description = '<div style="font-size:90%" >';
+            $carton_description = '<div style="font-size:90%" >';
 
 
-            $description .= '<span class="">'.$units_per_carton.'</span><span class="discreet ">x</span> '.$data['Supplier Part Description'].'<br/> 
+            $carton_description .= '<span class="">'.$units_per_carton.'</span><span class="discreet ">x</span> '.$data['Supplier Part Description'].'<br/> 
              <span class="discreet">'.sprintf(_('Packed in <b>%ds</b>'), $data['Part Units Per Package']).' <span class="" title="'._('SKOs per carton').'">, pks/C: <b>'.$skos_per_carton.'</b></span>';
 
 
             if ($data['Supplier Part Minimum Carton Order'] > 0 and $data['Supplier Part Minimum Carton Order'] != 1) {
-                $description .= sprintf(
+                $carton_description .= sprintf(
                     ' <span class="discreet"><span title="%s">MOQ</span>:%s<span>', _('Minimum order (cartons)'), number($data['Supplier Part Minimum Carton Order'])
                 );
             }
 
             $description_sales = '';
             if ($purchase_order->get('State Index') < 30) {
-
-
-
 
 
                 if ($data['Part On Demand'] == 'Yes') {
@@ -1369,10 +1317,9 @@ function order_items($_data, $db, $user, $account) {
 
                 $average_sales_per_year = '&lang;'.number($data['Part 1 Year Acc Dispatched'] / $data['Supplier Part Packages Per Carton']).' C/y&rang;';
 
-                $description_sales = $description.'<div style="margin-top:10px" >
+                $description_sales = $carton_description.'<div style="margin-top:10px" >
      
-                        <span style="display: inline-block; min-width: 50px;color:black" class="strong padding_right_10" title="'._('Stock (cartons)').'">'.
-                    number($data['Part Current On Hand Stock'] / $data['Supplier Part Packages Per Carton']).'</span> '.$stock_status.'
+                        <span style="display: inline-block; min-width: 50px;color:black" class="strong padding_right_10" title="'._('Stock (cartons)').'">'.number($data['Part Current On Hand Stock'] / $data['Supplier Part Packages Per Carton']).'</span> '.$stock_status.'
                         <span>'.$available_forecast.'</span>
                          <span class="discreet padding_left_10" title="'._('Cartons dispatched by year').'">'.$average_sales_per_year.'</span>
                     </div>
@@ -1420,8 +1367,8 @@ function order_items($_data, $db, $user, $account) {
             }
 
 
-            $description       .= '</div>';
-            $description_sales .= '</div>';
+            $carton_description .= '</div>';
+            $description_sales  .= '</div>';
 
 
             /*
@@ -1456,40 +1403,39 @@ function order_items($_data, $db, $user, $account) {
             }
 
             if ($data['Part Main Image Key'] != 0) {
-                $image = sprintf('<img src="/image_root.php?id=%d&r=50x50" style="display: block;
+                $image = sprintf(
+                    '<img src="/image_root.php?id=%d&r=50x50" style="display: block;
   max-width:50px;
   max-height:50px;
   width: auto;
-  height: auto;">', $data['Part Main Image Key']);
+  height: auto;">', $data['Part Main Image Key']
+                );
             } else {
                 $image = '';
             }
 
 
-
-
-
-            $info='';
+            $info = '';
 
             if ($data['Part Next Deliveries Data'] == '') {
-                $next_deliveries= array();
+                $next_deliveries = array();
             } else {
-                $next_deliveries= json_decode($data['Part Next Deliveries Data'], true);
+                $next_deliveries = json_decode($data['Part Next Deliveries Data'], true);
             }
 
-            $info.='<div border="0" style="font-size: small" class="as_table">';
+            $info .= '<div border="0" style="font-size: small" class="as_table">';
 
-            foreach($next_deliveries as $next_delivery){
-                if($next_delivery['po_key']!=$data['Purchase Order Key']){
-                    $info.='<div class="as_row "><div class="as_cell" >'.$next_delivery['formatted_link'].'</div><div class="padding_left_20 as_cell strong" title="'._('Cartorns ordered').'">+'.number($next_delivery['raw_qty']).'</div></div>';
+            foreach ($next_deliveries as $next_delivery) {
+                if ($next_delivery['po_key'] != $data['Purchase Order Key']) {
+                    $info .= '<div class="as_row "><div class="as_cell" >'.$next_delivery['formatted_link'].'</div><div class="padding_left_20 as_cell strong" title="'._('Cartorns ordered').'">+'.number($next_delivery['raw_qty']).'</div></div>';
                 }
             }
 
 
-            $info.='</div>';
+            $info .= '</div>';
 
 
-         //   $image = '';
+            //   $image = '';
             $table_data[] = array(
 
                 'id'                => (integer)$data['Purchase Order Transaction Fact Key'],
@@ -1504,18 +1450,26 @@ function order_items($_data, $db, $user, $account) {
 
 
                 'reference' => $reference,
-                'info' => $info,
+                'info'      => $info,
 
-                'description'       => $description,
-                'description_sales' => $description_sales,
-                'quantity'          => $quantity,
-                'delivery_quantity' => $delivery_quantity,
-                'subtotals'         => $subtotals,
-                'ordered'           => number($data['Purchase Order Quantity']),
-                'supplier_key'      => $data['Supplier Key'],
-                'supplier'          => $data['Supplier Code'],
-                'unit'              => $data['Supplier Part Description'],
-                'image'             => $image
+                'carton_description' => $carton_description,
+                'unit_description'   => $data['Supplier Part Description'].'<br><span class="discreet">'._('Unit cost').':</span> '.money($data['Supplier Part Unit Cost'], $purchase_order->get('Purchase Order Currency Code')),
+                'units_per_sko'      => number($data['Part Units Per Package']),
+                'unit_cost'          => money($data['Supplier Part Unit Cost'], $purchase_order->get('Purchase Order Currency Code')),
+                'skos_per_carton'    => number($skos_per_carton),
+                'ordered_skos'       => number($skos_per_carton * $data['Purchase Order Quantity']),
+                'ordered_cartons'    => number($data['Purchase Order Quantity']),
+                'amount'            => money($data['Supplier Part Unit Cost'] * $data['Purchase Order Quantity'] * $units_per_carton, $purchase_order->get('Purchase Order Currency Code')),
+                'description_sales'  => $description_sales,
+                'quantity'           => $quantity,
+                'delivery_quantity'  => $delivery_quantity,
+                'subtotals'          => $subtotals,
+                'ordered'            => number($data['Purchase Order Quantity']),
+                'supplier_key'       => $data['Supplier Key'],
+                'supplier'           => $data['Supplier Code'],
+                'unit'               => $data['Supplier Part Description'],
+                'image'              => $image,
+                   'state'              => $state
 
 
             );
@@ -2476,9 +2430,6 @@ function order_supplier_all_parts($_data, $db, $user, $account) {
     include_once 'prepare_table/init.php';
 
 
-
-
-
     $sql = "select $fields from $table $where $wheref order by $order $order_direction limit $start_from,$number_results";
 
 
@@ -2670,8 +2621,8 @@ function order_supplier_all_parts($_data, $db, $user, $account) {
 
             $description_sales = $description.'<div style="margin-top:10px" >
                        
-                       <span style="display: inline-block; min-width: 50px;color:black" class="strong padding_right_10" title="'._('Stock (cartons)').'">'.
-                number($data['Part Current On Hand Stock'] / $data['Supplier Part Packages Per Carton']
+                       <span style="display: inline-block; min-width: 50px;color:black" class="strong padding_right_10" title="'._('Stock (cartons)').'">'.number(
+                    $data['Part Current On Hand Stock'] / $data['Supplier Part Packages Per Carton']
                 ).'</span> '.$stock_status.'
                         <span>'.$available_forecast.'</span>
                         <span class="discreet padding_left_10" title="'._('Cartons dispatched by year').'">'.$average_sales_per_year.'</span>
@@ -2744,35 +2695,36 @@ function order_supplier_all_parts($_data, $db, $user, $account) {
 
 
             if ($data['Part Main Image Key'] != 0) {
-                $image = sprintf('<img src="/image_root.php?id=%d&r=50x50" style="display: block;
+                $image = sprintf(
+                    '<img src="/image_root.php?id=%d&r=50x50" style="display: block;
   max-width:50px;
   max-height:50px;
   width: auto;
-  height: auto;">', $data['Part Main Image Key']);
+  height: auto;">', $data['Part Main Image Key']
+                );
             } else {
                 $image = '';
             }
 
 
-
-            $info='';
+            $info = '';
 
             if ($data['Part Next Deliveries Data'] == '') {
-                $next_deliveries= array();
+                $next_deliveries = array();
             } else {
-                $next_deliveries= json_decode($data['Part Next Deliveries Data'], true);
+                $next_deliveries = json_decode($data['Part Next Deliveries Data'], true);
             }
 
-            $info.='<div border="0" style="font-size: small" class="as_table">';
+            $info .= '<div border="0" style="font-size: small" class="as_table">';
 
-            foreach($next_deliveries as $next_delivery){
-                if($next_delivery['po_key']!=$purchase_order->id){
-                    $info.='<div class="as_row "><div class="as_cell" >'.$next_delivery['formatted_link'].'</div><div class="padding_left_20 as_cell strong" title="'._('Cartorns ordered').'">+'.number($next_delivery['raw_qty']).'</div></div>';
+            foreach ($next_deliveries as $next_delivery) {
+                if ($next_delivery['po_key'] != $purchase_order->id) {
+                    $info .= '<div class="as_row "><div class="as_cell" >'.$next_delivery['formatted_link'].'</div><div class="padding_left_20 as_cell strong" title="'._('Cartorns ordered').'">+'.number($next_delivery['raw_qty']).'</div></div>';
                 }
             }
 
 
-            $info.='</div>';
+            $info .= '</div>';
 
             $table_data[] = array(
                 'id'               => (integer)$data['Supplier Part Key'],
@@ -2784,7 +2736,7 @@ function order_supplier_all_parts($_data, $db, $user, $account) {
                 'parent_type'      => strtolower(
                     $purchase_order->get('Purchase Order Parent')
                 ),
-                'reference' => $reference,
+                'reference'        => $reference,
                 'formatted_sku'    => sprintf(
                     "SKU%05d", $data['Supplier Part Part SKU']
                 ),
@@ -2792,7 +2744,7 @@ function order_supplier_all_parts($_data, $db, $user, $account) {
 
                 'description'       => $description,
                 'description_sales' => $description_sales,
-                'info' => $info,
+                'info'              => $info,
 
                 'status'    => $status,
                 'cost'      => money(
@@ -2809,7 +2761,7 @@ function order_supplier_all_parts($_data, $db, $user, $account) {
                     ($data['Purchase Order Quantity'] == 0 ? '' : $data['Purchase Order Quantity'] + 0)
                 ),
                 'subtotals' => $subtotals,
-                'image' => $image
+                'image'     => $image
 
 
             );

@@ -9,6 +9,8 @@
 
  Version 2.0
 */
+
+
 include_once 'utils/date_functions.php';
 $period_tag = get_interval_db_name($parameters['f_period']);
 
@@ -102,7 +104,7 @@ switch ($parameters['parent']) {
             = "`Product Dimension` P left join `Product Data` PD on (PD.`Product ID`=P.`Product ID`)  left join `Product DC Data` PDCD on (PDCD.`Product ID`=P.`Product ID`) left join `Store Dimension` S on (`Product Store Key`=`Store Key`) left join `Customer Favourite Product Fact` F on (F.`Customer Favourite Product Product ID`=P.`Product ID`)";
 
 
-        $where .= sprintf(
+        $where = sprintf(
             ' where P.`Product Type`="Product" and F.`Customer Favourite Product Customer Key`=%d', $parameters['parent_key']
         );
         break;
@@ -145,34 +147,39 @@ switch ($parameters['parent']) {
 
 }
 
+if(isset($parameters['elements_type'])){
 
-switch ($parameters['elements_type']) {
 
-    case 'status':
-        $_elements      = '';
-        $count_elements = 0;
-        foreach (
-            $parameters['elements'][$parameters['elements_type']]['items'] as $_key => $_value
-        ) {
-            if ($_value['selected']) {
-                $count_elements++;
-                $_elements .= ','.prepare_mysql($_key);
+    switch ($parameters['elements_type']) {
 
+        case 'status':
+            $_elements      = '';
+            $count_elements = 0;
+            foreach (
+                $parameters['elements'][$parameters['elements_type']]['items'] as $_key => $_value
+            ) {
+                if ($_value['selected']) {
+                    $count_elements++;
+                    $_elements .= ','.prepare_mysql($_key);
+
+                }
             }
-        }
-        $_elements = preg_replace('/^\,/', '', $_elements);
-        if ($_elements == '') {
-            $where .= ' and false';
-        } elseif ($count_elements < 4) {
-            $where .= ' and P.`Product Status` in ('.$_elements.')';
-        }
+            $_elements = preg_replace('/^\,/', '', $_elements);
+            if ($_elements == '') {
+                $where .= ' and false';
+            } elseif ($count_elements < 4) {
+                $where .= ' and P.`Product Status` in ('.$_elements.')';
+            }
 
 
-        break;
+            break;
+
+
+    }
+
 
 
 }
-
 
 if (isset($parameters['f_period'])) {
 
@@ -196,7 +203,7 @@ if (isset($parameters['f_period'])) {
 
 
 if ($parameters['f_field'] == 'code' and $f_value != '') {
-    $wheref .= " and  `Product Code` like '".addslashes($f_value)."%'";
+    $wheref .= " and  P.`Product Code` like '".addslashes($f_value)."%'";
 } elseif ($parameters['f_field'] == 'description' and $f_value != '') {
     $wheref .= " and  `Product Name` like '%".addslashes($f_value)."%'";
 }
@@ -354,7 +361,7 @@ $sql_totals
 
 
 $fields
-    = "`Product Total Acc Quantity Ordered`,P.`Product ID`,`Product Code`,`Product Name`,`Product Price`,`Store Currency Code`,`Store Code`,`Store Key`,`Store Name`,`Product Web Configuration`,`Product Availability`,`Product Web State`,`Product Cost`,`Product Number of Parts`,P.`Product Status`,`Product Units Per Case`,
+    = "`Product Total Acc Quantity Ordered`,P.`Product ID`,P.`Product Code`,`Product Name`,`Product Price`,`Store Currency Code`,`Store Code`,S.`Store Key`,`Store Name`,`Product Web Configuration`,`Product Availability`,`Product Web State`,`Product Cost`,`Product Number of Parts`,P.`Product Status`,`Product Units Per Case`,
 `Product 1 Year Ago Invoiced Amount`,`Product 2 Year Ago Invoiced Amount`,`Product 3 Year Ago Invoiced Amount`,`Product 4 Year Ago Invoiced Amount`,`Product 5 Year Ago Invoiced Amount`,
 `Product 1 Quarter Ago Invoiced Amount`,`Product 2 Quarter Ago Invoiced Amount`,`Product 3 Quarter Ago Invoiced Amount`,`Product 4 Quarter Ago Invoiced Amount`,
 `Product 1 Quarter Ago 1YB Invoiced Amount`,`Product 2 Quarter Ago 1YB Invoiced Amount`,`Product 3 Quarter Ago 1YB Invoiced Amount`,`Product 4 Quarter Ago 1YB Invoiced Amount`,

@@ -253,8 +253,15 @@ function get_object($object_name, $key, $load_other_data = false) {
         case 'purchase_order':
         case 'purchase order':
         case 'purchaseorder':
+        case 'client_order':
             require_once "class.PurchaseOrder.php";
             $object = new PurchaseOrder($key);
+            break;
+        case 'agent_supplier_order':
+        case 'agentsupplierpurchaseorder':
+        case 'agent_supplier_purchase_order':
+            require_once "class.Agent_Supplier_Purchase_Order.php";
+            $object = new AgentSupplierPurchaseOrder($key);
             break;
         case 'upload':
             require_once "class.Upload.php";
@@ -283,6 +290,7 @@ function get_object($object_name, $key, $load_other_data = false) {
             break;
         case 'supplierdelivery':
         case 'supplier delivery':
+        case 'supplier_delivery':
             require_once "class.SupplierDelivery.php";
             $object = new SupplierDelivery($key);
             $object->get_order_data();

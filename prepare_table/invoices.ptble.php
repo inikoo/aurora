@@ -176,7 +176,21 @@ if (isset($parameters['awhere']) and $parameters['awhere']) {
         'where `Invoice Sales Representative Key`=%d  ', $parameters['parent_key']
     );
 
-} else {
+}elseif ($parameters['parent'] == 'customer_product') {
+
+    $parent_keys=preg_split('/\_/',$parameters['parent_key']);
+
+    $table
+        = '`Order Transaction Fact` OTF  left join     `Invoice Dimension` I   on (OTF.`Invoice Key`=I.`Invoice Key`)  left join `Payment Account Dimension` P on (P.`Payment Account Key`=I.`Invoice Payment Account Key`) ';
+
+    $where = sprintf(' where   `Customer Key`=%d  and `Product ID`=%d ', $parent_keys[0],$parent_keys[1]);
+
+    //print $where;
+
+    $group_by = ' group by OTF.`Invoice Key` ';
+
+
+}  else {
 
     exit("unknown parent ".$parameters['parent']." \n");
 }
@@ -188,7 +202,7 @@ if (isset($parameters['period'])) {
         = calculate_interval_dates(
         $db, $parameters['period'], $parameters['from'], $parameters['to']
     );
-    $where_interval = prepare_mysql_dates($from, $to, '`Invoice Date`');
+    $where_interval = prepare_mysql_dates($from, $to, 'I.`Invoice Date`');
     $where .= $where_interval['mysql'];
 
 }
@@ -250,7 +264,7 @@ if (($parameters['f_field'] == 'customer') and $f_value != '') {
         '  and  `Invoice Customer Name`  REGEXP "[[:<:]]%s" ', addslashes($f_value)
     );
 } elseif ($parameters['f_field'] == 'number' and $f_value != '') {
-    $wheref .= " and  `Invoice Public ID` like '".addslashes(
+    $wheref .= " and  I.`Invoice Public ID` like '".addslashes(
             preg_replace('/\s*|\,|\./', '', $f_value)
         )."%' ";
 } elseif ($parameters['f_field'] == 'last_more' and is_numeric($f_value)) {
@@ -313,7 +327,7 @@ if ($order == 'date') {
 
 
 $fields
-    .= 'I.`Invoice Key`,`Invoice Paid`,`Invoice Type`,`Invoice Main Payment Method`,`Invoice Store Key`,`Invoice Customer Key`,`Invoice Public ID`,`Invoice Customer Name`,`Invoice Date`,`Invoice Total Amount`,`Invoice Currency`,
+    .= 'I.`Invoice Key`,`Invoice Paid`,`Invoice Type`,`Invoice Main Payment Method`,`Invoice Store Key`,`Invoice Customer Key`,I.`Invoice Public ID`,`Invoice Customer Name`,I.`Invoice Date`,`Invoice Total Amount`,`Invoice Currency`,
 `Invoice Total Net Amount`,`Invoice Total Tax Amount`,`Invoice Shipping Net Amount`,`Invoice Items Net Amount`,`Invoice Total Net Amount`,`Invoice Shipping Net Amount`,
 `Invoice Address Country 2 Alpha Code`
 ';

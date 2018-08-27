@@ -10,7 +10,7 @@
 */
 
 $tab     = 'agent.client_orders';
-$ar_file = 'ar_suppliers_tables.php';
+$ar_file = 'ar_agents_tables.php';
 $tipo    = 'agent_client_orders';
 
 $default = $user->get_tab_defaults($tab);
@@ -25,7 +25,7 @@ $table_filters = array(
 );
 
 $parameters = array(
-    'parent'     => 'agent',
+    'parent'     => 'Agent',
     'parent_key' => $user->get('User Parent Key')
 
 );
@@ -35,10 +35,6 @@ $table_buttons = array();
 
 
 $smarty->assign('table_buttons', $table_buttons);
-
-$smarty->assign(
-    'js_code', 'js/injections/supplier.orders.'.(_DEVEL ? '' : 'min.').'js'
-);
 
 include 'utils/get_table_html.php';
 

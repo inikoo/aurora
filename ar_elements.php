@@ -2297,7 +2297,7 @@ function get_agent_client_orders_elements($db, $data, $user) {
             $table = '`Purchase Order Dimension` O';
             $where = sprintf('where  `Purchase Order Parent`="Supplier" and `Purchase Order Parent Key`=%d and `Purchase Order Agent Key`=%d', $parent_key, $agent_key);
             break;
-        case 'agent':
+        case 'Agent':
             $table = '`Purchase Order Dimension` O';
             $where = sprintf('where  `Purchase Order Parent`="Agent" and `Purchase Order Parent Key`=%d ', $parent_key, $agent_key);
             break;

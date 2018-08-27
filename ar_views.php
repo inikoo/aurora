@@ -154,22 +154,18 @@ function get_view($db, $smarty, $user, $account, $modules) {
     switch ($state['parent']) {
 
         case 'store':
-            include_once 'class.Store.php';
+
 
             if ($state['parent_key'] != '') {
-                $_parent = new Store($state['parent_key']);
+                $_parent = get_object('Store', $state['parent_key']);
             } else {
                 if ($state['object'] == 'product') {
-                    $_object             = get_object(
-                        $state['object'], $state['key']
-                    );
-                    $_parent             = new Store(
-                        $_object->get('Product Store Key')
-                    );
+                    $_object             = get_object($state['object'], $state['key']);
+                    $_parent             = get_object('Store', $_object->get('Product Store Key'));
                     $state['parent_key'] = $_parent->id;
                 } elseif ($state['object'] == 'customer') {
                     $_object             = get_object($state['object'], $state['key']);
-                    $_parent             = new Store($_object->get('Customer Store Key'));
+                    $_parent             = get_object('Store', $_object->get('Customer Store Key'));
                     $state['parent_key'] = $_parent->id;
 
                 } else {
@@ -182,6 +178,11 @@ function get_view($db, $smarty, $user, $account, $modules) {
             $state['current_store'] = $_parent->id;
             $store                  = $_parent;
 
+
+            break;
+        case 'customer':
+            $_parent = get_object($state['parent'], $state['parent_key']);
+            $store   = get_object('Store', $_parent->get('Customer Store Key'));
 
             break;
         case 'part':
@@ -858,6 +859,7 @@ function get_object_showcase($showcase, $data, $smarty, $user, $db, $account) {
         return '';
     }
 
+
     switch ($showcase) {
         case 'material':
             include_once 'showcase/material.show.php';
@@ -921,8 +923,16 @@ function get_object_showcase($showcase, $data, $smarty, $user, $db, $account) {
             }
             break;
         case 'product':
-            include_once 'showcase/product.show.php';
-            $html = get_product_showcase($data, $smarty, $user, $db);
+
+            if($data['module']=='customers'){
+                include_once 'showcase/customer.product.show.php';
+                $html = get_customer_product_showcase($data, $smarty, $user, $db);
+            }else{
+                include_once 'showcase/product.show.php';
+                $html = get_product_showcase($data, $smarty, $user, $db);
+            }
+
+
             break;
         case 'part':
             include_once 'showcase/part.show.php';
@@ -1064,7 +1074,7 @@ function get_object_showcase($showcase, $data, $smarty, $user, $db, $account) {
                     $data, $smarty, $user, $db
                 );
 
-            }elseif ($data['_object']->get('Category Scope') == 'Invoice') {
+            } elseif ($data['_object']->get('Category Scope') == 'Invoice') {
                 include_once 'showcase/invoice_category_showcase.show.php';
                 $html = get_invoice_category_showcase(
                     $data, $smarty, $user, $db
@@ -1081,6 +1091,7 @@ function get_object_showcase($showcase, $data, $smarty, $user, $db, $account) {
             $html = get_showcase($data, $smarty, $user, $db);
             break;
         case 'supplierdelivery':
+        case 'supplier_delivery':
 
 
             if ($user->get('User Type') == 'Agent') {
@@ -1162,7 +1173,10 @@ function get_object_showcase($showcase, $data, $smarty, $user, $db, $account) {
             include_once 'showcase/sales_representative.show.php';
             $html = get_sales_representative_showcase($data, $smarty, $user, $db);
             break;
-
+        case 'agent_supplier_order':
+            include_once 'showcase/agent_supplier_order.show.php';
+            $html = get_agent_supplier_order_showcase($data, $smarty, $user, $db);
+            break;
         default:
             $html = $data['object'].' -> '.$data['key'];
             break;
@@ -1564,6 +1578,11 @@ function get_navigation($user, $smarty, $data, $db, $account) {
                     break;
                 case ('prospects.email_template'):
                     return get_prospects_email_template_navigation(
+                        $data, $smarty, $user, $db, $account, $account
+                    );
+                    break;
+                case ('product'):
+                    return get_product_navigation(
                         $data, $smarty, $user, $db, $account, $account
                     );
                     break;
@@ -2673,10 +2692,16 @@ function get_navigation($user, $smarty, $data, $db, $account) {
                         $data, $smarty, $user, $db, $account
                     );
                     break;
+                case ('agent_supplier_order'):
+                    return get_agent_supplier_order_navigation(
+                        $data, $smarty, $user, $db, $account
+                    );
+                    break;
 
 
             }
         case 'agent_client_deliveries':
+
             require_once 'navigation/agent.nav.php';
             switch ($data['section']) {
                 case ('deliveries'):
@@ -2772,7 +2797,6 @@ function get_tabs($data, $db, $account, $modules, $user, $smarty, $requested_tab
     );
 
 
-
     if ($data['section'] == 'category') {
 
         if ($data['_object']->get('Category Scope') == 'Product') {
@@ -2844,8 +2868,7 @@ function get_tabs($data, $db, $account, $modules, $user, $smarty, $requested_tab
                 }
 
             }
-        }
-        elseif ($data['_object']->get('Category Scope') == 'Part') {
+        } elseif ($data['_object']->get('Category Scope') == 'Part') {
 
             $_content['tabs']['category.customers']['class'] = 'hide';
 
@@ -2871,13 +2894,12 @@ function get_tabs($data, $db, $account, $modules, $user, $smarty, $requested_tab
             }
 
 
-        }
-        elseif ($data['_object']->get('Category Scope') == 'Invoice') {
+        } elseif ($data['_object']->get('Category Scope') == 'Invoice') {
 
-            if($data['_object']->get('Category Branch Type')=='Root'){
-                $_content['tabs']['category.details']['class']                     = 'hide';
+            if ($data['_object']->get('Category Branch Type') == 'Root') {
+                $_content['tabs']['category.details']['class'] = 'hide';
 
-                if ($data['tab'] == 'category.details' ) {
+                if ($data['tab'] == 'category.details') {
                     $_content['tabs']['category.categories']['selected'] = true;
 
                     $data['tab'] = 'category.categories';
@@ -2887,8 +2909,7 @@ function get_tabs($data, $db, $account, $modules, $user, $smarty, $requested_tab
             }
 
 
-        }
-        else {
+        } else {
             $_content['tabs']['category.customers']['class'] = 'hide';
         }
 
@@ -2926,10 +2947,6 @@ function get_tabs($data, $db, $account, $modules, $user, $smarty, $requested_tab
     } elseif ($data['section'] == 'email_campaign_type') {
 
 
-
-
-
-
         if ($data['_object']->get('Email Campaign Type Code') == 'Newsletter') {
             $_content['tabs']['email_campaign_type.next_recipients']['class'] = 'hide';
             $_content['tabs']['email_campaign_type.details']['class']         = 'hide';
@@ -2948,7 +2965,7 @@ function get_tabs($data, $db, $account, $modules, $user, $smarty, $requested_tab
             }
 
 
-        }  elseif ($data['_object']->get('Email Campaign Type Code') == 'AbandonedCart'   or $data['_object']->get('Email Campaign Type Code') == 'Marketing'  ) {
+        } elseif ($data['_object']->get('Email Campaign Type Code') == 'AbandonedCart' or $data['_object']->get('Email Campaign Type Code') == 'Marketing') {
             $_content['tabs']['email_campaign_type.next_recipients']['class'] = 'hide';
             $_content['tabs']['email_campaign_type.details']['class']         = 'hide';
             $_content['tabs']['email_campaign_type.workshop']['class']        = 'hide';
@@ -3003,25 +3020,34 @@ function get_tabs($data, $db, $account, $modules, $user, $smarty, $requested_tab
         }
 
 
-    } elseif ($data['module'] == 'suppliers' and $data['section'] == 'order') {
-        if ($data['_object']->get('Purchase Order State') == 'InProcess') {
-
-            //$data['tab']='supplier.order.items';
-
-            //print_r($data);
-
-            //$_content['tabs']['supplier.order.delivery_notes']['class']='hide';
-
-            //if (isset($_content['tabs']['supplier.order.delivery_notes']['selected']) and  $_content['tabs']['supplier.order.delivery_notes']['selected']) {
-            // $_content['tabs']['supplier.order.delivery_notes']['selected']=false;
-            // $_content['tabs']['supplier.order.details']['selected']=true;
-
-            // $data['tab']='supplier.order.details';
-
-            // }
+    } elseif ($data['module'] == 'suppliers') {
 
 
+        if ($data['section'] == 'order') {
+
+            if ($data['_object']->get('Purchase Order State') == 'InProcess') {
+
+                $_content['tabs']['supplier.order.all_supplier_parts']['class'] = '';
+                $_content['tabs']['supplier.order.items_in_process']['class']   = '';
+                $_content['tabs']['supplier.order.items']['class']              = 'hide';
+
+
+                if ($data['tab'] == 'supplier.order.items') {
+                    $data['tab'] = 'supplier.order.items_in_process';
+                }
+
+            } else {
+                $_content['tabs']['supplier.order.all_supplier_parts']['class'] = 'hide';
+                $_content['tabs']['supplier.order.items_in_process']['class']   = 'hide';
+
+                if ($data['tab'] == 'supplier.order.items_in_process' || $data['tab'] == 'supplier.order.all_supplier_parts') {
+                    $data['tab'] = 'supplier.order.items';
+                }
+
+            }
         }
+
+
     } elseif ($data['module'] == 'products' and $data['section'] == 'webpage') {
 
 
@@ -3107,11 +3133,10 @@ function get_tabs($data, $db, $account, $modules, $user, $smarty, $requested_tab
         }
 
 
-    }
-    elseif ($data['section'] == 'email_campaign'  ) {
+    } elseif ($data['section'] == 'email_campaign') {
         $_content['tabs']['email_campaign.email_blueprints']['class'] = 'hide';
 
-        $_content['tabs']['email_campaign.set_mail_list']['class']        = 'hide';
+        $_content['tabs']['email_campaign.set_mail_list']['class'] = 'hide';
 
 
         switch ($data['_object']->get('Email Campaign State')) {
@@ -3130,8 +3155,8 @@ function get_tabs($data, $db, $account, $modules, $user, $smarty, $requested_tab
                 $_content['tabs']['email_campaign.workshop']['class']        = 'hide';
                 $_content['tabs']['email_campaign.sent_emails']['class']     = 'hide';
                 $_content['tabs']['email_campaign.published_email']['class'] = 'hide';
-                $_content['tabs']['email_campaign.set_mail_list']['class']        = '';
-                $_content['tabs']['email_campaign.mail_list']['class']        = 'hide';
+                $_content['tabs']['email_campaign.set_mail_list']['class']   = '';
+                $_content['tabs']['email_campaign.mail_list']['class']       = 'hide';
 
                 //$_content['tabs']['email_campaign.details']['selected'] = true;
                 //$_content['tabs']['email_campaign.details']['selected'] = true;
@@ -4477,13 +4502,35 @@ function get_view_position($db, $state, $user, $smarty, $account) {
                     break;
                 case 'pending_orders':
                     $branch[] = array(
-                        'label'     => _(
-                                "Pending orders"
-                            ).' '.$store->data['Store Code'],
+                        'label'     => _("Pending orders").' '.$store->data['Store Code'],
                         'icon'      => 'clock',
                         'reference' => 'customers/pending_orders/'.$store->id
                     );
                     break;
+
+
+                case 'product':
+
+
+                    $branch[] = array(
+                        'label'     => _('Customers').' '.$state['store']->get('Store Code'),
+                        'icon'      => 'users',
+                        'reference' => 'customers/'.$state['store']->id
+                    );
+                    $branch[] = array(
+                        'label'     => $state['_parent']->get_formatted_id(),
+                        'icon'      => 'user',
+                        'reference' => 'customer/'.$state['_parent']->id
+                    );
+                    $branch[] = array(
+                        'label'     => $state['_object']->get('Code'),
+                        'icon'      => 'cube',
+                        'reference' => 'customer/'.$state['_parent']->id.'/product/'.$state['_object']->id
+                    );
+
+
+                    break;
+
             }
             break;
         case 'suppliers':
@@ -5025,7 +5072,6 @@ function get_view_position($db, $state, $user, $smarty, $account) {
                 }
 
 
-
             } elseif ($state['section'] == 'group_by_store') {
 
                 $branch[] = array(
@@ -5036,7 +5082,6 @@ function get_view_position($db, $state, $user, $smarty, $account) {
 
 
             }
-
 
 
             break;
@@ -8848,6 +8893,53 @@ function get_view_position($db, $state, $user, $smarty, $account) {
                         'icon'      => 'clipboard',
                         'reference' => 'orders'
                     );
+                    break;
+                case 'agent_supplier_order':
+                    $branch[] = array(
+                        'label'     => _("Client's orders"),
+                        'icon'      => '',
+                        'reference' => 'orders'
+                    );
+                    $branch[] = array(
+                        'label'     => '<class ="Purchase_Order_Public_ID">'.$state['_parent']->get('Public ID').'</span>',
+                        'icon'      => 'clipboard',
+                        'reference' => 'client_order/'.$state['_parent']->id
+                    );
+                    $branch[] = array(
+                        'label'     => '<class ="Agent_Supplier_Purchase_Order_Public_ID">'.$state['_object']->get('Public ID').'</span>',
+                        'icon'      => 'paste',
+                        'reference' => ''
+                    );
+
+            }
+
+            break;
+
+        case 'agent_client_deliveries':
+
+
+
+            switch ($state['section']) {
+                case 'deliveries':
+                    $branch[] = array(
+                        'label'     => _("Deliveries"),
+                        'icon'      => 'truck-container',
+                        'reference' => 'agent_deliveries'
+                    );
+                    break;
+                case 'agent_delivery':
+                    $branch[] = array(
+                        'label'     => _("Deliveries"),
+                        'icon'      => '',
+                        'reference' => 'agent_deliveries'
+                    );
+                    $branch[] = array(
+                        'label'     => '<class ="Supplier_Delivery_Public_ID">'.$state['_object']->get('Public ID').'</span>',
+                        'icon'      => 'truck-container',
+                        'reference' => ''
+                    );
+                    break;
+
 
             }
 

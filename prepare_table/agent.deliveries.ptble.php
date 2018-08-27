@@ -19,14 +19,9 @@ $currency = '';
 $where = 'where true ';
 $table = '`Supplier Delivery Dimension` D';
 
-if ($parameters['parent'] == 'account') {
-
-    $where = sprintf(
-        'where  `Supplier Delivery Parent`="Agent" and `Supplier Delivery Parent Key`=%d  ', $parameters['agent_key']
-    );
 
 
-} if ($parameters['parent'] == 'agent') {
+if ($parameters['parent'] == 'Agent') {
     $where = sprintf(
         'where  `Supplier Delivery Parent`="Agent" and `Supplier Delivery Parent Key`=%d  ', $parameters['parent_key']
     );

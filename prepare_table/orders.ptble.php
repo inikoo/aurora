@@ -1,6 +1,7 @@
 <?php
 
 
+
 $group_by = '';
 $wheref   = '';
 
@@ -131,6 +132,20 @@ if (isset($parameters['awhere']) and $parameters['awhere']) {
         = '`Order Transaction Fact` OTF  left join     `Order Dimension` O   on (OTF.`Order Key`=O.`Order Key`)   left join `Payment Account Dimension` P on (P.`Payment Account Key`=O.`Order Payment Account Key`)';
 
     $where = sprintf(' where  `Product ID`=%d ', $parameters['parent_key']);
+
+    $group_by = ' group by OTF.`Order Key` ';
+
+
+} elseif ($parameters['parent'] == 'customer_product') {
+
+    $parent_keys=preg_split('/\_/',$parameters['parent_key']);
+
+    $table
+        = '`Order Transaction Fact` OTF  left join     `Order Dimension` O   on (OTF.`Order Key`=O.`Order Key`)   left join `Payment Account Dimension` P on (P.`Payment Account Key`=O.`Order Payment Account Key`)';
+
+    $where = sprintf(' where   `Customer Key`=%d  and `Product ID`=%d ', $parent_keys[0],$parent_keys[1]);
+
+    //print $where;
 
     $group_by = ' group by OTF.`Order Key` ';
 
