@@ -157,7 +157,7 @@ class Payment extends DB_Table {
                         return _('Completed');
                         break;
                     case 'Cancelled':
-                        return _('Cancelled');
+                        return '<span class="error">'._('Cancelled').'</span>';
                         break;
                     case 'Error':
                         return _('Error');
@@ -305,12 +305,12 @@ class Payment extends DB_Table {
 
         }
 
-
+        $date=gmdate('Y-m-d H:i:s');
         $this->update(
             array(
                 'Payment Transaction Status' => 'Cancelled',
-                'Payment Cancelled Date'     => gmdate('Y-m-d H:i:s'),
-                'Payment Last Updated Date'  => gmdate('Y-m-d H:i:s'),
+                'Payment Cancelled Date'     => $date,
+                'Payment Last Updated Date'  => $date,
             )
 
         );
@@ -320,6 +320,32 @@ class Payment extends DB_Table {
             $parent_payment = get_object('Payment', $this->data['Payment Related Payment Key']);
             $parent_payment->update(array('Payment Transaction Amount Refunded' => $parent_payment->get('Payment Transaction Amount Refunded') + $this->data['Payment Transaction Amount']));
 
+
+        }if ($this->data['Payment Type'] == 'Credit') {
+            $parent_payment = get_object('Payment', $this->data['Payment Related Payment Key']);
+            $parent_payment->update(array('Payment Transaction Amount Credited' => $parent_payment->get('Payment Transaction Amount Credited') + $this->data['Payment Transaction Amount']));
+
+
+            $customer=get_object('Customer',$this->data['Payment Customer Key']);
+
+            $account=get_object('Account',1);
+            include_once 'utils/currency_functions.php';
+            $exchange = currency_conversion(
+                $this->db, $this->get('Payment Currency Code'), $account->get('Account Currency'), '- 1 minutes'
+            );
+
+            $sql = sprintf(
+                'INSERT INTO `Credit Transaction Fact` 
+                    (`Credit Transaction Date`,`Credit Transaction Amount`,`Credit Transaction Currency Code`,`Credit Transaction Currency Exchange Rate`,`Credit Transaction Customer Key`,`Credit Transaction Payment Key`) 
+                    VALUES (%s,%.2f,%s,%f,%d,%d) ', prepare_mysql($date), $this->data['Payment Transaction Amount'], prepare_mysql($this->get('Payment Currency Code')), $exchange, $this->get('Payment Customer Key'), $this->id
+
+
+            );
+
+            $this->db->exec($sql);
+
+
+            $customer->update_account_balance();
 
         }
 
