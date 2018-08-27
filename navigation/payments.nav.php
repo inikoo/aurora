@@ -1091,9 +1091,18 @@ function get_payment_navigation($data, $user, $smarty, $db) {
     $sections[$_section]['selected'] = true;
 
 
-    $title = _('Payment').' <span class="id">'.$data['_object']->get(
-            'Payment Key'
-        ).' '.($data['_object']->get('Payment Transaction ID') != '' ? '('.$data['_object']->get('Payment Transaction ID').')' : '').' </span>';
+    if ($data['_object']->get('Payment Type') == 'Credit') {
+        $customer = get_object('Customer', $data['_object']->get('Payment Customer Key'));
+        $title    = sprintf(_('Credit for customer %s'), '<span class="link id" onclick="change_view(\'customers/'.$customer->get('Customer Store Key').'/'.$customer->id.'\')">'.$customer->get('Name')).'</span>';
+    } else {
+
+        $title = _('Payment').' <span class="id">'.$data['_object']->get(
+                'Payment Key'
+            ).' '.($data['_object']->get('Payment Transaction ID') != '' ? '('.$data['_object']->get('Payment Transaction ID').')' : '').' </span>';
+
+    }
+
+
 
 
     $_content = array(

@@ -1177,6 +1177,10 @@ function get_object_showcase($showcase, $data, $smarty, $user, $db, $account) {
             include_once 'showcase/agent_supplier_order.show.php';
             $html = get_agent_supplier_order_showcase($data, $smarty, $user, $db);
             break;
+        case 'payment':
+            include_once 'showcase/payment.show.php';
+            $html = get_payment_showcase($data, $smarty, $user, $db);
+            break;
         default:
             $html = $data['object'].' -> '.$data['key'];
             break;
