@@ -212,17 +212,19 @@
 
             <div id="menu">
             </div>
-            {if $user->get('User Type')=='Staff' or $user->get('User Type')=='Contractor' }
+
                 <ul style="margin-top:5px">
+                    {if $user->get('User Type')=='Staff' or $user->get('User Type')=='Contractor' }
                     <li onclick="change_view('/fire')"><i class="fa fa-fire fa-fw" style="color:orange;opacity:.8"></i><span id="fire_label" class="label"> {t}Fire{/t}</span>
                     </li>
+                    {/if}
                     <li ><a href="https://get.teamviewer.com/txww6bm" target="_blank"><i class="fa fa-hands-helping fa-fw" style="color:cornflowerblue;opacity:.75"></i><span id="fire_label" class="label"> {t}Remote help{/t}</span></a>
                     </li>
                     <li ><a href="https://inikoo.atlassian.net/servicedesk/customer/portal/6" target="_blank"><i class="fa fa-medkit fa-fw" style="color:cornflowerblue;opacity:.75"></i><span id="fire_label" class="label"> {t}Service desk{/t}</span></a>
                     </li>
                 </ul>
 
-            {/if}
+
 
 
 

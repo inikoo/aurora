@@ -176,39 +176,6 @@ if ($user->can_view('orders')) {
 
 
 
-if ($user->can_view('sites')) {
-
-/*
-    if ($user->get('User Hooked Site Key')) {
-        $nav_menu[] = array(
-            '<i class="button far fa-globe fa-fw"></i>',
-            _('Websites'),
-            'website/'.$user->get('User Hooked Site Key'),
-            'websites',
-            'module',
-            ''
-        );
-    } else {
-        $nav_menu[] = array(
-            '<i class="button far fa-globe fa-fw"></i>',
-            _('Websites'),
-            'websites',
-            'websites',
-            'module',
-            ''
-        );
-    }
-
-    */
-
-    /*
-    $sections=get_sections('websites', $data['parent_key']);
-    foreach ($sections as $key=>$section ) {
-        $nav_menu[] = array('<i class="button far fa-'.$section['icon'].' fa-fw"></i>',$section['label'], $section['reference'], $key, 'section', '');
-    }
-*/
-
-}
 
 
 /*
