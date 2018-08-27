@@ -22,7 +22,7 @@ class Public_Store {
         'Date'         => false
     );
 
-    function Public_Store($a1, $a2 = false, $a3 = false, $_db = false) {
+    function __construct($a1, $a2 = false, $a3 = false, $_db = false) {
 
         if (!$_db) {
             global $db;

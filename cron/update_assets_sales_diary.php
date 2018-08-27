@@ -398,6 +398,7 @@ $sql=sprintf('update `Part Category Data` set `Part Category Yesterday Acc Custo
 $sql=sprintf('update `Part Category Data` set `Part Category Yesterday Acc Repeat Customers`=`Part Category Today Acc Repeat Customers`,`Part Category Today Acc Repeat Customers`=0');$db->exec($sql);
 
 */
+//1032
 
 
 $msg = new_housekeeping_fork(

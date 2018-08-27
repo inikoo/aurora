@@ -313,6 +313,9 @@ function fork_housekeeping($job) {
                     break;
             }
 
+            $account->load_acc_data();
+            $store->load_acc_data();
+
             $context = new ZMQContext();
             $socket  = $context->getSocket(ZMQ::SOCKET_PUSH, 'my pusher');
             $socket->connect("tcp://localhost:5555");
@@ -1272,6 +1275,84 @@ function fork_housekeeping($job) {
                 }
             } else {
                 print_r($error_info = $db->errorInfo());
+                exit;
+            }
+
+
+            break;
+
+        case 'create_yesterday_timeseries':
+
+            require_once 'class.Timeserie.php';
+
+
+            require_once 'conf/timeseries.php';
+
+            $timeseries = get_time_series_config();
+
+
+            $sql = sprintf('SELECT `Category Key` FROM `Category Dimension` WHERE `Category Scope`="Part" ORDER BY  `Category Key` DESC');
+
+            if ($result = $db->query($sql)) {
+                foreach ($result as $row) {
+                    $category = get_object('Category',$row['Category Key']);
+                    if ($category->get('Part Category Status') != 'NotInUse' or date('Y-m-d') == date('Y-m-d', strtotime($category->get('Part Category Valid To').' +0:00'))) {
+                        if (!array_key_exists($category->get('Category Scope').'Category', $timeseries)) {
+                            continue;
+                        }
+
+                        $timeseries_data = $timeseries[$category->get('Category Scope').'Category'];
+                        //print_r($timeseries_data);
+                        foreach ($timeseries_data as $timeserie_data) {
+
+                            $editor['Date']                          = gmdate('Y-m-d H:i:s');
+                            $timeserie_data['editor']                = $editor;
+                            $timeserie_data['Timeseries Parent']     = 'Category';
+                            $timeserie_data['Timeseries Parent Key'] = $category->id;
+                            $timeseries                              = new Timeseries(
+                                'find', $timeserie_data, 'create'
+                            );
+                            $category->update_part_timeseries_record($timeseries, gmdate('Y-m-d', strtotime('now -1 day')), gmdate('Y-m-d', strtotime('now -1 day')));
+                        }
+                    }
+                }
+
+            } else {
+                print_r($error_info = $db->errorInfo());
+                print $sql;
+                exit;
+            }
+
+
+
+            $sql = sprintf('SELECT `Category Key` FROM `Category Dimension` WHERE `Category Scope`="Product" ORDER BY  `Category Key` DESC');
+
+            if ($result = $db->query($sql)) {
+                foreach ($result as $row) {
+                    $category = get_object('Category',$row['Category Key']);
+                    $category->update_product_category_new_products();
+                    if ($category->get('Product Category Status') != 'Discontinued' or date('Y-m-d') == date('Y-m-d', strtotime($category->get('Product Category Valid To').' +0:00'))) {
+                        if (!array_key_exists($category->get('Category Scope').'Category', $timeseries)) {
+                            continue;
+                        }
+
+                        $timeseries_data = $timeseries[$category->get('Category Scope').'Category'];
+                        //print_r($timeseries_data);
+                        foreach ($timeseries_data as $timeserie_data) {
+
+                            $editor['Date']                          = gmdate('Y-m-d H:i:s');
+                            $timeserie_data['editor']                = $editor;
+                            $timeserie_data['Timeseries Parent']     = 'Category';
+                            $timeserie_data['Timeseries Parent Key'] = $category->id;
+                            $timeseries                              = new Timeseries('find', $timeserie_data, 'create');
+                            $category->update_product_timeseries_record($timeseries, gmdate('Y-m-d', strtotime('now -1 day')), gmdate('Y-m-d', strtotime('now -1 day')));
+                        }
+                    }
+                }
+
+            } else {
+                print_r($error_info = $db->errorInfo());
+                print $sql;
                 exit;
             }
 

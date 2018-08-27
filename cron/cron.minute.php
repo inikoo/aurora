@@ -18,7 +18,21 @@ $time=date('H:i');
 
 if($time=='00:00'  ){
 
-    create_today_ISF($account);
+    new_housekeeping_fork(
+        'au_housekeeping', array(
+        'type'                    => 'create_today_ISF',
+
+    ), $account->get('Account Code')
+    );
+
+
+
+    new_housekeeping_fork(
+        'au_housekeeping', array(
+        'type'                    => 'create_yesterday_timeseries',
+
+    ), $account->get('Account Code')
+    );
 
     $account->load_acc_data();
     $account->update_orders();
@@ -315,15 +329,6 @@ if($time=='00:00'  ){
 send_periodic_email_mailshots($time,$db, $account);
 
 
-
-function create_today_ISF($account){
-    new_housekeeping_fork(
-        'au_housekeeping', array(
-        'type'                    => 'create_today_ISF',
-
-    ), $account->get('Account Code')
-    );
-}
 
 function send_periodic_email_mailshots($time,$db, $account) {
 
