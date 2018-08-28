@@ -10,9 +10,9 @@
 */
 
 
-$tab     = 'category.deals';
+$tab     = 'category.deal_components';
 $ar_file = 'ar_marketing_tables.php';
-$tipo    = 'deals';
+$tipo    = 'deal_components';
 
 $default = $user->get_tab_defaults($tab);
 

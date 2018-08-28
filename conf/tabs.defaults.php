@@ -3613,15 +3613,15 @@ $tab_defaults = array(
 
     ),
 
-    'category.deals' => array(
+    'category.deal_components' => array(
         'view'          => 'overview',
         'sort_key'      => 'name',
         'sort_order'    => 1,
         'rpp'           => 100,
         'rpp_options'   => $default_rrp_options,
         'f_field'       => 'name',
-        'elements_type' => each($elements_options['deals'])['key'],
-        'elements'      => $elements_options['deals'],
+        'elements_type' => each($elements_options['deal_components'])['key'],
+        'elements'      => $elements_options['deal_components'],
     ),
 
 

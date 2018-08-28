@@ -3569,37 +3569,11 @@ $modules = array(
                         // 'quantity_data' => array('object' => '_object', 'field'  => 'Number Customers'),
                         'icon'  => 'user'
                     ),
-                    'category.deals'     => array(
+                    'category.deal_components'     => array(
                         'label' => _('Offers'),
-                        // 'quantity_data' => array('object' => '_object', 'field'  => 'Number Customers'),
                         'icon'  => 'tags'
                     ),
 
-                    /*
-                    'category.customers' => array('label' => '',
-
-                                                  'subtabs'       => array(
-                                                      'category.customers'         => array(
-                                                          'label'         => _('Customers'),
-                                                          'quantity_data' => array(
-                                                              'object' => '_object',
-                                                              'field'  => 'Number Customers'
-                                                          ),
-                                                      ),
-                                                      'category.customers.favored' => array(
-                                                          'label'         => _('Customers who favored'),
-                                                          'quantity_data' => array(
-                                                              'object' => '_object',
-                                                              'field'  => 'Number Customers Favored'
-                                                          ),
-
-                                                      ),
-                                                  )
-
-
-                    ),
-
-                    */
 
                     'category.history' => array(
                         'title'         => _('History/Notes'),
