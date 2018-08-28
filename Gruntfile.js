@@ -373,7 +373,7 @@ module.exports = function (grunt) {
                     port: '<%= secret.fork.port %>',
                     debug: true,
                     releases_to_keep: '3',
-                    exclude: ['keyring', 'external_libs', 'server_files','vendor'],
+                    exclude: ['keyring', 'external_libs', 'server_files','vendor','base_dirs'],
                     after_deploy: 'cd /home/fork/fork/current && ln -s /home/fork/composer/current/vendor vendor && ln -s /home/fork/external_libs/current/ external_libs && ln -s /home/fork/keyring/ keyring  && ln -s /home/fork/base_dirs/ base_dirs '
                 }
             }, fork_external_libs: {

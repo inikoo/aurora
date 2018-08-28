@@ -1756,7 +1756,11 @@ class Order extends DB_Table {
     function get_items() {
 
         $sql = sprintf(
-            'SELECT OTF.`Product ID`,OTF.`Product Key`,`Order Transaction Fact Key`,`Order Currency Code`,`Order Transaction Amount`,`Order Quantity`,`Product History Name`,`Product History Units Per Case`,PD.`Product Code`,`Product Name`,`Product Units Per Case` FROM `Order Transaction Fact` OTF LEFT JOIN `Product History Dimension` PHD ON (OTF.`Product Key`=PHD.`Product Key`) LEFT JOIN `Product Dimension` PD ON (PD.`Product ID`=PHD.`Product ID`)  WHERE `Order Key`=%d  ORDER BY `Product Code File As` ',
+            'SELECT `Order State`,`Delivery Note Quantity`,`Order State`,OTF.`Product ID`,OTF.`Product Key`,`Order Transaction Fact Key`,`Order Currency Code`,`Order Transaction Amount`,`Order Quantity`,`Product History Name`,`Product History Units Per Case`,PD.`Product Code`,`Product Name`,`Product Units Per Case` 
+      FROM `Order Transaction Fact` OTF LEFT JOIN `Product History Dimension` PHD ON (OTF.`Product Key`=PHD.`Product Key`) LEFT JOIN 
+      `Product Dimension` PD ON (PD.`Product ID`=PHD.`Product ID`)  LEFT JOIN 
+        `Order Dimension` O ON (O.`Order Key`=OTF.`Order Key`) 
+      WHERE `Order Key`=%d  ORDER BY `Product Code File As` ',
             $this->id
         );
 
@@ -1770,12 +1774,19 @@ class Order extends DB_Table {
                     '<span    data-settings=\'{"field": "Order Quantity", "transaction_key":"%d","item_key":%d, "item_historic_key":%d ,"on":1 }\'   ><input class="order_qty width_50" value="%s" ovalue="%s"> <i onClick="save_item_qty_change(this)" class="fa  fa-plus fa-fw like_button button"  style="cursor:pointer" aria-hidden="true"></i></span>',
                     $row['Order Transaction Fact Key'], $row['Product ID'], $row['Product Key'], $row['Order Quantity'] + 0, $row['Order Quantity'] + 0
                 );
+//'InBasket','InProcess','InWarehouse','PackedDone','Approved','Dispatched','Cancelled'
+                if($row['Order State']=='Dispatched' or $row['Order State']=='Approved' or  $row['Order State']=='PackedDone'  ){
+                    $qty=number($row['Delivery Note Quantity']);
 
+                }else{
+                    $qty=number($row['Order Quantity']);
+
+                }
 
                 $items[] = array(
                     'code'        => $row['Product Code'],
                     'description' => $row['Product History Units Per Case'].'x '.$row['Product History Name'],
-                    'qty'         => number($row['Order Quantity']),
+                    'qty'         => $qty,
                     'edit_qty'    => $edit_quantity,
                     'amount'      => '<span class="item_amount">'.money($row['Order Transaction Amount'], $row['Order Currency Code']).'</span>'
 

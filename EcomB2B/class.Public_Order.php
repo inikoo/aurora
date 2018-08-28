@@ -232,7 +232,45 @@ class Public_Order extends DBW_Table {
 
 
         switch ($key) {
+            case ('State'):
 
+
+                switch ($this->data['Order State']) {
+                    case('InBasket'):
+                        $state = _('In Basket');
+                        break;
+                    case('InProcess'):
+                        $state = _('Submitted');
+                        break;
+                    case('InWarehouse'):
+                        $state = _('Picking order');
+                        break;
+                    case('PackedDone'):
+                        $state = _('Packed');
+                        break;
+                    case('Approved'):
+                        $state = _('Packed');
+                        break;
+                    case('Dispatch Approved'):
+                        $state = _('Ready to dispatch');
+                        break;
+                    case('Dispatched'):
+                        $state = _('Dispatched');
+                        break;
+                    case('Cancelled'):
+                        $state = '<span class="error">'._('Cancelled').'</span>';
+                        break;
+                    default:
+                        $state = $this->data['Order State'];
+
+                }
+
+                return $state;
+                break;
+            case 'Date':
+
+                return strftime("%e %B %Y", strtotime($this->data['Order Date'].' +0:00'));
+                break;
 
 
             case 'Currency Code':
@@ -363,6 +401,11 @@ class Public_Order extends DBW_Table {
 
         }
 
+    }
+
+
+    function get_date($field) {
+        return strftime("%e %b %Y", strtotime($this->data[$field].' +0:00'));
     }
 
 
