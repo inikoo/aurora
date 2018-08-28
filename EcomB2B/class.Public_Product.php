@@ -325,6 +325,18 @@ class Public_Product {
 
                 global $imagecache;
 
+
+                if(!is_object($imagecache)){
+                    require_once 'external_libs/ImageCache.php';
+
+                    $imagecache                         = new ImageCache();
+                    $imagecache->cached_image_directory = 'server_files/cached_images/';
+                }
+
+
+
+
+
                 $image_key = $this->data['Product Main Image Key'];
 
                 $_size_image_product_webpage = '340_214';

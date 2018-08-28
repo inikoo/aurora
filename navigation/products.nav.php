@@ -1224,7 +1224,7 @@ function get_product_navigation($data, $smarty, $user, $db, $account) {
     if (count($product_parts) == 1) {
 
         $part  = array_values($product_parts)[0];
-        $title .= ' <small class="padding_left_10"> <i class="fa fa-long-arrow-left padding_left_10"></i> <i class="fa fa-square button" title="'._('Part').'" onCLick="change_view(\'/part/'.$part->id
+        $title .= ' <small class="padding_left_10"> <i class="fa fa-long-arrow-left padding_left_10"></i> <i class="fa fa-box button" title="'._('Part').'" onCLick="change_view(\'/part/'.$part->id
             .'\')" ></i> <span class="Part_Reference button"  onCLick="change_view(\'part/'.$part->id.'\')">'.$part->get('Reference').'</small>';
 
 

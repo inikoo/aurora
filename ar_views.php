@@ -3224,6 +3224,10 @@ function get_tabs($data, $db, $account, $modules, $user, $smarty, $requested_tab
     //print_r($_content['tabs']);
     // print_r($_content['subtabs']);
 
+    if(empty($_content['subtabs'])){
+        $_content['subtabs']=array();
+    }
+
     $smarty->assign('_content', $_content);
 
 
@@ -3238,6 +3242,8 @@ function get_tabs($data, $db, $account, $modules, $user, $smarty, $requested_tab
         }
 
     }
+
+
 
     $html = $smarty->fetch('tabs.tpl');
 

@@ -634,6 +634,7 @@ function fork_housekeeping($job) {
                 } else {
                     $product->editor = $editor;
                 }
+                $product->fork=true;
                 $product->update_availability(true);
             }
 
@@ -661,7 +662,10 @@ function fork_housekeeping($job) {
                 } else {
                     $product->editor = $editor;
                 }
-                $product->update_availability(true);
+
+                $product->fork=true;
+
+                $product->update_availability(false);
             }
 
             break;

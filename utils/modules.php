@@ -502,7 +502,7 @@ $modules = array(
                     ),
 
                     'email_campaign_type.next_recipients' => array(
-                        'label' => _('Next recipients'),
+                        'label' => _('Notifications to be send next shot'),
                         'title' => _('Next mailshot recipients'),
                         'icon'  => 'user-clock'
                     ),

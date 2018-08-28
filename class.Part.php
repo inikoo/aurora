@@ -2786,12 +2786,22 @@ class Part extends Asset {
 
             )
         );
-
+/*
+        print "Stock $stock Picked  $picked\n";
+        print "a* $old_stock   ** ".$this->data['Part Current Stock']."  \n"   ;
+        print "b* $old_value   ** ".$this->data['Part Current Value']."  \n"   ;
+        print "b* $old_stock_in_progress   ** ".$this->data['Part Current Stock In Process']."  \n"   ;
+        print "b* $old_stock_picked   ** ".$this->data['Part Current Stock Picked']."  \n"   ;
+        print "b* $old_stock_on_hand   ** ".$this->data['Part Current On Hand Stock']."  \n"   ;
+*/
 
         if ($old_stock != $this->data['Part Current Stock'] or $old_value != $this->data['Part Current Value'] or $old_stock_in_progress != $this->data['Part Current Stock In Process'] or $old_stock_picked != $this->data['Part Current Stock Picked']
             or $old_stock_on_hand != $this->data['Part Current On Hand Stock']
 
         ) {
+
+           // print "XXXXXXX\n";
+
             $this->activate();
             $this->discontinue_trigger();
             $this->update_stock_status();
@@ -2807,12 +2817,16 @@ class Part extends Asset {
             $account = get_object('Account', 1);
 
 
+
+
             new_housekeeping_fork(
                 'au_housekeeping', array(
                 'type'     => 'update_part_products_availability',
                 'part_sku' => $this->id
             ), $account->get('Account Code')
             );
+
+            //print "Y $msg  YYYYYYYYYYY\n";
         }
 
 
@@ -2828,11 +2842,11 @@ class Part extends Asset {
             "SELECT sum(`Quantity On Hand`) AS stock , sum(`Quantity In Process`) AS in_process , sum(`Stock Value`) AS value FROM `Part Location Dimension` WHERE `Part SKU`=%d ", $this->id
         );
 
-
+//print $sql;
         if ($result = $this->db->query($sql)) {
             if ($row = $result->fetch()) {
 
-                //print_r($row);
+               // print_r($row);
 
                 $stock      = round($row['stock'], 3);
                 $in_process = round($row['in_process'], 3);
