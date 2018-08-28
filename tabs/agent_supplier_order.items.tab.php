@@ -68,9 +68,6 @@ $smarty->assign('table_buttons', $table_buttons);
 
 
 
-$smarty->assign(
-    'js_code', 'js/injections/agent.order.'.(_DEVEL ? '' : 'min.').'js'
-);
 
 
 $smarty->assign(
