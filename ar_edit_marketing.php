@@ -70,6 +70,17 @@ switch ($tipo) {
         );
         edit_campaign_component_status($account, $db, $user, $editor, $data, $smarty);
         break;
+    case 'edit_campaign_components_status':
+        $data = prepare_values(
+            $_REQUEST, array(
+                         'deal_key' => array('type' => 'key'),
+                         'status'   => array('type' => 'string'),
+
+
+                     )
+        );
+        edit_campaign_components_status($account, $db, $user, $editor, $data, $smarty);
+        break;
     case 'edit_bulk_deal_data':
         $data = prepare_values(
             $_REQUEST, array(
@@ -203,10 +214,10 @@ function add_target_to_campaign($account, $db, $user, $editor, $data, $smarty) {
     $category = get_object('category', $data['target_key']);
 
 
-    if ($store->get('Store Order Recursion Campaign Key') ==$campaign->id) {
+    if ($store->get('Store Order Recursion Campaign Key') == $campaign->id) {
 
 
-        $deal  = $campaign->get_deals()[0];
+        $deal = $campaign->get_deals()[0];
 
 
         $allowance = $data['allowance'] / 100;
@@ -222,7 +233,7 @@ function add_target_to_campaign($account, $db, $user, $editor, $data, $smarty) {
         );
 
 
-        $component_data['Deal Component Allowance Target Label']            = $category->get('Code');
+        $component_data['Deal Component Allowance Target Label'] = $category->get('Code');
         $deal->add_component($component_data);
 
 
@@ -231,21 +242,20 @@ function add_target_to_campaign($account, $db, $user, $editor, $data, $smarty) {
         $allowance = $data['allowance'] / 100;
 
 
-
         $qty       = $data['terms'];
-        $off       = sprintf(_('%s off'),percentage($allowance,1,0));
-        $off_ratio =$allowance;
+        $off       = sprintf(_('%s off'), percentage($allowance, 1, 0));
+        $off_ratio = $allowance;
 
         $deal_data = array(
-            'Deal Name'                          => sprintf(_('Bulk discount %s'),$category->get('Code')),
-         //   'Deal Description'                   => "order $qty or more $category_code family products and get $off",
-           // 'Deal Term Allowances'               => "order $qty or more $category_code &#8594; $off",
-           // 'Deal Term Allowances Label'         => "order $qty or more $category_code &#8594; $off",
-            'Deal Trigger'                       => 'Category',
-            'Deal Icon'                       => $campaign->get('Deal Campaign Icon'),
-            'Deal Trigger Key'                   => $category->id,
-            'Deal Terms Type'                    => 'Category Quantity Ordered',
-            'Deal Terms'                         => $qty,
+            'Deal Name'        => sprintf(_('Bulk discount %s'), $category->get('Code')),
+            //   'Deal Description'                   => "order $qty or more $category_code family products and get $off",
+            // 'Deal Term Allowances'               => "order $qty or more $category_code &#8594; $off",
+            // 'Deal Term Allowances Label'         => "order $qty or more $category_code &#8594; $off",
+            'Deal Trigger'     => 'Category',
+            'Deal Icon'        => $campaign->get('Deal Campaign Icon'),
+            'Deal Trigger Key' => $category->id,
+            'Deal Terms Type'  => 'Category Quantity Ordered',
+            'Deal Terms'       => $qty,
 
 
         );
@@ -254,27 +264,22 @@ function add_target_to_campaign($account, $db, $user, $editor, $data, $smarty) {
         $deal = $campaign->add_deal($deal_data);
 
 
-
-
         $component_data = array(
             //'Deal Component Terms Type'                   => 'Category Quantity Ordered',
             //'Deal Component Trigger'                      => 'Category',
-            'Deal Component Allowance Type'               => 'Percentage Off',
-            'Deal Component Allowance Target'             => 'Category',
-            'Deal Component Allowance Target Key'         => $category->id,
-            'Deal Component Allowance'                    => $off_ratio,
+            'Deal Component Allowance Type'       => 'Percentage Off',
+            'Deal Component Allowance Target'     => 'Category',
+            'Deal Component Allowance Target Key' => $category->id,
+            'Deal Component Allowance'            => $off_ratio,
 
         );
 
-        $component_data['Deal Component Allowance Target Label']            = $category->get('Code');
+        $component_data['Deal Component Allowance Target Label'] = $category->get('Code');
 
         $deal->add_component($component_data);
 
 
     }
-
-
-
 
 
     $response = array(
@@ -332,6 +337,47 @@ function edit_bulk_deal_data($account, $db, $user, $editor, $data, $smarty) {
         'state'              => 200,
         'description'        => $description,
         'deal_component_key' => $deal_component->id
+    );
+    echo json_encode($response);
+
+}
+
+
+function edit_campaign_components_status($account, $db, $user, $editor, $data, $smarty) {
+
+
+    $deal         = get_object('Deal', $data['deal_key']);
+    $deal->editor = $editor;
+
+
+    if ($data['status'] == 'Active') {
+        $deal_components = $deal->get_deal_components('objects', 'Suspended');
+    } elseif ($data['status'] == 'Suspended') {
+        $deal_components = $deal->get_deal_components('objects', 'Active');
+    } else {
+        $response = array(
+            'state'  => 400,
+            'msg' => 'wrong status '.$data['status']
+        );
+        echo json_encode($response);
+        exit;
+    }
+
+    foreach($deal_components as $deal_component){
+        $deal_component->update(
+            array(
+                'Deal Component Status' => $data['status']
+            )
+
+        );
+
+    }
+
+
+
+    $response = array(
+        'state'  => 200,
+
     );
     echo json_encode($response);
 
