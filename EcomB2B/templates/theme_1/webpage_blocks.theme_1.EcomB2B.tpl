@@ -76,6 +76,11 @@
             {assign "with_unsubscribe" false}
 
             {foreach from=$content.blocks item=$block key=key}
+
+
+
+
+
                 {if $block.show}
 
 
@@ -1209,6 +1214,7 @@
 
 
                 {if $with_favourites==1}
+
 
                     $.getJSON("ar_web_favourites.php?tipo=get_favourites_html&device_prefix=", function (data) {
 

@@ -10,7 +10,7 @@
 *}
 
 
-<h2 class="{if $hide_title}hide{/if}"  >{t}Order number{/t} <span class="order_number">342342</span></h2>
+<h2 class="{if $hide_title}hide{/if}"  >{t}Order number{/t} <span class="order_number">{$order->get('Order Public ID')}</span></h2>
 
 <table class="table" style="width: 100%">
     <thead>

@@ -19,9 +19,9 @@
 <div id="block_{$key}" data-block_key="{$key}" block="{$data.type}" class="{$data.type}  {if !$data.show}hide{/if}" style="padding-top:{$top_margin}px;padding-bottom:{$bottom_margin}px">
 
 
-    <div class="text_blocks container text_template_12">
+    <div class="text_blocks container ">
 
-        <div id="profile_menu" class="text_block ">
+        <div style="width: 250px" id="profile_menu" class="text_block ">
 
             <h4 id="_customer_profile_title">{$data.labels._customer_profile_title}</h4>
 
@@ -64,17 +64,19 @@
 
             </ul>
 
-            <div class="hide">
+            <div >
 
                 <h4 id="_customer_orders_title">{$data.labels._customer_orders_title}</h4>
 
-                <ul class="hide arrows_list1">
+                <ul class=" arrows_list1">
                     <li>
-                                <span class="block_link    selected">
+
+
+                        <span data-block="_orders_details" onClick="change_block(this)" class="block_link like_button " style="cursor: pointer">
                                     <i class="fa fa-angle-right"></i>
-                                    <span class="_orders_title">{$data.labels._orders_title}</span>
-                                    <i data-block="_orders" onClick="change_block(this)" class="padding_left_10 fa like_button fa-save"></i>
-                                </span>
+                                    <span class="_orders_address_title">{if empty($data.labels._orders_title)}{t}Orders{/t}{else}{$data.labels._orders_title}{/if}</span>
+                                    </span>
+
                     </li>
 
 
@@ -83,7 +85,7 @@
 
         </div>
 
-    <div class="text_block">
+         <div style="width: 100%" class="text_block">
 
 
         <div id="_contact_details" class="block reg_form">
@@ -510,13 +512,13 @@
 
         <div id="_poll_details" class="block hide reg_form">
             <form id="poll_details" class="sky-form">
-                <header class="mirror_master" id="_poll_details_title" contenteditable="true">{if empty($data.labels._poll_details_title)}{t}Poll{/t}{else}{$data.labels._poll_details_title}{/if}</header>
+                <header class="mirror_master" id="_poll_details_title" >{if empty($data.labels._poll_details_title)}{t}Poll{/t}{else}{$data.labels._poll_details_title}{/if}</header>
 
                 <fieldset>
                     <section>
 
                         <label class="input">
-                                        <span id="_poll_info" contenteditable="true">{if empty($data.labels._poll_info)}{t}Please let know you better so we can serve you better{/t}{else}{$data.labels._poll_info}{/if}
+                                        <span id="_poll_info" >{if empty($data.labels._poll_info)}{t}Please let know you better so we can serve you better{/t}{else}{$data.labels._poll_info}{/if}
                         </label>
                     </section>
 
@@ -561,9 +563,48 @@
         </div>
 
 
-        <div id="_orders" class="block hide">
+        <div id="_orders_details" class="block hide">
 
-            <h3 class="mirror_master" id="_orders_title">{$data.labels._orders_title}</h3>
+            <h3 class="mirror_master" >{$data.labels._orders_title}</h3>
+
+            <table class="orders">
+                <thead>
+                <tr>
+                    <th  class="text-left" id="_orders_th_number" >{if empty($data.labels._orders_th_number)}{t}Number{/t}{else}{$data.labels._orders_th_number}{/if}</th>
+                    <th  class="text-left" id="_orders_th_date" >{if empty($data.labels._orders_th_date)}{t}Date{/t}{else}{$data.labels._orders_th_date}{/if}</th>
+                    <th  class="text-left" id="_orders_th_status" >{if empty($data.labels._orders_th_status)}{t}Status{/t}{else}{$data.labels._orders_th_status}{/if}</th>
+                    <th  class="text-right" id="_orders_th_total" >{if empty($data.labels._orders_th_total)}{t}Total{/t}{else}{$data.labels._orders_th_total}{/if}</th>
+                    <th></th>
+
+
+                </tr>
+                </thead>
+                <tbody>
+                {assign "current_order_key"  $customer->get_order_in_process_key()}
+                {foreach from=$customer->get_orders_data() item=_order}
+                    {if $current_order_key!=$_order.key}
+                <tr>
+
+
+
+
+                    <td class="like_link" onclick="go_to_order({$_order.key})"><span >{$_order.number}</span></td>
+                    <td>{$_order.date}</td>
+                    <td>{$_order.state}</td>
+                    <td class="text-right">{$_order.total}</td>
+                    <td>
+                        <a target="_blank" href="invoice.pdf.php?id={$_order.invoice_key}"><img class="button  {if !$_order.invoice_key}hide{/if}"  style="margin-left:50px;width: 50px;height:16px;position: relative;top:2px" src="/art/pdf.gif"></a>
+                    </td>
+                </tr>
+                    {/if}
+                {/foreach}
+                </tbody>
+            </table>
+
+
+        </div>
+        <div id="_order_details" class="block hide">
+
 
 
         </div>
@@ -572,11 +613,45 @@
     </div>
 
 
-</div>
+    </div>
 
 </div>
 <script>
 
+    function go_to_order(order_key){
+        $('.block').addClass('hide')
+
+        var ajaxData = new FormData();
+
+        ajaxData.append("tipo", 'get_order_html')
+        ajaxData.append("order_key", order_key)
+        ajaxData.append("device_prefix", '')
+
+
+        $.ajax({
+            url: "/ar_web_order.php", type: 'POST', data: ajaxData, dataType: 'json', cache: false, contentType: false, processData: false, complete: function () {
+            }, success: function (data) {
+
+                console.log(data)
+
+                if (data.state == '200') {
+
+                 $('#_order_details').html(data.html).removeClass('hide')
+
+
+                } else if (data.state == '400') {
+                    swal("{t}Error{/t}!", data.msg, "error")
+                }
+
+
+
+
+            }, error: function () {
+
+            }
+        });
+
+    }
 
     function change_block(element) {
 
@@ -585,6 +660,13 @@
 
         $('.sidebar_widget .block_link').removeClass('selected')
         $(element).addClass('selected')
+    }
+
+    function go_back_orders() {
+
+        $('.block').addClass('hide')
+        $('#_orders_details').removeClass('hide')
+
     }
 
 

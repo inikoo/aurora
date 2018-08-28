@@ -300,7 +300,7 @@
         }
 
         .totals  table{
-            width: initial;
+
             float: right;
         }
 
@@ -470,7 +470,7 @@
 
         {if $profile==1}
         #profile_menu{
-            padding-left: 40px;
+            padding-left: 0px;
         }
 
         #profile_menu li{
@@ -478,6 +478,24 @@
             margin-bottom: 10px;
             font-size: 16px;
         }
+        table.orders tr{
+            height: 35px;
+        }
+        table.orders th{
+            border-bottom:1px solid #777
+        }
+        table.orders td{
+
+            border-bottom:1px solid #ccc
+        }
+        table.orders .like_link{
+            cursor: pointer;
+        }
+
+        table.orders .like_link:hover{
+            text-decoration: underline;
+        }
+
         {/if}
 
 

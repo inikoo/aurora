@@ -502,11 +502,13 @@ VALUES (%f,%s,%f,%s,%s,%s,%s,%s,%s,
     function get_items() {
 
         $sql = sprintf(
-            'SELECT `Current Dispatching State`,`Deal Info`,OTF.`Product ID`,OTF.`Product Key`,OTF.`Order Transaction Fact Key`,`Order Currency Code`,`Order Transaction Amount`,`Order Quantity`,`Product History Name`,`Product History Units Per Case`,PD.`Product Code`,`Product Name`,`Product Units Per Case` 
+            'SELECT `Order State`,`Delivery Note Quantity`,`Current Dispatching State`,`Deal Info`,OTF.`Product ID`,OTF.`Product Key`,OTF.`Order Transaction Fact Key`,`Order Currency Code`,`Order Transaction Amount`,`Order Quantity`,`Product History Name`,`Product History Units Per Case`,PD.`Product Code`,`Product Name`,`Product Units Per Case` 
 FROM `Order Transaction Fact` OTF 
 LEFT JOIN `Product History Dimension` PHD ON (OTF.`Product Key`=PHD.`Product Key`)
  LEFT JOIN `Product Dimension` PD ON (PD.`Product ID`=PHD.`Product ID`)  
   left join  `Order Transaction Deal Bridge` B on (OTF.`Order Transaction Fact Key`=B.`Order Transaction Fact Key`)
+    left join       `Order Dimension` O ON (O.`Order Key`=OTF.`Order Key`) 
+
  WHERE OTF.`Order Key`=%d  ORDER BY `Product Code File As` ', $this->id
         );
 
@@ -538,11 +540,21 @@ LEFT JOIN `Product History Dimension` PHD ON (OTF.`Product Key`=PHD.`Product Key
                 }
 
 
+                if($row['Order State']=='Dispatched' or $row['Order State']=='Approved' or  $row['Order State']=='PackedDone'  ){
+                    $qty=number($row['Delivery Note Quantity']);
+
+                }else{
+                    $qty=number($row['Order Quantity']);
+
+                }
+
+
+
                 $items[] = array(
                     'code'             => sprintf('<a href="/%s">%s</a>', strtolower($row['Product Code']), $row['Product Code']),
                     'code_description' => '<b>'.$row['Product Code'].'</b> '.$row['Product History Units Per Case'].'x '.$row['Product History Name'].$deal_info.$out_of_stock_info,
                     'description'      => $row['Product History Units Per Case'].'x '.$row['Product History Name'].$deal_info.$out_of_stock_info,
-                    'qty'              => number($row['Order Quantity']),
+                    'qty'              => $qty,
                     'qty_raw'          => $row['Order Quantity'] + 0,
                     'pid'              => $row['Product ID'],
                     'otf_key'          => $row['Order Transaction Fact Key'],

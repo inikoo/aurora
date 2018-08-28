@@ -31,11 +31,6 @@ $smarty->cache_dir    = 'server_files/smarty/cache';
 $smarty->config_dir   = 'server_files/smarty/configs';
 
 
-//$smarty->caching = 1;
-
-//$smarty->clearAllCache();
-//$smarty->clear_cache('index.tpl');
-
 
 if(session_id() == '' || !isset($_SESSION)) {
     session_start();
@@ -49,21 +44,6 @@ if(session_id() == '' || !isset($_SESSION)) {
 //}
 
 $is_cached = false;
-
-/*
-
-if (    (!isset($_SESSION['logged_in']) or !$_SESSION['logged_in']) and isset($page_key)   and !isset($_REQUEST['p']) and !isset($_REQUEST['masterkey']) and !isset($_COOKIE['user_handle']) ) {
-
-
-	$smarty->setCaching(Smarty::CACHING_LIFETIME_CURRENT);
-	$smarty->setCacheLifetime(3600);
-	$is_cached=$smarty->isCached('page.tpl',$page_key);
-
-
-}else {
-	$is_cached=false;
-}
-*/
 
 
 if (!$is_cached) {

@@ -67,6 +67,10 @@ function get_object($object_name, $key, $load_other_data = false) {
             include_once 'class.Public_Invoice.php';
             $object = new Public_Invoice($key);
             break;
+        case 'delivery_note':
+            include_once 'class.Public_Delivery_Note.php';
+            $object = new Public_Delivery_Note($key);
+            break;
        
         case 'website':
             include_once 'class.Public_Website.php';

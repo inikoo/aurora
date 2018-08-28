@@ -571,10 +571,12 @@
                         <table class="table">
                             <thead>
                             <tr>
-                                <th>{t}Number{/t}</th>
-                                <th>{t}Date{/t}</th>
-                                <th>{t}Status{/t}</th>
-                                <th class="text-right">{t}Total{/t}</th>
+                                <th  class="text-left" id="_orders_th_number" contenteditable="true">{if empty($data.labels._orders_th_number)}{t}Number{/t}{else}{$data.labels._orders_th_number}{/if}</th>
+                                <th  class="text-left" id="_orders_th_date" contenteditable="true">{if empty($data.labels._orders_th_date)}{t}Date{/t}{else}{$data.labels._orders_th_date}{/if}</th>
+                                <th  class="text-left" id="_orders_th_status" contenteditable="true">{if empty($data.labels._orders_th_status)}{t}Status{/t}{else}{$data.labels._orders_th_status}{/if}</th>
+                                <th  class="text-right" id="_orders_th_total" contenteditable="true">{if empty($data.labels._orders_th_total)}{t}Total{/t}{else}{$data.labels._orders_th_total}{/if}</th>
+
+
                             </tr>
                             </thead>
                             <tbody>

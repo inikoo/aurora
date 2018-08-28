@@ -457,7 +457,7 @@
 
         {if $profile==1}
         #profile_menu{
-            padding-left: 40px;
+            padding-left: 20px;
         }
 
         #profile_menu li{
