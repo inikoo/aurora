@@ -36,6 +36,7 @@ $smarty->cache_dir    = 'server_files/smarty/cache';
 $smarty->config_dir   = 'server_files/smarty/configs';
 
 
+
 $theme        = 'theme_1';
 $website_type = 'EcomB2B';
 
@@ -134,6 +135,7 @@ $template = $theme.'/webpage_blocks.'.$theme.'.'.$website_type.$template_suffix.
 if (!(isset($is_unsubscribe) or isset($is_reset))) {
 
 
+
     $smarty->setCaching(Smarty::CACHING_LIFETIME_CURRENT);
     $smarty->setCacheLifetime(-1);
     $smarty->setCompileCheck(true);
@@ -144,7 +146,6 @@ if (!(isset($is_unsubscribe) or isset($is_reset))) {
 
 
 if (!$smarty->isCached($template, $cache_id) or isset($is_unsubscribe) or isset($is_reset)) {
-
 
 
 
@@ -258,6 +259,9 @@ if (!$smarty->isCached($template, $cache_id) or isset($is_unsubscribe) or isset(
 
 
     //print $template;
+
+}
+else{
 
 }
 

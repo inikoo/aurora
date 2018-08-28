@@ -1363,10 +1363,21 @@ class Page extends DB_Table {
 
         require_once 'external_libs/Smarty/Smarty.class.php';
         $smarty_web               = new Smarty();
-        $smarty_web->template_dir = 'EcomB2B/templates';
-        $smarty_web->compile_dir  = 'EcomB2B/server_files/smarty/templates_c';
-        $smarty_web->cache_dir    = 'EcomB2B/server_files/smarty/cache';
-        $smarty_web->config_dir   = 'EcomB2B/server_files/smarty/configs';
+
+        if (empty($this->fork)) {
+            $base = '';
+        } else {
+            $account = get_object('Account', 1);
+            $base    = 'base_dirs/_home.'.strtoupper($account->get('Account Code')).'/';
+        }
+
+        $smarty_web->template_dir = $base.'EcomB2B/templates';
+        $smarty_web->compile_dir  = $base.'EcomB2B/server_files/smarty/templates_c';
+        $smarty_web->cache_dir    = $base.'EcomB2B/server_files/smarty/cache';
+        $smarty_web->config_dir   = $base.'EcomB2B/server_files/smarty/configs';
+
+
+
         $smarty_web->setCaching(Smarty::CACHING_LIFETIME_CURRENT);
 
 
@@ -1386,8 +1397,6 @@ class Page extends DB_Table {
             $redis->set($url_cache_key, $this->id);
 
         }
-
-
 
 
         return $template_response;
@@ -1814,10 +1823,21 @@ class Page extends DB_Table {
 
         require_once 'external_libs/Smarty/Smarty.class.php';
         $smarty_web               = new Smarty();
-        $smarty_web->template_dir = 'EcomB2B/templates';
-        $smarty_web->compile_dir  = 'EcomB2B/server_files/smarty/templates_c';
-        $smarty_web->cache_dir    = 'EcomB2B/server_files/smarty/cache';
-        $smarty_web->config_dir   = 'EcomB2B/server_files/smarty/configs';
+
+
+        if (empty($this->fork)) {
+            $base = '';
+        } else {
+            $account = get_object('Account', 1);
+            $base    = 'base_dirs/_home.'.strtoupper($account->get('Account Code')).'/';
+        }
+
+        $smarty_web->template_dir = $base.'EcomB2B/templates';
+        $smarty_web->compile_dir  = $base.'EcomB2B/server_files/smarty/templates_c';
+        $smarty_web->cache_dir    = $base.'EcomB2B/server_files/smarty/cache';
+        $smarty_web->config_dir   = $base.'EcomB2B/server_files/smarty/configs';
+
+
         $smarty_web->setCaching(Smarty::CACHING_LIFETIME_CURRENT);
 
         $theme        = 'theme_1';
@@ -2005,11 +2025,21 @@ class Page extends DB_Table {
 
 
             require_once 'external_libs/Smarty/Smarty.class.php';
-            $smarty_web               = new Smarty();
-            $smarty_web->template_dir = 'EcomB2B/templates';
-            $smarty_web->compile_dir  = 'EcomB2B/server_files/smarty/templates_c';
-            $smarty_web->cache_dir    = 'EcomB2B/server_files/smarty/cache';
-            $smarty_web->config_dir   = 'EcomB2B/server_files/smarty/configs';
+            $smarty_web = new Smarty();
+
+            if (empty($this->fork)) {
+                $base = '';
+            } else {
+                $account = get_object('Account', 1);
+                $base    = 'base_dirs/_home.'.strtoupper($account->get('Account Code')).'/';
+            }
+
+            $smarty_web->template_dir = $base.'EcomB2B/templates';
+            $smarty_web->compile_dir  = $base.'EcomB2B/server_files/smarty/templates_c';
+            $smarty_web->cache_dir    = $base.'EcomB2B/server_files/smarty/cache';
+            $smarty_web->config_dir   = $base.'EcomB2B/server_files/smarty/configs';
+
+
             $smarty_web->setCaching(Smarty::CACHING_LIFETIME_CURRENT);
 
             $theme        = 'theme_1';
@@ -3265,10 +3295,20 @@ class Page extends DB_Table {
 
         require_once 'external_libs/Smarty/Smarty.class.php';
         $smarty_web               = new Smarty();
-        $smarty_web->template_dir = 'EcomB2B/templates';
-        $smarty_web->compile_dir  = 'EcomB2B/server_files/smarty/templates_c';
-        $smarty_web->cache_dir    = 'EcomB2B/server_files/smarty/cache';
-        $smarty_web->config_dir   = 'EcomB2B/server_files/smarty/configs';
+
+        if (empty($this->fork)) {
+            $base = '';
+        } else {
+            $account = get_object('Account', 1);
+            $base    = 'base_dirs/_home.'.strtoupper($account->get('Account Code')).'/';
+        }
+
+        $smarty_web->template_dir = $base.'EcomB2B/templates';
+        $smarty_web->compile_dir  = $base.'EcomB2B/server_files/smarty/templates_c';
+        $smarty_web->cache_dir    = $base.'EcomB2B/server_files/smarty/cache';
+        $smarty_web->config_dir   = $base.'EcomB2B/server_files/smarty/configs';
+
+
         $smarty_web->setCaching(Smarty::CACHING_LIFETIME_CURRENT);
 
         //$theme='theme_1';
@@ -3583,8 +3623,7 @@ class Page extends DB_Table {
             }
 
 
-        }
-        elseif ($this->get('Webpage Scope') == 'Category Categories') {
+        } elseif ($this->get('Webpage Scope') == 'Category Categories') {
 
 
             //  $category=get_object('Category',$this->get('Webpage Scope Key'));
@@ -3768,8 +3807,7 @@ class Page extends DB_Table {
             }
 
 
-        }
-        elseif ($this->get('Webpage Scope') == 'Product') {
+        } elseif ($this->get('Webpage Scope') == 'Product') {
 
 
             //  $category=get_object('Category',$this->get('Webpage Scope Key'));
@@ -3893,7 +3931,6 @@ class Page extends DB_Table {
             $website = new Website($this->get('Webpage Website Key'));
 
             $website_system_webpages = website_system_webpages_config($website->get('Website Type'));
-
 
 
             if (isset($website_system_webpages[$this->get('Webpage Code')]['Page Store Content Data'])) {
@@ -10115,24 +10152,22 @@ class Page extends DB_Table {
 
                 );
 
-                if ($result=$this->db->query($sql)) {
-                		foreach ($result as $row) {
+                if ($result = $this->db->query($sql)) {
+                    foreach ($result as $row) {
 
-                		    $webpage=get_object('Webpage',$row['Product Webpage Key']);
-                		    if($webpage->id){
-                                $webpage->reindex_items();
-                                $webpage->update_navigation();
-                            }
+                        $webpage = get_object('Webpage', $row['Product Webpage Key']);
+                        if ($webpage->id) {
+                            $webpage->reindex_items();
+                            $webpage->update_navigation();
+                        }
 
 
-
-                		}
-                }else {
-                		print_r($error_info=$this->db->errorInfo());
-                		print "$sql\n";
-                		exit;
+                    }
+                } else {
+                    print_r($error_info = $this->db->errorInfo());
+                    print "$sql\n";
+                    exit;
                 }
-
 
 
         }

@@ -72,42 +72,7 @@ function new_fork($type, $data, $account_code, $db) {
 function new_housekeeping_fork($type, $data, $account_code) {
 
     if (class_exists('GearmanClient')) {
-        /*
-            include_once  'utils/aes.php';
-            $fork_encrypt_key = md5('huls0fjhslsshskslgjbtqcwijnbxhl2391');
 
-
-            $encrypted=AESEncryptCtr(
-                json_encode(
-                    array(
-                        'code'  => addslashes($account_code),
-                        'data'  => $data
-                    )
-                ), $fork_encrypt_key, 256
-            );
-
-            $fork_metadata = base64_encode($encrypted);
-
-            print "=======\n";
-            print $fork_encrypt_key."\n";
-            print "=======\n";
-            print json_encode(
-                    array(
-                        'code'  => addslashes($account_code),
-                        'data'  => $data
-                    )
-                )."\n";
-            print "=======\n";
-
-
-            print $fork_encrypt_key."\n";
-            print "=======\n";
-            print $encrypted."\n";
-            print "=======\n";
-            print $fork_metadata."\n";
-            print "=======\n";
-
-        */
 
         $client = new GearmanClient();
 
@@ -117,6 +82,8 @@ function new_housekeeping_fork($type, $data, $account_code) {
                 'data' => $data
             )
         );
+
+        //print_r($data);
 
         $client->addServer('127.0.0.1');
         $msg = $client->doBackground($type, $fork_metadata);

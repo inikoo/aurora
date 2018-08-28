@@ -582,9 +582,7 @@ function edit_stock($account, $db, $user, $editor, $data, $smarty) {
         if ($parts_locations_data[$key]['disassociate']) {
             $part_location->delete();
         } else {
-            if ($parts_locations_data[$key]['qty'] != $part_location->get(
-                    'Quantity On Hand'
-                ) or $parts_locations_data[$key]['audit']) {
+            if ($parts_locations_data[$key]['qty'] != $part_location->get('Quantity On Hand') or $parts_locations_data[$key]['audit']) {
 
 
                 $part_location->audit(

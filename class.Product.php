@@ -1782,8 +1782,6 @@ class Product extends Asset {
         if ($web_availability_updated) {
 
 
-            include_once 'class.Page.php';
-            include_once 'class.Order.php';
 
 
             $sql = sprintf(
@@ -1796,7 +1794,7 @@ class Product extends Asset {
 
                     $web_availability = ($this->get_web_state() == 'For Sale' ? 'Yes' : 'No');
                     if ($web_availability == 'No') {
-                        $order = new Order($row['Order Key']);
+                        $order =  get_object('Order',$row['Order Key']);
 
 
                         $order->remove_out_of_stocks_from_basket($this->id);
@@ -1817,7 +1815,7 @@ class Product extends Asset {
                 foreach ($result as $row) {
                     $web_availability = ($this->get_web_state() == 'For Sale' ? 'Yes' : 'No');
                     if ($web_availability == 'Yes') {
-                        $order = new Order($row['Order Key']);
+                        $order =  get_object('Order',$row['Order Key']);
                         $order->restore_back_to_stock_to_basket($this->id);
                     }
                 }
@@ -3886,6 +3884,11 @@ class Product extends Asset {
         if ($result=$this->db->query($sql)) {
         		foreach ($result as $row) {
         		    $webpage=get_object('Webpage',$row['Website Webpage Scope Webpage Key']);
+
+                    if(!empty($this->fork)){
+                        $webpage->fork=true;
+                    }
+
         		    $webpage->reindex_items();
         		}
         }else {
@@ -3896,6 +3899,11 @@ class Product extends Asset {
 
 
         $webpage=get_object('Webpage',$this->get('Product Webpage Key'));
+
+        if(!empty($this->fork)){
+            $webpage->fork=true;
+        }
+
         $webpage->reindex_items();
 
 
