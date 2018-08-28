@@ -65,7 +65,7 @@ function get_agent_purchase_order_transaction_data($data) {
             break;
         case 'ReceivedAgent':
 
-            $back_operations    .= sprintf('<span onclick="unconfirm_item(%d)" style="margin-left:47px" class="button " title="%s"><i class="fa fa-undo fa-fw"></i></span>', $data['Purchase Order Transaction Fact Key'], _('Unconfirm'));
+            $back_operations    .= sprintf('<span onclick="unmark_as_received(%d)" style="margin-left:47px" class="button " title="%s"><i class="fa fa-undo fa-fw"></i></span>', $data['Purchase Order Transaction Fact Key'], _('Unconfirm'));
             $forward_operations .= sprintf('<span onclick="add_to_delivery(%d)" class="button padding_left_20" title="%s"><i class="far fa-truck-container fa-fw"></i></span>', $data['Purchase Order Transaction Fact Key'], _('Add to delivery'));
 
             break;

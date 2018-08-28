@@ -11,18 +11,21 @@
 
 
     {if $_DEVEL}
+
+
+
+
         <link href="/css/jquery-ui.css" rel="stylesheet">
-
         <link href="/css/fa/fontawesome-all.min.css?v5.2" rel="stylesheet">
-
-
-
-
         <link href="/css/intlTelInput.css" rel="stylesheet">
         <link href="/css/countrySelect.css" rel="stylesheet">
         <link href="/css/d3fc.css" rel="stylesheet">
         <link href="/css/backgrid.css?v=211917" rel="stylesheet">
         <link href="/css/backgrid-filter.css" rel="stylesheet">
+
+
+        {if $user->get('User Type')=='Staff' or $user->get('User Type')=='Contractor'}
+
         <link href="/css/editor_v1/froala_editor.css?v2" rel="stylesheet">
         <link href="/css/editor_v1/froala_style.css?v2" rel="stylesheet">
         <link href="/css/editor_v1/codemirror.css" rel="stylesheet">
@@ -40,16 +43,18 @@
         <link href="/css/editor_v1/plugins/table.css" rel="stylesheet">
         <link href="/css/editor_v1/plugins/video.css" rel="stylesheet">
         <link href="/css/editor_v1/plugins/draggable.css" rel="stylesheet">
-
         <link href="/css/amcharts/style.css" rel="stylesheet">
-
         <link href="/css/fotorama.css" rel="stylesheet">
         <link href="/css/jquery.fancybox.min.css" rel="stylesheet">
         <link href="/css/tooltipster.bundle.min.css" rel="stylesheet" type="text/css">
 
-
+        {/if}
 
         <link href="/css/app.css?v180621" rel="stylesheet">
+
+
+
+
         <script src="/js/libs/jquery-2.2.1.js"></script>
         <script src="/js/libs/jquery-ui.js"></script>
         <script src="/js/libs/moment-with-locales.js"></script>
@@ -81,30 +86,25 @@
         <script src="/js/search.js"></script>
         <script src="/js/table.js?v201808v1"></script>
         <script src="/js/validation.js?v171206v5"></script>
-        <script src="/js/edit.js?v1800612v2"></script>
         <script src="/js/pdf.js?v1800612v2"></script>
+        <script src="/utils/country_data.js.php?locale={$locale}"></script>
+        <script src="/js/edit.js?v1800612v2"></script>
+    {if $user->get('User Type')=='Staff' or $user->get('User Type')=='Contractor'}
 
         <script src="/js/edit_webpage_edit.js?v180411v1"></script>
-
         <script src="/js/new.js?v180612"></script>
         <script src="/js/order.common.js?v180629v1"></script>
         <script src="/js/email_campaign.common.js?v180611v3"></script>
-
-
         <script src="/js/supplier.order.js"></script>
         <script src="/js/supplier.delivery.js"></script>
         <script src="/js/part_locations.edit.js?v=20180319"></script>
         <script src="/js/alert_dial.js?v20180128v2"></script>
-
-        <script src="/utils/country_data.js.php?locale={$locale}"></script>
         <script src="/js/libs/editor_v1/froala_editor.min.js?v1"></script>
         <script src="/js/libs/editor_v1/codemirror.js"></script>
         <script src="/js/libs/editor_v1/codemirror.xml.js"></script>
         <script src="/js/libs/editor_v1/codemirror_active-line.js"></script>
-
         <script src="/js/libs/editor_v1/plugins/align.min.js"></script>
         <script src="/js/libs/editor_v1/plugins/draggable.min.js"></script>
-
         <script src="/js/libs/editor_v1/plugins/char_counter.min.js"></script>
         <script src="/js/libs/editor_v1/plugins/code_beautifier.min.js"></script>
         <script src="/js/libs/editor_v1/plugins/code_view.min.js"></script>
@@ -134,12 +134,17 @@
         <script src="/js/libs/amcharts/amstock.js"></script>
         <script src="/js/libs/amcharts/plugins/dataloader/dataloader.min.js"></script>
         <script src="/js/libs/amcharts/plugins/export/export.min.js"></script>
+
+        {elseif $user->get('User Type')=='Agent' }
+        <script src="/js/agent.order.js?v1"></script>
+
+        {/if}
+
         <script src="/js/libs/jquery.scannerdetection.js"></script>
         <script src="/js/libs/jquery.fancybox.min.js"></script>
         <script src="/js/libs/jquery.awesome-cursor.min.js"></script>
         <script src="/js/libs/base64.js?v2"></script>
         <script src="/js/libs/jquery.formatCurrency-1.4.0.min.js"></script>
-
         <script src="/js/libs/autobahn.v1.js"></script>
 
 
