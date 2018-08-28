@@ -47,6 +47,8 @@ trait OrderDiscountOperations {
 
         $this->apply_items_discounts();
 
+
+
     }
 
     function get_allowances_from_order_trigger($no_items = false) {
@@ -74,6 +76,7 @@ trait OrderDiscountOperations {
 
         if ($result = $this->db->query($sql)) {
             foreach ($result as $row) {
+
                 $deals_component_data[$row['Deal Component Key']] = $row;
             }
         } else {
@@ -152,6 +155,8 @@ trait OrderDiscountOperations {
 
     function test_deal_terms($deal_component_data) {
 
+
+       // print_r($deal_component_data);
 
         switch ($deal_component_data['Deal Component Terms Type']) {
 

@@ -327,7 +327,6 @@ abstract class DB_Table extends stdClass {
 
             $this->db->exec($sql);
 
-
             $this->update_history_records_data();
         }
 
@@ -590,7 +589,7 @@ abstract class DB_Table extends stdClass {
             $date = gmdate("Y-m-d H:i:s");
         }
 
-        $user_key = 1;
+
 
         if (isset($this->editor['User Key']) and is_numeric(
                 $this->editor['User Key']

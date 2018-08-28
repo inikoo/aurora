@@ -335,18 +335,15 @@ class DealComponent extends DB_Table {
 
     function update_status($value, $options = '') {
 
+
+        $old_value = $this->data['Deal Component Status'];
+
         if ($value == 'Suspended') {
 
-            $old_value = $this->data['Deal Component Status'];
             $this->update_field('Deal Component Status', $value, $options);
 
 
-            if ($old_value != $value) {
 
-                $this->update_assets();
-
-
-            }
 
 
         } else {
@@ -354,6 +351,12 @@ class DealComponent extends DB_Table {
         }
 
 
+        if ($old_value != $this->data['Deal Component Status']) {
+
+            $this->update_assets();
+
+
+        }
     }
 
 
@@ -377,11 +380,15 @@ class DealComponent extends DB_Table {
         $smarty_web->setCaching(Smarty::CACHING_LIFETIME_CURRENT);
 
 
-        switch ($this->get('Deal Trigger')) {
+
+        switch ($this->get('Deal Component Allowance Target')) {
+
+
+
             case 'Category':
 
 
-                $category = get_object('Category', $this->get('Deal Trigger Key'));
+                $category = get_object('Category', $this->get('Deal Component Allowance Target Key'));
 
                 $webpage = $category->get_webpage();
 
@@ -402,7 +409,7 @@ class DealComponent extends DB_Table {
                 if ($result = $this->db->query($sql)) {
                     foreach ($result as $row) {
 
-                        $webpage = get_object('Webpage', $row['`Product Webpage Key']);
+                        $webpage = get_object('Webpage', $row['Product Webpage Key']);
                         if ($webpage->id) {
                             $cache_id = $webpage->get('Webpage Website Key').'|'.$webpage->id;
                             $smarty_web->clearCache(null, $cache_id);

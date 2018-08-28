@@ -73,7 +73,9 @@ $smarty->assign(
 
 
 $smarty->assign('table_buttons', $table_buttons);
-$smarty->assign('aux_templates', array('campaign_order_recursion_components.edit.tpl'));
+$smarty->assign('deal_key', $state['_object']->id);
+
+$smarty->assign('table_top_template', 'campaign_order_recursion_components.edit.tpl');
 
 include 'utils/get_table_html.php';
 

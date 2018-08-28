@@ -300,6 +300,10 @@ class Deal extends DB_Table {
 
             $where = ' and `Deal Component Status`="Active"';
 
+        }elseif ($options == 'Suspended') {
+
+            $where = ' and `Deal Component Status`="Suspended"';
+
         } else {
             $where = '';
         }

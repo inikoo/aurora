@@ -39,6 +39,7 @@
         }).attr('key', $(element).attr('key'))
 
 
+
         $('#campaign_bulk_deals_status_edit_dialog').find('.target').html($(element).attr('target'))
 
         $('#campaign_bulk_deals_status_edit_dialog').find('.operation').removeClass('hide')
