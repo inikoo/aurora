@@ -1144,6 +1144,33 @@ $elements_options = array(
         )
     ),
 
+    'deal_components' => array(
+        'status'  => array(
+            'label' => _('Status'),
+            'items' => array(
+                'Active'    => array(
+                    'label'    => _('Active'),
+                    'selected' => true
+                ),
+                'Waiting'   => array(
+                    'label'    => _('Waiting'),
+                    'selected' => true
+                ),
+                'Suspended' => array(
+                    'label'    => _('Suspended'),
+                    'selected' => true
+                ),
+                'Finish'    => array(
+                    'label'    => _('Finish'),
+                    'selected' => false
+                ),
+
+            ),
+
+        )
+
+    ),
+
     'campaign_history' => array(
         'type' => array(
             'label' => _('Type'),

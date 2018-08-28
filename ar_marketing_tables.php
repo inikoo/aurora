@@ -47,6 +47,9 @@ switch ($tipo) {
     case 'deals':
         deals(get_table_parameters(), $db, $user);
         break;
+    case 'deal_components':
+        components(get_table_parameters(), $db, $user);
+        break;
     case 'reminders':
         reminders(get_table_parameters(), $db, $user);
         break;
@@ -1127,5 +1130,7 @@ function email_template_types($_data, $db, $user) {
     );
     echo json_encode($response);
 }
+
+
 
 ?>
