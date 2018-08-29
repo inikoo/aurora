@@ -767,13 +767,13 @@ $modules = array(
                                     'Products invoiced'
                                 )
                             ),
-                            /*
+
                             'customer.marketing.families'   => array(
                                 'label' => _(
                                     'Categories ordered'
                                 )
                             ),
-                            */
+
                             'customer.marketing.favourites' => array(
                                 'label' => _(
                                     'Favourite products'

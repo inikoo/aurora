@@ -303,6 +303,16 @@ $tab_defaults = array(
         'f_period'    => 'ytd',
 
     ),
+    'customer.marketing.families' => array(
+        'view'        => 'overview',
+        'sort_key'    => 'id',
+        'sort_order'  => 1,
+        'rpp'         => 100,
+        'rpp_options' => $default_rrp_options,
+        'f_field'     => 'code',
+        'f_period'    => 'ytd',
+
+    ),
 
     'customer.sales.history' => array(
         'view'        => 'overview',

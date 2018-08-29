@@ -14,13 +14,11 @@
 include_once 'utils/date_functions.php';
 $period_tag = get_interval_db_name($parameters['f_period']);
 
-$group_by       = '';
-$table
-                = "`Product Dimension` P left join `Product Data` PD on (PD.`Product ID`=P.`Product ID`) left join `Product DC Data` PDCD on (PDCD.`Product ID`=P.`Product ID`) left join `Store Dimension` S on (`Product Store Key`=`Store Key`)";
+
 $where_interval = '';
 $wheref         = '';
 
-$group_by = ' group by OTF.`Product ID`';
+$group_by = ' group by P.`Product Family Category Key`';
 $where    = sprintf(
     ' where P.`Product Type`="Product" and OTF.`Invoice Key`>0 and `Customer Key`=%d', $parameters['parent_key']
 );
@@ -28,9 +26,9 @@ $where    = sprintf(
 
 
 if ($parameters['f_field'] == 'code' and $f_value != '') {
-    $wheref .= " and  P.`Product Code` like '".addslashes($f_value)."%'";
+    $wheref .= " and  C.`Category Code` like '".addslashes($f_value)."%'";
 } elseif ($parameters['f_field'] == 'description' and $f_value != '') {
-    $wheref .= " and  `Product Name` like '%".addslashes($f_value)."%'";
+    $wheref .= " and  `Category Label` like '%".addslashes($f_value)."%'";
 }
 
 
@@ -39,21 +37,19 @@ $_order = $order;
 
 
 if ($order == 'code') {
-    $order = '`Product Code File As`';
+    $order = '`Category Code`';
 } elseif ($order == 'name') {
-    $order = '`Product Name`';
-} elseif ($order == 'status') {
-    $order = '`Product Status`';
-}elseif ($order == 'invoices') {
+    $order = '`Category Label`';
+} elseif ($order == 'invoices') {
     $order = 'invoices';
 } elseif ($order == 'refunds') {
     $order = 'refunds';
 } elseif ($order == 'amount') {
     $order = 'amount';
-} elseif ($order == 'qty') {
-    $order = 'qty';
+} elseif ($order == 'products') {
+    $order = 'count(Distinct P.`Product ID`) ';
 }  else {
-    $order = 'P.`Product ID`';
+    $order = 'C.`Category Key`';
 }
 
 $table
@@ -61,6 +57,7 @@ $table
     left join `Product Dimension` P on (P.`Product ID`=OTF.`Product ID`) 
     left join `Store Dimension` S on (`Product Store Key`=S.`Store Key`)
      left join `Invoice Dimension` I on (OTF.`Invoice Key`=I.`Invoice Key`)
+      left join `Category Dimension` C on (`Product Family Category Key`=`Category Key`)
      ";
 
 
@@ -75,24 +72,24 @@ $store=get_object('store',$customer->get('Store Key'));
 if($store->get('Store Version')==1){
 
     $fields
-        = "P.`Product ID`,P.`Product Code`,`Product Name`,`Product Price`,`Store Currency Code`,`Store Code`,S.`Store Key`,`Product RRP`,`Product Unit Label`,`Store Currency Code`,`Customer Key`,
-    `Store Name`,`Product Web Configuration`,`Product Availability`,`Product Web State`,`Product Cost`,`Product Number of Parts`,P.`Product Status`,`Product Units Per Case`,
- 
+        = "C.`Category Key`,C.`Category Label`,`Store Currency Code`,`Store Code`,S.`Store Key`,`Customer Key`,`Category Code`,
+    `Store Name`,
     sum(if(`Invoice Type`='Invoice',1,0)) as invoices,
      sum(if(`Invoice Type`='Refund',1,0)) as refunds,
    sum(`Invoice Transaction Gross Amount`-`Invoice Transaction Total Discount Amount`) as amount,
-sum(`Delivery Note Quantity`) as qty 
+count(Distinct P.`Product ID`) as products 
 ";
 }else{
 
     $fields
-        = "P.`Product ID`,P.`Product Code`,`Product Name`,`Product Price`,`Store Currency Code`,`Store Code`,S.`Store Key`,`Product RRP`,`Product Unit Label`,`Customer Key`,
-    `Store Name`,`Product Web Configuration`,`Product Availability`,`Product Web State`,`Product Cost`,`Product Number of Parts`,P.`Product Status`,`Product Units Per Case`,
+        = "C.`Category Key`,C.`Category Label`,`Store Currency Code`,`Store Code`,S.`Store Key`,`Customer Key`,`Category Code`,
+    `Store Name`,
   
     sum(if(`Invoice Type`='Invoice',1,0)) as invoices,
      sum(if(`Invoice Type`='Refund',1,0)) as refunds,
    sum(`Order Transaction Amount`) as amount ,
-     sum(`Order Quantity`) as qty 
+     count(Distinct P.`Product ID`) as products 
+
 
 ";
 }
