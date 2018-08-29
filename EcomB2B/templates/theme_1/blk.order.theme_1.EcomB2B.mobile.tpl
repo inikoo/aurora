@@ -38,39 +38,36 @@
 
 <div class="container">
 
-
+<div style="padding: 0px 20px">
     <h2>{if isset($labels._order_number_label) and $labels._order_number_label!=''}{$labels._order_number_label}{else}{t}Order number{/t}{/if} <span class="order_number">{$order->get('Public ID')}</span></h2>
     {$order->get('State')}<br>
     {$order->get('Date')}<br>
 
+    <div class="" style="display: flex;    line-height: 1.5;">
 
-    <div class="one_third ">
-        <h5>
-            <i class="fa fa-fw fa-truck" aria-hidden="true"></i>
-            <span id="_delivery_address_label" class="website_localized_label"
-            >{if !empty($labels._delivery_address_label) }{$labels._delivery_address_label}{else}{t}Delivery address{/t}{/if}</span>
-        </h5>
-        <p>
+    <div style="font-size: x-small;padding:0px 4px;flex-grow:1;margin-bottom: 20px">
+
+            <span id="_delivery_address_label" class="strong website_localized_label">{if !empty($labels._delivery_address_label) }{$labels._delivery_address_label}{else}{t}Delivery address{/t}{/if}</span>
+
+
             {$order->get('Order Delivery Address Formatted')}
-        </p>
+
     </div>
 
-    <div class="one_third">
-        <h5>
-            <i class="fa fa-fw fa-dollar-sign" aria-hidden="true"></i>
-            <span id="_invoice_address_label" class="website_localized_label"
-            >{if !empty($labels._invoice_address_label) }{$labels._invoice_address_label}{else}{t}Invoice address{/t}{/if}</span>
+        <div style="font-size: x-small;padding:0px 4px;flex-grow:1">
+
+            <span id="_invoice_address_label" class="strong website_localized_label">{if !empty($labels._invoice_address_label) }{$labels._invoice_address_label}{else}{t}Invoice address{/t}{/if}</span>
 
 
 
-        </h5>
-        <p>
+
+
             {$order->get('Order Invoice Address Formatted')}
-        </p>
+
+    </div>
     </div>
 
-    <div class="one_third text-right last" style="padding-left:20px">
-
+</div>
 
         <table class="table">
 
@@ -120,7 +117,9 @@
             </tbody>
         </table>
 
-    </div>
+
+    {include file="theme_1/_order_items.theme_1.mobile.tpl" edit=false hide_title=true order=$order }
+
 
 </div>
 
@@ -128,12 +127,11 @@
 <div class="clearfix "></div>
 
 
-<div class="container order">
-
-    {include file="theme_1/_order_items.theme_1.tpl" edit=false hide_title=true order=$order }
 
 
-</div>
+
+
+
 
 <div class="clearfix marb6"></div>
 
