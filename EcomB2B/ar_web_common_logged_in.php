@@ -20,12 +20,23 @@ $logged_in = !empty($_SESSION['logged_in']);
 
 
 if (!$logged_in) {
-    $response = array(
-        'state' => 400,
-        'resp'  => 'log out'
-    );
-    echo json_encode($response);
-    exit;
+
+    if(empty($redirect_to_login)){
+        $response = array(
+            'state' => 400,
+            'resp'  => 'log out'
+        );
+        echo json_encode($response);
+        exit;
+    }else{
+
+       // print_r($_SERVER);
+
+        header('Location: /login.sys?'.$redirect_to_login[0].'='.$redirect_to_login[1]);
+        exit;
+    }
+
+
 }
 
 

@@ -36,7 +36,6 @@ $smarty->cache_dir    = 'server_files/smarty/cache';
 $smarty->config_dir   = 'server_files/smarty/configs';
 
 
-
 $theme        = 'theme_1';
 $website_type = 'EcomB2B';
 
@@ -107,20 +106,19 @@ if (isset($is_homepage)) {
     $unsubscribe_customer_key = $auth->get_customer_from_unsubscribe_link((isset($_REQUEST['s']) ? $_REQUEST['s'] : ''), (isset($_REQUEST['a']) ? $_REQUEST['a'] : ''));
 
 
-    if($unsubscribe_customer_key!='') {
+    if ($unsubscribe_customer_key != '') {
         $unsubscribe_customer = get_object('Customer', $unsubscribe_customer_key);
         if (!$unsubscribe_customer->id) {
             $unsubscribe_customer_key = '';
-        }else{
+        } else {
             $smarty->assign('unsubscribe_customer', $unsubscribe_customer);
 
         }
     }
     $smarty->assign('selector', (isset($_REQUEST['s']) ? $_REQUEST['s'] : ''));
-    $smarty->assign('authenticator',(isset($_REQUEST['a']) ? $_REQUEST['a'] : ''));
+    $smarty->assign('authenticator', (isset($_REQUEST['a']) ? $_REQUEST['a'] : ''));
 
     $smarty->assign('unsubscribe_customer_key', $unsubscribe_customer_key);
-
 
 
 }
@@ -135,11 +133,9 @@ $template = $theme.'/webpage_blocks.'.$theme.'.'.$website_type.$template_suffix.
 if (!(isset($is_unsubscribe) or isset($is_reset))) {
 
 
-
     $smarty->setCaching(Smarty::CACHING_LIFETIME_CURRENT);
     $smarty->setCacheLifetime(-1);
     $smarty->setCompileCheck(true);
-
 
 
 }
@@ -148,11 +144,9 @@ if (!(isset($is_unsubscribe) or isset($is_reset))) {
 if (!$smarty->isCached($template, $cache_id) or isset($is_unsubscribe) or isset($is_reset)) {
 
 
-
     include_once 'utils/public_object_functions.php';
 
     include_once 'utils/natural_language.php';
-
 
 
     $webpage = get_object('Webpage', $webpage_key);
@@ -240,6 +234,19 @@ if (!$smarty->isCached($template, $cache_id) or isset($is_unsubscribe) or isset(
     }
 
 
+    if ($webpage->get('Webpage Code') == 'login.sys') {
+
+        if (!empty($_REQUEST['invoice_pdf'])) {
+            $smarty->assign('redirect_after_login', '/invoice.pdf.php?id='.$_REQUEST['invoice_pdf']);
+
+        }elseif (!empty($_REQUEST['order'])) {
+            $smarty->assign('redirect_after_login', '/profile.sys?order='.$_REQUEST['order']);
+
+        }
+
+    }
+
+
     if ($webpage->get('Webpage Scope') == 'Product') {
 
 
@@ -260,8 +267,7 @@ if (!$smarty->isCached($template, $cache_id) or isset($is_unsubscribe) or isset(
 
     //print $template;
 
-}
-else{
+} else {
 
 }
 
