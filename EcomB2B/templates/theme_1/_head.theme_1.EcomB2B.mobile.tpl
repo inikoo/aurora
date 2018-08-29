@@ -157,6 +157,59 @@
         {$style[0]}{ {$style[1]}: {$style[2]}}
         {/foreach}
 
+         {if $profile==1}
+         #profile_menu{
+             padding-left: 0px;
+         }
+
+         #profile_menu li{
+             list-style-type: none;
+             margin-bottom: 10px;
+             font-size: 16px;
+         }
+         table.orders tr{
+             height: 55px;
+             min-height: 55px;
+         }
+         table.orders th{
+             font-weight: normal;
+             border-bottom:1px solid #777;text-align: center;
+         }
+         table.orders td{
+
+             border-bottom:1px solid #ccc
+         }
+         table.orders .like_link{
+             cursor: pointer;
+         }
+
+         table.orders .like_link:hover{
+             text-decoration: underline;
+         }
+
+         table.orders th.text-right{
+             text-align: right;padding-right: 4px;
+         }
+         table.orders td.text-right{
+             text-align: right;padding-right: 4px;
+         }
+
+         h3{
+             display: block;
+             padding: 20px 30px;
+             border-bottom: 1px solid rgba(0,0,0,.1);
+             background: rgba(248,248,248,.9);
+             font-size: 25px;
+             -weight: 300;
+             color: #232323;
+             font-weight: 800;
+             font-family: Ubuntu,Helvetica,Arial,sans-serif;
+             margin-top: 0;
+             border: 1px solid #ccc;
+             text-align: center;
+         }
+
+         {/if}
 
 
     </style>

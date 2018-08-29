@@ -563,7 +563,7 @@
         </div>
 
 
-        <div id="_orders_details" class="block hide">
+        <div id="_orders_details" class="block hide" >
 
             <h3 class="mirror_master" >{$data.labels._orders_title}</h3>
 
@@ -653,6 +653,13 @@
 
     }
 
+    function go_back_orders() {
+
+        $('.block').addClass('hide')
+        $('#_orders_details').removeClass('hide')
+
+    }
+
     function change_block(element) {
 
         $('.block').addClass('hide')
@@ -662,12 +669,7 @@
         $(element).addClass('selected')
     }
 
-    function go_back_orders() {
 
-        $('.block').addClass('hide')
-        $('#_orders_details').removeClass('hide')
-
-    }
 
 
     $("form").on('submit', function (e) {

@@ -912,7 +912,6 @@
                         ajaxData.append("pwd", sha256_digest($('#pwd').val()))
                         ajaxData.append("keep_logged", $('#keep_logged').is(':checked'))
 
-
                         $.ajax({
                             url: "/ar_web_login.php", type: 'POST', data: ajaxData, dataType: 'json', cache: false, contentType: false, processData: false, complete: function () {
                             }, success: function (data) {
@@ -921,9 +920,13 @@
                                 if (data.state == '200') {
 
 
+                                   {if isset($redirect_after_login)}
+                                    window.location.replace('{$redirect_after_login}');
+
+                                    {else}
 
 
-                                    if(document.referrer.indexOf(location.protocol + "//" + location.host) === 0){
+                                   if(document.referrer.indexOf(location.protocol + "//" + location.host) === 0){
                                         //console.log(document.referrer)
 
 
@@ -941,9 +944,8 @@
                                     }else{
                                         window.location.replace("index.php");
                                     }
+                                    {/if}
 
-
-                                   // window.location.replace("index.php");
 
 
                                 } else if (data.state == '400') {

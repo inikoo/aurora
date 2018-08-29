@@ -875,7 +875,31 @@
 
                                     if (data.state == '200') {
 
-                                        window.location.replace("index.php");
+                                        {if isset($redirect_after_login)}
+                                        window.location.replace('{$redirect_after_login}');
+
+                                        {else}
+
+
+                                        if(document.referrer.indexOf(location.protocol + "//" + location.host) === 0){
+                                            //console.log(document.referrer)
+
+
+                                            if(document.referrer.match(/login\.sys/g)){
+
+                                                window.location.replace("index.php");
+                                            }else if(document.referrer.match(/register\.sys/g)){
+                                                window.location.replace("index.php");
+                                            }else{
+                                                window.location.replace(document.referrer);
+                                            }
+
+
+
+                                        }else{
+                                            window.location.replace("index.php");
+                                        }
+                                        {/if}
 
 
                                     } else if (data.state == '400') {

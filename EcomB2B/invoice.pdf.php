@@ -11,20 +11,33 @@
 
 
 
+require_once 'utils/public_object_functions.php';
 
 require_once __DIR__.'/../vendor/autoload.php';
 use CommerceGuys\Addressing\Country\CountryRepository;
 
-
-require_once 'common.php';
-
-require_once 'utils/public_object_functions.php';
 
 
 $id = isset($_REQUEST['id']) ? $_REQUEST['id'] : '';
 if (!$id) {
     exit;
 }
+
+$redirect_to_login=array('invoice_pdf',$id);
+include_once 'ar_web_common_logged_in.php';
+
+$account=get_object('Account',1);
+require_once 'external_libs/Smarty/Smarty.class.php';
+
+$smarty               = new Smarty();
+$smarty->template_dir = 'templates';
+$smarty->compile_dir  = 'server_files/smarty/templates_c';
+$smarty->cache_dir    = 'server_files/smarty/cache';
+$smarty->config_dir   = 'server_files/smarty/configs';
+
+
+
+
 $invoice = get_object('Invoice', $id);
 if (!$invoice->id) {
     exit;

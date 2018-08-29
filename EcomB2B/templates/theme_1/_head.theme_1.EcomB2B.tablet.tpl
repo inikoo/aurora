@@ -27,9 +27,7 @@
     <title>{$webpage->get('Webpage Browser Title')}</title>
     <meta name="description" content="{$webpage->get('Webpage Meta Description')}"/>
 
-    <link rel="stylesheet" type="text/css" href="/css/tablet.min.css?v=2.0.2">
-
-
+    <link rel="stylesheet" type="text/css" href="/css/tablet.min.css?v=2.0.3">
 
 
     {assign "with_forms" false}
@@ -164,6 +162,53 @@
         {$style[0]}{ {$style[1]}: {$style[2]}}
         {/foreach}
 
+        {if $profile==1}
+        #profile_menu{
+            padding-left: 0px;
+        }
+
+        #profile_menu li{
+            list-style-type: none;
+            margin-bottom: 10px;
+            font-size: 16px;
+        }
+        table.orders tr{
+            height: 35px;
+        }
+        table.orders th{
+            border:none;font-weight: normal;
+            border-bottom:1px solid #777
+        }
+        table.orders td{
+            padding:0px;text-align: left;border:none;
+            border-bottom:1px solid #ccc
+        }
+        table.orders .like_link{
+            cursor: pointer;
+        }
+
+        table.orders .like_link:hover{
+            text-decoration: underline;
+        }
+
+        table.orders th.text-right{
+            text-align: right;
+        }
+        table.orders td.text-right{
+            text-align: right;
+        }
+
+        h3{
+            display: block;
+            padding-bottom: 20px;
+            border-bottom: 1px solid rgba(0,0,0,.1);
+            font-size: 25px;
+            color: #232323;
+            font-weight: 800;
+            font-family: Ubuntu,Helvetica,Arial,sans-serif;
+        }
+
+        {/if}
 
 
     </style>

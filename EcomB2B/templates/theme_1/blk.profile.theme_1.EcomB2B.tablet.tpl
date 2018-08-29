@@ -19,24 +19,16 @@
 
 
 
-            <div class="menu-bottom-bar menu-bottom-bar-{if empty($poll_queries)}four{else}five{/if} color-menu-bar menu-bottom-bar-text flat-menu-bar">
+            <div class="menu-bottom-bar menu-bottom-bar-{if empty($poll_queries)}five{else}six{/if} color-menu-bar menu-bottom-bar-text flat-menu-bar">
 
-
-
-
-
-                    <a  class="like_button profile_button no-smoothState bg-black border-orange-dark  "  data-tab="_contact_details">
+                <a  class="like_button profile_button no-smoothState bg-black border-orange-dark  "  data-tab="_contact_details">
                         <i class="fa fa-user  color-orange-dark" aria-hidden="true" style="margin-top: 7px"></i>
                         <em style="font-size: 11px">{$data.labels._contact_details_title}</em>
                     </a>
-
-
                 <a  class="like_button profile_button no-smoothState bg-black border-black color-gray-light  "  data-tab="_poll_details">
                     <i class="fa fa-question-circle  color-gray-light" aria-hidden="true"  style="margin-top: 7px"></i>
                     <em style="font-size: 11px">{if empty($data.labels._poll_title)}{t}Poll{/t}{else}{$data.labels._poll_title}{/if}</em>
                 </a>
-
-
                 <a  class="like_button profile_button no-smoothState bg-black border-black color-gray-light  "  data-tab="_login_details">
                     <i class="fa fa-sign-in  color-gray-light" aria-hidden="true"  style="margin-top: 7px"></i>
                     <em style="font-size: 11px">{$data.labels._login_details_title}</em>
@@ -48,6 +40,10 @@
                 <a  class="like_button profile_button no-smoothState bg-black border-black color-gray-light  "  data-tab="_delivery_addresses_details">
                     <i class="fa fa-truck color-gray-light" aria-hidden="true"  style="margin-top: 7px"></i>
                     <em style="font-size: 11px">{$data.labels._delivery_addresses_title}</em>
+                </a>
+                <a  class="like_button profile_button no-smoothState bg-black border-black color-gray-light  "  data-tab="_orders_details">
+                    <i class="fa fa-shopping-cart color-gray-light" aria-hidden="true"  style="margin-top: 7px"></i>
+                    <em style="font-size: 11px">{$data.labels._orders_title}</em>
                 </a>
 
             </div>
@@ -518,11 +514,99 @@
 
             </div>
 
-</div>
+
+    <div id="_orders_details" class="profile_block hide" style="width: auto">
+
+        <h3 class="mirror_master" >{$data.labels._orders_title}</h3>
+
+        <table class="orders">
+            <thead>
+            <tr>
+                <th  class="text-left" id="_orders_th_number" >{if empty($data.labels._orders_th_number)}{t}Number{/t}{else}{$data.labels._orders_th_number}{/if}</th>
+                <th  class="text-left" id="_orders_th_date" >{if empty($data.labels._orders_th_date)}{t}Date{/t}{else}{$data.labels._orders_th_date}{/if}</th>
+                <th  class="text-left" id="_orders_th_status" >{if empty($data.labels._orders_th_status)}{t}Status{/t}{else}{$data.labels._orders_th_status}{/if}</th>
+                <th  class="text-right" id="_orders_th_total" >{if empty($data.labels._orders_th_total)}{t}Total{/t}{else}{$data.labels._orders_th_total}{/if}</th>
+                <th></th>
+
+
+            </tr>
+            </thead>
+            <tbody>
+            {assign "current_order_key"  $customer->get_order_in_process_key()}
+            {foreach from=$customer->get_orders_data() item=_order}
+                {if $current_order_key!=$_order.key}
+                    <tr>
+
+
+
+
+                        <td class="like_link" onclick="go_to_order({$_order.key})"><span >{$_order.number}</span></td>
+                        <td>{$_order.date}</td>
+                        <td>{$_order.state}</td>
+                        <td class="text-right">{$_order.total}</td>
+                        <td>
+                            <a target="_blank" href="invoice.pdf.php?id={$_order.invoice_key}"><img class="button  {if !$_order.invoice_key}hide{/if}"  style="margin-left:50px;height:16px;position: relative;top:6px" src="/art/pdf.gif"></a>
+                        </td>
+                    </tr>
+                {/if}
+            {/foreach}
+            </tbody>
+        </table>
+
+
+    </div>
+    <div id="_order_details" class="profile_block hide" style="width: auto">
+
+
+
+    </div>
 
            
 
 <script>
+
+
+    function go_to_order(order_key){
+        $('.profile_block').addClass('hide')
+
+        var ajaxData = new FormData();
+
+        ajaxData.append("tipo", 'get_order_html')
+        ajaxData.append("order_key", order_key)
+        ajaxData.append("device_prefix", '')
+
+
+        $.ajax({
+            url: "/ar_web_order.php", type: 'POST', data: ajaxData, dataType: 'json', cache: false, contentType: false, processData: false, complete: function () {
+            }, success: function (data) {
+
+                console.log(data)
+
+                if (data.state == '200') {
+
+                    $('#_order_details').html(data.html).removeClass('hide')
+
+
+                } else if (data.state == '400') {
+                    swal("{t}Error{/t}!", data.msg, "error")
+                }
+
+
+
+
+            }, error: function () {
+
+            }
+        });
+
+    }
+
+    function go_back_orders() {
+
+        $('.profile_block').addClass('hide')
+        $('#_orders_details').removeClass('hide')
+
+    }
 
     function change_block(element) {
 
