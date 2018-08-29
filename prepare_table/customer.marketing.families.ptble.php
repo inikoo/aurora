@@ -38,7 +38,7 @@ $_order = $order;
 
 if ($order == 'code') {
     $order = '`Category Code`';
-} elseif ($order == 'name') {
+} elseif ($order == 'label') {
     $order = '`Category Label`';
 } elseif ($order == 'invoices') {
     $order = 'invoices';
