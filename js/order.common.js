@@ -779,6 +779,7 @@ function save_item_qty_change(element) {
 
 
     form_data.append("transaction_key", settings.transaction_key)
+    form_data.append("tab", state.tab)
 
 
     form_data.append("qty", qty)

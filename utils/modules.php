@@ -1128,6 +1128,10 @@ $modules = array(
                         ),
                         'icon'  => 'bars'
                     ),
+                    'order.all_products'   => array(
+                        'label' => _("All products"),
+                        'icon'  => 'th-list'
+                    ),
                     'order.details'        => array(
                         'label' => _(
                             'Data'
