@@ -1597,25 +1597,25 @@ function search_customers($db, $account, $memcache_ip, $data) {
     }
 
 
-    $q_postal_code = preg_replace('/[^a-z^A-Z^\d]/', '', $q);
-    if ($q_postal_code != '') {
-        $sql = sprintf(
-            "select `Customer Key`,`Customer Main Plain Postal Code` from `Customer Dimension`where true $where_store and `Customer Main Plain Postal Code`!='' and `Customer Main Plain Postal Code` like '%s%%' limit 150", addslashes($q_postal_code)
-        );
 
+
+
+    //$q_postal_code = preg_replace('/[^a-z^A-Z^\d]/', '', $q);
+
+    $q_postal_code=$q;
+    if (strlen($q_postal_code)>2) {
+        $sql = sprintf(
+            "select `Customer Key`,`Customer Contact Address Postal Code` from `Customer Dimension`where true $where_store and  `Customer Contact Address Postal Code` like '%s%%' limit 150", addslashes($q_postal_code)
+        );
 
         if ($result = $db->query($sql)) {
             foreach ($result as $row) {
 
-                if ($row['Customer Main Plain Postal Code'] == $q_postal_code) {
+                if ($row['Customer Contact Address Postal Code'] == $q_postal_code) {
                     $candidates[$row['Customer Key']] = 50;
                 } else {
-                    $len_name                         = strlen(
-                        $row['Customer Main Plain Postal Code']
-                    );
-                    $len_q                            = strlen(
-                        $q_postal_code
-                    );
+                    $len_name                         = strlen($row['Customer Contact Address Postal Code']);
+                    $len_q                            = strlen($q_postal_code);
                     $factor                           = $len_q / $len_name;
                     $candidates[$row['Customer Key']] = 20 * $factor;
                 }
@@ -1627,6 +1627,35 @@ function search_customers($db, $account, $memcache_ip, $data) {
         }
 
     }
+
+
+    $q_postal_code=$q;
+    if (strlen($q_postal_code)>3) {
+        $sql = sprintf(
+            "select `Customer Key`,`Customer Contact Address Locality` from `Customer Dimension`where true $where_store and  `Customer Contact Address Locality` like '%s%%' limit 150", addslashes($q_postal_code)
+        );
+
+       // print $sql;
+        if ($result = $db->query($sql)) {
+            foreach ($result as $row) {
+
+                if ($row['Customer Contact Address Locality'] == $q_postal_code) {
+                    $candidates[$row['Customer Key']] = 50;
+                } else {
+                    $len_name                         = strlen($row['Customer Contact Address Locality']);
+                    $len_q                            = strlen($q_postal_code);
+                    $factor                           = $len_q / $len_name;
+                    $candidates[$row['Customer Key']] = 20 * $factor;
+                }
+
+            }
+        } else {
+            print_r($error_info = $db->errorInfo());
+            exit;
+        }
+
+    }
+
 
 
     $sql = sprintf(
