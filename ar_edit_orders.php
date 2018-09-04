@@ -239,6 +239,10 @@ switch ($tipo) {
                              'type'     => 'numeric',
                              'optional' => true
                          ),
+                         'tab'        => array(
+                             'type'     => 'string',
+                             'optional' => true
+                         ),
                          'qty'               => array('type' => 'numeric'),
 
                      )
@@ -261,6 +265,7 @@ function edit_item_in_order($account, $db, $user, $editor, $data, $smarty) {
 
     $parent         = get_object($data['parent'], $data['parent_key']);
     $parent->editor = $editor;
+
 
     //print_r($data);
 
@@ -327,12 +332,23 @@ function edit_item_in_order($account, $db, $user, $editor, $data, $smarty) {
 
 
 
-                    $discounts_data[$row['Order Transaction Fact Key']]=
-                        array(
+
+                    if(isset($data['tab']) and $data['tab']=='order.all_products'){
+                        $discounts_data[$row['Product ID']]= array(
                             'deal_info'=> $row['Deal Info'],
                             'discounts'=>$discounts,
                             'item_net'=>money($row['Order Transaction Amount'], $row['Order Currency Code'])
                         );
+                    }else{
+                        $discounts_data[$row['Order Transaction Fact Key']]= array(
+                            'deal_info'=> $row['Deal Info'],
+                            'discounts'=>$discounts,
+                            'item_net'=>money($row['Order Transaction Amount'], $row['Order Currency Code'])
+                        );
+                    }
+
+
+
 
 
         		}

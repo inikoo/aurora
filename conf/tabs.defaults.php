@@ -533,6 +533,16 @@ $tab_defaults = array(
         'f_field'     => 'code',
 
     ),
+    'order.all_products' => array(
+        'view'          => 'overview',
+        'sort_key'      => 'code',
+        'sort_order'    =>-1,
+        'rpp'           => 100,
+        'rpp_options'   => $default_rrp_options,
+        'f_field'       => 'code',
+
+
+    ),
     'order.history'        => array(
         'view'        => 'overview',
         'sort_key'    => 'date',

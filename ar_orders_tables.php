@@ -105,7 +105,9 @@ switch ($tipo) {
     case 'order.items':
         order_items(get_table_parameters(), $db, $user);
         break;
-
+    case 'order.all_products':
+        order_all_products(get_table_parameters(), $db, $user);
+        break;
     case 'refund.new.items':
         refund_new_items(get_table_parameters(), $db, $user);
         break;
@@ -115,7 +117,7 @@ switch ($tipo) {
     case 'refund.items':
         refund_items(get_table_parameters(), $db, $user);
         break;
-    case 'replacement.new..items':
+    case 'replacement.new.items':
         replacment_items(get_table_parameters(), $db, $user);
         break;
     case 'invoice.items':
@@ -2933,6 +2935,146 @@ function replacement_new_items($_data, $db, $user) {
     $rtext = sprintf(
         ngettext('%s send part', '%s send parts', $items), number($items)
     );
+
+    $response = array(
+        'resultset' => array(
+            'state'         => 200,
+            'data'          => $adata,
+            'rtext'         => $rtext,
+            'sort_key'      => $_order,
+            'sort_dir'      => $_dir,
+            'total_records' => $total
+
+        )
+    );
+    echo json_encode($response);
+}
+
+
+function order_all_products($_data, $db, $user) {
+
+    global $_locale;// fix this locale stuff
+
+    $rtext_label = 'item';
+
+    include_once 'prepare_table/init.php';
+
+
+    $customer_order = get_object('Order', $_data['parameters']['parent_key']);
+
+
+    $sql = "select $fields from $table $where $wheref order by $order $order_direction limit $start_from,$number_results";
+
+    // print $sql;
+    $adata = array();
+
+    if ($result = $db->query($sql)) {
+        foreach ($result as $data) {
+
+
+            if ($data['otf_data'] == '') {
+                $deal_info = '';
+                $quantity  = sprintf(
+                    '<span    data-settings=\'{"field": "Order Quantity", "transaction_key":"%d","item_key":%d, "item_historic_key":%d ,"on":1 }\'   >
+            <i onClick="save_item_qty_change(this)" class="fa minus  fa-minus fa-fw button" aria-hidden="true"></i>
+            <input class="order_qty width_50" style="text-align: center" value="%s" ovalue="%s"> 
+            <i onClick="save_item_qty_change(this)" class="fa plus  fa-plus fa-fw button" aria-hidden="true"></i></span>', 0, $data['Product ID'], $data['Product Current Key'], '', ''
+                );
+
+                $discounts = '<span id="transaction_discounts_'.$data['Product ID'].'" class="_item_discounts"></span>';
+
+                $net = sprintf('<span  id="transaction_item_net_'.$data['Product ID'].'" class="_order_item_net"></span>');
+
+
+            } else {
+
+                list(
+                    $data['Order Transaction Fact Key'], $data['Order Quantity'], $data['Order Transaction Amount'], $data['Current Dispatching State'], $data['Order Transaction Total Discount Amount'], $data['Order Transaction Gross Amount']
+                    ) = preg_split('/\|/', $data['otf_data']);
+
+
+                $quantity = sprintf(
+                    '<span    data-settings=\'{"field": "Order Quantity", "transaction_key":"%d","item_key":%d, "item_historic_key":%d ,"on":1 }\'   >
+            <i onClick="save_item_qty_change(this)" class="fa minus  fa-minus fa-fw button" aria-hidden="true"></i>
+            <input class="order_qty width_50" style="text-align: center" value="%s" ovalue="%s"> 
+            <i onClick="save_item_qty_change(this)" class="fa plus  fa-plus fa-fw button" aria-hidden="true"></i></span>', $data['Order Transaction Fact Key'], $data['Product ID'], $data['Product Current Key'], $data['Order Quantity'] + 0, $data['Order Quantity'] + 0
+                );
+
+
+                $deal_info = '<div id="transaction_deal_info_'.$data['Order Transaction Fact Key'].'" class="deal_info">'.$data['Deal Info'].'</div>';
+
+                $discounts_class = 'button';
+                $discounts_input = sprintf(
+                    '<span class="hide order_item_percentage_discount_form" data-settings=\'{ "field": "Percentage" ,"transaction_key":"%d","item_key":%d, "item_historic_key":%d ,"on":1 }\'   ><input class="order_item_percentage_discount_input" style="width: 70px" value="%s"> <i class="fa save fa-cloud" aria-hidden="true"></i></span>',
+                    $data['Order Transaction Fact Key'], $data['Product ID'], $data['Product Current Key'], percentage($data['Order Transaction Total Discount Amount'], $data['Order Transaction Gross Amount'])
+                );
+
+                $discounts = $discounts_input.'<span class="order_item_percentage_discount   '.$discounts_class.' '.($data['Order Transaction Total Discount Amount'] == 0 ? 'super_discreet' : '').'"><span style="padding-right:5px">'.percentage(
+                        $data['Order Transaction Total Discount Amount'], $data['Order Transaction Gross Amount']
+                    ).'</span> <span class="'.($data['Order Transaction Total Discount Amount'] == 0 ? 'hide' : '').'">'.money($data['Order Transaction Total Discount Amount'], $data['Product Currency']).'</span></span>';
+
+
+                $discounts = '<span id="transaction_discounts_'.$data['Product ID'].'" class="_item_discounts">'.$discounts.'</span>';
+
+                $net = sprintf('<span  id="transaction_item_net_'.$data['Product ID'].'" class="_order_item_net">%s</span>', money($data['Order Transaction Amount'], $data['Product Currency']));
+            }
+
+
+            if (is_numeric($data['Product Availability'])) {
+                $stock = number($data['Product Availability']);
+            } else {
+                $stock = '?';
+            }
+
+
+            $units    = $data['Product Units Per Case'];
+            $name     = $data['Product Name'];
+            $price    = $data['Product Price'];
+            $currency = $data['Product Currency'];
+
+
+            $description = '';
+            if ($units > 1) {
+                $description = number($units).'x ';
+            }
+            $description .= ' '.$name;
+            if ($price > 0) {
+                $description .= ' ('.money($price, $currency, $_locale).')';
+            }
+
+
+            $description .= ' <span style="color:#777">['.$stock.']</span> '.$deal_info;
+
+
+            if ($data['otf_data'] != '') {
+                if ($data['Current Dispatching State'] == 'Out of Stock in Basket') {
+                    $description .= '<br> <span class="warning"><i class="fa fa-exclamation-circle" aria-hidden="true"></i> '._('Product out of stock, removed from basket').'</span>';
+
+
+                }
+            }
+
+
+            $adata[] = array(
+
+                'id'          => (integer)$data['Product ID'],
+                'code'        => sprintf('<span class="link" onclick="change_view(\'/products/%d/%d\')">%s</span>', $customer_order->get('Product Store Key'), $data['Product ID'], $data['Product Code']),
+                'description' => $description,
+                'quantity'    => $quantity,
+                'discounts'   => $discounts,
+
+
+                'net' => $net
+
+
+            );
+        }
+    } else {
+        print_r($error_info = $db->errorInfo());
+        print "$sql\n";
+        exit;
+    }
+
 
     $response = array(
         'resultset' => array(

@@ -1597,13 +1597,13 @@ function search_customers($db, $account, $memcache_ip, $data) {
     }
 
 
-
+    $postal_code_candidates = array();
 
 
     //$q_postal_code = preg_replace('/[^a-z^A-Z^\d]/', '', $q);
 
-    $q_postal_code=$q;
-    if (strlen($q_postal_code)>2) {
+    $q_postal_code = $q;
+    if (strlen($q_postal_code) > 2) {
         $sql = sprintf(
             "select `Customer Key`,`Customer Contact Address Postal Code` from `Customer Dimension`where true $where_store and  `Customer Contact Address Postal Code` like '%s%%' limit 150", addslashes($q_postal_code)
         );
@@ -1614,11 +1614,12 @@ function search_customers($db, $account, $memcache_ip, $data) {
                 if ($row['Customer Contact Address Postal Code'] == $q_postal_code) {
                     $candidates[$row['Customer Key']] = 50;
                 } else {
-                    $len_name                         = strlen($row['Customer Contact Address Postal Code']);
-                    $len_q                            = strlen($q_postal_code);
-                    $factor                           = $len_q / $len_name;
-                    $candidates[$row['Customer Key']] = 20 * $factor;
+                    $len_name                                     = strlen($row['Customer Contact Address Postal Code']);
+                    $len_q                                        = strlen($q_postal_code);
+                    $factor                                       = $len_q / $len_name;
+                    $candidates[$row['Customer Key']]             = 20 * $factor;
                 }
+                $postal_code_candidates[$row['Customer Key']] = sprintf(_('Postal code: %s'), $row['Customer Contact Address Postal Code']);
 
             }
         } else {
@@ -1628,25 +1629,28 @@ function search_customers($db, $account, $memcache_ip, $data) {
 
     }
 
+    $town_candidates = array();
 
-    $q_postal_code=$q;
-    if (strlen($q_postal_code)>3) {
+    $q_postal_code = $q;
+    if (strlen($q_postal_code) > 3) {
         $sql = sprintf(
             "select `Customer Key`,`Customer Contact Address Locality` from `Customer Dimension`where true $where_store and  `Customer Contact Address Locality` like '%s%%' limit 150", addslashes($q_postal_code)
         );
 
-       // print $sql;
+        // print $sql;
         if ($result = $db->query($sql)) {
             foreach ($result as $row) {
 
                 if ($row['Customer Contact Address Locality'] == $q_postal_code) {
                     $candidates[$row['Customer Key']] = 50;
                 } else {
-                    $len_name                         = strlen($row['Customer Contact Address Locality']);
-                    $len_q                            = strlen($q_postal_code);
-                    $factor                           = $len_q / $len_name;
-                    $candidates[$row['Customer Key']] = 20 * $factor;
+                    $len_name                              = strlen($row['Customer Contact Address Locality']);
+                    $len_q                                 = strlen($q_postal_code);
+                    $factor                                = $len_q / $len_name;
+                    $candidates[$row['Customer Key']]      = 20 * $factor;
+
                 }
+                $town_candidates[$row['Customer Key']] = sprintf(_('Town: %s'), $row['Customer Contact Address Locality']);
 
             }
         } else {
@@ -1655,7 +1659,6 @@ function search_customers($db, $account, $memcache_ip, $data) {
         }
 
     }
-
 
 
     $sql = sprintf(
@@ -1766,6 +1769,7 @@ function search_customers($db, $account, $memcache_ip, $data) {
     }
     $customer_keys = preg_replace('/^,/', '', $customer_keys);
 
+
     $sql = sprintf(
         "SELECT `Store Code`,`Customer Store Key`, `Customer Main XHTML Telephone`,`Customer Main Postal Code`,`Customer Key`,`Customer Main Contact Name`,`Customer Name`,`Customer Type`,`Customer Main Plain Email`,`Customer Main Location`,`Customer Tax Number` FROM `Customer Dimension` LEFT JOIN `Store Dimension` ON (`Customer Store Key`=`Store Key`) WHERE `Customer Key` IN (%s)",
         $customer_keys
@@ -1779,6 +1783,16 @@ function search_customers($db, $account, $memcache_ip, $data) {
             if ($row['Customer Type'] == 'Company' and $row['Customer Main Contact Name'] != '') {
                 $name .= ', '.$row['Customer Main Contact Name'];
             }
+
+
+            if (isset($postal_code_candidates[$row['Customer Key']])) {
+                $name .= ' <span class="italic discreet">('.$postal_code_candidates[$row['Customer Key']].')</span>';
+            }
+            if (isset($town_candidates[$row['Customer Key']])) {
+                $name .= ' <span class="italic discreet">('.$town_candidates[$row['Customer Key']].')</span>';
+            }
+
+
             /*
         if ($row['Customer Tax Number']!='') {
             $name.='<br/>'.$row['Customer Tax Number'];
