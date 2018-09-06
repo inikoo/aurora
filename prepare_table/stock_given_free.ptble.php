@@ -53,7 +53,6 @@ if (isset($parameters['period'])) {
 }
 
 
-
 if ($parameters['f_field'] == 'reference' and $f_value != '') {
     $wheref .= " and  `Part Reference` like '".addslashes($f_value)."%'";
 }
@@ -67,7 +66,7 @@ if ($order == 'date') {
     $order = '`Date`';
 } elseif ($order == 'reference') {
     $order = '`Part Reference`';
-}elseif ($order == 'delivery_note') {
+} elseif ($order == 'delivery_note') {
     $order = '`Delivery Note ID`';
 } elseif ($order == 'note') {
     $order = '`Note`';
@@ -82,7 +81,7 @@ if ($order == 'date') {
     $order = '`Inventory Transaction Key`';
 }
 
-$order = '`Date`';
+//$order = '`Date`';
 
 
 $sql_totals = "select count(*) as num from $table  $where $wheref ";

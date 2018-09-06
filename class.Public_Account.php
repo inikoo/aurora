@@ -14,7 +14,7 @@
 
 class Public_Account  {
 
-    function Public_Account($_db = false) {
+    function __construct($_db = false) {
 
         if (!$_db) {
             global $db;

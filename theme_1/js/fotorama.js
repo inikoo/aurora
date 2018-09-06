@@ -1,0 +1,1 @@
+../../EcomB2B/js/fotorama.js

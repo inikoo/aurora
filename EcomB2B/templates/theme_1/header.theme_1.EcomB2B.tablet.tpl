@@ -23,7 +23,7 @@
                 <div class="clear"></div>
             </div>
             <a href="/" class="sidebar-logo">
-                <strong>{$website->get('Website Name')}</strong>
+                <strong>{if !empty($settings['left_menu_text'])}{$settings['left_menu_text']}{else}{$website->get('Website Name')}{/if}</strong>
             </a>
         </div>
         <div class="menu-search">
@@ -147,14 +147,14 @@
 
     <div class="header header-logo-center header-light">
         <a href="/basket.sys" class="header-icon " ><i class="fa fa-arrow-left center"  ></i></a>
-        <a href="#" class="header-logo">{$website->get('Website Name')}</a>
+        <a href="#" class="header-logo">{if !empty($settings['header_text_mobile_website'])}{$settings['header_text_mobile_website']}{else}{$website->get('Website Name')}{/if}</a>
 
     </div>
 {else}
 
 <div class="header header-logo-center header-light">
     <a href="#" class="header-icon header-icon-1 hamburger-animated open-sidebar-left"></a>
-    <a href="/" style="margin:initial;left:70px" class="header-logo">{$website->get('Website Name')}</a>
+    <a href="/" style="margin:initial;left:70px" class="header-logo">{if !empty($settings['header_text_mobile_website'])}{$settings['header_text_mobile_website']}{else}{$website->get('Website Name')}{/if}</a>
 
 
 

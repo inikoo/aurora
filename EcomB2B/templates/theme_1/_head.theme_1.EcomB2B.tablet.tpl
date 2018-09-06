@@ -140,10 +140,25 @@
     <style>
 
 
+
         .header-logo{
             background-image:url({if !empty($settings['logo_website'])}{$settings['logo_website']}{else}/art/mobile_logo.png{/if});
             background-size: auto 100%;
-        };
+        }
+
+        .sidebar-header-image .sidebar-logo {
+            padding-left:0px;
+            background-image:url(/art/mobile_logo.png);
+        }
+
+        .sidebar-header-image .sidebar-logo strong{
+            padding-left: 75px;
+        }
+
+        .sidebar-header-image.bg-1 {
+            background-image: url(/art/mobile_side_bg_1.png);
+        }
+
 
 
         {if $website->get('Website Text Font')!=''}
@@ -159,6 +174,10 @@
         {/if}
 
         {foreach from=$website->style  item=style  }
+        {$style[0]}{ {$style[1]}: {$style[2]}}
+        {/foreach}
+
+        {foreach from=$website->mobile_style  item=style  }
         {$style[0]}{ {$style[1]}: {$style[2]}}
         {/foreach}
 

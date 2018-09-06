@@ -529,7 +529,7 @@
                     <tr>
                         <td class="label">{t}Text{/t}</td>
                         <td>
-                     <span data-scope="product_cointainer_color" class="fa-stack color_picker scope_product_cointainer_color like_button">
+                     <span data-scope="product_container_color" class="fa-stack color_picker scope_product_container_color like_button">
                          <i class="fas fa-circle fa-stack-1x "></i>
                          <i class="fas fa-circle fa-stack-1x "></i>
                     </span>

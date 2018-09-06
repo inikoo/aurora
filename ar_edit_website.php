@@ -76,7 +76,14 @@ switch ($tipo) {
         $data = prepare_values(
             $_REQUEST, array(
                          'key'      => array('type' => 'key'),
-                         'styles'   => array('type' => 'string'),
+                         'styles'   => array(
+                             'type'     => 'string',
+                             'optional' => true
+                         ),
+                         'mobile_styles'   => array(
+                             'type'     => 'string',
+                             'optional' => true
+                         ),
                          'labels'   => array(
                              'type'     => 'string',
                              'optional' => true
@@ -89,7 +96,7 @@ switch ($tipo) {
 
                      )
         );
-        update_website_styles($data, $editor, $smarty, $db);
+        update_website_styles($data, $editor);
         break;
 
     case 'save_footer':
@@ -1892,12 +1899,12 @@ function save_webpage_content($data, $editor, $smarty, $db) {
 
             $deal_component->update(
                 array(
-                    'Deal Component Name Label' => $deal_component_data['name'],
-                    'Deal Component Term Label' => $deal_component_data['term'],
+                    'Deal Component Name Label'      => $deal_component_data['name'],
+                    'Deal Component Term Label'      => $deal_component_data['term'],
                     'Deal Component Allowance Label' => $deal_component_data['allowance']
                 )
             );
-          //  print_r($deal_component_data);
+            //  print_r($deal_component_data);
 
             //$poll_query->update($_data);
 
@@ -1956,8 +1963,6 @@ function save_webpage_content($data, $editor, $smarty, $db) {
 
 
     $webpage->update(array('Page Store Content Data' => $data['content_data']), 'no_history');
-
-
 
 
     if (isset($old_content_data['backup'])) {
@@ -2045,7 +2050,7 @@ function save_deal_component_labels($data, $editor) {
 }
 
 
-function update_website_styles($data, $editor, $db, $smarty) {
+function update_website_styles($data, $editor) {
 
 
     $website         = get_object('Website', $data['key']);
@@ -2056,13 +2061,19 @@ function update_website_styles($data, $editor, $db, $smarty) {
         $website->update_labels_in_localised_labels(json_decode($data['labels'], true));
     }
     if (isset($data['settings'])) {
+
+
         $website->update_settings(json_decode($data['settings'], true));
     }
+
+
 
     if (isset($data['styles'])) {
         $website->update_styles(json_decode($data['styles'], true));
     }
-
+    if (isset($data['mobile_styles'])) {
+        $website->update_mobile_styles(json_decode($data['mobile_styles'], true));
+    }
 
     $website->clean_cache();
 
