@@ -5091,9 +5091,15 @@ function parse_tabs($module, $section, $_data, $modules) {
 
 function parse_subtab($module, $section, $tab, $modules) {
 
+    global $session;
+
     if (isset($modules[$module]['sections'][$section]['tabs'][$tab]['subtabs'])) {
-        if (isset ($_SESSION['tab_state'][$tab])) {
-            $subtab = $_SESSION['tab_state'][$tab];
+
+
+        $_session        = $session->get('tab_state');
+
+        if (isset ($_session[$tab])) {
+            $subtab = $_session[$tab];
         } else {
             $subtab = each(
                           $modules[$module]['sections'][$section]['tabs'][$tab]['subtabs']

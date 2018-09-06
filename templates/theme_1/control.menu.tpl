@@ -65,58 +65,68 @@
 </div>
 </div>
 
-<div style="padding:20px;min-height: 30px" class="control_panel">
-
-    <span class="hide"><i class="fa fa-toggle-on" aria-hidden="true"></i> {t}Logged in{/t}</span>
+<div id="control_panel_desktop" style="padding:0px;min-height: 30px" class="control_panel ">
 
 
-    <ul id="columns" class="sortable2 columns" >
+    <table border="0" style="width: 100%">
+        <tr>
+            <td style="width: 50px;padding-left: 10px">
 
-        {foreach from=$header_data.menu.columns item=column key=key}
+
+                <i onclick="" class="fa selected  fa-desktop fa-fw "></i>
+
+                <i onclick="toggle_device(this)" class="far very_discreet  fa-mobile fa-fw button"></i>
 
 
-                <li id="_column_{$key}" class="column" style="" class="button unselectable {if !$column.show}very_discreet hidden_menu{/if}" key="{$key}">
+            </td>
+            <td style="padding-top: 10px">
+                <ul id="columns" class="sortable2 columns" >
+
+                    {foreach from=$header_data.menu.columns item=column key=key}
+
+
+                        <li id="_column_{$key}" class="column" style="" class="button unselectable {if !$column.show}very_discreet hidden_menu{/if}" key="{$key}">
                     <span class="button open_edit">
                     <i class="fa-fw  {if $column.icon==''}} fa fa-ban error very_discreet {else}{$column.icon}{/if}"  aria-hidden="true" title="{$column.label}"></i>
                     <span class="label ">{$column.label}</span>
                      </span>
-                    <i class="far {if $column.show}fa-eye{else}fa-eye-slash{/if} column_show button" aria-hidden="true"></i>
-                    <i class="far fa-hand-rock handle2"  aria-hidden="true"></i>
-                </li>
+                            <i class="far {if $column.show}fa-eye{else}fa-eye-slash{/if} column_show button" aria-hidden="true"></i>
+                            <i class="far fa-hand-rock handle2"  aria-hidden="true"></i>
+                        </li>
 
 
-        {/foreach}
-        <li id="add_column" style="width: 20px;min-width:20px;padding:4px 5px" class="button unselectable" ">
-            <i class="fa fa-fw  button fa-plus"  onclick="add_header_column()" aria-hidden="true" title="{t}Add column{/t}"></i>
-
-
-
-        </li>
-
-    </ul>
-
-    <div id="edit_columns" class="hide">
-
-    <div style="float:left">
-        <i id="edit_prev_column" onClick="edit_prev_column(this)" key="" class="edit_column_button fa button fa-arrow-left " aria-hidden="true"></i>
-        <i id="exit_edit_column" style="margin-left:5px;margin-right: 5px"  onClick="exit_edit_column(this)" key="" class="edit_column_button fa button fa-window-close fa-flip-horizontal " aria-hidden="true"></i>
-        <i id="edit_next_column" style="margin-right: 10px" onClick="edit_next_column(this)" key="" class="edit_column_button fa button fa-arrow-right " aria-hidden="true"></i>
-    </div>
-
-        {counter start=-1 print=false}
-        <div id="edit_mode_container">
-    {foreach from=$header_data.menu.columns item=column key=key}
-        <div id="edit_mode_{$key}" class=" edit_mode hide "  type="{$column.type}" key="{$key}">
-            <div style="float:left;margin-right:20px;min-width: 200px;">
-                <span class="column_type button {$column.type}" data-column_type="{$column.type}" style="border:1px solid #ccc;padding:4px;;margin-left:5px"><span class="column_type_label">{if $column.type=='three_columns'}3{elseif $column.type=='single_column'}1{else}0{/if}</span> <i class="fa fa-bars button  " aria-hidden="true"></i> &nbsp; </span>
-                <span class="button delete_column" title="{t}Delete this column{/t}" style="border:1px solid #ccc;padding:4px;border-left: none"><i class="far fa-trash-alt button  " style="padding-left: 5px;padding-right: 7px" aria-hidden="true"></i></span>
-
-
-            </div>
+                    {/foreach}
+                    <li id="add_column" style="width: 20px;min-width:20px;padding:4px 5px" class="button unselectable" ">
+                    <i class="fa fa-fw  button fa-plus"  onclick="add_header_column()" aria-hidden="true" title="{t}Add column{/t}"></i>
 
 
 
-            <span class="column_controls">
+                    </li>
+
+                </ul>
+
+                <div id="edit_columns" class="hide">
+
+                    <div style="float:left">
+                        <i id="edit_prev_column" onClick="edit_prev_column(this)" key="" class="edit_column_button fa button fa-arrow-left " aria-hidden="true"></i>
+                        <i id="exit_edit_column" style="margin-left:5px;margin-right: 5px"  onClick="exit_edit_column(this)" key="" class="edit_column_button fa button fa-window-close fa-flip-horizontal " aria-hidden="true"></i>
+                        <i id="edit_next_column" style="margin-right: 10px" onClick="edit_next_column(this)" key="" class="edit_column_button fa button fa-arrow-right " aria-hidden="true"></i>
+                    </div>
+
+                    {counter start=-1 print=false}
+                    <div id="edit_mode_container">
+                        {foreach from=$header_data.menu.columns item=column key=key}
+                            <div id="edit_mode_{$key}" class=" edit_mode hide "  type="{$column.type}" key="{$key}">
+                                <div style="float:left;margin-right:20px;min-width: 200px;">
+                                    <span class="column_type button {$column.type}" data-column_type="{$column.type}" style="border:1px solid #ccc;padding:4px;;margin-left:5px"><span class="column_type_label">{if $column.type=='three_columns'}3{elseif $column.type=='single_column'}1{else}0{/if}</span> <i class="fa fa-bars button  " aria-hidden="true"></i> &nbsp; </span>
+                                    <span class="button delete_column" title="{t}Delete this column{/t}" style="border:1px solid #ccc;padding:4px;border-left: none"><i class="far fa-trash-alt button  " style="padding-left: 5px;padding-right: 7px" aria-hidden="true"></i></span>
+
+
+                                </div>
+
+
+
+                                <span class="column_controls">
             {if $column.type=='three_columns'}
                 <ul class="sortable unselectable columns" style="position: relative;top:-4px">
                     {foreach from=$column.sub_columns item=sub_column key=sub_column_key}
@@ -143,34 +153,431 @@
                             </li>
                     {/foreach}
                 </ul>
-                    
+
             {elseif $column.type=='single_column'}
-                
+
             {/if}
             </span>
-        </div>
-        {counter print=false}
-    {/foreach}
+                            </div>
+                            {counter print=false}
+                        {/foreach}
 
-        <div id="add_column_control_anchor" class="hide" data-key="{counter}"></div>
+                        <div id="add_column_control_anchor" class="hide" data-key="{counter}"></div>
+                    </div>
+                </div>
+            </td>
+            <td style="width: 80px">
+
+                <span id="save_button" class="" onClick="$('#preview')[0].contentWindow.save_header()"><i class="fa fa-cloud  " aria-hidden="true"></i> {t}Save{/t}</span>
+
+
+
+            </td>
+        </tr>
+    </table>
+
+
+
+
+
+
+
+
+
 </div>
+
+<div id="control_panel_mobile" style="padding:0px;min-height: 35px;padding-top:10px;border-bottom: 1px solid #ccc" class="control_panel hide">
+
+
+    <table border="0" style="width: 100%">
+        <tr>
+            <td style="width: 50px;padding-left: 10px">
+
+
+                <i onclick="toggle_device(this)" class="far button  very_discreet fa-desktop fa-fw "></i>
+
+                <i  class="fa  selected fa-mobile fa-fw "></i>
+
+
+            </td>
+            <td style="padding-top: 10px">
+
+            </td>
+            <td style="text-align: right;padding-right: 20px">
+                <span id="save_button_mobile" class=""  onClick="$('#preview_mobile')[0].contentWindow.save_mobile_menu()"><i class="fa fa-cloud  " aria-hidden="true"></i> {t}Save{/t}</span>
+            </td>
+        </tr>
+    </table>
+
+
+
+
+
+
+
+
+
+</div>
+
+<div id="preview_container" style="position: relative;" class="">
+
+<iframe id="preview"  style="width:100%;height: 750px" frameBorder="0" src="/website.menu.php?&website_key={$website->id}&theme={$theme}"></iframe>
+
+
+
+    <div   style="padding:20px">
+
+        <i class="fa fa-fw fa-lock button" onClick="toggle_unlock_delete_object(this)" style="margin-right:20px"></i>
+        <span data-data='{ "object": "website_header", "key":"{$website->id}"}' onClick="reset_object(this)" class="delete_object disabled "> {t}Reset header{/t} <i class="fa fa-recycle  "></i></span>
+
     </div>
 
-    <span id="save_button" class="" style="float:right" onClick="$('#preview')[0].contentWindow.save_header()"><i class="fa fa-cloud  " aria-hidden="true"></i> {t}Save{/t}</span>
-
-
 </div>
 
 
-<iframe id="preview" style="width:100%;height: 750px" frameBorder="0" src="/website.menu.php?&website_key={$website->id}&theme={$theme}"></iframe>
 
 
-<div style="padding:20px">
 
-    <i class="fa fa-fw fa-lock button" onClick="toggle_unlock_delete_object(this)" style="margin-right:20px"></i>
-    <span data-data='{ "object": "website_header", "key":"{$website->id}"}' onClick="reset_object(this)" class="delete_object disabled "> {t}Reset header{/t} <i class="fa fa-recycle  "></i></span>
 
+
+<div id="mobile_preview_container" style="position: relative;" class="hide">
+    <iframe id="preview_mobile" class="" style="width:400px;height: 700px;margin: 20px 50px !important" frameBorder="0" src="/website.header.mobile.php?&website_key={$website->id}&theme={$theme}"></iframe>
+
+
+    <table id="main_settings" data-website_key="{$website->id}" style="position: absolute;left:540px;top:40px">
+
+
+
+        <tr class="">
+
+
+            <td colspan="2" class="label strong" style="border-bottom: 1px solid #ccc">
+
+
+                {t}Left menu{/t}
+
+            </td>
+
+
+
+        </tr>
+
+
+
+        <tr>
+            <td  class="label padding_right_20" style="vertical-align: top;">{t}Background image{/t}
+
+
+            </td>
+
+            <td  class="label" style="padding-top: 5px;">
+
+
+                <input style="display:none" type="file" name="left_menu_background" id="update_image_left_menu_background_mobile" class="image_upload_mobile" data-options='{ }'/>
+                <label style="cursor: pointer" for="update_image_left_menu_background_mobile">
+                    <img id="website_left_menu_background_mobile" style="height: 120px" src="{if !empty($mobile_style_values['left_menu_background'])}{$mobile_style_values['left_menu_background']}{else}/EcomB2b/art/mobile_side_bg_1.png{/if}"/>
+                </label>
+
+
+
+
+
+            </td>
+
+        </tr>
+
+
+        <tr>
+            <td  class="label" style="vertical-align: top;">{t}Logo{/t}
+
+
+            </td>
+
+            <td  class="label">
+
+
+                <input style="display:none" type="file" name="left_menu_logo_mobile" id="update_image_logo_mobile" class="image_upload_mobile" data-options='{ }'/>
+                <label style="cursor: pointer" for="update_image_logo_mobile">
+                    <img id="left_menu_logo_mobile" style="height: 54px" src="{if !empty($mobile_style_values['left_menu_logo'])}{$mobile_style_values['left_menu_logo']}{else}/EcomB2B/art/mobile_logo.png{/if}"/>
+                </label>
+
+
+
+
+
+            </td>
+
+        </tr>
+        <tr>
+
+
+            <td  class="label">{t}Left margin{/t}
+
+
+            </td>
+
+
+            <td><span class="margins_container unselectable  " data-scope="left_menu_text_padding">
+                    <i class="fa fa-minus-circle down_margins button"></i> <input class="x edit_margin" value="{if !empty($mobile_style_values['left_menu_text_padding'])}{$mobile_style_values['left_menu_text_padding']}{else}75{/if}">
+                    <i class="fa fa-plus-circle up_margins button"></i></span>
+            </td>
+
+
+
+            </td>
+
+        </tr>
+        <tr>
+
+
+            <td  class="label">{t}Text{/t}
+
+
+            </td>
+
+            <td >
+                <input id="left_menu_text" value="{if !empty($settings['left_menu_text'])}{$settings['left_menu_text']}{else}{$website->get('Website Name')}{/if}">
+
+
+
+            </td>
+
+        </tr>
+
+
+
+
+
+
+    </table>
 </div>
+
+
+
+<script>
+
+    function toggle_device(element) {
+        if (!$(element).hasClass('fa-desktop')) {
+
+            $('#control_panel_mobile').removeClass('hide')
+            $('#control_panel_desktop').addClass('hide')
+
+            $('#preview_container').addClass('hide')
+            $('#mobile_preview_container').removeClass('hide')
+
+            $('#preview_mobile')[0].contentWindow.delay_open_menu()
+
+
+        } else {
+            $('#control_panel_mobile').addClass('hide')
+            $('#control_panel_desktop').removeClass('hide')
+            $('#preview_container').removeClass('hide')
+            $('#mobile_preview_container').addClass('hide')
+
+        }
+
+
+    }
+
+
+    droppedFiles = false;
+
+    $(document).on('change', '.image_upload_mobile', function (e) {
+
+
+
+        var ajaxData = new FormData();
+
+        //var ajaxData = new FormData( );
+        if (droppedFiles) {
+            $.each(droppedFiles, function (i, file) {
+                ajaxData.append('files', file);
+                return false;
+            });
+        }
+
+
+        $.each($(this).prop("files"), function (i, file) {
+            ajaxData.append("files[" + i + "]", file);
+            return false;
+        });
+
+
+        ajaxData.append("tipo", 'upload_images')
+        ajaxData.append("parent", 'website')
+        ajaxData.append("parent_key", $('#main_settings').data('website_key'))
+        ajaxData.append("options", JSON.stringify($(this).data('options')))
+        ajaxData.append("response_type", 'website')
+
+        var element = $(this)
+
+        $.ajax({
+            url: "/ar_upload.php", type: 'POST', data: ajaxData, dataType: 'json', cache: false, contentType: false, processData: false,
+
+
+            complete: function () {
+
+            }, success: function (data) {
+
+
+                console.log(element.attr('name'))
+
+                if (data.state == '200') {
+
+                    $('#save_button_mobile').addClass('save button changed valid')
+
+
+                    switch (element.attr('name')){
+                        case 'left_menu_background':
+                            $('#website_left_menu_background_mobile').attr('src',data.image_src);
+
+                            $('#preview_mobile').contents().find('.sidebar-header-image.bg-1').css('background-image','url('+data.image_src+')');
+                            break;
+
+                        case 'left_menu_logo_mobile':
+                            $('#left_menu_logo_mobile').attr('src',data.image_src);
+
+                            $('#preview_mobile').contents().find('.sidebar-header-image .sidebar-logo').css('background-image','url('+data.image_src+')');
+                            break;
+
+
+                    }
+
+
+                    $('#save_button_mobile').addClass('save button changed valid')
+
+
+
+                } else if (data.state == '400') {
+                    swal({
+                        title: data.title, text: data.msg, confirmButtonText: "{t}OK{/t}"
+                    });
+                }
+
+                element.val('')
+
+            }, error: function () {
+
+            }
+        });
+
+
+    });
+
+
+
+    $(document).on('input propertychange', '#left_menu_text', function () {
+
+        $('#save_button_mobile').addClass('save button changed valid')
+
+
+        $('#preview_mobile').contents().find('.sidebar-header-image .sidebar-logo strong').html($(this).val())
+
+    });
+
+
+    $('.up_margins').on( "click", function() {
+        $('input',$(this).closest('.margins_container')).each(function( index,input ) {
+
+
+
+            value=parseInt($(input).val())
+
+            if(isNaN(value)){
+                value=0;
+            }
+
+            //  console.log(value)
+
+            $(input).val( value+1)
+
+            //  console.log($(input))
+
+            change_margins(input)
+        })
+
+    });
+
+
+    $('.down_margins').on( "click", function() {
+        $('input',$(this).closest('.margins_container')).each(function( index,input ) {
+
+
+            value=parseInt($(input).val())
+
+            if(isNaN(value)){
+                value=0;
+            }
+
+            console.log(value)
+
+            value=value-1
+            if(value<0){
+                value=0;
+            }
+
+
+            $(input).val( value)
+            change_margins(input)
+        })
+
+    });
+
+    function change_margins(input) {
+
+        if (!validate_signed_integer($(input).val(), 1000)) {
+            $(input).removeClass('error')
+            var value = $(input).val()
+
+        } else {
+            value = 0;
+
+            $(input).addClass('error')
+        }
+
+        var element = $(input).closest('.element_for_margins').data('element')
+        var scope = $(input).closest('.margins_container').data('scope')
+
+        console.log(scope)
+
+        switch (scope) {
+
+            case 'left_menu_text_padding':
+
+
+                var max_width=$('#preview_mobile').contents().find('.sidebar-header-image .sidebar-logo').width()
+
+                console.log(max_width)
+                console.log(value)
+                // console.log($('#'+key).width())
+
+                if(max_width<value){
+                    $(input).addClass('error')
+
+                }else{
+                    $(input).removeClass('error')
+                    var left = value + 'px'
+
+                    $('#preview_mobile').contents().find('.sidebar-header-image .sidebar-logo strong').css('padding-left',left)
+                }
+
+                break;
+                break
+
+
+            default:
+        }
+
+
+        // element.css(scope+'-'+$(input).data('margin'), value + "px")
+
+
+        $('#save_button_mobile').addClass('save button changed valid')
+
+    }
+
+
+</script>
 
 
 <script>

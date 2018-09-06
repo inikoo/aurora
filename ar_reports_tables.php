@@ -2156,6 +2156,7 @@ function stock_given_free($_data, $db, $user, $account) {
     $adata = array();
 
 
+    //print $sql;
     if ($result = $db->query($sql)) {
 
         foreach ($result as $data) {

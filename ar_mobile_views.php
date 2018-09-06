@@ -450,7 +450,7 @@ function get_view($db, $smarty, $user, $account, $modules) {
     );
     $db->exec($sql);
 
-    $_SESSION['request'] = $state['request'];
+    //$_SESSION['request'] = $state['request'];
 
 
     if (isset($state['current_store'])) {

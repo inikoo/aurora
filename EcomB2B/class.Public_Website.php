@@ -76,6 +76,13 @@ class Public_Website {
                 $this->style = json_decode($this->data['Website Style'], true);
             }
 
+
+            if (empty($this->data['Website Mobile Style'])) {
+                $this->mobile_style = array();
+            } else {
+                $this->mobile_style = json_decode($this->data['Website Mobile Style'], true);
+            }
+
         }
 
 

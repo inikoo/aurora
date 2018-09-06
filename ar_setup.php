@@ -374,7 +374,7 @@ function get_view($data, $db, $modules, $smarty) {
     }
 
 
-    $_SESSION['request'] = $state['request'];
+    //$_SESSION['request'] = $state['request'];
 
 
     $response = array('state' => array());

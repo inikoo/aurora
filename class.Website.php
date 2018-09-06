@@ -18,7 +18,6 @@ class Website extends DB_Table {
     use ImageSubject;
 
 
-
     function __construct($a1, $a2 = false, $a3 = false) {
 
 
@@ -71,6 +70,12 @@ class Website extends DB_Table {
                 $this->style = array();
             } else {
                 $this->style = json_decode($this->data['Website Style'], true);
+            }
+
+            if (empty($this->data['Website Mobile Style'])) {
+                $this->mobile_style = array();
+            } else {
+                $this->mobile_style = json_decode($this->data['Website Mobile Style'], true);
             }
         }
 
@@ -791,6 +796,22 @@ class Website extends DB_Table {
 
     }
 
+    function clean_cache() {
+
+
+        require_once 'external_libs/Smarty/Smarty.class.php';
+        $smarty_web               = new Smarty();
+        $smarty_web->template_dir = 'EcomB2B/templates';
+        $smarty_web->compile_dir  = 'EcomB2B/server_files/smarty/templates_c';
+        $smarty_web->cache_dir    = 'EcomB2B/server_files/smarty/cache';
+        $smarty_web->config_dir   = 'EcomB2B/server_files/smarty/configs';
+        $smarty_web->setCaching(Smarty::CACHING_LIFETIME_CURRENT);
+
+        $smarty_web->clearCache(null, $this->id);
+
+
+    }
+
     function update_settings($labels, $operation = 'append') {
 
 
@@ -805,7 +826,6 @@ class Website extends DB_Table {
         $this->fast_update(array('Website Settings' => json_encode($this->settings)));
         $this->clean_cache();
     }
-
 
     function update_styles($styles, $operation = 'append') {
 
@@ -822,11 +842,25 @@ class Website extends DB_Table {
         $this->clean_cache();
     }
 
+    function update_mobile_styles($styles, $operation = 'append') {
 
+
+        switch ($operation) {
+            case 'append':
+                $this->mobile_style = array_merge($this->mobile_style, $styles);
+                break;
+            case 'replace':
+                $this->mobile_style = $styles;
+                break;
+
+        }
+
+
+        $this->fast_update(array('Website Mobile Style' => json_encode($this->mobile_style)));
+        $this->clean_cache();
+    }
 
     function update_field_switcher($field, $value, $options = '', $metadata = '') {
-
-
 
 
         if ($this->deleted) {
@@ -1287,14 +1321,13 @@ class Website extends DB_Table {
         $webpage_type = new Webpage_Type('website_code', $this->id, 'Prod');
 
 
-        if($this->get('Website Theme')=='theme_1'){
+        if ($this->get('Website Theme') == 'theme_1') {
             $template = 'product2';
 
-        }else{
+        } else {
             $template = 'product';
 
         }
-
 
 
         $page_data = array(
@@ -1367,9 +1400,9 @@ class Website extends DB_Table {
         $this->error        = $page->error;
 
 
-        if($this->get('Website Theme')=='theme_1'){
+        if ($this->get('Website Theme') == 'theme_1') {
             $page->reset_object();
-        }else{
+        } else {
 
             $content_data = array(
                 'description_block' => array(
@@ -1387,7 +1420,6 @@ class Website extends DB_Table {
 
 
         }
-
 
 
         //todo: AUR-33
@@ -1476,7 +1508,6 @@ class Website extends DB_Table {
 
     }
 
-
     function launch() {
 
         include_once 'class.Page.php';
@@ -1559,7 +1590,6 @@ class Website extends DB_Table {
 
     }
 
-
     function update_sitemap() {
 
 
@@ -1622,7 +1652,6 @@ class Website extends DB_Table {
 
     }
 
-
     function ping_sitemap() {
 
         $sitemap           = 'https://'.$this->get('Website URL').'/sitemap_index.xml.php';
@@ -1672,28 +1701,11 @@ class Website extends DB_Table {
 
     }
 
-    function clean_cache(){
-
-
-        require_once 'external_libs/Smarty/Smarty.class.php';
-        $smarty_web               = new Smarty();
-        $smarty_web->template_dir = 'EcomB2B/templates';
-        $smarty_web->compile_dir  = 'EcomB2B/server_files/smarty/templates_c';
-        $smarty_web->cache_dir    = 'EcomB2B/server_files/smarty/cache';
-        $smarty_web->config_dir   = 'EcomB2B/server_files/smarty/configs';
-        $smarty_web->setCaching(Smarty::CACHING_LIFETIME_CURRENT);
-
-       $smarty_web->clearCache(null,$this->id);
-
-
+    function get_number_images() {
 
     }
 
-    function get_number_images(){
-
-    }
-
-    function get_main_image_key(){
+    function get_main_image_key() {
 
     }
 

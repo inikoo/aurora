@@ -371,7 +371,7 @@ function open_edit_product_wrap_style(element) {
     $('#product_wrap_style').find('.border-width input.right').val(parse_margin_value(styles['.product_block border-right-width'][2]))
 
 
-    $('#product_wrap_style .scope_product_cointainer_color i:last-child').css('color', styles['.product_wrap color'][2]).data('color', styles['.product_wrap color'][2])
+    $('#product_wrap_style .scope_product_container_color i:last-child').css('color', styles['.product_wrap color'][2]).data('color', styles['.product_wrap color'][2])
 
     $('#product_wrap_style .scope_border-color i:last-child').css('color', styles['.product_block border-color'][2]).data('color', styles['.product_block border-color'][2])
 
@@ -407,7 +407,7 @@ function change_color(color, element, scope) {
 
 
     switch (scope) {
-        case 'product_cointainer_color':
+        case 'product_container_color':
 
 
             $('.product_wrap').css('color', color);
