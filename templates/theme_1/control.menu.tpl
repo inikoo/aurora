@@ -215,8 +215,6 @@
 
 
 
-
-
 </div>
 
 <div id="preview_container" style="position: relative;" class="">

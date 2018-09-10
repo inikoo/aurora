@@ -1423,9 +1423,11 @@ function order_items($_data, $db, $user, $account) {
 
             $info .= '<div border="0" style="font-size: small" class="as_table">';
 
+
+
             foreach ($next_deliveries as $next_delivery) {
-                if ($next_delivery['po_key'] != $data['Purchase Order Key']) {
-                    $info .= '<div class="as_row "><div class="as_cell" >'.$next_delivery['formatted_link'].'</div><div class="padding_left_20 as_cell strong" title="'._('Cartorns ordered').'">+'.number($next_delivery['raw_qty']).'</div></div>';
+                if ( !empty($next_delivery['po_key']) and  $next_delivery['po_key'] != $data['Purchase Order Key']) {
+                    $info .= '<div class="as_row "><div class="as_cell" >'.$next_delivery['formatted_link'].'</div><div class="padding_left_20 as_cell strong" title="'._('Cartons ordered').'">+'.number($next_delivery['raw_qty']).'</div></div>';
                 }
             }
 
@@ -2717,7 +2719,7 @@ function order_supplier_all_parts($_data, $db, $user, $account) {
 
             foreach ($next_deliveries as $next_delivery) {
                 if ($next_delivery['po_key'] != $purchase_order->id) {
-                    $info .= '<div class="as_row "><div class="as_cell" >'.$next_delivery['formatted_link'].'</div><div class="padding_left_20 as_cell strong" title="'._('Cartorns ordered').'">+'.number($next_delivery['raw_qty']).'</div></div>';
+                    $info .= '<div class="as_row "><div class="as_cell" >'.$next_delivery['formatted_link'].'</div><div class="padding_left_20 as_cell strong" title="'._('Cartons ordered').'">+'.number($next_delivery['raw_qty']).'</div></div>';
                 }
             }
 
