@@ -217,11 +217,17 @@
                                 </td>
 
                             </tr>
+                            <tr data-field='barcode' class="button pdf_option" onclick="check_field_value(this)">
+                                <td>
+                                    <i class="far fa-square  margin_right_10"></i> <span class="discreet">{t}Product barcode{/t}</span>
+                                </td>
+                            </tr>
                             <tr data-field='weight' class="button pdf_option" onclick="check_field_value(this)">
                                 <td>
                                     <i class="far fa-square  margin_right_10"></i> <span class="discreet">{t}Weight{/t}</span>
                                 </td>
                             </tr>
+
                             <tr data-field='origin' class="button pdf_option" onclick="check_field_value(this)">
                                 <td>
                                     <i class="far fa-square  margin_right_10"></i> <span class="discreet">{t}Country of origin{/t}</span>

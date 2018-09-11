@@ -46,7 +46,9 @@ function fork_migration($job) {
 
 
         case 'customer_updated_migration':
-            if($data['customer_key']) {
+            if($data['customer_key'] ) {
+
+
 
                 migrate_customer_data($data['customer_key'], $db);
 
