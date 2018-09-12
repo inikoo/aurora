@@ -27,7 +27,7 @@ $editor = array(
 );
 
 
-$sql = sprintf('SELECT `Part SKU`,`Part Barcode Number` FROM `Part Dimension` where `Part Barcode Number`!=""  and `Part Reference`="ACHS-03" ');
+$sql = sprintf('SELECT `Part SKU`,`Part Barcode Number` FROM `Part Dimension` where `Part Barcode Number`!=""  ');
 
 if ($result = $db->query($sql)) {
     foreach ($result as $row) {
