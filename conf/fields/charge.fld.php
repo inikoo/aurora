@@ -25,6 +25,10 @@ $options_trigger = array(
 
 );
 
+$options_yn = array(
+    'Yes' => _('Yes'),
+    'No'  => _('No')
+);
 
 
 $options_offer_type = array(
@@ -38,6 +42,34 @@ $options_offer_type = array(
 $object_fields=array();
 
 $object_fields[]=
+    array(
+        'label'      => _('Status'),
+        'show_title' => true,
+        'fields'     => array(
+
+
+            array(
+                'edit' => ($edit ? 'option' : ''),
+
+                'options'         => $options_yn,
+                'id'                => 'Charge_Active',
+                'value'             => $object->get('Charge Active'),
+                'formatted_value' => $object->get('Active'),
+
+                'label'             => ucfirst($object->get_field_label('Charge Active')),
+                'invalid_msg'       => get_invalid_message('string'),
+                'required'          => true,
+            ),
+
+
+        )
+
+    );
+
+$object_fields[]=
+
+
+
     array(
         'label'      => _('Id'),
         'show_title' => true,
@@ -109,7 +141,7 @@ $object_fields[]=
                     )
 
                 ),
-                'value'           => $object->get('Charge Public Description'),
+                'value'           => '',
                 'formatted_value' => $object->get('Charge Public Description'),
                 'label'             => ucfirst($object->get_field_label('Charge Public Description')),
                 'required'        => true,

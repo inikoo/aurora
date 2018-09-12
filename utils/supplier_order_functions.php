@@ -175,4 +175,128 @@ function get_agent_purchase_order_transaction_data($data) {
 
 }
 
+
+
+function get_purchase_order_transaction_data($data) {
+
+    //print_r($data);
+
+
+    if($data['Metadata']==''){
+        $metadata=array();
+    }else{
+        $metadata=json_decode($data['Metadata'],true);
+    }
+
+
+
+
+
+    $state='';
+
+    switch ($data['Purchase Order Transaction State']) {
+        case 'InProcess':
+            $state .= _('In process');
+            break;
+        case 'Submitted':
+            $state .= sprintf('<span  title="%s">%s</span>', _('Submitted to agent'), _('Submitted'));
+            break;
+        case 'ProblemSupplier':
+            $state .= sprintf('<span class="error" title="%s">%s</span>', _('Problem with supplier supplier'), _('Problem'));
+            // print_r($metadata);
+            if(isset($metadata['item_problems'])){
+
+
+
+
+
+                $problems_state='';
+                foreach($metadata['item_problems']['problems'] as $problem=>$problem_data){
+                    if($problem_data['selected']){
+                        switch ($problem){
+                            case 'price_increase':
+                                $problems_state.=_('Price increase');
+
+
+
+                                if(is_numeric($problem_data['note']) and $problem_data['note']>$data['Supplier Part Unit Cost']){
+                                    $problems_state.=' <b title="'.money($problem_data['note'], $data['Currency Code']).'">'.delta($problem_data['note'],$data['Supplier Part Unit Cost']).'</b>, ';
+                                }elseif($problem_data['note']!=''){
+                                    $problems_state.=' <em>('.$problem_data['note'].')</em>, ';
+                                }
+
+
+
+
+                                break;
+                            case 'discontinued':
+                                $problems_state.=_('Discontinued').', ';
+                                break;
+                            case 'low_stock':
+                                $problems_state.=_('Low stock').', ';
+                                break;
+                            case 'long_wait':
+                                $problems_state.=_('Out of stock').', ';
+                                break;
+                            case 'min_order':
+                                $problems_state.=_('Minimum order not meet').', ';
+                                break;
+                            case 'other':
+                                $problems_state.=_('Other').', ';
+                                break;
+                            default:
+                                $problems_state.=$problem.', ';
+
+                        }
+                    }
+                }
+
+                $problems_state=preg_replace('/\, $/','',$problems_state);
+                $state.='<div style="line-height: normal;font-size: x-small" class="error" >'.$problems_state.'</div>';
+                $state.='<div style="line-height: normal;margin:7px 0px;font-size: x-small" ><span style="border:1px solid #ccc;padding:2px 10px;" class="button unselectable">'._('Action').'</span></div>';
+
+            }
+
+            break;
+        case 'Confirmed':
+            $state .= sprintf('<span class="" title="%s">%s</span>', _('Confirmed by supplier'), _('Confirmed'));
+            break;
+        case 'ReceivedAgent':
+            $state .= sprintf('<span class="" title="%s">%s</span>', _('Goods received from supplier'), _('In agent warehouse'));
+
+            break;
+        case 'InDelivery':
+            $state .= _('Loading Delivery');
+            break;
+        case 'Inputted':
+            $state .= _('Delivery inputted');
+            break;
+        case 'Dispatched':
+            $state .= _('In transit');
+            break;
+        case 'Received':
+            $state .= _('Received');
+            break;
+        case 'Checked':
+            $state .= _('Checked');
+            break;
+        case 'Placed':
+            $state .= _('Placed');
+            break;
+        case 'Cancelled':
+            $state .= _('Cancelled');
+            break;
+        default:
+            $state .= $data['Purchase Order Transaction State'];
+            break;
+    }
+
+    return array(
+
+        $state
+
+    );
+
+}
+
 ?>

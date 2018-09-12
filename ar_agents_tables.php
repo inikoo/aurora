@@ -432,7 +432,7 @@ function agent_supplier_order_items($_data, $db, $user, $account) {
     $purchase_order = get_object('AgentSupplierPurchaseOrder', $_data['parameters']['parent_key']);
 
     include_once 'prepare_table/init.php';
-    include_once 'utils/agent_functions.php';
+    include_once 'utils/supplier_order_functions.php';
 
     $sql        = "select $fields from $table $where $wheref order by $order $order_direction limit $start_from,$number_results";
     $table_data = array();
@@ -441,39 +441,6 @@ function agent_supplier_order_items($_data, $db, $user, $account) {
     if ($result = $db->query($sql)) {
         foreach ($result as $data) {
 
-            if ($data['Metadata'] == '') {
-                $metadata = array();
-            } else {
-                $metadata = json_decode($data['Metadata'], true);
-            }
-
-            $data['Currency Code'] = $purchase_order->get('Agent Supplier Purchase Order Currency Code');
-
-            switch ($data['Part Stock Status']) {
-                case 'Surplus':
-                    $stock_status = '<i class="fa  fa-plus-circle fa-fw" aria-hidden="true" title="'._('Surplus').'" ></i>';
-                    break;
-                case 'Optimal':
-                    $stock_status = '<i class="fa fa-check-circle fa-fw" aria-hidden="true" title="'._('Optimal').'"></i>';
-                    break;
-                case 'Low':
-                    $stock_status = '<i class="fa fa-minus-circle fa-fw" aria-hidden="true" title="'._('Low').'"></i>';
-                    break;
-                case 'Critical':
-                    $stock_status = '<i class="fa error fa-minus-circle fa-fw" aria-hidden="true" title="'._('Critical').'"></i>';
-                    break;
-                case 'Out_Of_Stock':
-                    $stock_status = '<i class="fa error fa-ban fa-fw" aria-hidden="true" title="'._('Out of stock').'"></i>';
-                    break;
-                case 'Error':
-                    $stock_status = '<i class="fa fa-question-circle error fa-fw" aria-hidden="true" title="'._('Error').'"></i>';
-                    break;
-                default:
-                    $stock_status = $data['Part Stock Status'];
-                    break;
-            }
-
-            $quantity = number($data['Purchase Order Quantity']);
 
 
             $units_per_carton = $data['Part Units Per Package'] * $data['Supplier Part Packages Per Carton'];
@@ -541,15 +508,7 @@ function agent_supplier_order_items($_data, $db, $user, $account) {
             $description = ($data['Supplier Part Reference'] != $data['Part Reference'] ? $data['Part Reference'].', ' : '').$data['Supplier Part Description'];
 
 
-            /*
-                        $quantity = sprintf(
-                            '<span    data-settings=\'{"field": "Order Quantity", "transaction_key":"%d","item_key":%d, "item_historic_key":%d ,"on":1 }\'   >
-                        <i onClick="save_item_qty_change(this)" class="fa minus  fa-minus fa-fw button" aria-hidden="true"></i>
-                        <input class="order_qty width_50" style="text-align: center" value="%s" ovalue="%s">
-                        <i onClick="save_item_qty_change(this)" class="fa plus  fa-plus fa-fw button" aria-hidden="true"></i></span>',
-                            $data['Order Transaction Fact Key'], $data['Product ID'], $data['Product Key'], $data['Order Quantity'] + 0, $data['Order Quantity'] + 0
-                        );
-            */
+
             $quantity = sprintf(
                 '<span    data-settings=\'{"field": "Purchase Order Quantity", "transaction_key":"%d","item_key":%d, "item_historic_key":%d ,"on":1 }\'   >
                 <i onClick="save_item_qty_change(this)" class="fa minus  fa-minus fa-fw button" aria-hidden="true"></i>
@@ -731,7 +690,7 @@ function agent_items_in_warehouse($_data, $db, $user, $account) {
     $purchase_order = get_object('AgentSupplierPurchaseOrder', $_data['parameters']['parent_key']);
 
     include_once 'prepare_table/init.php';
-    include_once 'utils/agent_functions.php';
+    include_once 'utils/supplier_order_functions.php';
 
     $sql        = "select $fields from $table $where $wheref order by $order $order_direction limit $start_from,$number_results";
     $table_data = array();

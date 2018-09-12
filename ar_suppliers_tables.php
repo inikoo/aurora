@@ -943,7 +943,6 @@ function agent_orders($_data, $db, $user) {
 }
 
 
-
 function agent_deliveries($_data, $db, $user) {
 
     /*
@@ -1123,6 +1122,13 @@ function order_items($_data, $db, $user, $account) {
     include_once 'class.PurchaseOrder.php';
     $purchase_order = new PurchaseOrder($_data['parameters']['parent_key']);
 
+
+    include_once 'utils/supplier_order_functions.php';
+
+
+
+
+
     include_once 'prepare_table/init.php';
 
     $sql        = "select $fields from $table $where $wheref order by $order $order_direction limit $start_from,$number_results";
@@ -1132,49 +1138,7 @@ function order_items($_data, $db, $user, $account) {
     if ($result = $db->query($sql)) {
         foreach ($result as $data) {
 
-//'InProcess','Submitted', 'ProblemSupplier','Confirmed','ReceivedAgent','InDelivery','Inputted','Dispatched','Received','Checked','Placed','Cancelled'
 
-            switch($data['Purchase Order Transaction State']) {
-            case 'InProcess':
-                $state=_('In process');
-                break;
-                case 'Submitted':
-                    $state=_('Submitted');
-                    break;
-                case 'ProblemSupplier':
-                    $state=sprintf('<i class="fa fa-exclamation-circle error fa-fw"></i>');
-                    break;
-                case 'Confirmed':
-                    $state=_('Confirmed');
-                    break;
-                case 'ReceivedAgent':
-                    $state=_('In agent warehouse');
-                    break;
-                case 'InDelivery':
-                    $state=_('Loading Delivery');
-                    break;
-                case 'Inputted':
-                    $state=_('Delivery inputted');
-                    break;
-                case 'Dispatched':
-                    $state=_('In transit');
-                    break;
-                case 'Received':
-                    $state=_('Received');
-                    break;
-                case 'Checked':
-                    $state=_('Checked');
-                    break;
-                case 'Placed':
-                    $state=_('Placed');
-                    break;
-                case 'Cancelled':
-                    $state=_('Cancelled');
-                    break;
-            default:
-                $state=$data['Purchase Order Transaction State'];
-                break;
-            }
 
 
             switch ($data['Part Stock Status']) {
@@ -1368,16 +1332,6 @@ function order_items($_data, $db, $user, $account) {
             $carton_description .= '</div>';
             $description_sales  .= '</div>';
 
-
-            /*
-                        $quantity = sprintf(
-                            '<span    data-settings=\'{"field": "Order Quantity", "transaction_key":"%d","item_key":%d, "item_historic_key":%d ,"on":1 }\'   >
-                        <i onClick="save_item_qty_change(this)" class="fa minus  fa-minus fa-fw button" aria-hidden="true"></i>
-                        <input class="order_qty width_50" style="text-align: center" value="%s" ovalue="%s">
-                        <i onClick="save_item_qty_change(this)" class="fa plus  fa-plus fa-fw button" aria-hidden="true"></i></span>',
-                            $data['Order Transaction Fact Key'], $data['Product ID'], $data['Product Key'], $data['Order Quantity'] + 0, $data['Order Quantity'] + 0
-                        );
-            */
             $quantity = sprintf(
                 '<span    data-settings=\'{"field": "Purchase Order Quantity", "transaction_key":"%d","item_key":%d, "item_historic_key":%d ,"on":1 }\'   >
                 <i onClick="save_item_qty_change(this)" class="fa minus  fa-minus fa-fw button" aria-hidden="true"></i>
@@ -1424,15 +1378,25 @@ function order_items($_data, $db, $user, $account) {
             $info .= '<div border="0" style="font-size: small" class="as_table">';
 
 
-
             foreach ($next_deliveries as $next_delivery) {
-                if ( !empty($next_delivery['po_key']) and  $next_delivery['po_key'] != $data['Purchase Order Key']) {
+                if (!empty($next_delivery['po_key']) and $next_delivery['po_key'] != $data['Purchase Order Key']) {
                     $info .= '<div class="as_row "><div class="as_cell" >'.$next_delivery['formatted_link'].'</div><div class="padding_left_20 as_cell strong" title="'._('Cartons ordered').'">+'.number($next_delivery['raw_qty']).'</div></div>';
                 }
             }
 
 
             $info .= '</div>';
+
+
+            list(
+                $_state
+
+                ) = get_purchase_order_transaction_data($data);
+
+
+            $state = '<span class="transaction_state_'.$data['Purchase Order Transaction Fact Key'].'">';
+            $state .= $_state;
+            $state .= '</span>';
 
 
             //   $image = '';
@@ -1459,7 +1423,7 @@ function order_items($_data, $db, $user, $account) {
                 'skos_per_carton'    => number($skos_per_carton),
                 'ordered_skos'       => number($skos_per_carton * $data['Purchase Order Quantity']),
                 'ordered_cartons'    => number($data['Purchase Order Quantity']),
-                'amount'            => money($data['Supplier Part Unit Cost'] * $data['Purchase Order Quantity'] * $units_per_carton, $purchase_order->get('Purchase Order Currency Code')),
+                'amount'             => money($data['Supplier Part Unit Cost'] * $data['Purchase Order Quantity'] * $units_per_carton, $purchase_order->get('Purchase Order Currency Code')),
                 'description_sales'  => $description_sales,
                 'quantity'           => $quantity,
                 'delivery_quantity'  => $delivery_quantity,
@@ -1469,7 +1433,7 @@ function order_items($_data, $db, $user, $account) {
                 'supplier'           => $data['Supplier Code'],
                 'unit'               => $data['Supplier Part Description'],
                 'image'              => $image,
-                   'state'              => $state
+                'state'              => $state
 
 
             );
