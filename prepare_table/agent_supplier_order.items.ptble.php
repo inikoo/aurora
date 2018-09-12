@@ -53,7 +53,7 @@ $sql_totals
 
 $fields
     = "
-    `Part Main Image Key`,`Part Barcode Number`,`Purchase Order Transaction State`,`Metadata`,`Agent Supplier Purchase Order Key`,
+    `Part Main Image Key`,`Part Barcode Number`,`Purchase Order Transaction State`,`Metadata`,`Agent Supplier Purchase Order Key`,`Currency Code`,
     `Supplier Delivery Quantity`,`Supplier Delivery Key`,`Purchase Order Item Index`,`Supplier Part Currency Code`,`Supplier Part Historic Unit Cost`,
 `Purchase Order Transaction Fact Key`,`Purchase Order Quantity`,POTF.`Supplier Part Key`,`Supplier Part Reference`,POTF.`Supplier Part Historic Key`,
 `Supplier Part Description`,`Part Units Per Package`,`Supplier Part Packages Per Carton`,`Supplier Part Carton CBM`,POTF.`Purchase Order Key`,

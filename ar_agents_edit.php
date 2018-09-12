@@ -15,7 +15,7 @@ require_once 'utils/table_functions.php';
 require_once 'utils/natural_language.php';
 require_once 'utils/date_functions.php';
 require_once 'utils/object_functions.php';
-require_once 'utils/agent_functions.php';
+require_once 'utils/supplier_order_functions.php';
 
 
 if (!isset($_REQUEST['tipo'])) {
