@@ -3,7 +3,7 @@ msgstr ""
 "Project-Id-Version: Kaktus 1.0\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2018-05-17 12:01+0200\n"
-"PO-Revision-Date: 2018-05-17 12:01+0200\n"
+"PO-Revision-Date: 2018-09-13 09:23-0500\n"
 "Last-Translator: Raul <raul@inikoo.com>\n"
 "Language-Team: \n"
 "Language: de_DE\n"
@@ -13,7 +13,7 @@ msgstr ""
 "X-Poedit-SourceCharset: UTF-8\n"
 "X-Poedit-Basepath: ../../../../po_aurora_sources\n"
 "Plural-Forms: nplurals=2; plural=(n != 1);\n"
-"X-Generator: Poedit 2.0.7\n"
+"X-Generator: Poedit 2.1.1\n"
 "X-Poedit-SearchPath-0: .\n"
 
 #: EcomB2B/ar_web_basket.php:256 EcomB2B/ar_web_basket.php:448
@@ -1556,7 +1556,7 @@ msgstr "Status"
 #: pdf/supplier.order.pdf.php:430 pdf/supplier.order.pdf.php:518
 #: pdf/supplier.order.pdf.php:581
 msgid "Credit"
-msgstr "Gutschrift"
+msgstr "Guthaben"
 
 #: _smarty.php:122 _smarty.php:2192 ar_orders_tables.php:1489
 #: ar_reports_tables.php:381 conf/elements_options.php:489
