@@ -147,14 +147,14 @@
 
     <div class="header header-logo-center header-light">
         <a href="/basket.sys" class="header-icon " ><i class="fa fa-arrow-left center"  ></i></a>
-        <a href="#" class="header-logo">{if !empty($settings['header_text_mobile_website'])}{$settings['header_text_mobile_website']}{/if}</a>
+        <a href="#" class="header-logo">{if isset($settings['header_text_mobile_website'])}{$settings['header_text_mobile_website']}{/if}</a>
 
     </div>
 {else}
 
 <div class="header header-logo-center header-light">
     <a href="#" class="header-icon header-icon-1 hamburger-animated open-sidebar-left"></a>
-    <a href="/" style="margin:initial;left:70px" class="header-logo">{if !empty($settings['header_text_mobile_website'])}{$settings['header_text_mobile_website']}{/if}</a>
+    <a href="/" style="margin:initial;left:70px" class="header-logo">{if isset($settings['header_text_mobile_website'])}{$settings['header_text_mobile_website']}{/if}</a>
 
 
 
