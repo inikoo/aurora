@@ -26,7 +26,7 @@
                 <div class="clear"></div>
             </div>
             <a href="/" class="sidebar-logo">
-                <strong>{if isset($settings['left_menu_text'])}{$settings['left_menu_text']}{else}{$website->get('Website Name')}{/if}</strong>
+                <strong>{$settings['left_menu_text']}</strong>
             </a>
         </div>
         <div class="menu-search">
