@@ -147,7 +147,7 @@
 
     <div class="header header-logo-center header-light">
         <a href="/basket.sys" class="header-icon " ><i class="fa fa-arrow-left center"  ></i></a>
-        <a href="#" class="header-logo">{if !empty($settings['header_text_mobile_website'])}{$settings['header_text_mobile_website']}{else}{$website->get('Website Name')}{/if}</a>
+        <a href="#" class="header-logo">{if !empty($settings['header_text_mobile_website'])}{$settings['header_text_mobile_website']}{/if}</a>
 
     </div>
 {else}
