@@ -135,15 +135,12 @@
 
         </tr>
         <tr>
-
-
             <td  class="label">{t}Header text{/t}
-
 
             </td>
 
             <td >
-              <input id="website_header_text_mobile" value="{if !empty($settings['header_text_mobile_website'])}{$settings['header_text_mobile_website']}{else}{$website->get('Website Name')}{/if}">
+              <input id="website_header_text_mobile" value="{if isset($settings['header_text_mobile_website'])}{$settings['header_text_mobile_website']}{/if}">
 
 
 
