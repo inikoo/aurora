@@ -265,7 +265,7 @@ if (!$smarty->isCached($template, $cache_id) or isset($is_unsubscribe) or isset(
     $smarty->assign('settings', $website->settings);
 
 
-    print_r($website->settings);
+   // print_r($website->settings);
 
     //print $template;
 
