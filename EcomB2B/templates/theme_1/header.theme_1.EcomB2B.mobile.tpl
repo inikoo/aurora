@@ -155,7 +155,7 @@
 
 <div class="header header-logo-center header-light">
     <a href="#" class="header-icon header-icon-1 hamburger-animated open-sidebar-left"></a>
-    <a href="/" class="header-logo">{if isset($settings['header_text_mobile_website'])}{$settings['header_text_mobile_website']}{/if}</a>
+    <a href="/" title=":)" class="header-logo">{if isset($settings['header_text_mobile_website'])}{$settings['header_text_mobile_website']}{/if};</a>
     {if $logged_in}
         <a href="#" class="header-icon header-icon-4 open-sidebar-right "><i class="fa fa-shopping-cart"></i></a>
     {else}
