@@ -189,7 +189,7 @@
 
         mobile_styles = {
             '.sidebar-header-image .sidebar-logo strong padding-left' : ['.sidebar-header-image .sidebar-logo strong','padding-left',$('.sidebar-header-image .sidebar-logo strong').css('padding-left')],
-            '.sidebar-header-image.bg-1 background-image':  ['.sidebar-header-image.bg-1','background-image',$('.sidebar-header-image.bg-1').css('background-image')],
+            '.sidebar-header-image.bg-1 background-image':  ['.sidebar-header-image.bg-1','background-image',$('.sidebar-header-image.bg-1').attr('background-image')],
             '.sidebar-header-image .sidebar-logo background-image':  ['.sidebar-header-image .sidebar-logo','background-image',$('.sidebar-header-image .sidebar-logo').css('background-image')]
 
         };
