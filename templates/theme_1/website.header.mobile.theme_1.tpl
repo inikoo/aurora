@@ -133,11 +133,11 @@
 
         mobile_styles = {
            '.header-logo padding-left' : ['.header-logo','padding-left',$('.header-logo').css('padding-left')],
-           '.header-logo background-image':  ['.header-logo','background-image',$('.header-logo').css('background-image')]
+           '.header-logo background-image':  ['.header-logo','background-image',$('.header-logo').attr('background-image')]
     };
 
 
-       // console.log(JSON.stringify(mobile_styles))
+        console.log($('.header-logo').attr('background-image'))
         // return;
 
         var ajaxData = new FormData();
