@@ -209,9 +209,12 @@
 
                     switch (element.attr('name')){
                         case 'logo_mobile':
+
+
+                            console.log(data)
                             $('#website_logo_mobile').attr('src',data.image_src);
 
-                            $('#preview_mobile').contents().find('.header-logo').css('background-image','url('+data.image_src+')');
+                            $('#preview_mobile').contents().find('.header-logo').css('background-image','url(image_root.php?id='+data.img_key+')');
 
 
                     }
