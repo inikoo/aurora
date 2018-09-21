@@ -526,7 +526,7 @@ function change_view(_request, metadata) {
     } else if (metadata.subtab != undefined) {
         request = request + '&subtab=' + metadata.subtab;
     }
-
+    console.log(request);
 
     $.getJSON(request, function (data) {
 
