@@ -642,6 +642,7 @@ function change_view(_request, metadata) {
 
         }, error: function () {
 
+            console.log('error')
         }
     });
 
