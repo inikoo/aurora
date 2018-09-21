@@ -219,7 +219,7 @@
                                 </label>
                             </section>
                             <section class="col col-6">
-                                <button style="margin:0px" type="submit" class="button" id="_voucher_label" contenteditable="true" > {$data._voucher_label}</button>
+                                <button style="margin:0px" type="submit" class="button"  ><span id="_voucher_label" contenteditable="true">{$data._voucher_label}</span></button>
 
                             </section>
                         </div>
@@ -234,9 +234,8 @@
                                     <textarea style="color:lightgrey"  id="_special_instructions" rows="5" name="comment" >{$data._special_instructions}</textarea>
                                 </label>
                             </section>
-s
 
-                    </form>
+            </form>
 
 
 
