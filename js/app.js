@@ -528,103 +528,110 @@ function change_view(_request, metadata) {
     }
     console.log(request);
 
-    $.getJSON(request, function (data) {
-
-        console.log(data);
 
 
-        state = data.state;
-
-        //console.log(data.state)
-        if (typeof(data.navigation) != "undefined" && data.navigation !== null && data.navigation != '') {
-            // $('#navigation').removeClass('hide')
-            $('#navigation').html(data.navigation);
-        } else {
-            // $('#navigation').addClass('hide')
-        }
-
-        if (typeof(data.tabs) != "undefined" && data.tabs !== null) {
-            $('#tabs').html(data.tabs);
-        }
-
-        if (typeof(data.menu) != "undefined" && data.menu !== null) {
-
-            $('#menu').html(data.menu);
+    $.getJSON( request, {  } )
+        .done(function( data ) {
+            console.log(data);
 
 
-        }
+            state = data.state;
 
-        if (typeof(data.logout_label) != "undefined" && data.logout_label !== null) {
-            $('#logout_label').html(data.logout_label);
-
-
-        }
-
-
-        if (typeof(data.view_position) != "undefined" && data.view_position !== null) {
-
-            $('#view_position').html(data.view_position);
-        }
-
-
-        if (typeof(data.object_showcase) != "undefined" && data.object_showcase !== null) {
-
-
-            if (data.object_showcase == '_') {
-                $('#object_showcase').addClass('hide').html('')
+            //console.log(data.state)
+            if (typeof(data.navigation) != "undefined" && data.navigation !== null && data.navigation != '') {
+                // $('#navigation').removeClass('hide')
+                $('#navigation').html(data.navigation);
             } else {
-
-                $('#object_showcase').removeClass('hide')
-                $('#object_showcase').html(data.object_showcase);
+                // $('#navigation').addClass('hide')
             }
-        } else {
-            //  $('#object_showcase').addClass('hide')
-        }
+
+            if (typeof(data.tabs) != "undefined" && data.tabs !== null) {
+                $('#tabs').html(data.tabs);
+            }
+
+            if (typeof(data.menu) != "undefined" && data.menu !== null) {
+
+                $('#menu').html(data.menu);
 
 
-        console.log(data.tab)
-        if (typeof(data.tab) != "undefined" && data.tab !== null) {
+            }
+
+            if (typeof(data.logout_label) != "undefined" && data.logout_label !== null) {
+                $('#logout_label').html(data.logout_label);
 
 
-            $('#tab').html(data.tab);
-        }
+            }
 
 
-        console.log('xx')
+            if (typeof(data.view_position) != "undefined" && data.view_position !== null) {
 
-        if (typeof(data.structure) != "undefined" && data.structure !== null) {
-            //console.log(data.structure)
-
-            structure = data.structure
-        }
+                $('#view_position').html(data.view_position);
+            }
 
 
-        if (old_state_request == '') {
-            old_state_request = data.state.request
-        }
+            if (typeof(data.object_showcase) != "undefined" && data.object_showcase !== null) {
 
 
-         console.log(metadata)
+                if (data.object_showcase == '_') {
+                    $('#object_showcase').addClass('hide').html('')
+                } else {
+
+                    $('#object_showcase').removeClass('hide')
+                    $('#object_showcase').html(data.object_showcase);
+                }
+            } else {
+                //  $('#object_showcase').addClass('hide')
+            }
 
 
-        if (metadata.post_operations == 'delivery_note.fast_track_packing') {
-
-            $('#maintabs .tab').addClass('hide')
-
-
-            $("div[id='tab_delivery_note.fast_track_packing']").removeClass('hide')
-        } else if (metadata.post_operations == 'delivery_note.fast_track_packing_off') {
-
-            $('#maintabs .tab').removeClass('hide')
+            console.log(data.tab)
+            if (typeof(data.tab) != "undefined" && data.tab !== null) {
 
 
-            $("div[id='tab_delivery_note.fast_track_packing']").addClass('hide')
-        }
+                $('#tab').html(data.tab);
+            }
 
-        change_browser_history_state(data.state.request)
-        show_side_content($('#notifications').data('current_side_view'))
 
-    });
+            console.log('xxx')
+
+            if (typeof(data.structure) != "undefined" && data.structure !== null) {
+                //console.log(data.structure)
+
+                structure = data.structure
+            }
+
+
+            if (old_state_request == '') {
+                old_state_request = data.state.request
+            }
+
+
+            console.log(metadata)
+
+
+            if (metadata.post_operations == 'delivery_note.fast_track_packing') {
+
+                $('#maintabs .tab').addClass('hide')
+
+
+                $("div[id='tab_delivery_note.fast_track_packing']").removeClass('hide')
+            } else if (metadata.post_operations == 'delivery_note.fast_track_packing_off') {
+
+                $('#maintabs .tab').removeClass('hide')
+
+
+                $("div[id='tab_delivery_note.fast_track_packing']").addClass('hide')
+            }
+
+            change_browser_history_state(data.state.request)
+            show_side_content($('#notifications').data('current_side_view'))
+        })
+        .fail(function( jqxhr, textStatus, error ) {
+            var err = textStatus + ", " + error;
+            console.log( "Request Failed: " + err );
+        });
+
+
 
 }
 
