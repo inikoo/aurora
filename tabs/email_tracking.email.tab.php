@@ -17,16 +17,47 @@ $sql=sprintf('select `Email Tracking Email Copy Subject`, `Email Tracking Email 
 if ($result=$db->query($sql)) {
     if ($row = $result->fetch()) {
 
+//$row['Email Tracking Email Copy Body']
 
+        $html='<div style="margin:auto;width: 700px;background-color: #fff;margin-top:20px;"><div style="border:1px solid #ccc;padding:10px 20px"><span class="discreet">'._('Subject').':</span> '.$row['Email Tracking Email Copy Subject'].'</div><div class="__email_text" style="border:1px solid #ccc;border-top:none"></div></div>';
 
-        $html='<div style="margin:auto;width: 700px;background-color: #fff;margin-top:20px;"><div style="border:1px solid #ccc;padding:10px 20px"><span class="discreet">'._('Subject').':</span> '.$row['Email Tracking Email Copy Subject'].'</div><div style="border:1px solid #ccc;border-top:none">'.$row['Email Tracking Email Copy Body'].'</div></div>';
+        $html.='<script>var request = $.ajax({
+  url: "/ar_email_template.php",
+  method: "POST",
+  data: { tipo : "email_text", key : '.$email_tracking->id.' },
+  dataType: "html"
+});
+ 
+request.done(function( email_text ) {
+  $( ".__email_text" ).html( email_text );
+});
+ 
+request.fail(function( jqXHR, textStatus ) {
+  alert( "Request failed: " + textStatus );
+});</script>';
 
     }else{
-        $published_email_template = get_object('Published_Email_Template',$email_tracking->get('Email Tracking Published Email Template Key'));
+        //$published_email_template = get_object('Published_Email_Template',$email_tracking->get('Email Tracking Published Email Template Key'));
 
 
 
-        $html='<div style="margin:auto;width: 700px;background-color: #fff;margin-top:20px;"> <div class="very_discreet italic" style="margin-bottom: 2px">(Not actual copy archived, showing template)</div><div style="border:1px solid #ccc;padding:10px 20px"><span class="discreet">'._('Subject').':</span> '.$published_email_template->get('Published Email Template Subject').'</div><div style="border:1px solid #ccc;border-top:none">'.$published_email_template->get('Published Email Template HTML').'</div></div>';
+        $html='<div style="margin:auto;width: 700px;background-color: #fff;margin-top:20px;"> <div class="very_discreet italic" style="margin-bottom: 2px">(Not actual copy archived, showing template)</div><div style="border:1px solid #ccc;padding:10px 20px"><span class="discreet">'._('Subject').':</span> '.$published_email_template->get('Published Email Template Subject').'</div><div class="__email_text" style="border:1px solid #ccc;border-top:none"></div></div>';
+
+
+        $html.='<script>var request = $.ajax({
+  url: "/ar_email_template.php",
+  method: "POST",
+  data: { tipo : "template_text", key : '.$email_tracking->get('Email Tracking Published Email Template Key').' },
+  dataType: "html"
+});
+ 
+request.done(function( email_text ) {
+  $( ".__email_text" ).html( email_text );
+});
+ 
+request.fail(function( jqXHR, textStatus ) {
+  alert( "Request failed: " + textStatus );
+});</script>';
 
     }
 }else {

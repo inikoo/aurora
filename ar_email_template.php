@@ -41,7 +41,22 @@ switch ($tipo) {
         template_data($data);
         break;
 
-
+    case 'email_text':
+        $data = prepare_values(
+            $_REQUEST, array(
+                         'key' => array('type' => 'key')
+                     )
+        );
+        email_text($data,$db);
+        break;
+    case 'template_text':
+        $data = prepare_values(
+            $_REQUEST, array(
+                         'key' => array('type' => 'key')
+                     )
+        );
+        template_text($data,$db);
+        break;
     default:
         $response = array(
             'state' => 405,
@@ -53,22 +68,48 @@ switch ($tipo) {
 }
 
 
+function email_text($data, $db) {
+
+    $text = '';
+
+    $sql = sprintf('select `Email Tracking Email Copy Subject`, `Email Tracking Email Copy Body` from `Email Tracking Email Copy` where `Email Tracking Email Copy Key`=%d ', $data['key']);
+    if ($result = $db->query($sql)) {
+        if ($row = $result->fetch()) {
+            $text = $row['Email Tracking Email Copy Body'];
+
+        }
+
+    }
+
+    echo $text;
+
+}
+
+
+function template_text($data) {
+
+
+
+    $published_email_template = get_object('Published_Email_Template',$data['key']);
+
+    echo $published_email_template->get('Published Email Template HTML');
+
+
+}
+
 function template_data($data) {
 
     include_once 'class.Email_Template.php';
 
     $email_template = new Email_Template($data['key']);
 
-    switch ($data['field']){
+    switch ($data['field']) {
         case 'json':
 
 
             print $email_template->get('Email Template Editing JSON');
             break;
     }
-
-
-
 
 
 }
