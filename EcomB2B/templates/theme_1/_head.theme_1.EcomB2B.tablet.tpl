@@ -142,22 +142,19 @@
 
 
         .header-logo{
-            background-image:url({if !empty($settings['logo_website'])}{$settings['logo_website']}{else}/art/mobile_logo.png{/if});
+            background-image:url({if !empty($settings['logo_website'])}{$settings['logo_website']}{/if});
             background-size: auto 100%;
         }
 
         .sidebar-header-image .sidebar-logo {
             padding-left:0px;
-            background-image:url(/art/mobile_logo.png);
         }
 
         .sidebar-header-image .sidebar-logo strong{
             padding-left: 75px;
         }
 
-        .sidebar-header-image.bg-1 {
-            background-image: url(/art/mobile_side_bg_1.png);
-        }
+
 
 
 

@@ -128,22 +128,17 @@
 
 
          .header-logo{
-             background-image:url(/EcomB2b/art/mobile_logo.png);
              background-size: auto 100%;
          }
 
          .sidebar-header-image .sidebar-logo {
              padding-left:0px;
-             background-image:url(/EcomB2b/art/mobile_logo.png);
          }
 
          .sidebar-header-image .sidebar-logo strong{
              padding-left: 75px;
          }
 
-         .sidebar-header-image.bg-1 {
-             background-image: url(/EcomB2b/art/mobile_side_bg_1.png);
-         }
 
 
 

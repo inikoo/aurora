@@ -273,7 +273,7 @@
 
                 <input style="display:none" type="file" name="left_menu_background" id="update_image_left_menu_background_mobile" class="image_upload_mobile" data-options='{ }'/>
                 <label style="cursor: pointer" for="update_image_left_menu_background_mobile">
-                    <img id="website_left_menu_background_mobile" style="height: 120px" src="{if !empty($mobile_style_values['left_menu_background'])}{$mobile_style_values['left_menu_background']}{else}/EcomB2b/art/mobile_side_bg_1.png{/if}"/>
+                    <img id="website_left_menu_background_mobile" style="height: 120px" src="{if !empty($mobile_style_values['left_menu_background'])}{$mobile_style_values['left_menu_background']}{else}/EcomB2b/art/nopic.png{/if}"/>
                 </label>
 
 
@@ -296,7 +296,7 @@
 
                 <input style="display:none" type="file" name="left_menu_logo_mobile" id="update_image_logo_mobile" class="image_upload_mobile" data-options='{ }'/>
                 <label style="cursor: pointer" for="update_image_logo_mobile">
-                    <img id="left_menu_logo_mobile" style="height: 54px" src="{if !empty($mobile_style_values['left_menu_logo'])}{$mobile_style_values['left_menu_logo']}{else}/EcomB2B/art/mobile_logo.png{/if}"/>
+                    <img id="left_menu_logo_mobile" style="height: 54px" src="{if !empty($mobile_style_values['left_menu_logo'])}{$mobile_style_values['left_menu_logo']}{/if}"/>
                 </label>
 
 
