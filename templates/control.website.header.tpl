@@ -105,7 +105,7 @@
 
                 <input style="display:none" type="file" name="logo_mobile" id="update_image_logo_mobile" class="image_upload_mobile" data-options='{ }'/>
                 <label style="cursor: pointer" for="update_image_logo_mobile">
-                    <img id="website_logo_mobile" style="height: 54px" src="{if !empty($mobile_style_values['header_background_image'])}{$mobile_style_values['header_background_image']}{else}/EcomB2B/art/mobile_logo.png{/if}"/>
+                    <img id="website_logo_mobile" style="height: 54px" src="{if !empty($mobile_style_values['header_background_image'])}{$mobile_style_values['header_background_image']}{/if}"/>
                 </label>
 
 
