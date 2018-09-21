@@ -216,7 +216,7 @@
 
                             $('#preview_mobile').contents().find('.header-logo').css('background-image','url(/image_root.php?id='+data.img_key+')');
 
-                            $('#preview_mobile').contents().find('.header-logo').attr('background-image','url(/image_root.php?id='+data.img_key.')')
+                            $('#preview_mobile').contents().find('.header-logo').attr('background-image','url(/image_root.php?id='+data.img_key+')')
 
 
 
