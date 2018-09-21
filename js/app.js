@@ -530,7 +530,7 @@ function change_view(_request, metadata) {
 
     $.getJSON(request, function (data) {
 
-        //console.log(data);
+        console.log(data);
 
 
         state = data.state;
@@ -581,12 +581,16 @@ function change_view(_request, metadata) {
             //  $('#object_showcase').addClass('hide')
         }
 
+
+        console.log(data.tab)
         if (typeof(data.tab) != "undefined" && data.tab !== null) {
 
 
             $('#tab').html(data.tab);
         }
 
+
+        console.log('xx')
 
         if (typeof(data.structure) != "undefined" && data.structure !== null) {
             //console.log(data.structure)
@@ -600,7 +604,7 @@ function change_view(_request, metadata) {
         }
 
 
-        // console.log(metadata)
+         console.log(metadata)
 
 
         if (metadata.post_operations == 'delivery_note.fast_track_packing') {
