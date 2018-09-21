@@ -196,7 +196,8 @@
 
 
 
-        console.log(JSON.stringify(mobile_styles))
+        console.log($('.sidebar-header-image.bg-1').attr('background-image'))
+        console.log($('.sidebar-header-image .sidebar-logo').attr('background-image'))
         // return;
 
         var ajaxData = new FormData();

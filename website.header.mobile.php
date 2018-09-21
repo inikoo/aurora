@@ -73,6 +73,49 @@ $settings=$website->settings;
 $smarty->assign('settings',$settings);
 
 
+
+
+$mobile_style_values = array();
+foreach ($website->mobile_style as $key => $value) {
+    if ($key == '.sidebar-header-image .sidebar-logo strong padding-left') {
+        $mobile_style_values['padding-left'] = floatval($value[2]);
+
+
+    } elseif ($key == '.sidebar-header-image.bg-1 background-image') {
+        $mobile_style_values['left_menu_background'] = preg_replace('/\"?\)$/', '', preg_replace('/^url\(\"?/', '', $value[2]));
+        $mobile_style_values['left_menu_background_raw'] = $value[2];
+
+
+    } elseif ($key == '.sidebar-header-image .sidebar-logo background-image') {
+        $mobile_style_values['left_menu_logo'] = preg_replace('/\"?\)$/', '', preg_replace('/^url\(\"?/', '', $value[2]));
+        $mobile_style_values['left_menu_logo_raw'] = $value[2];
+
+
+    }
+
+
+
+    if($value[0]=='.header-logo'  ) {
+
+        if($value[1]=='background-image'){
+            $mobile_style_values['header_background_image_raw'] = $value[2];
+        }
+
+    }
+
+
+
+}
+
+
+
+
+
+$smarty->assign('mobile_style_values', $mobile_style_values);
+
+
+
+
 $template = $theme.'/website.header.mobile.'.$theme.'.tpl';
 
 if (file_exists('templates/'.$template)) {

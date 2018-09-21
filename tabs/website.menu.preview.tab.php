@@ -51,15 +51,17 @@ foreach ($website->mobile_style as $key => $value) {
 
 
     } elseif ($key == '.sidebar-header-image.bg-1 background-image') {
-        $mobile_style_values['left_menu_background'] = preg_replace('/\"\)$/', '', preg_replace('/^url\(\"/', '', $value[2]));
+        $mobile_style_values['left_menu_background'] = preg_replace('/\"?\)$/', '', preg_replace('/^url\(\"?/', '', $value[2]));
 
 
     } elseif ($key == '.sidebar-header-image .sidebar-logo background-image') {
-        $mobile_style_values['left_menu_logo'] = preg_replace('/\"\)$/', '', preg_replace('/^url\(\"/', '', $value[2]));
+        $mobile_style_values['left_menu_logo'] = preg_replace('/\"?\)$/', '', preg_replace('/^url\(\"?/', '', $value[2]));
 
 
     }
 }
+
+
 $smarty->assign('mobile_style_values', $mobile_style_values);
 
 
