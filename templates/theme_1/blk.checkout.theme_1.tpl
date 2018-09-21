@@ -121,6 +121,7 @@
 
     </div>
 
+        {if empty($data.labels._credit_card_label) }&nbsp;{else}{$data.labels._cash_on_delivery_label}{/if}
 
 
         <div class="clear" style="margin-bottom: 30px"> </div>
@@ -128,10 +129,10 @@
     <div class="container clear">
 
         <ul class="tabs3">
-            <li><a href="#example-3-tab-1" target="_self"><i class="fa fa-credit-card" aria-hidden="true"></i> <span contenteditable="true" id="_credit_card_label">{$data.labels._credit_card_label}</span></a></li>
+            <li><a href="#example-3-tab-1" target="_self"><i class="fa fa-credit-card" aria-hidden="true"></i> <span contenteditable="true" id="_credit_card_label">{if empty($data.labels._credit_card_label) }{t}Credit card{/t}{else}{$data.labels._credit_card_label}{/if}</span></a></li>
             <li><a href="#example-3-tab-2" target="_self"><i class="fab fa-paypal" aria-hidden="true"></i>&nbsp; Paypal</a></li>
-            <li><a href="#example-3-tab-3" target="_self"><i class="fa fa-university" aria-hidden="true"></i>&nbsp; <span contenteditable="true" id="_bank_label">{{$data.labels._bank_label}}</span></a></li>
-            <li><a href="#example-3-tab-4" target="_self"><i class="fa fa-handshake" aria-hidden="true"></i>&nbsp; <span contenteditable="true" id="_cash_on_delivery_label">{if !empty($data.labels._cash_on_delivery_label)}{{$data.labels._cash_on_delivery_label}}{else}Cash on delivery{/if}</span></a></li>
+            <li><a href="#example-3-tab-3" target="_self"><i class="fa fa-university" aria-hidden="true"></i>&nbsp; <span contenteditable="true" id="_bank_label">{if empty($data.labels._bank_label) }{t}Bank{/t}{else}{$data.labels._bank_label}{/if}</span></a></li>
+            <li><a href="#example-3-tab-4" target="_self"><i class="fa fa-handshake" aria-hidden="true"></i>&nbsp; <span contenteditable="true" id="_cash_on_delivery_label">{if empty($data.labels._cash_on_delivery_label) }{t}Cash on delivery{/t}{else}{$data.labels._cash_on_delivery_label}{/if}</span></a></li>
             <li ><a href="#example-3-tab-5" target="_self"><i class="fa fa-hand-peace" aria-hidden="true"></i> <span >Sofort</span></a></li>
 
         </ul>
@@ -192,7 +193,7 @@
                     </fieldset>
 
                     <footer>
-                        <button class="button" id="_place_order_from_credit_card" contenteditable="true">{$data.labels._place_order_from_credit_card}</button>
+                        <button class="button"><span  id="_place_order_from_credit_card" contenteditable="true">{if empty($data.labels._place_order_from_credit_card) } &nbsp;{else}{$data.labels._place_order_from_credit_card}{/if}</span></button>
                     </footer>
                 </form>
 
