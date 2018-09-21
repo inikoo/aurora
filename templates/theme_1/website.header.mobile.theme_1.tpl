@@ -190,12 +190,13 @@
         mobile_styles = {
             '.sidebar-header-image .sidebar-logo strong padding-left' : ['.sidebar-header-image .sidebar-logo strong','padding-left',$('.sidebar-header-image .sidebar-logo strong').css('padding-left')],
             '.sidebar-header-image.bg-1 background-image':  ['.sidebar-header-image.bg-1','background-image',$('.sidebar-header-image.bg-1').attr('background-image')],
-            '.sidebar-header-image .sidebar-logo background-image':  ['.sidebar-header-image .sidebar-logo','background-image',$('.sidebar-header-image .sidebar-logo').css('background-image')]
+            '.sidebar-header-image .sidebar-logo background-image':  ['.sidebar-header-image .sidebar-logo','background-image',$('.sidebar-header-image .sidebar-logo').attr('background-image')]
 
         };
 
 
-        // console.log(JSON.stringify(mobile_styles))
+
+        console.log(JSON.stringify(mobile_styles))
         // return;
 
         var ajaxData = new FormData();
