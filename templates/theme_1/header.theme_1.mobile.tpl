@@ -14,7 +14,7 @@
 
 <div class="sidebars sidebars-light">
     <div class="sidebar sidebar-left">
-        <div class="sidebar-header sidebar-header-image bg-1">
+        <div class="sidebar-header sidebar-header-image bg-1"  background-image="{if isset($mobile_style_values['left_menu_background_raw'])}{$mobile_style_values['left_menu_background_raw']}{/if}" >
             <div class="overlay "></div>
             <div class="sidebar-socials" >
                 <a  class="invisible"  href="tel:{$store->get('Telephone')}"><i class="ion-ios-telephone"></i></a>
@@ -25,7 +25,7 @@
                 <a class="close-sidebar" href=""><i class="fa fa-times"></i></a>
                 <div class="clear"></div>
             </div>
-            <a  class="sidebar-logo">
+            <a  class="sidebar-logo"  background-image="{if isset($mobile_style_values['left_menu_logo_raw'])}{$mobile_style_values['left_menu_logo_raw']}{/if}">
                 <strong>{if !empty($settings['left_menu_text'])}{$settings['left_menu_text']}{else}{$website->get('Website Name')}{/if}</strong>
             </a>
         </div>
@@ -147,7 +147,7 @@
 
 <div class="header header-logo-center header-light">
     <a href="" class="header-icon header-icon-1 hamburger-animated open-sidebar-left"></a>
-    <a href="" class="header-logo">{if !empty($settings['header_text_mobile_website'])}{$settings['header_text_mobile_website']}{/if}</a>
+    <a href="" class="header-logo" background-image="{if isset($mobile_style_values['header_background_image_raw'])}{$mobile_style_values['header_background_image_raw']}{/if}" >{if !empty($settings['header_text_mobile_website'])}{$settings['header_text_mobile_website']}{/if}</a>
     {if $logged_in}
         <a href="" class="header-icon header-icon-4 open-sidebar-right "><i class="fa fa-shopping-cart"></i></a>
     {else}

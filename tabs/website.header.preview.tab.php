@@ -29,7 +29,7 @@ foreach($website->mobile_style as $value){
         if($value[1]=='padding-left'){
             $mobile_style_values['header_text_padding'] = floatval($value[2]);
         }elseif($value[1]=='background-image'){
-            $mobile_style_values['header_background_image'] = preg_replace('/\"\)$/','',preg_replace('/^url\(\"/','',$value[2]));
+            $mobile_style_values['header_background_image'] = preg_replace('/\"?\)$/','',preg_replace('/^url\(\"?/','',$value[2]));
         }
 
     }
