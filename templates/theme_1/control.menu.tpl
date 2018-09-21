@@ -430,7 +430,8 @@
                             $('#website_left_menu_background_mobile').attr('src',data.image_src);
 
                             $('#preview_mobile').contents().find('.sidebar-header-image.bg-1').css('background-image','url('+data.image_src+')');
-                            $('#preview_mobile').contents().find('.sidebar-header-image.bg-1').attr('background-image','/image_root.php?id='+data.img_key);
+                            $('#preview_mobile').contents().find('.sidebar-header-image.bg-1').attr('background-image','url(/image_root.php?id='+data.img_key.')')
+
 
                             break;
 
@@ -438,7 +439,7 @@
                             $('#left_menu_logo_mobile').attr('src',data.image_src);
 
                             $('#preview_mobile').contents().find('.sidebar-header-image .sidebar-logo').css('background-image','url('+data.image_src+')');
-                            $('#preview_mobile').contents().find('.sidebar-header-image .sidebar-logo').attr('background-image','/image_root.php?id='+data.img_key)
+                            $('#preview_mobile').contents().find('.sidebar-header-image .sidebar-logo').attr('background-image','url(/image_root.php?id='+data.img_key.')')
 
                             break;
 
