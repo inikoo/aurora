@@ -6332,6 +6332,45 @@ $modules = array(
 
             ),
 
+            'prospect_agent' => array(
+                'type' => 'object',
+
+
+                'tabs' => array(
+                    'prospect_agent.prospects'  => array(
+                        'label' => _('Prospects')
+                    ),
+                    'prospect_agent.sent_emails'  => array(
+                        'label' => _('Sent emails')
+                    ),
+                    //'prospect_agent.calls'  => array(
+                    //    'label' => _('Calls')
+                    //),
+
+
+
+
+                )
+
+            ),
+
+            'prospect_agent_email_tracking'         => array(
+                'type' => 'object',
+                'tabs' => array(
+                    'email_tracking.email' => array(
+                        'label' => _('Email'),
+                        'icon'  => 'envelope',
+                    ),
+
+                    'email_tracking.events' => array(
+                        'label' => _('Tracking'),
+                        'icon'  => 'stopwatch'
+                    ),
+
+
+                )
+            ),
+
 
         )
     ),

@@ -445,6 +445,7 @@ function get_object($object_name, $key, $load_other_data = false) {
             break;
         case 'sales_representative':
         case 'salesrepresentative':
+        case 'prospect_agent':
             include_once 'class.Sales_Representative.php';
             $object = new Sales_Representative('id', $key);
             break;

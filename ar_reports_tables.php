@@ -1492,7 +1492,7 @@ function prospect_agents($_data, $db, $user, $account) {
 
 
 
-    $sql   = "select `User Alias`,`User Key`,`Sales Representative Key` from `Sales Representative Dimension` SRD left join `User Dimension` S on (S.`User Key`=`Sales Representative User Key`) ";
+    $sql   = "select `User Alias`,`User Key`,`Sales Representative Key` from `Sales Representative Dimension` SRD left join `User Dimension` S on (S.`User Key`=`Sales Representative User Key`) where `Sales Representative Prospect Agent`='Yes'";
 
     $_adata = array();
 
@@ -1500,8 +1500,8 @@ function prospect_agents($_data, $db, $user, $account) {
     if ($result = $db->query($sql)) {
         foreach ($result as $data) {
             $_adata[$data['Sales Representative Key']] = array(
-                'name' => sprintf('<span class="link" onclick="change_view(\'report/prospect_agent/%d\',{ tab:\'sales_representative.customers\'} ,  )">%s</span>',$data['Sales Representative Key'],$data['User Alias']),
-                'new_prospects'=>sprintf('<span class="link very_discreet" onclick="change_view(\'report/prospect_agent/%d\',{ tab:\'sales_representative.invoices\' , parameters:{ period:\'%s\',from:\'%s\',to:\'%s\',elements_type:\'type\' } ,element:{ type:{ Invoice:\'\',Refund:1}}  }  )">%s</span>',$data['Sales Representative Key'],$_data['parameters']['period'],$_data['parameters']['from'],$_data['parameters']['to'],0),
+                'name' => sprintf('<span class="link" onclick="change_view(\'report/prospect_agents/%d\',{ tab:\'prospect_agent.prospects\' , parameters:{ period:\'%s\',from:\'%s\',to:\'%s\',elements_type:\'type\' }  }  )">%s</span>',$data['Sales Representative Key'],$_data['parameters']['period'],$_data['parameters']['from'],$_data['parameters']['to'],$data['User Alias']),
+                'new_prospects'=>sprintf('<span class="link very_discreet" onclick="change_view(\'report/prospect_agents/%d\',{ tab:\'prospect_agent.invoices\' , parameters:{ period:\'%s\',from:\'%s\',to:\'%s\',elements_type:\'type\' } ,element:{ type:{ Invoice:\'\',Refund:1}}  }  )">%s</span>',$data['Sales Representative Key'],$_data['parameters']['period'],$_data['parameters']['from'],$_data['parameters']['to'],0),
                 //'invoices'=>sprintf('<span class="link very_discreet" onclick="change_view(\'report/sales_representatives/%d\',{ tab:\'sales_representative.invoices\',  parameters:{ period:\'%s\',from:\'%s\',to:\'%s\',elements_type:\'type\' } ,element:{ type:{ Invoice:1,Refund:\'\'}}}  )">%s</span>',$data['Sales Representative Key'],$_data['parameters']['period'],$_data['parameters']['from'],$_data['parameters']['to'],0),
                 //'sales'=>sprintf('<span class="link very_discreet" onclick="change_view(\'report/sales_representatives/%d\',{ tab:\'sales_representative.invoices\',  parameters:{ period:\'%s\',from:\'%s\',to:\'%s\',elements_type:\'type\' } ,element:{ type:{ Invoice:1,Refund:1}}}  )">%s</span>',$data['Sales Representative Key'],$_data['parameters']['period'],$_data['parameters']['from'],$_data['parameters']['to'],money(0,$account->get('Account Currency'))),
 
@@ -1522,9 +1522,28 @@ function prospect_agents($_data, $db, $user, $account) {
 
             //        print_r($data);
 
-            $_adata[$data['Prospect Sales Representative Key']]['new_prospects']=sprintf('<span class="link " onclick="change_view(\'report/prospect_agent/%d\',{ tab:\'prospect_agent.invoices\' , parameters:{ period:\'%s\',from:\'%s\',to:\'%s\',elements_type:\'type\' } ,element:{ type:{ Invoice:1,Refund:\'\'}}  }  )">%s</span>',$data['Prospect Sales Representative Key'],$_data['parameters']['period'],$_data['parameters']['from'],$_data['parameters']['to'],number($data['new_prospects']));
-            $_adata[$data['Prospect Sales Representative Key']]['calls']=sprintf('<span class="link " onclick="change_view(\'report/prospect_agent/%d\',{ tab:\'prospect_agent.invoices\' , parameters:{ period:\'%s\',from:\'%s\',to:\'%s\',elements_type:\'type\' } ,element:{ type:{ Invoice:1,Refund:\'\'}}  }  )">%s</span>',$data['Prospect Sales Representative Key'],$_data['parameters']['period'],$_data['parameters']['from'],$_data['parameters']['to'],number($data['calls']));
-            $_adata[$data['Prospect Sales Representative Key']]['emails_sent']=sprintf('<span class="link " onclick="change_view(\'report/prospect_agent/%d\',{ tab:\'prospect_agent.invoices\' , parameters:{ period:\'%s\',from:\'%s\',to:\'%s\',elements_type:\'type\' } ,element:{ type:{ Invoice:1,Refund:\'\'}}  }  )">%s</span>',$data['Prospect Sales Representative Key'],$_data['parameters']['period'],$_data['parameters']['from'],$_data['parameters']['to'],number($data['emails_sent']));
+            $_adata[$data['Prospect Sales Representative Key']]['new_prospects']=sprintf('<span class="link " onclick="change_view(\'report/prospect_agents/%d\',{ tab:\'prospect_agent.prospects\' , parameters:{ period:\'%s\',from:\'%s\',to:\'%s\',elements_type:\'type\' }  }  )">%s</span>',$data['Prospect Sales Representative Key'],$_data['parameters']['period'],$_data['parameters']['from'],$_data['parameters']['to'],number($data['new_prospects']));
+            $_adata[$data['Prospect Sales Representative Key']]['calls']=sprintf('<span class="link " onclick="change_view(\'report/prospect_agents/%d\',{ tab:\'prospect_agent.calls\' , parameters:{ period:\'%s\',from:\'%s\',to:\'%s\',elements_type:\'type\' } ,element:{ type:{ Invoice:1,Refund:\'\'}}  }  )">%s</span>',$data['Prospect Sales Representative Key'],$_data['parameters']['period'],$_data['parameters']['from'],$_data['parameters']['to'],number($data['calls']));
+            $_adata[$data['Prospect Sales Representative Key']]['emails_sent']=sprintf('<span class="link " onclick="change_view(\'report/prospect_agents/%d\',{ tab:\'prospect_agent.invoices\' , parameters:{ period:\'%s\',from:\'%s\',to:\'%s\',elements_type:\'type\' } ,element:{ type:{ Invoice:1,Refund:\'\'}}  }  )">%s</span>',$data['Prospect Sales Representative Key'],$_data['parameters']['period'],$_data['parameters']['from'],$_data['parameters']['to'],number($data['emails_sent']));
+
+
+
+            $_adata[$data['Prospect Sales Representative Key']]['open_percentage']=sprintf('<span title="%s" >%s</span>',number($data['emails_open']),percentage($data['emails_open'],$data['emails_sent']));
+            $_adata[$data['Prospect Sales Representative Key']]['click_percentage']=sprintf('<span title="%s"  >%s</span>',number($data['emails_clicked']),percentage($data['emails_clicked'],$data['emails_sent']));
+            $_adata[$data['Prospect Sales Representative Key']]['register_percentage']=sprintf('<span title="%s"  >%s</span>',number($data['prospects_registered']),percentage($data['prospects_registered'],$data['emails_sent']));
+            $_adata[$data['Prospect Sales Representative Key']]['invoiced_percentage']=sprintf('<span title="%s"  >%s</span>',number($data['prospects_invoiced']),percentage($data['prospects_invoiced'],$data['emails_sent']));
+
+
+
+
+            $_adata[$data['Prospect Sales Representative Key']]['open']=sprintf('<span title="%s" >%s</span>',percentage($data['emails_open'],$data['emails_sent']),number($data['emails_open']));
+            $_adata[$data['Prospect Sales Representative Key']]['click']=sprintf('<span   title="%s" >%s</span>',percentage($data['emails_clicked'],$data['emails_sent']),number($data['emails_clicked']));
+            $_adata[$data['Prospect Sales Representative Key']]['register']=sprintf('<span   title="%s">%s</span>',percentage($data['prospects_registered'],$data['emails_sent']),number($data['prospects_registered']));
+            $_adata[$data['Prospect Sales Representative Key']]['invoiced']=sprintf('<span  title="%s"  >%s</span>',percentage($data['prospects_invoiced'],$data['emails_sent']),number($data['prospects_invoiced']));
+
+
+
+
 
 
         }

@@ -243,6 +243,10 @@ function close_edit_this_field(scope) {
 
 
 function close_edit_field(field) {
+
+
+    console.log(field)
+
     var type = $('#' + field + '_container').attr('field_type')
 
     $('#' + field + '_formatted_value').removeClass('hide')
@@ -1139,12 +1143,17 @@ function pre_save_actions(field, data) {
 function post_save_actions(field, data) {
 
 //    console.log(field)
-    //   console.log(data)
+     //  console.log(data)
 
-    //   console.log(field)
+     // console.log(field)
 
     switch (field) {
+        case 'Prospect_Customer_Key':
+            change_view(state.request, {
+                reload_showcase: 1
+            })
 
+            break;
         case 'Webpage_See_Also':
             $('.webpage_see_also_editor').html(data.update_metadata.webpage_see_also_editor)
 
@@ -1937,6 +1946,33 @@ function toggle_unlock_delete_object(element) {
 }
 
 
+
+function toggle_prospect_link_to_customer(element) {
+
+
+    var field = 'Prospect_Customer_Key'
+    if ($(element).hasClass('fa-lock')) {
+        $(element).removeClass('fa-lock').addClass('fa-unlock')
+        $(element).nextAll('span:first').removeClass('disabled').addClass('button')
+
+
+
+            open_edit_field($('#fields').attr('object'), $('#fields').attr('key'), field)
+
+
+    } else {
+        $(element).addClass('fa-lock').removeClass('fa-unlock')
+        $(element).nextAll('span:first').addClass('disabled').removeClass('button')
+
+
+        close_edit_field(field)
+
+    }
+}
+
+
+
+
 function delete_object(element) {
     save_object_operation('delete', element)
 }
@@ -1979,6 +2015,10 @@ function archive_object(element) {
 
 function unarchive_object(element) {
     save_object_operation('unarchive', element)
+}
+
+function unlink_customer_object(element) {
+    save_object_operation('unlink_customer', element)
 }
 
 

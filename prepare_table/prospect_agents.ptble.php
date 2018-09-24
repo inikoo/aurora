@@ -53,7 +53,13 @@ $group_by
 
 $table='  `Prospect Dimension` ';
 
-$fields = "`Prospect Sales Representative Key`,count(Distinct `Prospect Key`) as new_prospects ,sum(`Prospect Calls Number`) calls,sum(`Prospect Emails Sent Number`) emails_sent
+$fields = "`Prospect Sales Representative Key`,count(Distinct `Prospect Key`) as new_prospects ,sum(`Prospect Calls Number`) calls,sum(`Prospect Emails Sent Number`) emails_sent,
+
+sum(`Prospect Emails Open Number`)  emails_open,
+sum(`Prospect Emails Clicked Number`)  emails_clicked,
+sum(if(`Prospect Status`='Registered',1,0))  prospects_registered,
+sum(if(`Prospect Status`='Invoiced',1,0))  prospects_invoiced
+
 
 ";
 

@@ -2,7 +2,7 @@
 /*
  About:
  Author: Raul Perusquia <raul@inikoo.com>
- Created: 31 May 2018 at 11:23:45 GMT+8, Kuala Lumpur, Malaysia
+ Created: 24 September 2018 at 11:29:35 GMT+8, Kuala Lumpur, Malaysia
  Copyright (c) 2018, Inikoo
 
  Version 3
@@ -11,13 +11,13 @@
 
 
 $parameters = array(
-    'parent'     => $state['object'],
+    'parent'     => 'prospect_agent',
     'parent_key' => $state['key'],
 
 );
 
 
-$tab     = 'prospect.sent_emails';
+$tab     = 'prospect_agent.sent_emails';
 $ar_file = 'ar_mailshot_tables.php';
 $tipo    = 'subject_sent_emails';
 

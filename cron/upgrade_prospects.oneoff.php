@@ -49,6 +49,13 @@ if ($result = $db->query($sql)) {
 
             )
         );
+        $prospect->update_prospect_data();
+
+        $customer = get_object('Customer', $prospect->get('Prospect Customer Key'));
+
+        if ($customer->id) {
+            $customer->update_invoices();
+        }
 
 
     }

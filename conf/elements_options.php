@@ -115,58 +115,9 @@ $elements_options = array(
                     'label'    => _('Registered'),
                     'selected' => false
                 ),
-
-            )
-
-
-        ),
-        'orders'   => array(
-            'label' => _('Orders'),
-            'items' => array(
-                'Yes' => array(
-                    'label'    => _('With orders'),
-                    'selected' => true
-                ),
-                'No'  => array(
-                    'label'    => _('Without orders'),
-                    'selected' => true
-                ),
-            )
-
-
-        ),
-
-        'type'     => array(
-            'label' => _('Type'),
-            'items' => array(
-                'Normal'  => array(
-                    'label'    => _('Normal'),
-                    'selected' => true
-                ),
-                'VIP'     => array(
-                    'label'    => _('VIP'),
-                    'selected' => true
-                ),
-                'Partner' => array(
-                    'label'    => _('Partner'),
-                    'selected' => true
-                ),
-                'Staff'   => array(
-                    'label'    => _('Staff'),
-                    'selected' => true
-                ),
-            )
-        ),
-        'location' => array(
-            'label' => _('Location'),
-            'items' => array(
-                'Domestic' => array(
-                    'label'    => _('Domestic'),
-                    'selected' => true
-                ),
-                'Export'   => array(
-                    'label'    => _('Export'),
-                    'selected' => true
+                'Invoiced' => array(
+                    'label'    => _('Invoiced'),
+                    'selected' => false
                 ),
 
             )

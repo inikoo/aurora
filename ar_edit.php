@@ -902,6 +902,9 @@ function object_operation($account, $db, $user, $editor, $data, $smarty) {
         case 'clean_cache':
             $request = $object->clean_cache();
             break;
+        case 'unlink_customer':
+            $request = $object->unlink_customer();
+            break;
         case 'un_dispatch':
             $request = $object->update_state('un_dispatch');
             break;

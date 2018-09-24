@@ -26,6 +26,21 @@ if (isset($_SESSION['table_state']['prospect_agents']['period'])) {
 }
 $table_views = array();
 
+
+$table_views = array(
+    'overview' => array(
+        'label' => _('Overview'),
+        'title' => _('Overview')
+    ),
+    'percentages'  => array(
+        'label' => _('Percentages'),
+        'title' => _('Percentages')
+    ),
+
+
+);
+
+
 $table_filters = array(
     'name' => array('label' => _('Name')),
 

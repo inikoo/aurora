@@ -1135,8 +1135,11 @@ function prospects($_data, $db, $user) {
                 case 'Registered':
                     $status = _('Registered');
                     break;
+                case 'Invoiced':
+                    $status = _('Invoiced');
+                    break;
                 default:
-                    $status = $data['Prospect Type by Activity'];
+                    $status = $data['Prospect Status'];
                     break;
             }
 

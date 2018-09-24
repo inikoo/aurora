@@ -2818,6 +2818,41 @@ class Customer extends Subject {
 
         $this->fast_update($update_data);
 
+
+        $sql=sprintf('select `Prospect Key` from `Prospect Dimension` where `Prospect Customer Key`=%d ',$this->id);
+        if ($result=$this->db->query($sql)) {
+            if ($row = $result->fetch()) {
+                $prospect=get_object('Prospect',$row['Prospect Key']);
+                $prospect->fast_update(array('Prospect Invoiced'=>($customer_invoices>0?'Yes':'No')));
+
+                if($customer_invoices>0 and $prospect->get('Prospect Status')=='Registered'){
+
+
+                    $sql=sprintf('select `Invoice Key` from `Invoice Dimension` where `Invoice Customer Key`=%d order by `Invoice Date` limit 1 ',$this->id);
+                    if ($result=$this->db->query($sql)) {
+                        if ($row = $result->fetch()) {
+                            $first_invoice=get_object('Invoice',$row['Invoice Key']);
+                            $prospect->update_status('Invoiced',$first_invoice);
+
+                        }
+                    }else {
+                    	print_r($error_info=$this->db->errorInfo());
+                    	print "$sql\n";
+                    	exit;
+                    }
+
+                }
+
+
+        	}
+        }else {
+        	print_r($error_info=$this->db->errorInfo());
+        	print "$sql\n";
+        	exit;
+        }
+
+
+
     }
 
     public function update_payments() {

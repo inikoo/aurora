@@ -10,23 +10,41 @@
 */
 
 
-if($parameters['parent']=='prospect'){
+if ($parameters['parent'] == 'prospect') {
 
 
     $table  = '`Email Tracking Dimension`  left join `Published Email Template Dimension` S on (`Email Tracking Published Email Template Key`=`Published Email Template Key`) ';
     $fields = "`Published Email Template Subject`,`Email Tracking Key`,`Email Tracking State`,`Email Tracking Created Date`";
 
-}else{
+} else {
 
 
     $table  = '`Email Tracking Dimension`  left join `Email Campaign Type Dimension`  on (`Email Tracking Email Template Type Key`=`Email Campaign Type Key`)  
     left join `Published Email Template Dimension` on (`Email Tracking Published Email Template Key`=`Published Email Template Key`)
     left join `Customer Dimension` on (`Email Tracking Recipient Key`=`Customer Key`) ';
-    $fields = "`Email Tracking Email`,`Customer Store Key` as store_key,`Customer Key` as recipient_key,`Customer Name` as recipient_name,`Email Campaign Type Code`,`Published Email Template Subject`,`Email Tracking Key`,`Email Tracking State`,`Email Tracking Created Date`";
+    $fields =
+        "`Email Tracking Email`,`Customer Store Key` as store_key,`Customer Key` as recipient_key,`Customer Name` as recipient_name,`Email Campaign Type Code`,`Published Email Template Subject`,`Email Tracking Key`,`Email Tracking State`,`Email Tracking Created Date`";
 
 }
 
+
 switch ($parameters['parent']) {
+
+    case('prospect_agent'):
+        $table  = '`Email Tracking Dimension`  left join `Email Campaign Type Dimension`  on (`Email Tracking Email Template Type Key`=`Email Campaign Type Key`)  
+    left join `Published Email Template Dimension` on (`Email Tracking Published Email Template Key`=`Published Email Template Key`)
+    left join `Prospect Dimension` on (`Email Tracking Recipient Key`=`Prospect Key`) ';
+        $fields =
+            "`Email Tracking Email`,`Prospect Store Key` as store_key,`Prospect Key` as recipient_key,`Prospect Name` recipient_name,`Published Email Template Subject`,`Email Tracking Key`,`Email Tracking State`,`Email Tracking Created Date`";
+
+
+
+
+        $where = sprintf(
+            ' where `Email Tracking Recipient`="Prospect"  and  `Prospect Sales Representative Key`=%d', $parameters['parent_key']
+        );
+        break;
+
     case('prospect'):
         $where = sprintf(
             ' where `Email Tracking Recipient`="Prospect"  and  `Email Tracking Recipient Key`=%d', $parameters['parent_key']
@@ -45,13 +63,14 @@ switch ($parameters['parent']) {
         break;
     case 'email_campaign_type':
 
-        $email_campaign_type=get_object('email_campaign_type',$parameters['parent_key']);
-        if($email_campaign_type->get('Code')=='Invite' or $email_campaign_type->get('Code')=='Invite Mailshot'){
+        $email_campaign_type = get_object('email_campaign_type', $parameters['parent_key']);
+        if ($email_campaign_type->get('Code') == 'Invite' or $email_campaign_type->get('Code') == 'Invite Mailshot') {
 
             $table  = '`Email Tracking Dimension`  left join `Email Campaign Type Dimension`  on (`Email Tracking Email Template Type Key`=`Email Campaign Type Key`)  
     left join `Published Email Template Dimension` on (`Email Tracking Published Email Template Key`=`Published Email Template Key`)
     left join `Prospect Dimension` on (`Email Tracking Recipient Key`=`Prospect Key`) ';
-            $fields = "`Email Tracking Email`,`Prospect Store Key` as store_key,`Prospect Key` as recipient_key,`Prospect Name` recipient_name,`Email Campaign Type Code`,`Published Email Template Subject`,`Email Tracking Key`,`Email Tracking State`,`Email Tracking Created Date`";
+            $fields =
+                "`Email Tracking Email`,`Prospect Store Key` as store_key,`Prospect Key` as recipient_key,`Prospect Name` recipient_name,`Prospect Store Key` store_key,`Email Campaign Type Code`,`Published Email Template Subject`,`Email Tracking Key`,`Email Tracking State`,`Email Tracking Created Date`";
 
 
         }
@@ -63,7 +82,6 @@ switch ($parameters['parent']) {
     default:
         $where = 'where false';
 }
-
 
 
 $wheref = '';
@@ -86,7 +104,6 @@ if ($order == 'subject') {
 } else {
     $order = '`Email Tracking Created Date`';
 }
-
 
 
 $sql_totals = "select count(*) as num from $table $where ";

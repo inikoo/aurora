@@ -415,14 +415,9 @@ if ($new) {
     );
 
 
-
-
-
-
-
     $with_operations = false;
 
-    if ($object->get('Prospect Status') == 'NoContacted'  or $object->get('Prospect Status') == 'Contacted'  ) {
+    if ($object->get('Prospect Status') == 'NoContacted' or $object->get('Prospect Status') == 'Contacted') {
         $with_operations = true;
     }
 
@@ -434,27 +429,42 @@ if ($new) {
 
         'fields' => array(
 
-                array(
-                    'id'                       => 'Prospect_Customer_Key',
-                    'edit'                     => 'dropdown_select',
-                    'scope'                    => 'customers',
-                    'parent'                   => 'store',
-                    'parent_key'               => ($new ? $options['store_key'] : $object->get('Prospect Store Key')),
-                    'value'                    => htmlspecialchars($object->get('Prospect Customer Key')),
-                    'formatted_value'          => $object->get('Category Key'),
-                    'stripped_formatted_value' => '',
-                    'label'                    => _('Link to customer'),
-                    'required'                 => true,
-                    'type'                     => 'value'
+            array(
+                'id'     => 'Prospect_Customer_Key',
+                'render' => (($object->get('Prospect Status') == 'Registered' or $object->get('Prospect Status') == 'Invoiced') ? false : true),
+                'class'     => 'operation_with_field',
+                'edit'                     => 'dropdown_select',
+                'scope'                    => 'customers',
+                'parent'                   => 'store',
+                'parent_key'               => ($new ? $options['store_key'] : $object->get('Prospect Store Key')),
+                'value'                    => htmlspecialchars($object->get('Prospect Customer Key')),
+                'formatted_value'          => $object->get('Category Key'),
+                'stripped_formatted_value' => '',
+                'label'     => '<i class="fa fa-fw fa-lock button padding_left_10" onClick="toggle_prospect_link_to_customer(this)" style="margin-right:20px"></i> <span  class="delete_object disabled">'._('Link to customer').' <i class="fa fa-link new_button link"></i></span>',
+                'required'                 => true,
+                'type'                     => 'value'
 
 
-                ),
+            ),
+
+
+            array(
+
+                'id'        => 'unlink_customer',
+                'class'     => 'operation',
+                'render'   => (($object->get('Prospect Status') == 'Registered' or $object->get('Prospect Status') == 'Invoiced') ? true : false),
+
+                'value'     => '',
+                'label'     => '<i class="fa fa-fw fa-lock button" onClick="toggle_unlock_delete_object(this)" style="margin-right:20px"></i> <span data-data=\'{ "object": "'.$object->get_object_name().'", "key":"'.$object->id
+                    .'"}\' onClick="unlink_customer_object(this)" class="delete_object disabled">'._('Unlink customer').' <i class="fa fa-unlink new_button link"></i></span>',                'reference' => '',
+                'type'      => 'operation'
+            ),
 
             array(
 
                 'id'        => 'activate_prospect',
                 'class'     => 'operation',
-                'render'    => (($object->get('Prospect Status') == 'NotInterested' and $object->get('Prospect Spam')=='No'   )? true : false),
+                'render'    => (($object->get('Prospect Status') == 'NotInterested' and $object->get('Prospect Spam') == 'No') ? true : false),
                 'value'     => '',
                 'label'     => '<i class="fa fa-fw fa-lock button" onClick="toggle_unlock_delete_object(this)" style="margin-right:20px"></i> <span data-data=\'{ "object": "'.$object->get_object_name().'", "key":"'.$object->id
                     .'"}\' onClick="activate_object(this)" class="delete_object disabled">'._('Undo set as not interested').' <i class="fa fa-undo new_button link"></i></span>',

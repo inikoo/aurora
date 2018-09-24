@@ -10,6 +10,10 @@
 *}
 {include file="sticky_note.tpl" value=$prospect->get('Sticky Note') object="Prospect" key="{$prospect->id}" field="Prospect_Sticky_Note"  }
 
+{if $prospect->get('Prospect Customer Assigned by User Key')}
+    <div style="padding: 5px 15px"><i class="warning fa fa-exclamation-circle"></i> {t}Customer manually linked{/t}  <span class="link" onclick="change_view('customers/{$prospect->customer->get('Store Key')}/{$prospect->customer->id}')">{$prospect->customer->get('Name')}</span> </div>
+{/if}
+
 
 <div id="prospect" class="subject_profile" key="{$prospect->id}" store_key="{$prospect->get('Store Key')}">
     <div id="contact_data">
@@ -117,11 +121,14 @@
                     <td class="aright Lost_Date">{$prospect->get('Lost Date')}</td>
                 </tr>
 
-                <tr  class="registration_date_tr {if $prospect->get('Prospect Status')!='Registered'}hide{/if}">
+                <tr  class="registration_date_tr {if !($prospect->get('Prospect Status')=='Registered' or $prospect->get('Prospect Status')=='Invoiced' ) }hide{/if}">
                     <td>{t}Registered{/t}</td>
                     <td class="aright Registration_Date">{$prospect->get('Registration Date')}</td>
                 </tr>
-
+                <tr  class="registration_date_tr {if  $prospect->get('Prospect Status')!='Invoiced'  }hide{/if}">
+                    <td>{t}Invoiced{/t}</td>
+                    <td class="aright Invoiced_Date">{$prospect->get('Invoiced Date')}</td>
+                </tr>
 
 
             </table>

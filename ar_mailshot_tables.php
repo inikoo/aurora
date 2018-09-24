@@ -45,6 +45,8 @@ switch ($tipo) {
     case 'subject_sent_emails':
         subject_sent_emails(get_table_parameters(), $db, $user);
         break;
+
+
     case 'sent_emails':
         sent_emails(get_table_parameters(), $db, $user);
         break;
@@ -67,6 +69,7 @@ switch ($tipo) {
         exit;
         break;
 }
+
 
 
 function subject_sent_emails($_data, $db, $user) {
@@ -125,11 +128,24 @@ function subject_sent_emails($_data, $db, $user) {
 
             $subject = sprintf('<span class="link" onclick="change_view(\'%s/%d/%d/email/%d\')"  >%s</span>', strtolower($parent->get_object_name()).'s', $parent->get('Store Key'), $parent->id, $data['Email Tracking Key'], $data['Published Email Template Subject']);
 
+            if($_data['parameters']['parent']=='prospect_agent') {
+                $recipient = sprintf('<span class="link" onclick="change_view(\'prospects/%d/%d\')"  >%s</span>',$data['store_key'] , $data['recipient_key'], $data['recipient_name']);
+                $email = sprintf('<span class="link" onclick="change_view(\'report/prospect_agents/%d/email/%d\')"  >%s</span>', $_data['parameters']['parent_key'],$data['Email Tracking Key'],$data['Email Tracking Email']);
+
+            }else{
+                $recipient='';
+                $email='';
+            }
+
+
+
 
             $adata[] = array(
                 'id'      => (integer)$data['Email Tracking Key'],
                 'state'   => $state,
                 'subject' => $subject,
+                'recipient' => $recipient,
+                'email' => $email,
                 'date'    => strftime("%a, %e %b %Y %R", strtotime($data['Email Tracking Created Date']." +00:00")),
 
 
