@@ -1419,6 +1419,7 @@
 
 
                             $('#change_image').data('element').attr('src', data.image_src).attr('web_image_key', data.web_image_key)
+                            $('#save_button', window.parent.document).addClass('save button changed valid')
 
 
                         } else if (data.state == '400') {
