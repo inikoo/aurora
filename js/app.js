@@ -526,13 +526,11 @@ function change_view(_request, metadata) {
     } else if (metadata.subtab != undefined) {
         request = request + '&subtab=' + metadata.subtab;
     }
-    console.log(request);
 
 
 
     $.getJSON( request, {  } )
         .done(function( data ) {
-            console.log(data);
 
 
             state = data.state;
@@ -584,7 +582,6 @@ function change_view(_request, metadata) {
             }
 
 
-            console.log(data.tab)
             if (typeof(data.tab) != "undefined" && data.tab !== null) {
 
 
@@ -592,7 +589,6 @@ function change_view(_request, metadata) {
             }
 
 
-            console.log('xxx')
 
             if (typeof(data.structure) != "undefined" && data.structure !== null) {
                 //console.log(data.structure)
@@ -606,7 +602,6 @@ function change_view(_request, metadata) {
             }
 
 
-            console.log(metadata)
 
 
             if (metadata.post_operations == 'delivery_note.fast_track_packing') {

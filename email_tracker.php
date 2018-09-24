@@ -173,8 +173,6 @@ if ($validator->isValid($sns)) {
                 $email_tracking->update_state($event_type);
 
 
-
-
                 if ($event_type == 'Hard Bounce') {
 
 
@@ -209,26 +207,34 @@ if ($validator->isValid($sns)) {
                         $db->exec($sql);
                     }
 
-                    $email_tracking->fast_update(array('Email Tracking Spam'=>'Yes'));
+                    $email_tracking->fast_update(array('Email Tracking Spam' => 'Yes'));
 
 
                 }
 
 
-                if($email_tracking->get('Email Tracking Email Template Type Key')>0){
+                if ($email_tracking->get('Email Tracking Email Template Type Key') > 0) {
                     $email_template_type = get_object('email_template_type', $email_tracking->get('Email Tracking Email Template Type Key'));
                     $email_template_type->update_sent_emails_totals();
                 }
-                if($email_tracking->get('Email Tracking Email Mailshot Key')>0){
+                if ($email_tracking->get('Email Tracking Email Mailshot Key') > 0) {
                     $email_campaign = get_object('email_campaign', $email_tracking->get('Email Tracking Email Mailshot Key'));
                     $email_campaign->update_sent_emails_totals();
                 }
-                if($email_tracking->get('Email Tracking Email Template Key')>0){
+                if ($email_tracking->get('Email Tracking Email Template Key') > 0) {
                     $email_template = get_object('email_template', $email_tracking->get('Email Tracking Email Template Key'));
                     $email_template->update_sent_emails_totals();
                 }
 
 
+                switch ($email_tracking->get('Email Tracking Recipient')) {
+                    case 'Prospect':
+                        $prospect = get_object('Prospect', $email_tracking->get('Email Tracking Recipient Key'));
+                        $prospect->update_prospect_data();
+                        break;
+                    default:
+                        break;
+                }
 
 
                 //$_sql = sprintf('insert into atest  (`date`,`headers`,`request`) values (NOW(),"%s","%s")  ', $sql, 'xx');

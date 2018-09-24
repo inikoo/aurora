@@ -2,33 +2,28 @@
 /*
  About:
  Author: Raul Perusquia <raul@inikoo.com>
- Created: 24 May 2018 at 23:02:46 GMT+8, Kuala Lumpur Malaysia
+ Created: 24 September 2018 at 09:42:53 GMT+8, Kuala Lumpur Malaysia
  Copyright (c) 2018, Inikoo
 
  Version 3
 
 */
 
-$currency = '';
 $where    = 'where true';
 $table    = '`Prospect Dimension` P ';
 $group_by = '';
 
 
-if ($parameters['parent'] == 'store') {
-    include_once('class.Store.php');
 
-    if (in_array($parameters['parent_key'], $user->stores)) {
-        $where_stores = sprintf(
-            ' and  `Prospect Store Key`=%d ', $parameters['parent_key']
+if ($parameters['parent'] == 'sales_representative') {
+
+
+    $where = sprintf(
+            ' where  `Prospect Sales Representative Key`=%d ', $parameters['parent_key']
         );
-    } else {
-        $where_stores = ' and false';
-    }
 
-    $store    = new Store($parameters['parent_key']);
-    $currency = $store->data['Store Currency Code'];
-    $where    .= $where_stores;
+
+
 } else {
     exit();
 }
@@ -77,8 +72,6 @@ if ($order == 'name') {
     $order = '`Prospect Name`';
 } elseif ($order == 'location') {
     $order = '`Prospect Location`';
-} elseif ($order == 'status') {
-    $order = '`Prospect Status`';
 } elseif ($order == 'email') {
     $order = '`Prospect Main Plain Email`';
 } elseif ($order == 'contact_since') {

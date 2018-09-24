@@ -260,6 +260,11 @@ class Prospect extends Subject {
                                     <span class="button padding_left_10" onClick="change_view(\'customers/'.$this->customer->get('Store Key').'/'.$this->customer->id.'\')"><i class="fa fa-user "></i> '.$this->customer->get_formatted_id().'</span>';
 
                         break;
+                    case 'Invoiced':
+                        $label = ' <span class="success padding_left_10"><i class="far fa-smile"></i> '._('Invoiced').'</span> 
+                                    <span class="button padding_left_10" onClick="change_view(\'customers/'.$this->customer->get('Store Key').'/'.$this->customer->id.'\')"><i class="fa fa-user "></i> '.$this->customer->get_formatted_id().'</span>';
+
+                        break;
                 }
 
                 return $label;
@@ -270,6 +275,7 @@ class Prospect extends Subject {
             case('Lost Date'):
             case('Created Date'):
             case('Registration Date'):
+            case('Invoiced Date'):
             case('First Contacted Date'):
 
                 if ($this->data['Prospect '.$key] == '') {
@@ -594,7 +600,8 @@ class Prospect extends Subject {
                     array(
                         'Prospect Status'            => 'Registered',
                         'Prospect Registration Date' => gmdate('Y-m-d H:i:s'),
-                        'Prospect Customer Key'      => $customer->id
+                        'Prospect Customer Key'      => $customer->id,
+                        'Prospect Customer Assigned by User Key'=>$this->editor['User Key']
 
                     )
                 );
@@ -602,7 +609,7 @@ class Prospect extends Subject {
 
                 $history_data = array(
                     'History Abstract' => sprintf(
-                        _('Prospect registered as a customer %s'),
+                        _('Prospect manually linked to customer %s'),
                         '<span class="button padding_left_5" onClick="change_view(\'customers/'.$this->customer->get('Store Key').'/'.$this->customer->id.'\')"><i class="fa fa-user "></i> <span class="link">'.$this->customer->get('Name').'</span> (<span class="link">'
                         .$this->customer->get_formatted_id().'</span>)</span>'
                     ),
@@ -739,6 +746,54 @@ class Prospect extends Subject {
     function update_status($value, $extra_args = false) {
 
         switch ($value) {
+            case 'Invoiced':
+
+                $invoice = $extra_args;
+
+
+                if (($this->get('Prospect Emails Sent Number') > 0 or $this->get('Prospect Calls Number') > 0 or $this->get('Prospect First Contacted Date') != '') and $this->get('Prospect Status') == 'Registered') {
+                    $this->fast_update(
+                        array(
+                            'Prospect Status' => 'Invoiced',
+                        )
+                    );
+
+
+                    if ($this->get('Prospect Invoiced Date') == '') {
+
+
+                        $this->fast_update(
+                            array(
+                                'Prospect Invoiced Date' => gmdate('Y-m-d H:i:s'),
+
+                            )
+                        );
+
+                        $history_data = array(
+                            'History Abstract' => sprintf(
+                                _('Prospect has been invoiced, %s'),
+                                '<span class="button padding_left_5" onClick="change_view(\'invoices/'.$invoice->get('Invoice Store Key').'/'.$invoice->id.'\')"><i class="fa fa-file-alt "></i> <span class="link">'.$invoice->get('Invoice Public ID').'</span></span>'
+                            ),
+
+
+                            'History Details' => '',
+                            'Action'          => 'edited'
+                        );
+
+
+                        $this->add_subject_history(
+                            $history_data, true, 'No', 'Changes', $this->get_object_name(), $this->id
+                        );
+
+
+                    }
+
+
+                }
+
+
+                break;
+
             case 'Registered':
 
                 $customer = $extra_args;
@@ -857,11 +912,65 @@ class Prospect extends Subject {
                             'activate_prospect_field_operation_tr'
                         )
                     );
+                } elseif ($this->data['Prospect Status'] == 'Registered' or $this->data['Prospect Status'] == 'Invoiced') {
+
+                    $this->fast_update(
+                        array(
+                            'Prospect Status'    => $value,
+                            'Prospect Lost Date' => '',
+                            'Prospect Lost Registered' => '',
+                            'Prospect Lost Invoiced' => '',
+                            'Prospect Customer Assigned by User Key'=>''
+                        )
+                    );
+
+
+                    $history_data = array(
+                        'History Abstract' => _('Prospect unlinked from customer'),
+                        'History Details'  => '',
+                        'Action'           => 'edited'
+                    );
+
+                    $this->add_subject_history(
+                        $history_data, true, 'No', 'Changes', $this->get_object_name(), $this->id
+                    );
+
+
+                    $this->update_metadata = array(
+                        'class_html' => array(
+                            'Status_Label'   => $this->get('Status Label'),
+                            'Contacted_Date' => $this->get('First Contacted Date'),
+                            'Lost_Date'      => $this->get('Lost Date'),
+
+                        ),
+                        'show'       => array('not_interested_button'),
+                        'hide'       => array(
+                            'contacted_date_tr',
+                            'fail_date_tr',
+                            'activate_prospect_field_operation_tr'
+                        )
+                    );
                 }
 
 
                 break;
 
+
+        }
+
+    }
+
+    function unlink_customer() {
+
+
+        if ($this->get('Prospect Status') == 'Registered' or $this->get('Prospect Status') == 'Invoiced') {
+
+            if (($this->get('Prospect Emails Sent Number') > 0 or $this->get('Prospect Calls Number') > 0 or $this->get('Prospect First Contacted Date') != '')) {
+                $status = 'Contacted';
+            } else {
+                $status = 'NoContacted';
+            }
+            $this->update_status($status);
 
         }
 
@@ -1144,45 +1253,44 @@ class Prospect extends Subject {
     }
 
 
-    function update_prospect_data(){
+    function update_prospect_data() {
 
-        $calls=0;
-        $emails_sent=0;
-        $emails_open=0;
-        $emails_clicked=0;
-        $registered=0;
-        $invoiced=0;
+        $calls          = 0;
+        $emails_sent    = 0;
+        $emails_open    = 0;
+        $emails_clicked = 0;
 
 
-        $sql=sprintf('select count(*) as emails_sent , sum(if(`Email Tracking Number Reads`>0,1,0))  open,  sum(if(`Email Tracking Number Clicks`>0,1,0))  clicked where `Email Tracking Recipient`="Prospect" and `Email Tracking Recipient Key`=%d   ',$this->id);
+        $sql = sprintf(
+            'select count(*) as emails_sent , sum(if(`Email Tracking Number Reads`>0,1,0))  open,  sum(if(`Email Tracking Number Clicks`>0,1,0))  clicked from `Email Tracking Dimension`  where `Email Tracking Recipient`="Prospect" and `Email Tracking Recipient Key`=%d   ',
+            $this->id
+        );
 
-        if ($result=$this->db->query($sql)) {
-        		foreach ($result as $row) {
-                    $emails_sent=$row['emails_sent'];
-                    $emails_open=$row['open'];
-                    $emails_clicked=$row['clicked'];
-        		}
-        }else {
-        		print_r($error_info=$this->db->errorInfo());
-        		print "$sql\n";
-        		exit;
+        if ($result = $this->db->query($sql)) {
+            foreach ($result as $row) {
+                $emails_sent    = $row['emails_sent'];
+                $emails_open    = $row['open'];
+                $emails_clicked = $row['clicked'];
+            }
+        } else {
+            print_r($error_info = $this->db->errorInfo());
+            print "$sql\n";
+            exit;
         }
-
 
 
         $this->fast_update(
             array(
-            'Prospect Calls Number'=>$calls,
-            'Prospect Emails Sent Number'=>$emails_sent,
-            'Prospect Emails Open Number'=>$emails_open,
-            'Prospect Emails Clicked Number'=>$emails_clicked,
-            'Prospect Registered Number'=>$registered,
-            'Prospect Invoiced Number'=>$invoiced,
+                'Prospect Calls Number'          => $calls,
+                'Prospect Emails Sent Number'    => $emails_sent,
+                'Prospect Emails Open Number'    => $emails_open,
+                'Prospect Emails Clicked Number' => $emails_clicked
 
 
             )
 
         );
+
 
     }
 

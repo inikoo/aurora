@@ -1819,6 +1819,13 @@ function get_navigation($user, $smarty, $data, $db, $account) {
                 case ('sales_representative'):
                     return get_sales_representative_navigation($user, $smarty, $data);
                     break;
+                case ('prospect_agent'):
+                    return get_prospect_agent_navigation($user, $smarty, $data);
+                    break;
+                case ('prospect_agent_email_tracking'):
+                    return get_prospect_agent_email_tracking_navigation($data, $smarty, $user, $db);
+                    break;
+
                 case ('lost_stock'):
                     return get_lost_stock_navigation($user, $smarty, $data);
                     break;
@@ -8349,6 +8356,35 @@ function get_view_position($db, $state, $user, $smarty, $account) {
                 $branch[] = array(
                     'label'     => _("Prospect's agents"),
                     'icon'      => '',
+                    'reference' => ''
+                );
+
+            }elseif ($state['section'] == 'prospect_agent') {
+                $branch[] = array(
+                    'label'     => _("Prospect's agents"),
+                    'icon'      => '',
+                    'reference' => 'report/prospect_agents'
+                );
+                $branch[] = array(
+                    'label'     => $state['_object']->user->get('Alias'),
+                    'icon'      => '',
+                    'reference' => ''
+                );
+
+            }elseif ($state['section'] == 'prospect_agent_email_tracking') {
+                $branch[] = array(
+                    'label'     => _("Prospect's agents"),
+                    'icon'      => '',
+                    'reference' => 'report/prospect_agents'
+                );
+                $branch[] = array(
+                    'label'     => $state['_parent']->user->get('Alias'),
+                    'icon'      => '',
+                    'reference' => 'report/prospect_agents/'.$state['parent_key']
+                );
+                $branch[] = array(
+                    'label'     => $state['_object']->get('Email Tracking Email'),
+                    'icon'      => 'paper-plane',
                     'reference' => ''
                 );
 

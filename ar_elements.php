@@ -352,7 +352,7 @@ switch ($tab) {
         parts_barcode_errors($db, $data['parameters'], $user);
         break;
     case 'prospects':
-
+    case 'prospect_agent.prospects':
         $data = prepare_values($_REQUEST, array('parameters' => array('type' => 'json array')));
         get_prospects_elements($db, $data['parameters'], $user);
         break;
@@ -3019,6 +3019,7 @@ function get_prospects_elements($db, $data) {
             'NoContacted'   => 0,
             'NotInterested' => 0,
             'Registered'    => 0,
+            'Invoiced'    => 0,
         )
     );
 
@@ -3030,7 +3031,11 @@ function get_prospects_elements($db, $data) {
                 ' where `Prospect Store Key`=%d  ', $data['parent_key']
             );
             break;
-
+        case 'sales_representative':
+            $where = sprintf(
+                ' where `Prospect Sales Representative Key`=%d  ', $data['parent_key']
+            );
+            break;
         default:
             $response = array(
                 'state' => 405,

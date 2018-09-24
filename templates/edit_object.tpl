@@ -268,12 +268,12 @@
                             </td>
                             <td class="show_buttons  {if $edit=='address'}address {/if}">
 
-                                <i id="{$field.id}_lock" class="fa fa-lock fw {if $edit!='' or $class=='new'  or $class=='operation'  or $edit=='no_icon'  }hide{/if} edit lock"></i>
+                                <i id="{$field.id}_lock" class="fa fa-lock fw {if $edit!='' or $class=='new'  or $class=='operation'   or $edit=='no_icon'  }hide{/if} edit lock"></i>
                                 <i class="fa fa-lock fw {if !$linked  }hide{/if} edit"></i>
 
-                                <i id="{$field.id}_reset_button" class="fa fa-sign-out fa-flip-horizontal fw reset hide reset_button" onclick="close_edit_this_field(this)"></i>
-                                <i id="{$field.id}_edit_button" class="fa fa-pencil fw edit {if $edit=='' or $linked!=''  or $edit=='custom' or $edit=='no_icon'  }hide{/if}  edit_button" onclick="open_edit_this_field(this)"></i>
-
+                                <span  class="{if  $class=='operation_with_field'  }hide{/if}" ><i id="{$field.id}_reset_button" class="fa fa-sign-out fa-flip-horizontal fw reset hide reset_button" onclick="close_edit_this_field(this)"></i>
+                                <i id="{$field.id}_edit_button" class="fa fa-pencil fw edit {if $edit=='' or $linked!=''  or $edit=='custom' or $edit=='no_icon'  or $class=='operation_with_field'  }hide{/if}  edit_button" onclick="open_edit_this_field(this)"></i>
+                                </span>
                             </td>
                             <td id="{$field.id}_container" class="container value  " _required="{$required}"
                                 field_type='{$field_type}' server_validation='{$server_validation}'

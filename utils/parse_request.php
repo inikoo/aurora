@@ -4344,9 +4344,37 @@ function parse_request($_data, $db, $modules, $account = '', $user = '', $is_set
                         if (isset($view_path[1])) {
                             if (is_numeric($view_path[1])) {
 
-                                $section = 'sales_representative';
+                                $section = 'prospect_agent';
                                 $object  = 'sales_representative';
                                 $key     = $view_path[1];
+
+
+
+                                if (isset($view_path[2])) {
+
+
+                                    if ($view_path[2] == 'email') {
+
+                                        //$store_key = $arg1;
+
+                                        $section = 'prospect_agent_email_tracking';
+
+                                        $parent     = 'prospect_agent';
+                                        $parent_key = $key;
+
+                                        if (is_numeric($view_path[3])) {
+                                            $section = 'prospect_agent_email_tracking';
+                                            $object  = 'email_tracking';
+                                            $key     = $view_path[3];
+
+
+                                        }
+
+                                    }
+                                }
+
+
+
                             }
 
 

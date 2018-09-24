@@ -3884,6 +3884,10 @@ $tab_defaults = array(
 
 
     ),
+
+
+
+
     'prospects.email_templates' => array(
         'view'        => 'overview',
         'sort_key'    => 'name',
@@ -3994,6 +3998,28 @@ $tab_defaults = array(
         'elements_type' => each($elements_options['customers']) ['key'],
         'elements'      => $elements_options['customers'],
         'export_fields' => $export_fields['customers']
+
+    ),
+    'prospect_agent.prospects'  => array(
+        'view'          => 'overview',
+        'sort_key'      => 'email',
+        'sort_order'    => 1,
+        'rpp'           => 100,
+        'rpp_options'   => $default_rrp_options,
+        'f_field'       => 'name',
+        'elements_type' => each($elements_options['prospects']) ['key'],
+        'elements'      => $elements_options['prospects'],
+        'export_fields' => $export_fields['prospects']
+
+    ),
+    'prospect_agent.sent_emails'      => array(
+        'view'        => 'overview',
+        'sort_key'    => 'date',
+        'sort_order'  => 1,
+        'rpp'         => 100,
+        'rpp_options' => $default_rrp_options,
+        'f_field'     => 'subject',
+
 
     ),
 

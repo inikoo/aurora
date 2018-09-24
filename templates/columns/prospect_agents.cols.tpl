@@ -59,6 +59,54 @@ sortType: "toggle",
 cell: Backgrid.HtmlCell.extend({ className: "aright"} ),
 headerCell: integerHeaderCell
 },
+
+
+{
+name: "open",
+label: "{t}Open{/t}",
+editable: false,
+sortable:false,
+defaultOrder:1,
+sortType: "toggle",
+{if $sort_key=='open'}direction: '{if $sort_order==1}descending{else}ascending{/if}',{/if}
+cell: Backgrid.HtmlCell.extend({ className: "aright"} ),
+headerCell: integerHeaderCell
+},
+{
+name: "click",
+label: "{t}Clicked{/t}",
+editable: false,
+sortable:false,
+defaultOrder:1,
+sortType: "toggle",
+{if $sort_key=='click'}direction: '{if $sort_order==1}descending{else}ascending{/if}',{/if}
+cell: Backgrid.HtmlCell.extend({ className: "aright"} ),
+headerCell: integerHeaderCell
+},
+
+{
+name: "register",
+label: "{t}Registered{/t}",
+editable: false,
+sortable:false,
+defaultOrder:1,
+sortType: "toggle",
+{if $sort_key=='register'}direction: '{if $sort_order==1}descending{else}ascending{/if}',{/if}
+cell: Backgrid.HtmlCell.extend({ className: "aright"} ),
+headerCell: integerHeaderCell
+},
+{
+name: "invoiced",
+label: "{t}Invoiced{/t}",
+editable: false,
+sortable:false,
+defaultOrder:1,
+sortType: "toggle",
+{if $sort_key=='invoiced'}direction: '{if $sort_order==1}descending{else}ascending{/if}',{/if}
+cell: Backgrid.HtmlCell.extend({ className: "aright"} ),
+headerCell: integerHeaderCell
+},
+
 {
 name: "open_percentage",
 label: "{t}Open %{/t}",
@@ -94,17 +142,54 @@ cell: Backgrid.HtmlCell.extend({ className: "aright"} ),
 headerCell: integerHeaderCell
 },
 {
-name: "ordered_percentage",
-label: "{t}Order %{/t}",
+name: "invoiced_percentage",
+label: "{t}Invoiced %{/t}",
 editable: false,
 sortable:false,
 defaultOrder:1,
 sortType: "toggle",
-{if $sort_key=='ordered_percentage'}direction: '{if $sort_order==1}descending{else}ascending{/if}',{/if}
+{if $sort_key=='invoiced_percentage'}direction: '{if $sort_order==1}descending{else}ascending{/if}',{/if}
 cell: Backgrid.HtmlCell.extend({ className: "aright"} ),
 headerCell: integerHeaderCell
 },
 
 ]
 
-function change_table_view(view,save_state){}
+function change_table_view(view,save_state){
+
+
+grid.columns.findWhere({ name: 'open'} ).set("renderable", false)
+grid.columns.findWhere({ name: 'click'} ).set("renderable", false)
+grid.columns.findWhere({ name: 'register'} ).set("renderable", false)
+grid.columns.findWhere({ name: 'invoiced'} ).set("renderable", false)
+
+grid.columns.findWhere({ name: 'open_percentage'} ).set("renderable", false)
+grid.columns.findWhere({ name: 'click_percentage'} ).set("renderable", false)
+grid.columns.findWhere({ name: 'register_percentage'} ).set("renderable", false)
+grid.columns.findWhere({ name: 'invoiced_percentage'} ).set("renderable", false)
+
+
+if(view=='overview'){
+
+grid.columns.findWhere({ name: 'open'} ).set("renderable", true)
+grid.columns.findWhere({ name: 'click'} ).set("renderable", true)
+grid.columns.findWhere({ name: 'register'} ).set("renderable", true)
+grid.columns.findWhere({ name: 'invoiced'} ).set("renderable", true)
+
+}else if(view=='percentages'){
+
+grid.columns.findWhere({ name: 'open_percentage'} ).set("renderable", true)
+grid.columns.findWhere({ name: 'click_percentage'} ).set("renderable", true)
+grid.columns.findWhere({ name: 'register_percentage'} ).set("renderable", true)
+grid.columns.findWhere({ name: 'invoiced_percentage'} ).set("renderable", true)
+
+}
+
+if(save_state){
+var request = "/ar_state.php?tipo=set_table_view&tab={$tab}&table_view=" + view
+
+$.getJSON(request, function(data) {});
+}
+
+
+}
