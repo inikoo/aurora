@@ -664,7 +664,7 @@
         set_up_blackboard('{$key}')
         {foreach from=$block.images item=image}
 
-
+console.log('{$image.id}')
 
     $('{$image.id}').one("load", function() {
         set_up_blackboard_image('{$image.id}')
