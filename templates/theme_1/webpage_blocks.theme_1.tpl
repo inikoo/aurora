@@ -663,7 +663,16 @@
 
         set_up_blackboard('{$key}')
         {foreach from=$block.images item=image}
-            set_up_blackboard_image('{$image.id}')
+
+
+
+    $('{$image.id}').one("load", function() {
+        set_up_blackboard_image('{$image.id}')
+    }).each(function() {
+        if(this.complete) $(this).load();
+    });
+
+
         {/foreach}
         {foreach from=$block.texts item=text}
             set_up_blackboard_text('{$text.id}')
@@ -2779,6 +2788,8 @@ console.log($(element))
 
 
     function set_up_blackboard_image(img_id){
+
+
 
         $('#'+img_id).find('img').resizable({
             containment: $('#'+img_id).closest('.blackboard'),
