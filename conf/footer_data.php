@@ -34,12 +34,12 @@ function get_default_footer_data($template) {
                                 ),
                                 array(
                                     'type' => 'text',
-                                    'icon' => 'fa-inventory ',
+                                    'icon' => 'fa fa-map ',
                                     'text' => '#address'
                                 ),
                                 array(
                                     'type' => 'text',
-                                    'icon' => 'fa-phone',
+                                    'icon' => 'fa fa-phone',
                                     'text' => '#tel'
                                 ),
                                 array(

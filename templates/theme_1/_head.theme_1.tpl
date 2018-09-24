@@ -45,6 +45,7 @@
     <link href="/css/editor_v1/plugins/video.css" rel="stylesheet">
     <link href="/css/editor_v1/plugins/draggable.css" rel="stylesheet">
 
+    <script src="/js/libs/sweetalert.min.js?v2a"></script>
 
     <link rel="stylesheet" title="for_edit_colors" href="EcomB2B/css/desktop.min.css?v5" type="text/css"/>
     <link rel="stylesheet" href="EcomB2B/css/forms.min.css?v4" type="text/css"/>
