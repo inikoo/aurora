@@ -127,7 +127,7 @@ if($url=='sitemap-info.xml' or $url=='sitemap-products.xml'){
 }
 
 
-$url_cache_key='pwc|'.$_SESSION['website_key'].'_'.$url;
+$url_cache_key='pwc|'.$_SERVER['SERVER_NAME'].'|'.$_SESSION['website_key'].'_'.$url;
 
 if($redis->exists($url_cache_key) or false){
     $webpage_id=$redis->get($url_cache_key);
