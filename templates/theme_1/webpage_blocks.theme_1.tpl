@@ -664,8 +664,13 @@
         set_up_blackboard('{$key}')
         {foreach from=$block.images item=image}
 
-    set_up_blackboard_image('{$image.id}')
-   
+
+    setTimeout(function(){
+        set_up_blackboard_image('{$image.id}')
+    }, 1000);
+
+
+
     $('#{$image.id} img ').on('load', function(){
 
         set_up_blackboard_image('{$image.id}')
