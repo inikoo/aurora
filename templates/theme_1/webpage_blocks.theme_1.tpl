@@ -664,17 +664,13 @@
         set_up_blackboard('{$key}')
         {foreach from=$block.images item=image}
 
-console.log('#{$image.id}')
-
-    $('#{$image.id}').one("load", function() {
-
-        console.log('xxxxx')
+    set_up_blackboard_image('{$image.id}')
+   
+    $('#{$image.id} img ').on('load', function(){
 
         set_up_blackboard_image('{$image.id}')
-    }).each(function() {
-        if(this.complete) $(this).load();
-    });
 
+    });
 
         {/foreach}
         {foreach from=$block.texts item=text}
