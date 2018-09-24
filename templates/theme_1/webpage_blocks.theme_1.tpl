@@ -666,7 +666,7 @@
 
 console.log('{$image.id}')
 
-    $('{$image.id}').one("load", function() {
+    $('#{$image.id}').one("load", function() {
         set_up_blackboard_image('{$image.id}')
     }).each(function() {
         if(this.complete) $(this).load();
