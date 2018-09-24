@@ -110,7 +110,7 @@
         text-decoration: none;
     }
 
-    .qlinks:hover .add_link, .faddress:hover .add_item {
+    .qlinks:hover .add_link, .address:hover .add_item {
         opacity: 1;
         -webkit-transition-duration: 500ms;
         transition-duration: 500ms;
@@ -272,10 +272,10 @@
 
             <i id="delete_item" class="far fa-trash-alt hide editing button"  aria-hidden="true" onClick="delete_item(this)" style="position:absolute;cursor: pointer;z-index: 10000" title="{t}Remove item{/t}"></i>
 
-            <form id="change_image" class="hide" style="position:absolute;top:0;left:0" method="post" action="/ar_edit.php" enctype="multipart/form-data" novalidate>
+            <form id="change_image" class="hide" style="z-index:5000;position:absolute;top:0;left:0" method="post" action="/ar_edit.php" enctype="multipart/form-data" novalidate>
                 <input type="file" name="image_upload" id="file_upload" class="input_file" multiple/>
                 <label for="file_upload">
-                    <i class=" fa fa-image fa-fw button editing" aria-hidden="true" title="{t}Change image{/t}"></i>
+                    <i style="cursor:pointer" class=" fa fa-image fa-fw button editing" aria-hidden="true" title="{t}Change image{/t}"></i>
                 </label>
             </form>
 
@@ -461,7 +461,7 @@
                                             {if $item.type=='logo'}
                                                 <li class="item _logo"><img  onclick="edit_item_image(this)" src="{$item.src}" alt="" title="{$item.title}"/></li>
                                             {elseif $item.type=='text'}
-                                                <li class="item _text"  icon="{$item.icon}"><i onclick="edit_item(this)" class="fa-fw {$item.icon}"></i> <span onclick="edit_item(this)" contenteditable="true">
+                                                <li class="item _text"  icon="{$item.icon}"><i onclick="edit_item(this)" class="fa-fw {$item.icon}"></i> <span  contenteditable="true">
                                           {if $item.text=='#tel' and  $store->get('Telephone')!=''}{$store->get('Telephone')}
                                           {elseif $item.text=='#email' and  $store->get('Email')!=''}{$store->get('Email')}
                                           {elseif $item.text=='#address' and  $store->get('Address')!=''}{$store->get('Address')}
@@ -705,8 +705,8 @@
                 } else if ($(element).hasClass('type_address')) {
                     $('#' + block_type.attr('block_id')).replaceWith($('#block_items_stem_cell').html())
 
-                    $('.faddress').sortable({
-                        disabled: false, items: "li:not(.ui-state-disabled)", connectWith: ".faddress"
+                    $('.address').sortable({
+                        disabled: false, items: "li:not(.ui-state-disabled)", connectWith: ".address"
                     });
 
 
@@ -820,6 +820,8 @@
 
             }
 
+
+
             function edit_item_image(element) {
                 $(element).uniqueId()
                 var id = $(element).attr('id')
@@ -828,9 +830,9 @@
                     current_editing_item_id = id
 
                     $('#delete_item').removeClass('hide').offset({ 
-                        top: $(element).offset().top, left: $(element).offset().left - 20}).data('element', element)
+                        top: $(element).offset().top, left: $(element).offset().left - 20}).data('element', $(element))
                     $('#change_image').removeClass('hide').offset({ 
-                        top: $(element).offset().top + 20, left: $(element).offset().left - 20}).data('element', element)
+                        top: $(element).offset().top + 20, left: $(element).offset().left - 20}).data('element', $(element))
 
                     //   $('#change_image').removeClass('hide')
 
@@ -902,13 +904,16 @@
             function drag_mode_on(element) {
 
 
+                $('#delete_item').addClass('hide')
+                $('#change_image').addClass('hide')
+
 
                 $('.links_list').sortable({
                     disabled: false, items: "li:not(.ui-state-disabled)", connectWith: ".links_list"
                 });
 
-                $('.faddress').sortable({
-                    disabled: false, items: "li:not(.ui-state-disabled)", connectWith: ".faddress"
+                $('.address').sortable({
+                    disabled: false, items: "li:not(.ui-state-disabled)", connectWith: ".address"
                 });
 
                 $('.sortable_container').sortable({
@@ -949,12 +954,14 @@
 
             function block_edit_mode_on(element) {
 
+                $('#delete_item').addClass('hide')
+                $('#change_image').addClass('hide')
 
                 $('.links_list').sortable({
                     disabled: true
                 });
 
-                $('.faddress').sortable({
+                $('.address').sortable({
                     disabled: true
                 });
 
@@ -978,7 +985,7 @@
                     disabled: true
                 });
 
-                $('.faddress').sortable({
+                $('.address').sortable({
                     disabled: true
                 });
 
@@ -1020,9 +1027,11 @@
             function delete_item(element) {
 
 
+                console.log('caca')
+
                 $($(element).data('element')).closest('li').remove()
                 $('#delete_item').addClass('hide')
-
+                $('#change_image').addClass('hide')
 
 
 
@@ -1405,13 +1414,17 @@
 
                         if (data.state == '200') {
 
-                            console.log('#' + $('#change_image').attr('item_id'))
+                            console.log($('#change_image').data('element'))
 
-                            $('#' + $('#change_image').attr('item_id')).attr('src', data.image_src).attr('web_image_key', data.web_image_key)
+
+
+                            $('#change_image').data('element').attr('src', data.image_src).attr('web_image_key', data.web_image_key)
 
 
                         } else if (data.state == '400') {
-
+                            swal({
+                                title: data.title, text: data.msg, confirmButtonText: "OK"
+                            });
                         }
 
 
