@@ -26,7 +26,7 @@ $smarty->cache_dir    = 'server_files/smarty/cache';
 $smarty->config_dir   = 'server_files/smarty/configs';
 
 
-$account=get_object('Account',1);
+$account = get_object('Account', 1);
 
 
 //print_r($_REQUEST);
@@ -65,7 +65,7 @@ switch ($tipo) {
                      )
         );
 
-        get_checkout_html($data, $customer,$smarty);
+        get_checkout_html($data, $customer, $smarty);
 
 
         break;
@@ -104,16 +104,16 @@ switch ($tipo) {
 
         }
 
-        $website=get_object('Website',$_SESSION['website_key']);
-        $store=get_object('Store',$order->get('Order Store Key'));
+        $website = get_object('Website', $_SESSION['website_key']);
+        $store   = get_object('Store', $order->get('Order Store Key'));
 
-        place_order($store, $order, $payment_account_key, $customer, $website, $editor, $smarty,$account,$db);
+        place_order($store, $order, $payment_account_key, $customer, $website, $editor, $smarty, $account, $db);
 
 
         break;
 
     case 'place_order_pay_braintree_paypal':
-        $data = prepare_values(
+        $data    = prepare_values(
             $_REQUEST, array(
                          'payment_account_key' => array('type' => 'key'),
                          'order_key'           => array('type' => 'key'),
@@ -124,9 +124,9 @@ switch ($tipo) {
 
                      )
         );
-        $website=get_object('Website',$_SESSION['website_key']);
-        $store=get_object('Store',$order->get('Order Store Key'));
-        $account=get_object('Account',1);
+        $website = get_object('Website', $_SESSION['website_key']);
+        $store   = get_object('Store', $order->get('Order Store Key'));
+        $account = get_object('Account', 1);
 
         place_order_pay_braintree_paypal($store, $data, $order, $customer, $website, $editor, $smarty, $db, $account);
 
@@ -134,7 +134,7 @@ switch ($tipo) {
         break;
 
     case 'place_order_pay_braintree':
-        $data = prepare_values(
+        $data    = prepare_values(
             $_REQUEST, array(
                          'payment_account_key' => array('type' => 'key'),
 
@@ -142,9 +142,9 @@ switch ($tipo) {
 
                      )
         );
-        $website=get_object('Website',$_SESSION['website_key']);
-        $store=get_object('Store',$order->get('Order Store Key'));
-        $account=get_object('Account',1);
+        $website = get_object('Website', $_SESSION['website_key']);
+        $store   = get_object('Store', $order->get('Order Store Key'));
+        $account = get_object('Account', 1);
         place_order_pay_braintree($store, $data, $order, $customer, $website, $editor, $smarty, $db, $account);
 
 
@@ -213,7 +213,7 @@ function place_order_pay_braintree($store, $_data, $order, $customer, $website, 
 
             list($customer, $order, $credit_payment_account, $credit_payment) = pay_credit($order, $to_pay_credits, $editor, $db, $account);
 
-            place_order($store, $order, $credit_payment_account->id, $customer, $website, $editor, $smarty,$account,$db);
+            place_order($store, $order, $credit_payment_account->id, $customer, $website, $editor, $smarty, $account, $db);
             exit;
 
         } else {
@@ -355,7 +355,7 @@ function place_order_pay_braintree($store, $_data, $order, $customer, $website, 
                 $order->add_payment($payment);
 
 
-                place_order($store, $order, $payment_account->id, $customer, $website, $editor, $smarty,$account,$db);
+                place_order($store, $order, $payment_account->id, $customer, $website, $editor, $smarty, $account, $db);
 
 
             } else {
@@ -485,11 +485,7 @@ function place_order_pay_braintree($store, $_data, $order, $customer, $website, 
 }
 
 
-function place_order($store, $order, $payment_account_key, $customer, $website, $editor, $smarty,$account,$db) {
-
-
-
-    $customer->editor = $editor;
+function place_order($store, $order, $payment_account_key, $customer, $website, $editor, $smarty, $account, $db) {
 
 
     $order->update(
@@ -500,29 +496,20 @@ function place_order($store, $order, $payment_account_key, $customer, $website, 
     );
 
 
+    include_once 'utils/new_fork.php';
+    new_housekeeping_fork(
+        'au_housekeeping', array(
+        'type'         => 'order_submitted_by_client',
+        'order_key'    => $order->id,
+        'customer_key' => $customer->id,
 
+        'editor'      => $editor,
+        'website_key' => $website->id,
+        'order_info'  => get_pay_info($order, $website, $smarty),
+        'pay_info'    => get_order_info($order),
 
-    $email_template_type=get_object('Email_Template_Type','Order Confirmation|'.$website->get('Website Store Key'),'code_store');
-    $email_template = get_object('email_template', $email_template_type->get('Email Campaign Type Email Template Key'));
-    $published_email_template = get_object('published_email_template', $email_template->get('Email Template Published Email Key'));
-
-
-    $send_data=array(
-        'Email_Template_Type'=>$email_template_type,
-        'Email_Template'=>$email_template,
-        'Order'=>$order,
-        'Order Info'=>get_pay_info($order, $website, $smarty),
-         'Pay Info'=> get_order_info($order)
-
+    ), $account->get('Account Code')
     );
-
-
-
-
-
-    $published_email_template->send($customer,$send_data);
-
-
 
 
     $response = array(
@@ -530,7 +517,6 @@ function place_order($store, $order, $payment_account_key, $customer, $website, 
         'order_key' => $order->id,
 
     );
-
 
 
     echo json_encode($response);
@@ -660,7 +646,7 @@ function place_order_pay_braintree_paypal($store, $_data, $order, $customer, $we
 
             list($customer, $order, $credit_payment_account, $credit_payment) = pay_credit($order, $to_pay_credits, $editor, $db, $account);
 
-            place_order($store, $order, $credit_payment_account->id, $customer, $website, $editor, $smarty,$account,$db);
+            place_order($store, $order, $credit_payment_account->id, $customer, $website, $editor, $smarty, $account, $db);
             exit;
 
         } else {
@@ -803,7 +789,7 @@ function place_order_pay_braintree_paypal($store, $_data, $order, $customer, $we
                 $order->add_payment($payment);
 
 
-                place_order($store, $order, $payment_account->id, $customer, $website, $editor, $smarty,$account,$db);
+                place_order($store, $order, $payment_account->id, $customer, $website, $editor, $smarty, $account, $db);
 
 
             } else {
@@ -1000,7 +986,6 @@ function pay_credit($order, $amount, $editor, $db, $account) {
     $reference = $db->lastInsertId();
 
 
-
     //print " ****> $reference <*****";
 
 
@@ -1025,7 +1010,7 @@ function pay_credit($order, $amount, $editor, $db, $account) {
 }
 
 
-function get_checkout_html($data, $customer,$smarty) {
+function get_checkout_html($data, $customer, $smarty) {
 
 
     require_once "utils/aes.php";
@@ -1036,9 +1021,9 @@ function get_checkout_html($data, $customer,$smarty) {
 
     $order = get_object('Order', $customer->get_order_in_process_key());
 
-    if (!$order->id or ($order->get('Products')==0) ) {
+    if (!$order->id or ($order->get('Products') == 0)) {
 
-       // print '>'.$data['device_prefix'].'<';
+        // print '>'.$data['device_prefix'].'<';
 
 
         $response = array(
@@ -1059,8 +1044,7 @@ function get_checkout_html($data, $customer,$smarty) {
 
     $webpage = $website->get_webpage('checkout.sys');
 
-    $content      = $webpage->get('Content Data');
-
+    $content = $webpage->get('Content Data');
 
 
     $block_found = false;
@@ -1085,7 +1069,6 @@ function get_checkout_html($data, $customer,$smarty) {
     }
 
 
-
     $placeholders = array(
 
         '[Order Number]' => $order->get('Public ID'),
@@ -1101,10 +1084,6 @@ function get_checkout_html($data, $customer,$smarty) {
     }
 
 
-
-
-
-
     $smarty->assign('order', $order);
     $smarty->assign('customer', $customer);
     $smarty->assign('website', $website);
@@ -1113,7 +1092,6 @@ function get_checkout_html($data, $customer,$smarty) {
     $smarty->assign('key', $block_key);
     $smarty->assign('data', $block);
     $smarty->assign('labels', $website->get('Localised Labels'));
-
 
 
     $response = array(
