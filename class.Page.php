@@ -1389,11 +1389,12 @@ class Page extends DB_Table {
         if ($redis->connect('127.0.0.1', 6379)) {
 
 
-            $url_cache_key = 'pwc|'.$this->get('Webpage Website Key').'_'.$this->get('Webpage Code');
+
+            $url_cache_key = 'pwc2|'.DNS_ACCOUNT_CODE.'|'.$this->get('Webpage Website Key').'_'.$this->get('Webpage Code');
             $redis->set($url_cache_key, $this->id);
-            $url_cache_key = 'pwc|'.$this->get('Webpage Website Key').'_'.strtoupper($this->get('Webpage Code'));
+            $url_cache_key = 'pwc2|'.DNS_ACCOUNT_CODE.'|'.$this->get('Webpage Website Key').'_'.strtoupper($this->get('Webpage Code'));
             $redis->set($url_cache_key, $this->id);
-            $url_cache_key = 'pwc|'.$this->get('Webpage Website Key').'_'.strtolower($this->get('Webpage Code'));
+            $url_cache_key = 'pwc2|'.DNS_ACCOUNT_CODE.'|'.$this->get('Webpage Website Key').'_'.strtolower($this->get('Webpage Code'));
             $redis->set($url_cache_key, $this->id);
 
         }
@@ -3323,11 +3324,11 @@ class Page extends DB_Table {
         if ($redis->connect('127.0.0.1', 6379)) {
 
 
-            $url_cache_key = 'pwc|'.$this->get('Webpage Website Key').'_'.$this->get('Webpage Code');
+            $url_cache_key = 'pwc2|'.DNS_ACCOUNT_CODE.'|'.$this->get('Webpage Website Key').'_'.$this->get('Webpage Code');
             $redis->set($url_cache_key, $this->id);
-            $url_cache_key = 'pwc|'.$this->get('Webpage Website Key').'_'.strtoupper($this->get('Webpage Code'));
+            $url_cache_key = 'pwc2|'.DNS_ACCOUNT_CODE.'|'.$this->get('Webpage Website Key').'_'.strtoupper($this->get('Webpage Code'));
             $redis->set($url_cache_key, $this->id);
-            $url_cache_key = 'pwc|'.$this->get('Webpage Website Key').'_'.strtolower($this->get('Webpage Code'));
+            $url_cache_key = 'pwc2|'.DNS_ACCOUNT_CODE.'|'.$this->get('Webpage Website Key').'_'.strtolower($this->get('Webpage Code'));
             $redis->set($url_cache_key, $this->id);
 
         }
