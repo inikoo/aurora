@@ -10,6 +10,7 @@
 */
 
 
+
 if ($_SERVER['SERVER_NAME'] == 'ecom.bali') {
     $_SESSION['website_key'] = 2;
 } else {
@@ -33,6 +34,10 @@ if ($_SERVER['SERVER_NAME'] == 'ecom.bali') {
     if ($result = $db->query($sql)) {
         if ($row = $result->fetch()) {
             $_SESSION['website_key'] = $row['Website Key'];
+
+
+
+
         } else {
 
             print 'E1 SERVER_NAME '.$_SERVER['SERVER_NAME'];
