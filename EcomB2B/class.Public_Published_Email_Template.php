@@ -16,7 +16,7 @@ class Public_Published_Email_Template {
     use Send_Email;
     public $id = 0;
 
-    function Public_Published_Email_Template($a1, $a2 = false, $a3 = false) {
+    function __construct($a1, $a2 = false, $a3 = false) {
 
         global $db;
         $this->db = $db;

@@ -15,7 +15,7 @@
 class Public_Payment_Account {
 
 
-    function Public_Payment_Account($arg1 = false, $arg2 = false) {
+    function __construct($arg1 = false, $arg2 = false) {
 
         global $db;
         $this->db            = $db;

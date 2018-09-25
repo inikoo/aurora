@@ -757,6 +757,42 @@ function fork_housekeeping($job) {
 
 
             break;
+
+        case 'order_submitted_by_client':
+            $order   = get_object('Order', $data['order_key']);
+            $website   = get_object('Website', $data['website_key']);
+            $customer   = get_object('Customer', $data['customer_key']);
+            $customer->editor = $editor;
+
+
+            $email_template_type      = get_object('Email_Template_Type', 'Order Confirmation|'.$website->get('Website Store Key'), 'code_store');
+            $email_template           = get_object('email_template', $email_template_type->get('Email Campaign Type Email Template Key'));
+            $published_email_template = get_object('published_email_template', $email_template->get('Email Template Published Email Key'));
+
+
+            $send_data = array(
+                'Email_Template_Type' => $email_template_type,
+                'Email_Template'      => $email_template,
+                'Order'               => $order,
+                'Order Info'          => $data['order_info'],
+                'Pay Info'            => $data['pay_info']
+
+            );
+
+
+            $email_tracking = $published_email_template->send($customer, $send_data);
+
+            $sql = sprintf(
+                'insert into `Order Sent Email Bridge` (`Order Sent Email Order Key`,`Order Sent Email Email Tracking Key`,`Order Sent Email Type`) values (%d,%d,%s)',
+                $order->id,
+                $email_tracking->id, prepare_mysql('Order Notification')
+            );
+
+            $db->exec($sql);
+
+
+            break;
+
         case 'order_dispatched':
             $order   = get_object('Order', $data['order_key']);
             $account = get_object('Account', '');

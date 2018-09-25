@@ -447,6 +447,7 @@ trait Send_Email {
 
 
 
+        return $email_tracking;
 
     }
 
