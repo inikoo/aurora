@@ -40,7 +40,7 @@ trait Send_Email {
         if ($this->get('Published Email Template Subject') == '') {
 
             $this->error = true;
-            $this->send  = false;
+            $this->sent  = false;
             $this->msg   = _('Empty email subject');
 
             return;
@@ -53,7 +53,7 @@ trait Send_Email {
         if ($sender->get('Send Email Address') == '') {
 
             $this->error = true;
-            $this->send  = false;
+            $this->sent  = false;
             $this->msg   = 'Sender email address not configured';
 
             return;
@@ -344,7 +344,7 @@ trait Send_Email {
 
             }
 
-            $this->send           = true;
+            $this->sent           = true;
             $this->email_tracking = $email_tracking;
 
 

@@ -39,12 +39,23 @@ trait Send_Email {
         if ($this->get('Published Email Template Subject') == '') {
 
             $this->error = true;
-            $this->send  = false;
+            $this->sent  = false;
             $this->msg   = _('Empty email subject');
 
-            return;
+            return false;
 
         }
+
+        if($email_template_type->id){
+            if($email_template_type->get('Email Campaign Type Status')!='Active'){
+                $this->error = true;
+                $this->sent  = false;
+                $this->msg   = 'Email Campaign Type Status not active';
+
+                return false;
+            }
+        }
+
 
 
         $sender = get_object('Store', $email_template_type->get('Store Key'));
@@ -52,10 +63,10 @@ trait Send_Email {
         if ($sender->get('Send Email Address') == '') {
 
             $this->error = true;
-            $this->send  = false;
+            $this->sent  = false;
             $this->msg   = 'Sender email address not configured';
 
-            return;
+            return false;
 
 
         }
@@ -89,6 +100,7 @@ trait Send_Email {
             '[Name,Company]'  => preg_replace('/^, /', '', $recipient->get('Main Contact Name').($recipient->get('Company Name') == '' ? '' : ', '.$recipient->get('Company Name'))),
             '[Signature]'     => $sender->get('Signature'),
         );
+
 
 
         switch ($email_template_type->get('Email Campaign Type Code')) {
@@ -183,15 +195,25 @@ trait Send_Email {
 
                 $placeholders['[Order Number]'] = $order->get('Public ID');
                 $placeholders['[Order Amount]'] = $order->get('Total');
-                $placeholders['[Order Date]']   = $order->get('Dispatched Date');
+                $placeholders['[Order Date]']   = $order->get('Date');
                 $placeholders['[Pay Info]']     = $data['Pay Info'];
                 $placeholders['[Order]']        = $data['Order Info'];
+                break;
+            case 'Delivery Confirmation':
+
+                $order = $data['Order'];
+
+                $placeholders['[Order Number]'] = $order->get('Public ID');
+                $placeholders['[Order Amount]'] = $order->get('Total');
+                $placeholders['[Order Date]']   = $order->get('Dispatched Date');
 
 
             default:
 
 
         }
+
+
 
 
         $from_name            = base64_encode($sender->get('Name'));
@@ -350,7 +372,7 @@ trait Send_Email {
 
             }
 
-            $this->send           = true;
+            $this->sent           = true;
             $this->email_tracking = $email_tracking;
 
 
