@@ -62,28 +62,28 @@ function fork_housekeeping($job) {
                     // update if is last placement
 
 
-                    $sql=sprintf('select `Date`,(`Inventory Transaction Amount`/`Inventory Transaction Quantity`) as value_per_sko from  `Inventory Transaction Fact` ITF  where  `Inventory Transaction Amount`>0 and `Inventory Transaction Quantity`>0 and  ( `Inventory Transaction Section`=\'In\' or ( `Inventory Transaction Type`=\'Adjust\' and `Inventory Transaction Quantity`>0 and `Location Key`>1 )  )  and ITF.`Part SKU`=%d  order by `Date` desc, FIELD(`Inventory Transaction Type`, \'In\',\'Adjust\')  limit 1 ',
-                                 $part->id);
+                    $sql = sprintf(
+                        'select `Date`,(`Inventory Transaction Amount`/`Inventory Transaction Quantity`) as value_per_sko from  `Inventory Transaction Fact` ITF  where  `Inventory Transaction Amount`>0 and `Inventory Transaction Quantity`>0 and  ( `Inventory Transaction Section`=\'In\' or ( `Inventory Transaction Type`=\'Adjust\' and `Inventory Transaction Quantity`>0 and `Location Key`>1 )  )  and ITF.`Part SKU`=%d  order by `Date` desc, FIELD(`Inventory Transaction Type`, \'In\',\'Adjust\')  limit 1 ',
+                        $part->id
+                    );
 
                     // print $sql;
 
-                    if ($result=$db->query($sql)) {
+                    if ($result = $db->query($sql)) {
                         foreach ($result as $row) {
 
                             //  print_r($row);
 
-                            $part->update_field_switcher('Part Cost in Warehouse',$row['value_per_sko'],'no_history');
+                            $part->update_field_switcher('Part Cost in Warehouse', $row['value_per_sko'], 'no_history');
                         }
-                    }else {
-                        print_r($error_info=$db->errorInfo());
+                    } else {
+                        print_r($error_info = $db->errorInfo());
                         print "$sql\n";
                         exit;
                     }
 
 
                 }
-
-
 
 
             }
@@ -634,7 +634,7 @@ function fork_housekeeping($job) {
                 } else {
                     $product->editor = $editor;
                 }
-                $product->fork=true;
+                $product->fork = true;
                 $product->update_availability(true);
             }
 
@@ -663,13 +663,12 @@ function fork_housekeeping($job) {
                     $product->editor = $editor;
                 }
 
-                $product->fork=true;
+                $product->fork = true;
 
                 $product->update_availability(false);
             }
 
             break;
-
 
 
         case 'order_payment_changed': // this can be removed after all inikoo gone
@@ -759,9 +758,9 @@ function fork_housekeeping($job) {
             break;
 
         case 'order_submitted_by_client':
-            $order   = get_object('Order', $data['order_key']);
-            $website   = get_object('Website', $data['website_key']);
-            $customer   = get_object('Customer', $data['customer_key']);
+            $order            = get_object('Order', $data['order_key']);
+            $website          = get_object('Website', $data['website_key']);
+            $customer         = get_object('Customer', $data['customer_key']);
             $customer->editor = $editor;
 
 
@@ -780,16 +779,15 @@ function fork_housekeeping($job) {
             );
 
 
-            $email_tracking = $published_email_template->send($customer, $send_data);
+            $published_email_template->send($customer, $send_data);
+            if ($published_email_template->sent) {
 
-            $sql = sprintf(
-                'insert into `Order Sent Email Bridge` (`Order Sent Email Order Key`,`Order Sent Email Email Tracking Key`,`Order Sent Email Type`) values (%d,%d,%s)',
-                $order->id,
-                $email_tracking->id, prepare_mysql('Order Notification')
-            );
+                $sql = sprintf(
+                    'insert into `Order Sent Email Bridge` (`Order Sent Email Order Key`,`Order Sent Email Email Tracking Key`,`Order Sent Email Type`) values (%d,%d,%s)', $order->id, $published_email_template->email_tracking->id, prepare_mysql('Order Notification')
+                );
 
-            $db->exec($sql);
-
+                $db->exec($sql);
+            }
 
             break;
 
@@ -803,6 +801,36 @@ function fork_housekeeping($job) {
             $account->update_orders();
 
             $order->send_review_invitation();
+
+
+            $customer         = get_object('Customer', $order->get('Order Customer Key'));
+            $customer->editor = $editor;
+
+
+            $email_template_type      = get_object('Email_Template_Type', 'Delivery Confirmation|'.$order->get('Order Store Key'), 'code_store');
+            $email_template           = get_object('email_template', $email_template_type->get('Email Campaign Type Email Template Key'));
+            $published_email_template = get_object('published_email_template', $email_template->get('Email Template Published Email Key'));
+
+
+            $send_data = array(
+                'Email_Template_Type' => $email_template_type,
+                'Email_Template'      => $email_template,
+                'Order'               => $order,
+
+
+            );
+
+
+            $published_email_template->send($customer, $send_data);
+
+
+            if ($published_email_template->sent) {
+                $sql = sprintf(
+                    'insert into `Order Sent Email Bridge` (`Order Sent Email Order Key`,`Order Sent Email Email Tracking Key`,`Order Sent Email Type`) values (%d,%d,%s)', $order->id, $published_email_template->email_tracking->id, prepare_mysql('Dispatch Notification')
+                );
+
+                $db->exec($sql);
+            }
 
 
             break;
@@ -1080,7 +1108,7 @@ function fork_housekeeping($job) {
                 $part_location = get_object('Part_Location', $returned_part_locations);
                 $part_location->update_stock();
 
-                $returned_parts[$part_location->part->id]=$part_location->part->id;
+                $returned_parts[$part_location->part->id] = $part_location->part->id;
 
             }
 
@@ -1089,8 +1117,7 @@ function fork_housekeeping($job) {
                 $customer->update_part_bridge();
 
 
-
-                if($data['date']==gmdate('Y-m-d')){
+                if ($data['date'] == gmdate('Y-m-d')) {
                     $intervals = array(
                         'Total',
                         'Year To Day',
@@ -1104,7 +1131,7 @@ function fork_housekeeping($job) {
 
 
                     );
-                }else{
+                } else {
                     $intervals = array(
                         'Total',
                         'Year To Day',
@@ -1115,14 +1142,15 @@ function fork_housekeeping($job) {
                         '1 Year',
                         '1 Month',
                         '1 Week',
-                        'Yesterday',  //todo don't calculate the ones not applicable
-                        'Last Week',  //todo don't calculate the ones not applicable
-                        'Last Month'  //todo don't calculate the ones not applicable
+                        'Yesterday',
+                        //todo don't calculate the ones not applicable
+                        'Last Week',
+                        //todo don't calculate the ones not applicable
+                        'Last Month'
+                        //todo don't calculate the ones not applicable
 
                     );
                 }
-
-
 
 
                 require_once 'conf/timeseries.php';
@@ -1136,8 +1164,7 @@ function fork_housekeeping($job) {
                 $part_categories      = array();
 
 
-
-                foreach($returned_parts as $part_sku) {
+                foreach ($returned_parts as $part_sku) {
 
                     $part = get_object('Part', $part_sku);
 
@@ -1146,7 +1173,7 @@ function fork_housekeeping($job) {
                         $part->update_sales_from_invoices($interval, true, false);
                     }
 
-                    if($data['date']!=gmdate('Y-m-d')) {
+                    if ($data['date'] != gmdate('Y-m-d')) {
                         //todo don't calculate the ones not applicable
                         $part->update_previous_quarters_data();
                         $part->update_previous_years_data();
@@ -1169,7 +1196,7 @@ function fork_housekeeping($job) {
                         }
                     }
 
-                    if($data['date']!=gmdate('Y-m-d')) {
+                    if ($data['date'] != gmdate('Y-m-d')) {
                         //todo don't calculate the ones not applicable
                         $category->update_part_category_previous_quarters_data();
                         $category->update_part_category_previous_years_data();
@@ -1216,7 +1243,7 @@ function fork_housekeeping($job) {
                     foreach ($intervals as $interval) {
                         $supplier->update_sales_from_invoices($interval, true, false);
 
-                        if($data['date']!=gmdate('Y-m-d')) {
+                        if ($data['date'] != gmdate('Y-m-d')) {
                             //todo don't calculate the ones not applicable
                             $supplier->update_previous_quarters_data();
                             $supplier->update_previous_years_data();
@@ -1235,7 +1262,7 @@ function fork_housekeeping($job) {
                         foreach ($intervals as $interval) {
                             $category->update_sales_from_invoices($interval, true, false);
                         }
-                        if($data['date']!=gmdate('Y-m-d')) {
+                        if ($data['date'] != gmdate('Y-m-d')) {
                             //todo don't calculate the ones not applicable
                             $category->update_part_category_previous_quarters_data();
                             $category->update_part_category_previous_years_data();
@@ -1260,8 +1287,6 @@ function fork_housekeeping($job) {
                     }
                     */
                 }
-
-
 
 
             }
@@ -1289,7 +1314,7 @@ function fork_housekeeping($job) {
 
                 $suppliers = $part_location->part->get_suppliers();
                 foreach ($suppliers as $supplier_key) {
-                    $supplier_production = get_object('Supplier_Production',$supplier_key);
+                    $supplier_production = get_object('Supplier_Production', $supplier_key);
 
                     if ($supplier_production->id) {
                         $supplier_production->update_locations_with_errors();
@@ -1347,7 +1372,7 @@ function fork_housekeeping($job) {
 
             if ($result = $db->query($sql)) {
                 foreach ($result as $row) {
-                    $category = get_object('Category',$row['Category Key']);
+                    $category = get_object('Category', $row['Category Key']);
                     if ($category->get('Part Category Status') != 'NotInUse' or date('Y-m-d') == date('Y-m-d', strtotime($category->get('Part Category Valid To').' +0:00'))) {
                         if (!array_key_exists($category->get('Category Scope').'Category', $timeseries)) {
                             continue;
@@ -1376,12 +1401,11 @@ function fork_housekeeping($job) {
             }
 
 
-
             $sql = sprintf('SELECT `Category Key` FROM `Category Dimension` WHERE `Category Scope`="Product" ORDER BY  `Category Key` DESC');
 
             if ($result = $db->query($sql)) {
                 foreach ($result as $row) {
-                    $category = get_object('Category',$row['Category Key']);
+                    $category = get_object('Category', $row['Category Key']);
                     $category->update_product_category_new_products();
                     if ($category->get('Product Category Status') != 'Discontinued' or date('Y-m-d') == date('Y-m-d', strtotime($category->get('Product Category Valid To').' +0:00'))) {
                         if (!array_key_exists($category->get('Category Scope').'Category', $timeseries)) {

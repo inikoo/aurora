@@ -671,7 +671,7 @@ class Prospect extends Subject {
         $published_email_template->send($this, $send_data);
 
 
-        if ($published_email_template->send) {
+        if ($published_email_template->sent) {
 
 
             $history_data = array(
@@ -998,7 +998,7 @@ class Prospect extends Subject {
         $published_email_template->send($this, $send_data);
 
 
-        if ($published_email_template->send) {
+        if ($published_email_template->sent) {
 
 
             $history_data = array(
