@@ -513,13 +513,12 @@ class Store extends DB_Table {
                 return number($this->data['Store '.$key]);
 
 
-
             case 'Percentage Contacts With Orders':
             case 'Percentage Active Contacts':
-                return percentage($this->data['Store '.preg_replace('/^Percentage /','',$key)],$this->data['Store Contacts']);
+                return percentage($this->data['Store '.preg_replace('/^Percentage /', '', $key)], $this->data['Store Contacts']);
                 break;
             case 'Percentage New Contacts With Orders':
-                return ($this->data['Store New Contacts']==0?'':'('.percentage($this->data['Store '.preg_replace('/^Percentage /','',$key)],$this->data['Store New Contacts'])).')';
+                return ($this->data['Store New Contacts'] == 0 ? '' : '('.percentage($this->data['Store '.preg_replace('/^Percentage /', '', $key)], $this->data['Store New Contacts'])).')';
                 break;
 
             case 'Percentage Active Web Out of Stock':
@@ -610,10 +609,19 @@ class Store extends DB_Table {
 
                 return $website->get('Website URL');
                 break;
+            case 'Reviews Settings':
+
+
+                if ($this->data['Store Reviews Settings'] == '') {
+                    return false;
+                } else {
+                    return json_decode($this->data['Store Reviews Settings'], true);
+                }
+
+                break;
 
 
         }
-
 
 
         if (preg_match('/^(DC Orders).*(Amount) Soft Minify$/', $key)) {
@@ -629,9 +637,6 @@ class Store extends DB_Table {
 
             return $amount;
         }
-
-
-
 
 
         if (preg_match('/^(DC Orders).*(Amount|Profit)$/', $key)) {
@@ -699,7 +704,6 @@ class Store extends DB_Table {
         if (array_key_exists($key, $this->data)) {
             return $this->data[$key];
         }
-
 
 
         if (preg_match('/^(Orders|Last|Yesterday|Total|1|10|6|3|4|2|Year To|Quarter To|Month To|Today|Week To).*(Amount|Profit) Soft Minify$/', $key)) {
@@ -1400,84 +1404,6 @@ class Store extends DB_Table {
         }
     }
 
-
-    function update_new_customers(){
-        $this->data['Store New Contacts']                = 0;
-        $this->data['Store New Contacts With Orders']    = 0;
-
-        $sql = sprintf(
-            "SELECT count(*) AS num FROM  `Customer Dimension`    WHERE   `Customer First Contacted Date`>%s  AND `Customer Store Key`=%d  ", prepare_mysql(gmdate('Y-m-d H:i:s'), strtotime('now - 1 week')), $this->id
-        );
-
-
-        if ($result = $this->db->query($sql)) {
-            if ($row = $result->fetch()) {
-                $this->data['Store New Contacts'] = $row['num'];
-            }
-        } else {
-            print_r($error_info = $this->db->errorInfo());
-            print "$sql\n";
-            exit;
-        }
-
-
-        $sql = sprintf(
-            "SELECT count(*) AS num FROM  `Customer Dimension`    WHERE   `Customer First Contacted Date`>%s  AND `Customer Store Key`=%d  AND `Customer With Orders`='Yes' ", prepare_mysql(gmdate('Y-m-d H:i:s',strtotime('now -1 week'))), $this->id
-        );
-
-
-
-        if ($result = $this->db->query($sql)) {
-            if ($row = $result->fetch()) {
-                $this->data['Store New Contacts With Orders']    = $row['num'];
-            }
-        } else {
-            print_r($error_info = $this->db->errorInfo());
-            print "$sql\n";
-            exit;
-        }
-
-
-
-
-        $sql = sprintf(
-            "UPDATE `Store Dimension` SET `Store New Contacts`=%d ,`Store New Contacts With Orders`=%d  WHERE `Store Key`=%d  ",  $this->data['Store New Contacts'] , $this->data['Store New Contacts With Orders'],$this->id);
-
-        $this->db->exec($sql);
-
-
-        $account_new_customers=0;
-        $account_new_customers_with_orders=0;
-        $sql = sprintf(
-            "SELECT  
-                sum(`Store New Contacts`) as new_contacts from  `Store Dimension` "
-        );
-
-
-        if ($result = $this->db->query($sql)) {
-            if ($row = $result->fetch()) {
-                $account_new_customers=    $row['new_contacts'];
-                $account_new_customers_with_orders=    $row['new_contacts_with_orders'];
-
-
-
-            }
-        } else {
-            print_r($error_info = $this->db->errorInfo());
-            exit;
-        }
-
-
-        $sql = sprintf(
-            "UPDATE `Account Data` SET `Account New Contacts`=%d ,`Account New Contacts With Orders`=%d  WHERE `Account Key`=1  ",$account_new_customers,$account_new_customers_with_orders
-            );
-
-        $this->db->exec($sql);
-
-
-
-    }
-
     function update_customers_data() {
 
         $this->data['Store Contacts']                    = 0;
@@ -1514,9 +1440,8 @@ class Store extends DB_Table {
 
 
         $sql = sprintf(
-            "SELECT count(*) AS num FROM  `Customer Dimension`    WHERE   `Customer First Contacted Date`>%s  AND `Customer Store Key`=%d  ", prepare_mysql(gmdate('Y-m-d H:i:s',strtotime('now -1 week'))), $this->id
+            "SELECT count(*) AS num FROM  `Customer Dimension`    WHERE   `Customer First Contacted Date`>%s  AND `Customer Store Key`=%d  ", prepare_mysql(gmdate('Y-m-d H:i:s', strtotime('now -1 week'))), $this->id
         );
-
 
 
         if ($result = $this->db->query($sql)) {
@@ -1531,22 +1456,19 @@ class Store extends DB_Table {
 
 
         $sql = sprintf(
-            "SELECT count(*) AS num FROM  `Customer Dimension`    WHERE   `Customer First Contacted Date`>%s  AND `Customer Store Key`=%d  AND `Customer With Orders`='Yes' ", prepare_mysql(gmdate('Y-m-d H:i:s',strtotime('now -1 week'))), $this->id
+            "SELECT count(*) AS num FROM  `Customer Dimension`    WHERE   `Customer First Contacted Date`>%s  AND `Customer Store Key`=%d  AND `Customer With Orders`='Yes' ", prepare_mysql(gmdate('Y-m-d H:i:s', strtotime('now -1 week'))), $this->id
         );
-
 
 
         if ($result = $this->db->query($sql)) {
             if ($row = $result->fetch()) {
-                $this->data['Store New Contacts With Orders']    = $row['num'];
+                $this->data['Store New Contacts With Orders'] = $row['num'];
             }
         } else {
             print_r($error_info = $this->db->errorInfo());
             print "$sql\n";
             exit;
         }
-
-
 
 
         $sql = sprintf(
@@ -1613,12 +1535,83 @@ class Store extends DB_Table {
         $this->db->exec($sql);
 
 
-
         $account = get_object('Account', 1);
         $account->update_customers_data();
 
     }
 
+    function update_new_customers() {
+        $this->data['Store New Contacts']             = 0;
+        $this->data['Store New Contacts With Orders'] = 0;
+
+        $sql = sprintf(
+            "SELECT count(*) AS num FROM  `Customer Dimension`    WHERE   `Customer First Contacted Date`>%s  AND `Customer Store Key`=%d  ", prepare_mysql(gmdate('Y-m-d H:i:s'), strtotime('now - 1 week')), $this->id
+        );
+
+
+        if ($result = $this->db->query($sql)) {
+            if ($row = $result->fetch()) {
+                $this->data['Store New Contacts'] = $row['num'];
+            }
+        } else {
+            print_r($error_info = $this->db->errorInfo());
+            print "$sql\n";
+            exit;
+        }
+
+
+        $sql = sprintf(
+            "SELECT count(*) AS num FROM  `Customer Dimension`    WHERE   `Customer First Contacted Date`>%s  AND `Customer Store Key`=%d  AND `Customer With Orders`='Yes' ", prepare_mysql(gmdate('Y-m-d H:i:s', strtotime('now -1 week'))), $this->id
+        );
+
+
+        if ($result = $this->db->query($sql)) {
+            if ($row = $result->fetch()) {
+                $this->data['Store New Contacts With Orders'] = $row['num'];
+            }
+        } else {
+            print_r($error_info = $this->db->errorInfo());
+            print "$sql\n";
+            exit;
+        }
+
+
+        $sql = sprintf(
+            "UPDATE `Store Dimension` SET `Store New Contacts`=%d ,`Store New Contacts With Orders`=%d  WHERE `Store Key`=%d  ", $this->data['Store New Contacts'], $this->data['Store New Contacts With Orders'], $this->id
+        );
+
+        $this->db->exec($sql);
+
+
+        $account_new_customers             = 0;
+        $account_new_customers_with_orders = 0;
+        $sql                               = sprintf(
+            "SELECT  
+                sum(`Store New Contacts`) as new_contacts from  `Store Dimension` "
+        );
+
+
+        if ($result = $this->db->query($sql)) {
+            if ($row = $result->fetch()) {
+                $account_new_customers             = $row['new_contacts'];
+                $account_new_customers_with_orders = $row['new_contacts_with_orders'];
+
+
+            }
+        } else {
+            print_r($error_info = $this->db->errorInfo());
+            exit;
+        }
+
+
+        $sql = sprintf(
+            "UPDATE `Account Data` SET `Account New Contacts`=%d ,`Account New Contacts With Orders`=%d  WHERE `Account Key`=1  ", $account_new_customers, $account_new_customers_with_orders
+        );
+
+        $this->db->exec($sql);
+
+
+    }
 
     function update_children_data() {
         $this->update_product_data();
@@ -3137,15 +3130,14 @@ class Store extends DB_Table {
         $data['Prospect User Key'] = $this->editor['User Key'];
 
 
-
         include_once('class.Sales_Representative.php');
         $sales_representative = new Sales_Representative(
             'find', array(
                       'Sales Representative User Key' => $this->editor['User Key'],
-                      'editor'                         => $this->editor
+                      'editor'                        => $this->editor
                   )
         );
-        $sales_representative->fast_update(array('Sales Representative Prospect Agent'=>'Yes'));
+        $sales_representative->fast_update(array('Sales Representative Prospect Agent' => 'Yes'));
 
 
         $data['Prospect Sales Representative Key'] = $sales_representative->id;
@@ -4154,8 +4146,6 @@ class Store extends DB_Table {
 
 
     }
-
-
 
 
 }

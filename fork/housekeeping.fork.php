@@ -757,7 +757,19 @@ function fork_housekeeping($job) {
 
 
             break;
+        case 'order_dispatched':
+            $order   = get_object('Order', $data['order_key']);
+            $account = get_object('Account', '');
+            $store   = get_object('Store', $order->get('Store Key'));
 
+
+            $store->update_orders();
+            $account->update_orders();
+
+            $order->send_review_invitation();
+
+
+            break;
         case 'invoice_created':
 
             update_invoice_products_sales_data($db, $account, $data);

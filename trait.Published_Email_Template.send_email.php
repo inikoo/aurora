@@ -199,15 +199,14 @@ trait Send_Email {
         $_source              = "=?utf-8?B?$from_name?= <$sender_email_address>";
 
 
-        //$to_address = 'raul@inikoo.com';
 
-
-        //
-        //
-        //
         $to_address = $recipient->get('Main Plain Email');
 
-       // $to_address='raul@inikoo.com';
+        if(gethostname()=='bali'){
+            $to_address='raul@inikoo.com';
+        }
+
+
 
 
 
