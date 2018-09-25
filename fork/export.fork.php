@@ -31,7 +31,6 @@ function fork_export($job) {
     $download_key  = $fork_data['download_key'];
 
 
-    // print_r($fork_data);
 
     $creator     = 'aurora.systems';
     $title       = _('Report');

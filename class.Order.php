@@ -749,7 +749,6 @@ class Order extends DB_Table {
                     $this->db->exec($sql);
 
 
-
                     break;
                 case 'un_dispatch':
 
@@ -828,6 +827,14 @@ class Order extends DB_Table {
                     $customer->fast_update(array('Customer Last Dispatched Order Key' => $this->id));
 
 
+                    new_housekeeping_fork(
+                        'au_housekeeping', array(
+                        'type'      => 'order_dispatched',
+                        'order_key' => $this->id,
+                    ), $account->get('Account Code')
+                    );
+
+
                     break;
 
 
@@ -864,23 +871,14 @@ class Order extends DB_Table {
                     </span>
                     <div class="red" style="float: right;padding-right: 10px;padding-top: 5px">%s
                     </div>
-                </div>', $invoice->id,
-                ($invoice->get('Invoice Type')=='Refund'?'error':''),
-                ($invoice->get('Invoice Type')=='Refund'?'error':''),
-                'invoices/'.$invoice->get('Invoice Store Key').'/'.$invoice->id, $invoice->get('Invoice Public ID'),
-                $invoice->id,
-                $invoice->id,_('PDF invoice display settings'),
-                ($invoice->get('Invoice Type')=='Refund'? $invoice->get('Refund Total Amount').' '.($invoice->get('Invoice Paid')!='Yes'?'<i class="fa fa-exclamation-triangle warning fa-fw" aria-hidden="true" title="'._('Return payment pending').'"></i>':'') :'')
+                </div>', $invoice->id, ($invoice->get('Invoice Type') == 'Refund' ? 'error' : ''), ($invoice->get('Invoice Type') == 'Refund' ? 'error' : ''), 'invoices/'.$invoice->get('Invoice Store Key').'/'.$invoice->id, $invoice->get('Invoice Public ID'),
+                $invoice->id, $invoice->id, _('PDF invoice display settings'),
+                ($invoice->get('Invoice Type') == 'Refund' ? $invoice->get('Refund Total Amount').' '.($invoice->get('Invoice Paid') != 'Yes' ? '<i class="fa fa-exclamation-triangle warning fa-fw" aria-hidden="true" title="'._('Return payment pending').'"></i>' : '')
+                    : '')
 
             );
 
         }
-
-
-
-
-
-
 
 
         $this->update_metadata = array(
@@ -1454,8 +1452,6 @@ class Order extends DB_Table {
         $this->db->exec($sql);
 
 
-
-
         $sql = sprintf(
             "UPDATE `Order Transaction Fact` SET  `Delivery Note Key`=NULL,  `Delivery Note ID`=NULL,`Invoice Key`=NULL, `Invoice Public ID`=NULL,`Picker Key`=NULL,`Picker Key`=NULL, `Consolidated`='Yes',`Current Dispatching State`=%s ,`Cost Supplier`=0  WHERE `Order Key`=%d ",
             prepare_mysql('Cancelled'), $this->id
@@ -1591,8 +1587,6 @@ class Order extends DB_Table {
     function get_invoices($scope = 'keys') {
 
 
-
-
         $invoices = array();
         $sql      = sprintf(
             "SELECT `Invoice Key` FROM `Invoice Dimension` WHERE `Invoice Order Key`=%d  ", $this->id
@@ -1638,27 +1632,166 @@ class Order extends DB_Table {
 
     }
 
-    function get_replacement_public_id($dn_id, $suffix_counter = '') {
+    function send_review_invitation() {
+
+
+        if (gethostname() == 'bali') {
+            return;
+        }
+
+
+        $store = get_object('Store', $this->get('Order Store Key'));
+
+        $settings = $store->get('Reviews Settings');
+
+        if (is_array($settings)) {
+
+            if (!isset($settings['provider'])) {
+                return;
+            }
+
+
+            if (!empty($settings['max_product_reviews']) and is_numeric($settings['max_product_reviews']) and $settings['max_product_reviews'] >= 0) {
+                $max_product_reviews = $settings['max_product_reviews'];
+            } else {
+                $max_product_reviews = 20;
+            }
+
+
+            if ($settings['provider'] == 'reviews.io') {
+
+                if (isset($settings['data']['delay'])) {
+                    $delay = settings['data']['delay'];
+                } else {
+                    $delay = '7';
+                }
+
+
+                $headersRequest = array(
+                    "store: ".$settings['data']['store'],
+                    "apikey: ".$settings['data']['apikey'],
+                    "Content-Type: application/json"
+                );
+
+
+                $products = array();
+
+
+                $items = $this->get_items();
+
+                shuffle($items);
+
+
+                $counter = 1;
+                foreach ($items as $item) {
+
+                    if ($item['webpage_state'] == 'Online') {
+
+                        if ($counter > $max_product_reviews) {
+                            break;
+                        }
+
+                        $products[] = array(
+                            "sku"     => $item['code'],
+                            "name"    => $item['description'],
+                            "image"   => $item['image'],
+                            "pageUrl" => $item['webpage_url'],
+
+                            //"pageUrl" => ($item['webpage_state'] == 'Online' ? $item['webpage_url'] : ''),
+                        );
+                        $counter++;
+                    }
+
+
+                }
+
+                $bodyRequest = array(
+                    "name"     => $this->get('Order Customer Name'),
+                    "email"    => "raul2@inikoo.com",
+                    "order_id" => $this->get('Public ID'),
+                    'delay'    => $delay,
+                    "products" => $products
+                );
+
+
+                try {
+
+                    // Queue Product Invitation
+                    $ch = curl_init();
+                    curl_setopt($ch, CURLOPT_URL, 'https://api.reviews.co.uk/product/invitation');
+                    curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
+                    //curl_setopt($ch, CURLOPT_HEADER, true);
+                    curl_setopt($ch, CURLOPT_HTTPHEADER, $headersRequest);
+                    curl_setopt($ch, CURLOPT_POST, 1);
+                    curl_setopt($ch, CURLOPT_POSTFIELDS, json_encode($bodyRequest));
+                    $response = curl_exec($ch);
+
+                    $sql = sprintf(
+                        'insert into `Order Review Invitation Dimension` (`Order Review Invitation Order Key`,`Order Review Invitation Provider`,`Order Review Invitation Date`,`Order Review Invitation Metadata`) values(%d,%s,%s,%s)', $this->id,
+                        prepare_mysql($settings['provider']), prepare_mysql(gmdate('Y-m-d H:i:s')), prepare_mysql($response)
+
+
+                    );
+
+                    $this->db->exec($sql);
+
+
+                } catch (Exception $e) {
+
+
+                }
+
+
+            }
+
+        }
+
+
+    }
+
+    function get_items() {
+
         $sql = sprintf(
-            "SELECT `Delivery Note ID` FROM `Delivery Note Dimension` WHERE `Delivery Note Store Key`=%d AND `Delivery Note ID`=%s ", $this->data['Order Store Key'], prepare_mysql($dn_id.$suffix_counter)
+            'SELECT `Webpage State`,`Webpage URL`,`Product Main Image`,`Order State`,`Delivery Note Quantity`,`Order State`,OTF.`Product ID`,OTF.`Product Key`,`Order Transaction Fact Key`,`Order Currency Code`,`Order Transaction Amount`,`Order Quantity`,`Product History Name`,`Product History Units Per Case`,PD.`Product Code`,`Product Name`,`Product Units Per Case` 
+      FROM `Order Transaction Fact` OTF LEFT JOIN `Product History Dimension` PHD ON (OTF.`Product Key`=PHD.`Product Key`) LEFT JOIN 
+      `Product Dimension` PD ON (PD.`Product ID`=PHD.`Product ID`)  LEFT JOIN 
+        `Order Dimension` O ON (O.`Order Key`=OTF.`Order Key`) Left join 
+        `Page Store Dimension` W on (`Page Key`=`Product Webpage Key`)
+      WHERE OTF.`Order Key`=%d  ORDER BY `Product Code File As` ', $this->id
         );
+
+        $items = array();
 
 
         if ($result = $this->db->query($sql)) {
-            if ($row = $result->fetch()) {
-                if ($suffix_counter > 100) {
-                    return $dn_id.$suffix_counter;
-                }
+            foreach ($result as $row) {
 
-                if (!$suffix_counter) {
-                    $suffix_counter = 2;
+                $edit_quantity = sprintf(
+                    '<span    data-settings=\'{"field": "Order Quantity", "transaction_key":"%d","item_key":%d, "item_historic_key":%d ,"on":1 }\'   ><input class="order_qty width_50" value="%s" ovalue="%s"> <i onClick="save_item_qty_change(this)" class="fa  fa-plus fa-fw like_button button"  style="cursor:pointer" aria-hidden="true"></i></span>',
+                    $row['Order Transaction Fact Key'], $row['Product ID'], $row['Product Key'], $row['Order Quantity'] + 0, $row['Order Quantity'] + 0
+                );
+                //'InBasket','InProcess','InWarehouse','PackedDone','Approved','Dispatched','Cancelled'
+                if ($row['Order State'] == 'Dispatched' or $row['Order State'] == 'Approved' or $row['Order State'] == 'PackedDone') {
+                    $qty = number($row['Delivery Note Quantity']);
+
                 } else {
-                    $suffix_counter++;
+                    $qty = number($row['Order Quantity']);
+
                 }
 
-                return $this->get_replacement_public_id($dn_id, $suffix_counter);
-            } else {
-                return $dn_id.$suffix_counter;
+                $items[] = array(
+                    'code'          => $row['Product Code'],
+                    'description'   => $row['Product History Units Per Case'].'x '.$row['Product History Name'],
+                    'qty'           => $qty,
+                    'edit_qty'      => $edit_quantity,
+                    'amount'        => '<span class="item_amount">'.money($row['Order Transaction Amount'], $row['Order Currency Code']).'</span>',
+                    'webpage_url'   => $row['Webpage URL'],
+                    'image'         => $row['Product Main Image'],
+                    'webpage_state' => $row['Webpage State']
+
+                );
+
+
             }
         } else {
             print_r($error_info = $this->db->errorInfo());
@@ -1666,6 +1799,8 @@ class Order extends DB_Table {
             exit;
         }
 
+
+        return $items;
 
     }
 
@@ -1706,8 +1841,6 @@ class Order extends DB_Table {
 
     }
 
-
-
     function update_customer_history() {
         $customer = new Customer ($this->data['Order Customer Key']);
         switch ($this->data['Order State']) {
@@ -1726,13 +1859,6 @@ class Order extends DB_Table {
 
     }
 
-
-
-
-
-
-
-
     function get_currency_symbol() {
         return currency_symbol($this->data['Order Currency']);
     }
@@ -1744,79 +1870,14 @@ class Order extends DB_Table {
         return $formatted_tax_info;
     }
 
-
     function get_formatted_payment_state() {
         return get_order_formatted_payment_state($this->data);
 
     }
 
-
-
-
-    function get_items() {
-
-        $sql = sprintf(
-            'SELECT `Order State`,`Delivery Note Quantity`,`Order State`,OTF.`Product ID`,OTF.`Product Key`,`Order Transaction Fact Key`,`Order Currency Code`,`Order Transaction Amount`,`Order Quantity`,`Product History Name`,`Product History Units Per Case`,PD.`Product Code`,`Product Name`,`Product Units Per Case` 
-      FROM `Order Transaction Fact` OTF LEFT JOIN `Product History Dimension` PHD ON (OTF.`Product Key`=PHD.`Product Key`) LEFT JOIN 
-      `Product Dimension` PD ON (PD.`Product ID`=PHD.`Product ID`)  LEFT JOIN 
-        `Order Dimension` O ON (O.`Order Key`=OTF.`Order Key`) 
-      WHERE `Order Key`=%d  ORDER BY `Product Code File As` ',
-            $this->id
-        );
-
-        $items = array();
-
-
-        if ($result = $this->db->query($sql)) {
-            foreach ($result as $row) {
-
-                $edit_quantity = sprintf(
-                    '<span    data-settings=\'{"field": "Order Quantity", "transaction_key":"%d","item_key":%d, "item_historic_key":%d ,"on":1 }\'   ><input class="order_qty width_50" value="%s" ovalue="%s"> <i onClick="save_item_qty_change(this)" class="fa  fa-plus fa-fw like_button button"  style="cursor:pointer" aria-hidden="true"></i></span>',
-                    $row['Order Transaction Fact Key'], $row['Product ID'], $row['Product Key'], $row['Order Quantity'] + 0, $row['Order Quantity'] + 0
-                );
-//'InBasket','InProcess','InWarehouse','PackedDone','Approved','Dispatched','Cancelled'
-                if($row['Order State']=='Dispatched' or $row['Order State']=='Approved' or  $row['Order State']=='PackedDone'  ){
-                    $qty=number($row['Delivery Note Quantity']);
-
-                }else{
-                    $qty=number($row['Order Quantity']);
-
-                }
-
-                $items[] = array(
-                    'code'        => $row['Product Code'],
-                    'description' => $row['Product History Units Per Case'].'x '.$row['Product History Name'],
-                    'qty'         => $qty,
-                    'edit_qty'    => $edit_quantity,
-                    'amount'      => '<span class="item_amount">'.money($row['Order Transaction Amount'], $row['Order Currency Code']).'</span>'
-
-                );
-
-
-            }
-        } else {
-            print_r($error_info = $this->db->errorInfo());
-            print "$sql\n";
-            exit;
-        }
-
-
-        return $items;
-
-    }
-
-
-
-
-
-
     function get_date($field) {
         return strftime("%e %b %Y", strtotime($this->data[$field].' +0:00'));
     }
-
-
-
-
 
     function remove_out_of_stocks_from_basket($product_pid) {
 
@@ -2546,8 +2607,36 @@ class Order extends DB_Table {
         return $replacement;
     }
 
-    function z() {
-    }// just for better access to update_state function in PhpStorm editor
+    function get_replacement_public_id($dn_id, $suffix_counter = '') {
+        $sql = sprintf(
+            "SELECT `Delivery Note ID` FROM `Delivery Note Dimension` WHERE `Delivery Note Store Key`=%d AND `Delivery Note ID`=%s ", $this->data['Order Store Key'], prepare_mysql($dn_id.$suffix_counter)
+        );
+
+
+        if ($result = $this->db->query($sql)) {
+            if ($row = $result->fetch()) {
+                if ($suffix_counter > 100) {
+                    return $dn_id.$suffix_counter;
+                }
+
+                if (!$suffix_counter) {
+                    $suffix_counter = 2;
+                } else {
+                    $suffix_counter++;
+                }
+
+                return $this->get_replacement_public_id($dn_id, $suffix_counter);
+            } else {
+                return $dn_id.$suffix_counter;
+            }
+        } else {
+            print_r($error_info = $this->db->errorInfo());
+            print "$sql\n";
+            exit;
+        }
+
+
+    }
 
 
 }

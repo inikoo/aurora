@@ -207,6 +207,7 @@
         </div>
         <div style="clear:both"></div>
     </div>
+
     <div class="block " style="align-items: stretch;flex: 1;padding-top: 0px">
         <div class="state" style="height:30px;">
             <div id="back_operations" class="{if $store->get('Store Version')<2}hide{/if}">
@@ -695,7 +696,7 @@
             </tr>
 
             <tr class="subtotal">
-                <td class="label">{t}Tax{/t}</td>
+                <td class="label button" onclick="show_order_tax_dialog()" title="{t}Show order tax dialog{/t}">{t}Tax{/t}</td>
                 <td class="aright Total_Tax_Amount">{$order->get('Total Tax Amount')}</td>
             </tr>
 
