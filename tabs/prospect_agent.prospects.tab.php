@@ -17,6 +17,8 @@ $tipo    = 'prospects';
 $default = $user->get_tab_defaults($tab);
 
 
+//print_r($default);
+
 $table_views = array(
     'overview' => array(
         'label' => _('Overview'),

@@ -13,11 +13,16 @@
 include_once 'utils/date_functions.php';
 
 
+//print_r($default);
+
+
 if (isset($_SESSION['table_state'][$tab])) {
     $table_state = $_SESSION['table_state'][$tab];
 } else {
     $table_state = array();
 }
+
+//print_r($table_state);
 
 
 foreach ($default as $key => $value) {
@@ -63,6 +68,8 @@ foreach ($default as $key => $value) {
 }
 
 
+
+
 if (isset($metadata['parameters'])) {
     foreach ($metadata['parameters'] as $_key => $_value) {
         if (isset($parameters[$_key])) {
@@ -72,7 +79,6 @@ if (isset($metadata['parameters'])) {
 }
 
 
-//print_r($metadata);
 
 if (isset($metadata['element'])) {
 
@@ -94,6 +100,8 @@ if (isset($metadata['element'])) {
     }
 
 }
+
+
 
 
 $parameters['tab'] = $tab;

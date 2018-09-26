@@ -14,7 +14,7 @@ include_once 'class.DB_Table.php';
 class Email_Tracking extends DB_Table {
 
 
-    function Email_Tracking($arg1 = false, $arg2 = false) {
+    function __construct($arg1 = false, $arg2 = false) {
 
         global $db;
         $this->db = $db;
@@ -190,21 +190,27 @@ class Email_Tracking extends DB_Table {
                 )) {
 
                     if ($this->data['Email Tracking First Clicked Date'] == '') {
-                        $this->update_field('Email Tracking First Read Date', gmdate('Y-m-d H:i:s'), 'no_history');
+                        $this->fast_update(array(
+                                               'Email Tracking First Clicked Date'=>gmdate('Y-m-d H:i:s')
+                                           ));
 
                     }
                     $this->update_field('Email Tracking State', 'Clicked', 'no_history');
 
                     $this->update_field('Email Tracking Last Clicked Date', gmdate('Y-m-d H:i:s'), 'no_history');
+
+
+                    $this->fast_update(array(
+                                           'Email Tracking State'=> 'Clicked',
+                                           'Email Tracking Last Clicked Date'=>gmdate('Y-m-d H:i:s')
+                                       ));
+
                     $sql = sprintf('select count(*) as num from  `Email Tracking Event Dimension` where `Email Tracking Event Tracking Key`=%d and `Email Tracking Event Type`="Clicked" ', $this->id);
 
                     if ($result = $this->db->query($sql)) {
                         if ($row = $result->fetch()) {
                             $this->update_field(
-                                'Email Tracking Number Clicks
-                            
-                            
-                            ', $row['num'], 'no_history'
+                                'Email Tracking Number Clicks', $row['num'], 'no_history'
                             );
 
                         }

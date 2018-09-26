@@ -126,6 +126,37 @@ $elements_options = array(
         )
     ),
 
+    'prospect_agent_prospects'              => array(
+        'status' => array(
+            'label' => _('Status'),
+            'items' => array(
+                'NoContacted' => array(
+                    'label'    => _('To be contacted'),
+                    'selected' => true
+                ),
+                'Contacted' => array(
+                    'label'    => _('Contacted'),
+                    'selected' => true
+                ),
+                'NotInterested' => array(
+                    'label'    => _('Not interested'),
+                    'selected' => true
+                ),
+                'Registered' => array(
+                    'label'    => _('Registered'),
+                    'selected' => true
+                ),
+                'Invoiced' => array(
+                    'label'    => _('Invoiced'),
+                    'selected' => true
+                ),
+
+            )
+
+
+        )
+    ),
+
     'product_category_customers'              => array(
         'sales_status' => array(
             'label' => _('Status'),

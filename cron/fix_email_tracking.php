@@ -13,6 +13,7 @@
 require_once 'common.php';
 require_once 'utils/natural_language.php';
 require_once 'utils/date_functions.php';
+require_once 'utils/object_functions.php';
 
 
 require_once 'class.EmailCampaignType.php';
@@ -27,6 +28,49 @@ $editor = array(
     'Date'         => gmdate('Y-m-d H:i:s')
 );
 
+
+$sql = sprintf('select `Email Tracking Key` from `Email Tracking Dimension` ');
+
+if ($result = $db->query($sql)) {
+    foreach ($result as $row) {
+
+
+        $sql = sprintf('select count(*) as num, min(`Email Tracking Event Date`) as min_date from `Email Tracking Event Dimension` where `Email Tracking Event Type`="Clicked" and `Email Tracking Event Tracking Key`=%d ', $row['Email Tracking Key']);
+
+
+        if ($result2 = $db->query($sql)) {
+            if ($row2 = $result2->fetch()) {
+
+                if($row2['num']>0){
+                    $email_tracking=get_object('Email_Tracking',$row['Email Tracking Key']);
+                    $data_to_update=array(
+                        'Email Tracking Number Clicks'=>$row2['num'],
+                        'Email Tracking First Clicked Date'=>$row2['min_date'],
+                    );
+                    $email_tracking->fast_update($data_to_update);
+
+
+                }
+
+
+            }
+        } else {
+            print_r($error_info = $db->errorInfo());
+            print "$sql\n";
+            exit;
+        }
+
+
+    }
+} else {
+    print_r($error_info = $db->errorInfo());
+    print "$sql\n";
+    exit;
+}
+
+
+exit;
+// old fixes
 
 $email_campaign_types = array(
     'Newsletter',
@@ -235,19 +279,15 @@ if ($result = $db->query($sql)) {
                 $email_template->fast_update(
                     array(
                         'Email Template Scope Key' => $email_template_type->id,
-                        'Email Template Scope' => 'EmailCampaignType'
+                        'Email Template Scope'     => 'EmailCampaignType'
                     )
                 );
             } else {
 
-               // print_r($website);
+                // print_r($website);
 
-                exit('email_template_type not found from role' .$email_template->get('Email Template Role'));
+                exit('email_template_type not found from role'.$email_template->get('Email Template Role'));
             }
-
-
-
-
 
 
         }

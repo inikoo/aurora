@@ -4007,8 +4007,11 @@ $tab_defaults = array(
         'rpp'           => 100,
         'rpp_options'   => $default_rrp_options,
         'f_field'       => 'name',
-        'elements_type' => each($elements_options['prospects']) ['key'],
-        'elements'      => $elements_options['prospects'],
+        'from'          => '',
+        'to'            => '',
+        'period'        => 'all',
+        'elements_type' => each($elements_options['prospect_agent_prospects']) ['key'],
+        'elements'      => $elements_options['prospect_agent_prospects'],
         'export_fields' => $export_fields['prospects']
 
     ),
@@ -4017,6 +4020,9 @@ $tab_defaults = array(
         'sort_key'    => 'date',
         'sort_order'  => 1,
         'rpp'         => 100,
+        'from'          => '',
+        'to'            => '',
+        'period'        => 'all',
         'rpp_options' => $default_rrp_options,
         'f_field'     => 'subject',
 
