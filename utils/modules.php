@@ -1139,10 +1139,12 @@ $modules = array(
                         'icon'  => 'database'
                     ),
                     'order.history'        => array(
-                        'label' => _(
-                            'History'
-                        ),
+                        'label' => _('History'),
                         'icon'  => 'road'
+                    ),
+                    'order.sent_emails'       => array(
+                        'label' => _('Sent emails'),
+                        'icon'  => 'envelope'
                     ),
                     'order.delivery_notes' => array(
                         'label' => _(
@@ -1158,7 +1160,7 @@ $modules = array(
                     ),
                     'order.payments'       => array(
                         'label' => _('Payments'),
-                        'icon'  => 'fa-dollar-sign'
+                        'icon'  => 'dollar-sign'
                     ),
 
                 )
@@ -1374,7 +1376,24 @@ $modules = array(
                     ),
 
                 )
-            )
+            ),
+
+            'email_tracking'         => array(
+                'type' => 'object',
+                'tabs' => array(
+                    'email_tracking.email' => array(
+                        'label' => _('Email'),
+                        'icon'  => 'envelope',
+                    ),
+
+                    'email_tracking.events' => array(
+                        'label' => _('Tracking'),
+                        'icon'  => 'stopwatch'
+                    ),
+
+
+                )
+            ),
 
         )
     ),

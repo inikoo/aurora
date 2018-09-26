@@ -142,6 +142,9 @@ switch ($tipo) {
     case 'orders_in_website_mailshots':
         orders_in_website_mailshots(get_table_parameters(), $db, $user);
         break;
+    case 'order_sent_emails':
+        order_sent_emails(get_table_parameters(), $db, $user);
+        break;
     default:
         $response = array(
             'state' => 405,
@@ -3072,6 +3075,120 @@ function order_all_products($_data, $db, $user) {
     } else {
         print_r($error_info = $db->errorInfo());
         print "$sql\n";
+        exit;
+    }
+
+
+    $response = array(
+        'resultset' => array(
+            'state'         => 200,
+            'data'          => $adata,
+            'rtext'         => $rtext,
+            'sort_key'      => $_order,
+            'sort_dir'      => $_dir,
+            'total_records' => $total
+
+        )
+    );
+    echo json_encode($response);
+}
+
+
+
+
+function order_sent_emails($_data, $db, $user) {
+
+    $rtext_label = 'email';
+    include_once 'prepare_table/init.php';
+
+
+
+
+    $sql   = "select $fields from $table $where $wheref order by $order $order_direction limit $start_from,$number_results";
+    $adata = array();
+
+
+    $parent = get_object($_data['parameters']['parent'], $_data['parameters']['parent_key']);
+
+    // print $sql;
+    //'Ready','Send to SES','Rejected by SES','Send','Read','Hard Bounce','Soft Bounce','Spam','Delivered','Opened','Clicked','Error'
+
+
+    if ($result = $db->query($sql)) {
+        foreach ($result as $data) {
+
+
+            switch ($data['Email Tracking State']) {
+                case 'Ready':
+                    $state = _('Ready to send');
+                    break;
+                case 'Sent to SES':
+                    $state = _('Sending');
+                    break;
+
+                    break;
+                case 'Delivered':
+                    $state = _('Delivered');
+                    break;
+                case 'Opened':
+                    $state = _('Opened');
+                    break;
+                case 'Clicked':
+                    $state = _('Clicked');
+                    break;
+                case 'Error':
+                    $state = '<span class="warning">'._('Error').'</span>';
+                    break;
+                case 'Hard Bounce':
+                    $state = '<span class="error"><i class="fa fa-exclamation-circle"></i>  '._('Bounced').'</span>';
+                    break;
+                case 'Soft Bounce':
+                    $state = '<span class="warning"><i class="fa fa-exclamation-triangle"></i>  '._('Probable bounce').'</span>';
+                    break;
+                case 'Spam':
+                    $state = '<span class="error"><i class="fa fa-exclamation-circle"></i>  '._('Mark as spam').'</span>';
+                    break;
+                default:
+                    $state = $data['Email Tracking State'];
+            }
+
+            switch ($data['Order Sent Email Type']){
+                case 'Dispatch Notification':
+                    $type=_('Dispatch notification');
+                    break;
+                case 'Order Notification':
+                    $type=_('Order notification');
+                    break;
+                case 'Replacement Dispatch Notification':
+                    $type=_('Replacement dispatch notification');
+                    break;
+                default:
+                    $type=$data['Order Sent Email Type'];
+
+            }
+
+
+             $type = sprintf('<span class="link" onclick="change_view(\'orders/%d/%d/email/%d\')"  >%s</span>',$parent->get('Store Key') ,$parent->id,$data['Email Tracking Key'],$type);
+
+
+
+
+
+
+            $adata[] = array(
+                'id'      => (integer)$data['Email Tracking Key'],
+                'state'   => $state,
+
+                'type' => $type,
+                'date'    => strftime("%a, %e %b %Y %R", strtotime($data['Email Tracking Created Date']." +00:00")),
+
+
+            );
+
+
+        }
+    } else {
+        print_r($error_info = $db->errorInfo());
         exit;
     }
 

@@ -2062,7 +2062,8 @@ function parse_request($_data, $db, $modules, $account = '', $user = '', $is_set
                         }
 
 
-                    } elseif (is_numeric($arg1)) {
+                    }
+                    elseif (is_numeric($arg1)) {
 
 
                         $section    = 'orders';
@@ -2156,7 +2157,22 @@ function parse_request($_data, $db, $modules, $account = '', $user = '', $is_set
 
                                         }
 
-                                    }
+                                    }elseif ($view_path[1] == 'email') {
+
+
+
+                                            $section    = 'email_tracking';
+                                            $parent     = 'order';
+                                            $parent_key = $key;
+                                            $object     = 'email_tracking';
+                                            if (isset($view_path[2])) {
+                                                if (is_numeric($view_path[2])) {
+                                                    $key = $view_path[2];
+                                                }
+                                            }
+                                        }
+
+
 
 
                                 }
