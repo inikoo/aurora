@@ -904,7 +904,7 @@ class Public_Product {
 
 
         $sql = sprintf(
-            'SELECT `Attachment Subject Type`, `Attachment Bridge Key`,`Attachment Caption`  FROM `Product Part Bridge`  LEFT JOIN `Attachment Bridge` AB  ON (AB.`Subject Key`=`Product Part Part SKU`)    WHERE AB.`Subject`="Part" AND  `Product Part Product ID`=%d  AND `Attachment Public`="Yes" AND `Attachment Subject Type`="MSDS" ',
+            'SELECT `Attachment Subject Type`, `Attachment Bridge Key`,`Attachment Caption`  FROM `Product Part Bridge`  LEFT JOIN `Attachment Bridge` AB  ON (AB.`Subject Key`=`Product Part Part SKU`)    WHERE AB.`Subject`="Part" AND  `Product Part Product ID`=%d  AND `Attachment Public`="Yes" ',
             $this->id
         );
 
