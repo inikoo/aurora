@@ -59,6 +59,8 @@ function attachments($_data, $db, $user) {
     $sql   = "select $fields from $table $where $wheref order by $order $order_direction limit $start_from,$number_results";
     $adata = array();
 
+
+
     foreach ($db->query($sql) as $data) {
 
         if ($data['Attachment Public'] == 'Yes') {

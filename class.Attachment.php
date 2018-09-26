@@ -172,76 +172,84 @@ class Attachment extends DB_Table {
     }
 
     function create_thumbnail() {
-        include_once 'class.Image.php';
-        if (preg_match('/application\/pdf/', $this->data['Attachment MIME Type'])) {
-            $tmp_file = 'server_files/tmp/attch'.date('U').$this->data['Attachment File Checksum'];
 
 
-            $tmp_file_name = $tmp_file.'.pdf';
-            file_put_contents($tmp_file_name, $this->data['Attachment Data']);
-
-            $im = new imagick($tmp_file_name.'[0]');
-
-
-        } elseif (preg_match('/image\/(png|jpg|gif|jpeg)/', $this->data['Attachment MIME Type'])) {
-
-            $tmp_file      = 'server_files/tmp/attch'.date('U').$this->data['Attachment File Checksum'];
-            $tmp_file_name = $tmp_file;
-            file_put_contents($tmp_file_name, $this->data['Attachment Data']);
-            $im = new imagick($tmp_file_name);
+        try {
+            include_once 'class.Image.php';
+            if (preg_match('/application\/pdf/', $this->data['Attachment MIME Type'])) {
+                $tmp_file = 'server_files/tmp/attch'.date('U').$this->data['Attachment File Checksum'];
 
 
-        } else {
-            return;
+                $tmp_file_name = $tmp_file.'.pdf';
+                file_put_contents($tmp_file_name, $this->data['Attachment Data']);
+
+                $im = new imagick($tmp_file_name.'[0]');
+
+
+            } elseif (preg_match('/image\/(png|jpg|gif|jpeg)/', $this->data['Attachment MIME Type'])) {
+
+                $tmp_file      = 'server_files/tmp/attch'.date('U').$this->data['Attachment File Checksum'];
+                $tmp_file_name = $tmp_file;
+                file_put_contents($tmp_file_name, $this->data['Attachment Data']);
+                $im = new imagick($tmp_file_name);
+
+
+            } else {
+                return;
+            }
+
+
+            $im->setImageFormat('jpg');
+            $im->thumbnailImage(500, 0);
+            $im->writeImage($tmp_file.'.jpg');
+
+
+            $image_data = array(
+                'Image Width'         => 0,
+                'Image Height'        => 0,
+                'Image File Size'     => 0,
+                'Image File Checksum' => '',
+                'Image Filename'      => 'attachment_thumbnail',
+                'Image File Format'   => '',
+                'Image Data'          => '',
+                'upload_data'         => array('tmp_name' => $tmp_file.'.jpg'),
+                'editor'              => $this->editor
+            );
+
+
+            $image = new Image('find', $image_data, 'create');
+
+            if (!$image->error) {
+
+
+                $sql = sprintf(
+                    "DELETE FROM `Image Bridge` WHERE `Subject Type`=%s AND `Subject Key`=%d", prepare_mysql('Attachment Thumbnail'), $this->id
+
+                );
+                $this->db->exec($sql);
+                $sql = sprintf(
+                    "INSERT INTO `Image Bridge` (`Subject Type`,`Subject Key`,`Image Key`,`Is Principal`,`Caption`) VALUES (%s,%d,%d,'Yes','')", prepare_mysql('Attachment Thumbnail'), $this->id,
+                    $image->id
+                );
+                $this->db->exec($sql);
+
+                $sql = sprintf(
+                    "UPDATE `Attachment Dimension` SET `Attachment Thumbnail Image Key`=%d WHERE `Attachment Key`=%d", $image->id, $this->id
+                );
+                $this->db->exec($sql);
+                $this->data['Attachment Thumbnail Image Key'] = $image->id;
+            } else {
+
+
+            }
+
+            unlink($tmp_file_name);
+            unlink($tmp_file.'.jpg');
+        } catch (Exception $e) {
+           // echo 'Caught exception: ',  $e->getMessage(), "\n";
         }
 
 
-        $im->setImageFormat('jpg');
-        $im->thumbnailImage(500, 0);
-        $im->writeImage($tmp_file.'.jpg');
-
-
-        $image_data = array(
-            'Image Width'         => 0,
-            'Image Height'        => 0,
-            'Image File Size'     => 0,
-            'Image File Checksum' => '',
-            'Image Filename'      => 'attachment_thumbnail',
-            'Image File Format'   => '',
-            'Image Data'          => '',
-            'upload_data'         => array('tmp_name' => $tmp_file.'.jpg'),
-            'editor'              => $this->editor
-        );
-
-
-        $image = new Image('find', $image_data, 'create');
-
-        if (!$image->error) {
-
-
-            $sql = sprintf(
-                "DELETE FROM `Image Bridge` WHERE `Subject Type`=%s AND `Subject Key`=%d", prepare_mysql('Attachment Thumbnail'), $this->id
-
-            );
-           $this->db->exec($sql);
-            $sql = sprintf(
-                "INSERT INTO `Image Bridge` (`Subject Type`,`Subject Key`,`Image Key`,`Is Principal`,`Caption`) VALUES (%s,%d,%d,'Yes','')", prepare_mysql('Attachment Thumbnail'), $this->id,
-                $image->id
-            );
-            $this->db->exec($sql);
-
-            $sql = sprintf(
-                "UPDATE `Attachment Dimension` SET `Attachment Thumbnail Image Key`=%d WHERE `Attachment Key`=%d", $image->id, $this->id
-            );
-            $this->db->exec($sql);
-            $this->data['Attachment Thumbnail Image Key'] = $image->id;
-        } else {
-
-
-        }
-
-        unlink($tmp_file_name);
-        unlink($tmp_file.'.jpg');
 
 
     }
