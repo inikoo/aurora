@@ -158,6 +158,12 @@ headerCell: integerHeaderCell
 function change_table_view(view,save_state){
 
 
+$('.view.tab').removeClass('selected');
+$('#view_'+view).addClass('selected');
+
+
+
+
 grid.columns.findWhere({ name: 'open'} ).set("renderable", false)
 grid.columns.findWhere({ name: 'click'} ).set("renderable", false)
 grid.columns.findWhere({ name: 'register'} ).set("renderable", false)

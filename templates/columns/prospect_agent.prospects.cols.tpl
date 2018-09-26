@@ -124,8 +124,12 @@ events: {
 
 function change_table_view(view,save_state){
 
-$('.view').removeClass('selected');
+$('.view.tab').removeClass('selected');
 $('#view_'+view).addClass('selected');
+
+
+
+
 
 grid.columns.findWhere({ name: 'name'} ).set("renderable", true)
 grid.columns.findWhere({ name: 'status'} ).set("renderable", false)
