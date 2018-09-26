@@ -30,20 +30,7 @@ if ($parameters['parent'] == 'prospect') {
 
 switch ($parameters['parent']) {
 
-    case('prospect_agent'):
-        $table  = '`Email Tracking Dimension`  left join `Email Campaign Type Dimension`  on (`Email Tracking Email Template Type Key`=`Email Campaign Type Key`)  
-    left join `Published Email Template Dimension` on (`Email Tracking Published Email Template Key`=`Published Email Template Key`)
-    left join `Prospect Dimension` on (`Email Tracking Recipient Key`=`Prospect Key`) ';
-        $fields =
-            "`Email Tracking Email`,`Prospect Store Key` as store_key,`Prospect Key` as recipient_key,`Prospect Name` recipient_name,`Published Email Template Subject`,`Email Tracking Key`,`Email Tracking State`,`Email Tracking Created Date`";
 
-
-
-
-        $where = sprintf(
-            ' where `Email Tracking Recipient`="Prospect"  and  `Prospect Sales Representative Key`=%d', $parameters['parent_key']
-        );
-        break;
 
     case('prospect'):
         $where = sprintf(
@@ -81,6 +68,20 @@ switch ($parameters['parent']) {
         break;
     default:
         $where = 'where false';
+}
+
+
+
+
+if (isset($parameters['period'])) {
+    include_once 'utils/date_functions.php';
+    list($db_interval, $from, $to, $from_date_1yb, $to_1yb)
+        = calculate_interval_dates(
+        $db, $parameters['period'], $parameters['from'], $parameters['to']
+    );
+    $where_interval = prepare_mysql_dates($from, $to, '`Email Tracking Created Date`');
+    $where .= $where_interval['mysql'];
+
 }
 
 

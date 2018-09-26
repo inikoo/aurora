@@ -28,6 +28,21 @@ if ($parameters['parent'] == 'sales_representative') {
     exit();
 }
 
+
+
+
+if (isset($parameters['period'])) {
+    include_once 'utils/date_functions.php';
+    list($db_interval, $from, $to, $from_date_1yb, $to_1yb)
+        = calculate_interval_dates(
+        $db, $parameters['period'], $parameters['from'], $parameters['to']
+    );
+    $where_interval = prepare_mysql_dates($from, $to, 'P.`Prospect First Contacted Date`');
+    $where .= $where_interval['mysql'];
+
+}
+
+
 switch ($parameters['elements_type']) {
 
     case 'status':

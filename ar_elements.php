@@ -3047,10 +3047,26 @@ function get_prospects_elements($db, $data) {
     }
 
 
+
+
+    if (isset($data['period'])) {
+        include_once 'utils/date_functions.php';
+        list($db_interval, $from, $to, $from_date_1yb, $to_1yb)
+            = calculate_interval_dates(
+            $db, $data['period'], $data['from'], $data['to']
+        );
+        $where_interval = prepare_mysql_dates($from, $to, 'P.`Prospect First Contacted Date`');
+        $where .= $where_interval['mysql'];
+
+    }
+
+
     $sql = sprintf(
         "select count(Distinct P.`Prospect Key`) as number,`Prospect Status` as element from $table $where  group by `Prospect Status` "
     );
 
+
+   
 
     foreach ($db->query($sql) as $row) {
 

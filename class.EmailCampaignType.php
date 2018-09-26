@@ -17,7 +17,7 @@ class EmailCampaignType extends DB_Table {
     var $new = false;
     var $updated_data = array();
 
-    function EmailCampaignType($arg1 = false, $arg2 = false, $arg3 = false) {
+    function __construct($arg1 = false, $arg2 = false, $arg3 = false) {
 
 
         global $db;

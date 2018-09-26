@@ -77,6 +77,9 @@ function subject_sent_emails($_data, $db, $user) {
     $rtext_label = 'email';
     include_once 'prepare_table/init.php';
 
+
+
+
     $sql   = "select $fields from $table $where $wheref order by $order $order_direction limit $start_from,$number_results";
     $adata = array();
 
