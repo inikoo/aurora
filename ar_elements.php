@@ -3066,7 +3066,7 @@ function get_prospects_elements($db, $data) {
     );
 
 
-   
+
 
     foreach ($db->query($sql) as $row) {
 
