@@ -610,8 +610,7 @@ class Prospect extends Subject {
                 $history_data = array(
                     'History Abstract' => sprintf(
                         _('Prospect manually linked to customer %s'),
-                        '<span class="button padding_left_5" onClick="change_view(\'customers/'.$this->customer->get('Store Key').'/'.$this->customer->id.'\')"><i class="fa fa-user "></i> <span class="link">'.$this->customer->get('Name').'</span> (<span class="link">'
-                        .$this->customer->get_formatted_id().'</span>)</span>'
+                        '<span class="button padding_left_5" onClick="change_view(\'customers/'.$customer->get('Store Key').'/'.$customer->id.'\')"><i class="fa fa-user "></i> <span class="link">'.$customer->get('Name').'</span> (<span class="link">'.$customer->get_formatted_id().'</span>)</span>'
                     ),
 
 
@@ -926,7 +925,9 @@ class Prospect extends Subject {
 
 
                     $history_data = array(
-                        'History Abstract' => _('Prospect unlinked from customer'),
+                        'History Abstract' => sprintf(_('Prospect unlinked from customer %s'),
+                                                      '<span class="button padding_left_5" onClick="change_view(\'customers/'.$this->customer->get('Store Key').'/'.$this->customer->id.'\')"><i class="fa fa-user "></i> <span class="link">'.$this->customer->get('Name').'</span> (<span class="link">'
+                                                      .$this->customer->get_formatted_id().'</span>)</span>'),
                         'History Details'  => '',
                         'Action'           => 'edited'
                     );
