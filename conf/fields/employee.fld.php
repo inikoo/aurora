@@ -152,6 +152,7 @@ foreach ($db->query($sql) as $row) {
     );
 }
 
+//print_r($employee->system_user->get('User Groups'));
 
 
 if(is_object($employee->system_user)) {

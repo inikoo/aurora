@@ -64,6 +64,11 @@ $user_rights = array(
         'Right Name' => 'staff'
     ),
 
+    'CM' => array(
+        'Right Type' => 'Manager',
+        'Right Name' => 'customers'
+    ),
+
     'CV' => array(
         'Right Type' => 'View',
         'Right Name' => 'customers'

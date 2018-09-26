@@ -1989,6 +1989,12 @@ class User extends DB_Table {
 
     }
 
+    function can_supervisor($tag, $tag_key = false) {
+
+        return $this->can_do('Manager', $tag, $tag_key);
+
+    }
+
     function can_do($right_type, $tag, $tag_key = false) {
 
 
