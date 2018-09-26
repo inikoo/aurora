@@ -1724,8 +1724,11 @@ function get_navigation($user, $smarty, $data, $db, $account) {
                 case ('replacement'):
                     return get_replacement_navigation($data, $smarty, $user, $db, $account);
                     break;
+                case ('email_tracking'):
+                    return get_email_tracking_navigation($data, $smarty, $user, $db, $account);
+                    break;
                 default:
-                    return 'View not found';
+                    return 'View not found '.$data['section'];
 
             }
             break;
@@ -1754,7 +1757,7 @@ function get_navigation($user, $smarty, $data, $db, $account) {
                     return get_pack_aid_navigation($data, $smarty, $user, $db, $account);
                     break;
                 default:
-                    return 'View not found';
+                    return 'View not found '.$data['section'];
 
             }
             break;
@@ -5509,6 +5512,33 @@ function get_view_position($db, $state, $user, $smarty, $account) {
                         'reference' => ''
                     );
                     break;
+
+                case 'email_tracking':
+                    //$store = get_object('Store', $state['_parent']->get('Store Key'));
+
+                    $branch[] = array(
+                        'label'     => _('Orders').' '.$state['store']->data['Store Code'],
+                        'icon'      => '',
+                        'reference' => 'orders/'.$state['store']->id
+                    );
+
+
+                    $branch[] = array(
+                        'label'     => $state['_parent']->get('Order Public ID'),
+                        'icon'      => 'shopping-cart',
+                        'reference' => 'orders/'.$state['store']->id.'/'.$state['_parent']->id                    );
+
+
+
+                    $branch[] = array(
+                        'label'     => _('Sent email').' <span class="id">'.$state['_object']->get('Sent Date').'</span>',
+                        'icon'      => '',
+                        'reference' => ''
+                    );
+
+
+                    break;
+
             }
 
             break;
