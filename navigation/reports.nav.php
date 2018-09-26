@@ -836,7 +836,7 @@ function get_prospect_agent_navigation($user, $smarty, $data) {
         $sections[$data['section']]['selected'] = true;
     }
 
-    $title = $data['_object']->user->get('Alias');
+    $title = sprintf(_("Agent %s prospects report"), '<span class="id">'.$data['_object']->user->get('Alias').'</span>');
 
     $_content = array(
         'sections_class' => '',
