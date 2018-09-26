@@ -244,7 +244,29 @@ $user_groups = array(
         )
 
     ),
-    
+    16 => array(
+        'Key'    => 16,
+        'Name'   => _('Customer Services Manager'),
+        'View'   => '<i title="'._('Customers').'" class="fa fa-users fa-fw"> <i title="'._('Orders').'" class="fa fa-shopping-cart fa-fw"> <i title="'._('Websites')
+            .'" class="fa fa-globe fa-fw"></i> <i  title="'._('Products').'" class="fa fa-square fa-fw"></i>',
+        'Edit'   => '<i title="'._('Customers').'" class="fa fa-users fa-fw"> <i title="'._('Orders').'" class="fa fa-shopping-cart fa-fw">',
+        'Rights' => array(
+            'CM',
+            'CV',
+            'CE',
+            'CC',
+            'CD',
+            'SV',
+            'WV',
+            'PV'
+
+        ),
+        'Stores_Scope'=>true,
+        'Websites_Scope'=>true,
+        'Warehouses_Scope'=>true
+
+
+    ),
 
 
 );

@@ -19,6 +19,8 @@ if (isset($options['new']) and $options['new']) {
 $employee = $object;
 $account  = new Account();
 
+$employee->get_user();
+
 $options_Staff_Payment_Terms = array(
     'Monthly'  => _('Monthly (fixed)'),
     'PerHour' => _('Per hour (prorata)')
@@ -80,6 +82,115 @@ asort($options_Staff_Type);
 asort($options_Staff_Payment_Terms);
 
 asort($options_yn);
+
+
+include 'conf/user_groups.php';
+
+
+$_options_User_Groups=array();
+$options_User_Groups=array();
+
+foreach($user_groups as $key=>$user_group){
+    $_options_User_Groups['x'. $user_group['Key']]=array('label'=>$user_group['Name'],'selected'=>false,'key'=>$user_group['Key']);
+}
+
+
+foreach($_options_User_Groups as $k => $d) {
+    $_tmp[$k] = $d['label'];
+}
+array_multisort($_tmp, SORT_ASC, $_options_User_Groups);
+foreach($_options_User_Groups as $_option){
+    $options_User_Groups[(string) $_option['key']]=$_option;
+}
+
+
+$options_Stores = array();
+$sql            = sprintf('SELECT `Store Key` AS `key` ,`Store Name`,`Store Code`   FROM `Store Dimension`  ');
+foreach ($db->query($sql) as $row) {
+    $options_Stores[$row['key']] = array(
+        'label'    => $row['Store Code'],
+        'selected' => false
+    );
+}
+
+
+
+$options_Websites = array();
+$sql              = sprintf('SELECT `Site Key` AS `key` ,`Site Name`,`Site Code` FROM `Site Dimension`  ');
+foreach ($db->query($sql) as $row) {
+    $options_Websites[$row['key']] = array(
+        'label'    => $row['Site Code'],
+        'selected' => false
+    );
+}
+
+
+$options_Warehouses = array();
+$sql                = sprintf('SELECT `Warehouse Key` AS `key` ,`Warehouse Name`,`Warehouse Code` FROM `Warehouse Dimension`  ');
+foreach ($db->query($sql) as $row) {
+    $options_Warehouses[$row['key']] = array(
+        'label'    => $row['Warehouse Code'],
+        'selected' => false
+    );
+}
+
+
+
+
+
+$options_Productions = array();
+$sql                 = sprintf(
+    'SELECT `Supplier Production Supplier Key` AS `key`,`Supplier Name`,`Supplier Code` FROM `Supplier Production Dimension` SPD LEFT JOIN `Supplier Dimension` S ON (`Supplier Key`=`Supplier Production Supplier Key`)  '
+);
+
+
+foreach ($db->query($sql) as $row) {
+    $options_Productions[$row['key']] = array(
+        'label'    => $row['Supplier Code'],
+        'selected' => false
+    );
+}
+
+
+if(is_object($employee->system_user)) {
+
+
+
+
+    foreach (preg_split('/,/', $employee->system_user->get('User Groups')) as $current_user_group_key) {
+        if (array_key_exists($current_user_group_key, $options_User_Groups)) {
+            $options_User_Groups[$current_user_group_key]['selected'] = true;
+        }
+    }
+
+    foreach (preg_split('/,/', $employee->system_user->get('User Stores')) as $key) {
+        if (array_key_exists($key, $options_Stores)) {
+            $options_Stores[$key]['selected'] = true;
+        }
+    }
+
+    foreach (preg_split('/,/', $employee->system_user->get('User Websites')) as $key) {
+        if (array_key_exists($key, $options_Websites)) {
+            $options_Websites[$key]['selected'] = true;
+        }
+    }
+
+    foreach (preg_split('/,/', $employee->system_user->get('User Warehouses')) as $key) {
+        if (array_key_exists($key, $options_Warehouses)) {
+            $options_Warehouses[$key]['selected'] = true;
+        }
+    }
+
+    foreach (preg_split('/,/', $employee->system_user->get('User Productions')) as $key) {
+        if (array_key_exists($key, $options_Productions)) {
+            $options_Productions[$key]['selected'] = true;
+        }
+    }
+
+}
+
+
+
 
 $object_fields = array(
     array(
@@ -352,6 +463,8 @@ if (!$new) {
     if ($employee->get('Staff User Key')) {
 
 
+
+
         $object_fields[] = array(
             'label'      => _('System user').' <i  onClick="change_view(\'account/user/'.$employee->get(
                     'Staff User Key'
@@ -371,6 +484,7 @@ if (!$new) {
                         $employee->get_field_label('Staff Active')
                     ),
                 ),
+                /*
                 array(
                     'id'              => 'Staff_Position',
                     'edit'            => 'option_multiple_choices',
@@ -381,6 +495,7 @@ if (!$new) {
                         $employee->get_field_label('Staff Position')
                     ),
                 ),
+                */
                 array(
 
                     'id'                => 'Staff_User_Handle',
@@ -420,6 +535,68 @@ if (!$new) {
                     ),
                     'invalid_msg'     => get_invalid_message('pin'),
                 ),
+
+
+                array(
+                    'render' => ($employee->get('Staff User Active') == 'Yes' ? true : false),
+                    'id'              => 'Staff_User_Groups',
+                    'edit'            => 'option_multiple_choices',
+                    'value'           => $employee->system_user->get('User Groups'),
+                    'formatted_value' => $employee->system_user->get('Groups'),
+                    'options'         => $options_User_Groups,
+                    'label'           => ucfirst($object->get_field_label('User Groups')),
+                ),
+                array(
+                    'render'=>$employee->system_user->has_scope('Stores'),
+                    'id'              => 'Staff_User_Stores',
+                    'edit'            => 'option_multiple_choices',
+                    'value'           => $employee->system_user->get('User Stores'),
+                    'formatted_value' => $employee->system_user->get('Stores'),
+                    'label'           => ucfirst($object->get_field_label('User Stores')),
+                    'options'         => $options_Stores,
+                    'required'        => false
+
+                ),
+                array(
+                    'render'=>$employee->system_user->has_scope('Websites'),
+                    'id'              => 'Staff_User_Websites',
+                    'edit'            => 'option_multiple_choices',
+                    'value'           => $employee->system_user->get('User Websites'),
+                    'formatted_value' => $employee->system_user->get('Websites'),
+                    'label'           => ucfirst($employee->get_field_label('User Websites')
+                    ),
+                    'options'         => $options_Websites,
+                    'required'        => false
+
+                ),
+                array(
+                    'render'=>$employee->system_user->has_scope('Warehouses'),
+                    'id'              => 'Staff_User_Warehouses',
+                    'edit'            => 'option_multiple_choices',
+                    'value'           => $employee->system_user->get('User Warehouses'),
+                    'formatted_value' => $employee->system_user->get('Warehouses'),
+                    'label'           => ucfirst($employee->get_field_label('User Warehouses')
+                    ),
+                    'options'         => $options_Warehouses,
+                    'required'        => false
+
+
+                ),
+                array(
+                    'render'=>$employee->system_user->has_scope('Productions'),
+                    'id'              => 'Staff_User_Productions',
+                    'edit'            => 'option_multiple_choices',
+                    'value'           => $employee->system_user->get('User Productions'),
+                    'formatted_value' => $employee->system_user->get('Productions'),
+                    'label'           => ucfirst($employee->get_field_label('User Productions')
+                    ),
+                    'options'         => $options_Productions,
+                    'required'        => false
+
+
+                )
+
+
 
 
             )
