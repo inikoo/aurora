@@ -7,48 +7,55 @@ renderable: false
 
 
 },
-
 {
-name: "public_id",
-label: "{t}Number{/t}",
-editable: false,
-sortType: "toggle",
-cell: Backgrid.HtmlCell.extend({
-})
-}, {
 name: "date",
 label: "{t}Date{/t}",
 editable: false,
 defaultOrder:1,
 sortType: "toggle",
 {if $sort_key=='date'}direction: '{if $sort_order==1}descending{else}ascending{/if}',{/if}
-cell: Backgrid.HtmlCell.extend({ className: "aright"} ),
-headerCell: integerHeaderCell
-}, {
-name: "customer",
-label: "{t}Customer{/t}",
-sortType: "toggle",
+cell: Backgrid.HtmlCell.extend({ className: ""} ),
+},
+{
+name: "type",
+label: "{t}Type{/t}",
 editable: false,
-cell: Backgrid.HtmlCell.extend({})
-}, {
+sortType: "toggle",
+cell: "html"
+},
+{
 name: "state",
 label: "{t}State{/t}",
 editable: false,
 sortType: "toggle",
 cell: "html"
-}, {
-name: "payment_state",
-label: "{t}Payment{/t}",
-editable: false,
-sortType: "toggle",
-cell: "html"
-}, {
-name: "total_amount",
-label: "{t}Total{/t}",
+},
+{
+name: "orders",
+label: "{t}Orders{/t}",
 editable: false,
 defaultOrder:1,
 sortType: "toggle",
-{if $sort_key=='total_amount'}direction: '{if $sort_order==1}descending{else}ascending{/if}',{/if}
+{if $sort_key=='orders'}direction: '{if $sort_order==1}descending{else}ascending{/if}',{/if}
+cell: Backgrid.HtmlCell.extend({ className: "aright"} ),
+headerCell: integerHeaderCell
+},
+{
+name: "transactions",
+label: "{t}Items{/t}",
+editable: false,
+defaultOrder:1,
+sortType: "toggle",
+{if $sort_key=='transactions'}direction: '{if $sort_order==1}descending{else}ascending{/if}',{/if}
+cell: Backgrid.HtmlCell.extend({ className: "aright"} ),
+headerCell: integerHeaderCell
+},{
+name: "amount",
+label: "{t}Amount{/t}",
+editable: false,
+defaultOrder:1,
+sortType: "toggle",
+{if $sort_key=='amount'}direction: '{if $sort_order==1}descending{else}ascending{/if}',{/if}
 cell: Backgrid.HtmlCell.extend({ className: "aright"} ),
 headerCell: integerHeaderCell
 }

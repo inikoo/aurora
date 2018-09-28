@@ -13,11 +13,11 @@
 $elements_options = array(
 
 
-    'customers'              => array(
+    'customers' => array(
         'activity' => array(
             'label' => _('Status'),
             'items' => array(
-                'Rejected' => array(
+                'Rejected'  => array(
                     'label'    => _('Rejected'),
                     'selected' => true
                 ),
@@ -25,15 +25,15 @@ $elements_options = array(
                     'label'    => _('To be approved'),
                     'selected' => true
                 ),
-                'Active' => array(
+                'Active'    => array(
                     'label'    => _('Active'),
                     'selected' => true
                 ),
-                'Losing' => array(
+                'Losing'    => array(
                     'label'    => _('Losing'),
                     'selected' => true
                 ),
-                'Lost'   => array(
+                'Lost'      => array(
                     'label'    => _('Lost'),
                     'selected' => true
                 ),
@@ -95,15 +95,15 @@ $elements_options = array(
 
         )
     ),
-    'prospects'              => array(
+    'prospects' => array(
         'status' => array(
             'label' => _('Status'),
             'items' => array(
-                'NoContacted' => array(
+                'NoContacted'   => array(
                     'label'    => _('To be contacted'),
                     'selected' => true
                 ),
-                'Contacted' => array(
+                'Contacted'     => array(
                     'label'    => _('Contacted'),
                     'selected' => true
                 ),
@@ -111,11 +111,11 @@ $elements_options = array(
                     'label'    => _('Not interested'),
                     'selected' => false
                 ),
-                'Registered' => array(
+                'Registered'    => array(
                     'label'    => _('Registered'),
                     'selected' => false
                 ),
-                'Invoiced' => array(
+                'Invoiced'      => array(
                     'label'    => _('Invoiced'),
                     'selected' => false
                 ),
@@ -126,15 +126,15 @@ $elements_options = array(
         )
     ),
 
-    'prospect_agent_prospects'              => array(
+    'prospect_agent_prospects' => array(
         'status' => array(
             'label' => _('Status'),
             'items' => array(
-                'NoContacted' => array(
+                'NoContacted'   => array(
                     'label'    => _('To be contacted'),
                     'selected' => true
                 ),
-                'Contacted' => array(
+                'Contacted'     => array(
                     'label'    => _('Contacted'),
                     'selected' => true
                 ),
@@ -142,11 +142,11 @@ $elements_options = array(
                     'label'    => _('Not interested'),
                     'selected' => true
                 ),
-                'Registered' => array(
+                'Registered'    => array(
                     'label'    => _('Registered'),
                     'selected' => true
                 ),
-                'Invoiced' => array(
+                'Invoiced'      => array(
                     'label'    => _('Invoiced'),
                     'selected' => true
                 ),
@@ -157,11 +157,11 @@ $elements_options = array(
         )
     ),
 
-    'product_category_customers'              => array(
+    'product_category_customers' => array(
         'sales_status' => array(
             'label' => _('Status'),
             'items' => array(
-                'basket' => array(
+                'basket'  => array(
                     'label'    => _('Just in basket'),
                     'selected' => true
                 ),
@@ -174,7 +174,7 @@ $elements_options = array(
 
         )
     ),
-    'customer_history'       => array(
+    'customer_history'           => array(
         'type' => array(
             'label' => _('Type'),
             'items' => array(
@@ -206,28 +206,28 @@ $elements_options = array(
 
         )
     ),
-    'prospect_history'       => array(
+    'prospect_history'           => array(
         'type' => array(
             'label' => _('Type'),
             'items' => array(
-                'Notes'       => array(
+                'Notes' => array(
                     'label'    => _('Notes'),
                     'selected' => true
                 ),
 
-                'Changes'     => array(
+                'Changes' => array(
                     'label'    => _('Changes'),
                     'selected' => true
                 ),
-                'Emails' => array(
+                'Emails'  => array(
                     'label'    => _('Emails'),
                     'selected' => true
                 ),
-                'Calls'      => array(
+                'Calls'   => array(
                     'label'    => _('Calls'),
                     'selected' => true
                 ),
-                'Posts'      => array(
+                'Posts'   => array(
                     'label'    => _('Mail posts'),
                     'selected' => true
                 )
@@ -237,16 +237,16 @@ $elements_options = array(
     ),
 
 
-    'webpage_publishing_history'       => array(
+    'webpage_publishing_history' => array(
         'type' => array(
             'label' => _('Type'),
             'items' => array(
-                'Notes'       => array(
+                'Notes' => array(
                     'label'    => _('Notes'),
                     'selected' => true
                 ),
 
-                'Deployment'     => array(
+                'Deployment' => array(
                     'label'    => _('Deployments'),
                     'selected' => true
                 ),
@@ -294,8 +294,7 @@ $elements_options = array(
     ),
 
 
-
-    'supplier_part_history'  => array(
+    'supplier_part_history' => array(
         'type' => array(
             'label' => _('Type'),
             'items' => array(
@@ -311,7 +310,7 @@ $elements_options = array(
 
         )
     ),
-    'agent_history'          => array(
+    'agent_history'         => array(
         'type' => array(
             'label' => _('Type'),
             'items' => array(
@@ -368,7 +367,7 @@ $elements_options = array(
     ),
 
 
-    'orders_archived'        => array(
+    'orders_archived' => array(
         'dispatch' => array(
             'label' => _('Dispatched'),
             'items' => array(
@@ -447,31 +446,31 @@ $elements_options = array(
         'state' => array(
             'label' => _('state'),
             'items' => array(
-                'InBasket' => array(
+                'InBasket'    => array(
                     'label'    => _('In basket'),
                     'selected' => true
                 ),
-                'InProcess'         => array(
+                'InProcess'   => array(
                     'label'    => _('Submitted'),
                     'selected' => true
                 ),
-                'InWarehouse'         => array(
+                'InWarehouse' => array(
                     'label'    => _('In warehouse'),
                     'selected' => true
                 ),
-                'PackedDone'         => array(
+                'PackedDone'  => array(
                     'label'    => _('Packed'),
                     'selected' => true
                 ),
-                'Approved'         => array(
+                'Approved'    => array(
                     'label'    => _('Approved'),
                     'selected' => true
                 ),
-                'Dispatched'         => array(
+                'Dispatched'  => array(
                     'label'    => _('Dispatched'),
                     'selected' => true
                 ),
-                'Cancelled'         => array(
+                'Cancelled'   => array(
                     'label'    => _('Cancelled'),
                     'selected' => true
                 )
@@ -535,28 +534,25 @@ $elements_options = array(
     ),
 
 
-
-
-
     'orders_pending' => array(
 
         'state' => array(
             'label' => _('state'),
             'items' => array(
 
-                'InProcess'         => array(
+                'InProcess'   => array(
                     'label'    => _('Submitted'),
                     'selected' => true
                 ),
-                'InWarehouse'         => array(
+                'InWarehouse' => array(
                     'label'    => _('In warehouse'),
                     'selected' => true
                 ),
-                'PackedDone'         => array(
+                'PackedDone'  => array(
                     'label'    => _('Packed'),
                     'selected' => true
                 ),
-                'Approved'         => array(
+                'Approved'    => array(
                     'label'    => _('Approved'),
                     'selected' => true
                 ),
@@ -617,7 +613,7 @@ $elements_options = array(
                     'label'    => _('Picking'),
                     'selected' => true
                 ),
-                'Packed'  => array(
+                'Packed'   => array(
                     'label'    => _('Packed'),
                     'selected' => true
                 ),
@@ -835,7 +831,7 @@ $elements_options = array(
         )
     ),
 
-    'supplier_parts'          => array(
+    'supplier_parts' => array(
         'status'      => array(
             'label' => _('Status'),
             'items' => array(
@@ -858,11 +854,11 @@ $elements_options = array(
         'part_status' => array(
             'label' => _('Part status'),
             'items' => array(
-                'InProcess'    => array(
+                'InProcess'     => array(
                     'label'    => _('Part in process'),
                     'selected' => true
                 ),
-                'InUse'    => array(
+                'InUse'         => array(
                     'label'    => _('Part active'),
                     'selected' => true
                 ),
@@ -870,7 +866,7 @@ $elements_options = array(
                     'label'    => _('Part discontinuing'),
                     'selected' => true
                 ),
-                'NotInUse' => array(
+                'NotInUse'      => array(
                     'label'    => _('Part discontinued'),
                     'selected' => true
                 ),
@@ -881,27 +877,25 @@ $elements_options = array(
     ),
 
 
-
-    'agent_parts'          => array(
-
+    'agent_parts' => array(
 
 
-            'part_status' => array(
-                'label' => _('Required by client'),
-                'items' => array(
-                    'Required'    => array(
-                        'label'    => _('Required by client'),
-                        'selected' => true
-                    ),
-                    'NotRequired' => array(
-                        'label'    => _('Not required'),
-                        'selected' => true
-                    ),
-                )
+        'part_status' => array(
+            'label' => _('Required by client'),
+            'items' => array(
+                'Required'    => array(
+                    'label'    => _('Required by client'),
+                    'selected' => true
+                ),
+                'NotRequired' => array(
+                    'label'    => _('Not required'),
+                    'selected' => true
+                ),
+            )
 
 
-            ),
-            'status'      => array(
+        ),
+        'status'      => array(
             'label' => _('Availability'),
             'items' => array(
                 'Available'    => array(
@@ -922,8 +916,6 @@ $elements_options = array(
         ),
 
     ),
-
-
 
 
     'barcodes'                => array(
@@ -968,15 +960,15 @@ $elements_options = array(
                     'selected' => true
                 ),
 
-                'In'           => array(
+                'In'  => array(
                     'label'    => _('In'),
                     'selected' => true
                 ),
-                'Out'          => array(
+                'Out' => array(
                     'label'    => _('Out'),
                     'selected' => true
                 ),
-                'OIP'          => array(
+                'OIP' => array(
                     'label'    => 'OIP',
                     'selected' => true,
                     'title'    => _('Orders in Process')
@@ -1092,21 +1084,21 @@ $elements_options = array(
             'label' => _('Trigger'),
             'items' => array(
 
-                'Order'              => array(
+                'Order'             => array(
                     'label'    => _('Order'),
                     'selected' => true
                 ),
-                'Product_Category'   => array(
+                'Product_Category'  => array(
                     'label'    => _(
                         'Product category'
                     ),
                     'selected' => true
                 ),
-                'Product'            => array(
+                'Product'           => array(
                     'label'    => _('Product'),
                     'selected' => false
                 ),
-                'Customer'           => array(
+                'Customer'          => array(
                     'label'    => _('Customer'),
                     'selected' => true
                 ),
@@ -1116,7 +1108,7 @@ $elements_options = array(
                     ),
                     'selected' => true
                 ),
-                'Customer_List'      => array(
+                'Customer_List'     => array(
                     'label'    => _('Customer list'),
                     'selected' => true
                 ),
@@ -1127,7 +1119,7 @@ $elements_options = array(
     ),
 
     'deal_components' => array(
-        'status'  => array(
+        'status' => array(
             'label' => _('Status'),
             'items' => array(
                 'Active'    => array(
@@ -1247,32 +1239,32 @@ $elements_options = array(
 
 
     ),
-    'agent_orders'     => array(
+    'agent_orders'        => array(
         'state' => array(
             'label' => _('State'),
             'items' => array(
-                'InProcess'                   => array(
+                'InProcess' => array(
                     'label'    => _('In process'),
                     'selected' => true
                 ),
 
-                'Submitted'                   => array(
+                'Submitted'       => array(
                     'label'    => _('Submitted to agent'),
                     'selected' => true
                 ),
-                'InTransit'                   => array(
+                'InTransit'       => array(
                     'label'    => _('In transit'),
                     'selected' => true
                 ),
-                'ReceivedChecked'             => array(
+                'ReceivedChecked' => array(
                     'label'    => _('In warehouse'),
                     'selected' => true
                 ),
-                'Placed'                      => array(
+                'Placed'          => array(
                     'label'    => _('Placed'),
                     'selected' => true
                 ),
-                'Cancelled'                   => array(
+                'Cancelled'       => array(
                     'label'    => _(
                         'Cancelled'
                     ),
@@ -1329,19 +1321,17 @@ $elements_options = array(
             'items' => array(
 
 
-
-
-                'Submitted'                   => array(
+                'Submitted' => array(
                     'label'    => _('To do'),
                     'selected' => true
                 ),
 
 
-                'Dispatched'                      => array(
+                'Dispatched' => array(
                     'label'    => _('Dispatched'),
                     'selected' => true
                 ),
-                'Cancelled'                   => array(
+                'Cancelled'  => array(
                     'label'    => _('Cancelled'),
                     'selected' => false
                 ),
@@ -1388,7 +1378,7 @@ $elements_options = array(
     ),
 
     'webpages' => array(
-        'state'   => array(
+        'state' => array(
             'label' => _('State'),
             'items' => array(
                 'Online'  => array(
@@ -1404,23 +1394,23 @@ $elements_options = array(
 
 
         ),
-        'type'    => array(
+        'type'  => array(
             'label' => _('Type'),
             'items' => array(
 
-                'Cats' => array(
+                'Cats'   => array(
                     'label'    => _('Departments'),
                     'selected' => true
                 ),
-                'Prods'   => array(
+                'Prods'  => array(
                     'label'    => _('Families'),
                     'selected' => true
                 ),
-                'Prod'             => array(
+                'Prod'   => array(
                     'label'    => _('Products'),
                     'selected' => true
                 ),
-                'Others'                => array(
+                'Others' => array(
                     'label'    => _('Other'),
                     'selected' => true
                 ),
@@ -1433,32 +1423,26 @@ $elements_options = array(
     ),
 
 
-
-    'online_webpages_in_webpage_type'=>array(
-
-
-
-
-),
+    'online_webpages_in_webpage_type' => array(),
 
     'online_webpages' => array(
-        'type'    => array(
+        'type' => array(
             'label' => _('Type'),
             'items' => array(
 
-                'Cats' => array(
+                'Cats'   => array(
                     'label'    => _('Departments'),
                     'selected' => true
                 ),
-                'Prods'   => array(
+                'Prods'  => array(
                     'label'    => _('Families'),
                     'selected' => true
                 ),
-                'Prod'             => array(
+                'Prod'   => array(
                     'label'    => _('Products'),
                     'selected' => true
                 ),
-                'Others'                => array(
+                'Others' => array(
                     'label'    => _('Other'),
                     'selected' => true
                 ),
@@ -1508,15 +1492,15 @@ $elements_options = array(
 
         )
     ),
-    'leakages_transactions' => array(
+    'leakages_transactions'  => array(
         'type' => array(
             'label' => _('Type'),
             'items' => array(
-                'found'     => array(
+                'found' => array(
                     'label'    => _('Found'),
                     'selected' => true
                 ),
-                'lost'      => array(
+                'lost'  => array(
                     'label'    => _('Lost'),
                     'selected' => true
                 )
@@ -1530,15 +1514,15 @@ $elements_options = array(
         'type' => array(
             'label' => _('Type'),
             'items' => array(
-                'Lost'     => array(
+                'Lost'   => array(
                     'label'    => _('Lost'),
                     'selected' => true
                 ),
-                'Broken'      => array(
+                'Broken' => array(
                     'label'    => _('Damaged'),
                     'selected' => true
                 ),
-                'Error'      => array(
+                'Error'  => array(
                     'label'    => _('Error'),
                     'selected' => false
                 )
@@ -1548,15 +1532,15 @@ $elements_options = array(
         )
     ),
 
-'stock_given_free' => array(
+    'stock_given_free'    => array(
         'type' => array(
             'label' => _('Type'),
             'items' => array(
-                'Order'     => array(
+                'Order'       => array(
                     'label'    => _('Offer'),
                     'selected' => true
                 ),
-                'Replacement'      => array(
+                'Replacement' => array(
                     'label'    => _('Replacement'),
                     'selected' => true
                 )
@@ -1569,27 +1553,71 @@ $elements_options = array(
         'type' => array(
             'label' => _('Type'),
             'items' => array(
-                'Duplicated'     => array(
+                'Duplicated'       => array(
                     'label'    => _('Duplicated'),
                     'selected' => true
                 ),
-                'Size'      => array(
+                'Size'             => array(
                     'label'    => _('Number digits'),
                     'selected' => true
                 ),
-                'Short_Duplicated'      => array(
+                'Short_Duplicated' => array(
                     'label'    => _('No check digit (Will dup.)'),
                     'selected' => true
                 ),
-                'Checksum_missing'      => array(
+                'Checksum_missing' => array(
                     'label'    => _('No check digit'),
                     'selected' => true
                 ),
-                'Checksum'      => array(
+                'Checksum'         => array(
                     'label'    => _('Invalid check digit'),
                     'selected' => true
                 )
 
+            ),
+
+        )
+    ),
+
+    //'In Process','Purged','Exculpated','Cancelled'
+    'purged_orders' => array(
+        'state' => array(
+            'label' => _('State'),
+            'items' => array(
+                'In_Process'       => array(
+                    'label'    => _('In Process'),
+                    'selected' => true
+                ),
+                'Purged'             => array(
+                    'label'    => _('Purged'),
+                    'selected' => true
+                ),
+                'Exculpated' => array(
+                    'label'    => _('Exculpated'),
+                    'selected' => true
+                ),
+                'Cancelled' => array(
+                    'label'    => _('Purge cancelled'),
+                    'selected' => true
+                ),
+
+
+            ),
+
+        )
+    ),
+    'purges_history' => array(
+        'type' => array(
+            'label' => _('Type'),
+            'items' => array(
+                'Notes'   => array(
+                    'label'    => _('Notes'),
+                    'selected' => true
+                ),
+                'Changes' => array(
+                    'label'    => _('Changes'),
+                    'selected' => true
+                ),
             ),
 
         )

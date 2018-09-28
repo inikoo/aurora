@@ -223,6 +223,11 @@ if ($parameters['parent'] == 'customer' or $parameters['parent'] == 'order_custo
         ' where   B.`Customer Poll Query Option Key`=%d   ', $parameters['parent_key']
     );
     $subject = 'Customer Poll Query Option';
+}elseif ($parameters['parent'] == 'purge') {
+    $where   = sprintf(
+        ' where   B.`Order Basket Purge Key`=%d   ', $parameters['parent_key']
+    );
+    $subject = 'Order Basket Purge';
 }else {
     print_r($parameters);
     exit('parent not set up '.$parameters['parent']);

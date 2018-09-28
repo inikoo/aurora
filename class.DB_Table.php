@@ -280,7 +280,7 @@ abstract class DB_Table extends stdClass {
 
 
             if (preg_match(
-                    '/product category|prospect|deal|charge|deal campaign|attachment bridge|location|site|page|part|barcode|agent|customer|contact|company|order|staff|supplier|address|user|store|product|company area|company department|position|category|customer poll query|customer poll query option|api key|email campaign|email template|list|sales representative/i',
+                    '/product category|prospect|deal|charge|deal campaign|attachment bridge|location|site|page|part|barcode|agent|customer|contact|company|order|staff|supplier|address|user|store|product|company area|company department|position|category|customer poll query|customer poll query option|api key|email campaign|email template|list|sales representative|order basket purge/i',
                     $table_name
                 ) and !$this->new and $save_history) {
 
@@ -568,7 +568,7 @@ abstract class DB_Table extends stdClass {
         );
 
 
-        //print $sql;
+      //  print $sql;
 
         $this->db->exec($sql);
 
@@ -792,7 +792,6 @@ abstract class DB_Table extends stdClass {
         $sql = sprintf(
             "INSERT INTO `%s History Bridge` VALUES (%d,%d,%s,'No',%s)", $table_name, $table_key, $history_key, prepare_mysql($deletable), prepare_mysql($type)
         );
-
 
         $this->db->exec($sql);
 

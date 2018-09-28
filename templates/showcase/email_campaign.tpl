@@ -145,7 +145,7 @@
                             <i class="far fa-trash-alt discreet " aria-hidden="true" onclick="toggle_order_operation_dialog('delete')"></i>
                             <table id="delete_dialog" border="0" class="order_operation_dialog hide">
                                 <tr class="top">
-                                    <td colspan="2">{t}Delete mailshot{/t}</td>
+                                    <td colspan="2">{if  $email_campaign->get('Email Campaign Type')=='Newsletter'}{t}Delete newsletter{/t}{else}{t}Delete mailshot{/t}{/if}</td>
                                 </tr>
                                 <tr class="changed buttons">
                                     <td>
@@ -186,10 +186,10 @@
                 <div id="forward_operations">
 
 
-                    <div id="set_recipients_email_operations" class="email_campaign_operation {if $email_campaign->get('State Index')!=10    }hide{/if}">
+                    <div id="set_recipients_email_operations" class="email_campaign_operation {if $email_campaign->get('State Index')!=10 or $email_campaign->get('Type')=='Newsletter'   }hide{/if}">
                         <div class="square_button right  " title="{t}Set mailing list{/t}">
                             <i class="fa fa-users button discreet" id="compose_email_save_buttons" aria-hidden="true" data-data='{  "field": "Email Campaign State","value": "ComposingEmail","dialog_name":"compose_email"}'
-                               onclick="set_up+mailing_list(this)"></i>
+                               onclick="set_up_mailing_list(this)"></i>
 
                         </div>
                     </div>
@@ -337,7 +337,7 @@
                     <div class="Email_Campaign_Sent">{$email_campaign->get('Sent')}</div>
                 </div>
                 <div>
-                    <label>{t}Hard boune{/t}</label>
+                    <label>{t}Hard bounce{/t}</label>
                     <div class="Email_Campaign_Hard_Bounce">{$email_campaign->get('Hard Bounces')}</div>
                 </div>
                 <div>
@@ -369,7 +369,7 @@
             <div class="Email_Campaign_Sent">{$email_campaign->get('Sent')}</div>
         </div>
         <div>
-            <label>{t}Hard boune{/t}</label>
+            <label>{t}Hard bounce{/t}</label>
             <div class="Email_Campaign_Hard_Bounce">{$email_campaign->get('Hard Bounces')}</div>
         </div>
         <div>

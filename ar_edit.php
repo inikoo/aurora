@@ -1997,7 +1997,38 @@ function new_object($account, $db, $user, $editor, $data, $smarty) {
                 $updated_data = array();
             }
             break;
+        case 'Order_Basket_Purge':
 
+            $sql = sprintf('select `Order Basket Purge Key` from `Order Basket Purge Dimension` where `Order Basket Purge Store Key`=%d and `Order Basket Purge Type`="Manual" and `Order Basket Purge State`="In Process"', $parent->id);
+
+            if ($result = $db->query($sql)) {
+                if ($row = $result->fetch()) {
+                    $response = array(
+
+                        'new_id' => $row['Order Basket Purge Key']
+
+                    );
+                    echo json_encode($response);
+                    exit;
+                }
+            } else {
+                print_r($error_info = $db->errorInfo());
+                print "$sql\n";
+                exit;
+            }
+
+            include_once 'class.Order_Basket_Purge.php';
+
+
+            $object = $parent->create_purge($data['fields_data']);
+
+
+            if (!$parent->error) {
+
+                $pcard        = '';
+                $updated_data = array();
+            }
+            break;
         default:
             $response = array(
                 'state' => 400,

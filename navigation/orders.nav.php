@@ -2587,7 +2587,7 @@ function get_abandoned_card_email_navigation($data, $smarty, $user, $db, $accoun
 
             $up_button = array(
                 'icon'      => 'arrow-up',
-                'title'     => _("Abandoned card mailshots").' ('.$data['_parent']->get('Order Public ID').')',
+                'title'     => _("Abandoned card mailshots").' ('.$data['_parent']->get('Name').')',
                 'reference' => 'orders/'.$data['_parent']->id.'/dashboard/website/mailshots'
             );
 
@@ -3035,6 +3035,258 @@ function get_email_tracking_navigation($data, $smarty, $user, $db) {
     return $html;
 
 }
+
+
+
+function get_purge_navigation($data, $smarty, $user, $db) {
+
+
+    $object        = $data['_object'];
+    $left_buttons  = array();
+    $right_buttons = array();
+
+    if ($data['parent']) {
+
+        switch ($data['parent']) {
+
+            case 'store':
+                $tab      = 'orders.website.purges';
+                $_section = 'orders';
+                break;
+            case 'account':
+                $tab      = 'orders.website.purges';
+                $_section = 'orders';
+                break;
+
+        }
+
+        if (isset($_SESSION['table_state'][$tab])) {
+            $number_results  = $_SESSION['table_state'][$tab]['nr'];
+            $start_from      = 0;
+            $order           = $_SESSION['table_state'][$tab]['o'];
+            $order_direction = ($_SESSION['table_state'][$tab]['od'] == 1 ? 'desc' : '');
+            $f_value         = $_SESSION['table_state'][$tab]['f_value'];
+            $parameters      = $_SESSION['table_state'][$tab];
+        } else {
+
+            $default = $user->get_tab_defaults($tab);
+
+            $number_results           = $default['rpp'];
+            $start_from               = 0;
+            $order                    = $default['sort_key'];
+            $order_direction          = ($default['sort_order'] == 1 ? 'desc' : '');
+            $f_value                  = '';
+            $parameters               = $default;
+            $parameters['parent']     = $data['parent'];
+            $parameters['parent_key'] = $data['parent_key'];
+
+        }
+
+
+        include_once 'prepare_table/'.$tab.'.ptble.php';
+        $_order_field       = $order;
+        $order              = preg_replace('/^.*\.`/', '', $order);
+        $order              = preg_replace('/^`/', '', $order);
+        $order              = preg_replace('/`$/', '', $order);
+        $_order_field_value = $object->get($order);
+
+
+        $prev_title = '';
+        $next_title = '';
+        $prev_key   = 0;
+        $next_key   = 0;
+        $sql        = trim($sql_totals." $wheref");
+
+        if ($result2 = $db->query($sql)) {
+            if ($row2 = $result2->fetch()) {
+                if ($row2['num'] > 1) {
+
+
+                    $sql = sprintf(
+                        "select `Order Basket Purge Date` object_name,`Order Basket Purge Key` as object_key from $table   $where $wheref
+	                and ($_order_field < %s OR ($_order_field = %s AND `Order Basket Purge Key` < %d))  order by $_order_field desc , `Order Basket Purge Key` desc limit 1",
+
+                        prepare_mysql($_order_field_value), prepare_mysql($_order_field_value), $object->id
+                    );
+
+
+                    if ($result = $db->query($sql)) {
+                        if ($row = $result->fetch()) {
+                            $prev_key   = $row['object_key'];
+                            $prev_title = _("Purge").' '.$row['object_name'];
+
+                        }
+                    } else {
+                        print $sql;
+
+                        print_r($error_info = $db->errorInfo());
+                        exit;
+                    }
+
+
+                    $sql = sprintf(
+                        "select `Order Basket Purge Date` object_name,`Order Basket Purge Key` as object_key from $table   $where $wheref
+	                and ($_order_field  > %s OR ($_order_field  = %s AND `Order Basket Purge Key` > %d))  order by $_order_field   , `Order Basket Purge Key`  limit 1", prepare_mysql($_order_field_value), prepare_mysql($_order_field_value), $object->id
+                    );
+
+                    if ($result = $db->query($sql)) {
+                        if ($row = $result->fetch()) {
+                            $next_key   = $row['object_key'];
+                            $next_title = _("Purge").' '.$row['object_name'];
+
+                        }
+                    } else {
+                        print_r($error_info = $db->errorInfo());
+                        exit;
+                    }
+
+
+                    if ($order_direction == 'desc') {
+                        $_tmp1      = $prev_key;
+                        $_tmp2      = $prev_title;
+                        $prev_key   = $next_key;
+                        $prev_title = $next_title;
+                        $next_key   = $_tmp1;
+                        $next_title = $_tmp2;
+                    }
+
+
+                }
+            }
+        } else {
+            print_r($error_info = $db->errorInfo());
+            exit;
+        }
+
+        if ($data['parent'] == 'store') {
+
+            $up_button = array(
+                'icon'      => 'arrow-up',
+                'title'     => _('Purges').' ('.$data['_parent']->get('Name').')',
+                'reference' => 'orders/'.$data['_parent']->id.'/dashboard/website/purges'
+            );
+
+            if ($prev_key) {
+                $left_buttons[] = array(
+                    'icon'      => 'arrow-left',
+                    'title'     => $prev_title,
+                    'reference' => 'orders/'.$data['_parent']->id.'/dashboard/website/purges/'.$prev_key
+                );
+
+            } else {
+                $left_buttons[] = array(
+                    'icon'  => 'arrow-left disabled',
+                    'title' => '',
+                    'url'   => ''
+                );
+
+            }
+            $left_buttons[] = $up_button;
+
+
+            if ($next_key) {
+                $left_buttons[] = array(
+                    'icon'      => 'arrow-right',
+                    'title'     => $next_title,
+                    'reference' => 'orders/'.$data['_parent']->id.'/dashboard/website/purges/'.$next_key
+                );
+
+            } else {
+                $left_buttons[] = array(
+                    'icon'  => 'arrow-right disabled',
+                    'title' => '',
+                    'url'   => ''
+                );
+
+            }
+
+
+            $sections = get_sections('orders', $data['_parent']->id);
+
+
+        } elseif ($data['parent'] == 'account') {
+
+            $up_button = array(
+                'icon'      => 'arrow-up',
+                'title'     => _("Purges"),
+                'reference' => 'orders/all/dashboard/website/purges'
+            );
+
+            if ($prev_key) {
+                $left_buttons[] = array(
+                    'icon'      => 'arrow-left',
+                    'title'     => $prev_title,
+                    'reference' => 'orders/all/dashboard/website/purges/'.$prev_key
+                );
+
+            } else {
+                $left_buttons[] = array(
+                    'icon'  => 'arrow-left disabled',
+                    'title' => '',
+                    'url'   => ''
+                );
+
+            }
+            $left_buttons[] = $up_button;
+
+
+            if ($next_key) {
+                $left_buttons[] = array(
+                    'icon'      => 'arrow-right',
+                    'title'     => $next_title,
+                    'reference' => 'orders/all/dashboard/website/purges/'.$next_key
+                );
+
+            } else {
+                $left_buttons[] = array(
+                    'icon'  => 'arrow-right disabled',
+                    'title' => '',
+                    'url'   => ''
+                );
+
+            }
+
+
+            $sections = get_sections('orders_server');
+
+
+        }
+
+    } else {
+
+
+    }
+
+
+    if (isset($sections[$_section])) {
+        $sections[$_section]['selected'] = true;
+    }
+
+
+    $title = _('Purge').' <span class="id Order_Basket_Purge_Date">'.$object->get('Date').'</span>';
+
+
+    $_content = array(
+        'sections_class' => '',
+        'sections'       => $sections,
+        'left_buttons'   => $left_buttons,
+        'right_buttons'  => $right_buttons,
+        'title'          => $title,
+        'search'         => array(
+            'show'        => true,
+            'placeholder' => _('Search orders')
+        )
+
+    );
+    $smarty->assign('_content', $_content);
+
+
+    $html = $smarty->fetch('navigation.tpl');
+
+    return $html;
+
+}
+
 
 
 ?>

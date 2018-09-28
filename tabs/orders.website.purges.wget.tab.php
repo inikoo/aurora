@@ -28,9 +28,34 @@ $parameters = array(
     'parent_key' => $state['parent_key'],
 );
 
+$table_buttons   = array();
+
+if( $state['parent']=='store') {
+
+    $table_buttons[] = array(
+        'icon'      => 'plus',
+        'title'     => _('New purge'),
+        'id'=>'new_purge',
+        'attr'=>array(
+            'parent'=>$state['parent'],
+            'parent_key'=>$state['parent_key'],
+
+        )
+
+    );
+
+}
+$smarty->assign('table_buttons', $table_buttons);
+
+
+$smarty->assign(
+    'js_code', 'js/injections/new_purge.'.(_DEVEL ? '' : 'min.').'js'
+);
 
 
 $smarty->assign('table_top_template', 'orders_website_tabs.tpl');
+
+
 
 include('utils/get_table_html.php');
 

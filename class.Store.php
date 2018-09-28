@@ -3742,10 +3742,47 @@ class Store extends DB_Table {
 
     }
 
+    function create_purge($data) {
+
+        $data['editor']=$this->editor;
+
+        $data['Order Basket Purge Store Key']=$this->id;
+
+
+
+        $purge = new Order_Basket_Purge('create', $data);
+
+        if ($purge->id) {
+            $this->new_object_msg = $purge->msg;
+
+            if ($purge->new) {
+                $this->new_object = true;
+
+
+
+
+            } else {
+                $this->error = true;
+
+                    $this->msg = $purge->msg;
+
+            }
+
+            return $purge;
+        } else {
+            $this->error = true;
+            $this->msg   = $purge->msg;
+        }
+
+
+
+    }
+
     function create_email_campaign($data) {
 
 
         $email_template_type = get_object('Email_Template_Type', $data['Email Campaign Type'].'|'.$this->id, 'code_store');
+        $email_template_type->editor=$this->editor;
 
         if ($email_template_type->id) {
             $mailshot = $email_template_type->create_mailshot();
@@ -4145,6 +4182,12 @@ class Store extends DB_Table {
         $this->update(array('Store Websites' => $number_sites), 'no_history');
 
 
+    }
+
+
+
+    function update_purges_data(){
+        // todo: make stats for purges
     }
 
 

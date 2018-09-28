@@ -1183,6 +1183,10 @@ function get_object_showcase($showcase, $data, $smarty, $user, $db, $account) {
             include_once 'showcase/payment.show.php';
             $html = get_payment_showcase($data, $smarty, $user, $db);
             break;
+        case 'purge':
+            include_once 'showcase/purge.show.php';
+            $html = get_purge_showcase($data, $smarty, $user, $db);
+            break;
         default:
             $html = $data['object'].' -> '.$data['key'];
             break;
@@ -1726,6 +1730,9 @@ function get_navigation($user, $smarty, $data, $db, $account) {
                     break;
                 case ('email_tracking'):
                     return get_email_tracking_navigation($data, $smarty, $user, $db, $account);
+                    break;
+                case ('purge'):
+                    return get_purge_navigation($data, $smarty, $user, $db, $account);
                     break;
                 default:
                     return 'View not found '.$data['section'];
@@ -4316,11 +4323,21 @@ function get_view_position($db, $state, $user, $smarty, $account) {
                             'reference' => 'email_campaign_type/'.$state['_parent']->get('Store Key').'/'.$state['_parent']->id
                         );
 
-                        $branch[] = array(
-                            'label'     => _('Mailshot').': <span class="id">'.$state['_object']->get('Name').'</span>',
-                            'icon'      => 'container-storage"',
-                            'reference' => ''
-                        );
+                        if($state['_object']->get('Email Campaign Type')=='Newsletter'){
+                            $branch[] = array(
+                                'label'     => '<span class="id Email_Campaign_Name">'.$state['_object']->get('Name').'</span>',
+                                'icon'      => '',
+                                'reference' => ''
+                            );
+                        }else{
+                            $branch[] = array(
+                                'label'     => _('Mailshot').': <span class="id Email_Campaign_Name">'.$state['_object']->get('Name').'</span>',
+                                'icon'      => 'container-storage',
+                                'reference' => ''
+                            );
+                        }
+
+
 
                     }
 
@@ -5537,8 +5554,40 @@ function get_view_position($db, $state, $user, $smarty, $account) {
                     );
 
 
-                    break;
 
+                    break;
+                case 'purge':
+                    //$store = get_object('Store', $state['_parent']->get('Store Key'));
+
+                    if ($user->get_number_stores() > 1) {
+                        $branch[] = array(
+                            'label'     => '('._('All stores').')',
+                            'icon'      => '',
+                            'reference' => 'orders/all/dashboard'
+                        );
+                    }
+
+                    $branch[] = array(
+                        'label'     => _('Orders control panel').' '.$state['store']->data['Store Code'],
+                        'icon'      => '',
+                        'reference' => ''
+                    );
+
+
+
+
+
+
+
+
+                    $branch[] = array(
+                        'label'     => _('Purge').' <span class="id">'.$state['_object']->get('Date').'</span>',
+                        'icon'      => '',
+                        'reference' => ''
+                    );
+
+
+                    break;
             }
 
             break;
