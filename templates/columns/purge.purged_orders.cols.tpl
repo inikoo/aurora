@@ -41,7 +41,7 @@ cell: Backgrid.HtmlCell.extend({ className: "aright"} ),
 headerCell: integerHeaderCell
 },
  {
-name: "state",
+name: "purge_status",
 label: "{t}Purged state{/t}",
 editable: false,
 sortType: "toggle",

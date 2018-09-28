@@ -2883,45 +2883,6 @@ class Store extends DB_Table {
     }
 
 
-    function cancel_old_orders_in_basket() {
-        include_once 'common_natural_language.php';
-
-        if (!$this->data['Cancel Orders In Basket Older Than']) {
-            return;
-        }
-
-        $date = gmdate(
-            'Y-m-d H:i:s', strtotime(
-                             sprintf(
-                                 "now -%d seconds +0:00", $this->data['Cancel Orders In Basket Older Than']
-                             )
-                         )
-        );
-
-        $sql = sprintf(
-            "SELECT `Order Key` FROM `Order Dimension` WHERE  `Order State`='InBasket' AND `Order Store Key`=%d AND `Order Last Updated Date`<%s", $this->id, prepare_mysql($date)
-        );
-
-
-        if ($result = $this->db->query($sql)) {
-            foreach ($result as $row) {
-                $order         = new Order($row['Order Key']);
-                $order->editor = $this->editor;
-                $note          = sprintf(
-                    _('Order cancelled because has been untouched in the basket for more than %s'), seconds_to_string($this->data['Cancel Orders In Basket Older Than'])
-                );
-
-
-                $order->cancel($note, false, true);
-            }
-        } else {
-            print_r($error_info = $this->db->errorInfo());
-            print "$sql\n";
-            exit;
-        }
-
-
-    }
 
     function get_field_label($field) {
 

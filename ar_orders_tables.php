@@ -3322,49 +3322,31 @@ function purged_orders($_data, $db, $user) {
     include_once 'prepare_table/init.php';
 
 
-    if ($parameters['parent'] == 'charge') {
-        $rtext_label = 'submited orders with this charge';
-
-    }
-
 
     $sql   = "select $fields from $table $where $wheref order by $order $order_direction limit $start_from,$number_results";
     $adata = array();
 
 
-    if ($parameters['parent'] == 'store') {
-        $link_format = '/orders/%d/%d';
-    } else {
-        $link_format = '/'.$parameters['parent'].'/%d/order/%d';
-    }
 
     if ($result = $db->query($sql)) {
         foreach ($result as $data) {
 
-            switch ($data['Order State']) {
-                case('InBasket'):
-                    $state = _('In Basket');
+            switch ($data['Order Basket Purge Order Status']) {
+
+                case('In Process'):
+                    $purge_status = _('In process');
                     break;
-                case('InProcess'):
-                    $state = _('Submitted');
+                case('Purged'):
+                    $purge_status = _('Purged');
                     break;
-                case('InWarehouse'):
-                    $state = _('In Warehouse');
-                    break;
-                case('PackedDone'):
-                    $state = _('Packed Done');
-                    break;
-                case('Dispatch Approved'):
-                    $state = _('Dispatch Approved');
-                    break;
-                case('Dispatched'):
-                    $state = _('Dispatched');
+                case('Exculpated'):
+                    $purge_status = _('Exculpated');
                     break;
                 case('Cancelled'):
-                    $state = _('Cancelled');
+                    $purge_status = _('Purge cancelled');
                     break;
                 default:
-                    $state = $data['Order State'];
+                    $purge_status = $data['Order Basket Purge Order Status'];
 
             }
 
@@ -3372,16 +3354,16 @@ function purged_orders($_data, $db, $user) {
             $adata[] = array(
                 'id' => (integer)$data['Order Key'],
 
-                'public_id' => sprintf('<span class="link" onClick="change_view(\''.$link_format.'\')">%s</span>', $parameters['parent_key'], $data['Order Key'], $data['Order Public ID']),
-                'state'     => $state,
+                'public_id' => sprintf('<span class="link" onClick="change_view(\'orders/%d/%d\')">%s</span>',$data['Order Store Key'], $data['Order Key'], $data['Order Public ID']),
+                'purge_status'     => sprintf('<span class="purged_status_%d">%s</span>',$data['Order Key'],$purge_status),
 
-                'date'           => strftime("%a %e %b %Y %H:%M %Z", strtotime($data['Order Date'].' +0:00')),
-                'last_date'      => strftime("%a %e %b %Y %H:%M %Z", strtotime($data['Order Last Updated Date'].' +0:00')),
+                'last_updated_date'      => strftime("%a %e %b %Y", strtotime($data['Order Last Updated Date'].' +0:00')),
+                'purged_date'      =>  sprintf('<span class="purged_date_%d">%s</span>',$data['Order Key'],(($data['Order Basket Purge Purged Date']=='' or ($data['Order Basket Purge Order Status']=='Exculpated')  )?'':strftime("%a %e %b %Y %H:%M %Z", strtotime($data['Order Basket Purge Purged Date'].' +0:00')))),
+
+
+
                 'customer'       => sprintf('<span class="link" onClick="change_view(\'customers/%d/%d\')">%s</span>', $data['Order Store Key'], $data['Order Customer Key'], $data['Order Customer Name']),
-                'dispatch_state' => get_order_formatted_dispatch_state($data['Order State'], '', $data['Order Key']),
-                'payment_state'  => get_order_formatted_payment_state($data),
-                'total_amount'   => money($data['Order Total Amount'], $data['Order Currency']),
-                'margin'         => sprintf('<span title="%s: %s">%s</span>', _('Profit'), money($data['Order Profit Amount'], $data['Order Currency']), percentage($data['Order Margin'], 1)),
+                'net_amount'   => money($data['Order Total Net Amount'], $data['Order Currency']),
 
 
             );
