@@ -1377,7 +1377,7 @@ class Order extends DB_Table {
         return false;
     }
 
-    function cancel($note = '', $date = false, $force = false) {
+    function cancel($note = '', $fork = true) {
 
 
         if ($this->data['Order State'] == 'Dispatched') {
@@ -1405,9 +1405,8 @@ class Order extends DB_Table {
         }
 
 
-        if (!$date) {
-            $date = gmdate('Y-m-d H:i:s');
-        }
+        $date = gmdate('Y-m-d H:i:s');
+
         $this->data['Order Cancelled Date'] = $date;
 
         $this->data['Order Cancel Note'] = $note;
@@ -1560,7 +1559,7 @@ class Order extends DB_Table {
 
 
         $history_data = array(
-            'History Abstract' => _('Order cancelled'),
+            'History Abstract' => _('Order cancelled').($note!=''?', '.$note:''),
             'History Details'  => '',
         );
         $this->add_subject_history($history_data, $force_save = true, $deletable = 'No', $type = 'Changes', $this->get_object_name(), $this->id, $update_history_records_data = true);
@@ -1568,16 +1567,47 @@ class Order extends DB_Table {
 
         $account = get_object('Account', '');
 
-        require_once 'utils/new_fork.php';
-        new_housekeeping_fork(
-            'au_housekeeping', array(
-            'type'      => 'order_cancelled',
-            'order_key' => $this->id,
+        if($fork){
+
+            require_once 'utils/new_fork.php';
+            new_housekeeping_fork(
+                'au_housekeeping', array(
+                'type'      => 'order_cancelled',
+                'order_key' => $this->id,
 
 
-            'editor' => $this->editor
-        ), $account->get('Account Code'), $this->db
-        );
+                'editor' => $this->editor
+            ), $account->get('Account Code'), $this->db
+            );
+        }else{
+
+
+            $customer = get_object('Customer', $this->get('Order Customer Key'));
+            $store    = get_object('Store', $this->get('Order Store Key'));
+
+            $sql = sprintf('SELECT `Transaction Type Key` FROM `Order No Product Transaction Fact` WHERE `Transaction Type`="Charges" AND   `Order Key`=%d  ', $this->id);
+
+            if ($result = $this->db->query($sql)) {
+                foreach ($result as $row) {
+                    $charge = get_object('Charge', $row['Transaction Type Key']);
+                    $charge->update_charge_usage();
+
+                }
+            } else {
+                print_r($error_info = $this->db->errorInfo());
+                print "$sql\n";
+                exit;
+            }
+
+
+            $customer->update_orders();
+            $store->update_orders();
+            $account->update_orders();
+
+            $this->update_deals_usage();
+        }
+
+
 
 
         return true;

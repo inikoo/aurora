@@ -100,17 +100,11 @@ if ($order == 'public_id') {
     $order = '`Order Basket Purge Order Last Updated Date`';
 } elseif ($order == 'customer') {
     $order = 'O.`Order Customer Name`';
-} elseif ($order == 'dispatch_state') {
-    $order = 'O.`Order State`';
-} elseif ($order == 'payment_state') {
-    $order = 'O.`Order Payment State`';
-} elseif ($order == 'state') {
-    $order = 'O.`Order State`';
-} elseif ($order == 'total_amount') {
-    $order = 'O.`Order Total Amount`';
+}   elseif ($order == 'net_amount') {
+    $order = 'O.`Order Total Net Amount`';
 } elseif ($order == 'margin') {
     $order = 'O.`Order Margin`';
-}elseif ($order == 'status') {
+}elseif ($order == 'purge_status') {
     $order = '`Order Basket Purge Order Status`';
 } elseif ($order == 'purged_date') {
     $order = '`Order Basket Purge Purged Date`';
@@ -121,7 +115,7 @@ if ($order == 'public_id') {
 
 
 $fields
-    = '`Order Profit Amount`,`Order Margin`,`Order State`,`Order Number Items`,`Order Store Key`,`Order Payment Method`,`Order Balance Total Amount`,`Order Payment State`,`Order State`,`Order Out of Stock Net Amount`,`Order Invoiced Total Net Adjust Amount`,`Order Invoiced Total Tax Adjust Amount`,FORMAT(`Order Invoiced Total Net Adjust Amount`+`Order Invoiced Total Tax Adjust Amount`,2) as `Order Adjust Amount`,`Order Out of Stock Net Amount`,`Order Out of Stock Tax Amount`,FORMAT(`Order Out of Stock Net Amount`+`Order Out of Stock Tax Amount`,2) as `Order Out of Stock Amount`,`Order Invoiced Balance Total Amount`,`Order Type`,`Order Currency Exchange`,`Order Currency`,O.`Order Key`,O.`Order Public ID`,`Order Customer Key`,`Order Customer Name`,O.`Order Last Updated Date`,O.`Order Date`,`Order Total Amount` ,`Order Current XHTML Payment State`,
+    = '`Order Profit Amount`,`Order Margin`,`Order State`,`Order Number Items`,`Order Store Key`,`Order Payment Method`,`Order Total Net Amount`,`Order Payment State`,`Order State`,`Order Out of Stock Net Amount`,`Order Invoiced Total Net Adjust Amount`,`Order Invoiced Total Tax Adjust Amount`,FORMAT(`Order Invoiced Total Net Adjust Amount`+`Order Invoiced Total Tax Adjust Amount`,2) as `Order Adjust Amount`,`Order Out of Stock Net Amount`,`Order Out of Stock Tax Amount`,FORMAT(`Order Out of Stock Net Amount`+`Order Out of Stock Tax Amount`,2) as `Order Out of Stock Amount`,`Order Invoiced Balance Total Amount`,`Order Type`,`Order Currency Exchange`,`Order Currency`,O.`Order Key`,O.`Order Public ID`,`Order Customer Key`,`Order Customer Name`,O.`Order Last Updated Date`,O.`Order Date`,`Order Total Amount` ,`Order Current XHTML Payment State`,
     `Order Basket Purge Order Status`,`Order Basket Purge Purged Date`,`Order Basket Purge Order Basket Purge Key`
     
     ';

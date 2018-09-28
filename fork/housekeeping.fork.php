@@ -1435,6 +1435,23 @@ function fork_housekeeping($job) {
 
             break;
 
+
+        case 'start_purge':
+
+            $context = new ZMQContext();
+            $socket  = $context->getSocket(ZMQ::SOCKET_PUSH, 'my pusher');
+            $socket->connect("tcp://localhost:5555");
+
+
+            $purge = get_object('purge', $data['purge_key']);
+            $purge->editor=$editor;
+            if ($purge->id) {
+                $purge->socket = $socket;
+                $purge->purge();
+            }
+            break;
+
+
         default:
             break;
 

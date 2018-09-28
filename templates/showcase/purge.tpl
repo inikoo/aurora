@@ -13,18 +13,18 @@
         padding: 0px
     }
 
-    .sent_email_data > div {
+    .purge_data > div {
         padding: 5px 10px 15px 10px;
         border-right: 1px solid #ccc;
         flex-grow: 1;
         text-align: center
     }
 
-    .sent_email_data > div label {
+    .purge_data > div label {
         font-size: smaller;
     }
 
-    .sent_email_data > div div {
+    .purge_data > div div {
         font-weight: bold;
         margin-top: 5px;
     }
@@ -36,17 +36,16 @@
 <div id="purge" data-object="{$object_data}" data-purge_key="{$purge->id}">
 
 
-    <div class="order control_panel  {if $purge->get('State Index')==100}hide{/if}">
-        <div class="block estimated_recipients" style="padding:10px 20px; align-items: stretch;flex: 1">
+    <div class="order control_panel ">
+        <div class="block estimated_orders " style="padding:10px 20px; align-items: stretch;flex: 1">
 
 
-            <div class="estimated_orders_pre_sent   {if $purge->get('State Index')>=50}hide{/if}">
-                <span class="hide Purge_Number_Estimated_Emails">{$purge->get('Order Basket Purge Number Estimated Emails')}</span>
+            <div class="estimated_orders_pre_sent   {if $purge->get('State Index')>=20}hide{/if}">
                 <span>{t}Estimated orders{/t}</span> <span class="strong Estimated_Orders">{$purge->get('Estimated Orders')}</span> (<span class=" Estimated_Amount">{$purge->get('Estimated Amount')}</span>)
             </div>
 
-            <div class="estimated_orders_post_sent   {if $purge->get('State Index')<50}hide{/if}">
-                <span class="Sent_Emails_Info">{$purge->get('Sent Emails Info')}</span>
+            <div class="estimated_orders_post_sent {if $purge->get('State Index')<20 or $purge->get('State Index')==100 }hide{/if}">
+                <span class="Purged_Orders_Info">{$purge->get('Purged Orders Info')}</span>
             </div>
 
             <div style="clear:both"></div>
@@ -85,7 +84,7 @@
 
                     <div id="stop_operations" class="purge_operation {if $purge->get('State Index')!=20   }hide{/if}">
                         <div class="square_button left  " title="{t}Stop sending emails{/t}">
-                            <i class="fa  fa-stop button error" id="stop_save_buttons" aria-hidden="true" data-data='{  "field": "Order Basket Purge State","value": "Stopped","dialog_name":"stop"}'
+                            <i class="fa  fa-stop button error" id="stop_save_buttons" aria-hidden="true" data-data='{  "field": "Order Basket Purge State","value": "Cancelled","dialog_name":"stop"}'
                                onclick="save_purge_operation(this)"></i>
 
                         </div>
@@ -147,8 +146,7 @@
 
         </div>
         <div class="block " style="align-items: stretch;flex:2;padding:0px ">
-            <div class="hide purged_data">
-            <div style="display:flex" class=" ">
+            <div style="display:flex" class="{if $purge->get('State Index')>=20 }hide{/if} purge_data ">
                 <div>
                     <label>{t}Orders purged{/t}</label>
                     <div class="Purged_Orders">{$purge->get('Purged Orders')}</div>
@@ -164,7 +162,7 @@
 
 
             </div>
-            </div>
+       
         </div>
 
         <div style="clear:both"></div>

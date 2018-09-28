@@ -222,10 +222,11 @@ class Order_Basket_Purge extends DB_Table {
 
                 return money($this->data['Order Basket Purge '.$key], $store->get('Store Currency Code'));
                 break;
-            case  'Purge Orders Info':
+            case  'Purged Orders Info':
 
 
-                if (!$this->data['Order Basket Purge Estimated Orders'] > 0) {
+
+                if (!$this->data['Order Basket Purge Orders'] > 0) {
 
 
                     if ($this->data['Order Basket Purge State'] == 'Purging') {
@@ -236,27 +237,29 @@ class Order_Basket_Purge extends DB_Table {
 
                 }
 
-                $sent_emails_info = sprintf(_('Purged %s of %s'), '<b>'.number($this->data['Order Basket Purge Purged Orders']).'</b>', '<b>'.number($this->data['Order Basket Purge Estimated Orders'])).'</b> ';
+                $orders_done=$this->data['Order Basket Purge Purged Orders']+$this->data['Order Basket Purge Exculpated']+$this->data['Order Basket Purge Errors'];
+
+                $purged_orders_info = sprintf(_('Purged %s of %s'), '<b>'.number($orders_done).'</b>', '<b>'.number($this->data['Order Basket Purge Orders'])).'</b> ';
 
 
-                if ($this->data['Order Basket Purge Estimated Orders'] > 0) {
-                    $sent_emails_info .= ' <span class="discreet">('.percentage($this->data['Order Basket Purge Purged Orders'], $this->data['Order Basket Purge Estimated Orders']).')</span>';
+                if ($this->data['Order Basket Purge Orders'] > 0) {
+                    $purged_orders_info .= ' <span class="discreet">('.percentage($orders_done, $this->data['Order Basket Purge Orders']).')</span>';
 
 
-                    if ($this->data['Order Basket Purge State'] == 'Sending') {
+                    if ($this->data['Order Basket Purge State'] == 'Purging') {
 
                         if (isset($this->start_send)) {
                             $start_datetime = $this->start_send;
                         } else {
-                            $start_datetime = $this->data['Order Basket Purge Start Send Date'];
+                            $start_datetime = $this->data['Order Basket Purge Start Purge Date'];
                         }
 
 
                         $offset = (isset($this->sent) ? $this->sent : 0);
 
 
-                        if ($this->data['Order Basket Purge Purged Orders'] - $offset > 5) {
-                            $sent_emails_info .= ' <span class="discreet padding_left_5">'.eta($this->data['Order Basket Purge Purged Orders'] - $offset, $this->data['Order Basket Purge Estimated Orders'] - $offset, $start_datetime).'</span>';
+                        if ($orders_done - $offset > 5) {
+                            $purged_orders_info .= ' <span class="discreet padding_left_5">'.eta($orders_done - $offset, $this->data['Order Basket Purge Orders'] - $offset, $start_datetime).'</span>';
 
                         }
 
@@ -264,7 +267,7 @@ class Order_Basket_Purge extends DB_Table {
                 }
 
 
-                return $sent_emails_info;
+                return $purged_orders_info;
                 break;
 
 
@@ -405,6 +408,7 @@ class Order_Basket_Purge extends DB_Table {
                 if (!is_numeric($value)) {
                     $this->error = true;
                     $this->msg   = 'numeric value required';
+
                     return;
                 }
 
@@ -474,7 +478,6 @@ class Order_Basket_Purge extends DB_Table {
                 }
 
 
-
                 $this->fast_update(
                     array(
                         'Order Basket Purge State' => $value,
@@ -498,7 +501,8 @@ class Order_Basket_Purge extends DB_Table {
                     foreach ($result as $row) {
 
                         $sql = sprintf(
-                            'insert into `Order Basket Purge Order Fact` (`Order Basket Purge Order Basket Purge Key`,`Order Basket Purge Order Order Key`,`Order Basket Purge Order Last Updated Date`) values (%d,%d,%s) ', $this->id, $row['Order Key'],prepare_mysql($row['Order Last Updated Date'])
+                            'insert into `Order Basket Purge Order Fact` (`Order Basket Purge Order Basket Purge Key`,`Order Basket Purge Order Order Key`,`Order Basket Purge Order Last Updated Date`) values (%d,%d,%s) ', $this->id, $row['Order Key'],
+                            prepare_mysql($row['Order Last Updated Date'])
                         );
                         $this->db->exec($sql);
 
@@ -523,11 +527,41 @@ class Order_Basket_Purge extends DB_Table {
                     exit;
                 }
 
+                $account = get_object('Account', 1);
+                require_once 'utils/new_fork.php';
+                new_housekeeping_fork(
+                    'au_housekeeping', array(
+                    'type'      => 'start_purge',
+                    'purge_key' => $this->id,
+                    'editor'    => $this->editor
+                ), $account->get('Account Code'), $this->db
+                );
+
 
                 $operations = array(
                     'stop_operations',
 
                 );
+
+                switch ($this->get('Order Basket Purge Type')) {
+                    case 'Manual':
+                        $history_abstract = _("Purge started");
+
+
+                        $history_data = array(
+                            'History Abstract' => $history_abstract,
+                            'History Details'  => '',
+                            'Action'           => 'edited'
+                        );
+
+                        $this->add_subject_history(
+                            $history_data, true, 'No', 'Changes', $this->get_object_name(), $this->id
+                        );
+
+                        break;
+
+                }
+
 
                 break;
 
@@ -556,7 +590,30 @@ class Order_Basket_Purge extends DB_Table {
                     )
                 );
 
+
+                $sql = sprintf(
+                    'update `Order Basket Purge Order Fact` set `Order Basket Purge Order Status`="Cancelled" where `Order Basket Purge Order Basket Purge Key`=%d and `Order Basket Purge Order Status`="In Process" ', $this->id
+                );
+                $this->db->exec($sql);
+
+                $this->update_purged_orders_data();
+
                 $operations = array();
+
+
+                $history_abstract = _("Purge cancelled");
+
+
+                $history_data = array(
+                    'History Abstract' => $history_abstract,
+                    'History Details'  => '',
+                    'Action'           => 'edited'
+                );
+
+                $this->add_subject_history(
+                    $history_data, true, 'No', 'Changes', $this->get_object_name(), $this->id
+                );
+
 
                 break;
         }
@@ -580,7 +637,7 @@ class Order_Basket_Purge extends DB_Table {
                 $this->update_metadata['show'] = array('estimated_orders_post_sent');
 
                 $this->update_metadata['show']                           = array('purged_data');
-                $this->update_metadata['class_html']['Sent_Emails_Info'] = $this->get('Purge Orders Info');
+                $this->update_metadata['class_html']['Sent_Emails_Info'] = $this->get('Purged Orders Info');
 
 
                 break;
@@ -590,6 +647,95 @@ class Order_Basket_Purge extends DB_Table {
 
         }
 
+
+    }
+
+    function update_purged_orders_data() {
+
+
+        $purged_orders       = 0;
+        $purged_transactions = 0;
+        $purged_amount       = 0;
+        $exculpated          = 0;
+        $cancelled           = 0;
+        $errors              = 0;
+
+        $sql = sprintf(
+            'SELECT count(DISTINCT O.`Order Key`) AS orders,sum(`Order Number Items`) AS transactions,sum(`Order Total Net Amount`) AS amount 
+                FROM  `Order Basket Purge Order Fact` left join  `Order Dimension` O  on (`Order Key`=`Order Basket Purge Order Order Key`)
+                WHERE `Order Basket Purge Order Basket Purge Key`=%d AND `Order Basket Purge Order Status`="Purged"', $this->id
+        );
+        //print $sql;
+        if ($result = $this->db->query($sql)) {
+            if ($row = $result->fetch()) {
+
+                $purged_orders       = $row['orders'];
+                $purged_transactions = $row['transactions'];
+                $purged_amount       = $row['amount'];
+            }
+        } else {
+            print_r($error_info = $this->db->errorInfo());
+            print "$sql\n";
+            exit;
+        }
+        $sql = sprintf(
+            'SELECT count(*) AS orders  FROM  `Order Basket Purge Order Fact`
+                WHERE `Order Basket Purge Order Basket Purge Key`=%d AND `Order Basket Purge Order Status`="Exculpated"', $this->id
+        );
+        if ($result = $this->db->query($sql)) {
+            if ($row = $result->fetch()) {
+
+                $exculpated = $row['orders'];
+
+            }
+        } else {
+            print_r($error_info = $this->db->errorInfo());
+            print "$sql\n";
+            exit;
+        }
+        $sql = sprintf(
+            'SELECT count(*)  AS orders  FROM  `Order Basket Purge Order Fact`
+                WHERE `Order Basket Purge Order Basket Purge Key`=%d AND `Order Basket Purge Order Status`="Error"', $this->id
+        );
+        if ($result = $this->db->query($sql)) {
+            if ($row = $result->fetch()) {
+
+                $errors = $row['orders'];
+
+            }
+        } else {
+            print_r($error_info = $this->db->errorInfo());
+            print "$sql\n";
+            exit;
+        }
+
+        $sql = sprintf(
+            'SELECT count(*)  AS orders  FROM  `Order Basket Purge Order Fact`
+                WHERE `Order Basket Purge Order Basket Purge Key`=%d AND `Order Basket Purge Order Status`="Cancelled"', $this->id
+        );
+        if ($result = $this->db->query($sql)) {
+            if ($row = $result->fetch()) {
+
+                $cancelled = $row['orders'];
+
+            }
+        } else {
+            print_r($error_info = $this->db->errorInfo());
+            print "$sql\n";
+            exit;
+        }
+
+
+        $this->fast_update(
+            array(
+                'Order Basket Purge Purged Orders'       => $purged_orders,
+                'Order Basket Purge Purged Transactions' => $purged_transactions,
+                'Order Basket Purge Purged Amount'       => $purged_amount,
+                'Order Basket Purge Exculpated'          => $exculpated,
+                'Order Basket Purge Cancelled'           => $cancelled,
+                'Order Basket Purge Errors'              => $errors
+            )
+        );
 
     }
 
@@ -614,15 +760,14 @@ class Order_Basket_Purge extends DB_Table {
     function purge() {
 
 
-
         // $store = get_object('Store', $this->data['Order Basket Purge Store Key']);
 
-      //  if (isset($this->socket)) {
-      //      $published_email_template->socket = $this->socket;
-      //  }
+        //  if (isset($this->socket)) {
+        //      $published_email_template->socket = $this->socket;
+        //  }
 
 
-
+        $account = get_object('Account', 1);
 
         $sql = sprintf('select `Order Basket Purge Order Order Key` from `Order Basket Purge Order Fact` where `Order Basket Purge Order Basket Purge Key`=%d and `Order Basket Purge Order Status`="In Process" ', $this->id);
 
@@ -637,6 +782,42 @@ class Order_Basket_Purge extends DB_Table {
                 if ($result2 = $this->db->query($sql)) {
                     if ($row2 = $result2->fetch()) {
                         if ($row2['Order Basket Purge State'] == 'Cancelled') {
+
+
+                            $this->update_metadata = array(
+                                'class_html' => array(
+                                    'Purge_State' => $this->get('State'),
+
+
+                                ),
+                                'hide'       => array(
+                                    'estimated_orders_post_sent',
+                                    'purge_operation'
+                                ),
+
+                            );
+
+
+                            $this->socket->send(
+                                json_encode(
+                                    array(
+                                        'channel' => 'real_time.'.strtolower($account->get('Account Code')),
+                                        'objects' => array(
+                                            array(
+                                                'object' => 'purge',
+                                                'key'    => $this->id,
+
+                                                'update_metadata' => $this->get_update_metadata()
+
+                                            )
+
+                                        ),
+
+
+                                    )
+                                )
+                            );
+
                             return;
                         }
                     }
@@ -646,29 +827,113 @@ class Order_Basket_Purge extends DB_Table {
                     exit;
                 }
 
-                $order         = get_object('Object', $row['Order Basket Purge Order Order Key']);
+                $order=get_object('Order',$row['Order Basket Purge Order Order Key']);
                 $order->editor = $this->editor;
                 if ($order->get('Order State') != 'InBasket') {
+
+                    $operation_status = 'Exculpated';
+
                     $sql = sprintf(
-                        'update `Order Basket Purge Order Fact`  set `Order Basket Purge Order Status`="Exculpated" and `Order Basket Purge Purged Date`=%s where `Order Basket Purge Order Basket Purge Key`=%d and `Order Basket Purge Order Order Key`',
+                        'update `Order Basket Purge Order Fact`  set `Order Basket Purge Order Status`="Exculpated" , `Order Basket Purge Purged Date`=%s where `Order Basket Purge Order Basket Purge Key`=%d and `Order Basket Purge Order Order Key`=%d',
                         prepare_mysql(gmdate('Y-m-d H:i:s')), $this->id, $row['Order Basket Purge Order Order Key']
                     );
 
                     $this->db->exec($sql);
-                    continue;
 
-                }
 
-                if ($this->get('Order Basket Purge Type') == 'Scheduled') {
-                    $note = _("Order cancelled due inactivity in the basket (Scheduled purge)");
                 } else {
-                    $_user = get_object('User', $this->get('Order Basket Purge User Key'));
-                    $note  = sprintf(_("Order cancelled due inactivity in the basket (Purged by %s)"), $_user->get('Alias'));
+                    if ($this->get('Order Basket Purge Type') == 'Scheduled') {
+                        $note = _("cancelled due inactivity in the basket (Scheduled purge)");
+                    } else {
+                        $_user = get_object('User', $this->get('Order Basket Purge User Key'));
+                        $note  = sprintf(_("cancelled due inactivity in the basket (Purged by %s)"), $_user->get('Alias'));
 
+                    }
+
+                    if ($order->cancel($note, $fork = false)) {
+
+                        $operation_status = 'Purged';
+
+                        $sql = sprintf(
+                            'update `Order Basket Purge Order Fact`  set `Order Basket Purge Order Status`="Purged" , `Order Basket Purge Purged Date`=%s where `Order Basket Purge Order Basket Purge Key`=%d and `Order Basket Purge Order Order Key`=%d',
+                            prepare_mysql(gmdate('Y-m-d H:i:s')), $this->id, $row['Order Basket Purge Order Order Key']
+                        );
+
+                    } else {
+
+                        $operation_status = 'Error';
+
+                        $sql = sprintf(
+                            'update `Order Basket Purge Order Fact`  set `Order Basket Purge Order Status`="Error" , `Order Basket Purge Purged Date`=%s,`Order Basket Purge Note`=%s where `Order Basket Purge Order Basket Purge Key`=%d and `Order Basket Purge Order Order Key`=%d',
+                            prepare_mysql(gmdate('Y-m-d H:i:s')), prepare_mysql($order->msg), $this->id, $row['Order Basket Purge Order Order Key']
+                        );
+                    }
+                    $this->db->exec($sql);
                 }
 
-                $order->cancel($note);
+
                 $this->update_purged_orders_data();
+
+                if (isset($this->socket)) {
+
+                    switch ($operation_status) {
+                        case('In Process'):
+                            $purge_status = _('In process');
+                            break;
+                        case('Purged'):
+                            $purge_status = _('Purged');
+                            break;
+                        case('Exculpated'):
+                            $purge_status = _('Exculpated');
+                            break;
+                        case('Cancelled'):
+                            $purge_status = _('Purge cancelled');
+                            break;
+                        default:
+                            $purge_status = $operation_status;
+
+                    }
+
+
+                    $this->socket->send(
+                        json_encode(
+                            array(
+                                'channel' => 'real_time.'.strtolower($account->get('Account Code')),
+                                'objects' => array(
+                                    array(
+                                        'object' => 'purge',
+                                        'key'    => $this->id,
+
+
+                                        'update_metadata' => array(
+                                            'class_html' => array(
+                                                'Purged_Orders_Info'        => $this->get('Purged Orders Info'),
+                                                'Purged_Orders'             => $this->get('Purged Orders'),
+                                                'Purged_Transactions'       => $this->get('Purged Transactions'),
+                                                'Purged_Amount'             => $this->get('Purged Amount'),
+                                                'purged_status_'.$order->id => $purge_status,
+                                                'purged_date_'.$order->id   => ($operation_status == 'Purged' ? strftime("%a %e %b %Y %H:%M %Z") : '')
+
+
+                                            ),
+
+                                            'show' => array(
+                                                'estimated_orders_post_sent',
+                                            ),
+                                            'hide' => array(
+                                                'estimated_orders_pre_sent',
+                                            ),
+                                        )
+
+                                    )
+
+                                ),
+
+
+                            )
+                        )
+                    );
+                }
 
 
             }
@@ -683,11 +948,19 @@ class Order_Basket_Purge extends DB_Table {
 
         if (isset($this->socket)) {
 
-            $account = get_object('Account', 1);
 
-            $this->update_metadata['hide'] = array(
-                'estimated_recipients',
-                'email_campaign_operations'
+
+            $this->update_metadata = array(
+                'class_html' => array(
+                    'Purge_State' => $this->get('State'),
+
+
+                ),
+                'hide'       => array(
+                    'estimated_orders_post_sent',
+                    'purge_operation'
+                ),
+
             );
 
 
@@ -697,7 +970,7 @@ class Order_Basket_Purge extends DB_Table {
                         'channel' => 'real_time.'.strtolower($account->get('Account Code')),
                         'objects' => array(
                             array(
-                                'object' => 'email_campaign',
+                                'object' => 'purge',
                                 'key'    => $this->id,
 
                                 'update_metadata' => $this->get_update_metadata()
@@ -712,49 +985,6 @@ class Order_Basket_Purge extends DB_Table {
             );
         }
 
-
-    }
-
-    function update_purged_orders_data() {
-
-
-        if ($this->get('State Index') < 20) {
-
-
-            $purged_orders       = 0;
-            $purged_transactions = 0;
-            $purged_amount       = 0;
-
-            $sql = sprintf(
-                'SELECT count(DISTINCT O.`Order Key`) AS orders,sum(`Order Number Items`) AS transactions,sum(`Order Total Net Amount`) AS amount 
-                FROM  `Order Basket Purge Order Fact` left join  `Order Dimension` O  on (`Order Key`=`Order Basket Purge Order Order Key`)
-                WHERE `Order Basket Purge Order Basket Purge Key`=%d AND `Order Basket Purge Order Status`="Purged"', $this->id
-            );
-
-            if ($result = $this->db->query($sql)) {
-                if ($row = $result->fetch()) {
-
-                    $purged_orders       = $row['orders'];
-                    $purged_transactions = $row['transactions'];
-                    $purged_amount       = $row['amount'];
-                }
-            } else {
-                print_r($error_info = $this->db->errorInfo());
-                print "$sql\n";
-                exit;
-            }
-
-
-            $this->fast_update(
-                array(
-                    'Order Basket Purge Purged Orders'       => $purged_orders,
-                    'Order Basket Purge Purged Transactions' => $purged_transactions,
-                    'Order Basket Purge Purged Amount'       => $purged_amount
-
-                )
-            );
-
-        }
 
     }
 

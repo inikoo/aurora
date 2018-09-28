@@ -274,6 +274,7 @@ switch ($tab) {
     case 'email_campaign.history':
     case 'poll_query_option.history':
     case 'poll_query.history':
+    case 'purge.history':
         $data = prepare_values(
             $_REQUEST, array(
                          'parameters' => array('type' => 'json array')
@@ -355,6 +356,10 @@ switch ($tab) {
     case 'prospect_agent.prospects':
         $data = prepare_values($_REQUEST, array('parameters' => array('type' => 'json array')));
         get_prospects_elements($db, $data['parameters'], $user);
+        break;
+    case 'purge.purged_orders':
+        $data = prepare_values($_REQUEST, array('parameters' => array('type' => 'json array')));
+        get_purged_orders_elements($db, $data['parameters'], $user);
         break;
     default:
         $response = array(
@@ -1447,6 +1452,10 @@ function get_history_elements($db, $data) {
     } elseif ($data['parent'] == 'prospect') {
         $sql = sprintf(
             "SELECT count(*) AS num ,`Type` FROM  `Prospect History Bridge` WHERE  `Prospect Key`=%d GROUP BY  `Type`", $data['parent_key']
+        );
+    } elseif ($data['parent'] == 'purge') {
+        $sql = sprintf(
+            "SELECT count(*) AS num ,`Type` FROM  `Order Basket Purge History Bridge` WHERE  `Order Basket Purge Key`=%d GROUP BY  `Type`", $data['parent_key']
         );
     } else {
         $response = array(
@@ -3083,6 +3092,61 @@ function get_prospects_elements($db, $data) {
 
 
 }
+
+
+
+
+
+function get_purged_orders_elements($db, $data) {
+
+
+    $elements_numbers = array(
+
+        'state' => array(
+            'In_Process'     => 0,
+            'Purged'   => 0,
+            'Exculpated' => 0,
+            'Cancelled'    => 0,
+
+        )
+    );
+
+
+    $table = '`Order Basket Purge Order Fact` left join   `Order Dimension` O on (`Order Key`=`Order Basket Purge Order Order Key`)  ';
+
+
+    $where = sprintf(
+        ' where `Order Basket Purge Order Basket Purge Key`=%d ', $data['parent_key']
+    );
+
+
+    $sql = sprintf(
+        "select count(*) as number,`Order Basket Purge Order Status` as element from $table $where  group by `Order Basket Purge Order Status` "
+    );
+
+
+
+
+    foreach ($db->query($sql) as $row) {
+
+        if($row['element']=='In Process'){
+            $row['element']='In_Process';
+        }
+
+        $elements_numbers['state'][$row['element']] = number($row['number']);
+
+    }
+
+
+    $response = array(
+        'state'            => 200,
+        'elements_numbers' => $elements_numbers
+    );
+    echo json_encode($response);
+
+
+}
+
 
 
 ?>
