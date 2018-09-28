@@ -115,6 +115,8 @@ class EmailCampaign extends DB_Table {
         $data = $this->base_data();
 
 
+        $this->editor=$raw_data['editor'];
+
         foreach ($raw_data as $key => $value) {
             if (array_key_exists($key, $data)) {
 
@@ -130,6 +132,7 @@ class EmailCampaign extends DB_Table {
 
             return;
         }
+
 
 
         $data['Email Campaign Creation Date']     = gmdate('Y-m-d H:i:s');
@@ -171,6 +174,10 @@ class EmailCampaign extends DB_Table {
             switch ($this->get('Email Campaign Type')) {
                 case 'AbandonedCart':
                     $history_abstract = sprintf(_('Abandoned cart mailshot %s created'), '<b>'.$this->data['Email Campaign Name'].'</b>');
+
+                    break;
+                case 'Newsletter':
+                    $history_abstract = _('Newsletter created');
 
                     break;
                 default:
@@ -547,7 +554,9 @@ class EmailCampaign extends DB_Table {
 
                     break;
                 case 'Newsletter':
-                    return sprintf('customers/%d/email_campaigns', $store->id);
+
+
+                    return sprintf('email_campaign_type/%d/%d', $store->id,$email_template_type->id);
 
                     break;
                 default:

@@ -553,13 +553,14 @@ class EmailCampaignType extends DB_Table {
     function create_mailshot() {
 
 
-        if ($this->get_estimated_recipients() > 0 or $this->data['Email Campaign Type Code'] == 'create_mailshot' or $this->data['Email Campaign Type Code']=='Marketing') {
+        if ($this->get_estimated_recipients() > 0 or $this->data['Email Campaign Type Code'] == 'create_mailshot' or $this->data['Email Campaign Type Code'] == 'Marketing') {
             include_once 'class.EmailCampaign.php';
             $email_campaign_data = array(
                 'Email Campaign Store Key'               => $this->data['Email Campaign Type Store Key'],
                 'Email Campaign Name'                    => date('Y.m.d'),
                 'Email Campaign Type'                    => $this->data['Email Campaign Type Code'],
                 'Email Campaign Email Template Type Key' => $this->id,
+                'editor'                                 => $this->editor
             );
 
             if ($this->data['Email Campaign Type Code'] == 'GR Reminder') {
@@ -575,14 +576,12 @@ class EmailCampaignType extends DB_Table {
             } elseif ($this->data['Email Campaign Type Code'] == 'Marketing') {
 
 
-
             } elseif ($this->data['Email Campaign Type Code'] == 'AbandonedCart') {
 
                 $metadata                                       = $this->get('Metadata');
                 $email_campaign_data['Email Campaign Metadata'] = json_encode(array('Days Inactive in Basket' => (isset($metadata['Days Inactive in Basket']) ? $metadata['Days Inactive in Basket'] : 30)));
 
-            }elseif ($this->data['Email Campaign Type Code'] == 'Marketing') {
-
+            } elseif ($this->data['Email Campaign Type Code'] == 'Marketing') {
 
 
             }
@@ -590,7 +589,8 @@ class EmailCampaignType extends DB_Table {
 
             return $email_campaign;
         } else {
-            $this->error=true;
+            $this->error = true;
+
             return false;
         }
     }

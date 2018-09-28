@@ -145,6 +145,12 @@ switch ($tipo) {
     case 'order_sent_emails':
         order_sent_emails(get_table_parameters(), $db, $user);
         break;
+    case 'orders_in_website_purges':
+        orders_in_website_purges(get_table_parameters(), $db, $user);
+        break;
+    case 'purged_orders':
+        purged_orders(get_table_parameters(), $db, $user);
+        break;
     default:
         $response = array(
             'state' => 405,
@@ -3189,6 +3195,200 @@ function order_sent_emails($_data, $db, $user) {
         }
     } else {
         print_r($error_info = $db->errorInfo());
+        exit;
+    }
+
+
+    $response = array(
+        'resultset' => array(
+            'state'         => 200,
+            'data'          => $adata,
+            'rtext'         => $rtext,
+            'sort_key'      => $_order,
+            'sort_dir'      => $_dir,
+            'total_records' => $total
+
+        )
+    );
+    echo json_encode($response);
+}
+
+
+
+function orders_in_website_purges($_data, $db, $user) {
+
+    $rtext_label = 'purge';
+    include_once 'prepare_table/init.php';
+
+
+
+
+    $sql   = "select $fields from $table $where $wheref order by $order $order_direction limit $start_from,$number_results";
+    $adata = array();
+
+
+
+    if ($result = $db->query($sql)) {
+        foreach ($result as $data) {
+
+            switch ($data['Order Basket Purge State']) {
+                case 'In Process':
+                    $state = _('In process');
+                    break;
+                case 'Purging':
+                    $state = _('Purging');
+                    break;
+                case 'Finished':
+                    $state = _('Finished');
+                    break;
+                case 'Cancelled':
+                    $state = _('Cancelled');
+                    break;
+
+                default:
+                    $state = $data['Order Basket Purge State'];
+            }
+
+            switch ($data['Order Basket Purge Type']){
+                case 'Scheduled':
+                    $type=_('Scheduled');
+                    break;
+                case 'Manual':
+                    $type=_('Manual');
+                    break;
+
+                default:
+                    $type=$data['Order Basket Purge Type'];
+
+            }
+
+
+           $date = sprintf('<span class="link" onclick="change_view(\'orders/%d/dashboard/website/purges/%d\')"  >%s</span>',
+                           $data['Order Basket Purge Store Key'] ,$data['Order Basket Purge Key'],strftime("%a, %e %b %Y %R", strtotime($data['Order Basket Purge Date']." +00:00")));
+
+
+            if($data['Order Basket Purge State']=='In Process'){
+                $orders=sprintf('<span class="italic discreet" title="%s">%s</span>',_('Estimated'),number($data['Order Basket Purge Estimated Orders']));
+                $transactions=sprintf('<span class="italic discreet" title="%s">%s</span>',_('Estimated'),number($data['Order Basket Purge Estimated Transactions']));
+                $amount=sprintf('<span class="italic discreet" title="%s">%s</span>',_('Estimated'),money($data['Order Basket Purge Estimated Amount'],$data['Store Currency Code']));
+            }else{
+                $orders=number($data['Order Basket Purge Purged Orders']);
+                $transactions=number($data['Order Basket Purge Purged Transactions']);
+                $amount=money($data['Order Basket Purge Purged Amount'],$data['Store Currency Code']);
+            }
+
+
+
+            $adata[] = array(
+                'id'      => (integer)$data['Order Basket Purge Key'],
+                'state'   => $state,
+                'type' => $type,
+                'inactive_days'=>number($data['Order Basket Purge Inactive Days']),
+                'orders'=>$orders,
+                'transactions'=>$transactions,
+                'amount'=>$amount,
+                'date'    => $date,
+
+
+            );
+
+
+        }
+    } else {
+        print_r($error_info = $db->errorInfo());
+        exit;
+    }
+
+
+    $response = array(
+        'resultset' => array(
+            'state'         => 200,
+            'data'          => $adata,
+            'rtext'         => $rtext,
+            'sort_key'      => $_order,
+            'sort_dir'      => $_dir,
+            'total_records' => $total
+
+        )
+    );
+    echo json_encode($response);
+}
+
+function purged_orders($_data, $db, $user) {
+
+    $rtext_label = 'order';
+
+
+    include_once 'prepare_table/init.php';
+
+
+    if ($parameters['parent'] == 'charge') {
+        $rtext_label = 'submited orders with this charge';
+
+    }
+
+
+    $sql   = "select $fields from $table $where $wheref order by $order $order_direction limit $start_from,$number_results";
+    $adata = array();
+
+
+    if ($parameters['parent'] == 'store') {
+        $link_format = '/orders/%d/%d';
+    } else {
+        $link_format = '/'.$parameters['parent'].'/%d/order/%d';
+    }
+
+    if ($result = $db->query($sql)) {
+        foreach ($result as $data) {
+
+            switch ($data['Order State']) {
+                case('InBasket'):
+                    $state = _('In Basket');
+                    break;
+                case('InProcess'):
+                    $state = _('Submitted');
+                    break;
+                case('InWarehouse'):
+                    $state = _('In Warehouse');
+                    break;
+                case('PackedDone'):
+                    $state = _('Packed Done');
+                    break;
+                case('Dispatch Approved'):
+                    $state = _('Dispatch Approved');
+                    break;
+                case('Dispatched'):
+                    $state = _('Dispatched');
+                    break;
+                case('Cancelled'):
+                    $state = _('Cancelled');
+                    break;
+                default:
+                    $state = $data['Order State'];
+
+            }
+
+
+            $adata[] = array(
+                'id' => (integer)$data['Order Key'],
+
+                'public_id' => sprintf('<span class="link" onClick="change_view(\''.$link_format.'\')">%s</span>', $parameters['parent_key'], $data['Order Key'], $data['Order Public ID']),
+                'state'     => $state,
+
+                'date'           => strftime("%a %e %b %Y %H:%M %Z", strtotime($data['Order Date'].' +0:00')),
+                'last_date'      => strftime("%a %e %b %Y %H:%M %Z", strtotime($data['Order Last Updated Date'].' +0:00')),
+                'customer'       => sprintf('<span class="link" onClick="change_view(\'customers/%d/%d\')">%s</span>', $data['Order Store Key'], $data['Order Customer Key'], $data['Order Customer Name']),
+                'dispatch_state' => get_order_formatted_dispatch_state($data['Order State'], '', $data['Order Key']),
+                'payment_state'  => get_order_formatted_payment_state($data),
+                'total_amount'   => money($data['Order Total Amount'], $data['Order Currency']),
+                'margin'         => sprintf('<span title="%s: %s">%s</span>', _('Profit'), money($data['Order Profit Amount'], $data['Order Currency']), percentage($data['Order Margin'], 1)),
+
+
+            );
+        }
+    } else {
+        print_r($error_info = $db->errorInfo());
+        print "$sql\n";
         exit;
     }
 

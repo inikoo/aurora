@@ -4038,9 +4038,28 @@ $tab_defaults = array(
 
 
     ),
+    'purge.purged_orders'               => array(
+        'view'          => 'overview',
+        'sort_key'      => 'id',
+        'sort_order'    => 1,
+        'rpp'           => 100,
+        'rpp_options'   => $default_rrp_options,
+        'f_field'       => 'number',
 
+        'elements_type' => each($elements_options['purged_orders'])['key'],
+        'elements'      => $elements_options['purged_orders']
+    ),
 
-
+    'purge.history'        => array(
+        'view'          => 'overview',
+        'sort_key'      => 'date',
+        'sort_order'    => 1,
+        'rpp'           => 100,
+        'rpp_options'   => $default_rrp_options,
+        'f_field'       => 'note',
+        'elements_type' => each($elements_options['purges_history'])['key'],
+        'elements'      => $elements_options['purges_history']
+    ),
 
 
 

@@ -33,6 +33,11 @@ function get_website_section_items($db, $section_data) {
 
 
     );
+
+
+   // print_r($sql);
+    //exit;
+
 //AND (`Product Category Active Products`+`Product Category Discontinuing Products`+`Product Category In Process Products`)>0
 
 // and `Webpage State`='Online'
@@ -47,7 +52,7 @@ function get_website_section_items($db, $section_data) {
 
         foreach ($result as $row) {
 
-            //print_r($row);
+
             if (isset($panels[$stack_index])) {
 
 

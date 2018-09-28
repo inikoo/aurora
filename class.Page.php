@@ -1362,7 +1362,7 @@ class Page extends DB_Table {
 
 
         require_once 'external_libs/Smarty/Smarty.class.php';
-        $smarty_web               = new Smarty();
+        $smarty_web = new Smarty();
 
         if (empty($this->fork)) {
             $base = '';
@@ -1377,7 +1377,6 @@ class Page extends DB_Table {
         $smarty_web->config_dir   = $base.'EcomB2B/server_files/smarty/configs';
 
 
-
         $smarty_web->setCaching(Smarty::CACHING_LIFETIME_CURRENT);
 
 
@@ -1387,7 +1386,6 @@ class Page extends DB_Table {
 
         $redis = new Redis();
         if ($redis->connect('127.0.0.1', 6379)) {
-
 
 
             $url_cache_key = 'pwc2|'.DNS_ACCOUNT_CODE.'|'.$this->get('Webpage Website Key').'_'.$this->get('Webpage Code');
@@ -1823,7 +1821,7 @@ class Page extends DB_Table {
 
 
         require_once 'external_libs/Smarty/Smarty.class.php';
-        $smarty_web               = new Smarty();
+        $smarty_web = new Smarty();
 
 
         if (empty($this->fork)) {
@@ -3295,7 +3293,7 @@ class Page extends DB_Table {
 
 
         require_once 'external_libs/Smarty/Smarty.class.php';
-        $smarty_web               = new Smarty();
+        $smarty_web = new Smarty();
 
         if (empty($this->fork)) {
             $base = '';
@@ -5436,6 +5434,7 @@ class Page extends DB_Table {
 
 
         //  print_r($subject_category);
+        // print_r($subject_webpage);
 
         if ($subject_webpage->id) {
 
@@ -5480,8 +5479,7 @@ class Page extends DB_Table {
                 prepare_mysql($subject_type), $stack
             );
 
-            // print $sql;
-
+            //  print "$sql\n\n";
             $this->db->exec($sql);
 
 
@@ -5506,6 +5504,7 @@ class Page extends DB_Table {
                 }
             }
         }
+
 
         $this->update(array('Page Store Content Data' => json_encode($content_data)), 'no_history');
 

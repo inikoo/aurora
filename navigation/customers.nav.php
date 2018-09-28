@@ -2101,105 +2101,59 @@ function get_email_campaign_navigation($data, $smarty, $user, $db, $account) {
         exit;
     }
 
-    if ($data['section'] == 'newsletter') {
-
+    if($object->get('Email Campaign Type')=='Newsletter'){
         $title = _('Newsletter').' <span class="id Email_Campaign_Name">'.$object->get('Name').'</span>';
 
-        $up_button = array(
-            'icon'      => 'arrow-up',
-            'title'     => _("Email communications").' ('.$data['_parent']->get('Code').')',
-            'reference' => 'customers/'.$data['_parent']->id.'/email_campaigns'
-        );
-
-        if ($prev_key) {
-            $left_buttons[] = array(
-                'icon'      => 'arrow-left',
-                'title'     => $prev_title,
-                'reference' => 'newsletters/'.$data['_parent']->id.'/'.$prev_key
-            );
-
-        } else {
-            $left_buttons[] = array(
-                'icon'  => 'arrow-left disabled',
-                'title' => '',
-                'url'   => ''
-            );
-
-        }
-        $left_buttons[] = $up_button;
-
-
-        if ($next_key) {
-            $left_buttons[] = array(
-                'icon'      => 'arrow-right',
-                'title'     => $next_title,
-                'reference' => 'newsletters/'.$data['_parent']->id.'/'.$next_key
-            );
-
-        } else {
-            $left_buttons[] = array(
-                'icon'  => 'arrow-right disabled',
-                'title' => '',
-                'url'   => ''
-            );
-
-        }
-
-
-        $sections = get_sections('customers', $data['_parent']->id);
-
-
-        $title = _('Newsletter').' <span class="id Email_Campaign_Name">'.$object->get('Name').'</span>';
-
-    } elseif ($data['section'] == 'email_campaign') {
-
+    }else{
         $title = _('Mailshot').' <span class="id Email_Campaign_Name">'.$object->get('Name').'</span>';
 
-        $up_button = array(
-            'icon'      => 'arrow-up',
-            'title'     => _("Email communications").' ('.$data['_parent']->get('Code').')',
-            'reference' => 'email_campaign_type/'.$data['_parent']->get('Store Key').'/'.$data['_parent']->id
+    }
+
+
+    $up_button = array(
+        'icon'      => 'arrow-up',
+        'title'     => _("Email communications").' ('.$data['_parent']->get('Code').')',
+        'reference' => 'email_campaign_type/'.$data['_parent']->get('Store Key').'/'.$data['_parent']->id
+    );
+
+    if ($prev_key) {
+        $left_buttons[] = array(
+            'icon'      => 'arrow-left',
+            'title'     => $prev_title,
+            'reference' => 'email_campaign_type/'.$data['_parent']->get('Store Key').'/'.$data['_parent']->id.'/mailshot/'.$prev_key
         );
 
-        if ($prev_key) {
-            $left_buttons[] = array(
-                'icon'      => 'arrow-left',
-                'title'     => $prev_title,
-                'reference' => 'email_campaign_type/'.$data['_parent']->get('Store Key').'/'.$data['_parent']->id.'/mailshot/'.$prev_key
-            );
-
-        } else {
-            $left_buttons[] = array(
-                'icon'  => 'arrow-left disabled',
-                'title' => '',
-                'url'   => ''
-            );
-
-        }
-        $left_buttons[] = $up_button;
-
-
-        if ($next_key) {
-            $left_buttons[] = array(
-                'icon'      => 'arrow-right',
-                'title'     => $next_title,
-                'reference' => 'email_campaign_type/'.$data['_parent']->get('Store Key').'/'.$data['_parent']->id.'/mailshot/'.$next_key
-            );
-
-        } else {
-            $left_buttons[] = array(
-                'icon'  => 'arrow-right disabled',
-                'title' => '',
-                'url'   => ''
-            );
-
-        }
-
-
-        $sections = get_sections('customers', $data['_parent']->get('Store Key'));
-
+    } else {
+        $left_buttons[] = array(
+            'icon'  => 'arrow-left disabled',
+            'title' => '',
+            'url'   => ''
+        );
 
     }
+    $left_buttons[] = $up_button;
+
+
+    if ($next_key) {
+        $left_buttons[] = array(
+            'icon'      => 'arrow-right',
+            'title'     => $next_title,
+            'reference' => 'email_campaign_type/'.$data['_parent']->get('Store Key').'/'.$data['_parent']->id.'/mailshot/'.$next_key
+        );
+
+    } else {
+        $left_buttons[] = array(
+            'icon'  => 'arrow-right disabled',
+            'title' => '',
+            'url'   => ''
+        );
+
+    }
+
+
+    $sections = get_sections('customers', $data['_parent']->get('Store Key'));
+
+
 
     if (isset($sections[$_section])) {
         $sections[$_section]['selected'] = true;

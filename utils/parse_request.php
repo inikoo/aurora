@@ -2070,7 +2070,6 @@ function parse_request($_data, $db, $modules, $account = '', $user = '', $is_set
                         $parent     = 'store';
                         $parent_key = $arg1;
 
-
                         if (isset($view_path[0])) {
 
                             if ($view_path[0] == 'dashboard') {
@@ -2080,24 +2079,50 @@ function parse_request($_data, $db, $modules, $account = '', $user = '', $is_set
                                     $extra = $view_path[1];
 
                                 }
+
+
+
+
+
                                 if (isset($view_path[2])) {
-                                    $extra_tab = $view_path[2];
+
+                                    if($view_path[2]=='mailshots'){
+                                        $extra_tab = $view_path[2];
+
+                                        if (isset($view_path[3])) {
 
 
-                                    if (isset($view_path[3])) {
+                                            if (is_numeric($view_path[3])) {
+
+                                                $section = 'email_campaign';
+                                                $object  = 'email_campaign';
+                                                $key     = $view_path[3];
 
 
-                                        if (is_numeric($view_path[3])) {
-
-                                            $section = 'email_campaign';
-                                            $object  = 'email_campaign';
-                                            $key     = $view_path[3];
+                                            }
 
 
                                         }
+                                    }elseif($view_path[2]=='purges'){
+                                        $extra_tab = $view_path[2];
+
+                                        if (isset($view_path[3])) {
 
 
+                                            if (is_numeric($view_path[3])) {
+
+                                                $section = 'purge';
+                                                $object  = 'purge';
+                                                $key     = $view_path[3];
+
+
+                                            }
+
+
+                                        }
                                     }
+
+
 
                                 }
 

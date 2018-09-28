@@ -586,9 +586,13 @@ function get_object_fields($object, $db, $user, $smarty, $options = false) {
             include 'fields/shipper.fld.php';
 
             return $object_fields;
-            break;
-            break;
 
+            break;
+        case 'Order Basket Purge':
+            include 'fields/purge.fld.php';
+
+            return $object_fields;
+            break;
         default:
             print 'todo object in object fields'.$object->get_object_name();
 

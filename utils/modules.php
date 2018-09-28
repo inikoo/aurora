@@ -1395,6 +1395,32 @@ $modules = array(
                 )
             ),
 
+            'purge' => array(
+                'type' => 'object',
+                'tabs' => array(
+                    'purge.details'   => array(
+                        'icon'  => 'sliders-h',
+
+                        'label' => _('Settings'),
+                        'title' => _('Settings')
+                    ),
+
+
+                    'purge.purged_orders' => array(
+                        'label' => _('Purged orders'),
+                        'icon'  => 'skull'
+                    ),
+
+                    'purge.history' => array(
+                        'title' => _('History'),
+                        'label' => '',
+                        'icon'  => 'road',
+                        'class' => 'right icon_only'
+                    ),
+
+                )
+            ),
+
         )
     ),
     'orders_server'    => array(
