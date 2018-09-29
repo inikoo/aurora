@@ -50,8 +50,14 @@ if ($email_template->id and !($email_template->get('Email Template Type') == 'HT
     $merge_contents = '';
 
 
-  if ($email_template->get('Email Template Role') == 'OOS Notification') {
+    if ($email_template->get('Email Template Role') == 'OOS Notification') {
         $merge_tags = ",{ name: '"._('Back in stock products')."',value: '[Products]'}";
+
+    }elseif ($email_template->get('Email Template Role') == 'Newsletter') {
+        $merge_contents = "{ name: '"._('Unsubscribe')."',value: '[Unsubscribe]'}";
+
+    } elseif ($email_template->get('Email Template Role') == 'Marketing') {
+        $merge_contents = "{ name: '"._('Unsubscribe')."',value: '[Unsubscribe]'}";
 
     } elseif ($email_template->get('Email Template Role') == 'GR Reminder') {
         $merge_tags = ",{ name: '"._('Last order number')."',value: '[Order Number]'},{ name: '"._('Last order date')."',value: '[Order Date]'},

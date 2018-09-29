@@ -55,7 +55,7 @@
             {assign "with_reset_password" false}
             {assign "with_product_order_input" false}
             {assign "with_product" false}
-
+            {assign "with_unsubscribe" false}
 
 
             {foreach from=$content.blocks item=$block key=key}
@@ -144,6 +144,7 @@
                          {if $block.type=='reset_password'   }{assign "with_reset_password" 1}{/if}
 
 
+                         {if $block.type=='unsubscribe'}{assign "with_unsubscribe" 1}{/if}
 
                             {if $block.type=='iframe'   }{assign "with_iframe" 1}{/if}
                             {if $block.type=='product'   }{assign "with_gallery" 1}{/if}

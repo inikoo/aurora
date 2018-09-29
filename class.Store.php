@@ -187,7 +187,7 @@ class Store extends DB_Table {
             $this->id = $this->db->lastInsertId();
 
 
-            $this->msg = _("Store Added");
+            $this->msg = _("Store added");
             $this->get_data('id', $this->id);
             $this->new = true;
 
@@ -316,6 +316,13 @@ class Store extends DB_Table {
 
                 ), 'no_history'
             );
+
+
+
+
+            // todo create Email email Campaign Type
+            // // update `Email Campaign Type Dimension` set `Email Campaign Type Status`='Active' where `Email Campaign Type Code` in ('Newsletter','Marketing','AbandonedCart','Invite Mailshot','Invite');
+
 
 
             $history_data = array(

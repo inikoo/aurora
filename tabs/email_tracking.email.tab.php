@@ -37,7 +37,7 @@ request.fail(function( jqXHR, textStatus ) {
 });</script>';
 
     }else{
-        //$published_email_template = get_object('Published_Email_Template',$email_tracking->get('Email Tracking Published Email Template Key'));
+        $published_email_template = get_object('Published_Email_Template',$email_tracking->get('Email Tracking Published Email Template Key'));
 
 
 

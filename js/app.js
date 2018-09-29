@@ -192,6 +192,9 @@ $(document).ready(function () {
     }, 60000);
 
 
+
+
+
 })
 
 
@@ -219,10 +222,6 @@ function connect_websocket(){
             ws_connection.subscribe('real_time.'+$('#account_name').data('account_code').toLowerCase(), function(topic, data) {
 
                 for (var i in data.objects) {
-
-
-
-
                     if (state.object == data.objects[i].object && state.key == data.objects[i].key) {
 
 
@@ -264,6 +263,23 @@ function connect_websocket(){
                         for (var j in data.objects[i].update_metadata.add_class) {
                             $('.' + j).addClass(data.objects[i].update_metadata.add_class[j])
                         }
+                    }
+                }
+
+                for (var i in data.tabs) {
+
+
+
+                    if (state.tab == data.tabs[i].tab ) {
+                        console.log(data.tabs[i])
+                        for (var j in data.tabs[i].cell) {
+//console.log(data.tabs[i].cell[j])
+
+                            console.log(j)
+                            $('#table .' + j).html(data.tabs[i].cell[j])
+                        }
+
+
                     }
                 }
 
@@ -535,7 +551,7 @@ function change_view(_request, metadata) {
 
             state = data.state;
 
-            //console.log(data.state)
+            console.log(data.state)
             if (typeof(data.navigation) != "undefined" && data.navigation !== null && data.navigation != '') {
                 // $('#navigation').removeClass('hide')
                 $('#navigation').html(data.navigation);
@@ -626,7 +642,7 @@ function change_view(_request, metadata) {
             console.log( "Request Failed: " + err );
         });
 
-
+   // console.log(state)
 
 }
 

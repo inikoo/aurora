@@ -1032,10 +1032,12 @@ class EmailCampaign extends DB_Table {
                 $published_email_template->send(get_object($row['Email Tracking Recipient'], $row['Email Tracking Recipient Key']), $send_data, $smarty);
 
 
-                //  print_r($published_email_template);
+                // print_r($published_email_template);
 
 
                 // print_r($published_email_template);
+
+               // exit('caca1');
 
             }
         } else {

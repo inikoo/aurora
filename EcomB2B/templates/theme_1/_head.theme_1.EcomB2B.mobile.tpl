@@ -105,7 +105,16 @@
                 {else}
                     {assign "with_register" 1} {assign "with_forms" 1}
                 {/if}
+            {elseif $block.type=='unsubscribe'}
+                {assign "with_reset_password" 1}
+                {assign "with_forms" 1}
 
+
+
+                <script src="js/tablet.min.js"></script>
+
+                <script src="js/mobile.forms.min.js"></script>
+                <script src="js/sweetalert.min.js"></script>
             {else}
                 {if $block.type=='search'   }{assign "with_search" 1}{/if}
                 {if $block.type=='iframe'   }{assign "with_iframe" 1}{/if}

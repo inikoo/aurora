@@ -81,7 +81,8 @@
             {assign "with_product_order_input" false}
             {assign "with_product" false}
             {assign "with_blackboard" false}
-            {assign "with_reset_passoword" false}
+            {assign "with_reset_password" false}
+            {assign "with_unsubscribe" false}
 
 
 
@@ -170,6 +171,9 @@
                         {if $block.type=='search'   }{assign "with_search" 1}{/if}
                         {if $block.type=='blackboard'   }{assign "with_blackboard" 1}{/if}
                         {if $block.type=='reset_passowrd'   }{assign "with_reset_passowrd" 1}{/if}
+                        {if $block.type=='unsubscribe'}{assign "with_unsubscribe" 1}{/if}
+
+
                         {if $block.type=='iframe'   }{assign "with_iframe" 1}{/if}
                         {if $block.type=='product'   }{assign "with_gallery" 1}{/if}
                         {if $block.type=='category_products' or   $block.type=='products'  or   $block.type=='product' }{assign "with_product_order_input" 1}{/if}
@@ -735,7 +739,7 @@ getScript('/js/tablet.custom.min.js?v=2', function () {
             {/if}
 
 
-            {if $with_reset_passoword}
+            {if $with_reset_password}
             getScript('/js/mobile.forms.min.js', function () {
                 $("form").on('submit', function (e) {
 

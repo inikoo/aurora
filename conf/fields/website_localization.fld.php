@@ -565,6 +565,33 @@ $object_fields = array(
     ),
 
     array(
+        'label'      => _('Unsubscribe'),
+        'show_title' => true,
+        'fields'     => array(
+
+            array(
+                'id'       => 'Localised_Labels_unsubscribe_text',
+                'edit'     => ($edit ? 'string' : ''),
+                'value'    => (empty($labels['_unsubscribe_text']) ? _('If you do not wish to receive more marketing emails from us') : $labels['_unsubscribe_text']),
+                'label'    => _('Unsubscribe text'),
+                'required' => true,
+                'type'     => 'value'
+            ),
+            array(
+                'id'       => 'Localised_Labels_unsubscribe_link',
+                'edit'     => ($edit ? 'string' : ''),
+                'value'    => (empty($labels['_unsubscribe_link']) ? _('Unsubscribe here') : $labels['_unsubscribe_link']),
+                'label'    => _('Unsubscribe link text'),
+                'required' => true,
+                'type'     => 'value'
+            ),
+
+
+        )
+    ),
+
+
+    array(
         'label'      => _('General'),
         'show_title' => true,
         'fields'     => array(
