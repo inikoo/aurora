@@ -19,7 +19,28 @@ $published_email_template = get_object('Published_Email_Template',$email_templat
 
 
 
-$html='<div style="margin:auto;width: 700px;background-color: #fff;margin-top:20px;"><div style="border:1px solid #ccc;padding:10px 20px"><span class="discreet">'._('Subject').':</span> '.$published_email_template->get('Published Email Template Subject').'</div><div style="border:1px solid #ccc;border-top:none">'.$published_email_template->get('Published Email Template HTML').'</div></div>';
+//$html='<div style="margin:auto;width: 700px;background-color: #fff;margin-top:20px;"><div style="border:1px solid #ccc;padding:10px 20px"><span class="discreet">'._('Subject').':</span> '.$published_email_template->get('Published Email Template Subject').'</div><div style="border:1px solid #ccc;border-top:none">'.$published_email_template->get('Published Email Template HTML').'</div></div>';
+
+
+
+
+$html='<div style="margin:auto;width: 700px;background-color: #fff;margin-top:20px;"> <div class="very_discreet italic" style="margin-bottom: 2px">(Not actual copy archived, showing template)</div><div style="border:1px solid #ccc;padding:10px 20px"><span class="discreet">'._('Subject').':</span> '.$published_email_template->get('Published Email Template Subject').'</div><div class="__email_text" style="border:1px solid #ccc;border-top:none"></div></div>';
+
+
+$html.='<script>var request = $.ajax({
+  url: "/ar_email_template.php",
+  method: "POST",
+  data: { tipo : "template_text", key : '.$published_email_template->id.' },
+  dataType: "html"
+});
+ 
+request.done(function( email_text ) {
+  $( ".__email_text" ).html( email_text );
+});
+ 
+request.fail(function( jqXHR, textStatus ) {
+  alert( "Request failed: " + textStatus );
+});</script>';
 
 
 

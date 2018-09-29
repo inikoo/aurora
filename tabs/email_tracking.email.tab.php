@@ -59,6 +59,8 @@ request.fail(function( jqXHR, textStatus ) {
   alert( "Request failed: " + textStatus );
 });</script>';
 
+
+
     }
 }else {
 	print_r($error_info=$db->errorInfo());
