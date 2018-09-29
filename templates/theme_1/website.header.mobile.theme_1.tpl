@@ -31,7 +31,7 @@
             {assign "with_product_order_input" false}
             {assign "with_product" false}
             {assign "with_blackboard" false}
-            {assign "with_reset_passoword" false}
+            {assign "with_reset_password" false}
 
 
             <div style="height: 300px">

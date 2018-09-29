@@ -147,7 +147,10 @@ function get_object($object_name, $key, $load_other_data = false) {
 
             $object = new EmailCampaignType('code_store', $keys[0],$keys[1]);
             break;
-
+        case 'email_tracking':
+            require_once "class.Email_Tracking.php";
+            $object = new Email_Tracking($key);
+            break;
         default:
             exit('need to complete Pub  E1: >'.strtolower($object_name.' '.$load_other_data)."<\n");
             break;

@@ -25,7 +25,6 @@ require_once 'keyring/dns.php';
 
 require_once 'utils/object_functions.php';
 
-// require 'external_libs/aws.phar';
 
 $db = new PDO(
     "mysql:host=$dns_host;dbname=$dns_db;charset=utf8", $dns_user, $dns_pwd, array(\PDO::MYSQL_ATTR_INIT_COMMAND => "SET time_zone = '+0:00';")
@@ -99,6 +98,12 @@ if ($validator->isValid($sns)) {
                         break;
 
                     case 'Click':
+
+                        if (isset($message['linkTags']['type']['unsubscribe'])) {
+                            // ignore Unsubscribe link clicks
+                            exit;
+                        }
+
                         $event_type = 'Clicked';
                         $date       = gmdate('Y-m-d H:i:s', strtotime($message['click']['timestamp']));
 
@@ -239,6 +244,100 @@ if ($validator->isValid($sns)) {
 
                 //$_sql = sprintf('insert into atest  (`date`,`headers`,`request`) values (NOW(),"%s","%s")  ', $sql, 'xx');
                 //$db->exec($_sql);
+
+                $socket = $context->getSocket(ZMQ::SOCKET_PUSH, 'my pusher');
+                $socket->connect("tcp://localhost:5555");
+                $account = get_object('Account', 1);
+
+
+                switch ($email_tracking->get('Email Tracking State')) {
+                    case 'Ready':
+                        $state = _('Ready to send');
+                        break;
+                    case 'Sent to SES':
+                        $state = _('Sending');
+                        break;
+                        break;
+                    case 'Delivered':
+                        $state = _('Delivered');
+                        break;
+                    case 'Opened':
+                        $state = _('Opened');
+                        break;
+                    case 'Clicked':
+                        $state = _('Clicked');
+                        break;
+                    case 'Error':
+                        $state = '<span class="warning">'._('Error').'</span>';
+                        break;
+                    case 'Hard Bounce':
+                        $state = '<span class="error"><i class="fa fa-exclamation-circle"></i>  '._('Bounced').'</span>';
+                        break;
+                    case 'Soft Bounce':
+                        $state = '<span class="warning"><i class="fa fa-exclamation-triangle"></i>  '._('Probable bounce').'</span>';
+                        break;
+                    case 'Spam':
+                        $state = '<span class="error"><i class="fa fa-exclamation-circle"></i>  '._('Mark as spam').'</span>';
+                        break;
+                    default:
+                        $state = $email_tracking->get('Email Tracking State');
+                }
+
+
+                if (isset($email_campaign)) {
+                    $this->socket->send(
+                        json_encode(
+                            array(
+                                'channel' => 'real_time.'.strtolower($account->get('Account Code')),
+                                'objects' => array(
+                                    array(
+                                        'object' => 'email_campaign',
+                                        'key'    => $email_campaign->id,
+
+                                        'update_metadata' => array(
+                                            'class_html' => array(
+                                                'Sent_Emails_Info'    => $email_campaign->get('Sent Emails Info'),
+                                                'Email_Campaign_Sent' => $email_campaign->get('Sent'),
+                                            )
+                                        )
+
+                                    )
+
+                                ),
+
+                                'tabs' => array(
+                                    array(
+                                        'tab'        => 'email_campaign.sent_emails',
+                                        'parent'     => 'email_campaign_type',
+                                        'parent_key' => $email_template_type->id,
+                                        'cell'       => array(
+                                            'email_tracking_state_'.$email_tracking->id => $state
+                                        )
+
+
+                                    ),
+                                    array(
+                                        'tab'        => 'email_campaign_type.mailshots',
+                                        'parent'     => 'store',
+                                        'parent_key' => $email_template_type->get('Store Key'),
+                                        'cell'       => array(
+                                            'date_'.$email_campaign->id  => strftime("%a, %e %b %Y %R", strtotime($email_campaign->get('Email Campaign Last Updated Date')." +00:00")),
+                                            'state_'.$email_campaign->id => $email_campaign->get('State'),
+                                            'sent_'.$email_campaign->id  => $email_campaign->get('Sent')
+                                        )
+
+
+                                    ),
+
+                                ),
+
+
+                            )
+                        )
+                    );
+
+                }
+
 
             } else {
                 $sql = sprintf(

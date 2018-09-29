@@ -10,6 +10,8 @@
 
 
 */
+
+
 include_once 'class.DB_Table.php';
 
 class EmailCampaignType extends DB_Table {

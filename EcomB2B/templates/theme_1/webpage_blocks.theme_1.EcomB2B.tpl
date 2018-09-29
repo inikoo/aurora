@@ -168,13 +168,10 @@
                         {/if}
                     {else}
                         {if $block.type=='search'   }{assign "with_search" 1}{/if}
-
                         {if $block.type=='iframe'   }{assign "with_iframe" 1}{/if}
                         {if $block.type=='product'   }{assign "with_gallery" 1}{/if}
-
                         {if $block.type=='reset_password' }{assign "with_reset_password" 1}{/if}
                         {if $block.type=='unsubscribe'}{assign "with_unsubscribe" 1}{/if}
-
                         {if $block.type=='category_products' or   $block.type=='products'  or   $block.type=='product' }{assign "with_product_order_input" 1}{/if}
 
 

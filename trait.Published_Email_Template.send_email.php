@@ -18,7 +18,6 @@ trait Send_Email {
     function send($recipient, $data, $smarty = false) {
 
 
-
         $this->error = false;
         $account     = get_object('Account', 1);
 
@@ -46,8 +45,8 @@ trait Send_Email {
 
         }
 
-        if($email_template_type->id){
-            if($email_template_type->get('Email Campaign Type Status')!='Active'){
+        if ($email_template_type->id) {
+            if ($email_template_type->get('Email Campaign Type Status') != 'Active') {
                 $this->error = true;
                 $this->sent  = false;
                 $this->msg   = 'Email Campaign Type Status not active';
@@ -57,10 +56,13 @@ trait Send_Email {
         }
 
 
+        $store = get_object('Store', $email_template_type->get('Store Key'));
 
-        $sender = get_object('Store', $email_template_type->get('Store Key'));
+        $website          = get_object('Website', $store->get('Store Website Key'));
+        $localised_labels = $website->get('Localised Labels');
 
-        if ($sender->get('Send Email Address') == '') {
+
+        if ($store->get('Send Email Address') == '') {
 
             $this->error = true;
             $this->sent  = false;
@@ -98,9 +100,8 @@ trait Send_Email {
             '[Customer Name]' => $recipient->get('Name'),
             '[Name]'          => $recipient->get('Main Contact Name'),
             '[Name,Company]'  => preg_replace('/^, /', '', $recipient->get('Main Contact Name').($recipient->get('Company Name') == '' ? '' : ', '.$recipient->get('Company Name'))),
-            '[Signature]'     => $sender->get('Signature'),
+            '[Signature]'     => $store->get('Signature'),
         );
-
 
 
         switch ($email_template_type->get('Email Campaign Type Code')) {
@@ -214,22 +215,21 @@ trait Send_Email {
         }
 
 
-
-
-        $from_name            = base64_encode($sender->get('Name'));
-        $sender_email_address = $sender->get('Send Email Address');
+        $from_name            = base64_encode($store->get('Name'));
+        $sender_email_address = $store->get('Send Email Address');
         $_source              = "=?utf-8?B?$from_name?= <$sender_email_address>";
-
 
 
         $to_address = $recipient->get('Main Plain Email');
 
-        if(gethostname()=='bali'){
-            $to_address='raul@inikoo.com';
+        if (gethostname() == 'bali') {
+
+
+            $to_address = 'raul@inikoo.com';
         }
 
 
-
+       // $to_address='raul@inikoo.com';
 
 
         $request                                    = array();
@@ -288,11 +288,18 @@ trait Send_Email {
         }
 
         $request['Message']['Body']['Html']['Data'] = preg_replace_callback(
-            '/\[Unsubscribe]/', function () use ($email_tracking, $recipient, $data, $smarty) {
+            '/\[Unsubscribe]/', function () use ($email_tracking, $recipient, $data, $smarty, $localised_labels) {
 
             if (isset($data['Unsubscribe URL'])) {
                 include_once 'keyring/key.php';
+
+
+                $smarty->assign('localised_labels', $localised_labels);
+
+
                 $smarty->assign('link', $data['Unsubscribe URL'].'?s='.$email_tracking->id.'&a='.hash('sha256', IKEY.$recipient->id.$email_tracking->id));
+
+                // print $smarty->fetch('unsubscribe_marketing_email.placeholder.tpl');
 
                 return $smarty->fetch('unsubscribe_marketing_email.placeholder.tpl');;
 
@@ -301,7 +308,6 @@ trait Send_Email {
 
         }, $request['Message']['Body']['Html']['Data']
         );
-
 
         $client = SesClient::factory(
             array(
@@ -318,8 +324,10 @@ trait Send_Email {
         try {
 
 
-
             $result = $client->sendEmail($request);
+
+            //print_r($result);
+
             $email_tracking->fast_update(
                 array(
                     'Email Tracking State'  => "Sent to SES",
@@ -329,21 +337,21 @@ trait Send_Email {
                 )
             );
 
-
-/*
-
-            $email_tracking->fast_update(
-                array(
-                    'Email Tracking State'  => "Sent to SES",
-                    "Email Tracking SES Id" => 'xxxx'.date('U'),
+            /*
 
 
-                )
-            );
+                        $email_tracking->fast_update(
+                            array(
+                                'Email Tracking State'  => "Sent to SES",
+                                "Email Tracking SES Id" => 'xxxx'.date('U'),
 
-           // sleep(2);
+
+                            )
+                        );
+
+                        sleep(5);
+
 */
-
 
             if (in_array(
                 $email_template_type->get('Email Campaign Type Code'), array(
@@ -426,9 +434,41 @@ trait Send_Email {
             $email_campaign->update_sent_emails_totals();
 
 
-
             if (isset($this->socket)) {
 
+
+                switch ($email_tracking->get('Email Tracking State')) {
+                    case 'Ready':
+                        $state = _('Ready to send');
+                        break;
+                    case 'Sent to SES':
+                        $state = _('Sending');
+                        break;
+                        break;
+                    case 'Delivered':
+                        $state = _('Delivered');
+                        break;
+                    case 'Opened':
+                        $state = _('Opened');
+                        break;
+                    case 'Clicked':
+                        $state = _('Clicked');
+                        break;
+                    case 'Error':
+                        $state = '<span class="warning">'._('Error').'</span>';
+                        break;
+                    case 'Hard Bounce':
+                        $state = '<span class="error"><i class="fa fa-exclamation-circle"></i>  '._('Bounced').'</span>';
+                        break;
+                    case 'Soft Bounce':
+                        $state = '<span class="warning"><i class="fa fa-exclamation-triangle"></i>  '._('Probable bounce').'</span>';
+                        break;
+                    case 'Spam':
+                        $state = '<span class="error"><i class="fa fa-exclamation-circle"></i>  '._('Mark as spam').'</span>';
+                        break;
+                    default:
+                        $state = $email_tracking->get('Email Tracking State');
+                }
 
 
                 $this->socket->send(
@@ -448,6 +488,32 @@ trait Send_Email {
                                     )
 
                                 )
+
+                            ),
+
+                            'tabs' => array(
+                                array(
+                                    'tab'        => 'email_campaign.sent_emails',
+                                    'parent'     => 'email_campaign_type',
+                                    'parent_key' => $email_template_type->id,
+                                    'cell'       => array(
+                                        'email_tracking_state_'.$email_tracking->id => $state
+                                    )
+
+
+                                ),
+                                array(
+                                    'tab'        => 'email_campaign_type.mailshots',
+                                    'parent'     => 'store',
+                                    'parent_key' => $email_template_type->get('Store Key'),
+                                    'cell'       => array(
+                                        'date_'.$email_campaign->id  => strftime("%a, %e %b %Y %R", strtotime($email_campaign->get('Email Campaign Last Updated Date')." +00:00")),
+                                        'state_'.$email_campaign->id => $email_campaign->get('State'),
+                                        'sent_'.$email_campaign->id  => $email_campaign->get('Sent')
+                                    )
+
+
+                                ),
 
                             ),
 

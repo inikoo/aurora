@@ -189,8 +189,6 @@ if (!$account->id) {
 
 
 
-
-
     if ($account->id != 1) {
 
         $smarty->assign('request', 'account/setup/error/2');

@@ -304,7 +304,6 @@ function sent_emails($_data, $db, $user) {
                 case 'Sent to SES':
                     $state = _('Sending');
                     break;
-
                     break;
                 case 'Delivered':
                     $state = _('Delivered');
@@ -331,6 +330,7 @@ function sent_emails($_data, $db, $user) {
                     $state = $data['Email Tracking State'];
             }
 
+            $state=sprintf('<span class="email_tracking_state_%d">%s</span>',$data['Email Tracking Key'],$state);
 
             $customer = sprintf('<span class="link" onclick="change_view(\'customers/%d/%d\')"  >%s (%05d)</span>', $data['store_key'], $data['recipient_key'], $data['recipient_name'], $data['recipient_key']);
             $prospects= sprintf('<span class="link" onclick="change_view(\'prospects/%d/%d\')"  >%s (%05d)</span>', $data['store_key'], $data['recipient_key'], $data['recipient_name'], $data['recipient_key']);
@@ -588,11 +588,11 @@ function mailshots($_data, $db, $user) {
             $adata[] = array(
                 'id' => (integer)$data['Email Campaign Key'],
 
-                'name'  => $name,
-                'state' => $state,
+                'name'  => sprintf('<span class="name_%d">%s</span>',$data['Email Campaign Key'],$name),
+                'state' => sprintf('<span class="state_%d">%s</span>',$data['Email Campaign Key'],$state),
 
-                'date' => strftime("%a, %e %b %Y %R", strtotime($data['Email Campaign Last Updated Date']." +00:00")),
-                'sent' => number($data['Email Campaign Sent']),
+                'date' => sprintf('<span class="date_%d">%s</span>',$data['Email Campaign Key'],strftime("%a, %e %b %Y %R", strtotime($data['Email Campaign Last Updated Date']." +00:00"))),
+                'sent' => sprintf('<span class="sent_%d">%s</span>',$data['Email Campaign Key'],number($data['Email Campaign Sent'])),
 
                 'hard_bounces' => sprintf(
                     '<span class="%s" title="%s">%s</span>', ($data['Email Campaign Delivered'] == 0 ? 'super_discreet' : ($data['Email Campaign Hard Bounces'] == 0 ? 'success super_discreet' : '')), number($data['Email Campaign Hard Bounces']),
