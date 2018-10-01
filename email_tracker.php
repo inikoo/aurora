@@ -267,6 +267,9 @@ if ($validator->isValid($sns)) {
                 //$_sql = sprintf('insert into atest  (`date`,`headers`,`request`) values (NOW(),"%s","%s")  ', $sql, 'xx');
                 //$db->exec($_sql);
 
+
+
+                $context = new ZMQContext();
                 $socket = $context->getSocket(ZMQ::SOCKET_PUSH, 'my pusher');
                 $socket->connect("tcp://localhost:5555");
                 $account = get_object('Account', 1);
