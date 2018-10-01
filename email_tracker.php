@@ -52,7 +52,7 @@ if ($validator->isValid($sns)) {
     } else {
 
 
-        $sql = sprintf('insert into atest2  (`date`,`data`) values (NOW(),"%s")  ', addslashes(serialize($sns)));
+        $sql = sprintf('insert into atest2  (`date`,`data`) values (NOW(),"%s")  ', addslashes($sns['MessageId']));
 
         $db->exec($sql);
 
