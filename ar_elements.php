@@ -361,6 +361,10 @@ switch ($tab) {
         $data = prepare_values($_REQUEST, array('parameters' => array('type' => 'json array')));
         get_purged_orders_elements($db, $data['parameters'], $user);
         break;
+    case 'email_campaign.sent_emails':
+        $data = prepare_values($_REQUEST, array('parameters' => array('type' => 'json array')));
+        get_email_campaign_sent_emails_elements($db, $data['parameters'], $user);
+        break;
     default:
         $response = array(
             'state' => 405,
@@ -3147,6 +3151,73 @@ function get_purged_orders_elements($db, $data) {
 
 }
 
+function get_email_campaign_sent_emails_elements($db, $data) {
+
+
+
+
+
+    $elements_numbers = array(
+
+        'state' => array(
+            'Sending'     => 0,
+            'Delivered'   => 0,
+            'Opened' => 0,
+            'Clicked'    => 0,
+            'Bounced'    => 0,
+            'Spam'    => 0,
+            'Error'    => 0,
+
+        )
+    );
+
+
+
+    $table = '`Email Tracking Dimension`   ';
+
+
+    $where = sprintf(
+        ' where `Email Tracking Email Mailshot Key`=%d ', $data['parent_key']
+    );
+
+
+    $sql = sprintf(
+        "select count(*) as number,`Email Tracking State` as element from $table $where  group by `Email Tracking State` "
+    );
+
+
+
+    foreach ($db->query($sql) as $row) {
+
+        if($row['element']=='Ready' or $row['element']=='Sent to SES' or  $row['element']=='Sent'){
+            $row['element']='Sending';
+        }
+
+        if($row['element']=='Soft Bounce'){
+            $row['element']='Bounced';
+        }
+
+        if($row['element']=='Hard Bounce'){
+            $row['element']='Bounced';
+        }
+
+        $elements_numbers['state'][$row['element']] += $row['number'];
+
+    }
+
+    foreach($elements_numbers['state'] as $_key=>$_value){
+        $elements_numbers['state'][$_key]=number($_value);
+    }
+
+
+    $response = array(
+        'state'            => 200,
+        'elements_numbers' => $elements_numbers
+    );
+    echo json_encode($response);
+
+
+}
 
 
 ?>

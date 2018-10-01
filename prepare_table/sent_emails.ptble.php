@@ -31,7 +31,6 @@ if ($parameters['parent'] == 'prospect') {
 switch ($parameters['parent']) {
 
 
-
     case('prospect'):
         $where = sprintf(
             ' where `Email Tracking Recipient`="Prospect"  and  `Email Tracking Recipient Key`=%d', $parameters['parent_key']
@@ -71,19 +70,62 @@ switch ($parameters['parent']) {
 }
 
 
-
-
 if (isset($parameters['period'])) {
     include_once 'utils/date_functions.php';
-    list($db_interval, $from, $to, $from_date_1yb, $to_1yb)
-        = calculate_interval_dates(
+    list(
+        $db_interval, $from, $to, $from_date_1yb, $to_1yb
+        ) = calculate_interval_dates(
         $db, $parameters['period'], $parameters['from'], $parameters['to']
     );
     $where_interval = prepare_mysql_dates($from, $to, '`Email Tracking Created Date`');
-    $where .= $where_interval['mysql'];
+    $where          .= $where_interval['mysql'];
 
 }
 
+
+if (isset($parameters['elements_type'])) {
+
+
+    switch ($parameters['elements_type']) {
+
+
+        case('state'):
+            $_elements            = '';
+            $num_elements_checked = 0;
+            foreach (
+                $parameters['elements']['state']['items'] as $_key => $_value
+            ) {
+                $_value = $_value['selected'];
+                if ($_value) {
+                    $num_elements_checked++;
+
+                    if ($_key == 'Bounced') {
+                        $_elements = ",'Hard Bounce','Soft Bounce'";
+                    } elseif ($_key == 'Sending') {
+                        $_elements = ",'Ready','Sent to SES','Sent'";
+                    } else {
+                        $_elements .= ", '$_key'";
+
+                    }
+
+
+                }
+            }
+
+            if ($_elements == '') {
+                $where .= ' and false';
+            } elseif ($num_elements_checked == 7) {
+
+            } else {
+                $_elements = preg_replace('/^,/', '', $_elements);
+                $where     .= ' and `Email Tracking State` in ('.$_elements.')';
+            }
+            break;
+
+    }
+}
+
+//print $where;
 
 $wheref = '';
 if ($parameters['f_field'] == 'subject' and $f_value != '') {

@@ -3841,6 +3841,9 @@ $tab_defaults = array(
         'rpp'         => 100,
         'rpp_options' => $default_rrp_options,
         'f_field'     => 'email',
+        'elements_type' => each($elements_options['sent_emails']) ['key'],
+        'elements'      => $elements_options['sent_emails'],
+        'export_fields' => $export_fields['customer_sent_emails']
 
 
     ),
