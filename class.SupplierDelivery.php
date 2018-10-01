@@ -1519,7 +1519,6 @@ class SupplierDelivery extends DB_Table {
 
     function update_item_delivery_placed_quantity($data) {
 
-        include_once 'class.SupplierPart.php';
 
 
         $date            = gmdate('Y-m-d H:i:s');
@@ -1527,7 +1526,7 @@ class SupplierDelivery extends DB_Table {
 
 
         $sql = sprintf(
-            'SELECT POTF.`Purchase Order Transaction Fact Key`,`Supplier Part Packages Per Carton`,`Part SKU`,`Supplier Delivery Placed Quantity`,POTF.`Supplier Part Key`,`Supplier Delivery Checked Quantity`,`Metadata`
+            'SELECT `Purchase Order Key`,POTF.`Purchase Order Transaction Fact Key`,`Supplier Part Packages Per Carton`,`Part SKU`,`Supplier Delivery Placed Quantity`,POTF.`Supplier Part Key`,`Supplier Delivery Checked Quantity`,`Metadata`
 
 		 FROM `Purchase Order Transaction Fact`  POTF
 LEFT JOIN `Supplier Part Historic Dimension` SPH ON (POTF.`Supplier Part Historic Key`=SPH.`Supplier Part Historic Key`)
@@ -1542,7 +1541,7 @@ LEFT JOIN `Supplier Part Historic Dimension` SPH ON (POTF.`Supplier Part Histori
 
                 $placement_qty = $this->get_placement_quantity($transaction_key);
 
-                $supplier_part = new SupplierPart($row['Supplier Part Key']);
+                $supplier_part = get_object( 'SupplierPart',$row['Supplier Part Key']);
                 $qty           = ($data['qty'] + $placement_qty) / $supplier_part->get('Supplier Part Packages Per Carton');
                 if ($qty < 0) {
                     $qty = 0;
@@ -1623,6 +1622,9 @@ LEFT JOIN `Supplier Part Historic Dimension` SPH ON (POTF.`Supplier Part Histori
                 <div>';
 
 
+                $purchase_order=get('Purchase Order',$row['Purchase Order Key']);
+                $purchase_order->update_totals();
+
             } else {
                 $this->error = true;
                 $this->msg   = 'po transaction not found';
@@ -1649,6 +1651,10 @@ LEFT JOIN `Supplier Part Historic Dimension` SPH ON (POTF.`Supplier Part Histori
 
         */
         $this->update_state($this->get_state());
+
+
+
+
 
 
         $operations = array();

@@ -33,7 +33,7 @@ $print_est = true;
 print date('l jS \of F Y h:i:s A')."\n";
 
 
-$sql = sprintf("SELECT `Purchase Order Key` FROM `Purchase Order Dimension`");
+$sql = sprintf("SELECT `Purchase Order Key` FROM `Purchase Order Dimension` ");
 if ($result = $db->query($sql)) {
     foreach ($result as $row) {
         $po = get_object('PurchaseOrder', $row['Purchase Order Key']);
