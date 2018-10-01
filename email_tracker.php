@@ -51,10 +51,23 @@ if ($validator->isValid($sns)) {
         file_get_contents($sns['SubscribeURL']);
     } else {
 
+        $sns_id=$sns['MessageId'];
+
+        $sql=spintf('select `Email Tracking Event Key` from `Email Tracking Event Dimension` where `Email Tracking Event Message ID`=%s ',prepare_mysql($sns_id));
+        if ($result=$db->query($sql)) {
+            if ($row = $result->fetch()) {
+                exit;
+        	}
+        }else {
+        	print_r($error_info=$db->errorInfo());
+        	print "$sql\n";
+        	exit;
+        }
 
         $sql = sprintf('insert into atest2  (`date`,`data`) values (NOW(),"%s")  ', addslashes($sns['MessageId']));
 
         $db->exec($sql);
+
 
 
         $message = json_decode($sns['Message'], true);
@@ -84,7 +97,7 @@ if ($validator->isValid($sns)) {
 
 
 
-                $message_id=$message['mail']['messageId'];
+
 
                 switch ($message['eventType']) {
                     case 'Send':
@@ -175,8 +188,8 @@ if ($validator->isValid($sns)) {
 
 
                 $sql = sprintf(
-                    'insert into `Email Tracking Event Dimension`  (`Email Tracking Event Tracking Key`,`Email Tracking Event Type`,`Email Tracking Event Date`,`Email Tracking Event Data`) 
-                  values (%d,%s,%s,%s)', $row['Email Tracking Key'], prepare_mysql($event_type), prepare_mysql($date), prepare_mysql(json_encode($event_data))
+                    'insert into `Email Tracking Event Dimension`  (`Email Tracking Event Tracking Key`,`Email Tracking Event Type`,`Email Tracking Event Date`,`Email Tracking Event Data`,`Email Tracking Event Message ID`) 
+                  values (%d,%s,%s,%s,%s)', $row['Email Tracking Key'], prepare_mysql($event_type), prepare_mysql($date), prepare_mysql(json_encode($event_data)),prepare_mysql($sns_id)
 
                 );
                 $db->exec($sql);
