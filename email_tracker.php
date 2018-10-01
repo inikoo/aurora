@@ -56,17 +56,19 @@ if ($validator->isValid($sns)) {
         $sql=sprintf('select `Email Tracking Event Key` from `Email Tracking Event Dimension` where `Email Tracking Event Message ID`=%s ',prepare_mysql($sns_id));
         if ($result=$db->query($sql)) {
             if ($row = $result->fetch()) {
+                http_response_code(200);
                 exit;
         	}
         }else {
-        	print_r($error_info=$db->errorInfo());
-        	print "$sql\n";
-        	exit;
+        	//print_r($error_info=$db->errorInfo());
+        	//print "$sql\n";
+            http_response_code(200);
+            exit;
         }
 
-        $sql = sprintf('insert into atest2  (`date`,`data`) values (NOW(),"%s")  ', addslashes($sns['MessageId']));
+        //$sql = sprintf('insert into atest2  (`date`,`data`) values (NOW(),"%s")  ', addslashes($sns['MessageId']));
 
-        $db->exec($sql);
+        //$db->exec($sql);
 
 
 
@@ -123,6 +125,7 @@ if ($validator->isValid($sns)) {
 
                         if (isset($message['linkTags']['type']['unsubscribe'])) {
                             // ignore Unsubscribe link clicks
+                            http_response_code(200);
                             exit;
                         }
 
@@ -372,9 +375,14 @@ if ($validator->isValid($sns)) {
 
                 $db->exec($sql);
             }
-        } else {
-            print_r($error_info = $db->errorInfo());
-            print "$sql\n";
+            http_response_code(200);
+            exit;
+
+        }
+        else {
+            //print_r($error_info = $db->errorInfo());
+            //print "$sql\n";
+            http_response_code(200);
             exit;
         }
 
