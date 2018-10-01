@@ -152,14 +152,20 @@ class Email_Tracking extends DB_Table {
 
                     }
 
-                    $this->update_field('Email Tracking State', 'Opened', 'no_history');
 
-                    $this->update_field('Email Tracking Last Read Date', gmdate('Y-m-d H:i:s'), 'no_history');
+                    $this->fast_update(
+                        array(
+                            'Email Tracking State'          => 'Opened',
+                            'Email Tracking Last Read Date' => gmdate('Y-m-d H:i:s')
+                        )
+                    );
+
+
                     $sql = sprintf('select count(*) as num from  `Email Tracking Event Dimension` where `Email Tracking Event Tracking Key`=%d and `Email Tracking Event Type`="Opened" ', $this->id);
 
                     if ($result = $this->db->query($sql)) {
                         if ($row = $result->fetch()) {
-                            $this->update_field('Email Tracking Number Reads', $row['num'], 'no_history');
+                            $this->fast_update(array('Email Tracking Number Reads' => $row['num']));
 
                         }
                     } else {
@@ -190,28 +196,30 @@ class Email_Tracking extends DB_Table {
                 )) {
 
                     if ($this->data['Email Tracking First Clicked Date'] == '') {
-                        $this->fast_update(array(
-                                               'Email Tracking First Clicked Date'=>gmdate('Y-m-d H:i:s')
-                                           ));
+                        $this->fast_update(
+                            array(
+                                'Email Tracking First Clicked Date' => gmdate('Y-m-d H:i:s')
+                            )
+                        );
 
                     }
-                    $this->update_field('Email Tracking State', 'Clicked', 'no_history');
-
-                    $this->update_field('Email Tracking Last Clicked Date', gmdate('Y-m-d H:i:s'), 'no_history');
 
 
-                    $this->fast_update(array(
-                                           'Email Tracking State'=> 'Clicked',
-                                           'Email Tracking Last Clicked Date'=>gmdate('Y-m-d H:i:s')
-                                       ));
+                    $this->fast_update(
+                        array(
+                            'Email Tracking State'             => 'Clicked',
+                            'Email Tracking Last Clicked Date' => gmdate('Y-m-d H:i:s')
+                        )
+                    );
 
                     $sql = sprintf('select count(*) as num from  `Email Tracking Event Dimension` where `Email Tracking Event Tracking Key`=%d and `Email Tracking Event Type`="Clicked" ', $this->id);
 
                     if ($result = $this->db->query($sql)) {
                         if ($row = $result->fetch()) {
-                            $this->update_field(
-                                'Email Tracking Number Clicks', $row['num'], 'no_history'
-                            );
+                            $this->update_field();
+
+                            $this->fast_update(array('Email Tracking Number Clicks' => $row['num']));
+
 
                         }
                     } else {
