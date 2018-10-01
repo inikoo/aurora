@@ -310,7 +310,7 @@ if ($validator->isValid($sns)) {
 
 
                 if (isset($email_campaign)) {
-                    $this->socket->send(
+                    $socket->send(
                         json_encode(
                             array(
                                 'channel' => 'real_time.'.strtolower($account->get('Account Code')),
