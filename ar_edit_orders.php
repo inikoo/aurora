@@ -952,10 +952,13 @@ function refund_payment($data, $editor, $smarty, $db, $account, $user) {
                     exit;
 
             }
+            $store=get_object('Store',$order->get('Store Key'));
 
 
             $payment_data = array(
                 'Payment Store Key'                   => $order->get('Store Key'),
+                'Payment Website Key'                   => $store->get('Store Website Key'),
+
                 'Payment Customer Key'                => $order->get('Customer Key'),
                 'Payment Transaction Amount'          => -$data['amount'],
                 'Payment Currency Code'               => $order->get('Currency Code'),
@@ -972,7 +975,7 @@ function refund_payment($data, $editor, $smarty, $db, $account, $user) {
                 'Payment Method'                         => $payment->get('Payment Method'),
                 'Payment Location'                       => 'Order',
                 'Payment Metadata'                       => '',
-                'Payment Submit Type'                    => ($data['submit_type'] == 'Online' ? 'EPS' : $data['submit_type']),
+                'Payment Submit Type'                    => ($data['submit_type'] == 'Online' ? 'EPS' : 'Manual'),
                 'Payment Type'                           => 'Refund',
                 'Payment Currency Exchange Rate'         => currency_conversion($db, $order->get('Currency Code'), $account->get('Currency Code')),
                 'Payment Related Payment Key'            => $payment->id,
@@ -998,9 +1001,12 @@ function refund_payment($data, $editor, $smarty, $db, $account, $user) {
 
             $exchange = currency_conversion($db, $order->get('Currency Code'), $account->get('Currency Code'));
 
+            $store=get_object('Store',$order->get('Store Key'));
+
             $reference    = '';
             $payment_data = array(
                 'Payment Store Key'                   => $order->get('Store Key'),
+                'Payment Website Key'                   => $store->get('Store Website Key'),
                 'Payment Customer Key'                => $order->get('Customer Key'),
                 'Payment Transaction Amount'          => -$data['amount'],
                 'Payment Currency Code'               => $order->get('Currency Code'),
@@ -1017,7 +1023,7 @@ function refund_payment($data, $editor, $smarty, $db, $account, $user) {
                 'Payment Method'                         => $payment->get('Payment Method'),
                 'Payment Location'                       => 'Order',
                 'Payment Metadata'                       => '',
-                'Payment Submit Type'                    => ($data['submit_type'] == 'Online' ? 'EPS' : $data['submit_type']),
+                'Payment Submit Type'                    => ($data['submit_type'] == 'Online' ? 'EPS' : 'Manual'),
                 'Payment Type'                           => 'Credit',
                 'Payment Currency Exchange Rate'         => $exchange,
                 'Payment Related Payment Key'            => $payment->id,

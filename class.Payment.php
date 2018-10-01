@@ -80,6 +80,8 @@ class Payment extends DB_Table {
         }
 
 
+      //  print_r($data);
+
         $keys   = '';
         $values = '';
 
@@ -128,6 +130,7 @@ class Payment extends DB_Table {
             $this->get_data('id', $this->id);
         } else {
             print "Error can not create payment\n";
+            print "$sql\n";
             exit;
 
         }
