@@ -53,7 +53,7 @@ if ($validator->isValid($sns)) {
 
         $sns_id=$sns['MessageId'];
 
-        $sql=spintf('select `Email Tracking Event Key` from `Email Tracking Event Dimension` where `Email Tracking Event Message ID`=%s ',prepare_mysql($sns_id));
+        $sql=sprintf('select `Email Tracking Event Key` from `Email Tracking Event Dimension` where `Email Tracking Event Message ID`=%s ',prepare_mysql($sns_id));
         if ($result=$db->query($sql)) {
             if ($row = $result->fetch()) {
                 exit;
