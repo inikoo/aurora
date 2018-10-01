@@ -52,6 +52,11 @@ if ($validator->isValid($sns)) {
     } else {
 
 
+        $sql = sprintf('insert into atest2  (`date`,`data`) values (NOW(),"%s")  ', addslashes($sns));
+
+        $db->exec($sql);
+
+
         $message = json_decode($sns['Message'], true);
 
 
@@ -170,8 +175,8 @@ if ($validator->isValid($sns)) {
 
 
                 $sql = sprintf(
-                    'insert into `Email Tracking Event Dimension`  (`Email Tracking Event Tracking Key`,`Email Tracking Event Type`,`Email Tracking Event Date`,`Email Tracking Event Data`,`Email Tracking Event Message ID`) 
-                  values (%d,%s,%s,%s,%s)', $row['Email Tracking Key'], prepare_mysql($event_type), prepare_mysql($date), prepare_mysql(json_encode($event_data)), prepare_mysql($message_id)
+                    'insert into `Email Tracking Event Dimension`  (`Email Tracking Event Tracking Key`,`Email Tracking Event Type`,`Email Tracking Event Date`,`Email Tracking Event Data`) 
+                  values (%d,%s,%s,%s)', $row['Email Tracking Key'], prepare_mysql($event_type), prepare_mysql($date), prepare_mysql(json_encode($event_data))
 
                 );
                 $db->exec($sql);
