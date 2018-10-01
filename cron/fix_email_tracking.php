@@ -29,6 +29,95 @@ $editor = array(
 );
 
 
+// remove duplicated events
+
+
+$sql = sprintf('select `Email Tracking Key` from `Email Tracking Dimension` ');
+
+if ($result = $db->query($sql)) {
+    foreach ($result as $row) {
+
+
+        $sql = sprintf('select * from `Email Tracking Event Dimension` where   `Email Tracking Event Tracking Key`=%d and `Email Tracking Event Message ID` is null order by 	`Email Tracking Event Key`', $row['Email Tracking Key']);
+
+
+        if ($result = $db->query($sql)) {
+            foreach ($result as $row2) {
+                //print_r($row2);
+
+
+                $sql = sprintf('select `Email Tracking Event Type` from `Email Tracking Event Dimension` where `Email Tracking Event Key`=%s', $row2['Email Tracking Event Key']);
+
+                if ($result3 = $db->query($sql)) {
+                    if ($row3 = $result3->fetch()) {
+                        $sql = sprintf(
+                            'delete from `Email Tracking Event Dimension` where `Email Tracking Event Tracking Key`=%d  and `Email Tracking Event Date`=%s and `Email Tracking Event Data`=%s and `Email Tracking Event Type`=%s 
+                            and `Email Tracking Event Key`!=%d ', $row['Email Tracking Key'], prepare_mysql($row2['Email Tracking Event Date']), prepare_mysql($row2['Email Tracking Event Data']), prepare_mysql($row2['Email Tracking Event Type']),
+                            $row2['Email Tracking Event Key']
+
+                        );
+                        //print "$sql\n";
+
+                        $db->exec($sql);
+                    }
+                } else {
+                    print_r($error_info = $db->errorInfo());
+                  //  print "$sql\n";
+                    exit;
+                }
+
+
+
+            }
+        } else {
+            print_r($error_info = $db->errorInfo());
+            print "$sql\n";
+            exit;
+        }
+
+        $email_tracking = get_object('Email_Tracking', $row['Email Tracking Key']);
+
+
+        $sql = sprintf('select count(*) as num from  `Email Tracking Event Dimension` where `Email Tracking Event Tracking Key`=%d and `Email Tracking Event Type`="Clicked" ',  $row['Email Tracking Key']);
+
+        if ($result = $db->query($sql)) {
+            if ($rowx = $result->fetch()) {
+                $email_tracking->fast_update(
+                    array('Email Tracking Number Clicks'=> $rowx['num'])
+                );
+
+            }
+        } else {
+            print_r($error_info = $db->errorInfo());
+            print "$sql\n";
+            exit;
+        }
+
+        $sql = sprintf('select count(*) as num from  `Email Tracking Event Dimension` where `Email Tracking Event Tracking Key`=%d and `Email Tracking Event Type`="Opened" ',  $row['Email Tracking Key']);
+
+        if ($result = $db->query($sql)) {
+            if ($rowx = $result->fetch()) {
+                $email_tracking->fast_update(
+                    array('Email Tracking Number Reads'=> $rowx['num'])
+                );
+
+            }
+        } else {
+            print_r($error_info = $db->errorInfo());
+            print "$sql\n";
+            exit;
+        }
+
+    }
+} else {
+    print_r($error_info = $db->errorInfo());
+    print "$sql\n";
+    exit;
+}
+
+
+exit;
+
 $sql = sprintf('select `Email Tracking Key` from `Email Tracking Dimension` ');
 
 if ($result = $db->query($sql)) {
@@ -41,11 +130,11 @@ if ($result = $db->query($sql)) {
         if ($result2 = $db->query($sql)) {
             if ($row2 = $result2->fetch()) {
 
-                if($row2['num']>0){
-                    $email_tracking=get_object('Email_Tracking',$row['Email Tracking Key']);
-                    $data_to_update=array(
-                        'Email Tracking Number Clicks'=>$row2['num'],
-                        'Email Tracking First Clicked Date'=>$row2['min_date'],
+                if ($row2['num'] > 0) {
+                    $email_tracking = get_object('Email_Tracking', $row['Email Tracking Key']);
+                    $data_to_update = array(
+                        'Email Tracking Number Clicks'      => $row2['num'],
+                        'Email Tracking First Clicked Date' => $row2['min_date'],
                     );
                     $email_tracking->fast_update($data_to_update);
 
