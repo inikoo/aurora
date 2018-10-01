@@ -853,14 +853,35 @@ sum(`Purchase Order Net Amount`) AS items_net, sum(`Purchase Order Extra Cost Am
         }
 
 
+        $deliveries=$this->get_deliveries('objects');
+
         if ($this->get('Purchase Order State') == 'Submitted') {
 
-            if ($this->get('Purchase Order Number Supplier Delivery Items') == 0) {
+            if ($this->get('Purchase Order Number Supplier Delivery Items') == 0 or  $deliveries==0) {
 
                 return;
 
             }
         }
+
+
+        // todo this mus be rewritten
+
+     //   print $this->get('Purchase Order State');
+
+        if ($this->get('Purchase Order State') == 'Inputted') {
+
+            if ($this->get('Purchase Order Number Supplier Delivery Items') == 0 or  $deliveries==0) {
+
+
+
+                $this->update_state('Submitted');
+
+                return;
+
+            }
+        }
+
 
 
         $max_index          = 0;
@@ -872,8 +893,12 @@ sum(`Purchase Order Net Amount`) AS items_net, sum(`Purchase Order Extra Cost Am
         $min_delivery_state = 'Inputted';
 
 
-        foreach ($this->get_deliveries('objects') as $delivery) {
+
+
+
+        foreach ($deliveries as $delivery) {
             $index = $delivery->get('State Index');
+
 
 
             if ($index < 0) {
@@ -896,6 +921,7 @@ sum(`Purchase Order Net Amount`) AS items_net, sum(`Purchase Order Extra Cost Am
         }
 
 
+
         $this->fast_update(
             array(
                 'Purchase Order Max Supplier Delivery State' => $max_delivery_state,
@@ -903,15 +929,17 @@ sum(`Purchase Order Net Amount`) AS items_net, sum(`Purchase Order Extra Cost Am
         );
 
 
-        //  print $this->get('State Index').' '.$min_delivery_state;
+         // print $this->get('State Index').' '.$min_delivery_state;
+//'InProcess','SubmittedAgent','Submitted','Editing_Submitted','Inputted','Dispatched','Received','Checked','Placed','Cancelled'
+
 
         if ($this->get('State Index') >= 60) {
             if ($min_delivery_state == 'InProcess') {
                 $min_delivery_state = 'Inputted';
             }
-
-            $this->update_state($min_delivery_state);
         }
+            $this->update_state($min_delivery_state);
+
 
 
     }
@@ -961,6 +989,7 @@ sum(`Purchase Order Net Amount`) AS items_net, sum(`Purchase Order Extra Cost Am
 
 
 
+       // print "* $value *";
 
         if ($old_value != $value) {
             switch ($value) {
@@ -1094,7 +1123,7 @@ sum(`Purchase Order Net Amount`) AS items_net, sum(`Purchase Order Extra Cost Am
 
                     break;
 
-                //case 'Inputted':
+                case 'Inputted':
                 case 'Dispatched':
                 case 'Received':
                 case 'Placed':
@@ -1207,7 +1236,10 @@ sum(`Purchase Order Net Amount`) AS items_net, sum(`Purchase Order Extra Cost Am
         if ($result = $this->db->query($sql)) {
             foreach ($result as $row) {
                 $supplier_part = get_object('SupplierPart', $row['Supplier Part Key']);
-                $supplier_part->part->update_next_deliveries_data();
+                if(isset($supplier_part->part)){
+                    $supplier_part->part->update_next_deliveries_data();
+                }
+
 
 
             }
