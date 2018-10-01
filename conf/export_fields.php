@@ -1206,7 +1206,56 @@ $export_fields = array(
 
 
 
-    )
+    ),
+    'customer_sent_emails' => array(
+        array(
+            'name'    => '`Email Tracking Email`',
+            'label'   => _('Email'),
+            'checked' => 1
+        ),
+        array(
+            'name'    => '`Customer Key`',
+            'label'   => _('Customer ID'),
+            'checked' => 1
+        ),
+        array(
+            'name'    => '`Customer Name`',
+            'label'   => _('Customer name'),
+            'checked' => 1
+        ),
+        array(
+            'name'    => '`Email Tracking State`',
+            'label'   => _('State'),
+            'checked' => 1
+        ),
+        array(
+            'name'    => '`Email Tracking Sent Date`',
+            'label'   => _('Date sent'),
+            'checked' => 1
+        ),
+        array(
+            'name'    => '`Email Tracking Number Reads`',
+            'label'   => _('Number of times opened'),
+            'checked' => 1
+        ),
+        array(
+            'name'    => '`Email Tracking Number Clicks`',
+            'label'   => _('Number of clicks'),
+            'checked' => 1
+        ),
+        array(
+            'name'    => '`Email Tracking Spam`',
+            'label'   => _('Marked as spam'),
+            'checked' => 1
+        ),
+        array(
+            'name'    => '`Email Tracking Unsubscribed`',
+            'label'   => _('Unsubscribed'),
+            'checked' => 1
+        ),
+
+
+    ),
 
 
 );

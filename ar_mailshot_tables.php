@@ -248,7 +248,7 @@ function sent_emails($_data, $db, $user) {
 
 
     $parent = get_object($_data['parameters']['parent'], $_data['parameters']['parent_key']);
-    if ($_data['parameters']['parent'] == 'mailshot') {
+    if ($_data['parameters']['parent'] == 'mailshot' or $_data['parameters']['parent'] == 'email_campaign') {
         $email_campaign_type= get_object('email_campaign_type',$parent->get('Email Campaign Email Template Type Key'));
     }elseif ($_data['parameters']['parent'] == 'customer') {
         $_parent= get_object('customer',$_data['parameters']['parent_key']);
@@ -355,10 +355,22 @@ function sent_emails($_data, $db, $user) {
                 );
 
             }elseif ($_data['parameters']['parent'] == 'email_campaign') {
+
+             //   print_r($parent);
+
                 $subject='';
-                $email = sprintf(
-                    '<span class="link" onclick="change_view(\'orders/%d/dashboard/website/mailshots/%d/tracking/%d\')"  >%s</span>',$data['store_key'],$parent->id, $data['Email Tracking Key'], $data['Email Tracking Email']
-                );
+
+                if($parent->get('Email Campaign Type')=='AbandonedCart'){
+                    $email = sprintf(
+                        '<span class="link" onclick="change_view(\'orders/%d/dashboard/website/mailshots/%d/tracking/%d\')"  >%s</span>',$data['store_key'],$parent->id, $data['Email Tracking Key'], $data['Email Tracking Email']
+                    );
+                }else{
+                    $email = sprintf(
+                        '<span class="link" onclick="change_view(\'email_campaign_type/%d/%d/mailshot/%d/tracking/%d\')"  >%s</span>', $email_campaign_type->get('Store Key'),$email_campaign_type->id, $parent->id, $data['Email Tracking Key'], $data['Email Tracking Email']
+                    );
+                }
+
+
 
             }
 

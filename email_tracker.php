@@ -77,6 +77,10 @@ if ($validator->isValid($sns)) {
 
                 //'Sent','Rejected by SES','Send','Read','Hard Bounce','Soft Bounce','Spam','Delivered','Opened','Clicked','Send to SES Error'
 
+
+
+                $message_id=$message['mail']['messageId'];
+
                 switch ($message['eventType']) {
                     case 'Send':
                         $event_type = 'Sent';
@@ -166,8 +170,8 @@ if ($validator->isValid($sns)) {
 
 
                 $sql = sprintf(
-                    'insert into `Email Tracking Event Dimension`  (`Email Tracking Event Tracking Key`,`Email Tracking Event Type`,`Email Tracking Event Date`,`Email Tracking Event Data`) 
-                  values (%d,%s,%s,%s)', $row['Email Tracking Key'], prepare_mysql($event_type), prepare_mysql($date), prepare_mysql(json_encode($event_data))
+                    'insert into `Email Tracking Event Dimension`  (`Email Tracking Event Tracking Key`,`Email Tracking Event Type`,`Email Tracking Event Date`,`Email Tracking Event Data`,`Email Tracking Event Message ID`) 
+                  values (%d,%s,%s,%s,%s)', $row['Email Tracking Key'], prepare_mysql($event_type), prepare_mysql($date), prepare_mysql(json_encode($event_data)), prepare_mysql($message_id)
 
                 );
                 $db->exec($sql);

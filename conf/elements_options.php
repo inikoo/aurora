@@ -1579,7 +1579,6 @@ $elements_options = array(
         )
     ),
 
-    //'In Process','Purged','Exculpated','Cancelled'
     'purged_orders' => array(
         'state' => array(
             'label' => _('State'),
@@ -1618,6 +1617,48 @@ $elements_options = array(
                     'label'    => _('Changes'),
                     'selected' => true
                 ),
+            ),
+
+        )
+    ),
+    //'Ready','Sent to SES','Rejected by SES','Sent','Soft Bounce','Hard Bounce','Delivered','Spam','Opened','Clicked','Error'
+
+
+
+    'sent_emails' => array(
+        'state' => array(
+            'label' => _('State'),
+            'items' => array(
+                'Sending'       => array(
+                    'label'    => _('Sending'),
+                    'selected' => true
+                ),
+                'Delivered'       => array(
+                    'label'    => _('Delivered'),
+                    'selected' => true
+                ),
+                'Opened'       => array(
+                    'label'    => _('Opened'),
+                    'selected' => true
+                ),
+                'Clicked'       => array(
+                    'label'    => _('Clicked'),
+                    'selected' => true
+                ),
+                'Bounced'             => array(
+                    'label'    => _('Bounced'),
+                    'selected' => true
+                ),
+                'Spam' => array(
+                    'label'    => _('Spam'),
+                    'selected' => true
+                ),
+                'Error' => array(
+                    'label'    => _('Errors'),
+                    'selected' => true
+                ),
+
+
             ),
 
         )
