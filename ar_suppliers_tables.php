@@ -820,7 +820,7 @@ function orders($_data, $db, $user) {
             $table_data[] = array(
                 'id'           => (integer)$data['Purchase Order Key'],
                 'parent'       => sprintf('<span class="link" onclick="change_view(\'/%s/%d\')" >%s</span>  ', strtolower($data['Purchase Order Parent']), $data['Purchase Order Parent Key'], $data['Purchase Order Parent Name']),
-                'public_id'    => sprintf('<span class="link" onclick="change_view(\'suppliers/order/%d\')" >%s</span>  ', $data['Purchase Order Key'], $data['Purchase Order Public ID']),
+                'public_id'    => sprintf('<span class="link" onclick="change_view(\'suppliers/order/%d\')" >%s</span>  ', $data['Purchase Order Key'], ($data['Purchase Order Public ID']==''?'<i class="fa fa-exclamation-circle error"></i> <span class="very_discreet italic">'._('empty').'</span>':$data['Purchase Order Public ID'])),
                 'date'         => strftime("%e %b %Y", strtotime($data['Purchase Order Creation Date'].' +0:00')),
                 'last_date'    => strftime("%a %e %b %Y %H:%M %Z", strtotime($data['Purchase Order Last Updated Date'].' +0:00')),
                 'state'        => $state,
