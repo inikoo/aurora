@@ -52,7 +52,7 @@ if ($validator->isValid($sns)) {
     } else {
 
 
-        $sql = sprintf('insert into atest2  (`date`,`data`) values (NOW(),"%s")  ', addslashes($sns));
+        $sql = sprintf('insert into atest2  (`date`,`data`) values (NOW(),"%s")  ', addslashes(json_encode($sns)));
 
         $db->exec($sql);
 
