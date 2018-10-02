@@ -1665,7 +1665,7 @@ class Order extends DB_Table {
     function send_review_invitation() {
 
 
-        if (gethostname() == 'bali') {
+        if (gethostname() == 'bali' or $this->get('Order Email')=='') {
             return;
         }
 
@@ -1737,7 +1737,7 @@ class Order extends DB_Table {
 
                 $bodyRequest = array(
                     "name"     => $this->get('Order Customer Name'),
-                    "email"    => "raul2@inikoo.com",
+                    "email"    => $this->get('Order Email'),
                     "order_id" => $this->get('Public ID'),
                     'delay'    => $delay,
                     "products" => $products
