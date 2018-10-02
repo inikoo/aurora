@@ -1622,7 +1622,7 @@ LEFT JOIN `Supplier Part Historic Dimension` SPH ON (POTF.`Supplier Part Histori
                 <div>';
 
 
-                $purchase_order=get('Purchase Order',$row['Purchase Order Key']);
+                $purchase_order=get_object('Purchase Order',$row['Purchase Order Key']);
                 $purchase_order->update_totals();
 
             } else {
