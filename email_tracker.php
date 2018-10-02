@@ -51,17 +51,17 @@ if ($validator->isValid($sns)) {
         file_get_contents($sns['SubscribeURL']);
     } else {
 
-        $sns_id=$sns['MessageId'];
+        $sns_id = $sns['MessageId'];
 
-        $sql=sprintf('select `Email Tracking Event Key` from `Email Tracking Event Dimension` where `Email Tracking Event Message ID`=%s ',prepare_mysql($sns_id));
-        if ($result=$db->query($sql)) {
+        $sql = sprintf('select `Email Tracking Event Key` from `Email Tracking Event Dimension` where `Email Tracking Event Message ID`=%s ', prepare_mysql($sns_id));
+        if ($result = $db->query($sql)) {
             if ($row = $result->fetch()) {
                 http_response_code(200);
                 exit;
-        	}
-        }else {
-        	//print_r($error_info=$db->errorInfo());
-        	//print "$sql\n";
+            }
+        } else {
+            //print_r($error_info=$db->errorInfo());
+            //print "$sql\n";
             http_response_code(200);
             exit;
         }
@@ -69,7 +69,6 @@ if ($validator->isValid($sns)) {
         //$sql = sprintf('insert into atest2  (`date`,`data`) values (NOW(),"%s")  ', addslashes($sns['MessageId']));
 
         //$db->exec($sql);
-
 
 
         $message = json_decode($sns['Message'], true);
@@ -96,11 +95,8 @@ if ($validator->isValid($sns)) {
 
 
                 //'Sent','Rejected by SES','Send','Read','Hard Bounce','Soft Bounce','Spam','Delivered','Opened','Clicked','Send to SES Error'
-
-
-
-
-
+                $note        = '';
+                $status_code = '';
                 switch ($message['eventType']) {
                     case 'Send':
                         $event_type = 'Sent';
@@ -112,11 +108,59 @@ if ($validator->isValid($sns)) {
 
                         break;
                     case 'Open':
+
+                        require_once 'utils/ip_geolocation.php';
+                        require_once 'utils/parse_user_agent.php';
+
+
                         $event_type = 'Opened';
                         $date       = gmdate('Y-m-d H:i:s', strtotime($message['open']['timestamp']));
 
                         unset($message['open']['timestamp']);
                         $event_data = $message['open'];
+
+                        if (isset($event_data['ipAddress'])) {
+                            $ips = preg_split('/\,/', $event_data['ipAddress']);
+                            //print_r($ips);
+
+                            foreach ($ips as $ip) {
+                                $geolocation_data = get_ip_geolocation(trim($ip), $db);
+                                $note             = $geolocation_data['Location'];
+                            }
+                        }
+
+
+                        $user_agent_note = '';
+
+                        if (isset($event_data['userAgent'])) {
+                            $user_agent_data = parse_user_agent(trim($event_data['userAgent']), $db);
+
+                            if (is_array($user_agent_data) and $user_agent_data['Status'] == 'OK') {
+
+
+                                if ($user_agent_data['Icon'] != '') {
+                                    $user_agent_note = ' <i title="'.$user_agent_data['Device'].'" class="far '.$user_agent_data['Icon'].'"></i> ';
+                                } else {
+                                    $user_agent_note = $user_agent_data['Device'].' ';
+                                }
+
+
+                                $user_agent_note .= $user_agent_data['Software'];
+
+                                if ($user_agent_data['Software Details'] != '') {
+                                    $user_agent_note .= ' <span class="discreet italic">('.$user_agent_data['Software Details'].')</span>';
+                                }
+
+
+                            }
+
+
+                        }
+
+                        if ($user_agent_note != '') {
+                            $note .= ', '.$user_agent_note;
+                        }
+                        $note = preg_replace('/^\, /', '', $note);
 
 
                         break;
@@ -136,12 +180,18 @@ if ($validator->isValid($sns)) {
                         $event_data = $message['click'];
 
 
+                        if (isset($event_data['link'])) {
+                            $note = $event_data['link'];
+                        }
+
+
                         break;
                     case 'Bounce':
                         $date       = gmdate('Y-m-d H:i:s', strtotime($message['bounce']['timestamp']));
                         $event_data = $message['bounce'];
 
                         unset($message['bounce']['timestamp']);
+
 
                         switch ($message['bounce']['bounceType']) {
                             case 'Undetermined':
@@ -162,6 +212,13 @@ if ($validator->isValid($sns)) {
 
                                 break;
 
+                        }
+
+                        if (isset($event_data['bouncedRecipients'][0]['status'])) {
+                            $status_code = $event_data['bouncedRecipients'][0]['status'];
+                        }
+                        if (isset($event_data['bouncedRecipients'][0]['diagnosticCode'])) {
+                            $note = $event_data['bouncedRecipients'][0]['diagnosticCode'];
                         }
 
 
@@ -191,8 +248,8 @@ if ($validator->isValid($sns)) {
 
 
                 $sql = sprintf(
-                    'insert into `Email Tracking Event Dimension`  (`Email Tracking Event Tracking Key`,`Email Tracking Event Type`,`Email Tracking Event Date`,`Email Tracking Event Data`,`Email Tracking Event Message ID`) 
-                  values (%d,%s,%s,%s,%s)', $row['Email Tracking Key'], prepare_mysql($event_type), prepare_mysql($date), prepare_mysql(json_encode($event_data)),prepare_mysql($sns_id)
+                    'insert into `Email Tracking Event Dimension`  (`Email Tracking Event Tracking Key`,`Email Tracking Event Type`,`Email Tracking Event Date`,`Email Tracking Event Data`,`Email Tracking Event Message ID`,`Email Tracking Event Note`,`Email Tracking Delivery Status Code`) 
+                  values (%d,%s,%s,%s,%s,%s,%s)', $row['Email Tracking Key'], prepare_mysql($event_type), prepare_mysql($date), prepare_mysql(json_encode($event_data)), prepare_mysql($sns_id), prepare_mysql($note), prepare_mysql($status_code)
 
                 );
                 $db->exec($sql);
@@ -271,9 +328,8 @@ if ($validator->isValid($sns)) {
                 //$db->exec($_sql);
 
 
-
                 $context = new ZMQContext();
-                $socket = $context->getSocket(ZMQ::SOCKET_PUSH, 'my pusher');
+                $socket  = $context->getSocket(ZMQ::SOCKET_PUSH, 'my pusher');
                 $socket->connect("tcp://localhost:5555");
                 $account = get_object('Account', 1);
 
@@ -378,8 +434,7 @@ if ($validator->isValid($sns)) {
             http_response_code(200);
             exit;
 
-        }
-        else {
+        } else {
             //print_r($error_info = $db->errorInfo());
             //print "$sql\n";
             http_response_code(200);

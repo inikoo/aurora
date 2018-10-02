@@ -457,14 +457,7 @@ class Subject extends DB_Table {
                 $this->update(
                     array(
                         $this->table_name.' Location' => trim(
-                            sprintf(
-                                '<img src="/art/flags/%s.gif" title="%s"> %s', strtolower(
-                                $this->get(
-                                    'Contact Address Country 2 Alpha Code'
-                                )
-                            ), $this->get(
-                                'Contact Address Country 2 Alpha Code'
-                            ), $location
+                            sprintf('<img src="/art/flags/%s.gif" title="%s"> %s', strtolower($this->get('Contact Address Country 2 Alpha Code')), $this->get('Contact Address Country 2 Alpha Code'), $location
                             )
                         )
                     ), 'no_history'
