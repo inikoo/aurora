@@ -204,6 +204,12 @@ class Payment_Account extends DB_Table {
 
     function get($key = '') {
 
+
+        if(!$this->id){
+            return false;
+        }
+
+
         //'Credit Card','Cash','Paypal','Check','Bank Transfer','Cash on Delivery','Other','Unknown','Account'
 
         switch ($key) {
