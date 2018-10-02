@@ -216,7 +216,6 @@ class Email_Tracking extends DB_Table {
 
                     if ($result = $this->db->query($sql)) {
                         if ($row = $result->fetch()) {
-                            $this->update_field();
 
                             $this->fast_update(array('Email Tracking Number Clicks' => $row['num']));
 
