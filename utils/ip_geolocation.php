@@ -42,7 +42,7 @@ function get_ip_geolocation($ip, $db) {
             // Decode JSON response:
             $api_result = json_decode($json, true);
 
-            print_r($api_result);
+            //print_r($api_result);
             $location = parse_geolocation_data($api_result);
             $sql      = sprintf(
                 "insert into kbase.`IP Geolocation` (IP,Latitude,Longitude,Location,`Country Code`,`Region Code`,`Region Name`,Town,`Postal Code`) values (%s,%s,%s,%s,%s,%s,%s,%s,%s)", prepare_mysql($ip), prepare_mysql($api_result['latitude']), prepare_mysql($api_result['longitude']),
@@ -50,7 +50,7 @@ function get_ip_geolocation($ip, $db) {
 
             );
 
-            print "$sql\n";
+           // print "$sql\n";
 
 
             $db->exec($sql);
