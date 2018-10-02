@@ -11,7 +11,6 @@
  Version 2.0
 */
 
-
 class Timesheet_Record extends DB_Table {
 
 

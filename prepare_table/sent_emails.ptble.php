@@ -14,7 +14,7 @@ if ($parameters['parent'] == 'prospect') {
 
 
     $table  = '`Email Tracking Dimension`  left join `Published Email Template Dimension` S on (`Email Tracking Published Email Template Key`=`Published Email Template Key`) ';
-    $fields = "`Published Email Template Subject`,`Email Tracking Key`,`Email Tracking State`,`Email Tracking Created Date`";
+    $fields = "`Email Tracking Delivery Status Code`,`Published Email Template Subject`,`Email Tracking Key`,`Email Tracking State`,`Email Tracking Created Date`";
 
 } else {
 
@@ -23,7 +23,7 @@ if ($parameters['parent'] == 'prospect') {
     left join `Published Email Template Dimension` on (`Email Tracking Published Email Template Key`=`Published Email Template Key`)
     left join `Customer Dimension` on (`Email Tracking Recipient Key`=`Customer Key`) ';
     $fields =
-        "`Email Tracking Email`,`Customer Store Key` as store_key,`Customer Key` as recipient_key,`Customer Name` as recipient_name,`Email Campaign Type Code`,`Published Email Template Subject`,`Email Tracking Key`,`Email Tracking State`,`Email Tracking Created Date`";
+        "`Email Tracking Delivery Status Code`,`Email Tracking Email`,`Customer Store Key` as store_key,`Customer Key` as recipient_key,`Customer Name` as recipient_name,`Email Campaign Type Code`,`Published Email Template Subject`,`Email Tracking Key`,`Email Tracking State`,`Email Tracking Created Date`";
 
 }
 

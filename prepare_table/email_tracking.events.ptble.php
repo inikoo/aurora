@@ -28,7 +28,7 @@ if ($order == 'date') {
     $order = '`Email Tracking Event Key`';
 }
 $table  = '`Email Tracking Event Dimension`  ';
-$fields = "`Email Tracking Event Key`,`Email Tracking Event Type`,`Email Tracking Event Date`,UNCOMPRESS(`Email Tracking Event Data`) as data";
+$fields = "`Email Tracking Event Key`,`Email Tracking Event Type`,`Email Tracking Event Date`,`Email Tracking Event Data`,`Email Tracking Event Status Code`,`Email Tracking Event Note`";
 
 
 $sql_totals = "select count(*) as num from $table $where ";
