@@ -214,7 +214,6 @@ trait Send_Email {
 
         }
 
-
         $from_name            = base64_encode($store->get('Name'));
         $sender_email_address = $store->get('Send Email Address');
         $_source              = "=?utf-8?B?$from_name?= <$sender_email_address>";
