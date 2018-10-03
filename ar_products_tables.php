@@ -288,21 +288,48 @@ function products($_data, $db, $user, $account) {
 
 
             //  print_r($_data);
-            $name = '<span >'.$data['Product Units Per Case'].'</span>x <span>'.$data['Product Name'].'</span>';
 
+
+            $margin = '<span class="product_margin" title="'._('Cost').':'.money($data['Product Cost'], $account->get('Account Currency')).'">'.percentage(
+                    $exchange * $data['Product Price'] - $data['Product Cost'], $exchange * $data['Product Price']
+                ).'<span>';
 
             switch ($_data['parameters']['parent']) {
 
                 case 'part':
+
                     $code = sprintf(
-                        '<span class="link" onClick="change_view(\'part/%d/product/%d\')" title="%s">%s</span>', $_data['parameters']['parent_key'], $data['Product ID'], $name, $data['Product Code']
+                        '<span class="link" onClick="change_view(\'part/%d/product/%d\')" title="%s">%s</span>', $_data['parameters']['parent_key'], $data['Product ID'], '<span >'.$data['Product Units Per Case'].'</span>x <span>'.$data['Product Name'].'</span>', $data['Product Code']
                     );
+                    $name = number($data['Product Part Ratio']).' <i class="far fa-box" title="'.sprintf(_('Each outer pick %s part SKOs'),number($data['Product Part Ratio'])).'"></i> =  '.$data['Product Name'].($data['Product Units Per Case']!=1?'<span class="discreet italic small">('.$data['Product Units Per Case'].' '._('units').')</span>':'');
+
+
+
+                    if($data['Part Units Per Package']!=0 and  $data['Part Unit Price']!=0 and $exchange!=0){
+                        $_recommended_margin_ratio= ($data['Part Unit Price'] - ($data['Part Cost in Warehouse']/$data['Part Units Per Package']))/  $data['Part Unit Price'];
+
+                        $_actual_margin_ratio=($exchange * $data['Product Price'] - $data['Product Cost'])/( $exchange * $data['Product Price']);
+
+                        if($_recommended_margin_ratio*.8>$_actual_margin_ratio){
+                            $margin='<i class="fa yellow fa-exclamation-triangle " title="'.sprintf(_('Margin %s lower than expected'),percentage($_actual_margin_ratio,$_recommended_margin_ratio)).'"></i> '.$margin;
+                        }
+
+                    }
+
+
+
                     break;
                 case 'category':
+                    $name = '<span >'.$data['Product Units Per Case'].'</span>x <span>'.$data['Product Name'].'</span>';
+
                     $code = sprintf('<span class="link" onClick="change_view(\'%sproduct/%d\')" title="%s">%s</span>', $path, $data['Product ID'], $name, $data['Product Code']);
+
                     break;
                 default:
+                    $name = '<span >'.$data['Product Units Per Case'].'</span>x <span>'.$data['Product Name'].'</span>';
+
                     $code = sprintf('<span class="link" onClick="change_view(\'products/%d/%d\')" title="%s">%s</span>', $data['Store Key'], $data['Product ID'], $name, $data['Product Code']);
+
                     break;
             }
 
@@ -322,9 +349,9 @@ function products($_data, $db, $user, $account) {
 
             */
 
-            $margin = '<span class="product_margin" title="'._('Cost').':'.money($data['Product Cost'], $account->get('Account Currency')).'">'.percentage(
-                    $exchange * $data['Product Price'] - $data['Product Cost'], $exchange * $data['Product Price']
-                ).'<span>';
+
+
+
 
             $record_data[] = array(
 

@@ -20,6 +20,9 @@ $table
 $where_interval = '';
 $wheref         = '';
 
+$part_fields='';
+
+
 if (isset($parameters['awhere']) and $parameters['awhere']) {
 
     $tmp = preg_replace('/\\\"/', '"', $awhere);
@@ -91,11 +94,14 @@ switch ($parameters['parent']) {
 
     case('part'):
         $table
-            = '`Product Dimension`  P  left join `Product Data` PD on (PD.`Product ID`=P.`Product ID`)  left join `Product DC Data` PDCD on (PDCD.`Product ID`=P.`Product ID`) left join `Store Dimension` S on (`Product Store Key`=`Store Key`) left join `Product Part Bridge` B on (B.`Product Part Product ID`=P.`Product ID`)';
+            = '`Product Dimension`  P  left join `Product Data` PD on (PD.`Product ID`=P.`Product ID`)  left join `Product DC Data` PDCD on (PDCD.`Product ID`=P.`Product ID`) left join `Store Dimension` S on (`Product Store Key`=`Store Key`) left join `Product Part Bridge` B on (B.`Product Part Product ID`=P.`Product ID`) left join `Part Dimension` on (`Part SKU`=`Product Part Part SKU`)';
 
         $where = sprintf(
             ' where  P.`Product Type`="Product" and `Product Part Part SKU`=%d  ', $parameters['parent_key']
         );
+
+        $part_fields=', B.`Product Part Ratio`,`Part Unit Price`,`Part Cost in Warehouse`,`Part Cost`,`Part Units Per Package`';
+
         break;
 
     case('customer_favourites'):
@@ -375,7 +381,7 @@ $fields
 if(`Product Total Acc Customers`=0,0,  (`Product Total Acc Repeat Customers`/`Product Total Acc Customers`)) percentage_repeat_customer_total,`Product RRP`,`Product Unit Label`,
 
 `Product $db_period Acc Invoiced Amount` as sales,`Product DC $db_period Acc Invoiced Amount` as dc_sales,`Product $db_period Acc Quantity Invoiced` as qty_invoiced,
- $yb_fields
+ $yb_fields  $part_fields
 
 
 ";
