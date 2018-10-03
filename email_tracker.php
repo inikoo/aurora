@@ -11,6 +11,8 @@
 
 require 'vendor/autoload.php';
 require_once 'utils/parse_user_agent.php';
+require_once 'utils/natural_language.php';
+
 
 use Aws\Sns\Message;
 use Aws\Sns\MessageValidator;
