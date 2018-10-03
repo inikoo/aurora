@@ -53,7 +53,7 @@ switch ($tipo) {
 function email_blueprints($_data, $db, $user) {
 
 
-    include_once 'utils/natural_language.php';
+    include_once 'utils/object_functions.php';
 
     $rtext_label = 'saved email template';
     include_once 'prepare_table/init.php';
@@ -61,7 +61,7 @@ function email_blueprints($_data, $db, $user) {
 
     $sql = "select $fields from $table $where $wheref order by $order $order_direction limit $start_from,$number_results";
 
-
+//print_r($_data);
     //  print $sql;
 
     $adata = array();
