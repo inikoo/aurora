@@ -592,34 +592,12 @@ function mailshots($_data, $db, $user) {
 
 
             switch ($data['Email Campaign State']) {
-                case 'Ready':
-                    $state = _('Ready to send');
-                    break;
-                case 'Sent to SES':
-                    $state = _('Sending');
-                    break;
 
+                case 'ComposingEmail':
+                    $state = _('Composing email');
                     break;
-                case 'Delivered':
-                    $state = _('Delivered');
-                    break;
-                case 'Opened':
-                    $state = _('Opened');
-                    break;
-                case 'Clicked':
-                    $state = _('Clicked');
-                    break;
-                case 'Error':
-                    $state = '<span class="warning">'._('Error').'</span>';
-                    break;
-                case 'Hard Bounce':
-                    $state = '<span class="error"><i class="fa fa-exclamation-circle"></i>  '._('Bounced').'</span>';
-                    break;
-                case 'Soft Bounce':
-                    $state = '<span class="warning"><i class="fa fa-exclamation-triangle"></i>  '._('Probable bounce').'</span>';
-                    break;
-                case 'Spam':
-                    $state = '<span class="error"><i class="fa fa-exclamation-circle"></i>  '._('Mark as spam').'</span>';
+                case 'Sent':
+                    $state = _('Sent');
                     break;
                 default:
                     $state = $data['Email Campaign State'];
@@ -639,6 +617,13 @@ function mailshots($_data, $db, $user) {
 
                 'date' => sprintf('<span class="date_%d">%s</span>', $data['Email Campaign Key'], strftime("%a, %e %b %Y %R", strtotime($data['Email Campaign Last Updated Date']." +00:00"))),
                 'sent' => sprintf('<span class="sent_%d">%s</span>', $data['Email Campaign Key'], number($data['Email Campaign Sent'])),
+
+
+
+                'bounces' => sprintf(
+                    '<span class="%s" title="%s">%s</span>', ($data['Email Campaign Delivered'] == 0 ? 'super_discreet' : ($data['Email Campaign Bounces'] == 0 ? 'success super_discreet' : '')), number($data['Email Campaign Bounces']),
+                    percentage($data['Email Campaign Bounces'], $data['Email Campaign Sent'])
+                ),
 
                 'hard_bounces' => sprintf(
                     '<span class="%s" title="%s">%s</span>', ($data['Email Campaign Delivered'] == 0 ? 'super_discreet' : ($data['Email Campaign Hard Bounces'] == 0 ? 'success super_discreet' : '')), number($data['Email Campaign Hard Bounces']),
