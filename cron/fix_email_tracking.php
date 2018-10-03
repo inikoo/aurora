@@ -17,10 +17,9 @@ require_once 'utils/object_functions.php';
 require_once 'utils/ip_geolocation.php';
 require_once 'utils/parse_user_agent.php';
 
-
+require_once 'utils/parse_email_status_codes.php';
 
 require_once 'class.EmailCampaignType.php';
-
 
 $editor = array(
     'Author Name'  => '',
@@ -28,9 +27,140 @@ $editor = array(
     'Author Type'  => '',
     'Author Key'   => '',
     'User Key'     => 0,
-    'Date'         => gmdate('Y-m-d H:i:s')
+    'Date'         => gmdate('Y-m-d H:i:s'),
+    'Subject'      => 'System',
+    'Subject Key'  => 0,
+    'Author Name'  => 'Email tracker'
 );
 
+
+$sql = sprintf('select * from `Email Tracking Event Dimension` where `Email Tracking Event Tracking Key`=3093860 ');
+$sql = sprintf('select * from `Email Tracking Event Dimension` ');
+
+
+if ($result = $db->query($sql)) {
+    foreach ($result as $row) {
+
+
+        switch ($row['Email Tracking Event Type']) {
+
+            case 'Soft Bounce':
+            case 'Hard Bounce':
+
+
+                //print_r($row);
+
+
+                $bounce_type        = ($row['Email Tracking Event Type'] == 'Hard Bounce' ? 'Hard' : 'Soft');
+                $bounce_status_code = $row['Email Tracking Event Status Code'];
+                $bounce_note        = $row['Email Tracking Event Note'];
+
+                $email_tracking = get_object('email_tracking', $row['Email Tracking Event Tracking Key']);
+
+                $sql = sprintf('select `Bounced Email Key`,`Bounced Email Bounce Type`,`Bounced Email Count` from `Bounced Email Dimension` where `Bounced Email`=%s  ', prepare_mysql($email_tracking->get('Email Tracking Email')));
+                if ($result = $db->query($sql)) {
+                    if ($row = $result->fetch()) {
+
+                        $bounce_count = $row['Bounced Email Count'] + 1;
+
+                        $sql = sprintf(
+                            'update  `Bounced Email Dimension` set `Bounced Email Bounce Type`=%s,`Bounced Email Status Code`=%s,`Bounced Email Count`=%d  where `Bounced Email Key`=%d ', prepare_mysql($bounce_type), prepare_mysql($bounce_status_code), $bounce_count,
+                            $row['Bounced Email Key']
+                        );
+                        $db->exec($sql);
+
+                    } else {
+                        $sql = sprintf(
+                            'insert into `Bounced Email Dimension` (`Bounced Email`,`Bounced Email Bounce Type`,`Bounced Email Status Code`,`Bounced Email Date`) values (%s,%s,%s,%s) ', prepare_mysql($email_tracking->get('Email Tracking Email')),
+                            prepare_mysql($bounce_type), prepare_mysql($bounce_status_code), prepare_mysql(gmdate('Y-m-d H:i:s'))
+
+
+                        );
+                        $db->exec($sql);
+                        $bounce_count = 1;
+
+                    }
+
+
+                    $sql = sprintf(
+                        'select `Customer Key` from `Customer Dimension` where `Customer Main Plain Email`=%s  ', prepare_mysql($email_tracking->get('Email Tracking Email'))
+                    );
+
+
+                    $unsubscribe_note = sprintf('<span>%s</span>', parse_email_status_code($bounce_type.' Bounce', $bounce_status_code));
+
+                    if ($bounce_note != '') {
+                        $unsubscribe_note .= ' <span class="discreet italic">('.$bounce_note.')</span>';
+                    }
+
+                    if ($result2 = $db->query($sql)) {
+                        foreach ($result2 as $row2) {
+                            $customer         = get_object('Customer', $row2['Customer Key']);
+                            $customer->editor = $editor;
+
+                            if ($bounce_type == 'Hard' or ($bounce_type == 'Soft' and $bounce_count > 1)) {
+
+                                if ($customer->get('Customer Send Newsletter') == 'Yes' or $customer->get('Customer Send Email Marketing') == 'Yes') {
+
+
+                                    $customer->unsubscribe(_('Unsubscribed to newsletter and marketing emails because email bounced').', '.$unsubscribe_note);
+
+                                }
+
+                                $customer->fast_update(array('Customer Email State' => 'Error'));
+                                print "Customer x ".$customer->get('Store Key')."  ".$customer->id."\n";
+                                //exit;
+                            } else {
+                                $customer->fast_update(array('Customer Email State' => 'Warning'));
+
+                                $history_data = array(
+                                    'History Abstract' => _('Email soft bounced').', '.$unsubscribe_note,
+                                    'History Details'  => '',
+                                    'Action'           => 'edited'
+                                );
+
+                                $customer->add_subject_history(
+                                    $history_data, true, 'No', 'Changes', $customer->get_object_name(), $customer->id
+                                );
+                                print "Customer ".$customer->get('Store Key')."  ".$customer->id."\n";
+                                //exit;
+
+                            }
+
+
+
+                        }
+                    } else {
+                        print_r($error_info = $db->errorInfo());
+                        print "$sql\n";
+                        exit;
+                    }
+
+
+                } else {
+                    print_r($error_info = $db->errorInfo());
+                    print "$sql\n";
+                    exit;
+                }
+
+
+                // exit;
+
+                break;
+            default:
+
+        }
+
+
+    }
+} else {
+    print_r($error_info = $db->errorInfo());
+    print "$sql\n";
+    exit;
+}
+
+
+exit;
 
 //
 $sql = sprintf('select * from `Email Tracking Event Dimension` where `Email Tracking Event Tracking Key`=3093860 ');
@@ -47,10 +177,10 @@ if ($result = $db->query($sql)) {
             case 'Clicked':
 
                 $_data = json_decode($row['Email Tracking Event Data'], true);
-               // print_r($_data);
+                // print_r($_data);
 
-                $note=$_data['link'];
-                $sql = sprintf(
+                $note = $_data['link'];
+                $sql  = sprintf(
                     'update `Email Tracking Event Dimension` set `Email Tracking Event Note`=%s where `Email Tracking Event Key`=%d ', prepare_mysql($note), $row['Email Tracking Event Key']
                 );
 
@@ -64,44 +194,40 @@ if ($result = $db->query($sql)) {
                 $_data = json_decode($row['Email Tracking Event Data'], true);
 
 
-                $ips=preg_split('/\,/',$_data['ipAddress']);
+                $ips = preg_split('/\,/', $_data['ipAddress']);
                 //print_r($ips);
 
-                foreach ($ips as $ip){
+                foreach ($ips as $ip) {
                     $geolocation_data = get_ip_geolocation(trim($ip), $db);
-                  // print_r($geolocation_data);
+                    // print_r($geolocation_data);
 
 
                     $note = $geolocation_data['Location'];
 
 
                 }
-                $user_agent_note='';
-                if(isset($_data['userAgent'])){
+                $user_agent_note = '';
+                if (isset($_data['userAgent'])) {
                     $user_agent_data = parse_user_agent(trim($_data['userAgent']), $db);
 
-                    if( is_array($user_agent_data) and $user_agent_data['Status']=='OK'){
+                    if (is_array($user_agent_data) and $user_agent_data['Status'] == 'OK') {
 
                         // exit;
-                       // print_r($user_agent_data);
+                        // print_r($user_agent_data);
 
 
-
-
-                        if($user_agent_data['Icon']!=''){
-                            $user_agent_note=' <i title="'.$user_agent_data['Device'].'" class="far '.$user_agent_data['Icon'].'"></i> ';
-                        }else{
-                            $user_agent_note=$user_agent_data['Device'].' ';
+                        if ($user_agent_data['Icon'] != '') {
+                            $user_agent_note = ' <i title="'.$user_agent_data['Device'].'" class="far '.$user_agent_data['Icon'].'"></i> ';
+                        } else {
+                            $user_agent_note = $user_agent_data['Device'].' ';
                         }
 
 
-                        $user_agent_note.=$user_agent_data['Software'];
+                        $user_agent_note .= $user_agent_data['Software'];
 
-                        if($user_agent_data['Software Details']!=''){
-                            $user_agent_note.=' <span class="discreet italic">('.$user_agent_data['Software Details'].')</span>';
+                        if ($user_agent_data['Software Details'] != '') {
+                            $user_agent_note .= ' <span class="discreet italic">('.$user_agent_data['Software Details'].')</span>';
                         }
-
-
 
 
                     }
@@ -109,10 +235,10 @@ if ($result = $db->query($sql)) {
 
                 }
 
-                if($user_agent_note!=''){
-                    $note.=', '.$user_agent_note;
+                if ($user_agent_note != '') {
+                    $note .= ', '.$user_agent_note;
                 }
-                $note=preg_replace('/^\, /','',$note);
+                $note = preg_replace('/^\, /', '', $note);
 
                 $sql = sprintf(
                     'update `Email Tracking Event Dimension` set `Email Tracking Event Note`=%s where `Email Tracking Event Key`=%d ', prepare_mysql($note), $row['Email Tracking Event Key']
@@ -121,9 +247,9 @@ if ($result = $db->query($sql)) {
                 //print "$sql\n";
 
                 $db->exec($sql);
-//exit;
+                //exit;
 
-               // exit;
+                // exit;
                 break;
             case 'Soft Bounce':
             case 'Hard Bounce':

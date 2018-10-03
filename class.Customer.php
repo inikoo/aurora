@@ -4058,6 +4058,29 @@ class Customer extends Subject {
 
     }
 
+    function unsubscribe($note){
+
+
+
+
+
+        $this->fast_update(array(
+                               'Customer Send Newsletter'=>'No',
+                               'Customer Send Email Marketing'=>'No'
+                           ));
+
+
+        $history_data = array(
+            'History Abstract' => $note,
+            'History Details'  => '',
+            'Action'           => 'edited'
+        );
+
+        $this->add_subject_history(
+            $history_data, true, 'No', 'Changes', $this->get_object_name(), $this->id
+        );
+
+    }
 
 }
 

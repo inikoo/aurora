@@ -46,27 +46,17 @@ cell: Backgrid.HtmlCell.extend({ className: "aright"} ),
 headerCell: integerHeaderCell
 },
 {
-name: "hard_bounces",
-title: '{t}Hard bounces{/t}',
-label: '{t}Hard{/t} <i class="fa error fa-arrow-alt-from-right"></i>',
+name: "bounces",
+title: '{t}Bounces{/t}',
+label: '{t}Bounces{/t} <i class="fa error fa-arrow-alt-from-right"></i>',
 headerCell: rightHeaderHtmlCell,
 editable: false,
 defaultOrder:1,
 sortType: "toggle",
-{if $sort_key=='hard_bounces'}direction: '{if $sort_order==1}descending{else}ascending{/if}',{/if}
+{if $sort_key=='bounces'}direction: '{if $sort_order==1}descending{else}ascending{/if}',{/if}
 cell: Backgrid.HtmlCell.extend({ className: "aright"} ),
 },
-{
-name: "soft_bounces",
-title: '{t}Soft bounces{/t}',
-label: '{t}Soft{/t} <i class="fa warning fa-arrow-alt-from-right"></i>',
-editable: false,
-defaultOrder:1,
-sortType: "toggle",
-{if $sort_key=='soft_bounces'}direction: '{if $sort_order==1}descending{else}ascending{/if}',{/if}
-cell: Backgrid.HtmlCell.extend({ className: "aright"} ),
-headerCell: rightHeaderHtmlCell
-},
+
 
 {
 name: "delivered",

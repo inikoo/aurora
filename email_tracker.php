@@ -10,6 +10,7 @@
 */
 
 require 'vendor/autoload.php';
+require_once 'utils/parse_user_agent.php';
 
 use Aws\Sns\Message;
 use Aws\Sns\MessageValidator;
@@ -24,6 +25,20 @@ require_once 'utils/general_functions.php';
 require_once 'keyring/dns.php';
 
 require_once 'utils/object_functions.php';
+
+$editor = array(
+    'Author Name'  => '',
+    'Author Alias' => '',
+    'Author Type'  => '',
+    'Author Key'   => '',
+    'User Key'     => 0,
+    'Date'         => gmdate('Y-m-d H:i:s'),
+    'Subject'      => 'System',
+    'Subject Key'  => 0,
+    'Author Name'  => 'Email tracker'
+);
+
+
 
 
 $db = new PDO(
@@ -217,9 +232,14 @@ if ($validator->isValid($sns)) {
                         if (isset($event_data['bouncedRecipients'][0]['status'])) {
                             $status_code = $event_data['bouncedRecipients'][0]['status'];
                         }
+
                         if (isset($event_data['bouncedRecipients'][0]['diagnosticCode'])) {
                             $note = $event_data['bouncedRecipients'][0]['diagnosticCode'];
                         }
+
+
+
+
 
 
                         break;
@@ -260,23 +280,105 @@ if ($validator->isValid($sns)) {
                 $email_tracking->update_state($event_type);
 
 
-                if ($event_type == 'Hard Bounce') {
+                if ($event_type == 'Hard Bounce' or $event_type == 'Soft Bounce') {
 
 
-                    foreach ($event_data['bouncedRecipients'] as $_bounced_recipients) {
+
+                    $bounce_type        = $event_type;
+                    $bounce_status_code = $status_code;
+                    $bounce_note        = $note;
+
+
+                    $sql = sprintf('select `Bounced Email Key`,`Bounced Email Bounce Type`,`Bounced Email Count` from `Bounced Email Dimension` where `Bounced Email`=%s  ', prepare_mysql($email_tracking->get('Email Tracking Email')));
+                    if ($result3 = $db->query($sql)) {
+                        if ($row3 = $result->fetch()) {
+
+                            $bounce_count = $row3['Bounced Email Count'] + 1;
+
+                            $sql = sprintf(
+                                'update  `Bounced Email Dimension` set `Bounced Email Bounce Type`=%s,`Bounced Email Status Code`=%s,`Bounced Email Count`=%d  where `Bounced Email Key`=%d ', prepare_mysql($bounce_type), prepare_mysql($bounce_status_code), $bounce_count,
+                                $row3['Bounced Email Key']
+                            );
+                            $db->exec($sql);
+
+                        } else {
+                            $sql = sprintf(
+                                'insert into `Bounced Email Dimension` (`Bounced Email`,`Bounced Email Bounce Type`,`Bounced Email Status Code`,`Bounced Email Date`) values (%s,%s,%s,%s) ', prepare_mysql($email_tracking->get('Email Tracking Email')),
+                                prepare_mysql($bounce_type), prepare_mysql($bounce_status_code), prepare_mysql(gmdate('Y-m-d H:i:s'))
+
+
+                            );
+                            $db->exec($sql);
+                            $bounce_count = 1;
+
+                        }
+
 
                         $sql = sprintf(
-                            'insert into `Email Hard Bounce Dimension` (`Email Hard Bounce Email`,`Email Hard Bounce Tracking Event Key`) values (%s,%d) ',
-
-                            prepare_mysql($_bounced_recipients['emailAddress']), $event_key
-
+                            'select `Customer Key` from `Customer Dimension` where `Customer Main Plain Email`=%s  ', prepare_mysql($email_tracking->get('Email Tracking Email'))
                         );
-                        $db->exec($sql);
 
+
+                        $unsubscribe_note = sprintf('<span>%s</span>', parse_email_status_code($bounce_type.' Bounce', $bounce_status_code));
+
+                        if ($bounce_note != '') {
+                            $unsubscribe_note .= ' <span class="discreet italic">('.$bounce_note.')</span>';
+                        }
+
+                        if ($result2 = $db->query($sql)) {
+                            foreach ($result2 as $row2) {
+                                $customer         = get_object('Customer', $row2['Customer Key']);
+                                $customer->editor = $editor;
+
+                                if ($bounce_type == 'Hard' or ($bounce_type == 'Soft' and $bounce_count > 1)) {
+
+                                    if ($customer->get('Customer Send Newsletter') == 'Yes' or $customer->get('Customer Send Email Marketing') == 'Yes') {
+
+
+                                        $customer->unsubscribe(_('Unsubscribed to newsletter and marketing emails because email bounced').', '.$unsubscribe_note);
+
+                                    }
+
+                                    $customer->fast_update(array('Customer Email State' => 'Error'));
+                                    print "Customer x ".$customer->get('Store Key')."  ".$customer->id."\n";
+                                    //exit;
+                                } else {
+                                    $customer->fast_update(array('Customer Email State' => 'Warning'));
+
+                                    $history_data = array(
+                                        'History Abstract' => _('Email soft bounced').', '.$unsubscribe_note,
+                                        'History Details'  => '',
+                                        'Action'           => 'edited'
+                                    );
+
+                                    $customer->add_subject_history(
+                                        $history_data, true, 'No', 'Changes', $customer->get_object_name(), $customer->id
+                                    );
+                                    print "Customer ".$customer->get('Store Key')."  ".$customer->id."\n";
+                                    //exit;
+
+                                }
+
+
+
+                            }
+                        } else {
+                            print_r($error_info = $db->errorInfo());
+                            print "$sql\n";
+                            exit;
+                        }
+
+
+                    } else {
+                        print_r($error_info = $db->errorInfo());
+                        print "$sql\n";
+                        exit;
                     }
 
 
+
                 }
+
 
                 if ($event_type == 'Spam') {
 

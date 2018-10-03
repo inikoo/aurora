@@ -42,12 +42,14 @@ if ($order == 'name') {
     $order = '`Email Campaign Last Updated Date`';
 } elseif ($order == 'state') {
     $order = '`Email Campaign State`';
+}elseif ($order == 'bounces') {
+    $order = '(`Email Campaign Hard Bounces`+`Email Campaign Soft Bounces`)';
 } else {
     $order = '`Email Campaign Key`';
 }
 $table  = '`Email Campaign Dimension`  ';
 $fields = "`Email Campaign Key`,`Email Campaign Name`,`Email Campaign Store Key`,`Email Campaign Last Updated Date`,`Email Campaign State`,`Email Campaign Number of Emails`,
-`Email Campaign Sent`,`Email Campaign Delivered`,`Email Campaign Hard Bounces`,`Email Campaign Soft Bounces`,`Email Campaign Open`,`Email Campaign Clicked`,`Email Campaign Spams`,`Email Campaign Unsubscribed`
+`Email Campaign Sent`,`Email Campaign Delivered`,`Email Campaign Hard Bounces`,`Email Campaign Soft Bounces`,(`Email Campaign Hard Bounces`+`Email Campaign Soft Bounces`) as `Email Campaign Bounces`,`Email Campaign Open`,`Email Campaign Clicked`,`Email Campaign Spams`,`Email Campaign Unsubscribed`
 
 ";
 

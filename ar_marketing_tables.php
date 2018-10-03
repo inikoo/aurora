@@ -1073,6 +1073,10 @@ function email_template_types($_data, $db, $user) {
                 percentage($data['Email Campaign Type Soft Bounces'], $data['Email Campaign Type Sent'])
             ),
 
+            'bounces' => sprintf(
+                '<span class="%s" title="%s">%s</span>', ($data['Email Campaign Type Delivered'] == 0 ? 'super_discreet' : ($data['Email Campaign Type Bounces'] == 0 ? 'success super_discreet' : '')), number($data['Email Campaign Type Bounces']),
+                percentage($data['Email Campaign Type Bounces'], $data['Email Campaign Type Sent'])
+            ),
 
             'delivered' => ($data['Email Campaign Type Sent'] == 0 ? '<span class="super_discreet">'._('NA').'</span>' : number($data['Email Campaign Type Delivered'])),
 
