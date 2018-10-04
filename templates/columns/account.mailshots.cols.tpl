@@ -1,48 +1,88 @@
 {*/*
  About:
  Author: Raul Perusquia <raul@inikoo.com>
- Created: 26 February 2018 at 18:20:03 GMT+8, Kuala, Lumpur, Malaysia
+ Created: 4 October 2018 at 10:56:12 GMT+8, Kuala Lumpur, Malysia
  Copyright (c) 2018, Inikoo
 
  Version 3
 */*}
 
-var columns= [{
+var columns = [
+{
 name: "id",
 label: "",
 editable: false,
-cell: "integer",
-renderable: false
-
+renderable: false,
+cell: "string",
 
 },
+
 {
-name: "status",
-label: "",
+name: "store",
+label: "{t}Store{/t}",
 editable: false,
-sortable:false,
+sortType: "toggle",
+{if $sort_key=='store'}direction: '{if $sort_order==1}descending{else}ascending{/if}',{/if}
+
 cell: Backgrid.HtmlCell.extend({
-className: "width_30 align_center"
+
 })
 },
+
 {
 name: "type",
-label: "{t}Type{/t}",
+title: '{t}Mailshot type{/t}',
+headerCell: HeaderHtmlCell,
+
+label: '{t}Type{/t}',
 editable: false,
 sortType: "toggle",
 {if $sort_key=='type'}direction: '{if $sort_order==1}descending{else}ascending{/if}',{/if}
 
 cell: Backgrid.HtmlCell.extend({
+class: 'width_20'
 })
 },
+
 {
-name: "mailshots",
-label: "{t}Mailshots{/t}",
+name: "name",
+label: "{t}Name{/t}",
 editable: false,
+sortType: "toggle",
+{if $sort_key=='name'}direction: '{if $sort_order==1}descending{else}ascending{/if}',{/if}
+
+cell: Backgrid.HtmlCell.extend({
+
+})
+},
+
+
+
+ {
+name: "date",
+label: "{t}Date{/t}",
+sortType: "toggle",
+editable: false,
+
+{if $sort_key=='date'}direction: '{if $sort_order==1}descending{else}ascending{/if}',{/if}
+
+cell: Backgrid.HtmlCell.extend({
+className: "aright"
+}),
+headerCell: integerHeaderCell
+
+},
+
+{
+name: "state",
+label: "{t}State{/t}",
+editable: false,
+
 defaultOrder:1,
 sortType: "toggle",
-{if $sort_key=='mailshots'}direction: '{if $sort_order==1}descending{else}ascending{/if}',{/if}
+{if $sort_key=='state'}direction: '{if $sort_order==1}descending{else}ascending{/if}',{/if}
 cell: Backgrid.HtmlCell.extend({ className: "aright"} ),
+
 headerCell: integerHeaderCell
 },
 {
@@ -55,18 +95,41 @@ sortType: "toggle",
 cell: Backgrid.HtmlCell.extend({ className: "aright"} ),
 headerCell: integerHeaderCell
 },
-
 {
 name: "bounces",
-label: '{t}Bounces{/t}',
+title: '{t}Bounces{/t}',
+label: '{t}Bounces{/t} <i class="fa error fa-arrow-alt-from-right"></i>',
+headerCell: rightHeaderHtmlCell,
 editable: false,
-
 defaultOrder:1,
 sortType: "toggle",
 {if $sort_key=='bounces'}direction: '{if $sort_order==1}descending{else}ascending{/if}',{/if}
 cell: Backgrid.HtmlCell.extend({ className: "aright"} ),
-headerCell: integerHeaderCell
+},
+{
+name: "hard_bounces",
+title: '{t}Hard bounces{/t}',
+label: '{t}Hard{/t} <i class="fa error fa-arrow-alt-from-right"></i>',
+renderable:false,
+headerCell: rightHeaderHtmlCell,
+editable: false,
+defaultOrder:1,
+sortType: "toggle",
+{if $sort_key=='hard_bounces'}direction: '{if $sort_order==1}descending{else}ascending{/if}',{/if}
+cell: Backgrid.HtmlCell.extend({ className: "aright"} ),
+},
+{
+name: "soft_bounces",
+title: '{t}Soft bounces{/t}',
+label: '{t}Soft{/t} <i class="fa warning fa-arrow-alt-from-right"></i>',
+editable: false,
+renderable:false,
 
+defaultOrder:1,
+sortType: "toggle",
+{if $sort_key=='soft_bounces'}direction: '{if $sort_order==1}descending{else}ascending{/if}',{/if}
+cell: Backgrid.HtmlCell.extend({ className: "aright"} ),
+headerCell: rightHeaderHtmlCell
 },
 
 {
@@ -111,8 +174,9 @@ cell: Backgrid.HtmlCell.extend({ className: "aright"} ),
 headerCell: integerHeaderCell
 }
 
-
-
 ]
 
-function change_table_view(view,save_state){}
+function change_table_view(view,save_state){
+
+
+}

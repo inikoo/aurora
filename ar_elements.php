@@ -365,6 +365,11 @@ switch ($tab) {
         $data = prepare_values($_REQUEST, array('parameters' => array('type' => 'json array')));
         get_email_campaign_sent_emails_elements($db, $data['parameters'], $user);
         break;
+    case 'account.mailshots':
+        $data = prepare_values($_REQUEST, array('parameters' => array('type' => 'json array')));
+        get_account_mailshots_elements($db, $data['parameters'], $user);
+        break;
+
     default:
         $response = array(
             'state' => 405,
@@ -3207,6 +3212,72 @@ function get_email_campaign_sent_emails_elements($db, $data) {
 
     foreach($elements_numbers['state'] as $_key=>$_value){
         $elements_numbers['state'][$_key]=number($_value);
+    }
+
+
+    $response = array(
+        'state'            => 200,
+        'elements_numbers' => $elements_numbers
+    );
+    echo json_encode($response);
+
+
+}
+
+
+
+function get_account_mailshots_elements($db, $data) {
+
+
+
+
+    $elements_numbers = array(
+
+        'type' => array(
+            'Newsletter'     => 0,
+            'Marketing'   => 0,
+            'AbandonedCart' => 0,
+            'GRReminder'    => 0,
+            'OOSNotification'    => 0,
+
+
+        )
+    );
+
+
+
+    $table = '`Email Campaign Dimension`   ';
+
+
+    $where = sprintf(
+        ' where true '
+    );
+
+
+    $sql = sprintf(
+        "select count(*) as number,`Email Campaign Type` as element from $table $where  group by `Email Campaign Type` "
+    );
+
+
+
+    foreach ($db->query($sql) as $row) {
+
+        if($row['element']=='GR Reminder'){
+            $row['element']='GRReminder';
+        }
+
+        if($row['element']=='OOS Notification'){
+            $row['element']='OOSNotification';
+        }
+
+
+
+        $elements_numbers['type'][$row['element']] += $row['number'];
+
+    }
+
+    foreach($elements_numbers['type'] as $_key=>$_value){
+        $elements_numbers['type'][$_key]=number($_value);
     }
 
 

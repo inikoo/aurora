@@ -1008,22 +1008,29 @@ function email_template_types($_data, $db, $user) {
 
         }
 
-
+        $mailshots='';
         switch ($data['Email Campaign Type Code']) {
             case 'Newsletter':
                 $_type  = _('Newsletters');
                 $status = '';
+                $mailshots=number($data['Email Campaign Type Mailshots']);
                 break;
             case 'Marketing':
                 $_type  = _('Marketing mailshots');
                 $status = '';
+                $mailshots=number($data['Email Campaign Type Mailshots']);
+
                 break;
             case 'AbandonedCart':
                 $_type  = _('Abandoned carts');
                 $status = '';
+                $mailshots=number($data['Email Campaign Type Mailshots']);
+
                 break;
             case 'OOS Notification':
                 $_type = _('Back in stock emails');
+                $mailshots=number($data['Email Campaign Type Mailshots']);
+
                 break;
             case 'Registration':
                 $_type = _('Welcome emails');
@@ -1036,6 +1043,8 @@ function email_template_types($_data, $db, $user) {
                 break;
             case 'GR Reminder':
                 $_type = _('Reorder reminders');
+                $mailshots=number($data['Email Campaign Type Mailshots']);
+
                 break;
             case 'Invite Mailshot':
                 $_type  = _('Invitation');
@@ -1061,6 +1070,7 @@ function email_template_types($_data, $db, $user) {
 
             '_type' => $_type,
             'type'  => $type,
+            'mailshots' =>$mailshots,
 
             'sent' => number($data['Email Campaign Type Sent']),
 

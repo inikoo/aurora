@@ -441,31 +441,7 @@ $modules = array(
                         'label' => _('Operations'),
                         'icon'  => 'handshake-alt',
 
-                        /*
-                          'subtabs' => array(
 
-                              'sent_emails.welcome' => array(
-                                  'label' => _('Welcome'),
-                                  'icon'  => 'door-open'
-                              ),
-                              'sent_emails.order_notification' => array(
-                                  'label' => _('Order notification'),
-                                  'icon'  => 'shopping-cart'
-                              ),
-                              'sent_emails.dispatched_order' => array(
-                                  'label' => _('Dispatched'),
-                                  'icon'  => 'truck'
-                              ),
-                              'send_email.reminders'   => array(
-                                  'label' => _('Deal reminders'),
-                                  'icon'  => 'bell'
-                              ),
-                              'send_email.back_in_stock'   => array(
-                                  'label' => _('Back in stock'),
-                                  'icon'  => 'dolly'
-                              ),
-    )
-  */
 
                     ),
 
@@ -1069,6 +1045,15 @@ $modules = array(
                 'reference' => 'customers/all',
                 'tabs'      => array(
                     'customers_server' => array()
+                )
+            ),
+            'email_communications' => array(
+                'type'      => 'navigation',
+                'label'     => _('Email Comms.').' ('._('All stores').')',
+                'icon'      => '',
+                'reference' => 'customers/all/email_communications',
+                'tabs'      => array(
+                    'mailshots' => array()
                 )
             ),
 

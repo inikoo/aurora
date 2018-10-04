@@ -1610,6 +1610,11 @@ function get_navigation($user, $smarty, $data, $db, $account) {
                         $data, $smarty, $user, $db
                     );
                     break;
+                case('email_communications'):
+                    return get_email_communications_server_navigation(
+                        $data, $smarty, $user, $db
+                    );
+                    break;
             }
 
             break;
@@ -4071,7 +4076,13 @@ function get_view_position($db, $state, $user, $smarty, $account) {
                     'icon'      => '',
                     'reference' => ''
                 );
-            }
+            } elseif ($state['section'] == 'email_communications') {
+            $branch[] = array(
+                'label'     => _('Email communications (All stores)'),
+                'icon'      => '',
+                'reference' => ''
+            );
+        }
 
             break;
 
@@ -4095,11 +4106,26 @@ function get_view_position($db, $state, $user, $smarty, $account) {
             if ($user->get_number_stores() > 1) {
 
 
-                $branch[] = array(
-                    'label'     => _('(All stores)'),
-                    'icon'      => '',
-                    'reference' => 'customers/all'
-                );
+
+                if(in_array($state['section'],array('email_campaigns','email_campaign_type','email_tracking','email_campaign'))){
+                    $branch[] = array(
+                        'label'     => _('(All stores)'),
+                        'icon'      => 'mail-bulk',
+                        'reference' => 'customers/all/email_communications'
+                    );
+                }else{
+                    $branch[] = array(
+                        'label'     => _('(All stores)'),
+                        'icon'      => '',
+                        'reference' => 'customers/all'
+                    );
+                }
+
+
+
+
+
+
 
             }
             switch ($state['section']) {
