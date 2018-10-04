@@ -1743,7 +1743,11 @@ function parse_request($_data, $db, $modules, $account = '', $user = '', $is_set
                 if ($arg1 == 'all') {
                     $module  = 'customers_server';
                     $section = 'customers';
-
+                    if (isset($view_path[0]) ) {
+                        if($view_path[0]=='email_communications'){
+                            $section = 'email_communications';
+                        }
+                    }
 
                 } elseif ($arg1 == 'list') {
                     $section = 'list';

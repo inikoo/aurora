@@ -16,7 +16,7 @@
 
 
         <link href="/css/jquery-ui.css" rel="stylesheet">
-        <link href="/css/fa/fontawesome-all.min.css?v5.2" rel="stylesheet">
+        <link href="/css/fa/fontawesome-all.min.css?v5.3.1" rel="stylesheet">
         <link href="/css/intlTelInput.css" rel="stylesheet">
         <link href="/css/countrySelect.css" rel="stylesheet">
         <link href="/css/d3fc.css" rel="stylesheet">

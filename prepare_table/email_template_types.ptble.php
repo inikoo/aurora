@@ -41,15 +41,19 @@ if ($order == 'type') {
     $order = '`Email Campaign Type Sent`';
 }elseif ($order == 'bounces') {
     $order = '`Email Campaign Type Soft Bounces`+`Email Campaign Type Hard Bounces`';
+}elseif ($order == 'delivered') {
+    $order = '`Email Campaign Type Delivered`';
 }elseif ($order == 'open') {
-    $order = '`Email Campaign Type Open`';
+    $order = '`Email Campaign Type Open`/`Email Campaign Type Delivered`';
+}elseif ($order == 'mailshots') {
+    $order = '`Email Campaign Type Mailshots`';
 }elseif ($order == 'clicked') {
-    $order = '`Email Campaign Type Clicked`';
+    $order = '`Email Campaign Type Clicked`/`Email Campaign Type Delivered`';
 } else {
     $order = '`Email Campaign Type Key`';
 }
 $table  = '`Email Campaign Type Dimension`  left join `Store Dimension` S on (S.`Store Key`=`Email Campaign Type Store Key`) ';
-$fields = "`Email Campaign Type Status`,`Email Campaign Type Hard Bounces`,`Email Campaign Type Soft Bounces`,(`Email Campaign Type Hard Bounces`+`Email Campaign Type Soft Bounces`) as `Email Campaign Type Bounces`,`Email Campaign Type Spams`,`Email Campaign Type Delivered`,`Email Campaign Type Key`,`Email Campaign Type Code`,`Email Campaign Type Store Key`,S.`Store Code`,`Store Name`,`Email Campaign Type Sent`,`Email Campaign Type Open`,`Email Campaign Type Clicked`";
+$fields = "`Email Campaign Type Mailshots`,`Email Campaign Type Status`,`Email Campaign Type Hard Bounces`,`Email Campaign Type Soft Bounces`,(`Email Campaign Type Hard Bounces`+`Email Campaign Type Soft Bounces`) as `Email Campaign Type Bounces`,`Email Campaign Type Spams`,`Email Campaign Type Delivered`,`Email Campaign Type Key`,`Email Campaign Type Code`,`Email Campaign Type Store Key`,S.`Store Code`,`Store Name`,`Email Campaign Type Sent`,`Email Campaign Type Open`,`Email Campaign Type Clicked`";
 
 
 $sql_totals = "select count(*) as num from $table $where ";

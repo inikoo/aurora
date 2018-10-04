@@ -163,6 +163,17 @@ $tab_defaults = array(
         'f_field'     => 'name',
     ),
 
+    'account.mailshots' => array(
+        'view'        => 'overview',
+        'sort_key'    => 'date',
+        'sort_order'  => 1,
+        'rpp'         => 500,
+        'rpp_options' => $default_rrp_options,
+        'f_field'     => 'name',
+        'elements_type' => each($elements_options['mailshots']) ['key'],
+        'elements'      => $elements_options['mailshots'],
+    ),
+
 
     'oss_notification.next_recipients' => array(
         'view'        => 'overview',
