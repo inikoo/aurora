@@ -12,6 +12,7 @@
 require 'vendor/autoload.php';
 require_once 'utils/parse_user_agent.php';
 require_once 'utils/natural_language.php';
+require_once 'utils/parse_email_status_codes.php';
 
 
 use Aws\Sns\Message;
