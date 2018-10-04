@@ -1663,6 +1663,38 @@ $elements_options = array(
 
         )
     ),
+//'Newsletter','Marketing','GR Reminder','AbandonedCart','Invite Mailshot','OOS Notification'
+    'mailshots' => array(
+        'type' => array(
+            'label' => _('State'),
+            'items' => array(
+                'Newsletter'       => array(
+                    'label'    => _('Newsletters'),
+                    'selected' => true
+                ),
+                'Marketing'       => array(
+                    'label'    => _('Marketing'),
+                    'selected' => true
+                ),
+                'AbandonedCart'       => array(
+                    'label'    => _('Abandoned carts'),
+                    'selected' => false
+                ),
+                'GRReminder'       => array(
+                    'label'    => _('Reorder reminder'),
+                    'selected' => false
+                ),
+                'OOSNotification'             => array(
+                    'label'    => _('Back in stock'),
+                    'selected' => false
+                ),
+
+
+
+            ),
+
+        )
+    ),
 );
 
 ?>
