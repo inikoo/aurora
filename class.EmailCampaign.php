@@ -115,7 +115,7 @@ class EmailCampaign extends DB_Table {
         $data = $this->base_data();
 
 
-        $this->editor=$raw_data['editor'];
+        $this->editor = $raw_data['editor'];
 
         foreach ($raw_data as $key => $value) {
             if (array_key_exists($key, $data)) {
@@ -132,7 +132,6 @@ class EmailCampaign extends DB_Table {
 
             return;
         }
-
 
 
         $data['Email Campaign Creation Date']     = gmdate('Y-m-d H:i:s');
@@ -379,6 +378,15 @@ class EmailCampaign extends DB_Table {
 
 
                 break;
+            case 'Bounces Percentage':
+
+                if ($this->data['Email Campaign Sent'] == 0) {
+                    return percentage(0, 1);
+                }
+
+                return percentage($this->data['Email Campaign Hard Bounces'] + $this->data['Email Campaign Soft Bounces'], $this->data['Email Campaign Sent']);
+
+                break;
 
 
             default:
@@ -485,6 +493,44 @@ class EmailCampaign extends DB_Table {
                     }
 
                     break;
+                case 'Marketing':
+                    $metadata = $this->get('Metadata');
+
+
+                    if (isset($metadata['type'])) {
+                        switch ($metadata['type']) {
+                            case 'awhere':
+                                include_once 'utils/parse_customer_list.php';
+
+                                list($table, $where, $group_by) = parse_customer_list($metadata['fields'], $this->db);
+
+                                $where = sprintf(' where `Customer Store Key`=%d ', $this->get('Store Key')).$where.' and `Customer Send Email Marketing`="Yes" and `Customer Main Plain Email`!="" ';
+
+                                $sql = "select count(Distinct C.`Customer Key`) as num from $table  $where ";
+
+
+                                // print_r($data);
+                                //print $sql;
+
+                                if ($result = $this->db->query($sql)) {
+                                    if ($row = $result->fetch()) {
+                                        $estimated_recipients = $row['num'];
+                                    }
+                                } else {
+                                    print_r($error_info = $this->db->errorInfo());
+                                    print "$sql\n";
+                                    exit;
+                                }
+
+
+                                break;
+                            default:
+                                break;
+                        }
+                    }
+
+
+                    break;
                 default:
 
             }
@@ -556,7 +602,7 @@ class EmailCampaign extends DB_Table {
                 case 'Newsletter':
 
 
-                    return sprintf('email_campaign_type/%d/%d', $store->id,$email_template_type->id);
+                    return sprintf('email_campaign_type/%d/%d', $store->id, $email_template_type->id);
 
                     break;
                 default:
@@ -636,6 +682,42 @@ class EmailCampaign extends DB_Table {
 
         switch ($value) {
 
+            case 'InProcess':
+
+
+                if ($this->data['Email Campaign State'] != 'ComposingEmail') {
+                    $this->error = true;
+                    $this->msg   = 'forbidden';
+
+                    return;
+                }
+
+
+                if ($this->data['Email Campaign State'] == 'Ready') {
+                    $this->fast_update(
+                        array(
+                            'Email Campaign Composed Date' => ''
+                        )
+                    );
+                }
+
+
+                $this->fast_update(
+                    array(
+                        'Email Campaign State'             => $value,
+                        'Email Campaign Last Updated Date' => gmdate('Y-m-d H:i:s'),
+                        'Email Campaign Setup Date'        => ''
+                    )
+                );
+
+                $operations = array(
+                    'delete_operations'
+
+                );
+
+                break;
+
+
             case 'ComposingEmail':
 
 
@@ -659,25 +741,7 @@ class EmailCampaign extends DB_Table {
                         )
                     );
                 }
-                /*
-                                if ($this->data['Email Campaign State'] == 'Scheduled' or $this->data['Email Campaign State'] == 'Ready' or $this->data['Email Campaign State'] == 'Cancelled' or $this->data['Email Campaign State'] == 'ComposingEmail') {
 
-                                    $this->fast_update(
-                                        array(
-                                            'Email Campaign Last Updated Date' => gmdate('Y-m-d H:i:s')
-                                        )
-                                    );
-                                }else{
-
-                                    $this->fast_update(
-                                        array(
-                                            'Email Campaign State'             => $value,
-                                            'Email Campaign Last Updated Date' => gmdate('Y-m-d H:i:s'),
-                                            'Email Campaign Setup Date' => gmdate('Y-m-d H:i:s')
-                                        )
-                                    );
-                                }
-                */
 
                 $this->fast_update(
                     array(
@@ -691,6 +755,9 @@ class EmailCampaign extends DB_Table {
                     'delete_operations'
 
                 );
+                if ($this->get('Email Campaign Type') == 'Marketing' and $this->get('Email Campaign Scope') == '') {
+                    $operations[] = 'set_mail_list_operations';
+                }
 
                 break;
 
@@ -841,7 +908,7 @@ class EmailCampaign extends DB_Table {
                 'Email_Campaign_Composed_Date'   => '&nbsp;'.$this->get('Composed Date'),
                 'Email_Campaign_Start_Send_Date' => '&nbsp;'.$this->get('Start Send Date'),
                 'Email_Campaign_End_Send_Date'   => '&nbsp;'.$this->get('End Send Date'),
-
+                'Number_Estimated_Emails'        => $this->get('Number Estimated Emails')
 
             ),
             'operations'  => $operations,
@@ -851,9 +918,24 @@ class EmailCampaign extends DB_Table {
 
 
         switch ($this->data['Email Campaign State']) {
+
+            case 'InProcess':
+
+                if ($this->get('Email Campaign Type') == 'Marketing' and $this->get('Email Campaign Scope') == '') {
+                    $this->update_metadata['tab'] = 'set_mail_list';
+                } else {
+                    $this->update_metadata['tab'] = 'details';
+                }
+
+
+                break;
+            case 'ComposingEmail':
+                $this->update_metadata['tab'] = 'workshop';
+                break;
             case 'Sending':
-                $this->update_metadata['hide']                           = array('estimated_recipients_pre_sent');
-                $this->update_metadata['show']                           = array('estimated_recipients_post_sent');
+                $this->update_metadata['hide'] = array('estimated_recipients_pre_sent');
+                $this->update_metadata['show'] = array('estimated_recipients_post_sent');
+
                 $this->update_metadata['class_html']['Sent_Emails_Info'] = $this->get('Sent Emails Info');
 
 
@@ -1037,7 +1119,7 @@ class EmailCampaign extends DB_Table {
 
                 // print_r($published_email_template);
 
-               // exit('caca1');
+                // exit('caca1');
 
             }
         } else {
@@ -1142,6 +1224,35 @@ class EmailCampaign extends DB_Table {
 
                 break;
 
+            case 'Marketing':
+                $metadata = $this->get('Metadata');
+
+
+                if (isset($metadata['type'])) {
+                    switch ($metadata['type']) {
+                        case 'awhere':
+                            include_once 'utils/parse_customer_list.php';
+
+                            list($table, $where, $group_by) = parse_customer_list($metadata['fields'], $this->db);
+
+                            $where = sprintf(' where `Customer Store Key`=%d ', $this->get('Store Key')).$where.' and `Customer Send Email Marketing`="Yes" and `Customer Main Plain Email`!="" ';
+
+                            $sql = "select C.`Customer Key` ,`Customer Main Plain Email` from $table  $where ";
+
+
+                            return $sql;
+
+
+                            break;
+                        default:
+                            break;
+                    }
+                }
+
+
+                break;
+
+
         }
     }
 
@@ -1168,8 +1279,6 @@ class EmailCampaign extends DB_Table {
         $published_email_template = get_object('published_email_template', $email_template->get('Email Template Published Email Key'));
 
 
-
-
         if (isset($this->socket)) {
             $published_email_template->socket = $this->socket;
         }
@@ -1183,7 +1292,6 @@ class EmailCampaign extends DB_Table {
 
         if ($result = $this->db->query($sql)) {
             foreach ($result as $row) {
-
 
 
                 $send_data = array(
@@ -1213,8 +1321,6 @@ class EmailCampaign extends DB_Table {
                 }
 
                 $published_email_template->send(get_object($row['Email Tracking Recipient'], $row['Email Tracking Recipient Key']), $send_data, $smarty);
-
-
 
 
                 //  print_r($published_email_template);

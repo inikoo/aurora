@@ -834,7 +834,7 @@ function get_tab($db, $smarty, $user, $account, $tab, $subtab, $state = false, $
 
         $tmp[$state['module']][$state['section']]['tab'] = $_tab;
 
-       // print $_subtab;
+        // print $_subtab;
 
         $session->set('state', $tmp);
 
@@ -2832,8 +2832,247 @@ function get_tabs($data, $db, $account, $modules, $user, $smarty, $requested_tab
     );
 
 
+    if ($data['section'] == 'email_campaign') {
 
-    if ($data['section'] == 'category') {
+
+        switch ($data['_object']->get('Email Campaign Type')) {
+            case 'Newsletter':
+                $_content['tabs']['email_campaign.email_blueprints']['class'] = 'hide';
+
+                $_content['tabs']['email_campaign.set_mail_list']['class'] = 'hide';
+                $_content['tabs']['email_campaign.mail_list']['class']     = 'hide';
+
+
+                switch ($data['_object']->get('Email Campaign State')) {
+
+                    case 'InProcess':
+                        $_content['tabs']['email_campaign.workshop']['class']        = 'hide';
+                        $_content['tabs']['email_campaign.sent_emails']['class']     = 'hide';
+                        $_content['tabs']['email_campaign.published_email']['class'] = 'hide';
+
+                        //$_content['tabs']['email_campaign.details']['selected'] = true;
+                        //$_content['tabs']['email_campaign.details']['selected'] = true;
+
+
+                        break;
+                    case 'SetRecipients':
+                        $_content['tabs']['email_campaign.workshop']['class']        = 'hide';
+                        $_content['tabs']['email_campaign.sent_emails']['class']     = 'hide';
+                        $_content['tabs']['email_campaign.published_email']['class'] = 'hide';
+                        $_content['tabs']['email_campaign.set_mail_list']['class']   = '';
+                        $_content['tabs']['email_campaign.mail_list']['class']       = 'hide';
+
+                        //$_content['tabs']['email_campaign.details']['selected'] = true;
+                        //$_content['tabs']['email_campaign.details']['selected'] = true;
+
+                        if ($data['tab'] == 'email_campaign.mail_list') {
+                            $data['tab'] = 'email_campaign.set_mail_list';
+                        }
+
+
+                        break;
+
+                    case 'ComposingEmail':
+                        $_content['tabs']['email_campaign.email_blueprints']['class'] = 'hide';
+                        $_content['tabs']['email_campaign.published_email']['class']  = 'hide';
+                        $_content['tabs']['email_campaign.sent_emails']['class']      = 'hide';
+
+                        if ($data['tab'] == 'email_campaign.published_email') {
+                            $data['tab'] = 'email_campaign.workshop';
+                        }
+                        break;
+
+                    case 'Ready':
+                        $_content['tabs']['email_campaign.email_blueprints']['class'] = 'hide';
+                        $_content['tabs']['email_campaign.workshop']['class']         = 'hide';
+                        $_content['tabs']['email_campaign.sent_emails']['class']      = 'hide';
+
+
+                        if ($data['tab'] == 'email_campaign.workshop') {
+                            $data['tab'] = 'email_campaign.published_email';
+                        }
+                        break;
+                    case 'Sent':
+                    case 'Sending':
+                    case 'Stopped':
+                        $_content['tabs']['email_campaign.email_blueprints']['class'] = 'hide';
+                        $_content['tabs']['email_campaign.workshop']['class']         = 'hide';
+                        $_content['tabs']['email_campaign.mail_list']['class']        = 'hide';
+
+                        $_content['tabs']['email_campaign.sent_emails']['class'] = '';
+
+
+                        if ($data['tab'] == 'email_campaign.workshop') {
+                            $data['tab'] = 'email_campaign.sent_emails';
+                        }
+
+                        break;
+
+                }
+
+                break;
+
+            case 'AbandonedCart':
+                $_content['tabs']['email_campaign.email_blueprints']['class'] = 'hide';
+
+                $_content['tabs']['email_campaign.set_mail_list']['class'] = 'hide';
+                $_content['tabs']['email_campaign.mail_list']['class']     = 'hide';
+
+
+                switch ($data['_object']->get('Email Campaign State')) {
+
+                    case 'InProcess':
+                        $_content['tabs']['email_campaign.workshop']['class']        = 'hide';
+                        $_content['tabs']['email_campaign.sent_emails']['class']     = 'hide';
+                        $_content['tabs']['email_campaign.published_email']['class'] = 'hide';
+
+                        //$_content['tabs']['email_campaign.details']['selected'] = true;
+                        //$_content['tabs']['email_campaign.details']['selected'] = true;
+
+
+                        break;
+                    case 'SetRecipients':
+                        $_content['tabs']['email_campaign.workshop']['class']        = 'hide';
+                        $_content['tabs']['email_campaign.sent_emails']['class']     = 'hide';
+                        $_content['tabs']['email_campaign.published_email']['class'] = 'hide';
+                        $_content['tabs']['email_campaign.set_mail_list']['class']   = '';
+                        $_content['tabs']['email_campaign.mail_list']['class']       = 'hide';
+
+                        //$_content['tabs']['email_campaign.details']['selected'] = true;
+                        //$_content['tabs']['email_campaign.details']['selected'] = true;
+
+                        if ($data['tab'] == 'email_campaign.mail_list') {
+                            $data['tab'] = 'email_campaign.set_mail_list';
+                        }
+
+
+                        break;
+
+                    case 'ComposingEmail':
+                        $_content['tabs']['email_campaign.email_blueprints']['class'] = 'hide';
+                        $_content['tabs']['email_campaign.published_email']['class']  = 'hide';
+                        $_content['tabs']['email_campaign.sent_emails']['class']      = 'hide';
+
+                        if ($data['tab'] == 'email_campaign.published_email') {
+                            $data['tab'] = 'email_campaign.workshop';
+                        }
+                        break;
+
+                    case 'Ready':
+                        $_content['tabs']['email_campaign.email_blueprints']['class'] = 'hide';
+                        $_content['tabs']['email_campaign.workshop']['class']         = 'hide';
+                        $_content['tabs']['email_campaign.sent_emails']['class']      = 'hide';
+
+
+                        if ($data['tab'] == 'email_campaign.workshop') {
+                            $data['tab'] = 'email_campaign.published_email';
+                        }
+                        break;
+                    case 'Sent':
+                    case 'Sending':
+                    case 'Stopped':
+                        $_content['tabs']['email_campaign.email_blueprints']['class'] = 'hide';
+                        $_content['tabs']['email_campaign.workshop']['class']         = 'hide';
+                        $_content['tabs']['email_campaign.mail_list']['class']        = 'hide';
+
+                        $_content['tabs']['email_campaign.sent_emails']['class'] = '';
+
+
+                        if ($data['tab'] == 'email_campaign.workshop') {
+                            $data['tab'] = 'email_campaign.sent_emails';
+                        }
+
+                        break;
+
+                }
+
+                break;
+
+            case 'Marketing':
+
+                $_content['tabs']['email_campaign.email_blueprints']['class'] = 'hide';
+
+                $_content['tabs']['email_campaign.set_mail_list']['class'] = 'hide';
+                $_content['tabs']['email_campaign.mail_list']['class']     = 'hide';
+
+
+                switch ($data['_object']->get('Email Campaign State')) {
+
+                    case 'InProcess':
+                        $_content['tabs']['email_campaign.workshop']['class']        = 'hide';
+                        $_content['tabs']['email_campaign.sent_emails']['class']     = 'hide';
+                        $_content['tabs']['email_campaign.published_email']['class'] = 'hide';
+                        $_content['tabs']['email_campaign.set_mail_list']['class']   = '';
+
+                        //$_content['tabs']['email_campaign.details']['selected'] = true;
+                        if ($data['tab'] != 'email_campaign.details') {
+                            $_content['tabs']['email_campaign.set_mail_list']['selected'] = true;
+
+                            $data['tab'] = 'email_campaign.set_mail_list';
+                        }
+
+                        break;
+                    case 'SetRecipients':
+                        $_content['tabs']['email_campaign.workshop']['class']        = 'hide';
+                        $_content['tabs']['email_campaign.sent_emails']['class']     = 'hide';
+                        $_content['tabs']['email_campaign.published_email']['class'] = 'hide';
+                        $_content['tabs']['email_campaign.set_mail_list']['class']   = '';
+                        $_content['tabs']['email_campaign.mail_list']['class']       = 'hide';
+
+                        //$_content['tabs']['email_campaign.details']['selected'] = true;
+                        //$_content['tabs']['email_campaign.details']['selected'] = true;
+
+                        if ($data['tab'] == 'email_campaign.mail_list') {
+                            $data['tab'] = 'email_campaign.set_mail_list';
+                        }
+
+
+                        break;
+
+                    case 'ComposingEmail':
+                        $_content['tabs']['email_campaign.email_blueprints']['class'] = 'hide';
+                        $_content['tabs']['email_campaign.published_email']['class']  = 'hide';
+                        $_content['tabs']['email_campaign.sent_emails']['class']      = 'hide';
+
+                        if ($data['tab'] == 'email_campaign.published_email') {
+                            $data['tab'] = 'email_campaign.workshop';
+                        }
+                        break;
+
+                    case 'Ready':
+                        $_content['tabs']['email_campaign.email_blueprints']['class'] = 'hide';
+                        $_content['tabs']['email_campaign.workshop']['class']         = 'hide';
+                        $_content['tabs']['email_campaign.sent_emails']['class']      = 'hide';
+
+
+                        if ($data['tab'] == 'email_campaign.workshop') {
+                            $data['tab'] = 'email_campaign.published_email';
+                        }
+                        break;
+                    case 'Sent':
+                    case 'Sending':
+                    case 'Stopped':
+                        $_content['tabs']['email_campaign.email_blueprints']['class'] = 'hide';
+                        $_content['tabs']['email_campaign.workshop']['class']         = 'hide';
+                        $_content['tabs']['email_campaign.mail_list']['class']        = 'hide';
+
+                        $_content['tabs']['email_campaign.sent_emails']['class'] = '';
+
+
+                        if ($data['tab'] == 'email_campaign.workshop') {
+                            $data['tab'] = 'email_campaign.sent_emails';
+                        }
+
+                        break;
+
+                }
+
+                break;
+
+        }
+
+
+    } elseif ($data['section'] == 'category') {
 
         if ($data['_object']->get('Category Scope') == 'Product') {
 
@@ -2969,8 +3208,7 @@ function get_tabs($data, $db, $account, $modules, $user, $smarty, $requested_tab
         //print_r($_content);
 
 
-    }
-    elseif ($data['section'] == 'prospects.email_template') {
+    } elseif ($data['section'] == 'prospects.email_template') {
 
         if ($requested_tab != '') {
             $data['tab'] = $requested_tab;
@@ -2981,8 +3219,7 @@ function get_tabs($data, $db, $account, $modules, $user, $smarty, $requested_tab
         }
 
 
-    }
-    elseif ($data['section'] == 'email_campaign_type') {
+    } elseif ($data['section'] == 'email_campaign_type') {
 
 
         if ($data['_object']->get('Email Campaign Type Code') == 'Newsletter') {
@@ -3058,14 +3295,13 @@ function get_tabs($data, $db, $account, $modules, $user, $smarty, $requested_tab
         }
 
 
-    }
+    } elseif ($data['module'] == 'orders') {
 
-    elseif ($data['module'] == 'orders') {
 
         if ($data['section'] == 'order') {
 
 
-            if ($data['_object']->get('State Index') >40 or $data['_object']->get('State Index') <0) {
+            if ($data['_object']->get('State Index') > 40 or $data['_object']->get('State Index') < 0) {
 
                 $_content['tabs']['order.all_products']['class'] = 'hide';
 
@@ -3082,7 +3318,7 @@ function get_tabs($data, $db, $account, $modules, $user, $smarty, $requested_tab
         }
 
 
-    }  elseif ($data['module'] == 'suppliers') {
+    } elseif ($data['module'] == 'suppliers') {
 
 
         if ($data['section'] == 'order') {
@@ -3191,80 +3427,6 @@ function get_tabs($data, $db, $account, $modules, $user, $smarty, $requested_tab
             $_content['tabs']['poll_query.answers']['class'] = '';
 
             $_content['tabs']['poll_query.answers']['selected'] = true;
-
-        }
-
-
-    } elseif ($data['section'] == 'email_campaign') {
-        $_content['tabs']['email_campaign.email_blueprints']['class'] = 'hide';
-
-        $_content['tabs']['email_campaign.set_mail_list']['class'] = 'hide';
-
-
-        switch ($data['_object']->get('Email Campaign State')) {
-
-            case 'InProcess':
-                $_content['tabs']['email_campaign.workshop']['class']        = 'hide';
-                $_content['tabs']['email_campaign.sent_emails']['class']     = 'hide';
-                $_content['tabs']['email_campaign.published_email']['class'] = 'hide';
-
-                //$_content['tabs']['email_campaign.details']['selected'] = true;
-                //$_content['tabs']['email_campaign.details']['selected'] = true;
-
-
-                break;
-            case 'SetRecipients':
-                $_content['tabs']['email_campaign.workshop']['class']        = 'hide';
-                $_content['tabs']['email_campaign.sent_emails']['class']     = 'hide';
-                $_content['tabs']['email_campaign.published_email']['class'] = 'hide';
-                $_content['tabs']['email_campaign.set_mail_list']['class']   = '';
-                $_content['tabs']['email_campaign.mail_list']['class']       = 'hide';
-
-                //$_content['tabs']['email_campaign.details']['selected'] = true;
-                //$_content['tabs']['email_campaign.details']['selected'] = true;
-
-                if ($data['tab'] == 'email_campaign.mail_list') {
-                    $data['tab'] = 'email_campaign.set_mail_list';
-                }
-
-
-                break;
-
-            case 'ComposingEmail':
-                $_content['tabs']['email_campaign.email_blueprints']['class'] = 'hide';
-                $_content['tabs']['email_campaign.published_email']['class']  = 'hide';
-                $_content['tabs']['email_campaign.sent_emails']['class']      = 'hide';
-
-                if ($data['tab'] == 'email_campaign.published_email') {
-                    $data['tab'] = 'email_campaign.workshop';
-                }
-                break;
-
-            case 'Ready':
-                $_content['tabs']['email_campaign.email_blueprints']['class'] = 'hide';
-                $_content['tabs']['email_campaign.workshop']['class']         = 'hide';
-                $_content['tabs']['email_campaign.sent_emails']['class']      = 'hide';
-
-
-                if ($data['tab'] == 'email_campaign.workshop') {
-                    $data['tab'] = 'email_campaign.published_email';
-                }
-                break;
-            case 'Sent':
-            case 'Sending':
-            case 'Stopped':
-                $_content['tabs']['email_campaign.email_blueprints']['class'] = 'hide';
-                $_content['tabs']['email_campaign.workshop']['class']         = 'hide';
-                $_content['tabs']['email_campaign.mail_list']['class']        = 'hide';
-
-                $_content['tabs']['email_campaign.sent_emails']['class'] = '';
-
-
-                if ($data['tab'] == 'email_campaign.workshop') {
-                    $data['tab'] = 'email_campaign.sent_emails';
-                }
-
-                break;
 
         }
 
@@ -4077,12 +4239,12 @@ function get_view_position($db, $state, $user, $smarty, $account) {
                     'reference' => ''
                 );
             } elseif ($state['section'] == 'email_communications') {
-            $branch[] = array(
-                'label'     => _('Email communications (All stores)'),
-                'icon'      => '',
-                'reference' => ''
-            );
-        }
+                $branch[] = array(
+                    'label'     => _('Email communications (All stores)'),
+                    'icon'      => '',
+                    'reference' => ''
+                );
+            }
 
             break;
 
@@ -4106,25 +4268,26 @@ function get_view_position($db, $state, $user, $smarty, $account) {
             if ($user->get_number_stores() > 1) {
 
 
-
-                if(in_array($state['section'],array('email_campaigns','email_campaign_type','email_tracking','email_campaign'))){
+                if (in_array(
+                    $state['section'], array(
+                    'email_campaigns',
+                    'email_campaign_type',
+                    'email_tracking',
+                    'email_campaign'
+                )
+                )) {
                     $branch[] = array(
                         'label'     => _('(All stores)'),
                         'icon'      => 'mail-bulk',
                         'reference' => 'customers/all/email_communications'
                     );
-                }else{
+                } else {
                     $branch[] = array(
                         'label'     => _('(All stores)'),
                         'icon'      => '',
                         'reference' => 'customers/all'
                     );
                 }
-
-
-
-
-
 
 
             }
@@ -4349,20 +4512,19 @@ function get_view_position($db, $state, $user, $smarty, $account) {
                             'reference' => 'email_campaign_type/'.$state['_parent']->get('Store Key').'/'.$state['_parent']->id
                         );
 
-                        if($state['_object']->get('Email Campaign Type')=='Newsletter'){
+                        if ($state['_object']->get('Email Campaign Type') == 'Newsletter') {
                             $branch[] = array(
                                 'label'     => '<span class="id Email_Campaign_Name">'.$state['_object']->get('Name').'</span>',
                                 'icon'      => '',
                                 'reference' => ''
                             );
-                        }else{
+                        } else {
                             $branch[] = array(
                                 'label'     => _('Mailshot').': <span class="id Email_Campaign_Name">'.$state['_object']->get('Name').'</span>',
                                 'icon'      => 'container-storage',
                                 'reference' => ''
                             );
                         }
-
 
 
                     }
@@ -5569,8 +5731,8 @@ function get_view_position($db, $state, $user, $smarty, $account) {
                     $branch[] = array(
                         'label'     => $state['_parent']->get('Order Public ID'),
                         'icon'      => 'shopping-cart',
-                        'reference' => 'orders/'.$state['store']->id.'/'.$state['_parent']->id                    );
-
+                        'reference' => 'orders/'.$state['store']->id.'/'.$state['_parent']->id
+                    );
 
 
                     $branch[] = array(
@@ -5578,7 +5740,6 @@ function get_view_position($db, $state, $user, $smarty, $account) {
                         'icon'      => '',
                         'reference' => ''
                     );
-
 
 
                     break;
@@ -5598,12 +5759,6 @@ function get_view_position($db, $state, $user, $smarty, $account) {
                         'icon'      => '',
                         'reference' => ''
                     );
-
-
-
-
-
-
 
 
                     $branch[] = array(
@@ -8464,7 +8619,7 @@ function get_view_position($db, $state, $user, $smarty, $account) {
                     'reference' => ''
                 );
 
-            }elseif ($state['section'] == 'prospect_agent') {
+            } elseif ($state['section'] == 'prospect_agent') {
                 $branch[] = array(
                     'label'     => _("Prospect's agents"),
                     'icon'      => '',
@@ -8476,7 +8631,7 @@ function get_view_position($db, $state, $user, $smarty, $account) {
                     'reference' => ''
                 );
 
-            }elseif ($state['section'] == 'prospect_agent_email_tracking') {
+            } elseif ($state['section'] == 'prospect_agent_email_tracking') {
                 $branch[] = array(
                     'label'     => _("Prospect's agents"),
                     'icon'      => '',

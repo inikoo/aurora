@@ -180,19 +180,21 @@
                         </div>
                     </div>
 
+                    <div id="set_mail_list_operations" class="email_campaign_operation  {if $email_campaign->get('State Index')!=20 or $email_campaign->get('Email Campaign Type')=='Newsletter' or $email_campaign->get('Email Campaign Type')=='AbandonedCart'   }hide{/if}">
+                        <div class="square_button left  " title="{t}Set mailing list{/t}">
+                            <i class="fa fa-users button discreet" id="set_mail_list_save_buttons" aria-hidden="true" data-data='{  "field": "Email Campaign State","value": "InProcess","dialog_name":"set_mail_list"}'
+                               onclick="save_email_campaign_operation(this)"></i>
+
+                        </div>
+                    </div>
+
 
                 </div>
                 <span style="float:left;padding-left:10px;padding-top:5px" class="Email_Campaign_State"> {$email_campaign->get('State')} </span>
                 <div id="forward_operations">
 
 
-                    <div id="set_recipients_email_operations" class="email_campaign_operation {if $email_campaign->get('State Index')!=10 or $email_campaign->get('Type')=='Newsletter'   }hide{/if}">
-                        <div class="square_button right  " title="{t}Set mailing list{/t}">
-                            <i class="fa fa-users button discreet" id="compose_email_save_buttons" aria-hidden="true" data-data='{  "field": "Email Campaign State","value": "ComposingEmail","dialog_name":"compose_email"}'
-                               onclick="set_up_mailing_list(this)"></i>
 
-                        </div>
-                    </div>
 
 
 
@@ -336,11 +338,15 @@
                     <label>{t}Sent{/t}</label>
                     <div class="Email_Campaign_Sent">{$email_campaign->get('Sent')}</div>
                 </div>
-                <div>
+                <div >
+                    <label>{t}Bounces{/t}</label>
+                    <div class="Email_Campaign_Bounces_Percentage">{$email_campaign->get('Bounces Percentage')}</div>
+                </div>
+                <div class="hide">
                     <label>{t}Hard bounce{/t}</label>
                     <div class="Email_Campaign_Hard_Bounce">{$email_campaign->get('Hard Bounces')}</div>
                 </div>
-                <div>
+                <div class="hide">
                     <label>{t}Soft bounce{/t}</label>
                     <div class="Email_Campaign_Soft_Bounce">{$email_campaign->get('Soft Bounces')}</div>
                 </div>
@@ -413,6 +419,181 @@
 
         }
         $('#select_date_save').addClass(validation)
+
+    }
+
+/*
+    function set_up_mailing_list(){
+
+        $('#email_campaign\\.set_mail_list').removeClass('hide')
+        change_tab('email_campaign.set_mail_list')
+
+    }
+
+*/
+
+
+    function set_mailing_list(){
+
+        var form_data = new FormData();
+
+        var fields_data = {};
+        var re = new RegExp('_', 'g');
+
+        $(".value").each(function (index) {
+
+            var field = $(this).attr('field')
+            var field_type = $(this).attr('field_type')
+
+            if(field=='List_Name') return 1;
+            if(field=='List_Type') return 1;
+
+
+            if (field_type == 'time') {
+                value = clean_time($('#' + field).val())
+            } else if (field_type == 'date' || field_type == 'date_interval') {
+                if($('#' + field).val()!='') {
+                    value = $('#' + field).val() + ' ' + $('#' + field + '_time').val()
+                }else{
+                    value=''
+                }
+            } else if (field_type == 'password' || field_type == 'password_with_confirmation' || field_type == 'password_with_confirmation_paranoid' || field_type == 'pin' || field_type == 'pin_with_confirmation' || field_type == 'pin_with_confirmation_paranoid') {
+                value = sha256_digest($('#' + field).val())
+            } else if (field_type == 'attachment') {
+                form_data.append("file", $('#' + field).prop("files")[0])
+                value = ''
+            } else if (field_type == 'country_select') {
+                value = $('#' + field).countrySelect("getSelectedCountryData").code
+
+            } else if (field_type == 'telephone') {
+                value = $('#' + field).intlTelInput("getNumber");
+
+            } else if (field_type == 'subscription') {
+                var icon = $(this).find('i')
+                if (icon.hasClass('fa-toggle-on')) {
+                    value = 'Yes'
+
+                } else {
+                    value = 'No'
+                }
+
+            }  else if (field_type == 'elements') {
+                var icon = $(this).find('i')
+                if (icon.hasClass('fa-check-square')) {
+                    value = 'Yes'
+
+                } else {
+                    value = 'No'
+                }
+
+            } else if (field_type == 'with_field') {
+                var icon = $(this).find('i')
+                if (icon.hasClass('fa-toggle-on')) {
+                    value = 'Yes'
+
+                }else if (icon.hasClass('fa-toggle-off')) {
+                    value = 'No'
+
+                } else {
+                    value = ''
+                }
+            } else {
+                var value = $('#' + field).val()
+            }
+
+
+            fields_data[field.replace(re, ' ')] = value
+
+
+
+
+
+        });
+
+
+        // used only for debug
+        var request = '/ar_edit_marketing.php?tipo=set_mailing_list&object=' + $('#fields').attr('object') + '&key=' + $('#fields').attr('key') + '&fields_data=' + JSON.stringify(fields_data)
+        console.log(request)
+
+
+        //return;
+        //=====
+        form_data.append("tipo",'set_mailing_list')
+        form_data.append("object", $('#fields').attr('object'))
+        form_data.append("key", $('#fields').attr('key'))
+        form_data.append("fields_data", JSON.stringify(fields_data))
+
+        var request = $.ajax({
+
+            url: "/ar_edit_marketing.php" , data: form_data, processData: false, contentType: false, type: 'POST', dataType: 'json'
+
+        })
+
+        request.done(function (data) {
+
+
+            console.log(data)
+
+
+            switch (data.update_metadata.state) {
+                case 'ComposingEmail':
+                    $('#email_campaign\\.workshop').removeClass('hide')
+                    change_tab('email_campaign.workshop')
+                    break;
+
+
+            }
+
+
+            for (var key in data.update_metadata.class_html) {
+                $('.' + key).html(data.update_metadata.class_html[key])
+            }
+
+
+            $('.email_campaign_operation').addClass('hide')
+            // $('.items_operation').addClass('hide')
+
+
+            for (var key in data.update_metadata.operations) {
+
+                console.log('#' + data.update_metadata.operations[key])
+
+                $('#' + data.update_metadata.operations[key]).removeClass('hide')
+            }
+
+
+            $('.timeline .li').removeClass('complete')
+
+
+            if (data.update_metadata.state_index >= 20) {
+                $('#setup_mail_list_node').addClass('complete')
+            }
+            if (data.update_metadata.state_index >= 30) {
+                $('#composed_email_node').addClass('complete')
+            }
+            if (data.update_metadata.state_index >= 80) {
+                $('#packed_done_node').addClass('complete')
+            }
+            if (data.update_metadata.state_index >= 90) {
+                $('#approved_node').addClass('complete')
+            }
+            if (data.update_metadata.state_index >= 100) {
+                $('#dispatched_node').addClass('complete')
+            }
+
+
+
+
+        })
+
+        request.fail(function (jqXHR, textStatus) {
+            console.log(textStatus)
+
+            console.log(jqXHR.responseText)
+
+
+        });
+
 
     }
 

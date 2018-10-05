@@ -1337,6 +1337,13 @@ $modules = array(
                         'icon'  => 'users',
                     ),
 
+
+
+
+
+
+
+
                     'email_campaign.workshop' => array(
                         'label' => _('Workshop'),
                         'icon'  => 'wrench'

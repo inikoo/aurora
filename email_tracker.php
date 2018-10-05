@@ -487,6 +487,11 @@ if ($validator->isValid($sns)) {
                                             'class_html' => array(
                                                 'Sent_Emails_Info'    => $email_campaign->get('Sent Emails Info'),
                                                 'Email_Campaign_Sent' => $email_campaign->get('Sent'),
+                                                'Email_Campaign_Bounces_Percentage'=>$email_campaign->get('Bounces Percentage'),
+                                                'Email_Campaign_Delivered'=>$email_campaign->get('Delivered'),
+                                                'Email_Campaign_Open'=>$email_campaign->get('Open'),
+                                                'Email_Campaign_Clicked'=>$email_campaign->get('Clicked'),
+
                                             )
                                         )
 

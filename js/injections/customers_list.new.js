@@ -89,7 +89,7 @@ function toggle_list_with(element){
 
 function post_process_new_customer_list_form_validation(){
 
-    console.log('caca')
+    //console.log('caca')
 
      var original_customer_list_checksum='3a4f6614d714c0b2a430815c430d6d259df7cd59642280894d3b1335d0bb3e8f';
     var fields_data = {};
@@ -315,3 +315,5 @@ function estimate_number_list_items(){
 
 
 }
+
+

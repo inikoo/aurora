@@ -19,7 +19,8 @@ $email_campaign = $state['_object'];
 $object_fields = get_object_fields(
     $email_campaign, $db, $user, $smarty, array(
     'new' => false,
-    'store_key' => $email_campaign->get('Store Key')
+    'store_key' => $email_campaign->get('Store Key'),
+    'type'=>''
 )
 );
 
