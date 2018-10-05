@@ -336,7 +336,7 @@
     <div class="block " style="align-items: stretch;flex: 1 ;padding-top: 0px">
 
         <div id="create_delivery"
-             class="delivery_node {if  $order->get('Purchase Order Parent')=='Agent' or   ({$order->get('State Index')|intval} < 20 or ($order->get('Purchase Order Ordered Number Items')-$order->get('Purchase Order Number Supplier Delivery Items'))==0) or $parent->get('Parent Skip Inputting')=='Yes' }hide{/if}"
+             class="delivery_node {if  $order->get('Purchase Order Parent')=='xAgent' or   ({$order->get('State Index')|intval} < 20 or ($order->get('Purchase Order Ordered Number Items')-$order->get('Purchase Order Number Supplier Delivery Items'))==0) or $parent->get('Parent Skip Inputting')=='Yes' }hide{/if}"
              style="height:30px;clear:both;border-bottom:1px solid #ccc">
             <div id="back_operations">
             </div>
