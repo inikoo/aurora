@@ -331,7 +331,7 @@
                 </div>
 
 
-                <div id="create_refund_operations" class="order_operation {if {$order->get('State Index')}<100 or $order->get('Order To Pay Amount')!=0 }hide{/if}">
+                <div id="create_refund_operations" class="order_operation {if {$order->get('State Index')}<100  }hide{/if}">
                     <div class="square_button right  " title="{t}Create refund{/t}">
                         <i class="fal fa-file-alt error " aria-hidden="true" onclick="toggle_order_operation_dialog('create_refund')"></i>
                         <table id="create_refund_dialog" border="0" class="order_operation_dialog hide" style="color:#777">
