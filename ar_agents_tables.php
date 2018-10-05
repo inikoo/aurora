@@ -291,6 +291,44 @@ function client_order_items($_data, $db, $user, $account) {
             }
 
 
+            $xhtml_materials = '';
+            if ($data['Part Materials'] != '') {
+
+
+                $materials_data = json_decode($data['Part Materials'], true);
+
+
+                foreach ($materials_data as $material_data) {
+                    if (!array_key_exists('id', $material_data)) {
+                        continue;
+                    }
+
+                    if ($material_data['may_contain'] == 'Yes') {
+                        $may_contain_tag = '±';
+                    } else {
+                        $may_contain_tag = '';
+                    }
+
+
+                    $xhtml_materials .= sprintf(
+                        ', %s%s', $may_contain_tag, $material_data['name']
+                    );
+
+
+                    if ($material_data['ratio'] > 0) {
+                        $xhtml_materials .= sprintf(
+                            ' (%s)', percentage($material_data['ratio'], 1)
+                        );
+                    }
+                }
+
+                $xhtml_materials = ucfirst(
+                    preg_replace('/^\, /', '', $xhtml_materials)
+                );
+
+            }
+
+
             $table_data[] = array(
 
                 'id'                => (integer)$data['Purchase Order Transaction Fact Key'],
@@ -323,6 +361,10 @@ function client_order_items($_data, $db, $user, $account) {
                 'qty_units'         => number($units_per_carton * $data['Purchase Order Quantity']),
                 'qty_cartons'       => number($data['Purchase Order Quantity']),
                 'amount'            => money($data['Supplier Part Unit Cost'] * $data['Purchase Order Quantity'] * $units_per_carton, $purchase_order->get('Purchase Order Currency Code')),
+
+                'barcode'     => $data['Part Barcode Number'],
+                'sko_barcode' => $data['Part SKO Barcode'],
+                'materials'   => $xhtml_materials
 
             );
 
@@ -442,7 +484,6 @@ function agent_supplier_order_items($_data, $db, $user, $account) {
         foreach ($result as $data) {
 
 
-
             $units_per_carton = $data['Part Units Per Package'] * $data['Supplier Part Packages Per Carton'];
             $skos_per_carton  = $data['Supplier Part Packages Per Carton'];
 
@@ -508,7 +549,6 @@ function agent_supplier_order_items($_data, $db, $user, $account) {
             $description = ($data['Supplier Part Reference'] != $data['Part Reference'] ? $data['Part Reference'].', ' : '').$data['Supplier Part Description'];
 
 
-
             $quantity = sprintf(
                 '<span    data-settings=\'{"field": "Purchase Order Quantity", "transaction_key":"%d","item_key":%d, "item_historic_key":%d ,"on":1 }\'   >
                 <i onClick="save_item_qty_change(this)" class="fa minus  fa-minus fa-fw button" aria-hidden="true"></i>
@@ -545,6 +585,47 @@ function agent_supplier_order_items($_data, $db, $user, $account) {
             $state .= $_state;
             $state .= '</span>';
 
+
+
+            $xhtml_materials = '';
+            if ($data['Part Materials'] != '') {
+
+
+                $materials_data = json_decode($data['Part Materials'], true);
+
+
+                foreach ($materials_data as $material_data) {
+                    if (!array_key_exists('id', $material_data)) {
+                        continue;
+                    }
+
+                    if ($material_data['may_contain'] == 'Yes') {
+                        $may_contain_tag = '±';
+                    } else {
+                        $may_contain_tag = '';
+                    }
+
+
+                    $xhtml_materials .= sprintf(
+                        ', %s%s', $may_contain_tag, $material_data['name']
+                    );
+
+
+                    if ($material_data['ratio'] > 0) {
+                        $xhtml_materials .= sprintf(
+                            ' (%s)', percentage($material_data['ratio'], 1)
+                        );
+                    }
+                }
+
+                $xhtml_materials = ucfirst(
+                    preg_replace('/^\, /', '', $xhtml_materials)
+                );
+
+            }
+
+
+
             $table_data[] = array(
 
                 'id'                => (integer)$data['Purchase Order Transaction Fact Key'],
@@ -579,7 +660,10 @@ function agent_supplier_order_items($_data, $db, $user, $account) {
                 'amount'             => money($data['Supplier Part Unit Cost'] * $data['Purchase Order Quantity'] * $units_per_carton, $purchase_order->get('Agent Supplier Purchase Order Currency Code')),
                 'state'              => $state,
                 'back_operations'    => $back_operations,
-                'forward_operations' => $forward_operations
+                'forward_operations' => $forward_operations,
+                'barcode'     => $data['Part Barcode Number'],
+                'sko_barcode' => $data['Part SKO Barcode'],
+                'materials'   => $xhtml_materials
 
             );
 

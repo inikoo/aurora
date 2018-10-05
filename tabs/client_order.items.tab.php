@@ -18,8 +18,11 @@ $default = $user->get_tab_defaults($tab);
 
 $table_views = array(
     'overview' => array(
-        'label' => _('Description'),
-        'title' => _('Description')
+        'label' => _('Ordered quantity'),
+        'title' => _('Ordered quantity')
+    ),
+    'properties' => array(
+        'label' => _('Barcodes').'/'._('Materials'),
     ),
 
 );
