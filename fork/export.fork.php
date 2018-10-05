@@ -557,7 +557,7 @@ if(in_array($cell->getColumn(),$columns_no_resize)){
     );
 
 
-   
+
 
     foreach($files_to_delete as $file_to_delete){
         unlink($file_to_delete);
