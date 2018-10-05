@@ -473,7 +473,7 @@ $export_fields = array(
             'name'    => '`Part Barcode Number`',
             'label'   => _('Unit barcode').' (for website)',
             'checked' => 1,
-            'type'=>'text'
+            'type'    => 'text'
         ),
 
     ),
@@ -555,7 +555,7 @@ $export_fields = array(
             'name'    => '`Part Barcode Number`',
             'label'   => _('Unit barcode').' (for website)',
             'checked' => 1,
-            'type'=>'text'
+            'type'    => 'text'
         ),
 
     ),
@@ -824,7 +824,7 @@ $export_fields = array(
             'name'    => '`Part Barcode Number`',
             'label'   => _('Unit barcode'),
             'checked' => 1,
-            'type'=>'text'
+            'type'    => 'text'
         ),
 
         array(
@@ -1136,78 +1136,94 @@ $export_fields = array(
 
 
     ),
-    'client_order_items'=>array(
-    array(
-        'name'    => '`Supplier Code`',
-        'label'   => _('Supplier code'),
-        'checked' => 1
-    ),
-    array(
-        'name'    => '`Suppler Name`',
-        'label'   => _('Supplier name'),
-        'checked' => 0
-    ),
-    array(
-        'name'    => '`Supplier Part Reference`',
-        'label'   => _('Product Code'),
-        'checked' => 1
-    ),
-    array(
-        'name'    => '`Part Barcode Number`',
-        'label'   => _('Unit barcode'),
-        'checked' => 1,
-        'type'=>'text'
-    ),
-    array(
-        'name'    => '`Supplier Part Description`',
-        'label'   => _('Unit description'),
-        'checked' => 1
-    ),
-       array(
-        'name'    => '`Supplier Part Unit Cost`',
-        'label'   => _('Unit cost'),
-        'checked' => 1
-    ),
-    array(
-        'name'    => '`Part Units Per Package`',
-        'label'   => _('Packed in'),
-        'checked' => 1
-    ),
-    array(
-        'name'    => '`Part Units Per Package`*`Supplier Part Packages Per Carton`',
-        'label'   => _('Units per carton'),
-        'checked' => 1
-    ),
-    array(
-        'name'    => '`Supplier Part Packages Per Carton`',
-        'label'   => _('Packs per carton'),
-        'checked' => 1
-    ),
-    array(
-        'name'    => '`Purchase Order Quantity`*`Part Units Per Package`*`Supplier Part Packages Per Carton`',
-        'label'   => _('Ordered units'),
-        'checked' => 1
-    ),
-    array(
-        'name'    => '`Purchase Order Quantity`*`Supplier Part Packages Per Carton`',
-        'label'   => _('Ordered packs'),
-        'checked' => 1
-    ),
-    array(
-        'name'    => '`Purchase Order Quantity`',
-        'label'   => _('Ordered cartons'),
-        'checked' => 1
-    ),
-    array(
-        'name'    => '`Supplier Part Unit Cost`*`Purchase Order Quantity`*`Part Units Per Package`*`Supplier Part Packages Per Carton`',
-        'label'   => _('Amount'),
-        'checked' => 1
-    ),
+    'client_order_items'          => array(
+
+        array(
+            'name'    => '`Supplier Code`',
+            'label'   => _('Supplier code'),
+            'checked' => 1
+        ),
+        array(
+            'name'    => '`Suppler Name`',
+            'label'   => _('Supplier name'),
+            'checked' => 0
+        ),
+        array(
+            'name'    => '`Supplier Part Reference`',
+            'label'   => _('Product Code'),
+            'checked' => 1
+        ),
+        array(
+            'name'    => '`Part Barcode Number`',
+            'label'   => _('Unit barcode'),
+            'checked' => 1,
+            'type'    => 'text'
+        ),
+        array(
+            'name'    => '`Supplier Part Description`',
+            'label'   => _('Unit description'),
+            'checked' => 1
+        ),
+        array(
+            'name'    => '`Supplier Part Unit Cost`',
+            'label'   => _('Unit cost'),
+            'checked' => 1
+        ),
+        array(
+            'name'    => '`Part Units Per Package`',
+            'label'   => _('Packed in'),
+            'checked' => 1
+        ),
+        array(
+            'name'    => '`Part Units Per Package`*`Supplier Part Packages Per Carton`',
+            'label'   => _('Units per carton'),
+            'checked' => 1
+        ),
+        array(
+            'name'    => '`Supplier Part Packages Per Carton`',
+            'label'   => _('Packs per carton'),
+            'checked' => 1
+        ),
+        array(
+            'name'    => '`Part SKO Barcode`',
+            'label'   => _('SKO barcode'),
+            'checked' => 1,
+            'type'    => 'text'
+        ),
+        array(
+            'name'    => '`Part Materials`',
+            'label'   => _('Materials'),
+            'checked' => 1
+        ),
+        array(
+            'name'    => '`Purchase Order Quantity`*`Part Units Per Package`*`Supplier Part Packages Per Carton`',
+            'label'   => _('Ordered units'),
+            'checked' => 1
+        ),
+        array(
+            'name'    => '`Purchase Order Quantity`*`Supplier Part Packages Per Carton`',
+            'label'   => _('Ordered packs'),
+            'checked' => 1
+        ),
+        array(
+            'name'    => '`Purchase Order Quantity`',
+            'label'   => _('Ordered cartons'),
+            'checked' => 1
+        ),
+        array(
+            'name'    => '`Supplier Part Unit Cost`*`Purchase Order Quantity`*`Part Units Per Package`*`Supplier Part Packages Per Carton`',
+            'label'   => _('Amount'),
+            'checked' => 1
+        ),
+        array(
+            'name'    => '`Part Main Image Key`',
+            'label'   => _('Picture'),
+            'checked' => 1
+        ),
 
 
-
     ),
-    'customer_sent_emails' => array(
+    'customer_sent_emails'        => array(
         array(
             'name'    => '`Email Tracking Email`',
             'label'   => _('Email'),

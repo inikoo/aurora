@@ -122,6 +122,27 @@ sortType: "toggle",
 cell: Backgrid.HtmlCell.extend({ className: "aright"} ),
 headerCell: integerHeaderCell
 },
+{
+name: "barcode",
+label: "{t}Unit Barcode{/t}",
+editable: false,
+cell: Backgrid.HtmlCell.extend({
+}),
+},
+{
+name: "sko_barcode",
+label: "{t}SKO Barcode{/t}",
+editable: false,
+cell: Backgrid.HtmlCell.extend({
+}),
+},
+{
+name: "materials",
+label: "{t}Materials{/t}",
+editable: false,
+cell: Backgrid.HtmlCell.extend({
+}),
+},
 
 {
 name: "back_operations",
@@ -152,6 +173,57 @@ cell: Backgrid.HtmlCell.extend({
 
 
 function change_table_view(view, save_state) {
+
+
+$('.view').removeClass('selected');
+$('#view_'+view).addClass('selected');
+
+grid.columns.findWhere({ name: 'packed_in'} ).set("renderable", false)
+grid.columns.findWhere({ name: 'units_per_carton'} ).set("renderable", false)
+grid.columns.findWhere({ name: 'unit_cost'} ).set("renderable", false)
+grid.columns.findWhere({ name: 'qty_units'} ).set("renderable", false)
+grid.columns.findWhere({ name: 'qty_cartons'} ).set("renderable", false)
+grid.columns.findWhere({ name: 'amount'} ).set("renderable", false)
+
+grid.columns.findWhere({ name: 'sko_per_carton'} ).set("renderable", false)
+
+grid.columns.findWhere({ name: 'back_operations'} ).set("renderable", false)
+grid.columns.findWhere({ name: 'state'} ).set("renderable", false)
+grid.columns.findWhere({ name: 'forward_operations'} ).set("renderable", false)
+
+
+grid.columns.findWhere({ name: 'barcode'} ).set("renderable", false)
+grid.columns.findWhere({ name: 'sko_barcode'} ).set("renderable", false)
+grid.columns.findWhere({ name: 'materials'} ).set("renderable", false)
+
+
+if(view=='overview'){
+grid.columns.findWhere({ name: 'packed_in'} ).set("renderable", true)
+grid.columns.findWhere({ name: 'units_per_carton'} ).set("renderable", true)
+grid.columns.findWhere({ name: 'unit_cost'} ).set("renderable", true)
+grid.columns.findWhere({ name: 'qty_units'} ).set("renderable", true)
+grid.columns.findWhere({ name: 'qty_cartons'} ).set("renderable", true)
+grid.columns.findWhere({ name: 'amount'} ).set("renderable", true)
+grid.columns.findWhere({ name: 'sko_per_carton'} ).set("renderable", true)
+
+grid.columns.findWhere({ name: 'back_operations'} ).set("renderable", true)
+grid.columns.findWhere({ name: 'state'} ).set("renderable", true)
+grid.columns.findWhere({ name: 'forward_operations'} ).set("renderable", true)
+
+
+
+}else if(view=='properties'){
+grid.columns.findWhere({ name: 'barcode'} ).set("renderable", true)
+grid.columns.findWhere({ name: 'sko_barcode'} ).set("renderable", true)
+grid.columns.findWhere({ name: 'materials'} ).set("renderable", true)
+}
+
+if(save_state){
+var request = "/ar_state.php?tipo=set_table_view&tab={$tab}&table_view=" + view
+
+$.getJSON(request, function(data) {});
+}
+
 
 {if isset($data['metadata']['create_delivery']) and $data['metadata']['create_delivery'] }
 

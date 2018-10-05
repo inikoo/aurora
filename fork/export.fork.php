@@ -31,7 +31,6 @@ function fork_export($job) {
     $download_key  = $fork_data['download_key'];
 
 
-
     $creator     = 'aurora.systems';
     $title       = _('Report');
     $subject     = _('Report');
@@ -51,6 +50,11 @@ function fork_export($job) {
 
     $db->exec($sql);
 
+
+    $files_to_delete=array();
+
+
+    $columns_no_resize=array();
 
     $number_rows = 0;
 
@@ -85,7 +89,7 @@ function fork_export($job) {
     $socket->send(
         json_encode(
             array(
-                'channel'      => 'real_time.'.strtolower($account->get('Account Code')).'.'.$user_key,
+                'channel' => 'real_time.'.strtolower($account->get('Account Code')).'.'.$user_key,
 
                 'progress_bar' => array(
                     array(
@@ -166,8 +170,10 @@ function fork_export($job) {
     if ($result = $db->query($sql_data)) {
         foreach ($result as $row) {
 
-            // print_r($row);
+           //print_r($row);
             //usleep(10000);
+
+           // exit;
 
             if ($row_index == 1) {
 
@@ -221,32 +227,145 @@ function fork_export($job) {
 
 
             $char_index = 1;
-            foreach ($row as $value) {
+            foreach ($row as $sql_field => $value) {
                 $char = number2alpha($char_index);
 
-                $type=(empty($fork_data['field_set'][$char_index ]['type'])? '':$fork_data['field_set'][$char_index ]['type'] );
+
+                if ($sql_field == 'Part Materials') {
 
 
-                if ( $type=='html' ) {
-                    $_value = $value;
-                } else {
-                    $_value = strip_tags($value);
 
+                    $materials = '';
+                    if ($value != '') {
+
+
+                        $materials_data = json_decode($value, true);
+
+
+                        foreach ($materials_data as $material_data) {
+                            if (!array_key_exists('id', $material_data)) {
+                                continue;
+                            }
+
+                            if ($material_data['may_contain'] == 'Yes') {
+                                $may_contain_tag = '±';
+                            } else {
+                                $may_contain_tag = '';
+                            }
+
+
+                            $materials .= sprintf(
+                                ', %s%s', $may_contain_tag, $material_data['name']
+                            );
+
+
+                            if ($material_data['ratio'] > 0) {
+                                $materials .= sprintf(
+                                    ' (%s)', percentage($material_data['ratio'], 1)
+                                );
+                            }
+                        }
+
+                        $materials = ucfirst(
+                            preg_replace('/^\, /', '', $materials)
+                        );
+
+                    }
+
+
+                    $value = $materials;
                 }
 
-                //print "$_value\n";
 
-              //  print_r($fork_data['field_set'][$char_index - 1]);
+                if ($sql_field == 'Part Main Image Key') {
 
-               // $objPHPExcel->getActiveSheet()->setCellValue($char.$row_index, $_value);
+                    if($value>0){
 
-                if($type=='text'){
+                        $columns_no_resize[]=$char;
 
-                    $objPHPExcel->getActiveSheet()->setCellValueExplicit($char.$row_index, $_value,PHPExcel_Cell_DataType::TYPE_STRING);
+                        $objDrawing = new PHPExcel_Worksheet_Drawing();    //create object for Worksheet drawing
+                        $objDrawing->setName('Image');        //set name to image
+                        $objDrawing->setDescription('Item image'); //set description to image
 
-                }else{
-                    $objPHPExcel->getActiveSheet()->setCellValue($char.$row_index, $_value);
+
+                        $tmp_file='tmp/'.$output_filename.date('U').$row_index.'.png';
+
+
+
+
+                        include_once 'class.Image.php';
+                        $image = new Image($value);
+
+
+
+
+                        $new_image = $image->fit_to_canvas(200, 200);
+
+
+                        ImagePNG($new_image,$tmp_file);
+
+
+
+
+
+
+                        $signature = $tmp_file;    //Path to signature .jpg file
+                        $objDrawing->setPath($signature);
+                        $objDrawing->setOffsetX(10);                       //setOffsetX works properly
+                        $objDrawing->setOffsetY(10);                       //setOffsetY works properly
+                        $objDrawing->setCoordinates($char.$row_index);        //set image to cell
+
+
+                        $objDrawing->setResizeProportional(false);
+
+                        $objDrawing->setWidth(200);                 //set width, height
+                       //$objDrawing->setHeight(20);
+
+                        $objDrawing->setWorksheet($objPHPExcel->getActiveSheet());  //save
+
+
+                        $objPHPExcel->getActiveSheet()->getRowDimension($row_index)->setRowHeight(220);
+
+                        $files_to_delete[]=$tmp_file;
+
+
+
+                    }
+
+
+                    $objPHPExcel->getActiveSheet()->getColumnDimension($char)->setWidth(220);
+
                 }
+                else{
+
+
+                    $type = (empty($fork_data['field_set'][$char_index]['type']) ? '' : $fork_data['field_set'][$char_index]['type']);
+
+
+                    if ($type == 'html') {
+                        $_value = $value;
+                    } else {
+                        $_value = strip_tags($value);
+
+                    }
+
+                    //print "$sql_field --> $_value\n";
+
+                    //  print_r($fork_data['field_set'][$char_index - 1]);
+
+                    // $objPHPExcel->getActiveSheet()->setCellValue($char.$row_index, $_value);
+
+                    if ($type == 'text') {
+
+                        $objPHPExcel->getActiveSheet()->setCellValueExplicit($char.$row_index, $_value, PHPExcel_Cell_DataType::TYPE_STRING);
+
+                    } else {
+                        $objPHPExcel->getActiveSheet()->setCellValue($char.$row_index, $_value);
+                    }
+                }
+
+
+
 
 
                 $char_index++;
@@ -308,6 +427,11 @@ function fork_export($job) {
 
             }
 
+
+
+         //
+
+
         }
     } else {
         print_r($error_info = $db->errorInfo());
@@ -324,12 +448,23 @@ function fork_export($job) {
     }
 */
 
+
+   // exit;
+
     $sheet        = $objPHPExcel->getActiveSheet();
     $cellIterator = $sheet->getRowIterator()->current()->getCellIterator();
     $cellIterator->setIterateOnlyExistingCells(true);
     /** @var PHPExcel_Cell $cell */
     foreach ($cellIterator as $cell) {
-        $sheet->getColumnDimension($cell->getColumn())->setAutoSize(true);
+
+       // print_r($cell->getColumn());
+if(in_array($cell->getColumn(),$columns_no_resize)){
+    $sheet->getColumnDimension($cell->getColumn())->setWidth(250);
+}else{
+    $sheet->getColumnDimension($cell->getColumn())->setAutoSize(true);
+
+}
+
     }
 
     $objPHPExcel->getActiveSheet()->freezePane('A2');
@@ -420,6 +555,13 @@ function fork_export($job) {
             )
         )
     );
+
+
+   
+
+    foreach($files_to_delete as $file_to_delete){
+        unlink($file_to_delete);
+    }
 
 
     return false;

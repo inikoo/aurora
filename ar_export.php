@@ -78,6 +78,8 @@ if ($_data['tipo'] == 'timeserie_records') {
         $_tipo = 'inventory_stock_history_day';
     }elseif ($_data['tipo'] == 'client_order.items') {
         $_tipo = 'client_order_items';
+    }elseif ($_data['tipo'] == 'agent_supplier_order.items') {
+        $_tipo = 'client_order_items';
     }elseif ($_data['tipo'] == 'sent_emails') {
         //print_r($_data);
         // todo parse request for prospects (ise state to find out)
