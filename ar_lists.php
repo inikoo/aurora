@@ -11,6 +11,7 @@
 
 require_once 'common.php';
 require_once 'utils/ar_common.php';
+require_once 'utils/object_functions.php';
 
 
 if (!isset($_REQUEST['tipo'])) {
@@ -57,8 +58,41 @@ function estimate_number_list_items($data, $db, $user, $smarty) {
     $number_items = 0;
 
     switch ($data['object']) {
+        case 'Email_Campaign':
+            include_once 'utils/parse_customer_list.php';
+
+
+            $email_campaign=get_object('Email_Campaign_Type',$data['parent_key']);
+            $data['fields_data']['store_key']=$email_campaign->get('Store Key');
+
+            list($table, $where,$group_by) = parse_customer_list($data['fields_data'],$db);
+
+            $where = sprintf(' where `Customer Store Key`=%d ', $email_campaign->get('Store Key')).$where.' and `Customer Send Email Marketing`="Yes" and `Customer Main Plain Email`!="" ';
+
+            $sql = "select count(Distinct C.`Customer Key`) as num from $table  $where ";
+
+
+
+           // print_r($data);
+             //print $sql;
+
+            if ($result = $db->query($sql)) {
+                if ($row = $result->fetch()) {
+                    $number_items = $row['num'];
+                }
+            } else {
+                print_r($error_info = $db->errorInfo());
+                print "$sql\n";
+                exit;
+            }
+
+            $text=sprintf(
+                ngettext('The mailing list will have %s recipient', 'The mailing list will have %s recipients', $number_items), number($number_items)
+            );
+
+            break;
         case 'Customers_List':
-            include_once 'parse_customer_list.php';
+            include_once 'utils/parse_customer_list.php';
 
             $data['fields_data']['store_key']=$data['parent_key'];
             list($table, $where,$group_by) = parse_customer_list($data['fields_data'],$db);

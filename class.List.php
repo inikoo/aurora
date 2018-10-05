@@ -90,7 +90,7 @@ class SubjectList extends DB_Table {
 
             if ($this->data['List Type'] == 'Static') {
 
-                include_once 'parse_customer_list.php';
+                include_once 'utils/parse_customer_list.php';
 
                 $_data              = json_decode($this->data['List Metadata'], true);
                 $_data['store_key'] = $this->data['List Parent Key'];
@@ -179,7 +179,7 @@ class SubjectList extends DB_Table {
             }
 
         } else {
-            include_once 'parse_customer_list.php';
+            include_once 'utils/parse_customer_list.php';
 
             $_data              = json_decode($this->data['List Metadata'], true);
             $_data['store_key'] = $this->data['List Parent Key'];

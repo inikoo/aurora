@@ -10,7 +10,7 @@
 
 */
 
-
+require_once 'vendor/autoload.php';
 use Aws\Ses\SesClient;
 
 
@@ -336,8 +336,8 @@ trait Send_Email {
                 )
             );
 
-            /*
 
+/*
 
                         $email_tracking->fast_update(
                             array(
@@ -348,7 +348,7 @@ trait Send_Email {
                             )
                         );
 
-                        sleep(5);
+                        sleep(1);
 
 */
 

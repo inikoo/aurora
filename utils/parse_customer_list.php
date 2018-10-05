@@ -11,14 +11,14 @@
  Version 3.0
 */
 
-function parse_customer_list($data,$db) {
+function parse_customer_list($data, $db) {
 
-  //  print_r($data);
+    //  print_r($data);
 
     $table = '`Customer Dimension` C  ';
-    $group ='';
+    $group = '';
 
-    $with_otf=false;
+    $with_otf = false;
 
     $where = '';
     if ($data['Customer Status Active'] == 'No' or $data['Customer Status Loosing'] == 'No' or $data['Customer Status Lost'] == 'No') {
@@ -92,11 +92,15 @@ function parse_customer_list($data,$db) {
 
     }
 
-
-    $where .= sprintf(' and `Customer Send Newsletter` =%s ', prepare_mysql($data['Customer Send Newsletter']));
-    $where .= sprintf(' and `Customer Send Email Marketing` =%s ', prepare_mysql($data['Customer Send Email Marketing']));
-    $where .= sprintf(' and `Customer Send Postal Marketing` =%s ', prepare_mysql($data['Customer Send Postal Marketing']));
-
+    if (isset($data['Customer Send Newsletter'])) {
+        $where .= sprintf(' and `Customer Send Newsletter` =%s ', prepare_mysql($data['Customer Send Newsletter']));
+    }
+    if (isset($data['Customer Send Email Marketing'])) {
+        $where .= sprintf(' and `Customer Send Email Marketing` =%s ', prepare_mysql($data['Customer Send Email Marketing']));
+    }
+    if (isset($data['Customer Send Postal Marketing'])) {
+        $where .= sprintf(' and `Customer Send Postal Marketing` =%s ', prepare_mysql($data['Customer Send Postal Marketing']));
+    }
     if ($data['With Email'] == 'Yes') {
         $where .= sprintf(' and `Customer Main Plain Email` !="" ');
     } elseif ($data['With Email'] == 'No') {
@@ -122,7 +126,7 @@ function parse_customer_list($data,$db) {
 
 
     if ($data['Assets'] != '') {
-        $tmp           = '';
+        $tmp         = '';
         $product_ids = array();
 
 
@@ -135,64 +139,69 @@ function parse_customer_list($data,$db) {
             }
 
 
-            $sql=sprintf('select `Product ID` from `Product Dimension` where `Product Code`=%s and `Product Store Key`=%d ',prepare_mysql($asset_code),$data['store_key']);
+            $sql = sprintf('select `Product ID` from `Product Dimension` where `Product Code`=%s and `Product Store Key`=%d ', prepare_mysql($asset_code), $data['store_key']);
 
-            if ($result=$db->query($sql)) {
-            		foreach ($result as $row) {
-                        $product_ids[$row['Product ID']]=$row['Product ID'];
-            		}
-            }else {
-            		print_r($error_info=$db->errorInfo());
-            		print "$sql\n";
-            		exit;
-            }
+           // print $sql;
 
-
-
-
-
-            $sql=sprintf('select `Subject Key` from `Category Dimension` C left join `Category Bridge` B on (B.`Category Key`=C.`Category Key`) where `Category Code`=%s and `Category Store Key`=%d and `Category Scope`="Product" and  `Category Subject`="Product"  ',prepare_mysql($asset_code),$data['store_key']);
-          //  print $sql;
-            if ($result=$db->query($sql)) {
+            if ($result = $db->query($sql)) {
                 foreach ($result as $row) {
-                    $product_ids[$row['Subject Key']]=$row['Subject Key'];
+                    $product_ids[$row['Product ID']] = $row['Product ID'];
                 }
-            }else {
-                print_r($error_info=$db->errorInfo());
-                print "$sql\n";
-                exit;
-            }
-
-            $sql=sprintf('select `Subject Key` from `Category Dimension` C left join `Category Bridge` B on (B.`Category Key`=C.`Category Key`) where `Category Code`=%s and `Category Store Key`=%d and `Category Scope`="Product" and  `Category Subject`="Category" ',prepare_mysql($asset_code),$data['store_key']);
-          //  print $sql;
-            $categories=array();
-
-            if ($result=$db->query($sql)) {
-                foreach ($result as $row) {
-
-                    $categories[$row['Subject Key']]=$row['Subject Key'];
-
-
-                }
-            }else {
-                print_r($error_info=$db->errorInfo());
+            } else {
+                print_r($error_info = $db->errorInfo());
                 print "$sql\n";
                 exit;
             }
 
 
-            if(count($categories)>1){
+            $sql = sprintf(
+                'select `Subject Key` from `Category Dimension` C left join `Category Bridge` B on (B.`Category Key`=C.`Category Key`) where `Category Code`=%s and `Category Store Key`=%d and `Category Scope`="Product" and  `Category Subject`="Product"  ',
+                prepare_mysql($asset_code), $data['store_key']
+            );
+            //  print $sql;
+            if ($result = $db->query($sql)) {
+                foreach ($result as $row) {
+                    $product_ids[$row['Subject Key']] = $row['Subject Key'];
+                }
+            } else {
+                print_r($error_info = $db->errorInfo());
+                print "$sql\n";
+                exit;
+            }
 
-                $sql=sprintf('select `Subject Key` from  `Category Bridge` where  `Subject`="Product"  and `Category Key` in (%s) ',join(',',$categories));
+            $sql = sprintf(
+                'select `Subject Key` from `Category Dimension` C left join `Category Bridge` B on (B.`Category Key`=C.`Category Key`) where `Category Code`=%s and `Category Store Key`=%d and `Category Scope`="Product" and  `Category Subject`="Category" ',
+                prepare_mysql($asset_code), $data['store_key']
+            );
+            //  print $sql;
+            $categories = array();
 
-              //  print $sql;
+            if ($result = $db->query($sql)) {
+                foreach ($result as $row) {
 
-                if ($result=$db->query($sql)) {
+                    $categories[$row['Subject Key']] = $row['Subject Key'];
+
+
+                }
+            } else {
+                print_r($error_info = $db->errorInfo());
+                print "$sql\n";
+                exit;
+            }
+
+
+            if (count($categories) > 1) {
+
+                $sql = sprintf('select `Subject Key` from  `Category Bridge` where  `Subject`="Product"  and `Category Key` in (%s) ', join(',', $categories));
+
+                //  print $sql;
+
+                if ($result = $db->query($sql)) {
                     foreach ($result as $row) {
-                        $product_ids[$row['Subject Key']]=$row['Subject Key'];
+                        $product_ids[$row['Subject Key']] = $row['Subject Key'];
                     }
-                }else {
-                    print_r($error_info=$db->errorInfo());
+                } else {
+                    print_r($error_info = $db->errorInfo());
                     print "$sql\n";
                     exit;
                 }
@@ -202,15 +211,14 @@ function parse_customer_list($data,$db) {
             // print_r($product_ids);
 
 
-
         }
 
         //   print_r($country_codes);
 
         if (count($product_ids) > 0) {
-            $with_otf=true;
-            $table = '`Customer Dimension` C  left join  `Order Transaction Fact` OTF  on (C.`Customer Key`=OTF.`Customer Key`)   ';
-            $group = ' group by C.`Customer Key`';
+            $with_otf = true;
+            $table    = '`Customer Dimension` C  left join  `Order Transaction Fact` OTF  on (C.`Customer Key`=OTF.`Customer Key`)   ';
+            $group    = ' group by C.`Customer Key`';
 
             $tmp .= sprintf(' and `Product ID` in (\'%s\') ', join("','", $product_ids));
         }
@@ -222,10 +230,10 @@ function parse_customer_list($data,$db) {
 
     if ($data['Ordered Date From'] != '' or $data['Ordered Date To'] != '') {
 
-        $table = '`Customer Dimension` C  left join  `Order Transaction Fact` OTF  on (C.`Customer Key`=OTF.`Customer Key`)   ';
-        $group = ' group by C.`Customer Key`';
-        $with_otf=true;
-        $tmp = '';
+        $table    = '`Customer Dimension` C  left join  `Order Transaction Fact` OTF  on (C.`Customer Key`=OTF.`Customer Key`)   ';
+        $group    = ' group by C.`Customer Key`';
+        $with_otf = true;
+        $tmp      = '';
         if ($data['Ordered Date From'] != '') {
             $tmp .= sprintf(' and  `Order Date`>=%s ', prepare_mysql($data['Ordered Date From']));
         }
@@ -237,8 +245,8 @@ function parse_customer_list($data,$db) {
     }
 
 
-    if($with_otf and ($data['Order State Basket'] == 'No' or $data['Order State Processing'] == 'No' or $data['Order State Dispatched'] == 'No' or $data['Order State Cancelled'] == 'No')){
-//'In Process by Customer','Submitted by Customer','In Process','Ready to Pick','Picking','Ready to Pack','Ready to Ship','Dispatched','Unknown','Packing','Packed','Packed Done','Cancelled','No Picked Due Out of Stock','No Picked Due No Authorised','No Picked Due Not Found','No Picked Due Other','Suspended','Cancelled by Customer','Out of Stock in Basket'
+    if ($with_otf and ($data['Order State Basket'] == 'No' or $data['Order State Processing'] == 'No' or $data['Order State Dispatched'] == 'No' or $data['Order State Cancelled'] == 'No')) {
+        //'In Process by Customer','Submitted by Customer','In Process','Ready to Pick','Picking','Ready to Pack','Ready to Ship','Dispatched','Unknown','Packing','Packed','Packed Done','Cancelled','No Picked Due Out of Stock','No Picked Due No Authorised','No Picked Due Not Found','No Picked Due Other','Suspended','Cancelled by Customer','Out of Stock in Basket'
         $tmp = ' and `Current Dispatching State` in ( ';
         if ($data['Order State Basket'] == 'Yes') {
             $tmp .= ' "In Process","Out of Stock in Basket" ';
@@ -260,7 +268,7 @@ function parse_customer_list($data,$db) {
 
     }
 
-//print $where;
+    //print $where;
     return array(
         $table,
         $where,

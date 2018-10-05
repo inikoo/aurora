@@ -41,7 +41,7 @@ if (isset($parameters['awhere']) and $parameters['awhere']) {
             } else {
 
 
-                include_once 'parse_customer_list.php';
+                include_once 'utils/parse_customer_list.php';
 
                 $_data=json_decode($row['List Metadata'], true);
                 $_data['store_key']=$row['List Parent Key'];

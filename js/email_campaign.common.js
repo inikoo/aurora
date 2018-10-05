@@ -252,18 +252,10 @@ function save_email_campaign_operation(element) {
                     reload_showcase: true
                 })
             }
-
-
-            switch (data.update_metadata.state) {
-                case 'ComposingEmail':
-                    $('#email_campaign\\.workshop').removeClass('hide')
-                    change_tab('email_campaign.workshop')
-                    break;
-
-
+            if(data.update_metadata.tab!=undefined) {
+                $('#email_campaign\\.' + data.update_metadata.tab).removeClass('hide')
+                change_tab('email_campaign.' + data.update_metadata.tab)
             }
-
-
             for (var key in data.update_metadata.class_html) {
                 $('.' + key).html(data.update_metadata.class_html[key])
             }

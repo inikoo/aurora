@@ -95,7 +95,17 @@ switch ($tipo) {
         );
         edit_bulk_deal_data($account, $db, $user, $editor, $data, $smarty);
         break;
+    case 'set_mailing_list':
+        $data = prepare_values(
+            $_REQUEST, array(
+                         'object'      => array('type' => 'string'),
+                         'key'  => array('type' => 'string'),
+                         'fields_data' => array('type' => 'json array')
+                     )
+        );
 
+        set_mailing_list($account, $db, $user, $editor, $data, $smarty);
+        break;
     default:
         $response = array(
             'state' => 405,
@@ -356,14 +366,14 @@ function edit_campaign_components_status($account, $db, $user, $editor, $data, $
         $deal_components = $deal->get_deal_components('objects', 'Active');
     } else {
         $response = array(
-            'state'  => 400,
-            'msg' => 'wrong status '.$data['status']
+            'state' => 400,
+            'msg'   => 'wrong status '.$data['status']
         );
         echo json_encode($response);
         exit;
     }
 
-    foreach($deal_components as $deal_component){
+    foreach ($deal_components as $deal_component) {
         $deal_component->update(
             array(
                 'Deal Component Status' => $data['status']
@@ -374,11 +384,46 @@ function edit_campaign_components_status($account, $db, $user, $editor, $data, $
     }
 
 
-
     $response = array(
-        'state'  => 200,
+        'state' => 200,
 
     );
+    echo json_encode($response);
+
+}
+
+
+function set_mailing_list($account, $db, $user, $editor, $data, $smarty) {
+
+
+    include_once 'utils/parse_customer_list.php';
+
+
+    $email_campaign                   = get_object('Email_Campaign', $data['key']);
+    $data['fields_data']['store_key'] = $email_campaign->get('Store Key');
+
+
+    $metadata = array(
+        'type'   => 'awhere',
+        'fields' => $data['fields_data']
+    );
+
+    $email_campaign->fast_update(
+        array(
+            'Email Campaign Metadata' => json_encode($metadata)
+        )
+    );
+    $email_campaign->update_estimated_recipients();
+
+    $email_campaign->update_state('ComposingEmail');
+
+
+    $response = array(
+        'state'    => 200,
+        'update_metadata' => $email_campaign->get_update_metadata(),
+
+    );
+
     echo json_encode($response);
 
 }
