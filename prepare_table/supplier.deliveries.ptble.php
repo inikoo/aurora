@@ -91,9 +91,11 @@ if (isset($parameters['elements_type'])) {
 
             if ($_elements == '') {
                 $where .= ' and false';
-            } elseif ($num_elements_checked < 8) {
+            } elseif ($num_elements_checked < 6) {
 
                if ($_key == 'Placed') {
+                    $_elements .= ",'InProcess','Dispatched','Consolidated'";
+                }if ($_key == 'InProcess') {
                     $_elements .= ",'Placed','Costing'";
                 } else {
 

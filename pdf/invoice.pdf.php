@@ -192,7 +192,7 @@ if ($result = $db->query($sql)) {
             $discount = ($row['Order Transaction Total Discount Amount'] == 0
                 ? ''
                 : percentage(
-                    $row['Order Transaction Total Discount Amount'], $row['Order Transaction Gross Amount'] - floatval($row['Order Transaction Out of Stock Amount']), 0
+                    $row['Order Transaction Total Discount Amount'], $row['Order Transaction Gross Amount'] , 0
                 ));
 
         } else {
