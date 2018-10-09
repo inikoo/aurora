@@ -1802,6 +1802,17 @@ $tab_defaults = array(
 
     ),
 
+     'supplier.delivery.items_done'         => array(
+        'view'        => 'overview',
+        'sort_key'    => 'id',
+        'sort_order'  => 1,
+        'rpp'         => 1000,
+        'rpp_options' => $default_rrp_options,
+        'f_field'     => 'code',
+
+    ),
+
+
     'supplier.delivery.check_items' => array(
         'view'        => 'overview',
         'sort_key'    => 'id',

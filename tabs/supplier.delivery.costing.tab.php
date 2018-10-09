@@ -12,7 +12,7 @@
 $ar_file = 'ar_suppliers_tables.php';
 
 
-if ($state['_object']->get('State Index') == 100) {
+if ($state['_object']->get('State Index') >=100) {
     $tab  = 'supplier.delivery.costing';
     $tipo = 'delivery.costing';
 
@@ -82,6 +82,25 @@ $smarty->assign('currency', $state['_object']->get('Supplier Delivery Currency C
 $smarty->assign('currency_account', $account->get('Currency Code'));
 
 $smarty->assign('currency_symbol', currency_symbol($account->get('Currency Code')));
+
+$number_zero_placed_items=0;
+$sql=sprintf('select count(*) as num from `Purchase Order Transaction Fact` where `Supplier Delivery Key`=%d and (`Supplier Delivery Placed Quantity`=0  or `Supplier Delivery Placed Quantity` is null) ',
+             $state['_object']->id
+
+    );
+if ($result=$db->query($sql)) {
+    if ($row = $result->fetch()) {
+        $number_zero_placed_items=$row['num'];
+	}
+}else {
+	print_r($error_info=$db->errorInfo());
+	print "$sql\n";
+	exit;
+}
+
+//print $sql;
+
+$smarty->assign('number_zero_placed_items',$number_zero_placed_items);
 
 
 $smarty->assign('table_top_template', 'supplier.delivery.costing.tpl');

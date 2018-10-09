@@ -281,6 +281,7 @@ function fork_export_edit_template($job) {
 
 
 
+
     if ($result = $db->query($sql_data)) {
         foreach ($result as $row) {
 
@@ -420,9 +421,7 @@ function fork_export_edit_template($job) {
                                             $op .= 'NO PIC, ';
 
                                         }
-                                        if (!$object->get(
-                                                'Part Current On Hand Stock'
-                                            ) > 0) {
+                                        if (!$object->get('Part Current On Hand Stock') > 0) {
                                             $op .= 'NO STOCK, ';
 
                                         }
@@ -473,7 +472,7 @@ function fork_export_edit_template($job) {
                                                 $value = $object->get('Part Label in Family');
                                                 break;
                                             case 'Product Units Per Case':
-                                                $value = $object->get('Part Units Per Package');
+                                                $value = $object->get('Part Units Per Package')* $skos_per_outer;
                                                 break;
                                             case 'Product Unit Label':
                                                 $value = $object->get('Part Unit Label');
@@ -501,9 +500,9 @@ function fork_export_edit_template($job) {
                                                 }
                                                 break;
 
-                                            case 'Product Units Per Case':
-                                                $value = $object->get('Part Units Per Package') * $object->get('Part SKOs per Carton');
-                                                break;
+                                           // case 'Product Units Per Case':
+                                            //    $value = $object->get('Part Units Per Package') * $skos_per_outer;
+                                             //   break;
                                             default:
                                                 $value = $object->get($field['name']);
                                                 break;
@@ -679,6 +678,9 @@ function fork_export_edit_template($job) {
     $sheet        = $objPHPExcel->getActiveSheet();
     $cellIterator = $sheet->getRowIterator()->current()->getCellIterator();
 
+
+   // exit('cacaca');
+
 try {
     $cellIterator->setIterateOnlyExistingCells(true);
 }catch(PHPExcel_Exception $e) {
@@ -703,6 +705,10 @@ try {
 
 
     $download_path = 'tmp/';
+
+
+
+
 
     switch ($output_type) {
 
@@ -760,6 +766,7 @@ try {
     );
 
     $db->exec($sql);
+
 
 
     $socket->send(

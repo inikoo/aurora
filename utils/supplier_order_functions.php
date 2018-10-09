@@ -156,7 +156,7 @@ function get_agent_purchase_order_transaction_data($data) {
             $state .= _('Checked');
             break;
         case 'Placed':
-            $state .= _('Placed');
+            $state .= _('Booked in');
             break;
         case 'Cancelled':
             $state .= _('Cancelled');
@@ -281,7 +281,7 @@ function get_purchase_order_transaction_data($data) {
             $state .= _('Checked');
             break;
         case 'Placed':
-            $state .= _('Placed');
+            $state .= _('Booked in');
             break;
         case 'Cancelled':
             $state .= _('Cancelled');

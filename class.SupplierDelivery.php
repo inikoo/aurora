@@ -254,7 +254,7 @@ class SupplierDelivery extends DB_Table {
                     // //'InProcess','Consolidated','Dispatched','Received','Checked','Placed','Cancelled'
 
                     case 'InProcess':
-                        return _('Inputted');
+                        return _('In process');
                         break;
                     case 'Consolidated':
                         return _('Consolidated');
@@ -270,7 +270,13 @@ class SupplierDelivery extends DB_Table {
                         return _('Checked');
                         break;
                     case 'Placed':
-                        return _('Placed');
+                        return _('Booked in');
+                        break;
+                    case 'Costing':
+                        return _('Booked in').', '._('Checking costing');
+                        break;
+                    case 'InvoiceChecked':
+                        return _('Booked in').', '._('Costing done').' <i class="fa fa-check success"></i>';
                         break;
                     case 'Cancelled':
                         return _('Cancelled');
@@ -298,7 +304,13 @@ class SupplierDelivery extends DB_Table {
                         return _('Received by client').' ('._('checked').')';
                         break;
                     case 'Placed':
-                        return _('Received by client').' ('._('placed').')';
+                        return _('Received by client').' ('._('Booked in').')';
+                        break;
+                    case 'Costing':
+                        return _('Received by client').' ('._('Checking costs').')';
+                        break;
+                    case 'InvoiceChecked':
+                        return _('Done');
                         break;
                     case 'Cancelled':
                         return _('Cancelled');
@@ -309,7 +321,6 @@ class SupplierDelivery extends DB_Table {
 
                 break;
             case 'State Index':
-
 
 
                 switch ($this->data['Supplier Delivery State']) {
@@ -333,6 +344,12 @@ class SupplierDelivery extends DB_Table {
                         break;
                     case 'Placed':
                         return 100;
+                        break;
+                    case 'Costing':
+                        return 105;
+                        break;
+                    case 'InvoiceChecked':
+                        return 110;
                         break;
                     case 'Cancelled':
                         return -10;
@@ -442,6 +459,32 @@ class SupplierDelivery extends DB_Table {
 
                     return strftime(
                         "%e %b %Y", strtotime($this->data['Supplier Delivery Placed Date'].' +0:00')
+                    );
+                }
+
+                break;
+            case 'Costing Date':
+                if ($this->get('State Index') <= 100) {
+                    return '';
+                } elseif ($this->get('State Index') == 105) {
+                    if ($this->data['Supplier Delivery Start Costing Date'] == '') {
+                        $date = '';
+                    } else {
+                        $date = strftime(
+                            "%e %b %Y", strtotime($this->data['Supplier Delivery Start Costing Date'].' +0:00')
+                        );
+                    }
+
+                    return sprintf('<span title="%s" class="very_discreet italic">%s</span>', $date, _('In process'));
+
+
+                } else {
+                    if ($this->data['Supplier Delivery Invoice Checked Date'] == '') {
+                        return '';
+                    }
+
+                    return strftime(
+                        "%e %b %Y", strtotime($this->data['Supplier Delivery Invoice Checked Date'].' +0:00')
                     );
                 }
 
@@ -674,6 +717,10 @@ class SupplierDelivery extends DB_Table {
         $date = gmdate('Y-m-d H:i:s');
 
 
+        $skip_update_totals = false;
+
+        $operations = array();
+
         if ($value == 'InProcess or Dispatched') {
 
             if ($this->get('Supplier Delivery Placed Items') == 'Yes') {
@@ -855,17 +902,90 @@ class SupplierDelivery extends DB_Table {
                 break;
             case 'Placed':
 
-                $this->update_field(
-                    'Supplier Delivery Placed Date', $date, 'no_history'
-                );
-                $this->update_field(
-                    'Supplier Delivery State', $value, 'no_history'
-                );
-                foreach ($metadata as $key => $_value) {
-                    $this->update_field($key, $_value, 'no_history');
+
+                if ($this->data['Supplier Delivery State'] != 'Placed') {
+
+
+                    $this->fast_update(
+                        array(
+                            'Supplier Delivery Placed Date' => $date,
+                            'Supplier Delivery State'       => $value,
+                        )
+                    );
+
+
+                    foreach ($metadata as $key => $_value) {
+
+                        $this->fast_update(
+                            array(
+                                $key => $_value
+                            )
+                        );
+
+                    }
+
                 }
 
-                $operations = array();
+                $operations = array('costing_operations');
+
+
+                break;
+
+            case 'Costing':
+
+
+                if ($this->data['Supplier Delivery State'] == 'Placed' or $this->data['Supplier Delivery State'] == 'InvoiceChecked') {
+
+                    $this->fast_update(
+                        array(
+                            'Supplier Delivery Start Costing Date'   => $date,
+                            'Supplier Delivery State'                => $value,
+                            'Supplier Delivery Invoice Checked Date' => '',
+                        )
+                    );
+
+                    $operations = array('undo_costing_operations');
+
+                }
+
+
+                break;
+            case 'RedoCosting':
+
+
+                if ($this->data['Supplier Delivery State'] == 'InvoiceChecked') {
+
+                    $this->fast_update(
+                        array(
+                            'Supplier Delivery Start Costing Date'   => $date,
+                            'Supplier Delivery State'                => 'Costing',
+                            'Supplier Delivery Invoice Checked Date' => '',
+                        )
+                    );
+
+                    $operations = array('');
+
+                }
+
+                $skip_update_totals = true;
+
+                break;
+
+            case 'InvoiceChecked':
+
+
+                if ($this->data['Supplier Delivery State'] == 'Costing') {
+
+                    $this->fast_update(
+                        array(
+                            'Supplier Delivery State'                => $value,
+                            'Supplier Delivery Invoice Checked Date' => $date,
+                        )
+                    );
+
+                    $operations = array('');
+
+                }
 
 
                 break;
@@ -909,22 +1029,31 @@ class SupplierDelivery extends DB_Table {
                 break;
         }
 
+        if (!$skip_update_totals) {
+            $this->update_totals();
 
-        $this->update_totals();
+        }
 
-        include_once 'class.PurchaseOrder.php';
-        $purchase_order = new PurchaseOrder(
-            $this->get('Supplier Delivery Purchase Order Key')
+
+        require_once 'utils/new_fork.php';
+        $account=get_object('Account',1);
+        new_housekeeping_fork(
+            'au_housekeeping', array(
+            'type'                  => 'supplier_delivery_state_changed',
+            'supplier_delivery_key' => $this->id,
+            'editor'                => $this->editor
+        ), $account->get('Account Code'), $this->db
         );
-        $purchase_order->update_totals();
 
 
         $this->update_metadata = array(
             'class_html'  => array(
-                'Supplier_Delivery_State'                   => $this->get('State'),
-                'Supplier_Delivery_Dispatched_Date'         => '&nbsp;'.$this->get('Dispatched Date'),
-                'Supplier_Delivery_Received_Date'           => '&nbsp;'.$this->get('Received Date'),
-                'Supplier_Delivery_Checked_Date'            => '&nbsp;'.$this->get('Checked Date'),
+                'Supplier_Delivery_State'           => $this->get('State'),
+                'Supplier_Delivery_Dispatched_Date' => '&nbsp;'.$this->get('Dispatched Date'),
+                'Supplier_Delivery_Received_Date'   => '&nbsp;'.$this->get('Received Date'),
+                'Supplier_Delivery_Checked_Date'    => '&nbsp;'.$this->get('Checked Date'),
+                'Supplier_Delivery_Costing_Date'    => '&nbsp;'.$this->get('Costing Date'),
+
                 'Supplier_Delivery_Number_Dispatched_Items' => $this->get('Number Dispatched Items'),
                 'Supplier_Delivery_Number_Received_Items'   => $this->get('Number Received Items')
 
@@ -1184,8 +1313,9 @@ class SupplierDelivery extends DB_Table {
                     $dispatched_items = 0;
                 }
 
-                $items_amount = ($row['items_amount'] == '' ? 0 : $row['items_amount']);
-                $extra_amount = ($row['extra_cost_amount'] == '' ? 0 : $row['extra_cost_amount']);
+                $items_amount         = ($row['items_amount'] == '' ? 0 : $row['items_amount']);
+                $extra_amount         = ($row['extra_cost_amount'] == '' ? 0 : $row['extra_cost_amount']);
+                $ac_extra_cost_amount = ($row['ac_extra_cost_amount'] == '' ? 0 : $row['ac_extra_cost_amount']);
 
                 $this->fast_update(
                     array(
@@ -1194,9 +1324,9 @@ class SupplierDelivery extends DB_Table {
                         'Supplier Delivery Items Amount'          => $items_amount,
                         'Supplier Delivery Extra Costs Amount'    => $extra_amount,
                         'Supplier Delivery Total Amount'          => $items_amount + $extra_amount,
-                        'Supplier Delivery AC Subtotal Amount'    => $items_amount * $this->get('Supplier Delivery Currency Exchange'),
-                        'Supplier Delivery AC Extra Costs Amount' => $extra_amount * $this->get('Supplier Delivery Currency Exchange'),
-                        'Supplier Delivery AC Total Amount'       => ($items_amount + $extra_amount) * $this->get('Supplier Delivery Currency Exchange'),
+                        'Supplier Delivery AC Subtotal Amount'    => ($items_amount + $extra_amount) * $this->get('Supplier Delivery Currency Exchange'),
+                        'Supplier Delivery AC Extra Costs Amount' => $ac_extra_cost_amount,
+                        'Supplier Delivery AC Total Amount'       => $ac_extra_cost_amount + ($items_amount + $extra_amount) * $this->get('Supplier Delivery Currency Exchange'),
 
                         'Supplier Delivery Number Items'                      => $row['num_items'],
                         'Supplier Delivery Number Dispatched Items'           => $dispatched_items,
@@ -1433,22 +1563,24 @@ class SupplierDelivery extends DB_Table {
 
         if (in_array(
             $this->get('Supplier Delivery State'), array(
-            'InProcess',
-            'Dispatched',
-            'Cancelled'
-        )
+                                                     'InProcess',
+                                                     'Dispatched',
+                                                     'Costing',
+                                                     'InvoiceChecked',
+                                                     'Cancelled'
+                                                 )
         )) {
 
             $state = $this->get('Supplier Delivery State');
-        }
-        else {
+        } else {
 
 
             $items = 0;
 
             $state = 'Placed';
             $sql   = sprintf(
-                'SELECT `Purchase Order Transaction Fact Key`,`Supplier Part Key`,`Purchase Order Transaction State`,`Supplier Delivery Quantity`,`Supplier Delivery Checked Quantity`,`Supplier Delivery Placed Quantity`  FROM  `Purchase Order Transaction Fact`  WHERE `Supplier Delivery Key` =%d', $this->id
+                'SELECT `Purchase Order Transaction Fact Key`,`Supplier Part Key`,`Purchase Order Transaction State`,`Supplier Delivery Quantity`,`Supplier Delivery Checked Quantity`,`Supplier Delivery Placed Quantity`  FROM  `Purchase Order Transaction Fact`  WHERE `Supplier Delivery Key` =%d',
+                $this->id
             );
 
             if ($result = $this->db->query($sql)) {
@@ -1458,11 +1590,11 @@ class SupplierDelivery extends DB_Table {
                 foreach ($result as $row) {
 
                     $items++;
-                   // print_r($row);
+                    // print_r($row);
 
                     if ($row['Supplier Delivery Checked Quantity'] == '') {
                         $state = 'Received';
-                       // print_r($row);
+                        // print_r($row);
                         break;
                     } else {
                         if ($row['Supplier Delivery Checked Quantity'] == 0) {
@@ -1472,7 +1604,6 @@ class SupplierDelivery extends DB_Table {
                                 $state = 'Cancelled';
                             }
                         } else {
-
 
 
                             if (round($row['Supplier Delivery Checked Quantity'], 2) > round($row['Supplier Delivery Placed Quantity'], 2)) {
@@ -1488,7 +1619,7 @@ class SupplierDelivery extends DB_Table {
 
                                 $state = 'Placed';
 
-                              //  print "Pla \n";
+                                //  print "Pla \n";
                             }
 
 
@@ -1497,7 +1628,7 @@ class SupplierDelivery extends DB_Table {
                     }
                 }
 
-               // print $state."\n";
+                // print $state."\n";
 
             } else {
                 print_r($error_info = $this->db->errorInfo());
@@ -1508,17 +1639,14 @@ class SupplierDelivery extends DB_Table {
             //  print $state;exit;
 
 
-
-
         }
-      //  print $state."\n";
-       // exit;
+        //  print $state."\n";
+        // exit;
         return $state;
 
     }
 
     function update_item_delivery_placed_quantity($data) {
-
 
 
         $date            = gmdate('Y-m-d H:i:s');
@@ -1541,7 +1669,7 @@ LEFT JOIN `Supplier Part Historic Dimension` SPH ON (POTF.`Supplier Part Histori
 
                 $placement_qty = $this->get_placement_quantity($transaction_key);
 
-                $supplier_part = get_object( 'SupplierPart',$row['Supplier Part Key']);
+                $supplier_part = get_object('SupplierPart', $row['Supplier Part Key']);
                 $qty           = ($data['qty'] + $placement_qty) / $supplier_part->get('Supplier Part Packages Per Carton');
                 if ($qty < 0) {
                     $qty = 0;
@@ -1622,7 +1750,7 @@ LEFT JOIN `Supplier Part Historic Dimension` SPH ON (POTF.`Supplier Part Histori
                 <div>';
 
 
-                $purchase_order=get_object('Purchase Order',$row['Purchase Order Key']);
+                $purchase_order = get_object('Purchase Order', $row['Purchase Order Key']);
                 $purchase_order->update_totals();
 
             } else {
@@ -1651,10 +1779,6 @@ LEFT JOIN `Supplier Part Historic Dimension` SPH ON (POTF.`Supplier Part Histori
 
         */
         $this->update_state($this->get_state());
-
-
-
-
 
 
         $operations = array();

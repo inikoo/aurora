@@ -140,6 +140,18 @@
             <div class="dot">
             </div>
         </li>
+
+        <li id="costing_done_node"
+            class=" {if $delivery->get('State Index')<0}hide{/if} li {if $delivery->get('State Index')>=110}complete{/if}">
+            <div class="label">
+                <span class="state">{t}Costing done{/t}</span>
+            </div>
+            <div class="timestamp">
+                <span class="Supplier_Delivery_Costing_Date">&nbsp;{$delivery->get('Costing Date')}</span>
+            </div>
+            <div class="dot">
+            </div>
+        </li>
     </ul>
 </div>
 <div class="order" style="display: flex;" data-object="{$object_data}">
@@ -264,6 +276,32 @@
                         </table>
                     </div>
                 </div>
+                <div id="undo_costing_operations"
+                     class="order_operation {if $delivery->get('Supplier Delivery State')!='InvoiceChecked'  }hide{/if}">
+                    <div class="square_button left" title="{t}Redo costing{/t}">
+						<span class="fa-stack" style="position:relative;top:-1px"
+                              onclick="toggle_order_operation_dialog('undo_costing')">
+						<i class="fa fa-check discreet " aria-hidden="true"></i>
+						<i class="fa fa-ban fa-stack-1x very_discreet error"></i>
+						</span>
+                        <table id="undo_costing_dialog" border="0" class="order_operation_dialog hide">
+                            <tr class="top">
+                                <td colspan="2" class="label">{t}Redo costing{/t}</td>
+                            </tr>
+                            <tr class="buttons changed">
+                                <td><i class="fa fa-sign-out fa-flip-horizontal button" aria-hidden="true"
+                                       onclick="close_dialog('undo_costing')"></i></td>
+                                <td class="aright"><span
+                                            data-data='{ "value": "RedoCosting","dialog_name":"undo_costing", "field": "Supplier Delivery State"}'
+                                            id="undo_costing_save_buttons" class="valid save button"
+                                            onclick="save_order_operation(this)"><span class="label">{t}Save{/t}</span> <i
+                                                class="fa fa-cloud fa-fw  " aria-hidden="true"></i></span></td>
+                            </tr>
+                        </table>
+                    </div>
+                </div>
+                
+                
             </div>
             <span style="float:left;padding-left:10px;padding-top:5px"
                   class="Supplier_Delivery_State"> {$delivery->get('State')} </span>
@@ -360,32 +398,44 @@
                         </table>
                     </div>
                 </div>
-            </div>
-        </div>
-        <div class="delivery_node {if {$delivery->get('State Index')|intval}<30 }hide{/if}"
-             style="height:30px;clear:both;border-top:1px solid #ccc;border-bottom:1px solid #ccc">
-            <div id="back_operations"></div>
-            <span style="float:left;padding-left:10px;padding-top:5px" class="very_discreet italic"><i
-                        class="fa fa-dollar-sign button" aria-hidden="true"></i> {t}Invoice{/t} </span>
-            <div id="forward_operations">
 
-                <div id="received_operations"
-                     class="order_operation {if !($delivery->get('Supplier Delivery State')=='Submitted' or  $delivery->get('Supplier Delivery State')=='Send') }hide{/if}">
-                    <div class="square_button right" style="padding:0;margin:0;position:relative;top:0px"
-                         title="{t}Input delivery note{/t}">
-                        <i class="fa fa-plus" aria-hidden="true" onclick="show_create_delivery()"></i>
 
+                <div id="costing_operations"
+                     class="order_operation {if $delivery->get('Supplier Delivery State')!='Placed'}hide{/if}">
+                    <div class="square_button right" title="{t}Start checking costs{/t}">
+
+                        <i class="far fa-box-usd fa-fw" aria-hidden="true"
+                           onclick="toggle_order_operation_dialog('costing')"></i>
+
+
+                        <table id="costing_dialog" border="0" class="order_operation_dialog hide">
+                            <tr class="top">
+                                <td class="label"
+                                    colspan="2">{t}Start checking costs{/t}</td>
+                            </tr>
+
+
+
+
+                            <tr class="buttons">
+                                <td><i class="fa fa-sign-out fa-flip-horizontal button" aria-hidden="true"
+                                       onclick="close_dialog('costing')"></i></td>
+                                <td class="aright">
+								<span data-data='{ "value": "Costing","dialog_name":"costing", "field": "Supplier Delivery State"}'
+                                      id="costing_save_buttons" class="valid save button changed"
+                                      onclick="save_order_operation(this)">
+								<span class="label">{t}Save{/t}</span> <i class="fa fa-cloud fa-fw  "
+                                                                          aria-hidden="true"></i></span></td>
+                            </tr>
+                        </table>
                     </div>
                 </div>
-
-
+                
             </div>
-
         </div>
 
 
-    </div>
-    <div class="block " style="align-items: stretch;flex: 1 ">
+
         <table border="0" class="info_block acenter">
 
             <tr>
@@ -410,6 +460,12 @@
                 <td class=" Supplier_Delivery_CBM" title="{t}CBM{/t}">{$delivery->get('CBM')}</td>
             </tr>
         </table>
+
+
+
+    </div>
+    <div class="block " style="align-items: stretch;flex: 1 ">
+
         <div style="clear:both">
         </div>
     </div>
@@ -420,7 +476,7 @@
         <table border="0" class="info_block">
 
 
-            <tr style="border-bottom:1px solid #ccc;" >
+            <tr class="hide" style="border-bottom:1px solid #ccc;" >
                 <td class="label">{t}Purchase order amount{/t} </td>
                 <td class="aright Supplier_Delivery_Items_Amount">{$delivery->get('Purchase Order Amount')}</td>
             </tr>

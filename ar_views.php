@@ -3320,7 +3320,6 @@ function get_tabs($data, $db, $account, $modules, $user, $smarty, $requested_tab
 
     } elseif ($data['module'] == 'suppliers') {
 
-
         if ($data['section'] == 'order') {
 
             if ($data['_object']->get('Purchase Order State') == 'InProcess') {
@@ -3343,6 +3342,54 @@ function get_tabs($data, $db, $account, $modules, $user, $smarty, $requested_tab
                 }
 
             }
+        } elseif ($data['section'] == 'delivery') {
+
+            $_content['tabs']['supplier.delivery.items_done']['class'] = 'hide';
+
+            $_content['tabs']['supplier.delivery.costing']['class'] = 'hide';
+            $_content['tabs']['supplier.delivery.items']['class'] = '';
+
+            switch ($data['_object']->get('Supplier Delivery State')) {
+
+                case 'Placed':
+
+
+
+                    if ($data['tab'] == 'supplier.delivery.costing' || $data['tab'] == 'supplier.delivery.items_done' ) {
+                        $data['tab'] = 'supplier.delivery.items';
+                        $_content['tabs']['supplier.delivery.items']['selected'] = true;
+
+                    }
+
+                    break;
+
+                case 'Costing':
+
+
+                    $_content['tabs']['supplier.delivery.costing']['class'] = '';
+                    $_content['tabs']['supplier.delivery.items']['class'] = 'hide';
+                    if ($data['tab'] == 'supplier.delivery.items'|| $data['tab'] == 'supplier.delivery.items_done'   ) {
+                        $data['tab'] = 'supplier.delivery.costing';
+                        $_content['tabs']['supplier.delivery.costing']['selected'] = true;
+                    }
+
+                    break;
+                case 'InvoiceChecked':
+
+                    $_content['tabs']['supplier.delivery.items_done']['class'] = '';
+
+                    $_content['tabs']['supplier.delivery.costing']['class'] = 'hide';
+                    $_content['tabs']['supplier.delivery.items']['class'] = 'hide';
+                    if ($data['tab'] == 'supplier.delivery.costing' || $data['tab'] == 'supplier.delivery.items' ) {
+                        $data['tab'] = 'supplier.delivery.items_done';
+                        $_content['tabs']['supplier.delivery.items_done']['selected'] = true;
+                    }
+
+                    break;
+
+            }
+
+
         }
 
 
@@ -4270,11 +4317,11 @@ function get_view_position($db, $state, $user, $smarty, $account) {
 
                 if (in_array(
                     $state['section'], array(
-                    'email_campaigns',
-                    'email_campaign_type',
-                    'email_tracking',
-                    'email_campaign'
-                )
+                                         'email_campaigns',
+                                         'email_campaign_type',
+                                         'email_tracking',
+                                         'email_campaign'
+                                     )
                 )) {
                     $branch[] = array(
                         'label'     => _('(All stores)'),

@@ -2165,6 +2165,7 @@ function get_supplier_orders_elements($db, $data) {
             'SubmittedInputtedDispatched' => 0,
             'ReceivedChecked'             => 0,
             'Placed'                      => 0,
+            'InvoiceChecked'                      => 0,
             'Cancelled'                   => 0
         ),
     );
@@ -2172,17 +2173,23 @@ function get_supplier_orders_elements($db, $data) {
 
     //USE INDEX (`Main Source Type Store Key`)
     $sql = sprintf(
-        "SELECT count(*) AS number,`Purchase Order State` AS element FROM %s    %s  %s GROUP BY `Purchase Order State` ", $table, $where, $where_interval
+        "SELECT count(*) AS number,`Purchase Order State` AS element FROM %s %s %s GROUP BY `Purchase Order State` ", $table, $where, $where_interval
     );
+
+   // print $sql;
 
     if ($result = $db->query($sql)) {
         foreach ($result as $row) {
 
-
-            if ($row['element'] == 'Submitted'  or $row['element'] == 'Inputted' or $row['element'] == 'Dispatched') {
+//'InProcess','SubmittedAgent','Submitted','Editing_Submitted','Inputted','Dispatched','Received','Checked','Placed', 'Costing','InvoiceChecked' ,'Cancelled'
+            if ($row['element'] == 'InProcess'  or $row['element'] == 'Editing_Submitted') {
+                $element = 'InProcess';
+            }elseif ($row['element'] == 'Submitted'  or $row['element'] == 'SubmittedAgent' or  $row['element'] == 'Inputted' or $row['element'] == 'Dispatched') {
                 $element = 'SubmittedInputtedDispatched';
             } elseif ($row['element'] == 'Received' or $row['element'] == 'Checked') {
                 $element = 'ReceivedChecked';
+            } elseif ($row['element'] == 'Placed' or $row['element'] == 'Costing') {
+                $element = 'Placed';
             } else {
                 $element = $row['element'];
             }

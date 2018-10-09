@@ -34,7 +34,7 @@
         {/if}
         {foreach from=$deliveries item=dn name=deliveries}
 
-        <li id="send_node" class="li button {if $dn->get('State Index')==100}complete{/if} "  onclick="change_view('{$order->get('Purchase Order Parent')|lower}/{$order->get('Purchase Order Parent Key')}/delivery/{$dn->id}')"  >
+        <li id="send_node" class="li button {if $dn->get('State Index')>=100}complete{/if} "  onclick="change_view('{$order->get('Purchase Order Parent')|lower}/{$order->get('Purchase Order Parent Key')}/delivery/{$dn->id}')"  >
             <div class="label">
                 <span class="state" style="position:relative;left:5px">  <i class="fa fa-truck   " aria-hidden="true" title="{t}Delivery{/t}"></i>  {$dn->get('Public ID')} {$dn->get('Progress')}<span></span></span>
             </div>
@@ -105,7 +105,7 @@
             <div class="dot">
             </div>
         </li>
-        <li class="li {if $order->get('State Index')==100}complete{/if}">
+        <li class="li {if $order->get('State Index')>=100}complete{/if}">
             <div class="label">
                 <span class="state">{t}Placed{/t}</span>
             </div>
