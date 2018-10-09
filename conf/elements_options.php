@@ -1291,14 +1291,7 @@ $elements_options = array(
                     'label'    => _('In process'),
                     'selected' => true
                 ),
-                'Consolidated'  => array(
-                    'label'    => _('Consolidated'),
-                    'selected' => true
-                ),
-                'Dispatched' => array(
-                    'label'    => _('Dispatched'),
-                    'selected' => true
-                ),
+
                 'Received'   => array(
                     'label'    => _('Received'),
                     'selected' => true

@@ -2402,10 +2402,9 @@ function get_supplier_deliveries_element_numbers($db, $data) {
     $elements_numbers = array(
         'state' => array(
             'InProcess'      => 0,
-            'Consolidated'   => 0,
-            'Dispatched'     => 0,
             'Received'       => 0,
             'Checked'        => 0,
+
             'Placed'         => 0,
             'Cancelled'      => 0,
             'InvoiceChecked' => 0
@@ -2422,7 +2421,9 @@ function get_supplier_deliveries_element_numbers($db, $data) {
         foreach ($result as $row) {
 
 
-            if ($row['element'] == 'Placed' or $row['element'] == 'Costing') {
+            if ($row['element'] == 'Consolidated' or $row['element'] == 'Dispatched') {
+                $element = 'InProcess';
+            } elseif ($row['element'] == 'Placed' or $row['element'] == 'Costing') {
                 $element = 'Placed';
             } else {
                 $element = $row['element'];
