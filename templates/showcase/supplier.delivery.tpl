@@ -132,7 +132,7 @@
         <li id="placed_node"
             class=" {if $delivery->get('State Index')<0}hide{/if} li {if $delivery->get('State Index')>=100}complete{/if}">
             <div class="label">
-                <span class="state">{t}Placed{/t}</span>
+                <span class="state">{t}Booked in{/t}</span>
             </div>
             <div class="timestamp">
                 <span class="Supplier_Delivery_Placed_Percentage_or_Date">&nbsp;{$delivery->get('Placed Percentage or Date')}</span>

@@ -107,7 +107,7 @@
         </li>
         <li class="li {if $order->get('State Index')>=100}complete{/if}">
             <div class="label">
-                <span class="state">{t}Placed{/t}</span>
+                <span class="state">{t}Booked in{/t}</span>
             </div>
             <div class="timestamp">
 		<span class="Purchase_Order_Placed_Date">&nbsp;{foreach from=$deliveries item=dn name=deliveries}
