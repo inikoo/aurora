@@ -273,10 +273,10 @@ class SupplierDelivery extends DB_Table {
                         return _('Booked in');
                         break;
                     case 'Costing':
-                        return _('Booked in').', '._('Checking costing');
+                        return _('Booked in').', '._('checking costing');
                         break;
                     case 'InvoiceChecked':
-                        return _('Booked in').', '._('Costing done').' <i class="fa fa-check success"></i>';
+                        return _('Booked in').', '._('costing done').' <i class="fa fa-check success"></i>';
                         break;
                     case 'Cancelled':
                         return _('Cancelled');
