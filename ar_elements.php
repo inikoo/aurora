@@ -2161,12 +2161,12 @@ function get_supplier_orders_elements($db, $data) {
 
     $elements_numbers = array(
         'state' => array(
-            'Consolidated'                   => 0,
+
             'InProcess'                   => 0,
             'SubmittedInputtedDispatched' => 0,
             'ReceivedChecked'             => 0,
             'Placed'                      => 0,
-            'InvoiceChecked'                      => 0,
+            'InvoiceChecked'              => 0,
             'Cancelled'                   => 0
         ),
     );
@@ -2177,15 +2177,15 @@ function get_supplier_orders_elements($db, $data) {
         "SELECT count(*) AS number,`Purchase Order State` AS element FROM %s %s %s GROUP BY `Purchase Order State` ", $table, $where, $where_interval
     );
 
-   // print $sql;
+    // print $sql;
 
     if ($result = $db->query($sql)) {
         foreach ($result as $row) {
 
-//'InProcess','SubmittedAgent','Submitted','Editing_Submitted','Inputted','Dispatched','Received','Checked','Placed', 'Costing','InvoiceChecked' ,'Cancelled'
-            if ($row['element'] == 'InProcess'  or $row['element'] == 'Editing_Submitted') {
+            //'InProcess','SubmittedAgent','Submitted','Editing_Submitted','Inputted','Dispatched','Received','Checked','Placed', 'Costing','InvoiceChecked' ,'Cancelled'
+            if ($row['element'] == 'InProcess' or $row['element'] == 'Editing_Submitted') {
                 $element = 'InProcess';
-            }elseif ($row['element'] == 'Submitted'  or $row['element'] == 'SubmittedAgent' or  $row['element'] == 'Inputted' or $row['element'] == 'Dispatched') {
+            } elseif ($row['element'] == 'Submitted' or $row['element'] == 'SubmittedAgent' or $row['element'] == 'Inputted' or $row['element'] == 'Dispatched') {
                 $element = 'SubmittedInputtedDispatched';
             } elseif ($row['element'] == 'Received' or $row['element'] == 'Checked') {
                 $element = 'ReceivedChecked';
@@ -2244,7 +2244,7 @@ function get_agent_orders_elements($db, $data) {
     $elements_numbers = array(
         'state' => array(
             'InProcess'       => 0,
-            'Submitted'  => 0,
+            'Submitted'       => 0,
             'InTransit'       => 0,
             'ReceivedChecked' => 0,
             'Placed'          => 0,
@@ -2262,7 +2262,7 @@ function get_agent_orders_elements($db, $data) {
     if ($result = $db->query($sql)) {
         foreach ($result as $row) {
 
-            if ($row['element'] == 'Submitted' ) {
+            if ($row['element'] == 'Submitted') {
                 $element = 'Submitted';
             } elseif ($row['element'] == 'Dispatched') {
                 $element = 'InTransit';
@@ -2399,20 +2399,16 @@ function get_supplier_deliveries_element_numbers($db, $data) {
     }
 
 
-
-
-
-
-
     $elements_numbers = array(
         'state' => array(
-            'InProcess'  => 0,
-            'Dispatched' => 0,
-            'Received'   => 0,
-            'Checked'    => 0,
-            'Placed'     => 0,
-            'Cancelled'  => 0,
-            'InvoiceChecked'=>0
+            'InProcess'      => 0,
+            'Consolidated'   => 0,
+            'Dispatched'     => 0,
+            'Received'       => 0,
+            'Checked'        => 0,
+            'Placed'         => 0,
+            'Cancelled'      => 0,
+            'InvoiceChecked' => 0
         ),
     );
 
@@ -2434,9 +2430,6 @@ function get_supplier_deliveries_element_numbers($db, $data) {
             if (isset($elements_numbers['state'][$element])) {
                 $elements_numbers['state'][$element] += $row['number'];
             }
-
-
-
 
 
         }
@@ -3064,7 +3057,7 @@ function get_prospects_elements($db, $data) {
             'NoContacted'   => 0,
             'NotInterested' => 0,
             'Registered'    => 0,
-            'Invoiced'    => 0,
+            'Invoiced'      => 0,
         )
     );
 
@@ -3092,16 +3085,15 @@ function get_prospects_elements($db, $data) {
     }
 
 
-
-
     if (isset($data['period'])) {
         include_once 'utils/date_functions.php';
-        list($db_interval, $from, $to, $from_date_1yb, $to_1yb)
-            = calculate_interval_dates(
+        list(
+            $db_interval, $from, $to, $from_date_1yb, $to_1yb
+            ) = calculate_interval_dates(
             $db, $data['period'], $data['from'], $data['to']
         );
         $where_interval = prepare_mysql_dates($from, $to, 'P.`Prospect First Contacted Date`');
-        $where .= $where_interval['mysql'];
+        $where          .= $where_interval['mysql'];
 
     }
 
@@ -3109,8 +3101,6 @@ function get_prospects_elements($db, $data) {
     $sql = sprintf(
         "select count(Distinct P.`Prospect Key`) as number,`Prospect Status` as element from $table $where  group by `Prospect Status` "
     );
-
-
 
 
     foreach ($db->query($sql) as $row) {
@@ -3130,19 +3120,16 @@ function get_prospects_elements($db, $data) {
 }
 
 
-
-
-
 function get_purged_orders_elements($db, $data) {
 
 
     $elements_numbers = array(
 
         'state' => array(
-            'In_Process'     => 0,
-            'Purged'   => 0,
+            'In_Process' => 0,
+            'Purged'     => 0,
             'Exculpated' => 0,
-            'Cancelled'    => 0,
+            'Cancelled'  => 0,
 
         )
     );
@@ -3161,12 +3148,10 @@ function get_purged_orders_elements($db, $data) {
     );
 
 
-
-
     foreach ($db->query($sql) as $row) {
 
-        if($row['element']=='In Process'){
-            $row['element']='In_Process';
+        if ($row['element'] == 'In Process') {
+            $row['element'] = 'In_Process';
         }
 
         $elements_numbers['state'][$row['element']] = number($row['number']);
@@ -3186,23 +3171,19 @@ function get_purged_orders_elements($db, $data) {
 function get_email_campaign_sent_emails_elements($db, $data) {
 
 
-
-
-
     $elements_numbers = array(
 
         'state' => array(
-            'Sending'     => 0,
-            'Delivered'   => 0,
-            'Opened' => 0,
-            'Clicked'    => 0,
-            'Bounced'    => 0,
-            'Spam'    => 0,
-            'Error'    => 0,
+            'Sending'   => 0,
+            'Delivered' => 0,
+            'Opened'    => 0,
+            'Clicked'   => 0,
+            'Bounced'   => 0,
+            'Spam'      => 0,
+            'Error'     => 0,
 
         )
     );
-
 
 
     $table = '`Email Tracking Dimension`   ';
@@ -3218,27 +3199,26 @@ function get_email_campaign_sent_emails_elements($db, $data) {
     );
 
 
-
     foreach ($db->query($sql) as $row) {
 
-        if($row['element']=='Ready' or $row['element']=='Sent to SES' or  $row['element']=='Sent'){
-            $row['element']='Sending';
+        if ($row['element'] == 'Ready' or $row['element'] == 'Sent to SES' or $row['element'] == 'Sent') {
+            $row['element'] = 'Sending';
         }
 
-        if($row['element']=='Soft Bounce'){
-            $row['element']='Bounced';
+        if ($row['element'] == 'Soft Bounce') {
+            $row['element'] = 'Bounced';
         }
 
-        if($row['element']=='Hard Bounce'){
-            $row['element']='Bounced';
+        if ($row['element'] == 'Hard Bounce') {
+            $row['element'] = 'Bounced';
         }
 
         $elements_numbers['state'][$row['element']] += $row['number'];
 
     }
 
-    foreach($elements_numbers['state'] as $_key=>$_value){
-        $elements_numbers['state'][$_key]=number($_value);
+    foreach ($elements_numbers['state'] as $_key => $_value) {
+        $elements_numbers['state'][$_key] = number($_value);
     }
 
 
@@ -3252,25 +3232,21 @@ function get_email_campaign_sent_emails_elements($db, $data) {
 }
 
 
-
 function get_account_mailshots_elements($db, $data) {
-
-
 
 
     $elements_numbers = array(
 
         'type' => array(
-            'Newsletter'     => 0,
-            'Marketing'   => 0,
-            'AbandonedCart' => 0,
-            'GRReminder'    => 0,
-            'OOSNotification'    => 0,
+            'Newsletter'      => 0,
+            'Marketing'       => 0,
+            'AbandonedCart'   => 0,
+            'GRReminder'      => 0,
+            'OOSNotification' => 0,
 
 
         )
     );
-
 
 
     $table = '`Email Campaign Dimension`   ';
@@ -3286,25 +3262,23 @@ function get_account_mailshots_elements($db, $data) {
     );
 
 
-
     foreach ($db->query($sql) as $row) {
 
-        if($row['element']=='GR Reminder'){
-            $row['element']='GRReminder';
+        if ($row['element'] == 'GR Reminder') {
+            $row['element'] = 'GRReminder';
         }
 
-        if($row['element']=='OOS Notification'){
-            $row['element']='OOSNotification';
+        if ($row['element'] == 'OOS Notification') {
+            $row['element'] = 'OOSNotification';
         }
-
 
 
         $elements_numbers['type'][$row['element']] += $row['number'];
 
     }
 
-    foreach($elements_numbers['type'] as $_key=>$_value){
-        $elements_numbers['type'][$_key]=number($_value);
+    foreach ($elements_numbers['type'] as $_key => $_value) {
+        $elements_numbers['type'][$_key] = number($_value);
     }
 
 
