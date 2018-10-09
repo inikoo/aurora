@@ -10,8 +10,7 @@
  Version 3.0
 */
 
-
-
+$account->load_acc_data();
 $html = '';
 foreach ($user->get_dashboard_items() as $item) {
 

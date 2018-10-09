@@ -418,6 +418,9 @@ class Account extends DB_Table {
             case 'Active Contacts':
             case 'Losing Contacts':
             case 'Lost Contacts':
+            case 'Active Parts Number':
+            case 'In Process Parts Number':
+            case 'Discontinuing Parts Number':
             return number($this->data['Account '.$key]);
                 break;
             case 'Percentage Contacts With Orders':
