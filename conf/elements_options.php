@@ -1280,12 +1280,19 @@ $elements_options = array(
 
 
     ),
+
+    //'InProcess','Consolidated','Dispatched','Received','Checked','Placed','Costing','Cancelled','InvoiceChecked'
+
     'supplier_deliveries' => array(
         'state' => array(
             'label' => _('State'),
             'items' => array(
                 'InProcess'  => array(
                     'label'    => _('In process'),
+                    'selected' => true
+                ),
+                'Consolidated'  => array(
+                    'label'    => _('Consolidated'),
                     'selected' => true
                 ),
                 'Dispatched' => array(
@@ -1302,6 +1309,10 @@ $elements_options = array(
                 ),
                 'Placed'     => array(
                     'label'    => _('Booked in'),
+                    'selected' => true
+                ),
+                'InvoiceChecked'     => array(
+                    'label'    => _('Booked in').' ('._('Costing done').')',
                     'selected' => true
                 ),
                 'Cancelled'  => array(

@@ -91,10 +91,20 @@ if (isset($parameters['elements_type'])) {
 
             if ($_elements == '') {
                 $where .= ' and false';
-            } elseif ($num_elements_checked < 6) {
+            } elseif ($num_elements_checked < 8) {
+
+               if ($_key == 'Placed') {
+                    $_elements .= ",'Placed','Costing'";
+                } else {
+
+                    $_elements .= ",'".addslashes($_key)."'";
+                }
 
 
                 $_elements = preg_replace('/^,/', '', $_elements);
+
+
+
 
                 $where .= ' and `Supplier Delivery State` in ('.$_elements.')';
             }
