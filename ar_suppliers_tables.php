@@ -1073,17 +1073,26 @@ function deliveries($_data, $db, $user) {
                 case 'InProcess':
                     $state = sprintf('%s', _('In Process'));
                     break;
-                case 'Submitted':
-                    $state = sprintf('%s', _('Submitted'));
+                case 'Consolidated':
+                    $state = sprintf('%s', _('Consolidated'));
                     break;
-                case 'Confirmed':
-                    $state = sprintf('%s', _('Confirmed'));
+                case 'Dispatched':
+                    $state = sprintf('%s', _('Dispatched'));
                     break;
-                case 'In Warehouse':
-                    $state = sprintf('%s', _('In Warehouse'));
+                case 'Received':
+                    $state = sprintf('%s', _('Received'));
                     break;
-                case 'Done':
-                    $state = sprintf('%s', _('Done'));
+                case 'Checked':
+                    $state = sprintf('%s', _('Checked'));
+                    break;
+                case 'Placed':
+                    $state =  _('Booked in');
+                    break;
+                case 'Costing':
+                    $state =  _('Booked in').', '._('Checking costing');
+                    break;
+                case 'InvoiceChecked':
+                    $state =  _('Booked in').', '._('Costing done').' <i class="fa fa-check success"></i>';
                     break;
                 case 'Cancelled':
                     $state = sprintf('%s', _('Cancelled'));

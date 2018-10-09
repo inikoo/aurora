@@ -2397,6 +2397,12 @@ function get_supplier_deliveries_element_numbers($db, $data) {
             return;
     }
 
+
+
+
+
+
+
     $elements_numbers = array(
         'state' => array(
             'InProcess'  => 0,
@@ -2404,7 +2410,8 @@ function get_supplier_deliveries_element_numbers($db, $data) {
             'Received'   => 0,
             'Checked'    => 0,
             'Placed'     => 0,
-            'Cancelled'  => 0
+            'Cancelled'  => 0,
+            'InvoiceChecked'=>0
         ),
     );
 
@@ -2416,9 +2423,21 @@ function get_supplier_deliveries_element_numbers($db, $data) {
 
     if ($result = $db->query($sql)) {
         foreach ($result as $row) {
-            $elements_numbers['state'][$row['element']] = number(
-                $row['number']
-            );
+
+
+            if ($row['element'] == 'Placed' or $row['element'] == 'Costing') {
+                $element = 'Placed';
+            } else {
+                $element = $row['element'];
+            }
+            if (isset($elements_numbers['state'][$element])) {
+                $elements_numbers['state'][$element] += $row['number'];
+            }
+
+
+
+
+
         }
     } else {
         print_r($error_info = $db->errorInfo());
