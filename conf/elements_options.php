@@ -1221,9 +1221,12 @@ $elements_options = array(
                     'selected' => true
                 ),
                 'Placed'                      => array(
-                    'label'    => _(
-                        'Placed'
-                    ),
+                    'label'    => _('Booked in'),
+                    'selected' => true
+                ),
+
+                'InvoiceChecked'                      => array(
+                    'label'    => _('Booked in').' ('._('Costing done').')',
                     'selected' => true
                 ),
                 'Cancelled'                   => array(
@@ -1261,7 +1264,7 @@ $elements_options = array(
                     'selected' => true
                 ),
                 'Placed'          => array(
-                    'label'    => _('Placed'),
+                    'label'    => _('Booked in'),
                     'selected' => true
                 ),
                 'Cancelled'       => array(
@@ -1298,7 +1301,7 @@ $elements_options = array(
                     'selected' => true
                 ),
                 'Placed'     => array(
-                    'label'    => _('Placed'),
+                    'label'    => _('Booked in'),
                     'selected' => true
                 ),
                 'Cancelled'  => array(
@@ -1362,7 +1365,7 @@ $elements_options = array(
                     'selected' => true
                 ),
                 'Placed'     => array(
-                    'label'    => _('Placed'),
+                    'label'    => _('Booked in'),
                     'selected' => true
                 ),
                 'Cancelled'  => array(

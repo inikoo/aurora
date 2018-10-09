@@ -335,7 +335,9 @@ function set_delivery_costing($account, $db, $user, $editor, $data, $smarty) {
     $delivery->fast_update(
         array('Supplier Delivery Currency Exchange' => 1 / $data['exchange'])
     );
-
+    $delivery->update_state(
+      'InvoiceChecked'
+    );
 
     $delivery->update_totals();
 

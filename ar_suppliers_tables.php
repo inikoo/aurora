@@ -126,7 +126,9 @@ switch ($tipo) {
     case 'delivery.costing':
         delivery_costing(get_table_parameters(), $db, $user, $account);
         break;
-
+    case 'delivery.items_done':
+        delivery_items_done(get_table_parameters(), $db, $user, $account);
+        break;
     default:
         $response = array(
             'state' => 405,
@@ -792,24 +794,43 @@ function orders($_data, $db, $user) {
         foreach ($result as $data) {
 
             switch ($data['Purchase Order State']) {
+
+
                 case 'InProcess':
-                    $state = sprintf('%s', _('In Process'));
+                    $state = _('In Process');
                     break;
+                case 'SubmittedAgent':
                 case 'Submitted':
-                    $state = sprintf('%s', _('Submitted'));
+                    $state = _('Submitted');
                     break;
-                case 'Confirmed':
-                    $state = sprintf('%s', _('Confirmed'));
+                case 'Editing_Submitted':
+                    $state = _('Submitted').' ('._('editing').')';
                     break;
-                case 'In Warehouse':
-                    $state = sprintf('%s', _('In Warehouse'));
+                case 'Inputted':
+                    $state = _('Delivery in process');
                     break;
-                case 'Done':
-                    $state = sprintf('%s', _('Done'));
+                case 'Dispatched':
+                    $state = _('Delivery dispatched');
+                    break;
+                case 'Received':
+                    return _('Received');
+                    break;
+                case 'Checked':
+                    $state = _('Checked');
+                    break;
+                case 'Placed':
+                    $state = _('Booked in');
+                    break;
+                case 'Costing':
+                    $state = _('Booked in').' ('._('Review costing').')';
+                    break;
+                case 'InvoiceChecked':
+                    $state = _('Booked in').' ('._('Costing done').')';
                     break;
                 case 'Cancelled':
-                    $state = sprintf('%s', _('Cancelled'));
+                    $state = _('Cancelled');
                     break;
+
 
                 default:
                     $state = $data['Purchase Order State'];
@@ -820,7 +841,10 @@ function orders($_data, $db, $user) {
             $table_data[] = array(
                 'id'           => (integer)$data['Purchase Order Key'],
                 'parent'       => sprintf('<span class="link" onclick="change_view(\'/%s/%d\')" >%s</span>  ', strtolower($data['Purchase Order Parent']), $data['Purchase Order Parent Key'], $data['Purchase Order Parent Name']),
-                'public_id'    => sprintf('<span class="link" onclick="change_view(\'suppliers/order/%d\')" >%s</span>  ', $data['Purchase Order Key'], ($data['Purchase Order Public ID']==''?'<i class="fa fa-exclamation-circle error"></i> <span class="very_discreet italic">'._('empty').'</span>':$data['Purchase Order Public ID'])),
+                'public_id'    => sprintf(
+                    '<span class="link" onclick="change_view(\'suppliers/order/%d\')" >%s</span>  ', $data['Purchase Order Key'],
+                    ($data['Purchase Order Public ID'] == '' ? '<i class="fa fa-exclamation-circle error"></i> <span class="very_discreet italic">'._('empty').'</span>' : $data['Purchase Order Public ID'])
+                ),
                 'date'         => strftime("%e %b %Y", strtotime($data['Purchase Order Creation Date'].' +0:00')),
                 'last_date'    => strftime("%a %e %b %Y %H:%M %Z", strtotime($data['Purchase Order Last Updated Date'].' +0:00')),
                 'state'        => $state,
@@ -1126,9 +1150,6 @@ function order_items($_data, $db, $user, $account) {
     include_once 'utils/supplier_order_functions.php';
 
 
-
-
-
     include_once 'prepare_table/init.php';
 
     $sql        = "select $fields from $table $where $wheref order by $order $order_direction limit $start_from,$number_results";
@@ -1137,8 +1158,6 @@ function order_items($_data, $db, $user, $account) {
 
     if ($result = $db->query($sql)) {
         foreach ($result as $data) {
-
-
 
 
             switch ($data['Part Stock Status']) {
@@ -2681,8 +2700,12 @@ function order_supplier_all_parts($_data, $db, $user, $account) {
 
             $info .= '<div border="0" style="font-size: small" class="as_table">';
 
+
+            //print $data['Part Reference'];
+            //print_r($next_deliveries);
+
             foreach ($next_deliveries as $next_delivery) {
-                if ($next_delivery['po_key'] != $purchase_order->id) {
+                if (isset($next_delivery['po_key']) and $next_delivery['po_key'] != $purchase_order->id) {
                     $info .= '<div class="as_row "><div class="as_cell" >'.$next_delivery['formatted_link'].'</div><div class="padding_left_20 as_cell strong" title="'._('Cartons ordered').'">+'.number($next_delivery['raw_qty']).'</div></div>';
                 }
             }
@@ -4154,7 +4177,7 @@ function delivery_costing($_data, $db, $user) {
             );
 
             $extra_amount = sprintf(
-                '<input class="extra_amount width_100" id="extra_amount_%d" data-sku="%d" value="%s" ovalue="%s"/>',
+                '<input class="extra_amount extra_amount_input  width_100" id="extra_amount_%d" data-sku="%d" value="%s" ovalue="%s"/>',
 
                 $data['Part SKU'], $data['Part SKU'],
 
@@ -4162,9 +4185,7 @@ function delivery_costing($_data, $db, $user) {
             );
 
             $extra_amount_account_currency = sprintf(
-                '<input id="extra_amount_account_currency_%d" data-sku="%d" class="extra_amount_account_currency width_100" value="%s" ovalue="%s"/>',
-
-                $data['Part SKU'], $data['Part SKU'],
+                '<input  id="extra_amount_account_currency_%d" data-sku="%d" class="extra_amount_account_currency width_100" value="%s" ovalue="%s"/>', $data['Part SKU'], $data['Part SKU'],
 
                 format_money_paid($data['extra_amount_account_currency']), $data['extra_amount_account_currency']
             );
@@ -4176,11 +4197,94 @@ function delivery_costing($_data, $db, $user) {
             }
 
             $total_paid = sprintf(
-                '<span id="total_paid_%d" class="total_paid_amount" data-sku="%d" data-sko_in="%f" data-exchange="%f" data-items_amount="%f" data-extra_amount="%f" data-extra_amount_account_currency="%f"  data-changed=false >%s</span>', $data['Part SKU'],
+                '<span id="total_paid_%d" class="total_paid_amount %s" data-sku="%d" data-sko_in="%f" data-exchange="%f" data-items_amount="%f" data-extra_amount="%f" data-extra_amount_account_currency="%f"  data-changed=false >%s</span>',
+
+                $data['Part SKU'], ($data['skos_in']==0?'zero':''),
                 $data['Part SKU'], $data['skos_in'], 1 / $supplier_delivery->get('Supplier Delivery Currency Exchange'), $data['items_amount'], $data['extra_amount'], $data['extra_amount_account_currency'],
 
                 money($data['paid_amount'], $account->get('Currency Code'))
             );
+
+
+            $table_data[] = array(
+
+                'id'                => (integer)$data['Part SKU'],
+                'supplier_part_key' => (integer)$data['Supplier Part Key'],
+
+
+                'reference'      => $data['Supplier Part Reference'],
+                'part_reference' => sprintf('%s', $data['Part Reference']),
+                'description'    => $data['Part Package Description'],
+
+                'received_quantity'             => number($data['skos_in']),
+                'items_amount'                  => $items_amount,
+                'extra_amount'                  => $extra_amount,
+                'extra_amount_account_currency' => $extra_amount_account_currency,
+
+                'ordered'               => number($data['Purchase Order Quantity']),
+                //'qty'       => number($quantity),
+                'paid_account_currency' => money($data['Supplier Delivery Net Amount'] * $supplier_delivery->get('Supplier Delivery Currency Exchange'), $account->get('Currency Code')),
+
+                'total_paid' => $total_paid,
+                'sko_cost'   => $sko_cost
+            );
+
+
+        }
+    } else {
+        print_r($error_info = $db->errorInfo());
+        exit;
+    }
+
+
+    $response = array(
+        'resultset' => array(
+            'state'         => 200,
+            'data'          => $table_data,
+            'rtext'         => $rtext,
+            'sort_key'      => $_order,
+            'sort_dir'      => $_dir,
+            'total_records' => $total
+
+        )
+    );
+    echo json_encode($response);
+}
+
+
+function delivery_items_done($_data, $db, $user) {
+
+
+    $rtext_label = 'part';
+
+    $account = get_object('Account', 1);
+
+
+    $supplier_delivery = get_object('SupplierDelivery', $_data['parameters']['parent_key']);
+
+    include_once 'prepare_table/init.php';
+
+    $sql        = "select $fields from $table $where $wheref $group_by  order by $order $order_direction  limit $start_from,$number_results";
+    $table_data = array();
+
+    if ($result = $db->query($sql)) {
+        foreach ($result as $data) {
+
+
+            $items_amount = money($data['items_amount'], $data['Currency Code']);
+
+            $extra_amount = money($data['extra_amount'], $data['Currency Code']);
+
+            $extra_amount_account_currency = money($data['extra_amount_account_currency'], $account->get('Currency Code'));
+
+
+            if ($data['skos_in'] != 0) {
+                $sko_cost = sprintf('<span id="sko_cost_%d"  class="sko_cost" >%s/sko</span>', $data['Part SKU'], money($data['paid_amount'] / $data['skos_in'], $account->get('Currency Code')));
+            } else {
+                $sko_cost = sprintf('<span id="sko_cost_%d"  class="sko_cost" ></span>', $data['Part SKU']);
+            }
+
+            $total_paid = money($data['paid_amount'], $account->get('Currency Code'));
 
 
             $table_data[] = array(

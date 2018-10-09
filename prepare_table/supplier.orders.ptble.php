@@ -80,10 +80,14 @@ if (isset($parameters['elements_type'])) {
                     $num_elements_checked++;
 
 
-                    if ($_key == 'SubmittedInputtedDispatched') {
+                    if ($_key == 'InProcess') {
+                        $_elements .= ",'InProcess','Editing_Submitted'";
+                    }elseif ($_key == 'SubmittedInputtedDispatched') {
                         $_elements .= ",'Submitted','Inputted','Dispatched'";
                     } elseif ($_key == 'ReceivedChecked') {
                         $_elements .= ",'Received','Checked'";
+                    }  elseif ($_key == 'Placed') {
+                        $_elements .= ",'Placed','Costing'";
                     } else {
 
                         $_elements .= ",'".addslashes($_key)."'";
@@ -93,7 +97,7 @@ if (isset($parameters['elements_type'])) {
 
             if ($_elements == '') {
                 $where .= ' and false';
-            } elseif ($num_elements_checked < 5) {
+            } elseif ($num_elements_checked < 6) {
 
 
                 $_elements = preg_replace('/^,/', '', $_elements);

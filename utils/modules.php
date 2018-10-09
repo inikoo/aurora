@@ -4540,8 +4540,13 @@ $modules = array(
                         'icon'  => 'bars'
                     ),
                     'supplier.delivery.costing' => array(
-                        'label' => _('Costing'),
-                        'icon'  => 'box-usd'
+                        'label' => _('Items').' ('._('Costing').')',
+                        'icon'  => 'bars'
+                    ),
+
+                    'supplier.delivery.items_done' => array(
+                        'label' => _('Items'),
+                        'icon'  => 'bars'
                     ),
 
                     'supplier.delivery.history' => array(

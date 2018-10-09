@@ -484,7 +484,7 @@ function save_order_operation(element) {
                 if (data.update_metadata.state_index >= 50) {
                     $('#checked_node').addClass('complete')
                 }
-                if (data.update_metadata.state_index == 100) {
+                if (data.update_metadata.state_index >= 100) {
                     $('#placed_node').addClass('complete')
 
                     if (state.tab == 'supplier.delivery.items') {

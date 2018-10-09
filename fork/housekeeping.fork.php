@@ -22,7 +22,7 @@ function fork_housekeeping($job) {
 
     print_r($data);
 
-    //return true;
+   // return true;
 
 
     switch ($data['type']) {
@@ -1450,6 +1450,20 @@ function fork_housekeeping($job) {
                 $purge->purge();
             }
             break;
+        case 'supplier_delivery_state_changed':
+
+
+
+            $supplier_delivery = get_object('supplier_delivery', $data['supplier_delivery_key']);
+
+            $po= get_object('supplier_delivery', $supplier_delivery->get('Supplier Delivery Purchase Order Key'));
+
+            $po->editor=$editor;
+            if ($po->id) {
+                $po->update_totals();
+            }
+            break;
+
 
 
         default:

@@ -143,8 +143,6 @@ class PurchaseOrder extends DB_Table {
             $parent->update_purchase_orders();
 
 
-
-
         } else {
             // print "Error can not create supplier $sql\n";
         }
@@ -276,6 +274,106 @@ class PurchaseOrder extends DB_Table {
         }
     }
 
+    function create_delivery($data) {
+
+        include_once 'utils/currency_functions.php';
+
+        $account = get_object('Account', 1);
+        // $warehouse=ger_object('Warehouse',$data['Supplier Delivery Warehouse Key']);
+
+
+        $delivery_data = array(
+            'Supplier Delivery Public ID'           => $data['Supplier Delivery Public ID'],
+            'Supplier Delivery Parent'              => $this->get('Purchase Order Parent'),
+            'Supplier Delivery Parent Key'          => $this->get('Purchase Order Parent Key'),
+            'Supplier Delivery Parent Name'         => $this->get('Purchase Order Parent Name'),
+            'Supplier Delivery Parent Code'         => $this->get('Purchase Order Parent Code'),
+            'Supplier Delivery Parent Contact Name' => $this->get('Purchase Order Parent Contact Name'),
+            'Supplier Delivery Parent Email'        => $this->get('Purchase Order Parent Email'),
+            'Supplier Delivery Parent Telephone'    => $this->get('Purchase Order Parent Telephone'),
+            'Supplier Delivery Parent Address'      => $this->get('Purchase Order Parent Address'),
+            'Supplier Delivery Currency Code'       => $this->get('Purchase Order Currency Code'),
+            'Supplier Delivery Incoterm'            => $this->get('Purchase Order Incoterm'),
+            'Supplier Delivery Port of Import'      => $this->get('Purchase Order Port of Import'),
+            'Supplier Delivery Port of Export'      => $this->get('Purchase Order Port of Export'),
+            'Supplier Delivery Purchase Order Key'  => $this->id,
+            'Supplier Delivery Currency Exchange'   => currency_conversion(
+                $this->db, $this->get('Purchase Order Currency Code'), $account->get('Account Currency'), '- 15 minutes'
+            ),
+            //'Supplier Delivery Warehouse Key'=>$warehouse->id,
+            //'Supplier Delivery Warehouse Metadata'=>json_encode($warehouse->data),
+
+            'editor' => $this->editor
+        );
+
+        //  print_r($delivery_data);
+
+
+        $delivery = new SupplierDelivery('new', $delivery_data);
+
+
+        if ($delivery->error) {
+            $this->error = true;
+            $this->msg   = $delivery->msg;
+
+        } elseif ($delivery->new or true) {
+
+
+            foreach ($data['items'] as $potf_key => $qty) {
+
+
+                $sql = sprintf(
+                    "SELECT `Purchase Order Net Amount`,`Purchase Order Extra Cost Amount`,`Purchase Order Quantity` FROM `Purchase Order Transaction Fact`  WHERE `Purchase Order Transaction Fact Key`=%d",
+
+                    $potf_key
+                );
+                if ($result = $this->db->query($sql)) {
+                    if ($row = $result->fetch()) {
+
+                        if ($row['Purchase Order Quantity'] != 0) {
+                            $net   = $qty * $row['Purchase Order Net Amount'] / $row['Purchase Order Quantity'];
+                            $extra = $qty * $row['Purchase Order Extra Cost Amount'] / $row['Purchase Order Quantity'];
+                        } else {
+                            $net   = 0;
+                            $extra = 0;
+                        }
+                        $sql = sprintf(
+                            'UPDATE `Purchase Order Transaction Fact` SET `Supplier Delivery Net Amount`=%f,
+                                `Supplier Delivery Extra Cost Amount`=%f,
+                                `Supplier Delivery Quantity`=%f,
+                                `Supplier Delivery Key`=%d,`Supplier Delivery Transaction State`=%s  ,`Supplier Delivery Transaction Placed`="No" WHERE `Purchase Order Transaction Fact Key`=%d', $net, $extra, $qty, $delivery->id, prepare_mysql('InProcess'), $potf_key
+                        );
+
+                        //   print $sql;
+
+                        $this->db->exec($sql);
+                    }
+                } else {
+                    print_r($error_info = $this->db->errorInfo());
+                    exit;
+                }
+
+
+            }
+            $delivery->update_totals();
+            $this->update_totals();
+
+            $parent = get_object(
+                $this->data['Purchase Order Parent'], $this->data['Purchase Order Parent Key']
+            );
+
+            if ($parent->get('Parent Skip Mark as Received') == 'Yes') {
+                $delivery->update_state('Received');
+            }
+
+
+        }
+
+
+        return $delivery;
+
+    }
+
     function get($key = '') {
         global $account;
 
@@ -377,6 +475,12 @@ class PurchaseOrder extends DB_Table {
                         break;
                     case 'Placed':
                         return 100;
+                        break;
+                    case 'Costing':
+                        return 105;
+                        break;
+                    case 'InvoiceChecked':
+                        return 110;
                         break;
                     case 'Cancelled':
                         return -10;
@@ -510,26 +614,40 @@ class PurchaseOrder extends DB_Table {
                 break;
 
             case ('State'):
+
+                //'InProcess','SubmittedAgent','Submitted','Editing_Submitted','Inputted','Dispatched','Received','Checked','Placed', 'Costing','InvoiceChecked'
+
                 switch ($this->data['Purchase Order State']) {
                     case 'InProcess':
                         return _('In Process');
                         break;
-
+                    case 'SubmittedAgent':
                     case 'Submitted':
                         return _('Submitted');
                         break;
-
-                    case 'Confirmed':
-                        return _('Confirmed');
+                    case 'Editing_Submitted':
+                        return _('Submitted').' ('._('editing').')';
                         break;
-                    case 'Checking':
-                        return _('Checking');
+                    case 'Inputted':
+                        return _('Delivery in process');
                         break;
-                    case 'In Warehouse':
-                        return _('In Warehouse');
+                    case 'Dispatched':
+                        return _('Delivery dispatched');
                         break;
-                    case 'Done':
-                        return _('Consolidated');
+                    case 'Received':
+                        return _('Received');
+                        break;
+                    case 'Checked':
+                        return _('Checked');
+                        break;
+                    case 'Placed':
+                        return _('Booked in');
+                        break;
+                    case 'Costing':
+                        return _('Booked in').' ('._('Review costing').')';
+                        break;
+                    case 'InvoiceChecked':
+                        return _('Booked in').' ('._('Costing done').')';
                         break;
                     case 'Cancelled':
                         return _('Cancelled');
@@ -691,107 +809,9 @@ class PurchaseOrder extends DB_Table {
 
     }
 
-    function create_delivery($data) {
-
-        include_once 'utils/currency_functions.php';
-
-        $account = get_object('Account', 1);
-        // $warehouse=ger_object('Warehouse',$data['Supplier Delivery Warehouse Key']);
-
-
-        $delivery_data = array(
-            'Supplier Delivery Public ID'           => $data['Supplier Delivery Public ID'],
-            'Supplier Delivery Parent'              => $this->get('Purchase Order Parent'),
-            'Supplier Delivery Parent Key'          => $this->get('Purchase Order Parent Key'),
-            'Supplier Delivery Parent Name'         => $this->get('Purchase Order Parent Name'),
-            'Supplier Delivery Parent Code'         => $this->get('Purchase Order Parent Code'),
-            'Supplier Delivery Parent Contact Name' => $this->get('Purchase Order Parent Contact Name'),
-            'Supplier Delivery Parent Email'        => $this->get('Purchase Order Parent Email'),
-            'Supplier Delivery Parent Telephone'    => $this->get('Purchase Order Parent Telephone'),
-            'Supplier Delivery Parent Address'      => $this->get('Purchase Order Parent Address'),
-            'Supplier Delivery Currency Code'       => $this->get('Purchase Order Currency Code'),
-            'Supplier Delivery Incoterm'            => $this->get('Purchase Order Incoterm'),
-            'Supplier Delivery Port of Import'      => $this->get('Purchase Order Port of Import'),
-            'Supplier Delivery Port of Export'      => $this->get('Purchase Order Port of Export'),
-            'Supplier Delivery Purchase Order Key'  => $this->id,
-            'Supplier Delivery Currency Exchange'   => currency_conversion(
-                $this->db, $this->get('Purchase Order Currency Code'), $account->get('Account Currency'), '- 15 minutes'
-            ),
-            //'Supplier Delivery Warehouse Key'=>$warehouse->id,
-            //'Supplier Delivery Warehouse Metadata'=>json_encode($warehouse->data),
-
-            'editor' => $this->editor
-        );
-
-        //  print_r($delivery_data);
-
-
-        $delivery = new SupplierDelivery('new', $delivery_data);
-
-
-        if ($delivery->error) {
-            $this->error = true;
-            $this->msg   = $delivery->msg;
-
-        } elseif ($delivery->new or true) {
-
-
-            foreach ($data['items'] as $potf_key => $qty) {
-
-
-                $sql = sprintf(
-                    "SELECT `Purchase Order Net Amount`,`Purchase Order Extra Cost Amount`,`Purchase Order Quantity` FROM `Purchase Order Transaction Fact`  WHERE `Purchase Order Transaction Fact Key`=%d",
-
-                    $potf_key
-                );
-                if ($result = $this->db->query($sql)) {
-                    if ($row = $result->fetch()) {
-
-                        if ($row['Purchase Order Quantity'] != 0) {
-                            $net   = $qty * $row['Purchase Order Net Amount'] / $row['Purchase Order Quantity'];
-                            $extra = $qty * $row['Purchase Order Extra Cost Amount'] / $row['Purchase Order Quantity'];
-                        } else {
-                            $net   = 0;
-                            $extra = 0;
-                        }
-                        $sql = sprintf(
-                            'UPDATE `Purchase Order Transaction Fact` SET `Supplier Delivery Net Amount`=%f,
-                                `Supplier Delivery Extra Cost Amount`=%f,
-                                `Supplier Delivery Quantity`=%f,
-                                `Supplier Delivery Key`=%d,`Supplier Delivery Transaction State`=%s  ,`Supplier Delivery Transaction Placed`="No" WHERE `Purchase Order Transaction Fact Key`=%d', $net, $extra, $qty, $delivery->id, prepare_mysql('InProcess'), $potf_key
-                        );
-
-                        //   print $sql;
-
-                        $this->db->exec($sql);
-                    }
-                } else {
-                    print_r($error_info = $this->db->errorInfo());
-                    exit;
-                }
-
-
-            }
-            $delivery->update_totals();
-            $this->update_totals();
-
-            $parent = get_object(
-                $this->data['Purchase Order Parent'], $this->data['Purchase Order Parent Key']
-            );
-
-            if ($parent->get('Parent Skip Mark as Received') == 'Yes') {
-                $delivery->update_state('Received');
-            }
-
-
-        }
-
-
-        return $delivery;
-
-    }
-
     function update_totals() {
+
+
 
         $sql = sprintf(
             "SELECT sum(`Purchase Order Weight`) AS  weight,sum(if(isNULL(`Purchase Order Weight`),1,0) )AS missing_weights ,sum(if(isNULL(`Purchase Order CBM`),1,0) )AS missing_cbms , sum(`Purchase Order CBM` )AS cbm ,count(DISTINCT `Supplier Key`) AS num_suppliers ,count(*) AS num_items ,sum(if(`Purchase Order Quantity`>0,1,0)) AS num_ordered_items ,
@@ -848,16 +868,16 @@ sum(`Purchase Order Net Amount`) AS items_net, sum(`Purchase Order Extra Cost Am
         }
 
         if ($this->get('Purchase Order State') == 'InProcess') {
-            return;
+        //    return;
 
         }
 
 
-        $deliveries=$this->get_deliveries('objects');
+        $deliveries = $this->get_deliveries('objects');
 
         if ($this->get('Purchase Order State') == 'Submitted') {
 
-            if ($this->get('Purchase Order Number Supplier Delivery Items') == 0 or  $deliveries==0) {
+            if ($this->get('Purchase Order Number Supplier Delivery Items') == 0 or $deliveries == 0) {
 
                 return;
 
@@ -867,13 +887,11 @@ sum(`Purchase Order Net Amount`) AS items_net, sum(`Purchase Order Extra Cost Am
 
         // todo this mus be rewritten
 
-     //   print $this->get('Purchase Order State');
+      //    print $this->get('Purchase Order State');
 
         if ($this->get('Purchase Order State') == 'Inputted') {
 
-            if ($this->get('Purchase Order Number Supplier Delivery Items') == 0 or  $deliveries==0) {
-
-
+            if ($this->get('Purchase Order Number Supplier Delivery Items') == 0 or $deliveries == 0) {
 
                 $this->update_state('Submitted');
 
@@ -883,23 +901,17 @@ sum(`Purchase Order Net Amount`) AS items_net, sum(`Purchase Order Extra Cost Am
         }
 
 
-
         $max_index          = 0;
         $max_delivery_state = 'NA';
 
-        $min_index = 100;
+        $min_index = 110;
 
 
         $min_delivery_state = 'Inputted';
 
 
-
-
-
         foreach ($deliveries as $delivery) {
             $index = $delivery->get('State Index');
-
-
 
             if ($index < 0) {
                 continue;
@@ -921,7 +933,6 @@ sum(`Purchase Order Net Amount`) AS items_net, sum(`Purchase Order Extra Cost Am
         }
 
 
-
         $this->fast_update(
             array(
                 'Purchase Order Max Supplier Delivery State' => $max_delivery_state,
@@ -929,17 +940,21 @@ sum(`Purchase Order Net Amount`) AS items_net, sum(`Purchase Order Extra Cost Am
         );
 
 
-         // print $this->get('State Index').' '.$min_delivery_state;
-//'InProcess','SubmittedAgent','Submitted','Editing_Submitted','Inputted','Dispatched','Received','Checked','Placed','Cancelled'
+
+        // print $this->get('State Index').' '.$min_delivery_state;
+        //'InProcess','SubmittedAgent','Submitted','Editing_Submitted','Inputted','Dispatched','Received','Checked','Placed','Cancelled'
 
 
-        if ($this->get('State Index') >= 60) {
-            if ($min_delivery_state == 'InProcess') {
-                $min_delivery_state = 'Inputted';
-            }
+        if ($min_delivery_state == 'InProcess') {
+            $min_delivery_state = 'Inputted';
+        }elseif ($min_delivery_state == 'Costing') {
+            $min_delivery_state = 'Placed';
         }
-            $this->update_state($min_delivery_state);
 
+       // print $min_delivery_state;
+       // exit;
+
+        $this->update_state($min_delivery_state);
 
 
     }
@@ -988,8 +1003,7 @@ sum(`Purchase Order Net Amount`) AS items_net, sum(`Purchase Order Extra Cost Am
         $operations = array();
 
 
-
-       // print "* $value *";
+        // print "* $value *";
 
         if ($old_value != $value) {
             switch ($value) {
@@ -1127,6 +1141,8 @@ sum(`Purchase Order Net Amount`) AS items_net, sum(`Purchase Order Extra Cost Am
                 case 'Dispatched':
                 case 'Received':
                 case 'Placed':
+                case 'Costing':
+                case 'InvoiceChecked':
 
 
                     $this->update_field(
@@ -1236,10 +1252,9 @@ sum(`Purchase Order Net Amount`) AS items_net, sum(`Purchase Order Extra Cost Am
         if ($result = $this->db->query($sql)) {
             foreach ($result as $row) {
                 $supplier_part = get_object('SupplierPart', $row['Supplier Part Key']);
-                if(isset($supplier_part->part)){
+                if (isset($supplier_part->part)) {
                     $supplier_part->part->update_next_deliveries_data();
                 }
-
 
 
             }
@@ -1579,13 +1594,13 @@ sum(`Purchase Order Net Amount`) AS items_net, sum(`Purchase Order Extra Cost Am
 
         $this->update_metadata = array(
             'class_html' => array(
-                'Purchase_Order_Total_Amount'                  => $this->get('Total Amount'),
-                'Purchase_Order_Total_Amount_Account_Currency' => $this->get('Total Amount Account Currency'),
+                'Purchase_Order_Total_Amount'                      => $this->get('Total Amount'),
+                'Purchase_Order_Total_Amount_Account_Currency'     => $this->get('Total Amount Account Currency'),
                 'Purchase_Order_Items_Net_Amount'                  => $this->get('Items Net Amount'),
                 'Purchase_Order_Items_Net_Amount_Account_Currency' => $this->get('Items Net Amount Account Currency'),
-                'Purchase_Order_Weight'                        => $this->get('Weight'),
-                'Purchase_Order_CBM'                           => $this->get('CBM'),
-                'Purchase_Order_Number_Items'                  => $this->get('Number Items'),
+                'Purchase_Order_Weight'                            => $this->get('Weight'),
+                'Purchase_Order_CBM'                               => $this->get('CBM'),
+                'Purchase_Order_Number_Items'                      => $this->get('Number Items'),
             ),
             'operations' => $operations,
         );

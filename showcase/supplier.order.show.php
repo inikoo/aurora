@@ -22,8 +22,7 @@ function get_supplier_order_showcase($data, $smarty, $user, $db) {
 
     } else {
 
-       // $data['_object']->update_totals();
-
+        //$data['_object']->update_totals();
         $smarty->assign('order', $data['_object']);
 
         $_parent = get_object(
