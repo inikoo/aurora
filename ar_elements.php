@@ -2161,6 +2161,7 @@ function get_supplier_orders_elements($db, $data) {
 
     $elements_numbers = array(
         'state' => array(
+            'Consolidated'                   => 0,
             'InProcess'                   => 0,
             'SubmittedInputtedDispatched' => 0,
             'ReceivedChecked'             => 0,

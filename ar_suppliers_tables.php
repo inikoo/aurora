@@ -1089,10 +1089,10 @@ function deliveries($_data, $db, $user) {
                     $state =  _('Booked in');
                     break;
                 case 'Costing':
-                    $state =  _('Booked in').', '._('Checking costing');
+                    $state =  _('Booked in').', '._('checking costing');
                     break;
                 case 'InvoiceChecked':
-                    $state =  _('Booked in').', '._('Costing done').' <i class="fa fa-check success"></i>';
+                    $state =  _('Booked in').', '._('costing done').' <i class="fa fa-check success"></i>';
                     break;
                 case 'Cancelled':
                     $state = sprintf('%s', _('Cancelled'));
