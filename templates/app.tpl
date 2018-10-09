@@ -93,10 +93,10 @@
 
         <script src="/js/edit_webpage_edit.js?v180411v1"></script>
         <script src="/js/new.js?v180612"></script>
-        <script src="/js/order.common.js?v180629v1"></script>
+        <script src="/js/order.common.js?v180629v2"></script>
         <script src="/js/email_campaign.common.js?v180611v3"></script>
-        <script src="/js/supplier.order.js"></script>
-        <script src="/js/supplier.delivery.js"></script>
+        <script src="/js/supplier.order.js?v2"></script>
+        <script src="/js/supplier.delivery.js?v2"></script>
         <script src="/js/part_locations.edit.js?v=20180319"></script>
         <script src="/js/alert_dial.js?v20180128v2"></script>
         <script src="/js/libs/editor_v1/froala_editor.min.js?v1"></script>

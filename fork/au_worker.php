@@ -65,23 +65,23 @@ function get_fork_metadata($job) {
         'Author Key'   => '',
         'User Key'     => 0,
         'Date'         => gmdate('Y-m-d H:i:s'),
-        'Subject'=>'System',
-        'Subject Key'=>0,
-        'Author Name'=>'Fork',
+        'Subject'      => 'System',
+        'Subject Key'  => 0,
+        'Author Name'  => 'Fork',
         'Author Alias' => 'Fork',
     );
 
 
     global $db, $account;
 
-   // $fork_encrypt_key = md5('huls0fjhslsshskslgjbtqcwijnbxhl2391');
-    $fork_raw_data    = $job->workload();
-   // $fork_metadata    = json_decode(AESDecryptCtr(base64_decode($fork_raw_data), $fork_encrypt_key, 256), true);
+    // $fork_encrypt_key = md5('huls0fjhslsshskslgjbtqcwijnbxhl2391');
+    $fork_raw_data = $job->workload();
+    // $fork_metadata    = json_decode(AESDecryptCtr(base64_decode($fork_raw_data), $fork_encrypt_key, 256), true);
     //print_r($fork_raw_data);
-    $fork_metadata=json_decode($fork_raw_data,true);
+    $fork_metadata = json_decode($fork_raw_data, true);
 
-   // print_r($fork_metadata);
-   // exit;
+    // print_r($fork_metadata);
+    // exit;
 
 
     $inikoo_account_code = $fork_metadata['code'];
@@ -89,7 +89,8 @@ function get_fork_metadata($job) {
 
         // print_r(AESDecryptCtr(base64_decode($fork_raw_data), $fork_encrypt_key, 256));
 
-        print "can't find account code y ->".$inikoo_account_code."<-  \n";
+        print "can't find account code ***  ->".$inikoo_account_code."<-  \n";
+        print_r($fork_metadata);
 
         return false;
     }
@@ -134,8 +135,6 @@ function get_fork_metadata($job) {
     }
 
 
-
-
     return array(
         $account,
         $db,
@@ -159,22 +158,22 @@ function get_fork_data($job) {
         'Author Key'   => '',
         'User Key'     => 0,
         'Date'         => gmdate('Y-m-d H:i:s'),
-        'Subject'=>'System',
-        'Subject Key'=>0,
-        'Author Name'=>'Fork',
+        'Subject'      => 'System',
+        'Subject Key'  => 0,
+        'Author Name'  => 'Fork',
         'Author Alias' => 'Fork',
     );
 
-   // $fork_encrypt_key = md5('huls0fjhslsshskslgjbtqcwijnbxhl2391');
-    $fork_raw_data    = $job->workload();
+    // $fork_encrypt_key = md5('huls0fjhslsshskslgjbtqcwijnbxhl2391');
+    $fork_raw_data = $job->workload();
     //$fork_metadata    = json_decode(
-     //   AESDecryptCtr(base64_decode($fork_raw_data), $fork_encrypt_key, 256), true
+    //   AESDecryptCtr(base64_decode($fork_raw_data), $fork_encrypt_key, 256), true
     //);
 
-    $fork_metadata    = json_decode($fork_raw_data, true);
+    $fork_metadata = json_decode($fork_raw_data, true);
 
 
-print_r($fork_metadata);
+    print_r($fork_metadata);
 
     $inikoo_account_code = $fork_metadata['code'];
     if (!ctype_alnum($inikoo_account_code)) {
@@ -198,7 +197,7 @@ print_r($fork_metadata);
 
 
     $fork_key = $fork_metadata['fork_key'];
-//    $token    = $fork_metadata['token'];
+    //    $token    = $fork_metadata['token'];
 
     $db = new PDO("mysql:host=$dns_host;dbname=$dns_db;charset=utf8", $dns_user, $dns_pwd, array(\PDO::MYSQL_ATTR_INIT_COMMAND => "SET time_zone = '+0:00';"));
     $db->setAttribute(PDO::ATTR_DEFAULT_FETCH_MODE, PDO::FETCH_ASSOC);
@@ -239,12 +238,12 @@ print_r($fork_metadata);
             $fork_data = json_decode($row['Fork Process Data'], true);
 
 
-            $fork_data=array(
+            $fork_data = array(
                 'fork_key'            => $fork_key,
                 'inikoo_account_code' => $inikoo_account_code,
                 'fork_data'           => $fork_data,
                 'db'                  => $db,
-                'editor'=>$editor,
+                'editor'              => $editor,
 
             );
 
