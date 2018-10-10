@@ -235,7 +235,7 @@
                     </div>
                 </div>
                 <div id="undo_submit_operations"
-                     class="order_operation {if   $order->get('State Index')!=30 or $order->get('Purchase Order Parent')=='Agent'  }hide{/if}">
+                     class="order_operation {if   $order->get('State Index')!=30   }hide{/if}">
                     <div class="square_button left" title="{t}Undo submit{/t}">
                         <span class="fa-stack" onclick="toggle_order_operation_dialog('undo_submit')"> <i
                                     class="fa fa-paper-plane discreet " aria-hidden="true"></i> <i

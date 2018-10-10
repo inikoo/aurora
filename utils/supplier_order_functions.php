@@ -182,7 +182,7 @@ function get_purchase_order_transaction_data($data) {
     //print_r($data);
 
 
-    if($data['Metadata']==''){
+    if(empty($data['Metadata'])){
         $metadata=array();
     }else{
         $metadata=json_decode($data['Metadata'],true);

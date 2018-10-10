@@ -875,86 +875,95 @@ sum(`Purchase Order Net Amount`) AS items_net, sum(`Purchase Order Extra Cost Am
 
         $deliveries = $this->get_deliveries('objects');
 
-        if ($this->get('Purchase Order State') == 'Submitted') {
-
-            if ($this->get('Purchase Order Number Supplier Delivery Items') == 0 or $deliveries == 0) {
-
-                return;
-
-            }
-        }
+        if(count($deliveries)>0){
 
 
-        // todo this mus be rewritten
-
-      //    print $this->get('Purchase Order State');
-
-        if ($this->get('Purchase Order State') == 'Inputted') {
-
-            if ($this->get('Purchase Order Number Supplier Delivery Items') == 0 or $deliveries == 0) {
-
-                $this->update_state('Submitted');
-
-                return;
-
-            }
-        }
 
 
-        $max_index          = 0;
-        $max_delivery_state = 'NA';
+            if ($this->get('Purchase Order State') == 'Submitted') {
 
-        $min_index = 110;
+                if ($this->get('Purchase Order Number Supplier Delivery Items') == 0 or $deliveries == 0) {
 
+                    return;
 
-        $min_delivery_state = 'Inputted';
-
-
-        foreach ($deliveries as $delivery) {
-            $index = $delivery->get('State Index');
-
-            if ($index < 0) {
-                continue;
-            }
-
-            if ($index > $max_index) {
-                $max_index          = $index;
-                $max_delivery_state = $delivery->get('Supplier Delivery State');
-            }
-
-            if ($index <= $min_index) {
-
-
-                $min_index          = $index;
-                $min_delivery_state = $delivery->get('Supplier Delivery State');
+                }
             }
 
 
-        }
+            // todo this mus be rewritten
+
+            //    print $this->get('Purchase Order State');
+
+            if ($this->get('Purchase Order State') == 'Inputted') {
+
+                if ($this->get('Purchase Order Number Supplier Delivery Items') == 0 or $deliveries == 0) {
+
+                    $this->update_state('Submitted');
+
+                    return;
+
+                }
+            }
 
 
-        $this->fast_update(
-            array(
-                'Purchase Order Max Supplier Delivery State' => $max_delivery_state,
-            )
-        );
+            $max_index          = 0;
+            $max_delivery_state = 'NA';
+
+            $min_index = 110;
 
 
-
-        // print $this->get('State Index').' '.$min_delivery_state;
-        //'InProcess','SubmittedAgent','Submitted','Editing_Submitted','Inputted','Dispatched','Received','Checked','Placed','Cancelled'
-
-
-        if ($min_delivery_state == 'InProcess') {
             $min_delivery_state = 'Inputted';
-        }elseif ($min_delivery_state == 'Costing') {
-            $min_delivery_state = 'Placed';
+
+
+            foreach ($deliveries as $delivery) {
+                $index = $delivery->get('State Index');
+
+                if ($index < 0) {
+                    continue;
+                }
+
+                if ($index > $max_index) {
+                    $max_index          = $index;
+                    $max_delivery_state = $delivery->get('Supplier Delivery State');
+                }
+
+                if ($index <= $min_index) {
+
+
+                    $min_index          = $index;
+                    $min_delivery_state = $delivery->get('Supplier Delivery State');
+                }
+
+
+            }
+
+
+            $this->fast_update(
+                array(
+                    'Purchase Order Max Supplier Delivery State' => $max_delivery_state,
+                )
+            );
+
+
+
+            // print $this->get('State Index').' '.$min_delivery_state;
+            //'InProcess','SubmittedAgent','Submitted','Editing_Submitted','Inputted','Dispatched','Received','Checked','Placed','Cancelled'
+
+
+            if ($min_delivery_state == 'InProcess') {
+                $min_delivery_state = 'Inputted';
+            }elseif ($min_delivery_state == 'Costing') {
+                $min_delivery_state = 'Placed';
+            }
+
+            // print $min_delivery_state;
+            // exit;
+
+            $this->update_state($min_delivery_state);
+
         }
 
-       // print $min_delivery_state;
-       // exit;
 
-        $this->update_state($min_delivery_state);
 
 
     }
