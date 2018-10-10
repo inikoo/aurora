@@ -14,11 +14,14 @@ include_once 'utils/invalid_messages.php';
 include_once 'conf/object_fields.php';
 
 
+
+
 if (!$user->can_view('suppliers')) {
     $html = '';
 } else {
 
     include_once 'utils/invalid_messages.php';
+
 
 
     $object_fields = get_object_fields($state['_object'], $db, $user, $smarty);

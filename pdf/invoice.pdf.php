@@ -178,8 +178,6 @@ if ($invoice->get('Invoice Version') == 2) {
 //print $sql;exit;
 
 
-
-
 if ($result = $db->query($sql)) {
     foreach ($result as $row) {
 

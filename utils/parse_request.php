@@ -1431,7 +1431,6 @@ function parse_request($_data, $db, $modules, $account = '', $user = '', $is_set
 
                                 }
 
-
                             } else {
                                 if ($view_path[1] == 'user') {
 
@@ -5076,6 +5075,7 @@ function parse_request($_data, $db, $modules, $account = '', $user = '', $is_set
     }
 
 
+
     list($tab, $subtab) = parse_tabs($module, $section, $_data, $modules);
 
 
@@ -5105,6 +5105,8 @@ function parse_request($_data, $db, $modules, $account = '', $user = '', $is_set
     if (isset($store_key)) {
         $state['store_key'] = $store_key;
     }
+
+
 
 
     return $state;
@@ -5137,8 +5139,9 @@ function parse_tabs($module, $section, $_data, $modules) {
         if (!empty($tmp[$module][$section]['tab'])) {
             $tab = $tmp[$module][$section]['tab'];
 
-
         } else {
+
+
 
 
             if (!isset($modules[$module]['sections'][$section]['tabs']) or !is_array($modules[$module]['sections'][$section]['tabs']) or count($modules[$module]['sections'][$section]['tabs']) == 0) {

@@ -186,7 +186,7 @@
                      class="order_operation {if $delivery->get('Supplier Delivery State')!='InProcess'}hide{/if}">
                     <div class="square_button left" xstyle="padding:0;margin:0;position:relative;top:-5px"
                          title="{t}delete{/t}">
-                        <i class="fa fa-trash very_discreet " aria-hidden="true"
+                        <i class="far fa-trash-alt very_discreet " aria-hidden="true"
                            onclick="toggle_order_operation_dialog('delete')"></i>
                         <table id="delete_dialog" border="0" class="order_operation_dialog hide">
                             <tr class="top">

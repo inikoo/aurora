@@ -1751,7 +1751,7 @@ function get_delivery_navigation($data, $smarty, $user, $db, $account) {
                 $tab      = 'supplier.deliveries';
                 $_section = 'suppliers';
                 break;
-
+            case 'Agent':
             case 'agent':
                 $tab      = 'agent.deliveries';
                 $_section = 'agents';
