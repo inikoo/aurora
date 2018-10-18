@@ -47,9 +47,9 @@ if ($result = $db->query($sql)) {
     foreach ($result as $row) {
         $part = get_object('Part', $row['Part SKU']);
 
-        //foreach($part->get_locations('part_location_object') as $part_location){
-        //    $part_location->update_stock();
-        // }
+        foreach($part->get_locations('part_location_object') as $part_location){
+            $part_location->update_stock();
+         }
 
         $part->update_sales_from_invoices('1 Quarter',true,false);
 
