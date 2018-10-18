@@ -366,7 +366,7 @@
             {foreach from=$deliveries item=dn}
                 <div class="delivery_node" style="height:30px;clear:both;border-bottom:1px solid #ccc">
                     <span style="float:left;padding-left:10px;padding-top:5px"> <span class="button" onclick="change_view('{$order->get('Purchase Order Parent')|lower}/{$order->get('Purchase Order Parent Key')}/delivery/{$dn->id}')">
-                            <i class="fa fa-truck"></i> {$dn->get('Public ID')}</span> ({$dn->get('State')}) </span>
+                            <i class="fa fa-truck"></i> {$dn->get('Public ID')}</span> <span class="small">({$dn->get('State')})</span></span>
                 </div>
             {/foreach}
         </div>
