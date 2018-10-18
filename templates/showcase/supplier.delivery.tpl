@@ -17,18 +17,19 @@
         {if $delivery->get('Supplier Delivery Key')}
             <li id="purchase_order_node" class="li complete">
                 <div class="label">
-                    <span class="state "><i class="fa fa-clipboard fa-fw"></i> {t}Submitted{/t}</span>
+                    <span class="state "><i class="far fa-clipboard fa-fw"></i> {t}Submitted{/t}</span>
                 </div>
                 <div class="timestamp">
                     <span class="Purchase_Order_Submitted_Date">&nbsp;{$delivery->get('PO Submitted Date')}</span> <span
                             class="start_date Purchase_Order_Creation_Date">{$delivery->get('PO Creation Date')} </span>
                 </div>
                 <div class="dot">
+
                 </div>
             </li>
             <li id="inputted_node" class="li  complete">
                 <div class="label">
-                    <span class="state">&nbsp; <span>{t}Inputted{/t}</span></span>
+                    <span class="state">&nbsp; <span>{t}Created{/t}</span></span>
                 </div>
                 <div class="timestamp">
                     <span class="Supplier_Delivery_Creation_Date">&nbsp;{$delivery->get('Creation Date')}</span>
@@ -156,23 +157,26 @@
 </div>
 <div class="order" style="display: flex;" data-object="{$object_data}">
     <div class="block" style=" align-items: stretch;flex: 1">
+
+
+
         <div class="data_container" style="padding:5px 10px">
-            <div class="data_field">
+            <div class="data_field" style="margin:5px 0px 15px 0px ">
                 <i class="fa fa-ship fa-fw" aria-hidden="true" title="{t}Supplier{/t}"></i> <span
                         onclick="change_view('{if $delivery->get('Supplier Delivery Parent')=='Supplier'}supplier{else}agent{/if}/{$delivery->get('Supplier Delivery Parent Key')}')"
                         class="link Supplier_Delivery_Parent_Name">{$delivery->get('Supplier Delivery Parent Name')}</span>
             </div>
             <div class="data_field">
                 <i class="fa fa-share fa-fw" aria-hidden="true" title="Incoterm"></i> <span
-                        class="Supplier_Delivery_Incoterm">{$delivery->get('Supplier Delivery Incoterm')}</span>
+                        class="Supplier_Delivery_Incoterm">{if $delivery->get('Supplier Delivery Incoterm')==''}<i class="error fa fa-exclamation-circle" style="margin-right: 0px"></i> <span class="very_discreet error italic">{t}Incoterm not set{/t}</span>{else}{$delivery->get('Supplier Delivery Incoterm')}{/if}</span>
             </div>
             <div class="data_field">
                 <i class="fa fa-arrow-circle-right fa-fw" aria-hidden="true" title="{t}Port of export{/t}"></i> <span
-                        class="Supplier_Delivery_Port_of_Export">{$delivery->get('Port of Export')}</span>
+                        class="Supplier_Delivery_Port_of_Export">{if $delivery->get('Port of Export')==''}<i class="error fa fa-exclamation-circle" style="margin-right: 0px"></i> <span class="very_discreet error italic">{t}Port of export not set{/t}</span>{else}{$delivery->get('Port of Export')}{/if}</span>
             </div>
             <div class="data_field">
                 <i class="fa fa-arrow-circle-left fa-fw" aria-hidden="true" title="{t}Port of import{/t}"></i> <span
-                        class="Supplier_Delivery_Port_of_Import">{$delivery->get('Port of Import')}</span>
+                        class="Supplier_Delivery_Port_of_Import">{if $delivery->get('Port of Import')==''}<i class="error fa fa-exclamation-circle" style="margin-right: 0px"></i> <span class="very_discreet error italic">{t}Port of import not set{/t}</span>{else}{$delivery->get('Port of Import')}{/if}</span>
             </div>
         </div>
         <div style="clear:both">
@@ -284,12 +288,12 @@
                     <div class="square_button left" title="{t}Redo costing{/t}">
 						<span class="fa-stack" style="position:relative;top:-1px"
                               onclick="toggle_order_operation_dialog('undo_costing')">
-						<i class="fa fa-check discreet " aria-hidden="true"></i>
-						<i class="fa fa-ban fa-stack-1x very_discreet error"></i>
+						<i class="fal fa-box-usd super_discreet " aria-hidden="true"></i>
+						<i class="far fa-undo-alt fa-stack-1x  "></i>
 						</span>
                         <table id="undo_costing_dialog" border="0" class="order_operation_dialog hide">
                             <tr class="top">
-                                <td colspan="2" class="label">{t}Redo costing{/t}</td>
+                                <td colspan="2" class="label">{t}Go back to delivery costing{/t}</td>
                             </tr>
                             <tr class="buttons changed">
                                 <td><i class="fa fa-sign-out fa-flip-horizontal button" aria-hidden="true"
@@ -297,8 +301,8 @@
                                 <td class="aright"><span
                                             data-data='{ "value": "RedoCosting","dialog_name":"undo_costing", "field": "Supplier Delivery State"}'
                                             id="undo_costing_save_buttons" class="valid save button"
-                                            onclick="save_order_operation(this)"><span class="label">{t}Save{/t}</span> <i
-                                                class="fa fa-cloud fa-fw  " aria-hidden="true"></i></span></td>
+                                            onclick="save_order_operation(this)"><span class="label">{t}Redo costing{/t}</span> <i
+                                                class="fa fa-undo-alt fa-fw  " aria-hidden="true"></i></span></td>
                             </tr>
                         </table>
                     </div>
@@ -407,8 +411,8 @@
                      class="order_operation {if $delivery->get('Supplier Delivery State')!='Placed'}hide{/if}">
                     <div class="square_button right" title="{t}Start checking costs{/t}">
 
-                        <i class="far fa-box-usd fa-fw" aria-hidden="true"
-                           onclick="toggle_order_operation_dialog('costing')"></i>
+                        <i class="far fa-box-usd fa-fw" aria-hidden="true" data-data='{ "value": "Costing","dialog_name":"costing", "field": "Supplier Delivery State"}'
+                           onclick="save_order_operation(this)"></i>
 
 
                         <table id="costing_dialog" border="0" class="order_operation_dialog hide">
@@ -443,11 +447,10 @@
 
             <tr>
 
-                <td>
-                    <span style="padding-right:20px"><i class="fa fa-arrow-circle-right fa-fw discreet"
-                                                        aria-hidden="true"></i> <span
-                                class="Supplier_Delivery_Number_Dispatched_Items">{$delivery->get('Number Dispatched Items')}</span></span>
-                    <span><i class="fa fa-arrow-circle-down fa-fw discreet" aria-hidden="true"></i>  <span
+                <td style="text-align: center" colspan="2">
+
+                    <span style="padding-right:20px"  title="{t}Number of items{/t}" ><i class="fa fa-bars fa-fw discreet"></i> <span class="Supplier_Delivery_Number_Items">{$delivery->get('Number Items')}</span></span>
+                    <span><i class="fa fa-box-check fa-fw discreet" aria-hidden="true"></i>  <span
                                 class="Supplier_Delivery_Number_Received_and_Checked_Items">{$delivery->get('Number Received and Checked Items')}</span></span>
                     <span style="padding-left:20px"><i class="fa fa-inventory fa-fw discreet" aria-hidden="true"></i>  <span
                                 class="Supplier_Delivery_Number_Placed_Items">{$delivery->get('Number Placed Items')}</span></span>
@@ -456,12 +459,21 @@
 
             <tr>
 
-                <td class=" Supplier_Delivery_Weight" title="{t}Weight{/t}">{$delivery->get('Weight')}</td>
-            </tr>
-            <tr>
+                <td style="text-align: center" title="{t}Weight{/t}"><i class="far fa-weight-hanging {if $delivery->get('Supplier Delivery Weight')==''}hide{/if}"></i> <span class="Supplier_Delivery_Weight">{$delivery->get('Weight')}</span></td>
 
-                <td class=" Supplier_Delivery_CBM" title="{t}CBM{/t}">{$delivery->get('CBM')}</td>
+
+                <td style="text-align: center" class=" Supplier_Delivery_CBM" title="{t}CBM{/t}">{$delivery->get('CBM')}</td>
             </tr>
+
+
+            <tr  class="Mismatched_Items {if $delivery->get('Supplier Delivery Number Received and Checked Items')==0}hide{/if} ">
+                <td style="text-align: center;padding-top: 20px"  title="{t}Items under delivered{/t}"><i class="far fa-box-open"></i>  <span class="Supplier_Delivery_Number_Under_Delivered_Items">{$delivery->get('Number Under Delivered Items')}</span></td>
+
+                <td  style="text-align: center;padding-top: 20px" title="{t}Items over delivered{/t}"><i class="fa fa-box-full"></i>  <span  class=" Supplier_Delivery_Number_Over_Delivered_Items">{$delivery->get('Number Over Delivered Items')}</span></td>
+
+
+            </tr>
+
         </table>
 
 

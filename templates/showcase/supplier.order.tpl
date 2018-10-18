@@ -17,109 +17,110 @@
         </li>
 
 
-        {if $deliveries|@count ==0}
 
-            <li id="send_node" class=" li ">
+
+        <li id="dispatched_node"
+            class="li  {if $order->get('State Index')>=70 and $order->get('Max State Index')>=70   }complete{elseif $order->get('Max State Index')>=70 }semi_complete{/if}">
+            <div class="label">&#160;
+            </div>
+            <div class="timestamp">
+                <span class="">&nbsp;
+
+                    {foreach from=$deliveries item=dn name=dns}
+                        <span class="link" onclick="change_view('{$order->get('Purchase Order Parent')|lower}/{$order->get('Purchase Order Parent Key')}/delivery/{$dn->id}')">{$dn->get('Public ID')}</span>{if $smarty.foreach.dns.last}{else},{/if}
+
+                    {/foreach}
+
+                </span>
+            </div>
+            <div class="truck">
+            </div>
+        </li>
+
+
+
+            <li id="dispatched_node"
+                class="li  {if $order->get('State Index')>=70 and $order->get('Max State Index')>=70   }complete{elseif $order->get('Max State Index')>=70 }semi_complete{/if}">
                 <div class="label">
-                    <span class="state ">{t}Estimated delivery date{/t} <span></i></span></span>
+                    <span class="state ">{t}Dispatched{/t} <span></i></span></span>
                 </div>
                 <div class="timestamp">
-			<span class="Purchase_Order_Dispatched_Date">&nbsp;{$order->get('Estimated Receiving Date')} &nbsp;</span>
+                    <span class="Supplier_Delivery_Dispatched_Date">&nbsp;</span>
                 </div>
                 <div class="dot">
                 </div>
             </li>
 
 
-        {/if}
-        {foreach from=$deliveries item=dn name=deliveries}
 
-        <li id="send_node" class="li button {if $dn->get('State Index')>=100}complete{/if} "  onclick="change_view('{$order->get('Purchase Order Parent')|lower}/{$order->get('Purchase Order Parent Key')}/delivery/{$dn->id}')"  >
-            <div class="label">
-                <span class="state" style="position:relative;left:5px">  <i class="fa fa-truck   " aria-hidden="true" title="{t}Delivery{/t}"></i>  {$dn->get('Public ID')} {$dn->get('Progress')}<span></span></span>
-            </div>
-            <div class="timestamp">
-			<span class="Deliveries_Public_IDs" style="position:relative;left:5px">&nbsp;
-                <span>{$dn->get('Progress Date')}</span>
-            </span>
-            </div>
-            <div class="dot">
-            </div>
-        </li>
-        {/foreach}
+            <li id="estimated_send_node" class=" li {if $order->get('State Index')>=80  }hide{/if}"  ">
+                <div class="label">
+                    <span class="state ">{t}Estimated delivery date{/t} <span></i></span></span>
+                </div>
+                <div class="timestamp">
+                    <span class="Purchase_Order_Estimated_Receiving_Date">&nbsp;{if $order->get('Estimated Receiving Date')==''}<i class="error fa fa-exclamation-circle" ></i> <span class="error discreet italic">{t}No estimated delivery date{/t}</span> {else}{$order->get('Estimated Receiving Date')}{/if} &nbsp;</span>
+                </div>
+                <div class="dot">
+                </div>
+            </li>
 
-        <div class="hide">
-
-        <li id="send_node" class=" li  {if $order->get('State Index')>=60}complete{/if}">
+        <li id="send_node" class=" li {if $order->get('State Index')>=80 and $order->get('Max State Index')>=80   }complete{elseif $order->get('Max State Index')>=80 }semi_complete{/if} ">
             <div class="label">
-                <span class="state ">{t}Inputted{/t} <span></i></span></span>
+                <span class="state ">{t}Received{/t} <span></i></span></span>
             </div>
             <div class="timestamp">
-			<span class="Purchase_Order_Inputted_Date">&nbsp;{foreach from=$deliveries item=dn name=deliveries}
-                <span i
-                      class="{if $smarty.foreach.deliveries.index != 0}hide{/if} index_{$smarty.foreach.deliveries.index}">{$dn->get('Creation Date')}</span>
-                {/foreach}&nbsp;</span>
-            </div>
-            <div class="dot">
-            </div>
-        </li>
-        <li id="send_node" class=" li {if $order->get('State Index')>=70}complete{/if}">
-            <div class="label">
-                <span class="state ">{t}Dispatched{/t} <span></i></span></span>
-            </div>
-            <div class="timestamp">
-			<span class="Purchase_Order_Dispatched_Date">&nbsp;{foreach from=$deliveries item=dn name=deliveries}
-                <span i
-                      class="{if $smarty.foreach.deliveries.index != 0}hide{/if} index_{$smarty.foreach.deliveries.index}">{$dn->get('Dispatched Date')}</span>
-                {/foreach}&nbsp;</span>
-            </div>
-            <div class="dot">
-            </div>
-        </li>
-        <li class="li  {if $order->get('State Index')>=80}complete{/if}">
-            <div class="label">
-                <span class="state ">{t}Received{/t}</span>
-            </div>
-            <div class="timestamp">
-
-			<span class="Purchase_Order_Received_Date">&nbsp;<span
-                        class="Purchase_Order_Received_Date">{$order->get('Received Date')}</span>{foreach from=$deliveries item=dn name=deliveries}
-			<span i
-                  class="{if $smarty.foreach.deliveries.index != 0}hide{/if} index_{$smarty.foreach.deliveries.index}">{$dn->get('Received Date')}</span>
-                {/foreach}&nbsp;</span>
-
-            </div>
-            <div class="dot">
-            </div>
-        </li>
-        <li class="li  {if $order->get('State Index')>=90}complete{/if}">
-            <div class="label">
-                <span class="state">{t}Checked{/t}</span>
-            </div>
-            <div class="timestamp">
-		<span class="Purchase_Order_Checked_Date">&nbsp;{foreach from=$deliveries item=dn name=deliveries}
-            <span i
-                  class="{if $smarty.foreach.deliveries.index != 0}hide{/if} index_{$smarty.foreach.deliveries.index}">{$dn->get('Checked Percentage or Date')}</span>
-            {/foreach}&nbsp;</span>
-            </div>
-            <div class="dot">
-            </div>
-        </li>
-        <li class="li {if $order->get('State Index')>=100}complete{/if}">
-            <div class="label">
-                <span class="state">{t}Booked in{/t}</span>
-            </div>
-            <div class="timestamp">
-		<span class="Purchase_Order_Placed_Date">&nbsp;{foreach from=$deliveries item=dn name=deliveries}
-            <span i
-                  class="{if $smarty.foreach.deliveries.index != 0}hide{/if} index_{$smarty.foreach.deliveries.index}">{$dn->get('Placed Percentage or Date')}</span>
-            {/foreach}&nbsp;</span>
+                <span class="Purchase_Order_Receiving_Date">&nbsp; &nbsp;</span>
             </div>
             <div class="dot">
             </div>
         </li>
 
-        </div>
+            <li id="checked_node"
+                class="li  {if $order->get('State Index')>=90 and $order->get('Max State Index')>=90   }complete{elseif $order->get('Max State Index')>=90 }semi_complete{/if} ">
+                <div class="label">
+                    <span class="state">{t}Checked{/t}</span>
+                </div>
+                <div class="timestamp">
+                    <span class="Supplier_Delivery_Checked_Percentage_or_Date">&nbsp;</span>
+                </div>
+                <div class="dot">
+                </div>
+            </li>
+
+
+
+
+            <li id="placed_node"
+                class="li {if $order->get('State Index')>=100 and $order->get('Max State Index')>=100   }complete{elseif $order->get('Max State Index')>=100 }semi_complete{/if} ">
+                <div class="label">
+                    <span class="state">{t}Booked in{/t}</span>
+                </div>
+                <div class="timestamp">
+                    <span class="Supplier_Delivery_Placed_Percentage_or_Date">&nbsp;</span>
+                </div>
+                <div class="dot">
+                </div>
+            </li>
+
+            <li id="costing_done_node"
+                class="li {if $order->get('State Index')>=110 and $order->get('Max State Index')>=110   }complete{elseif $order->get('Max State Index')>=110 }semi_complete{/if} ">
+                <div class="label">
+                    <span class="state">{t}Costing done{/t}</span>
+                </div>
+                <div class="timestamp">
+                    <span class="Supplier_Delivery_Costing_Date">&nbsp;</span>
+                </div>
+                <div class="dot">
+                </div>
+            </li>
+
+
+
+
+
+
+
+
 
     </ul>
 </div>
@@ -150,28 +151,38 @@
         </li>
 
 
+
+
     </ul>
 </div>
 
 <div class="order" style="display: flex;" data-object="{$object_data}">
     <div style=" align-items: stretch;flex: 1" class="block ">
         <div class="data_container" style="padding:5px 10px">
-            <div class="data_field">
+            <div class="data_field" style="margin:5px 0px 15px 0px ">
                 <i class="fa fa-ship fa-fw" aria-hidden="true" title="{t}Supplier{/t}"></i> <span
                         onclick="change_view('{if $order->get('Purchase Order Parent')=='Supplier'}supplier{else}agent{/if}/{$order->get('Purchase Order Parent Key')}')"
                         class="link Purchase_Order_Parent_Name">{$order->get('Purchase Order Parent Name')}</span>
             </div>
             <div class="data_field">
-                <i class="fa fa-share fa-fw" aria-hidden="true" title="Incoterm"></i> <span
-                        class="Purchase_Order_Incoterm">{$order->get('Purchase Order Incoterm')}</span>
+                <i class="fa fa-share fa-fw" aria-hidden="true" title="Incoterm"></i>
+                <span class="Purchase_Order_Incoterm_empty small  {if $order->get('Purchase Order Incoterm')!=''}hide{/if}"     ><i class="error fa fa-exclamation-circle" style="margin-right: 0px"></i> <span class="very_discreet error italic">{t}Incoterm not set{/t}</span></span><span class="Purchase_Order_Incoterm">{$order->get('Purchase Order Incoterm')}</span>
             </div>
             <div class="data_field">
-                <i class="fa fa-arrow-circle-right fa-fw" aria-hidden="true" title="{t}Port of export{/t}"></i> <span
-                        class="Purchase_Order_Port_of_Export">{$order->get('Port of Export')}</span>
+                <i class="fa fa-arrow-circle-right fa-fw" aria-hidden="true" title="{t}Port of export{/t}"></i>
+                        <span class="Purchase_Order_Port_of_Export_empty small {if $order->get('Port of Export')!=''}hide{/if} "><i class="error fa fa-exclamation-circle" style="margin-right: 0px"></i> <span class="very_discreet error italic">{t}Port of export not set{/t}</span></span><span class="Purchase_Order_Port_of_Export">{$order->get('Port of Export')}</span>
             </div>
             <div class="data_field">
                 <i class="fa fa-arrow-circle-left fa-fw" aria-hidden="true" title="{t}Port of import{/t}"></i> <span
-                        class="Purchase_Order_Port_of_Import">{$order->get('Port of Import')}</span>
+                <span class="Purchase_Order_Port_of_Import_empty small {if $order->get('Port of Import')!=''}hide{/if} "><i class="error fa fa-exclamation-circle" style="margin-right: 0px"></i> <span class="very_discreet error italic">{t}Port of import not set{/t}</span></span><span class="Purchase_Order_Port_of_Import">{$order->get('Port of Import')}</span>
+            </div>
+
+            <div class="data_field small" ">
+                <div class=" discreet" style="margin:15px 0px 5px 0px" >{t}Deliver to{/t}:</div>
+            <div class="Purchase_Order_Warehouse_Address_empty  error {if $order->get('Purchase Order Warehouse Address')!=''}hide{/if} "><i class="error fa fa-exclamation-circle" style="margin-right: 0px"></i> <span class="very_discreet error italic">{t}Delivery address not set{/t}</span></div>
+
+            <div class="Purchase_Order_Warehouse_Address">{$order->get('Purchase Order Warehouse Address')}</div>
+
             </div>
         </div>
         <div style="clear:both">
@@ -299,9 +310,9 @@
         </div>
 
 
-        <table border="0" class=" ">
+        <table border="0" >
 
-            <tr style="    border-bottom: 1px solid #ccc;">
+            <tr class="pdf_purchase_order_container  {if  $order->get('State Index') < 20 }hide{/if} " style="    border-bottom: 1px solid #ccc;">
                 <td style="text-align: center;padding: 0px" colspan="2">
                     <a href="/pdf/supplier.order.pdf.php?id={$order->id}" target="_blank"><img class="button pdf_link"  style="width: 50px;height:16px;position: relative;top:2px" src="/art/pdf.gif"></a>
 
@@ -313,7 +324,7 @@
 
             <tr>
                 <td style="text-align: center" colspan="2">
-                    <span style=""><i class="fa fa-stop fa-fw discreet" aria-hidden="true"></i> <span class="Purchase_Order_Number_Items">{$order->get('Number Items')}</span></span>
+                    <span style=""><i class="fa fa-bars fa-fw discreet" aria-hidden="true"></i> <span class="Purchase_Order_Number_Items">{$order->get('Number Items')}</span></span>
                     <span class="{if $order->get('State Index')<60}super_discreet{/if}" style="padding-left:20px"><i
                                 class="fa fa-arrow-circle-down  fa-fw discreet" aria-hidden="true"></i> <span
                                 class="Purchase_Order_Number_Supplier_Delivery_Items">{$order->get('Number Supplier Delivery Items')}</span></span>
@@ -330,20 +341,20 @@
 
             </tr>
 
+
         </table>
 
     </div>
     <div class="block " style="align-items: stretch;flex: 1 ;padding-top: 0px">
-
         <div id="create_delivery"
-             class="delivery_node {if  $order->get('Purchase Order Parent')=='xAgent' or   ({$order->get('State Index')|intval} < 20 or ($order->get('Purchase Order Ordered Number Items')-$order->get('Purchase Order Number Supplier Delivery Items'))==0) or $parent->get('Parent Skip Inputting')=='Yes' }hide{/if}"
+             class="delivery_node {if   ({$order->get('State Index')|intval} < 20 or ($order->get('Purchase Order Ordered Number Items')-$order->get('Purchase Order Number Supplier Delivery Items'))==0) or $parent->get('Parent Skip Inputting')=='Yes' }hide{/if}"
              style="height:30px;clear:both;border-bottom:1px solid #ccc">
             <div id="back_operations">
             </div>
             <span style="float:left;padding-left:10px;padding-top:5px" class="very_discreet italic"><i class="fa fa-truck" aria-hidden="true"></i> {t}Delivery{/t}</span>
             <div id="forward_operations">
                 <div id="received_operations"
-                     class="order_operation {if !(   $order->get('Purchase Order State')=='Submitted'  or  $order->get('Purchase Order State')=='Send') }hide{/if}">
+                     class="order_operation">
                     <div class="square_button right" style="padding:0;margin:0;position:relative;top:0px"
                          title="{t}Input delivery note{/t}">
                         <i class="fa fa-plus" aria-hidden="true" onclick="show_create_delivery()"></i>
@@ -366,15 +377,75 @@
         </div>
     </div>
     <div class="block " style="align-items: stretch;flex: 1 ">
+
+
+
+
+
+
         <table border="0" class="info_block">
-            <tr>
-                <td class="label">{t}Items cost{/t} ({$order->get('Purchase Order Currency Code')})</td>
+
+
+
+            <tr style="height: 16px" class="{if $account->get('Account Currency')==$order->get('Purchase Order Currency Code')}hide{/if}">
+                <td class="small" colspan="2" style="border-bottom:1px solid #ccc;text-align: center">
+                    {t}Supplier invoice currency{/t} <b>{$order->get('Currency Code')}</b>
+                </td>
+
+
+
+            </tr>
+
+
+            <tr style="border-bottom:1px solid #eee;" >
+                <td class="label">{t}Items{/t} </td>
                 <td class="aright Purchase_Order_Items_Net_Amount">{$order->get('Items Net Amount')}</td>
             </tr>
-            <tr class="{if $account->get('Account Currency')==$order->get('Purchase Order Currency Code')}hide{/if}">
-                <td colspan="2"
-                    class="Purchase_Order_Items_Net_Amount_Account_Currency aright ">{$order->get('Items Net Amount Account Currency')}</td>
+
+            <tr  >
+                <td class="label">{t}Extra costs{/t} </td>
+                <td class="aright Purchase_Order_Extra_Costs_Amount">{$order->get('Extra Cost Amount')}</td>
             </tr>
+
+            <tr style="border-bottom:1px solid #ccc;border-top:1px solid #ccc;" >
+                <td class="label">{t}Total{/t} </td>
+                <td class="aright Purchase_Order_Total_Amount">{$order->get('Total Amount')}</td>
+            </tr>
+
+
+            <tbody class="{if $account->get('Account Currency')==$order->get('Supplier Delivery Currency Code')}hide{/if}">
+
+            <tr style="height: 16px" class="{if $account->get('Account Currency')==$order->get('Supplier Delivery Currency Code')}hide{/if}">
+                <td class="small" colspan="2" style="border-bottom:1px solid #ccc;text-align: center">
+                    1 {$account->get('Currency Code')}={math equation="1/x" x=$order->get('Currency Exchange') format="%.5f"} {$order->get('Supplier Delivery Currency Code')}
+
+                </td>
+
+
+
+            </tr>
+
+            <tr  >
+                <td class="label">{t}Subtotal{/t}</td>
+                <td class="aright Purchase_Order_AC_Subtotal_Amount">{$order->get('AC Subtotal Amount')}</td>
+            </tr>
+            <tr style="border-top:1px solid #eee;" >
+                <td class="label">{t}Extra costs{/t}</td>
+                <td class="aright Purchase_Order_AC_Extra_Costs_Amount">{$order->get('AC Extra Costs Amount')}</td>
+            </tr>
+
+
+            <tr style="border-top:1px solid #ccc;" >
+
+                <td class="label">{t}Total{/t}</td>
+
+
+                <td class="Purchase_Order_AC_Total_Amount aright ">{$order->get('AC Total Amount')}</td>
+            </tr>
+
+            </tbody>
+
+
         </table>
         <div style="clear:both">
         </div>
@@ -382,9 +453,18 @@
     <div style="clear:both">
     </div>
 </div>
+
+<style>
+
+
+    </style>
+
 <div id="new_delivery" class="table_new_fields hide">
-    <div class="invisible" style="align-items: stretch;flex: 1;padding:20px 5px;">
-        <i key="" class="far fa-square fa-fw button" aria-hidden="true"></i> <span>{t}Select all{/t}</span>
+    <div style="align-items: stretch;flex: 1;padding:20px 5px;">
+
+
+
+
     </div>
     <div style="align-items: stretch;flex: 1;padding:10px 20px;border-left:1px solid #eee">
         <table border="0" style="width:50%;float:right;xborder-left:1px solid #ccc;width:100%;">
@@ -403,73 +483,3 @@
         </table>
     </div>
 </div>
-<script>
-
-
-
-
-
-    $('#new_delivery').on('input propertychange', '.new_delivery_field', function (evt) {
-
-
-        var field_id = $(this).attr('id')
-
-        if (field_id == 'delivery_number') {
-
-            $(this).closest('table').find('td.buttons i').addClass('fa-spinner fa-spin').removeClass('fa-cloud')
-
-
-            var object_data = JSON.parse(atob($('#object_showcase div.order').data("object")))
-            console.log(object_data)
-            var value = $(this).val()
-
-            var parent = object_data.order_parent
-            var parent_key = object_data.order_parent_key
-            var object = 'Supplier Delivery'
-            var key = ''
-            var field = 'Supplier Delivery Public ID'
-
-            if (value == '') {
-                $(this).closest('table').find('td.buttons').removeClass('changed')
-            } else {
-
-                $(this).closest('table').find('td.buttons').addClass('changed')
-                var request = '/ar_validation.php?tipo=check_for_duplicates&parent=' + parent + '&parent_key=' + parent_key + '&object=' + object + '&key=' + key + '&field=' + field + '&value=' + value + '&metadata=' + JSON.stringify({
-                            option: 'creating_dn_from_po'
-                        })
-
-                console.log(request)
-
-
-                $.getJSON(request, function (data) {
-
-
-                    $('#' + field_id).removeClass('waiting invalid valid')
-                    $('#' + field_id).closest('table').find('td.buttons').removeClass('waiting invalid valid')
-
-                    $('#' + field_id).closest('table').find('td.buttons i').removeClass('fa-spinner fa-spin').addClass('fa-cloud')
-
-
-                    if (data.state == 200) {
-
-                        var validation = data.validation
-                        var msg = data.msg
-
-                    } else {
-                        var validation = 'invalid'
-                        var msg = "Error, can't verify value on server"
-
-                    }
-                    $('#' + field_id).closest('table').find('td.buttons').addClass(validation)
-
-
-                })
-            }
-
-
-        }
-
-    });
-
-
-</script> 

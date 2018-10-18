@@ -103,7 +103,7 @@ switch ($tipo) {
 function confirm_item($db, $data, $editor) {
 
     $sql = sprintf(
-        'select POTF.`Purchase Order Key`,`Agent Supplier Purchase Order Key`,`Purchase Order Quantity`,`Supplier Part Unit Cost`,`Supplier Part Reference`,`Metadata`,`Agent Supplier Purchase Order Key`,`Purchase Order Transaction Fact Key`,`Purchase Order Parent Key`,`Purchase Order Parent`,POTF.`Purchase Order Key`,`Purchase Order Transaction State` 
+        'select POTF.`Purchase Order Key`,`Agent Supplier Purchase Order Key`,`Purchase Order Submitted Units`,`Supplier Part Unit Cost`,`Supplier Part Reference`,`Metadata`,`Agent Supplier Purchase Order Key`,`Purchase Order Transaction Fact Key`,`Purchase Order Parent Key`,`Purchase Order Parent`,POTF.`Purchase Order Key`,`Purchase Order Transaction State` 
       from `Purchase Order Transaction Fact` POTF left join `Purchase Order Dimension` PO on (PO.`Purchase Order Key`=POTF.`Purchase Order Key`) 
       left join `Supplier Part Dimension` SPD on (SPD.`Supplier Part Key`=POTF.`Supplier Part Key`) 
       where `Purchase Order Transaction Fact Key`=%d  ',
@@ -146,9 +146,7 @@ function confirm_item($db, $data, $editor) {
 
 
             list(
-                $back_operations, $forward_operations, $state
-
-                ) = get_agent_purchase_order_transaction_data($row);
+                $back_operations, $forward_operations, $state) = get_agent_purchase_order_transaction_data($row);
 
             $response = array(
                 'state'            => 200,
@@ -187,7 +185,7 @@ function unconfirm_item($db, $data, $editor) {
 
 
     $sql = sprintf(
-        'select POTF.`Purchase Order Key`,`Agent Supplier Purchase Order Key`,`Purchase Order Quantity`,`Supplier Part Unit Cost`,`Supplier Part Reference`,`Metadata`,`Agent Supplier Purchase Order Key`,`Purchase Order Transaction Fact Key`,`Purchase Order Parent Key`,`Purchase Order Parent`,POTF.`Purchase Order Key`,`Purchase Order Transaction State` 
+        'select POTF.`Purchase Order Key`,`Agent Supplier Purchase Order Key`,`Purchase Order Submitted Units`,`Supplier Part Unit Cost`,`Supplier Part Reference`,`Metadata`,`Agent Supplier Purchase Order Key`,`Purchase Order Transaction Fact Key`,`Purchase Order Parent Key`,`Purchase Order Parent`,POTF.`Purchase Order Key`,`Purchase Order Transaction State` 
       from `Purchase Order Transaction Fact` POTF left join `Purchase Order Dimension` PO on (PO.`Purchase Order Key`=POTF.`Purchase Order Key`) 
       left join `Supplier Part Dimension` SPD on (SPD.`Supplier Part Key`=POTF.`Supplier Part Key`) 
       where `Purchase Order Transaction Fact Key`=%d  ',
@@ -272,7 +270,7 @@ function update_item_problems($db, $data, $editor) {
 
 
     $sql = sprintf(
-        'select POTF.`Purchase Order Key`,`Agent Supplier Purchase Order Key`,`Purchase Order Quantity`,`Supplier Part Unit Cost`,`Supplier Part Reference`,`Metadata`,`Agent Supplier Purchase Order Key`,`Purchase Order Transaction Fact Key`,`Purchase Order Parent Key`,`Purchase Order Parent`,POTF.`Purchase Order Key`,`Purchase Order Transaction State` 
+        'select POTF.`Purchase Order Key`,`Agent Supplier Purchase Order Key`,`Purchase Order Submitted Units`,`Supplier Part Unit Cost`,`Supplier Part Reference`,`Metadata`,`Agent Supplier Purchase Order Key`,`Purchase Order Transaction Fact Key`,`Purchase Order Parent Key`,`Purchase Order Parent`,POTF.`Purchase Order Key`,`Purchase Order Transaction State` 
       from `Purchase Order Transaction Fact` POTF left join `Purchase Order Dimension` PO on (PO.`Purchase Order Key`=POTF.`Purchase Order Key`) 
       left join `Supplier Part Dimension` SPD on (SPD.`Supplier Part Key`=POTF.`Supplier Part Key`) 
       where `Purchase Order Transaction Fact Key`=%d  ',
@@ -390,7 +388,7 @@ function update_item_problems($db, $data, $editor) {
 function mark_as_received($db, $data, $editor) {
 
     $sql = sprintf(
-        'select POTF.`Purchase Order Key`,`Agent Supplier Purchase Order Key`,`Purchase Order Quantity`,`Supplier Part Unit Cost`,`Supplier Part Reference`,`Metadata`,`Agent Supplier Purchase Order Key`,`Purchase Order Transaction Fact Key`,`Purchase Order Parent Key`,`Purchase Order Parent`,POTF.`Purchase Order Key`,`Purchase Order Transaction State` 
+        'select POTF.`Purchase Order Key`,`Agent Supplier Purchase Order Key`,`Purchase Order Submitted Units`,`Supplier Part Unit Cost`,`Supplier Part Reference`,`Metadata`,`Agent Supplier Purchase Order Key`,`Purchase Order Transaction Fact Key`,`Purchase Order Parent Key`,`Purchase Order Parent`,POTF.`Purchase Order Key`,`Purchase Order Transaction State` 
       from `Purchase Order Transaction Fact` POTF left join `Purchase Order Dimension` PO on (PO.`Purchase Order Key`=POTF.`Purchase Order Key`) 
       left join `Supplier Part Dimension` SPD on (SPD.`Supplier Part Key`=POTF.`Supplier Part Key`) 
       where `Purchase Order Transaction Fact Key`=%d  ',
@@ -476,7 +474,7 @@ function mark_as_received($db, $data, $editor) {
 function unmark_as_received($db, $data, $editor) {
 
     $sql = sprintf(
-        'select POTF.`Purchase Order Key`,`Agent Supplier Purchase Order Key`,`Purchase Order Quantity`,`Supplier Part Unit Cost`,`Supplier Part Reference`,`Metadata`,`Agent Supplier Purchase Order Key`,`Purchase Order Transaction Fact Key`,`Purchase Order Parent Key`,`Purchase Order Parent`,POTF.`Purchase Order Key`,`Purchase Order Transaction State` 
+        'select POTF.`Purchase Order Key`,`Agent Supplier Purchase Order Key`,`Purchase Order Submitted Units`,`Supplier Part Unit Cost`,`Supplier Part Reference`,`Metadata`,`Agent Supplier Purchase Order Key`,`Purchase Order Transaction Fact Key`,`Purchase Order Parent Key`,`Purchase Order Parent`,POTF.`Purchase Order Key`,`Purchase Order Transaction State` 
       from `Purchase Order Transaction Fact` POTF left join `Purchase Order Dimension` PO on (PO.`Purchase Order Key`=POTF.`Purchase Order Key`) 
       left join `Supplier Part Dimension` SPD on (SPD.`Supplier Part Key`=POTF.`Supplier Part Key`) 
       where `Purchase Order Transaction Fact Key`=%d  ',

@@ -20,9 +20,6 @@ if (!$purchase_order->id) {
 }
 
 
-
-
-
 $mpdf = new \Mpdf\Mpdf(
     [
         'tempDir'       => __DIR__.'/../server_files/pdf_tmp',
@@ -35,8 +32,6 @@ $mpdf = new \Mpdf\Mpdf(
         'margin_footer' => 10
     ]
 );
-
-
 
 
 $mpdf->useOnlyCoreFonts = true;    // false is default
@@ -76,7 +71,7 @@ $_data = array(
         'tab'        => 'supplier.order.items',
         'parent'     => 'purchase_order',
         'parent_key' => $purchase_order->id,
-        'f_field'       => 'code',
+        'f_field'    => 'code',
     ),
     'nr'         => 1000000,
     'page'       => 1
@@ -89,66 +84,41 @@ $group_by = '';
 include_once 'prepare_table/init.php';
 
 
-$sql
-    = "select $fields from $table $where $wheref order by $order $order_direction limit $start_from,$number_results";
+$sql = "select $fields from $table $where $wheref order by $order $order_direction limit $start_from,$number_results";
 
 
 $adata = array();
 
-$exchange = -1;
 
 $adata = array();
 
 if ($result = $db->query($sql)) {
     foreach ($result as $data) {
 
+        $units_per_carton= $data['Part Units Per Package'] * $data['Supplier Part Packages Per Carton'];
 
-        $quantity = number($data['Purchase Order Quantity']);
+        $items_qty = $data['Purchase Order Submitted Units'].'<span class="small discreet">u.</span> | ';
 
+        if ($data['Purchase Order Submitted Units'] % $data['Part Units Per Package'] != 0) {
+            $items_qty .= '<span class="error">'.number($data['Purchase Order Submitted Units'] / $data['Part Units Per Package'], 3).'<span class="small discreet">sko.</span></span> | ';
 
-        $units_per_carton = $data['Part Units Per Package'] * $data['Supplier Part Packages Per Carton'];
-
-
-        $subtotals = sprintf('<span  class="subtotals" >');
-        if ($data['Purchase Order Quantity'] > 0) {
-
-
-            $amount = money(
-                $data['Purchase Order Quantity'] * $units_per_carton * $data['Supplier Part Historic Unit Cost'], $purchase_order->get('Purchase Order Currency Code')
-            );
-
-
-            $subtotals .= sprintf(
-                _("%d units"), ($data['Purchase Order Quantity'] * $data['Part Units Per Package'] * $data['Supplier Part Packages Per Carton'])
-            );
-
-            if ($data['Part Package Weight'] > 0) {
-                $subtotals .= ' '.weight(
-                        $data['Part Package Weight'] * $data['Purchase Order Quantity'] * $data['Supplier Part Packages Per Carton']
-                    );
-            }
-            if ($data['Supplier Part Carton CBM'] > 0) {
-                $subtotals .= ' '.number(
-                        $data['Purchase Order Quantity'] * $data['Supplier Part Carton CBM']
-                    ).' m³';
-            }
-        }
-        $subtotals .= '</span>';
-
-
-        if (!$data['Supplier Delivery Key']) {
-
-            $delivery_qty = $data['Purchase Order Quantity'];
-
-            $delivery_quantity = sprintf(
-                '<span class="delivery_quantity" id="delivery_quantity_%d" key="%d" item_key="%d" item_historic_key=%d on="1" ><input class="order_qty width_50" value="%s" ovalue="%s"> <i onClick="save_item_qty_change(this)" class="fa  fa-minus fa-fw button" aria-hidden="true"></i></span>',
-                $data['Purchase Order Transaction Fact Key'], $data['Purchase Order Transaction Fact Key'], $data['Supplier Part Key'], $data['Supplier Part Historic Key'], $delivery_qty + 0,
-                $delivery_qty + 0
-            );
         } else {
-            $delivery_quantity = number($data['Supplier Delivery Quantity']);
+            $items_qty .= number($data['Purchase Order Submitted Units'] / $data['Part Units Per Package'], 3).'<span class="small discreet">sko.</span> | ';
 
         }
+
+
+        if ($data['Purchase Order Submitted Units'] % ($data['Part Units Per Package'] * $data['Supplier Part Packages Per Carton']) != 0) {
+            $items_qty .= '<span class="error">'.number($data['Purchase Order Submitted Units'] / $data['Part Units Per Package'] / $data['Supplier Part Packages Per Carton'], 3).'<span title="'._('Cartons').'" class="small discreet">C.</span></span>';
+
+        } else {
+            $items_qty .= number($data['Purchase Order Submitted Units'] / $data['Part Units Per Package'] / $data['Supplier Part Packages Per Carton'], 3).'<span title="'._('Cartons').'" class="small discreet">C.</span>';
+
+        }
+
+
+        $items_qty = '<span class="submitted_items_qty" onclick="use_submitted_qty_in_delivery(this,'.$data['Purchase Order Submitted Units'].')">'.$items_qty.'</span>';
+
 
         $description = $data['Supplier Part Description'].' @'.money(
                 $data['Supplier Part Historic Unit Cost'], $purchase_order->get('Purchase Order Currency Code')
@@ -182,37 +152,15 @@ if ($result = $db->query($sql)) {
         $description .= '</span>';
 
 
+        $amount = money($data['Purchase Order Submitted Units'] * $data['Supplier Part Unit Cost'], $purchase_order->get('Purchase Order Currency Code'));
+
+
         $adata[] = array(
 
-            'id'                => (integer)$data['Purchase Order Transaction Fact Key'],
-            'item_index'        => $data['Purchase Order Item Index'],
-            'parent_key'        => $purchase_order->get(
-                'Purchase Order Parent Key'
-            ),
-            'parent_type'       => strtolower(
-                $purchase_order->get('Purchase Order Parent')
-            ),
-            'supplier_part_key' => (integer)$data['Supplier Part Key'],
-            'supplier_key'      => (integer)$data['Supplier Key'],
-            'checkbox'          => sprintf(
-                '<i key="%d" class="invisible far fa-square fa-fw button" aria-hidden="true"></i>', $data['Purchase Order Transaction Fact Key']
-            ),
-            'operations'        => sprintf(
-                '<i key="%d" class="fa fa-fw fa-truck fa-flip-horizontal button" aria-hidden="true" onClick="change_on_delivery(this)"></i>', $data['Purchase Order Transaction Fact Key']
-            ),
-            'reference'         => $data['Supplier Part Reference'],
-            'description'       => $description,
-            'quantity'          => sprintf(
-                '<span    data-settings=\'{"field": "Purchase Order Quantity", "transaction_key":"%d","item_key":%d, "item_historic_key":%d ,"on":1 }\'   ><input class="order_qty width_50" value="%s" ovalue="%s"> <i onClick="save_item_qty_change(this)" class="fa  fa-plus fa-fw button" aria-hidden="true"></i></span>',
-                $data['Purchase Order Transaction Fact Key'], $data['Supplier Part Key'], $data['Supplier Part Historic Key'], $data['Purchase Order Quantity'] + 0,
-                $data['Purchase Order Quantity'] + 0
-            ),
-            'delivery_quantity' => $delivery_quantity,
-            'subtotals'         => $subtotals,
-            'ordered'           => number($data['Purchase Order Quantity']),
-            'supplier_key'      => $data['Supplier Key'],
-            'supplier'          => $data['Supplier Code'],
-            'amount'            => $amount
+            'reference'   => $data['Supplier Part Reference'],
+            'description' => $description,
+            'ordered'     => $items_qty,
+            'amount'      => $amount
 
 
         );
@@ -228,9 +176,11 @@ if ($result = $db->query($sql)) {
 $smarty->assign('transactions', $adata);
 
 $html = $smarty->fetch('supplier.order.pdf.tpl');
+
+//print $html;
+
 $mpdf->WriteHTML($html);
 $mpdf->Output();
-
 
 
 ?>

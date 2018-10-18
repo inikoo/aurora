@@ -1644,7 +1644,7 @@ class SupplierPart extends DB_Table {
 
             $purchase_order_keys = array();
             $sql                 = sprintf(
-                "SELECT `Purchase Order Transaction Fact Key`,PO.`Purchase Order Key`,`Purchase Order Quantity` FROM `Purchase Order Transaction Fact` POTF  LEFT JOIN `Purchase Order Dimension` PO ON (POTF.`Purchase Order Key`=PO.`Purchase Order Key`) WHERE `Supplier Part Key`=%d  AND `Purchase Order Locked`='No'  ",
+                "SELECT `Purchase Order Transaction Fact Key`,PO.`Purchase Order Key`,`Purchase Order Ordering Units` FROM `Purchase Order Transaction Fact` POTF  LEFT JOIN `Purchase Order Dimension` PO ON (POTF.`Purchase Order Key`=PO.`Purchase Order Key`) WHERE `Supplier Part Key`=%d  AND `Purchase Order Locked`='No'  ",
                 $this->id
             );
             //print $sql;
@@ -1662,15 +1662,11 @@ class SupplierPart extends DB_Table {
 						 `Purchase Order CBM`=%f,
 						 `Purchase Order Weight`=%f,
 						 `Purchase Order Net Amount`=%.2f
-						  WHERE `Purchase Order Transaction Fact Key`=%d', $this->get('Supplier Part Historic Key'), $row['Purchase Order Quantity'] *
-                        $this->get('Supplier Part Carton CBM'),
-                        $row['Purchase Order Quantity'] *
-                        $this->get('Supplier Part Packages Per Carton') *
-                        floatval($this->get('Part Package Weight')),
-                        $row['Purchase Order Quantity'] *
-                        $units_per_carton *
-                        $this->get('Supplier Part Unit Cost'
-                        ),
+						  WHERE `Purchase Order Transaction Fact Key`=%d',
+                        $this->get('Supplier Part Historic Key'),
+                        $row['Purchase Order Ordering Units'] * $this->get('Supplier Part Carton CBM') / $this->get('Supplier Part Packages Per Carton')/ $this->part->get('Part Units Per Package') ,
+                        $row['Purchase Order Ordering Units'] /$this->part->get('Part Units Per Package')  * floatval($this->get('Part Package Weight')),
+                        $row['Purchase Order Ordering Units'] * $units_per_carton ,
 
                         $row['Purchase Order Transaction Fact Key']
                     );
@@ -1829,32 +1825,100 @@ class SupplierPart extends DB_Table {
 
     function get_next_deliveries_data() {
 
-
+        $next_delivery_time   = 0;
         $next_deliveries_data = array();
 
 
         $sql = sprintf(
-            'SELECT  `Supplier Delivery Parent`,`Supplier Delivery Parent Key`,`Supplier Delivery Quantity`-`Supplier Delivery Placed Quantity` AS qty,POTF.`Supplier Delivery Key`,`Supplier Delivery Public ID` FROM `Purchase Order Transaction Fact` POTF LEFT JOIN `Supplier Delivery Dimension` PO  ON (PO.`Supplier Delivery Key`=POTF.`Supplier Delivery Key`)  WHERE POTF.`Supplier Part Key`=%d  AND  POTF.`Supplier Delivery Key` IS NOT NULL  AND (`Supplier Delivery Transaction Placed`!="Yes"  OR `Supplier Delivery Transaction Placed` IS NULL)  ',
+            'SELECT  `Supplier Delivery Parent`,`Supplier Delivery Parent Key`,`Supplier Delivery Transaction State`,`Purchase Order Key`,
+            `Supplier Delivery Units`,`Supplier Delivery Checked Units` ,ifnull(`Supplier Delivery Placed Units`,0) AS placed,
+              POTF.`Supplier Delivery Key`,`Supplier Delivery Public ID` ,`Part Units Per Package`,`Supplier Delivery State`
+            FROM `Purchase Order Transaction Fact` POTF LEFT JOIN 
+            `Supplier Delivery Dimension` PO  ON (PO.`Supplier Delivery Key`=POTF.`Supplier Delivery Key`)  LEFT JOIN 
+            `Supplier Part Dimension` SP on (POTF.`Supplier Part Key`=SP.`Supplier Part Key`) left join 
+                `Part Dimension` Pa on (SP.`Supplier Part Part SKU`=Pa.`Part SKU`)
+            
+            
+            WHERE POTF.`Supplier Part Key`=%d  AND  POTF.`Supplier Delivery Key` IS NOT NULL  AND `Supplier Delivery Transaction State` in ("InProcess","Dispatched","Received","Checked") ',
             $this->id
         );
+
 
         if ($result = $this->db->query($sql)) {
             foreach ($result as $row) {
 
-                if ($row['qty'] > 0) {
-                    $next_deliveries_data[] = array(
-                        'type'           => 'delivery',
-                        'qty'            => $row['qty'],
-                        'date'           => '',
-                        'formatted_link' => sprintf(
-                            '<span class="link" onclick="change_view(\'%s/%d/delivery/%d\')"><i class="fa fa-truck" aria-hidden="true"></i> %s</span>', strtolower($row['Supplier Delivery Parent']), $row['Supplier Delivery Parent Key'], $row['Supplier Delivery Key'],
-                            $row['Supplier Delivery Public ID']
-                        ),
-                        'link'           => sprintf('%s/%d/delivery/%d', strtolower($row['Supplier Delivery Parent']), $row['Supplier Delivery Parent Key'], $row['Supplier Delivery Key']),
-                        'order_id'       => $row['Supplier Delivery Public ID']
-                    );
-                }
 
+
+                // print_r($row);
+
+
+                if ($row['Supplier Delivery Checked Units'] >0 or $row['Supplier Delivery Checked Units']=='') {
+
+
+
+                    if($row['Supplier Delivery Checked Units'] ==''){
+                        $raw_units_qty=$row['Supplier Delivery Units'];
+                    }else{
+
+
+                        $raw_units_qty=$row['Supplier Delivery Checked Units']-$row['placed'];;
+                    }
+
+
+
+                    if ($raw_units_qty > 0) {
+
+                        $_next_delivery_time = strtotime('tomorrow');
+                        $raw_skos_qty        = $raw_units_qty / $row['Part Units Per Package'];
+
+
+                        switch ($row['Supplier Delivery Transaction State']) {
+                            case 'InProcess':
+                                $state = sprintf('%s', _('In Process'));
+                                break;
+                            case 'Consolidated':
+                                $state = sprintf('%s', _('Consolidated'));
+                                break;
+                            case 'Dispatched':
+                                $state = sprintf('%s', _('Dispatched'));
+                                break;
+                            case 'Received':
+                                $state = sprintf('%s', _('Received'));
+                                break;
+                            case 'Checked':
+                                $state = sprintf('%s', _('Checked'));
+                                break;
+
+
+                            default:
+                                $state = $row['Supplier Delivery State'];
+                                break;
+                        }
+
+                        $next_deliveries_data[] = array(
+                            'type'           => 'delivery',
+                            'qty'            => '+'.number($raw_skos_qty),
+                            'raw_sko_qty'    => $raw_skos_qty,
+                            'raw_units_qty'  => $raw_units_qty,
+                            'date'           => '',
+                            'formatted_link' => sprintf(
+                                '<i class="fal fa-truck fa-fw" ></i> <i style="visibility: hidden" class="fal fa-truck fa-fw" ></i> <span class="link" onclick="change_view(\'%s/%d/delivery/%d\')"> %s</span>', strtolower($row['Supplier Delivery Parent']),
+                                $row['Supplier Delivery Parent Key'], $row['Supplier Delivery Key'], $row['Supplier Delivery Public ID']
+                            ),
+                            'link'           => sprintf('%s/%d/delivery/%d', strtolower($row['Supplier Delivery Parent']), $row['Supplier Delivery Parent Key'], $row['Supplier Delivery Key']),
+                            'order_id'       => $row['Supplier Delivery Public ID'],
+                            'formatted_state'          => '<span class=" italic">'.$row['Supplier Delivery Transaction State'].'</span>',
+                            'state'          => $state,
+
+                            'po_key'         => $row['Purchase Order Key']
+                        );
+
+
+                        if ($_next_delivery_time > $next_delivery_time) {
+                            $next_delivery_time = $_next_delivery_time;
+                        }
+                    }
+                }
             }
         } else {
             print_r($error_info = $this->db->errorInfo());
@@ -1864,34 +1928,73 @@ class SupplierPart extends DB_Table {
 
 
         $sql = sprintf(
-            'SELECT POTF.`Purchase Order Transaction State`,`Purchase Order Quantity`,`Supplier Delivery Key` ,`Purchase Order Estimated Receiving Date`,`Purchase Order Public ID`,POTF.`Purchase Order Key` FROM `Purchase Order Transaction Fact` POTF LEFT JOIN `Purchase Order Dimension` PO  ON (PO.`Purchase Order Key`=POTF.`Purchase Order Key`)  WHERE `Supplier Part Key`=%d  AND  POTF.`Supplier Delivery Key` IS NULL AND POTF.`Purchase Order Transaction State` NOT IN ("Placed","Cancelled") ',
+            'SELECT `Part Units Per Package`,POTF.`Purchase Order Transaction State`,`Purchase Order Ordering Units`,`Purchase Order Submitted Units`,`Supplier Delivery Key` ,`Purchase Order Estimated Receiving Date`,`Purchase Order Public ID`,POTF.`Purchase Order Key` 
+FROM `Purchase Order Transaction Fact` POTF LEFT JOIN `Purchase Order Dimension` PO  ON (PO.`Purchase Order Key`=POTF.`Purchase Order Key`)   LEFT JOIN 
+            `Supplier Part Dimension` SP on (POTF.`Supplier Part Key`=SP.`Supplier Part Key`) left join 
+                `Part Dimension` Pa on (SP.`Supplier Part Part SKU`=Pa.`Part SKU`)
+
+
+WHERE POTF.`Supplier Part Key`=%d  AND  POTF.`Supplier Delivery Key` IS NULL AND POTF.`Purchase Order Transaction State` NOT IN ("Placed","Cancelled") ',
             $this->id
         );
+
+
 
         if ($result = $this->db->query($sql)) {
             foreach ($result as $row) {
 
 
                 if ($row['Purchase Order Transaction State'] == 'InProcess') {
-                    $date = '<span class="very_discreet italic">'._('Draft').'</span>';
-                    $link = sprintf('<span class="link discreet" onclick="change_view(\'suppliers/order/%d\')"><i class="fa fa-clipboard" aria-hidden="true"></i> %s</span>', $row['Purchase Order Key'], $row['Purchase Order Public ID']);
-                    $qty  = '<span class="very_discreet italic">+'.number($row['Purchase Order Quantity']).'</span>';
+
+                    $raw_units_qty = $row['Purchase Order Ordering Units'];
+                    $raw_skos_qty  = $raw_units_qty / $row['Part Units Per Package'];
+
+                    $_next_delivery_time = 0;
+                    $date='';
+                    $formatted_state                = '<span class="very_discreet italic">'._('Draft').'</span>';
+                    $link                = sprintf(
+                        '<i class="fal fa-fw  fa-clipboard" ></i> <i class="fal fa-fw  fa-seedling" title="%s" ></i> <span class="link discreet" onclick="change_view(\'suppliers/order/%d\')"> %s</span>', _('In process'), $row['Purchase Order Key'],
+                        $row['Purchase Order Public ID']
+                    );
+                    $qty                 = '<span class="very_discreet italic">+'.number($raw_skos_qty).'</span>';
 
                 } else {
-                    $date = strftime("%e %b %y", strtotime($row['Purchase Order Estimated Receiving Date'].' +0:00'));
-                    $link = sprintf(
-                        '<span class="link" onclick="change_view(\'suppliers/order/%d\')"><i class="fa fa-clipboard" aria-hidden="true"></i> %s</span> <i class="fa fa-paper-plane" aria-hidden="true"></i>', $row['Purchase Order Key'], $row['Purchase Order Public ID']
+
+                    $raw_units_qty = $row['Purchase Order Submitted Units'];
+                    $raw_skos_qty  = $raw_units_qty / $row['Part Units Per Package'];
+
+                    $_next_delivery_time = strtotime($row['Purchase Order Estimated Receiving Date'].' +0:00');
+                    $date                = strftime("%e %b %y", strtotime($row['Purchase Order Estimated Receiving Date'].' +0:00'));
+
+                    $formatted_state                = strftime("%e %b %y", strtotime($row['Purchase Order Estimated Receiving Date'].' +0:00'));
+                    $link                = sprintf(
+                        '<i class="fal fa-fw  fa-clipboard" ></i> <i class="fal fa-fw  fa-paper-plane" title="%s" ></i> <span class="link" onclick="change_view(\'suppliers/order/%d\')">  %s</span>', _('Submitted'), $row['Purchase Order Key'],
+                        $row['Purchase Order Public ID']
                     );
-                    $qty  = '+'.number($row['Purchase Order Quantity']);
+                    $qty                 = '+'.number($raw_skos_qty);
                 }
 
 
                 $next_deliveries_data[] = array(
-                    'qty'  => $qty,
-                    'date' => $date,
+                    'type'          => 'po',
+                    'qty'           => $qty,
+                    'raw_sko_qty'   => $raw_skos_qty,
+                    'raw_units_qty' => $raw_units_qty,
+
+                    'date'           => $date,
+                    'formatted_state'          => $formatted_state,
+
                     'formatted_link' => $link,
+                    'link'           => sprintf('suppliers/order/%d', $row['Purchase Order Key']),
+                    'order_id'       => $row['Purchase Order Public ID'],
+                    'state'          => $row['Purchase Order Transaction State'],
+                    'po_key'         => $row['Purchase Order Key']
                 );
 
+
+                if ($_next_delivery_time > $next_delivery_time) {
+                    $next_delivery_time = $_next_delivery_time;
+                }
 
             }
         } else {
@@ -1899,6 +2002,9 @@ class SupplierPart extends DB_Table {
             print "$sql\n";
             exit;
         }
+
+
+
 
         return $next_deliveries_data;
 

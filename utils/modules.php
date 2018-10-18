@@ -4543,11 +4543,15 @@ $modules = array(
                         'label' => _('Items').' ('._('Costing').')',
                         'icon'  => 'bars'
                     ),
-
+                    'supplier.delivery.items_mismatch' => array(
+                        'label' => _('Under/Over delivered items'),
+                        'icon'  => 'box-open'
+                    ),
                     'supplier.delivery.items_done' => array(
                         'label' => _('Items'),
                         'icon'  => 'bars'
                     ),
+
 
                     'supplier.delivery.history' => array(
                         'label' => '',

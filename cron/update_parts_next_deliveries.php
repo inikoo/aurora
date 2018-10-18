@@ -11,8 +11,6 @@
 */
 
 require_once 'common.php';
-require_once 'class.Part.php';
-require_once 'class.Category.php';
 
 
 $sql = sprintf(
@@ -21,7 +19,7 @@ $sql = sprintf(
 
 if ($result = $db->query($sql)) {
     foreach ($result as $row) {
-        $part = new Part($row['Part SKU']);
+        $part =  get_object('Part',$row['Part SKU']);
         $part->update_next_deliveries_data();
 
     }
@@ -31,6 +29,11 @@ if ($result = $db->query($sql)) {
     exit;
 
 }
+
+
+
+
+
 
 
 ?>

@@ -80,8 +80,6 @@ $fields
 
 ";
 
-//( select Group_CONCAT(concat_ws('|',`Supplier Delivery Parent`,`Supplier Delivery Parent Key`,POTF.`Supplier Delivery Key`,`Supplier Delivery Public ID`,`Purchase Order Quantity`)) from `Purchase Order Transaction Fact` POTF LEFT JOIN `Supplier Delivery Dimension` PO  ON (PO.`Supplier Delivery Key`=POTF.`Supplier Delivery Key`)  where POTF.`Supplier Part Key`=SP.`Supplier Part Key`  and  POTF.`Supplier Delivery Key` is not null and  `Supplier Delivery Transaction Placed`!='Yes'     ) in_deliveries,
-//( select Group_CONCAT(concat_ws('|',POTF.`Purchase Order Key` ,`Purchase Order Public ID`,`Purchase Order Quantity`,POTF.`Purchase Order Transaction State`)) from `Purchase Order Transaction Fact` POTF  LEFT JOIN `Purchase Order Dimension` PO  ON (PO.`Purchase Order Key`=POTF.`Purchase Order Key`)  where POTF.`Supplier Part Key`=SP.`Supplier Part Key`  and  POTF.`Supplier Delivery Key` is null and   POTF.`Purchase Order Transaction State` not in ("Placed","Cancelled")    ) in_purchase_orders
 
 
 ?>

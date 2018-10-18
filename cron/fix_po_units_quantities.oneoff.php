@@ -46,13 +46,13 @@ if ($result = $db->query($sql)) {
         $sql = sprintf('select * from `Supplier Part Historic Dimension` where `Supplier Part Historic Key`=%d ', $row['Supplier Part Historic Key']);
         if ($result2 = $db->query($sql)) {
             if ($row2 = $result2->fetch()) {
-               // print_r($row2);
-                $submitted_units_per_sko=$row2['Supplier Part Historic Units Per Package'];
+                // print_r($row2);
+                $submitted_units_per_sko = $row2['Supplier Part Historic Units Per Package'];
 
-                $submitted_skos_per_carton=$row2['Supplier Part Historic Packages Per Carton'];
-                $submited_unit_cost=$row2['Supplier Part Historic Unit Cost'];
+                $submitted_skos_per_carton = $row2['Supplier Part Historic Packages Per Carton'];
+                $submited_unit_cost        = $row2['Supplier Part Historic Unit Cost'];
 
-            }else{
+            } else {
                 exit('ups error');
             }
         } else {
@@ -60,8 +60,127 @@ if ($result = $db->query($sql)) {
             print "$sql\n";
             exit;
         }
+        $purchase_order = get_object('Purchase Order', $row['Purchase Order Key']);
+        if ($purchase_order->get('State Index') != 10) {
+            $sql = sprintf(
+                'update `Purchase Order Transaction Fact` set `Purchase Order Submitted Units Per SKO`=%d,`Purchase Order Submitted SKOs Per Carton`=%d ,`Purchase Order Submitted Unit Cost`=%f where `Purchase Order Transaction Fact Key`=%d', $submitted_units_per_sko,
+                $submitted_skos_per_carton, $submited_unit_cost, $row['Purchase Order Transaction Fact Key']
 
-       // exit;
+            );
+
+            $db->exec($sql);
+
+        }
+
+        /*
+        // too complicated, what if is half placed will fail in that case
+        if($row['Supplier Delivery Placed Quantity']>0){
+            print_r($row);
+
+            $metadata=json_decode($row['Metadata'],true);
+            print_r($metadata);
+
+            exit;
+
+
+
+            if(isset($metadata['placement_data']) and is_array($metadata['placement_data']) ){
+                $skos_placed=0;
+
+                foreach ($metadata['placement_data'] as $_data){
+                    $skos_placed+=$_data['qty'];
+                }
+
+
+            }
+
+
+
+        }else{
+
+        }
+        */
+
+
+        if($row['Purchase Order Quantity']!=''){
+            $sql = sprintf(
+                'update `Purchase Order Transaction Fact` set `Purchase Order Ordering Units`=%d  where `Purchase Order Transaction Fact Key`=%d',
+
+                $row['Purchase Order Quantity'] * $supplier_part->get('Supplier Part Packages Per Carton') * $supplier_part->part->get('Part Units Per Package'),
+
+                $row['Purchase Order Transaction Fact Key']
+
+            );
+
+            $db->exec($sql);
+        }
+
+        if($row['Purchase Order Quantity']!='' and $purchase_order->get('State Index')>10){
+            $sql = sprintf(
+                'update `Purchase Order Transaction Fact` set `Purchase Order Submitted Units`=%d  where `Purchase Order Transaction Fact Key`=%d',
+
+                $row['Purchase Order Quantity'] * $supplier_part->get('Supplier Part Packages Per Carton') * $supplier_part->part->get('Part Units Per Package'),
+
+                $row['Purchase Order Transaction Fact Key']
+
+            );
+
+            $db->exec($sql);
+        }
+
+        $sql = sprintf(
+            'update `Purchase Order Transaction Fact` set `Supplier Delivery Units`=%d  where `Purchase Order Transaction Fact Key`=%d',
+
+            $row['Supplier Delivery Quantity'] * $supplier_part->get('Supplier Part Packages Per Carton') * $supplier_part->part->get('Part Units Per Package'),
+
+            $row['Purchase Order Transaction Fact Key']
+
+        );
+
+        $db->exec($sql);
+
+        if($row['Supplier Delivery Checked Quantity']!=''){
+            $sql = sprintf(
+                'update `Purchase Order Transaction Fact` set `Supplier Delivery Checked Units`=%d  where `Purchase Order Transaction Fact Key`=%d',
+
+                $row['Supplier Delivery Checked Quantity'] * $supplier_part->get('Supplier Part Packages Per Carton') * $supplier_part->part->get('Part Units Per Package'),
+
+                $row['Purchase Order Transaction Fact Key']
+
+            );
+
+            $db->exec($sql);
+        }
+
+
+        if($row['Supplier Delivery Checked Quantity']!=''){
+            $sql = sprintf(
+                'update `Purchase Order Transaction Fact` set `Supplier Delivery Checked Units`=%d  where `Purchase Order Transaction Fact Key`=%d',
+
+                $row['Supplier Delivery Checked Quantity'] * $supplier_part->get('Supplier Part Packages Per Carton') * $supplier_part->part->get('Part Units Per Package'),
+
+                $row['Purchase Order Transaction Fact Key']
+
+            );
+
+            $db->exec($sql);
+        }
+
+
+        if($row['Supplier Delivery Placed Quantity']!=''){
+            $sql = sprintf(
+                'update `Purchase Order Transaction Fact` set `Supplier Delivery Placed SKOs`=%f,  `Supplier Delivery Placed Units`=%d  where `Purchase Order Transaction Fact Key`=%d',
+                $row['Supplier Delivery Placed Quantity'] *$supplier_part->get('Supplier Part Packages Per Carton') ,
+                $row['Supplier Delivery Placed Quantity'] * $supplier_part->get('Supplier Part Packages Per Carton') * $supplier_part->part->get('Part Units Per Package'),
+
+                $row['Purchase Order Transaction Fact Key']
+
+            );
+
+            $db->exec($sql);
+        }
+
+        // exit;
     }
 } else {
     print_r($error_info = $db->errorInfo());

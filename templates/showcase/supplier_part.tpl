@@ -146,8 +146,8 @@
                     {foreach from=$supplier_part->get_next_deliveries_data() item=next_delivery }
                     <tr class="main ">
                         <td>{$next_delivery.formatted_link}</td>
-                        <td>{$next_delivery.date}</td>
-                        <td class="aright highlight">+{$next_delivery.qty}</td>
+                        <td>{$next_delivery.formatted_state}</td>
+                        <td class="aright highlight">{$next_delivery.qty}</td>
                     </tr>
                     {/foreach}
                 </table>

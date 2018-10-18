@@ -304,47 +304,93 @@ class Part extends Asset {
 
 
             $sql = sprintf(
-                'SELECT  `Supplier Part Packages Per Carton`,`Purchase Order Key`,`Purchase Order Transaction State`,`Supplier Delivery Parent`,`Supplier Delivery Parent Key`,ifnull(`Supplier Delivery Quantity`,0) AS qty ,ifnull(`Supplier Delivery Placed Quantity`,0) AS placed,POTF.`Supplier Delivery Key`,`Supplier Delivery Public ID` FROM 
+                'SELECT  `Supplier Part Packages Per Carton`,`Purchase Order Key`,`Supplier Delivery Transaction State`,`Supplier Delivery Parent`,`Supplier Delivery Parent Key`,`Part Units Per Package`,
+                `Supplier Delivery Units`, `Supplier Delivery Checked Units`,
+                ifnull(`Supplier Delivery Placed Units`,0) AS placed,POTF.`Supplier Delivery Key`,`Supplier Delivery Public ID` FROM 
                 `Purchase Order Transaction Fact` POTF LEFT JOIN 
-                `Supplier Delivery Dimension` PO  ON (PO.`Supplier Delivery Key`=POTF.`Supplier Delivery Key`)  
-                 left join  `Supplier Part Dimension` SP on (POTF.`Supplier Part Key`=SP.`Supplier Part Key`)
-                WHERE POTF.`Supplier Part Key` IN (%s)  AND  POTF.`Supplier Delivery Key` IS NOT NULL AND  (`Supplier Delivery Transaction Placed`!="Yes"  OR `Supplier Delivery Transaction Placed` IS NULL)   ',
-                join($supplier_parts, ',')
+                `Supplier Delivery Dimension` PO  ON (PO.`Supplier Delivery Key`=POTF.`Supplier Delivery Key`)  left join  
+                `Supplier Part Dimension` SP on (POTF.`Supplier Part Key`=SP.`Supplier Part Key`) left join 
+                `Part Dimension` Pa on (SP.`Supplier Part Part SKU`=Pa.`Part SKU`)
+                WHERE POTF.`Supplier Part Key` IN (%s)  AND  POTF.`Supplier Delivery Key` IS NOT NULL AND `Supplier Delivery Transaction State` in ("InProcess","Dispatched","Received","Checked")
+                
+
+                
+                 ', join($supplier_parts, ',')
             );
 
 
             if ($result = $this->db->query($sql)) {
                 foreach ($result as $row) {
 
-                    //print_r($row);
-                    $qty = $row['qty'] - $row['placed'];
-                    if ($qty > 0) {
 
-                        $_next_delivery_time = strtotime('tomorrow');
+                    // print_r($row);
 
 
-                        $next_deliveries_data[] = array(
-                            'type'           => 'delivery',
-                            'qty'            => $qty,
-                            'raw_qty'            => $qty,
-                            'qty_sko'            => $qty*$row['Supplier Part Packages Per Carton'],
-                            'date'           => '',
-                            'formatted_link' => sprintf(
-                                '<i class="fal fa-truck fa-fw" ></i> <i style="visibility: hidden" class="fal fa-truck fa-fw" ></i> <span class="link" onclick="change_view(\'%s/%d/delivery/%d\')"> %s</span>', strtolower($row['Supplier Delivery Parent']), $row['Supplier Delivery Parent Key'], $row['Supplier Delivery Key'],
-                                $row['Supplier Delivery Public ID']
-                            ),
-                            'link'           => sprintf('%s/%d/delivery/%d', strtolower($row['Supplier Delivery Parent']), $row['Supplier Delivery Parent Key'], $row['Supplier Delivery Key']),
-                            'order_id'       => $row['Supplier Delivery Public ID'],
-                            'state'          => $row['Purchase Order Transaction State'],
-                            'po_key'         => $row['Purchase Order Key']
-                        );
+                    if ($row['Supplier Delivery Checked Units'] > 0 or $row['Supplier Delivery Checked Units'] == '') {
 
 
-                        if ($_next_delivery_time > $next_delivery_time) {
-                            $next_delivery_time = $_next_delivery_time;
+                        if ($row['Supplier Delivery Checked Units'] == '') {
+                            $raw_units_qty = $row['Supplier Delivery Units'];
+                        } else {
+
+
+                            $raw_units_qty = $row['Supplier Delivery Checked Units'] - $row['placed'];;
+                        }
+
+
+                        if ($raw_units_qty > 0) {
+
+                            $_next_delivery_time = strtotime('tomorrow');
+                            $raw_skos_qty        = $raw_units_qty / $row['Part Units Per Package'];
+
+
+                            switch ($row['Supplier Delivery Transaction State']) {
+                                case 'InProcess':
+                                    $state = sprintf('%s', _('In Process'));
+                                    break;
+                                case 'Consolidated':
+                                    $state = sprintf('%s', _('Consolidated'));
+                                    break;
+                                case 'Dispatched':
+                                    $state = sprintf('%s', _('Dispatched'));
+                                    break;
+                                case 'Received':
+                                    $state = sprintf('%s', _('Received'));
+                                    break;
+                                case 'Checked':
+                                    $state = sprintf('%s', _('Checked'));
+                                    break;
+
+
+                                default:
+                                    $state = $row['Supplier Delivery State'];
+                                    break;
+                            }
+
+                            $next_deliveries_data[] = array(
+                                'type'            => 'delivery',
+                                'qty'             => '+'.number($raw_skos_qty),
+                                'raw_sko_qty'     => $raw_skos_qty,
+                                'raw_units_qty'   => $raw_units_qty,
+                                'date'            => '',
+                                'formatted_link'  => sprintf(
+                                    '<i class="fal fa-truck fa-fw" ></i> <i style="visibility: hidden" class="fal fa-truck fa-fw" ></i> <span class="link" onclick="change_view(\'%s/%d/delivery/%d\')"> %s</span>', strtolower($row['Supplier Delivery Parent']),
+                                    $row['Supplier Delivery Parent Key'], $row['Supplier Delivery Key'], $row['Supplier Delivery Public ID']
+                                ),
+                                'link'            => sprintf('%s/%d/delivery/%d', strtolower($row['Supplier Delivery Parent']), $row['Supplier Delivery Parent Key'], $row['Supplier Delivery Key']),
+                                'order_id'        => $row['Supplier Delivery Public ID'],
+                                'formatted_state' => '<span class=" italic">'.$row['Supplier Delivery Transaction State'].'</span>',
+                                'state'           => $state,
+
+                                'po_key' => $row['Purchase Order Key']
+                            );
+
+
+                            if ($_next_delivery_time > $next_delivery_time) {
+                                $next_delivery_time = $_next_delivery_time;
+                            }
                         }
                     }
-
                 }
             } else {
                 print_r($error_info = $this->db->errorInfo());
@@ -354,47 +400,59 @@ class Part extends Asset {
 
 
             $sql = sprintf(
-                'SELECT `Supplier Part Packages Per Carton`,POTF.`Purchase Order Transaction State`,`Purchase Order Quantity`,`Supplier Delivery Key` ,`Purchase Order Estimated Receiving Date`,`Purchase Order Public ID`,POTF.`Purchase Order Key` 
+                'SELECT `Supplier Part Packages Per Carton`,POTF.`Purchase Order Transaction State`,`Purchase Order Submitted Units`,`Supplier Delivery Key` ,`Purchase Order Estimated Receiving Date`,`Purchase Order Public ID`,POTF.`Purchase Order Key` ,
+                `Part Units Per Package`,`Purchase Order Ordering Units`,`Purchase Order Submitted Units`
         FROM `Purchase Order Transaction Fact` POTF LEFT JOIN `Purchase Order Dimension` PO  ON (PO.`Purchase Order Key`=POTF.`Purchase Order Key`)  
-          left join  `Supplier Part Dimension` SP on (POTF.`Supplier Part Key`=SP.`Supplier Part Key`)
+          left join  `Supplier Part Dimension` SP on (POTF.`Supplier Part Key`=SP.`Supplier Part Key`) left join 
+                `Part Dimension` Pa on (SP.`Supplier Part Part SKU`=Pa.`Part SKU`)
         
-        WHERE POTF.`Supplier Part Key`IN (%s) AND  POTF.`Supplier Delivery Key` IS NULL AND POTF.`Purchase Order Transaction State` NOT IN ("Placed","Cancelled") ',
-                join($supplier_parts, ',')
+        WHERE POTF.`Supplier Part Key`IN (%s) AND  POTF.`Supplier Delivery Key` IS NULL AND POTF.`Purchase Order Transaction State` NOT IN ("Placed","Cancelled") ', join($supplier_parts, ',')
             );
 
             if ($result = $this->db->query($sql)) {
                 foreach ($result as $row) {
 
-                    $raw_qty = $row['Purchase Order Quantity'];
-
 
                     if ($row['Purchase Order Transaction State'] == 'InProcess') {
+
+                        $raw_units_qty = $row['Purchase Order Ordering Units'];
+                        $raw_skos_qty  = $raw_units_qty / $row['Part Units Per Package'];
+
                         $_next_delivery_time = 0;
-                        $date                = '<span class="very_discreet italic">'._('Draft').'</span>';
-                        $link                = sprintf('<i class="fal fa-fw  fa-clipboard" ></i> <i class="fal fa-fw  fa-seedling" title="%s" ></i> <span class="link discreet" onclick="change_view(\'suppliers/order/%d\')"> %s</span>',
-                                                       _('In process'),
-                                                       $row['Purchase Order Key'], $row['Purchase Order Public ID']);
-                        $qty                 = '<span class="very_discreet italic">+'.number($row['Purchase Order Quantity']).'</span>';
+                        $date                = '';
+                        $formatted_state     = '<span class="very_discreet italic">'._('Draft').'</span>';
+                        $link                = sprintf(
+                            '<i class="fal fa-fw  fa-clipboard" ></i> <i class="fal fa-fw  fa-seedling" title="%s" ></i> <span class="link discreet" onclick="change_view(\'suppliers/order/%d\')"> %s</span>', _('In process'), $row['Purchase Order Key'],
+                            $row['Purchase Order Public ID']
+                        );
+                        $qty                 = '<span class="very_discreet italic">+'.number($raw_skos_qty).'</span>';
 
                     } else {
+
+                        $raw_units_qty = $row['Purchase Order Submitted Units'];
+                        $raw_skos_qty  = $raw_units_qty / $row['Part Units Per Package'];
+
                         $_next_delivery_time = strtotime($row['Purchase Order Estimated Receiving Date'].' +0:00');
                         $date                = strftime("%e %b %y", strtotime($row['Purchase Order Estimated Receiving Date'].' +0:00'));
-                        $link                = sprintf(
-                            '<i class="fal fa-fw  fa-clipboard" ></i> <i class="fal fa-fw  fa-paper-plane" title="%s" ></i> <span class="link" onclick="change_view(\'suppliers/order/%d\')">  %s</span>',
-                            _('Submitted'),
-                            $row['Purchase Order Key'], $row['Purchase Order Public ID']
+
+                        $formatted_state = strftime("%e %b %y", strtotime($row['Purchase Order Estimated Receiving Date'].' +0:00'));
+                        $link            = sprintf(
+                            '<i class="fal fa-fw  fa-clipboard" ></i> <i class="fal fa-fw  fa-paper-plane" title="%s" ></i> <span class="link" onclick="change_view(\'suppliers/order/%d\')">  %s</span>', _('Submitted'), $row['Purchase Order Key'],
+                            $row['Purchase Order Public ID']
                         );
-                        $qty                 = '+'.number($row['Purchase Order Quantity']);
+                        $qty             = '+'.number($raw_skos_qty);
                     }
 
 
                     $next_deliveries_data[] = array(
-                        'type'           => 'po',
-                        'qty'            => $qty,
-                        'raw_qty'            => $raw_qty,
-                        'qty_sko'            => $raw_qty*$row['Supplier Part Packages Per Carton'],
+                        'type'          => 'po',
+                        'qty'           => $qty,
+                        'raw_sko_qty'   => $raw_skos_qty,
+                        'raw_units_qty' => $raw_units_qty,
 
-                        'date'           => $date,
+                        'date'            => $date,
+                        'formatted_state' => $formatted_state,
+
                         'formatted_link' => $link,
                         'link'           => sprintf('suppliers/order/%d', $row['Purchase Order Key']),
                         'order_id'       => $row['Purchase Order Public ID'],
@@ -2061,37 +2119,48 @@ class Part extends Asset {
 
                 if ($field == 'Part Package Weight') {
 
-                    if ($value != '') {
-                        $purchase_order_keys = array();
-                        $sql                 = sprintf(
-                            "SELECT `Purchase Order Transaction Fact Key`,`Purchase Order Key`,`Purchase Order Quantity`,`Supplier Part Packages Per Carton` FROM `Purchase Order Transaction Fact` POTF LEFT JOIN `Supplier Part Dimension` S ON (POTF.`Supplier Part Key`=S.`Supplier Part Key`)  WHERE `Supplier Part Part SKU`=%d  AND `Purchase Order Weight` IS NULL AND `Purchase Order Transaction State` IN ('InProcess','Submitted')  ",
-                            $this->id
-                        );
-                        //print $sql;
-                        if ($result = $this->db->query($sql)) {
-                            foreach ($result as $row) {
-                                $purchase_order_keys[$row['Purchase Order Key']] = $row['Purchase Order Key'];
-                                $sql                                             = sprintf(
+
+                    $purchase_order_keys = array();
+                    $sql                 = sprintf(
+                        "SELECT `Purchase Order Transaction Fact Key`,`Purchase Order Key`,`Purchase Order Ordering Units`,`Supplier Part Packages Per Carton` FROM `Purchase Order Transaction Fact`POTF 
+                            LEFT JOIN `Supplier Part Dimension` S ON (POTF.`Supplier Part Key`=S.`Supplier Part Key`)  
+                            LEFT JOIN `Part Dimension` P ON (S.`Supplier Part Part SKU`=P.`Part SKU`)  
+
+                            WHERE `Supplier Part Part SKU`=%d  AND `Purchase Order Weight` IS NULL AND `Purchase Order Transaction State` IN ('InProcess','Submitted')  ", $this->id
+                    );
+                    //print $sql;
+                    if ($result = $this->db->query($sql)) {
+                        foreach ($result as $row) {
+
+                            //todo review if this is really necessary
+
+                            $purchase_order_keys[$row['Purchase Order Key']] = $row['Purchase Order Key'];
+
+                            if ($value != '') {
+                                $sql = sprintf(
                                     'UPDATE `Purchase Order Transaction Fact` SET  `Purchase Order Weight`=%f WHERE `Purchase Order Transaction Fact Key`=%d',
-                                    $this->get('Part Package Weight') * $row['Supplier Part Packages Per Carton'] * $row['Purchase Order Quantity'], $row['Purchase Order Transaction Fact Key']
+                                    $this->get('Part Package Weight') * $row['Purchase Order Ordering Units'] / $row['Supplier Part Packages Per Carton'], $row['Purchase Order Transaction Fact Key']
                                 );
-                                $this->db->exec($sql);
-                            }
-                            include_once 'class.PurchaseOrder.php';
-                            foreach (
-                                $purchase_order_keys as $purchase_order_key
-                            ) {
-                                $purchase_order = new PurchaseOrder(
-                                    $purchase_order_key
+                            } else {
+                                $sql = sprintf(
+                                    'UPDATE `Purchase Order Transaction Fact` SET  `Purchase Order Weight`=NULL WHERE `Purchase Order Transaction Fact Key`=%d', $row['Purchase Order Transaction Fact Key']
                                 );
-                                $purchase_order->update_totals();
                             }
 
-                        } else {
-                            print_r($error_info = $this->db->errorInfo());
-                            exit;
+
+                            $this->db->exec($sql);
                         }
+
+                        foreach ($purchase_order_keys as $purchase_order_key) {
+                            $purchase_order = get_object('PurchaseOrder', $purchase_order_key);
+                            $purchase_order->update_totals();
+                        }
+
+                    } else {
+                        print_r($error_info = $this->db->errorInfo());
+                        exit;
                     }
+
 
                 }
 
@@ -2786,21 +2855,21 @@ class Part extends Asset {
 
             )
         );
-/*
-        print "Stock $stock Picked  $picked\n";
-        print "a* $old_stock   ** ".$this->data['Part Current Stock']."  \n"   ;
-        print "b* $old_value   ** ".$this->data['Part Current Value']."  \n"   ;
-        print "b* $old_stock_in_progress   ** ".$this->data['Part Current Stock In Process']."  \n"   ;
-        print "b* $old_stock_picked   ** ".$this->data['Part Current Stock Picked']."  \n"   ;
-        print "b* $old_stock_on_hand   ** ".$this->data['Part Current On Hand Stock']."  \n"   ;
-*/
+        /*
+                print "Stock $stock Picked  $picked\n";
+                print "a* $old_stock   ** ".$this->data['Part Current Stock']."  \n"   ;
+                print "b* $old_value   ** ".$this->data['Part Current Value']."  \n"   ;
+                print "b* $old_stock_in_progress   ** ".$this->data['Part Current Stock In Process']."  \n"   ;
+                print "b* $old_stock_picked   ** ".$this->data['Part Current Stock Picked']."  \n"   ;
+                print "b* $old_stock_on_hand   ** ".$this->data['Part Current On Hand Stock']."  \n"   ;
+        */
 
         if ($old_stock != $this->data['Part Current Stock'] or $old_value != $this->data['Part Current Value'] or $old_stock_in_progress != $this->data['Part Current Stock In Process'] or $old_stock_picked != $this->data['Part Current Stock Picked']
             or $old_stock_on_hand != $this->data['Part Current On Hand Stock']
 
         ) {
 
-           // print "XXXXXXX\n";
+            // print "XXXXXXX\n";
 
             $this->activate();
             $this->discontinue_trigger();
@@ -2815,8 +2884,6 @@ class Part extends Asset {
 
             include_once 'utils/new_fork.php';
             $account = get_object('Account', 1);
-
-
 
 
             new_housekeeping_fork(
@@ -2842,11 +2909,11 @@ class Part extends Asset {
             "SELECT sum(`Quantity On Hand`) AS stock , sum(`Quantity In Process`) AS in_process , sum(`Stock Value`) AS value FROM `Part Location Dimension` WHERE `Part SKU`=%d ", $this->id
         );
 
-//print $sql;
+        //print $sql;
         if ($result = $this->db->query($sql)) {
             if ($row = $result->fetch()) {
 
-               // print_r($row);
+                // print_r($row);
 
                 $stock      = round($row['stock'], 3);
                 $in_process = round($row['in_process'], 3);

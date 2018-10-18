@@ -2322,7 +2322,7 @@ input.input_file {
   .timeline_horizontal.with_time .dot, .timeline_horizontal.with_time .truck {
     padding: 0px 50px; }
   .timeline_horizontal .truck:after {
-    font-family: Font Awesome 5 Pro;
+    font-family: "Font Awesome 5 Pro";
     content: "\f0d1";
     width: 20px;
     height: 10px;
@@ -2363,14 +2363,20 @@ input.input_file {
     z-index: 10; }
   .timeline_horizontal .li.complete .dot, .timeline_horizontal .li.complete .truck {
     border-top: 2px solid #66DC71; }
+  .timeline_horizontal .li.semi_complete .dot, .timeline_horizontal .li.semi_complete .truck {
+    border-top: 2px dashed #66DC71; }
+  .timeline_horizontal .li.semi_complete .dot:after {
+    background-color: #66DC71;
+    border: 1px dashed #66DC71;
+    transition: all 200ms ease-in; }
   .timeline_horizontal .li.complete .dot:after {
     background-color: #66DC71;
     border: 1px solid #66DC71;
     transition: all 200ms ease-in; }
-  .timeline_horizontal .li.complete .truck:after {
+  .timeline_horizontal .li.complete .truck:after, .timeline_horizontal .li.semi_complete .truck:after {
     color: #777;
     transition: all 200ms ease-in; }
-  .timeline_horizontal .li.complete .label span {
+  .timeline_horizontal .li.complete .label span, .timeline_horizontal .li.semi_complete .label span {
     color: #888; }
   .timeline_horizontal .li.cancelled .dot, .timeline_horizontal .li.cancelled .truck {
     border-top: 2px solid tomato; }

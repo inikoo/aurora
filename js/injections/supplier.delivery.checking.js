@@ -36,7 +36,6 @@ function delivery_qty_changed(element) {
 function copy_qty(element) {
 
     var qty = $(element).data('metadata').qty
-    console.log(qty)
 
     var input = $(element).closest('tr').find('input.checked_qty')
 

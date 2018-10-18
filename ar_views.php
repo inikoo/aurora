@@ -3345,33 +3345,29 @@ function get_tabs($data, $db, $account, $modules, $user, $smarty, $requested_tab
         } elseif ($data['section'] == 'delivery') {
 
             $_content['tabs']['supplier.delivery.items_done']['class'] = 'hide';
+            $_content['tabs']['supplier.delivery.costing']['class']    = 'hide';
 
-            $_content['tabs']['supplier.delivery.costing']['class'] = 'hide';
-            $_content['tabs']['supplier.delivery.items']['class'] = '';
+            $_content['tabs']['supplier.delivery.items_mismatch']['class'] = 'hide';
+            $_content['tabs']['supplier.delivery.items']['class']          = '';
 
             switch ($data['_object']->get('Supplier Delivery State')) {
 
-                case 'Placed':
 
-
-
-                    if ($data['tab'] == 'supplier.delivery.costing' || $data['tab'] == 'supplier.delivery.items_done' ) {
-                        $data['tab'] = 'supplier.delivery.items';
-                        $_content['tabs']['supplier.delivery.items']['selected'] = true;
-
-                    }
-
-                    break;
+                //'InProcess','Consolidated','Dispatched','Received','Checked','Placed','Costing','Cancelled','InvoiceChecked'
 
                 case 'Costing':
 
 
                     $_content['tabs']['supplier.delivery.costing']['class'] = '';
-                    $_content['tabs']['supplier.delivery.items']['class'] = 'hide';
-                    if ($data['tab'] == 'supplier.delivery.items'|| $data['tab'] == 'supplier.delivery.items_done'   ) {
+                    $_content['tabs']['supplier.delivery.items']['class']   = 'hide';
+                    if ($data['tab'] == 'supplier.delivery.items' || $data['tab'] == 'supplier.delivery.items_done') {
                         $data['tab'] = 'supplier.delivery.costing';
+
                         $_content['tabs']['supplier.delivery.costing']['selected'] = true;
                     }
+
+                    $_content['tabs']['supplier.delivery.items_mismatch']['class'] = '';
+
 
                     break;
                 case 'InvoiceChecked':
@@ -3379,11 +3375,51 @@ function get_tabs($data, $db, $account, $modules, $user, $smarty, $requested_tab
                     $_content['tabs']['supplier.delivery.items_done']['class'] = '';
 
                     $_content['tabs']['supplier.delivery.costing']['class'] = 'hide';
-                    $_content['tabs']['supplier.delivery.items']['class'] = 'hide';
-                    if ($data['tab'] == 'supplier.delivery.costing' || $data['tab'] == 'supplier.delivery.items' ) {
+                    $_content['tabs']['supplier.delivery.items']['class']   = 'hide';
+                    if ($data['tab'] == 'supplier.delivery.costing' || $data['tab'] == 'supplier.delivery.items') {
                         $data['tab'] = 'supplier.delivery.items_done';
+
                         $_content['tabs']['supplier.delivery.items_done']['selected'] = true;
                     }
+                    $_content['tabs']['supplier.delivery.items_mismatch']['class'] = '';
+
+                    break;
+                case 'Received':
+
+                    if ($data['tab'] == 'supplier.delivery.costing' || $data['tab'] == 'supplier.delivery.items_done') {
+                        $data['tab'] = 'supplier.delivery.items';
+
+                        $_content['tabs']['supplier.delivery.items']['selected'] = true;
+
+                    }
+
+                    if($data['_object']->get('Supplier Delivery Number Received and Checked Items')>0){
+                        $_content['tabs']['supplier.delivery.items_mismatch']['class'] = '';
+
+                    }
+
+                    break;
+
+                case 'Placed':
+                case 'Checked':
+
+                    if ($data['tab'] == 'supplier.delivery.costing' || $data['tab'] == 'supplier.delivery.items_done') {
+                        $data['tab'] = 'supplier.delivery.items';
+
+                        $_content['tabs']['supplier.delivery.items']['selected'] = true;
+
+                    }
+                    $_content['tabs']['supplier.delivery.items_mismatch']['class'] = '';
+
+                    break;
+                default:
+                    if ($data['tab'] == 'supplier.delivery.costing' || $data['tab'] == 'supplier.delivery.items_done' || $data['tab'] == 'supplier.delivery.items_mismatch') {
+                        $data['tab'] = 'supplier.delivery.items';
+
+                        $_content['tabs']['supplier.delivery.items']['selected'] = true;
+
+                    }
+
 
                     break;
 

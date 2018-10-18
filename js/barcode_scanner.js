@@ -495,7 +495,7 @@ function scanned_barcode_in_supplier_delivery_note(value) {
                         var item_historic_key = '';
 
 
-                        var request = '/ar_edit_orders.php?tipo=edit_item_in_order&parent=supplierdelivery&field=Supplier Delivery Checked Quantity&parent_key=' + supplier_delivery_key + '&item_key=' + item_key + '&qty=' + qty + '&transaction_key=' + transaction_key + '&item_historic_key=' + item_historic_key
+                        var request = '/ar_edit_orders.php?tipo=edit_item_in_order&parent=supplierdelivery&field=Supplier Delivery Checked Units&parent_key=' + supplier_delivery_key + '&item_key=' + item_key + '&qty=' + qty + '&transaction_key=' + transaction_key + '&item_historic_key=' + item_historic_key
 
 
                         // ar_edit_stock.php?tipo=place_part & object = supplierdelivery & key = 4 & transaction_key = 2334 & part_sku = 4158 & location_key = 394 & qty = 100 & note =

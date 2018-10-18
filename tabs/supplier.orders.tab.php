@@ -36,10 +36,6 @@ $parameters = array(
 if ($state['_object']->get('Supplier Type') != 'Archived') {
 
     $table_buttons   = array();
-
-
-
-
     if($state['_object']->get('Supplier Has Agent')=='Yes'){
 
 

@@ -712,22 +712,22 @@ $export_fields = array(
             'checked' => 1
         ),
         array(
-            'name'    => '`Purchase Order Quantity`*`Supplier Part Packages Per Carton`*`Part Units Per Package`',
+            'name'    => '`Purchase Order Ordering Units`',
             'label'   => _('Units'),
             'checked' => 1
         ),
         array(
-            'name'    => '`Purchase Order Quantity`*`Supplier Part Packages Per Carton`',
+            'name'    => '`Purchase Order Ordering Units`/`Part Units Per Package`',
             'label'   => _('Packs'),
             'checked' => 1
         ),
         array(
-            'name'    => '`Purchase Order Quantity`',
+            'name'    => '`Purchase Order Ordering Units`/`Purchase Order Ordering Units`/`Supplier Part Packages Per Carton`',
             'label'   => _('Cartons'),
             'checked' => 1
         ),
         array(
-            'name'    => '`Purchase Order Quantity`*`Supplier Part Packages Per Carton`*`Part Units Per Package`*`Supplier Part Unit Cost`  ',
+            'name'    => '`Purchase Order Ordering Units`*`Supplier Part Unit Cost`  ',
             'label'   => _('Amount'),
             'checked' => 1
         ),
@@ -1196,22 +1196,22 @@ $export_fields = array(
             'checked' => 1
         ),
         array(
-            'name'    => '`Purchase Order Quantity`*`Part Units Per Package`*`Supplier Part Packages Per Carton`',
+            'name'    => '`Purchase Order Submitted Units`',
             'label'   => _('Ordered units'),
             'checked' => 1
         ),
         array(
-            'name'    => '`Purchase Order Quantity`*`Supplier Part Packages Per Carton`',
+            'name'    => '`Purchase Order Submitted Units`/`Part Units Per Package`',
             'label'   => _('Ordered packs'),
             'checked' => 1
         ),
         array(
-            'name'    => '`Purchase Order Quantity`',
+            'name'    => '`Purchase Order Submitted Units`/`Part Units Per Package`/`Supplier Part Packages Per Carton`',
             'label'   => _('Ordered cartons'),
             'checked' => 1
         ),
         array(
-            'name'    => '`Supplier Part Unit Cost`*`Purchase Order Quantity`*`Part Units Per Package`*`Supplier Part Packages Per Carton`',
+            'name'    => '`Supplier Part Unit Cost`*`Purchase Order Submitted Units`',
             'label'   => _('Amount'),
             'checked' => 1
         ),

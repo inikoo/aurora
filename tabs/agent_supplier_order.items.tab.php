@@ -71,7 +71,7 @@ $smarty->assign('table_buttons', $table_buttons);
 
 
 
-
+/*
 $smarty->assign(
     'table_metadata', base64_encode(
         json_encode(
@@ -83,6 +83,8 @@ $smarty->assign(
         )
     )
 );
+*/
+
 $smarty->assign('table_top_template', 'agent.order.edit.tpl');
 
 

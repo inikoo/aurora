@@ -44,7 +44,7 @@ left join `Supplier Part Historic Dimension` SPH on (POTF.`Supplier Part Histori
  left join  `Part Dimension` P on (P.`Part SKU`=SP.`Supplier Part Part SKU`)
  left join  `Part Data` PD on (PD.`Part SKU`=SP.`Supplier Part Part SKU`)
  left join `Supplier Dimension` S on (`Supplier Part Supplier Key`=S.`Supplier Key`)
-
+left join `Supplier Delivery Dimension` SD on (POTF.`Supplier Delivery Key`=SD.`Supplier Delivery Key`)
 ";
 
 $sql_totals
@@ -52,10 +52,10 @@ $sql_totals
 
 
 $fields
-    = "`Part Barcode Number`,`Part SKO Barcode`,`Part Materials`,
+    = "`Part Barcode Number`,`Part SKO Barcode`,`Part Materials`,`Supplier Part Status`,`Purchase Order Ordering Units`,`Purchase Order Submitted Units`,`Supplier Delivery Public ID`,`Supplier Delivery Parent`,
     `Part Main Image Key`,`Part Barcode Number`,`Purchase Order Transaction State`,
-    `Supplier Delivery Quantity`,`Supplier Delivery Key`,`Purchase Order Item Index`,`Supplier Part Currency Code`,`Supplier Part Historic Unit Cost`,`Metadata`,`Currency Code`,
-`Purchase Order Transaction Fact Key`,`Purchase Order Quantity`,POTF.`Supplier Part Key`,`Supplier Part Reference`,POTF.`Supplier Part Historic Key`,
+    `Supplier Delivery Units`,POTF.`Supplier Delivery Key`,`Purchase Order Item Index`,`Supplier Part Currency Code`,`Supplier Part Historic Unit Cost`,`Metadata`,`Currency Code`,
+`Purchase Order Transaction Fact Key`,`Purchase Order Submitted Units`,POTF.`Supplier Part Key`,`Supplier Part Reference`,POTF.`Supplier Part Historic Key`,
 `Supplier Part Description`,`Part Units Per Package`,`Supplier Part Packages Per Carton`,`Supplier Part Carton CBM`,POTF.`Purchase Order Key`,
 `Supplier Part Unit Cost`,`Part Package Weight`,`Purchase Order CBM`,`Purchase Order Weight`,S.`Supplier Key`,`Supplier Code`,`Supplier Part Minimum Carton Order`,
 `Part 1 Quarter Ago Dispatched`,`Part 2 Quarter Ago Dispatched`,`Part 3 Quarter Ago Dispatched`,`Part 4 Quarter Ago Dispatched`,
@@ -64,7 +64,6 @@ $fields
 `Part 1 Quarter Ago 1YB Invoiced Amount`,`Part 2 Quarter Ago 1YB Invoiced Amount`,`Part 3 Quarter Ago 1YB Invoiced Amount`,`Part 4 Quarter Ago 1YB Invoiced Amount`,
 `Part Quarter To Day Acc Dispatched`,`Part Stock Status`,`Part Current On Hand Stock`,`Part Reference`,`Part Total Acc Dispatched`,
 `Part Products Web Status`,`Part On Demand`,`Part Days Available Forecast`,`Part Fresh`,P.`Part SKU`,`Part 1 Year Acc Dispatched`,`Part Main Image Key`,`Part Next Deliveries Data`
-
 
 ";
 

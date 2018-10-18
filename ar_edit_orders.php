@@ -267,7 +267,6 @@ function edit_item_in_order($account, $db, $user, $editor, $data, $smarty) {
     $parent->editor = $editor;
 
 
-    //print_r($data);
 
     if ($data['parent'] == 'order') {
 

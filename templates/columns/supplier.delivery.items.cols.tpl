@@ -53,21 +53,54 @@ label: "{t}Unit description{/t}",
 editable: false,
 cell: "html"
 
-}, {
-name: "subtotals",
-label: "{t}Subtotals{/t}",
-renderable: {if $data['_object']->get('State Index')>=40}false{else}true{/if},
+},
 
+
+{
+name: "items_qty",
+label: "{t}Qty{/t}",
 defaultOrder:1,
 editable: false,
 sortType: "toggle",
-{if $sort_key=='subtotals'}direction: '{if $sort_order==1}descending{else}ascending{/if}',{/if}
+{if $sort_key=='items_qty'}direction: '{if $sort_order==1}descending{else}ascending{/if}',{/if}
 cell: Backgrid.HtmlCell.extend({ className: ""} ),
 
-}, {
+},
+{
+name: "weight",
+label: "{t}Weight{/t}",
+defaultOrder:1,
+editable: false,
+sortType: "toggle",
+{if $sort_key=='weight'}direction: '{if $sort_order==1}descending{else}ascending{/if}',{/if}
+cell: Backgrid.HtmlCell.extend({ className: ""} ),
+
+},
+{
+name: "cbm",
+label: "{t}CBM{/t}",
+defaultOrder:1,
+editable: false,
+sortType: "toggle",
+{if $sort_key=='cbm'}direction: '{if $sort_order==1}descending{else}ascending{/if}',{/if}
+cell: Backgrid.HtmlCell.extend({ className: ""} ),
+
+},
+{
+name: "amount",
+label: "{t}Amount{/t}",
+defaultOrder:1,
+editable: false,
+sortType: "toggle",
+{if $sort_key=='amount'}direction: '{if $sort_order==1}descending{else}ascending{/if}',{/if}
+cell: Backgrid.HtmlCell.extend({ className: ""} ),
+
+},
+
+ {
 name: "quantity",
 label: "{t}Cartons{/t}",
-renderable: {if $data['_object']->get('Supplier Delivery State')=='In Process'}true{else}false{/if},
+renderable: false,
 defaultOrder:1,
 editable: false,
 sortType: "toggle",
@@ -77,14 +110,15 @@ headerCell: integerHeaderCell
 }, {
 name: "qty",
 label: "{t}Cartons{/t}",
-renderable: {if $data['_object']->get('Supplier Delivery State')!='In Process' and  $data['_object']->get('State Index')<40 }true{else}false{/if},
+renderable: false,
 defaultOrder:1,
 editable: false,
 sortType: "toggle",
 {if $sort_key=='ordered'}direction: '{if $sort_order==1}descending{else}ascending{/if}',{/if}
 cell: Backgrid.HtmlCell.extend({ className: "aright"} ),
 headerCell: integerHeaderCell
-}, {
+},
+{
 name: "delivery_quantity",
 label: "{t}Delivery{/t}",
 renderable: false,

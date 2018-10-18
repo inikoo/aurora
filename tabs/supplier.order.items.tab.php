@@ -81,6 +81,7 @@ $smarty->assign('table_buttons', $table_buttons);
 $smarty->assign(
     'js_code', 'js/injections/supplier.order.'.(_DEVEL ? '' : 'min.').'js'
 );
+/*
 $smarty->assign(
     'table_metadata', base64_encode(
                         json_encode(
@@ -92,7 +93,7 @@ $smarty->assign(
                         )
                     )
 );
-
+*/
 
 include 'utils/get_table_html.php';
 

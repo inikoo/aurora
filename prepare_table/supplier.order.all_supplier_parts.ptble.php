@@ -53,7 +53,7 @@ if ($parameters['parent'] == 'purchase_order') {
 
 
     $fields .= sprintf(
-        ',(select `Purchase Order Quantity` from `Purchase Order Transaction Fact` POTF where POTF.`Purchase Order Key`=%d and POTF.`Supplier Part Key`=SP.`Supplier Part Key` ) as `Purchase Order Quantity`',
+        ',(select `Purchase Order Ordering Units` from `Purchase Order Transaction Fact` POTF where POTF.`Purchase Order Key`=%d and POTF.`Supplier Part Key`=SP.`Supplier Part Key` ) as `Purchase Order Ordering Units`',
         $parameters['parent_key']
     );
 
@@ -138,7 +138,7 @@ if ($order == 'description') {
 } elseif ($order == 'stock') {
     $order = '`Part Current Stock`';
 } elseif ($order == 'quantity') {
-    $order = '`Purchase Order Quantity`';
+    $order = '`Purchase Order Ordering Units`';
 } else {
 
     $order = '`Supplier Part Key`';
