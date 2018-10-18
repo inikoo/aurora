@@ -213,8 +213,7 @@
     <tr>
         <td style="width:12%;text-align:left">{t}Reference{/t}</td>
         <td style="text-align:left">{t}Unit description{/t}</td>
-        <td style="width:12%;text-align:right">{t}Units{/t}</td>
-        <td style="width:12%;text-align:right">{t}Cartons{/t}</td>
+        <td style="width:22%;text-align:right">{t}Quantity ordered{/t}</td>
         <td style="width:16%;text-align:right">{t}Amount{/t}</td>
 
     </tr>
@@ -224,8 +223,6 @@
         <tr class="{if $smarty.foreach.products.last}last{/if}">
             <td style="text-align:left">{$transaction.reference}</td>
             <td style="text-align:left">{$transaction.description}</td>
-            <td style="text-align:right;font-size:95%">{$transaction.subtotals}</td>
-
             <td style="text-align:right">{$transaction.ordered}</td>
             <td style="text-align:right">{$transaction.amount}</td>
         </tr>
@@ -237,7 +234,7 @@
 
     <tr class="total">
         <td style="border:none" colspan="2" ></td>
-        <td colspan="2"><b>{t}Total items{/t}</b></td>
+        <td colspan="1"><b>{t}Total items{/t}</b></td>
         <td><b>{$purchase_order->get('Items Net Amount')}</b></td>
     </tr>
 

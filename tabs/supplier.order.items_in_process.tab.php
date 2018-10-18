@@ -10,15 +10,17 @@
 */
 
 $ar_file = 'ar_suppliers_tables.php';
-$tipo    = 'supplier.order.items';
+$tipo    = 'supplier.order.items_in_process';
+$tab = 'supplier.order.items_in_process';
 
 
-$tab     = 'supplier.order.items_in_process';
+
 
 $table_views = array(
-    'ordering' => array('label' => _('Ordering cartons'),),
+    'cartons' => array('label' => _('Ordering cartons'),),
+    'skos'    => array('label' => _('Ordering SKOs'),),
+    'units'   => array('label' => _('Ordering units'),),
 );
-
 
 $default = $user->get_tab_defaults($tab);
 
@@ -36,8 +38,7 @@ $parameters = array(
 );
 
 
-$table_buttons   = array();
-
+$table_buttons = array();
 
 
 $table_buttons[] = array(
@@ -73,7 +74,7 @@ $smarty->assign(
                             array(
                                 'parent'     => $state['object'],
                                 'parent_key' => $state['key'],
-                                'field'      => 'Purchase Order Quantity'
+                                'field'      => 'Purchase Order Ordering Units'
                             )
                         )
                     )

@@ -50,13 +50,13 @@ $sql_totals
 
 
 $fields
-    = "`Part SKO Image Key`,`Part SKO Barcode`,`Supplier Delivery Quantity`,POTF.`Supplier Delivery Key`,`Part Reference`,P.`Part SKU`,`Supplier Delivery Checked Quantity`,`Part Package Description`,`Supplier Delivery Transaction Placed`,`Supplier Delivery Placed Quantity`,`Metadata`,
-`Purchase Order Transaction Fact Key`,`Purchase Order Quantity`,POTF.`Supplier Part Key`,`Supplier Part Reference`,POTF.`Supplier Part Historic Key`,
+    = "`Part SKO Image Key`,`Part SKO Barcode`,`Supplier Delivery Units`,POTF.`Supplier Delivery Key`,`Part Reference`,P.`Part SKU`,`Supplier Delivery Checked Units`,`Part Package Description`,`Supplier Delivery Transaction Placed`,`Supplier Delivery Placed Units`,`Metadata`,
+`Purchase Order Transaction Fact Key`,POTF.`Supplier Part Key`,`Supplier Part Reference`,POTF.`Supplier Part Historic Key`,
 `Supplier Part Description`,`Part Units Per Package`,`Supplier Part Packages Per Carton`,`Supplier Part Carton CBM`,
-`Supplier Part Unit Cost`,`Part Package Weight`,POTF.`Supplier Delivery CBM`,POTF.`Supplier Delivery Weight`,
+`Supplier Part Unit Cost`,`Part Package Weight`,POTF.`Supplier Delivery CBM`,POTF.`Supplier Delivery Weight`,`Purchase Order Submitted Units`,`Supplier Key`,
 `Supplier Delivery Net Amount`,`Currency Code`,
 
-sum(`Supplier Delivery Placed Quantity`*`Part Units Per Package`*`Supplier Part Packages Per Carton`) as skos_in,
+sum(`Supplier Delivery Placed SKOs`) as skos_in,
 sum(`Supplier Delivery Net Amount`) as items_amount,
 sum(`Supplier Delivery Extra Cost Amount`) as extra_amount,
 sum(`Supplier Delivery Extra Cost Account Currency Amount`) as extra_amount_account_currency,

@@ -53,9 +53,9 @@ $sql_totals
 
 $fields
     = "
-    `Part Main Image Key`,`Part Barcode Number`,`Purchase Order Transaction State`,
-    `Supplier Delivery Quantity`,`Supplier Delivery Key`,`Purchase Order Item Index`,`Supplier Part Currency Code`,`Supplier Part Historic Unit Cost`,
-`Purchase Order Transaction Fact Key`,`Purchase Order Quantity`,POTF.`Supplier Part Key`,`Supplier Part Reference`,POTF.`Supplier Part Historic Key`,
+    `Part Main Image Key`,`Part Barcode Number`,`Purchase Order Transaction State`,`Supplier Part Status`,`Purchase Order Ordering Units`,
+    `Supplier Delivery Units`,`Supplier Delivery Key`,`Purchase Order Item Index`,`Supplier Part Currency Code`,`Supplier Part Historic Unit Cost`,
+`Purchase Order Transaction Fact Key`,POTF.`Supplier Part Key`,`Supplier Part Reference`,POTF.`Supplier Part Historic Key`,
 `Supplier Part Description`,`Part Units Per Package`,`Supplier Part Packages Per Carton`,`Supplier Part Carton CBM`,POTF.`Purchase Order Key`,
 `Supplier Part Unit Cost`,`Part Package Weight`,`Purchase Order CBM`,`Purchase Order Weight`,S.`Supplier Key`,`Supplier Code`,`Supplier Part Minimum Carton Order`,
 `Part 1 Quarter Ago Dispatched`,`Part 2 Quarter Ago Dispatched`,`Part 3 Quarter Ago Dispatched`,`Part 4 Quarter Ago Dispatched`,

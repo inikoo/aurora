@@ -70,7 +70,7 @@ $(document).on('click', '.order_item_percentage_discount_form i', function (evt)
 
     var request = '/ar_edit_orders.php?tipo=edit_item_discount&parent=' + table_metadata.parent + '&field=' + settings.field + '&parent_key=' + table_metadata.parent_key + '&item_key=' + settings.item_key + '&value=' + value + '&transaction_key=' + settings.transaction_key
 
-console.log(request)
+    //console.log(request)
 
 
     //=====
@@ -98,8 +98,8 @@ console.log(request)
 
         if (data.state == 200) {
 
-            console.log(data)
-            console.log(table_metadata)
+            //console.log(data)
+            //console.log(table_metadata)
 
 
 
@@ -265,7 +265,7 @@ function save_order_operation(element) {
 
     var data = $(element).data("data")
 
-    console.log(data)
+    //console.log(data)
 
     var object_data = JSON.parse(atob($('#object_showcase div.order').data("object")))
 
@@ -303,14 +303,14 @@ function save_order_operation(element) {
 
     });
 
-    console.log(field)
+    //console.log(field)
 
     if(field=='Replacement State'){
         metadata['Delivery Note Key']=data.replacement_key;
     }
 
 
-    var request = '/ar_edit.php?tipo=edit_field&object=' + object + '&key=' + key + '&field=' + field + '&value=' + value + '&metadata=' + JSON.stringify(metadata)
+   // var request = '/ar_edit.php?tipo=edit_field&object=' + object + '&key=' + key + '&field=' + field + '&value=' + value + '&metadata=' + JSON.stringify(metadata)
 
 
 
@@ -335,6 +335,8 @@ function save_order_operation(element) {
 
     request.done(function (data) {
 
+        console.log(data)
+
         $('#' + dialog_name + '_save_buttons').addClass('button');
         $('#' + dialog_name + '_save_buttons i').removeClass('fa-spinner fa-spin')
         $('#' + dialog_name + '_save_buttons .label').removeClass('hide')
@@ -358,17 +360,21 @@ function save_order_operation(element) {
                 $('.' + key).html(data.update_metadata.class_html[key])
             }
 
+            for (var key in data.update_metadata.hide) {
+                $('.' + data.update_metadata.hide[key]).addClass('hide')
+            }
+
+            for (var key in data.update_metadata.show) {
+                $('.' + data.update_metadata.show[key]).removeClass('hide')
+            }
+
 
             $('.order_operation').addClass('hide')
            // $('.items_operation').addClass('hide')
 
 
-
-
             for (var key in data.update_metadata.operations) {
-
-                console.log('#' + data.update_metadata.operations[key])
-
+                //console.log('#' + data.update_metadata.operations[key])
                 $('#' + data.update_metadata.operations[key]).removeClass('hide')
             }
 
@@ -467,9 +473,10 @@ function save_order_operation(element) {
 
 
 
-
             }
             else if (object == 'supplierdelivery') {
+
+
 
                 $('#inputted_node').addClass('complete')
                 $('#purchase_order_node').addClass('complete')
@@ -487,6 +494,8 @@ function save_order_operation(element) {
                 if (data.update_metadata.state_index >= 100) {
                     $('#placed_node').addClass('complete')
 
+
+
                     if (state.tab == 'supplier.delivery.items') {
                         change_tab('supplier.delivery.items')
 
@@ -496,7 +505,11 @@ function save_order_operation(element) {
                 }
 
 
-                if ((dialog_name == 'undo_received' || dialog_name == 'received') && state.tab == 'supplier.delivery.items') {
+
+                if( dialog_name=='undo_costing'){
+                    change_tab('supplier.delivery.costing')
+
+               }else if ((dialog_name == 'undo_received' || dialog_name == 'received') && state.tab == 'supplier.delivery.items') {
 
 
                     change_tab('supplier.delivery.items')
@@ -651,7 +664,7 @@ function picked_offline_items_qty_change(element) {
     input.val(qty).addClass('discreet')
 
 
-    console.log(_icon)
+    //console.log(_icon)
 
     $(element).addClass(_icon)
 
@@ -679,6 +692,7 @@ function save_item_qty_change(element) {
 
     var input = $(element).closest('span').find('input')
     var icon = $(element)
+    var settings = $(element).closest('span').data('settings')
 
     if ($(element).hasClass('fa-plus')) {
 
@@ -708,6 +722,7 @@ function save_item_qty_change(element) {
     } else {
         qty = parseFloat(input.val())
 
+
         var _icon = 'fa-cloud'
 
     }
@@ -719,10 +734,12 @@ function save_item_qty_change(element) {
     if (qty == '') qty = 0;
 
 
-    var settings = $(element).closest('span').data('settings')
 
+    //console.log(settings)
 
     var table_metadata = JSON.parse(atob($('#table').data("metadata")))
+
+
 
 
     if (settings.field == 'Picked' && $('#dn_data').attr('picker_key') == '') {
@@ -735,6 +752,10 @@ function save_item_qty_change(element) {
         $(element).removeClass('fa-spinner fa-spin')
         sweetAlert($('#dn_data').attr('no_packer_msg'));
         return;
+    }
+
+    if (settings.field == 'Supplier Delivery Checked Units' ) {
+        qty=qty*settings.sko_factor
     }
 
     var request = '/ar_edit_orders.php?tipo=edit_item_in_order&parent=' + table_metadata.parent + '&field=' + settings.field + '&parent_key=' + table_metadata.parent_key + '&item_key=' + settings.item_key + '&qty=' + qty + '&transaction_key=' + settings.transaction_key
@@ -754,8 +775,8 @@ function save_item_qty_change(element) {
     if (settings.field == 'Packed') {
         request = request + '&packer_key=' + $('#dn_data').attr('packer_key')
     }
-//console.log(request)
-
+    //console.log(request)
+    //return;
 
 
     //=====
@@ -801,12 +822,14 @@ function save_item_qty_change(element) {
 
         if (data.state == 200) {
 
-            //console.log(data)
+            console.log(data)
             //console.log(table_metadata)
 
 
             input.val(data.transaction_data.qty).removeClass('discreet')
             input.attr('ovalue', data.transaction_data.qty)
+
+
             if (table_metadata.parent == 'order') {
 
 
@@ -907,11 +930,12 @@ function save_item_qty_change(element) {
                         }
 
 
-            } else if (table_metadata.parent == 'delivery_note') {
+            }
+            else if (table_metadata.parent == 'delivery_note') {
 
-                console.log(data.metadata.location_components)
-                console.log(data.metadata.picked_quantity_components)
-                console.log(data.metadata.pending)
+                //console.log(data.metadata.location_components)
+                //console.log(data.metadata.picked_quantity_components)
+                //console.log(data.metadata.pending)
 
 
                 $(element).closest('tr').find('.location_components').html(data.metadata.location_components)
@@ -923,16 +947,24 @@ function save_item_qty_change(element) {
                 }
 
 
-            } else {
+            }
+            else if (table_metadata.parent == 'purchase_order'){
 
-console.log(data)
+
+
+
+                input.closest('tr').find('.order_units_qty').val(data.transaction_data.qty_units)
+                input.closest('tr').find('.order_skos_qty').val(data.transaction_data.qty_skos)
+                input.closest('tr').find('.order_cartons_qty').val(data.transaction_data.qty_cartons)
+                input.closest('tr').find('input.order_qty').removeClass('error').addClass(data.transaction_data.input_class)
+
 
                 $('.order_operation').addClass('hide')
                 for (var key in data.metadata.operations) {
 
 
                     $('#' + data.metadata.operations[key]).removeClass('hide')
-                    console.log('#' + data.metadata.operations[key])
+                    //console.log('#' + data.metadata.operations[key])
 
                 }
 
@@ -965,6 +997,65 @@ console.log(data)
                 } else {
                     $('#placed_node').removeClass('complete')
                 }
+            }
+            else if (table_metadata.parent == 'supplierdelivery'){
+
+                //console.log(data)
+
+                $('.order_operation').addClass('hide')
+                for (var key in data.metadata.operations) {
+
+
+                    $('#' + data.metadata.operations[key]).removeClass('hide')
+                    //console.log('#' + data.metadata.operations[key])
+
+                }
+
+
+                $(element).closest('tr').find('.part_sko_item').attr('_checked', data.transaction_data.qty)
+
+
+                $(element).closest('tr').find('.subtotals').html(data.transaction_data.subtotals)
+                $(element).closest('tr').find('.placement').html(data.metadata.placement)
+                $(element).closest('.checked_quantity').find('.checked_qty').attr('ovalue', data.transaction_data.qty)
+
+                $('#inputted_node').addClass('complete')
+                $('#purchase_order_node').addClass('complete')
+
+                if (data.metadata.state_index >= 30) {
+                    $('#dispatched_node').addClass('complete')
+                }
+                if (data.metadata.state_index >= 40) {
+                    $('#received_node').addClass('complete')
+                }
+
+                if (data.metadata.state_index >= 50) {
+                    $('#checked_node').addClass('complete')
+                }
+                if (data.metadata.state_index == 100) {
+                    $('#placed_node').addClass('complete')
+                    if (state.tab == 'supplier.delivery.items') {
+                        change_tab('supplier.delivery.items')
+                    }
+                } else {
+                    $('#placed_node').removeClass('complete')
+                }
+
+
+                if( data.metadata.checked_items!=undefined &&  data.metadata.checked_items>0){
+
+                    console.log('cacaca')
+
+                    $('.Mismatched_Items').removeClass('hide')
+                    $("div[id='tab_supplier.delivery.items_mismatch']").removeClass('hide')
+
+                }else{
+                    $("div[id='tab_supplier.delivery.items_mismatch']").addClass('hide')
+                    $('.Mismatched_Items').addClass('hide')
+
+
+                }
+
             }
 
 
@@ -1045,7 +1136,7 @@ function save_item_out_of_stock_qty_change(element) {
     var request = '/ar_edit_orders.php?tipo=edit_item_in_order&parent=' + table_metadata.parent + '&field=Out_of_stock&parent_key=' + table_metadata.parent_key + '&item_key=' + $('#set_out_of_stock_items_dialog').attr('item_key') + '&qty=' + qty + '&transaction_key=' + $('#set_out_of_stock_items_dialog').attr('transaction_key')
 
 
-    console.log(request)
+    //console.log(request)
 
     return;
 
@@ -1074,7 +1165,7 @@ function save_item_out_of_stock_qty_change(element) {
 
         if (data.state == 200) {
 
-            console.log(data)
+            //console.log(data)
 
             input.val(data.transaction_data.qty).removeClass('discreet')
 
@@ -1226,7 +1317,7 @@ function get_orders_table( order_flow, metadata) {
         new_url = window.location.pathname.replace(/dashboard.*$/, '') + 'dashboard/' + order_flow
 
 
-        console.log(new_url)
+        //console.log(new_url)
 
 
         window.top.history.pushState({
@@ -1263,7 +1354,7 @@ function select_payment_account(element) {
     $(element).addClass('selected')
 
 
-    console.log(settings)
+    //console.log(settings)
     $('#new_payment_payment_account_key').val(settings.payment_account_key).data('settings',settings)
     $('#new_payment_payment_method').val(settings.payment_method)
 
@@ -1297,7 +1388,7 @@ function try_to_pay(element) {
     var object_data = JSON.parse(atob($('#object_showcase div.order').data("object")))
 
 
-    console.log($(element).attr('amount'))
+    //console.log($(element).attr('amount'))
 
     if ($(element).attr('amount') > 0  ||  object_data.order_type=='Refund'   ) {
 
@@ -1404,9 +1495,9 @@ $(document).on('input propertychange', '.new_payment_field', function (evt) {
 
 function validate_new_payment() {
 
-     console.log($('#new_payment_reference').val() != '')
-     console.log(!validate_number($('#new_payment_amount').val(), 0, 999999999))
-    console.log($('#new_payment_payment_account_key').val() > 0)
+     //console.log($('#new_payment_reference').val() != '')
+     //console.log(!validate_number($('#new_payment_amount').val(), 0, 999999999))
+    //console.log($('#new_payment_payment_account_key').val() > 0)
 
 
     var settings=$('#new_payment_payment_account_key').data('settings')
@@ -1424,8 +1515,8 @@ function validate_new_payment() {
 
     if(settings.max_amount!=''){
 
-        console.log(settings.max_amount)
-        console.log($('#new_payment_amount').val())
+        //console.log(settings.max_amount)
+        //console.log($('#new_payment_amount').val())
 
         var valid_max_amount=(parseFloat(settings.max_amount)<parseFloat($('#new_payment_amount').val())?false:true)
 
@@ -1442,13 +1533,13 @@ function validate_new_payment() {
 
     }
 
-    console.log(valid_reference)
-    console.log(valid_max_amount)
+    //console.log(valid_reference)
+    //console.log(valid_max_amount)
 
-    console.log(valid_amount)
+    //console.log(valid_amount)
 
     if (valid_reference && valid_max_amount &&  valid_amount) {
-        console.log('xx')
+        //console.log('xx')
         $('#save_new_payment').addClass('valid changed')
     } else {
         $('#save_new_payment').removeClass('valid changed')
@@ -1499,7 +1590,7 @@ function save_new_payment() {
             $('#save_new_payment i').addClass('fa-cloud').removeClass('fa-spinner fa-spin');
 
 
-            console.log(data)
+            //console.log(data)
 
             if (data.state == '200') {
 

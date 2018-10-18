@@ -84,7 +84,7 @@ $smarty->assign('currency_account', $account->get('Currency Code'));
 $smarty->assign('currency_symbol', currency_symbol($account->get('Currency Code')));
 
 $number_zero_placed_items=0;
-$sql=sprintf('select count(*) as num from `Purchase Order Transaction Fact` where `Supplier Delivery Key`=%d and (`Supplier Delivery Placed Quantity`=0  or `Supplier Delivery Placed Quantity` is null) ',
+$sql=sprintf('select count(*) as num from `Purchase Order Transaction Fact` where `Supplier Delivery Key`=%d and (`Supplier Delivery Placed Units`=0  or `Supplier Delivery Placed Units` is null) ',
              $state['_object']->id
 
     );

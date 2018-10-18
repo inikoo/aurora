@@ -2,34 +2,31 @@
 /*
  About:
  Author: Raul Perusquia <raul@inikoo.com>
- Created: 26 June 2016 at 11:54:43 GMT+8, Kuta, Bali, Indonesia
+ Created: 17 October 2018 at 22:25:48 GMT+8, Kuala Lumpur, Malaysia
  Copyright (c) 2016, Inikoo
 
  Version 3
 
 */
 
-
-$tab     = 'supplier.order.all_supplier_parts';
 $ar_file = 'ar_suppliers_tables.php';
-$tipo    = 'order.supplier_parts';
 
-$default = $user->get_tab_defaults($tab);
 
+$tab  = 'supplier.delivery.items_mismatch';
+$tipo = 'delivery.items_mismatch';
 
 $table_views = array(
-    'cartons' => array('label' => _('Ordering cartons'),),
-    'skos'    => array('label' => _('Ordering SKOs'),),
-    'units'   => array('label' => _('Ordering units'),),
+    'overview' => array('label' => _('Description')),
 
 );
 
 
+$default = $user->get_tab_defaults($tab);
+
+
 $table_filters = array(
-    'reference' => array(
-        'label' => _('Reference'),
-        'title' => _('Part reference')
-    ),
+    'code' => array('label' => _('Code')),
+    'name' => array('label' => _('Name')),
 
 );
 
@@ -45,10 +42,6 @@ $table_buttons = array();
 $smarty->assign('table_buttons', $table_buttons);
 
 $smarty->assign(
-    'js_code', 'js/injections/supplier.order.'.(_DEVEL ? '' : 'min.').'js'
-);
-
-$smarty->assign(
     'table_metadata', base64_encode(
                         json_encode(
                             array(
@@ -58,6 +51,9 @@ $smarty->assign(
                         )
                     )
 );
+
+$smarty->assign('dn', $state['_object']);
+
 
 include 'utils/get_table_html.php';
 

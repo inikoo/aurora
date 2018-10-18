@@ -163,50 +163,49 @@ function client_order_items($_data, $db, $user, $account) {
 
     $sql        = "select $fields from $table $where $wheref order by $order $order_direction limit $start_from,$number_results";
     $table_data = array();
-    $exchange   = -1;
+    //$exchange   = -1;
 
     if ($result = $db->query($sql)) {
         foreach ($result as $data) {
 
+            /*
+                        switch ($data['Part Stock Status']) {
+                            case 'Surplus':
+                                $stock_status = '<i class="fa  fa-plus-circle fa-fw" aria-hidden="true" title="'._('Surplus').'" ></i>';
+                                break;
+                            case 'Optimal':
+                                $stock_status = '<i class="fa fa-check-circle fa-fw" aria-hidden="true" title="'._('Optimal').'"></i>';
+                                break;
+                            case 'Low':
+                                $stock_status = '<i class="fa fa-minus-circle fa-fw" aria-hidden="true" title="'._('Low').'"></i>';
+                                break;
+                            case 'Critical':
+                                $stock_status = '<i class="fa error fa-minus-circle fa-fw" aria-hidden="true" title="'._('Critical').'"></i>';
+                                break;
+                            case 'Out_Of_Stock':
+                                $stock_status = '<i class="fa error fa-ban fa-fw" aria-hidden="true" title="'._('Out of stock').'"></i>';
+                                break;
+                            case 'Error':
+                                $stock_status = '<i class="fa fa-question-circle error fa-fw" aria-hidden="true" title="'._('Error').'"></i>';
+                                break;
+                            default:
+                                $stock_status = $data['Part Stock Status'];
+                                break;
+                        }
 
-            switch ($data['Part Stock Status']) {
-                case 'Surplus':
-                    $stock_status = '<i class="fa  fa-plus-circle fa-fw" aria-hidden="true" title="'._('Surplus').'" ></i>';
-                    break;
-                case 'Optimal':
-                    $stock_status = '<i class="fa fa-check-circle fa-fw" aria-hidden="true" title="'._('Optimal').'"></i>';
-                    break;
-                case 'Low':
-                    $stock_status = '<i class="fa fa-minus-circle fa-fw" aria-hidden="true" title="'._('Low').'"></i>';
-                    break;
-                case 'Critical':
-                    $stock_status = '<i class="fa error fa-minus-circle fa-fw" aria-hidden="true" title="'._('Critical').'"></i>';
-                    break;
-                case 'Out_Of_Stock':
-                    $stock_status = '<i class="fa error fa-ban fa-fw" aria-hidden="true" title="'._('Out of stock').'"></i>';
-                    break;
-                case 'Error':
-                    $stock_status = '<i class="fa fa-question-circle error fa-fw" aria-hidden="true" title="'._('Error').'"></i>';
-                    break;
-                default:
-                    $stock_status = $data['Part Stock Status'];
-                    break;
-            }
+            */
 
-            $quantity = number($data['Purchase Order Quantity']);
-
-
-            $units_per_carton = $data['Part Units Per Package'] * $data['Supplier Part Packages Per Carton'];
-            $skos_per_carton  = $data['Supplier Part Packages Per Carton'];
+            //$units_per_carton = $data['Part Units Per Package'] * $data['Supplier Part Packages Per Carton'];
+            //$skos_per_carton  = $data['Supplier Part Packages Per Carton'];
 
 
             $subtotals = sprintf('<span  class="subtotals" style="font-size:90%%"  >');
-            if ($data['Purchase Order Quantity'] > 0) {
+            if ($data['Purchase Order Submitted Units'] > 0) {
 
-                $subtotals .= $data['Purchase Order Quantity'] * $units_per_carton.'u. '.$data['Purchase Order Quantity'] * $skos_per_carton.'pkg. ';
+                $subtotals .= $data['Purchase Order Submitted Units'].'u. '.$data['Purchase Order Submitted Units'] / $data['Part Units Per Package'].'pkg. ';
 
 
-                $amount = $data['Purchase Order Quantity'] * $units_per_carton * $data['Supplier Part Unit Cost'];
+                $amount = $data['Purchase Order Submitted Units'] * $data['Supplier Part Unit Cost'];
 
                 $subtotals .= money(
                     $amount, $purchase_order->get('Purchase Order Currency Code')
@@ -225,26 +224,34 @@ function client_order_items($_data, $db, $user, $account) {
 
                 if ($data['Part Package Weight'] > 0) {
                     $subtotals .= ' | '.weight(
-                            $data['Part Package Weight'] * $data['Purchase Order Quantity'] * $data['Supplier Part Packages Per Carton']
+                            $data['Part Package Weight'] * $data['Purchase Order Submitted Units'] / $data['Part Units Per Package']
                         );
                 }
                 if ($data['Supplier Part Carton CBM'] > 0) {
                     $subtotals .= ' | '.number(
-                            $data['Purchase Order Quantity'] * $data['Supplier Part Carton CBM']
+                            $data['Purchase Order Submitted Units'] * $data['Supplier Part Carton CBM'] / $data['Part Units Per Package'] / $data['Supplier Part Packages Per Carton']
                         ).' m³';
                 }
             }
             $subtotals .= '</span>';
 
 
+            $amount = money(
+                $amount, $purchase_order->get('Purchase Order Currency Code')
+            );
+
+
             $packing = sprintf(
                 '<i class="fa fa-fw fa-gift" aria-hidden="true" ></i> %ss, (%s <i class="far fa-fw fa-dot-circle discreet" aria-hidden="true" ></i>, %s <i class="fa fa-fw fa-gift " aria-hidden="true" ></i>)/<i class="fa fa-fw fa-dropbox" aria-hidden="true" ></i>',
-                '<b>'.$data['Part Units Per Package'].'</b>', '<b>'.$units_per_carton.'</b>', '<b>'.$skos_per_carton.'</b>'
+                '<b>'.$data['Part Units Per Package'].'</b>', '<b>'.$data['Part Units Per Package'] * $data['Supplier Part Packages Per Carton'].'</b>', '<b>'.$data['Supplier Part Packages Per Carton'].'</b>'
             );
+
+
+            /*
 
             if (!$data['Supplier Delivery Key']) {
 
-                $delivery_qty = $data['Purchase Order Quantity'];
+                $delivery_qty = $data['Purchase Order Submitted Units'];
 
                 $delivery_quantity = sprintf(
                     '<span class="delivery_quantity" id="delivery_quantity_%d" key="%d" item_key="%d" item_historic_key=%d on="1" ><input class="order_qty width_50" value="%s" ovalue="%s"> <i onClick="save_item_qty_change(this)" class="fa  fa-minus fa-fw button" aria-hidden="true"></i></span>',
@@ -252,10 +259,12 @@ function client_order_items($_data, $db, $user, $account) {
                 );
             } else {
                 $delivery_quantity = number(
-                    $data['Supplier Delivery Quantity']
+                    $data['Supplier Delivery Units']
                 );
 
             }
+
+            */
 
 
             $description = ($data['Supplier Part Reference'] != $data['Part Reference'] ? $data['Part Reference'].', ' : '').$data['Supplier Part Description'];
@@ -271,11 +280,11 @@ function client_order_items($_data, $db, $user, $account) {
                         );
             */
             $quantity = sprintf(
-                '<span    data-settings=\'{"field": "Purchase Order Quantity", "transaction_key":"%d","item_key":%d, "item_historic_key":%d ,"on":1 }\'   >
+                '<span    data-settings=\'{"field": "Purchase Order Submitted Units", "transaction_key":"%d","item_key":%d, "item_historic_key":%d ,"on":1 }\'   >
                 <i onClick="save_item_qty_change(this)" class="fa minus  fa-minus fa-fw button" aria-hidden="true"></i>
                 <input class="order_qty width_50" style="text-align: center" value="%s" ovalue="%s"> 
                 <i onClick="save_item_qty_change(this)" class="fa plus  fa-plus fa-fw button" aria-hidden="true"></i></span>', $data['Purchase Order Transaction Fact Key'], $data['Supplier Part Key'], $data['Supplier Part Historic Key'],
-                $data['Purchase Order Quantity'] + 0, $data['Purchase Order Quantity'] + 0
+                $data['Purchase Order Submitted Units'] + 0, $data['Purchase Order Submitted Units'] + 0
             );
 
             if ($data['Part Main Image Key'] != 0) {
@@ -348,19 +357,19 @@ function client_order_items($_data, $db, $user, $account) {
                 'packing' => $packing,
 
                 'packed_in'        => $data['Part Units Per Package'],
-                'units_per_carton' => $units_per_carton,
-                'sko_per_carton'   => $skos_per_carton,
+                'units_per_carton' => $data['Part Units Per Package'] * $data['Supplier Part Packages Per Carton'],
+                'sko_per_carton'   => $data['Supplier Part Packages Per Carton'],
 
-                'description'       => $description,
-                'quantity'          => $quantity,
-                'delivery_quantity' => $delivery_quantity,
-                'subtotals'         => $subtotals,
-                'ordered'           => number($data['Purchase Order Quantity']),
-                'supplier'          => sprintf('<span class="link" onclick="change_view(\'supplier/%d\')">%s</span>', $data['Supplier Key'], $data['Supplier Code']),
-                'unit_cost'         => money($data['Supplier Part Unit Cost'], $purchase_order->get('Purchase Order Currency Code')),
-                'qty_units'         => number($units_per_carton * $data['Purchase Order Quantity']),
-                'qty_cartons'       => number($data['Purchase Order Quantity']),
-                'amount'            => money($data['Supplier Part Unit Cost'] * $data['Purchase Order Quantity'] * $units_per_carton, $purchase_order->get('Purchase Order Currency Code')),
+                'description' => $description,
+                'quantity'    => $quantity,
+                //   'delivery_quantity' => $delivery_quantity,
+                'subtotals'   => $subtotals,
+                'ordered'     => number($data['Purchase Order Submitted Units']),
+                'supplier'    => sprintf('<span class="link" onclick="change_view(\'supplier/%d\')">%s</span>', $data['Supplier Key'], $data['Supplier Code']),
+                'unit_cost'   => money($data['Supplier Part Unit Cost'], $purchase_order->get('Purchase Order Currency Code')),
+                'qty_units'   => number($data['Purchase Order Submitted Units']),
+                'qty_cartons' => number($data['Purchase Order Submitted Units'] / $data['Part Units Per Package'] / $data['Supplier Part Packages Per Carton']),
+                'amount'      => $amount,
 
                 'barcode'     => $data['Part Barcode Number'],
                 'sko_barcode' => $data['Part SKO Barcode'],
@@ -478,7 +487,7 @@ function agent_supplier_order_items($_data, $db, $user, $account) {
 
     $sql        = "select $fields from $table $where $wheref order by $order $order_direction limit $start_from,$number_results";
     $table_data = array();
-    $exchange   = -1;
+   // $exchange   = -1;
 
     if ($result = $db->query($sql)) {
         foreach ($result as $data) {
@@ -489,16 +498,14 @@ function agent_supplier_order_items($_data, $db, $user, $account) {
 
 
             $subtotals = sprintf('<span  class="subtotals" style="font-size:90%%"  >');
-            if ($data['Purchase Order Quantity'] > 0) {
+            if ($data['Purchase Order Submitted Units'] > 0) {
 
-                $subtotals .= $data['Purchase Order Quantity'] * $units_per_carton.'u. '.$data['Purchase Order Quantity'] * $skos_per_carton.'pkg. ';
+                $subtotals .= $data['Purchase Order Submitted Units'] .'u. '.$data['Purchase Order Submitted Units'] * $data['Part Units Per Package'] .'pkg. ';
 
 
-                $amount = $data['Purchase Order Quantity'] * $units_per_carton * $data['Supplier Part Unit Cost'];
+                $amount = $data['Purchase Order Submitted Units'] * $units_per_carton * $data['Supplier Part Unit Cost'];
 
-                $subtotals .= money(
-                    $amount, $purchase_order->get('Purchase Order Currency Code')
-                );
+                $subtotals .= money($amount, $purchase_order->get('Purchase Order Currency Code'));
 
                 if ($data['Supplier Part Currency Code'] != $account->get(
                         'Account Currency'
@@ -513,12 +520,12 @@ function agent_supplier_order_items($_data, $db, $user, $account) {
 
                 if ($data['Part Package Weight'] > 0) {
                     $subtotals .= ' | '.weight(
-                            $data['Part Package Weight'] * $data['Purchase Order Quantity'] * $data['Supplier Part Packages Per Carton']
+                            $data['Part Package Weight'] * $data['Purchase Order Submitted Units'] / $data['Part Units Per Package']
                         );
                 }
                 if ($data['Supplier Part Carton CBM'] > 0) {
                     $subtotals .= ' | '.number(
-                            $data['Purchase Order Quantity'] * $data['Supplier Part Carton CBM']
+                            $data['Purchase Order Submitted Units'] * $data['Supplier Part Carton CBM']/ $data['Part Units Per Package']/$data['Supplier Part Packages Per Carton']
                         ).' m³';
                 }
             }
@@ -532,7 +539,7 @@ function agent_supplier_order_items($_data, $db, $user, $account) {
 
             if (!$data['Supplier Delivery Key']) {
 
-                $delivery_qty = $data['Purchase Order Quantity'];
+                $delivery_qty = $data['Purchase Order Submitted Units'];
 
                 $delivery_quantity = sprintf(
                     '<span class="delivery_quantity" id="delivery_quantity_%d" key="%d" item_key="%d" item_historic_key=%d on="1" ><input class="order_qty width_50" value="%s" ovalue="%s"> <i onClick="save_item_qty_change(this)" class="fa  fa-minus fa-fw button" aria-hidden="true"></i></span>',
@@ -540,7 +547,7 @@ function agent_supplier_order_items($_data, $db, $user, $account) {
                 );
             } else {
                 $delivery_quantity = number(
-                    $data['Supplier Delivery Quantity']
+                    $data['Supplier Delivery Units']
                 );
 
             }
@@ -550,11 +557,11 @@ function agent_supplier_order_items($_data, $db, $user, $account) {
 
 
             $quantity = sprintf(
-                '<span    data-settings=\'{"field": "Purchase Order Quantity", "transaction_key":"%d","item_key":%d, "item_historic_key":%d ,"on":1 }\'   >
+                '<span    data-settings=\'{"field": "Purchase Order Submitted Units", "transaction_key":"%d","item_key":%d, "item_historic_key":%d ,"on":1 }\'   >
                 <i onClick="save_item_qty_change(this)" class="fa minus  fa-minus fa-fw button" aria-hidden="true"></i>
                 <input class="order_qty width_50" style="text-align: center" value="%s" ovalue="%s"> 
                 <i onClick="save_item_qty_change(this)" class="fa plus  fa-plus fa-fw button" aria-hidden="true"></i></span>', $data['Purchase Order Transaction Fact Key'], $data['Supplier Part Key'], $data['Supplier Part Historic Key'],
-                $data['Purchase Order Quantity'] + 0, $data['Purchase Order Quantity'] + 0
+                $data['Purchase Order Submitted Units'] + 0, $data['Purchase Order Submitted Units'] + 0
             );
 
             if ($data['Part Main Image Key'] != 0) {
@@ -584,7 +591,6 @@ function agent_supplier_order_items($_data, $db, $user, $account) {
             $state = '<span class="transaction_state_'.$data['Purchase Order Transaction Fact Key'].'">';
             $state .= $_state;
             $state .= '</span>';
-
 
 
             $xhtml_materials = '';
@@ -625,7 +631,6 @@ function agent_supplier_order_items($_data, $db, $user, $account) {
             }
 
 
-
             $table_data[] = array(
 
                 'id'                => (integer)$data['Purchase Order Transaction Fact Key'],
@@ -652,18 +657,18 @@ function agent_supplier_order_items($_data, $db, $user, $account) {
                 'quantity'           => $quantity,
                 'delivery_quantity'  => $delivery_quantity,
                 'subtotals'          => $subtotals,
-                'ordered'            => number($data['Purchase Order Quantity']),
+                'ordered'            => number($data['Purchase Order Submitted Units']),
                 'supplier'           => sprintf('<span class="link" onclick="change_view(\'supplier/%d\')">%s</span>', $data['Supplier Key'], $data['Supplier Code']),
                 'unit_cost'          => money($data['Supplier Part Unit Cost'], $purchase_order->get('Agent Supplier Purchase Order Currency Code')),
-                'qty_units'          => number($units_per_carton * $data['Purchase Order Quantity']),
-                'qty_cartons'        => number($data['Purchase Order Quantity']),
-                'amount'             => money($data['Supplier Part Unit Cost'] * $data['Purchase Order Quantity'] * $units_per_carton, $purchase_order->get('Agent Supplier Purchase Order Currency Code')),
+                'qty_units'          => number($units_per_carton * $data['Purchase Order Submitted Units']),
+                'qty_cartons'        => number($data['Purchase Order Submitted Units']),
+                'amount'             => money($data['Supplier Part Unit Cost'] * $data['Purchase Order Submitted Units'] * $units_per_carton, $purchase_order->get('Agent Supplier Purchase Order Currency Code')),
                 'state'              => $state,
                 'back_operations'    => $back_operations,
                 'forward_operations' => $forward_operations,
-                'barcode'     => $data['Part Barcode Number'],
-                'sko_barcode' => $data['Part SKO Barcode'],
-                'materials'   => $xhtml_materials
+                'barcode'            => $data['Part Barcode Number'],
+                'sko_barcode'        => $data['Part SKO Barcode'],
+                'materials'          => $xhtml_materials
 
             );
 
@@ -815,7 +820,7 @@ function agent_items_in_warehouse($_data, $db, $user, $account) {
                     break;
             }
 
-            $quantity = number($data['Purchase Order Quantity']);
+            $quantity = number($data['Purchase Order Submitted Units']);
 
 
             $units_per_carton = $data['Part Units Per Package'] * $data['Supplier Part Packages Per Carton'];
@@ -823,12 +828,12 @@ function agent_items_in_warehouse($_data, $db, $user, $account) {
 
 
             $subtotals = sprintf('<span  class="subtotals" style="font-size:90%%"  >');
-            if ($data['Purchase Order Quantity'] > 0) {
+            if ($data['Purchase Order Submitted Units'] > 0) {
 
-                $subtotals .= $data['Purchase Order Quantity'] * $units_per_carton.'u. '.$data['Purchase Order Quantity'] * $skos_per_carton.'pkg. ';
+                $subtotals .= $data['Purchase Order Submitted Units'] * $units_per_carton.'u. '.$data['Purchase Order Submitted Units'] * $skos_per_carton.'pkg. ';
 
 
-                $amount = $data['Purchase Order Quantity'] * $units_per_carton * $data['Supplier Part Unit Cost'];
+                $amount = $data['Purchase Order Submitted Units'] * $units_per_carton * $data['Supplier Part Unit Cost'];
 
                 $subtotals .= money(
                     $amount, $purchase_order->get('Purchase Order Currency Code')
@@ -847,12 +852,12 @@ function agent_items_in_warehouse($_data, $db, $user, $account) {
 
                 if ($data['Part Package Weight'] > 0) {
                     $subtotals .= ' | '.weight(
-                            $data['Part Package Weight'] * $data['Purchase Order Quantity'] * $data['Supplier Part Packages Per Carton']
+                            $data['Part Package Weight'] * $data['Purchase Order Submitted Units'] * $data['Supplier Part Packages Per Carton']
                         );
                 }
                 if ($data['Supplier Part Carton CBM'] > 0) {
                     $subtotals .= ' | '.number(
-                            $data['Purchase Order Quantity'] * $data['Supplier Part Carton CBM']
+                            $data['Purchase Order Submitted Units'] * $data['Supplier Part Carton CBM']
                         ).' m³';
                 }
             }
@@ -866,7 +871,7 @@ function agent_items_in_warehouse($_data, $db, $user, $account) {
 
             if (!$data['Supplier Delivery Key']) {
 
-                $delivery_qty = $data['Purchase Order Quantity'];
+                $delivery_qty = $data['Purchase Order Submitted Units'];
 
                 $delivery_quantity = sprintf(
                     '<span class="delivery_quantity" id="delivery_quantity_%d" key="%d" item_key="%d" item_historic_key=%d on="1" ><input class="order_qty width_50" value="%s" ovalue="%s"> <i onClick="save_item_qty_change(this)" class="fa  fa-minus fa-fw button" aria-hidden="true"></i></span>',
@@ -874,7 +879,7 @@ function agent_items_in_warehouse($_data, $db, $user, $account) {
                 );
             } else {
                 $delivery_quantity = number(
-                    $data['Supplier Delivery Quantity']
+                    $data['Supplier Delivery Units']
                 );
 
             }
@@ -893,11 +898,11 @@ function agent_items_in_warehouse($_data, $db, $user, $account) {
                         );
             */
             $quantity = sprintf(
-                '<span    data-settings=\'{"field": "Purchase Order Quantity", "transaction_key":"%d","item_key":%d, "item_historic_key":%d ,"on":1 }\'   >
+                '<span    data-settings=\'{"field": "Purchase Order Submitted Units", "transaction_key":"%d","item_key":%d, "item_historic_key":%d ,"on":1 }\'   >
                 <i onClick="save_item_qty_change(this)" class="fa minus  fa-minus fa-fw button" aria-hidden="true"></i>
                 <input class="order_qty width_50" style="text-align: center" value="%s" ovalue="%s"> 
                 <i onClick="save_item_qty_change(this)" class="fa plus  fa-plus fa-fw button" aria-hidden="true"></i></span>', $data['Purchase Order Transaction Fact Key'], $data['Supplier Part Key'], $data['Supplier Part Historic Key'],
-                $data['Purchase Order Quantity'] + 0, $data['Purchase Order Quantity'] + 0
+                $data['Purchase Order Submitted Units'] + 0, $data['Purchase Order Submitted Units'] + 0
             );
 
             if ($data['Part Main Image Key'] != 0) {
@@ -954,12 +959,12 @@ function agent_items_in_warehouse($_data, $db, $user, $account) {
                 'quantity'           => $quantity,
                 'delivery_quantity'  => $delivery_quantity,
                 'subtotals'          => $subtotals,
-                'ordered'            => number($data['Purchase Order Quantity']),
+                'ordered'            => number($data['Purchase Order Submitted Units']),
                 'supplier'           => sprintf('<span class="link" onclick="change_view(\'supplier/%d\')">%s</span>', $data['Supplier Key'], $data['Supplier Code']),
                 'unit_cost'          => money($data['Supplier Part Unit Cost'], $purchase_order->get('Agent Supplier Purchase Order Currency Code')),
-                'qty_units'          => number($units_per_carton * $data['Purchase Order Quantity']),
-                'qty_cartons'        => number($data['Purchase Order Quantity']),
-                'amount'             => money($data['Supplier Part Unit Cost'] * $data['Purchase Order Quantity'] * $units_per_carton, $purchase_order->get('Agent Supplier Purchase Order Currency Code')),
+                'qty_units'          => number($units_per_carton * $data['Purchase Order Submitted Units']),
+                'qty_cartons'        => number($data['Purchase Order Submitted Units']),
+                'amount'             => money($data['Supplier Part Unit Cost'] * $data['Purchase Order Submitted Units'] * $units_per_carton, $purchase_order->get('Agent Supplier Purchase Order Currency Code')),
                 'state'              => $state,
                 'back_operations'    => $back_operations,
                 'forward_operations' => $forward_operations

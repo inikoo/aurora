@@ -42,11 +42,21 @@ cell: "html"
 name: "total_amount",
 label: "{t}Total{/t}",
 editable: false,
-defaultOrder:1,
-sortType: "toggle",
-{if $sort_key=='total_amount'}direction: '{if $sort_order==1}descending{else}ascending{/if}',{/if}
+sortable: false,
+
 cell: Backgrid.HtmlCell.extend({ className: "aright"} ),
 headerCell: integerHeaderCell
-}]
+},
+{
+name: "total_ac_amount",
+label: "{t}Total AC{/t}",
+editable: false,
+defaultOrder:1,
+sortType: "toggle",
+{if $sort_key=='total_ac_amount'}direction: '{if $sort_order==1}descending{else}ascending{/if}',{/if}
+cell: Backgrid.HtmlCell.extend({ className: "aright"} ),
+headerCell: integerHeaderCell
+}
+]
 
 function change_table_view(view,save_state){}

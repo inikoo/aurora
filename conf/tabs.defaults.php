@@ -1622,7 +1622,7 @@ $tab_defaults = array(
 
 
     'supplier.order.all_supplier_parts' => array(
-        'view'        => 'overview',
+        'view'        => 'cartons',
         'sort_key'    => 'reference',
         'sort_order'  => 1,
         'rpp'         => 100,
@@ -1682,7 +1682,7 @@ $tab_defaults = array(
 
     ),
     'supplier.order.items_in_process'              => array(
-        'view'          => 'ordering',
+        'view'          => 'cartons',
         'sort_key'      => 'id',
         'sort_order'    => 1,
         'rpp'           => 1000,
@@ -1784,6 +1784,15 @@ $tab_defaults = array(
     ),
 
     'supplier.delivery.items'           => array(
+        'view'        => 'overview',
+        'sort_key'    => 'id',
+        'sort_order'  => 1,
+        'rpp'         => 1000,
+        'rpp_options' => $default_rrp_options,
+        'f_field'     => 'code',
+
+    ),
+    'supplier.delivery.items_mismatch'           => array(
         'view'        => 'overview',
         'sort_key'    => 'id',
         'sort_order'  => 1,

@@ -663,7 +663,7 @@ function place_part($account, $db, $user, $editor, $data, $smarty) {
 
 
     $sql = sprintf(
-        'SELECT `Supplier Delivery Extra Cost Amount`,`Supplier Delivery Extra Cost Account Currency Amount`,`Supplier Delivery Key`,`Part Units Per Package`,`Supplier Part Unit Extra Cost`,`Supplier Part Unit Cost`,`Supplier Part Currency Code`,POTF.`Currency Code`,SP.`Supplier Part Key`,`Supplier Part Unit Extra Cost Percentage`,`Supplier Delivery Quantity`,`Supplier Delivery Net Amount`,`Purchase Order Transaction Fact Key`,`Supplier Delivery Checked Quantity`,`Supplier Delivery Placed Quantity` ,`Supplier Part Packages Per Carton` FROM	
+        'SELECT `Supplier Delivery Extra Cost Amount`,`Supplier Delivery Extra Cost Account Currency Amount`,`Supplier Delivery Key`,`Part Units Per Package`,`Supplier Part Unit Extra Cost`,`Supplier Part Unit Cost`,`Supplier Part Currency Code`,POTF.`Currency Code`,SP.`Supplier Part Key`,`Supplier Part Unit Extra Cost Percentage`,`Supplier Delivery Units`,`Supplier Delivery Net Amount`,`Purchase Order Transaction Fact Key`,`Supplier Delivery Checked Units`,`Supplier Delivery Placed Units` ,`Supplier Part Packages Per Carton` FROM	
   `Purchase Order Transaction Fact` POTF
 LEFT JOIN `Supplier Part Historic Dimension` SPH ON (POTF.`Supplier Part Historic Key`=SPH.`Supplier Part Historic Key`)
  LEFT JOIN  `Supplier Part Dimension` SP ON (POTF.`Supplier Part Key`=SP.`Supplier Part Key`)
@@ -678,8 +678,8 @@ LEFT JOIN `Supplier Part Historic Dimension` SPH ON (POTF.`Supplier Part Histori
         if ($row = $result->fetch()) {
 
 
-            if ($row['Supplier Delivery Placed Quantity'] == '') {
-                $row['Supplier Delivery Placed Quantity'] = 0;
+            if ($row['Supplier Delivery Placed Units'] == '') {
+                $row['Supplier Delivery Placed Units'] = 0;
             }
 
 
@@ -702,10 +702,10 @@ LEFT JOIN `Supplier Part Historic Dimension` SPH ON (POTF.`Supplier Part Histori
             // $data['qty'] <--- SKOs
             //
 
-            $cartons_qty_placed=$data['qty'] / $row['Supplier Part Packages Per Carton'];
+            $units_qty_placed=$data['qty'] * $row['Part Units Per Package'];
 
 
-            if (round($cartons_qty_placed, 2) > round($row['Supplier Delivery Checked Quantity'] - $row['Supplier Delivery Placed Quantity'], 2)) {
+            if (round($units_qty_placed, 2) > round($row['Supplier Delivery Checked Units'] - $row['Supplier Delivery Placed Units'], 2)) {
                 $response = array(
                     'state' => 400,
                     'msg'   => _('Placement quantity greater than the checked quantity')
@@ -715,19 +715,19 @@ LEFT JOIN `Supplier Part Historic Dimension` SPH ON (POTF.`Supplier Part Histori
             }
 
 
-            // todo Supplier Delivery Quantity <-- that is Cartons!! it should be units but refactoring will be epic
 
             $exchange = $object->get('Supplier Delivery Currency Exchange');
 
             $amount_per_sko = round(
-                    ($exchange * ($row['Supplier Delivery Net Amount'] + $row['Supplier Delivery Extra Cost Amount']) + $row['Supplier Delivery Extra Cost Account Currency Amount'])
-                    / $row['Supplier Delivery Quantity'] / $row['Supplier Part Packages Per Carton'] /
-                    $row['Part Units Per Package'], 4
+                $row['Part Units Per Package']*($exchange * ($row['Supplier Delivery Net Amount'] + $row['Supplier Delivery Extra Cost Amount']) + $row['Supplier Delivery Extra Cost Account Currency Amount'])/$row['Supplier Delivery Checked Units']
+                    , 4
             );
 
 
             if ($account->get('Account Add Stock Value Type') == 'Last Price') {
 
+
+                /*
 
                 $part_location->part->update(array('Part Cost in Warehouse' => $amount_per_sko), 'no_history');
 
@@ -746,7 +746,7 @@ LEFT JOIN `Supplier Part Historic Dimension` SPH ON (POTF.`Supplier Part Histori
 
                 }
 
-
+                */
                 $oif_key = $part_location->add_stock(
                     array(
                         'Quantity' => $data['qty'],
@@ -793,7 +793,7 @@ LEFT JOIN `Supplier Part Historic Dimension` SPH ON (POTF.`Supplier Part Histori
             );
 
 
-            $result_placement = $object->update_item_delivery_placed_quantity($_data);
+            $result_placement = $object->update_item_delivery_placed_skos($_data);
 
             if ($object->error) {
                 $response = array(

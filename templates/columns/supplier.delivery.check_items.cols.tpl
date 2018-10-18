@@ -104,13 +104,13 @@ sortType: "toggle",
 cell: Backgrid.HtmlCell.extend({ className: "aright"} ),
 headerCell: integerHeaderCell
 }, {
-name: "c_sko_u",
-label: "{t}C/SKO/U{/t}",
+name: "items_qty",
+label: "{t}Delivered quantity{/t}",
 renderable: {if $data['_object']->get('State Index')>=40}true{else}false{/if},
 defaultOrder:1,
 editable: false,
 sortType: "toggle",
-{if $sort_key=='quantity'}direction: '{if $sort_order==1}descending{else}ascending{/if}',{/if}
+{if $sort_key=='items_qty'}direction: '{if $sort_order==1}descending{else}ascending{/if}',{/if}
 cell: Backgrid.HtmlCell.extend( ),
 
 }, {
@@ -159,12 +159,12 @@ function change_table_view(view, save_state) {
 grid.columns.findWhere({ name: 'placement_notes'} ).set("renderable", false)
 
 grid.columns.findWhere({ name: 'description'} ).set("renderable", false)
-grid.columns.findWhere({ name: 'c_sko_u'} ).set("renderable", false)
+grid.columns.findWhere({ name: 'items_qty'} ).set("renderable", false)
 
 
 if(view=='overview'){
 grid.columns.findWhere({ name: 'description'} ).set("renderable", true)
-grid.columns.findWhere({ name: 'c_sko_u'} ).set("renderable", true)
+grid.columns.findWhere({ name: 'items_qty'} ).set("renderable", true)
 } else if(view=='placement_notes'){
 grid.columns.findWhere({ name: 'placement_notes'} ).set("renderable", true)
 }

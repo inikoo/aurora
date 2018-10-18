@@ -50,7 +50,7 @@
 
         {/if}
 
-        <link href="/css/app.css?v180621" rel="stylesheet">
+        <link href="/css/app.css?v181017v5" rel="stylesheet">
 
 
 
@@ -82,7 +82,7 @@
         <script src="/js/help.js?v180124v4"></script>
         <script src="/js/app.js?v180718v3d4"></script>
         <script src="/js/keyboard_shortcuts.js"></script>
-        <script src="/js/barcode_scanner.js?v1712v2"></script>
+        <script src="/js/barcode_scanner.js?v181017"></script>
         <script src="/js/search.js"></script>
         <script src="/js/table.js?v201808v1"></script>
         <script src="/js/validation.js?v171206v5"></script>
@@ -93,9 +93,9 @@
 
         <script src="/js/edit_webpage_edit.js?v180411v1"></script>
         <script src="/js/new.js?v180612"></script>
-        <script src="/js/order.common.js?v180629v2"></script>
+        <script src="/js/order.common.js?v181017"></script>
         <script src="/js/email_campaign.common.js?v180611v3"></script>
-        <script src="/js/supplier.order.js?v2"></script>
+        <script src="/js/supplier.order.js?v3"></script>
         <script src="/js/supplier.delivery.js?v2"></script>
         <script src="/js/part_locations.edit.js?v=20180319"></script>
         <script src="/js/alert_dial.js?v20180128v2"></script>

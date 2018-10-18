@@ -439,7 +439,7 @@
                 {foreach from=$part->get('Next Deliveries Data') item=next_delivery }
                     <tr class="main ">
                         <td>{$next_delivery.formatted_link}</td>
-                        <td>{$next_delivery.date}</td>
+                        <td>{$next_delivery.formatted_state}</td>
                         <td class="aright highlight">{$next_delivery.qty}</td>
                     </tr>
                 {/foreach}

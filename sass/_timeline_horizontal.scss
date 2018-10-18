@@ -99,7 +99,7 @@
   }
 
   .truck:after {
-    font-family: Font Awesome 5 Pro;
+    font-family: "Font Awesome 5 Pro";
     content: "\f0d1";
 
     width: 20px;
@@ -152,18 +152,30 @@
   .li.complete .dot, .li.complete .truck {
     border-top: 2px solid #66DC71;
   }
+
+  .li.semi_complete .dot, .li.semi_complete .truck {
+    border-top: 2px dashed #66DC71;
+  }
+
+  .li.semi_complete .dot:after {
+    background-color: #66DC71;
+    border: 1px dashed #66DC71;
+    transition: all 200ms ease-in;
+  }
+
   .li.complete .dot:after {
     background-color: #66DC71;
     border: 1px solid #66DC71;
     transition: all 200ms ease-in;
   }
 
-  .li.complete .truck:after {
+
+  .li.complete .truck:after,.li.semi_complete .truck:after {
     color: #777;
     transition: all 200ms ease-in;
   }
 
-  .li.complete .label span {
+  .li.complete .label span,.li.semi_complete .label span {
     color: #888;
   }
 

@@ -10,7 +10,7 @@ renderable: false
 },
 {
 name: "reference",
-label: "{t}Code{/t}",
+label: "{t}S. Code{/t}",
 editable: false,
 cell: Backgrid.HtmlCell.extend({
 })
@@ -21,94 +21,47 @@ label: "{t}Image{/t}",
 editable: false,
 sortable: false,
 
-cell: Backgrid.HtmlCell.extend({
-})
-},
-{
-name: "description",
-label: "{t}Carton description{/t}",
-editable: false,
 cell: "html"
 
 },
 {
-name: "unit_description",
+name: "description_units",
 label: "{t}Unit description{/t}",
 editable: false,
 cell: "html"
 
 },
-
 {
-name: "description_sales",
+name: "description_skos",
+label: "{t}SKO description{/t}",
+editable: false,
+cell: "html"
+
+},{
+name: "description_cartons",
 label: "{t}Carton description{/t}",
 editable: false,
 cell: "html"
 
 },
+
 {
-name: "unit",
-label: "{t}Unit description{/t}",
+name: "other_deliveries_units",
+label: "{t}Other deliveries{/t}",
 editable: false,
 cell: "html"
-},
 
+},
 {
-name: "unit_cost",
-label: "{t}Unit cost{/t}",
+name: "other_deliveries_skos",
+label: "{t}Other deliveries{/t}",
 editable: false,
 cell: "html"
-},
-{
-name: "units_per_sko",
-label: "U/SKO",
-editable: false,
-cell: "html"
-},
 
-{
-name: "skos_per_carton",
-label: "SKOs/C",
-editable: false,
-cell: "html"
-},
-
-{
-name: "ordered_skos",
-label: "{t}SKOs{/t}",
-defaultOrder:1,
-editable: false,
-sortType: "toggle",
-{if $sort_key=='ordered_skos'}direction: '{if $sort_order==1}descending{else}ascending{/if}',{/if}
-cell: Backgrid.HtmlCell.extend({ className: "aright"} ),
-headerCell: integerHeaderCell
 },
 {
-name: "ordered_cartons",
-label: "{t}Cartons{/t}",
-defaultOrder:1,
-editable: false,
-sortType: "toggle",
-{if $sort_key=='ordered_cartons'}direction: '{if $sort_order==1}descending{else}ascending{/if}',{/if}
-cell: Backgrid.HtmlCell.extend({ className: "aright"} ),
-headerCell: integerHeaderCell
-},
-{
-name: "quantity",
-label: "{t}Cartons{/t}",
-renderable: {if $data['_object']->get('Purchase Order State')=='InProcess'}true{else}false{/if},
-defaultOrder:1,
-editable: false,
-sortType: "toggle",
-{if $sort_key=='quantity'}direction: '{if $sort_order==1}descending{else}ascending{/if}',{/if}
-cell: Backgrid.HtmlCell.extend({ className: "aright"} ),
-headerCell: integerHeaderCell
-},
-
-
-{
-name: "info",
-label: "{t}Info{/t}",
+name: "other_deliveries_cartons",
+label: "{t}Other deliveries{/t}",
 editable: false,
 cell: "html"
 
@@ -124,29 +77,8 @@ cell: Backgrid.HtmlCell.extend({ className: ""} ),
 
 },
 {
-name: "quantity",
-label: "{t}Cartons{/t}",
-renderable: {if $data['_object']->get('Purchase Order State')=='InProcess'}true{else}false{/if},
-defaultOrder:1,
-editable: false,
-sortType: "toggle",
-{if $sort_key=='quantity'}direction: '{if $sort_order==1}descending{else}ascending{/if}',{/if}
-cell: Backgrid.HtmlCell.extend({ className: "aright"} ),
-headerCell: integerHeaderCell
-}, {
-name: "ordered",
-label: "{t}Cartons{/t}",
-renderable: {if $data['_object']->get('Purchase Order State')!='InProcess'}true{else}false{/if},
-defaultOrder:1,
-editable: false,
-sortType: "toggle",
-{if $sort_key=='ordered'}direction: '{if $sort_order==1}descending{else}ascending{/if}',{/if}
-cell: Backgrid.HtmlCell.extend({ className: "aright"} ),
-headerCell: integerHeaderCell
-}, {
-name: "delivery_quantity",
-label: "{t}Delivery{/t}",
-renderable: false,
+name: "quantity_units",
+label: "{t}Units{/t}",
 defaultOrder:1,
 editable: false,
 sortType: "toggle",
@@ -155,78 +87,79 @@ cell: Backgrid.HtmlCell.extend({ className: "aright"} ),
 headerCell: integerHeaderCell
 },
 {
-name: "amount",
-label: "{t}Amount{/t}",
-renderable: false,
+name: "quantity_skos",
+label: "{t}SKOs{/t}",
 defaultOrder:1,
 editable: false,
 sortType: "toggle",
-{if $sort_key=='amount'}direction: '{if $sort_order==1}descending{else}ascending{/if}',{/if}
+{if $sort_key=='quantity'}direction: '{if $sort_order==1}descending{else}ascending{/if}',{/if}
 cell: Backgrid.HtmlCell.extend({ className: "aright"} ),
 headerCell: integerHeaderCell
 },
 {
-name: "state",
-label: "{t}State{/t}",
+name: "quantity_cartons",
+label: "{t}Cartons{/t}",
 defaultOrder:1,
 editable: false,
-sortType: "state",
-{if $sort_key=='amount'}direction: '{if $sort_order==1}descending{else}ascending{/if}',{/if}
+sortType: "toggle",
+{if $sort_key=='quantity'}direction: '{if $sort_order==1}descending{else}ascending{/if}',{/if}
 cell: Backgrid.HtmlCell.extend({ className: "aright"} ),
 headerCell: integerHeaderCell
 }
-
 
 ]
 
+
 function change_table_view(view, save_state) {
 
-grid.columns.findWhere({ name: 'unit_description'} ).set("renderable", false)
+$('.view').removeClass('selected');
+$('#view_'+view).addClass('selected');
 
-grid.columns.findWhere({ name: 'description'} ).set("renderable", false)
-grid.columns.findWhere({ name: 'description_sales'} ).set("renderable", false)
-grid.columns.findWhere({ name: 'unit'} ).set("renderable", false)
-grid.columns.findWhere({ name: 'units_per_sko'} ).set("renderable", false)
 
-grid.columns.findWhere({ name: 'skos_per_carton'} ).set("renderable", false)
-
-grid.columns.findWhere({ name: 'unit_cost'} ).set("renderable", false)
-grid.columns.findWhere({ name: 'quantity'} ).set("renderable", false)
-grid.columns.findWhere({ name: 'info'} ).set("renderable", false)
-grid.columns.findWhere({ name: 'subtotals'} ).set("renderable", false)
-grid.columns.findWhere({ name: 'ordered'} ).set("renderable", false)
-
-grid.columns.findWhere({ name: 'ordered_skos'} ).set("renderable", false)
-grid.columns.findWhere({ name: 'ordered_cartons'} ).set("renderable", false)
-grid.columns.findWhere({ name: 'amount'} ).set("renderable", false)
-grid.columns.findWhere({ name: 'state'} ).set("renderable", false)
+grid.columns.findWhere({ name: 'description_units'} ).set("renderable", false)
+grid.columns.findWhere({ name: 'description_skos'} ).set("renderable", false)
+grid.columns.findWhere({ name: 'description_cartons'} ).set("renderable", false)
 
 
 
+grid.columns.findWhere({ name: 'other_deliveries_units'} ).set("renderable", false)
+grid.columns.findWhere({ name: 'other_deliveries_skos'} ).set("renderable", false)
+grid.columns.findWhere({ name: 'other_deliveries_cartons'} ).set("renderable", false)
 
-if(view=='ordering'){
-grid.columns.findWhere({ name: 'description_sales'} ).set("renderable", true)
-grid.columns.findWhere({ name: 'subtotals'} ).set("renderable", true)
-grid.columns.findWhere({ name: 'info'} ).set("renderable", true)
+
+grid.columns.findWhere({ name: 'quantity_units'} ).set("renderable", false)
+grid.columns.findWhere({ name: 'quantity_skos'} ).set("renderable", false)
+grid.columns.findWhere({ name: 'quantity_cartons'} ).set("renderable", false)
+
+
+
+
+
+if(view=='cartons'){
+grid.columns.findWhere({ name: 'description_cartons'} ).set("renderable", true)
+grid.columns.findWhere({ name: 'quantity_cartons'} ).set("renderable", true)
+grid.columns.findWhere({ name: 'other_deliveries_cartons'} ).set("renderable", true)
+
+}else if(view=='skos'){
+grid.columns.findWhere({ name: 'quantity_skos'} ).set("renderable", true)
+grid.columns.findWhere({ name: 'description_skos'} ).set("renderable", true)
+grid.columns.findWhere({ name: 'other_deliveries_skos'} ).set("renderable", true)
+
+
+}else if(view=='units'){
+grid.columns.findWhere({ name: 'description_units'} ).set("renderable", true)
+
+grid.columns.findWhere({ name: 'quantity_units'} ).set("renderable", true)
+grid.columns.findWhere({ name: 'other_deliveries_units'} ).set("renderable", true)
 
 }
 
 
 
+if(save_state){
+var request = "/ar_state.php?tipo=set_table_view&tab={$tab}&table_view=" + view
 
-{if isset($data['metadata']['create_delivery']) and $data['metadata']['create_delivery'] }
-
-    grid.columns.findWhere({
-    name: 'checkbox'
-    }).set("renderable", true)
-
-    grid.columns.findWhere({
-    name: 'operations'
-    }).set("renderable", true)
-
-    grid.columns.findWhere({
-    name: 'delivery_quantity'
-    }).set("renderable", true)
-{/if}
+$.getJSON(request, function(data) {});
+}
 
 }

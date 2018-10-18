@@ -22,7 +22,7 @@ function fork_housekeeping($job) {
 
     print_r($data);
 
-   // return true;
+    return true;
 
 
     switch ($data['type']) {

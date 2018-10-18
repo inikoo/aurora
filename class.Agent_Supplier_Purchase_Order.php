@@ -154,8 +154,8 @@ class AgentSupplierPurchaseOrder extends DB_Table {
     function update_totals() {
 
         $sql = sprintf(
-            "SELECT sum(`Purchase Order Quantity`) as cartons, sum(POTF.`Purchase Order Weight`) AS  weight,sum(if(isNULL(`Purchase Order Weight`),1,0) )AS missing_weights ,sum(if(isNULL(`Purchase Order CBM`),1,0) )AS missing_cbms , sum(`Purchase Order CBM` )AS cbm ,count( distinct POTF.`Supplier Part Key` ) AS num_items  ,
-sum(`Supplier Part Unit Cost`*`Purchase Order Quantity`*`Part Units Per Package`*`Supplier Part Packages Per Carton`) AS items_net from
+            "SELECT `Part Units Per Package`,`Supplier Part Packages Per Carton`,sum(`Purchase Order Ordering Units`) as units, sum(POTF.`Purchase Order Weight`) AS  weight,sum(if(isNULL(`Purchase Order Weight`),1,0) )AS missing_weights ,sum(if(isNULL(`Purchase Order CBM`),1,0) )AS missing_cbms , sum(`Purchase Order CBM` )AS cbm ,count( distinct POTF.`Supplier Part Key` ) AS num_items  ,
+sum(`Supplier Part Unit Cost`*`Purchase Order Ordering Units`) AS items_net from
              `Purchase Order Transaction Fact` POTF
 left join `Supplier Part Historic Dimension` SPH on (POTF.`Supplier Part Historic Key`=SPH.`Supplier Part Historic Key`)
  left join  `Supplier Part Dimension` SP on (POTF.`Supplier Part Key`=SP.`Supplier Part Key`)
@@ -172,7 +172,7 @@ left join `Supplier Part Historic Dimension` SPH on (POTF.`Supplier Part Histori
                     array(
                         'Agent Supplier Purchase Order Amount'          => $row['items_net'],
                         'Agent Supplier Purchase Order Products'        => $row['num_items'],
-                        'Agent Supplier Purchase Order Cartons'         => $row['cartons'],
+                        'Agent Supplier Purchase Order Cartons'         => $row['units']/$row['Supplier Part Packages Per Carton']/$row['Part Units Per Package'],
                         'Agent Supplier Purchase Order Weight'          => $row['weight'],
                         'Agent Supplier Purchase Order CBM'             => $row['cbm'],
                         'Agent Supplier Purchase Order Missing Weights' => $row['missing_weights'],
@@ -672,7 +672,7 @@ left join `Supplier Part Historic Dimension` SPH on (POTF.`Supplier Part Histori
             case 'CBM':
                 if ($this->data['Agent Supplier Purchase Order CBM'] == '') {
                     if ($this->get('Agent Supplier Purchase Order Products') > 0) {
-                        return '<span class="italic very_discreet">'._('Unknown CBM').'</span>';
+                        return '<span class="italic very_discreet error">'._('Unknown CBM').'</span>';
                     }
                 } else {
                     return ($this->get('Agent Supplier Purchase Order Missing CBMs') > 0 ? '<i class="fa fa-exclamation-circle warning" aria-hidden="true" title="'._("Some supplier's parts without CBM").'" ></i> ' : '').number(
@@ -858,291 +858,9 @@ left join `Supplier Part Historic Dimension` SPH on (POTF.`Supplier Part Histori
 
     }
 
-    function update_item($data) {
 
-        switch ($data['field']) {
-            case 'Agent Supplier Purchase Order Quantity':
-                return $this->update_item_quantity($data);
-                break;
 
-            default:
 
-                break;
-        }
-
-    }
-
-    function update_item_quantity($data) {
-
-
-        global $account;
-
-
-        $item_key          = $data['item_key'];
-        $item_historic_key = $data['item_historic_key'];
-        $qty               = $data['qty'];
-
-        include_once 'class.SupplierPart.php';
-        $supplier_part = new SupplierPart($item_key);
-
-
-        $date            = gmdate('Y-m-d H:i:s');
-        $transaction_key = '';
-
-        if ($qty == 0) {
-
-            $sql = sprintf(
-                "SELECT `Purchase Order Transaction Fact Key`,`Note to Supplier Locked` FROM `Purchase Order Transaction Fact` WHERE `Agent Supplier Purchase Order Key`=%d AND `Supplier Part Key`=%d ", $this->id, $item_key
-            );
-
-
-            if ($result = $this->db->query($sql)) {
-                if ($row = $result->fetch()) {
-
-                    $sql = sprintf(
-                        "DELETE FROM `Purchase Order Transaction Fact` WHERE `Purchase Order Transaction Fact Key`=%d ", $row['Purchase Order Transaction Fact Key']
-                    );
-                    $this->db->exec($sql);
-                    $transaction_key = $row['Purchase Order Transaction Fact Key'];
-
-                }
-            }
-
-
-            $amount    = 0;
-            $subtotals = '';
-
-
-        } else {
-
-
-            $amount = $qty * $supplier_part->get('Supplier Part Unit Cost') * $supplier_part->part->get('Part Units Per Package') * $supplier_part->get('Supplier Part Packages Per Carton');
-
-            $extra_amount = round($amount * floatval($supplier_part->get('Supplier Part Unit Extra Cost Percentage')) / 100, 2);
-            if (is_numeric($supplier_part->get('Supplier Part Carton CBM'))) {
-                $cbm = $qty * $supplier_part->get('Supplier Part Carton CBM');
-            } else {
-                $cbm = 'NULL';
-            }
-
-
-            if (is_numeric($supplier_part->part->get('Part Package Weight'))) {
-                $weight = $qty * $supplier_part->part->get(
-                        'Part Package Weight'
-                    ) * $supplier_part->get(
-                        'Supplier Part Packages Per Carton'
-                    );
-            } else {
-                $weight = 'NULL';
-            }
-
-
-            $sql = sprintf(
-                "SELECT `Purchase Order Transaction Fact Key`,`Note to Supplier Locked` FROM `Purchase Order Transaction Fact` WHERE `Agent Supplier Purchase Order Key`=%d AND `Supplier Part Key`=%d ", $this->id, $item_key
-            );
-
-            if ($result = $this->db->query($sql)) {
-                if ($row = $result->fetch()) {
-
-                    $sql = sprintf(
-                        "update`Purchase Order Transaction Fact` set  `Agent Supplier Purchase Order Quantity`=%f,`Agent Supplier Purchase Order Last Updated Date`=%s,
-                        `Agent Supplier Purchase Order Net Amount`=%f ,
-                        `Agent Supplier Purchase Order Extra Cost Amount`=%f ,
-                        `Agent Supplier Purchase Order CBM`=%s,`Agent Supplier Purchase Order Weight`=%s  where  `Purchase Order Transaction Fact Key`=%d ", $qty, prepare_mysql($date), $amount, $extra_amount, $cbm, $weight, $row['Purchase Order Transaction Fact Key']
-                    );
-                    $this->db->exec($sql);
-                    /*
-
-                    if ($row['Note to Supplier Locked']=='No' and $data['Note to Supplier']!='') {
-                        $sql = sprintf( "update`Purchase Order Transaction Fact` set  `Note to Supplier`=%s where  `Purchase Order Transaction Fact Key`=%d ",
-                            prepare_mysql ( $data['Note to Supplier']),
-                            $row['Purchase Order Transaction Fact Key']
-                        );
-
-                        $this->db->exec($sql);
-                    }
-    */
-                    $transaction_key = $row['Purchase Order Transaction Fact Key'];
-                } else {
-
-
-                    $item_index = 1;
-                    $sql        = sprintf(
-                        'SELECT max(`Agent Supplier Purchase Order Item Index`) item_index FROM `Purchase Order Transaction Fact` WHERE `Agent Supplier Purchase Order Key`=%d ', $this->id
-                    );
-                    if ($result2 = $this->db->query($sql)) {
-                        if ($row2 = $result2->fetch()) {
-                            if (is_numeric($row2['item_index'])) {
-                                $item_index = $row2['item_index'] + 1;
-                            }
-                        }
-                    } else {
-                        print_r($error_info = $this->db->errorInfo());
-                        exit;
-                    }
-
-
-                    $sql = sprintf(
-                        "INSERT INTO `Purchase Order Transaction Fact` (`Agent Supplier Purchase Order Item Index`,`Supplier Part Key`,`Supplier Part Historic Key`,`Currency Code`,`Agent Supplier Purchase Order Last Updated Date`,`Agent Supplier Purchase Order Transaction State`,
-					`Supplier Key`,`Agent Key`,`Agent Supplier Purchase Order Key`,`Agent Supplier Purchase Order Quantity`,`Agent Supplier Purchase Order Net Amount`,`Agent Supplier Purchase Order Extra Cost Amount`,`Note to Supplier`,`Agent Supplier Purchase Order CBM`,`Agent Supplier Purchase Order Weight`,
-					`User Key`,`Creation Date`
-					)
-					VALUES (%d,%d,%d,%s,%s,%s,
-					 %d,%s,%d,%.6f,%.2f,%.2f,%s,%s,%s,
-					 %d,%s
-					 )", $item_index, $item_key, $item_historic_key, prepare_mysql($this->get('Agent Supplier Purchase Order Currency Code')), prepare_mysql($date), prepare_mysql($this->get('Agent Supplier Purchase Order State')),
-
-                        $supplier_part->get('Supplier Part Supplier Key'), ($supplier_part->get('Supplier Part Agent Key') == ''
-                        ? 'Null'
-                        : sprintf(
-                            "%d", $supplier_part->get('Supplier Part Agent Key')
-                        )), $this->id, $qty, $amount, $extra_amount, prepare_mysql(
-                            $supplier_part->get(
-                                'Supplier Part Note to Supplier'
-                            ), false
-                        ), $cbm, $weight, $this->editor['User Key'], prepare_mysql($date)
-
-
-                    );
-                    //print $sql;
-                    $this->db->exec($sql);
-                    $transaction_key = $this->db->lastInsertId();
-
-
-                }
-
-                /*
-
-                $subtotals = money(
-                    $amount, $this->get('Agent Supplier Purchase Order Currency Code')
-                );
-
-                if ($weight > 0) {
-                    $subtotals .= ' '.weight($weight);
-                }
-                if ($cbm > 0) {
-                    $subtotals .= ' '.number($cbm).' m³';
-                }
-                */
-
-                $units_per_carton = $supplier_part->part->get('Part Units Per Package') * $supplier_part->get('Supplier Part Packages Per Carton');
-                $skos_per_carton  = $supplier_part->get('Supplier Part Packages Per Carton');
-
-                $subtotals = '';
-                if ($qty > 0) {
-
-                    $subtotals .= $qty * $units_per_carton.'u. | '.$qty * $skos_per_carton.'pkg. ';
-
-
-                    $subtotals .= ' | '.money($amount, $this->get('Agent Supplier Purchase Order Currency Code'));
-
-                    if ($this->get('Agent Supplier Purchase Order Currency Code') != $account->get(
-                            'Account Currency'
-                        )) {
-                        $subtotals .= ' <span class="">('.money(
-                                $amount * $this->get(
-                                    'Agent Supplier Purchase Order Currency Exchange'
-                                ), $account->get('Account Currency')
-                            ).')</span>';
-
-                    }
-
-                    if ($weight > 0) {
-                        $subtotals .= ' | '.weight($weight);
-                    }
-                    if ($cbm > 0) {
-                        $subtotals .= ' | '.number($cbm).' m³';
-                    }
-                }
-
-
-            } else {
-                print_r($error_info = $this->db->errorInfo());
-                exit;
-            }
-
-
-        }
-        $supplier_part->part->update_next_deliveries_data();
-        $this->update_totals();
-        $operations = array();
-
-        if ($this->get('State Index') == 10) {
-
-
-            if ($this->get('Agent Supplier Purchase Order Products') == 0) {
-                $operations = array(
-                    'delete_operations',
-                );
-            } else {
-                $operations = array(
-                    'delete_operations',
-                    'submit_operations'
-                );
-            }
-
-
-        }
-
-        /*
-        elseif ($this->get('Order State') == 'InProcess') {
-
-            if($this->get('Order Number Items')==0){
-                $operations = array(
-                    'cancel_operations',
-                    'undo_submit_operations'
-                );
-            }else{
-                $operations = array(
-                    'send_to_warehouse_operations',
-                    'cancel_operations',
-                    'undo_submit_operations'
-                );
-            }
-
-
-        } elseif ($this->get('Order State') == 'InWarehouse') {
-            $operations = array('cancel_operations');
-        } elseif ($this->get('Order State') == 'PackedDone') {
-            $operations = array(
-                'invoice_operations',
-                'cancel_operations'
-            );
-        } else {
-            $operations = array();
-        }
-        */
-
-        $this->update_metadata = array(
-            'class_html' => array(
-                'Purchase_Order_Total_Amount'                  => $this->get('Total Amount'),
-                'Purchase_Order_Total_Amount_Account_Currency' => $this->get('Total Amount Account Currency'),
-                'Purchase_Order_Weight'                        => $this->get('Weight'),
-                'Purchase_Order_CBM'                           => $this->get('CBM'),
-                'Purchase_Order_Number_Items'                  => $this->get('Number Items'),
-            ),
-            'operations' => $operations,
-        );
-
-        /*
-        if ($this->get('Agent Supplier Purchase Order Products') == 0) {
-            $this->update_metadata['hide'] = array('submit_operation');
-        } else {
-            $this->update_metadata['show'] = array('submit_operation');
-
-        }
-        */
-
-
-        return array(
-            'transaction_key' => $transaction_key,
-            'subtotals'       => $subtotals,
-            'to_charge'       => money($amount, $this->data['Agent Supplier Purchase Order Currency Code']),
-            'qty'             => $qty + 0
-        );
-
-
-    }
 
     function mark_as_confirmed($data) {
 

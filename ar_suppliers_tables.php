@@ -42,6 +42,9 @@ switch ($tipo) {
     case 'supplier.order.items':
         order_items(get_table_parameters(), $db, $user, $account);
         break;
+    case 'supplier.order.items_in_process':
+        order_items_in_process(get_table_parameters(), $db, $user, $account);
+        break;
     case 'order.items':
         agent_order_items(get_table_parameters(), $db, $user, $account);
         break;
@@ -52,10 +55,10 @@ switch ($tipo) {
         invoice_items(get_table_parameters(), $db, $user, $account);
         break;
     case 'delivery.items':
-        delivery_items(get_table_parameters(), $db, $user);
+        delivery_items(get_table_parameters(), $db, $user, $account);
         break;
     case 'delivery.checking_items':
-        delivery_checking_items(get_table_parameters(), $db, $user);
+        delivery_checking_items(get_table_parameters(), $db, $user, $account);
         break;
     case 'suppliers':
         suppliers(get_table_parameters(), $db, $user, $account);
@@ -128,6 +131,9 @@ switch ($tipo) {
         break;
     case 'delivery.items_done':
         delivery_items_done(get_table_parameters(), $db, $user, $account);
+        break;
+    case 'delivery.items_mismatch':
+        delivery_items_mismatch(get_table_parameters(), $db, $user, $account);
         break;
     default:
         $response = array(
@@ -769,7 +775,7 @@ function categories($_data, $db, $user) {
 }
 
 
-function orders($_data, $db, $user) {
+function orders($_data, $db, $user,$account) {
 
     if (!$user->can_view('suppliers')) {
         echo json_encode(
@@ -790,8 +796,12 @@ function orders($_data, $db, $user) {
     $sql        = "select $fields from $table $where $wheref order by $order $order_direction limit $start_from,$number_results";
     $table_data = array();
 
+
+
     if ($result = $db->query($sql)) {
         foreach ($result as $data) {
+
+
 
             switch ($data['Purchase Order State']) {
 
@@ -813,7 +823,7 @@ function orders($_data, $db, $user) {
                     $state = _('Delivery dispatched');
                     break;
                 case 'Received':
-                    return _('Received');
+                    $state = _('Received');
                     break;
                 case 'Checked':
                     $state = _('Checked');
@@ -830,8 +840,6 @@ function orders($_data, $db, $user) {
                 case 'Cancelled':
                     $state = _('Cancelled');
                     break;
-
-
                 default:
                     $state = $data['Purchase Order State'];
                     break;
@@ -848,7 +856,8 @@ function orders($_data, $db, $user) {
                 'date'         => strftime("%e %b %Y", strtotime($data['Purchase Order Creation Date'].' +0:00')),
                 'last_date'    => strftime("%a %e %b %Y %H:%M %Z", strtotime($data['Purchase Order Last Updated Date'].' +0:00')),
                 'state'        => $state,
-                'total_amount' => money($data['Purchase Order Total Amount'], $data['Purchase Order Currency Code'])
+                'total_amount' => money($data['Purchase Order Total Amount'], $data['Purchase Order Currency Code']),
+                'total_ac_amount' => money($data['Purchase Order Total Amount']*$data['Purchase Order Currency Exchange'], $account->get('Currency Code'))
 
 
             );
@@ -1086,13 +1095,13 @@ function deliveries($_data, $db, $user) {
                     $state = sprintf('%s', _('Checked'));
                     break;
                 case 'Placed':
-                    $state =  _('Booked in');
+                    $state = _('Booked in');
                     break;
                 case 'Costing':
-                    $state =  _('Booked in').', '._('checking costing');
+                    $state = _('Booked in').', '._('checking costing');
                     break;
                 case 'InvoiceChecked':
-                    $state =  _('Booked in').', '._('costing done').' <i class="fa fa-check success"></i>';
+                    $state = _('Booked in').', '._('costing done').' <i class="fa fa-check success"></i>';
                     break;
                 case 'Cancelled':
                     $state = sprintf('%s', _('Cancelled'));
@@ -1147,13 +1156,14 @@ function deliveries($_data, $db, $user) {
 }
 
 
-function order_items($_data, $db, $user, $account) {
+function order_items_in_process($_data, $db, $user, $account) {
 
 
     $rtext_label = 'item';
 
-    include_once 'class.PurchaseOrder.php';
-    $purchase_order = new PurchaseOrder($_data['parameters']['parent_key']);
+    include_once 'utils/supplier_order_functions.php';
+
+    $purchase_order = get_object('PurchaseOrder', $_data['parameters']['parent_key']);
 
 
     include_once 'utils/supplier_order_functions.php';
@@ -1163,30 +1173,53 @@ function order_items($_data, $db, $user, $account) {
 
     $sql        = "select $fields from $table $where $wheref order by $order $order_direction limit $start_from,$number_results";
     $table_data = array();
-    $exchange   = -1;
+    //$exchange   = -1;
 
     if ($result = $db->query($sql)) {
         foreach ($result as $data) {
 
 
+            switch ($data['Supplier Part Status']) {
+                case 'Available':
+                    $status = sprintf(
+                        '<i class="fa fa-stop success" title="%s"></i>', _('Available')
+                    );
+                    break;
+                case 'NoAvailable':
+                    $status = sprintf(
+                        '<i class="fa fa-stop warning" title="%s"></i>', _('No available')
+                    );
+
+                    break;
+                case 'Discontinued':
+                    $status = sprintf(
+                        '<i class="fa fa-ban error" title="%s"></i>', _('Discontinued')
+                    );
+
+                    break;
+                default:
+                    $status = $data['Supplier Part Status'];
+                    break;
+            }
+
             switch ($data['Part Stock Status']) {
                 case 'Surplus':
-                    $stock_status = '<i class="fa  fa-plus-circle fa-fw" aria-hidden="true" title="'._('Surplus').'" ></i>';
+                    $stock_status = '<i class="fa  fa-plus-circle fa-fw" aria-hidden="true"></i>';
                     break;
                 case 'Optimal':
-                    $stock_status = '<i class="fa fa-check-circle fa-fw" aria-hidden="true" title="'._('Optimal').'"></i>';
+                    $stock_status = '<i class="fa fa-check-circle fa-fw" aria-hidden="true"></i>';
                     break;
                 case 'Low':
-                    $stock_status = '<i class="fa fa-minus-circle fa-fw" aria-hidden="true" title="'._('Low').'"></i>';
+                    $stock_status = '<i class="fa fa-minus-circle fa-fw" aria-hidden="true"></i>';
                     break;
                 case 'Critical':
-                    $stock_status = '<i class="fa error fa-minus-circle fa-fw" aria-hidden="true" title="'._('Critical').'"></i>';
+                    $stock_status = '<i class="fa error fa-minus-circle fa-fw" aria-hidden="true"></i>';
                     break;
                 case 'Out_Of_Stock':
-                    $stock_status = '<i class="fa error fa-ban fa-fw" aria-hidden="true" title="'._('Out of stock').'"></i>';
+                    $stock_status = '<i class="fa error fa-ban fa-fw" aria-hidden="true"></i>';
                     break;
                 case 'Error':
-                    $stock_status = '<i class="fa fa-question-circle error fa-fw" aria-hidden="true" title="'._('Error').'"></i>';
+                    $stock_status = '<i class="fa fa-question-circle error fa-fw" aria-hidden="true"></i>';
                     break;
                 default:
                     $stock_status = $data['Part Stock Status'];
@@ -1194,179 +1227,25 @@ function order_items($_data, $db, $user, $account) {
             }
 
 
+            $transaction_key  = '';
             $units_per_carton = $data['Part Units Per Package'] * $data['Supplier Part Packages Per Carton'];
             $skos_per_carton  = $data['Supplier Part Packages Per Carton'];
 
 
-            $subtotals = sprintf('<span  class="subtotals" style="font-size:90%%"  >');
-            if ($data['Purchase Order Quantity'] > 0) {
-
-                $subtotals .= $data['Purchase Order Quantity'] * $units_per_carton.'u. | '.$data['Purchase Order Quantity'] * $skos_per_carton.'pkg. ';
-
-
-                $amount = $data['Purchase Order Quantity'] * $units_per_carton * $data['Supplier Part Unit Cost'];
-
-                $subtotals .= ' | '.money($amount, $purchase_order->get('Purchase Order Currency Code'));
-
-                if ($data['Supplier Part Currency Code'] != $account->get(
-                        'Account Currency'
-                    )) {
-                    $subtotals .= ' <span class="">('.money(
-                            $amount * $purchase_order->get(
-                                'Purchase Order Currency Exchange'
-                            ), $account->get('Account Currency')
-                        ).')</span>';
-
-                }
-
-                if ($data['Part Package Weight'] > 0) {
-                    $subtotals .= ' | '.weight(
-                            $data['Part Package Weight'] * $data['Purchase Order Quantity'] * $data['Supplier Part Packages Per Carton']
-                        );
-                }
-                if ($data['Supplier Part Carton CBM'] > 0) {
-                    $subtotals .= ' | '.number(
-                            $data['Purchase Order Quantity'] * $data['Supplier Part Carton CBM']
-                        ).' m³';
-                }
-            }
-            $subtotals .= '</span>';
-
-
             if (!$data['Supplier Delivery Key']) {
+                /*
+                                $delivery_qty = $data['Purchase Order Ordering Units'];
 
-                $delivery_qty = $data['Purchase Order Quantity'];
-
-                $delivery_quantity = sprintf(
-                    '<span class="delivery_quantity" id="delivery_quantity_%d" key="%d" item_key="%d" item_historic_key=%d on="1" ><input class="order_qty width_50" value="%s" ovalue="%s"> <i onClick="save_item_qty_change(this)" class="fa  fa-minus fa-fw button" aria-hidden="true"></i></span>',
-                    $data['Purchase Order Transaction Fact Key'], $data['Purchase Order Transaction Fact Key'], $data['Supplier Part Key'], $data['Supplier Part Historic Key'], $delivery_qty + 0, $delivery_qty + 0
-                );
+                                $delivery_quantity = sprintf(
+                                    '<span class="delivery_quantity" id="delivery_quantity_%d" key="%d" item_key="%d" item_historic_key=%d on="1" ><input class="order_qty width_50" value="%s" ovalue="%s"> <i onClick="save_item_qty_change(this)" class="fa  fa-minus fa-fw button" aria-hidden="true"></i></span>',
+                                    $data['Purchase Order Transaction Fact Key'], $data['Purchase Order Transaction Fact Key'], $data['Supplier Part Key'], $data['Supplier Part Historic Key'], $delivery_qty + 0, $delivery_qty + 0
+                                );
+                */
+                $delivery_quantity = '';
             } else {
-                $delivery_quantity = number(
-                    $data['Supplier Delivery Quantity']
-                );
+                $delivery_quantity = number($data['Supplier Delivery Units']);
 
             }
-
-            $carton_description = '<div style="font-size:90%" >';
-
-
-            $carton_description .= '<span class="">'.$units_per_carton.'</span><span class="discreet ">x</span> '.$data['Supplier Part Description'].'<br/> 
-             <span class="discreet">'.sprintf(_('Packed in <b>%ds</b>'), $data['Part Units Per Package']).' <span class="" title="'._('SKOs per carton').'">, pks/C: <b>'.$skos_per_carton.'</b></span>';
-
-
-            if ($data['Supplier Part Minimum Carton Order'] > 0 and $data['Supplier Part Minimum Carton Order'] != 1) {
-                $carton_description .= sprintf(
-                    ' <span class="discreet"><span title="%s">MOQ</span>:%s<span>', _('Minimum order (cartons)'), number($data['Supplier Part Minimum Carton Order'])
-                );
-            }
-
-            $description_sales = '';
-            if ($purchase_order->get('State Index') < 30) {
-
-
-                if ($data['Part On Demand'] == 'Yes') {
-
-                    $available_forecast = '<span >'.sprintf(
-                            _('%s in stock'), '<span  title="'.sprintf(
-                                                "%s %s", number(
-                                                $data['Part Days Available Forecast'], 1
-                                            ), ngettext(
-                                                    "day", "days", intval(
-                                                             $data['Part Days Available Forecast']
-                                                         )
-                                                )
-                                            ).'">'.seconds_to_until(
-                                                $data['Part Days Available Forecast'] * 86400
-                                            ).'</span>'
-                        ).'</span>';
-
-                    if ($data['Part Fresh'] == 'No') {
-                        $available_forecast .= ' <i class="fa fa-fighter-jet padding_left_5" aria-hidden="true" title="'._('On demand').'"></i>';
-                    } else {
-                        $available_forecast = ' <i class="far fa-lemon padding_left_5" aria-hidden="true" title="'._('On demand').'"></i>';
-                    }
-                } else {
-                    $available_forecast = '<span >'.sprintf(
-                            _('%s availability'), '<span  title="'.sprintf(
-                                                    "%s %s", number(
-                                                    $data['Part Days Available Forecast'], 1
-                                                ), ngettext(
-                                                        "day", "days", intval(
-                                                                 $data['Part Days Available Forecast']
-                                                             )
-                                                    )
-                                                ).'">'.seconds_to_until(
-                                                    $data['Part Days Available Forecast'] * 86400
-                                                ).'</span>'
-                        ).'</span>';
-
-
-                }
-
-
-                $average_sales_per_year = '&lang;'.number($data['Part 1 Year Acc Dispatched'] / $data['Supplier Part Packages Per Carton']).' C/y&rang;';
-
-                $description_sales = $carton_description.'<div style="margin-top:10px" >
-     
-                        <span style="display: inline-block; min-width: 50px;color:black" class="strong padding_right_10" title="'._('Stock (cartons)').'">'.number($data['Part Current On Hand Stock'] / $data['Supplier Part Packages Per Carton']).'</span> '.$stock_status.'
-                        <span>'.$available_forecast.'</span>
-                         <span class="discreet padding_left_10" title="'._('Cartons dispatched by year').'">'.$average_sales_per_year.'</span>
-                    </div>
-                    <div class="as_table asset_sales">
-                        <div class="as_row header">
-			            <div class="as_cell width_75">'.get_quarter_label(
-                        strtotime('now -12 months')
-                    ).'</div>
-			            <div class="as_cell width_75">'.get_quarter_label(
-                        strtotime('now -9 months')
-                    ).'</div>
-			            <div class="as_cell width_75">'.get_quarter_label(
-                        strtotime('now -6 months')
-                    ).'</div>
-			            <div class="as_cell width_75">'.get_quarter_label(
-                        strtotime('now -3 months')
-                    ).'</div>
-			            <div class="as_cell width_75">'.get_quarter_label(
-                        strtotime('now')
-                    ).'</div>
-			        </div>
-		            <div class="as_row header">
-			            <div class="as_cell width_75">'.number(
-                        $data['Part 4 Quarter Ago Dispatched'] / $data['Supplier Part Packages Per Carton']
-                    ).'</div>
-			            <div class="as_cell width_75">'.number(
-                        $data['Part 3 Quarter Ago Dispatched'] / $data['Supplier Part Packages Per Carton']
-                    ).'</div>
-			            <div class="as_cell width_75">'.number(
-                        $data['Part 2 Quarter Ago Dispatched'] / $data['Supplier Part Packages Per Carton']
-                    ).'</div>
-			            <div class="as_cell width_75">'.number(
-                        $data['Part 1 Quarter Ago Dispatched'] / $data['Supplier Part Packages Per Carton']
-                    ).'</div>
-			        <div class="as_cell width_75">'.number(
-                        $data['Part Quarter To Day Acc Dispatched'] / $data['Supplier Part Packages Per Carton']
-                    ).'</div>
-			    </div>
-			</div>
-
-
-
-			';
-
-            }
-
-
-            $carton_description .= '</div>';
-            $description_sales  .= '</div>';
-
-            $quantity = sprintf(
-                '<span    data-settings=\'{"field": "Purchase Order Quantity", "transaction_key":"%d","item_key":%d, "item_historic_key":%d ,"on":1 }\'   >
-                <i onClick="save_item_qty_change(this)" class="fa minus  fa-minus fa-fw button" aria-hidden="true"></i>
-                <input class="order_qty width_50" style="text-align: center" value="%s" ovalue="%s"> 
-                <i onClick="save_item_qty_change(this)" class="fa plus  fa-plus fa-fw button" aria-hidden="true"></i></span>', $data['Purchase Order Transaction Fact Key'], $data['Supplier Part Key'], $data['Supplier Part Historic Key'],
-                $data['Purchase Order Quantity'] + 0, $data['Purchase Order Quantity'] + 0
-            );
 
 
             $reference = sprintf(
@@ -1395,7 +1274,217 @@ function order_items($_data, $db, $user, $account) {
             }
 
 
-            $info = '';
+            list($_state) = get_purchase_order_transaction_data($data);
+
+
+            $state = '<span class="transaction_state_'.$data['Purchase Order Transaction Fact Key'].'">';
+            $state .= $_state;
+            $state .= '</span>';
+
+            $data['units_qty'] = $data['Purchase Order Ordering Units'];
+
+            $data['account_currency_code'] = $account->get('Account Currency');
+            $data['currency_code']         = $purchase_order->get('Purchase Order Currency Code');
+            $data['exchange']              = $purchase_order->get('Purchase Order Currency Exchange');
+
+
+            $subtotals = get_purchase_order_subtotals($data);
+
+
+            $description = '<div style="font-size:90%" >'.($data['Supplier Part Reference'] != $data['Part Reference'] ? $data['Part Reference'].', ' : '');
+
+
+            $description_units = $description.' '.$data['Supplier Part Description'].'<br/> 
+             <span class="discreet">'.sprintf(_('Packed in <b>%ds</b>'), $data['Part Units Per Package']).' <span class="" title="'._('SKOs per carton').'">, sko/C: <b>'.$skos_per_carton.'</b></span>';
+
+
+            if ($data['Supplier Part Minimum Carton Order'] > 0 and $data['Supplier Part Minimum Carton Order'] != 1) {
+                $description .= sprintf(
+                    ' <span class="discreet"><span title="%s">Min order</span>:%s<span>', _('Minimum order (units)'), number($data['Part Units Per Package'] * $data['Supplier Part Packages Per Carton'] * $data['Supplier Part Minimum Carton Order'])
+                );
+            }
+
+            $description_skos = $description.'<span class="">'.$data['Part Units Per Package'].'</span><span class="discreet ">x</span> '.$data['Supplier Part Description'].'<br/> 
+             <span class="discreet">'.sprintf(_('Packed in <b>%ds</b>'), $data['Part Units Per Package']).' <span class="" title="'._('SKOs per carton').'">, sko/C: <b>'.$skos_per_carton.'</b></span>';
+
+
+            if ($data['Supplier Part Minimum Carton Order'] > 0 and $data['Supplier Part Minimum Carton Order'] != 1) {
+                $description_skos .= sprintf(
+                    ' <span class="discreet"><span title="%s">MOQ</span>:%s<span>', _('Minimum order (cartons)'), number($data['Supplier Part Minimum Carton Order'])
+                );
+            }
+
+            $description_cartons = $description.'<span class="">'.$units_per_carton.'</span><span class="discreet ">x</span> '.$data['Supplier Part Description'].'<br/> 
+             <span class="discreet">'.sprintf(_('Packed in <b>%ds</b>'), $data['Part Units Per Package']).' <span class="" title="'._('SKOs per carton').'">, sko/C: <b>'.$skos_per_carton.'</b></span>';
+
+
+            if ($data['Supplier Part Minimum Carton Order'] > 0 and $data['Supplier Part Minimum Carton Order'] != 1) {
+                $description_cartons .= sprintf(
+                    ' <span class="discreet"><span title="%s">MOQ</span>:%s<span>', _('Minimum order (cartons)'), number($data['Supplier Part Minimum Carton Order'])
+                );
+            }
+
+
+            if ($data['Part Stock Status'] == 'Out_Of_Stock' or $data['Part Stock Status'] == 'Error') {
+                $available_forecast = '';
+            } else {
+                if (in_array(
+                    $data['Part Products Web Status'], array(
+                                                         'No Products',
+                                                         'Offline',
+                                                         'Out of Stock'
+                                                     )
+                )) {
+                    $available_forecast = '';
+
+                } elseif ($data['Part On Demand'] == 'Yes') {
+
+                    $available_forecast = '<span >'.sprintf(
+                            _('%s in stock'),
+                            '<span  title="'.sprintf("%s %s", number($data['Part Days Available Forecast'], 1), ngettext("day", "days", intval($data['Part Days Available Forecast']))).'">'.seconds_to_until($data['Part Days Available Forecast'] * 86400).'</span>'
+                        ).'</span>';
+
+                    if ($data['Part Fresh'] == 'No') {
+                        $available_forecast .= ' <i class="fa fa-fighter-jet padding_left_5" aria-hidden="true" title="'._('On demand').'"></i>';
+                    } else {
+                        $available_forecast = ' <i class="far fa-lemon padding_left_5" aria-hidden="true" title="'._('On demand').'"></i>';
+                    }
+                } else {
+                    $available_forecast = '<span >'.sprintf(
+                            _('%s availability'), '<span  title="'.sprintf(
+                                                    "%s %s", number($data['Part Days Available Forecast'], 1), ngettext("day", "days", intval($data['Part Days Available Forecast']))
+                                                ).'">'.seconds_to_until(
+                                                    $data['Part Days Available Forecast'] * 86400
+                                                ).'</span>'
+                        ).'</span>';
+
+
+                }
+            }
+
+            $average_sales_per_year_units = '&lang;'.number($data['Part 1 Year Acc Dispatched'] * $data['Part Units Per Package']).' u/y&rang;';
+            $average_sales_per_year_skos  = '&lang;'.number($data['Part 1 Year Acc Dispatched']).' SKOs/y&rang;';
+
+
+            $average_sales_per_year_cartons = '&lang;'.number($data['Part 1 Year Acc Dispatched'] / $data['Supplier Part Packages Per Carton']).' C/y&rang;';
+
+
+            $description_units = $description_units.'<div style="margin-top:10px" >
+                       
+                       <span style="display: inline-block; min-width: 50px;color:black" class="strong padding_right_10" title="'._('Stock (units)').'">'.number($data['Part Current On Hand Stock'] * $data['Part Units Per Package']).'<span class="small">u.</span></span> '
+                .$stock_status.'
+                        <span>'.$available_forecast.'</span>
+                        <span class="discreet padding_left_10" title="'._('Cartons dispatched by year').'">'.$average_sales_per_year_units.'</span>
+                    </div>
+                    <div class="as_table asset_sales">
+                        <div class="as_row header">
+			            <div class="as_cell width_75">'.get_quarter_label(strtotime('now -12 months')).'</div>
+			            <div class="as_cell width_75">'.get_quarter_label(strtotime('now -9 months')).'</div>
+			            <div class="as_cell width_75">'.get_quarter_label(strtotime('now -6 months')).'</div>
+			            <div class="as_cell width_75">'.get_quarter_label(strtotime('now -3 months')).'</div>
+			            <div class="as_cell width_75">'.get_quarter_label(strtotime('now')).'</div>
+			        </div>
+		            <div class="as_row header">
+			            <div class="as_cell width_75">'.number($data['Part 4 Quarter Ago Dispatched'] * $data['Part Units Per Package']).'</div>
+			            <div class="as_cell width_75">'.number($data['Part 3 Quarter Ago Dispatched'] * $data['Part Units Per Package']).'</div>
+			            <div class="as_cell width_75">'.number($data['Part 2 Quarter Ago Dispatched'] * $data['Part Units Per Package']).'</div>
+			            <div class="as_cell width_75">'.number($data['Part 1 Quarter Ago Dispatched'] * $data['Part Units Per Package']).'</div>
+			        <div class="as_cell width_75">'.number($data['Part Quarter To Day Acc Dispatched'] * $data['Part Units Per Package']).'</div>
+			    </div>
+			</div>';
+
+            $description_skos = $description_skos.'<div style="margin-top:10px" >
+                       
+                       <span style="display: inline-block; min-width: 50px;color:black" class="strong padding_right_10" title="'._('Stock (SKOs)').'">'.number($data['Part Current On Hand Stock']).'<span class="small">sko.</span></span> '.$stock_status.'
+                        <span>'.$available_forecast.'</span>
+                        <span class="discreet padding_left_10" title="'._('Cartons dispatched by year').'">'.$average_sales_per_year_skos.'</span>
+                    </div>
+                    <div class="as_table asset_sales">
+                        <div class="as_row header">
+			            <div class="as_cell width_75">'.get_quarter_label(strtotime('now -12 months')).'</div>
+			            <div class="as_cell width_75">'.get_quarter_label(strtotime('now -9 months')).'</div>
+			            <div class="as_cell width_75">'.get_quarter_label(strtotime('now -6 months')).'</div>
+			            <div class="as_cell width_75">'.get_quarter_label(strtotime('now -3 months')).'</div>
+			            <div class="as_cell width_75">'.get_quarter_label(strtotime('now')).'</div>
+			        </div>
+		            <div class="as_row header">
+			            <div class="as_cell width_75">'.number($data['Part 4 Quarter Ago Dispatched']).'</div>
+			            <div class="as_cell width_75">'.number($data['Part 3 Quarter Ago Dispatched']).'</div>
+			            <div class="as_cell width_75">'.number($data['Part 2 Quarter Ago Dispatched']).'</div>
+			            <div class="as_cell width_75">'.number($data['Part 1 Quarter Ago Dispatched']).'</div>
+			        <div class="as_cell width_75">'.number($data['Part Quarter To Day Acc Dispatched']).'</div>
+			    </div>
+			</div>';
+
+            $description_cartons = $description_cartons.'<div style="margin-top:10px" >
+                       
+                       <span style="display: inline-block; min-width: 50px;color:black" class="strong padding_right_10" title="'._('Stock (cartons)').'">'.number($data['Part Current On Hand Stock'] / $data['Supplier Part Packages Per Carton'])
+                .'<span class="small discreet">C.</span></span> '.$stock_status.'
+                        <span>'.$available_forecast.'</span>
+                        <span class="discreet padding_left_10" title="'._('Cartons dispatched by year').'">'.$average_sales_per_year_cartons.'</span>
+                    </div>
+                    <div class="as_table asset_sales">
+                        <div class="as_row header">
+			            <div class="as_cell width_75">'.get_quarter_label(strtotime('now -12 months')).'</div>
+			            <div class="as_cell width_75">'.get_quarter_label(strtotime('now -9 months')).'</div>
+			            <div class="as_cell width_75">'.get_quarter_label(strtotime('now -6 months')).'</div>
+			            <div class="as_cell width_75">'.get_quarter_label(strtotime('now -3 months')).'</div>
+			            <div class="as_cell width_75">'.get_quarter_label(strtotime('now')).'</div>
+			        </div>
+		            <div class="as_row header">
+			            <div class="as_cell width_75">'.number($data['Part 4 Quarter Ago Dispatched'] / $data['Supplier Part Packages Per Carton']).'</div>
+			            <div class="as_cell width_75">'.number($data['Part 3 Quarter Ago Dispatched'] / $data['Supplier Part Packages Per Carton']).'</div>
+			            <div class="as_cell width_75">'.number($data['Part 2 Quarter Ago Dispatched'] / $data['Supplier Part Packages Per Carton']).'</div>
+			            <div class="as_cell width_75">'.number($data['Part 1 Quarter Ago Dispatched'] / $data['Supplier Part Packages Per Carton']).'</div>
+			        <div class="as_cell width_75">'.number($data['Part Quarter To Day Acc Dispatched'] / $data['Supplier Part Packages Per Carton']).'</div>
+			    </div>
+			</div>';
+
+            $units_qty   = $data['Purchase Order Ordering Units'];
+            $skos_qty    = $units_qty / $data['Part Units Per Package'];
+            $cartons_qty = $skos_qty / $data['Supplier Part Packages Per Carton'];
+
+
+            if ($data['Purchase Order Ordering Units'] % ($data['Part Units Per Package'] * $data['Supplier Part Packages Per Carton']) != 0 or $data['Purchase Order Ordering Units'] % ($data['Part Units Per Package']) != 0) {
+                $class = 'error';
+            } else {
+                $class = '';
+            }
+
+
+            $quantity_units = sprintf(
+                '<span    data-settings=\'{"field": "Purchase Order Units", "transaction_key":"%d","item_key":%d, "item_historic_key":%d ,"on":1 }\'   >
+                <i onClick="save_item_qty_change(this)" class="fa minus  fa-minus fa-fw button" aria-hidden="true"></i>
+                <input class="order_qty order_units_qty %s width_50" style="text-align: center" value="%s" ovalue="%s"> 
+                <i onClick="save_item_qty_change(this)" class="fa plus  fa-plus fa-fw button" aria-hidden="true"></i></span>',
+
+
+                $transaction_key, $data['Supplier Part Key'], $data['Supplier Part Historic Key'], $class, ($units_qty == 0 ? '' : $units_qty + 0), ($units_qty == 0 ? '' : $units_qty + 0)
+
+            );
+
+            $quantity_skos = sprintf(
+                '<span    data-settings=\'{"field": "Purchase Order SKOs", "transaction_key":"%d","item_key":%d, "item_historic_key":%d ,"on":1 }\'   >
+                <i onClick="save_item_qty_change(this)" class="fa minus  fa-minus fa-fw button" aria-hidden="true"></i>
+                <input class="order_qty order_skos_qty  %s width_50" style="text-align: center" value="%s" ovalue="%s"> 
+                <i onClick="save_item_qty_change(this)" class="fa plus  fa-plus fa-fw button" aria-hidden="true"></i></span>',
+
+
+                $transaction_key, $data['Supplier Part Key'], $data['Supplier Part Historic Key'], $class, ($skos_qty == 0 ? '' : $skos_qty + 0), ($skos_qty == 0 ? '' : $skos_qty + 0)
+
+            );
+
+            $quantity_cartons = sprintf(
+                '<span    data-settings=\'{"field": "Purchase Order Cartons", "transaction_key":"%d","item_key":%d, "item_historic_key":%d ,"on":1 }\'   >
+                <i onClick="save_item_qty_change(this)" class="fa minus  fa-minus fa-fw button" aria-hidden="true"></i>
+                <input class="order_qty order_cartons_qty  %s width_50" style="text-align: center" value="%s" ovalue="%s"> 
+                <i onClick="save_item_qty_change(this)" class="fa plus  fa-plus fa-fw button" aria-hidden="true"></i></span>',
+
+
+                $transaction_key, $data['Supplier Part Key'], $data['Supplier Part Historic Key'], $class, ($cartons_qty == 0 ? '' : $cartons_qty + 0), ($cartons_qty == 0 ? '' : $cartons_qty + 0)
+
+            );
+
 
             if ($data['Part Next Deliveries Data'] == '') {
                 $next_deliveries = array();
@@ -1403,28 +1492,32 @@ function order_items($_data, $db, $user, $account) {
                 $next_deliveries = json_decode($data['Part Next Deliveries Data'], true);
             }
 
-            $info .= '<div border="0" style="font-size: small" class="as_table">';
+
+            $other_deliveries_units   = '';
+            $other_deliveries_skos    = '';
+            $other_deliveries_cartons = '';
 
 
             foreach ($next_deliveries as $next_delivery) {
-                if (!empty($next_delivery['po_key']) and $next_delivery['po_key'] != $data['Purchase Order Key']) {
-                    $info .= '<div class="as_row "><div class="as_cell" >'.$next_delivery['formatted_link'].'</div><div class="padding_left_20 as_cell strong" title="'._('Cartons ordered').'">+'.number($next_delivery['raw_qty']).'</div></div>';
+                if (isset($next_delivery['po_key']) and $next_delivery['po_key'] != $purchase_order->id) {
+
+                    $other_deliveries_units   .= '<div class="as_row "><div class="as_cell" >'.$next_delivery['formatted_link'].'</div><div class="padding_left_20 as_cell strong" title="'._('Units ordered').'">+'.number($next_delivery['raw_units_qty'])
+                        .'<span style="font-weight: normal" class="small discreet">u.</span></div></div>';
+                    $other_deliveries_skos    .= '<div class="as_row "><div class="as_cell" >'.$next_delivery['formatted_link'].'</div><div class="padding_left_20 as_cell strong" title="'._('SKOs ordered').'">+'.number(
+                            $next_delivery['raw_units_qty'] / $data['Part Units Per Package']
+                        ).'<span style="font-weight: normal" class="small discreet">skos</span></div></div>';
+                    $other_deliveries_cartons .= '<div class="as_row "><div class="as_cell" >'.$next_delivery['formatted_link'].'</div><div class="padding_left_20 as_cell strong" title="'._('Cartons ordered').'">+'.number(
+                            $next_delivery['raw_units_qty'] / $data['Part Units Per Package'] / $data['Supplier Part Packages Per Carton']
+                        ).'<span style="font-weight: normal" class="small discreet">C.</span></div></div>';
+
+
                 }
             }
 
 
-            $info .= '</div>';
-
-
-            list(
-                $_state
-
-                ) = get_purchase_order_transaction_data($data);
-
-
-            $state = '<span class="transaction_state_'.$data['Purchase Order Transaction Fact Key'].'">';
-            $state .= $_state;
-            $state .= '</span>';
+            $other_deliveries_units   = '<div border="0" style="font-size: small" class="as_table">'.$other_deliveries_units.'</div>';
+            $other_deliveries_skos    = '<div border="0" style="font-size: small" class="as_table">'.$other_deliveries_skos.'</div>';
+            $other_deliveries_cartons = '<div border="0" style="font-size: small" class="as_table">'.$other_deliveries_cartons.'</div>';
 
 
             //   $image = '';
@@ -1438,30 +1531,493 @@ function order_items($_data, $db, $user, $account) {
                 'supplier_key'      => (integer)$data['Supplier Key'],
                 'checkbox'          => sprintf('<i key="%d" class="invisible far fa-square fa-fw button" aria-hidden="true"></i>', $data['Purchase Order Transaction Fact Key']),
                 'operations'        => sprintf('<i key="%d" class="fa fa-fw fa-truck fa-flip-horizontal button" aria-hidden="true" onClick="change_on_delivery(this)"></i>', $data['Purchase Order Transaction Fact Key']),
-                'reference'         => $data['Supplier Part Reference'],
 
 
                 'reference' => $reference,
-                'info'      => $info,
 
-                'carton_description' => $carton_description,
-                'unit_description'   => $data['Supplier Part Description'].'<br><span class="discreet">'._('Unit cost').':</span> '.money($data['Supplier Part Unit Cost'], $purchase_order->get('Purchase Order Currency Code')),
-                'units_per_sko'      => number($data['Part Units Per Package']),
-                'unit_cost'          => money($data['Supplier Part Unit Cost'], $purchase_order->get('Purchase Order Currency Code')),
-                'skos_per_carton'    => number($skos_per_carton),
-                'ordered_skos'       => number($skos_per_carton * $data['Purchase Order Quantity']),
-                'ordered_cartons'    => number($data['Purchase Order Quantity']),
-                'amount'             => money($data['Supplier Part Unit Cost'] * $data['Purchase Order Quantity'] * $units_per_carton, $purchase_order->get('Purchase Order Currency Code')),
-                'description_sales'  => $description_sales,
-                'quantity'           => $quantity,
-                'delivery_quantity'  => $delivery_quantity,
-                'subtotals'          => $subtotals,
-                'ordered'            => number($data['Purchase Order Quantity']),
-                'supplier_key'       => $data['Supplier Key'],
-                'supplier'           => $data['Supplier Code'],
-                'unit'               => $data['Supplier Part Description'],
-                'image'              => $image,
-                'state'              => $state
+                'unit_description'         => $data['Supplier Part Description'].'<br><span class="discreet">'._('Unit cost').':</span> '.money($data['Supplier Part Unit Cost'], $purchase_order->get('Purchase Order Currency Code')),
+                'units_per_sko'            => number($data['Part Units Per Package']),
+                'unit_cost'                => money($data['Supplier Part Unit Cost'], $purchase_order->get('Purchase Order Currency Code')),
+                'skos_per_carton'          => number($skos_per_carton),
+                'delivery_quantity'        => $delivery_quantity,
+                'subtotals'                => $subtotals,
+                'supplier_key'             => $data['Supplier Key'],
+                'supplier'                 => $data['Supplier Code'],
+                'unit'                     => $data['Supplier Part Description'],
+                'image'                    => $image,
+                'state'                    => $state,
+                'description_units'        => $description_units,
+                'description_skos'         => $description_skos,
+                'description_cartons'      => $description_cartons,
+                'quantity_units'           => $quantity_units,
+                'quantity_skos'            => $quantity_skos,
+                'quantity_cartons'         => $quantity_cartons,
+                'other_deliveries_units'   => $other_deliveries_units,
+                'other_deliveries_skos'    => $other_deliveries_skos,
+                'other_deliveries_cartons' => $other_deliveries_cartons,
+
+
+            );
+
+
+        }
+    } else {
+        print_r($error_info = $db->errorInfo());
+        exit;
+    }
+
+
+    $response = array(
+        'resultset' => array(
+            'state'         => 200,
+            'data'          => $table_data,
+            'rtext'         => $rtext,
+            'sort_key'      => $_order,
+            'sort_dir'      => $_dir,
+            'total_records' => $total
+
+        )
+    );
+    echo json_encode($response);
+}
+
+
+function order_items($_data, $db, $user, $account) {
+
+
+    $rtext_label = 'item';
+
+    include_once 'utils/supplier_order_functions.php';
+
+    $purchase_order = get_object('PurchaseOrder', $_data['parameters']['parent_key']);
+
+
+    include_once 'prepare_table/init.php';
+
+    $sql        = "select $fields from $table $where $wheref order by $order $order_direction limit $start_from,$number_results";
+    $table_data = array();
+    // $exchange   = -1;
+
+    if ($result = $db->query($sql)) {
+        foreach ($result as $data) {
+
+            //  print_r($data);
+
+            /*
+                        switch ($data['Supplier Part Status']) {
+                            case 'Available':
+                                $status = sprintf(
+                                    '<i class="fa fa-stop success" title="%s"></i>', _('Available')
+                                );
+                                break;
+                            case 'NoAvailable':
+                                $status = sprintf(
+                                    '<i class="fa fa-stop warning" title="%s"></i>', _('No available')
+                                );
+
+                                break;
+                            case 'Discontinued':
+                                $status = sprintf(
+                                    '<i class="fa fa-ban error" title="%s"></i>', _('Discontinued')
+                                );
+
+                                break;
+                            default:
+                                $status = $data['Supplier Part Status'];
+                                break;
+                        }
+
+                        switch ($data['Part Stock Status']) {
+                            case 'Surplus':
+                                $stock_status = '<i class="fa  fa-plus-circle fa-fw" aria-hidden="true"></i>';
+                                break;
+                            case 'Optimal':
+                                $stock_status = '<i class="fa fa-check-circle fa-fw" aria-hidden="true"></i>';
+                                break;
+                            case 'Low':
+                                $stock_status = '<i class="fa fa-minus-circle fa-fw" aria-hidden="true"></i>';
+                                break;
+                            case 'Critical':
+                                $stock_status = '<i class="fa error fa-minus-circle fa-fw" aria-hidden="true"></i>';
+                                break;
+                            case 'Out_Of_Stock':
+                                $stock_status = '<i class="fa error fa-ban fa-fw" aria-hidden="true"></i>';
+                                break;
+                            case 'Error':
+                                $stock_status = '<i class="fa fa-question-circle error fa-fw" aria-hidden="true"></i>';
+                                break;
+                            default:
+                                $stock_status = $data['Part Stock Status'];
+                                break;
+                        }
+
+            */
+            $units_per_carton = $data['Part Units Per Package'] * $data['Supplier Part Packages Per Carton'];
+            $skos_per_carton  = $data['Supplier Part Packages Per Carton'];
+
+
+            $reference = sprintf(
+                '<span class="link" onclick="change_view(\'/supplier/%d/part/%d\')" title="%s" >%s</span>', $data['Supplier Key'], $data['Supplier Part Key'], _('Supplier product code'), $data['Supplier Part Reference']
+            );
+            if ($data['Part Reference'] != $data['Supplier Part Reference']) {
+                $reference .= sprintf(
+                    '<br ><span class="small link" onclick="change_view(\'part/%d\')" title="%s"><i class="far fa-box"></i> %s</span>', $data['Part SKU'], _('Part reference'), $data['Part Reference']
+                );
+            } else {
+                $reference .= sprintf(
+                    ', <span class="small link" onclick="change_view(\'part/%d\')" ><i class="far fa-box" title="%s"></i> </span>', $data['Part SKU'], _('Part reference is same as supplier product code')
+                );
+            }
+
+            if ($data['Part Main Image Key'] != 0) {
+                $image = sprintf(
+                    '<img src="/image_root.php?id=%d&r=50x50" style="display: block;
+  max-width:50px;
+  max-height:50px;
+  width: auto;
+  height: auto;">', $data['Part Main Image Key']
+                );
+            } else {
+                $image = '';
+            }
+
+
+            list($_state) = get_purchase_order_transaction_data($data);
+
+
+            $state = '<span class="transaction_state_'.$data['Purchase Order Transaction Fact Key'].'">';
+            $state .= $_state;
+            $state .= '</span>';
+
+
+            $items_qty = $data['Purchase Order Submitted Units'].'<span class="small discreet">u.</span> | ';
+
+            if ($data['Purchase Order Submitted Units'] % $data['Part Units Per Package'] != 0) {
+                $items_qty .= '<span class="error">'.number($data['Purchase Order Submitted Units'] / $data['Part Units Per Package'], 3).'<span class="small discreet">sko.</span></span> | ';
+
+            } else {
+                $items_qty .= number($data['Purchase Order Submitted Units'] / $data['Part Units Per Package'], 3).'<span class="small discreet">sko.</span> | ';
+
+            }
+
+
+            if ($data['Purchase Order Submitted Units'] % ($data['Part Units Per Package'] * $data['Supplier Part Packages Per Carton']) != 0) {
+                $items_qty .= '<span class="error">'.number($data['Purchase Order Submitted Units'] / $data['Part Units Per Package'] / $data['Supplier Part Packages Per Carton'], 3).'<span title="'._('Cartons').'" class="small discreet">C.</span></span>';
+
+            } else {
+                $items_qty .= number($data['Purchase Order Submitted Units'] / $data['Part Units Per Package'] / $data['Supplier Part Packages Per Carton'], 3).'<span title="'._('Cartons').'" class="small discreet">C.</span>';
+
+            }
+
+
+            $items_qty = '<span class="submitted_items_qty" onclick="use_submitted_qty_in_delivery(this,'.$data['Purchase Order Submitted Units'].')">'.$items_qty.'</span>';
+
+            $amount = money($data['Purchase Order Submitted Units'] * $data['Supplier Part Unit Cost'], $purchase_order->get('Purchase Order Currency Code'));
+
+            if ($data['Supplier Part Currency Code'] != $account->get('Account Currency')) {
+                $amount .= ' <span class="">('.money($data['Purchase Order Submitted Units'] * $data['Supplier Part Unit Cost'] * $purchase_order->get('Purchase Order Currency Exchange'), $account->get('Account Currency')).')</span>';
+
+            }
+
+            if ($data['Part Package Weight'] > 0) {
+                $weight = weight(
+                    $data['Part Package Weight'] * $data['Purchase Order Submitted Units'] / $data['Part Units Per Package']
+                );
+            } else {
+                $weight = '<i class="error fa fa-exclamation-circle"></i>';
+            }
+            if ($data['Supplier Part Carton CBM'] > 0) {
+                $cbm = number(
+                        $data['Purchase Order Submitted Units'] * $data['Supplier Part Carton CBM'] / $data['Part Units Per Package'] / $data['Supplier Part Packages Per Carton']
+                    ).' m³';
+            } else {
+                $cbm = '<i class="error fa fa-exclamation-circle"></i>';
+
+            }
+
+
+            $description = '<div style="font-size:90%" >'.($data['Supplier Part Reference'] != $data['Part Reference'] ? $data['Part Reference'].', ' : '');
+
+
+            $description_units = $description.' '.$data['Supplier Part Description'].'<br/> 
+             <span class="discreet">'.sprintf(_('Packed in <b>%ds</b>'), $data['Part Units Per Package']).' <span class="" title="'._('SKOs per carton').'">, sko/C: <b>'.$skos_per_carton.'</b></span>';
+
+
+            if ($data['Supplier Part Minimum Carton Order'] > 0 and $data['Supplier Part Minimum Carton Order'] != 1) {
+                $description_units .= sprintf(
+                    ' <span class="discreet"><span title="%s">Min order</span>:%s<span>', _('Minimum order (units)'), number($data['Part Units Per Package'] * $data['Supplier Part Packages Per Carton'] * $data['Supplier Part Minimum Carton Order'])
+                );
+            }
+
+            $description_skos = $description.'<span class="">'.$data['Part Units Per Package'].'</span><span class="discreet ">x</span> '.$data['Supplier Part Description'].'<br/> 
+             <span class="discreet">'.sprintf(_('Packed in <b>%ds</b>'), $data['Part Units Per Package']).' <span class="" title="'._('SKOs per carton').'">, sko/C: <b>'.$skos_per_carton.'</b></span>';
+
+
+            if ($data['Supplier Part Minimum Carton Order'] > 0 and $data['Supplier Part Minimum Carton Order'] != 1) {
+                $description_skos .= sprintf(
+                    ' <span class="discreet"><span title="%s">MOQ</span>:%s<span>', _('Minimum order (cartons)'), number($data['Supplier Part Minimum Carton Order'])
+                );
+            }
+
+            $description_cartons = $description.'<span class="">'.$units_per_carton.'</span><span class="discreet ">x</span> '.$data['Supplier Part Description'].'<br/> 
+             <span class="discreet">'.sprintf(_('Packed in <b>%ds</b>'), $data['Part Units Per Package']).' <span class="" title="'._('SKOs per carton').'">, sko/C: <b>'.$skos_per_carton.'</b></span>';
+
+
+            if ($data['Supplier Part Minimum Carton Order'] > 0 and $data['Supplier Part Minimum Carton Order'] != 1) {
+                $description_cartons .= sprintf(
+                    ' <span class="discreet"><span title="%s">MOQ</span>:%s<span>', _('Minimum order (cartons)'), number($data['Supplier Part Minimum Carton Order'])
+                );
+            }
+
+            /*
+                      if ($data['Part Stock Status'] == 'Out_Of_Stock' or $data['Part Stock Status'] == 'Error') {
+                          $available_forecast = '';
+                      } else {
+                          if (in_array(
+                              $data['Part Products Web Status'], array(
+                                                                   'No Products',
+                                                                   'Offline',
+                                                                   'Out of Stock'
+                                                               )
+                          )) {
+                              $available_forecast = '';
+
+                          } elseif ($data['Part On Demand'] == 'Yes') {
+
+                              $available_forecast = '<span >'.sprintf(
+                                      _('%s in stock'),
+                                      '<span  title="'.sprintf("%s %s", number($data['Part Days Available Forecast'], 1), ngettext("day", "days", intval($data['Part Days Available Forecast']))).'">'.seconds_to_until($data['Part Days Available Forecast'] * 86400).'</span>'
+                                  ).'</span>';
+
+                              if ($data['Part Fresh'] == 'No') {
+                                  $available_forecast .= ' <i class="fa fa-fighter-jet padding_left_5" aria-hidden="true" title="'._('On demand').'"></i>';
+                              } else {
+                                  $available_forecast = ' <i class="far fa-lemon padding_left_5" aria-hidden="true" title="'._('On demand').'"></i>';
+                              }
+                          } else {
+                              $available_forecast = '<span >'.sprintf(
+                                      _('%s availability'), '<span  title="'.sprintf(
+                                                              "%s %s", number($data['Part Days Available Forecast'], 1), ngettext("day", "days", intval($data['Part Days Available Forecast']))
+                                                          ).'">'.seconds_to_until(
+                                                              $data['Part Days Available Forecast'] * 86400
+                                                          ).'</span>'
+                                  ).'</span>';
+
+
+                          }
+                      }
+
+                                 $average_sales_per_year_units = '&lang;'.number($data['Part 1 Year Acc Dispatched'] * $data['Part Units Per Package']).' u/y&rang;';
+                                 $average_sales_per_year_skos  = '&lang;'.number($data['Part 1 Year Acc Dispatched']).' SKOs/y&rang;';
+
+
+                                 $average_sales_per_year_cartons = '&lang;'.number($data['Part 1 Year Acc Dispatched'] / $data['Supplier Part Packages Per Carton']).' C/y&rang;';
+
+
+                                             $description_units = $description_units.'<div style="margin-top:10px" >
+
+                                                        <span style="display: inline-block; min-width: 50px;color:black" class="strong padding_right_10" title="'._('Stock (units)').'">'.number($data['Part Current On Hand Stock'] * $data['Part Units Per Package']).'<span class="small">u.</span></span> '
+                                                 .$stock_status.'
+                                                         <span>'.$available_forecast.'</span>
+                                                         <span class="discreet padding_left_10" title="'._('Cartons dispatched by year').'">'.$average_sales_per_year_units.'</span>
+                                                     </div>
+                                                     <div class="as_table asset_sales">
+                                                         <div class="as_row header">
+                                                         <div class="as_cell width_75">'.get_quarter_label(strtotime('now -12 months')).'</div>
+                                                         <div class="as_cell width_75">'.get_quarter_label(strtotime('now -9 months')).'</div>
+                                                         <div class="as_cell width_75">'.get_quarter_label(strtotime('now -6 months')).'</div>
+                                                         <div class="as_cell width_75">'.get_quarter_label(strtotime('now -3 months')).'</div>
+                                                         <div class="as_cell width_75">'.get_quarter_label(strtotime('now')).'</div>
+                                                     </div>
+                                                     <div class="as_row header">
+                                                         <div class="as_cell width_75">'.number($data['Part 4 Quarter Ago Dispatched'] * $data['Part Units Per Package']).'</div>
+                                                         <div class="as_cell width_75">'.number($data['Part 3 Quarter Ago Dispatched'] * $data['Part Units Per Package']).'</div>
+                                                         <div class="as_cell width_75">'.number($data['Part 2 Quarter Ago Dispatched'] * $data['Part Units Per Package']).'</div>
+                                                         <div class="as_cell width_75">'.number($data['Part 1 Quarter Ago Dispatched'] * $data['Part Units Per Package']).'</div>
+                                                     <div class="as_cell width_75">'.number($data['Part Quarter To Day Acc Dispatched'] * $data['Part Units Per Package']).'</div>
+                                                 </div>
+                                             </div>';
+
+                                             $description_skos = $description_skos.'<div style="margin-top:10px" >
+
+                                                        <span style="display: inline-block; min-width: 50px;color:black" class="strong padding_right_10" title="'._('Stock (SKOs)').'">'.number($data['Part Current On Hand Stock']).'<span class="small">sko.</span></span> '.$stock_status.'
+                                                         <span>'.$available_forecast.'</span>
+                                                         <span class="discreet padding_left_10" title="'._('Cartons dispatched by year').'">'.$average_sales_per_year_skos.'</span>
+                                                     </div>
+                                                     <div class="as_table asset_sales">
+                                                         <div class="as_row header">
+                                                         <div class="as_cell width_75">'.get_quarter_label(strtotime('now -12 months')).'</div>
+                                                         <div class="as_cell width_75">'.get_quarter_label(strtotime('now -9 months')).'</div>
+                                                         <div class="as_cell width_75">'.get_quarter_label(strtotime('now -6 months')).'</div>
+                                                         <div class="as_cell width_75">'.get_quarter_label(strtotime('now -3 months')).'</div>
+                                                         <div class="as_cell width_75">'.get_quarter_label(strtotime('now')).'</div>
+                                                     </div>
+                                                     <div class="as_row header">
+                                                         <div class="as_cell width_75">'.number($data['Part 4 Quarter Ago Dispatched']).'</div>
+                                                         <div class="as_cell width_75">'.number($data['Part 3 Quarter Ago Dispatched']).'</div>
+                                                         <div class="as_cell width_75">'.number($data['Part 2 Quarter Ago Dispatched']).'</div>
+                                                         <div class="as_cell width_75">'.number($data['Part 1 Quarter Ago Dispatched']).'</div>
+                                                     <div class="as_cell width_75">'.number($data['Part Quarter To Day Acc Dispatched']).'</div>
+                                                 </div>
+                                             </div>';
+
+                                             $description_cartons = $description_cartons.'<div style="margin-top:10px" >
+
+                                                        <span style="display: inline-block; min-width: 50px;color:black" class="strong padding_right_10" title="'._('Stock (cartons)').'">'.number($data['Part Current On Hand Stock'] / $data['Supplier Part Packages Per Carton'])
+                                                 .'<span class="small discreet">C.</span></span> '.$stock_status.'
+                                                         <span>'.$available_forecast.'</span>
+                                                         <span class="discreet padding_left_10" title="'._('Cartons dispatched by year').'">'.$average_sales_per_year_cartons.'</span>
+                                                     </div>
+                                                     <div class="as_table asset_sales">
+                                                         <div class="as_row header">
+                                                         <div class="as_cell width_75">'.get_quarter_label(strtotime('now -12 months')).'</div>
+                                                         <div class="as_cell width_75">'.get_quarter_label(strtotime('now -9 months')).'</div>
+                                                         <div class="as_cell width_75">'.get_quarter_label(strtotime('now -6 months')).'</div>
+                                                         <div class="as_cell width_75">'.get_quarter_label(strtotime('now -3 months')).'</div>
+                                                         <div class="as_cell width_75">'.get_quarter_label(strtotime('now')).'</div>
+                                                     </div>
+                                                     <div class="as_row header">
+                                                         <div class="as_cell width_75">'.number($data['Part 4 Quarter Ago Dispatched'] / $data['Supplier Part Packages Per Carton']).'</div>
+                                                         <div class="as_cell width_75">'.number($data['Part 3 Quarter Ago Dispatched'] / $data['Supplier Part Packages Per Carton']).'</div>
+                                                         <div class="as_cell width_75">'.number($data['Part 2 Quarter Ago Dispatched'] / $data['Supplier Part Packages Per Carton']).'</div>
+                                                         <div class="as_cell width_75">'.number($data['Part 1 Quarter Ago Dispatched'] / $data['Supplier Part Packages Per Carton']).'</div>
+                                                     <div class="as_cell width_75">'.number($data['Part Quarter To Day Acc Dispatched'] / $data['Supplier Part Packages Per Carton']).'</div>
+                                                 </div>
+                                             </div>';
+
+                                 */
+            $units_qty       = $data['Purchase Order Submitted Units'];
+            $skos_qty        = $units_qty / $data['Part Units Per Package'];
+            $cartons_qty     = $skos_qty / $data['Supplier Part Packages Per Carton'];
+            $transaction_key = $data['Purchase Order Transaction Fact Key'];
+
+            if ($data['Purchase Order Submitted Units'] % ($data['Part Units Per Package'] * $data['Supplier Part Packages Per Carton']) != 0 or $data['Purchase Order Submitted Units'] % ($data['Part Units Per Package']) != 0) {
+                $class = 'error';
+            } else {
+                $class = '';
+            }
+
+
+
+
+            if ($data['Part Next Deliveries Data'] == '') {
+                $next_deliveries = array();
+            } else {
+                $next_deliveries = json_decode($data['Part Next Deliveries Data'], true);
+            }
+
+
+            $other_deliveries_units   = '';
+            $other_deliveries_skos    = '';
+            $other_deliveries_cartons = '';
+
+
+            foreach ($next_deliveries as $next_delivery) {
+                if (isset($next_delivery['po_key']) and $next_delivery['po_key'] != $purchase_order->id) {
+
+                    $other_deliveries_units   .= '<div class="as_row "><div class="as_cell" >'.$next_delivery['formatted_link'].'</div><div class="padding_left_20 as_cell strong" title="'._('Units ordered').'">+'.number($next_delivery['raw_units_qty'])
+                        .'<span style="font-weight: normal" class="small discreet">u.</span></div></div>';
+                    $other_deliveries_skos    .= '<div class="as_row "><div class="as_cell" >'.$next_delivery['formatted_link'].'</div><div class="padding_left_20 as_cell strong" title="'._('SKOs ordered').'">+'.number(
+                            $next_delivery['raw_units_qty'] / $data['Part Units Per Package']
+                        ).'<span style="font-weight: normal" class="small discreet">skos</span></div></div>';
+                    $other_deliveries_cartons .= '<div class="as_row "><div class="as_cell" >'.$next_delivery['formatted_link'].'</div><div class="padding_left_20 as_cell strong" title="'._('Cartons ordered').'">+'.number(
+                            $next_delivery['raw_units_qty'] / $data['Part Units Per Package'] / $data['Supplier Part Packages Per Carton']
+                        ).'<span style="font-weight: normal" class="small discreet">C.</span></div></div>';
+
+
+                }
+            }
+
+
+            $other_deliveries_units   = '<div border="0" style="font-size: small" class="as_table">'.$other_deliveries_units.'</div>';
+            $other_deliveries_skos    = '<div border="0" style="font-size: small" class="as_table">'.$other_deliveries_skos.'</div>';
+            $other_deliveries_cartons = '<div border="0" style="font-size: small" class="as_table">'.$other_deliveries_cartons.'</div>';
+
+
+            //   $image = '';
+
+            if($data['Purchase Order Transaction State']=='Submitted'){
+                $operations= sprintf('<i key="%d" class="far fa-fw fa-check-square  button" aria-hidden="true" onClick="change_on_delivery(this)"></i>', $data['Purchase Order Transaction Fact Key']);
+
+                $quantity_units = sprintf(
+                    '<span   class="delivery_quantity_%d delivery_quantity_item_container on"    data-settings=\'{ "key":%d,  "type": "Units", "sko_factor":%d , "carton_factor":%d }\'   >
+                <i onClick="create_delivery_item_icon_clicked(this)" class="fa minus  fa-minus fa-fw button" aria-hidden="true"></i>
+                <input  class=" create_delivery_item_qty order_units_qty %s width_50" style="text-align: center" value="%s" ovalue="%s">
+                <i onClick="create_delivery_item_icon_clicked(this)" class="fa plus  fa-plus fa-fw button" aria-hidden="true"></i></span>',
+
+
+                    $transaction_key, $transaction_key, $data['Part Units Per Package'], $data['Supplier Part Packages Per Carton'] * $data['Part Units Per Package'], $class, ($units_qty == 0 ? '' : $units_qty + 0), ($units_qty == 0 ? '' : $units_qty + 0)
+
+                );
+
+                $quantity_skos = sprintf(
+                    '<span  class="delivery_quantity_%d delivery_quantity_item_container on"    data-settings=\'{"type": "SKOs", "unit_factor":%d , "carton_factor":%d }\'   >
+                <i onClick="create_delivery_item_icon_clicked(this)" class="fa minus  fa-minus fa-fw button" aria-hidden="true"></i>
+                <input class=" create_delivery_item_qty order_skos_qty  %s width_50" style="text-align: center" value="%s" ovalue="%s">
+                <i onClick="create_delivery_item_icon_clicked(this)" class="fa plus  fa-plus fa-fw button" aria-hidden="true"></i></span>',
+
+
+                    $transaction_key, $data['Part Units Per Package'], $data['Supplier Part Packages Per Carton'], $class, ($skos_qty == 0 ? '' : $skos_qty + 0), ($skos_qty == 0 ? '' : $skos_qty + 0)
+
+                );
+
+                $quantity_cartons = sprintf(
+                    '<span   class="delivery_quantity_%d delivery_quantity_item_container on"   data-settings=\'{"type": "Cartons", "unit_factor":%d , "sko_factor":%d }\'   >
+                <i onClick="create_delivery_item_icon_clicked(this)" class="fa minus  fa-minus fa-fw button" aria-hidden="true"></i>
+                <input class=" create_delivery_item_qty order_cartons_qty  %s width_50" style="text-align: center" value="%s" ovalue="%s">
+                <i onClick="create_delivery_item_icon_clicked(this)" class="fa plus  fa-plus fa-fw button" aria-hidden="true"></i></span>',
+
+
+                    $transaction_key, $data['Part Units Per Package'] * $data['Supplier Part Packages Per Carton'], $data['Supplier Part Packages Per Carton'], $class, ($cartons_qty == 0 ? '' : $cartons_qty + 0), ($cartons_qty == 0 ? '' : $cartons_qty + 0)
+
+                );
+            }else{
+                $operations= '';
+                $quantity_units='';
+                $quantity_skos='';
+                $quantity_cartons='';
+            }
+
+            $table_data[] = array(
+
+                'id'                => (integer)$data['Purchase Order Transaction Fact Key'],
+                'item_index'        => $data['Purchase Order Item Index'],
+                'parent_key'        => $purchase_order->get('Purchase Order Parent Key'),
+                'parent_type'       => strtolower($purchase_order->get('Purchase Order Parent')),
+                'supplier_part_key' => (integer)$data['Supplier Part Key'],
+                'supplier_key'      => (integer)$data['Supplier Key'],
+               // 'checkbox'          => sprintf('<i key="%d" class="invisible far fa-square fa-fw button" aria-hidden="true"></i>', $data['Purchase Order Transaction Fact Key']),
+                'operations'        =>$operations,
+
+
+                'reference' => $reference,
+
+                'unit_description' => $data['Supplier Part Description'].'<br><span class="discreet">'._('Unit cost').':</span> '.money($data['Supplier Part Unit Cost'], $purchase_order->get('Purchase Order Currency Code')),
+                'units_per_sko'    => number($data['Part Units Per Package']),
+                'unit_cost'        => money($data['Supplier Part Unit Cost'], $purchase_order->get('Purchase Order Currency Code')),
+                'skos_per_carton'  => number($skos_per_carton),
+                //'ordered_skos'     => number($skos_per_carton * $data['Purchase Order Quantity']),
+                //'ordered_cartons'  => number($data['Purchase Order Quantity']),
+                //'delivery_quantity' => $delivery_quantity,
+                'supplier'         => $data['Supplier Code'],
+
+                'image'                    => $image,
+                'state'                    => $state,
+                'description_units'        => $description_units,
+                'description_skos'         => $description_skos,
+                'description_cartons'      => $description_cartons,
+                'quantity_units'           => $quantity_units,
+                'quantity_skos'            => $quantity_skos,
+                'quantity_cartons'         => $quantity_cartons,
+                'other_deliveries_units'   => $other_deliveries_units,
+                'other_deliveries_skos'    => $other_deliveries_skos,
+                'other_deliveries_cartons' => $other_deliveries_cartons,
+                'items_qty'                => $items_qty,
+
+
+                'amount' => $amount,
+                'weight' => $weight,
+                'cbm'    => $cbm,
 
 
             );
@@ -1501,100 +2057,100 @@ function agent_order_items($_data, $db, $user, $account) {
 
     $sql        = "select $fields from $table $where $wheref order by $order $order_direction limit $start_from,$number_results";
     $table_data = array();
-    $exchange   = -1;
+    //$exchange   = -1;
 
     if ($result = $db->query($sql)) {
         foreach ($result as $data) {
 
+            /*
+                        switch ($data['Part Stock Status']) {
+                            case 'Surplus':
+                                $stock_status = '<i class="fa  fa-plus-circle fa-fw" aria-hidden="true" title="'._('Surplus').'" ></i>';
+                                break;
+                            case 'Optimal':
+                                $stock_status = '<i class="fa fa-check-circle fa-fw" aria-hidden="true" title="'._('Optimal').'"></i>';
+                                break;
+                            case 'Low':
+                                $stock_status = '<i class="fa fa-minus-circle fa-fw" aria-hidden="true" title="'._('Low').'"></i>';
+                                break;
+                            case 'Critical':
+                                $stock_status = '<i class="fa error fa-minus-circle fa-fw" aria-hidden="true" title="'._('Critical').'"></i>';
+                                break;
+                            case 'Out_Of_Stock':
+                                $stock_status = '<i class="fa error fa-ban fa-fw" aria-hidden="true" title="'._('Out of stock').'"></i>';
+                                break;
+                            case 'Error':
+                                $stock_status = '<i class="fa fa-question-circle error fa-fw" aria-hidden="true" title="'._('Error').'"></i>';
+                                break;
+                            default:
+                                $stock_status = $data['Part Stock Status'];
+                                break;
+                        }
 
-            switch ($data['Part Stock Status']) {
-                case 'Surplus':
-                    $stock_status = '<i class="fa  fa-plus-circle fa-fw" aria-hidden="true" title="'._('Surplus').'" ></i>';
-                    break;
-                case 'Optimal':
-                    $stock_status = '<i class="fa fa-check-circle fa-fw" aria-hidden="true" title="'._('Optimal').'"></i>';
-                    break;
-                case 'Low':
-                    $stock_status = '<i class="fa fa-minus-circle fa-fw" aria-hidden="true" title="'._('Low').'"></i>';
-                    break;
-                case 'Critical':
-                    $stock_status = '<i class="fa error fa-minus-circle fa-fw" aria-hidden="true" title="'._('Critical').'"></i>';
-                    break;
-                case 'Out_Of_Stock':
-                    $stock_status = '<i class="fa error fa-ban fa-fw" aria-hidden="true" title="'._('Out of stock').'"></i>';
-                    break;
-                case 'Error':
-                    $stock_status = '<i class="fa fa-question-circle error fa-fw" aria-hidden="true" title="'._('Error').'"></i>';
-                    break;
-                default:
-                    $stock_status = $data['Part Stock Status'];
-                    break;
-            }
-
-            $quantity = number($data['Purchase Order Quantity']);
-
+                        $quantity = number($data['Purchase Order Quantity']);
+            */
 
             $units_per_carton = $data['Part Units Per Package'] * $data['Supplier Part Packages Per Carton'];
             $skos_per_carton  = $data['Supplier Part Packages Per Carton'];
 
+            /*
+                        $subtotals = sprintf('<span  class="subtotals" style="font-size:90%%"  >');
+                        if ($data['Purchase Order Quantity'] > 0) {
 
-            $subtotals = sprintf('<span  class="subtotals" style="font-size:90%%"  >');
-            if ($data['Purchase Order Quantity'] > 0) {
-
-                $subtotals .= $data['Purchase Order Quantity'] * $units_per_carton.'u. '.$data['Purchase Order Quantity'] * $skos_per_carton.'pkg. ';
+                            $subtotals .= $data['Purchase Order Quantity'] * $units_per_carton.'u. '.$data['Purchase Order Quantity'] * $skos_per_carton.'pkg. ';
 
 
-                $amount = $data['Purchase Order Quantity'] * $units_per_carton * $data['Supplier Part Unit Cost'];
+                            $amount = $data['Purchase Order Quantity'] * $units_per_carton * $data['Supplier Part Unit Cost'];
 
-                $subtotals .= money(
-                    $amount, $purchase_order->get('Purchase Order Currency Code')
-                );
+                            $subtotals .= money(
+                                $amount, $purchase_order->get('Purchase Order Currency Code')
+                            );
 
-                if ($data['Supplier Part Currency Code'] != $account->get(
-                        'Account Currency'
-                    )) {
-                    $subtotals .= ' <span class="">('.money(
-                            $amount * $purchase_order->get(
-                                'Purchase Order Currency Exchange'
-                            ), $account->get('Account Currency')
-                        ).')</span>';
+                            if ($data['Supplier Part Currency Code'] != $account->get(
+                                    'Account Currency'
+                                )) {
+                                $subtotals .= ' <span class="">('.money(
+                                        $amount * $purchase_order->get(
+                                            'Purchase Order Currency Exchange'
+                                        ), $account->get('Account Currency')
+                                    ).')</span>';
 
-                }
+                            }
 
-                if ($data['Part Package Weight'] > 0) {
-                    $subtotals .= ' | '.weight(
-                            $data['Part Package Weight'] * $data['Purchase Order Quantity'] * $data['Supplier Part Packages Per Carton']
-                        );
-                }
-                if ($data['Supplier Part Carton CBM'] > 0) {
-                    $subtotals .= ' | '.number(
-                            $data['Purchase Order Quantity'] * $data['Supplier Part Carton CBM']
-                        ).' m³';
-                }
-            }
-            $subtotals .= '</span>';
-
+                            if ($data['Part Package Weight'] > 0) {
+                                $subtotals .= ' | '.weight(
+                                        $data['Part Package Weight'] * $data['Purchase Order Quantity'] * $data['Supplier Part Packages Per Carton']
+                                    );
+                            }
+                            if ($data['Supplier Part Carton CBM'] > 0) {
+                                $subtotals .= ' | '.number(
+                                        $data['Purchase Order Quantity'] * $data['Supplier Part Carton CBM']
+                                    ).' m³';
+                            }
+                        }
+                        $subtotals .= '</span>';
+            */
 
             $packing = sprintf(
                 '<i class="fa fa-fw fa-gift" aria-hidden="true" ></i> %ss, (%s <i class="far fa-fw fa-dot-circle discreet" aria-hidden="true" ></i>, %s <i class="fa fa-fw fa-gift " aria-hidden="true" ></i>)/<i class="fa fa-fw fa-dropbox" aria-hidden="true" ></i>',
                 '<b>'.$data['Part Units Per Package'].'</b>', '<b>'.$units_per_carton.'</b>', '<b>'.$skos_per_carton.'</b>'
             );
+            /*
+                        if (!$data['Supplier Delivery Key']) {
 
-            if (!$data['Supplier Delivery Key']) {
+                            $delivery_qty = $data['Purchase Order Quantity'];
 
-                $delivery_qty = $data['Purchase Order Quantity'];
+                            $delivery_quantity = sprintf(
+                                '<span class="delivery_quantity" id="delivery_quantity_%d" key="%d" item_key="%d" item_historic_key=%d on="1" ><input class="order_qty width_50" value="%s" ovalue="%s"> <i onClick="save_item_qty_change(this)" class="fa  fa-minus fa-fw button" aria-hidden="true"></i></span>',
+                                $data['Purchase Order Transaction Fact Key'], $data['Purchase Order Transaction Fact Key'], $data['Supplier Part Key'], $data['Supplier Part Historic Key'], $delivery_qty + 0, $delivery_qty + 0
+                            );
+                        } else {
+                            $delivery_quantity = number(
+                                $data['Supplier Delivery Units']
+                            );
 
-                $delivery_quantity = sprintf(
-                    '<span class="delivery_quantity" id="delivery_quantity_%d" key="%d" item_key="%d" item_historic_key=%d on="1" ><input class="order_qty width_50" value="%s" ovalue="%s"> <i onClick="save_item_qty_change(this)" class="fa  fa-minus fa-fw button" aria-hidden="true"></i></span>',
-                    $data['Purchase Order Transaction Fact Key'], $data['Purchase Order Transaction Fact Key'], $data['Supplier Part Key'], $data['Supplier Part Historic Key'], $delivery_qty + 0, $delivery_qty + 0
-                );
-            } else {
-                $delivery_quantity = number(
-                    $data['Supplier Delivery Quantity']
-                );
-
-            }
-
+                        }
+            */
 
             $description = ($data['Supplier Part Reference'] != $data['Part Reference'] ? $data['Part Reference'].', ' : '').$data['Supplier Part Description'];
 
@@ -1608,6 +2164,9 @@ function agent_order_items($_data, $db, $user, $account) {
                             $data['Order Transaction Fact Key'], $data['Product ID'], $data['Product Key'], $data['Order Quantity'] + 0, $data['Order Quantity'] + 0
                         );
             */
+
+            /*
+
             $quantity = sprintf(
                 '<span    data-settings=\'{"field": "Purchase Order Quantity", "transaction_key":"%d","item_key":%d, "item_historic_key":%d ,"on":1 }\'   >
                 <i onClick="save_item_qty_change(this)" class="fa minus  fa-minus fa-fw button" aria-hidden="true"></i>
@@ -1615,6 +2174,7 @@ function agent_order_items($_data, $db, $user, $account) {
                 <i onClick="save_item_qty_change(this)" class="fa plus  fa-plus fa-fw button" aria-hidden="true"></i></span>', $data['Purchase Order Transaction Fact Key'], $data['Supplier Part Key'], $data['Supplier Part Historic Key'],
                 $data['Purchase Order Quantity'] + 0, $data['Purchase Order Quantity'] + 0
             );
+            */
 
             $table_data[] = array(
 
@@ -1643,13 +2203,13 @@ function agent_order_items($_data, $db, $user, $account) {
                 'quantity'          => $quantity,
                 'delivery_quantity' => $delivery_quantity,
                 'subtotals'         => $subtotals,
-                'ordered'           => number($data['Purchase Order Quantity']),
+                // 'ordered'           => number($data['Purchase Order Quantity']),
                 'supplier_key'      => $data['Supplier Key'],
                 'supplier'          => $data['Supplier Code'],
                 'unit_cost'         => money($data['Supplier Part Unit Cost'], $purchase_order->get('Purchase Order Currency Code')),
-                'qty_units'         => number($units_per_carton * $data['Purchase Order Quantity']),
-                'qty_cartons'       => number($data['Purchase Order Quantity']),
-                'amount'            => money($data['Supplier Part Unit Cost'] * $data['Purchase Order Quantity'] * $units_per_carton, $purchase_order->get('Purchase Order Currency Code')),
+                //'qty_units'         => number($units_per_carton * $data['Purchase Order Quantity']),
+                //'qty_cartons'       => number($data['Purchase Order Quantity']),
+                //'amount'            => money($data['Supplier Part Unit Cost'] * $data['Purchase Order Quantity'] * $units_per_carton, $purchase_order->get('Purchase Order Currency Code')),
 
             );
 
@@ -1688,100 +2248,100 @@ function client_order_items($_data, $db, $user, $account) {
 
     $sql        = "select $fields from $table $where $wheref order by $order $order_direction limit $start_from,$number_results";
     $table_data = array();
-    $exchange   = -1;
+    // $exchange   = -1;
 
     if ($result = $db->query($sql)) {
         foreach ($result as $data) {
 
+            /*
+                        switch ($data['Part Stock Status']) {
+                            case 'Surplus':
+                                $stock_status = '<i class="fa  fa-plus-circle fa-fw" aria-hidden="true" title="'._('Surplus').'" ></i>';
+                                break;
+                            case 'Optimal':
+                                $stock_status = '<i class="fa fa-check-circle fa-fw" aria-hidden="true" title="'._('Optimal').'"></i>';
+                                break;
+                            case 'Low':
+                                $stock_status = '<i class="fa fa-minus-circle fa-fw" aria-hidden="true" title="'._('Low').'"></i>';
+                                break;
+                            case 'Critical':
+                                $stock_status = '<i class="fa error fa-minus-circle fa-fw" aria-hidden="true" title="'._('Critical').'"></i>';
+                                break;
+                            case 'Out_Of_Stock':
+                                $stock_status = '<i class="fa error fa-ban fa-fw" aria-hidden="true" title="'._('Out of stock').'"></i>';
+                                break;
+                            case 'Error':
+                                $stock_status = '<i class="fa fa-question-circle error fa-fw" aria-hidden="true" title="'._('Error').'"></i>';
+                                break;
+                            default:
+                                $stock_status = $data['Part Stock Status'];
+                                break;
+                        }
 
-            switch ($data['Part Stock Status']) {
-                case 'Surplus':
-                    $stock_status = '<i class="fa  fa-plus-circle fa-fw" aria-hidden="true" title="'._('Surplus').'" ></i>';
-                    break;
-                case 'Optimal':
-                    $stock_status = '<i class="fa fa-check-circle fa-fw" aria-hidden="true" title="'._('Optimal').'"></i>';
-                    break;
-                case 'Low':
-                    $stock_status = '<i class="fa fa-minus-circle fa-fw" aria-hidden="true" title="'._('Low').'"></i>';
-                    break;
-                case 'Critical':
-                    $stock_status = '<i class="fa error fa-minus-circle fa-fw" aria-hidden="true" title="'._('Critical').'"></i>';
-                    break;
-                case 'Out_Of_Stock':
-                    $stock_status = '<i class="fa error fa-ban fa-fw" aria-hidden="true" title="'._('Out of stock').'"></i>';
-                    break;
-                case 'Error':
-                    $stock_status = '<i class="fa fa-question-circle error fa-fw" aria-hidden="true" title="'._('Error').'"></i>';
-                    break;
-                default:
-                    $stock_status = $data['Part Stock Status'];
-                    break;
-            }
-
-            $quantity = number($data['Purchase Order Quantity']);
-
+                        $quantity = number($data['Purchase Order Quantity']);
+            */
 
             $units_per_carton = $data['Part Units Per Package'] * $data['Supplier Part Packages Per Carton'];
             $skos_per_carton  = $data['Supplier Part Packages Per Carton'];
 
+            /*
+                        $subtotals = sprintf('<span  class="subtotals" style="font-size:90%%"  >');
+                        if ($data['Purchase Order Quantity'] > 0) {
 
-            $subtotals = sprintf('<span  class="subtotals" style="font-size:90%%"  >');
-            if ($data['Purchase Order Quantity'] > 0) {
-
-                $subtotals .= $data['Purchase Order Quantity'] * $units_per_carton.'u. '.$data['Purchase Order Quantity'] * $skos_per_carton.'pkg. ';
+                            $subtotals .= $data['Purchase Order Quantity'] * $units_per_carton.'u. '.$data['Purchase Order Quantity'] * $skos_per_carton.'pkg. ';
 
 
-                $amount = $data['Purchase Order Quantity'] * $units_per_carton * $data['Supplier Part Unit Cost'];
+                            $amount = $data['Purchase Order Quantity'] * $units_per_carton * $data['Supplier Part Unit Cost'];
 
-                $subtotals .= money(
-                    $amount, $purchase_order->get('Purchase Order Currency Code')
-                );
+                            $subtotals .= money(
+                                $amount, $purchase_order->get('Purchase Order Currency Code')
+                            );
 
-                if ($data['Supplier Part Currency Code'] != $account->get(
-                        'Account Currency'
-                    )) {
-                    $subtotals .= ' <span class="">('.money(
-                            $amount * $purchase_order->get(
-                                'Purchase Order Currency Exchange'
-                            ), $account->get('Account Currency')
-                        ).')</span>';
+                            if ($data['Supplier Part Currency Code'] != $account->get(
+                                    'Account Currency'
+                                )) {
+                                $subtotals .= ' <span class="">('.money(
+                                        $amount * $purchase_order->get(
+                                            'Purchase Order Currency Exchange'
+                                        ), $account->get('Account Currency')
+                                    ).')</span>';
 
-                }
+                            }
 
-                if ($data['Part Package Weight'] > 0) {
-                    $subtotals .= ' | '.weight(
-                            $data['Part Package Weight'] * $data['Purchase Order Quantity'] * $data['Supplier Part Packages Per Carton']
-                        );
-                }
-                if ($data['Supplier Part Carton CBM'] > 0) {
-                    $subtotals .= ' | '.number(
-                            $data['Purchase Order Quantity'] * $data['Supplier Part Carton CBM']
-                        ).' m³';
-                }
-            }
-            $subtotals .= '</span>';
-
+                            if ($data['Part Package Weight'] > 0) {
+                                $subtotals .= ' | '.weight(
+                                        $data['Part Package Weight'] * $data['Purchase Order Quantity'] * $data['Supplier Part Packages Per Carton']
+                                    );
+                            }
+                            if ($data['Supplier Part Carton CBM'] > 0) {
+                                $subtotals .= ' | '.number(
+                                        $data['Purchase Order Quantity'] * $data['Supplier Part Carton CBM']
+                                    ).' m³';
+                            }
+                        }
+                        $subtotals .= '</span>';
+            */
 
             $packing = sprintf(
                 '<i class="fa fa-fw fa-gift" aria-hidden="true" ></i> %ss, (%s <i class="far fa-fw fa-dot-circle discreet" aria-hidden="true" ></i>, %s <i class="fa fa-fw fa-gift " aria-hidden="true" ></i>)/<i class="fa fa-fw fa-dropbox" aria-hidden="true" ></i>',
                 '<b>'.$data['Part Units Per Package'].'</b>', '<b>'.$units_per_carton.'</b>', '<b>'.$skos_per_carton.'</b>'
             );
+            /*
+                        if (!$data['Supplier Delivery Key']) {
 
-            if (!$data['Supplier Delivery Key']) {
+                            $delivery_qty = $data['Purchase Order Quantity'];
 
-                $delivery_qty = $data['Purchase Order Quantity'];
+                            $delivery_quantity = sprintf(
+                                '<span class="delivery_quantity" id="delivery_quantity_%d" key="%d" item_key="%d" item_historic_key=%d on="1" ><input class="order_qty width_50" value="%s" ovalue="%s"> <i onClick="save_item_qty_change(this)" class="fa  fa-minus fa-fw button" aria-hidden="true"></i></span>',
+                                $data['Purchase Order Transaction Fact Key'], $data['Purchase Order Transaction Fact Key'], $data['Supplier Part Key'], $data['Supplier Part Historic Key'], $delivery_qty + 0, $delivery_qty + 0
+                            );
+                        } else {
+                            $delivery_quantity = number(
+                                $data['Supplier Delivery Units']
+                            );
 
-                $delivery_quantity = sprintf(
-                    '<span class="delivery_quantity" id="delivery_quantity_%d" key="%d" item_key="%d" item_historic_key=%d on="1" ><input class="order_qty width_50" value="%s" ovalue="%s"> <i onClick="save_item_qty_change(this)" class="fa  fa-minus fa-fw button" aria-hidden="true"></i></span>',
-                    $data['Purchase Order Transaction Fact Key'], $data['Purchase Order Transaction Fact Key'], $data['Supplier Part Key'], $data['Supplier Part Historic Key'], $delivery_qty + 0, $delivery_qty + 0
-                );
-            } else {
-                $delivery_quantity = number(
-                    $data['Supplier Delivery Quantity']
-                );
-
-            }
-
+                        }
+            */
 
             $description = ($data['Supplier Part Reference'] != $data['Part Reference'] ? $data['Part Reference'].', ' : '').$data['Supplier Part Description'];
 
@@ -1795,6 +2355,7 @@ function client_order_items($_data, $db, $user, $account) {
                             $data['Order Transaction Fact Key'], $data['Product ID'], $data['Product Key'], $data['Order Quantity'] + 0, $data['Order Quantity'] + 0
                         );
             */
+            /*
             $quantity = sprintf(
                 '<span    data-settings=\'{"field": "Purchase Order Quantity", "transaction_key":"%d","item_key":%d, "item_historic_key":%d ,"on":1 }\'   >
                 <i onClick="save_item_qty_change(this)" class="fa minus  fa-minus fa-fw button" aria-hidden="true"></i>
@@ -1802,7 +2363,7 @@ function client_order_items($_data, $db, $user, $account) {
                 <i onClick="save_item_qty_change(this)" class="fa plus  fa-plus fa-fw button" aria-hidden="true"></i></span>', $data['Purchase Order Transaction Fact Key'], $data['Supplier Part Key'], $data['Supplier Part Historic Key'],
                 $data['Purchase Order Quantity'] + 0, $data['Purchase Order Quantity'] + 0
             );
-
+*/
             $table_data[] = array(
 
                 'id'                => (integer)$data['Purchase Order Transaction Fact Key'],
@@ -1829,12 +2390,12 @@ function client_order_items($_data, $db, $user, $account) {
                 'quantity'          => $quantity,
                 'delivery_quantity' => $delivery_quantity,
                 'subtotals'         => $subtotals,
-                'ordered'           => number($data['Purchase Order Quantity']),
+                // 'ordered'           => number($data['Purchase Order Quantity']),
                 'supplier'          => sprintf('<span class="link" onclick="change_view(\'supplier/%d\')">%s</span>', $data['Supplier Key'], $data['Supplier Code']),
                 'unit_cost'         => money($data['Supplier Part Unit Cost'], $purchase_order->get('Purchase Order Currency Code')),
-                'qty_units'         => number($units_per_carton * $data['Purchase Order Quantity']),
-                'qty_cartons'       => number($data['Purchase Order Quantity']),
-                'amount'            => money($data['Supplier Part Unit Cost'] * $data['Purchase Order Quantity'] * $units_per_carton, $purchase_order->get('Purchase Order Currency Code')),
+                //'qty_units'         => number($units_per_carton * $data['Purchase Order Quantity']),
+                //'qty_cartons'       => number($data['Purchase Order Quantity']),
+                //'amount'            => money($data['Supplier Part Unit Cost'] * $data['Purchase Order Quantity'] * $units_per_carton, $purchase_order->get('Purchase Order Currency Code')),
 
             );
 
@@ -1860,13 +2421,16 @@ function client_order_items($_data, $db, $user, $account) {
     echo json_encode($response);
 }
 
-function delivery_items($_data, $db, $user) {
+function delivery_items($_data, $db, $user, $account) {
 
+    include_once 'utils/supplier_order_functions.php';
 
     $rtext_label = 'item';
 
-    include_once 'class.PurchaseOrder.php';
-    $purchase_order = new PurchaseOrder($_data['parameters']['parent_key']);
+    //include_once 'class.PurchaseOrder.php';
+    //$purchase_order = new PurchaseOrder($_data['parameters']['parent_key']);
+
+    $supplier_delivery = get_object('Supplier_Delivery', $_data['parameters']['parent_key']);
 
     include_once 'prepare_table/init.php';
 
@@ -1877,51 +2441,103 @@ function delivery_items($_data, $db, $user) {
         foreach ($result as $data) {
 
 
-            $quantity = number($data['Supplier Delivery Quantity']);
+           // $quantity = number($data['Supplier Delivery Units']);
 
 
-            $units_per_carton = $data['Part Units Per Package'] * $data['Supplier Part Packages Per Carton'];
+           // $units_per_carton = $data['Part Units Per Package'] * $data['Supplier Part Packages Per Carton'];
 
 
-            $subtotals = sprintf('<span  class="subtotals" >');
-            if ($data['Supplier Delivery Quantity'] > 0) {
-                $subtotals .= money(
-                    $data['Supplier Delivery Net Amount'], $data['Currency Code']
-                );
+            $data['units_qty'] = $data['Supplier Delivery Units'];
 
-                if ($data['Supplier Delivery Weight'] > 0) {
-                    $subtotals .= ' '.weight($data['Supplier Delivery Weight']);
-                }
-                if ($data['Supplier Delivery CBM'] > 0) {
-                    $subtotals .= ' '.number($data['Supplier Delivery CBM']).' m³';
-                }
-            }
-            $subtotals .= '</span>';
+            $data['account_currency_code'] = $account->get('Account Currency');
+            $data['currency_code']         = $supplier_delivery->get('Supplier Delivery Currency Code');
+            $data['exchange']              = $supplier_delivery->get('Supplier Delivery Currency Exchange');
 
 
-            $delivery_quantity = sprintf(
-                '<span class="delivery_quantity" id="delivery_quantity_%d" key="%d" item_key="%d" item_historic_key=%d on="1" ><input class="order_qty width_50" value="%s" ovalue="%s"> <i onClick="save_item_qty_change(this)" class="fa  fa-minus fa-fw button" aria-hidden="true"></i></span>',
-                $data['Purchase Order Transaction Fact Key'], $data['Purchase Order Transaction Fact Key'], $data['Supplier Part Key'], $data['Supplier Part Historic Key'], $quantity, $quantity
+
+
+
+            //  $subtotals = get_purchase_order_subtotals($data);
+            /*
+
+                        $delivery_quantity = sprintf(
+                            '<span class="delivery_quantity" id="delivery_quantity_%d" key="%d" item_key="%d" item_historic_key=%d on="1" ><input class="order_qty width_50" value="%s" ovalue="%s"> <i onClick="save_item_qty_change(this)" class="fa  fa-minus fa-fw button" aria-hidden="true"></i></span>',
+                            $data['Purchase Order Transaction Fact Key'], $data['Purchase Order Transaction Fact Key'], $data['Supplier Part Key'], $data['Supplier Part Historic Key'], $quantity, $quantity
+                        );
+
+            */
+            $reference = sprintf(
+                '<span class="link" onclick="change_view(\'/supplier/%d/part/%d\')" title="%s" >%s</span>', $data['Supplier Key'], $data['Supplier Part Key'], _('Supplier product code'), $data['Supplier Part Reference']
             );
+            if ($data['Part Reference'] != $data['Supplier Part Reference']) {
+                $reference .= sprintf(
+                    '<br ><span class="small link" onclick="change_view(\'part/%d\')" title="%s"><i class="far fa-box"></i> %s</span>', $data['Part SKU'], _('Part reference'), $data['Part Reference']
+                );
+            } else {
+                $reference .= sprintf(
+                    ', <span class="small link" onclick="change_view(\'part/%d\')" ><i class="far fa-box" title="%s"></i> </span>', $data['Part SKU'], _('Part reference is same as supplier product code')
+                );
+            }
+
+
+            $description = '<div style="font-size:90%" >'.($data['Supplier Part Reference'] != $data['Part Reference'] ? $data['Part Reference'].', ' : '');
+
+
+            $description_units = $description.' '.$data['Supplier Part Description'].'<br/> 
+             <span class="discreet">'.sprintf(_('Packed in <b>%ds</b>'), $data['Part Units Per Package']).' <span class="" title="'._('SKOs per carton').'">, sko/C: <b>'.$data['Supplier Part Packages Per Carton'].'</b></span>';
+
+
+            $data['units_qty'] = $data['Supplier Delivery Units'];
+            $items_qty         = get_purchase_order_items_qty($data);
+
+
+            $amount = money($data['Supplier Delivery Units'] * $data['Supplier Part Unit Cost'], $data['currency_code']);
+
+            if ($data['currency_code'] != $data['account_currency_code']) {
+                $amount .= ' <span class="">('.money($data['Supplier Delivery Units'] * $data['Supplier Part Unit Cost']*$data['exchange'], $data['account_currency_code']).')</span>';
+
+            }
+
+            if ($data['Part Package Weight'] > 0) {
+                $weight = weight(
+                    $data['Part Package Weight'] * $data['Supplier Delivery Units'] / $data['Part Units Per Package']
+                );
+            } else {
+                $weight = '<i class="error fa fa-exclamation-circle"></i>';
+            }
+            if ($data['Supplier Part Carton CBM'] > 0) {
+                $cbm = number(
+                        $data['Supplier Delivery Units'] * $data['Supplier Part Carton CBM'] / $data['Part Units Per Package'] / $data['Supplier Part Packages Per Carton']
+                    ).' m³';
+            } else {
+                $cbm = '<i class="error fa fa-exclamation-circle"></i>';
+
+            }
 
 
             $table_data[] = array(
 
-                'id'                => (integer)$data['Purchase Order Transaction Fact Key'],
-                'supplier_part_key' => (integer)$data['Supplier Part Key'],
-                'checkbox'          => sprintf('<i key="%d" class="far fa-square fa-fw button" aria-hidden="true"></i>', $data['Purchase Order Transaction Fact Key']),
+                'id' => (integer)$data['Purchase Order Transaction Fact Key'],
+                //'supplier_part_key' => (integer)$data['Supplier Part Key'],
+                //'checkbox'          => sprintf('<i key="%d" class="far fa-square fa-fw button" aria-hidden="true"></i>', $data['Purchase Order Transaction Fact Key']),
 
-                'operations' => sprintf(
-                    '<i key="%d" class="fa fa-fw fa-truck fa-flip-horizontal button" aria-hidden="true" onClick="change_on_delivery(this)"></i>', $data['Purchase Order Transaction Fact Key']
-                ),
+                //'operations' => sprintf(
+                //    '<i key="%d" class="fa fa-fw fa-truck fa-flip-horizontal button" aria-hidden="true" onClick="change_on_delivery(this)"></i>', $data['Purchase Order Transaction Fact Key']
+                //),
 
-                'reference'   => sprintf('<span class="link" onclick="change_view(\'supplier/%d/part/%d\')">%s</span>', $data['Supplier Part Supplier Key'], $data['Supplier Part Key'], $data['Supplier Part Reference']),
-                'description' => $data['Supplier Part Description'].' ('.number($units_per_carton).'/C)',
+                'reference'   => $reference,
+                'description' => $description_units,
+                'items_qty'   => $items_qty,
 
-                'quantity'  => $delivery_quantity,
-                'subtotals' => $subtotals,
-                'ordered'   => number($data['Purchase Order Quantity']),
-                'qty'       => number($quantity)
+
+                'amount' => $amount,
+                'weight' => $weight,
+                'cbm'    => $cbm,
+
+                //'quantity'  => $delivery_quantity,
+                //'items_qty' => $subtotals,
+                //'ordered'   => number($data['Purchase Order Quantity']),
+                // 'qty'       => number($quantity)
 
             );
 
@@ -1947,14 +2563,16 @@ function delivery_items($_data, $db, $user) {
     echo json_encode($response);
 }
 
+function delivery_items_mismatch($_data, $db, $user, $account) {
 
-function delivery_checking_items($_data, $db, $user) {
-
+    include_once 'utils/supplier_order_functions.php';
 
     $rtext_label = 'item';
 
-    include_once 'class.SupplierDelivery.php';
-    $supplier_delivery = new SupplierDelivery($_data['parameters']['parent_key']);
+    //include_once 'class.PurchaseOrder.php';
+    //$purchase_order = new PurchaseOrder($_data['parameters']['parent_key']);
+
+    $supplier_delivery = get_object('Supplier_Delivery', $_data['parameters']['parent_key']);
 
     include_once 'prepare_table/init.php';
 
@@ -1964,14 +2582,149 @@ function delivery_checking_items($_data, $db, $user) {
     if ($result = $db->query($sql)) {
         foreach ($result as $data) {
 
-            $quantity = number($data['Supplier Delivery Quantity']);
+
+            // $quantity = number($data['Supplier Delivery Units']);
+
+
+            // $units_per_carton = $data['Part Units Per Package'] * $data['Supplier Part Packages Per Carton'];
+
+
+            $data['units_qty'] = $data['Supplier Delivery Units'];
+
+            $data['account_currency_code'] = $account->get('Account Currency');
+            $data['currency_code']         = $supplier_delivery->get('Supplier Delivery Currency Code');
+            $data['exchange']              = $supplier_delivery->get('Supplier Delivery Currency Exchange');
+
+
+
+
+
+            //  $subtotals = get_purchase_order_subtotals($data);
+            /*
+
+                        $delivery_quantity = sprintf(
+                            '<span class="delivery_quantity" id="delivery_quantity_%d" key="%d" item_key="%d" item_historic_key=%d on="1" ><input class="order_qty width_50" value="%s" ovalue="%s"> <i onClick="save_item_qty_change(this)" class="fa  fa-minus fa-fw button" aria-hidden="true"></i></span>',
+                            $data['Purchase Order Transaction Fact Key'], $data['Purchase Order Transaction Fact Key'], $data['Supplier Part Key'], $data['Supplier Part Historic Key'], $quantity, $quantity
+                        );
+
+            */
+            $reference = sprintf(
+                '<span class="link" onclick="change_view(\'/supplier/%d/part/%d\')" title="%s" >%s</span>', $data['Supplier Key'], $data['Supplier Part Key'], _('Supplier product code'), $data['Supplier Part Reference']
+            );
+            if ($data['Part Reference'] != $data['Supplier Part Reference']) {
+                $reference .= sprintf(
+                    '<br ><span class="small link" onclick="change_view(\'part/%d\')" title="%s"><i class="far fa-box"></i> %s</span>', $data['Part SKU'], _('Part reference'), $data['Part Reference']
+                );
+            } else {
+                $reference .= sprintf(
+                    ', <span class="small link" onclick="change_view(\'part/%d\')" ><i class="far fa-box" title="%s"></i> </span>', $data['Part SKU'], _('Part reference is same as supplier product code')
+                );
+            }
+
+
+
+
+            $description_skos = $data['Part Package Description'].'<br/> 
+             <span class="discreet">'.sprintf(_('Packed in <b>%ds</b>'), $data['Part Units Per Package']).' <span class="" title="'._('SKOs per carton').'">, sko/C: <b>'.$data['Supplier Part Packages Per Carton'].'</b></span>';
+
+
+            $data['units_qty'] = $data['Supplier Delivery Units'];
+
+            $items_qty         = get_purchase_order_items_qty($data);
+
+            $data['units_qty'] = $data['Supplier Delivery Checked Units'];
+
+            $checked_qty         = get_purchase_order_items_qty($data);
+
+            $diff_units=$data['Supplier Delivery Checked Units']-$data['Supplier Delivery Units'];
+
+
+
+
+            $table_data[] = array(
+
+                'id' => (integer)$data['Purchase Order Transaction Fact Key'],
+                //'supplier_part_key' => (integer)$data['Supplier Part Key'],
+                //'checkbox'          => sprintf('<i key="%d" class="far fa-square fa-fw button" aria-hidden="true"></i>', $data['Purchase Order Transaction Fact Key']),
+
+                //'operations' => sprintf(
+                //    '<i key="%d" class="fa fa-fw fa-truck fa-flip-horizontal button" aria-hidden="true" onClick="change_on_delivery(this)"></i>', $data['Purchase Order Transaction Fact Key']
+                //),
+                'type'=>    ($diff_units>0?'<i class="far fa-box-open"></i>':'<i class="fa fa-box-full"></i>'),
+                'reference'   => $reference,
+                'description' => $description_skos,
+                'items_qty'   => $items_qty,
+                'checked_qty'   => $checked_qty,
+                'diff'   => delta($data['Supplier Delivery Checked Units'],$data['Supplier Delivery Units']),
+                'diff_units'   => ($diff_units>0?'+':'').$diff_units,
+                'diff_skos'   => ($diff_units>0?'+':'').($diff_units)/$data['Part Units Per Package'],
+
+                // 'amount' => $amount,
+               // 'weight' => $weight,
+               // 'cbm'    => $cbm,
+
+                //'quantity'  => $delivery_quantity,
+                //'items_qty' => $subtotals,
+                //'ordered'   => number($data['Purchase Order Quantity']),
+                // 'qty'       => number($quantity)
+
+            );
+
+
+        }
+    } else {
+        print_r($error_info = $db->errorInfo());
+        exit;
+    }
+
+
+    $response = array(
+        'resultset' => array(
+            'state'         => 200,
+            'data'          => $table_data,
+            'rtext'         => $rtext,
+            'sort_key'      => $_order,
+            'sort_dir'      => $_dir,
+            'total_records' => $total
+
+        )
+    );
+    echo json_encode($response);
+}
+
+function delivery_checking_items($_data, $db, $user, $account) {
+
+
+    $rtext_label = 'item';
+    include_once 'utils/supplier_order_functions.php';
+
+
+    $supplier_delivery = get_object('Supplier_Delivery', $_data['parameters']['parent_key']);
+
+
+    include_once 'prepare_table/init.php';
+
+    $sql        = "select $fields from $table $where $wheref order by $order $order_direction limit $start_from,$number_results";
+    $table_data = array();
+
+    if ($result = $db->query($sql)) {
+        foreach ($result as $data) {
+
+            // $quantity = number($data['Supplier Delivery Units']);
+
+
+            $data['units_qty'] = $data['Supplier Delivery Units'];
+
+            $data['account_currency_code'] = $account->get('Account Currency');
+            $data['currency_code']         = $supplier_delivery->get('Supplier Delivery Currency Code');
+            $data['exchange']              = $supplier_delivery->get('Supplier Delivery Currency Exchange');
 
 
             $units_per_carton = $data['Part Units Per Package'] * $data['Supplier Part Packages Per Carton'];
 
 
             $subtotals = sprintf('<span  class="subtotals" >');
-            if ($data['Supplier Delivery Quantity'] > 0) {
+            if ($data['Supplier Delivery Units'] > 0) {
                 $subtotals .= money(
                     $data['Supplier Delivery Net Amount'], $data['Currency Code']
                 );
@@ -1985,10 +2738,18 @@ function delivery_checking_items($_data, $db, $user) {
             }
             $subtotals .= '</span>';
 
+            /*
+                        $description = $data['Part Package Description'].' ('.number(
+                                $units_per_carton
+                            ).'/'.number($data['Supplier Part Packages Per Carton']).'/C)    '.($data['Part SKO Barcode'] != '' ? '<br><i class="fa fa-barcode" aria-hidden="true"></i> '.$data['Part SKO Barcode'] : '');
 
-            $description = $data['Part Package Description'].' ('.number(
-                    $units_per_carton
-                ).'/'.number($data['Supplier Part Packages Per Carton']).'/C)    '.($data['Part SKO Barcode'] != '' ? '<br><i class="fa fa-barcode" aria-hidden="true"></i> '.$data['Part SKO Barcode'] : '');
+                        */
+
+            $description = '<div style="font-size:90%" >'.($data['Supplier Part Reference'] != $data['Part Reference'] ? $data['Part Reference'].', ' : '');
+
+            $description = $description.'<span class="">'.$data['Part Units Per Package'].'</span><span class="discreet ">x</span> '.$data['Supplier Part Description'].'<br/> 
+             <span class="discreet">'.sprintf(_('Packed in <b>%ds</b>'), $data['Part Units Per Package']).' <span class="" title="'._('SKOs per carton').'">, sko/C: <b>'.$data['Part Units Per Package'].'</b></span>';
+
 
             $number_locations = 0;
             $locations        = '';
@@ -2029,10 +2790,15 @@ function delivery_checking_items($_data, $db, $user) {
             );
             */
 
-            if ($data['Supplier Delivery Checked Quantity'] == '') {
+            if ($data['Supplier Delivery Checked Units'] == '') {
+
                 $sko_checked_quantity = '';
+
             } else {
-                $sko_checked_quantity = ($data['Supplier Delivery Checked Quantity'] * $data['Supplier Part Packages Per Carton']) + 0;
+
+                $sko_checked_quantity = ($data['Supplier Delivery Checked Units'] / $data['Part Units Per Package']) + 0;
+
+
             }
 
             /*
@@ -2052,16 +2818,16 @@ function delivery_checking_items($_data, $db, $user) {
 
             $edit_sko_checked_quantity = sprintf(
                 '<span class="%s" ondblclick="show_check_dialog(this)">%s</span>
-                <span data-settings=\'{"field": "Supplier Delivery Checked Quantity", "transaction_key":%d,"item_key":%d, "item_historic_key":%d ,"on":1 }\' class="checked_quantity %s"  >
+                <span data-settings=\'{"field": "Supplier Delivery Checked Units", "sko_factor":%d, "transaction_key":%d,"item_key":%d, "item_historic_key":%d ,"on":1 }\' class="checked_quantity %s"  >
                     <i onClick="save_item_qty_change(this)" class="fa minus  fa-minus fa-fw button" aria-hidden="true"></i>
-                    <input class="checked_qty width_50" style="text-align: center" value="%s" ovalue="%s"> 
+                    <input   class="checked_qty width_50" style="text-align: center" value="%s" ovalue="%s"> 
                     <i onClick="save_item_qty_change(this)" class="fa plus  fa-plus fa-fw button %s" aria-hidden="true">
-                </span>', ($supplier_delivery->get('Supplier Delivery State') == 'Placed' ? '' : 'hide'), number($sko_checked_quantity), $data['Purchase Order Transaction Fact Key'], $data['Supplier Part Key'], $data['Supplier Part Historic Key'],
-                ($supplier_delivery->get('Supplier Delivery State') == 'Placed' ? 'hide' : ''), $sko_checked_quantity, $sko_checked_quantity, ''
+                </span>', ($supplier_delivery->get('Supplier Delivery State') == 'Placed' ? '' : 'hide'), number($sko_checked_quantity), $data['Part Units Per Package'], $data['Purchase Order Transaction Fact Key'], $data['Supplier Part Key'],
+                $data['Supplier Part Historic Key'], ($supplier_delivery->get('Supplier Delivery State') == 'Placed' ? 'hide' : ''), $sko_checked_quantity, $sko_checked_quantity, ''
             );
 
 
-            $quantity = ($data['Supplier Delivery Checked Quantity'] - $data['Supplier Delivery Placed Quantity']) * $data['Supplier Part Packages Per Carton'];
+            $quantity = ($data['Supplier Delivery Checked Units'] - $data['Supplier Delivery Placed Units']) / $data['Part Units Per Package'];
 
             if ($data['Metadata'] == '') {
                 $metadata = array();
@@ -2085,12 +2851,11 @@ function delivery_checking_items($_data, $db, $user) {
 
                 }
             }
-            $placement .= '<div style="clear:both"></div></div>';
-
+            $placement      .= '<div style="clear:both"></div></div>';
             $placement_note = '<input type="hidden" class="note" /><i class="far add_note fa-sticky-note padding_right_5 button" aria-hidden="true"  onClick="show_placement_note(this)" ></i>';
             $placement      .= '
-			    <div style="clear:both"  id="place_item_'.$data['Purchase Order Transaction Fact Key'].'" class="place_item '.($data['Supplier Delivery Transaction Placed'] == 'No' ? '' : 'hide').' " part_sku="'.$data['Part SKU'].'" transaction_key="'
-                .$data['Purchase Order Transaction Fact Key'].'"  >
+			    <div style="clear:both"  id="place_item_'.$data['Purchase Order Transaction Fact Key'].'" class="place_item  '.($data['Supplier Delivery Checked Units'] != '' ? '' : 'invisible').'  '.($data['Supplier Delivery Transaction Placed'] == 'No' ? '' : 'hide')
+                .' " part_sku="'.$data['Part SKU'].'" transaction_key="'.$data['Purchase Order Transaction Fact Key'].'"  >
 
 			    '.$placement_note.'
 
@@ -2100,6 +2865,17 @@ function delivery_checking_items($_data, $db, $user) {
                 </div>
                 </div>
 			';
+
+            $items_qty = get_purchase_order_items_qty($data);
+            $items_qty = sprintf(
+                '<span  id="part_sko_item_%d"  data-barcode_settings=\'{"reference":"%s","description":"%s" ,"image_src":"%s" ,"qty":"%s" ,"cartons":"%s"  , "skos":"%s"  ,"units":"%s"   }\'  _checked="%s"   barcode="%s" data-metadata=\'{"qty":%d}\' onClick="copy_qty(this)" class="button part_sko_item"  >%s</span>',
+                $data['Part SKU'], $data['Part Reference'], base64_encode($data['Part Package Description']), $data['Part SKO Image Key'], $data['Supplier Part Packages Per Carton'] * $data['Supplier Delivery Units'], number($data['Supplier Delivery Units']),
+                number($data['Supplier Part Packages Per Carton'] * $data['Supplier Delivery Units']), number($data['Supplier Part Packages Per Carton'] * $data['Part Units Per Package'] * $data['Supplier Delivery Units']), $data['Supplier Delivery Checked Units'],
+
+
+                $data['Part SKO Barcode'], $data['Supplier Delivery Units'] / $data['Part Units Per Package'], $items_qty
+
+            );
 
 
             $table_data[] = array(
@@ -2135,26 +2911,24 @@ function delivery_checking_items($_data, $db, $user) {
                 'sko_checked_quantity'      => number($sko_checked_quantity),
                 //'placement_notes'=>$placement_notes_field,
                 'subtotals'                 => $subtotals,
-                'ordered'                   => number(
-                    $data['Purchase Order Quantity']
-                ),
+                // 'ordered'                   => number($data['Purchase Order Quantity']),
                 'qty'                       => number($quantity),
+                'items_qty'                 => $items_qty,
+
+                /*
+                                'c_sko_u'   => sprintf(
+                                    '<span  id="part_sko_item_%d"  data-barcode_settings=\'{"reference":"%s","description":"%s" ,"image_src":"%s" ,"qty":"%s" ,"cartons":"%s"  , "skos":"%s"  ,"units":"%s"   }\'  _checked="%s"   barcode="%s" data-metadata=\'{"qty":%d}\' onClick="copy_qty(this)" class="button part_sko_item"  ><span class="very_discreet">%s/</span> <span>%s</span> <span class="super_discreet">/%s</span></span>',
+
+                                    $data['Part SKU'], $data['Part Reference'], base64_encode($data['Part Package Description']), $data['Part SKO Image Key'], $data['Supplier Part Packages Per Carton'] * $data['Supplier Delivery Units'], number($data['Supplier Delivery Units']),
+                                    number($data['Supplier Part Packages Per Carton'] * $data['Supplier Delivery Units']), number($data['Supplier Part Packages Per Carton'] * $data['Part Units Per Package'] * $data['Supplier Delivery Units']), $data['Supplier Delivery Checked Units'],
 
 
-                'c_sko_u'   => sprintf(
-                    '<span  id="part_sko_item_%d"  data-barcode_settings=\'{"reference":"%s","description":"%s" ,"image_src":"%s" ,"qty":"%s" ,"cartons":"%s"  , "skos":"%s"  ,"units":"%s"   }\'  _checked="%s"   barcode="%s" data-metadata=\'{"qty":%d}\' onClick="copy_qty(this)" class="button part_sko_item"  ><span class="very_discreet">%s/</span> <span>%s</span> <span class="super_discreet">/%s</span></span>',
+                                    $data['Part SKO Barcode'], $data['Supplier Part Packages Per Carton'] * $data['Supplier Delivery Units'],
 
-                    $data['Part SKU'], $data['Part Reference'], base64_encode($data['Part Package Description']), $data['Part SKO Image Key'], $data['Supplier Part Packages Per Carton'] * $data['Supplier Delivery Quantity'], number($data['Supplier Delivery Quantity']),
-                    number($data['Supplier Part Packages Per Carton'] * $data['Supplier Delivery Quantity']), number($data['Supplier Part Packages Per Carton'] * $data['Part Units Per Package'] * $data['Supplier Delivery Quantity']),
-                    $data['Supplier Delivery Checked Quantity'],
-
-
-                    $data['Part SKO Barcode'], $data['Supplier Part Packages Per Carton'] * $data['Supplier Delivery Quantity'],
-
-                    number($data['Supplier Delivery Quantity']), number($data['Supplier Part Packages Per Carton'] * $data['Supplier Delivery Quantity']),
-                    number($data['Supplier Part Packages Per Carton'] * $data['Part Units Per Package'] * $data['Supplier Delivery Quantity'])
-                ),
-                'placement' => $placement
+                                    number($data['Supplier Delivery Units']), number($data['Supplier Part Packages Per Carton'] * $data['Supplier Delivery Units']), number($data['Supplier Part Packages Per Carton'] * $data['Part Units Per Package'] * $data['Supplier Delivery Units'])
+                                ),
+                */
+                'placement'                 => $placement
             );
 
 
@@ -2412,12 +3186,11 @@ function category_all_suppliers($_data, $db, $user, $account) {
 
 function order_supplier_all_parts($_data, $db, $user, $account) {
 
-    include_once 'class.PurchaseOrder.php';
-    include_once 'utils/natural_language.php';
+    include_once 'utils/supplier_order_functions.php';
 
     $rtext_label = 'supplier part';
 
-    $purchase_order = new PurchaseOrder($_data['parameters']['parent_key']);
+    $purchase_order = get_object('PurchaseOrder', $_data['parameters']['parent_key']);
 
     include_once 'prepare_table/init.php';
 
@@ -2483,61 +3256,12 @@ function order_supplier_all_parts($_data, $db, $user, $account) {
 
             $skos_per_carton = $data['Supplier Part Packages Per Carton'];
 
-            /*
-                        $subtotals = sprintf('<span  class="subtotals" >');
-                        if ($data['Purchase Order Quantity'] > 0) {
-                            $subtotals = money(
-                                $data['Purchase Order Quantity'] * $units_per_carton * $data['Supplier Part Unit Cost'], $purchase_order->get('Purchase Order Currency Code')
-                            );
+            $data['units_qty']             = $data['Purchase Order Ordering Units'];
+            $data['account_currency_code'] = $account->get('Account Currency');
+            $data['currency_code']         = $purchase_order->get('Purchase Order Currency Code');
+            $data['exchange']              = $purchase_order->get('Purchase Order Currency Exchange');
 
-                            if ($data['Part Package Weight'] > 0) {
-                                $subtotals .= ' '.weight(
-                                        $data['Part Package Weight'] * $data['Purchase Order Quantity'] * $data['Supplier Part Packages Per Carton']
-                                    );
-                            }
-                            if ($data['Supplier Part Carton CBM'] > 0) {
-                                $subtotals .= ' '.number(
-                                        $data['Purchase Order Quantity'] * $data['Supplier Part Carton CBM']
-                                    ).' m³';
-                            }
-                        }
-                        $subtotals .= '</span>';
-            */
-
-
-            $subtotals = sprintf('<span  class="subtotals" style="font-size:90%%"  >');
-            if ($data['Purchase Order Quantity'] > 0) {
-
-                $subtotals .= $data['Purchase Order Quantity'] * $units_per_carton.'u. | '.$data['Purchase Order Quantity'] * $skos_per_carton.'pkg. ';
-
-
-                $amount = $data['Purchase Order Quantity'] * $units_per_carton * $data['Supplier Part Unit Cost'];
-
-                $subtotals .= ' | '.money($amount, $purchase_order->get('Purchase Order Currency Code'));
-
-                if ($data['Supplier Part Currency Code'] != $account->get(
-                        'Account Currency'
-                    )) {
-                    $subtotals .= ' <span class="">('.money(
-                            $amount * $purchase_order->get(
-                                'Purchase Order Currency Exchange'
-                            ), $account->get('Account Currency')
-                        ).')</span>';
-
-                }
-
-                if ($data['Part Package Weight'] > 0) {
-                    $subtotals .= ' '.weight(
-                            $data['Part Package Weight'] * $data['Purchase Order Quantity'] * $data['Supplier Part Packages Per Carton']
-                        );
-                }
-                if ($data['Supplier Part Carton CBM'] > 0) {
-                    $subtotals .= ' '.number(
-                            $data['Purchase Order Quantity'] * $data['Supplier Part Carton CBM']
-                        ).' m³';
-                }
-            }
-            $subtotals .= '</span>';
+            $subtotals = get_purchase_order_subtotals($data);
 
 
             $transaction_key = '';
@@ -2546,12 +3270,32 @@ function order_supplier_all_parts($_data, $db, $user, $account) {
             $description = '<div style="font-size:90%" >'.($data['Supplier Part Reference'] != $data['Part Reference'] ? $data['Part Reference'].', ' : '');
 
 
-            $description .= '<span class="">'.$units_per_carton.'</span><span class="discreet ">x</span> '.$data['Supplier Part Description'].'<br/> 
-             <span class="discreet">'.sprintf(_('Packed in <b>%ds</b>'), $data['Part Units Per Package']).' <span class="" title="'._('SKOs per carton').'">, pks/C: <b>'.$skos_per_carton.'</b></span>';
+            $description_units = $description.' '.$data['Supplier Part Description'].'<br/> 
+             <span class="discreet">'.sprintf(_('Packed in <b>%ds</b>'), $data['Part Units Per Package']).' <span class="" title="'._('SKOs per carton').'">, sko/C: <b>'.$skos_per_carton.'</b></span>';
 
 
             if ($data['Supplier Part Minimum Carton Order'] > 0 and $data['Supplier Part Minimum Carton Order'] != 1) {
                 $description .= sprintf(
+                    ' <span class="discreet"><span title="%s">Min order</span>:%s<span>', _('Minimum order (units)'), number($data['Part Units Per Package'] * $data['Supplier Part Packages Per Carton'] * $data['Supplier Part Minimum Carton Order'])
+                );
+            }
+
+            $description_skos = $description.'<span class="">'.$data['Part Units Per Package'].'</span><span class="discreet ">x</span> '.$data['Supplier Part Description'].'<br/> 
+             <span class="discreet">'.sprintf(_('Packed in <b>%ds</b>'), $data['Part Units Per Package']).' <span class="" title="'._('SKOs per carton').'">, sko/C: <b>'.$skos_per_carton.'</b></span>';
+
+
+            if ($data['Supplier Part Minimum Carton Order'] > 0 and $data['Supplier Part Minimum Carton Order'] != 1) {
+                $description_skos .= sprintf(
+                    ' <span class="discreet"><span title="%s">MOQ</span>:%s<span>', _('Minimum order (cartons)'), number($data['Supplier Part Minimum Carton Order'])
+                );
+            }
+
+            $description_cartons = $description.'<span class="">'.$units_per_carton.'</span><span class="discreet ">x</span> '.$data['Supplier Part Description'].'<br/> 
+             <span class="discreet">'.sprintf(_('Packed in <b>%ds</b>'), $data['Part Units Per Package']).' <span class="" title="'._('SKOs per carton').'">, sko/C: <b>'.$skos_per_carton.'</b></span>';
+
+
+            if ($data['Supplier Part Minimum Carton Order'] > 0 and $data['Supplier Part Minimum Carton Order'] != 1) {
+                $description_cartons .= sprintf(
                     ' <span class="discreet"><span title="%s">MOQ</span>:%s<span>', _('Minimum order (cartons)'), number($data['Supplier Part Minimum Carton Order'])
                 );
             }
@@ -2572,17 +3316,8 @@ function order_supplier_all_parts($_data, $db, $user, $account) {
                 } elseif ($data['Part On Demand'] == 'Yes') {
 
                     $available_forecast = '<span >'.sprintf(
-                            _('%s in stock'), '<span  title="'.sprintf(
-                                                "%s %s", number(
-                                                $data['Part Days Available Forecast'], 1
-                                            ), ngettext(
-                                                    "day", "days", intval(
-                                                             $data['Part Days Available Forecast']
-                                                         )
-                                                )
-                                            ).'">'.seconds_to_until(
-                                                $data['Part Days Available Forecast'] * 86400
-                                            ).'</span>'
+                            _('%s in stock'),
+                            '<span  title="'.sprintf("%s %s", number($data['Part Days Available Forecast'], 1), ngettext("day", "days", intval($data['Part Days Available Forecast']))).'">'.seconds_to_until($data['Part Days Available Forecast'] * 86400).'</span>'
                         ).'</span>';
 
                     if ($data['Part Fresh'] == 'No') {
@@ -2593,13 +3328,7 @@ function order_supplier_all_parts($_data, $db, $user, $account) {
                 } else {
                     $available_forecast = '<span >'.sprintf(
                             _('%s availability'), '<span  title="'.sprintf(
-                                                    "%s %s", number(
-                                                    $data['Part Days Available Forecast'], 1
-                                                ), ngettext(
-                                                        "day", "days", intval(
-                                                                 $data['Part Days Available Forecast']
-                                                             )
-                                                    )
+                                                    "%s %s", number($data['Part Days Available Forecast'], 1), ngettext("day", "days", intval($data['Part Days Available Forecast']))
                                                 ).'">'.seconds_to_until(
                                                     $data['Part Days Available Forecast'] * 86400
                                                 ).'</span>'
@@ -2608,67 +3337,128 @@ function order_supplier_all_parts($_data, $db, $user, $account) {
 
                 }
             }
-            $average_sales_per_year = '&lang;'.number($data['Part 1 Year Acc Dispatched'] / $data['Supplier Part Packages Per Carton']).' C/y&rang;';
+
+            $average_sales_per_year_units = '&lang;'.number($data['Part 1 Year Acc Dispatched'] * $data['Part Units Per Package']).' u/y&rang;';
+            $average_sales_per_year_skos  = '&lang;'.number($data['Part 1 Year Acc Dispatched']).' SKOs/y&rang;';
 
 
-            $description_sales = $description.'<div style="margin-top:10px" >
+            $average_sales_per_year_cartons = '&lang;'.number($data['Part 1 Year Acc Dispatched'] / $data['Supplier Part Packages Per Carton']).' C/y&rang;';
+
+
+            $description_units = $description_units.'<div style="margin-top:10px" >
                        
-                       <span style="display: inline-block; min-width: 50px;color:black" class="strong padding_right_10" title="'._('Stock (cartons)').'">'.number(
-                    $data['Part Current On Hand Stock'] / $data['Supplier Part Packages Per Carton']
-                ).'</span> '.$stock_status.'
+                       <span style="display: inline-block; min-width: 50px;color:black" class="strong padding_right_10" title="'._('Stock (units)').'">'.number($data['Part Current On Hand Stock'] * $data['Part Units Per Package']).'<span class="small">u.</span></span> '
+                .$stock_status.'
                         <span>'.$available_forecast.'</span>
-                        <span class="discreet padding_left_10" title="'._('Cartons dispatched by year').'">'.$average_sales_per_year.'</span>
+                        <span class="discreet padding_left_10" title="'._('Cartons dispatched by year').'">'.$average_sales_per_year_units.'</span>
                     </div>
                     <div class="as_table asset_sales">
                         <div class="as_row header">
-			            <div class="as_cell width_75">'.get_quarter_label(
-                    strtotime('now -12 months')
-                ).'</div>
-			            <div class="as_cell width_75">'.get_quarter_label(
-                    strtotime('now -9 months')
-                ).'</div>
-			            <div class="as_cell width_75">'.get_quarter_label(
-                    strtotime('now -6 months')
-                ).'</div>
-			            <div class="as_cell width_75">'.get_quarter_label(
-                    strtotime('now -3 months')
-                ).'</div>
-			            <div class="as_cell width_75">'.get_quarter_label(
-                    strtotime('now')
-                ).'</div>
+			            <div class="as_cell width_75">'.get_quarter_label(strtotime('now -12 months')).'</div>
+			            <div class="as_cell width_75">'.get_quarter_label(strtotime('now -9 months')).'</div>
+			            <div class="as_cell width_75">'.get_quarter_label(strtotime('now -6 months')).'</div>
+			            <div class="as_cell width_75">'.get_quarter_label(strtotime('now -3 months')).'</div>
+			            <div class="as_cell width_75">'.get_quarter_label(strtotime('now')).'</div>
 			        </div>
 		            <div class="as_row header">
-			            <div class="as_cell width_75">'.number(
-                    $data['Part 4 Quarter Ago Dispatched'] / $data['Supplier Part Packages Per Carton']
-                ).'</div>
-			            <div class="as_cell width_75">'.number(
-                    $data['Part 3 Quarter Ago Dispatched'] / $data['Supplier Part Packages Per Carton']
-                ).'</div>
-			            <div class="as_cell width_75">'.number(
-                    $data['Part 2 Quarter Ago Dispatched'] / $data['Supplier Part Packages Per Carton']
-                ).'</div>
-			            <div class="as_cell width_75">'.number(
-                    $data['Part 1 Quarter Ago Dispatched'] / $data['Supplier Part Packages Per Carton']
-                ).'</div>
-			        <div class="as_cell width_75">'.number(
-                    $data['Part Quarter To Day Acc Dispatched'] / $data['Supplier Part Packages Per Carton']
-                ).'</div>
+			            <div class="as_cell width_75">'.number($data['Part 4 Quarter Ago Dispatched'] * $data['Part Units Per Package']).'</div>
+			            <div class="as_cell width_75">'.number($data['Part 3 Quarter Ago Dispatched'] * $data['Part Units Per Package']).'</div>
+			            <div class="as_cell width_75">'.number($data['Part 2 Quarter Ago Dispatched'] * $data['Part Units Per Package']).'</div>
+			            <div class="as_cell width_75">'.number($data['Part 1 Quarter Ago Dispatched'] * $data['Part Units Per Package']).'</div>
+			        <div class="as_cell width_75">'.number($data['Part Quarter To Day Acc Dispatched'] * $data['Part Units Per Package']).'</div>
 			    </div>
-			</div>
+			</div>';
+
+            $description_skos = $description_skos.'<div style="margin-top:10px" >
+                       
+                       <span style="display: inline-block; min-width: 50px;color:black" class="strong padding_right_10" title="'._('Stock (SKOs)').'">'.number($data['Part Current On Hand Stock']).'<span class="small">sko.</span></span> '.$stock_status.'
+                        <span>'.$available_forecast.'</span>
+                        <span class="discreet padding_left_10" title="'._('Cartons dispatched by year').'">'.$average_sales_per_year_skos.'</span>
+                    </div>
+                    <div class="as_table asset_sales">
+                        <div class="as_row header">
+			            <div class="as_cell width_75">'.get_quarter_label(strtotime('now -12 months')).'</div>
+			            <div class="as_cell width_75">'.get_quarter_label(strtotime('now -9 months')).'</div>
+			            <div class="as_cell width_75">'.get_quarter_label(strtotime('now -6 months')).'</div>
+			            <div class="as_cell width_75">'.get_quarter_label(strtotime('now -3 months')).'</div>
+			            <div class="as_cell width_75">'.get_quarter_label(strtotime('now')).'</div>
+			        </div>
+		            <div class="as_row header">
+			            <div class="as_cell width_75">'.number($data['Part 4 Quarter Ago Dispatched']).'</div>
+			            <div class="as_cell width_75">'.number($data['Part 3 Quarter Ago Dispatched']).'</div>
+			            <div class="as_cell width_75">'.number($data['Part 2 Quarter Ago Dispatched']).'</div>
+			            <div class="as_cell width_75">'.number($data['Part 1 Quarter Ago Dispatched']).'</div>
+			        <div class="as_cell width_75">'.number($data['Part Quarter To Day Acc Dispatched']).'</div>
+			    </div>
+			</div>';
+
+            $description_cartons = $description_cartons.'<div style="margin-top:10px" >
+                       
+                       <span style="display: inline-block; min-width: 50px;color:black" class="strong padding_right_10" title="'._('Stock (cartons)').'">'.number($data['Part Current On Hand Stock'] / $data['Supplier Part Packages Per Carton'])
+                .'<span class="small discreet">C.</span></span> '.$stock_status.'
+                        <span>'.$available_forecast.'</span>
+                        <span class="discreet padding_left_10" title="'._('Cartons dispatched by year').'">'.$average_sales_per_year_cartons.'</span>
+                    </div>
+                    <div class="as_table asset_sales">
+                        <div class="as_row header">
+			            <div class="as_cell width_75">'.get_quarter_label(strtotime('now -12 months')).'</div>
+			            <div class="as_cell width_75">'.get_quarter_label(strtotime('now -9 months')).'</div>
+			            <div class="as_cell width_75">'.get_quarter_label(strtotime('now -6 months')).'</div>
+			            <div class="as_cell width_75">'.get_quarter_label(strtotime('now -3 months')).'</div>
+			            <div class="as_cell width_75">'.get_quarter_label(strtotime('now')).'</div>
+			        </div>
+		            <div class="as_row header">
+			            <div class="as_cell width_75">'.number($data['Part 4 Quarter Ago Dispatched'] / $data['Supplier Part Packages Per Carton']).'</div>
+			            <div class="as_cell width_75">'.number($data['Part 3 Quarter Ago Dispatched'] / $data['Supplier Part Packages Per Carton']).'</div>
+			            <div class="as_cell width_75">'.number($data['Part 2 Quarter Ago Dispatched'] / $data['Supplier Part Packages Per Carton']).'</div>
+			            <div class="as_cell width_75">'.number($data['Part 1 Quarter Ago Dispatched'] / $data['Supplier Part Packages Per Carton']).'</div>
+			        <div class="as_cell width_75">'.number($data['Part Quarter To Day Acc Dispatched'] / $data['Supplier Part Packages Per Carton']).'</div>
+			    </div>
+			</div>';
 
 
+            $units_qty   = $data['Purchase Order Ordering Units'];
+            $skos_qty    = $units_qty / $data['Part Units Per Package'];
+            $cartons_qty = $skos_qty / $data['Supplier Part Packages Per Carton'];
 
-			';
+
+            if ($data['Purchase Order Ordering Units'] % ($data['Part Units Per Package'] * $data['Supplier Part Packages Per Carton']) != 0 or $data['Purchase Order Ordering Units'] % ($data['Part Units Per Package']) != 0) {
+                $class = 'error';
+            } else {
+                $class = '';
+            }
 
 
-            $quantity = sprintf(
-                '<span    data-settings=\'{"field": "Purchase Order Quantity", "transaction_key":"%d","item_key":%d, "item_historic_key":%d ,"on":1 }\'   >
+            $quantity_units = sprintf(
+                '<span    data-settings=\'{"field": "Purchase Order Units", "transaction_key":"%d","item_key":%d, "item_historic_key":%d ,"on":1 }\'   >
                 <i onClick="save_item_qty_change(this)" class="fa minus  fa-minus fa-fw button" aria-hidden="true"></i>
-                <input class="order_qty width_50" style="text-align: center" value="%s" ovalue="%s"> 
+                <input class="order_qty order_units_qty %s width_50" style="text-align: center" value="%s" ovalue="%s"> 
                 <i onClick="save_item_qty_change(this)" class="fa plus  fa-plus fa-fw button" aria-hidden="true"></i></span>',
 
 
-                $transaction_key, $data['Supplier Part Key'], $data['Supplier Part Historic Key'], ($data['Purchase Order Quantity'] == 0 ? '' : $data['Purchase Order Quantity'] + 0), ($data['Purchase Order Quantity'] == 0 ? '' : $data['Purchase Order Quantity'] + 0)
+                $transaction_key, $data['Supplier Part Key'], $data['Supplier Part Historic Key'], $class, ($units_qty == 0 ? '' : $units_qty + 0), ($units_qty == 0 ? '' : $units_qty + 0)
+
+            );
+
+            $quantity_skos = sprintf(
+                '<span    data-settings=\'{"field": "Purchase Order SKOs", "transaction_key":"%d","item_key":%d, "item_historic_key":%d ,"on":1 }\'   >
+                <i onClick="save_item_qty_change(this)" class="fa minus  fa-minus fa-fw button" aria-hidden="true"></i>
+                <input class="order_qty order_skos_qty  %s width_50" style="text-align: center" value="%s" ovalue="%s"> 
+                <i onClick="save_item_qty_change(this)" class="fa plus  fa-plus fa-fw button" aria-hidden="true"></i></span>',
+
+
+                $transaction_key, $data['Supplier Part Key'], $data['Supplier Part Historic Key'], $class, ($skos_qty == 0 ? '' : $skos_qty + 0), ($skos_qty == 0 ? '' : $skos_qty + 0)
+
+            );
+
+            $quantity_cartons = sprintf(
+                '<span    data-settings=\'{"field": "Purchase Order Cartons", "transaction_key":"%d","item_key":%d, "item_historic_key":%d ,"on":1 }\'   >
+                <i onClick="save_item_qty_change(this)" class="fa minus  fa-minus fa-fw button" aria-hidden="true"></i>
+                <input class="order_qty order_cartons_qty  %s width_50" style="text-align: center" value="%s" ovalue="%s"> 
+                <i onClick="save_item_qty_change(this)" class="fa plus  fa-plus fa-fw button" aria-hidden="true"></i></span>',
+
+
+                $transaction_key, $data['Supplier Part Key'], $data['Supplier Part Historic Key'], $class, ($cartons_qty == 0 ? '' : $cartons_qty + 0), ($cartons_qty == 0 ? '' : $cartons_qty + 0)
 
             );
 
@@ -2688,18 +3478,12 @@ function order_supplier_all_parts($_data, $db, $user, $account) {
 
             if ($data['Part Main Image Key'] != 0) {
                 $image = sprintf(
-                    '<img src="/image_root.php?id=%d&r=50x50" style="display: block;
-  max-width:50px;
-  max-height:50px;
-  width: auto;
-  height: auto;">', $data['Part Main Image Key']
+                    '<img src="/image_root.php?id=%d&r=50x50" style="display: block;  max-width:50px; max-height:50px; width: auto; height: auto;">', $data['Part Main Image Key']
                 );
             } else {
                 $image = '';
             }
 
-
-            $info = '';
 
             if ($data['Part Next Deliveries Data'] == '') {
                 $next_deliveries = array();
@@ -2707,20 +3491,32 @@ function order_supplier_all_parts($_data, $db, $user, $account) {
                 $next_deliveries = json_decode($data['Part Next Deliveries Data'], true);
             }
 
-            $info .= '<div border="0" style="font-size: small" class="as_table">';
 
+            $other_deliveries_units   = '';
+            $other_deliveries_skos    = '';
+            $other_deliveries_cartons = '';
 
-            //print $data['Part Reference'];
-            //print_r($next_deliveries);
 
             foreach ($next_deliveries as $next_delivery) {
                 if (isset($next_delivery['po_key']) and $next_delivery['po_key'] != $purchase_order->id) {
-                    $info .= '<div class="as_row "><div class="as_cell" >'.$next_delivery['formatted_link'].'</div><div class="padding_left_20 as_cell strong" title="'._('Cartons ordered').'">+'.number($next_delivery['raw_qty']).'</div></div>';
+
+                    $other_deliveries_units   .= '<div class="as_row "><div class="as_cell" >'.$next_delivery['formatted_link'].'</div><div class="padding_left_20 as_cell strong" title="'._('Units ordered').'">+'.number($next_delivery['raw_units_qty'])
+                        .'<span style="font-weight: normal" class="small discreet">u.</span></div></div>';
+                    $other_deliveries_skos    .= '<div class="as_row "><div class="as_cell" >'.$next_delivery['formatted_link'].'</div><div class="padding_left_20 as_cell strong" title="'._('SKOs ordered').'">+'.number(
+                            $next_delivery['raw_units_qty'] / $data['Part Units Per Package']
+                        ).'<span style="font-weight: normal" class="small discreet">skos</span></div></div>';
+                    $other_deliveries_cartons .= '<div class="as_row "><div class="as_cell" >'.$next_delivery['formatted_link'].'</div><div class="padding_left_20 as_cell strong" title="'._('Cartons ordered').'">+'.number(
+                            $next_delivery['raw_units_qty'] / $data['Part Units Per Package'] / $data['Supplier Part Packages Per Carton']
+                        ).'<span style="font-weight: normal" class="small discreet">C.</span></div></div>';
+
+
                 }
             }
 
 
-            $info .= '</div>';
+            $other_deliveries_units   = '<div border="0" style="font-size: small" class="as_table">'.$other_deliveries_units.'</div>';
+            $other_deliveries_skos    = '<div border="0" style="font-size: small" class="as_table">'.$other_deliveries_skos.'</div>';
+            $other_deliveries_cartons = '<div border="0" style="font-size: small" class="as_table">'.$other_deliveries_cartons.'</div>';
 
             $table_data[] = array(
                 'id'               => (integer)$data['Supplier Part Key'],
@@ -2733,29 +3529,26 @@ function order_supplier_all_parts($_data, $db, $user, $account) {
                     $purchase_order->get('Purchase Order Parent')
                 ),
                 'reference'        => $reference,
-                'formatted_sku'    => sprintf(
-                    "SKU%05d", $data['Supplier Part Part SKU']
-                ),
                 'part_description' => '<span style="min-width:80px;display: inline-block;" class="link padding_right_10" onClick="change_view(\'part/'.$data['Supplier Part Part SKU'].'\')">'.$data['Part Reference'].'</span> '.$data['Part Package Description'],
 
-                'description'       => $description,
-                'description_sales' => $description_sales,
-                'info'              => $info,
 
-                'status'    => $status,
-                'cost'      => money(
-                    $data['Supplier Part Unit Cost'], $data['Supplier Part Currency Code']
-                ),
-                'packing'   => '<div style="float:left;min-width:20px;text-align:right"><span>'.$data['Part Units Per Package']
+                'status'  => $status,
+                'cost'    => money($data['Supplier Part Unit Cost'], $data['Supplier Part Currency Code']),
+                'packing' => '<div style="float:left;min-width:20px;text-align:right"><span>'.$data['Part Units Per Package']
                     .'</span></div><div style="float:left;min-width:70px;text-align:left"> <i  class="fa fa-arrow-right very_discreet padding_right_10 padding_left_10"></i><span>['.$data['Supplier Part Packages Per Carton'].']</span></div> <span class="discreet">'
                     .($data['Part Units Per Package'] * $data['Supplier Part Packages Per Carton'].'</span>'),
-                'stock'     => number(floor($data['Part Current Stock']))." $stock_status",
-                'quantity'  => $quantity,
-                'xquantity' => sprintf(
-                    '<span    data-settings=\'{"field": "Purchase Order Quantity", "transaction_key":"%d","item_key":%d, "item_historic_key":%d ,"on":1 }\'   ><input class="order_qty width_50" value="%s" ovalue="%s"> <i onClick="save_item_qty_change(this)" class="fa  fa-plus fa-fw button" aria-hidden="true"></i></span>',
-                    $transaction_key, $data['Supplier Part Key'], $data['Supplier Part Historic Key'], ($data['Purchase Order Quantity'] == 0 ? '' : $data['Purchase Order Quantity'] + 0),
-                    ($data['Purchase Order Quantity'] == 0 ? '' : $data['Purchase Order Quantity'] + 0)
-                ),
+                'stock'   => number(floor($data['Part Current Stock']))." $stock_status",
+
+                'description_units'        => $description_units,
+                'description_skos'         => $description_skos,
+                'description_cartons'      => $description_cartons,
+                'quantity_units'           => $quantity_units,
+                'quantity_skos'            => $quantity_skos,
+                'quantity_cartons'         => $quantity_cartons,
+                'other_deliveries_units'   => $other_deliveries_units,
+                'other_deliveries_skos'    => $other_deliveries_skos,
+                'other_deliveries_cartons' => $other_deliveries_cartons,
+
                 'subtotals' => $subtotals,
                 'image'     => $image
 
@@ -4208,21 +5001,31 @@ function delivery_costing($_data, $db, $user) {
             $total_paid = sprintf(
                 '<span id="total_paid_%d" class="total_paid_amount %s" data-sku="%d" data-sko_in="%f" data-exchange="%f" data-items_amount="%f" data-extra_amount="%f" data-extra_amount_account_currency="%f"  data-changed=false >%s</span>',
 
-                $data['Part SKU'], ($data['skos_in']==0?'zero':''),
-                $data['Part SKU'], $data['skos_in'], 1 / $supplier_delivery->get('Supplier Delivery Currency Exchange'), $data['items_amount'], $data['extra_amount'], $data['extra_amount_account_currency'],
+                $data['Part SKU'], ($data['skos_in'] == 0 ? 'zero' : ''), $data['Part SKU'], $data['skos_in'], 1 / $supplier_delivery->get('Supplier Delivery Currency Exchange'), $data['items_amount'], $data['extra_amount'], $data['extra_amount_account_currency'],
 
                 money($data['paid_amount'], $account->get('Currency Code'))
             );
 
+            $reference = sprintf(
+                '<span class="link" onclick="change_view(\'/part/%d\')" title="%s" >%s</span>', $data['Part SKU'], _('Part reference'), $data['Part Reference']
+            );
+            if ($data['Part Reference'] != $data['Supplier Part Reference']) {
+                $reference .= sprintf(
+                    '<br ><span class="small link"  onclick="change_view(\'/supplier/%d/part/%d\')"  title="%s"><i class="fa fa-square"></i> %s</span>', $data['Supplier Key'], $data['Supplier Part Key'], _('Supplier product code'), $data['Supplier Part Reference']
+                );
+            } else {
+                $reference .= sprintf(
+                    ', <span class="small link"  onclick="change_view(\'/supplier/%d/part/%d\')" ><i class="fa fa-square" title="%s"></i> </span>', $data['Supplier Key'], $data['Supplier Part Key'], _('Part reference is same as supplier product code')
+                );
+            }
 
             $table_data[] = array(
 
-                'id'                => (integer)$data['Part SKU'],
-                'supplier_part_key' => (integer)$data['Supplier Part Key'],
+                'id'             => (integer)$data['Part SKU'],
 
 
-                'reference'      => $data['Supplier Part Reference'],
-                'part_reference' => sprintf('%s', $data['Part Reference']),
+                //  'reference'      => $reference,
+                'part_reference' => $reference,
                 'description'    => $data['Part Package Description'],
 
                 'received_quantity'             => number($data['skos_in']),
@@ -4230,7 +5033,7 @@ function delivery_costing($_data, $db, $user) {
                 'extra_amount'                  => $extra_amount,
                 'extra_amount_account_currency' => $extra_amount_account_currency,
 
-                'ordered'               => number($data['Purchase Order Quantity']),
+                'ordered'               => number($data['Purchase Order Submitted Units']),
                 //'qty'       => number($quantity),
                 'paid_account_currency' => money($data['Supplier Delivery Net Amount'] * $supplier_delivery->get('Supplier Delivery Currency Exchange'), $account->get('Currency Code')),
 
@@ -4296,14 +5099,27 @@ function delivery_items_done($_data, $db, $user) {
             $total_paid = money($data['paid_amount'], $account->get('Currency Code'));
 
 
+            $reference = sprintf(
+                '<span class="link" onclick="change_view(\'/part/%d\')" title="%s" >%s</span>', $data['Part SKU'], _('Part reference'), $data['Part Reference']
+            );
+            if ($data['Part Reference'] != $data['Supplier Part Reference']) {
+                $reference .= sprintf(
+                    '<br ><span class="small link"  onclick="change_view(\'/supplier/%d/part/%d\')"  title="%s"><i class="fa fa-square"></i> %s</span>', $data['Supplier Key'], $data['Supplier Part Key'], _('Supplier product code'), $data['Supplier Part Reference']
+                );
+            } else {
+                $reference .= sprintf(
+                    ', <span class="small link"  onclick="change_view(\'/supplier/%d/part/%d\')" ><i class="fa fa-square" title="%s"></i> </span>', $data['Supplier Key'], $data['Supplier Part Key'], _('Part reference is same as supplier product code')
+                );
+            }
+
+
             $table_data[] = array(
 
                 'id'                => (integer)$data['Part SKU'],
                 'supplier_part_key' => (integer)$data['Supplier Part Key'],
 
 
-                'reference'      => $data['Supplier Part Reference'],
-                'part_reference' => sprintf('%s', $data['Part Reference']),
+                'part_reference' => $reference,
                 'description'    => $data['Part Package Description'],
 
                 'received_quantity'             => number($data['skos_in']),
@@ -4311,9 +5127,9 @@ function delivery_items_done($_data, $db, $user) {
                 'extra_amount'                  => $extra_amount,
                 'extra_amount_account_currency' => $extra_amount_account_currency,
 
-                'ordered'               => number($data['Purchase Order Quantity']),
+                // 'ordered'               => number($data['Purchase Order Quantity']),
                 //'qty'       => number($quantity),
-                'paid_account_currency' => money($data['Supplier Delivery Net Amount'] * $supplier_delivery->get('Supplier Delivery Currency Exchange'), $account->get('Currency Code')),
+                'paid_account_currency'         => money($data['Supplier Delivery Net Amount'] * $supplier_delivery->get('Supplier Delivery Currency Exchange'), $account->get('Currency Code')),
 
                 'total_paid' => $total_paid,
                 'sko_cost'   => $sko_cost
