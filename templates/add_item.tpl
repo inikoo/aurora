@@ -4,7 +4,7 @@
     <span>{$data.field_label}</span>
     <input style="margin-right:2px" id="add_item" class="item " value=""
            placeholder="{if isset($data.placeholder)}{$data.placeholder}{/if}">
-    <input style="margin-right:2px" id="add_item_qty" class="qty width_50 " value="" placeholder="{t}qty{/t}">
+    <input style="margin-right:2px" id="add_item_qty" class="qty width_75 " value="" placeholder="{if isset($data.placeholder_qty)}{$data.placeholder_qty}{else}{t}qty{/t}{/if}">
     <div id="add_item_results_container" class="search_results_container hide" style="width:400px;">
 
         <table id="add_item_results" border="0" style="background:white;font-size:90%">
