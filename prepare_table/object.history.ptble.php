@@ -10,6 +10,7 @@
 */
 
 
+
 if ($parameters['parent'] == 'customer' or $parameters['parent'] == 'order_customer') {
     $where   = sprintf(
         ' where   B.`Customer Key`=%d   ', $parameters['parent_key']
