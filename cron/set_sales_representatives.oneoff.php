@@ -23,11 +23,11 @@ $sql = sprintf('select `Customer Sales Representative Key`,`Customer Key` from `
 if ($result = $db->query($sql)) {
     foreach ($result as $row) {
 
-        $sql = sprintf('update `Invoice Dimension` set `Invoice Sales Representative Key`=%d where `Invoice Customer Key`=%d and `Invoice Date`>"2018-10-01 00:00:00" ', $row['Customer Sales Representative Key'], $row['Customer Key']);
+        $sql = sprintf('update `Invoice Dimension` set `Invoice Sales Representative Key`=%d where `Invoice Customer Key`=%d and `Invoice Date`>"2017-01-01 00:00:00" ', $row['Customer Sales Representative Key'], $row['Customer Key']);
         print "$sql\n";
         $db->exec($sql);
 
-        $sql = sprintf('update `Order Dimension` set `Order Sales Representative Key`=%d where `Order Customer Key`=%d and `Order Date`>"2018-10-01 00:00:00" ', $row['Customer Sales Representative Key'], $row['Customer Key']);
+        $sql = sprintf('update `Order Dimension` set `Order Sales Representative Key`=%d where `Order Customer Key`=%d and `Order Date`>"2017-01-01 00:00:00" ', $row['Customer Sales Representative Key'], $row['Customer Key']);
         print "$sql\n";
         $db->exec($sql);
 
