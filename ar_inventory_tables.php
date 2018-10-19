@@ -235,6 +235,33 @@ function parts($_data, $db, $user, $type, $account) {
             }
 
 
+
+            if ($data['Part Next Deliveries Data'] == '') {
+                $next_deliveries_array = array();
+            } else {
+                $next_deliveries_array = json_decode($data['Part Next Deliveries Data'], true);
+            }
+
+
+            $next_deliveries='';
+
+            foreach ($next_deliveries_array as $next_delivery) {
+
+
+                    $next_deliveries    .= '<div class="as_row "><div class="as_cell" >'.$next_delivery['formatted_link'].'</div><div class="padding_left_20 as_cell strong" title="'._('SKOs ordered').'">+'.number(
+                            $next_delivery['raw_units_qty'] / $data['Part Units Per Package']
+                        ).'<span style="font-weight: normal" class="small discreet">skos</span></div></div>';
+
+
+
+
+            }
+
+
+            $next_deliveries   = '<div border="0" style="font-size: small" class="as_table">'.$next_deliveries.'</div>';
+
+
+
             $record_data[] = array(
                 'id'                 => (integer)$data['Part SKU'],
                 'associated'         => $associated,
@@ -397,7 +424,8 @@ function parts($_data, $db, $user, $type, $account) {
 
                 'cost'            => $cost,
                 'sko_stock_value' => $sko_stock_value,
-                'margin'          => '<span class="'.($data['Part Margin'] <= 0 ? 'error' : '').'">'.percentage($data['Part Margin'], 1).'</span>'
+                'margin'          => '<span class="'.($data['Part Margin'] <= 0 ? 'error' : '').'">'.percentage($data['Part Margin'], 1).'</span>',
+                'next_deliveries'=>$next_deliveries
             );
 
 
