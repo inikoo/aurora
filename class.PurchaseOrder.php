@@ -1377,8 +1377,12 @@ sum(`Purchase Order Net Amount`) AS items_net, sum(`Purchase Order Extra Cost Am
 
     function update_item($data) {
 
+        //print_r($data);
+
         switch ($data['field']) {
             case 'Purchase Order Cartons':
+
+
             case 'Purchase Order SKOs':
             case 'Purchase Order Units':
                 return $this->update_item_quantity($data);
@@ -1414,7 +1418,7 @@ sum(`Purchase Order Net Amount`) AS items_net, sum(`Purchase Order Extra Cost Am
                 break;
             case 'Purchase Order Units':
                 $unit_qty = $qty;
-                break;
+
 
                 break;
         }
@@ -1423,6 +1427,8 @@ sum(`Purchase Order Net Amount`) AS items_net, sum(`Purchase Order Extra Cost Am
         $date            = gmdate('Y-m-d H:i:s');
         $transaction_key = '';
 
+
+       // print $unit_qty;
         if ($unit_qty == 0) {
 
             $sql = sprintf(

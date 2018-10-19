@@ -49,6 +49,7 @@ $table_buttons[] = array(
     'add_item' => array(
 
         'field_label' => _("Supplier's part").':',
+        'placeholder_qty' => _("Cartons"),
         'metadata'    => base64_encode(
             json_encode(
                 array(
@@ -74,7 +75,7 @@ $smarty->assign(
                             array(
                                 'parent'     => $state['object'],
                                 'parent_key' => $state['key'],
-                                'field'      => 'Purchase Order Ordering Units'
+                                'field'      => 'Purchase Order Cartons'
                             )
                         )
                     )
