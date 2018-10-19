@@ -2643,20 +2643,23 @@ class User extends DB_Table {
         $dashboard_items = array();
 
         if ($this->data['User Type'] == 'Staff') {
-            $dashboard_items[] = 'kpis';
+            //$dashboard_items[] = 'kpis';
 
-            $dashboard_items[] = 'pending_orders';
+            $dashboard_items[] = 'pending_orders_and_customers';
+            $dashboard_items[] = 'inventory_warehouse';
             $dashboard_items[] = 'sales_overview';
-            $dashboard_items[] = 'customers';
+           // $dashboard_items[] = 'customers';
 
 
         } else {
             if ($this->data['User Type'] == 'Contractor') {
 
-                $dashboard_items[] = 'kpis';
-                $dashboard_items[] = 'pending_orders';
+               // $dashboard_items[] = 'kpis';
+                $dashboard_items[] = 'pending_orders_and_customers';
+                $dashboard_items[] = 'inventory_warehouse';
+
                 $dashboard_items[] = 'sales_overview';
-                $dashboard_items[] = 'customers';
+                //$dashboard_items[] = 'customers';
 
 
 

@@ -16,11 +16,41 @@ require_once 'utils/natural_language.php';
 
 
 $account->load_acc_data();
+
+$account->update_active_parts_stock_data();
+
+
 $account->update_stores_data();
 $account->update_suppliers_data();
 $account->update_warehouses_data();
 $account->update_parts_data();
 $account->update_orders();
+
+
+$account->update_sales_from_invoices('Total');
+
+$account->update_sales_from_invoices('1 Year');
+$account->update_sales_from_invoices('1 Quarter');
+$account->update_sales_from_invoices('1 Month');
+$account->update_sales_from_invoices('1 Week');
+
+$account->update_sales_from_invoices('Year To Day');
+$account->update_sales_from_invoices('Quarter To Day');
+$account->update_sales_from_invoices('Month To Day');
+$account->update_sales_from_invoices('Week To Day');
+
+$account->update_sales_from_invoices('Last Month');
+$account->update_sales_from_invoices('Last Week');
+
+$account->update_sales_from_invoices('Yesterday');
+$account->update_sales_from_invoices('Today');
+
+$account->update_previous_years_data();
+$account->update_previous_quarters_data();
+
+
+$account->update_customers_data();
+$account->update_employees_data();
 
 
 
@@ -34,6 +64,7 @@ if ($result = $db->query($sql)) {
 
 
         $store->update_orders();
+
 
         $store->update(
             array('Store Today Start Orders In Warehouse Number'=>$store->get('Store Orders In Warehouse Number')+$store->get('Store Orders Packed Number')+$store->get('Store Orders Dispatch Approved Number'))

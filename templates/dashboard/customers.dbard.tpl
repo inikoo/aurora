@@ -53,16 +53,9 @@
 
     </li>
 
+    <li class="flex-item invisible">
 
-    <li class="flex-item ">
-        <span>{t}Parts{/t}</span>
-        <div class="title"><span class="Active_Parts button"   title="{t}Number active parts{/t}" >{$account->get('Active Parts Number')}</span></div>
-        <div >
-            <i class="fa fa-fw fa-seedling" title="{t}Parts in process{/t}"></i> <span class="In_Process_Parts " title="{t}Parts in process{/t}">{$account->get('In Process Parts Number')}</span>
 
-            | <i class="far fa-fw fa-skull" title="{t}Discontinuing parts{/t}"></i> <span class="In_Process_Parts " title="{t}Discontinuing parts{/t}">{$account->get('Discontinuing Parts Number')}</span>
-
-        </div>
     </li>
 
     <li class="flex-item invisible">

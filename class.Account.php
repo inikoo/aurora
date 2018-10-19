@@ -421,20 +421,63 @@ class Account extends DB_Table {
             case 'Active Parts Number':
             case 'In Process Parts Number':
             case 'Discontinuing Parts Number':
-            return number($this->data['Account '.$key]);
+            case 'Active Parts Stock Surplus Number':
+            case 'Active Parts Stock OK Number':
+            case 'Active Parts Stock Low Number':
+            case 'Active Parts Stock Critical Number':
+            case 'Active Parts Stock Zero Number':
+            case 'Active Parts Stock Surplus Deliveries Number':
+            case 'Active Parts Stock OK Deliveries Number':
+            case 'Active Parts Stock Low Deliveries Number':
+            case 'Active Parts Stock Critical Deliveries Number':
+            case 'Active Parts Stock Zero Deliveries Number':
+
+
+            case 'Active Active Production Stock Surplus Number':
+            case 'Active Active Production Stock OK Number':
+            case 'Active Active Production Stock Low Number':
+            case 'Active Active Production Stock Critical Number':
+            case 'Active Active Production Stock Zero Number':
+            case 'Active Active Production Stock Surplus Deliveries Number':
+            case 'Active Active Production Stock OK Deliveries Number':
+            case 'Active Active Production Stock Low Deliveries Number':
+            case 'Active Active Production Stock Critical Deliveries Number':
+            case 'Active Active Production Stock Zero Deliveries Number':
+
+
+                return number($this->data['Account '.$key]);
                 break;
             case 'Percentage Contacts With Orders':
             case 'Percentage Active Contacts':
-                return percentage($this->data['Account '.preg_replace('/^Percentage /','',$key)],$this->data['Account Contacts']);
+                return percentage($this->data['Account '.preg_replace('/^Percentage /', '', $key)], $this->data['Account Contacts']);
                 break;
             case 'Percentage New Contacts With Orders':
-                return ($this->data['Account New Contacts']==0?'':'('.percentage($this->data['Account '.preg_replace('/^Percentage /','',$key)],$this->data['Account New Contacts'])).')';
+                return ($this->data['Account New Contacts'] == 0 ? '' : '('.percentage($this->data['Account '.preg_replace('/^Percentage /', '', $key)], $this->data['Account New Contacts'])).')';
 
                 break;
             default:
 
 
-                if (preg_match('/^(DC Orders|Orders|Last|Yesterday|Total|1|10|6|3|4|2|Year To|Quarter To|Month To|Today|Week To).*(Amount|Profit) Minify$/', $key)) {
+                if (preg_match('/^(DC Orders|Orders|Last|Yesterday|Total|1|10|6|3|4|2|Year To|Quarter To|Month To|Today|Week To).*(Amount|Profit) Minify$/', $key) or in_array(
+                        $key, array(
+                                'Active Parts Stock Surplus Stock Value Minify',
+                                'Active Parts Stock OK Stock Value Minify',
+                                'Active Parts Stock Low Stock Value Minify',
+                                'Active Parts Stock Critical Stock Value Minify',
+                                'Active Parts Stock Error Stock Value Minify',
+                                'Active Parts Stock Zero Stock Value Minify',
+                                'Active Production Parts Stock Surplus Stock Value Minify',
+                                'Active Production Parts Stock OK Stock Value Minify',
+                                'Active Production Parts Stock Low Stock Value Minify',
+                                'Active Production Parts Stock Critical Stock Value Minify',
+                                'Active Production Parts Stock Error Stock Value Minify',
+                                'Active Production Parts Stock Zero Stock Value Minify',
+
+
+                            )
+                    )
+
+                ) {
 
                     $field = 'Account '.preg_replace('/ Minify$/', '', $key);
                     $field = preg_replace('/DC Orders/', 'Orders', $field);
@@ -741,7 +784,7 @@ class Account extends DB_Table {
         $number_parts_with_barcode    = 0;
 
 
-        $sql = sprintf('SELECT count(*) AS num ,`Part Status`  FROM `Part Dimension` WHERE `Part Status` GROUP BY `Part Status`');
+        $sql = sprintf('SELECT count(*) AS num ,`Part Status`  FROM `Part Dimension`  GROUP BY `Part Status`');
         if ($result = $this->db->query($sql)) {
             foreach ($result as $row) {
                 switch ($row['Part Status']) {
@@ -802,6 +845,251 @@ class Account extends DB_Table {
 
             ), 'Account Data'
         );
+
+    }
+
+    function update_active_parts_stock_data() {
+
+
+        $number_surplus_parts      = 0;
+        $number_ok_parts           = 0;
+        $number_low_parts          = 0;
+        $number_critical_parts     = 0;
+        $number_error_parts        = 0;
+        $number_parts_zero_barcode = 0;
+
+        $stock_value_surplus_parts      = 0;
+        $stock_value_ok_parts           = 0;
+        $stock_value_low_parts          = 0;
+        $stock_value_critical_parts     = 0;
+        $stock_value_error_parts        = 0;
+        $stock_value_parts_zero_barcode = 0;
+
+
+        $active_deliveries_surplus_parts      = 0;
+        $active_deliveries_ok_parts           = 0;
+        $active_deliveries_low_parts          = 0;
+        $active_deliveries_critical_parts     = 0;
+        $active_deliveries_error_parts        = 0;
+        $active_deliveries_parts_zero_barcode = 0;
+
+
+        $sql = sprintf(
+            'SELECT count(*) AS num , sum(`Part Cost in Warehouse`*`Part Current On Hand Stock`) as stock_value ,sum(`Part Number Active Deliveries`) as next_deliveries , `Part Stock Status`  FROM `Part Dimension` WHERE `Part Status`="In Use"   GROUP BY `Part Stock Status`'
+        );
+        if ($result = $this->db->query($sql)) {
+            foreach ($result as $row) {
+
+                // print "$sql\n";
+
+                // print_r($row);
+                //'Surplus','Optimal','Low','Critical','Out_Of_Stock','Error'
+                switch ($row['Part Stock Status']) {
+                    case 'Surplus':
+                        $number_surplus_parts            = $row['num'];
+                        $stock_value_surplus_parts       = $row['stock_value'];
+                        $active_deliveries_surplus_parts = $row['next_deliveries'];
+
+                        break;
+                    case 'Optimal':
+                        $number_ok_parts            = $row['num'];
+                        $stock_value_ok_parts       = $row['stock_value'];
+                        $active_deliveries_ok_parts = $row['next_deliveries'];
+
+                        break;
+                    case 'Low':
+                        $number_low_parts            = $row['num'];
+                        $stock_value_low_parts       = $row['stock_value'];
+                        $active_deliveries_low_parts = $row['next_deliveries'];
+
+                        break;
+                    case 'Critical':
+                        $number_critical_parts            = $row['num'];
+                        $stock_value_critical_parts       = $row['stock_value'];
+                        $active_deliveries_critical_parts = $row['next_deliveries'];
+
+                        break;
+                    case 'Out_Of_Stock':
+                        $number_parts_zero_barcode            = $row['num'];
+                        $stock_value_parts_zero_barcode       = $row['stock_value'];
+                        $active_deliveries_parts_zero_barcode = $row['next_deliveries'];
+
+                        break;
+                    case 'Error':
+                        $number_error_parts            = $row['num'];
+                        $stock_value_error_parts       = $row['stock_value'];
+                        $active_deliveries_error_parts = $row['next_deliveries'];
+
+                        break;
+                }
+
+            }
+        } else {
+            print_r($error_info = $this->db->errorInfo());
+            print "$sql\n";
+            exit;
+        }
+
+
+        $this->fast_update(
+            array(
+
+
+                'Account Active Parts Stock Surplus Number'  => $number_surplus_parts,
+                'Account Active Parts Stock OK Number'       => $number_ok_parts,
+                'Account Active Parts Stock Low Number'      => $number_low_parts,
+                'Account Active Parts Stock Critical Number' => $number_critical_parts,
+                'Account Active Parts Stock Zero Number'     => $number_parts_zero_barcode,
+                'Account Active Parts Stock Error Number'    => $number_error_parts,
+
+                'Account Active Parts Stock Surplus Stock Value'  => $stock_value_surplus_parts,
+                'Account Active Parts Stock OK Stock Value'       => $stock_value_ok_parts,
+                'Account Active Parts Stock Low Stock Value'      => $stock_value_low_parts,
+                'Account Active Parts Stock Critical Stock Value' => $stock_value_critical_parts,
+                'Account Active Parts Stock Error Stock Value'    => $stock_value_error_parts,
+                'Account Active Parts Stock Zero Stock Value'     => $stock_value_parts_zero_barcode,
+
+
+                'Account Active Parts Stock Surplus Deliveries Number'  => $active_deliveries_surplus_parts,
+                'Account Active Parts Stock OK Deliveries Number'       => $active_deliveries_ok_parts,
+                'Account Active Parts Stock Low Deliveries Number'      => $active_deliveries_low_parts,
+                'Account Active Parts Stock Critical Deliveries Number' => $active_deliveries_critical_parts,
+                'Account Active Parts Stock Error Deliveries Number'    => $active_deliveries_error_parts,
+                'Account Active Parts Stock Zero Deliveries Number'     => $active_deliveries_parts_zero_barcode,
+
+
+            ), 'Account Data'
+        );
+
+
+        $sql = sprintf('select count(*) as num from `Supplier Production Dimension` ');
+
+        if ($result2 = $this->db->query($sql)) {
+            if ($row2 = $result2->fetch()) {
+
+                if ($row2['num'] > 0) {
+
+
+                    $number_surplus_parts      = 0;
+                    $number_ok_parts           = 0;
+                    $number_low_parts          = 0;
+                    $number_critical_parts     = 0;
+                    $number_error_parts        = 0;
+                    $number_parts_zero_barcode = 0;
+
+                    $stock_value_surplus_parts      = 0;
+                    $stock_value_ok_parts           = 0;
+                    $stock_value_low_parts          = 0;
+                    $stock_value_critical_parts     = 0;
+                    $stock_value_error_parts        = 0;
+                    $stock_value_parts_zero_barcode = 0;
+
+
+                    $active_deliveries_surplus_parts      = 0;
+                    $active_deliveries_ok_parts           = 0;
+                    $active_deliveries_low_parts          = 0;
+                    $active_deliveries_critical_parts     = 0;
+                    $active_deliveries_error_parts        = 0;
+                    $active_deliveries_parts_zero_barcode = 0;
+
+
+                    $sql = sprintf(
+                        'SELECT count(*) AS num , sum(`Part Cost in Warehouse`*`Part Current On Hand Stock`) as stock_value ,sum(`Part Number Active Deliveries`) as next_deliveries , `Part Stock Status`  FROM `Part Dimension` WHERE `Part Status`="In Use" and  `Part Production`="Yes"  GROUP BY `Part Stock Status`'
+                    );
+                    if ($result = $this->db->query($sql)) {
+                        foreach ($result as $row) {
+
+                            // print "$sql\n";
+
+                            //'Surplus','Optimal','Low','Critical','Out_Of_Stock','Error'
+                            switch ($row['Part Stock Status']) {
+                                case 'Surplus':
+                                    $number_surplus_parts            = $row['num'];
+                                    $stock_value_surplus_parts       = $row['stock_value'];
+                                    $active_deliveries_surplus_parts = $row['next_deliveries'];
+
+                                    break;
+                                case 'Optimal':
+                                    $number_ok_parts            = $row['num'];
+                                    $stock_value_ok_parts       = $row['stock_value'];
+                                    $active_deliveries_ok_parts = $row['next_deliveries'];
+
+                                    break;
+                                case 'Low':
+                                    $number_low_parts            = $row['num'];
+                                    $stock_value_low_parts       = $row['stock_value'];
+                                    $active_deliveries_low_parts = $row['next_deliveries'];
+
+                                    break;
+                                case 'Critical':
+                                    $number_critical_parts            = $row['num'];
+                                    $stock_value_critical_parts       = $row['stock_value'];
+                                    $active_deliveries_critical_parts = $row['next_deliveries'];
+
+                                    break;
+                                case 'Out_Of_Stock':
+                                    $number_parts_zero_barcode            = $row['num'];
+                                    $stock_value_parts_zero_barcode       = $row['stock_value'];
+                                    $active_deliveries_parts_zero_barcode = $row['next_deliveries'];
+
+                                    break;
+                                case 'Error':
+                                    $number_error_parts            = $row['num'];
+                                    $stock_value_error_parts       = $row['stock_value'];
+                                    $active_deliveries_error_parts = $row['next_deliveries'];
+
+                                    break;
+                            }
+
+                        }
+                    } else {
+                        print_r($error_info = $this->db->errorInfo());
+                        print "$sql\n";
+                        exit;
+                    }
+
+
+                    $this->fast_update(
+                        array(
+
+
+                            'Account Active Production Parts Stock Surplus Number'  => $number_surplus_parts,
+                            'Account Active Production Parts Stock OK Number'       => $number_ok_parts,
+                            'Account Active Production Parts Stock Low Number'      => $number_low_parts,
+                            'Account Active Production Parts Stock Critical Number' => $number_critical_parts,
+                            'Account Active Production Parts Stock Zero Number'     => $number_parts_zero_barcode,
+                            'Account Active Production Parts Stock Error Number'    => $number_error_parts,
+
+                            'Account Active Production Parts Stock Surplus Stock Value'  => $stock_value_surplus_parts,
+                            'Account Active Production Parts Stock OK Stock Value'       => $stock_value_ok_parts,
+                            'Account Active Production Parts Stock Low Stock Value'      => $stock_value_low_parts,
+                            'Account Active Production Parts Stock Critical Stock Value' => $stock_value_critical_parts,
+                            'Account Active Production Parts Stock Error Stock Value'    => $stock_value_error_parts,
+                            'Account Active Production Parts Stock Zero Stock Value'     => $stock_value_parts_zero_barcode,
+
+
+                            'Account Active Production Parts Stock Surplus Deliveries Number'  => $active_deliveries_surplus_parts,
+                            'Account Active Production Parts Stock OK Deliveries Number'       => $active_deliveries_ok_parts,
+                            'Account Active Production Parts Stock Low Deliveries Number'      => $active_deliveries_low_parts,
+                            'Account Active Production Parts Stock Critical Deliveries Number' => $active_deliveries_critical_parts,
+                            'Account Active Production Parts Stock Error Deliveries Number'    => $active_deliveries_error_parts,
+                            'Account Active Production Parts Stock Zero Deliveries Number'     => $active_deliveries_parts_zero_barcode,
+
+
+                        ), 'Account Data'
+                    );
+
+
+                }
+
+
+            }
+        } else {
+            print_r($error_info = $this->db->errorInfo());
+            print "$sql\n";
+            exit;
+        }
+
 
     }
 
@@ -1537,7 +1825,7 @@ class Account extends DB_Table {
 
     }
 
-    function update_timeseries_record($timeseries, $from, $to, $fork_key= false) {
+    function update_timeseries_record($timeseries, $from, $to, $fork_key = false) {
 
         if ($timeseries->get('Type') == 'AccountSales') {
 
@@ -2150,9 +2438,9 @@ class Account extends DB_Table {
 
         if ($result = $this->db->query($sql)) {
             if ($row = $result->fetch()) {
-                $this->data['Account Contacts']        = $row['contacts'];
-                $this->data['Account New Contacts']    = $row['new_contacts'];
-                $this->data['Account Contacts With Orders']    = $row['contacts_with_orders'];
+                $this->data['Account Contacts']             = $row['contacts'];
+                $this->data['Account New Contacts']         = $row['new_contacts'];
+                $this->data['Account Contacts With Orders'] = $row['contacts_with_orders'];
 
                 $this->data['Account Active Contacts'] = $row['active'];
                 $this->data['Account Losing Contacts'] = $row['losing'];
@@ -2162,8 +2450,7 @@ class Account extends DB_Table {
                 $this->data['Account Active Contacts With Orders'] = $row['active_with_orders'];
                 $this->data['Account Losing Contacts With Orders'] = $row['losing_with_orders'];
                 $this->data['Account Lost Contacts With Orders']   = $row['lost_with_orders'];
-                $this->data['Account Contacts Who Visit Website']    = $row['visitors'];
-
+                $this->data['Account Contacts Who Visit Website']  = $row['visitors'];
 
 
             }
@@ -2195,7 +2482,7 @@ class Account extends DB_Table {
             $this->id
         );
 
-      //  print "$sql\n";
+        //  print "$sql\n";
 
 
         $this->db->exec($sql);

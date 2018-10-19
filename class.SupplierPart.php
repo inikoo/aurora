@@ -567,8 +567,17 @@ class SupplierPart extends DB_Table {
                 $updated = $this->updated;
 
 
-                $this->update_field(
-                    'Supplier Part Currency Code', $supplier->get('Supplier Default Currency Code'), 'no_history'
+                $this->fast_update(
+                    array(
+                        'Supplier Part Currency Code'=> $supplier->get('Supplier Default Currency Code'),
+                        'Supplier Part Production'=> $supplier->get('Supplier Production'),
+                        )
+                );
+
+                $this->part->fast_update(
+                    array(
+                        'Part Production'=> $supplier->get('Supplier Production'),
+                    )
                 );
 
 
