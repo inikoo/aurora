@@ -805,6 +805,8 @@ class Supplier extends SubjectSupplier {
 
 
 
+
+
         if (!$part_exist) {
             $auto_part_barcode = false;
 
@@ -1121,6 +1123,7 @@ class Supplier extends SubjectSupplier {
 
 
         $data['Supplier Part Supplier Key'] = $this->id;
+        $data['Supplier Part Production'] = $this->get('Supplier Production');
 
         $data['Supplier Part Minimum Carton Order'] = ceil($data['Supplier Part Minimum Carton Order']);
 
@@ -1178,6 +1181,7 @@ class Supplier extends SubjectSupplier {
                     $data['Part SKOs per Carton'] = $data['Supplier Part Packages Per Carton'];
 
                 }
+                $data['Part Production'] = $this->get('Supplier Production');
 
 
                 if (!$part_exist) {

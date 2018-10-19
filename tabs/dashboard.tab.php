@@ -59,7 +59,7 @@ foreach ($user->get_dashboard_items() as $item) {
         $html .= get_dashboard_sales_overview($db, $account, $user, $smarty, $type, $sub_type,$period, $currency, $orders_view_type, $_SESSION['display_device_version']);
 
     }
-    elseif ($item == 'pending_orders') {
+    elseif ($item == 'pending_orders_and_customers') {
 
         $period = '1y';
 
@@ -83,6 +83,29 @@ foreach ($user->get_dashboard_items() as $item) {
 
         $html .= get_dashboard_pending_orders($db, $account, $user, $smarty, $parent,$currency, $_SESSION['display_device_version']);
         $html .= get_dashboard_customers($db, $account, $user, $smarty, $parent,$currency, $_SESSION['display_device_version']);
+
+    }elseif ($item == 'inventory_warehouse') {
+
+
+      include_once 'widgets/parts_stock_status.wget.php';
+        include_once 'widgets/inventory.wget.php';
+
+        if (isset($_SESSION['dashboard_state']['parts_stock_status']['parent'])) {
+            $parent = $_SESSION['dashboard_state']['parts_stock_status']['parent'];
+        } else {
+
+            $parent = '';
+
+
+
+
+        }
+
+
+
+
+       $html .= get_dashboard_parts_stock_status($db, $account, $user, $smarty, $parent,$currency, $_SESSION['display_device_version']);
+        $html .= get_dashboard_inventory($db, $account, $user, $smarty, $parent, $_SESSION['display_device_version']);
 
     }
 

@@ -282,10 +282,13 @@ class Part extends Asset {
 
         $this->fast_update(
             array(
-                'Part Next Deliveries Data' => json_encode($data['deliveries']),
-                'Part Next Shipment Date'   => $data['next_delivery_time']
+                'Part Next Deliveries Data'     => json_encode($data['deliveries']),
+                'Part Next Shipment Date'       => $data['next_delivery_time'],
+                'Part Number Active Deliveries' => $data['number_non_draft_POs'],
+                'Part Number Draft Deliveries'  => $data['number_draft_POs']
             )
         );
+
 
         foreach ($this->get_products('objects') as $product) {
             $product->editor = $this->editor;
@@ -299,7 +302,11 @@ class Part extends Asset {
 
         $next_delivery_time   = 0;
         $next_deliveries_data = array();
-        $supplier_parts       = $this->get_supplier_parts();
+
+        $number_draft_POs     = 0;
+        $number_non_draft_POs = 0;
+
+        $supplier_parts = $this->get_supplier_parts();
         if (count($supplier_parts) > 0) {
 
 
@@ -367,6 +374,8 @@ class Part extends Asset {
                                     break;
                             }
 
+                            $number_non_draft_POs++;
+
                             $next_deliveries_data[] = array(
                                 'type'            => 'delivery',
                                 'qty'             => '+'.number($raw_skos_qty),
@@ -414,6 +423,7 @@ class Part extends Asset {
 
 
                     if ($row['Purchase Order Transaction State'] == 'InProcess') {
+                        $number_draft_POs++;
 
                         $raw_units_qty = $row['Purchase Order Ordering Units'];
                         $raw_skos_qty  = $raw_units_qty / $row['Part Units Per Package'];
@@ -428,7 +438,7 @@ class Part extends Asset {
                         $qty                 = '<span class="very_discreet italic">+'.number($raw_skos_qty).'</span>';
 
                     } else {
-
+                        $number_non_draft_POs++;
                         $raw_units_qty = $row['Purchase Order Submitted Units'];
                         $raw_skos_qty  = $raw_units_qty / $row['Part Units Per Package'];
 
@@ -476,8 +486,11 @@ class Part extends Asset {
 
 
         return array(
-            'deliveries'         => $next_deliveries_data,
-            'next_delivery_time' => (!$next_delivery_time ? '' : $next_delivery_time)
+            'deliveries'           => $next_deliveries_data,
+            'next_delivery_time'   => (!$next_delivery_time ? '' : $next_delivery_time),
+            'number_non_draft_POs' => $number_non_draft_POs,
+            'number_draft_POs'     => $number_draft_POs
+
         );
 
     }
