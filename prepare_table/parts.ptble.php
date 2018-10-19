@@ -258,6 +258,8 @@ if ($order == 'id') {
     $order = "`Part 1 Quarter Acc Dispatched`";
 } elseif ($order == 'weeks_available') {
     $order = "`Part Days Available Forecast`";
+} elseif ($order == 'next_deliveries') {
+    $order = "(`Part Number Active Deliveries`+`Part Number Draft Deliveries`)";
 } else {
 
     $order = '`Part SKU`';
@@ -268,7 +270,7 @@ $sql_totals
     = "select count(Distinct P.`Part SKU`) as num from $table  $where  ";
 
 $fields
-    .= "P.`Part SKU`,`Part Reference`,`Part Package Description`,`Part Current Stock`,`Part Stock Status`,`Part Days Available Forecast`,`Part Current On Hand Stock`,
+    .= "P.`Part SKU`,`Part Reference`,`Part Package Description`,`Part Current Stock`,`Part Stock Status`,`Part Days Available Forecast`,`Part Current On Hand Stock`,`Part Next Deliveries Data`,
 `Part $db_period Acc Dispatched` as dispatched,`Part Number Active Products`,`Part Margin`,
 `Part $db_period Acc Invoiced Amount` as sales,
 `Part Days Available Forecast`,$yb_fields

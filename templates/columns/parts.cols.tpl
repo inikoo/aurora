@@ -54,6 +54,17 @@ cell: Backgrid.HtmlCell.extend({
 
 },
 
+{
+name: "next_deliveries",
+label: "{t}Next deliveries{/t}",
+editable: false,
+sortType: "toggle",
+cell: Backgrid.HtmlCell.extend({ } ),
+
+
+},
+
+
 
 {
 name: "sales_total",
@@ -64,6 +75,7 @@ defaultOrder:1,
 sortType: "toggle",
 {if $sort_key=='sales_total'}direction: '{if $sort_order==1}descending{else}ascending{/if}',{/if}
 cell: Backgrid.HtmlCell.extend({ className: "aright"} ),
+
 
 headerCell: integerHeaderCell
 },
