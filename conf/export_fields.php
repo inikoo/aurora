@@ -892,6 +892,12 @@ $export_fields = array(
         ),
 
         array(
+            'name'    => '`Product Price`/`Product Units Per Case`',
+            'label'   => _('Unit price'),
+            'checked' => 0
+        ),
+
+        array(
             'name'    => '`Product Unit Type`',
             'label'   => _('Unit label'),
             'checked' => 1
