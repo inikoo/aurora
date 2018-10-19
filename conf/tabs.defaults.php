@@ -554,6 +554,19 @@ $tab_defaults = array(
 
 
     ),
+
+
+     'order_customer.history'        => array(
+        'view'        => 'overview',
+        'sort_key'    => 'date',
+        'sort_order'  => 1,
+        'rpp'         => 100,
+        'rpp_options' => $default_rrp_options,
+        'f_field'     => 'note',
+        'elements_type' => each($elements_options['customer_history'])['key'],
+        'elements'      => $elements_options['customer_history']
+    ),
+
     'order.history'        => array(
         'view'        => 'overview',
         'sort_key'    => 'date',

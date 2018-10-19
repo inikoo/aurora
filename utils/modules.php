@@ -1123,6 +1123,10 @@ $modules = array(
                         ),
                         'icon'  => 'database'
                     ),
+                    'order.customer_history'        => array(
+                        'label' => _('Customer notes/history'),
+                        'icon'  => 'sticky-note'
+                    ),
                     'order.history'        => array(
                         'label' => _('History'),
                         'icon'  => 'road'
