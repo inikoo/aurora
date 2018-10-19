@@ -53,7 +53,7 @@
         <div>
             <span class="Active_Parts_Stock_OK_Stock_Value_Minify " title="{t}Stock value{/t}">{$object->get('Active Parts Stock OK Stock Value Minify')}</span>
 
-            | <i class="fa fa-fw fa-truck" title="{t}Discontinuing parts{/t}"></i> <span class="Active_Parts_Stock_OK_Deliveries_Number " title="{t}Current purchase orders{/t}">{$object->get('Active Parts Stock OK Deliveries Number')}</span>
+            | <i class="fa fa-fw fa-truck" title="{t}Current purchase orders{/t}"></i> <span class="Active_Parts_Stock_OK_Deliveries_Number " title="{t}Current purchase orders{/t}">{$object->get('Active Parts Stock OK Deliveries Number')}</span>
 
         </div>
     </li>
