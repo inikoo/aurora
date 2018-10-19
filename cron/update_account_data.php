@@ -26,6 +26,8 @@ $account->update_warehouses_data();
 $account->update_parts_data();
 $account->update_orders();
 
+$account->update_customers_data();
+$account->update_employees_data();
 
 $account->update_sales_from_invoices('Total');
 
@@ -49,8 +51,6 @@ $account->update_previous_years_data();
 $account->update_previous_quarters_data();
 
 
-$account->update_customers_data();
-$account->update_employees_data();
 
 
 
