@@ -30,6 +30,11 @@ function fork_export_edit_template($job) {
 
     $output_type = $fork_data['output'];
 
+    if($output_type=='Excel'){
+        $output_type='xls';
+    }
+
+
     $user_key = $fork_data['user_key'];
 
     $parent       = $fork_data['parent'];
@@ -705,7 +710,6 @@ try {
 
 
     $download_path = 'tmp/';
-
 
 
 
