@@ -472,7 +472,13 @@ function money($amount, $currency = '', $locale = false, $option = '') {
     }
 
 
-    return $money->formatCurrency($amount, $currency);
+    $formatted_money=$money->formatCurrency($amount, $currency);
+
+    // todo, remove when NumberFormatter support this symbols
+
+    $formatted_money=preg_replace('/\s?PLN\s?/','zł',$formatted_money);
+
+    return $formatted_money;
 }
 
 function seconds_to_until($seconds, $short = false) {

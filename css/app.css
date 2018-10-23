@@ -1338,6 +1338,9 @@ tr.deleting_tr {
   padding: 10px 0px; }
   .mini_table.no_padding {
     padding: 0px; }
+    .mini_table.no_padding > div:first-of-type .data {
+      border-top: 0px solid #eee;
+      padding-top: 0px; }
   .mini_table > div:first-of-type .data {
     border-top: 1px solid #eee; }
   .mini_table .data {

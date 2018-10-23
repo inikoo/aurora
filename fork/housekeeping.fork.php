@@ -22,7 +22,7 @@ function fork_housekeeping($job) {
 
     print_r($data);
 
-   //return true;
+    //return true;
 
 
     switch ($data['type']) {
@@ -54,7 +54,8 @@ function fork_housekeeping($job) {
             //  print_r($data);
 
             foreach ($data['parts_data'] as $part_sku => $from_date) {
-                $part = get_object('Part', $part_sku);
+                $part         = get_object('Part', $part_sku);
+                $part->editor = $data['editor'];
                 $part->update_stock_run();
                 $part->redo_inventory_snapshot_fact($from_date);
 
@@ -98,6 +99,92 @@ function fork_housekeeping($job) {
                 print_r($error_info = $db->errorInfo());
                 exit;
             }
+
+            break;
+
+        case 'update_part_status':
+
+
+            $part = get_object('Part', $data['part_sku']);
+
+            $part->editor = $data['editor'];
+
+
+            $part->update_stock_status();
+            $part->update_available_forecast();
+
+
+            $sql = sprintf(
+                "SELECT `Category Key` FROM `Category Bridge` WHERE `Subject`='Part' AND `Subject Key`=%d", $part->sku
+            );
+
+            if ($result = $db->query($sql)) {
+                foreach ($result as $row) {
+                    $category         = get_object('Category', $row['Category Key']);
+                    $category->editor = $data['editor'];
+
+                    $category->update_part_category_status();
+                }
+            } else {
+                print_r($error_info = $db->errorInfo());
+                exit;
+            }
+
+
+            $products = $part->get_products('objects');
+            foreach ($products as $product) {
+                $product->editor = $data['editor'];
+                $product->update_status_from_parts();
+            }
+
+            $account->update_parts_data();
+            $account->update_active_parts_stock_data();
+
+
+
+            $context = new ZMQContext();
+            $socket  = $context->getSocket(ZMQ::SOCKET_PUSH, 'my pusher');
+            $socket->connect("tcp://localhost:5555");
+
+
+            switch ($part->get('Part Status')){
+                case 'In Use':
+                    $part_status= sprintf('<i onclick="set_discontinuing_part_as_active(this,%d)" class="far button fa-fw fa-box title="%s"></i></span>',$part->sku,_('Active, click to discontinue'));
+                    break;
+                case 'Discontinuing':
+                    $part_status= sprintf('<i onclick="set_discontinuing_part_as_active(this,%d)" class="far button fa-fw fa-skull" ></i></span>',$part->sku,_('Discontinuing, click to set as an active part'));
+                    break;
+                case 'Discontinued':
+                    $part_status= sprintf('<i  class="far  fa-fw fa-tombstone" ></i></span>',$part->sku,_('Discontinued'));
+                    break;
+            }
+
+
+            $socket->send(
+                json_encode(
+                    array(
+                        'channel'  => 'real_time.'.strtolower($account->get('Account Code')),
+
+                        'tabs'     => array(
+                            array(
+                                'tab'   => 'inventory.discontinuing_parts',
+                                'rtext' => sprintf(ngettext('%s discontinuing part', '%s discontinuing parts', $account->get('Account Discontinuing Parts Number')), number($account->get('Account Discontinuing Parts Number'))),
+
+                                'cell' => array(
+                                    'part_status_'.$part->sku=> $part_status
+                                )
+                            )
+
+                        ),
+
+                    )
+                )
+            );
+
+
+
+
+
 
             break;
 
@@ -1443,8 +1530,8 @@ function fork_housekeeping($job) {
             $socket->connect("tcp://localhost:5555");
 
 
-            $purge = get_object('purge', $data['purge_key']);
-            $purge->editor=$editor;
+            $purge         = get_object('purge', $data['purge_key']);
+            $purge->editor = $editor;
             if ($purge->id) {
                 $purge->socket = $socket;
                 $purge->purge();
@@ -1453,17 +1540,15 @@ function fork_housekeeping($job) {
         case 'supplier_delivery_state_changed':
 
 
-
             $supplier_delivery = get_object('supplier_delivery', $data['supplier_delivery_key']);
 
-            $po= get_object('supplier_delivery', $supplier_delivery->get('Supplier Delivery Purchase Order Key'));
+            $po = get_object('supplier_delivery', $supplier_delivery->get('Supplier Delivery Purchase Order Key'));
 
-            $po->editor=$editor;
+            $po->editor = $editor;
             if ($po->id) {
                 $po->update_totals();
             }
             break;
-
 
 
         default:

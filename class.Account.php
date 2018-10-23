@@ -846,6 +846,39 @@ class Account extends DB_Table {
             ), 'Account Data'
         );
 
+
+        $context = new ZMQContext();
+        $socket  = $context->getSocket(ZMQ::SOCKET_PUSH, 'my pusher');
+        $socket->connect("tcp://localhost:5555");
+
+        $socket->send(
+            json_encode(
+                array(
+                    'channel'  => 'real_time.'.strtolower($this->get('Account Code')),
+                    'sections' => array(
+                        array(
+                            'section' => 'dashboard',
+
+                            'update_metadata' => array(
+                                'class_html' => array(
+                                    'Active_Parts'        => $this->get('Active Parts Number'),
+                                    'In_Process_Parts'    => $this->get('In Process Parts Number'),
+                                    'Discontinuing_Parts' => $this->get('Discontinuing Parts Number'),
+
+                                )
+                            )
+
+                        )
+
+                    ),
+
+
+
+                )
+            )
+        );
+
+
     }
 
     function update_active_parts_stock_data() {

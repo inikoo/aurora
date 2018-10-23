@@ -269,12 +269,16 @@ function connect_websocket(){
                 for (var i in data.tabs) {
 
 
-
+                    console.log(data.tabs)
                     if (state.tab == data.tabs[i].tab ) {
-                        console.log(data.tabs[i])
-                        for (var j in data.tabs[i].cell) {
-//console.log(data.tabs[i].cell[j])
 
+                        console.log(data.rtext)
+
+                        if(data.tabs[i].rtext!=undefined){
+                            $('#rtext').html(data.tabs[i].rtext)
+                        }
+
+                        for (var j in data.tabs[i].cell) {
                             console.log(j)
                             $('#table .' + j).html(data.tabs[i].cell[j])
                         }

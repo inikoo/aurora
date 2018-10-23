@@ -19,7 +19,6 @@ if($account->get('Account Warehouses')==0){
 
 
 
-
 $tab     = 'inventory.discontinued_parts';
 $ar_file = 'ar_inventory_tables.php';
 $tipo    = 'discontinued_parts';
