@@ -8,7 +8,7 @@
         <title>{t}Login{/t}</title>
         {if $_DEVEL}
             <link href="/css/jquery-ui.css" rel="stylesheet">
-            <link href="/css/fa/fontawesome-all.css?v2" rel="stylesheet">
+            <link href="/css/fa/fontawesome-all.min.css?v5.3.1" rel="stylesheet">
 
 
             <link href="/css/intlTelInput.css" rel="stylesheet">
