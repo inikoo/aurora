@@ -29,7 +29,7 @@
         <div class="button"  onclick="change_view('inventory',{ 'tab':'inventory.in_process_parts'})">
             <span> <i class="fa fa-fw fa-seedling" title="{t}Parts in process{/t}"  ></i> <span class="In_Process_Parts " title="{t}Parts in process{/t}">{$object->get('In Process Parts Number')}</span></span>
 
-            | <span class="button"  onclick="change_view('inventory',{ 'tab':'inventory.discontinuing_parts'})"><i class="far fa-fw fa-skull" title="{t}Discontinuing parts{/t}" ></i> <span class="In_Process_Parts " title="{t}Discontinuing parts{/t}">{$object->get('Discontinuing Parts Number')}</span>
+            | <span class="button"  onclick="change_view('inventory',{ 'tab':'inventory.discontinuing_parts'})"><i class="far fa-fw fa-skull" title="{t}Discontinuing parts{/t}" ></i> <span class="Discontinuing_Parts " title="{t}Discontinuing parts{/t}">{$object->get('Discontinuing Parts Number')}</span>
 
         </div>
     </li>

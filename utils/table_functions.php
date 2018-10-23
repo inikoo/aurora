@@ -513,6 +513,14 @@ function get_rtext($record_label, $total_records) {
 
 
 
+    }  elseif ($record_label == 'discontinuing part') {
+        return sprintf(
+            ngettext('%s discontinuing part', '%s discontinuing parts', $total_records), number($total_records)
+        );
+
+
+
+
     }  elseif ($record_label == 'back to stock request') {
         return sprintf(
             ngettext('%s back to stock request', '%s  back to stock requests', $total_records), number($total_records)

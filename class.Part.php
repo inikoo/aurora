@@ -961,7 +961,6 @@ class Part extends Asset {
 
             case 'Available Forecast':
 
-                $available_forecast = '';
 
                 if ($this->data['Part Stock Status'] == 'Out_Of_Stock' or $this->data['Part Stock Status'] == 'Error') {
                     return '';
@@ -983,17 +982,9 @@ class Part extends Asset {
                 if ($this->data['Part On Demand'] == 'Yes') {
 
                     $available_forecast = '<span >'.sprintf(
-                            _('%s in stock'), '<span  title="'.sprintf(
-                                                "%s %s", number(
-                                                $this->data['Part Days Available Forecast'], 1
-                                            ), ngettext(
-                                                    "day", "days", intval(
-                                                             $this->data['Part Days Available Forecast']
-                                                         )
-                                                )
-                                            ).'">'.seconds_to_until(
-                                                $this->data['Part Days Available Forecast'] * 86400
-                                            ).'</span>'
+                            _('%s in stock'),
+                            '<span  title="'.sprintf("%s %s", number($this->data['Part Days Available Forecast'], 1), ngettext("day", "days", intval($this->data['Part Days Available Forecast']))).'">'.seconds_to_until($this->data['Part Days Available Forecast'] * 86400)
+                            .'</span>'
                         ).'</span>';
 
                     if ($this->data['Part Fresh'] == 'No') {
@@ -1004,16 +995,10 @@ class Part extends Asset {
                 } else {
                     $available_forecast = '<span >'.sprintf(
                             _('%s availability'), '<span  title="'.sprintf(
-                                                    "%s %s", number(
-                                                    $this->data['Part Days Available Forecast'], 1
-                                                ), ngettext(
-                                                        "day", "days", intval(
-                                                                 $this->data['Part Days Available Forecast']
-                                                             )
-                                                    )
-                                                ).'">'.seconds_to_until(
-                                                    $this->data['Part Days Available Forecast'] * 86400
-                                                ).'</span>'
+                                                    "%s %s", number($this->data['Part Days Available Forecast'], 1), ngettext(
+                                                    "day", "days", intval($this->data['Part Days Available Forecast'])
+                                                )
+                                                ).'">'.seconds_to_until($this->data['Part Days Available Forecast'] * 86400).'</span>'
                         ).'</span>';
 
 
@@ -2773,31 +2758,17 @@ class Part extends Asset {
         }
 
 
-        $this->update_stock_status();
-        $this->update_available_forecast();
+        include_once 'utils/new_fork.php';
+        $account = get_object('Account', 1);
 
 
-        include_once 'class.Category.php';
-        $sql = sprintf(
-            "SELECT `Category Key` FROM `Category Bridge` WHERE `Subject`='Part' AND `Subject Key`=%d", $this->sku
+        new_housekeeping_fork(
+            'au_housekeeping', array(
+            'type'     => 'update_part_status',
+            'part_sku' => $this->id,
+            'editor'   => $this->editor
+        ), $account->get('Account Code')
         );
-
-        if ($result = $this->db->query($sql)) {
-            foreach ($result as $row) {
-                $category = new Category($row['Category Key']);
-                $category->update_part_category_status();
-            }
-        } else {
-            print_r($error_info = $this->db->errorInfo());
-            exit;
-        }
-
-
-        $products = $this->get_products('objects');
-        foreach ($products as $product) {
-            $product->editor = $this->editor;
-            $product->update_status_from_parts();
-        }
 
 
     }
@@ -2905,6 +2876,7 @@ class Part extends Asset {
                 'part_sku' => $this->id
             ), $account->get('Account Code')
             );
+
 
             //print "Y $msg  YYYYYYYYYYY\n";
         }
@@ -3219,101 +3191,6 @@ class Part extends Asset {
 
     }
 
-    function update_available_forecast() {
-
-        $this->load_acc_data();
-
-
-        if ($this->data['Part Current Stock'] == '' or $this->data['Part Current Stock'] < 0) {
-            $this->data['Part Days Available Forecast']      = 0;
-            $this->data['Part XHTML Available For Forecast'] = '?';
-        } elseif ($this->data['Part Current Stock'] == 0) {
-            $this->data['Part Days Available Forecast']      = 0;
-            $this->data['Part XHTML Available For Forecast'] = 0;
-        } else {
-
-
-            //print $this->data['Part 1 Quarter Acc Dispatched'];
-
-            //   print $this->data['Part 1 Quarter Acc Dispatched']/(52/4)/7;
-
-
-            if ($this->data['Part 1 Quarter Acc Required'] > 0) {
-
-                $days_on_sale = 91.25;
-
-                $from_since = (date('U') - strtotime($this->data['Part Valid From'])) / 86400;
-                if ($from_since < 1) {
-                    $from_since = 1;
-                }
-
-
-                if ($days_on_sale > $from_since) {
-                    $days_on_sale = $from_since;
-                }
-
-
-                $this->data['Part Days Available Forecast']      = $this->data['Part Current Stock'] / ($this->data['Part 1 Quarter Acc Required'] / $days_on_sale);
-                $this->data['Part XHTML Available For Forecast'] = number($this->data['Part Days Available Forecast'], 0).' '._('d');
-
-            } else {
-
-
-                $from_since = (date('U') - strtotime($this->data['Part Valid From'])) / 86400;
-
-
-                // print $from_since;
-
-                if ($from_since < ($this->data['Part Excess Availability Days Limit'] / 2)) {
-                    $forecast = $this->data['Part Excess Availability Days Limit'] - 1;
-                } else {
-                    $forecast = $this->data['Part Excess Availability Days Limit'] + $from_since;
-                }
-
-
-                $this->data['Part Days Available Forecast']      = $forecast;
-                $this->data['Part XHTML Available For Forecast'] = number($this->data['Part Days Available Forecast'], 0).' '._('d');
-
-
-            }
-
-
-        }
-
-
-        $this->fast_update(
-            array(
-                'Part Days Available Forecast'      => $this->data['Part Days Available Forecast'],
-                'Part XHTML Available for Forecast' => $this->data['Part XHTML Available For Forecast']
-            )
-        );
-
-
-        $this->update_stock_status();
-
-
-    }
-
-    function load_acc_data() {
-        $sql = sprintf(
-            "SELECT * FROM `Part Data` WHERE `Part SKU`=%d", $this->id
-        );
-
-
-        if ($result = $this->db->query($sql)) {
-            if ($row = $result->fetch()) {
-                foreach ($row as $key => $value) {
-                    $this->data[$key] = $value;
-                }
-            }
-        } else {
-            print_r($error_info = $this->db->errorInfo());
-            exit;
-        }
-
-
-    }
-
     function update_availability_for_products_configuration($value, $options) {
 
         $this->update_field(
@@ -3411,6 +3288,101 @@ class Part extends Asset {
             }
 
         }
+
+    }
+
+    function update_available_forecast() {
+
+        $this->load_acc_data();
+
+
+        if ($this->data['Part Current Stock'] == '' or $this->data['Part Current Stock'] < 0) {
+            $this->data['Part Days Available Forecast']      = 0;
+            $this->data['Part XHTML Available For Forecast'] = '?';
+        } elseif ($this->data['Part Current Stock'] == 0) {
+            $this->data['Part Days Available Forecast']      = 0;
+            $this->data['Part XHTML Available For Forecast'] = 0;
+        } else {
+
+
+            //print $this->data['Part 1 Quarter Acc Dispatched'];
+
+            //   print $this->data['Part 1 Quarter Acc Dispatched']/(52/4)/7;
+
+
+            if ($this->data['Part 1 Quarter Acc Required'] > 0) {
+
+                $days_on_sale = 91.25;
+
+                $from_since = (date('U') - strtotime($this->data['Part Valid From'])) / 86400;
+                if ($from_since < 1) {
+                    $from_since = 1;
+                }
+
+
+                if ($days_on_sale > $from_since) {
+                    $days_on_sale = $from_since;
+                }
+
+
+                $this->data['Part Days Available Forecast']      = $this->data['Part Current Stock'] / ($this->data['Part 1 Quarter Acc Required'] / $days_on_sale);
+                $this->data['Part XHTML Available For Forecast'] = number($this->data['Part Days Available Forecast'], 0).' '._('d');
+
+            } else {
+
+
+                $from_since = (date('U') - strtotime($this->data['Part Valid From'])) / 86400;
+
+
+                // print $from_since;
+
+                if ($from_since < ($this->data['Part Excess Availability Days Limit'] / 2)) {
+                    $forecast = $this->data['Part Excess Availability Days Limit'] - 1;
+                } else {
+                    $forecast = $this->data['Part Excess Availability Days Limit'] + $from_since;
+                }
+
+
+                $this->data['Part Days Available Forecast']      = $forecast;
+                $this->data['Part XHTML Available For Forecast'] = number($this->data['Part Days Available Forecast'], 0).' '._('d');
+
+
+            }
+
+
+        }
+
+
+        $this->fast_update(
+            array(
+                'Part Days Available Forecast'      => $this->data['Part Days Available Forecast'],
+                'Part XHTML Available for Forecast' => $this->data['Part XHTML Available For Forecast']
+            )
+        );
+
+
+        $this->update_stock_status();
+
+
+    }
+
+    function load_acc_data() {
+        $sql = sprintf(
+            "SELECT * FROM `Part Data` WHERE `Part SKU`=%d", $this->id
+        );
+
+
+        if ($result = $this->db->query($sql)) {
+            if ($row = $result->fetch()) {
+                foreach ($row as $key => $value) {
+                    $this->data[$key] = $value;
+                }
+            }
+        } else {
+            print_r($error_info = $this->db->errorInfo());
+            exit;
+        }
+
 
     }
 

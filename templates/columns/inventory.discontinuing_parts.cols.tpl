@@ -10,7 +10,7 @@ cell: "string",
 name: "stock_status",
 label: "",
 editable: false,
-sortType: "toggle",
+sortable:false,
 cell: Backgrid.HtmlCell.extend({
 className: "width_20"
 })
@@ -24,10 +24,9 @@ sortType: "toggle",
 cell: Backgrid.HtmlCell.extend({
 events: {
 "click": function() {
-change_view('{if $data['parent']=='account'}{else if $data['parent']=='category'}category/{$data['key']}/{else}{$data['parent']}/{$data['parent_key']}/{/if}part/' + this.model.get("id"))
+
 }
 },
-className: "link"
 
 })
 
@@ -45,17 +44,31 @@ cell: Backgrid.HtmlCell.extend({
 
 },
 {
-name: "stock_status_label",
-label: "{t}Stock status{/t}",
+name: "stock_weight",
+label: "{t}Stock weight{/t}",
 editable: false,
+
+defaultOrder:1,
 sortType: "toggle",
+{if $sort_key=='stock_weight'}direction: '{if $sort_order==1}descending{else}ascending{/if}',{/if}
+cell: Backgrid.HtmlCell.extend({ className: "aright"} ),
 
-cell: Backgrid.HtmlCell.extend({
-
-
-})
-
+headerCell: integerHeaderCell
 },
+{
+name: "stock_value",
+label: "{t}Stock value{/t}",
+editable: false,
+
+defaultOrder:1,
+sortType: "toggle",
+{if $sort_key=='stock'}direction: '{if $sort_order==1}descending{else}ascending{/if}',{/if}
+cell: Backgrid.HtmlCell.extend({ className: "aright"} ),
+
+headerCell: integerHeaderCell
+},
+
+
 {
 name: "stock",
 label: "{t}Stock{/t}",
@@ -67,6 +80,29 @@ sortType: "toggle",
 cell: Backgrid.HtmlCell.extend({ className: "aright"} ),
 
 headerCell: integerHeaderCell
+},
+
+{
+name: "available_forecast",
+label: "{t}Available forecast{/t}",
+editable: false,
+
+defaultOrder:1,
+sortType: "toggle",
+{if $sort_key=='available_forecast'}direction: '{if $sort_order==1}descending{else}ascending{/if}',{/if}
+cell: Backgrid.HtmlCell.extend({ className: "aright"} ),
+
+headerCell: integerHeaderCell
+},
+
+{
+name: "products",
+label: "{t}Active products{/t}",
+editable: false,
+sortable: false,
+
+cell: Backgrid.HtmlCell.extend({} ),
+
 },
 {
 name: "dispatched",
@@ -274,6 +310,9 @@ $('#columns_period').addClass('hide');
 
 grid.columns.findWhere({ name: 'sko_description'} ).set("renderable", false)
 grid.columns.findWhere({ name: 'stock'} ).set("renderable", false)
+grid.columns.findWhere({ name: 'stock_value'} ).set("renderable", false)
+grid.columns.findWhere({ name: 'stock_weight'} ).set("renderable", false)
+
 grid.columns.findWhere({ name: 'dispatched'} ).set("renderable", false)
 grid.columns.findWhere({ name: 'revenue'} ).set("renderable", false)
 grid.columns.findWhere({ name: 'dispatched_1y'} ).set("renderable", false)
@@ -288,16 +327,20 @@ grid.columns.findWhere({ name: 'revenue_year0'} ).set("renderable", false)
 grid.columns.findWhere({ name: 'revenue_year1'} ).set("renderable", false)
 grid.columns.findWhere({ name: 'revenue_year2'} ).set("renderable", false)
 grid.columns.findWhere({ name: 'revenue_year3'} ).set("renderable", false)
-grid.columns.findWhere({ name: 'stock_status_label'} ).set("renderable", false)
 grid.columns.findWhere({ name: 'dispatched_per_week'} ).set("renderable", false)
 grid.columns.findWhere({ name: 'weeks_available'} ).set("renderable", false)
+grid.columns.findWhere({ name: 'available_forecast'} ).set("renderable", false)
+
+
 
 
 if(view=='overview'){
 grid.columns.findWhere({ name: 'sko_description'} ).set("renderable", true)
 grid.columns.findWhere({ name: 'stock'} ).set("renderable", true)
-grid.columns.findWhere({ name: 'dispatched'} ).set("renderable", true)
-grid.columns.findWhere({ name: 'revenue'} ).set("renderable", true)
+grid.columns.findWhere({ name: 'stock_value'} ).set("renderable", true)
+grid.columns.findWhere({ name: 'available_forecast'} ).set("renderable", true)
+grid.columns.findWhere({ name: 'stock_weight'} ).set("renderable", true)
+
 $('#columns_period').removeClass('hide');
 
 
@@ -323,7 +366,6 @@ $('#columns_period').removeClass('hide');
 
 
 }else if(view=='stock'){
-grid.columns.findWhere({ name: 'stock_status_label'} ).set("renderable", true)
 grid.columns.findWhere({ name: 'stock'} ).set("renderable", true)
 grid.columns.findWhere({ name: 'dispatched_per_week'} ).set("renderable", true)
 
