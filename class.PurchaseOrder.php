@@ -941,7 +941,7 @@ sum(`Purchase Order Net Amount`) AS items_net, sum(`Purchase Order Extra Cost Am
             }
 
 
-            // todo this mus be rewritten
+            //todo this must be rewritten
 
             //    print $this->get('Purchase Order State');
 
@@ -998,7 +998,7 @@ sum(`Purchase Order Net Amount`) AS items_net, sum(`Purchase Order Extra Cost Am
             );
 
 
-            // print $this->get('State Index').' '.$min_delivery_state;
+          //   print $this->get('Purchase Order Max Supplier Delivery State').' '.$max_delivery_state;
             //'InProcess','SubmittedAgent','Submitted','Editing_Submitted','Inputted','Dispatched','Received','Checked','Placed','Cancelled'
 
 
