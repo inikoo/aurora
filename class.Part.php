@@ -3002,6 +3002,22 @@ class Part extends Asset {
         );
 
 
+
+        include_once 'utils/new_fork.php';
+        $account = get_object('Account', 1);
+
+
+        new_housekeeping_fork(
+            'au_housekeeping', array(
+            'type'     => 'update_part_status',
+            'part_sku' => $this->id,
+            'editor'   => $this->editor
+        ), $account->get('Account Code')
+        );
+
+
+
+
     }
 
     function update_stock_run() {
