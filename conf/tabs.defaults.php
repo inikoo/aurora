@@ -2336,7 +2336,7 @@ $tab_defaults = array(
 
     'inventory.discontinued_parts'  => array(
         'view'          => 'overview',
-        'sort_key'      => 'to',
+        'sort_key'      => 'valid_to',
         'sort_order'    => 1,
         'rpp'           => 100,
         'f_period'      => 'all',
