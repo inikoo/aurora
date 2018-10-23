@@ -25,6 +25,8 @@ function get_supplier_order_showcase($data, $smarty, $user, $db) {
 
         $smarty->assign('order', $data['_object']);
 
+       // $data['_object']->update_totals();
+
         $_parent = get_object(
             $data['_object']->get('Purchase Order Parent'), $data['_object']->get('Purchase Order Parent Key')
         );

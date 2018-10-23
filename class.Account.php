@@ -1157,7 +1157,7 @@ class Account extends DB_Table {
                                     'Active_Parts_Stock_Zero_Stock_Value_Minify' => $this->get('Active Parts Stock Zero Stock Value Minify'),
                                     'Active_Parts_Stock_Zero_Deliveries_Number'  => $this->get('Active Parts Stock Zero Deliveries Number'),
 
-                                
+
                                 )
                             )
 
