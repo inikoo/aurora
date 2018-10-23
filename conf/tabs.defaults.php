@@ -2347,7 +2347,7 @@ $tab_defaults = array(
     ),
     'inventory.discontinuing_parts' => array(
         'view'          => 'overview',
-        'sort_key'      => 'to',
+        'sort_key'      => 'stock_value',
         'sort_order'    => 1,
         'rpp'           => 100,
         'f_period'      => 'all',
