@@ -2737,7 +2737,6 @@ class Part extends Asset {
         $this->update_field('Part Status', $value, $options);
 
 
-
         if ($old_value != $value) {
 
             if ($value == 'Discontinuing') {
@@ -2953,6 +2952,7 @@ class Part extends Asset {
         //print 'Part Current Stock '.$this->data['Part Current Stock']."\n";
         //print 'Part Days Available Forecast '.$this->data['Part Days Available Forecast']."\n";
 
+        $old_value = $this->get('Part Stock Status\'');
 
         if ($this->data['Part Current Stock'] < 0) {
             $stock_state = 'Error';
@@ -3009,21 +3009,14 @@ class Part extends Asset {
         );
 
 
-        /*
-                include_once 'utils/new_fork.php';
-                $account = get_object('Account', 1);
+        if ($stock_state != $old_value) {
+            $account = get_object('Account', 1);
 
 
-                new_housekeeping_fork(
-                    'au_housekeeping', array(
-                    'type'     => 'update_part_status',
-                    'part_sku' => $this->id,
-                    'editor'   => $this->editor
-                ), $account->get('Account Code')
-                );
-
-        */
-
+            $account->update_parts_data();
+            $account->update_active_parts_stock_data();
+        }
+     
 
     }
 
