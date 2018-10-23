@@ -996,8 +996,8 @@ class Part extends Asset {
                     $available_forecast = '<span >'.sprintf(
                             _('%s availability'), '<span  title="'.sprintf(
                                                     "%s %s", number($this->data['Part Days Available Forecast'], 1), ngettext(
-                                                    "day", "days", intval($this->data['Part Days Available Forecast'])
-                                                )
+                                                               "day", "days", intval($this->data['Part Days Available Forecast'])
+                                                           )
                                                 ).'">'.seconds_to_until($this->data['Part Days Available Forecast'] * 86400).'</span>'
                         ).'</span>';
 
@@ -2723,6 +2723,8 @@ class Part extends Asset {
     function update_status($value, $options = '', $force = false) {
 
 
+        $old_value = $this->get('Part Status');
+
         if ($value == 'Not In Use' and ($this->data['Part Current On Hand Stock'] - $this->data['Part Current Stock In Process']) > 0) {
             $value = 'Discontinuing';
         }
@@ -2734,41 +2736,46 @@ class Part extends Asset {
 
         $this->update_field('Part Status', $value, $options);
 
-        if ($value == 'Discontinuing') {
-            $this->discontinue_trigger();
-
-        } elseif ($value == 'Not In Use') {
 
 
-            foreach ($this->get_locations('part_location_object') as $part_location) {
-                $part_location->disassociate();
+        if ($old_value != $value) {
+
+            if ($value == 'Discontinuing') {
+                $this->discontinue_trigger();
+
+            } elseif ($value == 'Not In Use') {
+
+
+                foreach ($this->get_locations('part_location_object') as $part_location) {
+                    $part_location->disassociate();
+                }
+
+                $this->update_stock();
+
+
+                $this->update(
+                    array('Part Valid To' => gmdate("Y-m-d H:i:s")), 'no_history'
+                );
+
+
+                $this->get_data('sku', $this->sku);
+
+
             }
 
-            $this->update_stock();
+
+            include_once 'utils/new_fork.php';
+            $account = get_object('Account', 1);
 
 
-            $this->update(
-                array('Part Valid To' => gmdate("Y-m-d H:i:s")), 'no_history'
+            new_housekeeping_fork(
+                'au_housekeeping', array(
+                'type'     => 'update_part_status',
+                'part_sku' => $this->id,
+                'editor'   => $this->editor
+            ), $account->get('Account Code')
             );
-
-
-            $this->get_data('sku', $this->sku);
-
-
         }
-
-
-        include_once 'utils/new_fork.php';
-        $account = get_object('Account', 1);
-
-
-        new_housekeeping_fork(
-            'au_housekeeping', array(
-            'type'     => 'update_part_status',
-            'part_sku' => $this->id,
-            'editor'   => $this->editor
-        ), $account->get('Account Code')
-        );
 
 
     }
@@ -3002,20 +3009,20 @@ class Part extends Asset {
         );
 
 
-/*
-        include_once 'utils/new_fork.php';
-        $account = get_object('Account', 1);
+        /*
+                include_once 'utils/new_fork.php';
+                $account = get_object('Account', 1);
 
 
-        new_housekeeping_fork(
-            'au_housekeeping', array(
-            'type'     => 'update_part_status',
-            'part_sku' => $this->id,
-            'editor'   => $this->editor
-        ), $account->get('Account Code')
-        );
+                new_housekeeping_fork(
+                    'au_housekeeping', array(
+                    'type'     => 'update_part_status',
+                    'part_sku' => $this->id,
+                    'editor'   => $this->editor
+                ), $account->get('Account Code')
+                );
 
-*/
+        */
 
 
     }
