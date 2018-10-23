@@ -3016,7 +3016,7 @@ class Part extends Asset {
             $account->update_parts_data();
             $account->update_active_parts_stock_data();
         }
-     
+
 
     }
 

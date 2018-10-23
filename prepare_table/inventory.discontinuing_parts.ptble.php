@@ -69,7 +69,7 @@ if ($order == 'id') {
 } elseif ($order == 'stock') {
     $order = '`Part Current On Hand Stock`';
 } elseif ($order == 'stock_value') {
-    $order = '`Part Current On Hand Stock`*``Part Cost in Warehouse';
+    $order = '`Part Current On Hand Stock`*`Part Cost in Warehouse`';
 } elseif ($order == 'stock_weight') {
     $order = '`Part Current On Hand Stock`*`Part Package Weight`';
 }elseif ($order == 'available_forecast') {
