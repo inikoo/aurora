@@ -701,36 +701,80 @@ $export_fields = array(
 
     ),
     'supplier.order.items'                    => array(
+
         array(
             'name'    => '`Supplier Part Reference`',
-            'label'   => _('Supplier product code'),
+            'label'   => _('Product Code'),
             'checked' => 1
+        ),
+        array(
+            'name'    => '`Part Barcode Number`',
+            'label'   => _('Unit barcode'),
+            'checked' => 1,
+            'type'    => 'text'
         ),
         array(
             'name'    => '`Supplier Part Description`',
-            'label'   => _("Supplier's unit description"),
+            'label'   => _('Unit description'),
             'checked' => 1
         ),
         array(
-            'name'    => '`Purchase Order Ordering Units`',
-            'label'   => _('Units'),
+            'name'    => '`Supplier Part Unit Cost`',
+            'label'   => _('Unit cost'),
             'checked' => 1
         ),
         array(
-            'name'    => '`Purchase Order Ordering Units`/`Part Units Per Package`',
-            'label'   => _('Packs'),
+            'name'    => '`Part Units Per Package`',
+            'label'   => _('Packed in'),
             'checked' => 1
         ),
         array(
-            'name'    => '`Purchase Order Ordering Units`/`Purchase Order Ordering Units`/`Supplier Part Packages Per Carton`',
-            'label'   => _('Cartons'),
+            'name'    => '`Part Units Per Package`*`Supplier Part Packages Per Carton`',
+            'label'   => _('Units per carton'),
             'checked' => 1
         ),
         array(
-            'name'    => '`Purchase Order Ordering Units`*`Supplier Part Unit Cost`  ',
+            'name'    => '`Supplier Part Packages Per Carton`',
+            'label'   => _('Packs per carton'),
+            'checked' => 1
+        ),
+        array(
+            'name'    => '`Part SKO Barcode`',
+            'label'   => _('SKO barcode'),
+            'checked' => 1,
+            'type'    => 'text'
+        ),
+        array(
+            'name'    => '`Part Materials`',
+            'label'   => _('Materials'),
+            'checked' => 1
+        ),
+        array(
+            'name'    => '`Purchase Order Submitted Units`',
+            'label'   => _('Ordered units'),
+            'checked' => 1
+        ),
+        array(
+            'name'    => '`Purchase Order Submitted Units`/`Part Units Per Package`',
+            'label'   => _('Ordered packs'),
+            'checked' => 1
+        ),
+        array(
+            'name'    => '`Purchase Order Submitted Units`/`Part Units Per Package`/`Supplier Part Packages Per Carton`',
+            'label'   => _('Ordered cartons'),
+            'checked' => 1
+        ),
+        array(
+            'name'    => '`Supplier Part Unit Cost`*`Purchase Order Submitted Units`',
             'label'   => _('Amount'),
             'checked' => 1
         ),
+        array(
+            'name'    => '`Part Main Image Key`',
+            'label'   => _('Picture'),
+            'checked' => 0
+        ),
+
 
 
     ),
