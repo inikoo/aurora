@@ -6,8 +6,25 @@ editable: false,
 renderable: false,
 cell: "string",
 
-},
-{
+}, {
+name: "associated",
+label: "",
+editable: false,
+sortType: "toggle",
+cell: Backgrid.HtmlCell.extend({
+className: "width_20"
+})
+
+}, {
+name: "stock_status",
+label: "",
+editable: false,
+sortType: "toggle",
+cell: Backgrid.HtmlCell.extend({
+className: "width_20"
+})
+
+},{
 name: "reference",
 label: "{t}Reference{/t}",
 editable: false,
@@ -16,8 +33,10 @@ sortType: "toggle",
 cell: Backgrid.HtmlCell.extend({
 events: {
 "click": function() {
+change_view('{if $data['parent']=='account'}{else if $data['parent']=='category'}category/{$data['key']}/{else}{$data['parent']}/{$data['parent_key']}/{/if}part/' + this.model.get("id"))
 }
 },
+className: "link"
 
 })
 
@@ -35,20 +54,6 @@ cell: Backgrid.HtmlCell.extend({
 
 },
 
-{
-name: "valid_to",
-label: "{t}Discontinued date{/t}",
-editable: false,
-
-defaultOrder:1,
-sortType: "toggle",
-{if $sort_key=='valid_to'}direction: '{if $sort_order==1}descending{else}ascending{/if}',{/if}
-cell: Backgrid.HtmlCell.extend({ className: "aright"} ),
-
-
-headerCell: integerHeaderCell
-},
-
 
 {
 name: "sales_total",
@@ -59,7 +64,6 @@ defaultOrder:1,
 sortType: "toggle",
 {if $sort_key=='sales_total'}direction: '{if $sort_order==1}descending{else}ascending{/if}',{/if}
 cell: Backgrid.HtmlCell.extend({ className: "aright"} ),
-
 
 headerCell: integerHeaderCell
 },
@@ -103,7 +107,18 @@ cell: Backgrid.HtmlCell.extend({ className: "aright"} ),
 headerCell: integerHeaderCell
 },
 
+{
+name: "stock_status_label",
+label: "{t}Stock status{/t}",
+editable: false,
+sortType: "toggle",
 
+cell: Backgrid.HtmlCell.extend({
+
+
+})
+
+},
 
 {
 name: "sales",
@@ -180,7 +195,18 @@ cell: Backgrid.HtmlCell.extend({ className: "aright"} ),
 
 headerCell: integerHeaderCell
 },
+{
+name: "stock",
+label: "{t}Stock{/t}",
+editable: false,
 
+defaultOrder:1,
+sortType: "toggle",
+{if $sort_key=='stock'}direction: '{if $sort_order==1}descending{else}ascending{/if}',{/if}
+cell: Backgrid.HtmlCell.extend({ className: "aright"} ),
+
+headerCell: integerHeaderCell
+},
 {
 name: "dispatched_year0",
 label: new Date().getFullYear(),
@@ -448,6 +474,7 @@ close_columns_period_options()
 $('#columns_period').addClass('hide');
 
 grid.columns.findWhere({ name: 'sko_description'} ).set("renderable", false)
+grid.columns.findWhere({ name: 'stock'} ).set("renderable", false)
 
 grid.columns.findWhere({ name: 'dispatched'} ).set("renderable", false)
 grid.columns.findWhere({ name: 'sales'} ).set("renderable", false)
@@ -477,6 +504,7 @@ grid.columns.findWhere({ name: 'sales_quarter3'} ).set("renderable", false)
 grid.columns.findWhere({ name: 'sales_quarter4'} ).set("renderable", false)
 
 
+grid.columns.findWhere({ name: 'stock_status_label'} ).set("renderable", false)
 grid.columns.findWhere({ name: 'dispatched_per_week'} ).set("renderable", false)
 grid.columns.findWhere({ name: 'weeks_available'} ).set("renderable", false)
 
@@ -489,6 +517,7 @@ grid.columns.findWhere({ name: 'percentage_repeat_customer_total'} ).set("render
 if(view=='overview'){
 $('#columns_period').removeClass('hide');
 grid.columns.findWhere({ name: 'sko_description'} ).set("renderable", true)
+grid.columns.findWhere({ name: 'stock'} ).set("renderable", true)
 grid.columns.findWhere({ name: 'dispatched'} ).set("renderable", true)
 grid.columns.findWhere({ name: 'sales'} ).set("renderable", true)
 }else if(view=='performance'){
