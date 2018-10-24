@@ -158,23 +158,23 @@ function parts($_data, $db, $user, $type, $account) {
 
             switch ($data['Part Stock Status']) {
                 case 'Surplus':
-                    $stock_status       = '<i class="fa  fa-plus-circle fa-fw" aria-hidden="true"></i>';
+                    $stock_status       = '<i class="fa  fa-plus-circle fa-fw warning discreet"  aria-hidden="true" title="'._('To much stock').'" ></i>';
                     $stock_status_label = _('Surplus');
                     break;
                 case 'Optimal':
-                    $stock_status       = '<i class="fa fa-check-circle fa-fw" aria-hidden="true"></i>';
+                    $stock_status       = '<i class="fa fa-check-circle fa-fw success" aria-hidden="true"  title="'._('Good level of stock').'"></i>';
                     $stock_status_label = _('Ok');
                     break;
                 case 'Low':
-                    $stock_status       = '<i class="fa fa-minus-circle fa-fw" aria-hidden="true"></i>';
+                    $stock_status       = '<i class="fa fa-minus-circle fa-fw warning discreet" aria-hidden="true" title="'._('Low stock, order now').'"></i>';
                     $stock_status_label = _('Low');
                     break;
                 case 'Critical':
-                    $stock_status       = '<i class="fa error fa-minus-circle fa-fw" aria-hidden="true"></i>';
+                    $stock_status       = '<i class="fa error fa-minus-circle fa-fw error discreet" aria-hidden="true" title="'._('Critical low stock, will be out of stock anytime').'"></i>';
                     $stock_status_label = _('Critical');
                     break;
                 case 'Out_Of_Stock':
-                    $stock_status       = '<i class="fa error fa-ban fa-fw" aria-hidden="true"></i>';
+                    $stock_status       = '<i class="fa error fa-ban fa-fw error" aria-hidden="true" title="'._('Out of stock').'"></i>';
                     $stock_status_label = _('Out of stock');
                     break;
                 case 'Error':
