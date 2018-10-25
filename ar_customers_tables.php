@@ -188,11 +188,11 @@ function customers($_data, $db, $user) {
             }
 
 
-            if ($parameters['parent'] == 'store') {
+            if ($parameters['parent'] == 'store'  ) {
                 $link_format  = '/customers/%d/%d';
                 $formatted_id = sprintf('<span class="link" onClick="change_view(\''.$link_format.'\')">%06d</span>', $parameters['parent_key'], $data['Customer Key'], $data['Customer Key']);
 
-            } elseif ($parameters['parent'] == 'customer_poll_query_option' or $parameters['parent'] == 'customer_poll_query') {
+            } elseif ($parameters['parent'] == 'customer_poll_query_option' or $parameters['parent'] == 'customer_poll_query' or  $parameters['parent'] == 'sales_representative' ) {
                 $link_format  = '/customers/%d/%d';
                 $formatted_id = sprintf('<span class="link" onClick="change_view(\''.$link_format.'\')">%06d</span>', $data['Customer Store Key'], $data['Customer Key'], $data['Customer Key']);
 
