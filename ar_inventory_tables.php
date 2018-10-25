@@ -188,7 +188,7 @@ function parts($_data, $db, $user, $type, $account) {
             }
 
 
-            if ($data['Part Current Stock'] <= 0) {
+            if ($data['Part Current On Hand Stock'] <= 0) {
                 $weeks_available = '-';
             } else {
                 $weeks_available = number(
@@ -1066,7 +1066,7 @@ function supplier_parts($_data, $db, $user, $account) {
 				<div style="float:right;min-width:70px;text-align:center;"> <i  class="fa fa-arrow-right very_discreet padding_right_10 padding_left_10"></i><span>['.$data['Supplier Part Packages Per Carton'].']</span></div>
 				<div style="float:right;min-width:20px;text-align:right"><span>'.$data['Part Units Per Package'].'</span></div>
 				 '),
-                'stock'          => number(floor($data['Part Current Stock']))." $stock_status",
+                'stock'          => number(floor($data['Part Current On Hand Stock']))." $stock_status",
 
 
             );
@@ -2397,7 +2397,7 @@ function parts_discontinuing($_data, $db, $user, $account) {
         foreach ($result as $data) {
 
 
-            if ($data['Part Current Stock'] <= 0) {
+            if ($data['Part Current On Hand Stock'] <= 0) {
                 $weeks_available = '-';
             } else {
                 $weeks_available = number(

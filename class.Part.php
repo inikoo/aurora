@@ -2804,7 +2804,6 @@ class Part extends Asset {
     function update_stock() {
 
 
-        $old_stock             = $this->data['Part Current Stock'];
         $old_value             = $this->data['Part Current Value'];
         $old_stock_in_progress = $this->data['Part Current Stock In Process'];
         $old_stock_picked      = $this->data['Part Current Stock Picked'];
@@ -2837,7 +2836,6 @@ class Part extends Asset {
 
         $this->fast_update(
             array(
-                'Part Current Stock'            => $stock + $picked,
                 'Part Current Value'            => $value,
                 'Part Current Stock In Process' => $required - $picked,
                 'Part Current Stock Picked'     => $picked,
@@ -2847,14 +2845,13 @@ class Part extends Asset {
         );
         /*
                 print "Stock $stock Picked  $picked\n";
-                print "a* $old_stock   ** ".$this->data['Part Current Stock']."  \n"   ;
                 print "b* $old_value   ** ".$this->data['Part Current Value']."  \n"   ;
                 print "b* $old_stock_in_progress   ** ".$this->data['Part Current Stock In Process']."  \n"   ;
                 print "b* $old_stock_picked   ** ".$this->data['Part Current Stock Picked']."  \n"   ;
                 print "b* $old_stock_on_hand   ** ".$this->data['Part Current On Hand Stock']."  \n"   ;
         */
 
-        if ($old_stock != $this->data['Part Current Stock'] or $old_value != $this->data['Part Current Value'] or $old_stock_in_progress != $this->data['Part Current Stock In Process'] or $old_stock_picked != $this->data['Part Current Stock Picked']
+        if ( $old_value != $this->data['Part Current Value'] or $old_stock_in_progress != $this->data['Part Current Stock In Process'] or $old_stock_picked != $this->data['Part Current Stock Picked']
             or $old_stock_on_hand != $this->data['Part Current On Hand Stock']
 
         ) {
@@ -2949,14 +2946,13 @@ class Part extends Asset {
 
 
         //print 'Delivery days '.$this->data['Part Delivery Days']."\n";
-        //print 'Part Current Stock '.$this->data['Part Current Stock']."\n";
         //print 'Part Days Available Forecast '.$this->data['Part Days Available Forecast']."\n";
 
-        $old_value = $this->get('Part Stock Status\'');
+        $old_value = $this->get('Part Stock Status');
 
-        if ($this->data['Part Current Stock'] < 0) {
+        if ($this->data['Part Current On Hand Stock'] < 0) {
             $stock_state = 'Error';
-        } elseif ($this->data['Part Current Stock'] == 0) {
+        } elseif ($this->data['Part Current On Hand Stock'] == 0) {
             if ($this->data['Part Fresh'] == 'Yes') {
                 $stock_state = 'Optimal';
             } else {
@@ -3237,7 +3233,7 @@ class Part extends Asset {
                 );
                 break;
             case 'Automatic':
-                if ($this->data['Part Current Stock'] > 0 and $this->data['Part Status'] == 'In Use') {
+                if ($this->data['Part Current On Hand Stock'] > 0 and $this->data['Part Status'] == 'In Use') {
                     $this->update_field('Part Available for Products', 'Yes');
                 } else {
                     $this->update_field('Part Available for Products', 'No');
@@ -3312,10 +3308,10 @@ class Part extends Asset {
         $this->load_acc_data();
 
 
-        if ($this->data['Part Current Stock'] == '' or $this->data['Part Current Stock'] < 0) {
+        if ($this->data['Part Current On Hand Stock'] == '' or $this->data['Part Current On Hand Stock'] < 0) {
             $this->data['Part Days Available Forecast']      = 0;
             $this->data['Part XHTML Available For Forecast'] = '?';
-        } elseif ($this->data['Part Current Stock'] == 0) {
+        } elseif ($this->data['Part Current On Hand Stock'] == 0) {
             $this->data['Part Days Available Forecast']      = 0;
             $this->data['Part XHTML Available For Forecast'] = 0;
         } else {
@@ -3341,7 +3337,7 @@ class Part extends Asset {
                 }
 
 
-                $this->data['Part Days Available Forecast']      = $this->data['Part Current Stock'] / ($this->data['Part 1 Quarter Acc Required'] / $days_on_sale);
+                $this->data['Part Days Available Forecast']      = $this->data['Part Current On Hand Stock'] / ($this->data['Part 1 Quarter Acc Required'] / $days_on_sale);
                 $this->data['Part XHTML Available For Forecast'] = number($this->data['Part Days Available Forecast'], 0).' '._('d');
 
             } else {

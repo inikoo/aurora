@@ -95,6 +95,12 @@ function get_fork_metadata($job) {
         return false;
     }
 
+    // tod remove after spain migration
+    if($inikoo_account_code=='AWR'){
+        return false;
+    }
+
+
     require_once "keyring/dns.$inikoo_account_code.php";
     require_once "class.Account.php";
 
