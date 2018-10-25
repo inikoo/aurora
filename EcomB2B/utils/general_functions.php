@@ -78,6 +78,19 @@ function delta($current_value, $old_value) {
 }
 
 
+function delta_raw($current_value, $old_value){
+    if($old_value==0){
+        if($current_value==0){
+            return 0;
+        }else{
+            return 0;
+        }
+    }
+    return  ($current_value - $old_value)/$old_value;
+
+}
+
+
 function delta_icon($_value, $_value_1yb, $inverse = false) {
 
     if ($inverse) {
@@ -94,7 +107,6 @@ function delta_icon($_value, $_value_1yb, $inverse = false) {
 
     if ($_value != 0 and $_value_1yb != 0) {
 
-        $diff  = $_value - $_value_1yb;
         $delta = delta($_value, $_value_1yb);
 
         if ($_value > $_value_1yb) {

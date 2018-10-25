@@ -2784,6 +2784,9 @@ function get_tabs($data, $db, $account, $modules, $user, $smarty, $requested_tab
 
 
     if (isset($modules[$data['module']]['sections'][$data['section']]['tabs'])) {
+
+
+
         $tabs = $modules[$data['module']]['sections'][$data['section']]['tabs'];
     } else {
         $tabs = array();
@@ -2808,7 +2811,6 @@ function get_tabs($data, $db, $account, $modules, $user, $smarty, $requested_tab
     }
 
 
-    // print_r($tabs);
 
 
     foreach ($tabs as $key => $tab) {
@@ -8636,7 +8638,7 @@ function get_view_position($db, $state, $user, $smarty, $account) {
 
             } elseif ($state['section'] == 'sales') {
                 $branch[] = array(
-                    'label'     => _('Invoice sales'),
+                    'label'     => _('Sales report'),
                     'icon'      => '',
                     'reference' => ''
                 );

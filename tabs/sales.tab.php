@@ -25,9 +25,24 @@ if (isset($_SESSION['table_state']['sales']['period'])) {
     $default['period'] = $_SESSION['table_state']['sales']['period'];
 }
 if (isset($_SESSION['table_state']['sales']['excluded_stores'])) {
-    $default['excluded_stores']
-        = $_SESSION['table_state']['sales']['excluded_stores'];
+    $default['excluded_stores'] = $_SESSION['table_state']['sales']['excluded_stores'];
 }
+
+
+if (isset($state['metadata']['parameters']['currency'])) {
+    $_SESSION['table_state']['sales']['currency']=$state['metadata']['parameters']['currency'];
+}
+
+
+if (isset($_SESSION['table_state']['sales']['currency'])) {
+    $default['currency'] = $_SESSION['table_state']['sales']['currency'];
+}
+
+
+//print_r($state);
+
+
+
 $table_views = array();
 
 $table_filters = array(
@@ -41,8 +56,10 @@ $parameters = array(
     'parent_key' => $state['parent_key'],
 );
 
+$smarty->assign('table_state',$default);
 
-//$smarty->assign('hide_period',true);
+$smarty->assign('table_top_template', 'control.sales.tpl');
+$smarty->assign('table_class', 'with_totals');
 
 include 'utils/get_table_html.php';
 

@@ -1,8 +1,8 @@
 {*/*
  About:
  Author: Raul Perusquia <raul@inikoo.com>
- Created: 9 March 2018 at 14:18:26 GMT+8, Kuala Lumpur, Malaysia
- Copyright (c) 2016, Inikoo
+ Created: 24 October 2018 at 19:53:45 GMT+8, Kuala Lumpur, Malaysia
+ Copyright (c) 2018, Inikoo
 
  Version 3
 */*}
@@ -18,8 +18,8 @@ renderable: false
 },
 
 {
-name: "store_code",
-label: "{t}Store{/t}",
+name: "category_code",
+label: "{t}Category{/t}",
 editable: false,
 sortType: "toggle",
 cell: Backgrid.HtmlCell.extend({
@@ -27,8 +27,8 @@ cell: Backgrid.HtmlCell.extend({
 },
 
 {
-name: "store",
-label: "{t}Store{/t}",
+name: "category",
+label: "{t}Category{/t}",
 editable: false,
 sortType: "toggle",
 cell: Backgrid.HtmlCell.extend({
@@ -224,8 +224,8 @@ $('#view_'+view).addClass('selected');
 
 
 
-grid.columns.findWhere({ name: 'store_code'} ).set("renderable", false)
-grid.columns.findWhere({ name: 'store'} ).set("renderable", false)
+grid.columns.findWhere({ name: 'category_code'} ).set("renderable", false)
+grid.columns.findWhere({ name: 'category'} ).set("renderable", false)
 
 grid.columns.findWhere({ name: 'customers'} ).set("renderable", false)
 
@@ -248,7 +248,7 @@ grid.columns.findWhere({ name: 'profit_delta_1yb'} ).set("renderable", false)
 
 
 if(view=='overview'){
-grid.columns.findWhere({ name: 'store'} ).set("renderable", true)
+grid.columns.findWhere({ name: 'category'} ).set("renderable", true)
 
 {if $table_state['currency']=='account'}
     grid.columns.findWhere({ name: 'refunds_amount_oc'} ).set("renderable", true)

@@ -20,13 +20,10 @@ $default = $user->get_tab_defaults($tab);
 $table_views = array();
 
 $table_filters = array(
-    'code' => array(
-        'label' => _('Code'),
-        'title' => _('Store code')
-    ),
+
     'name' => array(
         'label' => _('Name'),
-        'title' => _('Store name')
+        'title' => _('Name')
     ),
 
 );

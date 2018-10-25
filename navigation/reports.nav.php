@@ -86,7 +86,7 @@ function get_sales_navigation($user, $smarty, $data) {
         $sections[$data['section']]['selected'] = true;
     }
 
-    $title = _('Invoice sales');
+    $title = _('Sales report');
 
     $_content = array(
         'sections_class' => '',

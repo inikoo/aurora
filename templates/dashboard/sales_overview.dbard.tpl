@@ -5,7 +5,7 @@
     <input type="hidden" id="order_overview_orders_view_type" value="{$orders_view_type}">
     <table border="0" style="width:100%">
         <tr class="main_title small_row">
-            <td colspan="9">
+            <td colspan="7">
                 <div class="widget_types">
                     <div id="orders" onclick="change_sales_overview_type('orders')"
                          class="widget  left {if $type=='orders'}selected{/if}">
@@ -37,7 +37,7 @@
                 </div>
 
                 <div id="sales_overview_currency_container"
-                     class="button  {if $type=='delivery_notes' or ($type=='orders' and $orders_view_type=='numbers')  }hide{/if} "
+                     class="button  {if $type=='delivery_notes' or ($type=='orzers' and $orders_view_type=='numbers')  }hide{/if} "
                      onclick="toggle_sales_overview_currency()" style="float:right;margin-right:10px">
                     <i id="sales_overview_currency"
                        class="fa {if $currency=='store'}fa-toggle-on{else}fa-toggle-off{/if}"></i> {t}Store currency{/t}
@@ -47,9 +47,15 @@
             </td>
         </tr>
         <tr class=" small_row   ">
+
+
             <td colspan="7">
-                <div class="date_chooser {if $type=='orders'}invisible{/if}">
-                    <div style="visibility:hidden" id="interval"
+
+                <div class="date_chooser {if $type=='orders' }invisible{/if}">
+                    <div  class="interval go_to_sales_report  {if $type=='orders' or  $type=='delivery_notes'}invisible{/if} "  data-type="{$type}" data-metadata='{ "parameters":{ "period":"{$period}", "currency":"{$currency}"}}' onclick="go_to_sales_report()" >
+                        {t}Sales report{/t} <i class="far button fa-chart-line fa-fw"></i>
+                    </div>
+                    <div style="display:none" id="interval"
                          class="interval {if  $period=='interval'}selected{/if}">
                         <img src="/art/icons/mini-calendar_interval.png"/> {t}Interval{/t}
                     </div>
@@ -237,6 +243,27 @@
 </div>
 <script>
 
+
+    function go_to_sales_report(){
+
+
+
+        switch ($('.go_to_sales_report').data('type') ) {
+            case 'invoices':
+                change_view('report/sales&tab=sales', $('.go_to_sales_report').data('metadata') );
+                break;
+            case 'invoice_categories':
+                change_view('report/sales&tab=sales_invoice_category', $('.go_to_sales_report').data('metadata') );
+                break;
+
+        }
+
+
+
+
+    }
+
+
     function change_sales_overview_type(type) {
 
 
@@ -244,6 +271,9 @@
         $('#' + type).addClass('selected')
 
         $('#sales_overview_orders_view_type_container').addClass('hide')
+
+
+
 
         if (type == 'invoices') {
 
@@ -257,6 +287,9 @@
             $('.replacements ,.delivery_notes,.orders ,.orders_amount').addClass('hide')
 
 
+            $('.go_to_sales_report').removeClass('invisible')
+
+
         } else if (type == 'invoice_categories') {
             $('.date_chooser').removeClass('invisible')
 
@@ -267,7 +300,7 @@
             $('#sales_overview_currency_container').removeClass('hide')
             $('.replacements ,.delivery_notes,.orders ,.orders_amount').addClass('hide')
             $('#sales_overview_currency_container').removeClass('hide')
-
+            $('.go_to_sales_report').removeClass('invisible')
 
         } else if (type == 'delivery_notes') {
             $('.date_chooser').removeClass('invisible')
@@ -277,9 +310,10 @@
             $('.refunds,.invoices,.sales,.orders ,.orders_amount').addClass('hide')
             $('.replacements ,.delivery_notes').removeClass('hide')
             $('#sales_overview_currency_container').addClass('hide')
+            $('.go_to_sales_report').addClass('invisible')
 
         } else if (type == 'orders') {
-            $('.date_chooser').removeClass('invisible')
+            $('.date_chooser').addClass('invisible')
 
             $('.category').addClass('hide')
             $('.store').removeClass('hide')
@@ -297,11 +331,17 @@
 
             $('#sales_overview_orders_view_type_container').removeClass('hide')
             // $('#sales_overview_currency_container').removeClass('hide')
+            $('.go_to_sales_report').addClass('invisible')
 
         }
 
         console.log('caca')
         get_order_overview_data(type, $('#order_overview_period').val(), $('#order_overview_currency').val(), $('#order_overview_orders_view_type').val())
+
+
+
+
+        $('.go_to_sales_report').data('type',type)
 
 
     }
@@ -345,6 +385,12 @@
 
         get_order_overview_data($('#order_overview_type').val(), $('#order_overview_period').val(), $('#order_overview_currency').val(), $('#order_overview_orders_view_type').val())
 
+        var metadata=$('.go_to_sales_report').data('metadata')
+        metadata.parameters.currency=currency;
+
+        $('.go_to_sales_report').data('metadata',metadata)
+
+
     }
 
 
@@ -359,6 +405,13 @@
         get_order_overview_data($('#order_overview_type').val(), period, $('#order_overview_currency').val())
 
         console.log($('#order_overview_type').val() + ' ' + period)
+
+
+        var metadata=$('.go_to_sales_report').data('metadata')
+        metadata.parameters.period=period;
+
+        $('.go_to_sales_report').data('metadata',metadata)
+
 
 
     }
