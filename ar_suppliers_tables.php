@@ -3042,7 +3042,7 @@ function order_supplier_parts($_data, $db, $user) {
                 'packing'     => '<div style="float:left;min-width:20px;text-align:right"><span>'.$data['Part Units Per Package']
                     .'</span></div><div style="float:left;min-width:70px;text-align:left"> <i  class="fa fa-arrow-right very_discreet padding_right_10 padding_left_10"></i><span>['.$data['Supplier Part Packages Per Carton'].']</span></div> <span class="discreet">'
                     .($data['Part Units Per Package'] * $data['Supplier Part Packages Per Carton'].'</span>'),
-                'stock'       => number(floor($data['Part Current Stock']))." $stock_status"
+                'stock'       => number(floor($data['Part Current On Hand Stock']))." $stock_status"
             );
 
 
@@ -3537,7 +3537,7 @@ function order_supplier_all_parts($_data, $db, $user, $account) {
                 'packing' => '<div style="float:left;min-width:20px;text-align:right"><span>'.$data['Part Units Per Package']
                     .'</span></div><div style="float:left;min-width:70px;text-align:left"> <i  class="fa fa-arrow-right very_discreet padding_right_10 padding_left_10"></i><span>['.$data['Supplier Part Packages Per Carton'].']</span></div> <span class="discreet">'
                     .($data['Part Units Per Package'] * $data['Supplier Part Packages Per Carton'].'</span>'),
-                'stock'   => number(floor($data['Part Current Stock']))." $stock_status",
+                'stock'   => number(floor($data['Part Current On Hand Stock']))." $stock_status",
 
                 'description_units'        => $description_units,
                 'description_skos'         => $description_skos,
@@ -4198,7 +4198,7 @@ function parts_by_stock_status($stock_status, $_data, $db, $user) {
                     .'</span></div><div style="float:left;min-width:70px;text-align:left"> <i  class="fa fa-arrow-right very_discreet padding_right_10 padding_left_10"></i><span>['.$data['Supplier Part Packages Per Carton'].']</span></div> <span class="discreet">'
                     .($data['Part Units Per Package'] * $data['Supplier Part Packages Per Carton'].'</span>'),
                 'stock'               => number(
-                        floor($data['Part Current Stock'])
+                        floor($data['Part Current On Hand Stock'])
                     )." $stock_status",
                 'available_forecast'  => $available_forecast,
                 'dispatched_per_week' => $dispatched_per_week,
@@ -4354,7 +4354,7 @@ function todo_paid_parts($_data, $db, $user) {
                 'packing'         => '<div style="float:left;min-width:20px;text-align:right"><span>'.$data['Part Units Per Package']
                     .'</span></div><div style="float:left;min-width:70px;text-align:left"> <i  class="fa fa-arrow-right very_discreet padding_right_10 padding_left_10"></i><span>['.$data['Supplier Part Packages Per Carton'].']</span></div> <span class="discreet">'
                     .($data['Part Units Per Package'] * $data['Supplier Part Packages Per Carton'].'</span>'),
-                'stock'           => number(floor($data['Part Current Stock']))." $stock_status",
+                'stock'           => number(floor($data['Part Current On Hand Stock']))." $stock_status",
                 //'date'=>strftime("%a %e %b %Y %H:%M %Z", strtotime($data['date'].' +0:00')),
                 'required'        => number(ceil($data['required']), 0),
                 'next_deliveries' => $next_deliveries
@@ -4742,7 +4742,7 @@ function part_locations_to_replenish_picking_location($_data, $db, $user) {
             'quantity_in_picking' => number(floor($data['Quantity On Hand'])),
             'to_pick'             => number(ceil($data['to_pick'])),
 
-            'total_stock'       => number(floor($data['Part Current Stock'])),
+            'total_stock'       => number(floor($data['Part Current On Hand Stock'])),
             'storing_locations' => $data['storing_locations'],
             'stock_status'      => $stock_status
 

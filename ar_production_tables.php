@@ -512,7 +512,7 @@ function supplier_parts($_data, $db, $user, $account) {
                         .$data['Supplier Part Packages Per Carton'].']</span></div>
 				<div style="float:right;min-width:20px;text-align:right"><span>'.$data['Part Units Per Package'].'</span></div>
 				 '),
-                'stock'          => number(floor($data['Part Current Stock']))." $stock_status",
+                'stock'          => number(floor($data['Part Current On Hand Stock']))." $stock_status",
 
 
             );
@@ -722,7 +722,7 @@ function materials($_data, $db, $user, $account) {
                         .$data['Supplier Part Packages Per Carton'].']</span></div>
 				<div style="float:right;min-width:20px;text-align:right"><span>'.$data['Part Units Per Package'].'</span></div>
 				 '),
-                'stock'          => number(floor($data['Part Current Stock']))." $stock_status",
+                'stock'          => number(floor($data['Part Current On Hand Stock']))." $stock_status",
 
 
             );

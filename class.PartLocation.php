@@ -598,8 +598,7 @@ class PartLocation extends DB_Table {
 
 
         $sql = sprintf(
-            "SELECT sum(`Inventory Transaction Quantity`) AS stock ,sum(`Inventory Transaction Amount`) AS value
-			       FROM `Inventory Transaction Fact` WHERE  `Date`<=%s AND `Part SKU`=%d AND `Location Key`=%d  ", prepare_mysql($date), $this->part_sku, $this->location_key
+            "SELECT sum(`Inventory Transaction Quantity`) AS stock ,sum(`Inventory Transaction Amount`) AS value FROM `Inventory Transaction Fact` WHERE  `Date`<=%s AND `Part SKU`=%d AND `Location Key`=%d  ", prepare_mysql($date), $this->part_sku, $this->location_key
         );
         if ($result = $this->db->query($sql)) {
             if ($row = $result->fetch()) {

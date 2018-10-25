@@ -20,6 +20,7 @@ function fork_housekeeping($job) {
 
     list($account, $db, $data, $editor) = $_data;
 
+
     print_r($data);
 
     //return true;
@@ -696,6 +697,9 @@ function fork_housekeeping($job) {
 
 
         case 'full_after_part_stock_update':
+
+           // return true;
+
             // todo remove after migration
             // for use in pre migration inikoo
 
@@ -1044,8 +1048,13 @@ function fork_housekeeping($job) {
         case 'delivery_note_packed_done':
 
 
+
+
             $customer = get_object('Customer', $data['customer_key']);
+
             $customer->update_part_bridge();
+
+
 
 
             $intervals = array(
@@ -1070,22 +1079,35 @@ function fork_housekeeping($job) {
             $suppliers_categories = array();
             $part_categories      = array();
 
-            $sql = sprintf('select `Part SKU`  FROM `Inventory Transaction Fact` WHERE  `Delivery Note Key`=%d  and `Inventory Transaction Type`="Sale" ', $data['delivery_note_key']);
+
+
+            //$sql = sprintf('select `Part SKU`  FROM `Inventory Transaction Fact` WHERE  `Delivery Note Key`=%d  and `Inventory Transaction Type`="Sale" ', $data['delivery_note_key']);
+            $sql = sprintf('select `Part SKU`,`Inventory Transaction Type`  FROM `Inventory Transaction Fact` WHERE  `Delivery Note Key`=%d   ', $data['delivery_note_key']);
+
             if ($result = $db->query($sql)) {
                 foreach ($result as $row) {
-                    $part = get_object('Part', $row['Part SKU']);
 
 
-                    foreach ($intervals as $interval) {
-                        $part->update_sales_from_invoices($interval, true, false);
+                    if($row['Inventory Transaction Type']=='Sale'){
+
+                        $part = get_object('Part', $row['Part SKU']);
+
+
+                        foreach ($intervals as $interval) {
+                            $part->update_sales_from_invoices($interval, true, false);
+                        }
+
+                        foreach ($part->get_suppliers() as $suppliers_key) {
+                            $suppliers[$suppliers_key] = $suppliers_key;
+                        }
+                        foreach ($part->get_categories() as $part_category_key) {
+                            $part_categories[$part_category_key] = $part_category_key;
+                        }
                     }
 
-                    foreach ($part->get_suppliers() as $suppliers_key) {
-                        $suppliers[$suppliers_key] = $suppliers_key;
-                    }
-                    foreach ($part->get_categories() as $part_category_key) {
-                        $part_categories[$part_category_key] = $part_category_key;
-                    }
+
+
+
 
 
                 }
@@ -1382,6 +1404,8 @@ function fork_housekeeping($job) {
 
             break;
         case 'update_ISF':
+
+
 
             include_once 'class.PartLocation.php';
 
