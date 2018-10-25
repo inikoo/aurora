@@ -164,12 +164,12 @@ $tab_defaults = array(
     ),
 
     'account.mailshots' => array(
-        'view'        => 'overview',
-        'sort_key'    => 'date',
-        'sort_order'  => 1,
-        'rpp'         => 500,
-        'rpp_options' => $default_rrp_options,
-        'f_field'     => 'name',
+        'view'          => 'overview',
+        'sort_key'      => 'date',
+        'sort_order'    => 1,
+        'rpp'           => 500,
+        'rpp_options'   => $default_rrp_options,
+        'f_field'       => 'name',
         'elements_type' => each($elements_options['mailshots']) ['key'],
         'elements'      => $elements_options['mailshots'],
     ),
@@ -325,7 +325,7 @@ $tab_defaults = array(
 
     ),
 
-    'customer.sales.history' => array(
+    'customer.sales.history'        => array(
         'view'        => 'overview',
         'sort_key'    => 'id',
         'sort_order'  => 1,
@@ -336,19 +336,19 @@ $tab_defaults = array(
         //  'export_fields'=>$export_fields['timeserie_records']
 
     ),
-    'customer.product.orders'        => array(
-        'view'          => 'overview',
-        'sort_key'      => 'id',
-        'sort_order'    => 1,
-        'rpp'           => 100,
-        'rpp_options'   => $default_rrp_options,
-        'f_field'       => 'number',
+    'customer.product.orders'       => array(
+        'view'        => 'overview',
+        'sort_key'    => 'id',
+        'sort_order'  => 1,
+        'rpp'         => 100,
+        'rpp_options' => $default_rrp_options,
+        'f_field'     => 'number',
 
         'elements_type' => each($elements_options['orders'])['key'],
         'elements'      => $elements_options['orders'],
         'export_fields' => $export_fields['orders']
     ),
-    'customer.product.invoices'        => array(
+    'customer.product.invoices'     => array(
         'view'          => 'overview',
         'sort_key'      => 'id',
         'sort_order'    => 1,
@@ -362,15 +362,15 @@ $tab_defaults = array(
         'elements'      => $elements_options['invoices'],
         'export_fields' => $export_fields['invoices']
     ),
-    'customer.product.transactions'        => array(
-        'view'          => 'overview',
-        'sort_key'      => 'id',
-        'sort_order'    => 1,
-        'rpp'           => 100,
-        'rpp_options'   => $default_rrp_options,
-        'from'          => '',
-        'to'            => '',
-        'period'        => 'all',
+    'customer.product.transactions' => array(
+        'view'        => 'overview',
+        'sort_key'    => 'id',
+        'sort_order'  => 1,
+        'rpp'         => 100,
+        'rpp_options' => $default_rrp_options,
+        'from'        => '',
+        'to'          => '',
+        'period'      => 'all',
 
     ),
 
@@ -521,7 +521,7 @@ $tab_defaults = array(
 
     ),
 
-    'orders_server'        => array(
+    'orders_server'      => array(
         'view'          => 'overview',
         'sort_key'      => 'id',
         'sort_order'    => 1,
@@ -535,7 +535,7 @@ $tab_defaults = array(
         'elements'      => $elements_options['orders']
 
     ),
-    'order.items'          => array(
+    'order.items'        => array(
         'view'        => 'overview',
         'sort_key'    => 'id',
         'sort_order'  => 1,
@@ -545,24 +545,24 @@ $tab_defaults = array(
 
     ),
     'order.all_products' => array(
-        'view'          => 'overview',
-        'sort_key'      => 'code',
-        'sort_order'    =>-1,
-        'rpp'           => 100,
-        'rpp_options'   => $default_rrp_options,
-        'f_field'       => 'code',
+        'view'        => 'overview',
+        'sort_key'    => 'code',
+        'sort_order'  => -1,
+        'rpp'         => 100,
+        'rpp_options' => $default_rrp_options,
+        'f_field'     => 'code',
 
 
     ),
 
 
-     'order_customer.history'        => array(
-        'view'        => 'overview',
-        'sort_key'    => 'date',
-        'sort_order'  => 1,
-        'rpp'         => 100,
-        'rpp_options' => $default_rrp_options,
-        'f_field'     => 'note',
+    'order_customer.history' => array(
+        'view'          => 'overview',
+        'sort_key'      => 'date',
+        'sort_order'    => 1,
+        'rpp'           => 100,
+        'rpp_options'   => $default_rrp_options,
+        'f_field'       => 'note',
         'elements_type' => each($elements_options['customer_history'])['key'],
         'elements'      => $elements_options['customer_history']
     ),
@@ -946,7 +946,7 @@ $tab_defaults = array(
     ),
 
 
-    'store.products' => array(
+    'store.products'                              => array(
         'view'          => 'overview',
         'sort_key'      => 'id',
         'sort_order'    => 1,
@@ -960,12 +960,12 @@ $tab_defaults = array(
 
     ),
     'back_to_stock_notification_request.products' => array(
-        'view'          => 'overview',
-        'sort_key'      => 'id',
-        'sort_order'    => 1,
-        'rpp'           => 100,
-        'rpp_options'   => $default_rrp_options,
-        'f_field'       => 'code',
+        'view'        => 'overview',
+        'sort_key'    => 'id',
+        'sort_order'  => 1,
+        'rpp'         => 100,
+        'rpp_options' => $default_rrp_options,
+        'f_field'     => 'code',
 
 
     ),
@@ -1067,24 +1067,24 @@ $tab_defaults = array(
         'export_fields' => $export_fields['orders']
     ),
 
-    'product.customers' => array(
-        'view'          => 'overview',
-        'sort_key'      => 'formatted_id',
-        'sort_order'    => 1,
-        'rpp'           => 100,
-        'rpp_options'   => $default_rrp_options,
-        'f_field'       => 'name',
+    'product.customers'                                    => array(
+        'view'        => 'overview',
+        'sort_key'    => 'formatted_id',
+        'sort_order'  => 1,
+        'rpp'         => 100,
+        'rpp_options' => $default_rrp_options,
+        'f_field'     => 'name',
 
         'export_fields' => $export_fields['customers']
 
     ),
     'product.back_to_stock_notification_request.customers' => array(
-        'view'          => 'overview',
-        'sort_key'      => 'formatted_id',
-        'sort_order'    => 1,
-        'rpp'           => 100,
-        'rpp_options'   => $default_rrp_options,
-        'f_field'       => 'name',
+        'view'        => 'overview',
+        'sort_key'    => 'formatted_id',
+        'sort_order'  => 1,
+        'rpp'         => 100,
+        'rpp_options' => $default_rrp_options,
+        'f_field'     => 'name',
 
         'export_fields' => $export_fields['customers']
 
@@ -1694,13 +1694,13 @@ $tab_defaults = array(
 
 
     ),
-    'supplier.order.items_in_process'              => array(
-        'view'          => 'cartons',
-        'sort_key'      => 'id',
-        'sort_order'    => 1,
-        'rpp'           => 1000,
-        'rpp_options'   => $default_rrp_options,
-        'f_field'       => 'code',
+    'supplier.order.items_in_process'   => array(
+        'view'        => 'cartons',
+        'sort_key'    => 'id',
+        'sort_order'  => 1,
+        'rpp'         => 1000,
+        'rpp_options' => $default_rrp_options,
+        'f_field'     => 'code',
         //'export_fields' => $export_fields['supplier.order.items']
 
 
@@ -1738,28 +1738,28 @@ $tab_defaults = array(
 
     ),
     'client_order.items'                => array(
-        'view'        => 'overview',
-        'sort_key'    => 'id',
-        'sort_order'  => 1,
-        'rpp'         => 1000,
-        'rpp_options' => $default_rrp_options,
-        'f_field'     => 'code',
+        'view'          => 'overview',
+        'sort_key'      => 'id',
+        'sort_order'    => 1,
+        'rpp'           => 1000,
+        'rpp_options'   => $default_rrp_options,
+        'f_field'       => 'code',
         'export_fields' => $export_fields['client_order_items']
 
 
     ),
-    'agent_supplier_order.items'                => array(
-        'view'        => 'overview',
-        'sort_key'    => 'id',
-        'sort_order'  => 1,
-        'rpp'         => 1000,
-        'rpp_options' => $default_rrp_options,
-        'f_field'     => 'code',
+    'agent_supplier_order.items'        => array(
+        'view'          => 'overview',
+        'sort_key'      => 'id',
+        'sort_order'    => 1,
+        'rpp'           => 1000,
+        'rpp_options'   => $default_rrp_options,
+        'f_field'       => 'code',
         'export_fields' => $export_fields['client_order_items']
 
 
     ),
-    'client_order.suppliers'                => array(
+    'client_order.suppliers'            => array(
         'view'        => 'overview',
         'sort_key'    => 'id',
         'sort_order'  => 1,
@@ -1768,7 +1768,7 @@ $tab_defaults = array(
         'f_field'     => 'code',
 
     ),
-    'client_order.supplier.items'                => array(
+    'client_order.supplier.items'       => array(
         'view'        => 'overview',
         'sort_key'    => 'id',
         'sort_order'  => 1,
@@ -1777,7 +1777,7 @@ $tab_defaults = array(
         'f_field'     => 'code',
 
     ),
-    'agent.delivery.items'                => array(
+    'agent.delivery.items'              => array(
         'view'        => 'overview',
         'sort_key'    => 'id',
         'sort_order'  => 1,
@@ -1786,35 +1786,7 @@ $tab_defaults = array(
         'f_field'     => 'code',
 
     ),
-    'agent.delivery.items_in_warehouse'                => array(
-        'view'        => 'overview',
-        'sort_key'    => 'id',
-        'sort_order'  => 1,
-        'rpp'         => 1000,
-        'rpp_options' => $default_rrp_options,
-        'f_field'     => 'code',
-
-    ),
-
-    'supplier.delivery.items'           => array(
-        'view'        => 'overview',
-        'sort_key'    => 'id',
-        'sort_order'  => 1,
-        'rpp'         => 1000,
-        'rpp_options' => $default_rrp_options,
-        'f_field'     => 'code',
-
-    ),
-    'supplier.delivery.items_mismatch'           => array(
-        'view'        => 'overview',
-        'sort_key'    => 'id',
-        'sort_order'  => 1,
-        'rpp'         => 1000,
-        'rpp_options' => $default_rrp_options,
-        'f_field'     => 'code',
-
-    ),
-    'supplier.delivery.costing'         => array(
+    'agent.delivery.items_in_warehouse' => array(
         'view'        => 'overview',
         'sort_key'    => 'id',
         'sort_order'  => 1,
@@ -1824,7 +1796,35 @@ $tab_defaults = array(
 
     ),
 
-     'supplier.delivery.items_done'         => array(
+    'supplier.delivery.items'          => array(
+        'view'        => 'overview',
+        'sort_key'    => 'id',
+        'sort_order'  => 1,
+        'rpp'         => 1000,
+        'rpp_options' => $default_rrp_options,
+        'f_field'     => 'code',
+
+    ),
+    'supplier.delivery.items_mismatch' => array(
+        'view'        => 'overview',
+        'sort_key'    => 'id',
+        'sort_order'  => 1,
+        'rpp'         => 1000,
+        'rpp_options' => $default_rrp_options,
+        'f_field'     => 'code',
+
+    ),
+    'supplier.delivery.costing'        => array(
+        'view'        => 'overview',
+        'sort_key'    => 'id',
+        'sort_order'  => 1,
+        'rpp'         => 1000,
+        'rpp_options' => $default_rrp_options,
+        'f_field'     => 'code',
+
+    ),
+
+    'supplier.delivery.items_done' => array(
         'view'        => 'overview',
         'sort_key'    => 'id',
         'sort_order'  => 1,
@@ -1875,7 +1875,7 @@ $tab_defaults = array(
     ),
 
 
-     'supplier.delivery.attachments'             => array(
+    'supplier.delivery.attachments' => array(
         'view'        => 'overview',
         'sort_key'    => 'date',
         'sort_order'  => 1,
@@ -1892,7 +1892,6 @@ $tab_defaults = array(
         'rpp_options' => $default_rrp_options,
         'f_field'     => 'note'
     ),
-
 
 
     'supplier.sales.history' => array(
@@ -1950,7 +1949,7 @@ $tab_defaults = array(
     ),
 
 
-    'agents'                       => array(
+    'agents'                  => array(
         'view'        => 'overview',
         'sort_key'    => 'code',
         'sort_order'  => 1,
@@ -1959,7 +1958,7 @@ $tab_defaults = array(
         'f_field'     => 'name',
         'f_period'    => 'ytd',
     ),
-    'agent.history'                => array(
+    'agent.history'           => array(
         'view'          => 'overview',
         'sort_key'      => 'date',
         'sort_order'    => 1,
@@ -1969,7 +1968,7 @@ $tab_defaults = array(
         'elements_type' => each($elements_options['agent_history'])['key'],
         'elements'      => $elements_options['agent_history']
     ),
-    'agent.suppliers'              => array(
+    'agent.suppliers'         => array(
         'view'          => 'overview',
         'sort_key'      => 'formatted_id',
         'sort_order'    => 1,
@@ -1981,7 +1980,7 @@ $tab_defaults = array(
         'elements'      => $elements_options['agent_suppliers']
 
     ),
-    'agent.supplier_parts'         => array(
+    'agent.supplier_parts'    => array(
         'view'          => 'overview',
         'sort_key'      => 'reference',
         'sort_order'    => 1,
@@ -1994,7 +1993,7 @@ $tab_defaults = array(
 
 
     ),
-    'agent.orders'                 => array(
+    'agent.orders'            => array(
         'view'          => 'overview',
         'sort_key'      => 'id',
         'sort_order'    => 1,
@@ -2007,7 +2006,7 @@ $tab_defaults = array(
         'elements_type' => each($elements_options['agent_orders'])['key'],
         'elements'      => $elements_options['agent_orders']
     ),
-    'agent.client_orders'          => array(
+    'agent.client_orders'     => array(
         'view'          => 'overview',
         'sort_key'      => 'id',
         'sort_order'    => 1,
@@ -2020,7 +2019,7 @@ $tab_defaults = array(
         'elements_type' => each($elements_options['agent_client_orders'])['key'],
         'elements'      => $elements_options['agent_client_orders']
     ),
-    'agent.deliveries'             => array(
+    'agent.deliveries'        => array(
         'view'          => 'overview',
         'sort_key'      => 'id',
         'sort_order'    => 1,
@@ -2035,7 +2034,7 @@ $tab_defaults = array(
                            )['key'],
         'elements'      => $elements_options['supplier_deliveries']
     ),
-    'agent.client_deliveries'      => array(
+    'agent.client_deliveries' => array(
         'view'          => 'overview',
         'sort_key'      => 'id',
         'sort_order'    => 1,
@@ -2050,8 +2049,6 @@ $tab_defaults = array(
                            )['key'],
         'elements'      => $elements_options['agent_client_deliveries']
     ),
-
-
 
 
     'agent.users'                  => array(
@@ -2896,11 +2893,11 @@ $tab_defaults = array(
     ),
     'reports'                    => array(
         'view'        => 'overview',
-        'sort_key'    => 'id',
+        'sort_key'    => 'name',
         'sort_order'  => 1,
         'rpp'         => 100,
         'rpp_options' => $default_rrp_options,
-        'f_field'     => 'code',
+        'f_field'     => 'name',
     ),
     'data_sets'                  => array(
         'view'        => 'overview',
@@ -3345,9 +3342,27 @@ $tab_defaults = array(
         'f_field'     => 'store',
         'from'        => '',
         'to'          => '',
-        'period'      => 'mtd'
+        'period'      => 'mtd',
+        'currency'    => 'account'
 
     ),
+
+     'sales_invoice_category'                    => array(
+        'view'        => 'overview',
+        'sort_key'    => 'category',
+        'sort_order'  => 1,
+        'rpp'         => 500,
+        'rpp_options' => $default_rrp_options,
+        'f_field'     => 'category',
+        'from'        => '',
+        'to'          => '',
+        'period'      => 'mtd',
+        'currency'    => 'account'
+
+    ),
+
+
+
     'report_orders'            => array(
         'view'        => 'overview',
         'sort_key'    => 'store',
@@ -3420,7 +3435,7 @@ $tab_defaults = array(
         'period'      => 'last_w'
 
     ),
-    'prospect_agents'    => array(
+    'prospect_agents'          => array(
         'view'        => 'overview',
         'sort_key'    => 'name',
         'sort_order'  => -1,
@@ -3879,12 +3894,12 @@ $tab_defaults = array(
     ),
 
     'email_campaign.sent_emails'      => array(
-        'view'        => 'overview',
-        'sort_key'    => 'email',
-        'sort_order'  => 1,
-        'rpp'         => 100,
-        'rpp_options' => $default_rrp_options,
-        'f_field'     => 'email',
+        'view'          => 'overview',
+        'sort_key'      => 'email',
+        'sort_order'    => 1,
+        'rpp'           => 100,
+        'rpp_options'   => $default_rrp_options,
+        'f_field'       => 'email',
         'elements_type' => each($elements_options['sent_emails']) ['key'],
         'elements'      => $elements_options['sent_emails'],
         'export_fields' => $export_fields['customer_sent_emails']
@@ -3921,7 +3936,7 @@ $tab_defaults = array(
 
     ),
 
-    'prospect.sent_emails'      => array(
+    'prospect.sent_emails' => array(
         'view'        => 'overview',
         'sort_key'    => 'date',
         'sort_order'  => 1,
@@ -3931,8 +3946,6 @@ $tab_defaults = array(
 
 
     ),
-
-
 
 
     'prospects.email_templates' => array(
@@ -4047,7 +4060,7 @@ $tab_defaults = array(
         'export_fields' => $export_fields['customers']
 
     ),
-    'prospect_agent.prospects'  => array(
+    'prospect_agent.prospects'        => array(
         'view'          => 'overview',
         'sort_key'      => 'email',
         'sort_order'    => 1,
@@ -4067,15 +4080,15 @@ $tab_defaults = array(
         'sort_key'    => 'date',
         'sort_order'  => 1,
         'rpp'         => 100,
-        'from'          => '',
-        'to'            => '',
-        'period'        => 'all',
+        'from'        => '',
+        'to'          => '',
+        'period'      => 'all',
         'rpp_options' => $default_rrp_options,
         'f_field'     => 'subject',
 
 
     ),
-    'order.sent_emails'      => array(
+    'order.sent_emails'               => array(
         'view'        => 'overview',
         'sort_key'    => 'date',
         'sort_order'  => 1,
@@ -4085,19 +4098,19 @@ $tab_defaults = array(
 
 
     ),
-    'purge.purged_orders'               => array(
-        'view'          => 'overview',
-        'sort_key'      => 'id',
-        'sort_order'    => 1,
-        'rpp'           => 100,
-        'rpp_options'   => $default_rrp_options,
-        'f_field'       => 'number',
+    'purge.purged_orders'             => array(
+        'view'        => 'overview',
+        'sort_key'    => 'id',
+        'sort_order'  => 1,
+        'rpp'         => 100,
+        'rpp_options' => $default_rrp_options,
+        'f_field'     => 'number',
 
         'elements_type' => each($elements_options['purged_orders'])['key'],
         'elements'      => $elements_options['purged_orders']
     ),
 
-    'purge.history'        => array(
+    'purge.history' => array(
         'view'          => 'overview',
         'sort_key'      => 'date',
         'sort_order'    => 1,
@@ -4107,7 +4120,6 @@ $tab_defaults = array(
         'elements_type' => each($elements_options['purges_history'])['key'],
         'elements'      => $elements_options['purges_history']
     ),
-
 
 
 );

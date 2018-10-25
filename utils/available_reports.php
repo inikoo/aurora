@@ -36,7 +36,7 @@ $available_reports = array(
 
     ),
     'sales' => array(
-        'Label'      => _('Invoices'),
+        'Label'      => _('Sales overview'),
         'Group'      => 'sales',
         'GroupLabel' => _('Sales'),
 

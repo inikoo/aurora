@@ -2,7 +2,7 @@
 /*
  About:
  Author: Raul Perusquia <raul@inikoo.com>
- Created: 9 March 2018 at 14:32:14 GMT+8, Kuala Lumpur, Malaysia
+ Created: 24 October 2018 at 19:56:18 GMT+8, Kuala Lumpur, Malaysia
  Copyright (c) 2018, Inikoo
 
  Version 3
@@ -17,7 +17,7 @@
 //$where_interval_working_hours='';
 
 
-$where = " where true   ";
+$where = " where `Category Branch Type`='Head'    ";
 
 
 if (isset($parameters['period']) ) {
@@ -44,9 +44,9 @@ if (isset($parameters['period']) ) {
 
 
 $wheref = '';
-if ($parameters['f_field'] == 'store' and $f_value != '') {
+if ($parameters['f_field'] == 'category' and $f_value != '') {
     $wheref = sprintf(
-        ' and `Store Code` REGEXP "[[:<:]]%s" ', addslashes($f_value)
+        ' and `Category Label` REGEXP "[[:<:]]%s" ', addslashes($f_value)
     );
 }
 
@@ -76,12 +76,12 @@ if ($order == 'store') {
 
 
 $group_by
-    = 'group by `Store Key`';
+    = 'group by `Invoice Category Key`';
 
-$table = ' `Invoice Dimension` I  left join `Store Dimension` S on (`Store Key`=`Invoice Store Key`)    ';
+$table = ' `Invoice Dimension` I  left join `Store Dimension` S on (`Store Key`=`Invoice Store Key`)  left join `Category Dimension` C on (C.`Category Key`=I.`Invoice Category Key`)   ';
 
 $fields = "
-`Store Key`,`Store Code`,`Store Name`,`Store Currency Code`,sum(if(`Invoice Type`='Invoice',1,0)) as invoices,sum(if(`Invoice Type`='Refund',1,0)) as refunds,
+`Category Key`,`Category Code`,`Category Label`,`Store Currency Code`,sum(if(`Invoice Type`='Invoice',1,0)) as invoices,sum(if(`Invoice Type`='Refund',1,0)) as refunds,
 sum(if(`Invoice Type`='Refund',`Invoice Total Net Amount`* `Invoice Currency Exchange`,0)) refunds_amount_oc,
 sum(`Invoice Total Net Amount` * `Invoice Currency Exchange`) revenue_oc,
 sum(`Invoice Total Profit` * `Invoice Currency Exchange`) profit_oc,

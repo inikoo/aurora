@@ -6149,33 +6149,15 @@ $modules = array(
                 'icon'      => 'money-bill-alt',
                 'reference' => 'users',
                 'tabs'      => array(
-                    'report.sales'      => array(
-                        'label'     => _(
-                            'Pickers & Packers'
-                        ),
-                        'title'     => _(
-                            'Pickers & Packers Report'
-                        ),
-                        'reference' => 'users'
+                    'sales'      => array(
+                        'label'     => _('Sales by store'),
+
                     ),
-                    'report.geosales'   => array(
-                        'label'     => _(
-                            "Geographic Sales"
-                        ),
-                        'title'     => _(
-                            "Geographic Sales Report"
-                        ),
-                        'reference' => 'users/'
+                    'sales_invoice_category'   => array(
+                        'label'     => _("Sales by invoices' categories"),
+
                     ),
-                    'report.components' => array(
-                        'label'     => _(
-                            'Sales Components'
-                        ),
-                        'title'     => _(
-                            'Top Customers'
-                        ),
-                        'reference' => 'locations/%d/parts'
-                    ),
+
 
                 )
 
@@ -6223,14 +6205,7 @@ $modules = array(
 
             ),
 
-            'sales'            => array(
-                'type' => '',
-                'tabs' => array(
-                    'sales' => array(),
 
-                )
-
-            ),
             'stock_given_free' => array(
                 'type' => '',
                 'tabs' => array(

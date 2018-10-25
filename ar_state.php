@@ -43,7 +43,7 @@ switch ($tipo) {
             $_REQUEST, array(
                          'table'        => array('type' => 'string'),
                          'key' => array('type' => 'string'),
-                         'value' => array('type' => 'numberic'),
+                         'value' => array('type' => 'string'),
                      )
         );
         update_table_state($data);
@@ -82,6 +82,7 @@ function update_table_state($data) {
         echo json_encode(array('state'=>400));
 
     }
+
 
 
 }

@@ -53,6 +53,9 @@ switch ($tipo) {
     case 'sales':
         sales(get_table_parameters(), $db, $user, $account);
         break;
+    case 'sales_invoice_category':
+        sales_invoice_category(get_table_parameters(), $db, $user, $account);
+        break;
     case 'orders':
         dispatched_orders(get_table_parameters(), $db, $user, $account);
         break;
@@ -111,8 +114,8 @@ switch ($tipo) {
 
 
 function reports($_data, $db, $user) {
-    global $db;
-    $rtext_label = 'report';
+
+    //$rtext_label = 'report';
     //include_once 'prepare_table/init.php';
     include_once 'utils/available_reports.php';
 
@@ -123,15 +126,25 @@ function reports($_data, $db, $user) {
     foreach ($available_reports as $key => $data) {
 
         $adata[] = array(
-            'name'    => sprintf('<span class="link" onclick="change_view(\'/report/%s\')">%s</span>', $key, $data['Label']),
-            'section' => sprintf('<span class="link" onclick="change_view(\'/reports/%s\')">%s</span>', $data['Group'], $data['GroupLabel'])
+            'name'     => sprintf('<span class="link" onclick="change_view(\'/report/%s\')">%s</span>', $key, $data['Label']),
+            'raw_name' => $data['Label']
+            //     'section' => sprintf('<span class="link" onclick="change_view(\'/reports/%s\')">%s</span>', $data['Group'], $data['GroupLabel'])
 
         );
 
     }
 
-    $_order = (isset($_data['o']) ? $_data['o'] : 'id');
-    $_dir   = ((isset($_data['od']) and preg_match('/desc/i', $_data['od'])) ? 'desc' : '');
+
+    $_dir = ((isset($_data['od']) and preg_match('/desc/i', $_data['od'])) ? SORT_DESC : SORT_ASC);
+
+    switch ($_data['o']) {
+        default:
+            $sort_column = array_column($adata, 'raw_name');
+            array_multisort($sort_column, $_dir, $adata);
+            $_order = 'name';
+
+
+    }
 
 
     $rtext = get_rtext('report', count($available_reports));
@@ -961,8 +974,6 @@ function intrastat_orders_totals($db, $user, $account) {
     }
 
 
-
-
     if ($account->get('Account Code') == 'AWEU') {
 
 
@@ -992,9 +1003,6 @@ count(distinct OTF.`Product ID`) as products,
  
    $where
   ";
-
-
-
 
 
     }
@@ -1103,11 +1111,6 @@ function intrastat_products_totals($db, $user, $account) {
     }
 
 
-
-
-
-
-
     if ($account->get('Account Code') == 'AWEU') {
 
         $sql = "select 
@@ -1125,7 +1128,6 @@ sum(`Order Transaction Amount`*`Invoice Currency Exchange Rate`) as amount,
     } else {
 
 
-
         $sql = "select 
 count(distinct OTF.`Order Key`) as orders,
 
@@ -1139,9 +1141,7 @@ count(distinct OTF.`Order Key`) as orders,
   ";
 
 
-
     }
-
 
 
     if ($result = $db->query($sql)) {
@@ -1372,7 +1372,6 @@ function intrastat_products($_data, $db, $user, $account) {
 }
 
 
-
 function sales_representatives($_data, $db, $user, $account) {
 
     $rtext_label = 'sales representative';
@@ -1386,27 +1385,34 @@ function sales_representatives($_data, $db, $user, $account) {
 */
 
 
+    $sql = "select `User Alias`,`User Key`,`Sales Representative Key` from `Sales Representative Dimension` SRD left join `User Dimension` S on (S.`User Key`=`Sales Representative User Key`) ";
+
+    $_adata = array();
 
 
-$sql   = "select `User Alias`,`User Key`,`Sales Representative Key` from `Sales Representative Dimension` SRD left join `User Dimension` S on (S.`User Key`=`Sales Representative User Key`) ";
+    if ($result = $db->query($sql)) {
+        foreach ($result as $data) {
+            $_adata[$data['User Key']] = array(
+                'name'     => sprintf('<span class="link" onclick="change_view(\'report/sales_representatives/%d\',{ tab:\'sales_representative.customers\'} ,  )">%s</span>', $data['Sales Representative Key'], $data['User Alias']),
+                'refunds'  => sprintf(
+                    '<span class="link very_discreet" onclick="change_view(\'report/sales_representatives/%d\',{ tab:\'sales_representative.invoices\' , parameters:{ period:\'%s\',from:\'%s\',to:\'%s\',elements_type:\'type\' } ,element:{ type:{ Invoice:\'\',Refund:1}}  }  )">%s</span>',
+                    $data['Sales Representative Key'], $_data['parameters']['period'], $_data['parameters']['from'], $_data['parameters']['to'], 0
+                ),
+                'invoices' => sprintf(
+                    '<span class="link very_discreet" onclick="change_view(\'report/sales_representatives/%d\',{ tab:\'sales_representative.invoices\',  parameters:{ period:\'%s\',from:\'%s\',to:\'%s\',elements_type:\'type\' } ,element:{ type:{ Invoice:1,Refund:\'\'}}}  )">%s</span>',
+                    $data['Sales Representative Key'], $_data['parameters']['period'], $_data['parameters']['from'], $_data['parameters']['to'], 0
+                ),
+                'sales'    => sprintf(
+                    '<span class="link very_discreet" onclick="change_view(\'report/sales_representatives/%d\',{ tab:\'sales_representative.invoices\',  parameters:{ period:\'%s\',from:\'%s\',to:\'%s\',elements_type:\'type\' } ,element:{ type:{ Invoice:1,Refund:1}}}  )">%s</span>',
+                    $data['Sales Representative Key'], $_data['parameters']['period'], $_data['parameters']['from'], $_data['parameters']['to'], money(0, $account->get('Account Currency'))
+                ),
 
-$_adata = array();
 
-
-if ($result = $db->query($sql)) {
-    foreach ($result as $data) {
-        $_adata[$data['User Key']] = array(
-            'name' => sprintf('<span class="link" onclick="change_view(\'report/sales_representatives/%d\',{ tab:\'sales_representative.customers\'} ,  )">%s</span>',$data['Sales Representative Key'],$data['User Alias']),
-            'refunds'=>sprintf('<span class="link very_discreet" onclick="change_view(\'report/sales_representatives/%d\',{ tab:\'sales_representative.invoices\' , parameters:{ period:\'%s\',from:\'%s\',to:\'%s\',elements_type:\'type\' } ,element:{ type:{ Invoice:\'\',Refund:1}}  }  )">%s</span>',$data['Sales Representative Key'],$_data['parameters']['period'],$_data['parameters']['from'],$_data['parameters']['to'],0),
-            'invoices'=>sprintf('<span class="link very_discreet" onclick="change_view(\'report/sales_representatives/%d\',{ tab:\'sales_representative.invoices\',  parameters:{ period:\'%s\',from:\'%s\',to:\'%s\',elements_type:\'type\' } ,element:{ type:{ Invoice:1,Refund:\'\'}}}  )">%s</span>',$data['Sales Representative Key'],$_data['parameters']['period'],$_data['parameters']['from'],$_data['parameters']['to'],0),
-            'sales'=>sprintf('<span class="link very_discreet" onclick="change_view(\'report/sales_representatives/%d\',{ tab:\'sales_representative.invoices\',  parameters:{ period:\'%s\',from:\'%s\',to:\'%s\',elements_type:\'type\' } ,element:{ type:{ Invoice:1,Refund:1}}}  )">%s</span>',$data['Sales Representative Key'],$_data['parameters']['period'],$_data['parameters']['from'],$_data['parameters']['to'],money(0,$account->get('Account Currency'))),
-
-
-        );
+            );
+        }
     }
-}
 
-//print_r($_adata);
+    //print_r($_adata);
     include_once 'prepare_table/init.php';
 
 
@@ -1415,36 +1421,42 @@ if ($result = $db->query($sql)) {
     //print $sql;
 
 
-
     if ($result = $db->query($sql)) {
 
         foreach ($result as $data) {
 
 
-    //        print_r($data);
+            //        print_r($data);
 
-            $_adata[$data['User Key']]['invoices']=sprintf('<span class="link " onclick="change_view(\'report/sales_representatives/%d\',{ tab:\'sales_representative.invoices\' , parameters:{ period:\'%s\',from:\'%s\',to:\'%s\',elements_type:\'type\' } ,element:{ type:{ Invoice:1,Refund:\'\'}}  }  )">%s</span>',$data['Sales Representative Key'],$_data['parameters']['period'],$_data['parameters']['from'],$_data['parameters']['to'],number($data['invoices']));
-            $_adata[$data['User Key']]['refunds']=sprintf('<span class="link " onclick="change_view(\'report/sales_representatives/%d\',{ tab:\'sales_representative.invoices\' , parameters:{ period:\'%s\',from:\'%s\',to:\'%s\',elements_type:\'type\' } ,element:{ type:{ Invoice:\'\',Refund:1}}  }  )">%s</span>',$data['Sales Representative Key'],$_data['parameters']['period'],$_data['parameters']['from'],$_data['parameters']['to'],number($data['refunds']));
-            $_adata[$data['User Key']]['sales']=sprintf('<span class="link " onclick="change_view(\'report/sales_representatives/%d\',{ tab:\'sales_representative.invoices\' , parameters:{ period:\'%s\',from:\'%s\',to:\'%s\',elements_type:\'type\' } ,element:{ type:{ Invoice:1,Refund:1}}  }  )">%s</span>',$data['Sales Representative Key'],$_data['parameters']['period'],$_data['parameters']['from'],$_data['parameters']['to'],money($data['sales'],$account->get('Account Currency')));
-            $_adata[$data['User Key']]['customers']= number($data['customers']);
+            $_adata[$data['User Key']]['invoices']  = sprintf(
+                '<span class="link " onclick="change_view(\'report/sales_representatives/%d\',{ tab:\'sales_representative.invoices\' , parameters:{ period:\'%s\',from:\'%s\',to:\'%s\',elements_type:\'type\' } ,element:{ type:{ Invoice:1,Refund:\'\'}}  }  )">%s</span>',
+                $data['Sales Representative Key'], $_data['parameters']['period'], $_data['parameters']['from'], $_data['parameters']['to'], number($data['invoices'])
+            );
+            $_adata[$data['User Key']]['refunds']   = sprintf(
+                '<span class="link " onclick="change_view(\'report/sales_representatives/%d\',{ tab:\'sales_representative.invoices\' , parameters:{ period:\'%s\',from:\'%s\',to:\'%s\',elements_type:\'type\' } ,element:{ type:{ Invoice:\'\',Refund:1}}  }  )">%s</span>',
+                $data['Sales Representative Key'], $_data['parameters']['period'], $_data['parameters']['from'], $_data['parameters']['to'], number($data['refunds'])
+            );
+            $_adata[$data['User Key']]['sales']     = sprintf(
+                '<span class="link " onclick="change_view(\'report/sales_representatives/%d\',{ tab:\'sales_representative.invoices\' , parameters:{ period:\'%s\',from:\'%s\',to:\'%s\',elements_type:\'type\' } ,element:{ type:{ Invoice:1,Refund:1}}  }  )">%s</span>',
+                $data['Sales Representative Key'], $_data['parameters']['period'], $_data['parameters']['from'], $_data['parameters']['to'], money($data['sales'], $account->get('Account Currency'))
+            );
+            $_adata[$data['User Key']]['customers'] = number($data['customers']);
 
 
+            //  'name'                              => $data['Staff Name'],
 
-
-              //  'name'                              => $data['Staff Name'],
-
-/*
-                'deliveries'                        => number($data['deliveries']),
-                'deliveries_with_errors'            => number($data['deliveries_with_errors']),
-                'deliveries_with_errors_percentage' => percentage($data['deliveries_with_errors'], $data['deliveries']),
-                'picks_with_errors'                 => number($data['picks_with_errors']),
-                'picks_with_errors_percentage'      => percentage($data['picks_with_errors_percentage'], 1),
-                'picked'                            => number($data['picked'], 0),
-                'dp'                                => number($data['dp']),
-                'dp_percentage'                     => percentage($data['dp'], $total_dp),
-                'hrs'                               => number($data['hrs'], 1, true),
-                'dp_per_hour'                       => ($data['dp_per_hour'] == '' ? '' : number($data['dp_per_hour'], 1, true)),
-*/
+            /*
+                            'deliveries'                        => number($data['deliveries']),
+                            'deliveries_with_errors'            => number($data['deliveries_with_errors']),
+                            'deliveries_with_errors_percentage' => percentage($data['deliveries_with_errors'], $data['deliveries']),
+                            'picks_with_errors'                 => number($data['picks_with_errors']),
+                            'picks_with_errors_percentage'      => percentage($data['picks_with_errors_percentage'], 1),
+                            'picked'                            => number($data['picked'], 0),
+                            'dp'                                => number($data['dp']),
+                            'dp_percentage'                     => percentage($data['dp'], $total_dp),
+                            'hrs'                               => number($data['hrs'], 1, true),
+                            'dp_per_hour'                       => ($data['dp_per_hour'] == '' ? '' : number($data['dp_per_hour'], 1, true)),
+            */
 
 
         }
@@ -1454,19 +1466,19 @@ if ($result = $db->query($sql)) {
     }
 
 
-    $adata=array();
-foreach ($_adata as $values){
-    $adata[]=$values;
-}
+    $adata = array();
+    foreach ($_adata as $values) {
+        $adata[] = $values;
+    }
 
 
-    $number_records=count($adata);
+    $number_records = count($adata);
 
     $response = array(
         'resultset' => array(
             'state'         => 200,
             'data'          => $adata,
-            'rtext' => sprintf(ngettext('%s sales representative', '%s sales representatives', $number_records), number($number_records)),
+            'rtext'         => sprintf(ngettext('%s sales representative', '%s sales representatives', $number_records), number($number_records)),
             'sort_key'      => $_order,
             'sort_dir'      => $_dir,
             'total_records' => $total
@@ -1490,9 +1502,7 @@ function prospect_agents($_data, $db, $user, $account) {
 */
 
 
-
-
-    $sql   = "select `User Alias`,`User Key`,`Sales Representative Key` from `Sales Representative Dimension` SRD left join `User Dimension` S on (S.`User Key`=`Sales Representative User Key`) where `Sales Representative Prospect Agent`='Yes'";
+    $sql = "select `User Alias`,`User Key`,`Sales Representative Key` from `Sales Representative Dimension` SRD left join `User Dimension` S on (S.`User Key`=`Sales Representative User Key`) where `Sales Representative Prospect Agent`='Yes'";
 
     $_adata = array();
 
@@ -1500,8 +1510,14 @@ function prospect_agents($_data, $db, $user, $account) {
     if ($result = $db->query($sql)) {
         foreach ($result as $data) {
             $_adata[$data['Sales Representative Key']] = array(
-                'name' => sprintf('<span class="link" onclick="change_view(\'report/prospect_agents/%d\',{ tab:\'prospect_agent.prospects\' , parameters:{ period:\'%s\',from:\'%s\',to:\'%s\' }  }  )">%s</span>',$data['Sales Representative Key'],$_data['parameters']['period'],$_data['parameters']['from'],$_data['parameters']['to'],$data['User Alias']),
-                'new_prospects'=>sprintf('<span class="link very_discreet" onclick="change_view(\'report/prospect_agents/%d\',{ tab:\'prospect_agent.prospects\' , parameters:{ period:\'%s\',from:\'%s\',to:\'%s\' } ,element:{ type:{ Invoice:\'\',Refund:1}}  }  )">%s</span>',$data['Sales Representative Key'],$_data['parameters']['period'],$_data['parameters']['from'],$_data['parameters']['to'],0),
+                'name'          => sprintf(
+                    '<span class="link" onclick="change_view(\'report/prospect_agents/%d\',{ tab:\'prospect_agent.prospects\' , parameters:{ period:\'%s\',from:\'%s\',to:\'%s\' }  }  )">%s</span>', $data['Sales Representative Key'], $_data['parameters']['period'],
+                    $_data['parameters']['from'], $_data['parameters']['to'], $data['User Alias']
+                ),
+                'new_prospects' => sprintf(
+                    '<span class="link very_discreet" onclick="change_view(\'report/prospect_agents/%d\',{ tab:\'prospect_agent.prospects\' , parameters:{ period:\'%s\',from:\'%s\',to:\'%s\' } ,element:{ type:{ Invoice:\'\',Refund:1}}  }  )">%s</span>',
+                    $data['Sales Representative Key'], $_data['parameters']['period'], $_data['parameters']['from'], $_data['parameters']['to'], 0
+                ),
                 //'invoices'=>sprintf('<span class="link very_discreet" onclick="change_view(\'report/sales_representatives/%d\',{ tab:\'sales_representative.invoices\',  parameters:{ period:\'%s\',from:\'%s\',to:\'%s\' } ,element:{ type:{ Invoice:1,Refund:\'\'}}}  )">%s</span>',$data['Sales Representative Key'],$_data['parameters']['period'],$_data['parameters']['from'],$_data['parameters']['to'],0),
                 //'sales'=>sprintf('<span class="link very_discreet" onclick="change_view(\'report/sales_representatives/%d\',{ tab:\'sales_representative.invoices\',  parameters:{ period:\'%s\',from:\'%s\',to:\'%s\' } ,element:{ type:{ Invoice:1,Refund:1}}}  )">%s</span>',$data['Sales Representative Key'],$_data['parameters']['period'],$_data['parameters']['from'],$_data['parameters']['to'],money(0,$account->get('Account Currency'))),
 
@@ -1511,7 +1527,7 @@ function prospect_agents($_data, $db, $user, $account) {
     }
 
     include_once 'prepare_table/init.php';
-    $sql   = "select $fields from $table $where $wheref $group_by  limit $start_from,$number_results";
+    $sql = "select $fields from $table $where $wheref $group_by  limit $start_from,$number_results";
 
 
     if ($result = $db->query($sql)) {
@@ -1519,30 +1535,32 @@ function prospect_agents($_data, $db, $user, $account) {
         foreach ($result as $data) {
 
 
-             //       print_r($data);
+            //       print_r($data);
 
-            $_adata[$data['Prospect Sales Representative Key']]['new_prospects']=sprintf('<span class="link " onclick="change_view(\'report/prospect_agents/%d\',{ tab:\'prospect_agent.prospects\' , parameters:{ period:\'%s\',from:\'%s\',to:\'%s\' }  }  )">%s</span>',$data['Prospect Sales Representative Key'],$_data['parameters']['period'],$_data['parameters']['from'],$_data['parameters']['to'],number($data['new_prospects']));
-            $_adata[$data['Prospect Sales Representative Key']]['calls']=sprintf('<span class="link " onclick="change_view(\'report/prospect_agents/%d\',{ tab:\'prospect_agent.calls\' , parameters:{ period:\'%s\',from:\'%s\',to:\'%s\' } ,element:{ type:{ Invoice:1,Refund:\'\'}}  }  )">%s</span>',$data['Prospect Sales Representative Key'],$_data['parameters']['period'],$_data['parameters']['from'],$_data['parameters']['to'],number($data['calls']));
-            $_adata[$data['Prospect Sales Representative Key']]['emails_sent']=sprintf('<span class="link " onclick="change_view(\'report/prospect_agents/%d\',{ tab:\'prospect_agent.invoices\' , parameters:{ period:\'%s\',from:\'%s\',to:\'%s\' } ,element:{ type:{ Invoice:1,Refund:\'\'}}  }  )">%s</span>',$data['Prospect Sales Representative Key'],$_data['parameters']['period'],$_data['parameters']['from'],$_data['parameters']['to'],number($data['emails_sent']));
-
-
-
-            $_adata[$data['Prospect Sales Representative Key']]['open_percentage']=sprintf('<span title="%s" >%s</span>',number($data['emails_open']),percentage($data['emails_open'],$data['emails_sent']));
-            $_adata[$data['Prospect Sales Representative Key']]['click_percentage']=sprintf('<span title="%s"  >%s</span>',number($data['emails_clicked']),percentage($data['emails_clicked'],$data['emails_sent']));
-            $_adata[$data['Prospect Sales Representative Key']]['register_percentage']=sprintf('<span title="%s"  >%s</span>',number($data['prospects_registered']),percentage($data['prospects_registered'],$data['emails_sent']));
-            $_adata[$data['Prospect Sales Representative Key']]['invoiced_percentage']=sprintf('<span title="%s"  >%s</span>',number($data['prospects_invoiced']),percentage($data['prospects_invoiced'],$data['emails_sent']));
-
-
-
-
-            $_adata[$data['Prospect Sales Representative Key']]['open']=sprintf('<span title="%s" >%s</span>',percentage($data['emails_open'],$data['emails_sent']),number($data['emails_open']));
-            $_adata[$data['Prospect Sales Representative Key']]['click']=sprintf('<span   title="%s" >%s</span>',percentage($data['emails_clicked'],$data['emails_sent']),number($data['emails_clicked']));
-            $_adata[$data['Prospect Sales Representative Key']]['register']=sprintf('<span   title="%s">%s</span>',percentage($data['prospects_registered'],$data['emails_sent']),number($data['prospects_registered']));
-            $_adata[$data['Prospect Sales Representative Key']]['invoiced']=sprintf('<span  title="%s"  >%s</span>',percentage($data['prospects_invoiced'],$data['emails_sent']),number($data['prospects_invoiced']));
+            $_adata[$data['Prospect Sales Representative Key']]['new_prospects'] = sprintf(
+                '<span class="link " onclick="change_view(\'report/prospect_agents/%d\',{ tab:\'prospect_agent.prospects\' , parameters:{ period:\'%s\',from:\'%s\',to:\'%s\' }  }  )">%s</span>', $data['Prospect Sales Representative Key'], $_data['parameters']['period'],
+                $_data['parameters']['from'], $_data['parameters']['to'], number($data['new_prospects'])
+            );
+            $_adata[$data['Prospect Sales Representative Key']]['calls']         = sprintf(
+                '<span class="link " onclick="change_view(\'report/prospect_agents/%d\',{ tab:\'prospect_agent.calls\' , parameters:{ period:\'%s\',from:\'%s\',to:\'%s\' } ,element:{ type:{ Invoice:1,Refund:\'\'}}  }  )">%s</span>',
+                $data['Prospect Sales Representative Key'], $_data['parameters']['period'], $_data['parameters']['from'], $_data['parameters']['to'], number($data['calls'])
+            );
+            $_adata[$data['Prospect Sales Representative Key']]['emails_sent']   = sprintf(
+                '<span class="link " onclick="change_view(\'report/prospect_agents/%d\',{ tab:\'prospect_agent.invoices\' , parameters:{ period:\'%s\',from:\'%s\',to:\'%s\' } ,element:{ type:{ Invoice:1,Refund:\'\'}}  }  )">%s</span>',
+                $data['Prospect Sales Representative Key'], $_data['parameters']['period'], $_data['parameters']['from'], $_data['parameters']['to'], number($data['emails_sent'])
+            );
 
 
+            $_adata[$data['Prospect Sales Representative Key']]['open_percentage']     = sprintf('<span title="%s" >%s</span>', number($data['emails_open']), percentage($data['emails_open'], $data['emails_sent']));
+            $_adata[$data['Prospect Sales Representative Key']]['click_percentage']    = sprintf('<span title="%s"  >%s</span>', number($data['emails_clicked']), percentage($data['emails_clicked'], $data['emails_sent']));
+            $_adata[$data['Prospect Sales Representative Key']]['register_percentage'] = sprintf('<span title="%s"  >%s</span>', number($data['prospects_registered']), percentage($data['prospects_registered'], $data['emails_sent']));
+            $_adata[$data['Prospect Sales Representative Key']]['invoiced_percentage'] = sprintf('<span title="%s"  >%s</span>', number($data['prospects_invoiced']), percentage($data['prospects_invoiced'], $data['emails_sent']));
 
 
+            $_adata[$data['Prospect Sales Representative Key']]['open']     = sprintf('<span title="%s" >%s</span>', percentage($data['emails_open'], $data['emails_sent']), number($data['emails_open']));
+            $_adata[$data['Prospect Sales Representative Key']]['click']    = sprintf('<span   title="%s" >%s</span>', percentage($data['emails_clicked'], $data['emails_sent']), number($data['emails_clicked']));
+            $_adata[$data['Prospect Sales Representative Key']]['register'] = sprintf('<span   title="%s">%s</span>', percentage($data['prospects_registered'], $data['emails_sent']), number($data['prospects_registered']));
+            $_adata[$data['Prospect Sales Representative Key']]['invoiced'] = sprintf('<span  title="%s"  >%s</span>', percentage($data['prospects_invoiced'], $data['emails_sent']), number($data['prospects_invoiced']));
 
 
         }
@@ -1552,20 +1570,20 @@ function prospect_agents($_data, $db, $user, $account) {
     }
     //print_r($_adata);
 
-    $adata=array();
-    foreach ($_adata as $values){
-        $adata[]=$values;
+    $adata = array();
+    foreach ($_adata as $values) {
+        $adata[] = $values;
     }
 
-   // print_r($adata);
+    // print_r($adata);
 
-    $number_records=count($adata);
+    $number_records = count($adata);
 
     $response = array(
         'resultset' => array(
             'state'         => 200,
             'data'          => $adata,
-            'rtext' => sprintf(ngettext('%s sales representative', '%s sales representatives', $number_records), number($number_records)),
+            'rtext'         => sprintf(ngettext('%s sales representative', '%s sales representatives', $number_records), number($number_records)),
             'sort_key'      => $_order,
             'sort_dir'      => $_dir,
             'total_records' => $total
@@ -1741,51 +1759,266 @@ function packers($_data, $db, $user, $account) {
 function sales($_data, $db, $user, $account) {
 
     $rtext_label = 'store';
-    include_once 'prepare_table/init.php';
 
-    $sql   = "select $fields from $table $where $wheref $group_by order by $order $order_direction limit $start_from,$number_results";
+
+    foreach ($_data['parameters'] as $parameter => $parameter_value) {
+
+        if (in_array(
+            $parameter, array(
+                          'from',
+                          'to',
+                          'period',
+                          'currency'
+                      )
+        )) {
+            $_SESSION['table_state']['sales_invoice_category'][$parameter] = $parameter_value;
+        }
+
+    }
+
+
     $adata = array();
 
-    $totals = array(
-        'store'         => _('Total'),
-        'invoices'      => 0,
-        'refunds'       => 0,
-        'replacements'  => 0,
-        'customers'     => 0,
-        'refund_amount' => 0,
-        'revenue'       => 0,
-        'profit'        => 0,
-        'margin'        => 0,
+    $totals        = array(
+        'store'             => _('Total'),
+        'invoices'          => 0,
+        'refunds'           => 0,
+        'replacements'      => 0,
+        'customers'         => 0,
+        'refunds_amount_oc' => 0,
+        'revenue_oc'        => 0,
+        'profit_oc'         => 0,
+        'refunds_amount'    => 0,
+        'revenue'           => 0,
+        'profit'            => 0,
+        'margin'            => 0,
+
+        'refunds_amount_oc_1yb' => 0,
+        'revenue_oc_1yb'        => 0,
+        'profit_oc_1yb'         => 0,
+        'invoices_1yb'          => 0,
+        'refunds_1yb'           => 0,
+
+
+    );
+    $number_stores = 0;
+
+    $sql = sprintf('select `Store Code`,`Store Name`,`Store Currency Code` from `Store Dimension` ');
+
+    if ($result = $db->query($sql)) {
+        foreach ($result as $data) {
+            $adata[$data['Store Code']] = array(
+
+                'store_code' => $data['Store Code'],
+                'store'      => $data['Store Name'],
+                'store_raw'  => $data['Store Name'],
+                'invoices'   => '<span class="discreet">'.number(0).'</span>',
+                'refunds'    => '<span class="discreet">'.number(0).'</span>',
+                'customers'  => '<span class="discreet">'.number(0).'</span>',
+
+
+                'invoices_raw'          => 0,
+                'refunds_raw'           => 0,
+                'customers_raw'         => 0,
+                'refunds_amount_oc_raw' => 0,
+                'revenue_oc_raw'        => 0,
+                'profit_oc_raw'         => 0,
+                'refunds_amount_raw'    => 0,
+                'revenue_raw'           => 0,
+                'profit_raw'            => 0,
+
+                'refunds_delta_1yb_raw' => 0,
+
+
+                'refunds_amount_oc'           => '<span class="discreet">'.money(0, $account->get('Account Currency Code')).'</span>',
+                'revenue_oc'                  => '<span class="discreet">'.money(0, $account->get('Account Currency Code')).'</span>',
+                'profit_oc'                   => '<span class="discreet">'.money(0, $account->get('Account Currency Code')).'</span>',
+                'refunds_amount_oc_delta_1yb' => sprintf('<span title="%s">%s %s</span>', money(0, $account->get('Account Currency Code')), delta(0, 0), delta_icon(0, 0)),
+                'revenue_oc_delta_1yb'        => sprintf('<span title="%s">%s %s</span>', money(0, $account->get('Account Currency Code')), delta(0, 0), delta_icon(0, 0)),
+                'profit_oc_delta_1yb'         => sprintf('<span title="%s">%s %s</span>', money(0, $account->get('Account Currency Code')), delta(0, 0), delta_icon(0, 0)),
+
+                'refunds_amount_oc_delta_1yb_raw' => 0,
+                'revenue_oc_delta_1yb_raw'        => 0,
+                'profit_oc_delta_1yb_raw'         => 0,
+
+
+                'refunds_amount'           => '<span class="discreet">'.money(0, $data['Store Currency Code']).'</span>',
+                'revenue'                  => '<span class="discreet">'.money(0, $data['Store Currency Code']).'</span>',
+                'profit'                   => '<span class="discreet">'.money(0, $data['Store Currency Code']).'</span>',
+                'refunds_amount_delta_1yb' => sprintf('<span title="%s">%s %s</span>', money(0, $data['Store Currency Code']), delta(0, 0), delta_icon(0, 0)),
+                'revenue_delta_1yb'        => sprintf('<span title="%s">%s %s</span>', money(0, $data['Store Currency Code']), delta(0, 0), delta_icon(0, 0)),
+                'profit_delta_1yb'         => sprintf('<span title="%s">%s %s</span>', money(0, $data['Store Currency Code']), delta(0, 0), delta_icon(0, 0)),
+
+                'refunds_amount_delta_1yb_raw' => 0,
+                'revenue_delta_1yb_raw'        => 0,
+                'profit_delta_1yb_raw'         => 0,
+
+
+                'refunds_delta_1yb'      => sprintf('<span title="%s">%s %s</span>', number(0), delta(0, 0), delta_icon(0, 0)),
+                'invoices_delta_1yb'     => sprintf('<span title="%s">%s %s</span>', number(0), delta(0, 0), delta_icon(0, 0)),
+                'refunds_delta_1yb_raw'  => 0,
+                'invoices_delta_1yb_raw' => 0,
+
+
+            );
+            $number_stores++;
+
+        }
+    } else {
+        print_r($error_info = $db->errorInfo());
+        print "$sql\n";
+        exit;
+    }
+
+
+    $skip_get_table_totals = true;
+
+    $total = $number_stores;
+    $rtext = sprintf(
+        ngettext('%s store', '%s stores', $number_stores), number($number_stores)
     );
 
-    // print $sql;
+
+    include_once 'prepare_table/init.php';
+
+
+    $sql = "select $fields from $table $where $where_dates $wheref $group_by  limit $start_from,$number_results";
+
+
 
     if ($result = $db->query($sql)) {
 
         foreach ($result as $data) {
 
 
-            $refund_amount = money($data['refunds_amount_oc'], $account->get('Account Currency Code'));
-            $revenue       = money($data['revenue_oc'], $account->get('Account Currency Code'));
-            $profit        = money($data['profit_oc'], $account->get('Account Currency Code'));
 
-            $adata[] = array(
 
-                'store'         => $data['Store Code'],
-                'invoices'      => number($data['invoices']),
-                'refunds'       => number($data['refunds']),
-                'customers'     => number($data['customers']),
-                'refund_amount' => $refund_amount,
-                'revenue'       => $revenue,
-                'profit'        => $profit
+            $adata[$data['Store Code']] = array(
+
+                'store_code' => $data['Store Code'],
+                'store'      => $data['Store Name'],
+                'store_raw'  => $data['Store Name'],
+                'invoices'   => sprintf('<span class="link" onclick="change_view(\'invoices/%s\' , { parameters:{ period:\'%s\', from:\'%s\', to:\'%s\',elements_type:\'type\' } ,element:{ type:{ Refund:\'\',Invoice:1}} } )" >%s</span>',$data['Store Key'],$_data['parameters']['period'],$_data['parameters']['from'],$_data['parameters']['to'],number($data['invoices'])),
+                'refunds'   => sprintf('<span class="link" onclick="change_view(\'invoices/%s\' , { parameters:{ period:\'%s\', from:\'%s\', to:\'%s\',elements_type:\'type\' } ,element:{ type:{ Invoice:\'\',Refund:1}} } )" >%s</span>',$data['Store Key'],$_data['parameters']['period'],$_data['parameters']['from'],$_data['parameters']['to'],number($data['refunds'])),
+                'customers'  => number($data['customers']),
+
+                'invoices_raw'  => $data['invoices'],
+                'refunds_raw'   => $data['refunds'],
+                'customers_raw' => $data['customers'],
+
+                'refunds_amount_oc'           => money($data['refunds_amount_oc'], $account->get('Account Currency Code')),
+                'revenue_oc'                  => money($data['revenue_oc'], $account->get('Account Currency Code')),
+                'profit_oc'                   => money($data['profit_oc'], $account->get('Account Currency Code')),
+                'refunds_amount_oc_raw'       => $data['refunds_amount_oc'],
+                'revenue_oc_raw'              => $data['revenue_oc'],
+                'profit_oc_raw'               => $data['profit_oc'],
+                'refunds_amount_oc_delta_1yb' => sprintf('<span title="%s">%s %s</span>', money(0, $account->get('Account Currency Code')), delta($data['refunds_amount_oc'], 0), delta_icon($data['refunds_amount_oc'], 0)),
+                'revenue_oc_delta_1yb'        => sprintf('<span title="%s">%s %s</span>', money(0, $account->get('Account Currency Code')), delta($data['revenue_oc'], 0), delta_icon($data['revenue_oc'], 0)),
+                'profit_oc_delta_1yb'         => sprintf('<span title="%s">%s %s</span>', money(0, $account->get('Account Currency Code')), delta($data['profit_oc'], 0), delta_icon($data['profit_oc'], 0)),
+
+
+                'refunds_amount_oc_delta_1yb_raw' => delta_raw($data['refunds_amount_oc'], 0),
+                'revenue_oc_delta_1yb_raw'        => delta_raw($data['revenue_oc'], 0),
+                'profit_oc_delta_1yb_raw'         => delta_raw($data['profit_oc'], 0),
+
+                'refunds_amount'               => money($data['refunds_amount'], $data['Store Currency Code']),
+                'revenue'                      => money($data['revenue'], $data['Store Currency Code']),
+                'profit'                       => money($data['profit'], $data['Store Currency Code']),
+                'refunds_amount_raw'           => $data['refunds_amount'],
+                'revenue_raw'                  => $data['revenue'],
+                'profit_raw'                   => $data['profit'],
+                'refunds_amount_delta_1yb'     => sprintf('<span title="%s">%s %s</span>', money(0, $data['Store Currency Code']), delta($data['refunds_amount'], 0), delta_icon($data['refunds_amount'], 0)),
+                'revenue_delta_1yb'            => sprintf('<span title="%s">%s %s</span>', money(0, $data['Store Currency Code']), delta($data['revenue'], 0), delta_icon($data['revenue'], 0)),
+                'profit_delta_1yb'             => sprintf('<span title="%s">%s %s</span>', money(0, $data['Store Currency Code']), delta($data['profit'], 0), delta_icon($data['profit'], 0)),
+                'refunds_amount_delta_1yb_raw' => delta_raw($data['refunds_amount'], 0),
+                'revenue_delta_1yb_raw'        => delta_raw($data['revenue'], 0),
+                'profit_delta_1yb_raw'         => delta_raw($data['profit'], 0),
+
+                'refunds_delta_1yb'  => sprintf('<span title="%s">%s %s</span>', number(0), delta($data['refunds'], 0), delta_icon($data['refunds'], 0, true)),
+                'invoices_delta_1yb' => sprintf('<span title="%s">%s %s</span>', number(0), delta($data['invoices'], 0), delta_icon($data['invoices'], 0)),
+
+                'refunds_delta_1yb_raw'  => delta_raw($data['refunds'], 0),
+                'invoices_delta_1yb_raw' => delta_raw($data['invoices'], 0),
+
+
             );
 
-            $totals['customers']     += $data['customers'];
-            $totals['invoices']      += $data['invoices'];
-            $totals['refunds']       += $data['refunds'];
-            $totals['refund_amount'] += $data['refunds_amount_oc'];
-            $totals['revenue']       += $data['revenue_oc'];
-            $totals['profit']        += $data['profit_oc'];
+            $totals['customers']         += $data['customers'];
+            $totals['invoices']          += $data['invoices'];
+            $totals['refunds']           += $data['refunds'];
+            $totals['refunds_amount_oc'] += $data['refunds_amount_oc'];
+            $totals['revenue_oc']        += $data['revenue_oc'];
+            $totals['profit_oc']         += $data['profit_oc'];
+            $totals['refunds_amount']    += $data['refunds_amount'];
+            $totals['revenue']           += $data['revenue'];
+            $totals['profit']            += $data['profit'];
+        }
+    } else {
+        print_r($error_info = $db->errorInfo());
+        exit;
+    }
+
+
+    $sql = "select $fields from $table $where $where_dates_1yb $wheref $group_by limit $start_from,$number_results";
+
+
+    if ($result = $db->query($sql)) {
+
+        foreach ($result as $data) {
+
+
+            $refund_amount_1yb_oc = money($data['refunds_amount_oc'], $account->get('Account Currency Code'));
+            $revenue_1yb_oc       = money($data['revenue_oc'], $account->get('Account Currency Code'));
+            $profit_1yb_oc        = money($data['profit_oc'], $account->get('Account Currency Code'));
+
+
+            $refund_amount_1yb = money($data['refunds_amount'], $data['Store Currency Code']);
+            $revenue_1yb       = money($data['revenue'], $data['Store Currency Code']);
+            $profit_1yb        = money($data['profit'], $data['Store Currency Code']);
+
+
+            $adata[$data['Store Code']]['refunds_amount_oc_delta_1yb'] =
+                sprintf('<span title="%s">%s %s</span>', $refund_amount_1yb_oc, delta($adata[$data['Store Code']]['refunds_amount_oc_raw'], $data['refunds_amount_oc']), delta_icon($adata[$data['Store Code']]['refunds_amount_oc_raw'], $data['refunds_amount_oc']));
+            $adata[$data['Store Code']]['revenue_oc_delta_1yb']        =
+                sprintf('<span title="%s">%s %s</span>', $revenue_1yb_oc, delta($adata[$data['Store Code']]['revenue_oc_raw'], $data['revenue_oc']), delta_icon($adata[$data['Store Code']]['revenue_oc_raw'], $data['revenue_oc']));
+
+            $adata[$data['Store Code']]['profit_oc_delta_1yb'] =
+                sprintf('<span title="%s">%s %s</span>', $profit_1yb_oc, delta($adata[$data['Store Code']]['profit_oc_raw'], $data['profit_oc']), delta_icon($adata[$data['Store Code']]['profit_oc_raw'], $data['profit_oc']));
+
+
+            $adata[$data['Store Code']]['refunds_amount_oc_delta_1yb_raw'] = delta_raw($adata[$data['Store Code']]['refunds_amount_oc_raw'], $data['refunds_amount_oc']);
+            $adata[$data['Store Code']]['revenue_oc_delta_1yb_raw']        = delta_raw($adata[$data['Store Code']]['revenue_oc_raw'], $data['revenue_oc']);
+            $adata[$data['Store Code']]['profit_oc_delta_1yb_raw']         = delta_raw($adata[$data['Store Code']]['profit_oc_raw'], $data['profit_oc']);
+
+
+            $adata[$data['Store Code']]['refunds_amount_delta_1yb'] =
+                sprintf('<span title="%s">%s %s</span>', $refund_amount_1yb, delta($adata[$data['Store Code']]['refunds_amount_raw'], $data['refunds_amount']), delta_icon($adata[$data['Store Code']]['refunds_amount_raw'], $data['refunds_amount']));
+            $adata[$data['Store Code']]['revenue_delta_1yb']        = sprintf('<span title="%s">%s %s</span>', $revenue_1yb, delta($adata[$data['Store Code']]['revenue_raw'], $data['revenue']), delta_icon($adata[$data['Store Code']]['revenue_raw'], $data['revenue']));
+
+            $adata[$data['Store Code']]['profit_delta_1yb'] = sprintf('<span title="%s">%s %s</span>', $profit_1yb, delta($adata[$data['Store Code']]['profit_raw'], $data['profit']), delta_icon($adata[$data['Store Code']]['profit_raw'], $data['profit']));
+
+
+            $adata[$data['Store Code']]['refunds_amount_delta_1yb_raw'] = delta_raw($adata[$data['Store Code']]['refunds_amount_raw'], $data['refunds_amount']);
+            $adata[$data['Store Code']]['revenue_delta_1yb_raw']        = delta_raw($adata[$data['Store Code']]['revenue_raw'], $data['revenue']);
+            $adata[$data['Store Code']]['profit_delta_1yb_raw']         = delta_raw($adata[$data['Store Code']]['profit_raw'], $data['profit']);
+
+
+            $adata[$data['Store Code']]['invoices_delta_1yb'] =
+                sprintf('<span title="%s">%s %s</span>', number($data['invoices']), delta($adata[$data['Store Code']]['invoices_raw'], $data['invoices']), delta_icon($adata[$data['Store Code']]['invoices_raw'], $data['invoices']));
+            $adata[$data['Store Code']]['refunds_delta_1yb']  =
+                sprintf('<span title="%s">%s %s</span>', number($data['refunds']), delta($adata[$data['Store Code']]['refunds_raw'], $data['refunds']), delta_icon($adata[$data['Store Code']]['refunds_raw'], $data['refunds'], true));
+
+
+            $adata[$data['Store Code']]['invoices_delta_1yb_raw'] = delta_raw($adata[$data['Store Code']]['invoices_raw'], $data['invoices']);
+            $adata[$data['Store Code']]['refunds_delta_1yb_raw']  = delta_raw($adata[$data['Store Code']]['refunds_raw'], $data['refunds']);
+
+
+            $totals['refunds_amount_oc_1yb'] += $data['refunds_amount_oc'];
+            $totals['revenue_oc_1yb']        += $data['revenue_oc'];
+            $totals['profit_oc_1yb']         += $data['profit_oc'];
+
+            $totals['invoices_1yb'] += $data['invoices'];
+            $totals['refunds_1yb']  += $data['refunds'];
 
 
         }
@@ -1794,22 +2027,117 @@ function sales($_data, $db, $user, $account) {
         exit;
     }
 
+
+    $_adata = array();
+    foreach ($adata as $data_value) {
+        $_adata[] = $data_value;
+    }
+
+
+    $_dir = ((isset($_data['od']) and preg_match('/desc/i', $_data['od'])) ? SORT_DESC : SORT_ASC);
+
+    $_order = $_data['o'];
+    switch ($_data['o']) {
+
+        case 'refunds_delta_1yb':
+            $sort_column  = array_column($_adata, 'refunds_delta_1yb_raw');
+            $sort_column2 = array_column($_adata, 'refunds_raw');
+            array_multisort($sort_column, $_dir, $sort_column2, $_dir, $_adata);
+            break;
+
+        case 'refunds_amount_oc_delta_1yb':
+            $sort_column  = array_column($_adata, 'refunds_amount_oc_delta_1yb_raw');
+            $sort_column2 = array_column($_adata, 'refunds_amount_oc_raw');
+
+            array_multisort($sort_column, $_dir, $sort_column2, $_dir, $_adata);
+            break;
+        case 'refunds_amount_delta_1yb':
+            $sort_column  = array_column($_adata, 'refunds_amount_delta_1yb_raw');
+            $sort_column2 = array_column($_adata, 'refunds_amount_raw');
+
+            array_multisort($sort_column, $_dir, $sort_column2, $_dir, $_adata);
+            break;
+
+        case 'invoices_delta_1yb':
+            $sort_column  = array_column($_adata, 'invoices_delta_1yb_raw');
+            $sort_column2 = array_column($_adata, 'invoices_raw');
+            array_multisort($sort_column, $_dir, $sort_column2, $_dir, $_adata);
+            break;
+
+        case 'revenue_oc_delta_1yb':
+            $sort_column  = array_column($_adata, 'revenue_oc_delta_1yb_raw');
+            $sort_column2 = array_column($_adata, 'revenue_oc_raw');
+
+            array_multisort($sort_column, $_dir, $sort_column2, $_dir, $_adata);
+            break;
+        case 'revenue_delta_1yb':
+            $sort_column  = array_column($_adata, 'revenue_delta_1yb_raw');
+            $sort_column2 = array_column($_adata, 'revenue_raw');
+
+            array_multisort($sort_column, $_dir, $sort_column2, $_dir, $_adata);
+            break;
+        case 'profit_oc_delta_1yb':
+            $sort_column  = array_column($_adata, 'profit_oc_delta_1yb_raw');
+            $sort_column2 = array_column($_adata, 'profit_oc_raw');
+
+            array_multisort($sort_column, $_dir, $sort_column2, $_dir, $_adata);
+            break;
+        case 'profit_delta_1yb':
+            $sort_column  = array_column($_adata, 'profit_delta_1yb_raw');
+            $sort_column2 = array_column($_adata, 'profit_raw');
+
+            array_multisort($sort_column, $_dir, $sort_column2, $_dir, $_adata);
+            break;
+
+        default:
+            $sort_column = array_column($_adata, $_data['o'].'_raw');
+            array_multisort($sort_column, $_dir, $_adata);
+            break;
+
+
+    }
+
+
+    $totals['refunds_amount_oc_delta_1yb'] = sprintf(
+        '<span title="%s">%s %s</span>', money($totals['refunds_amount_oc_1yb'], $account->get('Account Currency Code')), delta($totals['refunds_amount_oc'], $totals['refunds_amount_oc_1yb']), delta_icon($totals['refunds_amount_oc'], $totals['refunds_amount_oc_1yb'])
+    );
+    $totals['revenue_oc_delta_1yb']        = sprintf(
+        '<span title="%s">%s %s</span>', money($totals['revenue_oc_1yb'], $account->get('Account Currency Code')), delta($totals['revenue_oc'], $totals['revenue_oc_1yb']), delta_icon($totals['revenue_oc'], $totals['revenue_oc_1yb'])
+    );
+
+    $totals['profit_oc_delta_1yb'] = sprintf('<span title="%s">%s %s</span>', money($totals['profit_oc_1yb'], $account->get('Account Currency Code')), delta($totals['profit_oc'], $totals['profit_oc_1yb']), delta_icon($totals['profit_oc'], $totals['profit_oc_1yb']));
+
+
+    $totals['invoices_delta_1yb'] = sprintf('<span title="%s">%s %s</span>', number($totals['invoices_1yb']), delta($totals['invoices'], $totals['invoices_1yb']), delta_icon($totals['invoices'], $totals['invoices_1yb']));
+
+
+    // print $totals['refunds_1yb'].' x '.$totals['refunds'];
+
+    $totals['refunds_delta_1yb'] = sprintf('<span title="%s">%s %s</span>', number($totals['refunds_1yb']), delta($totals['refunds'], $totals['refunds_1yb']), delta_icon($totals['refunds'], $totals['refunds_1yb'], true));
+
+
     $totals['invoices']  = number($totals['invoices']);
     $totals['refunds']   = number($totals['refunds']);
     $totals['customers'] = number($totals['customers']);
 
 
-    $totals['margin']        = percentage($totals['profit'], $totals['revenue']);
-    $totals['refund_amount'] = money($totals['refund_amount'], $account->get('Account Currency Code'));
-    $totals['revenue']       = money($totals['revenue'], $account->get('Account Currency Code'));
-    $totals['profit']        = money($totals['profit'], $account->get('Account Currency Code'));
+    $totals['margin']            = percentage($totals['profit_oc'], $totals['revenue_oc']);
+    $totals['refunds_amount_oc'] = money($totals['refunds_amount_oc'], $account->get('Account Currency Code'));
+    $totals['revenue_oc']        = money($totals['revenue_oc'], $account->get('Account Currency Code'));
+    $totals['profit_oc']         = money($totals['profit_oc'], $account->get('Account Currency Code'));
 
-    $adata[] = $totals;
+    $totals['refunds_amount'] = '';
+    $totals['revenue']        = '';
+    $totals['profit']         = '';
+
+
+    $_adata[] = $totals;
+
 
     $response = array(
         'resultset' => array(
             'state'         => 200,
-            'data'          => $adata,
+            'data'          => $_adata,
             'rtext'         => $rtext,
             'sort_key'      => $_order,
             'sort_dir'      => $_dir,
@@ -1820,6 +2148,398 @@ function sales($_data, $db, $user, $account) {
     echo json_encode($response);
 }
 
+
+function sales_invoice_category($_data, $db, $user, $account) {
+
+    $rtext_label = 'category';
+
+
+    foreach ($_data['parameters'] as $parameter => $parameter_value) {
+
+        if (in_array(
+            $parameter, array(
+                          'from',
+                          'to',
+                          'period',
+                          'currency'
+                      )
+        )) {
+            $_SESSION['table_state']['sales'][$parameter] = $parameter_value;
+        }
+
+    }
+
+
+    $adata = array();
+
+    $totals        = array(
+        'category'          => _('Total'),
+        'invoices'          => 0,
+        'refunds'           => 0,
+        'replacements'      => 0,
+        'customers'         => 0,
+        'refunds_amount_oc' => 0,
+        'revenue_oc'        => 0,
+        'profit_oc'         => 0,
+        'refunds_amount'    => 0,
+        'revenue'           => 0,
+        'profit'            => 0,
+        'margin'            => 0,
+
+        'refunds_amount_oc_1yb' => 0,
+        'revenue_oc_1yb'        => 0,
+        'profit_oc_1yb'         => 0,
+        'invoices_1yb'          => 0,
+        'refunds_1yb'           => 0,
+
+
+    );
+    $number_stores = 0;
+
+    $sql = sprintf(
+        'select `Category Key`,`Category Code`,`Category Label`,`Store Currency Code`  from `Invoice Category Dimension` IC  left join `Category Dimension` C on (C.`Category Key`=IC.`Invoice Category Key`) left join `Store Dimension` S on (S.`Store Key`=C.`Category Store Key`) where `Category Branch Type`="Head"  '
+    );
+
+
+    if ($result = $db->query($sql)) {
+        foreach ($result as $data) {
+            $adata[$data['Category Key']] = array(
+
+                'category_code' => $data['Category Code'],
+                'category'      => $data['Category Label'],
+                'category_raw'  => $data['Category Label'],
+                'invoices'      => '<span class="discreet">'.number(0).'</span>',
+                'refunds'       => '<span class="discreet">'.number(0).'</span>',
+                'customers'     => '<span class="discreet">'.number(0).'</span>',
+
+                'invoices_raw'          => 0,
+                'refunds_raw'           => 0,
+                'customers_raw'         => 0,
+                'refunds_amount_oc_raw' => 0,
+                'revenue_oc_raw'        => 0,
+                'profit_oc_raw'         => 0,
+                'refunds_amount_raw'    => 0,
+                'revenue_raw'           => 0,
+                'profit_raw'            => 0,
+
+                'refunds_delta_1yb_raw' => 0,
+
+
+                'refunds_amount_oc'           => '<span class="discreet">'.money(0, $account->get('Account Currency Code')).'</span>',
+                'revenue_oc'                  => '<span class="discreet">'.money(0, $account->get('Account Currency Code')).'</span>',
+                'profit_oc'                   => '<span class="discreet">'.money(0, $account->get('Account Currency Code')).'</span>',
+                'refunds_amount_oc_delta_1yb' => sprintf('<span title="%s">%s %s</span>', money(0, $account->get('Account Currency Code')), delta(0, 0), delta_icon(0, 0)),
+                'revenue_oc_delta_1yb'        => sprintf('<span title="%s">%s %s</span>', money(0, $account->get('Account Currency Code')), delta(0, 0), delta_icon(0, 0)),
+                'profit_oc_delta_1yb'         => sprintf('<span title="%s">%s %s</span>', money(0, $account->get('Account Currency Code')), delta(0, 0), delta_icon(0, 0)),
+
+                'refunds_amount_oc_delta_1yb_raw' => 0,
+                'revenue_oc_delta_1yb_raw'        => 0,
+                'profit_oc_delta_1yb_raw'         => 0,
+
+
+                'refunds_amount'           => '<span class="discreet">'.money(0, $data['Store Currency Code']).'</span>',
+                'revenue'                  => '<span class="discreet">'.money(0, $data['Store Currency Code']).'</span>',
+                'profit'                   => '<span class="discreet">'.money(0, $data['Store Currency Code']).'</span>',
+                'refunds_amount_delta_1yb' => sprintf('<span title="%s">%s %s</span>', money(0, $data['Store Currency Code']), delta(0, 0), delta_icon(0, 0)),
+                'revenue_delta_1yb'        => sprintf('<span title="%s">%s %s</span>', money(0, $data['Store Currency Code']), delta(0, 0), delta_icon(0, 0)),
+                'profit_delta_1yb'         => sprintf('<span title="%s">%s %s</span>', money(0, $data['Store Currency Code']), delta(0, 0), delta_icon(0, 0)),
+
+                'refunds_amount_delta_1yb_raw' => 0,
+                'revenue_delta_1yb_raw'        => 0,
+                'profit_delta_1yb_raw'         => 0,
+
+
+                'refunds_delta_1yb'      => sprintf('<span title="%s">%s %s</span>', number(0), delta(0, 0), delta_icon(0, 0)),
+                'invoices_delta_1yb'     => sprintf('<span title="%s">%s %s</span>', number(0), delta(0, 0), delta_icon(0, 0)),
+                'refunds_delta_1yb_raw'  => 0,
+                'invoices_delta_1yb_raw' => 0,
+
+
+            );
+            $number_stores++;
+
+        }
+    } else {
+        print_r($error_info = $db->errorInfo());
+        print "$sql\n";
+        exit;
+    }
+
+
+    $skip_get_table_totals = true;
+
+    $total = $number_stores;
+    $rtext = sprintf(
+        ngettext('%s category', '%s categories', $number_stores), number($number_stores)
+    );
+
+    include_once 'prepare_table/init.php';
+
+
+    $sql = "select $fields from $table $where $where_dates $wheref $group_by  limit $start_from,$number_results";
+
+
+    if ($result = $db->query($sql)) {
+
+        foreach ($result as $data) {
+
+
+            $adata[$data['Category Key']] = array(
+
+                'category_code' => $data['Category Code'],
+                'category'      => $data['Category Label'],
+                'category_raw'  => $data['Category Label'],
+
+
+                'invoices'   => sprintf('<span class="link" onclick="change_view(\'invoices/all/category/%s\' , { parameters:{ period:\'%s\', from:\'%s\', to:\'%s\',elements_type:\'type\' } ,element:{ type:{ Refund:\'\',Invoice:1}} } )" >%s</span>',$data['Category Key'],$_data['parameters']['period'],$_data['parameters']['from'],$_data['parameters']['to'],number($data['invoices'])),
+                'refunds'   => sprintf('<span class="link" onclick="change_view(\'invoices/all/category/%s\' , { parameters:{ period:\'%s\', from:\'%s\', to:\'%s\',elements_type:\'type\' } ,element:{ type:{ Invoice:\'\',Refund:1}} } )" >%s</span>',$data['Category Key'],$_data['parameters']['period'],$_data['parameters']['from'],$_data['parameters']['to'],number($data['refunds'])),
+
+
+                'customers'     => number($data['customers']),
+
+                'invoices_raw'  => $data['invoices'],
+                'refunds_raw'   => $data['refunds'],
+                'customers_raw' => $data['customers'],
+
+                'refunds_amount_oc'           => money($data['refunds_amount_oc'], $account->get('Account Currency Code')),
+                'revenue_oc'                  => money($data['revenue_oc'], $account->get('Account Currency Code')),
+                'profit_oc'                   => money($data['profit_oc'], $account->get('Account Currency Code')),
+                'refunds_amount_oc_raw'       => $data['refunds_amount_oc'],
+                'revenue_oc_raw'              => $data['revenue_oc'],
+                'profit_oc_raw'               => $data['profit_oc'],
+                'refunds_amount_oc_delta_1yb' => sprintf('<span title="%s">%s %s</span>', money(0, $account->get('Account Currency Code')), delta($data['refunds_amount_oc'], 0), delta_icon($data['refunds_amount_oc'], 0)),
+                'revenue_oc_delta_1yb'        => sprintf('<span title="%s">%s %s</span>', money(0, $account->get('Account Currency Code')), delta($data['revenue_oc'], 0), delta_icon($data['revenue_oc'], 0)),
+                'profit_oc_delta_1yb'         => sprintf('<span title="%s">%s %s</span>', money(0, $account->get('Account Currency Code')), delta($data['profit_oc'], 0), delta_icon($data['profit_oc'], 0)),
+
+
+                'refunds_amount_oc_delta_1yb_raw' => delta_raw($data['refunds_amount_oc'], 0),
+                'revenue_oc_delta_1yb_raw'        => delta_raw($data['revenue_oc'], 0),
+                'profit_oc_delta_1yb_raw'         => delta_raw($data['profit_oc'], 0),
+
+                'refunds_amount'               => money($data['refunds_amount'], $data['Store Currency Code']),
+                'revenue'                      => money($data['revenue'], $data['Store Currency Code']),
+                'profit'                       => money($data['profit'], $data['Store Currency Code']),
+                'refunds_amount_raw'           => $data['refunds_amount'],
+                'revenue_raw'                  => $data['revenue'],
+                'profit_raw'                   => $data['profit'],
+                'refunds_amount_delta_1yb'     => sprintf('<span title="%s">%s %s</span>', money(0, $data['Store Currency Code']), delta($data['refunds_amount'], 0), delta_icon($data['refunds_amount'], 0)),
+                'revenue_delta_1yb'            => sprintf('<span title="%s">%s %s</span>', money(0, $data['Store Currency Code']), delta($data['revenue'], 0), delta_icon($data['revenue'], 0)),
+                'profit_delta_1yb'             => sprintf('<span title="%s">%s %s</span>', money(0, $data['Store Currency Code']), delta($data['profit'], 0), delta_icon($data['profit'], 0)),
+                'refunds_amount_delta_1yb_raw' => delta_raw($data['refunds_amount'], 0),
+                'revenue_delta_1yb_raw'        => delta_raw($data['revenue'], 0),
+                'profit_delta_1yb_raw'         => delta_raw($data['profit'], 0),
+
+                'refunds_delta_1yb'  => sprintf('<span title="%s">%s %s</span>', number(0), delta($data['refunds'], 0), delta_icon($data['refunds'], 0, true)),
+                'invoices_delta_1yb' => sprintf('<span title="%s">%s %s</span>', number(0), delta($data['invoices'], 0), delta_icon($data['invoices'], 0)),
+
+                'refunds_delta_1yb_raw'  => delta_raw($data['refunds'], 0),
+                'invoices_delta_1yb_raw' => delta_raw($data['invoices'], 0),
+            );
+
+            $totals['customers']         += $data['customers'];
+            $totals['invoices']          += $data['invoices'];
+            $totals['refunds']           += $data['refunds'];
+            $totals['refunds_amount_oc'] += $data['refunds_amount_oc'];
+            $totals['revenue_oc']        += $data['revenue_oc'];
+            $totals['profit_oc']         += $data['profit_oc'];
+            $totals['refunds_amount']    += $data['refunds_amount'];
+            $totals['revenue']           += $data['revenue'];
+            $totals['profit']            += $data['profit'];
+        }
+    } else {
+        print_r($error_info = $db->errorInfo());
+        exit;
+    }
+
+
+    $sql = "select $fields from $table $where $where_dates_1yb $wheref $group_by limit $start_from,$number_results";
+
+
+    if ($result = $db->query($sql)) {
+
+        foreach ($result as $data) {
+
+
+            $refund_amount_1yb_oc = money($data['refunds_amount_oc'], $account->get('Account Currency Code'));
+            $revenue_1yb_oc       = money($data['revenue_oc'], $account->get('Account Currency Code'));
+            $profit_1yb_oc        = money($data['profit_oc'], $account->get('Account Currency Code'));
+
+
+            $refund_amount_1yb = money($data['refunds_amount'], $data['Store Currency Code']);
+            $revenue_1yb       = money($data['revenue'], $data['Store Currency Code']);
+            $profit_1yb        = money($data['profit'], $data['Store Currency Code']);
+
+
+            $adata[$data['Category Key']]['refunds_amount_oc_delta_1yb'] =
+                sprintf('<span title="%s">%s %s</span>', $refund_amount_1yb_oc, delta($adata[$data['Category Key']]['refunds_amount_oc_raw'], $data['refunds_amount_oc']), delta_icon($adata[$data['Category Key']]['refunds_amount_oc_raw'], $data['refunds_amount_oc']));
+            $adata[$data['Category Key']]['revenue_oc_delta_1yb']        =
+                sprintf('<span title="%s">%s %s</span>', $revenue_1yb_oc, delta($adata[$data['Category Key']]['revenue_oc_raw'], $data['revenue_oc']), delta_icon($adata[$data['Category Key']]['revenue_oc_raw'], $data['revenue_oc']));
+
+            $adata[$data['Category Key']]['profit_oc_delta_1yb'] =
+                sprintf('<span title="%s">%s %s</span>', $profit_1yb_oc, delta($adata[$data['Category Key']]['profit_oc_raw'], $data['profit_oc']), delta_icon($adata[$data['Category Key']]['profit_oc_raw'], $data['profit_oc']));
+
+
+            $adata[$data['Category Key']]['refunds_amount_oc_delta_1yb_raw'] = delta_raw($adata[$data['Category Key']]['refunds_amount_oc_raw'], $data['refunds_amount_oc']);
+            $adata[$data['Category Key']]['revenue_oc_delta_1yb_raw']        = delta_raw($adata[$data['Category Key']]['revenue_oc_raw'], $data['revenue_oc']);
+            $adata[$data['Category Key']]['profit_oc_delta_1yb_raw']         = delta_raw($adata[$data['Category Key']]['profit_oc_raw'], $data['profit_oc']);
+
+
+            $adata[$data['Category Key']]['refunds_amount_delta_1yb'] =
+                sprintf('<span title="%s">%s %s</span>', $refund_amount_1yb, delta($adata[$data['Category Key']]['refunds_amount_raw'], $data['refunds_amount']), delta_icon($adata[$data['Category Key']]['refunds_amount_raw'], $data['refunds_amount']));
+            $adata[$data['Category Key']]['revenue_delta_1yb']        = sprintf('<span title="%s">%s %s</span>', $revenue_1yb, delta($adata[$data['Category Key']]['revenue_raw'], $data['revenue']), delta_icon($adata[$data['Category Key']]['revenue_raw'], $data['revenue']));
+
+            $adata[$data['Category Key']]['profit_delta_1yb'] = sprintf('<span title="%s">%s %s</span>', $profit_1yb, delta($adata[$data['Category Key']]['profit_raw'], $data['profit']), delta_icon($adata[$data['Category Key']]['profit_raw'], $data['profit']));
+
+
+            $adata[$data['Category Key']]['refunds_amount_delta_1yb_raw'] = delta_raw($adata[$data['Category Key']]['refunds_amount_raw'], $data['refunds_amount']);
+            $adata[$data['Category Key']]['revenue_delta_1yb_raw']        = delta_raw($adata[$data['Category Key']]['revenue_raw'], $data['revenue']);
+            $adata[$data['Category Key']]['profit_delta_1yb_raw']         = delta_raw($adata[$data['Category Key']]['profit_raw'], $data['profit']);
+
+
+            $adata[$data['Category Key']]['invoices_delta_1yb'] =
+                sprintf('<span title="%s">%s %s</span>', number($data['invoices']), delta($adata[$data['Category Key']]['invoices_raw'], $data['invoices']), delta_icon($adata[$data['Category Key']]['invoices_raw'], $data['invoices']));
+            $adata[$data['Category Key']]['refunds_delta_1yb']  =
+                sprintf('<span title="%s">%s %s</span>', number($data['refunds']), delta($adata[$data['Category Key']]['refunds_raw'], $data['refunds']), delta_icon($adata[$data['Category Key']]['refunds_raw'], $data['refunds'], true));
+
+
+            $adata[$data['Category Key']]['invoices_delta_1yb_raw'] = delta_raw($adata[$data['Category Key']]['invoices_raw'], $data['invoices']);
+            $adata[$data['Category Key']]['refunds_delta_1yb_raw']  = delta_raw($adata[$data['Category Key']]['refunds_raw'], $data['refunds']);
+
+
+            $totals['refunds_amount_oc_1yb'] += $data['refunds_amount_oc'];
+            $totals['revenue_oc_1yb']        += $data['revenue_oc'];
+            $totals['profit_oc_1yb']         += $data['profit_oc'];
+
+            $totals['invoices_1yb'] += $data['invoices'];
+            $totals['refunds_1yb']  += $data['refunds'];
+
+
+        }
+    } else {
+        print_r($error_info = $db->errorInfo());
+        exit;
+    }
+
+
+    $_adata = array();
+    foreach ($adata as $data_value) {
+        $_adata[] = $data_value;
+    }
+
+
+    $_dir = ((isset($_data['od']) and preg_match('/desc/i', $_data['od'])) ? SORT_DESC : SORT_ASC);
+
+    $_order = $_data['o'];
+    switch ($_data['o']) {
+
+        case 'refunds_delta_1yb':
+            $sort_column  = array_column($_adata, 'refunds_delta_1yb_raw');
+            $sort_column2 = array_column($_adata, 'refunds_raw');
+            array_multisort($sort_column, $_dir, $sort_column2, $_dir, $_adata);
+            break;
+
+        case 'refunds_amount_oc_delta_1yb':
+            $sort_column  = array_column($_adata, 'refunds_amount_oc_delta_1yb_raw');
+            $sort_column2 = array_column($_adata, 'refunds_amount_oc_raw');
+
+            array_multisort($sort_column, $_dir, $sort_column2, $_dir, $_adata);
+            break;
+        case 'refunds_amount_delta_1yb':
+            $sort_column  = array_column($_adata, 'refunds_amount_delta_1yb_raw');
+            $sort_column2 = array_column($_adata, 'refunds_amount_raw');
+
+            array_multisort($sort_column, $_dir, $sort_column2, $_dir, $_adata);
+            break;
+
+        case 'invoices_delta_1yb':
+            $sort_column  = array_column($_adata, 'invoices_delta_1yb_raw');
+            $sort_column2 = array_column($_adata, 'invoices_raw');
+            array_multisort($sort_column, $_dir, $sort_column2, $_dir, $_adata);
+            break;
+
+        case 'revenue_oc_delta_1yb':
+            $sort_column  = array_column($_adata, 'revenue_oc_delta_1yb_raw');
+            $sort_column2 = array_column($_adata, 'revenue_oc_raw');
+
+            array_multisort($sort_column, $_dir, $sort_column2, $_dir, $_adata);
+            break;
+        case 'revenue_delta_1yb':
+            $sort_column  = array_column($_adata, 'revenue_delta_1yb_raw');
+            $sort_column2 = array_column($_adata, 'revenue_raw');
+
+            array_multisort($sort_column, $_dir, $sort_column2, $_dir, $_adata);
+            break;
+        case 'profit_oc_delta_1yb':
+            $sort_column  = array_column($_adata, 'profit_oc_delta_1yb_raw');
+            $sort_column2 = array_column($_adata, 'profit_oc_raw');
+
+            array_multisort($sort_column, $_dir, $sort_column2, $_dir, $_adata);
+            break;
+        case 'profit_delta_1yb':
+            $sort_column  = array_column($_adata, 'profit_delta_1yb_raw');
+            $sort_column2 = array_column($_adata, 'profit_raw');
+
+            array_multisort($sort_column, $_dir, $sort_column2, $_dir, $_adata);
+            break;
+
+        default:
+            $sort_column = array_column($_adata, $_data['o'].'_raw');
+            array_multisort($sort_column, $_dir, $_adata);
+            break;
+
+
+    }
+
+
+    $totals['refunds_amount_oc_delta_1yb'] = sprintf(
+        '<span title="%s">%s %s</span>', money($totals['refunds_amount_oc_1yb'], $account->get('Account Currency Code')), delta($totals['refunds_amount_oc'], $totals['refunds_amount_oc_1yb']), delta_icon($totals['refunds_amount_oc'], $totals['refunds_amount_oc_1yb'])
+    );
+    $totals['revenue_oc_delta_1yb']        = sprintf(
+        '<span title="%s">%s %s</span>', money($totals['revenue_oc_1yb'], $account->get('Account Currency Code')), delta($totals['revenue_oc'], $totals['revenue_oc_1yb']), delta_icon($totals['revenue_oc'], $totals['revenue_oc_1yb'])
+    );
+
+    $totals['profit_oc_delta_1yb'] = sprintf('<span title="%s">%s %s</span>', money($totals['profit_oc_1yb'], $account->get('Account Currency Code')), delta($totals['profit_oc'], $totals['profit_oc_1yb']), delta_icon($totals['profit_oc'], $totals['profit_oc_1yb']));
+
+
+    $totals['invoices_delta_1yb'] = sprintf('<span title="%s">%s %s</span>', number($totals['invoices_1yb']), delta($totals['invoices'], $totals['invoices_1yb']), delta_icon($totals['invoices'], $totals['invoices_1yb']));
+
+
+    // print $totals['refunds_1yb'].' x '.$totals['refunds'];
+
+    $totals['refunds_delta_1yb'] = sprintf('<span title="%s">%s %s</span>', number($totals['refunds_1yb']), delta($totals['refunds'], $totals['refunds_1yb']), delta_icon($totals['refunds'], $totals['refunds_1yb'], true));
+
+
+    $totals['invoices']  = number($totals['invoices']);
+    $totals['refunds']   = number($totals['refunds']);
+    $totals['customers'] = number($totals['customers']);
+
+
+    $totals['margin']            = percentage($totals['profit_oc'], $totals['revenue_oc']);
+    $totals['refunds_amount_oc'] = money($totals['refunds_amount_oc'], $account->get('Account Currency Code'));
+    $totals['revenue_oc']        = money($totals['revenue_oc'], $account->get('Account Currency Code'));
+    $totals['profit_oc']         = money($totals['profit_oc'], $account->get('Account Currency Code'));
+
+    $totals['refunds_amount'] = '';
+    $totals['revenue']        = '';
+    $totals['profit']         = '';
+
+
+    $_adata[] = $totals;
+
+
+    $response = array(
+        'resultset' => array(
+            'state'         => 200,
+            'data'          => $_adata,
+            'rtext'         => $rtext,
+            'sort_key'      => $_order,
+            'sort_dir'      => $_dir,
+            'total_records' => $total
+
+        )
+    );
+    echo json_encode($response);
+}
 
 function dispatched_orders($_data, $db, $user, $account) {
 
@@ -1843,6 +2563,7 @@ function dispatched_orders($_data, $db, $user, $account) {
         'profit'        => 0,
         'margin'        => 0,
     );
+
 
     if ($result = $db->query($sql)) {
 
@@ -1889,6 +2610,7 @@ function dispatched_orders($_data, $db, $user, $account) {
     $totals['profit'] = money($totals['profit'], $account->get('Account Currency Code'));
 
     $adata[] = $totals;
+
 
     $response = array(
         'resultset' => array(
@@ -1954,6 +2676,8 @@ function dispatched_delivery_notes($_data, $db, $user, $account) {
             $totals['shipments']      += $data['shipments'];
             $totals['delivery_notes'] += $data['shipments'] - $data['replacements'];
             $totals['replacements']   += $data['replacements'];
+
+
         }
     } else {
         print_r($error_info = $db->errorInfo());

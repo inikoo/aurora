@@ -5157,6 +5157,8 @@ function parse_tabs($module, $section, $_data, $modules) {
     }
 
 
+
+
     return array(
         $tab,
         $subtab
