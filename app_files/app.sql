@@ -1,8 +1,8 @@
--- MySQL dump 10.13  Distrib 5.7.19, for osx10.12 (x86_64)
+-- MySQL dump 10.13  Distrib 5.6.40, for osx10.13 (x86_64)
 --
 -- Host: localhost    Database: dw
 -- ------------------------------------------------------
--- Server version	5.7.19
+-- Server version	5.6.40
 
 /*!40101 SET @OLD_CHARACTER_SET_CLIENT=@@CHARACTER_SET_CLIENT */;
 /*!40101 SET @OLD_CHARACTER_SET_RESULTS=@@CHARACTER_SET_RESULTS */;
@@ -14,6 +14,25 @@
 /*!40014 SET @OLD_FOREIGN_KEY_CHECKS=@@FOREIGN_KEY_CHECKS, FOREIGN_KEY_CHECKS=0 */;
 /*!40101 SET @OLD_SQL_MODE=@@SQL_MODE, SQL_MODE='NO_AUTO_VALUE_ON_ZERO' */;
 /*!40111 SET @OLD_SQL_NOTES=@@SQL_NOTES, SQL_NOTES=0 */;
+
+--
+-- Table structure for table `API Key Deleted Dimension`
+--
+
+DROP TABLE IF EXISTS `API Key Deleted Dimension`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!40101 SET character_set_client = utf8 */;
+CREATE TABLE `API Key Deleted Dimension` (
+  `API Key Deleted Key` mediumint(8) unsigned NOT NULL,
+  `API Key Deleted Scope` varchar(64) COLLATE utf8_unicode_ci DEFAULT NULL,
+  `API Key Deleted User Key` mediumint(8) unsigned DEFAULT NULL,
+  `API Key Deleted Code` varchar(64) COLLATE utf8_unicode_ci NOT NULL,
+  `API Key Deleted Date` datetime NOT NULL,
+  `API Key Deleted Metadata` text COLLATE utf8_unicode_ci NOT NULL,
+  PRIMARY KEY (`API Key Deleted Key`),
+  KEY `API Key Deleted User Key` (`API Key Deleted User Key`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
+/*!40101 SET character_set_client = @saved_cs_client */;
 
 --
 -- Table structure for table `API Key Dimension`
@@ -48,6 +67,27 @@ CREATE TABLE `API Key Dimension` (
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
+-- Table structure for table `API Key History Bridge`
+--
+
+DROP TABLE IF EXISTS `API Key History Bridge`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!40101 SET character_set_client = utf8 */;
+CREATE TABLE `API Key History Bridge` (
+  `API Key Key` mediumint(8) unsigned NOT NULL,
+  `History Key` int(10) unsigned NOT NULL,
+  `Deletable` enum('Yes','No') NOT NULL DEFAULT 'No',
+  `Strikethrough` enum('Yes','No') NOT NULL DEFAULT 'No',
+  `Type` enum('Notes','Changes') NOT NULL DEFAULT 'Notes',
+  PRIMARY KEY (`API Key Key`,`History Key`),
+  KEY `API Key Key` (`API Key Key`),
+  KEY `History Key` (`History Key`),
+  KEY `Deletable` (`Deletable`),
+  KEY `Type` (`Type`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
 -- Table structure for table `API Request Dimension`
 --
 
@@ -76,20 +116,47 @@ DROP TABLE IF EXISTS `Account Data`;
 /*!40101 SET character_set_client = utf8 */;
 CREATE TABLE `Account Data` (
   `Account Key` mediumint(8) unsigned NOT NULL,
+  `Account Contacts` mediumint(8) unsigned NOT NULL DEFAULT '0',
+  `Account New Contacts` mediumint(8) unsigned NOT NULL DEFAULT '0',
+  `Account Contacts Who Visit Website` mediumint(8) unsigned NOT NULL DEFAULT '0',
+  `Account Losing Contacts With Orders` mediumint(8) unsigned NOT NULL DEFAULT '0',
+  `Account Lost Contacts With Orders` mediumint(8) unsigned NOT NULL DEFAULT '0',
+  `Account Active Contacts With Orders` mediumint(8) unsigned NOT NULL DEFAULT '0',
+  `Account New Contacts With Orders` mediumint(8) unsigned NOT NULL DEFAULT '0',
+  `Account Contacts With Orders` mediumint(8) unsigned NOT NULL DEFAULT '0',
+  `Account Lost Contacts` mediumint(8) unsigned NOT NULL DEFAULT '0',
+  `Account Losing Contacts` mediumint(8) unsigned NOT NULL DEFAULT '0',
+  `Account Active Contacts` mediumint(8) unsigned NOT NULL DEFAULT '0',
   `Account Active Parts Number` mediumint(9) NOT NULL DEFAULT '0',
   `Account Active Parts with SKO Barcode Number` mediumint(9) NOT NULL DEFAULT '0',
+  `Account Parts with Barcode Number Error` mediumint(8) unsigned NOT NULL DEFAULT '0',
+  `Account Parts with Barcode Number` mediumint(8) unsigned NOT NULL DEFAULT '0',
   `Account Orders In Basket Number` mediumint(8) unsigned NOT NULL DEFAULT '0',
   `Account Orders In Basket Amount` decimal(12,2) NOT NULL DEFAULT '0.00',
+  `Account Orders Cancelled Number` mediumint(8) unsigned NOT NULL DEFAULT '0',
+  `Account Orders Dispatched Number` mediumint(8) unsigned NOT NULL DEFAULT '0',
+  `Account Orders Dispatch Approved Number` mediumint(8) unsigned NOT NULL DEFAULT '0',
+  `Account Orders In Process Number` mediumint(8) unsigned NOT NULL DEFAULT '0',
+  `Account Orders Cancelled Amount` decimal(16,2) NOT NULL DEFAULT '0.00',
+  `Account Orders Dispatched Amount` decimal(16,2) NOT NULL DEFAULT '0.00',
+  `Account Orders Dispatch Approved Amount` decimal(16,2) NOT NULL DEFAULT '0.00',
+  `Account Orders In Process Amount` decimal(16,2) NOT NULL DEFAULT '0.00',
   `Account Orders In Process Paid Number` mediumint(8) unsigned NOT NULL DEFAULT '0',
   `Account Orders In Process Paid Amount` decimal(12,2) NOT NULL DEFAULT '0.00',
   `Account Orders In Process Not Paid Number` mediumint(8) unsigned NOT NULL DEFAULT '0',
   `Account Orders In Process Not Paid Amount` decimal(12,2) NOT NULL DEFAULT '0.00',
   `Account Orders In Warehouse Number` mediumint(8) unsigned NOT NULL DEFAULT '0',
   `Account Orders In Warehouse Amount` decimal(12,2) NOT NULL DEFAULT '0.00',
+  `Account Orders In Warehouse No Alerts Number` mediumint(8) unsigned NOT NULL DEFAULT '0',
+  `Account Orders In Warehouse No Alerts Amount` decimal(12,2) NOT NULL DEFAULT '0.00',
+  `Account Orders In Warehouse With Alerts Number` mediumint(8) unsigned NOT NULL DEFAULT '0',
+  `Account Orders In Warehouse With Alerts Amount` decimal(12,2) NOT NULL DEFAULT '0.00',
   `Account Orders Packed Number` mediumint(9) NOT NULL DEFAULT '0',
   `Account Orders Packed Amount` decimal(12,0) NOT NULL DEFAULT '0',
   `Account Orders In Dispatch Area Number` mediumint(8) unsigned NOT NULL DEFAULT '0',
   `Account Orders In Dispatch Area Amount` decimal(12,2) NOT NULL DEFAULT '0.00',
+  `Account Orders Dispatched Today Number` mediumint(8) unsigned NOT NULL DEFAULT '0',
+  `Account Orders Dispatched Today Amount` decimal(12,2) NOT NULL DEFAULT '0.00',
   `Account Today Start Orders In Warehouse Number` mediumint(8) unsigned NOT NULL DEFAULT '0',
   `Account Total Acc Invoiced Discount Amount` decimal(12,2) NOT NULL DEFAULT '0.00',
   `Account Total Acc Invoiced Amount` decimal(12,2) NOT NULL DEFAULT '0.00',
@@ -623,6 +690,45 @@ CREATE TABLE `Account Data` (
   `Account 4 Quarter Ago 1YB Lost Contacts` mediumint(8) unsigned NOT NULL DEFAULT '0',
   `Account 4 Quarter Ago 1YB Lost Customers` mediumint(8) unsigned NOT NULL DEFAULT '0',
   `Account 4 Quarter Ago 1YB Average Dispatch Time` float DEFAULT NULL,
+  `Account In Process Parts Number` mediumint(9) NOT NULL DEFAULT '0',
+  `Account Discontinuing Parts Number` mediumint(9) NOT NULL DEFAULT '0',
+  `Account Discontinued Parts Number` mediumint(9) NOT NULL DEFAULT '0',
+  `Account Active Parts Stock Surplus Number` mediumint(8) unsigned NOT NULL DEFAULT '0',
+  `Account Active Parts Stock OK Number` mediumint(8) unsigned NOT NULL DEFAULT '0',
+  `Account Active Parts Stock Low Number` mediumint(8) unsigned NOT NULL DEFAULT '0',
+  `Account Active Parts Stock Critical Number` mediumint(8) unsigned NOT NULL DEFAULT '0',
+  `Account Active Parts Stock Zero Number` mediumint(8) unsigned NOT NULL DEFAULT '0',
+  `Account Active Parts Stock Error Number` mediumint(8) unsigned NOT NULL DEFAULT '0',
+  `Account Active Parts Stock Surplus Stock Value` decimal(18,2) NOT NULL DEFAULT '0.00',
+  `Account Active Parts Stock OK Stock Value` decimal(18,2) NOT NULL DEFAULT '0.00',
+  `Account Active Parts Stock Low Stock Value` decimal(18,2) NOT NULL DEFAULT '0.00',
+  `Account Active Parts Stock Critical Stock Value` decimal(18,2) NOT NULL DEFAULT '0.00',
+  `Account Active Parts Stock Zero Stock Value` decimal(18,2) NOT NULL DEFAULT '0.00',
+  `Account Active Parts Stock Error Stock Value` decimal(18,2) NOT NULL DEFAULT '0.00',
+  `Account Active Parts Stock Surplus Deliveries Number` smallint(5) unsigned NOT NULL DEFAULT '0',
+  `Account Active Parts Stock OK Deliveries Number` smallint(5) unsigned NOT NULL DEFAULT '0',
+  `Account Active Parts Stock Low Deliveries Number` smallint(5) unsigned NOT NULL DEFAULT '0',
+  `Account Active Parts Stock Critical Deliveries Number` smallint(5) unsigned NOT NULL DEFAULT '0',
+  `Account Active Parts Stock Zero Deliveries Number` smallint(5) unsigned NOT NULL DEFAULT '0',
+  `Account Active Parts Stock Error Deliveries Number` smallint(5) unsigned NOT NULL DEFAULT '0',
+  `Account Active Production Parts Stock Surplus Number` mediumint(8) unsigned NOT NULL DEFAULT '0',
+  `Account Active Production Parts Stock OK Number` mediumint(8) unsigned NOT NULL DEFAULT '0',
+  `Account Active Production Parts Stock Low Number` mediumint(8) unsigned NOT NULL DEFAULT '0',
+  `Account Active Production Parts Stock Critical Number` mediumint(8) unsigned NOT NULL DEFAULT '0',
+  `Account Active Production Parts Stock Zero Number` mediumint(8) unsigned NOT NULL DEFAULT '0',
+  `Account Active Production Parts Stock Error Number` mediumint(8) unsigned NOT NULL DEFAULT '0',
+  `Account Active Production Parts Stock Surplus Stock Value` decimal(18,2) NOT NULL DEFAULT '0.00',
+  `Account Active Production Parts Stock OK Stock Value` decimal(18,2) NOT NULL DEFAULT '0.00',
+  `Account Active Production Parts Stock Low Stock Value` decimal(18,2) NOT NULL DEFAULT '0.00',
+  `Account Active Production Parts Stock Critical Stock Value` decimal(18,2) NOT NULL DEFAULT '0.00',
+  `Account Active Production Parts Stock Zero Stock Value` decimal(18,2) NOT NULL DEFAULT '0.00',
+  `Account Active Production Parts Stock Error Stock Value` decimal(18,2) NOT NULL DEFAULT '0.00',
+  `Account Active Production Parts Stock Surplus Deliveries Number` smallint(5) unsigned NOT NULL DEFAULT '0',
+  `Account Active Production Parts Stock OK Deliveries Number` smallint(5) unsigned NOT NULL DEFAULT '0',
+  `Account Active Production Parts Stock Low Deliveries Number` smallint(5) unsigned NOT NULL DEFAULT '0',
+  `Account Active Production Parts Stock Critical Deliveries Number` smallint(5) unsigned NOT NULL DEFAULT '0',
+  `Account Active Production Parts Stock Zero Deliveries Number` smallint(5) unsigned NOT NULL DEFAULT '0',
+  `Account Active Production Parts Stock Error Deliveries Number` smallint(5) unsigned NOT NULL DEFAULT '0',
   PRIMARY KEY (`Account Key`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 /*!40101 SET character_set_client = @saved_cs_client */;
@@ -678,6 +784,7 @@ CREATE TABLE `Account Dimension` (
   `Account Acc Ongoing Intervals Updated` datetime DEFAULT NULL,
   `Account Acc Previous Intervals Updated` datetime DEFAULT NULL,
   `Account Analytics ID` varchar(16) DEFAULT NULL,
+  `Account Add Stock Value Type` enum('Last Price','Blockchain') NOT NULL DEFAULT 'Blockchain',
   PRIMARY KEY (`Account Key`),
   KEY `Account Currency` (`Account Currency`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
@@ -1321,10 +1428,13 @@ CREATE TABLE `Agent Dimension` (
   `Agent Acc To Day Updated` datetime DEFAULT NULL,
   `Agent Acc Ongoing Intervals Updated` datetime DEFAULT NULL,
   `Agent Acc Previous Intervals Updated` datetime DEFAULT NULL,
+  `Agent Number History Records` smallint(5) unsigned DEFAULT '0',
   `Agent Number Purchase Orders` smallint(5) unsigned NOT NULL DEFAULT '0',
   `Agent Number Open Purchase Orders` smallint(5) unsigned NOT NULL DEFAULT '0',
   `Agent Number Deliveries` smallint(5) unsigned NOT NULL DEFAULT '0',
   `Agent Number Invoices` smallint(5) unsigned NOT NULL DEFAULT '0',
+  `Agent Order Public ID Format` varchar(64) DEFAULT NULL,
+  `Agent Order Last Order ID` mediumint(8) unsigned NOT NULL DEFAULT '0',
   PRIMARY KEY (`Agent Key`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 /*!40101 SET character_set_client = @saved_cs_client */;
@@ -1402,6 +1512,67 @@ CREATE TABLE `Agent Supplier Bridge` (
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
+-- Table structure for table `Agent Supplier Purchase Order Dimension`
+--
+
+DROP TABLE IF EXISTS `Agent Supplier Purchase Order Dimension`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!40101 SET character_set_client = utf8 */;
+CREATE TABLE `Agent Supplier Purchase Order Dimension` (
+  `Agent Supplier Purchase Order Key` mediumint(8) unsigned NOT NULL AUTO_INCREMENT,
+  `Agent Supplier Purchase Order Purchase Order Key` mediumint(8) unsigned NOT NULL,
+  `Agent Supplier Purchase Order Supplier Key` mediumint(8) unsigned NOT NULL,
+  `Agent Supplier Purchase Order File As` varchar(255) COLLATE utf8_unicode_ci NOT NULL,
+  `Agent Supplier Purchase Order Public ID` varchar(255) COLLATE utf8_unicode_ci NOT NULL,
+  `Agent Supplier Purchase Order Last Updated Date` datetime DEFAULT NULL,
+  `Agent Supplier Purchase Order Creation Date` datetime DEFAULT NULL,
+  `Agent Supplier Purchase Order Confirm Date` datetime DEFAULT NULL,
+  `Agent Supplier Purchase Order Estimated Receiving Date` datetime DEFAULT NULL,
+  `Agent Supplier Purchase Order Received Date` timestamp NULL DEFAULT NULL,
+  `Agent Supplier Purchase Order InDelivery Date` timestamp NULL DEFAULT NULL,
+  `Agent Supplier Purchase Order Cancelled Date` datetime DEFAULT NULL,
+  `Agent Supplier Purchase Order State` enum('InProcess','Confirmed','InWarehouse','InDelivery','Cancelled') COLLATE utf8_unicode_ci NOT NULL DEFAULT 'InProcess',
+  `Agent Supplier Purchase Order Currency Code` varchar(3) COLLATE utf8_unicode_ci DEFAULT NULL,
+  `Agent Supplier Purchase Order Amount` decimal(18,2) NOT NULL DEFAULT '0.00',
+  `Agent Supplier Purchase Order Products` mediumint(8) unsigned NOT NULL DEFAULT '0',
+  `Agent Supplier Purchase Order Products In Process` mediumint(8) unsigned NOT NULL DEFAULT '0',
+  `Agent Supplier Purchase Order Products With Problem` mediumint(8) unsigned NOT NULL DEFAULT '0',
+  `Agent Supplier Purchase Order Products Confirmed` mediumint(8) unsigned NOT NULL DEFAULT '0',
+  `Agent Supplier Purchase Order Products Received` mediumint(8) unsigned NOT NULL DEFAULT '0',
+  `Agent Supplier Purchase Order Products In Delivery` mediumint(8) unsigned NOT NULL DEFAULT '0',
+  `Agent Supplier Purchase Order Products Cancelled` mediumint(9) NOT NULL DEFAULT '0',
+  `Agent Supplier Purchase Order Cartons` mediumint(8) unsigned NOT NULL DEFAULT '0',
+  `Agent Supplier Purchase Order Weight` float unsigned NOT NULL DEFAULT '0',
+  `Agent Supplier Purchase Order CBM` float unsigned NOT NULL DEFAULT '0',
+  `Agent Supplier Purchase Order Missing Weights` smallint(5) unsigned NOT NULL DEFAULT '0',
+  `Agent Supplier Purchase Order Missing CBMs` smallint(5) unsigned NOT NULL DEFAULT '0',
+  `Agent Supplier Purchase Order Metadata` text COLLATE utf8_unicode_ci,
+  PRIMARY KEY (`Agent Supplier Purchase Order Key`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Table structure for table `Agent Supplier Purchase Order History Bridge`
+--
+
+DROP TABLE IF EXISTS `Agent Supplier Purchase Order History Bridge`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!40101 SET character_set_client = utf8 */;
+CREATE TABLE `Agent Supplier Purchase Order History Bridge` (
+  `Agent Supplier Purchase Order Key` mediumint(8) unsigned NOT NULL,
+  `History Key` int(10) unsigned NOT NULL,
+  `Deletable` enum('Yes','No') NOT NULL DEFAULT 'No',
+  `Strikethrough` enum('Yes','No') NOT NULL DEFAULT 'No',
+  `Type` enum('Notes','Changes') NOT NULL DEFAULT 'Notes',
+  PRIMARY KEY (`Agent Supplier Purchase Order Key`,`History Key`),
+  KEY `Agent Supplier Purchase Order Key` (`Agent Supplier Purchase Order Key`),
+  KEY `History Key` (`History Key`),
+  KEY `Deletable` (`Deletable`),
+  KEY `Type` (`Type`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
 -- Table structure for table `Attachment Bridge`
 --
 
@@ -1411,9 +1582,9 @@ DROP TABLE IF EXISTS `Attachment Bridge`;
 CREATE TABLE `Attachment Bridge` (
   `Attachment Bridge Key` mediumint(8) unsigned NOT NULL AUTO_INCREMENT,
   `Attachment Key` mediumint(8) unsigned NOT NULL,
-  `Subject` enum('Part','Staff','Customer Communications','Customer History Attachment','Product History Attachment','Part History Attachment','Part MSDS','Product MSDS','Supplier Product MSDS','Product Info Sheet','Purchase Order History Attachment','Purchase Order','Supplier Delivery Note History Attachment','Supplier Delivery Note','Supplier Invoice History Attachment','Supplier Invoice','Order Note History Attachment','Delivery Note History Attachment','Invoice History Attachment','Supplier') NOT NULL,
+  `Subject` enum('Part','Staff','Customer Communications','Customer History Attachment','Product History Attachment','Part History Attachment','Part MSDS','Product MSDS','Supplier Product MSDS','Product Info Sheet','Purchase Order History Attachment','Purchase Order','Supplier Delivery Note History Attachment','Supplier Delivery Note','Supplier Invoice History Attachment','Supplier Invoice','Order Note History Attachment','Delivery Note History Attachment','Invoice History Attachment','Supplier','Supplier Delivery') NOT NULL,
   `Subject Key` int(10) unsigned NOT NULL,
-  `Attachment Subject Type` enum('Other','CV','Contract','Invoice','PurchaseOrder','Catalogue','MSDS','Image','Contact Card') NOT NULL DEFAULT 'Other',
+  `Attachment Subject Type` enum('Other','CV','Contract','Invoice','PurchaseOrder','Catalogue','MSDS','Image','Contact Card','Delivery Paperwork') NOT NULL DEFAULT 'Other',
   `Attachment Caption` text,
   `Attachment File Original Name` varchar(255) DEFAULT NULL,
   `Attachment Public` enum('Yes','No') NOT NULL DEFAULT 'No',
@@ -1508,6 +1679,31 @@ CREATE TABLE `Audit Dimension` (
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
+-- Table structure for table `Back in Stock Reminder Fact`
+--
+
+DROP TABLE IF EXISTS `Back in Stock Reminder Fact`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!40101 SET character_set_client = utf8 */;
+CREATE TABLE `Back in Stock Reminder Fact` (
+  `Back in Stock Reminder Key` mediumint(8) unsigned NOT NULL AUTO_INCREMENT,
+  `Back in Stock Reminder State` enum('Waiting','Ready') NOT NULL DEFAULT 'Waiting',
+  `Back in Stock Reminder Customer Key` mediumint(8) unsigned NOT NULL,
+  `Back in Stock Reminder Product ID` mediumint(8) unsigned NOT NULL,
+  `Back in Stock Reminder Website Key` mediumint(8) unsigned NOT NULL,
+  `Back in Stock Reminder Store Key` mediumint(8) unsigned NOT NULL,
+  `Back in Stock Reminder Creation Date` datetime NOT NULL,
+  `Back in Stock Reminder Ready Date` datetime DEFAULT NULL,
+  PRIMARY KEY (`Back in Stock Reminder Key`),
+  UNIQUE KEY `Back in Stock Reminder Custome_2` (`Back in Stock Reminder Customer Key`,`Back in Stock Reminder Product ID`),
+  KEY `Back in Stock Reminder State` (`Back in Stock Reminder State`),
+  KEY `Back in Stock Reminder Dimension Product ID` (`Back in Stock Reminder Product ID`),
+  KEY `Back in Stock Reminder Customer Key` (`Back in Stock Reminder Customer Key`) USING BTREE,
+  KEY `Back in Stock Reminder Store Key` (`Back in Stock Reminder Store Key`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
 -- Table structure for table `Barcode Asset Bridge`
 --
 
@@ -1521,8 +1717,8 @@ CREATE TABLE `Barcode Asset Bridge` (
   `Barcode Asset Key` mediumint(9) DEFAULT NULL,
   `Barcode Asset Assigned Date` datetime DEFAULT NULL,
   `Barcode Asset Withdrawn Date` datetime DEFAULT NULL,
-  UNIQUE KEY `Barcode Asset Type` (`Barcode Asset Type`,`Barcode Asset Key`,`Barcode Asset Status`,`Barcode Asset Barcode Key`) USING BTREE,
-  KEY `Barcode Asset Status` (`Barcode Asset Status`)
+  KEY `Barcode Asset Status` (`Barcode Asset Status`),
+  KEY `Barcode Asset Type` (`Barcode Asset Type`,`Barcode Asset Key`,`Barcode Asset Barcode Key`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
@@ -1613,6 +1809,25 @@ CREATE TABLE `Billing To Dimension` (
   KEY `Billing To Country 2 Alpha Code` (`Billing To Country 2 Alpha Code`),
   KEY `Billing To Postal Code` (`Billing To Postal Code`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Table structure for table `Bounced Email Dimension`
+--
+
+DROP TABLE IF EXISTS `Bounced Email Dimension`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!40101 SET character_set_client = utf8 */;
+CREATE TABLE `Bounced Email Dimension` (
+  `Bounced Email Key` mediumint(8) unsigned NOT NULL AUTO_INCREMENT,
+  `Bounced Email` varchar(255) COLLATE utf8_unicode_ci DEFAULT NULL,
+  `Bounced Email Bounce Type` enum('Hard','Soft') COLLATE utf8_unicode_ci DEFAULT NULL,
+  `Bounced Email Status Code` varchar(16) COLLATE utf8_unicode_ci DEFAULT NULL,
+  `Bounced Email Date` datetime DEFAULT NULL,
+  `Bounced Email Count` smallint(5) unsigned NOT NULL DEFAULT '1',
+  PRIMARY KEY (`Bounced Email Key`),
+  UNIQUE KEY `Bounced Email` (`Bounced Email`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -1737,6 +1952,7 @@ CREATE TABLE `Category Dimension` (
   `Category Sticky Note` text,
   `Category Main Image` varchar(255) DEFAULT NULL,
   `Category Main Image Key` mediumint(8) unsigned DEFAULT NULL,
+  `Category Number History Records` mediumint(8) unsigned NOT NULL DEFAULT '0',
   PRIMARY KEY (`Category Key`),
   UNIQUE KEY `Category Code` (`Category Code`,`Category Root Key`),
   KEY `Category Default` (`Category Default`),
@@ -1808,25 +2024,54 @@ DROP TABLE IF EXISTS `Charge Dimension`;
 /*!40101 SET character_set_client = utf8 */;
 CREATE TABLE `Charge Dimension` (
   `Charge Key` mediumint(8) unsigned NOT NULL AUTO_INCREMENT,
+  `Charge Scope` enum('Hanging','Premium') DEFAULT NULL,
   `Charge Name` varchar(255) NOT NULL,
+  `Charge Store Key` smallint(5) unsigned DEFAULT NULL,
   `Store Key` mediumint(8) unsigned NOT NULL,
-  `Charge Trigger` enum('Product','Order') DEFAULT NULL,
+  `Charge Trigger` enum('Product','Order','Selected by Customer') DEFAULT NULL,
   `Charge Trigger Key` mediumint(8) unsigned DEFAULT NULL,
   `Charge Description` varchar(255) DEFAULT NULL,
   `Charge Public Description` text CHARACTER SET utf8mb4,
   `Charge Metadata` varchar(245) NOT NULL,
-  `Charge Terms Type` enum('Order Interval','Product Quantity Ordered','Family Quantity Ordered','Total Amount','Order Number','Shipping Country','Shipping Country First Division','Order Items Gross Amount','Order Items Net Amount') DEFAULT NULL,
+  `Charge Terms Type` enum('Order Interval','Product Quantity Ordered','Family Quantity Ordered','Total Amount','Order Number','Shipping Country','Shipping Country First Division','Order Items Gross Amount','Order Items Net Amount','Selected') DEFAULT NULL,
   `Charge Terms Description` varchar(255) DEFAULT NULL,
   `Charge Type` enum('Percentage','Amount') DEFAULT NULL,
   `Charge Terms Metadata` varchar(4096) DEFAULT NULL,
   `Charge Active` enum('Yes','No') NOT NULL,
   `Charge Begin Date` datetime DEFAULT NULL,
   `Charge Expiration Date` datetime DEFAULT NULL,
+  `Charge Total Acc Orders` mediumint(8) unsigned NOT NULL DEFAULT '0',
+  `Charge Total Acc Cancelled Orders` mediumint(8) unsigned NOT NULL DEFAULT '0',
+  `Charge Total Acc Customers` mediumint(8) unsigned NOT NULL DEFAULT '0',
+  `Charge Total Acc Amount` decimal(12,2) NOT NULL DEFAULT '0.00',
+  `Charge Number History Records` smallint(5) unsigned NOT NULL DEFAULT '0',
   PRIMARY KEY (`Charge Key`),
   KEY `x` (`Charge Trigger`,`Charge Trigger Key`),
   KEY `z` (`Charge Type`),
   KEY `Charge Active` (`Charge Active`),
-  KEY `Store Key` (`Store Key`)
+  KEY `Store Key` (`Store Key`),
+  KEY `Charge Store Key` (`Charge Store Key`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Table structure for table `Charge History Bridge`
+--
+
+DROP TABLE IF EXISTS `Charge History Bridge`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!40101 SET character_set_client = utf8 */;
+CREATE TABLE `Charge History Bridge` (
+  `Charge Key` mediumint(8) unsigned NOT NULL,
+  `History Key` int(10) unsigned NOT NULL,
+  `Deletable` enum('Yes','No') NOT NULL DEFAULT 'No',
+  `Strikethrough` enum('Yes','No') NOT NULL DEFAULT 'No',
+  `Type` enum('Notes','Changes') NOT NULL DEFAULT 'Notes',
+  PRIMARY KEY (`Charge Key`,`History Key`),
+  KEY `Charge Key` (`Charge Key`),
+  KEY `History Key` (`History Key`),
+  KEY `Deletable` (`Deletable`),
+  KEY `Type` (`Type`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
@@ -2183,6 +2428,27 @@ CREATE TABLE `Contract Terms Dimension` (
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
+-- Table structure for table `Credit Transaction Fact`
+--
+
+DROP TABLE IF EXISTS `Credit Transaction Fact`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!40101 SET character_set_client = utf8 */;
+CREATE TABLE `Credit Transaction Fact` (
+  `Credit Transaction Key` int(10) unsigned NOT NULL AUTO_INCREMENT,
+  `Credit Transaction Type` enum('Payment','Adjust') COLLATE utf8_unicode_ci NOT NULL DEFAULT 'Payment',
+  `Credit Transaction Date` datetime NOT NULL,
+  `Credit Transaction Amount` decimal(16,2) NOT NULL,
+  `Credit Transaction Currency Code` varchar(3) COLLATE utf8_unicode_ci NOT NULL,
+  `Credit Transaction Currency Exchange Rate` float NOT NULL DEFAULT '1',
+  `Credit Transaction Customer Key` mediumint(8) unsigned NOT NULL,
+  `Credit Transaction Payment Key` int(10) unsigned DEFAULT NULL,
+  PRIMARY KEY (`Credit Transaction Key`),
+  KEY `Credit Transaction Customer Key` (`Credit Transaction Customer Key`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
 -- Table structure for table `Custom Field Dimension`
 --
 
@@ -2343,6 +2609,7 @@ CREATE TABLE `Customer Deleted Dimension` (
   `Customer Deleted Name` varchar(255) DEFAULT NULL,
   `Customer Deleted Contact Name` varchar(255) DEFAULT NULL,
   `Customer Deleted Email` varchar(255) DEFAULT NULL,
+  `Customer Deleted Metadata` blob,
   `Customer Card` text NOT NULL,
   `Customer Deleted Date` datetime NOT NULL,
   `Customer Deleted Note` text NOT NULL,
@@ -2496,7 +2763,7 @@ CREATE TABLE `Customer Dimension` (
   `Customer Outstanding Total Balance` decimal(14,2) NOT NULL DEFAULT '0.00',
   `Customer Account Balance` decimal(14,2) NOT NULL DEFAULT '0.00',
   `Customer Next Invoice Credit Amount` decimal(16,2) NOT NULL DEFAULT '0.00',
-  `Customer Type by Activity` enum('Active','Losing','Lost') NOT NULL DEFAULT 'Active',
+  `Customer Type by Activity` enum('Rejected','ToApprove','Active','Losing','Lost') NOT NULL DEFAULT 'Active',
   `Customer Location Type` enum('Domestic','Export') NOT NULL DEFAULT 'Domestic',
   `Customer Type` enum('Company','Person','Unknown') NOT NULL DEFAULT 'Unknown',
   `Customer Company Key` mediumint(8) unsigned DEFAULT NULL,
@@ -2526,6 +2793,17 @@ CREATE TABLE `Customer Dimension` (
   `Customer Send Email Marketing` enum('Yes','No') NOT NULL DEFAULT 'No',
   `Customer Send Postal Marketing` enum('Yes','No') NOT NULL DEFAULT 'No',
   `Customer Account Operative` enum('Yes','No') NOT NULL DEFAULT 'Yes',
+  `Customer Website User Key` mediumint(8) unsigned DEFAULT NULL,
+  `Customer Payments Amount` decimal(18,2) NOT NULL DEFAULT '0.00',
+  `Customer Invoiced Amount` decimal(18,2) NOT NULL DEFAULT '0.00',
+  `Customer Net Amount` decimal(18,2) NOT NULL DEFAULT '0.00',
+  `Customer Refunded Net Amount` decimal(18,2) NOT NULL DEFAULT '0.00',
+  `Customer Invoiced Net Amount` decimal(18,2) NOT NULL DEFAULT '0.00',
+  `Customer Last Dispatched Order Key` mediumint(8) unsigned DEFAULT NULL,
+  `Customer Sales Representative Key` mediumint(8) unsigned DEFAULT NULL,
+  `Customer Number Invoices` mediumint(8) unsigned NOT NULL DEFAULT '0',
+  `Customer Number Refunds` mediumint(8) unsigned NOT NULL DEFAULT '0',
+  `Customer Email State` enum('Valid','Error','Warning') NOT NULL DEFAULT 'Valid',
   `Customer Sticky Note` text NOT NULL,
   `Customer Active` enum('Yes','No') NOT NULL DEFAULT 'Yes',
   `Customer With Orders` enum('Yes','No') NOT NULL DEFAULT 'No',
@@ -2584,7 +2862,8 @@ CREATE TABLE `Customer Dimension` (
   KEY `Customer Profit` (`Customer Store Key`,`Customer Profit`),
   KEY `Customer Last Dispatched Order Date` (`Customer Last Invoiced Dispatched Date`),
   KEY `Customer Billing Address Key` (`Customer Billing Address Key`),
-  KEY `Customer Tax Number` (`Customer Tax Number`)
+  KEY `Customer Tax Number` (`Customer Tax Number`),
+  KEY `Customer Sales Representative Key` (`Customer Sales Representative Key`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
@@ -2607,6 +2886,25 @@ CREATE TABLE `Customer Favorite Product Bridge` (
   PRIMARY KEY (`Customer Favorite Product Key`),
   UNIQUE KEY `Customer Key` (`Customer Key`,`Product ID`,`Site Key`) USING BTREE
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Table structure for table `Customer Favourite Product Fact`
+--
+
+DROP TABLE IF EXISTS `Customer Favourite Product Fact`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!40101 SET character_set_client = utf8 */;
+CREATE TABLE `Customer Favourite Product Fact` (
+  `Customer Favourite Product Key` int(10) unsigned NOT NULL AUTO_INCREMENT,
+  `Customer Favourite Product Store Key` smallint(6) NOT NULL,
+  `Customer Favourite Product Customer Key` mediumint(9) NOT NULL,
+  `Customer Favourite Product Product ID` mediumint(9) NOT NULL,
+  `Customer Favourite Product Creation Date` datetime DEFAULT NULL,
+  PRIMARY KEY (`Customer Favourite Product Key`),
+  UNIQUE KEY `Customer Favourite Product Store Key` (`Customer Favourite Product Store Key`,`Customer Favourite Product Customer Key`,`Customer Favourite Product Product ID`),
+  KEY `Customer Favourite Product Customer Key` (`Customer Favourite Product Customer Key`,`Customer Favourite Product Product ID`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -2788,6 +3086,149 @@ CREATE TABLE `Customer Part Category Bridge` (
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
+-- Table structure for table `Customer Poll Fact`
+--
+
+DROP TABLE IF EXISTS `Customer Poll Fact`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!40101 SET character_set_client = utf8 */;
+CREATE TABLE `Customer Poll Fact` (
+  `Customer Poll Key` mediumint(9) NOT NULL AUTO_INCREMENT,
+  `Customer Poll Customer Key` mediumint(9) NOT NULL,
+  `Customer Poll Query Key` smallint(6) NOT NULL,
+  `Customer Poll Query Option Key` smallint(6) DEFAULT NULL,
+  `Customer Poll Date` datetime DEFAULT NULL,
+  `Customer Poll Reply` text COLLATE utf8_unicode_ci,
+  PRIMARY KEY (`Customer Poll Key`),
+  KEY `Customer Poll Customer Key` (`Customer Poll Customer Key`,`Customer Poll Query Key`) USING BTREE,
+  KEY `Customer Poll Customer Key_2` (`Customer Poll Customer Key`,`Customer Poll Query Key`,`Customer Poll Query Option Key`) USING BTREE,
+  KEY `Customer Poll Query Key` (`Customer Poll Query Key`) USING BTREE
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Table structure for table `Customer Poll Query Deleted Dimension`
+--
+
+DROP TABLE IF EXISTS `Customer Poll Query Deleted Dimension`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!40101 SET character_set_client = utf8 */;
+CREATE TABLE `Customer Poll Query Deleted Dimension` (
+  `Customer Poll Query Deleted Key` mediumint(8) unsigned NOT NULL,
+  `Customer Poll Query Deleted Name` varchar(64) COLLATE utf8_unicode_ci DEFAULT NULL,
+  `Customer Poll Query Deleted Label` text COLLATE utf8_unicode_ci,
+  `Customer Poll Query Deleted Date` datetime DEFAULT NULL,
+  `Customer Poll Query Deleted Metadata` longblob,
+  PRIMARY KEY (`Customer Poll Query Deleted Key`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Table structure for table `Customer Poll Query Dimension`
+--
+
+DROP TABLE IF EXISTS `Customer Poll Query Dimension`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!40101 SET character_set_client = utf8 */;
+CREATE TABLE `Customer Poll Query Dimension` (
+  `Customer Poll Query Key` smallint(5) unsigned NOT NULL AUTO_INCREMENT,
+  `Customer Poll Query Type` enum('Options','Open') COLLATE utf8_unicode_ci NOT NULL DEFAULT 'Options',
+  `Customer Poll Query Store Key` mediumint(8) unsigned NOT NULL,
+  `Customer Poll Query Position` smallint(5) unsigned DEFAULT NULL,
+  `Customer Poll Query Name` varchar(255) COLLATE utf8_unicode_ci NOT NULL,
+  `Customer Poll Query Label` text COLLATE utf8_unicode_ci NOT NULL,
+  `Customer Poll Query In Registration` enum('Yes','No') COLLATE utf8_unicode_ci NOT NULL DEFAULT 'Yes',
+  `Customer Poll Query In Profile` enum('Yes','No') COLLATE utf8_unicode_ci NOT NULL DEFAULT 'Yes',
+  `Customer Poll Query Registration Required` enum('Yes','No') COLLATE utf8_unicode_ci NOT NULL DEFAULT 'No',
+  `Customer Poll Query Customers` mediumint(9) NOT NULL DEFAULT '0',
+  `Customer Poll Query Options` smallint(5) unsigned DEFAULT NULL,
+  `Customer Poll Query Creation Date` datetime DEFAULT NULL,
+  `Customer Poll Query Last Answered` datetime DEFAULT NULL,
+  PRIMARY KEY (`Customer Poll Query Key`),
+  KEY `Customer Poll Query Store Key` (`Customer Poll Query Store Key`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Table structure for table `Customer Poll Query History Bridge`
+--
+
+DROP TABLE IF EXISTS `Customer Poll Query History Bridge`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!40101 SET character_set_client = utf8 */;
+CREATE TABLE `Customer Poll Query History Bridge` (
+  `Customer Poll Query Key` mediumint(8) unsigned NOT NULL,
+  `History Key` int(10) unsigned NOT NULL,
+  `Deletable` enum('Yes','No') NOT NULL DEFAULT 'No',
+  `Strikethrough` enum('Yes','No') NOT NULL DEFAULT 'No',
+  `Type` enum('Notes','Changes') NOT NULL DEFAULT 'Notes',
+  PRIMARY KEY (`Customer Poll Query Key`,`History Key`),
+  KEY `Customer Poll Query Key` (`Customer Poll Query Key`),
+  KEY `History Key` (`History Key`),
+  KEY `Deletable` (`Deletable`),
+  KEY `Type` (`Type`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Table structure for table `Customer Poll Query Option Deleted Dimension`
+--
+
+DROP TABLE IF EXISTS `Customer Poll Query Option Deleted Dimension`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!40101 SET character_set_client = utf8 */;
+CREATE TABLE `Customer Poll Query Option Deleted Dimension` (
+  `Customer Poll Query Option Deleted Key` mediumint(8) unsigned NOT NULL,
+  `Customer Poll Query Option Deleted Name` varchar(64) COLLATE utf8_unicode_ci DEFAULT NULL,
+  `Customer Poll Query Option Deleted Label` text COLLATE utf8_unicode_ci,
+  `Customer Poll Query Option Deleted Date` datetime DEFAULT NULL,
+  `Customer Poll Query Option Deleted Metadata` longblob,
+  PRIMARY KEY (`Customer Poll Query Option Deleted Key`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Table structure for table `Customer Poll Query Option Dimension`
+--
+
+DROP TABLE IF EXISTS `Customer Poll Query Option Dimension`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!40101 SET character_set_client = utf8 */;
+CREATE TABLE `Customer Poll Query Option Dimension` (
+  `Customer Poll Query Option Key` smallint(5) unsigned NOT NULL AUTO_INCREMENT,
+  `Customer Poll Query Option Store Key` mediumint(8) unsigned DEFAULT NULL,
+  `Customer Poll Query Option Query Key` smallint(5) unsigned NOT NULL,
+  `Customer Poll Query Option Name` varchar(255) COLLATE utf8_unicode_ci NOT NULL,
+  `Customer Poll Query Option Label` text COLLATE utf8_unicode_ci NOT NULL,
+  `Customer Poll Query Option Customers` mediumint(8) unsigned NOT NULL DEFAULT '0',
+  `Customer Poll Query Option Last Answered` datetime DEFAULT NULL,
+  PRIMARY KEY (`Customer Poll Query Option Key`),
+  KEY `Customer Poll Query Option Query Key` (`Customer Poll Query Option Query Key`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Table structure for table `Customer Poll Query Option History Bridge`
+--
+
+DROP TABLE IF EXISTS `Customer Poll Query Option History Bridge`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!40101 SET character_set_client = utf8 */;
+CREATE TABLE `Customer Poll Query Option History Bridge` (
+  `Customer Poll Query Option Key` mediumint(8) unsigned NOT NULL,
+  `History Key` int(10) unsigned NOT NULL,
+  `Deletable` enum('Yes','No') NOT NULL DEFAULT 'No',
+  `Strikethrough` enum('Yes','No') NOT NULL DEFAULT 'No',
+  `Type` enum('Notes','Changes') NOT NULL DEFAULT 'Notes',
+  PRIMARY KEY (`Customer Poll Query Option Key`,`History Key`),
+  KEY `Customer Poll Query Option Key` (`Customer Poll Query Option Key`),
+  KEY `History Key` (`History Key`),
+  KEY `Deletable` (`Deletable`),
+  KEY `Type` (`Type`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
 -- Table structure for table `Customer Product Bridge`
 --
 
@@ -2931,16 +3372,21 @@ DROP TABLE IF EXISTS `Deal Campaign Dimension`;
 CREATE TABLE `Deal Campaign Dimension` (
   `Deal Campaign Key` mediumint(8) unsigned NOT NULL AUTO_INCREMENT,
   `Deal Campaign Status` enum('Suspended','Active','Finish','Waiting') NOT NULL DEFAULT 'Waiting',
+  `Deal Campaign Icon` text,
   `Deal Campaign Name` varchar(50) NOT NULL,
   `Deal Campaign Description` text NOT NULL,
   `Deal Campaign Store Key` mediumint(8) unsigned NOT NULL,
   `Deal Campaign Valid From` datetime DEFAULT NULL,
   `Deal Campaign Valid To` datetime DEFAULT NULL,
+  `Deal Campaign Number Deals` mediumint(8) unsigned NOT NULL DEFAULT '0',
   `Deal Campaign Number Current Deals` mediumint(8) unsigned NOT NULL DEFAULT '0',
   `Deal Campaign Total Acc Used Orders` mediumint(8) unsigned DEFAULT '0',
   `Deal Campaign Total Acc Used Customers` mediumint(8) unsigned DEFAULT '0',
   `Deal Campaign Total Acc Applied Orders` mediumint(8) unsigned DEFAULT '0',
   `Deal Campaign Total Acc Applied Customers` mediumint(8) unsigned NOT NULL DEFAULT '0',
+  `Deal Campaign Number History Records` mediumint(8) unsigned NOT NULL DEFAULT '0',
+  `Deal Campaign Number Deal Components` mediumint(8) unsigned NOT NULL DEFAULT '0',
+  `Deal Campaign Number Active Deal Components` mediumint(8) unsigned NOT NULL DEFAULT '0',
   PRIMARY KEY (`Deal Campaign Key`),
   UNIQUE KEY `Deal Campaign Store Key` (`Deal Campaign Store Key`,`Deal Campaign Name`),
   KEY `Deal Campaign Status` (`Deal Campaign Status`)
@@ -2996,9 +3442,13 @@ CREATE TABLE `Deal Component Dimension` (
   `Deal Component Campaign Key` mediumint(8) unsigned DEFAULT NULL,
   `Deal Component Deal Key` mediumint(8) unsigned NOT NULL,
   `Deal Component Status` enum('Suspended','Active','Finish','Waiting') NOT NULL DEFAULT 'Active',
+  `Deal Component Icon` text,
+  `Deal Component Name Label` text,
+  `Deal Component Term Label` text,
+  `Deal Component Allowance Label` text,
   `Deal Component Trigger` enum('Category','Department','Family','Product','Order','Customer','Customer Category','Customer List') DEFAULT NULL,
   `Deal Component Trigger Key` mediumint(8) unsigned DEFAULT NULL,
-  `Deal Component Terms Type` enum('Category Quantity Ordered','Department Quantity Ordered','Every Order','Family For Every Quantity Any Product Ordered','Department For Every Quantity Any Product Ordered','Voucher AND Order Interval','Amount AND Order Number','Amount AND Order Interval','Voucher AND Order Number','Voucher AND Amount','Amount','Order Total Net Amount','Order Total Net Amount AND Order Number','Order Total Net Amount AND Shipping Country','Order Total Net Amount AND Order Interval','Order Items Net Amount','Order Items Net Amount AND Order Number','Order Items Net Amount AND Shipping Country','Order Items Net Amount AND Order Interval','Order Total Amount','Order Total Amount AND Order Number','Order Total Amount AND Shipping Country','Order Total Amount AND Order Interval','Order Interval','Product Quantity Ordered','Family Quantity Ordered','Order Number','Shipping Country','Voucher','Department For Every Quantity Ordered','Family For Every Quantity Ordered','Product For Every Quantity Ordered') NOT NULL,
+  `Deal Component Terms Type` enum('Category For Every Quantity Ordered AND Voucher','Category For Every Quantity Ordered','Category For Every Quantity Any Product Ordered AND Voucher','Category For Every Quantity Any Product Ordered','Category Quantity Ordered','Category Quantity Ordered AND Voucher','Department Quantity Ordered','Every Order','Family For Every Quantity Any Product Ordered','Department For Every Quantity Any Product Ordered','Voucher AND Order Interval','Amount AND Order Number','Amount AND Order Interval','Voucher AND Order Number','Voucher AND Amount','Amount','Order Total Net Amount','Order Total Net Amount AND Order Number','Order Total Net Amount AND Shipping Country','Order Total Net Amount AND Order Interval','Order Items Net Amount','Order Items Net Amount AND Order Number','Order Items Net Amount AND Shipping Country','Order Items Net Amount AND Order Interval','Order Total Amount','Order Total Amount AND Order Number','Order Total Amount AND Shipping Country','Order Total Amount AND Order Interval','Order Interval','Product Quantity Ordered','Family Quantity Ordered','Order Number','Shipping Country','Voucher','Department For Every Quantity Ordered','Family For Every Quantity Ordered','Product For Every Quantity Ordered AND Voucher','Product For Every Quantity Ordered') NOT NULL,
   `Deal Component Terms Description` varchar(255) DEFAULT NULL,
   `Deal Component XHTML Terms Description Label` text,
   `Deal Component Terms Lock` enum('Yes','No') NOT NULL DEFAULT 'No',
@@ -3007,10 +3457,11 @@ CREATE TABLE `Deal Component Dimension` (
   `Deal Component Allowance Target` enum('Category','Product','Order','Shipping','Charge','Family','Department') DEFAULT NULL,
   `Deal Component Allowance Target Type` enum('Items','No Items') NOT NULL DEFAULT 'Items',
   `Deal Component Allowance Target Key` mediumint(8) unsigned DEFAULT NULL,
-  `Deal Component Allowance Target XHTML Label` varchar(255) NOT NULL,
+  `Deal Component Allowance Target Label` varchar(255) DEFAULT NULL,
+  `Deal Component Allowance Target XHTML Label` varchar(255) DEFAULT NULL,
   `Deal Component Allowance Description` varchar(255) DEFAULT NULL,
-  `Deal Component Allowance Plain Description` varchar(255) NOT NULL,
-  `Deal Component Allowance XHTML Description` varchar(255) NOT NULL,
+  `Deal Component Allowance Plain Description` varchar(255) DEFAULT NULL,
+  `Deal Component Allowance XHTML Description` varchar(255) DEFAULT NULL,
   `Deal Component XHTML Allowance Description Label` text,
   `Deal Component Allowance` varchar(255) DEFAULT NULL,
   `Deal Component Allowance Lock` enum('Yes','No') NOT NULL DEFAULT 'No',
@@ -3037,6 +3488,27 @@ CREATE TABLE `Deal Component Dimension` (
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
+-- Table structure for table `Deal Component History Bridge`
+--
+
+DROP TABLE IF EXISTS `Deal Component History Bridge`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!40101 SET character_set_client = utf8 */;
+CREATE TABLE `Deal Component History Bridge` (
+  `Deal Component Key` mediumint(8) unsigned NOT NULL,
+  `History Key` int(10) unsigned NOT NULL,
+  `Deletable` enum('Yes','No') NOT NULL DEFAULT 'No',
+  `Strikethrough` enum('Yes','No') NOT NULL DEFAULT 'No',
+  `Type` enum('Notes','Changes') NOT NULL DEFAULT 'Notes',
+  PRIMARY KEY (`Deal Component Key`,`History Key`),
+  KEY `Deal Component Key` (`Deal Component Key`),
+  KEY `History Key` (`History Key`),
+  KEY `Deletable` (`Deletable`),
+  KEY `Type` (`Type`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
 -- Table structure for table `Deal Dimension`
 --
 
@@ -3048,6 +3520,10 @@ CREATE TABLE `Deal Dimension` (
   `Deal Campaign Key` mediumint(8) unsigned DEFAULT NULL,
   `Deal Store Key` mediumint(8) unsigned NOT NULL,
   `Deal Status` enum('Suspended','Active','Finish','Waiting') NOT NULL DEFAULT 'Waiting',
+  `Deal Icon` text,
+  `Deal Name Label` text,
+  `Deal Term Label` text,
+  `Deal Allowance Label` text,
   `Deal Name` varchar(255) DEFAULT NULL,
   `Deal Label` varchar(255) DEFAULT NULL,
   `Deal Description` text,
@@ -3055,8 +3531,8 @@ CREATE TABLE `Deal Dimension` (
   `Deal Term Allowances Label` text,
   `Deal Trigger` enum('Order','Category','Department','Family','Product','Customer','Customer Category','Customer List') NOT NULL,
   `Deal Trigger Key` mediumint(9) NOT NULL DEFAULT '0',
-  `Deal Trigger XHTML Label` varchar(255) NOT NULL,
-  `Deal Terms Type` enum('Category Quantity Ordered','Department Quantity Ordered','Every Order','Family For Every Quantity Any Product Ordered','Department For Every Quantity Any Product Ordered','Voucher AND Order Interval','Amount AND Order Number','Amount AND Order Interval','Voucher AND Order Number','Voucher AND Amount','Amount','Order Total Net Amount','Order Total Net Amount AND Order Number','Order Total Net Amount AND Shipping Country','Order Total Net Amount AND Order Interval','Order Items Net Amount','Order Items Net Amount AND Order Number','Order Items Net Amount AND Shipping Country','Order Items Net Amount AND Order Interval','Order Total Amount','Order Total Amount AND Order Number','Order Total Amount AND Shipping Country','Order Total Amount AND Order Interval','Order Interval','Product Quantity Ordered','Family Quantity Ordered','Order Number','Shipping Country','Voucher','Department For Every Quantity Ordered','Family For Every Quantity Ordered','Product For Every Quantity Ordered') NOT NULL,
+  `Deal Trigger XHTML Label` varchar(255) DEFAULT NULL,
+  `Deal Terms Type` enum('Category For Every Quantity Ordered AND Voucher','Category For Every Quantity Ordered','Category For Every Quantity Any Product Ordered AND Voucher','Category For Every Quantity Any Product Ordered','Category Quantity Ordered','Category Quantity Ordered AND Voucher','Department Quantity Ordered','Every Order','Family For Every Quantity Any Product Ordered','Department For Every Quantity Any Product Ordered','Voucher AND Order Interval','Amount AND Order Number','Amount AND Order Interval','Voucher AND Order Number','Voucher AND Amount','Amount','Order Total Net Amount','Order Total Net Amount AND Order Number','Order Total Net Amount AND Shipping Country','Order Total Net Amount AND Order Interval','Order Items Net Amount','Order Items Net Amount AND Order Number','Order Items Net Amount AND Shipping Country','Order Items Net Amount AND Order Interval','Order Total Amount','Order Total Amount AND Order Number','Order Total Amount AND Shipping Country','Order Total Amount AND Order Interval','Order Interval','Product Quantity Ordered','Family Quantity Ordered','Order Number','Shipping Country','Voucher','Department For Every Quantity Ordered','Family For Every Quantity Ordered','Product For Every Quantity Ordered AND Voucher','Product For Every Quantity Ordered') NOT NULL,
   `Deal Terms Description` varchar(255) DEFAULT NULL,
   `Deal XHTML Terms Description Label` text,
   `Deal Terms` varchar(255) DEFAULT NULL,
@@ -3067,8 +3543,10 @@ CREATE TABLE `Deal Dimension` (
   `Deal Total Acc Used Customers` mediumint(8) unsigned NOT NULL DEFAULT '0',
   `Deal Total Acc Applied Orders` mediumint(8) unsigned DEFAULT '0',
   `Deal Total Acc Applied Customers` mediumint(8) unsigned DEFAULT '0',
+  `Deal Number History Records` mediumint(8) unsigned NOT NULL DEFAULT '0',
   `Deal Remainder Email Campaign Key` mediumint(8) unsigned DEFAULT NULL,
   `Deal Number Active Components` mediumint(8) unsigned NOT NULL DEFAULT '0',
+  `Deal Number Components` mediumint(8) unsigned NOT NULL DEFAULT '0',
   `Deal Voucher Key` mediumint(8) unsigned DEFAULT NULL,
   `Deal Allowance Target Type` enum('Items','No Items') NOT NULL DEFAULT 'Items',
   `Deal Mirror Key` mediumint(8) unsigned DEFAULT NULL,
@@ -3142,6 +3620,7 @@ CREATE TABLE `Delivery Note Dimension` (
   `Delivery Note Date Done Approved` datetime DEFAULT NULL,
   `Delivery Note Date Dispatched Approved` datetime DEFAULT NULL,
   `Delivery Note Date Dispatched` datetime DEFAULT NULL,
+  `Delivery Note Date Cancelled` datetime DEFAULT NULL,
   `Delivery Note Date` datetime DEFAULT NULL COMMENT 'Date when the DN dispatched',
   `Delivery Note Approved Done` enum('Yes','No') NOT NULL DEFAULT 'No',
   `Delivery Note Approved To Dispatch` enum('Yes','No') NOT NULL DEFAULT 'No',
@@ -3214,6 +3693,12 @@ CREATE TABLE `Delivery Note Dimension` (
   `Delivery Note Number To Pick Items` mediumint(8) unsigned NOT NULL DEFAULT '0',
   `Delivery Note Number Ordered Parts` smallint(5) unsigned NOT NULL DEFAULT '0',
   `Delivery Note Pending` enum('Yes','No') DEFAULT 'Yes',
+  `Delivery Note Order Alert` enum('No','Yes','Closed') NOT NULL DEFAULT 'No',
+  `Delivery Note Premium Key` mediumint(9) DEFAULT NULL,
+  `Delivery Note Items Cost` decimal(16,2) DEFAULT '0.00',
+  `Delivery Note Shipping Cost` decimal(16,2) DEFAULT '0.00',
+  `Delivery Note Shipper Key` mediumint(8) unsigned DEFAULT NULL,
+  `Delivery Note Shipper Tracking` varchar(255) DEFAULT NULL,
   PRIMARY KEY (`Delivery Note Key`),
   KEY `Metadata` (`Delivery Note Metadata`(12)),
   KEY `Delivery Note Type` (`Delivery Note Type`),
@@ -3227,7 +3712,11 @@ CREATE TABLE `Delivery Note Dimension` (
   KEY `Delivery Note Waiting For Parts` (`Delivery Note Waiting For Parts`),
   KEY `Delivery Note File As` (`Delivery Note File As`),
   KEY `Delivery Note Order Key` (`Delivery Note Order Key`),
-  KEY `Delivery Note Date` (`Delivery Note Date`)
+  KEY `Delivery Note Date` (`Delivery Note Date`),
+  KEY `Delivery Note Order Alert` (`Delivery Note Order Alert`),
+  KEY `Delivery Note Premium Key` (`Delivery Note Premium Key`),
+  KEY `Delivery Note Address Country 2 Alpha Code` (`Delivery Note Address Country 2 Alpha Code`),
+  KEY `Delivery Note Shipper Key` (`Delivery Note Shipper Key`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
@@ -3279,6 +3768,7 @@ DROP TABLE IF EXISTS `Download Dimension`;
 /*!40101 SET character_set_client = utf8 */;
 CREATE TABLE `Download Dimension` (
   `Download Key` int(10) unsigned NOT NULL AUTO_INCREMENT,
+  `Download State` enum('Created','Error','Cancelled','In Process','Finish','Downloaded') NOT NULL DEFAULT 'Created',
   `Download Type` varchar(255) DEFAULT NULL,
   `Download Filename` varchar(255) DEFAULT NULL,
   `Download Date` datetime DEFAULT NULL,
@@ -3287,7 +3777,8 @@ CREATE TABLE `Download Dimension` (
   `Download Data` longblob,
   `Download Attempts` smallint(5) unsigned NOT NULL DEFAULT '0',
   `Download Attempt Last Date` datetime DEFAULT NULL,
-  PRIMARY KEY (`Download Key`)
+  PRIMARY KEY (`Download Key`),
+  KEY `Download State` (`Download State`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
@@ -3300,6 +3791,8 @@ DROP TABLE IF EXISTS `Email Blueprint Dimension`;
 /*!40101 SET character_set_client = utf8 */;
 CREATE TABLE `Email Blueprint Dimension` (
   `Email Blueprint Key` mediumint(8) unsigned NOT NULL AUTO_INCREMENT,
+  `Email Blueprint Email Campaign Type Key` mediumint(8) unsigned DEFAULT NULL,
+  `Email Blueprint Email Template Key` mediumint(8) unsigned DEFAULT NULL,
   `Email Blueprint Role` varchar(64) COLLATE utf8_unicode_ci NOT NULL,
   `Email Blueprint Scope` varchar(128) COLLATE utf8_unicode_ci DEFAULT NULL,
   `Email Blueprint Scope Key` mediumint(8) unsigned DEFAULT NULL,
@@ -3309,7 +3802,9 @@ CREATE TABLE `Email Blueprint Dimension` (
   `Email Blueprint Image Key` mediumint(8) unsigned DEFAULT NULL,
   `Email Blueprint Created` datetime DEFAULT NULL,
   `Email Blueprint Created By` mediumint(8) unsigned DEFAULT NULL,
-  PRIMARY KEY (`Email Blueprint Key`)
+  PRIMARY KEY (`Email Blueprint Key`),
+  KEY `Email Blueprint Email Template Key` (`Email Blueprint Email Template Key`),
+  KEY `Email Blueprint Email Campaign Type Key` (`Email Blueprint Email Campaign Type Key`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
@@ -3359,31 +3854,60 @@ DROP TABLE IF EXISTS `Email Campaign Dimension`;
 /*!40101 SET character_set_client = utf8 */;
 CREATE TABLE `Email Campaign Dimension` (
   `Email Campaign Key` mediumint(8) unsigned NOT NULL AUTO_INCREMENT,
-  `Email Campaign Type` enum('Newsletter','Marketing','Reminder') NOT NULL DEFAULT 'Marketing',
+  `Email Campaign Type` enum('Newsletter','Marketing','GR Reminder','AbandonedCart','Invite Mailshot','OOS Notification') NOT NULL DEFAULT 'Marketing',
   `Email Campaign Store Key` smallint(5) unsigned NOT NULL,
+  `Email Campaign Email Template Type Key` mediumint(8) unsigned DEFAULT NULL,
+  `Email Campaign Email Template Key` mediumint(8) unsigned DEFAULT NULL,
+  `Email Campaign Scope` varchar(255) DEFAULT NULL,
+  `Email Campaign Scope Key` mediumint(8) unsigned DEFAULT NULL,
   `Email Campaign Creation Date` datetime NOT NULL,
+  `Email Campaign Setup Date` datetime DEFAULT NULL,
+  `Email Campaign Composed Date` datetime DEFAULT NULL,
   `Email Campaign Last Updated Date` datetime NOT NULL,
   `Email Campaign Start Overdue Date` datetime DEFAULT NULL,
+  `Email Campaign Stopped Date` datetime DEFAULT NULL,
   `Email Campaign Start Send Date` datetime DEFAULT NULL,
   `Email Campaign End Send Date` datetime DEFAULT NULL,
   `Email Campaign Name` varchar(255) NOT NULL,
-  `Email Campaign Scope` text NOT NULL,
-  `Email Campaign Maximum Emails` mediumint(8) unsigned DEFAULT NULL,
-  `Email Campaign Status` enum('Creating','Ready','Sending','Complete') NOT NULL,
-  `Email Campaign Engine` enum('Internal','External') NOT NULL DEFAULT 'Internal',
-  `Email Campaign Content Type` enum('HTML','Multi HTML','Plain','HTML Template','Multi Plain','Multi HTML Template','Multi Mixed','Unknown') NOT NULL DEFAULT 'Unknown',
-  `Email Campaign Number Contents` mediumint(8) unsigned NOT NULL DEFAULT '1',
-  `Email Campaign Subject` varchar(64) NOT NULL,
-  `Email Campaign Recipients Preview` text NOT NULL,
-  `Number of Emails` smallint(5) NOT NULL DEFAULT '0',
-  `Number of Read Emails` smallint(5) NOT NULL DEFAULT '0',
-  `Number of Rejected Emails` smallint(5) NOT NULL DEFAULT '0',
+  `Email Campaign State` enum('InProcess','SetRecipients','ComposingEmail','Ready','Scheduled','Sending','Sent','Cancelled','Stopped') NOT NULL DEFAULT 'InProcess',
+  `Email Campaign Number Estimated Emails` mediumint(8) unsigned NOT NULL DEFAULT '0',
+  `Email Campaign Number of Emails` mediumint(8) unsigned NOT NULL DEFAULT '0',
+  `Email Campaign Sent` mediumint(8) unsigned NOT NULL DEFAULT '0',
+  `Email Campaign Delivered` mediumint(8) unsigned NOT NULL DEFAULT '0',
+  `Email Campaign Open` mediumint(8) unsigned NOT NULL DEFAULT '0',
+  `Email Campaign Clicked` mediumint(8) unsigned NOT NULL DEFAULT '0',
+  `Email Campaign Errors` mediumint(8) unsigned NOT NULL DEFAULT '0',
+  `Email Campaign Hard Bounces` mediumint(8) unsigned NOT NULL DEFAULT '0',
+  `Email Campaign Soft Bounces` mediumint(8) unsigned NOT NULL DEFAULT '0',
+  `Email Campaign Spams` mediumint(8) unsigned NOT NULL DEFAULT '0',
+  `Email Campaign Unsubscribed` mediumint(8) unsigned NOT NULL DEFAULT '0',
+  `Email Campaign Metadata` mediumtext,
   PRIMARY KEY (`Email Campaign Key`),
-  UNIQUE KEY `Email Campaign Store Key_2` (`Email Campaign Store Key`,`Email Campaign Name`),
-  KEY `Email Campaign Status` (`Email Campaign Status`),
+  KEY `Email Campaign Status` (`Email Campaign State`),
   KEY `Email Campaign Store Key` (`Email Campaign Store Key`),
   KEY `Email Campaign Type` (`Email Campaign Type`)
 ) ENGINE=MyISAM DEFAULT CHARSET=utf8;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Table structure for table `Email Campaign History Bridge`
+--
+
+DROP TABLE IF EXISTS `Email Campaign History Bridge`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!40101 SET character_set_client = utf8 */;
+CREATE TABLE `Email Campaign History Bridge` (
+  `Email Campaign Key` mediumint(8) unsigned NOT NULL,
+  `History Key` int(10) unsigned NOT NULL,
+  `Deletable` enum('Yes','No') NOT NULL DEFAULT 'No',
+  `Strikethrough` enum('Yes','No') NOT NULL DEFAULT 'No',
+  `Type` enum('Notes','Changes') NOT NULL DEFAULT 'Notes',
+  PRIMARY KEY (`Email Campaign Key`,`History Key`),
+  KEY `Email Campaign Key` (`Email Campaign Key`),
+  KEY `History Key` (`History Key`),
+  KEY `Deletable` (`Deletable`),
+  KEY `Type` (`Type`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -3443,6 +3967,57 @@ CREATE TABLE `Email Campaign Objective Link Bridge` (
   `Email Link Key` mediumint(8) unsigned NOT NULL,
   PRIMARY KEY (`Email Campaign Objective Key`,`Email Link Key`)
 ) ENGINE=MyISAM DEFAULT CHARSET=utf8;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Table structure for table `Email Campaign Type Dimension`
+--
+
+DROP TABLE IF EXISTS `Email Campaign Type Dimension`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!40101 SET character_set_client = utf8 */;
+CREATE TABLE `Email Campaign Type Dimension` (
+  `Email Campaign Type Key` smallint(6) NOT NULL AUTO_INCREMENT,
+  `Email Campaign Type Status` enum('Active','Suspended','InProcess') COLLATE utf8_unicode_ci NOT NULL DEFAULT 'InProcess',
+  `Email Campaign Type Store Key` smallint(5) unsigned DEFAULT NULL,
+  `Email Campaign Type Code` enum('AbandonedCart','Delivery Confirmation','GR Reminder','Invite','Invite Mailshot','Marketing','Newsletter','OOS Notification','Order Confirmation','Password Reminder','Registration') COLLATE utf8_unicode_ci DEFAULT NULL,
+  `Email Campaign Type Mailshots` mediumint(8) unsigned NOT NULL DEFAULT '0',
+  `Email Campaign Type Scheduled` mediumint(8) unsigned NOT NULL DEFAULT '0',
+  `Email Campaign Type Sent` mediumint(8) unsigned NOT NULL DEFAULT '0',
+  `Email Campaign Type Delivered` mediumint(8) unsigned NOT NULL DEFAULT '0',
+  `Email Campaign Type Open` mediumint(8) unsigned NOT NULL DEFAULT '0',
+  `Email Campaign Type Clicked` mediumint(8) unsigned NOT NULL DEFAULT '0',
+  `Email Campaign Type Errors` mediumint(8) unsigned NOT NULL DEFAULT '0',
+  `Email Campaign Type Hard Bounces` mediumint(8) unsigned NOT NULL DEFAULT '0',
+  `Email Campaign Type Soft Bounces` mediumint(8) unsigned NOT NULL DEFAULT '0',
+  `Email Campaign Type Spams` mediumint(8) unsigned NOT NULL DEFAULT '0',
+  `Email Campaign Type Unsubscribed` mediumint(8) unsigned NOT NULL DEFAULT '0',
+  `Email Campaign Type Email Template Key` mediumint(8) unsigned DEFAULT NULL,
+  `Email Campaign Type Metadata` text COLLATE utf8_unicode_ci,
+  PRIMARY KEY (`Email Campaign Type Key`),
+  UNIQUE KEY `Email Campaign Type` (`Email Campaign Type Code`,`Email Campaign Type Store Key`) USING BTREE
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Table structure for table `Email Campaign Type History Bridge`
+--
+
+DROP TABLE IF EXISTS `Email Campaign Type History Bridge`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!40101 SET character_set_client = utf8 */;
+CREATE TABLE `Email Campaign Type History Bridge` (
+  `Email Campaign Type Key` mediumint(8) unsigned NOT NULL,
+  `History Key` int(10) unsigned NOT NULL,
+  `Deletable` enum('Yes','No') NOT NULL DEFAULT 'No',
+  `Strikethrough` enum('Yes','No') NOT NULL DEFAULT 'No',
+  `Type` enum('Notes','Changes') NOT NULL DEFAULT 'Notes',
+  PRIMARY KEY (`Email Campaign Type Key`,`History Key`),
+  KEY `Email Campaign Type Key` (`Email Campaign Type Key`),
+  KEY `History Key` (`History Key`),
+  KEY `Deletable` (`Deletable`),
+  KEY `Type` (`Type`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -3708,8 +4283,11 @@ DROP TABLE IF EXISTS `Email Send Dimension`;
 /*!40101 SET character_set_client = utf8 */;
 CREATE TABLE `Email Send Dimension` (
   `Email Send Key` int(10) unsigned NOT NULL AUTO_INCREMENT,
-  `Email Send Type` enum('Test Email','Marketing','Registration','Password Reminder','Newsletter','Order Confirmation','Delivery Confirmation','Issue Reporting') NOT NULL,
+  `Email Send State` enum('Ready','Send to SES','Rejected by SES','Send','Read','Hard Bounce','Soft Bounce','Spam','Delivered','Opened','Clicked','Error') NOT NULL DEFAULT 'Ready',
+  `Email Send Type` enum('Test Email','Marketing','Registration','Password Reminder','Newsletter','Order Confirmation','Delivery Confirmation','Issue Reporting','Abandoned Cart') NOT NULL,
   `Email Send Type Key` mediumint(9) NOT NULL DEFAULT '0',
+  `Email Send Email Template Key` mediumint(9) DEFAULT NULL,
+  `Email Send Published Email Template Key` mediumint(9) DEFAULT NULL,
   `Email Send Type Parent Key` mediumint(8) unsigned DEFAULT NULL,
   `Email Send Recipient Type` enum('Customer','Supplier','User','Other','Staff') NOT NULL DEFAULT 'Other',
   `Email Send Recipient Key` mediumint(8) unsigned DEFAULT NULL,
@@ -3719,13 +4297,17 @@ CREATE TABLE `Email Send Dimension` (
   `Email Send First Read Date` datetime DEFAULT NULL,
   `Email Send Last Read Date` datetime DEFAULT NULL,
   `Email Send Number Reads` smallint(5) unsigned DEFAULT NULL,
+  `Email Send SES Id` varchar(64) DEFAULT NULL,
+  `Email Send Note` text,
   PRIMARY KEY (`Email Send Key`),
   KEY `Email Key` (`Email Key`),
   KEY `Email Send Type` (`Email Send Type`),
   KEY `Email Send Parent Key` (`Email Send Recipient Key`),
   KEY `Email Send Parent Type` (`Email Send Recipient Type`),
   KEY `Email Send Type Key` (`Email Send Type Key`),
-  KEY `Email Send Type Parent Key` (`Email Send Type Parent Key`)
+  KEY `Email Send Type Parent Key` (`Email Send Type Parent Key`),
+  KEY `Email Send State` (`Email Send State`),
+  KEY `Email Send Email Template Key` (`Email Send Email Template Key`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
@@ -3812,19 +4394,6 @@ CREATE TABLE `Email Template Color Scheme Dimension` (
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
--- Table structure for table `Email Template Data`
---
-
-DROP TABLE IF EXISTS `Email Template Data`;
-/*!40101 SET @saved_cs_client     = @@character_set_client */;
-/*!40101 SET character_set_client = utf8 */;
-CREATE TABLE `Email Template Data` (
-  `Email Template Key` mediumint(8) unsigned NOT NULL,
-  PRIMARY KEY (`Email Template Key`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8;
-/*!40101 SET character_set_client = @saved_cs_client */;
-
---
 -- Table structure for table `Email Template Dimension`
 --
 
@@ -3833,6 +4402,8 @@ DROP TABLE IF EXISTS `Email Template Dimension`;
 /*!40101 SET character_set_client = utf8 */;
 CREATE TABLE `Email Template Dimension` (
   `Email Template Key` mediumint(8) unsigned NOT NULL AUTO_INCREMENT,
+  `Email Template Email Campaign Type Key` mediumint(8) unsigned DEFAULT NULL,
+  `Email Template State` enum('Active','Suspended') NOT NULL DEFAULT 'Active',
   `Email Template Published Email Key` mediumint(8) unsigned DEFAULT NULL,
   `Email Template Name` varchar(64) NOT NULL,
   `Email Template Type` enum('HTML','Text') NOT NULL DEFAULT 'HTML',
@@ -3846,6 +4417,7 @@ CREATE TABLE `Email Template Dimension` (
   `Email Template Editing Checksum` varchar(64) DEFAULT NULL,
   `Email Template Published Checksum` varchar(64) DEFAULT NULL,
   `Email Template Text Last Edited` datetime DEFAULT NULL,
+  `Email Template Created` datetime DEFAULT NULL,
   `Email Template Last Edited` datetime DEFAULT NULL,
   `Email Template Last Edited By` mediumint(8) unsigned DEFAULT NULL,
   `Email Template Deliveries` int(10) unsigned NOT NULL DEFAULT '0',
@@ -3853,7 +4425,17 @@ CREATE TABLE `Email Template Dimension` (
   `Email Template Bounces` int(10) unsigned NOT NULL DEFAULT '0',
   `Email Template Complains` int(10) unsigned NOT NULL DEFAULT '0',
   `Email Template Rejects` int(10) unsigned NOT NULL DEFAULT '0',
-  PRIMARY KEY (`Email Template Key`)
+  `Email Template Sent` mediumint(8) unsigned NOT NULL DEFAULT '0',
+  `Email Template Delivered` mediumint(8) unsigned NOT NULL DEFAULT '0',
+  `Email Template Open` mediumint(8) unsigned NOT NULL DEFAULT '0',
+  `Email Template Clicked` mediumint(8) unsigned NOT NULL DEFAULT '0',
+  `Email Template Errors` mediumint(8) unsigned NOT NULL DEFAULT '0',
+  `Email Template Hard Bounces` mediumint(8) unsigned NOT NULL DEFAULT '0',
+  `Email Template Soft Bounces` mediumint(8) unsigned NOT NULL DEFAULT '0',
+  `Email Template Spams` mediumint(8) unsigned NOT NULL DEFAULT '0',
+  `Email Template Unsubscribed` mediumint(8) unsigned NOT NULL DEFAULT '0',
+  PRIMARY KEY (`Email Template Key`),
+  KEY `Email Template Email Campaign Type Key` (`Email Template Email Campaign Type Key`)
 ) ENGINE=MyISAM DEFAULT CHARSET=utf8;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
@@ -3902,6 +4484,27 @@ CREATE TABLE `Email Template Historic Color Scheme Dimension` (
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
+-- Table structure for table `Email Template History Bridge`
+--
+
+DROP TABLE IF EXISTS `Email Template History Bridge`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!40101 SET character_set_client = utf8 */;
+CREATE TABLE `Email Template History Bridge` (
+  `Email Template Key` mediumint(8) unsigned NOT NULL,
+  `History Key` int(10) unsigned NOT NULL,
+  `Deletable` enum('Yes','No') NOT NULL DEFAULT 'No',
+  `Strikethrough` enum('Yes','No') NOT NULL DEFAULT 'No',
+  `Type` enum('Notes','Changes') NOT NULL DEFAULT 'Notes',
+  PRIMARY KEY (`Email Template Key`,`History Key`),
+  KEY `Email Template Key` (`Email Template Key`),
+  KEY `History Key` (`History Key`),
+  KEY `Deletable` (`Deletable`),
+  KEY `Type` (`Type`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
 -- Table structure for table `Email Template Postcard Dimension`
 --
 
@@ -3915,6 +4518,78 @@ CREATE TABLE `Email Template Postcard Dimension` (
   `Image Key` mediumint(8) unsigned NOT NULL,
   PRIMARY KEY (`Email Template Postcard Key`)
 ) ENGINE=MyISAM DEFAULT CHARSET=utf8;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Table structure for table `Email Tracking Dimension`
+--
+
+DROP TABLE IF EXISTS `Email Tracking Dimension`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!40101 SET character_set_client = utf8 */;
+CREATE TABLE `Email Tracking Dimension` (
+  `Email Tracking Key` int(10) unsigned NOT NULL AUTO_INCREMENT,
+  `Email Tracking Email` varchar(255) DEFAULT NULL,
+  `Email Tracking State` enum('Ready','Sent to SES','Rejected by SES','Sent','Soft Bounce','Hard Bounce','Delivered','Spam','Opened','Clicked','Error') NOT NULL DEFAULT 'Ready',
+  `Email Tracking Delivery Status Code` varchar(64) DEFAULT NULL,
+  `Email Tracking Email Template Type Key` mediumint(8) unsigned DEFAULT NULL,
+  `Email Tracking Email Mailshot Key` mediumint(8) unsigned DEFAULT NULL,
+  `Email Tracking Email Template Key` mediumint(8) unsigned DEFAULT NULL,
+  `Email Tracking Published Email Template Key` mediumint(8) unsigned DEFAULT NULL,
+  `Email Tracking Recipient` enum('Prospect','Customer','Supplier','User','Other','Staff') NOT NULL DEFAULT 'Other',
+  `Email Tracking Recipient Key` mediumint(8) unsigned DEFAULT NULL,
+  `Email Tracking Created Date` datetime NOT NULL,
+  `Email Tracking Sent Date` datetime DEFAULT NULL,
+  `Email Tracking First Read Date` datetime DEFAULT NULL,
+  `Email Tracking Last Read Date` datetime DEFAULT NULL,
+  `Email Tracking Number Reads` smallint(5) unsigned DEFAULT '0',
+  `Email Tracking First Clicked Date` datetime DEFAULT NULL,
+  `Email Tracking Last Clicked Date` datetime DEFAULT NULL,
+  `Email Tracking Number Clicks` smallint(5) unsigned NOT NULL DEFAULT '0',
+  `Email Tracking SES Id` varchar(128) DEFAULT NULL,
+  `Email Tracking Spam` enum('Yes','No') NOT NULL DEFAULT 'No',
+  `Email Tracking Unsubscribed` enum('Yes','No') NOT NULL DEFAULT 'No',
+  PRIMARY KEY (`Email Tracking Key`),
+  KEY `Email Tracking SES Id` (`Email Tracking SES Id`),
+  KEY `Email Tracking Email Template Type Key` (`Email Tracking Email Template Type Key`),
+  KEY `Email Tracking Email Mailshot Key` (`Email Tracking Email Mailshot Key`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Table structure for table `Email Tracking Email Copy`
+--
+
+DROP TABLE IF EXISTS `Email Tracking Email Copy`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!40101 SET character_set_client = utf8 */;
+CREATE TABLE `Email Tracking Email Copy` (
+  `Email Tracking Email Copy Key` int(10) unsigned NOT NULL,
+  `Email Tracking Email Copy Subject` varchar(255) NOT NULL,
+  `Email Tracking Email Copy Body` mediumtext,
+  PRIMARY KEY (`Email Tracking Email Copy Key`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Table structure for table `Email Tracking Event Dimension`
+--
+
+DROP TABLE IF EXISTS `Email Tracking Event Dimension`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!40101 SET character_set_client = utf8 */;
+CREATE TABLE `Email Tracking Event Dimension` (
+  `Email Tracking Event Key` int(10) unsigned NOT NULL AUTO_INCREMENT,
+  `Email Tracking Event Tracking Key` int(10) unsigned NOT NULL,
+  `Email Tracking Event Type` enum('Sent','Rejected by SES','Send','Read','Hard Bounce','Soft Bounce','Spam','Delivered','Opened','Clicked','Send to SES Error') COLLATE utf8_unicode_ci DEFAULT NULL,
+  `Email Tracking Event Status Code` varchar(64) COLLATE utf8_unicode_ci DEFAULT NULL,
+  `Email Tracking Event Note` text COLLATE utf8_unicode_ci,
+  `Email Tracking Event Date` datetime DEFAULT NULL,
+  `Email Tracking Event Data` mediumtext COLLATE utf8_unicode_ci,
+  `Email Tracking Event Message ID` varchar(255) COLLATE utf8_unicode_ci DEFAULT NULL,
+  PRIMARY KEY (`Email Tracking Event Key`),
+  KEY `Email Tracking Event Tracking Key` (`Email Tracking Event Tracking Key`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -3974,8 +4649,8 @@ DROP TABLE IF EXISTS `Fork Dimension`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
 /*!40101 SET character_set_client = utf8 */;
 CREATE TABLE `Fork Dimension` (
-  `Fork Key` mediumint(8) unsigned NOT NULL AUTO_INCREMENT,
-  `Fork Type` enum('au_export','au_upload','au_housekeeping','export','import','edit','ping_sitemap','housekeeping','sendemail','edit_pages','au_time_series','au_calculate_sales','au_export_edit_template','au_upload_edit') NOT NULL,
+  `Fork Key` int(10) unsigned NOT NULL AUTO_INCREMENT,
+  `Fork Type` enum('au_export','au_upload','au_housekeeping','export','import','edit','ping_sitemap','housekeeping','sendemail','edit_pages','au_time_series','au_calculate_sales','au_export_edit_template','au_upload_edit','au_send_mailshot') NOT NULL,
   `Fork Process Data` text NOT NULL,
   `Fork Token` varchar(64) DEFAULT NULL,
   `Fork State` enum('Queued','In Process','Finished','Cancelled') NOT NULL DEFAULT 'Queued',
@@ -4062,7 +4737,7 @@ CREATE TABLE `History Dimension` (
   `Subject` enum('Customer','Staff','Supplier','Administrator','System') DEFAULT NULL,
   `Subject Key` mediumint(8) unsigned DEFAULT NULL,
   `Action` enum('sold_since','last_sold','first_sold','placed','wrote','deleted','edited','cancelled','charged','merged','created','associated','disassociate','register','login','logout','fail_login','password_request','password_reset','search') DEFAULT 'edited',
-  `Direct Object` enum('Account','After Sale','Delivery Note','Category','Warehouse','Warehouse Area','Shelf','Location','Company Department','Company Area','Position','Store','User','Product','Address','Customer','Note','Order','Telecom','Email','Company','Contact','FAX','Telephone','Mobile','Work Telephone','Office Fax','Supplier','Family','Department','Attachment','Supplier Product','Part','Site','Page','Invoice','Category Customer','Category Part','Category Invoice','Category Supplier','Category Product','Category Family','Purchase Order','Supplier Delivery Note','Supplier Invoice','Webpage','Website') DEFAULT NULL,
+  `Direct Object` enum('Order Basket Purge','Email Campaign','Deal Campaign','Account','After Sale','Delivery Note','Category','Warehouse','Warehouse Area','Shelf','Location','Company Department','Company Area','Position','Store','User','Product','Address','Customer','Note','Order','Telecom','Email','Company','Contact','FAX','Telephone','Mobile','Work Telephone','Office Fax','Supplier','Family','Department','Attachment','Supplier Product','Part','Site','Page','Invoice','Category Customer','Category Part','Category Invoice','Category Supplier','Category Product','Category Family','Purchase Order','Supplier Delivery Note','Supplier Invoice','Webpage','Website','Prospect') DEFAULT NULL,
   `Direct Object Key` mediumint(8) unsigned DEFAULT '0',
   `Preposition` enum('about','','to','on','because') DEFAULT NULL,
   `Indirect Object` varchar(128) DEFAULT NULL,
@@ -4343,6 +5018,7 @@ CREATE TABLE `Inventory Spanshot Fact` (
   `Value Commercial` decimal(9,2) DEFAULT NULL,
   `Storing Cost` decimal(12,2) DEFAULT NULL,
   `Quantity Sold` float NOT NULL DEFAULT '0',
+  `Quantity Given` float unsigned NOT NULL DEFAULT '0',
   `Quantity In` float NOT NULL DEFAULT '0',
   `Quantity Lost` float NOT NULL DEFAULT '0',
   `Quantity Open` float DEFAULT NULL,
@@ -4357,6 +5033,10 @@ CREATE TABLE `Inventory Spanshot Fact` (
   `Value Commercial Open` float NOT NULL DEFAULT '0',
   `Value Commercial High` float NOT NULL DEFAULT '0',
   `Value Commercial Low` float NOT NULL DEFAULT '0',
+  `Inventory Spanshot Amount In PO` decimal(12,2) NOT NULL DEFAULT '0.00',
+  `Inventory Spanshot Amount In Other` decimal(12,2) NOT NULL DEFAULT '0.00',
+  `Inventory Spanshot Amount Out Sales` decimal(12,2) NOT NULL DEFAULT '0.00',
+  `Inventory Spanshot Amount Out Other` decimal(12,2) NOT NULL DEFAULT '0.00',
   `Location Type` enum('Picking','Storing','Displaying','Unknown') NOT NULL DEFAULT 'Unknown',
   `Stock Available` decimal(3,2) NOT NULL DEFAULT '1.00',
   `Dormant 1 Year` enum('Yes','No','NA') NOT NULL DEFAULT 'NA',
@@ -4367,7 +5047,26 @@ CREATE TABLE `Inventory Spanshot Fact` (
   KEY `Warehouse Key` (`Warehouse Key`),
   KEY `Location Type` (`Location Type`),
   KEY `Dormant 1 Year` (`Dormant 1 Year`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8
+/*!50100 PARTITION BY RANGE ( YEAR(`Date`))
+(PARTITION p0 VALUES LESS THAN (2002) ENGINE = InnoDB,
+ PARTITION p1 VALUES LESS THAN (2003) ENGINE = InnoDB,
+ PARTITION p3 VALUES LESS THAN (2004) ENGINE = InnoDB,
+ PARTITION p4 VALUES LESS THAN (2005) ENGINE = InnoDB,
+ PARTITION p5 VALUES LESS THAN (2006) ENGINE = InnoDB,
+ PARTITION p6 VALUES LESS THAN (2007) ENGINE = InnoDB,
+ PARTITION p7 VALUES LESS THAN (2008) ENGINE = InnoDB,
+ PARTITION p8 VALUES LESS THAN (2009) ENGINE = InnoDB,
+ PARTITION p9 VALUES LESS THAN (2010) ENGINE = InnoDB,
+ PARTITION p10 VALUES LESS THAN (2011) ENGINE = InnoDB,
+ PARTITION p11 VALUES LESS THAN (2012) ENGINE = InnoDB,
+ PARTITION p12 VALUES LESS THAN (2013) ENGINE = InnoDB,
+ PARTITION p13 VALUES LESS THAN (2014) ENGINE = InnoDB,
+ PARTITION p14 VALUES LESS THAN (2015) ENGINE = InnoDB,
+ PARTITION p15 VALUES LESS THAN (2016) ENGINE = InnoDB,
+ PARTITION p16 VALUES LESS THAN (2017) ENGINE = InnoDB,
+ PARTITION p17 VALUES LESS THAN (2018) ENGINE = InnoDB,
+ PARTITION p18 VALUES LESS THAN MAXVALUE ENGINE = InnoDB) */;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -4392,7 +5091,7 @@ CREATE TABLE `Inventory Transaction Fact` (
   `Warehouse Key` smallint(5) unsigned NOT NULL DEFAULT '1',
   `Location Key` smallint(6) unsigned NOT NULL DEFAULT '1',
   `Inventory Transaction Record Type` enum('Movement','Helper') NOT NULL DEFAULT 'Helper',
-  `Inventory Transaction Type` enum('Move','Order In Process','No Dispatched','Sale','Audit','In','Adjust','Broken','Lost','Not Found','Associate','Disassociate','Move In','Move Out','Other Out') NOT NULL,
+  `Inventory Transaction Type` enum('Move','Order In Process','No Dispatched','Sale','Audit','In','Adjust','Broken','Lost','Not Found','Associate','Disassociate','Move In','Move Out','Other Out','Restock','FailSale','Production') NOT NULL,
   `Inventory Transaction Section` enum('OIP','In','Move','Out','Audit','NoDispatched','Other') NOT NULL DEFAULT 'Other',
   `Inventory Transaction Quantity` float DEFAULT NULL,
   `Inventory Transaction Amount` decimal(12,3) DEFAULT NULL,
@@ -4406,6 +5105,7 @@ CREATE TABLE `Inventory Transaction Fact` (
   `No Authorized` float NOT NULL DEFAULT '0',
   `Not Found` float NOT NULL DEFAULT '0',
   `No Picked Other` float NOT NULL DEFAULT '0',
+  `Waitng` float unsigned NOT NULL DEFAULT '0',
   `Given` float NOT NULL DEFAULT '0',
   `Amount In` decimal(12,2) NOT NULL DEFAULT '0.00',
   `Picker Key` mediumint(9) DEFAULT NULL,
@@ -4426,6 +5126,10 @@ CREATE TABLE `Inventory Transaction Fact` (
   `Map To Order Transaction Fact Parts Multiplicity` smallint(5) unsigned NOT NULL DEFAULT '1',
   `Map To Order Transaction Fact XHTML Info` text,
   `Inventory Transaction Fact Delivery 2 Alpha Code` varchar(2) DEFAULT NULL,
+  `Inventory Transaction State` enum('Picked','Done') DEFAULT NULL,
+  `Running Stock` float DEFAULT NULL,
+  `Running Stock Value` float DEFAULT '0',
+  `Running Cost per SKO` float DEFAULT NULL,
   KEY `Date` (`Date`),
   KEY `Part SKU` (`Part SKU`),
   KEY `Metadata` (`Metadata`(12)),
@@ -4463,9 +5167,9 @@ CREATE TABLE `Inventory Warehouse Spanshot Fact` (
   `Warehouse Key` smallint(5) unsigned NOT NULL DEFAULT '1',
   `Parts` mediumint(8) unsigned NOT NULL,
   `Locations` mediumint(8) unsigned NOT NULL,
-  `Value At Cost` decimal(9,2) DEFAULT NULL,
-  `Value At Day Cost` decimal(9,2) DEFAULT NULL,
-  `Value Commercial` decimal(9,2) DEFAULT NULL,
+  `Value At Cost` decimal(16,2) DEFAULT NULL,
+  `Value At Day Cost` decimal(16,2) DEFAULT NULL,
+  `Value Commercial` decimal(16,2) DEFAULT NULL,
   `Value At Cost Open` float NOT NULL DEFAULT '0',
   `Value At Cost High` float NOT NULL DEFAULT '0',
   `Value At Cost Low` float NOT NULL DEFAULT '0',
@@ -4476,6 +5180,10 @@ CREATE TABLE `Inventory Warehouse Spanshot Fact` (
   `Value Commercial High` float NOT NULL DEFAULT '0',
   `Value Commercial Low` float NOT NULL DEFAULT '0',
   `Dormant 1 Year Value At Day Cost` decimal(9,2) NOT NULL DEFAULT '0.00',
+  `Inventory Warehouse Spanshot In PO` decimal(12,2) NOT NULL DEFAULT '0.00',
+  `Inventory Warehouse Spanshot In Other` decimal(12,2) NOT NULL DEFAULT '0.00',
+  `Inventory Warehouse Spanshot Out Sales` decimal(12,2) NOT NULL DEFAULT '0.00',
+  `Inventory Warehouse Spanshot Out Other` decimal(12,2) NOT NULL DEFAULT '0.00',
   UNIQUE KEY `Date_Warehouse` (`Date`,`Warehouse Key`),
   KEY `Date` (`Date`),
   KEY `Warehouse Key` (`Warehouse Key`)
@@ -4897,12 +5605,15 @@ DROP TABLE IF EXISTS `Invoice Category Dimension`;
 /*!40101 SET character_set_client = utf8 */;
 CREATE TABLE `Invoice Category Dimension` (
   `Invoice Category Key` mediumint(8) unsigned NOT NULL,
+  `Invoice Category Function Code` varchar(64) DEFAULT NULL,
+  `Invoice Category Function Argument` varchar(255) DEFAULT NULL,
   `Invoice Category Store Key` mediumint(8) unsigned DEFAULT NULL,
   `Invoice Category Currency Code` varchar(3) DEFAULT NULL,
   `Invoice Category Valid From` datetime DEFAULT NULL,
   `Invoice Category Acc To Day Updated` datetime DEFAULT NULL,
   `Invoice Category Acc Ongoing Intervals Updated` datetime DEFAULT NULL,
   `Invoice Category Acc Previous Intervals Updated` datetime DEFAULT NULL,
+  `Invoice Category Function Order` tinyint(3) unsigned NOT NULL DEFAULT '1',
   PRIMARY KEY (`Invoice Category Key`) USING BTREE
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 /*!40101 SET character_set_client = @saved_cs_client */;
@@ -4964,8 +5675,10 @@ DROP TABLE IF EXISTS `Invoice Dimension`;
 /*!40101 SET character_set_client = utf8 */;
 CREATE TABLE `Invoice Dimension` (
   `Invoice Key` mediumint(8) unsigned NOT NULL AUTO_INCREMENT,
+  `Invoice Order Key` mediumint(8) unsigned DEFAULT NULL,
   `Invoice Date` datetime NOT NULL DEFAULT '0000-00-00 00:00:00' COMMENT 'Date when the order where first placed',
   `Invoice Paid Date` datetime DEFAULT NULL,
+  `Invoice Tax Liability Date` datetime DEFAULT NULL,
   `Invoice Type` enum('Invoice','Refund','CreditNote') NOT NULL DEFAULT 'Invoice',
   `Invoice Public ID` varchar(32) DEFAULT NULL,
   `Invoice File As` varchar(32) DEFAULT NULL,
@@ -4982,9 +5695,10 @@ CREATE TABLE `Invoice Dimension` (
   `Invoice XHTML Sales Representative` text,
   `Invoice XHTML Processed By` varchar(255) DEFAULT NULL,
   `Invoice XHTML Charged By` varchar(255) DEFAULT NULL,
-  `Invoice Main Source Type` enum('Internet','Call','Store','Unknown','Email','Fax') NOT NULL DEFAULT 'Unknown',
+  `Invoice Main Source Type` enum('Internet','Call','Store','Unknown','Email','Fax') DEFAULT NULL,
   `Invoice Items Gross Amount` decimal(12,2) NOT NULL DEFAULT '0.00',
   `Invoice Items Discount Amount` decimal(12,2) NOT NULL DEFAULT '0.00',
+  `Invoice Items Out of Stock Amount` decimal(16,2) NOT NULL DEFAULT '0.00',
   `Invoice Items Net Adjust Amount` decimal(12,2) NOT NULL DEFAULT '0.00',
   `Invoice Items Net Amount` decimal(12,2) NOT NULL DEFAULT '0.00',
   `Invoice Net Amount Off` decimal(14,2) NOT NULL DEFAULT '0.00',
@@ -5014,6 +5728,8 @@ CREATE TABLE `Invoice Dimension` (
   `Invoice Total Tax Amount` decimal(12,2) NOT NULL DEFAULT '0.00',
   `Invoice Total Adjust Amount` decimal(10,2) NOT NULL DEFAULT '0.00',
   `Invoice Total Amount` decimal(12,2) NOT NULL DEFAULT '0.00',
+  `Invoice Payments Amount` decimal(16,2) DEFAULT '0.00',
+  `Invoice To Pay Amount` decimal(16,2) DEFAULT '0.00',
   `Invoice Outstanding Net Balance` decimal(16,2) NOT NULL DEFAULT '0.00',
   `Invoice Outstanding Tax Balance` decimal(16,2) NOT NULL DEFAULT '0.00',
   `Invoice Paid Amount` decimal(12,2) NOT NULL DEFAULT '0.00',
@@ -5063,11 +5779,14 @@ CREATE TABLE `Invoice Dimension` (
   `Invoice Billing Postal Code` varchar(64) DEFAULT NULL,
   `Invoice Customer Sevices Note` text,
   `Invoice Tax Number` varchar(64) DEFAULT NULL,
-  `Invoice Tax Number Valid` enum('Yes','No','Unknown') NOT NULL DEFAULT 'No',
+  `Invoice Tax Number Valid` enum('Yes','No','Unknown') DEFAULT 'No',
   `Invoice Tax Number Validation Date` datetime DEFAULT NULL,
   `Invoice Tax Number Associated Name` varchar(255) DEFAULT NULL,
   `Invoice Tax Number Associated Address` text,
+  `Invoice Registration Number` varchar(255) DEFAULT NULL,
   `Invoice Category Key` mediumint(8) unsigned DEFAULT NULL,
+  `Invoice Sales Representative Key` mediumint(8) unsigned DEFAULT NULL,
+  `Invoice Version` tinyint(4) DEFAULT '1',
   PRIMARY KEY (`Invoice Key`,`Invoice Store Key`,`Invoice Date`) USING BTREE,
   KEY `Invoice Has Been Paid In Full` (`Invoice Has Been Paid In Full`),
   KEY `Metadata` (`Invoice Metadata`),
@@ -5079,7 +5798,9 @@ CREATE TABLE `Invoice Dimension` (
   KEY `Invoice Customer Key` (`Invoice Customer Key`),
   KEY `Invoice Customer Level Type` (`Invoice Customer Level Type`),
   KEY `Invoice Billing To Key` (`Invoice Billing To Key`),
-  KEY `Invoice Billing Region` (`Invoice Billing Region`)
+  KEY `Invoice Billing Region` (`Invoice Billing Region`),
+  KEY `Invoice Order Key` (`Invoice Order Key`),
+  KEY `Invoice Sales Representative Key` (`Invoice Sales Representative Key`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
@@ -5279,6 +6000,27 @@ CREATE TABLE `List Dimension` (
   PRIMARY KEY (`List Key`),
   UNIQUE KEY `Customer List Store Key` (`List Parent Key`,`List Name`(36),`List Scope`),
   KEY `Customer List Use Type` (`List Use Type`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Table structure for table `List History Bridge`
+--
+
+DROP TABLE IF EXISTS `List History Bridge`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!40101 SET character_set_client = utf8 */;
+CREATE TABLE `List History Bridge` (
+  `List Key` mediumint(8) unsigned NOT NULL,
+  `History Key` int(10) unsigned NOT NULL,
+  `Deletable` enum('Yes','No') NOT NULL DEFAULT 'No',
+  `Strikethrough` enum('Yes','No') NOT NULL DEFAULT 'No',
+  `Type` enum('Notes','Changes') NOT NULL DEFAULT 'Notes',
+  PRIMARY KEY (`List Key`,`History Key`),
+  KEY `List Key` (`List Key`),
+  KEY `History Key` (`History Key`),
+  KEY `Deletable` (`Deletable`),
+  KEY `Type` (`Type`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
@@ -5672,6 +6414,79 @@ CREATE TABLE `Order Basket History Dimension` (
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
+-- Table structure for table `Order Basket Purge Dimension`
+--
+
+DROP TABLE IF EXISTS `Order Basket Purge Dimension`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!40101 SET character_set_client = utf8 */;
+CREATE TABLE `Order Basket Purge Dimension` (
+  `Order Basket Purge Key` mediumint(8) unsigned NOT NULL AUTO_INCREMENT,
+  `Order Basket Purge State` enum('In Process','Purging','Finished','Cancelled') COLLATE utf8_unicode_ci NOT NULL DEFAULT 'In Process',
+  `Order Basket Purge Type` enum('Scheduled','Manual') COLLATE utf8_unicode_ci NOT NULL DEFAULT 'Scheduled',
+  `Order Basket Purge Store Key` smallint(5) unsigned NOT NULL,
+  `Order Basket Purge Date` datetime NOT NULL,
+  `Order Basket Purge Start Purge Date` datetime DEFAULT NULL,
+  `Order Basket Purge End Purge Date` datetime DEFAULT NULL,
+  `Order Basket Purge Inactive Days` smallint(5) unsigned DEFAULT '90',
+  `Order Basket Purge Estimated Orders` mediumint(8) unsigned NOT NULL DEFAULT '0',
+  `Order Basket Purge Estimated Transactions` mediumint(8) unsigned NOT NULL DEFAULT '0',
+  `Order Basket Purge Estimated Amount` decimal(18,2) NOT NULL DEFAULT '0.00',
+  `Order Basket Purge Orders` int(10) unsigned NOT NULL DEFAULT '0',
+  `Order Basket Purge Purged Orders` int(10) unsigned NOT NULL DEFAULT '0',
+  `Order Basket Purge Purged Transactions` int(10) unsigned NOT NULL DEFAULT '0',
+  `Order Basket Purge Purged Amount` decimal(18,2) NOT NULL DEFAULT '0.00' COMMENT 'Total Net Amount',
+  `Order Basket Purge Exculpated` mediumint(8) unsigned NOT NULL DEFAULT '0',
+  `Order Basket Purge Cancelled` mediumint(8) unsigned NOT NULL DEFAULT '0',
+  `Order Basket Purge Errors` mediumint(8) unsigned NOT NULL DEFAULT '0',
+  `Order Basket Purge User Key` mediumint(8) unsigned DEFAULT NULL,
+  PRIMARY KEY (`Order Basket Purge Key`),
+  KEY `Order Basket Purge Store Key` (`Order Basket Purge Store Key`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Table structure for table `Order Basket Purge History Bridge`
+--
+
+DROP TABLE IF EXISTS `Order Basket Purge History Bridge`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!40101 SET character_set_client = utf8 */;
+CREATE TABLE `Order Basket Purge History Bridge` (
+  `Order Basket Purge Key` mediumint(8) unsigned NOT NULL,
+  `History Key` int(10) unsigned NOT NULL,
+  `Deletable` enum('Yes','No') NOT NULL DEFAULT 'No',
+  `Strikethrough` enum('Yes','No') NOT NULL DEFAULT 'No',
+  `Type` enum('Notes','Changes') NOT NULL DEFAULT 'Notes',
+  PRIMARY KEY (`Order Basket Purge Key`,`History Key`),
+  KEY `Order Basket Purge Key` (`Order Basket Purge Key`),
+  KEY `History Key` (`History Key`),
+  KEY `Deletable` (`Deletable`),
+  KEY `Type` (`Type`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Table structure for table `Order Basket Purge Order Fact`
+--
+
+DROP TABLE IF EXISTS `Order Basket Purge Order Fact`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!40101 SET character_set_client = utf8 */;
+CREATE TABLE `Order Basket Purge Order Fact` (
+  `Order Basket Purge Order Basket Purge Key` mediumint(8) unsigned NOT NULL,
+  `Order Basket Purge Order Order Key` mediumint(8) unsigned NOT NULL,
+  `Order Basket Purge Order Status` enum('In Process','Purged','Exculpated','Cancelled','Error') COLLATE utf8_unicode_ci DEFAULT 'In Process',
+  `Order Basket Purge Purged Date` datetime DEFAULT NULL,
+  `Order Basket Purge Order Last Updated Date` datetime DEFAULT NULL,
+  `Order Basket Purge Note` text COLLATE utf8_unicode_ci,
+  PRIMARY KEY (`Order Basket Purge Order Basket Purge Key`,`Order Basket Purge Order Order Key`),
+  KEY `Order Basket Purge Order Basket Purge Key` (`Order Basket Purge Order Basket Purge Key`),
+  KEY `Order Basket Purge State` (`Order Basket Purge Order Status`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
 -- Table structure for table `Order Deal Bridge`
 --
 
@@ -5720,7 +6535,12 @@ DROP TABLE IF EXISTS `Order Dimension`;
 /*!40101 SET character_set_client = utf8 */;
 CREATE TABLE `Order Dimension` (
   `Order Key` mediumint(8) unsigned NOT NULL AUTO_INCREMENT,
-  `Order Class` enum('InWebsite','InProcess','Archived') NOT NULL DEFAULT 'InWebsite',
+  `Order Class` enum('InWebsite','InProcess','Archived') DEFAULT NULL,
+  `Order State` enum('InBasket','InProcess','InWarehouse','PackedDone','Approved','Dispatched','Cancelled') NOT NULL DEFAULT 'InBasket',
+  `Order Payment State` enum('NA','Paid','ToPay','OverPaid') NOT NULL DEFAULT 'NA',
+  `Order Replacement State` enum('NA','InWarehouse','PackedDone','Approved','Dispatched') NOT NULL DEFAULT 'NA',
+  `Order Delivery Note Key` mediumint(8) unsigned DEFAULT NULL,
+  `Order Invoice Key` mediumint(8) unsigned DEFAULT NULL,
   `Order Date` datetime NOT NULL DEFAULT '0000-00-00 00:00:00' COMMENT 'Date when the order where first placed',
   `Order Created Date` datetime DEFAULT NULL,
   `Order Checkout Submitted Payment Date` datetime DEFAULT NULL,
@@ -5728,6 +6548,7 @@ CREATE TABLE `Order Dimension` (
   `Order Submitted by Customer Date` datetime DEFAULT NULL,
   `Order Send to Warehouse Date` datetime DEFAULT NULL,
   `Order Packed Done Date` datetime DEFAULT NULL,
+  `Order Invoiced Date` datetime DEFAULT NULL,
   `Order Dispatched Date` datetime DEFAULT NULL,
   `Order Post Transactions Dispatched Date` datetime DEFAULT NULL,
   `Order Suspended Date` datetime DEFAULT NULL,
@@ -5799,6 +6620,7 @@ CREATE TABLE `Order Dimension` (
   `Order Number Items with Deals` smallint(5) unsigned NOT NULL DEFAULT '0',
   `Order Items Gross Amount` decimal(12,2) NOT NULL DEFAULT '0.00',
   `Order Items Discount Amount` decimal(12,2) NOT NULL DEFAULT '0.00',
+  `Order Items Out of Stock Amount` decimal(12,2) DEFAULT '0.00',
   `Order Items Adjust Amount` decimal(12,2) NOT NULL DEFAULT '0.00',
   `Order Items Net Amount` decimal(12,2) NOT NULL DEFAULT '0.00',
   `Order Items Tax Amount` decimal(12,2) NOT NULL DEFAULT '0.00',
@@ -5855,6 +6677,11 @@ CREATE TABLE `Order Dimension` (
   `Order Invoiced Outstanding Balance Tax Amount` decimal(16,2) NOT NULL DEFAULT '0.00',
   `Order Invoiced Outstanding Balance Total Amount` decimal(16,2) NOT NULL DEFAULT '0.00',
   `Order Invoiced Profit Amount` decimal(16,2) NOT NULL DEFAULT '0.00',
+  `Order Total Refunds` decimal(16,2) NOT NULL DEFAULT '0.00',
+  `Order Total Balance` decimal(16,2) NOT NULL DEFAULT '0.00',
+  `Order Items Cost` decimal(16,2) DEFAULT '0.00',
+  `Order Shipping Cost` decimal(16,2) DEFAULT '0.00',
+  `Order Replacement Cost` decimal(16,2) DEFAULT '0.00',
   `Order Profit Amount` decimal(12,2) NOT NULL DEFAULT '0.00',
   `Order Margin` float DEFAULT NULL,
   `Order Invoiced Refund Notes` text,
@@ -5887,6 +6714,7 @@ CREATE TABLE `Order Dimension` (
   `Order Dispatched Estimated Weight` float NOT NULL DEFAULT '0',
   `Order Weight` float DEFAULT NULL,
   `Order Shipping Method` enum('No Applicable','TBC','Calculated','Set') NOT NULL DEFAULT 'Calculated',
+  `Order Charges Method` enum('Calculated','Set') DEFAULT 'Calculated',
   `Order Ship To Country 2 Alpha Code` varchar(2) DEFAULT NULL,
   `Order Ship To World Region Code` char(4) DEFAULT NULL,
   `Order Ship To Town` varchar(255) DEFAULT NULL,
@@ -5911,9 +6739,15 @@ CREATE TABLE `Order Dimension` (
   `Order Tax Number Registered Address` text,
   `Order Tax Number Associated Name` varchar(255) DEFAULT NULL,
   `Order Tax Number Associated Address` text,
+  `Order Registration Number` varchar(255) DEFAULT NULL,
   `Order Apply Auto Customer Account Payment` enum('Yes','No') NOT NULL DEFAULT 'Yes',
   `Order Show in Warehouse Orders` enum('Yes','No') NOT NULL DEFAULT 'Yes',
   `Order Checkout Block Payment Account Key` smallint(5) unsigned DEFAULT NULL,
+  `Order Delivery Note Alert` enum('No','Yes','Closed') NOT NULL DEFAULT 'No',
+  `Order Delivery Note Alert Note` text,
+  `Order Premium Key` mediumint(9) DEFAULT NULL,
+  `Order Sales Representative Key` mediumint(8) unsigned DEFAULT NULL,
+  `Order Payment Metadata` varchar(64) DEFAULT NULL,
   PRIMARY KEY (`Order Key`,`Order Store Key`,`Order Date`) USING BTREE,
   KEY `Order Original Data Source` (`Order Original Data Source`),
   KEY `Order Public ID` (`Order Public ID`),
@@ -5940,7 +6774,13 @@ CREATE TABLE `Order Dimension` (
   KEY `Order Send to Warehouse Date` (`Order Send to Warehouse Date`),
   KEY `Order Dispatched Date` (`Order Dispatched Date`),
   KEY `Order Show in Warehouse Orders` (`Order Show in Warehouse Orders`),
-  KEY `Order Class` (`Order Class`)
+  KEY `Order Class` (`Order Class`),
+  KEY `Order State` (`Order State`),
+  KEY `Order Delivery Note Alert` (`Order Delivery Note Alert`),
+  KEY `StoreState` (`Order State`,`Order Store Key`),
+  KEY `Order Replacement State` (`Order Replacement State`),
+  KEY `Order Payment State` (`Order Payment State`),
+  KEY `Order Sales Representative Key` (`Order Sales Representative Key`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
@@ -6015,7 +6855,7 @@ DROP TABLE IF EXISTS `Order Meta Transaction Deal Dimension`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
 /*!40101 SET character_set_client = utf8 */;
 CREATE TABLE `Order Meta Transaction Deal Dimension` (
-  `Order Meta Transaction Deal Key` mediumint(8) unsigned NOT NULL AUTO_INCREMENT,
+  `Order Meta Transaction Deal Key` int(8) unsigned NOT NULL AUTO_INCREMENT,
   `Order Key` mediumint(8) unsigned NOT NULL,
   `Deal Campaign Key` mediumint(8) unsigned DEFAULT NULL,
   `Deal Key` mediumint(9) NOT NULL,
@@ -6067,6 +6907,7 @@ DROP TABLE IF EXISTS `Order No Product Transaction Fact`;
 /*!40101 SET character_set_client = utf8 */;
 CREATE TABLE `Order No Product Transaction Fact` (
   `Order No Product Transaction Fact Key` int(10) unsigned NOT NULL AUTO_INCREMENT,
+  `Type` enum('Order','Refund') NOT NULL DEFAULT 'Order',
   `Order Date` datetime DEFAULT NULL,
   `Delivery Note Date` datetime DEFAULT NULL,
   `Invoice Date` datetime DEFAULT NULL,
@@ -6077,7 +6918,7 @@ CREATE TABLE `Order No Product Transaction Fact` (
   `Delivery Note Key` mediumint(8) unsigned DEFAULT NULL,
   `Invoice Key` mediumint(9) DEFAULT NULL,
   `Refund Key` mediumint(8) unsigned DEFAULT NULL,
-  `Transaction Type` enum('Credit','Unknown','Refund','Shipping','Charges','Adjust','Other','Deal','Insurance','Discount') NOT NULL DEFAULT 'Unknown',
+  `Transaction Type` enum('Credit','Unknown','Refund','Shipping','Charges','Adjust','Other','Deal','Insurance','Discount','Premium') NOT NULL DEFAULT 'Unknown',
   `Transaction Type Key` mediumint(8) unsigned DEFAULT NULL,
   `Tax Category Code` varchar(16) DEFAULT NULL,
   `Transaction Description` varchar(1024) NOT NULL,
@@ -6123,8 +6964,9 @@ DROP TABLE IF EXISTS `Order Payment Bridge`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
 /*!40101 SET character_set_client = utf8 */;
 CREATE TABLE `Order Payment Bridge` (
-  `Order Key` mediumint(9) unsigned NOT NULL,
-  `Payment Key` mediumint(9) unsigned NOT NULL,
+  `Order Key` int(10) unsigned NOT NULL,
+  `Invoice Key` int(10) unsigned DEFAULT NULL,
+  `Payment Key` int(10) unsigned NOT NULL,
   `Payment Account Key` mediumint(8) unsigned DEFAULT NULL,
   `Payment Service Provider Key` mediumint(8) unsigned DEFAULT NULL,
   `Amount` decimal(12,2) DEFAULT NULL,
@@ -6145,6 +6987,7 @@ DROP TABLE IF EXISTS `Order Post Transaction Dimension`;
 CREATE TABLE `Order Post Transaction Dimension` (
   `Order Post Transaction Key` mediumint(8) unsigned NOT NULL AUTO_INCREMENT,
   `Order Transaction Fact Key` int(8) unsigned NOT NULL,
+  `Inventory Transaction Key` int(10) unsigned DEFAULT NULL,
   `Order Post Transaction Fact Key` int(8) unsigned DEFAULT NULL,
   `Order Key` mediumint(8) unsigned DEFAULT NULL,
   `Delivery Note Key` mediumint(8) unsigned DEFAULT NULL,
@@ -6160,13 +7003,20 @@ CREATE TABLE `Order Post Transaction Dimension` (
   `Credit Saved` float DEFAULT NULL,
   `Credit Used` float DEFAULT NULL,
   `Credit Paid` float DEFAULT NULL,
+  `Picker Fault` float DEFAULT '0',
+  `Packer Fault` float DEFAULT '0',
+  `Customer Services Fault` float DEFAULT '0',
+  `Picker Fault Delivery Note Key` mediumint(8) unsigned DEFAULT NULL,
+  `Packer Fault Delivery Note Key` mediumint(8) unsigned DEFAULT NULL,
+  `Customer Services Fault Delivery Note Key` mediumint(8) unsigned DEFAULT NULL,
   PRIMARY KEY (`Order Post Transaction Key`),
   KEY `Order Transaction Fact Key` (`Order Transaction Fact Key`),
   KEY `Order Key` (`Order Key`),
   KEY `State` (`State`),
   KEY `Order Post Transaction Fact Key` (`Order Post Transaction Fact Key`),
   KEY `Order Post Transaction Metadata` (`Order Post Transaction Metadata`),
-  KEY `Delivery Note Key` (`Delivery Note Key`)
+  KEY `Delivery Note Key` (`Delivery Note Key`),
+  KEY `Inventory Transaction Key` (`Inventory Transaction Key`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
@@ -6191,6 +7041,24 @@ CREATE TABLE `Order Post Transaction In Process Dimension` (
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
+-- Table structure for table `Order Review Invitation Dimension`
+--
+
+DROP TABLE IF EXISTS `Order Review Invitation Dimension`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!40101 SET character_set_client = utf8 */;
+CREATE TABLE `Order Review Invitation Dimension` (
+  `Order Review Invitation Key` mediumint(8) unsigned NOT NULL AUTO_INCREMENT,
+  `Order Review Invitation Order Key` mediumint(8) unsigned NOT NULL,
+  `Order Review Invitation Provider` varchar(255) COLLATE utf8_unicode_ci DEFAULT NULL,
+  `Order Review Invitation Date` datetime DEFAULT NULL,
+  `Order Review Invitation Metadata` text COLLATE utf8_unicode_ci,
+  PRIMARY KEY (`Order Review Invitation Key`),
+  KEY `Order Review Order Key` (`Order Review Invitation Order Key`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
 -- Table structure for table `Order Sales Representative Bridge`
 --
 
@@ -6203,6 +7071,22 @@ CREATE TABLE `Order Sales Representative Bridge` (
   `Share` float NOT NULL DEFAULT '1',
   PRIMARY KEY (`Order Key`,`Staff Key`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Table structure for table `Order Sent Email Bridge`
+--
+
+DROP TABLE IF EXISTS `Order Sent Email Bridge`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!40101 SET character_set_client = utf8 */;
+CREATE TABLE `Order Sent Email Bridge` (
+  `Order Sent Email Order Key` mediumint(8) unsigned NOT NULL,
+  `Order Sent Email Email Tracking Key` int(10) unsigned NOT NULL,
+  `Order Sent Email Type` enum('Order Notification','Dispatch Notification','Replacement Dispatch Notification') COLLATE utf8_unicode_ci DEFAULT NULL,
+  UNIQUE KEY `Order Sent Email Order Key` (`Order Sent Email Order Key`,`Order Sent Email Email Tracking Key`),
+  KEY `Order Sent Email Order Key_2` (`Order Sent Email Order Key`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -6286,7 +7170,7 @@ CREATE TABLE `Order Transaction Fact` (
   `Actual Shipping Date` datetime DEFAULT NULL,
   `Arrival Date` datetime DEFAULT NULL,
   `Invoice Date` datetime NOT NULL DEFAULT '0000-00-00 00:00:00',
-  `Order Transaction Type` enum('Order','Sample','Donation','Unknown','Other','Resend') NOT NULL DEFAULT 'Unknown',
+  `Order Transaction Type` enum('Order','Sample','Donation','Unknown','Other','Resend','Refund') NOT NULL DEFAULT 'Unknown',
   `Current Dispatching State` enum('In Process by Customer','Submitted by Customer','In Process','Ready to Pick','Picking','Ready to Pack','Ready to Ship','Dispatched','Unknown','Packing','Packed','Packed Done','Cancelled','No Picked Due Out of Stock','No Picked Due No Authorised','No Picked Due Not Found','No Picked Due Other','Suspended','Cancelled by Customer','Out of Stock in Basket') NOT NULL DEFAULT 'Unknown',
   `Current Payment State` enum('Waiting Payment','Paid','Unknown','Payment Refunded','Cancelled','No Applicable','Cancelled by Customer') NOT NULL DEFAULT 'Unknown',
   `Paid Factor` float NOT NULL DEFAULT '0',
@@ -6345,6 +7229,7 @@ CREATE TABLE `Order Transaction Fact` (
   `Customer Return Quantity` float DEFAULT '0',
   `Order Transaction Gross Amount` decimal(12,2) DEFAULT '0.00' COMMENT 'Order amount by customer (potential)',
   `Order Transaction Total Discount Amount` decimal(12,2) DEFAULT '0.00',
+  `Order Transaction Out of Stock Amount` decimal(12,2) DEFAULT '0.00',
   `Order Transaction Amount` decimal(10,2) NOT NULL DEFAULT '0.00',
   `Transaction Tax Rate` float NOT NULL DEFAULT '0',
   `Transaction Tax Code` varchar(3) NOT NULL DEFAULT 'UNK',
@@ -6418,14 +7303,8 @@ CREATE TABLE `Order Transaction Fact` (
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8
 /*!50100 PARTITION BY RANGE ( YEAR(`Invoice Date`))
 SUBPARTITION BY KEY (`Store Key`)
-SUBPARTITIONS 12
-(PARTITION p2002 VALUES LESS THAN (2002) ENGINE = InnoDB,
- PARTITION p2003 VALUES LESS THAN (2003) ENGINE = InnoDB,
- PARTITION p2004 VALUES LESS THAN (2004) ENGINE = InnoDB,
- PARTITION p2005 VALUES LESS THAN (2005) ENGINE = InnoDB,
- PARTITION p2007 VALUES LESS THAN (2007) ENGINE = InnoDB,
- PARTITION p2008 VALUES LESS THAN (2008) ENGINE = InnoDB,
- PARTITION p2009 VALUES LESS THAN (2009) ENGINE = InnoDB,
+SUBPARTITIONS 16
+(PARTITION p2009 VALUES LESS THAN (2009) ENGINE = InnoDB,
  PARTITION p2010 VALUES LESS THAN (2010) ENGINE = InnoDB,
  PARTITION p2011 VALUES LESS THAN (2011) ENGINE = InnoDB,
  PARTITION p2012 VALUES LESS THAN (2012) ENGINE = InnoDB,
@@ -6433,6 +7312,8 @@ SUBPARTITIONS 12
  PARTITION p2014 VALUES LESS THAN (2014) ENGINE = InnoDB,
  PARTITION p2015 VALUES LESS THAN (2015) ENGINE = InnoDB,
  PARTITION p2016 VALUES LESS THAN (2016) ENGINE = InnoDB,
+ PARTITION p2017 VALUES LESS THAN (2017) ENGINE = InnoDB,
+ PARTITION p2018 VALUES LESS THAN (2018) ENGINE = InnoDB,
  PARTITION pcurrent VALUES LESS THAN MAXVALUE ENGINE = InnoDB) */;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
@@ -6913,6 +7794,7 @@ CREATE TABLE `Page Store Deleted Dimension` (
   `Page Snapshot Image Key` mediumint(8) unsigned DEFAULT NULL,
   `Page Snapshot Last Update` datetime DEFAULT NULL,
   `Page Valid To` datetime DEFAULT NULL,
+  `Page Store Deleted Metadata` text,
   PRIMARY KEY (`Page Store Deleted Key`),
   KEY `Site Key` (`Site Key`),
   KEY `Store Key` (`Store Key`)
@@ -6994,16 +7876,19 @@ CREATE TABLE `Page Store Dimension` (
   `Site Flag Key` tinyint(3) unsigned DEFAULT NULL,
   `Page Related Products List` text,
   `Page See Also Last Updated` datetime DEFAULT NULL,
-  `Page Store Content Data` text,
+  `Page Store Content Data` mediumtext,
   `Page Store Content Published Data` text,
   `Webpage Version` tinyint(3) unsigned NOT NULL DEFAULT '1',
   `Webpage Browser Title` varchar(255) DEFAULT NULL,
   `Webpage Name` varchar(255) DEFAULT NULL,
   `Webpage Meta Description` text,
   `Webpage URL` varchar(255) DEFAULT NULL,
+  `Webpage Redirection Code` varchar(255) DEFAULT NULL,
+  `Webpage Navigation Data` mediumtext,
   PRIMARY KEY (`Page Key`),
   UNIQUE KEY `Page Site Key_2` (`Page Site Key`,`Page Code`),
   UNIQUE KEY `Webpage Code` (`Webpage Code`,`Page Site Key`) USING BTREE,
+  UNIQUE KEY `Webpage Code_2` (`Webpage Code`,`Webpage Website Key`),
   KEY `Page Store Function` (`Page Store Section`),
   KEY `Page Parent Key` (`Page Parent Key`),
   KEY `Page Site Key` (`Page Site Key`),
@@ -7017,7 +7902,8 @@ CREATE TABLE `Page Store Dimension` (
   KEY `Webpage Store Key` (`Webpage Store Key`),
   KEY `Webpage State` (`Webpage State`),
   KEY `Webpage Version` (`Webpage Version`),
-  KEY `Webpage Type Key` (`Webpage Type Key`)
+  KEY `Webpage Type Key` (`Webpage Type Key`),
+  KEY `Webpage Scope` (`Webpage Scope`,`Webpage Scope Key`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
@@ -8131,6 +9017,17 @@ CREATE TABLE `Part Dimension` (
   `Part Main State` enum('Keeping','LastStock','Discontinued','NotKeeping') DEFAULT NULL,
   `Part Cost` decimal(12,4) DEFAULT '0.0000',
   `Part Cost in Warehouse` decimal(12,4) DEFAULT NULL,
+  `Part Margin` float DEFAULT NULL,
+  `Part Unknown Location Stock` float NOT NULL DEFAULT '0',
+  `Part Unknown Location Stock Value` decimal(16,2) NOT NULL DEFAULT '0.00',
+  `Part Stock Errors SKOs` float NOT NULL DEFAULT '0',
+  `Part Stock Errors Value` decimal(16,2) NOT NULL DEFAULT '0.00',
+  `Part Stock Damaged SKOs` float NOT NULL DEFAULT '0',
+  `Part Stock Damaged Value` decimal(16,2) NOT NULL DEFAULT '0.00',
+  `Part Stock Lost SKOs` float NOT NULL DEFAULT '0',
+  `Part Stock Lost Value` decimal(16,2) NOT NULL DEFAULT '0.00',
+  `Part Stock Found SKOs` float NOT NULL DEFAULT '0',
+  `Part Stock Found Value` decimal(16,0) NOT NULL DEFAULT '0',
   `Part Unit Price` float unsigned DEFAULT NULL,
   `Part Unit RRP` float unsigned DEFAULT NULL,
   `Part XHTML Currently Used In` text,
@@ -8145,11 +9042,13 @@ CREATE TABLE `Part Dimension` (
   `Part Unit Description` text,
   `Part SKOs per Carton` smallint(5) unsigned DEFAULT NULL,
   `Part SKO Barcode` varchar(128) DEFAULT NULL,
+  `Part Carton Barcode` varchar(64) DEFAULT NULL,
   `Part Barcode Type` enum('none','ean8','ean13',' code11','code39','code128','codabar') NOT NULL DEFAULT 'code128',
   `Part Barcode Data Source` enum('SKU','Reference','Other') NOT NULL DEFAULT 'SKU',
   `Part Barcode Data` text,
   `Part Barcode Key` mediumint(8) unsigned DEFAULT NULL,
   `Part Barcode Number` varchar(128) DEFAULT NULL,
+  `Part Barcode Number Error` enum('Checksum','Size','Duplicated','Short_Duplicated','Checksum_missing') DEFAULT NULL,
   `Part General Description` longtext,
   `Part Health And Safety` longtext,
   `Part UN Number` varchar(4) DEFAULT NULL,
@@ -8168,6 +9067,7 @@ CREATE TABLE `Part Dimension` (
   `Part Package Weight Display` float DEFAULT NULL,
   `Part Package Weight Display Units` enum('Kg','g','oz','lb') DEFAULT 'Kg',
   `Part Package Volume` float unsigned DEFAULT NULL,
+  `Part Recommended Packages Per Selling Outer` float unsigned DEFAULT NULL,
   `Part Units` smallint(5) unsigned NOT NULL DEFAULT '1',
   `Part Unit Weight` float DEFAULT NULL,
   `Part Unit Weight Display` float DEFAULT NULL,
@@ -8202,7 +9102,7 @@ CREATE TABLE `Part Dimension` (
   `Part Package Dimensions Diameter Display` float DEFAULT NULL,
   `Part Package Dimensions Volume` float DEFAULT NULL,
   `Part Package XHTML Dimensions` varchar(255) DEFAULT NULL,
-  `Part Comercial Value` decimal(12,2) NOT NULL DEFAULT '0.00',
+  `Part Commercial Value` decimal(12,2) DEFAULT NULL,
   `Part Current Stock` decimal(24,6) DEFAULT NULL,
   `Part Current On Hand Stock` decimal(24,6) NOT NULL DEFAULT '0.000000',
   `Part Current Stock Ordered Paid` decimal(24,6) NOT NULL DEFAULT '0.000000',
@@ -8215,6 +9115,7 @@ CREATE TABLE `Part Dimension` (
   `Part Current Storing Cost Per Unit` decimal(12,2) DEFAULT NULL,
   `Part XHTML Picking Location` varchar(255) NOT NULL,
   `Part Distinct Locations` smallint(5) unsigned NOT NULL DEFAULT '0',
+  `Part Forecast Metadata` text,
   `Part Days Available Forecast` float DEFAULT NULL,
   `Part XHTML Available For Forecast` text,
   `Part Average Future Cost Per Unit` float DEFAULT NULL,
@@ -8247,6 +9148,7 @@ CREATE TABLE `Part Dimension` (
   `Part Family Category Key` mediumint(8) unsigned DEFAULT NULL,
   `Part Units Per Package` smallint(5) unsigned NOT NULL DEFAULT '1',
   `Part Products Web Status` enum('Offline','No Products','Online','Out of Stock') DEFAULT NULL,
+  `Part Production` enum('Yes','No') NOT NULL DEFAULT 'No',
   `Part On Demand` enum('Yes','No') NOT NULL DEFAULT 'No',
   `Part Fresh` enum('Yes','No') NOT NULL DEFAULT 'No',
   `Part CPNP Number` varchar(64) DEFAULT NULL COMMENT 'For EU notification of cosmetic products',
@@ -8255,8 +9157,8 @@ CREATE TABLE `Part Dimension` (
   `Part Acc To Day Updated` datetime DEFAULT NULL,
   `Part Acc Ongoing Intervals Updated` datetime DEFAULT NULL,
   `Part Acc Previous Intervals Updated` datetime DEFAULT NULL,
-  `Part Number Deliveries` smallint(5) unsigned NOT NULL DEFAULT '0',
-  `Part Number Purchase Orders` smallint(5) unsigned NOT NULL DEFAULT '0',
+  `Part Number Active Deliveries` smallint(5) unsigned NOT NULL DEFAULT '0' COMMENT 'PO + Deliveries not placed',
+  `Part Number Draft Deliveries` smallint(5) unsigned NOT NULL DEFAULT '0' COMMENT 'PO in process',
   `Part Number Supplier Parts` smallint(5) unsigned NOT NULL DEFAULT '0',
   `Part Number No Active Products` smallint(5) unsigned NOT NULL DEFAULT '0',
   `Part Number Active Products` smallint(5) unsigned NOT NULL DEFAULT '0',
@@ -8264,6 +9166,9 @@ CREATE TABLE `Part Dimension` (
   `Part Number Attachments` smallint(5) unsigned NOT NULL DEFAULT '0',
   `Part Number Images` smallint(5) unsigned NOT NULL DEFAULT '0',
   `Part SKO Image Key` mediumint(8) unsigned DEFAULT NULL,
+  `Part Recommended Product Unit Name` varchar(255) DEFAULT NULL,
+  `Part Production Supply` enum('Yes','No') DEFAULT 'No',
+  `Part Next Deliveries Data` text,
   PRIMARY KEY (`Part SKU`),
   KEY `Part TYpe` (`Part Status`),
   KEY `Part Valid From` (`Part Valid From`),
@@ -8278,7 +9183,8 @@ CREATE TABLE `Part Dimension` (
   KEY `Part Next Shipment State` (`Part Next Shipment State`),
   KEY `Part Units` (`Part Units`),
   KEY `Part Barcode Number` (`Part Barcode Number`),
-  KEY `Part Barcode Key` (`Part Barcode Key`)
+  KEY `Part Barcode Key` (`Part Barcode Key`),
+  KEY `Part Production` (`Part Production`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
@@ -8322,8 +9228,10 @@ CREATE TABLE `Part Location Dimension` (
   `Maximum Quantity` mediumint(8) unsigned DEFAULT NULL,
   `Moving Quantity` float DEFAULT NULL,
   `Last Updated` datetime NOT NULL,
+  `Part Location Last Audit` datetime DEFAULT NULL,
   `Negative Discrepancy` float NOT NULL DEFAULT '0',
   `Negative Discrepancy Value` decimal(12,2) NOT NULL DEFAULT '0.00',
+  `Part Location Note` text,
   PRIMARY KEY (`Part SKU`,`Location Key`),
   KEY `Part SKU` (`Part SKU`),
   KEY `Location Key` (`Location Key`),
@@ -8461,7 +9369,7 @@ CREATE TABLE `Payment Account Dimension` (
   `Payment Account Last Used Date` datetime DEFAULT NULL,
   `Payment Account Recipient Holder` varchar(64) DEFAULT NULL,
   `Payment Account Recipient Address` text,
-  `Payment Account Recipient Bank Account Number` varchar(32) DEFAULT NULL,
+  `Payment Account Recipient Bank Account Number` varchar(255) DEFAULT NULL,
   `Payment Account Recipient Bank Code` varchar(32) DEFAULT NULL,
   `Payment Account Recipient Bank Name` varchar(32) DEFAULT NULL,
   `Payment Account Recipient Bank Swift` varchar(32) DEFAULT NULL,
@@ -8786,15 +9694,15 @@ CREATE TABLE `Product Category DC Data` (
   `Product Category DC Month To Day Acc Invoiced Amount` decimal(12,2) NOT NULL DEFAULT '0.00',
   `Product Category DC Month To Day Acc Profit` decimal(12,2) NOT NULL DEFAULT '0.00',
   `Product Category DC Week To Day Acc Profit` decimal(12,2) NOT NULL DEFAULT '0.00',
-  `Product Category DC Week To Day Acc Quantity Ordered` decimal(12,2) NOT NULL DEFAULT '0.00',
+  `Product Category DC Week To Day Acc Invoiced Amount` decimal(12,2) NOT NULL DEFAULT '0.00',
   `Product Category DC Last Month Acc Profit` decimal(12,2) NOT NULL DEFAULT '0.00',
-  `Product Category DC Last Month Acc Quantity Ordered` decimal(12,2) NOT NULL DEFAULT '0.00',
+  `Product Category DC Last Month Acc Invoiced Amount` decimal(12,2) NOT NULL DEFAULT '0.00',
   `Product Category DC Last Week Acc Profit` decimal(12,2) NOT NULL DEFAULT '0.00',
-  `Product Category DC Last Week Acc Quantity Ordered` decimal(12,2) NOT NULL DEFAULT '0.00',
+  `Product Category DC Last Week Acc Invoiced Amount` decimal(12,2) NOT NULL DEFAULT '0.00',
   `Product Category DC Yesterday Acc Profit` decimal(12,2) NOT NULL DEFAULT '0.00',
-  `Product Category DC Yesterday Acc Quantity Ordered` decimal(12,2) NOT NULL DEFAULT '0.00',
+  `Product Category DC Yesterday Acc Invoiced Amount` decimal(12,2) NOT NULL DEFAULT '0.00',
   `Product Category DC Today Acc Profit` decimal(12,2) NOT NULL DEFAULT '0.00',
-  `Product Category DC Today Acc Quantity Ordered` decimal(12,2) NOT NULL DEFAULT '0.00',
+  `Product Category DC Today Acc Invoiced Amount` decimal(12,2) NOT NULL DEFAULT '0.00',
   `Product Category DC 1 Year Acc 1YB Invoiced Amount` decimal(12,2) NOT NULL DEFAULT '0.00',
   `Product Category DC 1 Year Acc 1YB Profit` decimal(12,2) NOT NULL DEFAULT '0.00',
   `Product Category DC 6 Month Acc 1YB Invoiced Amount` decimal(12,2) NOT NULL DEFAULT '0.00',
@@ -9361,6 +10269,7 @@ CREATE TABLE `Product Category Dimension` (
   `Product Category Acc Previous Intervals Updated` datetime DEFAULT NULL COMMENT 'ast month, last week, past years, past quarters',
   `Product Category Number History Records` mediumint(8) unsigned NOT NULL DEFAULT '0',
   `Product Category Number Images` mediumint(8) unsigned NOT NULL DEFAULT '0',
+  `Product Category Number Customers` mediumint(9) DEFAULT '0',
   PRIMARY KEY (`Product Category Key`) USING BTREE,
   KEY `Product Category Store Key` (`Product Category Store Key`),
   KEY `Product Category Status` (`Product Category Status`)
@@ -9378,7 +10287,9 @@ CREATE TABLE `Product Category History Bridge` (
   `Store Key` smallint(5) unsigned NOT NULL,
   `Category Key` mediumint(8) unsigned NOT NULL,
   `History Key` int(10) unsigned NOT NULL,
-  `Type` enum('Changes','Assign') NOT NULL,
+  `Deletable` enum('Yes','No') NOT NULL DEFAULT 'No',
+  `Strikethrough` enum('Yes','No') NOT NULL DEFAULT 'No',
+  `Type` enum('Changes','Assign','Note') NOT NULL DEFAULT 'Changes',
   UNIQUE KEY `Store Key` (`Store Key`,`Category Key`,`History Key`),
   KEY `Type` (`Type`)
 ) ENGINE=MyISAM DEFAULT CHARSET=utf8;
@@ -9492,15 +10403,15 @@ CREATE TABLE `Product DC Data` (
   `Product DC Month To Day Acc Invoiced Amount` decimal(12,2) NOT NULL DEFAULT '0.00',
   `Product DC Month To Day Acc Profit` decimal(12,2) NOT NULL DEFAULT '0.00',
   `Product DC Week To Day Acc Profit` decimal(12,2) NOT NULL DEFAULT '0.00',
-  `Product DC Week To Day Acc Quantity Ordered` decimal(12,2) NOT NULL DEFAULT '0.00',
+  `Product DC Week To Day Acc Invoiced Amount` decimal(12,2) NOT NULL DEFAULT '0.00',
   `Product DC Last Month Acc Profit` decimal(12,2) NOT NULL DEFAULT '0.00',
-  `Product DC Last Month Acc Quantity Ordered` decimal(12,2) NOT NULL DEFAULT '0.00',
+  `Product DC Last Month Acc Invoiced Amount` decimal(12,2) NOT NULL DEFAULT '0.00',
   `Product DC Last Week Acc Profit` decimal(12,2) NOT NULL DEFAULT '0.00',
-  `Product DC Last Week Acc Quantity Ordered` decimal(12,2) NOT NULL DEFAULT '0.00',
+  `Product DC Last Week Acc Invoiced Amount` decimal(12,2) NOT NULL DEFAULT '0.00',
   `Product DC Yesterday Acc Profit` decimal(12,2) NOT NULL DEFAULT '0.00',
-  `Product DC Yesterday Acc Quantity Ordered` decimal(12,2) NOT NULL DEFAULT '0.00',
+  `Product DC Yesterday Acc Invoiced Amount` decimal(12,2) NOT NULL DEFAULT '0.00',
   `Product DC Today Acc Profit` decimal(12,2) NOT NULL DEFAULT '0.00',
-  `Product DC Today Acc Quantity Ordered` decimal(12,2) NOT NULL DEFAULT '0.00',
+  `Product DC Today Acc Invoiced Amount` decimal(12,2) NOT NULL DEFAULT '0.00',
   `Product DC 1 Year Acc 1YB Invoiced Amount` decimal(12,2) NOT NULL DEFAULT '0.00',
   `Product DC 1 Year Acc 1YB Profit` decimal(12,2) NOT NULL DEFAULT '0.00',
   `Product DC 6 Month Acc 1YB Invoiced Amount` decimal(12,2) NOT NULL DEFAULT '0.00',
@@ -10918,9 +11829,9 @@ CREATE TABLE `Product Dimension` (
   `Product Next Day Availability` float DEFAULT NULL,
   `Product Stock Value` decimal(12,2) DEFAULT NULL,
   `Product Next Supplier Shipment` datetime DEFAULT NULL,
-  `Product XHTML Next Supplier Shipment` text NOT NULL,
+  `Product XHTML Next Supplier Shipment` text,
   `Product Number of Parts` mediumint(8) unsigned NOT NULL DEFAULT '0',
-  `Product XHTML Parts` varchar(1024) DEFAULT NULL,
+  `Product XHTML Parts` text,
   `Product XHTML Supplied By` varchar(1024) DEFAULT NULL,
   `Product Main Picking Location Key` mediumint(8) unsigned DEFAULT NULL,
   `Product Main Picking Location` varchar(255) DEFAULT NULL,
@@ -10936,6 +11847,7 @@ CREATE TABLE `Product Dimension` (
   `Product STD with Sale Day Sales` float NOT NULL DEFAULT '0',
   `Product Max Day Sales` float NOT NULL DEFAULT '0',
   `Product Sticky Note` text,
+  `Product Parts Data` text,
   `Product Part Ratio` float NOT NULL DEFAULT '0',
   `Product Part Units Ratio` float DEFAULT NULL,
   `Product Use Part Tariff Data` enum('Yes','No') NOT NULL DEFAULT 'Yes',
@@ -10975,6 +11887,9 @@ CREATE TABLE `Product Dimension` (
   `Product Number Parts` smallint(5) unsigned NOT NULL DEFAULT '0',
   `Product Number History Records` smallint(5) unsigned NOT NULL DEFAULT '0',
   `Product Number Images` smallint(5) unsigned NOT NULL DEFAULT '0',
+  `Product Published Webpage Description` text,
+  `Product New on Family` enum('Yes','No') DEFAULT 'No',
+  `Product Department Category Key` smallint(5) unsigned DEFAULT NULL,
   PRIMARY KEY (`Product ID`,`Product Store Key`),
   KEY `Product Alphanumeric Code` (`Product Code File As`(16)),
   KEY `date` (`Product Valid From`),
@@ -10998,7 +11913,8 @@ CREATE TABLE `Product Dimension` (
   KEY `Product Name` (`Product Name`(64)),
   KEY `Product Status` (`Product Status`),
   KEY `Product Public` (`Product Public`),
-  KEY `Product Webpage Key` (`Product Webpage Key`)
+  KEY `Product Webpage Key` (`Product Webpage Key`),
+  KEY `Product Category Department Key` (`Product Department Category Key`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
@@ -12228,6 +13144,113 @@ CREATE TABLE `Promotion Dimension` (
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
+-- Table structure for table `Prospect Dimension`
+--
+
+DROP TABLE IF EXISTS `Prospect Dimension`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!40101 SET character_set_client = utf8 */;
+CREATE TABLE `Prospect Dimension` (
+  `Prospect Key` mediumint(8) unsigned NOT NULL AUTO_INCREMENT,
+  `Prospect Store Key` smallint(5) unsigned NOT NULL DEFAULT '1',
+  `Prospect Name` varchar(255) DEFAULT NULL,
+  `Prospect Company Name` varchar(255) DEFAULT NULL,
+  `Prospect Main Contact Name` varchar(255) DEFAULT '',
+  `Prospect Main XHTML Telephone` varchar(255) DEFAULT NULL,
+  `Prospect Main Plain Telephone` varchar(45) NOT NULL,
+  `Prospect Main Plain FAX` varchar(100) NOT NULL,
+  `Prospect Main XHTML FAX` varchar(100) DEFAULT NULL,
+  `Prospect Main XHTML Mobile` varchar(255) DEFAULT NULL,
+  `Prospect Main Plain Mobile` varchar(255) NOT NULL,
+  `Prospect Main Plain Email` varchar(255) NOT NULL,
+  `Prospect Location` varchar(255) DEFAULT NULL,
+  `Prospect Contact Address Recipient` varchar(255) DEFAULT NULL,
+  `Prospect Contact Address Organization` varchar(255) DEFAULT NULL,
+  `Prospect Contact Address Line 1` varchar(255) DEFAULT NULL,
+  `Prospect Contact Address Line 2` varchar(255) DEFAULT NULL,
+  `Prospect Contact Address Sorting Code` varchar(255) DEFAULT NULL,
+  `Prospect Contact Address Postal Code` varchar(255) DEFAULT NULL,
+  `Prospect Contact Address Dependent Locality` varchar(255) DEFAULT NULL,
+  `Prospect Contact Address Locality` varchar(255) DEFAULT NULL,
+  `Prospect Contact Address Administrative Area` varchar(255) DEFAULT NULL,
+  `Prospect Contact Address Country 2 Alpha Code` varchar(2) DEFAULT NULL,
+  `Prospect Contact Address Checksum` varchar(64) DEFAULT NULL,
+  `Prospect Contact Address Formatted` text,
+  `Prospect Contact Address Postal Label` text,
+  `Prospect File As` varchar(255) DEFAULT NULL,
+  `Prospect Created Date` datetime DEFAULT NULL,
+  `Prospect First Contacted Date` datetime DEFAULT NULL,
+  `Prospect Registration Date` datetime DEFAULT NULL,
+  `Prospect Invoiced Date` datetime DEFAULT NULL,
+  `Prospect Lost Date` datetime DEFAULT NULL,
+  `Prospect Status` enum('NoContacted','Contacted','NotInterested','Registered','Invoiced') NOT NULL DEFAULT 'NoContacted',
+  `Prospect Preferred Contact Number` enum('Telephone','Mobile') NOT NULL DEFAULT 'Mobile',
+  `Prospect Preferred Contact Number Formatted Number` varchar(255) DEFAULT NULL,
+  `Prospect Website` varchar(255) DEFAULT NULL,
+  `Prospect Sticky Note` text,
+  `Prospect Customer Key` mediumint(8) unsigned DEFAULT NULL,
+  `Prospect User Key` mediumint(9) DEFAULT NULL,
+  `Prospect Bounced` enum('Yes','No') NOT NULL DEFAULT 'No',
+  `Prospect Spam` enum('Yes','No') NOT NULL DEFAULT 'No',
+  `Prospect Calls Number` smallint(6) NOT NULL DEFAULT '0',
+  `Prospect Emails Sent Number` mediumint(9) NOT NULL DEFAULT '0',
+  `Prospect Emails Open Number` mediumint(9) NOT NULL DEFAULT '0',
+  `Prospect Emails Clicked Number` mediumint(9) NOT NULL DEFAULT '0',
+  `Prospect Invoiced` enum('Yes','No') NOT NULL DEFAULT 'No',
+  `Prospect Sales Representative Key` mediumint(8) unsigned DEFAULT NULL,
+  `Prospect Customer Assigned by User Key` mediumint(8) unsigned DEFAULT NULL,
+  PRIMARY KEY (`Prospect Key`),
+  UNIQUE KEY `Prospect Store Key` (`Prospect Store Key`,`Prospect Main Plain Email`),
+  KEY `Prospect Store Key_2` (`Prospect Store Key`),
+  KEY `Prospect User Key` (`Prospect User Key`),
+  KEY `Prospect Sales Representative Key` (`Prospect Sales Representative Key`),
+  KEY `Prospect Invoiced` (`Prospect Invoiced`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Table structure for table `Prospect History Bridge`
+--
+
+DROP TABLE IF EXISTS `Prospect History Bridge`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!40101 SET character_set_client = utf8 */;
+CREATE TABLE `Prospect History Bridge` (
+  `Prospect Key` mediumint(8) unsigned NOT NULL,
+  `History Key` int(10) unsigned NOT NULL,
+  `Deletable` enum('Yes','No') NOT NULL DEFAULT 'No',
+  `Strikethrough` enum('Yes','No') NOT NULL DEFAULT 'No',
+  `Type` enum('Notes','Changes','Emails','Calls','Posts') NOT NULL DEFAULT 'Notes',
+  PRIMARY KEY (`Prospect Key`,`History Key`),
+  KEY `Prospect Key` (`Prospect Key`),
+  KEY `History Key` (`History Key`),
+  KEY `Deletable` (`Deletable`),
+  KEY `Type` (`Type`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Table structure for table `Prospect Other Telephone Dimension`
+--
+
+DROP TABLE IF EXISTS `Prospect Other Telephone Dimension`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!40101 SET character_set_client = utf8 */;
+CREATE TABLE `Prospect Other Telephone Dimension` (
+  `Prospect Other Telephone Key` mediumint(8) unsigned NOT NULL AUTO_INCREMENT,
+  `Prospect Other Telephone Store Key` mediumint(8) unsigned NOT NULL,
+  `Prospect Other Telephone Prospect Key` mediumint(8) unsigned NOT NULL,
+  `Prospect Other Telephone Number` varchar(255) NOT NULL,
+  `Prospect Other Telephone Formatted Number` varchar(255) NOT NULL,
+  `Prospect Other Telephone Label` varchar(255) DEFAULT NULL,
+  PRIMARY KEY (`Prospect Other Telephone Key`),
+  KEY `Prospect Other Telephone Prospect Key` (`Prospect Other Telephone Prospect Key`,`Prospect Other Telephone Number`) USING BTREE,
+  KEY `Prospect Other Telephone Store Key` (`Prospect Other Telephone Store Key`),
+  KEY `Prospect Other Telephone Number` (`Prospect Other Telephone Number`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
 -- Table structure for table `Published Email Template Dimension`
 --
 
@@ -12236,7 +13259,7 @@ DROP TABLE IF EXISTS `Published Email Template Dimension`;
 /*!40101 SET character_set_client = utf8 */;
 CREATE TABLE `Published Email Template Dimension` (
   `Published Email Template Key` mediumint(8) unsigned NOT NULL AUTO_INCREMENT,
-  `Published Email Template Email Template Key` mediumint(8) unsigned NOT NULL,
+  `Published Email Template Email Template Key` mediumint(8) unsigned DEFAULT NULL,
   `Published Email Template JSON` mediumtext,
   `Published Email Template Subject` varchar(70) DEFAULT NULL,
   `Published Email Template HTML` mediumtext,
@@ -12302,6 +13325,7 @@ DROP TABLE IF EXISTS `Purchase Order Dimension`;
 /*!40101 SET character_set_client = utf8 */;
 CREATE TABLE `Purchase Order Dimension` (
   `Purchase Order Key` mediumint(8) unsigned NOT NULL AUTO_INCREMENT,
+  `Purchase Order Supplier Delivery Key` mediumint(8) unsigned DEFAULT NULL,
   `Purchase Order Locked` enum('Yes','No') NOT NULL DEFAULT 'No',
   `Purchase Order Parent` enum('Supplier','Agent') NOT NULL DEFAULT 'Supplier',
   `Purchase Order Parent Key` mediumint(8) unsigned DEFAULT NULL,
@@ -12332,8 +13356,8 @@ CREATE TABLE `Purchase Order Dimension` (
   `Purchase Order Main Buyer Key` mediumint(8) unsigned DEFAULT NULL,
   `Purchase Order Main Buyer Name` varchar(255) DEFAULT NULL,
   `Purchase Order Main Source Type` enum('Post','Internet','Telephone','Fax','In Person','Unknown','Email','Other') NOT NULL DEFAULT 'Unknown',
-  `Purchase Order State` enum('InProcess','SubmittedAgent','Submitted','Inputted','Dispatched','Received','Checked','Placed','Cancelled') NOT NULL DEFAULT 'InProcess',
-  `Purchase Order Max Supplier Delivery State` enum('NA','InProcess','Dispatched','Received','Checked','Placed') NOT NULL DEFAULT 'NA',
+  `Purchase Order State` enum('InProcess','SubmittedAgent','Submitted','Editing_Submitted','Inputted','Dispatched','Received','Checked','Placed','Costing','InvoiceChecked','Cancelled') NOT NULL DEFAULT 'InProcess',
+  `Purchase Order Max Supplier Delivery State` enum('NA','InProcess','Consolidated','Dispatched','Received','Checked','Placed','Costing','Cancelled','InvoiceChecked') NOT NULL DEFAULT 'NA',
   `Purchase Order Our Feedback` enum('Praise','None','Shortages','Breakings','Different Product','Multiple','Low Quality','Not Like','Slow Delivery','Other') NOT NULL DEFAULT 'None',
   `Purchase Order Actions Taken` enum('Refund','Credit','Replacement','Send Missing','Other','No Applicable') NOT NULL DEFAULT 'No Applicable',
   `Purchase Order Number Suppliers` smallint(5) unsigned NOT NULL DEFAULT '0',
@@ -12347,6 +13371,7 @@ CREATE TABLE `Purchase Order Dimension` (
   `Purchase Order Charges Net Amount` decimal(16,2) NOT NULL DEFAULT '0.00',
   `Purchase Order Net Credited Amount` decimal(16,2) NOT NULL DEFAULT '0.00',
   `Purchase Order Total Net Amount` decimal(16,2) NOT NULL DEFAULT '0.00',
+  `Purchase Order Extra Cost Amount` decimal(16,2) NOT NULL DEFAULT '0.00',
   `Purchase Order Shipping Tax Amount` decimal(16,2) NOT NULL DEFAULT '0.00',
   `Purchase Order Charges Tax Amount` decimal(16,2) NOT NULL DEFAULT '0.00',
   `Purchase Order Tax Credited Amount` decimal(16,2) NOT NULL DEFAULT '0.00',
@@ -12429,20 +13454,36 @@ CREATE TABLE `Purchase Order Transaction Fact` (
   `Note to Supplier Locked` enum('Yes','No') NOT NULL DEFAULT 'No',
   `Supplier Key` mediumint(9) NOT NULL,
   `Agent Key` mediumint(8) unsigned DEFAULT NULL,
-  `Purchase Order Quantity` float NOT NULL,
+  `Agent Supplier Purchase Order Key` mediumint(8) unsigned DEFAULT NULL,
+  `Purchase Order Ordering Units` float unsigned DEFAULT NULL,
+  `Purchase Order Quantity` float DEFAULT NULL,
   `Purchase Order Tax Code` varchar(16) DEFAULT NULL,
   `Purchase Order Net Amount` decimal(16,2) NOT NULL,
+  `Purchase Order Submitted Units` float unsigned DEFAULT NULL,
+  `Purchase Order Submitted Unit Cost` decimal(12,2) DEFAULT NULL,
+  `Purchase Order Submitted Units Per SKO` mediumint(8) unsigned DEFAULT NULL,
+  `Purchase Order Submitted SKOs Per Carton` mediumint(8) unsigned DEFAULT NULL,
+  `Purchase Order Extra Cost Amount` decimal(16,2) NOT NULL DEFAULT '0.00',
   `Purchase Order Tax Amount` decimal(16,3) NOT NULL DEFAULT '0.000',
   `Purchase Order Shipping Contribution Amount` double(15,2) NOT NULL DEFAULT '0.00',
-  `Purchase Order Transaction State` enum('InProcess','Submitted','Inputted','Dispatched','Received','Checked','Placed','Cancelled') NOT NULL DEFAULT 'InProcess',
+  `Purchase Order Transaction State` enum('InProcess','Submitted','ProblemSupplier','Confirmed','ReceivedAgent','InDelivery','Inputted','Dispatched','Received','Checked','Placed','Cancelled') NOT NULL DEFAULT 'InProcess',
   `Currency Code` varchar(3) NOT NULL DEFAULT 'GBP',
   `Supplier Invoice Current Payment State` enum('No Applicable','Paid') NOT NULL DEFAULT 'No Applicable',
   `Supplier Delivery Key` mediumint(8) unsigned DEFAULT NULL,
   `Supplier Delivery Received Location Key` mediumint(8) unsigned NOT NULL DEFAULT '1',
-  `Supplier Delivery Quantity` float NOT NULL DEFAULT '0',
+  `Supplier Delivery Units` float unsigned DEFAULT NULL,
+  `Supplier Delivery Checked Units` float unsigned DEFAULT NULL,
+  `Supplier Delivery Placed Units` float unsigned DEFAULT NULL,
+  `Supplier Delivery Placed SKOs` double unsigned DEFAULT NULL,
+  `Supplier Delivery Quantity` float DEFAULT NULL,
   `Supplier Delivery Checked Quantity` float DEFAULT NULL,
   `Supplier Delivery Placed Quantity` float DEFAULT NULL,
-  `Supplier Delivery Net Amount` float NOT NULL DEFAULT '0',
+  `Supplier Delivery Net Amount` decimal(16,2) NOT NULL DEFAULT '0.00',
+  `Supplier Delivery Placed Net Amount` decimal(16,2) NOT NULL DEFAULT '0.00',
+  `Supplier Delivery Extra Cost Amount` decimal(16,2) NOT NULL DEFAULT '0.00',
+  `Supplier Delivery Extra Cost Account Currency Amount` decimal(16,2) NOT NULL DEFAULT '0.00',
+  `Supplier Delivery Exchange Rate` int(11) DEFAULT NULL,
+  `Supplier Delivery Paid Amount` decimal(16,2) DEFAULT '0.00',
   `Supplier Delivery Tax Amount` float NOT NULL DEFAULT '0',
   `Supplier Delivery Transaction State` enum('InProcess','Dispatched','Received','Checked','Placed','Cancelled') DEFAULT NULL,
   `Supplier Delivery Transaction Placed` enum('Yes','No','NA') DEFAULT NULL,
@@ -12452,10 +13493,13 @@ CREATE TABLE `Purchase Order Transaction Fact` (
   `Supplier Delivery CBM` float DEFAULT NULL COMMENT 'In m3',
   `Supplier Delivery Weight` float DEFAULT NULL COMMENT 'In Kg',
   `Metadata` text,
+  `Note Problem with Supplier` text,
+  `Note Delivery Problem` text,
   PRIMARY KEY (`Purchase Order Transaction Fact Key`),
   KEY `Purchase Order Key` (`Purchase Order Key`),
   KEY `User Key` (`User Key`),
-  KEY `Purchase Order Item Index` (`Purchase Order Item Index`)
+  KEY `Purchase Order Item Index` (`Purchase Order Item Index`),
+  KEY `Agent Supplier Purchase Order Key` (`Agent Supplier Purchase Order Key`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
@@ -12474,6 +13518,55 @@ CREATE TABLE `Right Dimension` (
   `Right Access Keys` text NOT NULL,
   UNIQUE KEY `define_name_i_idx` (`Right Type`,`Right Name`),
   UNIQUE KEY `right_id_idx` (`Right Key`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Table structure for table `Sales Representative Dimension`
+--
+
+DROP TABLE IF EXISTS `Sales Representative Dimension`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!40101 SET character_set_client = utf8 */;
+CREATE TABLE `Sales Representative Dimension` (
+  `Sales Representative Key` mediumint(8) unsigned NOT NULL AUTO_INCREMENT,
+  `Sales Representative User Key` mediumint(8) unsigned DEFAULT NULL,
+  `Sales Representative Customer Agent` enum('Yes','No') COLLATE utf8_unicode_ci NOT NULL DEFAULT 'No',
+  `Sales Representative Prospect Agent` enum('Yes','No') COLLATE utf8_unicode_ci NOT NULL DEFAULT 'No',
+  `Sales Representative Number Stores` mediumint(8) unsigned NOT NULL DEFAULT '0',
+  `Sales Representative Number Customers` mediumint(8) unsigned NOT NULL DEFAULT '0',
+  `Sales Representative Number Prospects` mediumint(8) unsigned NOT NULL DEFAULT '0',
+  `Sales Representative Number Prospects Registered` mediumint(8) unsigned NOT NULL DEFAULT '0',
+  `Sales Representative Number Prospects with Orders` mediumint(8) unsigned NOT NULL DEFAULT '0',
+  `Sales Representative Number Orders` mediumint(8) unsigned NOT NULL DEFAULT '0',
+  `Sales Representative Number Invoices` mediumint(8) unsigned NOT NULL DEFAULT '0',
+  `Sales Representative Number Invoiced Net Amount` decimal(14,2) NOT NULL DEFAULT '0.00',
+  `Sales Representative Created Date` datetime DEFAULT NULL,
+  PRIMARY KEY (`Sales Representative Key`),
+  KEY `Sales Representative Customer Agent` (`Sales Representative Customer Agent`),
+  KEY `Sales Representative Prospect Agent` (`Sales Representative Prospect Agent`),
+  KEY `Sales Representative User Key` (`Sales Representative User Key`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Table structure for table `Sales Representative History Bridge`
+--
+
+DROP TABLE IF EXISTS `Sales Representative History Bridge`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!40101 SET character_set_client = utf8 */;
+CREATE TABLE `Sales Representative History Bridge` (
+  `Sales Representative Key` mediumint(8) unsigned NOT NULL,
+  `History Key` int(10) unsigned NOT NULL,
+  `Deletable` enum('Yes','No') NOT NULL DEFAULT 'No',
+  `Strikethrough` enum('Yes','No') NOT NULL DEFAULT 'No',
+  `Type` enum('Notes','Changes') NOT NULL DEFAULT 'Notes',
+  PRIMARY KEY (`Sales Representative Key`,`History Key`),
+  KEY `Sales Representative Key` (`Sales Representative Key`),
+  KEY `History Key` (`History Key`),
+  KEY `Deletable` (`Deletable`),
+  KEY `Type` (`Type`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
@@ -12681,6 +13774,8 @@ DROP TABLE IF EXISTS `Shipper Dimension`;
 /*!40101 SET character_set_client = utf8 */;
 CREATE TABLE `Shipper Dimension` (
   `Shipper Key` mediumint(8) unsigned NOT NULL AUTO_INCREMENT,
+  `Shipper Warehouse Key` smallint(5) unsigned DEFAULT NULL,
+  `Shipper Status` enum('Active','Suspended') NOT NULL DEFAULT 'Active',
   `Shipper Code` varchar(16) NOT NULL,
   `Shipper Name` varchar(255) NOT NULL,
   `Shipper Telephone` varchar(64) DEFAULT NULL,
@@ -12688,8 +13783,34 @@ CREATE TABLE `Shipper Dimension` (
   `Shipper Tracking URL` varchar(255) DEFAULT NULL,
   `Shipper Fiscal Name` varchar(255) DEFAULT NULL,
   `Shipper Active` enum('Yes','No') NOT NULL DEFAULT 'Yes',
+  `Shipper Last Consignment` datetime DEFAULT NULL,
+  `Shipper Consignments` mediumint(9) NOT NULL DEFAULT '0',
+  `Shipper Number Parcels` mediumint(9) NOT NULL DEFAULT '0',
+  `Shipper Dispatched Weight` float NOT NULL DEFAULT '0',
   PRIMARY KEY (`Shipper Key`),
-  KEY `Shipper Active` (`Shipper Active`)
+  KEY `Shipper Active` (`Shipper Active`),
+  KEY `Shipper Warehouse Key` (`Shipper Warehouse Key`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Table structure for table `Shipper History Bridge`
+--
+
+DROP TABLE IF EXISTS `Shipper History Bridge`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!40101 SET character_set_client = utf8 */;
+CREATE TABLE `Shipper History Bridge` (
+  `Shipper Key` mediumint(8) unsigned NOT NULL,
+  `History Key` int(10) unsigned NOT NULL,
+  `Deletable` enum('Yes','No') NOT NULL DEFAULT 'No',
+  `Strikethrough` enum('Yes','No') NOT NULL DEFAULT 'No',
+  `Type` enum('Notes','Changes') NOT NULL DEFAULT 'Notes',
+  PRIMARY KEY (`Shipper Key`,`History Key`),
+  KEY `Shipper Key` (`Shipper Key`),
+  KEY `History Key` (`History Key`),
+  KEY `Deletable` (`Deletable`),
+  KEY `Type` (`Type`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
@@ -13333,6 +14454,10 @@ CREATE TABLE `Store DC Data` (
   `Store DC Orders In Process Paid Amount` decimal(12,2) NOT NULL DEFAULT '0.00',
   `Store DC Orders In Process Not Paid Amount` decimal(12,2) NOT NULL DEFAULT '0.00',
   `Store DC Orders In Warehouse Amount` decimal(12,2) NOT NULL DEFAULT '0.00',
+  `Store DC Orders In Warehouse No Alerts Amount` decimal(12,2) DEFAULT '0.00',
+  `Store DC Orders In Warehouse With Alerts Amount` decimal(12,2) DEFAULT '0.00',
+  `Store DC Orders Dispatch Approved Amount` decimal(12,2) DEFAULT '0.00',
+  `Store DC Orders Dispatched Today Amount` decimal(12,2) DEFAULT '0.00',
   `Store DC Orders Packed Amount` decimal(12,2) NOT NULL DEFAULT '0.00',
   `Store DC Orders In Dispatch Area Amount` decimal(12,2) NOT NULL DEFAULT '0.00',
   `Store DC Total Acc Invoiced Discount Amount` decimal(12,2) NOT NULL DEFAULT '0.00',
@@ -13464,16 +14589,30 @@ CREATE TABLE `Store Data` (
   `Store Key` mediumint(8) unsigned NOT NULL,
   `Store Orders In Basket Number` mediumint(8) unsigned NOT NULL DEFAULT '0',
   `Store Orders In Basket Amount` decimal(12,2) NOT NULL DEFAULT '0.00',
+  `Store Orders Cancelled Number` mediumint(8) unsigned NOT NULL DEFAULT '0',
+  `Store Orders Dispatched Number` mediumint(8) unsigned NOT NULL DEFAULT '0',
+  `Store Orders Dispatch Approved Number` mediumint(8) unsigned NOT NULL DEFAULT '0',
+  `Store Orders In Process Number` mediumint(8) unsigned NOT NULL DEFAULT '0',
+  `Store Orders Cancelled Amount` decimal(16,2) NOT NULL DEFAULT '0.00',
+  `Store Orders Dispatched Amount` decimal(16,2) NOT NULL DEFAULT '0.00',
+  `Store Orders Dispatch Approved Amount` decimal(16,2) NOT NULL DEFAULT '0.00',
+  `Store Orders In Process Amount` decimal(16,2) NOT NULL DEFAULT '0.00',
   `Store Orders In Process Paid Number` mediumint(8) unsigned NOT NULL DEFAULT '0',
   `Store Orders In Process Paid Amount` decimal(12,2) NOT NULL DEFAULT '0.00',
   `Store Orders In Process Not Paid Number` mediumint(8) unsigned NOT NULL DEFAULT '0',
   `Store Orders In Process Not Paid Amount` decimal(12,2) NOT NULL DEFAULT '0.00',
   `Store Orders In Warehouse Number` mediumint(8) unsigned NOT NULL DEFAULT '0',
   `Store Orders In Warehouse Amount` decimal(12,2) NOT NULL DEFAULT '0.00',
+  `Store Orders In Warehouse With Alerts Number` mediumint(8) unsigned DEFAULT '0',
+  `Store Orders In Warehouse With Alerts Amount` decimal(12,2) DEFAULT '0.00',
+  `Store Orders In Warehouse No Alerts Number` mediumint(8) unsigned DEFAULT '0',
+  `Store Orders In Warehouse No Alerts Amount` decimal(12,2) DEFAULT '0.00',
   `Store Orders Packed Number` mediumint(8) unsigned NOT NULL DEFAULT '0',
   `Store Orders Packed Amount` decimal(12,2) NOT NULL DEFAULT '0.00',
   `Store Orders In Dispatch Area Number` mediumint(8) unsigned NOT NULL DEFAULT '0',
   `Store Orders In Dispatch Area Amount` decimal(12,2) NOT NULL DEFAULT '0.00',
+  `Store Orders Dispatched Today Number` mediumint(8) unsigned DEFAULT '0',
+  `Store Orders Dispatched Today Amount` decimal(12,2) DEFAULT '0.00',
   `Store Today Start Orders In Warehouse Number` mediumint(8) unsigned NOT NULL DEFAULT '0',
   `Store Total Acc Invoiced Discount Amount` decimal(12,2) NOT NULL DEFAULT '0.00',
   `Store Total Acc Invoiced Amount` decimal(12,2) NOT NULL DEFAULT '0.00',
@@ -14007,6 +15146,10 @@ CREATE TABLE `Store Data` (
   `Store 4 Quarter Ago 1YB Lost Contacts` mediumint(8) unsigned NOT NULL DEFAULT '0',
   `Store 4 Quarter Ago 1YB Lost Customers` mediumint(8) unsigned NOT NULL DEFAULT '0',
   `Store 4 Quarter Ago 1YB Average Dispatch Time` float DEFAULT NULL,
+  `Store Total Acc Payments` mediumint(8) unsigned NOT NULL DEFAULT '0',
+  `Store Total Acc Payments Amount` decimal(18,2) NOT NULL DEFAULT '0.00',
+  `Store Total Acc Credits` mediumint(8) unsigned NOT NULL DEFAULT '0',
+  `Store Total Acc Credits Amount` decimal(18,2) NOT NULL DEFAULT '0.00',
   PRIMARY KEY (`Store Key`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 /*!40101 SET character_set_client = @saved_cs_client */;
@@ -14422,7 +15565,7 @@ CREATE TABLE `Store Dimension` (
   `Store Google Map URL` text,
   `Short Marketing Description` varchar(255) DEFAULT NULL,
   `Store Telecom Format` varchar(255) NOT NULL DEFAULT 'GBR',
-  `Store State` enum('Normal','Closed') NOT NULL DEFAULT 'Normal',
+  `Store State` enum('Normal','Closed','Suspended') NOT NULL DEFAULT 'Normal',
   `Store Website Key` smallint(5) unsigned DEFAULT NULL,
   `Store Valid From` datetime DEFAULT NULL,
   `Store Valid To` datetime DEFAULT NULL,
@@ -14545,6 +15688,7 @@ CREATE TABLE `Store Dimension` (
   `Store Refund Public ID Format` varchar(32) NOT NULL DEFAULT '%05d',
   `Store Refund Public ID Method` enum('Same Invoice ID','Next Invoice ID','Account Wide Own Index','Store Own Index') NOT NULL DEFAULT 'Same Invoice ID',
   `Store Refund Suffix` varchar(16) NOT NULL DEFAULT 'ref',
+  `Store Replacement Suffix` varchar(64) NOT NULL DEFAULT 'rpl',
   `Cancel Orders In Basket Older Than` bigint(20) unsigned NOT NULL DEFAULT '15778463' COMMENT 'Seconds (default 6 months)',
   `Store Payments` mediumint(8) unsigned NOT NULL DEFAULT '0',
   `Store Family Category Key` mediumint(9) DEFAULT NULL,
@@ -14556,6 +15700,10 @@ CREATE TABLE `Store Dimension` (
   `Store Acc Ongoing Intervals Updated` datetime DEFAULT NULL COMMENT '1 year, 1 quarter ',
   `Store Acc Previous Intervals Updated` datetime DEFAULT NULL COMMENT 'last month, last week, past years, past quarters ',
   `Store Email Template Signature` text,
+  `Store Proforma Message` text,
+  `Store Version` tinyint(4) NOT NULL DEFAULT '1',
+  `Store Send Order Recursion Emails` enum('Yes','No') NOT NULL DEFAULT 'No',
+  `Store Reviews Settings` text,
   PRIMARY KEY (`Store Key`),
   UNIQUE KEY `Store Name` (`Store Name`),
   KEY `code` (`Store Code`),
@@ -15514,16 +16662,19 @@ CREATE TABLE `Supplier Delivery Dimension` (
   `Supplier Delivery Parent Address` text,
   `Supplier Delivery Warehouse Key` smallint(5) unsigned DEFAULT NULL,
   `Supplier Delivery Warehouse Metadata` text,
-  `Supplier Delivery State` enum('InProcess','Dispatched','Received','Checked','Placed','Cancelled') NOT NULL DEFAULT 'InProcess',
+  `Supplier Delivery State` enum('InProcess','Consolidated','Dispatched','Received','Checked','Placed','Costing','Cancelled','InvoiceChecked') NOT NULL DEFAULT 'InProcess',
   `Supplier Delivery Receipt Confirmed Date` datetime DEFAULT NULL,
   `Supplier Delivery Date` date DEFAULT NULL,
   `Supplier Delivery Creation Date` datetime NOT NULL,
+  `Supplier Delivery Consolidated Date` datetime DEFAULT NULL,
   `Supplier Delivery Dispatched Date` datetime DEFAULT NULL,
   `Supplier Delivery Estimated Receiving Date` datetime DEFAULT NULL,
   `Supplier Delivery Received Date` datetime DEFAULT NULL,
   `Supplier Delivery Checked Date` datetime DEFAULT NULL,
   `Supplier Delivery Damages Checked Date` datetime DEFAULT NULL,
   `Supplier Delivery Placed Date` datetime DEFAULT NULL,
+  `Supplier Delivery Start Costing Date` date DEFAULT NULL,
+  `Supplier Delivery Invoice Checked Date` datetime DEFAULT NULL,
   `Supplier Delivery Cancelled Date` datetime DEFAULT NULL,
   `Supplier Delivery Last Updated Date` datetime DEFAULT NULL COMMENT 'Lastest Date when Adding/Modify Supplier Delivery Transaction or Data',
   `Supplier Delivery Main Inputter Key` mediumint(8) unsigned DEFAULT NULL,
@@ -15535,11 +16686,14 @@ CREATE TABLE `Supplier Delivery Dimension` (
   `Supplier Delivery XHTML Purchase Orders` varchar(4096) DEFAULT NULL,
   `Supplier Delivery Our Feedback` enum('Praise','None','Shortages','Breakings','Different Product','Multiple','Low Quality','Not Like','Slow Delivery','Other') NOT NULL DEFAULT 'None',
   `Supplier Delivery Actions Taken` enum('Refund','Credit','Replacement','Send Missing','Other','No Applicable') NOT NULL DEFAULT 'No Applicable',
+  `Supplier Delivery Purchase Order Amount` decimal(16,2) NOT NULL DEFAULT '0.00',
   `Supplier Delivery Number Items` smallint(5) unsigned NOT NULL DEFAULT '0',
   `Supplier Delivery Number Ordered Items` mediumint(8) unsigned NOT NULL DEFAULT '0',
   `Supplier Delivery Number Items Without PO` mediumint(8) unsigned NOT NULL DEFAULT '0',
   `Supplier Delivery Number Dispatched Items` smallint(5) unsigned NOT NULL DEFAULT '0',
   `Supplier Delivery Number Checked Items` smallint(5) unsigned NOT NULL DEFAULT '0',
+  `Supplier Delivery Number Over Delivered Items` smallint(5) unsigned NOT NULL DEFAULT '0',
+  `Supplier Delivery Number Under Delivered Items` smallint(5) unsigned NOT NULL DEFAULT '0',
   `Supplier Delivery Number Received and Checked Items` mediumint(8) unsigned NOT NULL DEFAULT '0',
   `Supplier Delivery Number Placed Items` smallint(5) unsigned NOT NULL DEFAULT '0',
   `Supplier Delivery Placed Items` enum('Yes','No') NOT NULL DEFAULT 'No',
@@ -15564,6 +16718,7 @@ CREATE TABLE `Supplier Delivery Dimension` (
   `Supplier Delivery Weight` float DEFAULT NULL,
   `Supplier Delivery CBM` float DEFAULT NULL,
   `Supplier Delivery Metadata` text,
+  `Supplier Delivery Number Attachments` smallint(5) unsigned NOT NULL DEFAULT '0',
   PRIMARY KEY (`Supplier Delivery Key`),
   KEY `Supplier Delivery Purchase Order Key` (`Supplier Delivery Purchase Order Key`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
@@ -15604,6 +16759,7 @@ CREATE TABLE `Supplier Dimension` (
   `Supplier Code` varchar(16) NOT NULL,
   `Supplier Name` varchar(255) DEFAULT NULL,
   `Supplier File As` varchar(255) NOT NULL,
+  `Supplier Nickname` varchar(255) DEFAULT NULL,
   `Supplier Fiscal Name` varchar(255) DEFAULT NULL,
   `Supplier Company Key` mediumint(8) unsigned NOT NULL,
   `Supplier Main Contact Key` mediumint(8) unsigned DEFAULT NULL,
@@ -15706,6 +16862,9 @@ CREATE TABLE `Supplier Dimension` (
   `Supplier Part Locations To Replenish` mediumint(8) unsigned NOT NULL DEFAULT '0',
   `Supplier Tolerable Percentage Part Locations To Replenish` float NOT NULL DEFAULT '0.1',
   `Supplier Max Percentage Part Locations To Replenish` float NOT NULL DEFAULT '0.2',
+  `Supplier Order Public ID Format` varchar(64) DEFAULT NULL,
+  `Supplier Order Last Order ID` mediumint(8) unsigned NOT NULL DEFAULT '0',
+  `Supplier Production` enum('Yes','No') NOT NULL DEFAULT 'No',
   PRIMARY KEY (`Supplier Key`),
   UNIQUE KEY `Supplier Code` (`Supplier Code`),
   KEY `Supplier Most Recent` (`Supplier Active`),
@@ -15718,7 +16877,8 @@ CREATE TABLE `Supplier Dimension` (
   KEY `Supplier Main Telephone Key` (`Supplier Main Telephone Key`),
   KEY `Supplier Main FAX Key` (`Supplier Main FAX Key`),
   KEY `Supplier Is Agent` (`Supplier Has Agent`),
-  KEY `Supplier Type` (`Supplier Type`)
+  KEY `Supplier Type` (`Supplier Type`),
+  KEY `Supplier Production` (`Supplier Production`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
@@ -15808,6 +16968,7 @@ CREATE TABLE `Supplier Part Dimension` (
   `Supplier Part Supplier Key` mediumint(8) unsigned NOT NULL,
   `Supplier Part Part SKU` mediumint(8) unsigned DEFAULT NULL,
   `Supplier Part Reference` varchar(255) DEFAULT NULL,
+  `Supplier Part Description` varchar(255) DEFAULT NULL,
   `Supplier Part Status` enum('Available','NoAvailable','Discontinued') NOT NULL DEFAULT 'Available',
   `Supplier Part From` datetime NOT NULL,
   `Supplier Part To` datetime DEFAULT NULL,
@@ -15820,11 +16981,15 @@ CREATE TABLE `Supplier Part Dimension` (
   `Supplier Part Minimum Carton Order` smallint(5) unsigned NOT NULL DEFAULT '1',
   `Supplier Part Average Delivery Days` float unsigned DEFAULT NULL,
   `Supplier Part Note to Supplier` text,
+  `Supplier Part Production` enum('Yes','No') NOT NULL DEFAULT 'No',
   `Supplier Part On Demand` enum('Yes','No') NOT NULL DEFAULT 'No',
   `Supplier Part Fresh` enum('Yes','No') NOT NULL DEFAULT 'No',
+  `Supplier Part Sticky Note` text,
   PRIMARY KEY (`Supplier Part Key`),
   KEY `Supplier Part Supplier Part Historic Key` (`Supplier Part Historic Key`),
-  KEY `Supplier Part Supplier Key` (`Supplier Part Supplier Key`)
+  KEY `Supplier Part Supplier Key` (`Supplier Part Supplier Key`),
+  KEY `Supplier Part Description` (`Supplier Part Description`),
+  KEY `Supplier Part Production` (`Supplier Part Production`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
@@ -17125,18 +18290,46 @@ CREATE TABLE `Timeseries Record Dimension` (
   `Timeseries Record Key` int(10) unsigned NOT NULL AUTO_INCREMENT,
   `Timeseries Record Timeseries Key` mediumint(9) NOT NULL,
   `Timeseries Record Date` date NOT NULL,
-  `Timeseries Record Float A` float DEFAULT NULL,
-  `Timeseries Record Float B` float DEFAULT NULL,
-  `Timeseries Record Float C` float DEFAULT NULL,
-  `Timeseries Record Float D` float DEFAULT NULL,
+  `Timeseries Record Float A` double DEFAULT NULL,
+  `Timeseries Record Float B` double DEFAULT NULL,
+  `Timeseries Record Float C` double DEFAULT NULL,
+  `Timeseries Record Float D` double DEFAULT NULL,
   `Timeseries Record Integer A` mediumint(9) DEFAULT NULL,
   `Timeseries Record Integer B` mediumint(9) DEFAULT NULL,
   `Timeseries Record Integer C` mediumint(9) DEFAULT NULL,
   `Timeseries Record Type` enum('Data','Forecast','First','Current','Target') DEFAULT NULL,
+  `Timeseries Record Metadata` text,
   PRIMARY KEY (`Timeseries Record Key`),
   KEY `Time Series Date` (`Timeseries Record Date`),
   KEY `Timeseries Key` (`Timeseries Record Timeseries Key`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Table structure for table `Timeseries Record Drill Down`
+--
+
+DROP TABLE IF EXISTS `Timeseries Record Drill Down`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!40101 SET character_set_client = utf8 */;
+CREATE TABLE `Timeseries Record Drill Down` (
+  `Timeseries Record Drill Down Timeseries Record Key` int(10) unsigned NOT NULL,
+  `Timeseries Record Drill Down Subject` enum('Part','Category','Product') COLLATE utf8_unicode_ci NOT NULL,
+  `Timeseries Record Drill Down Subject Key` mediumint(8) unsigned NOT NULL,
+  `Timeseries Record Drill Down Float A` float DEFAULT NULL,
+  `Timeseries Record Drill Down Float B` float DEFAULT NULL,
+  `Timeseries Record Drill Down Float C` float DEFAULT NULL,
+  `Timeseries Record Drill Down Float D` float DEFAULT NULL,
+  `Timeseries Record Drill Down Float E` float DEFAULT NULL,
+  `Timeseries Record Drill Down Float F` float DEFAULT NULL,
+  `Timeseries Record Drill Down Integer A` mediumint(9) DEFAULT NULL,
+  `Timeseries Record Drill Down Integer B` mediumint(9) DEFAULT NULL,
+  `Timeseries Record Drill Down Integer C` mediumint(9) DEFAULT NULL,
+  `Timeseries Record Drill Down Integer D` mediumint(9) DEFAULT NULL,
+  `Timeseries Record Drill Down Integer E` mediumint(9) DEFAULT NULL,
+  `Timeseries Record Drill Down Integer F` mediumint(9) DEFAULT NULL,
+  KEY `Timeseries Record Drill Down Timeseries Record Key` (`Timeseries Record Drill Down Timeseries Record Key`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -17225,6 +18418,7 @@ CREATE TABLE `Timesheet Record Dimension` (
   `Timesheet Record Source` enum('ClockingMachine','Manual','API','System') DEFAULT 'Manual',
   `Timesheet Authoriser Key` mediumint(8) unsigned DEFAULT NULL,
   `Timesheet Remover Key` mediumint(8) unsigned DEFAULT NULL,
+  `Timesheet Record Note` text,
   PRIMARY KEY (`Timesheet Record Key`),
   UNIQUE KEY `Staff Key` (`Timesheet Record Staff Key`,`Timesheet Record Date`,`Timesheet Record Type`) USING BTREE,
   KEY `Timesheet Key` (`Timesheet Record Timesheet Key`),
@@ -17777,6 +18971,11 @@ CREATE TABLE `Warehouse Dimension` (
   `Warehouse Max Percentage Part Locations To Replenish` float NOT NULL DEFAULT '0.2',
   `Warehouse Email Template Signature` text,
   `Warehouse Delivery Note Processing Block` enum('real_time','offline') NOT NULL DEFAULT 'real_time',
+  `Warehouse Leakage Timeseries From` date DEFAULT NULL,
+  `Warehouse Stock Amount` decimal(18,2) NOT NULL DEFAULT '0.00',
+  `Warehouse Part Location Unknown Locations` mediumint(9) NOT NULL DEFAULT '0',
+  `Warehouse Tolerable Percentage Part Location Unknown Locations` float NOT NULL DEFAULT '0.05',
+  `Warehouse Max Percentage Part Location Unknown Locations` float NOT NULL DEFAULT '0.15',
   PRIMARY KEY (`Warehouse Key`),
   UNIQUE KEY `Warehouse Code` (`Warehouse Code`),
   UNIQUE KEY `Warehouse Name` (`Warehouse Name`)
@@ -18209,7 +19408,9 @@ CREATE TABLE `Website Dimension` (
   `Website Name` varchar(128) NOT NULL,
   `Website URL` varchar(255) NOT NULL,
   `Website Locale` varchar(5) NOT NULL DEFAULT 'en_GB',
-  `Website Data` text,
+  `Website Settings` text,
+  `Website Style` mediumtext,
+  `Website Mobile Style` text,
   `Website Localised Labels` text,
   `Website Theme` varchar(64) DEFAULT NULL,
   `Website Header Key` mediumint(9) DEFAULT NULL,
@@ -18226,11 +19427,20 @@ CREATE TABLE `Website Dimension` (
   `Website Primary Color` varchar(64) NOT NULL DEFAULT '#3183d7',
   `Website Secondary Color` varchar(64) NOT NULL,
   `Website Accent Color` varchar(64) NOT NULL,
-  `Website Title Font` varchar(255) NOT NULL DEFAULT '"Open Sans",Helvetica,Arial,sans-serif',
-  `Website Text Font` varchar(255) NOT NULL DEFAULT '"Open Sans",Helvetica,Arial,sans-serif',
+  `Website Button Color` varchar(16) DEFAULT NULL,
+  `Website Button Text Color` varchar(16) DEFAULT NULL,
+  `Website Active Button Color` varchar(16) DEFAULT NULL,
+  `Website Active Button Text Color` varchar(16) DEFAULT NULL,
+  `Website Title Font` varchar(255) NOT NULL DEFAULT 'Ubuntu',
+  `Website Text Font` varchar(255) NOT NULL DEFAULT 'Ubuntu',
   `Website Text Background` text NOT NULL,
   `Website Sitemap Last Update` datetime DEFAULT NULL,
   `Website Client Analytics Code` varchar(16) DEFAULT NULL,
+  `Website Google Tag Manager Code` varchar(16) DEFAULT NULL,
+  `Website Zendesk Chat Code` varchar(255) DEFAULT NULL,
+  `Website Tawk Chat Code` varchar(255) DEFAULT NULL,
+  `Website New Webpage Policy` enum('Publish','DontPublish') NOT NULL DEFAULT 'Publish',
+  `Website Registration Type` enum('Open','ApprovedOnly','Closed') NOT NULL DEFAULT 'Open',
   PRIMARY KEY (`Website Key`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 /*!40101 SET character_set_client = @saved_cs_client */;
@@ -18536,6 +19746,49 @@ CREATE TABLE `Website User Log Dimension` (
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
+-- Table structure for table `Website Webpage Scope Map`
+--
+
+DROP TABLE IF EXISTS `Website Webpage Scope Map`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!40101 SET character_set_client = utf8 */;
+CREATE TABLE `Website Webpage Scope Map` (
+  `Website Webpage Scope Website Key` mediumint(8) unsigned NOT NULL,
+  `Website Webpage Scope Webpage Key` mediumint(8) unsigned NOT NULL,
+  `Website Webpage Scope Scope` enum('Category','Product') COLLATE utf8_unicode_ci DEFAULT NULL,
+  `Website Webpage Scope Scope Key` mediumint(8) unsigned NOT NULL,
+  `Website Webpage Scope Type` varchar(64) COLLATE utf8_unicode_ci DEFAULT NULL,
+  `Website Webpage Scope Index` smallint(6) DEFAULT NULL,
+  KEY `Website Webpage Scope Webpage Key` (`Website Webpage Scope Webpage Key`),
+  KEY `Website Webpage Scope Scope` (`Website Webpage Scope Scope`,`Website Webpage Scope Scope Key`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Table structure for table `Whiteboard Dimension`
+--
+
+DROP TABLE IF EXISTS `Whiteboard Dimension`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!40101 SET character_set_client = utf8 */;
+CREATE TABLE `Whiteboard Dimension` (
+  `Whiteboard Key` mediumint(8) unsigned NOT NULL AUTO_INCREMENT,
+  `Whiteboard Type` enum('Page','Tab') COLLATE utf8_unicode_ci DEFAULT NULL,
+  `Whiteboard Hash` varchar(8) COLLATE utf8_unicode_ci NOT NULL,
+  `Whiteboard Module` varchar(64) COLLATE utf8_unicode_ci NOT NULL,
+  `Whiteboard Section` varchar(255) COLLATE utf8_unicode_ci NOT NULL,
+  `Whiteboard Tab` varchar(255) COLLATE utf8_unicode_ci NOT NULL,
+  `Whiteboard Text` text COLLATE utf8_unicode_ci NOT NULL,
+  `Whiteboard Created` datetime NOT NULL,
+  `Whiteboard Updated` datetime NOT NULL,
+  `Whiteboard Last Updated User Key` mediumint(8) unsigned DEFAULT NULL,
+  `Whiteboard Last Updated Staff Key` mediumint(8) unsigned DEFAULT NULL,
+  PRIMARY KEY (`Whiteboard Key`),
+  UNIQUE KEY `Whiteboard Hash` (`Whiteboard Hash`) USING BTREE
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
 -- Table structure for table `Widget Dimension`
 --
 
@@ -18552,6 +19805,37 @@ CREATE TABLE `Widget Dimension` (
   `Widget Metadata` varchar(1024) NOT NULL,
   PRIMARY KEY (`Widget Key`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Table structure for table `atest`
+--
+
+DROP TABLE IF EXISTS `atest`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!40101 SET character_set_client = utf8 */;
+CREATE TABLE `atest` (
+  `id` int(11) NOT NULL AUTO_INCREMENT,
+  `date` datetime DEFAULT NULL,
+  `headers` text,
+  `request` text,
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB DEFAULT CHARSET=latin1;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Table structure for table `atest2`
+--
+
+DROP TABLE IF EXISTS `atest2`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!40101 SET character_set_client = utf8 */;
+CREATE TABLE `atest2` (
+  `ket` mediumint(8) unsigned NOT NULL AUTO_INCREMENT,
+  `date` datetime NOT NULL,
+  `data` mediumtext NOT NULL,
+  PRIMARY KEY (`ket`)
+) ENGINE=InnoDB DEFAULT CHARSET=latin1;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -18594,4 +19878,4 @@ CREATE TABLE `todo_users` (
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
 /*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
 
--- Dump completed on 2017-08-09 17:21:20
+-- Dump completed on 2018-10-25 15:36:38
