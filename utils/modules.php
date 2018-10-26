@@ -84,8 +84,9 @@ $_product = array(
                     )
                 ),
                 'product.sales.info'     => array(
-                    'label' => _('Info'),
-                    'icon'  => 'info',
+                    'label'=>'',
+                    'title' => _('Sales data info'),
+                    'icon_v2' => 'fal fa-fw fa-chess-clock',
                     'class' => 'right icon_only'
                 ),
 
@@ -705,9 +706,9 @@ $modules = array(
                                 'label' => _('Calendar')
                             ),
                             'customer.sales.info'      => array(
-                                'label' => '',
-                                'title' => _('Info'),
-                                'icon'  => 'info',
+                                'label'=>'',
+                                'title' => _('Sales data info'),
+                                'icon_v2' => 'fal fa-fw fa-chess-clock',
                                 'class' => 'right icon_only'
                             ),
 
@@ -2851,8 +2852,9 @@ $modules = array(
                                 )
                             ),
                             'store.sales.info'     => array(
-                                'label' => _('Info'),
-                                'icon'  => 'info',
+                                'label'=>'',
+                                'title' => _('Sales data info'),
+                                'icon_v2' => 'fal fa-fw fa-chess-clock',
                                 'class' => 'right icon_only'
                             ),
 
@@ -3962,8 +3964,9 @@ $modules = array(
                                 )
                             ),
                             'stores.sales.info'     => array(
-                                'label' => _('Info'),
-                                'icon'  => 'info',
+                                'label'=>'',
+                                'title' => _('Sales data info'),
+                                'icon_v2' => 'fal fa-fw fa-chess-clock',
                                 'class' => 'right icon_only'
                             ),
 
@@ -4743,9 +4746,9 @@ $modules = array(
 
 
                             'supplier.sales.info' => array(
-                                'label' => '',
-                                'title' => _('Info'),
-                                'icon'  => 'info',
+                                'label'=>'',
+                                'title' => _('Sales data info'),
+                                'icon_v2' => 'fal fa-fw fa-chess-clock',
                                 'class' => 'right icon_only'
                             ),
 
@@ -5361,10 +5364,9 @@ $modules = array(
                                 )
                             ),
                             'category.part.sales.info'     => array(
-                                'label' => _(
-                                    'Info'
-                                ),
-                                'icon'  => 'info',
+                                'label'=>'',
+                                'title' => _('Sales data info'),
+                                'icon_v2' => 'fal fa-fw fa-chess-clock',
                                 'class' => 'right icon_only'
                             ),
 
@@ -5486,8 +5488,9 @@ $modules = array(
                                 )
                             ),
                             'part.sales.info'     => array(
-                                'label' => _('Info'),
-                                'icon'  => 'info',
+                                'label'=>'',
+                                'title' => _('Sales data info'),
+                                'icon_v2' => 'fal fa-fw fa-chess-clock',
                                 'class' => 'right icon_only'
                             ),
 
@@ -6130,12 +6133,8 @@ $modules = array(
                         'reference' => 'users/'
                     ),
                     'report.top_customers' => array(
-                        'label'     => _(
-                            'Top Customers'
-                        ),
-                        'title'     => _(
-                            'Top Customers'
-                        ),
+                        'label'     => _('Top Customers'),
+                        'title'     => _('Top Customers'),
                         'reference' => 'locations/%d/parts'
                     ),
 
