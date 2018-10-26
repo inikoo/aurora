@@ -119,6 +119,56 @@ cell: Backgrid.HtmlCell.extend({
 
 },
 
+
+{
+name: "sko_cost",
+label:'',
+html_label: "CC/SKO",
+title: '{t}Current supplier cost per SKO{/t}',
+
+editable: false,
+
+defaultOrder:1,
+sortType: "toggle",
+{if $sort_key=='sko_cost'}direction: '{if $sort_order==1}descending{else}ascending{/if}',{/if}
+cell: Backgrid.HtmlCell.extend({ className: "aright"} ),
+
+headerCell: rightHeaderHtmlCell
+},
+
+{
+name: "sko_stock_value",
+label:'',
+html_label: "WSV/SKO",
+title: '{t}Warehouse stock value per SKO{/t}',
+
+editable: false,
+
+defaultOrder:1,
+sortType: "toggle",
+{if $sort_key=='sko_stock_value'}direction: '{if $sort_order==1}descending{else}ascending{/if}',{/if}
+cell: Backgrid.HtmlCell.extend({ className: "aright"} ),
+
+headerCell: rightHeaderHtmlCell
+},
+
+{
+name: "sko_commercial_value",
+label:'',
+html_label: "CV/SKO",
+title: '{t}Commercial value per SKO{/t}',
+
+editable: false,
+
+defaultOrder:1,
+sortType: "toggle",
+{if $sort_key=='sko_commercial_value'}direction: '{if $sort_order==1}descending{else}ascending{/if}',{/if}
+cell: Backgrid.HtmlCell.extend({ className: "aright"} ),
+
+headerCell: rightHeaderHtmlCell
+},
+
+
 {
 name: "sales",
 label: "{t}Revenue{/t}",
@@ -143,6 +193,8 @@ cell: Backgrid.HtmlCell.extend({ className: "aright"} ),
 
 headerCell: integerHeaderCell
 },
+
+
 
 {
 name: "dispatched",
@@ -170,6 +222,36 @@ headerCell: integerHeaderCell
 },
 
 
+
+
+
+{
+name: "stock_value",
+label: "{t}Stock value{/t}",
+editable: false,
+
+defaultOrder:1,
+sortType: "toggle",
+{if $sort_key=='stock_value'}direction: '{if $sort_order==1}descending{else}ascending{/if}',{/if}
+cell: Backgrid.HtmlCell.extend({ className: "aright"} ),
+
+headerCell: integerHeaderCell
+},
+
+
+{
+name: "stock",
+label: "{t}Stock{/t}",
+editable: false,
+
+defaultOrder:1,
+sortType: "toggle",
+{if $sort_key=='stock'}direction: '{if $sort_order==1}descending{else}ascending{/if}',{/if}
+cell: Backgrid.HtmlCell.extend({ className: "aright"} ),
+
+headerCell: integerHeaderCell
+},
+
 {
 name: "dispatched_per_week",
 label: "{t}Dispatched/w{/t}",
@@ -183,8 +265,8 @@ cell: Backgrid.HtmlCell.extend({ className: "aright"} ),
 headerCell: integerHeaderCell
 },
 {
-name: "weeks_available",
-label: "{t}Weeks available{/t}",
+name: "available_forecast",
+label: "{t}Available forecast{/t}",
 editable: false,
 
 defaultOrder:1,
@@ -194,18 +276,23 @@ cell: Backgrid.HtmlCell.extend({ className: "aright"} ),
 
 headerCell: integerHeaderCell
 },
+
+
 {
-name: "stock",
-label: "{t}Stock{/t}",
+name: "next_deliveries",
+label: "{t}Next deliveries{/t}",
 editable: false,
 
 defaultOrder:1,
 sortType: "toggle",
-{if $sort_key=='stock'}direction: '{if $sort_order==1}descending{else}ascending{/if}',{/if}
+{if $sort_key=='next_deliveries'}direction: '{if $sort_order==1}descending{else}ascending{/if}',{/if}
 cell: Backgrid.HtmlCell.extend({ className: "aright"} ),
 
 headerCell: integerHeaderCell
 },
+
+
+
 {
 name: "dispatched_year0",
 label: new Date().getFullYear(),
@@ -502,10 +589,19 @@ grid.columns.findWhere({ name: 'sales_quarter2'} ).set("renderable", false)
 grid.columns.findWhere({ name: 'sales_quarter3'} ).set("renderable", false)
 grid.columns.findWhere({ name: 'sales_quarter4'} ).set("renderable", false)
 
+grid.columns.findWhere({ name: 'stock_value'} ).set("renderable", false)
+
+
+grid.columns.findWhere({ name: 'sko_cost'} ).set("renderable", false)
+grid.columns.findWhere({ name: 'sko_stock_value'} ).set("renderable", false)
+grid.columns.findWhere({ name: 'sko_commercial_value'} ).set("renderable", false)
+
+
 
 grid.columns.findWhere({ name: 'stock_status_label'} ).set("renderable", false)
 grid.columns.findWhere({ name: 'dispatched_per_week'} ).set("renderable", false)
-grid.columns.findWhere({ name: 'weeks_available'} ).set("renderable", false)
+grid.columns.findWhere({ name: 'available_forecast'} ).set("renderable", false)
+grid.columns.findWhere({ name: 'next_deliveries'} ).set("renderable", false)
 
 grid.columns.findWhere({ name: 'sales_total'} ).set("renderable", false)
 grid.columns.findWhere({ name: 'dispatched_total'} ).set("renderable", false)
@@ -519,6 +615,8 @@ grid.columns.findWhere({ name: 'sko_description'} ).set("renderable", true)
 grid.columns.findWhere({ name: 'stock'} ).set("renderable", true)
 grid.columns.findWhere({ name: 'dispatched'} ).set("renderable", true)
 grid.columns.findWhere({ name: 'sales'} ).set("renderable", true)
+grid.columns.findWhere({ name: 'stock_value'} ).set("renderable", true)
+
 }else if(view=='performance'){
 grid.columns.findWhere({ name: 'sales_total'} ).set("renderable", true)
 grid.columns.findWhere({ name: 'dispatched_total'} ).set("renderable", true)
@@ -528,6 +626,13 @@ grid.columns.findWhere({ name: 'stock'} ).set("renderable", true)
 grid.columns.findWhere({ name: 'dispatched_per_week'} ).set("renderable", true)
 }else if(view=='sales'){
 $('#columns_period').removeClass('hide');
+
+grid.columns.findWhere({ name: 'sko_cost'} ).set("renderable", true)
+grid.columns.findWhere({ name: 'sko_stock_value'} ).set("renderable", true)
+grid.columns.findWhere({ name: 'sko_commercial_value'} ).set("renderable", true)
+
+
+
 grid.columns.findWhere({ name: 'dispatched'} ).set("renderable", true)
 grid.columns.findWhere({ name: 'sales'} ).set("renderable", true)
 grid.columns.findWhere({ name: 'dispatched_1yb'} ).set("renderable", true)
@@ -557,10 +662,13 @@ grid.columns.findWhere({ name: 'sales_quarter2'} ).set("renderable", true)
 grid.columns.findWhere({ name: 'sales_quarter3'} ).set("renderable", true)
 grid.columns.findWhere({ name: 'sales_quarter4'} ).set("renderable", true)
 }else if(view=='stock'){
-grid.columns.findWhere({ name: 'stock_status_label'} ).set("renderable", true)
+//grid.columns.findWhere({ name: 'stock_status_label'} ).set("renderable", true)
 grid.columns.findWhere({ name: 'stock'} ).set("renderable", true)
 grid.columns.findWhere({ name: 'dispatched_per_week'} ).set("renderable", true)
-grid.columns.findWhere({ name: 'weeks_available'} ).set("renderable", true)
+grid.columns.findWhere({ name: 'available_forecast'} ).set("renderable", true)
+grid.columns.findWhere({ name: 'stock_value'} ).set("renderable", true)
+grid.columns.findWhere({ name: 'next_deliveries'} ).set("renderable", true)
+
 }
 
 if(save_state){
