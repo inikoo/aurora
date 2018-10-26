@@ -325,6 +325,15 @@ if($time=='00:00'  ){
 
 
 }
+elseif($time=='22:00'){
+
+    new_housekeeping_fork(
+        'au_housekeeping', array(
+        'type'                    => 'update_active_parts_commercial_value'
+    ), $account->get('Account Code')
+    );
+
+}
 
 send_periodic_email_mailshots($time,$db, $account);
 

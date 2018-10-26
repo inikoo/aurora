@@ -1575,6 +1575,20 @@ function fork_housekeeping($job) {
             }
             break;
 
+        case 'update_active_parts_commercial_value':
+
+            $sql = sprintf('SELECT `Part SKU` FROM `Part Dimension`  where `Part Status` ="In Use" ORDER BY `Part SKU` desc');
+
+            if ($result = $db->query($sql)) {
+                foreach ($result as $row) {
+                    $part = get_object('Part', $row['Part SKU']);
+                    $part->update_commercial_value();
+                }
+
+            }
+
+            break;
+
 
         default:
             break;

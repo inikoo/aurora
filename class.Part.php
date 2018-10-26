@@ -4755,7 +4755,63 @@ class Part extends Asset {
                 $num_products++;
 
                 if ($product->get('Product Status') == 'Discontinued') {
-                    $sales = $product->get('Product Total Acc Quantity Invoiced') * $product_data['Product Part Ratio'];
+
+
+                    list($db_interval, $from_date, $to_date, $from_date_1yb, $to_1yb) = calculate_interval_dates($this->db, '1 Year');
+
+
+
+                    $invoiced=0;
+
+
+
+                    // todo quick hack before migration is done
+                    global $account;
+                    if ($account->get('Code') == 'AW') {
+                        $sql = sprintf(
+                            "SELECT round(ifnull(sum(`Invoice Quantity`),0),1) AS invoiced FROM `Order Transaction Fact` USE INDEX (`Product ID`,`Invoice Date`) WHERE `Invoice Key` IS NOT NULL AND  `Product ID`=%d %s %s ", $product->id, ($from_date ? sprintf(
+                            'and `Invoice Date`>=%s', prepare_mysql($from_date)
+                        ) : ''), ($to_date ? sprintf(
+                            'and `Invoice Date`<%s', prepare_mysql($to_date)
+                        ) : '')
+
+                        );
+                    } else {
+                        $sql = sprintf(
+                            "SELECT round(ifnull(sum(`Delivery Note Quantity`),0),1) AS invoiced FROM `Order Transaction Fact` USE INDEX (`Product ID`,`Invoice Date`) WHERE `Invoice Key` >0 AND  `Product ID`=%d %s %s ", $product->id, ($from_date ? sprintf(
+                            'and `Invoice Date`>=%s', prepare_mysql($from_date)
+                        ) : ''), ($to_date ? sprintf(
+                            'and `Invoice Date`<%s', prepare_mysql($to_date)
+                        ) : '')
+
+                        );
+                    }
+
+                   // print "$sql\n";
+
+
+                    if ($result = $this->db->query($sql)) {
+                        if ($row = $result->fetch()) {
+
+
+                            $invoiced  = $row['invoiced'];
+
+
+
+                        }
+                    } else {
+                        print_r($error_info = $this->db->errorInfo());
+                        exit;
+                    }
+
+
+
+
+
+
+
+
+                    $sales = $invoiced * $product_data['Product Part Ratio'];
 
                 } else {
                     $sales = $product->get('Product 1 Year Acc Quantity Invoiced') * $product_data['Product Part Ratio'];

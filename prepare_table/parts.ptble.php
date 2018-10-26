@@ -260,6 +260,12 @@ if ($order == 'id') {
     $order = "`Part Days Available Forecast`";
 } elseif ($order == 'next_deliveries') {
     $order = "(`Part Number Active Deliveries`+`Part Number Draft Deliveries`)";
+} elseif ($order == 'sko_cost') {
+    $order = "`Part Cost`";
+} elseif ($order == 'sko_stock_value') {
+    $order = "`Part Cost in Warehouse`";
+} elseif ($order == 'sko_commercial_value') {
+    $order = "`Part Commercial Value`";
 } else {
 
     $order = '`Part SKU`';
@@ -289,7 +295,7 @@ $fields
 `Part 1 Quarter Acc Dispatched`,
 `Part Valid From`,`Part Valid From`,`Part Active From`,`Part Main Image Key`,`Part Status`,
 if(`Part Total Acc Customers`=0,0,  (`Part Total Acc Repeat Customers`/`Part Total Acc Customers`)) percentage_repeat_customer_total,
-`Part Cost`,`Part Cost in Warehouse`,`Part Units Per Package`,`Part Unit Price`
+`Part Cost`,`Part Cost in Warehouse`,`Part Units Per Package`,`Part Unit Price`,`Part On Demand`,`Part Commercial Value`,`Part Fresh`
 
 ";
 
