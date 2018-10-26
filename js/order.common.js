@@ -46,7 +46,7 @@ $(document).on('click', '.order_item_percentage_discount_form i', function (evt)
 
     var icon=$(this)
 
-    if(icon.hasClass('wait')){
+    if(icon.hasClass('wait') || !(icon.hasClass('valid')    )  ){
         return
     }
 

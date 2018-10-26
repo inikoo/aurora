@@ -20,7 +20,7 @@ class Warehouse extends DB_Table {
     var $areas = false;
     var $locations = false;
 
-    function Warehouse($a1, $a2 = false, $a3 = false) {
+    function __construct($a1, $a2 = false, $a3 = false) {
 
         global $db;
         $this->db = $db;

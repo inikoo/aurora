@@ -20,7 +20,7 @@ class PartLocation extends DB_Table {
 
     var $ok = false;
 
-    function PartLocation($arg1 = false, $arg2 = false, $arg3 = false) {
+    function __construct($arg1 = false, $arg2 = false, $arg3 = false) {
 
         global $db;
         $this->db = $db;
@@ -421,7 +421,7 @@ class PartLocation extends DB_Table {
                 $this->db->exec($sql);
 
 
-                $part_unk_location->update_stock($dont_update_part_stock=true);
+                $part_unk_location->update_stock($dont_update_part_stock = true);
                 $this->part->update_unknown_location();
 
 
@@ -430,7 +430,7 @@ class PartLocation extends DB_Table {
 
         }
 
-       // print "---------------------\n";
+        // print "---------------------\n";
 
 
         $this->update_stock();
@@ -513,7 +513,7 @@ class PartLocation extends DB_Table {
     }
     */
 
-    function update_stock($dont_update_part_stock=false) {
+    function update_stock($dont_update_part_stock = false) {
 
 
         $old_stock = $this->data['Quantity On Hand'];
@@ -536,21 +536,21 @@ class PartLocation extends DB_Table {
 
         $this->db->exec($sql);
 
-/*
-        $sql = "SELECT * FROM `Part Location Dimension` WHERE `Part SKU`=2426";
-        if ($result = $this->db->query($sql)) {
-            foreach ($result as $row) {
-                print_r($row);
-            }
-        } else {
-            print_r($error_info = $this->db->errorInfo());
-            print "$sql\n";
-            exit;
-        }
-*/
+        /*
+                $sql = "SELECT * FROM `Part Location Dimension` WHERE `Part SKU`=2426";
+                if ($result = $this->db->query($sql)) {
+                    foreach ($result as $row) {
+                        print_r($row);
+                    }
+                } else {
+                    print_r($error_info = $this->db->errorInfo());
+                    print "$sql\n";
+                    exit;
+                }
+        */
 
-       // print "XXX---------------------\n";
-        if(!$dont_update_part_stock) {
+        // print "XXX---------------------\n";
+        if (!$dont_update_part_stock) {
             $this->part->update_stock();
         }
         $this->location->update_stock_value();

@@ -23,7 +23,7 @@ class Location extends DB_Table {
     var $warehouse_area = false;
     var $shelf = false;
 
-    function Location($arg1 = false, $arg2 = false, $arg3 = false) {
+    function __construct($arg1 = false, $arg2 = false, $arg3 = false) {
 
         global $db;
         $this->db = $db;

@@ -23,7 +23,7 @@ class WarehouseArea extends DB_Table {
 
     var $warehouse = false;
 
-    function WarehouseArea($arg1 = false, $arg2 = false, $arg3 = false) {
+    function __construct($arg1 = false, $arg2 = false, $arg3 = false) {
 
         $this->table_name    = 'Warehouse Area';
         $this->ignore_fields = array('Warehouse Area Key');

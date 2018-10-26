@@ -1880,6 +1880,23 @@ trait OrderDiscountOperations {
 
 
     function update_transaction_discount_percentage($otf_key, $percentage) {
+
+
+        if(!is_numeric($percentage)){
+            $this->error=true;
+            $this->msg=_('Wrong percentage');
+            return;
+        }elseif($percentage<0){
+            $this->error=true;
+            $this->msg=_('Percentage must be a number between 0 and 100');
+            return;
+        }elseif($percentage>100){
+            $this->error=true;
+            $this->msg=_('Percentage must be a number between 0 and 100');
+            return;
+        }
+
+
         $sql = sprintf(
             'SELECT `Product Key`,`Order Transaction Fact Key`,`Order Transaction Gross Amount`,`Order Transaction Total Discount Amount` FROM  `Order Transaction Fact`  WHERE `Order Transaction Fact Key`=%d ',
             $otf_key
@@ -1888,6 +1905,14 @@ trait OrderDiscountOperations {
 
         if ($result = $this->db->query($sql)) {
             if ($row = $result->fetch()) {
+
+
+                if(!is_numeric($row['Order Transaction Gross Amount'])){
+                    $this->error=true;
+                    $this->msg='Item amount is not numeric!, submit a ticket';
+                    return;
+                }
+
                 $discount_amount = round(
                     ($row['Order Transaction Gross Amount']) * $percentage / 100, 2
                 );

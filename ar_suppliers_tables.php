@@ -2698,6 +2698,8 @@ function delivery_checking_items($_data, $db, $user, $account) {
     $rtext_label = 'item';
     include_once 'utils/supplier_order_functions.php';
 
+    $db->exec('SET SESSION group_concat_max_len = 1000000;');
+
 
     $supplier_delivery = get_object('Supplier_Delivery', $_data['parameters']['parent_key']);
 
@@ -4771,6 +4773,8 @@ function replenishments($_data, $db, $user, $account) {
 
     $rtext_label = 'replenishment';
     include_once 'prepare_table/init.php';
+
+    $db->exec('SET SESSION group_concat_max_len = 1000000;');
 
     $sql   = "select $fields from $table $where $wheref order by $order $order_direction limit $start_from,$number_results";
     $adata = array();

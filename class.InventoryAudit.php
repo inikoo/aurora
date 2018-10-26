@@ -17,7 +17,7 @@ class InventoryAudit extends DB_Table {
 
     var $new = false;
 
-    function InventoryAudit($arg1 = false, $arg2 = false, $arg3 = false) {
+    function __construct($arg1 = false, $arg2 = false, $arg3 = false) {
         $this->table_name    = 'Inventory Audit';
         $this->ignore_fields = array('Inventory Audit Key');
 
