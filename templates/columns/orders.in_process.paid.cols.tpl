@@ -21,7 +21,8 @@ renderable: false
 
 {
 name: "checked",
-label: '<i class="fa fa-square" style="margin-left:3.5px" aria-hidden="true"></i>',
+label:'',
+html_label: '<i class="fa fa-square" style="margin-left:3.5px" aria-hidden="true"></i>',
 headerCell: HeaderHtmlCell,
 editable: false,
 sortType: "toggle",

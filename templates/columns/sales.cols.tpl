@@ -57,17 +57,19 @@ headerCell: integerHeaderCell
 },
 {
 name: "refunds_delta_1yb",
-label: "{t}1Y{/t}",
+label:'',
+html_label: "&Delta;{t}1Y{/t}",
+title:'{t}Number of refunds difference form previous year{/t}',
 editable: false,
 defaultOrder:1,
 sortType: "toggle",
 {if $sort_key=='refunds_delta_1yb'}direction: '{if $sort_order==1}descending{else}ascending{/if}',{/if}
 cell: Backgrid.HtmlCell.extend({ className: "aright"} ),
-headerCell: integerHeaderCell
+headerCell: rightHeaderHtmlCell
 },
 {
 name: "refunds_amount_oc",
-label: "{t}Refund amount{/t}",
+label: "{t}Refunded amount{/t}",
 editable: false,
 defaultOrder:1,
 sortType: "toggle",
@@ -77,7 +79,7 @@ headerCell: integerHeaderCell
 },
 {
 name: "refunds_amount",
-label: "{t}Refund amount{/t}",
+label: "{t}Refunded amount{/t}",
 editable: false,
 defaultOrder:1,
 sortType: "toggle",
@@ -87,23 +89,27 @@ headerCell: integerHeaderCell
 },
 {
 name: "refunds_amount_oc_delta_1yb",
-label: "{t}1Y{/t}",
+label:'',
+html_label: "&Delta;{t}1Y{/t}",
+title:'{t}Refunded amount difference form previous year{/t}',
+
 editable: false,
 defaultOrder:1,
 sortType: "toggle",
 {if $sort_key=='refunds_amount_oc_delta_1yb'}direction: '{if $sort_order==1}descending{else}ascending{/if}',{/if}
 cell: Backgrid.HtmlCell.extend({ className: "aright"} ),
-headerCell: integerHeaderCell
+headerCell: rightHeaderHtmlCell
 },
 {
 name: "refunds_amount_delta_1yb",
-label: "{t}1Y{/t}",
+label:'',
+html_label: "&Delta;{t}1Y{/t}",
 editable: false,
 defaultOrder:1,
 sortType: "toggle",
 {if $sort_key=='refunds_amount_delta_1yb'}direction: '{if $sort_order==1}descending{else}ascending{/if}',{/if}
 cell: Backgrid.HtmlCell.extend({ className: "aright"} ),
-headerCell: integerHeaderCell
+headerCell: rightHeaderHtmlCell
 },
 {
 name: "invoices",
@@ -118,13 +124,16 @@ headerCell: integerHeaderCell
 
 {
 name: "invoices_delta_1yb",
-label: "{t}1Y{/t}",
+label:'',
+html_label: "&Delta;{t}1Y{/t}",
+title:'{t}Number of invoices difference form previous year{/t}',
+
 editable: false,
 defaultOrder:1,
 sortType: "toggle",
 {if $sort_key=='invoices_delta_1yb'}direction: '{if $sort_order==1}descending{else}ascending{/if}',{/if}
 cell: Backgrid.HtmlCell.extend({ className: "aright"} ),
-headerCell: integerHeaderCell
+headerCell: rightHeaderHtmlCell
 },
 
 {
@@ -139,7 +148,8 @@ headerCell: integerHeaderCell
 },
 {
 name: "revenue_oc_delta_1yb",
-label: "{t}1Y{/t}",
+label:'',
+html_label: "&Delta; {t}1Y{/t}",
 editable: false,
 defaultOrder:1,
 sortType: "toggle",

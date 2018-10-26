@@ -31,6 +31,25 @@ var HeaderHtmlCell = Backgrid.HeaderCell.extend({
     /** @property */
     className: "html-cell",
 
+    render: function () {
+
+
+
+        this.column.set("label",'')
+        this.constructor.__super__.render.apply(this, arguments);
+
+        if (this.column.get('title')) {
+            this.$el.attr('title', this.column.get('title'))
+
+        }
+        this.$el.find('button').html(this.column.get("html_label")+' '+this.$el.find('button').html())
+
+       // this.$el.html(this.column.get("html_label")+' '+this.$el.html())
+        return this;
+    }
+
+
+/*
 
     render: function () {
         this.$el.empty();
@@ -45,12 +64,13 @@ var HeaderHtmlCell = Backgrid.HeaderCell.extend({
         }
 
 
-        this.$el.append(this.column.get("label"))
-
+       this.$el.append(this.column.get("label"))
 
         this.delegateEvents();
         return this;
     }
+    */
+
 });
 
 var rightHeaderHtmlCell = Backgrid.HeaderCell.extend({
@@ -60,6 +80,22 @@ var rightHeaderHtmlCell = Backgrid.HeaderCell.extend({
 
 
     render: function () {
+
+        this.constructor.__super__.render.apply(this, arguments);
+        this.$el.addClass('align-right');
+
+        if (this.column.get('title')) {
+            this.$el.attr('title', this.column.get('title'))
+
+        }
+        if (this.column.get('html_label')) {
+            this.$el.find('button').html(this.column.get("html_label") + ' ' + this.$el.find('button').html())
+        }
+        // this.$el.html(this.column.get("html_label")+' '+this.$el.html())
+        return this;
+
+
+        /*
         this.$el.empty();
 
 
@@ -77,6 +113,8 @@ var rightHeaderHtmlCell = Backgrid.HeaderCell.extend({
 
         this.delegateEvents();
         return this;
+        */
+
     }
 });
 

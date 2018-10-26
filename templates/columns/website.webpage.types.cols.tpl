@@ -9,7 +9,8 @@ cell: "string"
 
 {
 name: "icon",
-label: '',
+label:'',
+html_label: '<i class="fa fa-layer-group"></i>',
 editable: false,
 title: '{t}Web page group{/t}',
 sortType: "toggle",
