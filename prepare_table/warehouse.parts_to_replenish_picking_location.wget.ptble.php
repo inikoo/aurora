@@ -99,7 +99,7 @@ $sql_totals = "select count(DISTINCT PLD.`Part SKU`) as num from $table  $where 
 $fields
     .= "
 P.`Part SKU`,`Part Reference`,`Part Current Stock`,`Part Stock Status`,`Part Days Available Forecast`,`Part Current Stock In Process`+ `Part Current Stock Ordered Paid` as to_pick,
-`Location Code`,PLD.`Location Key`,`Part Location Warehouse Key`,`Part Package Description`,
+`Location Code`,PLD.`Location Key`,`Part Location Warehouse Key`,`Part Package Description`,`Part Current On Hand Stock`,
 `Quantity On Hand`,`Quantity In Process`,`Stock Value`,`Can Pick`,`Minimum Quantity`,`Maximum Quantity`,`Moving Quantity`,`Last Updated`,
 (select Group_CONCAT(LL.`Location Code`) from `Part Location Dimension` PL_SL left join `Location Dimension` LL on (LL.`Location Key`=PL_SL.`Location Key`) where PL_SL.`Part SKU`=PLD.`Part SKU` and PL_SL.`Can Pick`='No'  ) as storing_locations,
 (select Group_CONCAT(concat_ws(\"|\",LL.`Location Warehouse Key`,  LL.`Location Key`,LL.`Location Code`,PL_SL.`Quantity On Hand`) )  from `Part Location Dimension` PL_SL left join `Location Dimension` LL on (LL.`Location Key`=PL_SL.`Location Key`) where PL_SL.`Part SKU`=PLD.`Part SKU` and PL_SL.`Can Pick`='No'  ) as storing_locations_data

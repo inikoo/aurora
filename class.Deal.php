@@ -54,6 +54,8 @@ class Deal extends DB_Table {
             $sql = sprintf(
                 "SELECT * FROM `Deal Dimension` WHERE `Deal Store Key`=%d AND `Deal Name`=%s", $tag, prepare_mysql($tag2)
             );
+        }else{
+            return;
         }
 
 
@@ -64,10 +66,7 @@ class Deal extends DB_Table {
 
 
         if ($this->data['Deal Remainder Email Campaign Key'] > 0) {
-            include_once 'class.EmailCampaign.php';
-            $this->remainder_email_campaign = new EmailCampaign(
-                $this->data['Deal Remainder Email Campaign Key']
-            );
+            $this->remainder_email_campaign = get_object('EmailCampaign',$this->data['Deal Remainder Email Campaign Key']);
 
         }
 
