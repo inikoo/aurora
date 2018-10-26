@@ -58,7 +58,8 @@ headerCell: integerHeaderCell
 
 {
 name: "problems",
-label: '<i class="fa fa-exclamation-circle error" ></i>',
+label:'',
+html_label: '<i class="fa fa-exclamation-circle error" ></i>',
 title: '{t}Items with problems{/t}',
 renderable:false,
 defaultOrder:1,

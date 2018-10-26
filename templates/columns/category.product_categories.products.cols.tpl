@@ -8,7 +8,8 @@ cell: "string"
 },
 {
 name: "status",
-label:'<i class="fa fa-retweet" aria-hidden="true"></i> ',
+label:'',
+html_label:'<i class="fa fa-retweet" aria-hidden="true"></i> ',
 title:"{t}Category status{/t}",
 
 editable: false,
@@ -61,7 +62,8 @@ headerCell: integerHeaderCell
 
 {
 name: "webpage_state",
-label:'<i class="fa fa-retweet fa-fw" style="opacity:.8" aria-hidden="true"></i><i class="fa fa-globe fa-fw" style="position:relative;left:-25px;opacity:.3" aria-hidden="true"></i> ',
+label:'',
+html_label:'<i class="fa fa-retweet fa-fw" style="opacity:.8" aria-hidden="true"></i><i class="fa fa-globe fa-fw" style="position:relative;left:-25px;opacity:.3" aria-hidden="true"></i> ',
 title:"{t}Webpage state{/t}",
 
 editable: false,
@@ -74,7 +76,8 @@ headerCell: HeaderHtmlCell
 
 {
 name: "online",
-label:'<i class="fa fa-microphone" aria-hidden="true"></i> <i class="fa fa-cube" aria-hidden="true"></i>',
+label:'',
+html_label:'<i class="fa fa-microphone" aria-hidden="true"></i> <i class="fa fa-cube" aria-hidden="true"></i>',
 title:"{t}Online products{/t}",
 
 editable: false,
@@ -89,7 +92,8 @@ headerCell: rightHeaderHtmlCell
 
 {
 name: "out_of_stock",
-label:'<i class="fa fa-microphone" aria-hidden="true"></i> <i class="fa fa-cube" aria-hidden="true"></i> <i class="fa fa-ban error" aria-hidden="true"></i>',
+label:'',
+html_label:'<i class="fa fa-microphone" aria-hidden="true"></i> <i class="fa fa-cube" aria-hidden="true"></i> <i class="fa fa-ban error" aria-hidden="true"></i>',
 
 title:"{t}Online out of stock products{/t}",
 editable: false,
@@ -339,7 +343,8 @@ headerCell: integerHeaderCell
 name: "remove",
 renderable: {if empty($is_family)}true{else}false{/if},
 
-label: "",
+label:'',
+html_label: "<i class="far fa-trash-alt"></i>",
 editable: false,
 sortable:false,
 

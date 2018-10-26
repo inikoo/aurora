@@ -45,7 +45,8 @@ cell: Backgrid.HtmlCell.extend({
 },
 {
 name: "in_process",
-label: '<i class="fa fa-child" aria-hidden="true"></i>',
+label:'',
+html_label: '<i class="fa fa-child" aria-hidden="true"></i>',
 title: "{t}New products{/t}",
 headerCell: HeaderHtmlCell,
 headerClass:"aright",
@@ -59,7 +60,8 @@ cell: Backgrid.HtmlCell.extend({ className: "aright"} ),
 },
 {
 name: "active",
-label: '<i class="fa fa-cube" aria-hidden="true"></i>',
+label:'',
+html_label: '<i class="fa fa-cube" aria-hidden="true"></i>',
 title: "{t}Active products (including discontinuing){/t}",
 
 editable: false,
@@ -74,7 +76,8 @@ headerClass:"aright"
 },
 {
 name: "discontinuing",
-label: '<i class="fa fa-cube warning discreet" aria-hidden="true"></i>',
+label:'',
+html_label: '<i class="fa fa-cube warning discreet" aria-hidden="true"></i>',
 title: "{t}Discontinuing products{/t}",
 
 editable: false,
@@ -89,7 +92,8 @@ headerClass:"aright"
 },
 {
 name: "discontinued",
-label: '<i class="fa fa-cube very_discreet" aria-hidden="true"></i>',
+label:'',
+html_label: '<i class="fa fa-cube very_discreet" aria-hidden="true"></i>',
 editable: false,
 title: "{t}Discontinued products{/t}",
 

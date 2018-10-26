@@ -9,7 +9,8 @@ cell: "string"
 
 {
 name: "type",
-label: '{t}Type{/t}',
+label:'',
+html_label: '{t}Type{/t}',
 editable: false,
 title: '{t}Online state{/t}',
 sortType: "toggle",

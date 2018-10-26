@@ -79,7 +79,8 @@ headerCell: integerHeaderCell
 
 {
 name: "orders",
-label:"&Sigma; {t}Orders{/t}",
+label:'',
+html_label:"&Sigma; {t}Orders{/t}",
 title:"{t}Sum orders{/t}",
 
 

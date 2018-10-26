@@ -16,7 +16,8 @@ cell: "string",
 
 {
 name: "status",
-label: '<i class="fa fa-retweet very_discreet" aria-hidden="true"></i>',
+label:'',
+html_label: '<i class="fa fa-retweet very_discreet" aria-hidden="true"></i>',
 editable: false,
 title: '{t}Category status{/t}',
 sortType: "toggle",
@@ -64,7 +65,8 @@ cell: "string"
 
 {
 name: "in_process",
-label: '<i class="fa fa-child" aria-hidden="true"></i>',
+label:'',
+html_label: '<i class="fa fa-child" aria-hidden="true"></i>',
 title: "{t}Parts in process{/t}",
 headerCell: HeaderHtmlCell,
 headerClass:"aright",
@@ -78,7 +80,8 @@ cell: Backgrid.HtmlCell.extend({ className: "aright"} ),
 },
 {
 name: "active",
-label: '<i class="fa fa-square" aria-hidden="true"></i>',
+label:'',
+html_label: '<i class="fa fa-square" aria-hidden="true"></i>',
 title: "{t}Active parts{/t}",
 
 editable: false,
@@ -93,7 +96,8 @@ headerClass:"aright"
 },
 {
 name: "discontinuing",
-label: '<i class="fa fa-square warning discreet" aria-hidden="true"></i>',
+label:'',
+html_label: '<i class="fa fa-square warning discreet" aria-hidden="true"></i>',
 title: "{t}Discontinuing parts{/t}",
 
 editable: false,
@@ -108,7 +112,8 @@ headerClass:"aright"
 },
 {
 name: "discontinued",
-label: '<i class="fa fa-square very_discreet" aria-hidden="true"></i>',
+label:'',
+html_label: '<i class="fa fa-square very_discreet" aria-hidden="true"></i>',
 editable: false,
 title: "{t}Discontinued parts{/t}",
 

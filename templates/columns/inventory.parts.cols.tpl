@@ -125,9 +125,7 @@ name: "sko_cost",
 label:'',
 html_label: "CC/SKO",
 title: '{t}Current supplier cost per SKO{/t}',
-
 editable: false,
-
 defaultOrder:1,
 sortType: "toggle",
 {if $sort_key=='sko_cost'}direction: '{if $sort_order==1}descending{else}ascending{/if}',{/if}
