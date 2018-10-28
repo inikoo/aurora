@@ -116,14 +116,13 @@ if ($url == 'sitemap-info.xml' or $url == 'sitemap-products.xml') {
 
     header("Content-Type:text/xml");
     print $xml;
+    if (isset($db)) {
+        $db = null;
+    }
     exit;
 
 
 }
-
-
-
-
 
 
 $url_cache_key = 'pwc2|'.DNS_ACCOUNT_CODE.'|'.$_SESSION['website_key'].'_'.$url;
@@ -146,13 +145,19 @@ if (is_numeric($webpage_id)) {
     $website_key = $_SESSION['website_key'];
     $webpage_key = $webpage_id;
     include 'display_webpage.php';
-    exit;
+
+
+
 } else {
 
 
     header("Location: ".((isset($_SERVER['HTTPS']) && $_SERVER['HTTPS'] != 'off') ? 'https' : 'http')."://".$_SERVER['SERVER_NAME']."$webpage_id");
-    exit;
+
 }
+if (isset($db)) {
+    $db = null;
+}
+exit();
 
 
 function get_url($website_key, $url, $dns_host, $dns_user, $dns_pwd, $dns_db) {
@@ -185,7 +190,7 @@ function get_url($website_key, $url, $dns_host, $dns_user, $dns_pwd, $dns_db) {
     if (preg_match('/[a-z0-9\_\-]\/$/i', $url)) {
         return $_SERVER['HTTP_HOST'].'/index.php?error='.$_tmp_url;
         //$_tmp_url=preg_replace('/\/$/','',$url);
-        //exit("$_tmp_url");
+
         //header("Location: http://".$target);
     }
 

@@ -36,9 +36,9 @@ if ($redis->connect('127.0.0.1', 6379)) {
     $redis_on = false;
 }
 
-$cache_file = 'image_cache/'.$image_key.'_'.$size.($size_r!=''?'_'.$size_r:'');
+$cache_file = 'image_cache/'.$image_key.'_'.$size.($size_r != '' ? '_'.$size_r : '');
 
-$image_code = 'AWi'.$image_key.'_'.$size.($size_r!=''?'_'.$size_r:'');
+$image_code = 'AWi'.$image_key.'_'.$size.($size_r != '' ? '_'.$size_r : '');
 
 
 if ($redis->exists($image_code)) {
@@ -56,7 +56,6 @@ if ($redis->exists($image_code)) {
         header("Pragma: cache");
         header("Cache-Control: max-age=$seconds_to_cache");
         readfile($image_filename);
-
 
 
         exit();
@@ -92,9 +91,11 @@ if ($size_r != '') {
 
     ImagePNG($new_image);
 
-    ImagePNG($new_image,$cache_file.'.'.$image->get('Image File Format'));
-    $redis->set($image_code,$cache_file.'.'.$image->get('Image File Format'));
+    ImagePNG($new_image, $cache_file.'.'.$image->get('Image File Format'));
+    $redis->set($image_code, $cache_file.'.'.$image->get('Image File Format'));
     imagedestroy($new_image);
+    $db = null;
+
     exit;
 }
 
@@ -117,46 +118,47 @@ if ($result = $db->query($sql)) {
         header("Pragma: cache");
         header("Cache-Control: max-age=$seconds_to_cache");
         if ($size == 'original') {
-            $_image= $row['Image Data'];
+            $_image = $row['Image Data'];
         } elseif ($size == 'large') {
             if (!$row['Image Large Data']) {
-                $_image= $row['Image Data'];
+                $_image = $row['Image Data'];
             } else {
-                $_image= $row['Image Large Data'];
+                $_image = $row['Image Large Data'];
             }
         } elseif ($size == 'small') {
             if (!$row['Image Small Data']) {
-                $_image= $row['Image Data'];
+                $_image = $row['Image Data'];
             } else {
-                $_image= $row['Image Small Data'];
+                $_image = $row['Image Small Data'];
             }
         } elseif ($size == 'thumbnail' or $size == 'tiny') {
             if ($row['Image Thumbnail Data']) {
-                $_image= $row['Image Thumbnail Data'];
+                $_image = $row['Image Thumbnail Data'];
             } elseif ($row['Image Small Data']) {
-                $_image= $row['Image Small Data'];
+                $_image = $row['Image Small Data'];
             } else {
-                $_image= $row['Image Data'];
+                $_image = $row['Image Data'];
             }
         } else {
-            $_image= $row['Image Data'];
+            $_image = $row['Image Data'];
         }
 
-        file_put_contents($cache_file.'.'.$row['Image File Format'],$_image);
-        $redis->set($image_code,$cache_file.'.'.$row['Image File Format']);
+        file_put_contents($cache_file.'.'.$row['Image File Format'], $_image);
+        $redis->set($image_code, $cache_file.'.'.$row['Image File Format']);
         echo $_image;
 
 
     } else {
         header("HTTP/1.0 404 Not Found");
         echo "Image not found";
-
+        $db = null;
         exit;
     }
 
 
 } else {
     print_r($error_info = $db->errorInfo());
+    $db = null;
     exit;
 
 }
