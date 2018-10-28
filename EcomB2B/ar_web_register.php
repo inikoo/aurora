@@ -145,7 +145,7 @@ function register($db, $website, $data, $editor) {
 
             );
 
-            $published_email_template->send($customer,$send_data,$smarty);
+            $published_email_template->send($customer,$send_data);
 
 
 
