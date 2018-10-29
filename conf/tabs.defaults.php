@@ -2373,6 +2373,8 @@ $tab_defaults = array(
         'f_period'      => 'ytd',
         'elements_type' => each($elements_options['part_categories']) ['key'],
         'elements'      => $elements_options['part_categories'],
+        'export_fields' => $export_fields['part_categories']
+
     ),
 
     'parts.categories'                    => array(

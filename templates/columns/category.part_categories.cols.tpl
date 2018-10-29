@@ -17,7 +17,7 @@ cell: "string",
 {
 name: "status",
 label:'',
-html_label: '<i class="fa fa-retweet very_discreet" aria-hidden="true"></i>',
+html_label: '<i class="fa fa-retweet discreet" ></i>',
 editable: false,
 title: '{t}Category status{/t}',
 sortType: "toggle",
@@ -29,100 +29,84 @@ headerCell: HeaderHtmlCell,
 },
 
 
-
-
 {
 name: "code",
-label: "{t}Code{/t}",
+label:"{t}Code{/t}",
 editable: false,
-cell: Backgrid.HtmlCell.extend({
-orderSeparator: '',
-events: {
-"click": function() {
-change_view('{if $data.module=='products'}products/{$data._object->get('Category Store Key')}/{else if $data.module=='customers'}customers/{$data._object->get('Category Store Key')}/{elseif $data.module=='invoices_server'}invoices/all/{/if}category/' + this.model.get("id") )
-}
+sortType: "toggle",
+cell: "Html"
 },
-className: "link",
-
-render: function () {
-this.constructor.__super__.render.apply(this, arguments);
-if(this.model.get('id')==''){
-this.$el.removeClass('link');
-}
-return this;
-}
 
 
-})
-},
 {
 name: "label",
 label:"{t}Label{/t}",
 editable: false,
-cell: "string"
+cell: "Html"
 },
 
 
 {
 name: "in_process",
 label:'',
-html_label: '<i class="fa fa-child" aria-hidden="true"></i>',
+html_label: '<i class="fa fa-fw fa-seedling" ></i>',
 title: "{t}Parts in process{/t}",
-headerCell: HeaderHtmlCell,
+headerCell: rightHeaderHtmlCell,
 headerClass:"aright",
 
 editable: false,
 defaultOrder:1,
 sortType: "toggle",
-{if $sort_key=='supplier_parts'}direction: '{if $sort_order==1}descending{else}ascending{/if}',{/if}
+{if $sort_key=='in_process'}direction: '{if $sort_order==1}descending{else}ascending{/if}',{/if}
 cell: Backgrid.HtmlCell.extend({ className: "aright"} ),
 
 },
+
 {
 name: "active",
 label:'',
-html_label: '<i class="fa fa-square" aria-hidden="true"></i>',
+html_label: '<i class="fa fa-box"></i>',
 title: "{t}Active parts{/t}",
 
 editable: false,
 
 defaultOrder:1,
 sortType: "toggle",
-{if $sort_key=='supplier_parts'}direction: '{if $sort_order==1}descending{else}ascending{/if}',{/if}
+{if $sort_key=='active'}direction: '{if $sort_order==1}descending{else}ascending{/if}',{/if}
 cell: Backgrid.HtmlCell.extend({ className: "aright"} ),
 
-headerCell: HeaderHtmlCell,
+headerCell: rightHeaderHtmlCell,
 headerClass:"aright"
 },
 {
 name: "discontinuing",
 label:'',
-html_label: '<i class="fa fa-square warning discreet" aria-hidden="true"></i>',
+html_label: '<i class="fa fa-box  warning discreet" ></i>',
 title: "{t}Discontinuing parts{/t}",
 
 editable: false,
 defaultOrder:1,
 sortType: "toggle",
-{if $sort_key=='supplier_parts'}direction: '{if $sort_order==1}descending{else}ascending{/if}',{/if}
+{if $sort_key=='discontinuing'}direction: '{if $sort_order==1}descending{else}ascending{/if}',{/if}
 cell: Backgrid.HtmlCell.extend({ className: "aright"} ),
 
-headerCell: HeaderHtmlCell,
+headerCell: rightHeaderHtmlCell,
 headerClass:"aright"
 
 },
 {
 name: "discontinued",
 label:'',
-html_label: '<i class="fa fa-square very_discreet" aria-hidden="true"></i>',
+html_label: '<i class="fal error fa-box  discreet" ></i>',
 editable: false,
 title: "{t}Discontinued parts{/t}",
 
 defaultOrder:1,
 sortType: "toggle",
-{if $sort_key=='supplier_parts'}direction: '{if $sort_order==1}descending{else}ascending{/if}',{/if}
+{if $sort_key=='discontinued'}direction: '{if $sort_order==1}descending{else}ascending{/if}',{/if}
 cell: Backgrid.HtmlCell.extend({ className: "aright"} ),
 
-headerCell: HeaderHtmlCell,
+headerCell: rightHeaderHtmlCell,
 headerClass:"aright"
 
 },

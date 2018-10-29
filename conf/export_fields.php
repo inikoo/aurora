@@ -671,6 +671,72 @@ $export_fields = array(
         ),
 
     ),
+    'part_categories' => array(
+        array(
+            'name'    => '`Category Code`',
+            'label'   => _('Code'),
+            'checked' => 1
+        ),
+
+        array(
+            'name'    => '`Category Label`',
+            'label'   => _('Name'),
+            'checked' => 1
+        ),
+        array(
+            'name'    => '`Part Category In Process`',
+            'label'   => _('In process parts'),
+            'checked' => 1
+        ),
+        array(
+            'name'    => '`Part Category Active`',
+            'label'   => _('Active parts'),
+            'checked' => 1
+        ),
+        array(
+            'name'    => '`Part Category Discontinuing`',
+            'label'   => _('Discontinuing parts'),
+            'checked' => 1
+        ),
+        array(
+            'name'    => '`Part Category Discontinued`',
+            'label'   => _('Discontinued parts'),
+            'checked' => 1
+        ),
+        array(
+            'name'    => '`Part Category Number Surplus Parts`',
+            'label'   => _('Active parts with surplus stock'),
+            'checked' => 1
+        ),
+        array(
+            'name'    => '`Part Category Number Optimal Parts`',
+            'label'   => _('Active parts with optimal stock'),
+            'checked' => 1
+        ),
+        array(
+            'name'    => '`Part Category Number Low Parts`',
+            'label'   => _('Active parts with low stock'),
+            'checked' => 1
+        ),
+        array(
+            'name'    => '`Part Category Number Critical Parts`',
+            'label'   => _('Active parts with critical stock'),
+            'checked' => 1
+        ),
+        array(
+            'name'    => '`Part Category Number Out Of Stock Parts`',
+            'label'   => _('Active parts out of stock'),
+            'checked' => 1
+        ),
+        array(
+            'name'    => '`Part Category Number Error Parts`',
+            'label'   => _('Parts with stock errors'),
+            'checked' => 1
+        ),
+
+
+    ),
+
     'part_locations'                          => array(
         array(
             'name'    => '`Part Reference`',
