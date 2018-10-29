@@ -29,7 +29,7 @@ include 'calculate_sales.fork.php';
 include 'migrate.fork.php';
 
 
-$count_number_used = 0;
+//$count_number_used = 0;
 
 
 $worker = new GearmanWorker();
@@ -49,7 +49,8 @@ $account = false;
 
 while ($worker->work()) {
     if ($worker->returnCode() == GEARMAN_SUCCESS) {
-        $count_number_used++;
+        //$count_number_used++;
+        $db=null;
         exec("kill -9 ".getmypid());
         die();
     }
@@ -110,6 +111,8 @@ function get_fork_metadata($job) {
     $db->setAttribute(PDO::ATTR_DEFAULT_FETCH_MODE, PDO::FETCH_ASSOC);
 
 
+    /*
+
     if (function_exists('mysql_connect')) {
 
         $default_DB_link = mysql_connect($dns_host, $dns_user, $dns_pwd);
@@ -127,6 +130,8 @@ function get_fork_metadata($job) {
         mysql_set_charset('utf8');
         mysql_query("SET time_zone='+0:00'");
     }
+
+    */
 
     $account = new Account($db);
 

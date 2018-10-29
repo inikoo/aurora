@@ -457,14 +457,14 @@ function parts($_data, $db, $user, $type, $account) {
                 'has_picture'         => ($data['Part Main Image Key'] > 0 ? '<i class="fa fa-check success" aria-hidden="true"></i>' : '<i class="fa fa-minus super_discreet" aria-hidden="true"></i>'),
                 'has_products'        => ($data['Part Number Active Products'] > 0 ? '<i class="fa fa-check success" aria-hidden="true"></i>' : '<i class="fa fa-minus super_discreet" aria-hidden="true"></i>'),
 
-                'sko_cost'                 => $sko_cost,
+                'sko_cost'             => $sko_cost,
                 'sko_stock_value'      => $sko_stock_value,
                 'sko_commercial_value' => ($data['Part Commercial Value'] == '' ? '' : money($data['Part Commercial Value'], $account->get('Account Currency'))),
 
-                'margin'               => '<span class="'.($data['Part Margin'] <= 0 ? 'error' : '').'">'.percentage($data['Part Margin'], 1).'</span>',
-                'next_deliveries'      => $next_deliveries,
-                'available_forecast'   => $available_forecast,
-                'next_deliveries'      => $next_deliveries
+                'margin'             => '<span class="'.($data['Part Margin'] <= 0 ? 'error' : '').'">'.percentage($data['Part Margin'], 1).'</span>',
+                'next_deliveries'    => $next_deliveries,
+                'available_forecast' => $available_forecast,
+                'next_deliveries'    => $next_deliveries
 
 
             );
@@ -1224,9 +1224,7 @@ function barcodes($_data, $db, $user) {
 function part_categories($_data, $db, $user, $account) {
 
 
-    if ($_data['parameters']['parent_key'] == $account->get(
-            'Account Part Family Category Key'
-        )) {
+    if ($_data['parameters']['parent_key'] == $account->get('Account Part Family Category Key')) {
         $rtext_label = 'family';
     } else {
         $rtext_label = 'category';
@@ -1249,16 +1247,16 @@ function part_categories($_data, $db, $user, $account) {
 
             switch ($data['Part Category Status']) {
                 case 'InUse':
-                    $status = '<i class="fa fa-sitemap" aria-hidden="true"></i>';
+                    $status = '<i class="far fa-fw fa-boxes" title="'._('Active').'"></i>';
                     break;
                 case 'Discontinuing':
-                    $status = '<i class="fa fa-sitemap very_discreet warning" aria-hidden="true"></i>';
+                    $status = '<i class="far fa-boxes discreet warning" title="'._('Discontinuing').'"></i>';
                     break;
                 case 'NotInUse':
-                    $status = '<i class="fa fa-sitemap super_discreet" aria-hidden="true"></i>';
+                    $status = '<i class="fal error fa-boxes  discreet" title="'._('Discontinued').'"></i>';
                     break;
                 case 'InProcess':
-                    $status = '<i class="fa fa-child" aria-hidden="true"></i>';
+                    $status = '<i class="fal fa-seedling" title="'._('In process').'"></i>';
                     break;
                 default:
                     $status = '';
@@ -1271,6 +1269,7 @@ function part_categories($_data, $db, $user, $account) {
                 'store_key'     => (integer)$data['Category Store Key'],
                 'code'          => $data['Category Code'],
                 'label'         => $data['Category Label'],
+
                 'in_process'    => number($data['Part Category In Process']),
                 'active'        => number($data['Part Category Active']),
                 'discontinuing' => number($data['Part Category Discontinuing']),
