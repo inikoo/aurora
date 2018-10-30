@@ -284,6 +284,30 @@ function replenishments($_data, $db, $user) {
         $stock .= '</div>';
 
 
+        if ($data['Part Next Deliveries Data'] == '') {
+            $next_deliveries_array = array();
+        } else {
+            $next_deliveries_array = json_decode($data['Part Next Deliveries Data'], true);
+        }
+
+
+        $next_deliveries = '';
+
+        foreach ($next_deliveries_array as $next_delivery) {
+
+
+            $next_deliveries .= '<div class="as_row "><div class="as_cell padding_left_5" style="min-width: 100px" >'.$next_delivery['formatted_link'].'</div><div class="padding_left_10 as_cell strong" style="text-align: right;min-width: 40px" title="'._('SKOs ordered')
+                .'">+'.number(
+                    $next_delivery['raw_units_qty'] / $data['Part Units Per Package']
+                ).'<span style="font-weight: normal" class="small discreet">skos</span></div></div>';
+
+
+        }
+
+
+        $next_deliveries = '<div border="0" style="font-size: small" class="as_table">'.$next_deliveries.'</div>';
+
+
         $adata[] = array(
             'id'                    => (integer)$data['Location Key'],
             'location'              => ($data['Warehouse Flag Key'] ? sprintf(
@@ -297,7 +321,8 @@ function replenishments($_data, $db, $user) {
             'effective_stock'      => number($data['effective_stock']),
             'recommended_quantity' => ' <span class="padding_left_5">(<span style="display: inline-block;min-width: 20px;text-align: center">'.number($data['Minimum Quantity']).'</span>,<span style="display: inline-block;min-width: 25px;text-align: center">'.number(
                     $data['Maximum Quantity']
-                ).'</span>)</span>'
+                ).'</span>)</span>',
+            'next_deliveries'      => $next_deliveries
 
         );
 
@@ -590,6 +615,30 @@ function part_locations_to_replenish_picking_location($_data, $db, $user) {
         $storing_locations = preg_replace('/^, /', '', $storing_locations);
 
 
+        if ($data['Part Next Deliveries Data'] == '') {
+            $next_deliveries_array = array();
+        } else {
+            $next_deliveries_array = json_decode($data['Part Next Deliveries Data'], true);
+        }
+
+
+        $next_deliveries = '';
+
+        foreach ($next_deliveries_array as $next_delivery) {
+
+
+            $next_deliveries .= '<div class="as_row "><div class="as_cell padding_left_5" style="min-width: 120px" >'.$next_delivery['formatted_link'].'</div><div class="padding_left_10 as_cell strong" style="text-align: right;min-width: 60px" title="'._('SKOs ordered')
+                .'">+'.number(
+                    $next_delivery['raw_units_qty'] / $data['Part Units Per Package']
+                ).'<span style="font-weight: normal" class="small discreet">skos</span></div></div>';
+
+
+        }
+
+
+        $next_deliveries = '<div border="0" style="font-size: small" class="as_table">'.$next_deliveries.'</div>';
+
+
         $table_data[] = array(
             'reference' => sprintf('<span class="link"  title="%s" onclick="change_view(\'part/%d\')">%s</span>', $data['Part Package Description'], $data['Part SKU'], $data['Part Reference']),
             'location'  => sprintf('<span  class="link"  onclick="change_view(\'locations/%d/%d\')">%s</span>', $data['Part Location Warehouse Key'], $data['Location Key'], $data['Location Code']),
@@ -598,9 +647,9 @@ function part_locations_to_replenish_picking_location($_data, $db, $user) {
             'quantity_in_picking' => number(floor($data['Quantity On Hand'])),
             'to_pick'             => number(ceil($data['to_pick'])),
 
-            'total_stock'       => number(floor($data['Part Current On Hand Stock'])),
-            'storing_locations' => $storing_locations
-
+            'total_stock'        => number(floor($data['Part Current On Hand Stock'])),
+            '_storing_locations' => $storing_locations,
+            'next_deliveries'    => $next_deliveries
 
         );
 
@@ -1149,26 +1198,26 @@ function shippers($_data, $db, $user, $account) {
         foreach ($result as $data) {
 
 
-            switch ($data['Shipper Status']){
+            switch ($data['Shipper Status']) {
                 case 'Active':
-                    $status=sprintf('<i class="fa fa-play success" title="%s"></i>',_('Active'));
+                    $status = sprintf('<i class="fa fa-play success" title="%s"></i>', _('Active'));
 
                     break;
                 case 'Active':
-                    $status=sprintf('<i class="fa fa-pause discreet error" title="%s"></i>',_('Suspended'));
+                    $status = sprintf('<i class="fa fa-pause discreet error" title="%s"></i>', _('Suspended'));
                     break;
                 default:
-                    $status='';
+                    $status = '';
             }
 
 
-            $code = sprintf('<span class="link" onclick="change_view(\'warehouse/%d/shipper/%d\')">%s</span>', $data['Shipper Warehouse Key'],$data['Shipper Key'], $data['Shipper Code']);
+            $code = sprintf('<span class="link" onclick="change_view(\'warehouse/%d/shipper/%d\')">%s</span>', $data['Shipper Warehouse Key'], $data['Shipper Key'], $data['Shipper Code']);
 
 
             $record_data[] = array(
                 'id'               => (integer)$data['Shipper Key'],
                 'code'             => $code,
-                'status'             => $status,
+                'status'           => $status,
                 'name'             => $data['Shipper Name'],
                 'consignments'     => number($data['Shipper Consignments']),
                 'parcels'          => number($data['Shipper Number Parcels']),

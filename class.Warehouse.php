@@ -684,6 +684,12 @@ class Warehouse extends DB_Table {
 
 
                 break;
+
+            case 'Stock Amount':
+                $account=get_object('Account',1);
+                return money($this->data['Warehouse '.$key],$account->get('Account Currency Code'));
+                break;
+
             default:
 
 

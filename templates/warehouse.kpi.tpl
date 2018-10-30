@@ -9,6 +9,19 @@
 -->
 *}
 
+
+<div style="margin-top: 10px">
+    <div style="border-bottom:1px solid #ccc;padding:20px">
+
+        <div class="unselectable button " onclick="change_view('inventory/stock_history')" style="border:1px solid #eee;padding:10px;font-size:150%;float:left;margin-right:20px"  ">{t}Total stock{/t} {$warehouse->get('Stock Amount')}</div>
+<div style="clear: both"></div>
+
+</div>
+</div>
+
+
+{*
+// todo revalute how to do the KPIs
 {assign "kpi" $warehouse->get_kpi('Month To Day')}
 <div style="margin-top: 10px">
 <span style="position: absolute;margin-left: 20px" class="small discreet">{t}Month to day{/t}</span>
@@ -21,3 +34,5 @@
 
 </div>
 </div>
+
+*}

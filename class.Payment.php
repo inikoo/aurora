@@ -136,6 +136,38 @@ class Payment extends DB_Table {
         }
     }
 
+    function get_orders($scope = 'keys') {
+
+
+
+
+        $sql = sprintf(
+            'SELECT `Payment Order Key` FROM `Payment Dimension` WHERE `Payment Key`=%d ', $this->id
+        );
+
+        $orders = array();
+
+        if ($result = $this->db->query($sql)) {
+            foreach ($result as $row) {
+
+                if ($scope == 'objects') {
+                    $orders[$row['Payment Order Key']] = get_object('Order', $row['Payment Order Key']);
+                } else {
+                    $orders[$row['Payment Order Key']] = $row['Payment Order Key'];
+                }
+
+
+            }
+        } else {
+            print_r($error_info = $this->db->errorInfo());
+            exit;
+        }
+
+        return $orders;
+    }
+
+
+
     function get($key = '') {
 
 
@@ -339,11 +371,13 @@ class Payment extends DB_Table {
 
             $sql = sprintf(
                 'INSERT INTO `Credit Transaction Fact` 
-                    (`Credit Transaction Date`,`Credit Transaction Amount`,`Credit Transaction Currency Code`,`Credit Transaction Currency Exchange Rate`,`Credit Transaction Customer Key`,`Credit Transaction Payment Key`) 
-                    VALUES (%s,%.2f,%s,%f,%d,%d) ', prepare_mysql($date), $this->data['Payment Transaction Amount'], prepare_mysql($this->get('Payment Currency Code')), $exchange, $this->get('Payment Customer Key'), $this->id
+                    (`Credit Transaction Date`,`Credit Transaction Amount`,`Credit Transaction Currency Code`,`Credit Transaction Currency Exchange Rate`,`Credit Transaction Customer Key`,`Credit Transaction Payment Key`,`Credit Transaction Type`) 
+                    VALUES (%s,%.2f,%s,%f,%d,%d,%s) ', prepare_mysql($date), $this->data['Payment Transaction Amount'], prepare_mysql($this->get('Payment Currency Code')), $exchange, $this->get('Payment Customer Key'), $this->id,prepare_mysql('Cancel')
 
 
             );
+
+            //print $sql;
 
             $this->db->exec($sql);
 

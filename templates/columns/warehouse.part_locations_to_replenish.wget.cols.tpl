@@ -76,15 +76,35 @@ cell: Backgrid.HtmlCell.extend({ className: "aright"} ),
 
 headerCell: integerHeaderCell
 },
+
+
 {
 name: "recommended_quantity",
-label: "{t}Recommended SKOs quantity{/t}",
-sortable: false,
+label:'',
+html_label: "<i class=\"far fa-lightbulb\"></i> (min,max)",
+title:'{t}Number of refunds difference form previous year{/t}',
+editable: false,
+sortType: "toggle",
+{if $sort_key=='recommended_quantity'}direction: '{if $sort_order==1}descending{else}ascending{/if}',{/if}
+cell: Backgrid.HtmlCell.extend({ } ),
+headerCell: HeaderHtmlCell
+},
 
+
+{
+name: "next_deliveries",
+label: "{t}Next deliveries{/t}",
 editable: false,
 
-cell: Backgrid.HtmlCell.extend({ } ),
-}
+defaultOrder:1,
+sortType: "toggle",
+{if $sort_key=='next_deliveries'}direction: '{if $sort_order==1}descending{else}ascending{/if}',{/if}
+cell: Backgrid.HtmlCell.extend({
+
+} ),
+
+},
+
 
 ]
 
