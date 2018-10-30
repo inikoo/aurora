@@ -1601,57 +1601,7 @@ function order_items($_data, $db, $user, $account) {
     if ($result = $db->query($sql)) {
         foreach ($result as $data) {
 
-            //  print_r($data);
 
-            /*
-                        switch ($data['Supplier Part Status']) {
-                            case 'Available':
-                                $status = sprintf(
-                                    '<i class="fa fa-stop success" title="%s"></i>', _('Available')
-                                );
-                                break;
-                            case 'NoAvailable':
-                                $status = sprintf(
-                                    '<i class="fa fa-stop warning" title="%s"></i>', _('No available')
-                                );
-
-                                break;
-                            case 'Discontinued':
-                                $status = sprintf(
-                                    '<i class="fa fa-ban error" title="%s"></i>', _('Discontinued')
-                                );
-
-                                break;
-                            default:
-                                $status = $data['Supplier Part Status'];
-                                break;
-                        }
-
-                        switch ($data['Part Stock Status']) {
-                            case 'Surplus':
-                                $stock_status = '<i class="fa  fa-plus-circle fa-fw" aria-hidden="true"></i>';
-                                break;
-                            case 'Optimal':
-                                $stock_status = '<i class="fa fa-check-circle fa-fw" aria-hidden="true"></i>';
-                                break;
-                            case 'Low':
-                                $stock_status = '<i class="fa fa-minus-circle fa-fw" aria-hidden="true"></i>';
-                                break;
-                            case 'Critical':
-                                $stock_status = '<i class="fa error fa-minus-circle fa-fw" aria-hidden="true"></i>';
-                                break;
-                            case 'Out_Of_Stock':
-                                $stock_status = '<i class="fa error fa-ban fa-fw" aria-hidden="true"></i>';
-                                break;
-                            case 'Error':
-                                $stock_status = '<i class="fa fa-question-circle error fa-fw" aria-hidden="true"></i>';
-                                break;
-                            default:
-                                $stock_status = $data['Part Stock Status'];
-                                break;
-                        }
-
-            */
             $units_per_carton = $data['Part Units Per Package'] * $data['Supplier Part Packages Per Carton'];
             $skos_per_carton  = $data['Supplier Part Packages Per Carton'];
 
@@ -1712,12 +1662,38 @@ function order_items($_data, $db, $user, $account) {
 
             $items_qty = '<span class="submitted_items_qty" onclick="use_submitted_qty_in_delivery(this,'.$data['Purchase Order Submitted Units'].')">'.$items_qty.'</span>';
 
-            $amount = money($data['Purchase Order Submitted Units'] * $data['Supplier Part Unit Cost'], $purchase_order->get('Purchase Order Currency Code'));
+
+
+
+
+            $amount = money($data['Purchase Order Net Amount'], $purchase_order->get('Purchase Order Currency Code'));
+
+
+
 
             if ($data['Supplier Part Currency Code'] != $account->get('Account Currency')) {
-                $amount .= ' <span class="">('.money($data['Purchase Order Submitted Units'] * $data['Supplier Part Unit Cost'] * $purchase_order->get('Purchase Order Currency Exchange'), $account->get('Account Currency')).')</span>';
+
+
+
+                $amount .= ' <span class="">('.money($data['Purchase Order Net Amount'] * $purchase_order->get('Purchase Order Currency Exchange'), $account->get('Account Currency')).')</span>';
 
             }
+
+            if($data['Purchase Order Submitted Unit Cost']!=$data['Supplier Part Unit Cost']){
+                $amount.='<div style="color:#ffc822" class="small"><i class="fa fa-exclamation-triangle attention"></i> <span class="warning">'._('Unit cost changed').' 
+                <span title="'._('Submitted unit cost').'">'.money($data['Purchase Order Submitted Unit Cost'],$purchase_order->get('Purchase Order Currency Code')).'</span>  <i class="far fa-arrow-right"></i>
+                <span class="strong" title="'._('Current unit cost').'">'.money($data['Supplier Part Unit Cost'],$purchase_order->get('Purchase Order Currency Code')).'</span> <i onclick="set_po_transaction_amount_to_current_cost(this,\'cost\','.$data['Purchase Order Transaction Fact Key'].')" class="button fa fa-sync-alt" title="'._('Update item amount to current price').'"></i></div>';
+            }
+
+
+
+            if($data['Purchase Order Submitted Unit Extra Cost Percentage']!=$data['Supplier Part Unit Extra Cost Percentage']){
+                $amount.='<div style="color:#ffc822" class="small"><i class="fa fa-exclamation-triangle attention"></i> <span class="warning">'._('Extra cost % changed').' 
+                <span title="'._('Submitted extra cost %').'">'.percentage($data['Purchase Order Submitted Unit Extra Cost Percentage'],1,1).'</span>  <i class="far fa-arrow-right"></i>
+                <span class="strong" title="'._('Current extra cost %').'">'.percentage($data['Supplier Part Unit Extra Cost Percentage'],1,1).'</span> <i onclick="set_po_transaction_amount_to_current_extra_cost(this,\'extra_cost\','.$data['Purchase Order Transaction Fact Key'].')" class="button fa fa-sync-alt" title="'._('Update item amount to current extra cost').'"></i></div>';
+            }
+
+            $amount='<span class="po_amount_'.$data['Purchase Order Transaction Fact Key'].'">'.$amount.'</span>';
 
             if ($data['Part Package Weight'] > 0) {
                 $weight = weight(
@@ -1769,123 +1745,7 @@ function order_items($_data, $db, $user, $account) {
                 );
             }
 
-            /*
-                      if ($data['Part Stock Status'] == 'Out_Of_Stock' or $data['Part Stock Status'] == 'Error') {
-                          $available_forecast = '';
-                      } else {
-                          if (in_array(
-                              $data['Part Products Web Status'], array(
-                                                                   'No Products',
-                                                                   'Offline',
-                                                                   'Out of Stock'
-                                                               )
-                          )) {
-                              $available_forecast = '';
 
-                          } elseif ($data['Part On Demand'] == 'Yes') {
-
-                              $available_forecast = '<span >'.sprintf(
-                                      _('%s in stock'),
-                                      '<span  title="'.sprintf("%s %s", number($data['Part Days Available Forecast'], 1), ngettext("day", "days", intval($data['Part Days Available Forecast']))).'">'.seconds_to_until($data['Part Days Available Forecast'] * 86400).'</span>'
-                                  ).'</span>';
-
-                              if ($data['Part Fresh'] == 'No') {
-                                  $available_forecast .= ' <i class="fa fa-fighter-jet padding_left_5" aria-hidden="true" title="'._('On demand').'"></i>';
-                              } else {
-                                  $available_forecast = ' <i class="far fa-lemon padding_left_5" aria-hidden="true" title="'._('On demand').'"></i>';
-                              }
-                          } else {
-                              $available_forecast = '<span >'.sprintf(
-                                      _('%s availability'), '<span  title="'.sprintf(
-                                                              "%s %s", number($data['Part Days Available Forecast'], 1), ngettext("day", "days", intval($data['Part Days Available Forecast']))
-                                                          ).'">'.seconds_to_until(
-                                                              $data['Part Days Available Forecast'] * 86400
-                                                          ).'</span>'
-                                  ).'</span>';
-
-
-                          }
-                      }
-
-                                 $average_sales_per_year_units = '&lang;'.number($data['Part 1 Year Acc Dispatched'] * $data['Part Units Per Package']).' u/y&rang;';
-                                 $average_sales_per_year_skos  = '&lang;'.number($data['Part 1 Year Acc Dispatched']).' SKOs/y&rang;';
-
-
-                                 $average_sales_per_year_cartons = '&lang;'.number($data['Part 1 Year Acc Dispatched'] / $data['Supplier Part Packages Per Carton']).' C/y&rang;';
-
-
-                                             $description_units = $description_units.'<div style="margin-top:10px" >
-
-                                                        <span style="display: inline-block; min-width: 50px;color:black" class="strong padding_right_10" title="'._('Stock (units)').'">'.number($data['Part Current On Hand Stock'] * $data['Part Units Per Package']).'<span class="small">u.</span></span> '
-                                                 .$stock_status.'
-                                                         <span>'.$available_forecast.'</span>
-                                                         <span class="discreet padding_left_10" title="'._('Cartons dispatched by year').'">'.$average_sales_per_year_units.'</span>
-                                                     </div>
-                                                     <div class="as_table asset_sales">
-                                                         <div class="as_row header">
-                                                         <div class="as_cell width_75">'.get_quarter_label(strtotime('now -12 months')).'</div>
-                                                         <div class="as_cell width_75">'.get_quarter_label(strtotime('now -9 months')).'</div>
-                                                         <div class="as_cell width_75">'.get_quarter_label(strtotime('now -6 months')).'</div>
-                                                         <div class="as_cell width_75">'.get_quarter_label(strtotime('now -3 months')).'</div>
-                                                         <div class="as_cell width_75">'.get_quarter_label(strtotime('now')).'</div>
-                                                     </div>
-                                                     <div class="as_row header">
-                                                         <div class="as_cell width_75">'.number($data['Part 4 Quarter Ago Dispatched'] * $data['Part Units Per Package']).'</div>
-                                                         <div class="as_cell width_75">'.number($data['Part 3 Quarter Ago Dispatched'] * $data['Part Units Per Package']).'</div>
-                                                         <div class="as_cell width_75">'.number($data['Part 2 Quarter Ago Dispatched'] * $data['Part Units Per Package']).'</div>
-                                                         <div class="as_cell width_75">'.number($data['Part 1 Quarter Ago Dispatched'] * $data['Part Units Per Package']).'</div>
-                                                     <div class="as_cell width_75">'.number($data['Part Quarter To Day Acc Dispatched'] * $data['Part Units Per Package']).'</div>
-                                                 </div>
-                                             </div>';
-
-                                             $description_skos = $description_skos.'<div style="margin-top:10px" >
-
-                                                        <span style="display: inline-block; min-width: 50px;color:black" class="strong padding_right_10" title="'._('Stock (SKOs)').'">'.number($data['Part Current On Hand Stock']).'<span class="small">sko.</span></span> '.$stock_status.'
-                                                         <span>'.$available_forecast.'</span>
-                                                         <span class="discreet padding_left_10" title="'._('Cartons dispatched by year').'">'.$average_sales_per_year_skos.'</span>
-                                                     </div>
-                                                     <div class="as_table asset_sales">
-                                                         <div class="as_row header">
-                                                         <div class="as_cell width_75">'.get_quarter_label(strtotime('now -12 months')).'</div>
-                                                         <div class="as_cell width_75">'.get_quarter_label(strtotime('now -9 months')).'</div>
-                                                         <div class="as_cell width_75">'.get_quarter_label(strtotime('now -6 months')).'</div>
-                                                         <div class="as_cell width_75">'.get_quarter_label(strtotime('now -3 months')).'</div>
-                                                         <div class="as_cell width_75">'.get_quarter_label(strtotime('now')).'</div>
-                                                     </div>
-                                                     <div class="as_row header">
-                                                         <div class="as_cell width_75">'.number($data['Part 4 Quarter Ago Dispatched']).'</div>
-                                                         <div class="as_cell width_75">'.number($data['Part 3 Quarter Ago Dispatched']).'</div>
-                                                         <div class="as_cell width_75">'.number($data['Part 2 Quarter Ago Dispatched']).'</div>
-                                                         <div class="as_cell width_75">'.number($data['Part 1 Quarter Ago Dispatched']).'</div>
-                                                     <div class="as_cell width_75">'.number($data['Part Quarter To Day Acc Dispatched']).'</div>
-                                                 </div>
-                                             </div>';
-
-                                             $description_cartons = $description_cartons.'<div style="margin-top:10px" >
-
-                                                        <span style="display: inline-block; min-width: 50px;color:black" class="strong padding_right_10" title="'._('Stock (cartons)').'">'.number($data['Part Current On Hand Stock'] / $data['Supplier Part Packages Per Carton'])
-                                                 .'<span class="small discreet">C.</span></span> '.$stock_status.'
-                                                         <span>'.$available_forecast.'</span>
-                                                         <span class="discreet padding_left_10" title="'._('Cartons dispatched by year').'">'.$average_sales_per_year_cartons.'</span>
-                                                     </div>
-                                                     <div class="as_table asset_sales">
-                                                         <div class="as_row header">
-                                                         <div class="as_cell width_75">'.get_quarter_label(strtotime('now -12 months')).'</div>
-                                                         <div class="as_cell width_75">'.get_quarter_label(strtotime('now -9 months')).'</div>
-                                                         <div class="as_cell width_75">'.get_quarter_label(strtotime('now -6 months')).'</div>
-                                                         <div class="as_cell width_75">'.get_quarter_label(strtotime('now -3 months')).'</div>
-                                                         <div class="as_cell width_75">'.get_quarter_label(strtotime('now')).'</div>
-                                                     </div>
-                                                     <div class="as_row header">
-                                                         <div class="as_cell width_75">'.number($data['Part 4 Quarter Ago Dispatched'] / $data['Supplier Part Packages Per Carton']).'</div>
-                                                         <div class="as_cell width_75">'.number($data['Part 3 Quarter Ago Dispatched'] / $data['Supplier Part Packages Per Carton']).'</div>
-                                                         <div class="as_cell width_75">'.number($data['Part 2 Quarter Ago Dispatched'] / $data['Supplier Part Packages Per Carton']).'</div>
-                                                         <div class="as_cell width_75">'.number($data['Part 1 Quarter Ago Dispatched'] / $data['Supplier Part Packages Per Carton']).'</div>
-                                                     <div class="as_cell width_75">'.number($data['Part Quarter To Day Acc Dispatched'] / $data['Supplier Part Packages Per Carton']).'</div>
-                                                 </div>
-                                             </div>';
-
-                                 */
             $units_qty       = $data['Purchase Order Submitted Units'];
             $skos_qty        = $units_qty / $data['Part Units Per Package'];
             $cartons_qty     = $skos_qty / $data['Supplier Part Packages Per Carton'];
@@ -2432,6 +2292,7 @@ function delivery_items($_data, $db, $user, $account) {
 
     $supplier_delivery = get_object('Supplier_Delivery', $_data['parameters']['parent_key']);
 
+
     include_once 'prepare_table/init.php';
 
     $sql        = "select $fields from $table $where $wheref order by $order $order_direction limit $start_from,$number_results";
@@ -2491,12 +2352,31 @@ function delivery_items($_data, $db, $user, $account) {
             $items_qty         = get_purchase_order_items_qty($data);
 
 
-            $amount = money($data['Supplier Delivery Units'] * $data['Supplier Part Unit Cost'], $data['currency_code']);
+            $amount = money($data['Supplier Delivery Net Amount'], $data['currency_code']);
 
             if ($data['currency_code'] != $data['account_currency_code']) {
-                $amount .= ' <span class="">('.money($data['Supplier Delivery Units'] * $data['Supplier Part Unit Cost']*$data['exchange'], $data['account_currency_code']).')</span>';
+                $amount .= ' <span class="">('.money($data['Supplier Delivery Net Amount']*$data['exchange'], $data['account_currency_code']).')</span>';
 
             }
+
+
+            if($data['Purchase Order Submitted Unit Cost']!=$data['Supplier Part Unit Cost']){
+                $amount.='<div style="color:#ffc822" class="small"><i class="fa fa-exclamation-triangle attention"></i> <span class="warning">'._('Unit cost changed').' 
+                <span title="'._('Submitted unit cost').'">'.money($data['Purchase Order Submitted Unit Cost'],$data['currency_code']).'</span>  <i class="far fa-arrow-right"></i>
+                <span class="strong" title="'._('Current unit cost').'">'.money($data['Supplier Part Unit Cost'],$data['currency_code']).'</span> <i onclick="set_po_transaction_amount_to_current_cost(this,\'cost\','.$data['Purchase Order Transaction Fact Key'].')" class="button fa fa-sync-alt" title="'._('Update item amount to current price').'"></i></div>';
+            }
+
+
+
+            if($data['Purchase Order Submitted Unit Extra Cost Percentage']!=$data['Supplier Part Unit Extra Cost Percentage']){
+                $amount.='<div style="color:#ffc822" class="small"><i class="fa fa-exclamation-triangle attention"></i> <span class="warning">'._('Extra cost % changed').' 
+                <span title="'._('Submitted extra cost %').'">'.percentage($data['Purchase Order Submitted Unit Extra Cost Percentage'],1,1).'</span>  <i class="far fa-arrow-right"></i>
+                <span class="strong" title="'._('Current extra cost %').'">'.percentage($data['Supplier Part Unit Extra Cost Percentage'],1,1).'</span> <i onclick="set_po_transaction_amount_to_current_extra_cost(this,\'extra_cost\','.$data['Purchase Order Transaction Fact Key'].')" class="button fa fa-sync-alt" title="'._('Update item amount to current extra cost').'"></i></div>';
+            }
+
+            $amount='<span class="po_amount_'.$data['Purchase Order Transaction Fact Key'].'">'.$amount.'</span>';
+
+
 
             if ($data['Part Package Weight'] > 0) {
                 $weight = weight(

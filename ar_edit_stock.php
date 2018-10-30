@@ -663,7 +663,7 @@ function place_part($account, $db, $user, $editor, $data, $smarty) {
 
 
     $sql = sprintf(
-        'SELECT `Supplier Delivery Extra Cost Amount`,`Supplier Delivery Extra Cost Account Currency Amount`,`Supplier Delivery Key`,`Part Units Per Package`,`Supplier Part Unit Extra Cost`,`Supplier Part Unit Cost`,`Supplier Part Currency Code`,POTF.`Currency Code`,SP.`Supplier Part Key`,`Supplier Part Unit Extra Cost Percentage`,`Supplier Delivery Units`,`Supplier Delivery Net Amount`,`Purchase Order Transaction Fact Key`,`Supplier Delivery Checked Units`,`Supplier Delivery Placed Units` ,`Supplier Part Packages Per Carton` FROM	
+        'SELECT `Supplier Delivery Extra Cost Amount`,`Supplier Delivery Extra Cost Account Currency Amount`,`Supplier Delivery Key`,`Part Units Per Package`,`Supplier Part Unit Extra Cost`,`Supplier Part Unit Cost`,`Supplier Part Currency Code`,POTF.`Currency Code`,SP.`Supplier Part Key`,`Supplier Delivery Units`,`Supplier Delivery Net Amount`,`Purchase Order Transaction Fact Key`,`Supplier Delivery Checked Units`,`Supplier Delivery Placed Units` ,`Supplier Part Packages Per Carton` FROM	
   `Purchase Order Transaction Fact` POTF
 LEFT JOIN `Supplier Part Historic Dimension` SPH ON (POTF.`Supplier Part Historic Key`=SPH.`Supplier Part Historic Key`)
  LEFT JOIN  `Supplier Part Dimension` SP ON (POTF.`Supplier Part Key`=SP.`Supplier Part Key`)

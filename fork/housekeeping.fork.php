@@ -106,7 +106,6 @@ function fork_housekeeping($job) {
         case 'update_part_status':
 
 
-
             $part = get_object('Part', $data['part_sku']);
 
             $part->editor = $data['editor'];
@@ -143,21 +142,20 @@ function fork_housekeeping($job) {
             $account->update_active_parts_stock_data();
 
 
-
             $context = new ZMQContext();
             $socket  = $context->getSocket(ZMQ::SOCKET_PUSH, 'my pusher');
             $socket->connect("tcp://localhost:5555");
 
 
-            switch ($part->get('Part Status')){
+            switch ($part->get('Part Status')) {
                 case 'In Use':
-                    $part_status= sprintf('<i onclick="set_discontinuing_part_as_active(this,%d)" class="far button fa-fw fa-box title="%s"></i></span>',$part->sku,_('Active, click to discontinue'));
+                    $part_status = sprintf('<i onclick="set_discontinuing_part_as_active(this,%d)" class="far button fa-fw fa-box title="%s"></i></span>', $part->sku, _('Active, click to discontinue'));
                     break;
                 case 'Discontinuing':
-                    $part_status= sprintf('<i onclick="set_discontinuing_part_as_active(this,%d)" class="far button fa-fw fa-skull" ></i></span>',$part->sku,_('Discontinuing, click to set as an active part'));
+                    $part_status = sprintf('<i onclick="set_discontinuing_part_as_active(this,%d)" class="far button fa-fw fa-skull" ></i></span>', $part->sku, _('Discontinuing, click to set as an active part'));
                     break;
                 case 'Discontinued':
-                    $part_status= sprintf('<i  class="far  fa-fw fa-tombstone" ></i></span>',$part->sku,_('Discontinued'));
+                    $part_status = sprintf('<i  class="far  fa-fw fa-tombstone" ></i></span>', $part->sku, _('Discontinued'));
                     break;
             }
 
@@ -165,15 +163,15 @@ function fork_housekeeping($job) {
             $socket->send(
                 json_encode(
                     array(
-                        'channel'  => 'real_time.'.strtolower($account->get('Account Code')),
+                        'channel' => 'real_time.'.strtolower($account->get('Account Code')),
 
-                        'tabs'     => array(
+                        'tabs' => array(
                             array(
                                 'tab'   => 'inventory.discontinuing_parts',
                                 'rtext' => sprintf(ngettext('%s discontinuing part', '%s discontinuing parts', $account->get('Account Discontinuing Parts Number')), number($account->get('Account Discontinuing Parts Number'))),
 
                                 'cell' => array(
-                                    'part_status_'.$part->sku=> $part_status
+                                    'part_status_'.$part->sku => $part_status
                                 )
                             )
 
@@ -182,10 +180,6 @@ function fork_housekeeping($job) {
                     )
                 )
             );
-
-
-
-
 
 
             break;
@@ -698,7 +692,7 @@ function fork_housekeeping($job) {
 
         case 'full_after_part_stock_update':
 
-           // return true;
+            // return true;
 
             // todo remove after migration
             // for use in pre migration inikoo
@@ -1048,13 +1042,9 @@ function fork_housekeeping($job) {
         case 'delivery_note_packed_done':
 
 
-
-
             $customer = get_object('Customer', $data['customer_key']);
 
             $customer->update_part_bridge();
-
-
 
 
             $intervals = array(
@@ -1080,7 +1070,6 @@ function fork_housekeeping($job) {
             $part_categories      = array();
 
 
-
             //$sql = sprintf('select `Part SKU`  FROM `Inventory Transaction Fact` WHERE  `Delivery Note Key`=%d  and `Inventory Transaction Type`="Sale" ', $data['delivery_note_key']);
             $sql = sprintf('select `Part SKU`,`Inventory Transaction Type`  FROM `Inventory Transaction Fact` WHERE  `Delivery Note Key`=%d   ', $data['delivery_note_key']);
 
@@ -1088,7 +1077,7 @@ function fork_housekeeping($job) {
                 foreach ($result as $row) {
 
 
-                    if($row['Inventory Transaction Type']=='Sale'){
+                    if ($row['Inventory Transaction Type'] == 'Sale') {
 
                         $part = get_object('Part', $row['Part SKU']);
 
@@ -1104,10 +1093,6 @@ function fork_housekeeping($job) {
                             $part_categories[$part_category_key] = $part_category_key;
                         }
                     }
-
-
-
-
 
 
                 }
@@ -1406,7 +1391,6 @@ function fork_housekeeping($job) {
         case 'update_ISF':
 
 
-
             include_once 'class.PartLocation.php';
 
             $part_location = new PartLocation(
@@ -1588,6 +1572,55 @@ function fork_housekeeping($job) {
             }
 
             break;
+
+        case 'supplier_part_unit_costs_updated':
+            //todo move to vip_aurora workers
+
+
+            $purchase_orders = array();
+
+
+            $sql = sprintf(
+                'select `Purchase Order Key`,`Purchase Order Transaction Fact Key` ,`Supplier Part Unit Cost`,`Purchase Order Ordering Units`,`Supplier Part Unit Extra Cost` from `Purchase Order Transaction Fact` POTF left join `Supplier Part Dimension` SPD  on (POTF.`Supplier Part Key`=SPD.`Supplier Part Key`) where `Purchase Order Transaction State`="InProcess" and SPD.`Supplier Part Key`=%d ',
+                $data['supplier_part_key']
+            );
+
+            if ($result = $db->query($sql)) {
+                foreach ($result as $row) {
+
+
+                    $sql = sprintf(
+                        'update `Purchase Order Transaction Fact` set `Purchase Order Net Amount`=%.2f ,`Purchase Order Extra Cost Amount`=%.2f where `Purchase Order Transaction Fact Key`=%d  ',
+
+                        $row['Supplier Part Unit Cost'] * $row['Purchase Order Ordering Units'],
+                        $row['Supplier Part Unit Extra Cost'] * $row['Purchase Order Ordering Units'],
+                        $row['Purchase Order Transaction Fact Key']
+                    );
+
+                    //print "$sql\n";
+                    $db->exec($sql);
+
+                    $purchase_orders[$row['Purchase Order Key']]=$row['Purchase Order Key'];
+
+
+                    // exit;
+                }
+            } else {
+                print_r($error_info = $db->errorInfo());
+                print "$sql\n";
+                exit;
+            }
+
+
+            foreach ($purchase_orders as $purchase_order_key) {
+                $purchase_order = get_object('Purchase Order', $purchase_order_key);
+                $purchase_order->update_totals();
+            }
+
+
+            break;
+
+
 
 
         default:

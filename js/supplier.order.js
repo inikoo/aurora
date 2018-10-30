@@ -538,3 +538,63 @@ function create_delivery_change_quantity(qty,element) {
     validate_new_supplier_delivery();
 
 }
+
+
+function set_po_transaction_amount_to_current_cost(element,type,transaction_key){
+
+
+    $(element).addClass('fa-spin fa-spinner')
+
+    var form_data = new FormData();
+
+    form_data.append("tipo", 'set_po_transaction_amount_to_current_cost')
+    form_data.append("transaction_key", transaction_key)
+    form_data.append("type", type)
+
+
+
+
+    var request = $.ajax({
+
+        url: "/ar_edit_orders.php",
+        data: form_data,
+        processData: false,
+        contentType: false,
+        type: 'POST',
+        dataType: 'json'
+
+    })
+
+
+    request.done(function (data) {
+
+
+        if (data.state == 200) {
+
+            $('.po_amount_'+transaction_key).html(data.amount)
+
+            for (var key in data.update_metadata.class_html) {
+                $('.' + key).html(data.update_metadata.class_html[key])
+            }
+
+
+        } else if (data.state == 400) {
+
+
+            console.log(data)
+        }
+
+    })
+
+
+    request.fail(function (jqXHR, textStatus) {
+        console.log(textStatus)
+        console.log(jqXHR.responseText)
+
+    });
+
+
+
+}
+
+

@@ -52,8 +52,8 @@ $locations
 $fields
     = "`Supplier Part Supplier Key`,`Part SKO Image Key`,`Part SKO Barcode`,`Supplier Delivery Units`,`Supplier Delivery Key`,`Part Reference`,P.`Part SKU`,`Supplier Delivery Checked Units`,`Part Package Description`,`Supplier Delivery Transaction Placed`,`Supplier Delivery Placed Units`,`Metadata`,
 `Purchase Order Transaction Fact Key`,POTF.`Supplier Part Key`,`Supplier Part Reference`,POTF.`Supplier Part Historic Key`,
-`Supplier Part Description`,`Part Units Per Package`,`Supplier Part Packages Per Carton`,`Supplier Part Carton CBM`,
-`Supplier Part Unit Cost`,`Part Package Weight`,`Supplier Delivery CBM`,`Supplier Delivery Weight`,`Supplier Key`,
+`Supplier Part Description`,`Part Units Per Package`,`Supplier Part Packages Per Carton`,`Supplier Part Carton CBM`,`Supplier Part Unit Extra Cost Percentage`,
+`Supplier Part Unit Cost`,`Part Package Weight`,`Supplier Delivery CBM`,`Supplier Delivery Weight`,`Supplier Key`,`Purchase Order Submitted Unit Cost`,`Purchase Order Submitted Unit Extra Cost Percentage`,
 `Supplier Delivery Net Amount`,`Currency Code` $locations
 
 ";

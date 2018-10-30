@@ -1239,18 +1239,10 @@ class SupplierDelivery extends DB_Table {
 
         $this->update_metadata = array(
             'class_html' => array(
-                'Supplier_Delivery_Total_Amount'                  => $this->get(
-                    'Total Amount'
-                ),
-                'Supplier_Delivery_Total_Amount_Account_Currency' => $this->get(
-                    'Total Amount Account Currency'
-                ),
-                'Supplier_Delivery_Weight'                        => $this->get(
-                    'Weight'
-                ),
-                'Supplier_Delivery_CBM'                           => $this->get(
-                    'CBM'
-                ),
+                'Supplier_Delivery_Total_Amount'                  => $this->get('Total Amount'),
+                'Supplier_Delivery_Total_Amount_Account_Currency' => $this->get('Total Amount Account Currency'),
+                'Supplier_Delivery_Weight'                        => $this->get('Weight'),
+                'Supplier_Delivery_CBM'                           => $this->get('CBM'),
 
             )
         );

@@ -35,6 +35,100 @@ $editor = array(
 );
 
 
+
+$purchase_orders = array();
+
+
+$sql = sprintf(
+    'select `Purchase Order Key`,`Purchase Order Transaction Fact Key` ,`Supplier Part Unit Cost`,`Purchase Order Ordering Units`,`Supplier Part Unit Extra Cost` from `Purchase Order Transaction Fact` POTF left join `Supplier Part Dimension` SPD  on (POTF.`Supplier Part Key`=SPD.`Supplier Part Key`) where `Purchase Order Transaction State`="InProcess"  '
+
+);
+
+if ($result = $db->query($sql)) {
+    foreach ($result as $row) {
+
+
+        $sql = sprintf(
+            'update `Purchase Order Transaction Fact` set `Purchase Order Net Amount`=%.2f ,`Purchase Order Extra Cost Amount`=%.2f where `Purchase Order Transaction Fact Key`=%d  ',
+
+            $row['Supplier Part Unit Cost'] * $row['Purchase Order Ordering Units'],
+            $row['Supplier Part Unit Extra Cost'] * $row['Purchase Order Ordering Units'],
+            $row['Purchase Order Transaction Fact Key']
+        );
+
+        //print "$sql\n";
+        $db->exec($sql);
+
+        $purchase_orders[$row['Purchase Order Key']]=$row['Purchase Order Key'];
+
+
+        // exit;
+    }
+} else {
+    print_r($error_info = $db->errorInfo());
+    print "$sql\n";
+    exit;
+}
+
+
+foreach ($purchase_orders as $purchase_order_key) {
+    $purchase_order = get_object('Purchase Order', $purchase_order_key);
+    $purchase_order->update_totals();
+}
+
+
+
+
+$sql = sprintf('select * from `Purchase Order Transaction Fact` POTF left join `Supplier Part Dimension` SPD  on (POTF.`Supplier Part Key`=SPD.`Supplier Part Key`) ');
+
+if ($result = $db->query($sql)) {
+    foreach ($result as $row) {
+
+
+       // $supplier_part = get_object('Supplier_Part', $row['Supplier Part Key']);
+
+
+        $purchase_order = get_object('Purchase Order', $row['Purchase Order Key']);
+
+        switch ($row['Purchase Order Transaction State']) {
+            case 'InProcess':
+            case 'Cancelled':
+
+                break;
+            default:
+
+                $sql = sprintf(
+                    'update `Purchase Order Transaction Fact` set `Purchase Order Submitted Unit Cost`=%s,`Purchase Order Submitted Unit Extra Cost Percentage`=%s  where `Purchase Order Transaction Fact Key`=%d  ',
+
+                    prepare_mysql(($row['Purchase Order Submitted Units']>0?$row['Purchase Order Net Amount']/$row['Purchase Order Submitted Units']:'')),
+                    prepare_mysql(($row['Purchase Order Submitted Units']>0?$row['Purchase Order Extra Cost Amount']/$row['Purchase Order Submitted Units']:'')),
+
+                    $row['Purchase Order Transaction Fact Key']
+                );
+
+                //print "$sql\n";
+                $db->exec($sql);
+
+                break;
+
+        }
+
+
+
+
+
+        // exit;
+    }
+} else {
+    print_r($error_info = $db->errorInfo());
+    print "$sql\n";
+    exit;
+}
+
+
+
+exit;
+
 $sql = sprintf('select * from `Purchase Order Transaction Fact` ');
 
 if ($result = $db->query($sql)) {

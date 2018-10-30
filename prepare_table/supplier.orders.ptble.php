@@ -144,14 +144,20 @@ if (isset($parameters['elements_type'])) {
 }
 
 
-if (($parameters['f_field'] == 'supplier') and $f_value != '') {
+
+
+if (($parameters['f_field'] == 'number') and $f_value != '') {
 
     $wheref = sprintf(
-        '  and  `Purcahse Order Supplier Name`  REGEXP "[[:<:]]%s" ', addslashes($f_value)
+        '  and  `Purchase Order Public ID`  like "%%%s%%" ', addslashes($f_value)
     );
 
 
+
+
 }
+
+
 
 
 $_order = $order;
