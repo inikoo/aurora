@@ -219,12 +219,16 @@ function payments($_data, $db, $user) {
             switch ($data['Payment Type']) {
                 case 'Payment':
                     $type = _('Order payment');
+                    $_remove_label=_('Cancel payment');
                     break;
                 case 'Refund':
                     $type = _('Refund pay back');
+                    $_remove_label=_('Cancel refund');
+
                     break;
                 case 'Credit':
                     $type = _('Credit');
+                    $_remove_label=_('Cancel credit');
                     break;
                 default:
                     $type = $data['Payment Type'];
@@ -263,7 +267,7 @@ function payments($_data, $db, $user) {
 
                         $operations = sprintf(
                             '<span class="operations">
-                            <i class="fa fa-trash button %s" aria-hidden="true" title="'._('Remove payment').'"  onClick="cancel_payment(this,%d)"  ></i>
+                            <i class="far fa-trash-alt button %s" aria-hidden="true" title="'.$_remove_label.'"  onClick="cancel_payment(this,%d)"  ></i>
                             <i class="fa fa-share fa-flip-horizontal button %s" data-settings=\'{"reference":"%s","amount_formatted":"%s","amount":"%s","can_refund_online":"%s"}\'   aria-hidden="true" title="'._('Refund/Credit payment').'"  onClick="open_refund_dialog(this,%d)"  ></i>
 
                             </span>', (($data['Payment Submit Type'] != 'Manual' or ($is_refund and $data['Payment Type'] != 'Refund')) ? 'hide' : ''), $data['Payment Key'],

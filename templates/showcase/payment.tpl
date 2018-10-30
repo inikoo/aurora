@@ -16,11 +16,24 @@
             <table border="0" class="overview">
                 <tr>
                     <td>{t}Status{/t}:</td>
-                    <td class="aright strong"><span class="Payment_Transaction_status">{$payment->get('Transaction Status')}</span></td>
+                    <td class="aright "><span class="Payment_Transaction_status">{$payment->get('Transaction Status')}</span></td>
                 </tr>
                 <tr>
                     <td>{t}Amount{/t}:</td>
-                    <td class="aright strong"><span class="Payment_Transaction_Amount">{$payment->get('Transaction Amount')}</span></td>
+                    <td class="aright "><span class="Payment_Transaction_Amount">{$payment->get('Transaction Amount')}</span></td>
+                </tr>
+
+
+                {assign "orders" $payment->get_orders('objects')}
+
+
+                <tr >
+                    <td>{if $orders|@count==1}{t}Order{/t}{else}{t}Orders{/t}{/if}:</td>
+                    <td class="aright ">
+                        {foreach from=$orders item=order name=foo}
+                            <span class="link" onclick="change_view('orders/{$order->get('Order Store Key')}/{$order->id}')">{$order->get('Order Public ID')}</span> {if $smarty.foreach.foo.last}{else}, {/if}
+                        {/foreach }
+                    </td>
                 </tr>
 
 

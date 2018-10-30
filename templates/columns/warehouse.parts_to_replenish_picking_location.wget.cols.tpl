@@ -74,7 +74,7 @@ headerCell: integerHeaderCell
 },
 
 {
-name: "storing_locations",
+name: "_storing_locations",
 label: "{t}Storing locations{/t}",
 editable: false,
 sortable: false,
@@ -83,7 +83,19 @@ sortType: "toggle",
 
 cell: Backgrid.HtmlCell.extend({})
 
-}
+},
+{
+name: "next_deliveries",
+label: "{t}Next deliveries{/t}",
+editable: false,
+
+defaultOrder:1,
+sortType: "toggle",
+{if $sort_key=='next_deliveries'}direction: '{if $sort_order==1}descending{else}ascending{/if}',{/if}
+cell: Backgrid.HtmlCell.extend({
+
+})}
+
 
 ]
 

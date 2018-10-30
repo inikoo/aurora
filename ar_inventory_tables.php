@@ -247,7 +247,7 @@ function parts($_data, $db, $user, $type, $account) {
             foreach ($next_deliveries_array as $next_delivery) {
 
 
-                $next_deliveries .= '<div class="as_row "><div class="as_cell" >'.$next_delivery['formatted_link'].'</div><div class="padding_left_20 as_cell strong" title="'._('SKOs ordered').'">+'.number(
+                $next_deliveries .= '<div class="as_row "><div class="as_cell padding_left_10" style="min-width: 150px" >'.$next_delivery['formatted_link'].'</div><div class="padding_left_20 as_cell strong" style="text-align: right;min-width: 70px" title="'._('SKOs ordered').'">+'.number(
                         $next_delivery['raw_units_qty'] / $data['Part Units Per Package']
                     ).'<span style="font-weight: normal" class="small discreet">skos</span></div></div>';
 

@@ -10,33 +10,28 @@
 */
 
 
-
-
-
 include_once 'utils/date_functions.php';
 
 
-
-$production_suppliers='';
-$sql=sprintf('select group_concat(`Supplier Production Supplier Key`) as  production_suppliers from `Supplier Production Dimension`');
-if ($result=$db->query($sql)) {
+$production_suppliers = '';
+$sql                  = sprintf('select group_concat(`Supplier Production Supplier Key`) as  production_suppliers from `Supplier Production Dimension`');
+if ($result = $db->query($sql)) {
     if ($row = $result->fetch()) {
-        $production_suppliers=$row['production_suppliers'];
-	}
-}else {
-	print_r($error_info=$db->errorInfo());
-	print "$sql\n";
-	exit;
+        $production_suppliers = $row['production_suppliers'];
+    }
+} else {
+    print_r($error_info = $db->errorInfo());
+    print "$sql\n";
+    exit;
 }
 
-$where      = "where true  ";
-$table
-            = "  `Part Location Dimension` PLD  left join `Part Dimension` P on (PLD.`Part SKU`=P.`Part SKU`) left join `Location Dimension` L on (PLD.`Location Key`=L.`Location Key`) 
+$where = "where true  ";
+$table = "  `Part Location Dimension` PLD  left join `Part Dimension` P on (PLD.`Part SKU`=P.`Part SKU`) left join `Location Dimension` L on (PLD.`Location Key`=L.`Location Key`) 
             
             ";
 
-if($production_suppliers!=''){
-    $table.='  LEFT JOIN `Supplier Part Dimension` SP ON (SP.`Supplier Part Part SKU`=P.`Part SKU`) ';
+if ($production_suppliers != '') {
+    $table .= '  LEFT JOIN `Supplier Part Dimension` SP ON (SP.`Supplier Part Part SKU`=P.`Part SKU`) ';
 }
 
 
@@ -51,12 +46,12 @@ if ($parameters['parent'] == 'warehouse') {
         "where `Part Location Warehouse Key`=%d  and `Can Pick`='Yes' and (`Part Current Stock In Process`+ `Part Current Stock Ordered Paid`)>`Quantity On Hand`  and (`Part Current Stock In Process`+ `Part Current Stock Ordered Paid`)>0  ", $parameters['parent_key']
     );
 
-if($production_suppliers!='') {
+    if ($production_suppliers != '') {
 
-    $where .= sprintf(
-        " and `Supplier Part Supplier Key` not in (%s) ", $production_suppliers
-    );
-}
+        $where .= sprintf(
+            " and `Supplier Part Supplier Key` not in (%s) ", $production_suppliers
+        );
+    }
 
 
 } else {
@@ -79,14 +74,16 @@ $_dir   = $order_direction;
 
 if ($order == 'total_stock') {
     $order = '`Part Current Stock`';
-}elseif ($order == 'quantity_in_picking') {
+} elseif ($order == 'quantity_in_picking') {
     $order = '`Quantity on hand`';
-}elseif ($order == 'to_pick') {
+} elseif ($order == 'to_pick') {
     $order = 'to_pick';
 } elseif ($order == 'location') {
     $order = '`Location File As`';
 } elseif ($order == 'reference') {
     $order = '`Part Reference`';
+} elseif ($order == 'next_deliveries') {
+    $order = "(`Part Number Active Deliveries`+`Part Number Draft Deliveries`)";
 } else {
 
     $order = '`Part SKU`';
@@ -96,13 +93,13 @@ if ($order == 'total_stock') {
 $sql_totals = "select count(DISTINCT PLD.`Part SKU`) as num from $table  $where  ";
 
 
-$fields
-    .= "
+$fields .= "
 P.`Part SKU`,`Part Reference`,`Part Current Stock`,`Part Stock Status`,`Part Days Available Forecast`,`Part Current Stock In Process`+ `Part Current Stock Ordered Paid` as to_pick,
 `Location Code`,PLD.`Location Key`,`Part Location Warehouse Key`,`Part Package Description`,`Part Current On Hand Stock`,
 `Quantity On Hand`,`Quantity In Process`,`Stock Value`,`Can Pick`,`Minimum Quantity`,`Maximum Quantity`,`Moving Quantity`,`Last Updated`,
 (select Group_CONCAT(LL.`Location Code`) from `Part Location Dimension` PL_SL left join `Location Dimension` LL on (LL.`Location Key`=PL_SL.`Location Key`) where PL_SL.`Part SKU`=PLD.`Part SKU` and PL_SL.`Can Pick`='No'  ) as storing_locations,
-(select Group_CONCAT(concat_ws(\"|\",LL.`Location Warehouse Key`,  LL.`Location Key`,LL.`Location Code`,PL_SL.`Quantity On Hand`) )  from `Part Location Dimension` PL_SL left join `Location Dimension` LL on (LL.`Location Key`=PL_SL.`Location Key`) where PL_SL.`Part SKU`=PLD.`Part SKU` and PL_SL.`Can Pick`='No'  ) as storing_locations_data
+(select Group_CONCAT(concat_ws(\"|\",LL.`Location Warehouse Key`,  LL.`Location Key`,LL.`Location Code`,PL_SL.`Quantity On Hand`) )  from `Part Location Dimension` PL_SL left join `Location Dimension` LL on (LL.`Location Key`=PL_SL.`Location Key`) where PL_SL.`Part SKU`=PLD.`Part SKU` and PL_SL.`Can Pick`='No'  ) as storing_locations_data,
+ `Part Next Deliveries Data`,`Part Units Per Package`
 
 
 
