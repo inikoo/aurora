@@ -50,7 +50,7 @@
 
         {/if}
 
-        <link href="/css/app.css?v181017v5" rel="stylesheet">
+        <link href="/css/app.css?v181017v6" rel="stylesheet">
 
 
 

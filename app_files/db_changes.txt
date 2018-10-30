@@ -927,6 +927,14 @@ ALTER TABLE `Attachment Bridge` CHANGE `Attachment Subject Type` `Attachment Sub
 
  update `Purchase Order Dimension` set `Purchase Order State`='Submitted' where `Purchase Order State`='SubmittedAgent';
 
+
+ALTER TABLE `Supplier Part Dimension` CHANGE `Supplier Part Unit Cost` `Supplier Part Unit Cost` DECIMAL(16,4) UNSIGNED NULL DEFAULT NULL;
+ALTER TABLE `Purchase Order Transaction Fact` CHANGE `Purchase Order Submitted Unit Cost` `Purchase Order Submitted Unit Cost` DECIMAL(16,4) NULL DEFAULT NULL;
+ALTER TABLE `Supplier Part Dimension` CHANGE `Supplier Part Unit Extra Cost Percentage` `Supplier Part Unit Extra Cost Percentage` DECIMAL(6,3) NULL DEFAULT NULL;
+ALTER TABLE `Purchase Order Transaction Fact` ADD `Purchase Order Submitted Unit Extra Cost Percentage` DECIMAL(6,3) NULL DEFAULT NULL AFTER `Purchase Order Submitted Unit Cost`;
+ALTER TABLE `Supplier Part Dimension` CHANGE `Supplier Part Unit Extra Cost` `Supplier Part Unit Extra Cost` DECIMAL(16,4) NOT NULL DEFAULT '0';
+
+
 ======= fer migration ordering in dw and costa
 
                     ALTER TABLE `Invoice Tax Dimension` ADD `Invoice Tax Key` INT UNSIGNED NOT NULL AUTO_INCREMENT FIRST, ADD PRIMARY KEY (`Invoice Tax Key`);

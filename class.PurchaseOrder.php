@@ -323,7 +323,7 @@ class PurchaseOrder extends DB_Table {
 
 
                 $sql = sprintf(
-                    "SELECT `Purchase Order Weight`,`Purchase Order CBM`,`Purchase Order Net Amount`,`Purchase Order Extra Cost Amount`,`Purchase Order Submitted Units` FROM `Purchase Order Transaction Fact`  WHERE `Purchase Order Transaction Fact Key`=%d",
+                    "SELECT `Purchase Order Submitted Unit Cost`,`Purchase Order Weight`,`Purchase Order CBM`,`Purchase Order Net Amount`,`Purchase Order Extra Cost Amount`,`Purchase Order Submitted Units` FROM `Purchase Order Transaction Fact`  WHERE `Purchase Order Transaction Fact Key`=%d",
 
                     $potf_key
                 );
@@ -331,7 +331,7 @@ class PurchaseOrder extends DB_Table {
                     if ($row = $result->fetch()) {
 
                         if ($row['Purchase Order Submitted Units'] != 0) {
-                            $net   = $units_qty * $row['Purchase Order Net Amount'] / $row['Purchase Order Submitted Units'];
+                            $net   = $units_qty * $row['Purchase Order Submitted Unit Cost'] ;
                             $extra = $units_qty * $row['Purchase Order Extra Cost Amount'] / $row['Purchase Order Submitted Units'];
 
                             if ($row['Purchase Order Weight'] == '') {
@@ -355,9 +355,6 @@ class PurchaseOrder extends DB_Table {
                         }
 
 
-
-
-
                         $sql = sprintf(
                             'UPDATE `Purchase Order Transaction Fact` SET 
                                 `Purchase Order Transaction State`=%s ,
@@ -368,8 +365,8 @@ class PurchaseOrder extends DB_Table {
                                  `Supplier Delivery CBM`=%s,
                                 
                                 `Supplier Delivery Key`=%d,`Supplier Delivery Transaction State`=%s  ,`Supplier Delivery Transaction Placed`="No" WHERE `Purchase Order Transaction Fact Key`=%d',
-                            prepare_mysql('Inputted'),
-                            $net, $extra, $units_qty, prepare_mysql($weight), prepare_mysql($cbm),
+                            prepare_mysql('Inputted'), $net, $extra, $units_qty,
+                            prepare_mysql($weight), prepare_mysql($cbm),
 
                             $delivery->id, prepare_mysql('InProcess'), $potf_key
                         );
@@ -483,7 +480,7 @@ class PurchaseOrder extends DB_Table {
             case 'State Index':
             case 'Max State Index':
 
-                switch (($key=='State Index'?$this->data['Purchase Order State']:$this->data['Purchase Order Max Supplier Delivery State'])) {
+                switch (($key == 'State Index' ? $this->data['Purchase Order State'] : $this->data['Purchase Order Max Supplier Delivery State'])) {
                     case 'InProcess':
                         return 10;
                         break;
@@ -522,9 +519,6 @@ class PurchaseOrder extends DB_Table {
                         break;
                 }
                 break;
-
-
-
 
 
             case 'Weight':
@@ -862,6 +856,58 @@ class PurchaseOrder extends DB_Table {
 
     }
 
+/*
+    function update_prices() {
+
+
+        $sql = sprintf(
+            "SELECT `Purchase Order Transaction State`,`Supplier Delivery Key`,`Purchase Order Transaction Fact Key`,`Purchase Order Ordering Units`,`Purchase Order Submitted Units`,`Supplier Part Unit Cost` FROM `Purchase Order Transaction Fact`  POTF left join `Supplier Part Dimension` SPD  on (POTF.`Supplier Part Key`=SPD.`Supplier Part Key`)  WHERE `Purchase Order Key`=%d",
+            $this->id
+        );
+        if ($result = $this->db->query($sql)) {
+            if ($row = $result->fetch()) {
+
+                //'InProcess','Submitted','ProblemSupplier','Confirmed','ReceivedAgent','InDelivery','Inputted','Dispatched','Received','Checked','Placed','Cancelled'
+
+
+                switch ($row['Purchase Order Transaction State`']) {
+                    case 'InProcess':
+                        $sql = sprintf(
+                            'update `Purchase Order Transaction Fact`  set `Purchase Order Net Amount`=%.2f where `Purchase Order Transaction Fact Key`=%d ', $row['Purchase Order Ordering Units'] * $row['Supplier Part Unit Cost'],
+                            $row['Purchase Order Transaction Fact Key']
+                        );
+                        $this->db->exec($sql);
+                        break;
+                    case 'Submitted':
+
+                        $sql = sprintf(
+                            'update `Purchase Order Transaction Fact` set `Purchase Order Net Amount`=%.2f ,`Purchase Order Submitted Unit Cost`=%f  where `Purchase Order Transaction Fact Key`=%d  ',
+
+
+                            $row['Purchase Order Ordering Units'] * $row['Supplier Part Unit Cost'],
+
+                            $row['Supplier Part Unit Cost'],
+
+                            $row['Purchase Order Transaction Fact Key']
+                        );
+
+                        //print "$sql\n";
+                        $this->db->exec($sql);
+
+                        break;
+
+                }
+
+
+            }
+
+        }
+
+
+        $this->update_totals();
+    }
+*/
+
     function update_totals() {
 
 
@@ -873,6 +919,8 @@ sum(`Purchase Order Net Amount`) AS items_net, sum(`Purchase Order Extra Cost Am
         if ($result = $this->db->query($sql)) {
             if ($row = $result->fetch()) {
 
+
+               // print_r($row);
 
                 $total_net  = $row['items_net'];
                 $extra_cost = $row['extra_cost'];
@@ -970,7 +1018,6 @@ sum(`Purchase Order Net Amount`) AS items_net, sum(`Purchase Order Extra Cost Am
                 $index = $delivery->get('State Index');
 
 
-
                 if ($index < 0) {
                     continue;
                 }
@@ -998,7 +1045,7 @@ sum(`Purchase Order Net Amount`) AS items_net, sum(`Purchase Order Extra Cost Am
             );
 
 
-          //   print $this->get('Purchase Order Max Supplier Delivery State').' '.$max_delivery_state;
+            //   print $this->get('Purchase Order Max Supplier Delivery State').' '.$max_delivery_state;
             //'InProcess','SubmittedAgent','Submitted','Editing_Submitted','Inputted','Dispatched','Received','Checked','Placed','Cancelled'
 
 
@@ -1268,9 +1315,6 @@ sum(`Purchase Order Net Amount`) AS items_net, sum(`Purchase Order Extra Cost Am
             $this->db->exec($sql);
 
 
-
-
-
             $this->update_affected_parts();
 
             $parent = get_object($this->data['Purchase Order Parent'], $this->data['Purchase Order Parent Key']);
@@ -1296,17 +1340,14 @@ sum(`Purchase Order Net Amount`) AS items_net, sum(`Purchase Order Extra Cost Am
         );
 
 
-
-        switch ($this->get('Purchase Order State')){
+        switch ($this->get('Purchase Order State')) {
             case 'InProcess':
-                $this->update_metadata['hide']=array('pdf_purchase_order_container');
+                $this->update_metadata['hide'] = array('pdf_purchase_order_container');
                 break;
             case 'Submitted':
-                $this->update_metadata['show']=array('pdf_purchase_order_container');
+                $this->update_metadata['show'] = array('pdf_purchase_order_container');
                 break;
         }
-
-
 
 
     }
@@ -1375,6 +1416,8 @@ sum(`Purchase Order Net Amount`) AS items_net, sum(`Purchase Order Extra Cost Am
 
     }
 
+
+
     function update_item($data) {
 
         //print_r($data);
@@ -1428,7 +1471,7 @@ sum(`Purchase Order Net Amount`) AS items_net, sum(`Purchase Order Extra Cost Am
         $transaction_key = '';
 
 
-       // print $unit_qty;
+        // print $unit_qty;
         if ($unit_qty == 0) {
 
             $sql = sprintf(
@@ -1461,7 +1504,7 @@ sum(`Purchase Order Net Amount`) AS items_net, sum(`Purchase Order Extra Cost Am
 
             $amount = $unit_qty * $supplier_part->get('Supplier Part Unit Cost');
 
-            $extra_amount = round($amount * floatval($supplier_part->get('Supplier Part Unit Extra Cost Percentage')) / 100, 2);
+            $extra_amount =  $unit_qty * $supplier_part->get('Supplier Part Unit Extra Cost');
             if (is_numeric($supplier_part->get('Supplier Part Carton CBM'))) {
                 $cbm = $unit_qty * $supplier_part->get('Supplier Part Carton CBM') / $supplier_part->get('Supplier Part Packages Per Carton') / $supplier_part->part->get('Part Units Per Package');
             } else {
@@ -1485,8 +1528,8 @@ sum(`Purchase Order Net Amount`) AS items_net, sum(`Purchase Order Extra Cost Am
 
                     $sql = sprintf(
                         "update`Purchase Order Transaction Fact` set  `Purchase Order Ordering Units`=%f,`Purchase Order Last Updated Date`=%s,
-                        `Purchase Order Net Amount`=%f ,
-                        `Purchase Order Extra Cost Amount`=%f ,
+                        `Purchase Order Net Amount`=%.2f ,
+                        `Purchase Order Extra Cost Amount`=%.2f ,
                         `Purchase Order CBM`=%s,`Purchase Order Weight`=%s  where  `Purchase Order Transaction Fact Key`=%d ", $unit_qty, prepare_mysql($date), $amount, $extra_amount, $cbm, $weight, $row['Purchase Order Transaction Fact Key']
                     );
                     $this->db->exec($sql);

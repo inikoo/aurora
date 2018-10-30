@@ -239,7 +239,7 @@ switch ($tipo) {
                              'type'     => 'numeric',
                              'optional' => true
                          ),
-                         'tab'        => array(
+                         'tab'               => array(
                              'type'     => 'string',
                              'optional' => true
                          ),
@@ -249,6 +249,21 @@ switch ($tipo) {
         );
         edit_item_in_order($account, $db, $user, $editor, $data, $smarty);
         break;
+
+
+    case 'set_po_transaction_amount_to_current_cost':
+        $data = prepare_values(
+            $_REQUEST, array(
+                         'type' => array('type' => 'string'),
+
+                         'transaction_key' => array('type' => 'key'),
+
+
+                     )
+        );
+        set_po_transaction_amount_to_current_cost($data, $editor, $account, $db);
+        break;
+
 
     default:
         $response = array(
@@ -265,7 +280,6 @@ function edit_item_in_order($account, $db, $user, $editor, $data, $smarty) {
 
     $parent         = get_object($data['parent'], $data['parent_key']);
     $parent->editor = $editor;
-
 
 
     if ($data['parent'] == 'order') {
@@ -300,61 +314,56 @@ function edit_item_in_order($account, $db, $user, $editor, $data, $smarty) {
     $discounts_data = array();
 
     if ($data['parent'] == 'order') {
-        $sql = sprintf('SELECT `Order Transaction Amount`,OTF.`Product ID`,OTF.`Product Key`,`Order Transaction Total Discount Amount`,`Order Transaction Gross Amount`,`Order Transaction Total Discount Amount`,`Order Transaction Amount`,`Order Currency Code`,OTF.`Order Transaction Fact Key`, `Deal Info` FROM `Order Transaction Fact` OTF left join  `Order Transaction Deal Bridge` B on (OTF.`Order Transaction Fact Key`=B.`Order Transaction Fact Key`) WHERE OTF.`Order Key`=%s ', $parent->id);
+        $sql = sprintf(
+            'SELECT `Order Transaction Amount`,OTF.`Product ID`,OTF.`Product Key`,`Order Transaction Total Discount Amount`,`Order Transaction Gross Amount`,`Order Transaction Total Discount Amount`,`Order Transaction Amount`,`Order Currency Code`,OTF.`Order Transaction Fact Key`, `Deal Info` FROM `Order Transaction Fact` OTF left join  `Order Transaction Deal Bridge` B on (OTF.`Order Transaction Fact Key`=B.`Order Transaction Fact Key`) WHERE OTF.`Order Key`=%s ',
+            $parent->id
+        );
 
-        if ($result=$db->query($sql)) {
-        		foreach ($result as $row) {
-
-
-
-
-
-                    if (in_array(
-                        $parent->get('Order State'), array(
-                                                               'Cancelled',
-                                                               'Approved',
-                                                               'Dispatched',
-                                                           )
-                    )) {
-                        $discounts_class = '';
-                        $discounts_input = '';
-                    } else {
-                        $discounts_class = 'button';
-                        $discounts_input = sprintf(
-                            '<span class="hide order_item_percentage_discount_form" data-settings=\'{ "field": "Percentage" ,"transaction_key":"%d","item_key":%d, "item_historic_key":%d ,"on":1 }\'   ><input class="order_item_percentage_discount_input" style="width: 70px" value="%s"> <i class="fa save fa-cloud" aria-hidden="true"></i></span>',
-                            $row['Order Transaction Fact Key'], $row['Product ID'], $row['Product Key'], percentage($row['Order Transaction Total Discount Amount'], $row['Order Transaction Gross Amount'])
-                        );
-                    }
-                    $discounts = $discounts_input.'<span class="order_item_percentage_discount   '.$discounts_class.' '.($row['Order Transaction Total Discount Amount'] == 0 ? 'super_discreet' : '').'"><span style="padding-right:5px">'.percentage(
-                            $row['Order Transaction Total Discount Amount'], $row['Order Transaction Gross Amount']
-                        ).'</span> <span class="'.($row['Order Transaction Total Discount Amount'] == 0 ? 'hide' : '').'">'.money($row['Order Transaction Total Discount Amount'], $row['Order Currency Code']).'</span></span>';
+        if ($result = $db->query($sql)) {
+            foreach ($result as $row) {
 
 
+                if (in_array(
+                    $parent->get('Order State'), array(
+                                                   'Cancelled',
+                                                   'Approved',
+                                                   'Dispatched',
+                                               )
+                )) {
+                    $discounts_class = '';
+                    $discounts_input = '';
+                } else {
+                    $discounts_class = 'button';
+                    $discounts_input = sprintf(
+                        '<span class="hide order_item_percentage_discount_form" data-settings=\'{ "field": "Percentage" ,"transaction_key":"%d","item_key":%d, "item_historic_key":%d ,"on":1 }\'   ><input class="order_item_percentage_discount_input" style="width: 70px" value="%s"> <i class="fa save fa-cloud" aria-hidden="true"></i></span>',
+                        $row['Order Transaction Fact Key'], $row['Product ID'], $row['Product Key'], percentage($row['Order Transaction Total Discount Amount'], $row['Order Transaction Gross Amount'])
+                    );
+                }
+                $discounts = $discounts_input.'<span class="order_item_percentage_discount   '.$discounts_class.' '.($row['Order Transaction Total Discount Amount'] == 0 ? 'super_discreet' : '').'"><span style="padding-right:5px">'.percentage(
+                        $row['Order Transaction Total Discount Amount'], $row['Order Transaction Gross Amount']
+                    ).'</span> <span class="'.($row['Order Transaction Total Discount Amount'] == 0 ? 'hide' : '').'">'.money($row['Order Transaction Total Discount Amount'], $row['Order Currency Code']).'</span></span>';
 
 
-                    if(isset($data['tab']) and $data['tab']=='order.all_products'){
-                        $discounts_data[$row['Product ID']]= array(
-                            'deal_info'=> $row['Deal Info'],
-                            'discounts'=>$discounts,
-                            'item_net'=>money($row['Order Transaction Amount'], $row['Order Currency Code'])
-                        );
-                    }else{
-                        $discounts_data[$row['Order Transaction Fact Key']]= array(
-                            'deal_info'=> $row['Deal Info'],
-                            'discounts'=>$discounts,
-                            'item_net'=>money($row['Order Transaction Amount'], $row['Order Currency Code'])
-                        );
-                    }
+                if (isset($data['tab']) and $data['tab'] == 'order.all_products') {
+                    $discounts_data[$row['Product ID']] = array(
+                        'deal_info' => $row['Deal Info'],
+                        'discounts' => $discounts,
+                        'item_net'  => money($row['Order Transaction Amount'], $row['Order Currency Code'])
+                    );
+                } else {
+                    $discounts_data[$row['Order Transaction Fact Key']] = array(
+                        'deal_info' => $row['Deal Info'],
+                        'discounts' => $discounts,
+                        'item_net'  => money($row['Order Transaction Amount'], $row['Order Currency Code'])
+                    );
+                }
 
 
-
-
-
-        		}
-        }else {
-        		print_r($error_info=$db->errorInfo());
-        		print "$sql\n";
-        		exit;
+            }
+        } else {
+            print_r($error_info = $db->errorInfo());
+            print "$sql\n";
+            exit;
         }
 
 
@@ -755,12 +764,9 @@ function new_payment($data, $editor, $smarty, $db, $account, $user) {
         $invoice = get_object('invoice', $order->get('Order Invoice Key'));
     }
 
-    if($invoice->id){
+    if ($invoice->id) {
         $invoice->add_payment($payment);
     }
-
-
-
 
 
     $operations = array();
@@ -951,12 +957,12 @@ function refund_payment($data, $editor, $smarty, $db, $account, $user) {
                     exit;
 
             }
-            $store=get_object('Store',$order->get('Store Key'));
+            $store = get_object('Store', $order->get('Store Key'));
 
 
             $payment_data = array(
-                'Payment Store Key'                   => $order->get('Store Key'),
-                'Payment Website Key'                   => $store->get('Store Website Key'),
+                'Payment Store Key'   => $order->get('Store Key'),
+                'Payment Website Key' => $store->get('Store Website Key'),
 
                 'Payment Customer Key'                => $order->get('Customer Key'),
                 'Payment Transaction Amount'          => -$data['amount'],
@@ -1000,12 +1006,12 @@ function refund_payment($data, $editor, $smarty, $db, $account, $user) {
 
             $exchange = currency_conversion($db, $order->get('Currency Code'), $account->get('Currency Code'));
 
-            $store=get_object('Store',$order->get('Store Key'));
+            $store = get_object('Store', $order->get('Store Key'));
 
             $reference    = '';
             $payment_data = array(
                 'Payment Store Key'                   => $order->get('Store Key'),
-                'Payment Website Key'                   => $store->get('Store Website Key'),
+                'Payment Website Key'                 => $store->get('Store Website Key'),
                 'Payment Customer Key'                => $order->get('Customer Key'),
                 'Payment Transaction Amount'          => -$data['amount'],
                 'Payment Currency Code'               => $order->get('Currency Code'),
@@ -1078,10 +1084,9 @@ function refund_payment($data, $editor, $smarty, $db, $account, $user) {
 
     }
 
-    if($invoice->id){
+    if ($invoice->id) {
         $invoice->add_payment($refund);
     }
-
 
 
     $operations = array();
@@ -1197,5 +1202,180 @@ function create_replacement($data, $editor, $smarty, $db) {
 
 }
 
+
+function set_po_transaction_amount_to_current_cost($data, $editor, $account, $db) {
+
+
+    $sql = sprintf(
+        'select `Supplier Delivery Units`,`Supplier Delivery Key`,`Purchase Order Submitted Unit Extra Cost Percentage`,`Purchase Order Submitted Unit Cost`,`Supplier Part Unit Extra Cost Percentage`,`Purchase Order Transaction State`,`Purchase Order Key`,`Purchase Order Transaction Fact Key`,`Supplier Part Unit Cost`,`Purchase Order Submitted Units`,`Supplier Part Currency Code` from `Purchase Order Transaction Fact` POTF left join `Supplier Part Dimension` SPD  on (POTF.`Supplier Part Key`=SPD.`Supplier Part Key`) where `Purchase Order Transaction Fact Key`=%d ',
+        $data['transaction_key']
+    );
+
+    if ($result = $db->query($sql)) {
+        foreach ($result as $row) {
+
+
+            // $supplier_part = get_object('Supplier_Part', $row['Supplier Part Key']);
+
+
+            $purchase_order = get_object('Purchase Order', $row['Purchase Order Key']);
+
+
+            $net_amount = $row['Supplier Part Unit Cost'] * $row['Purchase Order Submitted Units'];
+
+
+            $unit_cost=$row['Purchase Order Submitted Unit Cost'];
+            $extra_unit_cost= $row['Supplier Part Unit Extra Cost Percentage'];
+
+            switch ($row['Purchase Order Transaction State']) {
+
+                case 'Cancelled':
+                    $response = array(
+                        'state' => 400,
+                        'msg'   => 'Purchase order cancelled'
+                    );
+
+                    echo json_encode($response);
+                    exit;
+                    break;
+                default:
+
+                    if ($data['type'] == 'cost') {
+
+
+
+
+                        $sql = sprintf(
+                            'update `Purchase Order Transaction Fact` set `Purchase Order Submitted Unit Cost`=%.4f ,`Purchase Order Net Amount`=%.2f where `Purchase Order Transaction Fact Key`=%d  ',
+
+                            $row['Supplier Part Unit Cost'], $net_amount,
+
+                            $row['Purchase Order Transaction Fact Key']
+                        );
+
+
+                        $unit_cost=$row['Supplier Part Unit Cost'];
+
+
+                        // print "$sql\n";
+                       $db->exec($sql);
+                    } elseif ($data['type'] == 'extra_cost') {
+
+                        $sql = sprintf(
+                            'update `Purchase Order Transaction Fact` set `Purchase Order Submitted Unit Extra Cost Percentage`=%.4f  where `Purchase Order Transaction Fact Key`=%d  ',
+
+                            $row['Supplier Part Unit Extra Cost Percentage'],
+
+                            $row['Purchase Order Transaction Fact Key']
+                        );
+
+                        // print "$sql\n";
+                        $db->exec($sql);
+
+                        $extra_unit_cost=$row['Supplier Part Unit Extra Cost Percentage'];
+                    }
+
+                    if($row['Supplier Delivery Key']){
+                        $delivery = get_object('Supplier Delivery', $row['Supplier Delivery Key']);
+
+                        if ($data['type'] == 'cost') {
+
+                            $sql = sprintf(
+                                'update `Purchase Order Transaction Fact` set `Supplier Delivery Net Amount`=%.2f where `Purchase Order Transaction Fact Key`=%d  ',
+
+                                $row['Supplier Part Unit Cost']*$row['Supplier Delivery Units'],
+
+                                $row['Purchase Order Transaction Fact Key']
+                            );
+
+                          //   print "$sql\n";
+                              $db->exec($sql);
+                        }
+
+                        $delivery->update_totals();
+
+                    }
+
+
+                    break;
+
+            }
+
+            $purchase_order->update_totals();
+
+
+            $amount = money($net_amount, $purchase_order->get('Purchase Order Currency Code'));
+
+
+            if ($row['Supplier Part Currency Code'] != $account->get('Account Currency')) {
+
+
+                $amount .= ' <span class="">('.money($net_amount * $purchase_order->get('Purchase Order Currency Exchange'), $account->get('Account Currency')).')</span>';
+
+            }
+
+            if($unit_cost!=$row['Supplier Part Unit Cost']){
+                $amount.='<div style="color:#ffc822" class="small"><i class="fa fa-exclamation-triangle attention"></i> <span class="warning">'._('Unit cost changed').' 
+                <span title="'._('Submitted unit cost').'">'.money($row['Purchase Order Submitted Unit Cost'],$purchase_order->get('Purchase Order Currency Code')).'</span>  <i class="far fa-arrow-right"></i>
+                <span class="strong" title="'._('Current unit cost').'">'.money($row['Supplier Part Unit Cost'],$purchase_order->get('Purchase Order Currency Code')).'</span> <i onclick="set_po_transaction_amount_to_current_cost(this,\'cost\','.$row['Purchase Order Transaction Fact Key'].')" class="button fa fa-sync-alt" title="'._('Update item amount to current price').'"></i></div>';
+            }
+
+
+
+            if($extra_unit_cost!=$row['Supplier Part Unit Extra Cost Percentage']){
+                $amount.='<div style="color:#ffc822" class="small"><i class="fa fa-exclamation-triangle attention"></i> <span class="warning">'._('Extra cost % changed').' 
+                <span title="'._('Submitted extra cost %').'">'.percentage($row['Purchase Order Submitted Unit Extra Cost Percentage'],1,1).'</span>  <i class="far fa-arrow-right"></i>
+                <span class="strong" title="'._('Current extra cost %').'">'.percentage($row['Supplier Part Unit Extra Cost Percentage'],1,1).'</span> <i onclick="set_po_transaction_amount_to_current_extra_cost(this,\'extra_cost\','.$row['Purchase Order Transaction Fact Key'].')" class="button fa fa-sync-alt" title="'._('Update item amount to current extra cost').'"></i></div>';
+            }
+
+
+
+            $update_metadata = array(
+                'class_html' => array(
+                    'Purchase_Order_Total_Amount'                      => $purchase_order->get('Total Amount'),
+                    'Purchase_Order_Total_Amount_Account_Currency'     => $purchase_order->get('Total Amount Account Currency'),
+                    'Purchase_Order_Items_Net_Amount'                  => $purchase_order->get('Items Net Amount'),
+                    'Purchase_Order_Items_Net_Amount_Account_Currency' => $purchase_order->get('Items Net Amount Account Currency'),
+                    'Purchase_Order_AC_Total_Amount'       => $purchase_order->get('AC Total Amount'),
+                    'Purchase_Order_AC_Extra_Costs_Amount' => $purchase_order->get('AC Extra Costs Amount'),
+                    'Purchase_Order_AC_Subtotal_Amount' => $purchase_order->get('AC Subtotal Amount'),
+                    'Purchase_Order_AC_Total_Amount' => $purchase_order->get('AC Total Amount'),
+
+
+
+                ),
+            );
+
+            if(isset($delivery)){
+                $update_metadata['class_html']['Supplier_Delivery_Items_Amount']=$delivery->get('Items Amount');
+                $update_metadata['class_html']['Supplier_Delivery_Extra_Costs_Amount']=$delivery->get('Extra Costs Amount');
+                $update_metadata['class_html']['Supplier_Delivery_Total_Amount']=$delivery->get('Total Amount');
+                $update_metadata['class_html']['Supplier_Delivery_AC_Subtotal_Amount']=$delivery->get('AC Subtotal Amount');
+                $update_metadata['class_html']['Supplier_Delivery_AC_Extra_Costs_Amount']=$delivery->get('AC Extra Costs Amount');
+                $update_metadata['class_html']['Supplier_Delivery_AC_Total_Amount']=$delivery->get('AC Total Amount');
+
+
+            }
+
+
+            // exit;
+        }
+    } else {
+        print_r($error_info = $db->errorInfo());
+        print "$sql\n";
+        exit;
+    }
+
+    $response = array(
+        'state'           => 200,
+        'update_metadata' => $update_metadata,
+        'amount'          => $amount
+    );
+
+    echo json_encode($response);
+    exit;
+
+
+}
 
 ?>

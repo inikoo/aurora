@@ -469,6 +469,8 @@ function money($amount, $currency = '', $locale = false, $option = '') {
         $money->setAttribute(NumberFormatter::MAX_FRACTION_DIGITS, 0);
     } elseif ($option == 'SINGLE_FRACTION_DIGITS') {
         $money->setAttribute(NumberFormatter::MAX_FRACTION_DIGITS, 1);
+    }elseif ($option == 'FOUR_FRACTION_DIGITS') {
+        $money->setAttribute(NumberFormatter::MAX_FRACTION_DIGITS, 4);
     }
 
 

@@ -118,7 +118,7 @@ if (isset($parameters['elements_type'])) {
 if (($parameters['f_field'] == 'number') and $f_value != '') {
 
     $wheref = sprintf(
-        '  and  `Supplier Delivery Public ID`  REGEXP "[[:<:]]%s" ', addslashes($f_value)
+        '  and  `Supplier Delivery Public ID`  like "%%%s%%" ', addslashes($f_value)
     );
 
 
