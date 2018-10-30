@@ -428,15 +428,15 @@
 
 
 
+            {assign "next_deliveries" $part->get('Next Deliveries Data')}
 
 
 
-
-            <table border="0" class="overview with_title next_deliveries">
+            <table border="0" class="overview with_title next_deliveries {if $next_deliveries|@count==0}hide{/if}  ">
                 <tr class="top">
                     <td colspan="3">{t}Next deliveries{/t}</td>
                 </tr>
-                {foreach from=$part->get('Next Deliveries Data') item=next_delivery }
+                {foreach from=$next_deliveries item=next_delivery }
                     <tr class="main ">
                         <td>{$next_delivery.formatted_link}</td>
                         <td>{$next_delivery.formatted_state}</td>
