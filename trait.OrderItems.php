@@ -16,9 +16,6 @@ trait OrderItems {
     function update_item($data) {
 
 
-        print_r($data);
-
-        exit;
 
 
 
