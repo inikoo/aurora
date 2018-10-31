@@ -532,7 +532,7 @@ class Part extends Asset {
     function get_products($scope = 'keys') {
 
 
-        if ($scope == 'data') {
+        if ($scope == 'data' or $scope == 'products_data' ) {
             $fields = '*';
         } else {
             $fields = '`Product Part Product ID`';
@@ -551,6 +551,24 @@ class Part extends Asset {
                     $products[$row['Product Part Product ID']] = get_object('Product', $row['Product Part Product ID']);
                 } elseif ($scope == 'data') {
                     $products[$row['Product Part Product ID']] = $row;
+                } elseif ($scope == 'products_data') {
+                    $product= get_object('Product', $row['Product Part Product ID']);
+                    $store= get_object('Store', $product->get('Product Store Key'));
+
+
+
+                    $products[$row['Product Part Product ID']] = array(
+                        'store_key'=>$store->id,
+                        'store_code'=>$store->get('Code'),
+                        'store_key'=>$store->get('Name'),
+                        'product_id'=>$product->id,
+                        'units_per_case'=>$product->get('Product Units Per Case'),
+                        'name'=>$product->get('Product Name'),
+                        'status'=>$product->get('Product Status'),
+                        'web_status'=>$product->get('Product Web State'),
+                        'parts_per_product'=>$row['Product Part Ratio']
+
+                    );
                 } else {
                     $products[$row['Product Part Product ID']] = $row['Product Part Product ID'];
                 }
