@@ -247,7 +247,9 @@ function parts($_data, $db, $user, $type, $account) {
             foreach ($next_deliveries_array as $next_delivery) {
 
 
-                $next_deliveries .= '<div class="as_row "><div class="as_cell padding_left_10" style="min-width: 150px" >'.$next_delivery['formatted_link'].'</div><div class="padding_left_20 as_cell strong" style="text-align: right;min-width: 70px" title="'._('SKOs ordered').'">+'.number(
+                $next_deliveries .= '<div class="as_row "><div class="as_cell padding_left_10" style="min-width: 150px" >'.$next_delivery['formatted_link'].'</div><div class="padding_left_20 as_cell strong" style="text-align: right;min-width: 70px" title="'._(
+                        'SKOs ordered'
+                    ).'">+'.number(
                         $next_delivery['raw_units_qty'] / $data['Part Units Per Package']
                     ).'<span style="font-weight: normal" class="small discreet">skos</span></div></div>';
 
@@ -306,10 +308,20 @@ function parts($_data, $db, $user, $type, $account) {
             }
 
 
+            if($_data['parameters']['parent']=='category'){
+                $reference=sprintf('<span class="link" onclick="change_view(\'category/%d/part/%d\')">%s</span>',$_data['parameters']['parent_key'],$data['Part SKU'],($data['Part Reference']==''?'<i class="fa error fa-exclamation-circle"></i> <span class="discreet italic">'._('Reference missing').'</span>':$data['Part Reference']));
+
+            }else{
+                $reference=sprintf('<span class="link" onclick="change_view(\'part/%d\')">%s</span>',$data['Part SKU'],($data['Part Reference']==''?'<i class="fa error fa-exclamation-circle"></i> <span class="discreet italic">'._('Reference missing').'</span>':$data['Part Reference']));
+
+            }
+
+
+
             $record_data[] = array(
                 'id'                 => (integer)$data['Part SKU'],
                 'associated'         => $associated,
-                'reference'          => $data['Part Reference'],
+                'reference'          => $reference,
                 'sko_description'    => $data['Part Package Description'],
                 'status'             => $status,
                 'stock_status'       => $stock_status,
@@ -360,12 +372,7 @@ function parts($_data, $db, $user, $type, $account) {
                     )
                 ),
 
-                'sales_quarter0' => sprintf(
-                    '<span>%s</span> %s', money(
-                    $data['Part Quarter To Day Acc Invoiced Amount'], $account->get('Account Currency')
-                ), delta_icon(
-                        $data["Part Quarter To Day Acc Invoiced Amount"], $data["Part Quarter To Day Acc 1YB Invoiced Amount"]
-                    )
+                'sales_quarter0' => sprintf('<span>%s</span> %s', money($data['Part Quarter To Day Acc Invoiced Amount'], $account->get('Account Currency')), delta_icon($data["Part Quarter To Day Acc Invoiced Amount"], $data["Part Quarter To Day Acc 1YB Invoiced Amount"])
                 ),
                 'sales_quarter1' => sprintf(
                     '<span>%s</span> %s', money(
@@ -399,47 +406,15 @@ function parts($_data, $db, $user, $type, $account) {
 
                 'dispatched_year0' => sprintf('<span>%s</span> %s', number($data['Part Year To Day Acc Dispatched']), delta_icon($data["Part Year To Day Acc Dispatched"], $data["Part Year To Day Acc 1YB Dispatched"])),
                 'dispatched_year1' => sprintf('<span>%s</span> %s', number($data['Part 1 Year Ago Dispatched']), delta_icon($data["Part 1 Year Ago Dispatched"], $data["Part 2 Year Ago Dispatched"])),
-                'dispatched_year2' => sprintf(
-                    '<span>%s</span> %s', number($data['Part 2 Year Ago Dispatched']), delta_icon(
-                                            $data["Part 2 Year Ago Dispatched"], $data["Part 3 Year Ago Dispatched"]
-                                        )
-                ),
-                'dispatched_year3' => sprintf(
-                    '<span>%s</span> %s', number($data['Part 3 Year Ago Dispatched']), delta_icon(
-                                            $data["Part 3 Year Ago Dispatched"], $data["Part 4 Year Ago Dispatched"]
-                                        )
-                ),
-                'dispatched_year4' => sprintf(
-                    '<span>%s</span> %s', number($data['Part 4 Year Ago Dispatched']), delta_icon(
-                                            $data["Part 4 Year Ago Dispatched"], $data["Part 5 Year Ago Dispatched"]
-                                        )
-                ),
+                'dispatched_year2' => sprintf('<span>%s</span> %s', number($data['Part 2 Year Ago Dispatched']), delta_icon($data["Part 2 Year Ago Dispatched"], $data["Part 3 Year Ago Dispatched"])),
+                'dispatched_year3' => sprintf('<span>%s</span> %s', number($data['Part 3 Year Ago Dispatched']), delta_icon($data["Part 3 Year Ago Dispatched"], $data["Part 4 Year Ago Dispatched"])),
+                'dispatched_year4' => sprintf('<span>%s</span> %s', number($data['Part 4 Year Ago Dispatched']), delta_icon($data["Part 4 Year Ago Dispatched"], $data["Part 5 Year Ago Dispatched"])),
 
-                'dispatched_quarter0' => sprintf(
-                    '<span>%s</span> %s', number($data['Part Quarter To Day Acc Dispatched']), delta_icon(
-                                            $data["Part Quarter To Day Acc Dispatched"], $data["Part Quarter To Day Acc 1YB Dispatched"]
-                                        )
-                ),
-                'dispatched_quarter1' => sprintf(
-                    '<span>%s</span> %s', number($data['Part 1 Quarter Ago Dispatched']), delta_icon(
-                                            $data["Part 1 Quarter Ago Dispatched"], $data["Part 1 Quarter Ago 1YB Dispatched"]
-                                        )
-                ),
-                'dispatched_quarter2' => sprintf(
-                    '<span>%s</span> %s', number($data['Part 2 Quarter Ago Dispatched']), delta_icon(
-                                            $data["Part 2 Quarter Ago Dispatched"], $data["Part 2 Quarter Ago 1YB Dispatched"]
-                                        )
-                ),
-                'dispatched_quarter3' => sprintf(
-                    '<span>%s</span> %s', number($data['Part 3 Quarter Ago Dispatched']), delta_icon(
-                                            $data["Part 3 Quarter Ago Dispatched"], $data["Part 3 Quarter Ago 1YB Dispatched"]
-                                        )
-                ),
-                'dispatched_quarter4' => sprintf(
-                    '<span>%s</span> %s', number($data['Part 4 Quarter Ago Dispatched']), delta_icon(
-                                            $data["Part 4 Quarter Ago Dispatched"], $data["Part 4 Quarter Ago 1YB Dispatched"]
-                                        )
-                ),
+                'dispatched_quarter0' => sprintf('<span>%s</span> %s', number($data['Part Quarter To Day Acc Dispatched']), delta_icon($data["Part Quarter To Day Acc Dispatched"], $data["Part Quarter To Day Acc 1YB Dispatched"])),
+                'dispatched_quarter1' => sprintf('<span>%s</span> %s', number($data['Part 1 Quarter Ago Dispatched']), delta_icon($data["Part 1 Quarter Ago Dispatched"], $data["Part 1 Quarter Ago 1YB Dispatched"])),
+                'dispatched_quarter2' => sprintf('<span>%s</span> %s', number($data['Part 2 Quarter Ago Dispatched']), delta_icon($data["Part 2 Quarter Ago Dispatched"], $data["Part 2 Quarter Ago 1YB Dispatched"])),
+                'dispatched_quarter3' => sprintf('<span>%s</span> %s', number($data['Part 3 Quarter Ago Dispatched']), delta_icon($data["Part 3 Quarter Ago Dispatched"], $data["Part 3 Quarter Ago 1YB Dispatched"])),
+                'dispatched_quarter4' => sprintf('<span>%s</span> %s', number($data['Part 4 Quarter Ago Dispatched']), delta_icon($data["Part 4 Quarter Ago Dispatched"], $data["Part 4 Quarter Ago 1YB Dispatched"])),
 
 
                 'sales_total'                      => money($data['Part Total Acc Invoiced Amount'], $account->get('Account Currency')),
@@ -1263,12 +1238,13 @@ function part_categories($_data, $db, $user, $account) {
                     break;
             }
 
+            $code=sprintf('<span class="link" onclick="change_view(\'category/%d\')">%s</span>',$data['Category Key'],($data['Category Code']==''?'<i class="fa error fa-exclamation-circle"> <span class="discreet italic">'._('No code set').'</span>':$data['Category Code']));
 
             $record_data[] = array(
-                'id'            => (integer)$data['Category Key'],
-                'store_key'     => (integer)$data['Category Store Key'],
-                'code'          => $data['Category Code'],
-                'label'         => $data['Category Label'],
+                'id'        => (integer)$data['Category Key'],
+                'store_key' => (integer)$data['Category Store Key'],
+                'code'      => $code,
+                'label'     => $data['Category Label'],
 
                 'in_process'    => number($data['Part Category In Process']),
                 'active'        => number($data['Part Category Active']),
@@ -2623,11 +2599,16 @@ function parts_discontinuing($_data, $db, $user, $account) {
             }
 
 
+
+
+            $reference=sprintf('<span class="link" onclick="change_view(\'part/%d\')">%s</span>',$data['Part SKU'],($data['Part Reference']==''?'<i class="fa error fa-exclamation-circle"></i> <span class="discreet italic">'._('Reference missing').'</span>':$data['Part Reference']));
+
+
             $record_data[] = array(
                 'id' => (integer)$data['Part SKU'],
 
                 'products'        => $products,
-                'reference'       => sprintf('<span class="link" onclick="change_view(\'/part/%d\')">%s</span>', $data['Part SKU'], $data['Part Reference']),
+                'reference'       => $reference,
                 'sko_description' => $data['Part Package Description'],
                 'stock_status'    => $stock_status,
                 'stock_value'     => $stock_value,
@@ -2843,11 +2824,12 @@ function parts_discontinued($_data, $db, $user, $type, $account) {
 
 
             $cost = money($data['Part Cost'], $account->get('Account Currency'));
+            $reference=sprintf('<span class="link" onclick="change_view(\'part/%d\')">%s</span>',$data['Part SKU'],($data['Part Reference']==''?'<i class="fa error fa-exclamation-circle"></i> <span class="discreet italic">'._('Reference missing').'</span>':$data['Part Reference']));
 
 
             $record_data[] = array(
                 'id'              => (integer)$data['Part SKU'],
-                'reference'       => sprintf('<span class="link" onclick="change_view(\'/part/%d\')">%s</span>', $data['Part SKU'], $data['Part Reference']),
+                'reference'       => $reference,
                 'sko_description' => $data['Part Package Description'],
 
 
