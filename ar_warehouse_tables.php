@@ -700,7 +700,7 @@ function part_locations_with_errors($_data, $db, $user) {
     $table_data = array();
 
     //print $sql;
-
+   
 
     foreach ($db->query($sql) as $data) {
 
@@ -1117,7 +1117,7 @@ function parts_with_unknown_location($_data, $db, $user, $account) {
     $sql   = "select $fields from $table $where $wheref order by $order $order_direction limit $start_from,$number_results";
     $adata = array();
 
-    //  print $sql;
+
 
 
     foreach ($db->query($sql) as $data) {
