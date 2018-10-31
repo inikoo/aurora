@@ -854,8 +854,6 @@ class DeliveryNote extends DB_Table {
         $this->db->exec($sql);
 
         $part_index = 0;
-        //  $debug_txt=sprintf("creating itf %s %s",$product->data['Product Code'],$sql);
-        //  $xsql=sprintf("insert into debugtable (`text`,`date`) values (%s,NOW())",prepare_mysql($debug_txt));mysql_query($xsql);
 
 
         $multipart_data              = sprintf('<a href="product.php?id=%d">%s</a>', $product->id, $product->data['Product Code']);
@@ -1457,10 +1455,9 @@ class DeliveryNote extends DB_Table {
                                     $sql = sprintf(
                                         "UPDATE  `Inventory Transaction Fact`  SET `Amount In`=%f WHERE `Inventory Transaction Key`=%d ", $amount_in * $value, $key
                                     );
-                                    //print "$sql\n";
+
                                     $this->db->exec($sql);
-                                    //  exit;
-                                    // mysql_query( $sql );
+
                                 }
 
 

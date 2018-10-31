@@ -1451,19 +1451,7 @@ class Page extends DB_Table {
 
     }
 
-    function load_data() {
-        $sql = sprintf(
-            "SELECT * FROM `Page Store Data Dimension` WHERE `Page Key`=%d", $this->id
-        );
 
-        $res = mysql_query($sql);
-        if ($row = mysql_fetch_assoc($res)) {
-            foreach ($row as $key => $value) {
-                $this->data[$key] = $value;
-            }
-
-        }
-    }
 
     function get_options() {
 
@@ -1476,35 +1464,8 @@ class Page extends DB_Table {
 
     }
 
-    function update_thumbnail_key($image_key) {
 
-        $old_value = $this->data['Page Snapshot Image Key'];
-        if ($old_value != $image_key) {
-            $this->updated;
-            $this->data['Page Snapshot Image Key'] = $image_key;
 
-            $sql = sprintf(
-                "UPDATE `Page Dimension` SET `Page Snapshot Image Key`=%d ,`Page Snapshot Last Update`=NOW() WHERE `Page Key`=%d ", $this->data['Page Snapshot Image Key'], $this->id
-            );
-            mysql_query($sql);
-
-            $sql = sprintf(
-                "DELETE FROM  `Image Bridge` WHERE `Subject Type`='Website' AND `Subject Key`=%d ", $this->id
-
-            );
-            mysql_query($sql);
-
-            if ($this->data['Page Snapshot Image Key']) {
-                $sql = sprintf(
-                    "INSERT INTO `Image Bridge` (`Subject Type`,`Subject Key`,`Image Key`) VALUES('Website',%d,%d)", $this->id, $image_key
-                );
-                print $sql;
-                mysql_query($sql);
-            }
-
-        }
-
-    }
 
     function get_items() {
 
@@ -1562,115 +1523,7 @@ class Page extends DB_Table {
 
     }
 
-    function update_code($value, $options = '') {
 
-
-        if ($this->type != 'Store') {
-            return;
-        }
-
-        $value = _trim($value);
-        if ($value == '') {
-            $this->msg           .= ' '._('Invalid Code')."\n";
-            $this->error_updated = true;
-            $this->error         = true;
-
-            return;
-        }
-
-        if ($value == $this->data['Page Code']) {
-            $this->msg .= ' '._('Same value as the old record');
-
-            return;
-        }
-
-        $old_value = $this->data['Page Code'];
-
-
-        $sql = sprintf(
-            "SELECT `Page Code`  FROM  `Page Store Dimension`  WHERE `Page Store Key`=%d AND `Page Code`=%s ", $this->data['Page Store Key'], prepare_mysql($value)
-
-        );
-
-        $result = mysql_query($sql);
-        if ($row = mysql_fetch_array($result, MYSQL_ASSOC)) {
-            $this->msg           .= ' '._('Code already used on this website')."\n";
-            $this->error_updated = true;
-            $this->error         = true;
-
-            return;
-
-
-        }
-
-
-        $site = new Site($this->data['Page Site Key']);
-        $url  = $site->data['Site URL'].'/'.strtolower($value);
-
-        $sql = sprintf(
-            "UPDATE `Page Store Dimension`  SET  `Page Code`=%s  WHERE `Page Key`=%d", prepare_mysql($value), $this->id
-        );
-        // print $sql;
-
-
-        mysql_query($sql);
-        $affected = mysql_affected_rows();
-        if ($affected == -1) {
-            $this->msg           .= ' '._('Record can not be updated')."\n";
-            $this->error_updated = true;
-            $this->error         = true;
-
-            return;
-        } elseif ($affected == 0) {
-            $this->msg .= ' '._('Same value as the old record');
-
-        } else {
-
-            $this->msg               .= _('Code updated').", \n";
-            $this->msg_updated       .= _('Code updated').", \n";
-            $this->updated           = true;
-            $this->new_value         = $value;
-            $this->data['Page Code'] = $value;
-
-            $save_history = true;
-            if (preg_match('/no( |\_)history|nohistory/i', $options)) {
-                $save_history = false;
-            }
-
-            if (!$this->new and $save_history) {
-                $history_data = array(
-                    'indirect_object' => 'Page Code',
-                    'old_value'       => $old_value,
-                    'new_value'       => $value
-
-                );
-
-
-                $this->add_history($history_data);
-
-
-                $site = new Site($this->data['Page Site Key']);
-                $url  = $site->data['Site URL'].'/'.strtolower($value);
-
-                $sql = sprintf(
-                    "UPDATE `Page Dimension`  SET  `Page URL`=%s  WHERE `Page Key`=%d", prepare_mysql($url), $this->id
-                );
-
-                mysql_query($sql);
-
-                $sql = sprintf(
-                    "UPDATE `Page Redirection Dimension`  SET  `Page Target URL`=%s  WHERE `Page Target Key`=%d", prepare_mysql($url), $this->id
-                );
-
-                mysql_query($sql);
-            }
-
-
-            //$this->update_field('Page URL',$url,'nohistory');
-
-        }
-
-    }
 
     function update_content_display_type($value, $options) {
 
@@ -1710,46 +1563,7 @@ class Page extends DB_Table {
 
     }
 
-    function display_found_in() {
 
-        $found_in = '';
-        foreach ($this->get_found_in() as $item) {
-            $found_in .= $item['link'];
-            break;
-        }
-
-        return $found_in;
-    }
-
-    function get_found_in() {
-
-        $found_in = array();
-        $sql      = sprintf(
-            "SELECT `Page Store Found In Key` FROM  `Page Store Found In Bridge` WHERE `Page Store Key`=%d", $this->id
-        );
-
-        $res = mysql_query($sql);
-
-        while ($row = mysql_fetch_assoc($res)) {
-            $found_in_page = new Page($row['Page Store Found In Key']);
-            if ($found_in_page->id) {
-
-                $link = '<a class="found_in" href="https://'.$found_in_page->data['Page URL'].'">'.$found_in_page->data['Page Short Title'].'</a>';
-
-                $found_in[] = array(
-                    'link'           => $link,
-                    'found_in_label' => $found_in_page->data['Page Short Title'],
-                    'found_in_url'   => $found_in_page->data['Page URL'],
-                    'found_in_key'   => $found_in_page->id,
-                    'found_in_code'  => $found_in_page->data['Page Code']
-                );
-            }
-
-        }
-
-        return $found_in;
-
-    }
 
     function get_related_products_data() {
 

@@ -1559,7 +1559,7 @@ class Order extends DB_Table {
 
 
         $history_data = array(
-            'History Abstract' => _('Order cancelled').($note!=''?', '.$note:''),
+            'History Abstract' => _('Order cancelled').($note != '' ? ', '.$note : ''),
             'History Details'  => '',
         );
         $this->add_subject_history($history_data, $force_save = true, $deletable = 'No', $type = 'Changes', $this->get_object_name(), $this->id, $update_history_records_data = true);
@@ -1567,7 +1567,7 @@ class Order extends DB_Table {
 
         $account = get_object('Account', '');
 
-        if($fork){
+        if ($fork) {
 
             require_once 'utils/new_fork.php';
             new_housekeeping_fork(
@@ -1579,7 +1579,7 @@ class Order extends DB_Table {
                 'editor' => $this->editor
             ), $account->get('Account Code'), $this->db
             );
-        }else{
+        } else {
 
 
             $customer = get_object('Customer', $this->get('Order Customer Key'));
@@ -1608,9 +1608,47 @@ class Order extends DB_Table {
         }
 
 
-
-
         return true;
+
+    }
+
+    function update_deals_usage() {
+
+        include_once 'class.DealCampaign.php';
+        include_once 'class.DealComponent.php';
+
+
+        $deals     = array();
+        $campaigns = array();
+        $sql       = sprintf(
+            "SELECT `Deal Component Key`,`Deal Key`,`Deal Campaign Key` FROM  `Order Deal Bridge` WHERE `Order Key`=%d", $this->id
+        );
+        // exit("$sql\n");
+
+
+        if ($result = $this->db->query($sql)) {
+            foreach ($result as $row) {
+                $component = new DealComponent($row['Deal Component Key']);
+                $component->update_usage();
+                $deals[$row['Deal Key']]              = $row['Deal Key'];
+                $campaigns[$row['Deal Campaign Key']] = $row['Deal Campaign Key'];
+            }
+        } else {
+            print_r($error_info = $this->db->errorInfo());
+            print "$sql\n";
+            exit;
+        }
+
+
+        foreach ($deals as $deal_key) {
+            $deal = new Deal($deal_key);
+            $deal->update_usage();
+        }
+
+        foreach ($campaigns as $campaign_key) {
+            $campaign = new DealCampaign($campaign_key);
+            $campaign->update_usage();
+        }
 
     }
 
@@ -1665,7 +1703,7 @@ class Order extends DB_Table {
     function send_review_invitation() {
 
 
-        if (gethostname() == 'bali' or $this->get('Order Email')=='') {
+        if (gethostname() == 'bali' or $this->get('Order Email') == '') {
             return;
         }
 
@@ -2143,12 +2181,21 @@ class Order extends DB_Table {
                             $sql = sprintf(
                                 "SELECT sum(`Order Transaction Net Amount`*(`Delivery Note Quantity`/`Order Quantity`)) AS amount FROM `Order Transaction Fact` WHERE `Order Key`=%d AND `Delivery Note Key`=%d AND `Order Quantity`!=0", $this->id, $dn_key
                             );
-                            $res = mysql_query($sql);
-                            if ($row2 = mysql_fetch_assoc($res)) {
-                                $order_amount = $row2['amount'];
+
+
+                            if ($result2 = $this->db->query($sql)) {
+                                if ($row2 = $result2->fetch()) {
+                                    $order_amount = $row2['amount'];
+                                } else {
+                                    $order_amount = 0;
+                                }
                             } else {
-                                $order_amount = 0;
+                                print_r($error_info = $this->db->errorInfo());
+                                print "$sql\n";
+                                exit;
                             }
+
+
                             break;
 
 
@@ -2157,11 +2204,18 @@ class Order extends DB_Table {
                             $sql = sprintf(
                                 "SELECT sum(`Order Transaction Gross Amount`*(`Delivery Note Quantity`/`Order Quantity`)) AS amount FROM `Order Transaction Fact` WHERE `Order Key`=%d AND `Delivery Note Key`=%d AND `Order Quantity`!=0", $this->id, $dn_key
                             );
-                            $res = mysql_query($sql);
-                            if ($row2 = mysql_fetch_assoc($res)) {
-                                $order_amount = $row2['amount'];
+
+
+                            if ($result2 = $this->db->query($sql)) {
+                                if ($row2 = $result2->fetch()) {
+                                    $order_amount = $row2['amount'];
+                                } else {
+                                    $order_amount = 0;
+                                }
                             } else {
-                                $order_amount = 0;
+                                print_r($error_info = $this->db->errorInfo());
+                                print "$sql\n";
+                                exit;
                             }
                             break;
                     }
@@ -2225,26 +2279,30 @@ class Order extends DB_Table {
                 }
 
 
-                $sql  = sprintf(
+                $sql = sprintf(
                     "SELECT `Order No Product Transaction Fact Key`  FROM `Order No Product Transaction Fact` WHERE `Order Key`=%d  AND `Transaction Type`='Insurance' AND `Transaction Type Key`=%d ", $this->id, $row['Insurance Key']
                 );
-                $res2 = mysql_query($sql);
-                if ($row2 = mysql_fetch_assoc($res2)) {
-                    $onptf_key = $row2['Order No Product Transaction Fact Key'];
+
+
+                if ($result2 = $this->db->query($sql)) {
+                    if ($row2 = $result2->fetch()) {
+                        $onptf_key = $row2['Order No Product Transaction Fact Key'];
+                    } else {
+                        $onptf_key = 0;
+                    }
                 } else {
-                    $onptf_key = 0;
+                    print_r($error_info = $this->db->errorInfo());
+                    print "$sql\n";
+                    exit;
                 }
+
 
                 if ($apply_insurance) {
                     $insurances[$row['Insurance Key']] = array(
                         'Insurance Net Amount'                  => $charge_net_amount,
                         'Insurance Tax Amount'                  => $charge_tax_amount,
-                        'Insurance Formatted Net Amount'        => money(
-                            $this->exchange * $charge_net_amount, $this->currency_code
-                        ),
-                        'Insurance Formatted Tax Amount'        => money(
-                            $this->exchange * $charge_tax_amount, $this->currency_code
-                        ),
+                        'Insurance Formatted Net Amount'        => money($this->exchange * $charge_net_amount, $this->currency_code),
+                        'Insurance Formatted Tax Amount'        => money($this->exchange * $charge_tax_amount, $this->currency_code),
                         'Insurance Tax Code'                    => $tax_category_code,
                         'Insurance Key'                         => $row['Insurance Key'],
                         'Insurance Description'                 => $row['Insurance Name'],
@@ -2260,46 +2318,6 @@ class Order extends DB_Table {
 
 
         return $insurances;
-
-    }
-
-    function update_deals_usage() {
-
-        include_once 'class.DealCampaign.php';
-        include_once 'class.DealComponent.php';
-
-
-        $deals     = array();
-        $campaigns = array();
-        $sql       = sprintf(
-            "SELECT `Deal Component Key`,`Deal Key`,`Deal Campaign Key` FROM  `Order Deal Bridge` WHERE `Order Key`=%d", $this->id
-        );
-        // exit("$sql\n");
-
-
-        if ($result = $this->db->query($sql)) {
-            foreach ($result as $row) {
-                $component = new DealComponent($row['Deal Component Key']);
-                $component->update_usage();
-                $deals[$row['Deal Key']]              = $row['Deal Key'];
-                $campaigns[$row['Deal Campaign Key']] = $row['Deal Campaign Key'];
-            }
-        } else {
-            print_r($error_info = $this->db->errorInfo());
-            print "$sql\n";
-            exit;
-        }
-
-
-        foreach ($deals as $deal_key) {
-            $deal = new Deal($deal_key);
-            $deal->update_usage();
-        }
-
-        foreach ($campaigns as $campaign_key) {
-            $campaign = new DealCampaign($campaign_key);
-            $campaign->update_usage();
-        }
 
     }
 

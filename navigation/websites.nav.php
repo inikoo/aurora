@@ -159,7 +159,7 @@ function get_webpage_navigation($data, $smarty, $user, $db, $account) {
 
 
     $object = $data['_object'];
-    //$object->load_data();
+
 
 
 
@@ -426,7 +426,7 @@ function get_page_version_navigation($data, $smarty, $user, $db, $account) {
 
 
     $object = $data['_object'];
-    //$object->load_data();
+
 
     $block_view = $data['section'];
 
@@ -1279,7 +1279,7 @@ function get_webpage_type_navigation($data, $smarty, $user, $db, $account) {
 
 
     $object = $data['_object'];
-    //$object->load_data();
+
 
     //  $block_view = $data['section'];
 
