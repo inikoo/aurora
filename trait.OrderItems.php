@@ -16,6 +16,12 @@ trait OrderItems {
     function update_item($data) {
 
 
+        print_r($data);
+
+        exit;
+
+
+
         /*
          *
          *
@@ -39,7 +45,7 @@ trait OrderItems {
         $gross = 0;
 
         $otf_key         = 0;
-        $net_amount      = 0;
+
         $gross_discounts = 0;
 
         $tax_code = $this->data['Order Tax Code'];
@@ -134,7 +140,6 @@ trait OrderItems {
                 $otf_key = $row['Order Transaction Fact Key'];
 
                 $old_quantity       = $row['Order Quantity'];
-                $old_bonus_quantity = $row['Order Bonus Quantity'];
                 $old_net_amount     = $row['Order Transaction Gross Amount'] - $row['Order Transaction Total Discount Amount'];
 
                 $delta_qty -= $old_quantity;

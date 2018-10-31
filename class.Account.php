@@ -137,16 +137,7 @@ class Account extends DB_Table {
         return $positions;
     }
 
-    function get_store_keys() {
-        $store_keys = array();
-        $sql        = sprintf('SELECT `Account Key` FROM `Account Dimension`');
-        $res        = mysql_query($sql);
-        while ($row = mysql_fetch_assoc($res)) {
-            $store_keys[] = $row['Account Key'];
-        }
 
-        return $store_keys;
-    }
 
     function create_staff($data) {
         $this->new_employee = false;

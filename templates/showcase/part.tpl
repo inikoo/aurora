@@ -242,10 +242,7 @@
                     <td class="Products_Web_Status">{$part->get('Products Web Status')}</td>
                     <td class="aright Available_Forecast">{$part->get('Available Forecast')}</td>
                 </tr>
-                <tr class="{if $part->get('Part Next Shipment Date')==''}hide{/if}">
-                    <td>{t}Next shipment{/t}</td>
-                    <td class="aright">{$part->get('Next Shipment')}</td>
-                </tr>
+
                 </tbody>
 
                 <tr class="main hide edit_controls" id="edit_stock_controls">

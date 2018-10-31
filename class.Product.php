@@ -1275,7 +1275,6 @@ class Product extends Asset {
     }
 
 
-
     function update_pages_numbers() {
 
         $number_pages = 0;
@@ -1568,7 +1567,7 @@ class Product extends Asset {
             );
             if ($result = $this->db->query($sql)) {
                 foreach ($result as $row) {
-                    $category = new Category($row['Category Key']);
+                    $category = get_object('Category', $row['Category Key']);
 
                     //   print_r($category->get('Code'));
 
@@ -1583,9 +1582,7 @@ class Product extends Asset {
 
             //print $this->data['Product Store Key'].' '.$this->data['Product Code']." $old_web_availability  $web_availability \n";
 
-            if (isset($this->editor['User Key']) and is_numeric(
-                    $this->editor['User Key']
-                )) {
+            if (isset($this->editor['User Key']) and is_numeric($this->editor['User Key'])) {
                 $user_key = $this->editor['User Key'];
             } else {
                 $user_key = 0;
@@ -1610,12 +1607,12 @@ class Product extends Asset {
             }
 
 
-            $new_date_formated = gmdate('Y-m-d H:i:s');
-            $new_date          = gmdate('U');
+            $new_date_formatted = gmdate('Y-m-d H:i:s');
+            $new_date           = gmdate('U');
 
             $sql = sprintf(
                 "INSERT INTO `Product Availability Timeline`  (`Product ID`,`Store Key`,`Department Key`,`Family Key`,`User Key`,`Date`,`Availability`,`Web State`) VALUES (%d,%d,%d,%d,%d,%s,%s,%s) ", $this->id, $this->data['Product Store Key'],
-                $this->data['Product Main Department Key'], $this->data['Product Family Category Key'], $user_key, prepare_mysql($new_date_formated), prepare_mysql($web_availability), prepare_mysql($web_state)
+                $this->data['Product Main Department Key'], $this->data['Product Family Category Key'], $user_key, prepare_mysql($new_date_formatted), prepare_mysql($web_availability), prepare_mysql($web_state)
 
             );
             $this->db->exec($sql);
@@ -1628,7 +1625,7 @@ class Product extends Asset {
                 $this->db->exec($sql);
 
             }
-// todo: remove after migration
+            // todo: remove after migration
 
             if ($web_availability == 'Yes') {
                 $sql = sprintf(
@@ -1644,7 +1641,7 @@ class Product extends Asset {
 
             $this->db->exec($sql);
 
-            if ($web_availability=='Yes') {
+            if ($web_availability == 'Yes') {
 
                 /*
                 $sql=sprintf("update `Back in Stock Reminder Fact` set `Back in Stock Reminder Ready Date`=%s   where `Back in Stock Reminder State`='Ready' and  `Back in Stock Reminder Product ID`=%d",
@@ -1653,16 +1650,16 @@ class Product extends Asset {
                 $this->db->exec($sql);
                 */
 
-                $sql=sprintf("update `Back in Stock Reminder Fact` set `Back in Stock Reminder State`='Ready',`Back in Stock Reminder Ready Date`=%s where `Back in Stock Reminder State`='Waiting' and `Back in Stock Reminder Product ID`=%d ",
-                            prepare_mysql(gmdate('Y-m-d H:i:s')), $this->id
+                $sql = sprintf(
+                    "update `Back in Stock Reminder Fact` set `Back in Stock Reminder State`='Ready',`Back in Stock Reminder Ready Date`=%s where `Back in Stock Reminder State`='Waiting' and `Back in Stock Reminder Product ID`=%d ", prepare_mysql(gmdate('Y-m-d H:i:s')),
+                    $this->id
                 );
                 $this->db->exec($sql);
 
 
-
-            }else {
-                $sql=sprintf("update `Back in Stock Reminder Fact` set `Back in Stock Reminder State`='Waiting',`Back in Stock Reminder Ready Date`=NULL  where `Back in Stock Reminder State`='Ready' and  `Back in Stock Reminder Product ID`=%d",
-                             $this->id
+            } else {
+                $sql = sprintf(
+                    "update `Back in Stock Reminder Fact` set `Back in Stock Reminder State`='Waiting',`Back in Stock Reminder Ready Date`=NULL  where `Back in Stock Reminder State`='Ready' and  `Back in Stock Reminder Product ID`=%d", $this->id
                 );
                 $this->db->exec($sql);
 
@@ -1670,41 +1667,39 @@ class Product extends Asset {
             }
 
 
-
-
-
-
-
         }
 
 
-        if ($use_fork) {
+        //todo remove this after migration (Store version stuff)
+        $store = get_object('Store', $this->get('Product Store Key'));
+        if ($use_fork or $store->get('Store Version')==1) {
             include_once 'utils/new_fork.php';
             $account = new Account($this->db);
 
-            if ($account->get('Account Code') == 'AWEU') {
-                $msg = new_housekeeping_fork(
-                    'au_housekeeping', array(
-                    'type'                     => 'update_web_state_slow_forks',
-                    'web_availability_updated' => $web_availability_updated,
-                    'product_id'               => $this->id,
-                    'xx'                       => 'zz',
-                    'editor'                   => $this->editor
-                ), $account->get('Account Code')
+            if ($store->get('Store Version')==1) {
+                $msg = new_fork(
+                    'housekeeping', array(
+                    'type'       => 'product_web_state',
+                    'product_id' => $this->id,
+                    'wa'         => $web_availability,
+                    'wa_updated' => $web_availability_updated
+
+                ), $account->get('Account Code'), $this->db
                 );
 
             } else {
 
 
-                $msg = new_fork(
-                    'housekeeping', array(
-                                      'type'       => 'product_web_state',
-                                      'product_id' => $this->id,
-                                      'wa'         => $web_availability,
-                                      'wa_updated' => $web_availability_updated
-
-                                  ), $account->get('Account Code'), $this->db
+                $msg = new_housekeeping_fork(
+                    'au_housekeeping', array(
+                    'type'                     => 'update_web_state_slow_forks',
+                    'web_availability_updated' => $web_availability_updated,
+                    'product_id'               => $this->id,
+                    'editor'                   => $this->editor
+                ), $account->get('Account Code')
                 );
+
+
 
 
             }
@@ -1782,8 +1777,6 @@ class Product extends Asset {
         if ($web_availability_updated) {
 
 
-
-
             $sql = sprintf(
                 "SELECT `Order Key` FROM `Order Transaction Fact` WHERE `Current Dispatching State` IN ('In Process','In Process by Customer') AND `Product ID`=%d ", $this->id
             );
@@ -1794,7 +1787,7 @@ class Product extends Asset {
 
                     $web_availability = ($this->get_web_state() == 'For Sale' ? 'Yes' : 'No');
                     if ($web_availability == 'No') {
-                        $order =  get_object('Order',$row['Order Key']);
+                        $order = get_object('Order', $row['Order Key']);
 
 
                         $order->remove_out_of_stocks_from_basket($this->id);
@@ -1815,7 +1808,7 @@ class Product extends Asset {
                 foreach ($result as $row) {
                     $web_availability = ($this->get_web_state() == 'For Sale' ? 'Yes' : 'No');
                     if ($web_availability == 'Yes') {
-                        $order =  get_object('Order',$row['Order Key']);
+                        $order = get_object('Order', $row['Order Key']);
                         $order->restore_back_to_stock_to_basket($this->id);
                     }
                 }
@@ -1866,6 +1859,41 @@ class Product extends Asset {
             print_r($error_info = $this->db->errorInfo());
             exit;
         }
+
+
+    }
+
+    function update_webpages() {
+
+
+        $sql = sprintf(
+            'select `Website Webpage Scope Webpage Key`  from `Website Webpage Scope Map` where `Website Webpage Scope Scope`="Product" and `Website Webpage Scope Scope Key`=%d ', $this->id
+        );
+
+        if ($result = $this->db->query($sql)) {
+            foreach ($result as $row) {
+                $webpage = get_object('Webpage', $row['Website Webpage Scope Webpage Key']);
+
+                if (!empty($this->fork)) {
+                    $webpage->fork = true;
+                }
+
+                $webpage->reindex_items();
+            }
+        } else {
+            print_r($error_info = $this->db->errorInfo());
+            print "$sql\n";
+            exit;
+        }
+
+
+        $webpage = get_object('Webpage', $this->get('Product Webpage Key'));
+
+        if (!empty($this->fork)) {
+            $webpage->fork = true;
+        }
+
+        $webpage->reindex_items();
 
 
     }
@@ -2759,7 +2787,7 @@ class Product extends Asset {
 
 
                 $this->update_field($tag.' Dimensions', $dim, $options);
-                $this->fast_update(array('Product Unit XHTML Dimensions'=>$this->get('Unit Dimensions')));
+                $this->fast_update(array('Product Unit XHTML Dimensions' => $this->get('Unit Dimensions')));
 
 
                 break;
@@ -2858,7 +2886,7 @@ class Product extends Asset {
 
 
                 $this->update_field('Product Materials', $materials, $options);
-                $this->fast_update(array('Product Unit XHTML Materials'=>$this->get('Materials')));
+                $this->fast_update(array('Product Unit XHTML Materials' => $this->get('Materials')));
 
                 $updated = $this->updated;
 
@@ -3175,8 +3203,6 @@ class Product extends Asset {
                         $this->update_field_switcher('Product Department Category Key', $family->get('Product Category Department Category Key'), 'no_history');
 
 
-
-
                     } else {
                         $this->error = true;
                         $this->msg   = _("Can't create family");
@@ -3212,63 +3238,62 @@ class Product extends Asset {
 
                 if ($value) {
 
-                     if ($this->data['Product Family Category Key'] != $value) {
+                    if ($this->data['Product Family Category Key'] != $value) {
 
-                         $old_family=get_object('Category',$this->data['Product Family Category Key']);
+                        $old_family = get_object('Category', $this->data['Product Family Category Key']);
 
-                         $family=get_object('Category',$value);
+                        $family = get_object('Category', $value);
 
-                         $family->associate_subject($this->id, false, '', 'skip_direct_update');
-
-
-                         /*
-
-                         $sql = sprintf(
-                             "SELECT C.`Category Key` FROM `Category Dimension` C LEFT JOIN `Category Bridge` B ON (C.`Category Key`=B.`Category Key`) WHERE `Category Root Key`=%d AND `Subject Key`=%d AND `Subject`='Category' AND `Category Branch Type`='Head'",
-
-                             $this->data['Store Department Category Key'], $family->id
-                         );
-                         //print $sql;
-                         $department_key = '';
-                         if ($result = $this->db->query($sql)) {
-                             if ($row = $result->fetch()) {
-                                 $department_key = $row['Category Key'];
-                             }
-                         } else {
-                             print_r($error_info = $this->db->errorInfo());
-                             exit;
-                         }
-                         $this->update_field(
-                             'Product Department Category Key', $department_key, 'no_history'
-                         );
-
-                         */
-
-                         if($old_family->id){
-                             $old_website=get_object('Webpage',$old_family->get('Product Category Webpage Key'));
-                             if($old_website->id){
-                                 $old_website->reindex_items();
-                                 if ($old_website->updated) {
-                                     $old_website->publish();
-                                 }
-                             }
-                         }
-
-                         if($family->id){
-                             $website=get_object('Webpage',$family->get('Product Category Webpage Key'));
-                             if($website->id){
-                                 $website->reindex_items();
-                                 if ($website->updated) {
-                                     $website->publish();
-                                 }
-                             }
-                         }
-
-                         $this->update_field_switcher('Product Department Category Key', $family->get('Product Category Department Category Key'), 'no_history');
+                        $family->associate_subject($this->id, false, '', 'skip_direct_update');
 
 
+                        /*
 
-                     }
+                        $sql = sprintf(
+                            "SELECT C.`Category Key` FROM `Category Dimension` C LEFT JOIN `Category Bridge` B ON (C.`Category Key`=B.`Category Key`) WHERE `Category Root Key`=%d AND `Subject Key`=%d AND `Subject`='Category' AND `Category Branch Type`='Head'",
+
+                            $this->data['Store Department Category Key'], $family->id
+                        );
+                        //print $sql;
+                        $department_key = '';
+                        if ($result = $this->db->query($sql)) {
+                            if ($row = $result->fetch()) {
+                                $department_key = $row['Category Key'];
+                            }
+                        } else {
+                            print_r($error_info = $this->db->errorInfo());
+                            exit;
+                        }
+                        $this->update_field(
+                            'Product Department Category Key', $department_key, 'no_history'
+                        );
+
+                        */
+
+                        if ($old_family->id) {
+                            $old_website = get_object('Webpage', $old_family->get('Product Category Webpage Key'));
+                            if ($old_website->id) {
+                                $old_website->reindex_items();
+                                if ($old_website->updated) {
+                                    $old_website->publish();
+                                }
+                            }
+                        }
+
+                        if ($family->id) {
+                            $website = get_object('Webpage', $family->get('Product Category Webpage Key'));
+                            if ($website->id) {
+                                $website->reindex_items();
+                                if ($website->updated) {
+                                    $website->publish();
+                                }
+                            }
+                        }
+
+                        $this->update_field_switcher('Product Department Category Key', $family->get('Product Category Department Category Key'), 'no_history');
+
+
+                    }
 
                 } else {
                     if ($this->data['Product Family Category Key'] != '') {
@@ -3338,7 +3363,7 @@ class Product extends Asset {
 
 
                 $this->update_field($field, $value, $options);
-            $this->update_webpages();
+                $this->update_webpages();
 
                 break;
             case 'Product Origin Country Code':
@@ -3515,7 +3540,7 @@ class Product extends Asset {
         $this->update_availability();
         $this->update_cost();
 
-        $this->fast_update(array('Product XHTML Parts'=>$this->get('Parts')));
+        $this->fast_update(array('Product XHTML Parts' => $this->get('Parts')));
 
         foreach ($this->get_parts('objects') as $part) {
             $part->update_products_data();
@@ -3783,10 +3808,9 @@ class Product extends Asset {
 
     }
 
-
     function get_next_deliveries_data() {
 
-        $next_delivery_time   = 0;
+        $next_delivery_time = 0;
 
         $next_deliveries_data = array();
 
@@ -3795,7 +3819,7 @@ class Product extends Asset {
         if (count($parts_data) == 1) {
 
             $part_data = array_pop($parts_data);
-//                            'qty'  => number($row['Purchase Ordering Units'] / $part->get('Part Units Per Package') / $part_data['Ratio']),
+            //                            'qty'  => number($row['Purchase Ordering Units'] / $part->get('Part Units Per Package') / $part_data['Ratio']),
             $part           = get_object('Part', $part_data['Part SKU']);
             $supplier_parts = $part->get_supplier_parts();
             if (count($supplier_parts) > 0) {
@@ -3820,29 +3844,26 @@ class Product extends Asset {
                     foreach ($result as $row) {
 
 
-
                         // print_r($row);
 
 
-                        if ($row['Supplier Delivery Checked Units'] >0 or $row['Supplier Delivery Checked Units']=='') {
+                        if ($row['Supplier Delivery Checked Units'] > 0 or $row['Supplier Delivery Checked Units'] == '') {
 
 
+                            if ($row['Supplier Delivery Checked Units'] == '') {
+                                $raw_units_qty = $row['Supplier Delivery Units'];
+                            } else {
 
-                            if($row['Supplier Delivery Checked Units'] ==''){
-                                $raw_units_qty=$row['Supplier Delivery Units'];
-                            }else{
 
-
-                                $raw_units_qty=$row['Supplier Delivery Checked Units']-$row['placed'];;
+                                $raw_units_qty = $row['Supplier Delivery Checked Units'] - $row['placed'];;
                             }
-
 
 
                             if ($raw_units_qty > 0) {
 
                                 $_next_delivery_time = strtotime('tomorrow');
 
-                                $raw_outer_qty        = $raw_units_qty / $row['Part Units Per Package']/ $part_data['Ratio'];
+                                $raw_outer_qty = $raw_units_qty / $row['Part Units Per Package'] / $part_data['Ratio'];
 
 
                                 switch ($row['Supplier Delivery Transaction State']) {
@@ -3869,21 +3890,21 @@ class Product extends Asset {
                                 }
 
                                 $next_deliveries_data[] = array(
-                                    'type'           => 'delivery',
-                                    'qty'            => '+'.number($raw_outer_qty),
-                                    'raw_outer_qty'    => $raw_outer_qty,
-                                    'raw_units_qty'  => $raw_units_qty,
-                                    'date'           => '',
-                                    'formatted_link' => sprintf(
+                                    'type'            => 'delivery',
+                                    'qty'             => '+'.number($raw_outer_qty),
+                                    'raw_outer_qty'   => $raw_outer_qty,
+                                    'raw_units_qty'   => $raw_units_qty,
+                                    'date'            => '',
+                                    'formatted_link'  => sprintf(
                                         '<i class="fal fa-truck fa-fw" ></i> <i style="visibility: hidden" class="fal fa-truck fa-fw" ></i> <span class="link" onclick="change_view(\'%s/%d/delivery/%d\')"> %s</span>', strtolower($row['Supplier Delivery Parent']),
                                         $row['Supplier Delivery Parent Key'], $row['Supplier Delivery Key'], $row['Supplier Delivery Public ID']
                                     ),
-                                    'link'           => sprintf('%s/%d/delivery/%d', strtolower($row['Supplier Delivery Parent']), $row['Supplier Delivery Parent Key'], $row['Supplier Delivery Key']),
-                                    'order_id'       => $row['Supplier Delivery Public ID'],
-                                    'formatted_state'          => '<span class=" italic">'.$row['Supplier Delivery Transaction State'].'</span>',
-                                    'state'          => $state,
+                                    'link'            => sprintf('%s/%d/delivery/%d', strtolower($row['Supplier Delivery Parent']), $row['Supplier Delivery Parent Key'], $row['Supplier Delivery Key']),
+                                    'order_id'        => $row['Supplier Delivery Public ID'],
+                                    'formatted_state' => '<span class=" italic">'.$row['Supplier Delivery Transaction State'].'</span>',
+                                    'state'           => $state,
 
-                                    'po_key'         => $row['Purchase Order Key']
+                                    'po_key' => $row['Purchase Order Key']
                                 );
 
 
@@ -3916,7 +3937,7 @@ class Product extends Asset {
                         if ($row['Purchase Order Transaction State'] == 'InProcess') {
 
                             $raw_units_qty = $row['Purchase Order Ordering Units'];
-                            $raw_outer_qty  = $raw_units_qty / $row['Part Units Per Package']/ $part_data['Ratio'];
+                            $raw_outer_qty = $raw_units_qty / $row['Part Units Per Package'] / $part_data['Ratio'];
 
                             $_next_delivery_time = 0;
                             $date                = '';
@@ -3930,7 +3951,7 @@ class Product extends Asset {
                         } else {
 
                             $raw_units_qty = $row['Purchase Order Submitted Units'];
-                            $raw_outer_qty  = $raw_units_qty / $row['Part Units Per Package']/ $part_data['Ratio'];
+                            $raw_outer_qty = $raw_units_qty / $row['Part Units Per Package'] / $part_data['Ratio'];
 
                             $_next_delivery_time = strtotime($row['Purchase Order Estimated Receiving Date'].' +0:00');
                             $date                = strftime("%e %b %y", strtotime($row['Purchase Order Estimated Receiving Date'].' +0:00'));
@@ -3945,10 +3966,10 @@ class Product extends Asset {
 
 
                         $next_deliveries_data[] = array(
-                            'type'          => 'po',
-                            'qty'           => $qty,
-                            '$raw_outer_qty'   => $raw_outer_qty,
-                            'raw_units_qty' => $raw_units_qty,
+                            'type'           => 'po',
+                            'qty'            => $qty,
+                            '$raw_outer_qty' => $raw_outer_qty,
+                            'raw_units_qty'  => $raw_units_qty,
 
                             'date'            => $date,
                             'formatted_state' => $formatted_state,
@@ -3982,103 +4003,58 @@ class Product extends Asset {
 
     }
 
-    function update_webpages(){
+    function update_sales_correlations($type = 'All', $limit = '100') {
 
+        $max_correlations = 50;
 
-        $sql=sprintf('select `Website Webpage Scope Webpage Key`  from `Website Webpage Scope Map` where `Website Webpage Scope Scope`="Product" and `Website Webpage Scope Scope Key`=%d ',
-            $this->id
-            );
-
-        if ($result=$this->db->query($sql)) {
-        		foreach ($result as $row) {
-        		    $webpage=get_object('Webpage',$row['Website Webpage Scope Webpage Key']);
-
-                    if(!empty($this->fork)){
-                        $webpage->fork=true;
-                    }
-
-        		    $webpage->reindex_items();
-        		}
-        }else {
-        		print_r($error_info=$this->db->errorInfo());
-        		print "$sql\n";
-        		exit;
-        }
-
-
-        $webpage=get_object('Webpage',$this->get('Product Webpage Key'));
-
-        if(!empty($this->fork)){
-            $webpage->fork=true;
-        }
-
-        $webpage->reindex_items();
-
-
-
-
-    }
-
-
-
-
-    function update_sales_correlations($type='All',$limit='100') {
-
-        $max_correlations=50;
-
-        $sql=sprintf("select count(distinct `Customer Key`) as num from  `Order Transaction Fact` where `Product ID`=%d and `Order Transaction Type`='Order' ",$this->id);
-        if ($result=$this->db->query($sql)) {
+        $sql = sprintf("select count(distinct `Customer Key`) as num from  `Order Transaction Fact` where `Product ID`=%d and `Order Transaction Type`='Order' ", $this->id);
+        if ($result = $this->db->query($sql)) {
             if ($row = $result->fetch()) {
 
 
-
-
-                if ($row['num']<5) {
+                if ($row['num'] < 5) {
                     return;
                 }
-                $a_samples=$row['num'];
-                $a_length=sqrt($a_samples);
-        	}
-        }else {
-        	print_r($error_info=$this->db->errorInfo());
-        	print "$sql\n";
-        	exit;
+                $a_samples = $row['num'];
+                $a_length  = sqrt($a_samples);
+            }
+        } else {
+            print_r($error_info = $this->db->errorInfo());
+            print "$sql\n";
+            exit;
         }
-
-      
 
 
         switch ($type) {
             case 'Same Family':
-                $sql=sprintf("select P.`Product ID`,P.`Product Code` from `Product Dimension` P left join `Product Data Dimension` D on (P.`Product ID`=D.`Product ID`)  where `Product Store Key`=%d and `Product Main Type`='Sale' and `Product Web State`  in ('For Sale','Out of Stock') and `Product Family Category Key`=%d order by `Product Total Acc Customers` desc  ",
-                             $this->data['Product Store Key'],
-                             $this->data['Product Family Category Key']
+                $sql = sprintf(
+                    "select P.`Product ID`,P.`Product Code` from `Product Dimension` P left join `Product Data Dimension` D on (P.`Product ID`=D.`Product ID`)  where `Product Store Key`=%d and `Product Main Type`='Sale' and `Product Web State`  in ('For Sale','Out of Stock') and `Product Family Category Key`=%d order by `Product Total Acc Customers` desc  ",
+                    $this->data['Product Store Key'], $this->data['Product Family Category Key']
                 );
                 break;
             case 'Exclude Same Family':
-                $sql=sprintf("select P.`Product ID`,P.`Product Code` from `Product Dimension` P left join `Product Data Dimension` D on (P.`Product ID`=D.`Product ID`)  where `Product Store Key`=%d and `Product Main Type`='Sale' and `Product Web State`  in ('For Sale','Out of Stock') and `Product Family Category Key`!=%d order by `Product Total Acc Customers` desc  ",
-                             $this->data['Product Store Key'],
-                             $this->data['Product Family Category Key']
+                $sql = sprintf(
+                    "select P.`Product ID`,P.`Product Code` from `Product Dimension` P left join `Product Data Dimension` D on (P.`Product ID`=D.`Product ID`)  where `Product Store Key`=%d and `Product Main Type`='Sale' and `Product Web State`  in ('For Sale','Out of Stock') and `Product Family Category Key`!=%d order by `Product Total Acc Customers` desc  ",
+                    $this->data['Product Store Key'], $this->data['Product Family Category Key']
                 );
 
 
                 break;
             case 'Same Department':
 
-                $sql=sprintf("select P.`Product ID`,P.`Product Code` from `Product Dimension` P left join `Product Data Dimension` D on (P.`Product ID`=D.`Product ID`)  where `Product Store Key`=%d and `Product Main Type`='Sale' and `Product Web State`  in ('For Sale','Out of Stock') and `Product 1 Year Acc Customers`>0  order by `Product 1 Year Acc Customers` desc  limit %s ",
-                             $this->data['Product Store Key'],
-                             $limit
+                $sql = sprintf(
+                    "select P.`Product ID`,P.`Product Code` from `Product Dimension` P left join `Product Data Dimension` D on (P.`Product ID`=D.`Product ID`)  where `Product Store Key`=%d and `Product Main Type`='Sale' and `Product Web State`  in ('For Sale','Out of Stock') and `Product 1 Year Acc Customers`>0  order by `Product 1 Year Acc Customers` desc  limit %s ",
+                    $this->data['Product Store Key'], $limit
                 );
 
 
                 break;
             default:
 
-                $sql=sprintf("select P.`Product ID`,P.`Product Code` from `Product Dimension` P left join `Product Data Dimension` D on (P.`Product ID`=D.`Product ID`)  where `Product Store Key`=%d and `Product Main Type`='Sale' and `Product Web State`  in ('For Sale','Out of Stock') and `Product 1 Year Acc Customers`>0  order by `Product 1 Year Acc Customers` desc  limit %s ",
-                             $this->data['Product Store Key'],
-                             $limit
+                $sql = sprintf(
+                    "select P.`Product ID`,P.`Product Code` from `Product Dimension` P left join `Product Data Dimension` D on (P.`Product ID`=D.`Product ID`)  where `Product Store Key`=%d and `Product Main Type`='Sale' and `Product Web State`  in ('For Sale','Out of Stock') and `Product 1 Year Acc Customers`>0  order by `Product 1 Year Acc Customers` desc  limit %s ",
+                    $this->data['Product Store Key'], $limit
                 );
-
 
 
         }
@@ -4086,172 +4062,146 @@ class Product extends Asset {
 
         print "$sql\n";
 
-        if ($result2=$this->db->query($sql)) {
-        		foreach ($result2 as $row2) {
-                    if ($row2['Product ID']==$this->id) continue;
+        if ($result2 = $this->db->query($sql)) {
+            foreach ($result2 as $row2) {
+                if ($row2['Product ID'] == $this->id) {
+                    continue;
+                }
 
 
-                    $sql=sprintf("select count(distinct `Customer Key`) as num from  `Order Transaction Fact` where `Product ID`=%d and `Order Transaction Type`='Order' ",$row2['Product ID']);
-                    
-                    if ($result=$this->db->query($sql)) {
-                        if ($row = $result->fetch()) {
-                            if ($row['num']<5) {
-                                continue;
+                $sql = sprintf("select count(distinct `Customer Key`) as num from  `Order Transaction Fact` where `Product ID`=%d and `Order Transaction Type`='Order' ", $row2['Product ID']);
+
+                if ($result = $this->db->query($sql)) {
+                    if ($row = $result->fetch()) {
+                        if ($row['num'] < 5) {
+                            continue;
+                        }
+
+                        $b_samples = $row['num'];
+                        $b_length  = sqrt($b_samples);
+                    }
+                } else {
+                    print_r($error_info = $this->db->errorInfo());
+                    print "$sql\n";
+                    exit;
+                }
+
+                $dot_product = 0;
+                $sql         = sprintf(
+                    "select `Customer Key` from `Order Transaction Fact` OTF  where `Product ID`=%d  and  `Order Transaction Type`='Order'  group by `Customer Key`", $this->id
+                );
+                if ($result = $this->db->query($sql)) {
+                    foreach ($result as $row) {
+                        $sql = sprintf(
+                            "select count(`Order Transaction Fact Key`) as num from `Order Transaction Fact` OTF2 where OTF2.`Order Transaction Type`='Order' and OTF2.`Product ID`=%d and OTF2.`Customer Key`=%d", $row2['Product ID'], $row['Customer Key']
+                        );
+
+
+                        if ($result = $this->db->query($sql)) {
+                            if ($row = $result->fetch()) {
+                                $dot_product = $row['num'];
+                            }
+                        } else {
+                            print_r($error_info = $this->db->errorInfo());
+                            print "$sql\n";
+                            exit;
+                        }
+
+
+                    }
+                } else {
+                    print_r($error_info = $this->db->errorInfo());
+                    print "$sql\n";
+                    exit;
+                }
+
+
+                if ($dot_product) {
+
+
+                    $normalization_factor = $a_length * $b_length;
+                    $correlation          = $dot_product / $normalization_factor;
+                    $normalization_factor = ceil($normalization_factor);
+                    //print $row2['Product ID'].' '.$row2['Product Code'].' '.$correlation." $normalization_factor   \n";
+
+                    $sql = sprintf("select min(`Correlation`) as corr ,count(*) as num from `Product Sales Correlation` where `Product A ID`=%d    ", $this->id);
+
+                    if ($result4 = $this->db->query($sql)) {
+                        if ($row4 = $result4->fetch()) {
+
+
+                            if ($row4['num'] < $max_correlations) {
+                                $sql = sprintf(
+                                    "insert into  `Product Sales Correlation` (`Product A ID`,`Product B ID`,`Correlation`,`Samples`) values (%d,%d,%f,%d) ON DUPLICATE KEY UPDATE `Correlation`=%f, `Samples`=%d ", $this->id, $row2['Product ID'], $correlation,
+                                    $normalization_factor, $correlation, $normalization_factor
+                                );
+
+
+                                $this->db->exec($sql);
+                            } else {
+                                if ($row4['corr'] < $correlation) {
+                                    $sql = sprintf("delete from `Product Sales Correlation` where `Product A ID`=%d  order by `Correlation` limit 1  ", $this->id);
+                                    $this->db->exec($sql);
+                                    $sql = sprintf(
+                                        "insert into  `Product Sales Correlation` (`Product A ID`,`Product B ID`,`Correlation`,`Samples`) values (%d,%d,%f,%d) ON DUPLICATE KEY UPDATE `Correlation`=%f, `Samples`=%d ", $this->id, $row2['Product ID'], $correlation,
+                                        $normalization_factor, $correlation, $normalization_factor
+                                    );
+                                    $this->db->exec($sql);
+                                }
+
                             }
 
-                            $b_samples=$row['num'];
-                            $b_length=sqrt($b_samples);
-                    	}
-                    }else {
-                    	print_r($error_info=$this->db->errorInfo());
-                    	print "$sql\n";
-                    	exit;
+                        }
+                    } else {
+                        print_r($error_info = $this->db->errorInfo());
+                        print "$sql\n";
+                        exit;
                     }
 
-                    $dot_product=0;
-                    $sql=sprintf("select `Customer Key` from `Order Transaction Fact` OTF  where `Product ID`=%d  and  `Order Transaction Type`='Order'  group by `Customer Key`",
-                                 $this->id
-                    );
-                    if ($result=$this->db->query($sql)) {
-                    		foreach ($result as $row) {
-                                $sql=sprintf("select count(`Order Transaction Fact Key`) as num from `Order Transaction Fact` OTF2 where OTF2.`Order Transaction Type`='Order' and OTF2.`Product ID`=%d and OTF2.`Customer Key`=%d",
-                                             $row2['Product ID'],
-                                             $row['Customer Key']
+
+                    $sql = sprintf("select min(`Correlation`) as corr ,count(*) as num from `Product Sales Correlation` where `Product A ID`=%d    ", $row2['Product ID']);
+
+                    if ($result4 = $this->db->query($sql)) {
+                        if ($row4 = $result4->fetch()) {
+                            if ($row4['num'] < $max_correlations) {
+                                $sql = sprintf(
+                                    "insert into  `Product Sales Correlation` (`Product A ID`,`Product B ID`,`Correlation`,`Samples`) values (%d,%d,%f,%d) ON DUPLICATE KEY UPDATE `Correlation`=%f, `Samples`=%d ",
+
+                                    $row2['Product ID'], $this->id, $correlation, $normalization_factor, $correlation, $normalization_factor
                                 );
-                    		   
-                                
-                                if ($result=$this->db->query($sql)) {
-                                    if ($row = $result->fetch()) {
-                                        $dot_product=$row['num'];
-                                	}
-                                }else {
-                                	print_r($error_info=$this->db->errorInfo());
-                                	print "$sql\n";
-                                	exit;
-                                }
-                    		    
-                    		    
-                    		}
-                    }else {
-                    		print_r($error_info=$this->db->errorInfo());
-                    		print "$sql\n";
-                    		exit;
-                    }
-                    
-                 
 
 
-                    
-                    
-                    
-                    if ($dot_product) {
-
-
-
-                        $normalization_factor=$a_length * $b_length;
-                        $correlation=$dot_product/ $normalization_factor;
-                        $normalization_factor=ceil($normalization_factor);
-                        //print $row2['Product ID'].' '.$row2['Product Code'].' '.$correlation." $normalization_factor   \n";
-
-                        $sql=sprintf("select min(`Correlation`) as corr ,count(*) as num from `Product Sales Correlation` where `Product A ID`=%d    ",$this->id);
-
-                        if ($result4=$this->db->query($sql)) {
-                            if ($row4 = $result4->fetch()) {
-
-
-                                if ($row4['num']<$max_correlations) {
-                                    $sql=sprintf("insert into  `Product Sales Correlation` (`Product A ID`,`Product B ID`,`Correlation`,`Samples`) values (%d,%d,%f,%d) ON DUPLICATE KEY UPDATE `Correlation`=%f, `Samples`=%d ",
-                                                 $this->id,
-                                                 $row2['Product ID'],
-                                                 $correlation,
-                                                 $normalization_factor,
-                                                 $correlation,
-                                                 $normalization_factor
-                                    );
-
-
+                                $this->db->exec($sql);
+                            } else {
+                                if ($row4['corr'] < $correlation) {
+                                    $sql = sprintf("delete from `Product Sales Correlation` where `Product A ID`=%d  order by `Correlation` limit 1  ", $row2['Product ID']);
                                     $this->db->exec($sql);
-                                }else {
-                                    if ($row4['corr']<$correlation) {
-                                        $sql=sprintf("delete from `Product Sales Correlation` where `Product A ID`=%d  order by `Correlation` limit 1  ",$this->id);
-                                        $this->db->exec($sql);
-                                        $sql=sprintf("insert into  `Product Sales Correlation` (`Product A ID`,`Product B ID`,`Correlation`,`Samples`) values (%d,%d,%f,%d) ON DUPLICATE KEY UPDATE `Correlation`=%f, `Samples`=%d ",
-                                                     $this->id,
-                                                     $row2['Product ID'],
-                                                     $correlation,
-                                                     $normalization_factor,
-                                                     $correlation,
-                                                     $normalization_factor
-                                        );
-                                        $this->db->exec($sql);
-                                    }
+                                    $sql = sprintf(
+                                        "insert into  `Product Sales Correlation` (`Product A ID`,`Product B ID`,`Correlation`,`Samples`) values (%d,%d,%f,%d) ON DUPLICATE KEY UPDATE `Correlation`=%f, `Samples`=%d ",
 
-                                }
-
-                        	}
-                        }else {
-                        	print_r($error_info=$this->db->errorInfo());
-                        	print "$sql\n";
-                        	exit;
-                        }
-
-
-
-
-
-                        $sql=sprintf("select min(`Correlation`) as corr ,count(*) as num from `Product Sales Correlation` where `Product A ID`=%d    ",$row2['Product ID']);
-
-                        if ($result4=$this->db->query($sql)) {
-                            if ($row4 = $result4->fetch()) {
-                                if ($row4['num']<$max_correlations) {
-                                    $sql=sprintf("insert into  `Product Sales Correlation` (`Product A ID`,`Product B ID`,`Correlation`,`Samples`) values (%d,%d,%f,%d) ON DUPLICATE KEY UPDATE `Correlation`=%f, `Samples`=%d ",
-
-                                                 $row2['Product ID'],
-                                                 $this->id,
-                                                 $correlation,
-                                                 $normalization_factor,
-                                                 $correlation,
-                                                 $normalization_factor
+                                        $row2['Product ID'], $this->id, $correlation, $normalization_factor, $correlation, $normalization_factor
                                     );
-
-
                                     $this->db->exec($sql);
-                                }else {
-                                    if ($row4['corr']<$correlation) {
-                                        $sql=sprintf("delete from `Product Sales Correlation` where `Product A ID`=%d  order by `Correlation` limit 1  ",$row2['Product ID']);
-                                        $this->db->exec($sql);
-                                        $sql=sprintf("insert into  `Product Sales Correlation` (`Product A ID`,`Product B ID`,`Correlation`,`Samples`) values (%d,%d,%f,%d) ON DUPLICATE KEY UPDATE `Correlation`=%f, `Samples`=%d ",
-
-                                                     $row2['Product ID'],
-                                                     $this->id,
-                                                     $correlation,
-                                                     $normalization_factor,
-                                                     $correlation,
-                                                     $normalization_factor
-                                        );
-                                        $this->db->exec($sql);
-                                    }
-
                                 }
-                        	}
-                        }else {
-                        	print_r($error_info=$this->db->errorInfo());
-                        	print "$sql\n";
-                        	exit;
+
+                            }
                         }
-
-
-
-
+                    } else {
+                        print_r($error_info = $this->db->errorInfo());
+                        print "$sql\n";
+                        exit;
                     }
-                    
-        		}
-        }else {
-        		print_r($error_info=$this->db->errorInfo());
-        		print "$sql\n";
-        		exit;
+
+
+                }
+
+            }
+        } else {
+            print_r($error_info = $this->db->errorInfo());
+            print "$sql\n";
+            exit;
         }
-    
+
 
     }
 
