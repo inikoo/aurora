@@ -12,8 +12,6 @@ cell: "string",
 
 
 
-
-
 {
 name: "status",
 label:'',

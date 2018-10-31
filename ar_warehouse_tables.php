@@ -308,12 +308,18 @@ function replenishments($_data, $db, $user) {
         $next_deliveries = '<div border="0" style="font-size: small" class="as_table">'.$next_deliveries.'</div>';
 
 
+        $reference = sprintf(
+            '<span class="link" title="%s" onclick="change_view(\'part/%d\')">%s</span>', $data['Part Package Description'], $data['Part SKU'],
+            ($data['Part Reference'] == '' ? '<i class="fa error fa-exclamation-circle"></i> <span class="discreet italic">'._('Reference missing').'</span>' : $data['Part Reference'])
+        );
+
+
         $adata[] = array(
             'id'                    => (integer)$data['Location Key'],
             'location'              => ($data['Warehouse Flag Key'] ? sprintf(
                     '<i class="fa fa-flag %s" aria-hidden="true" title="%s"></i>', strtolower($data['Warehouse Flag Color']), $data['Warehouse Flag Label']
                 ) : '<i class="far fa-flag super_discreet" aria-hidden="true"></i>').' <span class="link" onClick="change_view(\'locations/'.$data['Location Warehouse Key'].'/'.$data['Location Key'].'\')">'.$data['Location Code'].'</span>',
-            'part'                  => sprintf('<span class="link" onCLick="change_view(\'part/%d\')" >%s</span>', $data['Part SKU'], $data['Part Reference']),
+            'part'                  => $reference,
             'other_locations_stock' => $stock,
 
             'quantity'             => number($data['Quantity On Hand']),
@@ -362,10 +368,15 @@ function parts($_data, $db, $user, $account) {
 
     foreach ($db->query($sql) as $data) {
 
+        $reference = sprintf(
+            '<span class="link" onclick="change_view(\'part/%d\')">%s</span>', $data['Part SKU'], ($data['Part Reference'] == '' ? '<i class="fa error fa-exclamation-circle"></i> <span class="discreet italic">'._('Reference missing').'</span>' : $data['Part Reference'])
+        );
+
+
         $adata[] = array(
 
 
-            'reference' => sprintf('<span class="link" onCLick="change_view(\'part/%d\')" >%s</span>', $data['Part SKU'], $data['Part Reference']),
+            'reference' => $reference,
             'location'  => sprintf('<span class="link" onCLick="change_view(\'locations/%d/%d\')" >%s</span>', $data['Part Location Warehouse Key'], $data['Location Key'], $data['Location Code']),
 
 
@@ -639,8 +650,16 @@ function part_locations_to_replenish_picking_location($_data, $db, $user) {
         $next_deliveries = '<div border="0" style="font-size: small" class="as_table">'.$next_deliveries.'</div>';
 
 
+
+        $reference = sprintf(
+            '<span class="link" title="%s" onclick="change_view(\'part/%d\')">%s</span>', $data['Part Package Description'], $data['Part SKU'],
+            ($data['Part Reference'] == '' ? '<i class="fa error fa-exclamation-circle"></i> <span class="discreet italic">'._('Reference missing').'</span>' : $data['Part Reference'])
+        );
+
+
+
         $table_data[] = array(
-            'reference' => sprintf('<span class="link"  title="%s" onclick="change_view(\'part/%d\')">%s</span>', $data['Part Package Description'], $data['Part SKU'], $data['Part Reference']),
+            'reference' => $reference,
             'location'  => sprintf('<span  class="link"  onclick="change_view(\'locations/%d/%d\')">%s</span>', $data['Part Location Warehouse Key'], $data['Location Key'], $data['Location Code']),
 
 
@@ -685,9 +704,15 @@ function part_locations_with_errors($_data, $db, $user) {
 
     foreach ($db->query($sql) as $data) {
 
+        $reference = sprintf(
+            '<span class="link" title="%s" onclick="change_view(\'part/%d\')">%s</span>', $data['Part Package Description'], $data['Part SKU'],
+            ($data['Part Reference'] == '' ? '<i class="fa error fa-exclamation-circle"></i> <span class="discreet italic">'._('Reference missing').'</span>' : $data['Part Reference'])
+        );
+
+
         $table_data[] = array(
 
-            'reference' => sprintf('<span class="link" title="%s" onclick="change_view(\'part/%d\')">%s</span>', $data['Part Package Description'], $data['Part SKU'], $data['Part Reference']),
+            'reference' => $reference,
             'location'  => sprintf('<span  class="link" onclick="change_view(\'locations/%d/%d\')">%s</span>', $data['Part Location Warehouse Key'], $data['Location Key'], $data['Location Code']),
 
 
@@ -1098,13 +1123,13 @@ function parts_with_unknown_location($_data, $db, $user, $account) {
     foreach ($db->query($sql) as $data) {
 
         if ($data['Part Status'] == 'Not In Use') {
-            $part_status = '<i class="fa fa-square fa-fw  very_discreet" aria-hidden="true"></i> ';
+            $part_status = '<i class="far fa-box fa-fw  very_discreet" aria-hidden="true"></i> ';
 
         } elseif ($data['Part Status'] == 'Discontinuing') {
-            $part_status = '<i class="fa fa-square fa-fw  very_discreet" aria-hidden="true"></i> ';
+            $part_status = '<i class="far fa-box fa-fw  very_discreet" aria-hidden="true"></i> ';
 
         } else {
-            $part_status = '<i class="fa fa-square fa-fw " aria-hidden="true"></i> ';
+            $part_status = '<i class="far fa-box fa-fw " aria-hidden="true"></i> ';
         }
 
 
@@ -1142,10 +1167,17 @@ function parts_with_unknown_location($_data, $db, $user, $account) {
         $locations .= '</div>';
 
 
+        $reference = sprintf(
+            '<span class="link" title="%s" onclick="change_view(\'part/%d\')">%s</span>', $data['Part Package Description'], $data['Part SKU'],
+            ($data['Part Reference'] == '' ? '<i class="fa error fa-exclamation-circle"></i> <span class="discreet italic">'._('Reference missing').'</span>' : $data['Part Reference'])
+        );
+
+
+
         $adata[] = array(
 
 
-            'reference' => sprintf('<span class="link" onCLick="change_view(\'part/%d\')" >%s</span>', $data['Part SKU'], $data['Part Reference']),
+            'reference' => $reference,
 
 
             'description' => $data['Part Package Description'],

@@ -1025,9 +1025,15 @@ function parts($_data, $db, $user, $account) {
             );
 
 
+            $reference=sprintf('<span class="link" onclick="change_view(\'part/%d\')">%s</span>',$data['Part SKU'],($data['Part Reference']==''?'<i class="fa error fa-exclamation-circle"></i> <span class="discreet italic">'._('Reference missing').'</span>':$data['Part Reference']));
+
+
+
+
+
             $record_data[] = array(
                 'id'                  => (integer)$data['Part SKU'],
-                'reference'           => $data['Part Reference'],
+                'reference'           => $reference,
                 'package_description' => $data['Part Package Description'],
                 'picking_ratio'       => number($data['Product Part Ratio'], 5),
                 'picking_note'        => $data['Product Part Note'],
