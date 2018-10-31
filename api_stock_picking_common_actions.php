@@ -270,7 +270,27 @@ switch ($_REQUEST['action']) {
         echo json_encode($response);
         exit;
         break;
+    case 'get_part_products_data':
+        $part = get_object('part', $_REQUEST['part_sku']);
 
+        if (!$part->id) {
+            $response = array(
+                'state' => 'Error',
+                'msg'   => 'part not found'
+            );
+            echo json_encode($response);
+            exit;
+        }
+
+        $data = $part->get_products('products_data');
+
+        $response = array(
+            'state' => 'OK',
+            'data'  => $data
+        );
+        echo json_encode($response);
+        exit;
+        break;
 
     case 'get_parts_from_location_key':
 
