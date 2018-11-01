@@ -16,9 +16,6 @@ trait OrderItems {
     function update_item($data) {
 
 
-
-
-
         /*
          *
          *
@@ -41,7 +38,7 @@ trait OrderItems {
 
         $gross = 0;
 
-        $otf_key         = 0;
+        $otf_key = 0;
 
         $gross_discounts = 0;
 
@@ -136,8 +133,8 @@ trait OrderItems {
 
                 $otf_key = $row['Order Transaction Fact Key'];
 
-                $old_quantity       = $row['Order Quantity'];
-                $old_net_amount     = $row['Order Transaction Gross Amount'] - $row['Order Transaction Total Discount Amount'];
+                $old_quantity   = $row['Order Quantity'];
+                $old_net_amount = $row['Order Transaction Gross Amount'] - $row['Order Transaction Total Discount Amount'];
 
                 $delta_qty -= $old_quantity;
 
@@ -520,36 +517,47 @@ LEFT JOIN `Product History Dimension` PHD ON (OTF.`Product Key`=PHD.`Product Key
         if ($result = $this->db->query($sql)) {
             foreach ($result as $row) {
 
-                $edit_quantity = sprintf(
-                    '<span    data-settings=\'{"field": "Order Quantity", "transaction_key":"%d","item_key":%d, "item_historic_key":%d ,"on":1 }\'   >
-<i onClick="save_item_qty_change(this)" class="fa minus fa-minus fa-fw like_button "  style="cursor:pointer" aria-hidden="true"></i>
-<input class="order_qty width_50 " style="text-align: center" value="%s" ovalue="%s"> 
-
-<i onClick="save_item_qty_change(this)" class="fa plus  fa-plus fa-fw like_button "  style="cursor:pointer" aria-hidden="true"></i></span>', $row['Order Transaction Fact Key'], $row['Product ID'], $row['Product Key'], $row['Order Quantity'] + 0,
-                    $row['Order Quantity'] + 0
-                );
-
 
                 $deal_info = '<div id="transaction_deal_info_'.$row['Order Transaction Fact Key'].'" class="deal_info">'.$row['Deal Info'].'</div>';
 
 
                 if ($row['Current Dispatching State'] == 'Out of Stock in Basket') {
                     $out_of_stock_info = '<div> <span class="error"><i class="fa fa-exclamation-circle" aria-hidden="true"></i> '._('Product out of stock, removed from basket').'</span></div>';
-
+                    $edit_quantity     = sprintf(
+                        '<span    data-settings=\'{"field": "Order Quantity", "transaction_key":"%d","item_key":%d, "item_historic_key":%d ,"on":1 }\'>
+                        <i  class="fa minus fa-minus fa-fw like_button "  style="visibility:hidden;cursor:pointer" aria-hidden="true"></i>
+                        <input readonly class=" width_50 " style="text-align: center" value="%s" ovalue="%s"> 
+                        <i  class="fa plus  fa-plus fa-fw like_button "  style="visibility:hidden;ccursor:pointer" aria-hidden="true"></i></span>',
+                        $row['Order Transaction Fact Key'],
+                        $row['Product ID'],
+                        $row['Product Key'],
+                        $row['Order Quantity'] + 0,
+                        $row['Order Quantity'] + 0
+                    );
 
                 } else {
+                    $edit_quantity     = sprintf(
+                        '<span    data-settings=\'{"field": "Order Quantity", "transaction_key":"%d","item_key":%d, "item_historic_key":%d ,"on":1 }\'>
+                        <i onClick="save_item_qty_change(this)" class="fa minus fa-minus fa-fw like_button "  style="cursor:pointer" aria-hidden="true"></i>
+                        <input class="order_qty width_50 " style="text-align: center" value="%s" ovalue="%s"> 
+                        <i onClick="save_item_qty_change(this)" class="fa plus  fa-plus fa-fw like_button "  style="cursor:pointer" aria-hidden="true"></i></span>',
+                        $row['Order Transaction Fact Key'],
+                        $row['Product ID'],
+                        $row['Product Key'],
+                        $row['Order Quantity'] + 0,
+                        $row['Order Quantity'] + 0
+                    );
                     $out_of_stock_info = '';
                 }
 
 
-                if($row['Order State']=='Dispatched' or $row['Order State']=='Approved' or  $row['Order State']=='PackedDone'  ){
-                    $qty=number($row['Delivery Note Quantity']);
+                if ($row['Order State'] == 'Dispatched' or $row['Order State'] == 'Approved' or $row['Order State'] == 'PackedDone') {
+                    $qty = number($row['Delivery Note Quantity']);
 
-                }else{
-                    $qty=number($row['Order Quantity']);
+                } else {
+                    $qty = number($row['Order Quantity']);
 
                 }
-
 
 
                 $items[] = array(
@@ -561,8 +569,8 @@ LEFT JOIN `Product History Dimension` PHD ON (OTF.`Product Key`=PHD.`Product Key
                     'pid'              => $row['Product ID'],
                     'otf_key'          => $row['Order Transaction Fact Key'],
                     'edit_qty'         => $edit_quantity,
-                    'amount'           => '<span id="transaction_item_net_'.$row['Order Transaction Fact Key'].'" class="item_amount">'.money($row['Order Transaction Amount'], $row['Order Currency Code']).'</span>'
-
+                    'amount'           => '<span id="transaction_item_net_'.$row['Order Transaction Fact Key'].'" class="item_amount">'.money($row['Order Transaction Amount'], $row['Order Currency Code']).'</span>',
+                    'state'            => $row['Current Dispatching State']
                 );
 
 

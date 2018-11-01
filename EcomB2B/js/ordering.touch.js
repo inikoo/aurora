@@ -105,7 +105,7 @@ function save_item_qty_change(element) {
 
     var request = 'ar_web_basket.php?tipo=update_item&product_id=' + settings.pid + '&order_key=' + $('#webpage_data').data('order_key') + '&qty=' + qty + '&webpage_key=' + $('#webpage_data').data('webpage_key') + '&page_section_type=Basket'
 
-console.log(request)
+    //console.log(request)
 
     $.getJSON(request, function (data) {
         input.prop('readonly', false);
@@ -156,6 +156,20 @@ console.log(request)
             for (var key in data.metadata.class_html) {
                 $('.' + key).html(data.metadata.class_html[key])
             }
+            for (var key in data.metadata.hide) {
+                $('.' + data.metadata.hide[key]).addClass('hide')
+            }
+
+            for (var key in data.metadata.show) {
+                $('.' + data.metadata.show[key]).removeClass('hide')
+            }
+            for (var key in data.metadata.add_class) {
+
+                $('.' + key).addClass( data.metadata.add_class[key])
+            }
+            for (var key in data.metadata.remove_class) {
+                $('.' + key).removeClass( data.metadata.remove_class[key])
+            }
 
 
 
@@ -196,46 +210,9 @@ console.log(request)
 
 
     })
-
+    validate_signed_integer
 }
 
-
-
-function validate_signed_integer(value, max_value) {
-
-    if (!$.isNumeric(value)) {
-        return {
-            class: 'invalid', type: 'not_integer'
-        }
-    }
-
-    if (value > max_value) {
-        return {
-            class: 'invalid',
-
-            type: 'too_big'
-        }
-    }
-
-    if (value < 0) {
-        return {
-            class: 'invalid',
-
-            type: 'negative'
-        }
-    }
-    if (Math.floor(value) != value) {
-
-
-        return {
-            class: 'invalid',
-
-            type: 'not_integer'
-        }
-    }
-
-    return false
-}
 
 
 

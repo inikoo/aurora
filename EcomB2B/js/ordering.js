@@ -46,7 +46,7 @@ $(function() {
 
     $(document).on('click', '.payment_method_button', function (evt) {
 
-        console.log(this)
+
 
         $('.payment_method_button').addClass('discreet bg-gray-light border-gray-dark').removeClass('bg-blue-light border-blue-dark').css({ 'opacity':.2})
 
@@ -71,7 +71,7 @@ $(function() {
 
         var input = $(this).closest('.order_row').find('.order_input');
 
-        // console.log(input)
+
 
         if (input.val() == '') {
             input.val(1)
@@ -109,8 +109,7 @@ $(function() {
 
 
         var request = 'ar_web_basket.php?tipo=update_item&product_id=' + $(this).closest('.product_container').data('product_id') + '&qty=' + order_qty + '&webpage_key=' + $('#webpage_data').data('webpage_key') + '&page_section_type=Family'
-console.log(request)
-      //  console.log(request)
+
         $.getJSON(request, function (data) {
 
 
@@ -150,7 +149,6 @@ console.log(request)
 
 
                 for (var key in data.discounts_data) {
-                   // console.log(key+': '+data.discounts_data[key])
                     $('#transaction_deal_info_'+key).html(data.discounts_data[key]['deal_info'])
                     $('#transaction_item_net_'+key).html(data.discounts_data[key]['item_net'])
 
@@ -182,7 +180,6 @@ console.log(request)
 
         var button = order_row.find('.label');
 
-        console.log(button)
 
         if (order_qty != $(this).data('ovalue')) {
 
@@ -237,8 +234,7 @@ console.log(request)
 
             var size_now = parseInt(un.css("font-size"));
             var size_new = size_now * len_fit / len_user_name;
-            console.log(size_now)
-            console.log(size_new)
+
 
             un.css("font-size", size_new);
 
@@ -298,7 +294,6 @@ function save_item_qty_change(element) {
     $(element).addClass('fa-spinner fa-spin')
 
     var input = $(element).closest('span').find('input')
-    var icon=$(element)
 
     input.prop('readonly', true);
 
@@ -325,7 +320,7 @@ function save_item_qty_change(element) {
         } else {
             qty = parseFloat(input.val()) - 1
         }
-        console.log(qty)
+
         input.val(qty).addClass('discreet')
 
         var _icon='fa-minus'
@@ -347,7 +342,7 @@ function save_item_qty_change(element) {
 
 
     $.getJSON(request, function (data) {
-        input.prop('readonly', false);
+        input.prop('readonly', false).removeClass('discreet');
 
         if (data.state == 200) {
 
@@ -357,13 +352,7 @@ function save_item_qty_change(element) {
             $(element).closest('span').find('i.plus').removeClass('fa-spinner fa-spin fa-save').addClass('fa-plus')
             $(element).closest('span').find('i.minus').removeClass('hide fa-spinner fa-spin').addClass('fa-minus')
 
-           // console.log($(element))
 
-
-            console.log(data)
-
-
-            console.log(data.order_empty)
 
 
             if(data.order_empty){
@@ -376,12 +365,24 @@ function save_item_qty_change(element) {
                 })
             }
 
-         //   $('#header_order_total_amount').html(data.data.order_total)
-         //   $('#header_order_products').html(data.data.ordered_products_number)
 
 
             for (var key in data.metadata.class_html) {
                 $('.' + key).html(data.metadata.class_html[key])
+            }
+            for (var key in data.metadata.hide) {
+                $('.' + data.metadata.hide[key]).addClass('hide')
+            }
+
+            for (var key in data.metadata.show) {
+                $('.' + data.metadata.show[key]).removeClass('hide')
+            }
+            for (var key in data.metadata.add_class) {
+
+                $('.' + key).addClass( data.metadata.add_class[key])
+            }
+            for (var key in data.metadata.remove_class) {
+                $('.' + key).removeClass( data.metadata.remove_class[key])
             }
 
 
@@ -396,10 +397,9 @@ function save_item_qty_change(element) {
             }
 
             if (data.quantity == 0) data.quantity = ''
-console.log(data.discounts_data)
 
             for (var key in data.discounts_data) {
-                console.log(key+': '+data.discounts_data[key])
+
                 $('#transaction_deal_info_'+key).html(data.discounts_data[key]['deal_info'])
                 $('#transaction_item_net_'+key).html(data.discounts_data[key]['item_net'])
 
@@ -433,7 +433,6 @@ console.log(data.discounts_data)
 
 $("#_special_instructions").on("input propertychange", function (evt) {
 
-    console.log('xx')
 
     var delay = 100;
     if (window.event && event.type == "propertychange" && event.propertyName != "value") return;
@@ -447,7 +446,6 @@ function delayed_save_special_instructions(object, timeout) {
     window.clearTimeout(object.data("timeout"));
 
     object.data("timeout", setTimeout(function () {
-
         save_special_instructions()
     }, timeout));
 }
@@ -508,22 +506,13 @@ function show_saved_cards(){
 }
 
 function use_this_credit_card(element){
-    console.log(element)
-
 
     $(element).closest('fieldset').find('.row').addClass('hide')
-
-
-
     $(element).closest('div.row').find('.delete_this_credit_card').addClass('hide')
     $(element).closest('div.row').find('.cancel_use_this_card').removeClass('hide')
 
 
     $(element).closest('div.row').find('.check_icon_saved_card').removeClass('fa-circle').addClass('fa-check-circle success')
-
-
-
-
 
 
     $('.cvv_for_saved_card').addClass('invisible')

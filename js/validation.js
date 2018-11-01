@@ -3,12 +3,10 @@
  Copyright (c) 2015, Inikoo
  Version 3.0*/
 
+
 function validate_field(field, new_value, field_type, required, server_validation_settings, parent, parent_key, object, key) {
 
-
-
     var validation = client_validation(field_type, required, new_value, field)
-
 
     //console.log(field+' '+validation.class)
     if (validation.class == 'valid' && (server_validation_settings != undefined && server_validation_settings != '')) {

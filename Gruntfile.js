@@ -56,7 +56,7 @@ module.exports = function (grunt) {
                 },
 
                 src: [
-
+                    'EcomB2B/js/validation.EcomB2B.js',
                     'EcomB2B/js/aurora.logged_in.js',
                     'EcomB2B/js/ordering.js',
 
@@ -104,6 +104,7 @@ module.exports = function (grunt) {
                     sourceMap: true,
                 },
                 src: [
+                    'EcomB2B/js/validation.EcomB2B.js',
                     'EcomB2B/js/aurora.logged_in.mobile.js',
                     'EcomB2B/js/ordering.touch.js'
 
