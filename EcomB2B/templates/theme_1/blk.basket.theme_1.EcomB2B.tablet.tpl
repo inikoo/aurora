@@ -80,11 +80,19 @@
 
                     <td class="text-right order_items_net">{$order->get('Items Net Amount')}</td>
                 </tr>
-                <tr class="order_charges_container {if $order->get('Order Charges Net Amount')==0 }hide{/if}">
-                    <td>{if isset($labels._items_charges) and $labels._items_charges!=''}{$labels._items_charges}{else}{t}Charges{/t}{/if}</td>
+
+
+
+                <tr class="order_charges_container {if $order->get('Order Charges Net Amount')==0 }very_discreet{/if}">
+                    <td>
+
+                        {if !empty($labels._items_charges)}{$labels._items_charges}{else}{t}Charges{/t}{/if}  <i class=" order_charges_info fa fa-info-circle padding_left_5  info {if $order->get('Order Charges Net Amount')==0 }hide{/if}"    style="color: #007fff;" onclick="show_charges_info()" ></i>
+                    </td>
 
                     <td class="text-right order_charges">{$order->get('Charges Net Amount')}</td>
                 </tr>
+
+
                 <tr class="last_items">
                     <td>{if isset($labels._items_shipping) and $labels._items_shipping!=''}{$labels._items_shipping}{else}{t}Shipping{/t}{/if}</td>
                     <td class="text-right order_shipping">{if $order->get('Shipping Net Amount')=='TBC'}<i class="fa error fa-exclamation-circle" title="" aria-hidden="true"></i> <small>{if !empty($labels._we_will_contact_you)}{$labels._we_will_contact_you}{else}{t}We will contact you{/t}{/if}</small>{else}{$order->get('Shipping Net Amount')}{/if}</td>
@@ -147,15 +155,19 @@
 
                         <tr>
                             <td style="text-align: left">{$item.code_description}</td>
-<td>
+                            <td>
 
-    <div class="mobile_ordering"  data-settings='{ "pid":{$item.pid},"basket":true }'>
-        <i onclick="save_item_qty_change(this)" class="ordering_button one_less fa fa-fw  fa-minus-circle color-red-dark"></i>
-        <input  type="number" min="0" value="{$item.qty_raw}" class="needsclick order_qty">
-        <i onclick="save_item_qty_change(this)" style="display:none" class="ordering_button save far fa-save fa-fw color-blue-dark"></i>
-        <i onclick="save_item_qty_change(this)" class="ordering_button add_one fa fa-fw  fa-plus-circle color-green-dark"></i>
-    </div>
-</td>
+                                {if $item.state=='Out of Stock in Basket'}
+                                    0
+                                {else}
+                                    <div class="mobile_ordering"  data-settings='{ "pid":{$item.pid},"basket":true }'>
+                                        <i onclick="save_item_qty_change(this)" class="ordering_button one_less fa fa-fw  fa-minus-circle color-red-dark"></i>
+                                        <input  type="number" min="0" value="{$item.qty_raw}" class="needsclick order_qty">
+                                        <i onclick="save_item_qty_change(this)" style="display:none" class="ordering_button save far fa-save fa-fw color-blue-dark"></i>
+                                        <i onclick="save_item_qty_change(this)" class="ordering_button add_one fa fa-fw  fa-plus-circle color-green-dark"></i>
+                                    </div>
+                                {/if}
+                            </td>
 
 
                             <td class="text-right">{$item.amount}</td>
@@ -512,6 +524,22 @@
 
 <script>
 
+
+
+    function show_charges_info(){
+
+        var request = '/ar_web_basket.php?tipo=get_charges_info'
+        $.getJSON(request, function (data) {
+
+            if (data.state == 200) {
+                swal({
+                    html:true,
+                    title: '',
+                    text:data.text,
+                })
+            }
+        })
+    }
 
 
     $("form").submit(function(e) {
