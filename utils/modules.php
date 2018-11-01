@@ -1118,40 +1118,58 @@ $modules = array(
                         'label' => _("All products"),
                         'icon'  => 'th-list'
                     ),
-                    'order.details'        => array(
-                        'label' => _(
-                            'Data'
-                        ),
-                        'icon'  => 'database'
-                    ),
+
                     'order.customer_history'        => array(
                         'label' => _('Customer notes/history'),
-                        'icon'  => 'sticky-note'
+                        'icon'  => 'user-tag'
                     ),
-                    'order.history'        => array(
-                        'label' => _('History'),
-                        'icon'  => 'road'
-                    ),
-                    'order.sent_emails'       => array(
-                        'label' => _('Sent emails'),
-                        'icon'  => 'envelope'
-                    ),
-                    'order.delivery_notes' => array(
-                        'label' => _(
-                            'Delivery notes'
-                        ),
-                        'icon'  => 'truck'
-                    ),
-                    'order.invoices'       => array(
-                        'label' => _(
-                            'Invoices'
-                        ),
-                        'icon'  => 'file-alt'
-                    ),
+
+
+
                     'order.payments'       => array(
                         'label' => _('Payments'),
                         'icon'  => 'dollar-sign'
                     ),
+
+
+                    'order.history'        => array(
+                        'label' => '',
+                        'title' => _('History'),
+                        'icon'  => 'road',
+                        'class' => 'right icon_only'
+                    ),
+                    'order.delivery_notes' => array(
+                        'label' => '',
+                        'title' => _('Delivery notes'),
+                        'icon'  => 'truck',
+                        'class' => 'right icon_only'
+                    ),
+                    'order.invoices'       => array(
+                        'label' => '',
+                        'title' => _('Invoices'),
+                        'icon'  => 'file-alt',
+                        'class' => 'right icon_only'
+                    ),
+                    'order.deals'       => array(
+                        'label' => '',
+                        'title' => _('Discounts'),
+                        'icon'  => 'tag',
+                        'class' => 'right icon_only'
+                    ),
+
+                    'order.sent_emails'       => array(
+                        'title' => _('Sent emails'),
+                        'label' => '',
+                        'icon'  => 'envelope',
+                        'class' => 'right icon_only'
+                    ),
+                    'order.details'        => array(
+                        'label' => '',
+                        'title' => _('Data'),
+                        'icon'  => 'database',
+                        'class' => 'right icon_only'
+                    ),
+
 
                 )
 

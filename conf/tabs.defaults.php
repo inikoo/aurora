@@ -4114,6 +4114,15 @@ $tab_defaults = array(
 
 
     ),
+    'order.deals'            => array(
+        'view'          => 'overview',
+        'sort_key'      => 'name',
+        'sort_order'    => 1,
+        'rpp'           => 100,
+        'rpp_options'   => $default_rrp_options,
+        'f_field'       => 'name',
+
+    ),
     'purge.purged_orders'             => array(
         'view'        => 'overview',
         'sort_key'    => 'id',
