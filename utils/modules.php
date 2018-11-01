@@ -6345,6 +6345,14 @@ $modules = array(
                     'sales_representative.invoices'  => array(
                         'label' => _('Invoices')
                     ),
+
+                    'sales_representative.invoices_group_by_customer' => array(
+                        'label'=>'',
+                        'title' => _('Invoices grouped by customers'),
+                        'icon'  => 'users-class',
+                        'class' => 'right icon_only'
+                    ),
+
                     /*
                     'sales_representative.prospects' => array(
                         'label' => _('Prospects')

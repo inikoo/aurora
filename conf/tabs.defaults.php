@@ -770,6 +770,20 @@ $tab_defaults = array(
 
     ),
 
+    'sales_representative.invoices_group_by_customer' => array(
+        'view'          => 'overview',
+        'sort_key'      => 'id',
+        'sort_order'    => 1,
+        'rpp'           => 100,
+        'rpp_options'   => $default_rrp_options,
+        'f_field'       => 'customer',
+        'from'          => '',
+        'to'            => '',
+        'period'        => 'all',
+     //   'export_fields' => $export_fields['invoices_group_by_customer']
+
+    ),
+
 
     'category.invoices' => array(
         'view'          => 'overview',
