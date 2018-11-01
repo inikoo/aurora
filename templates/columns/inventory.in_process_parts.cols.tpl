@@ -70,12 +70,12 @@ headerCell: integerHeaderCell
 
 
 {
-name: "cost",
-label: "{t}Cost{/t}",
+name: "sko_cost",
+label: "{t}SKO cost{/t}",
 editable: false,
 sortType: "toggle",
 defaultOrder:1,
-{if $sort_key=='cost'}direction: '{if $sort_order==1}descending{else}ascending{/if}',{/if}
+{if $sort_key=='sko_cost'}direction: '{if $sort_order==1}descending{else}ascending{/if}',{/if}
 
 cell: Backgrid.HtmlCell.extend({
 
@@ -100,7 +100,20 @@ className: "aright"
 }),
 headerCell: integerHeaderCell
 
-}
+},{
+
+name: "next_deliveries",
+label: "{t}Next deliveries{/t}",
+editable: false,
+sortType: "toggle",
+{if $sort_key=='next_deliveries'}direction: '{if $sort_order==1}descending{else}ascending{/if}',{/if}
+
+cell: Backgrid.HtmlCell.extend({
+
+
+})
+
+},
 
 ]
 
