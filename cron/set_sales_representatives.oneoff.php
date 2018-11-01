@@ -12,7 +12,6 @@
 
 require_once 'common.php';
 
-// todo do this properly in class.Order (inikoo and in aurora)
 //$sql = sprintf('update `Invoice Dimension` set `Invoice Sales Representative Key`=NULL');
 //print "$sql\n";
 //$db->exec($sql);

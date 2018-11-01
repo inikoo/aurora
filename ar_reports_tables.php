@@ -1406,6 +1406,10 @@ function sales_representatives($_data, $db, $user, $account) {
                     '<span class="link very_discreet" onclick="change_view(\'report/sales_representatives/%d\',{ tab:\'sales_representative.invoices\',  parameters:{ period:\'%s\',from:\'%s\',to:\'%s\',elements_type:\'type\' } ,element:{ type:{ Invoice:1,Refund:1}}}  )">%s</span>',
                     $data['Sales Representative Key'], $_data['parameters']['period'], $_data['parameters']['from'], $_data['parameters']['to'], money(0, $account->get('Account Currency'))
                 ),
+                'customers'    => sprintf(
+                    '<span class="link very_discreet" onclick="change_view(\'report/sales_representatives/%d\',{ tab:\'sales_representative.invoices_group_by_customer\',  parameters:{ period:\'%s\',from:\'%s\',to:\'%s\'} }  )">%s</span>',
+                    $data['Sales Representative Key'], $_data['parameters']['period'], $_data['parameters']['from'], $_data['parameters']['to'], 0
+                ),
 
 
             );
@@ -1440,7 +1444,12 @@ function sales_representatives($_data, $db, $user, $account) {
                 '<span class="link " onclick="change_view(\'report/sales_representatives/%d\',{ tab:\'sales_representative.invoices\' , parameters:{ period:\'%s\',from:\'%s\',to:\'%s\',elements_type:\'type\' } ,element:{ type:{ Invoice:1,Refund:1}}  }  )">%s</span>',
                 $data['Sales Representative Key'], $_data['parameters']['period'], $_data['parameters']['from'], $_data['parameters']['to'], money($data['sales'], $account->get('Account Currency'))
             );
-            $_adata[$data['User Key']]['customers'] = number($data['customers']);
+
+            $_adata[$data['User Key']]['customers']     = sprintf(
+                '<span class="link " onclick="change_view(\'report/sales_representatives/%d\',{ tab:\'sales_representative.invoices_group_by_customer\',  parameters:{ period:\'%s\',from:\'%s\',to:\'%s\'} }  )">%s</span>',
+                $data['Sales Representative Key'], $_data['parameters']['period'], $_data['parameters']['from'], $_data['parameters']['to'], number($data['customers'])
+            );
+
 
 
             //  'name'                              => $data['Staff Name'],

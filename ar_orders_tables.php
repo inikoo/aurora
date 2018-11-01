@@ -151,6 +151,9 @@ switch ($tipo) {
     case 'purged_orders':
         purged_orders(get_table_parameters(), $db, $user);
         break;
+    case 'invoices_group_by_customer':
+        invoices_group_by_customer(get_table_parameters(), $db, $user);
+        break;
     default:
         $response = array(
             'state' => 405,
@@ -3100,14 +3103,10 @@ function order_all_products($_data, $db, $user) {
 }
 
 
-
-
 function order_sent_emails($_data, $db, $user) {
 
     $rtext_label = 'email';
     include_once 'prepare_table/init.php';
-
-
 
 
     $sql   = "select $fields from $table $where $wheref order by $order $order_direction limit $start_from,$number_results";
@@ -3158,35 +3157,31 @@ function order_sent_emails($_data, $db, $user) {
                     $state = $data['Email Tracking State'];
             }
 
-            switch ($data['Order Sent Email Type']){
+            switch ($data['Order Sent Email Type']) {
                 case 'Dispatch Notification':
-                    $type=_('Dispatch notification');
+                    $type = _('Dispatch notification');
                     break;
                 case 'Order Notification':
-                    $type=_('Order notification');
+                    $type = _('Order notification');
                     break;
                 case 'Replacement Dispatch Notification':
-                    $type=_('Replacement dispatch notification');
+                    $type = _('Replacement dispatch notification');
                     break;
                 default:
-                    $type=$data['Order Sent Email Type'];
+                    $type = $data['Order Sent Email Type'];
 
             }
 
 
-             $type = sprintf('<span class="link" onclick="change_view(\'orders/%d/%d/email/%d\')"  >%s</span>',$parent->get('Store Key') ,$parent->id,$data['Email Tracking Key'],$type);
-
-
-
-
+            $type = sprintf('<span class="link" onclick="change_view(\'orders/%d/%d/email/%d\')"  >%s</span>', $parent->get('Store Key'), $parent->id, $data['Email Tracking Key'], $type);
 
 
             $adata[] = array(
-                'id'      => (integer)$data['Email Tracking Key'],
-                'state'   => $state,
+                'id'    => (integer)$data['Email Tracking Key'],
+                'state' => $state,
 
                 'type' => $type,
-                'date'    => strftime("%a, %e %b %Y %R", strtotime($data['Email Tracking Created Date']." +00:00")),
+                'date' => strftime("%a, %e %b %Y %R", strtotime($data['Email Tracking Created Date']." +00:00")),
 
 
             );
@@ -3214,18 +3209,14 @@ function order_sent_emails($_data, $db, $user) {
 }
 
 
-
 function orders_in_website_purges($_data, $db, $user) {
 
     $rtext_label = 'purge';
     include_once 'prepare_table/init.php';
 
 
-
-
     $sql   = "select $fields from $table $where $wheref order by $order $order_direction limit $start_from,$number_results";
     $adata = array();
-
 
 
     if ($result = $db->query($sql)) {
@@ -3249,45 +3240,46 @@ function orders_in_website_purges($_data, $db, $user) {
                     $state = $data['Order Basket Purge State'];
             }
 
-            switch ($data['Order Basket Purge Type']){
+            switch ($data['Order Basket Purge Type']) {
                 case 'Scheduled':
-                    $type=_('Scheduled');
+                    $type = _('Scheduled');
                     break;
                 case 'Manual':
-                    $type=_('Manual');
+                    $type = _('Manual');
                     break;
 
                 default:
-                    $type=$data['Order Basket Purge Type'];
+                    $type = $data['Order Basket Purge Type'];
 
             }
 
 
-           $date = sprintf('<span class="link" onclick="change_view(\'orders/%d/dashboard/website/purges/%d\')"  >%s</span>',
-                           $data['Order Basket Purge Store Key'] ,$data['Order Basket Purge Key'],strftime("%a, %e %b %Y %R", strtotime($data['Order Basket Purge Date']." +00:00")));
+            $date = sprintf(
+                '<span class="link" onclick="change_view(\'orders/%d/dashboard/website/purges/%d\')"  >%s</span>',
+                $data['Order Basket Purge Store Key'], $data['Order Basket Purge Key'], strftime("%a, %e %b %Y %R", strtotime($data['Order Basket Purge Date']." +00:00"))
+            );
 
 
-            if($data['Order Basket Purge State']=='In Process'){
-                $orders=sprintf('<span class="italic discreet" title="%s">%s</span>',_('Estimated'),number($data['Order Basket Purge Estimated Orders']));
-                $transactions=sprintf('<span class="italic discreet" title="%s">%s</span>',_('Estimated'),number($data['Order Basket Purge Estimated Transactions']));
-                $amount=sprintf('<span class="italic discreet" title="%s">%s</span>',_('Estimated'),money($data['Order Basket Purge Estimated Amount'],$data['Store Currency Code']));
-            }else{
-                $orders=number($data['Order Basket Purge Purged Orders']);
-                $transactions=number($data['Order Basket Purge Purged Transactions']);
-                $amount=money($data['Order Basket Purge Purged Amount'],$data['Store Currency Code']);
+            if ($data['Order Basket Purge State'] == 'In Process') {
+                $orders       = sprintf('<span class="italic discreet" title="%s">%s</span>', _('Estimated'), number($data['Order Basket Purge Estimated Orders']));
+                $transactions = sprintf('<span class="italic discreet" title="%s">%s</span>', _('Estimated'), number($data['Order Basket Purge Estimated Transactions']));
+                $amount       = sprintf('<span class="italic discreet" title="%s">%s</span>', _('Estimated'), money($data['Order Basket Purge Estimated Amount'], $data['Store Currency Code']));
+            } else {
+                $orders       = number($data['Order Basket Purge Purged Orders']);
+                $transactions = number($data['Order Basket Purge Purged Transactions']);
+                $amount       = money($data['Order Basket Purge Purged Amount'], $data['Store Currency Code']);
             }
-
 
 
             $adata[] = array(
-                'id'      => (integer)$data['Order Basket Purge Key'],
-                'state'   => $state,
-                'type' => $type,
-                'inactive_days'=>number($data['Order Basket Purge Inactive Days']),
-                'orders'=>$orders,
-                'transactions'=>$transactions,
-                'amount'=>$amount,
-                'date'    => $date,
+                'id'            => (integer)$data['Order Basket Purge Key'],
+                'state'         => $state,
+                'type'          => $type,
+                'inactive_days' => number($data['Order Basket Purge Inactive Days']),
+                'orders'        => $orders,
+                'transactions'  => $transactions,
+                'amount'        => $amount,
+                'date'          => $date,
 
 
             );
@@ -3322,10 +3314,8 @@ function purged_orders($_data, $db, $user) {
     include_once 'prepare_table/init.php';
 
 
-
     $sql   = "select $fields from $table $where $wheref order by $order $order_direction limit $start_from,$number_results";
     $adata = array();
-
 
 
     if ($result = $db->query($sql)) {
@@ -3354,20 +3344,116 @@ function purged_orders($_data, $db, $user) {
             $adata[] = array(
                 'id' => (integer)$data['Order Key'],
 
-                'public_id' => sprintf('<span class="link" onClick="change_view(\'orders/%d/%d\')">%s</span>',$data['Order Store Key'], $data['Order Key'], $data['Order Public ID']),
-                'purge_status'     => sprintf('<span class="purged_status_%d">%s</span>',$data['Order Key'],$purge_status),
+                'public_id'    => sprintf('<span class="link" onClick="change_view(\'orders/%d/%d\')">%s</span>', $data['Order Store Key'], $data['Order Key'], $data['Order Public ID']),
+                'purge_status' => sprintf('<span class="purged_status_%d">%s</span>', $data['Order Key'], $purge_status),
 
-                'last_updated_date'      => strftime("%a %e %b %Y", strtotime($data['Order Last Updated Date'].' +0:00')),
-                'purged_date'      =>  sprintf('<span class="purged_date_%d">%s</span>',$data['Order Key'],(($data['Order Basket Purge Purged Date']=='' or ($data['Order Basket Purge Order Status']=='Exculpated')  )?'':strftime("%a %e %b %Y %H:%M %Z", strtotime($data['Order Basket Purge Purged Date'].' +0:00')))),
+                'last_updated_date' => strftime("%a %e %b %Y", strtotime($data['Order Last Updated Date'].' +0:00')),
+                'purged_date'       => sprintf(
+                    '<span class="purged_date_%d">%s</span>', $data['Order Key'],
+                    (($data['Order Basket Purge Purged Date'] == '' or ($data['Order Basket Purge Order Status'] == 'Exculpated')) ? '' : strftime("%a %e %b %Y %H:%M %Z", strtotime($data['Order Basket Purge Purged Date'].' +0:00')))
+                ),
 
 
-
-                'customer'       => sprintf('<span class="link" onClick="change_view(\'customers/%d/%d\')">%s</span>', $data['Order Store Key'], $data['Order Customer Key'], $data['Order Customer Name']),
-                'net_amount'   => money($data['Order Total Net Amount'], $data['Order Currency']),
+                'customer'   => sprintf('<span class="link" onClick="change_view(\'customers/%d/%d\')">%s</span>', $data['Order Store Key'], $data['Order Customer Key'], $data['Order Customer Name']),
+                'net_amount' => money($data['Order Total Net Amount'], $data['Order Currency']),
 
 
             );
         }
+    } else {
+        print_r($error_info = $db->errorInfo());
+        print "$sql\n";
+        exit;
+    }
+
+
+    $response = array(
+        'resultset' => array(
+            'state'         => 200,
+            'data'          => $adata,
+            'rtext'         => $rtext,
+            'sort_key'      => $_order,
+            'sort_dir'      => $_dir,
+            'total_records' => $total
+
+        )
+    );
+    echo json_encode($response);
+}
+
+
+function invoices_group_by_customer($_data, $db, $user) {
+
+
+    $rtext_label = 'customer';
+
+
+    include_once 'prepare_table/init.php';
+
+    $sql = "select  $fields from $table $where $wheref $group_by order by $order $order_direction limit $start_from,$number_results";
+
+
+    $adata = array();
+
+    if ($result = $db->query($sql)) {
+
+        foreach ($result as $data) {
+
+
+            switch ($data['Customer Type by Activity']) {
+                case 'ToApprove':
+                    $activity = _('To be approved');
+                    break;
+                case 'Inactive':
+                    $activity = _('Lost');
+                    break;
+                case 'Active':
+                    $activity = _('Active');
+                    break;
+                case 'Prospect':
+                    $activity = _('Prospect');
+                    break;
+                default:
+                    $activity = $data['Customer Type by Activity'];
+                    break;
+            }
+
+
+
+            if ($parameters['parent'] == 'store') {
+                $link_format  = '/customers/%d/%d';
+                $formatted_id = sprintf('<span class="link" onClick="change_view(\''.$link_format.'\')">%06d</span>', $parameters['parent_key'], $data['Customer Key'], $data['Customer Key']);
+
+            } elseif ($parameters['parent'] == 'customer_poll_query_option' or $parameters['parent'] == 'customer_poll_query' or $parameters['parent'] == 'sales_representative') {
+                $link_format  = '/customers/%d/%d';
+                $formatted_id = sprintf('<span class="link" onClick="change_view(\''.$link_format.'\')">%06d</span>', $data['Customer Store Key'], $data['Customer Key'], $data['Customer Key']);
+
+            } else {
+                $link_format = '/'.$parameters['parent'].'/%d/customer/%d';
+
+                $formatted_id = sprintf('<span class="link" onClick="change_view(\''.$link_format.'\')">%06d</span>', $parameters['parent_key'], $data['Customer Key'], $data['Customer Key']);
+
+            }
+
+
+            $adata[] = array(
+                'id'           => (integer)$data['Customer Key'],
+                'store_key'    => $data['Customer Store Key'],
+                'formatted_id' => $formatted_id,
+                'status'       => $activity,
+
+                'name' => $data['Customer Name'],
+
+                'invoices' => number($data['invoices']),
+                'refunds'  => number($data['refunds']),
+
+
+                'total_amount' => money($data['invoiced_amount'] + $data['refunded_amount'], $data['Store Currency Code']),
+
+
+            );
+        }
+
     } else {
         print_r($error_info = $db->errorInfo());
         print "$sql\n";
