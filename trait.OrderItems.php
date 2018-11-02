@@ -496,6 +496,18 @@ VALUES (%f,%s,%f,%s,%s,%s,%s,%s,%s,
         );
         $this->db->exec($sql);
 
+
+        $sql = sprintf(
+            "DELETE FROM `Order Transaction Deal Bridge` WHERE `Order Transaction Fact Key`=%d", $otf_key
+        );
+        $this->db->exec($sql);
+
+        $sql = sprintf(
+            "DELETE FROM `Order Transaction Out of Stock in Basket Bridge` WHERE `Order Transaction Fact Key`=%d", $otf_key
+        );
+        $this->db->exec($sql);
+
+
     }
 
     function get_items() {
