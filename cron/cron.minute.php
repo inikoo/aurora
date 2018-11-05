@@ -335,6 +335,18 @@ elseif($time=='22:00'){
 
 }
 
+
+
+if($time=='05:00'   ){
+
+    new_housekeeping_fork(
+        'au_housekeeping', array(
+        'type'                    => 'update_parts_cost'
+    ), $account->get('Account Code')
+    );
+
+}
+
 send_periodic_email_mailshots($time,$db, $account);
 
 
