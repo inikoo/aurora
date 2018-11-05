@@ -1600,7 +1600,7 @@ function fork_housekeeping($job) {
                     //print "$sql\n";
                     $db->exec($sql);
 
-                    $purchase_orders[$row['Purchase Order Key']]=$row['Purchase Order Key'];
+                    $purchase_orders[$row['Purchase Order Key']] = $row['Purchase Order Key'];
 
 
                     // exit;
@@ -1619,8 +1619,29 @@ function fork_housekeeping($job) {
 
 
             break;
+        case 'update_parts_cost':
 
 
+            $sql = sprintf(
+                'SELECT `Part SKU` FROM `Part Dimension`    where `Part Status`!="Not In Use" '
+            );
+
+            if ($result = $db->query($sql)) {
+                foreach ($result as $row) {
+                    $part = get_object('Part', $row['Part SKU']);
+
+                    $part->update_cost();
+
+
+                }
+
+            } else {
+                print_r($error_info = $db->errorInfo());
+                exit;
+            }
+
+
+            break;
 
 
         default:
