@@ -353,14 +353,14 @@ class DealComponent extends DB_Table {
 
         if ($old_value != $this->data['Deal Component Status']) {
 
-            $this->update_assets();
+            $this->update_deal_component_assets();
 
 
         }
     }
 
 
-    function update_assets() {
+    function update_deal_component_assets() {
         $account = get_object('Account', 1);
         require_once 'utils/new_fork.php';
         new_housekeeping_fork(
@@ -451,7 +451,7 @@ class DealComponent extends DB_Table {
             if ($old_value != $value) {
 
 
-                $this->update_assets();
+                $this->update_deal_component_assets();
 
             }
 
@@ -478,7 +478,7 @@ class DealComponent extends DB_Table {
 
         if ($old_value != $value) {
 
-            $this->update_assets();
+            $this->update_deal_component_assets();
 
 
         }

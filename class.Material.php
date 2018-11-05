@@ -13,7 +13,7 @@ include_once 'class.DB_Table.php';
 
 class Material extends DB_Table {
 
-    function Material($a1 = false, $a2 = false) {
+    function __construct($a1 = false, $a2 = false) {
 
         global $db;
         $this->db = $db;

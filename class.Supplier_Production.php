@@ -16,7 +16,7 @@ include_once 'class.Supplier.php';
 class Supplier_Production extends Supplier {
 
 
-    function Supplier_Production($a1, $a2 = false, $a3 = false) {
+    function __construct($a1, $a2 = false, $a3 = false) {
 
         global $db;
         $this->db = $db;

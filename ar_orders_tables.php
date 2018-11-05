@@ -154,6 +154,9 @@ switch ($tipo) {
     case 'invoices_group_by_customer':
         invoices_group_by_customer(get_table_parameters(), $db, $user);
         break;
+    case 'order.deals':
+        order_deals(get_table_parameters(), $db, $user);
+        break;
     default:
         $response = array(
             'state' => 405,
@@ -3419,7 +3422,6 @@ function invoices_group_by_customer($_data, $db, $user) {
             }
 
 
-
             if ($parameters['parent'] == 'store') {
                 $link_format  = '/customers/%d/%d';
                 $formatted_id = sprintf('<span class="link" onClick="change_view(\''.$link_format.'\')">%06d</span>', $parameters['parent_key'], $data['Customer Key'], $data['Customer Key']);
@@ -3457,6 +3459,124 @@ function invoices_group_by_customer($_data, $db, $user) {
     } else {
         print_r($error_info = $db->errorInfo());
         print "$sql\n";
+        exit;
+    }
+
+
+    $response = array(
+        'resultset' => array(
+            'state'         => 200,
+            'data'          => $adata,
+            'rtext'         => $rtext,
+            'sort_key'      => $_order,
+            'sort_dir'      => $_dir,
+            'total_records' => $total
+
+        )
+    );
+    echo json_encode($response);
+}
+
+
+function order_deals($_data, $db, $user) {
+
+    $rtext_label = 'offer';
+    include_once 'prepare_table/init.php';
+
+
+    $sql   = "select $fields from $table $where $wheref $group_by order by $order $order_direction  limit $start_from,$number_results";
+    $adata = array();
+
+
+    //print $sql;
+
+    if ($result = $db->query($sql)) {
+        foreach ($result as $data) {
+
+
+          //  print_r($data);
+
+
+
+
+            if ($data['Deal Key']) {
+                $name = sprintf('<span class="link" onclick="change_view(\'deals/%d/%d\')">%s</span>', $data['Deal Store Key'], $data['Deal Key'], $data['Deal Name']);
+
+                $pin='';
+/*
+                if($data['Order Transaction Event Type']=='Origin'){
+                    $pin = sprintf('<i class="far fa-paper-plane"></i>');
+
+                }else{
+                    if ($data['Order Transaction Deal Pinned'] == 'Yes') {
+                        $pin = sprintf('<i class="fa fa-thumbtack"></i>');
+
+                    } else {
+                        $pin = sprintf('<i class="fal fa-empty-set super_discreet"></i>');
+
+                    }
+                }
+*/
+
+
+
+                switch ($data['Deal Status']) {
+                    case 'Waiting':
+                        $status = sprintf(
+                            '<i class="far fa-clock discreet fa-fw" aria-hidden="true" title="%s" ></i>', _('Waiting')
+                        );
+                        break;
+                    case 'Active':
+                        $status = sprintf(
+                            '<i class="fa fa-play success fa-fw" aria-hidden="true" title="%s" ></i>', _('Active')
+                        );
+                        break;
+                    case 'Suspended':
+                        $status = sprintf(
+                            '<i class="fa fa-pause error fa-fw" aria-hidden="true" title="%s" ></i>', _('Suspended')
+                        );
+                        break;
+                    case 'Finish':
+                        $status = sprintf(
+                            '<i class="fa fa-stop discreet fa-fw" aria-hidden="true" title="%s" ></i>', _('Finished')
+                        );
+                        break;
+                    default:
+                        $status = $data['Deal Status'];
+                }
+
+            } else {
+                $name = '<span class="italic">'._('Custom made').'</span>';
+                $pin  = sprintf('<i class="fa fa-thumbtack"></i>');
+                $status='';
+            }
+
+
+            // $type = sprintf('<span class="link" onclick="change_view(\'orders/%d/%d/email/%d\')"  >%s</span>', $parent->get('Store Key'), $parent->id, $data['Email Tracking Key'], $type);
+
+
+            $adata[] = array(
+                'id'                  => (integer)$data['Order Transaction Fact Key'],
+                'name'                => $name,
+                'description'         => $data['Deal Info'],
+                'current_deal_status'              => $status,
+                'pin'                 => $pin,
+                'items'               => number($data['items']),
+                'bonus'               => number($data['bonus']),
+                'discount_percentage' => percentage($data['discount_percentage'], 1),
+                'amount_discounted'   => money($data['amount_discounted'], $data['Store Currency Code'])
+                //'state' => $state,
+
+                //'type' => $type,
+                //'date' => strftime("%a, %e %b %Y %R", strtotime($data['Email Tracking Created Date']." +00:00")),
+
+
+            );
+
+
+        }
+    } else {
+        print_r($error_info = $db->errorInfo());
         exit;
     }
 

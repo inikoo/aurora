@@ -22,7 +22,7 @@ function get_order_showcase($data, $smarty, $user, $db) {
     $order = $data['_object'];
     $store = get_object('store', $order->get('Store Key'));
 
-
+    $order->update_totals();
 
     $smarty->assign('order', $order);
     $smarty->assign('store', $store);

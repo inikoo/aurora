@@ -289,6 +289,22 @@ class Order extends DB_Table {
                     $this->db->exec($sql);
 
 
+                    $sql = sprintf(
+                        "UPDATE `Order Transaction Deal Bridge` SET `Order Transaction Deal Pinned`='No' WHERE `Order Key`=%d  ",
+                        $this->id
+                    );
+                    $this->db->exec($sql);
+
+
+                    $this->update_totals();
+                    $this->update_discounts_items();
+                    $this->update_shipping(false, false);
+                    $this->update_charges(false, false);
+                    $this->update_deal_bridge();
+                    $this->update_totals();
+
+
+
                     break;
 
                 case 'InProcess':
@@ -324,6 +340,14 @@ class Order extends DB_Table {
                         "UPDATE `Order Transaction Fact` SET `Current Dispatching State`='Submitted by Customer' WHERE `Order Key`=%d  AND `Current Dispatching State` NOT IN ('Out of Stock in Basket')  ",
 
 
+                        $this->id
+                    );
+
+                    $this->db->exec($sql);
+
+
+                    $sql = sprintf(
+                        "UPDATE `Order Transaction Deal Bridge` SET `Order Transaction Deal Pinned`='Yes' WHERE `Order Key`=%d  ",
                         $this->id
                     );
 
@@ -951,7 +975,14 @@ class Order extends DB_Table {
 
             case 'Margin':
 
-                return percentage($this->data['Order Margin'], 1);
+                if(is_numeric($this->data['Order Margin'])){
+                    return percentage($this->data['Order Margin'], 1);
+                }else{
+                    return '';
+                }
+
+
+
                 break;
 
             case 'Expected Payment':

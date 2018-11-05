@@ -12,7 +12,7 @@
 
 $tab     = 'order.deals';
 $ar_file = 'ar_orders_tables.php';
-$tipo    = 'order_deals';
+$tipo    = 'order.deals';
 
 $default = $user->get_tab_defaults($tab);
 
@@ -32,11 +32,12 @@ $table_filters = array(
 );
 
 $parameters = array(
-    'parent'     => 'store',
-    'parent_key' => $state['parent_key'],
+    'parent'     => $state['object'],
+    'parent_key' => $state['key'],
 
 );
 
+$smarty->assign('order', $state['_object']);
 
 $table_buttons   = array();
 
