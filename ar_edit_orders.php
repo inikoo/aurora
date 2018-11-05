@@ -1325,7 +1325,7 @@ function set_po_transaction_amount_to_current_cost($data, $editor, $account, $db
             if($extra_unit_cost!=$row['Supplier Part Unit Extra Cost Percentage']){
                 $amount.='<div style="color:#ffc822" class="small"><i class="fa fa-exclamation-triangle attention"></i> <span class="warning">'._('Extra cost % changed').' 
                 <span title="'._('Submitted extra cost %').'">'.percentage($row['Purchase Order Submitted Unit Extra Cost Percentage'],1,1).'</span>  <i class="far fa-arrow-right"></i>
-                <span class="strong" title="'._('Current extra cost %').'">'.percentage($row['Supplier Part Unit Extra Cost Percentage'],1,1).'</span> <i onclick="set_po_transaction_amount_to_current_extra_cost(this,\'extra_cost\','.$row['Purchase Order Transaction Fact Key'].')" class="button fa fa-sync-alt" title="'._('Update item amount to current extra cost').'"></i></div>';
+                <span class="strong" title="'._('Current extra cost %').'">'.percentage($row['Supplier Part Unit Extra Cost Percentage'],1,1).'</span> <i onclick="set_po_transaction_amount_to_current_cost(this,\'extra_cost\','.$row['Purchase Order Transaction Fact Key'].')" class="button fa fa-sync-alt" title="'._('Update item amount to current extra cost').'"></i></div>';
             }
 
 
