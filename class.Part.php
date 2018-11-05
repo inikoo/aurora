@@ -905,8 +905,11 @@ class Part extends Asset {
                 if ($this->data['Part Cost in Warehouse'] != '') {
 
                     $cost = $this->data['Part Cost in Warehouse'];
+                    $formatted_cost=sprintf(_('Current stock value per unit in warehouse %s'),money($cost/ $this->data['Part Units Per Package'],$account->get('Currency Code')));
+
                 } else {
                     $cost = $this->data['Part Cost'];
+                    $formatted_cost=sprintf(_('Supplier unit cost %s'),money($cost/ $this->data['Part Units Per Package'],$account->get('Currency Code')));
                 }
 
 
@@ -920,14 +923,12 @@ class Part extends Asset {
                 }
 
 
-                if ($this->data['Part Units Per Package'] != 0 and is_numeric(
-                        $this->data['Part Units Per Package']
-                    )) {
+                if ($this->data['Part Units Per Package'] != 0 and is_numeric($this->data['Part Units Per Package'])) {
 
                     $unit_margin = $this->data['Part Unit Price'] - ($cost / $this->data['Part Units Per Package']);
 
                     $price_other_info .= sprintf(
-                        '<span class="'.($unit_margin < 0 ? 'error' : '').'">'._('margin %s').'</span>', percentage($unit_margin, $this->data['Part Unit Price'])
+                        '<span title="%s" class="'.($unit_margin < 0 ? 'error' : '').'">'._('margin %s').'</span>',$formatted_cost,percentage($unit_margin, $this->data['Part Unit Price'])
                     );
                 }
 
