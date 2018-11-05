@@ -307,7 +307,24 @@ trait OrderCalculateTotals {
 
         $this->update_payment_state();
 
+      //  $this->update_order_discount_totals();
 
+    }
+
+
+    function update_order_discount_totals(){
+
+
+        $this->fast_update(
+            array(
+                'Order Number Items with Deals'   => $number_with_deals,
+
+
+
+
+
+            )
+        );
     }
 
 

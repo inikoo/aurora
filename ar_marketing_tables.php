@@ -233,7 +233,7 @@ function deals($_data, $db, $user) {
 
             $adata[] = array(
                 'id'          => (integer)$data['Deal Key'],
-                'status'      => $status,
+                'current_deal_status'      => $status,
                 'name'        => $name,
                 'description' => $description,
                 'from'        => $from,

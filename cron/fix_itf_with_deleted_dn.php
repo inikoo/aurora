@@ -92,7 +92,69 @@ if ($result = $db->query($sql)) {
 
 
 $sql =
+    "select *,`Date`,`Inventory Transaction Key`,`Location Key`,ITF.`Part SKU`,ITF.`Delivery Note Key`,`Note`,`Amount In`,`Inventory Transaction Type`,`Inventory Transaction Section`,`Delivery Note State`,`Inventory Transaction Quantity` from `Inventory Transaction Fact` ITF left join `Delivery Note Dimension` DN on (DN.`Delivery Note Key`=ITF.`Delivery Note Key`) where  `Inventory Transaction Section`='OIP'  and `Delivery Note State` in ('Cancelled') ;";
+
+
+//print $sql;
+
+if ($result = $db->query($sql)) {
+    foreach ($result as $row) {
+
+        $part     = get_object('Part', $row['Part SKU']);
+        $location = get_object('Location', $row['Location Key']);
+
+
+        $part_location = new PartLocation($row['Part SKU'].'_'.$row['Location Key']);
+
+
+        // print_r($row);
+
+        $sql = sprintf('update  `Inventory Transaction Fact` set 
+                        `Inventory Transaction Type` = "FailSale",`Inventory Transaction Section`="Out" 
+                          where `Inventory Transaction Key`=%d',
+
+
+
+
+                       $row['Inventory Transaction Key']);
+
+
+     //   print "$sql\n";
+
+
+        $db->exec($sql);
+        if ($part_location->ok) {
+            $part_location->redo_adjusts();
+            $part_location->update_stock();
+        } else {
+
+            $part->update_stock();
+            $location->update_stock_value();
+
+
+            foreach (
+                $part->get_production_suppliers('objects') as $production
+            ) {
+                $production->update_locations_with_errors();
+            }
+
+
+        }
+
+    }
+} else {
+    print_r($error_info = $db->errorInfo());
+    print "$sql\n";
+    exit;
+}
+
+
+
+$sql =
 "select *,`Date`,`Inventory Transaction Key`,`Location Key`,ITF.`Part SKU`,ITF.`Delivery Note Key`,`Note`,`Amount In`,`Inventory Transaction Type`,`Inventory Transaction Section`,`Delivery Note State`,`Inventory Transaction Quantity` from `Inventory Transaction Fact` ITF left join `Delivery Note Dimension` DN on (DN.`Delivery Note Key`=ITF.`Delivery Note Key`) where  `Inventory Transaction Section`='OIP'  and `Delivery Note State` in ('Approved','Packed Done','Packed','Dispatched') ;";
+
+
+//print $sql;
 
 if ($result = $db->query($sql)) {
     foreach ($result as $row) {

@@ -2,101 +2,18 @@
 /*
  About:
  Author: Raul Perusquia <raul@inikoo.com>
- Created: 29 September 2015 12:00:00 BST (aprox), Sheffield, UK
+ Created: 2 November 2018 at 10:56:53 GMT+8, Kuala Lumpur, Malaysia
  Copyright (c) 2015, Inikoo
 
  Version 3
 
 */
 
+$group_by=' group by DB.`Deal Key`,`Deal Info`';
 
-switch ($parameters['parent']) {
-    case('store'):
-        $where = sprintf(
-            ' where  `Deal Store Key`=%d  and D.`Deal Campaign Key` is NULL ', $parameters['parent_key']
-        );
-        break;
-    case('campaign'):
-        $where = sprintf(
-            ' where D.`Deal Campaign Key`=%d', $parameters['parent_key']
-        );
-        break;
-    case('account'):
-
-        $where = sprintf(' where true ');
-        break;
-
-    case('category'):
-
-
-
-        $where = sprintf(
-            ' where  `Deal Store Key`=%d', $parameters['parent_key']
-        );
-
-        break;
-
-    default:
-        $where = 'where false';
-}
-
-
-if (isset($parameters['elements_type'])) {
-    switch ($parameters['elements_type']) {
-        case 'status':
-
-            $_elements      = '';
-            $count_elements = 0;
-            foreach (
-                $parameters['elements'][$parameters['elements_type']]['items'] as $_key => $_value
-            ) {
-                if ($_value['selected']) {
-                    $count_elements++;
-                    $_elements .= ",'".addslashes($_key)."'";
-
-
-                }
-            }
-
-            $_elements = preg_replace('/^\,/', '', $_elements);
-            if ($_elements == '') {
-                $where .= ' and false';
-            } elseif ($count_elements < 4) {
-                $where .= ' and `Deal Status` in ('.$_elements.')';
-
-
-            }
-
-            break;
-        case 'trigger':
-            $_elements      = '';
-            $count_elements = 0;
-            foreach (
-                $parameters['elements'][$parameters['elements_type']]['items'] as $_key => $_value
-            ) {
-                if ($_value['selected']) {
-                    $count_elements++;
-                    $_elements .= ",'".addslashes(
-                            preg_replace('/_/', ' ', $_key)
-                        )."'";
-
-
-                }
-            }
-
-            $_elements = preg_replace('/^\,/', '', $_elements);
-            if ($_elements == '') {
-                $where .= ' and false';
-            } elseif ($count_elements < 7) {
-                $where .= ' and `Deal Trigger` in ('.$_elements.')';
-
-
-            }
-
-            break;
-
-    }
-}
+$where = sprintf(
+    ' where  DB.`Order Key`=%d', $parameters['parent_key']
+);
 
 
 $wheref = '';
@@ -112,25 +29,36 @@ $_dir   = $order_direction;
 
 if ($order == 'name') {
     $order = '`Deal Name`';
-} elseif ($order == 'orders') {
-    $order = '`Deal Total Acc Used Orders`';
-} elseif ($order == 'customers') {
-    $order = '`Deal Total Acc Used Customers`';
-} elseif ($order == 'from') {
-    $order = '`Deal Begin Date`';
-} elseif ($order == 'to') {
-    $order = '`Deal Expiration Date`';
-} elseif ($order == 'description') {
-    $order = '`Deal Term Allowances Label`';
+}else if ($order == 'description') {
+    $order = '`Deal Info`';
+}else if ($order == 'current_deal_status') {
+    $order = '`Deal Status`';
+}else if ($order == 'items') {
+    $order = 'items';
+}else if ($order == 'discount_percentage') {
+    $order = 'discount_percentage';
+}else if ($order == 'amount_discounted') {
+    $order = 'amount_discounted';
+} else if ($order == 'bonus') {
+    $order = 'bonus';
 } else {
-    $order = '`Deal Key`';
+    $order = 'DB.`Deal Key`';
 }
-$table  = '`Deal Dimension` D left join `Deal Campaign Dimension` C on (C.`Deal Campaign Key`=D.`Deal Campaign Key`) left join `Store Dimension` on (`Deal Store Key`=`Store Key`) ';
-$fields = "`Deal Key`,`Deal Name`,`Deal Term Allowances Label`,`Deal Store Key`,D.`Deal Campaign Key`,`Deal Status`,`Deal Begin Date`,`Deal Expiration Date`,
-`Deal Total Acc Used Orders`,`Deal Total Acc Used Customers`,`Store Bulk Discounts Campaign Key`";
+
+
+
+$table = '`Order Transaction Deal Bridge` DB   left join  `Deal Dimension` D  on (D.`Deal Key`=DB.`Deal Key`)  left join `Deal Campaign Dimension` C on (C.`Deal Campaign Key`=D.`Deal Campaign Key`) left join `Order Dimension` O on (DB.`Order Key`=O.`Order Key`) left join `Store Dimension` on (`Order Store Key`=`Store Key`) left join `Order Transaction Fact` OTF on (OTF.`Order Transaction Fact Key`=DB.`Order Transaction Fact Key`)   ';
+
+
+$fields = "DB.`Deal Key`,`Deal Name`,`Deal Term Allowances Label`,`Deal Store Key`,D.`Deal Campaign Key`,`Deal Status`,`Deal Begin Date`,`Deal Expiration Date`,`Store Currency Code`,
+`Deal Total Acc Used Orders`,`Deal Total Acc Used Customers`,`Store Bulk Discounts Campaign Key`,
+`Deal Description`, DB.`Order Transaction Fact Key`,`Deal Info`,`Order Transaction Deal Pinned`,`Order Transaction Deal Metadata`,
+count(*) as items,avg(`Fraction Discount`) as discount_percentage,sum(`Amount Discount`) amount_discounted,sum(`Bonus Quantity`) bonus
+";
 
 
 $sql_totals = "select count(*) as num from $table $where ";
+
 
 
 ?>
