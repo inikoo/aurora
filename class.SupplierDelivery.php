@@ -1529,7 +1529,7 @@ class SupplierDelivery extends DB_Table {
 
 
         $this->update_metadata = array(
-            'class_html'  => array(
+            'class_html'    => array(
                 'Supplier_Delivery_State'                             => $this->get('State'),
                 'Supplier_Delivery_Number_Placed_Items'               => $this->get('Number Placed Items'),
                 'Supplier_Delivery_Number_Received_and_Checked_Items' => $this->get('Number Received and Checked Items'),
@@ -1539,9 +1539,9 @@ class SupplierDelivery extends DB_Table {
                 'Supplier_Delivery_Number_Over_Delivered_Items'       => $this->get('Number Over Delivered Items'),
 
             ),
-            'checked_items'=>$this->get('Supplier Delivery Number Received and Checked Items'),
+            'checked_items' => $this->get('Supplier Delivery Number Received and Checked Items'),
 
-                'placement'   => $placement,
+            'placement'   => $placement,
             'operations'  => $operations,
             'state_index' => $this->get('State Index'),
 
@@ -1942,22 +1942,19 @@ LEFT JOIN `Supplier Part Historic Dimension` SPH ON (POTF.`Supplier Part Histori
             }
 
 
-            include_once 'class.PurchaseOrder.php';
-            $purchase_order = new PurchaseOrder(
+            $purchase_order =  get_object(
+                'PurchaseOrder',
                 $this->get('Supplier Delivery Purchase Order Key')
             );
+
+/*
+            $purchase_order->update_state(
+                'Submitted', '', array('date' => $purchase_order->get('Purchase Order Submitted Date'))
+            );
+
+*/
+
             $purchase_order->update_totals();
-
-            if ($purchase_order->get('Purchase Order Submitted Date') != '') {
-                $purchase_order->update_state(
-                    'Submitted', array(
-                                   'Purchase Order Submitted Date' => $purchase_order->get(
-                                       'Purchase Order Submitted Date'
-                                   )
-                               )
-                );
-            }
-
 
             $this->deleted = true;
 
