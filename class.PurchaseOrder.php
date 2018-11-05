@@ -1168,7 +1168,11 @@ sum(`Purchase Order Net Amount`) AS items_net, sum(`Purchase Order Extra Cost Am
                     );
 
                     $sql = sprintf(
-                        'UPDATE `Purchase Order Transaction Fact` SET `Purchase Order Transaction State`=%s WHERE `Purchase Order Key`=%d ', prepare_mysql($value), $this->id
+                        'UPDATE `Purchase Order Transaction Fact` SET 
+                            `Purchase Order Transaction State`=%s ,
+                            `Purchase Order Submitted Units`=NULL ,`Purchase Order Submitted Unit Cost`=NULL,`Purchase Order Submitted Units Per SKO`=NULL,`Purchase Order Submitted SKOs Per Carton`=NULL
+                            
+                            WHERE `Purchase Order Key`=%d ', prepare_mysql($value), $this->id
                     );
                     $this->db->exec($sql);
 
