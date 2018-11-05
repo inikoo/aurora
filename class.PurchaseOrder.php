@@ -1157,9 +1157,7 @@ sum(`Purchase Order Net Amount`) AS items_net, sum(`Purchase Order Extra Cost Am
 
 
                     $history_data = array(
-                        'History Abstract' => _(
-                            'Purchase order send back to process'
-                        ),
+                        'History Abstract' => _('Purchase order send back to process'),
                         'History Details'  => '',
                         'Action'           => 'created'
                     );
@@ -1170,7 +1168,7 @@ sum(`Purchase Order Net Amount`) AS items_net, sum(`Purchase Order Extra Cost Am
                     $sql = sprintf(
                         'UPDATE `Purchase Order Transaction Fact` SET 
                             `Purchase Order Transaction State`=%s ,
-                            `Purchase Order Submitted Units`=NULL ,`Purchase Order Submitted Unit Cost`=NULL,`Purchase Order Submitted Units Per SKO`=NULL,`Purchase Order Submitted SKOs Per Carton`=NULL
+                            `Purchase Order Submitted Units`=NULL ,`Purchase Order Submitted Unit Cost`=NULL,`Purchase Order Submitted Units Per SKO`=NULL,`Purchase Order Submitted SKOs Per Carton`=NULL,`Purchase Order Submitted Unit Extra Cost Percentage`=NULL
                             
                             WHERE `Purchase Order Key`=%d ', prepare_mysql($value), $this->id
                     );
@@ -1221,15 +1219,26 @@ sum(`Purchase Order Net Amount`) AS items_net, sum(`Purchase Order Extra Cost Am
 
                                 $supplier_part = get_object('Supplier_Part', $row['Supplier Part Key']);
 
+                                if($supplier_part->get('Supplier Part Unit Extra Cost Percentage')==''){
+                                    $extra_cost_percentage=0;
+                                }else{
+                                    $extra_cost_percentage=floatval($supplier_part->get('Supplier Part Unit Extra Cost Fraction'));
+
+                                }
+
+                                //print $supplier_part->get('Supplier Part Unit Extra Cost Percentage');
+                                //print_r($supplier_part->data);
+
 
                                 $sql = sprintf(
-                                    'update `Purchase Order Transaction Fact` set `Purchase Order Submitted Units`=%f ,`Purchase Order Submitted Unit Cost`=%f,`Purchase Order Submitted Units Per SKO`=%d,`Purchase Order Submitted SKOs Per Carton`=%d where `Purchase Order Transaction Fact Key`=%d  ',
+                                    'update `Purchase Order Transaction Fact` set `Purchase Order Submitted Units`=%f ,`Purchase Order Submitted Unit Cost`=%f,`Purchase Order Submitted Units Per SKO`=%d,`Purchase Order Submitted SKOs Per Carton`=%d ,`Purchase Order Submitted Unit Extra Cost Percentage`=%f where `Purchase Order Transaction Fact Key`=%d  ',
 
                                     $row['Purchase Order Ordering Units'], $supplier_part->get('Supplier Part Unit Cost'), $supplier_part->part->get('Part Units Per Package'), $supplier_part->get('Supplier Part Packages Per Carton'),
+                                    $extra_cost_percentage,
                                     $row['Purchase Order Transaction Fact Key']
                                 );
 
-                                //print "$sql\n";
+                               // print "$sql\n";
                                 $this->db->exec($sql);
                             }
                         } else {

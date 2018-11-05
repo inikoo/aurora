@@ -1690,7 +1690,7 @@ function order_items($_data, $db, $user, $account) {
             if($data['Purchase Order Submitted Unit Extra Cost Percentage']!=$data['Supplier Part Unit Extra Cost Percentage']){
                 $amount.='<div style="color:#ffc822" class="small"><i class="fa fa-exclamation-triangle attention"></i> <span class="warning">'._('Extra cost % changed').' 
                 <span title="'._('Submitted extra cost %').'">'.percentage($data['Purchase Order Submitted Unit Extra Cost Percentage'],1,1).'</span>  <i class="far fa-arrow-right"></i>
-                <span class="strong" title="'._('Current extra cost %').'">'.percentage($data['Supplier Part Unit Extra Cost Percentage'],1,1).'</span> <i onclick="set_po_transaction_amount_to_current_extra_cost(this,\'extra_cost\','.$data['Purchase Order Transaction Fact Key'].')" class="button fa fa-sync-alt" title="'._('Update item amount to current extra cost').'"></i></div>';
+                <span class="strong" title="'._('Current extra cost %').'">'.percentage($data['Supplier Part Unit Extra Cost Percentage'],1,1).'</span> <i onclick="set_po_transaction_amount_to_current_cost(this,\'extra_cost\','.$data['Purchase Order Transaction Fact Key'].')" class="button fa fa-sync-alt" title="'._('Update item amount to current extra cost').'"></i></div>';
             }
 
             $amount='<span class="po_amount_'.$data['Purchase Order Transaction Fact Key'].'">'.$amount.'</span>';
@@ -2371,7 +2371,7 @@ function delivery_items($_data, $db, $user, $account) {
             if($data['Purchase Order Submitted Unit Extra Cost Percentage']!=$data['Supplier Part Unit Extra Cost Percentage']){
                 $amount.='<div style="color:#ffc822" class="small"><i class="fa fa-exclamation-triangle attention"></i> <span class="warning">'._('Extra cost % changed').' 
                 <span title="'._('Submitted extra cost %').'">'.percentage($data['Purchase Order Submitted Unit Extra Cost Percentage'],1,1).'</span>  <i class="far fa-arrow-right"></i>
-                <span class="strong" title="'._('Current extra cost %').'">'.percentage($data['Supplier Part Unit Extra Cost Percentage'],1,1).'</span> <i onclick="set_po_transaction_amount_to_current_extra_cost(this,\'extra_cost\','.$data['Purchase Order Transaction Fact Key'].')" class="button fa fa-sync-alt" title="'._('Update item amount to current extra cost').'"></i></div>';
+                <span class="strong" title="'._('Current extra cost %').'">'.percentage($data['Supplier Part Unit Extra Cost Percentage'],1,1).'</span> <i onclick="set_po_transaction_amount_to_current_cost(this,\'extra_cost\','.$data['Purchase Order Transaction Fact Key'].')" class="button fa fa-sync-alt" title="'._('Update item amount to current extra cost').'"></i></div>';
             }
 
             $amount='<span class="po_amount_'.$data['Purchase Order Transaction Fact Key'].'">'.$amount.'</span>';
