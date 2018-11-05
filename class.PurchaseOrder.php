@@ -976,6 +976,8 @@ sum(`Purchase Order Net Amount`) AS items_net, sum(`Purchase Order Extra Cost Am
 
         $deliveries = $this->get_deliveries('objects');
 
+
+
         if (count($deliveries) > 0) {
 
 
@@ -1060,6 +1062,22 @@ sum(`Purchase Order Net Amount`) AS items_net, sum(`Purchase Order Extra Cost Am
             $this->update_state($min_delivery_state);
 
         }
+        else{
+
+
+            if(!in_array($this->data['Purchase Order State'],array('Submitted','InProcess','Cancelled'))){
+
+                if($this->data['Purchase Order Submitted Date']==''){
+
+                    $this->update_state('InProcess');
+                }else{
+                    $this->update_state('Submitted','',array('date'=>$this->data['Purchase Order Submitted Date']));
+                }
+            }
+
+
+
+        }
 
 
     }
@@ -1101,7 +1119,14 @@ sum(`Purchase Order Net Amount`) AS items_net, sum(`Purchase Order Extra Cost Am
     }
 
     function update_state($value, $options = '', $metadata = array()) {
-        $date = gmdate('Y-m-d H:i:s');
+
+        if(isset($metadata['date'])  and $metadata['date']!='' ){
+            $date = $metadata['date'];
+        }else{
+            $date = gmdate('Y-m-d H:i:s');
+        }
+
+
 
 
         $old_value  = $this->get('Purchase Order State');
