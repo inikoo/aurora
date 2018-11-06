@@ -41,8 +41,12 @@ trait OrderDiscountOperations {
        // 'In Process by Customer','Submitted by Customer','In Process','Ready to Pick','Picking','Ready to Pack','Ready to Ship','Dispatched','Unknown','Packing','Packed','Packed Done','Cancelled','No Picked Due Out of Stock','No Picked Due No Authorised','No Picked Due Not Found','No Picked Due Other','Suspended','Cancelled by Customer','Out of Stock in Basket'
 
         $sql = sprintf(
-            "DELETE `Order Transaction Deal Bridge` FROM `Order Transaction Deal Bridge`  OTDB left join `Order Transaction Fact` OTF on (OTF.`Order Transaction Fact Key`=OTDB.`Order Transaction Fact Key`) WHERE `Order Key` =%d AND `Deal Component Key`!=0    and  ( `Current Dispatching State`='In Process'  or  (`Current Dispatching State` in ('Submitted by Customer','Ready to Pick') and `Order Transaction Deal Pinned`='No' ) ) ", $this->id
+            "DELETE OTDB FROM `Order Transaction Deal Bridge`  OTDB left join `Order Transaction Fact` OTF on (OTF.`Order Transaction Fact Key`=OTDB.`Order Transaction Fact Key`) WHERE OTDB.`Order Key` =%d AND `Deal Component Key`!=0    and  ( `Current Dispatching State`='In Process'  or  (`Current Dispatching State` in ('Submitted by Customer','Ready to Pick') and `Order Transaction Deal Pinned`='No' ) ) ", $this->id
         );
+
+        
+       // print $sql;
+
         $this->db->exec($sql);
 
         $this->get_allowances_from_order_trigger();
