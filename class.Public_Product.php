@@ -464,7 +464,7 @@ class Public_Product {
 
             case 'Price':
 
-                $price = preg_replace('/PLN/', 'zł ', money($this->data['Product Price'], $this->data['Store Currency Code']));
+                $price = money($this->data['Product Price'], $this->data['Store Currency Code']);
 
 
 
