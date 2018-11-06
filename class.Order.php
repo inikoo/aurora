@@ -304,7 +304,6 @@ class Order extends DB_Table {
                     $this->update_totals();
 
 
-
                     break;
 
                 case 'InProcess':
@@ -563,52 +562,89 @@ class Order extends DB_Table {
                 case 'Invoice Deleted':
 
 
-                    if ($this->data['Order State'] != 'Approved') {
-                        $this->error = true;
-                        $this->msg   = 'Order is not in Approved: :(';
+                    switch ($this->get('Order State')) {
+                        case 'Approved':
 
-                        return;
+                            $this > fast_update(
+                                array(
+                                    'Order State'            => 'PackedDone',
+                                    'Order Packed Done Date' => $date,
+                                    'Order Invoiced Date'    => '',
+                                    'Order Invoice Key'      => '',
+                                    'Order Date'             => $date
+                                )
+                            );
+
+
+                            $history_data = array(
+                                'History Abstract' => _('Invoice deleted, order state back to packed and sealed'),
+                                'History Details'  => '',
+                            );
+                            $this->add_subject_history($history_data, $force_save = true, $deletable = 'No', $type = 'Changes', $this->get_object_name(), $this->id, $update_history_records_data = true);
+
+                            $operations = array(
+                                'invoice_operations',
+                                'cancel_operations'
+                            );
+
+                            $sql = sprintf(
+                                "UPDATE `Order Transaction Fact` SET `Current Dispatching State`='Packed Done' WHERE `Order Key`=%d  AND `Current Dispatching State` NOT IN ('No Picked Due Out of Stock','No Picked Due No Authorised','No Picked Due Not Found','No Picked Due Other','Out of Stock in Basket')  ",
+                                $this->id
+
+
+                            );
+
+                            $this->db->exec($sql);
+                            break;
+
+                        case 'Dispatched':
+
+                            $this->fast_update(
+                                array(
+                                    'Order Invoiced Date' => '',
+                                    'Order Invoice Key'   => '',
+                                    'Order Date'          => $date
+                                )
+                            );
+
+
+                            $history_data = array(
+                                'History Abstract' => _('Invoice deleted'),
+                                'History Details'  => '',
+                            );
+                            $this->add_subject_history($history_data, $force_save = true, $deletable = 'No', $type = 'Changes', $this->get_object_name(), $this->id, $update_history_records_data = true);
+
+                            $operations = array();
+
+
+                            break;
+
+
+                            break;
+                        default:
+                            $this->error = true;
+                            $this->msg   = 'Order is not in Approved: :(';
+
+                            return;
+
 
                     }
-                    $value = 'PackedDone';
-
-                    $this->update_field('Order State', $value, 'no_history');
-                    $this->update_field('Order Packed Done Date', $date, 'no_history');
-                    $this->update_field('Order Invoiced Date', '', 'no_history');
-
-                    $this->update_field('Order Date', $date, 'no_history');
-
-
-                    $history_data = array(
-                        'History Abstract' => _('Invoice deleted, order state back to packed and sealed'),
-                        'History Details'  => '',
-                    );
-                    $this->add_subject_history($history_data, $force_save = true, $deletable = 'No', $type = 'Changes', $this->get_object_name(), $this->id, $update_history_records_data = true);
-
-                    $operations = array(
-                        'invoice_operations',
-                        'cancel_operations'
-                    );
-
-                    $sql = sprintf(
-                        "UPDATE `Order Transaction Fact` SET `Current Dispatching State`='Packed Done' WHERE `Order Key`=%d  AND `Current Dispatching State` NOT IN ('No Picked Due Out of Stock','No Picked Due No Authorised','No Picked Due Not Found','No Picked Due Other','Out of Stock in Basket')  ",
-                        $this->id
-
-
-                    );
-
-                    $this->db->exec($sql);
 
 
                     $dn = get_object('DeliveryNote', $this->data['Order Delivery Note Key']);
 
-
-                    $dn->update(
+                    $dn->fast_update(
                         array(
                             'Delivery Note Invoiced'                    => 'No',
                             'Delivery Note Invoiced Net DC Amount'      => 0,
                             'Delivery Note Invoiced Shipping DC Amount' => 0,
-                            'Delivery Note State'                       => 'Invoice Deleted',
+                        )
+                    );
+
+                    $dn->update(
+                        array(
+
+                            'Delivery Note State' => 'Invoice Deleted',
                         )
                     );
 
@@ -631,108 +667,7 @@ class Order extends DB_Table {
                     $this->update_field('Order State', $value, 'no_history');
 
 
-                    $store = get_object('Store', $this->data['Order Store Key']);
-
-
-                    if ($store->data['Store Next Invoice Public ID Method'] == 'Order ID') {
-                        $invoice_public_id = $this->data['Order Public ID'];
-                        $file_as           = $this->data['Order File As'];
-                    } elseif ($store->data['Store Next Invoice Public ID Method'] == 'Invoice Public ID') {
-
-                        $sql = sprintf(
-                            "UPDATE `Store Dimension` SET `Store Invoice Last Invoice Public ID` = LAST_INSERT_ID(`Store Invoice Last Invoice Public ID` + 1) WHERE `Store Key`=%d", $this->data['Order Store Key']
-                        );
-                        $this->db->exec($sql);
-                        $public_id = $this->db->lastInsertId();
-
-                        $invoice_public_id = sprintf(
-                            $store->data['Store Invoice Public ID Format'], $public_id
-                        );
-
-                        //todo file as
-
-                    } else {
-
-                        $sql = sprintf(
-                            "UPDATE `Account Dimension` SET `Account Invoice Last Invoice Public ID` = LAST_INSERT_ID(`Account Invoice Last Invoice Public ID` + 1) WHERE `Account Key`=1"
-                        );
-                        $this->db->exec($sql);
-                        $public_id = $this->db->lastInsertId();
-
-                        include_once 'class.Account.php';
-                        $invoice_public_id = sprintf(
-                            $account->data['Account Invoice Public ID Format'], $public_id
-                        );
-
-                        //todo file as
-                    }
-
-
-                    $data_invoice = array(
-                        'Invoice Date'                          => $date,
-                        'Invoice Type'                          => 'Invoice',
-                        'Invoice Public ID'                     => $invoice_public_id,
-                        'Invoice File As'                       => $file_as,
-                        'Invoice Order Key'                     => $this->id,
-                        'Invoice Store Key'                     => $this->data['Order Store Key'],
-                        'Invoice Customer Key'                  => $this->data['Order Customer Key'],
-                        'Invoice Tax Code'                      => $this->data['Order Tax Code'],
-                        'Invoice Tax Shipping Code'             => $this->data['Order Tax Code'],
-                        'Invoice Tax Charges Code'              => $this->data['Order Tax Code'],
-                        'Invoice Metadata'                      => $this->data['Order Original Metadata'],
-                        'Invoice Tax Number'                    => $this->data['Order Tax Number'],
-                        'Invoice Tax Number Valid'              => $this->data['Order Tax Number Valid'],
-                        'Invoice Tax Number Validation Date'    => $this->data['Order Tax Number Validation Date'],
-                        'Invoice Tax Number Associated Name'    => $this->data['Order Tax Number Associated Name'],
-                        'Invoice Tax Number Associated Address' => $this->data['Order Tax Number Associated Address'],
-                        'Invoice Net Amount Off'                => $this->data['Order Deal Amount Off'],
-                        'Invoice Customer Contact Name'         => $this->data['Order Customer Contact Name'],
-                        'Invoice Customer Name'                 => $this->data['Order Customer Name'],
-                        'Invoice Sales Representative Key'      => $this->data['Order Sales Representative Key'],
-
-                        //   'Invoice Telephone'                    => $this->data['Order Telephone'],
-                        //     'Invoice Email'                        => $this->data['Order Email'],
-                        'Invoice Address Recipient'             => $this->data['Order Invoice Address Recipient'],
-                        'Invoice Address Organization'          => $this->data['Order Invoice Address Organization'],
-                        'Invoice Address Line 1'                => $this->data['Order Invoice Address Line 1'],
-                        'Invoice Address Line 2'                => $this->data['Order Invoice Address Line 2'],
-                        'Invoice Address Sorting Code'          => $this->data['Order Invoice Address Sorting Code'],
-                        'Invoice Address Postal Code'           => $this->data['Order Invoice Address Postal Code'],
-                        'Invoice Address Dependent Locality'    => $this->data['Order Invoice Address Dependent Locality'],
-                        'Invoice Address Locality'              => $this->data['Order Invoice Address Locality'],
-                        'Invoice Address Administrative Area'   => $this->data['Order Invoice Address Administrative Area'],
-                        'Invoice Address Country 2 Alpha Code'  => $this->data['Order Invoice Address Country 2 Alpha Code'],
-                        'Invoice Address Checksum'              => $this->data['Order Invoice Address Checksum'],
-                        'Invoice Address Formatted'             => $this->data['Order Invoice Address Formatted'],
-                        'Invoice Address Postal Label'          => $this->data['Order Invoice Address Postal Label'],
-                        'Invoice Registration Number'           => $this->data['Order Registration Number'],
-
-
-                        'Invoice Tax Liability Date' => $this->data['Order Packed Done Date'],
-
-                        'Invoice Main Source Type' => $this->data['Order Main Source Type'],
-
-                        'Invoice Items Gross Amount'    => $this->data['Order Items Gross Amount'],
-                        'Invoice Items Discount Amount' => $this->data['Order Items Discount Amount'],
-
-                        'Invoice Items Net Amount'          => $this->data['Order Items Net Amount'],
-                        'Invoice Items Out of Stock Amount' => $this->data['Order Items Out of Stock Amount'],
-                        'Invoice Shipping Net Amount'       => $this->data['Order Shipping Net Amount'],
-                        'Invoice Charges Net Amount'        => $this->data['Order Charges Net Amount'],
-                        'Invoice Insurance Net Amount'      => $this->data['Order Insurance Net Amount'],
-                        'Invoice Total Net Amount'          => $this->data['Order Total Net Amount'],
-                        'Invoice Total Tax Amount'          => $this->data['Order Total Tax Amount'],
-                        'Invoice Payments Amount'           => $this->data['Order Payments Amount'],
-                        'Invoice To Pay Amount'             => $this->data['Order To Pay Amount'],
-                        'Invoice Total Amount'              => $this->data['Order Total Amount'],
-                        'Invoice Currency'                  => $this->data['Order Currency'],
-
-
-                    );
-
-
-                    $invoice = new Invoice ('create', $data_invoice);
-
+                    $invoice = $this->create_invoice($date);
 
                     $dn = get_object('DeliveryNote', $this->data['Order Delivery Note Key']);
 
@@ -774,6 +709,8 @@ class Order extends DB_Table {
 
 
                     break;
+
+
                 case 'un_dispatch':
 
 
@@ -860,7 +797,54 @@ class Order extends DB_Table {
 
 
                     break;
+                case 'ReInvoice':
 
+
+                    if ($this->get('State Index') <= 80) {
+                        $this->error = true;
+                        $this->msg   = 'try invoice_recreated but Order has State Index <=80';
+
+                        return false;
+
+                    }
+
+                    include_once('class.Invoice.php');
+
+
+                    $invoice = $this->create_invoice($date);
+
+                    $dn = get_object('DeliveryNote', $this->data['Order Delivery Note Key']);
+
+
+                    $dn->update(
+                        array(
+                            'Delivery Note Invoiced'                    => 'Yes',
+                            'Delivery Note Invoiced Net DC Amount'      => $invoice->get('Invoice Total Net Amount') * $invoice->get('Invoice Currency Exchange'),
+                            'Delivery Note Invoiced Shipping DC Amount' => $invoice->get('Invoice Shipping Net Amount') * $invoice->get('Invoice Currency Exchange'),
+                        )
+                    );
+
+
+                    $this->fast_update(
+                        array(
+                            'Order Invoiced Date' => $date,
+                            'Order Date'          => $date,
+                            'Order Invoice Key'   => $invoice->id,
+                        )
+                    );
+
+
+                    $history_data = array(
+                        'History Abstract' => _('Order invoiced again'),
+                        'History Details'  => '',
+                    );
+                    $this->add_subject_history($history_data, $force_save = true, $deletable = 'No', $type = 'Changes', $this->table_name, $this->id);
+
+
+                    $operations = array('');
+
+
+                    break;
 
                 default:
                     exit('unknown state:::'.$value);
@@ -975,12 +959,11 @@ class Order extends DB_Table {
 
             case 'Margin':
 
-                if(is_numeric($this->data['Order Margin'])){
+                if (is_numeric($this->data['Order Margin'])) {
                     return percentage($this->data['Order Margin'], 1);
-                }else{
+                } else {
                     return '';
                 }
-
 
 
                 break;
@@ -1680,6 +1663,115 @@ class Order extends DB_Table {
             $campaign = new DealCampaign($campaign_key);
             $campaign->update_usage();
         }
+
+    }
+
+    function create_invoice($date) {
+
+
+        $store = get_object('Store', $this->data['Order Store Key']);
+
+
+        if ($store->data['Store Next Invoice Public ID Method'] == 'Order ID') {
+            $invoice_public_id = $this->data['Order Public ID'];
+            $file_as           = $this->data['Order File As'];
+        } elseif ($store->data['Store Next Invoice Public ID Method'] == 'Invoice Public ID') {
+
+            $sql = sprintf(
+                "UPDATE `Store Dimension` SET `Store Invoice Last Invoice Public ID` = LAST_INSERT_ID(`Store Invoice Last Invoice Public ID` + 1) WHERE `Store Key`=%d", $this->data['Order Store Key']
+            );
+            $this->db->exec($sql);
+            $public_id = $this->db->lastInsertId();
+
+            $invoice_public_id = sprintf(
+                $store->data['Store Invoice Public ID Format'], $public_id
+            );
+
+            //todo file as
+
+        } else {
+
+            $sql = sprintf(
+                "UPDATE `Account Dimension` SET `Account Invoice Last Invoice Public ID` = LAST_INSERT_ID(`Account Invoice Last Invoice Public ID` + 1) WHERE `Account Key`=1"
+            );
+            $this->db->exec($sql);
+            $public_id = $this->db->lastInsertId();
+
+            include_once 'class.Account.php';
+            $invoice_public_id = sprintf(
+                $account->data['Account Invoice Public ID Format'], $public_id
+            );
+
+            //todo file as
+        }
+
+
+        $data_invoice = array(
+            'Invoice Date'                          => $date,
+            'Invoice Type'                          => 'Invoice',
+            'Invoice Public ID'                     => $invoice_public_id,
+            'Invoice File As'                       => $file_as,
+            'Invoice Order Key'                     => $this->id,
+            'Invoice Store Key'                     => $this->data['Order Store Key'],
+            'Invoice Customer Key'                  => $this->data['Order Customer Key'],
+            'Invoice Tax Code'                      => $this->data['Order Tax Code'],
+            'Invoice Tax Shipping Code'             => $this->data['Order Tax Code'],
+            'Invoice Tax Charges Code'              => $this->data['Order Tax Code'],
+            'Invoice Metadata'                      => $this->data['Order Original Metadata'],
+            'Invoice Tax Number'                    => $this->data['Order Tax Number'],
+            'Invoice Tax Number Valid'              => $this->data['Order Tax Number Valid'],
+            'Invoice Tax Number Validation Date'    => $this->data['Order Tax Number Validation Date'],
+            'Invoice Tax Number Associated Name'    => $this->data['Order Tax Number Associated Name'],
+            'Invoice Tax Number Associated Address' => $this->data['Order Tax Number Associated Address'],
+            'Invoice Net Amount Off'                => $this->data['Order Deal Amount Off'],
+            'Invoice Customer Contact Name'         => $this->data['Order Customer Contact Name'],
+            'Invoice Customer Name'                 => $this->data['Order Customer Name'],
+            'Invoice Sales Representative Key'      => $this->data['Order Sales Representative Key'],
+
+            //   'Invoice Telephone'                    => $this->data['Order Telephone'],
+            //     'Invoice Email'                        => $this->data['Order Email'],
+            'Invoice Address Recipient'             => $this->data['Order Invoice Address Recipient'],
+            'Invoice Address Organization'          => $this->data['Order Invoice Address Organization'],
+            'Invoice Address Line 1'                => $this->data['Order Invoice Address Line 1'],
+            'Invoice Address Line 2'                => $this->data['Order Invoice Address Line 2'],
+            'Invoice Address Sorting Code'          => $this->data['Order Invoice Address Sorting Code'],
+            'Invoice Address Postal Code'           => $this->data['Order Invoice Address Postal Code'],
+            'Invoice Address Dependent Locality'    => $this->data['Order Invoice Address Dependent Locality'],
+            'Invoice Address Locality'              => $this->data['Order Invoice Address Locality'],
+            'Invoice Address Administrative Area'   => $this->data['Order Invoice Address Administrative Area'],
+            'Invoice Address Country 2 Alpha Code'  => $this->data['Order Invoice Address Country 2 Alpha Code'],
+            'Invoice Address Checksum'              => $this->data['Order Invoice Address Checksum'],
+            'Invoice Address Formatted'             => $this->data['Order Invoice Address Formatted'],
+            'Invoice Address Postal Label'          => $this->data['Order Invoice Address Postal Label'],
+            'Invoice Registration Number'           => $this->data['Order Registration Number'],
+
+
+            'Invoice Tax Liability Date' => $this->data['Order Packed Done Date'],
+
+            'Invoice Main Source Type' => $this->data['Order Main Source Type'],
+
+            'Invoice Items Gross Amount'    => $this->data['Order Items Gross Amount'],
+            'Invoice Items Discount Amount' => $this->data['Order Items Discount Amount'],
+
+            'Invoice Items Net Amount'          => $this->data['Order Items Net Amount'],
+            'Invoice Items Out of Stock Amount' => $this->data['Order Items Out of Stock Amount'],
+            'Invoice Shipping Net Amount'       => $this->data['Order Shipping Net Amount'],
+            'Invoice Charges Net Amount'        => $this->data['Order Charges Net Amount'],
+            'Invoice Insurance Net Amount'      => $this->data['Order Insurance Net Amount'],
+            'Invoice Total Net Amount'          => $this->data['Order Total Net Amount'],
+            'Invoice Total Tax Amount'          => $this->data['Order Total Tax Amount'],
+            'Invoice Payments Amount'           => $this->data['Order Payments Amount'],
+            'Invoice To Pay Amount'             => $this->data['Order To Pay Amount'],
+            'Invoice Total Amount'              => $this->data['Order Total Amount'],
+            'Invoice Currency'                  => $this->data['Order Currency'],
+
+
+        );
+
+
+        $invoice = new Invoice ('create', $data_invoice);
+
+        return $invoice;
 
     }
 

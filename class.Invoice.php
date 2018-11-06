@@ -392,8 +392,12 @@ class Invoice extends DB_Table {
                 print_r($error_info = $this->db->errorInfo());
                 exit;
             }
-            $this->fast_update(array('Invoice Version'=>2,'Invoice Total Profit' => $profit));
-
+            $this->fast_update(
+                array(
+                    'Invoice Version'      => 2,
+                    'Invoice Total Profit' => $profit
+                )
+            );
 
 
             $this->update_billing_region();
@@ -483,127 +487,6 @@ class Invoice extends DB_Table {
         }
 
 
-    }
-
-    function update_billing_region() {
-        $account               = get_object('Account', 1);
-        $european_union_2alpha = array(
-            'NL',
-            'BE',
-            'GB',
-            'BG',
-            'ES',
-            'IE',
-            'IT',
-            'AT',
-            'GR',
-            'CY',
-            'LV',
-            'LT',
-            'LU',
-            'MT',
-            'PT',
-            'PL',
-            'FR',
-            'RO',
-            'SE',
-            'DE',
-            'SK',
-            'SI',
-            'FI',
-            'DK',
-            'CZ',
-            'HU',
-            'EE'
-        );
-
-
-        $european_union = array(
-            'NLD',
-            'BEL',
-            'GBR',
-            'BGR',
-            'ESP',
-            'IRL',
-            'ITA',
-            'AUT',
-            'GRC',
-            'CYP',
-            'LVA',
-            'LTU',
-            'LUX',
-            'MLT',
-            'PRT',
-            'POL',
-            'FRA',
-            'ROU',
-            'SWE',
-            'DEU',
-            'SVK',
-            'SVN',
-            'FIN',
-            'DNK',
-            'CZE',
-            'HUN',
-            'EST'
-        );
-
-
-        include_once('class.Country.php');
-
-        $account_country = new Country('code', $account->get('Account Country Code'));
-
-
-        if ($account->get('Account Country Code') == 'GBR') {
-
-
-            if ($this->get('Invoice Address Country 2 Alpha Code') == 'GB' or $this->get('Invoice Address Country 2 Alpha Code') == 'IM') {
-                $billing_region = 'GBIM';
-            } else {
-                if (in_array($this->get('Invoice Address Country 2 Alpha Code'), $european_union_2alpha)) {
-                    $billing_region = 'EU';
-                } elseif ($this->get('Invoice Address Country 2 Alpha Code') == 'XX') {
-                    $billing_region = 'Unknown';
-                } else {
-                    $billing_region = 'NOEU';
-                }
-            }
-
-        } elseif (in_array($account->get('Account Country Code'), $european_union)) {
-
-            //   exit;
-
-            if ($this->get('Invoice Address Country 2 Alpha Code') == $account_country->get('Country 2 Alpha Code')) {
-                $billing_region = $account->get('Account Country Code');
-            } else {
-                if (in_array($this->get('Invoice Address Country 2 Alpha Code'), $european_union_2alpha)) {
-                    $billing_region = 'EU';
-                } elseif ($this->get('Invoice Address Country 2 Alpha Code') == 'XX') {
-
-                    $billing_region = 'Unknown';
-
-
-                } else {
-                    $billing_region = 'NOEU';
-                }
-            }
-
-
-        } else {
-
-            if ($this->get('Invoice Address Country 2 Alpha Code') == $account_country->get('Country 2 Alpha Code')) {
-                $billing_region = $account->get('Account Country Code');
-            } elseif ($this->get('Invoice Address Country 2 Alpha Code') == 'XX') {
-                $billing_region = 'Unknown';
-            } else {
-                $billing_region = 'Export';
-            }
-
-
-        }
-
-
-        $this->update(array('Invoice Billing Region' => $billing_region), 'no_history');
     }
 
     function get($key) {
@@ -796,6 +679,127 @@ class Invoice extends DB_Table {
         }
 
 
+    }
+
+    function update_billing_region() {
+        $account               = get_object('Account', 1);
+        $european_union_2alpha = array(
+            'NL',
+            'BE',
+            'GB',
+            'BG',
+            'ES',
+            'IE',
+            'IT',
+            'AT',
+            'GR',
+            'CY',
+            'LV',
+            'LT',
+            'LU',
+            'MT',
+            'PT',
+            'PL',
+            'FR',
+            'RO',
+            'SE',
+            'DE',
+            'SK',
+            'SI',
+            'FI',
+            'DK',
+            'CZ',
+            'HU',
+            'EE'
+        );
+
+
+        $european_union = array(
+            'NLD',
+            'BEL',
+            'GBR',
+            'BGR',
+            'ESP',
+            'IRL',
+            'ITA',
+            'AUT',
+            'GRC',
+            'CYP',
+            'LVA',
+            'LTU',
+            'LUX',
+            'MLT',
+            'PRT',
+            'POL',
+            'FRA',
+            'ROU',
+            'SWE',
+            'DEU',
+            'SVK',
+            'SVN',
+            'FIN',
+            'DNK',
+            'CZE',
+            'HUN',
+            'EST'
+        );
+
+
+        include_once('class.Country.php');
+
+        $account_country = new Country('code', $account->get('Account Country Code'));
+
+
+        if ($account->get('Account Country Code') == 'GBR') {
+
+
+            if ($this->get('Invoice Address Country 2 Alpha Code') == 'GB' or $this->get('Invoice Address Country 2 Alpha Code') == 'IM') {
+                $billing_region = 'GBIM';
+            } else {
+                if (in_array($this->get('Invoice Address Country 2 Alpha Code'), $european_union_2alpha)) {
+                    $billing_region = 'EU';
+                } elseif ($this->get('Invoice Address Country 2 Alpha Code') == 'XX') {
+                    $billing_region = 'Unknown';
+                } else {
+                    $billing_region = 'NOEU';
+                }
+            }
+
+        } elseif (in_array($account->get('Account Country Code'), $european_union)) {
+
+            //   exit;
+
+            if ($this->get('Invoice Address Country 2 Alpha Code') == $account_country->get('Country 2 Alpha Code')) {
+                $billing_region = $account->get('Account Country Code');
+            } else {
+                if (in_array($this->get('Invoice Address Country 2 Alpha Code'), $european_union_2alpha)) {
+                    $billing_region = 'EU';
+                } elseif ($this->get('Invoice Address Country 2 Alpha Code') == 'XX') {
+
+                    $billing_region = 'Unknown';
+
+
+                } else {
+                    $billing_region = 'NOEU';
+                }
+            }
+
+
+        } else {
+
+            if ($this->get('Invoice Address Country 2 Alpha Code') == $account_country->get('Country 2 Alpha Code')) {
+                $billing_region = $account->get('Account Country Code');
+            } elseif ($this->get('Invoice Address Country 2 Alpha Code') == 'XX') {
+                $billing_region = 'Unknown';
+            } else {
+                $billing_region = 'Export';
+            }
+
+
+        }
+
+
+        $this->update(array('Invoice Billing Region' => $billing_region), 'no_history');
     }
 
     function create($invoice_data) {
@@ -996,7 +1000,12 @@ class Invoice extends DB_Table {
                 print_r($error_info = $this->db->errorInfo());
                 exit;
             }
-            $this->fast_update(array('Invoice Version'=>2,'Invoice Total Profit' => $profit));
+            $this->fast_update(
+                array(
+                    'Invoice Version'      => 2,
+                    'Invoice Total Profit' => $profit
+                )
+            );
 
 
             $this->update_billing_region();
@@ -1030,14 +1039,13 @@ class Invoice extends DB_Table {
 
     function categorize($skip_update_sales = false) {
 
-        $category_key =0;
+        $category_key = 0;
 
 
-
-        $account=get_object('Account',1);
+        $account = get_object('Account', 1);
 
         // Todo remove after migration
-        if($account->get('Account Code')=='AW'){
+        if ($account->get('Account Code') == 'AW') {
             $sql = sprintf(
                 "SELECT * FROM `Category Dimension` WHERE `Category Subject`='Invoice' AND `Category Store Key`=%d ORDER BY `Category Function Order`, `Category Key` ", $this->data['Invoice Store Key']
             );
@@ -1067,44 +1075,39 @@ class Invoice extends DB_Table {
             // $this->data['Invoice Customer Level Type'];
 
             $category_key = $new_function($this->data);
-        }
-        else{
+        } else {
 
             include 'conf/invoice_categorize_functions.php';
             $sql = sprintf(
                 "SELECT `Invoice Category Key`,`Invoice Category Function Code`,`Invoice Category Function Argument` FROM `Invoice Category Dimension` WHERE `Invoice Category Function Code` is not null ORDER BY `Invoice Category Function Order` desc "
             );
 
-            if ($result=$this->db->query($sql)) {
-            		foreach ($result as $row) {
+            if ($result = $this->db->query($sql)) {
+                foreach ($result as $row) {
 
 
+                    if (isset($categorize_invoices_functions[$row['Invoice Category Function Code']])) {
 
-                       if(isset($categorize_invoices_functions[$row['Invoice Category Function Code']])){
-
-                          if( $categorize_invoices_functions[$row['Invoice Category Function Code']]($this->data,$row['Invoice Category Function Argument'])){
-                              $category_key=$row['Invoice Category Key'];
-                              break;
-                          }
+                        if ($categorize_invoices_functions[$row['Invoice Category Function Code']]($this->data, $row['Invoice Category Function Argument'])) {
+                            $category_key = $row['Invoice Category Key'];
+                            break;
+                        }
 
 
-                       }
+                    }
 
-            		}
-            }else {
-            		print_r($error_info=$this->db->errorInfo());
-            		print "$sql\n";
-            		exit;
+                }
+            } else {
+                print_r($error_info = $this->db->errorInfo());
+                print "$sql\n";
+                exit;
             }
-
 
 
         }
 
 
-
-
-     //   print "Cat $category_key\n";
+        //   print "Cat $category_key\n";
 
         if ($category_key) {
             $category                    = new Category($category_key);
@@ -1161,7 +1164,7 @@ class Invoice extends DB_Table {
         return strftime("%e %b %Y", strtotime($this->data[$field].' +0:00'));
     }
 
-    function delete() {
+    function delete($note='') {
 
         $is_refund = ($this->data['Invoice Type'] == 'Refund' ? true : false);
 
@@ -1171,6 +1174,7 @@ class Invoice extends DB_Table {
 
         $order->editor = $this->editor;
 
+        /*
         if ($order->get('Order State') == 'Dispatched' and !$is_refund) {
             $this->error = true;
             $this->msg   = 'invoice cant be deleted';
@@ -1178,7 +1182,7 @@ class Invoice extends DB_Table {
             return;
 
         }
-
+*/
 
         $products             = array();
         $dates                = array();
@@ -1335,6 +1339,18 @@ class Invoice extends DB_Table {
         );
         $this->db->exec($sql);
 
+
+        $sql = sprintf(
+            "INSERT INTO `Invoice Deleted Dimension` (`Invoice Deleted Key`,`Invoice Store Key`,`Invoice Deleted Public ID`,`Invoice Deleted Metadata`,`Invoice Deleted Date`,`Invoice Deleted Note`,`Invoice Deleted User Key`,`Invoice Deleted Type`,`Invoice Deleted Total Amount`) VALUE (%d,%d,%s,%s,%s,%s,%d,%s,%.2f) ",
+            $this->id, $this->data['Invoice Store Key'], prepare_mysql($this->data['Invoice Public ID']),
+            prepare_mysql(json_encode($this->data)), prepare_mysql($this->editor['Date']), prepare_mysql($note, false), prepare_mysql($this->editor['User Key']),
+            prepare_mysql($this->data['Invoice Type']),$this->data['Invoice Total Amount']
+        );
+
+
+        $this->db->exec($sql);
+
+
         if (!$is_refund) {
 
 
@@ -1350,7 +1366,7 @@ class Invoice extends DB_Table {
                 )
             );
 
-            $order->update(array('Order State' => 'Invoice Deleted'), 'no_history');
+            $order->update_state('Invoice Deleted', $options = '', $metadata = array('note'=>$note));
         } else {
 
             $order->update_totals();
