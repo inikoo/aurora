@@ -15,12 +15,10 @@ require_once 'utils/natural_language.php';
 require_once 'utils/order_functions.php';
 
 
-require_once 'class.Store.php';
-require_once 'class.Category.php';
 
 
 
-  $sql = sprintf("SELECT `Order Key` FROM `Order Dimension` where `Order State`='InBasket' ");
+  $sql = sprintf("SELECT `Order Key` FROM `Order Dimension`  left join `Store Dimension` on (`Store Key`=`Order Store Key`) where `Order State`='InBasket'and `Store Version`=2 ");
     if ($result = $db->query($sql)) {
         foreach ($result as $row) {
         
