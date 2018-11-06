@@ -365,8 +365,7 @@
                         </table>
                     </div>
                 </div>
-
-                <div id="create_invoice_operations" class="order_operation {if {$order->get('State Index')}!=80  }hide{/if}">
+                <div id="create_invoice_operations" class="order_operation  {if  $order->get('State Index')!=80}hide{/if}">
                     <div class="square_button right  " title="{t}Create invoice{/t}">
                         <i class="fal fa-file-alt  " aria-hidden="true" onclick="toggle_order_operation_dialog('create_invoice')"></i>
                         <table id="create_invoice_dialog" border="0" class="order_operation_dialog hide">
@@ -376,6 +375,22 @@
                             <tr class="changed buttons">
                                 <td><i class="fa fa-sign-out fa-flip-horizontal button" aria-hidden="true" onclick="close_dialog('create_invoice')"></i></td>
                                 <td class="aright"><span data-data='{  "field": "Order State","value": "Approved","dialog_name":"create_invoice"}' id="create_invoice_save_buttons" class="valid save button"
+                                                         onclick="save_order_operation(this)"><span class="label">{t}Save{/t}</span> <i class="fa fa-cloud fa-fw  " aria-hidden="true"></i></span></td>
+                            </tr>
+                        </table>
+                    </div>
+                </div>
+
+                <div id="recreate_invoice_operations" class="order_operation {if ( $order->get('State Index')>80 and $order->get('Order Invoice Key')>0 ) }hide{/if}">
+                    <div class="square_button right  " title="{t}Create invoice again{/t}">
+                        <i class="fas fa-file-alt  " aria-hidden="true" onclick="toggle_order_operation_dialog('recreate_invoice')"></i>
+                        <table id="recreate_invoice_dialog" border="0" class="order_operation_dialog hide">
+                            <tr class="top">
+                                <td class="label" colspan="2">{t}Invoice order again{/t}</td>
+                            </tr>
+                            <tr class="changed buttons">
+                                <td><i class="fa fa-sign-out fa-flip-horizontal button" aria-hidden="true" onclick="close_dialog('recreate_invoice')"></i></td>
+                                <td class="aright"><span data-data='{  "field": "Order State","value": "ReInvoice","dialog_name":"recreate_invoice"}' id="recreate_invoice_save_buttons" class="valid save button"
                                                          onclick="save_order_operation(this)"><span class="label">{t}Save{/t}</span> <i class="fa fa-cloud fa-fw  " aria-hidden="true"></i></span></td>
                             </tr>
                         </table>

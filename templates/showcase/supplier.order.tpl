@@ -253,7 +253,7 @@
                                     class="fa fa-ban fa-stack-1x discreet error"></i> </span>
                         <table id="undo_submit_dialog" border="0" class="order_operation_dialog hide">
                             <tr class="top">
-                                <td class="label" colspan="2">{t}Undo submition{/t}</td>
+                                <td class="label" colspan="2">{t}Undo submit{/t}</td>
                             </tr>
                             <tr class="changed buttons">
                                 <td><i class="fa fa-sign-out fa-flip-horizontal button" aria-hidden="true"
