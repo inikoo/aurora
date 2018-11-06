@@ -856,7 +856,7 @@ class PurchaseOrder extends DB_Table {
 
     }
 
-/*
+
     function update_prices() {
 
 
@@ -864,49 +864,36 @@ class PurchaseOrder extends DB_Table {
             "SELECT `Purchase Order Transaction State`,`Supplier Delivery Key`,`Purchase Order Transaction Fact Key`,`Purchase Order Ordering Units`,`Purchase Order Submitted Units`,`Supplier Part Unit Cost` FROM `Purchase Order Transaction Fact`  POTF left join `Supplier Part Dimension` SPD  on (POTF.`Supplier Part Key`=SPD.`Supplier Part Key`)  WHERE `Purchase Order Key`=%d",
             $this->id
         );
-        if ($result = $this->db->query($sql)) {
-            if ($row = $result->fetch()) {
 
-                //'InProcess','Submitted','ProblemSupplier','Confirmed','ReceivedAgent','InDelivery','Inputted','Dispatched','Received','Checked','Placed','Cancelled'
-
-
-                switch ($row['Purchase Order Transaction State`']) {
-                    case 'InProcess':
-                        $sql = sprintf(
-                            'update `Purchase Order Transaction Fact`  set `Purchase Order Net Amount`=%.2f where `Purchase Order Transaction Fact Key`=%d ', $row['Purchase Order Ordering Units'] * $row['Supplier Part Unit Cost'],
-                            $row['Purchase Order Transaction Fact Key']
-                        );
-                        $this->db->exec($sql);
-                        break;
-                    case 'Submitted':
-
-                        $sql = sprintf(
-                            'update `Purchase Order Transaction Fact` set `Purchase Order Net Amount`=%.2f ,`Purchase Order Submitted Unit Cost`=%f  where `Purchase Order Transaction Fact Key`=%d  ',
+        if ($result=$this->db->query($sql)) {
+        		foreach ($result as $row) {
+                    switch ($row['Purchase Order Transaction State']) {
+                        case 'InProcess':
+                            $sql = sprintf(
+                                'update `Purchase Order Transaction Fact`  set `Purchase Order Net Amount`=%.2f where `Purchase Order Transaction Fact Key`=%d ', $row['Purchase Order Ordering Units'] * $row['Supplier Part Unit Cost'],
+                                $row['Purchase Order Transaction Fact Key']
+                            );
 
 
-                            $row['Purchase Order Ordering Units'] * $row['Supplier Part Unit Cost'],
 
-                            $row['Supplier Part Unit Cost'],
-
-                            $row['Purchase Order Transaction Fact Key']
-                        );
-
-                        //print "$sql\n";
-                        $this->db->exec($sql);
-
-                        break;
-
-                }
+                            $this->db->exec($sql);
+                            break;
 
 
-            }
-
+                    }
+        		}
+        }else {
+        		print_r($error_info=$this->db->errorInfo());
+        		print "$sql\n";
+        		exit;
         }
+
+
 
 
         $this->update_totals();
     }
-*/
+
 
     function update_totals() {
 
@@ -916,6 +903,9 @@ class PurchaseOrder extends DB_Table {
 sum(`Purchase Order Net Amount`) AS items_net, sum(`Purchase Order Extra Cost Amount`) AS extra_cost 
       FROM `Purchase Order Transaction Fact`  POTF left join `Supplier Part Dimension` SPD  on (POTF.`Supplier Part Key`=SPD.`Supplier Part Key`)  WHERE `Purchase Order Key`=%d", $this->id
         );
+
+       // print $sql;
+
         if ($result = $this->db->query($sql)) {
             if ($row = $result->fetch()) {
 
