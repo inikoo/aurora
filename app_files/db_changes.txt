@@ -937,7 +937,11 @@ ALTER TABLE `Supplier Part Dimension` CHANGE `Supplier Part Unit Extra Cost` `Su
 ALTER TABLE `Order Transaction Fact` ADD `Order Transaction Event Type` ENUM('Origin','postSubmit') NOT NULL DEFAULT 'Origin' AFTER `Order Transaction Fact Key`, ADD INDEX (`Order Transaction Event Type`);
 
 
-ALTER TABLE `Order Transaction Deal Bridge` ADD UNIQUE (`Order Transaction Fact Key`, `Deal Campaign Key`);
+ALTER TABLE `Order Transaction Deal Bridge` ADD UNIQUE (`Order Transaction Fact Key`, `Deal Campaign Key`); <--- to do in costa MIG-01
+
+ALTER TABLE `Order No Product Transaction Deal Bridge` DROP PRIMARY KEY;
+ALTER TABLE `Order No Product Transaction Deal Bridge` ADD `Order No Product Transaction Deal Key` INT UNSIGNED NOT NULL AUTO_INCREMENT FIRST, ADD PRIMARY KEY (`Order No Product Transaction Deal Key`);
+ALTER TABLE `Order No Product Transaction Deal Bridge` ADD UNIQUE (`Order No Product Transaction Fact Key`, `Deal Component Key`);
 
 
 ======= fer migration ordering in dw and costa

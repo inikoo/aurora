@@ -398,9 +398,7 @@ class Product extends Asset {
                     $order->update_totals();
                     $order->update_shipping($row['Delivery Note Key'], false);
                     $order->update_charges($row['Delivery Note Key'], false);
-                    $order->update_discounts_no_items(
-                        $row['Delivery Note Key']
-                    );
+                    $order->update_discounts_no_items($row['Delivery Note Key']);
                     $order->update_deal_bridge();
                     $order->update_totals();
                     $order->update_number_products();

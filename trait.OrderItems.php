@@ -151,6 +151,8 @@ trait OrderItems {
 
                 $product = get_object('Product', $data['item_historic_key'], 'historic_key');
 
+
+
                 if ($total_quantity == 0) {
 
                     $this->delete_transaction(
@@ -160,7 +162,8 @@ trait OrderItems {
                     $gross   = 0;
 
 
-                } else {
+                }
+                else {
 
 
                     $estimated_weight = $total_quantity * $product->data['Product Package Weight'];
@@ -210,7 +213,7 @@ trait OrderItems {
                 //-----here
 
                 $old_quantity       = 0;
-                $old_bonus_quantity = 0;
+
                 $old_net_amount     = 0;
 
 
