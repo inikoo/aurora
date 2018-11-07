@@ -309,6 +309,7 @@ class Order extends DB_Table {
                     $this->update_discounts_items();
                     $this->update_shipping(false, false);
                     $this->update_charges(false, false);
+                    $this->update_discounts_no_items();
                     $this->update_deal_bridge();
                     $this->update_totals();
 

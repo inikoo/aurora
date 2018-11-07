@@ -350,6 +350,7 @@ function get_object($object_name, $key, $load_other_data = false) {
             $object = new Payment_Account('block', $key);
             break;
         case 'tax_category':
+        case 'tax category':
             require_once "class.TaxCategory.php";
             $object = new TaxCategory($key);
             break;

@@ -510,9 +510,7 @@ class Customer extends Subject {
                 return $order_interval;
                 break;
 
-            case('Tax Rate'):
-                return $this->get_tax_rate();
-                break;
+
             case('Tax Code'):
                 return $this->data['Customer Tax Category Code'];
                 break;
@@ -750,25 +748,7 @@ class Customer extends Subject {
 
     }
 
-    function get_tax_rate() {
-        $rate = 0;
-        $sql  = sprintf(
-            "SELECT `Tax Category Rate` FROM kbase.`Tax Category Dimension` WHERE `Tax Category Code`=%s", prepare_mysql($this->data['Customer Tax Category Code'])
-        );
 
-        if ($result = $this->db->query($sql)) {
-            if ($row = $result->fetch()) {
-                $rate = $row['Tax Category Rate'];
-            }
-        } else {
-            print_r($error_info = $this->db->errorInfo());
-            print "$sql\n";
-            exit;
-        }
-
-
-        return $rate;
-    }
 
     function get_other_delivery_address_fields($other_delivery_address_key) {
 

@@ -215,7 +215,7 @@ function fork_housekeeping($job) {
 
                                 $order->update_shipping(false, false);
                                 $order->update_charges(false, false);
-
+                                $order->update_discounts_no_items();
                                 $order->update_deal_bridge();
 
 
@@ -272,7 +272,7 @@ function fork_housekeeping($job) {
 
                             $order->update_shipping(false, false);
                             $order->update_charges(false, false);
-
+                            $order->update_discounts_no_items();
                             $order->update_deal_bridge();
 
 

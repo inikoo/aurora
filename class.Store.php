@@ -2834,26 +2834,7 @@ class Store extends DB_Table {
 
     }
 
-    function get_tax_rate() {
-        $rate = 0;
-        $sql  = sprintf(
-            "SELECT `Tax Category Rate` FROM kbase.`Tax Category Dimension` WHERE `Tax Category Code`=%s", prepare_mysql($this->data['Store Tax Category Code'])
-        );
 
-
-        if ($result = $this->db->query($sql)) {
-            if ($row = $result->fetch()) {
-                $rate = $row['Tax Category Rate'];
-            }
-        } else {
-            print_r($error_info = $this->db->errorInfo());
-            print "$sql\n";
-            exit;
-        }
-
-
-        return $rate;
-    }
 
     function get_payment_accounts($type = 'objects', $filter = '') {
 
