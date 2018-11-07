@@ -38,17 +38,21 @@ trait OrderDiscountOperations {
         $this->db->exec($sql);
 
 
-       // 'In Process by Customer','Submitted by Customer','In Process','Ready to Pick','Picking','Ready to Pack','Ready to Ship','Dispatched','Unknown','Packing','Packed','Packed Done','Cancelled','No Picked Due Out of Stock','No Picked Due No Authorised','No Picked Due Not Found','No Picked Due Other','Suspended','Cancelled by Customer','Out of Stock in Basket'
+        // 'In Process by Customer','Submitted by Customer','In Process','Ready to Pick','Picking','Ready to Pack','Ready to Ship','Dispatched','Unknown','Packing','Packed','Packed Done','Cancelled','No Picked Due Out of Stock','No Picked Due No Authorised','No Picked Due Not Found','No Picked Due Other','Suspended','Cancelled by Customer','Out of Stock in Basket'
 
         $sql = sprintf(
-            "DELETE OTDB FROM `Order Transaction Deal Bridge`  OTDB left join `Order Transaction Fact` OTF on (OTF.`Order Transaction Fact Key`=OTDB.`Order Transaction Fact Key`) WHERE OTDB.`Order Key` =%d AND `Deal Component Key`!=0    and  ( `Current Dispatching State`='In Process'  or  (`Current Dispatching State` in ('Submitted by Customer','Ready to Pick') and `Order Transaction Deal Pinned`='No' ) ) ", $this->id
+            "DELETE OTDB FROM `Order Transaction Deal Bridge`  OTDB left join `Order Transaction Fact` OTF on (OTF.`Order Transaction Fact Key`=OTDB.`Order Transaction Fact Key`) WHERE OTDB.`Order Key` =%d AND `Deal Component Key`!=0    and  ( `Current Dispatching State`='In Process'  or  (`Current Dispatching State` in ('Submitted by Customer','Ready to Pick') and `Order Transaction Deal Pinned`='No' ) ) ",
+            $this->id
+        );
+        $sql = sprintf(
+            "DELETE  FROM `Order Transaction Deal Bridge`  WHERE OTDB.`Order Key` =%d AND `Deal Component Key`!=0      ", $this->id
         );
 
-
-       // print $sql;
+        // print $sql;
 
         $this->db->exec($sql);
 
+        $this->get_allowances_from_pinned_deals();
         $this->get_allowances_from_order_trigger();
         $this->get_allowances_from_category_trigger();
         $this->get_allowances_from_product_trigger();
@@ -57,6 +61,18 @@ trait OrderDiscountOperations {
         $this->apply_items_discounts();
 
 
+    }
+
+    function get_allowances_from_pinned_deals() {
+
+/*
+        foreach ($this->get('Pinned Deal Components') as $pinned_deal_component) {
+            $this->create_allowances_from_deal_component_data(
+                $pinned_deal_component
+            );
+        }
+
+*/
     }
 
     function get_allowances_from_order_trigger($no_items = false) {
@@ -95,7 +111,7 @@ trait OrderDiscountOperations {
 
         foreach ($deals_component_data as $deal_component_data) {
 
-            $terms_ok                     = false;
+
             $this->deals['Order']['Deal'] = true;
 
             if (isset($this->deals['Order']['Deal Multiplicity'])) {
@@ -136,7 +152,6 @@ trait OrderDiscountOperations {
 
         foreach ($deals_component_data as $deal_component_data) {
 
-            $terms_ok                     = false;
             $this->deals['Order']['Deal'] = true;
 
             if (isset($this->deals['Order']['Deal Multiplicity'])) {
@@ -181,7 +196,7 @@ trait OrderDiscountOperations {
                     if ($row = $result->fetch()) {
                         if ($row['num'] == $order_number_term) {
                             $this->deals['Order']['Terms'] = true;
-                            $this->get_allowances_from_deal_component_data(
+                            $this->create_allowances_from_deal_component_data(
                                 $deal_component_data
                             );
                         }
@@ -220,7 +235,7 @@ trait OrderDiscountOperations {
                                 if ($__row = $result3->fetch()) {
                                     if ($__row['num'] == $order_number_term) {
                                         $this->deals['Order']['Terms'] = true;
-                                        $this->get_allowances_from_deal_component_data(
+                                        $this->create_allowances_from_deal_component_data(
                                             $deal_component_data
                                         );
                                     }
@@ -262,7 +277,7 @@ trait OrderDiscountOperations {
 
                             if ($this->data[$amount_type] >= $amount_term) {
                                 $this->deals['Order']['Terms'] = true;
-                                $this->get_allowances_from_deal_component_data(
+                                $this->create_allowances_from_deal_component_data(
                                     $deal_component_data
                                 );
                             }
@@ -286,11 +301,11 @@ trait OrderDiscountOperations {
 
 
                 if ($result2 = $this->db->query($sql)) {
-                    if ($r_ow = $result2->fetch()) {
+                    if ($_row = $result2->fetch()) {
                         if ($_row['num'] > 0) {
 
                             $this->deals['Order']['Terms'] = true;
-                            $this->get_allowances_from_deal_component_data(
+                            $this->create_allowances_from_deal_component_data(
                                 $deal_component_data
                             );
 
@@ -320,7 +335,7 @@ trait OrderDiscountOperations {
                         if ($_row['num'] > 0) {
                             $this->deals['Order']['Terms'] = true;
                             // print_r($deal_component_data);
-                            $this->get_allowances_from_deal_component_data($deal_component_data);
+                            $this->create_allowances_from_deal_component_data($deal_component_data);
 
                         }
                     }
@@ -341,7 +356,7 @@ trait OrderDiscountOperations {
                 $amount_type = $terms[1];
 
                 if ($this->data[$amount_type] >= $amount_term) {
-                    $this->get_allowances_from_deal_component_data(
+                    $this->create_allowances_from_deal_component_data(
                         $deal_component_data
                     );
                 }
@@ -398,7 +413,7 @@ trait OrderDiscountOperations {
                 if ($amount_term_ok and $interval_term_ok) {
 
 
-                    $this->get_allowances_from_deal_component_data($deal_component_data);
+                    $this->create_allowances_from_deal_component_data($deal_component_data);
                 }
             case('Amount AND Order Number'):
 
@@ -447,7 +462,7 @@ trait OrderDiscountOperations {
                 if ($amount_term_ok and $order_number_term_ok) {
 
 
-                    $this->get_allowances_from_deal_component_data(
+                    $this->create_allowances_from_deal_component_data(
                         $deal_component_data
                     );
                 }
@@ -477,7 +492,7 @@ trait OrderDiscountOperations {
                 if ($qty_category >= $deal_component_data['Deal Component Terms']) {
                     $terms_ok                         = true;
                     $this->deals['Category']['Terms'] = true;
-                    $this->get_allowances_from_deal_component_data($deal_component_data);
+                    $this->create_allowances_from_deal_component_data($deal_component_data);
                 }
 
 
@@ -521,7 +536,7 @@ trait OrderDiscountOperations {
                 if ($qty_category >= $deal_component_data['Deal Component Terms']) {
                     $terms_ok                         = true;
                     $this->deals['Category']['Terms'] = true;
-                    $this->get_allowances_from_deal_component_data($deal_component_data);
+                    $this->create_allowances_from_deal_component_data($deal_component_data);
                 }
 
 
@@ -552,7 +567,7 @@ trait OrderDiscountOperations {
                                 $deal_component_product_data['Deal Component Allowance Type']       = 'Get Free';
                                 $deal_component_product_data['Deal Component Allowance Target']     = 'Product';
                                 $deal_component_product_data['Deal Component Allowance Target Key'] = $row['Product ID'];
-                                $this->get_allowances_from_deal_component_data($deal_component_product_data);
+                                $this->create_allowances_from_deal_component_data($deal_component_product_data);
 
                             }
                         }
@@ -590,7 +605,7 @@ trait OrderDiscountOperations {
 
                             $deal_component_data['Deal Component Allowance'] = $deal_component_data['Deal Component Allowance'] * floor($qty / $deal_component_data['Deal Component Terms']);
 
-                            $this->get_allowances_from_deal_component_data(
+                            $this->create_allowances_from_deal_component_data(
                                 $deal_component_data
                             );
 
@@ -625,7 +640,7 @@ trait OrderDiscountOperations {
 
                 if ($qty >= $deal_component_data['Deal Component Terms']) {
                     $terms_ok = true;
-                    $this->get_allowances_from_deal_component_data(
+                    $this->create_allowances_from_deal_component_data(
                         $deal_component_data
                     );
                     //  print "----\n";
@@ -671,7 +686,7 @@ trait OrderDiscountOperations {
                             );
                     }
 
-                    $this->get_allowances_from_deal_component_data(
+                    $this->create_allowances_from_deal_component_data(
                         $deal_component_data
                     );
                 }
@@ -680,9 +695,9 @@ trait OrderDiscountOperations {
                 break;
 
             case('Every Order'):
-                $terms_ok                         = true;
+
                 $this->deals['Customer']['Terms'] = true;
-                $this->get_allowances_from_deal_component_data(
+                $this->create_allowances_from_deal_component_data(
                     $deal_component_data
                 );
                 break;
@@ -692,7 +707,7 @@ trait OrderDiscountOperations {
 
     }
 
-    function get_allowances_from_deal_component_data($deal_component_data) {
+    function create_allowances_from_deal_component_data($deal_component_data) {
 
 
         //print_r($deal_component_data);
@@ -1231,7 +1246,7 @@ trait OrderDiscountOperations {
             if (isset($this->deals['Customer']['Terms Multiplicity'])) {
                 $this->deals['Customer']['Terms Multiplicity']++;
             } else {
-                $this->deals['Customer']['Terms Multiplicity'] = 1;
+                ss['Customer']['Terms Multiplicity'] = 1;
             }
 
 
@@ -1441,11 +1456,12 @@ trait OrderDiscountOperations {
 
 
         $sql = sprintf(
-                  "DELETE `Order Transaction Deal Bridge` FROM `Order Transaction Deal Bridge`  OTDB left join `Order Transaction Fact` OTF on (OTF.`Order Transaction Fact Key`=OTDB.`Order Transaction Fact Key`) WHERE `Order Key` =%d AND `Deal Component Key`!=0    and `Current Dispatching State`='In Process' ", $this->id
-
-
+            "DELETE FROM `Order No Product Transaction Deal Bridge` WHERE `Order Key` =%d AND `Deal Component Key`!=0  ", $this->id
         );
         $this->db->exec($sql);
+
+
+
 
 
         $sql = sprintf(

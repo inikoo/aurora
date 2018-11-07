@@ -368,7 +368,13 @@ class Public_Order extends DBW_Table {
 
               break;
 
+            case 'Pinned Deal Components':
 
+                if($this->data['Order Pinned Deal Components']==''){
+                    return array();
+                }else{
+                    return json_decode($this->data['Order Pinned Deal Components'],true);
+                }
 
             default:
 

@@ -165,11 +165,20 @@ class Order extends DB_Table {
                 break;
 
 
-                break;
+
 
             case('Sticky Note'):
                 $this->update_field('Order '.$field, $value, 'no_null');
                 $this->new_value = html_entity_decode($this->new_value);
+                break;
+            case 'Pinned Deal Components':
+
+                if($this->data['Order Pinned Deal Components']==''){
+                    return array();
+                }else{
+                    return json_decode($this->data['Order Pinned Deal Components'],true);
+                }
+
                 break;
             default:
                 $base_data = $this->base_data();
