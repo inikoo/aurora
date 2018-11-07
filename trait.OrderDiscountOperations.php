@@ -45,7 +45,7 @@ trait OrderDiscountOperations {
             $this->id
         );
         $sql = sprintf(
-            "DELETE  FROM `Order Transaction Deal Bridge`  WHERE OTDB.`Order Key` =%d AND `Deal Component Key`!=0      ", $this->id
+            "DELETE  FROM `Order Transaction Deal Bridge`  WHERE `Order Key` =%d AND `Deal Component Key`!=0      ", $this->id
         );
 
         // print $sql;
@@ -1261,6 +1261,24 @@ trait OrderDiscountOperations {
     function apply_items_discounts() {
 
         // print_r($this->allowance);
+/*
+        $current_OTDB=array();
+        $sql=sprintf('select `Order Transaction Fact Key`,`Deal Campaign Key` from `Order Transaction Deal Bridge` where `Order Key`=%d ',$this->id);
+
+        if ($result=$this->db->query($sql)) {
+        		foreach ($result as $row) {
+                    $current_OTDB[$row['Order Transaction Fact Key'].'_'.$row['Deal Campaign Key']]=
+                        array(
+                            'otfk'=>$row['Order Transaction Fact Key']
+                        );
+        		}
+        }else {
+        		print_r($error_info=$this->db->errorInfo());
+        		print "$sql\n";
+        		exit;
+        }
+
+*/
         foreach (
             $this->allowance['Percentage Off'] as $otf_key => $allowance_data
         ) {
