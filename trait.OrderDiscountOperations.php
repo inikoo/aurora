@@ -1246,7 +1246,7 @@ trait OrderDiscountOperations {
             if (isset($this->deals['Customer']['Terms Multiplicity'])) {
                 $this->deals['Customer']['Terms Multiplicity']++;
             } else {
-                ss['Customer']['Terms Multiplicity'] = 1;
+                $this->deals['Customer']['Terms Multiplicity'] = 1;
             }
 
 
