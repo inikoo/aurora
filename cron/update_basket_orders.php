@@ -19,7 +19,6 @@ $sql = sprintf("SELECT `Order Key` FROM `Order Dimension`  left join `Store Dime
 if ($result = $db->query($sql)) {
     foreach ($result as $row) {
 
-        $dn_key = false;
 
         $order = get_object('order', $row['Order Key']);
 
@@ -28,8 +27,8 @@ if ($result = $db->query($sql)) {
         $order->update_discounts_items();
 
 
-        $order->update_shipping($dn_key, false);
-        $order->update_charges($dn_key, false);
+        $order->update_shipping();
+        $order->update_charges();
         $order->update_discounts_no_items();
         $order->update_deal_bridge();
 

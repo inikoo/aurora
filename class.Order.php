@@ -171,15 +171,7 @@ class Order extends DB_Table {
                 $this->update_field('Order '.$field, $value, 'no_null');
                 $this->new_value = html_entity_decode($this->new_value);
                 break;
-            case 'Pinned Deal Components':
 
-                if($this->data['Order Pinned Deal Components']==''){
-                    return array();
-                }else{
-                    return json_decode($this->data['Order Pinned Deal Components'],true);
-                }
-
-                break;
             default:
                 $base_data = $this->base_data();
 
@@ -298,12 +290,6 @@ class Order extends DB_Table {
                     $this->db->exec($sql);
 
 
-                    $sql = sprintf(
-                        "UPDATE `Order Transaction Deal Bridge` SET `Order Transaction Deal Pinned`='No' WHERE `Order Key`=%d  ",
-                        $this->id
-                    );
-                    $this->db->exec($sql);
-
 
                     $this->update_totals();
                     $this->update_discounts_items();
@@ -355,12 +341,7 @@ class Order extends DB_Table {
                     $this->db->exec($sql);
 
 
-                    $sql = sprintf(
-                        "UPDATE `Order Transaction Deal Bridge` SET `Order Transaction Deal Pinned`='Yes' WHERE `Order Key`=%d  ",
-                        $this->id
-                    );
 
-                    $this->db->exec($sql);
 
                     break;
 
@@ -1385,6 +1366,25 @@ class Order extends DB_Table {
             case 'Number Items with Deals':
 
                 return number($this->data['Order '.$key]);
+                break;
+
+            case 'Pinned Deal Components':
+
+                if($this->data['Order Pinned Deal Components']==''){
+                    return array(
+                        'in_process'=>array(
+                            'items'=>array(),
+                            'no_product_items'=>array(),
+                        ),
+                        'submitted'=>array(
+                            'items'=>array(),
+                            'no_product_items'=>array(),
+                        )
+                    );
+                }else{
+                    return json_decode($this->data['Order Pinned Deal Components'],true);
+                }
+
                 break;
 
 

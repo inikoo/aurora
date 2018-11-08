@@ -24,7 +24,7 @@ include_once 'class.DBW_Table.php';
 
 
 class Public_Order extends DBW_Table {
-    use OrderShippingOperations, OrderChargesOperations, OrderDiscountOperations, OrderItems, OrderPayments, OrderCalculateTotals,OrderBasketOperations,OrderTax;
+    use OrderShippingOperations, OrderChargesOperations, OrderDiscountOperations, OrderItems, OrderPayments, OrderCalculateTotals, OrderBasketOperations, OrderTax;
 
 
     var $amount_off_allowance_data = false;
@@ -90,7 +90,6 @@ class Public_Order extends DBW_Table {
         switch ($field) {
 
 
-
             case('Order For Collection'):
 
                 $this->update_for_collection($value, $options);
@@ -103,7 +102,6 @@ class Public_Order extends DBW_Table {
                 $this->update_tax_number_valid($value);
                 break;
             case 'Order Invoice Address':
-
 
 
                 $this->update_address('Invoice', json_decode($value, true));
@@ -174,7 +172,7 @@ class Public_Order extends DBW_Table {
 
 
                     $history_data = array(
-                        'History Abstract' => _('Order submited'),
+                        'History Abstract' => _('Order submitted by customer'),
                         'History Details'  => '',
                     );
                     $this->add_subject_history($history_data, $force_save = true, $deletable = 'No', $type = 'Changes', $this->get_object_name(), $this->id, $update_history_records_data = true);
@@ -228,7 +226,6 @@ class Public_Order extends DBW_Table {
     }
 
     function get($key, $arg1 = '') {
-
 
 
         switch ($key) {
@@ -314,11 +311,11 @@ class Public_Order extends DBW_Table {
 
             case 'Basket To Pay Amount':
 
-                if($this->data['Order Total Amount']>$this->data['Order Available Credit Amount']){
+                if ($this->data['Order Total Amount'] > $this->data['Order Available Credit Amount']) {
                     return money($this->data['Order Total Amount'] - $this->data['Order Available Credit Amount'], $this->data['Order Currency']);
 
-                }else{
-                    return money(0 , $this->data['Order Currency']);
+                } else {
+                    return money(0, $this->data['Order Currency']);
 
                 }
 
@@ -327,9 +324,9 @@ class Public_Order extends DBW_Table {
 
             case 'Order Basket To Pay Amount':
 
-                if($this->data['Order Total Amount']>$this->data['Order Available Credit Amount']){
+                if ($this->data['Order Total Amount'] > $this->data['Order Available Credit Amount']) {
                     return $this->data['Order Total Amount'] - $this->data['Order Available Credit Amount'];
-                }else{
+                } else {
                     return $this->data['Order Total Amount'];
 
                 }
@@ -346,11 +343,11 @@ class Public_Order extends DBW_Table {
 
             case 'Available Credit Amount':
 
-                if($this->data['Order Total Amount']>$this->data['Order Available Credit Amount']){
-                    return money(-1*$this->data['Order Available Credit Amount'], $this->data['Order Currency']);
+                if ($this->data['Order Total Amount'] > $this->data['Order Available Credit Amount']) {
+                    return money(-1 * $this->data['Order Available Credit Amount'], $this->data['Order Currency']);
 
-                }else{
-                    return money(-1*$this->data['Order Total Amount'], $this->data['Order Currency']);
+                } else {
+                    return money(-1 * $this->data['Order Total Amount'], $this->data['Order Currency']);
                 }
 
 
@@ -358,22 +355,31 @@ class Public_Order extends DBW_Table {
 
 
             case 'Shipping Net Amount':
-                if( $this->data['Order Shipping Method'] == 'TBC'){
+                if ($this->data['Order Shipping Method'] == 'TBC') {
                     return 'TBC';
-                }else{
+                } else {
                     return money(
                         $this->exchange * $this->data['Order Shipping Net Amount'], $this->currency_code
                     );
                 }
 
-              break;
+                break;
 
             case 'Pinned Deal Components':
 
-                if($this->data['Order Pinned Deal Components']==''){
-                    return array();
-                }else{
-                    return json_decode($this->data['Order Pinned Deal Components'],true);
+                if ($this->data['Order Pinned Deal Components'] == '') {
+                    return array(
+                        'in_process' => array(
+                            'items'            => array(),
+                            'no_product_items' => array(),
+                        ),
+                        'submitted'  => array(
+                            'items'            => array(),
+                            'no_product_items' => array(),
+                        )
+                    );
+                } else {
+                    return json_decode($this->data['Order Pinned Deal Components'], true);
                 }
 
             default:

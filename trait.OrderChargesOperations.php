@@ -12,27 +12,8 @@
 
 trait OrderChargesOperations {
 
-   
+
     function update_charges($dn_key = false, $order_picked = true) {
-/*
-        if (!$dn_key) {
-            $dn_key = '';
-            $sql    = sprintf(
-                'DELETE FROM `Order No Product Transaction Fact` WHERE `Order Key`=%d AND `Transaction Type`="Charges" AND `Delivery Note Key` IS NULL AND `Invoice Key` IS NULL', $this->id
-            );
-        } else {
-            $sql = sprintf(
-                'DELETE FROM `Order No Product Transaction Fact` WHERE `Order Key`=%d AND `Transaction Type`="Charges" AND `Delivery Note Key`=%d AND `Invoice Key` IS NULL', $this->id, $dn_key
-            );
-
-
-        }
-*/
-        $sql    = sprintf(
-            'DELETE FROM `Order No Product Transaction Fact` WHERE `Order Key`=%d AND `Transaction Type`="Charges" ', $this->id
-        );
-
-        $this->db->exec($sql);
 
 
         if ($dn_key and $order_picked) {
@@ -42,40 +23,115 @@ trait OrderChargesOperations {
         }
 
 
+        // print_r($charges_array);
 
-       // print_r($charges_array);
+
+        $charges_to_delete = array();
+
+        $sql = sprintf(
+            'select `Order No Product Transaction Fact Key`  from `Order No Product Transaction Fact`  where `Order Key`=%d and `Transaction Type`="Charges" and `Type`="Order" ',
+            $this->id
+
+
+        );
+        if ($result = $this->db->query($sql)) {
+            foreach ($result as $row) {
+                $charges_to_delete[$row['Order No Product Transaction Fact Key']] = $row['Order No Product Transaction Fact Key'];
+            }
+        } else {
+            print_r($error_info = $this->db->errorInfo());
+            print "$sql\n";
+            exit;
+        }
+
 
         $total_charges_net = 0;
         $total_charges_tax = 0;
+
+
+
+
         foreach ($charges_array as $charge_data) {
 
 
-
-
-            $net=$charge_data['Charge Net Amount'];
-            $tax=$charge_data['Charge Net Amount']*$this->data['Order Tax Rate'];
+            $net               = $charge_data['Charge Net Amount'];
+            $tax               = $charge_data['Charge Net Amount'] * $this->data['Order Tax Rate'];
             $total_charges_net += $net;
             $total_charges_tax += $tax;
 
             if (!($net == 0 and $tax == 0)) {
+
                 $sql = sprintf(
-                    "INSERT INTO `Order No Product Transaction Fact` (`Order Key`,`Order Date`,`Transaction Type`,`Transaction Type Key`,`Transaction Description`,`Transaction Gross Amount`,`Transaction Net Amount`,`Tax Category Code`,`Transaction Tax Amount`,`Currency Code`,`Currency Exchange`,`Metadata`,`Delivery Note Key`)
+                    'select `Order No Product Transaction Fact Key`  from `Order No Product Transaction Fact`  where `Order Key`=%d and `Transaction Type`="Charges" and `Transaction Type Key`=%d and `Type`="Order" ',
+                    $this->id, $charge_data['Charge Key']
 
-					VALUES (%d,%s,%s,%d,%s,%.2f,%.2f,%s,%.2f,%s,%.2f,%s,%s)  ", $this->id, prepare_mysql($this->data['Order Date']), prepare_mysql('Charges'), $charge_data['Charge Key'],
-                    prepare_mysql($charge_data['Charge Description']), $charge_data['Charge Net Amount'], $charge_data['Charge Net Amount'], prepare_mysql($this->data['Order Tax Code']),
-                    $tax,
-
-                    prepare_mysql($this->data['Order Currency']), $this->data['Order Currency Exchange'], prepare_mysql($this->data['Order Original Metadata']), prepare_mysql($dn_key)
 
                 );
-               // print "$sql\n";
 
-                $this->db->exec($sql);
+                if ($result = $this->db->query($sql)) {
+                    if ($row = $result->fetch()) {
+
+
+                        unset($charges_to_delete[$row['Order No Product Transaction Fact Key']]);
+
+                        $sql = sprintf(
+                            'update `Order No Product Transaction Fact` set `Transaction Description`=%s ,`Transaction Gross Amount`=%.2f,`Transaction Net Amount`=%.2f,`Tax Category Code`=%s,`Transaction Tax Amount`=%.2f ,
+                            `Currency Exchange`=%f,`Metadata`=%s,`Delivery Note Key`=%s
+
+                          where `Order No Product Transaction Fact Key`=%d ',
+                            prepare_mysql($charge_data['Charge Description']), $charge_data['Charge Net Amount'], $charge_data['Charge Net Amount'], prepare_mysql($this->data['Order Tax Code']), $tax,
+                            $this->data['Order Currency Exchange'], prepare_mysql($this->data['Order Original Metadata']), prepare_mysql($dn_key),
+                            $row['Order No Product Transaction Fact Key']
+
+
+                        );
+
+                        $this->db->exec($sql);
+
+
+
+
+
+
+                    } else {
+                        $sql = sprintf(
+                            "INSERT INTO `Order No Product Transaction Fact` (`Order Key`,`Order Date`,`Transaction Type`,`Transaction Type Key`,`Transaction Description`,`Transaction Gross Amount`,`Transaction Net Amount`,`Tax Category Code`,`Transaction Tax Amount`,`Currency Code`,`Currency Exchange`,`Metadata`,`Delivery Note Key`)
+
+					VALUES (%d,%s,%s,%d,%s,%.2f,%.2f,%s,%.2f,%s,%f,%s,%s)  ", $this->id, prepare_mysql($this->data['Order Date']), prepare_mysql('Charges'), $charge_data['Charge Key'],
+                            prepare_mysql($charge_data['Charge Description']), $charge_data['Charge Net Amount'], $charge_data['Charge Net Amount'], prepare_mysql($this->data['Order Tax Code']),
+                            $tax,
+
+                            prepare_mysql($this->data['Order Currency']), $this->data['Order Currency Exchange'], prepare_mysql($this->data['Order Original Metadata']), prepare_mysql($dn_key)
+
+                        );
+
+
+                        $this->db->exec($sql);
+                    }
+                } else {
+                    print_r($error_info = $this->db->errorInfo());
+                    print "$sql\n";
+                    exit;
+                }
 
 
             }
 
         }
+
+        foreach($charges_to_delete as $onpt_key){
+            $sql = sprintf(
+                'delete  from `Order No Product Transaction Fact`  where `Order No Product Transaction Fact Key`=%d ',
+                $onpt_key
+
+
+            );
+
+
+
+            $this->db->exec($sql);
+        }
+
 
 
         $this->data['Order Charges Net Amount'] = $total_charges_net;
@@ -86,28 +142,31 @@ trait OrderChargesOperations {
             "UPDATE `Order Dimension` SET `Order Charges Net Amount`=%s ,`Order Charges Tax Amount`=%.2f WHERE `Order Key`=%d", $this->data['Order Charges Net Amount'],
             $this->data['Order Charges Tax Amount'], $this->id
         );
+
+
         $this->db->exec($sql);
 
     }
 
 
-    function get_charges_public_info(){
+    function get_charges_public_info() {
 
-        $charges_public_info='';
-        $sql=sprintf('select `Charge Public Description`,`Charge Name` from `Order No Product Transaction Fact` ONPTF  left join `Charge Dimension` C on (C.`Charge Key`=`Transaction Type Key` ) where `Order Key`=%d and `Transaction Type`="Charges"',$this->id);
+        $charges_public_info = '';
+        $sql                 =
+            sprintf('select `Charge Public Description`,`Charge Name` from `Order No Product Transaction Fact` ONPTF  left join `Charge Dimension` C on (C.`Charge Key`=`Transaction Type Key` ) where `Order Key`=%d and `Transaction Type`="Charges"', $this->id);
 
-        if ($result=$this->db->query($sql)) {
-        		foreach ($result as $row) {
+        if ($result = $this->db->query($sql)) {
+            foreach ($result as $row) {
 
-                    $charges_public_info.=', <h3>'.$row['Charge Name'].'</h3><p>'.$row['Charge Public Description']."</p>";
-        		}
-        }else {
-        		print_r($error_info=$this->db->errorInfo());
-        		print "$sql\n";
-        		exit;
+                $charges_public_info .= ', <h3>'.$row['Charge Name'].'</h3><p>'.$row['Charge Public Description']."</p>";
+            }
+        } else {
+            print_r($error_info = $this->db->errorInfo());
+            print "$sql\n";
+            exit;
         }
 
-        $charges_public_info=preg_replace('/^, /','',$charges_public_info);
+        $charges_public_info = preg_replace('/^, /', '', $charges_public_info);
 
         return $charges_public_info;
 
@@ -115,10 +174,8 @@ trait OrderChargesOperations {
 
 
     function get_charges($dn_key = false) {
-        
-        
-        
-        
+
+
         $charges = array();;
         if ($this->data['Order Number Items'] == 0) {
 
@@ -129,9 +186,7 @@ trait OrderChargesOperations {
         if ($this->data['Order Charges Method'] == 'Set') {
 
 
-
-
-            $charges[]=  array(
+            $charges[] = array(
                 'Charge Net Amount'  => ($this->data['Order Charges Net Amount'] == '' ? 0 : $this->data['Order Charges Net Amount']),
                 'Charge Key'         => 0,
                 'Charge Description' => 'Set'
@@ -140,8 +195,6 @@ trait OrderChargesOperations {
             return $charges;
 
         }
-        
-        
 
 
         $sql = sprintf(
@@ -270,14 +323,14 @@ trait OrderChargesOperations {
         return $charges;
 
     }
-    
-      function use_calculated_items_charges() {
+
+    function use_calculated_items_charges() {
 
 
-          $this->update_field_switcher('Order Charges Method', 'Calculated', 'no_history');
+        $this->update_field_switcher('Order Charges Method', 'Calculated', 'no_history');
 
 
-          $this->update_charges();
+        $this->update_charges();
         $this->updated = true;
         $this->update_totals();
         $this->new_value = $this->data['Order Charges Net Amount'];
@@ -302,11 +355,8 @@ trait OrderChargesOperations {
         //$this->apply_payment_from_customer_account();
 
     }
-    
+
 }
-
-
-
 
 
 ?>

@@ -15,6 +15,7 @@ trait OrderDiscountOperations {
 
     function update_discounts_items() {
 
+        $this->deal_components = array();
 
         $this->allowance = array(
             'Percentage Off'              => array(),
@@ -67,14 +68,18 @@ trait OrderDiscountOperations {
 
     function get_allowances_from_pinned_deals() {
 
-        /*
-                foreach ($this->get('Pinned Deal Components') as $pinned_deal_component) {
-                    $this->create_allowances_from_deal_component_data(
-                        $pinned_deal_component
-                    );
-                }
 
-        */
+        $pinned_deal_components = $this->get('Pinned Deal Components');
+
+
+
+        foreach ($pinned_deal_components['submitted']['items'] as $pinned_deal_component) {
+            $this->create_allowances_from_deal_component_data(
+                $pinned_deal_component
+            );
+        }
+
+
     }
 
     function get_allowances_from_order_trigger($no_items = false) {
@@ -114,19 +119,7 @@ trait OrderDiscountOperations {
         foreach ($deals_component_data as $deal_component_data) {
 
 
-            $this->deals['Order']['Deal'] = true;
 
-            if (isset($this->deals['Order']['Deal Multiplicity'])) {
-                $this->deals['Order']['Deal Multiplicity']++;
-            } else {
-                $this->deals['Order']['Deal Multiplicity'] = 1;
-            }
-
-            if (isset($this->deals['Order']['Terms Multiplicity'])) {
-                $this->deals['Order']['Terms Multiplicity']++;
-            } else {
-                $this->deals['Order']['Terms Multiplicity'] = 1;
-            }
 
 
             $this->test_deal_terms($deal_component_data);
@@ -180,7 +173,6 @@ trait OrderDiscountOperations {
     function test_deal_terms($deal_component_data) {
 
 
-        // print_r($deal_component_data);
 
         switch ($deal_component_data['Deal Component Terms Type']) {
 
@@ -327,7 +319,7 @@ trait OrderDiscountOperations {
 
                 $sql = sprintf(
                     "SELECT count(*) AS num FROM `Order Dimension` WHERE `Order Customer Key`=%d AND `Order Key`!=%d AND `Order Dispatched Date`>=%s AND `Order State`='Dispatched' ", $this->data['Order Customer Key'], $this->id,
-                    prepare_mysql(date('Y-m-d', strtotime($this->data['Order Date']." -".$deal_component_data['Deal Component Terms'])).' 00:00:00')
+                    prepare_mysql(date('Y-m-d', strtotime(gmdate('Y-m-d H:i:s')." -".$deal_component_data['Deal Component Terms'])).' 00:00:00')
                 );
 
                 //print "$sql\n";
@@ -712,8 +704,6 @@ trait OrderDiscountOperations {
     function create_allowances_from_deal_component_data($deal_component_data) {
 
 
-        //print_r($deal_component_data);
-
         if (isset($deal_component_data['Deal Name Label'])) {
 
             $deal_info = sprintf(
@@ -722,7 +712,7 @@ trait OrderDiscountOperations {
 
             );
         } else {
-            $deal_info = 'Discount';
+            $deal_info = _('Discount');
         }
 
 
@@ -796,11 +786,17 @@ trait OrderDiscountOperations {
                 $percentage = $deal_component_data['Deal Component Allowance'];
 
 
+                //print_r($deal_component_data);
                 if ($result = $this->db->query($sql)) {
                     foreach ($result as $row) {
                         $otf_key = $row['Order Transaction Fact Key'];
                         if (isset($this->allowance['Percentage Off'][$otf_key])) {
                             if ($this->allowance['Percentage Off'][$otf_key]['Percentage Off'] <= $percentage) {
+
+
+                                $this->deal_components[$deal_component_data['Deal Component Key']] = $deal_component_data;
+
+
                                 $this->allowance['Percentage Off'][$otf_key]['Percentage Off']     = $percentage;
                                 $this->allowance['Percentage Off'][$otf_key]['Deal Campaign Key']  = $deal_component_data['Deal Component Campaign Key'];
                                 $this->allowance['Percentage Off'][$otf_key]['Deal Component Key'] = $deal_component_data['Deal Component Key'];
@@ -820,6 +816,9 @@ trait OrderDiscountOperations {
                                 'Order Transaction Gross Amount' => $row['Order Transaction Gross Amount']
 
                             );
+
+                            $this->deal_components[$deal_component_data['Deal Component Key']] = $deal_component_data;
+
                         }
                     }
                 } else {
@@ -1308,7 +1307,7 @@ trait OrderDiscountOperations {
 
         foreach ($deals_component_data as $deal_component_data) {
 
-            $terms_ok                        = false;
+
             $this->deals['Customer']['Deal'] = true;
             if (isset($this->deals['Customer']['Deal Multiplicity'])) {
                 $this->deals['Customer']['Deal Multiplicity']++;
@@ -1619,6 +1618,17 @@ trait OrderDiscountOperations {
         }
 
 
+        $pinned_deal_components = $this->get('Pinned Deal Components');
+
+        $pinned_deal_components['in_process']['items'] = $this->deal_components;
+
+        $this->fast_update(
+            array(
+                'Order Pinned Deal Components' => json_encode($pinned_deal_components)
+            )
+        );
+
+
     }
 
     function update_discounts_no_items($dn_key = false) {
@@ -1700,7 +1710,6 @@ trait OrderDiscountOperations {
         $this->amount_off_allowance_data = 0;
 
         $current_OTDBs_to_delete        = array();
-        $current_OTF_discounts_to_clear = array();
 
 
         // print_r($this->allowance);
@@ -1710,8 +1719,13 @@ trait OrderDiscountOperations {
             $this->id
         );
 
+      // print "$sql\n";
+
         if ($result = $this->db->query($sql)) {
             foreach ($result as $row) {
+
+                //print_r($row);
+
                 $current_OTDBs_to_delete[$row['Order No Product Transaction Fact Key'].'_'.$row['Deal Component Key']] =
                     array(
                         'onpt_key'          => $row['Order No Product Transaction Fact Key'],
@@ -1720,9 +1734,7 @@ trait OrderDiscountOperations {
                         'gross_amount'      => $row['Transaction Gross Amount']
                     );
 
-                if ($row['Amount Discount'] > 0) {
-                    $current_OTF_discounts_to_clear[$row['Order No Product Transaction Fact Key']] = $row['Order No Product Transaction Fact Key'];
-                }
+
 
 
             }
@@ -1733,15 +1745,19 @@ trait OrderDiscountOperations {
         }
 
 
+
+        //print_r($this->allowance);
+
+      // print_r($current_OTDBs_to_delete);
+       // exit;
+
         foreach ($this->allowance['Percentage Off'] as $otf_key => $allowance_data) {
 
             if (isset($current_OTDBs_to_delete[$otf_key.'_'.$allowance_data['Deal Component Key']])) {
                 unset($current_OTDBs_to_delete[$otf_key.'_'.$allowance_data['Deal Component Key']]);
             }
 
-            if (isset($current_OTF_discounts_to_clear[$otf_key])) {
-                unset($current_OTDBs_to_delete[$otf_key]);
-            }
+
 
 
             //todo % discount in charges or shipping
@@ -1783,9 +1799,6 @@ trait OrderDiscountOperations {
                                 unset($current_OTDBs_to_delete[$row['Order No Product Transaction Fact Key'].'_'.$allowance_data['Deal Component Key']]);
                             }
 
-                            if (isset($current_OTF_discounts_to_clear[$row['Order No Product Transaction Fact Key']])) {
-                                unset($current_OTDBs_to_delete[$row['Order No Product Transaction Fact Key']]);
-                            }
 
 
                             $sql = sprintf(
@@ -1826,9 +1839,7 @@ trait OrderDiscountOperations {
                                 unset($current_OTDBs_to_delete[$row['Order No Product Transaction Fact Key'].'_'.$allowance_data['Deal Component Key']]);
                             }
 
-                            if (isset($current_OTF_discounts_to_clear[$row['Order No Product Transaction Fact Key']])) {
-                                unset($current_OTDBs_to_delete[$row['Order No Product Transaction Fact Key']]);
-                            }
+
 
                             $sql = sprintf(
                                 "INSERT INTO `Order No Product Transaction Deal Bridge` (`Order No Product Transaction Fact Key`,`Order Key`,`Deal Campaign Key`,`Deal Key`,`Deal Component Key`,`Deal Info`,`Amount Discount`,`Fraction Discount`)
@@ -1872,20 +1883,33 @@ trait OrderDiscountOperations {
         }
 
 
-        foreach ($current_OTF_discounts_to_clear as $data) {
+        foreach ($current_OTDBs_to_delete as $data) {
 
 
             $tax_category = get_object('Tax Category', $data['tax_category_code']);
+/*
+            if(!$tax_category->id){
+
+                print_r($this);
+                print_r($data);
+                exit('error tax category');
+            }
+            if(!is_numeric($tax_category->get('Tax Category Rate'))){
+                print_r($tax_category);
+           exit('error tax category error error');
+        }
+*/
 
             $sql = sprintf(
                 'UPDATE `Order No Product Transaction Fact` SET `Transaction Total Discount Amount`=0 , `Transaction Net Amount`=`Transaction Gross Amount` ,`Transaction Tax Amount`=%.2f WHERE `Order No Product Transaction Fact Key`=%d  ',
                 $data['onpt_key'],
-                $data['gross_amount']*$tax_category->get('Tax Category Rate')
+                $data['gross_amount'] * $tax_category->get('Tax Category Rate')
             );
             $this->db->exec($sql);
 
 
         }
+
 
 
         $sql = sprintf(
