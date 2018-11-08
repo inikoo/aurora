@@ -1340,14 +1340,16 @@ class Invoice extends DB_Table {
         $this->db->exec($sql);
 
 
+
+
         $sql = sprintf(
-            "INSERT INTO `Invoice Deleted Dimension` (`Invoice Deleted Key`,`Invoice Store Key`,`Invoice Deleted Public ID`,`Invoice Deleted Metadata`,`Invoice Deleted Date`,`Invoice Deleted Note`,`Invoice Deleted User Key`,`Invoice Deleted Type`,`Invoice Deleted Total Amount`) VALUE (%d,%d,%s,%s,%s,%s,%d,%s,%.2f) ",
+            "INSERT INTO `Invoice Deleted Dimension` (`Invoice Deleted Key`,`Invoice Deleted Store Key`,`Invoice Deleted Public ID`,`Invoice Deleted Metadata`,`Invoice Deleted Date`,`Invoice Deleted Note`,`Invoice Deleted User Key`,`Invoice Deleted Type`,`Invoice Deleted Total Amount`) VALUE (%d,%d,%s,%s,%s,%s,%d,%s,%.2f) ",
             $this->id, $this->data['Invoice Store Key'], prepare_mysql($this->data['Invoice Public ID']),
-            prepare_mysql(json_encode($this->data)), prepare_mysql($this->editor['Date']), prepare_mysql($note, false), prepare_mysql($this->editor['User Key']),
+            prepare_mysql(json_encode($this->data)), prepare_mysql($this->editor['Date']), prepare_mysql($note, false), $this->editor['User Key'],
             prepare_mysql($this->data['Invoice Type']),$this->data['Invoice Total Amount']
         );
 
-
+     
         $this->db->exec($sql);
 
 
