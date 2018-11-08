@@ -11,7 +11,7 @@
 */
 
 require_once 'common.php';
-ini_set('memory_limit', '4024M');
+//ini_set('memory_limit', '4024M');
 
 
 $sql = sprintf('select `Order Key` from `Order Dimension`  order by `Order Key` desc  ' );
