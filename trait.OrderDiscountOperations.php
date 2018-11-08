@@ -1502,14 +1502,19 @@ trait OrderDiscountOperations {
             );
 
 
+
             if ($result = $this->db->query($sql)) {
 
 
-                if (isset($current_free_no_ordered_items_to_delete[$row['Order Meta Transaction Deal Key']])) {
-                    unset($current_free_no_ordered_items_to_delete[$row['Order Meta Transaction Deal Key']]);
-                }
+
 
                 if ($row = $result->fetch()) {
+
+
+                    if (isset($current_free_no_ordered_items_to_delete[$row['Order Meta Transaction Deal Key']])) {
+                        unset($current_free_no_ordered_items_to_delete[$row['Order Meta Transaction Deal Key']]);
+                    }
+
                     $sql = sprintf(
                         "UPDATE  `Order Meta Transaction Deal Dimension`  SET `Bonus Quantity`=%f,`Bonus Product Key`=%d,`Bonus Product ID`=%d ,`Bonus Product Category Key`=%d ,`Bonus Order Transaction Fact Key`=%d WHERE `Order Meta Transaction Deal Key`=%d",
 

@@ -942,7 +942,6 @@ ALTER TABLE `Order Transaction Deal Bridge` ADD UNIQUE (`Order Transaction Fact 
 ALTER TABLE `Order No Product Transaction Deal Bridge` DROP PRIMARY KEY;
 ALTER TABLE `Order No Product Transaction Deal Bridge` ADD `Order No Product Transaction Deal Key` INT UNSIGNED NOT NULL AUTO_INCREMENT FIRST, ADD PRIMARY KEY (`Order No Product Transaction Deal Key`);
 ALTER TABLE `Order No Product Transaction Deal Bridge` ADD UNIQUE (`Order No Product Transaction Fact Key`, `Deal Component Key`);
-ALTER TABLE  `Order No Product Transaction Fact` ADD UNIQUE (`Order Key`, `Transaction Type`, `Transaction Type Key`);
 
 
 ======= fer migration ordering in dw and costa
