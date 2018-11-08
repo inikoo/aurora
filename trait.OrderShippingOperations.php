@@ -63,22 +63,6 @@ trait OrderShippingOperations {
 
         $this->update_field_switcher('Order Shipping Method', $shipping_method, 'no_history');
 
-        /*
-
-        if (!$dn_key) {
-
-            $sql = sprintf(
-                'DELETE FROM `Order No Product Transaction Fact` WHERE `Order Key`=%d AND `Transaction Type`="Shipping" ', $this->id
-            );
-        } else {
-            $sql = sprintf(
-                'DELETE FROM `Order No Product Transaction Fact` WHERE `Order Key`=%d AND `Transaction Type`="Shipping"  AND `Delivery Note Key`=%d AND `Invoice Key` IS NULL', $this->id, $dn_key
-            );
-
-
-        }
-
-*/
 
          $sql    = sprintf(
              'DELETE FROM `Order No Product Transaction Fact` WHERE `Order Key`=%d AND `Transaction Type`="Shipping" ', $this->id

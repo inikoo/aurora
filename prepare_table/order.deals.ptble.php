@@ -52,7 +52,7 @@ $table = '`Order Transaction Deal Bridge` DB   left join  `Deal Dimension` D  on
 
 $fields = "DB.`Deal Key`,`Deal Name`,`Deal Term Allowances Label`,`Deal Store Key`,D.`Deal Campaign Key`,`Deal Status`,`Deal Begin Date`,`Deal Expiration Date`,`Store Currency Code`,
 `Deal Total Acc Used Orders`,`Deal Total Acc Used Customers`,`Store Bulk Discounts Campaign Key`,
-`Deal Description`, DB.`Order Transaction Fact Key`,`Deal Info`,`Order Transaction Deal Pinned`,`Order Transaction Deal Metadata`,
+`Deal Description`, DB.`Order Transaction Fact Key`,`Deal Info`,`Order Transaction Deal Metadata`,
 count(*) as items,avg(`Fraction Discount`) as discount_percentage,sum(`Amount Discount`) amount_discounted,sum(`Bonus Quantity`) bonus
 ";
 
