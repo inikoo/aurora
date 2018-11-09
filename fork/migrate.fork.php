@@ -390,7 +390,7 @@ function migrate_customer_data($customer_key, $db) {
     $customer->update_address('Delivery', $address_fields, 'no_history no_old_address');
 
 
-    $fiscal_name  = get_fiscal_name($customer);
+    $fiscal_name  = get_fiscal_name($customer,$db);
     $organization = $fiscal_name;
     $recipient    = $customer->data['Customer Main Contact Name'];
     if ($fiscal_name == '') {
@@ -743,7 +743,7 @@ function address_fields($address_key, $recipient, $organization, $default_countr
 }
 
 
-function get_fiscal_name($customer) {
+function get_fiscal_name($customer,$db) {
     if ($customer->data['Customer Type'] == 'Person') {
         $customer->data['Customer Fiscal Name'] = $customer->data['Customer Name'];
 
@@ -756,17 +756,24 @@ function get_fiscal_name($customer) {
     $sql = sprintf(
         "select `$subject Fiscal Name` as fiscal_name from `$subject Dimension` where `$subject Key`=%d ", $subject_key
     );
-    $res = mysql_query($sql);
 
-    if ($row = mysql_fetch_assoc($res)) {
-        $customer->data['Customer Fiscal Name'] = $row['fiscal_name'];
 
-        return $customer->data['Customer Fiscal Name'];
-    } else {
-        $customer->error;
+    if ($result=$db->query($sql)) {
+        if ($row = $result->fetch()) {
+            $customer->data['Customer Fiscal Name'] = $row['fiscal_name'];
 
-        return '';
+            return $customer->data['Customer Fiscal Name'];
+    	}else{
+            return '';
+        }
+    }else {
+    	print_r($error_info=$db->errorInfo());
+    	print "$sql\n";
+    	exit;
     }
+
+
+
 
 
 }
