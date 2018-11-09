@@ -10,8 +10,18 @@
  Version 2.0
 */
 
-
 error_reporting(E_ALL ^ E_DEPRECATED);
+
+require_once 'vendor/autoload.php';
+require_once 'utils/sentry.php';
+
+
+
+
+
+
+
+
 
 include_once 'utils/natural_language.php';
 include_once 'utils/general_functions.php';

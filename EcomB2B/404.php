@@ -10,6 +10,8 @@
   Version 2.0
 */
 
+require_once 'vendor/autoload.php';
+require_once 'utils/sentry.php';
 
 
 $not_found_current_page = $_REQUEST['original_url'];

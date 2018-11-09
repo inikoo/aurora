@@ -11,8 +11,8 @@
 */
 
 require_once 'vendor/autoload.php';
-$sentry_client = new Raven_Client('https://7c38fecb8a274f7e93cb0488ad22ca10@sentry.io/1319834');
-$sentry_client->install();
+require_once 'utils/sentry.php';
+
 
 $redis = new Redis();
 if(  $redis->connect('127.0.0.1', 6379)){

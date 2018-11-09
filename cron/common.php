@@ -10,8 +10,10 @@
 
 */
 
-
 chdir('../');
+
+require_once 'vendor/autoload.php';
+require_once 'utils/sentry.php';
 
 require_once 'keyring/dns.php';
 require_once 'keyring/key.php';
