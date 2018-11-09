@@ -60,6 +60,12 @@ class _Address extends DB_Table {
 
 
         global $db;
+
+
+
+
+
+
         $this->db = $db;
 
         $this->table_name    = 'Address';
@@ -143,17 +149,14 @@ class _Address extends DB_Table {
         }
 
 
-        $result = mysql_query($sql);
-        if ($this->data = mysql_fetch_array($result, MYSQL_ASSOC)) {
+        if ($this->data = $this->db->query($sql)->fetch()) {
+
             $this->id = $this->data['Address Key'];
-        } else {
+        }else{
             $this->msg   = "address do not exists";
             $this->error = true;
-
-
-            // exit(" $sql\n can not open address");
-
         }
+
     }
 
     function find($raw_data, $options = '') {

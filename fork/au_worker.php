@@ -13,6 +13,8 @@
 error_reporting(E_ALL ^ E_DEPRECATED);
 
 require_once 'vendor/autoload.php';
+$sentry_client = new Raven_Client('https://825ad207fd0f4d50989a28857783377b@sentry.io/1319906');
+$sentry_client->install();
 
 
 include 'utils/aes.php';
@@ -50,7 +52,7 @@ $account = false;
 while ($worker->work()) {
     if ($worker->returnCode() == GEARMAN_SUCCESS) {
         //$count_number_used++;
-        $db=null;
+        $db = null;
         exec("kill -9 ".getmypid());
         die();
     }
@@ -97,7 +99,7 @@ function get_fork_metadata($job) {
     }
 
     // tod remove after spain migration
-    if($inikoo_account_code=='AWR'){
+    if ($inikoo_account_code == 'AWR') {
         return false;
     }
 
