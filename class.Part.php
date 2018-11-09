@@ -4753,6 +4753,7 @@ class Part extends Asset {
     function update_commercial_value() {
 
         include_once 'utils/currency_functions.php';
+        include_once 'utils/date_functions.php';
 
         $num_all_products        = 0;
         $num_products            = 0;
