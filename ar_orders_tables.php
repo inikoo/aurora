@@ -1813,10 +1813,16 @@ function order_items($_data, $db, $user) {
 
 
 
-        $deal_info_data=preg_split('/\|\|/',$data['Deal Info']);
+
+        if($data['Deal Info']!=''){
+            $deal_info_data=preg_split('/\|\|/',$data['Deal Info']);
 
 
-        $deal_info = '<div id="transaction_deal_info_'.$data['Order Transaction Fact Key'].'" class="deal_info">'.($deal_info_data[1]=='Yes'?'<i class="fas fa-thumbtack"></i> ':'').$deal_info_data[0].'</div>';
+            $deal_info = '<div id="transaction_deal_info_'.$data['Order Transaction Fact Key'].'" class="deal_info">'.($deal_info_data[1]=='Yes'?'<i class="fas fa-thumbtack"></i> ':'').$deal_info_data[0].'</div>';
+
+        }else{
+            $deal_info='';
+        }
 
 
         $units    = $data['Product Units Per Case'];
