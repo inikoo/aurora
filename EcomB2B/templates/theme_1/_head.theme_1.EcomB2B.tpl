@@ -38,13 +38,15 @@
     <!--[if lt IE 9]>
     <script src="https://html5shim.googlecode.com/svn/trunk/html5.js"></script>
 
-    {if $smarty.server.SERVER_NAME!='ecom.bali' }
-    <script src="https://browser.sentry-cdn.com/4.3.0/bundle.min.js" crossorigin="anonymous"></script>
-    <script>
-        Sentry.init({ dsn: 'https://bdeef00d9ed04614a5b3245c0ba178ec@sentry.io/1319896' });
-    </script>
-    {/if}
+
     <![endif]-->
+
+    {if $smarty.server.SERVER_NAME!='ecom.bali' }
+        <script src="https://browser.sentry-cdn.com/4.3.0/bundle.min.js" crossorigin="anonymous"></script>
+        <script>
+            Sentry.init({ dsn: 'https://bdeef00d9ed04614a5b3245c0ba178ec@sentry.io/1319896' });
+        </script>
+    {/if}
     <link rel="canonical" href="{$webpage->get('URL')}"/>
 
 
