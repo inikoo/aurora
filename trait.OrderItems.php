@@ -152,7 +152,6 @@ trait OrderItems {
                 $product = get_object('Product', $data['item_historic_key'], 'historic_key');
 
 
-
                 if ($total_quantity == 0) {
 
                     $this->delete_transaction(
@@ -162,8 +161,7 @@ trait OrderItems {
                     $gross   = 0;
 
 
-                }
-                else {
+                } else {
 
 
                     $estimated_weight = $total_quantity * $product->data['Product Package Weight'];
@@ -212,9 +210,9 @@ trait OrderItems {
             } else {
                 //-----here
 
-                $old_quantity       = 0;
+                $old_quantity = 0;
 
-                $old_net_amount     = 0;
+                $old_net_amount = 0;
 
 
                 $total_quantity = $quantity + $bonus_quantity;
@@ -386,7 +384,8 @@ VALUES (%f,%s,%f,%s,%s,%s,%s,%s,%s,
                 $operations = array(
                     'send_to_warehouse_operations',
                     'cancel_operations',
-                    'undo_submit_operations'
+                    'undo_submit_operations',
+                    'proforma_operations'
                 );
             }
 
@@ -403,9 +402,48 @@ VALUES (%f,%s,%f,%s,%s,%s,%s,%s,%s,
         }
 
 
+      //  print_r($operations);
+
+        $hide         = array();
+        $show         = array();
+        $add_class    = array();
+        $remove_class = array();
+
+
+        if ($this->get('Order Charges Net Amount') == 0) {
+
+            $add_class['order_charges_container'] = 'very_discreet';
+
+            $hide[] = 'order_charges_info';
+        } else {
+            $remove_class['order_charges_container'] = 'very_discreet';
+
+            $show[] = 'order_charges_info';
+        }
+
+
+        if ($this->get('Order Items Discount Amount') == 0) {
+
+
+            $hide[] = 'order_items_discount_container';
+        } else {
+
+            $show[] = 'order_items_discount_container';
+        }
+
+
+        if ($this->get('Order Charges Discount Amount') == 0) {
+
+
+            $hide[] = 'Charges_Discount_Amount_tr';
+        } else {
+
+            $show[] = 'Charges_Discount_Amount_tr';
+        }
+
         $this->update_metadata = array(
 
-            'class_html'  => array(
+            'class_html'   => array(
                 'Order_State'      => $this->get('State'),
                 'Items_Net_Amount' => $this->get('Items Net Amount'),
 
@@ -423,9 +461,16 @@ VALUES (%f,%s,%f,%s,%s,%s,%s,%s,%s,
                 'Profit_Amount'                 => $this->get('Profit Amount'),
                 'Order_Margin'                  => $this->get('Margin'),
                 'Order_Number_items'            => $this->get('Number Items'),
-                'Order_Number_Items_with_Deals' => $this->get('Number Items with Deals')
+                'Order_Number_Items_with_Deals' => $this->get('Number Items with Deals'),
+                'Charges_Discount_Amount'       => $this->get('Charges Discount Amount'),
+                'Charges_Discount_Percentage'     => $this->get('Charges Discount Percentage')
 
             ),
+            'hide'         => $hide,
+            'show'         => $show,
+            'add_class'    => $add_class,
+            'remove_class' => $remove_class,
+
             'operations'  => $operations,
             'state_index' => $this->get('State Index'),
             'to_pay'      => $this->get('Order To Pay Amount'),

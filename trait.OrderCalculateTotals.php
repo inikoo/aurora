@@ -28,6 +28,7 @@ trait OrderCalculateTotals {
         $replacement_costs               = 0;
         $items_cost                      = 0;
 
+
         $sql = sprintf(
             "SELECT
 		count(*) AS number_items,
@@ -71,7 +72,7 @@ trait OrderCalculateTotals {
 		
 		FROM `Order Transaction Fact` WHERE `Order Key`=%d  ", $this->id
         );
-       // print $sql;
+        // print $sql;
 
         if ($result = $this->db->query($sql)) {
             if ($row = $result->fetch()) {
@@ -105,7 +106,6 @@ trait OrderCalculateTotals {
             print_r($error_info = $this->db->errorInfo());
             exit;
         }
-
 
 
         $profit = $items_net_for_profit_calculation - $items_cost - $replacement_costs;
@@ -197,24 +197,39 @@ trait OrderCalculateTotals {
         $shipping  = 0;
         $charges   = 0;
         $insurance = 0;
-        $others    = 0;
+
+        $total_charges_discounts         = 0;
+        $total_shipping_discounts        = 0;
+        $total_insurance_discounts        = 0;
+
+        $total_charges_gross_amount=0;
+        $total_shipping_gross_amount=0;
+        $total_insurance_gross_amount=0;
+
+
 
         $sql = sprintf(
-            "SELECT `Transaction Type`,  sum(`Transaction Net Amount`) AS net  FROM `Order No Product Transaction Fact` WHERE
-		`Order Key`=%d  AND `Type`='Order' GROUP BY  `Transaction Type`  ", $this->id
+            "SELECT `Transaction Type`,  sum(`Transaction Net Amount`) AS net , sum(`Transaction Gross Amount`) AS gross ,sum(`Transaction Total Discount Amount`) AS discounts  FROM `Order No Product Transaction Fact` WHERE `Order Key`=%d  AND `Type`='Order' GROUP BY  `Transaction Type`  ", $this->id
         );
         if ($result = $this->db->query($sql)) {
             foreach ($result as $row) {
 
                 switch ($row['Transaction Type']) {
                     case 'Shipping':
-                        $shipping = $row['net'];
+                        $shipping += $row['net'];
+                        $total_shipping_discounts += $row['discounts'];
+                        $total_shipping_gross_amount += $row['gross'];
                         break;
                     case 'Charges':
-                        $charges = $row['net'];
+                        $charges += $row['net'];
+                        $total_charges_discounts += $row['discounts'];
+                        $total_charges_gross_amount += $row['gross'];
                         break;
                     case 'Insurance':
-                        $insurance = $row['net'];
+                        $insurance += $row['net'];
+                        $total_insurance_discounts += $row['discounts'];
+                        $total_insurance_gross_amount += $row['gross'];
+
                         break;
 
                 }
@@ -263,14 +278,14 @@ trait OrderCalculateTotals {
         $total_balance = $total + $total_refunds;
 
 
-        $margin=($total_items_net == 0 ? '' : $profit / $total_items_net);
+        $margin = ($total_items_net == 0 ? '' : $profit / $total_items_net);
 
-        if($this->data['Order State']=='Cancelled'){
+        if ($this->data['Order State'] == 'Cancelled') {
 
-            $profit=0;
-            $margin='';
-            $items_cost=0;
-            $replacement_costs=0;
+            $profit            = 0;
+            $margin            = '';
+            $items_cost        = 0;
+            $replacement_costs = 0;
         }
 
 
@@ -280,10 +295,21 @@ trait OrderCalculateTotals {
                 'Order Number Items with Deals'   => $number_with_deals,
                 'Order Number Items Out of Stock' => $number_items_with_out_of_stock,
 
-                'Order Number Items Returned'     => $number_with_problems,
-                'Order Items Net Amount'          => $total_items_net,
-                'Order Items Gross Amount'        => $total_items_gross,
-                'Order Items Discount Amount'     => $total_items_discounts,
+                'Order Number Items Returned'    => $number_with_problems,
+                'Order Items Net Amount'         => $total_items_net,
+                'Order Items Gross Amount'       => $total_items_gross,
+                'Order Items Discount Amount'    => $total_items_discounts,
+
+
+
+                'Order Charges Gross Amount'  => $total_charges_gross_amount,
+                'Order Shipping Gross Amount' => $total_shipping_gross_amount,
+                'Order Insurance Gross Amount' => $total_insurance_gross_amount,
+
+                'Order Charges Discount Amount'  => $total_charges_discounts,
+                'Order Shipping Discount Amount' => $total_shipping_discounts,
+                'Order Insurance Discount Amount' => $total_insurance_discounts,
+
                 'Order Items Out of Stock Amount' => $total_items_out_of_stock_amount,
 
 
@@ -307,20 +333,17 @@ trait OrderCalculateTotals {
 
         $this->update_payment_state();
 
-      //  $this->update_order_discount_totals();
+        //  $this->update_order_discount_totals();
 
     }
 
 
-    function update_order_discount_totals(){
+    function update_order_discount_totals() {
 
 
         $this->fast_update(
             array(
-                'Order Number Items with Deals'   => $number_with_deals,
-
-
-
+                'Order Number Items with Deals' => $number_with_deals,
 
 
             )

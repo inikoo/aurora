@@ -896,12 +896,23 @@ function save_item_qty_change(element) {
                 }
 
 
+
                 for (var key in data.metadata.hide) {
-                    $('#' + data.metadata.hide[key]).addClass('hide')
+                    $('.' + data.metadata.hide[key]).addClass('hide')
                 }
+
                 for (var key in data.metadata.show) {
-                    $('#' + data.metadata.show[key]).removeClass('hide')
+                    $('.' + data.metadata.show[key]).removeClass('hide')
                 }
+                for (var key in data.metadata.add_class) {
+
+                    $('.' + key).addClass( data.metadata.add_class[key])
+                }
+                for (var key in data.metadata.remove_class) {
+                    $('.' + key).removeClass( data.metadata.remove_class[key])
+                }
+
+
 
 
 

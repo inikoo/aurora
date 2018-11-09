@@ -22,6 +22,23 @@ if ($result = $db->query($sql)) {
 
         $order = get_object('order', $row['Order Key']);
 
+
+        $order->fast_update(
+            array(
+                'Order Pinned Deal Components' => json_encode(array())
+            )
+        );
+
+
+        $sql = sprintf(
+            "UPDATE `Order Transaction Deal Bridge` SET `Order Transaction Deal Pinned`='No' WHERE `Order Key`=%d   ",
+
+
+            $order->id
+        );
+
+
+
         $order->update_totals();
 
         $order->update_discounts_items();

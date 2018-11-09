@@ -187,6 +187,84 @@ class Public_Order extends DBW_Table {
 
                     $this->db->exec($sql);
 
+                    $deals_component_data = array();
+
+                    $deal_components = '';
+
+                    $sql = sprintf('select group_concat(`Deal Component Key`) as deal_components from `Order Transaction Deal Bridge` where `Order Key`=%d ', $this->id);
+                    if ($result = $this->db->query($sql)) {
+                        if ($row = $result->fetch()) {
+                            $deal_components = $row['deal_components'];
+                        }
+                    } else {
+                        print_r($error_info = $this->db->errorInfo());
+                        print "$sql\n";
+                        exit;
+                    }
+
+
+                    $sql = sprintf('select group_concat(`Deal Component Key`) as deal_components from `Order No Product Transaction Deal Bridge` where `Order Key`=%d ', $this->id);
+                    if ($result = $this->db->query($sql)) {
+                        if ($row = $result->fetch()) {
+
+                            if ($row['deal_components'] != '') {
+                                if ($deal_components == '') {
+                                    $deal_components = $row['deal_components'];
+
+                                } else {
+                                    $deal_components .= ','.$row['deal_components'];
+
+                                }
+
+                            }
+
+
+                        }
+                    } else {
+                        print_r($error_info = $this->db->errorInfo());
+                        print "$sql\n";
+                        exit;
+                    }
+
+                    if ($deal_components != '') {
+                        $sql = sprintf(
+                            "select * from `Deal Component Dimension` left join `Deal Dimension` D on (D.`Deal Key`=`Deal Component Deal Key`)  where `Deal Component Key` in (%s)",
+                            $deal_components
+                        );
+
+
+                        if ($result = $this->db->query($sql)) {
+                            foreach ($result as $row) {
+
+                                $deals_component_data[$row['Deal Component Key']] = $row;
+                            }
+                        } else {
+                            print_r($error_info = $this->db->errorInfo());
+                            print "$sql\n";
+                            exit;
+                        }
+                    }
+
+
+                    $sql = sprintf(
+                        "UPDATE `Order Transaction Deal Bridge` SET `Order Transaction Deal Pinned`='Yes' WHERE `Order Key`=%d   ",
+                        $this->id
+                    );
+                    $this->db->exec($sql);
+                    $sql = sprintf(
+                        "UPDATE `Order No Product Transaction Deal Bridge` SET `Order Transaction Deal Pinned`='Yes' WHERE `Order Key`=%d   ",
+                        $this->id
+                    );
+
+                    $this->db->exec($sql);
+
+                    $this->fast_update(
+                        array(
+                            'Order Pinned Deal Components' => json_encode($deals_component_data)
+                        )
+                    );
+
+
 
                     break;
 
@@ -365,19 +443,10 @@ class Public_Order extends DBW_Table {
 
                 break;
 
-            case 'Pinned Deal Components':
+            case 'Pinned Deal Deal Components':
 
                 if ($this->data['Order Pinned Deal Components'] == '') {
-                    return array(
-                        'in_process' => array(
-                            'items'            => array(),
-                            'no_product_items' => array(),
-                        ),
-                        'submitted'  => array(
-                            'items'            => array(),
-                            'no_product_items' => array(),
-                        )
-                    );
+                    return array();
                 } else {
                     return json_decode($this->data['Order Pinned Deal Components'], true);
                 }

@@ -23,7 +23,6 @@ trait OrderChargesOperations {
         }
 
 
-        // print_r($charges_array);
 
 
         $charges_to_delete = array();
@@ -86,6 +85,8 @@ trait OrderChargesOperations {
 
                         );
 
+
+
                         $this->db->exec($sql);
 
 
@@ -106,6 +107,7 @@ trait OrderChargesOperations {
                         );
 
 
+
                         $this->db->exec($sql);
                     }
                 } else {
@@ -121,14 +123,15 @@ trait OrderChargesOperations {
 
         foreach($charges_to_delete as $onpt_key){
             $sql = sprintf(
-                'delete  from `Order No Product Transaction Fact`  where `Order No Product Transaction Fact Key`=%d ',
+                'delete from `Order No Product Transaction Fact`  where `Order No Product Transaction Fact Key`=%d ',
                 $onpt_key
-
-
             );
+            $this->db->exec($sql);
 
-
-
+            $sql = sprintf(
+                'delete from `Order No Product Transaction Deal Bridge`  where `Order No Product Transaction Fact Key`=%d ',
+                $onpt_key
+            );
             $this->db->exec($sql);
         }
 
@@ -202,12 +205,16 @@ trait OrderChargesOperations {
             $this->data['Order Store Key']
         );
 
-
         if ($result = $this->db->query($sql)) {
             foreach ($result as $row) {
+
+
+
                 $apply_charge = false;
 
                 $order_amount = $this->data[$row['Charge Terms Type']];
+
+
 
 
                 if ($dn_key) {
@@ -221,8 +228,10 @@ trait OrderChargesOperations {
                             );
 
 
-                            if ($result = $this->db->query($sql)) {
-                                if ($row = $result->fetch()) {
+
+
+                            if ($result2 = $this->db->query($sql)) {
+                                if ($row2 = $result2->fetch()) {
                                     $order_amount = $row2['amount'];
                                 } else {
                                     $order_amount = 0;
@@ -244,8 +253,8 @@ trait OrderChargesOperations {
                                 $this->id, $dn_key
                             );
 
-                            if ($result = $this->db->query($sql)) {
-                                if ($row = $result->fetch()) {
+                            if ($result2 = $this->db->query($sql)) {
+                                if ($row2 = $result2->fetch()) {
                                     $order_amount = $row2['amount'];
                                 } else {
                                     $order_amount = 0;
@@ -268,7 +277,6 @@ trait OrderChargesOperations {
                 $operator         = $terms_components[0];
                 $amount           = $terms_components[1];
 
-                //print_r($order_amount);
 
 
                 switch ($operator) {
@@ -293,6 +301,8 @@ trait OrderChargesOperations {
                         }
                         break;
                 }
+
+
 
 
                 if ($row['Charge Type'] == 'Amount') {

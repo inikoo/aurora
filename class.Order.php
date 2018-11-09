@@ -165,8 +165,6 @@ class Order extends DB_Table {
                 break;
 
 
-
-
             case('Sticky Note'):
                 $this->update_field('Order '.$field, $value, 'no_null');
                 $this->new_value = html_entity_decode($this->new_value);
@@ -290,6 +288,23 @@ class Order extends DB_Table {
                     $this->db->exec($sql);
 
 
+                    //todo if user want to keep old allowances  you must do an if here
+                    $this->fast_update(
+                        array(
+                            'Order Pinned Deal Components' => json_encode(array())
+                        )
+                    );
+
+
+                    $sql = sprintf(
+                        "UPDATE `Order Transaction Deal Bridge` SET `Order Transaction Deal Pinned`='No' WHERE `Order Key`=%d   ",
+
+
+                        $this->id
+                    );
+
+                    $this->db->exec($sql);
+
 
                     $this->update_totals();
                     $this->update_discounts_items();
@@ -340,7 +355,82 @@ class Order extends DB_Table {
 
                     $this->db->exec($sql);
 
+                    $deals_component_data = array();
 
+                    $deal_components = '';
+
+                    $sql = sprintf('select group_concat(`Deal Component Key`) as deal_components from `Order Transaction Deal Bridge` where `Order Key`=%d ', $this->id);
+                    if ($result = $this->db->query($sql)) {
+                        if ($row = $result->fetch()) {
+                            $deal_components = $row['deal_components'];
+                        }
+                    } else {
+                        print_r($error_info = $this->db->errorInfo());
+                        print "$sql\n";
+                        exit;
+                    }
+
+
+                    $sql = sprintf('select group_concat(`Deal Component Key`) as deal_components from `Order No Product Transaction Deal Bridge` where `Order Key`=%d ', $this->id);
+                    if ($result = $this->db->query($sql)) {
+                        if ($row = $result->fetch()) {
+
+                            if ($row['deal_components'] != '') {
+                                if ($deal_components == '') {
+                                    $deal_components = $row['deal_components'];
+
+                                } else {
+                                    $deal_components .= ','.$row['deal_components'];
+
+                                }
+
+                            }
+
+
+                        }
+                    } else {
+                        print_r($error_info = $this->db->errorInfo());
+                        print "$sql\n";
+                        exit;
+                    }
+
+                    if ($deal_components != '') {
+                        $sql = sprintf(
+                            "select * from `Deal Component Dimension` left join `Deal Dimension` D on (D.`Deal Key`=`Deal Component Deal Key`)  where `Deal Component Key` in (%s)",
+                            $deal_components
+                        );
+
+
+                        if ($result = $this->db->query($sql)) {
+                            foreach ($result as $row) {
+
+                                $deals_component_data[$row['Deal Component Key']] = $row;
+                            }
+                        } else {
+                            print_r($error_info = $this->db->errorInfo());
+                            print "$sql\n";
+                            exit;
+                        }
+                    }
+
+
+                    $sql = sprintf(
+                        "UPDATE `Order Transaction Deal Bridge` SET `Order Transaction Deal Pinned`='Yes' WHERE `Order Key`=%d   ",
+                        $this->id
+                    );
+                    $this->db->exec($sql);
+                    $sql = sprintf(
+                        "UPDATE `Order No Product Transaction Deal Bridge` SET `Order Transaction Deal Pinned`='Yes' WHERE `Order Key`=%d   ",
+                        $this->id
+                    );
+
+                    $this->db->exec($sql);
+
+                    $this->fast_update(
+                        array(
+                            'Order Pinned Deal Components' => json_encode($deals_component_data)
+                        )
+                    );
 
 
                     break;
@@ -928,7 +1018,7 @@ class Order extends DB_Table {
         }
 
         if (preg_match(
-            '/^(Balance (Total|Net|Tax)|Invoiced Total Net Adjust|Invoiced Total Tax Adjust|Invoiced Refund Net|Invoiced Refund Tax|Total|Items|Invoiced Items|Invoiced Tax|Invoiced Net|Invoiced Charges|Payments|To Pay|Invoiced Shipping|Invoiced Insurance |(Shipping |Charges |Insurance )?Net|Profit).*(Amount)$/',
+            '/^(Balance (Total|Net|Tax)|Invoiced Total Net Adjust|Invoiced Total Tax Adjust|Invoiced Refund Net|Invoiced Refund Tax|Total|Items|Invoiced Items|Invoiced Tax|Invoiced Net|Invoiced Charges|Payments|To Pay|Invoiced Shipping|Invoiced Insurance |(Shipping Discount|Charges Discount|Insurance Discount)|(Shipping |Charges |Insurance )?Net|Profit).*(Amount)$/',
             $key
         )) {
             $amount = 'Order '.$key;
@@ -987,6 +1077,19 @@ class Order extends DB_Table {
             case 'Items Discount Percentage':
 
                 return percentage($this->data['Order Items Discount Amount'], $this->data['Order Items Gross Amount']);
+                break;
+            case 'Charges Discount Percentage':
+
+                return percentage($this->data['Order Charges Discount Amount'], $this->data['Order Charges Gross Amount']);
+                break;
+            case 'Shipping Discount Percentage':
+
+                return percentage($this->data['Order Shipping Discount Amount'], $this->data['Order Shipping Gross Amount']);
+                break;
+            case 'Insurance Discount Percentage':
+
+                return percentage($this->data['Order Insurance Discount Amount'], $this->data['Order Insurance Gross Amount']);
+                break;
 
             case 'Currency Code':
 
@@ -1368,21 +1471,12 @@ class Order extends DB_Table {
                 return number($this->data['Order '.$key]);
                 break;
 
-            case 'Pinned Deal Components':
+            case 'Pinned Deal Deal Components':
 
-                if($this->data['Order Pinned Deal Components']==''){
-                    return array(
-                        'in_process'=>array(
-                            'items'=>array(),
-                            'no_product_items'=>array(),
-                        ),
-                        'submitted'=>array(
-                            'items'=>array(),
-                            'no_product_items'=>array(),
-                        )
-                    );
-                }else{
-                    return json_decode($this->data['Order Pinned Deal Components'],true);
+                if ($this->data['Order Pinned Deal Components'] == '') {
+                    return array();
+                } else {
+                    return json_decode($this->data['Order Pinned Deal Components'], true);
                 }
 
                 break;

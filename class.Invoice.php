@@ -1349,7 +1349,7 @@ class Invoice extends DB_Table {
             prepare_mysql($this->data['Invoice Type']),$this->data['Invoice Total Amount']
         );
 
-     
+
         $this->db->exec($sql);
 
 
