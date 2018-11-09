@@ -54,7 +54,7 @@
 
 
 
-
+        <script src="https://browser.sentry-cdn.com/4.3.0/bundle.min.js" crossorigin="anonymous"></script>
         <script src="/js/libs/jquery-2.2.1.js"></script>
         <script src="/js/libs/jquery-ui.js"></script>
         <script src="/js/libs/moment-with-locales.js"></script>
@@ -183,7 +183,7 @@
         ga('set', 'userId', '{$account->get('Code')}_{"%05d"|sprintf:$user->id}');
         ga('send', 'pageview');
 
-
+        Sentry.init({ dsn: 'https://7c38fecb8a274f7e93cb0488ad22ca10@sentry.io/1319834' });
     </script>
 
 

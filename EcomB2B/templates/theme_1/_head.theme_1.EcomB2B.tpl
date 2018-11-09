@@ -37,6 +37,8 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <!--[if lt IE 9]>
     <script src="https://html5shim.googlecode.com/svn/trunk/html5.js"></script>
+    <script src="https://browser.sentry-cdn.com/4.3.0/bundle.min.js" crossorigin="anonymous"></script>
+
     <![endif]-->
     <link rel="canonical" href="{$webpage->get('URL')}"/>
 

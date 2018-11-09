@@ -564,7 +564,9 @@ function trim_value(&$value) {
 
 
 function address_fields($address_key, $recipient, $organization, $default_country) {
+
     $address = new _Address($address_key);
+
     if ($address->id > 0) {
 
 
