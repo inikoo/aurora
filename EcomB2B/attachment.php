@@ -9,8 +9,17 @@
 
 */
 
+require_once 'vendor/autoload.php';
+require_once 'utils/sentry.php';
 
-require_once 'common.php';
+
+
+require_once 'keyring/key.php';
+
+$db = new PDO(
+    "mysql:host=$dns_host;dbname=$dns_db;charset=utf8", $dns_user, $dns_pwd, array(\PDO::MYSQL_ATTR_INIT_COMMAND => "SET time_zone = '+0:00';")
+);
+$db->setAttribute(PDO::ATTR_DEFAULT_FETCH_MODE, PDO::FETCH_ASSOC);
 
 if (!isset($_REQUEST['id'])) {
     $attachment_key = -1;
@@ -31,14 +40,13 @@ if ($result = $db->query($sql)) {
     if ($row = $result->fetch()) {
 
 
-     
-            header('Content-Type: '.$row['Attachment MIME Type']);
+        header('Content-Type: '.$row['Attachment MIME Type']);
 
-            header(
-                'Content-Disposition: inline; filename='.$row['Attachment File Original Name']
-            );
-            echo $row['Attachment Data'];
-      
+        header(
+            'Content-Disposition: inline; filename='.$row['Attachment File Original Name']
+        );
+        echo $row['Attachment Data'];
+
     } else {
         header("HTTP/1.0 404 Not Found");
         echo "Attachment not found";

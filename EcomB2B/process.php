@@ -11,8 +11,8 @@
 */
 
 require_once 'vendor/autoload.php';
-$sentry_client = new Raven_Client('https://7c38fecb8a274f7e93cb0488ad22ca10@sentry.io/1319834');
-$sentry_client->install();
+require_once 'utils/sentry.php';
+
 
 //error_reporting(E_ALL ^ E_DEPRECATED);
 
@@ -148,7 +148,6 @@ if (is_numeric($webpage_id)) {
     $website_key = $_SESSION['website_key'];
     $webpage_key = $webpage_id;
     include 'display_webpage.php';
-
 
 
 } else {
