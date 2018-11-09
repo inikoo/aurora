@@ -381,7 +381,7 @@
                     </div>
                 </div>
 
-                <div id="recreate_invoice_operations" class="order_operation {if ( $order->get('State Index')>80 and $order->get('Order Invoice Key')>0 ) }hide{/if}">
+                <div id="recreate_invoice_operations" class="order_operation {if ( $order->get('State Index')>80 and !$order->get('Order Invoice Key')>0 ) }{else}hide{/if}">
                     <div class="square_button right  " title="{t}Create invoice again{/t}">
                         <i class="fas fa-file-alt  " aria-hidden="true" onclick="toggle_order_operation_dialog('recreate_invoice')"></i>
                         <table id="recreate_invoice_dialog" border="0" class="order_operation_dialog hide">
@@ -452,7 +452,7 @@
 
 
             <tr class="subtotal first">
-                <td class="label">{t}Items profit{/t}</td>
+                <td class="label small">{t}Items profit{/t}</td>
                 <td class="aright "><span class="Profit_Amount">{$order->get('Profit Amount')}</span> (<span class="Order_Margin">{$order->get('Margin')}</span>)</td>
             </tr>
 
@@ -464,25 +464,27 @@
 
 
             <tr class="subtotal first error">
-                <td class="label"><i class="fa fa-cube fa-fw  " aria-hidden="true"></i> {t}lost revenue{/t}</td>
+                <td class="label small"><i class="fa fa-cube fa-fw  " aria-hidden="true"></i> {t}lost revenue{/t}</td>
                 <td class="aright Items_Discount_Amount">{$order->get('Items Out of Stock Amount')}</td>
             </tr>
 
 
         </table>
 
-        <table border="0" class="totals" style="">
-
-
-            <tr class="subtotal first">
-                <td class="label">{t}Discounts{/t}</td>
-                <td class="aright Items_Discount_Amount">{$order->get('Items Discount Amount')}</td>
+        <table border="0" class="totals" style="margin-top:10px">
+            <tr class="total first">
+                <td class="label" colspan="2" style="border-bottom: 1px solid #ddd;">{t}Discounts{/t}</td>
             </tr>
 
-            <tr class="subtotal last">
-                <td class="label"></td>
-                <td class="aright Items_Discount_Percentage">{$order->get('Items Discount Percentage')}</td>
+            <tr class="subtotal Items_Discount_Amount_tr">
+                <td class="label small">{t}Items{/t}</td>
+                <td class="aright"><span class="discreet italic">(<span class=" Items_Discount_Percentage">{$order->get('Items Discount Percentage')}</span>)</span> <span class="padding_left_10 Items_Discount_Amount">{$order->get('Items Discount Amount')}</span></td>
             </tr>
+            <tr class="subtotal Charges_Discount_Amount_tr  {if $order->get('Order Charges Discount Amount')==0}hide{/if} ">
+                <td class="label small">{t}Charges{/t}</td>
+                <td class="aright"><span class="discreet italic">(<span class=" Charges_Discount_Percentage">{$order->get('Charges Discount Percentage')}</span>)</span> <span class="padding_left_10 Charges_Discount_Amount">{$order->get('Charges Discount Amount')}</span></td>
+            </tr>
+
         </table>
 
 

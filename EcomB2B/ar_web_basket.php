@@ -223,6 +223,16 @@ function update_item($_data, $customer, $order, $editor, $db) {
         }
 
 
+        if ($order->get('Order Items Discount Amount') == 0) {
+
+
+            $hide[] = 'order_items_discount_container';
+        } else {
+
+            $show[] = 'order_items_discount_container';
+        }
+
+
         $class_html = array(
             'order_items_gross'       => $order->get('Items Gross Amount'),
             'order_items_discount'    => $order->get('Items Discount Amount'),

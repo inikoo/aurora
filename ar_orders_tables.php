@@ -1812,7 +1812,11 @@ function order_items($_data, $db, $user) {
         }
 
 
-        $deal_info = '<div id="transaction_deal_info_'.$data['Order Transaction Fact Key'].'" class="deal_info">'.$data['Deal Info'].'</div>';
+
+        $deal_info_data=preg_split('/\|\|/',$data['Deal Info']);
+
+
+        $deal_info = '<div id="transaction_deal_info_'.$data['Order Transaction Fact Key'].'" class="deal_info">'.($deal_info_data[1]=='Yes'?'<i class="fas fa-thumbtack"></i> ':'').$deal_info_data[0].'</div>';
 
 
         $units    = $data['Product Units Per Case'];
@@ -3502,12 +3506,9 @@ function order_deals($_data, $db, $user) {
             if ($data['Deal Key']) {
                 $name = sprintf('<span class="link" onclick="change_view(\'deals/%d/%d\')">%s</span>', $data['Deal Store Key'], $data['Deal Key'], $data['Deal Name']);
 
-                $pin='';
-/*
-                if($data['Order Transaction Event Type']=='Origin'){
-                    $pin = sprintf('<i class="far fa-paper-plane"></i>');
 
-                }else{
+
+
                     if ($data['Order Transaction Deal Pinned'] == 'Yes') {
                         $pin = sprintf('<i class="fa fa-thumbtack"></i>');
 
@@ -3515,8 +3516,8 @@ function order_deals($_data, $db, $user) {
                         $pin = sprintf('<i class="fal fa-empty-set super_discreet"></i>');
 
                     }
-                }
-*/
+
+
 
 
 
@@ -3564,7 +3565,8 @@ function order_deals($_data, $db, $user) {
                 'items'               => number($data['items']),
                 'bonus'               => number($data['bonus']),
                 'discount_percentage' => percentage($data['discount_percentage'], 1),
-                'amount_discounted'   => money($data['amount_discounted'], $data['Store Currency Code'])
+                'amount_discounted'   => money($data['amount_discounted'], $data['Store Currency Code']),
+                'pin'=>$pin
                 //'state' => $state,
 
                 //'type' => $type,
