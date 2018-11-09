@@ -5,6 +5,10 @@ define("_DEVEL", isset($_SERVER['devel']));
 
 
 require_once 'vendor/autoload.php';
+$sentry_client = new Raven_Client('https://7c38fecb8a274f7e93cb0488ad22ca10@sentry.io/1319834');
+$sentry_client->install();
+
+
 
 use Symfony\Component\HttpFoundation\Session\Session;
 use Symfony\Component\HttpFoundation\Session\Storage\NativeSessionStorage;

@@ -4,7 +4,8 @@
         "aws/aws-php-sns-message-validator": "^1.4",
         "symfony/http-foundation": "^3.4",
         "mpdf/mpdf": "^7.1",
-        "commerceguys/addressing": "^1.0"
+        "commerceguys/addressing": "^1.0",
+        "sentry/sentry": "^1.10"
 
     }
 }
