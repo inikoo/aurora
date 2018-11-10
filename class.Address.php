@@ -56,7 +56,7 @@ class _Address extends DB_Table {
 
     */
 
-    function _Address($arg1 = false, $arg2 = false) {
+    function __construct($arg1 = false, $arg2 = false) {
 
 
         global $db;
