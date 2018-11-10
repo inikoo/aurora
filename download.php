@@ -57,7 +57,7 @@ $file_ext   = $path_parts['extension'];
 $file_path  = 'server_files/tmp/'.$file_name;
 
 
-file_put_contents('server_files/tmp/'.$file_name, $blob_data);
+file_put_contents($file_path, $blob_data);
 
 
 // allow a file to be streamed instead of sent as an attachment
@@ -98,24 +98,40 @@ if (is_file($file_path)) {
         $ctype         = isset($content_types[$file_ext]) ? $content_types[$file_ext] : $ctype_default;
         header("Content-Type: ".$ctype);
 
-        //check if http_range is sent by browser (or download manager)
-        if (isset($_SERVER['HTTP_RANGE'])) {
-            list($size_unit, $range_orig) = explode(
-                '=', $_SERVER['HTTP_RANGE'], 2
-            );
-            if ($size_unit == 'bytes') {
-                //multiple ranges could be specified at the same time, but for simplicity only serve the first range
-                //http://tools.ietf.org/id/draft-ietf-http-range-retrieval-00.txt
-                list($range, $extra_ranges) = explode(',', $range_orig, 2);
-            } else {
-                $range = '';
-                unlink('server_files/tmp/'.$file_name);
+
+
+
+        $range ='';
+
+        if (isset($_SERVER['HTTP_RANGE']))
+        {
+            $begin  = 0;
+            $end  = $file_size - 1;
+
+            if (preg_match('/bytes=\h*(\d+)-(\d*)[\D.*]?/i', $_SERVER['HTTP_RANGE'], $matches))
+            {
+                $begin  = intval($matches[1]);
+                if (!empty($matches[2])) {
+                    $end  = intval($matches[2]);
+                }
+
+                $range=$begin.'-'. $end;
+            }else{
+                if (file_exists($file_path)) {
+                    unlink($file_path);
+                }
+
                 header('HTTP/1.1 416 Requested Range Not Satisfiable');
                 exit;
             }
-        } else {
-            $range = '';
+
+
         }
+
+
+
+
+
 
         //figure out download piece from range (if set)
         if ($range == '') {
@@ -180,14 +196,18 @@ if (is_file($file_path)) {
         }
 
         // file save was a success
-        @fclose($file);
+        fclose($file);
 
-        unlink('server_files/tmp/'.$file_name);
+        if (file_exists($file_path)) {
+            unlink($file_path);
+        }
 
         exit;
     } else {
         // file couldn't be opened
-        unlink('server_files/tmp/'.$file_name);
+        if (file_exists($file_path)) {
+            unlink($file_path);
+        }
         header("HTTP/1.0 500 Internal Server Error");
 
         exit;
@@ -195,7 +215,10 @@ if (is_file($file_path)) {
 } else {
     // file does not exist
     header("HTTP/1.0 404 Not Found");
-    unlink('server_files/tmp/'.$file_name);
+    if (file_exists($file_path)) {
+        unlink($file_path);
+    }
+
     exit;
 }
 
