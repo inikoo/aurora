@@ -80,7 +80,7 @@
 
 
         <script src="/js/help.js?v180124v4"></script>
-        <script src="/js/app.js?v180718v3d4"></script>
+        <script src="/js/app.js?v181111"></script>
         <script src="/js/keyboard_shortcuts.js"></script>
         <script src="/js/barcode_scanner.js?v181017"></script>
         <script src="/js/search.js"></script>
