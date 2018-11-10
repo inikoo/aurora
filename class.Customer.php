@@ -791,7 +791,7 @@ class Customer extends Subject {
 
     function update_full_search() {
 
-        $store = new Store($this->data['Customer Store Key']);
+       // $store = new Store($this->data['Customer Store Key']);
 
 
         $address_plain      = strip_tags($this->get('Contact Address'));
@@ -799,7 +799,7 @@ class Customer extends Subject {
         $second_full_search = '';
 
 
-        $description = '';
+     //   $description = '';
 
         if ($this->data['Customer Company Name'] != '') {
             $name = '<b>'.$this->data['Customer Name'].'</b> (Id:'.$this->get_formatted_id().')<br/>'.$this->data['Customer Main Contact Name'];
@@ -853,7 +853,7 @@ class Customer extends Subject {
             $location_type = 'Export';
         }
 
-        $this->update(array('Customer Location Type' => $location_type));
+        $this->fast_update(array('Customer Location Type' => $location_type));
 
 
     }

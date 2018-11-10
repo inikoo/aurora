@@ -29,7 +29,7 @@ function fork_migration($job) {
 
         case 'update_other_telephones':
 
-            if($data['customer_key']) {
+            if ($data['customer_key']) {
                 $customer         = get_object('Customer', $data['customer_key']);
                 $customer->editor = $data['editor'];
 
@@ -46,14 +46,12 @@ function fork_migration($job) {
 
 
         case 'customer_updated_migration':
-            if($data['customer_key'] ) {
-
+            if ($data['customer_key']) {
 
 
                 migrate_customer_data($data['customer_key'], $db);
 
-                $customer         = get_object('Customer', $data['customer_key']);
-                $customer->editor = $data['editor'];
+                $customer = get_object('Customer', $data['customer_key']);
 
 
                 $customer->update_full_search();
@@ -63,7 +61,7 @@ function fork_migration($job) {
             break;
         case 'customer_created_migration':
 
-            if($data['customer_key']) {
+            if ($data['customer_key']) {
                 migrate_customer_data($data['customer_key'], $db);
 
 
@@ -192,21 +190,20 @@ function fork_migration($job) {
             include_once 'class.Store.php';
             include_once 'class.DeliveryNote.php';
 
-            $dn = new DeliveryNote($data['dn_key']);
+            $dn                       = new DeliveryNote($data['dn_key']);
             $data_to_update           = array();
             $address_fields_to_update = array();
 
 
-            $sql=sprintf("select `Order Key` from `Order Transaction Fact` where `Delivery Note Key`=%d and  `Order Key`>0", $dn->id);
+            $sql = sprintf("select `Order Key` from `Order Transaction Fact` where `Delivery Note Key`=%d and  `Order Key`>0", $dn->id);
 
-            if ($result2=$db->query($sql)) {
+            if ($result2 = $db->query($sql)) {
                 if ($row2 = $result2->fetch()) {
 
                     $order = get_object('Order', $row2['Order Key']);
 
 
                     $data_to_update['Delivery Note Order Key'] = $row2['Order Key'];
-
 
 
                     $ship_to = new Ship_To($dn->get('Delivery Note Ship To Key'));
@@ -227,11 +224,9 @@ function fork_migration($job) {
                     }
 
 
-
-
                 }
-            }else {
-                print_r($error_info=$db->errorInfo());
+            } else {
+                print_r($error_info = $db->errorInfo());
                 print "$sql\n";
                 exit;
             }
@@ -390,7 +385,7 @@ function migrate_customer_data($customer_key, $db) {
     $customer->update_address('Delivery', $address_fields, 'no_history no_old_address');
 
 
-    $fiscal_name  = get_fiscal_name($customer,$db);
+    $fiscal_name  = get_fiscal_name($customer, $db);
     $organization = $fiscal_name;
     $recipient    = $customer->data['Customer Main Contact Name'];
     if ($fiscal_name == '') {
@@ -743,7 +738,7 @@ function address_fields($address_key, $recipient, $organization, $default_countr
 }
 
 
-function get_fiscal_name($customer,$db) {
+function get_fiscal_name($customer, $db) {
     if ($customer->data['Customer Type'] == 'Person') {
         $customer->data['Customer Fiscal Name'] = $customer->data['Customer Name'];
 
@@ -758,22 +753,19 @@ function get_fiscal_name($customer,$db) {
     );
 
 
-    if ($result=$db->query($sql)) {
+    if ($result = $db->query($sql)) {
         if ($row = $result->fetch()) {
             $customer->data['Customer Fiscal Name'] = $row['fiscal_name'];
 
             return $customer->data['Customer Fiscal Name'];
-    	}else{
+        } else {
             return '';
         }
-    }else {
-    	print_r($error_info=$db->errorInfo());
-    	print "$sql\n";
-    	exit;
+    } else {
+        print_r($error_info = $db->errorInfo());
+        print "$sql\n";
+        exit;
     }
-
-
-
 
 
 }
@@ -888,16 +880,14 @@ function parse_old_invoice_address_fields($store, $address_key, $recipient, $org
     if ($address->id > 0) {
 
 
-        if($address->data['Billing To Country 2 Alpha Code'] == 'XX' or $address->data['Billing To Country 2 Alpha Code'] == '' ){
-            $address->data['Billing To Country 2 Alpha Code'] =$default_country;
+        if ($address->data['Billing To Country 2 Alpha Code'] == 'XX' or $address->data['Billing To Country 2 Alpha Code'] == '') {
+            $address->data['Billing To Country 2 Alpha Code'] = $default_country;
         }
 
 
         $address_format = get_address_format(
-            (  ( $address->data['Billing To Country 2 Alpha Code'] == 'XX' or $address->data['Billing To Country 2 Alpha Code'] == '' )  ? $default_country : $address->data['Billing To Country 2 Alpha Code'])
+            (($address->data['Billing To Country 2 Alpha Code'] == 'XX' or $address->data['Billing To Country 2 Alpha Code'] == '') ? $default_country : $address->data['Billing To Country 2 Alpha Code'])
         );
-
-
 
 
         $_tmp = preg_replace('/,/', '', $address_format->getFormat());
@@ -991,10 +981,9 @@ function parse_old_invoice_address_fields($store, $address_key, $recipient, $org
         }
 
 
-
-            if (!in_array('locality', $used_fields) and ($address->get(
-                        'Billing To Town'
-                    ) != '' or $address->get('Billing To Line 4') != '')) {
+        if (!in_array('locality', $used_fields) and ($address->get(
+                    'Billing To Town'
+                ) != '' or $address->get('Billing To Line 4') != '')) {
 
 
             //$address_fields['Address Locality']='';
@@ -1142,20 +1131,18 @@ function parse_old_invoice_address_fields($store, $address_key, $recipient, $org
 }
 
 
-
 function parse_old_dn_address_fields($store, $address, $recipient, $organization, $default_country) {
-
 
 
     if ($address->id > 0) {
 
 
-        if($address->data['Ship To Country 2 Alpha Code'] == 'XX' or $address->data['Ship To Country 2 Alpha Code'] == '' ){
-            $address->data['Ship To Country 2 Alpha Code'] =$default_country;
+        if ($address->data['Ship To Country 2 Alpha Code'] == 'XX' or $address->data['Ship To Country 2 Alpha Code'] == '') {
+            $address->data['Ship To Country 2 Alpha Code'] = $default_country;
         }
 
         $address_format = get_address_format(
-            ( ($address->data['Ship To Country 2 Alpha Code'] == 'XX' or  $address->data['Ship To Country 2 Alpha Code'] == '') ? $default_country : $address->data['Ship To Country 2 Alpha Code'])
+            (($address->data['Ship To Country 2 Alpha Code'] == 'XX' or $address->data['Ship To Country 2 Alpha Code'] == '') ? $default_country : $address->data['Ship To Country 2 Alpha Code'])
         );
 
 
@@ -1345,25 +1332,29 @@ function parse_old_dn_address_fields($store, $address, $recipient, $organization
     $_address_fields['Delivery Note Address Checksum'] = $new_checksum;
 
 
-    $account=get_object('Account',1);
+    $account = get_object('Account', 1);
     $country = $account->get('Account Country 2 Alpha Code');
     $locale  = $store->get('Store Locale');
-
 
 
     list($address, $formatter, $postal_label_formatter) = get_address_formatter($country, $locale);
 
 
     $address =
-        $address->withFamilyName($_address_fields['Delivery Note Address Recipient'])->withOrganization($_address_fields['Delivery Note Address Organization'])->withAddressLine1($_address_fields['Delivery Note Address Line 1'])->withAddressLine2($_address_fields['Delivery Note Address Line 2'])->withSortingCode(
-            $_address_fields['Delivery Note Address Sorting Code'])->withPostalCode($_address_fields['Delivery Note Address Postal Code'])->withDependentLocality(
-            $_address_fields['Delivery Note Address Dependent Locality'])->withLocality($_address_fields['Delivery Note Address Locality'])->withAdministrativeArea(
-            $_address_fields['Delivery Note Address Administrative Area'])->withCountryCode(
-            $_address_fields['Delivery Note Address Country 2 Alpha Code']);
+        $address->withFamilyName($_address_fields['Delivery Note Address Recipient'])->withOrganization($_address_fields['Delivery Note Address Organization'])->withAddressLine1($_address_fields['Delivery Note Address Line 1'])->withAddressLine2(
+            $_address_fields['Delivery Note Address Line 2']
+        )->withSortingCode(
+            $_address_fields['Delivery Note Address Sorting Code']
+        )->withPostalCode($_address_fields['Delivery Note Address Postal Code'])->withDependentLocality(
+            $_address_fields['Delivery Note Address Dependent Locality']
+        )->withLocality($_address_fields['Delivery Note Address Locality'])->withAdministrativeArea(
+            $_address_fields['Delivery Note Address Administrative Area']
+        )->withCountryCode(
+            $_address_fields['Delivery Note Address Country 2 Alpha Code']
+        );
 
 
     $xhtml_address = $formatter->format($address);
-
 
 
     $xhtml_address = preg_replace('/class="address-line1"/', 'class="address-line1 street-address"', $xhtml_address);
@@ -1379,10 +1370,7 @@ function parse_old_dn_address_fields($store, $address, $recipient, $organization
     $_address_fields['Delivery Note Address Postal Label'] = $postal_label_formatter->format($address);
 
 
-
-
     $_address_fields['Delivery Note Address Formatted'] = $xhtml_address;
-
 
 
     //print "\n".$customer->id."\n";
