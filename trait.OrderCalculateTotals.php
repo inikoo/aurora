@@ -182,11 +182,16 @@ trait OrderCalculateTotals {
 
         foreach ($data as $tax_code => $amount) {
 
-            $tax_category = get_object('Tax_Category', $tax_code);
-
 
             $total_net += round($amount, 2);
-            $tax       = round($tax_category->get('Tax Category Rate') * $amount, 2);
+
+            $tax_category = get_object('Tax_Category', $tax_code);
+            if ($tax_category->id) {
+                $tax = round($tax_category->get('Tax Category Rate') * $amount, 2);
+            } else {
+                $tax = 0;
+            }
+
             $total_tax += $tax;
 
         }
@@ -198,36 +203,36 @@ trait OrderCalculateTotals {
         $charges   = 0;
         $insurance = 0;
 
-        $total_charges_discounts         = 0;
-        $total_shipping_discounts        = 0;
-        $total_insurance_discounts        = 0;
+        $total_charges_discounts   = 0;
+        $total_shipping_discounts  = 0;
+        $total_insurance_discounts = 0;
 
-        $total_charges_gross_amount=0;
-        $total_shipping_gross_amount=0;
-        $total_insurance_gross_amount=0;
-
+        $total_charges_gross_amount   = 0;
+        $total_shipping_gross_amount  = 0;
+        $total_insurance_gross_amount = 0;
 
 
         $sql = sprintf(
-            "SELECT `Transaction Type`,  sum(`Transaction Net Amount`) AS net , sum(`Transaction Gross Amount`) AS gross ,sum(`Transaction Total Discount Amount`) AS discounts  FROM `Order No Product Transaction Fact` WHERE `Order Key`=%d  AND `Type`='Order' GROUP BY  `Transaction Type`  ", $this->id
+            "SELECT `Transaction Type`,  sum(`Transaction Net Amount`) AS net , sum(`Transaction Gross Amount`) AS gross ,sum(`Transaction Total Discount Amount`) AS discounts  FROM `Order No Product Transaction Fact` WHERE `Order Key`=%d  AND `Type`='Order' GROUP BY  `Transaction Type`  ",
+            $this->id
         );
         if ($result = $this->db->query($sql)) {
             foreach ($result as $row) {
 
                 switch ($row['Transaction Type']) {
                     case 'Shipping':
-                        $shipping += $row['net'];
-                        $total_shipping_discounts += $row['discounts'];
+                        $shipping                    += $row['net'];
+                        $total_shipping_discounts    += $row['discounts'];
                         $total_shipping_gross_amount += $row['gross'];
                         break;
                     case 'Charges':
-                        $charges += $row['net'];
-                        $total_charges_discounts += $row['discounts'];
+                        $charges                    += $row['net'];
+                        $total_charges_discounts    += $row['discounts'];
                         $total_charges_gross_amount += $row['gross'];
                         break;
                     case 'Insurance':
-                        $insurance += $row['net'];
-                        $total_insurance_discounts += $row['discounts'];
+                        $insurance                    += $row['net'];
+                        $total_insurance_discounts    += $row['discounts'];
                         $total_insurance_gross_amount += $row['gross'];
 
                         break;
@@ -295,19 +300,18 @@ trait OrderCalculateTotals {
                 'Order Number Items with Deals'   => $number_with_deals,
                 'Order Number Items Out of Stock' => $number_items_with_out_of_stock,
 
-                'Order Number Items Returned'    => $number_with_problems,
-                'Order Items Net Amount'         => $total_items_net,
-                'Order Items Gross Amount'       => $total_items_gross,
-                'Order Items Discount Amount'    => $total_items_discounts,
+                'Order Number Items Returned' => $number_with_problems,
+                'Order Items Net Amount'      => $total_items_net,
+                'Order Items Gross Amount'    => $total_items_gross,
+                'Order Items Discount Amount' => $total_items_discounts,
 
 
-
-                'Order Charges Gross Amount'  => $total_charges_gross_amount,
-                'Order Shipping Gross Amount' => $total_shipping_gross_amount,
+                'Order Charges Gross Amount'   => $total_charges_gross_amount,
+                'Order Shipping Gross Amount'  => $total_shipping_gross_amount,
                 'Order Insurance Gross Amount' => $total_insurance_gross_amount,
 
-                'Order Charges Discount Amount'  => $total_charges_discounts,
-                'Order Shipping Discount Amount' => $total_shipping_discounts,
+                'Order Charges Discount Amount'   => $total_charges_discounts,
+                'Order Shipping Discount Amount'  => $total_shipping_discounts,
                 'Order Insurance Discount Amount' => $total_insurance_discounts,
 
                 'Order Items Out of Stock Amount' => $total_items_out_of_stock_amount,
