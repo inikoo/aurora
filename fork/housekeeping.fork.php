@@ -149,14 +149,20 @@ function fork_housekeeping($job) {
 
             switch ($part->get('Part Status')) {
                 case 'In Use':
-                    $part_status = sprintf('<i onclick="set_discontinuing_part_as_active(this,%d)" class="far button fa-fw fa-box title="%s"></i></span>', $part->sku, _('Active, click to discontinue'));
+                    $part_status = sprintf('<i onclick="set_discontinuing_part_as_active(this,%d)" class="far button fa-fw fa-box title="%s"></i>', $part->sku, _('Active, click to discontinue'));
                     break;
                 case 'Discontinuing':
-                    $part_status = sprintf('<i onclick="set_discontinuing_part_as_active(this,%d)" class="far button fa-fw fa-skull" ></i></span>', $part->sku, _('Discontinuing, click to set as an active part'));
+                    $part_status = sprintf('<i onclick="set_discontinuing_part_as_active(this,%d)" class="far button fa-fw fa-skull" title="%s"></i>', $part->sku, _('Discontinuing, click to set as an active part'));
                     break;
                 case 'Discontinued':
-                    $part_status = sprintf('<i  class="far  fa-fw fa-tombstone" ></i></span>', $part->sku, _('Discontinued'));
+                    $part_status = sprintf('<i  class="far  fa-fw fa-tombstone" title="%s"></i>', _('Discontinued'));
                     break;
+                case 'In Process':
+                    $part_status = sprintf('<i  class="far  fa-fw fa-seedling" title="%s"></i>', _('In process'));
+                    break;
+                default:
+                    $part_status = $part->get('Part Status');
+
             }
 
 
