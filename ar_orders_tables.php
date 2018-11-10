@@ -456,14 +456,19 @@ function orders_in_warehouse_no_alerts($_data, $db, $user) {
             $payment_state = get_order_formatted_payment_state($data);
             $total_amount  = money($data['Order Total Amount'], $data['Order Currency']);
             $deliveries    = '';
-            foreach (preg_split('/,/', $data['delivery_notes']) as $delivery_note_data) {
-                $_delivery_note_data = preg_split('/\|/', $delivery_note_data);
 
-                $deliveries = sprintf(
-                    "<span class='padding_right_10 link' onClick=\"change_view('delivery_notes/%d/%d')\"><i class=\"fa fa-truck fa-flip-horizontal   \" ></i> %s</span>", $data['Order Store Key'], $_delivery_note_data[0], $_delivery_note_data[1]
 
-                );
+            if($data['delivery_notes']!=''){
+                foreach (preg_split('/,/', $data['delivery_notes']) as $delivery_note_data) {
+                    $_delivery_note_data = preg_split('/\|/', $delivery_note_data);
+
+                    $deliveries = sprintf(
+                        "<span class='padding_right_10 link' onClick=\"change_view('delivery_notes/%d/%d')\"><i class=\"fa fa-truck fa-flip-horizontal   \" ></i> %s</span>", $data['Order Store Key'], $_delivery_note_data[0], $_delivery_note_data[1]
+
+                    );
+                }
             }
+
         }
 
 
