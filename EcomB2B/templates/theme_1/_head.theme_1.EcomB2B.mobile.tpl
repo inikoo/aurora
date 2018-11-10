@@ -29,7 +29,8 @@
     {if $smarty.server.SERVER_NAME!='ecom.bali' }
         <script src="https://browser.sentry-cdn.com/4.3.0/bundle.min.js" crossorigin="anonymous"></script>
         <script>
-            Sentry.init({ dsn: 'https://bdeef00d9ed04614a5b3245c0ba178ec@sentry.io/1319896' });
+            Sentry.init({ dsn: 'https://bdeef00d9ed04614a5b3245c0ba178ec@sentry.io/1319896'
+                release: "au-web@1.0" });
         </script>
     {/if}
     <link rel="stylesheet" type="text/css" href="/css/mobile.min.css?v2.1">
