@@ -260,8 +260,8 @@ function connect_websocket(){
                             $('.' + data.sections[i].update_metadata.show[key]).removeClass('hide')
                         }
 
-                        for (var j in data.objects[i].update_metadata.add_class) {
-                            $('.' + j).addClass(data.objects[i].update_metadata.add_class[j])
+                        for (var j in data.sections[i].update_metadata.add_class) {
+                            $('.' + j).addClass(data.sections[i].update_metadata.add_class[j])
                         }
                     }
                 }
@@ -269,17 +269,17 @@ function connect_websocket(){
                 for (var i in data.tabs) {
 
 
-                    console.log(data.tabs)
+                    //console.log(data.tabs)
                     if (state.tab == data.tabs[i].tab ) {
 
-                        console.log(data.rtext)
+                        //console.log(data.rtext)
 
                         if(data.tabs[i].rtext!=undefined){
                             $('#rtext').html(data.tabs[i].rtext)
                         }
 
                         for (var j in data.tabs[i].cell) {
-                            console.log(j)
+                           // console.log(j)
                             $('#table .' + j).html(data.tabs[i].cell[j])
                         }
 
@@ -555,7 +555,7 @@ function change_view(_request, metadata) {
 
             state = data.state;
 
-            console.log(data.state)
+            //console.log(data.state)
             if (typeof(data.navigation) != "undefined" && data.navigation !== null && data.navigation != '') {
                 // $('#navigation').removeClass('hide')
                 $('#navigation').html(data.navigation);
@@ -643,7 +643,7 @@ function change_view(_request, metadata) {
         })
         .fail(function( jqxhr, textStatus, error ) {
             var err = textStatus + ", " + error;
-            console.log( "Request Failed: " + err );
+            //console.log( "Request Failed: " + err );
         });
 
    // console.log(state)
