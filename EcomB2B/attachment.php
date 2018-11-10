@@ -14,7 +14,7 @@ require_once 'utils/sentry.php';
 
 
 
-require_once 'keyring/key.php';
+require_once 'keyring/dns.php';
 
 $db = new PDO(
     "mysql:host=$dns_host;dbname=$dns_db;charset=utf8", $dns_user, $dns_pwd, array(\PDO::MYSQL_ATTR_INIT_COMMAND => "SET time_zone = '+0:00';")
