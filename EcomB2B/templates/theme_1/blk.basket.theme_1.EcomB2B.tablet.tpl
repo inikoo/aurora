@@ -24,37 +24,37 @@
 
 
                 <div class="one-third-responsive">
-                    <a href="#order_delivery_address_form" class="modal-opener" style="color:#777">
                     <h5 style="position: relative;left:-10px;font-size: 90%;font-weight: 800;color: #333">
 
                         <span id="delivery_label" class="{if $order->get('Order For Collection')=='Yes'}hide{/if}">
                         <i id="_delivery_address_icon" class="fa fa-fw fa-truck   " aria-hidden="true"></i>
-                        <span id="_delivery_address_label"  >{if isset($labels._delivery_address_label) and $labels._delivery_address_label!=''}{$labels._delivery_address_label}{else}{t}Delivery Address:{/t}{/if}</span>
+                        <span id="_delivery_address_label"  >{if isset($labels._delivery_address_label) and $labels._delivery_address_label!=''}{$labels._delivery_address_label}{else}{t}Delivery Address{/t}{/if}</span>
                         </span>
                         <span  id="collection_label" class="{if $order->get('Order For Collection')=='No'}hide{/if} "">
                         <i id="_delivery_address_icon" class="far fa-hand-rock fa-fw   aria-hidden="true"></i>
                         <span id="_delivery_address_label"  >{if isset($labels._for_collecion_label) and $labels._for_collecion_label!=''}{$labels._for_collecion_label}{else}{t}To be collected at:{/t}{/if}</span>
 
                         </span>
+                        <a href="#order_delivery_address_form" class="modal-opener"><i class="fa fa-fw fa-pencil padding_left_5 discreet_on_hover like_button" aria-hidden="true"></i></a>
+
 
 
                     </h5>
                     <div class="formatted_delivery_address single_line_height">{$order->get('Order Delivery Address Formatted')}</div>
-                    </a>
+
 
 
                 </div>
         <div class="one-third-responsive">
-                    <a href="#order_invoice_address_form" class="modal-opener " style="color:#777">
+
                     <h5 style="position: relative;left:-10px;;font-size: 90%;font-weight: 800;color: #333">
                         <i id="_invoice_address_icon" class="fa fa-fw fa-dollar-sign" aria-hidden="true"></i>
                         <span id="_invoice_address_label"  >{if isset($labels._invoice_address_label) and $labels._invoice_address_label!=''}{$labels._invoice_address_label}{else}{t}Invoice Address{/t}{/if}</span>
 
 
-
                     </h5>
                    <div class="formatted_invoice_address single_line_height">{$order->get('Order Invoice Address Formatted')}</div>
-                    </a>
+
                 </div>
 
 
@@ -526,20 +526,6 @@
 
 
 
-    function show_charges_info(){
-
-        var request = '/ar_web_basket.php?tipo=get_charges_info'
-        $.getJSON(request, function (data) {
-
-            if (data.state == 200) {
-                swal({
-                    html:true,
-                    title: '',
-                    text:data.text,
-                })
-            }
-        })
-    }
 
 
     $("form").submit(function(e) {
@@ -551,123 +537,8 @@
     });
 
 
-    var special_instructions_timeout
-
-    $(document).on('input propertychange', "#special_instructions", function(ev){
 
 
-        if (special_instructions_timeout) clearTimeout(special_instructions_timeout);
-
-        value= $(this).val()
-
-        special_instructions_timeout = setTimeout(function () {
-
-            var ajaxData = new FormData();
-
-            ajaxData.append("tipo", 'special_instructions')
-            ajaxData.append("value",value)
-
-
-            $.ajax({
-                url: "/ar_web_basket.php", type: 'POST', data: ajaxData, dataType: 'json', cache: false, contentType: false, processData: false,
-                complete: function () {
-                }, success: function (data) {
-
-
-
-                    if (data.state == '200') {
-
-
-
-                    } else if (data.state == '400') {
-                    }
-
-
-
-                }, error: function () {
-
-                }
-            });
-
-        }, 400);
-
-
-
-
-
-
-    });
-
-
-
-
-
-
-
-    $(document).on('change', "#order_for_collection", function(ev){
-
-        if($(this).is(':checked')){
-            $('#order_delivery_address_fields').addClass('hide')
-
-        }else{
-            $('#order_delivery_address_fields').removeClass('hide')
-
-        }
-    });
-
-    $( "#order_invoice_country_select" ).change(function() {
-
-        var selected=$( "#invoice_country_select option:selected" )
-        // console.log(selected.val())
-
-        var request= "ar_web_addressing.php?tipo=address_format&country_code="+selected.val()+'&website_key={$website->id}'
-
-        console.log(request)
-        $.getJSON(request, function( data ) {
-            console.log(data)
-            $.each(data.hidden_fields, function(index, value) {
-                $('#invoice_'+value).addClass('hide')
-                $('#invoice_'+value).find('input').addClass('ignore')
-
-            });
-
-            $.each(data.used_fields, function(index, value) {
-                $('#invoice_'+value).removeClass('hide')
-                $('#invoice_'+value).find('input').removeClass('ignore')
-
-            });
-
-            $.each(data.labels, function(index, value) {
-                $('#invoice_'+index).find('input').attr('placeholder',value)
-                $('#invoice_'+index).find('b').html(value)
-
-            });
-
-            $.each(data.no_required_fields, function(index, value) {
-
-
-                // console.log(value)
-
-                $('#invoice_'+value+' input').rules( "remove" );
-
-
-
-
-            });
-
-            $.each(data.required_fields, function(index, value) {
-                console.log($('#'+value))
-                //console.log($('#'+value+' input').rules())
-
-                $('#invoice_'+value+' input').rules( "add", { required: true});
-
-            });
-
-
-        });
-
-
-    });
 
 
 
@@ -814,61 +685,6 @@
     {
         error.insertAfter(element.parent());
     }
-    });
-
-
-    $( "#order_delivery_country_select" ).change(function() {
-
-        var selected=$( "#order_delivery_country_select option:selected" )
-        // console.log(selected.val())
-
-        var request= "ar_web_addressing.php?tipo=address_format&country_code="+selected.val()+'&website_key={$website->id}'
-
-        console.log(request)
-        $.getJSON(request, function( data ) {
-            console.log(data)
-            $.each(data.hidden_fields, function(index, value) {
-                $('#order_delivery_'+value).addClass('hide')
-                $('#order_delivery_'+value).find('input').addClass('ignore')
-
-            });
-
-            $.each(data.used_fields, function(index, value) {
-                $('#order_delivery_'+value).removeClass('hide')
-                $('#order_delivery_'+value).find('input').removeClass('ignore')
-
-            });
-
-            $.each(data.labels, function(index, value) {
-                $('#order_delivery_'+index).find('input').attr('placeholder',value)
-                $('#order_delivery_'+index).find('b').html(value)
-
-            });
-
-            $.each(data.no_required_fields, function(index, value) {
-
-
-                // console.log(value)
-
-                $('#order_delivery_'+value+' input').rules( "remove" );
-
-
-
-
-            });
-
-            $.each(data.required_fields, function(index, value) {
-                console.log($('#'+value))
-                //console.log($('#'+value+' input').rules())
-
-                $('#order_delivery_delivery_'+value+' input').rules( "add", { required: true});
-
-            });
-
-
-        });
-
-
     });
 
 

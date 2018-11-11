@@ -14,7 +14,7 @@
 
 
 {if $logged_in}
-    <span id="ordering_settings" class="hide" data-labels='{
+    <span id="ordering_settings" class="hide"  data-website_key="{$website->id}" data-labels='{
     "zero_money":"{$zero_money}",
     "ordered":"<i class=\"fa fa-thumbs-up fa-flip-horizontal fa-fw \" aria-hidden=\"true\"></i> <span class=\"order_button_text\"> {if empty($labels._ordering_ordered)}{t}Ordered{/t}{else}{$labels._ordering_ordered}{/if}</span>",
     "order":"<i class=\"fa fa-hand-pointer fa-fw \" aria-hidden=\"true\"></i>  <span class=\"order_button_text\">{if empty($labels._ordering_order_now)}{t}Order now{/t}{else}{$labels._ordering_order_now}{/if}</span>",
@@ -428,6 +428,8 @@
             {if $with_basket==1}
             getScript('/js/desktop.logged_in.min.js?v=2', function () {
                 getScript('/js/desktop.forms.min.js', function () {
+                    getScript('/js/desktop.basket.min.js?v2', function () {
+
                     $.getJSON("ar_web_basket.php?tipo=get_basket_html&device_prefix=", function (data) {
 
                         $('#basket').html(data.html)
@@ -460,7 +462,7 @@
                             return false;
                         });
 
-
+                      })
                     })
                 })
             })
@@ -542,6 +544,7 @@
 
             {if $with_profile==1}
             getScript('/js/desktop.forms.min.js', function () {
+                getScript('/js/desktop.profile.min.js', function () {
                 $.getJSON("ar_web_profile.php?tipo=get_profile_html&device_prefix=", function (data) {
 
 
@@ -552,7 +555,7 @@
 
 
                 })
-
+                })
             })
             {/if}
 

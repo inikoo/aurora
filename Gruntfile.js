@@ -71,7 +71,9 @@ module.exports = function (grunt) {
 
                 ], dest: 'EcomB2B/js/image_gallery.min.js',
             }, pweb_desktop_forms: {
-                sourceMap: true,
+                options: {
+                    sourceMap: true,
+                },
                 src: [
                     'EcomB2B/theme_1/local/jquery-ui.js',
                     'EcomB2B/theme_1/sky_forms/js/jquery.form.min.js',
@@ -84,12 +86,22 @@ module.exports = function (grunt) {
             }, pweb_desktop_basket: {
                 src: [
                     'EcomB2B/js/basket.js',
+                    'EcomB2B/js/order_totals.js',
                 ], dest: 'EcomB2B/js/desktop.basket.min.js'
             }, pweb_desktop_checkout: {
                 src: [
                     'EcomB2B/js/braintree.js',
                     'EcomB2B/js/checkout.js',
+                    'EcomB2B/js/order_totals.js',
+
                 ], dest: 'EcomB2B/js/desktop.checkout.min.js'
+            }, pweb_desktop_profile: {
+                options: {
+                    sourceMap: true,
+                },
+                src: [
+                    'EcomB2B/js/order_totals.js',
+                ], dest: 'EcomB2B/js/desktop.profile.min.js'
             }, pweb_mobile: {
                 src: [
                     'EcomB2B/theme_1/local/jquery.js',
@@ -100,7 +112,6 @@ module.exports = function (grunt) {
 
             }, pweb_mobile_logged_in: {
                 options: {
-
                     sourceMap: true,
                 },
                 src: [
@@ -111,6 +122,9 @@ module.exports = function (grunt) {
                 ], dest: 'EcomB2B/js/mobile.logged_in.min.js',
 
             }, pweb_mobile_forms: {
+                options: {
+                    sourceMap: true,
+                },
                 src: [
                     'EcomB2B/theme_1/local/jquery-ui.js',
                     'EcomB2B/theme_1/sky_forms/js/jquery.form.min.js',
@@ -121,10 +135,29 @@ module.exports = function (grunt) {
                     'EcomB2B/js/aurora_forms.js',
                 ], dest: 'EcomB2B/js/mobile.forms.min.js',
 
+            }, pweb_mobile_basket: {
+                options: {
+                    sourceMap: true,
+                },
+                src: [
+                    'EcomB2B/js/basket.js',
+                    'EcomB2B/js/order_totals.js',
+                ], dest: 'EcomB2B/js/mobile.basket.min.js'
+            }, pweb_mobile_profile: {
+                options: {
+                    sourceMap: true,
+                },
+                src: [
+                    'EcomB2B/js/order_totals.js',
+                ], dest: 'EcomB2B/js/mobile.profile.min.js'
             }, pweb_mobile_checkout: {
+                options: {
+                    sourceMap: true,
+                },
                 src: [
                     'EcomB2B/js/braintree.js',
                     'EcomB2B/js/checkout.js',
+                    'EcomB2B/js/order_totals.js',
                 ], dest: 'EcomB2B/js/mobile.checkout.min.js'
 
             },
@@ -205,13 +238,12 @@ module.exports = function (grunt) {
                     'EcomB2B/css/desktop.min.css': [
 
                       'EcomB2B/css/fontawesome-all.css',
-
                         'EcomB2B/css/style.theme_1.EcomB2B.desktop.css'],
 
                     'EcomB2B/css/forms.min.css': [
                         'EcomB2B/css/sweetalert.css',
-
-                        'EcomB2B/theme_1/sky_forms/css/sky-forms.css'
+                        'EcomB2B/theme_1/sky_forms/css/sky-forms.css',
+                        'EcomB2B/css/sky_forms.aurora.css'
                     ],
 
 
@@ -497,12 +529,15 @@ module.exports = function (grunt) {
         'uglify:pweb_mobile',
         'uglify:pweb_mobile_logged_in',
         'uglify:pweb_mobile_forms',
+        'uglify:pweb_mobile_profile',
+        'uglify:pweb_mobile_basket',
         'uglify:pweb_mobile_checkout',
         'uglify:pweb_tablet',
         'uglify:pweb_tablet_custom',
         'uglify:pweb_desktop',
         'uglify:pweb_desktop_logged_in',
         'uglify:pweb_desktop_forms',
+        'uglify:pweb_desktop_profile',
         'uglify:pweb_desktop_basket',
         'uglify:pweb_desktop_checkout',
         'uglify:pweb_desktop_image_gallery'

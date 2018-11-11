@@ -493,20 +493,6 @@
 <script>
 
 
-    function show_charges_info(){
-
-        var request = '/ar_web_basket.php?tipo=get_charges_info'
-        $.getJSON(request, function (data) {
-
-            if (data.state == 200) {
-                swal({
-                    html:true,
-                    title: '',
-                    text:data.text,
-                })
-            }
-        })
-    }
 
 
     $("form").submit(function(e) {
@@ -518,62 +504,16 @@
     });
 
 
-    var special_instructions_timeout
-
-    $(document).on('input propertychange', "#special_instructions", function(ev){
-
-
-        if (special_instructions_timeout) clearTimeout(special_instructions_timeout);
-
-        value= $(this).val()
-
-        special_instructions_timeout = setTimeout(function () {
-
-            var ajaxData = new FormData();
-
-            ajaxData.append("tipo", 'special_instructions')
-            ajaxData.append("value",value)
-
-
-            $.ajax({
-                url: "/ar_web_basket.php", type: 'POST', data: ajaxData, dataType: 'json', cache: false, contentType: false, processData: false,
-                complete: function () {
-                }, success: function (data) {
-
-
-
-                    if (data.state == '200') {
-
-
-
-                    } else if (data.state == '400') {
-                    }
-
-
-
-                }, error: function () {
-
-                }
-            });
-
-        }, 400);
-
-
-
-
-
-
-    });
-
-
-
 
 
 
 
     $(document).on('change', "#order_for_collection", function(ev){
 
+
         if($(this).is(':checked')){
+
+            console.log('caca')
             $('#order_delivery_address_fields').addClass('hide')
 
         }else{
@@ -582,66 +522,12 @@
         }
     });
 
-    $( "#order_invoice_country_select" ).change(function() {
-
-        var selected=$( "#invoice_country_select option:selected" )
-        // console.log(selected.val())
-
-        var request= "ar_web_addressing.php?tipo=address_format&country_code="+selected.val()+'&website_key={$website->id}'
-
-        console.log(request)
-        $.getJSON(request, function( data ) {
-            console.log(data)
-            $.each(data.hidden_fields, function(index, value) {
-                $('#invoice_'+value).addClass('hide')
-                $('#invoice_'+value).find('input').addClass('ignore')
-
-            });
-
-            $.each(data.used_fields, function(index, value) {
-                $('#invoice_'+value).removeClass('hide')
-                $('#invoice_'+value).find('input').removeClass('ignore')
-
-            });
-
-            $.each(data.labels, function(index, value) {
-                $('#invoice_'+index).find('input').attr('placeholder',value)
-                $('#invoice_'+index).find('b').html(value)
-
-            });
-
-            $.each(data.no_required_fields, function(index, value) {
-
-
-                // console.log(value)
-
-                $('#invoice_'+value+' input').rules( "remove" );
-
-
-
-
-            });
-
-            $.each(data.required_fields, function(index, value) {
-                console.log($('#'+value))
-                //console.log($('#'+value+' input').rules())
-
-                $('#invoice_'+value+' input').rules( "add", { required: true});
-
-            });
-
-
-        });
-
-
-    });
 
 
 
 
 
-    $("#order_invoice_address_form").validate
-    (
+    $("#order_invoice_address_form").validate(
         {
 
             submitHandler: function(form)
@@ -783,60 +669,6 @@
     }
     });
 
-
-    $( "#order_delivery_country_select" ).change(function() {
-
-        var selected=$( "#order_delivery_country_select option:selected" )
-        // console.log(selected.val())
-
-        var request= "ar_web_addressing.php?tipo=address_format&country_code="+selected.val()+'&website_key={$website->id}'
-
-        console.log(request)
-        $.getJSON(request, function( data ) {
-            console.log(data)
-            $.each(data.hidden_fields, function(index, value) {
-                $('#order_delivery_'+value).addClass('hide')
-                $('#order_delivery_'+value).find('input').addClass('ignore')
-
-            });
-
-            $.each(data.used_fields, function(index, value) {
-                $('#order_delivery_'+value).removeClass('hide')
-                $('#order_delivery_'+value).find('input').removeClass('ignore')
-
-            });
-
-            $.each(data.labels, function(index, value) {
-                $('#order_delivery_'+index).find('input').attr('placeholder',value)
-                $('#order_delivery_'+index).find('b').html(value)
-
-            });
-
-            $.each(data.no_required_fields, function(index, value) {
-
-
-                // console.log(value)
-
-                $('#order_delivery_'+value+' input').rules( "remove" );
-
-
-
-
-            });
-
-            $.each(data.required_fields, function(index, value) {
-                console.log($('#'+value))
-                //console.log($('#'+value+' input').rules())
-
-                $('#order_delivery_delivery_'+value+' input').rules( "add", { required: true});
-
-            });
-
-
-        });
-
-
-    });
 
 
 

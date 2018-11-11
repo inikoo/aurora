@@ -10,6 +10,9 @@
 *}
 {include file="theme_1/_head.theme_1.EcomB2B.mobile.tpl"}
 <body>{include file="analytics.tpl"}
+{if $logged_in}
+    <span id="ordering_settings" class="hide"  data-website_key="{$website->id}" ></span>
+{/if}
 <div id="page-transitions">
     {include file="theme_1/header.theme_1.EcomB2B.mobile.tpl"}
     <div id="page-content" class="page-content">
@@ -284,7 +287,7 @@ getScript('/js/tablet.custom.min.js?v=2', function () {
             {if $with_basket==1}
             getScript('/js/mobile.logged_in.min.js?v=2', function () {
                 getScript('/js/mobile.forms.min.js', function () {
-
+                    getScript('/js/mobile.basket.min.js?v3', function () {
                     $.getJSON("ar_web_basket.php?tipo=get_basket_html&device_prefix=mobile", function (data) {
 
                         $('#basket').html(data.html)
@@ -300,7 +303,7 @@ getScript('/js/tablet.custom.min.js?v=2', function () {
                             $('.modal-opener').on('click', function()
                             {
 
-                                console.log('xCcaca')
+
 
                                 if( !$('#sky-form-modal-overlay').length )
                                 {
@@ -332,6 +335,7 @@ getScript('/js/tablet.custom.min.js?v=2', function () {
 
 
 
+                    })
 
                     })
                 })
@@ -434,6 +438,7 @@ getScript('/js/tablet.custom.min.js?v=2', function () {
             {/if}
             {if $with_profile==1}
             getScript('/js/mobile.forms.min.js', function () {
+                getScript('/js/mobile.profile.min.js', function () {
                 $.getJSON("ar_web_profile.php?tipo=get_profile_html&device_prefix=mobile", function (data) {
 
 
@@ -442,7 +447,7 @@ getScript('/js/tablet.custom.min.js?v=2', function () {
 
 
 
-
+                })
                 })
 
             })
