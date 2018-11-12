@@ -23,6 +23,8 @@ function fork_housekeeping($job) {
 
     print_r($data);
 
+    
+
     //return true;
 
 
@@ -998,6 +1000,9 @@ function fork_housekeeping($job) {
 
             $email_campaign = get_object('email_campaign', $data['mailshot_key']);
 
+
+
+
             if ($email_campaign->id) {
                 $email_campaign->socket = $socket;
                 $email_campaign->update_estimated_recipients();
@@ -1011,7 +1016,14 @@ function fork_housekeeping($job) {
             $socket  = $context->getSocket(ZMQ::SOCKET_PUSH, 'my pusher');
             $socket->connect("tcp://localhost:5555");
 
+
+
+
+
             $email_campaign = get_object('email_campaign', $data['mailshot_key']);
+
+
+
 
             if ($email_campaign->id) {
                 $email_campaign->socket = $socket;
