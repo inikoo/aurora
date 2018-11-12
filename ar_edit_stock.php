@@ -233,6 +233,7 @@ function set_delivery_costing($account, $db, $user, $editor, $data, $smarty) {
 
 
     $delivery   = get_object('SupplierDelivery', $data['key']);
+    $delivery->editor=$editor;
     $parts_data = array();
 
 
@@ -335,9 +336,7 @@ function set_delivery_costing($account, $db, $user, $editor, $data, $smarty) {
     $delivery->fast_update(
         array('Supplier Delivery Currency Exchange' => 1 / $data['exchange'])
     );
-    $delivery->update_state(
-      'InvoiceChecked'
-    );
+    $delivery->update_state('InvoiceChecked');
 
     $delivery->update_totals();
 
@@ -349,6 +348,7 @@ function set_delivery_costing($account, $db, $user, $editor, $data, $smarty) {
         'au_housekeeping', array(
         'type'               => 'update_parts_stock_run',
         'parts_data'         => $parts_data,
+        'editor'             => $editor,
         'all_parts_min_date' => ($all_parts_min_date != '' ? gmdate('Y-m-d', $all_parts_min_date) : ''),
     ), $account->get('Account Code')
     );
@@ -702,7 +702,7 @@ LEFT JOIN `Supplier Part Historic Dimension` SPH ON (POTF.`Supplier Part Histori
             // $data['qty'] <--- SKOs
             //
 
-            $units_qty_placed=$data['qty'] * $row['Part Units Per Package'];
+            $units_qty_placed = $data['qty'] * $row['Part Units Per Package'];
 
 
             if (round($units_qty_placed, 2) > round($row['Supplier Delivery Checked Units'] - $row['Supplier Delivery Placed Units'], 2)) {
@@ -715,12 +715,11 @@ LEFT JOIN `Supplier Part Historic Dimension` SPH ON (POTF.`Supplier Part Histori
             }
 
 
-
             $exchange = $object->get('Supplier Delivery Currency Exchange');
 
             $amount_per_sko = round(
-                $row['Part Units Per Package']*($exchange * ($row['Supplier Delivery Net Amount'] + $row['Supplier Delivery Extra Cost Amount']) + $row['Supplier Delivery Extra Cost Account Currency Amount'])/$row['Supplier Delivery Checked Units']
-                    , 4
+                $row['Part Units Per Package'] * ($exchange * ($row['Supplier Delivery Net Amount'] + $row['Supplier Delivery Extra Cost Amount']) + $row['Supplier Delivery Extra Cost Account Currency Amount']) / $row['Supplier Delivery Checked Units']
+                , 4
             );
 
 
