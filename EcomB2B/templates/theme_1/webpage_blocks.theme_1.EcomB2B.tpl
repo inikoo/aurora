@@ -426,7 +426,7 @@
 
 
             {if $with_basket==1}
-            getScript('/js/desktop.logged_in.min.js?v=2', function () {
+            getScript('/js/desktop.logged_in.min.js?v=3', function () {
                 getScript('/js/desktop.forms.min.js', function () {
                     getScript('/js/desktop.basket.min.js?v2', function () {
 
