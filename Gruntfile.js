@@ -37,7 +37,9 @@ module.exports = function (grunt) {
             }, setup: {
                 src: ['js/setup/setup.js'], dest: 'build/app/js/setup.min.js'
             }, pweb_desktop: {
-                sourceMap: true,
+                options: {
+                    sourceMap: true,
+                },
 
                 src: [
                     'EcomB2B/theme_1/local/jquery.js',
@@ -84,11 +86,17 @@ module.exports = function (grunt) {
                     'EcomB2B/js/aurora_forms.js',
                 ], dest: 'EcomB2B/js/desktop.forms.min.js'
             }, pweb_desktop_basket: {
+                options: {
+                    sourceMap: true,
+                },
                 src: [
                     'EcomB2B/js/basket.js',
                     'EcomB2B/js/order_totals.js',
                 ], dest: 'EcomB2B/js/desktop.basket.min.js'
             }, pweb_desktop_checkout: {
+                options: {
+                    sourceMap: true,
+                },
                 src: [
                     'EcomB2B/js/braintree.js',
                     'EcomB2B/js/checkout.js',
@@ -103,6 +111,9 @@ module.exports = function (grunt) {
                     'EcomB2B/js/order_totals.js',
                 ], dest: 'EcomB2B/js/desktop.profile.min.js'
             }, pweb_mobile: {
+                options: {
+                    sourceMap: true,
+                },
                 src: [
                     'EcomB2B/theme_1/local/jquery.js',
                     'EcomB2B/theme_1/mobile/plugins.js',
