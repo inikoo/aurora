@@ -43,8 +43,6 @@ module.exports = function (grunt) {
 
                 src: [
                     'EcomB2B/theme_1/local/jquery.js',
-
-
                     'EcomB2B/js/jquery.hoverIntent.js',
                     'EcomB2B/js/menu.js',
                     'EcomB2B/js/search.js',
