@@ -290,7 +290,7 @@ trait Send_Email {
             '/\[Unsubscribe]/', function () use ($email_tracking, $recipient, $data, $smarty, $localised_labels) {
 
             if (isset($data['Unsubscribe URL'])) {
-                include_once 'keyring/key.php';
+
 
 
                 $smarty->assign('localised_labels', $localised_labels);
