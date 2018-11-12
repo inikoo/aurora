@@ -7,35 +7,28 @@
 function scanned_barcode(value) {
 
 
-        var matches_location = value.match(/^\!W(\d+)L(\d+)/);
-
-
-        console.log(parseInt(matches_location.length))
-
-        if(parseInt(matches_location.length)==3){
-
-            console.log(matches_location)
-            change_view('/locations/'+matches_location[1]+'/'+matches_location[2]+'&tab=location.parts');
-
+    var matches_location = value.match(/^\!W(\d+)L(\d+)/);
+    if (matches_location) {
+        if (parseInt(matches_location.length) == 3) {
+            change_view('/locations/' + matches_location[1] + '/' + matches_location[2] + '&tab=location.parts');
             return;
         }
-
-
+    }
 
 
     if (state.object == 'delivery_note') {
         scanned_barcode_in_delivery_note(value)
     } else if (state.object == 'supplierdelivery') {
         scanned_barcode_in_supplier_delivery_note(value)
-    }else if (state.object == 'warehouse') {
+    } else if (state.object == 'warehouse') {
         barcode_jump_location(value)
-    } else if (state.object == ''){
+    } else if (state.object == '') {
         console.log(state)
-        if(state.section=='inventory'){
+        if (state.section == 'inventory') {
 
             barcode_jump_part(value)
 
-        }else if(state.section=='locations'){
+        } else if (state.section == 'locations') {
 
             barcode_jump_location(value)
 
@@ -43,9 +36,6 @@ function scanned_barcode(value) {
 
 
     }
-
-
-
 
 
 }
