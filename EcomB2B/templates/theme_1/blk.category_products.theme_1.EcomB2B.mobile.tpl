@@ -34,14 +34,11 @@
 
                             <div class="description"  {if ($item.name|count_characters)>40} style="font-size: 80% {elseif ($item.name|count_characters)>35}{/if}">{$item.name}</div>
                             {if $logged_in}
+
                                 <div class="price" style="margin-top: 5px">
-                                {t}Price{/t}: {$item.price} {$item.price_unit}
+                                {t}Price{/t}: {$item.price} {if isset($item.price_unit)}{$item.price_unit}{/if}
                                 </div>
-                                {if $item.rrp!=''}
-                                <div class="price">
-                                  {t}RRP{/t}: {$item.rrp}
-                                </div>
-                                {/if}
+                                {if !empty($item.rrp)}<div class="price">{t}RRP{/t}: {$item.rrp}</div>{/if}
 
                             {if $item.web_state=='Out of Stock'}
 
@@ -52,8 +49,6 @@
                                            data-label_add_notification="{if empty($labels.add_notification)}{t}Click to be notified by email when back in stock{/t},{else}{$labels.add_notification}{/if}"   title="{if empty($labels.add_notification)}{t}Click to be notified by email when back in stock{/t},{else}{$labels.add_notification}{/if}"    class="far fa-envelope like_button reminder out_of_stock_reminders_{$item.product_id} margin_left_5" aria-hidden="true"></i>
 
                                     </span>
-
-
                                 </div>
                             {elseif $item.web_state=='For Sale'}
                                 <div class="mobile_ordering"  data-settings='{ "pid":{$item.product_id} }'>

@@ -221,7 +221,7 @@ trait Send_Email {
 
         $to_address = $recipient->get('Main Plain Email');
 
-        if (gethostname() == 'bali') {
+        if (preg_match('/bali/', gethostname()) ) {
 
 
             $to_address = 'raul@inikoo.com';

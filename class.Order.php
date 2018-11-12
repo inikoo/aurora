@@ -1930,7 +1930,7 @@ class Order extends DB_Table {
     function send_review_invitation() {
 
 
-        if (gethostname() == 'bali' or $this->get('Order Email') == '') {
+        if (  preg_match('/bali/', gethostname())    or $this->get('Order Email') == '') {
             return;
         }
 

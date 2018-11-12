@@ -10,7 +10,8 @@
  Version 2.0
 */
 
-if (gethostname() != 'bali') {
+
+if ( !preg_match('/bali/', gethostname()) ) {
 
     $sentry_client = new Raven_Client('https://7c38fecb8a274f7e93cb0488ad22ca10@sentry.io/1319834');
     $sentry_client->install();
