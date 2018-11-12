@@ -18,6 +18,8 @@ trait Send_Email {
     function send($recipient, $data, $smarty = false) {
 
 
+        $this->sent=false;
+
         $this->error = false;
         $account     = get_object('Account', 1);
 
@@ -38,7 +40,6 @@ trait Send_Email {
         if ($this->get('Published Email Template Subject') == '') {
 
             $this->error = true;
-            $this->sent  = false;
             $this->msg   = _('Empty email subject');
 
             return false;
@@ -48,7 +49,6 @@ trait Send_Email {
         if ($email_template_type->id) {
             if ($email_template_type->get('Email Campaign Type Status') != 'Active') {
                 $this->error = true;
-                $this->sent  = false;
                 $this->msg   = 'Email Campaign Type Status not active';
 
                 return false;
@@ -65,7 +65,6 @@ trait Send_Email {
         if ($store->get('Send Email Address') == '') {
 
             $this->error = true;
-            $this->sent  = false;
             $this->msg   = 'Sender email address not configured';
 
             return false;
