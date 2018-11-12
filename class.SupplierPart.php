@@ -983,15 +983,29 @@ class SupplierPart extends DB_Table {
 
             case 'Supplier Part Unit Extra Cost Percentage':
 
+
+                if (preg_match('/\%$/', $value)) {
+                    $value = preg_replace('/\%^/', '', $value) ;
+
+                    if(is_numeric($value)){
+                        $value=$value/100;
+                    }else{
+                        $this->error = true;
+                        $this->msg   = sprintf(
+                            _('Invalid extra cost (%s)'), $value
+                        );
+
+                        return;
+                    }
+
+                }
+
                 if ($value == '') {
                     $value = 0;
                 }
 
 
-                if (preg_match('/\%$/', $value)) {
-                    $value = preg_replace('/\%^/', '', $value) / 100;
-                    // $value = $this->data['Supplier Part Unit Cost'] * $value / 100;
-                }
+
 
 
                 if (!is_numeric($value) or $value < 0) {
@@ -1037,14 +1051,28 @@ class SupplierPart extends DB_Table {
 
             case 'Supplier Part Unit Extra Cost':
 
+                if (preg_match('/\%$/', $value)) {
+                    $value = preg_replace('/\%^/', '', $value) ;
+
+                    if(is_numeric($value)){
+                        $value=$value/100;
+                    }else{
+                        $this->error = true;
+                        $this->msg   = sprintf(
+                            _('Invalid extra cost (%s)'), $value
+                        );
+
+                        return;
+                    }
+
+                }
+
+
                 if ($value == '') {
                     $value = 0;
                 }
 
-                if (preg_match('/\%$/', $value)) {
-                    $value = preg_replace('/\%^/', '', $value);
-                    $value = $this->data['Supplier Part Unit Cost'] * $value / 100;
-                }
+
 
 
                 if (!is_numeric($value) or $value < 0) {
