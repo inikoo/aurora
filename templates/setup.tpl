@@ -32,7 +32,7 @@
         <script src="/js/libs/d3.js"></script>
         <script src="/js/libs/d3fc.layout.js"></script>
         <script src="/js/libs/d3fc.js"></script>
-        <script src="/js/keyboard_shorcuts.js"></script>
+        <script src="/js/keyboard_shortcuts.js"></script>
         <script src="/js/search.js"></script>
         <script src="/js/table.js"></script>
         <script src="/js/validation.js"></script>
