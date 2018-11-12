@@ -70,10 +70,10 @@
                     </div>
 
                     <div class="product_prices log_in " >
-                        <div class="product_price">{if empty($labels._product_price)}{t}Price{/t}{else}{$labels._product_price}{/if}: {$item.price}</div>
-                        {assign 'rrp' $item.rrp}
-                        {if $rrp!=''}<div>{if empty($labels._product_rrp)}{t}RRP{/t}{else}{$labels._product_rrp}{/if}: {$rrp}</div>{/if}
+                        <div class="product_price">{if empty($labels._product_price)}{t}Price{/t}{else}{$labels._product_price}{/if}: {$item.price} {if isset($item.price_unit)}<small>{$item.price_unit}</small>{/if}</div>
+                        {if !empty($item.rrp)}<div><small>{if empty($labels._product_rrp)}{t}RRP{/t}{else}{$labels._product_rrp}{/if}: {$item.rrp}</small></div>{/if}
                     </div>
+
 
                     {if $item.web_state=='Out of Stock'}
                         <div class="ordering log_in can_not_order  out_of_stock_row  {$item.out_of_stock_class} ">

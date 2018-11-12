@@ -34,14 +34,9 @@
                             <div class="description"  {if ($item.name|count_characters)>40} style="font-size: 80% {elseif ($item.name|count_characters)>35}{/if}">{$item.name}</div>
                             {if $logged_in}
                                 <div class="price" style="margin-top: 5px">
-                                {t}Price{/t}: {$item.price} {$item.price_unit}
+                                {t}Price{/t}: {$item.price} {if isset($item.price_unit)}{$item.price_unit}{/if}
                                 </div>
-                                {if $item.rrp!=''}
-                                <div class="price">
-                                  {t}RRP{/t}: {$item.rrp}
-                                </div>
-                            {/if}
-
+                                {if !empty($item.rrp)}<div class="price">{t}RRP{/t}: {$item.rrp}</div>{/if}
                             {if $item.web_state=='Out of Stock'}
 
                                 <div style="margin-top:10px;"><span style="padding:5px 10px" class="highlight-red color-white">{if empty($labels.out_of_stock)}{t}Out of stock{/t}{else}{$labels.out_of_stock}{/if}

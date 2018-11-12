@@ -52,9 +52,8 @@
                         </div>
                         {if $logged_in}
                             <div class="product_prices  " style="font-size: 14px;padding:0px 4px">
-                                <div class="product_price">{if empty($labels._product_price)}{t}Price{/t}{else}{$labels._product_price}{/if}: {$item.price} <small>{$item.price_unit}</small></div>
-                                {assign 'rrp' $item.rrp}
-                                {if $rrp!=''}<div>{if empty($labels._product_rrp)}{t}RRP{/t}{else}{$labels._product_rrp}{/if}: {$rrp}</div>{/if}
+                                <div class="product_price">{if empty($labels._product_price)}{t}Price{/t}{else}{$labels._product_price}{/if}: {$item.price} {if isset($item.price_unit)}<small>{$item.price_unit}</small>{/if}</div>
+                                {if !empty($item.rrp)}<div><small>{if empty($labels._product_rrp)}{t}RRP{/t}{else}{$labels._product_rrp}{/if}: {$item.rrp}</small></div>{/if}
                             </div>
                         {else}
                             <div class="product_prices  " style="font-size: 14px;padding:0px 4px">
