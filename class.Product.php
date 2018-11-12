@@ -249,12 +249,12 @@ class Product extends Asset {
             $this->get_data('id', $this->id);
 
             $sql = sprintf(
-                "INSERT INTO  `Product DC Data`  (`Product ID`) VALUES (%d) ", $this->id
+                "INSERT INTO `Product DC Data` (`Product ID`) VALUES (%d) ", $this->id
             );
             $this->db->exec($sql);
 
             $sql = sprintf(
-                "INSERT INTO  `Product Data`  (`Product ID`) VALUES (%d) ", $this->id
+                "INSERT INTO `Product Data` `Product ID`) VALUES (%d) ", $this->id
             );
             $this->db->exec($sql);
 
@@ -1830,6 +1830,8 @@ class Product extends Asset {
         $sql = sprintf(
             "SELECT * FROM `Product Data` WHERE `Product ID`=%d", $this->id
         );
+
+
 
 
         if ($result = $this->db->query($sql)) {
