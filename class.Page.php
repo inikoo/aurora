@@ -2500,7 +2500,7 @@ class Page extends DB_Table {
                                 $item['type'] = 'image';
 
 
-                                if (empty($item['image_website'])) {
+                                if (empty($item['image_website']) and $item['width']>0 and $item['height']>0 ) {
                                     $image_website = $item['src'];
                                     if (preg_match('/id=(\d+)/', $item['src'], $matches)) {
                                         $image_key = $matches[1];
@@ -2565,18 +2565,26 @@ class Page extends DB_Table {
                             $image_counter = 0;
 
                             foreach ($items as $key_item => $item) {
-                                if ($item['type'] == 'image' and $item['height'] > 0) {
-                                    $ratio = $item['width'] / $item['height'];
-                                    //print "$ratio\n";
 
-                                    if ($ratio > 7.5) {
-                                        $mobile_html .= '<img src="'.$item['image_website'].'" style="width:100%;" alt="'.$item['title'].'">';
-                                        unset($items[$key_item]);
-                                        break;
-                                    }
+                                  if ($item['type'] == 'image'){
+
+                                      if($item['height'] ==0 or $item['width'] ==0){
+                                          unset($items[$key_item]);
+                                      }else{
+                                          $ratio = $item['width'] / $item['height'];
+                                          //print "$ratio\n";
+
+                                          if ($ratio > 7.5) {
+                                              $mobile_html .= '<img src="'.$item['image_website'].'" style="width:100%;" alt="'.$item['title'].'">';
+                                              unset($items[$key_item]);
+                                              break;
+                                          }
+                                      }
+
+                                  }
 
 
-                                }
+
 
                             }
 
@@ -2617,7 +2625,8 @@ class Page extends DB_Table {
                             $content_data['blocks'][$block_key]['mobile_html'] = $mobile_html;
                             $content_data['blocks'][$block_key]['tablet_html'] = $tablet_html;
 
-                        } elseif ($block['type'] == 'category_products') {
+                        }
+                        elseif ($block['type'] == 'category_products') {
                             foreach ($block['items'] as $item_key => $item) {
                                 if ($item['type'] == 'product') {
                                     if (empty($item['image_mobile_website'])) {

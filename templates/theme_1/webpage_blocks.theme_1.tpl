@@ -1542,7 +1542,7 @@
 
                         var img = $(image_block).find('img')
 
-                            if(img.length){
+                            if(img.length && img.height()>0 && img.width()>0 ){
                                 console.log(img)
 
                                 images.push({
