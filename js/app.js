@@ -17,6 +17,9 @@ var key_scope = false;
 var old_state_request = '';
 var websocket_connected=false;
 var websocket_connected_connecting=false;
+
+
+
 $(document).ready(function () {
 
 
