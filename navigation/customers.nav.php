@@ -3522,7 +3522,7 @@ function get_email_campaign_type_navigation($data, $smarty, $user, $db) {
 }
 
 
-function get_product_navigation($data, $smarty, $user, $db) {
+function get_customer_product_navigation($data, $smarty, $user, $db) {
 
 
     $customer = $data['_parent'];
