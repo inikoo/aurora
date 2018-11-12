@@ -185,22 +185,22 @@ function get_employee_navigation($data, $smarty, $user, $db) {
 
     $object        = $data['_object'];
     $left_buttons  = array();
+    $right_buttons = array();
 
-    $_user=$object->get_user();
+    $_user = $object->get_user();
 
 
-    if($_user->id){
+    if ($_user and is_object($_user) and $_user->id) {
 
         $right_buttons[]
             = array(
-            'icon'  => 'terminal',
-            'title' => '',
-            'click'=>"change_view('/account/user/".$_user->id."')",
-            'pre_text'=>_('User'),
-            'class'=>'text'
+            'icon'     => 'terminal',
+            'title'    => '',
+            'click'    => "change_view('/account/user/".$_user->id."')",
+            'pre_text' => _('User'),
+            'class'    => 'text'
         );
     }
-
 
 
     if ($data['parent']) {
@@ -2087,34 +2087,33 @@ function get_position_navigation($data, $smarty, $user, $db) {
         $sql        = trim($sql_totals." $wheref");
 
 
-
-
         include 'conf/roles.php';
 
         $sql = "select $fields from $table $where $wheref $group_by ";
 
         $base_data = $roles;
         foreach ($db->query($sql) as $data) {
-            if(isset($base_data[$data['Role Code']]))
-            $base_data[$data['Role Code']] = array_merge($base_data[$data['Role Code']],$data);
+            if (isset($base_data[$data['Role Code']])) {
+                $base_data[$data['Role Code']] = array_merge($base_data[$data['Role Code']], $data);
+            }
         }
 
         foreach ($base_data as $key => $data) {
 
             $adata[] = array(
-                'id'      => $key,
-                '_position'         => $data['title'],
-                'position'         => sprintf('<span class="button" onClick="change_view(\'hr/position/%s\')">%s</span>',$key,$data['title']),
-                '_employees' => (isset($data['employees'])? $data['employees']:0),
+                'id'         => $key,
+                '_position'  => $data['title'],
+                'position'   => sprintf('<span class="button" onClick="change_view(\'hr/position/%s\')">%s</span>', $key, $data['title']),
+                '_employees' => (isset($data['employees']) ? $data['employees'] : 0),
 
-                'employees' => (isset($data['employees'])? number($data['employees']):0)
+                'employees' => (isset($data['employees']) ? number($data['employees']) : 0)
             );
 
         }
 
 
         foreach ($adata as $key => $row) {
-            $positions[$key]  = $row['_position'];
+            $positions[$key] = $row['_position'];
             $employees[$key] = $row['_employees'];
         }
 
@@ -2122,93 +2121,85 @@ function get_position_navigation($data, $smarty, $user, $db) {
         //print_r($positions);
 
 
-        if($order=='position'){
-            if($order_direction=='desc'){
+        if ($order == 'position') {
+            if ($order_direction == 'desc') {
                 array_multisort($positions, SORT_DESC, $adata);
 
-            }else{
+            } else {
                 array_multisort($positions, SORT_ASC, $adata);
 
             }
 
-        }elseif($order=='employees'){
-            if($order_direction=='desc'){
+        } elseif ($order == 'employees') {
+            if ($order_direction == 'desc') {
                 array_multisort($employees, SORT_DESC, $adata);
 
-            }else{
+            } else {
                 array_multisort($employees, SORT_ASC, $adata);
 
             }
 
         }
 
-//print_r($adata);
+        //print_r($adata);
 
-        foreach($adata as $key=>$value){
-            if($value['id']==$object->id){
+        foreach ($adata as $key => $value) {
+            if ($value['id'] == $object->id) {
 
 
-                if($key>0){
-                    $prev_key   = $adata[$key-1]['id'];
-                    $prev_title = $adata[$key-1]['_position'];
+                if ($key > 0) {
+                    $prev_key   = $adata[$key - 1]['id'];
+                    $prev_title = $adata[$key - 1]['_position'];
                 }
 
-                if($key<count($adata)-1){
-                    $next_key   = $adata[$key+1]['id'];
-                    $next_title = $adata[$key+1]['_position'];
+                if ($key < count($adata) - 1) {
+                    $next_key   = $adata[$key + 1]['id'];
+                    $next_title = $adata[$key + 1]['_position'];
                 }
 
             }
         }
 
 
+        $up_button = array(
+            'icon'      => 'arrow-up',
+            'title'     => _("Job positions"),
+            'reference' => 'hr/organization'
+        );
 
-
-
-
-
-
-
-            $up_button = array(
-                'icon'      => 'arrow-up',
-                'title'     => _("Job positions"),
-                'reference' => 'hr/organization'
+        if ($prev_key) {
+            $left_buttons[] = array(
+                'icon'      => 'arrow-left',
+                'title'     => $prev_title,
+                'reference' => 'hr/position/'.$prev_key
             );
 
-            if ($prev_key) {
-                $left_buttons[] = array(
-                    'icon'      => 'arrow-left',
-                    'title'     => $prev_title,
-                    'reference' => 'hr/position/'.$prev_key
-                );
+        } else {
+            $left_buttons[] = array(
+                'icon'  => 'arrow-left disabled',
+                'title' => '',
+                'url'   => ''
+            );
 
-            } else {
-                $left_buttons[] = array(
-                    'icon'  => 'arrow-left disabled',
-                    'title' => '',
-                    'url'   => ''
-                );
-
-            }
-            $left_buttons[] = $up_button;
+        }
+        $left_buttons[] = $up_button;
 
 
-            if ($next_key) {
-                $left_buttons[] = array(
-                    'icon'      => 'arrow-right',
-                    'title'     => $next_title,
-                    'reference' => 'hr/position/'.$next_key
-                );
+        if ($next_key) {
+            $left_buttons[] = array(
+                'icon'      => 'arrow-right',
+                'title'     => $next_title,
+                'reference' => 'hr/position/'.$next_key
+            );
 
-            } else {
-                $left_buttons[] = array(
-                    'icon'  => 'arrow-right disabled',
-                    'title' => '',
-                    'url'   => ''
-                );
+        } else {
+            $left_buttons[] = array(
+                'icon'  => 'arrow-right disabled',
+                'title' => '',
+                'url'   => ''
+            );
 
-            }
-
+        }
 
 
     } else {
