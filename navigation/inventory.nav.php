@@ -1411,7 +1411,7 @@ function get_parts_category_navigation($data, $smarty, $user, $db, $account) {
 }
 
 
-function get_product_navigation($data, $smarty, $user, $db, $account) {
+function get_part_product_navigation($data, $smarty, $user, $db, $account) {
 
 
     $object = $data['_object'];

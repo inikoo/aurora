@@ -1592,7 +1592,7 @@ function get_navigation($user, $smarty, $data, $db, $account) {
                     );
                     break;
                 case ('product'):
-                    return get_product_navigation(
+                    return get_customer_product_navigation(
                         $data, $smarty, $user, $db, $account, $account
                     );
                     break;
@@ -2155,7 +2155,7 @@ function get_navigation($user, $smarty, $data, $db, $account) {
                     break;
                 case ('product'):
 
-                    return get_product_navigation(
+                    return get_part_product_navigation(
                         $data, $smarty, $user, $db, $account
                     );
                     break;
@@ -2252,6 +2252,11 @@ function get_navigation($user, $smarty, $data, $db, $account) {
                     break;
                 case ('warehouse.new'):
                     return get_new_warehouse_navigation(
+                        $data, $smarty, $user, $db, $account
+                    );
+                    break;
+                case ('warehouse_area.new'):
+                    return get_new_warehouse_area_navigation(
                         $data, $smarty, $user, $db, $account
                     );
                     break;
@@ -7113,11 +7118,18 @@ function get_view_position($db, $state, $user, $smarty, $account) {
                     break;
                 case 'warehouse.new':
 
-
-
                     $branch[] = array(
                         'label'     => _('New warehouse'),
-                        'icon'      => 'map',
+                        'icon'      => 'warehouse-alt',
+                        'reference' => ''
+                    );
+
+                    break;
+                case 'warehouse_area.new':
+
+                    $branch[] = array(
+                        'label'     => _('New warehouse area'),
+                        'icon'      => 'inventory',
                         'reference' => ''
                     );
 
