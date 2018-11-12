@@ -115,6 +115,7 @@ function fork_migration($job) {
             $data_to_update           = array();
             $address_fields_to_update = array();
 
+            $order=false;
 
             if ($invoice->get('Invoice Order Key') > 0) {
                 $order = get_object('Order', $invoice->get('Invoice Order Key'));
@@ -130,7 +131,7 @@ function fork_migration($job) {
             }
 
 
-            if ($order->id) {
+            if ($order and is_object($order) and $order->id) {
                 $data_to_update['Invoice Order Key'] = $order->id;
 
                 $recipient    = $invoice->get('Invoice Customer Contact Name');
