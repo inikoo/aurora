@@ -622,7 +622,7 @@ function picked_offline_items_qty_change(element) {
 
 
     var input = $(element).closest('span').find('input')
-    var icon = $(element)
+  //  var icon = $(element)
 
     if ($(element).hasClass('fa-plus')) {
 
@@ -674,10 +674,8 @@ function picked_offline_items_qty_change(element) {
     if (qty == '') qty = 0;
 
 
-    var settings = $(element).closest('span').data('settings')
-
-
-    var table_metadata = JSON.parse(atob($('#table').data("metadata")))
+    //var settings = $(element).closest('span').data('settings')
+    //var table_metadata = JSON.parse(atob($('#table').data("metadata")))
 
 
 
