@@ -30,7 +30,7 @@ function get_order_showcase($data, $smarty, $user, $db) {
 
 
     $smarty->assign(
-        'object_data', base64_encode(
+        'object_data',
                          json_encode(
                              array(
                                  'object'              => $data['object'],
@@ -42,7 +42,7 @@ function get_order_showcase($data, $smarty, $user, $db) {
                                  'order_type'          => 'Order'
                              )
                          )
-                     )
+
     );
 
 

@@ -109,7 +109,7 @@
     </ul>
 </div>
 
-<div id="delivery_note" class="order" data-object="{$object_data}" dn_key="{$delivery_note->id}" style="display: flex;">
+<div id="delivery_note" class="order" data-object='{$object_data}' dn_key="{$delivery_note->id}" style="display: flex;">
     <div class="block" style="padding:10px 20px;position: relative">
 
 

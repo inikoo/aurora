@@ -177,7 +177,7 @@ function save_email_campaign_operation(element) {
     var data = $(element).data("data")
 
 
-    var object_data = JSON.parse(atob($('#email_campaign').data("object")))
+    var object_data = $('#email_campaign').data("object")
 
     var dialog_name = data.dialog_name
     var field = data.field

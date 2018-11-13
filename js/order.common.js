@@ -267,7 +267,10 @@ function save_order_operation(element) {
 
     //console.log(data)
 
-    var object_data = JSON.parse(atob($('#object_showcase div.order').data("object")))
+    var object_data = $('#object_showcase div.order').data("object")
+
+
+    console.log(object_data)
 
     var dialog_name = data.dialog_name
     var field = data.field
@@ -1396,7 +1399,7 @@ function select_payment_account(element) {
 
 function try_to_pay(element) {
 
-    var object_data = JSON.parse(atob($('#object_showcase div.order').data("object")))
+    var object_data = $('#object_showcase div.order').data("object")
 
 
     //console.log($(element).attr('amount'))
@@ -1454,7 +1457,7 @@ function show_add_payment_to_order() {
 
     if ($('#add_payment').hasClass('hide')) {
 
-        var object_data = JSON.parse(atob($('#object_showcase div.order').data("object")))
+        var object_data = $('#object_showcase div.order').data("object")
         if(object_data.object=='invoice') {
             change_tab('invoice.payments', {'add_payment': 1})
         }else{
@@ -1563,7 +1566,7 @@ function save_new_payment() {
 
 
 
-    var object_data = JSON.parse(atob($('#object_showcase div.order').data("object")))
+    var object_data = $('#object_showcase div.order').data("object")
 
 
     if ($('#save_new_payment').hasClass('wait')) {

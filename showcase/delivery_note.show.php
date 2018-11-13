@@ -52,7 +52,7 @@ function get_delivery_note_showcase($data) {
 
 
     $smarty->assign(
-        'object_data', base64_encode(
+        'object_data',
                          json_encode(
                              array(
                                  'object' => $data['object'],
@@ -61,7 +61,7 @@ function get_delivery_note_showcase($data) {
                                  'tab' => $data['tab']
                              )
                          )
-                     )
+
     );
 
 

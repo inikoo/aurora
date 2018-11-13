@@ -34,20 +34,19 @@ function get_agent_supplier_order_showcase($data, $smarty, $user, $db) {
 
 
         $smarty->assign(
-            'object_data', base64_encode(
-                             json_encode(
-                                 array(
-                                     'object'                        => $data['object'],
-                                     'key'                           => $data['key'],
-                                     'order_parent_key'              => $data['_object']->get('Agent Supplier Purchase Order Purchase Order Key'),
-                                     'tab'                           => $data['tab'],
-                                     'purchase_order_number'         => $data['_object']->get('Agent Supplier Purchase Order Public ID'),
+            'object_data',
+            json_encode(
+                array(
+                    'object'                => $data['object'],
+                    'key'                   => $data['key'],
+                    'order_parent_key'      => $data['_object']->get('Agent Supplier Purchase Order Purchase Order Key'),
+                    'tab'                   => $data['tab'],
+                    'purchase_order_number' => $data['_object']->get('Agent Supplier Purchase Order Public ID'),
 
 
+                )
+            )
 
-                                 )
-                             )
-                         )
         );
 
 

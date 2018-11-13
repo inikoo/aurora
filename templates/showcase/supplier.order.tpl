@@ -155,8 +155,7 @@
 
     </ul>
 </div>
-
-<div class="order" style="display: flex;" data-object="{$object_data}">
+<div class="order" style="display: flex;" data-object='{$object_data}'>
     <div style=" align-items: stretch;flex: 1" class="block ">
         <div class="data_container" style="padding:5px 10px">
             <div class="data_field" style="margin:5px 0px 15px 0px ">

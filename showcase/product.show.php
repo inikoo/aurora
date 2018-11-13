@@ -24,7 +24,7 @@ function get_product_showcase($data, $smarty, $user, $db) {
     $product->load_acc_data();
     $product->get_webpage();
 
-    
+
 
   //  if($product->id==30297) {
      //   $product->update_availability();

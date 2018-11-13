@@ -155,7 +155,7 @@
         </li>
     </ul>
 </div>
-<div class="order" style="display: flex;" data-object="{$object_data}">
+<div class="order" style="display: flex;" data-object='{$object_data}'>
     <div class="block" style=" align-items: stretch;flex: 1">
 
 
@@ -618,7 +618,7 @@
             $(this).closest('table').find('td.buttons i').addClass('fa-spinner fa-spin').removeClass('fa-cloud')
 
 
-            var object_data = JSON.parse(atob($('#object_showcase div.order').data("object")))
+            var object_data = $('#object_showcase div.order').data("object")
             console.log(object_data)
             var value = $(this).val()
 

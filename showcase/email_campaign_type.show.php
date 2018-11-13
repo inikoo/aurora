@@ -20,25 +20,21 @@ function get_email_campaign_type_showcase($data, $smarty, $user, $db) {
     $email_campaign_type = $data['_object'];
 
 
-  
-
-
     $smarty->assign('email_campaign_type', $email_campaign_type);
 
     $smarty->assign('store', get_object('store', $email_campaign_type->get('Store Key')));
 
 
     $smarty->assign(
-        'object_data', base64_encode(
-                         json_encode(
-                             array(
-                                 'object' => $data['object'],
-                                 'key'    => $data['key'],
+        'object_data',
+        json_encode(
+            array(
+                'object' => $data['object'],
+                'key'    => $data['key'],
+                'tab'    => $data['tab']
+            )
+        )
 
-                                 'tab' => $data['tab']
-                             )
-                         )
-                     )
     );
 
 

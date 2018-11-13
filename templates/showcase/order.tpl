@@ -159,7 +159,7 @@
     </ul>
 </div>
 
-<div id="order" class="order" style="display: flex;" data-object="{$object_data}" order_key="{$order->id}">
+<div id="order" class="order" style="display: flex;" data-object='{$object_data}' order_key="{$order->id}">
     <div class="block" style=" align-items: stretch;flex: 1">
         <div class="data_container" style="padding:5px 10px">
             <div class="data_field  " style="margin-bottom:10px">

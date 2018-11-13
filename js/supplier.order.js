@@ -116,7 +116,7 @@ function change_on_delivery(element) {
 
 function quick_create_delivery() {
 
-    var object_data = JSON.parse(atob($('#object_showcase div.order').data("object")))
+    var object_data = $('#object_showcase div.order').data("object")
     $('#delivery_number').val(object_data.purchase_order_number)
     $('#quick_create_delivery_operation').addClass('valid')
     save_create_delivery('#quick_create_delivery_operation')
@@ -132,7 +132,7 @@ function save_create_delivery(element) {
 
     $(element).addClass('wait')
     $(element).find('i').addClass('fa-spinner fa-spin fa-cloud').removeClass('fa-plus');
-    var object_data = JSON.parse(atob($('#object_showcase div.order').data("object")))
+    var object_data = $('#object_showcase div.order').data("object")
     var fields_data = {};
 
     fields_data['Supplier Delivery Public ID'] = $('#delivery_number').val()
@@ -223,7 +223,7 @@ $(document).on('input propertychange', '.new_delivery_field', function (evt) {
         }
 
 
-        var object_data = JSON.parse(atob($('#object_showcase div.order').data("object")))
+        var object_data = $('#object_showcase div.order').data("object")
        // console.log(object_data)
 
         var parent = object_data.order_parent

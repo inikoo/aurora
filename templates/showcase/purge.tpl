@@ -33,7 +33,7 @@
 
 
 
-<div id="purge" data-object="{$object_data}" data-purge_key="{$purge->id}">
+<div id="purge" data-object='{$object_data}' data-purge_key="{$purge->id}">
 
 
     <div class="order control_panel ">
@@ -181,7 +181,7 @@
         var data = $(element).data("data")
 
 
-        var object_data = JSON.parse(atob($('#purge').data("object")))
+        var object_data = $('#purge').data("object")
 
         var dialog_name = data.dialog_name
         var field = data.field

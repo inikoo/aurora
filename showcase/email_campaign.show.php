@@ -32,16 +32,15 @@ function get_email_campaign_showcase($data, $smarty, $user, $db) {
 
 
     $smarty->assign(
-        'object_data', base64_encode(
+        'object_data',
                          json_encode(
                              array(
                                  'object' => $data['object'],
                                  'key'    => $data['key'],
-
                                  'tab' => $data['tab']
                              )
                          )
-                     )
+
     );
 
 
