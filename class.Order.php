@@ -646,7 +646,7 @@ class Order extends DB_Table {
                     switch ($this->get('Order State')) {
                         case 'Approved':
 
-                            $this > fast_update(
+                            $this->fast_update(
                                 array(
                                     'Order State'            => 'PackedDone',
                                     'Order Packed Done Date' => $date,
