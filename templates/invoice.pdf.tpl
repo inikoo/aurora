@@ -141,19 +141,20 @@ div.inline { float:left; }
 
 
 			</td>
-			<td width="50%" style="vertical-align:bottom;border: 0mm solid #888888;text-align: right"> {if $number_dns==1} 
-			<div style="text-align:right;{if !$delivery_note->get('Delivery Note Number Parcels')}display:none{/if}">
-				<b> {$delivery_note->get_formatted_parcels()}</b>
-			</div>
-			<div style="text-align: right">
-				{t}Weight{/t}: <b>{$delivery_note->get('Weight')}</b> 
-			</div>
-			{if $delivery_note->data['Delivery Note Shipper Consignment']!=''}
-			<div style="text-align: right">
-				{t}Courier{/t}: <b> <span id="formatted_consignment">{$delivery_note->get('Consignment')|strip_tags}</span></span> </b> 
-			</div>
-			{/if}
-			{/if} </td>
+			<td width="50%" style="vertical-align:bottom;border: 0mm solid #888888;text-align: right">
+                    {if $number_dns==1}
+                        <div style="text-align:right;{if !$delivery_note->get('Delivery Note Number Parcels')}display:none{/if}">
+                            <b> {$delivery_note->get_formatted_parcels()}</b>
+                        </div>
+                            <div style="text-align: right">{t}Weight{/t}: <b>{$delivery_note->get('Weight')}</b></div>
+                        {if $delivery_note->data['Delivery Note Shipper Consignment']!=''}
+                        <div style="text-align: right">
+                            {t}Courier{/t}: <b> <span id="formatted_consignment">{$delivery_note->get('Consignment')|strip_tags}</span></span> </b>
+                        </div>
+                        {/if}
+			        {/if}
+
+			</td>
 		</tr>
 	</table>
 	<table width="100%" style="font-family: sans-serif;" cellpadding="10">
