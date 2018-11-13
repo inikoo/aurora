@@ -199,7 +199,11 @@ class Public_Invoice extends DBW_Table {
                         break;
                 }
             case 'Margin':
-                return percentage($this->data['Invoice Total Profit'] / $this->data['Invoice Items Net Amount'], 1);
+                if($this->data['Invoice Items Net Amount']>0){
+                    return percentage($this->data['Invoice Total Profit'] / $this->data['Invoice Items Net Amount'], 1);
+                }else{
+                    return '-';
+                }
                 break;
 
         }
