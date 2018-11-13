@@ -254,7 +254,7 @@ class Product extends Asset {
             $this->db->exec($sql);
 
             $sql = sprintf(
-                "INSERT INTO `Product Data` `Product ID`) VALUES (%d) ", $this->id
+                "INSERT INTO `Product Data` (`Product ID`) VALUES (%d) ", $this->id
             );
             $this->db->exec($sql);
 
