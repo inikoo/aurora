@@ -457,7 +457,8 @@ class Subject extends DB_Table {
                 $this->update(
                     array(
                         $this->table_name.' Location' => trim(
-                            sprintf('<img src="/art/flags/%s.gif" title="%s"> %s', strtolower($this->get('Contact Address Country 2 Alpha Code')), $this->get('Contact Address Country 2 Alpha Code'), $location
+                            sprintf(
+                                '<img src="/art/flags/%s.gif" title="%s"> %s', strtolower($this->get('Contact Address Country 2 Alpha Code')), $this->get('Contact Address Country 2 Alpha Code'), $location
                             )
                         )
                     ), 'no_history'
@@ -467,7 +468,6 @@ class Subject extends DB_Table {
 
 
         }
-
 
 
     }
@@ -523,14 +523,14 @@ class Subject extends DB_Table {
 
         $address =
             $address->withFamilyName($this->get($type.' Address Recipient'))->withOrganization($this->get($type.' Address Organization'))->withAddressLine1($this->get($type.' Address Line 1'))->withAddressLine2($this->get($type.' Address Line 2'))->withSortingCode(
-                    $this->get($type.' Address Sorting Code')
-                )->withPostalCode($this->get($type.' Address Postal Code'))->withDependentLocality(
-                    $this->get($type.' Address Dependent Locality')
-                )->withLocality($this->get($type.' Address Locality'))->withAdministrativeArea(
-                    $this->get($type.' Address Administrative Area')
-                )->withCountryCode(
-                    $this->get($type.' Address Country 2 Alpha Code')
-                );
+                $this->get($type.' Address Sorting Code')
+            )->withPostalCode($this->get($type.' Address Postal Code'))->withDependentLocality(
+                $this->get($type.' Address Dependent Locality')
+            )->withLocality($this->get($type.' Address Locality'))->withAdministrativeArea(
+                $this->get($type.' Address Administrative Area')
+            )->withCountryCode(
+                $this->get($type.' Address Country 2 Alpha Code')
+            );
 
 
         $xhtml_address = $formatter->format($address);
@@ -600,37 +600,41 @@ class Subject extends DB_Table {
 
             // print $type;
 
-            if ($type == 'Invoice') {
-                $sql = sprintf('SELECT `Order Key` FROM `Order Dimension` WHERE  `Order State` IN ("InBasket")   AND `Order Customer Key`=%d ', $this->id);
-                // print "$sql\n";
-                if ($result = $this->db->query($sql)) {
-                    foreach ($result as $row) {
-                        //  print_r($row);
-                        $order = get_object('Order', $row['Order Key']);
+            //todo remove after migration
+            $store = get_object('Store', $this->get('Store Key'));
+            if ($store->get('Store Version') == 2) {
+                if ($type == 'Invoice') {
+                    $sql = sprintf('SELECT `Order Key` FROM `Order Dimension` WHERE  `Order State` IN ("InBasket")   AND `Order Customer Key`=%d ', $this->id);
+                    // print "$sql\n";
+                    if ($result = $this->db->query($sql)) {
+                        foreach ($result as $row) {
+                            //  print_r($row);
+                            $order = get_object('Order', $row['Order Key']);
 
-                        $order->editor = $this->editor;
+                            $order->editor = $this->editor;
 
 
-                        $order->update(array('Order Invoice Address' => $this->get('Customer Invoice Address')), $options, array('no_propagate_customer' => true));
+                            $order->update(array('Order Invoice Address' => $this->get('Customer Invoice Address')), $options, array('no_propagate_customer' => true));
+                        }
+                    } else {
+                        print_r($error_info = $this->db->errorInfo());
+                        print "$sql\n";
+                        exit;
                     }
-                } else {
-                    print_r($error_info = $this->db->errorInfo());
-                    print "$sql\n";
-                    exit;
-                }
-            } elseif ($type == 'Delivery') {
-                $sql = sprintf('SELECT `Order Key` FROM `Order Dimension` WHERE  `Order State` IN ("InBasket")   AND `Order Customer Key`=%d ', $this->id);
-                if ($result = $this->db->query($sql)) {
-                    foreach ($result as $row) {
-                        $order         = get_object('Order', $row['Order Key']);
-                        $order->editor = $this->editor;
+                } elseif ($type == 'Delivery') {
+                    $sql = sprintf('SELECT `Order Key` FROM `Order Dimension` WHERE  `Order State` IN ("InBasket")   AND `Order Customer Key`=%d ', $this->id);
+                    if ($result = $this->db->query($sql)) {
+                        foreach ($result as $row) {
+                            $order         = get_object('Order', $row['Order Key']);
+                            $order->editor = $this->editor;
 
-                        $order->update(array('Order Delivery Address' => $this->get('Customer Delivery Address')), $options, array('no_propagate_customer' => true));
+                            $order->update(array('Order Delivery Address' => $this->get('Customer Delivery Address')), $options, array('no_propagate_customer' => true));
+                        }
+                    } else {
+                        print_r($error_info = $this->db->errorInfo());
+                        print "$sql\n";
+                        exit;
                     }
-                } else {
-                    print_r($error_info = $this->db->errorInfo());
-                    print "$sql\n";
-                    exit;
                 }
             }
 
@@ -957,8 +961,6 @@ class Subject extends DB_Table {
                 return true;
                 break;
             case $this->table_name.' Main Contact Name':
-
-
 
 
                 $old_value = $this->get('Main Contact Name');

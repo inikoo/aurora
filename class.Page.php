@@ -1452,7 +1452,6 @@ class Page extends DB_Table {
     }
 
 
-
     function get_options() {
 
         if (array_key_exists('Page Options', $this->data)) {
@@ -1463,8 +1462,6 @@ class Page extends DB_Table {
         }
 
     }
-
-
 
 
     function get_items() {
@@ -1524,7 +1521,6 @@ class Page extends DB_Table {
     }
 
 
-
     function update_content_display_type($value, $options) {
 
 
@@ -1562,7 +1558,6 @@ class Page extends DB_Table {
         }
 
     }
-
 
 
     function get_related_products_data() {
@@ -2054,7 +2049,7 @@ class Page extends DB_Table {
 
                     $product = get_object('Public_Product', $item['product_id']);
 
-                    if($product->id){
+                    if ($product->id) {
                         $product->load_webpage();
 
                         // print_r($content_data['blocks'][$block_key]['items'][$item_key]);
@@ -2088,7 +2083,7 @@ class Page extends DB_Table {
 
 
                         unset($items_product_id_index[$item['product_id']]);
-                    }else{
+                    } else {
                         unset($content_data['blocks'][$block_key]['items'][$item_key]);
                         unset($items_product_id_index[$item['product_id']]);
                     }
@@ -2106,7 +2101,7 @@ class Page extends DB_Table {
 
             $product = get_object('Public_Product', $product_id);
 
-            if($product->id){
+            if ($product->id) {
 
                 $product->load_webpage();
 
@@ -2513,7 +2508,7 @@ class Page extends DB_Table {
                                 $item['type'] = 'image';
 
 
-                                if (empty($item['image_website']) and $item['width']>0 and $item['height']>0 ) {
+                                if (empty($item['image_website']) and $item['width'] > 0 and $item['height'] > 0) {
                                     $image_website = $item['src'];
                                     if (preg_match('/id=(\d+)/', $item['src'], $matches)) {
                                         $image_key = $matches[1];
@@ -2579,24 +2574,22 @@ class Page extends DB_Table {
 
                             foreach ($items as $key_item => $item) {
 
-                                  if ($item['type'] == 'image'){
+                                if ($item['type'] == 'image') {
 
-                                      if($item['height'] ==0 or $item['width'] ==0){
-                                          unset($items[$key_item]);
-                                      }else{
-                                          $ratio = $item['width'] / $item['height'];
-                                          //print "$ratio\n";
+                                    if ($item['height'] == 0 or $item['width'] == 0) {
+                                        unset($items[$key_item]);
+                                    } else {
+                                        $ratio = $item['width'] / $item['height'];
+                                        //print "$ratio\n";
 
-                                          if ($ratio > 7.5) {
-                                              $mobile_html .= '<img src="'.$item['image_website'].'" style="width:100%;" alt="'.$item['title'].'">';
-                                              unset($items[$key_item]);
-                                              break;
-                                          }
-                                      }
+                                        if ($ratio > 7.5) {
+                                            $mobile_html .= '<img src="'.$item['image_website'].'" style="width:100%;" alt="'.$item['title'].'">';
+                                            unset($items[$key_item]);
+                                            break;
+                                        }
+                                    }
 
-                                  }
-
-
+                                }
 
 
                             }
@@ -2638,8 +2631,7 @@ class Page extends DB_Table {
                             $content_data['blocks'][$block_key]['mobile_html'] = $mobile_html;
                             $content_data['blocks'][$block_key]['tablet_html'] = $tablet_html;
 
-                        }
-                        elseif ($block['type'] == 'category_products') {
+                        } elseif ($block['type'] == 'category_products') {
                             foreach ($block['items'] as $item_key => $item) {
                                 if ($item['type'] == 'product') {
                                     if (empty($item['image_mobile_website'])) {
