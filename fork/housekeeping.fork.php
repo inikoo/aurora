@@ -24,7 +24,6 @@ function fork_housekeeping($job) {
     print_r($data);
 
 
-
     //return true;
 
 
@@ -1001,8 +1000,6 @@ function fork_housekeeping($job) {
             $email_campaign = get_object('email_campaign', $data['mailshot_key']);
 
 
-
-
             if ($email_campaign->id) {
                 $email_campaign->socket = $socket;
                 $email_campaign->update_estimated_recipients();
@@ -1017,12 +1014,7 @@ function fork_housekeeping($job) {
             $socket->connect("tcp://localhost:5555");
 
 
-
-
-
             $email_campaign = get_object('email_campaign', $data['mailshot_key']);
-
-
 
 
             if ($email_campaign->id) {
@@ -1661,7 +1653,34 @@ function fork_housekeeping($job) {
 
             break;
 
+        case 'product_created':
 
+            $product = get_object('product', $data['product_id']);
+            $store   = get_object('store', $product->get('Product Store Key'));
+
+            foreach ($product->get_parts('objects') as $part) {
+                $part->update_products_data();
+                $part->update_commercial_value();
+            }
+            $store->update_product_data();
+            $store->update_new_products();
+
+            break;
+        case 'product_part_list_updated':
+
+            $product = get_object('product', $data['product_id']);
+
+            $product->update_part_numbers();
+            $product->update_availability();
+            $product->update_cost();
+
+
+            foreach ($product->get_parts('objects') as $part) {
+                $part->update_products_data();
+                $part->update_commercial_value();
+            }
+
+            break;
         default:
             break;
 

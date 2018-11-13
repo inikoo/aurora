@@ -573,7 +573,7 @@ class Product extends Asset {
             case 'Webpage Out of Stock Label':
 
 
-                    return _('Out of stock');
+                return _('Out of stock');
 
 
                 break;
@@ -706,12 +706,8 @@ class Product extends Asset {
 
                 foreach ($parts_data as $part_data) {
 
-                    $parts .= ', '.number($part_data['Ratio']).'x <span class="button " onClick="change_view(\'part/'.$part_data['Part']->id.'\')">'.$part_data['Part']->get(
-                            'Reference'
-                        ).'</span>';
-                    //if ($part_data['Note']!='') {
-                    // $parts.=' <span class="very_discreet">('.$part_data['Note'].')</span>';
-                    //}
+                    $parts .= ', '.number($part_data['Ratio']).'x <span class="button " onClick="change_view(\'part/'.$part_data['Part']->id.'\')">'.$part_data['Part']->get('Reference').'</span>';
+
 
                 }
 
@@ -1668,11 +1664,11 @@ class Product extends Asset {
 
         //todo remove this after migration (Store version stuff)
         $store = get_object('Store', $this->get('Product Store Key'));
-        if ($use_fork or $store->get('Store Version')==1) {
+        if ($use_fork or $store->get('Store Version') == 1) {
             include_once 'utils/new_fork.php';
             $account = new Account($this->db);
 
-            if ($store->get('Store Version')==1) {
+            if ($store->get('Store Version') == 1) {
                 $msg = new_fork(
                     'housekeeping', array(
                     'type'       => 'product_web_state',
@@ -1694,8 +1690,6 @@ class Product extends Asset {
                     'editor'                   => $this->editor
                 ), $account->get('Account Code')
                 );
-
-
 
 
             }
@@ -1828,8 +1822,6 @@ class Product extends Asset {
         $sql = sprintf(
             "SELECT * FROM `Product Data` WHERE `Product ID`=%d", $this->id
         );
-
-
 
 
         if ($result = $this->db->query($sql)) {
@@ -2667,9 +2659,7 @@ class Product extends Asset {
                 break;
             case('Product Tariff Code'):
 
-                if (!preg_match('/from_part/', $options) and count(
-                        $this->get_parts()
-                    ) == 1) {
+                if (!preg_match('/from_part/', $options) and count($this->get_parts()) == 1) {
 
 
                     $part = array_values($this->get_parts('objects'))[0];
@@ -3245,29 +3235,6 @@ class Product extends Asset {
                         $family->associate_subject($this->id, false, '', 'skip_direct_update');
 
 
-                        /*
-
-                        $sql = sprintf(
-                            "SELECT C.`Category Key` FROM `Category Dimension` C LEFT JOIN `Category Bridge` B ON (C.`Category Key`=B.`Category Key`) WHERE `Category Root Key`=%d AND `Subject Key`=%d AND `Subject`='Category' AND `Category Branch Type`='Head'",
-
-                            $this->data['Store Department Category Key'], $family->id
-                        );
-                        //print $sql;
-                        $department_key = '';
-                        if ($result = $this->db->query($sql)) {
-                            if ($row = $result->fetch()) {
-                                $department_key = $row['Category Key'];
-                            }
-                        } else {
-                            print_r($error_info = $this->db->errorInfo());
-                            exit;
-                        }
-                        $this->update_field(
-                            'Product Department Category Key', $department_key, 'no_history'
-                        );
-
-                        */
-
                         if ($old_family->id) {
                             $old_website = get_object('Webpage', $old_family->get('Product Category Webpage Key'));
                             if ($old_website->id) {
@@ -3288,6 +3255,7 @@ class Product extends Asset {
                             }
                         }
 
+
                         $this->update_field_switcher('Product Department Category Key', $family->get('Product Category Department Category Key'), 'no_history');
 
 
@@ -3297,9 +3265,7 @@ class Product extends Asset {
                     if ($this->data['Product Family Category Key'] != '') {
 
 
-                        $category = new Category(
-                            $this->data['Product Family Category Key']
-                        );
+                        $category = new Category($this->data['Product Family Category Key']);
 
                         if ($category->id) {
                             $category->disassociate_subject($this->id);
@@ -3533,68 +3499,21 @@ class Product extends Asset {
 
 
         $this->fast_update(array('Product Parts Data' => json_encode($this->get_parts_data())));
-
-        $this->update_part_numbers();
-        $this->update_availability();
-        $this->update_cost();
-
         $this->fast_update(array('Product XHTML Parts' => $this->get('Parts')));
 
-        foreach ($this->get_parts('objects') as $part) {
-            $part->update_products_data();
-            $part->update_commercial_value();
-        }
 
+        global $account;
 
-    }
-
-    function update_part_numbers() {
-
-        $number_parts = 0;
-
-        $sql = sprintf(
-            'SELECT count(`Product Part Part SKU`) AS num FROM `Product Part Bridge`  WHERE `Product Part Product ID`=%d', $this->id
-        );
-
-        if ($result = $this->db->query($sql)) {
-            if ($row = $result->fetch()) {
-                $number_parts = $row['num'];
-            }
-        } else {
-            print_r($error_info = $this->db->errorInfo());
-            exit;
-        }
-
-
-        $this->update(
-            array(
-                'Product Number of Parts' => $number_parts,
-
-
-            ), 'no_history'
+        require_once 'utils/new_fork.php';
+        new_housekeeping_fork(
+            'au_housekeeping', array(
+            'type'       => 'product_part_list_updated',
+            'product_id' => $this->id,
+            'editor'     => $this->editor
+        ), $account->get('Account Code'), $this->db
         );
 
 
-    }
-
-    function update_cost() {
-        $cost = 0;
-
-        foreach ($this->get_parts_data($with_objects = true) as $part_data) {
-            if ($part_data['Part']->get('Part Cost in Warehouse') != '') {
-
-
-                $part_cost = $part_data['Part']->get('Part Cost in Warehouse');
-            } else {
-                $part_cost = $part_data['Part']->get('Part Cost');
-            }
-
-            $cost += $part_cost * $part_data['Ratio'];
-
-        }
-
-
-        $this->update(array('Product Cost' => $cost), 'no_history');
     }
 
     function get_category_data() {
@@ -3652,6 +3571,55 @@ class Product extends Asset {
 
 
         return $category_data;
+    }
+
+    function update_part_numbers() {
+
+        $number_parts = 0;
+
+        $sql = sprintf(
+            'SELECT count(`Product Part Part SKU`) AS num FROM `Product Part Bridge`  WHERE `Product Part Product ID`=%d', $this->id
+        );
+
+        if ($result = $this->db->query($sql)) {
+            if ($row = $result->fetch()) {
+                $number_parts = $row['num'];
+            }
+        } else {
+            print_r($error_info = $this->db->errorInfo());
+            exit;
+        }
+
+
+        $this->update(
+            array(
+                'Product Number of Parts' => $number_parts,
+
+
+            ), 'no_history'
+        );
+
+
+    }
+
+    function update_cost() {
+        $cost = 0;
+
+        foreach ($this->get_parts_data($with_objects = true) as $part_data) {
+            if ($part_data['Part']->get('Part Cost in Warehouse') != '') {
+
+
+                $part_cost = $part_data['Part']->get('Part Cost in Warehouse');
+            } else {
+                $part_cost = $part_data['Part']->get('Part Cost');
+            }
+
+            $cost += $part_cost * $part_data['Ratio'];
+
+        }
+
+
+        $this->update(array('Product Cost' => $cost), 'no_history');
     }
 
     function get_deal_components($scope = 'keys', $options = 'Active') {
