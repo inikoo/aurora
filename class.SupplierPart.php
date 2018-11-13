@@ -72,7 +72,7 @@ class SupplierPart extends DB_Table {
         $this->found_key = false;
 
         $create = '';
-        $update = '';
+
         if (preg_match('/create/i', $options)) {
             $create = 'create';
         }
@@ -984,8 +984,8 @@ class SupplierPart extends DB_Table {
             case 'Supplier Part Unit Extra Cost Percentage':
 
 
-                if (preg_match('/\%$/', $value)) {
-                    $value = preg_replace('/\%^/', '', $value) ;
+                if (preg_match('/\s*\%\s*$/', $value)) {
+                    $value = preg_replace('/\s*\%\s*/', '', $value) ;
 
                     if(is_numeric($value)){
                         $value=$value/100;
@@ -1051,8 +1051,8 @@ class SupplierPart extends DB_Table {
 
             case 'Supplier Part Unit Extra Cost':
 
-                if (preg_match('/\%$/', $value)) {
-                    $value = preg_replace('/\%^/', '', $value) ;
+                if (preg_match('/\s*\%\s*$/', $value)) {
+                    $value = preg_replace('/\s*\%\s*/', '', $value) ;
 
                     if(is_numeric($value)){
                         $value=$value/100;
