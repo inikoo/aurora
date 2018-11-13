@@ -10,12 +10,11 @@
 */
 
 
-
 require_once 'utils/public_object_functions.php';
 
 require_once __DIR__.'/../vendor/autoload.php';
-use CommerceGuys\Addressing\Country\CountryRepository;
 
+use CommerceGuys\Addressing\Country\CountryRepository;
 
 
 $id = isset($_REQUEST['id']) ? $_REQUEST['id'] : '';
@@ -23,10 +22,13 @@ if (!$id) {
     exit;
 }
 
-$redirect_to_login=array('invoice_pdf',$id);
+$redirect_to_login = array(
+    'invoice_pdf',
+    $id
+);
 include_once 'ar_web_common_logged_in.php';
 
-$account=get_object('Account',1);
+$account = get_object('Account', 1);
 require_once 'external_libs/Smarty/Smarty.class.php';
 
 $smarty               = new Smarty();
@@ -36,14 +38,12 @@ $smarty->cache_dir    = 'server_files/smarty/cache';
 $smarty->config_dir   = 'server_files/smarty/configs';
 
 
-
-
 $invoice = get_object('Invoice', $id);
 if (!$invoice->id) {
     exit;
 }
 
-if($invoice->get('Invoice Customer Key')!=$customer->id){
+if ($invoice->get('Invoice Customer Key') != $customer->id) {
     exit;
 }
 
@@ -105,9 +105,16 @@ if ($number_orders == 1) {
 
 
 $delivery_note = get_object('Delivery_Note', $order->get('Order Delivery Note Key'));
-$smarty->assign('delivery_note', $delivery_note);
 
-$number_dns=1;
+if ($delivery_note->id) {
+    $smarty->assign('delivery_note', $delivery_note);
+    $number_dns = 1;
+
+} else {
+    $number_dns = 0;
+
+}
+
 
 $smarty->assign('number_orders', $number_orders);
 $smarty->assign('number_dns', $number_dns);
@@ -164,7 +171,6 @@ if ($invoice->data['Invoice Type'] == 'Invoice') {
 }
 
 
-
 $transactions = array();
 
 if ($invoice->get('Invoice Version') == 2) {
@@ -180,13 +186,12 @@ if ($invoice->get('Invoice Version') == 2) {
         "SELECT `Product Origin Country Code`,`Invoice Transaction Gross Amount`,`Invoice Transaction Total Discount Amount`,`Invoice Transaction Total Discount Amount`,`Invoice Quantity` as Qty, (`Invoice Transaction Gross Amount`-`Invoice Transaction Total Discount Amount`+`Invoice Transaction Item Tax Amount`) as Amount, `Product Unit Weight`,`Invoice Currency Code`,`Order Transaction Amount`,`Delivery Note Quantity`,`Order Transaction Total Discount Amount`,`Order Transaction Out of Stock Amount`,`Order Currency Code`,`Order Transaction Gross Amount`,
 `Product Currency`,`Product History Name`,`Product History Price`,`Product Units Per Case`,`Product History XHTML Short Description`,`Product Name`,`Product RRP`,`Product Tariff Code`,`Product Tariff Code`,`Product XHTML Short Description`,P.`Product ID`,O.`Product Code`
  FROM `Order Transaction Fact` O  LEFT JOIN `Product History Dimension` PH ON (O.`Product Key`=PH.`Product Key`) LEFT JOIN
-  `Product Dimension` P ON (PH.`Product ID`=P.`Product ID`) WHERE `Invoice Key`=%d  and `Current Dispatching State` not in ('Out of Stock in Basket')  and ((`Invoice Transaction Gross Amount`-`Invoice Transaction Total Discount Amount`+`Invoice Transaction Item Tax Amount`)!=0 or `Invoice Quantity`!=0)  ORDER BY `Product Code`", $invoice->id
+  `Product Dimension` P ON (PH.`Product ID`=P.`Product ID`) WHERE `Invoice Key`=%d  and `Current Dispatching State` not in ('Out of Stock in Basket')  and ((`Invoice Transaction Gross Amount`-`Invoice Transaction Total Discount Amount`+`Invoice Transaction Item Tax Amount`)!=0 or `Invoice Quantity`!=0)  ORDER BY `Product Code`",
+        $invoice->id
     );
 }
 
 //print $sql;exit;
-
-
 
 
 if ($result = $db->query($sql)) {
@@ -238,10 +243,10 @@ if ($result = $db->query($sql)) {
 
         if ($row['Product Origin Country Code'] != '' and $print_origin) {
 
-            $_country=new Country('code',$row['Product Origin Country Code']);
+            $_country = new Country('code', $row['Product Origin Country Code']);
 
 
-            $country=$countryRepository->get($_country->get('Country 2 Alpha Code'));
+            $country = $countryRepository->get($_country->get('Country 2 Alpha Code'));
 
             $description .= ' <br>'._('Origin').': '.$country->getName().' ('.$country->getThreeLetterCode().')';
         }
