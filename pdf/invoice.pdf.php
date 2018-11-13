@@ -371,8 +371,8 @@ if ($result = $db->query($sql)) {
         }
 
 
-        $row['Discount']         = '';
-        $row['Invoice Quantity'] = $row['Refund Quantity'];
+        $row['Discount'] = '';
+        $row['Qty']      = $row['Refund Quantity'];
         if ($row['Product RRP'] != 0) {
             $row['Product XHTML Short Description'] = $row['Product History XHTML Short Description'].'<br>'._('RRP').': '.money($row['Product RRP'], $row['Invoice Currency Code']);
         }
@@ -401,17 +401,12 @@ if ($result = $db->query($sql)) {
     foreach ($result as $row) {
         $row['Product Code']                    = _('Credit');
         $row['Product XHTML Short Description'] = $row['Transaction Description'];
-        $row['Net']                             = money(
-            ($row['Transaction Refund Net Amount']), $row['Currency Code']
-        );
-        $row['Tax']                             = money(
-            ($row['Transaction Refund Tax Amount']), $row['Currency Code']
-        );
-        $row['Amount']                          = money(
-            ($row['Transaction Refund Net Amount'] + $row['Transaction Refund Tax Amount']), $row['Currency Code']
-        );
+        $row['Net']                             = money($row['Transaction Refund Net Amount'], $row['Currency Code']);
+        $row['Tax']                             = money($row['Transaction Refund Tax Amount'], $row['Currency Code']);
+        $row['Amount']                          = money(($row['Transaction Refund Net Amount'] + $row['Transaction Refund Tax Amount']), $row['Currency Code']);
 
         $row['Discount'] = '';
+        $row['Qty']      = '';
         $transactions[]  = $row;
     }
 } else {
@@ -503,11 +498,11 @@ if ($invoice->data['Invoice Type'] == 'CreditNote') {
             }
             $row['Product Code']                    = $code;
             $row['Product XHTML Short Description'] = $row['Transaction Description'];
-            $row['Amount']                          = money(
-                ($row['Transaction Invoice Net Amount']), $row['Currency Code']
-            );
-            $row['Discount']                        = '';
-            $transactions[]                         = $row;
+            $row['Amount']                          = money($row['Transaction Invoice Net Amount'], $row['Currency Code']);
+
+            $row['Discount'] = '';
+            $row['Qty']      = '';
+            $transactions[]  = $row;
         }
     } else {
         print_r($error_info = $db->errorInfo());
