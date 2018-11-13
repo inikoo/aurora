@@ -318,11 +318,8 @@ class Store extends DB_Table {
             );
 
 
-
-
             // todo create Email email Campaign Type
             // // update `Email Campaign Type Dimension` set `Email Campaign Type Status`='Active' where `Email Campaign Type Code` in ('Newsletter','Marketing','AbandonedCart','Invite Mailshot','Invite');
-
 
 
             $history_data = array(
@@ -2835,7 +2832,6 @@ class Store extends DB_Table {
     }
 
 
-
     function get_payment_accounts($type = 'objects', $filter = '') {
 
 
@@ -2869,7 +2865,6 @@ class Store extends DB_Table {
         return $payment_accounts;
 
     }
-
 
 
     function get_field_label($field) {
@@ -3503,20 +3498,10 @@ class Store extends DB_Table {
                 $this->new_object  = true;
                 $this->new_product = true;
 
+                set_time_limit(90);
+
                 if ($product_parts_data) {
 
-                    /*
-
-                                        $tmp=json_decode($product_parts_data, true);
-                                        print_r($tmp);
-
-                                        foreach($tmp as $_key=>$_tmp_val){
-                                            $tmp[$_key]['Key']=$product->id;
-                                        }
-                                        print_r($tmp);
-                                        $product_parts_data=json_encode($tmp);
-
-                    */
 
                     $product->update_part_list($product_parts_data, 'no_history');
 
@@ -3526,30 +3511,31 @@ class Store extends DB_Table {
 
                 if ($product->get('Product Number of Parts') == 1) {
                     foreach ($product->get_parts('objects') as $part) {
-
-                        // print_r($part);
                         $part->updated_linked_products();
                     }
                 }
 
-                foreach ($product->get_parts('objects') as $part) {
-                    $part->update_products_data();
-                    $part->update_commercial_value();
-                }
 
                 foreach ($this->get_websites('objects') as $website) {
                     $website->create_product_webpage($product->id);
                 }
 
                 if ($family_key) {
-                    $product->update(
-                        array('Product Family Category Key' => $family_key), 'no_history'
-                    );
+                    $product->update(array('Product Family Category Key' => $family_key), 'no_history');
                 }
 
 
-                $this->update_product_data();
-                $this->update_new_products();
+                global $account;
+
+                require_once 'utils/new_fork.php';
+                new_housekeeping_fork(
+                    'au_housekeeping', array(
+                    'type'       => 'product_created',
+                    'product_id' => $product->id,
+                    'editor'     => $product->editor
+                ), $account->get('Account Code'), $this->db
+                );
+
 
             } else {
 
@@ -3693,10 +3679,9 @@ class Store extends DB_Table {
 
     function create_purge($data) {
 
-        $data['editor']=$this->editor;
+        $data['editor'] = $this->editor;
 
-        $data['Order Basket Purge Store Key']=$this->id;
-
+        $data['Order Basket Purge Store Key'] = $this->id;
 
 
         $purge = new Order_Basket_Purge('create', $data);
@@ -3708,12 +3693,10 @@ class Store extends DB_Table {
                 $this->new_object = true;
 
 
-
-
             } else {
                 $this->error = true;
 
-                    $this->msg = $purge->msg;
+                $this->msg = $purge->msg;
 
             }
 
@@ -3724,14 +3707,13 @@ class Store extends DB_Table {
         }
 
 
-
     }
 
     function create_email_campaign($data) {
 
 
-        $email_template_type = get_object('Email_Template_Type', $data['Email Campaign Type'].'|'.$this->id, 'code_store');
-        $email_template_type->editor=$this->editor;
+        $email_template_type         = get_object('Email_Template_Type', $data['Email Campaign Type'].'|'.$this->id, 'code_store');
+        $email_template_type->editor = $this->editor;
 
         if ($email_template_type->id) {
             $mailshot = $email_template_type->create_mailshot();
@@ -4134,8 +4116,7 @@ class Store extends DB_Table {
     }
 
 
-
-    function update_purges_data(){
+    function update_purges_data() {
         // todo: make stats for purges
     }
 

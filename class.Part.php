@@ -4586,77 +4586,82 @@ class Part extends Asset {
             if (count($product->get_parts()) == 1) {
                 $product->editor = $this->editor;
 
-                $product->update(
+                $product->fast_update(
                     array(
-                        'Product Tariff Code' => $this->get(
-                            'Part Tariff Code'
-                        )
-                    ), 'no_history from_part'
-                );
-                $product->update(
-                    array('Product Duty Rate' => $this->get('Part Duty Rate')), 'no_history from_part'
-                );
-                $product->update(
-                    array(
-                        'Product Origin Country Code' => $this->get(
-                            'Part Origin Country Code'
-                        )
-                    ), 'no_history from_part'
+                        'Product Tariff Code' => $this->get('Part Tariff Code'),
+                        'Product Duty Rate' => $this->get('Part Duty Rate'),
+                        'Product Origin Country Code' => $this->get('Part Origin Country Code'),
+                        'Product UN Number' => $this->get('Part UN Number'),
+                        'Product UN Class' => $this->get('Part UN Class'),
+                        'Product Packing Group' => $this->get('Part Packing Group'),
+                        'Product Proper Shipping Name' => $this->get('Part Proper Shipping Name'),
+                        'Product Hazard Indentification Number' => $this->get('Part Hazard Indentification Number'),
+                        'Product Unit Weight' => $this->get('Part Unit Weight'),
+                        'Product Unit Dimensions' => $this->get('Part Unit Dimensions'),
+                        'Product Materials' => strip_tags($this->get('Materials'))
+                    )
                 );
 
-
-                $product->update(
-                    array('Product UN Number' => $this->get('Part UN Number')), 'no_history from_part'
-                );
-                $product->update(
-                    array('Product UN Class' => $this->get('Part UN Class')), 'no_history from_part'
-                );
-                $product->update(
-                    array(
-                        'Product Packing Group' => $this->get(
-                            'Part Packing Group'
-                        )
-                    ), 'no_history from_part'
-                );
-                $product->update(
-                    array(
-                        'Product Proper Shipping Name' => $this->get(
-                            'Part Proper Shipping Name'
-                        )
-                    ), 'no_history from_part'
-                );
-                $product->update(
-                    array(
-                        'Product Hazard Indentification Number' => $this->get(
-                            'Part Hazard Indentification Number'
-                        )
-                    ), 'no_history from_part'
-                );
+                /*
+                            $product->update(
+                                array(
+                                    'Product Tariff Code' => $this->get('Part Tariff Code')
+                                ), 'no_history from_part'
+                            );
+                            $product->update(
+                                array('Product Duty Rate' => $this->get('Part Duty Rate')), 'no_history from_part'
+                            );
+                            $product->update(
+                                array(
+                                    'Product Origin Country Code' => $this->get('Part Origin Country Code'
+                                    )
+                                ), 'no_history from_part'
+                            );
 
 
-                $product->update(
-                    array(
-                        'Product Unit Weight' => $this->get(
-                            'Part Unit Weight'
-                        )
-                    ), 'no_history from_part'
-                );
+                                        $product->update(
+                                            array('Product UN Number' => $this->get('Part UN Number')), 'no_history from_part'
+                                        );
+                                        $product->update(
+                                            array('Product UN Class' => $this->get('Part UN Class')), 'no_history from_part'
+                                        );
+                                        $product->update(
+                                            array(
+                                                'Product Packing Group' => $this->get('Part Packing Group')
+                                            ), 'no_history from_part'
+                                        );
+
+                                      $product->update(
+                                          array(
+                                              'Product Proper Shipping Name' => $this->get('Part Proper Shipping Name')
+                                          ), 'no_history from_part'
+                                      );
+                                      $product->update(
+                                          array(
+                                              'Product Hazard Indentification Number' => $this->get('Part Hazard Indentification Number')
+                                          ), 'no_history from_part'
+                                      );
 
 
-                $product->update(
-                    array(
-                        'Product Unit Dimensions' => $this->get(
-                            'Part Unit Dimensions'
-                        )
-                    ), 'no_history from_part'
-                );
-                $product->update(
-                    array(
-                        'Product Materials' => strip_tags(
-                            $this->get('Materials')
-                        )
-                    ), 'no_history from_part'
-                );
+                                      $product->update(
+                                          array(
+                                              'Product Unit Weight' => $this->get('Part Unit Weight')
+                                          ), 'no_history from_part'
+                                      );
+
+
+                                      $product->update(
+                                          array(
+                                              'Product Unit Dimensions' => $this->get('Part Unit Dimensions')
+                                          ), 'no_history from_part'
+                                      );
+                                      $product->update(
+                                          array(
+                                              'Product Materials' => strip_tags($this->get('Materials'))
+                                          ), 'no_history from_part'
+                                      );
+
+                                      */
 
                 $sql = sprintf(
                     'SELECT `Image Subject Image Key` FROM `Image Subject Bridge` WHERE `Image Subject Object`="Part" AND `Image Subject Object Key`=%d ORDER BY `Image Subject Order` ', $this->id
