@@ -124,6 +124,12 @@ function get_object($object_name, $key, $load_other_data = false) {
             include_once 'class.Warehouse.php';
             $object = new Warehouse($key);
             break;
+        case 'warehouse_area':
+        case 'warehousearea':
+        case 'warehouse area':
+            include_once 'class.WarehouseArea.php';
+            $object = new WarehouseArea($key);
+            break;
         case 'part':
             include_once 'class.Part.php';
             $object = new Part($key);

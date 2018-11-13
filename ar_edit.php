@@ -2029,6 +2029,32 @@ function new_object($account, $db, $user, $editor, $data, $smarty) {
                 $updated_data = array();
             }
             break;
+        case 'Warehouse Area':
+            include_once 'class.WarehouseArea.php';
+            $object = $parent->create_warehouse_area($data['fields_data']);
+
+
+
+            if ($parent->new_warehouse_area) {
+
+                $smarty->assign('object', $object);
+
+                $pcard        = $smarty->fetch(
+                    'presentation_cards/warehouse_area.pcard.tpl'
+                );
+                $updated_data = array();
+            } else {
+
+
+                $response = array(
+                    'state' => 400,
+                    'msg'   => $parent->msg
+
+                );
+                echo json_encode($response);
+                exit;
+            }
+            break;
         default:
             $response = array(
                 'state' => 400,

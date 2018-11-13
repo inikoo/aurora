@@ -530,6 +530,10 @@ function get_rtext($record_label, $total_records) {
 
 
 
+    } elseif ($record_label == 'warehouse area') {
+        return sprintf(
+            ngettext('%s warehouse area', '%s warehouse areas', $total_records), number($total_records)
+        );
     } else {
         return sprintf(
             ngettext('%s record', '%s records', $total_records), number($total_records)
@@ -1013,7 +1017,13 @@ function get_rtext_with_filter($record_label, $total_with_filter, $total_no_filt
                 '%s back to stock request of %s', '%s back to stock requests of %s', $total_with_filter
             ), number($total_with_filter), number($total_no_filter)
         );
-    } else {
+    } elseif ($record_label == 'warehouse area') {
+        return sprintf(
+            ngettext(
+                '%s warehouse area of %s', '%s warehouse areas of %s', $total_with_filter
+            ), number($total_with_filter), number($total_no_filter)
+        );
+    }else {
         return sprintf(
             ngettext('%s record of %s', '%s records of %s', $total_with_filter), number($total_with_filter), number($total_no_filter)
         );

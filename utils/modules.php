@@ -5793,6 +5793,41 @@ $modules = array(
     ),
     'warehouses'      => array(
         'sections' => array(
+
+
+
+            'warehouse' => array(
+
+                'type'      => 'navigation',
+                'label'     => '',
+                'title'     => _('Warehouse'),
+                'icon'      => 'warehouse-alt',
+                'reference' => 'warehouse/%d',
+                'sections_class'=>'icon-only',
+
+                'tabs' => array(
+                    'warehouse.details' => array(
+                        'label' => _('Settings'),
+                        'title' => _('Warehouse settings'),
+                        'icon'  => 'sliders-h'
+                    ),
+
+
+                    'warehouse.history' => array(
+                        'label' => '',
+                        'title' => _('History' ),
+                        'icon'  => 'road',
+                        'class' => 'right icon_only'
+                    ),
+                    'warehouse.parts'   => array(
+                        'label' => _('Part-Locations'),
+                        'icon'=>'pallet-alt',
+                        'class' => 'right'
+                    ),
+
+                )
+
+            ),
             'dashboard' => array(
                 'type'      => 'navigation',
                 'label'     => _('Dashboard'),
@@ -5803,50 +5838,40 @@ $modules = array(
 
                 )
             ),
+            'warehouse_area' => array(
 
-
-            'warehouse' => array(
-
-                'type'      => 'navigation',
-                'label'     => _('Warehouse'),
-                'title'     => _('Warehouse'),
-                'icon'      => 'warehouse-alt',
-                'reference' => 'warehouse/%d',
+                'type'      => 'object',
+                'label'     => _('Warehouse area'),
+                'icon'      => 'inventory',
+                'reference' => '',
 
                 'tabs' => array(
-                    'warehouse.details' => array(
-                        'label' => _('Data'),
-                        'title' => _(
-                            'Warehouse details'
-                        ),
-                        'icon'  => 'database'
+                    'warehouse_area.details' => array(
+                        'label' => _('Settings'),
+                        'title' => _('Warehouse area settings'),
+                        'icon'  => 'sliders-h'
                     ),
-                    /*
-                    'warehouse.replenishments' => array(
-                        'label' => _(
-                            "Replenishment"
-                        )
+
+                    'warehouse_area.locations' => array(
+                        'label' => _('Locations'),
+                        'icon'  => 'pallet'
                     ),
-                    */
-                    'warehouse.parts'   => array(
-                        'label' => _(
-                            'Part-Locations'
-                        )
-                    ),
-                    'warehouse.history' => array(
-                        'label' => _(
-                            'History/Notes'
-                        ),
-                        'title' => _(
-                            'History/Notes'
-                        ),
+                    'warehouse_area.history' => array(
+                        'label' => '',
+                        'title' => _('History' ),
                         'icon'  => 'road',
                         'class' => 'right icon_only'
+                    ),
+                    'warehouse_area.parts'   => array(
+                        'label' => _('Part-Locations'),
+                        'icon'=>'pallet-alt',
+                        'class' => 'right'
                     ),
 
                 )
 
             ),
+
             /* to add
 			'categories'=>array('type'=>'navigation', 'label'=>_("Locations's categories"), 'icon'=>'sitemap', 'reference'=>'warehouse/%d/categories',
 
@@ -5855,16 +5880,36 @@ $modules = array(
 				)
 			),
 			*/
+
+            'warehouse_areas' => array(
+
+                'type'      => 'navigation',
+                'label'     => _('Areas'),
+                'title'     => _('Warehouse areas (Rankings, aisles, rooms)'),
+                'icon'      => 'inventory',
+                'reference' => 'warehouse/%d/areas',
+                   'tabs'      => array(
+
+                       'warehouse.areas' => array(
+                           'label' => _('Warehouse areas'),
+                           'icon'  => 'inventory'
+                       ),
+
+
+                )
+
+
+            ),
+
+
             'locations' => array(
 
                 'type'      => 'navigation',
                 'label'     => _('Locations'),
-                'icon'      => 'inventory',
+                'icon'      => 'pallet',
                 'reference' => 'warehouse/%d/locations',
                 'tabs'      => array(
-                    'warehouse.locations' => array(
-                        'label' => _('Locations'),
-                    ),
+                    'warehouse.locations' => array('label' => _('Locations'),),
 
 
                 )
@@ -5914,9 +5959,17 @@ $modules = array(
                 'type' => 'new_object',
                 'tabs' => array(
                     'warehouse.new' => array(
-                        'label' => _(
-                            'new warehouse'
-                        )
+                        'label' => _('New warehouse')
+                    ),
+
+                )
+
+            ),
+            'warehouse_area.new' => array(
+                'type' => 'new_object',
+                'tabs' => array(
+                    'warehouse.new' => array(
+                        'label' => _('New warehouse area')
                     ),
 
                 )

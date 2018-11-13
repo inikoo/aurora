@@ -1,19 +1,15 @@
 <?php
 /*
- File: WarehouseArea.php 
-
- This file contains the Warehouse Area Class
 
  About: 
  Author: Raul Perusquia <rulovico@gmail.com>
- 
+
+ Refurbished: 12 November 2018 at 15:04:45 GMT+8, Kuala Lumpur, Malaysia
  Copyright (c) 2009, Inikoo 
  
  Version 2.0
 */
 include_once('class.DB_Table.php');
-include_once('class.Warehouse.php');
-include_once('class.Location.php');
 
 
 class WarehouseArea extends DB_Table {
@@ -24,6 +20,9 @@ class WarehouseArea extends DB_Table {
     var $warehouse = false;
 
     function __construct($arg1 = false, $arg2 = false, $arg3 = false) {
+
+        global $db;
+        $this->db = $db;
 
         $this->table_name    = 'Warehouse Area';
         $this->ignore_fields = array('Warehouse Area Key');
@@ -47,12 +46,8 @@ class WarehouseArea extends DB_Table {
         $this->get_data($arg1, $arg2);
     }
 
-    /*
-     Method: find
-     Find W Area with similar data
-    */
 
-    function create($data, $options = '') {
+    function create($data) {
 
         $this->data = $this->base_data();
         foreach ($data as $key => $value) {
@@ -62,31 +57,23 @@ class WarehouseArea extends DB_Table {
         }
 
         if ($this->data['Warehouse Area Code'] == '') {
-            $this->msg   = ('Wrong warehouse area name');
+            $this->msg   = _('Field required');
             $this->new   = false;
             $this->error = true;
 
             return;
         }
-        $warehouse = new Warehouse('id', $this->data['Warehouse Key']);
-        if (!$warehouse->id) {
-            $this->msg   = ('Wrong warehouse key');
-            $this->new   = false;
-            $this->error = true;
 
-            return;
 
-        }
         if ($this->data['Warehouse Area Name'] == '') {
-            $this->data['Warehouse Area Name']
-                = $this->data['Warehouse Area Code'];
+            $this->data['Warehouse Area Name'] = $this->data['Warehouse Area Code'];
         }
 
         $keys   = '(';
         $values = 'values(';
         foreach ($this->data as $key => $value) {
 
-            $keys .= "`$key`,";
+            $keys  .= "`$key`,";
             $_mode = true;
             if ($key == 'Warehouse Area Description') {
                 $_mode = false;
@@ -100,25 +87,30 @@ class WarehouseArea extends DB_Table {
         $sql = sprintf(
             "INSERT INTO `Warehouse Area Dimension` %s %s", $keys, $values
         );
-        //print "$sql\n";
-        // exit;
-        if (mysql_query($sql)) {
-            $this->id  = mysql_insert_id();
+
+
+        if ($this->db->exec($sql)) {
+            $this->id = $this->db->lastInsertId();
             $this->new = true;
             $this->get_data('id', $this->id);
-            $note         = _('Warehouse Area Created');
-            $details      = _('Warehouse Area')." ".$this->data['Warehouse Area Code']." "._('created in')." ".$warehouse->data['Warehouse Name'];
-            $history_data = array(
-                'History Abstract' => $note,
-                'History Details'  => $details
 
-                ,
+
+
+            $history_data = array(
+                'History Abstract' => sprintf(_('Warehouse area %s (%s) created'), '<span class="italic">'.$this->get('Name').'</span>' ,'<span title="'._('Code').'" class="strong">'.$this->get('Code').'</span>'),
+                'History Details'  => '',
                 'Action'           => 'created'
             );
-            $this->add_history($history_data);
+
+            $this->add_subject_history(
+                $history_data, true, 'No', 'Changes', $this->get_object_name(), $this->id
+            );
+
+
 
         } else {
-            exit($sql);
+            $this->error = true;
+            $this->msg   = 'Error inserting warehouse area record';
         }
 
     }
@@ -129,19 +121,18 @@ class WarehouseArea extends DB_Table {
             $sql = sprintf(
                 "SELECT * FROM `Warehouse Area Dimension` WHERE `Warehouse Area Key`=%d", $tag
             );
+        } elseif ($key == 'code') {
+            $sql = sprintf(
+                "SELECT  *  FROM `Warehouse Area Dimension` WHERE `Warehouse Area Code`=%s ", prepare_mysql($tag)
+            );
         } else {
-            if ($key == 'code') {
-                $sql = sprintf(
-                    "SELECT  *  FROM `Warehouse Area Dimension` WHERE `Warehouse Area Code`=%s ", prepare_mysql($tag)
-                );
-            } else {
-                return;
-            }
+            return false;
         }
 
-        $result = mysql_query($sql);
-        if ($this->data = mysql_fetch_array($result, MYSQL_ASSOC)) {
+
+        if ($this->data = $this->db->query($sql)->fetch()) {
             $this->id = $this->data['Warehouse Area Key'];
+
         }
 
 
@@ -162,13 +153,11 @@ class WarehouseArea extends DB_Table {
 
         $this->found = false;
         $create      = '';
-        $update      = '';
+
         if (preg_match('/create/i', $options)) {
             $create = 'create';
         }
-        if (preg_match('/update/i', $options)) {
-            $update = 'update';
-        }
+
 
         $data = $this->base_data();
         foreach ($raw_data as $key => $val) {
@@ -176,45 +165,43 @@ class WarehouseArea extends DB_Table {
             $data[$_key] = $val;
         }
 
-
-        //look for areas with the same code in the same warehouse
         $sql = sprintf(
-            "SELECT `Warehouse Area Key` FROM `Warehouse Area Dimension` WHERE `Warehouse Key`=%d AND `Warehouse Area Code`=%s", $data['Warehouse Key'], prepare_mysql($data['Warehouse Area Code'])
+            "SELECT `Warehouse Area Key` FROM `Warehouse Area Dimension` WHERE `Warehouse Area Warehouse Key`=%d AND `Warehouse Area Code`=%s", $data['Warehouse Area Warehouse Key'], prepare_mysql($data['Warehouse Area Code'])
         );
 
-        // print $sql;
-        $res = mysql_query($sql);
-        if ($row = mysql_fetch_array($res)) {
-            $this->found     = true;
-            $this->found_key = $row['Warehouse Area Key'];
+        if ($result=$this->db->query($sql)) {
+            if ($row = $result->fetch()) {
+                $this->found     = true;
+                $this->found_key = $row['Warehouse Area Key'];
+        	}
+        }else {
+        	print_r($error_info=$this->db->errorInfo());
+        	print "$sql\n";
+        	exit;
         }
 
-        //what to do if found
+
         if ($this->found) {
             $this->get_data('id', $this->found_key);
         }
 
 
         if ($create) {
-            if ($this->found) {
-                $this->update($raw_data, $options);
-            } else {
-
-                $this->create($data, $options);
-
-            }
-
-
+            $this->create($data, $options);
         }
     }
 
     function get($key, $data = false) {
 
 
+        if(!$this->id){
+            return;
+        }
+
         if (preg_match('/^warehouse (code|name)/i', $key)) {
 
             if (!$this->warehouse) {
-                $warehouse = new Warehouse($this->data['Warehouse Key']);
+                $warehouse = get_object('Warehouse', $this->data['Warehouse Key']);
             }
 
             return $warehouse->get($key);
@@ -245,6 +232,12 @@ class WarehouseArea extends DB_Table {
                 }
                 break;
             default:
+
+
+                if (array_key_exists('Warehouse Area '.$key, $this->data)) {
+                    return $this->data[$this->table_name.' '.$key];
+                }
+
                 if (isset($this->data[$key])) {
                     return $this->data[$key];
                 } else {
@@ -270,6 +263,8 @@ class WarehouseArea extends DB_Table {
         $this->updated                       = false;
         $data['Location Warehouse Key']      = $this->data['Warehouse Key'];
         $data['Location Warehouse Area Key'] = $this->id;
+
+        include_once 'class.Location.php';
 
         $location               = new Location('find', $data, 'create');
         $this->new_location_msg = $location->msg;
@@ -349,6 +344,30 @@ class WarehouseArea extends DB_Table {
         } else {
             $this->deleted_msg = 'Error area can not be deleted';
         }
+
+    }
+
+
+    function get_field_label($field) {
+
+        switch ($field) {
+
+            case 'Warehouse Area Code':
+                $label = _('code');
+                break;
+            case 'Warehouse Area Name':
+                $label = _('name');
+                break;
+
+
+            default:
+
+
+                $label = $field;
+
+        }
+
+        return $label;
 
     }
 }

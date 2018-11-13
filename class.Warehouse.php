@@ -12,8 +12,6 @@
  Version 2.0
 */
 include_once 'class.DB_Table.php';
-include_once 'class.WarehouseArea.php';
-include_once 'class.Location.php';
 
 class Warehouse extends DB_Table {
 
@@ -292,6 +290,9 @@ class Warehouse extends DB_Table {
 
     function create_location($data) {
 
+        include_once 'class.Location.php';
+
+
         $this->new_product = false;
 
         $data['editor'] = $this->editor;
@@ -445,110 +446,6 @@ class Warehouse extends DB_Table {
 
     }
 
-    function create_shipper($data) {
-
-        include_once 'class.Shipper.php';
-
-        $this->new_shipper = false;
-
-        $data['editor'] = $this->editor;
-
-
-        //print_r($data);
-
-        if (empty($data['Shipper Code'])) {
-            $this->error      = true;
-            $this->msg        = _("Code missing");
-            $this->error_code = 'shipper_code_missing';
-            $this->metadata   = '';
-
-            return;
-        }
-
-        if (empty($data['Shipper Name'])) {
-            $this->error      = true;
-            $this->msg        = _("Name missing");
-            $this->error_code = 'shipper_name_missing';
-            $this->metadata   = '';
-
-            return;
-        }
-
-        $sql = sprintf(
-            'SELECT count(*) AS num FROM `Shipper Dimension` WHERE `Shipper Code`=%s AND `Shipper Warehouse Key`=%d  ', prepare_mysql($data['Shipper Code']), $this->id
-
-        );
-
-
-        if ($result = $this->db->query($sql)) {
-            if ($row = $result->fetch()) {
-                if ($row['num'] > 0) {
-                    $this->error      = true;
-                    $this->msg        = sprintf(_('Duplicated code (%s)'), $data['Shipper Code']);
-                    $this->error_code = 'duplicate_shipper_code';
-                    $this->metadata   = $data['Shipper Code'];
-
-                    return;
-                }
-            }
-        } else {
-            print_r($error_info = $this->db->errorInfo());
-            exit;
-        }
-
-
-
-
-
-        $data['Shipper Warehouse Key'] = $this->id;
-
-
-        $shipper = new Shipper('find', $data, 'create');
-
-
-        if ($shipper->id) {
-            $this->new_object_msg = $shipper->msg;
-
-            if ($shipper->new) {
-                $this->new_object    = true;
-                $this->new_shipper = true;
-
-
-                $this->update_children();
-
-
-            } else {
-
-                $this->error = true;
-                if ($shipper->found) {
-
-                    $this->error_code     = 'duplicated_field';
-                    $this->error_metadata = json_encode(
-                        array($shipper->duplicated_field)
-                    );
-
-                    if ($shipper->duplicated_field == 'Shipper Code') {
-                        $this->msg = _("Duplicated code");
-                    } else {
-                        $this->msg = 'Duplicated '.$shipper->duplicated_field;
-                    }
-
-
-                } else {
-                    $this->msg = $shipper->msg;
-                }
-            }
-
-            return $shipper;
-        } else {
-
-            $this->error = true;
-            $this->msg   = $shipper->msg;
-
-        }
-
-    }
-
     function update_location_flag_number($flag_key) {
         $num = 0;
         $sql = sprintf(
@@ -686,8 +583,9 @@ class Warehouse extends DB_Table {
                 break;
 
             case 'Stock Amount':
-                $account=get_object('Account',1);
-                return money($this->data['Warehouse '.$key],$account->get('Account Currency Code'));
+                $account = get_object('Account', 1);
+
+                return money($this->data['Warehouse '.$key], $account->get('Account Currency Code'));
                 break;
 
             default:
@@ -717,22 +615,122 @@ class Warehouse extends DB_Table {
         return '';
     }
 
+    function create_shipper($data) {
+
+        include_once 'class.Shipper.php';
+
+        $this->new_shipper = false;
+
+        $data['editor'] = $this->editor;
+
+
+        //print_r($data);
+
+        if (empty($data['Shipper Code'])) {
+            $this->error      = true;
+            $this->msg        = _("Code missing");
+            $this->error_code = 'shipper_code_missing';
+            $this->metadata   = '';
+
+            return;
+        }
+
+        if (empty($data['Shipper Name'])) {
+            $this->error      = true;
+            $this->msg        = _("Name missing");
+            $this->error_code = 'shipper_name_missing';
+            $this->metadata   = '';
+
+            return;
+        }
+
+        $sql = sprintf(
+            'SELECT count(*) AS num FROM `Shipper Dimension` WHERE `Shipper Code`=%s AND `Shipper Warehouse Key`=%d  ', prepare_mysql($data['Shipper Code']), $this->id
+
+        );
+
+
+        if ($result = $this->db->query($sql)) {
+            if ($row = $result->fetch()) {
+                if ($row['num'] > 0) {
+                    $this->error      = true;
+                    $this->msg        = sprintf(_('Duplicated code (%s)'), $data['Shipper Code']);
+                    $this->error_code = 'duplicate_shipper_code';
+                    $this->metadata   = $data['Shipper Code'];
+
+                    return;
+                }
+            }
+        } else {
+            print_r($error_info = $this->db->errorInfo());
+            exit;
+        }
+
+
+        $data['Shipper Warehouse Key'] = $this->id;
+
+
+        $shipper = new Shipper('find', $data, 'create');
+
+
+        if ($shipper->id) {
+            $this->new_object_msg = $shipper->msg;
+
+            if ($shipper->new) {
+                $this->new_object  = true;
+                $this->new_shipper = true;
+
+
+                $this->update_children();
+
+
+            } else {
+
+                $this->error = true;
+                if ($shipper->found) {
+
+                    $this->error_code     = 'duplicated_field';
+                    $this->error_metadata = json_encode(
+                        array($shipper->duplicated_field)
+                    );
+
+                    if ($shipper->duplicated_field == 'Shipper Code') {
+                        $this->msg = _("Duplicated code");
+                    } else {
+                        $this->msg = 'Duplicated '.$shipper->duplicated_field;
+                    }
+
+
+                } else {
+                    $this->msg = $shipper->msg;
+                }
+            }
+
+            return $shipper;
+        } else {
+
+            $this->error = true;
+            $this->msg   = $shipper->msg;
+
+        }
+
+    }
+
     function update_stock_amount() {
 
 
-        $account=get_object('Account',1);
+        $account = get_object('Account', 1);
 
         $stock_amount = 0;
 
 
-        if($account->get('Account Add Stock Value Type')=='Blockchain'){
+        if ($account->get('Account Add Stock Value Type') == 'Blockchain') {
             $sql = sprintf('SELECT sum(`Stock Value` ) AS amount FROM `Part Location Dimension` WHERE `Part Location Warehouse Key`=%d', $this->id);
 
-        }else{
+        } else {
             $sql = sprintf('SELECT sum(`Quantity On Hand`*`Part Cost in Warehouse` ) AS amount FROM `Part Location Dimension`  PL left join `Part Dimension` P on (P.`Part SKU`=PL.`Part SKU`)  WHERE `Part Location Warehouse Key`=%d', $this->id);
 
         }
-
 
 
         if ($result = $this->db->query($sql)) {
@@ -872,7 +870,7 @@ class Warehouse extends DB_Table {
 
                         if ($result2 = $this->db->query($sql)) {
                             foreach ($result2 as $row2) {
-                                $location         = new Location($row2['Location Key']);
+                                $location         = get_object('Location', $row2['Location Key']);
                                 $location->editor = $this->editor;
                                 $location->update(
                                     array(
@@ -952,15 +950,34 @@ class Warehouse extends DB_Table {
 
     }
 
-    function add_area($data) {
+    function create_warehouse_area($data) {
+
+        include_once 'class.WarehouseArea.php';
+
+
         // print_r($data);
-        $this->new_area        = false;
-        $data['Warehouse Key'] = $this->id;
-        $area                  = new WarehouseArea('find', $data, 'create');
-        $this->new_area_msg    = $area->msg;
-        if ($area->new) {
-            $this->new_area     = true;
-            $this->new_area_key = $area->id;
+        $this->new_warehouse_area = false;
+        $data['Warehouse Area Warehouse Key']    = $this->id;
+        $data['editor']    = $this->editor;
+        $warehouse_area           = new WarehouseArea('find', $data, 'create');
+
+        if ($warehouse_area->id) {
+
+            $this->new_area_msg = $warehouse_area->msg;
+            if ($warehouse_area->new) {
+                $this->new_warehouse_area     = true;
+                $this->new_warehouse_area_key = $warehouse_area->id;
+            } else {
+                $this->error = true;
+                $this->msg   = $warehouse_area->msg;
+
+            }
+
+            return $warehouse_area;
+        } else {
+            $this->error = true;
+            $this->msg   = $warehouse_area->msg;
+            return false;
         }
     }
 
@@ -1321,7 +1338,6 @@ class Warehouse extends DB_Table {
             'stock_amount' => money($this->get('Warehouse Stock Amount'), $account->get('Account Currency'), false, 'NO_FRACTION_DIGITS'),
             //'stock_leakage_down_transactions' => number($_stock_leakage_transactions)
         );
-
 
 
         return array(
