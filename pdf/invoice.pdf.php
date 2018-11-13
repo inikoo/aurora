@@ -84,29 +84,25 @@ bindtextdomain("inikoo", "./locales");
 textdomain("inikoo");
 
 
-$order_key = 0;
-$dn_key    = 0;
+$number_orders = 0;
+$number_dns    = 0;
 
+$order = get_object('Order', $invoice->get('Invoice Order Key'));
 
-$number_orders = 1;
-
-if ($number_orders == 1) {
-    $order = get_object('Order', $invoice->get('Invoice Order Key'));
+if ($order->id) {
     $smarty->assign('order', $order);
+    $number_orders = 1;
+
+    $delivery_note = get_object('Delivery_Note', $order->get('Order Delivery Note Key'));
+
+
+    if ($delivery_note->id) {
+        $smarty->assign('delivery_note', $delivery_note);
+        $number_dns = 1;
+
+    }
+
 }
-
-
-$delivery_note = get_object('Delivery_Note', $order->get('Order Delivery Note Key'));
-
-if ($delivery_note->id) {
-    $smarty->assign('delivery_note', $delivery_note);
-    $number_dns = 1;
-
-} else {
-    $number_dns = 0;
-
-}
-
 
 
 $smarty->assign('number_orders', $number_orders);
