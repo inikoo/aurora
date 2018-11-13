@@ -185,6 +185,15 @@
         ga('send', 'pageview');
 
         Sentry.init({ dsn: 'https://7c38fecb8a274f7e93cb0488ad22ca10@sentry.io/1319834' });
+
+        Sentry.configureScope((scope) => {
+            scope.setUser({
+            "id": "{$user->id}",
+            "username": "{$user->get('Alias')}",
+            "email": "{$user->get_staff_email()}"
+            });
+        });
+
     </script>
 
 
