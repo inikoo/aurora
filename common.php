@@ -23,6 +23,7 @@ include_once 'utils/i18n.php';
 require_once 'utils/general_functions.php';
 require_once 'utils/natural_language.php';
 require_once 'utils/date_functions.php';
+require_once 'utils/object_functions.php';
 
 require_once 'utils/system_functions.php';
 require_once 'utils/detect_agent.php';
@@ -145,7 +146,7 @@ if ($_SESSION['logged_in_page'] != 0) {
     exit;
 
 }
-$user = new User($_SESSION['user_key']);
+$user = get_object('User',$_SESSION['user_key']);
 
 //$_client_locale='en_GB.UTF-8';
 
