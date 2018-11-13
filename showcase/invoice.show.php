@@ -74,7 +74,6 @@ function get_invoice_showcase($data, $smarty, $user, $db) {
     $smarty->assign('tax_data', $tax_data);
 
 
-
     if (in_array(
         $invoice->get('Invoice Address Country 2 Alpha Code'), get_countries_EC_Fiscal_VAT_area($db)
     )) {
@@ -84,37 +83,35 @@ function get_invoice_showcase($data, $smarty, $user, $db) {
     }
     $smarty->assign('pdf_with_commodity', $pdf_with_commodity);
 
-    if($store->get('Store Locale')!='en_GB'){
+    if ($store->get('Store Locale') != 'en_GB') {
         $pdf_show_locale_option = true;
-    }else{
+    } else {
         $pdf_show_locale_option = false;
 
     }
     $smarty->assign('pdf_show_locale_option', $pdf_show_locale_option);
 
-    $pdf_with_rrp=true;
+    $pdf_with_rrp = true;
     $smarty->assign('pdf_with_rrp', $pdf_with_rrp);
 
 
     if ($data['_object']->get('Invoice Type') == 'Refund') {
 
 
-
-
         $smarty->assign(
-            'object_data', base64_encode(
-                             json_encode(
-                                 array(
-                                     'object' => $data['object'],
-                                     'key'    => $data['key'],
-                                     'symbol'=>currency_symbol($invoice->get('Order Currency')),
-                                     'tax_rate'=>$invoice->get('Invoice Tax Rate'),
-                                     'available_to_refund'=>$invoice->get('Invoice Total Amount'),
-                                     'tab' => $data['tab'],
-                                     'order_type'=>$invoice->get('Invoice Type'),
-                                 )
-                             )
-                         )
+            'object_data',
+            json_encode(
+                array(
+                    'object'              => $data['object'],
+                    'key'                 => $data['key'],
+                    'symbol'              => currency_symbol($invoice->get('Order Currency')),
+                    'tax_rate'            => $invoice->get('Invoice Tax Rate'),
+                    'available_to_refund' => $invoice->get('Invoice Total Amount'),
+                    'tab'                 => $data['tab'],
+                    'order_type'          => $invoice->get('Invoice Type'),
+                )
+            )
+
         );
 
 

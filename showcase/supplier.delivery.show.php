@@ -35,7 +35,7 @@ function get_showcase($data, $smarty, $user, $db) {
     $smarty->assign('delivery', $data['_object']);
 
     $smarty->assign(
-        'object_data', base64_encode(
+        'object_data',
             json_encode(
                 array(
                     'object'           => $data['object'],
@@ -65,7 +65,7 @@ function get_showcase($data, $smarty, $user, $db) {
 
                 )
             )
-        )
+
     );
 
 

@@ -33,7 +33,7 @@
 
 
 
-<div id="email_campaign" data-object="{$object_data}" data-email_campaign_key="{$email_campaign->id}">
+<div id="email_campaign" data-object='{$object_data}' data-email_campaign_key="{$email_campaign->id}">
 
     <div class="timeline_horizontal with_time     ">
 

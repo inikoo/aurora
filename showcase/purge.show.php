@@ -32,16 +32,15 @@ function get_purge_showcase($data, $smarty, $user, $db) {
 
 
     $smarty->assign(
-        'object_data', base64_encode(
-                         json_encode(
-                             array(
-                                 'object' => $data['object'],
-                                 'key'    => $data['key'],
+        'object_data',
+        json_encode(
+            array(
+                'object' => $data['object'],
+                'key'    => $data['key'],
+                'tab' => $data['tab']
+            )
+        )
 
-                                 'tab' => $data['tab']
-                             )
-                         )
-                     )
     );
 
     return $smarty->fetch('showcase/purge.tpl');

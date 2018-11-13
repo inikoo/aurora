@@ -160,7 +160,7 @@ function place_item(element) {
     $(element).removeClass('fa-cloud').addClass('fa-spinner fa-spin')
 
 
-    var object_data = JSON.parse(atob($('#object_showcase div.order').data("object")))
+    var object_data = $('#object_showcase div.order').data("object")
 
     var object = object_data.object
     var key = object_data.key

@@ -338,7 +338,7 @@ function scanned_barcode_in_supplier_delivery_note(value) {
                                 var element = tr.find('.place_item_button')
                                 var qty = $('#booking_in_barcode_qty_input').val()
 
-                                var object_data = JSON.parse(atob($('#object_showcase div.order').data("object")))
+                                var object_data = $('#object_showcase div.order').data("object")
 
                                 var object = object_data.object
                                 var key = object_data.key

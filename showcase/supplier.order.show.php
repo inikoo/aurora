@@ -37,7 +37,7 @@ function get_supplier_order_showcase($data, $smarty, $user, $db) {
 
 
         $smarty->assign(
-            'object_data', base64_encode(
+            'object_data',
                              json_encode(
                                  array(
                                      'object'                        => $data['object'],
@@ -55,8 +55,10 @@ function get_supplier_order_showcase($data, $smarty, $user, $db) {
 
                                  )
                              )
-                         )
+
         );
+
+
 
 
         if ($data['_object']->get('Purchase Order Submitted Date') != '') {

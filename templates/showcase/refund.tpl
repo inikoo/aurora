@@ -12,7 +12,7 @@
 {assign payments $invoice->get_payments('objects','Completed')}
 
 
-<div id="order" class="order" style="display: flex;" data-object="{$object_data}" invoice_key="{$invoice->id}">
+<div id="order" class="order" style="display: flex;" data-object='{$object_data}' invoice_key="{$invoice->id}">
     <div class="block" style=" align-items: stretch;flex: 2;padding: 20px">
         <div class="data_container">
             <div class="data_field">

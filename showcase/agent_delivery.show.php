@@ -29,45 +29,45 @@ function get_showcase($data, $smarty, $user, $db) {
     $smarty->assign('delivery', $data['_object']);
 
     $smarty->assign(
-        'object_data', base64_encode(
-            json_encode(
-                array(
-                    'object'           => $data['object'],
-                    'key'              => $data['key'],
-                    'order_parent'     => $data['_object']->get(
-                        'Supplier Delivery Parent'
-                    ),
-                    'order_parent_key' => $data['_object']->get(
-                        'Supplier Delivery Parent Key'
-                    ),
+        'object_data',
+        json_encode(
+            array(
+                'object'           => $data['object'],
+                'key'              => $data['key'],
+                'order_parent'     => $data['_object']->get(
+                    'Supplier Delivery Parent'
+                ),
+                'order_parent_key' => $data['_object']->get(
+                    'Supplier Delivery Parent Key'
+                ),
 
-                    'skip_inputting'                => $_parent->get(
-                        'Parent Skip Inputting'
-                    ),
-                    'skip_mark_as_dispatched'       => $_parent->get(
-                        'Parent Skip Mark as Dispatched'
-                    ),
-                    'skip_mark_as_received'         => $_parent->get(
-                        'Parent Skip Mark as Received'
-                    ),
-                    'skip_checking'                 => $_parent->get(
-                        'Parent Skip Checking'
-                    ),
-                    'automatic_placement_locations' => $_parent->get(
-                        'Parent Automatic Placement Location'
-                    )
-
+                'skip_inputting'                => $_parent->get(
+                    'Parent Skip Inputting'
+                ),
+                'skip_mark_as_dispatched'       => $_parent->get(
+                    'Parent Skip Mark as Dispatched'
+                ),
+                'skip_mark_as_received'         => $_parent->get(
+                    'Parent Skip Mark as Received'
+                ),
+                'skip_checking'                 => $_parent->get(
+                    'Parent Skip Checking'
+                ),
+                'automatic_placement_locations' => $_parent->get(
+                    'Parent Automatic Placement Location'
                 )
+
             )
         )
+
     );
 
 
     if ($data['_object']->get('Purchase Order Submitted Date') != '') {
         $mindate_send_order = 1000 * date(
                 'U', strtotime(
-                    $data['_object']->get('Purchase Order Submitted Date').' +0:00'
-                )
+                       $data['_object']->get('Purchase Order Submitted Date').' +0:00'
+                   )
             );
     } else {
         $mindate_send_order = '';

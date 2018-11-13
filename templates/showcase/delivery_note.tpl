@@ -119,7 +119,7 @@
     </ul>
 </div>
 
-<div id="delivery_note" class="order" data-object="{$object_data}" data-number_shippers="{$number_shippers}" dn_key="{$delivery_note->id}" style="display: flex;">
+<div id="delivery_note" class="order" data-object='{$object_data}' data-number_shippers="{$number_shippers}" dn_key="{$delivery_note->id}" style="display: flex;">
     <div class="block" style="padding:10px 20px;position: relative">
 
 
@@ -1482,7 +1482,7 @@
 
         console.log(data)
 
-        var object_data = JSON.parse(atob($('#object_showcase div.order').data("object")))
+        var object_data = $('#object_showcase div.order').data("object")
 
         var dialog_name = data.dialog_name
         var field = data.field
