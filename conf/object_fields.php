@@ -468,6 +468,11 @@ function get_object_fields($object, $db, $user, $smarty, $options = false) {
 
             return $object_fields;
             break;
+        case 'Warehouse Area':
+            include 'fields/warehouse_area.fld.php';
+
+            return $object_fields;
+            break;
         case 'Location':
             include 'fields/location.fld.php';
 

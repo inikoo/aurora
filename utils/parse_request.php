@@ -39,7 +39,7 @@ function parse_request($_data, $db, $modules, $account = '', $user = '', $is_set
     $extra_tab  = '';
 
     $count_view_path = count($view_path);
-    $shorcut         = false;
+    $shortcut         = false;
     $is_main_section = false;
 
     reset($modules);
@@ -1742,8 +1742,8 @@ function parse_request($_data, $db, $modules, $account = '', $user = '', $is_set
                 if ($arg1 == 'all') {
                     $module  = 'customers_server';
                     $section = 'customers';
-                    if (isset($view_path[0]) ) {
-                        if($view_path[0]=='email_communications'){
+                    if (isset($view_path[0])) {
+                        if ($view_path[0] == 'email_communications') {
                             $section = 'email_communications';
                         }
                     }
@@ -2065,8 +2065,7 @@ function parse_request($_data, $db, $modules, $account = '', $user = '', $is_set
                         }
 
 
-                    }
-                    elseif (is_numeric($arg1)) {
+                    } elseif (is_numeric($arg1)) {
 
 
                         $section    = 'orders';
@@ -2084,12 +2083,9 @@ function parse_request($_data, $db, $modules, $account = '', $user = '', $is_set
                                 }
 
 
-
-
-
                                 if (isset($view_path[2])) {
 
-                                    if($view_path[2]=='mailshots'){
+                                    if ($view_path[2] == 'mailshots') {
                                         $extra_tab = $view_path[2];
 
                                         if (isset($view_path[3])) {
@@ -2106,7 +2102,7 @@ function parse_request($_data, $db, $modules, $account = '', $user = '', $is_set
 
 
                                         }
-                                    }elseif($view_path[2]=='purges'){
+                                    } elseif ($view_path[2] == 'purges') {
                                         $extra_tab = $view_path[2];
 
                                         if (isset($view_path[3])) {
@@ -2124,7 +2120,6 @@ function parse_request($_data, $db, $modules, $account = '', $user = '', $is_set
 
                                         }
                                     }
-
 
 
                                 }
@@ -2185,22 +2180,19 @@ function parse_request($_data, $db, $modules, $account = '', $user = '', $is_set
 
                                         }
 
-                                    }elseif ($view_path[1] == 'email') {
+                                    } elseif ($view_path[1] == 'email') {
 
 
-
-                                            $section    = 'email_tracking';
-                                            $parent     = 'order';
-                                            $parent_key = $key;
-                                            $object     = 'email_tracking';
-                                            if (isset($view_path[2])) {
-                                                if (is_numeric($view_path[2])) {
-                                                    $key = $view_path[2];
-                                                }
+                                        $section    = 'email_tracking';
+                                        $parent     = 'order';
+                                        $parent_key = $key;
+                                        $object     = 'email_tracking';
+                                        if (isset($view_path[2])) {
+                                            if (is_numeric($view_path[2])) {
+                                                $key = $view_path[2];
                                             }
                                         }
-
-
+                                    }
 
 
                                 }
@@ -2965,6 +2957,58 @@ function parse_request($_data, $db, $modules, $account = '', $user = '', $is_set
                                         }
 
                                     }
+
+                                }
+
+
+                            }  elseif ($view_path[1] == 'areas') {
+                                $section = 'warehouse_areas';
+                                $object  = '';
+
+                                $parent     = 'warehouse';
+                                $parent_key = $key;
+
+                                if (isset($view_path[2])) {
+                                    $object = 'warehouse_area';
+                                    if ($view_path[2] == 'new') {
+
+                                        $section = 'warehouse_area.new';
+                                        $key     = 0;
+
+
+                                    } elseif (is_numeric($view_path[2])) {
+                                        $key     = $view_path[2];
+                                        $section = 'warehouse_area';
+
+                                    }
+
+
+                                }
+
+
+
+
+                            } elseif ($view_path[1] == 'area') {
+                                $section = 'warehouse_area';
+                                $object  = '';
+
+                                $parent     = 'warehouse';
+                                $parent_key = $key;
+
+                                if (isset($view_path[2])) {
+                                    $object = 'warehouse_area';
+                                    if ($view_path[2] == 'new') {
+
+                                        $section = 'warehouse_area.new';
+                                        $key     = 0;
+
+
+                                    } elseif (is_numeric($view_path[2])) {
+                                        $key     = $view_path[2];
+                                        $section = 'warehouse_area';
+
+                                    }
+
 
                                 }
 
@@ -4393,7 +4437,6 @@ function parse_request($_data, $db, $modules, $account = '', $user = '', $is_set
                                 $key     = $view_path[1];
 
 
-
                                 if (isset($view_path[2])) {
 
 
@@ -4416,7 +4459,6 @@ function parse_request($_data, $db, $modules, $account = '', $user = '', $is_set
 
                                     }
                                 }
-
 
 
                             }
@@ -5075,7 +5117,6 @@ function parse_request($_data, $db, $modules, $account = '', $user = '', $is_set
     }
 
 
-
     list($tab, $subtab) = parse_tabs($module, $section, $_data, $modules);
 
 
@@ -5105,8 +5146,6 @@ function parse_request($_data, $db, $modules, $account = '', $user = '', $is_set
     if (isset($store_key)) {
         $state['store_key'] = $store_key;
     }
-
-
 
 
     return $state;
@@ -5142,8 +5181,6 @@ function parse_tabs($module, $section, $_data, $modules) {
         } else {
 
 
-
-
             if (!isset($modules[$module]['sections'][$section]['tabs']) or !is_array($modules[$module]['sections'][$section]['tabs']) or count($modules[$module]['sections'][$section]['tabs']) == 0) {
                 print "problem with M: $module S: $section";
             }
@@ -5155,8 +5192,6 @@ function parse_tabs($module, $section, $_data, $modules) {
 
         $subtab = parse_subtab($module, $section, $tab, $modules);
     }
-
-
 
 
     return array(
@@ -5174,7 +5209,7 @@ function parse_subtab($module, $section, $tab, $modules) {
     if (isset($modules[$module]['sections'][$section]['tabs'][$tab]['subtabs'])) {
 
 
-        $_session        = $session->get('tab_state');
+        $_session = $session->get('tab_state');
 
         if (isset ($_session[$tab])) {
             $subtab = $_session[$tab];

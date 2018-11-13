@@ -983,26 +983,28 @@ function get_object_showcase($showcase, $data, $smarty, $user, $db, $account) {
         case 'warehouse':
             include_once 'showcase/warehouse.show.php';
 
-            if (!$user->can_view('locations') or !in_array(
-                    $data['key'], $user->warehouses
-                )) {
-                $html = get_locked_warehouse_showcase(
-                    $data, $smarty, $user, $db
-                );
+            if (!$user->can_view('locations') or !in_array($data['key'], $user->warehouses)) {
+                $html = get_locked_warehouse_showcase($data, $smarty, $user, $db);
 
             } else {
                 $html = get_warehouse_showcase($data, $smarty, $user, $db);
             }
             break;
+        case 'warehouse_area':
+            include_once 'showcase/warehouse_area.show.php';
+
+            if (!$user->can_view('locations') or !in_array($data['warehouse']->id, $user->warehouses)) {
+                $html = get_locked_warehouse_area_showcase($data, $smarty, $user, $db);
+
+            } else {
+                $html = get_warehouse_area_showcase($data, $smarty, $user, $db);
+            }
+            break;
         case 'location':
             include_once 'showcase/location.show.php';
 
-            if (!$user->can_view('locations') or !in_array(
-                    $data['warehouse']->id, $user->warehouses
-                )) {
-                $html = get_locked_location_showcase(
-                    $data, $smarty, $user, $db
-                );
+            if (!$user->can_view('locations') or !in_array($data['warehouse']->id, $user->warehouses)) {
+                $html = get_locked_location_showcase($data, $smarty, $user, $db);
 
             } else {
                 $html = get_location_showcase($data, $smarty, $user, $db);
@@ -2260,7 +2262,16 @@ function get_navigation($user, $smarty, $data, $db, $account) {
                         $data, $smarty, $user, $db, $account
                     );
                     break;
-
+                case ('warehouse_areas'):
+                    return get_warehouse_areas_navigation(
+                        $data, $smarty, $user, $db, $account
+                    );
+                    break;
+                case ('warehouse_area'):
+                    return get_warehouse_area_navigation(
+                        $data, $smarty, $user, $db, $account
+                    );
+                    break;
                 case ('locations'):
                     return get_locations_navigation(
                         $data, $smarty, $user, $db, $account
@@ -6992,7 +7003,7 @@ function get_view_position($db, $state, $user, $smarty, $account) {
                     'icon'      => '',
                     'reference' => 'warehouses'
                 );
-           }
+            }
 
             switch ($state['section']) {
 
@@ -7012,6 +7023,39 @@ function get_view_position($db, $state, $user, $smarty, $account) {
                     $branch[] = array(
                         'label'     => '<span class="id Warehouse_Code">'.$state['warehouse']->get('Code').'</span>',
                         'icon'      => 'warehouse-alt',
+                        'reference' => ''
+                    );
+                    break;
+                case 'warehouse_areas':
+
+
+                    $branch[] = array(
+                        'label'     => '<span class="id Warehouse_Code">'.$state['warehouse']->get('Code').'</span>',
+                        'icon'      => 'warehouse-alt',
+                        'reference' => 'warehouse/'.$state['parent_key']
+                    );
+                    $branch[] = array(
+                        'label'     => _('Warehouse areas'),
+                        'icon'      => 'inventory',
+                        'reference' => ''
+                    );
+                    break;
+                case 'warehouse_area':
+
+
+                    $branch[] = array(
+                        'label'     => '<span class="id Warehouse_Code">'.$state['warehouse']->get('Code').'</span>',
+                        'icon'      => 'warehouse-alt',
+                        'reference' => 'warehouse/'.$state['warehouse']->id
+                    );
+                    $branch[] = array(
+                        'label'     => _('Warehouse areas'),
+                        'icon'      => 'inventory',
+                        'reference' => 'warehouse/'.$state['warehouse']->id.'/areas'
+                    );
+                    $branch[] = array(
+                        'label'     => '<span class="id Warehouse_Area_Code">'.$state['_object']->get('Code').'</span>',
+                        'icon'      => 'inventory',
                         'reference' => ''
                     );
                     break;
@@ -7187,7 +7231,6 @@ function get_view_position($db, $state, $user, $smarty, $account) {
                 case 'shippers':
 
 
-
                     $branch[] = array(
                         'label'     => '<span class=" Warehouse_Code">'.$state['warehouse']->get('Code').'</span>',
                         'icon'      => 'warehouse-alt',
@@ -7201,7 +7244,6 @@ function get_view_position($db, $state, $user, $smarty, $account) {
                     );
                     break;
                 case 'shipper.new':
-
 
 
                     $branch[] = array(
@@ -7223,7 +7265,6 @@ function get_view_position($db, $state, $user, $smarty, $account) {
                     );
                     break;
                 case 'shipper.new':
-
 
 
                     $branch[] = array(

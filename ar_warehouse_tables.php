@@ -125,7 +125,7 @@ function warehouses($_data, $db, $user) {
 
 function areas($_data, $db, $user) {
 
-    $rtext_label = 'area';
+    $rtext_label = 'warehouse area';
     include_once 'prepare_table/init.php';
 
     $sql   = "select $fields from $table $where $wheref order by $order $order_direction limit $start_from,$number_results";
@@ -142,7 +142,7 @@ function areas($_data, $db, $user) {
             ) ? '' : '<i class="fa fa-lock error"></i>'),
             'id'        => (integer)$data['Warehouse Area Key'],
             'code'      => sprintf(
-                '<span class="link" onClick="change_view(\'warehouse/%d/area/%d\')">%s</span>', $data['Warehouse Area Warehouse Key'], $data['Warehouse Area Key'], $data['Warehouse Area Code']
+                '<span class="link" onClick="change_view(\'warehouse/%d/areas/%d\')">%s</span>', $data['Warehouse Area Warehouse Key'], $data['Warehouse Area Key'], $data['Warehouse Area Code']
             ),
             'name'      => $data['Warehouse Area Name'],
             'locations' => number($data['Warehouse Area Number Locations']),

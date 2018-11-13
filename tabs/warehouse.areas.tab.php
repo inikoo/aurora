@@ -32,10 +32,24 @@ if (!$user->can_view('locations') or !in_array(
     );
 
     $parameters = array(
-        'parent'     => $state['object'],
-        'parent_key' => $state['key'],
+        'parent'     => $state['parent'],
+        'parent_key' => $state['parent_key'],
 
     );
+
+    $table_buttons=array();
+
+
+    $table_buttons[] = array(
+        'icon'      => 'plus',
+        'title'     => _('New warehouse area'),
+       'reference' => "warehouse/".  $state['parent_key']."/areas/new"
+    );
+
+
+
+
+    $smarty->assign('table_buttons', $table_buttons);
 
 
     include 'utils/get_table_html.php';

@@ -2081,6 +2081,14 @@ $tab_defaults = array(
         'rpp_options' => $default_rrp_options,
         'f_field'     => 'code',
     ),
+    'warehouse.areas'                   => array(
+        'view'        => 'overview',
+        'sort_key'    => 'id',
+        'sort_order'  => 1,
+        'rpp'         => 100,
+        'rpp_options' => $default_rrp_options,
+        'f_field'     => 'code',
+    ),
     'category.location_categories' => array(
         'view'        => 'overview',
         'sort_key'    => 'id',
