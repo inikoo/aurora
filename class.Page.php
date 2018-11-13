@@ -2053,39 +2053,47 @@ class Page extends DB_Table {
 
 
                     $product = get_object('Public_Product', $item['product_id']);
-                    $product->load_webpage();
 
-                    // print_r($content_data['blocks'][$block_key]['items'][$item_key]);
+                    if($product->id){
+                        $product->load_webpage();
 
-
-                    if ($product->get('Image') != $content_data['blocks'][$block_key]['items'][$item_key]['image_src']) {
-                        $content_data['blocks'][$block_key]['items'][$item_key]['image_src']            = $product->get('Image');
-                        $content_data['blocks'][$block_key]['items'][$item_key]['image_mobile_website'] = '';
-                        $content_data['blocks'][$block_key]['items'][$item_key]['image_website']        = '';
+                        // print_r($content_data['blocks'][$block_key]['items'][$item_key]);
 
 
+                        if ($product->get('Image') != $content_data['blocks'][$block_key]['items'][$item_key]['image_src']) {
+                            $content_data['blocks'][$block_key]['items'][$item_key]['image_src']            = $product->get('Image');
+                            $content_data['blocks'][$block_key]['items'][$item_key]['image_mobile_website'] = '';
+                            $content_data['blocks'][$block_key]['items'][$item_key]['image_website']        = '';
+
+
+                        }
+
+
+                        $content_data['blocks'][$block_key]['items'][$item_key]['web_state']  = $product->get('Web State');
+                        $content_data['blocks'][$block_key]['items'][$item_key]['price']      = $product->get('Price');
+                        $content_data['blocks'][$block_key]['items'][$item_key]['price_unit'] = $product->get('Price Per Unit');
+
+                        $content_data['blocks'][$block_key]['items'][$item_key]['rrp']          = $product->get('RRP');
+                        $content_data['blocks'][$block_key]['items'][$item_key]['code']         = $product->get('Code');
+                        $content_data['blocks'][$block_key]['items'][$item_key]['name']         = $product->get('Name');
+                        $content_data['blocks'][$block_key]['items'][$item_key]['link']         = $product->webpage->get('URL');
+                        $content_data['blocks'][$block_key]['items'][$item_key]['webpage_code'] = $product->webpage->get('Webpage Code');
+                        $content_data['blocks'][$block_key]['items'][$item_key]['webpage_key']  = $product->webpage->id;
+
+
+                        $content_data['blocks'][$block_key]['items'][$item_key]['out_of_stock_class'] = $product->get('Out of Stock Class');
+                        $content_data['blocks'][$block_key]['items'][$item_key]['out_of_stock_label'] = $product->get('Out of Stock Label');
+                        $content_data['blocks'][$block_key]['items'][$item_key]['sort_code']          = $product->get('Code File As');
+                        $content_data['blocks'][$block_key]['items'][$item_key]['sort_name']          = $product->get('Product Name');
+
+
+                        unset($items_product_id_index[$item['product_id']]);
+                    }else{
+                        unset($content_data['blocks'][$block_key]['items'][$item_key]);
+                        unset($items_product_id_index[$item['product_id']]);
                     }
 
 
-                    $content_data['blocks'][$block_key]['items'][$item_key]['web_state']  = $product->get('Web State');
-                    $content_data['blocks'][$block_key]['items'][$item_key]['price']      = $product->get('Price');
-                    $content_data['blocks'][$block_key]['items'][$item_key]['price_unit'] = $product->get('Price Per Unit');
-
-                    $content_data['blocks'][$block_key]['items'][$item_key]['rrp']          = $product->get('RRP');
-                    $content_data['blocks'][$block_key]['items'][$item_key]['code']         = $product->get('Code');
-                    $content_data['blocks'][$block_key]['items'][$item_key]['name']         = $product->get('Name');
-                    $content_data['blocks'][$block_key]['items'][$item_key]['link']         = $product->webpage->get('URL');
-                    $content_data['blocks'][$block_key]['items'][$item_key]['webpage_code'] = $product->webpage->get('Webpage Code');
-                    $content_data['blocks'][$block_key]['items'][$item_key]['webpage_key']  = $product->webpage->id;
-
-
-                    $content_data['blocks'][$block_key]['items'][$item_key]['out_of_stock_class'] = $product->get('Out of Stock Class');
-                    $content_data['blocks'][$block_key]['items'][$item_key]['out_of_stock_label'] = $product->get('Out of Stock Label');
-                    $content_data['blocks'][$block_key]['items'][$item_key]['sort_code']          = $product->get('Code File As');
-                    $content_data['blocks'][$block_key]['items'][$item_key]['sort_name']          = $product->get('Product Name');
-
-
-                    unset($items_product_id_index[$item['product_id']]);
                 } else {
                     unset($content_data['blocks'][$block_key]['items'][$item_key]);
 
@@ -2097,34 +2105,39 @@ class Page extends DB_Table {
         foreach ($items_product_id_index as $product_id) {
 
             $product = get_object('Public_Product', $product_id);
-            $product->load_webpage();
+
+            if($product->id){
+
+                $product->load_webpage();
 
 
-            $item = array(
-                'type'                 => 'product',
-                'product_id'           => $product_id,
-                'web_state'            => $product->get('Web State'),
-                'price'                => $product->get('Price'),
-                'rrp'                  => $product->get('RRP'),
-                'header_text'          => '',
-                'code'                 => $product->get('Code'),
-                'name'                 => $product->get('Name'),
-                'link'                 => $product->webpage->get('URL'),
-                'webpage_code'         => $product->webpage->get('Webpage Code'),
-                'webpage_key'          => $product->webpage->id,
-                'image_src'            => $product->get('Image'),
-                'image_mobile_website' => '',
-                'image_website'        => '',
-                'out_of_stock_class'   => $product->get('Out of Stock Class'),
-                'out_of_stock_label'   => $product->get('Out of Stock Label'),
-                'sort_code'            => $product->get('Code File As'),
-                'sort_name'            => $product->get('Product Name'),
+                $item = array(
+                    'type'                 => 'product',
+                    'product_id'           => $product_id,
+                    'web_state'            => $product->get('Web State'),
+                    'price'                => $product->get('Price'),
+                    'rrp'                  => $product->get('RRP'),
+                    'header_text'          => '',
+                    'code'                 => $product->get('Code'),
+                    'name'                 => $product->get('Name'),
+                    'link'                 => $product->webpage->get('URL'),
+                    'webpage_code'         => $product->webpage->get('Webpage Code'),
+                    'webpage_key'          => $product->webpage->id,
+                    'image_src'            => $product->get('Image'),
+                    'image_mobile_website' => '',
+                    'image_website'        => '',
+                    'out_of_stock_class'   => $product->get('Out of Stock Class'),
+                    'out_of_stock_label'   => $product->get('Out of Stock Label'),
+                    'sort_code'            => $product->get('Code File As'),
+                    'sort_name'            => $product->get('Product Name'),
 
 
-            );
+                );
 
 
-            array_unshift($content_data['blocks'][$block_key]['items'], $item);
+                array_unshift($content_data['blocks'][$block_key]['items'], $item);
+            }
+
         }
 
 

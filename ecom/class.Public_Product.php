@@ -506,12 +506,6 @@ class Public_Product {
             case 'Out of Stock Label':
 
 
-                if (!$this->acc_data_loaded) {
-                    $this->load_acc_data();
-                }
-
-
-                if ($this->data['Product Total Acc Quantity Ordered'] > 0 or $this->data['Product Web Configuration'] == 'Online Force Out of Stock' or $this->data['Product Status'] == 'Discontinuing') {
 
 
                     if ($this->data['Product Next Supplier Shipment'] != '') {
@@ -525,23 +519,13 @@ class Public_Product {
 
                     return $label;
 
-                } else {
-                    return _('Launching soon');
-                }
+
                 break;
 
             case 'Out of Stock Class':
 
-
-                if (!$this->acc_data_loaded) {
-                    $this->load_acc_data();
-                }
-                if ($this->data['Product Total Acc Quantity Ordered'] > 0 or $this->data['Product Web Configuration'] == 'Online Force Out of Stock' or $this->data['Product Status'] == 'Discontinuing') {
                     return 'out_of_stock';
-                } else {
-                    return 'launching_soon';
-                }
-                break;
+                    //return 'launching_soon';
 
 
             case 'Unit Type':
