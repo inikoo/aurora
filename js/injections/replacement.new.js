@@ -85,7 +85,7 @@ function update_new_replacement_totals() {
 
     var number_affected_items=0;
 
-    var data = $.parseJSON(atob($('#order').data('object')))
+    var data = $$('#order').data('object')
 
 
 
@@ -148,7 +148,7 @@ function save_replacement(){
 
     });
 
-    var _data = $.parseJSON(atob($('#order').data('object')))
+    var _data =$('#order').data('object')
 
 
     request='ar_edit_orders.php?tipo=create_replacement&key='+_data.key+'&transactions='+JSON.stringify(transactions);

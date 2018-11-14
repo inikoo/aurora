@@ -82,7 +82,7 @@ function update_new_refund_totals() {
 
     var number_affected_items=0;
 
-    var data = $.parseJSON(atob($('#order').data('object')))
+    var data = $('#order').data('object')
 
     symbol = data.symbol
     tax_rate = parseFloat(data.tax_rate)
@@ -155,7 +155,7 @@ function save_refund(){
 
     });
 
-    var _data = $.parseJSON(atob($('#order').data('object')))
+    var _data =$('#order').data('object')
 
 
     request='ar_edit_orders.php?tipo=create_refund&key='+_data.key+'&transactions='+JSON.stringify(transactions);
