@@ -36,7 +36,7 @@ trait PartCategory {
             return;
         }
 
-
+        $data['editor']     = $this->editor;
         $data['Timeseries Parent']     = 'Category';
         $data['Timeseries Parent Key'] = $this->id;
 
