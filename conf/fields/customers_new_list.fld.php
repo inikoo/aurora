@@ -65,11 +65,11 @@ $object_fields[] = array(
             'id'              => 'Customer_Status',
             'edit'            => 'no_icon',
             'value'           => '',
-            'formatted_value' => '<span id="Customer_Status_Active_field" class="button value valid" onclick="toggle_list_elements(this)" field_type="elements" field="Customer_Status_Active"  style="margin-right:40px"><i class=" fa fa-fw fa-check-square" aria-hidden="true"></i> <span class="unselectable">'
+            'formatted_value' => '<span id="Customer_Status_Active_field" class="button value valid" onclick="toggle_list_elements(this)" field_type="elements" field="Customer_Status_Active"  style="margin-right:40px"><i class=" far fa-fw fa-check-square" aria-hidden="true"></i> <span class="unselectable">'
                 ._('Active').'</span></span>'
-                .'<span id="Customer_Status_Loosing_field" onclick="toggle_list_elements(this)"  field_type="elements"  field="Customer_Status_Loosing" class="button value valid" style="margin-right:40px"><i class=" fa fa-fw fa-check-square" aria-hidden="true"></i> <span class="unselectable">'
+                .'<span id="Customer_Status_Loosing_field" onclick="toggle_list_elements(this)"  field_type="elements"  field="Customer_Status_Loosing" class="button value valid" style="margin-right:40px"><i class=" far fa-fw fa-check-square" aria-hidden="true"></i> <span class="unselectable">'
                 ._('Loosing').'</span></span>'
-                .'<span id="Customer_Status_Lost_field" onclick="toggle_list_elements(this)"  field_type="elements"  field="Customer_Status_Lost" class="value valid button" style="margin-right:40px"><i class=" fa fa-fw fa-check-square" aria-hidden="true"></i> <span class="unselectable">'
+                .'<span id="Customer_Status_Lost_field" onclick="toggle_list_elements(this)"  field_type="elements"  field="Customer_Status_Lost" class="value valid button" style="margin-right:40px"><i class=" far fa-fw fa-check-square" aria-hidden="true"></i> <span class="unselectable">'
                 ._('Lost').'</span></span>',
             'label'           => _('Customer status'),
             'required'        => false,
@@ -197,13 +197,13 @@ $object_fields[] = array(
             'edit'            => 'no_icon',
             'class'=>'super_discreet',
             'value'           => '',
-            'formatted_value' => '<span id="Order_State_Basket_field" class="button value valid" onclick="toggle_list_elements(this)" field_type="elements" field="Order_State_Basket"  style="margin-right:40px"><i class=" fa fa-fw fa-check-square" aria-hidden="true"></i> <span class="unselectable">'
+            'formatted_value' => '<span id="Order_State_Basket_field" class="button value valid" onclick="toggle_list_elements(this)" field_type="elements" field="Order_State_Basket"  style="margin-right:40px"><i class=" far fa-fw fa-check-square" aria-hidden="true"></i> <span class="unselectable">'
                 ._('Basket').'</span></span>'
-                .'<span id="Order_State_Processing_field" onclick="toggle_list_elements(this)"  field_type="elements"  field="Order_State_Processing" class="button value valid" style="margin-right:40px"><i class=" fa fa-fw fa-check-square" aria-hidden="true"></i> <span class="unselectable">'
+                .'<span id="Order_State_Processing_field" onclick="toggle_list_elements(this)"  field_type="elements"  field="Order_State_Processing" class="button value valid" style="margin-right:40px"><i class=" far fa-fw fa-check-square" aria-hidden="true"></i> <span class="unselectable">'
                 ._('Processing').'</span></span>'
-                .'<span id="Order_State_Dispatched_field" onclick="toggle_list_elements(this)"  field_type="elements"  field="Order_State_Dispatched" class="value valid button" style="margin-right:40px"><i class=" fa fa-fw fa-check-square" aria-hidden="true"></i> <span class="unselectable">'
+                .'<span id="Order_State_Dispatched_field" onclick="toggle_list_elements(this)"  field_type="elements"  field="Order_State_Dispatched" class="value valid button" style="margin-right:40px"><i class=" far fa-fw fa-check-square" aria-hidden="true"></i> <span class="unselectable">'
                 ._('Dispatched').'</span></span>'
-                .'<span id="Order_State_Cancelled_field" onclick="toggle_list_elements(this)"  field_type="elements"  field="Order_State_Cancelled" class="value valid button" style="margin-right:40px"><i class=" fa fa-fw fa-check-square" aria-hidden="true"></i> <span class="unselectable">'
+                .'<span id="Order_State_Cancelled_field" onclick="toggle_list_elements(this)"  field_type="elements"  field="Order_State_Cancelled" class="value valid button" style="margin-right:40px"><i class=" far fa-fw fa-check-square" aria-hidden="true"></i> <span class="unselectable">'
                 ._('Cancelled').'</span></span>',
             'label'           => _('Order state'),
             'required'        => false,

@@ -181,8 +181,10 @@
 		<td  id="{$field.id}_container" class="{$field.type} new" field="{$field.id}" _required="{$required}" field_type='{$edit}' server_validation='{$server_validation}' object='{$object_name}' key='{$state.key}' parent='{$state.parent}' parent_key='{if isset($overwrite_parent_key)}{$overwrite_parent_key}{else}{$state.parent_key}{/if}'>
 	   
 	     {if $edit!='custom'  }
-		<span id="{$field.id}_formatted_value" class="{$field.id} formatted_value hide" ondblclick="open_edit_field('{$object_name}','{$state.key}','{$field.id}')">{if isset($field.formatted_value)}{$field.formatted_value}{else}{$field.value}{/if}</span>
-		<span id="{$field.id}_value" class="hide " >{$field.value}</span>
+		<span id="{$field.id}_formatted_value" class="{$field.id} formatted_value hide" ondblclick="open_edit_field('{$object_name}','{$state.key}','{$field.id}')">
+		{if isset($field.formatted_value) and is_string($field.formatted_value) }{$field.formatted_value}{elseif  is_string($field.value) }{$field.value}{/if}
+		</span>
+		<span id="{$field.id}_value" class="hide " >{if is_string($field.value)}{$field.value}{/if}</span>
         {/if}
 		{if $edit=='string' or $edit=='handle' or $edit=='dimensions'  or $edit=='email' or   $edit=='numeric_unsigned' or  $edit=='int_unsigned' or $edit=='smallint_unsigned' or $edit=='mediumint_unsigned' or $edit=='int' or $edit=='smallint' or $edit=='mediumint' or $edit=='anything' or  $edit=='percentage' or $edit=='numeric'  or $edit=='amount'  or $edit=='amount_margin'  or $edit=='amount_percentage' }
 		
