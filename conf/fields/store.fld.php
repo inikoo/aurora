@@ -354,7 +354,7 @@ if (!$new) {
                 'value'     => '',
                 'label'     => '<i class="fa fa-fw fa-lock button" onClick="toggle_unlock_delete_object(this)" style="margin-right:20px"></i> <span data-data=\'{ "object": "'.$object->get_object_name(
                     ).'", "key":"'.$object->id.'"}\' onClick="delete_object(this)" class="delete_object disabled">'.($object->get('Store Contacts') > 0 ? _('Close store') : _("Delete store"))
-                    .' <i class="fa fa-trash new_button link"></i></span>',
+                    .' <i class="far fa-trash-alt new_button link"></i></span>',
                 'reference' => '',
                 'type'      => 'operation'
             ),

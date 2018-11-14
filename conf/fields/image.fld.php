@@ -99,7 +99,7 @@ $operations = array(
             'value'     => '',
             'label'     => '<i class="fa fa-fw fa-lock button" onClick="toggle_unlock_delete_object(this)" style="margin-right:20px"></i> <span data-data=\'{  "image_bridge_key":"'.$object->get(
                     'Image Bridge Key'
-                ).'"}\' onClick="delete_image(this)" class="delete_object disabled">'._("Delete image").' <i class="fa fa-trash new_button link"></i></span>',
+                ).'"}\' onClick="delete_image(this)" class="delete_object disabled">'._("Delete image").' <i class="far fa-trash-alt new_button link"></i></span>',
             'reference' => '',
             'type'      => 'operation'
         ),

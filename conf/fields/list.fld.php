@@ -42,7 +42,7 @@ $operations = array(
             'class'     => 'operation',
             'value'     => '',
             'label'     => '<i class="fa fa-fw fa-lock button" onClick="toggle_unlock_delete_object(this)" style="margin-right:20px"></i> <span data-data=\'{ "object": "'.$object->get_object_name()
-                .'", "key":"'.$object->id.'"}\' onClick="delete_object(this)" class="delete_object disabled">'._('Delete list').' <i class="fa fa-trash new_button link"></i></span>',
+                .'", "key":"'.$object->id.'"}\' onClick="delete_object(this)" class="delete_object disabled">'._('Delete list').' <i class="far fa-trash-alt new_button link"></i></span>',
             'reference' => '',
             'type'      => 'operation'
         ),
