@@ -58,9 +58,8 @@
 
         <script src="/js/libs/jquery-3.3.1.min.js"></script>
         <script src="/js/libs/jquery-migrate-3.0.1.js"></script>
-
-
         <script src="/js/libs/jquery-ui.1.12.1.js"></script>
+
         <script src="/js/libs/moment-with-locales.js"></script>
         <script src="/js/libs/chrono.js"></script>
         <script src="/js/libs/sha256.js"></script>
@@ -71,7 +70,7 @@
         <script src="/js/libs/backgrid-filter.js"></script>
         <script src="/js/libs/snap.svg.js"></script>
         <script src="/js/libs/svg-dial.js"></script>
-        <script src="/js/libs/countrySelect.js"></script>
+        <script src="/js/libs/countrySelect.js?v181115"></script>
         <script src="/js/libs/intlTelInput-jquery.14.0.6.js"></script>
         <script src="/js/libs/d3.js"></script>
         <script src="/js/libs/d3fc.layout.js"></script>
@@ -82,27 +81,27 @@
         <script src="/js/libs/jquery-qrcode-0.14.0.min.js"></script>
 
 
-        <script src="/js/help.js?v180124v4"></script>
-        <script src="/js/keyboard_shortcuts.js?v2"></script>
-        <script src="/js/barcode_scanner.js?v181112v2"></script>
+        <script src="/js/help.js?v181115"></script>
+        <script src="/js/keyboard_shortcuts.js?v181115"></script>
+        <script src="/js/barcode_scanner.js?v181115"></script>
 
-        <script src="/js/app.js?v181114"></script>
+        <script src="/js/app.js?v181115"></script>
         <script src="/js/search.js"></script>
         <script src="/js/table.js?v201808v2"></script>
         <script src="/js/validation.js?v171206v6"></script>
         <script src="/js/pdf.js?v1800612v2"></script>
-        <script src="/utils/country_data.js.php?locale={$locale}"></script>
-        <script src="/js/edit.js?v1800612v3"></script>
+        <script src="/utils/country_data.js.php?v=v181115&locale={$locale}"></script>
+        <script src="/js/edit.js?v181115"></script>
     {if $user->get('User Type')=='Staff' or $user->get('User Type')=='Contractor'}
 
-        <script src="/js/edit_webpage_edit.js?v180411v1"></script>
-        <script src="/js/new.js?v181114"></script>
-        <script src="/js/order.common.js?v181017v2"></script>
-        <script src="/js/email_campaign.common.js?v180611v3"></script>
-        <script src="/js/supplier.order.js?v4"></script>
-        <script src="/js/supplier.delivery.js?v4"></script>
-        <script src="/js/part_locations.edit.js?v=20180319v2"></script>
-        <script src="/js/alert_dial.js?v20180128v2"></script>
+        <script src="/js/edit_webpage_edit.js?v181115"></script>
+        <script src="/js/new.js?v181115"></script>
+        <script src="/js/order.common.js?v181115"></script>
+        <script src="/js/email_campaign.common.js?v181115"></script>
+        <script src="/js/supplier.order.js?v181115"></script>
+        <script src="/js/supplier.delivery.js?v181115"></script>
+        <script src="/js/part_locations.edit.js?v=v181115"></script>
+        <script src="/js/alert_dial.js?v181115"></script>
         <script src="/js/libs/editor_v1/froala_editor.min.js?v1"></script>
         <script src="/js/libs/editor_v1/codemirror.js"></script>
         <script src="/js/libs/editor_v1/codemirror.xml.js"></script>
@@ -140,11 +139,11 @@
         <script src="/js/libs/amcharts/plugins/export/export.min.js"></script>
 
         {elseif $user->get('User Type')=='Agent' }
-        <script src="/js/agent.order.js?v1"></script>
+        <script src="/js/agent.order.js?v181115"></script>
 
         {/if}
 
-        <script src="/js/libs/jquery.scannerdetection.js"></script>
+        <script src="/js/libs/jquery.scannerdetection.js?v181115"></script>
         <script src="/js/libs/jquery.fancybox.min.js"></script>
         <script src="/js/libs/jquery.awesome-cursor.min.js"></script>
         <script src="/js/libs/base64.js?v2"></script>
