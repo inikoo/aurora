@@ -1177,7 +1177,6 @@ right connector from last child*/
     cursor: pointer; }
   .new_object table .new_button, .presentation_card table .new_button, .showcase table .new_button, .export_dialog_block table .new_button {
     position: relative;
-    top: 1px;
     left: 5px; }
   .new_object table .title, .presentation_card table .title, .showcase table .title, .export_dialog_block table .title {
     border-top: none; }
@@ -1969,7 +1968,6 @@ textarea {
       cursor: pointer; }
     .edit_object table .new_button {
       position: relative;
-      top: 1px;
       left: 5px; }
     .edit_object table .title {
       border-top: none; }
