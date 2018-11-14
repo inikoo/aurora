@@ -46,7 +46,7 @@ trait ProductCategory {
 
         $data['Timeseries Parent']     = 'Category';
         $data['Timeseries Parent Key'] = $this->id;
-
+        $data['editor']                = $this->editor;
         $timeseries = new Timeseries('find', $data, 'create');
         if ($timeseries->id) {
 
