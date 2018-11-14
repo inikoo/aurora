@@ -47,13 +47,13 @@
 <script>
     $('#navigation').on('click', '#download_button',
             function () {
-                $("#download")[0].click();
+                $("#download")[0].trigger( "click" );
             }
     );
 
     $(document).on('click', '#download_button_vis',
             function () {
-                $("#download")[0].click();
+                $("#download")[0].trigger("click");
             }
     );
 </script>

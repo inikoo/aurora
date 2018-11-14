@@ -243,7 +243,7 @@
         console.log($('.sidebar.sidebar-left'))
 
         if(!$('.sidebar.sidebar-left').hasClass('sidebar-left-active')){
-            $( ".open-sidebar-left" ).click();
+            $( ".open-sidebar-left" ).trigger("click");
         }
 
 

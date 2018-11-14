@@ -31,9 +31,13 @@ $(document).ready(function () {
 
     change_view($('#_request').val())
 
-    $(document).keydown(function (e) {
+
+
+
+
+    $(document).on( "keydown", function (e) {
         key_press(e)
-    });
+    })
 
 
     $(document).scannerDetection(function (value) {
@@ -117,7 +121,7 @@ $(document).ready(function () {
 
 
                     $('#' + data.id + ' .download_export').attr('href', '/download.php?file=' + data.download_key)
-                    $('#' + data.id + ' .export_download').removeClass('hide').attr('title', data.result_info).click(function () {
+                    $('#' + data.id + ' .export_download').removeClass('hide').attr('title', data.result_info).on( 'click',function () {
 
                         download_exported_file(this)
 
@@ -315,7 +319,7 @@ function connect_websocket(){
 
 
                         $('#' + data.id + ' .download_export').attr('href', '/download.php?file=' + data.download_key)
-                        $('#' + data.id + ' .export_download').removeClass('hide').attr('title', data.result_info).click(function () {
+                        $('#' + data.id + ' .export_download').removeClass('hide').attr('title', data.result_info).on( 'click',function () {
 
                             download_exported_file(this)
 

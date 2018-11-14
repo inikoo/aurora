@@ -28,46 +28,50 @@ $(function () {
     });
 
 
-    $('a').click(function (e) {
+    $('a').on( 'click',function (e) {
 
         e.preventDefault();
     });
 
-    $('.empty').hover(function (e) {
+
+
+
+    $( '.empty' ).on( "mouseenter mouseleave",  function (e) {
         $(this).css("background-color", e.type === "mouseenter" ? styles['.empty:hover background-color'][2] : styles['.empty background-color'][2])
         $(this).css("color", e.type === "mouseenter" ? styles['.empty:hover color'][2] : styles['.empty color'][2])
+    } );
 
-    });
-    $('.ordered').hover(function (e) {
+
+    $('.ordered').on("mouseenter mouseleave",function (e) {
         $(this).css("background-color", e.type === "mouseenter" ? styles['.ordered:hover background-color'][2] : styles['.ordered background-color'][2])
         $(this).css("color", e.type === "mouseenter" ? styles['.ordered:hover color'][2] : styles['.ordered color'][2])
 
     });
-    $('.out_of_stock').hover(function (e) {
+    $('.out_of_stock').on("mouseenter mouseleave",function (e) {
         $(this).css("background-color", e.type === "mouseenter" ? styles['.out_of_stock:hover background-color'][2] : styles['.out_of_stock background-color'][2])
         $(this).css("color", e.type === "mouseenter" ? styles['.out_of_stock:hover color'][2] : styles['.out_of_stock color'][2])
 
     });
-    $('.launching_soon').hover(function (e) {
+    $('.launching_soon').on("mouseenter mouseleave",function (e) {
         $(this).css("background-color", e.type === "mouseenter" ? styles['.launching_soon:hover background-color'][2] : styles['.launching_soon background-color'][2])
         $(this).css("color", e.type === "mouseenter" ? styles['.launching_soon:hover color'][2] : styles['.launching_soon color'][2])
 
     });
 
 
-    $('#bottom_header .button').hover(function (e) {
+    $('#bottom_header .button').on("mouseenter mouseleave",function (e) {
         $(this).css("background-color", e.type === "mouseenter" ? styles['#bottom_header .button:hover background-color'][2] : styles['#bottom_header .button background-color'][2])
         $(this).css("color", e.type === "mouseenter" ? styles['#bottom_header .button:hover color'][2] : styles['#bottom_header .button color'][2])
 
     });
 
-    $('#bottom_header a.menu.dropdown').hover(function (e) {
+    $('#bottom_header a.menu.dropdown').on("mouseenter mouseleave",function (e) {
         $(this).css("background-color", e.type === "mouseenter" ? styles['#bottom_header a.menu.dropdown:hover background-color'][2] : styles['#bottom_header a.menu background-color'][2])
         $(this).css("color", e.type === "mouseenter" ? styles['#bottom_header a.menu.dropdown:hover color'][2] : styles['#bottom_header a.menu color'][2])
 
     });
 
-    $('.vertical-menu a').hover(function (e) {
+    $('.vertical-menu a').on("mouseenter mouseleave",function (e) {
         $(this).css("background-color", e.type === "mouseenter" ? styles['.vertical-menu a:hover background-color'][2] : styles['.vertical-menu a background-color'][2])
         $(this).css("color", e.type === "mouseenter" ? styles['.vertical-menu a:hover color'][2] : styles['.vertical-menu a color'][2])
 

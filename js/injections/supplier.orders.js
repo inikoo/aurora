@@ -3,7 +3,7 @@
  Copyright (c) 2015, Inikoo
  Version 3.0*/
 
-$("#new_purchase_order").click(function () {
+$("#new_purchase_order").on( 'click',function () {
     open_new_purchase_order()
 })
 

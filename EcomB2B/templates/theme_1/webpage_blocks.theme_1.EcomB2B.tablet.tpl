@@ -1080,7 +1080,7 @@
 
                     })
 
-                    $('.images figure a').click(function (event) {
+                    $('.images figure a').on( 'click',function (event) {
                         event.preventDefault();
                         var options = {
                             index: $(this).index()

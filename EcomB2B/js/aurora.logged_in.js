@@ -137,7 +137,7 @@ $(function() {
 
 
 
- $('.order_row .label').click(function () {
+ $('.order_row .label').on( 'click',function () {
 
         var element = $(this);
         var order_row = $(this).closest('.order_row');

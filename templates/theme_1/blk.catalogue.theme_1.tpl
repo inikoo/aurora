@@ -297,7 +297,7 @@
     }
 
 
-    $("#add_filter").click(function (event) {
+    $("#add_filter").on('click',function (event) {
 
 
 
@@ -365,7 +365,7 @@
 
     })
 
-    $("#edit_filter").click(function (event) {
+    $("#edit_filter").on('click',function (event) {
 
         if ($('#edit_filter').hasClass('active')) {
 
@@ -543,7 +543,7 @@
             $('#catalogue_name').html(r.data.label)
 
 
-            $('#catalogue_webpage_link').click(function() {
+            $('#catalogue_webpage_link').on('click',function() {
                parent.change_view(r.data.webpage_link)
             });
 
@@ -729,7 +729,7 @@
         }
     }
 
-    $('#next_item').click(function (event) {
+    $('#next_item').on('click',function (event) {
 
         var next_item = $('#cbp_item_' + $('#catalogue_code').data('category_key')).next('.cbp-item')
         if (next_item.length) {
@@ -740,7 +740,7 @@
 
     });
 
-    $('#prev_item').click(function (event) {
+    $('#prev_item').on('click',function (event) {
 
         var prev_item = $('#cbp_item_' + $('#catalogue_code').data('category_key')).prev('.cbp-item')
         if (prev_item.length) {
@@ -751,7 +751,7 @@
 
     });
 
-    $('#insert_category').click(function (event) {
+    $('#insert_category').on('click',function (event) {
 
         $('#add_item_dialog').removeClass('hide').offset({
             top: $(this).offset().top + $(this).height() + 3, left: $(this).offset().left + $(this).width() - $('#add_item_dialog').width()})
@@ -760,7 +760,7 @@
     });
 
 
-    $('#disassociate_category').click(function (event) {
+    $('#disassociate_category').on('click',function (event) {
 
         $('#cbp_thumbnail_item_' + $('#catalogue_code').data('category_key')).remove()
 
@@ -848,7 +848,7 @@
             $('#catalogue_code').html(r.data.code).data('category_key', r.data.category_key)
             $('#catalogue_name').html(r.data.label)
 
-            $('#catalogue_webpage_link').click(function() {
+            $('#catalogue_webpage_link').on('click',function() {
                 parent,change_view(r.data.webpage_link)
             });
 

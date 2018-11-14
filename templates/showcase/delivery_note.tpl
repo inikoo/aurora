@@ -1078,7 +1078,7 @@
 
     }
 
-    $("#start_picking").click(function () {
+    $("#start_picking").on( 'click',function () {
 
         var request = '/ar_edit_orders.php?tipo=set_state&object=delivery_note&key=' + $('#dn_data').attr('dn_key') + '&value=Picking'
         $.getJSON(request, function (data) {
@@ -1100,7 +1100,7 @@
         })
     })
 
-    $("#start_packing").click(function () {
+    $("#start_packing").on( 'click',function () {
 
         var request = '/ar_edit_orders.php?tipo=set_state&object=delivery_note&key=' + $('#dn_data').attr('dn_key') + '&value=Packing'
         $.getJSON(request, function (data) {

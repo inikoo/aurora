@@ -1742,8 +1742,8 @@ function get_warehouse_area_navigation($data, $smarty, $user, $db, $account) {
 
                         $up_button = array(
                             'icon'      => 'arrow-up',
-                            'title'     => _('Warehouse'),
-                            'reference' => 'warehouse/'.$data['parent_key'],
+                            'title'     => _('Warehouse areas'),
+                            'reference' => 'warehouse/'.$data['parent_key'].'/areas',
                             'parent'    => ''
                         );
 

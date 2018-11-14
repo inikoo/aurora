@@ -109,6 +109,11 @@ if ($parameters['parent'] == 'customer' or $parameters['parent'] == 'order_custo
         ' where   B.`Warehouse Key`=%d   ', $parameters['parent_key']
     );
     $subject = 'Warehouse';
+} elseif ($parameters['parent'] == 'warehouse_area') {
+    $where   = sprintf(
+        ' where   B.`Warehouse Area Key`=%d   ', $parameters['parent_key']
+    );
+    $subject = 'Warehouse Area';
 } elseif ($parameters['parent'] == 'user') {
     $where   = sprintf(
         ' where   B.`User Key`=%d   ', $parameters['parent_key']

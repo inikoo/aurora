@@ -44,7 +44,6 @@
         <link href="/css/editor_v1/plugins/video.css" rel="stylesheet">
         <link href="/css/editor_v1/plugins/draggable.css" rel="stylesheet">
         <link href="/css/amcharts/style.css" rel="stylesheet">
-        <link href="/css/fotorama.css" rel="stylesheet">
         <link href="/css/jquery.fancybox.min.css" rel="stylesheet">
         <link href="/css/tooltipster.bundle.min.css" rel="stylesheet" type="text/css">
 
@@ -55,8 +54,13 @@
 
 
         <script src="https://browser.sentry-cdn.com/4.3.0/bundle.min.js" crossorigin="anonymous"></script>
-        <script src="/js/libs/jquery-2.2.1.js"></script>
-        <script src="/js/libs/jquery-ui.js"></script>
+
+
+        <script src="/js/libs/jquery-3.3.1.min.js"></script>
+        <script src="/js/libs/jquery-migrate-3.0.1.js"></script>
+
+
+        <script src="/js/libs/jquery-ui.1.12.1.js"></script>
         <script src="/js/libs/moment-with-locales.js"></script>
         <script src="/js/libs/chrono.js"></script>
         <script src="/js/libs/sha256.js"></script>
@@ -68,13 +72,12 @@
         <script src="/js/libs/snap.svg.js"></script>
         <script src="/js/libs/svg-dial.js"></script>
         <script src="/js/libs/countrySelect.js"></script>
-        <script src="/js/libs/intlTelInput.js"></script>
+        <script src="/js/libs/intlTelInput-jquery.14.0.6.js"></script>
         <script src="/js/libs/d3.js"></script>
         <script src="/js/libs/d3fc.layout.js"></script>
         <script src="/js/libs/d3fc.js"></script>
         <script src="/js/libs/sweetalert.min.js?v2a"></script>
 
-        <script src="/js/libs/fotorama.js"></script>
         <script src="/js/libs/tooltipster.bundle.min.js"></script>
         <script src="/js/libs/jquery-qrcode-0.14.0.min.js"></script>
 

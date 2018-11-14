@@ -5,7 +5,7 @@
     
 
 
-    $('#add_panel').click(function(){
+    $('#add_panel').on('click',function(){
 
         if(!$(this).hasClass('active')) {
             $(this).addClass('active')
@@ -47,7 +47,7 @@
 
 
 
-      //  $('.item_overlay .panel_type div').click(function() {
+      //  $('.item_overlay .panel_type div').on('click',function() {
 
 
         $(this).closest('#products').find('.panel_type div').removeClass('selected')
@@ -68,7 +68,7 @@
 
     $('#items_container').on('click', '.item_overlay .panel_size div', function() {
 
-      //  $('.item_overlay .panel_size div').click(function() {
+      //  $('.item_overlay .panel_size div').on('click',function() {
 
         var wrap=$(this).closest('.item_wrap')
 
@@ -453,7 +453,7 @@
 
 
 
-    $( "#save_code" ).click(function() {
+    $( "#save_code" ).on('click',function() {
 
 
 

@@ -159,7 +159,7 @@
     
     
     
-   $('.toggle_description_block').click(function(){
+   $('.toggle_description_block').on('click',function(){
         if($('#description_block_on').hasClass('hide')){
 
             $('#description_block_on').removeClass('hide')
@@ -222,7 +222,7 @@ var position=$(this).position();
     })
 
 
-    $('#image_edit_toolbar .fa-window-close').click(function() {
+    $('#image_edit_toolbar .fa-window-close').on('click',function() {
         $('#image_edit_toolbar').addClass('hide')
         $('#'+$('#image_edit_toolbar').attr('block')).removeClass('editing').draggable( 'enable' ).resizable(
             {
@@ -240,7 +240,7 @@ var position=$(this).position();
     })
 
 
-    $('#image_edit_toolbar .fa-trash,#text_edit_toolbar .fa-trash').click(function() {
+    $('#image_edit_toolbar .fa-trash,#text_edit_toolbar .fa-trash').on('click',function() {
 
       var toolbar=$(this).closest('.edit_toolbar')
 
@@ -273,7 +273,7 @@ var position=$(this).position();
     })
 
 
-    $('.create_text').click(function() {
+    $('.create_text').on('click',function() {
 
 
     var section=$(this).closest('div.section');
@@ -343,7 +343,7 @@ var position=$(this).position();
 
 })
 
-    $('.create_image').click(function() {
+    $('.create_image').on('click',function() {
 
 
         var section=$(this).closest('div.section');
@@ -411,7 +411,7 @@ var position=$(this).position();
     })
 
 
-    $('#image_edit_toolbar .fa-comment').click(function() {
+    $('#image_edit_toolbar .fa-comment').on('click',function() {
 
         var caption= $(this).closest('.edit_toolbar').find('div.caption')
 
@@ -564,7 +564,7 @@ var position=$(this).position();
 
 
 
-    $('#text_edit_toolbar .fa-window-close').click(function() {
+    $('#text_edit_toolbar .fa-window-close').on('click',function() {
 
         $('#text_edit_toolbar').addClass('hide')
 
