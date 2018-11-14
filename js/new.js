@@ -350,8 +350,9 @@ function save_new_object(object, form_type) {
 
                 if (data.pcard == '' && data.redirect != '') {
 
-                    console.log(data.updated_data.redirect)
-                    change_view(data.redirect)
+                    //console.log(data.redirect)
+                   // console.log(data.redirect_metadata)
+                    change_view(data.redirect,data.redirect_metadata)
                     return;
 
 

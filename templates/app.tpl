@@ -83,7 +83,7 @@
         <script src="/js/keyboard_shortcuts.js?v2"></script>
         <script src="/js/barcode_scanner.js?v181112v2"></script>
 
-        <script src="/js/app.js?v181111v2"></script>
+        <script src="/js/app.js?v181114"></script>
         <script src="/js/search.js"></script>
         <script src="/js/table.js?v201808v2"></script>
         <script src="/js/validation.js?v171206v6"></script>
@@ -93,7 +93,7 @@
     {if $user->get('User Type')=='Staff' or $user->get('User Type')=='Contractor'}
 
         <script src="/js/edit_webpage_edit.js?v180411v1"></script>
-        <script src="/js/new.js?v180612"></script>
+        <script src="/js/new.js?v181114"></script>
         <script src="/js/order.common.js?v181017v2"></script>
         <script src="/js/email_campaign.common.js?v180611v3"></script>
         <script src="/js/supplier.order.js?v4"></script>

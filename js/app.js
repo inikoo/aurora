@@ -534,7 +534,7 @@ function change_view(_request, metadata) {
     //console.log(websocket_connected)
 
 
-    if (metadata == undefined) {
+    if (metadata == undefined || !metadata ) {
         metadata = {};
     }
 
