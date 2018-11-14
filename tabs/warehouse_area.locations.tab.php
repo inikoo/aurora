@@ -9,9 +9,7 @@
 
 */
 
-if (!$user->can_view('locations') or !in_array(
-        $state['key'], $user->warehouses
-    )
+if (!$user->can_view('locations') or !in_array($state['warehouse']->id, $user->warehouses)
 ) {
     $html = '';
 } else {
@@ -20,7 +18,7 @@ if (!$user->can_view('locations') or !in_array(
     $warehouse=$state['warehouse'];
 
 
-    $tab     = 'warehouse.locations';
+    $tab     = 'warehouse_area.locations';
     $ar_file = 'ar_warehouse_tables.php';
     $tipo    = 'locations';
 
@@ -38,8 +36,8 @@ if (!$user->can_view('locations') or !in_array(
     );
 
     $parameters = array(
-        'parent'     => $state['parent'],
-        'parent_key' => $state['parent_key'],
+        'parent'     => $state['object'],
+        'parent_key' => $state['key'],
 
     );
 

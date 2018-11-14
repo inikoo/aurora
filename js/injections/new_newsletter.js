@@ -3,7 +3,7 @@
  Copyright (c) 2018, Inikoo
  Version 3.0*/
 
-$("#new_newsletter").click(function () {
+$("#new_newsletter").on( 'click',function () {
     new_newsletter(this)
 })
 

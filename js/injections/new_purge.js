@@ -3,7 +3,7 @@
  Copyright (c) 2015, Inikoo
  Version 3.0*/
 
-$("#new_purge").click(function () {
+$("#new_purge").on( 'click',function () {
     new_purge(this)
 })
 

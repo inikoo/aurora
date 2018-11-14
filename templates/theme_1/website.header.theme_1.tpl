@@ -389,9 +389,12 @@
     var mouse_over_menu = false;
     var mouse_over_menu_link = false;
 
-    $("#bottom_header a").hoverIntent(menu_in, menu_out);
-    $("#bottom_header a").hover(menu_in_fast, menu_out_fast);
-    $("#_menu_blocks ._menu_block").hover(menu_block_in, menu_block_out);
+
+    $( "#bottom_header a" ).on( 'mouseenter', menu_in ).on( 'mouseleave', menu_out );
+    $( "#bottom_header a" ).on( 'mouseenter', menu_in_fast ).on( 'mouseleave', menu_out_fast );
+    $( "#_menu_blocks ._menu_block" ).on( 'mouseenter', menu_block_in ).on( 'mouseleave', menu_block_out );
+
+
 
     $('#_menu_blocks').width($('#top_header').width())
 

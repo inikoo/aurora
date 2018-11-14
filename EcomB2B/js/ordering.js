@@ -66,7 +66,9 @@ $(function() {
 
 
 
-    $('.order_row .label').hover(function () {
+
+
+    $('.order_row .label').on( "mouseenter", function () {
 
 
         var input = $(this).closest('.order_row').find('.order_input');
@@ -78,14 +80,16 @@ $(function() {
         }
 
 
-    }, function () {
+    } ).on( "mouseleave", function () {
         var input = $(this).closest('.order_row').find('.order_input');
         if (input.data('ovalue') == '' && !input.is('[readonly]')) {
             input.val('')
         }
-    });
+    } );
 
-    $('.order_row .label').click(function () {
+
+
+    $('.order_row .label').on('click',function () {
 
         var element = $(this);
         var order_row = $(this).closest('.order_row');

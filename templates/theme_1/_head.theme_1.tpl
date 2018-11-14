@@ -164,7 +164,6 @@
     <script src="/js/validation.js"></script>
     <script src="/js/common_webpage_preview.js"></script>
 
-    <script src="/js/libs/tinycolorpicker.js"></script>
 
     <style>
 

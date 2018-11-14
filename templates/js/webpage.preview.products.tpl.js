@@ -106,7 +106,7 @@
     
     
     
-    $('.product_header_text').dblclick(function() {
+    $('.product_header_text').on('dblclick',function() {
 
 
 
@@ -164,7 +164,7 @@
     })
 
 
-    $('#show_sort_options').click(function() {
+    $('#show_sort_options').on('click',function() {
 
         if($('#sort_options').hasClass('hide')){
             $('#sort_options').removeClass('hide').offset({ top:$('#show_sort_options').offset().top-15, left:$('#show_sort_options').offset().left+20  })
@@ -204,7 +204,7 @@
 
 
 
-    $('#sort_options i').click(function() {
+    $('#sort_options i').on('click',function() {
 
         var request = '/ar_edit_website.php?tipo=sort_items&object=webpage&key='+$('#webpage_preview').attr('webpage_key')+'&value='+$(this).attr('type')
         $.getJSON(request, function (data) {

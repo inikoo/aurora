@@ -533,14 +533,21 @@
                                         $('#{$field.id}_locality  input ').val(decodeEntities(address_fields['Address Locality']))
                                         $('#{$field.id}_administrativeArea  input ').val(decodeEntities(address_fields['Address Administrative Area']))
 
-                                        var initial_country = address_fields['Address Country 2 Alpha Code'].toLowerCase();
+                                        if(address_fields['Address Country 2 Alpha Code']){
+                                            var initial_country = address_fields['Address Country 2 Alpha Code'].toLowerCase();
+
+                                        }else{
+                                            var initial_country = '{$default_country|lower}';
+
+                                        }
+
 
                                         {else}
 
                                         var initial_country = '{$default_country|lower}';
                                         {/if}
 
-                                        //caca
+
                                         $.fn.countrySelect.setCountryData({$field.countries});
 
                                         var {$field.id}country_select = $("#{$field.id}_country_select")

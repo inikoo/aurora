@@ -4,7 +4,7 @@
  Version 3.0*/
 
 
-$('#report_settings').click(
+$('#report_settings').on( 'click',
     function () {
 
         if ($('#report_config').hasClass('hide')) {

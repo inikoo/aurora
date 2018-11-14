@@ -1115,7 +1115,7 @@ getScript('/js/tablet.custom.min.js?v=2', function () {
 
                 })
 
-                $('.images figure a').click(function (event) {
+                $('.images figure a').on( 'click',function (event) {
                     event.preventDefault();
                     var options = {
                         index: $(this).index()
@@ -1161,7 +1161,7 @@ getScript('/js/tablet.custom.min.js?v=2', function () {
             {if $with_blackboard==1}
 
 
-            $(".asset_description .show_all").click(function() {
+            $(".asset_description .show_all").on( 'click',function() {
 
                 totalHeight = 0
 

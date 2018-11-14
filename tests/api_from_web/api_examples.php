@@ -162,46 +162,46 @@
     var api_url = '';
 
 
-    $("#get_user_data").click(function () {
+    $("#get_user_data").on('click',function () {
         get_user_data()
     });
-    $("#get_employee_data").click(function () {
+    $("#get_employee_data").on('click',function () {
         get_employee_data()
     });
-    $("#get_part_data").click(function () {
+    $("#get_part_data").on('click',function () {
         get_part_data()
     });
 
-    $("#get_part_data_from_barcode").click(function () {
+    $("#get_part_data_from_barcode").on('click',function () {
         get_part_data_from_barcode()
     });
 
 
-    $("#get_location_data").click(function () {
+    $("#get_location_data").on('click',function () {
         get_location_data()
     });
 
-    $("#search_location_by_code").click(function () {
+    $("#search_location_by_code").on('click',function () {
         search_location_by_code()
     });
 
-    $("#search_part_by_code").click(function () {
+    $("#search_part_by_code").on('click',function () {
         search_part_by_code()
     });
 
 
-    $("#audit_stock").click(function () {
+    $("#audit_stock").on('click',function () {
         audit_stock()
     });
 
-    $("#set_picking_location").click(function () {
+    $("#set_picking_location").on('click',function () {
         set_picking_location()
     });
-    $("#get_delivery_note").click(function () {
+    $("#get_delivery_note").on('click',function () {
         get_delivery_note()
     });
 
-    $("#get_delivery_note_items").click(function () {
+    $("#get_delivery_note_items").on('click',function () {
         get_delivery_note_items()
     });
 

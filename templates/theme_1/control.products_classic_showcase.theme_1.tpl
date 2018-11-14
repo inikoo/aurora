@@ -71,7 +71,7 @@
 
 
 
-    $(".edit_block").click(function () {
+    $(".edit_block").on('click',function () {
         if (!$(this).hasClass('editing')) {
             $('.edit_block_buttons').addClass('hide')
 

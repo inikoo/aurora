@@ -134,13 +134,23 @@
 
 
 
-                    <div class="fotorama"
+
+                    <div class="images"
                          data-auto="false"
                          data-nav="thumbs"
                          data-width="450"
+
+
+
                     >
                         {foreach from=$public_product->get_images_slidesshow() item=image name=foo}
-                            <a href="/{$image.normal_url}"><img src="/{$image.small_url}"></a>
+                            {if $smarty.foreach.foo.first}
+                                <a href="/{$image.normal_url}"><img src="/{$image.small_url}"></a>
+                            {else}
+                                <a href="/{$image.normal_url}"><img style="width: 40px" src="/{$image.small_url}"></a>
+                            {/if}
+
+
                         {/foreach}
 
 
@@ -300,9 +310,6 @@
     }
 
 
-    $(function () {
-        $('.fotorama').fotorama();
-    });
 
 
 </script>

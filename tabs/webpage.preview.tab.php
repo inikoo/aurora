@@ -29,7 +29,7 @@ if ($webpage->get('Webpage Template Filename') == 'products_showcase' or $webpag
 
 } elseif ($webpage->get('Webpage Template Filename') == 'product'  and  $website->get('Website Theme')!='theme_1' ) {
 
-
+    // delete this after migration of webpage
 
     $state['_object'] = get_object('Product',$webpage->get('Webpage Scope Key'));
 

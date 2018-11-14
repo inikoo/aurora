@@ -42,11 +42,8 @@ if ($result = $db->query($sql)) {
 
     foreach ($result as $data) {
 
-        $length = 5;
-
-        $randomString = substr(
-            str_shuffle("abcdefghijklmnopqrstuvwxyz"), 0, $length
-        );
+        //$length = 5;
+        //$randomString = substr(str_shuffle("abcdefghijklmnopqrstuvwxyz"), 0, $length);
 
 
         $country_translator .= sprintf(
@@ -68,8 +65,9 @@ $country_translator .= '};';
 print "
 $country_translator
 
-var countryData = $.fn.intlTelInput.getCountryData();
+var countryData = window.intlTelInputGlobals.getCountryData();
 $.each(countryData, function(i, country) {
+
 country.name = country_translator[country.iso2].name
 country.currency=country_translator[country.iso2].currency
 });

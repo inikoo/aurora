@@ -9,7 +9,7 @@ $('#overview_container,#items_container').on('dblclick', '.category_image', func
 
     //console.log(index_key)
 
-    $('#item_image_uploader').attr('section_key',section_key).attr('item_key',item_key).attr('index_key',index_key).click()
+    $('#item_image_uploader').attr('section_key',section_key).attr('item_key',item_key).attr('index_key',index_key).trigger( "click" )
 
 
 
@@ -18,7 +18,7 @@ $('#overview_container,#items_container').on('dblclick', '.category_image', func
 
 
 
-$('.item_header_text').dblclick(function() {
+$('.item_header_text').on('dblclick',function() {
 
 
 

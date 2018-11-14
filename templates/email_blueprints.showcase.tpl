@@ -145,7 +145,7 @@
 
 <script>
 
-    $('.blueprint_option').click(function() {
+    $('.blueprint_option').on( 'click',function() {
 
         label=$(this).find('div')
 
@@ -205,7 +205,7 @@
 
     });
 
-    $('#create_text_only_email_template').click(function() {
+    $('#create_text_only_email_template').on( 'click',function() {
 
 
 

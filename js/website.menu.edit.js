@@ -4,9 +4,6 @@ var menu_open = false;
 var mouse_over_menu = false;
 var mouse_over_menu_link = false;
 
-//$("#bottom_header a").hoverIntent(menu_in, menu_out);
-//$("#bottom_header a").hover(menu_in_fast, menu_out_fast);
-//$("#_menu_blocks ._menu_block").hover(menu_block_in, menu_block_out);
 
 
 

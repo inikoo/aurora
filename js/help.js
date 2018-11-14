@@ -11,13 +11,14 @@ $(document).ready(function () {
         show_answer($(this))
     });
 
-    $( "#whiteboard .content" ).focusin(function() {
+
+    $( "#whiteboard .content" ).on( "focusin", function() {
 
         if($(this).data('empty')){
             $(this).html('');
         }
 
-    });
+    } )
 
 
 

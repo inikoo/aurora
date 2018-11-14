@@ -62,7 +62,7 @@
 
 <script>
 
-    $('.blueprint_option').click(function() {
+    $('.blueprint_option').on( 'click',function() {
 
         label=$(this).find('div')
 

@@ -3,7 +3,7 @@
  Copyright (c) 2015, Inikoo
  Version 3.0*/
 
-$("#new_orders_in_website_mailshot").click(function () {
+$("#new_orders_in_website_mailshot").on( 'click',function () {
     new_orders_in_website_mailshot(this)
 })
 

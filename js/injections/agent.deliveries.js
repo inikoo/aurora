@@ -4,7 +4,7 @@
  Version 3.0*/
 
 
-$("#new_agent_delivery").click(function () {
+$("#new_agent_delivery").on( 'click',function () {
     open_new_delivery()
 })
 

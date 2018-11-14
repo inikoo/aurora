@@ -129,8 +129,11 @@
     </main>
 </div>
 <input id="_request" type="hidden" value="{$_request}">
-
+{*
+todo get new version of material
+*}
 <script src="/js/libs/material.min.js"></script>
+
 <script src="/js/libs/jquery-2.2.1.js"></script>
 <script src="/js/libs/jquery.mobile-1.4.5.js"></script>
 

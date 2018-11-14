@@ -241,8 +241,13 @@
 
 
             $("#bottom_header a.dropdown").hoverIntent(menu_in, menu_out);
-            $("#bottom_header a.dropdown").hover(menu_in_fast, menu_out_fast);
-            $("._menu_block").hover(menu_block_in, menu_block_out);
+
+
+            $( "#bottom_header a.dropdown" ).on( 'mouseenter', menu_in_fast ).on( 'mouseleave', menu_out_fast );
+            $( "._menu_block" ).on( 'mouseenter', menu_block_in ).on( 'mouseleave', menu_block_out );
+
+
+
 
             $('#_menu_blocks').width($('#top_header').width())
 
@@ -520,7 +525,7 @@
 
                             function jQueryTabs3() {
                                 $(".tabs3").each(function () {
-                                    $(".tabs-panel3").not(":first").hide(), $("li", this).removeClass("active"), $("li:first-child", this).addClass("active"), $(".tabs-panel:first-child").show(), $("li", this).click(function (t){
+                                    $(".tabs-panel3").not(":first").hide(), $("li", this).removeClass("active"), $("li:first-child", this).addClass("active"), $(".tabs-panel:first-child").show(), $("li", this).on( 'click',function (t){
                                         var i=$("a",this).attr("href");
                                         $(this).siblings().removeClass("active"),$(this).addClass("active"),$(i).siblings().hide(),$(i).fadeIn(400),t.preventDefault()}), $(window).width() < 100 && $(".tabs-panel3").show()
                                 })
@@ -1114,7 +1119,7 @@
 
                 })
 
-                $('.images figure a').click(function (event) {
+                $('.images figure a').on( 'click',function (event) {
                     event.preventDefault();
                     var options = {
                         index: $(this).index()

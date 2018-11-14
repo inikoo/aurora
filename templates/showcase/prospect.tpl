@@ -165,7 +165,7 @@
 
     email_width_hack();
 
-    $("#take_order").click(function () {
+    $("#take_order").on( 'click',function () {
         open_new_order()
     })
 

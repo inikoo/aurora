@@ -654,7 +654,7 @@ function hide_export_dialog(export_dialog) {
 
 */
 
-    $(export_dialog).find('.export_download').addClass('hide').attr('title', '').click(function () {
+    $(export_dialog).find('.export_download').addClass('hide').attr('title', '').on( 'click',function () {
     })
     $(export_dialog).find('.export_progress_bar_bg').addClass('hide').html('')
     $(export_dialog).find('.export_progress_bar').css('width', '0px').removeClass('hide').attr('title', '').html('')
@@ -930,7 +930,7 @@ function get_export_process_bar(fork_key, tag, type,suffix) {
 /*
             if ($('#stop_export_table_' + type+suffix).attr('stop') == 1) {
 
-                $('.export_download').addClass('hide').attr('title', '').click(function () {
+                $('.export_download').addClass('hide').attr('title', '').on( 'click',function () {
                 })
                 $('.export_progress_bar_bg').addClass('hide').html('')
                 $('.export_progress_bar').css('width', '0px').removeClass('hide').attr('title', '').html('')
@@ -964,7 +964,7 @@ function get_export_process_bar(fork_key, tag, type,suffix) {
             else if (data.fork_state == 'Finished') {
 
                 $('#download_' + type+suffix).attr('href', '/download.php?file=' + data.result)
-                $('#export_download_' + type+suffix).removeClass('hide').attr('title', data.result_info).click(function () {
+                $('#export_download_' + type+suffix).removeClass('hide').attr('title', data.result_info).on( 'click',function () {
 
                     download_exported_file(type,suffix)
 
@@ -994,22 +994,22 @@ function download_exported_file(element) {
 
     var export_container=$(element).closest('.export_dialog_container')
 
-    export_container.find('.download_export')[0].click();
+    export_container.find('.download_export')[0].trigger("click");
 
-   // $("#download_" + type+suffix)[0].click();
+   // $("#download_" + type+suffix)[0].trigger("click");
     //$('#table_edit_items_file_upload2_button').removeClass('disabled')
 
 
     /*
 
     if(suffix=='_export'){
-        $("#download_" + type+suffix)[0].click();
+        $("#download_" + type+suffix)[0].trigger("click");
         $('#table_edit_items_file_upload2_button').removeClass('disabled')
 
 
 
     }else{
-        $("#download_" + type)[0].click();
+        $("#download_" + type)[0].trigger("click");
         $('#upload_icon').removeClass('very_discreet').addClass('valid_save')
         setTimeout(
             function () {

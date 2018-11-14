@@ -2,15 +2,15 @@
 /*
  About:
  Author: Raul Perusquia <raul@inikoo.com>
- Created: 9 October 2015 at 12:56:37 CEST, Malaga Spain
- Copyright (c) 2015, Inikoo
+ Created: 14 November 2018 at 14:25:05 GMT+8, Kuala Lumpur, Malaysia
+ Copyright (c) 2018, Inikoo
 
  Version 3
 
 */
 
 if (!$user->can_view('locations') or !in_array(
-        $state['key'], $user->warehouses
+        $state['warehouse']->id, $user->warehouses
     )
 ) {
 

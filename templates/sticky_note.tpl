@@ -9,7 +9,7 @@
 
 
 
-    $('#sticky_note_button').click(function() {
+    $('#sticky_note_button').on( 'click',function() {
         $(this).addClass('hide')
         $('#sticky_note_container').removeClass('hide')
     });

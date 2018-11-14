@@ -2263,7 +2263,25 @@ $tab_defaults = array(
         'f_field'     => 'reference',
 
     ),
-
+    'warehouse_area.locations'         => array(
+        'view'          => 'overview',
+        'sort_key'      => 'code',
+        'sort_order'    => 1,
+        'rpp'           => 100,
+        'rpp_options'   => $default_rrp_options,
+        'f_field'       => 'code',
+        'elements_type' => each($elements_options['locations']) ['key'],
+        'elements'      => $elements_options['locations'],
+        'export_fields' => $export_fields['locations']
+    ),
+    'warehouse_area.history'           => array(
+        'view'        => 'overview',
+        'sort_key'    => 'date',
+        'sort_order'  => 1,
+        'rpp'         => 100,
+        'rpp_options' => $default_rrp_options,
+        'f_field'     => 'note'
+    ),
     'parts_with_unknown_location.wget' => array(
         'view'        => 'overview',
         'sort_key'    => 'reference',

@@ -372,7 +372,7 @@
 
 
 
-    $('.favourite').click(function () {
+    $('.favourite').on('click',function () {
         var icon = $(this).find('i');
 
 
@@ -390,7 +390,7 @@
     });
 
 
-    $('.reminder').click(function () {
+    $('.reminder').on('click',function () {
         var icon = $(this).find('i');
 
 
@@ -409,21 +409,25 @@
     });
 
 
-    $('.order_button').hover(function () {
+
+
+
+    $('.order_button').on( "mouseenter", function () {
         var input = $(this).closest('.ordering').find('.order_input');
         if (input.val() == '') {
             $(this).closest('.ordering').find('.order_input').val(1)
         }
 
 
-    }, function () {
+    } ).on( "mouseleave", function () {
         var input = $(this).closest('.ordering').find('.order_input');
         if (input.attr('ovalue') == '') {
             $(this).closest('.ordering').find('.order_input').val('')
         }
     });
 
-    $('.order_button').click(function () {
+
+    $('.order_button').on('click',function () {
         var input = $(this).closest('.ordering').find('.order_input');
 
         var order_qty = input.val()

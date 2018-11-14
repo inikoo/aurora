@@ -140,7 +140,7 @@ $('#page_content').on( "dblclick", ".product_description_block", function() {
 
 
 
-    $('#text_edit_toolbar .fa-window-close').click(function() {
+    $('#text_edit_toolbar .fa-window-close').on('click',function() {
 
         $('#text_edit_toolbar').addClass('hide')
 
