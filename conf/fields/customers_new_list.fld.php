@@ -80,17 +80,28 @@ $object_fields[] = array(
 
             'id'              => 'Register_Date',
             'edit'            => 'date_interval',
-            'class'=>'valid',
-            'time'            => array('From'=>'00:00:00','To'=>'23:59:59'),
-            'value'           => array('From'=>'','To'=>''),
-            'formatted_value' => array('From'=>'','To'=>''),
-            'placeholder' => array('From'=>_('from'),'To'=>_('until')),
+            'class'           => 'valid',
+            'time'            => array(
+                'From' => '00:00:00',
+                'To'   => '23:59:59'
+            ),
+            'value'           => array(
+                'From' => '',
+                'To'   => ''
+            ),
+            'formatted_value' => array(
+                'From' => '',
+                'To'   => ''
+            ),
+            'placeholder'     => array(
+                'From' => _('from'),
+                'To'   => _('until')
+            ),
             'label'           => _('Registered interval'),
             'invalid_msg'     => get_invalid_message('date'),
             'required'        => false,
             'type'            => ''
         ),
-
 
 
     ),
@@ -176,16 +187,27 @@ $object_fields[] = array(
         ),
 
 
-
         array(
 
             'id'              => 'Ordered_Date',
             'edit'            => 'date_interval',
-            'class'=>'valid',
-            'time'            => array('From'=>'00:00:00','To'=>'23:59:59'),
-            'value'           => array('From'=>'','To'=>''),
-            'formatted_value' => array('From'=>'','To'=>''),
-            'placeholder' => array('From'=>_('from'),'To'=>_('until')),
+            'class'           => 'valid',
+            'time'            => array(
+                'From' => '00:00:00',
+                'To'   => '23:59:59'
+            ),
+            'value'           => array(
+                'From' => '',
+                'To'   => ''
+            ),
+            'formatted_value' => array(
+                'From' => '',
+                'To'   => ''
+            ),
+            'placeholder'     => array(
+                'From' => _('from'),
+                'To'   => _('until')
+            ),
             'label'           => _('Ordered interval'),
             'invalid_msg'     => get_invalid_message('date'),
             'required'        => false,
@@ -195,7 +217,7 @@ $object_fields[] = array(
         array(
             'id'              => 'Order_State',
             'edit'            => 'no_icon',
-            'class'=>'super_discreet',
+            'class'           => 'super_discreet',
             'value'           => '',
             'formatted_value' => '<span id="Order_State_Basket_field" class="button value valid" onclick="toggle_list_elements(this)" field_type="elements" field="Order_State_Basket"  style="margin-right:40px"><i class=" far fa-fw fa-check-square" aria-hidden="true"></i> <span class="unselectable">'
                 ._('Basket').'</span></span>'
@@ -211,7 +233,6 @@ $object_fields[] = array(
         ),
 
 
-
     ),
 
 
@@ -220,16 +241,19 @@ $object_fields[] = array(
 $object_fields[] = array(
     'label'      => '',
     'show_title' => false,
+    'class'      => 'operations',
     'fields'     => array(
 
 
         array(
             'edit'            => 'no_icon',
+            'class'           => 'operation',
             'id'              => '',
             'formatted_value' => '<span  class="calculate_number_list_items button super_discreet"  onclick="estimate_number_list_items()" >'._('Calculate number of customer the list will have').'</span><span class="calculated_number_list_items hide"></span>',
             'label'           => '',
             'required'        => false,
-            'type'            => ''
+            'type'            => 'operation',
+            'value'     => '',
         ),
 
 

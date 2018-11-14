@@ -990,8 +990,9 @@ function new_object($account, $db, $user, $editor, $data, $smarty) {
     $parent         = get_object($data['parent'], $data['parent_key']);
     $parent->editor = $editor;
 
-    $metadata = array();
-    $redirect = '';
+    $metadata          = array();
+    $redirect          = '';
+    $redirect_metadata = '';
 
     switch ($data['object']) {
 
@@ -1933,9 +1934,10 @@ function new_object($account, $db, $user, $editor, $data, $smarty) {
 
             if ($parent->new_list) {
 
-                $pcard        = '';
-                $redirect     = 'customers/'.$parent->id.'/lists/'.$object->id;
-                $updated_data = array();
+                $pcard             = '';
+                $redirect          = 'customers/list/'.$object->id;
+                $redirect_metadata = array('tab' => 'customers.list');
+                $updated_data      = array();
             } else {
 
 
@@ -2034,7 +2036,6 @@ function new_object($account, $db, $user, $editor, $data, $smarty) {
             $object = $parent->create_warehouse_area($data['fields_data']);
 
 
-
             if ($parent->new_warehouse_area) {
 
                 $smarty->assign('object', $object);
@@ -2090,13 +2091,14 @@ function new_object($account, $db, $user, $editor, $data, $smarty) {
 
 
         $response = array(
-            'state'        => 200,
-            'msg'          => '<i class="fa fa-check"></i> '._('Success'),
-            'pcard'        => $pcard,
-            'new_id'       => $object->id,
-            'updated_data' => $updated_data,
-            'metadata'     => $metadata,
-            'redirect'     => $redirect
+            'state'             => 200,
+            'msg'               => '<i class="fa fa-check"></i> '._('Success'),
+            'pcard'             => $pcard,
+            'new_id'            => $object->id,
+            'updated_data'      => $updated_data,
+            'metadata'          => $metadata,
+            'redirect'          => $redirect,
+            'redirect_metadata' => $redirect_metadata
         );
 
 
