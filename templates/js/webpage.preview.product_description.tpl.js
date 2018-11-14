@@ -120,7 +120,7 @@ $('#page_content').on( "dblclick", ".product_description_block", function() {
     }).on('froalaEditor.save.after', function (e, editor, response) {
 
 
-        var data=jQuery.parseJSON(response)
+        var data=JSON.parse(response)
 
         if(data.state==200){
 

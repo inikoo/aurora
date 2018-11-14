@@ -168,7 +168,7 @@ function change_results_per_page(results_per_page) {
 
 function change_period(period) {
 
-    var parameters = jQuery.parseJSON(rows.parameters);
+    var parameters = JSON.parse(rows.parameters);
 
     if (period == 'date') {
 
@@ -381,7 +381,7 @@ function change_columns_frequency(frequency, frequency_label) {
     $('#columns_frequency span.label').html(frequency_label)
 
 
-    var parameters = jQuery.parseJSON(rows.parameters);
+    var parameters = JSON.parse(rows.parameters);
     parameters.frequency = frequency;
 
     rows.parameters = JSON.stringify(parameters)
@@ -404,7 +404,7 @@ function change_columns_period(period, period_label) {
     $('#columns_period span.label').html(period_label)
 
 
-    var parameters = jQuery.parseJSON(rows.parameters);
+    var parameters = JSON.parse(rows.parameters);
     parameters.f_period = period;
 
     rows.parameters = JSON.stringify(parameters)
@@ -447,7 +447,7 @@ function change_elements_type(elements_type) {
     $('#elements_chooser').addClass('hide')
 
 
-    var parameters = jQuery.parseJSON(rows.parameters);
+    var parameters = JSON.parse(rows.parameters);
     parameters.elements_type = elements_type;
 
     rows.parameters = JSON.stringify(parameters)
@@ -523,7 +523,7 @@ function change_table_element(event, item) {
     }
 
 
-    var parameters = jQuery.parseJSON(rows.parameters);
+    var parameters = JSON.parse(rows.parameters);
     $("#elements_group_" + parameters.elements_type + " .element").each(function (index) {
         //console.log($(this).attr('item_key') + ": " + $(this).hasClass('selected'));
         parameters['elements'][parameters.elements_type]['items'][$(this).attr('item_key')]['selected'] = $(this).hasClass('selected')

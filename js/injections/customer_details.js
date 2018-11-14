@@ -19,7 +19,7 @@ function post_set_as_main(data) {
     } else if (data.action == 'set_main_delivery_address') {
 
 
-        var address_fields = jQuery.parseJSON(data.value)
+        var address_fields = JSON.parse(data.value)
 
         $('#Customer_Delivery_Address_recipient  input ').val(decodeEntities(address_fields['Address Recipient']))
         $('#Customer_Delivery_Address_organization  input ').val(decodeEntities(address_fields['Address Organization']))

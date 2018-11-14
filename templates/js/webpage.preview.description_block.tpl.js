@@ -530,7 +530,7 @@ var position=$(this).position();
         }).on('froalaEditor.save.after', function (e, editor, response) {
 
 
-            var data=jQuery.parseJSON(response)
+            var data=JSON.parse(response)
 
             if(data.state==200){
 

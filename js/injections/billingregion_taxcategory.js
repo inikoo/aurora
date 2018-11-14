@@ -90,7 +90,7 @@ function apply_changes() {
 
     $('#report_config').addClass('hide')
 
-    var parameters = jQuery.parseJSON(rows.parameters);
+    var parameters = JSON.parse(rows.parameters);
     parameters['excluded_stores'] = excluded_stores
     rows.parameters = JSON.stringify(parameters)
 

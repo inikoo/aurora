@@ -1271,7 +1271,7 @@ function create_new_field(_data) {
         clone.find('input.country_select ').prop('id', clone_field + '_country_select')
 
 
-        var address_fields = jQuery.parseJSON(_data.value)
+        var address_fields = JSON.parse(_data.value)
 
         $('#' + clone_field + '_recipient  input ').val(decodeEntities(address_fields['Address Recipient']))
         $('#' + clone_field + '_organization  input ').val(decodeEntities(address_fields['Address Organization']))
