@@ -56,18 +56,6 @@ function get_website_section_items($db, $section_data) {
             if (isset($panels[$stack_index])) {
 
 
-                if (isset($page_breaks[$category_stack_index])) {
-                    $categories[] = array(
-                        'type'                 => 'panel',
-                        'category_stack_index' => $category_stack_index,
-                        'data'                 => $page_breaks[$category_stack_index]
-                    );
-
-
-                    unset($page_breaks[$category_stack_index]);
-                    //  $category_stack_index++;
-                    //  $stack_index++;
-                }
 
                 $categories[] = array(
                     'type'                 => 'panel',
@@ -99,24 +87,6 @@ function get_website_section_items($db, $section_data) {
                 $item_content_data = json_decode($row['Category Webpage Index Content Data'], true);
 
             }
-
-
-
-            if (isset($page_breaks[$row['Category Webpage Index Stack']])) {
-                $categories[] = array(
-                    'type'                 => 'panel',
-                    'category_stack_index' => $row['Category Webpage Index Stack'],
-                    'data'                 => $page_breaks[$row['Category Webpage Index Stack']]
-                );
-                unset($page_breaks[$row['Category Webpage Index Stack']]);
-                // $category_stack_index++;
-                //  $stack_index++;
-            }
-
-
-            //=======
-
-
 
 
 
@@ -279,7 +249,7 @@ function get_website_section_items($db, $section_data) {
         $max_row_free_slots[$current_row] = $max_free_slots;
 
 
-        if ($stack_index % 4 == 1 and $item['type'] != 'category' and $categories[$stack_index - 1]['type'] == 'category') {
+        if ($stack_index % 4 == 1 and $item['type'] != 'category' and   isset($categories[$stack_index - 1]['type'])  and   $categories[$stack_index - 1]['type'] == 'category') {
             $max_cell_free_slots[$stack_index - 1] = 1;
 
         }
@@ -474,7 +444,7 @@ function get_products_html($content_data, $webpage, $smarty, $db) {
         $max_row_free_slots[$current_row] = $max_free_slots;
 
 
-        if ($stack_index % 4 == 1 and $item['type'] != 'product' and $products[$stack_index - 1]['type'] == 'product') {
+        if ($stack_index % 4 == 1 and $item['type'] != 'product' and  isset( $products[$stack_index - 1]['type'])  and  $products[$stack_index - 1]['type'] == 'product') {
             $max_cell_free_slots[$stack_index - 1] = 1;
 
         }
