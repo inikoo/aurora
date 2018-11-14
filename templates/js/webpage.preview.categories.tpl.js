@@ -59,7 +59,7 @@ $('.item_header_text').on('dblclick',function() {
 
 
 
-        var data=jQuery.parseJSON(response)
+        var data=JSON.parse(response)
 
         if(data.state==200){
 

@@ -120,7 +120,7 @@
             if (data.state == 200) {
                 get_intrastat_totals();
 
-                var parameters = jQuery.parseJSON(rows.parameters);
+                var parameters = JSON.parse(rows.parameters);
 
                 //onsole.log(key)
                 //console.log(value)

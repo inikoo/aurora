@@ -516,7 +516,7 @@
 
 
 
-                                        var address_fields = jQuery.parseJSON($('#{$field.id}_value').val())
+                                        var address_fields = JSON.parse($('#{$field.id}_value').val())
 
 
 
