@@ -55,7 +55,7 @@
 
                     <div class="  "style="align-items: stretch;flex: 1;border-left:1px solid #eeee;text-align:center">
 
-                        <a class="pdf_link" target='_blank' href="/pdf/order_pick_aid.pdf.php?id={$delivery_note->id}"> <img src="/art/pdf.gif"></a>
+                        <a class="pdf_link" target='_blank' href="/pdf/order_pick_aid.pdf.php?id={$dn->id}"> <img src="/art/pdf.gif"></a>
 
                     </div>
 
@@ -109,7 +109,7 @@
                         </div>
                         <div class="  "style="align-items: stretch;flex: 1;border-left:1px solid #eeee;text-align:center">
 
-                            <a class="pdf_link" target='_blank' href="/pdf/order_pick_aid.pdf.php?id={$delivery_note->id}"> <img src="/art/pdf.gif"></a>
+                            <a class="pdf_link" target='_blank' href="/pdf/order_pick_aid.pdf.php?id={$dn->id}"> <img src="/art/pdf.gif"></a>
 
                         </div>
 
