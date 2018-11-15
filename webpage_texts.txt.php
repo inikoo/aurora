@@ -13,13 +13,12 @@
 require_once 'common.php';
 require_once 'utils/object_functions.php';
 
-
 function br2nl($input) {
     return preg_replace('/<br\s?\/?>/ius', "\n", str_replace("\n", "", str_replace("\r", "", htmlspecialchars_decode($input))));
 }
 
 
-function get_product_text($product){
+function get_product_text($product) {
 
 
     $product->get_webpage();
@@ -30,48 +29,63 @@ function get_product_text($product){
     $text = "**************************\n";
 
     $text .= $product->get('Code')." ("._('product').")\n";
-    $text .=$product->get('Name')."\n";
+    $text .= $product->get('Name')."\n";
 
 
     $text .= "\n";
 
 
-
-    $text .= strip_tags(br2nl($content_data['description_block']['content']))."\n";
+    if (isset($content_data['blocks'])) {
+        foreach ($content_data['blocks'] as $key => $data) {
+            if ($data['type'] == 'product') {
+                $text .= strip_tags(br2nl($data['text']))."\n";
+            }
+        }
+    }
 
 
     $text .= "\n";
 
 
-    $origin              = $product->get('Origin Country');
-    $cpnp                = $product->get('CPNP Number');
-    $materials           = $product->get('Materials');
-    $weight              = $product->get('Unit Weight');
-    $dimensions          = $product->get('Unit Dimensions');
-    $barcode             = $product->get('Barcode Number');
+    $origin     = $product->get('Origin Country');
+    $cpnp       = $product->get('CPNP Number');
+    $materials  = $product->get('Materials');
+    $weight     = $product->get('Unit Weight');
+    $dimensions = $product->get('Unit Dimensions');
+    $barcode    = $product->get('Barcode Number');
 
-    if($origin){$text .= _('Origin').': '.$origin."\n";}
-    if($cpnp){$text .= _('CPNP').': '.$cpnp."\n";}
-    if($materials){$text .= _('Material').': '.strip_tags($materials)."\n";}
-    if($weight){$text .= _('Weight').': '.$weight."\n";}
+    if ($origin) {
+        $text .= _('Origin').': '.$origin."\n";
+    }
+    if ($cpnp) {
+        $text .= _('CPNP').': '.$cpnp."\n";
+    }
+    if ($materials) {
+        $text .= _('Material').': '.strip_tags($materials)."\n";
+    }
+    if ($weight) {
+        $text .= _('Weight').': '.$weight."\n";
+    }
 
-    if($dimensions){$text .= _('Dimensions').': '.$dimensions."\n";}
-    if($barcode){$text .= _('Barcode').': '.$barcode."\n";}
+    if ($dimensions) {
+        $text .= _('Dimensions').': '.$dimensions."\n";
+    }
+    if ($barcode) {
+        $text .= _('Barcode').': '.$barcode."\n";
+    }
 
     $text .= "\n";
 
 
-return $text;
-
-
+    return $text;
 
 
 }
 
 
-function get_category_text($category){
+function get_category_text($category) {
 
-global $db;
+    global $db;
 
     $category->get_webpage();
     $webpage      = $category->webpage;
@@ -81,7 +95,7 @@ global $db;
     $text = "**************************\n";
 
     $text .= $category->get('Code')." ("._('family').")\n";
-    $text .=$category->get('Label')."\n";
+    $text .= $category->get('Label')."\n";
 
     $text .= "\n";
 
@@ -102,15 +116,12 @@ global $db;
         );
 
 
-
         if ($result = $db->query($sql)) {
 
             foreach ($result as $row) {
 
                 $product = get_object('Product', $row['Product ID']);
-                $text.=get_product_text($product);
-
-
+                $text    .= get_product_text($product);
 
 
             }
@@ -128,8 +139,6 @@ global $db;
     return $text;
 
 
-
-
 }
 
 
@@ -142,10 +151,10 @@ $files = array();
 $object = get_object($_REQUEST['parent'], $_REQUEST['key']);
 
 
-if($object->get_object_name()=='Category'){
-    $text=get_category_text($object);
-}elseif($object->get_object_name()=='Product'){
-    $text=get_product_text($object);
+if ($object->get_object_name() == 'Category') {
+    $text = get_category_text($object);
+} elseif ($object->get_object_name() == 'Product') {
+    $text = get_product_text($object);
 }
 
 
@@ -153,18 +162,16 @@ $download_name = 'webpage_text_'.strtolower($object->get('Code'));
 
 $text = preg_replace("/[\r\n]+/", "\n", $text);
 
-$text = wordwrap($text,120, "\n", true);
+$text = wordwrap($text, 120, "\n", true);
 $text = preg_replace("/\*\*\*\*\*\*\*\*\*\*\*\*\*\*\*\*\*\*\*\*\*\*\*\*\*\*/", "\n**************************", $text);
 
-$text=html_entity_decode($text);
+$text = html_entity_decode($text);
 
 $text = preg_replace("/\&apos\;/", "'", $text);
 
 
-
-
-header('Content-disposition: attachment; filename='.$download_name.'.txt');
-header("Content-Type: text/plain");
+//header('Content-disposition: attachment; filename='.$download_name.'.txt');
+//header("Content-Type: text/plain");
 print $text;
 
 ?>
