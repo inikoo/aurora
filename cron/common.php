@@ -34,6 +34,43 @@ $db = new PDO(
 $db->setAttribute(PDO::ATTR_DEFAULT_FETCH_MODE, PDO::FETCH_ASSOC);
 
 
+
+class fake_session {
+    function __construct() {
+        $this->data = array();
+    }
+
+    function set($key, $value) {
+        $this->data[$key] = $value;
+    }
+
+    function get($key) {
+        if (isset($this->data[$key])) {
+            return $this->data[$key];
+        } else {
+            return false;
+        }
+    }
+}
+
+$session = new fake_session;
+
+$warehouse_key = '';
+$sql           = sprintf('SELECT `Warehouse Key` FROM `Warehouse Dimension` WHERE `Warehouse State`="Active" limit 1');
+
+if ($result2 = $db->query($sql)) {
+    if ($row2 = $result2->fetch()) {
+        $warehouse_key = $row2['Warehouse Key'];
+    }
+} else {
+    print_r($error_info = $db->errorInfo());
+    print "$sql\n";
+    exit;
+}
+$session->set('current_warehouse', $warehouse_key);
+
+
+/*
 if(function_exists('mysql_connect')) {
 
     $default_DB_link = @mysql_connect($dns_host, $dns_user, $dns_pwd);
@@ -49,9 +86,12 @@ if(function_exists('mysql_connect')) {
     mysql_query("SET time_zone='+0:00'");
 
 }
-
+*/
 
 $account = new Account($db);
+
+
+
 
 
 date_default_timezone_set($account->data['Account Timezone']);
