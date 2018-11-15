@@ -14,14 +14,13 @@ require_once 'vendor/autoload.php';
 require_once 'utils/sentry.php';
 
 
-$not_found_current_page = $_REQUEST['original_url'];
+if (!empty($_REQUEST['original_url'])) {
 
-if (preg_match('/\.(jpg|png|gif|xml|txt|ico|css|js)$/i', $not_found_current_page)) {
-    header("HTTP/1.0 404 Not Found");
-    exit();
+    if (preg_match('/\.(jpg|png|gif|xml|txt|ico|css|js)$/i', $_REQUEST['original_url'])) {
+        header("HTTP/1.0 404 Not Found");
+        exit();
+    }
 }
-
-
 
 include_once('common.php');
 $webpage_key = $website->get_system_webpage_key('not_found.sys');
