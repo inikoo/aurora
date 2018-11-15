@@ -22,7 +22,6 @@ if (!preg_match('/bali/', gethostname())) {
     $sentry_client->install();
 }
 
-$session;
 
 class fake_session {
     function __construct() {

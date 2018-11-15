@@ -1366,7 +1366,7 @@ class Invoice extends DB_Table {
             $dn = get_object('DeliveryNote', $order->get('Order Delivery Note Key'));
 
 
-            $dn->update(
+            $dn->fast_update(
                 array(
                     'Delivery Note Invoiced'                    => 'No',
                     'Delivery Note Invoiced Net DC Amount'      => 0,
