@@ -11,8 +11,6 @@
 */
 
 
-
-
 function get_websites_navigation($data, $smarty, $user, $db, $account) {
 
 
@@ -111,7 +109,7 @@ function get_website_navigation($data, $smarty, $user, $db, $account) {
         $left_buttons[] = array(
             'icon'      => 'arrow-left',
             'title'     => $prev_title,
-            'reference' =>'store/'.$prev_key.'/website'
+            'reference' => 'store/'.$prev_key.'/website'
         );
         $left_buttons[] = array(
             'icon'      => 'arrow-up',
@@ -161,8 +159,6 @@ function get_webpage_navigation($data, $smarty, $user, $db, $account) {
     $object = $data['_object'];
 
 
-
-
     $block_view = 'website';
 
 
@@ -173,9 +169,8 @@ function get_webpage_navigation($data, $smarty, $user, $db, $account) {
     $right_buttons = array();
 
 
-
     if (preg_match('/online/', $data['request'])) {
-        $request_prefix='online/';
+        $request_prefix = 'online/';
         switch ($data['parent']) {
 
             case 'website':
@@ -187,14 +182,12 @@ function get_webpage_navigation($data, $smarty, $user, $db, $account) {
         }
 
 
-    }
-    elseif (preg_match('/offline/', $data['request'])) {
+    } elseif (preg_match('/offline/', $data['request'])) {
 
-    }
-    elseif (preg_match('/in_process/', $data['request'])) {
+    } elseif (preg_match('/in_process/', $data['request'])) {
 
 
-        $request_prefix='in_process/';
+        $request_prefix = 'in_process/';
         switch ($data['parent']) {
 
             case 'website':
@@ -206,11 +199,10 @@ function get_webpage_navigation($data, $smarty, $user, $db, $account) {
         }
 
 
-    }
-    elseif (preg_match('/ready/', $data['request'])) {
+    } elseif (preg_match('/ready/', $data['request'])) {
 
 
-        $request_prefix='ready/';
+        $request_prefix = 'ready/';
         switch ($data['parent']) {
 
             case 'website':
@@ -222,9 +214,8 @@ function get_webpage_navigation($data, $smarty, $user, $db, $account) {
         }
 
 
-    }
-    else {
-        $request_prefix='';
+    } else {
+        $request_prefix = '';
         switch ($data['parent']) {
 
             case 'website':
@@ -260,12 +251,10 @@ function get_webpage_navigation($data, $smarty, $user, $db, $account) {
     include_once 'prepare_table/'.$tab.'.ptble.php';
 
 
-    $order=preg_replace('/Webpage Key/','Page Key',$order);
+    $order = preg_replace('/Webpage Key/', 'Page Key', $order);
 
 
-
-    $_order_field       = $order;
-
+    $_order_field = $order;
 
 
     $order              = preg_replace('/^.*\.`/', '', $order);
@@ -281,8 +270,7 @@ function get_webpage_navigation($data, $smarty, $user, $db, $account) {
     $sql        = trim($sql_totals." $wheref");
 
 
-
-   // print $sql;
+    // print $sql;
 
     if ($result2 = $db->query($sql)) {
         if ($row2 = $result2->fetch()) {
@@ -290,8 +278,8 @@ function get_webpage_navigation($data, $smarty, $user, $db, $account) {
 
 
                 $sql = sprintf(
-                    "select `Webpage Code` object_name,`Page Key` as object_key from $table   $where $wheref
-	                and ($_order_field < %s OR ($_order_field = %s AND `Page Key` < %d))  order by $_order_field desc , `Page Key` desc limit 1",
+                    "select `Webpage Code` object_name,`Page Key` as object_key from %s %s %s
+	                and ($_order_field < %s OR ($_order_field = %s AND `Page Key` < %d))  order by $_order_field desc , `Page Key` desc limit 1", $table, $where, $wheref,
 
                     prepare_mysql($_order_field_value), prepare_mysql($_order_field_value), $object->id
                 );
@@ -310,8 +298,9 @@ function get_webpage_navigation($data, $smarty, $user, $db, $account) {
 
 
                 $sql = sprintf(
-                    "select `Webpage Code` object_name,`Page Key` as object_key from $table   $where $wheref
-	                and ($_order_field  > %s OR ($_order_field  = %s AND `Page Key` > %d))  order by $_order_field   , `Page Key`  limit 1", prepare_mysql($_order_field_value),
+                    "select `Webpage Code` object_name,`Page Key` as object_key from %s %s %s
+	                and ($_order_field  > %s OR ($_order_field  = %s AND `Page Key` > %d))  order by $_order_field   , `Page Key`  limit 1", $table, $where, $wheref,
+                    prepare_mysql($_order_field_value),
                     prepare_mysql($_order_field_value), $object->id
                 );
 
@@ -351,7 +340,7 @@ function get_webpage_navigation($data, $smarty, $user, $db, $account) {
                             $left_buttons[] = array(
                                 'icon'      => 'arrow-left',
                                 'title'     => $prev_title,
-                            'reference' => 'website/'.$data['parent_key'].'/'.$request_prefix.'webpage/'.$prev_key
+                                'reference' => 'website/'.$data['parent_key'].'/'.$request_prefix.'webpage/'.$prev_key
 
 
                             );
@@ -1616,8 +1605,6 @@ function get_website_new_navigation($data, $smarty, $user, $db, $account) {
 }
 
 function get_deleted_webpage_navigation($data, $smarty, $user, $db, $account) {
-
-
 
 
     $sections_class = '';
