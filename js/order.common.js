@@ -569,23 +569,7 @@ function save_order_operation(element) {
 
                 }
 
-                if (state.tab == 'supplier.order.items') {
-                    if (data.value == 'InProcess') {
-
-                        grid.columns.findWhere({ name: 'ordered'}).set("renderable", false)
-
-                        grid.columns.findWhere({ name: 'quantity'}).set("renderable", true)
-
-                    } else if (data.value == 'Submitted') {
-
-                        grid.columns.findWhere({ name: 'ordered'}).set("renderable", true)
-
-                        grid.columns.findWhere({ name: 'quantity'}).set("renderable", false)
-
-
-                    }
-
-                } else if (state.tab == 'supplier.order.history' || state.tab == 'supplier.delivery.history') {
+               if (state.tab == 'supplier.order.history' || state.tab == 'supplier.delivery.history') {
                     rows.fetch({
                         reset: true
                     });
