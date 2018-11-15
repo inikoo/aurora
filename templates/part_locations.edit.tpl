@@ -1,7 +1,7 @@
 
 {foreach from=$locations_data item=location_data}
 
-{if $location_data.location_key!=1}
+{if $location_data.location_key!=$warehouse_unknown_location_key}
 
     <tr id="part_location_edit_{$location_data.location_key}" class="locations"  location_key="{$location_data.location_key}" >
         <td style="width:20px" class="unlink_operations hide"><i class="fa fa-fw  fa-unlink button super_discreet"
@@ -12,7 +12,7 @@
 
 
               <span class="picking_location_note" style="margin-right: 3px">
-                <i onclick="set_part_location_note_bis(this)" key="{$part_sku}_{$location_data.location_key}" class="button  fa-fw   {if $location_data.note==''}super_discreet_on_hover far fa-sticky-note{else}fa fa-sticky-note{/if}   " aria-hidden="true" title="{t}Part's location note{/t}" ></i>
+                <i onclick="set_part_location_note_bis(this)" key="{$part_sku}_{$location_data.location_key}" class="button  fa-fw   {if $location_data.note==''}super_discreet_on_hover far fa-sticky-note{else}fas fa-sticky-note{/if}   " aria-hidden="true" title="{t}Part's location note{/t}" ></i>
                      <div  class="hide picking_location_note_value">{$location_data.note}</div>
               </span>
 
@@ -61,8 +61,8 @@
             <i class="far fa-sticky-note button super_discreet add_note invisible " aria-hidden="true"
                title="{t}Note{/t}" onclick="set_inventory_transaction_note(this)"></i>
 
-            <i class="fa fa-fw fa-forklift move_trigger button super_discreet  " aria-hidden="true"
-               title="{t}Move from{/t}" onclick="move(this)"></i></td>
+            <i class="fa fa-fw fa-forklift move_trigger button super_discreet  {if $part->get_number_real_locations($warehouse_unknown_location_key)<=1}hide{/if} "  title="{t}Move from{/t}" onclick="move(this)"></i>
+        </td>
     </tr>
 
     {/if}
@@ -81,6 +81,13 @@
                                                              onclick="disassociate_location(this)"></i></td>
     <td>
 	    <span class="location_info">
+
+
+              <span class="picking_location_note" style="margin-right: 3px">
+                <i onclick="set_part_location_note_bis(this)" key="" class="button  fa-fw  super_discreet_on_hover far fa-sticky-note   " aria-hidden="true" title="{t}Part's location note{/t}" ></i>
+                     <div  class="hide picking_location_note_value"></div>
+              </span>
+
 	        <span class="picking_location_icon"></span>
 	        <span class="location_code link"></span>
         </span>
@@ -107,7 +114,7 @@
 
 	        </span>
     </td>
-
+    <td class="aright  last_audit_days"></td>
     <td class="aright  formatted_stock">0</td>
     <td class="aright  hide stock_input"><span class="stock_change"></span>
 
@@ -116,7 +123,7 @@
         <input class="stock" style="width:60px" action="" location_key="0" ovalue="0" value="0">
 
         <input type="hidden" class="note" value="">
-        <i class="far fa-sticky-note button super_discreet add_note invisible " aria-hidden="true" title="{t}Note{/t}"
+        <i class="far fa-sticky-note button super_discreet add_note invisible xx" aria-hidden="true" title="{t}Note{/t}"
            onclick="set_inventory_transaction_note(this)"></i>
 
         <i class="fa fa-fw fa-forklift move_trigger button super_discreet invisible " aria-hidden="true"
@@ -128,8 +135,8 @@
 <tr id="add_location_tr" class="  hide">
     <td><i class="fa fa-fw  discreet fa-link button" aria-hidden="true" title="{t}Associate location{/t}"
            onclick="open_add_location()"></i></td>
-    <td colspan=2><span id="add_location_label" class="button discreet"
-                        onclick="open_add_location()">{t}Associate location{/t}</span>
+    <td colspan=3>
+        <span id="add_location_label" class="button discreet" onclick="open_add_location()">{t}Associate location{/t}</span>
         <input class="hide" id="add_location" placeholder="{t}Location code{/t}"> <i class="fa  fa-cloud   save hide"
                                                                                      aria-hidden="true"
                                                                                      title="{t}Add location{/t}"
@@ -154,7 +161,7 @@
 </tr>
 <tr>
     <td></td>
-    <td colspan="2" class="small" id="location_data_msg"></td>
+    <td colspan="3" class="small" id="location_data_msg"></td>
 </tr>
 
 

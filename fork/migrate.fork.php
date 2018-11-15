@@ -18,7 +18,7 @@ function fork_migration($job) {
     }
 
 
-    list($account, $db, $data, $editor) = $_data;
+    list($account, $db, $data, $editor, $session) = $_data;
 
     print_r($data);
 

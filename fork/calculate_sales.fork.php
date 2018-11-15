@@ -23,6 +23,7 @@ function fork_calculate_sales($job) {
     $db        = $_data['db'];
     $fork_data = $_data['fork_data'];
     $fork_key  = $_data['fork_key'];
+    $session   = $_data['session'];
     //$inikoo_account_code = $_data['inikoo_account_code'];
 
 
@@ -30,11 +31,11 @@ function fork_calculate_sales($job) {
     $object->editor = $fork_data['editor'];
     $object->load_acc_data();
 
-   // print_r($fork_data);
+    // print_r($fork_data);
 
     switch ($fork_data['scope']) {
         case 'X_To_Day':
-            $intervals = array(
+            $intervals             = array(
                 'Total',
                 'Year To Day',
                 'Quarter To Day',
@@ -42,34 +43,34 @@ function fork_calculate_sales($job) {
                 'Week To Day',
                 'Today'
             );
-            $result_metadata_field='Acc To Day Updated';
-            $number_operations= count($intervals);
+            $result_metadata_field = 'Acc To Day Updated';
+            $number_operations     = count($intervals);
             break;
         case 'Ongoing_Intervals':
-            $intervals = array(
+            $intervals             = array(
                 '1 Year',
                 '1 Month',
                 '1 Week',
             );
-            $result_metadata_field='Acc Ongoing Intervals Updated';
-            $number_operations= count($intervals);
+            $result_metadata_field = 'Acc Ongoing Intervals Updated';
+            $number_operations     = count($intervals);
             break;
         case 'Previous_Intervals':
-            $intervals = array(
+            $intervals             = array(
                 'Last Year',
                 'Last Month',
                 'Last Week',
                 'Yesterday'
             );
-            $result_metadata_field='Acc Previous Intervals Updated';
-            $number_operations= count($intervals)+2;
+            $result_metadata_field = 'Acc Previous Intervals Updated';
+            $number_operations     = count($intervals) + 2;
             break;
     }
 
 
     $sql = sprintf(
         "UPDATE `Fork Dimension` SET `Fork State`='In Process' ,`Fork Operations Total Operations`=%d,`Fork Start Date`=NOW(),`Fork Result Metadata`=%s  WHERE `Fork Key`=%d ",
-       $number_operations,
+        $number_operations,
         prepare_mysql($object->get($result_metadata_field)),
         $fork_key
     );
@@ -78,7 +79,7 @@ function fork_calculate_sales($job) {
 
     $index = 0;
 
-    if($fork_data['scope']== 'Previous_Intervals') {
+    if ($fork_data['scope'] == 'Previous_Intervals') {
         $object->update_previous_years_data();
         $index++;
         $sql = sprintf(
@@ -125,7 +126,6 @@ function fork_calculate_sales($job) {
     );
     //print "$sql\n";
     $db->exec($sql);
-
 
 
     //$object->create_timeseries($fork_data['time_series_data'],$fork_key);

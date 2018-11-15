@@ -235,15 +235,14 @@ class Warehouse extends DB_Table {
                 array(
                     'Location Code' => 'Unknown',
                     'editor'        => $this->editor
-                    //  'Location Mainly Used For'=>'Storing'
                 )
             );
 
 
-            $this->update(
+            $this->fast_update(
                 array(
                     'Warehouse Unknown Location Key' => $unknown_location->id
-                ), 'no_history'
+                )
 
             );
 

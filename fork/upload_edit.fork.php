@@ -35,11 +35,13 @@ function fork_upload_edit($job) {
     $fork_key            = $_data['fork_key'];
     $inikoo_account_code = $_data['inikoo_account_code'];
     $db                  = $_data['db'];
+    $session             = $_data['session'];
+
 
     $account = new Account($db);
 
 
-    $user   = new User('id', $fork_data['user_key']);
+    $user = new User('id', $fork_data['user_key']);
 
     $upload = new Upload('id', $fork_data['upload_key']);
     $upload->load_file_data();
@@ -109,9 +111,6 @@ function fork_upload_edit($job) {
 
     $key_index     = -1;
     $valid_indexes = array();
-
-
-
 
 
     foreach ($fields as $key => $value) {
@@ -241,14 +240,13 @@ function fork_upload_edit($job) {
                 );
 
 
+                if ($upload->get('Upload Object') == 'supplier_part') {
 
-                if( $upload->get('Upload Object')=='supplier_part'){
+                    if (isset($fork_data['allow_duplicate_part_reference'])) {
+                        $_data['allow_duplicate_part_reference'] = $fork_data['allow_duplicate_part_reference'];
 
-                    if(  isset($fork_data['allow_duplicate_part_reference'])){
-                        $_data['allow_duplicate_part_reference']=$fork_data['allow_duplicate_part_reference'];
-
-                    }else{
-                        $_data['allow_duplicate_part_reference']='No';
+                    } else {
+                        $_data['allow_duplicate_part_reference'] = 'No';
                     }
 
                 }
@@ -259,9 +257,7 @@ function fork_upload_edit($job) {
                 );
 
 
-
-            }
-            else {
+            } else {
                 if ($record_data[$key_index] == '') {
 
                     $sql = sprintf(
@@ -439,7 +435,6 @@ function new_object($account, $db, $user, $editor, $data, $upload, $fork_key) {
     $error = false;
 
 
-
     $parent = get_object($data['parent'], $data['parent_key']);
 
 
@@ -509,11 +504,8 @@ function new_object($account, $db, $user, $editor, $data, $upload, $fork_key) {
             include_once 'class.SupplierPart.php';
 
 
-
-
-
             $object = $parent->create_supplier_part_record(
-                $data['fields_data'],$data['allow_duplicate_part_reference']
+                $data['fields_data'], $data['allow_duplicate_part_reference']
             );
             if ($parent->error) {
                 $error          = $parent->error;

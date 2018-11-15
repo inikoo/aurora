@@ -288,13 +288,15 @@
                 <tr class="Part_Cost_in_Warehouse_info_set_up {if $part->get('Part Cost in Warehouse')==''}hide{/if}">
                     <td>
 
-                        {t}Stock value{/t}: <span id="part_stock_value" style="font-size:85%" class="Part_Cost_in_Warehouse">{$part->get('Cost in Warehouse')}</span>
+                        <span class="part_stock_value_info">{t}Stock value{/t}: <span  style="font-size:85%" class="Part_Cost_in_Warehouse">{$part->get('Cost in Warehouse')}</span></span>
 
-                        <i id="close_edit_stock" class="fa fa-sign-out fa-flip-horizontal button hide" aria-hidden="true" title="{t}Exit edit stock{/t}" onClick="close_edit_stock()"></i></td>
+                        <span id="close_edit_stock" class="button hide" onClick="close_edit_stock()">
+                            <i  class="fa fa-sign-out fa-flip-horizontal  " title="{t}Exit edit stock{/t}" ></i> <span class="discreet italic">{t}Exit edit stock{/t}</span>
+                        </span>
+                    </td>
                     <td class="aright">
                         <i id="open_edit_stock" class="fa fa-pencil button very_discreet " aria-hidden="true" title="{t}Edit stock{/t}" onClick="open_edit_stock()"></i>
-                        <span id="edit_stock_saving_buttons" class="aright discreet hide"><span class="save padding_right_5">{t}Save{/t}</span><i class="fa  fa-cloud   save " aria-hidden="true" title="{t}Save{/t}"
-                                                                                                                                 onClick="save_stock(this)"></i></span>
+                        <span id="edit_stock_saving_buttons" class="aright discreet hide"><span class="save padding_right_5">{t}Save{/t}</span><i class="fa  fa-cloud   save " aria-hidden="true" title="{t}Save{/t}" onClick="save_stock(this)"></i></span>
                     </td>
                 </tr>
 
@@ -318,7 +320,7 @@
             </div>
 
 
-            <table id="locations_table" border="0" class="overview" part_sku="{$part->id}">
+            <table id="locations_table" border="1" class="overview" part_sku="{$part->id}">
 
                 <tr id="move_stock_tr" class="discreet button hide " style="border-bottom:1px solid #ccc" max="">
                     <td colspan=3><span id="move_from"></span> <i class="fa fa-fw fa-forklift padding_left_5 padding_right_5 " aria-hidden="true"></i> <span id="move_to"></span></td>
@@ -333,7 +335,7 @@
 
 
                 <tbody id="part_locations" class="Part_Locations">
-                {include file='part_locations.edit.tpl' locations_data=$part->get_locations('data') part_sku=$part->id}
+                {include file='part_locations.edit.tpl' locations_data=$part->get_locations('data') part_sku=$part->id  warehouse_unknown_location_key=$warehouse_unknown_location_key }
                 </tbody>
 
 

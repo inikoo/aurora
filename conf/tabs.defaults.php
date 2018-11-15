@@ -2274,6 +2274,16 @@ $tab_defaults = array(
         'elements'      => $elements_options['locations'],
         'export_fields' => $export_fields['locations']
     ),
+    'warehouse_area.parts'                           => array(
+        'view'          => 'overview',
+        'sort_key'      => 'reference',
+        'sort_order'    => 1,
+        'rpp'           => 100,
+        'rpp_options'   => $default_rrp_options,
+        'f_field'       => 'reference',
+        'export_fields' => $export_fields['part_locations']
+
+    ),
     'warehouse_area.history'           => array(
         'view'        => 'overview',
         'sort_key'    => 'date',

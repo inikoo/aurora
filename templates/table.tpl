@@ -37,8 +37,9 @@
 
             <tr>
 
-            <td>{if isset($edit_table_dialog.spreadsheet_edit.label)} {$edit_table_dialog.spreadsheet_edit.label} {else}{t}Edit items{/t}{/if}
-            </td>
+
+                <td>{if isset($edit_table_dialog.labels.edit_items)}{$edit_table_dialog.labels.edit_items}{else}{t}Edit items{/t}{/if}</td>
+
             {if isset($edit_table_dialog.inline_edit)}
                 <td class="button" onclick="table_edit_view()" ><i class="fa  fa-fw fa-i-cursor" aria-hidden="true"></i> {t}inline{/t}</td>
             {else}
@@ -69,8 +70,7 @@
 
         {if isset($edit_table_dialog.new_item) or isset($edit_table_dialog.upload_items)}
         <tr>
-            <td>{t}Add items{/t}
-            </td>
+            <td>{if isset($edit_table_dialog.labels.add_items)}{$edit_table_dialog.labels.add_items}{else}{t}Add items{/t}{/if}</td>
 
             {if isset($edit_table_dialog.new_item)}
             <td class="button" onclick="change_view('{$edit_table_dialog.new_item.reference}')"><i class="fa  fa-fw fa-server fa-flip-horizontal " aria-hidden="true"></i> {t}Online form{/t}

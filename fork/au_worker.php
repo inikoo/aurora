@@ -13,8 +13,36 @@
 error_reporting(E_ALL ^ E_DEPRECATED);
 
 require_once 'vendor/autoload.php';
-$sentry_client = new Raven_Client('https://825ad207fd0f4d50989a28857783377b@sentry.io/1319906');
-$sentry_client->install();
+
+
+if (!preg_match('/bali/', gethostname())) {
+
+
+    $sentry_client = new Raven_Client('https://825ad207fd0f4d50989a28857783377b@sentry.io/1319906');
+    $sentry_client->install();
+}
+
+$session;
+
+class fake_session {
+    function __construct() {
+        $this->data = array();
+    }
+
+    function set($key, $value) {
+        $this->data[$key] = $value;
+    }
+
+    function get($key) {
+        if (isset($this->data[$key])) {
+            return $this->data[$key];
+        } else {
+            return false;
+        }
+    }
+}
+
+$session = new fake_session;
 
 
 include 'utils/aes.php';
@@ -75,7 +103,7 @@ function get_fork_metadata($job) {
     );
 
 
-    global $db, $account;
+    global $db, $account, $session;
 
     // $fork_encrypt_key = md5('huls0fjhslsshskslgjbtqcwijnbxhl2391');
     $fork_raw_data = $job->workload();
@@ -150,11 +178,27 @@ function get_fork_metadata($job) {
     }
 
 
+    $warehouse_key = '';
+    $sql           = sprintf('SELECT `Warehouse Key` FROM `Warehouse Dimension` WHERE `Warehouse State`="Active" limit 1');
+
+    if ($result = $db->query($sql)) {
+        if ($row = $result->fetch()) {
+            $warehouse_key = $row['Warehouse Key'];
+        }
+    } else {
+        print_r($error_info = $db->errorInfo());
+        print "$sql\n";
+        exit;
+    }
+    $session->set('current_warehouse', $warehouse_key);
+
+
     return array(
         $account,
         $db,
         $fork_metadata['data'],
-        $editor
+        $editor,
+        $session
     );
 
 
@@ -163,7 +207,7 @@ function get_fork_metadata($job) {
 
 function get_fork_data($job) {
 
-    global $db, $account;
+    global $db, $account, $session;
 
 
     $editor = array(
@@ -252,6 +296,23 @@ function get_fork_data($job) {
 
     if ($result = $db->query($sql)) {
         if ($row = $result->fetch()) {
+
+
+            $warehouse_key = '';
+            $sql           = sprintf('SELECT `Warehouse Key` FROM `Warehouse Dimension` WHERE `Warehouse State`="Active" limit 1');
+
+            if ($result2 = $db->query($sql)) {
+                if ($row2 = $result2->fetch()) {
+                    $warehouse_key = $row2['Warehouse Key'];
+                }
+            } else {
+                print_r($error_info = $db->errorInfo());
+                print "$sql\n";
+                exit;
+            }
+            $session->set('current_warehouse', $warehouse_key);
+
+
             $fork_data = json_decode($row['Fork Process Data'], true);
 
 
@@ -261,6 +322,7 @@ function get_fork_data($job) {
                 'fork_data'           => $fork_data,
                 'db'                  => $db,
                 'editor'              => $editor,
+                'session'             => $session
 
             );
 

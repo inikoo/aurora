@@ -70,9 +70,7 @@ if ($result2 = $db->query($sql)) {
                     foreach ($result3 as $row3) {
                         print $row['Date'].' '.$row2['Part SKU'].'_'.$row3['Location Key']."\r";
 
-                        $part_location = new PartLocation(
-                            $row2['Part SKU'].'_'.$row3['Location Key']
-                        );
+                        $part_location = new PartLocation($row2['Part SKU'].'_'.$row3['Location Key']);
                         $part_location->update_stock_history_date($row['Date']);
 
 

@@ -462,10 +462,8 @@ function get_location_navigation($data, $smarty, $user, $db, $account) {
 
                         $up_button = array(
                             'icon'      => 'arrow-up',
-                            'title'     => _(
-                                'Warehouse'
-                            ),
-                            'reference' => 'warehouse/'.$data['parent_key'],
+                            'title'     => _('Locations'),
+                            'reference' => 'warehouse/'.$data['parent_key'].'/locations',
                             'parent'    => ''
                         );
 
