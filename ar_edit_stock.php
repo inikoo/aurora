@@ -363,6 +363,28 @@ function set_delivery_costing($account, $db, $user, $editor, $data, $smarty) {
 
 function new_part_location($account, $db, $user, $editor, $data, $smarty) {
 
+
+
+    $part = get_object('Part', $data['part_sku']);
+    if (!$part->sku) {
+        $response = array(
+            'state' => 400,
+            'msg'   => 'part not found'
+        );
+        echo json_encode($response);
+        exit;
+    }
+
+    $location = get_object('Location', $data['location_key']);
+    if (!$location->id) {
+        $response = array(
+            'state' => 400,
+            'msg'   => 'location not found'
+        );
+        echo json_encode($response);
+        exit;
+    }
+
     include_once 'class.PartLocation.php';
 
 
@@ -425,12 +447,11 @@ function new_part_location($account, $db, $user, $editor, $data, $smarty) {
 
 
         );
-    } elseif ($part_location->ok) {
+    }
+    elseif ($part_location->ok) {
         $response = array(
             'state' => 400,
-            'msg'   => _(
-                'Location already associated with the part'
-            )
+            'msg'   => _('Location already associated with the part')
         );
 
     } else {
@@ -598,14 +619,17 @@ function edit_stock($account, $db, $user, $editor, $data, $smarty) {
     $response = array('state' => 200);
 
     if ($data['object'] == 'part') {
-        $part = get_object(
-            $data['object'], $data['key']
-        );
+        $part = get_object($data['object'], $data['key']);
 
         $smarty->assign('part_sku', $part->id);
         $smarty->assign('part', $part);
 
         $smarty->assign('locations_data', $part->get_locations('data'));
+
+        global $session;
+        $warehouse=get_object('Warehouse',$session->get('current_warehouse'));
+        $smarty->assign('warehouse_unknown_location_key', $warehouse->get('Warehouse Unknown Location Key'));
+
         $part_locations = $smarty->fetch('part_locations.edit.tpl');
 
 
@@ -651,6 +675,30 @@ function place_part($account, $db, $user, $editor, $data, $smarty) {
         'editor'       => $editor
     );
 
+
+
+    $part = get_object('Part', $data['part_sku']);
+    if (!$part->sku) {
+        $response = array(
+            'state' => 400,
+            'msg'   => 'part not found'
+        );
+        echo json_encode($response);
+        exit;
+    }
+
+    $location = get_object('Location', $data['location_key']);
+    if (!$location->id) {
+        $response = array(
+            'state' => 400,
+            'msg'   => 'location not found'
+        );
+        echo json_encode($response);
+        exit;
+    }
+
+
+
     $object         = get_object($data['object'], $data['key']);
     $object->editor = $editor;
     $origin         = sprintf(
@@ -683,9 +731,14 @@ LEFT JOIN `Supplier Part Historic Dimension` SPH ON (POTF.`Supplier Part Histori
             }
 
 
-            $part = get_object('part', $data['part_sku']);
+            //$part = get_object('part', $data['part_sku']);
 
-            $old_value = $part->get('Part Cost in Warehouse');
+
+
+
+
+
+            // $old_value = $part->get('Part Cost in Warehouse');
 
 
             $part_location         = new PartLocation('find', $part_location_data, 'create');
@@ -931,6 +984,15 @@ function edit_leakages($account, $db, $user, $editor, $data, $smarty) {
     $smarty->assign('part', $part);
 
     $smarty->assign('locations_data', $part->get_locations('data'));
+
+
+    global $session;
+    $warehouse=get_object('Warehouse',$session->get('current_warehouse'));
+    $smarty->assign('warehouse_unknown_location_key', $warehouse->get('Warehouse Unknown Location Key'));
+
+
+
+
     $part_locations = $smarty->fetch('part_locations.edit.tpl');
 
 
@@ -993,6 +1055,11 @@ function send_to_production($account, $db, $user, $editor, $data, $smarty) {
     $smarty->assign('part', $part);
 
     $smarty->assign('locations_data', $part->get_locations('data'));
+
+    global $session;
+    $warehouse=get_object('Warehouse',$session->get('current_warehouse'));
+    $smarty->assign('warehouse_unknown_location_key', $warehouse->get('Warehouse Unknown Location Key'));
+
     $part_locations = $smarty->fetch('part_locations.edit.tpl');
 
 

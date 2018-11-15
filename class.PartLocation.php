@@ -101,15 +101,12 @@ class PartLocation extends DB_Table {
         $this->location = new Location($data['Location Key']);
         if (!$this->location->id) {
 
-            $this->location = new Location(1);
-            if (!$this->location->id) {
-                $sql = "INSERT INTO `Location Dimension` (`Location Key` ,`Location Warehouse Key` ,`Location Warehouse Area Key` ,`Location Code` ,`Location Mainly Used For` ,`Location Max Weight` ,`Location Max Volume` ,`Location Max Slots` ,`Location Distinct Parts` ,`Location Has Stock` ,`Location Stock Value`)
-                    VALUES ('1', '1', '1','Unknown', 'Picking', NULL , NULL , NULL , '0', 'Unknown', '0.00');";
-                $this->db->exec($sql);
-                $this->location = new Location(1);
-                $this->new      = true;
+            global $session;
+            $warehouse=get_object('Warehouse',$session->get('current_warehouse'));
 
-            }
+
+            $this->location = get_object('Location', $warehouse->get('Warehouse Unknown Location Key'));
+
 
         }
         $this->location_key                  = $this->location->id;
@@ -387,6 +384,9 @@ class PartLocation extends DB_Table {
                 $details .= $note;
 
             }
+            global $session;
+            $warehouse=get_object('Warehouse',$session->get('current_warehouse'));
+
 
             $sql = sprintf(
                 "INSERT INTO `Inventory Transaction Fact` (`Inventory Transaction Record Type`,`Inventory Transaction Section`,`Part SKU`,`Location Key`,`Inventory Transaction Type`,`Inventory Transaction Quantity`,`Inventory Transaction Amount`,`User Key`,`Note`,`Date`,`Relations`) VALUES (%s,%s,%d,%d,%s,%f,%.3f,%s,%s,%s,%s)",
@@ -397,9 +397,14 @@ class PartLocation extends DB_Table {
             $this->db->exec($sql);
 
 
-            if ($qty_change != 0 and $this->location_key != 1) {
+            if ($qty_change != 0 and $this->location_key != $warehouse->get('Warehouse Unknown Location Key')) {
+
+
+
+
+
                 $part_location_data = array(
-                    'Location Key' => 1,
+                    'Location Key' => $warehouse->get('Warehouse Unknown Location Key'),
                     'Part SKU'     => $this->part_sku,
                     'editor'       => $this->editor
                 );
@@ -556,7 +561,10 @@ class PartLocation extends DB_Table {
         $this->location->update_stock_value();
 
 
-        if ($this->location->id == 1) {
+        global $session;
+        $warehouse=get_object('Warehouse',$session->get('current_warehouse'));
+
+        if ($this->location->id == $warehouse->get('Warehouse Unknown Location Key')) {
             $this->part->update_unknown_location();
         }
 
@@ -1048,44 +1056,6 @@ class PartLocation extends DB_Table {
 
     }
 
-    function identify_unknown($location_key) {
-        if ($this->location_key != 1) {
-            $this->error = true;
-
-            return;
-        }
-        $old_qty   = $this->data['Quantity On Hand'];
-        $old_value = $this->data['Stock Value'];
-        $this->disassociate();
-
-
-        $data = array(
-            'Location Key' => $location_key,
-            'Part SKU'     => $this->part_sku,
-            'editor'       => $this->editor
-        );
-
-
-        $part_location = new PartLocation('find', $data, 'create');
-
-
-        $data_inventory_audit = array(
-            'Inventory Audit Date'         => $this->editor['Date'],
-            'Inventory Audit Part SKU'     => $this->part_sku,
-            'Inventory Audit Location Key' => $location_key,
-            'Inventory Audit Note'         => '',
-            'Inventory Audit Type'         => 'Identify',
-            'Inventory Audit User Key'     => $this->editor['User Key'],
-            'Inventory Audit Quantity'     => $old_qty
-        );
-        $audit                = new InventoryAudit(
-            'find', $data_inventory_audit, 'create'
-        );
-        $part_location->set_audits();
-        $part_location->update_stock();
-        $part_location->part->update_stock();
-
-    }
 
     function set_audits() {
 

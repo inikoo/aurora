@@ -22,7 +22,8 @@ function fork_export_edit_template($job) {
         return;
     }
 
-    list($account, $db, $fork_data, $editor) = $_data;
+    list($account, $db, $fork_data, $editor, $session) = $_data;
+
     $inikoo_account_code = $account->get('Account Code');
 
     // print_r($_data);
@@ -34,6 +35,9 @@ function fork_export_edit_template($job) {
         $output_type='xls';
     }
 
+
+    print_r($fork_data);
+    //return true;
 
     $user_key = $fork_data['user_key'];
 
@@ -54,7 +58,7 @@ function fork_export_edit_template($job) {
     $description = '';
     $keywords    = '';
     $category    = '';
-    $filename    = 'output';
+
 
     $output_filename = 'edit_'.$inikoo_account_code.'_'.$download_key.'_'.$parent_code.'_'.$objects;
     $output_filename = preg_replace('/\s+/', '', $output_filename);
@@ -118,15 +122,17 @@ function fork_export_edit_template($job) {
         case 'location':
             include_once 'class.Location.php';
             $object_id_name = 'Id: Location Key';
-            $download_type  = 'edit_locations';
             switch ($parent) {
                 case 'warehouse':
 
+                    $warehouse = get_object('Warehouse', $parent_key);
+
+
                     $sql_count = sprintf(
-                        'SELECT count(*) AS num FROM `Location Dimension` WHERE  `Location Warehouse Key`=%d', $parent_key
+                        'SELECT count(*) AS num FROM `Location Dimension` WHERE  `Location Warehouse Key`=%d  and `Location Key`!=%d ', $parent_key,$warehouse->get('Warehouse Unknown Location Key')
                     );
                     $sql_data  = sprintf(
-                        'SELECT `Location Key` AS id FROM `Location Dimension` WHERE `Location Warehouse Key`=%d', $parent_key
+                        'SELECT `Location Key` AS id FROM `Location Dimension` WHERE `Location Warehouse Key`=%d and `Location Key`!=%d ', $parent_key,$warehouse->get('Warehouse Unknown Location Key')
                     );
 
                     break;

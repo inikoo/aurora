@@ -123,10 +123,10 @@ if ($auth->is_authenticated()) {
 
     $warehouse_key = '';
 
-    $sql = sprintf('SELECT `Warehouse Key`,count(*) as num FROM `Warehouse Dimension` WHERE `Warehouse State`="Active" ');
+    $sql = sprintf('SELECT `Warehouse Key` FROM `Warehouse Dimension` WHERE `Warehouse State`="Active" limit 1');
 
     if ($result = $db->query($sql)) {
-        if ($row = $result->fetch() and $row['num'] == 1) {
+        if ($row = $result->fetch() ) {
             $warehouse_key = $row['Warehouse Key'];
         }
     } else {

@@ -54,6 +54,10 @@ function get_part_showcase($data, $smarty, $user, $db) {
     }
 
 
+    global $session;
+    $warehouse=get_object('Warehouse',$session->get('current_warehouse'));
+    $smarty->assign('warehouse_unknown_location_key', $warehouse->get('Warehouse Unknown Location Key'));
+
     $smarty->assign(
         'quarter_data', array(
             array(

@@ -18,7 +18,7 @@ function fork_housekeeping($job) {
     }
 
 
-    list($account, $db, $data, $editor) = $_data;
+    list($account, $db, $data, $editor, $session) = $_data;
 
 
     print_r($data);
@@ -1403,9 +1403,7 @@ function fork_housekeeping($job) {
 
             include_once 'class.PartLocation.php';
 
-            $part_location = new PartLocation(
-                $data['part_sku'].'_'.$data['location_key']
-            );
+            $part_location = new PartLocation($data['part_sku'].'_'.$data['location_key']);
 
             $date = gmdate('Y-m-d');
 

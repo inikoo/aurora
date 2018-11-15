@@ -332,8 +332,19 @@ class Location extends DB_Table {
 
     function update_field_switcher($field, $value, $options = '', $metadata = '') {
 
+
+        $warehouse = get_object('Warehouse', $this->get('Location Warehouse Key'));
+        if ($this->id == $warehouse->get('Warehouse Unknown Location Key')) {
+            $this->deleted_msg = 'Error location unknown can not be edited';
+            $this->error       = true;
+
+            return;
+        }
+
         switch ($field) {
             case('Location Code'):
+
+
                 $code = _trim($value);
 
                 if ($code == '') {
@@ -544,258 +555,7 @@ class Location extends DB_Table {
 
     }
 
-
-    function update_area_key($data) {
-        if ($data == $this->data['Location Warehouse Area Key']) {
-            $this->msg = 'no_change';
-
-            return;
-        }
-
-        $old_area = new WarehouseArea(
-            $this->data['Location Warehouse Area Key']
-        );
-
-        $new_area = new WarehouseArea($data);
-
-        if ($new_area->id) {
-            $this->data['Location Warehouse Area Key'] = $new_area->id;
-            $this->data['Location Shelf Key']          = 0;
-
-
-            $sql = sprintf(
-                "UPDATE `Location Dimension` SET `Location Warehouse Area Key`=%d,`Location Shelf Key`=%d WHERE `Location Key`=%d", $this->data['Location Warehouse Area Key'], $this->data['Location Shelf Key'], $this->id
-            );
-            $this->db->exec($sql);
-            $this->msg       = _('Location warehouse area changed');
-            $this->updated   = true;
-            $this->new_value = array(
-                'code' => $new_area->data['Warehouse Area Code'],
-                'key'  => $new_area->id
-            );
-
-        }
-
-
-    }
-
-    /*
-    function update_used_for($value, $options = '') {
-
-        if (!preg_match(
-            '/^(Picking|Storing|Displaying|Loading|Other)$/', $value
-        )
-        ) {
-            $this->msg     = _('Wrong location type');
-            $this->updated = false;
-
-            return;
-        }
-
-        $this->update_field('Location Mainly Used For', $value, $options);
-
-
-    }
-
-*/
-    function update_shape($value) {
-        $value = _trim($value);
-        if ($value == $this->data['Location Shape Type']) {
-            $this->msg     = _('Nothing to change');
-            $this->updated = false;
-
-            return;
-        }
-        if (!preg_match('/^(Box|Cylinder|Unknown)$/', $value)) {
-            $this->msg     = _('Wrong location shape');
-            $this->updated = false;
-
-            return;
-        }
-
-        $old_value = $this->data['Location Shape Type'];
-        $sql       = sprintf(
-            "UPDATE `Location Dimension` SET `Location Shape Type`=%s WHERE `Location Key`=%d", prepare_mysql($value), $this->id
-        );
-        //print $sql; exit;
-        $this->db->exec($sql);
-        $this->data['Location Shape Type'] = $value;
-        $this->new_value                   = $value;
-        $this->new_data                    = array(
-            'old_value' => $old_value,
-            'type'      => 'shape'
-        );
-        $this->msg                         = _('Location shape changed');
-        $this->updated                     = true;
-
-
-    }
-
-
-    function update_stock_value() {
-
-        $stock_value = 0;
-
-        $sql = sprintf('SELECT sum(`Stock Value`) AS value FROM `Part Location Dimension` WHERE `Location Key`=%d ', $this->id);
-
-        if ($result = $this->db->query($sql)) {
-            if ($row = $result->fetch()) {
-                $stock_value = $row['value'];
-            }
-        } else {
-            print_r($error_info = $this->db->errorInfo());
-            print "$sql\n";
-            exit;
-        }
-
-        $this->update_field('Location Stock Value', $stock_value, 'no_history');
-
-    }
-
-    function update_parts() {
-        $this->parts = array();
-
-        $sql = sprintf(
-            "SELECT `Part SKU`,`Quantity On Hand` AS qty FROM `Part Location Dimension`  WHERE `Location Key`=%d  ", $this->id
-
-        );
-
-
-        $has_stock  = 'No';
-        $has_errors = 'No';
-
-        if ($result = $this->db->query($sql)) {
-            foreach ($result as $row) {
-
-                if (is_numeric($row['qty']) and $row['qty'] > 0) {
-                    $has_stock = 'Yes';
-
-                }
-                if (is_numeric($row['qty']) and $row['qty'] < 0) {
-                    $has_errors = 'Yes';
-
-                }
-
-            }
-        } else {
-            print_r($error_info = $this->db->errorInfo());
-            exit;
-        }
-
-
-        $this->update(
-            array(
-                'Location Distinct Parts' => count($this->get_parts()),
-                'Location has Stock'      => $has_stock,
-                'Location has Errors'     => $has_errors
-            ), 'no_history'
-
-        );
-
-
-    }
-
-    function get_parts($scope = 'keys') {
-
-
-        if ($scope == 'objects') {
-            include_once 'class.Part.php';
-        } elseif ($scope == 'part_location_object') {
-            include_once 'class.PartLocation.php';
-        }elseif ($scope == 'data') {
-            include_once 'class.PartLocation.php';
-
-        }
-        $sql = sprintf(
-            "SELECT PL.`Part SKU`,`Quantity On Hand`,`Minimum Quantity`,`Maximum Quantity`,`Moving Quantity`,`Can Pick` 
-            FROM `Part Location Dimension` PL LEFT JOIN `Part Dimension` P ON (P.`Part SKU`=PL.`Part SKU`)  WHERE `Location Key`=%d", $this->id
-        );
-
-
-        $part_locations = array();
-
-
-        if ($result = $this->db->query($sql)) {
-            foreach ($result as $row) {
-
-                if ($scope == 'keys') {
-                    $part_locations[$row['Part SKU']] = $row['Part SKU'];
-                } elseif ($scope == 'objects') {
-                    $part_locations[$row['Part SKU']] = new Part($row['Part SKU']);
-                } elseif ($scope == 'part_location_object') {
-                    $part_locations[$row['Part SKU']] = new  PartLocation($row['Part SKU'].'_'.$this->id);
-                } else {
-
-                    $part_location = new  PartLocation($row['Part SKU'].'_'.$this->id);
-
-                    $part_locations[$row['Part SKU']] =   $part_location->data;
-                    $part_locations[$row['Part SKU']] ['Part']=$part_location->part->data;
-                }
-
-            }
-        } else {
-            print_r($error_info = $this->db->errorInfo());
-            exit;
-        }
-
-
-        return $part_locations;
-    }
-
-    function delete() {
-
-        include_once 'class.Warehouse.php';
-        $warehouse = new Warehouse($this->data['Location Warehouse Key']);
-
-        $this->deleted     = false;
-        $this->deleted_msg = '';
-
-
-        if ($this->id == $warehouse->get('Warehouse Unknown Location Key')) {
-            $this->deleted_msg = 'Error location unknown can not be deleted';
-
-            return;
-        }
-
-
-        if (count($this->get_parts()) > 0) {
-            $this->deleted_msg = _("Can't delete because location has parts associated");
-
-            return;
-        }
-
-
-        $sql = sprintf(
-            'INSERT INTO `Location Deleted Dimension`  (`Location Deleted Key`,`Location Deleted Code`,`Location Deleted Date`,`Location Deleted Metadata`) VALUES (%d,%s,%s,%s) ', $this->id, prepare_mysql($this->get('Location Code')),
-            prepare_mysql(gmdate('Y-m-d H:i:s')), prepare_mysql(gzcompress(json_encode($this->data), 9))
-
-        );
-        $this->db->exec($sql);
-
-        $sql = sprintf(
-            "DELETE FROM `Location Dimension` WHERE `Location Key`=%d", $this->id
-        );
-        $this->db->exec($sql);
-        $this->deleted = true;
-
-        $history_data = array(
-            'History Abstract' => sprintf(
-                _("Location %s deleted"), $this->data['Location Code']
-            ),
-            'History Details'  => '',
-            'Action'           => 'deleted'
-        );
-
-        $this->add_subject_history(
-            $history_data, true, 'No', 'Changes', $this->get_object_name(), $this->id
-        );
-
-
-    }
-
     function get($key) {
-
-
 
 
         if (!$this->id) {
@@ -805,7 +565,7 @@ class Location extends DB_Table {
 
         switch ($key) {
             case 'Stock Value':
-                $account=get_object('Account',1);
+                $account = get_object('Account', 1);
 
                 return money($this->data['Location Stock Value'], $account->get('Account Currency'));
 
@@ -936,6 +696,279 @@ class Location extends DB_Table {
                 return '';
 
         }
+
+
+    }
+
+    /*
+    function update_used_for($value, $options = '') {
+
+        if (!preg_match(
+            '/^(Picking|Storing|Displaying|Loading|Other)$/', $value
+        )
+        ) {
+            $this->msg     = _('Wrong location type');
+            $this->updated = false;
+
+            return;
+        }
+
+        $this->update_field('Location Mainly Used For', $value, $options);
+
+
+    }
+
+*/
+
+    function update_area_key($data) {
+
+
+        $warehouse = get_object('Warehouse', $this->get('Location Warehouse Key'));
+        if ($this->id == $warehouse->get('Warehouse Unknown Location Key')) {
+            $this->deleted_msg = 'Error location unknown can not be edited';
+            $this->error       = true;
+
+            return;
+        }
+
+
+        if ($data == $this->data['Location Warehouse Area Key']) {
+            $this->msg = 'no_change';
+
+            return;
+        }
+
+        $old_area = new WarehouseArea(
+            $this->data['Location Warehouse Area Key']
+        );
+
+        $new_area = new WarehouseArea($data);
+
+        if ($new_area->id) {
+            $this->data['Location Warehouse Area Key'] = $new_area->id;
+            $this->data['Location Shelf Key']          = 0;
+
+
+            $sql = sprintf(
+                "UPDATE `Location Dimension` SET `Location Warehouse Area Key`=%d,`Location Shelf Key`=%d WHERE `Location Key`=%d", $this->data['Location Warehouse Area Key'], $this->data['Location Shelf Key'], $this->id
+            );
+            $this->db->exec($sql);
+            $this->msg       = _('Location warehouse area changed');
+            $this->updated   = true;
+            $this->new_value = array(
+                'code' => $new_area->data['Warehouse Area Code'],
+                'key'  => $new_area->id
+            );
+
+        }
+
+
+    }
+
+    function update_shape($value) {
+
+
+        $warehouse = get_object('Warehouse', $this->get('Location Warehouse Key'));
+        if ($this->id == $warehouse->get('Warehouse Unknown Location Key')) {
+            $this->deleted_msg = 'Error location unknown can not be edited';
+            $this->error       = true;
+
+            return;
+        }
+
+
+        $value = _trim($value);
+        if ($value == $this->data['Location Shape Type']) {
+            $this->msg     = _('Nothing to change');
+            $this->updated = false;
+
+            return;
+        }
+        if (!preg_match('/^(Box|Cylinder|Unknown)$/', $value)) {
+            $this->msg     = _('Wrong location shape');
+            $this->updated = false;
+
+            return;
+        }
+
+        $old_value = $this->data['Location Shape Type'];
+        $sql       = sprintf(
+            "UPDATE `Location Dimension` SET `Location Shape Type`=%s WHERE `Location Key`=%d", prepare_mysql($value), $this->id
+        );
+        //print $sql; exit;
+        $this->db->exec($sql);
+        $this->data['Location Shape Type'] = $value;
+        $this->new_value                   = $value;
+        $this->new_data                    = array(
+            'old_value' => $old_value,
+            'type'      => 'shape'
+        );
+        $this->msg                         = _('Location shape changed');
+        $this->updated                     = true;
+
+
+    }
+
+    function update_stock_value() {
+
+        $stock_value = 0;
+
+        $sql = sprintf('SELECT sum(`Stock Value`) AS value FROM `Part Location Dimension` WHERE `Location Key`=%d ', $this->id);
+
+        if ($result = $this->db->query($sql)) {
+            if ($row = $result->fetch()) {
+                $stock_value = $row['value'];
+            }
+        } else {
+            print_r($error_info = $this->db->errorInfo());
+            print "$sql\n";
+            exit;
+        }
+
+        $this->fast_update(
+            array(
+            'Location Stock Value', $stock_value));
+
+
+    }
+
+    function update_parts() {
+        $this->parts = array();
+
+        $sql = sprintf(
+            "SELECT `Part SKU`,`Quantity On Hand` AS qty FROM `Part Location Dimension`  WHERE `Location Key`=%d  ", $this->id
+
+        );
+
+
+        $has_stock  = 'No';
+        $has_errors = 'No';
+
+        if ($result = $this->db->query($sql)) {
+            foreach ($result as $row) {
+
+                if (is_numeric($row['qty']) and $row['qty'] > 0) {
+                    $has_stock = 'Yes';
+
+                }
+                if (is_numeric($row['qty']) and $row['qty'] < 0) {
+                    $has_errors = 'Yes';
+
+                }
+
+            }
+        } else {
+            print_r($error_info = $this->db->errorInfo());
+            exit;
+        }
+
+
+        $this->fast_update(
+            array(
+                'Location Distinct Parts' => count($this->get_parts()),
+                'Location has Stock'      => $has_stock,
+                'Location has Errors'     => $has_errors
+            )
+
+        );
+
+
+    }
+
+    function get_parts($scope = 'keys') {
+
+
+        if ($scope == 'objects') {
+            include_once 'class.Part.php';
+        } elseif ($scope == 'part_location_object') {
+            include_once 'class.PartLocation.php';
+        } elseif ($scope == 'data') {
+            include_once 'class.PartLocation.php';
+
+        }
+        $sql = sprintf(
+            "SELECT PL.`Part SKU`,`Quantity On Hand`,`Minimum Quantity`,`Maximum Quantity`,`Moving Quantity`,`Can Pick` 
+            FROM `Part Location Dimension` PL LEFT JOIN `Part Dimension` P ON (P.`Part SKU`=PL.`Part SKU`)  WHERE `Location Key`=%d", $this->id
+        );
+
+
+        $part_locations = array();
+
+
+        if ($result = $this->db->query($sql)) {
+            foreach ($result as $row) {
+
+                if ($scope == 'keys') {
+                    $part_locations[$row['Part SKU']] = $row['Part SKU'];
+                } elseif ($scope == 'objects') {
+                    $part_locations[$row['Part SKU']] = new Part($row['Part SKU']);
+                } elseif ($scope == 'part_location_object') {
+                    $part_locations[$row['Part SKU']] = new  PartLocation($row['Part SKU'].'_'.$this->id);
+                } else {
+
+                    $part_location = new  PartLocation($row['Part SKU'].'_'.$this->id);
+
+                    $part_locations[$row['Part SKU']]          = $part_location->data;
+                    $part_locations[$row['Part SKU']] ['Part'] = $part_location->part->data;
+                }
+
+            }
+        } else {
+            print_r($error_info = $this->db->errorInfo());
+            exit;
+        }
+
+
+        return $part_locations;
+    }
+
+    function delete() {
+
+        include_once 'class.Warehouse.php';
+        $warehouse = new Warehouse($this->data['Location Warehouse Key']);
+
+        $this->deleted     = false;
+        $this->deleted_msg = '';
+
+
+        if ($this->id == $warehouse->get('Warehouse Unknown Location Key')) {
+            $this->deleted_msg = 'Error location unknown can not be deleted';
+
+            return;
+        }
+
+
+        if (count($this->get_parts()) > 0) {
+            $this->deleted_msg = _("Can't delete because location has parts associated");
+
+            return;
+        }
+
+
+        $sql = sprintf(
+            'INSERT INTO `Location Deleted Dimension`  (`Location Deleted Key`,`Location Deleted Code`,`Location Deleted Date`,`Location Deleted Metadata`) VALUES (%d,%s,%s,%s) ', $this->id, prepare_mysql($this->get('Location Code')),
+            prepare_mysql(gmdate('Y-m-d H:i:s')), prepare_mysql(gzcompress(json_encode($this->data), 9))
+
+        );
+        $this->db->exec($sql);
+
+        $sql = sprintf(
+            "DELETE FROM `Location Dimension` WHERE `Location Key`=%d", $this->id
+        );
+        $this->db->exec($sql);
+        $this->deleted = true;
+
+        $history_data = array(
+            'History Abstract' => sprintf(
+                _("Location %s deleted"), $this->data['Location Code']
+            ),
+            'History Details'  => '',
+            'Action'           => 'deleted'
+        );
+
+        $this->add_subject_history(
+            $history_data, true, 'No', 'Changes', $this->get_object_name(), $this->id
+        );
 
 
     }

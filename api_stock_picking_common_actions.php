@@ -35,8 +35,8 @@ switch ($_REQUEST['action']) {
         }
 
 
-        $location = get_object('location', $_REQUEST['Location Key']);
-        $location->editor=$editor;
+        $location         = get_object('location', $_REQUEST['Location Key']);
+        $location->editor = $editor;
         if (!$location->id) {
             $response = array(
                 'state' => 'Error',
@@ -65,9 +65,11 @@ switch ($_REQUEST['action']) {
             exit;
         }
 
-        $location->update(array(
-            'Location Warehouse Flag Key'=>$flag_key
-                          ));
+        $location->update(
+            array(
+                'Location Warehouse Flag Key' => $flag_key
+            )
+        );
 
 
         $response = array(
@@ -475,6 +477,29 @@ switch ($_REQUEST['action']) {
             echo json_encode($response);
             exit;
         }
+
+
+        $part = get_object('Part', $_REQUEST['part_sku']);
+        if (!$part->sku) {
+            $response = array(
+                'state' => 'Error',
+                'msg'   => 'part not found'
+            );
+            echo json_encode($response);
+            exit;
+        }
+
+        $location = get_object('Location', $_REQUEST['location_key']);
+        if (!$location->id) {
+            $response = array(
+                'state' => 'Error',
+                'msg'   => 'location not found'
+            );
+            echo json_encode($response);
+            exit;
+        }
+
+
 
 
         include_once 'class.PartLocation.php';

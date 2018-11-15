@@ -532,7 +532,7 @@ class Part extends Asset {
     function get_products($scope = 'keys') {
 
 
-        if ($scope == 'data' or $scope == 'products_data' ) {
+        if ($scope == 'data' or $scope == 'products_data') {
             $fields = '*';
         } else {
             $fields = '`Product Part Product ID`';
@@ -552,21 +552,20 @@ class Part extends Asset {
                 } elseif ($scope == 'data') {
                     $products[$row['Product Part Product ID']] = $row;
                 } elseif ($scope == 'products_data') {
-                    $product= get_object('Product', $row['Product Part Product ID']);
-                    $store= get_object('Store', $product->get('Product Store Key'));
-
+                    $product = get_object('Product', $row['Product Part Product ID']);
+                    $store   = get_object('Store', $product->get('Product Store Key'));
 
 
                     $products[$row['Product Part Product ID']] = array(
-                        'store_key'=>$store->id,
-                        'store_code'=>$store->get('Code'),
-                        'store_key'=>$store->get('Name'),
-                        'product_id'=>$product->id,
-                        'units_per_case'=>$product->get('Product Units Per Case'),
-                        'name'=>$product->get('Product Name'),
-                        'status'=>$product->get('Product Status'),
-                        'web_status'=>$product->get('Product Web State'),
-                        'parts_per_product'=>$row['Product Part Ratio']
+                        'store_key'         => $store->id,
+                        'store_code'        => $store->get('Code'),
+                        'store_key'         => $store->get('Name'),
+                        'product_id'        => $product->id,
+                        'units_per_case'    => $product->get('Product Units Per Case'),
+                        'name'              => $product->get('Product Name'),
+                        'status'            => $product->get('Product Status'),
+                        'web_status'        => $product->get('Product Web State'),
+                        'parts_per_product' => $row['Product Part Ratio']
 
                     );
                 } else {
@@ -904,12 +903,12 @@ class Part extends Asset {
 
                 if ($this->data['Part Cost in Warehouse'] != '') {
 
-                    $cost = $this->data['Part Cost in Warehouse'];
-                    $formatted_cost=sprintf(_('Current stock value per unit in warehouse %s'),money($cost/ $this->data['Part Units Per Package'],$account->get('Currency Code')));
+                    $cost           = $this->data['Part Cost in Warehouse'];
+                    $formatted_cost = sprintf(_('Current stock value per unit in warehouse %s'), money($cost / $this->data['Part Units Per Package'], $account->get('Currency Code')));
 
                 } else {
-                    $cost = $this->data['Part Cost'];
-                    $formatted_cost=sprintf(_('Supplier unit cost %s'),money($cost/ $this->data['Part Units Per Package'],$account->get('Currency Code')));
+                    $cost           = $this->data['Part Cost'];
+                    $formatted_cost = sprintf(_('Supplier unit cost %s'), money($cost / $this->data['Part Units Per Package'], $account->get('Currency Code')));
                 }
 
 
@@ -928,7 +927,7 @@ class Part extends Asset {
                     $unit_margin = $this->data['Part Unit Price'] - ($cost / $this->data['Part Units Per Package']);
 
                     $price_other_info .= sprintf(
-                        '<span title="%s" class="'.($unit_margin < 0 ? 'error' : '').'">'._('margin %s').'</span>',$formatted_cost,percentage($unit_margin, $this->data['Part Unit Price'])
+                        '<span title="%s" class="'.($unit_margin < 0 ? 'error' : '').'">'._('margin %s').'</span>', $formatted_cost, percentage($unit_margin, $this->data['Part Unit Price'])
                     );
                 }
 
@@ -2870,7 +2869,7 @@ class Part extends Asset {
                 print "b* $old_stock_on_hand   ** ".$this->data['Part Current On Hand Stock']."  \n"   ;
         */
 
-        if ( $old_value != $this->data['Part Current Value'] or $old_stock_in_progress != $this->data['Part Current Stock In Process'] or $old_stock_picked != $this->data['Part Current Stock Picked']
+        if ($old_value != $this->data['Part Current Value'] or $old_stock_in_progress != $this->data['Part Current Stock In Process'] or $old_stock_picked != $this->data['Part Current Stock Picked']
             or $old_stock_on_hand != $this->data['Part Current On Hand Stock']
 
         ) {
@@ -3319,6 +3318,35 @@ class Part extends Asset {
             }
 
         }
+
+    }
+
+    function get_number_real_locations($unknown_location_key = '') {
+
+
+        if (!$unknown_location_key) {
+            global $session;
+
+            $warehouse            = get_object('Warehouse', $session->get('current_warehouse'));
+            $unknown_location_key = $warehouse->get('Warehouse Unknown Location Key');
+        }
+
+
+        $number_real_locations = 0;
+        $sql                   = sprintf(
+            "SELECT count(*) as num  FROM `Part Location Dimension` WHERE `Part SKU`=%d  and `Location Key`!=%d", $this->sku, $unknown_location_key
+        );
+        if ($result = $this->db->query($sql)) {
+            if ($row = $result->fetch()) {
+                $number_real_locations = $row['num'];
+            }
+        } else {
+            print_r($error_info = $this->db->errorInfo());
+            print "$sql\n";
+            exit;
+        }
+
+        return $number_real_locations;
 
     }
 
@@ -4048,9 +4076,7 @@ class Part extends Asset {
 
         if ($result = $this->db->query($sql)) {
             foreach ($result as $row) {
-                $part_location = new PartLocation(
-                    $this->sku.'_'.$row['Location Key']
-                );
+                $part_location = new PartLocation($this->sku.'_'.$row['Location Key']);
                 $part_location->update_stock_history();
             }
         } else {
@@ -4588,17 +4614,17 @@ class Part extends Asset {
 
                 $product->fast_update(
                     array(
-                        'Product Tariff Code' => $this->get('Part Tariff Code'),
-                        'Product Duty Rate' => $this->get('Part Duty Rate'),
-                        'Product Origin Country Code' => $this->get('Part Origin Country Code'),
-                        'Product UN Number' => $this->get('Part UN Number'),
-                        'Product UN Class' => $this->get('Part UN Class'),
-                        'Product Packing Group' => $this->get('Part Packing Group'),
-                        'Product Proper Shipping Name' => $this->get('Part Proper Shipping Name'),
+                        'Product Tariff Code'                   => $this->get('Part Tariff Code'),
+                        'Product Duty Rate'                     => $this->get('Part Duty Rate'),
+                        'Product Origin Country Code'           => $this->get('Part Origin Country Code'),
+                        'Product UN Number'                     => $this->get('Part UN Number'),
+                        'Product UN Class'                      => $this->get('Part UN Class'),
+                        'Product Packing Group'                 => $this->get('Part Packing Group'),
+                        'Product Proper Shipping Name'          => $this->get('Part Proper Shipping Name'),
                         'Product Hazard Indentification Number' => $this->get('Part Hazard Indentification Number'),
-                        'Product Unit Weight' => $this->get('Part Unit Weight'),
-                        'Product Unit Dimensions' => $this->get('Part Unit Dimensions'),
-                        'Product Materials' => strip_tags($this->get('Materials'))
+                        'Product Unit Weight'                   => $this->get('Part Unit Weight'),
+                        'Product Unit Dimensions'               => $this->get('Part Unit Dimensions'),
+                        'Product Materials'                     => strip_tags($this->get('Materials'))
                     )
                 );
 
@@ -4785,9 +4811,7 @@ class Part extends Asset {
                     list($db_interval, $from_date, $to_date, $from_date_1yb, $to_1yb) = calculate_interval_dates($this->db, '1 Year');
 
 
-
-                    $invoiced=0;
-
+                    $invoiced = 0;
 
 
                     // todo quick hack before migration is done
@@ -4812,15 +4836,14 @@ class Part extends Asset {
                         );
                     }
 
-                   // print "$sql\n";
+                    // print "$sql\n";
 
 
                     if ($result = $this->db->query($sql)) {
                         if ($row = $result->fetch()) {
 
 
-                            $invoiced  = $row['invoiced'];
-
+                            $invoiced = $row['invoiced'];
 
 
                         }
@@ -4828,12 +4851,6 @@ class Part extends Asset {
                         print_r($error_info = $this->db->errorInfo());
                         exit;
                     }
-
-
-
-
-
-
 
 
                     $sales = $invoiced * $product_data['Product Part Ratio'];
@@ -4976,9 +4993,7 @@ class Part extends Asset {
                     foreach ($result3 as $row3) {
                         // print $row['Date'].' '.$this->id.'_'.$row3['Location Key']."\r";
 
-                        $part_location = new PartLocation(
-                            $this->id.'_'.$row3['Location Key']
-                        );
+                        $part_location = new PartLocation($this->id.'_'.$row3['Location Key']);
                         $part_location->update_stock_history_date($row['Date']);
 
 

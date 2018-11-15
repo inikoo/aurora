@@ -15,12 +15,6 @@ function get_location_showcase($data, $smarty, $user, $db) {
 
     $location = $data['_object'];
 
-    if($location->id==1){
-        exit;
-    }
-
-
-
     $smarty->assign('location', $location);
 
 

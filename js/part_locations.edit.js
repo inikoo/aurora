@@ -1,6 +1,6 @@
 function open_edit_stock() {
 
-    $('#part_stock_value').addClass('hide')
+    $('.part_stock_value_info').addClass('hide')
 
     process_edit_stock()
 
@@ -25,7 +25,7 @@ function open_edit_stock() {
 function close_edit_stock() {
 
 
-    $('#part_stock_value').removeClass('hide')
+    $('.part_stock_value_info').removeClass('hide')
 
 
     if (!$('#move_stock_tr').hasClass('hide')) {
@@ -608,9 +608,8 @@ function select_add_location_option(element) {
 
 
     $('#add_location').val($(element).attr('formatted_value'))
-    $('#save_add_location').attr('location_key', $(element).attr('value'))
+    $('#save_add_location').attr('location_key', $(element).attr('value')).addClass('valid changed')
 
-    $('#save_add_location').addClass('valid')
     $('#add_location_tr').addClass('valid')
     $('#add_location_results_container').addClass('hide').removeClass('show')
     //console.log($(element).attr('value'))
@@ -656,7 +655,8 @@ function save_add_location() {
 
             var clone = $("#add_location_template").clone().removeClass('hide').addClass('locations').attr('id', 'part_location_edit_' + data.location_key).attr('location_key', data.location_key)
 
-            clone.find(".location_info")
+
+            clone.find(".picking_location_note i").data('key',data.part_sku+'+'+data.location_key)
 
             clone.find(".picking_location_icon").html(data.picking_location_icon)
             clone.find(".location_code").html(data.location_code).attr('onclick', "change_view('" + data.location_link + "')")
@@ -682,7 +682,7 @@ function save_add_location() {
 
             clone.find(".formatted_stock").html(data.formatted_stock)
             clone.find(".stock").attr('location_key', data.location_key)
-            clone.find('.add_note').removeClass('super_discreet invisible').addClass('visible')
+          //  clone.find('.add_note').removeClass('super_discreet invisible').addClass('visible')
 
 
             $("#add_location_template").before(clone)
@@ -1059,6 +1059,8 @@ function save_leakage(element) {
     var form_data = new FormData();
     form_data.append("tipo", 'edit_leakages')
     form_data.append("part_sku", $('#locations_table').attr('part_sku'))
+    form_data.append("warehouse_key", $('#locations_table').attr('part_sku'))
+
     form_data.append("qty",$('#part_leakage_qty_input').val()* $('#edit_stock_dialog_consolidate_unknown_location').attr('factor'))
     form_data.append("note",$('#part_leakage_note_input').val())
     form_data.append("type",$(element).attr('type'))
@@ -1441,23 +1443,27 @@ function save_part_location_notes_bis(){
     if($('#set_part_location_note_bis').find('i.save').hasClass('valid')) {
         $('#set_part_location_note_bis').find('i.save').addClass('fa-spinner fa-spin').removeClass('valid changed')
         var request = '/ar_edit_stock.php?tipo=edit_part_location_note&part_location_code=' + $('#set_part_location_note_bis').attr('key') + '&note=' + $('#set_part_location_note_bis').find('textarea').val()
-        console.log(request)
+
 
 
         $.getJSON(request, function (r) {
 
+
+            close_part_location_notes_bis();
+
+            console.log(r)
             $('#set_part_location_note_bis').find('i.save').removeClass('fa-spinner fa-spin')
 
 
             element = $('#set_part_location_note_bis').data('element');
             element.closest('span').find('.picking_location_note_value').html(r.value)
             if(r.value==''){
-                element.addClass('super_discreet_on_hover fa-sticky-note').removeClass('fa-sticky-note')
+                element.addClass('super_discreet_on_hover far').removeClass('fas')
             }else{
-                element.addClass('fa-sticky-note').removeClass('super_discreet_on_hover fa-sticky-note')
+                element.addClass('fas').removeClass('super_discreet_on_hover far')
 
             }
-            close_part_location_notes_bis();
+
 
             if (state.tab == 'part.locations') {
                 rows.fetch({reset: true});

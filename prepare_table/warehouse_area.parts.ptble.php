@@ -1,0 +1,1 @@
+part_locations.ptble.php

@@ -994,32 +994,9 @@ function download_exported_file(element) {
 
     var export_container=$(element).closest('.export_dialog_container')
 
-    export_container.find('.download_export')[0].trigger("click");
-
-   // $("#download_" + type+suffix)[0].trigger("click");
-    //$('#table_edit_items_file_upload2_button').removeClass('disabled')
+    export_container.find('.download_export')[0].click();
 
 
-    /*
-
-    if(suffix=='_export'){
-        $("#download_" + type+suffix)[0].trigger("click");
-        $('#table_edit_items_file_upload2_button').removeClass('disabled')
-
-
-
-    }else{
-        $("#download_" + type)[0].trigger("click");
-        $('#upload_icon').removeClass('very_discreet').addClass('valid_save')
-        setTimeout(
-            function () {
-                $('#upload_icon').addClass('valid_save')
-                hide_export_dialog()
-            }
-            , 1000)
-    }
-
-    */
 
 
 }

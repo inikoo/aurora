@@ -28,14 +28,24 @@ $editor = array(
 );
 
 
-$sql = sprintf('SELECT `Part SKU` FROM `Part Location Dimension` WHERE `Location Key`=1 AND `Quantity On Hand`=0 AND `Quantity In Process`=0 ');
-if ($result = $db->query($sql)) {
-    foreach ($result as $row) {
-        $part_location         = new PartLocation($row['Part SKU'].'_1');
-        $part_location->editor = $editor;
-        $part_location->disassociate(
-            array('Note'=>_('Automatic cleaning of zero stock unknown locations'))
-        );
+$sql = sprintf('select `Warehouse Key`,`Warehouse Unknown Location Key` from `Warehouse Dimension` ');
+if ($result2 = $db->query($sql)) {
+    foreach ($result2 as $row2) {
+
+        $sql = sprintf('SELECT `Part SKU` FROM `Part Location Dimension`  WHERE `Location Key`=%d AND `Quantity On Hand`=0 AND `Quantity In Process`=0 ', $row2['Warehouse Unknown Location Key']);
+        print $sql;
+        if ($result = $db->query($sql)) {
+            foreach ($result as $row) {
+                $part_location         = new PartLocation($row['Part SKU'].'_'.$row2['Warehouse Unknown Location Key']);
+                $part_location->editor = $editor;
+                $part_location->disassociate(array('Note' => _('Automatic cleaning of zero stock unknown locations')));
+
+            }
+        } else {
+            print_r($error_info = $db->errorInfo());
+            print "$sql\n";
+            exit;
+        }
 
     }
 } else {

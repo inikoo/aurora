@@ -13,8 +13,7 @@
 include_once 'utils/date_functions.php';
 
 $where      = "where true  ";
-$table
-            = "  `Part Location Dimension` PLD  left join `Part Dimension` P on (PLD.`Part SKU`=P.`Part SKU`)  left join `Location Dimension` L on (PLD.`Location Key`=L.`Location Key`) ";
+$table      = "  `Part Location Dimension` PLD  left join `Part Dimension` P on (PLD.`Part SKU`=P.`Part SKU`)  left join `Location Dimension` L on (PLD.`Location Key`=L.`Location Key`) ";
 $filter_msg = '';
 $wheref     = '';
 
@@ -23,10 +22,13 @@ $fields = '';
 
 if ($parameters['parent'] == 'location') {
     $where = sprintf("where PLD.`Location Key`=%d  ", $parameters['parent_key']);
-}elseif ($parameters['parent'] == 'part') {
+} elseif ($parameters['parent'] == 'part') {
     $where = sprintf("where PLD.`Part SKU`=%d  ", $parameters['parent_key']);
-}  elseif ($parameters['parent'] == 'warehouse') {
+} elseif ($parameters['parent'] == 'warehouse') {
     $where = sprintf("where `Part Location Warehouse Key`=%d  ", $parameters['parent_key']);
+} elseif ($parameters['parent'] == 'warehouse_area') {
+
+    $where = sprintf("where  `Location Warehouse Area Key`=%d  ", $parameters['parent_key']);
 } else {
     exit("parent not found ".$parameters['parent']);
 }
@@ -46,20 +48,20 @@ $_order = $order;
 $_dir   = $order_direction;
 
 if ($order == 'reference') {
-       $order = '`Part Reference`';
-}elseif ($order == 'sko_description') {
+    $order = '`Part Reference`';
+} elseif ($order == 'sko_description') {
     $order = '`Part Package Description`';
-}elseif ($order == 'location') {
+} elseif ($order == 'location') {
     $order = '`Location File As`';
-}elseif ($order == 'can_pick') {
+} elseif ($order == 'can_pick') {
     $order = '`Can Pick`';
-}elseif ($order == 'last_audit') {
+} elseif ($order == 'last_audit') {
     $order = '`Part Location Last Audit`';
-}elseif ($order == 'sko_cost') {
+} elseif ($order == 'sko_cost') {
     $order = '`Part Cost in Warehouse`';
-}elseif ($order == 'stock_value') {
+} elseif ($order == 'stock_value') {
     $order = '`Stock Value`';
-}elseif ($order == 'quantity') {
+} elseif ($order == 'quantity') {
     $order = '`Quantity On Hand`';
 } else {
 

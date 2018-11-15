@@ -141,6 +141,8 @@ function get_view($db, $smarty, $user, $account, $modules) {
     $state['current_production'] = (!empty($session->get('current_production')) ? $session->get('current_production') : '');
 
 
+
+
     $store      = '';
     $website    = '';
     $warehouse  = '';
