@@ -1679,6 +1679,59 @@ function fork_housekeeping($job) {
             }
 
             break;
+        case 'product_price_updated':
+
+            $product = get_object('product', $data['product_id']);
+            $states_to_change = "'In Process','Out of Stock in Basket'";
+            $sql = sprintf(
+                "SELECT `Order Key`,`Delivery Note Key`,`Order Quantity`,`Order Transaction Fact Key` FROM `Order Transaction Fact` OTF  WHERE `Product ID`=%d   AND `Product Key`!=%d AND  `Current Dispatching State` IN (%s) AND `Invoice Key` IS NULL ",
+                $product->id,
+                $product->get('Product Current Key'),
+                $states_to_change
+
+            );
+
+            if ($result = $db->query($sql)) {
+                foreach ($result as $row) {
+
+
+                    $sql = sprintf(
+                        'UPDATE `Order Transaction Fact` SET  `Product Key`=%d, `Product Code`=%s, `Order Transaction Gross Amount`=%.2f, `Order Transaction Total Discount Amount`=0	, `Order Transaction Amount`=%.2f  WHERE `Order Transaction Fact Key`=%d',
+                        $product->get('Product Current Key'), prepare_mysql($product->get('Product Code')), $product->get('Product Price') * $row['Order Quantity'], $product->get('Product Price') * $row['Order Quantity'],
+
+                        $row['Order Transaction Fact Key']
+                    );
+
+
+                    $db->exec($sql);
+
+                    $order = get_object('Order', $row['Order Key']);
+
+
+                    $order->update_number_products();
+                    $order->update_insurance();
+
+                    $order->update_discounts_items();
+                    $order->update_totals();
+                    $order->update_shipping($row['Delivery Note Key'], false);
+                    $order->update_charges($row['Delivery Note Key'], false);
+                    $order->update_discounts_no_items($row['Delivery Note Key']);
+                    $order->update_deal_bridge();
+                    $order->update_totals();
+                    $order->update_number_products();
+                }
+
+
+            } else {
+                print_r($error_info = $db->errorInfo());
+                exit;
+            }
+
+
+
+
+            break;
+
         default:
             break;
 
