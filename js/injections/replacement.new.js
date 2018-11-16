@@ -85,7 +85,7 @@ function update_new_replacement_totals() {
 
     var number_affected_items=0;
 
-    var data = $$('#order').data('object')
+    //var data = $('#order').data('object')
 
 
 
