@@ -350,64 +350,21 @@ class Product extends Asset {
         }
 
 
-        $change_orders_in_basket  = true;
-        $change_orders_in_process = false;
+        if ($changed and $old_value > 0) {
+            require_once 'utils/new_fork.php';
 
-        $states_to_change = '';
-        if ($change_orders_in_basket) {
-            $states_to_change = "'In Process','Out of Stock in Basket',";
-        }
-        if ($change_orders_in_process) {
-            $states_to_change .= "'Submitted by Customer','Ready to Pick','Picking','Ready to Pack','Ready to Ship','Packing','Packed','Packed Done','No Picked Due Out of Stock','No Picked Due No Authorised','No Picked Due Not Found','No Picked Due Other'";
-        }
+            $account = get_object('Account', 1);
+            //todo : no need for the version if after migration
 
-        $states_to_change = preg_replace('/\,$/', '', $states_to_change);
-        if ($changed and $old_value > 0 and $states_to_change != '') {
-
-
-            include_once 'class.Order.php';
-
-            $orders = array();
-            $sql    = sprintf(
-                "SELECT `Order Key`,`Delivery Note Key`,`Order Quantity`,`Order Transaction Fact Key` FROM `Order Transaction Fact` OTF  WHERE `Product ID`=%d   AND `Product Key`!=%d AND  `Current Dispatching State` IN (%s) AND `Invoice Key` IS NULL ", $this->id,
-                $this->get('Product Current Key'), $states_to_change
-
-            );
-
-            if ($result = $this->db->query($sql)) {
-                foreach ($result as $row) {
-
-
-                    $sql = sprintf(
-                        'UPDATE `Order Transaction Fact` SET  `Product Key`=%d, `Product Code`=%s, `Order Transaction Gross Amount`=%.2f, `Order Transaction Total Discount Amount`=0	, `Order Transaction Amount`=%.2f  WHERE `Order Transaction Fact Key`=%d',
-                        $this->get('Product Current Key'), prepare_mysql($this->get('Product Code')), $this->get('Product Price') * $row['Order Quantity'], $this->get('Product Price') * $row['Order Quantity'],
-
-                        $row['Order Transaction Fact Key']
-                    );
-
-                    //    print "$sql\n";
-                    $this->db->exec($sql);
-
-                    $order = new Order($row['Order Key']);
-
-
-                    $order->update_number_products();
-                    $order->update_insurance();
-
-                    $order->update_discounts_items();
-                    $order->update_totals();
-                    $order->update_shipping($row['Delivery Note Key'], false);
-                    $order->update_charges($row['Delivery Note Key'], false);
-                    $order->update_discounts_no_items($row['Delivery Note Key']);
-                    $order->update_deal_bridge();
-                    $order->update_totals();
-                    $order->update_number_products();
-                }
-
-
-            } else {
-                print_r($error_info = $this->db->errorInfo());
-                exit;
+            $store = get_object('Store', $this->get('Product Store Key'));
+            if ($store->get('Store Version') >= 2) {
+                new_housekeeping_fork(
+                    'au_housekeeping', array(
+                    'type'       => 'product_price_updated',
+                    'product_id' => $this->id,
+                    'editor'     => $this->editor
+                ), $account->get('Account Code')
+                );
             }
         }
 

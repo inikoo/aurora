@@ -846,9 +846,7 @@ trait OrderDiscountOperations {
             case('Amount AND Order Number'):
 
 
-                $terms = preg_split(
-                    '/;/', $deal_component_data['Deal Component Terms']
-                );
+                $terms = preg_split('/;/', $deal_component_data['Deal Component Terms']);
 
 
                 $amount_term = $terms[0];
