@@ -61,7 +61,7 @@ $_order = $order;
 $_dir   = $order_direction;
 
 if ($order == 'total_stock') {
-    $order = '`Part Current Stock`';
+    $order = '`Part Current On Hand Stock`';
 }elseif ($order == 'quantity_in_picking') {
     $order = '`Quantity on hand`';
 }elseif ($order == 'to_pick') {
@@ -87,7 +87,7 @@ $fields
     .= "
 P.`Part SKU`,`Part Reference`,`Part Current Stock`,`Part Stock Status`,`Part Days Available Forecast`,`Part Current Stock In Process`+ `Part Current Stock Ordered Paid` as to_pick,
 `Location Code`,PLD.`Location Key`,`Part Location Warehouse Key`,`Part Package Description`,
-`Quantity On Hand`,`Quantity In Process`,`Stock Value`,`Can Pick`,`Minimum Quantity`,`Maximum Quantity`,`Moving Quantity`,`Last Updated`,
+`Quantity On Hand`,`Quantity In Process`,`Stock Value`,`Can Pick`,`Minimum Quantity`,`Maximum Quantity`,`Moving Quantity`,`Last Updated`,`Part Current On Hand Stock`,
 (select Group_CONCAT(LL.`Location Code`) from `Part Location Dimension` PL_SL left join `Location Dimension` LL on (LL.`Location Key`=PL_SL.`Location Key`) where PL_SL.`Part SKU`=PLD.`Part SKU` and PL_SL.`Can Pick`='No'  ) as storing_locations
 
 ";
