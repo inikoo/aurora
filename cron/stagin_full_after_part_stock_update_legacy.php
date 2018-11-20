@@ -54,7 +54,7 @@ $sql = sprintf(
 
 if ($result = $db->query($sql)) {
     foreach ($result as $row) {
-        $part = new Part($row['Staging Object Key']);
+        $part =  get_object('Part',$row['Staging Object Key']);
 
 
         $editor['Date'] = gmdate('Y-m-d H:i:s');
