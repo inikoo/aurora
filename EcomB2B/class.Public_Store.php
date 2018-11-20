@@ -72,78 +72,83 @@ class Public_Store {
         $categories = array();
 
 
-        $limit = preg_split('/-/', $pages);
+        if ($pages != '') {
 
-        // print_r($pages);
-
-        switch ($type) {
-            case 'departments':
-                $sql = sprintf(
-                    'SELECT  `Webpage Code`,`Webpage Name` FROM  `Category Dimension` C   LEFT JOIN `Page Store Dimension` P ON (P.`Webpage Scope Key`=C.`Category Key` AND `Webpage Scope`="Category Categories" ) WHERE   C.`Category Parent Key`=%d  order by `Webpage Name` LIMIT %d,%d ',
-                    $this->get('Store Department Category Key'), $limit[0], $limit[1]
-                );
-
-             //   print $sql;
-
-                break;
-            case 'families':
-                $sql = sprintf(
-                    'SELECT  `Webpage Code`,`Webpage Name` FROM  `Category Dimension` C   LEFT JOIN `Page Store Dimension` P ON (P.`Webpage Scope Key`=C.`Category Key` AND `Webpage Scope`="Category Products" ) WHERE   C.`Category Parent Key`=%d order by `Webpage Name` LIMIT %d,%d ',
-                    $this->get('Store Family Category Key'), $limit[0], $limit[1]
-                );
+            $limit = preg_split('/-/', $pages);
 
 
-
-                break;
-            case 'web_departments':
-                include_once 'class.Public_Website.php';
-                $website=new Public_Website($this->get('Store Website Key'));
-
-
-                $sql = sprintf(
-                    'SELECT  `Webpage Code`,`Webpage Name` FROM  `Category Dimension` C   LEFT JOIN `Page Store Dimension` P ON (P.`Webpage Scope Key`=C.`Category Key` AND `Webpage Scope`="Category Categories" ) WHERE   C.`Category Parent Key`=%d order by `Webpage Name` LIMIT %d,%d ',
-                    $website->get('Website Alt Department Category Key'), $limit[0], $limit[1]
-                );
-
-
-                break;
-            case 'web_families':
-
-                include_once 'class.Public_Website.php';
-                $website=new Public_Website($this->get('Store Website Key'));
-
-                $sql = sprintf(
-                    'SELECT  `Webpage Code`,`Webpage Name` FROM  `Category Dimension` C   LEFT JOIN `Page Store Dimension` P ON (P.`Webpage Scope Key`=C.`Category Key` AND `Webpage Scope`="Category Products" ) WHERE   C.`Category Parent Key`=%d order by `Webpage Name` LIMIT %d,%d ',
-                    $website->get('Website Alt Family Category Key'), $limit[0], $limit[1]
-                );
-
-                break;
-            default:
-
-                print $type;
-
-        }
-
-
-        if ($result = $this->db->query($sql)) {
-            foreach ($result as $row) {
-
-                switch ($output) {
-                    case 'menu':
-                        $categories[] = array(
-                            'url'   => strtolower($row['Webpage Code']),
-                            'label' => $row['Webpage Name'],
-                            'new'   => false
-
+            if (is_array($limit) and count($limit) == 2 and is_numeric($limit[0]) and is_numeric($limit[1])    ) {
+                switch ($type) {
+                    case 'departments':
+                        $sql = sprintf(
+                            'SELECT  `Webpage Code`,`Webpage Name` FROM  `Category Dimension` C   LEFT JOIN `Page Store Dimension` P ON (P.`Webpage Scope Key`=C.`Category Key` AND `Webpage Scope`="Category Categories" ) WHERE   C.`Category Parent Key`=%d  order by `Webpage Name` LIMIT %d,%d ',
+                            $this->get('Store Department Category Key'), $limit[0], $limit[1]
                         );
+
+                        //   print $sql;
+
                         break;
+                    case 'families':
+                        $sql = sprintf(
+                            'SELECT  `Webpage Code`,`Webpage Name` FROM  `Category Dimension` C   LEFT JOIN `Page Store Dimension` P ON (P.`Webpage Scope Key`=C.`Category Key` AND `Webpage Scope`="Category Products" ) WHERE   C.`Category Parent Key`=%d order by `Webpage Name` LIMIT %d,%d ',
+                            $this->get('Store Family Category Key'), $limit[0], $limit[1]
+                        );
+
+
+                        break;
+                    case 'web_departments':
+                        include_once 'class.Public_Website.php';
+                        $website = new Public_Website($this->get('Store Website Key'));
+
+
+                        $sql = sprintf(
+                            'SELECT  `Webpage Code`,`Webpage Name` FROM  `Category Dimension` C   LEFT JOIN `Page Store Dimension` P ON (P.`Webpage Scope Key`=C.`Category Key` AND `Webpage Scope`="Category Categories" ) WHERE   C.`Category Parent Key`=%d order by `Webpage Name` LIMIT %d,%d ',
+                            $website->get('Website Alt Department Category Key'), $limit[0], $limit[1]
+                        );
+
+
+                        break;
+                    case 'web_families':
+
+                        include_once 'class.Public_Website.php';
+                        $website = new Public_Website($this->get('Store Website Key'));
+
+                        $sql = sprintf(
+                            'SELECT  `Webpage Code`,`Webpage Name` FROM  `Category Dimension` C   LEFT JOIN `Page Store Dimension` P ON (P.`Webpage Scope Key`=C.`Category Key` AND `Webpage Scope`="Category Products" ) WHERE   C.`Category Parent Key`=%d order by `Webpage Name` LIMIT %d,%d ',
+                            $website->get('Website Alt Family Category Key'), $limit[0], $limit[1]
+                        );
+
+                        break;
+                    default:
+
+                        print $type;
+
                 }
 
+
+                if ($result = $this->db->query($sql)) {
+                    foreach ($result as $row) {
+
+                        switch ($output) {
+                            case 'menu':
+                                $categories[] = array(
+                                    'url'   => strtolower($row['Webpage Code']),
+                                    'label' => $row['Webpage Name'],
+                                    'new'   => false
+
+                                );
+                                break;
+                        }
+
+                    }
+                } else {
+                    print_r($error_info = $this->db->errorInfo());
+                    print "$sql\n";
+                    exit;
+                }
             }
-        } else {
-            print_r($error_info = $this->db->errorInfo());
-            print "$sql\n";
-            exit;
+
+
         }
 
 
@@ -196,8 +201,6 @@ class Public_Store {
             case 'Store Collect Address Country 2 Alpha Code':
 
 
-
-
                 return $this->data[$key];
                 break;
 
@@ -214,16 +217,16 @@ class Public_Store {
     }
 
 
-    function create_customer($data,$user_data) {
+    function create_customer($data, $user_data) {
 
         include_once 'class.Public_Customer.php';
 
-        $this->new_customer = false;
-        $this->new_website_user=false;
+        $this->new_customer     = false;
+        $this->new_website_user = false;
 
-        $data['editor']             = $this->editor;
-        $data['Customer Store Key'] = $this->id;
-        $data['Customer Billing Address Link'] = 'Contact';
+        $data['editor']                         = $this->editor;
+        $data['Customer Store Key']             = $this->id;
+        $data['Customer Billing Address Link']  = 'Contact';
         $data['Customer Delivery Address Link'] = 'Billing';
 
         $address_fields = array(
@@ -278,19 +281,19 @@ class Public_Store {
 
         //exit;
 
-        $customer = new Public_Customer('new', $data, $address_fields);
-        $website_user='';
+        $customer     = new Public_Customer('new', $data, $address_fields);
+        $website_user = '';
         if ($customer->id) {
             $this->new_customer_msg = $customer->msg;
 
             if ($customer->new) {
 
 
-                $website=get_object('website',$this->get('Store Website Key'));
+                $website = get_object('website', $this->get('Store Website Key'));
 
-                $user_data['Website User Handle']=$customer->get('Customer Main Plain Email');
-                $user_data['Website User Customer Key']=$customer->id;
-                $website_user=$website->create_user($user_data);
+                $user_data['Website User Handle']       = $customer->get('Customer Main Plain Email');
+                $user_data['Website User Customer Key'] = $customer->id;
+                $website_user                           = $website->create_user($user_data);
 
                 include_once 'utils/new_fork.php';
 
@@ -300,21 +303,21 @@ class Public_Store {
 
                 $this->new_website_user = $website_user->new;
 
-                $customer->update(array('Customer Website User Key'=>$website_user->id),'no_history');
+                $customer->update(array('Customer Website User Key' => $website_user->id), 'no_history');
 
 
                 new_housekeeping_fork(
                     'au_housekeeping', array(
-                    'type'     => 'customer_created',
-                    'customer_key' => $customer->id,
+                    'type'             => 'customer_created',
+                    'customer_key'     => $customer->id,
                     'website_user_key' => $website_user->id,
-                    'editor'=>$this->editor
+                    'editor'           => $this->editor
                 ), $account->get('Account Code')
                 );
 
                 //$customer->update_full_search();
                 //$customer->update_location_type();
-               // $store->update_customers_data();
+                // $store->update_customers_data();
 
 
             } else {
@@ -323,7 +326,10 @@ class Public_Store {
 
             }
 
-            return array($customer,$website_user);
+            return array(
+                $customer,
+                $website_user
+            );
         } else {
             $this->error = true;
             $this->msg   = $customer->msg;
