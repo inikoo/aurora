@@ -344,7 +344,7 @@ name: "remove",
 renderable: {if empty($is_family)}true{else}false{/if},
 
 label:'',
-html_label: "<i class="far fa-trash-alt"></i>",
+html_label: "<i class='far fa-trash-alt'></i>",
 editable: false,
 sortable:false,
 
