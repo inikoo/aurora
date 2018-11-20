@@ -79,6 +79,11 @@ if ($result = $db->query($sql)) {
         $contador++;
         $lap_time1 = date('U');
 
+
+        $sql=sprintf('delete from `Staging Dimension`  where `Staging Key`=%d ',$row['Staging Key']);
+        $db->exec($sql);
+
+
         if ($print_est) {
             print 'Pa '.percentage($contador, $total, 3)."  lap time ".sprintf("%.2f", ($lap_time1 - $lap_time0) / $contador)." EST  ".sprintf(
                     "%.1f", (($lap_time1 - $lap_time0) / $contador) * ($total - $contador) / 3600
