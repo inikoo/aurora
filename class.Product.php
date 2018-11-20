@@ -1631,7 +1631,8 @@ class Product extends Asset {
                     'type'       => 'product_web_state',
                     'product_id' => $this->id,
                     'wa'         => $web_availability,
-                    'wa_updated' => $web_availability_updated
+                    'wa_updated' => $web_availability_updated,
+                    'from'       => 'aurora_update_web_state'
 
                 ), $account->get('Account Code'), $this->db
                 );

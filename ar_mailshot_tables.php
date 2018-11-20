@@ -305,7 +305,7 @@ function sent_emails($_data, $db, $user) {
                     $_type = _('Marketing mailshot');
                     break;
                 case 'AbandonedCart':
-                    $_type = _('Abandoned cart');
+                    $_type = _('Orders in basket');
                     break;
                 case 'OOS Notification':
                     $_type = _('Back in stock email');

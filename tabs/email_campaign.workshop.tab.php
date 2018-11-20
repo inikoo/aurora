@@ -59,6 +59,9 @@ if ($email_template->id and !($email_template->get('Email Template Type') == 'HT
     } elseif ($email_template->get('Email Template Role') == 'Marketing') {
         $merge_contents = "{ name: '"._('Unsubscribe')."',value: '[Unsubscribe]'}";
 
+    }  elseif ($email_template->get('Email Template Role') == 'AbandonedCart') {
+        $merge_contents = "{ name: '"._('Unsubscribe')."',value: '[Unsubscribe]'}";
+
     } elseif ($email_template->get('Email Template Role') == 'GR Reminder') {
         $merge_tags = ",{ name: '"._('Last order number')."',value: '[Order Number]'},{ name: '"._('Last order date')."',value: '[Order Date]'},
                 { name: '"._('Last order date + n days (Replace n for a number, default 30)')."',value: '[Order Date + n days]'},

@@ -187,7 +187,7 @@ class EmailCampaignType extends DB_Table {
                         $name = _('Mailshots');
                         break;
                     case 'AbandonedCart':
-                        $name = _('Abandoned carts');
+                        $name = _('Orders in basket');
                         break;
                     case 'OOS Notification':
                         $name = _('Back in stock emails');
@@ -581,7 +581,14 @@ class EmailCampaignType extends DB_Table {
             } elseif ($this->data['Email Campaign Type Code'] == 'AbandonedCart') {
 
                 $metadata                                       = $this->get('Metadata');
-                $email_campaign_data['Email Campaign Metadata'] = json_encode(array('Days Inactive in Basket' => (isset($metadata['Days Inactive in Basket']) ? $metadata['Days Inactive in Basket'] : 30)));
+                $email_campaign_data['Email Campaign Metadata'] = json_encode(
+                    array(
+                        'Type'                    => (isset($metadata['Type']) ? $metadata['Type'] : 'Inactive'),
+                        'Days Inactive in Basket' => (isset($metadata['Days Inactive in Basket']) ? $metadata['Days Inactive in Basket'] : 30),
+                        'Days Last Updated'       => (isset($metadata['Days Last Updated']) ? $metadata['Days Last Updated'] : 7)
+
+                    )
+                );
 
             } elseif ($this->data['Email Campaign Type Code'] == 'Marketing') {
 

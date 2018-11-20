@@ -920,7 +920,7 @@ function reminders($_data, $db, $user) {
                 $name = _('Mailshot');
                 break;
             case 'AbandonedCart':
-                $name = _('Abandoned cart');
+                $name = _('Orders in basket');
                 break;
             case 'OOS Notification':
                 $name = _('Out of stock notification');
@@ -1022,7 +1022,7 @@ function email_template_types($_data, $db, $user) {
 
                 break;
             case 'AbandonedCart':
-                $_type  = _('Abandoned carts');
+                $_type  = _('Orders in basket');
                 $status = '';
                 $mailshots=number($data['Email Campaign Type Mailshots']);
 
