@@ -10,10 +10,6 @@
 */
 
 
-
-
-
-
 $group_by = '';
 $wheref   = '';
 
@@ -24,16 +20,14 @@ $where = 'where `Order State`="InBasket" and `Customer Main Plain Email`!="" and
 $table = '`Order Dimension` O  left join `Customer Dimension` on (`Order Customer Key`=`Customer Key`) ';
 
 
-
-
 if ($parameters['parent'] == 'email_campaign') {
 
-    $mailshot=get_object('mailshot',$parameters['parent_key']);
+    $mailshot = get_object('mailshot', $parameters['parent_key']);
 
-    $metadata=$mailshot->get('Metadata');
-$days=0;
-    $store_key=0;
-// todo
+    $metadata  = $mailshot->get('Metadata');
+    $days      = 0;
+    $store_key = 0;
+    // todo
     /*
 
     $sql=sprintf('select `Email Campaign Abandoned Cart Days Inactive in Basket`,`Email Campaign Store Key` from `Email Campaign Abandoned Cart Dimension` left join `Email Campaign Dimension` on (`Email Campaign Abandoned Cart Email Campaign Key`=`Email Campaign Key`)  where `Email Campaign Abandoned Cart Email Campaign Key`=%d ',
@@ -53,17 +47,17 @@ $days=0;
     }
 */
 
-    $where.=sprintf(' and `Order Store Key`=%d  and `Order Last Updated Date`<= CURRENT_DATE - INTERVAL %d DAY ',$mailshot->get('Store Key'),$metadata['Days Inactive in Basket']);
+    $where .= sprintf(' and `Order Store Key`=%d  and `Order Last Updated Date`<= CURRENT_DATE - INTERVAL %d DAY ', $mailshot->get('Store Key'), $metadata['Days Inactive in Basket']);
 
 
-} else{
+} else {
     exit('error abandoned_cart.mail_list E.l.1');
 }
 
 
 if (($parameters['f_field'] == 'customer') and $f_value != '') {
     $wheref = sprintf('  and  `Order Customer Name`  REGEXP "[[:<:]]%s" ', addslashes($f_value));
-}  elseif ($parameters['f_field'] == 'number' and $f_value != '') {
+} elseif ($parameters['f_field'] == 'number' and $f_value != '') {
     $wheref = " and  `Order Public ID`  like '".addslashes($f_value)."%'";
 }
 
@@ -98,7 +92,7 @@ $fields
 
 $sql_totals = "select count(Distinct O.`Order Key`) as num from $table $where";
 
-$sql="select $fields from $table $where $wheref order by $order $order_direction limit $start_from,$number_results";
+$sql = "select $fields from $table $where $wheref order by $order $order_direction limit $start_from,$number_results";
 
 
 ?>

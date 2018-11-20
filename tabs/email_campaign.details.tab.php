@@ -28,6 +28,12 @@ $smarty->assign('object_fields', $object_fields);
 $smarty->assign('state', $state);
 $smarty->assign('object_name', 'Email_Campaign');
 
+
+
+if($email_campaign->get('Email Campaign Type')=='AbandonedCart'){
+    $smarty->assign('js_code', 'js/injections/email_campaign.abandoned_cart.new.'.(_DEVEL ? '' : 'min.').'js');
+}
+
 $html = $smarty->fetch('edit_object.tpl');
 
 

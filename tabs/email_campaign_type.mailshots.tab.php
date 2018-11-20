@@ -96,7 +96,7 @@ if($state['_object']->get('Code')=='Newsletter'){
 
     $table_buttons[] = array(
         'icon'      => 'plus',
-        'title'     => _('New abandoned cart mailshot'),
+        'title'     => _('New mailshot for orders in basket'),
         'id'=>'new_orders_in_website_mailshot',
         'attr'=>array(
             'parent'=>'Store',

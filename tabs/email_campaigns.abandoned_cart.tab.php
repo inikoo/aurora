@@ -37,7 +37,7 @@ if( $state['parent']=='store') {
 
     $table_buttons[] = array(
         'icon'      => 'plus',
-        'title'     => _('New abandoned cart mailshot'),
+        'title'     => _('New mailshot for orders in basket'),
         'id'=>'new_abandoned_cart',
         'attr'=>array(
             'parent'=>$state['parent'],

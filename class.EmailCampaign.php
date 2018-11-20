@@ -172,7 +172,7 @@ class EmailCampaign extends DB_Table {
 
             switch ($this->get('Email Campaign Type')) {
                 case 'AbandonedCart':
-                    $history_abstract = sprintf(_('Abandoned cart mailshot %s created'), '<b>'.$this->data['Email Campaign Name'].'</b>');
+                    $history_abstract = sprintf(_('Mailshot for orders in basket created (%s)'), '<b>'.$this->data['Email Campaign Name'].'</b>');
 
                     break;
                 case 'Newsletter':
@@ -304,6 +304,29 @@ class EmailCampaign extends DB_Table {
 
                 break;
 
+
+            case 'Email Campaign Abandoned Cart Type':
+                $metadata = $this->get('Metadata');
+
+                return $metadata['Type'];
+                break;
+            case 'Abandoned Cart Type':
+                $metadata = $this->get('Metadata');
+
+                switch ($metadata['Type']) {
+                    case 'Inactive':
+                        $formatted_value = _('Inactive day');
+                        break;
+                    case 'Last_Updated':
+                        $formatted_value = _('Last updated');
+                        break;
+                    default:
+                        $formatted_value = $metadata['Type'];
+                }
+
+                return $formatted_value;
+                break;
+
             case 'Abandoned Cart Days Inactive in Basket':
                 $metadata = $this->get('Metadata');
 
@@ -314,7 +337,16 @@ class EmailCampaign extends DB_Table {
 
                 return (isset($metadata['Days Inactive in Basket']) ? $metadata['Days Inactive in Basket'] : '');
                 break;
+            case 'Email Campaign Abandoned Cart Days Last Updated':
+                $metadata = $this->get('Metadata');
 
+                return (isset($metadata['Days Last Updated']) ? $metadata['Days Last Updated'] : '');
+                break;
+            case 'Abandoned Cart Days Last Updated':
+                $metadata = $this->get('Metadata');
+
+                return number(isset($metadata['Days Last Updated']) ? $metadata['Days Last Updated'] : 0);
+                break;
             case 'Number Estimated Emails':
                 return number($this->data['Email Campaign '.$key]);
                 break;
@@ -416,10 +448,18 @@ class EmailCampaign extends DB_Table {
                     $metadata = $this->get('Metadata');
 
 
-                    $sql = sprintf(
-                        'SELECT count(DISTINCT O.`Order Key`) AS num FROM `Order Dimension` O LEFT JOIN `Customer Dimension` ON (`Order Customer Key`=`Customer Key`) WHERE `Order State`="InBasket" AND `Customer Main Plain Email`!="" AND `Customer Send Email Marketing`="Yes" AND `Order Store Key`=%d AND `Order Last Updated Date`<= CURRENT_DATE - INTERVAL %d DAY',
-                        $this->data['Email Campaign Store Key'], (empty($metadata['Days Inactive in Basket']) ? 0 : $metadata['Days Inactive in Basket'])
-                    );
+                    if ($metadata['Type'] == 'Inactive') {
+                        $sql = sprintf(
+                            'SELECT count(DISTINCT O.`Order Key`) AS num FROM `Order Dimension` O LEFT JOIN `Customer Dimension` ON (`Order Customer Key`=`Customer Key`) WHERE `Order State`="InBasket" AND `Customer Main Plain Email`!="" AND `Customer Send Email Marketing`="Yes" AND `Order Store Key`=%d AND `Order Last Updated Date`<= CURRENT_DATE - INTERVAL %d DAY',
+                            $this->data['Email Campaign Store Key'], (empty($metadata['Days Inactive in Basket']) ? 0 : $metadata['Days Inactive in Basket'])
+                        );
+                    } else {
+                        $sql = sprintf(
+                            'SELECT count(DISTINCT O.`Order Key`) AS num FROM `Order Dimension` O LEFT JOIN `Customer Dimension` ON (`Order Customer Key`=`Customer Key`) WHERE `Order State`="InBasket" AND `Customer Main Plain Email`!="" AND `Customer Send Email Marketing`="Yes" AND `Order Store Key`=%d AND `Order Last Updated Date`>= CURRENT_DATE - INTERVAL %d DAY',
+                            $this->data['Email Campaign Store Key'], (empty($metadata['Days Last Updated']) ? 0 : $metadata['Days Last Updated'])
+                        );
+                    }
+
 
                     if ($result = $this->db->query($sql)) {
                         if ($row = $result->fetch()) {
@@ -643,6 +683,62 @@ class EmailCampaign extends DB_Table {
                 }
 
                 $metadata['Days Inactive in Basket'] = $value;
+
+
+                $this->fast_update(array('Email Campaign Metadata' => json_encode($metadata)));
+                $this->update_estimated_recipients();
+
+
+                $this->update_metadata = array(
+                    'class_html' => array(
+                        'Email_Campaign_Number_Estimated_Emails' => $this->get('Email Campaign Number Estimated Emails'),
+                        'Number_Estimated_Emails'                => $this->get('Number Estimated Emails'),
+
+                    ),
+
+                );
+
+
+                break;
+
+            case 'Email Campaign Abandoned Cart Days Last Updated':
+
+
+                $metadata = $this->get('Metadata');
+
+                if ($metadata == '') {
+                    $metadata = array();
+                }
+
+                $metadata['Days Last Updated'] = $value;
+
+
+                $this->fast_update(array('Email Campaign Metadata' => json_encode($metadata)));
+                $this->update_estimated_recipients();
+
+
+                $this->update_metadata = array(
+                    'class_html' => array(
+                        'Email_Campaign_Number_Estimated_Emails' => $this->get('Email Campaign Number Estimated Emails'),
+                        'Number_Estimated_Emails'                => $this->get('Number Estimated Emails'),
+
+                    ),
+
+                );
+
+
+                break;
+
+            case 'Email Campaign Abandoned Cart Type':
+
+
+                $metadata = $this->get('Metadata');
+
+                if ($metadata == '') {
+                    $metadata = array();
+                }
+
+                $metadata['Type'] = $value;
 
 
                 $this->fast_update(array('Email Campaign Metadata' => json_encode($metadata)));
@@ -960,7 +1056,9 @@ class EmailCampaign extends DB_Table {
             case 'Email Campaign Abandoned Cart Days Inactive in Basket':
                 $label = _('Inactive days in basket');
                 break;
-
+            case 'Email Campaign Abandoned Cart Days Last Updated':
+                $label = sprintf(_('Last updated %s days ago'), '<em>n</em>');
+                break;
             default:
                 $label = $field;
 
@@ -1185,10 +1283,26 @@ class EmailCampaign extends DB_Table {
 
                 $metadata = $this->get('Metadata');
 
-                $sql = sprintf(
-                    'select `Customer Key` ,`Customer Main Plain Email` from `Order Dimension` O  left join `Customer Dimension` on (`Order Customer Key`=`Customer Key`) where `Order State`="InBasket" and `Customer Main Plain Email`!="" and `Customer Send Email Marketing`="Yes" and `Customer Main Plain Email`!="" and `Order Store Key`=%d  and `Order Last Updated Date`<= CURRENT_DATE - INTERVAL %d DAY ',
-                    $this->data['Email Campaign Store Key'], $metadata['Days Inactive in Basket']
-                );
+
+                if ($metadata['Type'] == 'Inactive') {
+                    $sql = sprintf(
+                        'select `Customer Key` ,`Customer Main Plain Email` from `Order Dimension` O  left join `Customer Dimension` on (`Order Customer Key`=`Customer Key`) where `Order State`="InBasket" and `Customer Main Plain Email`!="" and `Customer Send Email Marketing`="Yes" and `Customer Main Plain Email`!="" and `Order Store Key`=%d  and `Order Last Updated Date`<= CURRENT_DATE - INTERVAL %d DAY ',
+                        $this->data['Email Campaign Store Key'], $metadata['Days Inactive in Basket']
+                    );
+                } else {
+                    $sql = sprintf(
+                        'select `Customer Key` ,`Customer Main Plain Email` from `Order Dimension` O  left join `Customer Dimension` on (`Order Customer Key`=`Customer Key`) where `Order State`="InBasket" and `Customer Main Plain Email`!="" and `Customer Send Email Marketing`="Yes" and `Customer Main Plain Email`!="" and `Order Store Key`=%d  and `Order Last Updated Date`>= CURRENT_DATE - INTERVAL %d DAY ',
+                        $this->data['Email Campaign Store Key'], $metadata['Days Last Updated']
+                    );
+                }
+
+
+
+
+
+
+
+
 
                 return $sql;
 

@@ -44,8 +44,8 @@ $email_templates_data = array(
     ),
     'AbandonedCart'         => array(
         'key'     => 'AbandonedCart',
-        'name'    => _('Abandoned cart'),
-        'subject' => _('Abandoned cart'),
+        'name'    => _('Orders in basket'),
+        'subject' => _('Hello'),
         'sender'  => 'Store'
 
     ),

@@ -1684,7 +1684,7 @@ $elements_options = array(
                     'selected' => true
                 ),
                 'AbandonedCart'       => array(
-                    'label'    => _('Abandoned carts'),
+                    'label'    => _('Orders in basket'),
                     'selected' => false
                 ),
                 'GRReminder'       => array(

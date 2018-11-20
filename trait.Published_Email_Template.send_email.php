@@ -11,6 +11,7 @@
 */
 
 require_once 'vendor/autoload.php';
+
 use Aws\Ses\SesClient;
 
 
@@ -18,7 +19,7 @@ trait Send_Email {
     function send($recipient, $data, $smarty = false) {
 
 
-        $this->sent=false;
+        $this->sent = false;
 
         $this->error = false;
         $account     = get_object('Account', 1);
@@ -220,14 +221,14 @@ trait Send_Email {
 
         $to_address = $recipient->get('Main Plain Email');
 
-        if (preg_match('/bali/', gethostname()) ) {
+        if (preg_match('/bali/', gethostname())) {
 
 
             $to_address = 'raul@inikoo.com';
         }
 
 
-       // $to_address='raul@inikoo.com';
+        // $to_address='raul@inikoo.com';
 
 
         $request                                    = array();
@@ -291,7 +292,6 @@ trait Send_Email {
             if (isset($data['Unsubscribe URL'])) {
 
 
-
                 $smarty->assign('localised_labels', $localised_labels);
 
 
@@ -324,7 +324,6 @@ trait Send_Email {
 
             $result = $client->sendEmail($request);
 
-            //print_r($result);
 
             $email_tracking->fast_update(
                 array(
@@ -336,20 +335,20 @@ trait Send_Email {
             );
 
 
-/*
+            /*
 
-                        $email_tracking->fast_update(
-                            array(
-                                'Email Tracking State'  => "Sent to SES",
-                                "Email Tracking SES Id" => 'xxxx'.date('U'),
+                                    $email_tracking->fast_update(
+                                        array(
+                                            'Email Tracking State'  => "Sent to SES",
+                                            "Email Tracking SES Id" => 'xxxx'.date('U'),
 
 
-                            )
-                        );
+                                        )
+                                    );
 
-                        sleep(1);
+                                    sleep(1);
 
-*/
+            */
 
             if (in_array(
                 $email_template_type->get('Email Campaign Type Code'), array(
