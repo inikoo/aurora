@@ -31,7 +31,7 @@ $editor = array(
 
 );
 
-$sql = sprintf("SELECT count(*) AS num FROM `Staging Dimension`  where `Staging Operation`='full_after_part_stock_update_legacy'");
+$sql = sprintf("SELECT count(*) AS num FROM `Stack Dimension`  where `Stack Operation`='full_after_part_stock_update_legacy'");
 if ($result = $db->query($sql)) {
     if ($row = $result->fetch()) {
         $total = $row['num'];
@@ -49,12 +49,12 @@ $contador  = 0;
 
 
 $sql = sprintf(
-    "SELECT `Staging Key`,`Staging Object Key` FROM `Staging Dimension`  where `Staging Operation`='full_after_part_stock_update_legacy' "
+    "SELECT `Stack Key`,`Stack Object Key` FROM `Stack Dimension`  where `Stack Operation`='full_after_part_stock_update_legacy' "
 );
 
 if ($result = $db->query($sql)) {
     foreach ($result as $row) {
-        $part =  get_object('Part',$row['Staging Object Key']);
+        $part =  get_object('Part',$row['Stack Object Key']);
 
         if($part->id){
 
@@ -80,7 +80,7 @@ if ($result = $db->query($sql)) {
 
 
 
-            $sql=sprintf('delete from `Staging Dimension`  where `Staging Key`=%d ',$row['Staging Key']);
+            $sql=sprintf('delete from `Stack Dimension`  where `Stack Key`=%d ',$row['Stack Key']);
             $db->exec($sql);
         }
 
