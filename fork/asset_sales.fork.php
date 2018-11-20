@@ -582,7 +582,189 @@ function fork_asset_sales($job) {
 }
 
 
+
+
 function update_invoice_products_sales_data($db, $account, $data) {
+
+    global $editor;
+
+    require_once 'conf/timeseries.php';
+    require_once 'class.Timeserie.php';
+
+    include_once 'class.Product.php';
+    include_once 'class.Customer.php';
+    include_once 'class.Category.php';
+    include_once 'class.Store.php';
+    include_once 'class.Invoice.php';
+
+
+    $account->update_sales_from_invoices('Total', true, false);
+    $account->update_sales_from_invoices('Week To Day', true, false);
+    $account->update_sales_from_invoices('Month To Day', true, false);
+    $account->update_sales_from_invoices('Quarter To Day', true, false);
+    $account->update_sales_from_invoices('Year To Day', true, false);
+    $account->update_sales_from_invoices('Today', true, false);
+
+
+
+    $timeseries      = get_time_series_config();
+    $timeseries_data = $timeseries['Account'];
+    foreach ($timeseries_data as $time_series_data) {
+
+
+        $time_series_data['Timeseries Parent']     = 'Account';
+        $time_series_data['Timeseries Parent Key'] = 1;
+        $time_series_data['editor']                = $editor;
+
+
+        $object_timeseries = new Timeseries('find', $time_series_data, 'create');
+        $account->update_timeseries_record($object_timeseries, gmdate('Y-m-d'), gmdate('Y-m-d'));
+
+
+    }
+
+
+    $categories     = array();
+    $categories_bis = array();
+    //  print_r($data);
+
+    $customer = get_object('Customer',$data['customer_key']);
+    $customer->update_product_bridge();
+
+
+    $store = get_object('Store', $data['store_key']);
+
+    $store->update_sales_from_invoices('Total', true, false);
+    $store->update_sales_from_invoices('Week To Day', true, false);
+    $store->update_sales_from_invoices('Month To Day', true, false);
+    $store->update_sales_from_invoices('Quarter To Day', true, false);
+    $store->update_sales_from_invoices('Year To Day', true, false);
+    $store->update_sales_from_invoices('Today', true, false);
+
+
+    $timeseries      = get_time_series_config();
+    $timeseries_data = $timeseries['Store'];
+    foreach ($timeseries_data as $time_series_data) {
+
+
+        $time_series_data['Timeseries Parent']     = 'Store';
+        $time_series_data['Timeseries Parent Key'] = $store->id;
+        $time_series_data['editor']                = $editor;
+
+
+        $object_timeseries = new Timeseries('find', $time_series_data, 'create');
+        $store->update_timeseries_record($object_timeseries, gmdate('Y-m-d'), gmdate('Y-m-d'));
+
+
+    }
+
+
+
+    if(!empty($data['invoice_key'])) {
+
+        $invoice = new Invoice($data['invoice_key']);
+        $invoice->categorize();
+
+        if (($invoice->get('Invoice Category Key'))) {
+
+            $invoice_category = new Category($invoice->get('Invoice Category Key'));
+
+            //  $invoice_category->load_acc_data();
+
+
+            $invoice_category->update_invoice_category_sales('Total', true, false);
+
+            $invoice_category->update_invoice_category_sales('Year To Day', true, false);
+            $invoice_category->update_invoice_category_sales('Quarter To Day', true, false);
+            $invoice_category->update_invoice_category_sales('Month To Day', true, false);
+            $invoice_category->update_invoice_category_sales('Week To Day', true, false);
+            $invoice_category->update_invoice_category_sales('Today', true, false);
+        }
+
+
+        $sql = sprintf(
+            "SELECT `Product ID`,`Invoice Date` FROM `Order Transaction Fact` WHERE `Invoice Key`=%d", $data['invoice_key']
+        );
+
+
+        if ($result = $db->query($sql)) {
+            foreach ($result as $row) {
+                $product = new Product('id', $row['Product ID']);
+
+                if($product->id){
+                    $date = gmdate('Y-m-d H:i:s');
+                    $sql  = sprintf(
+                        'insert into `Stack Dimension` (`Stack Creation Date`,`Stack Last Update Date`,`Stack Operation`,`Stack Object Key`) values (%s,%s,%s,%d) 
+                      ON DUPLICATE KEY UPDATE `Stack Last Update Date`=%s ,`Stack Counter`=`Stack Counter`+1 ',
+                        prepare_mysql($date),
+                        prepare_mysql($date),
+                        prepare_mysql('product_sales'),
+                        $product->id,
+                        prepare_mysql($date)
+
+                    );
+                    $db->exec($sql);
+
+
+                    $categories = $categories + $product->get_categories();
+                }
+
+
+
+            }
+        }
+
+    }
+
+    foreach ($categories as $category_key) {
+
+        $category = new Category($category_key);
+
+        if($category->id) {
+            $sql = sprintf(
+                'insert into `Stack Dimension` (`Stack Creation Date`,`Stack Last Update Date`,`Stack Operation`,`Stack Object Key`) values (%s,%s,%s,%d) 
+                      ON DUPLICATE KEY UPDATE `Stack Last Update Date`=%s ,`Stack Counter`=`Stack Counter`+1 ',
+                prepare_mysql($date),
+                prepare_mysql($date),
+                prepare_mysql('product_family_sales'),
+                $category->id,
+                prepare_mysql($date)
+
+            );
+            $db->exec($sql);
+
+
+            $categories_bis = $categories_bis + $category->get_categories();
+
+        }
+    }
+
+    foreach ($categories_bis as $category_key) {
+
+        $sql = sprintf(
+            'insert into `Stack Dimension` (`Stack Creation Date`,`Stack Last Update Date`,`Stack Operation`,`Stack Object Key`) values (%s,%s,%s,%d) 
+                      ON DUPLICATE KEY UPDATE `Stack Last Update Date`=%s ,`Stack Counter`=`Stack Counter`+1 ',
+            prepare_mysql($date),
+            prepare_mysql($date),
+            prepare_mysql('product_department_sales'),
+            $category_key,
+            prepare_mysql($date)
+
+        );
+        $db->exec($sql);
+
+
+    }
+
+
+
+
+}
+
+
+
+
+function update_invoice_products_sales_data_reaL_time($db, $account, $data) {
 
     global $editor;
 
