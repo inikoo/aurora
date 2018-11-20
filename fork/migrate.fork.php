@@ -201,7 +201,7 @@ function fork_migration($job) {
             if ($result2 = $db->query($sql)) {
                 if ($row2 = $result2->fetch()) {
 
-                    $order = get_object('Order', $row2['Order Key']);
+                    //$order = get_object('Order', $row2['Order Key']);
 
 
                     $data_to_update['Delivery Note Order Key'] = $row2['Order Key'];
