@@ -701,6 +701,42 @@ function fork_housekeeping($job) {
 
             // return true;
 
+            //
+
+/*
+            $editor = array(
+
+
+                'Author Type'  => '',
+                'Author Key'   => '',
+                'User Key'     => 0,
+                'Date'         => gmdate('Y-m-d H:i:s'),
+                'Subject'=>'System',
+                'Subject Key'=>0,
+                'Author Name'=>'System (Stock change)',
+                'Author Alias' => 'System (Stock change)',
+                'v'=>3
+
+'email_tacking_ses','product_web_state_legacy','update_part_products_availability','part_stock_in_paid_orders','full_after_part_stock_update_legacy'
+
+            );
+            */
+
+            $date = gmdate('Y-m-d H:i:s');
+            $sql  = sprintf(
+                'insert into `Stack Dimension` (`Stack Creation Date`,`Stack Last Update Date`,`Stack Operation`,`Stack Object Key`) values (%s,%s,%s,%d) 
+                      ON DUPLICATE KEY UPDATE `Stack Last Update Date`=%s ,`Stack Counter`=`Stack Counter`+1 ',
+                prepare_mysql($date),
+                prepare_mysql($date),
+                prepare_mysql('full_after_part_stock_update_legacy'),
+                $data['part_sku'],
+                prepare_mysql($date)
+
+            );
+            $db->exec($sql);
+
+            return true;
+
             // todo remove after migration
             // for use in pre migration inikoo
 
@@ -764,7 +800,8 @@ function fork_housekeeping($job) {
             break;
 
 
-        case 'order_payment_changed': // this can be removed after all inikoo gone
+        case 'order_payment_changed':
+            // this can be removed after all inikoo gone
 
 
             $order = get_object('Order', $data['order_key']);
@@ -779,9 +816,23 @@ function fork_housekeeping($job) {
             // print "$sql\n";
             if ($result = $db->query($sql)) {
                 foreach ($result as $row) {
-                    $part = get_object('Part', $row['Product Part Part SKU']);
-                    $part->update_stock_in_paid_orders();
-                    //   print $part->get('Reference')."\n";
+
+                    $date = gmdate('Y-m-d H:i:s');
+                    $sql  = sprintf(
+                        'insert into `Stack Dimension` (`Stack Creation Date`,`Stack Last Update Date`,`Stack Operation`,`Stack Object Key`) values (%s,%s,%s,%d) 
+                      ON DUPLICATE KEY UPDATE `Stack Last Update Date`=%s ,`Stack Counter`=`Stack Counter`+1 ',
+                        prepare_mysql($date),
+                        prepare_mysql($date),
+                        prepare_mysql('part_stock_in_paid_orders'),
+                        $row['Product Part Part SKU'],
+                        prepare_mysql($date)
+
+                   );
+                    $db->exec($sql);
+
+                    // $part = get_object('Part', $row['Product Part Part SKU']);
+                    // $part->update_stock_in_paid_orders();
+
                 }
             } else {
                 print_r($error_info = $db->errorInfo());
@@ -1057,6 +1108,123 @@ function fork_housekeeping($job) {
             $customer->update_part_bridge();
 
 
+            $suppliers            = array();
+            $suppliers_categories = array();
+            $part_categories      = array();
+
+
+            $sql = sprintf('select `Part SKU`,`Inventory Transaction Type`  FROM `Inventory Transaction Fact` WHERE  `Delivery Note Key`=%d   ', $data['delivery_note_key']);
+
+            if ($result = $db->query($sql)) {
+                foreach ($result as $row) {
+
+
+                    if ($row['Inventory Transaction Type'] == 'Sale') {
+
+                        $part = get_object('Part', $row['Part SKU']);
+
+
+                        if($part->id){
+                            $date = gmdate('Y-m-d H:i:s');
+                            $sql  = sprintf(
+                                'insert into `Stack Dimension` (`Stack Creation Date`,`Stack Last Update Date`,`Stack Operation`,`Stack Object Key`) values (%s,%s,%s,%d) 
+                      ON DUPLICATE KEY UPDATE `Stack Last Update Date`=%s ,`Stack Counter`=`Stack Counter`+1 ',
+                                prepare_mysql($date),
+                                prepare_mysql($date),
+                                prepare_mysql('part_sales'),
+                                $part->id,
+                                prepare_mysql($date)
+
+                            );
+                            $db->exec($sql);
+
+
+
+                            foreach ($part->get_suppliers() as $suppliers_key) {
+                                $suppliers[$suppliers_key] = $suppliers_key;
+                            }
+                            foreach ($part->get_categories() as $part_category_key) {
+                                $part_categories[$part_category_key] = $part_category_key;
+                            }
+                        }
+
+
+                    }
+
+
+                }
+            } else {
+                print_r($error_info = $db->errorInfo());
+                print "$sql\n";
+                exit;
+            }
+
+
+            foreach ($part_categories as $part_category_key) {
+                $date = gmdate('Y-m-d H:i:s');
+                $sql  = sprintf(
+                    'insert into `Stack Dimension` (`Stack Creation Date`,`Stack Last Update Date`,`Stack Operation`,`Stack Object Key`) values (%s,%s,%s,%d) 
+                      ON DUPLICATE KEY UPDATE `Stack Last Update Date`=%s ,`Stack Counter`=`Stack Counter`+1 ',
+                    prepare_mysql($date),
+                    prepare_mysql($date),
+                    prepare_mysql('part_category_sales'),
+                    $part_category_key,
+                    prepare_mysql($date)
+
+                );
+                $db->exec($sql);
+            }
+
+
+            foreach ($suppliers as $supplier_key) {
+                $supplier = get_object('Supplier', $supplier_key);
+
+                if($supplier->id){
+                    $date = gmdate('Y-m-d H:i:s');
+                    $sql  = sprintf(
+                        'insert into `Stack Dimension` (`Stack Creation Date`,`Stack Last Update Date`,`Stack Operation`,`Stack Object Key`) values (%s,%s,%s,%d) 
+                      ON DUPLICATE KEY UPDATE `Stack Last Update Date`=%s ,`Stack Counter`=`Stack Counter`+1 ',
+                        prepare_mysql($date),
+                        prepare_mysql($date),
+                        prepare_mysql('supplier_sales'),
+                        $supplier->id,
+                        prepare_mysql($date)
+
+                    );
+                    $db->exec($sql);
+
+                    foreach ($supplier->get_categories() as $supplier_category_key) {
+                        $suppliers_categories[$supplier_category_key] = $supplier_category_key;
+                    }
+                }
+
+
+
+            }
+
+            foreach ($suppliers_categories as $supplier_category_key) {
+                $date = gmdate('Y-m-d H:i:s');
+                $sql  = sprintf(
+                    'insert into `Stack Dimension` (`Stack Creation Date`,`Stack Last Update Date`,`Stack Operation`,`Stack Object Key`) values (%s,%s,%s,%d) 
+                      ON DUPLICATE KEY UPDATE `Stack Last Update Date`=%s ,`Stack Counter`=`Stack Counter`+1 ',
+                    prepare_mysql($date),
+                    prepare_mysql($date),
+                    prepare_mysql('supplier_category_sales'),
+                    $supplier_category_key,
+                    prepare_mysql($date)
+
+                );
+                $db->exec($sql);
+            }
+
+
+
+            return;
+
+
+            // down here is real time
+            //todo option to do real time
+
             $intervals = array(
                 'Total',
                 'Year To Day',
@@ -1075,9 +1243,7 @@ function fork_housekeeping($job) {
             $timeseries = get_time_series_config();
 
 
-            $suppliers            = array();
-            $suppliers_categories = array();
-            $part_categories      = array();
+
 
 
             //$sql = sprintf('select `Part SKU`  FROM `Inventory Transaction Fact` WHERE  `Delivery Note Key`=%d  and `Inventory Transaction Type`="Sale" ', $data['delivery_note_key']);
@@ -1400,6 +1566,7 @@ function fork_housekeeping($job) {
             break;
         case 'update_ISF':
 
+            return true;
 
             include_once 'class.PartLocation.php';
 
@@ -1681,9 +1848,9 @@ function fork_housekeeping($job) {
             break;
         case 'product_price_updated':
 
-            $product = get_object('product', $data['product_id']);
+            $product          = get_object('product', $data['product_id']);
             $states_to_change = "'In Process','Out of Stock in Basket'";
-            $sql = sprintf(
+            $sql              = sprintf(
                 "SELECT `Order Key`,`Delivery Note Key`,`Order Quantity`,`Order Transaction Fact Key` FROM `Order Transaction Fact` OTF  WHERE `Product ID`=%d   AND `Product Key`!=%d AND  `Current Dispatching State` IN (%s) AND `Invoice Key` IS NULL ",
                 $product->id,
                 $product->get('Product Current Key'),
@@ -1726,8 +1893,6 @@ function fork_housekeeping($job) {
                 print_r($error_info = $db->errorInfo());
                 exit;
             }
-
-
 
 
             break;
