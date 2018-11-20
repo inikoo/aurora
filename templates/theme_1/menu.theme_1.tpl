@@ -475,7 +475,7 @@
                                     <img data-type="image" link="{$sub_column.url}" src="{$sub_column.image}" alt="{$sub_column.title}"/>
                                 </div>
                             {elseif $sub_column.type=='departments' or   $sub_column.type=='families' or  $sub_column.type=='web_departments' or   $sub_column.type=='web_families'}
-                                <div id="submenu_{$key}_{$sub_key}" data-type="{$sub_column.type}" data-page="{$sub_column.page}" class="submenu vertical-menu  ">
+                                <div id="submenu_{$key}_{$sub_key}" data-type="{$sub_column.type}" _page="{$sub_column.page}" data-page="{$sub_column.page}" class="submenu vertical-menu  ">
                                     {foreach from=$store->get_categories({$sub_column.type},{$sub_column.page},'menu') item=item}
                                         <a href="{$item['url']}"><i class="fa fa-caret-right fa-fw "></i>{$item['label']}</a>
                                     {/foreach}

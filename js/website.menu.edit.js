@@ -397,7 +397,9 @@ function save_header() {
 
 
                     if (type == 'departments' || type == 'families' || type == 'web_departments' || type == 'web_families') {
-                        column.page = $(obj2).data('page')
+
+                        console.log(obj2)
+                        column.page = $(obj2).attr('_page')
 
 
                     } else if (type == 'items') {
@@ -791,7 +793,7 @@ function edit_catalogue_paginator(page, page_label, key, subkey) {
     var submenu = $('#submenu_' + key + '_' + subkey )
 
 
-    //submenu.data('page', page)
+    submenu.attr('_page', page)
     //submenu.data('page_label', page_label)
 
 
