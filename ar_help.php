@@ -191,11 +191,10 @@ function get_whiteboard($data, $modules, $db, $account, $user, $smarty) {
 
 
     $empty_tab = true;
+    $has_tab = false;
     $text_tab  = '';
     $tab_title='';
-    if (count($modules[$module]['sections'][$section]['tabs']) == 1) {
-        $has_tab = false;
-    } else {
+    if ( isset($modules[$module]['sections'][$section]['tabs']) and  count($modules[$module]['sections'][$section]['tabs']) > 1) {
         $has_tab = true;
 
         if($data['state']['subtab'] == ''){
@@ -203,7 +202,8 @@ function get_whiteboard($data, $modules, $db, $account, $user, $smarty) {
 
             $tab_title=sprintf(_('%s (tab)'),(isset($modules[$module]['sections'][$section]['tabs'][$tab]['label'])?$modules[$module]['sections'][$section]['tabs'][$tab]['label']:$tab));
 
-        }else{
+        }
+        else{
 
 
             $tab_title=sprintf(_('%s (tab)'),(
