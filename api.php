@@ -38,42 +38,48 @@ authorization($db, $user_key, $api_key_key, $scope);
 
 
 
-class fake_session {
-    function __construct() {
-        $this->data = array();
-    }
 
-    function set($key, $value) {
-        $this->data[$key] = $value;
-    }
-
-    function get($key) {
-        if (isset($this->data[$key])) {
-            return $this->data[$key];
-        } else {
-            return false;
-        }
-    }
-}
-
-$session = new fake_session;
-$warehouse_key = '';
-$sql           = sprintf('SELECT `Warehouse Key` FROM `Warehouse Dimension` WHERE `Warehouse State`="Active" limit 1');
-
-if ($result2 = $db->query($sql)) {
-    if ($row2 = $result2->fetch()) {
-        $warehouse_key = $row2['Warehouse Key'];
-    }
-} else {
-    print_r($error_info = $db->errorInfo());
-    print "$sql\n";
-    exit;
-}
-$session->set('current_warehouse', $warehouse_key);
 
 
 
 function authorization($db, $user_key, $api_key_key, $scope) {
+
+
+
+    class fake_session {
+        function __construct() {
+            $this->data = array();
+        }
+
+        function set($key, $value) {
+            $this->data[$key] = $value;
+        }
+
+        function get($key) {
+            if (isset($this->data[$key])) {
+                return $this->data[$key];
+            } else {
+                return false;
+            }
+        }
+    }
+
+    $session = new fake_session;
+    $warehouse_key = '';
+    $sql           = sprintf('SELECT `Warehouse Key` FROM `Warehouse Dimension` WHERE `Warehouse State`="Active" limit 1');
+
+    if ($result2 = $db->query($sql)) {
+        if ($row2 = $result2->fetch()) {
+            $warehouse_key = $row2['Warehouse Key'];
+        }
+    } else {
+        print_r($error_info = $db->errorInfo());
+        print "$sql\n";
+        exit;
+    }
+    $session->set('current_warehouse', $warehouse_key);
+
+
     $method       = $_SERVER['REQUEST_METHOD'];
     $parsed_scope = parse_scope($_SERVER['REDIRECT_URL']);
 
