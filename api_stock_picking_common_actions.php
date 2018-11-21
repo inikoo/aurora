@@ -10,7 +10,6 @@
  Version 2.0
 */
 
-
 switch ($_REQUEST['action']) {
 
     case 'update_location_flag':
