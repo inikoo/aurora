@@ -44,7 +44,7 @@ $intervals = array(
     '1 Week',
 );
 
-$sql = sprintf("SELECT count(*) AS num FROM `Stack Bikey Dimension`  where `Stack Bikey Operation`='update_ISF'");
+$sql = sprintf("SELECT count(*) AS num FROM `Stack BiKey Dimension`  where `Stack BiKey Operation`='update_ISF'");
 if ($result = $db->query($sql)) {
     if ($row = $result->fetch()) {
         $total = $row['num'];
@@ -64,25 +64,25 @@ $contador = 0;
 
 
 $sql = sprintf(
-    "SELECT `Stack Bikey Object Key One`,`Stack Bikey Object Key Two` FROM `Stack Bikey Dimension`  where `Stack Bikey Operation`='update_ISF' ORDER BY RAND()"
+    "SELECT `Stack BiKey Object Key One`,`Stack BiKey Object Key Two` FROM `Stack BiKey Dimension`  where `Stack BiKey Operation`='update_ISF' ORDER BY RAND()"
 );
 
 if ($result = $db->query($sql)) {
     foreach ($result as $row) {
 
 
-        $sql = sprintf('select `Stack Bikey Key` from `Stack Bikey Dimension` where `Stack Bikey Object Key One`=%d and `Stack Bikey Object Key Two`=%d ', $row['Stack Bikey Object Key One'], $row['Stack Bikey Object Key Two']);
+        $sql = sprintf('select `Stack BiKey Key` from `Stack BiKey Dimension` where `Stack BiKey Object Key One`=%d and `Stack BiKey Object Key Two`=%d ', $row['Stack BiKey Object Key One'], $row['Stack BiKey Object Key Two']);
 
         if ($result2 = $db->query($sql)) {
             if ($row2 = $result2->fetch()) {
 
-                $sql = sprintf('delete from `Stack Bikey Dimension`   where `Stack Bikey Object Key One`=%d and `Stack Bikey Object Key Two`=%d ', $row['Stack Bikey Object Key One'], $row['Stack Bikey Object Key Two']);
+                $sql = sprintf('delete from `Stack BiKey Dimension`   where `Stack BiKey Object Key One`=%d and `Stack BiKey Object Key Two`=%d ', $row['Stack BiKey Object Key One'], $row['Stack BiKey Object Key Two']);
                 $db->exec($sql);
 
                 $editor['Date'] = gmdate('Y-m-d H:i:s');
 
 
-                $part_location         = new PartLocation($row['Stack Bikey Object Key One'].'_'.$row['Stack Bikey Object Key Two']);
+                $part_location         = new PartLocation($row['Stack BiKey Object Key One'].'_'.$row['Stack BiKey Object Key Two']);
                 $part_location->editor = $editor;
 
 
