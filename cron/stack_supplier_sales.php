@@ -115,6 +115,9 @@ if ($result = $db->query($sql)) {
             }
 
 
+        }else{
+            $sql=sprintf('delete from `Stack Dimension`  where `Stack Key`=%d ',$row['Stack Key']);
+            $db->exec($sql);
         }
 
         $contador++;
