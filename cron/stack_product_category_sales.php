@@ -12,7 +12,7 @@
 
 require_once 'common.php';
 
-$print_est = true;
+$print_est = false;
 
 
 $editor = array(
@@ -47,11 +47,12 @@ require_once 'conf/timeseries.php';
 require_once 'class.Timeserie.php';
 
 $lap_time0 = date('U');
+$lap_time1= date('U');
 $contador  = 0;
 
 
 $sql = sprintf(
-    "SELECT `Stack Key`,`Stack Object Key` FROM `Stack Dimension`  where `Stack Operation` in ('product_family_sales','product_department_sales') "
+    "SELECT `Stack Key`,`Stack Object Key` FROM `Stack Dimension`  where `Stack Operation` in ('product_family_sales','product_department_sales') ORDER BY RAND()"
 );
 
 if ($result = $db->query($sql)) {
@@ -60,37 +61,54 @@ if ($result = $db->query($sql)) {
 
         if ($category->id) {
 
-            $editor['Date']   = gmdate('Y-m-d H:i:s');
-            $category->editor = $editor;
-
-            $category->update_sales_from_invoices('Total', true, false);
-            $category->update_sales_from_invoices('Week To Day', true, false);
-            $category->update_sales_from_invoices('Month To Day', true, false);
-            $category->update_sales_from_invoices('Quarter To Day', true, false);
-            $category->update_sales_from_invoices('Year To Day', true, false);
-
-            $category->update_sales_from_invoices('Today', true, false);
 
 
-            $timeseries      = get_time_series_config();
-            $timeseries_data = $timeseries['ProductCategory'];
-            foreach ($timeseries_data as $time_series_data) {
+            $sql=sprintf('select `Stack Key` from `Stack Dimension` where `Stack Key`=%d ',$row['Stack Key']);
+
+            if ($result2=$db->query($sql)) {
+                if ($row2 = $result2->fetch()) {
+                    $sql = sprintf('delete from `Stack Dimension`  where `Stack Key`=%d ', $row['Stack Key']);
+                    $db->exec($sql);
+
+                    $editor['Date']   = gmdate('Y-m-d H:i:s');
+                    $category->editor = $editor;
+
+                    $category->update_sales_from_invoices('Total', true, false);
+                    $category->update_sales_from_invoices('Week To Day', true, false);
+                    $category->update_sales_from_invoices('Month To Day', true, false);
+                    $category->update_sales_from_invoices('Quarter To Day', true, false);
+                    $category->update_sales_from_invoices('Year To Day', true, false);
+
+                    $category->update_sales_from_invoices('Today', true, false);
 
 
-                $time_series_data['Timeseries Parent']     = 'Category';
-                $time_series_data['Timeseries Parent Key'] = $category->id;
-                $time_series_data['editor']                = $editor;
+                    $timeseries      = get_time_series_config();
+                    $timeseries_data = $timeseries['ProductCategory'];
+                    foreach ($timeseries_data as $time_series_data) {
 
 
-                $object_timeseries = new Timeseries('find', $time_series_data, 'create');
-                $category->update_product_timeseries_record($object_timeseries, gmdate('Y-m-d'), gmdate('Y-m-d'));
+                        $time_series_data['Timeseries Parent']     = 'Category';
+                        $time_series_data['Timeseries Parent Key'] = $category->id;
+                        $time_series_data['editor']                = $editor;
 
 
+                        $object_timeseries = new Timeseries('find', $time_series_data, 'create');
+                        $category->update_product_timeseries_record($object_timeseries, gmdate('Y-m-d'), gmdate('Y-m-d'));
+
+
+                    }
+            	}
+            }else {
+            	print_r($error_info=$db->errorInfo());
+            	print "$sql\n";
+            	exit;
             }
 
 
-            $sql = sprintf('delete from `Stack Dimension`  where `Stack Key`=%d ', $row['Stack Key']);
-            $db->exec($sql);
+
+
+
+
         }
 
         $contador++;
@@ -108,6 +126,8 @@ if ($result = $db->query($sql)) {
     print_r($error_info = $db->errorInfo());
     exit;
 }
-
+if($total>0) {
+    printf("%s: PC %s/%s %.2 fmin \n", gmdate('Y-m-d H:i:s'), $contador, $total, ($lap_time1 - $lap_time0) / 60);
+}
 
 ?>

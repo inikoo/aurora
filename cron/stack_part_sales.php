@@ -12,7 +12,7 @@
 
 require_once 'common.php';
 
-$print_est = true;
+$print_est = false;
 
 
 $editor = array(
@@ -57,11 +57,13 @@ if ($result = $db->query($sql)) {
 
 
 $lap_time0 = date('U');
+$lap_time1= date('U');
+
 $contador  = 0;
 
 
 $sql = sprintf(
-    "SELECT `Stack Key`,`Stack Object Key` FROM `Stack Dimension`  where `Stack Operation`='part_sales' "
+    "SELECT `Stack Key`,`Stack Object Key` FROM `Stack Dimension`  where `Stack Operation`='part_sales' ORDER BY RAND()"
 );
 
 if ($result = $db->query($sql)) {
@@ -70,17 +72,28 @@ if ($result = $db->query($sql)) {
 
         if($part->id){
 
-            $editor['Date'] = gmdate('Y-m-d H:i:s');
-            $part->editor = $editor;
 
-            foreach ($intervals as $interval) {
-                $part->update_sales_from_invoices($interval, true, false);
+            $sql=sprintf('select `Stack Key` from `Stack Dimension` where `Stack Key`=%d ',$row['Stack Key']);
+
+            if ($result2=$db->query($sql)) {
+                if ($row2 = $result2->fetch()) {
+
+                    $sql=sprintf('delete from `Stack Dimension`  where `Stack Key`=%d ',$row['Stack Key']);
+                    $db->exec($sql);
+
+                    $editor['Date'] = gmdate('Y-m-d H:i:s');
+                    $part->editor = $editor;
+                    foreach ($intervals as $interval) {
+                        $part->update_sales_from_invoices($interval, true, false);
+                    }
+
+
+
+
+
+                }
             }
 
-
-
-            $sql=sprintf('delete from `Stack Dimension`  where `Stack Key`=%d ',$row['Stack Key']);
-            $db->exec($sql);
         }
 
         $contador++;
@@ -97,6 +110,9 @@ if ($result = $db->query($sql)) {
 } else {
     print_r($error_info = $db->errorInfo());
     exit;
+}
+if($total>0){
+    printf("%s: I  %s/%s %.2f min \n",gmdate('Y-m-d H:i:s'),$contador,$total,($lap_time1 - $lap_time0)/60);
 }
 
 

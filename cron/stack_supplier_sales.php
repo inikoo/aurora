@@ -12,7 +12,7 @@
 
 require_once 'common.php';
 
-$print_est = true;
+$print_est = false;
 
 
 $editor = array(
@@ -62,11 +62,13 @@ $timeseries = get_time_series_config();
 
 
 $lap_time0 = date('U');
+$lap_time1= date('U');
+
 $contador  = 0;
 
 
 $sql = sprintf(
-    "SELECT `Stack Key`,`Stack Object Key` FROM `Stack Dimension`  where `Stack Operation` in ('supplier_sales') "
+    "SELECT `Stack Key`,`Stack Object Key` FROM `Stack Dimension`  where `Stack Operation` in ('supplier_sales') ORDER BY RAND()"
 );
 
 if ($result = $db->query($sql)) {
@@ -75,33 +77,44 @@ if ($result = $db->query($sql)) {
 
         if ($supplier->id) {
 
-            $editor['Date']   = gmdate('Y-m-d H:i:s');
-            $supplier->editor = $editor;
+            $sql=sprintf('select `Stack Key` from `Stack Dimension` where `Stack Key`=%d ',$row['Stack Key']);
+
+            if ($result2=$db->query($sql)) {
+                if ($row2 = $result2->fetch()) {
+
+                    $sql = sprintf('delete from `Stack Dimension`  where `Stack Key`=%d ', $row['Stack Key']);
+                    $db->exec($sql);
+
+                    $editor['Date']   = gmdate('Y-m-d H:i:s');
+                    $supplier->editor = $editor;
 
 
-            foreach ($intervals as $interval) {
-                $supplier->update_sales_from_invoices($interval, true, false);
+                    foreach ($intervals as $interval) {
+                        $supplier->update_sales_from_invoices($interval, true, false);
+                    }
+
+
+                    $timeseries_data = $timeseries['Supplier'];
+                    foreach ($timeseries_data as $time_series_data) {
+
+
+                        $time_series_data['Timeseries Parent']     = 'Supplier';
+                        $time_series_data['Timeseries Parent Key'] = $supplier->id;
+                        $time_series_data['editor']                = $editor;
+
+
+                        $object_timeseries = new Timeseries('find', $time_series_data, 'create');
+                        $supplier->update_timeseries_record($object_timeseries, gmdate('Y-m-d'), gmdate('Y-m-d'));
+
+
+                    }
+
+
+
+                }
             }
 
 
-            $timeseries_data = $timeseries['Supplier'];
-            foreach ($timeseries_data as $time_series_data) {
-
-
-                $time_series_data['Timeseries Parent']     = 'Supplier';
-                $time_series_data['Timeseries Parent Key'] = $supplier->id;
-                $time_series_data['editor']                = $editor;
-
-
-                $object_timeseries = new Timeseries('find', $time_series_data, 'create');
-                $supplier->update_timeseries_record($object_timeseries, gmdate('Y-m-d'), gmdate('Y-m-d'));
-
-
-            }
-
-
-            $sql = sprintf('delete from `Stack Dimension`  where `Stack Key`=%d ', $row['Stack Key']);
-            $db->exec($sql);
         }
 
         $contador++;
@@ -120,5 +133,8 @@ if ($result = $db->query($sql)) {
     exit;
 }
 
+if($total>0){
+    printf("%s: S  %s/%s %.2f min \n",gmdate('Y-m-d H:i:s'),$contador,$total,($lap_time1 - $lap_time0)/60);
+}
 
 ?>

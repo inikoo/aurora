@@ -12,7 +12,7 @@
 
 require_once 'common.php';
 
-$print_est = true;
+$print_est = false;
 
 
 $editor = array(
@@ -45,43 +45,57 @@ if ($result = $db->query($sql)) {
 
 
 $lap_time0 = date('U');
-$contador  = 0;
+$lap_time1 = date('U');
+
+$contador = 0;
 
 
 $sql = sprintf(
-    "SELECT `Stack Key`,`Stack Object Key` FROM `Stack Dimension`  where `Stack Operation`='full_after_part_stock_update_legacy' "
+    "SELECT `Stack Key`,`Stack Object Key` FROM `Stack Dimension`  where `Stack Operation`='full_after_part_stock_update_legacy' ORDER BY RAND()"
 );
 
 if ($result = $db->query($sql)) {
     foreach ($result as $row) {
-        $part =  get_object('Part',$row['Stack Object Key']);
+        $part = get_object('Part', $row['Stack Object Key']);
 
-        if($part->id){
-
-            $editor['Date'] = gmdate('Y-m-d H:i:s');
-            $part->editor = $editor;
-
-            $part->activate();
-            $part->discontinue_trigger();
+        if ($part->id) {
 
 
-            $part->update_available_forecast();
-            $part->update_stock_status();
+            $sql=sprintf('select `Stack Key` from `Stack Dimension` where `Stack Key`=%d ',$row['Stack Key']);
 
-            foreach ($part->get_products('objects') as $product) {
+            if ($result2=$db->query($sql)) {
+                if ($row2 = $result2->fetch()) {
 
-                $editor['Date'] = gmdate('Y-m-d H:i:s');
-                $product->editor = $editor;
+                    $sql = sprintf('delete from `Stack Dimension`  where `Stack Key`=%d ', $row['Stack Key']);
+                    $db->exec($sql);
 
-                $product->fork = true;
-                $product->update_availability(false);
+                    $editor['Date'] = gmdate('Y-m-d H:i:s');
+                    $part->editor   = $editor;
+
+                    $part->activate();
+                    $part->discontinue_trigger();
+
+
+                    $part->update_available_forecast();
+                    $part->update_stock_status();
+
+                    foreach ($part->get_products('objects') as $product) {
+
+                        $editor['Date']  = gmdate('Y-m-d H:i:s');
+                        $product->editor = $editor;
+
+                        $product->fork = true;
+                        $product->update_availability(false);
+                    }
+
+
+
+
+                }
             }
 
 
 
-
-            $sql=sprintf('delete from `Stack Dimension`  where `Stack Key`=%d ',$row['Stack Key']);
-            $db->exec($sql);
         }
 
         $contador++;
@@ -100,5 +114,8 @@ if ($result = $db->query($sql)) {
     exit;
 }
 
+if($total>0){
+    printf("%s: FP  %s/%s %.2f min \n",gmdate('Y-m-d H:i:s'),$contador,$total,($lap_time1 - $lap_time0)/60);
+}
 
 ?>

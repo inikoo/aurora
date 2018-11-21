@@ -12,7 +12,7 @@
 
 require_once 'common.php';
 
-$print_est = true;
+$print_est = false;
 
 
 $editor = array(
@@ -64,11 +64,13 @@ $timeseries = get_time_series_config();
 
 
 $lap_time0 = date('U');
+$lap_time1= date('U');
+
 $contador  = 0;
 
 
 $sql = sprintf(
-    "SELECT `Stack Key`,`Stack Object Key` FROM `Stack Dimension`  where `Stack Operation` in ('supplier_category_sales') "
+    "SELECT `Stack Key`,`Stack Object Key` FROM `Stack Dimension`  where `Stack Operation` in ('supplier_category_sales') ORDER BY RAND()"
 );
 
 if ($result = $db->query($sql)) {
@@ -77,36 +79,48 @@ if ($result = $db->query($sql)) {
 
         if ($category->id) {
 
-            $editor['Date']   = gmdate('Y-m-d H:i:s');
-            $category->editor = $editor;
+            $sql=sprintf('select `Stack Key` from `Stack Dimension` where `Stack Key`=%d ',$row['Stack Key']);
+
+            if ($result2=$db->query($sql)) {
+                if ($row2 = $result2->fetch()) {
+
+                    $sql = sprintf('delete from `Stack Dimension`  where `Stack Key`=%d ', $row['Stack Key']);
+                    $db->exec($sql);
+
+                    $editor['Date']   = gmdate('Y-m-d H:i:s');
+                    $category->editor = $editor;
 
 
-            if ($category->get('Category Branch Type') != 'Root') {
-                foreach ($intervals as $interval) {
-                    $category->update_sales_from_invoices($interval, true, false);
+                    if ($category->get('Category Branch Type') != 'Root') {
+                        foreach ($intervals as $interval) {
+                            $category->update_sales_from_invoices($interval, true, false);
+                        }
+                    }
+
+                    // todo supplier categories timeseries still not done
+                    /*
+                    $timeseries_data = $timeseries['SupplierCategory'];
+                    foreach ($timeseries_data as $time_series_data) {
+
+
+                        $time_series_data['Timeseries Parent']     = 'Category';
+                        $time_series_data['Timeseries Parent Key'] = $category->id;
+                        $time_series_data['editor']                = $editor;
+
+
+                        $object_timeseries = new Timeseries('find', $time_series_data, 'create');
+                        $category->update_supplier_timeseries_record($object_timeseries, gmdate('Y-m-d'), gmdate('Y-m-d'));
+
+
+                    }
+        */
+
+
+
                 }
             }
 
-            // todo supplier categories timeseries still not done
-            /*
-            $timeseries_data = $timeseries['SupplierCategory'];
-            foreach ($timeseries_data as $time_series_data) {
 
-
-                $time_series_data['Timeseries Parent']     = 'Category';
-                $time_series_data['Timeseries Parent Key'] = $category->id;
-                $time_series_data['editor']                = $editor;
-
-
-                $object_timeseries = new Timeseries('find', $time_series_data, 'create');
-                $category->update_supplier_timeseries_record($object_timeseries, gmdate('Y-m-d'), gmdate('Y-m-d'));
-
-
-            }
-*/
-
-            $sql = sprintf('delete from `Stack Dimension`  where `Stack Key`=%d ', $row['Stack Key']);
-            $db->exec($sql);
         }
 
         $contador++;
@@ -125,5 +139,9 @@ if ($result = $db->query($sql)) {
     exit;
 }
 
+
+if($total>0){
+    printf("%s: SC %s/%s %.2f min \n",gmdate('Y-m-d H:i:s'),$contador,$total,($lap_time1 - $lap_time0)/60);
+}
 
 ?>
