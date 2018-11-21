@@ -33,6 +33,26 @@ $db = get_db();
 
 list($user_key, $api_key_key, $scope) = authenticate($db);
 
+class fake_session {
+    function __construct() {
+        $this->data = array();
+    }
+
+    function set($key, $value) {
+        $this->data[$key] = $value;
+    }
+
+    function get($key) {
+        if (isset($this->data[$key])) {
+            return $this->data[$key];
+        } else {
+            return false;
+        }
+    }
+}
+
+$session = new fake_session;
+
 
 authorization($db, $user_key, $api_key_key, $scope);
 
@@ -45,26 +65,8 @@ authorization($db, $user_key, $api_key_key, $scope);
 function authorization($db, $user_key, $api_key_key, $scope) {
 
 
+    global $session;
 
-    class fake_session {
-        function __construct() {
-            $this->data = array();
-        }
-
-        function set($key, $value) {
-            $this->data[$key] = $value;
-        }
-
-        function get($key) {
-            if (isset($this->data[$key])) {
-                return $this->data[$key];
-            } else {
-                return false;
-            }
-        }
-    }
-
-    $session = new fake_session;
     $warehouse_key = '';
     $sql           = sprintf('SELECT `Warehouse Key` FROM `Warehouse Dimension` WHERE `Warehouse State`="Active" limit 1');
 
