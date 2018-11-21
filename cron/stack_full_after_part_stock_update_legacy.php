@@ -115,7 +115,7 @@ if ($result = $db->query($sql)) {
 }
 
 if($total>0){
-    printf("%s: FP  %s/%s %.2f min \n",gmdate('Y-m-d H:i:s'),$contador,$total,($lap_time1 - $lap_time0)/60);
+    printf("%s: %s/%s %.2f min Part update legacy\n",gmdate('Y-m-d H:i:s'),$contador,$total,($lap_time1 - $lap_time0)/60);
 }
 
 ?>

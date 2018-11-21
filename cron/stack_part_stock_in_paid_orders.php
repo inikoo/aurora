@@ -101,7 +101,7 @@ if ($result = $db->query($sql)) {
     exit;
 }
 if($total>0){
-    printf("%s: xP  %s/%s %.2f min \n",gmdate('Y-m-d H:i:s'),$contador,$total,($lap_time1 - $lap_time0)/60);
+    printf("%s: %s/%s %.2f min Part stock in paid\n",gmdate('Y-m-d H:i:s'),$contador,$total,($lap_time1 - $lap_time0)/60);
 }
 
 ?>
