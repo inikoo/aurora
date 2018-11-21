@@ -1566,6 +1566,26 @@ function fork_housekeeping($job) {
             break;
         case 'update_ISF':
 
+
+
+            $date = gmdate('Y-m-d H:i:s');
+            $sql  = sprintf(
+                'insert into `Stack BiKey Dimension` (`Stack BiKey Creation Date`,`Stack BiKey Last Update Date`,`Stack BiKey Operation`,`Stack BiKey Object Key One`,`Stack BiKey Object Key Two`) values (%s,%s,%s,%d,%d) 
+                      ON DUPLICATE KEY UPDATE `Stack BiKey Last Update Date`=%s ,`Stack BiKey Counter`=`Stack BiKey Counter`+1 ',
+                prepare_mysql($date),
+                prepare_mysql($date),
+                prepare_mysql('update_ISF'),
+                $data['part_sku'],
+                $data['location_key'],
+                prepare_mysql($date)
+
+            );
+            $db->exec($sql);
+
+
+
+
+
             return true;
 
             include_once 'class.PartLocation.php';
