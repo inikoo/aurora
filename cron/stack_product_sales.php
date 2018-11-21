@@ -12,7 +12,7 @@
 
 require_once 'common.php';
 
-$print_est = true;
+$print_est = false;
 
 
 $editor = array(
@@ -45,11 +45,12 @@ if ($result = $db->query($sql)) {
 
 
 $lap_time0 = date('U');
+$lap_time1= date('U');
 $contador  = 0;
 
 
 $sql = sprintf(
-    "SELECT `Stack Key`,`Stack Object Key` FROM `Stack Dimension`  where `Stack Operation`='product_sales' "
+    "SELECT `Stack Key`,`Stack Object Key` FROM `Stack Dimension`  where `Stack Operation`='product_sales' ORDER BY RAND() "
 );
 
 if ($result = $db->query($sql)) {
@@ -58,21 +59,31 @@ if ($result = $db->query($sql)) {
 
         if($product->id){
 
-            $editor['Date'] = gmdate('Y-m-d H:i:s');
-            $product->editor = $editor;
+            $sql=sprintf('select `Stack Key` from `Stack Dimension` where `Stack Key`=%d ',$row['Stack Key']);
 
-            $product->update_sales_from_invoices('Total', true, false);
-            $product->update_sales_from_invoices('Week To Day', true, false);
-            $product->update_sales_from_invoices('Month To Day', true, false);
-            $product->update_sales_from_invoices('Quarter To Day', true, false);
-            $product->update_sales_from_invoices('Year To Day', true, false);
+            if ($result2=$db->query($sql)) {
+                if ($row2 = $result2->fetch()) {
 
-            $product->update_sales_from_invoices('Today', true, false);
+                    $sql=sprintf('delete from `Stack Dimension`  where `Stack Key`=%d ',$row['Stack Key']);
+                    $db->exec($sql);
+
+                    $editor['Date'] = gmdate('Y-m-d H:i:s');
+                    $product->editor = $editor;
+
+                    $product->update_sales_from_invoices('Total', true, false);
+                    $product->update_sales_from_invoices('Week To Day', true, false);
+                    $product->update_sales_from_invoices('Month To Day', true, false);
+                    $product->update_sales_from_invoices('Quarter To Day', true, false);
+                    $product->update_sales_from_invoices('Year To Day', true, false);
+
+                    $product->update_sales_from_invoices('Today', true, false);
+                }
+            }
 
 
 
-            $sql=sprintf('delete from `Stack Dimension`  where `Stack Key`=%d ',$row['Stack Key']);
-            $db->exec($sql);
+
+
         }
 
         $contador++;
@@ -91,5 +102,8 @@ if ($result = $db->query($sql)) {
     exit;
 }
 
+if($total>0){
+    printf("%s: P  %s/%s %.2f min \n",gmdate('Y-m-d H:i:s'),$contador,$total,($lap_time1 - $lap_time0)/60);
+}
 
 ?>
