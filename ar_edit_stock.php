@@ -19,7 +19,7 @@ require_once 'utils/parse_natural_language.php';
 if (!isset($_REQUEST['tipo'])) {
     $response = array(
         'state' => 405,
-        'resp'  => 'Non acceptable request (t)'
+        'msg'   => 'Non acceptable request (t)'
     );
     echo json_encode($response);
     exit;
@@ -31,6 +31,56 @@ $tipo = $_REQUEST['tipo'];
 switch ($tipo) {
 
 
+    case 'get_part_locations_html':
+        $data = prepare_values(
+            $_REQUEST, array(
+
+                         'part_sku' => array('type' => 'key'),
+
+                     )
+        );
+
+        get_part_locations_html($account, $db, $user, $editor, $data, $smarty);
+        break;
+    case 'edit_part_linked_locations':
+
+        $data = prepare_values(
+            $_REQUEST, array(
+
+                         'part_sku'            => array('type' => 'key'),
+                         'locations_to_add'    => array('type' => 'json array'),
+                         'locations_to_remove' => array('type' => 'json array')
+                     )
+        );
+
+
+        edit_part_linked_locations($account, $db, $user, $editor, $data, $smarty);
+        break;
+    case 'edit_part_stock_check':
+
+        $data = prepare_values(
+            $_REQUEST, array(
+
+                         'part_sku'        => array('type' => 'key'),
+                         'stock_to_update' => array('type' => 'json array')
+                     )
+        );
+
+
+        edit_part_stock_check($account, $db, $user, $editor, $data, $smarty);
+        break;
+    case 'edit_part_move_stock':
+
+        $data = prepare_values(
+            $_REQUEST, array(
+                         'part_sku'  => array('type' => 'key'),
+                         'movements' => array('type' => 'json array')
+                     )
+        );
+
+
+        edit_part_move_stock($account, $db, $user, $editor, $data, $smarty);
+        break;
     case 'set_as_picking_location':
 
         $data = prepare_values(
@@ -220,7 +270,7 @@ switch ($tipo) {
     default:
         $response = array(
             'state' => 405,
-            'resp'  => 'Tipo not found '.$tipo
+            'msg'   => 'Tipo not found '.$tipo
         );
         echo json_encode($response);
         exit;
@@ -232,9 +282,9 @@ function set_delivery_costing($account, $db, $user, $editor, $data, $smarty) {
     //print_r($data);
 
 
-    $delivery   = get_object('SupplierDelivery', $data['key']);
-    $delivery->editor=$editor;
-    $parts_data = array();
+    $delivery         = get_object('SupplierDelivery', $data['key']);
+    $delivery->editor = $editor;
+    $parts_data       = array();
 
 
     $sql = sprintf(
@@ -361,8 +411,240 @@ function set_delivery_costing($account, $db, $user, $editor, $data, $smarty) {
 
 }
 
-function new_part_location($account, $db, $user, $editor, $data, $smarty) {
 
+function get_part_locations_html($account, $db, $user, $editor, $data, $smarty) {
+
+
+    $part = get_object('Part', $data['part_sku']);
+    if (!$part->sku) {
+        $response = array(
+            'state' => 400,
+            'msg'   => 'part not found'
+        );
+        echo json_encode($response);
+        exit;
+    }
+
+
+    $smarty->assign('part_sku', $part->id);
+    $smarty->assign('part', $part);
+
+    $smarty->assign('locations_data', $part->get_locations('data'));
+
+
+    global $session;
+    $warehouse = get_object('Warehouse', $session->get('current_warehouse'));
+    $smarty->assign('warehouse_unknown_location_key', $warehouse->get('Warehouse Unknown Location Key'));
+
+
+    $response = array(
+        'state'          => 200,
+        'part_locations' => $smarty->fetch('part_locations.edit.tpl')
+    );
+
+
+    echo json_encode($response);
+    exit;
+
+
+}
+
+function edit_part_stock_check($account, $db, $user, $editor, $data, $smarty) {
+
+
+    $part = get_object('Part', $data['part_sku']);
+    if (!$part->sku) {
+        $response = array(
+            'state' => 400,
+            'msg'   => 'part not found'
+        );
+        echo json_encode($response);
+        exit;
+    }
+
+
+    include_once 'class.PartLocation.php';
+
+
+    foreach ($data['stock_to_update'] as $stock_to_update_data) {
+        $location = get_object('Location', $stock_to_update_data['location_key']);
+        if ($location->id) {
+
+            $part_location = new PartLocation($part->sku, $location->id);
+
+            $note = $stock_to_update_data['note'];
+
+
+            if ($part_location->ok) {
+                $part_location->editor = $editor;
+                $part_location->audit($stock_to_update_data['stock'], $note);
+
+            }
+
+
+        }
+    }
+
+
+    $part = get_object('Part', $data['part_sku']);
+
+    $smarty->assign('part_sku', $part->id);
+    $smarty->assign('part', $part);
+
+    $smarty->assign('locations_data', $part->get_locations('data'));
+
+
+    global $session;
+    $warehouse = get_object('Warehouse', $session->get('current_warehouse'));
+    $smarty->assign('warehouse_unknown_location_key', $warehouse->get('Warehouse Unknown Location Key'));
+
+
+    $response = array(
+        'state'          => 200,
+        'part_locations' => $smarty->fetch('part_locations.edit.tpl')
+    );
+
+    $response['Part_Unknown_Location_Stock'] = $part->get('Part Unknown Location Stock');
+
+    $response['updated_fields'] = array(
+        'Current_On_Hand_Stock'    => $part->get('Current On Hand Stock'),
+        'Stock_Status_Icon'        => $part->get('Stock Status Icon'),
+        'Current_Stock'            => $part->get('Current Stock'),
+        'Current_Stock_Picked'     => $part->get('Current Stock Picked'),
+        'Current_Stock_In_Process' => $part->get('Current Stock In Process'),
+        'Current_Stock_Available'  => $part->get('Current Stock Available'),
+        'Available_Forecast'       => $part->get('Available Forecast'),
+        'Part_Status'              => $part->get('Status'),
+        'Part_Cost_in_Warehouse'   => $part->get('Cost in Warehouse'),
+        'Unknown_Location_Stock'   => $part->get('Unknown Location Stock'),
+
+
+    );
+
+
+    echo json_encode($response);
+    exit;
+
+
+}
+
+
+function edit_part_linked_locations($account, $db, $user, $editor, $data, $smarty) {
+
+
+    $part = get_object('Part', $data['part_sku']);
+    if (!$part->sku) {
+        $response = array(
+            'state' => 400,
+            'msg'   => 'part not found'
+        );
+        echo json_encode($response);
+        exit;
+    }
+
+
+    include_once 'class.PartLocation.php';
+
+
+    foreach ($data['locations_to_add'] as $location_key) {
+        $location = get_object('Location', $location_key);
+        if ($location->id) {
+
+            $part_location_data = array(
+                'Location Key' => $location->id,
+                'Part SKU'     => $part->sku,
+                'editor'       => $editor
+            );
+            new PartLocation('find', $part_location_data, 'create');
+
+
+        }
+    }
+
+
+    foreach ($data['locations_to_remove'] as $location_key) {
+        $location = get_object('Location', $location_key);
+        if ($location->id) {
+
+            $part_location = new PartLocation($part->sku, $location->id);
+
+            if ($part_location->ok) {
+                $part_location->editor = $editor;
+                $part_location->delete();
+
+            }
+
+
+        }
+    }
+
+    $part           = get_object('Part', $data['part_sku']);
+    $part_locations = $part->get_locations('part_location_object','stock');
+
+
+   // print_r($part_locations);
+
+    $has_picking_location = false;
+    foreach ($part_locations as $part_location) {
+        if ($part_location->get('Part Location Can Pick') == 'Yes') {
+            $has_picking_location = true;
+            break;
+        }
+
+
+    }
+
+
+    global $session;
+    $warehouse = get_object('Warehouse', $session->get('current_warehouse'));
+
+    if (!$has_picking_location) {
+
+
+
+
+
+        foreach ($part_locations as $part_location) {
+
+            if($part_location->location->id!=$warehouse->get('Warehouse Unknown Location Key')   ){
+                $part_location->update(array('Part Location Can Pick' => 'Yes'));
+                break;
+            }
+
+
+
+
+        }
+    }
+
+
+
+
+    $part = get_object('Part', $data['part_sku']);
+    $smarty->assign('part_sku', $part->id);
+    $smarty->assign('part', $part);
+    $smarty->assign('warehouse_unknown_location_key', $warehouse->get('Warehouse Unknown Location Key'));
+
+    $smarty->assign('locations_data', $part->get_locations('data'));
+
+
+
+
+
+    $response = array(
+        'state'          => 200,
+        'part_locations' => $smarty->fetch('part_locations.edit.tpl')
+    );
+
+
+    echo json_encode($response);
+    exit;
+
+
+}
+
+
+function new_part_location($account, $db, $user, $editor, $data, $smarty) {
 
 
     $part = get_object('Part', $data['part_sku']);
@@ -447,8 +729,7 @@ function new_part_location($account, $db, $user, $editor, $data, $smarty) {
 
 
         );
-    }
-    elseif ($part_location->ok) {
+    } elseif ($part_location->ok) {
         $response = array(
             'state' => 400,
             'msg'   => _('Location already associated with the part')
@@ -547,6 +828,135 @@ function edit_part_location_stock($account, $db, $user, $editor, $data, $smarty)
 
 }
 
+function edit_part_move_stock($account, $db, $user, $editor, $data, $smarty) {
+
+
+    $part = get_object('Part', $data['part_sku']);
+    if (!$part->sku) {
+        $response = array(
+            'state' => 400,
+            'msg'   => 'part not found'
+        );
+        echo json_encode($response);
+        exit;
+    }
+
+
+    include_once 'class.PartLocation.php';
+
+
+    $movement = $data['movements'];
+
+    if (isset($movement['from_location_key']) and isset($movement['to_location_key']) and isset($movement['move_qty'])) {
+
+
+        $from_location = get_object('location', $movement['from_location_key']);
+        if (!$from_location->id) {
+            $response = array(
+                'state' => 400,
+                'msg'   => 'from location not found'
+            );
+            echo json_encode($response);
+            exit;
+        }
+
+        $to_location = get_object('location', $movement['to_location_key']);
+        if (!$to_location->id) {
+            $response = array(
+                'state' => 400,
+                'msg'   => 'from location not found'
+            );
+            echo json_encode($response);
+            exit;
+        }
+
+
+        if (!is_numeric($movement['move_qty'])) {
+            $response = array(
+                'state' => 400,
+                'msg'   => _('Quantity must be numeric')
+            );
+            echo json_encode($response);
+            exit;
+        }
+
+        if ($movement['move_qty'] <= 0) {
+            $response = array(
+                'state' => 400,
+                'msg'   => _('Quantity must be more than zero')
+            );
+            echo json_encode($response);
+            exit;
+        }
+
+        $part_location_from         = new PartLocation($part->sku, $movement['from_location_key']);
+        $part_location_from->editor = $editor;
+
+
+        $part_location_to         = new PartLocation($part->sku, $movement['to_location_key']);
+        $part_location_to->editor = $editor;
+
+
+        $part_location_from->move_stock(
+            array(
+                'Destination Key'  => $movement['to_location_key'],
+                'Quantity To Move' => $movement['move_qty']
+            ), $editor['Date']
+        );
+
+    } else {
+        $response = array(
+            'state' => 400,
+            'msg'   => 'missing arguments'
+        );
+        echo json_encode($response);
+        exit;
+    }
+
+
+    $response = array('state' => 200);
+
+
+    $part = get_object('part', $part->sku);
+
+    $smarty->assign('part_sku', $part->id);
+    $smarty->assign('part', $part);
+
+    $smarty->assign('locations_data', $part->get_locations('data'));
+
+    global $session;
+    $warehouse = get_object('Warehouse', $session->get('current_warehouse'));
+    $smarty->assign('warehouse_unknown_location_key', $warehouse->get('Warehouse Unknown Location Key'));
+
+    $part_locations = $smarty->fetch('part_locations.edit.tpl');
+
+
+    $response['Part_Unknown_Location_Stock'] = $part->get('Part Unknown Location Stock');
+
+    $response['updated_fields'] = array(
+        'Current_On_Hand_Stock'    => $part->get('Current On Hand Stock'),
+        'Stock_Status_Icon'        => $part->get('Stock Status Icon'),
+        'Current_Stock'            => $part->get('Current Stock'),
+        'Current_Stock_Picked'     => $part->get('Current Stock Picked'),
+        'Current_Stock_In_Process' => $part->get(
+            'Current Stock In Process'
+        ),
+        'Current_Stock_Available'  => $part->get('Current Stock Available'),
+        'Available_Forecast'       => $part->get('Available Forecast'),
+        'Part_Locations'           => $part_locations,
+        'Part_Status'              => $part->get('Status'),
+        'Part_Cost_in_Warehouse'   => $part->get('Cost in Warehouse'),
+        'Unknown_Location_Stock'   => $part->get('Unknown Location Stock'),
+
+
+    );
+
+
+    echo json_encode($response);
+
+
+}
+
 function edit_stock($account, $db, $user, $editor, $data, $smarty) {
 
     include_once 'class.PartLocation.php';
@@ -627,7 +1037,7 @@ function edit_stock($account, $db, $user, $editor, $data, $smarty) {
         $smarty->assign('locations_data', $part->get_locations('data'));
 
         global $session;
-        $warehouse=get_object('Warehouse',$session->get('current_warehouse'));
+        $warehouse = get_object('Warehouse', $session->get('current_warehouse'));
         $smarty->assign('warehouse_unknown_location_key', $warehouse->get('Warehouse Unknown Location Key'));
 
         $part_locations = $smarty->fetch('part_locations.edit.tpl');
@@ -676,7 +1086,6 @@ function place_part($account, $db, $user, $editor, $data, $smarty) {
     );
 
 
-
     $part = get_object('Part', $data['part_sku']);
     if (!$part->sku) {
         $response = array(
@@ -696,7 +1105,6 @@ function place_part($account, $db, $user, $editor, $data, $smarty) {
         echo json_encode($response);
         exit;
     }
-
 
 
     $object         = get_object($data['object'], $data['key']);
@@ -732,10 +1140,6 @@ LEFT JOIN `Supplier Part Historic Dimension` SPH ON (POTF.`Supplier Part Histori
 
 
             //$part = get_object('part', $data['part_sku']);
-
-
-
-
 
 
             // $old_value = $part->get('Part Cost in Warehouse');
@@ -987,10 +1391,8 @@ function edit_leakages($account, $db, $user, $editor, $data, $smarty) {
 
 
     global $session;
-    $warehouse=get_object('Warehouse',$session->get('current_warehouse'));
+    $warehouse = get_object('Warehouse', $session->get('current_warehouse'));
     $smarty->assign('warehouse_unknown_location_key', $warehouse->get('Warehouse Unknown Location Key'));
-
-
 
 
     $part_locations = $smarty->fetch('part_locations.edit.tpl');
@@ -1057,7 +1459,7 @@ function send_to_production($account, $db, $user, $editor, $data, $smarty) {
     $smarty->assign('locations_data', $part->get_locations('data'));
 
     global $session;
-    $warehouse=get_object('Warehouse',$session->get('current_warehouse'));
+    $warehouse = get_object('Warehouse', $session->get('current_warehouse'));
     $smarty->assign('warehouse_unknown_location_key', $warehouse->get('Warehouse Unknown Location Key'));
 
     $part_locations = $smarty->fetch('part_locations.edit.tpl');

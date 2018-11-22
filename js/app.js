@@ -519,6 +519,13 @@ function change_menu_view(module){
     }
 }
 
+function change_view_if_has_link_class(element,_request, metadata){
+
+    if($(element).hasClass('link')){
+        change_view(_request, metadata)
+    }
+
+}
 
 function change_view(_request, metadata) {
 

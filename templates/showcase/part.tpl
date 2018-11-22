@@ -25,7 +25,7 @@
 
 <div class="asset_container">
 
-    <div class="block picture">
+    <div class="block picture showcase_component">
 
         <div class="data_container">
             {assign "image_key" $part->get_main_image_key()}
@@ -70,7 +70,7 @@
 
 
     </div>
-    <div class="block sales_data">
+    <div class="block sales_data showcase_component">
         <table class="sales">
             <tr class="header {if $part->get('Part Number Active Products')==0}hide{/if} ">
                 <td colspan=3>{t}SKO commercial value{/t} <b>{$part->get('Commercial Value')}</b> <span class="tooltip" data-tooltip-content="#tooltip_part_margin">({$part->get('Margin')})</td>
@@ -206,7 +206,7 @@
 
         <div id="overviews">
 
-            <table id="stock_table" border="0" class="overview">
+            <table id="stock_table"  class="showcase_component overview" border="0" ">
                 <tbody class="info">
 
 
@@ -285,18 +285,40 @@
                     </td>
                 </tr>
 
+
                 <tr class="Part_Cost_in_Warehouse_info_set_up {if $part->get('Part Cost in Warehouse')==''}hide{/if}">
+                    <td colspan="2">
+
+                       {t}Stock value{/t}: <span  style="font-size:85%" class="Part_Cost_in_Warehouse">{$part->get('Cost in Warehouse')}</span>
+
+
+                </tr>
+
+
+                <tr class="hide ">
                     <td>
 
-                        <span class="part_stock_value_info">{t}Stock value{/t}: <span  style="font-size:85%" class="Part_Cost_in_Warehouse">{$part->get('Cost in Warehouse')}</span></span>
 
-                        <span id="close_edit_stock" class="button hide" onClick="close_edit_stock()">
+                        <span id="close_edit_stock" class="button " onClick="close_edit_stock()">
                             <i  class="fa fa-sign-out fa-flip-horizontal  " title="{t}Exit edit stock{/t}" ></i> <span class="discreet italic">{t}Exit edit stock{/t}</span>
                         </span>
                     </td>
                     <td class="aright">
-                        <i id="open_edit_stock" class="fa fa-pencil button very_discreet " aria-hidden="true" title="{t}Edit stock{/t}" onClick="open_edit_stock()"></i>
-                        <span id="edit_stock_saving_buttons" class="aright discreet hide"><span class="save padding_right_5">{t}Save{/t}</span><i class="fa  fa-cloud   save " aria-hidden="true" title="{t}Save{/t}" onClick="save_stock(this)"></i></span>
+                        <span id="edit_stock_saving_buttons" class="aright discreet "><span class="save padding_right_5">{t}Save{/t}</span><i class="fa  fa-cloud   save " aria-hidden="true" title="{t}Save{/t}" onClick="save_stock(this)"></i></span>
+                    </td>
+                </tr>
+
+
+                <tr class="hide ">
+                    <td>
+
+
+                        <span id="close_move_stock" class="button " onClick="close_move()">
+                            <i  class="fa fa-sign-out fa-flip-horizontal  " title="{t}Exit move stock{/t}" ></i> <span class="discreet italic">{t}Exit move stock{/t}</span>
+                        </span>
+                    </td>
+                    <td class="aright">
+                        <span id="edit_stock_saving_buttons" class="aright discreet "><span class="save padding_right_5">{t}Save{/t}</span><i class="fa  fa-cloud   save " aria-hidden="true" title="{t}Save{/t}" onClick="save_stock(this)"></i></span>
                     </td>
                 </tr>
 
@@ -320,9 +342,9 @@
             </div>
 
 
-            <table id="locations_table" border="1" class="overview" part_sku="{$part->id}">
+            <table id="locations_table" border="0" class="overview" part_sku="{$part->id}">
 
-                <tr id="move_stock_tr" class="discreet button hide " style="border-bottom:1px solid #ccc" max="">
+                <tr id="move_stock_tr" class="discreet button hide "  data-movements="{ }" style="border-bottom:1px solid #ccc" max="">
                     <td colspan=3><span id="move_from"></span> <i class="fa fa-fw fa-forklift padding_left_5 padding_right_5 " aria-hidden="true"></i> <span id="move_to"></span></td>
 
                     <td class="aright">
@@ -337,6 +359,137 @@
                 <tbody id="part_locations" class="Part_Locations">
                 {include file='part_locations.edit.tpl' locations_data=$part->get_locations('data') part_sku=$part->id  warehouse_unknown_location_key=$warehouse_unknown_location_key }
                 </tbody>
+
+
+
+
+
+
+                <tr id="add_location_template" class="hide">
+
+                    <td style="width:20px" class="undo_unlink_operations ">
+                        <i class="fal fa-fw   fa-trash-alt button " title="{t}Delete{/t}" onclick="delete_new_associated_location(this)"></i>
+                    </td>
+                    <td>
+	    <span class="location_info">
+
+
+              <span class="picking_location_note" style="margin-right: 3px">
+                <i onclick="set_part_location_note_bis(this)" key="" class="button  fa-fw  super_discreet_on_hover far fa-sticky-note   " aria-hidden="true" title="{t}Part's location note{/t}" ></i>
+                     <div  class="hide picking_location_note_value"></div>
+              </span>
+
+	        <span class="picking_location_icon"></span>
+	        <span class="location_code link"></span>
+        </span>
+
+                        <span class="very_discreet recommendations">
+	        <span onClick="open_edit_min_max(this)" class="min_max open_edit_min_max">{literal}{{/literal}<span
+                        class="formatted_recommended_min"></span>,<span
+                        class="formatted_recommended_max"></span>}</span>
+	        <span class="edit_min_max hide"><i onClick="close_edit_min_max(this)"
+                                               class="close_min_max button fa fa-times" aria-hidden="true"></i> <input
+                        class="recommended_min min_max" style="width:30px" ovalue="" value="" placeholder="{t}min{/t}"/><input
+                        class="recommended_max min_max" style="width:30px" ovalue="" value="" placeholder="{t}max{/t}"/> <i
+                        onClick="save_recommendations('min_max',this)" class="fa fa-cloud save"
+                        aria-hidden="true"></i></span>
+
+	        <span onClick="open_edit_recommended_move(this)" class="recommended_move open_edit_recommended_move">[<span
+                        class="formatted_recommended_move"></span>]</span>
+	        <span class="edit_move hide"><i onClick="close_edit_recommended_move(this)"
+                                            class="close_move button fa fa-times" aria-hidden="true"></i> <input
+                        class="recommended_move" style="width:30px" ovalue="" value=""/> <i
+                        onClick="save_recommendations('move',this)" class="fa fa-cloud save hide"
+                        aria-hidden="true"></i></span>
+
+
+	        </span>
+                    </td>
+                    <td class="aright  last_audit_days"></td>
+                    <td class="aright  formatted_stock">0</td>
+                    <td class="aright  hide stock_input"><span class="stock_change"></span>
+
+                        <i class="far fa-dot-circle button super_discreet set_as_audit" aria-hidden="true"
+                           title="{t}Mark as audited{/t}" onclick="set_as_audit(this)"></i>
+                        <input class="stock" style="width:60px" action="" location_key="0" ovalue="0" value="0">
+
+                        <input type="hidden" class="note" value="">
+                        <i class="far fa-sticky-note button super_discreet add_note invisible xx" aria-hidden="true" title="{t}Note{/t}"
+                           onclick="set_inventory_transaction_note(this)"></i>
+
+
+                        <i class="fal fa-fw button fa-seedling hide location_to_be_associated_icon" title="{t}Location to be linked{/t}"  ></i>
+
+                        <i class="fa fa-fw fa-forklift move_trigger button super_discreet invisible " aria-hidden="true"
+                           title="{t}Move from{/t}" onclick="move(this)"></i></td>
+
+                </tr>
+
+
+                <tr id="add_location_tr" class="  hide">
+                    <td></td>
+                    <td colspan=3 style="padding-top: 10px" >
+
+                        <input class="" style="width: 200px;" id="add_location" placeholder="{t}New linked location code{/t}">
+
+                        <div id="add_location_results_container" class="search_results_container" style="width:220px;">
+
+                            <table id="add_location_results" border="0" style="background:white;">
+                                <tr class="hide" style=";" id="add_location_search_result_template" field="" value="" formatted_value=""
+                                    onClick="select_add_location_option(this)">
+                                    <td class="label" style="padding-left:5px;"></td>
+
+                                </tr>
+                            </table>
+
+                        </div>
+
+                    </td>
+
+                </tr>
+                <tr>
+
+
+                    <td colspan="4" class="small " style="text-align: right">
+
+
+                        <div style="float: left;" onclick="close_part_location_edit()"  class="button edit_stock_close_button hide"><i class="fas fa-sign-out-alt  fa-flip-horizontal"  ></i> {t}Close{/t} </div>
+
+                        <span onclick="open_part_stock_check()"  class="button discreet_on_hover edit_stock_open_button margin_left_20">{t}Stock check{/t} <i class="far fa-clipboard-check"></i></span>
+                        <span onclick="open_part_edit_move_stock()"  class="button discreet_on_hover edit_stock_open_button margin_left_20">{t}Move stock{/t} <i class="far fa-forklift"></i></span>
+                        <span onclick="open_part_edit_locations()" class="button discreet_on_hover edit_stock_open_button margin_left_20">{t}Edit locations{/t} <i class="far fa-pallet"></i></span>
+
+
+                        <span onclick="save_part_locations_edit_locations(this)" class="save edit_stock_save_button  part_locations_edit_locations_button hide"><span data-labels='{ "save_changes":"{t}Save changes{/t}","add_location":"{t}Link location{/t}","add_locations":"{t}Link locations{/t}","remove_location":"{t}Unlink location{/t}","remove_locations":"{t}Unlink locations{/t}","no_change":"{t}No changes{/t}"}'>{t}No changes{/t}</span> <i class="fa fa-cloud"></i></span>
+                        <span onclick="save_part_locations_stock_check(this)" class="save edit_stock_save_button part_locations_stock_check_button hide"><span data-labels='{ "save_changes":"{t}Save changes{/t}","no_change":"{t}No changes{/t}"}'>{t}No changes{/t}</span> <i class="fa fa-cloud"></i></span>
+                        <span onclick="save_part_locations_move_stock(this)" class="save edit_stock_save_button part_locations_move_stock_button hide"><span data-labels='{ "save_changes":"{t}Move stock{/t}","no_change":"{t}No changes{/t}"}'>{t}No changes{/t}</span> <i class="fa fa-cloud"></i></span>
+
+                    </td>
+
+                </tr>
+
+
+
+
+
+                <div id="inventory_transaction_note" style="position:absolute;z-index:100" class="hide" scope="">
+                    <textarea></textarea>
+                </div>
+
+                <script>
+                    $('#inventory_transaction_note textarea').bind('input propertychange', function () {
+                        inventory_transaction_note_changed()
+                    });
+
+
+
+
+
+                </script>
+
+
+
+
 
 
 
@@ -359,7 +512,7 @@
                 </style>
 
 
-            <table id="unknown_location_table" border="0" class="overview " >
+            <table id="unknown_location_table" border="0" class="overview showcase_component" >
 
               <tr id="unknown_location_tr" class="{if $part->get('Part Unknown Location Stock')==0}hide{/if}">
                   <td colspan="3"><i class="fa error fa-exclamation-circle" aria-hidden="true"></i>  {t}Lost & found{/t}</td>
@@ -465,14 +618,8 @@
 <script>
 
 
-    var movements = false
 
-    //open_edit_stock()
-    $('#locations_table  input.stock ').each(function (i, obj) {
 
-        stock_changed($(obj))
-    })
-    //open_add_location()
 
 
     $(document).on('input propertychange', '.min_max', function (evt) {

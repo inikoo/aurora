@@ -335,17 +335,29 @@ class PartLocation extends DB_Table {
         }
 
 
-        if ($parent == 'associate') {
-            $details = sprintf(
-                '<span class="note_data"><span class="link" onClick="change_view(\'part/%d\')"><i class="fa fa-square" aria-hidden="true"></i> %s</span> <i class="fa fa-link" aria-hidden="true"></i> %s</span>%s', $this->part_sku, $this->part->get('Reference'),
-                $location_link, $audit_note
-            );
+        global $session;
+        $warehouse=get_object('Warehouse',$session->get('current_warehouse'));
+        $unknown_location=$warehouse->get('Warehouse Unknown Location Key');
+
+
+
+        $details='';
+        if ($parent == 'associate' ) {
+            if($unknown_location!=$this->location->id){
+                $details = sprintf(
+                    '<span class="note_data"><span class="link" onClick="change_view(\'part/%d\')"><i class="fa fa-square" aria-hidden="true"></i> %s</span> <i class="fa fa-link" aria-hidden="true"></i> %s</span>%s', $this->part_sku, $this->part->get('Reference'),
+                    $location_link, $audit_note
+                );
+            }
+
 
         } elseif ($parent == 'disassociate') {
-            $details = sprintf(
-                '<span class="note_data"><span class="link" onClick="change_view(\'part/%d\')"><i class="fa fa-square" aria-hidden="true"></i> %s</span> <i class="fa fa-unlink" aria-hidden="true"></i> %s</span>%s', $this->part_sku, $this->part->get('Reference'),
-                $location_link, $audit_note
-            );
+             if($unknown_location!=$this->location->id) {
+                 $details = sprintf(
+                     '<span class="note_data"><span class="link" onClick="change_view(\'part/%d\')"><i class="fa fa-square" aria-hidden="true"></i> %s</span> <i class="fa fa-unlink" aria-hidden="true"></i> %s</span>%s', $this->part_sku, $this->part->get('Reference'),
+                     $location_link, $audit_note
+                 );
+             }
 
         } else {
 
@@ -414,9 +426,9 @@ class PartLocation extends DB_Table {
 
 
                 if ($qty_change < 0) {
-                    $_details = sprintf(_('adding %s missing SKOs to unknown location'), -$qty_change);
+                    $_details = _('F&L stack updated to offset lost stock').' (+'.-$qty_change.')';
                 } else {
-                    $_details = sprintf(_('setting %s SKOs as found'), $qty_change);
+                    $_details =_('F&L stack updated to offset found stock').' ('.-$qty_change.')';
                 }
 
                 $sql = sprintf(
