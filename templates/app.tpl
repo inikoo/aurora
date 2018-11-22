@@ -316,7 +316,7 @@
     <style>#freshwidget-frame{background-color:initial}</style>
 <script type="text/javascript" src="https://s3.amazonaws.com/assets.freshdesk.com/widget/freshwidget.js"></script>
 <script type="text/javascript">
-    FreshWidget.init("", {"queryString": "&widgetType=popup&submitTitle=Submit+ticket", "utf8": "✓", "widgetType": "popup", "buttonType": "text", "buttonText": "Support", "buttonColor": "white", "buttonBg": "#006063", "alignment": "3", "offset": "-1000px", "formHeight": "420px", "url": "https://inikoo.freshdesk.com"} );
+    FreshWidget.init("", {"queryString": "&widgetType=popup&submitTitle=Submit+ticket", "utf8": "✓", "widgetType": "popup", "buttonType": "text", "buttonText": "Support", "buttonColor": "white", "buttonBg": "#006063", "alignment": "3", "offset": "-1000px", "formHeight": "500px", "url": "https://inikoo.freshdesk.com"} );
 </script>
 {/literal}
 </body>
