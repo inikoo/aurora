@@ -127,18 +127,6 @@ cell: Backgrid.HtmlCell.extend({
 
 
 {
-name: "dispatched_per_week",
-label: "{t}Dispatched/w{/t}",
-editable: false,
-
-defaultOrder:1,
-sortType: "toggle",
-{if $sort_key=='stock'}direction: '{if $sort_order==1}descending{else}ascending{/if}',{/if}
-cell: Backgrid.HtmlCell.extend({ className: "aright"} ),
-
-headerCell: integerHeaderCell
-},
-{
 name: "weeks_available",
 label: "{t}Weeks available{/t}",
 editable: false,
@@ -153,6 +141,19 @@ headerCell: integerHeaderCell
 
 
 {
+name: "stock_value",
+label: "{t}Stock value{/t}",
+editable: false,
+
+defaultOrder:1,
+sortType: "toggle",
+{if $sort_key=='stock_value'}direction: '{if $sort_order==1}descending{else}ascending{/if}',{/if}
+cell: Backgrid.HtmlCell.extend({ className: "aright"} ),
+
+headerCell: integerHeaderCell
+},
+
+{
 name: "stock",
 label: "{t}Stock{/t}",
 editable: false,
@@ -164,6 +165,49 @@ cell: Backgrid.HtmlCell.extend({ className: "aright"} ),
 
 headerCell: integerHeaderCell
 },
+
+
+{
+name: "dispatched_per_week",
+label: "{t}Dispatched/w{/t}",
+editable: false,
+
+defaultOrder:1,
+sortType: "toggle",
+{if $sort_key=='stock'}direction: '{if $sort_order==1}descending{else}ascending{/if}',{/if}
+cell: Backgrid.HtmlCell.extend({ className: "aright"} ),
+
+headerCell: integerHeaderCell
+},
+{
+name: "available_forecast",
+label: "{t}Available forecast{/t}",
+editable: false,
+
+defaultOrder:1,
+sortType: "toggle",
+{if $sort_key=='stock'}direction: '{if $sort_order==1}descending{else}ascending{/if}',{/if}
+cell: Backgrid.HtmlCell.extend({ className: "aright"} ),
+
+headerCell: integerHeaderCell
+},
+
+
+{
+name: "next_deliveries",
+label: "{t}Next deliveries{/t}",
+editable: false,
+
+defaultOrder:1,
+sortType: "toggle",
+{if $sort_key=='next_deliveries'}direction: '{if $sort_order==1}descending{else}ascending{/if}',{/if}
+cell: Backgrid.HtmlCell.extend({
+
+} ),
+
+},
+
+
 
 
 {
@@ -494,6 +538,12 @@ grid.columns.findWhere({ name: 'sales'} ).set("renderable", false)
 grid.columns.findWhere({ name: 'dispatched_1yb'} ).set("renderable", false)
 grid.columns.findWhere({ name: 'sales_1yb'} ).set("renderable", false)
 
+
+grid.columns.findWhere({ name: 'available_forecast'} ).set("renderable", false)
+grid.columns.findWhere({ name: 'next_deliveries'} ).set("renderable", false)
+
+
+
 grid.columns.findWhere({ name: 'dispatched_year0'} ).set("renderable", false)
 grid.columns.findWhere({ name: 'dispatched_year1'} ).set("renderable", false)
 grid.columns.findWhere({ name: 'dispatched_year2'} ).set("renderable", false)
@@ -568,11 +618,15 @@ grid.columns.findWhere({ name: 'sales_quarter2'} ).set("renderable", true)
 grid.columns.findWhere({ name: 'sales_quarter3'} ).set("renderable", true)
 grid.columns.findWhere({ name: 'sales_quarter4'} ).set("renderable", true)
 }else if(view=='stock'){
-grid.columns.findWhere({ name: 'stock_status_label'} ).set("renderable", true)
+
 grid.columns.findWhere({ name: 'stock'} ).set("renderable", true)
 grid.columns.findWhere({ name: 'dispatched_per_week'} ).set("renderable", true)
+grid.columns.findWhere({ name: 'available_forecast'} ).set("renderable", true)
+grid.columns.findWhere({ name: 'stock_value'} ).set("renderable", true)
+grid.columns.findWhere({ name: 'next_deliveries'} ).set("renderable", true)
 
-grid.columns.findWhere({ name: 'weeks_available'} ).set("renderable", true)
+
+
 
 
 }
