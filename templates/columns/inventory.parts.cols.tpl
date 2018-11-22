@@ -655,7 +655,7 @@ grid.columns.findWhere({ name: 'sales_quarter2'} ).set("renderable", true)
 grid.columns.findWhere({ name: 'sales_quarter3'} ).set("renderable", true)
 grid.columns.findWhere({ name: 'sales_quarter4'} ).set("renderable", true)
 }else if(view=='stock'){
-//grid.columns.findWhere({ name: 'stock_status_label'} ).set("renderable", true)
+
 grid.columns.findWhere({ name: 'stock'} ).set("renderable", true)
 grid.columns.findWhere({ name: 'dispatched_per_week'} ).set("renderable", true)
 grid.columns.findWhere({ name: 'available_forecast'} ).set("renderable", true)
