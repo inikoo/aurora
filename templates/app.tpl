@@ -322,4 +322,3 @@
 </body>
 </html>
 
-<script type="text/javascript" src="https://assets.freshdesk.com/widget/freshwidget.js"></script><script type="text/javascript">  FreshWidget.init("", {"queryString":"&helpdesk_ticket[requester]={{user.email}}&helpdesk_ticket[subject]={{user.subject}}&helpdesk_ticket[custom_field][phone_number]={{user.phone}}", "utf8": "✓", "widgetType": "popup", "buttonType": "text", "buttonText": "Support", "buttonColor": "white", "buttonBg": "#006063", "alignment": "4", "offset": "235px", "formHeight": "500px", "url": "https://yourcompany.freshdesk.com"} );</script>
