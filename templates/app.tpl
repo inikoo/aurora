@@ -85,7 +85,7 @@
         <script src="/js/keyboard_shortcuts.js?v181115"></script>
         <script src="/js/barcode_scanner.js?v181115"></script>
 
-        <script src="/js/app.js?v181122"></script>
+        <script src="/js/app.js?v181122bis"></script>
         <script src="/js/search.js"></script>
         <script src="/js/table.js?v201808v2"></script>
         <script src="/js/validation.js?v171206v6"></script>
@@ -241,7 +241,7 @@
                     {/if}
                     <li ><a href="https://get.teamviewer.com/txww6bm" target="_blank"><i class="fa fa-hands-helping fa-fw" style="color:cornflowerblue;opacity:.75"></i><span id="fire_label" class="label"> {t}Remote help{/t}</span></a>
                     </li>
-                    <li ><a href="https://inikoo.freshdesk.com/support/home" target="_blank"><i class="fa fa-medkit fa-fw" style="color:cornflowerblue;opacity:.75"></i><span id="fire_label" class="label"> {t}Service desk{/t}</span></a>
+                    <li  onclick="FreshWidget.show(); return false;" title="{t}Help me!{/t}"><i class="fas fa-ambulance fa-fw" style="color:cornflowerblue;opacity:.75"></i><span id="fire_label" class="label"> {t}Help{/t}</span>
                     </li>
                 </ul>
 
@@ -265,6 +265,7 @@
             </div>
             <div id="tab">
             </div>
+
             <div style="clear:both;margin-bottom:100px">
             </div>
         </div>
@@ -311,5 +312,14 @@
 
     </aside>
 </div>
+{literal}
+    <style>#freshwidget-frame{background-color:initial}</style>
+<script type="text/javascript" src="https://s3.amazonaws.com/assets.freshdesk.com/widget/freshwidget.js"></script>
+<script type="text/javascript">
+    FreshWidget.init("", {"queryString": "&widgetType=popup&submitTitle=Submit+ticket", "utf8": "✓", "widgetType": "popup", "buttonType": "text", "buttonText": "Support", "buttonColor": "white", "buttonBg": "#006063", "alignment": "3", "offset": "-1000px", "formHeight": "420px", "url": "https://inikoo.freshdesk.com"} );
+</script>
+{/literal}
 </body>
 </html>
+
+<script type="text/javascript" src="https://assets.freshdesk.com/widget/freshwidget.js"></script><script type="text/javascript">  FreshWidget.init("", {"queryString":"&helpdesk_ticket[requester]={{user.email}}&helpdesk_ticket[subject]={{user.subject}}&helpdesk_ticket[custom_field][phone_number]={{user.phone}}", "utf8": "✓", "widgetType": "popup", "buttonType": "text", "buttonText": "Support", "buttonColor": "white", "buttonBg": "#006063", "alignment": "4", "offset": "235px", "formHeight": "500px", "url": "https://yourcompany.freshdesk.com"} );</script>
