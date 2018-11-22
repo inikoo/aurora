@@ -49,7 +49,7 @@
 
         {/if}
 
-        <link href="/css/app.css?v181114" rel="stylesheet">
+        <link href="/css/app.css?v181122" rel="stylesheet">
 
 
 
@@ -85,7 +85,7 @@
         <script src="/js/keyboard_shortcuts.js?v181115"></script>
         <script src="/js/barcode_scanner.js?v181115"></script>
 
-        <script src="/js/app.js?v181115"></script>
+        <script src="/js/app.js?v181122"></script>
         <script src="/js/search.js"></script>
         <script src="/js/table.js?v201808v2"></script>
         <script src="/js/validation.js?v171206v6"></script>
@@ -101,7 +101,11 @@
         <script src="/js/supplier.order.js?v181115"></script>
         <script src="/js/supplier.delivery.js?v181115"></script>
         <script src="/js/part_locations.edit.js?v=v181115"></script>
-        <script src="/js/alert_dial.js?v181115"></script>
+        <script src="/js/part_locations.edit_locations.js"></script>
+        <script src="/js/part_locations.stock_check.js"></script>
+        <script src="/js/part_locations.move_stock.js"></script>
+
+        <script src="/js/alert_dial.js?v181122"></script>
         <script src="/js/libs/editor_v1/froala_editor.min.js?v1"></script>
         <script src="/js/libs/editor_v1/codemirror.js"></script>
         <script src="/js/libs/editor_v1/codemirror.xml.js"></script>

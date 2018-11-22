@@ -2,6 +2,8 @@ function open_edit_stock() {
 
     $('.part_stock_value_info').addClass('hide')
 
+
+
     process_edit_stock()
 
     $('.unlink_operations').removeClass('hide')
@@ -56,275 +58,9 @@ function close_edit_stock() {
 
 }
 
-function move(element) {
 
 
-    $('.locations  far.fa-dot-circle ').each(function (i, obj) {
-        $(obj).addClass('invisible')
-    })
 
-
-    //   $('#edit_stock_saving_buttons').addClass('hide')
-    if (!$(element).hasClass('fa-flip-horizontal')) {
-
-
-        console.log('xxx')
-
-        movements = false
-
-        $('#move_from').html($(element).closest('tr').find('.location_code').html())
-
-        $('#locations_table  .fa-unlink ').addClass('invisible')
-        $('#add_location_tr').addClass('hide')
-
-        $('#locations_table  input.stock ').prop('readonly', true)
-
-        $(element).addClass('invisible').addClass('from')
-
-
-        $('#move_stock_tr').removeClass('hide').attr('max', $(element).closest('tr').find('input').val())
-
-        var possible_to_locations = 0;
-        var to;
-        $('.locations  .move_trigger ').each(function (i, obj) {
-            if (!$(obj).hasClass('from')) {
-
-                //console.log($(obj))
-                $(obj).removeClass('super_discreet  invisible').addClass('fa-flip-horizontal')
-                possible_to_locations++;
-                to = obj
-            }
-
-        })
-        console.log(possible_to_locations)
-        if (possible_to_locations == 1) {
-            move(to)
-        }
-
-        $('#move_stock_qty').focus()
-
-    } else {
-
-        $(element).addClass('to')
-
-
-        $('#move_to').html($(element).closest('tr').find('.location_code').html())
-
-        $('.locations  .move_trigger ').each(function (i, obj) {
-            $(obj).addClass('invisible')
-        })
-
-
-        $('#move_stock_qty').focus()
-
-
-        move_qty_changed($('#move_stock_qty'))
-
-        console.log(movements)
-
-    }
-
-}
-
-
-function close_move() {
-
-    $('#edit_stock_saving_buttons').removeClass('hide')
-
-
-    $('#move_from').html('')
-    $('#move_to').html('')
-    $('#locations_table  .fa-unlink ').removeClass('invisible')
-    $('#locations_table  input.stock ').prop('readonly', false)
-    $('#move_stock_tr').removeClass('valid invalid')
-    $('#move_stock_qty').val('')
-    $('#add_location_tr').removeClass('hide')
-
-    if (movements) {
-
-
-        var from_input = $('#locations_table  .from ').closest('tr').find('input.stock')
-
-        old_from_input = from_input.val()
-        from_input.val(parseFloat(from_input.val()) + parseFloat(movements.move_qty))
-
-        stock_changed($(from_input))
-
-        var to_input = $('#locations_table  .to ').closest('tr').find('input.stock')
-        old_to_input = to_input.val()
-
-
-        console.log($('#locations_table  .to '))
-        //to_input.val('cc')
-        to_input.val(parseFloat(to_input.val()) - +movements.move_qty)
-        stock_changed(to_input)
-
-    }
-    $('#locations_table .move_trigger').removeClass('fa-flip-horizontal from to').addClass('very_discreet')
-    $('#move_stock_tr').addClass('hide')
-
-
-    $('.locations  .move_trigger ').each(function (i, obj) {
-        $(obj).addClass('super_discreet')
-
-
-        if ($(obj).closest('tr').find('input.stock').val() > 0) {
-            $(obj).addClass('visible')
-        }
-
-    })
-    $('.locations  far.fa-dot-circle ').each(function (i, obj) {
-        $(obj).addClass('visible')
-    })
-
-}
-
-
-function move_qty_changed(element) {
-
-
-    var value = element.val()
-
-
-    if (value == '') {
-        $('#move_stock_tr').removeClass('valid invalid')
-    } else {
-        validation = client_validation('numeric_unsigned', false, value, '')
-
-        if (validation.class == 'valid') {
-            //console.log($('#locations_table  .from ').closest('tr').find('input.stock').val())
-//console.log(value)
-//console.log($('.locations  .from ').closest('tr').find('input.stock').val())
-
-            if (parseInt(value) > parseInt($('.locations  .from ').closest('tr').find('input.stock').attr('ovalue'))) {
-                validation.class = 'invalid'
-            }
-        }
-        $('#move_stock_tr').removeClass('valid invalid').addClass(validation.class)
-
-
-        if (validation.class == 'valid') {
-
-
-            var move_qty = parseFloat($('#move_stock_qty').val())
-
-            if (isNaN(move_qty)) return
-
-            // $('#move_stock_qty').val('');
-            var from_input = $('.locations   .from ').closest('tr').find('input.stock')
-
-            old_from_input = from_input.attr('ovalue')
-            from_input.val(parseFloat(from_input.attr('ovalue')) - move_qty)
-
-            stock_changed($(from_input))
-
-            var to_input = $('.locations  .to ').closest('tr').find('input.stock')
-            old_to_input = to_input.attr('ovalue')
-
-
-            // console.log(to_input)
-            // console.log(parseFloat(to_input.attr('ovalue'))  )
-            to_input.val(parseFloat(to_input.attr('ovalue')) + move_qty)
-            stock_changed(to_input)
-
-
-            movements = {
-                part_sku: $('#locations_table').attr('part_sku'),
-                from_location_key: from_input.attr('location_key'),
-                from_location_stock: old_from_input,
-                to_location_key: to_input.attr('location_key'),
-                to_location_stock: old_to_input,
-                move_qty: move_qty
-            }
-
-        }
-
-
-    }
-
-
-}
-
-
-function stock_field_changed(element) {
-
-    stock_changed(element)
-    $('.locations  .move_trigger ').each(function (i, obj) {
-
-
-        if (!$(obj).hasClass('from')) {
-
-            //console.log($(obj))
-            $(obj).addClass('invisible')
-
-        }
-
-    })
-
-
-}
-
-function stock_changed(element) {
-
-
-    var value = element.val()
-
-
-    if (value == '') {
-        value = 0
-    }
-
-
-    var validation = validate_number(value, 0, 999999999)
-
-    if (!validation) {
-        validation = {
-            class: 'valid', type: 'valid'
-        }
-    }
-
-    element.closest('tr').removeClass('valid invalid').addClass(validation.class)
-
-
-    if (element.attr('ovalue') != value) {
-
-        if (validation.class == 'invalid') {
-            element.closest('tr').find('.stock_change').html('')
-            element.closest('tr').find('.set_as_audit').addClass('super_discreet').addClass('hide')
-
-        } else {
-
-            // console.log(value)
-            // console.log(element.attr('ovalue'))
-
-            var _diff = parseFloat(value) - parseFloat((element.attr('ovalue') == '' ? 0 : element.attr('ovalue')))
-
-
-            var diff = _diff.toFixed(2).replace(/[.,]00$/, "")
-
-            if (_diff > 0) {
-                diff = '+' + diff
-            }
-
-            var change = '(' + diff + ')';
-            element.closest('tr').find('.stock_change').html(change)
-
-            element.closest('tr').find('.set_as_audit').addClass('super_discreet').addClass('hide')
-
-            element.closest('tr').find('.add_note').removeClass('super_discreet invisible').addClass('visible')
-
-
-        }
-
-    } else {
-        element.closest('tr').find('.stock_change').html('')
-        element.closest('tr').find('.set_as_audit').removeClass('hide')
-
-    }
-
-    process_edit_stock()
-
-}
 
 function process_edit_stock() {
 
@@ -399,6 +135,7 @@ function process_edit_stock() {
         } else {
         }
 
+
         if (editable_location) {
             editable_locations++;
 
@@ -470,49 +207,6 @@ function process_edit_stock() {
 }
 
 
-function disassociate_location(element) {
-
-
-    if ($(element).hasClass('fa-unlink')) {
-
-        $(element).removeClass('fa-unlink').addClass('fa-link')
-        $(element).closest('tr').find('.stock').val('').attr('action', 'disassociate')
-        $(element).closest('tr').find('.location_code').addClass('deleted')
-        $(element).closest('tr').find('.move_trigger').addClass('invisible')
-        $(element).closest('tr').find('input').prop('readonly', true)
-        $(element).closest('tr').find('.set_as_audit').addClass('invisible')
-        $(element).closest('tr').find('.recommendations').addClass('hide')
-        stock_changed($(element).closest('tr').find('.stock'))
-    } else {
-
-        $(element).addClass('fa-unlink').removeClass('fa-link')
-        $(element).closest('tr').find('.stock').val($(element).closest('tr').find('.stock').attr('ovalue')).attr('action', '')
-        $(element).closest('tr').find('.location_code').removeClass('deleted')
-        $(element).closest('tr').find('.move_trigger').removeClass('invisible')
-        $(element).closest('tr').find('input').prop('readonly', false)
-        $(element).closest('tr').find('.set_as_audit').removeClass('invisible')
-        $(element).closest('tr').find('.recommendations').removeClass('hide')
-        stock_changed($(element).closest('tr').find('.stock'))
-    }
-
-}
-
-function set_as_audit(element) {
-
-    if ($(element).hasClass('super_discreet')) {
-        $(element).removeClass('super_discreet')
-        $(element).closest('tr').find('input').prop('readonly', true)
-        $(element).closest('tr').find('.add_note').removeClass('super_discreet invisible').addClass('visible')
-
-    } else {
-        $(element).addClass('super_discreet')
-        $(element).closest('tr').find('input').prop('readonly', false)
-
-    }
-
-    process_edit_stock()
-
-}
 
 function open_add_location() {
 
@@ -535,180 +229,6 @@ function close_add_location() {
 
 }
 
-
-function delayed_on_change_add_location_field(object, timeout) {
-
-    window.clearTimeout(object.data("timeout"));
-
-    object.data("timeout", setTimeout(function () {
-
-        get_locations_select()
-    }, timeout));
-}
-
-function get_locations_select() {
-
-    $('#location_data_msg').removeClass('error').html('')
-
-    $('#add_location_tr').removeClass('invalid')
-
-    var request = '/ar_find.php?tipo=find_objects&query=' + fixedEncodeURIComponent($('#add_location').val()) + '&scope=locations&state=' + JSON.stringify(state)
-
-    $.getJSON(request, function (data) {
-
-
-        if (data.number_results > 0) {
-            $('#add_location_results_container').removeClass('hide').addClass('show')
-        } else {
-
-
-            $('#add_location_results_container').addClass('hide').removeClass('show')
-
-            //console.log(data)
-            if ($('#add_location').val() != '') {
-                $('#add_location_tr').addClass('invalid')
-            }
-
-            // $('#add_location').val('')
-            // on_changed_value(field, '')
-        }
-
-
-        $("#add_location_results .result").remove();
-
-        var first = true;
-
-        for (var result_key in data.results) {
-
-            var clone = $("#add_location_search_result_template").clone()
-            clone.prop('id', 'add_location_result_' + result_key);
-            clone.addClass('result').removeClass('hide')
-            clone.attr('value', data.results[result_key].value)
-            clone.attr('formatted_value', data.results[result_key].formatted_value)
-            // clone.attr('field', field)
-            if (first) {
-                clone.addClass('selected')
-                first = false
-            }
-
-            // clone.children(".code").html(data.results[result_key].code)
-            clone.children(".label").html(data.results[result_key].description)
-
-            $("#add_location_results").append(clone)
-
-
-        }
-
-    })
-
-
-}
-
-function select_add_location_option(element) {
-
-
-    $('#add_location').val($(element).attr('formatted_value'))
-    $('#save_add_location').attr('location_key', $(element).attr('value')).addClass('valid changed')
-
-    $('#add_location_tr').addClass('valid')
-    $('#add_location_results_container').addClass('hide').removeClass('show')
-    //console.log($(element).attr('value'))
-    //console.log($('#save_add_location').attr('location_key'))
-}
-
-function save_add_location() {
-
-
-    $('#save_add_location').removeClass('fa-cloud').addClass('fa-spinner fa-spin')
-
-
-    var request = '/ar_edit_stock.php?tipo=new_part_location&object=part&part_sku=' + $('#locations_table').attr('part_sku') + '&location_key=' + $('#save_add_location').attr('location_key')
-    console.log(request)
-    //return;
-    //=====
-    var form_data = new FormData();
-    form_data.append("tipo", 'new_part_location')
-    form_data.append("object", 'part')
-    form_data.append("part_sku", $('#locations_table').attr('part_sku'))
-    form_data.append("location_key", $('#save_add_location').attr('location_key'))
-
-    var request = $.ajax({
-
-        url: "/ar_edit_stock.php", data: form_data, processData: false, contentType: false, type: 'POST', dataType: 'json'
-
-    })
-
-    request.done(function (data) {
-        $('#save_add_location').addClass('fa-cloud').removeClass('fa-spinner fa-spin')
-
-        if (data.state == 200) {
-
-            console.log(data)
-
-            if (state.tab == 'part.stock.transactions') {
-                rows.fetch({
-                    reset: true
-                });
-            }
-            close_add_location()
-
-
-            var clone = $("#add_location_template").clone().removeClass('hide').addClass('locations').attr('id', 'part_location_edit_' + data.location_key).attr('location_key', data.location_key)
-
-
-            clone.find(".picking_location_note i").data('key',data.part_sku+'+'+data.location_key)
-
-            clone.find(".picking_location_icon").html(data.picking_location_icon)
-            clone.find(".location_code").html(data.location_code).attr('onclick', "change_view('" + data.location_link + "')")
-
-
-            if (data.can_pick == 'No') {
-                clone.find(".open_edit_min_max").addClass('hide')
-            }
-
-            clone.find(".formatted_recommended_min").html(data.formatted_min_qty)
-            clone.find(".formatted_recommended_max").html(data.formatted_max_qty)
-            clone.find(".recommended_min").attr('ovalue', data.min_qty).val(data.min_qty)
-            clone.find(".recommended_max").attr('ovalue', data.max_qty).val(data.max_qty)
-
-            if (data.can_pick == 'Yes') {
-                clone.find(".open_edit_recommended_move").addClass('hide')
-            }
-
-            clone.find(".formatted_recommended_move").html(data.formatted_move_qty)
-
-            clone.find(".recommended_move").attr('ovalue', data.move_qty).val(data.move_qty)
-
-
-            clone.find(".formatted_stock").html(data.formatted_stock)
-            clone.find(".stock").attr('location_key', data.location_key)
-          //  clone.find('.add_note').removeClass('super_discreet invisible').addClass('visible')
-
-
-            $("#add_location_template").before(clone)
-
-
-            for (var key in data.updated_fields) {
-
-                $('.' + key).html(data.updated_fields[key])
-            }
-
-            if (state.tab == 'part.locations') {
-                rows.fetch({reset: true});
-            }
-
-        } else if (data.state == 400) {
-            $('#location_data_msg').addClass('error').html(data.msg)
-        }
-
-
-    })
-
-    request.fail(function (jqXHR, textStatus) {
-    });
-
-
-}
 
 function save_stock(element) {
 
@@ -869,7 +389,7 @@ function open_sent_part_to_production(element){
 
 
     $('#edit_stock_dialog_to_production').removeClass('hide').offset({
-        top: $(element).position().top - 3, left: $(element).position().left-$('#edit_stock_dialog_to_production').width()
+        top: $(element).offset().top - 3, left: $(element).offset().left-$('#edit_stock_dialog_to_production').width()
     }).attr('max', $(element).attr('max')).find('.max').html($(element).attr('max'))
     $('#edit_stock_dialog_to_production').attr('location_key',$(element).attr('location_key'))
 }
@@ -1116,13 +636,16 @@ function save_leakage(element) {
 
 function open_edit_min_max(element) {
 
+    console.log($(element).offset())
+
+
     location_key = $(element).attr('location_key')
     min = $(element).attr('min')
     max = $(element).attr('max')
 
 
     $('#edit_stock_min_max').removeClass('hide').offset({
-        top: $(element).position().top - 3, left: $(element).position().left
+        top: $(element).offset().top - 3, left: $(element).offset().left
     }).attr('location_key', location_key)
 
 
@@ -1150,9 +673,11 @@ function open_edit_recommended_move(element) {
     location_key = $(element).attr('location_key')
     recommended_move = $(element).attr('recommended_move')
 
+    console.log('caca')
+
 
     $('#edit_recommended_move').removeClass('hide').offset({
-        top: $(element).position().top - 3, left: $(element).position().left
+        top: $(element).offset().top - 3, left: $(element).offset().left
     }).attr('location_key', location_key)
 
 
@@ -1472,6 +997,69 @@ function save_part_location_notes_bis(){
 
         });
 
+    }
+
+}
+
+
+function process_part_locations_changed() {
+
+
+    var warnings=0;
+    var disassociate = 0
+    var associate = 0
+
+
+
+    $('#locations_table  locations').each(function (i, obj) {
+
+
+
+    })
+    var diff_msg = '';
+    //console.log(potential_more_outs)
+    if (editable_locations < 2) {
+        $('.move_trigger').addClass('invisible')
+    }
+
+    if (disassociate == 1) {
+        diff_msg = '<i class="fa fa-unlink" aria-hidden="true"></i> '
+
+    } else if (disassociate > 1) {
+        diff_msg = disassociate + '<i class="fa fa-unlink" aria-hidden="true"></i>'
+    }
+
+
+    if (set_as_audit == 1) {
+        diff_msg += ' <i class="far fa-dot-circle" aria-hidden="true"></i> '
+
+    } else if (set_as_audit > 1) {
+        diff_msg += set_as_audit + ' <i class="far fa-dot-circle" aria-hidden="true"></i>'
+    }
+
+
+    if (diff_down != 0) {
+        diff_msg += ' (' + diff_down.toFixed(2).replace(/[.,]00$/, "") + ') '
+    }
+    if (diff_up != 0) {
+        diff_msg += ' (+' + diff_up.toFixed(2).replace(/[.,]00$/, "") + ') '
+    }
+
+    $('#new_stock').html(total_new_stock)
+
+
+    $('#stock_diff').html(diff_msg)
+
+    if (has_invalid) {
+        $('#edit_stock_saving_buttons').removeClass('valid changed').addClass('invalid')
+    } else {
+        $('#edit_stock_saving_buttons').removeClass('invalid')
+
+        if (diff_down != 0 || diff_up != 0 || set_as_audit > 0 || disassociate > 0) {
+            $('#edit_stock_saving_buttons').addClass('valid changed')
+        } else {
+            $('#edit_stock_saving_buttons').removeClass('valid changed')
+        }
     }
 
 }

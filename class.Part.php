@@ -2575,7 +2575,7 @@ class Part extends Asset {
 
     }
 
-    function get_locations($scope = 'keys') {
+    function get_locations($scope = 'keys',$_order='') {
 
 
         if ($scope == 'objects') {
@@ -2584,11 +2584,18 @@ class Part extends Asset {
             include_once 'class.PartLocation.php';
         }
 
+        if($_order=='stock'){
+            $_order='`Quantity On Hand` desc';
+        }elseif($_order=='can_pick'){
+            $_order='`Can Pick`,`Location File As` ';
+        }else{
+            $_order='`Location File As` ';
+        }
+
+
         $sql = sprintf(
             "SELECT PL.`Location Key`,`Location Code`,`Quantity On Hand`,`Part Location Note`,`Location Warehouse Key`,`Part SKU`,`Minimum Quantity`,`Maximum Quantity`,`Moving Quantity`,`Can Pick`, datediff(CURDATE(), `Part Location Last Audit`) AS days_last_audit,`Part Location Last Audit` FROM `Part Location Dimension` PL LEFT JOIN `Location Dimension` L ON (L.`Location Key`=PL.`Location Key`)  WHERE `Part SKU`=%d 
-        ORDER BY `Can Pick`,`Location File As` 
-
-", $this->sku
+        ORDER BY %s", $this->sku,$_order
         );
 
 
