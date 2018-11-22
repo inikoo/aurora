@@ -239,9 +239,9 @@
                     <li onclick="change_view('/fire')"><i class="fa fa-fire fa-fw" style="color:orange;opacity:.8"></i><span id="fire_label" class="label"> {t}Fire{/t}</span>
                     </li>
                     {/if}
-                    <li ><a href="https://get.teamviewer.com/txww6bm" target="_blank"><i class="fa fa-hands-helping fa-fw" style="color:cornflowerblue;opacity:.75"></i><span id="fire_label" class="label"> {t}Remote help{/t}</span></a>
+                    <li title="{t}Share screen{/t}" ><a href="https://get.teamviewer.com/txww6bm" target="_blank"><i class="far fa-desktop fa-fw" style="color:cornflowerblue;opacity:.75"></i><span id="fire_label" class="label"> {t}Share screen{/t}</span></a>
                     </li>
-                    <li  onclick="FreshWidget.show(); return false;" title="{t}Help me!{/t}"><i class="fas fa-ambulance fa-fw" style="color:cornflowerblue;opacity:.75"></i><span id="fire_label" class="label"> {t}Help{/t}</span>
+                    <li title="{t}Help{/t}" onclick="FreshWidget.show(); return false;" title="{t}Help me!{/t}"><i class="fal fa-hands-helping fa-fw" style="color:cornflowerblue;opacity:.75"></i><span id="fire_label" class="label"> {t}Help{/t}</span>
                     </li>
                 </ul>
 
@@ -312,13 +312,12 @@
 
     </aside>
 </div>
-{literal}
-    <style>#freshwidget-frame{background-color:initial}</style>
+    <style>#freshwidget-frame{
+            background-color:initial}</style>
 <script type="text/javascript" src="https://s3.amazonaws.com/assets.freshdesk.com/widget/freshwidget.js"></script>
 <script type="text/javascript">
-    FreshWidget.init("", {"queryString": "&widgetType=popup&submitTitle=Submit+ticket", "utf8": "✓", "widgetType": "popup", "buttonType": "text", "buttonText": "Support", "buttonColor": "white", "buttonBg": "#006063", "alignment": "3", "offset": "-1000px", "formHeight": "500px", "url": "https://inikoo.freshdesk.com"} );
+    FreshWidget.init("", {
+        "queryString": "{if $user->get('User Password Recovery Email')!=''}helpdesk_ticket[requester]={$user->get('User Password Recovery Email')}&disable[requester]=true{/if}&widgetType=popup&submitTitle=Submit+ticket", "utf8": "✓", "widgetType": "popup", "buttonType": "text", "buttonText": "Support", "buttonColor": "white", "buttonBg": "#006063", "alignment": "3", "offset": "-1000px", "formHeight": "500px", "url": "https://inikoo.freshdesk.com"} );
 </script>
-{/literal}
 </body>
 </html>
-

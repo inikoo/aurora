@@ -30,10 +30,52 @@ $object_fields = array(
 
 
     array(
+        'label'      => _('Email'),
+        'show_title' => true,
+        'class'      => 'edit_fields',
+        'fields'     => array(
+
+
+
+
+
+            array(
+                'render'            => true,
+                'id'                => 'User_Password_Recovery_Email',
+                'edit'              => 'email',
+                'value'             => $object->get('User Password Recovery Email'),
+                'formatted_value'   => $object->get('User Password Recovery Email'),
+                'label'             => ucfirst(
+                    $object->get_field_label('User Password Recovery Email')
+                ),
+                'server_validation' => json_encode(
+                    array(
+                        'tipo'       => 'check_for_duplicates',
+                        'parent'     => 'account',
+                        'parent_key' => 1,
+                        'object'     => 'User',
+                        'key'        => $object->id
+                    )
+                ),
+                'invalid_msg'       => get_invalid_message('email'),
+                'type'              => 'value'
+
+            ),
+
+
+
+        )
+    ),
+
+
+    array(
         'label'      => _('Access'),
         'show_title' => true,
         'class'      => 'edit_fields',
         'fields'     => array(
+
+
+
 
             array(
                 'render'          => ($object->get('User Active') == 'Yes' ? true : false),

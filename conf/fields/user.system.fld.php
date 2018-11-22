@@ -70,7 +70,7 @@ $object_fields = array(
                     $options['parent'], array(
                                           'supplier',
                                           'agent',
-                                          'xontractor'
+                                          'contractor'
                                       )
                 ) ? true : false),
                 'id'              => 'User_Alias',
@@ -82,7 +82,7 @@ $object_fields = array(
                 ),
                 'type'            => (in_array(
                     $options['parent'], array(
-                                          'aupplier',
+                                          'supplier',
                                           'agent',
                                           'contractor'
                                       )
