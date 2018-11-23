@@ -9,6 +9,7 @@
 -->
 *}
 
+
         <form method="post" action="/ar_edit.php" enctype="multipart/form-data" novalidate>
             {$upload_data.label}
 
