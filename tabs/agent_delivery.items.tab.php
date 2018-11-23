@@ -26,7 +26,6 @@ if ($state['_object']->get('State Index') >= 40) {
     $smarty->assign(
         'js_code', array(
             'js/injections/supplier.delivery.checking.'.(_DEVEL ? '' : 'min.').'js',
-            'js/injections/supplier.delivery.placing.'.(_DEVEL ? '' : 'min.').'js'
         )
     );
 

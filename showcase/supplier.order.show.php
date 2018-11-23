@@ -50,7 +50,6 @@ function get_supplier_order_showcase($data, $smarty, $user, $db) {
                                      'skip_mark_as_dispatched'       => $_parent->get('Parent Skip Mark as Dispatched'),
                                      'skip_mark_as_received'         => $_parent->get('Parent Skip Mark as Received'),
                                      'skip_checking'                 => $_parent->get('Parent Skip Checking'),
-                                     'automatic_placement_locations' => $_parent->get('Parent Automatic Placement Location')
 
 
                                  )
