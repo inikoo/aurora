@@ -9,8 +9,8 @@
 -->
 *}
 
-{assign payments $invoice->get_payments('objects','Completed')}
 
+{assign payments $invoice->get_payments('objects','Completed')}
 
 <div id="order" class="order" style="display: flex;" data-object='{$object_data}' invoice_key="{$invoice->id}">
     <div class="block" style=" align-items: stretch;flex: 2;padding: 20px">
@@ -20,7 +20,7 @@
             </div>
 
             <div class="data_field ">
-                <i class="fabfa-fw  fa-black-tie" title="{t}Tax number{/t}"></i> <span class="Invoice_Tax_Number">{if $invoice->get('Invoice Tax Number')!=''}{$invoice->get('Invoice Tax Number')}{else}
+                <i class="fab fa-fw fa-black-tie" title="{t}Tax number{/t}"></i> <span class="Invoice_Tax_Number">{if $invoice->get('Invoice Tax Number')!=''}{$invoice->get('Invoice Tax Number')}{else}
 
                         <span style="font-style: italic" class="super_discreet">No tax number provided</span>
                     {/if}</span>
@@ -36,10 +36,9 @@
 
         </div>
 
-
         <div id="billing_address_container" class="data_container" style="">
             <div style="min-height:80px;float:left;width:16px">
-                <i style="position: relative;top:3px" class="fa fa-inventory"></i>
+                <i style="position: relative;top:3px" class="fa fa-map-marker"></i>
             </div>
             <div style="min-width:150px;max-width:220px;margin-left: 25px">
                 {$invoice->get('Invoice Address Formatted')}
@@ -53,8 +52,6 @@
 
 
         <table border="0" class="date_and_state">
-
-
             <tr class="date" style="text-align: center">
                 <td title="{$invoice->get('Date')}">{$invoice->get_date('Invoice Date')}</td>
             </tr>
@@ -72,7 +69,7 @@
         <div class="orders " style="margin-top:5px">
 
 
-            <div class="node" style="border-top: 1px solid #ccc">
+            <div class="node" style="border-top: 1px solid #ccc;">
             <span class="node_label">
                          <i class="fa fa-shopping-cart  fa-fw " aria-hidden="true"></i>
                 <span class="link" onClick="change_view('orders/{$order->get('Order Store Key')}/{$order->id}')">{$order->get('Public ID')}</span>
@@ -150,7 +147,7 @@
 
             </tbody>
         </table>
-        
+
 
     </div>
     <div class="block " style="align-items: stretch;flex: 1;">
@@ -217,16 +214,7 @@
             </tr>
 
 
-            <tr id="tr_order_total_to_pay" style="{if $invoice->get('Invoice Outstanding Total Amount')==0}display:none{/if}">
-                <td class="aright">
-                    <div class="buttons small left">
-                        <button style="{if $invoice->get('Invoice Outstanding Total Amount')==0}display:none{/if}" id="show_add_payment" amount="{$invoice->get('Invoice Outstanding Total Amount')}"
-                                onclick="add_payment('invoice','{$invoice->id}')"><img src="art/icons/add.png"> {t}Payment{/t}</button>
-                    </div>
-                    <span style="{if $invoice->get('Invoice Outstanding Total Amount')>0}display:none{/if}" id="to_refund_label">{t}To Refund{/t}</span>
-                    <span style="{if $invoice->get('Invoice Outstanding Total Amount')<0}display:none{/if}" id="to_pay_label">{t}To Pay{/t}</span></td>
-                <td id="order_total_to_pay" width="100" class="aright" style="font-weight:800">{$invoice->get('Outstanding Total Amount')}</td>
-            </tr>
+
         </table>
 
         <div id="sticky_note_div" class="sticky_note pink" style="position:relative;left:-20px;width:270px;{if $invoice->get('Sticky Note')==''}display:none{/if}">
