@@ -25,7 +25,9 @@
                 </div>
 
             </td>
-            <td ><img style="height:20mm" src="/barcode_asset.php?number={$part->get('Part Barcode Number')}">
+            <td >
+
+                <img style="height:20mm" src="/barcode_asset.php?number={$part->get('Part Barcode Number')}">
             </td>
 
         </tr>
