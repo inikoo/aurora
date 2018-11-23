@@ -116,6 +116,7 @@ class Deal extends DB_Table {
             if ($row = $result->fetch()) {
                 $this->found     = true;
                 $this->found_key = $row['Deal Key'];
+                $this->duplicated_field = 'Deal Name';
             }
         } else {
             print_r($error_info = $this->db->errorInfo());

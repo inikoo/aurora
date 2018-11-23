@@ -1235,7 +1235,7 @@ class Store extends DB_Table {
                     $this->error_metadata = json_encode(array($deal->duplicated_field));
 
                     if ($deal->duplicated_field == 'Deal Name') {
-                        $this->msg = _('Duplicated name');
+                        $this->msg = sprintf(_('Duplicated name %s'),$data['Deal Name']);
                     }
 
 
