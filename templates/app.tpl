@@ -92,6 +92,7 @@
         <script src="/js/pdf.js?v1800612v2"></script>
         <script src="/utils/country_data.js.php?v=v181115&locale={$locale}"></script>
         <script src="/js/edit.js?v181115"></script>
+        <script src="https://wchat.freshchat.com/js/widget.js"></script>
     {if $user->get('User Type')=='Staff' or $user->get('User Type')=='Contractor'}
 
         <script src="/js/edit_webpage_edit.js?v181115"></script>
@@ -241,7 +242,9 @@
                     {/if}
                     <li title="{t}Share screen{/t}" ><a href="https://get.teamviewer.com/txww6bm" target="_blank"><i class="far fa-desktop fa-fw" style="color:cornflowerblue;opacity:.75"></i><span id="fire_label" class="label"> {t}Share screen{/t}</span></a>
                     </li>
-                    <li title="{t}Help{/t}" onclick="FreshWidget.show(); return false;" title="{t}Help me!{/t}"><i class="fal fa-hands-helping fa-fw" style="color:cornflowerblue;opacity:.75"></i><span id="fire_label" class="label"> {t}Help{/t}</span>
+                    <li title="{t}Help{/t}" onclick="window.fcWidget.open(); return false;" ><i class="fal fa-headset fa-fw" style="color:cornflowerblue;opacity:.75"></i><span id="fire_label" class="label"> {t}Online chat{/t}</span>
+                    </li>
+                    <li title="{t}Help{/t}" onclick="FreshWidget.show(); return false;" ><i class="fal fa-hands-helping fa-fw" style="color:cornflowerblue;opacity:.75"></i><span id="fire_label" class="label"> {t}Help{/t}</span>
                     </li>
                 </ul>
 
@@ -312,12 +315,45 @@
 
     </aside>
 </div>
-    <style>#freshwidget-frame{
-            background-color:initial}</style>
+    <style>
+        #freshwidget-frame,#fc_widget{
+            background-color:initial
+        }
+        .d-hotline.h-btn    {
+            opacity:.5;transform: scale(.5) !important;
+        }
+
+
+    </style>
 <script type="text/javascript" src="https://s3.amazonaws.com/assets.freshdesk.com/widget/freshwidget.js"></script>
 <script type="text/javascript">
     FreshWidget.init("", {
         "queryString": "{if $user->get('User Password Recovery Email')!=''}helpdesk_ticket[requester]={$user->get('User Password Recovery Email')}&disable[requester]=true{/if}&widgetType=popup&submitTitle=Submit+ticket", "utf8": "✓", "widgetType": "popup", "buttonType": "text", "buttonText": "Support", "buttonColor": "white", "buttonBg": "#006063", "alignment": "3", "offset": "-1000px", "formHeight": "500px", "url": "https://inikoo.freshdesk.com"} );
+</script>
+<script>
+    window.fcWidget.init({
+        token: "869f028d-7877-4611-a735-7021ae47fab0",
+        host: "https://wchat.freshchat.com",
+        config: {
+            headerProperty: {
+                hideChatButton: true
+            }
+        },
+    });
+
+
+    {if $user->get('User Password Recovery Email')!=''}
+    window.fcWidget.user.setEmail("{$user->get('User Password Recovery Email')}");
+    {/if}
+
+
+    window.fcWidget.setExternalId("{$account->get('Code')}.{$user->get('Handle')}");
+
+    window.fcWidget.user.setFirstName("{$user->get('Alias')}");
+
+
+
+
 </script>
 </body>
 </html>
