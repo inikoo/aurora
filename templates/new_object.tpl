@@ -251,25 +251,26 @@
 	
 		
 		<script>
-				var default_telephone_data= JSON.parse(atob(  $('#edit_container').data( "default_telephone_data" ))) 
 
-	
-		
-		
-		$("#{$field.id}").intlTelInput(
-		{
-		utilsScript: "/js/libs/telephone_utils.js",
-		initialCountry:default_telephone_data.default_country,
-		preferredCountries:default_telephone_data.preferred_countries
-		}
-		);
-		
-		$("#{$field.id}").intlTelInput("setNumber", "{$field.value}");
-		
-		 $("#{$field.id}").on("countrychange", function(e, countryData) {
-                
-               update_related_fields(countryData)
-        });
+			var default_telephone_data= JSON.parse(atob(  $('#edit_container').data( "default_telephone_data" )))
+
+
+
+
+         $("#{$field.id}").intlTelInput({
+		        utilsScript: "/js/libs/telephone_utils.js",
+		        initialCountry:default_telephone_data.default_country,
+		        preferredCountries:default_telephone_data.preferred_countries
+		    });
+
+
+		    $("#{$field.id}").intlTelInput("setNumber", "{$field.value}");
+
+
+		    $("#{$field.id}").on("countrychange", function() {
+		       update_related_fields($(this).intlTelInput("getSelectedCountryData"))
+
+		    });
 				
 
 		

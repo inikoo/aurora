@@ -28,7 +28,7 @@
         <script src="/js/libs/backbone.paginator.js"></script>
         <script src="/js/libs/backgrid.js"></script>
         <script src="/js/libs/backgrid-filter.js"></script>
-        <script src="/js/libs/intlTelInput.js"></script>
+        <script src="/js/libs/intlTelInput-jquery.14.0.6.js"></script>
         <script src="/js/libs/d3.js"></script>
         <script src="/js/libs/d3fc.layout.js"></script>
         <script src="/js/libs/d3fc.js"></script>
