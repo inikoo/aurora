@@ -721,12 +721,22 @@ function update_related_fields(country_data) {
         }
     })
 
-    post_update_related_fields(country_data)
+
+
+
+
+        if ($('#Supplier_Products_Origin_Country_Code').attr('has_been_changed') == 0) {
+            $('#Supplier_Products_Origin_Country_Code').countrySelect("selectCountry", country_data.iso2);
+        }
+        // console.log(country_data)
+        if ($('#Supplier_Default_Currency_Code').attr('has_been_changed') == 0) {
+            $('#Supplier_Default_Currency_Code').countrySelect("selectCountryfromCode", country_data.currency);
+        }
+
+
 }
 
-function post_update_related_fields(country_data) {
 
-}
 
 
 function show_field_options(element) {
