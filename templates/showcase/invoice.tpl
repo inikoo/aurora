@@ -6,7 +6,7 @@
             </div>
 
             <div class="data_field ">
-                <i class="fab fa-fw  fa-black-tie" title="{t}Tax number{/t}"></i> <span class="Invoice_Tax_Number">{if $invoice->get('Invoice Tax Number')!=''}{$invoice->get('Invoice Tax Number')}{else}<span style="font-style: italic" class="super_discreet">No tax number provided</span>{/if}</span>
+                <i class="fab fa-fw fa-black-tie" title="{t}Tax number{/t}"></i> <span class="Invoice_Tax_Number">{if $invoice->get('Invoice Tax Number')!=''}{$invoice->get('Invoice Tax Number')}{else}<span style="font-style: italic" class="super_discreet">No tax number provided</span>{/if}</span>
             </div>
 
             <div class="data_field ">
@@ -118,22 +118,7 @@
             </tr>
 
 
-            <tr id="tr_order_total_to_pay"
-                style="{if $invoice->get('Invoice Outstanding Total Amount')==0}display:none{/if}">
-                <td class="aright">
-                    <div class="buttons small left">
-                        <button style="{if $invoice->get('Invoice Outstanding Total Amount')==0}display:none{/if}"
-                                id="show_add_payment" amount="{$invoice->get('Invoice Outstanding Total Amount')}"
-                                onclick="add_payment('invoice','{$invoice->id}')"><img
-                                    src="art/icons/add.png"> {t}Payment{/t}</button>
-                    </div>
-                    <span style="{if $invoice->get('Invoice Outstanding Total Amount')>0}display:none{/if}"
-                          id="to_refund_label">{t}To Refund{/t}</span>
-                    <span style="{if $invoice->get('Invoice Outstanding Total Amount')<0}display:none{/if}"
-                          id="to_pay_label">{t}To Pay{/t}</span></td>
-                <td id="order_total_to_pay" width="100" class="aright"
-                    style="font-weight:800">{$invoice->get('Outstanding Total Amount')}</td>
-            </tr>
+
         </table>
 
         <div id="sticky_note_div" class="sticky_note pink"
