@@ -53,9 +53,7 @@ function get_showcase($data, $smarty, $user, $db) {
                 'skip_checking'                 => $_parent->get(
                     'Parent Skip Checking'
                 ),
-                'automatic_placement_locations' => $_parent->get(
-                    'Parent Automatic Placement Location'
-                )
+
 
             )
         )
