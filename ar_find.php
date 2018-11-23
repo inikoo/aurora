@@ -1637,6 +1637,9 @@ function find_assets_on_sale($db, $account, $memcache_ip, $data) {
 function find_supplier_parts($db, $account, $memcache_ip, $data) {
 
 
+
+  //  print_r($data);
+
     $cache       = false;
     $max_results = 5;
     $user        = $data['user'];
@@ -1655,16 +1658,21 @@ function find_supplier_parts($db, $account, $memcache_ip, $data) {
     }
 
 
+    $table= "FROM   `Supplier Part Dimension` SP LEFT JOIN  `Part Dimension` ON (`Supplier Part Part SKU`=`Part SKU`) ";
+
     if ($data['metadata']['parent'] == 'Supplier') {
 
         $where = sprintf(
             ' `Supplier Part Supplier Key`=%d and ', $data['metadata']['parent_key']
         );
 
-    } elseif ($data['metadata']['parent'] == 'Agent') {
+    } elseif (strtolower($data['metadata']['parent']) == 'agent') {
+
+        $table= "FROM   `Supplier Part Dimension` SP  left join `Agent Supplier Bridge` on (SP.`Supplier Part Supplier Key`=`Agent Supplier Supplier Key`) LEFT JOIN  `Part Dimension` ON (`Supplier Part Part SKU`=`Part SKU`) ";
+
 
         $where = sprintf(
-            ' `Supplier Part Supplier Key`=%d and ', $data['metadata']['parent_key']
+            ' `Agent Supplier Agent Key`=%d and ', $data['metadata']['parent_key']
         );
 
     }
@@ -1677,15 +1685,18 @@ function find_supplier_parts($db, $account, $memcache_ip, $data) {
     }
 
 
+
     $candidates = array();
 
     $candidates_data = array();
 
 
     $sql = sprintf(
-        "SELECT `Supplier Part Reference`,`Supplier Part Historic Key`,`Supplier Part Key`,`Part Reference`,`Supplier Part Description` FROM   `Supplier Part Dimension` SP LEFT JOIN  `Part Dimension` ON (`Supplier Part Part SKU`=`Part SKU`) WHERE %s `Supplier Part Reference` LIKE '%s%%'  ORDER BY `Supplier Part Reference` LIMIT %d ",
-        $where, $q, $max_results
+        "SELECT `Supplier Part Reference`,`Supplier Part Historic Key`,`Supplier Part Key`,`Part Reference`,`Supplier Part Description` %s WHERE %s `Supplier Part Reference` LIKE '%s%%'  ORDER BY `Supplier Part Reference` LIMIT %d ",
+        $table ,$where, $q, $max_results
     );
+
+
 
     if ($result = $db->query($sql)) {
         foreach ($result as $row) {
@@ -1711,14 +1722,15 @@ function find_supplier_parts($db, $account, $memcache_ip, $data) {
 
         }
     } else {
+        print "$sql\n";
         print_r($error_info = $db->errorInfo());
         exit;
     }
 
 
     $sql = sprintf(
-        "SELECT `Supplier Part Key`,`Supplier Part Historic Key`,`Supplier Part Reference`,`Part Reference`,`Supplier Part Description` FROM   `Supplier Part Dimension` SP LEFT JOIN  `Part Dimension` ON (`Supplier Part Part SKU`=`Part SKU`) WHERE %s `Part Reference` LIKE '%s%%'  ORDER BY `Part Reference` LIMIT %d ",
-        $where, $q, $max_results
+        "SELECT `Supplier Part Key`,`Supplier Part Historic Key`,`Supplier Part Reference`,`Part Reference`,`Supplier Part Description`   %s WHERE %s `Part Reference` LIKE '%s%%'  ORDER BY `Part Reference` LIMIT %d ",
+        $table,$where, $q, $max_results
     );
 
     if ($result = $db->query($sql)) {
@@ -1745,6 +1757,7 @@ function find_supplier_parts($db, $account, $memcache_ip, $data) {
 
         }
     } else {
+        print "** $sql\n";
         print_r($error_info = $db->errorInfo());
         exit;
     }
