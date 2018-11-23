@@ -12,11 +12,15 @@
 require_once 'vendor/autoload.php';
 require_once 'utils/sentry.php';
 
-if (!isset($_REQUEST['number'])) {
+if (empty($_REQUEST['number'])) {
+    header('Content-Type: image/png');
+    echo base64_decode('iVBORw0KGgoAAAANSUhEUgAAAAEAAAABAQMAAAAl21bKAAAAA1BMVEUAAACnej3aAAAAAXRSTlMAQObYZgAAAApJREFUCNdjYAAAAAIAAeIhvDMAAAAASUVORK5CYII=');
+
     exit;
 
 }
 $number = $_REQUEST['number'];
+
 
 
 if (isset($_REQUEST['type'])) {
