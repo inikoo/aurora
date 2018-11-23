@@ -31,10 +31,10 @@ switch ($tipo) {
     case 'save_whiteboard':
         $data = prepare_values(
             $_REQUEST, array(
-            'state'   => array('type' => 'json array'),
-            'block'   => array('type' => 'string'),
-            'content' => array('type' => 'string'),
-        )
+                         'state'   => array('type' => 'json array'),
+                         'block'   => array('type' => 'string'),
+                         'content' => array('type' => 'string'),
+                     )
         );
         save_whiteboard($data, $modules, $db, $account, $user, $editor);
         break;
@@ -84,11 +84,11 @@ function save_whiteboard($data, $modules, $db, $account, $user, $editor) {
 
     $sql = sprintf(
         'INSERT INTO `Whiteboard Dimension` (`Whiteboard Hash`,`Whiteboard Type`,`Whiteboard Module`,`Whiteboard Section`,`Whiteboard Tab`,`Whiteboard Text`,`Whiteboard Created`,`Whiteboard Updated`,`Whiteboard Last Updated User Key`,`Whiteboard Last Updated Staff Key`) 
-        VALUES (%s,%s,%s,%s,%s,%s,%s,%s,%d,%d) ON DUPLICATE KEY UPDATE `Whiteboard Text`=%s,`Whiteboard Updated`=%s,`Whiteboard Last Updated User Key`=%d ,`Whiteboard Last Updated Staff Key`=%d ', prepare_mysql($hash), prepare_mysql($type), prepare_mysql($module), prepare_mysql($section), prepare_mysql($tab),
-        prepare_mysql($data['content'],false), prepare_mysql($date), prepare_mysql($date), $user->id, $user->get_staff_key(), prepare_mysql($data['content'],false), prepare_mysql($date),  $user->id, $user->get_staff_key()
+        VALUES (%s,%s,%s,%s,%s,%s,%s,%s,%d,%d) ON DUPLICATE KEY UPDATE `Whiteboard Text`=%s,`Whiteboard Updated`=%s,`Whiteboard Last Updated User Key`=%d ,`Whiteboard Last Updated Staff Key`=%d ', prepare_mysql($hash), prepare_mysql($type), prepare_mysql($module),
+        prepare_mysql($section), prepare_mysql($tab),
+        prepare_mysql($data['content'], false), prepare_mysql($date), prepare_mysql($date), $user->id, $user->get_staff_key(), prepare_mysql($data['content'], false), prepare_mysql($date), $user->id, $user->get_staff_key()
 
     );
-
 
 
     $db->exec($sql);
@@ -104,16 +104,23 @@ function save_whiteboard($data, $modules, $db, $account, $user, $editor) {
 
 function get_help($data, $modules, $db, $account, $user, $smarty) {
 
-    //print_r($data['state']);
+    if (empty($state['module']) or empty($state['tab'])) {
 
+        $response = array(
+            'title'   => '',
+            'content' => _('There is not help for this section')
+        );
 
-    $title   = get_title($data['state'], $account, $user);
-    $content = get_content($data['state'], $smarty, $account, $user);
+    } else {
+        $title   = get_title($data['state'], $account, $user);
+        $content = get_content($data['state'], $smarty, $account, $user);
 
-    $response = array(
-        'title'   => $title,
-        'content' => $content
-    );
+        $response = array(
+            'title'   => $title,
+            'content' => $content
+        );
+    }
+
 
     echo json_encode($response);
 
@@ -122,6 +129,11 @@ function get_help($data, $modules, $db, $account, $user, $smarty) {
 
 
 function get_title($state, $account, $user) {
+
+
+    if (empty($state['tab'])) {
+        return '';
+    }
 
     if ($state['tab'] == 'supplier.supplier_parts') {
         return _("Supplier's part list & adding supplier parts");
@@ -146,6 +158,11 @@ function get_title($state, $account, $user) {
 
 function get_content($state, $smarty, $account, $user) {
 
+    if (empty($state['module']) or empty($state['tab'])) {
+        return '';
+    }
+
+
     $smarty->assign('user', $user);
     $smarty->assign('object', $state['object']);
     $smarty->assign('key', $state['key']);
@@ -156,9 +173,11 @@ function get_content($state, $smarty, $account, $user) {
     $template = 'help/'.$state['module'].'.'.$state['tab'].'.quick.tpl';
     if ($smarty->templateExists($template)) {
         return $smarty->fetch($template);
+    } else {
+        return _('There is not help for this section').' '.$state['module'].'.'.$state['tab'];
+
     }
 
-    return _('There is not help for this section').' '.$state['module'].'.'.$state['tab'];
 }
 
 
@@ -186,35 +205,34 @@ function get_whiteboard($data, $modules, $db, $account, $user, $smarty) {
     $hash_tab = hash('crc32', $module.$section.$tab, false);
 
 
-
-    $page_title=sprintf(_('%s (page)'),(isset($modules[$module]['sections'][$section]['label'])?$modules[$module]['sections'][$section]['label']:$section));
+    $page_title = sprintf(_('%s (page)'), (isset($modules[$module]['sections'][$section]['label']) ? $modules[$module]['sections'][$section]['label'] : $section));
 
 
     $empty_tab = true;
-    $has_tab = false;
+    $has_tab   = false;
     $text_tab  = '';
-    $tab_title='';
-    if ( isset($modules[$module]['sections'][$section]['tabs']) and  count($modules[$module]['sections'][$section]['tabs']) > 1) {
+    $tab_title = '';
+    if (isset($modules[$module]['sections'][$section]['tabs']) and count($modules[$module]['sections'][$section]['tabs']) > 1) {
         $has_tab = true;
 
-        if($data['state']['subtab'] == ''){
+        if ($data['state']['subtab'] == '') {
 
 
-            $tab_title=sprintf(_('%s (tab)'),(isset($modules[$module]['sections'][$section]['tabs'][$tab]['label'])?$modules[$module]['sections'][$section]['tabs'][$tab]['label']:$tab));
+            $tab_title = sprintf(_('%s (tab)'), (isset($modules[$module]['sections'][$section]['tabs'][$tab]['label']) ? $modules[$module]['sections'][$section]['tabs'][$tab]['label'] : $tab));
+
+        } else {
+
+
+            $tab_title = sprintf(
+                _('%s (tab)'), (
+            isset($modules[$module]['sections'][$section]['tabs'] [$data['state']['tab']] ['subtabs'][$data['state']['subtab']]['label'])
+                ?
+                $modules[$module]['sections'][$section]['tabs'][$data['state']['tab']]['subtabs'][$data['state']['subtab']]['label']
+                : $tab
+            )
+            );
 
         }
-        else{
-
-
-            $tab_title=sprintf(_('%s (tab)'),(
-                isset($modules[$module]['sections'][$section]['tabs'] [$data['state']['tab']] ['subtabs'][$data['state']['subtab']]['label'])
-                    ?
-                    $modules[$module]['sections'][$section]['tabs'][$data['state']['tab']]['subtabs'][$data['state']['subtab']]['label']
-                    :$tab
-            ));
-
-        }
-
 
 
         $sql = sprintf('SELECT `Whiteboard Text` FROM `Whiteboard Dimension` WHERE `Whiteboard Hash`=%s ', prepare_mysql($hash_tab));
@@ -223,15 +241,14 @@ function get_whiteboard($data, $modules, $db, $account, $user, $smarty) {
         if ($result = $db->query($sql)) {
             if ($row = $result->fetch()) {
 
-                if($row['Whiteboard Text']==''){
+                if ($row['Whiteboard Text'] == '') {
                     $text_tab  = '<em class="very_discreet">'._('Feel free to type something about this tab').' ('.$tab.') </em>';
                     $empty_tab = true;
-                }else{
+                } else {
 
                     $text_tab  = $row['Whiteboard Text'];
                     $empty_tab = false;
                 }
-
 
 
             } else {
@@ -273,8 +290,8 @@ function get_whiteboard($data, $modules, $db, $account, $user, $smarty) {
         'has_tab'     => $has_tab,
         'empty_tab'   => $empty_tab,
         'content_tab' => $text_tab,
-        'page_title'=>$page_title,
-        'tab_title'=>$tab_title,
+        'page_title'  => $page_title,
+        'tab_title'   => $tab_title,
 
     );
 
