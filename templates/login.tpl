@@ -18,7 +18,7 @@
             <link href="/css/backgrid-filter.css" rel="stylesheet">
             *}
 
-            <link href="/css/login.min.css" rel="stylesheet">
+            <link href="/css/login.min.css/v=2" rel="stylesheet">
 
 
 
