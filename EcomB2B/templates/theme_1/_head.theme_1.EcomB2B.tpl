@@ -54,7 +54,7 @@
     <link rel="canonical" href="{$webpage->get('URL')}"/>
 
 
-    <link rel="stylesheet" href="css/desktop.min.css?v3.0.1" type="text/css"/>
+    <link rel="stylesheet" href="css/desktop.min.css?v181125" type="text/css"/>
 
     {assign "with_forms" false}
     {assign "with_not_found" 0}
