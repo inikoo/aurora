@@ -14,9 +14,9 @@
 
 
 
-
+{*
         <link href="/css/jquery-ui.css" rel="stylesheet">
-        <link href="/css/fa/fontawesome-all.min.css?v5.3.1" rel="stylesheet">
+        <link href="/css/fa/fontawesome-all.css?v5.5" rel="stylesheet">
         <link href="/css/intlTelInput.css" rel="stylesheet">
         <link href="/css/countrySelect.css" rel="stylesheet">
         <link href="/css/d3fc.css" rel="stylesheet">
@@ -24,7 +24,7 @@
         <link href="/css/backgrid-filter.css" rel="stylesheet">
 
 
-        {if $user->get('User Type')=='Staff' or $user->get('User Type')=='Contractor'}
+
 
         <link href="/css/editor_v1/froala_editor.css?v2" rel="stylesheet">
         <link href="/css/editor_v1/froala_style.css?v2" rel="stylesheet">
@@ -46,10 +46,11 @@
         <link href="/css/amcharts/style.css" rel="stylesheet">
         <link href="/css/jquery.fancybox.min.css" rel="stylesheet">
         <link href="/css/tooltipster.bundle.min.css" rel="stylesheet" type="text/css">
-
-        {/if}
-
         <link href="/css/app.css?v181122" rel="stylesheet">
+  /*}
+
+
+        <link href="/css/au_app.min.css?v181122v2" rel="stylesheet">
 
 
 
@@ -96,8 +97,8 @@
     {if $user->get('User Type')=='Staff' or $user->get('User Type')=='Contractor'}
 
         <script src="/js/edit_webpage_edit.js?v181115"></script>
-        <script src="/js/new.js?v181115"></script>
-        <script src="/js/order.common.js?v181115v2"></script>
+        <script src="/js/new.js?v181123"></script>
+        <script src="/js/order.common.js?v181124"></script>
         <script src="/js/email_campaign.common.js?v181115"></script>
         <script src="/js/supplier.order.js?v181115"></script>
         <script src="/js/supplier.delivery.js?v181115"></script>
@@ -242,7 +243,7 @@
                     {/if}
                     <li title="{t}Share screen{/t}" ><a href="https://get.teamviewer.com/txww6bm" target="_blank"><i class="far fa-desktop fa-fw" style="color:cornflowerblue;opacity:.75"></i><span id="fire_label" class="label"> {t}Share screen{/t}</span></a>
                     </li>
-                    <li title="{t}Help{/t}" onclick="window.fcWidget.open(); return false;" ><i class="fal fa-headset fa-fw" style="color:cornflowerblue;opacity:.75"></i><span id="fire_label" class="label"> {t}Online chat{/t}</span>
+                    <li title="{t}Help{/t}" onclick="window.fcWidget.open(); return false;" ><i class="fas fa-headset fa-fw" style="color:cornflowerblue;opacity:.75"></i><span id="fire_label" class="label"> {t}Online chat{/t}</span>
                     </li>
                     <li title="{t}Help{/t}" onclick="FreshWidget.show(); return false;" ><i class="fal fa-hands-helping fa-fw" style="color:cornflowerblue;opacity:.75"></i><span id="fire_label" class="label"> {t}Help{/t}</span>
                     </li>
