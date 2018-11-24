@@ -19,7 +19,7 @@
     <title>{$webpage->get('Webpage Browser Title')}</title>
     <meta name="description" content="{$webpage->get('Webpage Meta Description')}"/>
 
-    <link rel="stylesheet" type="text/css" href="/theme_1/css/mobile.min.css?v2.0">
+    <link rel="stylesheet" type="text/css" href="/theme_1/css/mobile.min.css?vv181125">
 
     {assign "with_forms" false}
     {assign "with_not_found" 0}

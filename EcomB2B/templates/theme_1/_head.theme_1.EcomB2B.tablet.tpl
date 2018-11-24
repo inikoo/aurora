@@ -35,7 +35,7 @@
         </script>
     {/if}
 
-    <link rel="stylesheet" type="text/css" href="/css/tablet.min.css?v=2.0.3">
+    <link rel="stylesheet" type="text/css" href="/css/tablet.min.css?v=v181125">
 
 
     {assign "with_forms" false}
