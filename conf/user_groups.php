@@ -51,7 +51,7 @@ $user_groups = array(
         'Key'    => 2,
         'Name'   => _('Customer Services'),
         'View'   => '<i title="'._('Customers').'" class="fa fa-users fa-fw"> <i title="'._('Orders').'" class="fa fa-shopping-cart fa-fw"> <i title="'._('Websites')
-            .'" class="fa fa-globe fa-fw"></i> <i  title="'._('Products').'" class="fa fa-square fa-fw"></i>',
+            .'" class="far fa-globe fa-fw"></i> <i  title="'._('Products').'" class="fa fa-square fa-fw"></i>',
         'Edit'   => '<i title="'._('Customers').'" class="fa fa-users fa-fw"> <i title="'._('Orders').'" class="fa fa-shopping-cart fa-fw">',
         'Rights' => array(
             'CV',
@@ -106,7 +106,7 @@ $user_groups = array(
         'Key'    => 5,
         'Name'   => _('Sales Intelligence'),
         'View'   => '<i title="'._('Customers').'" class="fa fa-users fa-fw"> <i title="'._('Orders').'" class="fa fa-shopping-cart fa-fw"> <i title="'._('Websites')
-            .'" class="fa fa-globe fa-fw"></i> <i title="'._('Marketing').'" class="fa fa-bullhorn fa-fw"></i> <i  title="'._('Products').'" class="fa fa-square fa-fw"></i>',
+            .'" class="far fa-globe fa-fw"></i> <i title="'._('Marketing').'" class="fa fa-bullhorn fa-fw"></i> <i  title="'._('Products').'" class="fa fa-square fa-fw"></i>',
         'Edit'   => '',
         'Rights' => array()
 
@@ -146,7 +146,7 @@ $user_groups = array(
     8 => array(
         'Key'    => 8,
         'Name'   => _('Buyer'),
-        'View'   => ' <i title="'._('Orders').'" class="fa fa-shopping-cart fa-fw"> <i title="'._('Websites').'" class="fa fa-globe fa-fw"></i> <i  title="'._('Inventory')
+        'View'   => ' <i title="'._('Orders').'" class="fa fa-shopping-cart fa-fw"> <i title="'._('Websites').'" class="far fa-globe fa-fw"></i> <i  title="'._('Inventory')
             .'" class="fa fa-square fa-fw"></i> <i title="'._('Suppliers').'" class="fa fa-industry fa-fw"></i>',
         'Edit'   => '<i  title="'._('Inventory').'" class="fa fa-square fa-fw"></i> <i title="'._('Suppliers').'" class="fa fa-industry fa-fw"></i>',
         'Rights' => array(
@@ -161,10 +161,10 @@ $user_groups = array(
         'Key'    => 9,
         'Name'   => _('Marketing'),
         'View'   => '<i title="'._('Customers').'" class="fa fa-users fa-fw"> <i title="'._('Orders').'" class="fa fa-shopping-cart fa-fw"> <i title="'._('Websites')
-            .'" class="fa fa-globe fa-fw"></i> <i title="'._('Marketing').'" class="fa fa-bullhorn fa-fw"></i> <i  title="'._('Products').'" class="fa fa-square fa-fw"></i> <i  title="'._(
+            .'" class="far fa-globe fa-fw"></i> <i title="'._('Marketing').'" class="fa fa-bullhorn fa-fw"></i> <i  title="'._('Products').'" class="fa fa-square fa-fw"></i> <i  title="'._(
                 'Inventory'
             ).'" class="fa fa-square fa-fw"></i> <i title="'._('Suppliers').'" class="fa fa-industry fa-fw"></i>',
-        'Edit'   => '<i title="'._('Websites').'" class="fa fa-globe fa-fw"></i> <i title="'._('Marketing').'" class="fa fa-bullhorn fa-fw"></i> <i  title="'._('Products')
+        'Edit'   => '<i title="'._('Websites').'" class="far fa-globe fa-fw"></i> <i title="'._('Marketing').'" class="fa fa-bullhorn fa-fw"></i> <i  title="'._('Products')
             .'" class="fa fa-square fa-fw"></i>',
         'Rights' => array(
             'CV',
@@ -181,8 +181,8 @@ $user_groups = array(
     10 => array(
         'Key'    => 10,
         'Name'   => _('Sales'),
-        'View'   => '<i title="'._('Websites').'" class="fa fa-globe fa-fw"></i>',
-        'Edit'   => '<i title="'._('Websites').'" class="fa fa-globe fa-fw"></i>',
+        'View'   => '<i title="'._('Websites').'" class="far fa-globe fa-fw"></i>',
+        'Edit'   => '<i title="'._('Websites').'" class="far fa-globe fa-fw"></i>',
         'Rights' => array(
             'WV',
             'WE',
@@ -248,7 +248,7 @@ $user_groups = array(
         'Key'    => 16,
         'Name'   => _('Customer Services Manager'),
         'View'   => '<i title="'._('Customers').'" class="fa fa-users fa-fw"> <i title="'._('Orders').'" class="fa fa-shopping-cart fa-fw"> <i title="'._('Websites')
-            .'" class="fa fa-globe fa-fw"></i> <i  title="'._('Products').'" class="fa fa-square fa-fw"></i>',
+            .'" class="far fa-globe fa-fw"></i> <i  title="'._('Products').'" class="fa fa-square fa-fw"></i>',
         'Edit'   => '<i title="'._('Customers').'" class="fa fa-users fa-fw"> <i title="'._('Orders').'" class="fa fa-shopping-cart fa-fw">',
         'Rights' => array(
             'CM',

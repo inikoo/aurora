@@ -63,7 +63,7 @@ headerCell: integerHeaderCell
 {
 name: "webpage_state",
 label:'',
-html_label:'<i class="fa fa-retweet fa-fw" style="opacity:.8" aria-hidden="true"></i><i class="fa fa-globe fa-fw" style="position:relative;left:-25px;opacity:.3" aria-hidden="true"></i> ',
+html_label:'<i class="fa fa-retweet fa-fw" style="opacity:.8" aria-hidden="true"></i><i class="far fa-globe fa-fw" style="position:relative;left:-25px;opacity:.3" aria-hidden="true"></i> ',
 title:"{t}Webpage state{/t}",
 
 editable: false,

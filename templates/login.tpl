@@ -7,15 +7,21 @@
         <link href="/art/aurora_log_v2_orange.png" rel="shortcut icon" type="image/x-icon"/>
         <title>{t}Login{/t}</title>
         {if $_DEVEL}
+
+
+            {*
             <link href="/css/jquery-ui.css" rel="stylesheet">
             <link href="/css/fa/fontawesome-all.min.css?v5.3.1" rel="stylesheet">
-
-
             <link href="/css/intlTelInput.css" rel="stylesheet">
             <link href="/css/d3fc.css" rel="stylesheet">
             <link href="/css/backgrid.css" rel="stylesheet">
             <link href="/css/backgrid-filter.css" rel="stylesheet">
-            <link href="/css/login.css" rel="stylesheet">
+            *}
+
+            <link href="/css/login.min.css" rel="stylesheet">
+
+
+
             <script src="js/libs/jquery-2.2.1.js"></script>
             <script src="js/libs/sha256.js"></script>
             <script src="js/libs/aes.js"></script>
