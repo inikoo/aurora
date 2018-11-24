@@ -98,7 +98,7 @@
                     <section>
                         <label class="label">{$data.labels._company_label}</label>
                         <label class="input">
-                            <i id="company" class="icon-append icon-briefcase"></i>
+                            <i class="icon-append "><i class="far fa-store-alt" aria-hidden="true"></i></i>
                             <input class="register_field" type="text" name="company" value="{$customer->get('Customer Company Name')}" placeholder="{$data.labels._company_placeholder}">
                             <b id="_company_tooltip" class="tooltip tooltip-bottom-right">{$data.labels._company_tooltip}</b>
                         </label>
@@ -108,7 +108,7 @@
                     <section>
                         <label class="label">{$data.labels._contact_name_label}</label>
                         <label class="input">
-                            <i id="contact_name" class="icon-append icon-user"></i>
+                            <i class="icon-append "><i class="far fa-user" aria-hidden="true"></i></i>
                             <input class="register_field" type="text" name="contact_name" value="{$customer->get('Customer Main Contact Name')}" placeholder="{$data.labels._contact_name_placeholder}">
                             <b id="_contact_name_tooltip" class="tooltip tooltip-bottom-right">{$data.labels._contact_name_tooltip}</b>
                         </label>
@@ -118,7 +118,7 @@
                     <section>
                         <label class="label">{$data.labels._mobile_label}</label>
                         <label class="input">
-                            <i class="icon-append fa fa-mobile"></i>
+                            <i class="icon-append "><i class="far fa-mobile" aria-hidden="true"></i></i>
                             <input class="register_field" type="text" name="mobile" value="{$customer->get('Customer Main Plain Mobile')}" placeholder="{$data.labels._mobile_placeholder}">
                             <b id="_mobile_tooltip" class="tooltip tooltip-bottom-right">{$data.labels._mobile_tooltip}</b>
                         </label>
@@ -127,7 +127,7 @@
                     <section>
                         <label class="label">{$data.labels._email_label}</label>
                         <label class="input">
-                            <i class="icon-append far envelope"></i>
+                            <i class="icon-append "><i class="far fa-envelope" aria-hidden="true"></i></i>
                             <input class="register_field" type="email" name="email" id="_email_placeholder" value="{$customer->get('Customer Main Plain Email')}" placeholder="{$data.labels._email_placeholder}">
                             <b id="_email_tooltip" class="tooltip tooltip-bottom-right">{$data.labels._email_tooltip}</b>
                         </label>
@@ -142,7 +142,7 @@
                         <label class="label">{$data.labels._registration_number_label}</label>
 
                         <label class="input">
-                            <i class="icon-append icon-gavel"><i class="fa fa-building" aria-hidden="true"></i>
+                            <i class="icon-append "><i class="far fa-file-signature" aria-hidden="true"></i>
                             </i>
                             <input class="register_field" type="text" name="registration_number" value="{$customer->get('Customer Registration Number')}" placeholder="{$data.labels._registration_number_placeholder}">
                             <b id="_registration_number_tooltip" class="tooltip tooltip-bottom-right">{$data.labels._registration_number_tooltip}</b>
@@ -153,12 +153,11 @@
                         <label class="label">{$data.labels._tax_number_label}</label>
 
                         <label class="input">
-                            <i id="_tax_number" onclick="show_edit_input(this)" class="icon-append icon-gavel"><i class="fa fa-gavel" aria-hidden="true"></i>
-                            </i>
+                            <i id="_tax_number"  class="icon-append icon-gavel"><i class="fa fa-gavel"></i></i>
                             <input class="register_field" type="text" name="tax_number" id="_tax_number_placeholder" value="{$customer->get('Customer Tax Number')}" placeholder="{$data.labels._tax_number_placeholder}">
                             <b id="_tax_number_tooltip" class="tooltip tooltip-bottom-right">{$data.labels._tax_number_tooltip}</b>
                         </label>
-                        <label class="label Tax_Number_Valid">{$customer->get('Tax Number Valid')}</label>
+                        <label style="margin-top:5px;font-size: smaller" class="label Tax_Number_Valid">{$customer->get('Tax Number Valid')}</label>
 
                     </section>
 
@@ -198,7 +197,7 @@
 
                     <section>
                         <label class="input">
-                            <i id="_password" onclick="show_edit_input(this)" class="icon-append icon-lock"></i>
+                            <i class="icon-append"><i class="fa fa-key"></i></i>
                             <input class="register_field" type="password" name="pwd" id="password" placeholder="{$data.labels._password_placeholder}">
                             <b id="_password_tooltip" class="tooltip tooltip-bottom-right">{$data.labels._password_tooltip}</b>
                         </label>
@@ -206,7 +205,7 @@
 
                     <section>
                         <label class="input">
-                            <i id="_password_conform" onclick="show_edit_input(this)" class="icon-append icon-lock"></i>
+                            <i  class="icon-append"><i class="fa fa-repeat-1"></i></i>
                             <input class="register_field ignore" type="password" name="password_confirm" placeholder="{$data.labels._password_confirm_placeholder}">
                             <b id="_password_conform_tooltip" class="tooltip tooltip-bottom-right">{$data.labels._password_conform_tooltip}</b>
                         </label>

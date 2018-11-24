@@ -215,7 +215,7 @@ module.exports = function (grunt) {
 
                 }
             },
-/*
+            /*
             web: {
                 options: {
                     // style: 'compressed'
@@ -246,7 +246,7 @@ module.exports = function (grunt) {
                 files: {
                     'EcomB2B/css/desktop.min.css': [
 
-                      'EcomB2B/css/fontawesome-all.css',
+                        'css/fontawesome-all.css',
                         'EcomB2B/css/style.theme_1.EcomB2B.desktop.css'],
 
                     'EcomB2B/css/forms.min.css': [
@@ -264,7 +264,7 @@ module.exports = function (grunt) {
 
 
                     'EcomB2B/css/mobile.min.css': [
-                        'EcomB2B/css/fontawesome-all.min.css',
+                        'css/fontawesome-all.css',
                         'EcomB2B/theme_1/mobile/style.css',
                         'EcomB2B/theme_1/mobile/skin.css',
                         'EcomB2B/theme_1/mobile/framework.css',
@@ -275,7 +275,7 @@ module.exports = function (grunt) {
 
                 'EcomB2B/css/tablet.min.css': [
 
-                        'EcomB2B/css/fontawesome-all.min.css',
+                        'css/fontawesome-all.css',
                         'EcomB2B/theme_1/tablet/style.css',
                         'EcomB2B/theme_1/tablet/skin.css',
                         'EcomB2B/theme_1/tablet/framework.css',
@@ -290,14 +290,50 @@ module.exports = function (grunt) {
                 }
             },
 
-            aurora: {
+            au: {
                 files: {
-                    'build/app/css/app.min.css': ['css/app.css']
+                    'css/au_app.min.css':
+                        [
+                            'css/jquery-ui.css',
+                            'css/fontawesome-all.css',
+                            'css/intlTelInput.css',
+                            'css/countrySelect.css',
+                            'css/d3fc.css',
+                            'css/backgrid.css',
+                            'css/backgrid-filter.css',
+
+                            'css/editor_v1/froala_editor.css',
+                            'css/editor_v1/froala_style.css',
+                            'css/editor_v1/codemirror.css',
+                            'css/editor_v1/codemirror_dracula.css',
+
+                            'css/editor_v1/plugins/char_counter.css',
+                            'css/editor_v1/plugins/code_view.css',
+                            'css/editor_v1/plugins/colors.css',
+                            'css/editor_v1/plugins/emoticons.css',
+                            'css/editor_v1/plugins/file.css',
+                            'css/editor_v1/plugins/fullscreen.css',
+                            'css/editor_v1/plugins/image.css',
+                            'css/editor_v1/plugins/image_manager.css',
+                            'css/editor_v1/plugins/line_breaker.css',
+                            'css/editor_v1/plugins/quick_insert.css',
+                            'css/editor_v1/plugins/table.css',
+                            'css/editor_v1/plugins/video.css',
+                            'css/editor_v1/plugins/draggable.css',
+                            'css/amcharts/style.css',
+                            'css/jquery.fancybox.min.css',
+                            'css/tooltipster.bundle.min.css',
+                            'css/app.css'
+                        ]
 
                 }
-            }, login: {
+            },
+            au_login: {
                 files: {
-                    'build/app/css/login.min.css': ['css/login.css']
+                    'css/login.min.css': [
+                        'css/fontawesome-all.css',
+                        'css/login.css'
+                    ]
 
                 }
             }
@@ -532,6 +568,9 @@ module.exports = function (grunt) {
 
     grunt.registerTask('ws', ['clean:websocket','copy:websocket', 'copy:websocket_stones']);
     grunt.registerTask('qws', ['copy:websocket']);
+
+
+    grunt.registerTask('au', ['sass:aurora_public','sass:login', 'cssmin:au', 'cssmin:au_login']);
 
 
     grunt.registerTask('pweb', ['sass:aurora_public', 'cssmin:pweb','uglify:pweb_mobile',

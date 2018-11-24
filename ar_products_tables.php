@@ -1312,15 +1312,15 @@ function product_categories_products($_data, $db, $user) {
 
                 if ($data['Webpage State'] == 'Online') {
                     if ($data['Product Category Status'] == 'Discontinued') {
-                        $webpage_state = '<i class="fa fa-globe warning" aria-hidden="true"></i>';
+                        $webpage_state = '<i class="far fa-globe warning" aria-hidden="true"></i>';
 
                     } else {
-                        $webpage_state = '<i class="fa fa-globe success" aria-hidden="true"></i>';
+                        $webpage_state = '<i class="far fa-globe success" aria-hidden="true"></i>';
 
                     }
 
                 } else {
-                    $webpage_state = '<i class="fa fa-globe super_discreet" aria-hidden="true"></i>';
+                    $webpage_state = '<i class="far fa-globe super_discreet" aria-hidden="true"></i>';
 
                 }
 

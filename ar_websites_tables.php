@@ -659,9 +659,9 @@ function webpages($_data, $db, $user) {
     foreach ($db->query($sql) as $data) {
 
         if ($data['Webpage State'] == 'Online') {
-            $state = '<i class="fa fa-globe" aria-hidden="true"></i>';
+            $state = '<i class="far fa-globe" aria-hidden="true"></i>';
         } else {
-            $state = '<i class="fa fa-globe very_discreet" aria-hidden="true"></i>';
+            $state = '<i class="far fa-globe very_discreet" aria-hidden="true"></i>';
 
         }
 
@@ -731,9 +731,9 @@ function webpages_in_process($_data, $db, $user) {
     foreach ($db->query($sql) as $data) {
 
         if ($data['Webpage State'] == 'Online') {
-            $state = '<i class="fa fa-globe" aria-hidden="true"></i>';
+            $state = '<i class="far fa-globe" aria-hidden="true"></i>';
         } else {
-            $state = '<i class="fa fa-globe very_discreet" aria-hidden="true"></i>';
+            $state = '<i class="far fa-globe very_discreet" aria-hidden="true"></i>';
 
         }
 
@@ -832,9 +832,9 @@ function webpages_online($_data, $db, $user) {
     foreach ($db->query($sql) as $data) {
 
         if ($data['Webpage State'] == 'Online') {
-            $state = '<i class="fa fa-globe" aria-hidden="true"></i>';
+            $state = '<i class="far fa-globe" aria-hidden="true"></i>';
         } else {
-            $state = '<i class="fa fa-globe very_discreet" aria-hidden="true"></i>';
+            $state = '<i class="far fa-globe very_discreet" aria-hidden="true"></i>';
 
         }
 
@@ -889,9 +889,9 @@ function webpages_offline($_data, $db, $user) {
     foreach ($db->query($sql) as $data) {
 
         if ($data['Webpage State'] == 'Online') {
-            $state = '<i class="fa fa-globe" aria-hidden="true"></i>';
+            $state = '<i class="far fa-globe" aria-hidden="true"></i>';
         } else {
-            $state = '<i class="fa fa-globe very_discreet" aria-hidden="true"></i>';
+            $state = '<i class="far fa-globe very_discreet" aria-hidden="true"></i>';
 
         }
 

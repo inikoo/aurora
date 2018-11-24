@@ -387,7 +387,7 @@ class Public_Customer extends DBW_Table {
                     $msg = $this->data['Customer Tax Number Validation Message'];
 
                     if ($this->data['Customer Tax Number Validation Source'] == 'Online') {
-                        $source = '<i title=\''._('Validated online').'\' class=\'fa fa-globe\'></i>';
+                        $source = '<i title=\''._('Validated online').'\' class=\'far fa-globe\'></i>';
 
 
                     } elseif ($this->data['Customer Tax Number Validation Source'] == 'Manual') {

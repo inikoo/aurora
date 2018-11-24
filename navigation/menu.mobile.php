@@ -175,7 +175,7 @@ function get_mobile_menu($data,$user, $smarty) {
 
         if ($user->data['User Hooked Site Key']) {
             $nav_menu[] = array(
-                '<i class="fa fa-globe fa-fw"></i>',
+                '<i class="far fa-globe fa-fw"></i>',
                 _('Websites'),
                 'website/'.$user->data['User Hooked Site Key'],
                 'websites',
@@ -184,7 +184,7 @@ function get_mobile_menu($data,$user, $smarty) {
             );
         } else {
             $nav_menu[] = array(
-                '<i class="fa fa-globe fa-fw"></i>',
+                '<i class="far fa-globe fa-fw"></i>',
                 _('Websites'),
                 'websites',
                 'websites',
