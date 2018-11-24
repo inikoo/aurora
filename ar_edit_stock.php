@@ -957,7 +957,7 @@ function edit_part_move_stock($account, $db, $user, $editor, $data, $smarty) {
 
 }
 
-function edit_stock($account, $db, $user, $editor, $data, $smarty) {
+function edit_stock_to_delete($account, $db, $user, $editor, $data, $smarty) {
 
     include_once 'class.PartLocation.php';
 
