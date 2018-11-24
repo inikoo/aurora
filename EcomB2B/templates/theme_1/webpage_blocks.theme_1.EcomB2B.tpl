@@ -313,7 +313,7 @@
 
 
             {if $with_reset_password==1}
-            getScript('/js/desktop.logged_in.min.js?v=2', function () {
+            getScript('/js/desktop.logged_in.min.js?v=181124', function () {
                 getScript('/js/desktop.forms.min.js', function () {
 
                     $("form").on('submit', function (e) {
@@ -431,7 +431,7 @@
 
 
             {if $with_basket==1}
-            getScript('/js/desktop.logged_in.min.js?v=3', function () {
+            getScript('/js/desktop.logged_in.min.js?v=181124', function () {
                 getScript('/js/desktop.forms.min.js', function () {
                     getScript('/js/desktop.basket.min.js?v2', function () {
 
@@ -474,7 +474,7 @@
 
             {/if}
             {if $with_thanks==1}
-            getScript('/js/desktop.logged_in.min.js?v=2', function () {
+            getScript('/js/desktop.logged_in.min.js?v=181124', function () {
 
                 var _args=document.location.href.split("?")[1];
 
@@ -503,7 +503,7 @@
 
             {/if}
             {if $with_checkout==1}
-            getScript('/js/desktop.logged_in.min.js?v=2', function () {
+            getScript('/js/desktop.logged_in.min.js?v=181124', function () {
                 getScript('/js/desktop.forms.min.js', function () {
                     getScript('/js/desktop.checkout.min.js?v2', function () {
                         $.getJSON("ar_web_checkout.php?tipo=get_checkout_html&device_prefix=", function (data) {
@@ -1216,7 +1216,7 @@
             });
             {/if}
 
-            getScript('/js/desktop.logged_in.min.js?v=2', function () {
+            getScript('/js/desktop.logged_in.min.js?v=181124', function () {
                 $('#logout i').removeClass('fa-spinner fa-spin').addClass('fa-sign-out')
 
 

@@ -608,12 +608,12 @@ function booking_in_barcode_qty_input_changed() {
 
     if (element.val() == '') {
 
-        element.closest('div').find('i').removeClass('fa-cloud exclamation-circle error').addClass('fa-plus')
+        element.closest('div').find('i').removeClass('fa-cloud fa-exclamation-circle error').addClass('fa-plus')
         $('#reading_location_barcode').addClass('invisible')
     } else {
 
         if (!validate_signed_integer(element.val(), 4294967295) || element.val() == '') {
-            element.closest('div').find('i').removeClass(' exclamation-circle error invisible').addClass('fa-plus')
+            element.closest('div').find('i').removeClass(' fa-exclamation-circle error invisible').addClass('fa-plus')
             element.addClass('discreet')
 
             $('#reading_location_barcode').removeClass('invisible')

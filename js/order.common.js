@@ -673,6 +673,10 @@ function picked_offline_items_qty_change(element) {
 
 function save_item_qty_change(element) {
 
+    if ($(element).hasClass('fa-exclamation-circle')) {
+        return;
+    }
+
     $(element).addClass('fa-spinner fa-spin')
 
     var input = $(element).closest('span').find('input')
