@@ -17,12 +17,12 @@ function delivery_qty_changed(element) {
 
 
     if ($(element).val() == $(element).attr('ovalue')) {
-        $(element).closest('span').find('i.plus').removeClass('fa-cloud exclamation-circle error').addClass('fa-plus')
+        $(element).closest('span').find('i.plus').removeClass('fa-cloud fa-exclamation-circle error').addClass('fa-plus')
         $(element).closest('span').find('i.minus').removeClass('invisible')
     } else {
 
         if (!validate_signed_integer($(element).val(), 4294967295) || $(element).val() == '') {
-            $(element).closest('span').find('i.plus').removeClass('fa-plus exclamation-circle error').addClass('fa-cloud')
+            $(element).closest('span').find('i.plus').removeClass('fa-plus fa-exclamation-circle error').addClass('fa-cloud')
             $(element).closest('span').find('i.minus').addClass('invisible')
 
             $(element).addClass('discreet')

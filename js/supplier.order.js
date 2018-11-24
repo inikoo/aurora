@@ -357,7 +357,7 @@ $(document).on('input propertychange', '.create_delivery_item_qty', function (ev
 
     if (!validate_signed_integer($(this).val(), 4294967295) || $(this).val() == '') {
 
-        $(this).closest('tr').find('i.plus').removeClass('fa-check-circle exclamation-circle error').addClass('fa-plus')
+        $(this).closest('tr').find('i.plus').removeClass('fa-check-circle fa-exclamation-circle error').addClass('fa-plus')
         $(this).closest('tr').find('i.minus').removeClass('invisible')
         $(this).closest('tr').find('input.create_delivery_item_qty').removeClass('error')
 
@@ -448,7 +448,7 @@ function use_submitted_qty_in_delivery(element,qty){
 
     if (!validate_signed_integer(qty, 4294967295) ) {
 
-        $(element).closest('tr').find('i.plus').removeClass('fa-check-circle exclamation-circle error').addClass('fa-plus')
+        $(element).closest('tr').find('i.plus').removeClass('fa-check-circle fa-exclamation-circle error').addClass('fa-plus')
         $(element).closest('tr').find('i.minus').removeClass('invisible')
         $(element).closest('tr').find('input.create_delivery_item_qty').removeClass('error')
 
@@ -532,7 +532,7 @@ function create_delivery_change_quantity(qty,element) {
 
     $(element).removeClass('discreet')
 
-    $(element).closest('span').find('i.plus').removeClass('fa-check-circle exclamation-circle error').addClass('fa-plus').removeClass('fa-spinner fa-spin')
+    $(element).closest('span').find('i.plus').removeClass('fa-check-circle fa-exclamation-circle error').addClass('fa-plus').removeClass('fa-spinner fa-spin')
     $(element).closest('span').find('i.minus').removeClass('invisible').removeClass('fa-spinner fa-spin')
 
     validate_new_supplier_delivery();

@@ -275,25 +275,28 @@ $(function() {
 
 $(document).on('input propertychange', '.order_qty', function (evt) {
 
-  //  if ($(this).val() == $(this).data('ovalue')) {
-  //      $(this).closest('span').find('i').removeClass('fa-save-o exclamation-circle error').addClass('fa-plus')
 
-//    } else {
 
         if (!validate_signed_integer($(this).val(), 4294967295) || $(this).val() == '') {
             $(this).closest('span').find('i.minus').addClass('hide')
-            $(this).closest('span').find('i.plus').removeClass('fa-plus exclamation-circle error').addClass('fa-save')
+            $(this).closest('span').find('i.plus').removeClass('fa-plus fa-exclamation-circle error').addClass('fa-save')
             $(this).addClass('discreet')
         } else {
             $(this).closest('span').find('i.minus').addClass('hide')
             $(this).closest('span').find('i.plus').removeClass('fa-plus fa-save').addClass('fa-exclamation-circle error')
 
         }
- //   }
+
 });
 
 
 function save_item_qty_change(element) {
+
+
+    if ($(element).hasClass('fa-exclamation-circle')) {
+        return;
+    }
+
 
     $(element).addClass('fa-spinner fa-spin')
 
