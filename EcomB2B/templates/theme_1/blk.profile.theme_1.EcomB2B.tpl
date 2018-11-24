@@ -197,7 +197,7 @@
 
                     <section>
                         <label class="input">
-                            <i class="icon-append"><i class="fa fa-key"></i></i>
+                            <i class="icon-append"><i class="fa fa-lock"></i></i>
                             <input class="register_field" type="password" name="pwd" id="password" placeholder="{$data.labels._password_placeholder}">
                             <b id="_password_tooltip" class="tooltip tooltip-bottom-right">{$data.labels._password_tooltip}</b>
                         </label>

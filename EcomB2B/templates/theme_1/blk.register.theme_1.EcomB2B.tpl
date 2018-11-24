@@ -42,7 +42,7 @@
 
                 <section>
                     <label class="input">
-                        <i id="_password_confirm" class="icon-append far fa-lock"></i>
+                        <i id="_password_confirm" class="icon-append far fa-repeat-1"></i>
                         <input class="register_field ignore" type="password" name="password_confirm" placeholder="{$data.labels._password_confirm_placeholder}" >
                         <b id="_password_confirm_tooltip"  class="tooltip tooltip-bottom-right">{$data.labels._password_confirm_tooltip}</b>
                     </label>
@@ -69,7 +69,7 @@
 
                 <section>
                     <label class="input">
-                        <i class="icon-append far fa-briefcase"></i>
+                        <i class="icon-append far fa-store-alt"></i>
                         <input class="register_field" type="text" name="company"  placeholder="{$data.labels._company_placeholder}">
                         <b id="_company_tooltip"  class="tooltip tooltip-bottom-right">{$data.labels._company_tooltip}</b>
                     </label>
