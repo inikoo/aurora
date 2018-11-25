@@ -54,7 +54,7 @@
 
 
 
-        <script src="https://browser.sentry-cdn.com/4.3.0/bundle.min.js" crossorigin="anonymous"></script>
+        <script src="https://browser.sentry-cdn.com/4.3.4/bundle.min.js" crossorigin="anonymous"></script>
 
 
         <script src="/js/libs/jquery-3.3.1.min.js"></script>
@@ -192,7 +192,7 @@
         ga('set', 'userId', '{$account->get('Code')}_{"%05d"|sprintf:$user->id}');
         ga('send', 'pageview');
 
-        Sentry.init({ dsn: 'https://7c38fecb8a274f7e93cb0488ad22ca10@sentry.io/1319834' });
+        Sentry.init({ dsn: 'https://8f17945abb95493692010f7026553f71@sentry.io/1329970' });
 
         Sentry.configureScope((scope) => {
             scope.setUser({
