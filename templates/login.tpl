@@ -18,9 +18,17 @@
             <link href="/css/backgrid-filter.css" rel="stylesheet">
             *}
 
-            <link href="/css/login.min.css/v=2" rel="stylesheet">
+            <link href="/css/login.min.css?v=3" rel="stylesheet">
 
+        {if $smarty.server.SERVER_NAME!='ecom.bali' }
+            <script src="https://browser.sentry-cdn.com/4.3.4/bundle.min.js" crossorigin="anonymous"></script>
+            <script>
+                Sentry.init({
+                    dsn: 'https://8f17945abb95493692010f7026553f71@sentry.io/1329970'
 
+                });
+            </script>
+        {/if}
 
             <script src="js/libs/jquery-2.2.1.js"></script>
             <script src="js/libs/sha256.js"></script>
@@ -36,6 +44,9 @@
             <link href="/css/login.min.css" rel="stylesheet">
             <script src="js/login.min.js"></script>
         {/if}
+
+
+
     </head>
     <body class="align">
     <div class="site__container">
