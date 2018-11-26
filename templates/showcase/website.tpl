@@ -170,6 +170,22 @@
                 </tbody>
 
             </table>
+
+            <table id="stock_table" border="0" class="overview" >
+                <tbody class="info">
+
+
+
+                <tr class="main ">
+                    <td colspan=2>
+                        <i class="far fa-sitemap margin_right_10" title="{t}Site map{/t}"></i> <em>https://{$website->get('Website URL')}/sitemap_index.xml.php</em>  <a target="_blank" href="https://{$website->get('Website URL')}/sitemap_index.xml.php"> <i class="fal margin_left_10 fa-external-link"></i> </a>
+                    </td>
+                </tr>
+                </tbody>
+
+            </table>
+
+
         </div>
     </div>
     <div style="clear:both"></div>
