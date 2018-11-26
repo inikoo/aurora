@@ -597,8 +597,10 @@ function website_system_webpages_config($website_type) {
             'Webpage Meta Description'  => '',
             'Page Store Content Data'   => json_encode(
                 array(
-                    '_title' => _('Under construction'),
-                    '_text'  => _('This page is under construction. Please come back soon!.')
+                    'blocks' => array(
+                        $blocks['in_process'],
+                    )
+
                 )
             )
         ),

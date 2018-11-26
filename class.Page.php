@@ -3450,7 +3450,8 @@ class Page extends DB_Table {
             }
 
 
-        } elseif ($this->get('Webpage Scope') == 'Category Categories') {
+        }
+        elseif ($this->get('Webpage Scope') == 'Category Categories') {
 
 
             //  $category=get_object('Category',$this->get('Webpage Scope Key'));
@@ -3634,7 +3635,8 @@ class Page extends DB_Table {
             }
 
 
-        } elseif ($this->get('Webpage Scope') == 'Product') {
+        }
+        elseif ($this->get('Webpage Scope') == 'Product') {
 
 
             //  $category=get_object('Category',$this->get('Webpage Scope Key'));
