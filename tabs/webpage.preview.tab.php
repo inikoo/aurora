@@ -54,6 +54,8 @@ if ($webpage->get('Webpage Template Filename') == 'products_showcase' or $webpag
     $smarty->assign('webpage', $webpage);
     $smarty->assign('website', $website);
 
+
+
     $smarty->assign('content', $webpage->get('Content Data'));
     $smarty->assign('metadata', $webpage->get('Scope MetaData'));
 

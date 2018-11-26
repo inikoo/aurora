@@ -124,7 +124,6 @@ $smarty->assign('discounts', $webpage->get('Discounts'));
 
 $smarty->assign('poll_queries', $website->get_poll_queries($webpage));
 
-
 if (file_exists('templates/'.$template)) {
 
 
