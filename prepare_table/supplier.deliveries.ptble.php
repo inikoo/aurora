@@ -93,9 +93,10 @@ if (isset($parameters['elements_type'])) {
                 $where .= ' and false';
             } elseif ($num_elements_checked < 6) {
 
-               if ($_key == 'Placed') {
+                //'InProcess','Consolidated','Dispatched','Received','Checked','Placed','Costing','Cancelled','InvoiceChecked'
+               if ($_key == 'InProcess') {
                     $_elements .= ",'InProcess','Dispatched','Consolidated'";
-                }if ($_key == 'InProcess') {
+                }if ($_key == 'Placed') {
                     $_elements .= ",'Placed','Costing'";
                 } else {
 
