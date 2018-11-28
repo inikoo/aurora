@@ -53,7 +53,7 @@ switch ($tipo) {
         break;
     case 'payments_group_by_store':
 
-        payments_group_by_store(get_table_parameters(), $db, $user,$account);
+        payments_group_by_store(get_table_parameters(), $db, $user, $account);
         break;
     default:
         $response = array(
@@ -135,22 +135,34 @@ function payment_accounts($_data, $db, $user) {
         foreach ($result as $data) {
 
 
-            $other_currency = ($account_currency != $data['Payment Account Currency']);
+            //$other_currency = ($account_currency != $data['Payment Account Currency']);
+
+
+           // print_r($data);
+
+            if ($data['stores'] != '') {
+                $stores='';
+                foreach (preg_split('/\|/',$data['stores']) as $_store_data) {
+                    $store_data=preg_split('/\,\:\,/',$_store_data);
+
+                   // print $_store_data;
+                    $stores.=sprintf('<span class="link" onclick="change_view(\'payment_accounts/%d\')">%s</span>, ',$store_data[0],$store_data[1]);
+                }
+                $stores=preg_replace('/\, $/','',$stores);
+            } else {
+                $stores = '';
+            }
+
 
             $adata[] = array(
                 'id'           => (integer)$data['Payment Account Key'],
                 'code'         => $data['Payment Account Code'],
                 'name'         => $data['Payment Account Name'],
                 'transactions' => number($data['Payment Account Transactions']),
-                'payments'     => money(
-                    $data['Payment Account Payments Amount'], $account_currency
-                ),
-                'refunds'      => money(
-                    $data['Payment Account Refunds Amount'], $account_currency
-                ),
-                'balance'      => money(
-                    $data['Payment Account Balance Amount'], $account_currency
-                )
+                'payments'     => money($data['Payment Account Payments Amount'], $account_currency),
+                'refunds'      => money($data['Payment Account Refunds Amount'], $account_currency),
+                'balance'      => money($data['Payment Account Balance Amount'], $account_currency),
+                'stores'       => $stores
             );
 
         }
@@ -178,11 +190,20 @@ function payment_accounts($_data, $db, $user) {
 
 function payments($_data, $db, $user) {
     global $db, $account;
-    $rtext_label = 'payment';
+    $rtext_label = 'transactions';
     include_once 'prepare_table/init.php';
 
 
-    $parent = get_object($_data['parameters']['parent'], $_data['parameters']['parent_key']);
+    if ($_data['parameters']['parent'] == 'store_payment_account') {
+
+        $tmp = preg_split('/\_/', $_data['parameters']['parent_key']);
+
+        $parent = get_object('payment_account', $tmp[1]);
+
+    } else {
+        $parent = get_object($_data['parameters']['parent'], $_data['parameters']['parent_key']);
+
+    }
 
 
     $is_refund = false;
@@ -218,17 +239,17 @@ function payments($_data, $db, $user) {
 
             switch ($data['Payment Type']) {
                 case 'Payment':
-                    $type = _('Order payment');
-                    $_remove_label=_('Cancel payment');
+                    $type          = _('Order payment');
+                    $_remove_label = _('Cancel payment');
                     break;
                 case 'Refund':
-                    $type = _('Refund pay back');
-                    $_remove_label=_('Cancel refund');
+                    $type          = _('Refund pay back');
+                    $_remove_label = _('Cancel refund');
 
                     break;
                 case 'Credit':
-                    $type = _('Credit');
-                    $_remove_label=_('Cancel credit');
+                    $type          = _('Credit');
+                    $_remove_label = _('Cancel credit');
                     break;
                 default:
                     $type = $data['Payment Type'];
@@ -325,15 +346,40 @@ function payments($_data, $db, $user) {
             }
 
 
+            if ($data['Order Key'] != '') {
+                $order = sprintf(
+                    "<span class='link' onclick='change_view(\"/orders/%d/%d\")' >%s</span>", $data['Order Store Key'], $data['Order Key'], $data['Order Public ID']
+                );
+
+            } else {
+                $order = '';
+            }
+
+            if ($_data['parameters']['parent'] == 'store_payment_account') {
+                $reference=sprintf(
+                    "<span class='link' onclick='change_view(\"/payment/%d/%d\")' >%s</span>", $tmp[0],$data['Payment Key'], ($data['Payment Transaction ID'] == '' ? '<span class="discreet italic">'._('Reference missing').'</span>' : $data['Payment Transaction ID'])
+                );
+            }elseif ($_data['parameters']['parent'] == 'payment_account') {
+                $reference=sprintf(
+                    "<span class='link' onclick='change_view(\"/payment_account/%d/payment/%d\")' >%s</span>", $_data['parameters']['parent_key'],$data['Payment Key'], ($data['Payment Transaction ID'] == '' ? '<span class="discreet italic">'._('Reference missing').'</span>' : $data['Payment Transaction ID'])
+                );
+            }else{
+                $reference=sprintf(
+                    "<span class='link' onclick='change_view(\"/payment/%d\")' >%s</span>", $data['Payment Key'], ($data['Payment Transaction ID'] == '' ? '<span class="discreet italic">'._('Reference missing').'</span>' : $data['Payment Transaction ID'])
+                );
+            }
+
+
+
+
             $adata[] = array(
                 'id'         => (integer)$data['Payment Key'],
                 'currency'   => $data['Payment Currency Code'],
                 'amount'     => $amount,
-                'reference'  => sprintf(
-                    "<span class='link' onclick='change_view(\"/payment/%d\")' >%s</span>", $data['Payment Key'], ($data['Payment Transaction ID'] == '' ? '<span class="discreet italic">'._('Reference missing').'</span>' : $data['Payment Transaction ID'])
-                ),
+                'reference'  => $reference,
                 'type'       => $type,
                 'status'     => $status,
+                'order'      => $order,
                 'notes'      => $notes,
                 'date'       => strftime("%a %e %b %Y %H:%M %Z", strtotime($data['Payment Last Updated Date'].' +0:00')),
                 'operations' => ($show_operations ? $operations : ''),
@@ -495,7 +541,7 @@ function credits($_data, $db, $user) {
 }
 
 
-function payments_group_by_store($_data, $db, $user,$account) {
+function payments_group_by_store($_data, $db, $user, $account) {
 
     $rtext_label = 'store';
     include_once 'prepare_table/init.php';
@@ -505,37 +551,31 @@ function payments_group_by_store($_data, $db, $user,$account) {
 
     //print $sql;
 
-    $total_payments       = 0;
-    $total_payments_amount       = 0;
-    $total_credits=0;
-    $total_credits_amount=0;
+    $total_payments        = 0;
+    $total_payments_amount = 0;
+    $total_credits         = 0;
+    $total_credits_amount  = 0;
 
-    $mix_currencies=false;
+    $mix_currencies = false;
 
     if ($result = $db->query($sql)) {
 
         foreach ($result as $data) {
 
 
-
             if ($data['Store Currency Code'] != $account->get('Account Currency')) {
 
 
+                if ($data['Store Total Acc Credits Amount'] != 0) {
+                    $exchange = currency_conversion(
+                        $db, $data['Store Currency Code'], $account->get('Account Currency'), '- 6 hours'
+                    );
 
-               if($data['Store Total Acc Credits Amount']!=0){
-                   $exchange = currency_conversion(
-                       $db,$data['Store Currency Code'], $account->get('Account Currency'), '- 6 hours'
-                   );
-
-                   $mix_currencies=true;
-                   $total_credits_amount += $exchange*$data['Store Total Acc Credits Amount'];
-
-
-               }
+                    $mix_currencies       = true;
+                    $total_credits_amount += $exchange * $data['Store Total Acc Credits Amount'];
 
 
-
-
+                }
 
 
             } else {
@@ -545,22 +585,20 @@ function payments_group_by_store($_data, $db, $user,$account) {
             }
 
 
-
-            $total_payments += $data['Store Total Acc Payments'];
+            $total_payments        += $data['Store Total Acc Payments'];
             $total_payments_amount += $data['Store Total Acc Payments Amount'];
-            $total_credits += $data['Store Total Acc Credits'];
+            $total_credits         += $data['Store Total Acc Credits'];
 
 
             $adata[] = array(
-                'store_key' => $data['Store Key'],
-                'code'      => sprintf('<span class="link" onclick="change_view(\'orders/%d\')">%s</span>', $data['Store Key'], $data['Store Code']),
-                'name'      => sprintf('<span class="link" onclick="change_view(\'orders/%d\')">%s</span>', $data['Store Key'], $data['Store Name']),
-                'payments'  => sprintf('<span class=" %s">%s</span>',($data['Store Total Acc Payments']==0?'super_discreet':''),number($data['Store Total Acc Payments'])),
-                'payments_amount'  => sprintf('<span class=" %s">%s</span>',($data['Store Total Acc Payments']==0?'super_discreet':''),money($data['Store Total Acc Payments Amount'],$data['Store Currency Code'])),
+                'store_key'       => $data['Store Key'],
+                'code'            => sprintf('<span class="link" onclick="change_view(\'orders/%d\')">%s</span>', $data['Store Key'], $data['Store Code']),
+                'name'            => sprintf('<span class="link" onclick="change_view(\'orders/%d\')">%s</span>', $data['Store Key'], $data['Store Name']),
+                'payments'        => sprintf('<span class=" %s">%s</span>', ($data['Store Total Acc Payments'] == 0 ? 'super_discreet' : ''), number($data['Store Total Acc Payments'])),
+                'payments_amount' => sprintf('<span class=" %s">%s</span>', ($data['Store Total Acc Payments'] == 0 ? 'super_discreet' : ''), money($data['Store Total Acc Payments Amount'], $data['Store Currency Code'])),
 
-                'credits'  => sprintf('<span class=" %s">%s</span>',($data['Store Total Acc Credits']==0?'super_discreet':''),number($data['Store Total Acc Credits'])),
-                'credits_amount'  => sprintf('<span class=" %s">%s</span>',($data['Store Total Acc Credits']==0?'super_discreet':''),money($data['Store Total Acc Credits Amount'],$data['Store Currency Code'])),
-
+                'credits'        => sprintf('<span class=" %s">%s</span>', ($data['Store Total Acc Credits'] == 0 ? 'super_discreet' : ''), number($data['Store Total Acc Credits'])),
+                'credits_amount' => sprintf('<span class=" %s">%s</span>', ($data['Store Total Acc Credits'] == 0 ? 'super_discreet' : ''), money($data['Store Total Acc Credits Amount'], $data['Store Currency Code'])),
 
 
             );
@@ -578,10 +616,10 @@ function payments_group_by_store($_data, $db, $user,$account) {
         'name'      => '',
         'code'      => _('Total').($filtered > 0 ? ' '.'<i class="fa fa-filter fa-fw"></i>' : ''),
 
-        'payments' => number($total_payments),
-        'payments_amount' => sprintf('<span class=" %s">%s</span>',($mix_currencies?'italic discreet':''),money($total_payments_amount,$account->get('Currency Code'))),
-        'credits' => number($total_credits),
-        'credits_amount'  => sprintf('<span class=" %s">%s</span>',($mix_currencies?'italic discreet':''),money($total_credits_amount,$account->get('Currency Code'))),
+        'payments'        => number($total_payments),
+        'payments_amount' => sprintf('<span class=" %s">%s</span>', ($mix_currencies ? 'italic discreet' : ''), money($total_payments_amount, $account->get('Currency Code'))),
+        'credits'         => number($total_credits),
+        'credits_amount'  => sprintf('<span class=" %s">%s</span>', ($mix_currencies ? 'italic discreet' : ''), money($total_credits_amount, $account->get('Currency Code'))),
 
     );
 

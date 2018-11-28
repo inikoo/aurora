@@ -15,7 +15,7 @@
 class Payment_Account extends DB_Table {
 
 
-    function Payment_Account($arg1 = false, $arg2 = false) {
+    function __construct($arg1 = false, $arg2 = false) {
 
         global $db;
         $this->db            = $db;
@@ -277,6 +277,44 @@ class Payment_Account extends DB_Table {
     }
 
 
+    function update_stores_data() {
+
+        $stores     = 0;
+        $websites      = 0;
+
+        $sql = sprintf(
+            "SELECT  count(*) as stores, ifnull(sum(if(`Payment Account Store Show In Cart`='Yes',1,0)),0) as websites from `Payment Account Store Bridge` where `Payment Account Store Payment Account Key`=%d  and `Payment Account Store Status`='Active' ",$this->id,
+            $this->id
+        );
+
+
+
+        if ($result=$this->db->query($sql)) {
+            if ($row = $result->fetch()) {
+                $stores = $row['stores'];
+                $websites = $row['websites'];
+        	}
+        }else {
+        	print_r($error_info=$this->db->errorInfo());
+        	print "$sql\n";
+        	exit;
+        }
+
+
+
+        $this->fast_update(
+            array(
+                'Payment Account Number Stores'    => $stores,
+                'Payment Account Number Websites' => $websites,
+
+
+
+            )
+        );
+
+    }
+
+
     function update_payments_data() {
         $transactions = 0;
         $payments     = 0;
@@ -328,6 +366,8 @@ class Payment_Account extends DB_Table {
 
 
         $this->db->exec($sql);
+
+        $this->update_stores_data();
 
 
     }

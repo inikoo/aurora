@@ -2489,7 +2489,7 @@ function get_navigation($user, $smarty, $data, $db, $account) {
                     );
                     break;
                 case ('payment_account'):
-                    return get_payment_account_navigation($data, $user, $smarty, $db);
+                    return get_payment_account_server_navigation($data, $user, $smarty, $db);
                     break;
                 case ('payment_accounts'):
                     return get_payment_accounts_navigation(
@@ -3529,7 +3529,8 @@ function get_tabs($data, $db, $account, $modules, $user, $smarty, $requested_tab
         }
 
 
-    } elseif ($data['section'] == 'return') {
+    }
+    elseif ($data['section'] == 'return') {
 
 
         $_content['tabs']['return.items_done']['class'] = 'hide';
@@ -3543,8 +3544,8 @@ function get_tabs($data, $db, $account, $modules, $user, $smarty, $requested_tab
 
                 $_content['tabs']['return.items_done']['class'] = '';
 
-                $_content['tabs']['return.items']['class']   = 'hide';
-                if ( $data['tab'] == 'return.items') {
+                $_content['tabs']['return.items']['class'] = 'hide';
+                if ($data['tab'] == 'return.items') {
                     $data['tab'] = 'return.items_done';
 
                     $_content['tabs']['return.items_done']['selected'] = true;
@@ -3553,7 +3554,7 @@ function get_tabs($data, $db, $account, $modules, $user, $smarty, $requested_tab
                 break;
             case 'Dispatched':
             case 'Received':
-                if ( $data['tab'] == 'return.items_done') {
+                if ($data['tab'] == 'return.items_done') {
                     $data['tab'] = 'return.items';
 
                     $_content['tabs']['return.items']['selected'] = true;
