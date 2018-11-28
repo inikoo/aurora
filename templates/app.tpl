@@ -98,10 +98,10 @@
 
         <script src="/js/edit_webpage_edit.js?v181115"></script>
         <script src="/js/new.js?v181123"></script>
-        <script src="/js/order.common.js?v181124"></script>
+        <script src="/js/order.common.js?v181128"></script>
         <script src="/js/email_campaign.common.js?v181115"></script>
         <script src="/js/supplier.order.js?v181115"></script>
-        <script src="/js/supplier.delivery.js?v181115"></script>
+        <script src="/js/supplier.delivery.js?v181128v2"></script>
         <script src="/js/part_locations.edit.js?v=v181115"></script>
         <script src="/js/part_locations.edit_locations.js"></script>
         <script src="/js/part_locations.stock_check.js"></script>
@@ -316,6 +316,9 @@
 
     </aside>
 </div>
+
+{if $_server_name!='au.bali'}
+
     <style>
         #freshwidget-frame,#fc_widget{
             background-color:initial
@@ -329,7 +332,7 @@
 <script type="text/javascript" src="https://s3.amazonaws.com/assets.freshdesk.com/widget/freshwidget.js"></script>
 <script type="text/javascript">
     FreshWidget.init("", {
-        "queryString": "{if $user->get('User Password Recovery Email')!=''}helpdesk_ticket[requester]={$user->get('User Password Recovery Email')}&disable[requester]=true{/if}&widgetType=popup&submitTitle=Submit+ticket", "utf8": "✓", "widgetType": "popup", "buttonType": "text", "buttonText": "Support", "buttonColor": "white", "buttonBg": "#006063", "alignment": "3", "offset": "-1000px", "formHeight": "500px", "url": "https://inikoo.freshdesk.com"} );
+        "queryString": "{if $user->get('User Password Recovery Email')!=''}helpdesk_ticket[requester]={$user->get('User Password Recovery Email')}&disable[requester]=true{/if}&widgetType=popup&submitTitle=Submit+ticket", "utf8": "✓", "widgetType": "popup", "buttonType": "text", "buttonText": "Support", "buttonColor": "white", "buttonBg": "#006063", "alignment": "3", "offset": "-1000px", "formHeight": "580px", "url": "https://inikoo.freshdesk.com"} );
 </script>
 <script>
     window.fcWidget.init({
@@ -351,10 +354,7 @@
     window.fcWidget.setExternalId("{$account->get('Code')}.{$user->get('Handle')}");
 
     window.fcWidget.user.setFirstName("{$user->get('Alias')}");
-
-
-
-
 </script>
+{/if}
 </body>
 </html>

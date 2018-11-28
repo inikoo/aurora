@@ -201,6 +201,8 @@ function place_item(element) {
 
     request.done(function (data) {
 
+        var table_metadata = JSON.parse(atob($('#table').data("metadata")))
+
 
         console.log(data)
 
@@ -228,6 +230,8 @@ function place_item(element) {
 
         $('.timeline .li').removeClass('complete')
 
+        $('#order_node').addClass('complete')
+        $('#order_dispatched_node').addClass('complete')
 
         $('#inputted_node').addClass('complete')
         $('#purchase_order_node').addClass('complete')
@@ -242,18 +246,45 @@ function place_item(element) {
         if (data.update_metadata.state_index >= 50) {
             $('#checked_node').addClass('complete')
         }
-        if (data.update_metadata.state_index == 100) {
+
+        if (data.update_metadata.state_index >= 100) {
             $('#placed_node').addClass('complete')
+        }
 
-            if (state.tab == 'supplier.delivery.items') {
+
+        console.log(table_metadata.type)
+        console.log(data.update_metadata.state_index)
+        if(table_metadata.type=='return'){
+
+            if (data.update_metadata.state_index >= 100) {
+
+                $("div[id='tab_return']").addClass('hide')
+
+                $("div[id='tab_return.items_done']").removeClass('hide')
+
+                change_tab('return.items_done')
 
 
-                change_tab('supplier.delivery.items')
+
 
             }
 
+        }else{
+            if (data.update_metadata.state_index == 100) {
 
+
+                if (state.tab == 'supplier.delivery.items') {
+
+
+                    change_tab('supplier.delivery.items')
+
+                }
+
+
+            }
         }
+
+
 
 
         if (data.placed == 'Yes') {

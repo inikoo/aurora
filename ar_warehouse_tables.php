@@ -77,6 +77,15 @@ switch ($tipo) {
     case 'shippers':
         shippers(get_table_parameters(), $db, $user, $account);
         break;
+    case 'returns':
+        returns(get_table_parameters(), $db, $user, $account);
+        break;
+    case 'return.checking_items':
+        return_checking_items(get_table_parameters(), $db, $user, $account);
+        break;
+    case 'return.items_done':
+        return_items_done(get_table_parameters(), $db, $user, $account);
+        break;
     default:
         $response = array(
             'state' => 405,
@@ -650,12 +659,10 @@ function part_locations_to_replenish_picking_location($_data, $db, $user) {
         $next_deliveries = '<div border="0" style="font-size: small" class="as_table">'.$next_deliveries.'</div>';
 
 
-
         $reference = sprintf(
             '<span class="link" title="%s" onclick="change_view(\'part/%d\')">%s</span>', $data['Part Package Description'], $data['Part SKU'],
             ($data['Part Reference'] == '' ? '<i class="fa error fa-exclamation-circle"></i> <span class="discreet italic">'._('Reference missing').'</span>' : $data['Part Reference'])
         );
-
 
 
         $table_data[] = array(
@@ -700,7 +707,7 @@ function part_locations_with_errors($_data, $db, $user) {
     $table_data = array();
 
     //print $sql;
-   
+
 
     foreach ($db->query($sql) as $data) {
 
@@ -1118,8 +1125,6 @@ function parts_with_unknown_location($_data, $db, $user, $account) {
     $adata = array();
 
 
-
-
     foreach ($db->query($sql) as $data) {
 
         if ($data['Part Status'] == 'Not In Use') {
@@ -1171,7 +1176,6 @@ function parts_with_unknown_location($_data, $db, $user, $account) {
             '<span class="link" title="%s" onclick="change_view(\'part/%d\')">%s</span>', $data['Part Package Description'], $data['Part SKU'],
             ($data['Part Reference'] == '' ? '<i class="fa error fa-exclamation-circle"></i> <span class="discreet italic">'._('Reference missing').'</span>' : $data['Part Reference'])
         );
-
 
 
         $adata[] = array(
@@ -1272,6 +1276,423 @@ function shippers($_data, $db, $user, $account) {
         'resultset' => array(
             'state'         => 200,
             'data'          => $record_data,
+            'rtext'         => $rtext,
+            'sort_key'      => $_order,
+            'sort_dir'      => $_dir,
+            'total_records' => $total
+
+        )
+    );
+    echo json_encode($response);
+}
+
+
+function returns($_data, $db, $user) {
+    $rtext_label = 'delivery';
+
+
+    include_once 'prepare_table/init.php';
+
+    $sql        = "select $fields from $table $where $wheref order by $order $order_direction limit $start_from,$number_results";
+    $table_data = array();
+
+    if ($result = $db->query($sql)) {
+        foreach ($result as $data) {
+
+            switch ($data['Supplier Delivery State']) {
+
+                case 'Received':
+                    $state = sprintf('%s', _('Received'));
+                    break;
+                case 'Checked':
+                    $state = sprintf('%s', _('Checked'));
+                    break;
+                case 'Placed':
+
+                    $state = _('Booked in');
+                    break;
+                case 'Costing':
+                case 'InvoiceChecked':
+                    $state = _('Booked in');
+                    break;
+                case 'Cancelled':
+                    $state = sprintf('%s', _('Cancelled'));
+                    break;
+
+                default:
+                    $state = $data['Supplier Delivery State'];
+                    break;
+            }
+
+            $table_data[] = array(
+                'id'        => (integer)$data['Supplier Delivery Key'],
+
+                //'public_id'   => $data['Supplier Delivery Public ID'],
+                'date'      => strftime("%e %b %Y", strtotime($data['Supplier Delivery Creation Date'].' +0:00')),
+                'last_date' => strftime("%a %e %b %Y %H:%M %Z", strtotime($data['Supplier Delivery Last Updated Date'].' +0:00')),
+                // 'parent_name' => $data['Supplier Delivery Parent Name'],
+
+
+                'store'     => sprintf('<span class="link" onclick="change_view(\'/store/%d\')" >%s</span>  ', $data['Order Store Key'], $data['Store Code']),
+                'public_id' => sprintf(
+                    '<span class="link" onclick="change_view(\'warehouse/%d/returns/%d\')" >%s</span>  ', $data['Supplier Delivery Warehouse Key'], $data['Supplier Delivery Key'], $data['Supplier Delivery Public ID']
+                ),
+
+
+                'state'        => $state,
+                'total_amount' => money($data['Supplier Delivery Total Amount'], $data['Supplier Delivery Currency Code'])
+
+
+            );
+
+
+        }
+    } else {
+        print_r($error_info = $db->errorInfo());
+        exit;
+    }
+
+
+    $response = array(
+        'resultset' => array(
+            'state'         => 200,
+            'data'          => $table_data,
+            'rtext'         => $rtext,
+            'sort_key'      => $_order,
+            'sort_dir'      => $_dir,
+            'total_records' => $total
+
+        )
+    );
+    echo json_encode($response);
+}
+
+function return_checking_items($_data, $db, $user, $account) {
+
+
+    $rtext_label = 'item';
+    include_once 'utils/supplier_order_functions.php';
+
+    $db->exec('SET SESSION group_concat_max_len = 1000000;');
+
+
+    $supplier_delivery = get_object('Supplier_Delivery', $_data['parameters']['parent_key']);
+
+
+    include_once 'prepare_table/init.php';
+
+    $sql        = "select $fields from $table $where $wheref order by $order $order_direction limit $start_from,$number_results";
+    $table_data = array();
+
+    if ($result = $db->query($sql)) {
+        foreach ($result as $data) {
+
+            // $quantity = number($data['Supplier Delivery Units']);
+
+
+            $data['units_qty'] = $data['Supplier Delivery Units'];
+
+            $data['account_currency_code'] = $account->get('Account Currency');
+            $data['currency_code']         = $supplier_delivery->get('Supplier Delivery Currency Code');
+            $data['exchange']              = $supplier_delivery->get('Supplier Delivery Currency Exchange');
+
+
+            $subtotals = sprintf('<span  class="subtotals" >');
+            if ($data['Supplier Delivery Units'] > 0) {
+                $subtotals .= money(
+                    $data['Supplier Delivery Net Amount'], $data['Currency Code']
+                );
+
+                if ($data['Supplier Delivery Weight'] > 0) {
+                    $subtotals .= ' '.weight($data['Supplier Delivery Weight']);
+                }
+                if ($data['Supplier Delivery CBM'] > 0) {
+                    $subtotals .= ' '.number($data['Supplier Delivery CBM']).' m³';
+                }
+            }
+            $subtotals .= '</span>';
+
+
+            $description = '<div style="font-size:90%" >';
+
+            $description = $description.'<span class="">'.$data['Part Units Per Package'].'</span><span class="discreet ">x</span> '.$data['Part Unit Description'].'<br/> 
+             <span class="discreet">'.sprintf(_('Packed in <b>%ds</b>'), $data['Part Units Per Package']).' <span class="" title="'._('SKOs per carton').'">, sko/C: <b>'.$data['Part Units Per Package'].'</b></span>';
+
+
+            $number_locations = 0;
+            $locations        = '';
+            if ($data['location_data'] != '') {
+                $locations_data = preg_split('/,/', $data['location_data']);
+
+
+                $locations = '<div  class="part_locations mini_table left " transaction_key="'.$data['Purchase Order Transaction Fact Key'].'" >';
+
+                foreach ($locations_data as $location_data) {
+                    $number_locations++;
+                    $location_data = preg_split('/\:/', $location_data);
+                    $locations     .= ' <div class="part_location button" style="clear:both;" onClick="set_placement_location(this)"  location_key="'.$location_data[0].'" >
+				<div  class="code data w150"  >'.$location_data[1].'</div>
+				<div class="data w30 aright" >'.number($location_data[3]).'</div>
+				</div>';
+
+                }
+                $locations .= '<div style="clear:both"></div></div>';
+            }
+
+            if ($locations != '') {
+                $description .= '<br><i style="margin-left:4px" class="fa fa-inventory button discreet  hide'.($number_locations == 0 ? 'hide' : '').'" aria-hidden="true" title="'._('Show locations').'"  show_title="'._('Show locations').'" hide_title="'._(
+                        'Hide locations'
+                    ).'"    onClick="show_part_locations(this)" ></i>';
+
+
+                $description .= $locations;
+
+            }
+
+
+            if ($data['Supplier Delivery Checked Units'] == '') {
+
+                $sko_checked_quantity = '';
+
+            } else {
+
+                $sko_checked_quantity = ($data['Supplier Delivery Checked Units'] / $data['Part Units Per Package']) + 0;
+
+
+            }
+
+
+            $edit_sko_checked_quantity = sprintf(
+                '<span class="%s" ondblclick="show_check_dialog(this)">%s</span>
+                <span data-settings=\'{"field": "Supplier Delivery Checked Units", "sko_factor":%d, "transaction_key":%d,"part_sku":%d ,"on":1 }\' class="checked_quantity %s"  >
+                    <i onClick="save_item_qty_change(this)" class="fa minus  fa-minus fa-fw button" aria-hidden="true"></i>
+                    <input   class="checked_qty width_50" style="text-align: center" value="%s" ovalue="%s"> 
+                    <i onClick="save_item_qty_change(this)" class="fa plus  fa-plus fa-fw button %s" aria-hidden="true">
+                </span>', ($supplier_delivery->get('Supplier Delivery State') == 'Placed' ? '' : 'hide'), number($sko_checked_quantity), $data['Part Units Per Package'], $data['Purchase Order Transaction Fact Key'], $data['Part SKU'],
+                ($supplier_delivery->get('Supplier Delivery State') == 'Placed' ? 'hide' : ''), $sko_checked_quantity, $sko_checked_quantity, ''
+            );
+
+
+           // print_r($data);
+
+            $quantity = ($data['Supplier Delivery Checked Units'] - $data['Supplier Delivery Placed Units']) / $data['Part Units Per Package'];
+
+
+            if ($data['Metadata'] == '') {
+                $metadata = array();
+            } else {
+                $metadata = json_decode($data['Metadata'], true);
+            }
+
+
+            $placement = '<div class="placement" ><div  class="placement_data mini_table right no_padding" style="padding-right:2px">';
+
+            if (isset($metadata['placement_data'])) {
+
+                foreach ($metadata['placement_data'] as $placement_data) {
+
+
+                    $placement .= '<div style="clear:both;">
+				<div class="data w150 aright link" onClick="change_view(\'locations/'.$placement_data['wk'].'/'.$placement_data['lk'].'\')" >'.$placement_data['l'].'</div>
+				<div  class=" data w75 aleft"  >'.$placement_data['qty'].' '._('SKO').' <i class="fa fa-sign-out" aria-hidden="true"></i></div>
+				</div>';
+
+
+                }
+            }
+            $placement      .= '<div style="clear:both"></div></div>';
+            $placement_note = '<input type="hidden" class="note" /><i class="far add_note fa-sticky-note padding_right_5 button" aria-hidden="true"  onClick="show_placement_note(this)" ></i>';
+            $placement      .= '
+			    <div style="clear:both"  id="place_item_'.$data['Purchase Order Transaction Fact Key'].'" class="place_item  '.($data['Supplier Delivery Checked Units'] != '' ? '' : 'invisible').'  '.($data['Supplier Delivery Transaction Placed'] == 'No' ? '' : 'hide')
+                .' " part_sku="'.$data['Part SKU'].'" transaction_key="'.$data['Purchase Order Transaction Fact Key'].'"  >
+
+			    '.$placement_note.'
+
+			    <input class="place_qty width_50 changed" value="'.($quantity + 0).'" ovalue="'.($quantity + 0).'"  min="1" max="'.round($quantity, 2).'"  >
+				<input class="location_code"  placeholder="'._('Location code').'"  >
+				<i  class="place_item_button  fa  fa-cloud  fa-fw save " aria-hidden="true" title="'._('Place to location').'"  location_key="" onClick="place_item(this)"  ></i>
+                </div>
+                </div>
+			';
+
+            $items_qty = sprintf(
+                '<span  id="part_sko_item_%d"  data-barcode_settings=\'{"reference":"%s","description":"%s" ,"image_src":"%s" ,"units":"%s" ,"formatted_units":"%s"   }\'  _checked="%s"   barcode="%s" data-metadata=\'{"qty":%d}\' onClick="copy_qty(this)" class="button part_sko_item"  >%s</span>',
+                $data['Part SKU'], $data['Part Reference'], base64_encode($data['Part Package Description']), $data['Part SKO Image Key'],
+                $data['Supplier Delivery Units'], number($data['Supplier Delivery Units']), $data['Supplier Delivery Checked Units'],
+
+
+                $data['Part SKO Barcode'], $data['Supplier Delivery Units'] / $data['Part Units Per Package'], number($data['Supplier Delivery Units'] / $data['Part Units Per Package'])
+
+            );
+
+
+            $table_data[] = array(
+
+                'id'       => (integer)$data['Purchase Order Transaction Fact Key'],
+                'part_sku' => (integer)$data['Part SKU'],
+                'checkbox' => sprintf(
+                    '<i key="%d" class="far fa-square fa-fw button" aria-hidden="true"></i>', $data['Purchase Order Transaction Fact Key']
+                ),
+
+                'operations' => sprintf(
+                    '<i key="%d" class="fa fa-fw fa-truck fa-flip-horizontal button" aria-hidden="true" onClick="change_on_delivery(this)"></i>', $data['Purchase Order Transaction Fact Key']
+                ),
+
+
+                'part_reference' => sprintf('<span class="link" onclick="change_view(\'/part/%d\')" >%s</span>  ', $data['Part SKU'], $data['Part Reference']),
+
+
+                'description' => $description,
+
+                'sko_edit_checked_quantity' => $edit_sko_checked_quantity,
+                'sko_checked_quantity'      => number($sko_checked_quantity),
+                'subtotals'                 => $subtotals,
+                'qty'                       => number($quantity),
+                'items_qty'                 => $items_qty,
+
+
+                'placement' => $placement
+            );
+
+
+        }
+    } else {
+        print_r($error_info = $db->errorInfo());
+        exit;
+    }
+
+
+    $response = array(
+        'resultset' => array(
+            'state'         => 200,
+            'data'          => $table_data,
+            'rtext'         => $rtext,
+            'sort_key'      => $_order,
+            'sort_dir'      => $_dir,
+            'total_records' => $total
+
+        )
+    );
+    echo json_encode($response);
+}
+
+
+
+
+function return_items_done($_data, $db, $user) {
+
+
+    $rtext_label = 'part';
+
+    $account = get_object('Account', 1);
+
+
+    $supplier_delivery = get_object('SupplierDelivery', $_data['parameters']['parent_key']);
+
+    include_once 'prepare_table/init.php';
+
+    $sql        = "select $fields from $table $where $wheref $group_by  order by $order $order_direction  limit $start_from,$number_results";
+    $table_data = array();
+
+    if ($result = $db->query($sql)) {
+        foreach ($result as $data) {
+
+
+            $items_amount = money($data['items_amount'], $data['Currency Code']);
+
+            $extra_amount = money($data['extra_amount'], $data['Currency Code']);
+
+            $extra_amount_account_currency = money($data['extra_amount_account_currency'], $account->get('Currency Code'));
+
+
+            if ($data['skos_in'] != 0) {
+                $sko_cost = sprintf('<span id="sko_cost_%d"  class="sko_cost" >%s/sko</span>', $data['Part SKU'], money($data['paid_amount'] / $data['skos_in'], $account->get('Currency Code')));
+            } else {
+                $sko_cost = sprintf('<span id="sko_cost_%d"  class="sko_cost" ></span>', $data['Part SKU']);
+            }
+
+            $total_paid = money($data['paid_amount'], $account->get('Currency Code'));
+
+
+            $reference = sprintf(
+                '<span class="link" onclick="change_view(\'/part/%d\')" title="%s" >%s</span>', $data['Part SKU'], _('Part reference'), $data['Part Reference']
+            );
+            $quantity = ($data['Supplier Delivery Checked Units'] - $data['Supplier Delivery Placed Units']) / $data['Part Units Per Package'];
+
+
+            if ($data['Metadata'] == '') {
+                $metadata = array();
+            } else {
+                $metadata = json_decode($data['Metadata'], true);
+            }
+
+
+            $placement = '<div class="placement" ><div  class="placement_data mini_table right no_padding" style="padding-right:2px">';
+
+            if (isset($metadata['placement_data'])) {
+
+                foreach ($metadata['placement_data'] as $placement_data) {
+
+
+                    $placement .= '<div style="clear:both;">
+				<div class="data w150 aright link" onClick="change_view(\'locations/'.$placement_data['wk'].'/'.$placement_data['lk'].'\')" >'.$placement_data['l'].'</div>
+				<div  class=" data w75 aleft"  >'.$placement_data['qty'].' '._('SKO').' <i class="fa fa-sign-out" aria-hidden="true"></i></div>
+				</div>';
+
+
+                }
+            }
+            $placement      .= '<div style="clear:both"></div></div>';
+            $placement_note = '<input type="hidden" class="note" /><i class="far add_note fa-sticky-note padding_right_5 button" aria-hidden="true"  onClick="show_placement_note(this)" ></i>';
+            $placement      .= '
+			    <div style="clear:both"  id="place_item_'.$data['Purchase Order Transaction Fact Key'].'" class="place_item  '.($data['Supplier Delivery Checked Units'] != '' ? '' : 'invisible').'  '.($data['Supplier Delivery Transaction Placed'] == 'No' ? '' : 'hide')
+                .' " part_sku="'.$data['Part SKU'].'" transaction_key="'.$data['Purchase Order Transaction Fact Key'].'"  >
+
+			    '.$placement_note.'
+
+			    <input class="place_qty width_50 changed" value="'.($quantity + 0).'" ovalue="'.($quantity + 0).'"  min="1" max="'.round($quantity, 2).'"  >
+				<input class="location_code"  placeholder="'._('Location code').'"  >
+				<i  class="place_item_button  fa  fa-cloud  fa-fw save " aria-hidden="true" title="'._('Place to location').'"  location_key="" onClick="place_item(this)"  ></i>
+                </div>
+                </div>
+			';
+
+            $table_data[] = array(
+
+                'id'                => (integer)$data['Part SKU'],
+
+
+                'part_reference' => $reference,
+                'description'    => $data['Part Package Description'],
+
+                'received_quantity'             => number($data['skos_in']),
+                'checked_quantity'             => number($data['checked_quantity']),
+
+                'items_amount'                  => $items_amount,
+                'extra_amount'                  => $extra_amount,
+                'extra_amount_account_currency' => $extra_amount_account_currency,
+
+                // 'ordered'               => number($data['Purchase Order Quantity']),
+                //'qty'       => number($quantity),
+                'paid_account_currency'         => money($data['Supplier Delivery Net Amount'] * $supplier_delivery->get('Supplier Delivery Currency Exchange'), $account->get('Currency Code')),
+
+                'total_paid' => $total_paid,
+                'sko_cost'   => $sko_cost,
+                'placement' => $placement
+            );
+
+
+        }
+    } else {
+        print_r($error_info = $db->errorInfo());
+        exit;
+    }
+
+
+    $response = array(
+        'resultset' => array(
+            'state'         => 200,
+            'data'          => $table_data,
             'rtext'         => $rtext,
             'sort_key'      => $_order,
             'sort_dir'      => $_dir,

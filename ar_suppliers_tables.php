@@ -2664,13 +2664,6 @@ function delivery_checking_items($_data, $db, $user, $account) {
             }
 
 
-            /*
-            $delivery_quantity = sprintf(
-                '<span class="delivery_quantity" id="delivery_quantity_%d" key="%d" item_key="%d" item_historic_key=%d on="1" ><input class="order_qty width_50" value="%s" ovalue="%s"> <i onClick="save_item_qty_change(this)" class="fa  fa-minus fa-fw button" aria-hidden="true"></i></span>',
-                $data['Purchase Order Transaction Fact Key'], $data['Purchase Order Transaction Fact Key'], $data['Supplier Part Key'], $data['Supplier Part Historic Key'], $quantity + 0,
-                $quantity + 0
-            );
-            */
 
             if ($data['Supplier Delivery Checked Units'] == '') {
 
@@ -2683,20 +2676,7 @@ function delivery_checking_items($_data, $db, $user, $account) {
 
             }
 
-            /*
-                        $quantity = sprintf(
-                            '<span    data-settings=\'{"field": "Purchase Order Quantity", "transaction_key":"%d","item_key":%d, "item_historic_key":%d ,"on":1 }\'   >
-                            <i onClick="save_item_qty_change(this)" class="fa minus  fa-minus fa-fw button" aria-hidden="true"></i>
-                            <input class="order_qty width_50" style="text-align: center" value="%s" ovalue="%s">
-                            <i onClick="save_item_qty_change(this)" class="fa plus  fa-plus fa-fw button" aria-hidden="true"></i></span>',
 
-
-
-                            $transaction_key, $data['Supplier Part Key'], $data['Supplier Part Historic Key'], ($data['Purchase Order Quantity'] == 0 ? '' : $data['Purchase Order Quantity'] + 0),
-                            ($data['Purchase Order Quantity'] == 0 ? '' : $data['Purchase Order Quantity'] + 0)
-
-                        );
-                        */
 
             $edit_sko_checked_quantity = sprintf(
                 '<span class="%s" ondblclick="show_check_dialog(this)">%s</span>
@@ -2748,14 +2728,14 @@ function delivery_checking_items($_data, $db, $user, $account) {
                 </div>
 			';
 
-            $items_qty = get_purchase_order_items_qty($data);
+
             $items_qty = sprintf(
                 '<span  id="part_sko_item_%d"  data-barcode_settings=\'{"reference":"%s","description":"%s" ,"image_src":"%s" ,"qty":"%s" ,"cartons":"%s"  , "skos":"%s"  ,"units":"%s"   }\'  _checked="%s"   barcode="%s" data-metadata=\'{"qty":%d}\' onClick="copy_qty(this)" class="button part_sko_item"  >%s</span>',
                 $data['Part SKU'], $data['Part Reference'], base64_encode($data['Part Package Description']), $data['Part SKO Image Key'], $data['Supplier Part Packages Per Carton'] * $data['Supplier Delivery Units'], number($data['Supplier Delivery Units']),
                 number($data['Supplier Part Packages Per Carton'] * $data['Supplier Delivery Units']), number($data['Supplier Part Packages Per Carton'] * $data['Part Units Per Package'] * $data['Supplier Delivery Units']), $data['Supplier Delivery Checked Units'],
 
 
-                $data['Part SKO Barcode'], $data['Supplier Delivery Units'] / $data['Part Units Per Package'], $items_qty
+                $data['Part SKO Barcode'], $data['Supplier Delivery Units'] / $data['Part Units Per Package'], get_purchase_order_items_qty($data)
 
             );
 

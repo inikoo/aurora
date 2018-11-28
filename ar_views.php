@@ -141,8 +141,6 @@ function get_view($db, $smarty, $user, $account, $modules) {
     $state['current_production'] = (!empty($session->get('current_production')) ? $session->get('current_production') : '');
 
 
-
-
     $store      = '';
     $website    = '';
     $warehouse  = '';
@@ -1731,11 +1729,17 @@ function get_navigation($user, $smarty, $data, $db, $account) {
                 case ('replacement.new'):
                     return get_replacement_new_navigation($data, $smarty, $user, $db, $account);
                     break;
+                case ('return.new'):
+                    return get_return_new_navigation($data, $smarty, $user, $db, $account);
+                    break;
                 case ('refund'):
                     return get_refund_navigation($data, $smarty, $user, $db, $account);
                     break;
                 case ('replacement'):
                     return get_replacement_navigation($data, $smarty, $user, $db, $account);
+                    break;
+                case ('return'):
+                    return get_return_navigation($data, $smarty, $user, $db, $account);
                     break;
                 case ('email_tracking'):
                     return get_email_tracking_navigation($data, $smarty, $user, $db, $account);
@@ -2320,8 +2324,11 @@ function get_navigation($user, $smarty, $data, $db, $account) {
                 case ('timeseries_record'):
                     return get_timeseries_record_navigation($data, $smarty, $user, $db, $account);
                     break;
-                case ('shippers'):
-                    return get_shippers_navigation($data, $smarty, $user, $db, $account);
+                case ('returns'):
+                    return get_returns_navigation($data, $smarty, $user, $db, $account);
+                    break;
+                case ('return'):
+                    return get_return_navigation($data, $smarty, $user, $db, $account);
                     break;
                 case ('shipper'):
                     return get_shipper_navigation($data, $smarty, $user, $db, $account);
@@ -3312,12 +3319,9 @@ function get_tabs($data, $db, $account, $modules, $user, $smarty, $requested_tab
         }
 
 
-    } elseif ($data['module'] == 'orders') {
+    } elseif ($data['section'] == 'order') {
 
-
-        if ($data['section'] == 'order') {
-
-
+        if ($data['module'] == 'orders') {
             if ($data['_object']->get('State Index') > 40 or $data['_object']->get('State Index') < 0) {
 
                 $_content['tabs']['order.all_products']['class'] = 'hide';
@@ -3332,13 +3336,8 @@ function get_tabs($data, $db, $account, $modules, $user, $smarty, $requested_tab
 
 
             }
-        }
 
-
-    } elseif ($data['module'] == 'suppliers') {
-
-        if ($data['section'] == 'order') {
-
+        } else {
             if ($data['_object']->get('Purchase Order State') == 'InProcess') {
 
                 $_content['tabs']['supplier.order.all_supplier_parts']['class'] = '';
@@ -3359,8 +3358,9 @@ function get_tabs($data, $db, $account, $modules, $user, $smarty, $requested_tab
                 }
 
             }
-        } elseif ($data['section'] == 'delivery') {
-
+        }
+    } elseif ($data['section'] == 'delivery') {
+        if ($data['module'] == 'suppliers') {
             $_content['tabs']['supplier.delivery.items_done']['class'] = 'hide';
             $_content['tabs']['supplier.delivery.costing']['class']    = 'hide';
 
@@ -3441,28 +3441,26 @@ function get_tabs($data, $db, $account, $modules, $user, $smarty, $requested_tab
                     break;
 
             }
-
-
         }
+    } elseif ($data['section'] == 'webpage') {
 
+        if ($data['module'] == 'products') {
+            if (!in_array(
+                    $data['_object']->get('Webpage Code'), array(
+                                                             'register.sys',
+                                                             'login.sys',
+                                                             'checkout.sys'
+                                                         )
+                )
 
-    } elseif ($data['module'] == 'products' and $data['section'] == 'webpage') {
+                or ($data['_object']->get('Webpage Code') == 'register.sys' and $data['_object']->get('Website Registration Type') == 'Closed')
 
+            ) {
+                $_content['subtabs'] = '';
 
-        if (!in_array(
-                $data['_object']->get('Webpage Code'), array(
-                                                         'register.sys',
-                                                         'login.sys',
-                                                         'checkout.sys'
-                                                     )
-            )
+            } else {
 
-            or ($data['_object']->get('Webpage Code') == 'register.sys' and $data['_object']->get('Website Registration Type') == 'Closed')
-
-        ) {
-            $_content['subtabs'] = '';
-
-        } else {
+            }
 
         }
 
@@ -3531,8 +3529,64 @@ function get_tabs($data, $db, $account, $modules, $user, $smarty, $requested_tab
         }
 
 
-    }
+    } elseif ($data['section'] == 'return') {
 
+
+        $_content['tabs']['return.items_done']['class'] = 'hide';
+
+        $_content['tabs']['return.items']['class'] = '';
+
+        switch ($data['_object']->get('Supplier Delivery State')) {
+
+
+            case 'InvoiceChecked':
+
+                $_content['tabs']['return.items_done']['class'] = '';
+
+                $_content['tabs']['return.items']['class']   = 'hide';
+                if ( $data['tab'] == 'return.items') {
+                    $data['tab'] = 'return.items_done';
+
+                    $_content['tabs']['return.items_done']['selected'] = true;
+                }
+
+                break;
+            case 'Dispatched':
+            case 'Received':
+                if ( $data['tab'] == 'return.items_done') {
+                    $data['tab'] = 'return.items';
+
+                    $_content['tabs']['return.items']['selected'] = true;
+
+                }
+
+                if ($data['_object']->get('Supplier Delivery Number Received and Checked Items') > 0) {
+                    $_content['tabs']['return.items_mismatch']['class'] = '';
+
+                }
+
+                break;
+
+            case 'Placed':
+            case 'Checked':
+
+                if ($data['tab'] == 'return.costing' || $data['tab'] == 'return.items_done') {
+                    $data['tab'] = 'return.items';
+
+                    $_content['tabs']['return.items']['selected'] = true;
+
+                }
+                $_content['tabs']['return.items_mismatch']['class'] = '';
+
+                break;
+            default:
+
+
+                break;
+
+        }
+
+    }
 
     //print_r($_content['tabs']);
     // print_r($_content['subtabs']);
@@ -5640,6 +5694,31 @@ function get_view_position($db, $state, $user, $smarty, $account) {
 
                     break;
 
+                case 'return.new':
+
+
+                    $branch[] = array(
+                        'label'     => _('Orders').' '.$state['store']->data['Store Code'],
+                        'icon'      => '',
+                        'reference' => 'orders/'.$state['store']->id
+                    );
+
+
+                    $branch[] = array(
+                        'label'     => $state['_object']->get('Order Public ID'),
+                        'icon'      => 'shopping-cart',
+                        'reference' => sprintf('orders/%d/%d', $state['_object']->get('Order Store Key'), $state['_object']->id)
+                    );
+
+
+                    $branch[] = array(
+                        'label'     => _('Creating return'),
+                        'icon'      => 'backspace',
+                        'reference' => ''
+                    );
+                    break;
+
+
                 case 'refund.new':
 
                     if ($state['parent'] == 'customer') {
@@ -7227,6 +7306,42 @@ function get_view_position($db, $state, $user, $smarty, $account) {
                     $branch[] = array(
                         'label'     => '<span class="id">'.$state['_object']->get('Code').'</span>',
                         'icon'      => 'table',
+                        'reference' => ''
+                    );
+                    break;
+                case 'returns':
+
+
+                    $branch[] = array(
+                        'label'     => '<span class=" Warehouse_Code">'.$state['warehouse']->get('Code').'</span>',
+                        'icon'      => 'warehouse-alt',
+                        'reference' => 'warehouse/'.$state['parent_key']
+                    );
+
+                    $branch[] = array(
+                        'label'     => _('Returns'),
+                        'icon'      => 'backspace',
+                        'reference' => ''
+                    );
+                    break;
+                case 'return':
+
+
+                    $branch[] = array(
+                        'label'     => '<span class=" Warehouse_Code">'.$state['warehouse']->get('Code').'</span>',
+                        'icon'      => 'warehouse-alt',
+                        'reference' => 'warehouse/'.$state['parent_key']
+                    );
+
+                    $branch[] = array(
+                        'label'     => _('Returns'),
+                        'icon'      => 'backspace',
+                        'reference' => 'warehouse/'.$state['parent_key'].'/returns'
+                    );
+
+                    $branch[] = array(
+                        'label'     => '<span class="id">'.$state['_object']->get('Public ID').'</span>',
+                        'icon'      => '',
                         'reference' => ''
                     );
                     break;

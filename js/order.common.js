@@ -265,6 +265,9 @@ function save_order_operation(element) {
 
     var data = $(element).data("data")
 
+    var table_metadata = JSON.parse(atob($('#table').data("metadata")))
+
+
     //console.log(data)
 
     var object_data = $('#object_showcase div.order').data("object")
@@ -479,10 +482,15 @@ function save_order_operation(element) {
             }
             else if (object == 'supplierdelivery') {
 
+                $('#order_dispatched_node').addClass('complete')
+                $('#order_node').addClass('complete')
 
 
                 $('#inputted_node').addClass('complete')
                 $('#purchase_order_node').addClass('complete')
+
+
+
 
                 if (data.update_metadata.state_index >= 30) {
                     $('#dispatched_node').addClass('complete')
@@ -494,30 +502,45 @@ function save_order_operation(element) {
                 if (data.update_metadata.state_index >= 50) {
                     $('#checked_node').addClass('complete')
                 }
-                if (data.update_metadata.state_index >= 100) {
-                    $('#placed_node').addClass('complete')
 
 
 
-                    if (state.tab == 'supplier.delivery.items') {
-                        change_tab('supplier.delivery.items')
+                if(table_metadata.type=='return'){
+                    if(dialog_name == 'received'){
+                        change_tab('return.items')
+                        $('#received_operations')
+                    }
+
+                }else{
+                    if (data.update_metadata.state_index >= 100) {
+                        $('#placed_node').addClass('complete')
+
+
+
+                        if (state.tab == 'supplier.delivery.items') {
+                            change_tab('supplier.delivery.items')
+
+                        }
+
 
                     }
 
 
+                    if( dialog_name=='undo_costing'){
+                        change_tab('supplier.delivery.costing')
+
+                    }
+                    else if ((dialog_name == 'undo_received' || dialog_name == 'received') && state.tab == 'supplier.delivery.items') {
+
+
+                        change_tab('supplier.delivery.items')
+
+                    }
                 }
 
 
 
-                if( dialog_name=='undo_costing'){
-                    change_tab('supplier.delivery.costing')
 
-               }else if ((dialog_name == 'undo_received' || dialog_name == 'received') && state.tab == 'supplier.delivery.items') {
-
-
-                    change_tab('supplier.delivery.items')
-
-                }
 
 
             }
@@ -764,7 +787,7 @@ function save_item_qty_change(element) {
     if (settings.field == 'Packed') {
         request = request + '&packer_key=' + $('#dn_data').attr('packer_key')
     }
-    //console.log(request)
+    console.log(request)
     //return;
 
 
@@ -775,7 +798,10 @@ function save_item_qty_change(element) {
     form_data.append("field", settings.field)
     form_data.append("parent", table_metadata.parent)
     form_data.append("parent_key", table_metadata.parent_key)
-    form_data.append("item_key", settings.item_key)
+    if(settings.item_key!= undefined){
+        form_data.append("item_key", settings.item_key)
+
+    }
     if (settings.item_historic_key != undefined) {
         form_data.append("item_historic_key", settings.item_historic_key)
     }
@@ -1041,20 +1067,27 @@ function save_item_qty_change(element) {
                     $('#placed_node').removeClass('complete')
                 }
 
+console.log('caca')
 
-                if( data.metadata.checked_items!=undefined &&  data.metadata.checked_items>0){
+                if(table_metadata.type=='agent_delivery' ||  table_metadata.type=='delivery'){
+                    if( data.metadata.checked_items!=undefined &&  data.metadata.checked_items>0 ){
 
-                    console.log('cacaca')
 
-                    $('.Mismatched_Items').removeClass('hide')
-                    $("div[id='tab_supplier.delivery.items_mismatch']").removeClass('hide')
 
-                }else{
-                    $("div[id='tab_supplier.delivery.items_mismatch']").addClass('hide')
-                    $('.Mismatched_Items').addClass('hide')
+                        $('.Mismatched_Items').removeClass('hide')
+                        $("div[id='tab_supplier.delivery.items_mismatch']").removeClass('hide')
 
+                    }else{
+                        $("div[id='tab_supplier.delivery.items_mismatch']").addClass('hide')
+                        $('.Mismatched_Items').addClass('hide')
+
+
+                    }
+                }else if(table_metadata.type=='return'){
 
                 }
+
+
 
             }
 

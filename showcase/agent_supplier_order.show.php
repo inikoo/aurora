@@ -51,13 +51,13 @@ function get_agent_supplier_order_showcase($data, $smarty, $user, $db) {
 
 
         if ($data['_object']->get('Agent Supplier Purchase Order Confirm Date') != '') {
-            $mindate_send_order = date(
+            $min_date_send_order = date(
                 'U', strtotime(
                        $data['_object']->get('Agent Supplier Purchase Order Confirm Date').' +0:00'
                    )
             );
         } else {
-            $mindate_send_order = date(
+            $min_date_send_order = date(
                 'U', strtotime(
                        $data['_object']->get('Agent Supplier Purchase Order Created Date').' +0:00'
                    )
@@ -65,7 +65,7 @@ function get_agent_supplier_order_showcase($data, $smarty, $user, $db) {
 
 
         }
-        $smarty->assign('mindate_send_order', 1000 * $mindate_send_order);
+        $smarty->assign('min_date_send_order', 1000 * $min_date_send_order);
 
 
         return $smarty->fetch('showcase/agent_supplier_order.tpl');

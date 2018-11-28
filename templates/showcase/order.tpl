@@ -1,4 +1,6 @@
 {assign deliveries $order->get_deliveries('objects')}
+{assign returns $order->get_returns('objects')}
+
 {assign invoices $order->get_invoices('objects')}
 {assign payments $order->get_payments('objects','Completed')}
 
@@ -365,6 +367,25 @@
                         </table>
                     </div>
                 </div>
+
+                <div id="create_return_operations"
+                     class="order_operation {if {$order->get('State Index')}<100  or $order->get('Order Return State')=='InWarehouse' or $order->get('Order Return State')=='PackedDone'  or $order->get('Order Return State')=='Approved'   }hide{/if}">
+                    <div class="square_button right  " title="{t}Create return{/t}">
+                        <i class="fas fa-backspace red " aria-hidden="true" onclick="toggle_order_operation_dialog('create_return')"></i>
+                        <table id="create_return_dialog" border="0" class="order_operation_dialog hide" style="color:#777">
+                            <tr class="top">
+                                <td class="label" colspan="2">{t}Create return{/t}</td>
+                            </tr>
+
+                            <tr class="changed buttons">
+                                <td><i class="fa fa-sign-out fa-flip-horizontal button" aria-hidden="true" onclick="close_dialog('create_return')"></i></td>
+                                <td class="aright"><span id="create_return_save_buttons" class="valid save button" onclick="change_view('orders/{$order->get('Store Key')}/{$order->id}/return/new')"><span
+                                                class="label">{t}Next{/t}</span> <i class="fa fa-arrow-right fa-fw  " aria-hidden="true"></i></span></td>
+                            </tr>
+                        </table>
+                    </div>
+                </div>
+                
                 <div id="create_invoice_operations" class="order_operation  {if  $order->get('State Index')!=80}hide{/if}">
                     <div class="square_button right  " title="{t}Create invoice{/t}">
                         <i class="fal fa-file-alt  " aria-hidden="true" onclick="toggle_order_operation_dialog('create_invoice')"></i>
@@ -526,6 +547,28 @@
             {/foreach}
 
         </div>
+
+
+
+        <div id="returns" class="returns {if $returns|@count == 0}hide{/if}" style="position:relative;;">
+
+
+            {foreach from=$returns item=return}
+                <div class="node" id="return_{$return->id}">
+                    <span class="node_label" error>
+                         <i class="fa fa-backspace fa-fw  error" aria-hidden="true"></i> <span
+                                class="link  {if $return->get('Supplier Delivery State')=='Cancelled'}strikethrough{/if}" onClick="change_view('warehouse/{$return->get('Supplier Delivery Warehouse Key')}/returns/{$return->id}')">{$return->get('Public ID')}</span>
+                        (<span class="Return_State">{$return->get('Return State')}</span>)
+
+                    </span>
+
+
+
+                </div>
+            {/foreach}
+
+        </div>
+
 
 
         <div id="invoices" class="invoices {if $invoices|@count == 0}hide{/if}" style="">

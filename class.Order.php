@@ -216,6 +216,38 @@ class Order extends DB_Table {
 
     }
 
+    function get_returns($scope = 'keys') {
+
+
+        $returns = array();
+        $sql        = sprintf(
+            "SELECT `Supplier Delivery Key` FROM `Supplier Delivery Dimension` WHERE `Supplier Delivery Parent`='Order' and `Supplier Delivery Parent Key`=%d ORDER BY `Supplier Delivery Key` DESC ", $this->id
+        );
+
+        if ($result = $this->db->query($sql)) {
+            foreach ($result as $row) {
+                if ($row['Supplier Delivery Key'] == '') {
+                    continue;
+                }
+
+                if ($scope == 'objects') {
+
+                    $returns[$row['Supplier Delivery Key']] = get_object('SupplierDelivery', $row['Supplier Delivery Key']);
+
+                } else {
+                    $returns[$row['Supplier Delivery Key']] = $row['Supplier Delivery Key'];
+                }
+            }
+        } else {
+            print_r($error_info = $this->db->errorInfo());
+            exit;
+        }
+
+
+        return $returns;
+
+    }
+
     function update_state($value, $options = '', $metadata = array()) {
 
         include_once 'utils/new_fork.php';
@@ -495,8 +527,8 @@ class Order extends DB_Table {
 
                 case 'InWarehouse':
 
-
-                    $warehouse_key = 1;
+                    global $session;
+                    $warehouse_key = $session->get('current_warehouse');
 
                     include_once('class.DeliveryNote.php');
 
@@ -1132,7 +1164,7 @@ class Order extends DB_Table {
                     $msg = $this->data['Order Tax Number Validation Message'];
 
                     if ($this->data['Order Tax Number Validation Source'] == 'Online') {
-                        $source = '<i title=\''._('Validated online').'\' class=\'fa fa-globe\'></i>';
+                        $source = '<i title=\''._('Validated online').'\' class=\'far fa-globe\'></i>';
 
 
                     } elseif ($this->data['Order Tax Number Validation Source'] == 'Manual') {
@@ -1930,7 +1962,7 @@ class Order extends DB_Table {
     function send_review_invitation() {
 
 
-        if (  preg_match('/bali/', gethostname())    or $this->get('Order Email') == '') {
+        if (preg_match('/bali/', gethostname()) or $this->get('Order Email') == '') {
             return;
         }
 
@@ -2785,6 +2817,7 @@ class Order extends DB_Table {
 
     function create_replacement($transactions) {
 
+        global $session;
 
         if (in_array(
             $this->data['Order Replacement State'], array(
@@ -2807,7 +2840,7 @@ class Order extends DB_Table {
         $account = get_object('Account', 1);
 
 
-        $warehouse_key = 1;
+        $warehouse_key = $session->get('current_warehouse');
 
         include_once('class.DeliveryNote.php');
 
@@ -2821,9 +2854,7 @@ class Order extends DB_Table {
         $store = get_object('Store', $this->data['Order Store Key']);
 
 
-        $replacement_public_id = $this->get_replacement_public_id(
-            $this->data['Order Public ID'].$store->data['Store Replacement Suffix']
-        );
+        $replacement_public_id = $this->get_replacement_public_id($this->data['Order Public ID'].$store->data['Store Replacement Suffix']);
 
 
         $data_dn                                              = array(
@@ -2903,6 +2934,159 @@ class Order extends DB_Table {
                 return $this->get_replacement_public_id($dn_id, $suffix_counter);
             } else {
                 return $dn_id.$suffix_counter;
+            }
+        } else {
+            print_r($error_info = $this->db->errorInfo());
+            print "$sql\n";
+            exit;
+        }
+
+
+    }
+
+    function create_return($transactions) {
+        include_once 'utils/currency_functions.php';
+
+        include_once 'class.SupplierDelivery.php';
+
+        $account = get_object('Account', 1);
+        // $warehouse=ger_object('Warehouse',$data['Supplier Delivery Warehouse Key']);
+
+        $store = get_object('Store', $this->data['Order Store Key']);
+        global $session;
+        $warehouse = get_object('Warehouse', $session->get('current_warehouse'));
+
+        $delivery_data = array(
+            'Supplier Delivery Public ID'           => $this->get_return_public_id($this->data['Order Public ID'].$store->data['Store Return Suffix']),
+            'Supplier Delivery Parent'              => 'Order',
+            'Supplier Delivery Parent Key'          => $this->id,
+            'Supplier Delivery Parent Name'         => $this->get('Order Public ID'),
+            'Supplier Delivery Parent Code'         => $this->get('Order Public ID'),
+            'Supplier Delivery Parent Contact Name' => $this->get('Order Customer Name'),
+            'Supplier Delivery Parent Email'        => $this->get('Order Email'),
+            'Supplier Delivery Parent Telephone'    => $this->get('Order Telephone'),
+            'Supplier Delivery Parent Address'      => $this->get('Delivery Address'),
+            'Supplier Delivery Currency Code'       => $account->get('Account Currency Code'),
+            'Supplier Delivery Incoterm'            => '',
+            'Supplier Delivery Warehouse Key'       => $warehouse->id,
+            'Supplier Delivery Port of Import'      => '',
+            'Supplier Delivery Port of Export'      => '',
+            'Supplier Delivery Purchase Order Key'  => '',
+            'Supplier Delivery Currency Exchange'   => 1,
+            'Supplier Delivery Dispatched Date'       => gmdate('Y-m-d H:i:s'),
+            'Supplier Delivery State'               => 'Dispatched',
+            //'Supplier Delivery Warehouse Key'=>$warehouse->id,
+            //'Supplier Delivery Warehouse Metadata'=>json_encode($warehouse->data),
+
+            'editor' => $this->editor
+        );
+
+
+        $delivery = new SupplierDelivery('new', $delivery_data);
+
+
+        if ($delivery->error) {
+            $this->error = true;
+            $this->msg   = $delivery->msg;
+
+        } elseif ($delivery->new or true) {
+
+
+            foreach ($transactions as $transaction) {
+
+                switch ($transaction['type']) {
+                    case 'itf':
+                        $sql = sprintf('select `Part SKU`,`Inventory Transaction Amount`,`Inventory Transaction Key` from `Inventory Transaction Fact` where `Inventory Transaction Key`=%d ', $transaction['id']);
+                        if ($result = $this->db->query($sql)) {
+                            if ($row = $result->fetch()) {
+                                // print_r($row);
+                                $date = gmdate('Y-m-d H:i:s');
+
+                                $part         = get_object('Part', $row['Part SKU']);
+                                $cbm_per_unit = $part->get('CBM per Unit');
+
+
+                                $unit_qty = $transaction['amount'] * $part->get('Part Units Per Package');
+
+                                if (is_numeric($cbm_per_unit)) {
+                                    $cbm = $cbm_per_unit * $unit_qty;
+                                } else {
+                                    $cbm = 0;
+                                }
+
+                                if ($part->get('Part Package Weight') != '' and is_numeric($part->get('Part Package Weight'))) {
+                                    $weight = $transaction['amount'] * $part->get('Part Package Weight');
+                                } else {
+                                    $weight = '';
+                                }
+
+                                $amount       = -1.0 * $row['Inventory Transaction Amount'];
+                                $extra_amount = 0;
+
+                                $sql = sprintf(
+                                    "INSERT INTO `Purchase Order Transaction Fact` (`Purchase Order Transaction Return ITF Key`,`Purchase Order Transaction Part SKU`,`Currency Code`,`Purchase Order Last Updated Date`,`Supplier Delivery Transaction State`,
+					`Supplier Delivery Units`,`Supplier Delivery Net Amount`,`Supplier Delivery Extra Cost Amount`,`Supplier Delivery CBM`,`Supplier Delivery Weight`,
+					`User Key`,`Creation Date`,`Supplier Delivery Key`,`Supplier Delivery Transaction Placed`,`Supplier Delivery Last Updated Date`
+					)
+					VALUES (%d,%d,%s,%s,%s,
+			          %.6f,%.2f,%.2f,%s,%s,
+					 %d,%s,
+					 %d,'No',%s
+					 )", $row['Inventory Transaction Key'],$part->id,prepare_mysql($account->get('Account Currency Code')), prepare_mysql($date), prepare_mysql('Dispatched'),
+
+                                    $unit_qty, $amount, $extra_amount, $cbm, $weight,
+                                    $this->editor['User Key'], prepare_mysql($date), $delivery->id, prepare_mysql($date)
+
+
+                                );
+                                $this->db->exec($sql);
+
+
+                            }
+                        } else {
+                            print_r($error_info = $this->db->errorInfo());
+                            print "$sql\n";
+                            exit;
+                        }
+
+                        break;
+                }
+
+            }
+
+
+            $delivery->update_totals();
+
+
+        }
+
+
+        return $delivery;
+
+    }
+
+
+    function get_return_public_id($supplier_delivery_id, $suffix_counter = '') {
+        $sql = sprintf(
+            "SELECT `Supplier Delivery Public ID` FROM `Supplier Delivery Dimension` WHERE `Supplier Delivery Parent`='Order' and `Supplier Delivery Parent Key`=%d AND `Supplier Delivery Public ID`=%s ", $this->id, prepare_mysql($supplier_delivery_id.$suffix_counter)
+        );
+
+
+        if ($result = $this->db->query($sql)) {
+            if ($row = $result->fetch()) {
+                if ($suffix_counter > 100) {
+                    return $supplier_delivery_id.$suffix_counter;
+                }
+
+                if (!$suffix_counter) {
+                    $suffix_counter = 2;
+                } else {
+                    $suffix_counter++;
+                }
+
+                return $this->get_return_public_id($supplier_delivery_id, $suffix_counter);
+            } else {
+                return $supplier_delivery_id.$suffix_counter;
             }
         } else {
             print_r($error_info = $this->db->errorInfo());

@@ -77,6 +77,11 @@ function get_order_showcase($data, $smarty, $user, $db) {
 
         return $smarty->fetch('showcase/replacement.new.tpl');
 
+    }elseif ($data['section'] == 'return.new') {
+        $smarty->assign('zero_amount', money(0, $store->get('Store Currency Code')));
+
+        return $smarty->fetch('showcase/return.new.tpl');
+
     } else {
         return $smarty->fetch('showcase/order.tpl');
 

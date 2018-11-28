@@ -623,6 +623,15 @@ $tab_defaults = array(
         'f_field'     => 'code',
 
     ),
+    'return.new.items' => array(
+        'view'        => 'overview',
+        'sort_key'    => 'id',
+        'sort_order'  => 1,
+        'rpp'         => 1000,
+        'rpp_options' => $default_rrp_options,
+        'f_field'     => 'code',
+
+    ),
     'refund.items'          => array(
         'view'        => 'overview',
         'sort_key'    => 'id',
@@ -633,6 +642,15 @@ $tab_defaults = array(
 
     ),
     'replacement.items'     => array(
+        'view'        => 'overview',
+        'sort_key'    => 'id',
+        'sort_order'  => 1,
+        'rpp'         => 1000,
+        'rpp_options' => $default_rrp_options,
+        'f_field'     => 'code',
+
+    ),
+    'return.items'     => array(
         'view'        => 'overview',
         'sort_key'    => 'id',
         'sort_order'  => 1,
@@ -1847,7 +1865,15 @@ $tab_defaults = array(
         'f_field'     => 'code',
 
     ),
+    'return.items_done' => array(
+        'view'        => 'overview',
+        'sort_key'    => 'id',
+        'sort_order'  => 1,
+        'rpp'         => 1000,
+        'rpp_options' => $default_rrp_options,
+        'f_field'     => 'reference',
 
+    ),
 
     'supplier.delivery.check_items' => array(
         'view'        => 'overview',
@@ -1856,6 +1882,15 @@ $tab_defaults = array(
         'rpp'         => 1000,
         'rpp_options' => $default_rrp_options,
         'f_field'     => 'code',
+
+    ),
+    'return.check_items' => array(
+        'view'        => 'overview',
+        'sort_key'    => 'id',
+        'sort_order'  => 1,
+        'rpp'         => 1000,
+        'rpp_options' => $default_rrp_options,
+        'f_field'     => 'reference',
 
     ),
 
@@ -2089,6 +2124,23 @@ $tab_defaults = array(
         'rpp_options' => $default_rrp_options,
         'f_field'     => 'code',
     ),
+    'warehouse.returns'    => array(
+        'view'          => 'overview',
+        'sort_key'      => 'id',
+        'sort_order'    => 1,
+        'rpp'           => 100,
+        'rpp_options'   => $default_rrp_options,
+        'f_field'       => 'number',
+        'from'          => '',
+        'to'            => '',
+        'period'        => 'all',
+        'elements_type' => each(
+                               $elements_options['supplier_deliveries']
+                           )['key'],
+        'elements'      => $elements_options['supplier_deliveries']
+    ),
+
+
     'category.location_categories' => array(
         'view'        => 'overview',
         'sort_key'    => 'id',

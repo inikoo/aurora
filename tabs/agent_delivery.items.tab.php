@@ -114,7 +114,8 @@ $smarty->assign(
     'table_metadata', base64_encode(
         json_encode(
             array('parent'     => $state['object'],
-                  'parent_key' => $state['key']
+                  'parent_key' => $state['key'],
+                  'type'  => 'agent_delivery'
             )
         )
     )

@@ -114,6 +114,9 @@ switch ($tipo) {
     case 'replacement.new.items':
         replacement_new_items(get_table_parameters(), $db, $user);
         break;
+    case 'return.new.items':
+        return_new_items(get_table_parameters(), $db, $user);
+        break;
     case 'refund.items':
         refund_items(get_table_parameters(), $db, $user);
         break;
@@ -2979,6 +2982,100 @@ function replacement_new_items($_data, $db, $user) {
     );
     echo json_encode($response);
 }
+
+
+function return_new_items($_data, $db, $user) {
+
+    global $_locale;// fix this locale stuff
+
+    $rtext_label = 'item';
+
+    include_once 'prepare_table/init.php';
+
+
+    $customer_order = get_object('Order', $_data['parameters']['parent_key']);
+
+
+    $items = 0;
+
+
+    $adata = array();
+
+
+    $sql = "select $fields from $table $where $wheref order by $order $order_direction limit $start_from,$number_results";
+    //print $sql;
+    foreach ($db->query($sql) as $data) {
+
+
+        if ($data['Inventory Transaction Quantity'] != 0) {
+
+            $units    = $data['Product Units Per Case'];
+            $name     = $data['Product History Name'];
+            $price    = $data['Product History Price'];
+            $currency = $data['Product Currency'];
+
+
+            $description = '';
+            if ($units > 1) {
+                $description = number($units).'x ';
+            }
+            $description .= ' '.$name;
+            if ($price > 0) {
+                $description .= ' ('.money($price, $currency, $_locale).')';
+            }
+
+
+            $quantity = sprintf(
+                    '<span class="new_return_ordered_quantity button"  refunded_qty="0"  max_qty="%f"    >',
+
+                    -1 * $data['Inventory Transaction Quantity']
+                ).number(-1 * $data['Inventory Transaction Quantity']).'</span>';
+
+
+            $to_return = sprintf(
+                '<input class="new_return_item %s item" style="width: 80px"  transaction_type="itf" transaction_id="%d"  max="%f"  />', ($data['Inventory Transaction Quantity'] == 0 ? 'hide' : ''), $data['Inventory Transaction Key'],
+                -1 * $data['Inventory Transaction Quantity']
+            );
+
+            $adata[] = array(
+
+                'id'        => (integer)$data['Inventory Transaction Key'],
+                'code'      => sprintf('<span class="link" onclick="change_view(\'/products/%d/%d\')">%s</span>', $customer_order->get('Order Store Key'), $data['Product ID'], $data['Product Code']),
+                'reference' => sprintf('<span class="link" onclick="change_view(\'/parts/%d\')">%s</span>', $data['Part SKU'], $data['Part Reference']),
+
+                'product_description' => $description,
+                'description'         => $data['Part Package Description'],
+                'quantity'            => $quantity,
+                'to_return'          => $to_return,
+                'quantity_order'      => number($data['Order Quantity']),
+
+                'net' => sprintf('<span class="new_refund_order_item_net button  " amount="%f" >%s</span>', $data['Order Transaction Amount'], money($data['Order Transaction Amount'], $data['Order Currency Code'])),
+
+            );
+
+            $items++;
+        }
+
+    }
+
+    $rtext = sprintf(
+        ngettext('%s send part', '%s send parts', $items), number($items)
+    );
+
+    $response = array(
+        'resultset' => array(
+            'state'         => 200,
+            'data'          => $adata,
+            'rtext'         => $rtext,
+            'sort_key'      => $_order,
+            'sort_dir'      => $_dir,
+            'total_records' => $total
+
+        )
+    );
+    echo json_encode($response);
+}
+
 
 
 function order_all_products($_data, $db, $user) {
