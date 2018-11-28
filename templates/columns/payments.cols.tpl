@@ -17,7 +17,14 @@ label:"{t}Type{/t}",
 editable: false,
 sortType: "toggle",
 cell: Backgrid.HtmlCell.extend({  }),
-},  {
+},
+{
+name: "order",
+label:"{t}Order{/t}",
+editable: false,
+sortType: "toggle",
+cell: Backgrid.HtmlCell.extend({  }),
+},{
 name: "amount",
 label: "{t}Amount{/t}",
 defaultOrder:1,

@@ -48,6 +48,13 @@ label:"{t}Name{/t}",
 editable: false,
 sortType: "toggle",
 cell: Backgrid.HtmlCell.extend({  }),
+},  {
+name: "stores",
+label:"{t}Stores{/t}",
+editable: false,
+sortable:false,
+sortType: "toggle",
+cell: Backgrid.HtmlCell.extend({  }),
 }, {
 name: "transactions",
 label: "{t}Transactions{/t}",

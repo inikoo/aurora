@@ -2158,14 +2158,7 @@ $modules = array(
                             'object' => '_object',
                             'field'  => 'Number Stores'
                         ),
-                    ),
-                    'payment_account.websites' => array(
-                        'label'         => _('Websites'),
-                        'quantity_data' => array(
-                            'object' => '_object',
-                            'field'  => 'Number Websites'
-                        ),
-                    ),
+                    )
 
                 )
             ),
@@ -2206,9 +2199,9 @@ $modules = array(
                 'type'      => 'navigation',
                 'label'     => _('Credit vault'),
                 'icon'      => 'university',
-                'reference' => 'credits/all',
+                'reference' => 'credits/%d',
                 'tabs'      => array(
-                    'credits' => array(
+                    'store.credits' => array(
                         'label' => _('Credits'),
                         'icon'  => 'university',
 
@@ -2223,7 +2216,7 @@ $modules = array(
                 'icon'      => 'cc',
                 'reference' => 'payment_accounts/%s',
                 'tabs'      => array(
-                    'payment_accounts' => array(),
+                    'store.payment_accounts' => array(),
                 )
             ),
 
@@ -2233,58 +2226,21 @@ $modules = array(
                 'icon'      => 'credit-card',
                 'reference' => 'payments/%s',
                 'tabs'      => array(
-                    'payments' => array()
+                    'store.payments' => array()
                 )
             ),
 
 
-            'payment_service_provider' => array(
-                'type' => 'object',
-                'tabs' => array(
-                    'payment_service_provider.details'  => array(
-                        'label' => _(
-                            'Data'
-                        ),
-                        'icon'  => 'database'
-                    ),
-                    'payment_service_provider.history'  => array(
-                        'label' => _(
-                            'History, notes'
-                        ),
-                        'icon'  => 'sticky-note'
-                    ),
-                    'payment_service_provider.accounts' => array(
-                        'label' => _(
-                            'Accounts'
-                        ),
-                        'title' => _(
-                            'Payment accounts'
-                        )
-                    ),
-                    'payment_service_provider.payments' => array(
-                        'label' => _(
-                            'Payments'
-                        ),
-                        'title' => _(
-                            'Payments transactions'
-                        )
-                    ),
 
-                )
-            ),
             'payment_account'          => array(
                 'type' => 'object',
                 'tabs' => array(
-                    'payment_account.details'  => array(
-                        'label' => _(
-                            'Data'
-                        ),
+                    'store.payment_account.details'  => array(
+                        'label' => _('Data'),
                         'icon'  => 'database',
-                        'title' => _(
-                            'Details'
-                        )
+                        'title' => _('Details')
                     ),
-                    'payment_account.history'  => array(
+                    'store.payment_account.history'  => array(
                         'title'         => _('History, notes'),
                         'label'         => '',
                         'quantity_data' => array(
@@ -2295,47 +2251,25 @@ $modules = array(
                         'icon'  => 'road',
                         'class' => 'right icon_only'
                     ),
-                    'payment_account.payments' => array(
+                    'store.payment_account.payments' => array(
                         'label'         => _('Transactions'),
                         'title'         => _('Payments transactions'),
-                        'quantity_data' => array(
-                            'object' => '_object',
-                            'field'  => 'Transactions'
-                        ),
-                    ),
-                    'payment_account.stores'   => array(
-                        'label'         => _('Stores'),
-                        'quantity_data' => array(
-                            'object' => '_object',
-                            'field'  => 'Number Stores'
-                        ),
-                    ),
-                    'payment_account.websites' => array(
-                        'label'         => _('Websites'),
-                        'quantity_data' => array(
-                            'object' => '_object',
-                            'field'  => 'Number Websites'
-                        ),
-                    ),
+
+                    )
+
 
                 )
             ),
             'payment'                  => array(
                 'type' => 'object',
                 'tabs' => array(
-                    'payment.details' => array(
-                        'label' => _(
-                            'Data'
-                        ),
+                    'store.payment.details' => array(
+                        'label' => _('Data'),
                         'icon'  => 'database',
-                        'title' => _(
-                            'Details'
-                        )
+                        'title' => _('Details')
                     ),
-                    'payment.history' => array(
-                        'label' => _(
-                            'History, notes'
-                        ),
+                    'store.payment.history' => array(
+                        'label' => _('History, notes'),
                         'icon'  => 'sticky-note'
                     ),
 

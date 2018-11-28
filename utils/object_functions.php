@@ -163,7 +163,9 @@ function get_object($object_name, $key, $load_other_data = false) {
             $object = new Payment_Service_Provider($key);
             break;
         case 'payment_account':
-            require_once "class.Payment_Account.php";
+        case 'paymentaccount':
+
+        require_once "class.Payment_Account.php";
             $object = new Payment_Account($key);
             break;
         case 'payment':

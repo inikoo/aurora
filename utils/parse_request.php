@@ -4534,8 +4534,7 @@ function parse_request($_data, $db, $modules, $account = '', $user = '', $is_set
                 break;
 
 
-            case
-            'profile':
+            case 'profile':
 
 
                 if ($user->get('User Type') == 'Staff' or $user->get('User Type') == 'Contractor') {
@@ -4922,19 +4921,24 @@ function parse_request($_data, $db, $modules, $account = '', $user = '', $is_set
                 }
                 break;
             case 'payment_account':
-                if (!$user->can_view('orders')) {
+
+              // todo improve this permissions
+                /*
+                if (!$user->can_view('payments')) {
                     $module  = 'utils';
                     $section = 'forbidden';
                     break;
                 }
+                */
 
-                $module  = 'payments';
+                $module  = 'payments_server';
                 $section = 'payment_account';
                 $parent  = 'account';
                 if (isset($view_path[0])) {
 
 
                     if (is_numeric($view_path[0]) and isset($view_path[1]) and is_numeric($view_path[1])) {
+                        $module  = 'payments';
                         $object     = 'payment_account';
                         $key        = $view_path[1];
                         $parent     = 'store';
@@ -4948,49 +4952,29 @@ function parse_request($_data, $db, $modules, $account = '', $user = '', $is_set
                 }
 
 
-                /*
 
-				if ( is_numeric($view_path[0])) {
-					$object='payment_account';
-					$key=$view_path[0];
-
-					if (isset($view_path[1])) {
-
-						if ($view_path[1]=='payment') {
-							$section='payment';
-							$object='payment';
-							$parent='payment_account';
-							$parent_key=$key;
-							if (isset($view_path[2])) {
-								$key=$view_path[2];
-							}
-
-						}
-
-					}
-
-
-
-				}
-
-*/
 
 
                 break;
             case 'payment':
+
+
+                /*
                 if (!$user->can_view('orders')) {
                     $module  = 'utils';
                     $section = 'forbidden';
                     break;
                 }
+                */
 
-                $module     = 'payments';
+                $module     = 'payments_server';
                 $section    = 'payment';
                 $object     = 'payment';
                 $parent     = 'account';
                 $parent_key = 1;
                 if (isset($view_path[0])) {
                     if (is_numeric($view_path[0]) and isset($view_path[1]) and is_numeric($view_path[1])) {
+                        $module     = 'payments';
 
                         $key        = $view_path[1];
                         $parent     = 'store';
