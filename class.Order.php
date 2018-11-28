@@ -2953,8 +2953,6 @@ class Order extends DB_Table {
         // $warehouse=ger_object('Warehouse',$data['Supplier Delivery Warehouse Key']);
 
         $store = get_object('Store', $this->data['Order Store Key']);
-        global $session;
-        $warehouse = get_object('Warehouse', $session->get('current_warehouse'));
 
         $delivery_data = array(
             'Supplier Delivery Public ID'           => $this->get_return_public_id($this->data['Order Public ID'].$store->data['Store Return Suffix']),
@@ -2968,7 +2966,7 @@ class Order extends DB_Table {
             'Supplier Delivery Parent Address'      => $this->get('Delivery Address'),
             'Supplier Delivery Currency Code'       => $account->get('Account Currency Code'),
             'Supplier Delivery Incoterm'            => '',
-            'Supplier Delivery Warehouse Key'       => $warehouse->id,
+            'Supplier Delivery Warehouse Key'       => $account->get('Account Default Warehouse'),
             'Supplier Delivery Port of Import'      => '',
             'Supplier Delivery Port of Export'      => '',
             'Supplier Delivery Purchase Order Key'  => '',
