@@ -2404,7 +2404,6 @@ function get_supplier_deliveries_element_numbers($db, $data) {
             'InProcess'      => 0,
             'Received'       => 0,
             'Checked'        => 0,
-
             'Placed'         => 0,
             'Cancelled'      => 0,
             'InvoiceChecked' => 0
