@@ -54,7 +54,8 @@ $smarty->assign(
                         json_encode(
                             array(
                                 'parent'     => $state['object'],
-                                'parent_key' => $state['key']
+                                'parent_key' => $state['key'],
+                                'type'  => 'agent_delivery'
                             )
                         )
                     )

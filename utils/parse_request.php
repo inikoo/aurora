@@ -39,7 +39,7 @@ function parse_request($_data, $db, $modules, $account = '', $user = '', $is_set
     $extra_tab  = '';
 
     $count_view_path = count($view_path);
-    $shortcut         = false;
+    $shortcut        = false;
     $is_main_section = false;
 
     reset($modules);
@@ -2180,6 +2180,28 @@ function parse_request($_data, $db, $modules, $account = '', $user = '', $is_set
 
                                         }
 
+                                    } elseif ($view_path[1] == 'return') {
+
+                                        $section = 'return';
+                                        $object  = 'return';
+
+                                        $parent     = 'order';
+                                        $parent_key = $key;
+                                        if (isset($view_path[2])) {
+
+                                            if (is_numeric($view_path[2])) {
+                                                $key = $view_path[2];
+                                            } elseif ($view_path[2] == 'new') {
+                                                $object     = 'order';
+                                                $key        = $parent_key;
+                                                $parent     = 'store';
+                                                $parent_key = $arg1;
+                                                $section    = 'return.new';
+                                            }
+
+
+                                        }
+
                                     } elseif ($view_path[1] == 'email') {
 
 
@@ -2900,6 +2922,28 @@ function parse_request($_data, $db, $modules, $account = '', $user = '', $is_set
                                 }
 
 
+                            } elseif ($view_path[1] == 'returns') {
+
+                                $section = 'returns';
+
+                                $parent= 'warehouse';
+                                $parent_key=$key;
+
+                                if (isset($view_path[2])) {
+                                    $section = 'return';
+                                    $object  = 'supplierdelivery';
+
+                                    if (is_numeric($view_path[2])) {
+                                        if (is_numeric($view_path[2])) {
+                                            $key = $view_path[2];
+                                        }
+
+                                    }
+
+
+                                }
+
+
                             } elseif ($view_path[1] == 'leakages') {
 
 
@@ -2961,7 +3005,7 @@ function parse_request($_data, $db, $modules, $account = '', $user = '', $is_set
                                 }
 
 
-                            }  elseif ($view_path[1] == 'areas') {
+                            } elseif ($view_path[1] == 'areas') {
                                 $section = 'warehouse_areas';
                                 $object  = '';
 
@@ -2984,8 +3028,6 @@ function parse_request($_data, $db, $modules, $account = '', $user = '', $is_set
 
 
                                 }
-
-
 
 
                             } elseif ($view_path[1] == 'area') {
@@ -3872,9 +3914,7 @@ function parse_request($_data, $db, $modules, $account = '', $user = '', $is_set
                     break;
                 }
 
-                $module = 'suppliers';
-
-
+                $module  = 'suppliers';
                 $section = 'delivery';
                 $object  = 'supplierdelivery';
 
@@ -3882,11 +3922,9 @@ function parse_request($_data, $db, $modules, $account = '', $user = '', $is_set
                     if (is_numeric($view_path[0])) {
                         $key = $view_path[0];
                     }
-
                 }
-
-
                 break;
+
             case 'client_order':
 
 

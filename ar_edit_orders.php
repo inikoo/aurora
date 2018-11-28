@@ -25,7 +25,6 @@ if (!isset($_REQUEST['tipo'])) {
     exit;
 }
 
-
 $tipo = $_REQUEST['tipo'];
 
 switch ($tipo) {
@@ -36,14 +35,18 @@ switch ($tipo) {
             $_REQUEST, array(
                          'key'          => array('type' => 'key'),
                          'transactions' => array('type' => 'json array'),
-
-
                      )
         );
-
         create_replacement($data, $editor, $smarty, $db, $account, $user);
-
-
+        break;
+    case 'create_return':
+        $data = prepare_values(
+            $_REQUEST, array(
+                         'key'          => array('type' => 'key'),
+                         'transactions' => array('type' => 'json array'),
+                     )
+        );
+        create_return($data, $editor, $smarty, $db, $account, $user);
         break;
     case 'create_refund':
         $data = prepare_values(
@@ -217,12 +220,17 @@ switch ($tipo) {
         break;
 
     case 'edit_item_in_order':
+
+
         $data = prepare_values(
             $_REQUEST, array(
                          'field'             => array('type' => 'string'),
                          'parent'            => array('type' => 'string'),
                          'parent_key'        => array('type' => 'key'),
-                         'item_key'          => array('type' => 'key'),
+                         'item_key'          => array(
+                             'type'     => 'key',
+                             'optional' => true
+                         ),
                          'item_historic_key' => array(
                              'type'     => 'key',
                              'optional' => true
@@ -1180,15 +1188,45 @@ function create_replacement($data, $editor, $smarty, $db) {
     $object->editor = $editor;
 
 
-    $refund = $object->create_replacement($data['transactions']);
+    $replacement = $object->create_replacement($data['transactions']);
 
 
-    if ($refund->id) {
+    if ($replacement->id) {
         $response = array(
             'state'           => 200,
-            'replacement_key' => $refund->id,
-            'store_key'       => $refund->get('Store Key')
+            'replacement_key' => $replacement->id,
+            'store_key'       => $replacement->get('Store Key')
 
+        );
+    } else {
+        $response = array(
+            'state' => 400,
+            'msg'   => $object->msg
+        );
+    }
+
+
+    echo json_encode($response);
+
+}
+
+
+function create_return($data, $editor, $smarty, $db) {
+
+
+    $object         = get_object('order', $data['key']);
+    $object->editor = $editor;
+
+
+    $return = $object->create_return($data['transactions']);
+
+
+    if ($return->id) {
+        $response = array(
+            'state'      => 200,
+            'return_key' => $return->id,
+            'store_key'  => $object->get('Store Key'),
+            'order_key'  => $object->id
         );
     } else {
         $response = array(
@@ -1224,8 +1262,8 @@ function set_po_transaction_amount_to_current_cost($data, $editor, $account, $db
             $net_amount = $row['Supplier Part Unit Cost'] * $row['Purchase Order Submitted Units'];
 
 
-            $unit_cost=$row['Purchase Order Submitted Unit Cost'];
-            $extra_unit_cost= $row['Supplier Part Unit Extra Cost Percentage'];
+            $unit_cost       = $row['Purchase Order Submitted Unit Cost'];
+            $extra_unit_cost = $row['Supplier Part Unit Extra Cost Percentage'];
 
             switch ($row['Purchase Order Transaction State']) {
 
@@ -1243,8 +1281,6 @@ function set_po_transaction_amount_to_current_cost($data, $editor, $account, $db
                     if ($data['type'] == 'cost') {
 
 
-
-
                         $sql = sprintf(
                             'update `Purchase Order Transaction Fact` set `Purchase Order Submitted Unit Cost`=%.4f ,`Purchase Order Net Amount`=%.2f where `Purchase Order Transaction Fact Key`=%d  ',
 
@@ -1254,11 +1290,11 @@ function set_po_transaction_amount_to_current_cost($data, $editor, $account, $db
                         );
 
 
-                        $unit_cost=$row['Supplier Part Unit Cost'];
+                        $unit_cost = $row['Supplier Part Unit Cost'];
 
 
                         // print "$sql\n";
-                       $db->exec($sql);
+                        $db->exec($sql);
                     } elseif ($data['type'] == 'extra_cost') {
 
                         $sql = sprintf(
@@ -1272,10 +1308,10 @@ function set_po_transaction_amount_to_current_cost($data, $editor, $account, $db
                         // print "$sql\n";
                         $db->exec($sql);
 
-                        $extra_unit_cost=$row['Supplier Part Unit Extra Cost Percentage'];
+                        $extra_unit_cost = $row['Supplier Part Unit Extra Cost Percentage'];
                     }
 
-                    if($row['Supplier Delivery Key']){
+                    if ($row['Supplier Delivery Key']) {
                         $delivery = get_object('Supplier Delivery', $row['Supplier Delivery Key']);
 
                         if ($data['type'] == 'cost') {
@@ -1283,13 +1319,13 @@ function set_po_transaction_amount_to_current_cost($data, $editor, $account, $db
                             $sql = sprintf(
                                 'update `Purchase Order Transaction Fact` set `Supplier Delivery Net Amount`=%.2f where `Purchase Order Transaction Fact Key`=%d  ',
 
-                                $row['Supplier Part Unit Cost']*$row['Supplier Delivery Units'],
+                                $row['Supplier Part Unit Cost'] * $row['Supplier Delivery Units'],
 
                                 $row['Purchase Order Transaction Fact Key']
                             );
 
-                          //   print "$sql\n";
-                              $db->exec($sql);
+                            //   print "$sql\n";
+                            $db->exec($sql);
                         }
 
                         $delivery->update_totals();
@@ -1314,20 +1350,20 @@ function set_po_transaction_amount_to_current_cost($data, $editor, $account, $db
 
             }
 
-            if($unit_cost!=$row['Supplier Part Unit Cost']){
-                $amount.='<div style="color:#ffc822" class="small"><i class="fa fa-exclamation-triangle attention"></i> <span class="warning">'._('Unit cost changed').' 
-                <span title="'._('Submitted unit cost').'">'.money($row['Purchase Order Submitted Unit Cost'],$purchase_order->get('Purchase Order Currency Code')).'</span>  <i class="far fa-arrow-right"></i>
-                <span class="strong" title="'._('Current unit cost').'">'.money($row['Supplier Part Unit Cost'],$purchase_order->get('Purchase Order Currency Code')).'</span> <i onclick="set_po_transaction_amount_to_current_cost(this,\'cost\','.$row['Purchase Order Transaction Fact Key'].')" class="button fa fa-sync-alt" title="'._('Update item amount to current price').'"></i></div>';
+            if ($unit_cost != $row['Supplier Part Unit Cost']) {
+                $amount .= '<div style="color:#ffc822" class="small"><i class="fa fa-exclamation-triangle attention"></i> <span class="warning">'._('Unit cost changed').' 
+                <span title="'._('Submitted unit cost').'">'.money($row['Purchase Order Submitted Unit Cost'], $purchase_order->get('Purchase Order Currency Code')).'</span>  <i class="far fa-arrow-right"></i>
+                <span class="strong" title="'._('Current unit cost').'">'.money($row['Supplier Part Unit Cost'], $purchase_order->get('Purchase Order Currency Code')).'</span> <i onclick="set_po_transaction_amount_to_current_cost(this,\'cost\','
+                    .$row['Purchase Order Transaction Fact Key'].')" class="button fa fa-sync-alt" title="'._('Update item amount to current price').'"></i></div>';
             }
 
 
-
-            if($extra_unit_cost!=$row['Supplier Part Unit Extra Cost Percentage']){
-                $amount.='<div style="color:#ffc822" class="small"><i class="fa fa-exclamation-triangle attention"></i> <span class="warning">'._('Extra cost % changed').' 
-                <span title="'._('Submitted extra cost %').'">'.percentage($row['Purchase Order Submitted Unit Extra Cost Percentage'],1,1).'</span>  <i class="far fa-arrow-right"></i>
-                <span class="strong" title="'._('Current extra cost %').'">'.percentage($row['Supplier Part Unit Extra Cost Percentage'],1,1).'</span> <i onclick="set_po_transaction_amount_to_current_cost(this,\'extra_cost\','.$row['Purchase Order Transaction Fact Key'].')" class="button fa fa-sync-alt" title="'._('Update item amount to current extra cost').'"></i></div>';
+            if ($extra_unit_cost != $row['Supplier Part Unit Extra Cost Percentage']) {
+                $amount .= '<div style="color:#ffc822" class="small"><i class="fa fa-exclamation-triangle attention"></i> <span class="warning">'._('Extra cost % changed').' 
+                <span title="'._('Submitted extra cost %').'">'.percentage($row['Purchase Order Submitted Unit Extra Cost Percentage'], 1, 1).'</span>  <i class="far fa-arrow-right"></i>
+                <span class="strong" title="'._('Current extra cost %').'">'.percentage($row['Supplier Part Unit Extra Cost Percentage'], 1, 1).'</span> <i onclick="set_po_transaction_amount_to_current_cost(this,\'extra_cost\','
+                    .$row['Purchase Order Transaction Fact Key'].')" class="button fa fa-sync-alt" title="'._('Update item amount to current extra cost').'"></i></div>';
             }
-
 
 
             $update_metadata = array(
@@ -1336,23 +1372,22 @@ function set_po_transaction_amount_to_current_cost($data, $editor, $account, $db
                     'Purchase_Order_Total_Amount_Account_Currency'     => $purchase_order->get('Total Amount Account Currency'),
                     'Purchase_Order_Items_Net_Amount'                  => $purchase_order->get('Items Net Amount'),
                     'Purchase_Order_Items_Net_Amount_Account_Currency' => $purchase_order->get('Items Net Amount Account Currency'),
-                    'Purchase_Order_AC_Total_Amount'       => $purchase_order->get('AC Total Amount'),
-                    'Purchase_Order_AC_Extra_Costs_Amount' => $purchase_order->get('AC Extra Costs Amount'),
-                    'Purchase_Order_AC_Subtotal_Amount' => $purchase_order->get('AC Subtotal Amount'),
-                    'Purchase_Order_AC_Total_Amount' => $purchase_order->get('AC Total Amount'),
-
+                    'Purchase_Order_AC_Total_Amount'                   => $purchase_order->get('AC Total Amount'),
+                    'Purchase_Order_AC_Extra_Costs_Amount'             => $purchase_order->get('AC Extra Costs Amount'),
+                    'Purchase_Order_AC_Subtotal_Amount'                => $purchase_order->get('AC Subtotal Amount'),
+                    'Purchase_Order_AC_Total_Amount'                   => $purchase_order->get('AC Total Amount'),
 
 
                 ),
             );
 
-            if(isset($delivery)){
-                $update_metadata['class_html']['Supplier_Delivery_Items_Amount']=$delivery->get('Items Amount');
-                $update_metadata['class_html']['Supplier_Delivery_Extra_Costs_Amount']=$delivery->get('Extra Costs Amount');
-                $update_metadata['class_html']['Supplier_Delivery_Total_Amount']=$delivery->get('Total Amount');
-                $update_metadata['class_html']['Supplier_Delivery_AC_Subtotal_Amount']=$delivery->get('AC Subtotal Amount');
-                $update_metadata['class_html']['Supplier_Delivery_AC_Extra_Costs_Amount']=$delivery->get('AC Extra Costs Amount');
-                $update_metadata['class_html']['Supplier_Delivery_AC_Total_Amount']=$delivery->get('AC Total Amount');
+            if (isset($delivery)) {
+                $update_metadata['class_html']['Supplier_Delivery_Items_Amount']          = $delivery->get('Items Amount');
+                $update_metadata['class_html']['Supplier_Delivery_Extra_Costs_Amount']    = $delivery->get('Extra Costs Amount');
+                $update_metadata['class_html']['Supplier_Delivery_Total_Amount']          = $delivery->get('Total Amount');
+                $update_metadata['class_html']['Supplier_Delivery_AC_Subtotal_Amount']    = $delivery->get('AC Subtotal Amount');
+                $update_metadata['class_html']['Supplier_Delivery_AC_Extra_Costs_Amount'] = $delivery->get('AC Extra Costs Amount');
+                $update_metadata['class_html']['Supplier_Delivery_AC_Total_Amount']       = $delivery->get('AC Total Amount');
 
 
             }

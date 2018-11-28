@@ -17,71 +17,79 @@ function get_showcase($data, $smarty, $user, $db) {
     }
 
     $data['_object']->get_order_data();
-
-
-
-
-   $data['_object']->update_totals();
-    //$data['_object']->get_state();
-    //$data['_object']->update_state($data['_object']->get_state());
-
-
-    $_parent = get_object(
-        $data['_object']->get('Supplier Delivery Parent'), $data['_object']->get('Supplier Delivery Parent Key')
-    );
+    $_parent = get_object($data['_object']->get('Supplier Delivery Parent'), $data['_object']->get('Supplier Delivery Parent Key'));
 
     $smarty->assign('parent', $_parent);
 
-    $smarty->assign('delivery', $data['_object']);
 
-    $smarty->assign(
-        'object_data',
+    if($data['_object']->get('Supplier Delivery Parent')=='Order'){
+
+
+        $smarty->assign('order', $_parent);
+        $smarty->assign('return', $data['_object']);
+
+        $smarty->assign(
+            'object_data',
             json_encode(
                 array(
                     'object'           => $data['object'],
                     'key'              => $data['key'],
-                    'order_parent'     => $data['_object']->get(
-                        'Supplier Delivery Parent'
-                    ),
-                    'order_parent_key' => $data['_object']->get(
-                        'Supplier Delivery Parent Key'
-                    ),
+                    'order_parent'     => $data['_object']->get('Supplier Delivery Parent'),
+                    'order_parent_key' => $data['_object']->get('Supplier Delivery Parent Key'),
 
-                    'skip_inputting'                => $_parent->get(
-                        'Parent Skip Inputting'
-                    ),
-                    'skip_mark_as_dispatched'       => $_parent->get(
-                        'Parent Skip Mark as Dispatched'
-                    ),
-                    'skip_mark_as_received'         => $_parent->get(
-                        'Parent Skip Mark as Received'
-                    ),
-                    'skip_checking'                 => $_parent->get(
-                        'Parent Skip Checking'
-                    ),
+
 
 
                 )
             )
 
-    );
+        );
+
+        return $smarty->fetch('showcase/return.tpl');
+
+    }else{
+
+        $smarty->assign('delivery', $data['_object']);
+        $smarty->assign('parent', $_parent);
+
+        $smarty->assign(
+            'object_data',
+            json_encode(
+                array(
+                    'object'           => $data['object'],
+                    'key'              => $data['key'],
+                    'order_parent'     => $data['_object']->get('Supplier Delivery Parent'),
+                    'order_parent_key' => $data['_object']->get('Supplier Delivery Parent Key'),
+
+                    'skip_inputting'                => $_parent->get('Parent Skip Inputting'),
+                    'skip_mark_as_dispatched'       => $_parent->get('Parent Skip Mark as Dispatched'),
+                    'skip_mark_as_received'         => $_parent->get('Parent Skip Mark as Received'),
+                    'skip_checking'                 => $_parent->get('Parent Skip Checking'),
 
 
-    if ($data['_object']->get('Purchase Order Submitted Date') != '') {
-        $mindate_send_order = 1000 * date(
-                'U', strtotime(
-                    $data['_object']->get('Purchase Order Submitted Date').' +0:00'
                 )
-            );
-    } else {
-        $mindate_send_order = '';
+            )
+
+        );
 
 
+        if ($data['_object']->get('Purchase Order Submitted Date') != '') {
+            $min_date_send_order = 1000 * date('U', strtotime($data['_object']->get('Purchase Order Submitted Date').' +0:00'));
+        } else {
+            $min_date_send_order = '';
+
+
+        }
+        $smarty->assign('min_date_send_order', $min_date_send_order);
+
+
+        return $smarty->fetch('showcase/supplier.delivery.tpl');
     }
-    $smarty->assign('mindate_send_order', $mindate_send_order);
 
 
-    return $smarty->fetch('showcase/supplier.delivery.tpl');
+
+
+
 
 
 }

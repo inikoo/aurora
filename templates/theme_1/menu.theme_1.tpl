@@ -342,7 +342,7 @@
             <i icon="fa fa-coffee" class="button  fa fa-fw fa-coffee" aria-hidden="true"></i>
             <i icon="fa fa-utensils" class="button  fa fa-fw fa-utensils" aria-hidden="true"></i>
             <i icon="fa fa-copyright" class="button  fa fa-fw fa-copyright" aria-hidden="true"></i>
-            <i icon="fa fa-black-tie" class="button  fab fa-fw fa-black-tie" aria-hidden="true"></i>
+            <i icon="fab fa-black-tie" class="button  fab fa-fw fa-black-tie" aria-hidden="true"></i>
             <i icon="fa fa-briefcase" class="button  fa fa-fw fa-briefcase" aria-hidden="true"></i>
 
         </div>

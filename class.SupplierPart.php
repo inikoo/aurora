@@ -812,9 +812,7 @@ class SupplierPart extends DB_Table {
 
                 if ($value != '' and (!is_numeric($value) or $value < 0)) {
                     $this->error = true;
-                    $this->msg   = sprintf(
-                        _('Invalid carton CBM (%s)'), $value
-                    );
+                    $this->msg   = sprintf(_('Invalid carton CBM (%s)'), $value);
 
                     return;
                 }

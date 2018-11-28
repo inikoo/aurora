@@ -423,7 +423,7 @@
             defaultDate: new Date('{$smarty.now|date_format:"%Y-%m-%d %H:%M:%S"}'),
             altField: "#received_date",
             altFormat: "yy-mm-dd",
-            //minDate: new Date({$mindate_send_order}),
+            //minDate: new Date({$min_date_send_order}),
             //maxDate: 0,
             onSelect: function () {
                 $('#received_date').change();
@@ -476,7 +476,7 @@
             defaultDate: new Date('{$smarty.now|date_format:"%Y-%m-%d %H:%M:%S"}'),
             altField: "#send_date",
             altFormat: "yy-mm-dd",
-            //minDate: new Date({$mindate_send_order}),
+            //minDate: new Date({$min_date_send_order}),
             //maxDate: 0,
 
             onSelect: function () {

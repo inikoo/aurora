@@ -1746,12 +1746,22 @@ function fork_housekeeping($job) {
 
             $supplier_delivery = get_object('supplier_delivery', $data['supplier_delivery_key']);
 
-            $po = get_object('supplier_delivery', $supplier_delivery->get('Supplier Delivery Purchase Order Key'));
 
-            $po->editor = $editor;
-            if ($po->id) {
-                $po->update_totals();
+            if($supplier_delivery->get('Supplier Delivery Purchase Order Key')){
+                $po = get_object('purchase_order', $supplier_delivery->get('Supplier Delivery Purchase Order Key'));
+
+                $po->editor = $editor;
+                if ($po->id) {
+                    $po->update_totals();
+                }
+
             }
+
+
+
+
+
+
             break;
 
         case 'update_active_parts_commercial_value':

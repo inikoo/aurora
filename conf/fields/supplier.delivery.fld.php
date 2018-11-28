@@ -59,6 +59,7 @@ $object_fields = array(
     ),
 );
 
+if( $object->get('Supplier Delivery Parent')!='Order'){
 
     $object_fields[] = array(
         'label'      => _('Dates').' <i class="fa padding_left_10 fa-exclamation-triangle yellow" aria-hidden="true"></i> <span class="warning" style=";font-weight: normal">'._('Please be careful changing dates').'</span>',
@@ -85,9 +86,9 @@ $object_fields = array(
             array(
 
 
-                'id'   => 'Supplier_Delivery_Estimated_Receiving_Date',
-                'edit' => ($edit ? 'date' : ''),
-               'render'=> ($object->get('State Index') < 40?true:false),
+                'id'              => 'Supplier_Delivery_Estimated_Receiving_Date',
+                'edit'            => ($edit ? 'date' : ''),
+                'render'          => ($object->get('State Index') < 40 ? true : false),
                 'time'            => '00:00:00',
                 'value'           => $object->get('Supplier Delivery Estimated Receiving Date'),
                 'formatted_value' => $object->get('Estimated Receiving Date'),
@@ -102,62 +103,62 @@ $object_fields = array(
 
         )
     );
+    $object_fields[] = array(
+        'label'      => _('Delivery rules'),
+        'show_title' => true,
+        'fields'     => array(
+
+            array(
 
 
+                'id'              => 'Supplier_Delivery_Incoterm',
+                'edit'            => ($edit ? 'option' : ''),
+                'options'         => $options_Incoterm,
+                'value'           => htmlspecialchars(
+                    $object->get('Supplier Delivery Incoterm')
+                ),
+                'formatted_value' => $object->get('Incoterm'),
+                'label'           => ucfirst(
+                    $object->get_field_label('Supplier Delivery Incoterm')
+                ),
+                'required'        => false,
+                'type'            => 'value'
 
-$object_fields[] = array(
-    'label'      => _('Delivery rules'),
-    'show_title' => true,
-    'fields'     => array(
 
-        array(
-
-
-            'id'              => 'Supplier_Delivery_Incoterm',
-            'edit'            => ($edit ? 'option' : ''),
-            'options'         => $options_Incoterm,
-            'value'           => htmlspecialchars(
-                $object->get('Supplier Delivery Incoterm')
             ),
-            'formatted_value' => $object->get('Incoterm'),
-            'label'           => ucfirst(
-                $object->get_field_label('Supplier Delivery Incoterm')
+            array(
+                'id'              => 'Supplier_Delivery_Port_of_Export',
+                'edit'            => ($edit ? 'string' : ''),
+                'value'           => htmlspecialchars(
+                    $object->get('Supplier Delivery Port of Export')
+                ),
+                'formatted_value' => $object->get('Port of Export'),
+                'label'           => ucfirst(
+                    $object->get_field_label('Supplier Delivery Port of Export')
+                ),
+                'required'        => false,
+                'type'            => 'value'
             ),
-            'required'        => false,
-            'type'            => 'value'
+            array(
+                'id'              => 'Supplier_Delivery_Port_of_Import',
+                'edit'            => ($edit ? 'string' : ''),
+                'value'           => htmlspecialchars(
+                    $object->get('Supplier Delivery Port of Import')
+                ),
+                'formatted_value' => $object->get('Port of Import'),
+                'label'           => ucfirst(
+                    $object->get_field_label('Supplier Delivery Port of Import')
+                ),
+                'required'        => false,
+                'type'            => 'value'
+            ),
 
 
-        ),
-        array(
-            'id'              => 'Supplier_Delivery_Port_of_Export',
-            'edit'            => ($edit ? 'string' : ''),
-            'value'           => htmlspecialchars(
-                $object->get('Supplier Delivery Port of Export')
-            ),
-            'formatted_value' => $object->get('Port of Export'),
-            'label'           => ucfirst(
-                $object->get_field_label('Supplier Delivery Port of Export')
-            ),
-            'required'        => false,
-            'type'            => 'value'
-        ),
-        array(
-            'id'              => 'Supplier_Delivery_Port_of_Import',
-            'edit'            => ($edit ? 'string' : ''),
-            'value'           => htmlspecialchars(
-                $object->get('Supplier Delivery Port of Import')
-            ),
-            'formatted_value' => $object->get('Port of Import'),
-            'label'           => ucfirst(
-                $object->get_field_label('Supplier Delivery Port of Import')
-            ),
-            'required'        => false,
-            'type'            => 'value'
-        ),
+        )
+    );
+}
 
 
-    )
-);
 
 
 ?>

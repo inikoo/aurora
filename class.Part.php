@@ -18,7 +18,6 @@ class Part extends Asset {
 
 
     public $sku = false;
-    public $warehouse_key = 1;
     public $locale = 'en_GB';
 
     function __construct($arg1, $arg2 = false, $arg3 = false, $_db = false) {
@@ -707,6 +706,57 @@ class Part extends Asset {
 
 
                 break;
+
+            case 'CBM per Unit':
+
+                $value_sum=0;
+                $count=0;
+                foreach ($this->get_supplier_parts('objects') as $supplier_part) {
+
+                    if (is_numeric($supplier_part->get('Supplier Part Carton CBM')) and $supplier_part->get('Supplier Part Carton CBM')>0  and $this->data['Part Units Per Package']>0 and $supplier_part->get('Supplier Part Packages Per Carton')>0 ) {
+                        $count++;
+                        $value_sum+=($supplier_part->get('Supplier Part Carton CBM')/$supplier_part->get('Supplier Part Packages Per Carton')/$this->data['Part Units Per Package']);
+                    }
+
+
+                  if($count>0){
+                      return $value_sum/$count;
+                  }else{
+                      return '';
+                  }
+
+
+
+
+                }
+
+
+                if ($value != '' and (!is_numeric($value) or $value < 0)) {
+                    $this->error = true;
+                    $this->msg   = sprintf(
+                        _('Invalid carton CBM (%s)'), $value
+                    );
+
+                    return;
+                }
+
+
+                $this->update_field($field, $value, $options);
+                if (!preg_match('/skip_update_historic_object/', $options)) {
+                    $this->update_historic_object();
+                }
+
+                $this->update_metadata = array(
+                    'class_html' => array(
+                        'Carton_CBM' => $this->get('Carton CBM')
+                    )
+                );
+
+
+                break;
+
+
+
             case 'Products Numbers':
 
                 return number($this->data['Part Number Active Products']).",<span class=' very_discreet'>".number($this->data['Part Number No Active Products']).'</span>';
@@ -3250,6 +3300,8 @@ class Part extends Asset {
 
     function update_availability_for_products($update_pages = true) {
 
+        global $session;
+
         switch ($this->data['Part Available for Products Configuration']) {
             case 'Yes':
             case 'No':
@@ -3280,7 +3332,7 @@ class Part extends Asset {
 
             $sql = sprintf(
                 "SELECT UNIX_TIMESTAMP(`Date`) AS date,`Part Availability for Products Key` FROM `Part Availability for Products Timeline` WHERE `Part SKU`=%d AND `Warehouse Key`=%d  ORDER BY `Date` DESC ,`Part Availability for Products Key` DESC LIMIT 1", $this->sku,
-                $this->warehouse_key
+                 $session->get('current_warehouse')
             );
 
             if ($result = $this->db->query($sql)) {
@@ -3302,7 +3354,7 @@ class Part extends Asset {
             $new_date           = gmdate('U');
 
             $sql = sprintf(
-                "INSERT INTO `Part Availability for Products Timeline`  (`Part SKU`,`User Key`,`Warehouse Key`,`Date`,`Availability for Products`) VALUES (%d,%d,%d,%s,%s) ", $this->sku, $user_key, $this->warehouse_key, prepare_mysql($new_date_formatted),
+                "INSERT INTO `Part Availability for Products Timeline`  (`Part SKU`,`User Key`,`Warehouse Key`,`Date`,`Availability for Products`) VALUES (%d,%d,%d,%s,%s) ", $this->sku, $user_key, $session->get('current_warehouse'), prepare_mysql($new_date_formatted),
                 prepare_mysql($this->data['Part Available for Products'])
 
             );

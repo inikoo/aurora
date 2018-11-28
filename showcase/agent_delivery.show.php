@@ -62,17 +62,17 @@ function get_showcase($data, $smarty, $user, $db) {
 
 
     if ($data['_object']->get('Purchase Order Submitted Date') != '') {
-        $mindate_send_order = 1000 * date(
+        $min_date_send_order = 1000 * date(
                 'U', strtotime(
                        $data['_object']->get('Purchase Order Submitted Date').' +0:00'
                    )
             );
     } else {
-        $mindate_send_order = '';
+        $min_date_send_order = '';
 
 
     }
-    $smarty->assign('mindate_send_order', $mindate_send_order);
+    $smarty->assign('min_date_send_order', $min_date_send_order);
 
 
     return $smarty->fetch('showcase/agent.delivery.tpl');

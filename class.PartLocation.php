@@ -1722,7 +1722,7 @@ class PartLocation extends DB_Table {
     }
 
     function update_stock_history_interval($from, $to) {
-
+        global $session;
 
         $sql = sprintf(
             "SELECT `Date` FROM kbase.`Date Dimension` WHERE `Date`>=%s AND `Date`<=%s ORDER BY `Date`", prepare_mysql($from), prepare_mysql($to)
@@ -1780,7 +1780,7 @@ class PartLocation extends DB_Table {
 
                 $storing_cost  = 0;
                 $location_type = "Unknown";
-                $warehouse_key = 1;
+                $warehouse_key = $session->get('current_warehouse');
 
 
                 //$commercial_value_unit_cost=$this->part->get_unit_commercial_value($row['Date'].' 23:59:59');
