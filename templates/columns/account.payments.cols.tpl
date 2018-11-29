@@ -22,7 +22,15 @@ label:"{t}Store{/t}",
 editable: false,
 sortType: "toggle",
 cell: Backgrid.HtmlCell.extend({  }),
-},{
+},
+{
+name: "payment_account",
+label:"{t}Payment account{/t}",
+editable: false,
+sortType: "toggle",
+cell: Backgrid.HtmlCell.extend({  }),
+},
+{
 name: "reference",
 label:"{t}Reference{/t}",
 editable: false,

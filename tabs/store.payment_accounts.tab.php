@@ -2,14 +2,14 @@
 /*
  About:
  Author: Raul Perusquia <raul@inikoo.com>
- Created: 3 November 2015 at 13:28:05 CET, Tessera, Italy
- Copyright (c) 2015, Inikoo
+ Created: 28 November 2018 at 23:35:24 GMT+8, Kuala Lumpur, Malaysia
+ Copyright (c) 2018, Inikoo
 
  Version 3
 
 */
 
-$tab     = 'payment_accounts';
+$tab     = 'store.payment_accounts';
 $ar_file = 'ar_payments_tables.php';
 $tipo    = 'accounts';
 

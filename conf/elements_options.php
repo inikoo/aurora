@@ -1670,7 +1670,6 @@ $elements_options = array(
 
         )
     ),
-//'Newsletter','Marketing','GR Reminder','AbandonedCart','Invite Mailshot','OOS Notification'
     'mailshots' => array(
         'type' => array(
             'label' => _('State'),
@@ -1695,6 +1694,58 @@ $elements_options = array(
                     'label'    => _('Back in stock'),
                     'selected' => false
                 ),
+
+
+
+            ),
+
+        )
+    ),
+    'payments' => array(
+        'status' => array(
+            'label' => _('Status'),
+            'items' => array(
+                'Pending'       => array(
+                    'label'    => _('Pending'),
+                    'selected' => true
+                ),
+                'Completed'       => array(
+                    'label'    => _('Completed'),
+                    'selected' => true
+                ),
+                'Cancelled'       => array(
+                    'label'    => _('Cancelled'),
+                    'selected' => true
+                ),
+                'Error'       => array(
+                    'label'    => _('Error'),
+                    'selected' => true
+                ),
+                'Declined'             => array(
+                    'label'    => _('Declined'),
+                    'selected' => true
+                ),
+
+
+
+            ),
+
+        ),
+        'type' => array(
+            'label' => _('Type'),
+            'items' => array(
+                'Payment'       => array(
+                    'label'    => _('Payment'),
+                    'selected' => true
+                ),
+                'Refund'       => array(
+                    'label'    => _('Refund'),
+                    'selected' => true
+                ),
+                'Credit'       => array(
+                    'label'    => _('Credit'),
+                    'selected' => true
+                )
 
 
 

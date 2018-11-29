@@ -2057,7 +2057,7 @@ $modules = array(
                 'icon'      => 'money-check-alt',
                 'reference' => 'payment_accounts/%s',
                 'tabs'      => array(
-                    'payment_accounts' => array(),
+                    'account.payment_accounts' => array(),
                 )
             ),
 
@@ -2198,12 +2198,12 @@ $modules = array(
             'credits' => array(
                 'type'      => 'navigation',
                 'label'     => _('Credit vault'),
-                'icon'      => 'university',
+                'icon'      => 'piggy-bank',
                 'reference' => 'credits/%d',
                 'tabs'      => array(
                     'store.credits' => array(
                         'label' => _('Credits'),
-                        'icon'  => 'university',
+                        'icon'  => 'piggy-bank',
 
                     ),
                 )

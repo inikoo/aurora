@@ -3121,7 +3121,9 @@ $tab_defaults = array(
         'sort_order'  => -1,
         'rpp'         => 100,
         'rpp_options' => $default_rrp_options,
-        'f_field'     => 'reference'
+        'f_field'     => 'reference',
+        'elements_type' => each($elements_options['payments']) ['key'],
+        'elements'      => $elements_options['payments'],
 
 
     ),
@@ -3137,6 +3139,16 @@ $tab_defaults = array(
 
     ),
     'account.credits' => array(
+        'view'        => 'overview',
+        'sort_key'    => 'customer',
+        'sort_order'  => 1,
+        'rpp'         => 100,
+        'rpp_options' => $default_rrp_options,
+        'f_field'     => 'customer'
+
+
+    ),
+    'store.credits' => array(
         'view'        => 'overview',
         'sort_key'    => 'customer',
         'sort_order'  => 1,
@@ -3206,7 +3218,19 @@ $tab_defaults = array(
         'sort_order'  => -1,
         'rpp'         => 100,
         'rpp_options' => $default_rrp_options,
-        'f_field'     => 'reference'
+        'f_field'     => 'reference',
+        'elements_type' => each($elements_options['payments']) ['key'],
+        'elements'      => $elements_options['payments'],
+    ),
+    'store.payments' => array(
+        'view'        => 'overview',
+        'sort_key'    => 'date',
+        'sort_order'  => -1,
+        'rpp'         => 100,
+        'rpp_options' => $default_rrp_options,
+        'f_field'     => 'reference',
+        'elements_type' => each($elements_options['payments']) ['key'],
+        'elements'      => $elements_options['payments'],
     ),
     'payment_account.stores'   => array(
         'view'        => 'overview',
@@ -3234,7 +3258,15 @@ $tab_defaults = array(
         'rpp_options' => $default_rrp_options,
         'f_field'     => 'note'
     ),
-    'payment_accounts'    => array(
+    'account.payment_accounts'    => array(
+        'view'        => 'overview',
+        'sort_key'    => 'code',
+        'sort_order'  => 1,
+        'rpp'         => 100,
+        'rpp_options' => $default_rrp_options,
+        'f_field'     => 'code'
+    ),
+    'store.payment_accounts'    => array(
         'view'        => 'overview',
         'sort_key'    => 'code',
         'sort_order'  => 1,
