@@ -611,8 +611,6 @@ function get_payment_account_navigation($data, $user, $smarty, $db) {
 }
 
 
-
-
 function get_payment_account_server_navigation($data, $user, $smarty, $db) {
 
 
@@ -627,17 +625,16 @@ function get_payment_account_server_navigation($data, $user, $smarty, $db) {
 
         switch ($data['parent']) {
             case 'account':
-                $tab      = 'payment_accounts';
+                $tab = 'account.payment_accounts';
 
                 break;
 
             case 'payment_service_provider':
-                $tab      = 'payment_service_provider.accounts';
+                $tab = 'payment_service_provider.accounts';
                 break;
 
 
         }
-
 
         if (isset($_SESSION['table_state'][$tab])) {
             $number_results  = $_SESSION['table_state'][$tab]['nr'];
@@ -858,8 +855,7 @@ function get_payment_account_server_navigation($data, $user, $smarty, $db) {
 }
 
 
-
-function get_payment_accounts_navigation($data, $user, $smarty,$db) {
+function get_payment_accounts_navigation($data, $user, $smarty, $db) {
 
 
     $left_buttons  = array();
@@ -926,35 +922,33 @@ function get_payment_accounts_navigation($data, $user, $smarty,$db) {
                     "SELECT `Store Code` FROM `Store Dimension` WHERE `Store Key`=%d", $prev_key
                 );
 
-                if ($result=$db->query($sql)) {
+                if ($result = $db->query($sql)) {
                     if ($row = $result->fetch()) {
                         $prev_title = sprintf($button_label, $row['Store Code']);
-                	}else{
+                    } else {
                         $prev_title = '';
                     }
-                }else {
-                	print_r($error_info=$db->errorInfo());
-                	print "$sql\n";
-                	exit;
+                } else {
+                    print_r($error_info = $db->errorInfo());
+                    print "$sql\n";
+                    exit;
                 }
 
 
                 $sql = sprintf(
                     "SELECT `Store Code` FROM `Store Dimension` WHERE `Store Key`=%d", $next_key
                 );
-                if ($result=$db->query($sql)) {
+                if ($result = $db->query($sql)) {
                     if ($row = $result->fetch()) {
                         $next_title = sprintf($button_label, $row['Store Code']);
-                    }else{
+                    } else {
                         $next_title = '';
                     }
-                }else {
-                    print_r($error_info=$db->errorInfo());
+                } else {
+                    print_r($error_info = $db->errorInfo());
                     print "$sql\n";
                     exit;
                 }
-
-             
 
 
                 $left_buttons[] = array(
@@ -1366,8 +1360,6 @@ function get_payment_navigation($data, $user, $smarty, $db) {
     }
 
 
-
-
     $_content = array(
         'sections_class' => '',
         'sections'       => $sections,
@@ -1390,7 +1382,7 @@ function get_payment_navigation($data, $user, $smarty, $db) {
 }
 
 
-function get_credits_navigation($data, $user) {
+function get_credits_navigation($data, $user, $smarty, $db) {
     global $smarty;
 
     $right_buttons = array();
@@ -1410,14 +1402,13 @@ function get_credits_navigation($data, $user) {
             $store = new Store($data['parent_key']);
 
             $sections     = get_sections('payments', $store->id);
-            $up_button    = array();
             $button_label = _('Payments %s');
-            $block_view   = 'payments';
+
             if ($user->stores > 1) {
                 $up_button = array(
                     'icon'      => 'arrow-up',
-                    'title'     => _("Payments"),
-                    'reference' => 'payments/all'
+                    'title'     => _("Credits (All stores)"),
+                    'reference' => 'credits/all'
                 );
 
                 list($prev_key, $next_key) = get_prev_next(
@@ -1427,45 +1418,57 @@ function get_credits_navigation($data, $user) {
                 $sql = sprintf(
                     "SELECT `Store Code` FROM `Store Dimension` WHERE `Store Key`=%d", $prev_key
                 );
-                $res = mysql_query($sql);
-                if ($row = mysql_fetch_assoc($res)) {
-                    $prev_title = sprintf($button_label, $row['Store Code']);
+
+                if ($result = $db->query($sql)) {
+                    if ($row = $result->fetch()) {
+                        $prev_title = sprintf($button_label, $row['Store Code']);
+                    } else {
+                        $prev_title = '';
+                    }
                 } else {
-                    $prev_title = '';
+                    print_r($error_info = $db->errorInfo());
+                    print "$sql\n";
+                    exit;
                 }
+
+
                 $sql = sprintf(
                     "SELECT `Store Code` FROM `Store Dimension` WHERE `Store Key`=%d", $next_key
                 );
-                $res = mysql_query($sql);
-                if ($row = mysql_fetch_assoc($res)) {
-                    $next_title = sprintf($button_label, $row['Store Code']);
+
+                if ($result = $db->query($sql)) {
+                    if ($row = $result->fetch()) {
+                        $next_title = sprintf($button_label, $row['Store Code']);
+                    } else {
+                        $next_title = '';
+                    }
                 } else {
-                    $next_title = '';
+                    print_r($error_info = $db->errorInfo());
+                    print "$sql\n";
+                    exit;
                 }
 
 
                 $left_buttons[] = array(
                     'icon'      => 'arrow-left',
                     'title'     => $prev_title,
-                    'reference' => $block_view.'/'.$prev_key
+                    'reference' => 'credits/'.$prev_key
                 );
                 $left_buttons[] = $up_button;
 
                 $left_buttons[] = array(
                     'icon'      => 'arrow-right',
                     'title'     => $next_title,
-                    'reference' => $block_view.'/'.$next_key
+                    'reference' => 'credits/'.$next_key
                 );
 
 
-                $title                            = _('Payments').' <span class="id" title="'.$store->get(
-                        'Name'
-                    ).'">'.$store->get('Code').'</span>';
-                $sections['payments']['selected'] = true;
+                $title = _('Customers with credits').' <span class="id" title="'.$store->get('Name').'">'.$store->get('Code').'</span>';
+
 
             }
 
-            $sections['payments']['selected'] = true;
+            $sections['credits']['selected'] = true;
 
             break;
     }

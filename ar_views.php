@@ -2537,6 +2537,9 @@ function get_navigation($user, $smarty, $data, $db, $account) {
                 case ('payments'):
                     return get_payments_navigation($data, $user, $smarty, $db);
                     break;
+                case ('credits'):
+                    return get_credits_navigation($data, $user, $smarty, $db);
+                    break;
             }
             break;
         case ('account'):

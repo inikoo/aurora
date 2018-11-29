@@ -48,7 +48,7 @@ switch ($tipo) {
 
     case 'credits':
     case 'account.credits':
-
+    case 'store.credits':
         credits(get_table_parameters(), $db, $user);
         break;
     case 'payments_group_by_store':
@@ -156,7 +156,7 @@ function payment_accounts($_data, $db, $user) {
 
             $adata[] = array(
                 'id'           => (integer)$data['Payment Account Key'],
-                'code'         => $data['Payment Account Code'],
+                'code'         => sprintf('<span class="link" onclick="change_view(\'payment_account/%d\')">%s</span>',$data['Payment Account Key'],$data['Payment Account Code']),
                 'name'         => $data['Payment Account Name'],
                 'transactions' => number($data['Payment Account Transactions']),
                 'payments'     => money($data['Payment Account Payments Amount'], $account_currency),
