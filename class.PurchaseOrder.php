@@ -1016,10 +1016,10 @@ sum(`Purchase Order Net Amount`) AS items_net, sum(`Purchase Order Extra Cost Am
 
             if (!in_array(
                 $this->data['Purchase Order State'], array(
-                'Submitted',
-                'InProcess',
-                'Cancelled'
-            )
+                                                       'Submitted',
+                                                       'InProcess',
+                                                       'Cancelled'
+                                                   )
             )) {
 
                 if ($this->data['Purchase Order Submitted Date'] == '') {
@@ -1043,10 +1043,13 @@ sum(`Purchase Order Net Amount`) AS items_net, sum(`Purchase Order Extra Cost Am
         }
 
 
+
+
         $deliveries = array();
         $sql        = sprintf(
             "SELECT `Supplier Delivery Key` FROM `Purchase Order Transaction Fact` WHERE `Purchase Order Key`=%d  GROUP BY `Supplier Delivery Key`", $this->id
         );
+
 
         if ($result = $this->db->query($sql)) {
             foreach ($result as $row) {
