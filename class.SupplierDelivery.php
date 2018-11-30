@@ -1056,9 +1056,12 @@ class SupplierDelivery extends DB_Table {
                 );
 
 
+         
+
+
                 $sql = sprintf(
-                    'UPDATE `Purchase Order Transaction Fact` SET `Supplier Delivery Transaction State`=%s ,`Purchase Order Transaction State`=%s ,`Supplier Delivery Last Updated Date`=%s WHERE `Supplier Delivery Key`=%d ', prepare_mysql($value), prepare_mysql($value),
-                    prepare_mysql($date), $this->id
+                    "UPDATE `Purchase Order Transaction Fact` SET `Supplier Delivery Key`=NULL ,`Supplier Delivery Units`=0 ,`Supplier Delivery Checked Units`=NULL,`Supplier Delivery Placed Units`=NULL,`Supplier Delivery Net Amount`=0,`Supplier Delivery Transaction State`=NULL,`Supplier Delivery Transaction Placed`=NULL,`Supplier Delivery CBM`=NULL,`Supplier Delivery CBM`=NULL  ,`Supplier Delivery Last Updated Date`=NULL  WHERE `Supplier Delivery Key`=%d  ",
+                    $this->id
                 );
                 $this->db->exec($sql);
 
