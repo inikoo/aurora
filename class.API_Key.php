@@ -15,7 +15,7 @@
 class API_Key extends DB_Table {
 
 
-    function API_Key($arg1 = false, $arg2 = false) {
+    function __construct($arg1 = false, $arg2 = false, $arg3 = false) {
         global $db;
 
         $this->db            = $db;
@@ -27,8 +27,8 @@ class API_Key extends DB_Table {
 
             return;
         }
-        if (preg_match('/^(create|new)/i', $arg1)) {
-            $this->create($arg2);
+        if ($arg1 == 'create') {
+            $this->create($arg2, $arg3);
 
             return;
         }
@@ -64,23 +64,20 @@ class API_Key extends DB_Table {
     function get_deleted_data($tag) {
 
 
-        if($tag>0){
+        if ($tag > 0) {
 
 
-
-        $this->deleted = true;
-        $sql           = sprintf(
-            "SELECT * FROM `API Key Deleted Dimension` WHERE `API Key Deleted Key`=%d", $tag
-        );
-
+            $this->deleted = true;
+            $sql           = sprintf(
+                "SELECT * FROM `API Key Deleted Dimension` WHERE `API Key Deleted Key`=%d", $tag
+            );
 
 
+            if ($this->data = $this->db->query($sql)->fetch()) {
+                $this->id   = $this->data['API Key Deleted Key'];
+                $this->user = get_object('User', $this->data['API Key Deleted User Key']);
 
-        if ($this->data = $this->db->query($sql)->fetch()) {
-            $this->id   = $this->data['API Key Deleted Key'];
-            $this->user = get_object('User', $this->data['API Key Deleted User Key']);
-
-        }
+            }
         }
 
     }
@@ -89,24 +86,31 @@ class API_Key extends DB_Table {
     function create($data) {
 
 
+        if (!$cost or !is_numeric($cost) or !is_integer($cost)) {
+            $cost = 10;
+        }
+
+        if ($cost < 4) {
+            $cost = 4;
+        }
+
+
         include_once 'utils/password_functions.php';
-        $this->secret_key = 'P'.generatePassword(39, 1);
+
+
+
+        $this->secret_key = 'P'.generatePassword(39, 3);
 
         $data['API Key Code'] = hash('crc32', generatePassword(32, 10), false);
 
 
-        $data['API Key Hash'] = password_hash($this->secret_key, PASSWORD_DEFAULT);
+        $data['API Key Hash'] = password_hash($this->secret_key, PASSWORD_DEFAULT, ['cost' => $cost]);
 
-        //print $this->secret_key;
+        $data['API Key Valid From'] = gmdate('Y-m-d H:i:s');
 
-        //print '>>>>>';
-        //print base64_encode($this->secret_key);
-        //print '<<<<<';
 
-        //print_r($data);
-
-        $this->secret_key     = base64_encode($this->secret_key);
-        $this->data           = $data;
+        $this->secret_key = base64_encode($this->secret_key);
+        $this->data       = $data;
 
         $keys   = '';
         $values = '';
@@ -258,6 +262,33 @@ class API_Key extends DB_Table {
                 return false;
 
         }
+
+
+    }
+
+    function refresh_key($cost) {
+
+
+        if (!$cost or !is_numeric($cost) or !is_integer($cost)) {
+            $cost = 10;
+        }
+
+        if ($cost < 4) {
+            $cost = 4;
+        }
+
+
+        include_once 'utils/password_functions.php';
+        $this->secret_key = 'P'.generatePassword(39, 3);
+
+
+        print "--> ".$this->secret_key."  <---";
+
+        $this->fast_update(
+            array(
+                'API Key Hash' => password_hash($this->secret_key, PASSWORD_DEFAULT, ['cost' => $cost])
+            )
+        );
 
 
     }

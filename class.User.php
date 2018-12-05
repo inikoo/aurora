@@ -2586,7 +2586,7 @@ class User extends DB_Table {
     function create_api_key($data) {
 
         $data['API Key User Key']   = $this->id;
-        $data['API Key Valid From'] = gmdate('Y-m-d H:i:s');
+
 
         $api_key = new API_Key('create', $data);
 

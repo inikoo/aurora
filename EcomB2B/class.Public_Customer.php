@@ -228,6 +228,14 @@ class Public_Customer extends DBW_Table {
         $updated_fields_number = 0;
 
 
+
+        if (preg_match('/gb|im|jy|gg/i', $fields['Address Country 2 Alpha Code'])) {
+            include_once 'utils/geography_functions.php';
+            $fields['Address Postal Code']=gbr_pretty_format_post_code($fields['Address Postal Code']);
+        }
+
+
+
         foreach ($fields as $field => $value) {
 
 
@@ -248,7 +256,7 @@ class Public_Customer extends DBW_Table {
 
         if ($this->updated) {
 
-            $this->update_address_formatted_fields($type, $options);
+            $this->update_address_formatted_fields($type);
 
 
             if (!preg_match('/no( |\_)history|nohistory/i', $options)) {
@@ -431,7 +439,7 @@ class Public_Customer extends DBW_Table {
 
     }
 
-    function update_address_formatted_fields($type, $options) {
+    function update_address_formatted_fields($type) {
 
 
         include_once 'utils/get_addressing.php';
@@ -819,9 +827,7 @@ class Public_Customer extends DBW_Table {
                     $this->update_field(
                         $this->table_name.' Contact Address Organization', $value, 'no_history'
                     );
-                    $this->update_address_formatted_fields(
-                        'Contact', 'no_history'
-                    );
+                    $this->update_address_formatted_fields('Contact');
 
 
                 }
@@ -847,14 +853,14 @@ class Public_Customer extends DBW_Table {
 
                 //   print $this->table_name.' Invoice Address Organization'.'--> '.$value;
                 $this->update_field($this->table_name.' Invoice Address Organization', $value, 'no_history');
-                $this->update_address_formatted_fields('Invoice', 'no_history');
+                $this->update_address_formatted_fields('Invoice');
 
                 $this->update_field($this->table_name.' Contact Address Organization', $value, 'no_history');
-                $this->update_address_formatted_fields('Contact', 'no_history');
+                $this->update_address_formatted_fields('Contact');
 
                 if ($this->data['Customer Delivery Address Link'] != 'None') {
                     $this->update_field($this->table_name.' Delivery Address Organization', $value, 'no_history');
-                    $this->update_address_formatted_fields('Delivery', 'no_history');
+                    $this->update_address_formatted_fields('Delivery');
 
                 }
 
@@ -902,14 +908,14 @@ class Public_Customer extends DBW_Table {
 
 
                 $this->update_field($this->table_name.' Invoice Address Recipient', $value, 'no_history');
-                $this->update_address_formatted_fields('Invoice', 'no_history');
+                $this->update_address_formatted_fields('Invoice');
 
                 $this->update_field($this->table_name.' Contact Address Recipient', $value, 'no_history');
-                $this->update_address_formatted_fields('Contact', 'no_history');
+                $this->update_address_formatted_fields('Contact');
 
                 if ($this->data['Customer Delivery Address Link'] != 'None') {
                     $this->update_field($this->table_name.' Delivery Address Recipient', $value, 'no_history');
-                    $this->update_address_formatted_fields('Delivery', 'no_history');
+                    $this->update_address_formatted_fields('Delivery');
 
                 }
 

@@ -9,14 +9,17 @@
 
 */
 
-
 switch ($parameters['parent']) {
+    case('shipping_zone_schema'):
+        $where = sprintf(
+            ' where  `Shipping Zone Shipping Zone Schema Key`=%d', $parameters['parent_key']
+        );
+        break;
     case('store'):
         $where = sprintf(
             ' where  `Shipping Zone Store Key`=%d', $parameters['parent_key']
         );
         break;
-  
     case('account'):
         $where = sprintf(' where true ');
         break;
@@ -27,9 +30,9 @@ switch ($parameters['parent']) {
 
 
 $wheref = '';
-if ($parameters['f_field'] == 'name' and $f_value != '') {
+if ($parameters['f_field'] == 'code' and $f_value != '') {
     $wheref = sprintf(
-        ' and `Shipping Zone Name` REGEXP "[[:<:]]%s" ', addslashes($f_value)
+        ' and `Shipping Zone Code` REGEXP "[[:<:]]%s" ', addslashes($f_value)
     );
 }
 
@@ -38,9 +41,9 @@ $_dir   = $order_direction;
 
 
 if ($order == 'code') {
-    $order = '`Shipping Zone Name`';
+    $order = '`Shipping Zone Code`';
 } elseif ($order == 'name') {
-    $order = '`Shipping Zone Description`';
+    $order = '`Shipping Zone Name`';
 } elseif ($order == 'customers') {
     $order = '`Shipping Zone Total Acc Customers`';
 } elseif ($order == 'orders') {
@@ -52,14 +55,13 @@ if ($order == 'code') {
 }  elseif ($order == 'active') {
     $order = '`Shipping Zone Active`';
 } else {
-    $order = '`Shipping Zone Key`';
+    $order = 'SZ.`Shipping Zone Key`';
 }
-$table  = '`Shipping Zone Dimension` C left join `Store Dimension` S on (S.`Store Key`=C.`Shipping Zone Store Key`) ';
-$fields = "`Shipping Zone Key`,`Shipping Zone Name`,`Shipping Zone Description`,`Shipping Zone Store Key`,S.`Store Code`,`Store Name`,`Shipping Zone Active`,`Shipping Zone Creation Date`,
+$table  = '`Shipping Zone Dimension` SZ left join `Shipping Zone Data` D on (D.`Shipping Zone Key`=SZ.`Shipping Zone Key`) left join `Store Dimension` S on (S.`Store Key`=SZ.`Shipping Zone Store Key`) ';
+$fields = "SZ.`Shipping Zone Key`,`Shipping Zone Name`,`Shipping Zone Code`,`Shipping Zone Description`,`Shipping Zone Store Key`,S.`Store Code`,`Store Name`,`Shipping Zone Active`,`Shipping Zone Creation Date`,
 `Shipping Zone Total Acc Orders`,`Shipping Zone Total Acc Customers`,`Shipping Zone Total Acc Amount`";
 
 
 $sql_totals = "select count(*) as num from $table $where ";
-
 
 ?>

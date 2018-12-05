@@ -65,32 +65,19 @@ function get_countries_EC_Fiscal_VAT_area($db) {
 }
 
 
-function gbr_postcode_first_part($mypostcode) {
-    if (($posOfSpace = stripos($mypostcode, " ")) !== false) {
-        return substr($mypostcode, 0, $posOfSpace);
-    }
-    // Deal with the format BS000
-    if (strlen($mypostcode) < 5) {
-        return $mypostcode;
+function gbr_pretty_format_post_code($postcode) {
+
+
+    if (preg_match('/^([A-Za-z][A-Ha-hJ-Yj-y]?[0-9][A-Za-z0-9]? ?[0-9][A-Za-z]{2}|[Gg][Ii][Rr] ?0[Aa]{2})$/', $postcode)) {
+        $postcode = preg_replace('/\s/', '', strtoupper($postcode));
+        $postcode = preg_replace('/\-/', '', strtoupper($postcode));
+        $postcode = substr_replace($postcode,' ',-3,0);
+
+
     }
 
-    $shortened = substr($mypostcode, 0, 5);
-    if ((string)(int)substr($shortened, 4, 1) === (string)substr(
-            $shortened, 4, 1
-        )
-    ) {
-        // BS000. Strip one and return
-        return substr($shortened, 0, 4);
-    } else {
-        if ((string)(int)substr($shortened, 3, 1) === (string)substr(
-                $shortened, 3, 1
-            )
-        ) {
-            return substr($shortened, 0, 3);
-        } else {
-            return substr($shortened, 0, 2);
-        }
-    }
+    return $postcode;
+
 }
 
 

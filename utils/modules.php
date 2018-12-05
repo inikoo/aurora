@@ -2231,8 +2231,7 @@ $modules = array(
             ),
 
 
-
-            'payment_account'          => array(
+            'payment_account' => array(
                 'type' => 'object',
                 'tabs' => array(
                     'store.payment_account.details'  => array(
@@ -2252,15 +2251,15 @@ $modules = array(
                         'class' => 'right icon_only'
                     ),
                     'store.payment_account.payments' => array(
-                        'label'         => _('Transactions'),
-                        'title'         => _('Payments transactions'),
+                        'label' => _('Transactions'),
+                        'title' => _('Payments transactions'),
 
                     )
 
 
                 )
             ),
-            'payment'                  => array(
+            'payment'         => array(
                 'type' => 'object',
                 'tabs' => array(
                     'store.payment.details' => array(
@@ -2778,7 +2777,10 @@ $modules = array(
                     'store.sales.plot'     => 'store.sales',
                     'store.sales.history'  => 'store.sales',
                     'store.sales.calendar' => 'store.sales',
-                    'store.sales.info'     => 'store.sales'
+                    'store.sales.info'     => 'store.sales',
+
+                    'store.current_shipping_zones'       => 'store.shipping_zones',
+                    'store.shipping_zones_schemas' => 'store.shipping_zones'
 
                 ),
 
@@ -2825,8 +2827,22 @@ $modules = array(
                     ),
 
                     'store.shipping_zones' => array(
-                        'label' => _('Shipping zones'),
-                        'icon'  => 'truck fa-flip-horizontal',
+                        'label'   => _('Shipping zones'),
+                        'icon'    => 'truck fa-flip-horizontal',
+                        'subtabs' => array(
+
+                            'store.current_shipping_zones' => array(
+                                'label' => _('Current shipping zones'),
+                                'icon'  => 'truck fa-flip-horizontal',
+                            ),
+
+                            'store.shipping_zones_schemas' => array(
+                                'label' => _('Shipping zones schemas'),
+                                'icon'  => 'layer-group ',
+                            ),
+
+
+                        ),
                     ),
 
                     'store.history' => array(
@@ -5733,7 +5749,7 @@ $modules = array(
         'sections' => array(
 
 
-            'warehouse'      => array(
+            'warehouse' => array(
 
                 'type'           => 'navigation',
                 'label'          => '',
@@ -5743,7 +5759,7 @@ $modules = array(
                 'sections_class' => 'icon-only',
 
                 'tabs' => array(
-                    'warehouse.details' => array(
+                    'warehouse.details'  => array(
                         'label' => _('Settings'),
                         'title' => _('Warehouse settings'),
                         'icon'  => 'sliders-h'
@@ -5769,13 +5785,6 @@ $modules = array(
                 )
 
             ),
-
-
-
-
-
-
-
 
 
             'dashboard'      => array(
@@ -5897,12 +5906,12 @@ $modules = array(
                         'icon'  => 'sliders-h'
                     ),
 
-                    'return.items'          => array(
+                    'return.items' => array(
                         'label' => _('Items'),
                         'icon'  => 'bars'
                     ),
 
-                    'return.items_done'     => array(
+                    'return.items_done' => array(
                         'label' => _('Items'),
                         'icon'  => 'bars'
                     ),

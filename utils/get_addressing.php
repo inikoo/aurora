@@ -12,9 +12,7 @@
 require_once 'vendor/autoload.php';
 
 
-
-
-
+use CommerceGuys\Addressing\Zone\Zone;
 
 use CommerceGuys\Addressing\Address;
 use CommerceGuys\Addressing\Formatter\DefaultFormatter;
@@ -24,15 +22,16 @@ use CommerceGuys\Addressing\Country\CountryRepository;
 use CommerceGuys\Addressing\Subdivision\SubdivisionRepository;
 
 
-
+function get_zone_object($data) {
+    return new Zone($data);
+}
+function get_address_object() {
+    return new Address();
+}
 
 function get_address_format($country_code) {
 
 
-
-
-   // $AddressFormatRepository_definitionPath = 'external_libs/CommerceGuys/Addressing/resources/address_format/';
-    //$addressFormatRepository                = new AddressFormatRepository($AddressFormatRepository_definitionPath);
     $addressFormatRepository = new AddressFormatRepository();
 
     return $addressFormatRepository->get($country_code);
@@ -66,12 +65,14 @@ function get_address_formatter($origin_country = null, $locale = null) {
                                 )
     );
 
-    $postal_label = new PostalLabelFormatter($addressFormatRepository, $countryRepository, $subdivisionRepository,
+    $postal_label = new PostalLabelFormatter(
+        $addressFormatRepository, $countryRepository, $subdivisionRepository,
 
-         array(
-             'locale'          => $locale,
-             'origin_country'=>$origin_country
-         ));
+        array(
+            'locale'         => $locale,
+            'origin_country' => $origin_country
+        )
+    );
 
 
     return array(

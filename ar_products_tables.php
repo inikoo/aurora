@@ -81,6 +81,9 @@ switch ($tipo) {
     case 'shipping_zones':
         shipping_zones(get_table_parameters(), $db, $user);
         break;
+    case 'shipping_zones_schemas':
+        shipping_zones_schemas(get_table_parameters(), $db, $user);
+        break;
     case 'shipping_options':
         shipping_options(get_table_parameters(), $db, $user);
         break;
@@ -1494,19 +1497,28 @@ function shipping_zones($_data, $db, $user) {
     $sql         = "select $fields from $table $where $wheref order by $order $order_direction limit $start_from,$number_results";
     $record_data = array();
 
+    if ($result=$db->query($sql)) {
+    		foreach ($result as $data) {
 
-    foreach ($db->query($sql) as $data) {
+                $price='';
+                $territories='';
 
+                $record_data[] = array(
+                    'id'   => (integer)$data['Shipping Zone Key'],
+                    'code' => sprintf('<span class="link" onClick="change_view(\'store/%d/shipping_zone/%d\')" >%s</span>', $data['Shipping Zone Store Key'], $data['Shipping Zone Key'], $data['Shipping Zone Code']),
+                    'name' => sprintf('<span >%s</span>', $data['Shipping Zone Name']),
+                    'price'=>$price,
+                    'territories'=>$territories,
 
-        $record_data[] = array(
-            'id'   => (integer)$data['Shipping Zone Key'],
-            'code' => sprintf('<span class="link" onClick="change_view(\'store/%d/shipping_zone/%d\')" >%s</span>', $data['Shipping Zone Store Key'], $data['Shipping Zone Key'], $data['Shipping Zone Name']),
-            'name' => sprintf('<span class="link" onClick="change_view(\'store/%d/shipping_zone/%d\')" >%s</span>', $data['Shipping Zone Store Key'], $data['Shipping Zone Key'], $data['Shipping Zone Description']),
-
-
-        );
-
+                );
+    		}
+    }else {
+    		print_r($error_info=$db->errorInfo());
+    		print "$sql\n";
+    		exit;
     }
+
+
 
     $response = array(
         'resultset' => array(
@@ -1522,6 +1534,68 @@ function shipping_zones($_data, $db, $user) {
     echo json_encode($response);
 }
 
+
+
+function shipping_zones_schemas($_data, $db, $user) {
+
+
+    $rtext_label = 'shipping zone schema';
+
+    include_once 'prepare_table/init.php';
+
+    $sql         = "select $fields from $table $where $wheref order by $order $order_direction limit $start_from,$number_results";
+    $record_data = array();
+
+    if ($result=$db->query($sql)) {
+        foreach ($result as $data) {
+            switch ($data['Shipping Zone Schema Type']){
+                case 'Current':
+                    $type='<i class="fa fa-play success margin_right_5"></i> '._('Current');
+                    break;
+                case 'InReserve':
+                    $type='<i class="fa fa-pause discreet margin_right_5"></i> '._('In reserve');
+                    break;
+                case 'Deal':
+                    $type='<i class="fa fa-tag  margin_right_5"></i> '._('Offer');
+                    break;
+                case 'Discontinued':
+                    $type='<i class="fa fa-skull discreet margin_right_5"></i> '._('Discontinued');
+                    break;
+                default:
+
+                    $type=$data['Shipping Zone Schema Type'];
+            }
+
+
+            $record_data[] = array(
+                'id'   => (integer)$data['Shipping Zone Schema Key'],
+                'type'=>$type,
+                'label' => sprintf('<span class="link" onClick="change_view(\'store/%d/shipping_zone/%d\')" >%s</span>', $data['Shipping Zone Schema Store Key'], $data['Shipping Zone Schema Key'], $data['Shipping Zone Schema Label']),
+
+
+            );
+        }
+    }else {
+        print_r($error_info=$db->errorInfo());
+        print "$sql\n";
+        exit;
+    }
+
+
+
+    $response = array(
+        'resultset' => array(
+            'state'         => 200,
+            'data'          => $record_data,
+            'rtext'         => $rtext,
+            'sort_key'      => $_order,
+            'sort_dir'      => $_dir,
+            'total_records' => $total
+
+        )
+    );
+    echo json_encode($response);
+}
 
 function back_to_stock_notification_request_products($_data, $db, $user, $account) {
 

@@ -2241,39 +2241,7 @@ class Order extends DB_Table {
         }
 
 
-        if ($affected_rows) {
 
-            /*
-
-
-            $dn_key = 0;
-
-            $this->update_number_products();
-            $this->update_insurance();
-
-            $this->update_discounts_items();
-            $this->update_totals();
-
-
-            $this->update_shipping($dn_key, false);
-            $this->update_charges($dn_key, false);
-            $this->update_discounts_no_items($dn_key);
-
-
-            $this->update_deal_bridge();
-
-            $this->update_deals_usage();
-
-            $this->update_totals();
-
-
-            $this->update_number_products();
-
-            //  $this->apply_payment_from_customer_account();
-
-
-            */
-        }
 
 
     }

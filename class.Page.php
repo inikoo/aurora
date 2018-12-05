@@ -5738,7 +5738,7 @@ class Page extends DB_Table {
                 $formatted_store_section = _('Search');
                 break;
             case 'Product Description':
-                $formatted_store_section = _('Product details').' <a href="product.php?pid='.$this->data['Page Parent Key'].'">'.$this->data['Page Parent Code'].'</a>';
+                $formatted_store_section = _('Product details');
 
                 break;
             case 'Information':

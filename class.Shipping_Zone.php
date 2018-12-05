@@ -16,7 +16,7 @@ include_once('class.DB_Table.php');
 class Shipping_Zone extends DB_Table {
 
 
-    function Shipping_Zone($a1, $a2 = false) {
+    function __construct($a1, $a2 = false) {
 
         global $db;
         $this->db = $db;
@@ -84,31 +84,49 @@ class Shipping_Zone extends DB_Table {
             }
 
         }
-        $fields = array();
-        foreach ($data as $key => $value) {
-            if (!($key == 'Shipping Zone Begin Date' or $key == 'Shipping Zone Expiration Date' or $key == 'Shipping Zone Terms Metadata' or $key == 'Shipping Zone Metadata')) {
-                $fields[] = $key;
-            }
-        }
 
-        $sql = "SELECT `Shipping Zone Key` FROM `Shipping Zone Dimension` WHERE  TRUE ";
-        //print_r($fields);
-        foreach ($fields as $field) {
-            $sql .= sprintf(
-                ' and `%s`=%s', $field, prepare_mysql($data[$field], false)
-            );
-        }
+
+        $sql = sprintf(
+            "SELECT `Shipping Zone Key` FROM `Shipping Zone Dimension` WHERE  `Shipping Zone Store Key`=%d and `Shipping Zone Code`=%s   ",
+            $data['Shipping Zone Store Key'],
+            prepare_mysql($data['Shipping Zone Code'])
+
+        );
 
 
         if ($result = $this->db->query($sql)) {
             if ($row = $result->fetch()) {
-                $this->found     = true;
-                $this->found_key = $row['Shipping Zone Key'];
+                $this->found            = true;
+                $this->found_key        = $row['Shipping Zone Key'];
+                $this->duplicated_field = 'Shipping Zone Code';
             }
         } else {
             print_r($error_info = $this->db->errorInfo());
             print "$sql\n";
             exit;
+        }
+
+        if (!$this->found) {
+            $sql = sprintf(
+                "SELECT `Shipping Zone Key` FROM `Shipping Zone Dimension` WHERE  `Shipping Zone Store Key`=%d and `Shipping Zone Name`=%s   ",
+                $data['Shipping Zone Store Key'],
+                prepare_mysql($data['Shipping Zone Name'])
+
+            );
+
+
+            if ($result = $this->db->query($sql)) {
+                if ($row = $result->fetch()) {
+                    $this->found            = true;
+                    $this->found_key        = $row['Shipping Zone Key'];
+                    $this->duplicated_field = 'Shipping Zone Name';
+                }
+            } else {
+                print_r($error_info = $this->db->errorInfo());
+                print "$sql\n";
+                exit;
+            }
+
         }
 
 
@@ -128,12 +146,7 @@ class Shipping_Zone extends DB_Table {
     function create($data) {
 
 
-        if ($data['Shipping Zone Trigger Key'] == '') {
-            $data['Shipping Zone Trigger Key'] = 0;
-        }
-
-    
-        //print_r($data);
+        $data['Shipping Zone Creation Date'] = gmdate('Y-m-d H:i:s');
 
         $keys   = '(';
         $values = 'values(';
@@ -148,12 +161,14 @@ class Shipping_Zone extends DB_Table {
         );
 
 
+
         if ($this->db->exec($sql)) {
             $this->id = $this->db->lastInsertId();
+            $this->new=true;
             $this->get_data('id', $this->id);
 
             $history_data = array(
-                'History Abstract' => sprintf(_('%s charge created'), $this->get('Name')),
+                'History Abstract' => sprintf(_('%s shipping zone created'), $this->get('Name')),
                 'History Details'  => '',
                 'Action'           => 'created'
             );
@@ -164,24 +179,25 @@ class Shipping_Zone extends DB_Table {
 
 
         } else {
-            print "Error can not create charge  $sql\n";
+            print "Error can not create shipping zone  $sql\n";
             exit;
 
         }
     }
 
-   
+
     function get($key = '') {
 
 
-if(!$this->id){
-return;
-}
+        if (!$this->id) {
+            return;
+        }
 
         switch ($key) {
             case 'Amount':
-                $store=get_object('Store',$this->data['Shipping Zone Store Key']);
-                return money($this->data['Shipping Zone Total Acc '.$key],$store->get('Store Currency Code'));
+                $store = get_object('Store', $this->data['Shipping Zone Store Key']);
+
+                return money($this->data['Shipping Zone Total Acc '.$key], $store->get('Store Currency Code'));
 
                 break;
             case 'Orders':
@@ -206,7 +222,6 @@ return;
                 }
 
 
-
                 return false;
         }
 
@@ -218,21 +233,18 @@ return;
 
 
         switch ($field) {
-
-            case 'Shipping Zone Name':
+            case 'Shipping Zone Code':
                 $label = _('code');
                 break;
-            case 'Shipping Zone Description':
+            case 'Shipping Zone Name':
                 $label = _('name');
                 break;
-            case 'Shipping Zone Public Description':
+            case 'Shipping Zone Description':
                 $label = _('description');
                 break;
 
 
             default:
-
-
 
 
                 $label = $field;
@@ -248,42 +260,36 @@ return;
 
         $orders    = 0;
         $customers = 0;
-        $amount=0;
+        $amount    = 0;
 
-        $sql       = sprintf(
+        $sql = sprintf(
             "SELECT sum(`Transaction Net Amount`) as amount,count( DISTINCT O.`Order Key`) AS orders,count( DISTINCT `Order Customer Key`) AS customers FROM `Order No Product Transaction Fact` B LEFT  JOIN `Order Dimension` O ON (O.`Order Key`=B.`Order Key`) WHERE `Transaction Type Key`=%d AND `Transaction Type`='Shipping Zones' AND `Order State` not in ('InBasket','Cancelled') ",
             $this->id
 
         );
 
 
-
-        if ($result=$this->db->query($sql)) {
+        if ($result = $this->db->query($sql)) {
             if ($row = $result->fetch()) {
                 $orders    = $row['orders'];
                 $customers = $row['customers'];
-                $amount = $row['amount'];
+                $amount    = $row['amount'];
             }
-        }else {
-            print_r($error_info=$this->db->errorInfo());
+        } else {
+            print_r($error_info = $this->db->errorInfo());
             print "$sql\n";
             exit;
         }
 
 
-
-
-
         $this->fast_update(
             array(
-                'Shipping Zone Total Acc Orders'=>$orders,
-                'Shipping Zone Total Acc Customers'=>$customers,
-                'Shipping Zone Total Acc Amount'=>$amount,
+                'Shipping Zone Total Acc Orders'    => $orders,
+                'Shipping Zone Total Acc Customers' => $customers,
+                'Shipping Zone Total Acc Amount'    => $amount,
             )
 
         );
-
-
 
 
     }

@@ -56,8 +56,11 @@ class Store extends DB_Table {
 
         if ($this->data = $this->db->query($sql)->fetch()) {
 
-            $this->id   = $this->data['Store Key'];
-            $this->code = $this->data['Store Code'];
+            $this->id         = $this->data['Store Key'];
+            $this->code       = $this->data['Store Code'];
+            $this->properties = json_decode($this->data['Store Properties'], true);
+            $this->settings   = json_decode($this->data['Store Settings'], true);
+
         }
 
 
@@ -214,9 +217,22 @@ class Store extends DB_Table {
             $this->db->exec($sql);
             $sql = sprintf(
                 "INSERT INTO `Store DC Data` (`Store Key`) VALUES (%d)", $this->id
-
             );
             $this->db->exec($sql);
+
+
+            $shipping_zone_schema = $this->create_shipping_zone_schema(
+                array(
+                    'Shipping Zone Schema Label'         => sprintf(_('%s shipping zones'), $this->get('Code')),
+                    'Shipping Zone Schema Type'          => 'Current',
+                    'Shipping Zone Schema Default Price' => json_encode(
+                        array(
+                            'type' => 'TBC'
+                        )
+                    )
+                )
+            );
+            $this->fast_update_json_field('Store Properties', 'current_shipping_zone_schema', $shipping_zone_schema->id);
 
 
             require_once 'conf/timeseries.php';
@@ -347,62 +363,69 @@ class Store extends DB_Table {
 
     }
 
-    function create_timeseries($data, $fork_key = 0) {
+    function create_shipping_zone_schema($data) {
 
-        $data['Timeseries Parent']     = 'Store';
-        $data['Timeseries Parent Key'] = $this->id;
-        $data['editor']                = $this->editor;
 
-        $timeseries = new Timeseries('find', $data, 'create');
-        if ($timeseries->id) {
-            require_once 'utils/date_functions.php';
+        include_once 'class.Shipping_Zone_Schema.php';
 
-            if ($this->data['Store Valid From'] != '') {
-                $from = date('Y-m-d', strtotime($this->get('Valid From')));
+        if (!array_key_exists('Shipping Zone Schema Label', $data) or $data['Shipping Zone Schema Label'] == '') {
+            $this->error = true;
+            $this->msg   = 'error, no label';
+
+            return;
+        }
+
+
+        $data['Shipping Zone Schema Store Key']     = $this->id;
+        $data['Shipping Zone Schema Creation Date'] = gmdate('Y-m-d H:i:s');
+
+
+        $shipping_zone_schema = new Shipping_Zone_Schema('find create', $data);
+
+        // print_r($shipping_zone_schema);
+        if ($shipping_zone_schema->id) {
+            $this->new_object_msg = $shipping_zone_schema->msg;
+
+            if ($shipping_zone_schema->new) {
+                $this->new_object = true;
+
+                $shipping_zone_schema->create_shipping_zone(
+                    array(
+                        'Shipping Zone Type'        => 'Failover',
+                        'Shipping Zone Code'        => 'Other',
+                        'Shipping Zone Name'        => _('Rest of the world'),
+                        'Shipping Zone Price'       => json_encode(
+                            array(
+                                'type' => 'TBC',
+
+                            )
+                        ),
+                        'Shipping Zone Territories' => ''
+                    )
+                );
+
 
             } else {
-                $from = '';
+                $this->error = true;
+                if ($shipping_zone_schema->found) {
+
+                    $this->error_code     = 'duplicated_field';
+                    $this->error_metadata = json_encode(array($shipping_zone_schema->duplicated_field));
+
+                    if ($shipping_zone_schema->duplicated_field == 'Shipping Zone Schema Label') {
+                        $this->msg = _('Duplicated label');
+                    }
+
+
+                } else {
+                    $this->msg = $shipping_zone_schema->msg;
+                }
             }
 
-            if ($this->get('Store State') == 'Closed') {
-                $to = $this->get('Valid To');
-            } else {
-                $to = date('Y-m-d');
-            }
-
-
-            $sql        = sprintf(
-                'DELETE FROM `Timeseries Record Dimension` WHERE `Timeseries Record Timeseries Key`=%d AND `Timeseries Record Date`<%s ', $timeseries->id, prepare_mysql($from)
-            );
-            $update_sql = $this->db->prepare($sql);
-            $update_sql->execute();
-            if ($update_sql->rowCount()) {
-                $timeseries->update(
-                    array('Timeseries Updated' => gmdate('Y-m-d H:i:s')), 'no_history'
-                );
-            }
-
-            $sql        = sprintf(
-                'DELETE FROM `Timeseries Record Dimension` WHERE `Timeseries Record Timeseries Key`=%d AND `Timeseries Record Date`>%s ', $timeseries->id, prepare_mysql($to)
-            );
-            $update_sql = $this->db->prepare($sql);
-            $update_sql->execute();
-            if ($update_sql->rowCount()) {
-                $timeseries->update(
-                    array('Timeseries Updated' => gmdate('Y-m-d H:i:s')), 'no_history'
-                );
-            }
-
-            if ($from and $to) {
-                $this->update_timeseries_record($timeseries, $from, $to, $fork_key);
-            }
-
-            if ($timeseries->get('Timeseries Number Records') == 0) {
-                $timeseries->update(
-                    array('Timeseries Updated' => gmdate('Y-m-d H:i:s')), 'no_history'
-                );
-            }
-
+            return $shipping_zone_schema;
+        } else {
+            $this->error = true;
+            $this->msg   = $shipping_zone_schema->msg;
         }
 
     }
@@ -791,6 +814,66 @@ class Store extends DB_Table {
             return $this->data['Store '.$key];
         }
 
+
+    }
+
+    function create_timeseries($data, $fork_key = 0) {
+
+        $data['Timeseries Parent']     = 'Store';
+        $data['Timeseries Parent Key'] = $this->id;
+        $data['editor']                = $this->editor;
+
+        $timeseries = new Timeseries('find', $data, 'create');
+        if ($timeseries->id) {
+            require_once 'utils/date_functions.php';
+
+            if ($this->data['Store Valid From'] != '') {
+                $from = date('Y-m-d', strtotime($this->get('Valid From')));
+
+            } else {
+                $from = '';
+            }
+
+            if ($this->get('Store State') == 'Closed') {
+                $to = $this->get('Valid To');
+            } else {
+                $to = date('Y-m-d');
+            }
+
+
+            $sql        = sprintf(
+                'DELETE FROM `Timeseries Record Dimension` WHERE `Timeseries Record Timeseries Key`=%d AND `Timeseries Record Date`<%s ', $timeseries->id, prepare_mysql($from)
+            );
+            $update_sql = $this->db->prepare($sql);
+            $update_sql->execute();
+            if ($update_sql->rowCount()) {
+                $timeseries->update(
+                    array('Timeseries Updated' => gmdate('Y-m-d H:i:s')), 'no_history'
+                );
+            }
+
+            $sql        = sprintf(
+                'DELETE FROM `Timeseries Record Dimension` WHERE `Timeseries Record Timeseries Key`=%d AND `Timeseries Record Date`>%s ', $timeseries->id, prepare_mysql($to)
+            );
+            $update_sql = $this->db->prepare($sql);
+            $update_sql->execute();
+            if ($update_sql->rowCount()) {
+                $timeseries->update(
+                    array('Timeseries Updated' => gmdate('Y-m-d H:i:s')), 'no_history'
+                );
+            }
+
+            if ($from and $to) {
+                $this->update_timeseries_record($timeseries, $from, $to, $fork_key);
+            }
+
+            if ($timeseries->get('Timeseries Number Records') == 0) {
+                $timeseries->update(
+                    array('Timeseries Updated' => gmdate('Y-m-d H:i:s')), 'no_history'
+                );
+            }
+
+        }
 
     }
 
@@ -1235,7 +1318,7 @@ class Store extends DB_Table {
                     $this->error_metadata = json_encode(array($deal->duplicated_field));
 
                     if ($deal->duplicated_field == 'Deal Name') {
-                        $this->msg = sprintf(_('Duplicated name %s'),$data['Deal Name']);
+                        $this->msg = sprintf(_('Duplicated name %s'), $data['Deal Name']);
                     }
 
 
@@ -3983,6 +4066,10 @@ class Store extends DB_Table {
 
         $updated_fields_number = 0;
 
+        if (preg_match('/gb|im|jy|gg/i', $fields['Address Country 2 Alpha Code'])) {
+            include_once 'utils/geography_functions.php';
+            $fields['Address Postal Code']=gbr_pretty_format_post_code($fields['Address Postal Code']);
+        }
 
         foreach ($fields as $field => $value) {
 
@@ -4003,7 +4090,7 @@ class Store extends DB_Table {
 
         if ($this->updated) {
 
-            $this->update_address_formatted_fields($type, $options);
+            $this->update_address_formatted_fields($type);
 
 
             if (!preg_match('/no( |\_)history|nohistory/i', $options)) {
@@ -4019,10 +4106,14 @@ class Store extends DB_Table {
 
     }
 
-    function update_address_formatted_fields($type, $options) {
+    function update_address_formatted_fields($type) {
 
 
         include_once 'utils/get_addressing.php';
+
+
+
+
 
         $new_checksum = md5(
             json_encode(

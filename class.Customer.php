@@ -749,7 +749,6 @@ class Customer extends Subject {
     }
 
 
-
     function get_other_delivery_address_fields($other_delivery_address_key) {
 
         $sql = sprintf(
@@ -791,7 +790,7 @@ class Customer extends Subject {
 
     function update_full_search() {
 
-       // $store = new Store($this->data['Customer Store Key']);
+        // $store = new Store($this->data['Customer Store Key']);
 
 
         $address_plain      = strip_tags($this->get('Contact Address'));
@@ -799,7 +798,7 @@ class Customer extends Subject {
         $second_full_search = '';
 
 
-     //   $description = '';
+        //   $description = '';
 
         if ($this->data['Customer Company Name'] != '') {
             $name = '<b>'.$this->data['Customer Name'].'</b> (Id:'.$this->get_formatted_id().')<br/>'.$this->data['Customer Main Contact Name'];
@@ -1071,90 +1070,13 @@ class Customer extends Subject {
 
 
                 $this->update_address('Contact', json_decode($value, true), $options);
-                /*
 
-                                if(  empty($metadata['no_propagate_addresses'])  ) {
-
-
-                                    if ($this->data['Customer Billing Address Link'] == 'Contact') {
-
-                                        $this->update_field_switcher('Customer Invoice Address', $value, $options, array('no_propagate_addresses'=>true));
-
-                                        if ($this->data['Customer Delivery Address Link'] == 'Billing') {
-                                            $this->update_field_switcher('Customer Delivery Address', $value, $options, array('no_propagate_addresses'=>true));
-
-                                        }
-
-
-                                    }
-                                    if ($this->data['Customer Delivery Address Link'] == 'Contact') {
-
-                                        $this->update_field_switcher('Customer Delivery Address', $value, $options, array('no_propagate_addresses'=>true));
-                                    }
-
-                                }
-
-
-                                $this->update_metadata = array(
-
-                                    'class_html'  => array(
-                                        'Contact_Address'      => $this->get('Contact Address')
-
-
-                                    )
-                                );
-                */
                 break;
 
 
             case 'Customer Invoice Address':
 
                 $this->update_address('Invoice', json_decode($value, true), $options);
-
-
-                //print_r(json_decode($value, true));
-                /*
-                                if(  empty($metadata['no_propagate_addresses'])  ) {
-
-
-                                    if ($this->data['Customer Billing Address Link'] == 'Contact') {
-
-                                        $this->update_field_switcher('Customer Contact Address', $value, $options, array('no_propagate_addresses'=>true));
-
-                                        if ($this->data['Customer Delivery Address Link'] == 'Contact') {
-                                            $this->update_field_switcher('Customer Delivery Address', $value, $options, array('no_propagate_addresses'=>true));
-
-                                        }
-
-
-                                    }
-                                    if ($this->data['Customer Delivery Address Link'] == 'Billing') {
-
-
-
-                                        $this->update_field_switcher('Customer Delivery Address', $value, $options, array('no_propagate_addresses'=>true));
-                                    }
-
-                                }
-
-                                //'InBasket','InProcess','InWarehouse','PackedDone','Approved','Dispatched','Cancelled'
-
-                                if(  empty($metadata['no_propagate_orders'])  ) {
-                                    $sql = sprintf('SELECT `Order Key` FROM `Order Dimension` WHERE  `Order State` in ("Basket")   AND `Order Customer Key`=%d ', $this->id);
-                                    if ($result = $this->db->query($sql)) {
-                                        foreach ($result as $row) {
-                                            $order = get_object('Order', $row['Order Key']);
-
-
-                                            $order->update(array('Order Invoice Address' => $value), $options, array('no_propagate_customer' => true));
-                                        }
-                                    } else {
-                                        print_r($error_info = $this->db->errorInfo());
-                                        print "$sql\n";
-                                        exit;
-                                    }
-                                }
-                */
 
 
                 $this->update_metadata = array(
@@ -1346,16 +1268,14 @@ class Customer extends Subject {
                 } else {
 
 
-
-
                     include_once('class.Sales_Representative.php');
                     $sales_representative = new Sales_Representative(
                         'find', array(
                                   'Sales Representative User Key' => $value,
-                                  'editor'                         => $this->editor
+                                  'editor'                        => $this->editor
                               )
                     );
-                    $sales_representative->fast_update(array('Sales Representative Customer Agent'=>'Yes'));
+                    $sales_representative->fast_update(array('Sales Representative Customer Agent' => 'Yes'));
 
 
                     $this->fast_update(
@@ -1479,7 +1399,7 @@ class Customer extends Subject {
         }
     }
 
-    function add_other_delivery_address($fields, $options = '') {
+    function add_other_delivery_address($fields) {
 
 
         include_once 'utils/get_addressing.php';
@@ -1519,18 +1439,22 @@ class Customer extends Subject {
         $store = new Store($this->get('Store Key'));
 
 
-        list(
-            $address, $formatter, $postal_label_formatter
-            ) = get_address_formatter(
-            $store->get('Store Home Country Code 2 Alpha'), $store->get('Store Locale')
-        );
+        list($address, $formatter, $postal_label_formatter) = get_address_formatter($store->get('Store Home Country Code 2 Alpha'), $store->get('Store Locale'));
 
 
-        $address = $address->withFamilyName($fields['Address Recipient'])->withOrganization($fields['Address Organization'])->withAddressLine1($fields['Address Line 1'])->withAddressLine2(
-            $fields['Address Line 2']
-        )->withSortingCode($fields['Address Sorting Code'])->withPostalCode($fields['Address Postal Code'])->withDependentLocality($fields['Address Dependent Locality'])->withLocality(
-            $fields['Address Locality']
-        )->withAdministrativeArea($fields['Address Administrative Area'])->withCountryCode($fields['Address Country 2 Alpha Code']);
+
+        if (preg_match('/gb|im|jy|gg/i', $fields['Address Country 2 Alpha Code'])) {
+            include_once 'utils/geography_functions.php';
+            $fields['Address Postal Code']=gbr_pretty_format_post_code($fields['Address Postal Code']);
+        }
+
+
+        $address =
+            $address->withFamilyName($fields['Address Recipient'])->withOrganization($fields['Address Organization'])->withAddressLine1($fields['Address Line 1'])->withAddressLine2(
+                $fields['Address Line 2']
+            )->withSortingCode($fields['Address Sorting Code'])->withPostalCode($fields['Address Postal Code'])->withDependentLocality($fields['Address Dependent Locality'])->withLocality(
+                $fields['Address Locality']
+            )->withAdministrativeArea($fields['Address Administrative Area'])->withCountryCode($fields['Address Country 2 Alpha Code']);
 
         $xhtml_address = $formatter->format($address);
         $xhtml_address = preg_replace('/<br>\s/', "\n", $xhtml_address);
@@ -1986,6 +1910,11 @@ class Customer extends Subject {
                 ) = get_address_formatter(
                 $store->get('Store Home Country Code 2 Alpha'), $store->get('Store Locale')
             );
+
+            if (preg_match('/gb|im|jy|gg/i', $address_fields['Address Country 2 Alpha Code'])) {
+                include_once 'utils/geography_functions.php';
+                $address_fields['Address Postal Code']=gbr_pretty_format_post_code($address_fields['Address Postal Code']);
+            }
 
 
             $address = $address->withFamilyName($address_fields['Address Recipient'])->withOrganization($address_fields['Address Organization'])->withAddressLine1($address_fields['Address Line 1'])->withAddressLine2($address_fields['Address Line 2'])->withSortingCode(
@@ -2799,38 +2728,37 @@ class Customer extends Subject {
         $this->fast_update($update_data);
 
 
-        $sql=sprintf('select `Prospect Key` from `Prospect Dimension` where `Prospect Customer Key`=%d ',$this->id);
-        if ($result=$this->db->query($sql)) {
+        $sql = sprintf('select `Prospect Key` from `Prospect Dimension` where `Prospect Customer Key`=%d ', $this->id);
+        if ($result = $this->db->query($sql)) {
             if ($row = $result->fetch()) {
-                $prospect=get_object('Prospect',$row['Prospect Key']);
-                $prospect->fast_update(array('Prospect Invoiced'=>($customer_invoices>0?'Yes':'No')));
+                $prospect = get_object('Prospect', $row['Prospect Key']);
+                $prospect->fast_update(array('Prospect Invoiced' => ($customer_invoices > 0 ? 'Yes' : 'No')));
 
-                if($customer_invoices>0 and $prospect->get('Prospect Status')=='Registered'){
+                if ($customer_invoices > 0 and $prospect->get('Prospect Status') == 'Registered') {
 
 
-                    $sql=sprintf('select `Invoice Key` from `Invoice Dimension` where `Invoice Customer Key`=%d order by `Invoice Date` limit 1 ',$this->id);
-                    if ($result=$this->db->query($sql)) {
+                    $sql = sprintf('select `Invoice Key` from `Invoice Dimension` where `Invoice Customer Key`=%d order by `Invoice Date` limit 1 ', $this->id);
+                    if ($result = $this->db->query($sql)) {
                         if ($row = $result->fetch()) {
-                            $first_invoice=get_object('Invoice',$row['Invoice Key']);
-                            $prospect->update_status('Invoiced',$first_invoice);
+                            $first_invoice = get_object('Invoice', $row['Invoice Key']);
+                            $prospect->update_status('Invoiced', $first_invoice);
 
                         }
-                    }else {
-                    	print_r($error_info=$this->db->errorInfo());
-                    	print "$sql\n";
-                    	exit;
+                    } else {
+                        print_r($error_info = $this->db->errorInfo());
+                        print "$sql\n";
+                        exit;
                     }
 
                 }
 
 
-        	}
-        }else {
-        	print_r($error_info=$this->db->errorInfo());
-        	print "$sql\n";
-        	exit;
+            }
+        } else {
+            print_r($error_info = $this->db->errorInfo());
+            print "$sql\n";
+            exit;
         }
-
 
 
     }
@@ -4038,16 +3966,15 @@ class Customer extends Subject {
 
     }
 
-    function unsubscribe($note){
+    function unsubscribe($note) {
 
 
-
-
-
-        $this->fast_update(array(
-                               'Customer Send Newsletter'=>'No',
-                               'Customer Send Email Marketing'=>'No'
-                           ));
+        $this->fast_update(
+            array(
+                'Customer Send Newsletter'      => 'No',
+                'Customer Send Email Marketing' => 'No'
+            )
+        );
 
 
         $history_data = array(

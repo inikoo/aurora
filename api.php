@@ -57,11 +57,6 @@ $session = new fake_session;
 authorization($db, $user_key, $api_key_key, $scope);
 
 
-
-
-
-
-
 function authorization($db, $user_key, $api_key_key, $scope) {
 
 
@@ -116,6 +111,9 @@ function authorization($db, $user_key, $api_key_key, $scope) {
 
 
     switch ($scope) {
+        case 'Nano Services':
+            include_once 'api_nano_services.php';
+            break;
         case 'Timesheet':
             include_once 'api_timesheet.php';
 
@@ -132,10 +130,7 @@ function authorization($db, $user_key, $api_key_key, $scope) {
             }
 
         case 'Stock':
-
             include_once 'api_stock.php';
-
-
             break;
         case 'Picking':
 
@@ -168,6 +163,8 @@ function parse_scope($request) {
 
     if ($request == '/api/timesheet_record') {
         return 'Timesheet';
+    } elseif ($request == '/api/nc') {
+        return 'Nano Services';
     } elseif ($request == '/api/stock') {
         return 'Stock';
     } elseif ($request == '/api/picking') {
@@ -179,51 +176,95 @@ function parse_scope($request) {
 }
 
 
-    ///
-    function _apache_request_headers() {
-        $arh = array();
-        $rx_http = '/\AHTTP_/';
-        foreach($_SERVER as $key => $val) {
-            if( preg_match($rx_http, $key) ) {
-                $arh_key = preg_replace($rx_http, '', $key);
-                $rx_matches = array();
-                // do some nasty string manipulations to restore the original letter case
-                // this should work in most cases
-                $rx_matches = explode('_', $arh_key);
-                if( count($rx_matches) > 0 and strlen($arh_key) > 2 ) {
-                    foreach($rx_matches as $ak_key => $ak_val) $rx_matches[$ak_key] = ucfirst($ak_val);
-                    $arh_key = implode('-', $rx_matches);
+function _apache_request_headers() {
+    $arh     = array();
+    $rx_http = '/\AHTTP_/';
+    foreach ($_SERVER as $key => $val) {
+        if (preg_match($rx_http, $key)) {
+            $arh_key    = preg_replace($rx_http, '', $key);
+            $rx_matches = array();
+            // do some nasty string manipulations to restore the original letter case
+            // this should work in most cases
+            $rx_matches = explode('_', $arh_key);
+            if (count($rx_matches) > 0 and strlen($arh_key) > 2) {
+                foreach ($rx_matches as $ak_key => $ak_val) {
+                    $rx_matches[$ak_key] = ucfirst($ak_val);
                 }
-                $arh[$arh_key] = $val;
+                $arh_key = implode('-', $rx_matches);
+            }
+            $arh[$arh_key] = $val;
+        }
+    }
+
+    return ($arh);
+}
+
+
+function getAuthorizationHeader() {
+    $headers = null;
+    if (isset($_SERVER['Authorization'])) {
+        $headers = trim($_SERVER["Authorization"]);
+    } else {
+        if (isset($_SERVER['HTTP_AUTHORIZATION'])) { //Nginx or fast CGI
+            $headers = trim($_SERVER["HTTP_AUTHORIZATION"]);
+        } elseif (function_exists('apache_request_headers')) {
+            $requestHeaders = apache_request_headers();
+            // Server-side fix for bug in old Android versions (a nice side-effect of this fix means we don't care about capitalization for Authorization)
+            $requestHeaders = array_combine(array_map('ucwords', array_keys($requestHeaders)), array_values($requestHeaders));
+            //print_r($requestHeaders);
+            if (isset($requestHeaders['Authorization'])) {
+                $headers = trim($requestHeaders['Authorization']);
             }
         }
-        return( $arh );
     }
-    ///
+
+    return $headers;
+}
 
 
 function authenticate($db) {
 
 
-
     $_headers = _apache_request_headers();
 
-    if (!isset($_SERVER['HTTP_X_AUTH_KEY']) and isset($_headers['HTTP_X_AUTH_KEY'])) {
-        $_SERVER['HTTP_X_AUTH_KEY'] = $_headers['HTTP_X_AUTH_KEY'];
+    $_headers2 = getAuthorizationHeader();
+
+
+;
+
+    $token = false;
+
+
+    if (empty($_SERVER['HTTP_X_AUTH_KEY'])) {
+        if (!empty($_headers['HTTP_X_AUTH_KEY'])) {
+            $token = $_headers['HTTP_X_AUTH_KEY'];
+        } elseif (!empty($_headers['http_x_auth_key'])) {
+            $token = $_headers['http_x_auth_key'];
+        }elseif (!empty($_REQUEST['AUTH_KEY'])) {
+            $token = $_REQUEST['AUTH_KEY'];
+        }else{
+            $auth_header= getAuthorizationHeader();
+            if(preg_match('/^Bearer\s(.+)$/',$auth_header,$matches)){
+                $token=$matches[1];
+            }
+
+
+        }
+
+
+    }else{
+        $token=$_SERVER['HTTP_X_AUTH_KEY'];
     }
 
-    if (!isset($_SERVER['HTTP_X_AUTH_KEY']) and isset($_headers['http_x_auth_key'])) {
-        $_SERVER['HTTP_X_AUTH_KEY'] = $_headers['http_x_auth_key'];
+
+    if (!isset($_SERVER['HTTP_X_AUTH_KEY']) and isset($_REQUEST['AUTH_KEY'])) {
+        $token['HTTP_X_AUTH_KEY'] = $_REQUEST['AUTH_KEY'];
 
     }
 
-if (!isset($_SERVER['HTTP_X_AUTH_KEY'])  and isset($_REQUEST['AUTH_KEY'])   ) {
-    $_SERVER['HTTP_X_AUTH_KEY']=$_REQUEST['AUTH_KEY'];
-
-}
 
 
-    if (!isset($_SERVER['HTTP_X_AUTH_KEY'])) {
+    if (!$token) {
 
         $response = log_api_key_access_failure(
             $db, 0, 'Fail_Attempt', 'No API key header'
@@ -232,7 +273,7 @@ if (!isset($_SERVER['HTTP_X_AUTH_KEY'])  and isset($_REQUEST['AUTH_KEY'])   ) {
         echo json_encode($response);
         exit;
     } else {
-        $api_key = $_SERVER['HTTP_X_AUTH_KEY'];
+        $api_key = $token;
 
 
         if (preg_match('/^([a-z0-9]{8})(.+)$/', $api_key, $matches)) {
@@ -254,10 +295,10 @@ if (!isset($_SERVER['HTTP_X_AUTH_KEY'])  and isset($_REQUEST['AUTH_KEY'])   ) {
             );
 
 
+
             if ($row = $db->query($sql)->fetch()) {
 
 
-                //print_r($row);
 
 
                 if ($row['API Key Active'] != 'Yes') {
@@ -268,7 +309,6 @@ if (!isset($_SERVER['HTTP_X_AUTH_KEY'])  and isset($_REQUEST['AUTH_KEY'])   ) {
                     exit;
                 }
 
-                //  print $api_key_secret;
 
 
                 if (!password_verify($api_key_secret, $row['API Key Hash'])) {
@@ -282,22 +322,30 @@ if (!isset($_SERVER['HTTP_X_AUTH_KEY'])  and isset($_REQUEST['AUTH_KEY'])   ) {
                 }
 
 
-                if ($row['User Active'] != 'Yes') {
+                if($row['API Key Scope']!='Nano Services'){
 
-                    if ($row['User Key'] == '') {
-                        $response = log_api_key_access_failure(
-                            $db, $row['API Key Key'], 'Fail_Access', 'User not found'
-                        );
-                        echo json_encode($response);
-                        exit;
-                    } else {
-                        $response = log_api_key_access_failure(
-                            $db, $row['API Key Key'], 'Fail_Access', 'User is not active'
-                        );
-                        echo json_encode($response);
-                        exit;
+                    if ($row['User Active'] != 'Yes') {
+
+                        if ($row['User Key'] == '') {
+                            $response = log_api_key_access_failure(
+                                $db, $row['API Key Key'], 'Fail_Access', 'User not found'
+                            );
+                            echo json_encode($response);
+                            exit;
+                        } else {
+                            $response = log_api_key_access_failure(
+                                $db, $row['API Key Key'], 'Fail_Access', 'User is not active'
+                            );
+                            echo json_encode($response);
+                            exit;
+                        }
                     }
+
+
                 }
+
+
+
 
                 return array(
                     $row['API Key User Key'],
