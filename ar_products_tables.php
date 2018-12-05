@@ -307,7 +307,7 @@ function products($_data, $db, $user, $account) {
 
 
 
-                    if($data['Part Units Per Package']!=0 and  $data['Part Unit Price']!=0 and $exchange!=0){
+                    if($data['Part Units Per Package']!=0 and  $data['Part Unit Price']!=0 and $exchange!=0 and  $data['Product Price']>0){
                         $_recommended_margin_ratio= ($data['Part Unit Price'] - ($data['Part Cost in Warehouse']/$data['Part Units Per Package']))/  $data['Part Unit Price'];
 
                         $_actual_margin_ratio=($exchange * $data['Product Price'] - $data['Product Cost'])/( $exchange * $data['Product Price']);
