@@ -630,7 +630,20 @@ class Product extends Asset {
                 );
                 break;
             case 'Product Unit RRP':
-                return $this->data['Product RRP'] / $this->data['Product Units Per Case'];
+
+                if($this->data['Product RRP']==''){
+                    return '';
+                }
+
+
+                if($this->data['Product Units Per Case']>0){
+                    return $this->data['Product RRP'] / $this->data['Product Units Per Case'];
+                }else{
+                    return '';
+                }
+
+
+
                 break;
 
             case 'Unit Type':
