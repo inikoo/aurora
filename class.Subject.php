@@ -613,7 +613,7 @@ class Subject extends DB_Table {
                             $order->editor = $this->editor;
 
 
-                            $order->update(array('Order Invoice Address' => $this->get('Customer Invoice Address')), $options, array('no_propagate_customer' => true));
+                            $order->update(array('Order Invoice Address' => $this->get('Customer Invoice Address')), 'no_history', array('no_propagate_customer' => true));
                         }
                     } else {
                         print_r($error_info = $this->db->errorInfo());
@@ -627,7 +627,7 @@ class Subject extends DB_Table {
                             $order         = get_object('Order', $row['Order Key']);
                             $order->editor = $this->editor;
 
-                            $order->update(array('Order Delivery Address' => $this->get('Customer Delivery Address')), $options, array('no_propagate_customer' => true));
+                            $order->update(array('Order Delivery Address' => $this->get('Customer Delivery Address')), 'no_history', array('no_propagate_customer' => true));
                         }
                     } else {
                         print_r($error_info = $this->db->errorInfo());
