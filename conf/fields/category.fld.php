@@ -12,11 +12,9 @@
 if (isset($options['new']) and $options['new']) {
     $new = true;
 
-    $store = get_object('Store',$options['store_key']);
 
 } else {
     $new = false;
-    $store = get_object('Store',$object->get('Store Key'));
 
 }
 
@@ -115,6 +113,17 @@ $category_fields = array(
 switch ($options['Category Scope']) {
     case 'Product':
 
+
+        if (isset($options['new']) and $options['new']) {
+
+            $store = get_object('Store', $options['store_key']);
+
+        } else {
+            $store = get_object('Store', $object->get('Store Key'));
+
+        }
+
+
         $object->get_webpage();
 
         if ($store->get('Store Family Category Key') == $object->get('Category Root Key')) {
@@ -124,7 +133,7 @@ switch ($options['Category Scope']) {
                 $category_fields, $category_product_fields
             );
 
-        } elseif ($store->get('Store Department Category Key') == $object->get('Category Root Key')){
+        } elseif ($store->get('Store Department Category Key') == $object->get('Category Root Key')) {
 
             include 'department.fld.php';
             $category_fields = array_merge(
@@ -144,9 +153,8 @@ switch ($options['Category Scope']) {
 
     case 'Part':
 
-    include 'category.part.fld.php';
-    $category_fields = array_merge($category_fields, $category_product_fields);
-
+        include 'category.part.fld.php';
+        $category_fields = array_merge($category_fields, $category_product_fields);
 
 
         break;
@@ -163,8 +171,8 @@ if (!$new) {
                 'id'        => 'delete_category',
                 'class'     => 'operation',
                 'value'     => '',
-                'label'     => '<i class="fa fa-fw fa-lock button" onClick="toggle_unlock_delete_object(this)" style="margin-right:20px"></i> <span data-data=\'{ "object": "'.$object->get_object_name(
-                    ).'", "key":"'.$object->id.'"}\' onClick="delete_object(this)" class="delete_object disabled">'._('Delete category').' <i class="far fa-trash-alt new_button link"></i></span>',
+                'label'     => '<i class="fa fa-fw fa-lock button" onClick="toggle_unlock_delete_object(this)" style="margin-right:20px"></i> <span data-data=\'{ "object": "'.$object->get_object_name().'", "key":"'.$object->id
+                    .'"}\' onClick="delete_object(this)" class="delete_object disabled">'._('Delete category').' <i class="far fa-trash-alt new_button link"></i></span>',
                 'reference' => '',
                 'type'      => 'operation'
             ),
