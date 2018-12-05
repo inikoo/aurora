@@ -163,7 +163,6 @@ function parse_request($_data, $db, $modules, $account = '', $user = '', $is_set
                                 $parent_key = $key;
 
 
-
                                 if (is_numeric($view_path[2])) {
                                     $key = $view_path[2];
                                 } elseif ($view_path[2] == 'new') {
@@ -2927,8 +2926,8 @@ function parse_request($_data, $db, $modules, $account = '', $user = '', $is_set
 
                                 $section = 'returns';
 
-                                $parent= 'warehouse';
-                                $parent_key=$key;
+                                $parent     = 'warehouse';
+                                $parent_key = $key;
 
                                 if (isset($view_path[2])) {
                                     $section = 'return';
@@ -4923,7 +4922,7 @@ function parse_request($_data, $db, $modules, $account = '', $user = '', $is_set
                 break;
             case 'payment_account':
 
-              // todo improve this permissions
+                // todo improve this permissions
                 /*
                 if (!$user->can_view('payments')) {
                     $module  = 'utils';
@@ -4939,7 +4938,7 @@ function parse_request($_data, $db, $modules, $account = '', $user = '', $is_set
 
 
                     if (is_numeric($view_path[0]) and isset($view_path[1]) and is_numeric($view_path[1])) {
-                        $module  = 'payments';
+                        $module     = 'payments';
                         $object     = 'payment_account';
                         $key        = $view_path[1];
                         $parent     = 'store';
@@ -4951,9 +4950,6 @@ function parse_request($_data, $db, $modules, $account = '', $user = '', $is_set
                     }
 
                 }
-
-
-
 
 
                 break;
@@ -4975,7 +4971,7 @@ function parse_request($_data, $db, $modules, $account = '', $user = '', $is_set
                 $parent_key = 1;
                 if (isset($view_path[0])) {
                     if (is_numeric($view_path[0]) and isset($view_path[1]) and is_numeric($view_path[1])) {
-                        $module     = 'payments';
+                        $module = 'payments';
 
                         $key        = $view_path[1];
                         $parent     = 'store';
@@ -5209,7 +5205,7 @@ function parse_tabs($module, $section, $_data, $modules) {
             }
 
 
-            $tab = each($modules[$module]['sections'][$section]['tabs'])['key'];
+            $tab = array_keys($modules[$module]['sections'][$section]['tabs'])[0];
         }
 
 
@@ -5237,9 +5233,8 @@ function parse_subtab($module, $section, $tab, $modules) {
         if (isset ($_session[$tab])) {
             $subtab = $_session[$tab];
         } else {
-            $subtab = each(
-                          $modules[$module]['sections'][$section]['tabs'][$tab]['subtabs']
-                      )['key'];
+
+            $subtab = array_keys($modules[$module]['sections'][$section]['tabs'][$tab]['subtabs'])[0];
 
         }
     } else {
