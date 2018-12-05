@@ -1371,8 +1371,8 @@ $tab_defaults = array(
         'rpp_options'   => $default_rrp_options,
         'f_field'       => 'code',
         'f_period'      => 'ytd',
-        'elements_type' => array_keys($elements_options['online_webpages_in_webpage_type'])[0],
-        'elements'      => $elements_options['online_webpages'],
+        //'elements_type' => array_keys($elements_options['online_webpages_in_webpage_type'])[0],
+        //'elements'      => $elements_options['online_webpages'],
     ),
     'webpage_type.offline_webpages' => array(
         'view'        => 'overview',
