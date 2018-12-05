@@ -43,8 +43,7 @@ $parameters = array(
 
 $table_buttons = array();
 
-//$table_buttons[]=array('icon'=>'edit', 'title'=>_('Edit'),'id'=>'edit_table');
-
+/*
 if ($state['parent'] == 'store') {
     $table_buttons[] = array(
         'icon'      => 'plus',
@@ -52,6 +51,7 @@ if ($state['parent'] == 'store') {
         'reference' => "services/".$state['store']->id."/new"
     );
 }
+*/
 $smarty->assign('table_buttons', $table_buttons);
 
 
