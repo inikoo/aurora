@@ -489,13 +489,10 @@ function get_rtext($record_label, $total_records) {
         return sprintf(
             ngettext('%s saved email template', '%s saved email templates', $total_records), number($total_records)
         );
-
     } elseif ($record_label == 'shipping company') {
         return sprintf(
             ngettext('%s shipping company', '%s shipping companies', $total_records), number($total_records)
         );
-
-
     } elseif ($record_label == 'mailshot') {
         return sprintf(
             ngettext('%s mailshot', '%s mailshots', $total_records), number($total_records)
@@ -508,31 +505,21 @@ function get_rtext($record_label, $total_records) {
         return sprintf(
             ngettext('%s client order', '%s client orders', $total_records), number($total_records)
         );
-
-
-
-
-
-    }  elseif ($record_label == 'discontinuing part') {
+    } elseif ($record_label == 'discontinuing part') {
         return sprintf(
             ngettext('%s discontinuing part', '%s discontinuing parts', $total_records), number($total_records)
         );
-
-
-
-
-    }  elseif ($record_label == 'back to stock request') {
+    } elseif ($record_label == 'back to stock request') {
         return sprintf(
             ngettext('%s back to stock request', '%s  back to stock requests', $total_records), number($total_records)
         );
-
-
-
-
-
     } elseif ($record_label == 'warehouse area') {
         return sprintf(
             ngettext('%s warehouse area', '%s warehouse areas', $total_records), number($total_records)
+        );
+    } elseif ($record_label == 'shipping zone schema') {
+        return sprintf(
+            ngettext('%s shipping zone schema', '%s shipping zone schemas', $total_records), number($total_records)
         );
     } else {
         return sprintf(
@@ -1005,13 +992,13 @@ function get_rtext_with_filter($record_label, $total_with_filter, $total_no_filt
                 '%s newsletter of %s', '%s newsletters of %s', $total_with_filter
             ), number($total_with_filter), number($total_no_filter)
         );
-    }elseif ($record_label == 'client order') {
+    } elseif ($record_label == 'client order') {
         return sprintf(
             ngettext(
                 '%s client order of %s', '%s client orders of %s', $total_with_filter
             ), number($total_with_filter), number($total_no_filter)
         );
-    }elseif ($record_label == 'back to stock request') {
+    } elseif ($record_label == 'back to stock request') {
         return sprintf(
             ngettext(
                 '%s back to stock request of %s', '%s back to stock requests of %s', $total_with_filter
@@ -1023,7 +1010,13 @@ function get_rtext_with_filter($record_label, $total_with_filter, $total_no_filt
                 '%s warehouse area of %s', '%s warehouse areas of %s', $total_with_filter
             ), number($total_with_filter), number($total_no_filter)
         );
-    }else {
+    } elseif ($record_label == 'shipping zone schemas') {
+        return sprintf(
+            ngettext(
+                '%s shipping zone schema of %s', '%s shipping zone schemas of %s', $total_with_filter
+            ), number($total_with_filter), number($total_no_filter)
+        );
+    } else {
         return sprintf(
             ngettext('%s record of %s', '%s records of %s', $total_with_filter), number($total_with_filter), number($total_no_filter)
         );

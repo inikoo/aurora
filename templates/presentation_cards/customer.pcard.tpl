@@ -22,19 +22,6 @@
         </tr>
 
 
-        {if $website_user->id}
-
-
-        <tr class="title">
-            <td colspan=2>{t}Website user{/t} </td>
-        </tr>
-
-        <tr>
-            <td class="label">{t}Login{/t}</td>
-            <td> <span  class="marked_link" onClick="change_view('website/{$website_user->get('Website User Website Key')}/user/{$website_user->id}')" >{$website_user->get('Website User Handle')}</span></td>
-        </tr>
-
-        {/if}
 
 
 

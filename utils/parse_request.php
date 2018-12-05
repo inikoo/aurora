@@ -81,7 +81,6 @@ function parse_request($_data, $db, $modules, $account = '', $user = '', $is_set
                 $section = 'store';
                 $object  = 'store';
 
-
                 if (isset($view_path[0])) {
 
                     if (is_numeric($view_path[0])) {
@@ -163,9 +162,11 @@ function parse_request($_data, $db, $modules, $account = '', $user = '', $is_set
                                 $parent     = 'store';
                                 $parent_key = $key;
 
+
+
                                 if (is_numeric($view_path[2])) {
                                     $key = $view_path[2];
-                                } elseif ($view_path[0] == 'new') {
+                                } elseif ($view_path[2] == 'new') {
 
                                     $section = 'shipping_zone.new';
                                 }

@@ -2,17 +2,17 @@
 /*
  About:
  Author: Raul Perusquia <raul@inikoo.com>
- Created: 29 September 2017 at 13:45:00 GMT+8, Kuala Lumpur, Malaysia
- Copyright (c) 2015, Inikoo
+ Created: 1 December 2018 at 15:07:44 GMT+8, Kuala Lumpur, Malaysia
+ Copyright (c) 2018, Inikoo
 
  Version 3
 
 */
 
 
-$tab     = 'store.shipping_zones';
+$tab     = 'store.shipping_zones_schemas';
 $ar_file = 'ar_products_tables.php';
-$tipo    = 'shipping_zones';
+$tipo    = 'shipping_zones_schemas';
 
 $default = $user->get_tab_defaults($tab);
 
@@ -27,16 +27,16 @@ $table_views = array(
 );
 
 $table_filters = array(
-    'name'         => array(
-        'label' => _('Name'),
-        'title' => _('Name')
+    'label'         => array(
+        'label' => _('Label'),
+        'title' => _('Label')
     )
 
 );
 
 $parameters = array(
     'parent'     => $state['object'],
-    'parent_key' => $state['key'],
+    'parent_key' => $state['key']
 
 );
 
@@ -44,8 +44,8 @@ $parameters = array(
 $table_buttons   = array();
 $table_buttons[] = array(
     'icon'      => 'plus',
-    'title'     => _('New shipping zone'),
-    'reference' => "store/".$state['key']."/shipping_zone/new"
+    'title'     => _('New shipping zone schema'),
+    'reference' => "store/".$state['key']."/shipping_zone_schema/new"
 );
 $smarty->assign('table_buttons', $table_buttons);
 

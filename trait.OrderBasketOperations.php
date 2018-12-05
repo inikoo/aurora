@@ -296,6 +296,11 @@ trait OrderBasketOperations {
 
         $updated_fields_number = 0;
 
+        if (preg_match('/gb|im|jy|gg/i', $fields['Address Country 2 Alpha Code'])) {
+            include_once 'utils/geography_functions.php';
+            $fields['Address Postal Code']=gbr_pretty_format_post_code($fields['Address Postal Code']);
+        }
+
         foreach ($fields as $field => $value) {
             $this->update_field(
                 $this->table_name.' '.$type.' '.$field, $value, 'no_history'
@@ -314,7 +319,7 @@ trait OrderBasketOperations {
 
         if ($this->updated) {
 
-            $this->update_address_formatted_fields($type, $options);
+            $this->update_address_formatted_fields($type);
 
 
             if (!preg_match('/no( |\_)history|nohistory/i', $options)) {
@@ -349,7 +354,7 @@ trait OrderBasketOperations {
     }
 
 
-    function update_address_formatted_fields($type, $options) {
+    function update_address_formatted_fields($type) {
 
         include_once 'utils/get_addressing.php';
 

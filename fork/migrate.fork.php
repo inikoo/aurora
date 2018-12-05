@@ -1048,6 +1048,13 @@ function parse_old_invoice_address_fields($store, $address_key, $recipient, $org
 
     array_walk($address_fields, 'trim_value');
 
+
+    if (preg_match('/gb|im|jy|gg/i', $address_fields['Address Country 2 Alpha Code'])) {
+        include_once 'utils/geography_functions.php';
+        $address_fields['Address Postal Code']=gbr_pretty_format_post_code($address_fields['Address Postal Code']);
+    }
+
+
     $_address_fields = array();
     foreach ($address_fields as $key => $value) {
         $_address_fields['Invoice '.$key] = $value;
@@ -1306,6 +1313,13 @@ function parse_old_dn_address_fields($store, $address, $recipient, $organization
     }
 
     array_walk($address_fields, 'trim_value');
+
+
+    if (preg_match('/gb|im|jy|gg/i', $address_fields['Address Country 2 Alpha Code'])) {
+        include_once 'utils/geography_functions.php';
+        $address_fields['Address Postal Code']=gbr_pretty_format_post_code($address_fields['Address Postal Code']);
+    }
+
 
     $_address_fields = array();
     foreach ($address_fields as $key => $value) {

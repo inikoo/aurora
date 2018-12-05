@@ -1056,7 +1056,7 @@ class SupplierDelivery extends DB_Table {
                 );
 
 
-         
+
 
 
                 $sql = sprintf(

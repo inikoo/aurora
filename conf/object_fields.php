@@ -607,6 +607,11 @@ function get_object_fields($object, $db, $user, $smarty, $options = false) {
 
             return $object_fields;
             break;
+        case 'Shipping Zone':
+            include 'fields/shipping_zone.fld.php';
+
+            return $object_fields;
+            break;
         default:
             print 'todo object in object fields'.$object->get_object_name();
 

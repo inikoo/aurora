@@ -280,7 +280,7 @@ abstract class DB_Table extends stdClass {
 
 
             if (preg_match(
-                    '/product category|prospect|deal|charge|deal campaign|attachment bridge|location|site|page|part|barcode|agent|customer|contact|company|order|staff|supplier|address|user|store|product|company area|company department|position|category|customer poll query|customer poll query option|api key|email campaign|waehouse|warehouse area|email template|list|sales representative|order basket purge/i',
+                    '/product category|prospect|deal|charge|deal campaign|attachment bridge|location|site|page|part|barcode|agent|customer|contact|company|order|staff|supplier|address|user|store|product|company area|company department|position|category|customer poll query|customer poll query option|api key|email campaign|waehouse|warehouse area|email template|list|sales representative|order basket purge|shipping zone|shipping zone schema/i',
                     $table_name
                 ) and !$this->new and $save_history) {
 
@@ -316,7 +316,6 @@ abstract class DB_Table extends stdClass {
 
 
         if (in_array($table_name, array('Product Category'))) {
-
 
 
             $this->post_add_history($history_key);
@@ -568,7 +567,7 @@ abstract class DB_Table extends stdClass {
         );
 
 
-      //  print $sql;
+        //  print $sql;
 
         $this->db->exec($sql);
 
@@ -588,7 +587,6 @@ abstract class DB_Table extends stdClass {
         } else {
             $date = gmdate("Y-m-d H:i:s");
         }
-
 
 
         if (isset($this->editor['User Key']) and is_numeric(
@@ -747,6 +745,30 @@ abstract class DB_Table extends stdClass {
             $this->data[$field] = $value;
 
         }
+
+
+    }
+
+    public function fast_update_json_field($field, $key, $value, $table_full_name = '') {
+
+
+        if ($table_full_name == '') {
+            $table_full_name = $this->table_name.' Dimension';
+        }
+
+        $key_field = $this->table_name." Key";
+
+        $sql = sprintf(
+            "UPDATE `%s` SET `%s`= JSON_SET(`%s`,'$.%s','%s') WHERE `%s`=%d",
+            addslashes($table_full_name), addslashes($field), addslashes($field),
+            addslashes($key), addslashes($value), addslashes($key_field), $this->id
+        );
+
+
+        $this->db->exec($sql);
+
+
+        $this->get_data('id', $this->id);
 
 
     }

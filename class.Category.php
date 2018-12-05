@@ -675,7 +675,6 @@ class Category extends DB_Table {
                 switch ($key) {
 
 
-
                     case 'Status':
                         switch ($this->data['Product Category Status']) {
                             case 'In Process':
@@ -1836,8 +1835,8 @@ VALUES (%d,%s, %d, %d, %s,%s, %d, %d, %s, %s, %s,%d,NOW())", $this->id,
         $this->db->exec($sql);
 
         foreach ($parent_keys as $parent_key) {
-            $parent_category = get_object('Category',$parent_key);
-            $parent_category->editor=$this->editor;
+            $parent_category         = get_object('Category', $parent_key);
+            $parent_category->editor = $this->editor;
             if ($parent_category->id) {
                 $parent_category->update_children_data();
 
@@ -1927,8 +1926,8 @@ VALUES (%d,%s, %d, %d, %s,%s, %d, %d, %s, %s, %s,%d,NOW())", $this->id,
             if ($result = $this->db->query($sql)) {
                 foreach ($result as $row) {
 
-                    $head_category = get_object('Category',$row['Category Head Key']);
-                    $head_category->editor=$this->editor;
+                    $head_category         = get_object('Category', $row['Category Head Key']);
+                    $head_category->editor = $this->editor;
                     if ($head_category->disassociate_subject($subject_key, $options)) {
                         $return_value = true;
                     }
@@ -2029,8 +2028,6 @@ VALUES (%d,%s, %d, %d, %s,%s, %d, %d, %s, %s, %s,%d,NOW())", $this->id,
                         _('Product %s disassociated from category %s'), $product->get('Code'), $this->get('Code')
                     );
                     $details  = '';
-                    //$abstract=_('Product').': <a href="product.php?pid='.$product->pid.'">'.$product->data['Product Code'].'</a> '._('disassociated with category').sprintf(' <a href="part_category.php?id=%d">%s</a>', $this->id, $this->data['Category Code']);
-                    //$details=_('Product').': <a href="product.php?pid='.$product->pid.'">'.$product->data['Product Code'].'</a> ('.$product->data['Product Name'].') '._('associated with category').sprintf(' <a href="part_category.php?id=%d">%s</a>', $this->id, $this->data['Category Code']).' ('.$this->data['Category Label'].')';
 
 
                     //  Migration  ----
@@ -2434,9 +2431,9 @@ VALUES (%d,%s, %d, %d, %s,%s, %d, %d, %s, %s, %s,%d,NOW())", $this->id,
 
         if ($result = $this->db->query($sql)) {
             foreach ($result as $row) {
-                $tmp=get_object('Category',$row['Category Key']);
-                $tmp->editor=$this->editor;
-                $children_keys[$row['Category Key']] =$tmp ;
+                $tmp                                 = get_object('Category', $row['Category Key']);
+                $tmp->editor                         = $this->editor;
+                $children_keys[$row['Category Key']] = $tmp;
             }
         } else {
             print_r($error_info = $this->db->errorInfo());
@@ -2460,9 +2457,9 @@ VALUES (%d,%s, %d, %d, %s,%s, %d, %d, %s, %s, %s,%d,NOW())", $this->id,
         if ($result = $this->db->query($sql)) {
             foreach ($result as $row) {
 
-                $tmp=get_object('Category',$row['Category Key']);
-                $tmp->editor=$this->editor;
-                $children_keys[$row['Category Key']] =$tmp ;
+                $tmp                                 = get_object('Category', $row['Category Key']);
+                $tmp->editor                         = $this->editor;
+                $children_keys[$row['Category Key']] = $tmp;
 
             }
         } else {
@@ -2485,9 +2482,9 @@ VALUES (%d,%s, %d, %d, %s,%s, %d, %d, %s, %s, %s,%d,NOW())", $this->id,
         if ($result = $this->db->query($sql)) {
             foreach ($result as $row) {
 
-                $tmp=get_object('Category',$row['Category Key']);
-                $tmp->editor=$this->editor;
-                $children_keys[$row['Category Key']] =$tmp ;
+                $tmp                                 = get_object('Category', $row['Category Key']);
+                $tmp->editor                         = $this->editor;
+                $children_keys[$row['Category Key']] = $tmp;
             }
         } else {
             print_r($error_info = $this->db->errorInfo());
@@ -2529,8 +2526,8 @@ VALUES (%d,%s, %d, %d, %s,%s, %d, %d, %s, %s, %s,%d,NOW())", $this->id,
                 $this->load_all_descendants_keys();
 
                 foreach ($this->all_descendants_keys as $descendant_key) {
-                    $descendant = get_object('Category',$descendant_key);
-                    $descendant->editor=$this->editor;
+                    $descendant         = get_object('Category', $descendant_key);
+                    $descendant->editor = $this->editor;
                     $descendant->update_branch_tree();
                 }
             } elseif ($field == 'Category Label') {
@@ -2539,13 +2536,12 @@ VALUES (%d,%s, %d, %d, %s,%s, %d, %d, %s, %s, %s,%d,NOW())", $this->id,
                 $this->update_field($field, $value, $options);
 
 
-               // print 'x'.$this->last_history_key.'xx>'.$this->data['Category Scope'].'<z';
+                // print 'x'.$this->last_history_key.'xx>'.$this->data['Category Scope'].'<z';
 
                 if (!empty($this->last_history_key)) {
 
 
                     $this->post_add_history($this->last_history_key);
-
 
 
                 }
@@ -3171,6 +3167,64 @@ VALUES (%d,%s, %d, %d, %s,%s, %d, %d, %s, %s, %s,%d,NOW())", $this->id,
 
     }
 
+    function post_add_history($history_key, $type = false) {
+
+        if (!$type) {
+            $type = 'Changes';
+        }
+
+        switch ($this->data['Category Scope']) {
+            case('Part'):
+                $sql = sprintf(
+                    "INSERT INTO  `Part Category History Bridge` VALUES (%d,%d,%s)", $this->id, $history_key, prepare_mysql($type)
+                );
+                $this->db->exec($sql);
+                break;
+            case('Location'):
+                $sql = sprintf(
+                    "INSERT INTO  `Location Category History Bridge` VALUES (%d,%d,%d,%s)", $this->data['Category Warehouse Key'], $this->id, $history_key, prepare_mysql($type)
+                );
+                $this->db->exec($sql);
+                break;
+            case('Supplier'):
+                $sql = sprintf(
+                    "INSERT INTO  `Supplier Category History Bridge` VALUES (%d,%d,%s)", $this->id, $history_key, prepare_mysql($type)
+                );
+                $this->db->exec($sql);
+                break;
+            case('Customer'):
+                $sql = sprintf(
+                    "INSERT INTO  `Customer Category History Bridge` VALUES (%d,%d,%d,%s)", $this->data['Category Store Key'], $this->id, $history_key, prepare_mysql($type)
+                );
+                $this->db->exec($sql);
+                break;
+            case('Product'):
+
+
+                $sql = sprintf(
+                    'insert into `Product Category History Bridge` (`Store Key`,`Category Key`,`History Key`,`Type`)  values (%d,%d,%d,%s)',
+                    $this->get('Store Key'),
+                    $this->id,
+                    $history_key,
+                    prepare_mysql($type)
+                );
+
+                //print $sql;
+
+                $this->db->exec($sql);
+                $this->update_product_category_history_records_data();
+
+
+                break;
+            case('Family'):
+                $sql = sprintf(
+                    "INSERT INTO  `Product Family Category History Bridge` VALUES (%d,%d,%d,%s)", $this->data['Category Store Key'], $this->id, $history_key, prepare_mysql($type)
+                );
+                $this->db->exec($sql);
+                break;
+        }
+    }
+
     function associate_subject($subject_key, $force_associate = false, $other_value = '', $options = '') {
 
 
@@ -3209,7 +3263,7 @@ VALUES (%d,%s, %d, %d, %s,%s, %d, %d, %s, %s, %s,%d,NOW())", $this->id,
                 switch ($this->data['Category Scope']) {
                     case('Part'):
 
-                        $part     = get_object('Part',$subject_key);
+                        $part     = get_object('Part', $subject_key);
                         $abstract = _('Part').': <a href="part.php?sku='.$part->sku.'">SKU'.sprintf('05%d', $part->sku).'</a> '._('associated with category').sprintf(
                                 ' <a href="part_category.php?id=%d">%s</a>', $this->id, $this->data['Category Code']
                             );
@@ -3223,7 +3277,7 @@ VALUES (%d,%s, %d, %d, %s,%s, %d, %d, %s, %s, %s,%d,NOW())", $this->id,
                         break;
                     case('Supplier'):
 
-                        $supplier = get_object('Supplier',$subject_key);
+                        $supplier = get_object('Supplier', $subject_key);
                         $abstract = _('Supplier').': <a href="supplier.php?id='.$supplier->id.'">'.$supplier->data['Supplier Code'].'</a> '._('associated with category').sprintf(
                                 ' <a href="part_category.php?id=%d">%s</a>', $this->id, $this->data['Category Code']
                             );
@@ -3235,7 +3289,7 @@ VALUES (%d,%s, %d, %d, %s,%s, %d, %d, %s, %s, %s,%d,NOW())", $this->id,
                         break;
                     case('Customer'):
 
-                        $customer = get_object('Customer',$subject_key);
+                        $customer = get_object('Customer', $subject_key);
                         $abstract = _('Customer').': <a href="customer.php?id='.$customer->id.'">'.$customer->data['Customer Name'].'</a> '._('associated with category').sprintf(
                                 ' <a href="part_category.php?id=%d">%s</a>', $this->id, $this->data['Category Code']
                             );
@@ -3249,10 +3303,10 @@ VALUES (%d,%s, %d, %d, %s,%s, %d, %d, %s, %s, %s,%d,NOW())", $this->id,
                         break;
                     case('Product'):
 
-                        $product = get_object('Product',$subject_key);
-                        $product->editor=$this->editor;
+                        $product         = get_object('Product', $subject_key);
+                        $product->editor = $this->editor;
 
-                        $store = get_object('Store',$this->get('Category Store Key'));
+                        $store = get_object('Store', $this->get('Category Store Key'));
                         if ($this->get('Category Root Key') == $store->get('Store Family Category Key')) {
                             $product->update(array('Product Family Category Key' => $this->id), 'no_history');
 
@@ -3335,8 +3389,8 @@ VALUES (%d,%s, %d, %d, %s,%s, %d, %d, %s, %s, %s,%d,NOW())", $this->id,
                             }
 
 
-                            $family = get_object('Category',$subject_key);
-                            $family->editor=$this->editor;
+                            $family         = get_object('Category', $subject_key);
+                            $family->editor = $this->editor;
 
                             $sql = sprintf(
                                 "SELECT * FROM `Product Family Dimension` WHERE `Product Family Store Key`=%d AND `Product Family Code`=%s", $family->get('Category Store Key'), prepare_mysql($family->get('Category Code'))
@@ -3417,8 +3471,6 @@ VALUES (%d,%s, %d, %d, %s,%s, %d, %d, %s, %s, %s,%d,NOW())", $this->id,
 
                         $this->update_product_category_products_data();
 
-                        //$abstract=_('Product').': <a href="product.php?pid='.$product->pid.'">'.$product->data['Product Code'].'</a> '._('associated with category').sprintf(' <a href="part_category.php?id=%d">%s</a>', $this->id, $this->data['Category Code']);
-                        //$details=_('Product').': <a href="product.php?pid='.$product->pid.'">'.$product->data['Product Code'].'</a> ('.$product->data['Product Name'].') '._('associated with category').sprintf(' <a href="part_category.php?id=%d">%s</a>', $this->id, $this->data['Category Code']).' ('.$this->data['Category Label'].')';
                         break;
                     default:
                         $abstract = 'todo';
@@ -3504,7 +3556,7 @@ VALUES (%d,%s, %d, %d, %s,%s, %d, %d, %s, %s, %s,%d,NOW())", $this->id,
             if ($result = $this->db->query($sql)) {
                 foreach ($result as $row) {
 
-                    $other_category         = get_object('Category',$row['Category Key']);
+                    $other_category         = get_object('Category', $row['Category Key']);
                     $other_category->editor = $this->editor;
                     $other_category->disassociate_subject($subject_key, $options);
                 }
@@ -3563,7 +3615,6 @@ VALUES (%d,%s, %d, %d, %s,%s, %d, %d, %s, %s, %s,%d,NOW())", $this->id,
 
     }
 
-
     function update_sales_from_invoices($interval, $this_year = true, $last_year = true) {
         switch ($this->data['Category Scope']) {
             case('Part'):
@@ -3602,7 +3653,6 @@ VALUES (%d,%s, %d, %d, %s,%s, %d, %d, %s, %s, %s,%d,NOW())", $this->id,
 
     }
 
-
     function update_previous_quarters_data() {
         switch ($this->data['Category Scope']) {
             case('Part'):
@@ -3621,7 +3671,6 @@ VALUES (%d,%s, %d, %d, %s,%s, %d, %d, %s, %s, %s,%d,NOW())", $this->id,
         }
 
     }
-
 
     function get_other_categories() {
 
@@ -3799,7 +3848,6 @@ VALUES (%d,%s, %d, %d, %s,%s, %d, %d, %s, %s, %s,%d,NOW())", $this->id,
 
     }
 
-
     function get_icon() {
         $branch_type_icon = '';
         switch ($this->data['Category Branch Type']) {
@@ -3822,66 +3870,6 @@ VALUES (%d,%s, %d, %d, %s,%s, %d, %d, %s, %s, %s,%d,NOW())", $this->id,
 
         return $branch_type_icon;
     }
-
-
-    function post_add_history($history_key, $type = false) {
-
-        if (!$type) {
-            $type = 'Changes';
-        }
-
-        switch ($this->data['Category Scope']) {
-            case('Part'):
-                $sql = sprintf(
-                    "INSERT INTO  `Part Category History Bridge` VALUES (%d,%d,%s)", $this->id, $history_key, prepare_mysql($type)
-                );
-                $this->db->exec($sql);
-                break;
-            case('Location'):
-                $sql = sprintf(
-                    "INSERT INTO  `Location Category History Bridge` VALUES (%d,%d,%d,%s)", $this->data['Category Warehouse Key'], $this->id, $history_key, prepare_mysql($type)
-                );
-                $this->db->exec($sql);
-                break;
-            case('Supplier'):
-                $sql = sprintf(
-                    "INSERT INTO  `Supplier Category History Bridge` VALUES (%d,%d,%s)", $this->id, $history_key, prepare_mysql($type)
-                );
-                $this->db->exec($sql);
-                break;
-            case('Customer'):
-                $sql = sprintf(
-                    "INSERT INTO  `Customer Category History Bridge` VALUES (%d,%d,%d,%s)", $this->data['Category Store Key'], $this->id, $history_key, prepare_mysql($type)
-                );
-                $this->db->exec($sql);
-                break;
-            case('Product'):
-
-
-                $sql=sprintf('insert into `Product Category History Bridge` (`Store Key`,`Category Key`,`History Key`,`Type`)  values (%d,%d,%d,%s)',
-                             $this->get('Store Key'),
-                             $this->id,
-                             $history_key,
-                             prepare_mysql($type)
-                );
-
-                //print $sql;
-
-                $this->db->exec($sql);
-                $this->update_product_category_history_records_data();
-
-
-
-                break;
-            case('Family'):
-                $sql = sprintf(
-                    "INSERT INTO  `Product Family Category History Bridge` VALUES (%d,%d,%d,%s)", $this->data['Category Store Key'], $this->id, $history_key, prepare_mysql($type)
-                );
-                $this->db->exec($sql);
-                break;
-        }
-    }
-
 
     function get_field_label($field) {
 

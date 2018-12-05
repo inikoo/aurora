@@ -16,24 +16,6 @@ trait OrderItems {
     function update_item($data) {
 
 
-        /*
-         *
-         *
-         *
-
-           $data = array(
-                'date'                      => gmdate('Y-m-d H:i:s'),
-                'Product Key'               => $allowance_data['Product Key'],
-                'Metadata'                  => '',
-                'qty'                       => 0,
-                'bonus qty'                 => $allowance_data['Get Free'],
-                'Current Dispatching State' => $dispatching_state,
-                'Current Payment State'     => $payment_state
-            );
-
-         *
-         *
-         */
 
 
         $gross = 0;
@@ -270,37 +252,28 @@ VALUES (%f,%s,%f,%s,%s,%s,%s,%s,%s,
 
         $this->update_field('Order Last Updated Date', gmdate('Y-m-d H:i:s'), 'no_history');
 
-        if (in_array(
-            $this->data['Order State'], array(
-                                          'InBasket'
-                                      )
-        )) {
+        if (in_array($this->data['Order State'], array('InBasket'))) {
             $this->update_field('Order Date', gmdate('Y-m-d H:i:s'), 'no_history');
 
 
-        } else {
+        }
+        else {
             $history_abstract = '';
             if ($delta_qty > 0) {
                 $history_abstract = sprintf(
-                    _('%1$s %2$s added'), $delta_qty, sprintf(
-                                            '<a href="product.php?pid=%d">%s</a>', $product->id, $product->data['Product Code']
-                                        )
+                    _('%1$s %2$s added'), $delta_qty, sprintf('<span class="link" onclick="change_view(\'products/%d/%d\')">%s</span>', $product->get('Store Key').$product->id, $product->get('Product Code'))
                 );
             } elseif ($delta_qty < 0) {
 
                 if ($quantity == 0) {
                     $history_abstract = sprintf(
-                        _('%s %s removed, none in the order anymore'), -$delta_qty, sprintf(
-                                                                         '<a href="product.php?pid=%d">%s</a>', $product->id, $product->data['Product Code']
-                                                                     )
+                        _('%s %s removed, none in the order anymore'), -$delta_qty, sprintf('<span class="link" onclick="change_view(\'products/%d/%d\')">%s</span>', $product->get('Store Key').$product->id, $product->get('Product Code'))
                     );
 
                 } else {
 
                     $history_abstract = sprintf(
-                        _('%s %s removed'), -$delta_qty, sprintf(
-                                              '<a href="product.php?pid=%d">%s</a>', $product->id, $product->data['Product Code']
-                                          )
+                        _('%s %s removed'), -$delta_qty, sprintf('<span class="link" onclick="change_view(\'products/%d/%d\')">%s</span>', $product->get('Store Key').$product->id, $product->get('Product Code'))
                     );
                 }
             }
@@ -329,9 +302,12 @@ VALUES (%f,%s,%f,%s,%s,%s,%s,%s,%s,
         $this->update_totals();
 
         $this->update_discounts_items();
+        $this->update_totals();
 
 
         $this->update_shipping($dn_key, false);
+
+
         $this->update_charges($dn_key, false);
         $this->update_discounts_no_items();
         $this->update_deal_bridge();

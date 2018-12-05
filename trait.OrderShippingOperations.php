@@ -12,7 +12,7 @@
 
 trait OrderShippingOperations {
 
-   function update_shipping_amount($value, $dn_key = false) {
+    function update_shipping_amount($value, $dn_key = false) {
         $value = sprintf("%.2f", $value);
 
 
@@ -22,19 +22,17 @@ trait OrderShippingOperations {
         $this->data['Order Shipping Net Amount'] = $value;
 
 
-
-
         $this->update_shipping($dn_key);
 
         $this->updated   = true;
         $this->new_value = $value;
 
         $this->update_totals();
-       //$this->apply_payment_from_customer_account();
+        //$this->apply_payment_from_customer_account();
 
     }
 
-     function update_shipping($dn_key = false, $order_picked = true) {
+    function update_shipping($dn_key = false, $order_picked = true) {
 
 
         if (!$dn_key) {
@@ -43,11 +41,10 @@ trait OrderShippingOperations {
 
 
         if ($dn_key and $order_picked) {
-            list($shipping, $shipping_key, $shipping_method) = $this->get_shipping($dn_key);
+            list($shipping, $shipping_key, $shipping_method) = $this->get_shipping();
         } else {
             list($shipping, $shipping_key, $shipping_method) = $this->get_shipping();
         }
-
 
 
         if (!is_numeric($shipping)) {
@@ -64,23 +61,19 @@ trait OrderShippingOperations {
         $this->update_field_switcher('Order Shipping Method', $shipping_method, 'no_history');
 
 
-         $sql    = sprintf(
-             'DELETE FROM `Order No Product Transaction Fact` WHERE `Order Key`=%d AND `Transaction Type`="Shipping" ', $this->id
-         );
+        $sql = sprintf(
+            'DELETE FROM `Order No Product Transaction Fact` WHERE `Order Key`=%d AND `Transaction Type`="Shipping" ', $this->id
+        );
 
 
-
-
-         $this->db->exec($sql);
-
-
+        $this->db->exec($sql);
 
 
         if (!($this->data['Order Shipping Net Amount'] == 0 and $this->data['Order Shipping Tax Amount'] == 0)) {
             $sql = sprintf(
                 "INSERT INTO `Order No Product Transaction Fact` (`Order Key`,`Order Date`,`Transaction Type`,`Transaction Type Key`,`Transaction Description`,
 				`Transaction Gross Amount`,`Transaction Net Amount`,`Tax Category Code`,`Transaction Tax Amount`,
-				`Currency Code`,`Currency Exchange`,`Metadata`,`Delivery Note Key`)  VALUES (%d,%s,%s,%d,%s,%.2f,%.2f,%s,%.2f,%s,%.2f,%s,%s)  ", $this->id, prepare_mysql($this->data['Order Date']),
+				`Currency Code`,`Currency Exchange`,`Metadata`,`Delivery Note Key`,`Order No Product Transaction Version`)  VALUES (%d,%s,%s,%d,%s,%.2f,%.2f,%s,%.2f,%s,%.2f,%s,%s,2)  ", $this->id, prepare_mysql($this->data['Order Date']),
                 prepare_mysql('Shipping'), $shipping_key, prepare_mysql(_('Shipping')), $this->data['Order Shipping Net Amount'], $this->data['Order Shipping Net Amount'],
                 prepare_mysql($this->data['Order Tax Code']), $this->data['Order Shipping Tax Amount'],
 
@@ -93,11 +86,9 @@ trait OrderShippingOperations {
         }
 
 
-      
-
     }
 
-    function get_shipping($dn_key = false) {
+    function get_shipping() {
 
 
         if ($this->data['Order Number Items'] == 0) {
@@ -128,84 +119,34 @@ trait OrderShippingOperations {
         }
 
 
-        if (in_array(
-            $this->data['Order Ship To Country Code'], array(
-                                                         'GBR',
-                                                         'JEY',
-                                                         'GGY',
-                                                         'IMN'
-                                                     )
-        )) {
-            include_once 'utils/geography_functions.php';
+        $_data = array(
+            'Store Key'  => $this->get('Order Store Key'),
+            'Order Data' => array(
+                'Order Items Net Amount'                      => $this->data['Order Items Net Amount'],
+                'Order Delivery Address Postal Code'          => $this->data['Order Delivery Address Postal Code'],
+                'Order Delivery Address Country 2 Alpha Code' => $this->data['Order Delivery Address Country 2 Alpha Code'],
+            )
 
-            $postcode = gbr_postcode_first_part(
-                $this->data['Order Ship To Postal Code']
-            );
-        } else {
-            $postcode = $this->data['Order Ship To Postal Code'];
-        }
-
-
-        $sql = sprintf(
-            "SELECT `Shipping Destination Metadata`,`Shipping Key`,`Shipping Metadata`,`Shipping Price Method`  FROM `Shipping Dimension`  WHERE (SELECT %s LIKE `Shipping Destination Metadata` ) AND  `Shipping Destination Type`='Country' AND `Shipping Destination Code`=%s  AND `Shipping Secondary Destination Check`='Post Code' AND `Store Key`=%d ",
-            prepare_mysql($postcode), prepare_mysql($this->data['Order Ship To Country Code']), $this->data['Order Store Key']
 
         );
 
 
-        if ($result = $this->db->query($sql)) {
-            if ($row = $result->fetch()) {
+        //print_r($_data);
 
-                list($shipping, $method) = $this->get_shipping_from_method(
-                    $row['Shipping Price Method'], $row['Shipping Metadata'], $dn_key
-                );
+        include_once 'nano_services/shipping_for_order.ns.php';
 
-                return array(
-                    $shipping,
-                    $row['Shipping Key'],
-                    $method
-                );
-            }
-        } else {
-            print_r($error_info = $this->db->errorInfo());
-            print "$sql\n";
-            exit;
-        }
-
-
-        $sql = sprintf(
-            "SELECT `Shipping Key`,`Shipping Metadata`,`Shipping Price Method` FROM `Shipping Dimension`  LEFT JOIN kbase.`Country Dimension` ON (`Country Code`=`Shipping Destination Code`)   WHERE  `Shipping Destination Type`='Country' AND `Country 2 Alpha Code`=%s  AND   `Shipping Secondary Destination Check`='None'  AND `Store Key`=%d  ",
-            prepare_mysql($this->data['Order Delivery Address Country 2 Alpha Code']), $this->data['Order Store Key']
-        );
-
-
-        if ($result = $this->db->query($sql)) {
-            if ($row = $result->fetch()) {
-                list($shipping, $method) = $this->get_shipping_from_method(
-                    $row['Shipping Price Method'], $row['Shipping Metadata'], $dn_key
-                );
-
-                return array(
-                    $shipping,
-                    $row['Shipping Key'],
-                    $method
-                );
-            }
-        } else {
-            print_r($error_info = $this->db->errorInfo());
-            print "$sql\n";
-            exit;
-        }
+        $shipping_data = (new shipping_for_order($this->db))->get($_data);
 
 
         return array(
-            0,
-            0,
-            'TBC'
+            $shipping_data['price'],
+            $shipping_data['shipping_zone_key'],
+            $shipping_data['method'],
         );
 
 
     }
+
 
     function get_shipping_from_method($type, $metadata, $dn_key = false) {
 
@@ -304,8 +245,8 @@ trait OrderShippingOperations {
         );
 
     }
-    
-     function use_calculated_shipping() {
+
+    function use_calculated_shipping() {
 
 
         $this->update_field_switcher('Order Shipping Method', 'Calculated', 'no_history');

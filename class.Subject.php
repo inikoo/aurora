@@ -397,28 +397,25 @@ class Subject extends DB_Table {
 
 
         $old_value = $this->get("$type Address");
-        //$old_checksum = $this->get("$type Address Checksum");
 
-
-        //$address_fields           = array();
         $updated_fields_number = 0;
-        // $updated_recipient_fields = false;
-        // $updated_address_fields   = false;
+
+
+
+        if (preg_match('/gb|im|jy|gg/i', $fields['Address Country 2 Alpha Code'])) {
+            include_once 'utils/geography_functions.php';
+            $fields['Address Postal Code']=gbr_pretty_format_post_code($fields['Address Postal Code']);
+        }
+
+
+
 
         foreach ($fields as $field => $value) {
-            $this->update_field(
-                $this->table_name.' '.$type.' '.$field, $value, 'no_history'
-            );
+            $this->update_field($this->table_name.' '.$type.' '.$field, $value, 'no_history');
             if ($this->updated) {
                 $updated_fields_number++;
 
-                /*
-                 if ($field == 'Address Recipient' or $field == 'Address Organization') {
-                     $updated_recipient_fields = true;
-                 } else {
-                     $updated_address_fields = true;
-                 }
-                */
+
             }
         }
 
@@ -430,7 +427,7 @@ class Subject extends DB_Table {
 
         if ($this->updated) {
 
-            $this->update_address_formatted_fields($type, $options);
+            $this->update_address_formatted_fields($type);
 
 
             if (!preg_match('/no( |\_)history|nohistory/i', $options)) {
@@ -472,7 +469,7 @@ class Subject extends DB_Table {
 
     }
 
-    function update_address_formatted_fields($type, $options) {
+    function update_address_formatted_fields($type) {
 
         include_once 'utils/get_addressing.php';
 
@@ -519,6 +516,8 @@ class Subject extends DB_Table {
 
 
         list($address, $formatter, $postal_label_formatter) = get_address_formatter($country, $locale);
+
+
 
 
         $address =
@@ -913,9 +912,7 @@ class Subject extends DB_Table {
                     $this->update_field(
                         $this->table_name.' Contact Address Organization', $value, 'no_history'
                     );
-                    $this->update_address_formatted_fields(
-                        'Contact', 'no_history'
-                    );
+                    $this->update_address_formatted_fields('Contact');
 
 
                 }
@@ -939,7 +936,7 @@ class Subject extends DB_Table {
 
                     if ($old_value == $this->get('Invoice Address Organization')) {
                         $this->update_field($this->table_name.' Invoice Address Organization', $value, 'no_history');
-                        $this->update_address_formatted_fields('Invoice', 'no_history');
+                        $this->update_address_formatted_fields('Invoice');
 
 
                     }
@@ -981,13 +978,13 @@ class Subject extends DB_Table {
 
                 if ($old_value == $this->get('Contact Address Recipient')) {
                     $this->update_field($this->table_name.' Contact Address Recipient', $value, 'no_history');
-                    $this->update_address_formatted_fields('Contact', 'no_history');
+                    $this->update_address_formatted_fields('Contact');
 
                 }
                 if ($this->table_name == 'Customer') {
                     if ($old_value == $this->get('Invoice Address Recipient')) {
                         $this->update_field($this->table_name.' Invoice Address Recipient', $value, 'no_history');
-                        $this->update_address_formatted_fields('Invoice', 'no_history');
+                        $this->update_address_formatted_fields('Invoice');
 
 
                     }

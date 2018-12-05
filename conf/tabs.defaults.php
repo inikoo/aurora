@@ -968,7 +968,7 @@ $tab_defaults = array(
         'rpp_options' => $default_rrp_options,
         'f_field'     => 'name'
     ),
-    'store.shipping_zones' => array(
+    'store.current_shipping_zones' => array(
         'view'        => 'overview',
         'sort_key'    => 'id',
         'sort_order'  => 1,
@@ -976,7 +976,14 @@ $tab_defaults = array(
         'rpp_options' => $default_rrp_options,
         'f_field'     => 'name'
     ),
-
+    'store.shipping_zones_schemas' => array(
+        'view'        => 'overview',
+        'sort_key'    => 'label',
+        'sort_order'  => 1,
+        'rpp'         => 100,
+        'rpp_options' => $default_rrp_options,
+        'f_field'     => 'label'
+    ),
 
     'store.products'                              => array(
         'view'          => 'overview',

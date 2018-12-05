@@ -62,6 +62,8 @@ class Public_Store {
 
             $this->id   = $this->data['Store Key'];
             $this->code = $this->data['Store Code'];
+            $this->properties=json_decode($this->data['Store Properties'],true);
+            $this->settings=json_decode($this->data['Store Settings'],true);
         }
 
 

@@ -15,25 +15,34 @@ function generatePassword($length = 9, $strength = 0) {
     $consonants = 'qwertyupasfghjkzxcvbnm';
     if ($strength >= 1) {
         $consonants .= 'QWERTYUPASDFGHJKLZXCVBNM';
-        $vowels .= 'AEU';
+        $vowels     .= 'AEU';
     }
-    if ($strength >= 2) {
+
+    if ($strength >= 3) {
+        $vowels     = '12345wertyuiopasdfghjklzxcvbnm';
+        $consonants = '67890QWERTYUIOPASDFGHJKLZXCVBNM';
+    }
+
+    if ($strength >= 4) {
+        $vowels     .= '!=/[]{}~\<>$%^&*()_+@#.,%';
         $consonants .= '!=/[]{}~\<>$%^&*()_+@#.,%';
     }
-    if ($strength >= 3) {
-        $vowels .= '!=/[]{}~\<>$%^&*()_+@#.,%';
 
+    if ($strength >= 5) {
+        $vowels     = " !\"#$%&'()*+,-./:;<=>?@[\]^_`{|}~qwertyuiopasdfghjklzxcvbnm1234567890";
+        $consonants = " !\"#$%&'()*+,-./:;<=>?@[\]^_`{|}~QWERTYUIOPASDFGHJKLZXCVBNM1234567890";
     }
+
 
     $password = '';
     $alt      = time() % 2;
     for ($i = 0; $i < $length; $i++) {
         if ($alt == 1) {
             $password .= $consonants[(mt_rand() % strlen($consonants))];
-            $alt = 0;
+            $alt      = 0;
         } else {
             $password .= $vowels[(mt_rand() % strlen($vowels))];
-            $alt = 1;
+            $alt      = 1;
         }
     }
 

@@ -381,6 +381,13 @@ function get_object($object_name, $key, $load_other_data = false) {
             require_once "class.Shipping_Zone.php";
             $object = new Shipping_Zone($key);
             break;
+        case 'shipping_zone_schema':
+        case 'shippingzoneschema':
+        case 'shipping zones chema':
+            require_once "class.Shipping_Zone_Schema.php";
+            $object = new Shipping_Zone_Schema($key);
+            break;
+
         case 'shipping_option':
         case 'shippingoption':
             require_once "class.Shipping_Option.php";

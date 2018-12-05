@@ -948,6 +948,11 @@ update `Order Dimension` set `Order Pinned Deal Components`=NULL;
 ALTER TABLE `Order Dimension` ADD `Order Charges Discount Amount` DECIMAL(12,2) NOT NULL DEFAULT '0.00' AFTER `Order Insurance Tax Amount`, ADD `Order Shipping Discount Amount` DECIMAL(12,2) NOT NULL DEFAULT '0.00' AFTER `Order Charges Discount Amount`, ADD `Order Insurance Discount Amount` DECIMAL(12,2) NOT NULL DEFAULT '0.00' AFTER `Order Shipping Discount Amount`;
 ALTER TABLE `Order Dimension` ADD `Order Charges Gross Amount` DECIMAL(12,2) NOT NULL DEFAULT '0.00' AFTER `Order Insurance Tax Amount`, ADD `Order Shipping Gross Amount` DECIMAL(12,2) NOT NULL DEFAULT '0.00' AFTER `Order Charges Gross Amount`, ADD `Order Insurance Gross Amount` DECIMAL(12,2) NOT NULL DEFAULT '0.00' AFTER `Order Shipping Gross Amount`;
 
+
+ALTER TABLE `Store Dimension` ADD `Store Settings` JSON  AFTER `Store Version`;
+ALTER TABLE `Store Dimension` ADD `Store Properties` JSON   AFTER `Store Version`;
+UPDATE `Store Dimension` SET `Store Settings`='{}' ,`Store Properties`='{}' ;
+
 ======= fer migration ordering in dw and costa
 
                     ALTER TABLE `Invoice Tax Dimension` ADD `Invoice Tax Key` INT UNSIGNED NOT NULL AUTO_INCREMENT FIRST, ADD PRIMARY KEY (`Invoice Tax Key`);
