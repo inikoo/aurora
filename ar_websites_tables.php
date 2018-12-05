@@ -263,18 +263,10 @@ function websites($_data, $db, $user) {
             'pages_out_of_stock'            => number(
                 $data['Website Number WebPages with Out of Stock Products']
             ),
-            'pages_out_of_stock_percentage' => percentage(
-                $data['Website Number WebPages with Out of Stock Products'], $data['Website Number WebPages with Products']
-            ),
-            'products'                      => number(
-                $data['Website Number Products']
-            ),
-            'out_of_stock'                  => number(
-                $data['Website Number Out of Stock Products']
-            ),
-            'out_of_stock_percentage'       => percentage(
-                $data['Website Number Out of Stock Products'], $data['Website Number Products']
-            ),
+            'pages_out_of_stock_percentage' => percentage($data['Website Number WebPages with Out of Stock Products'], $data['Website Number WebPages with Products']),
+            'products'                      => number($data['Website Number Products']),
+            'out_of_stock'                  => number($data['Website Number Out of Stock Products']),
+            'out_of_stock_percentage'       => percentage($data['Website Number Out of Stock Products'], $data['Website Number Products']),
             //'email_reminders_customers'=>number($data['Website Number Back in Stock Reminder Customers']),
             //'email_reminders_products'=>number($data['Website Number Back in Stock Reminder Products']),
             //'email_reminders_waiting'=>number($data['Website Number Back in Stock Reminder Waiting']),

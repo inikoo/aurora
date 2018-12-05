@@ -1165,6 +1165,10 @@ function new_object($account, $db, $user, $editor, $data, $smarty) {
             }
             break;
         case 'Website':
+
+
+            exit('Websites cant be created here');
+
             include_once 'class.Website.php';
 
 
