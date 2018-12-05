@@ -346,7 +346,7 @@ function payments($_data, $db, $user) {
             }
 
 
-            if ($data['Order Key'] != '') {
+            if (!empty($data['Order Key'])) {
                 $order = sprintf(
                     "<span class='link' onclick='change_view(\"/orders/%d/%d\")' >%s</span>", $data['Order Store Key'], $data['Order Key'], $data['Order Public ID']
                 );
