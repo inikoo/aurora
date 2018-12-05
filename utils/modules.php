@@ -3165,6 +3165,8 @@ $modules = array(
                 )
             ),
 
+            /*
+
             'website.new' => array(
                 'type' => 'new_object',
                 'tabs' => array(
@@ -3177,7 +3179,7 @@ $modules = array(
                 )
 
             ),
-
+*/
 
             'webpage.new' => array(
                 'type' => 'new_object',
