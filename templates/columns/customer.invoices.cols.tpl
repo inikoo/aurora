@@ -25,14 +25,7 @@ editable: false,
 sortType: "toggle",
 {if $sort_key=='number'}direction: '{if $sort_order==1}descending{else}ascending{/if}',{/if}
 
-cell: Backgrid.HtmlCell.extend({
-events: {
-"click": function() {
-change_view('invoices/'+this.model.get("store_key")+'/' + this.model.get("id")  )
-}
-},
-className: "link",
-})
+cell: Backgrid.HtmlCell.extend({ })
 }, {
 name: "date",
 label: "{t}Date{/t}",
@@ -47,15 +40,7 @@ name: "customer",
 label: "{t}Customer{/t}",
 sortType: "toggle",
 editable: false,
-cell: Backgrid.HtmlCell.extend({
-orderSeparator: '',
-events: {
-"click": function() {
-change_view('customer/' + this.model.get("customer_key")  )
-}
-},
-className: "link",
-})
+cell: Backgrid.HtmlCell.extend({ })
 }, {
 name: "type",
 label: "{t}Type{/t}",

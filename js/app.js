@@ -387,9 +387,16 @@ function change_browser_history_state(request) {
 
 window.addEventListener('popstate', function (event) {
 
-    //  console.log(event)
+    // console.log(event)
 
-    change_view(event.state.request)
+    if(event.state==null){
+        console.log('null state!!!!!!')
+    }else{
+        change_view(event.state.request)
+    }
+
+
+
 
 });
 
