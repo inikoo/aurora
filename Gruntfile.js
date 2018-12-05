@@ -409,6 +409,8 @@ module.exports = function (grunt) {
                 }, {
                     expand: true, src: ['conf/*.php'], dest: 'build/fork/'
                 }, {
+                    expand: true, src: ['nano_services/*.php'], dest: 'build/fork/'
+                }, {
                     expand: true, src: ['conf/fields/*.php'], dest: 'build/fork/'
                 }, {
                     expand: true, src: ['utils/*.php'], dest: 'build/fork/'
