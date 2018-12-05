@@ -334,8 +334,10 @@ function show_dialog_consolidate_unknown_location(element) {
     qty = $(element).attr('qty')
 
 
+    console.log($(element).offset().top)
+
     $('#edit_stock_dialog_consolidate_unknown_location').removeClass('hide').offset({
-        top: $(element).position().top - 3, left: $(element).position().left + $(element).width() - $('#edit_stock_dialog_consolidate_unknown_location').width() - 20
+        top: $(element).offset().top - 3, left: $(element).offset().left + $(element).width() - $('#edit_stock_dialog_consolidate_unknown_location').width() - 20
     }).attr('part_sku', part_sku).attr('max_qty', qty)
 
 
@@ -880,7 +882,7 @@ function set_inventory_transaction_note(element) {
 
         $('#inventory_transaction_note').removeClass('hide')
 
-        var position = $(element).closest('tr').find('.stock').position();
+        var position = $(element).closest('tr').find('.stock').offset();
 
 
         $('#inventory_transaction_note').css({
