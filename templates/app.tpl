@@ -102,7 +102,7 @@
         <script src="/js/email_campaign.common.js?v181115"></script>
         <script src="/js/supplier.order.js?v181115"></script>
         <script src="/js/supplier.delivery.js?v181128v2"></script>
-        <script src="/js/part_locations.edit.js?v=v181115"></script>
+        <script src="/js/part_locations.edit.js?v=v181115v2"></script>
         <script src="/js/part_locations.edit_locations.js"></script>
         <script src="/js/part_locations.stock_check.js"></script>
         <script src="/js/part_locations.move_stock.js"></script>
