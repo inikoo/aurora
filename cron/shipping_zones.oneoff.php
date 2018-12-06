@@ -16,9 +16,115 @@ require_once 'utils/get_addressing.php';
 require_once 'class.Country.php';
 
 
-set_shipping_zones($db);
+//set_shipping_zones($db);
 //test_shipping_zones($db);
 //migrate_shipping_zones($db);
+
+
+
+
+
+
+
+test_api($db);
+
+
+function test_api($db) {
+
+
+
+
+
+    $sql = sprintf('SELECT `Order Key` FROM `Order Dimension` where `Order Shipping Method`!="Set" and `Order For Collection`!="Yes"  and `Order Number Items`>0 and `Order Ship To Postal Code` like "J%%" ');
+    $sql = sprintf('SELECT `Order Key` FROM `Order Dimension` where `Order Shipping Method`!="Set" and `Order For Collection`!="Yes"  and `Order Number Items`>0 and `Order Ship To Postal Code` ');
+
+    //  $sql = sprintf('SELECT `Order Key` FROM `Order Dimension` where `Order Shipping Method`!="Set" and `Order For Collection`!="Yes"  and `Order Number Items`>0 and `Order Store Key` not in (10,14) and `Order Key`=1376 ');
+
+    // $sql = sprintf('SELECT `Order Key` FROM `Order Dimension` where `Order Key`=2320212');
+    if ($result = $db->query($sql)) {
+        foreach ($result as $row) {
+            $order = get_object('order', $row['Order Key']);
+
+
+            if ($order->id) {
+
+
+                if ($order->data['Order Number Items'] == 0) {
+                    continue;
+                }
+
+
+                if ($order->data['Order For Collection'] == 'Yes') {
+                    continue;
+                }
+
+                if ($order->data['Order Shipping Method'] == 'Set') {
+                    continue;
+                }
+
+
+
+
+                $country = new Country('code', $order->data['Order Ship To Country Code']);
+
+                $data = array(
+                    'action'           => 'get_order_shipping',
+                    'store_key'        => $order->get('Order Store Key'),
+                    'country'          => $country->get('Country 2 Alpha Code'),
+                    'items_net_amount' => $order->get('Order Items Net Amount'),
+                    'postal_code'      => $order->get('Order Ship To Postal Code')
+
+                );
+                include_once 'keyring/nano.key.php';
+                $_key=json_decode($nano_keys,true);
+
+
+                $auth_key=array_keys($_key)[0].'.'.reset($_key);
+
+
+                $response = callAPI('GET', $account->get('Account System Public URL').'/api/nc', $auth_key, $data);
+
+
+
+                $shipping_data=json_decode($response,true)['data'];
+
+
+
+                print $order->id.' '.$country->get('Country 2 Alpha Code')."\tPC: ".$order->get('Order Ship To Postal Code')."\t ".$order->get('Order Items Net Amount')."\t";
+                print "P ".$shipping_data['price']." s:".$shipping_data['step']."\n";
+
+
+                //print_r($shipping_data);
+
+
+            }
+
+
+            // print_r($data_new_method);
+
+            //    $data_old_method = $order->get_shipping_to_delete();
+            /*
+                        print_r($data_new_method);
+                        print_r($data_old_method);
+                        print_r($row['Order Delivery Address Country 2 Alpha Code']);
+                        print '-------'."\n";
+            */
+
+            /*
+                        if ($data_new_method[0] != $data_old_method[0]) {
+
+                            //  print_r($row);
+
+                            print_r($data_new_method);
+                            print_r($data_old_method);
+                            exit;
+                        }
+
+            */
+
+        }
+    }
+}
 
 
 function test_shipping_zones($db) {
@@ -34,17 +140,14 @@ function test_shipping_zones($db) {
             $order = get_object('order', $row['Order Key']);
 
 
-
             if ($order->id) {
                 $store = get_object('Store', $order->get('Store Key'));
 
                 if ($store->get('Store Version') == 1) {
 
 
-
-
                     if ($order->data['Order Number Items'] == 0) {
-                      continue;
+                        continue;
                     }
 
 
@@ -57,8 +160,7 @@ function test_shipping_zones($db) {
                     }
 
 
-
-                    $country= new Country('code',$order->data['Order Ship To Country Code']);
+                    $country = new Country('code', $order->data['Order Ship To Country Code']);
 
 
                     $_data = array(
@@ -81,7 +183,6 @@ function test_shipping_zones($db) {
 
                     //print_r($shipping_data);
 
-                    
 
                 } else {
                     include_once 'nano_services/migrate_order.ns.php';
@@ -90,25 +191,24 @@ function test_shipping_zones($db) {
                     //$data_old_method = $order->get_shipping_to_delete();
 
                     $data_new_method = $order->get_shipping();
-/*
-                    if ($data_new_method[0] != $data_old_method[0]) {
+                    /*
+                                        if ($data_new_method[0] != $data_old_method[0]) {
 
 
-                        print_r($order);
+                                            print_r($order);
 
 
-                        print_r($data_new_method);
-                        print_r($data_old_method);
-                        exit;
-                    }
-*/
+                                            print_r($data_new_method);
+                                            print_r($data_old_method);
+                                            exit;
+                                        }
+                    */
                     print $order->get('Order Delivery Address Country 2 Alpha Code')."\tPC: ".$order->get('Order Delivery Address Postal Code')."\t ".$order->get('Order Items Net Amount')."\t";
                     print "P ".$data_new_method['0']."\n";
 
                 }
 
 
-            
             }
 
 
@@ -962,7 +1062,7 @@ function get_shipping_zones_data($account_code) {
                         'Shipping Zone Territories' => json_encode(
                             array(
                                 array(
-                                    'country_code' => 'GB',
+                                    'country_code'          => 'GB',
                                     'excluded_postal_codes' => '/^(JE|GY)\d+\s.{3}$/',
                                 )
                             )
@@ -1008,7 +1108,7 @@ function get_shipping_zones_data($account_code) {
                                     'country_code' => 'GG'
                                 ),
                                 array(
-                                    'country_code' => 'GB',
+                                    'country_code'          => 'GB',
                                     'included_postal_codes' => '/^(JE|GY)\d+\s.{3}$/',
 
                                 )
@@ -1476,7 +1576,7 @@ function get_shipping_zones_data($account_code) {
                         'Shipping Zone Territories' => json_encode(
                             array(
                                 array(
-                                    'country_code' => 'GB',
+                                    'country_code'          => 'GB',
                                     'excluded_postal_codes' => '/^(JE|GY)\d+\s.{3}$/',
                                 )
                             )
@@ -1522,7 +1622,7 @@ function get_shipping_zones_data($account_code) {
                                     'country_code' => 'GG'
                                 ),
                                 array(
-                                    'country_code' => 'GB',
+                                    'country_code'          => 'GB',
                                     'included_postal_codes' => '/^(JE|GY)\d+\s.{3}$/',
 
                                 )
@@ -1801,7 +1901,7 @@ function get_shipping_zones_data($account_code) {
                         'Shipping Zone Territories' => json_encode(
                             array(
                                 array(
-                                    'country_code' => 'GB',
+                                    'country_code'          => 'GB',
                                     'excluded_postal_codes' => '/^(JE|GY)\d+\s.{3}$/',
                                 )
                             )
@@ -1847,7 +1947,7 @@ function get_shipping_zones_data($account_code) {
                                     'country_code' => 'GG'
                                 ),
                                 array(
-                                    'country_code' => 'GB',
+                                    'country_code'          => 'GB',
                                     'included_postal_codes' => '/^(JE|GY)\d+\s.{3}$/',
 
                                 )
@@ -2076,6 +2176,49 @@ function get_shipping_zones_data($account_code) {
 
     return $shipping_zones_data[$account_code];
 
+}
+
+function callAPI($method, $url, $token, $data) {
+    $curl = curl_init();
+
+    switch ($method) {
+        case "POST":
+            curl_setopt($curl, CURLOPT_POST, 1);
+            if ($data) {
+                curl_setopt($curl, CURLOPT_POSTFIELDS, $data);
+            }
+            break;
+        case "PUT":
+            curl_setopt($curl, CURLOPT_CUSTOMREQUEST, "PUT");
+            if ($data) {
+                curl_setopt($curl, CURLOPT_POSTFIELDS, $data);
+            }
+            break;
+        default:
+            if ($data) {
+                $url = sprintf("%s?%s", $url, http_build_query($data));
+            }
+    }
+
+    // OPTIONS:
+    curl_setopt($curl, CURLOPT_URL, $url);
+    curl_setopt(
+        $curl, CURLOPT_HTTPHEADER, array(
+                 'Authorization: Bearer '.$token,
+                 'Content-Type: application/json',
+             )
+    );
+    curl_setopt($curl, CURLOPT_RETURNTRANSFER, 1);
+    curl_setopt($curl, CURLOPT_HTTPAUTH, CURLAUTH_BASIC);
+
+    // EXECUTE:
+    $result = curl_exec($curl);
+    if (!$result) {
+        die("Connection Failure");
+    }
+    curl_close($curl);
+
+    return $result;
 }
 
 

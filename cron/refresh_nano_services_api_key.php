@@ -55,7 +55,7 @@ if($counter==0 ){
 
 $keys=json_encode($keys);
 
-file_put_contents($file, "<?php\n\$nano_keys=$keys;\n?>");
+file_put_contents($file, "<?php\n\$nano_keys='$keys';\n?>");
 
 
 ?>
