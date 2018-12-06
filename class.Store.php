@@ -3586,14 +3586,22 @@ class Store extends DB_Table {
                 if ($product_parts_data) {
 
 
+
                     $product->update_part_list($product_parts_data, 'no_history');
 
 
                 }
 
 
+
+
+
+
                 if ($product->get('Product Number of Parts') == 1) {
                     foreach ($product->get_parts('objects') as $part) {
+
+
+
                         $part->updated_linked_products();
                     }
                 }

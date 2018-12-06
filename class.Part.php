@@ -2075,6 +2075,9 @@ class Part extends Asset {
                 $updated = $this->updated;
 
 
+
+              //  print 'xxxxx';
+
                 foreach ($this->get_products('objects') as $product) {
 
                     if (count($product->get_parts()) == 1) {
@@ -4683,7 +4686,7 @@ class Part extends Asset {
                         'Product Hazard Indentification Number' => $this->get('Part Hazard Indentification Number'),
                         'Product Unit Weight'                   => $this->get('Part Unit Weight'),
                         'Product Unit Dimensions'               => $this->get('Part Unit Dimensions'),
-                        'Product Materials'                     => strip_tags($this->get('Materials'))
+                        'Product Materials'                     => $this->data['Part Materials'],
                     )
                 );
 
