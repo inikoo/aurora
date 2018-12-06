@@ -63,7 +63,7 @@ function test_api($db) {
                 }
 
 
-
+                $account=get_object('Account',1);
 
                 $country = new Country('code', $order->data['Order Ship To Country Code']);
 
