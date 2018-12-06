@@ -65,7 +65,7 @@ switch ($_REQUEST['action']) {
         if($shipping_data){
             $response = array(
                 'state' => 'OK',
-                'data'  => json_encode($shipping_data)
+                'data'  => $shipping_data
             );
         }else{
             $response = array(

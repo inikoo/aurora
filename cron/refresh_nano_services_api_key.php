@@ -27,11 +27,11 @@ if ($result=$db->query($sql)) {
             $api_key=get_object('api_key',$row['API Key Key']);
             $api_key->refresh_key($cost=4);
 
-            $keys[$row['API Key Code']]=base64_encode($api_key->secret_key);
+            $keys[$row['API Key Code']]=$api_key->secret_key;
 		}
 }
 
-if($counter==0){
+if($counter==0 ){
 
     include_once 'class.API_Key.php';
 
@@ -41,7 +41,10 @@ if($counter==0){
 
 
     $api_key = new API_Key('create', $data,4);
-    $keys[$row['API Key Code']]=base64_encode($api_key->secret_key);
+
+
+
+    $keys[$api_key->get('API Key Code')]=$api_key->secret_key;
 
 
 
