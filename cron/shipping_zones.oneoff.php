@@ -84,7 +84,7 @@ function test_api($db) {
 
                 $response = callAPI('GET', $account->get('Account System Public URL').'/api/nc', $auth_key, $data);
 
-
+                
 
                 $shipping_data=json_decode($response,true)['data'];
 
