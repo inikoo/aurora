@@ -3402,9 +3402,7 @@ class Product extends Asset {
             //print_r($old_part_list_keys);
             //print_r($new_part_list_keys);
             $this->error = true;
-            $this->msg   = _(
-                'Another user updated current part list, refresh and try again'
-            );
+            $this->msg   = _('Another user updated current part list, refresh and try again');
 
             return;
         }
@@ -3467,6 +3465,9 @@ class Product extends Asset {
 
 
         $this->get_data('id', $this->id);
+
+
+        $this->update_part_numbers();
 
 
         $this->fast_update(array('Product Parts Data' => json_encode($this->get_parts_data())));
@@ -3562,12 +3563,12 @@ class Product extends Asset {
         }
 
 
-        $this->update(
+        $this->fast_update(
             array(
                 'Product Number of Parts' => $number_parts,
 
 
-            ), 'no_history'
+            )
         );
 
 
