@@ -1,3 +1,5 @@
+keyring/
+keyring/nano.key.php
 .idea/
 .sass-cache/
 *.csv
@@ -103,7 +105,5 @@ EcomB2B/art/mobile_side_bg_1.sk.png
 
 js/libs/telephone_utils.old.js
 
-keyring/nano.key.php
 
 
-keyring/nano.key.php
