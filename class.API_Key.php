@@ -83,7 +83,7 @@ class API_Key extends DB_Table {
     }
 
 
-    function create($data) {
+    function create($data,$cost) {
 
 
         if (!$cost or !is_numeric($cost) or !is_integer($cost)) {
@@ -100,6 +100,8 @@ class API_Key extends DB_Table {
 
 
         $this->secret_key = 'P'.generatePassword(39, 3);
+
+
 
         $data['API Key Code'] = hash('crc32', generatePassword(32, 10), false);
 
@@ -282,7 +284,6 @@ class API_Key extends DB_Table {
         $this->secret_key = 'P'.generatePassword(39, 3);
 
 
-        print "--> ".$this->secret_key."  <---";
 
         $this->fast_update(
             array(
@@ -290,7 +291,7 @@ class API_Key extends DB_Table {
             )
         );
 
-
+        $this->secret_key = base64_encode($this->secret_key);
     }
 
     function update_requests_data() {

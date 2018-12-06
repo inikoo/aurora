@@ -6701,7 +6701,7 @@ function get_view_position($db, $state, $user, $smarty, $account) {
 
                     $branch[] = array(
                         'label'     => '<span class="id Part_Reference">'.$state['_object']->get('Reference').'</span>',
-                        'icon'      => 'square',
+                        'icon'      => 'box',
                         'reference' => ''
                     );
 
@@ -6716,7 +6716,7 @@ function get_view_position($db, $state, $user, $smarty, $account) {
                     );
                     $branch[] = array(
                         'label'     => '<span class="id Part_Reference">'.$state['_parent']->get('Reference').'</span>',
-                        'icon'      => 'square',
+                        'icon'      => 'box',
                         'reference' => 'part/'.$state['_parent']->sku
                     );
                     $branch[] = array(
@@ -6736,7 +6736,7 @@ function get_view_position($db, $state, $user, $smarty, $account) {
                     );
                     $branch[] = array(
                         'label'     => _('New part'),
-                        'icon'      => 'square',
+                        'icon'      => 'box',
                         'reference' => ''
                     );
 
@@ -6806,7 +6806,7 @@ function get_view_position($db, $state, $user, $smarty, $account) {
 
                     $branch[] = array(
                         'label'     => '<span class="id Part_Reference">'.$state['_object']->get('Reference').'</span>',
-                        'icon'      => 'square',
+                        'icon'      => 'box',
                         'reference' => 'part/'.$state['_object']->id
                     );
                     $branch[] = array(
@@ -6825,7 +6825,7 @@ function get_view_position($db, $state, $user, $smarty, $account) {
                     );
                     $branch[] = array(
                         'label'     => '<span class="id Part_Reference">'.$state['_parent']->get('Reference').'</span>',
-                        'icon'      => 'square',
+                        'icon'      => 'box',
                         'reference' => 'part/'.$state['parent_key']
                     );
 
@@ -7036,7 +7036,7 @@ function get_view_position($db, $state, $user, $smarty, $account) {
                     );
                     $branch[] = array(
                         'label'     => '<span class="id Part_Reference">'.$state['_parent']->get('Reference').'</span>',
-                        'icon'      => 'square',
+                        'icon'      => 'box',
                         'reference' => 'part/'.$state['_parent']->sku
                     );
                     $branch[] = array(
@@ -7053,7 +7053,7 @@ function get_view_position($db, $state, $user, $smarty, $account) {
                     );
                     $branch[] = array(
                         'label'     => '<span class="id Part_Reference">'.$state['_parent']->get('Reference').'</span>',
-                        'icon'      => 'square',
+                        'icon'      => 'box',
                         'reference' => 'part/'.$state['_parent']->sku
                     );
                     $branch[] = array(
@@ -7274,7 +7274,7 @@ function get_view_position($db, $state, $user, $smarty, $account) {
                         'label'     => '<span class="id Part_Reference">'.$state['_object']->get('Reference').'</span> (<span class="id">'.$state['_object']->get(
                                 'SKU'
                             ).'</span>)',
-                        'icon'      => 'square',
+                        'icon'      => 'box',
                         'reference' => ''
                     );
 

@@ -296,6 +296,8 @@ function authenticate($db) {
 
 
 
+
+
             if ($row = $db->query($sql)->fetch()) {
 
 
