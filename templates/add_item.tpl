@@ -227,13 +227,15 @@
         $('#add_item_save').addClass('fa-spinner fa-spin');
 
 
+        console.log($('#table'))
+
         var table_metadata = $('#table').data("metadata")
 
-
+        console.log(table_metadata)
 
         var request = '/ar_edit_orders.php?tipo=edit_item_in_order&field=' + table_metadata.field + '&parent=' + table_metadata.parent + '&parent_key=' + table_metadata.parent_key + '&item_key=' + $('#add_item_save').attr('item_key') + '&item_historic_key=' + $('#add_item_save').attr('item_historic_key') + '&qty=' + $('#add_item_qty').val()
         console.log(request)
-        // return;
+
         //=====
         var form_data = new FormData();
 
