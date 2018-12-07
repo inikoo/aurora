@@ -201,7 +201,7 @@ function place_item(element) {
 
     request.done(function (data) {
 
-        var table_metadata = JSON.parse(atob($('#table').data("metadata")))
+        var table_metadata = $('#table').data("metadata")
 
 
         console.log(data)

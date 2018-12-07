@@ -241,7 +241,7 @@
         $('#add_part_to_location_save').addClass('fa-spinner fa-spin');
 
 
-        var table_metadata = JSON.parse(atob($('#table').data("metadata")))
+        var table_metadata = $('#table').data("metadata")
 
 
 

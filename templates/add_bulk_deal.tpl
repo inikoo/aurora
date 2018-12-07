@@ -260,7 +260,7 @@
         $('#add_bulk_deal_save').addClass('fa-spinner fa-spin');
 
 
-        var table_metadata = JSON.parse(atob($('#table').data("metadata")))
+        var table_metadata = $('#table').data("metadata")
 
 
 

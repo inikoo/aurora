@@ -70,7 +70,7 @@ $smarty->assign(
     'js_code', 'js/injections/supplier.order.'.(_DEVEL ? '' : 'min.').'js'
 );
 $smarty->assign(
-    'table_metadata', base64_encode(
+    'table_metadata',
                         json_encode(
                             array(
                                 'parent'     => $state['object'],
@@ -78,7 +78,7 @@ $smarty->assign(
                                 'field'      => 'Purchase Order Cartons'
                             )
                         )
-                    )
+
 );
 
 

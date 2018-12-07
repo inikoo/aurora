@@ -239,7 +239,7 @@
         $('#add_allowance_to_order_recursion_deal_save').addClass('fa-spinner fa-spin');
 
 
-        var table_metadata = JSON.parse(atob($('#table').data("metadata")))
+        var table_metadata = $('#table').data("metadata")
 
 
 
