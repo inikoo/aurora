@@ -64,7 +64,7 @@ $(document).on('click', '.order_item_percentage_discount_form i', function (evt)
         value=0
     }
 
-    var table_metadata = JSON.parse(atob($('#table').data("metadata")))
+    var table_metadata = $('#table').data("metadata")
 
 
 
@@ -263,12 +263,20 @@ function close_dialog(dialog_name) {
 
 function save_order_operation(element) {
 
+
+    console.log($('#table').data("metadata"))
+    console.log($(element).data("data"))
+
+
     var data = $(element).data("data")
 
-    var table_metadata = JSON.parse(atob($('#table').data("metadata")))
+    var table_metadata = $('#table').data("metadata")
 
 
-    //console.log(data)
+
+
+
+
 
     var object_data = $('#object_showcase div.order').data("object")
 
@@ -682,7 +690,7 @@ function picked_offline_items_qty_change(element) {
 
 
     //var settings = $(element).closest('span').data('settings')
-    //var table_metadata = JSON.parse(atob($('#table').data("metadata")))
+    //var table_metadata = $('#table').data("metadata")
 
 
 
@@ -749,7 +757,7 @@ function save_item_qty_change(element) {
 
     //console.log(settings)
 
-    var table_metadata = JSON.parse(atob($('#table').data("metadata")))
+    var table_metadata = $('#table').data("metadata")
 
 
 
@@ -1163,7 +1171,7 @@ function save_item_out_of_stock_qty_change(element) {
     if (qty == '') qty = 0;
 
 
-    var table_metadata = JSON.parse(atob($('#table').data("metadata")))
+    var table_metadata = $('#table').data("metadata")
 
 
     var request = '/ar_edit_orders.php?tipo=edit_item_in_order&parent=' + table_metadata.parent + '&field=Out_of_stock&parent_key=' + table_metadata.parent_key + '&item_key=' + $('#set_out_of_stock_items_dialog').attr('item_key') + '&qty=' + qty + '&transaction_key=' + $('#set_out_of_stock_items_dialog').attr('transaction_key')

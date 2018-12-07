@@ -747,7 +747,7 @@
 
     </div>
 {/if}
-<div class="table {if !empty($table_class)}{$table_class}{/if}   " id="table" data-metadata="{if isset($table_metadata)}{$table_metadata}{/if}"></div>
+<div class="table {if !empty($table_class)}{$table_class}{/if}   " id="table" data-metadata="{if isset($table_metadata)}{$table_metadata}{ }{/if}"></div>
 <script>
 
 

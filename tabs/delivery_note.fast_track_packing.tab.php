@@ -45,13 +45,13 @@ $parameters = array(
 );
 
 $smarty->assign(
-    'table_metadata', base64_encode(
+    'table_metadata',
                         json_encode(
                             array('parent'     => $state['object'],
                                   'parent_key' => $state['key']
                             )
                         )
-                    )
+
 );
 $smarty->assign('dn', $state['_object']);
 

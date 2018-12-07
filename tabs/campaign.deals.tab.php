@@ -64,7 +64,7 @@ if($state['store']->get('Store Bulk Discounts Campaign Key')==$state['key']){
     );
 
     $smarty->assign(
-        'table_metadata', base64_encode(
+        'table_metadata',
                             json_encode(
                                 array(
                                     'parent'     => $state['object'],
@@ -72,7 +72,7 @@ if($state['store']->get('Store Bulk Discounts Campaign Key')==$state['key']){
                                     'field'      => 'target'
                                 )
                             )
-                        )
+
     );
 
 

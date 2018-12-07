@@ -98,7 +98,7 @@
 
         <script src="/js/edit_webpage_edit.js?v181115"></script>
         <script src="/js/new.js?v181123"></script>
-        <script src="/js/order.common.js?v181128"></script>
+        <script src="/js/order.common.js?v181128v2"></script>
         <script src="/js/email_campaign.common.js?v181115"></script>
         <script src="/js/supplier.order.js?v181115"></script>
         <script src="/js/supplier.delivery.js?v181128v2"></script>

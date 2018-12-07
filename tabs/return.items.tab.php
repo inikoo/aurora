@@ -68,14 +68,14 @@ $table_buttons[] = array(
 $smarty->assign('table_buttons', $table_buttons);
 
 $smarty->assign(
-    'table_metadata', base64_encode(
+    'table_metadata',
                         json_encode(
                             array(
                                 'parent'     => $state['object'],
                                 'parent_key' => $state['key'],
                                 'type'  => 'return'
                             )
-                        )
+
                     )
 );
 

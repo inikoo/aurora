@@ -239,7 +239,7 @@ function scanned_barcode_in_supplier_delivery_note(value) {
 
 
                         var input = tr.find('.checked_quantity input')
-                        var table_metadata = JSON.parse(atob($('#table').data("metadata")))
+                        var table_metadata = $('#table').data("metadata")
 
                         var settings = tr.find('.checked_quantity').data('settings')
 
