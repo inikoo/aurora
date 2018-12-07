@@ -21,6 +21,8 @@ if($state['_object']->get_object_name()=='Product'){
 $website = get_object('Website',$webpage->get('Webpage Website Key'));
 
 
+
+
 if ($webpage->get('Webpage Template Filename') == 'products_showcase' or $webpage->get('Webpage Template Filename') == 'categories_showcase') {
 
     $state['_object'] = get_object('Category', $webpage->get('Webpage Scope Key'));
@@ -35,7 +37,8 @@ if ($webpage->get('Webpage Template Filename') == 'products_showcase' or $webpag
 
     include 'product.webpage.preview.tab.php';
 
-} else {
+}
+else {
 
 
 
@@ -48,7 +51,17 @@ if ($webpage->get('Webpage Template Filename') == 'products_showcase' or $webpag
     }
 
 
+
+
+
     $theme = $website->get('Website Theme');
+
+    if ($theme=='old') {
+        $html = '<div style="padding:40px">'.'Old webpage version'.'</div>';
+
+        return;
+    }
+
 
     $smarty->assign('theme', $theme);
     $smarty->assign('webpage', $webpage);

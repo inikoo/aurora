@@ -28,6 +28,9 @@ if ($category->get('Product Category Public')=='No') {
 }
 */
 
+
+
+
 $webpage  = $category->get_webpage();
 
 
@@ -64,7 +67,7 @@ if($webpage->get('Webpage Template Filename')=='category_categories' or $webpage
 
     $control_template = $theme.'/control.'.strtolower($webpage->get('Webpage Template Filename')).'.'.$theme.'.tpl';
 
-    // print $control_template;
+
 
     if (file_exists('templates/'.$control_template)) {
         $smarty->assign('control_template', $control_template);

@@ -56,7 +56,7 @@ switch ($parameters['parent']) {
     left join `Published Email Template Dimension` on (`Email Tracking Published Email Template Key`=`Published Email Template Key`)
     left join `Prospect Dimension` on (`Email Tracking Recipient Key`=`Prospect Key`) ';
             $fields =
-                "`Email Tracking Email`,`Prospect Store Key` as store_key,`Prospect Key` as recipient_key,`Prospect Name` recipient_name,`Prospect Store Key` store_key,`Email Campaign Type Code`,`Published Email Template Subject`,`Email Tracking Key`,`Email Tracking State`,`Email Tracking Created Date`";
+                "`Email Tracking Delivery Status Code`,`Email Tracking Email`,`Prospect Store Key` as store_key,`Prospect Key` as recipient_key,`Prospect Name` recipient_name,`Prospect Store Key` store_key,`Email Campaign Type Code`,`Published Email Template Subject`,`Email Tracking Key`,`Email Tracking State`,`Email Tracking Created Date`";
 
 
         }
