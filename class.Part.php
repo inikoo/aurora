@@ -2628,7 +2628,11 @@ class Part extends Asset {
 
     }
 
-    function get_locations($scope = 'keys',$_order='') {
+
+
+
+
+    function get_locations($scope = 'keys',$_order='',$exclude_unknown=false) {
 
 
         if ($scope == 'objects') {
@@ -2636,6 +2640,8 @@ class Part extends Asset {
         } elseif ($scope == 'part_location_object') {
             include_once 'class.PartLocation.php';
         }
+
+
 
         if($_order=='stock'){
             $_order='`Quantity On Hand` desc';
@@ -2646,10 +2652,21 @@ class Part extends Asset {
         }
 
 
+        if($exclude_unknown){
+            global $session;
+            $warehouse = get_object('Warehouse', $session->get('current_warehouse'));
+            $where=sprintf('and PL.`Location Key`!=%d  ',$warehouse->get('Warehouse Unknown Location Key'));
+
+        }else{
+            $where='';
+        }
+
+
         $sql = sprintf(
-            "SELECT PL.`Location Key`,`Location Code`,`Quantity On Hand`,`Part Location Note`,`Location Warehouse Key`,`Part SKU`,`Minimum Quantity`,`Maximum Quantity`,`Moving Quantity`,`Can Pick`, datediff(CURDATE(), `Part Location Last Audit`) AS days_last_audit,`Part Location Last Audit` FROM `Part Location Dimension` PL LEFT JOIN `Location Dimension` L ON (L.`Location Key`=PL.`Location Key`)  WHERE `Part SKU`=%d 
-        ORDER BY %s", $this->sku,$_order
+            "SELECT PL.`Location Key`,`Location Code`,`Quantity On Hand`,`Part Location Note`,`Location Warehouse Key`,`Part SKU`,`Minimum Quantity`,`Maximum Quantity`,`Moving Quantity`,`Can Pick`, datediff(CURDATE(), `Part Location Last Audit`) AS days_last_audit,`Part Location Last Audit` FROM `Part Location Dimension` PL LEFT JOIN `Location Dimension` L ON (L.`Location Key`=PL.`Location Key`)  WHERE `Part SKU`=%d  %s
+        ORDER BY %s", $this->sku,$where,$_order
         );
+
 
 
         $part_locations = array();
@@ -2661,31 +2678,11 @@ class Part extends Asset {
                 if ($scope == 'keys') {
                     $part_locations[$row['Location Key']] = $row['Location Key'];
                 } elseif ($scope == 'objects') {
-                    $part_locations[$row['Location Key']] = new Location(
-                        $row['Location Key']
-                    );
+                    $part_locations[$row['Location Key']] = new Location($row['Location Key']);
                 } elseif ($scope == 'part_location_object') {
                     $part_locations[$row['Location Key']] = new  PartLocation($this->sku.'_'.$row['Location Key']);
                 } else {
 
-                    /*
-                                        switch ($row['Location Mainly Used For']) {
-                                            case 'Picking':
-                                                $used_for = sprintf(
-                                                    '<i class="fa fa-fw fa-shopping-basket"  title="%s" ></i>', _('Picking')
-                                                );
-                                                break;
-                                            case 'Storing':
-                                                $used_for = sprintf(
-                                                    '<i class="fa fa-fw  fa-hdd"  title="%s"></i>', _('Storing')
-                                                );
-                                                break;
-                                            default:
-                                                $used_for = sprintf(
-                                                    '<i class="fa fa-fw  fa-map-maker"  title="%s"></i>', $row['Location Mainly Used For']
-                                                );
-                                        }
-                    */
 
 
                     $picking_location_icon = sprintf(
@@ -4990,11 +4987,42 @@ class Part extends Asset {
 
     }
 
+
+    function update_number_locations(){
+
+
+        global $session;
+        $warehouse = get_object('Warehouse', $session->get('current_warehouse'));
+
+        $locations=0;
+
+        $sql   = sprintf("SELECT count(*) as num FROM `Part Location Dimension` WHERE `Location Key`!=%d AND `Part SKU`=%d ", $warehouse->get('Warehouse Unknown Location Key') ,$this->id);
+        if ($result = $this->db->query($sql)) {
+            if ($row = $result->fetch()) {
+                $locations= $row['num'];
+            }
+        } else {
+            print_r($error_info = $this->db->errorInfo());
+            print "$sql\n";
+            exit;
+        }
+
+
+
+        $this->fast_update(array('Part Distinct Locations'=>$locations));
+
+    }
+
+
     function update_unknown_location() {
+
+
+        global $session;
+        $warehouse = get_object('Warehouse', $session->get('current_warehouse'));
 
         $stock = 0;
         $value = 0;
-        $sql   = sprintf("SELECT `Quantity On Hand`,`Stock Value` FROM `Part Location Dimension` WHERE `Location Key`=1 AND `Part SKU`=%d ", $this->id);
+        $sql   = sprintf("SELECT `Quantity On Hand`,`Stock Value` FROM `Part Location Dimension` WHERE `Location Key`=%d AND `Part SKU`=%d ", $warehouse->get('Warehouse Unknown Location Key') ,$this->id);
         if ($result = $this->db->query($sql)) {
             if ($row = $result->fetch()) {
                 $stock = $row['Quantity On Hand'];

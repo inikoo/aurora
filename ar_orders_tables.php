@@ -461,7 +461,7 @@ function orders_in_warehouse_no_alerts($_data, $db, $user) {
             $deliveries    = '';
 
 
-            if($data['delivery_notes']!=''){
+            if ($data['delivery_notes'] != '') {
                 foreach (preg_split('/,/', $data['delivery_notes']) as $delivery_note_data) {
                     $_delivery_note_data = preg_split('/\|/', $delivery_note_data);
 
@@ -1820,16 +1820,14 @@ function order_items($_data, $db, $user) {
         }
 
 
+        if ($data['Deal Info'] != '') {
+            $deal_info_data = preg_split('/\|\|/', $data['Deal Info']);
 
 
-        if($data['Deal Info']!=''){
-            $deal_info_data=preg_split('/\|\|/',$data['Deal Info']);
+            $deal_info = '<div id="transaction_deal_info_'.$data['Order Transaction Fact Key'].'" class="deal_info">'.($deal_info_data[1] == 'Yes' ? '<i class="fas fa-thumbtack"></i> ' : '').$deal_info_data[0].'</div>';
 
-
-            $deal_info = '<div id="transaction_deal_info_'.$data['Order Transaction Fact Key'].'" class="deal_info">'.($deal_info_data[1]=='Yes'?'<i class="fas fa-thumbtack"></i> ':'').$deal_info_data[0].'</div>';
-
-        }else{
-            $deal_info='';
+        } else {
+            $deal_info = '';
         }
 
 
@@ -2064,53 +2062,55 @@ function delivery_note_fast_track_packing($_data, $db, $user) {
     $rtext_label = 'item';
 
 
-    $dn = new DeliveryNote($_data['parameters']['parent_key']);
+    //   $dn = new DeliveryNote($_data['parameters']['parent_key']);
 
     include_once 'prepare_table/init.php';
 
     $sql = "select $fields from $table $where $wheref  $group_by order by $order $order_direction  limit $start_from,$number_results";
-    // print $sql;
+
     $adata = array();
     foreach ($db->query($sql) as $data) {
 
+        // print_r($data);
 
-        $to_pick = $data['quantity'] - $data['Picked'];
-        $to_pack = $data['quantity'] - $data['Packed'];
-
-
-        switch ($dn->data['Delivery Note State']) {
-            case 'Dispatched':
-                $state = _('dispatched');
-                break;
-            case 'Cancelled':
-                $state = '';
-                break;
-            case 'Cancelled to Restock':
-                $state = _('to be restocked');
-                break;
-            default:
-                $state = _('to be dispatched');
-                break;
-        }
+        /*
+                $to_pick = $data['quantity'] - $data['Picked'];
+                $to_pack = $data['quantity'] - $data['Packed'];
 
 
-        $notes = '<b>'.number(-1 * $data['Inventory Transaction Quantity']).'</b> '.$state.'<br/>';
+                switch ($dn->data['Delivery Note State']) {
+                    case 'Dispatched':
+                        $state = _('dispatched');
+                        break;
+                    case 'Cancelled':
+                        $state = '';
+                        break;
+                    case 'Cancelled to Restock':
+                        $state = _('to be restocked');
+                        break;
+                    default:
+                        $state = _('to be dispatched');
+                        break;
+                }
 
-        if ($data['Out of Stock'] != 0) {
-            $notes .= '<span style="margin-left:10px">'.number(
-                    $data['Out of Stock']
-                ).'</span> '._('out of stock').'<br/>';
-        }
-        if ($data['Not Found'] != 0) {
-            $notes .= number($data['Not Found']).' '._('Not found').'<br/>';
-        }
-        if ($data['No Picked Other'] != 0) {
-            $notes .= _('not picked (other)').' '.number(
-                    $data['No Picked Other']
-                ).'<br/>';
-        }
 
+                $notes = '<b>'.number(-1 * $data['Inventory Transaction Quantity']).'</b> '.$state.'<br/>';
 
+                if ($data['Out of Stock'] != 0) {
+                    $notes .= '<span style="margin-left:10px">'.number(
+                            $data['Out of Stock']
+                        ).'</span> '._('out of stock').'<br/>';
+                }
+                if ($data['Not Found'] != 0) {
+                    $notes .= number($data['Not Found']).' '._('Not found').'<br/>';
+                }
+                if ($data['No Picked Other'] != 0) {
+                    $notes .= _('not picked (other)').' '.number(
+                            $data['No Picked Other']
+                        ).'<br/>';
+                }
+
+        */
         $description = $data['Part Package Description'];
 
 
@@ -2119,21 +2119,39 @@ function delivery_note_fast_track_packing($_data, $db, $user) {
         }
 
 
-        $quantity = '<div class="quantity_components">'.get_item_quantity($data['quantity'], $data['to_pick']).'</div>';
+        $pending = $data['required'] - $data['Picked'];
 
-        $picked = '<div class="picked_quantity_components">'.get_item_picked(
-                $data['pending'], $data['Quantity On Hand'], $data['Inventory Transaction Key'], $data['Part SKU'], $data['Picked'], $data['Part Current On Hand Stock'], $data['Part SKO Barcode'], $data['Part Reference'],
-                base64_encode($data['Part Package Description'].($data['Picking Note'] != '' ? ' <span>('.$data['Picking Note'].'</span>' : '')), $data['Part Main Image Key']
 
+        $available = $data['required'] - $data['cant_pick'];
+
+
+        if ($data['required'] != $available) {
+            $_quantity = '<span class="strikethrough  discreet">'.number($data['required']).'</span> <span class="error discreet item_quantity_fast_track_packing button  "  qty="'.$available.'" >'.number($available).'</error>';
+
+        } else {
+            $_quantity = sprintf('<span class="item_quantity_fast_track_packing button" qty="%s"   >%s</span>', $data['required'], number($data['required']));
+
+        }
+        $quantity = '<div class="quantity_components">'.$_quantity.'</div>';
+
+        $location = '<div class="location_components" style="margin-top: 2px">'.get_item_location(
+                $pending,
+                $data['Quantity On Hand'],
+                $data['Date Picked'],
+
+                $data['Location Key'],
+                $data['Location Code'],
+
+                $data['Part Current On Hand Stock'],
+                $data['Part SKO Barcode'],
+                $data['Part Distinct Locations'],
+
+                $data['Part SKU'],
+                $data['Inventory Transaction Key'], $_data['parameters']['parent_key']
             ).'</div>';
 
 
-        $packed   = '<div class="packed_quantity_components">'.get_item_packed($to_pack, $data['Inventory Transaction Key'], $data['Part SKU'], $data['Packed']).'</div>';
-        $location = '<div class="location_components">'.get_item_location(
-                $data['pending'], $data['Quantity On Hand'], $data['Date Picked'], $data['Location Key'], $data['Location Code'], $data['Part Current On Hand Stock'], $data['Part SKO Barcode']
-            ).'</div>';
-
-
+        /*
         if ($data['Picked'] == $data['quantity']) {
             $picked_info = '<i class="fa fa-fw fa-check success" aria-hidden="true"></i>';
 
@@ -2141,30 +2159,47 @@ function delivery_note_fast_track_packing($_data, $db, $user) {
             $picked_info = '';
         }
 
+*/
 
-        $picked_offline_input = '<div class="picked_quantity_components">'.get_picked_offline_input(
-                $data['quantity'], $data['pending'], $data['Quantity On Hand'], $data['Inventory Transaction Key'], $data['Part SKU'], $data['Picked'], $data['Part Current On Hand Stock'], $data['Part SKO Barcode'], $data['Part Reference'],
-                base64_encode($data['Part Package Description'].($data['Picking Note'] != '' ? ' <span>('.$data['Picking Note'].'</span>' : '')), $data['Part Main Image Key']
+
+        $picked_offline_done = sprintf(
+            '<i onClick="set_picked_offline_item_as_done(this)" class="picked_offline_status  fa fa-check-circle %s "  aria-hidden="true"></i>',
+            ($data['Part Current On Hand Stock'] < 1 && $pending > 0 ? 'success blocked' : 'super_discreet button')
+        );
+
+        //$total_qty,$total_picked,$picked_in_location, $quantity_on_location, $itf_key, $part_sku,  $part_stock
+        $picked_offline_input = '<div class="picked_quantity_components" data-pending="'.$pending.'">'.get_picked_offline_input(
+                $data['required'],
+                $data['Picked'],
+                $data['Picked'],
+                $data['required']-$data['Picked'],
+                $data['Quantity On Hand'],
+                $data['Inventory Transaction Key'],
+                $data['Part SKU'],
+                $data['Part Current On Hand Stock'],
+                $data['Location Key']
 
             ).'</div>';
-        $adata[]              = array(
+
+
+        $adata[] = array(
             'id' => (integer)$data['Inventory Transaction Key'],
 
-            'reference'         => sprintf('<span onclick="change_view(\'part/%d\')">%s</span>', $data['Part SKU'], $data['Part Reference']),
+            'reference'            => sprintf('<span onclick="change_view(\'part/%d\')">%s</span>', $data['Part SKU'], $data['Part Reference']),
             //   'product_pid' => $data['Product ID'],
-            'description'       => $description,
-            'quantity'          => $quantity,
-            'dispatched'        => number(-1 * $data['Inventory Transaction Quantity']),
-            'overview_required' => number($data['Required']),
+            'description'          => $description,
+            'quantity'             => $quantity,
+            //'dispatched'        => number(-1 * $data['Inventory Transaction Quantity']),
+            //'overview_required' => number($data['Required']),
 
-            'overview_packed'  => number($data['Packed']),
-            'overview_picked'  => number($data['Picked']),
-            'overview_problem' => number($data['Out of Stock']),
+            //'overview_packed'  => number($data['Packed']),
+            //'overview_picked'  => number($data['Picked']),
+            //'overview_problem' => number($data['Out of Stock']),
+            'picked_offline_done'  => $picked_offline_done,
 
-
-            'packed'               => $packed,
-            'picked'               => $picked,
-            'picked_info'          => $picked_info,
+            //  'packed'               => $packed,
+            //    'picked'               => $picked,
+            //  'picked_info'          => $picked_info,
             'location'             => $location,
             'picked_offline_input' => $picked_offline_input
 
@@ -2201,7 +2236,7 @@ function delivery_note_items($_data, $db, $user) {
     $rtext_label = 'item';
 
 
-    $dn = new DeliveryNote($_data['parameters']['parent_key']);
+    //$dn = new DeliveryNote($_data['parameters']['parent_key']);
 
     include_once 'prepare_table/init.php';
 
@@ -2211,48 +2246,47 @@ function delivery_note_items($_data, $db, $user) {
     foreach ($db->query($sql) as $data) {
 
 
-        $to_pick = $data['quantity'] - $data['Picked'];
         $to_pack = $data['quantity'] - $data['Packed'];
+        /*
+
+             switch ($dn->data['Delivery Note State']) {
+                 case 'Dispatched':
+                     $state = _('dispatched');
+                     break;
+                 case 'Cancelled':
+                     $state = '';
+                     break;
+                 case 'Cancelled to Restock':
+                     $state = _('to be restocked');
+                     break;
+                 default:
+                     $state = _('to be dispatched');
+                     break;
+             }
 
 
-        switch ($dn->data['Delivery Note State']) {
-            case 'Dispatched':
-                $state = _('dispatched');
-                break;
-            case 'Cancelled':
-                $state = '';
-                break;
-            case 'Cancelled to Restock':
-                $state = _('to be restocked');
-                break;
-            default:
-                $state = _('to be dispatched');
-                break;
-        }
 
 
-        $notes = '<b>'.number(-1 * $data['Inventory Transaction Quantity']).'</b> '.$state.'<br/>';
+             $notes = '<b>'.number(-1 * $data['Inventory Transaction Quantity']).'</b> '.$state.'<br/>';
 
-        if ($data['Out of Stock'] != 0) {
-            $notes .= '<span style="margin-left:10px">'.number(
-                    $data['Out of Stock']
-                ).'</span> '._('out of stock').'<br/>';
-        }
-        if ($data['Not Found'] != 0) {
-            $notes .= number($data['Not Found']).' '._('Not found').'<br/>';
-        }
-        if ($data['No Picked Other'] != 0) {
-            $notes .= _('not picked (other)').' '.number(
-                    $data['No Picked Other']
-                ).'<br/>';
-        }
-
+             if ($data['Out of Stock'] != 0) {
+                 $notes .= '<span style="margin-left:10px">'.number(
+                         $data['Out of Stock']
+                     ).'</span> '._('out of stock').'<br/>';
+             }
+             if ($data['Not Found'] != 0) {
+                 $notes .= number($data['Not Found']).' '._('Not found').'<br/>';
+             }
+             if ($data['No Picked Other'] != 0) {
+                 $notes .= _('not picked (other)').' '.number($data['No Picked Other']).'<br/>';
+             }
+     */
 
         $description = $data['Part Package Description'];
 
 
         if ($data['Part UN Number']) {
-            $description .= ' <span style="background-color:#f6972a;border:.5px solid #231e23;color:#231e23;padding:0px;font-size:90%">'.$data['Part UN Number'].'</span>';
+            $description .= ' <small style="background-color:#f6972a;border:.5px solid #231e23;color:#231e23;padding:0px;font-size:90%">'.$data['Part UN Number'].'</small>';
         }
 
 
@@ -2266,9 +2300,23 @@ function delivery_note_items($_data, $db, $user) {
 
 
         $packed   = '<div class="packed_quantity_components">'.get_item_packed($to_pack, $data['Inventory Transaction Key'], $data['Part SKU'], $data['Packed']).'</div>';
-        $location = '<div class="location_components">'.get_item_location(
-                $data['pending'], $data['Quantity On Hand'], $data['Date Picked'], $data['Location Key'], $data['Location Code'], $data['Part Current On Hand Stock'], $data['Part SKO Barcode']
-            ).'</div>';
+        $location = '<div class="location_components">'.
+            get_item_location(
+                $data['pending'],
+                $data['Quantity On Hand'],
+                $data['Date Picked'],
+
+                $data['Location Key'],
+                $data['Location Code'],
+
+                $data['Part Current On Hand Stock'],
+                $data['Part SKO Barcode'],
+                $data['Part Distinct Locations'],
+
+                $data['Part SKU'],
+                $data['Inventory Transaction Key'], $_data['parameters']['parent_key']
+            ).
+            '</div>';
 
 
         if ($data['Picked'] == $data['quantity']) {
@@ -2313,9 +2361,9 @@ function delivery_note_items($_data, $db, $user) {
         $state = '<span class="padding_left_20">'.$state_picking.' '.$state_packing.'</span>';
 
         $picked_offline_input = '<div class="picked_quantity_components">'.get_picked_offline_input(
-                $data['quantity'], $data['pending'], $data['Quantity On Hand'], $data['Inventory Transaction Key'], $data['Part SKU'], $data['Picked'], $data['Part Current On Hand Stock'], $data['Part SKO Barcode'], $data['Part Reference'],
+                $data['quantity'], $data['pending'], $data['Quantity On Hand'], $data['Inventory Transaction Key'], $data['Part SKU'], $data['Location Key'], $data['Location Code'], $data['Picked'], $data['Part Current On Hand Stock'], $data['Part SKO Barcode'],
+                $data['Part Reference'],
                 base64_encode($data['Part Package Description'].($data['Picking Note'] != '' ? ' <span>('.$data['Picking Note'].'</span>' : '')), $data['Part Main Image Key']
-
             ).'</div>';
         $adata[]              = array(
             'id' => (integer)$data['Inventory Transaction Key'],
@@ -2337,7 +2385,8 @@ function delivery_note_items($_data, $db, $user) {
             'picked_info'          => $picked_info,
             'location'             => $location,
             'picked_offline_input' => $picked_offline_input,
-            'overview_state'       => $state
+
+            'overview_state' => $state
 
 
         );
@@ -3046,7 +3095,7 @@ function return_new_items($_data, $db, $user) {
                 'product_description' => $description,
                 'description'         => $data['Part Package Description'],
                 'quantity'            => $quantity,
-                'to_return'          => $to_return,
+                'to_return'           => $to_return,
                 'quantity_order'      => number($data['Order Quantity']),
 
                 'net' => sprintf('<span class="new_refund_order_item_net button  " amount="%f" >%s</span>', $data['Order Transaction Amount'], money($data['Order Transaction Amount'], $data['Order Currency Code'])),
@@ -3075,7 +3124,6 @@ function return_new_items($_data, $db, $user) {
     );
     echo json_encode($response);
 }
-
 
 
 function order_all_products($_data, $db, $user) {
@@ -3606,27 +3654,20 @@ function order_deals($_data, $db, $user) {
         foreach ($result as $data) {
 
 
-          //  print_r($data);
-
-
+            //  print_r($data);
 
 
             if ($data['Deal Key']) {
                 $name = sprintf('<span class="link" onclick="change_view(\'deals/%d/%d\')">%s</span>', $data['Deal Store Key'], $data['Deal Key'], $data['Deal Name']);
 
 
+                if ($data['Order Transaction Deal Pinned'] == 'Yes') {
+                    $pin = sprintf('<i class="fa fa-thumbtack"></i>');
 
+                } else {
+                    $pin = sprintf('<i class="fal fa-empty-set super_discreet"></i>');
 
-                    if ($data['Order Transaction Deal Pinned'] == 'Yes') {
-                        $pin = sprintf('<i class="fa fa-thumbtack"></i>');
-
-                    } else {
-                        $pin = sprintf('<i class="fal fa-empty-set super_discreet"></i>');
-
-                    }
-
-
-
+                }
 
 
                 switch ($data['Deal Status']) {
@@ -3655,9 +3696,9 @@ function order_deals($_data, $db, $user) {
                 }
 
             } else {
-                $name = '<span class="italic">'._('Custom made').'</span>';
-                $pin  = sprintf('<i class="fa fa-thumbtack"></i>');
-                $status='';
+                $name   = '<span class="italic">'._('Custom made').'</span>';
+                $pin    = sprintf('<i class="fa fa-thumbtack"></i>');
+                $status = '';
             }
 
 
@@ -3668,13 +3709,13 @@ function order_deals($_data, $db, $user) {
                 'id'                  => (integer)$data['Order Transaction Fact Key'],
                 'name'                => $name,
                 'description'         => $data['Deal Info'],
-                'current_deal_status'              => $status,
+                'current_deal_status' => $status,
                 'pin'                 => $pin,
                 'items'               => number($data['items']),
                 'bonus'               => number($data['bonus']),
                 'discount_percentage' => percentage($data['discount_percentage'], 1),
                 'amount_discounted'   => money($data['amount_discounted'], $data['Store Currency Code']),
-                'pin'=>$pin
+                'pin'                 => $pin
                 //'state' => $state,
 
                 //'type' => $type,
