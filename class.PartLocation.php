@@ -267,6 +267,7 @@ class PartLocation extends DB_Table {
         $sql       = sprintf("UPDATE `Inventory Transaction Fact` SET `Relations`=%d WHERE `Inventory Transaction Key`=%d", $associate_transaction_key, $audit_key);
         $this->db->exec($sql);
         $this->location->update_parts();
+        $this->part->update_number_locations();
 
     }
 
@@ -1052,6 +1053,7 @@ class PartLocation extends DB_Table {
         $this->db->exec($sql);
 
         $this->location->update_parts();
+        $this->part->update_number_locations();
 
 
         if (!$this->part->get_picking_location_key()) {
@@ -1413,9 +1415,7 @@ class PartLocation extends DB_Table {
         }
         if ($this->data['Quantity On Hand'] < $data['Quantity To Move']) {
             $this->error = true;
-            $this->msg   = _(
-                'To Move Quantity greater than the stock on the location'
-            );
+            $this->msg   = _('To Move Quantity greater than the stock on the location');
 
             return;
         }

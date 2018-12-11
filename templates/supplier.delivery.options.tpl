@@ -224,46 +224,6 @@
     });
 
 
-    function select_dropdown_handler(type, element) {
-
-
-        field = $(element).attr('field')
-        value = $(element).attr('value')
-
-        if (value == 0) {
-            return;
-        }
-
-
-        formatted_value = $(element).attr('formatted_value')
-        //metadata = $(element).data('metadata')
-
-
-        $('#' + field + '_dropdown_select_label').val(formatted_value)
-
-
-        $('#' + field).val(value)
-
-        $('#' + field + '_results_container').addClass('hide').removeClass('show')
-
-
-        var request = '/ar_edit_orders.php?tipo=set_' + type + '&delivery_note_key=' + $('#dn_data').attr('dn_key') + '&staff_key=' + value
-        console.log(request)
-
-
-        $.getJSON(request, function (data) {
-
-            if (data.state == 200) {
-
-                $('#dn_data').attr(type + '_key', data.staff_key)
-
-
-            }
-
-        })
-
-
-    }
 
     $("#start_picking").on( 'click',function () {
 

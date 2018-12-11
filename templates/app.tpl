@@ -53,9 +53,9 @@
         <link href="/css/au_app.min.css?v181122v2" rel="stylesheet">
 
 
-
+        {if $_server_name!='au.bali'}
         <script src="https://browser.sentry-cdn.com/4.3.4/bundle.min.js" crossorigin="anonymous"></script>
-
+        {/if}
 
         <script src="/js/libs/jquery-3.3.1.min.js"></script>
         <script src="/js/libs/jquery-migrate-3.0.1.js"></script>
@@ -106,7 +106,7 @@
         <script src="/js/part_locations.edit_locations.js"></script>
         <script src="/js/part_locations.stock_check.js"></script>
         <script src="/js/part_locations.move_stock.js"></script>
-
+        <script src="/js/picking_and_packing.js"></script>
         <script src="/js/alert_dial.js?v181122"></script>
         <script src="/js/libs/editor_v1/froala_editor.min.js?v1"></script>
         <script src="/js/libs/editor_v1/codemirror.js"></script>

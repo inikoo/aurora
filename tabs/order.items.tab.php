@@ -81,6 +81,8 @@ if($state['_object']->get('State Index')>0 and  $state['_object']->get('State In
 
 $smarty->assign('table_buttons', $table_buttons);
 
+
+
 $smarty->assign(
     'table_metadata',
                         json_encode(

@@ -34,13 +34,7 @@ cell: "html"
 
 },
 
-{
-name: "location",
-label: "{t}Location{/t}",
-editable: false,
-cell: "html"
 
-},
 
 
 
@@ -56,6 +50,18 @@ cell: Backgrid.HtmlCell.extend({ className: "aright"} ),
 headerCell: integerHeaderCell
 },
 
+{
+name: "picked_offline_done",
+label: "{t}Done{/t}",
+defaultOrder:1,
+editable: false,
+sortType: "toggle",
+{if $sort_key=='picked_offline_done'}direction: '{if $sort_order==1}descending{else}ascending{/if}',{/if}
+
+
+cell: Backgrid.HtmlCell.extend({ className: "aright"} ),
+headerCell: integerHeaderCell
+},
 
 {
 name: "picked_offline_input",
@@ -68,7 +74,14 @@ sortType: "toggle",
 
 cell: Backgrid.HtmlCell.extend({ className: "aright"} ),
 headerCell: integerHeaderCell
-}
+},
+{
+name: "location",
+label: "{t}Location{/t}",
+editable: false,
+cell: "html"
+
+},
 
 
 ]

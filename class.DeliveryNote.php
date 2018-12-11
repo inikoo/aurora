@@ -1864,7 +1864,11 @@ class DeliveryNote extends DB_Table {
                 ), $part_location->part->get('Part Main Image Key')
             ),
             'location_components'        => get_item_location(
-                $pending, $part_location->get('Quantity On Hand'), $date, $part_location->location->id, $part_location->location->get('Code'), $part_location->part->get('Part Current On Hand Stock')
+                $pending, $part_location->get('Quantity On Hand'), $date, $part_location->location->id, $part_location->location->get('Code'),
+
+                $part_location->part->get('Part Current On Hand Stock'),
+                $part_location->part->get('Part SKO Barcode'),
+                $part_location->part->get('Part Distinct Locations'),$part_location->part->sku,$row['Inventory Transaction Key'],$this->id
             ),
             'pending'                    => $pending,
 
@@ -2183,7 +2187,9 @@ class DeliveryNote extends DB_Table {
                 $pending, $row['Inventory Transaction Key'], $row['Part SKU'], $packed
             ),
             'location_components'        => get_item_location(
-                $pending, $part_location->get('Quantity On Hand'), $date, $part_location->location->id, $part_location->location->get('Code'), $part_location->part->get('Part Current On Hand Stock')
+                $pending, $part_location->get('Quantity On Hand'), $date, $part_location->location->id, $part_location->location->get('Code'), $part_location->part->get('Part Current On Hand Stock'),
+                $part_location->part->get('Part SKO Barcode'),
+                $part_location->part->get('Part Distinct Locations'),$part_location->part->sku,$row['Inventory Transaction Key'],$this->id
             ),
             'pending'                    => $pending,
 
