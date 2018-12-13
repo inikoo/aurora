@@ -2,6 +2,7 @@
     "require": {
         "aws/aws-sdk-php": "^3.64",
         "commerceguys/addressing": "^1.0",
-        "sentry/sentry": "^1.10"
+        "sentry/sentry": "^1.10",
+        "braintree/braintree_php" : "3.37.0"
     }
 }
