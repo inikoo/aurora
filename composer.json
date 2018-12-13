@@ -7,6 +7,7 @@
         "commerceguys/addressing": "^1.0",
         "sentry/sentry": "^1.10",
         "guzzlehttp/guzzle": "~6.0",
+        "braintree/braintree_php" : "3.37.0"
 
     }
 }
