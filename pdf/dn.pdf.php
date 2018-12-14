@@ -94,8 +94,6 @@ $mpdf = new \Mpdf\Mpdf(
     ]
 );
 
-
-//$mpdf->useOnlyCoreFonts = true;    // false is default
 $mpdf->SetTitle(
     _('Delivery Note').' '.$delivery_note->data['Delivery Note ID']
 );
