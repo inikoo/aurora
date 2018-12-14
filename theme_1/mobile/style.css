@@ -607,7 +607,7 @@
 
 .sidebars-light .sidebar-header-classic . sidebar-socials a{color:#000000!important; border-bottom:solid 1px rgba(0,0,0,0.08); border-top:solid 1px rgba(0,0,0,0.05);	}
 .sidebars-light .sidebar-header-classic .sidebar-socials a i{color:#000000!important;}
-.sidebars-light .sidebar-header-classic .sidebar-logo{background-image:url(/art/mobile_logo.png);}
+/*.sidebars-light .sidebar-header-classic .sidebar-logo{background-image:url(/art/mobile_logo.png);}*/
 .sidebars-light .sidebar-header-classic strong{color:#000000;	border-bottom:solid 1px rgba(0,0,0,0.08);}
 .sidebars-light a, .menu-light a{border-bottom:solid 1px rgba(0,0,0,0.08);}
 .sidebars-light i:first-child, .menu-light i:first-child{color:#1f1f1f;}
@@ -628,7 +628,7 @@
 .sidebars-dark .sidebar-header-classic{background-color:#1e1e1e!important;}
 .sidebars-dark .sidebar-header-classic .sidebar-socials a{	color:#FFFFFF; border-bottom:solid 1px rgba(255,255,255,0.1); border-top:solid 1px rgba(255,255,255,0.1);	}
 .sidebars-dark .sidebar-header-classic .sidebar-socials a i{color:#FFFFFF!important;}
-.sidebars-dark .sidebar-header-classic .sidebar-logo{background-image:url(../images/mobile/logo-light.png);}
+/*.sidebars-dark .sidebar-header-classic .sidebar-logo{background-image:url(../images/mobile/logo-light.png);}*/
 .sidebars-dark .sidebar-header-classic strong{color:#FFFFFF;border-bottom:solid 1px rgba(255,255,255,0.05);}
 .sidebars-dark a, .menu-dark a{border-bottom:solid 1px rgba(255,255,255,0.05);}
 .sidebars-dark i:first-child, .menu-dark i:first-child{color:#FFFFFF;}
@@ -709,11 +709,13 @@
 
 .sidebar-header-image .sidebar-logo{
 	z-index:99;
-	background-image:url(/art/mobile_logo.png);
+	/*background-image:url(/art/mobile_logo.png);
+	background-size:130px 33px;
+	*/
 
 	background-repeat: no-repeat;
 	background-position: 10px 10px;
-	//background-size:130px 33px;
+
 	padding-top:33px;
 	padding-left: 60px;
 	width:100%;
@@ -817,16 +819,18 @@
 .footer-dark .copyright-text{border-top:solid 1px rgba(255,255,255,0.05); color:#656465;}
 .footer-dark .footer-socials a{color:#FFFFFF;}
 .footer-dark .footer-text{color:#b7b7b7!important; border-bottom:solid 1px rgba(255,255,255,0.05);}
+/*
 .footer-dark .footer-logo{background-image:url(/art/mobile_logo.png);}
-
+*/
 
 
 .footer-light{padding-top:0px!important;}
 .footer-light .copyright-text{border-top:solid 1px rgba(0,0,0,0.1); color:#656465;}
 .footer-light .footer-socials a{color:#000000;}
 .footer-light .footer-text{color:#666666!important; border-bottom:solid 1px rgba(0,0,0,0.1);}
+/*
 .footer-light .footer-logo{background-image:url(/art/mobile_logo.png);}
-
+*/
 .footer-logo{
 	background-repeat: no-repeat;
 	background-position: center center;
