@@ -407,9 +407,13 @@ function log_api_key_access_failure($db, $api_key_key, $fail_type, $fail_reason)
 
     $fail_code = hash('crc32', $fail_reason, false);
     $method    = $_SERVER['REQUEST_METHOD'];
+
+
+    $debug=json_encode(array($fail_reason,$_SERVER,$_REQUEST));
+
     $sql       = sprintf(
-        'INSERT INTO `API Request Dimension` (`API Key Key`,`Date`,`Response`,`Response Code`,`IP`,`HTTP Method`) VALUES(%d,%s,%s,%s,%s,%s)', $api_key_key, prepare_mysql(gmdate('Y-m-d H:i:s')), prepare_mysql($fail_type), prepare_mysql($fail_code), prepare_mysql(ip()),
-        prepare_mysql($method)
+        'INSERT INTO `API Request Dimension` (`API Key Key`,`Date`,`Response`,`Response Code`,`IP`,`HTTP Method`,`Debug`) VALUES(%d,%s,%s,%s,%s,%s,%s)', $api_key_key, prepare_mysql(gmdate('Y-m-d H:i:s')), prepare_mysql($fail_type), prepare_mysql($fail_code), prepare_mysql(ip()),
+        prepare_mysql($method),prepare_mysql($debug)
     );
 
     $db->exec($sql);
