@@ -20,6 +20,15 @@
 //header("Access-Control-Allow-Headers", "Origin, X-Requested-With, Content-Type, Accept");
 
 
+require_once 'vendor/autoload.php';
+
+if ( !preg_match('/bali/', gethostname()) ) {
+
+    $sentry_client = new Raven_Client('https://ece368725b6440adb9dcd83517454636@sentry.io/1353529');
+    $sentry_client->install();
+
+}
+
 header('Access-Control-Allow-Origin: *');
 header('Access-Control-Allow-Methods: GET, POST, PATCH, PUT, DELETE, OPTIONS');
 header('Access-Control-Allow-Headers: Origin, Content-Type, X-Auth-Token,HTTP_X_AUTH_KEY');
