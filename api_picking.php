@@ -244,7 +244,7 @@ switch ($_REQUEST['action']) {
                 $state='Picking';
                 break;
             case 'packed_done':
-                $state='Packed Don';
+                $state='Packed Done';
                 break;
         }
 
