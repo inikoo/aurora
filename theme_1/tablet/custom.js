@@ -460,6 +460,9 @@ $(document).ready(function(){
         //delaying these to load only after the page loads to increase load speed and it's
         //also easier to generally edit them by only editing this area instead of each HTML file
         //This will also put a lower request rate on the page increasing it's load speed.
+        //todo au-52
+       /*
+
         $('head').prepend('<link rel="icon" type="image/png" href="images/splash/android-chrome-192x192.png" sizes="192x192">');
         $('head').prepend('<link rel="apple-touch-icon" sizes="180x180" href="images/splash/apple-touch-icon-180x180.png">');
         $('head').prepend('<link rel="apple-touch-icon" sizes="152x152" href="images/splash/apple-touch-icon-152x152.png">');
@@ -474,7 +477,7 @@ $(document).ready(function(){
         $('head').prepend('<link rel="icon" type="image/png" href="images/splash/favicon-32x32.png" sizes="32x32">');
         $('head').prepend('<link rel="icon" type="image/png" href="images/splash/favicon-16x16.png" sizes="16x16">');
        // $('head').prepend('<link rel="shortcut icon" href="images/splash/favicon.ico" type="image/x-icon"/>');
-
+*/
         function animation_settings(){
             window.sr = ScrollReveal();
             //General Classes
