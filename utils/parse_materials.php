@@ -11,6 +11,8 @@
 */
 
 
+include_once 'class.Material.php';
+
 function parse_materials($value, $editor = '') {
 
     if ($editor == '') {
@@ -24,22 +26,17 @@ function parse_materials($value, $editor = '') {
         );
     }
 
-    include_once 'class.Material.php';
 
 
-    //if($value==$this->data['Part Unit Materials'])
-    //   return;
 
     $materials = array();
 
     $_materials = preg_split('/\s*,\s*/', $value);
-    // print_r($_materials);
     $sum_ratios = 0;
 
     foreach ($_materials as $material) {
         $material = _trim($material);
         $material = preg_replace('/\s*\.$/', '', $material);
-        $ratio    = 0;
         if (preg_match('/\s*\(.+\s*\%\s*\)$/', $material, $match)) {
             $_percentage = $match[0];
             $_percentage = preg_replace('/^\s*\(/', '', $_percentage);
@@ -129,4 +126,3 @@ function parse_materials($value, $editor = '') {
 }
 
 
-?>

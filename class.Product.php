@@ -2775,7 +2775,7 @@ class Product extends Asset {
 
 
                 include_once 'utils/parse_materials.php';
-                include_once 'class.Material.php';
+
 
                 $materials_to_update = array();
                 $sql                 = sprintf(
@@ -2837,7 +2837,7 @@ class Product extends Asset {
 
                 foreach ($materials_to_update as $material_key => $update) {
                     if ($update) {
-                        $material = new Material($material_key);
+                        $material = get_object(' Material',$material_key);
                         $material->update_stats();
 
                     }

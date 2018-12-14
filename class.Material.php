@@ -169,7 +169,7 @@ class Material extends DB_Table {
 
     }
 
-    function get($key, $data = false) {
+    function get($key) {
         switch ($key) {
 
             case 'Parts Number':
