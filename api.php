@@ -261,8 +261,8 @@ function authenticate($db) {
     }
 
 
-    if (!isset($_SERVER['HTTP_X_AUTH_KEY']) and isset($_REQUEST['AUTH_KEY'])) {
-        $token['HTTP_X_AUTH_KEY'] = $_REQUEST['AUTH_KEY'];
+    if (!$token  and isset($_REQUEST['AUTH_KEY'])) {
+        $token = $_REQUEST['AUTH_KEY'];
 
     }
 
