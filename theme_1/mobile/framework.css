@@ -312,6 +312,9 @@ textarea{font-family:'Roboto', sans-serif;}
 .bg-cover{background-size:cover; background-position:center center;}
 .bg-transparent{background:transparent!important;}
 .bg-dark{background-color:rgba(0,0,0,0.3)!important;}
+
+
+/*
 .bg-1{background-image:url(/art/mobile_side_bg_1.png)}
 .bg-2{background-image:url(../images/mobile/pictures/2.jpg)}
 .bg-3{background-image:url(../images/mobile/pictures/3.jpg)}
@@ -332,6 +335,8 @@ textarea{font-family:'Roboto', sans-serif;}
 .vertical-bg-7{background-image:url(../images/mobile/pictures_vertical/bg7.jpg);}
 .vertical-bg-8{background-image:url(../images/mobile/pictures_vertical/bg8.jpg);}
 .vertical-bg-9{background-image:url(../images/mobile/pictures_vertical/bg9.jpg);}
+
+*/
 
 .overlay{
     position:absolute;
@@ -3412,12 +3417,12 @@ ul.tabs li.current{
 .landing-dark .landing-overlay{background-color:rgba(0,0,0,0.8);}
 .landing-dark ul li a em{ color:#FFFFFF;}
 .landing-dark .deco{ background-color:rgba(255,255,255,0.1)!important;}
-.landing-dark .landing-header-logo{	background-image:url(../images/mobile/logo-light.png);}
+/*.landing-dark .landing-header-logo{	background-image:url(../images/mobile/logo-light.png);}*/
 
 .landing-light .landing-overlay{background-color:rgba(255,255,255,0.8);}
 .landing-light ul li a em{ color:#000000;}
 .landing-light .deco{ background-color:rgba(0,0,0,0.1)!important;}
-.landing-light .landing-header-logo{	background-image:url('/art/mobile_logo.png');}
+/*.landing-light .landing-header-logo{	background-image:url('/art/mobile_logo.png');}*/
 
 
 

@@ -33,7 +33,7 @@
                 release: "au-web@1.0" });
         </script>
     {/if}
-    <link rel="stylesheet" type="text/css" href="/css/mobile.min.css?v2.3">
+    <link rel="stylesheet" type="text/css" href="/css/mobile.min.css?v2.4">
 
     {assign "with_forms" false}
     {assign "with_not_found" 0}
