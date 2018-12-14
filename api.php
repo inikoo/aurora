@@ -436,7 +436,7 @@ function log_api_key_access_success($db, $api_key_key, $success_reason, $debug =
     $method = $_SERVER['REQUEST_METHOD'];
 
 
-    $debug=json_encode(array($debug,$fail_reason,$_SERVER,$_REQUEST));
+    $debug=json_encode(array($debug,$_SERVER,$_REQUEST));
 
 
     $sql = sprintf(
