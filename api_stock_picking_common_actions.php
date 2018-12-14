@@ -12,6 +12,7 @@
 
 switch ($_REQUEST['action']) {
 
+
     case 'update_location_flag':
 
 
@@ -79,6 +80,7 @@ switch ($_REQUEST['action']) {
         exit;
         break;
 
+
     case 'get_locations_by_flag':
 
         if (empty($_REQUEST['flag'])) {
@@ -113,6 +115,8 @@ switch ($_REQUEST['action']) {
         echo json_encode($response);
         exit;
         break;
+
+
     case 'get_empty_locations':
 
         $sql            = sprintf('select `Location Key`,`Location Code` from `Location Dimension` where `Location Distinct Parts`=0 ');
@@ -134,6 +138,7 @@ switch ($_REQUEST['action']) {
         echo json_encode($response);
         exit;
         break;
+
     case 'get_user_data':
         $response = array(
             'state' => 'OK',
