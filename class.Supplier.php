@@ -1107,8 +1107,12 @@ class Supplier extends SubjectSupplier {
 
         }
 
+
+
+
+
         if (preg_match('/\%$/', $data['Supplier Part Unit Extra Cost Percentage'])) {
-            $data['Supplier Part Unit Extra Cost Percentage'] = preg_replace('/\%^/', '', $data['Supplier Part Unit Extra Cost Percentage']) / 100;
+            $data['Supplier Part Unit Extra Cost Percentage'] = floatval(preg_replace('/\%$/', '', $data['Supplier Part Unit Extra Cost Percentage'])) / 100;
             // $value = $this->data['Supplier Part Unit Cost'] * $value / 100;
         }
 
@@ -1144,37 +1148,38 @@ class Supplier extends SubjectSupplier {
                 $this->new_object = true;
 
 
-                if (isset($data['Part Part Materials'])) {
-                    $materials = $data['Part Part Materials'];
-                    unset($data['Part Part Materials']);
+                foreach ($data as $key => $value) {
+                    $_key        = preg_replace('/^Part Part /', 'Part ', $key);
+                    $data[$_key] = $value;
+
+                }
+
+                if (isset($data['Part Materials'])) {
+                    $materials = $data['Part Materials'];
+                    unset($data['Part Materials']);
 
                 } else {
                     $materials = '';
                 }
 
-                if (isset($data['Part Part Package Dimensions'])) {
-                    $package_dimensions = $data['Part Part Package Dimensions'];
-                    unset($data['Part Part Package Dimensions']);
+                if (isset($data['Part Package Dimensions'])) {
+                    $package_dimensions = $data['Part Package Dimensions'];
+                    unset($data['Part Package Dimensions']);
 
                 } else {
                     $package_dimensions = '';
                 }
 
-                if (isset($data['Part Part Unit Dimensions'])) {
-                    $unit_dimensions = $data['Part Part Unit Dimensions'];
-                    unset($data['Part Part Unit Dimensions']);
+                if (isset($data['Part Unit Dimensions'])) {
+                    $unit_dimensions = $data['Part Unit Dimensions'];
+                    unset($data['Part Unit Dimensions']);
 
                 } else {
                     $unit_dimensions = '';
                 }
 
 
-                foreach ($data as $key => $value) {
-                    $_key        = preg_replace('/^Part Part /', 'Part ', $key);
-                    $data[$_key] = $value;
 
-
-                }
 
 
                 if (!empty($data['Supplier Part Packages Per Carton'])) {
