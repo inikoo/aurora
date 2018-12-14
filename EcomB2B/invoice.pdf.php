@@ -134,7 +134,7 @@ $mpdf = new \Mpdf\Mpdf(
 );
 
 
-$mpdf->useOnlyCoreFonts = true;    // false is default
+//$mpdf->useOnlyCoreFonts = true;    // false is default
 $mpdf->SetTitle(_('Invoice').' '.$invoice->data['Invoice Public ID']);
 $mpdf->SetAuthor($store->data['Store Name']);
 

@@ -100,7 +100,7 @@ $mpdf = new \Mpdf\Mpdf(
     ]
 );
 
-$mpdf->useOnlyCoreFonts = true;    // false is default
+//$mpdf->useOnlyCoreFonts = true;    // false is default
 $mpdf->SetTitle(_('Proforma').' '.$order->data['Order Public ID']);
 $mpdf->SetAuthor($store->data['Store Name']);
 

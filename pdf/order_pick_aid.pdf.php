@@ -38,7 +38,7 @@ $mpdf = new \Mpdf\Mpdf(
 );
 
 
-$mpdf->useOnlyCoreFonts = true;    // false is default
+//$mpdf->useOnlyCoreFonts = true;    // false is default
 $mpdf->SetTitle(_('Picking Aid').' '.$delivery_note->data['Delivery Note ID']);
 $mpdf->SetAuthor($store->data['Store Name']);
 
