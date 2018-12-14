@@ -236,11 +236,6 @@ function authenticate($db) {
 
     $_headers = _apache_request_headers();
 
-    $_headers2 = getAuthorizationHeader();
-
-
-;
-
     $token = false;
 
 
