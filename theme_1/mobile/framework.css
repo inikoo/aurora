@@ -8265,7 +8265,7 @@ button.swiper-pagination-bullet {
 #swipebox-caption.force-visible-bars {top: 0!important;}
 #swipebox-action #swipebox-prev, #swipebox-action #swipebox-next,
 #swipebox-action #swipebox-close {
-	background-image: url("../theme_1/images/mobile/framework/icons.png");
+    background-image: url("../theme_1/images/mobile/framework/icons.png");
 	background-repeat: no-repeat;
 	border: none!important;
 	text-decoration: none!important;

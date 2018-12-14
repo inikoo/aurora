@@ -312,6 +312,7 @@ textarea{font-family:'Roboto', sans-serif;}
 .bg-cover{background-size:cover; background-position:center center;}
 .bg-transparent{background:transparent!important;}
 .bg-dark{background-color:rgba(0,0,0,0.3)!important;}
+/*
 .bg-1{background-image:url(/art/mobile_side_bg_1.png)}
 .bg-2{background-image:url(../images/mobile/pictures/2.jpg)}
 .bg-3{background-image:url(../images/mobile/pictures/3.jpg)}
@@ -332,7 +333,7 @@ textarea{font-family:'Roboto', sans-serif;}
 .vertical-bg-7{background-image:url(../images/mobile/pictures_vertical/bg7.jpg);}
 .vertical-bg-8{background-image:url(../images/mobile/pictures_vertical/bg8.jpg);}
 .vertical-bg-9{background-image:url(../images/mobile/pictures_vertical/bg9.jpg);}
-
+*/
 .overlay{
     position:absolute;
     top:0px;
@@ -879,14 +880,16 @@ ol ol ol{list-style-type:disc;}
 .decoration-zig-zag{
     margin-bottom:30px;
 	height: 6px;
-	background: url(../images/mobile/framework/deco-zig.png) repeat-x 0 0;
+    background: url(../theme_1/images/mobile/framework/deco-zig.png) repeat-x 0 0;
+
     border: 0;   
 }
 
 .decoration-slash{
     margin-bottom:30px;
 	height: 6px;
-	background: url(../images/mobile/framework/deco-slash.png) repeat-x 0 0;
+    background: url(../theme_1/images/mobile/framework/deco-slash.png) repeat-x 0 0;
+
     border: 0;   
 }
 
