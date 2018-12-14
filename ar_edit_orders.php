@@ -9,6 +9,9 @@
 
 */
 
+
+require 'vendor/autoload.php';
+
 require_once 'common.php';
 require_once 'utils/ar_common.php';
 require_once 'utils/object_functions.php';
@@ -909,48 +912,63 @@ function refund_payment($data, $editor, $smarty, $db, $account, $user) {
 
                     switch ($payment_account->get('Payment Account Block')) {
                         case 'BTree':
+                        case 'BTreePaypal':
 
 
-                            require_once 'external_libs/braintree-php-3.2.0/lib/Braintree.php';
 
-                            Braintree_Configuration::environment('production');
-                            Braintree_Configuration::merchantId($payment_account->get('Payment Account ID'));
-                            Braintree_Configuration::publicKey($payment_account->get('Payment Account Login'));
-                            Braintree_Configuration::privateKey($payment_account->get('Payment Account Password'));
+                            $gateway = new Braintree_Gateway(
+                                [
+                                    'environment' => 'production',
+                                    'merchantId'  => $payment_account->get('Payment Account ID'),
+                                    'publicKey'   => $payment_account->get('Payment Account Login'),
+                                    'privateKey'  => $payment_account->get('Payment Account Password')
+                                ]
+                            );
 
+                            $transaction = $gateway->transaction()->find($payment->data['Payment Transaction ID']);
 
-                            $result = Braintree_Transaction::refund($payment->data['Payment Transaction ID'], $data['amount']);
+                            //print_r($transaction);
 
-
-                            if ($result->success) {
-
-                                $reference = $result->transaction->id;
-
-
-                            } else {
-
-                                if (isset($result->transaction->processorSettlementResponseText)) {
-                                    $msg = $result->transaction->processorSettlementResponseText.' ('.$result->transaction->processorSettlementResponseCode.')';
-
-                                } else {
-                                    $msg = $result->message;
-
-                                }
+                            switch ($transaction->status) {
+                                case 'settled';
+                                case 'settling';
 
 
-                                $response = array(
-                                    'state' => 400,
-                                    'msg'   => $msg
-                                );
-                                echo json_encode($response);
-                                exit;
+                                    $result = $gateway->transaction()->refund($payment->data['Payment Transaction ID'], $data['amount']);
+                                    if ($result->success) {
+
+                                        $reference = $result->transaction->id;
 
 
+                                    } else {
+
+                                        if (isset($result->transaction->processorSettlementResponseText)) {
+                                            $msg = $result->transaction->processorSettlementResponseText.' ('.$result->transaction->processorSettlementResponseCode.')';
+
+                                        } else {
+                                            $msg = $result->message;
+
+                                        }
+
+
+                                        $response = array(
+                                            'state' => 400,
+                                            'msg'   => $msg
+                                        );
+                                        echo json_encode($response);
+                                        exit;
+
+
+                                    }
+
+                                    break;
                             }
 
 
                             break;
                         default:
+
+
                             $response = array(
                                 'state' => 400,
                                 'msg'   => 'Payment account cant make online refunds'
@@ -1425,12 +1443,11 @@ function get_picked_offline_input_all_locations($data, $editor, $smarty, $db, $a
 
     include_once 'utils/order_handing_functions.php';
 
-    $total_required = 0;
-    $total_picked=0;
-    $locations='';
-    $picked_offline_input='';
-    $date = gmdate('Y-m-d Hi:i:s');
-
+    $total_required       = 0;
+    $total_picked         = 0;
+    $locations            = '';
+    $picked_offline_input = '';
+    $date                 = gmdate('Y-m-d Hi:i:s');
 
 
     $itf_data = array();
@@ -1444,17 +1461,16 @@ function get_picked_offline_input_all_locations($data, $editor, $smarty, $db, $a
         foreach ($result as $row) {
 
 
-
             $itf_data[$row['Location Key']] = array(
-                'required'  => $row['required'],
+                'required' => $row['required'],
                 'picked'   => $row['picked'],
-                'pending'   => $row['required']-$row['picked'],
+                'pending'  => $row['required'] - $row['picked'],
                 'itf_keys' => $row['itf_keys']
             );
 
 
-            $total_required+=$row['required'];
-            $total_picked+=$row['picked'];
+            $total_required += $row['required'];
+            $total_picked   += $row['picked'];
         }
     } else {
         print_r($error_info = $db->errorInfo());
@@ -1463,53 +1479,49 @@ function get_picked_offline_input_all_locations($data, $editor, $smarty, $db, $a
     }
 
 
-
-
-
     $part = get_object('part', $data['metadata']['part_sku']);
     foreach ($part->get_locations('part_location_object', '', true) as $part_location) {
 
 
-   //     $pending, $quantity_on_location, $date_picked,
-   // $location_key, $location_code,
-   // $part_stock, $part_barcode,$part_distinct_locations, $part_sku,
-   // $itf_key,$delivery_note_key ) {
+        //     $pending, $quantity_on_location, $date_picked,
+        // $location_key, $location_code,
+        // $part_stock, $part_barcode,$part_distinct_locations, $part_sku,
+        // $itf_key,$delivery_note_key ) {
 
         $locations .= '<div style="height: 32px">'.get_item_location(
-            $total_required-$total_picked,
-            $part_location->get('Quantity On Hand'),
-            $date,
-            $part_location->location->id,
-            $part_location->location->get('Code'),
-            $part_location->part->get('Part Current On Hand Stock'),
-            $part_location->part->get('Part SKO Barcode'),
-            1,
-            $part_location->part->sku,
-            (isset($itf_data[$part_location->location->id]) ? $itf_data[$part_location->location->id]['itf_keys'] : ''),
-            $data['metadata']['delivery_note_key']
-        ).'</div>';
-//function get_picked_offline_input($total_required,$total_picked,$picked_in_location, $quantity_on_location, $itf_key, $part_sku,  $part_stock) {
-        $picked_offline_input.='<div style="margin-bottom: 4px">'.get_picked_offline_input(
-            $total_required,
-            $total_picked,
-            (isset($itf_data[$part_location->location->id]) ? $itf_data[$part_location->location->id]['picked'] : 0),
-            ($part_location->get('Can Pick')=='Yes'?   (isset($itf_data[$part_location->location->id]) ? $itf_data[$part_location->location->id]['pending'] : 0) :0 ) ,
-            $part_location->get('Quantity On Hand'),
+                $total_required - $total_picked,
+                $part_location->get('Quantity On Hand'),
+                $date,
+                $part_location->location->id,
+                $part_location->location->get('Code'),
+                $part_location->part->get('Part Current On Hand Stock'),
+                $part_location->part->get('Part SKO Barcode'),
+                1,
+                $part_location->part->sku,
+                (isset($itf_data[$part_location->location->id]) ? $itf_data[$part_location->location->id]['itf_keys'] : ''),
+                $data['metadata']['delivery_note_key']
+            ).'</div>';
+        //function get_picked_offline_input($total_required,$total_picked,$picked_in_location, $quantity_on_location, $itf_key, $part_sku,  $part_stock) {
+        $picked_offline_input .= '<div style="margin-bottom: 4px">'.get_picked_offline_input(
+                $total_required,
+                $total_picked,
+                (isset($itf_data[$part_location->location->id]) ? $itf_data[$part_location->location->id]['picked'] : 0),
+                ($part_location->get('Can Pick') == 'Yes' ? (isset($itf_data[$part_location->location->id]) ? $itf_data[$part_location->location->id]['pending'] : 0) : 0),
+                $part_location->get('Quantity On Hand'),
 
-            (isset($itf_data[$part_location->location->id]) ? $itf_data[$part_location->location->id]['itf_keys'] : ''),
-            $part_location->part->sku,
-            $part_location->part->get('Part Current On Hand Stock'),
-            $part_location->location->id
-        ).'</div>';
+                (isset($itf_data[$part_location->location->id]) ? $itf_data[$part_location->location->id]['itf_keys'] : ''),
+                $part_location->part->sku,
+                $part_location->part->get('Part Current On Hand Stock'),
+                $part_location->location->id
+            ).'</div>';
 
     }
 
 
-
     $response = array(
-        'state' => 200,
-        'locations'  => $locations,
-        'picked_offline_input'=>$picked_offline_input
+        'state'                => 200,
+        'locations'            => $locations,
+        'picked_offline_input' => $picked_offline_input
     );
 
     echo json_encode($response);

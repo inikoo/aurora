@@ -9,6 +9,14 @@
 
 */
 
+$color_success: #26A65B;
+
+
+
+.success {
+	color: $color_success
+}
+
 body, input, textarea {
   font-size: 16px;
   font-weight: normal;

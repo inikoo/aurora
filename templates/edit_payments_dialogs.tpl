@@ -64,8 +64,8 @@
 
         <tr style=" height: 35px;" class="refund_submit_type hide">
             <td colspan="2" style="text-align: center">
-                <span class="refund_submit_type select_manual operation_button unselectable " onclick="payment_submit_type_manual_selected()" >{t}Manual{/t}</span>
-                <span class="refund_submit_type select_online operation_button unselectable "  onclick="payment_submit_type_online_selected()">{t}Online{/t}</span>
+                <span class="refund_submit_type select_manual operation_button unselectable " onclick="payment_submit_type_manual_selected()" ><i class="far margin_right_5 fa-keyboard"></i> {t}Log refund{/t}</span>
+                <span class="refund_submit_type select_online operation_button unselectable "  onclick="payment_submit_type_online_selected()"><i class="fa margin_right_5 fa-satellite-dish"></i> {t}Online{/t}</span>
 
             </td>
         </tr>

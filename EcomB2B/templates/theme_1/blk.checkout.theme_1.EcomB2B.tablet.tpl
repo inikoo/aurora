@@ -97,6 +97,28 @@
             </div>
             </div>
             <div class="clear"></div>
+                {assign "braintree_data" ""}
+            {foreach from=$payment_accounts item=payment_account key=key}
+                {assign "block" $payment_account.object->get("Block")  }
+                {if $block=='BTree' or  $block=='BTreePaypal'}
+                    {if $braintree_data==''}
+                        {assign "braintree_data" $payment_account.object->get('Block Data',$order->get('Order Customer Key'))  }
+                    {/if}
+                {/if}
+
+            {if $block=='BTree'}
+                <script> var BTree_account_key ={$payment_account.object->id}</script>
+            {/if}
+
+            {if $block=='BTreePaypal'}
+                <script>var BTreePaypal_account_key ={$payment_account.object->id}</script>
+            {/if}
+
+
+
+            {/foreach}
+
+
 
             {foreach from=$payment_accounts item=payment_account key=key name=foo}
                 {assign "block" $payment_account.object->get("Block")  }
@@ -104,29 +126,101 @@
                 <div id="payment_account_item_{$payment_account.object->get('Block')}" class="payment_method_block {if !$smarty.foreach.foo.first}hide{/if}" style="margin:auto;width: 440px">
 
                         {if $block=='BTree' }
-                            <form id="BTree_credit_card_form" action="" class="sky-form" style="max-width: 500px;">
 
 
+                            <form id="BTree_saved_credit_cards_form" action="" class="sky-form {if $braintree_data.number_saved_credit_cards==0}hide{/if}" style="max-width: 500px;">
+                                <header>{$data.labels._form_title_credit_card}</header>
+
+
+                                <fieldset  class="credit_cards_list " >
+
+
+                                    <div class="row submit_row ">
+                                        <section class="col  " style="width: 100%" onclick="use_other_credit_card()" >
+                                        <span style="float:none;margin: 0px;line-height: 30px;height: 30px" class="button button-secondary">
+                                                {if isset($data.labels._pay_with_other_card) and $labels._pay_with_other_card!=''}{$labels._pay_with_other_card}{else}{t}Pay with other card{/t}{/if}
+                                            </span>
+                                        </section>
+
+
+                                    </div>
+
+
+                                    <div class="row credit_card_input_row hide" >
+
+
+
+
+
+                                        <section class="col col-7 card_info" data-token=""  style="margin-left: 10px"></section>
+
+                                        <section class="col col-3  cvv_for_saved_card  " style="position: relative;top:-7px;">
+                                            <label class="input">
+                                                <div id="saved_credit_card_ccv"  style="border:1px solid #ccc;height: 36px"></div>
+                                            </label>
+                                        </section>
+                                    </div>
+
+
+                                    {foreach from=$braintree_data.credit_cards item=saved_card }
+
+                                        <div class="row credit_cards_row" >
+                                            <section class="col col-1">
+                                                <i onclick="delete_this_credit_card(this)" title="{t}Delete card{/t}" style="position: relative;top:2px;" class="like_button delete_this_credit_card far fa-trash-alt "></i>
+
+                                            </section>
+
+
+
+
+                                            <section class="col col-7 like_button card_info"  data-token="{$saved_card['Token']}" style="margin-left: 10px" onclick="use_this_credit_card(this)">
+                                                <div style="float: left;margin-right: 10px"><img style="width: 40px;" src="{$saved_card['Image']}"/> </div> <div > **** {$saved_card['Last 4 Numbers']}  ({$saved_card['Formatted Expiration Date']})   </div></section>
+                                            </section>
+                                            <section class="col col-3 like_button" style="text-align: right"  onclick="use_this_credit_card(this)">
+                                                <span style="float: right;margin: 0px;line-height: 30px;height: 30px" class="button button-secondary">{t}Use this card{/t}</span>
+
+                                            </section>
+
+                                        </div>
+
+
+                                    {/foreach}
+
+
+
+
+                                </fieldset>
+
+                                <footer>
+
+                                    <section  class="col col-5  "  >
+                                        <span style="font-size: smaller;color:#666;position: relative;top:5px" class="like_button show_saved_cards_list hide"  onclick="show_saved_cards()" >{if isset($data.labels._show_saved_cards) and $labels._show_saved_cards!=''}{$labels._show_saved_cards}{else}{t}Show saved cards list{/t}{/if}</span>
+                                    </section>
+                                    <button id="place_order_saved_card_braintree" type="submit" class="button state-disabled">{$data.labels._place_order_from_credit_card}  <i class="margin_left_10 fa fa-fw fa-arrow-right" aria-hidden="true"></i>  </button>
+                                </footer>
+                            </form>
+
+                            <form id="BTree_credit_card_form" action="" class="sky-form  {if $braintree_data.number_saved_credit_cards>0}hide{/if}" style="max-width: 500px;">
+                                <header>{$data.labels._form_title_credit_card}</header>
 
                                 {assign "saved_cards" $customer->get_saved_credit_cards($order->get('Order Delivery Address Checksum'),$order->get('Order Invoice Address Checksum'))}
-
                                 {assign "number_saved_cards" count($saved_cards)  }
 
 
 
-                                <fieldset    class=" credit_card_form  {if $number_saved_cards>0}hide{/if}" >
+                                <fieldset  class="credit_card_form" >
 
 
 
                                     <div class="row">
                                         <section class="col col-9">
                                             <label class="input">
-                                                <input type="text" name="credit_card_number" id="credit_card_number" value="" placeholder="{$data.labels._credit_card_number}">
+                                                <div  id="credit_card_number" style="border:1px solid #ccc;height: 36px" ></div>
                                             </label>
                                         </section>
                                         <section class="col col-3">
                                             <label class="input">
-                                                <input type="text" maxlength="4" name="credit_card_ccv" id="credit_card_ccv" value=""  placeholder="{$data.labels._credit_card_ccv}">
+                                                <div ty id="credit_card_ccv" value=""  style="border:1px solid #ccc;height: 36px"></div>
                                             </label>
                                         </section>
                                     </div>
@@ -135,38 +229,24 @@
                                         <label class="label col col-4">{$data.labels._credit_card_expiration_date}</label>
                                         <section class="col col-5">
                                             <label class="select">
-                                                <select name="credit_card_util_month" id="credit_card_util_month">
-                                                    <option value="0" selected disabled>{$data.labels._credit_card_expiration_date_month_label}</option>
+                                                <div id="credit_card_valid_until" style="border:1px solid #ccc;height: 36px">
 
-                                                    <option value="1">{'2000-01-01'|date_format:"%B"}</option>
-                                                    <option value="2">{'2000-02-01'|date_format:"%B"}</option>
-                                                    <option value="3">{'2000-03-01'|date_format:"%B"}</option>
-                                                    <option value="4">{'2000-04-01'|date_format:"%B"}</option>
-                                                    <option value="5">{'2000-05-01'|date_format:"%B"}</option>
-                                                    <option value="6">{'2000-06-01'|date_format:"%B"}</option>
-                                                    <option value="7">{'2000-07-01'|date_format:"%B"}</option>
-                                                    <option value="8">{'2000-08-01'|date_format:"%B"}</option>
-                                                    <option value="9">{'2000-09-01'|date_format:"%B"}</option>
-                                                    <option value="10">{'2000-10-01'|date_format:"%B"}</option>
-                                                    <option value="11">{'2000-11-01'|date_format:"%B"}</option>
-                                                    <option value="12">{'2000-12-01'|date_format:"%B"}</option>
-                                                </select>
-                                                <i></i>
                                             </label>
                                         </section>
                                         <section class="col col-3">
                                             <label class="input">
-                                                <input type="text" maxlength="4" name="credit_card_util_year" id="credit_card_util_year" value="" placeholder="{$data.labels._credit_card_expiration_date_year_label}">
+
+
+
                                             </label>
                                         </section>
                                     </div>
 
-                                    <div class="row hide">
+                                    <div class="row ">
 
                                         <section class="col col-5" >
                                             <label class="checkbox"><input type="checkbox"  id="save_card"><i></i> </label>
-                                            <span style="margin-left:27px;	font: 14px/1.55 'Open Sans', Helvetica, Arial, sans-serif;position:relative;top:-22px;font-size:15px;color:#404040" id="_credit_card_save"
-                                            >{$data.labels._credit_card_save}</span>
+                                            <span style="margin-left:27px;position:relative;bottom:2px	" >{$data.labels._credit_card_save}</span>
 
                                         </section>
 
@@ -184,138 +264,35 @@
 
                                 <footer>
 
-                                    <section  class="col col-5 like_button show_saved_cards_list hide "  onclick="show_saved_cards()" >
+                                    <section  class="col col-5  "   >
+                                        <span class="like_button show_saved_cards_list {if $braintree_data.number_saved_credit_cards==0}hide{/if}"" style="font-size: smaller;color:#666;position: relative;top:5px" onclick="show_saved_cards()" >{if isset($data.labels._show_saved_cards) and $labels._show_saved_cards!=''}{$labels._show_saved_cards}{else}{t}Show saved cards list{/t}{/if}</span>
 
-                                        {if isset($data.labels._show_saved_cards) and $labels._show_saved_cards!=''}{$labels._show_saved_cards}{else}{t}Show saved cards list{/t}{/if}
                                     </section>
-                                    <button id="place_order_braintree" type="submit" class="button  {if $number_saved_cards>0} state-disabled{/if}  ">{$data.labels._place_order_from_credit_card}  <i class="margin_left_10 fa fa-fw fa-arrow-right" aria-hidden="true"></i>  </button>
+                                    <button id="place_order_braintree" type="submit" class="button  {if $braintree_data.number_saved_credit_cards>0} state-disabled{/if}  ">{$data.labels._place_order_from_credit_card}  <i class="margin_left_10 fa fa-fw fa-arrow-right" aria-hidden="true"></i>  </button>
                                 </footer>
                             </form>
 
-                            <input type="hidden" id="braintree_credit_card_token" value="{$payment_account.object->get('Block Data')}"/>
-                            <input type="hidden" id="credit_card_postal_code" value="{$order->get('Order Invoice Address Postal Code')}"/>
-
-
                             <script>
 
-                                var braintree_client = new braintree.api.Client({
-                                    clientToken: $('#braintree_credit_card_token').val()
-                                });
 
 
 
 
 
-                                $("#BTree_credit_card_form").validate(
-                                    {
+                                function delete_this_credit_card(element){
 
-                                        submitHandler: function(form)
-                                        {
-
-
-
-                                            var button=$('#place_order_braintree');
-
-                                            if(button.hasClass('wait')){
-                                                return;
-                                            }
-
-                                            button.addClass('wait')
-                                            button.find('i').removeClass('fa-arrow-right').addClass('fa-spinner fa-spin')
-
-
-
-
-                                            braintree_client.tokenizeCard({
-                                                number: $("#credit_card_number").val(),
-                                                expirationMonth: $('#credit_card_util_month').val(),
-                                                expirationYear: $('#credit_card_util_year').val(),
-                                                cvv: $("#credit_card_ccv").val(),
-                                                billingAddress: {
-                                                    postalCode: $('#credit_card_postal_code').val()
-                                                }
-
-                                            }, onCardTokenization);
-
-
-
-
-
-
-                                        },
-
-                                        // Rules for form validation
-                                        rules:
-                                            {
-                                                credit_card_number:{
-                                                    required: true,
-                                                    creditcard: true
-                                                },
-
-                                                credit_card_ccv:{
-                                                    required: true,
-                                                    digits: true,
-                                                    minlength: 3,
-                                                    maxlength: 4
-                                                },
-                                                credit_card_util_year:{
-                                                    required: true,
-                                                    digits: true,
-                                                    minlength: 2,
-                                                    maxlength: 4
-                                                },
-                                                credit_card_util_month:{
-                                                    required: true
-                                                }
-
-
-                                            },
-
-                                        // Messages for form validation
-                                        messages:
-                                            {
-
-
-
-
-
-
-                                            },
-
-                                        // Do not change code below
-                                        errorPlacement: function(error, element)
-                                        {
-                                            error.insertAfter(element.parent());
-                                        }
-                                    });
-
-
-                                function onCardTokenization(err, nonce) {
-                                    if (err) {
-                                        return;
-                                    }
-
-
-                                    var register_data={ }
-
-
-                                    register_data['nonce']=nonce
-
-                                    register_data['save_card']=$('#save_card').is(':checked')
-
+                                    $(element).removeClass('fa-trash-alt').addClass('fa-spinner fa-spin')
 
                                     var ajaxData = new FormData();
 
-                                    ajaxData.append("tipo", 'place_order_pay_braintree')
+                                    ajaxData.append("tipo", 'delete_braintree_saved_card')
+                                    ajaxData.append("token", $(element).closest('.credit_cards_row').find('.card_info').data('token'))
 
-                                    ajaxData.append("payment_account_key",'{$payment_account.object->id}' )
-                                    ajaxData.append("data", JSON.stringify(register_data))
-
-
+                                    ajaxData.append("payment_account_key", BTree_account_key)
 
 
 
-                                    console.log(JSON.stringify(register_data))
+
 
 
                                     $.ajax({
@@ -327,16 +304,12 @@
 
 
                                             if (data.state == '200') {
-                                                $('.ordered_products_number').html('0')
-                                                $('.order_total').html('')
 
-                                                window.location.replace("thanks.sys?order_key="+data.order_key);
+                                                $(element).closest('.credit_cards_row').remove();
 
 
                                             } else if (data.state == '400') {
-                                                var button=$('#place_order_braintree');
-                                                button.removeClass('wait')
-                                                button.find('i').addClass('fa-arrow-right').removeClass('fa-spinner fa-spin')
+                                                $(element).removeClass('fa-spinner fa-spin').addClass('fa-trash-alt')
 
                                                 swal({ title:"{t}Error{/t}!", text:data.msg, type:"error", html: true}
                                                 )
@@ -353,17 +326,22 @@
                                         }
                                     });
 
-
-
-
-
-
-
                                 }
 
 
-                            </script>
 
+                                var saved_card_form = document.querySelector('#BTree_saved_credit_cards_form');
+                                var saved_card_submit = document.querySelector('#place_order_saved_card_braintree');
+
+                                var form = document.querySelector('#BTree_credit_card_form');
+                                var submit = document.querySelector('#place_order_braintree');
+
+
+
+
+
+
+                            </script>
 
                         {elseif $block=='Sofort'}
 
@@ -470,12 +448,21 @@
                             </script>
 
                         {elseif $block=='BTreePaypal'}
+
                             <form action="" class="sky-form" style="max-width: 500px;">
+                                <header >{if isset($data.labels._form_title_paypal) }{$data.labels._form_title_paypal}{else}{t}Checkout form{/t}{/if}</header>
 
 
                                 <fieldset style="min-height: 280px">
 
-                                    <iframe style="border:none;width:100%" src="/braintree_paypal_iframe.php?tipo=a&payment_account_key={$payment_account['object']->id}"></iframe>
+                                    <div  id="loading_paypal-button"><i class="fa fa-spinner fa-spin" style="margin-right: 10px"></i>  {t}Loading paypal{/t}</div>
+                                    <div  id="paying_paypal" class="hide"><i class="fab fa-paypal" style="margin-right: 10px"></i>  {t}Processing payment{/t}</div>
+                                    <div  id="processing_paypal" class="hide"><i class="fa fa-spinner fa-spin" style="margin-right: 10px"></i>  {t}Processing payment, please wait{/t}</div>
+
+
+
+
+                                    <div class="hide" id="paypal-button"></div>
 
 
                                 </fieldset>
@@ -484,6 +471,8 @@
 
                                 </footer>
                             </form>
+
+
 
 
                         {elseif $block=='Bank'}
@@ -532,11 +521,461 @@
             {/foreach}
 
 
+    {if $braintree_data!=''}
+        <script>
+
+
+
+            braintree.client.create({
+                    authorization: '{$braintree_data['client_token']}'
+                },
+                function (clientErr, clientInstance) {
+                    if (clientErr) {
+                        console.error(clientErr);
+                        return;
+                    }
+
+                    braintree.hostedFields.create({
+                            client: clientInstance,
+                            styles: {
+                                'input': {
+                                    'font-size': '16px', 'padding': '0px 0px 0px 10px','font-family':'Ubuntu, sans-serif'
+                                },
+                                'input.invalid': {
+                                    'color': 'red'
+                                },
+                                'input.valid': {
+                                    'color': 'green'
+                                }
+                            },
+                            fields: {
+
+                                cvv: {
+                                    selector: '#saved_credit_card_ccv',
+                                    placeholder: '{$data.labels._credit_card_ccv}'
+                                },
+
+                            }
+                        },
+                        function (hostedFieldsErr, hostedFieldsInstance) {
+                            if (hostedFieldsErr) {
+                                console.error(hostedFieldsErr);
+                                return;
+                            }
+
+
+                            hostedFieldsInstance.on('validityChange', function (event) {
+
+
+                                console.log(event.fields.cvv)
+
+                                if(event.fields.cvv.isValid){
+                                    $('#place_order_saved_card_braintree').removeClass('state-disabled')
+
+                                }else{
+                                    $('#place_order_saved_card_braintree').addClass('state-disabled')
+
+                                }
+
+                            })
+
+
+                            saved_card_submit.removeAttribute('disabled');
+
+                            saved_card_form.addEventListener('submit', function (event) {
+                                event.preventDefault();
+
+                                var button=$('#place_order_saved_card_braintree');
+
+                                if(button.hasClass('wait')){
+                                    return;
+                                }
+
+                                button.addClass('wait')
+                                button.find('i').removeClass('fa-arrow-right').addClass('fa-spinner fa-spin')
+
+
+                                hostedFieldsInstance.tokenize(function (tokenizeErr, payload) {
+
+
+
+
+                                    if (tokenizeErr) {
+
+
+                                        var button=$('#place_order_saved_card_braintree');
+                                        button.removeClass('wait')
+                                        button.find('i').addClass('fa-arrow-right').removeClass('fa-spinner fa-spin')
+
+                                        if($('#BTree_saved_credit_cards_form .credit_card_input_row').hasClass('hide')){
+                                            swal({ title:"{t}Error{/t}!", text:'{t}Choose a saved credit card or click in pay with other card{/t}', type:"error", html: true})
+                                        }else{
+
+                                            switch (tokenizeErr.code) {
+                                                case 'HOSTED_FIELDS_FIELDS_EMPTY':
+                                                    var _msg='{t}Pleas fill the CVV field{/t}';
+                                                    break;
+                                                case 'HOSTED_FIELDS_FIELDS_INVALID':
+                                                    var _msg='{t}CVV is invalid{/t}';
+                                                    break;
+                                                default:
+                                                    var _msg=tokenizeErr.message
+                                                    break;
+                                            }
+
+                                            swal({ title:"{t}Error{/t}!", text:_msg, type:"error", html: true})
+
+
+                                        }
+
+
+                                        console.error(tokenizeErr);
+                                        return;
+                                    }
+
+
+                                    var register_data={ }
+                                    register_data['nonce']=payload.nonce
+                                    register_data['token']=$('#BTree_saved_credit_cards_form .credit_card_input_row .card_info').data('token')
+
+                                    console.log($('#BTree_saved_credit_cards_form .credit_card_input_row .card_info').data('token'))
+
+
+
+                                    var ajaxData = new FormData();
+
+                                    ajaxData.append("tipo", 'place_order_pay_braintree_using_saved_card')
+                                    ajaxData.append("payment_account_key",BTree_account_key )
+                                    ajaxData.append("data", JSON.stringify(register_data))
+
+
+
+
+
+                                    console.log(JSON.stringify(register_data))
+
+
+                                    $.ajax({
+                                        url: "/ar_web_checkout.php", type: 'POST', data: ajaxData, dataType: 'json', cache: false, contentType: false, processData: false,
+                                        complete: function () {
+                                        }, success: function (data) {
+
+
+
+
+                                            if (data.state == '200') {
+                                                $('.ordered_products_number').html('0')
+                                                $('.order_total').html('')
+
+                                                window.location.replace("thanks.sys?order_key="+data.order_key);
+
+
+                                            } else if (data.state == '400') {
+                                                var button=$('#place_order_braintree');
+                                                button.removeClass('wait')
+                                                button.find('i').addClass('fa-arrow-right').removeClass('fa-spinner fa-spin')
+
+                                                swal({ title:"{t}Error{/t}!", text:data.msg, type:"error", html: true}
+                                                )
+
+                                            }
+
+
+
+                                        }, error: function () {
+                                            var button=$('#place_order_braintree');
+                                            button.removeClass('wait')
+                                            button.find('i').addClass('fa-arrow-right').removeClass('fa-spinner fa-spin')
+
+                                        }
+                                    });
+
+
+
+                                });
+                            }, false);
+                        });
+
+                    braintree.hostedFields.create({
+                            client: clientInstance,
+                            styles: {
+                                'input': {
+                                    'font-size': '16px', 'padding': '0px 0px 0px 10px','font-family':'Ubuntu, sans-serif'
+                                },
+                                'input.invalid': {
+                                    'color': 'red'
+                                },
+                                'input.valid': {
+                                    'color': 'green'
+                                }
+                            },
+                            fields: {
+                                number: {
+                                    selector: '#credit_card_number',
+                                    placeholder: '{$data.labels._credit_card_number}'
+                                },
+                                cvv: {
+                                    selector: '#credit_card_ccv',
+                                    placeholder: '{$data.labels._credit_card_ccv}'
+                                },
+                                expirationDate: {
+                                    selector: '#credit_card_valid_until',
+                                    placeholder: '{$data.labels._credit_card_expiration_date_month_label}/{$data.labels._credit_card_expiration_date_year_label}'
+                                }
+                            }
+                        },
+                        function (hostedFieldsErr, hostedFieldsInstance) {
+                            if (hostedFieldsErr) {
+                                console.error(hostedFieldsErr);
+                                return;
+                            }
+
+                            submit.removeAttribute('disabled');
+
+                            form.addEventListener('submit', function (event) {
+                                event.preventDefault();
+
+                                var button=$('#place_order_braintree');
+
+                                if(button.hasClass('wait')){
+                                    return;
+                                }
+
+                                button.addClass('wait')
+                                button.find('i').removeClass('fa-arrow-right').addClass('fa-spinner fa-spin')
+
+
+                                hostedFieldsInstance.tokenize(function (tokenizeErr, payload) {
+                                    if (tokenizeErr) {
+                                        //console.error(tokenizeErr);
+
+                                        var button=$('#place_order_braintree');
+                                        button.removeClass('wait')
+                                        button.find('i').addClass('fa-arrow-right').removeClass('fa-spinner fa-spin')
+
+                                        switch (tokenizeErr.code) {
+                                            case 'HOSTED_FIELDS_FIELDS_EMPTY':
+                                                var _msg='{t}All fields are empty{/t}';
+                                                break;
+                                            case 'HOSTED_FIELDS_FIELDS_INVALID':
+                                                var _msg='{t}Some payment input fields are invalid{/t}';
+                                                break;
+                                            default:
+                                                var _msg=tokenizeErr.message
+                                                break;
+                                        }
+
+                                        swal({ title:"{t}Error{/t}!", text:_msg, type:"error", html: true})
+                                        return;
+                                    }
+
+
+                                    var register_data={ }
+                                    register_data['nonce']=payload.nonce
+                                    register_data['save_card']=$('#save_card').is(':checked')
+
+
+                                    var ajaxData = new FormData();
+
+                                    ajaxData.append("tipo", 'place_order_pay_braintree')
+                                    ajaxData.append("payment_account_key",BTree_account_key )
+                                    ajaxData.append("data", JSON.stringify(register_data))
+
+
+
+
+
+                                    console.log(JSON.stringify(register_data))
+
+
+                                    $.ajax({
+                                        url: "/ar_web_checkout.php", type: 'POST', data: ajaxData, dataType: 'json', cache: false, contentType: false, processData: false,
+                                        complete: function () {
+                                        }, success: function (data) {
+
+
+
+
+                                            if (data.state == '200') {
+                                                $('.ordered_products_number').html('0')
+                                                $('.order_total').html('')
+
+                                                window.location.replace("thanks.sys?order_key="+data.order_key);
+
+
+                                            } else if (data.state == '400') {
+                                                var button=$('#place_order_braintree');
+                                                button.removeClass('wait')
+                                                button.find('i').addClass('fa-arrow-right').removeClass('fa-spinner fa-spin')
+
+                                                swal({ title:"{t}Error{/t}!", text:data.msg, type:"error", html: true}
+                                                )
+
+                                            }
+
+
+
+                                        }, error: function () {
+                                            var button=$('#place_order_braintree');
+                                            button.removeClass('wait')
+                                            button.find('i').addClass('fa-arrow-right').removeClass('fa-spinner fa-spin')
+
+                                        }
+                                    });
+
+
+
+                                });
+                            }, false);
+                        });
+
+                    braintree.paypalCheckout.create({
+                            client: clientInstance
+                        },
+                        function (paypalCheckoutErr, paypalCheckoutInstance) {
+
+                            // Stop if there was a problem creating PayPal Checkout.
+                            // This could happen if there was a network error or if it's incorrectly
+                            // configured.
+                            if (paypalCheckoutErr) {
+                                console.error('Error creating PayPal Checkout:', paypalCheckoutErr);
+                                return;
+                            }
+
+
+
+
+
+                            // Set up PayPal with the checkout.js library
+                            paypal.Button.render({
+                                env: 'sandbox', // or 'production'
+                                commit: true,
+                                payment: function () {
+                                    return paypalCheckoutInstance.createPayment({
+                                        flow: 'checkout', // Required
+                                        amount: '{$order->get('Order Basket To Pay Amount')}', // Required
+                                        currency: '{$order->get('Order Currency')}', // Required
+                                        // Your PayPal options here. For available options, see
+                                        // http://braintree.github.io/braintree-web/current/PayPalCheckout.html#createPayment
+                                    });
+                                },
+
+                                onAuthorize: function (data, actions) {
+                                    return paypalCheckoutInstance.tokenizePayment(data, function (err, payload) {
+
+
+
+
+                                        $('#processing_paypal').removeClass('hide')
+                                        $('#paying_paypal').addClass('hide')
+
+                                        console.log(err)
+                                        console.log(payload)
+
+
+
+                                        var ajaxData = new FormData();
+                                        ajaxData.append("tipo", 'place_order_pay_braintree_paypal')
+
+                                        ajaxData.append("payment_account_key",BTreePaypal_account_key )
+
+                                        ajaxData.append("nonce",payload.nonce )
+
+                                        $.ajax({
+                                                url: "/ar_web_checkout.php", type: 'POST', data: ajaxData, dataType: 'json', cache: false, contentType: false, processData: false,
+                                                complete: function () {
+                                                },
+                                                success: function (data) {
+
+
+
+
+                                                    if (data.state == '200') {
+
+
+
+
+                                                        window.location.replace("thanks.sys?order_key="+data.order_key);
+
+
+                                                        //window.parent.document.location="thanks.sys?order_key="+data.order_key
+
+
+                                                    } else if (data.state == '400') {
+
+                                                        $('#processing_paypal').addClass('hide')
+                                                        $('#paying_paypal').addClass('hide')
+                                                        $('#paypal-button').removeClass('hide')
+
+                                                        swal({ title:"{t}Error{/t}!", text:data.msg, type:"error", html: true}
+                                                        )
+
+                                                    }
+
+
+
+                                                }
+
+                                            }
+                                        );
+
+
+
+
+                                    });
+                                },
+
+                                onCancel: function (data) {
+
+
+                                    $('#processing_paypal').addClass('hide')
+                                    $('#paying_paypal').addClass('hide')
+                                    $('#paypal-button').removeClass('hide')
+
+                                    console.log('checkout.js payment cancelled', JSON.stringify(data, 0, 2));
+                                },
+
+                                onError: function (err) {
+
+                                    $('#processing_paypal').addClass('hide')
+                                    $('#paying_paypal').addClass('hide')
+
+
+                                    $('#paypal-button').removeClass('hide')
+
+                                    console.error('checkout.js error', err);
+                                },
+
+
+                                onClick: function (err) {
+                                    $('#processing_paypal').removeClass('hide')
+                                    $('#paypal-button').addClass('hide')
+                                }
+
+
+                            }, '#paypal-button').then(function () {
+
+                                console.log('cacaac')
+
+                                $('#loading_paypal-button').addClass('hide')
+                                $('#paypal-button').removeClass('hide')
+                                // The PayPal button will be rendered in an html element with the id
+                                // `paypal-button`. This function will be called when the PayPal button
+                                // is set up and ready to be used.
+                            });
+
+                        });
+
+
+                });
+
+
+        </script>
+    {/if}
+
+
+
             {/if}
-
-
-
-
 
 
 </div>

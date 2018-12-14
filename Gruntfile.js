@@ -96,7 +96,10 @@ module.exports = function (grunt) {
                     sourceMap: true,
                 },
                 src: [
-                    'EcomB2B/js/braintree.js',
+
+                    'EcomB2B/js/braintree.3.40.0.paypal-checkout.min.js',
+                    'EcomB2B/js/braintree.3.40.0.min.js',
+                    'EcomB2B/js/braintree.3.40.0.hosted-fields.min.js',
                     'EcomB2B/js/checkout.js',
                     'EcomB2B/js/order_totals.js',
 
@@ -164,7 +167,10 @@ module.exports = function (grunt) {
                     sourceMap: true,
                 },
                 src: [
-                    'EcomB2B/js/braintree.js',
+
+                    'EcomB2B/js/braintree.3.40.0.paypal-checkout.min.js',
+                    'EcomB2B/js/braintree.3.40.0.min.js',
+                    'EcomB2B/js/braintree.3.40.0.hosted-fields.min.js',
                     'EcomB2B/js/checkout.js',
                     'EcomB2B/js/order_totals.js',
                 ], dest: 'EcomB2B/js/mobile.checkout.min.js'

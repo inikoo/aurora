@@ -295,7 +295,7 @@ function payments($_data, $db, $user) {
 
                             (($data['Payment Type'] == 'Payment' and $refundable_amount > 0) ? '' : 'hide'),
 
-                            htmlspecialchars($data['Payment Transaction ID']), money($refundable_amount, $data['Payment Currency Code']), $refundable_amount, ($data['Payment Account Block'] == 'BTree' ? true : false), $data['Payment Key']
+                            htmlspecialchars($data['Payment Transaction ID']), money($refundable_amount, $data['Payment Currency Code']), $refundable_amount, ( ($data['Payment Account Block'] == 'BTree' or $data['Payment Account Block'] == 'BTreePaypal'   ) ? true : false), $data['Payment Key']
                         );
                     }
 

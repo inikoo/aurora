@@ -639,9 +639,7 @@ $(document).ready(function(){
             var cover_center_height = $('.coverpage-center').outerHeight();
             var cover_center_width = $('.coverpage-center').outerWidth();
 
-            console.log((content_height/2)*(-1) - ($('.outter-elements').height()/2))
-            console.log((content_height/2)*(-1) )
-            console.log(  $('.outter-elements'))
+       
 
 
             $('.content-center').css({

@@ -647,6 +647,9 @@ img.fr-view.fr-bordered {
  Version 3
 
 */
+.success {
+  color: #26A65B; }
+
 body, input, textarea {
   font-size: 16px;
   font-weight: normal;

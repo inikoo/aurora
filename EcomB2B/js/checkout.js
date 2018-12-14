@@ -8,45 +8,6 @@
 
 
 
-function use_other_credit_card(){
-
-    $('.credit_cards_list').addClass('hide')
-    $('.credit_card_form').removeClass('hide')
-    $('.show_saved_cards_list').removeClass('hide')
-
-}
-
-function show_saved_cards(){
-
-    $('.credit_cards_list').removeClass('hide')
-    $('.credit_card_form').addClass('hide')
-    $('.show_saved_cards_list').addClass('hide')
-}
-
-function use_this_credit_card(element){
-    console.log(element)
-
-
-    $(element).closest('fieldset').find('.row').addClass('hide')
-
-
-
-    $(element).closest('div.row').find('.delete_this_credit_card').addClass('hide')
-    $(element).closest('div.row').find('.cancel_use_this_card').removeClass('hide')
-
-
-    $(element).closest('div.row').find('.check_icon_saved_card').removeClass('fa-circle').addClass('fa-check-circle success')
-
-
-
-
-
-
-    $('.cvv_for_saved_card').addClass('invisible')
-    $(element).closest('div.row').removeClass('hide').find('.cvv_for_saved_card').removeClass('invisible')
-}
-
-
 function cancel_use_this_card(element){
 
     $(element).closest('div.row').find('.delete_this_credit_card').removeClass('hide')
@@ -111,5 +72,35 @@ function place_order(element) {
 
         }
     });
+
+}
+
+
+function use_this_credit_card(element){
+
+    $('.credit_cards_row').addClass('hide')
+    var card_info=$(element).closest('.credit_cards_row').find('.card_info');
+    $('.credit_card_input_row').removeClass('hide').find('.card_info').html(card_info.html()).data('token',card_info.data('token'))
+    $('#BTree_saved_credit_cards_form .show_saved_cards_list').removeClass('hide')
+
+}
+
+function use_other_credit_card(){
+
+    $('#BTree_saved_credit_cards_form').addClass('hide')
+    $('#BTree_credit_card_form').removeClass('hide')
+
+}
+
+function show_saved_cards(){
+
+    $('#BTree_saved_credit_cards_form').removeClass('hide')
+    $('#BTree_credit_card_form').addClass('hide')
+
+    $('#BTree_saved_credit_cards_form .show_saved_cards_list').addClass('hide')
+
+    $('.credit_cards_row').removeClass('hide')
+    $('.credit_card_input_row').addClass('hide')
+
 
 }

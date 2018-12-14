@@ -58,14 +58,13 @@ class Public_Payment_Account {
         $data['editor']                       = $this->editor;
 
 
-        $account=get_object('Account',1);
+        $account = get_object('Account', 1);
         if ($account->get('Currency Code') != $data['Payment Currency Code']) {
             include_once 'utils/currency_functions.php';
             $data['Payment Currency Exchange Rate'] = currency_conversion($this->db, $data['Payment Currency Code'], $account->get('Currency Code'));
         } else {
             $data['Payment Currency Exchange Rate'] = 1;
         }
-
 
 
         include_once 'class.Public_Payment.php';
@@ -77,7 +76,6 @@ class Public_Payment_Account {
 
             return $payment;
         }
-
 
 
         require_once 'utils/new_fork.php';
@@ -97,18 +95,16 @@ class Public_Payment_Account {
     function get($key = '', $arg = '') {
 
 
-
-
         switch ($key) {
 
             case 'Valid Delivery Countries':
 
-                $_tmp=array();
+                $_tmp = array();
 
-                if($this->data['Payment Account Settings']!=''){
+                if ($this->data['Payment Account Settings'] != '') {
 
 
-                    $_tmp=preg_split('/\,/',$this->data['Payment Account Settings']);
+                    $_tmp = preg_split('/\,/', $this->data['Payment Account Settings']);
                 }
 
                 return $_tmp;
@@ -121,8 +117,8 @@ class Public_Payment_Account {
                 if ($this->data['Payment Account Block'] == 'BTreePaypal') {
 
 
-                    $key=md5('83edh3847203942,'.CKEY);
-                    $key='xx';
+                    //$key=md5('83edh3847203942,'.CKEY);
+                    $key = 'xx';
 
 
                     $paypal_data = base64_url_encode(
@@ -141,31 +137,83 @@ class Public_Payment_Account {
                             ), $key, 256
                         )
                     );
-/*
-                    $paypal_data = base64_url_encode(
 
-                            json_encode(
-                                array(
-                                    'braintree_account_key'    => $this->id,
-                                    'Payment Account ID'       => $this->get('Payment Account ID'),
-                                    'Payment Account Login'    => $this->get('Payment Account Login'),
-                                    'Payment Account Password' => $this->get('Payment Account Password'),
-                                    'order_key'                => $arg->id,
-                                    'amount'                   => $arg->get('Order To Pay Amount'),
-                                    'currency'                 => $arg->get('Order Currency'),
-                                    'Random'                   => password_hash(time(), PASSWORD_BCRYPT)
-                                )
-                            )
-                    );
+                    /*
+                                        $paypal_data = base64_url_encode(
 
-*/
+                                                json_encode(
+                                                    array(
+                                                        'braintree_account_key'    => $this->id,
+                                                        'Payment Account ID'       => $this->get('Payment Account ID'),
+                                                        'Payment Account Login'    => $this->get('Payment Account Login'),
+                                                        'Payment Account Password' => $this->get('Payment Account Password'),
+                                                        'order_key'                => $arg->id,
+                                                        'amount'                   => $arg->get('Order To Pay Amount'),
+                                                        'currency'                 => $arg->get('Order Currency'),
+                                                        'Random'                   => password_hash(time(), PASSWORD_BCRYPT)
+                                                    )
+                                                )
+                                        );
+
+                    */
+
                     return $paypal_data;
 
                 } elseif ($this->data['Payment Account Block'] = 'BTree') {
 
+                    $gateway = new Braintree_Gateway(
+                        [
+                            'environment' => 'production',
+                            'merchantId'  => $this->get('Payment Account ID'),
+                            'publicKey'   => $this->get('Payment Account Login'),
+                            'privateKey'  => $this->get('Payment Account Password')
+                        ]
+                    );
 
-                    require_once 'external_libs/braintree-php-3.2.0/lib/Braintree.php';
+                    $credit_cards = array();
+                    try {
+                        $braintree_customer = $gateway->customer()->find($arg);
 
+
+
+                        include_once 'utils/aes.php';
+
+
+
+                        foreach ($braintree_customer->creditCards as $braintree_credit_card) {
+
+                            $token=AESEncryptCtr(json_encode(array('t'=>$braintree_credit_card->token,'s'=>mt_rand(1,10000))), md5('CCToken'.CKEY), 256);
+
+                            $credit_cards[] = array(
+                                'Masked Number'             => $braintree_credit_card->maskedNumber,
+                                'Last 4 Numbers'             => $braintree_credit_card->last4,
+                                'Image'                     => $braintree_credit_card->imageUrl,
+                                'Formatted Expiration Date' => $braintree_credit_card->expirationDate,
+                                'Token'                     => $token
+                            );
+                        }
+
+
+                    } catch (Exception $e) {
+
+                    }
+
+
+                    $_data = array(
+
+                        'client_token'        => $gateway->clientToken()->generate(),
+                        'credit_cards'        => $credit_cards,
+                        'number_saved_credit_cards' => count($credit_cards)
+                    );
+
+
+                    return $_data;
+
+
+                    // require_once 'external_libs/braintree-php-3.2.0/lib/Braintree.php';
+
+
+                    /*
 
                     Braintree_Configuration::environment('production');
                     Braintree_Configuration::merchantId($this->data['Payment Account ID']);
@@ -180,14 +228,13 @@ class Public_Payment_Account {
                         return 'error';
 
                     }
-
+*/
 
                 }
 
                 break;
 
         }
-
 
 
         if (isset($this->data[$key])) {

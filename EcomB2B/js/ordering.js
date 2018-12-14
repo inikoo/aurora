@@ -437,7 +437,7 @@ function save_item_qty_change(element) {
 
 
 
-
+/*
 
 
 function use_other_credit_card(){
@@ -482,6 +482,8 @@ function cancel_use_this_card(element){
 
     $(element).closest('fieldset').find('.row').removeClass('hide')
 }
+
+*/
 
 /*
 function place_order(element) {
