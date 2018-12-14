@@ -187,7 +187,7 @@ class SupplierPart extends DB_Table {
 
 
         if (preg_match('/\%$/', $base_data['Supplier Part Unit Extra Cost Percentage'])) {
-            $base_data['Supplier Part Unit Extra Cost Percentage'] = floatval(preg_replace('/\%^/', '', $base_data['Supplier Part Unit Extra Cost Percentage']) / 100);
+            $base_data['Supplier Part Unit Extra Cost Percentage'] = floatval(preg_replace('/\%$/', '', $base_data['Supplier Part Unit Extra Cost Percentage']) )/ 100;
             // $value = $this->data['Supplier Part Unit Cost'] * $value / 100;
         }
 

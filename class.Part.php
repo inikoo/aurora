@@ -709,23 +709,21 @@ class Part extends Asset {
 
             case 'CBM per Unit':
 
-                $value_sum=0;
-                $count=0;
+                $value_sum = 0;
+                $count     = 0;
                 foreach ($this->get_supplier_parts('objects') as $supplier_part) {
 
-                    if (is_numeric($supplier_part->get('Supplier Part Carton CBM')) and $supplier_part->get('Supplier Part Carton CBM')>0  and $this->data['Part Units Per Package']>0 and $supplier_part->get('Supplier Part Packages Per Carton')>0 ) {
+                    if (is_numeric($supplier_part->get('Supplier Part Carton CBM')) and $supplier_part->get('Supplier Part Carton CBM') > 0 and $this->data['Part Units Per Package'] > 0 and $supplier_part->get('Supplier Part Packages Per Carton') > 0) {
                         $count++;
-                        $value_sum+=($supplier_part->get('Supplier Part Carton CBM')/$supplier_part->get('Supplier Part Packages Per Carton')/$this->data['Part Units Per Package']);
+                        $value_sum += ($supplier_part->get('Supplier Part Carton CBM') / $supplier_part->get('Supplier Part Packages Per Carton') / $this->data['Part Units Per Package']);
                     }
 
 
-                  if($count>0){
-                      return $value_sum/$count;
-                  }else{
-                      return '';
-                  }
-
-
+                    if ($count > 0) {
+                        return $value_sum / $count;
+                    } else {
+                        return '';
+                    }
 
 
                 }
@@ -754,7 +752,6 @@ class Part extends Asset {
 
 
                 break;
-
 
 
             case 'Products Numbers':
@@ -2002,9 +1999,13 @@ class Part extends Asset {
                 include_once 'utils/parse_materials.php';
 
 
+
+
                 $materials_to_update = array();
-                $sql                 = sprintf(
-                    'SELECT `Material Key` FROM `Part Material Bridge` WHERE `Part SKU`=%d', $this->id
+
+                $sql = sprintf(
+                    'SELECT `Material Key` FROM `Part Material Bridge` WHERE `Part SKU`=%d',
+                    $this->id
                 );
                 if ($result = $this->db->query($sql)) {
                     foreach ($result as $row) {
@@ -2064,19 +2065,19 @@ class Part extends Asset {
 
                 foreach ($materials_to_update as $material_key => $update) {
                     if ($update) {
-                        $material = get_object(' Material',$material_key);
+                        $material = get_object('Material', $material_key);
                         $material->update_stats();
 
                     }
                 }
 
 
+
                 $this->update_field('Part Materials', $materials, $options);
                 $updated = $this->updated;
 
 
-
-              //  print 'xxxxx';
+                //  print 'xxxxx';
 
                 foreach ($this->get_products('objects') as $product) {
 
@@ -2629,10 +2630,7 @@ class Part extends Asset {
     }
 
 
-
-
-
-    function get_locations($scope = 'keys',$_order='',$exclude_unknown=false) {
+    function get_locations($scope = 'keys', $_order = '', $exclude_unknown = false) {
 
 
         if ($scope == 'objects') {
@@ -2642,31 +2640,29 @@ class Part extends Asset {
         }
 
 
-
-        if($_order=='stock'){
-            $_order='`Quantity On Hand` desc';
-        }elseif($_order=='can_pick'){
-            $_order='`Can Pick`,`Location File As` ';
-        }else{
-            $_order='`Location File As` ';
+        if ($_order == 'stock') {
+            $_order = '`Quantity On Hand` desc';
+        } elseif ($_order == 'can_pick') {
+            $_order = '`Can Pick`,`Location File As` ';
+        } else {
+            $_order = '`Location File As` ';
         }
 
 
-        if($exclude_unknown){
+        if ($exclude_unknown) {
             global $session;
             $warehouse = get_object('Warehouse', $session->get('current_warehouse'));
-            $where=sprintf('and PL.`Location Key`!=%d  ',$warehouse->get('Warehouse Unknown Location Key'));
+            $where     = sprintf('and PL.`Location Key`!=%d  ', $warehouse->get('Warehouse Unknown Location Key'));
 
-        }else{
-            $where='';
+        } else {
+            $where = '';
         }
 
 
         $sql = sprintf(
             "SELECT PL.`Location Key`,`Location Code`,`Quantity On Hand`,`Part Location Note`,`Location Warehouse Key`,`Part SKU`,`Minimum Quantity`,`Maximum Quantity`,`Moving Quantity`,`Can Pick`, datediff(CURDATE(), `Part Location Last Audit`) AS days_last_audit,`Part Location Last Audit` FROM `Part Location Dimension` PL LEFT JOIN `Location Dimension` L ON (L.`Location Key`=PL.`Location Key`)  WHERE `Part SKU`=%d  %s
-        ORDER BY %s", $this->sku,$where,$_order
+        ORDER BY %s", $this->sku, $where, $_order
         );
-
 
 
         $part_locations = array();
@@ -2682,7 +2678,6 @@ class Part extends Asset {
                 } elseif ($scope == 'part_location_object') {
                     $part_locations[$row['Location Key']] = new  PartLocation($this->sku.'_'.$row['Location Key']);
                 } else {
-
 
 
                     $picking_location_icon = sprintf(
@@ -3332,7 +3327,7 @@ class Part extends Asset {
 
             $sql = sprintf(
                 "SELECT UNIX_TIMESTAMP(`Date`) AS date,`Part Availability for Products Key` FROM `Part Availability for Products Timeline` WHERE `Part SKU`=%d AND `Warehouse Key`=%d  ORDER BY `Date` DESC ,`Part Availability for Products Key` DESC LIMIT 1", $this->sku,
-                 $session->get('current_warehouse')
+                $session->get('current_warehouse')
             );
 
             if ($result = $this->db->query($sql)) {
@@ -4988,18 +4983,18 @@ class Part extends Asset {
     }
 
 
-    function update_number_locations(){
+    function update_number_locations() {
 
 
         global $session;
         $warehouse = get_object('Warehouse', $session->get('current_warehouse'));
 
-        $locations=0;
+        $locations = 0;
 
-        $sql   = sprintf("SELECT count(*) as num FROM `Part Location Dimension` WHERE `Location Key`!=%d AND `Part SKU`=%d ", $warehouse->get('Warehouse Unknown Location Key') ,$this->id);
+        $sql = sprintf("SELECT count(*) as num FROM `Part Location Dimension` WHERE `Location Key`!=%d AND `Part SKU`=%d ", $warehouse->get('Warehouse Unknown Location Key'), $this->id);
         if ($result = $this->db->query($sql)) {
             if ($row = $result->fetch()) {
-                $locations= $row['num'];
+                $locations = $row['num'];
             }
         } else {
             print_r($error_info = $this->db->errorInfo());
@@ -5008,8 +5003,7 @@ class Part extends Asset {
         }
 
 
-
-        $this->fast_update(array('Part Distinct Locations'=>$locations));
+        $this->fast_update(array('Part Distinct Locations' => $locations));
 
     }
 
@@ -5022,7 +5016,7 @@ class Part extends Asset {
 
         $stock = 0;
         $value = 0;
-        $sql   = sprintf("SELECT `Quantity On Hand`,`Stock Value` FROM `Part Location Dimension` WHERE `Location Key`=%d AND `Part SKU`=%d ", $warehouse->get('Warehouse Unknown Location Key') ,$this->id);
+        $sql   = sprintf("SELECT `Quantity On Hand`,`Stock Value` FROM `Part Location Dimension` WHERE `Location Key`=%d AND `Part SKU`=%d ", $warehouse->get('Warehouse Unknown Location Key'), $this->id);
         if ($result = $this->db->query($sql)) {
             if ($row = $result->fetch()) {
                 $stock = $row['Quantity On Hand'];

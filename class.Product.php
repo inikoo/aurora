@@ -2837,7 +2837,7 @@ class Product extends Asset {
 
                 foreach ($materials_to_update as $material_key => $update) {
                     if ($update) {
-                        $material = get_object(' Material',$material_key);
+                        $material = get_object('Material',$material_key);
                         $material->update_stats();
 
                     }
