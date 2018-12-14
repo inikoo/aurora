@@ -412,7 +412,7 @@ function get_campaign_navigation($data, $smarty, $user, $db) {
         return;
     }
 
-    $block_view = $data['section'];
+   // $block_view = $data['section'];
 
 
     $left_buttons  = array();
@@ -423,7 +423,7 @@ function get_campaign_navigation($data, $smarty, $user, $db) {
         switch ($data['parent']) {
             case 'store':
                 $tab      = 'campaigns';
-                $_section = 'campaigns';
+                $_section = 'marketing';
                 break;
 
         }
@@ -570,7 +570,7 @@ function get_campaign_navigation($data, $smarty, $user, $db) {
 
 
     } else {
-        $_section = 'campaigns';
+        $_section = 'marketing';
 
     }
     //$right_buttons[]=array('icon'=>'edit', 'title'=>_('Edit customer'), 'url'=>'edit_customer.php?id='.$object->id);
@@ -581,10 +581,12 @@ function get_campaign_navigation($data, $smarty, $user, $db) {
 
     $sections = get_sections('products', $data['store']->id);
 
-
     if (isset($sections[$_section])) {
+
+
         $sections[$_section]['selected'] = true;
     }
+
 
 
     $title = _('Campaign').' <span class="id Deal_Campaign_Name">'.$object->get('Name').'</span>';
@@ -794,10 +796,8 @@ function get_deal_navigation($data, $smarty, $user, $db) {
 
             $up_button = array(
                 'icon'      => 'arrow-up',
-                'title'     => _(
-                        "Campaigns"
-                    ).' '.$data['store']->get('Code'),
-                'reference' => 'campaigns/'.$data['store']->id.'&tab=deals'
+                'title'     => _("Marketing").' '.$data['store']->get('Code'),
+                'reference' => 'marketing/'.$data['store']->id.'&tab=deals'
             );
 
             if ($prev_key) {
@@ -840,9 +840,7 @@ function get_deal_navigation($data, $smarty, $user, $db) {
 
             $up_button = array(
                 'icon'      => 'arrow-up',
-                'title'     => _(
-                        "Campaigns"
-                    ).' '.$data['store']->get('Code'),
+                'title'     => _("Campaign").' '.$data['_parent']->get('Code'),
                 'reference' => 'campaigns/'.$data['store']->id.'/'.$data['parent_key']
             );
 
@@ -887,9 +885,7 @@ function get_deal_navigation($data, $smarty, $user, $db) {
 
             $up_button = array(
                 'icon'      => 'arrow-up',
-                'title'     => _(
-                        "Category"
-                    ).' '.$data['_parent']->get('Code'),
+                'title'     => _("Category").' '.$data['_parent']->get('Code'),
                 'reference' => 'products/'.$data['store']->id.'/category/'.$data['parent_key']
             );
 
