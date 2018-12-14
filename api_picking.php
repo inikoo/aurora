@@ -215,7 +215,7 @@ switch ($_REQUEST['action']) {
         exit;
         break;
 
-
+    case 'packed_done':
     case 'start_picking':
 
         if (!isset($_REQUEST['delivery_note_key'])) {
@@ -237,7 +237,18 @@ switch ($_REQUEST['action']) {
         }
 
         $delivery_note = get_object('DeliveryNote', $_REQUEST['delivery_note_key']);
-        $delivery_note->update_state('Picking');
+
+
+        switch ($_REQUEST['action']){
+            case 'start_picking':
+                $state='Picking';
+                break;
+            case 'packed_done':
+                $state='Packed Don';
+                break;
+        }
+
+        $delivery_note->update_state($state);
 
         if($delivery_note->error){
             $response = array(
@@ -254,6 +265,8 @@ switch ($_REQUEST['action']) {
         echo json_encode($response);
         exit;
         break;
+
+
 
 
     case 'pick_item':
