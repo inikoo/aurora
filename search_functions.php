@@ -1614,10 +1614,10 @@ function search_customers($db, $account, $memcache_ip, $data) {
                 if ($row['Customer Contact Address Postal Code'] == $q_postal_code) {
                     $candidates[$row['Customer Key']] = 50;
                 } else {
-                    $len_name                                     = strlen($row['Customer Contact Address Postal Code']);
-                    $len_q                                        = strlen($q_postal_code);
-                    $factor                                       = $len_q / $len_name;
-                    $candidates[$row['Customer Key']]             = 20 * $factor;
+                    $len_name                         = strlen($row['Customer Contact Address Postal Code']);
+                    $len_q                            = strlen($q_postal_code);
+                    $factor                           = $len_q / $len_name;
+                    $candidates[$row['Customer Key']] = 20 * $factor;
                 }
                 $postal_code_candidates[$row['Customer Key']] = sprintf(_('Postal code: %s'), $row['Customer Contact Address Postal Code']);
 
@@ -1644,10 +1644,10 @@ function search_customers($db, $account, $memcache_ip, $data) {
                 if ($row['Customer Contact Address Locality'] == $q_postal_code) {
                     $candidates[$row['Customer Key']] = 50;
                 } else {
-                    $len_name                              = strlen($row['Customer Contact Address Locality']);
-                    $len_q                                 = strlen($q_postal_code);
-                    $factor                                = $len_q / $len_name;
-                    $candidates[$row['Customer Key']]      = 20 * $factor;
+                    $len_name                         = strlen($row['Customer Contact Address Locality']);
+                    $len_q                            = strlen($q_postal_code);
+                    $factor                           = $len_q / $len_name;
+                    $candidates[$row['Customer Key']] = 20 * $factor;
 
                 }
                 $town_candidates[$row['Customer Key']] = sprintf(_('Town: %s'), $row['Customer Contact Address Locality']);
@@ -3509,16 +3509,19 @@ function search_webpages($db, $account, $memcache_ip, $data) {
 function search_parts($db, $account, $data, $response_type = 'echo') {
 
 
-    $cache       = false;
+    // $cache       = false;
     $max_results = 10;
-    $user        = $data['user'];
-    $queries     = trim($data['query']);
+    // $user        = $data['user'];
+    $queries = trim($data['query']);
 
     if ($queries == '') {
         $response = array(
-            'state'   => 200,
-            'results' => 0,
-            'data'    => ''
+            'state'          => 200,
+            'results'        => array(),
+            'data'           => '',
+            'q'              => $queries,
+            'number_results' => 0
+
         );
         if ($response_type == 'echo') {
             echo json_encode($response);
@@ -3750,9 +3753,7 @@ function search_parts($db, $account, $data, $response_type = 'echo') {
                 $icon = '<i class="fa fa-sitemap fa-fw padding_right_5" aria-hidden="true" ></i> ';
 
                 $results['C'.$row['Category Key']] = array(
-                    'label'   => $icon.highlightkeyword(
-                            sprintf('%s', $row['Category Code']), $queries
-                        ),
+                    'label'   => $icon.highlightkeyword(sprintf('%s', $row['Category Code']), $queries),
                     'details' => highlightkeyword($row['Category Label'], $queries),
                     'view'    => sprintf('inventory/category/%d', $row['Category Key'])
 
