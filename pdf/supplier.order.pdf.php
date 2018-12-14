@@ -34,7 +34,7 @@ $mpdf = new \Mpdf\Mpdf(
 );
 
 
-$mpdf->useOnlyCoreFonts = true;    // false is default
+//$mpdf->useOnlyCoreFonts = true;    // false is default
 $mpdf->SetTitle(
     sprintf(_('Purchase order %s'), $purchase_order->get('Public ID'))
 );
