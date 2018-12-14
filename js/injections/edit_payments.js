@@ -162,6 +162,7 @@ function payment_refund_refund_selected() {
 
     var settings = $('#payment_refund_dialog').data('settings')
 
+    console.log(settings)
     if (!settings.can_refund_online) {
 
 

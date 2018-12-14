@@ -54,11 +54,7 @@
     {assign "with_telephone" false}
     {assign "with_product_order_input" false}
 
-    {assign "checkout" false}
-    {assign "profile" false}
-    {assign "favourites" false}
-    {assign "thanks" false}
-    {assign "checkout" false}
+
 
     {assign "with_order" false}
 
@@ -75,25 +71,25 @@
                 {if !$logged_in}
                     {assign "with_not_found" 1}
                 {else}
-                    {assign "profile" 1} {assign "with_forms" 1}
+                    {assign "with_profile" 1} {assign "with_forms" 1}
                 {/if}
             {elseif $block.type=='checkout'}
                 {if !$logged_in}
                     {assign "with_not_found" 1}
                 {else}
-                    {assign "checkout" 1} {assign "with_forms" 1} {assign "with_order" 1}
+                    {assign "with_checkout" 1} {assign "with_forms" 1} {assign "with_order" 1}
                 {/if}
             {elseif $block.type=='favourites'}
                 {if !$logged_in}
                     {assign "with_not_found" 1}
                 {else}
-                    {assign "favourites" 1}
+                    {assign "with_favourites" 1}
                 {/if}
             {elseif $block.type=='thanks'}
                 {if !$logged_in}
                     {assign "with_not_found" 1}
                 {else}
-                    {assign "thanks" 1} {assign "with_order" 1}
+                    {assign "with_thanks" 1} {assign "with_order" 1}
                 {/if}
 
 
@@ -124,7 +120,6 @@
 
 
                 <script src="js/tablet.min.js"></script>
-
                 <script src="js/mobile.forms.min.js"></script>
                 <script src="js/sweetalert.min.js"></script>
             {else}
@@ -153,6 +148,12 @@
     {if $website->get('Website Text Font')!=''}
         <link href="https://fonts.googleapis.com/css?family={$website->get('Website Text Font')}:400,700" rel="stylesheet">
     {/if}
+
+
+    {if $with_basket==1 or  $with_checkout==1}
+        <script src="https://www.paypalobjects.com/api/checkout.min.js" async></script>
+    {/if}
+
 
     <style>
 
@@ -195,7 +196,7 @@
         {$style[0]}{ {$style[1]}: {$style[2]}}
         {/foreach}
 
-        {if $profile==1}
+        {if $with_profile==1}
         #profile_menu{
             padding-left: 0px;
         }

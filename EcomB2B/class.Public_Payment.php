@@ -18,7 +18,7 @@ include_once 'class.DBW_Table.php';
 class Public_Payment extends DBW_Table {
 
 
-    function Public_Payment($arg1 = false, $arg2 = false) {
+    function __construct($arg1 = false, $arg2 = false) {
 
         global $db;
         $this->db = $db;
