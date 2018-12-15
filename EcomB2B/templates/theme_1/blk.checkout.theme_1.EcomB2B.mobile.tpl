@@ -833,7 +833,7 @@
 
                                     // Set up PayPal with the checkout.js library
                                     paypal.Button.render({
-                                        env: 'sandbox', // or 'production'
+                                        env: 'production', // or 'production'
                                         commit: true,
                                         payment: function () {
                                             return paypalCheckoutInstance.createPayment({

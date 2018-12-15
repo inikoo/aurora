@@ -203,6 +203,8 @@ function place_order_pay_braintree($store, $_data, $order, $customer, $website, 
 
     $braintree_data = get_sale_transaction_braintree_data($order, $gateway, $_data['data']['save_card']);
 
+    $braintree_data['merchantAccountId']= $payment_account->get('Payment Account Cart ID');
+
     $braintree_data['paymentMethodNonce'] = $_data['data']['nonce'];
 
 
@@ -326,7 +328,7 @@ function place_order_pay_braintree_paypal($store, $_data, $order, $customer, $we
     );
 
     $braintree_data = get_sale_transaction_braintree_data($order, $gateway);
-
+    $braintree_data['merchantAccountId']= $payment_account->get('Payment Account Cart ID');
     $braintree_data['paymentMethodNonce'] = $_data['nonce'];
 
     process_braintree_order($braintree_data, $order, $gateway, $customer, $store, $website, $payment_account, $editor, $db, $account, $smarty);
@@ -579,7 +581,7 @@ function place_order_pay_braintree_using_saved_card($store, $_data, $order, $cus
 
         $braintree_data                       = get_sale_transaction_braintree_data($order, $gateway);
         $braintree_data['paymentMethodToken'] = $token;
-
+        $braintree_data['merchantAccountId']= $payment_account->get('Payment Account Cart ID');
         process_braintree_order($braintree_data, $order, $gateway, $customer, $store, $website, $payment_account, $editor, $db, $account, $smarty);
 
 
@@ -636,8 +638,7 @@ function get_sale_transaction_braintree_data($order, $gateway, $save_payment = f
     $delivery_contact_name = $parser->parse_name($order->get('Order Delivery Address Recipient'));
 
     $braintree_data = [
-        'merchantAccountId' => '1234',
-        //$payment_account->get('Payment Account Cart ID'),
+
         'amount'            => $order->get('Order To Pay Amount'),
         'orderId'           => $order->get('Order Public ID'),
         'customer'          => [
@@ -722,6 +723,11 @@ function process_braintree_order($braintree_data, $order, $gateway, $customer, $
     if ($order->get('Order To Pay Amount') > 0) {
 
 
+
+
+        try {
+
+
         $result = $gateway->transaction()->sale($braintree_data);
 
 
@@ -783,7 +789,8 @@ function process_braintree_order($braintree_data, $order, $gateway, $customer, $
             place_order($store, $order, $payment_account->id, $customer, $website, $editor, $smarty, $account, $db);
 
 
-        } else {
+        }
+        else {
 
 
             $error_messages         = array();
@@ -899,12 +906,10 @@ function process_braintree_order($braintree_data, $order, $gateway, $customer, $
 
         }
 
-        /*
+
                 } catch (Exception $e) {
 
-        print_r($e);
-                    print $e->getMessage();
-                    exit;
+
                     $msg = _('There was a problem processing your credit card; please double check your payment information and try again').'.';
 
                     $response = array(
@@ -918,7 +923,7 @@ function process_braintree_order($braintree_data, $order, $gateway, $customer, $
 
                     //echo 'Message: ' .$e->getMessage();
                 }
-        */
+
     }
 
 
