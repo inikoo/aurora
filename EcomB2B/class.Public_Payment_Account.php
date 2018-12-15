@@ -182,6 +182,7 @@ class Public_Payment_Account {
 
                         foreach ($braintree_customer->creditCards as $braintree_credit_card) {
 
+
                             $token=AESEncryptCtr(json_encode(array('t'=>$braintree_credit_card->token,'s'=>mt_rand(1,10000))), md5('CCToken'.CKEY), 256);
 
                             $credit_cards[] = array(
