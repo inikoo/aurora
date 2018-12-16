@@ -11,6 +11,8 @@
 
 chdir('../');
 require_once __DIR__.'/../vendor/autoload.php';
+use CommerceGuys\Addressing\Country\CountryRepository;
+
 
 require_once 'common.php';
 
