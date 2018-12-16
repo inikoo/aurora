@@ -161,9 +161,9 @@ if ($order == 'code') {
 } elseif ($order == 'percentage_out_of_stock') {
     $order = "`Product Category Active Web Out of Stock`/online";
 }  elseif ($order == 'webpage') {
-    $order = "`Webpage Code";
+    $order = "`Webpage Code`";
 }elseif ($order == 'webpage_state') {
-    $order = "`Webpage State";
+    $order = "`Webpage State`";
 } else {
     $order = '`Category Code`';
 }
