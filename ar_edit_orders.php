@@ -915,7 +915,6 @@ function refund_payment($data, $editor, $smarty, $db, $account, $user) {
                         case 'BTreePaypal':
 
 
-
                             $gateway = new Braintree_Gateway(
                                 [
                                     'environment' => 'production',
@@ -962,6 +961,59 @@ function refund_payment($data, $editor, $smarty, $db, $account, $user) {
                                     }
 
                                     break;
+
+
+                                case 'authorized':
+                                case 'submitted_for_settlement':
+
+                                    if ($data['amount'] != $payment - get('Payment Transaction Amount')) {
+                                        $response = array(
+                                            'state' => 400,
+                                            'msg'   => sprintf(_("Transaction still not settled, can't do partial refunds"))
+                                        );
+                                        echo json_encode($response);
+                                        exit;
+                                    }
+
+                                    $result = $gateway->transaction()->void($payment->data['Payment Transaction ID']);
+                                    if ($result->success) {
+
+                                        $reference = $result->transaction->id;
+
+
+                                    } else {
+
+                                        if (isset($result->transaction->processorSettlementResponseText)) {
+                                            $msg = $result->transaction->processorSettlementResponseText.' ('.$result->transaction->processorSettlementResponseCode.')';
+
+                                        } else {
+                                            $msg = $result->message;
+
+                                        }
+
+
+                                        $response = array(
+                                            'state' => 400,
+                                            'msg'   => $msg
+                                        );
+                                        echo json_encode($response);
+                                        exit;
+
+
+                                    }
+
+
+                                    break;
+                                default:
+                                    $response = array(
+                                        'state' => 400,
+                                        'msg'   => sprintf(_("Can't refund transaction with status %s"), $transaction->status)
+                                    );
+                                );
+                                    echo json_encode($response);
+                                    exit;
+
+
                             }
 
 
