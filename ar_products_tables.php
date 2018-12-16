@@ -1254,6 +1254,7 @@ function product_categories_products($_data, $db, $user) {
         $rtext_label = 'category';
     }
 
+
     include_once 'prepare_table/init.php';
 
     $sql = "select $fields from $table $where $wheref order by $order $order_direction limit $start_from,$number_results";
