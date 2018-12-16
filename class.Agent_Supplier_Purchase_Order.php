@@ -168,17 +168,41 @@ left join `Supplier Part Historic Dimension` SPH on (POTF.`Supplier Part Histori
             if ($row = $result->fetch()) {
 
 
-                $this->fast_update(
-                    array(
-                        'Agent Supplier Purchase Order Amount'          => $row['items_net'],
-                        'Agent Supplier Purchase Order Products'        => $row['num_items'],
-                        'Agent Supplier Purchase Order Cartons'         => $row['units']/$row['Supplier Part Packages Per Carton']/$row['Part Units Per Package'],
-                        'Agent Supplier Purchase Order Weight'          => $row['weight'],
-                        'Agent Supplier Purchase Order CBM'             => $row['cbm'],
-                        'Agent Supplier Purchase Order Missing Weights' => $row['missing_weights'],
-                        'Agent Supplier Purchase Order Missing CBMs'    => $row['missing_cbms'],
-                    )
-                );
+                if (row['num_items'] > 0) {
+                    if ( $row['Supplier Part Packages Per Carton'] > 0 and $row['Part Units Per Package'] > 0) {
+                        $cartons = $row['units'] / $row['Supplier Part Packages Per Carton'] / $row['Part Units Per Package'];
+
+                    } else {
+                        $cartons = 0;
+
+                    }
+
+                    $this->fast_update(
+                        array(
+                            'Agent Supplier Purchase Order Amount'          => $row['items_net'],
+                            'Agent Supplier Purchase Order Products'        => $row['num_items'],
+                            'Agent Supplier Purchase Order Cartons'         => $cartons,
+                            'Agent Supplier Purchase Order Weight'          => $row['weight'],
+                            'Agent Supplier Purchase Order CBM'             => $row['cbm'],
+                            'Agent Supplier Purchase Order Missing Weights' => $row['missing_weights'],
+                            'Agent Supplier Purchase Order Missing CBMs'    => $row['missing_cbms'],
+                        )
+                    );
+                } else {
+                    $this->fast_update(
+                        array(
+                            'Agent Supplier Purchase Order Amount'          => 0,
+                            'Agent Supplier Purchase Order Products'        => 0,
+                            'Agent Supplier Purchase Order Cartons'         => 0,
+                            'Agent Supplier Purchase Order Weight'          => 0,
+                            'Agent Supplier Purchase Order CBM'             => 0,
+                            'Agent Supplier Purchase Order Missing Weights' => 0,
+                            'Agent Supplier Purchase Order Missing CBMs'    => 0
+                        )
+                    );
+                }
+
+
             }
         } else {
             print "$sql\n";
@@ -276,9 +300,6 @@ left join `Supplier Part Historic Dimension` SPH on (POTF.`Supplier Part Histori
         $operations = array();
 
 
-
-
-
         if ($old_value != $value) {
             switch ($value) {
                 case 'InProcess':
@@ -327,8 +348,6 @@ left join `Supplier Part Historic Dimension` SPH on (POTF.`Supplier Part Histori
                         )
 
                     );
-
-
 
 
                     $operations = array(
@@ -525,9 +544,9 @@ left join `Supplier Part Historic Dimension` SPH on (POTF.`Supplier Part Histori
 
                 if ($this->data['Agent Supplier Purchase Order Estimated Receiving Date'] and in_array(
                         $this->data['Agent Supplier Purchase Order State'], array(
-                                                               'Submitted',
-                                                               'Confirmed'
-                                                           )
+                                                                              'Submitted',
+                                                                              'Confirmed'
+                                                                          )
                     )) {
                     return gmdate("Y-m-d H:i:s", strtotime($this->data['Agent Supplier Purchase Order Estimated Receiving Date']));
                 } else {
@@ -535,9 +554,9 @@ left join `Supplier Part Historic Dimension` SPH on (POTF.`Supplier Part Histori
 
                     if (in_array(
                         $this->data['Agent Supplier Purchase Order State'], array(
-                                                               'Submitted',
-                                                               'Confirmed',
-                                                           )
+                                                                              'Submitted',
+                                                                              'Confirmed',
+                                                                          )
                     )) {
 
 
@@ -581,7 +600,7 @@ left join `Supplier Part Historic Dimension` SPH on (POTF.`Supplier Part Histori
                 break;
             case 'Received Date':
 
-                if($this->get('State Index')>=90){
+                if ($this->get('State Index') >= 90) {
                     if ($this->data['Agent Supplier Purchase Order '.$key] == '') {
                         return '';
                     }
@@ -589,7 +608,7 @@ left join `Supplier Part Historic Dimension` SPH on (POTF.`Supplier Part Histori
                     return strftime(
                         "%e %b %Y", strtotime($this->data['Agent Supplier Purchase Order '.$key].' +0:00')
                     );
-                }else{
+                } else {
                     if ($this->get('Estimated Receiving Datetime')) {
                         return '<span class="italic discreet">'.strftime("%d %b %Y", strtotime($this->get('Estimated Receiving Datetime'))).'</span>';
                     } else {
@@ -598,7 +617,7 @@ left join `Supplier Part Historic Dimension` SPH on (POTF.`Supplier Part Histori
                 }
             case 'Received Date or Percentage':
 
-                if($this->get('State Index')>=90){
+                if ($this->get('State Index') >= 90) {
                     if ($this->data['Agent Supplier Purchase Order '.$key] == '') {
                         return '&nbsp;';
                     }
@@ -606,13 +625,13 @@ left join `Supplier Part Historic Dimension` SPH on (POTF.`Supplier Part Histori
                     return strftime(
                         "%e %b %Y", strtotime($this->data['Agent Supplier Purchase Order '.$key].' +0:00')
                     );
-                }else{
+                } else {
 
-                    if($this->data['Agent Supplier Purchase Order Products Received']>0){
+                    if ($this->data['Agent Supplier Purchase Order Products Received'] > 0) {
                         return '('.$this->data['Agent Supplier Purchase Order Products Received'].'/'.(floatval($this->data['Agent Supplier Purchase Order Products']) - floatval($this->data['Agent Supplier Purchase Order Products Cancelled'])).') '.
 
                             percentage($this->data['Agent Supplier Purchase Order Products Confirmed'], ($this->data['Agent Supplier Purchase Order Products'] - $this->data['Agent Supplier Purchase Order Products Cancelled']));
-                    }else{
+                    } else {
                         if ($this->get('Estimated Receiving Datetime')) {
                             return '<span class="italic discreet">'.strftime("%d %b %Y", strtotime($this->get('Estimated Receiving Datetime'))).'</span>';
                         } else {
@@ -622,8 +641,6 @@ left join `Supplier Part Historic Dimension` SPH on (POTF.`Supplier Part Histori
 
 
                 }
-
-
 
 
                 break;
@@ -732,7 +749,6 @@ left join `Supplier Part Historic Dimension` SPH on (POTF.`Supplier Part Histori
                     case 'Cancelled':
                         return _('Cancelled');
                         break;
-
 
 
                     default:
@@ -857,9 +873,6 @@ left join `Supplier Part Historic Dimension` SPH on (POTF.`Supplier Part Histori
         return $deliveries;
 
     }
-
-
-
 
 
     function mark_as_confirmed($data) {
