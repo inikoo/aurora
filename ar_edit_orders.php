@@ -1009,7 +1009,7 @@ function refund_payment($data, $editor, $smarty, $db, $account, $user) {
                                         'state' => 400,
                                         'msg'   => sprintf(_("Can't refund transaction with status %s"), $transaction->status)
                                     );
-                                );
+                                
                                     echo json_encode($response);
                                     exit;
 
