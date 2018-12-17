@@ -387,6 +387,9 @@ class Public_Order extends DBW_Table {
                 return $this->get('Order '.$key.' Formatted');
                 break;
 
+            case 'Basket Items Discount Amount':
+                return money(-1 * $this->data['Order Items Discount Amount'], $this->data['Order Currency']);
+                break;
             case 'Basket Payments Amount':
                 return money(-1 * $this->data['Order Payments Amount'], $this->data['Order Currency']);
                 break;

@@ -330,18 +330,28 @@
             border-bottom:1px solid #ccc;
         }
 
-        .totals  table  tr.total{
-            font-weight: 800;
-        }
 
-        .totals  table tr:first-child td{
-            border-top:1px solid #c5c5c5;
+
+        .totals  table {
+            border-top:1px solid #777;
+            border-bottom:1px solid #777;
         }
 
 
 
         .totals  table tr:last-child td{
-            border-bottom:2px solid #bbb;
+            border-bottom:1px solid #777;
+        }
+
+        .totals  table  tr.before_total td{
+
+            border-bottom:1px solid #777;
+        }
+
+        .totals  table  tr.total td{
+            font-weight: 800;
+            border-top:1px solid #777;
+            border-bottom:1px solid #777;
         }
 
         .order table{
@@ -356,6 +366,8 @@
         .order table tr:last-child td{
             border-bottom:1px solid #c5c5c5;
         }
+
+
 
         {/if}
 

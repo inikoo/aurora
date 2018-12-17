@@ -138,28 +138,11 @@ class Public_Payment_Account {
                         )
                     );
 
-                    /*
-                                        $paypal_data = base64_url_encode(
-
-                                                json_encode(
-                                                    array(
-                                                        'braintree_account_key'    => $this->id,
-                                                        'Payment Account ID'       => $this->get('Payment Account ID'),
-                                                        'Payment Account Login'    => $this->get('Payment Account Login'),
-                                                        'Payment Account Password' => $this->get('Payment Account Password'),
-                                                        'order_key'                => $arg->id,
-                                                        'amount'                   => $arg->get('Order To Pay Amount'),
-                                                        'currency'                 => $arg->get('Order Currency'),
-                                                        'Random'                   => password_hash(time(), PASSWORD_BCRYPT)
-                                                    )
-                                                )
-                                        );
-
-                    */
 
                     return $paypal_data;
 
                 } elseif ($this->data['Payment Account Block'] = 'BTree') {
+
 
                     $gateway = new Braintree_Gateway(
                         [
@@ -171,26 +154,29 @@ class Public_Payment_Account {
                     );
 
 
-                    
-
                     $credit_cards = array();
                     try {
                         $braintree_customer = $gateway->customer()->find($arg);
 
 
-
                         include_once 'utils/aes.php';
-
 
 
                         foreach ($braintree_customer->creditCards as $braintree_credit_card) {
 
 
-                            $token=AESEncryptCtr(json_encode(array('t'=>$braintree_credit_card->token,'s'=>mt_rand(1,10000))), md5('CCToken'.CKEY), 256);
+                            $token = AESEncryptCtr(
+                                json_encode(
+                                    array(
+                                        't' => $braintree_credit_card->token,
+                                        's' => mt_rand(1, 10000)
+                                    )
+                                ), md5('CCToken'.CKEY), 256
+                            );
 
                             $credit_cards[] = array(
                                 'Masked Number'             => $braintree_credit_card->maskedNumber,
-                                'Last 4 Numbers'             => $braintree_credit_card->last4,
+                                'Last 4 Numbers'            => $braintree_credit_card->last4,
                                 'Image'                     => $braintree_credit_card->imageUrl,
                                 'Formatted Expiration Date' => $braintree_credit_card->expirationDate,
                                 'Token'                     => $token
@@ -205,8 +191,8 @@ class Public_Payment_Account {
 
                     $_data = array(
 
-                        'client_token'        => $gateway->clientToken()->generate(),
-                        'credit_cards'        => $credit_cards,
+                        'client_token'              => $gateway->clientToken()->generate(),
+                        'credit_cards'              => $credit_cards,
                         'number_saved_credit_cards' => count($credit_cards)
                     );
 

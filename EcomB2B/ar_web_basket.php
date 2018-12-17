@@ -225,24 +225,26 @@ function update_item($_data, $customer, $order, $editor, $db) {
 
         if ($order->get('Order Items Discount Amount') == 0) {
 
-
+            $hide[] = 'order_items_gross_container';
             $hide[] = 'order_items_discount_container';
         } else {
-
+            $show[] = 'order_items_gross_container';
             $show[] = 'order_items_discount_container';
         }
 
 
         $class_html = array(
             'order_items_gross'       => $order->get('Items Gross Amount'),
-            'order_items_discount'    => $order->get('Items Discount Amount'),
+            'order_items_discount'    => $order->get('Basket Items Discount Amount'),
             'order_items_net'         => $order->get('Items Net Amount'),
             'order_net'               => $order->get('Total Net Amount'),
             'order_tax'               => $order->get('Total Tax Amount'),
             'order_charges'           => $order->get('Charges Net Amount'),
             'order_credits'           => $order->get('Net Credited Amount'),
+            'available_credit_amount' => $order->get('Available Credit Amount'),
             'order_shipping'          => $shipping_amount,
             'order_total'             => $order->get('Total Amount'),
+            'to_pay_amount'             => $order->get('Basket To Pay Amount'),
             'ordered_products_number' => $order->get('Products'),
             'order_amount'            => ((!empty($website->settings['Info Bar Basket Amount Type']) and $website->settings['Info Bar Basket Amount Type'] == 'items_net') ? $order->get('Items Net Amount') : $order->get('Total'))
         );

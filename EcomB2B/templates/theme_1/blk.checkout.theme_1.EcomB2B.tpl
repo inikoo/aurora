@@ -95,7 +95,7 @@
 
                         <td class="text-right order_tax">{$order->get('Total Tax Amount')}</td>
                     </tr>
-                    <tr>
+                    <tr class="total">
                         <td>{if isset($labels._total) and $labels._total!=''}{$labels._total}{else}{t}Total{/t}{/if}</td>
 
                         <td class="text-right order_total">{$order->get('Total')}</td>
@@ -110,7 +110,7 @@
 
                         <td class="text-right available_credit_amount ">{$order->get('Available Credit Amount')}</td>
                     </tr>
-                    <tr class="to_pay_amount_tr {if $order->get('Order Payments Amount')==0 and $order->get('Order Available Credit Amount')==0 }hide{/if}">
+                    <tr class="to_pay_amount_tr total {if $order->get('Order Payments Amount')==0 and $order->get('Order Available Credit Amount')==0 }hide{/if}">
                         <td>{if isset($labels._order_to_pay_amount) and $_order_to_pay_amount._total!=''}{$labels._order_to_pay_amount}{else}{t}To pay{/t}{/if}</td>
 
                         <td class="text-right to_pay_amount">{$order->get('Basket To Pay Amount')}</td>
@@ -906,9 +906,7 @@
                                 },
                                     function (paypalCheckoutErr, paypalCheckoutInstance) {
 
-                                    // Stop if there was a problem creating PayPal Checkout.
-                                    // This could happen if there was a network error or if it's incorrectly
-                                    // configured.
+
                                     if (paypalCheckoutErr) {
                                         console.error('Error creating PayPal Checkout:', paypalCheckoutErr);
                                         return;
@@ -918,7 +916,6 @@
 
 
 
-                                    // Set up PayPal with the checkout.js library
                                     paypal.Button.render({
                                         env: 'production', // or 'production'
                                         commit: true,
@@ -940,9 +937,6 @@
 
                                                 $('#processing_paypal').removeClass('hide')
                                                 $('#paying_paypal').addClass('hide')
-
-                                                        console.log(err)
-                                                console.log(payload)
 
 
 
