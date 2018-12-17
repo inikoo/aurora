@@ -220,10 +220,10 @@ function place_order_pay_braintree($store, $_data, $order, $customer, $website, 
     if ($credits > 0) {
 
 
-        if (($order->get('Order Basket To Pay Amount') - $order->get('Order Basket To Pay Amount')) < $credits) {
-            $to_pay_credits = $to_pay;
+        if ($to_pay < $credits) {
 
-            list($customer, $order, $credit_payment_account, $credit_payment) = pay_credit($order, $to_pay_credits, $editor, $db, $account);
+
+            list($customer, $order, $credit_payment_account, $credit_payment) = pay_credit($order, $to_pay, $editor, $db, $account);
 
             place_order($store, $order, $credit_payment_account->id, $customer, $website, $editor, $smarty, $account, $db);
 
@@ -365,6 +365,7 @@ function place_order_pay_braintree_paypal($store, $_data, $order, $customer, $we
         ]
     );
 
+
     $braintree_data = get_sale_transaction_braintree_data($order, $gateway);
 
     $braintree_data['amount'] = floatval($_data['amount']);
@@ -372,8 +373,8 @@ function place_order_pay_braintree_paypal($store, $_data, $order, $customer, $we
     $braintree_data['merchantAccountId']  = $payment_account->get('Payment Account Cart ID');
     $braintree_data['paymentMethodNonce'] = $_data['nonce'];
 
-    process_braintree_order($braintree_data, $order, $gateway, $customer, $store, $website, $payment_account, $editor, $db, $account, $smarty);
-
+    $response = process_braintree_order($braintree_data, $order, $gateway, $customer, $store, $website, $payment_account, $editor, $db, $account, $smarty);
+    echo json_encode($response);
 
 }
 
@@ -635,9 +636,9 @@ function place_order_pay_braintree_using_saved_card($store, $_data, $order, $cus
 
 
             if ($to_pay < $credits) {
-                $to_pay_credits = $to_pay;
 
-                list($customer, $order, $credit_payment_account, $credit_payment) = pay_credit($order, $to_pay_credits, $editor, $db, $account);
+
+                list($customer, $order, $credit_payment_account, $credit_payment) = pay_credit($order, $to_pay, $editor, $db, $account);
 
                 place_order($store, $order, $credit_payment_account->id, $customer, $website, $editor, $smarty, $account, $db);
 
@@ -651,11 +652,6 @@ function place_order_pay_braintree_using_saved_card($store, $_data, $order, $cus
                 echo json_encode($response);
                 exit;
 
-            } else {
-
-                $to_pay = $to_pay - $credits;
-
-
             }
 
 
@@ -664,13 +660,13 @@ function place_order_pay_braintree_using_saved_card($store, $_data, $order, $cus
 
         $braintree_data = get_sale_transaction_braintree_data($order, $gateway);
 
-        $braintree_data['amount']             = $to_pay;
+        $braintree_data['amount']             = $order->get('Order Basket To Pay Amount');
         $braintree_data['paymentMethodToken'] = $token;
         $braintree_data['merchantAccountId']  = $payment_account->get('Payment Account Cart ID');
 
 
-        process_braintree_order($braintree_data, $order, $gateway, $customer, $store, $website, $payment_account, $editor, $db, $account, $smarty);
-
+        $response = process_braintree_order($braintree_data, $order, $gateway, $customer, $store, $website, $payment_account, $editor, $db, $account, $smarty);
+        echo json_encode($response);
 
     } else {
 

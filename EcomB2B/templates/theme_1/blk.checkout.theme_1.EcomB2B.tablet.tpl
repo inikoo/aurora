@@ -42,7 +42,7 @@
                     <tr class="payments_amount_tr {if $order->get('Order Payments Amount')==0}hide{/if}" >
                         <td>{if isset($labels._order_paid_amount) and $labels._order_paid_amount!=''}{$labels._order_paid_amount}{else}{t}Paid{/t}{/if}</td>
 
-                        <td class="text-right payments_amount">{$order->get('Payments Amount')}</td>
+                        <td class="text-right payments_amount">{$order->get('Basket Payments Amount')}</td>
                     </tr>
                     <tr class="tax available_credit_amount_tr {if $order->get('Order Available Credit Amount')==0}hide{/if}" >
                         <td>{if isset($labels._order_available_credit_amount) and $labels._order_available_credit_amount!=''}{$labels._order_available_credit_amount}{else}{t}Credit{/t}{/if}</td>
@@ -834,9 +834,7 @@
                         },
                         function (paypalCheckoutErr, paypalCheckoutInstance) {
 
-                            // Stop if there was a problem creating PayPal Checkout.
-                            // This could happen if there was a network error or if it's incorrectly
-                            // configured.
+
                             if (paypalCheckoutErr) {
                                 console.error('Error creating PayPal Checkout:', paypalCheckoutErr);
                                 return;
@@ -846,17 +844,16 @@
 
 
 
-                            // Set up PayPal with the checkout.js library
+
                             paypal.Button.render({
                                 env: 'production', // or 'production'
                                 commit: true,
                                 payment: function () {
                                     return paypalCheckoutInstance.createPayment({
-                                        flow: 'checkout', // Required
-                                        amount: '{$order->get('Order Basket To Pay Amount')}', // Required
-                                        currency: '{$order->get('Order Currency')}', // Required
-                                        // Your PayPal options here. For available options, see
-                                        // http://braintree.github.io/braintree-web/current/PayPalCheckout.html#createPayment
+                                        flow: 'checkout', 
+                                        amount: '{$order->get('Order Basket To Pay Amount')}', 
+                                        currency: '{$order->get('Order Currency')}', 
+                                       
                                     });
                                 },
 
@@ -869,8 +866,6 @@
                                         $('#processing_paypal').removeClass('hide')
                                         $('#paying_paypal').addClass('hide')
 
-                                        console.log(err)
-                                        console.log(payload)
 
 
 
@@ -878,7 +873,7 @@
                                         ajaxData.append("tipo", 'place_order_pay_braintree_paypal')
 
                                         ajaxData.append("payment_account_key",BTreePaypal_account_key )
-
+                                        ajaxData.append("amount",'{$order->get('Order Basket To Pay Amount')}' )
                                         ajaxData.append("nonce",payload.nonce )
 
                                         $.ajax({

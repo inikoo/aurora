@@ -70,10 +70,10 @@
 
                     <td class=" text-right order_items_gross ">{$order->get('Items Gross Amount')}</td>
                 </tr>
-                <tr class="order_items_discount_container {if $order->get('Order Items Discount Amount')==0 }hide{/if}">
+                <tr class="order_items_discount_container last_items {if $order->get('Order Items Discount Amount')==0 }hide{/if}">
                     <td>{if isset($labels._items_discounts) and $labels._items_discounts!=''}{$labels._items_discounts}{else}{t}Items Discounts{/t}{/if}</td>
 
-                    <td class="text-right order_items_discount">{$order->get('Items Discount Amount')}</td>
+                    <td class="text-right order_items_discount">{$order->get('Basket Items Discount Amount')}</td>
                 </tr>
                 <tr>
                     <td>{if isset($labels._items_net) and $labels._items_net!=''}{$labels._items_net}{else}{t}Items Net{/t}{/if}</td>
@@ -123,7 +123,7 @@
 
                     <td class="text-right available_credit_amount ">{$order->get('Available Credit Amount')}</td>
                 </tr>
-                <tr class="to_pay_amount_tr {if $order->get('Order Available Credit Amount')!=0}total{/if} {if $order->get('Order Payments Amount')==0 and $order->get('Order Available Credit Amount')==0 }hide{/if}" >
+                <tr class="to_pay_amount_tr total {if $order->get('Order Payments Amount')==0 and $order->get('Order Available Credit Amount')==0 }hide{/if}" >
                     <td>{if isset($labels._order_to_pay_amount) and $_order_to_pay_amoount._total!=''}{$labels._order_to_pay_amoount}{else}{t}To pay{/t}{/if}</td>
 
                     <td class="text-right to_pay_amount">{$order->get('Basket To Pay Amount')}</td>
