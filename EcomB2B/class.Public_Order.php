@@ -387,10 +387,13 @@ class Public_Order extends DBW_Table {
                 return $this->get('Order '.$key.' Formatted');
                 break;
 
+            case 'Basket Payments Amount':
+                return money(-1 * $this->data['Order Payments Amount'], $this->data['Order Currency']);
+                break;
             case 'Basket To Pay Amount':
 
-                if ($this->data['Order Total Amount'] > $this->data['Order Available Credit Amount']) {
-                    return money($this->data['Order Total Amount'] - $this->data['Order Available Credit Amount'], $this->data['Order Currency']);
+                if ($this->data['Order To Pay Amount']> $this->data['Order Available Credit Amount']) {
+                    return money($this->data['Order To Pay Amount'] - $this->data['Order Available Credit Amount'], $this->data['Order Currency']);
 
                 } else {
                     return money(0, $this->data['Order Currency']);
@@ -402,10 +405,10 @@ class Public_Order extends DBW_Table {
 
             case 'Order Basket To Pay Amount':
 
-                if ($this->data['Order Total Amount'] > $this->data['Order Available Credit Amount']) {
-                    return $this->data['Order Total Amount'] - $this->data['Order Available Credit Amount'];
+                if ($this->data['Order To Pay Amount']> $this->data['Order Available Credit Amount']) {
+                    return $this->data['Order To Pay Amount'] - $this->data['Order Available Credit Amount'] ;
                 } else {
-                    return $this->data['Order Total Amount'];
+                    return 0;
 
                 }
 

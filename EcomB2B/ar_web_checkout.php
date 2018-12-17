@@ -109,7 +109,14 @@ switch ($tipo) {
         $store   = get_object('Store', $order->get('Order Store Key'));
 
         place_order($store, $order, $payment_account_key, $customer, $website, $editor, $smarty, $account, $db);
+        $response = array(
+            'state'     => 200,
+            'order_key' => $order->id,
 
+        );
+
+
+        echo json_encode($response);
 
         break;
 
@@ -118,7 +125,7 @@ switch ($tipo) {
             $_REQUEST, array(
                          'payment_account_key' => array('type' => 'key'),
                          //  'order_key'           => array('type' => 'key'),
-                         //  'amount'              => array('type' => 'string'),
+                         'amount'              => array('type' => 'string'),
                          //  'currency'            => array('type' => 'string'),
                          'nonce'               => array('type' => 'string'),
 
@@ -189,6 +196,12 @@ switch ($tipo) {
 function place_order_pay_braintree($store, $_data, $order, $customer, $website, $editor, $smarty, $db, $account) {
 
 
+    $order->fast_update(
+        array(
+            'Order Available Credit Amount' => $customer->get('Customer Account Balance')
+        )
+    );
+
     $payment_account         = get_object('Payment_Account', $_data['payment_account_key']);
     $payment_account->editor = $editor;
 
@@ -201,17 +214,45 @@ function place_order_pay_braintree($store, $_data, $order, $customer, $website, 
         ]
     );
 
-    $braintree_data = get_sale_transaction_braintree_data($order, $gateway, $_data['data']['save_card']);
 
-    $braintree_data['merchantAccountId']= $payment_account->get('Payment Account Cart ID');
+    $to_pay  = $order->get('Order To Pay Amount');
+    $credits = floatval($customer->get('Customer Account Balance'));
+    if ($credits > 0) {
 
+
+        if (($order->get('Order Basket To Pay Amount') - $order->get('Order Basket To Pay Amount')) < $credits) {
+            $to_pay_credits = $to_pay;
+
+            list($customer, $order, $credit_payment_account, $credit_payment) = pay_credit($order, $to_pay_credits, $editor, $db, $account);
+
+            place_order($store, $order, $credit_payment_account->id, $customer, $website, $editor, $smarty, $account, $db);
+
+            $response = array(
+                'state'     => 200,
+                'order_key' => $order->id,
+
+            );
+
+
+            echo json_encode($response);
+            exit;
+
+        }
+
+
+    }
+
+
+    $braintree_data           = get_sale_transaction_braintree_data($order, $gateway, $_data['data']['save_card']);
+    $braintree_data['amount'] = $order->get('Order Basket To Pay Amount');
+
+
+    $braintree_data['merchantAccountId']  = $payment_account->get('Payment Account Cart ID');
     $braintree_data['paymentMethodNonce'] = $_data['data']['nonce'];
 
 
-    // print_r($braintree_data);
-
-    process_braintree_order($braintree_data, $order, $gateway, $customer, $store, $website, $payment_account, $editor, $db, $account, $smarty);
-
+    $response = process_braintree_order($braintree_data, $order, $gateway, $customer, $store, $website, $payment_account, $editor, $db, $account, $smarty);
+    echo json_encode($response);
 
 }
 
@@ -242,15 +283,6 @@ function place_order($store, $order, $payment_account_key, $customer, $website, 
     ), $account->get('Account Code')
     );
 
-
-    $response = array(
-        'state'     => 200,
-        'order_key' => $order->id,
-
-    );
-
-
-    echo json_encode($response);
 
 }
 
@@ -314,6 +346,12 @@ function get_error_message($code, $original_message) {
 function place_order_pay_braintree_paypal($store, $_data, $order, $customer, $website, $editor, $smarty, $db, $account) {
 
 
+    $order->fast_update(
+        array(
+            'Order Available Credit Amount' => $customer->get('Customer Account Balance')
+        )
+    );
+
     $payment_account         = get_object('Payment_Account', $_data['payment_account_key']);
     $payment_account->editor = $editor;
 
@@ -328,7 +366,10 @@ function place_order_pay_braintree_paypal($store, $_data, $order, $customer, $we
     );
 
     $braintree_data = get_sale_transaction_braintree_data($order, $gateway);
-    $braintree_data['merchantAccountId']= $payment_account->get('Payment Account Cart ID');
+
+    $braintree_data['amount'] = floatval($_data['amount']);
+
+    $braintree_data['merchantAccountId']  = $payment_account->get('Payment Account Cart ID');
     $braintree_data['paymentMethodNonce'] = $_data['nonce'];
 
     process_braintree_order($braintree_data, $order, $gateway, $customer, $store, $website, $payment_account, $editor, $db, $account, $smarty);
@@ -381,8 +422,6 @@ function pay_credit($order, $amount, $editor, $db, $account) {
 
 
     );
-
-    //print_r($payment_data);
 
 
     $payment = $payment_account->create_payment($payment_data);
@@ -437,6 +476,13 @@ function get_checkout_html($data, $customer, $smarty) {
     $theme   = $website->get('Website Theme');
 
     $order = get_object('Order', $customer->get_order_in_process_key());
+
+    $order->fast_update(
+        array(
+            'Order Available Credit Amount' => $customer->get('Customer Account Balance')
+        )
+    );
+
 
     if (!$order->id or ($order->get('Products') == 0)) {
 
@@ -528,10 +574,14 @@ function place_order_pay_braintree_using_saved_card($store, $_data, $order, $cus
     //require_once 'external_libs/braintree-php-3.2.0/lib/Braintree.php';
 
 
+    $order->fast_update(
+        array(
+            'Order Available Credit Amount' => $customer->get('Customer Account Balance')
+        )
+    );
+
     $payment_account         = get_object('Payment_Account', $_data['payment_account_key']);
     $payment_account->editor = $editor;
-
-
 
 
     $gateway = new Braintree_Gateway(
@@ -579,9 +629,46 @@ function place_order_pay_braintree_using_saved_card($store, $_data, $order, $cus
     if ($verification_result->success) {
 
 
-        $braintree_data                       = get_sale_transaction_braintree_data($order, $gateway);
+        $to_pay  = $order->get('Order To Pay Amount');
+        $credits = floatval($customer->get('Customer Account Balance'));
+        if ($credits > 0) {
+
+
+            if ($to_pay < $credits) {
+                $to_pay_credits = $to_pay;
+
+                list($customer, $order, $credit_payment_account, $credit_payment) = pay_credit($order, $to_pay_credits, $editor, $db, $account);
+
+                place_order($store, $order, $credit_payment_account->id, $customer, $website, $editor, $smarty, $account, $db);
+
+                $response = array(
+                    'state'     => 200,
+                    'order_key' => $order->id,
+
+                );
+
+
+                echo json_encode($response);
+                exit;
+
+            } else {
+
+                $to_pay = $to_pay - $credits;
+
+
+            }
+
+
+        }
+
+
+        $braintree_data = get_sale_transaction_braintree_data($order, $gateway);
+
+        $braintree_data['amount']             = $to_pay;
         $braintree_data['paymentMethodToken'] = $token;
-        $braintree_data['merchantAccountId']= $payment_account->get('Payment Account Cart ID');
+        $braintree_data['merchantAccountId']  = $payment_account->get('Payment Account Cart ID');
+
+
         process_braintree_order($braintree_data, $order, $gateway, $customer, $store, $website, $payment_account, $editor, $db, $account, $smarty);
 
 
@@ -639,9 +726,9 @@ function get_sale_transaction_braintree_data($order, $gateway, $save_payment = f
 
     $braintree_data = [
 
-        'amount'            => $order->get('Order To Pay Amount'),
-        'orderId'           => $order->get('Order Public ID'),
-        'customer'          => [
+        'amount'   => $order->get('Order To Pay Amount'),
+        'orderId'  => $order->get('Order Public ID'),
+        'customer' => [
 
             'firstName' => $billing_contact_name['fname'],
             'lastName'  => $billing_contact_name['lname'],
@@ -698,34 +785,8 @@ function get_sale_transaction_braintree_data($order, $gateway, $save_payment = f
 
 function process_braintree_order($braintree_data, $order, $gateway, $customer, $store, $website, $payment_account, $editor, $db, $account, $smarty) {
 
-    $to_pay  = $order->get('Order To Pay Amount');
-    $credits = $customer->get('Customer Account Balance');
-    if ($credits > 0) {
 
-        if ($to_pay < $credits) {
-            $to_pay_credits = $to_pay;
-
-            list($customer, $order, $credit_payment_account, $credit_payment) = pay_credit($order, $to_pay_credits, $editor, $db, $account);
-
-            place_order($store, $order, $credit_payment_account->id, $customer, $website, $editor, $smarty, $account, $db);
-            exit;
-
-        } else {
-            $to_pay_credits = $credits;
-            list($customer, $order, $credit_payment_account, $credit_payment) = pay_credit($order, $to_pay_credits, $editor, $db, $account);
-
-        }
-
-
-    }
-
-
-    if ($order->get('Order To Pay Amount') > 0) {
-
-
-
-
-        try {
+    try {
 
 
         $result = $gateway->transaction()->sale($braintree_data);
@@ -786,11 +847,26 @@ function process_braintree_order($braintree_data, $order, $gateway, $customer, $
             $order->add_payment($payment);
 
 
+            $credits = floatval($customer->get('Customer Account Balance'));
+
+            if ($credits > 0) {
+                $to_pay_credits = min($order->get('Order To Pay Amount'), $credits);
+                list($customer, $order, $credit_payment_account, $credit_payment) = pay_credit($order, $to_pay_credits, $editor, $db, $account);
+
+            }
+
+
             place_order($store, $order, $payment_account->id, $customer, $website, $editor, $smarty, $account, $db);
+            $response = array(
+                'state'     => 200,
+                'order_key' => $order->id,
+
+            );
+
+            return $response;
 
 
-        }
-        else {
+        } else {
 
 
             $error_messages         = array();
@@ -901,29 +977,28 @@ function process_braintree_order($braintree_data, $order, $gateway, $customer, $
                 // 'transaction_id'=>$transaction_id
 
             );
-            echo json_encode($response);
+
+            return $response;
 
 
         }
 
 
-                } catch (Exception $e) {
+    } catch (Exception $e) {
 
 
-                    $msg = _('There was a problem processing your credit card; please double check your payment information and try again').'.';
+        $msg = _('There was a problem processing your credit card; please double check your payment information and try again').'.';
 
-                    $response = array(
+        $response = array(
 
-                        'state' => 400,
-                        'msg'   => $msg
+            'state' => 400,
+            'msg'   => $msg
 
-                    );
-                    echo json_encode($response);
-                    exit;
+        );
 
-                    //echo 'Message: ' .$e->getMessage();
-                }
+        return $response;
 
+        //echo 'Message: ' .$e->getMessage();
     }
 
 

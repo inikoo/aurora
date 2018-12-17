@@ -520,6 +520,14 @@ function get_basket_html($data, $customer) {
 
     $order = get_object('Order', $customer->get_order_in_process_key());
 
+
+    $order->fast_update(
+        array(
+            'Order Available Credit Amount' => $customer->get('Customer Account Balance')
+        )
+    );
+
+
     $website = get_object('Website', $_SESSION['website_key']);
 
     $theme = $website->get('Website Theme');
