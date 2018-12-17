@@ -211,11 +211,11 @@ trait OrderItems {
                         "INSERT INTO `Order Transaction Fact` (`Order Bonus Quantity`,`Order Transaction Type`,`Transaction Tax Rate`,`Transaction Tax Code`,`Order Currency Code`,`Invoice Currency Code`,`Estimated Weight`,`Order Date`,`Order Last Updated Date`,
 			`Product Key`,`Product ID`,`Product Code`,`Product Family Key`,`Product Department Key`,
 			`Current Dispatching State`,`Current Payment State`,`Customer Key`,`Order Key`,`Order Public ID`,`Order Quantity`,
-			`Order Transaction Gross Amount`,`Order Transaction Total Discount Amount`,`Order Transaction Amount`,`Metadata`,`Store Key`,`Units Per Case`,`Customer Message`,`Delivery Note Key`,`Cost Supplier`)
+			`Order Transaction Gross Amount`,`Order Transaction Total Discount Amount`,`Order Transaction Amount`,`Metadata`,`Store Key`,`Units Per Case`,`Customer Message`,`Delivery Note Key`,`Cost Supplier`,`Order Transaction Metadata`)
 VALUES (%f,%s,%f,%s,%s,%s,%s,%s,%s,
 	%d,%d,%s,%d,%d,
 	%s,%s,%s,%s,%s,%s,
-	%.2f,%.2f,%.2f,%s,%s,%f,'',%s,%.4f)   ",
+	%.2f,%.2f,%.2f,%s,%s,%f,'',%s,%.4f,'{}')   ",
 
                         $bonus_quantity, prepare_mysql($order_type), $tax_rate, prepare_mysql($tax_code), prepare_mysql($this->data['Order Currency']), prepare_mysql($this->data['Order Currency']), $estimated_weight, prepare_mysql(gmdate('Y-m-d H:i:s')),
 
