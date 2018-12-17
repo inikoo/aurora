@@ -512,7 +512,9 @@ class Warehouse extends DB_Table {
             exit;
         }
 
-        $sql = sprintf('SELECT count(*) AS number  , sum(if(`Quantity On Hand`<0,1,0) ) AS errors,sum(`Stock Value`) as amount FROM `Part Location Dimension` WHERE `Part Location Warehouse Key`=%d  and `Location Key`=%d  ', $this->id,$this->get('Warehouse Unknown Location Key'));
+        $sql = sprintf(
+            'SELECT count(*) AS number  , sum(if(`Quantity On Hand`<0,1,0) ) AS errors,sum(`Stock Value`) as amount FROM `Part Location Dimension` WHERE `Part Location Warehouse Key`=%d  and `Location Key`=%d  ', $this->id, $this->get('Warehouse Unknown Location Key')
+        );
 
 
         if ($result = $this->db->query($sql)) {
@@ -586,6 +588,13 @@ class Warehouse extends DB_Table {
 
                 return money($this->data['Warehouse '.$key], $account->get('Account Currency Code'));
                 break;
+            case 'Delivery Notes Ready to Pick Weight':
+            case 'Delivery Notes Assigned Weight':
+
+
+                return weight($this->data['Warehouse '.$key]);
+                break;
+
 
             default:
 
@@ -955,10 +964,10 @@ class Warehouse extends DB_Table {
 
 
         // print_r($data);
-        $this->new_warehouse_area = false;
-        $data['Warehouse Area Warehouse Key']    = $this->id;
-        $data['editor']    = $this->editor;
-        $warehouse_area           = new WarehouseArea('find', $data, 'create');
+        $this->new_warehouse_area             = false;
+        $data['Warehouse Area Warehouse Key'] = $this->id;
+        $data['editor']                       = $this->editor;
+        $warehouse_area                       = new WarehouseArea('find', $data, 'create');
 
         if ($warehouse_area->id) {
 
@@ -976,6 +985,7 @@ class Warehouse extends DB_Table {
         } else {
             $this->error = true;
             $this->msg   = $warehouse_area->msg;
+
             return false;
         }
     }
@@ -1953,6 +1963,54 @@ class Warehouse extends DB_Table {
         return $shippers;
     }
 
+
+    function update_delivery_notes() {
+
+        $ready_to_pick_number = 0;
+        $assigned_number      = 0;
+
+        $ready_to_pick_weight = 0;
+        $assigned_weight      = 0;
+
+
+        $sql = sprintf('select count(*) as num, sum( if(`Delivery Note Weight Source`="Estimated",`Delivery Note Estimated Weight` ,`Delivery Note Weight`)  ) as weight,  `Delivery Note State` from `Delivery Note Dimension` where `Delivery Note Warehouse Key`=%d group by `Delivery Note State`', $this->id);
+
+        if ($result = $this->db->query($sql)) {
+            foreach ($result as $row) {
+
+                switch ($row['Delivery Note State']) {
+                    case 'Ready to be Picked':
+                        $ready_to_pick_number = $row['num'];
+                        $ready_to_pick_weight = $row['weight'];
+                        break;
+                    case 'Picker Assigned':
+                        $assigned_number = $row['num'];
+                        $assigned_weight = $row['weight'];
+                        break;
+
+                }
+
+
+            }
+        } else {
+            print_r($error_info = $this->db->errorInfo());
+            print "$sql\n";
+            exit;
+        }
+
+
+        $this->fast_update(
+            array(
+                'Warehouse Delivery Notes Ready to Pick Number' => $ready_to_pick_number,
+                'Warehouse Delivery Notes Ready to Pick Weight' => $ready_to_pick_weight,
+                'Warehouse Delivery Notes Assigned Number' => $assigned_number,
+                'Warehouse Delivery Notes Assigned Weight' => $assigned_weight,
+
+            )
+        );
+
+
+    }
 }
 
 

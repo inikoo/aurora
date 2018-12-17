@@ -1009,7 +1009,7 @@ function refund_payment($data, $editor, $smarty, $db, $account, $user) {
                                         'state' => 400,
                                         'msg'   => sprintf(_("Can't refund transaction with status %s"), $transaction->status)
                                     );
-                                
+
                                     echo json_encode($response);
                                     exit;
 
@@ -1243,6 +1243,7 @@ function create_refund($data, $editor, $smarty, $db) {
         $response = array(
             'state'      => 200,
             'refund_key' => $refund->id,
+            'order_key' => $refund->get('Invoice Order Key'),
             'store_key'  => $refund->get('Store Key')
 
         );

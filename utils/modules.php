@@ -1090,16 +1090,6 @@ $modules = array(
             ),
 
 
-            'invoices' => array(
-                'type'      => 'navigation',
-                'label'     => _('Invoices'),
-                'icon'      => 'file-alt',
-                'reference' => 'invoices/%d',
-                'tabs'      => array(
-                    'invoices' => array()
-                )
-
-            ),
 
 
             'order'         => array(
@@ -1172,6 +1162,36 @@ $modules = array(
                 )
 
             ),
+            'invoice'       => array(
+                'type' => 'object',
+                'tabs' => array(
+
+
+                    'invoice.items'    => array(
+                        'label' => _('Items'),
+                        'icon'  => 'bars'
+                    ),
+                    'invoice.details'  => array(
+                        'label' => _('Data'),
+                        'icon'  => 'database'
+                    ),
+                    'invoice.payments' => array(
+                        'label' => _('Payments'),
+                        'icon'  => 'fa-dollar-sign',
+
+                    ),
+                    'invoice.history'  => array(
+                        'label' => '',
+                        'title' => _('History'),
+                        'icon'  => 'road',
+                        'class' => 'right icon_only'
+
+                    )
+
+                )
+
+            ),
+
             'delivery_note' => array(
                 'type' => 'object',
                 'tabs' => array(
@@ -1217,21 +1237,20 @@ $modules = array(
                 )
 
             ),
-            'invoice'       => array(
+
+
+
+            'refund'       => array(
                 'type' => 'object',
                 'tabs' => array(
 
 
                     'invoice.items'    => array(
-                        'label' => _(
-                            'Items'
-                        ),
+                        'label' => _('Items'),
                         'icon'  => 'bars'
                     ),
                     'invoice.details'  => array(
-                        'label' => _(
-                            'Data'
-                        ),
+                        'label' => _('Data'),
                         'icon'  => 'database'
                     ),
                     'invoice.payments' => array(
@@ -1246,51 +1265,13 @@ $modules = array(
                         'class' => 'right icon_only'
 
                     )
-                    /*,
-                    'invoice.orders'         => array(
-                        'label' => _(
-                            'Orders'
-                        ),
-                        'icon'  => 'shopping-cart'
-                    ),
-                    'invoice.delivery_notes' => array(
-                        'label' => _(
-                            'Delivery notes'
-                        ),
-                        'icon'  => 'truck'
-                    ),
-                    */
+
                 )
 
             ),
 
 
-            'refund'          => array(
-                'type' => 'object',
-                'tabs' => array(
 
-
-                    'refund.items'   => array(
-                        'label' => _(
-                            'Items'
-                        ),
-                        'icon'  => 'bars'
-                    ),
-                    'refund.details' => array(
-                        'label' => _(
-                            'Data'
-                        ),
-                        'icon'  => 'database'
-                    ),
-                    'refund.history' => array(
-                        'label' => _(
-                            'History'
-                        ),
-                        'icon'  => 'road'
-                    )
-                )
-
-            ),
             'replacement.new' => array(
                 'type' => 'object',
                 'tabs' => array(
@@ -1482,53 +1463,9 @@ $modules = array(
                 )
 
             ),
-            'invoices'  => array(
-                'type'      => 'navigation',
-                'label'     => _('Invoices'),
-                'icon'      => 'file-alt',
-                'reference' => 'invoices/all',
-                'tabs'      => array(
-                    'invoices_server' => array()
-                )
-
-            ),
 
 
-            'categories' => array(
-                'type'      => 'navigation',
-                'label'     => _('Invoices categories'),
-                'icon'      => 'sitemap',
-                'reference' => 'invoices/all/categories',
-                'tabs'      => array(
-                    'invoices.categories' => array()
-                )
 
-            ),
-
-            'category' => array(
-                'type' => 'object',
-
-                'tabs' => array(
-                    'category.details' => array(
-                        'label' => _('Data'),
-                        'icon'  => 'database',
-                        'title' => _('Details')
-                    ),
-
-                    'category.subjects'   => array('label' => _('Invoices')),
-                    'category.categories' => array(
-                        'label' => _('Categories')
-                    ),
-                    'category.history'    => array(
-                        'title' => _('History'),
-                        'label' => '',
-                        'icon'  => 'road',
-                        'class' => 'right icon_only'
-                    ),
-
-                )
-
-            ),
 
 
             'email_campaign' => array(
@@ -1990,6 +1927,24 @@ $modules = array(
         'section'     => 'delivery_notes_server',
         'sections'    => array(
 
+
+
+            'pending_delivery_notes' => array(
+
+                'type'      => 'navigation',
+                'label'     => _('Pending delivery notes'),
+                'icon'      => 'angle-double-right',
+                'reference' => 'pending_delivery_notes',
+                'tabs'      => array(
+                    'pending_delivery_notes' => array(
+                        'label' => _('Delivery notes'),
+                    ),
+
+
+                )
+
+            ),
+/*
             'group_by_store' => array(
                 'type'      => 'navigation',
                 'label'     => _('Group by store'),
@@ -2001,14 +1956,73 @@ $modules = array(
 
             ),
 
-
+*/
             'delivery_notes' => array(
                 'type'      => 'navigation',
+                'label'     => _('Delivery notes'),
                 'icon'      => 'truck',
-                'label'     => _('Delivery notes').' ('._('All stores').')',
                 'reference' => 'delivery_notes/all',
                 'tabs'      => array(
-                    'delivery_notes_server' => array()
+                    'delivery_notes_server' => array(
+                        'icon'      => 'truck',
+                        'label'     => _('Delivery notes'),
+
+                    ),
+                    'delivery_notes_group_by_store' => array(
+                        'label'     => _('Group by store'),
+                        'icon'      => 'compress',
+
+                    )
+                )
+
+            ),
+
+            'returns'     => array(
+                'type'      => 'navigation',
+                'label'     => _('Returns'),
+                'icon'      => 'backspace',
+                'reference' => 'warehouse/%d/returns',
+                'tabs'      => array(
+                    'warehouse.returns' => array()
+                )
+            ),
+
+            'return' => array(
+                'type' => 'object',
+                'tabs' => array(
+
+                    'return.details' => array(
+                        'label' => _('Settings'),
+                        'icon'  => 'sliders-h'
+                    ),
+
+                    'return.items' => array(
+                        'label' => _('Items'),
+                        'icon'  => 'bars'
+                    ),
+
+                    'return.items_done' => array(
+                        'label' => _('Items'),
+                        'icon'  => 'bars'
+                    ),
+
+
+                    'return.history'     => array(
+                        'label' => '',
+                        'title' => _('History/Notes'),
+                        'icon'  => 'road',
+                        'class' => 'right icon_only'
+                    ),
+                    'return.attachments' => array(
+                        'label'         => '',
+                        'title'         => _('Attachments'),
+                        'icon'          => 'paperclip',
+                        'class'         => 'right icon_only',
+                        'quantity_data' => array(
+                            'object' => '_object',
+                            'field'  => 'Number Attachments'
+                        ),
+                    ),
                 )
 
             ),
@@ -2019,37 +2033,33 @@ $modules = array(
     ),
 
 
-    'payments_server' => array(
-        'section'     => 'invoices',
-        'parent'      => 'store',
-        'parent_type' => 'key',
-        'sections'    => array(
+    'accounting_server' => array(
 
 
-            'payments_by_store' => array(
+        'sections' => array(
+
+
+            'dashboard' => array(
                 'type'      => 'navigation',
-                'label'     => _('Group by store'),
-                'icon'      => 'compress',
-                'reference' => 'payments/by_store',
+                'label'     => _('Accounting'),
+                'title'     => _("Accounting dashboard"),
+                'icon'      => 'abacus',
+                'reference' => 'accounting',
                 'tabs'      => array(
-                    'payments_group_by_store' => array()
-                )
-
-            ),
-
-            'payment_service_providers' => array(
-                'type'      => 'navigation',
-                'label'     => _('Payment Service Providers'),
-                'icon'      => 'university',
-                'reference' => 'payment_service_providers',
-                'tabs'      => array(
+                    'payments_group_by_store'   => array(
+                        'label' => _('Group by store'),
+                        'icon'  => 'compress',
+                    ),
                     'payment_service_providers' => array(
                         'label' => _('Payment Service Providers'),
                         'icon'  => 'university',
 
                     ),
+
                 )
             ),
+
+
 
             'payment_accounts' => array(
                 'type'      => 'navigation',
@@ -2084,6 +2094,55 @@ $modules = array(
                 'tabs'      => array(
                     'account.payments' => array()
                 )
+            ),
+
+
+            'invoices' => array(
+                'type'      => 'navigation',
+                'label'     => _('Invoices'),
+                'icon'      => 'file-alt',
+                'reference' => 'invoices/all',
+                'tabs'      => array(
+                    'invoices_server' => array()
+                )
+
+            ),
+
+
+            'category' => array(
+                'type' => 'object',
+
+                'tabs' => array(
+                    'category.details' => array(
+                        'label' => _('Data'),
+                        'icon'  => 'database',
+                        'title' => _('Details')
+                    ),
+
+                    'category.subjects'   => array('label' => _('Invoices')),
+                    'category.categories' => array(
+                        'label' => _('Categories')
+                    ),
+                    'category.history'    => array(
+                        'title' => _('History'),
+                        'label' => '',
+                        'icon'  => 'road',
+                        'class' => 'right icon_only'
+                    ),
+
+                )
+
+            ),
+
+            'categories' => array(
+                'type'      => 'navigation',
+                'label'     => _('Invoices categories'),
+                'icon'      => 'sitemap',
+                'reference' => 'invoices/all/categories',
+                'tabs'      => array(
+                    'invoices.categories' => array()
+                )
+
             ),
 
 
@@ -2188,11 +2247,39 @@ $modules = array(
         )
     ),
 
-    'payments' => array(
-        'section'     => 'invoices',
-        'parent'      => 'store',
-        'parent_type' => 'key',
+    'accounting' => array(
+
         'sections'    => array(
+
+            'invoice'       => array(
+                'type' => 'object',
+                'tabs' => array(
+
+
+                    'invoice.items'    => array(
+                        'label' => _('Items'),
+                        'icon'  => 'bars'
+                    ),
+                    'invoice.details'  => array(
+                        'label' => _('Data'),
+                        'icon'  => 'database'
+                    ),
+                    'invoice.payments' => array(
+                        'label' => _('Payments'),
+                        'icon'  => 'fa-dollar-sign',
+
+                    ),
+                    'invoice.history'  => array(
+                        'label' => '',
+                        'title' => _('History'),
+                        'icon'  => 'road',
+                        'class' => 'right icon_only'
+
+                    )
+
+                )
+
+            ),
 
 
             'credits' => array(
@@ -2779,7 +2866,7 @@ $modules = array(
                     'store.sales.calendar' => 'store.sales',
                     'store.sales.info'     => 'store.sales',
 
-                    'store.current_shipping_zones'       => 'store.shipping_zones',
+                    'store.current_shipping_zones' => 'store.shipping_zones',
                     'store.shipping_zones_schemas' => 'store.shipping_zones'
 
                 ),
@@ -5751,10 +5838,23 @@ $modules = array(
         'sections' => array(
 
 
+
+
+
+            'dashboard'      => array(
+                'type'      => 'navigation',
+                'label'     => _('Dashboard'),
+                'icon'      => 'tachometer',
+                'reference' => 'warehouse/%d/dashboard',
+                'tabs'      => array(
+                    'warehouse.dashboard' => array('label' => _('Dashboard'))
+
+                )
+            ),
             'warehouse' => array(
 
                 'type'           => 'navigation',
-                'label'          => '',
+                'label'          => _('Warehouse'),
                 'title'          => _('Warehouse'),
                 'icon'           => 'warehouse-alt',
                 'reference'      => 'warehouse/%d',
@@ -5786,18 +5886,6 @@ $modules = array(
 
                 )
 
-            ),
-
-
-            'dashboard'      => array(
-                'type'      => 'navigation',
-                'label'     => _('Dashboard'),
-                'icon'      => 'tachometer',
-                'reference' => 'warehouse/%d/dashboard',
-                'tabs'      => array(
-                    'warehouse.dashboard' => array('label' => _('Dashboard'))
-
-                )
             ),
             'warehouse_area' => array(
 
@@ -5841,7 +5929,7 @@ $modules = array(
 				)
 			),
 			*/
-
+/*
             'warehouse_areas' => array(
 
                 'type'      => 'navigation',
@@ -5851,17 +5939,14 @@ $modules = array(
                 'reference' => 'warehouse/%d/areas',
                 'tabs'      => array(
 
-                    'warehouse.areas' => array(
-                        'label' => _('Warehouse areas'),
-                        'icon'  => 'inventory'
-                    ),
+
 
 
                 )
 
 
             ),
-
+*/
 
             'locations' => array(
 
@@ -5870,23 +5955,25 @@ $modules = array(
                 'icon'      => 'pallet',
                 'reference' => 'warehouse/%d/locations',
                 'tabs'      => array(
-                    'warehouse.locations' => array('label' => _('Locations'),),
 
+
+
+                    'warehouse.locations' => array(
+                        'label' => _('Locations'),
+                        'icon'      => 'pallet',
+                        ),
+                    'warehouse.areas' => array(
+                        'label' => _('Warehouse areas'),
+                        'title'     => _('Warehouse areas (Rankings, aisles, rooms)'),
+                        'icon'  => 'inventory'
+                    ),
 
                 )
 
             ),
 
 
-            'returns'     => array(
-                'type'      => 'navigation',
-                'label'     => _('Returns'),
-                'icon'      => 'backspace',
-                'reference' => 'warehouse/%d/returns',
-                'tabs'      => array(
-                    'warehouse.returns' => array()
-                )
-            ),
+
             'shipper.new' => array(
                 'type' => 'new_object',
                 'tabs' => array(
@@ -5899,61 +5986,7 @@ $modules = array(
             ),
 
 
-            'return' => array(
-                'type' => 'object',
-                'tabs' => array(
 
-                    'return.details' => array(
-                        'label' => _('Settings'),
-                        'icon'  => 'sliders-h'
-                    ),
-
-                    'return.items' => array(
-                        'label' => _('Items'),
-                        'icon'  => 'bars'
-                    ),
-
-                    'return.items_done' => array(
-                        'label' => _('Items'),
-                        'icon'  => 'bars'
-                    ),
-
-
-                    'return.history'     => array(
-                        'label' => '',
-                        'title' => _('History/Notes'),
-                        'icon'  => 'road',
-                        'class' => 'right icon_only'
-                    ),
-                    'return.attachments' => array(
-                        'label'         => '',
-                        'title'         => _('Attachments'),
-                        'icon'          => 'paperclip',
-                        'class'         => 'right icon_only',
-                        'quantity_data' => array(
-                            'object' => '_object',
-                            'field'  => 'Number Attachments'
-                        ),
-                    ),
-                )
-
-            ),
-
-            'delivery_notes' => array(
-
-                'type'      => 'navigation',
-                'label'     => _('Pending delivery notes'),
-                'icon'      => 'truck fa-flip-horizontal',
-                'reference' => 'warehouse/%d/delivery_notes',
-                'tabs'      => array(
-                    'warehouse.delivery_notes' => array(
-                        'label' => _('Delivery notes'),
-                    ),
-
-
-                )
-
-            ),
 
             'warehouse.new'      => array(
                 'type' => 'new_object',

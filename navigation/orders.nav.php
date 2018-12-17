@@ -516,140 +516,6 @@ function get_delivery_notes_navigation($data, $smarty, $user, $db, $account) {
 }
 
 
-function get_invoices_navigation($data, $smarty, $user, $db, $account) {
-
-    global $user, $smarty;
-    require_once 'class.Store.php';
-
-    switch ($data['parent']) {
-        case 'store':
-            $store = new Store($data['parent_key']);
-            break;
-        default:
-
-            break;
-    }
-
-    $block_view = $data['section'];
-
-
-    $sections = get_sections('orders', $store->id);
-    switch ($block_view) {
-
-        case 'invoices':
-            $sections_class = '';
-            $title          = _('Invoices').' <span class="id">'.$store->get(
-                    'Store Code'
-                ).'</span>';
-
-            $up_button    = array(
-                'icon'      => 'arrow-up',
-                'title'     => _('Invoices').' ('._(
-                        'All stores'
-                    ).')',
-                'reference' => 'invoices/all'
-            );
-            $button_label = _('Invoices %s');
-            break;
-
-        case 'payments':
-            $sections_class = '';
-            $title          = _('Payments').' <span class="id">'.$store->get(
-                    'Store Code'
-                ).'</span>';
-
-            $up_button    = array(
-                'icon'      => 'arrow-up',
-                'title'     => _('Payments').' ('._(
-                        'All stores'
-                    ).')',
-                'reference' => 'invoices/payments/all'
-            );
-            $button_label = _('Payments %s');
-            break;
-    }
-
-    $left_buttons = array();
-    if ($user->stores > 1) {
-
-        list($prev_key, $next_key) = get_prev_next($store->id, $user->stores);
-
-        $sql = sprintf(
-            "SELECT `Store Code` FROM `Store Dimension` WHERE `Store Key`=%d", $prev_key
-        );
-
-
-        if ($result = $db->query($sql)) {
-            if ($row = $result->fetch()) {
-                $prev_title = _('Store').' '.$row['Store Code'];
-            } else {
-                $prev_title = '';
-            }
-        } else {
-            print_r($error_info = $db->errorInfo());
-            exit;
-        }
-
-
-        $sql = sprintf(
-            "SELECT `Store Code` FROM `Store Dimension` WHERE `Store Key`=%d", $next_key
-        );
-
-        if ($result = $db->query($sql)) {
-            if ($row = $result->fetch()) {
-                $next_title = _('Store').' '.$row['Store Code'];
-            } else {
-                $next_title = '';
-            }
-        } else {
-            print_r($error_info = $db->errorInfo());
-            exit;
-        }
-
-
-        $left_buttons[] = array(
-            'icon'      => 'arrow-left',
-            'title'     => $prev_title,
-            'reference' => $block_view.'/'.$prev_key
-        );
-        $left_buttons[] = $up_button;
-
-        $left_buttons[] = array(
-            'icon'      => 'arrow-right',
-            'title'     => $next_title,
-            'reference' => $block_view.'/'.$next_key
-        );
-    }
-
-
-    $right_buttons = array();
-
-    if (isset($sections[$data['section']])) {
-        $sections[$data['section']]['selected'] = true;
-    }
-
-
-    $_content = array(
-        'sections_class' => $sections_class,
-        'sections'       => $sections,
-        'left_buttons'   => $left_buttons,
-        'right_buttons'  => $right_buttons,
-        'title'          => $title,
-        'search'         => array(
-            'show'        => true,
-            'placeholder' => _('Search invoices')
-        )
-
-    );
-    $smarty->assign('_content', $_content);
-
-    $html = $smarty->fetch('navigation.tpl');
-
-    return $html;
-
-}
-
-
 function get_orders_server_navigation($data, $smarty, $user, $db, $account) {
 
     global $user, $smarty;
@@ -706,174 +572,6 @@ function get_orders_server_navigation($data, $smarty, $user, $db, $account) {
         'search'         => array(
             'show'        => true,
             'placeholder' => _('Search orders')
-        )
-
-    );
-    $smarty->assign('_content', $_content);
-
-    $html = $smarty->fetch('navigation.tpl');
-
-    return $html;
-
-}
-
-
-function get_invoices_server_navigation($data, $smarty, $user, $db, $account) {
-
-
-    $block_view = $data['section'];
-
-
-    $sections = get_sections('orders_server');
-    switch ($block_view) {
-
-        case 'invoices':
-            $sections_class = '';
-            $title          = _('Invoices').' ('._('All stores').')';
-
-            $button_label = _('Invoices %s');
-            break;
-
-        case 'payments':
-            $sections_class = '';
-            $title          = _('Payments').' ('._('All stores').')';
-
-            $button_label = _('Payments %s');
-            break;
-    }
-
-    $left_buttons = array();
-
-
-    $right_buttons = array();
-
-    if (isset($sections[$data['section']])) {
-        $sections[$data['section']]['selected'] = true;
-    }
-
-
-    $_content = array(
-        'sections_class' => $sections_class,
-        'sections'       => $sections,
-        'left_buttons'   => $left_buttons,
-        'right_buttons'  => $right_buttons,
-        'title'          => $title,
-        'search'         => array(
-            'show'        => true,
-            'placeholder' => _('Search invoices')
-        )
-
-    );
-    $smarty->assign('_content', $_content);
-
-    $html = $smarty->fetch('navigation.tpl');
-
-    return $html;
-
-}
-
-
-function get_invoices_categories_server_navigation($data, $smarty, $user, $db, $account) {
-
-    global $user, $smarty;
-
-
-    $block_view = $data['section'];
-
-
-    $sections = get_sections('orders_server');
-
-    $sections_class = '';
-    $title          = _("Invoice's categories").' ('._('All stores').')';
-
-    $button_label = _('Payments %s');
-
-
-    // $up_button=array('icon'=>'arrow-up', 'title'=>_("Order's index"), 'reference'=>'account/orders');
-    $left_buttons = array();
-
-
-    $right_buttons = array();
-
-    if (isset($sections[$data['section']])) {
-        $sections[$data['section']]['selected'] = true;
-    }
-
-
-    $_content = array(
-        'sections_class' => $sections_class,
-        'sections'       => $sections,
-        'left_buttons'   => $left_buttons,
-        'right_buttons'  => $right_buttons,
-        'title'          => $title,
-        'search'         => array(
-            'show'        => true,
-            'placeholder' => _('Search invoices')
-        )
-
-    );
-    $smarty->assign('_content', $_content);
-
-    $html = $smarty->fetch('navigation.tpl');
-
-    return $html;
-
-}
-
-
-function get_invoices_category_server_navigation($data, $smarty, $user, $db, $account) {
-
-
-
-    $left_buttons = array();
-
-
-    $right_buttons = array();
-
-
-    $sections = get_sections('orders_server');
-
-    $sections_class = '';
-
-    if($data['_object']->get('Category Branch Type')=='Root'){
-        $title=_("Invoice's categories");
-    }else{
-
-
-        $up_button = array(
-            'icon'      => 'arrow-up',
-            'title'     => _("Invoice's categories"),
-            'reference' => 'invoices/all/categories'
-        );
-
-
-        $title          = _("Invoice's category").' <span class="Category_Label id">'.$data['_object']->get('Label').'</span>';
-
-
-
-        $left_buttons[] = $up_button;
-
-    }
-
-
-
-
-    // $up_button=array('icon'=>'arrow-up', 'title'=>_("Order's index"), 'reference'=>'account/orders');
-
-
-
-    $sections['categories']['selected'] = true;
-
-
-    $_content = array(
-        'sections_class' => $sections_class,
-        'sections'       => $sections,
-        'left_buttons'   => $left_buttons,
-        'right_buttons'  => $right_buttons,
-        'title'          => $title,
-        'search'         => array(
-            'show'        => true,
-            'placeholder' => _('Search invoices')
         )
 
     );
@@ -1807,7 +1505,10 @@ function get_invoice_navigation($data, $smarty, $user, $db, $account) {
         $next_title = '';
         $prev_key   = 0;
         $next_key   = 0;
-        $sql        = trim($sql_totals." $wheref");
+        $prev_type  = 'invoice';
+        $next_type  = 'invoice';
+
+        $sql = trim($sql_totals." $wheref");
 
         if ($result2 = $db->query($sql)) {
             if ($row2 = $result2->fetch()) {
@@ -1815,7 +1516,7 @@ function get_invoice_navigation($data, $smarty, $user, $db, $account) {
 
 
                     $sql = sprintf(
-                        "select `Invoice Public ID` object_name,I.`Invoice Key` as object_key from $table   $where $wheref
+                        "select `Invoice Type`,`Invoice Public ID` object_name,I.`Invoice Key` as object_key from $table   $where $wheref
 	                and ($_order_field < %s OR ($_order_field = %s AND I.`Invoice Key` < %d))  order by $_order_field desc , I.`Invoice Key`desc limit 1",
 
                         prepare_mysql($_order_field_value), prepare_mysql($_order_field_value), $object->id
@@ -1824,7 +1525,10 @@ function get_invoice_navigation($data, $smarty, $user, $db, $account) {
                     if ($result = $db->query($sql)) {
                         if ($row = $result->fetch()) {
                             $prev_key   = $row['object_key'];
-                            $prev_title = _("Invoice").' '.$row['object_name'].' ('.$row['object_key'].')';
+
+
+                            $prev_title = ($row['Invoice Type']=='Invoice'?_("Invoice"):_('Refund')).' '.$row['object_name'].' ('.$row['object_key'].')';
+                            $prev_type  = strtolower($row['Invoice Type']);
 
                         }
                     } else {
@@ -1835,15 +1539,15 @@ function get_invoice_navigation($data, $smarty, $user, $db, $account) {
 
 
                     $sql = sprintf(
-                        "select `Invoice Public ID` object_name,I.`Invoice Key` as object_key from $table   $where $wheref
+                        "select `Invoice Type`,`Invoice Public ID` object_name,I.`Invoice Key` as object_key from $table   $where $wheref
 	                and ($_order_field  > %s OR ($_order_field  = %s AND I.`Invoice Key` > %d))  order by $_order_field   , I.`Invoice Key`  limit 1", prepare_mysql($_order_field_value), prepare_mysql($_order_field_value), $object->id
                     );
 
                     if ($result = $db->query($sql)) {
                         if ($row = $result->fetch()) {
                             $next_key   = $row['object_key'];
-                            $next_title = _("Invoice").' '.$row['object_name'].' ('.$row['object_key'].')';
-
+                            $next_title = ($row['Invoice Type']=='Invoice'?_("Invoice"):_('Refund')).' '.$row['object_name'].' ('.$row['object_key'].')';
+                            $next_type  = strtolower($row['Invoice Type']);
                         }
                     } else {
                         print_r($error_info = $db->errorInfo());
@@ -1854,10 +1558,14 @@ function get_invoice_navigation($data, $smarty, $user, $db, $account) {
                     if ($order_direction == 'desc') {
                         $_tmp1      = $prev_key;
                         $_tmp2      = $prev_title;
+                        $_tmp3      = $prev_type;
+
                         $prev_key   = $next_key;
                         $prev_title = $next_title;
+                        $prev_type = $next_type;
                         $next_key   = $_tmp1;
                         $next_title = $_tmp2;
+                        $next_type=$_tmp3;
                     }
 
 
@@ -1874,21 +1582,15 @@ function get_invoice_navigation($data, $smarty, $user, $db, $account) {
 
             $up_button = array(
                 'icon'      => 'arrow-up',
-                'title'     => _("Customer").' '.$object->get(
-                        'Order Customer Name'
-                    ),
-                'reference' => 'customers/'.$object->get(
-                        'Order Store Key'
-                    ).'/'.$object->get('Order Customer Key')
+                'title'     => _("Customer").' '.$object->get('Order Customer Name'),
+                'reference' => 'customers/'.$object->get('Order Store Key').'/'.$object->get('Order Customer Key')
             );
 
             if ($prev_key) {
                 $left_buttons[] = array(
                     'icon'      => 'arrow-left',
                     'title'     => $prev_title,
-                    'reference' => 'customer/'.$object->get(
-                            'Order Customer Key'
-                        ).'/order/'.$prev_key
+                    'reference' => 'customer/'.$object->get('Order Customer Key').'/order/'.$prev_key
                 );
 
             } else {
@@ -1906,9 +1608,7 @@ function get_invoice_navigation($data, $smarty, $user, $db, $account) {
                 $left_buttons[] = array(
                     'icon'      => 'arrow-right',
                     'title'     => $next_title,
-                    'reference' => 'customer/'.$object->get(
-                            'Order Customer Key'
-                        ).'/order/'.$next_key
+                    'reference' => 'customer/'.$object->get('Order Customer Key').'/order/'.$next_key
                 );
 
             } else {
@@ -1924,13 +1624,12 @@ function get_invoice_navigation($data, $smarty, $user, $db, $account) {
             );
 
 
-        } elseif ($data['parent'] == 'store') {
+        }
+        elseif ($data['parent'] == 'store') {
             $store     = new Store($data['parent_key']);
             $up_button = array(
                 'icon'      => 'arrow-up',
-                'title'     => _("Invoices").' ('.$store->get(
-                        'Store Code'
-                    ).')',
+                'title'     => _("Invoices").' ('.$store->get('Store Code').')',
                 'reference' => 'invoices/'.$data['parent_key']
             );
 
@@ -1972,23 +1671,20 @@ function get_invoice_navigation($data, $smarty, $user, $db, $account) {
             $sections = get_sections('orders', $data['parent_key']);
 
 
-        } elseif ($data['parent'] == 'order') {
-            $order     = new Order($data['parent_key']);
+        }
+        elseif ($data['parent'] == 'order') {
+            $order     = get_object('Order', $data['parent_key']);
             $up_button = array(
                 'icon'      => 'arrow-up',
-                'title'     => _("Order").' ('.$order->get(
-                        'Order Public ID'
-                    ).')',
-                'reference' => '/orders/'.$order->get(
-                        'Order Store Key'
-                    ).'/'.$data['parent_key']
+                'title'     => _("Order").' ('.$order->get('Order Public ID').')',
+                'reference' => 'orders/'.$order->get('Order Store Key').'/'.$data['parent_key']
             );
 
             if ($prev_key) {
                 $left_buttons[] = array(
                     'icon'      => 'arrow-left',
-                    'title'     => $prev_title,
-                    'reference' => 'order/'.$data['parent_key'].'/invoice/'.$prev_key
+                    'title'     => $prev_title.'p',
+                    'reference' => 'orders/'.$order->get('Order Store Key').'/'.$data['parent_key'].'/'.$prev_type.'/'.$prev_key
                 );
 
             } else {
@@ -2006,7 +1702,7 @@ function get_invoice_navigation($data, $smarty, $user, $db, $account) {
                 $left_buttons[] = array(
                     'icon'      => 'arrow-right',
                     'title'     => $next_title,
-                    'reference' => 'order/'.$data['parent_key'].'/invoice/'.$next_key
+                    'reference' => 'orders/'.$order->get('Order Store Key').'/'.$data['parent_key'].'/'.$next_type.'/'.$next_key
                 );
 
             } else {
@@ -2953,7 +2649,7 @@ function get_email_tracking_navigation($data, $smarty, $user, $db) {
         switch ($data['parent']) {
             case 'order':
 
-                $order    = $data['_parent'];
+                $order       = $data['_parent'];
                 $placeholder = _('Search orders');
                 $sections    = get_sections('orders', $order->get('Store Key'));
 
@@ -3003,7 +2699,6 @@ function get_email_tracking_navigation($data, $smarty, $user, $db) {
                 break;
 
 
-
         }
 
 
@@ -3035,7 +2730,6 @@ function get_email_tracking_navigation($data, $smarty, $user, $db) {
     return $html;
 
 }
-
 
 
 function get_purge_navigation($data, $smarty, $user, $db) {
@@ -3288,7 +2982,6 @@ function get_purge_navigation($data, $smarty, $user, $db) {
 }
 
 
-
 function get_return_new_navigation($data, $smarty, $user, $db, $account) {
 
 
@@ -3329,7 +3022,6 @@ function get_return_new_navigation($data, $smarty, $user, $db, $account) {
     return $html;
 
 }
-
 
 
 ?>

@@ -900,6 +900,18 @@ $tab_defaults = array(
 
 
     ),
+
+    'delivery_notes.ready_to_pick'     => array(
+        'view'        => 'overview',
+        'sort_key'    => 'id',
+        'sort_order'  => 1,
+        'rpp'         => 100,
+        'rpp_options' => $default_rrp_options,
+        'f_field'     => 'number',
+
+
+    ),
+
     'orders_index'               => array(
         'view'        => 'overview',
         'sort_key'    => 'code',
