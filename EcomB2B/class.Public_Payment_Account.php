@@ -170,6 +170,9 @@ class Public_Payment_Account {
                         ]
                     );
 
+
+                    
+
                     $credit_cards = array();
                     try {
                         $braintree_customer = $gateway->customer()->find($arg);

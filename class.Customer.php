@@ -1442,10 +1442,9 @@ class Customer extends Subject {
         list($address, $formatter, $postal_label_formatter) = get_address_formatter($store->get('Store Home Country Code 2 Alpha'), $store->get('Store Locale'));
 
 
-
         if (preg_match('/gb|im|jy|gg/i', $fields['Address Country 2 Alpha Code'])) {
             include_once 'utils/geography_functions.php';
-            $fields['Address Postal Code']=gbr_pretty_format_post_code($fields['Address Postal Code']);
+            $fields['Address Postal Code'] = gbr_pretty_format_post_code($fields['Address Postal Code']);
         }
 
 
@@ -1913,7 +1912,7 @@ class Customer extends Subject {
 
             if (preg_match('/gb|im|jy|gg/i', $address_fields['Address Country 2 Alpha Code'])) {
                 include_once 'utils/geography_functions.php';
-                $address_fields['Address Postal Code']=gbr_pretty_format_post_code($address_fields['Address Postal Code']);
+                $address_fields['Address Postal Code'] = gbr_pretty_format_post_code($address_fields['Address Postal Code']);
             }
 
 
@@ -3572,6 +3571,23 @@ class Customer extends Subject {
         }
 
         $this->fast_update(array('Customer Account Balance' => $balance));
+
+        $sql = sprintf('select `Order Key` from `Order Dimension` where `Order Customer Key`=%d ', $this->id);
+        if ($result = $this->db->query($sql)) {
+            foreach ($result as $row) {
+                $order = get_object('Order', $row['Order Key']);
+                $order->fast_update(
+                    array(
+                        'Order Available Credit Amount' => $this->get('Customer Account Balance')
+                    )
+                );
+            }
+        } else {
+            print_r($error_info = $this->db->errorInfo());
+            print "$sql\n";
+            exit;
+        }
+
 
     }
 
