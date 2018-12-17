@@ -61,6 +61,39 @@ if ($user->can_view('customers')   ) {
     */
 }
 
+if ($user->can_view('stores')) {
+
+    if ($user->get('User Hooked Store Key')) {
+        $nav_menu[] = array(
+            '<i class="button far fa-store-alt fa-fw"></i>',
+            _('Products'),
+            'store/'.$user->get('User Hooked Store Key'),
+            'products',
+            'module',
+            ''
+        );
+
+    } else {
+        $nav_menu[] = array(
+            '<i class="button far fa-store-alt fa-fw"></i>',
+            _('Stores'),
+            'stores',
+            'products',
+            'module',
+            ''
+        );
+    }
+
+    /*
+    $sections=get_sections('products', $data['parent_key']);
+    foreach ($sections as $key=>$section ) {
+        $nav_menu[] = array('<i class="button far fa-'.$section['icon'].' fa-fw"></i>',$section['label'], $section['reference'], $key, 'section', '');
+    }
+*/
+
+
+}
+
 
 if ($user->can_view('orders')) {
 
@@ -89,26 +122,17 @@ if ($user->can_view('orders')) {
         $nav_menu[] = array('<i class="button far fa-'.$section['icon'].' fa-fw"></i>',$section['label'], $section['reference'], $key, 'section', '');
     }
 */
+/*
 
-    if ($user->get('User Hooked Store Key')) {
         $nav_menu[] = array(
-            '<i class="button far fa-truck fa-flip-horizontal fa-fw"></i>',
-            _('Delivery notes'),
-            'delivery_notes',
-            'delivery_notes',
-            'module',
-            ''
-        );
-    } else {
-        $nav_menu[] = array(
-            '<i class="button far fa-truck fa-flip-horizontal fa-fw"></i>',
-            _('Delivery notes'),
+            '<i class="button far fa-conveyor-belt-alt fa-fw"></i>',
+            _('Delivering'),
             'delivery_notes/all',
             'delivery_notes',
             'module',
             ''
         );
-    }
+*/
     /*
     $sections=get_sections('invoices', $data['parent_key']);
     foreach ($sections as $key=>$section ) {
@@ -146,25 +170,7 @@ if ($user->can_view('orders')) {
     }
 */
 
-    if ($user->get('User Hooked Store Key')) {
-        $nav_menu[] = array(
-            '<i class="button fal fa-credit-card fa-fw"></i>',
-            _('Payments'),
-            'payments',
-            'payments',
-            'module',
-            ''
-        );
-    } else {
-        $nav_menu[] = array(
-            '<i class="button fal fa-credit-card fa-fw"></i>',
-            _('Payments'),
-            'payments/all',
-            'payments',
-            'module',
-            ''
-        );
-    }
+
     /*
     $sections=get_sections('payments', $data['parent_key']);
     foreach ($sections as $key=>$section ) {
@@ -210,38 +216,6 @@ if ($user->can_view('marketing')) {
 
 */
 
-if ($user->can_view('stores')) {
-
-    if ($user->get('User Hooked Store Key')) {
-        $nav_menu[] = array(
-            '<i class="button far fa-store fa-fw"></i>',
-            _('Products'),
-            'store/'.$user->get('User Hooked Store Key'),
-            'products',
-            'module',
-            ''
-        );
-
-    } else {
-        $nav_menu[] = array(
-            '<i class="button far fa-store fa-fw"></i>',
-            _('Stores'),
-            'stores',
-            'products',
-            'module',
-            ''
-        );
-    }
-
-    /*
-    $sections=get_sections('products', $data['parent_key']);
-    foreach ($sections as $key=>$section ) {
-        $nav_menu[] = array('<i class="button far fa-'.$section['icon'].' fa-fw"></i>',$section['label'], $section['reference'], $key, 'section', '');
-    }
-*/
-
-
-}
 
 
 if ($user->can_view('locations')) {
@@ -373,6 +347,30 @@ if ($user->can_view('production') and $account->get('Account Manufacturers') > 0
 
 }
 
+if ($user->get('User Hooked Store Key')) {
+    $nav_menu[] = array(
+        '<i class="button fal fa-abacus fa-fw"></i>',
+        _('Accounting'),
+        'accounting/'.$user->get('User Hooked Store Key').'/dashboard',
+
+        'accounting',
+        'module',
+        ''
+    );
+} else {
+
+
+
+    $nav_menu[] = array(
+        '<i class="button fal fa-abacus fa-fw"></i>',
+        _('Accounting'),
+        'accounting/dashboard',
+        'accounting',
+        'module',
+        ''
+    );
+
+}
 
 if ($user->can_view('staff')) {
     $nav_menu[] = array(
@@ -525,7 +523,7 @@ if ($current_item == 'production_server') {
     $current_item = 'production';
 }
 
-if ($current_item == 'payments_server') {
+if ($current_item == 'accounting_server') {
     $current_item = 'payments';
 }
 

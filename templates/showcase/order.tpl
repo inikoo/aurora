@@ -578,7 +578,7 @@
                 <div class="node" id="invoice_{$invoice->id}">
                     <span class="node_label">
                         <i class="fal fa-file-alt fa-fw {if $invoice->get('Invoice Type')=='Refund'}error {/if}" aria-hidden="true"></i>
-                        <span class="link {if $invoice->get('Invoice Type')=='Refund'}error{/if}" onClick="change_view('invoices/{$invoice->get('Invoice Store Key')}/{$invoice->id}')">{$invoice->get('Invoice Public ID')}</span>
+                        <span class="link {if $invoice->get('Invoice Type')=='Refund'}error{/if}" onClick="change_view('orders/{$invoice->get('Invoice Store Key')}/{$order->id}/{$invoice->get('Invoice Type')|lower}/{$invoice->id}')">{$invoice->get('Invoice Public ID')}</span>
                          <img class="button pdf_link" onclick="download_pdf_from_list({$invoice->id},$('.pdf_invoice_dialog img'))" style="width: 50px;height:16px;position: relative;top:2px" src="/art/pdf.gif">
                          <i onclick="show_pdf_invoice_dialog(this,{$invoice->id})" title="{t}PDF invoice display settings{/t}" class="far very_discreet fa-sliders-h-square button"></i>
                     </span>

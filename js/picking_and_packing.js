@@ -1102,3 +1102,133 @@ function picked_offline_items_qty_change(element) {
 
 
 
+function get_delivery_notes_table( delivery_note_flow, metadata) {
+
+    $('.delivery_note_flow').removeClass('selected')
+
+
+      console.log(delivery_note_flow)
+
+    switch (delivery_note_flow){
+
+
+        case 'website':
+            $('#delivery_note_flow_website').addClass('selected')
+            widget='orders.website.wget'
+            $('.Orders_In_Basket_Number').addClass('blue')
+            $('.Orders_In_Basket_Amount').addClass('blue')
+
+            break;
+        case 'website_purges':
+            $('#delivery_note_flow_website').addClass('selected')
+            widget='orders.website.purges.wget'
+            $('.Orders_In_Basket_Number').addClass('blue')
+            $('.Orders_In_Basket_Amount').addClass('blue')
+
+            break;
+        case 'website_mailshots':
+            $('#delivery_note_flow_website').addClass('selected')
+            widget='orders.website.mailshots.wget'
+            $('.Orders_In_Basket_Number').addClass('blue')
+            $('.Orders_In_Basket_Amount').addClass('blue')
+
+            break;
+        case 'submitted_not_paid':
+            $('#delivery_note_flow_submitted').addClass('selected').find('')
+
+            widget='orders.in_process.not_paid.wget'
+
+            $('.Orders_In_Process_Not_Paid_Number').addClass('blue')
+            $('.Orders_In_Process_Not_Paid_Amount').addClass('blue')
+
+            break;
+        case 'submitted':
+            $('#delivery_note_flow_submitted').addClass('selected')
+            widget='orders.in_process.paid.wget'
+            $('.Orders_In_Process_Paid_Number').addClass('blue')
+            $('.Orders_In_Process_Paid_Amount').addClass('blue')
+
+            break;
+        case 'in_warehouse':
+            $('#delivery_note_flow_in_warehouse').addClass('selected')
+            widget='orders.in_warehouse_no_alerts.wget'
+            $('.Orders_In_Warehouse_No_Alerts_Number').addClass('blue')
+            $('.Orders_In_Warehouse_No_Alerts_Amount').addClass('blue')
+
+            break;
+        case 'in_warehouse_with_alerts':
+            $('#delivery_note_flow_in_warehouse').addClass('selected')
+            widget='orders.in_warehouse_with_alerts.wget'
+            $('.Orders_In_Warehouse_With_Alerts_Number').addClass('blue')
+            $('.Orders_In_Warehouse_With_Alerts_Amount').addClass('blue')
+
+            break;
+        case 'packed_done':
+            $('#delivery_note_flow_packed').addClass('selected')
+            widget='orders.packed_done.wget'
+            $('.Orders_Packed_Number').addClass('blue')
+            $('.Orders_Packed_Amount').addClass('blue')
+
+            break;
+        case 'approved':
+            $('#delivery_note_flow_packed').addClass('selected')
+            widget='orders.approved.wget'
+            $('.Orders_Dispatch_Approved_Number').addClass('blue')
+            $('.Orders_Dispatch_Approved_Amount').addClass('blue')
+
+            break;
+
+        case 'dispatched_today':
+            $('#delivery_note_flow_dispatched').addClass('selected')
+            widget='orders.dispatched_today.wget'
+            $('.Orders_Dispatched_Today_Number').addClass('blue')
+            $('.Orders_Dispatched_Today_Amount').addClass('blue')
+
+            break;
+
+        default:
+            delivery_note_flow='ready_to_pick'
+
+            $('#delivery_note_flow_ready_to_pick').addClass('selected')
+            widget='delivery_notes.ready_to_pick.wget'
+            $('.Delivery_Notes_Ready_to_Pick_Number').addClass('blue')
+            $('.Delivery_Notes_Ready_to_Pick_Weight').addClass('blue')
+
+
+    }
+
+    if(current_delivery_note_flow==''){
+        current_delivery_note_flow=delivery_note_flow
+    }
+
+
+    if(current_delivery_note_flow!=delivery_note_flow) {
+        new_url = window.location.pathname.replace(/dashboard.*$/, '') + 'dashboard/' + delivery_note_flow
+
+
+        //console.log(new_url)
+
+
+        window.top.history.pushState({
+            request: new_url}, null, new_url)
+    }
+
+
+
+    // history.pushState(null, null, new_url)
+
+    var request = "/ar_views.php?tipo=widget_details&widget=" + widget + '&metadata=' + JSON.stringify(metadata)
+
+    //console.log(request)
+
+    $.getJSON(request, function (data) {
+
+
+        $('#widget_details').html(data.widget_details).removeClass('hide');
+
+    });
+
+}
+
+
+

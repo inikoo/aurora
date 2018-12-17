@@ -106,7 +106,7 @@
         <script src="/js/part_locations.edit_locations.js"></script>
         <script src="/js/part_locations.stock_check.js"></script>
         <script src="/js/part_locations.move_stock.js"></script>
-        <script src="/js/picking_and_packing.js"></script>
+        <script src="/js/picking_and_packing.js?v2"></script>
         <script src="/js/alert_dial.js?v181122"></script>
         <script src="/js/libs/editor_v1/froala_editor.min.js?v1"></script>
         <script src="/js/libs/editor_v1/codemirror.js"></script>

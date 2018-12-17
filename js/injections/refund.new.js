@@ -178,7 +178,7 @@ function save_refund(){
 
             if (data.state == '200') {
 
-                change_view('invoices/'+data.store_key+'/'+data.refund_key);
+                change_view('orders/'+data.store_key+'/'+data.order_key+'/invoice/'+data.refund_key);
 
             } else if (data.state == '400') {
                 $('.open_create_refund_dialog_button').addClass('valid').removeClass('fa-spinner fa-spin')

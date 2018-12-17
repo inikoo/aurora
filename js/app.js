@@ -443,6 +443,7 @@ function get_widget_details(element, widget, metadata) {
 
 function change_menu_view(module){
 
+    console.log(module)
 
     switch (module){
         case '_dashboard':
@@ -462,18 +463,20 @@ function change_menu_view(module){
                 change_view('orders/all/by_store')
             }
             break;
+
         case 'delivery_notes':
-            if(state.current_store){
-                change_view('delivery_notes/'+state.current_store)
-            }else{
-                change_view('delivery_notes/all/by_store')
-            }
+           // if(state.current_store){
+             //   change_view('delivery_notes/'+state.current_store)
+            //}else{
+                change_view('delivery_notes/all/')
+          //  }
             break;
-        case 'payments':
+
+        case 'accounting':
             if(state.current_store){
-                change_view('payments/'+state.current_store)
+                change_view('accounting/'+state.current_store)
             }else{
-                change_view('payments/by_store')
+                change_view('accounting')
             }
             break;
         case 'products':
@@ -503,6 +506,7 @@ function change_menu_view(module){
                 change_view('production/all')
             }
             break;
+
         case 'hr':
         case 'reports':
         case 'profile':

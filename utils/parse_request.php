@@ -1986,7 +1986,6 @@ function parse_request($_data, $db, $modules, $account = '', $user = '', $is_set
                 $section = 'orders_index';
                 break;
             case 'orders':
-
                 if ($user->get('User Type') == 'Staff' or $user->get('User Type') == 'Contractor') {
 
 
@@ -2065,7 +2064,8 @@ function parse_request($_data, $db, $modules, $account = '', $user = '', $is_set
                         }
 
 
-                    } elseif (is_numeric($arg1)) {
+                    }
+                    elseif (is_numeric($arg1)) {
 
 
                         $section    = 'orders';
@@ -2074,7 +2074,8 @@ function parse_request($_data, $db, $modules, $account = '', $user = '', $is_set
 
                         if (isset($view_path[0])) {
 
-                            if ($view_path[0] == 'dashboard') {
+
+                           if ($view_path[0] == 'dashboard') {
                                 $section = 'dashboard';
                                 if (isset($view_path[1])) {
 
@@ -2082,10 +2083,9 @@ function parse_request($_data, $db, $modules, $account = '', $user = '', $is_set
 
                                 }
 
-
                                 if (isset($view_path[2])) {
 
-                                    if ($view_path[2] == 'mailshots') {
+                                   if ($view_path[2] == 'mailshots') {
                                         $extra_tab = $view_path[2];
 
                                         if (isset($view_path[3])) {
@@ -2136,7 +2136,25 @@ function parse_request($_data, $db, $modules, $account = '', $user = '', $is_set
 
                                 if (isset($view_path[1])) {
 
-                                    if ($view_path[1] == 'refund') {
+
+                                    if ($view_path[1] == 'invoice') {
+
+                                        $section = 'invoice';
+                                        $object  = 'invoice';
+
+                                        $parent     = 'order';
+                                        $parent_key = $key;
+                                        if (isset($view_path[2])) {
+
+                                            if (is_numeric($view_path[2])) {
+                                                $key = $view_path[2];
+                                            }
+
+
+                                        }
+
+
+                                    }elseif ($view_path[1] == 'refund') {
 
                                         $section = 'refund';
                                         $object  = 'refund';
@@ -2238,31 +2256,28 @@ function parse_request($_data, $db, $modules, $account = '', $user = '', $is_set
                     break;
                 }
 
-                $module = 'orders';
+                $module = 'accounting';
                 if ($count_view_path == 0) {
                     $section = 'invoices';
                     $parent  = 'store';
-                    if ($user->data['User Hooked Store Key'] and in_array(
-                            $user->data['User Hooked Store Key'], $user->stores
-                        )) {
-                        $parent_key = $user->data['User Hooked Store Key'];
-                    } else {
-                        $_tmp       = $user->stores;
-                        $parent_key = array_shift($_tmp);
-                    }
+
 
 
                 } else {
                     $arg1 = array_shift($view_path);
                     if ($arg1 == 'all') {
-                        $module     = 'orders_server';
+                        $module     = 'accounting_server';
                         $section    = 'invoices';
                         $parent     = 'account';
                         $parent_key = 1;
 
                         if (isset($view_path[0])) {
 
+
+
                             if ($view_path[0] == 'categories') {
+
+
 
                                 $section = 'category';
 
@@ -4825,7 +4840,25 @@ function parse_request($_data, $db, $modules, $account = '', $user = '', $is_set
 
                 }
                 break;
+            case 'accounting':
 
+                $module     = 'accounting_server';
+                $parent     = 'account';
+                $parent_key = 1;
+                $section    = 'dashboard';
+
+                if (isset($view_path[0])) {
+                    if ($view_path[0] == 'dashboard') {
+                        $section    = 'dashboard';
+
+                    }
+
+                }
+
+                break;
+
+
+           /*
             case 'payment_service_providers':
                 if (!$user->can_view('orders')) {
                     $module  = 'utils';
@@ -4833,7 +4866,7 @@ function parse_request($_data, $db, $modules, $account = '', $user = '', $is_set
                     break;
                 }
 
-                $module     = 'payments_server';
+                $module     = 'accounting_server';
                 $section    = 'payment_service_providers';
                 $parent     = 'account';
                 $parent_key = 1;
@@ -4873,6 +4906,9 @@ function parse_request($_data, $db, $modules, $account = '', $user = '', $is_set
 
                 }
                 break;
+           */
+
+
             case 'payment_service_provider':
                 if (!$user->can_view('orders')) {
                     $module  = 'utils';
@@ -4880,7 +4916,7 @@ function parse_request($_data, $db, $modules, $account = '', $user = '', $is_set
                     break;
                 }
 
-                $module     = 'payments';
+                $module     = 'accounting';
                 $section    = 'payment_service_provider';
                 $parent     = 'account';
                 $parent_key = 1;
@@ -4931,14 +4967,14 @@ function parse_request($_data, $db, $modules, $account = '', $user = '', $is_set
                 }
                 */
 
-                $module  = 'payments_server';
+                $module  = 'accounting_server';
                 $section = 'payment_account';
                 $parent  = 'account';
                 if (isset($view_path[0])) {
 
 
                     if (is_numeric($view_path[0]) and isset($view_path[1]) and is_numeric($view_path[1])) {
-                        $module     = 'payments';
+                        $module     = 'accounting';
                         $object     = 'payment_account';
                         $key        = $view_path[1];
                         $parent     = 'store';
@@ -4964,7 +5000,7 @@ function parse_request($_data, $db, $modules, $account = '', $user = '', $is_set
                 }
                 */
 
-                $module     = 'payments_server';
+                $module     = 'accounting_server';
                 $section    = 'payment';
                 $object     = 'payment';
                 $parent     = 'account';
@@ -4990,20 +5026,20 @@ function parse_request($_data, $db, $modules, $account = '', $user = '', $is_set
                     break;
                 }
 
-                $module     = 'payments_server';
+                $module     = 'accounting_server';
                 $section    = 'payment_accounts';
                 $parent     = 'account';
                 $parent_key = 1;
 
                 if (isset($view_path[0])) {
                     if (is_numeric($view_path[0]) and isset($view_path[1]) and is_numeric($view_path[1])) {
-                        $module     = 'payments';
+                        $module     = 'accounting';
                         $object     = 'payment_account';
                         $key        = $view_path[1];
                         $parent     = 'store';
                         $parent_key = $view_path[0];
                     } elseif (is_numeric($view_path[0])) {
-                        $module     = 'payments';
+                        $module     = 'accounting';
                         $parent     = 'store';
                         $parent_key = $view_path[0];
 
@@ -5031,7 +5067,7 @@ function parse_request($_data, $db, $modules, $account = '', $user = '', $is_set
                     break;
                 }
 
-                $module     = 'payments_server';
+                $module     = 'accounting_server';
                 $section    = 'payments';
                 $parent     = 'account';
                 $parent_key = 1;
@@ -5046,7 +5082,7 @@ function parse_request($_data, $db, $modules, $account = '', $user = '', $is_set
                         $parent     = 'store';
                         $parent_key = $view_path[0];
                     } elseif (is_numeric($view_path[0])) {
-                        $module     = 'payments';
+                        $module     = 'accounting';
                         $parent     = 'store';
                         $parent_key = $view_path[0];
 
@@ -5075,7 +5111,7 @@ function parse_request($_data, $db, $modules, $account = '', $user = '', $is_set
                     break;
                 }
 
-                $module     = 'payments_server';
+                $module     = 'accounting_server';
                 $section    = 'credits';
                 $parent     = 'account';
                 $parent_key = 1;
@@ -5084,7 +5120,7 @@ function parse_request($_data, $db, $modules, $account = '', $user = '', $is_set
                 if (isset($view_path[0])) {
 
                     if (is_numeric($view_path[0])) {
-                        $module     = 'payments';
+                        $module     = 'accounting';
                         $parent     = 'store';
                         $parent_key = $view_path[0];
 
@@ -5122,6 +5158,14 @@ function parse_request($_data, $db, $modules, $account = '', $user = '', $is_set
 
                     }
                 }
+                break;
+
+            case 'pending_delivery_notes':
+
+
+                $module  = 'delivery_notes_server';
+                $section = 'pending_delivery_notes';
+
                 break;
 
             case 'fire':

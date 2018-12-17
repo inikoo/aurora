@@ -135,6 +135,7 @@ function get_view($db, $smarty, $user, $account, $modules) {
     $state = parse_request($data, $db, $modules, $account, $user);
 
 
+
     //$state['current_website']   = $_SESSION['current_website'];
     $state['current_store']      = $session->get('current_website');
     $state['current_warehouse']  = $session->get('current_warehouse');
@@ -635,6 +636,9 @@ function get_view($db, $smarty, $user, $account, $modules) {
     }
 
 
+
+
+
     $sql = sprintf(
         'INSERT INTO `User System View Fact`  (`User Key`,`Date`,`Module`,`Section`,`Tab`,`Parent`,`Parent Key`,`Object`,`Object Key`)  VALUES (%d,%s,%s,%s,%s,%s,%s,%s,%s)', $user->id, prepare_mysql(gmdate('Y-m-d H:i:s')), prepare_mysql($state['module']),
         prepare_mysql($state['section']), prepare_mysql(
@@ -969,6 +973,7 @@ function get_object_showcase($showcase, $data, $smarty, $user, $db, $account) {
             $html = get_order_showcase($data, $smarty, $user, $db);
             break;
         case 'invoice':
+        case 'refund':
             include_once 'showcase/invoice.show.php';
             $html = get_invoice_showcase($data, $smarty, $user, $db);
             break;
@@ -1211,6 +1216,7 @@ function get_menu($data, $user, $smarty, $db, $account) {
 
 
 function get_navigation($user, $smarty, $data, $db, $account) {
+
 
     switch ($data['module']) {
 
@@ -1634,29 +1640,13 @@ function get_navigation($user, $smarty, $data, $db, $account) {
 
 
                 case ('orders'):
-                case ('payments'):
+
                     return get_orders_server_navigation(
                         $data, $smarty, $user, $db, $account
                     );
                     break;
 
-                case ('invoices'):
-                case ('payments'):
-                    return get_invoices_server_navigation(
-                        $data, $smarty, $user, $db, $account
-                    );
-                    break;
 
-                case ('categories'):
-                    return get_invoices_categories_server_navigation(
-                        $data, $smarty, $user, $db, $account
-                    );
-                    break;
-                case ('category'):
-                    return get_invoices_category_server_navigation(
-                        $data, $smarty, $user, $db, $account
-                    );
-                    break;
 
                 case ('email_campaign'):
                     return get_abandoned_card_email_navigation(
@@ -1702,7 +1692,7 @@ function get_navigation($user, $smarty, $data, $db, $account) {
                     return get_pending_orders_navigation($data, $smarty, $user, $db, $account);
                     break;
                 case ('orders'):
-                case ('payments'):
+
                     return get_orders_navigation($data, $smarty, $user, $db, $account);
                     break;
                 case ('order'):
@@ -1733,7 +1723,7 @@ function get_navigation($user, $smarty, $data, $db, $account) {
                     return get_return_new_navigation($data, $smarty, $user, $db, $account);
                     break;
                 case ('refund'):
-                    return get_refund_navigation($data, $smarty, $user, $db, $account);
+                    return get_invoice_navigation($data, $smarty, $user, $db, $account);
                     break;
                 case ('replacement'):
                     return get_replacement_navigation($data, $smarty, $user, $db, $account);
@@ -2475,11 +2465,20 @@ function get_navigation($user, $smarty, $data, $db, $account) {
 
 
             break;
-        case ('payments_server'):
-            require_once 'navigation/payments.nav.php';
+        case ('accounting_server'):
+
+
+
+            require_once 'navigation/accounting.nav.php';
+
+
+
             switch ($data['section']) {
-                case ('payment_service_provider'):
-                    return get_payment_service_provider_navigation(
+
+
+
+                case ('dashboard'):
+                    return get_accounting_server_dashboard_navigation(
                         $data, $user, $smarty, $db
                     );
                     break;
@@ -2508,11 +2507,33 @@ function get_navigation($user, $smarty, $data, $db, $account) {
                 case ('payments_by_store'):
                     return get_payments_by_store_navigation($data, $user, $smarty, $db);
                     break;
+                case ('invoice'):
+                    return get_invoice_navigation($data, $smarty, $user, $db, $account);
+                    break;
+                case ('invoices'):
+                    return get_invoices_server_navigation($data, $smarty, $user, $db, $account);
+                    break;
+
+                case ('categories'):
+                    return get_invoices_categories_server_navigation($data, $smarty, $user, $db, $account);
+                    break;
+                case ('category'):
+                    return get_invoices_category_server_navigation($data, $smarty, $user, $db, $account);
+                    break;
             }
             break;
-        case ('payments'):
-            require_once 'navigation/payments.nav.php';
+        case ('accounting'):
+            require_once 'navigation/accounting.nav.php';
             switch ($data['section']) {
+
+
+                case ('invoices'):
+                    return get_invoices_navigation($data, $smarty, $user, $db, $account);
+                    break;
+                case ('invoice'):
+                    return get_invoice_navigation($data, $smarty, $user, $db, $account);
+                    break;
+
                 case ('payment_service_provider'):
                     return get_payment_service_provider_navigation(
                         $data, $user, $smarty, $db
@@ -4172,7 +4193,7 @@ function get_view_position($db, $state, $user, $smarty, $account) {
 
                 $branch[] = array(
                     'label'     => '<span class="id Webpage_Code">'.$state['_object']->get('Code').'</span>',
-                    'icon'      => 'file-text',
+                    'icon'      => 'file-alt',
                     'reference' => ''
                 );
 
@@ -4195,7 +4216,7 @@ function get_view_position($db, $state, $user, $smarty, $account) {
 
                 $branch[] = array(
                     'label'     => '<span class=" Webpage_Code error"> ('._('Deleted').')  '.$state['_object']->get('Page Title').'</span>',
-                    'icon'      => 'file-text error',
+                    'icon'      => 'file-alt error',
                     'reference' => ''
                 );
 
@@ -5841,6 +5862,7 @@ function get_view_position($db, $state, $user, $smarty, $account) {
                     break;
 
                 case 'invoice':
+                case 'refund':
 
                     $store = new Store($state['_object']->data['Invoice Store Key']);
 
@@ -5871,7 +5893,7 @@ function get_view_position($db, $state, $user, $smarty, $account) {
                         'label'     => $state['_object']->get(
                             'Invoice Public ID'
                         ),
-                        'icon'      => 'file-text',
+                        'icon'      => 'file-alt',
                         'reference' => ''
                     );
                     break;
@@ -6143,7 +6165,7 @@ function get_view_position($db, $state, $user, $smarty, $account) {
                         'label'     => $state['_object']->get(
                             'Invoice Public ID'
                         ),
-                        'icon'      => 'file-text',
+                        'icon'      => 'file-alt',
                         'reference' => ''
                     );
                     $branch[] = array(
@@ -6251,7 +6273,7 @@ function get_view_position($db, $state, $user, $smarty, $account) {
                         'label'     => $state['_object']->get(
                             'Invoice Public ID'
                         ),
-                        'icon'      => 'file-text',
+                        'icon'      => 'file-alt',
                         'reference' => ''
                     );
 
@@ -6282,7 +6304,7 @@ function get_view_position($db, $state, $user, $smarty, $account) {
                         'label'     => $parent->get(
                             'Invoice Public ID'
                         ),
-                        'icon'      => 'file-text',
+                        'icon'      => 'file-alt',
                         'reference' => 'invoices/'.$store->id.'/'.$state['parent_key']
                     );
 
@@ -6322,7 +6344,7 @@ function get_view_position($db, $state, $user, $smarty, $account) {
                         'label'     => $parent->get(
                             'Invoice Public ID'
                         ),
-                        'icon'      => 'file-text',
+                        'icon'      => 'file-alt',
                         'reference' => 'invoices/'.$store->id.'/'.$state['parent_key']
                     );
 
@@ -7620,7 +7642,7 @@ function get_view_position($db, $state, $user, $smarty, $account) {
 
 
             break;
-        case 'payments_server':
+        case 'accounting_server':
 
             if ($state['section'] == 'payment_account') {
 
