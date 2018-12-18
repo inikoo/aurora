@@ -1304,6 +1304,9 @@ class DeliveryNote extends DB_Table {
             case 'Packed Done':
 
                 if ($this->get('State Index') > 70 or $this->get('State Index') < 70) {
+                    $this->error=true;
+                    $this->msg='Delivery note must be fully packed before close it';
+
                     return;
                 }
                 $this->update_field('Delivery Note Date Done Approved', $date, 'no_history');
@@ -1413,6 +1416,8 @@ class DeliveryNote extends DB_Table {
                 }
 
                 if ($this->get('State Index') != 80) {
+                    $this->error=true;
+                    $this->msg='Delivery note must be closed';
                     return;
                 }
                 $this->update_field('Delivery Note Date Done Approved', '', 'no_history');

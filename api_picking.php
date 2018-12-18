@@ -334,6 +334,7 @@ switch ($_REQUEST['action']) {
             case 'open_boxes':
                 $state = 'Undo Packed Done';
                 break;
+
         }
 
         $delivery_note->update_state($state);
