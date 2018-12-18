@@ -216,38 +216,6 @@ class Order extends DB_Table {
 
     }
 
-    function get_returns($scope = 'keys') {
-
-
-        $returns = array();
-        $sql        = sprintf(
-            "SELECT `Supplier Delivery Key` FROM `Supplier Delivery Dimension` WHERE `Supplier Delivery Parent`='Order' and `Supplier Delivery Parent Key`=%d ORDER BY `Supplier Delivery Key` DESC ", $this->id
-        );
-
-        if ($result = $this->db->query($sql)) {
-            foreach ($result as $row) {
-                if ($row['Supplier Delivery Key'] == '') {
-                    continue;
-                }
-
-                if ($scope == 'objects') {
-
-                    $returns[$row['Supplier Delivery Key']] = get_object('SupplierDelivery', $row['Supplier Delivery Key']);
-
-                } else {
-                    $returns[$row['Supplier Delivery Key']] = $row['Supplier Delivery Key'];
-                }
-            }
-        } else {
-            print_r($error_info = $this->db->errorInfo());
-            exit;
-        }
-
-
-        return $returns;
-
-    }
-
     function update_state($value, $options = '', $metadata = array()) {
 
         include_once 'utils/new_fork.php';
@@ -651,7 +619,7 @@ class Order extends DB_Table {
 
 
                     $history_data = array(
-                        'History Abstract' => _('Order packed and sealed'),
+                        'History Abstract' => _('Order packed and closed'),
                         'History Details'  => '',
                     );
                     $this->add_subject_history($history_data, $force_save = true, $deletable = 'No', $type = 'Changes', $this->get_object_name(), $this->id, $update_history_records_data = true);
@@ -672,6 +640,42 @@ class Order extends DB_Table {
                     $this->update_totals();
 
                     break;
+
+
+
+                case 'Undo PackedDone':
+
+
+                    if ($this->data['Order State'] != 'PackedDone') {
+                        $this->error = true;
+                        $this->msg   = 'Order is PackedDone: :(';
+
+                        return;
+
+                    }
+
+
+                    $this->update_field('Order State', 'InWarehouse', 'no_history');
+                    $this->update_field('Order Packed Done Date', '', 'no_history');
+                    $this->update_field('Order Date', $date, 'no_history');
+
+
+                    $history_data = array(
+                        'History Abstract' => _('Undo packed and closed'),
+                        'History Details'  => '',
+                    );
+                    $this->add_subject_history($history_data, $force_save = true, $deletable = 'No', $type = 'Changes', $this->get_object_name(), $this->id, $update_history_records_data = true);
+
+                    $operations = array(
+                        'cancel_operations'
+                    );
+
+
+
+                    $this->update_totals();
+
+                    break;
+
                 case 'Invoice Deleted':
 
 
@@ -690,7 +694,7 @@ class Order extends DB_Table {
 
 
                             $history_data = array(
-                                'History Abstract' => _('Invoice deleted, order state back to packed and sealed'),
+                                'History Abstract' => _('Invoice deleted, order state back to packed and closed'),
                                 'History Details'  => '',
                             );
                             $this->add_subject_history($history_data, $force_save = true, $deletable = 'No', $type = 'Changes', $this->get_object_name(), $this->id, $update_history_records_data = true);
@@ -972,9 +976,14 @@ class Order extends DB_Table {
             $deliveries_xhtml .= sprintf(
                 ' <div class="node"  id="delivery_node_%d"><span class="node_label"><i class="fa fa-truck fa-flip-horizontal fa-fw" aria-hidden="true"></i> 
                                <span class="link" onClick="change_view(\'%s\')">%s</span> (<span class="Delivery_Note_State">%s</span>)
+                                <a title="%s" class="pdf_link %s" target="_blank" href="/pdf/order_pick_aid.pdf.php?id=%d"> <i class="fal fa-clipboard-list-check " style="font-size: larger"></i></a>
                                 <a class="pdf_link %s" target=\'_blank\' href="/pdf/dn.pdf.php?id=%d"> <img style="width: 50px;height:16px;position: relative;top:2px" src="/art/pdf.gif"></a>
-
-                               </span></div>', $dn->id, 'delivery_notes/'.$dn->get('Delivery Note Store Key').'/'.$dn->id, $dn->get('ID'), $dn->get('Abbreviated State'), ($dn->get('State Index') < 90 ? 'hide' : ''), $dn->id
+                               </span>
+                                <div class="order_operation data_entry_delivery_note %s"><div class="square_button right" title="%s"><i class="fa fa-keyboard" aria-hidden="true" onclick="data_entry_delivery_note(%s)"></i></div></div>
+                               </div>', $dn->id, 'delivery_notes/'.$dn->get('Delivery Note Store Key').'/'.$dn->id, $dn->get('ID'), $dn->get('Abbreviated State'),
+                _('Picking sheet'), ($dn->get('State Index') != 10 ? 'hide' : ''), $dn->id,
+                ($dn->get('State Index') < 90 ? 'hide' : ''), $dn->id,
+                ($dn->get('State Index') != 10 ? 'hide' : ''), _('Input picking sheet data'), $dn->id
 
             );
 
@@ -1959,6 +1968,38 @@ class Order extends DB_Table {
 
     }
 
+    function get_returns($scope = 'keys') {
+
+
+        $returns = array();
+        $sql     = sprintf(
+            "SELECT `Supplier Delivery Key` FROM `Supplier Delivery Dimension` WHERE `Supplier Delivery Parent`='Order' and `Supplier Delivery Parent Key`=%d ORDER BY `Supplier Delivery Key` DESC ", $this->id
+        );
+
+        if ($result = $this->db->query($sql)) {
+            foreach ($result as $row) {
+                if ($row['Supplier Delivery Key'] == '') {
+                    continue;
+                }
+
+                if ($scope == 'objects') {
+
+                    $returns[$row['Supplier Delivery Key']] = get_object('SupplierDelivery', $row['Supplier Delivery Key']);
+
+                } else {
+                    $returns[$row['Supplier Delivery Key']] = $row['Supplier Delivery Key'];
+                }
+            }
+        } else {
+            print_r($error_info = $this->db->errorInfo());
+            exit;
+        }
+
+
+        return $returns;
+
+    }
+
     function send_review_invitation() {
 
 
@@ -2239,9 +2280,6 @@ class Order extends DB_Table {
             print "$sql\n";
             exit;
         }
-
-
-
 
 
     }
@@ -2939,7 +2977,7 @@ class Order extends DB_Table {
             'Supplier Delivery Port of Export'      => '',
             'Supplier Delivery Purchase Order Key'  => '',
             'Supplier Delivery Currency Exchange'   => 1,
-            'Supplier Delivery Dispatched Date'       => gmdate('Y-m-d H:i:s'),
+            'Supplier Delivery Dispatched Date'     => gmdate('Y-m-d H:i:s'),
             'Supplier Delivery State'               => 'Dispatched',
             //'Supplier Delivery Warehouse Key'=>$warehouse->id,
             //'Supplier Delivery Warehouse Metadata'=>json_encode($warehouse->data),
@@ -2998,7 +3036,7 @@ class Order extends DB_Table {
 			          %.6f,%.2f,%.2f,%s,%s,
 					 %d,%s,
 					 %d,'No',%s
-					 )", $row['Inventory Transaction Key'],$part->id,prepare_mysql($account->get('Account Currency Code')), prepare_mysql($date), prepare_mysql('Dispatched'),
+					 )", $row['Inventory Transaction Key'], $part->id, prepare_mysql($account->get('Account Currency Code')), prepare_mysql($date), prepare_mysql('Dispatched'),
 
                                     $unit_qty, $amount, $extra_amount, $cbm, $weight,
                                     $this->editor['User Key'], prepare_mysql($date), $delivery->id, prepare_mysql($date)
