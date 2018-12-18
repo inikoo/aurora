@@ -783,6 +783,8 @@ function save_item_qty_change(element) {
             input.attr('ovalue', data.transaction_data.qty)
 
 
+
+
             if (table_metadata.parent == 'order') {
 
 
@@ -962,7 +964,7 @@ function save_item_qty_change(element) {
                     $('#placed_node').removeClass('complete')
                 }
             }
-            else if (table_metadata.parent == 'supplierdelivery'){
+            else if (table_metadata.parent == 'supplierdelivery' || table_metadata.parent=='supplier_delivery'){
 
                 //console.log(data)
 
