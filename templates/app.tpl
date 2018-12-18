@@ -98,10 +98,10 @@
 
         <script src="/js/edit_webpage_edit.js?v181115"></script>
         <script src="/js/new.js?v181123"></script>
-        <script src="/js/order.common.js?v181128v2"></script>
+        <script src="/js/order.common.js?v181218v1"></script>
         <script src="/js/email_campaign.common.js?v181115"></script>
         <script src="/js/supplier.order.js?v181115"></script>
-        <script src="/js/supplier.delivery.js?v181128v2"></script>
+        <script src="/js/supplier.delivery.js?v181218v1"></script>
         <script src="/js/part_locations.edit.js?v=v181115v2"></script>
         <script src="/js/part_locations.edit_locations.js"></script>
         <script src="/js/part_locations.stock_check.js"></script>
