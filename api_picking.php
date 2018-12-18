@@ -215,7 +215,8 @@ switch ($_REQUEST['action']) {
         exit;
         break;
 
-    case 'packed_done':
+    case 'close_boxes':
+    case 'open_boxes':
     case 'start_picking':
 
         if (!isset($_REQUEST['delivery_note_key'])) {
@@ -243,8 +244,11 @@ switch ($_REQUEST['action']) {
             case 'start_picking':
                 $state='Picking';
                 break;
-            case 'packed_done':
+            case 'close_boxes':
                 $state='Packed Done';
+                break;
+            case 'open_boxes':
+                $state='Undo Packed Done';
                 break;
         }
 
