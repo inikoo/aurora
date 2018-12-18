@@ -34,9 +34,6 @@ include_once 'api_stock_picking_common_actions.php';
 switch ($_REQUEST['action']) {
 
 
-
-
-
     case 'get_delivery_note_from_public_id':
 
         if (!isset($_REQUEST['public_id'])) {
@@ -215,6 +212,93 @@ switch ($_REQUEST['action']) {
         exit;
         break;
 
+    case 'set_number_of_boxes':
+    case 'set_weight':
+
+        if (!isset($_REQUEST['delivery_note_key'])) {
+            $response = array(
+                'state' => 'Error',
+                'msg'   => 'delivery_note_key needed'
+            );
+            echo json_encode($response);
+            exit;
+        }
+
+        if (!is_numeric($_REQUEST['delivery_note_key']) or $_REQUEST['delivery_note_key'] <= 0) {
+            $response = array(
+                'state' => 'Error',
+                'msg'   => 'invalid delivery_note_key: '.$_REQUEST['delivery_note_key']
+            );
+            echo json_encode($response);
+            exit;
+        }
+
+
+        if (!isset($_REQUEST['value'])) {
+            $response = array(
+                'state' => 'Error',
+                'msg'   => 'value needed'
+            );
+            echo json_encode($response);
+            exit;
+        }
+
+        if (!is_numeric($_REQUEST['value']) or $_REQUEST['value'] <= 0) {
+            $response = array(
+                'state' => 'Error',
+                'msg'   => 'value must be a positive number: '.$_REQUEST['value']
+            );
+            echo json_encode($response);
+            exit;
+        }
+
+        if ($_REQUEST['action'] == 'set_number_of_boxes') {
+            if (!is_numeric($_REQUEST['value']) or $_REQUEST['value'] <= 0) {
+                $response = array(
+                    'state' => 'Error',
+                    'msg'   => 'value must be an integer: '.$_REQUEST['value']
+                );
+                echo json_encode($response);
+                exit;
+            }
+        }
+
+
+        $delivery_note = get_object('DeliveryNote', $_REQUEST['delivery_note_key']);
+
+        if (!$delivery_note->id) {
+            $response = array(
+                'state' => 'Error',
+                'msg'   => 'delivery note not found'
+            );
+            echo json_encode($response);
+            exit;
+        }
+
+
+        if ($_REQUEST['action'] == 'set_number_of_boxes') {
+
+            $field = 'Delivery Note Number Parcels';
+        } else {
+            $type = 'Delivery Note Weight';
+        }
+
+        $delivery_note->update(
+            array(
+                $field => $value,
+            )
+        );
+
+
+        $response = array(
+            'state' => 'OK',
+            'data'  => $delivery_note->get_update_metadata()
+        );
+        echo json_encode($response);
+        exit;
+        break;
+
+
     case 'close_boxes':
     case 'open_boxes':
     case 'start_picking':
@@ -240,26 +324,26 @@ switch ($_REQUEST['action']) {
         $delivery_note = get_object('DeliveryNote', $_REQUEST['delivery_note_key']);
 
 
-        switch ($_REQUEST['action']){
+        switch ($_REQUEST['action']) {
             case 'start_picking':
-                $state='Picking';
+                $state = 'Picking';
                 break;
             case 'close_boxes':
-                $state='Packed Done';
+                $state = 'Packed Done';
                 break;
             case 'open_boxes':
-                $state='Undo Packed Done';
+                $state = 'Undo Packed Done';
                 break;
         }
 
         $delivery_note->update_state($state);
 
-        if($delivery_note->error){
+        if ($delivery_note->error) {
             $response = array(
                 'state' => 'Error',
-                'msg'  => $delivery_note->msg
+                'msg'   => $delivery_note->msg
             );
-        }else{
+        } else {
             $response = array(
                 'state' => 'OK',
                 'data'  => $delivery_note->get_update_metadata()
@@ -269,8 +353,6 @@ switch ($_REQUEST['action']) {
         echo json_encode($response);
         exit;
         break;
-
-
 
 
     case 'pick_item':
@@ -365,13 +447,13 @@ switch ($_REQUEST['action']) {
             )
         );
 
-        if($delivery_note->error){
+        if ($delivery_note->error) {
 
             $response = array(
                 'state' => 'Error',
                 'data'  => $delivery_note->msg
             );
-        }else{
+        } else {
             $response = array(
                 'state' => 'OK',
                 'data'  => $delivery_note->get_update_metadata()
@@ -474,13 +556,13 @@ switch ($_REQUEST['action']) {
         );
 
 
-        if($delivery_note->error){
+        if ($delivery_note->error) {
 
             $response = array(
                 'state' => 'Error',
                 'data'  => $delivery_note->msg
             );
-        }else{
+        } else {
             $response = array(
                 'state' => 'OK',
                 'data'  => $delivery_note->get_update_metadata()
@@ -575,8 +657,6 @@ switch ($_REQUEST['action']) {
         break;
 
 
-
-
     default:
 
 
@@ -593,8 +673,6 @@ switch ($_REQUEST['action']) {
         exit;
 
 }
-
-
 
 
 ?>
