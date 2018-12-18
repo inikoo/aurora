@@ -69,7 +69,7 @@
         <li id="packed_done_node"
             class="li  {if $delivery_note->get('State Index')>=80   }complete{/if} {if $delivery_note->get('State Index')<0} {if  $delivery_note->get('Delivery Note Date Done Approved')=='' }hide{else}complete{/if}{/if}">
             <div class="label">
-                <span class="state Delivery_Note_Packed_Label">{t}Sealed{/t}<span></i></span></span>
+                <span class="state Delivery_Note_Packed_Label">{t}Packed & Closed{/t}<span></i></span></span>
             </div>
             <div class="timestamp">
                 <span class="Delivery_Note_Packed_Done_Datetime">&nbsp{$delivery_note->get('Done Approved Datetime')}&nbsp;</span>
@@ -203,6 +203,26 @@
                     </div>
                 </div>
 
+                <div id="undo_packed_done_operations" class="order_operation {if $delivery_note->get('State Index')!=80}hide{/if}">
+                    <div class="square_button left" title="{t}Open boxes{/t}" >
+						<i class="far fa-box-open    "  aria-hidden="true" onclick="toggle_order_operation_dialog('undo_packed_done')"></i>
+
+
+
+                        <table id="undo_packed_done_dialog" border="0" class="order_operation_dialog hide">
+                            <tr class="top">
+                                <td class="label" colspan="2">{t}Open boxes{/t}</td>
+                            </tr>
+                            <tr class="changed buttons">
+                                <td><i class="fa fa-sign-out fa-flip-horizontal button" aria-hidden="true" onclick="close_dialog('undo_packed_done')"></i></td>
+                                <td class="aright">
+                                    <span data-data='{  "field": "Delivery Note State","value": "Undo Packed Done","dialog_name":"undo_packed_done"}' id="undo_packed_done_save_buttons" class="valid save button"
+                                          onclick="save_order_operation(this)"><span class="label">{t}Open{/t}</span> <i class="fa fa-box-open fa-fw  " aria-hidden="true"></i></span></td>
+                            </tr>
+                        </table>
+                    </div>
+                </div>
+
             </div>
             <span style="float:left;padding-left:10px;padding-top:5px" class="Delivery_Note_State"> {$delivery_note->get('State')} </span>
             <div id="forward_operations" class="{if $store->get('Store Version')<2}hide{/if}">
@@ -225,7 +245,7 @@
 
 
                 <div id="packed_done_operations" class="order_operation {if $delivery_note->get('State Index')!=70    }hide{/if}">
-                    <div class="square_button right  " title="{t}Set as packed and sealed{/t}">
+                    <div class="square_button right  " title="{t}Close boxes{/t}">
                         <i id="packed_done_save_buttons"
                            class="fa button fa-archive  fa-fw  {if $delivery_note->get('Delivery Note Weight Source')!='Given'  or  $delivery_note->get('Delivery Note Number Parcels')=='' }  very_discreet{/if} "
                            data-data='{  "field": "Delivery Note State","value": "Packed Done","dialog_name":"packed_done"}' aria-hidden="true" onclick="save_order_operation(this)"></i>

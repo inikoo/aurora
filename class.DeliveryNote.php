@@ -423,7 +423,7 @@ class DeliveryNote extends DB_Table {
                         return _('Cancelled to restock');
                         break;
                     case 'Packed Done':
-                        return _('Packed done');
+                        return _('Packed & Closed');
                         break;
                     default:
                         return $this->data['Delivery Note State'];
@@ -1293,9 +1293,10 @@ class DeliveryNote extends DB_Table {
 
                 $order = get_object('order', $this->data['Delivery Note Order Key']);
                 $order->update_totals();
-                //   $order=
 
-                //   print "----";
+
+
+
 
                 break;
 
@@ -1390,6 +1391,11 @@ class DeliveryNote extends DB_Table {
                 ), $account->get('Account Code')
                 );
 
+                $operations = array(
+                    'undo_packed_done_operations',
+                    'cancel_operations',
+
+                );
 
                 break;
 
@@ -1455,7 +1461,7 @@ class DeliveryNote extends DB_Table {
 
 
                     $order = get_object('Order', $this->get('Delivery Note Order Key'));
-                    $order->update(array('Order State' => 'InWarehouse'));
+                    $order->update(array('Order State' => 'Undo PackedDone'));
 
 
                 } else {
@@ -1482,6 +1488,11 @@ class DeliveryNote extends DB_Table {
                 ), $account->get('Account Code')
                 );
 
+                $operations = array(
+                    'packed_done_operations',
+                    'cancel_operations',
+
+                );
 
                 break;
 

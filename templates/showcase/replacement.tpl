@@ -57,7 +57,7 @@
 
         <li id="packed_done_node" class="li  {if $delivery_note->get('State Index')>=80   }complete{/if} {if $delivery_note->get('State Index')<0} {if  $delivery_note->get('Delivery Note Date Done Approved')=='' }hide{else}complete{/if}{/if}">
             <div class="label">
-                <span class="state Delivery_Note_Packed_Label">{t}Sealed{/t}<span></i></span></span>
+                <span class="state Delivery_Note_Packed_Label">{t}Packed & Closed{/t}<span></i></span></span>
             </div>
             <div class="timestamp">
                 <span class="Delivery_Note_Packed_Done_Datetime">&nbsp{$delivery_note->get('Done Approved Datetime')}&nbsp;</span>
@@ -210,7 +210,7 @@
 
 
                 <div id="packed_done_operations" class="order_operation {if $delivery_note->get('State Index')!=70    }hide{/if}">
-                    <div class="square_button right  " title="{t}Set as packed and sealed{/t}">
+                    <div class="square_button right  " title="{t}Set as packed and closed{/t}">
                         <i id="packed_done_save_buttons" class="fa button fa-archive  fa-fw  {if $delivery_note->get('Delivery Note Weight Source')!='Given'  or  $delivery_note->get('Delivery Note Number Parcels')=='' }  very_discreet{/if} "
                            data-data='{  "field": "Delivery Note State","value": "Packed Done","dialog_name":"packed_done"}' aria-hidden="true" onclick="save_order_operation(this)"></i>
 
