@@ -1411,7 +1411,7 @@ class DeliveryNote extends DB_Table {
 
 
             case 'Undo Packed Done':
-                if ($this->get('State Index') == 80 ) {
+                if ($this->get('State Index') == 70 ) {
                     $this->error=true;
                     $this->msg='Delivery note already open';
 
