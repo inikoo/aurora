@@ -168,7 +168,7 @@ left join `Supplier Part Historic Dimension` SPH on (POTF.`Supplier Part Histori
             if ($row = $result->fetch()) {
 
 
-                if (row['num_items'] > 0) {
+                if ($row['num_items'] > 0) {
                     if ( $row['Supplier Part Packages Per Carton'] > 0 and $row['Part Units Per Package'] > 0) {
                         $cartons = $row['units'] / $row['Supplier Part Packages Per Carton'] / $row['Part Units Per Package'];
 
