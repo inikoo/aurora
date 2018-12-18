@@ -1303,6 +1303,13 @@ class DeliveryNote extends DB_Table {
 
             case 'Packed Done':
 
+                if ($this->get('State Index') == 80 ) {
+                    $this->error=true;
+                    $this->msg='Delivery note already closed';
+
+                    return;
+                }
+
                 if ($this->get('State Index') > 70 or $this->get('State Index') < 70) {
                     $this->error=true;
                     $this->msg='Delivery note must be fully packed before close it';
@@ -1404,7 +1411,12 @@ class DeliveryNote extends DB_Table {
 
 
             case 'Undo Packed Done':
+                if ($this->get('State Index') == 80 ) {
+                    $this->error=true;
+                    $this->msg='Delivery note already open';
 
+                    return;
+                }
 
                 if (!(isset($this->medatata) and $this->medatata >= 2)) {
 
