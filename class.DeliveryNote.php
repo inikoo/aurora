@@ -2100,6 +2100,106 @@ class DeliveryNote extends DB_Table {
                     $pending = $to_pick - $qty;
                     $picked  = $qty;
 
+
+
+
+                    $part_location = new PartLocation($row['Part SKU'].'_'.$row['Location Key']);
+                    $location_stock_icon_class = 'button ';
+                    $stock_in_location         = sprintf(_('Stock in location: %s'), $part_location->get('Quantity On Hand'));
+
+                    $stock_quantity_safe_limit = ceil($pending * 1.2);
+                    if ($stock_quantity_safe_limit > 10) {
+                        $stock_quantity_safe_limit;
+                    }
+
+
+                    if ($pending == 0) {
+                        $picked_time = sprintf(_('Picked: %s'), strftime("%a %e %b %y %H:%M %Z", strtotime($date.' +0:00')));
+                        $location    = sprintf('<i class="fa fa-fw fa-check super_discreet %s" aria-hidden="true" title="%s"></i> ', $location_stock_icon_class, $picked_time);
+
+                    } elseif ($part_location->get('Quantity On Hand') <= 0) {
+
+                        if ($part_location->part->get('Part Current On Hand Stock') >= $pending) {
+                            $location = sprintf('<i class="fa fa-fw fa-bookmark-o fa-flip-vertical warning %s" aria-hidden="true" title="%s"></i> ', $location_stock_icon_class, $stock_in_location);
+
+                        } else {
+                            $location = sprintf('<i class="fa fa-fw fa-star-o error %s" aria-hidden="true" title="%s"></i> ', $location_stock_icon_class, $stock_in_location);
+
+                        }
+
+
+                    } else {
+                        if ($part_location->get('Quantity On Hand') < $pending) {
+                            if ($part_location->part->get('Part Current On Hand Stock') >= $pending) {
+                                $location = sprintf('<i class="fa fa-fw fa-bookmark-o fa-flip-vertical warning %s" aria-hidden="true" title="%s"></i> ', $location_stock_icon_class, $stock_in_location);
+
+                            } else {
+                                if ($part_location->get('Quantity On Hand') < 1) {
+                                    $location = sprintf('<i class="fa  fa-fw no_stock_location  fa-circle error %s" aria-hidden="true" title="%s"></i> ', $location_stock_icon_class, $stock_in_location);
+
+                                } else {
+                                    $location = sprintf('<i class="fa fa-fw fa-star-half-o error %s" aria-hidden="true" title="%s"></i> ', $location_stock_icon_class, $stock_in_location);
+                                }
+
+
+                            }
+
+                        } else {
+                            if ($part_location->get('Quantity On Hand') < $stock_quantity_safe_limit) {
+                                $location = sprintf('<i class="fa fa-fw fa-star warning %s" aria-hidden="true" title="%s"></i> ', $location_stock_icon_class, $stock_in_location);
+                            } else {
+                                $location = sprintf('<i class="fa fa-fw fa-star success very_discreet %s" aria-hidden="true" title="%s"></i> ', $location_stock_icon_class, $stock_in_location);
+                            }
+                        }
+                    }
+
+                    $location .= sprintf(
+                        '<span class="%s location"  location_key = "%d" >%s </span >', ($pending > 0 ? 'discreet' : ''), $part_location->location->id, $part_location->location->get('Code')
+                    );
+
+
+                    //=======
+
+                    $picked = sprintf(
+                        '<span class="picked_quantity_done %s">  
+ <input class="picked_qty width_50" style="background-color:rgba(192,216,144, 0.2)" ondblclick="show_check_dialog(this)" value="%s" readonly >
+  <i  class="fa  fa-check fa-fw button add_picked " aria-hidden="true"/></span><span data-settings=\'{"field": "Picked", "transaction_key":%d,"item_key":%d ,"on":1 }\' class="picked_quantity %s"  >
+                    <input class="picked_qty width_50" value="%s" ovalue="%s"> <i onClick="save_item_qty_change(this)" class="fa  fa-plus fa-fw button add_picked %s" aria-hidden="true">
+                </span>', ($pending == 0 ? '' : 'hide'), number($picked), $row['Inventory Transaction Key'], $row['Part SKU'], ($pending != 0 ? '' : 'hide'), $picked, $picked, ''
+                    );
+
+                    //=========
+
+                    $this->update_totals();
+
+
+                    if ($this->get('Delivery Note Number Packed Items') == $this->get('Delivery Note Number To Pick Items')) {
+                        if ($this->get('State Index') == 20) {
+                            $this->update_state('Picked');
+                        }
+                    }
+
+                    $this->update_metadata = array(
+                        'state_index'                => $this->get('State Index'),
+                        'picked_quantity_components' => $picked,
+                        'location_components'        => $location,
+                        'pending'                    => $pending,
+
+                        'class_html' => array(
+                            'Delivery_Note_Picked_Label'              => ($this->get('State Index') == 20 ? _('Picking') : _('Picked')),
+                            'Delivery_Note_Picked_Percentage_or_Date' => $this->get('Picked Percentage or Date')
+
+                        )
+                    );
+
+
+                    return array(
+                        'transaction_key' => $transaction_key,
+                        'qty'             => $qty + 0
+                    );
+
+
+
                 } else {
                     $this->error = true;
                     $this->msg   = 'Trying to set as not picked more items than required';
@@ -2109,6 +2209,11 @@ class DeliveryNote extends DB_Table {
                 }
 
 
+            }else{
+                $this->error = true;
+                $this->msg   = 'Itf not found';
+
+                return;
             }
         } else {
             print_r($error_info = $this->db->errorInfo());
@@ -2119,100 +2224,6 @@ class DeliveryNote extends DB_Table {
 
         //=========
 
-
-        $location_stock_icon_class = 'button ';
-        $stock_in_location         = sprintf(_('Stock in location: %s'), $part_location->get('Quantity On Hand'));
-
-        $stock_quantity_safe_limit = ceil($pending * 1.2);
-        if ($stock_quantity_safe_limit > 10) {
-            $stock_quantity_safe_limit;
-        }
-
-
-        if ($pending == 0) {
-            $picked_time = sprintf(_('Picked: %s'), strftime("%a %e %b %y %H:%M %Z", strtotime($date.' +0:00')));
-            $location    = sprintf('<i class="fa fa-fw fa-check super_discreet %s" aria-hidden="true" title="%s"></i> ', $location_stock_icon_class, $picked_time);
-
-        } elseif ($part_location->get('Quantity On Hand') <= 0) {
-
-            if ($part_location->part->get('Part Current On Hand Stock') >= $pending) {
-                $location = sprintf('<i class="fa fa-fw fa-bookmark-o fa-flip-vertical warning %s" aria-hidden="true" title="%s"></i> ', $location_stock_icon_class, $stock_in_location);
-
-            } else {
-                $location = sprintf('<i class="fa fa-fw fa-star-o error %s" aria-hidden="true" title="%s"></i> ', $location_stock_icon_class, $stock_in_location);
-
-            }
-
-
-        } else {
-            if ($part_location->get('Quantity On Hand') < $pending) {
-                if ($part_location->part->get('Part Current On Hand Stock') >= $pending) {
-                    $location = sprintf('<i class="fa fa-fw fa-bookmark-o fa-flip-vertical warning %s" aria-hidden="true" title="%s"></i> ', $location_stock_icon_class, $stock_in_location);
-
-                } else {
-                    if ($part_location->get('Quantity On Hand') < 1) {
-                        $location = sprintf('<i class="fa  fa-fw no_stock_location  fa-circle error %s" aria-hidden="true" title="%s"></i> ', $location_stock_icon_class, $stock_in_location);
-
-                    } else {
-                        $location = sprintf('<i class="fa fa-fw fa-star-half-o error %s" aria-hidden="true" title="%s"></i> ', $location_stock_icon_class, $stock_in_location);
-                    }
-
-
-                }
-
-            } else {
-                if ($part_location->get('Quantity On Hand') < $stock_quantity_safe_limit) {
-                    $location = sprintf('<i class="fa fa-fw fa-star warning %s" aria-hidden="true" title="%s"></i> ', $location_stock_icon_class, $stock_in_location);
-                } else {
-                    $location = sprintf('<i class="fa fa-fw fa-star success very_discreet %s" aria-hidden="true" title="%s"></i> ', $location_stock_icon_class, $stock_in_location);
-                }
-            }
-        }
-
-        $location .= sprintf(
-            '<span class="%s location"  location_key = "%d" >%s </span >', ($pending > 0 ? 'discreet' : ''), $part_location->location->id, $part_location->location->get('Code')
-        );
-
-
-        //=======
-
-        $picked = sprintf(
-            '<span class="picked_quantity_done %s">  
- <input class="picked_qty width_50" style="background-color:rgba(192,216,144, 0.2)" ondblclick="show_check_dialog(this)" value="%s" readonly >
-  <i  class="fa  fa-check fa-fw button add_picked " aria-hidden="true"/></span><span data-settings=\'{"field": "Picked", "transaction_key":%d,"item_key":%d ,"on":1 }\' class="picked_quantity %s"  >
-                    <input class="picked_qty width_50" value="%s" ovalue="%s"> <i onClick="save_item_qty_change(this)" class="fa  fa-plus fa-fw button add_picked %s" aria-hidden="true">
-                </span>', ($pending == 0 ? '' : 'hide'), number($picked), $row['Inventory Transaction Key'], $row['Part SKU'], ($pending != 0 ? '' : 'hide'), $picked, $picked, ''
-        );
-
-        //=========
-
-        $this->update_totals();
-
-
-        if ($this->get('Delivery Note Number Packed Items') == $this->get('Delivery Note Number To Pick Items')) {
-            if ($this->get('State Index') == 20) {
-                $this->update_state('Picked');
-            }
-        }
-
-        $this->update_metadata = array(
-            'state_index'                => $this->get('State Index'),
-            'picked_quantity_components' => $picked,
-            'location_components'        => $location,
-            'pending'                    => $pending,
-
-            'class_html' => array(
-                'Delivery_Note_Picked_Label'              => ($this->get('State Index') == 20 ? _('Picking') : _('Picked')),
-                'Delivery_Note_Picked_Percentage_or_Date' => $this->get('Picked Percentage or Date')
-
-            )
-        );
-
-
-        return array(
-            'transaction_key' => $transaction_key,
-            'qty'             => $qty + 0
-        );
 
 
     }
