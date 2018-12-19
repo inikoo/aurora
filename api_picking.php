@@ -425,16 +425,12 @@ switch ($_REQUEST['action']) {
         exit;
         break;
 
-    case 'set_as_out_of_stock_item':
+    case 'set_as_not_picked_item':
 
         include 'api.includes/parse_arguments_dn_item_operations.inc.php';
 
         $delivery_note = get_object('DeliveryNote', $_REQUEST['delivery_note_key']);
-
-
-
-
-
+        
         $delivery_note->update_item_not_picked_quantity(
             array(
                 'transaction_key' => $_REQUEST['itf_key'],
