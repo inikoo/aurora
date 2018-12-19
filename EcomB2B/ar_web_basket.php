@@ -289,7 +289,6 @@ function create_order($editor, $customer) {
 
 
     $order_data = array(
-        'Order Current Dispatch State' => 'In Process',
         'editor'                       => $editor
     );
 

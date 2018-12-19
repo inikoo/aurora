@@ -2063,7 +2063,7 @@ class Store extends DB_Table {
             )
         );
         $sql  = sprintf(
-            'SELECT `Order Current Dispatch State`,count(*) AS num,ifnull(sum(`Order Total Net Amount`),0) AS amount,ifnull(sum(`Order Total Net Amount`*`Order Currency Exchange`),0) AS dc_amount FROM `Order Dimension` WHERE `Order Store Key`=%d  AND  `Order State` ="InProcess"  AND !`Order To Pay Amount`>0 ',
+            'SELECT count(*) AS num,ifnull(sum(`Order Total Net Amount`),0) AS amount,ifnull(sum(`Order Total Net Amount`*`Order Currency Exchange`),0) AS dc_amount FROM `Order Dimension` WHERE `Order Store Key`=%d  AND  `Order State` ="InProcess"  AND !`Order To Pay Amount`>0 ',
             $this->id
         );
 
@@ -2085,7 +2085,7 @@ class Store extends DB_Table {
 
 
         $sql = sprintf(
-            'SELECT `Order Current Dispatch State`,count(*) AS num,ifnull(sum(`Order Total Net Amount`) ,0)AS amount,ifnull(sum(`Order Total Net Amount`*`Order Currency Exchange`),0) AS dc_amount FROM `Order Dimension` WHERE `Order Store Key`=%d  AND `Order State`="InProcess"  AND `Order To Pay Amount`>0  ',
+            'SELECT count(*) AS num,ifnull(sum(`Order Total Net Amount`) ,0)AS amount,ifnull(sum(`Order Total Net Amount`*`Order Currency Exchange`),0) AS dc_amount FROM `Order Dimension` WHERE `Order Store Key`=%d  AND `Order State`="InProcess"  AND `Order To Pay Amount`>0  ',
             $this->id
         );
 

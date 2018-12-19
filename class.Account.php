@@ -2066,7 +2066,7 @@ class Account extends DB_Table {
 
         );
         $sql  = sprintf(
-            'SELECT `Order Current Dispatch State`,count(*) AS num, ifnull(sum(`Order Total Net Amount`*`Order Currency Exchange`),0) AS dc_amount FROM `Order Dimension` WHERE  `Order State` ="InProcess"  AND !`Order To Pay Amount`>0 '
+            'SELECT count(*) AS num, ifnull(sum(`Order Total Net Amount`*`Order Currency Exchange`),0) AS dc_amount FROM `Order Dimension` WHERE  `Order State` ="InProcess"  AND !`Order To Pay Amount`>0 '
         );
 
 
@@ -2086,7 +2086,7 @@ class Account extends DB_Table {
 
 
         $sql = sprintf(
-            'SELECT `Order Current Dispatch State`,count(*) AS num,ifnull(sum(`Order Total Net Amount`*`Order Currency Exchange`),0) AS dc_amount FROM `Order Dimension` WHERE  `Order State`="InProcess"  AND `Order To Pay Amount`>0  '
+            'SELECT count(*) AS num,ifnull(sum(`Order Total Net Amount`*`Order Currency Exchange`),0) AS dc_amount FROM `Order Dimension` WHERE  `Order State`="InProcess"  AND `Order To Pay Amount`>0  '
         );
 
 
