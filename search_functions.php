@@ -1864,7 +1864,7 @@ function search_orders($db, $account, $memcache_ip, $data) {
 
     if ($data['scope'] == 'store') {
         if (in_array($data['scope_key'], $user->stores)) {
-            $stores      = $data['scope_key'];
+            //$stores      = $data['scope_key'];
             $where_store = sprintf(
                 ' and `Order Store Key`=%d', $data['scope_key']
             );
@@ -1880,7 +1880,7 @@ function search_orders($db, $account, $memcache_ip, $data) {
             );
         }
 
-        $stores = join(',', $user->stores);
+      //  $stores = join(',', $user->stores);
     }
 
 
@@ -1946,66 +1946,53 @@ function search_orders($db, $account, $memcache_ip, $data) {
     $order_keys = preg_replace('/^,/', '', $order_keys);
 
     $sql = sprintf(
-        "SELECT `Order Key`,`Store Code`,`Order Store Key`,`Order Public ID`,`Order Current Dispatch State`,`Order Customer Name` FROM `Order Dimension` LEFT JOIN `Store Dimension` ON (`Order Store Key`=`Store Key`) WHERE `Order Key` IN (%s)", $order_keys
+        "SELECT `Order Key`,`Store Code`,`Order Store Key`,`Order Public ID`,`Order State`,`Order Customer Name` FROM `Order Dimension` LEFT JOIN `Store Dimension` ON (`Order Store Key`=`Store Key`) WHERE `Order Key` IN (%s)", $order_keys
     );
 
     if ($result = $db->query($sql)) {
         foreach ($result as $row) {
 
 
-            switch ($row['Order Current Dispatch State']) {
-                case 'In Process':
-                    $details = _('In Process');
+            switch ($row['Order State']) {
+                case('InBasket'):
+                    $state = _('In Basket');
                     break;
-
-                case 'Submitted by Customer':
-                    $details = _('Submitted by Customer');
+                case('InProcess'):
+                    $state = _('Submitted');
                     break;
-                case 'Ready to Pick':
-                    $details = _('Ready to Pick');
+                case('InWarehouse'):
+                    $state = _('In Warehouse');
                     break;
-                case 'Picking & Packing':
-                    $details = _('Picking & Packing');
+                case('PackedDone'):
+                    $state = _('Packed & Closed');
                     break;
-                case 'Packed Done':
-                    $details = _('Packed & Checked');
+                case('Approved'):
+                    $state = _('Invoiced');
                     break;
-                case 'Ready to Ship':
-                    $details = _('Ready to Ship');
+                case('Dispatch Approved'):
+                    $state = _('Dispatch Approved');
                     break;
-                case 'Dispatched':
-                    $details = _('Dispatched');
+                case('Dispatched'):
+                    $state = _('Dispatched');
                     break;
-                case 'Unknown':
-                    $details = _('Unknown');
+                case('Cancelled'):
+                    $state = _('Cancelled');
                     break;
-                case 'Packing':
-                    $details = _('Packing');
-                    break;
-                case 'Cancelled':
-                    $details = _('Cancelled');
-                    break;
-                case 'Suspended':
-                    $details = _('Suspended');
-                    break;
-
                 default:
-                    $details = $row['Order Current Dispatch State'];
-                    break;
+                    $state = $this->data['Order State'];
             }
+
+            $details = '<span >'.$row['Order Customer Name'].'</span> <span class="discreet">('.$state.')</span>';
 
             if ($data['scope'] != 'store') {
-                $details = '<span style="float:left;min-width:40px">'.$row['Store Code'].'</span> <span style="float:left;min-width:90px">'.$details.'</span>';
+                $details = '<span style="float:left;min-width:40px">'.$row['Store Code'].'</span>'.$details;
             }
 
-            $details .= ' <span style="">'.$row['Order Customer Name'].'</span>';
 
             $results[$row['Order Key']] = array(
                 'store'   => $row['Store Code'],
-                'label'   => highlightkeyword(
-                    sprintf('%s', $row['Order Public ID']), $queries
-                ),
-                'details' => highlightkeyword($details, $queries),
+                'label'   => highlightkeyword(sprintf('%s', $row['Order Public ID']), $queries),
+                'details' => $details,//highlightkeyword($details, $queries),
                 'view'    => sprintf(
                     'orders/%d/%d', $row['Order Store Key'], $row['Order Key']
                 )
@@ -2214,7 +2201,7 @@ function search_delivery_notes($db, $account, $memcache_ip, $data) {
                         $details = _('Cancelled to restock');
                         break;
                     case 'Packed Done':
-                        $details = _('Packed done');
+                        $details = _('Packed & Closed');
                         break;
                     default:
                         $details = $row['Delivery Note State'];
