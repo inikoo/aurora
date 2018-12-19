@@ -1295,24 +1295,21 @@ class DeliveryNote extends DB_Table {
                 $order->update_totals();
 
 
-
-
-
                 break;
 
 
             case 'Packed Done':
 
-                if ($this->get('State Index') == 80 ) {
-                    $this->error=true;
-                    $this->msg='Delivery note already closed';
+                if ($this->get('State Index') == 80) {
+                    $this->error = true;
+                    $this->msg   = 'Delivery note already closed';
 
                     return;
                 }
 
                 if ($this->get('State Index') > 70 or $this->get('State Index') < 70) {
-                    $this->error=true;
-                    $this->msg='Delivery note must be fully packed before close it';
+                    $this->error = true;
+                    $this->msg   = 'Delivery note must be fully packed before close it';
 
                     return;
                 }
@@ -1411,9 +1408,9 @@ class DeliveryNote extends DB_Table {
 
 
             case 'Undo Packed Done':
-                if ($this->get('State Index') == 70 ) {
-                    $this->error=true;
-                    $this->msg='Delivery note already open';
+                if ($this->get('State Index') == 70) {
+                    $this->error = true;
+                    $this->msg   = 'Delivery note already open';
 
                     return;
                 }
@@ -1428,8 +1425,9 @@ class DeliveryNote extends DB_Table {
                 }
 
                 if ($this->get('State Index') != 80) {
-                    $this->error=true;
-                    $this->msg='Delivery note must be closed';
+                    $this->error = true;
+                    $this->msg   = 'Delivery note must be closed';
+
                     return;
                 }
                 $this->update_field('Delivery Note Date Done Approved', '', 'no_history');
@@ -1466,7 +1464,7 @@ class DeliveryNote extends DB_Table {
                              `No Shipped Due Out of Stock`=0,
                             `Order Transaction Out of Stock Amount`=0 ,
                                `Order Transaction Amount`=%d
-                             WHERE `Order Transaction Fact Key`=%d ',$metadata['ota_bk']. $otf
+                             WHERE `Order Transaction Fact Key`=%d ', $metadata['ota_bk'].$otf
                             );
 
 
@@ -1888,7 +1886,7 @@ class DeliveryNote extends DB_Table {
                 return $this->update_item_picked_quantity($data);
                 break;
             case 'Out_of_stock':
-                return $this->update_item_out_of_stock_quantity($data);
+                return $this->update_item_not_picked_quantity($data);
                 break;
             case 'Packed':
                 return $this->update_item_packed_quantity($data);
@@ -2048,7 +2046,7 @@ class DeliveryNote extends DB_Table {
 
     }
 
-    function update_item_out_of_stock_quantity($data) {
+    function update_item_not_picked_quantity($data) {
 
         include_once('class.Location.php');
         include_once('class.PartLocation.php');
@@ -2087,8 +2085,13 @@ class DeliveryNote extends DB_Table {
                     $transaction_value = $row['Part Cost'] * $qty;
 
                     $sql = sprintf(
-                        "UPDATE `Inventory Transaction Fact` SET `Out of Stock`=%f ,`Out of Stock Lost Amount`=%f ,`Out of Stock Tag`=%s ,`Date`=%s ,`Picker Key`=%s WHERE `Inventory Transaction Key`=%d  ", $qty, $transaction_value,
-                        prepare_mysql(($qty == 0 ? 'No' : 'Yes')), prepare_mysql($date), prepare_mysql($data['picker_key']), $data['transaction_key']
+                        "UPDATE `Inventory Transaction Fact` SET `Out of Stock`=%f ,`Out of Stock Lost Amount`=%f ,`Out of Stock Tag`=%s ,`Date`=%s ,`Picker Key`=%s WHERE `Inventory Transaction Key`=%d  ",
+                        $qty,
+                        $transaction_value,
+                        prepare_mysql(($qty == 0 ? 'No' : 'Yes')),
+                        prepare_mysql($date),
+                        prepare_mysql($data['picker_key']),
+                        $data['transaction_key']
                     );
 
                     $this->db->exec($sql);
@@ -2099,7 +2102,7 @@ class DeliveryNote extends DB_Table {
 
                 } else {
                     $this->error = true;
-                    $this->msg   = 'Trying to pick more items than required';
+                    $this->msg   = 'Trying to set as not picked more items than required';
 
                     return;
 
