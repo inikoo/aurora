@@ -473,7 +473,7 @@ class DeliveryNote extends DB_Table {
                         return _('Cancelled to restock');
                         break;
                     case 'Packed Done':
-                        return _('Packed done');
+                        return _('Packed & Closed');
                         break;
                     default:
                         return $this->data['Delivery Note State'];

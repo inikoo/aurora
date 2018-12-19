@@ -1091,7 +1091,7 @@ function orders_server($_data, $db, $user) {
                 $state = _('In Warehouse');
                 break;
             case('PackedDone'):
-                $state = _('Packed Done');
+                $state = _('Packed & Closed');
                 break;
             case('Dispatch Approved'):
                 $state = _('Dispatch Approved');
@@ -1178,7 +1178,7 @@ function orders($_data, $db, $user) {
                     $state = _('In Warehouse');
                     break;
                 case('PackedDone'):
-                    $state = _('Packed Done');
+                    $state = _('Packed & Closed');
                     break;
                 case('Dispatch Approved'):
                     $state = _('Dispatch Approved');
@@ -1298,7 +1298,7 @@ function delivery_notes($_data, $db, $user) {
                 $state = _('Cancelled to restock');
                 break;
             case 'Packed Done':
-                $state = _('Packed done');
+                $state = _('Packed & Closed');
                 break;
             default:
                 $state = $data['Delivery Note State'];
