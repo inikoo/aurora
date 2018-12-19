@@ -122,8 +122,8 @@ if ($user->can_view('orders')) {
         $nav_menu[] = array('<i class="button far fa-'.$section['icon'].' fa-fw"></i>',$section['label'], $section['reference'], $key, 'section', '');
     }
 */
-/*
 
+/*
         $nav_menu[] = array(
             '<i class="button far fa-conveyor-belt-alt fa-fw"></i>',
             _('Delivering'),
@@ -347,6 +347,8 @@ if ($user->can_view('production') and $account->get('Account Manufacturers') > 0
 
 }
 
+/*
+
 if ($user->get('User Hooked Store Key')) {
     $nav_menu[] = array(
         '<i class="button fal fa-abacus fa-fw"></i>',
@@ -359,8 +361,6 @@ if ($user->get('User Hooked Store Key')) {
     );
 } else {
 
-
-
     $nav_menu[] = array(
         '<i class="button fal fa-abacus fa-fw"></i>',
         _('Accounting'),
@@ -371,6 +371,8 @@ if ($user->get('User Hooked Store Key')) {
     );
 
 }
+
+*/
 
 if ($user->can_view('staff')) {
     $nav_menu[] = array(
