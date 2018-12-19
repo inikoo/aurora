@@ -17,9 +17,14 @@ $parent=get_object('Invoice',$parameters['parent_key']);
 
 $filter_msg = '';
 
+
 $where = sprintf(
-    "where `Payment Order Key`=%d", $parent->get('Invoice Order Key')
+    "where   ( B.`Order Key`=%d  and  P.`Payment Type`='Payment'  )   or   `Invoice Key`=%d  ", $parent->get('Invoice Order Key'),$parent->id
 );
+
+
+
+
 
 $group = '';
 
@@ -49,12 +54,12 @@ if ($order == 'reference') {
 
 
 
-$table = '`Payment Dimension` P left join `Payment Account Dimension` PA on (PA.`Payment Account Key`=P.`Payment Account Key`)  left join `Store Dimension` on (`Store Key`=`Payment Store Key`)';
+$table = '`Order Payment Bridge` B LEFT  JOIN `Payment Dimension`   P on (P.`Payment Key`=B.`Payment Key`)    left join `Payment Account Dimension` PA on (PA.`Payment Account Key`=P.`Payment Account Key`)  left join `Store Dimension` on (`Store Key`=`Payment Store Key`)';
 
 
 $sql_totals = "select count(P.`Payment Key`) as num from $table  $where  ";
 $fields
-            = "`Store Key`,`Store Name`,`Store Code`,PA.`Payment Account Code`,PA.`Payment Account Name`,`Payment Account Block`,`Payment Transaction Amount Refunded`,`Payment Transaction Amount Credited`,`Payment Submit Type`,`Payment Key`,`Payment Transaction ID`,`Payment Currency Code`,`Payment Transaction Amount`,P.`Payment Type`,`Payment Last Updated Date`,`Payment Transaction Status`,`Payment Transaction Status Info`";
+            = "`Payment Order Key`,`Store Key`,`Store Name`,`Store Code`,PA.`Payment Account Code`,PA.`Payment Account Name`,`Payment Account Block`,`Payment Transaction Amount Refunded`,`Payment Transaction Amount Credited`,`Payment Submit Type`,P.`Payment Key`,`Payment Transaction ID`,`Payment Currency Code`,`Payment Transaction Amount`,P.`Payment Type`,`Payment Last Updated Date`,`Payment Transaction Status`,`Payment Transaction Status Info`";
 
 
 ?>

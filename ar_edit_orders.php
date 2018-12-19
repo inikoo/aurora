@@ -83,7 +83,8 @@ switch ($tipo) {
                          'submit_type'    => array('type' => 'string'),
                          'amount'         => array('type' => 'string'),
                          'payback_refund' => array('type' => 'string'),
-
+                         'parent'         => array('type' => 'string'),
+                         'parent_key'     => array('type' => 'string'),
 
                      )
         );
@@ -717,18 +718,18 @@ function new_payment($data, $editor, $smarty, $db, $account, $user) {
         'Payment Sender Email'                => $order->get('Email'),
         'Payment Sender Card Type'            => '',
         'Payment Created Date'                => $date,
-
-        'Payment Completed Date'         => $date,
-        'Payment Last Updated Date'      => $date,
-        'Payment Transaction Status'     => 'Completed',
-        'Payment Transaction ID'         => $data['reference'],
-        'Payment Method'                 => $data['payment_method'],
-        'Payment Location'               => 'Order',
-        'Payment Metadata'               => '',
-        'Payment Submit Type'            => 'Manual',
-        'Payment Currency Exchange Rate' => $exchange,
-        'Payment User Key'               => $user->id,
-        'Payment Type'                   => ($payback_refund ? 'Refund' : 'Payment')
+        'Payment Order Key'                       => $order->id,
+        'Payment Completed Date'              => $date,
+        'Payment Last Updated Date'           => $date,
+        'Payment Transaction Status'          => 'Completed',
+        'Payment Transaction ID'              => $data['reference'],
+        'Payment Method'                      => $data['payment_method'],
+        'Payment Location'                    => 'Order',
+        'Payment Metadata'                    => '',
+        'Payment Submit Type'                 => 'Manual',
+        'Payment Currency Exchange Rate'      => $exchange,
+        'Payment User Key'                    => $user->id,
+        'Payment Type'                        => ($payback_refund ? 'Refund' : 'Payment')
 
 
     );
@@ -796,7 +797,7 @@ function new_payment($data, $editor, $smarty, $db, $account, $user) {
     foreach ($order->get_payments('objects', 'Completed') as $payment) {
 
 
-        if ($payment->payment_account->get('Payment Account Block') == 'Accounts' or $payment->get('Payment Type') == 'Credit') {
+        if ($payment->payment_account->get('Payment Account Block') == 'Accounts') {
             $_code = _('Credit');
         } else {
             $_code = $payment->get('Payment Account Code');
@@ -896,6 +897,7 @@ function refund_payment($data, $editor, $smarty, $db, $account, $user) {
     $payment_account->editor = $editor;
 
     $order = get_object('Order', $payment->get('Payment Order Key'));
+
 
 
     switch ($data['operation']) {
@@ -1050,15 +1052,15 @@ function refund_payment($data, $editor, $smarty, $db, $account, $user) {
                 'Payment Store Key'   => $order->get('Store Key'),
                 'Payment Website Key' => $store->get('Store Website Key'),
 
-                'Payment Customer Key'                => $order->get('Customer Key'),
-                'Payment Transaction Amount'          => -$data['amount'],
-                'Payment Currency Code'               => $order->get('Currency Code'),
-                'Payment Sender'                      => $order->get('Order Invoice Address Recipient'),
-                'Payment Sender Country 2 Alpha Code' => $order->get('Order Invoice Address Country 2 Alpha Code'),
-                'Payment Sender Email'                => $order->get('Email'),
-                'Payment Sender Card Type'            => '',
-                'Payment Created Date'                => gmdate('Y-m-d H:i:s'),
-
+                'Payment Customer Key'                   => $order->get('Customer Key'),
+                'Payment Transaction Amount'             => -$data['amount'],
+                'Payment Currency Code'                  => $order->get('Currency Code'),
+                'Payment Sender'                         => $order->get('Order Invoice Address Recipient'),
+                'Payment Sender Country 2 Alpha Code'    => $order->get('Order Invoice Address Country 2 Alpha Code'),
+                'Payment Sender Email'                   => $order->get('Email'),
+                'Payment Sender Card Type'               => '',
+                'Payment Created Date'                   => gmdate('Y-m-d H:i:s'),
+                'Payment Order Key'                      => $order->id,
                 'Payment Completed Date'                 => gmdate('Y-m-d H:i:s'),
                 'Payment Last Updated Date'              => gmdate('Y-m-d H:i:s'),
                 'Payment Transaction Status'             => 'Completed',
@@ -1067,7 +1069,6 @@ function refund_payment($data, $editor, $smarty, $db, $account, $user) {
                 'Payment Location'                       => 'Order',
                 'Payment Metadata'                       => '',
                 'Payment Submit Type'                    => ($data['submit_type'] == 'Online' ? 'EPS' : 'Manual'),
-                'Payment Type'                           => 'Refund',
                 'Payment Currency Exchange Rate'         => currency_conversion($db, $order->get('Currency Code'), $account->get('Currency Code')),
                 'Payment Related Payment Key'            => $payment->id,
                 'Payment Related Payment Transaction ID' => $payment->get('Payment Transaction ID'),
@@ -1075,6 +1076,17 @@ function refund_payment($data, $editor, $smarty, $db, $account, $user) {
 
 
             );
+
+            if ($data['parent'] == 'Invoice') {
+                $payment_data['Payment Invoice Key'] = $data['parent_key'];
+                $payment_data['Payment Type'] = 'Refund';
+
+            }else{
+                $payment_data['Payment Type'] = 'Return';
+            }
+
+
+
 
 
             $refund = $payment_account->create_payment($payment_data);
@@ -1095,27 +1107,27 @@ function refund_payment($data, $editor, $smarty, $db, $account, $user) {
             $store = get_object('Store', $order->get('Store Key'));
 
             $reference    = '';
-            $payment_data = array(
-                'Payment Store Key'                   => $order->get('Store Key'),
-                'Payment Website Key'                 => $store->get('Store Website Key'),
-                'Payment Customer Key'                => $order->get('Customer Key'),
-                'Payment Transaction Amount'          => -$data['amount'],
-                'Payment Currency Code'               => $order->get('Currency Code'),
-                'Payment Sender'                      => $order->get('Order Invoice Address Recipient'),
-                'Payment Sender Country 2 Alpha Code' => $order->get('Order Invoice Address Country 2 Alpha Code'),
-                'Payment Sender Email'                => $order->get('Email'),
-                'Payment Sender Card Type'            => '',
-                'Payment Created Date'                => $date,
 
+            $payment_data = array(
+                'Payment Store Key'                      => $order->get('Store Key'),
+                'Payment Website Key'                    => $store->get('Store Website Key'),
+                'Payment Customer Key'                   => $order->get('Customer Key'),
+                'Payment Transaction Amount'             => -$data['amount'],
+                'Payment Currency Code'                  => $order->get('Currency Code'),
+                'Payment Sender'                         => $order->get('Order Invoice Address Recipient'),
+                'Payment Sender Country 2 Alpha Code'    => $order->get('Order Invoice Address Country 2 Alpha Code'),
+                'Payment Sender Email'                   => $order->get('Email'),
+                'Payment Sender Card Type'               => '',
+                'Payment Created Date'                   => $date,
+                'Payment Order Key'                      => $order->id,
                 'Payment Completed Date'                 => $date,
                 'Payment Last Updated Date'              => $date,
                 'Payment Transaction Status'             => 'Completed',
                 'Payment Transaction ID'                 => $reference,
-                'Payment Method'                         => $payment->get('Payment Method'),
+                'Payment Method'                         => 'Account',
                 'Payment Location'                       => 'Order',
                 'Payment Metadata'                       => '',
                 'Payment Submit Type'                    => ($data['submit_type'] == 'Online' ? 'EPS' : 'Manual'),
-                'Payment Type'                           => 'Credit',
                 'Payment Currency Exchange Rate'         => $exchange,
                 'Payment Related Payment Key'            => $payment->id,
                 'Payment Related Payment Transaction ID' => $payment->get('Payment Transaction ID'),
@@ -1123,6 +1135,17 @@ function refund_payment($data, $editor, $smarty, $db, $account, $user) {
 
 
             );
+
+
+            if ($data['parent'] == 'Invoice') {
+                $payment_data['Payment Invoice Key'] = $data['parent_key'];
+                $payment_data['Payment Type'] = 'Refund';
+
+            }else{
+                $payment_data['Payment Type'] = 'Return';
+            }
+
+
 
 
             $refund = $payment_account->create_payment($payment_data);
@@ -1243,7 +1266,7 @@ function create_refund($data, $editor, $smarty, $db) {
         $response = array(
             'state'      => 200,
             'refund_key' => $refund->id,
-            'order_key' => $refund->get('Invoice Order Key'),
+            'order_key'  => $refund->get('Invoice Order Key'),
             'store_key'  => $refund->get('Store Key')
 
         );

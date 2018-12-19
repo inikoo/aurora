@@ -94,9 +94,10 @@ if ($order == 'reference') {
 
 $sql_totals = "select count(P.`Payment Key`) as num from $table  $where  ";
 $fields
-            = "`Store Code`,`Store Name`,`Store Key`,PA.`Payment Account Code`,PA.`Payment Account Name`,`Payment Account Block`,`Payment Transaction Amount Refunded`,`Payment Transaction Amount Credited`,`Payment Submit Type`,`Payment Key`,`Payment Transaction ID`,`Payment Currency Code`,`Payment Transaction Amount`,P.`Payment Type`,`Payment Last Updated Date`,`Payment Transaction Status`,`Payment Transaction Status Info`,
+            = "`Payment Method`,`Payment Order Key`,`Payment Order Key`,`Store Code`,`Store Name`,`Store Key`,PA.`Payment Account Code`,PA.`Payment Account Name`,`Payment Account Block`,`Payment Transaction Amount Refunded`,`Payment Transaction Amount Credited`,`Payment Submit Type`,`Payment Key`,`Payment Transaction ID`,`Payment Currency Code`,`Payment Transaction Amount`,P.`Payment Type`,`Payment Last Updated Date`,`Payment Transaction Status`,`Payment Transaction Status Info`,
             `Order Key`,`Order Store Key`,`Order Public ID`
             ";
+
 
 
 ?>

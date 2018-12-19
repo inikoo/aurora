@@ -127,7 +127,7 @@ function update_new_refund_totals() {
 
 }
 
-function save_refund(){
+function create_refund(){
 
     if (!$('.open_create_refund_dialog_button').hasClass('valid')) {
         return;
