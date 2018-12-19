@@ -221,7 +221,7 @@ function delivery_notes($_data, $db, $user) {
                 $state = _('Cancelled to restock');
                 break;
             case 'Packed Done':
-                $state = _('Packed done');
+                $state = _('Packed & Closed');
                 break;
             default:
                 $state = $data['Delivery Note State'];

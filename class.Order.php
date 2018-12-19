@@ -1482,7 +1482,7 @@ class Order extends DB_Table {
                         $state = _('In Warehouse');
                         break;
                     case('PackedDone'):
-                        $state = _('Packed Done');
+                        $state = _('Packed & Closed');
                         break;
                     case('Approved'):
                         $state = _('Invoiced');
