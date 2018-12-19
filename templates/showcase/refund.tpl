@@ -93,7 +93,7 @@
                 <span class="node_label very_discreet italic">{t}Return payments{/t}</span>
 
 
-                <div class="payment_operation {if $invoice->get('Invoice To Pay Amount')==0     }hide{/if}  ">
+                <div class="payment_operation hide {if $invoice->get('Invoice To Pay Amount')==0     }hide{/if}  ">
                     <div class="square_button right" style="padding:0;margin:0;position:relative;top:0px" title="{t}add payment{/t}">
                         <i class="fa fa-plus" aria-hidden="true" onclick="show_add_payment_to_order()"></i>
 
@@ -108,7 +108,7 @@
                 {foreach from=$payments item=payment}
                     <div class="payment node">
                         <span class="node_label"> <span class="link"
-                                                        onClick="change_view('order/{$invoice->id}/payment/{$payment->id}')">{if $payment->payment_account->get('Payment Account Block')=='Accounts'  or $payment->get('Payment Type')=='Credit' }{t}Credit{/t}{else}{$payment->get('Payment Account Code')}{/if}</span> </span>
+                                                        onClick="change_view('order/{$invoice->id}/payment/{$payment->id}')">{if $payment->payment_account->get('Payment Account Block')=='Accounts'  }{t}Credit{/t}{else}{$payment->get('Payment Account Code')}{/if}</span> </span>
                         <span class="node_amount"> {$payment->get('Transaction Amount')}</span>
                     </div>
                 {/foreach}

@@ -39,12 +39,14 @@ switch ($tipo) {
         break;
     case 'payments':
     case 'order.payments':
-    case 'invoice.payments':
-    case 'refund.payments':
     case 'account.payments':
+    case 'refund.payments':
+    case 'order.payments':
+    case 'invoice.payments':
 
         payments(get_table_parameters(), $db, $user);
         break;
+
 
     case 'credits':
     case 'account.credits':
@@ -138,17 +140,17 @@ function payment_accounts($_data, $db, $user) {
             //$other_currency = ($account_currency != $data['Payment Account Currency']);
 
 
-           // print_r($data);
+            // print_r($data);
 
             if ($data['stores'] != '') {
-                $stores='';
-                foreach (preg_split('/\|/',$data['stores']) as $_store_data) {
-                    $store_data=preg_split('/\,\:\,/',$_store_data);
+                $stores = '';
+                foreach (preg_split('/\|/', $data['stores']) as $_store_data) {
+                    $store_data = preg_split('/\,\:\,/', $_store_data);
 
-                   // print $_store_data;
-                    $stores.=sprintf('<span class="link" onclick="change_view(\'payment_accounts/%d\')">%s</span>, ',$store_data[0],$store_data[1]);
+                    // print $_store_data;
+                    $stores .= sprintf('<span class="link" onclick="change_view(\'payment_accounts/%d\')">%s</span>, ', $store_data[0], $store_data[1]);
                 }
-                $stores=preg_replace('/\, $/','',$stores);
+                $stores = preg_replace('/\, $/', '', $stores);
             } else {
                 $stores = '';
             }
@@ -156,7 +158,7 @@ function payment_accounts($_data, $db, $user) {
 
             $adata[] = array(
                 'id'           => (integer)$data['Payment Account Key'],
-                'code'         => sprintf('<span class="link" onclick="change_view(\'payment_account/%d\')">%s</span>',$data['Payment Account Key'],$data['Payment Account Code']),
+                'code'         => sprintf('<span class="link" onclick="change_view(\'payment_account/%d\')">%s</span>', $data['Payment Account Key'], $data['Payment Account Code']),
                 'name'         => $data['Payment Account Name'],
                 'transactions' => number($data['Payment Account Transactions']),
                 'payments'     => money($data['Payment Account Payments Amount'], $account_currency),
@@ -206,11 +208,9 @@ function payments($_data, $db, $user) {
     }
 
 
-    $is_refund = false;
+    $is_refund=false;
 
-
-    /*
-    if ($parent->get_object_name() == 'Order' and $parent->get('State Index') < 90) {
+    if (($parent->get_object_name() == 'Order' and $parent->get('State Index') < 90) or $parent->get('Order To Pay Amount')<0) {
         $show_operations = true;
 
     } elseif ($parent->get_object_name() == 'Invoice' and $parent->get('Invoice Type') == 'Refund') {
@@ -220,13 +220,7 @@ function payments($_data, $db, $user) {
         $show_operations = false;
 
     }
-    */
 
-    if ($parent->get_object_name() == 'Invoice' and $parent->get('Invoice Type') == 'Refund') {
-        $is_refund = true;
-    }
-
-    $show_operations = true;
 
     $sql = "select $fields from $table $where $wheref order by $order $order_direction limit $start_from,$number_results";
 
@@ -243,13 +237,36 @@ function payments($_data, $db, $user) {
                     $_remove_label = _('Cancel payment');
                     break;
                 case 'Refund':
-                    $type          = _('Refund pay back');
-                    $_remove_label = _('Cancel refund');
+
+                    if($data['Payment Method']=='Account'){
+                        $type          = _('Refund (pay back)');
+                        $_remove_label = _('Cancel refund');
+                    }else{
+                        $type          = _('Refund (pay back)');
+                        $_remove_label = _('Remove credit');
+                    }
+
+
 
                     break;
+                case 'Return':
+
+                    if($data['Payment Method']=='Account'){
+                        $type          = _('Credit excess payment');
+                        $_remove_label = _('Remove credit');
+                    }else{
+                        $type          = _('Return excess payment');
+                        $_remove_label = _('Remove return');
+
+                    }
+
+
+
+                    break;
+
                 case 'Credit':
                     $type          = _('Credit');
-                    $_remove_label = _('Cancel credit');
+                    $_remove_label = _('Remove credit');
                     break;
                 default:
                     $type = $data['Payment Type'];
@@ -282,20 +299,36 @@ function payments($_data, $db, $user) {
 
 
                     if ($data['Payment Account Block'] == 'Accounts') {
-                        $operations = '';
+                        $operations = sprintf(
+                            '<span class="operations">
+                                <i class="far fa-trash-alt button %s " title="%s"   onClick="cancel_payment(this,%d)"  ></i>
+                             </span>',
+
+                            ($data['Payment Order Key']==''?'hide':''),
+                            _('Remove credit'),
+
+                            $data['Payment Key']
+                        );
                     } else {
 
 
                         $operations = sprintf(
                             '<span class="operations">
-                            <i class="far fa-trash-alt button %s" aria-hidden="true" title="'.$_remove_label.'"  onClick="cancel_payment(this,%d)"  ></i>
-                            <i class="fa fa-share fa-flip-horizontal button %s" data-settings=\'{"reference":"%s","amount_formatted":"%s","amount":"%s","can_refund_online":"%s"}\'   aria-hidden="true" title="'._('Refund/Credit payment').'"  onClick="open_refund_dialog(this,%d)"  ></i>
+                            <i class="far fa-trash-alt button %s %s" aria-hidden="true" title="%s"    onClick="cancel_payment(this,%d)"  ></i>
+                            <i class="fa fa-share fa-flip-horizontal button %s" data-settings=\'{"reference":"%s","amount_formatted":"%s","amount":"%s","can_refund_online":"%s","parent":"%s","parent_key":"%s"}\'   aria-hidden="true" title="'._('Refund/Credit payment').'"  onClick="open_refund_dialog(this,%d)"  ></i>
 
-                            </span>', (($data['Payment Submit Type'] != 'Manual' or ($is_refund and $data['Payment Type'] != 'Refund')) ? 'hide' : ''), $data['Payment Key'],
+                            </span>',
+                            ($data['Payment Submit Type'] != 'Manual'  ? 'hide' : ''),
+                            ($data['Payment Order Key']==''?'hide':''),
+                            $_remove_label,
+
+                            $data['Payment Key'],
 
                             (($data['Payment Type'] == 'Payment' and $refundable_amount > 0) ? '' : 'hide'),
 
-                            htmlspecialchars($data['Payment Transaction ID']), money($refundable_amount, $data['Payment Currency Code']), $refundable_amount, ( ($data['Payment Account Block'] == 'BTree' or $data['Payment Account Block'] == 'BTreePaypal'   ) ? true : false), $data['Payment Key']
+                            htmlspecialchars($data['Payment Transaction ID']), money($refundable_amount, $data['Payment Currency Code']), $refundable_amount, (($data['Payment Account Block'] == 'BTree' or $data['Payment Account Block'] == 'BTreePaypal') ? true : false),
+                            $parent->get_object_name(), $parent->id,
+                            $data['Payment Key']
                         );
                     }
 
@@ -356,20 +389,19 @@ function payments($_data, $db, $user) {
             }
 
             if ($_data['parameters']['parent'] == 'store_payment_account') {
-                $reference=sprintf(
-                    "<span class='link' onclick='change_view(\"/payment/%d/%d\")' >%s</span>", $tmp[0],$data['Payment Key'], ($data['Payment Transaction ID'] == '' ? '<span class="discreet italic">'._('Reference missing').'</span>' : $data['Payment Transaction ID'])
+                $reference = sprintf(
+                    "<span class='link' onclick='change_view(\"/payment/%d/%d\")' >%s</span>", $tmp[0], $data['Payment Key'], ($data['Payment Transaction ID'] == '' ? '<span class="discreet italic">'._('Reference missing').'</span>' : $data['Payment Transaction ID'])
                 );
-            }elseif ($_data['parameters']['parent'] == 'payment_account') {
-                $reference=sprintf(
-                    "<span class='link' onclick='change_view(\"/payment_account/%d/payment/%d\")' >%s</span>", $_data['parameters']['parent_key'],$data['Payment Key'], ($data['Payment Transaction ID'] == '' ? '<span class="discreet italic">'._('Reference missing').'</span>' : $data['Payment Transaction ID'])
+            } elseif ($_data['parameters']['parent'] == 'payment_account') {
+                $reference = sprintf(
+                    "<span class='link' onclick='change_view(\"/payment_account/%d/payment/%d\")' >%s</span>", $_data['parameters']['parent_key'], $data['Payment Key'],
+                    ($data['Payment Transaction ID'] == '' ? '<span class="discreet italic">'._('Reference missing').'</span>' : $data['Payment Transaction ID'])
                 );
-            }else{
-                $reference=sprintf(
+            } else {
+                $reference = sprintf(
                     "<span class='link' onclick='change_view(\"/payment/%d\")' >%s</span>", $data['Payment Key'], ($data['Payment Transaction ID'] == '' ? '<span class="discreet italic">'._('Reference missing').'</span>' : $data['Payment Transaction ID'])
                 );
             }
-
-
 
 
             $adata[] = array(

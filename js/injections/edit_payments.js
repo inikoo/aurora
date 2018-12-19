@@ -32,6 +32,10 @@ function open_refund_dialog(element, payment_key) {
     $('#payment_refund_dialog  .select_refund').removeClass('selected').removeClass('no_selected')
 
 
+
+    $('#payment_parent').val(settings.parent)
+    $('#payment_parent_key').val(settings.parent_key)
+
     $('#payment_refund_amount').val('')
     $('#payment_refund_reference').val('')
     $('#payment_refund_dialog .save').removeClass('valid changed error')
@@ -227,6 +231,7 @@ function cancel_payment(element, payment_key) {
     ajaxData.append("tipo", 'object_operation')
     ajaxData.append("operation", 'delete')
     ajaxData.append("object", 'Payment')
+
     ajaxData.append("key", payment_key)
 
 
@@ -284,6 +289,10 @@ function save_refund(element){
     ajaxData.append("key", $('#payment_refund_payment_key').val())
     ajaxData.append("amount", $('#payment_refund_amount').val())
     ajaxData.append("reference", $('#payment_refund_reference').val())
+
+    ajaxData.append("parent", $('#payment_parent').val())
+    ajaxData.append("parent_key", $('#payment_parent_key').val())
+
 
     ajaxData.append("payback_refund", $('#payback_refund').val())
 

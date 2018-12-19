@@ -302,7 +302,7 @@ class Payment extends DB_Table {
             default:
                 $base_data = $this->base_data();
                 if (array_key_exists($field, $base_data)) {
-                    if ($value != $this->data[$field]) {
+                    if ( isset($this->data[$field]) and $value != $this->data[$field]) {
                         $this->update_field($field, $value, $options);
                     }
                 }
@@ -311,7 +311,10 @@ class Payment extends DB_Table {
 
     function update_payment_parents() {
         $order = get_object('Order', $this->data['Payment Order Key']);
-        $order->update_totals();
+
+
+            $order->update_totals();
+
 
         $invoice = get_object('Invoice', $this->data['Payment Invoice Key']);
         if ($invoice->id) {
@@ -350,17 +353,27 @@ class Payment extends DB_Table {
 
         );
 
+        $parent_payment = get_object('Payment', $this->data['Payment Related Payment Key']);
 
-        if ($this->data['Payment Type'] == 'Refund') {
-            $parent_payment = get_object('Payment', $this->data['Payment Related Payment Key']);
-            $parent_payment->update(array('Payment Transaction Amount Refunded' => $parent_payment->get('Payment Transaction Amount Refunded') + $this->data['Payment Transaction Amount']));
-
-
-        }if ($this->data['Payment Type'] == 'Credit') {
-            $parent_payment = get_object('Payment', $this->data['Payment Related Payment Key']);
-            $parent_payment->update(array('Payment Transaction Amount Credited' => $parent_payment->get('Payment Transaction Amount Credited') + $this->data['Payment Transaction Amount']));
+        if ($this->data['Payment Type'] == 'Refund' or $this->data['Payment Type'] == 'Return') {
 
 
+
+            if ($this->data['Payment Method'] == 'Account') {
+                $parent_payment->update(array('Payment Transaction Amount Credited' => $parent_payment->get('Payment Transaction Amount Credited') + $this->data['Payment Transaction Amount']));
+
+
+            }else{
+                $parent_payment->update(array('Payment Transaction Amount Refunded' => $parent_payment->get('Payment Transaction Amount Refunded') + $this->data['Payment Transaction Amount']));
+
+            }
+
+
+
+
+        }
+
+        if ($this->data['Payment Method'] == 'Account') {
             $customer=get_object('Customer',$this->data['Payment Customer Key']);
 
             $account=get_object('Account',1);

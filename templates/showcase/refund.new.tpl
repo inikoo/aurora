@@ -145,7 +145,7 @@
         <div id="payment_nodes">
             {foreach from=$payments item=payment}
                 <div class="payment node">
-                    <span class="node_label"> <span class="link" onClick="change_view('order/{$order->id}/payment/{$payment->id}')">{if $payment->payment_account->get('Payment Account Block')=='Accounts'  or $payment->get('Payment Type')=='Credit' }{t}Credit{/t}{else}{$payment->get('Payment Account Code')}{/if}</span> </span>
+                    <span class="node_label"> <span class="link" onClick="change_view('order/{$order->id}/payment/{$payment->id}')">{if $payment->payment_account->get('Payment Account Block')=='Accounts'  }{t}Credit{/t}{else}{$payment->get('Payment Account Code')}{/if}</span> </span>
                     <span class="node_amount"> {$payment->get('Transaction Amount')}</span>
                 </div>
             {/foreach}
@@ -218,7 +218,7 @@
 
                 <div id="create_refund_operations" class="order_operation {if {$order->get('State Index')}<100  }hide{/if}">
                     <div  class="square_button right  " title="{t}Create refund{/t}">
-                        <i class="fa fa-cloud save   open_create_refund_dialog_button" aria-hidden="true" onclick="save_refund(this)"></i>
+                        <i class="fa fa-cloud save   open_create_refund_dialog_button" aria-hidden="true" onclick="create_refund(this)"></i>
 
                     </div>
                 </div>

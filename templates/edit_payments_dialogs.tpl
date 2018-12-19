@@ -25,6 +25,10 @@
 
 <div id="payment_refund_dialog"  style="position: absolute;background-color: #fff;z-index: 2000;border: 1px solid #ccc;padding:10px;width:350px" class="hide" >
 
+
+    <input type="hidden"  id="payment_parent" value=""  >
+    <input type="hidden"  id="payment_parent_key" value=""  >
+
     <input type="hidden"  id="payment_refund_max_amount" value=""  >
     <input type="hidden"  id="payment_refund_refund_type" value=""  >
     <input type="hidden"  id="payment_refund_submit_type" value=""  >
