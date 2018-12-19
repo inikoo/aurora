@@ -471,14 +471,15 @@ function change_menu_view(module){
                 change_view('delivery_notes/all/')
           //  }
             break;
-
+/*
         case 'accounting':
             if(state.current_store){
-                change_view('accounting/'+state.current_store)
+                change_view('invoices/'+state.current_store)
             }else{
-                change_view('accounting')
+                change_view('invoices/')
             }
             break;
+            */
         case 'products':
             if(state.current_store){
                 change_view('store/'+state.current_store)
@@ -492,6 +493,9 @@ function change_menu_view(module){
             }else{
                 change_view('warehouses')
             }
+            break;
+        case 'accounting':
+            change_view('invoices/all')
             break;
         case 'inventory':
             change_view('inventory/dashboard')
