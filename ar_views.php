@@ -118,6 +118,9 @@ function get_view($db, $smarty, $user, $account, $modules) {
     }
 
 
+
+
+
     if (isset($data['metadata']['reload']) and $data['metadata']['reload']) {
 
         $reload = true;
@@ -720,7 +723,8 @@ function get_view($db, $smarty, $user, $account, $modules) {
             }
 
         }
-    } elseif ($state['module'] == 'orders') {
+    }
+    elseif ($state['module'] == 'orders') {
 
         if ($state['section'] == 'email_campaign') {
 
@@ -3649,7 +3653,6 @@ function get_view_position($db, $state, $user, $smarty, $account) {
 
     $branch = array();
     //$branch=array(array('label'=>'<span >'._('Home').'</span>', 'icon'=>'home', 'reference'=>'/dashboard'));
-
 
     switch ($state['module']) {
         case 'dashboard':
@@ -7644,34 +7647,36 @@ function get_view_position($db, $state, $user, $smarty, $account) {
             break;
         case 'accounting_server':
 
-            if ($state['section'] == 'payment_account') {
+
+            if ($state['section'] == 'dashboard') {
+
+                    $branch[] = array(
+                        'label'     => _('Accounting'),
+                        'icon'      => 'abacus',
+                        'reference' => ''
+                    );
 
 
-                /*
 
-			include_once 'class.Payment_Service_Provider.php';
 
-			$psp=new Payment_Service_Provider($state['_object']->get('Payment Service Provider Key'));
 
-			$branch[]=array('label'=>_('Payment service provider').'  <span id="id">'.$psp->get('Payment Service Provider Code').'</span>', 'icon'=>'', 'reference'=>'account/payment_service_provider/'.$psp->id);
 
-			$branch[]=array('label'=>_('Payment account').'  <span id="id">'.$state['_object']->get('Payment Account Code').'</span>', 'icon'=>'', 'reference'=>'account/payment_service_provider/'.$state['_object']->id);
-*/
+            }elseif ($state['section'] == 'payment_account') {
+
+
 
 
                 if ($state['parent'] == 'account') {
                     $branch[] = array(
-                        'label'     => '('._('All stores').')',
-                        'icon'      => 'cc',
-                        'reference' => 'payment_accounts/all'
+                        'label'     => _('Accounting'),
+                        'icon'      => 'abacus',
+                        'reference' => ''
                     );
 
                 }
 
                 $branch[] = array(
-                    'label'     => _('Payment account').'  <span id="id">'.$state['_object']->get(
-                            'Payment Account Code'
-                        ).'</span>',
+                    'label'     => _('Payment account').'  <span id="id">'.$state['_object']->get('Payment Account Code').'</span>',
                     'icon'      => '',
                     'reference' => 'account/payment_service_provider/'.$state['_object']->id
                 );
@@ -7683,23 +7688,21 @@ function get_view_position($db, $state, $user, $smarty, $account) {
                     if ($user->get_number_stores() > 1) {
                         $branch[] = array(
                             'label'     => '('._('All stores').')',
-                            'icon'      => '',
+                            'icon'      => 'money-check-alt',
                             'reference' => 'payment_accounts/all'
                         );
                     }
 
                     $branch[] = array(
                         'label'     => _('Payment accounts').'  <span id="id">('.$store->get('Code').')</span>',
-                        'icon'      => '',
+                        'icon'      => 'money-check-al',
                         'reference' => 'payment_accounts/'.$store->id
                     );
                 } elseif ($state['parent'] == 'account') {
 
                     $branch[] = array(
-                        'label'     => _('Payment accounts').' ('._(
-                                'All stores'
-                            ).')',
-                        'icon'      => '',
+                        'label'     => _('Payment accounts').' ('._('All stores').')',
+                        'icon'      => 'money-check-alt',
                         'reference' => 'payment_accounts/all'
                     );
 
@@ -7822,7 +7825,7 @@ function get_view_position($db, $state, $user, $smarty, $account) {
 
                 $branch[] = array(
                     'label'     => _('Credits').' ('._('All stores').')',
-                    'icon'      => '',
+                    'icon'      => 'piggy-bank',
                     'reference' => 'credits/all'
                 );
 
@@ -7912,16 +7915,6 @@ function get_view_position($db, $state, $user, $smarty, $account) {
             if ($state['section'] == 'payment_account') {
 
 
-                /*
-
-			include_once 'class.Payment_Service_Provider.php';
-
-			$psp=new Payment_Service_Provider($state['_object']->get('Payment Service Provider Key'));
-
-			$branch[]=array('label'=>_('Payment service provider').'  <span id="id">'.$psp->get('Payment Service Provider Code').'</span>', 'icon'=>'', 'reference'=>'account/payment_service_provider/'.$psp->id);
-
-			$branch[]=array('label'=>_('Payment account').'  <span id="id">'.$state['_object']->get('Payment Account Code').'</span>', 'icon'=>'', 'reference'=>'account/payment_service_provider/'.$state['_object']->id);
-*/
 
 
                 if ($state['parent'] == 'account') {
@@ -7934,9 +7927,7 @@ function get_view_position($db, $state, $user, $smarty, $account) {
                 }
 
                 $branch[] = array(
-                    'label'     => _('Payment account').'  <span id="id">'.$state['_object']->get(
-                            'Payment Account Code'
-                        ).'</span>',
+                    'label'     => _('Payment account').'  <span id="id">'.$state['_object']->get('Payment Account Code').'</span>',
                     'icon'      => '',
                     'reference' => 'account/payment_service_provider/'.$state['_object']->id
                 );
@@ -7961,10 +7952,8 @@ function get_view_position($db, $state, $user, $smarty, $account) {
                 } elseif ($state['parent'] == 'account') {
 
                     $branch[] = array(
-                        'label'     => _('Payment accounts').' ('._(
-                                'All stores'
-                            ).')',
-                        'icon'      => '',
+                        'label'     => _('Payment accounts').' ('._('All stores').')',
+                        'icon'      => 'credit-card',
                         'reference' => 'payment_accounts/all'
                     );
 

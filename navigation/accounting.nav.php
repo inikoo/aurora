@@ -41,7 +41,8 @@ function get_accounting_server_dashboard_navigation($data, $user, $smarty) {
 
 
 function get_payments_navigation($data, $user, $smarty, $db) {
-    global $smarty;
+
+
 
     $right_buttons = array();
     $left_buttons  = array();
@@ -52,7 +53,7 @@ function get_payments_navigation($data, $user, $smarty, $db) {
 
             $title                            = _('Payments').' ('._('All stores').')';
             $sections                         = get_sections('accounting_server', 'all');
-            $sections['accounting']['selected'] = true;
+            $sections['payments']['selected'] = true;
 
             break;
 
@@ -138,6 +139,7 @@ function get_payments_navigation($data, $user, $smarty, $db) {
 
             break;
     }
+
 
 
     $_content = array(
