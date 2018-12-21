@@ -953,6 +953,16 @@ ALTER TABLE `Store Dimension` ADD `Store Settings` JSON  AFTER `Store Version`;
 ALTER TABLE `Store Dimension` ADD `Store Properties` JSON   AFTER `Store Version`;
 UPDATE `Store Dimension` SET `Store Settings`='{}' ,`Store Properties`='{}' ;
 
+ALTER TABLE `Order Transaction Fact` ADD `Order Transaction Metadata` JSON NULL DEFAULT NULL ;
+UPDATE `Order Transaction Fact` set `Order Transaction Metadata`='{}'  where  `Order Transaction Metadata` is NULL ;
+
+
+
+
+ALTER TABLE `Warehouse Dimension` ADD `Warehouse Delivery Notes Ready to Pick Number` SMALLINT UNSIGNED NOT NULL DEFAULT '0' AFTER `Warehouse Max Percentage Part Location Unknown Locations`, ADD `Warehouse Delivery Notes Ready to Pick Weight` DECIMAL(11,1) UNSIGNED NOT NULL DEFAULT '0' AFTER `Warehouse Delivery Notes Ready to Pick Number`, ADD `Warehouse Delivery Notes Assigned Number` SMALLINT UNSIGNED NOT NULL DEFAULT '0' AFTER `Warehouse Delivery Notes Ready to Pick Weight`, ADD `Warehouse Delivery Notes Assigned Weight` DECIMAL(11,1) UNSIGNED NOT NULL DEFAULT '0' AFTER `Warehouse Delivery Notes Assigned Number`;
+ALTER TABLE `Warehouse Dimension` ADD `Warehouse Delivery Notes Picking Number` SMALLINT UNSIGNED NOT NULL DEFAULT '0' AFTER `Warehouse Delivery Notes Assigned Weight`, ADD `Warehouse Delivery Notes Picking Weight` DECIMAL(11,1) UNSIGNED NOT NULL DEFAULT '0' AFTER `Warehouse Delivery Notes Picking Number`, ADD `Warehouse Delivery Notes Packing Number` SMALLINT UNSIGNED NOT NULL DEFAULT '0' AFTER `Warehouse Delivery Notes Picking Weight`, ADD `Warehouse Delivery Notes Packing Weight` DECIMAL(11,1) UNSIGNED NOT NULL DEFAULT '0' AFTER `Warehouse Delivery Notes Packing Number`;
+
+
 ======= fer migration ordering in dw and costa
 
                     ALTER TABLE `Invoice Tax Dimension` ADD `Invoice Tax Key` INT UNSIGNED NOT NULL AUTO_INCREMENT FIRST, ADD PRIMARY KEY (`Invoice Tax Key`);

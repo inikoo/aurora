@@ -123,7 +123,7 @@ if ($user->can_view('orders')) {
     }
 */
 
-/*
+
         $nav_menu[] = array(
             '<i class="button far fa-conveyor-belt-alt fa-fw"></i>',
             _('Delivering'),
@@ -132,7 +132,7 @@ if ($user->can_view('orders')) {
             'module',
             ''
         );
-*/
+
     /*
     $sections=get_sections('invoices', $data['parent_key']);
     foreach ($sections as $key=>$section ) {
@@ -347,13 +347,11 @@ if ($user->can_view('production') and $account->get('Account Manufacturers') > 0
 
 }
 
-/*
-
 if ($user->get('User Hooked Store Key')) {
     $nav_menu[] = array(
         '<i class="button fal fa-abacus fa-fw"></i>',
         _('Accounting'),
-        'accounting/'.$user->get('User Hooked Store Key').'/dashboard',
+        'accounting/'.$user->get('User Hooked Store Key'),
 
         'accounting',
         'module',
@@ -361,18 +359,18 @@ if ($user->get('User Hooked Store Key')) {
     );
 } else {
 
+
+
     $nav_menu[] = array(
         '<i class="button fal fa-abacus fa-fw"></i>',
         _('Accounting'),
-        'accounting/dashboard',
+        'invoices/all',
         'accounting',
         'module',
         ''
     );
 
 }
-
-*/
 
 if ($user->can_view('staff')) {
     $nav_menu[] = array(

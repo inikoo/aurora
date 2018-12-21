@@ -40,7 +40,7 @@
 
         <li id="packed_done_node" class="li {if $order->get('State Index')>=80}complete{/if} ">
             <div class="label">
-                <span class="state">{t}Packed & Sealed{/t}</span>
+                <span class="state">{t}Packed & Closed{/t}</span>
             </div>
             <div class="timestamp">
                 <span>&nbsp;<span class="Order_Packed_Done_Date">&nbsp;{$order->get('Packed Done Date')}</span></span>
@@ -521,9 +521,19 @@
                          <i class="fa fa-truck fa-flip-horizontal fa-fw  {if  $dn->get('Delivery Note Type')=='Replacement'}error{/if}" aria-hidden="true"></i> <span
                                 class="link  {if  $dn->get('Delivery Note Type')=='Replacement'}error{/if}" onClick="change_view('delivery_notes/{$dn->get('Delivery Note Store Key')}/{$dn->id}')">{$dn->get('ID')}</span>
                         (<span class="Delivery_Note_State">{$dn->get('Abbreviated State')}</span>)
-                        <a class="pdf_link {if $dn->get('State Index')<90 }hide{/if}" target='_blank' href="/pdf/dn.pdf.php?id={$dn->id}"> <img style="width: 50px;height:16px;position: relative;top:2px"
-                                                                                                                                                src="/art/pdf.gif"></a>
+
+
+                        <a title="{t}Picking sheet{/t}" class="pdf_link {if $dn->get('State Index')!=10 }hide{/if}" target="_blank" href="/pdf/order_pick_aid.pdf.php?id={$dn->id}"> <i class="fal fa-clipboard-list-check " style="font-size: larger"></i></a>
+
+                        <a class="pdf_link {if $dn->get('State Index')<90 }hide{/if}" target='_blank' href="/pdf/dn.pdf.php?id={$dn->id}"> <img style="width: 50px;height:16px;position: relative;top:2px" src="/art/pdf.gif"></a>
                     </span>
+
+
+                    <div class="order_operation data_entry_delivery_note {if $dn->get('State Index')!=10}hide{/if}">
+                        <div class="square_button right" title="{t}Input picking sheet data{/t}">
+                            <i class="fa fa-keyboard" aria-hidden="true" onclick="data_entry_delivery_note({$dn->id})"></i>
+                        </div>
+                    </div>
 
 
                     <div id="submit_operations" class="order_operation {if !($dn->get('State Index')==80   and  $dn->get('Delivery Note Type')=='Replacement') }hide{/if}">
@@ -681,7 +691,7 @@
                 {foreach from=$payments item=payment}
                     <div class="payment node">
                         <span class="node_label"> <span class="link"
-                                                        onClick="change_view('order/{$order->id}/payment/{$payment->id}')">{if $payment->payment_account->get('Payment Account Block')=='Accounts'  or $payment->get('Payment Type')=='Credit' }{t}Credit{/t}{else}{$payment->get('Payment Account Code')}{/if}</span> </span>
+                                                        onClick="change_view('order/{$order->id}/payment/{$payment->id}')">{if $payment->payment_account->get('Payment Account Block')=='Accounts'  }{t}Credit{/t}{else}{$payment->get('Payment Account Code')}{/if}</span> </span>
                         <span class="node_amount"> {$payment->get('Transaction Amount')}</span>
                     </div>
                 {/foreach}
@@ -849,6 +859,20 @@
 </div>
 
 <script>
+
+    var out_of_stock_dialog_open=false;
+
+
+    function data_entry_delivery_note(dn_key){
+
+        $('#tabs').html('');
+
+        change_view(state.request + '&tab=order.input_picking_sheet' , {
+            'dn_key':dn_key})
+
+
+
+    }
 
 
     $(document).on('click', '#Shipping_Net_Amount', function (evt) {
