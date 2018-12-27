@@ -45,6 +45,8 @@ function get_payments_navigation($data, $user, $smarty, $db) {
 
     $right_buttons = array();
     $left_buttons  = array();
+    $search_placeholder=_('Search payments');
+
 
     switch ($data['parent']) {
         case 'account':
@@ -149,7 +151,7 @@ function get_payments_navigation($data, $user, $smarty, $db) {
 
 
                 $title = _('Payments').' <span class="id" title="'.$store->get('Name').'">'.$store->get('Code').'</span>';
-
+                $search_placeholder=_('Search payments').' '.$data['_parent']->get('Code');
 
                 $sections['payments']['selected'] = true;
 
@@ -171,7 +173,7 @@ function get_payments_navigation($data, $user, $smarty, $db) {
         'title'          => $title,
         'search'         => array(
             'show'        => true,
-            'placeholder' => _('Search payments')
+            'placeholder' => $search_placeholder
         )
 
     );
@@ -381,12 +383,18 @@ function get_payment_service_provider_navigation($data, $user, $smarty, $db) {
 
 function get_payment_account_navigation($data, $user, $smarty, $db) {
 
+    $search_placeholder= _('Search invoices');
 
     $object        = $data['_object'];
     $left_buttons  = array();
     $right_buttons = array();
 
+
+
     if ($data['parent']) {
+
+
+
 
         switch ($data['parent']) {
             case 'account':
@@ -460,7 +468,7 @@ function get_payment_account_navigation($data, $user, $smarty, $db) {
                 if ($result = $db->query($sql)) {
                     if ($row = $result->fetch()) {
                         $prev_key   = $row['object_key'];
-                        $prev_title = _("Payment option").' '.$row['object_name'].' ('.$row['object_key'].')';
+                        $prev_title = _("Payment account").' '.$row['object_name'];
                     }
                 } else {
                     print_r($error_info = $db->errorInfo());
@@ -479,7 +487,7 @@ function get_payment_account_navigation($data, $user, $smarty, $db) {
 
                     }
                     $next_key   = $row['object_key'];
-                    $next_title = _("Payment option").' '.$row['object_name'].' ('.$row['object_key'].')';
+                    $next_title = _("Payment account").' '.$row['object_name'];
                 } else {
                     print_r($error_info = $db->errorInfo());
                     print "$sql\n";
@@ -500,8 +508,9 @@ function get_payment_account_navigation($data, $user, $smarty, $db) {
 
 
         if ($data['parent'] == 'account') {
-            $sections['payments']['selected'] = true;
 
+
+            $sections['payments']['selected'] = true;
 
             $up_button = array(
                 'icon'      => 'arrow-up',
@@ -590,6 +599,8 @@ function get_payment_account_navigation($data, $user, $smarty, $db) {
 
             }
 
+            $search_placeholder.=' '.$data['_parent']->get('code');
+
 
         } elseif ($data['parent'] == 'payment_service_provider') {
             include_once 'class.Payment_Service_Provider.php';
@@ -645,9 +656,7 @@ function get_payment_account_navigation($data, $user, $smarty, $db) {
     }
 
 
-    $title = _('Payment account').' <span class="id">'.$data['_object']->get(
-            'Payment Account Name'
-        ).'</span>';
+    $title = _('Payment account').' <span class="id">'.$data['_object']->get('Payment Account Name').'</span>';
 
 
     $_content = array(
@@ -658,7 +667,7 @@ function get_payment_account_navigation($data, $user, $smarty, $db) {
         'title'          => $title,
         'search'         => array(
             'show'        => true,
-            'placeholder' => _('Search payments')
+            'placeholder' => $search_placeholder
         )
 
     );
@@ -750,7 +759,7 @@ function get_payment_account_server_navigation($data, $user, $smarty, $db) {
                 if ($result = $db->query($sql)) {
                     if ($row = $result->fetch()) {
                         $prev_key   = $row['object_key'];
-                        $prev_title = _("Payment option").' '.$row['object_name'].' ('.$row['object_key'].')';
+                        $prev_title = _("Payment account").' '.$row['object_name'];
                     }
                 } else {
                     print_r($error_info = $db->errorInfo());
@@ -769,7 +778,7 @@ function get_payment_account_server_navigation($data, $user, $smarty, $db) {
 
                     }
                     $next_key   = $row['object_key'];
-                    $next_title = _("Payment option").' '.$row['object_name'].' ('.$row['object_key'].')';
+                    $next_title = _("Payment account").' '.$row['object_name'];
                 } else {
                     print_r($error_info = $db->errorInfo());
                     print "$sql\n";
@@ -794,9 +803,7 @@ function get_payment_account_server_navigation($data, $user, $smarty, $db) {
 
             $up_button = array(
                 'icon'      => 'arrow-up',
-                'title'     => _("Payment accounts").' ('._(
-                        'All stores'
-                    ).')',
+                'title'     => _("Payment accounts").' ('._('All stores').')',
                 'reference' => 'payment_accounts/all'
             );
 
@@ -889,12 +896,10 @@ function get_payment_account_server_navigation($data, $user, $smarty, $db) {
     }
 
 
-    $sections['payment_accounts']['selected'] = true;
+    $sections['payments']['selected'] = true;
 
 
-    $title = _('Payment account').' <span class="id">'.$data['_object']->get(
-            'Payment Account Name'
-        ).'</span>';
+    $title = _('Payment account').' <span class="id">'.$data['_object']->get('Payment Account Name').'</span>';
 
 
     $_content = array(
@@ -1149,6 +1154,8 @@ function get_payment_navigation($data, $user, $smarty, $db) {
     $left_buttons  = array();
     $right_buttons = array();
 
+    $search_placeholder=_('Search payments');
+
 
     if ($data['parent']) {
 
@@ -1217,7 +1224,7 @@ function get_payment_navigation($data, $user, $smarty, $db) {
 
 
         $sql = sprintf(
-            "select `Payment Key` object_name,P.`Payment Key` as object_key from $table   $where $wheref
+            "select `Payment Transaction ID` object_name,P.`Payment Key` as object_key from $table   $where $wheref
 	                and ($_order_field < %s OR ($_order_field = %s AND P.`Payment Key` < %d))  order by $_order_field desc , P.`Payment Key` desc limit 1",
 
             prepare_mysql($_order_field_value), prepare_mysql($_order_field_value), $object->id
@@ -1227,7 +1234,7 @@ function get_payment_navigation($data, $user, $smarty, $db) {
         if ($result = $db->query($sql)) {
             if ($row = $result->fetch()) {
                 $prev_key   = $row['object_key'];
-                $prev_title = _("Payment option").' '.$row['object_name'].' ('.$row['object_key'].')';
+                $prev_title = _("Payment").' '.$row['object_name'];
             }
         } else {
             print_r($error_info = $db->errorInfo());
@@ -1237,7 +1244,7 @@ function get_payment_navigation($data, $user, $smarty, $db) {
 
 
         $sql = sprintf(
-            "select `Payment Key` object_name,P.`Payment Key` as object_key from $table   $where $wheref
+            "select `Payment Transaction ID` object_name,P.`Payment Key` as object_key from $table   $where $wheref
 	                and ($_order_field  > %s OR ($_order_field  = %s AND P.`Payment Key` > %d))  order by $_order_field   , P.`Payment Key`  limit 1", prepare_mysql($_order_field_value), prepare_mysql($_order_field_value), $object->id
         );
 
@@ -1245,7 +1252,7 @@ function get_payment_navigation($data, $user, $smarty, $db) {
         if ($result = $db->query($sql)) {
             if ($row = $result->fetch()) {
                 $next_key   = $row['object_key'];
-                $next_title = _("Payment option").' '.$row['object_name'].' ('.$row['object_key'].')';
+                $next_title = _("Payment").' '.$row['object_name'];
             }
         } else {
             print_r($error_info = $db->errorInfo());
@@ -1453,6 +1460,7 @@ function get_payment_navigation($data, $user, $smarty, $db) {
                 );
 
             }
+            $search_placeholder.=' '.$data['store']->get('Code');
 
 
         } elseif ($data['parent'] == 'store') {
@@ -1502,6 +1510,7 @@ function get_payment_navigation($data, $user, $smarty, $db) {
                 );
 
             }
+            $search_placeholder.=' '.$data['_parent']->get('Code');
 
 
         }
@@ -1532,7 +1541,7 @@ function get_payment_navigation($data, $user, $smarty, $db) {
         'title'          => $title,
         'search'         => array(
             'show'        => true,
-            'placeholder' => _('Search payments')
+            'placeholder' => $search_placeholder
         )
 
     );
@@ -1923,7 +1932,6 @@ function get_invoices_category_server_navigation($data, $smarty, $user, $db, $ac
 
 function get_invoices_navigation($data, $smarty, $user, $db, $account) {
 
-    global $user, $smarty;
 
     switch ($data['parent']) {
         case 'store':
@@ -1935,6 +1943,8 @@ function get_invoices_navigation($data, $smarty, $user, $db, $account) {
     }
 
     $block_view = $data['section'];
+
+
 
 
     $sections = get_sections('accounting', $store->id);
@@ -1949,21 +1959,17 @@ function get_invoices_navigation($data, $smarty, $user, $db, $account) {
                 'title'     => _('Invoices').' ('._('All stores').')',
                 'reference' => 'invoices/all'
             );
-            $button_label = _('Invoices %s');
             break;
 
         case 'payments':
             $sections_class = '';
-            $title          = _('Payments').' <span class="id">'.$store->get(
-                    'Store Code'
-                ).'</span>';
+            $title          = _('Payments').' <span class="id">'.$store->get('Store Code').'</span>';
 
             $up_button    = array(
                 'icon'      => 'arrow-up',
                 'title'     => _('Payments').' ('._('All stores').')',
                 'reference' => 'invoices/payments/all'
             );
-            $button_label = _('Payments %s');
             break;
     }
 
@@ -2020,6 +2026,9 @@ function get_invoices_navigation($data, $smarty, $user, $db, $account) {
     }
 
 
+    $search_placeholder= _('Search invoices').' '.$store->get('Code');
+
+
     $right_buttons = array();
 
     if (isset($sections[$data['section']])) {
@@ -2035,7 +2044,7 @@ function get_invoices_navigation($data, $smarty, $user, $db, $account) {
         'title'          => $title,
         'search'         => array(
             'show'        => true,
-            'placeholder' => _('Search invoices')
+            'placeholder' => $search_placeholder
         )
 
     );
@@ -2050,10 +2059,14 @@ function get_invoices_navigation($data, $smarty, $user, $db, $account) {
 
 function get_invoice_navigation($data, $smarty, $user, $db, $account) {
 
+    $search_placeholder= _('Search invoices');
+
 
     $object        = $data['_object'];
     $left_buttons  = array();
     $right_buttons = array();
+
+
 
     if ($data['parent']) {
 
@@ -2214,9 +2227,7 @@ function get_invoice_navigation($data, $smarty, $user, $db, $account) {
                 $left_buttons[] = array(
                     'icon'      => 'arrow-right',
                     'title'     => $next_title,
-                    'reference' => 'customer/'.$object->get(
-                            'Order Customer Key'
-                        ).'/order/'.$next_key
+                    'reference' => 'customer/'.$object->get('Order Customer Key').'/order/'.$next_key
                 );
 
             } else {
@@ -2233,12 +2244,9 @@ function get_invoice_navigation($data, $smarty, $user, $db, $account) {
 
 
         } elseif ($data['parent'] == 'store') {
-            $store     = get_object('Store', $data['parent_key']);
             $up_button = array(
                 'icon'      => 'arrow-up',
-                'title'     => _("Invoices").' ('.$store->get(
-                        'Store Code'
-                    ).')',
+                'title'     => _("Invoices").' ('.$data['_parent']->get('Code').')',
                 'reference' => 'invoices/'.$data['parent_key']
             );
 
@@ -2278,6 +2286,7 @@ function get_invoice_navigation($data, $smarty, $user, $db, $account) {
 
 
             $sections = get_sections('accounting', $data['parent_key']);
+            $search_placeholder.=' '.$data['_parent']->get('Code');
 
 
         } elseif ($data['parent'] == 'account') {
@@ -2454,7 +2463,7 @@ function get_invoice_navigation($data, $smarty, $user, $db, $account) {
         'title'          => $title,
         'search'         => array(
             'show'        => true,
-            'placeholder' => _('Search invoices')
+            'placeholder' => $search_placeholder
         )
 
     );

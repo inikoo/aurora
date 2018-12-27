@@ -1880,7 +1880,7 @@ function search_orders($db, $account, $memcache_ip, $data) {
             );
         }
 
-      //  $stores = join(',', $user->stores);
+        //  $stores = join(',', $user->stores);
     }
 
 
@@ -1992,7 +1992,8 @@ function search_orders($db, $account, $memcache_ip, $data) {
             $results[$row['Order Key']] = array(
                 'store'   => $row['Store Code'],
                 'label'   => highlightkeyword(sprintf('%s', $row['Order Public ID']), $queries),
-                'details' => $details,//highlightkeyword($details, $queries),
+                'details' => $details,
+                //highlightkeyword($details, $queries),
                 'view'    => sprintf(
                     'orders/%d/%d', $row['Order Store Key'], $row['Order Key']
                 )
@@ -2253,12 +2254,12 @@ function search_delivery_notes($db, $account, $memcache_ip, $data) {
 }
 
 
-function search_invoices($db, $account, $memcache_ip, $data) {
+function search_invoices($db, $account, $user, $data) {
 
-    $cache       = false;
+
     $max_results = 10;
-    $user        = $data['user'];
-    $queries     = trim($data['query']);
+
+    $queries = trim($data['query']);
 
     if ($queries == '') {
         $response = array(
@@ -2291,30 +2292,23 @@ function search_invoices($db, $account, $memcache_ip, $data) {
 
         $stores = join(',', $user->stores);
     }
-    $memcache_fingerprint = $account->get('Account Code').'SEARCH_INVOICE'.$stores.md5($queries);
 
-    $cache = new Memcached();
-    $cache->addServer($memcache_ip, 11211);
+    $cache_fingerprint = 'AU/'.$account->get('Account Code').'/S/invoices/'.md5($stores.'|'.$queries);
+    $redis             = new Redis();
+    if ($redis->connect('127.0.0.1', 6379)) {
 
 
-    if (strlen($queries) <= 2) {
-        $memcache_time = 295200;
-    }
-    if (strlen($queries) <= 3) {
-        $memcache_time = 86400;
-    }
-    if (strlen($queries) <= 4) {
-        $memcache_time = 3600;
-    } else {
-        $memcache_time = 300;
+        if ($redis->exists($cache_fingerprint)) {
+
+            // $results_data = json_decode($redis->get($cache_fingerprint), true);
+
+
+        }
 
     }
 
 
-    $results_data = $cache->get($memcache_fingerprint);
-
-
-    if (!$results_data or $cache) {
+    if (!isset($results_data)) {
 
 
         $candidates = array();
@@ -2431,6 +2425,7 @@ function search_invoices($db, $account, $memcache_ip, $data) {
             'n' => count($results),
             'd' => $results
         );
+        $redis->set($cache_fingerprint, json_encode($results_data));
 
 
     }
@@ -3775,6 +3770,465 @@ function search_parts($db, $account, $data, $response_type = 'echo') {
     } else {
         return $response;
     }
+
+}
+
+
+function search_payments($db, $account, $user, $data) {
+
+
+    $max_results = 10;
+
+    $queries = trim($data['query']);
+
+    if ($queries == '') {
+        $response = array(
+            'state'   => 200,
+            'results' => 0,
+            'data'    => ''
+        );
+        echo json_encode($response);
+
+        return;
+    }
+
+    if ($data['scope'] == 'store') {
+        if (in_array($data['scope_key'], $user->stores)) {
+            $stores      = $data['scope_key'];
+            $where_store = sprintf(
+                ' and `Payment Store Key`=%d', $data['scope_key']
+            );
+        } else {
+            $where_store = ' and false';
+        }
+    } else {
+        if (count($user->stores) == $account->get('Account Stores')) {
+            $where_store = '';
+        } else {
+            $where_store = sprintf(
+                ' and `Payment Store Key` in (%s)', join(',', $user->stores)
+            );
+        }
+
+        $stores = join(',', $user->stores);
+    }
+
+
+    $cache_fingerprint = 'AU/'.$account->get('Account Code').'/S/payment/'.md5($stores.'|'.$queries);
+    $redis             = new Redis();
+    if ($redis->connect('127.0.0.1', 6379)) {
+
+
+        if ($redis->exists($cache_fingerprint)) {
+
+            // $results_data = json_decode($redis->get($cache_fingerprint), true);
+
+
+        }
+
+    }
+
+
+    if (!isset($results_data)) {
+
+        $candidates  = array();
+        $query_array = preg_split('/\s+/', $queries);
+        foreach ($query_array as $q) {
+
+
+            $q = $queries;
+
+
+            $sql = sprintf(
+                "select `Payment Key`,`Payment Transaction ID` from `Payment Dimension` where true $where_store and `Payment Transaction ID` like '%s%%'  order by `Payment Key` desc limit 10 ", $q
+            );
+
+            if ($result = $db->query($sql)) {
+                foreach ($result as $row) {
+
+                    if ($row['Payment Transaction ID'] == $q) {
+                        $candidates['P'.$row['Payment Key']] = 30;
+                    } else {
+
+                        $len_name = strlen($row['Payment Transaction ID']);
+                        $len_q    = strlen($q);
+                        $factor   = $len_q / $len_name;
+
+                        $candidates['P'.$row['Payment Key']] = 20 * $factor;
+                    }
+
+                }
+            } else {
+                print_r($error_info = $db->errorInfo());
+                exit;
+            }
+
+            if (is_numeric($q)) {
+
+                $sql = sprintf(
+                    "select `Payment Key`,`Payment Transaction ID` from `Payment Dimension` where true $where_store and `Payment Transaction Amount`=%.2f  order by `Payment Key` desc limit 10 ", $q
+                );
+
+                if ($result = $db->query($sql)) {
+                    foreach ($result as $row) {
+
+                        if (isset($candidates['P'.$row['Payment Key']])) {
+                            $candidates['P'.$row['Payment Key']] += 10;
+                        } else {
+                            $candidates['P'.$row['Payment Key']] = 10;
+                        }
+
+                    }
+                } else {
+                    print_r($error_info = $db->errorInfo());
+                    exit;
+                }
+
+
+            }
+
+
+            $sql = sprintf(
+                "select `Payment Account Key`,`Payment Account Code` from `Payment Account Dimension`  left join `Payment Account Store Bridge` on (`Payment Account Store Payment Account Key`=`Payment Account Key`)  where `Payment Account Store Store Key` in (%s)  and `Payment Account Code` like '%s%%'  ",
+                $stores,
+                $q
+            );
+
+
+            if ($result = $db->query($sql)) {
+                foreach ($result as $row) {
+
+                    if ($row['Payment Account Code'] == $q) {
+                        $candidates['A'.$row['Payment Account Key']] = 60;
+                    } else {
+
+                        $len_name = strlen($row['Payment Account Code']);
+                        $len_q    = strlen($q);
+                        $factor   = $len_q / $len_name;
+
+                        $candidates['A'.$row['Payment Account Key']] = 20 * $factor;
+                    }
+
+                }
+            } else {
+                print $sql;
+                print_r($error_info = $db->errorInfo());
+                exit;
+            }
+
+
+            $sql = sprintf(
+                "select `Payment Account Key`,`Payment Account Name` from `Payment Account Dimension`  left join `Payment Account Store Bridge` on (`Payment Account Store Payment Account Key`=`Payment Account Key`)  where `Payment Account Store Store Key` in (%s)  and `Payment Account Name`   REGEXP '[[:<:]]%s' LIMIT 20  ",
+                $stores,
+                $q
+            );
+
+
+            if ($result = $db->query($sql)) {
+                foreach ($result as $row) {
+
+                    if ($row['Payment Account Name'] == $q) {
+
+                        if (isset($candidates['A'.$row['Payment Account Key']])) {
+                            $candidates['A'.$row['Payment Account Key']] += 55;
+                        } else {
+                            $candidates['A'.$row['Payment Account Key']] = 55;
+                        }
+
+                    } else {
+
+                        $len_name = strlen($row['Payment Account Name']);
+                        $len_q    = strlen($q);
+                        $factor   = $len_q / $len_name;
+
+                        if (isset($candidates['A'.$row['Payment Account Key']])) {
+                            $candidates['A'.$row['Payment Account Key']] += 50 * $factor;
+                        } else {
+                            $candidates['A'.$row['Payment Account Key']] = 50 * $factor;
+                        }
+
+                    }
+
+                }
+            } else {
+                print $sql;
+                print_r($error_info = $db->errorInfo());
+                exit;
+            }
+
+            if ($data['scope'] == 'stores') {
+
+
+                $sql = sprintf(
+                    "select `Payment Service Provider Key`,`Payment Service Provider Code` from `Payment Service Provider Dimension`  where `Payment Service Provider Code` like '%s%%'  ",
+                    $q
+                );
+
+
+                if ($result = $db->query($sql)) {
+                    foreach ($result as $row) {
+
+                        if ($row['Payment Service Provider Code'] == $q) {
+                            $candidates['S'.$row['Payment Service Provider Key']] = 60;
+                        } else {
+
+                            $len_name = strlen($row['Payment Service Provider Code']);
+                            $len_q    = strlen($q);
+                            $factor   = $len_q / $len_name;
+
+                            $candidates['S'.$row['Payment Service Provider Key']] = 20 * $factor;
+                        }
+
+                    }
+                } else {
+                    print $sql;
+                    print_r($error_info = $db->errorInfo());
+                    exit;
+                }
+
+
+                $sql = sprintf(
+                    "select `Payment Service Provider Key`,`Payment Service Provider Name` from `Payment Service Provider Dimension`  where `Payment Service Provider Name`   REGEXP '[[:<:]]%s' LIMIT 20  ",
+                    $stores,
+                    $q
+                );
+
+
+                if ($result = $db->query($sql)) {
+                    foreach ($result as $row) {
+
+                        if ($row['Payment Service Provider Name'] == $q) {
+
+                            if (isset($candidates['S'.$row['Payment Service Provider Key']])) {
+                                $candidates['S'.$row['Payment Service Provider Key']] += 55;
+                            } else {
+                                $candidates['S'.$row['Payment Service Provider Key']] = 55;
+                            }
+
+                        } else {
+
+                            $len_name = strlen($row['Payment Service Provider Name']);
+                            $len_q    = strlen($q);
+                            $factor   = $len_q / $len_name;
+
+                            if (isset($candidates['S'.$row['Payment Service Provider Key']])) {
+                                $candidates['S'.$row['Payment Service Provider Key']] += 50 * $factor;
+                            } else {
+                                $candidates['S'.$row['Payment Service Provider Key']] = 50 * $factor;
+                            }
+
+                        }
+
+                    }
+                } else {
+                    print $sql;
+                    print_r($error_info = $db->errorInfo());
+                    exit;
+                }
+
+
+            }
+
+
+        }
+
+
+        arsort($candidates);
+
+
+        $total_candidates = count($candidates);
+
+        if ($total_candidates == 0) {
+            $response = array(
+                'state'   => 200,
+                'results' => 0,
+                'data'    => ''
+            );
+            echo json_encode($response);
+
+            return;
+        }
+
+        $counter                    = 0;
+        $payments_keys              = '';
+        $payments_account_keys      = '';
+        $payments_service_providers_keys = '';
+
+
+        $number_payments_keys              = 0;
+        $number_payments_account_keys      = 0;
+        $number_payments_service_providers_keys = 0;
+
+        $results = array();
+
+        foreach ($candidates as $_key => $val) {
+            $counter++;
+            if ($_key[0] == 'P') {
+                $key            = preg_replace('/^P/', '', $_key);
+                $payments_keys  .= ','.$key;
+                $results[$_key] = '';
+                $number_payments_keys++;
+
+            } elseif ($_key[0] == 'A') {
+                $key                   = preg_replace('/^A/', '', $_key);
+                $payments_account_keys .= ','.$key;
+                $results[$_key]        = '';
+                $number_payments_account_keys++;
+
+            } elseif ($_key[0] == 'S') {
+                $key                        = preg_replace('/^S/', '', $_key);
+                $payments_service_providers_keys .= ','.$key;
+                $results[$_key]             = '';
+                $number_payments_service_providers_keys++;
+
+            }
+
+            if ($counter > $max_results) {
+                break;
+            }
+        }
+        $payments_keys              = preg_replace('/^,/', '', $payments_keys);
+        $payments_account_keys      = preg_replace('/^,/', '', $payments_account_keys);
+        $payments_service_providers_keys = preg_replace('/^,/', '', $payments_service_providers_keys);
+
+
+        if ($number_payments_keys) {
+
+            $sql = sprintf(
+                "SELECT `Payment Key`,`Store Code`,`Payment Store Key`,`Payment Transaction ID`,`Payment Transaction Amount`,`Payment Currency Code` FROM `Payment Dimension` LEFT JOIN `Store Dimension` ON (`Payment Store Key`=`Store Key`) WHERE `Payment Key` IN (%s)",
+                $payments_keys
+            );
+
+
+            if ($result = $db->query($sql)) {
+                foreach ($result as $row) {
+
+
+                    if ($data['scope'] != 'store') {
+                        $details = '<span  style="float:left;min-width:40px">('.$row['Store Code'].')</span> ';
+                    } else {
+                        $details = '';
+                    }
+
+                    $details .= ' <span  style="float:left;min-width:60px">'.$row['Payment Transaction ID'].'</span>';
+
+
+                    if ($data['scope'] == 'store') {
+                        $view = sprintf('payments/%d/%d', $row['Payment Store Key'], $row['Payment Key']);
+                    } else {
+                        $view = sprintf('payment/%d', $row['Payment Key']);
+                    }
+
+
+                    $results['P'.$row['Payment Key']] = array(
+                        'store'   => $row['Store Code'],
+                        'label'   => highlightkeyword(sprintf('%s', money($row['Payment Transaction Amount'], $row['Payment Currency Code'])), $queries),
+                        'details' => highlightkeyword($details, $queries),
+                        'view'    => $view
+
+
+                    );
+
+                }
+            } else {
+                print $sql;
+                print_r($error_info = $db->errorInfo());
+                exit;
+            }
+
+        }
+        if ($number_payments_account_keys) {
+            $sql = sprintf(
+                "SELECT `Payment Account Key`,`Store Code`,`Store Key`,`Payment Account Code`,`Payment Account Name` FROM `Payment Account Dimension` left join `Payment Account Store Bridge` on (`Payment Account Store Payment Account Key`=`Payment Account Key`) LEFT JOIN `Store Dimension` ON (`Payment Account Store Store Key`=`Store Key`) WHERE `Payment Account Key` IN (%s)",
+                $payments_account_keys
+            );
+
+
+            if ($result = $db->query($sql)) {
+                foreach ($result as $row) {
+
+
+                    $details = ' <span  style="float:left;min-width:60px">'.$row['Payment Account Name'].'</span>';
+
+
+                    if ($data['scope'] == 'store') {
+                        $view = sprintf('payment_accounts/%d/%d', $row['Store Key'], $row['Payment Account Key']);
+                    } else {
+                        $view = sprintf('payment_account/%d', $row['Payment Account Key']);
+                    }
+
+
+                    $results['A'.$row['Payment Account Key']] = array(
+                        'store'   => $row['Store Code'],
+                        'label'   => '<i class="fal fa-money-check-alt margin_right_10 fa-fw"></i>'.highlightkeyword(sprintf('%s', $row['Payment Account Code']), $queries),
+                        'details' => highlightkeyword($details, $queries),
+                        'view'    => $view
+
+
+                    );
+
+                }
+            } else {
+                print $sql;
+                print_r($error_info = $db->errorInfo());
+                exit;
+            }
+        }
+
+
+        if ($number_payments_service_providers_keys) {
+            $sql = sprintf(
+                "SELECT `Payment Service Provider Key`,`Payment Service Provider Code`,`Payment Service Provider Name` FROM `Payment Service Provider Dimension` WHERE `Payment Service Provider Key` IN (%s)",
+                $payments_service_providers_keys
+            );
+
+
+            if ($result = $db->query($sql)) {
+                foreach ($result as $row) {
+
+
+                    $details = ' <span  style="float:left;min-width:60px">'.$row['Payment Service Provider Name'].'</span>';
+
+
+                    $view = sprintf('payment_service_provider/%d', $row['Payment Service Provider Key']);
+
+
+                    $results['S'.$row['Payment Service Provider Key']] = array(
+                        'store'   => '',
+                        'label'   => '<i class="fal fa-cash-register margin_right_10 fa-fw"></i>'.highlightkeyword(sprintf('%s', $row['Payment Service Provider Code']), $queries),
+                        'details' => highlightkeyword($details, $queries),
+                        'view'    => $view
+
+
+                    );
+
+                }
+            } else {
+                print $sql;
+                print_r($error_info = $db->errorInfo());
+                exit;
+            }
+        }
+
+
+        $results_data = array(
+            'n' => count($results),
+            'd' => $results
+        );
+
+
+        $redis->set($cache_fingerprint, json_encode($results_data));
+
+
+    }
+    $response = array(
+        'state'          => 200,
+        'number_results' => $results_data['n'],
+        'results'        => $results_data['d'],
+        'q'              => $queries
+    );
+
+    echo json_encode($response);
 
 }
 
