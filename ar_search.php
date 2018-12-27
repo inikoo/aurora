@@ -31,6 +31,8 @@ $tipo = $_REQUEST['tipo'];
 switch ($tipo) {
     case 'search':
 
+
+
         $data = prepare_values(
             $_REQUEST, array(
                          'query' => array('type' => 'string'),
@@ -38,7 +40,6 @@ switch ($tipo) {
                      )
         );
 
-        $data['user'] = $user;
 
         if ($user->get('User Type') == 'Agent') {
             agent_search($db, $account, $user, $memcache_ip, $data);
@@ -123,17 +124,53 @@ switch ($tipo) {
             } elseif ($data['state']['module'] == 'orders_server') {
                 $data['scope'] = 'stores';
                 search_orders($db, $account, $memcache_ip, $data);
-            } elseif ($data['state']['module'] == 'invoices_server') {
-                $data['scope'] = 'stores';
-                search_invoices($db, $account, $memcache_ip, $data);
-            } elseif ($data['state']['module'] == 'invoices') {
-                if ($data['state']['current_store']) {
-                    $data['scope']     = 'store';
-                    $data['scope_key'] = $data['state']['current_store'];
+            } elseif ($data['state']['module'] == 'accounting_server') {
+                if (in_array(
+                    $data['state']['section'], array(
+                                                 'invoices',
+
+                                             )
+                )) {
+
+
+
+
+                    $data['scope'] = 'stores';
+                    search_invoices($db, $account, $user, $data);
                 } else {
                     $data['scope'] = 'stores';
+                    search_payments($db, $account,$user, $data);
                 }
-                search_invoices($db, $account, $memcache_ip, $data);
+
+
+
+
+
+
+
+
+            } elseif ($data['state']['module'] == 'accounting') {
+
+                $data['scope']     = 'store';
+                $data['scope_key'] = $data['state']['current_store'];
+                if (in_array(
+                    $data['state']['section'], array(
+                                                 'invoices',
+
+                                             )
+                )) {
+
+
+
+
+
+                    search_invoices($db, $account, $user, $data);
+                } else {
+                    search_payments($db, $account,$user, $data);
+                }
+
+
+
             } elseif ($data['state']['module'] == 'warehouses') {
                 if ($data['state']['current_warehouse']) {
                     $data['scope']     = 'warehouse';
