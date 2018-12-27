@@ -10,7 +10,7 @@
 */
 
 $tab     = 'store.payment_accounts';
-$ar_file = 'ar_payments_tables.php';
+$ar_file = 'ar_accounting_tables.php';
 $tipo    = 'accounts';
 
 $default = $user->get_tab_defaults($tab);
@@ -40,6 +40,14 @@ $parameters = array(
     'parent'     => $state['parent'],
     'parent_key' => $state['parent_key'],
 
+);
+
+
+$smarty->assign('title', _('Payment accounts').' <span class=\"id\" title=\"'.$state['_parent']->get('Name').'\" >'.$state['_parent']->get('Code').'</span>');
+$smarty->assign(
+    'view_position', '<span onclick=\"change_view(\'payment_accounts/all\')\">'._('Payment accounts').' ('._('All stores').')</span><i class=\"fa fa-angle-double-right separator\"></i>    <span onclick=\"change_view(\'payment_accounts/'.$state['_parent']->id.'\')\">'._(
+                       'Payment accounts'
+                   ).'  <span id=\"id\">('.$state['_parent']->get('Code').')</span></span>'
 );
 
 

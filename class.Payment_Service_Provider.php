@@ -15,7 +15,7 @@
 class Payment_Service_Provider extends DB_Table {
 
 
-    function Payment_Service_Provider($arg1 = false, $arg2 = false) {
+    function __construct($arg1 = false, $arg2 = false) {
         global $db;
 
         $this->db            = $db;
@@ -273,16 +273,12 @@ class Payment_Service_Provider extends DB_Table {
 
     function get($key = '') {
 
-
         if (isset($this->data[$key])) {
             return $this->data[$key];
         }
 
-        switch ($key) {
-        }
-        $_key = ucfirst($key);
-        if (isset($this->data[$_key])) {
-            return $this->data[$_key];
+        if (array_key_exists('Payment Service Provider '.$key, $this->data)) {
+            return $this->data[$this->table_name.' '.$key];
         }
 
         return false;
@@ -294,7 +290,7 @@ class Payment_Service_Provider extends DB_Table {
 
 
         $sql = sprintf(
-            "SELECT count(*) AS num  FROM `Payment Account Dimension` WHERE `Payment Service Provider Key`=%d ", $this->id
+            "SELECT count(*) AS num  FROM `Payment Account Dimension` WHERE `Payment Account Service Provider Key`=%d ", $this->id
         );
         if ($row = $this->db->query($sql)->fetch()) {
 
@@ -302,10 +298,11 @@ class Payment_Service_Provider extends DB_Table {
 
         }
 
-        $this->update(
+
+        $this->fast_update(
             array(
                 'Payment Service Provider Accounts' => $number_accounts,
-            ), 'no_history'
+            )
         );
 
     }
@@ -313,7 +310,77 @@ class Payment_Service_Provider extends DB_Table {
 
     function update_payments_data() {
 
-        //todo update_payments_data in service provider
+        $transactions = 0;
+        $payments     = 0;
+        $refunded     = 0;
+        $credited     = 0;
+        $balance      = 0;
+
+        $sql = sprintf(
+            "SELECT count(*) AS num,group_concat(DISTINCT `Payment Currency Code`) AS currencies, sum(if(`Payment Transaction Amount`>0,`Payment Transaction Amount`,0)) AS payments,
+  sum(`Payment Transaction Amount`) AS balance,sum(`Payment Transaction Amount Refunded`) AS refunded,sum(`Payment Transaction Amount Credited`) AS credited FROM `Payment Dimension` P
+left join `Payment Account Dimension` PA on (P.`Payment Account Key`=PA.`Payment Account Key`)
+WHERE `Payment Account Service Provider Key`=%d AND `Payment Transaction Status`='Completed'",
+            $this->id
+        );
+        // print $sql;
+        if ($row = $this->db->query($sql)->fetch()) {
+
+            $transactions = $row['num'];
+            // $currencies   = $row['currencies'];
+            $payments = $row['payments'];
+            $refunded = $row['refunded'];
+            $balance  = $row['balance'];
+        }
+
+        $this->fast_update(
+            array(
+                'Payment Service Provider Transactions'    => $transactions,
+                'Payment Service Provider Payments Amount' => $payments,
+                'Payment Service Provider Refunded Amount' => $refunded,
+                'Payment Service Provider Credited Amount' => $credited,
+
+                'Payment Service Provider Balance Amount' => $balance,
+
+
+            )
+        );
+
+    }
+
+    function load_acc_data() {
+
+
+        //todo
+        return;
+
+        $sql = sprintf("SELECT * FROM `Payment Service Provider Data`  WHERE `Payment Service Provider Key`=%d", $this->id);
+
+        if ($result = $this->db->query($sql)) {
+            if ($row = $result->fetch()) {
+                foreach ($row as $key => $value) {
+                    $this->data[$key] = $value;
+                }
+            }
+        } else {
+            print_r($error_info = $this->db->errorInfo());
+            exit;
+        }
+
+        $sql = sprintf("SELECT * FROM `Payment Service Provider DC Data`  WHERE `Payment Service Provider Key`=%d", $this->id);
+
+        if ($result = $this->db->query($sql)) {
+            if ($row = $result->fetch()) {
+                foreach ($row as $key => $value) {
+                    $this->data[$key] = $value;
+                }
+            }
+        } else {
+            print_r($error_info = $this->db->errorInfo());
+            exit;
+        }
+
+
     }
 
 

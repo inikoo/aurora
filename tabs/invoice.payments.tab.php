@@ -13,7 +13,7 @@
 if ($state['_object']->get('Invoice Type') == 'Refund') {
 
     $tab     = 'refund.payments';
-    $ar_file = 'ar_payments_tables.php';
+    $ar_file = 'ar_accounting_tables.php';
     $tipo    = 'refund.payments';
 
     $smarty->assign('payback_refund', $state['_object']->id);
@@ -23,7 +23,7 @@ if ($state['_object']->get('Invoice Type') == 'Refund') {
 
 } else {
     $tab     = 'invoice.payments';
-    $ar_file = 'ar_payments_tables.php';
+    $ar_file = 'ar_accounting_tables.php';
     $tipo    = 'invoice.payments';
 
 

@@ -81,9 +81,7 @@ switch ($tipo) {
         orders(get_table_parameters(), $db, $user);
         break;
 
-    case 'invoices':
-        invoices(get_table_parameters(), $db, $user);
-        break;
+
     case 'delivery_notes':
         delivery_notes(get_table_parameters(), $db, $user);
         break;
@@ -99,9 +97,7 @@ switch ($tipo) {
     case 'delivery_notes_group_by_store':
         delivery_notes_group_by_store(get_table_parameters(), $db, $user);
         break;
-    case 'invoice_categories':
-        invoice_categories(get_table_parameters(), $db, $user, $account);
-        break;
+
     case 'order.items':
         order_items(get_table_parameters(), $db, $user);
         break;
@@ -1473,81 +1469,6 @@ function pending_delivery_notes($_data, $db, $user) {
 }
 
 
-function invoices($_data, $db, $user) {
-
-    $rtext_label = 'invoice';
-    include_once 'prepare_table/init.php';
-
-    $sql   = "select $fields from $table $where $wheref order by $order $order_direction limit $start_from,$number_results";
-    $adata = array();
-
-
-    if ($result = $db->query($sql)) {
-        foreach ($result as $data) {
-
-            if ($data['Invoice Paid'] == 'Yes') {
-                $state = _('Paid');
-            } elseif ($data['Invoice Paid'] == 'Partially') {
-                $state = _('Partially Paid');
-            } else {
-                $state = _('No Paid');
-            }
-
-
-            if ($data['Invoice Type'] == 'Invoice') {
-                $type = _('Invoice');
-            } elseif ($data['Invoice Type'] == 'CreditNote') {
-                $type = _('Credit Note');
-            } else {
-                $type = _('Refund');
-            }
-
-            switch ($data['Invoice Main Payment Method']) {
-                default:
-                    $method = $data['Invoice Main Payment Method'];
-            }
-
-            $adata[] = array(
-                'id' => (integer)$data['Invoice Key'],
-
-
-                'number' => sprintf('<span class="link" onclick="change_view(\'invoices/%d/%d\')">%s</span>', $data['Invoice Store Key'], $data['Invoice Key'], $data['Invoice Public ID']),
-
-                'customer'     => sprintf('<span class="link" onclick="change_view(\'customers/%d/%d\')">%s</span>', $data['Invoice Store Key'], $data['Invoice Customer Key'], $data['Invoice Customer Name']),
-                'date'         => strftime("%a %e %b %Y %H:%M %Z", strtotime($data['Invoice Date'].' +0:00')),
-                'total_amount' => money($data['Invoice Total Amount'], $data['Invoice Currency']),
-                'net'          => money($data['Invoice Total Net Amount'], $data['Invoice Currency']),
-                'shipping'     => money($data['Invoice Shipping Net Amount'], $data['Invoice Currency']),
-                'items'        => money($data['Invoice Items Net Amount'], $data['Invoice Currency']),
-                'type'         => $type,
-                'method'       => $method,
-                'state'        => $state,
-
-
-            );
-        }
-    } else {
-        print_r($error_info = $db->errorInfo());
-        print "$sql\n";
-        exit;
-    }
-
-
-    $response = array(
-        'resultset' => array(
-            'state'         => 200,
-            'data'          => $adata,
-            'rtext'         => $rtext,
-            'sort_key'      => $_order,
-            'sort_dir'      => $_dir,
-            'total_records' => $total
-
-        )
-    );
-    echo json_encode($response);
-}
-
-
 function orders_group_by_store($_data, $db, $user) {
 
     $rtext_label = 'store';
@@ -2471,152 +2392,6 @@ function delivery_note_cancelled_items($_data, $db, $user) {
 }
 
 
-function invoice_categories($_data, $db, $user, $account) {
-
-
-    $rtext_label = 'category';
-    include_once 'prepare_table/init.php';
-
-    $sql   = "select $fields from $table $where $wheref order by $order $order_direction limit $start_from,$number_results";
-    $adata = array();
-
-    $total_refunds            = 0;
-    $total_refunds_1yb        = 0;
-    $total_refunds_amount_1yb = 0;
-
-
-    $total_invoices            = 0;
-    $total_invoices_1yb        = 0;
-    $total_invoices_amount_1yb = 0;
-
-    $total_sales     = 0;
-    $total_sales_1yb = 0;
-
-    if ($result = $db->query($sql)) {
-        foreach ($result as $data) {
-
-            $total_refunds  += $data['refunds'];
-            $total_invoices += $data['invoices'];
-            $total_sales    += $data['sales'];
-
-
-            if ($data['refunds_1yb'] != '') {
-                $total_refunds_1yb         += $data['refunds_1yb'];
-                $total_refunds_amount_1yb  += $data['refunds_amount_1yb'];
-                $total_invoices_1yb        += $data['invoices_1yb'];
-                $total_invoices_amount_1yb += $data['invoices_amount_1yb'];
-                $total_sales_1yb           += $data['sales_1yb'];
-            }
-
-
-            //    change_view('invoices/2' , { parameters:{ period:'ytd',elements_type:'type' } ,element:{ type:{ Refund:1,Invoice:''}} } )
-
-
-            $adata[] = array(
-                'id'          => (integer)$data['Category Key'],
-                'code'        => sprintf(
-                    '<span class="link" onclick="change_view(\'category/%d\', { tab:\'category.subjects\', parameters:{ period:\'%s\',elements_type:\'type\' } ,element:{ type:{ Invoice:1,Refund:1}} })" >%s</span>', $data['Category Key'],
-                    $_data['parameters']['f_period'], $data['Category Code']
-                ),
-                'label'       => $data['Category Label'],
-                'refunds'     => sprintf(
-                    '<span class="link %s"  onclick="change_view(\'category/%d\', { tab:\'category.subjects\', parameters:{ period:\'%s\',elements_type:\'type\' } ,element:{ type:{ Refund:1,Invoice:\'\'}} })"  >%s</span>',
-
-                    ($data['refunds'] == 0 ? 'very_discreet' : ''), $data['Category Key'], $_data['parameters']['f_period'], number($data['refunds'])
-                ),
-                'refunds_1yb' => ($data['refunds_1yb'] == ''
-                    ? ''
-                    : sprintf(
-                        '<span title="%s" class="%s">%s %s</span>', sprintf(_('Refunds one year back %s, (%s)'), number($data['refunds_1yb']), money($data['refunds_amount_1yb'], $account->get('Account Currency Code'))),
-                        (($data['refunds'] == 0 or $data['refunds_1yb'] == 0) ? 'very_discreet' : ''), delta($data['refunds'], $data['refunds_1yb']), delta_icon($data['refunds'], $data['refunds_1yb'])
-                    )),
-
-
-                'invoices' => sprintf(
-                    '<span class="link %s"  onclick="change_view(\'category/%d\', { tab:\'category.subjects\', parameters:{ period:\'%s\',elements_type:\'type\' } ,element:{ type:{ Invoice:1,Refund:\'\'}} })"  >%s</span>',
-
-                    ($data['invoices'] == 0 ? 'very_discreet' : ''), $data['Category Key'], $_data['parameters']['f_period'], number($data['invoices'])
-                ),
-
-
-                'invoices_1yb' => ($data['invoices_1yb'] == ''
-                    ? ''
-                    : sprintf(
-                        '<span title="%s" class="%s">%s %s</span>', sprintf(_('Invoices one year back %s, (%s)'), number($data['invoices_1yb']), money($data['invoices_amount_1yb'], $account->get('Account Currency Code'))),
-                        (($data['invoices'] == 0 or $data['invoices_1yb'] == 0) ? 'very_discreet' : ''), delta($data['invoices'], $data['invoices_1yb']), delta_icon($data['invoices'], $data['invoices_1yb'])
-                    )),
-                'sales'        => '<span class="'.($data['sales'] == 0 ? 'very_discreet' : '').'">'.money($data['sales'], $account->get('Account Currency Code')).'</span>',
-                'sales_1yb'    => ($data['sales_1yb'] == ''
-                    ? ''
-                    : sprintf(
-                        '<span title="%s" class="%s">%s %s</span>', sprintf(_('Sales one year back %s'), money($data['sales_1yb'], $account->get('Account Currency Code'))), (($data['sales'] == 0 or $data['sales_1yb'] == 0) ? 'very_discreet' : ''),
-                        delta($data['sales'], $data['sales_1yb']), delta_icon($data['sales'], $data['sales_1yb'])
-                    )),
-            );
-        }
-    } else {
-        print_r($error_info = $db->errorInfo());
-        print "$sql\n";
-        exit;
-    }
-
-
-    $db_period = get_interval_db_name($_data['parameters']['f_period']);
-    if (in_array(
-        $db_period, array(
-                      'Total',
-                      '3 Year'
-                  )
-    )) {
-        $total_refunds_1yb  = '';
-        $total_invoices_1yb = '';
-    }
-
-    $adata[] = array(
-        'id'          => 'total',
-        'code'        => _('Total'),
-        'label'       => '',
-        'refunds'     => '<span class="'.($total_refunds == 0 ? 'very_discreet' : '').'">'.number($total_refunds).'</span>',
-        'refunds_1yb' => ($total_refunds_1yb == ''
-            ? ''
-            : sprintf(
-                '<span title="%s" class="%s">%s %s</span>', sprintf(_('Refunds one year back %s, (%s)'), number($total_refunds_1yb), money($total_refunds_amount_1yb, $account->get('Account Currency Code'))),
-                (($total_refunds == 0 or $total_refunds_1yb == 0) ? 'very_discreet' : ''), delta($total_refunds, $total_refunds_1yb), delta_icon($total_refunds, $total_refunds_1yb)
-            )),
-        'invoices'    => '<span class="'.($total_invoices == 0 ? 'very_discreet' : '').'">'.number($total_invoices).'</span>',
-
-        'invoices_1yb' => ($total_invoices_1yb == ''
-            ? ''
-            : sprintf(
-                '<span title="%s" class="%s">%s %s</span>', sprintf(_('invoices one year back %s, (%s)'), number($total_invoices_1yb), money($total_invoices_amount_1yb, $account->get('Account Currency Code'))),
-                (($total_invoices == 0 or $total_invoices_1yb == 0) ? 'very_discreet' : ''), delta($total_invoices, $total_invoices_1yb), delta_icon($total_invoices, $total_invoices_1yb)
-            )),
-
-        'sales' => '<span class="'.($total_sales == 0 ? 'very_discreet' : '').'">'.money($total_sales, $account->get('Account Currency Code')).'</span>',
-
-        'sales_1yb' => ($total_sales_1yb == ''
-            ? ''
-            : sprintf(
-                '<span title="%s" class="%s">%s %s</span>', sprintf(_('sales one year back %s'), money($total_sales_1yb, $account->get('Account Currency Code'))), (($total_sales == 0 or $total_sales_1yb == 0) ? 'very_discreet' : ''),
-                delta($total_sales, $total_sales_1yb), delta_icon($total_sales, $total_sales_1yb)
-            )),
-
-    );
-
-
-    $response = array(
-        'resultset' => array(
-            'state'         => 200,
-            'data'          => $adata,
-            'rtext'         => $rtext,
-            'sort_key'      => $_order,
-            'sort_dir'      => $_dir,
-            'total_records' => $total
-
-        )
-    );
-    echo json_encode($response);
-}
 
 function orders_in_website_mailshots($_data, $db, $user) {
 

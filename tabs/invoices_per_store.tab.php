@@ -9,17 +9,12 @@
 
 */
 
-$tab     = 'orders_server';
-$ar_file = 'ar_orders_tables.php';
-$tipo    = 'orders_server';
+$tab     = 'invoices_per_store';
+$ar_file = 'ar_accounting_tables.php';
+$tipo    = 'invoices_per_store';
 
 
 
-if($account->get('Account Warehouses')==0){
-
-    $html='<div style="padding:20px">'.sprintf(_('Warehouse missing, set it up %s'),'<span class="marked_link" onClick="change_view(\'/warehouse/new\')" >'._('here').'</span>').'</div>';
-    return;
-}
 
 if($account->get('Account Stores')==0){
 
@@ -34,14 +29,11 @@ $default = $user->get_tab_defaults($tab);
 $table_views = array();
 
 $table_filters = array(
-    'customer' => array(
-        'label' => _('Customer'),
-        'title' => _('Customer name')
+    'code' => array(
+        'label' => _('Store'),
+        'title' => _('Store code')
     ),
-    'number'   => array(
-        'label' => _('Number'),
-        'title' => _('Order number')
-    ),
+
 
 );
 
@@ -50,6 +42,10 @@ $parameters = array(
     'parent_key' => $state['parent_key'],
 );
 
+
+
+$smarty->assign('title', _('Invoices per store'));
+$smarty->assign('view_position', '<i class=\"fal fa-layer-group\"></i> '._('Invoices per store'));
 
 include 'utils/get_table_html.php';
 

@@ -10,7 +10,7 @@
 */
 
 $tab     = 'payment_account.payments';
-$ar_file = 'ar_payments_tables.php';
+$ar_file = 'ar_accounting_tables.php';
 $tipo    = 'payments';
 
 $default = $user->get_tab_defaults($tab);

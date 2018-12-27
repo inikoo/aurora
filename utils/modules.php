@@ -2036,26 +2036,26 @@ $modules = array(
         'sections' => array(
 
 
-
-
-
             'invoices' => array(
                 'type'      => 'navigation',
-                'label'     => _('Invoices'),
+                'label'     => _('Invoices').' ('._('All').')',
                 'icon'      => 'file-alt',
-                'reference' => 'invoices/all',
+                'reference' => 'invoices/per_store',
                 'tabs'      => array(
-                    'invoices_per_store' => array(
-                        'label'           => _('Invoices per store'),
+                    'invoices_per_store'  => array(
+                        'label'     => _('Invoices per store'),
                         'icon'      => 'layer-group',
+                        'reference' => 'invoices/per_store',
                     ),
-                       'invoices.categories' => array(
+                    'invoices.categories' => array(
                         'label'     => _('Invoices per categories'),
                         'icon'      => 'sitemap',
+                        'reference' => 'invoices/category/all',
                     ),
-                    'invoices_server' => array(
-                        'label'           => _('All invoices'),
+                    'invoices_server'     => array(
+                        'label'     => _('All invoices'),
                         'icon'      => 'copy',
+                        'reference' => 'invoices/all',
                     )
 
                 )
@@ -2064,28 +2064,32 @@ $modules = array(
 
             'payments' => array(
                 'type'      => 'navigation',
-                'label'     => _('Payments'),
+                'label'     => _('Payments').' ('._('All').')',
                 'icon'      => 'credit-card',
-                'reference' => 'payments/all',
+                'reference' => 'payments/per_store',
                 'tabs'      => array(
 
-                    'payments_group_by_store'   => array(
-                        'label' => _('Group by store'),
-                        'icon'  => 'compress',
+                    'payments_group_by_store' => array(
+                        'label'     => _('Payments per store'),
+                        'icon'      => 'layer-group',
+                        'reference' => 'payments/per_store'
                     ),
 
                     'account.payments' => array(
-                        'icon' => 'credit-card',
-                        'label'=>_('Payments'),
+                        'icon'      => 'credit-card',
+                        'label'     => _('Payments'),
+                        'reference' => 'payments/all'
                     ),
 
-                    'account.payment_accounts' => array(
-                        'label' => _("Payment accounts"),
-                        'icon'  => 'money-check-alt',
+                    'account.payment_accounts'  => array(
+                        'label'     => _("Payment accounts"),
+                        'icon'      => 'money-check-alt',
+                        'reference' => 'payment_accounts/all'
                     ),
                     'payment_service_providers' => array(
-                        'label' => _('Payment Service Providers'),
-                        'icon'  => 'university',
+                        'label'     => _('Payment service providers'),
+                        'icon'      => 'cash-register',
+                        'reference' => 'payment_service_providers/all'
 
                     ),
 
@@ -2095,7 +2099,7 @@ $modules = array(
 
             'credits' => array(
                 'type'      => 'navigation',
-                'label'     => _('Credit vault'),
+                'label'     => _('Credit vault').' ('._('All').')',
                 'html_icon' => '<i class="fa fa-piggy-bank"></i>',
                 'reference' => 'credits/all',
                 'tabs'      => array(
@@ -2106,7 +2110,6 @@ $modules = array(
                     ),
                 )
             ),
-
 
 
             'category' => array(
@@ -2135,36 +2138,30 @@ $modules = array(
             ),
 
 
-
-
             'payment_service_provider' => array(
                 'type' => 'object',
                 'tabs' => array(
-                    'payment_service_provider.details'  => array(
+                    'payment_service_provider.details' => array(
                         'label' => _('Data'),
                         'icon'  => 'database'
                     ),
-                    'payment_service_provider.history'  => array(
-                        'label' => _(
-                            'History, notes'
-                        ),
-                        'icon'  => 'sticky-note'
-                    ),
+
                     'payment_service_provider.accounts' => array(
-                        'label' => _(
-                            'Accounts'
-                        ),
-                        'title' => _(
-                            'Payment accounts'
-                        )
+                        'label' => _('Accounts'),
+                        'title' => _('Payment accounts'),
+                        'icon'  => 'money-check-alt',
                     ),
                     'payment_service_provider.payments' => array(
-                        'label' => _(
-                            'Payments'
-                        ),
-                        'title' => _(
-                            'Payments transactions'
-                        )
+                        'label' => _('Payments'),
+                        'title' => _('Payments transactions'),
+                        'icon'  => 'credit-card'
+                    ),
+
+                    'payment_service_provider.history' => array(
+                        'title' => _('History'),
+                        'label' => '',
+                        'icon'  => 'road',
+                        'class' => 'right icon_only'
                     ),
 
                 )
@@ -2193,8 +2190,8 @@ $modules = array(
                         'class' => 'right icon_only'
                     ),
                     'payment_account.payments' => array(
-                        'label'         => _('Transactions'),
-                        'title'         => _('Payments transactions'),
+                        'label'         => _('Payments'),
+                        'title'         => _('Payments & refunds'),
                         'quantity_data' => array(
                             'object' => '_object',
                             'field'  => 'Transactions'
@@ -2230,15 +2227,62 @@ $modules = array(
                     ),
 
                 )
-            )
+            ),
+            'invoice'                  => array(
+                'type' => 'object',
+                'tabs' => array(
 
 
-        )
+                    'invoice.items'    => array(
+                        'label' => _('Items'),
+                        'icon'  => 'bars'
+                    ),
+                    'invoice.details'  => array(
+                        'label' => _('Data'),
+                        'icon'  => 'database'
+                    ),
+                    'invoice.payments' => array(
+                        'label' => _('Payments'),
+                        'icon'  => 'fa-dollar-sign',
+
+                    ),
+                    'invoice.history'  => array(
+                        'label' => '',
+                        'title' => _('History'),
+                        'icon'  => 'road',
+                        'class' => 'right icon_only'
+
+                    )
+
+                )
+
+            ),
+
+
+        ),
+
     ),
 
     'accounting' => array(
 
         'sections' => array(
+
+
+            'invoices' => array(
+                'type'      => 'navigation',
+                'label'     => _('Invoices'),
+                'icon'      => 'file-alt',
+                'reference' => 'invoices/%d',
+                'tabs'      => array(
+
+                    'invoices' => array(
+                        'label' => _('Invoices'),
+                        'icon'  => 'file-alt',
+                    )
+
+                )
+
+            ),
 
             'invoice' => array(
                 'type' => 'object',
@@ -2270,6 +2314,24 @@ $modules = array(
 
             ),
 
+            'payments' => array(
+                'type'      => 'navigation',
+                'label'     => _('Payments'),
+                'icon'      => 'credit-card',
+                'reference' => 'payments/%s',
+                'tabs'      => array(
+                    'store.payments'         => array(
+                        'label'             => _('Payments'),
+                        'icon'              => 'credit-card',
+                        'dynamic_reference' => 'payments/%s',
+                    ),
+                    'store.payment_accounts' => array(
+                        'icon'              => 'money-check-alt',
+                        'label'             => _("Payment accounts"),
+                        'dynamic_reference' => 'payment_accounts/%s',
+                    )
+                )
+            ),
 
             'credits' => array(
                 'type'      => 'navigation',
@@ -2286,31 +2348,10 @@ $modules = array(
             ),
 
 
-            'payment_accounts' => array(
-                'type'      => 'navigation',
-                'label'     => _("Payment accounts"),
-                'icon'      => 'cc',
-                'reference' => 'payment_accounts/%s',
-                'tabs'      => array(
-                    'store.payment_accounts' => array(),
-                )
-            ),
-
-            'payments' => array(
-                'type'      => 'navigation',
-                'label'     => _('Payments'),
-                'icon'      => 'credit-card',
-                'reference' => 'payments/%s',
-                'tabs'      => array(
-                    'store.payments' => array()
-                )
-            ),
-
-
             'payment_account' => array(
                 'type' => 'object',
                 'tabs' => array(
-                    'store.payment_account.details'  => array(
+                    'payment_account.details'        => array(
                         'label' => _('Data'),
                         'icon'  => 'database',
                         'title' => _('Details')
@@ -2327,8 +2368,8 @@ $modules = array(
                         'class' => 'right icon_only'
                     ),
                     'store.payment_account.payments' => array(
-                        'label' => _('Transactions'),
-                        'title' => _('Payments transactions'),
+                        'label' => _('Payments'),
+                        'title' => _('Payments & refunds'),
 
                     )
 
@@ -2338,12 +2379,12 @@ $modules = array(
             'payment'         => array(
                 'type' => 'object',
                 'tabs' => array(
-                    'store.payment.details' => array(
+                    'payment.details' => array(
                         'label' => _('Data'),
                         'icon'  => 'database',
                         'title' => _('Details')
                     ),
-                    'store.payment.history' => array(
+                    'payment.history' => array(
                         'label' => _('History, notes'),
                         'icon'  => 'sticky-note'
                     ),

@@ -15,13 +15,10 @@ $filter_msg = '';
 $table = '`Payment Dimension` P left join `Payment Account Dimension` PA on (PA.`Payment Account Key`=P.`Payment Account Key`) left join `Store Dimension` on (`Payment Store Key`=`Store Key`) left join `Order Dimension` O on (`Payment Order Key`=`Order Key`)';
 
 
-
-
-
 switch ($parameters['parent']) {
     case 'payment_service_provider':
         $where = sprintf(
-            "where `Payment Service Provider Key`=%d", $parameters['parent_key']
+            "where `Payment Account Service Provider Key`=%d", $parameters['parent_key']
         );
         break;
     case 'payment_account':
@@ -35,10 +32,10 @@ switch ($parameters['parent']) {
         );
         break;
     case 'store_payment_account':
-        $tmp=preg_split('/\_/',$_data['parameters']['parent_key']);
+        $tmp = preg_split('/\_/', $parameters['parent_key']);
 
         $where = sprintf(
-            "where `Payment Store Key`=%d and  P.`Payment Account Key`=%d",$tmp[0],$tmp[1]
+            "where `Payment Store Key`=%d and  P.`Payment Account Key`=%d", $tmp[0], $tmp[1]
         );
         break;
     case 'account':
@@ -82,14 +79,13 @@ if ($order == 'reference') {
     $order = 'P.`Payment Type`';
 } elseif ($order == 'status') {
     $order = 'P.`Payment Transaction Status`';
-}elseif ($order == 'store') {
+} elseif ($order == 'store') {
     $order = 'Store Code`';
-}elseif ($order == 'order') {
+} elseif ($order == 'order') {
     $order = 'Order Public ID`';
 } else {
     $order = 'P.`Payment Key`';
 }
-
 
 
 $sql_totals = "select count(P.`Payment Key`) as num from $table  $where  ";
@@ -97,7 +93,6 @@ $fields
             = "`Payment Method`,`Payment Order Key`,`Payment Order Key`,`Store Code`,`Store Name`,`Store Key`,PA.`Payment Account Code`,PA.`Payment Account Name`,`Payment Account Block`,`Payment Transaction Amount Refunded`,`Payment Transaction Amount Credited`,`Payment Submit Type`,`Payment Key`,`Payment Transaction ID`,`Payment Currency Code`,`Payment Transaction Amount`,P.`Payment Type`,`Payment Last Updated Date`,`Payment Transaction Status`,`Payment Transaction Status Info`,
             `Order Key`,`Order Store Key`,`Order Public ID`
             ";
-
 
 
 ?>

@@ -11,7 +11,7 @@
 
 
 $tab     = 'payments_group_by_store';
-$ar_file = 'ar_payments_tables.php';
+$ar_file = 'ar_accounting_tables.php';
 $tipo    = 'payments_group_by_store';
 
 $default = $user->get_tab_defaults($tab);
@@ -35,6 +35,12 @@ $parameters = array(
     'parent'     => '',
     'parent_key' => '',
 );
+
+
+
+$smarty->assign('title', _('Payments per store'));
+$smarty->assign('view_position', '<i class=\"fal fa-layer-group\"></i> '._('Payments per store'));
+
 
 
 include('utils/get_table_html.php');

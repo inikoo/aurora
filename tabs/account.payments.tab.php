@@ -10,7 +10,7 @@
 */
 
 $tab     = 'account.payments';
-$ar_file = 'ar_payments_tables.php';
+$ar_file = 'ar_accounting_tables.php';
 $tipo    = 'account.payments';
 
 
@@ -52,6 +52,8 @@ $parameters = array(
     'parent_key' => $state['parent_key'],
 
 );
+
+$smarty->assign('title', _('Payments').' ('._('All stores').')');
 
 
 include('utils/get_table_html.php');

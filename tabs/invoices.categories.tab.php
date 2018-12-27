@@ -11,7 +11,7 @@
 
 
 $tab     = 'invoices.categories';
-$ar_file = 'ar_orders_tables.php';
+$ar_file = 'ar_accounting_tables.php';
 $tipo    = 'invoice_categories';
 
 $default = $user->get_tab_defaults($tab);
@@ -47,6 +47,11 @@ $table_buttons[] = array(
 );
 */
 $smarty->assign('table_buttons', $table_buttons);
+
+
+
+$smarty->assign('title', _('Invoices per category'));
+$smarty->assign('view_position', '<i class=\"fal fa-sitemap\"></i> '._('Invoices per category'));
 
 
 include('utils/get_table_html.php');

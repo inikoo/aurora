@@ -1039,9 +1039,9 @@ function edit_category_subject(element) {
 
 }
 
-function post_table_rendered() {
+function post_table_rendered(el) {
 
-
+console.log(state.tab)
     switch (state.tab){
         case 'location.parts':
             $('.table_edit_cell').awesomeCursor('pencil', {
@@ -1064,6 +1064,11 @@ function post_table_rendered() {
         case 'ec_sales_list':
 
             get_ec_sales_list_totals();
+            break;
+        case 'store.payment_accounts':
+
+            console.log(el)
+            // $('#nav_title').
             break;
 
 
