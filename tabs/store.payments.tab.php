@@ -2,7 +2,7 @@
 /*
  About:
  Author: Raul Perusquia <raul@inikoo.com>
- Created: 2 December 2017 at 12:21:21 GMT+7 , Bankok, Thailand
+ Created: 26 December 2018 at 16:00:44 GMT+8, Kuala Lumpur, Malaysia
  Copyright (c) 2015, Inikoo
 
  Version 3
@@ -40,6 +40,12 @@ $parameters = array(
     'parent_key' => $state['parent_key'],
 
 );
+
+
+
+$smarty->assign('title', _('Payments').' <span class=\"id\" title=\"'.$state['_parent']->get('Name').'\" >'.$state['_parent']->get('Code').'</span>');
+
+$smarty->assign('view_position','<span onclick=\"change_view(\'payments/per_store\')\"><i class=\"fal fa-layer-group\"></i> '._('Payments per store').'</span><i class=\"fa fa-angle-double-right separator\"></i>    <span onclick=\"change_view(\'payments/'.$state['_parent']->id.'\')\">'._('Payments').'  <span id=\"id\">('.$state['_parent']->get('Code').')</span></span>');
 
 
 include('utils/get_table_html.php');

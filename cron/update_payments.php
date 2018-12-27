@@ -28,6 +28,23 @@ $editor = array(
 
 
 
+$sql = sprintf("SELECT `Payment Service Provider Key` FROM `Payment Service Provider Dimension`");
+if ($result = $db->query($sql)) {
+    foreach ($result as $row) {
+        $payment_service_provider = get_object('Payment Service Provider',$row['Payment Service Provider Key']);
+
+        $payment_service_provider->update_payments_data();
+        $payment_service_provider->update_accounts_data();
+
+
+    }
+
+} else {
+    print_r($error_info = $db->errorInfo());
+    exit;
+}
+
+
 $sql = sprintf("SELECT `Payment Account Key` FROM `Payment Account Dimension`");
 if ($result = $db->query($sql)) {
     foreach ($result as $row) {
@@ -43,6 +60,9 @@ if ($result = $db->query($sql)) {
     print_r($error_info = $db->errorInfo());
     exit;
 }
+
+
+
 
 
 ?>

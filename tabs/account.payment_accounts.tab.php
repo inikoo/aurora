@@ -10,7 +10,7 @@
 */
 
 $tab     = 'account.payment_accounts';
-$ar_file = 'ar_payments_tables.php';
+$ar_file = 'ar_accounting_tables.php';
 $tipo    = 'accounts';
 
 $default = $user->get_tab_defaults($tab);
@@ -42,6 +42,10 @@ $parameters = array(
 
 );
 
+
+
+$smarty->assign('title', _('Payment accounts'));
+$smarty->assign('view_position', '<i class=\"fal fa-money-check-alt\"></i> '._('Payment accounts'));
 
 include('utils/get_table_html.php');
 

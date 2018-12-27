@@ -159,14 +159,21 @@ function get_object($object_name, $key, $load_other_data = false) {
             $object = new SubjectList($key);
             break;
         case 'payment_service_provider':
+        case 'payment service provider':
             require_once "class.Payment_Service_Provider.php";
             $object = new Payment_Service_Provider($key);
             break;
         case 'payment_account':
         case 'paymentaccount':
 
-        require_once "class.Payment_Account.php";
+            require_once "class.Payment_Account.php";
             $object = new Payment_Account($key);
+            break;
+
+        case 'store_payment_account':
+            $tmp = preg_split('/\_/', $key);
+            require_once "class.Payment_Account.php";
+            $object = new Payment_Account($tmp[1]);
             break;
         case 'payment':
             require_once "class.Payment.php";
@@ -311,7 +318,7 @@ function get_object($object_name, $key, $load_other_data = false) {
         case 'supplier_production':
         case 'supplierproduction':
 
-        require_once "class.Supplier_Production.php";
+            require_once "class.Supplier_Production.php";
             $object = new Supplier_Production($key);
             break;
         case 'position':
@@ -428,16 +435,13 @@ function get_object($object_name, $key, $load_other_data = false) {
             break;
 
 
-
-
         case 'email_template_type-code_store':
             include_once 'class.EmailCampaignType.php';
 
-            $keys=preg_split('/\|/',$key);
+            $keys = preg_split('/\|/', $key);
 
-            $object = new EmailCampaignType('code_store', $keys[0],$keys[1]);
+            $object = new EmailCampaignType('code_store', $keys[0], $keys[1]);
             break;
-
 
 
         case 'prospect':

@@ -10,7 +10,7 @@
 */
 
 $tab     = 'store.credits';
-$ar_file = 'ar_payments_tables.php';
+$ar_file = 'ar_accounting_tables.php';
 $tipo    = 'store.credits';
 
 

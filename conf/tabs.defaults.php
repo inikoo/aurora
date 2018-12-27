@@ -772,6 +772,19 @@ $tab_defaults = array(
         'export_fields' => $export_fields['invoices']
 
     ),
+
+    'invoices_per_store'      => array(
+        'view'          => 'overview',
+        'sort_key'      => 'code',
+        'sort_order'    => 1,
+        'rpp'           => 100,
+        'rpp_options'   => $default_rrp_options,
+        'f_field'       => 'code',
+
+
+
+    ),
+
     'sales_representative.invoices' => array(
         'view'          => 'overview',
         'sort_key'      => 'id',

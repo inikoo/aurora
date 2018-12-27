@@ -14,7 +14,7 @@
 function get_accounting_server_dashboard_navigation($data, $user, $smarty) {
 
 
-    $sections = get_sections('accounting_server','all');
+    $sections = get_sections('accounting_server', 'all');
 
     $sections['dashboard']['selected'] = true;
 
@@ -43,7 +43,6 @@ function get_accounting_server_dashboard_navigation($data, $user, $smarty) {
 function get_payments_navigation($data, $user, $smarty, $db) {
 
 
-
     $right_buttons = array();
     $left_buttons  = array();
 
@@ -51,25 +50,21 @@ function get_payments_navigation($data, $user, $smarty, $db) {
         case 'account':
 
 
-            $title                            = _('Payments').' ('._('All stores').')';
-            $sections                         = get_sections('accounting_server', 'all');
+            $title    = _('Payments').' ('._('All stores').')';
+            $sections = get_sections('accounting_server', 'all');
+
             $sections['payments']['selected'] = true;
 
             break;
 
         case 'store':
-            $store = new Store($data['parent_key']);
+            $store = $data['_parent'];
 
             $sections     = get_sections('accounting', $store->id);
-            $up_button    = array();
             $button_label = _('Payments %s');
-            $block_view   = 'accounting';
+
             if ($user->stores > 1) {
-                $up_button = array(
-                    'icon'      => 'arrow-up',
-                    'title'     => _("Payments"),
-                    'reference' => 'payments/all'
-                );
+
 
                 list($prev_key, $next_key) = get_prev_next(
                     $store->id, $user->stores
@@ -114,32 +109,58 @@ function get_payments_navigation($data, $user, $smarty, $db) {
                 }
 
 
-                $left_buttons[] = array(
-                    'icon'      => 'arrow-left',
-                    'title'     => $prev_title,
-                    'reference' => $block_view.'/'.$prev_key
-                );
-                $left_buttons[] = $up_button;
+                if ($data['tab'] == 'store.payment_accounts') {
+                    $left_buttons[] = array(
+                        'icon'      => 'arrow-left',
+                        'title'     => $prev_title,
+                        'reference' => 'payment_accounts/'.$prev_key
+                    );
+                    $left_buttons[] = array(
+                        'icon'      => 'arrow-up',
+                        'title'     => _("Payments"),
+                        'reference' => 'payment_accounts/all'
+                    );
 
-                $left_buttons[] = array(
-                    'icon'      => 'arrow-right',
-                    'title'     => $next_title,
-                    'reference' => $block_view.'/'.$next_key
-                );
+                    $left_buttons[] = array(
+                        'icon'      => 'arrow-right',
+                        'title'     => $next_title,
+                        'reference' => 'payment_accounts/'.$next_key
+                    );
+                } else {
+
+
+                    $left_buttons[] = array(
+                        'icon'      => 'arrow-left',
+                        'title'     => $prev_title,
+                        'reference' => 'payments/'.$prev_key
+                    );
+                    $left_buttons[] = array(
+                        'icon'      => 'arrow-up',
+                        'title'     => _("Payments"),
+                        'reference' => 'payments/all'
+                    );
+
+                    $left_buttons[] = array(
+                        'icon'      => 'arrow-right',
+                        'title'     => $next_title,
+                        'reference' => 'payments/'.$next_key
+                    );
+                }
 
 
                 $title = _('Payments').' <span class="id" title="'.$store->get('Name').'">'.$store->get('Code').'</span>';
 
 
-                $sections['accounting']['selected'] = true;
+                $sections['payments']['selected'] = true;
 
             }
 
-            $sections['accounting']['selected'] = true;
+            $sections['payments']['selected'] = true;
 
             break;
-    }
 
+
+    }
 
 
     $_content = array(
@@ -149,7 +170,7 @@ function get_payments_navigation($data, $user, $smarty, $db) {
         'right_buttons'  => $right_buttons,
         'title'          => $title,
         'search'         => array(
-            'show'        => false,
+            'show'        => true,
             'placeholder' => _('Search payments')
         )
 
@@ -280,15 +301,15 @@ function get_payment_service_provider_navigation($data, $user, $smarty, $db) {
 
             $up_button = array(
                 'icon'      => 'arrow-up',
-                'title'     => _("Account payment options"),
-                'reference' => 'account'
+                'title'     => _("Payment service provider"),
+                'reference' => 'payment_service_providers/all'
             );
 
             if ($prev_key) {
                 $left_buttons[] = array(
                     'icon'      => 'arrow-left',
                     'title'     => $prev_title,
-                    'reference' => 'account/payment_service_provider/'.$prev_key
+                    'reference' => 'payment_service_provider/'.$prev_key
                 );
 
             } else {
@@ -306,7 +327,7 @@ function get_payment_service_provider_navigation($data, $user, $smarty, $db) {
                 $left_buttons[] = array(
                     'icon'      => 'arrow-right',
                     'title'     => $next_title,
-                    'reference' => 'account/payment_service_provider/'.$next_key
+                    'reference' => 'payment_service_provider/'.$next_key
                 );
 
             } else {
@@ -325,10 +346,10 @@ function get_payment_service_provider_navigation($data, $user, $smarty, $db) {
 
     }
 
-    $sections = get_sections('account', '');
+    $sections = get_sections('accounting_server', '');
 
 
-    $sections['account']['selected'] = true;
+    $sections['payments']['selected'] = true;
 
 
     $title = _('Payment option').' <span class="id">'.$data['_object']->get(
@@ -370,21 +391,18 @@ function get_payment_account_navigation($data, $user, $smarty, $db) {
         switch ($data['parent']) {
             case 'account':
                 $tab      = 'payment_accounts';
-                $_section = 'account';
                 $sections = get_sections('accounting', 'all');
 
                 break;
             case 'store':
-                $tab      = 'payment_accounts';
-                $_section = 'account';
+                $tab = 'store.payment_accounts';
 
 
                 $sections = get_sections('accounting', $data['parent_key']);
 
                 break;
             case 'payment_service_provider':
-                $tab      = 'payment_service_provider.accounts';
-                $_section = 'account';
+                $tab = 'payment_service_provider.accounts';
                 break;
 
 
@@ -482,6 +500,7 @@ function get_payment_account_navigation($data, $user, $smarty, $db) {
 
 
         if ($data['parent'] == 'account') {
+            $sections['payments']['selected'] = true;
 
 
             $up_button = array(
@@ -515,6 +534,51 @@ function get_payment_account_navigation($data, $user, $smarty, $db) {
                     'icon'      => 'arrow-right',
                     'title'     => $next_title,
                     'reference' => 'payment_account/'.$next_key
+                );
+
+            } else {
+                $left_buttons[] = array(
+                    'icon'  => 'arrow-right disabled',
+                    'title' => '',
+                    'url'   => ''
+                );
+
+            }
+
+
+        } elseif ($data['parent'] == 'store') {
+
+            $sections['payments']['selected'] = true;
+
+            $up_button = array(
+                'icon'      => 'arrow-up',
+                'title'     => _("Payment account").' ('.$data['_parent']->get('code').')',
+                'reference' => 'payment_accounts/'.$data['_parent']->id
+            );
+
+            if ($prev_key) {
+                $left_buttons[] = array(
+                    'icon'      => 'arrow-left',
+                    'title'     => $prev_title,
+                    'reference' => 'payment_accounts/'.$data['_parent']->id.'/'.$prev_key
+                );
+
+            } else {
+                $left_buttons[] = array(
+                    'icon'  => 'arrow-left disabled',
+                    'title' => '',
+                    'url'   => ''
+                );
+
+            }
+            $left_buttons[] = $up_button;
+
+
+            if ($next_key) {
+                $left_buttons[] = array(
+                    'icon'      => 'arrow-right',
+                    'title'     => $next_title,
+                    'reference' => 'payment_accounts/'.$data['_parent']->id.'/'.$next_key
                 );
 
             } else {
@@ -581,9 +645,6 @@ function get_payment_account_navigation($data, $user, $smarty, $db) {
     }
 
 
-    $sections['payment_accounts']['selected'] = true;
-
-
     $title = _('Payment account').' <span class="id">'.$data['_object']->get(
             'Payment Account Name'
         ).'</span>';
@@ -633,6 +694,8 @@ function get_payment_account_server_navigation($data, $user, $smarty, $db) {
                 $tab = 'payment_service_provider.accounts';
                 break;
 
+            default:
+                exit('parent not set nav');
 
         }
 
@@ -1086,24 +1149,27 @@ function get_payment_navigation($data, $user, $smarty, $db) {
     $left_buttons  = array();
     $right_buttons = array();
 
+
     if ($data['parent']) {
 
         switch ($data['parent']) {
             case 'account':
-                $tab      = 'payments';
-                $_section = 'accounting';
+                $tab = 'payments';
                 break;
             case 'payment_service_provider':
-                $tab      = 'payment_service_provider.payments';
-                $_section = 'accounting';
+                $tab = 'payment_service_provider.payments';
+                break;
+            case 'store_payment_account':
+                $tab = 'payment_account.payments';
                 break;
             case 'payment_account':
-                $tab      = 'payment_account.payments';
-                $_section = 'accounting';
+                $tab = 'payment_account.payments';
                 break;
             case 'store':
-                $tab      = 'payments';
-                $_section = 'accounting';
+                $tab = 'payments';
+                break;
+            case 'payment_service_provider':
+                $tab = 'payment_service_provider.payments';
                 break;
         }
 
@@ -1197,9 +1263,11 @@ function get_payment_navigation($data, $user, $smarty, $db) {
             $next_title = $_tmp2;
         }
 
-
         if ($data['parent'] == 'account') {
 
+
+            $sections                         = get_sections('accounting_server', '');
+            $sections['payments']['selected'] = true;
 
             $up_button = array(
                 'icon'      => 'arrow-up',
@@ -1243,15 +1311,14 @@ function get_payment_navigation($data, $user, $smarty, $db) {
 
 
         } elseif ($data['parent'] == 'payment_service_provider') {
-            include_once 'class.Payment_Service_Provider.php';
-            $psp = new Payment_Service_Provider($data['parent_key']);
 
-            $up_button = array(
+            $sections = get_sections('accounting_server', '');
+
+            $sections['payments']['selected'] = true;
+            $up_button                        = array(
                 'icon'      => 'arrow-up',
-                'title'     => _("Payment option").' '.$psp->get(
-                        'Payment Service Provider Name'
-                    ),
-                'reference' => 'account/payment_service_provider/'.$data['parent_key']
+                'title'     => _("Payment option").' '.$data['_parent']->get('Payment Service Provider Name'),
+                'reference' => 'payment_service_provider/'.$data['parent_key']
             );
 
             if ($prev_key) {
@@ -1290,15 +1357,17 @@ function get_payment_navigation($data, $user, $smarty, $db) {
 
 
         } elseif ($data['parent'] == 'payment_account') {
-            include_once 'class.Payment_Account.php';
-            $payment_account = new Payment_Account($data['parent_key']);
+
+
+            $sections = get_sections('accounting_server', '');
+
+            $sections['payments']['selected'] = true;
+
 
             $up_button = array(
                 'icon'      => 'arrow-up',
-                'title'     => _("Payment account").' '.$payment_account->get(
-                        'Payment Account Name'
-                    ),
-                'reference' => 'account/payment_account/'.$data['parent_key']
+                'title'     => _("Payment account").' '.$data['_parent']->get('Payment Account Name'),
+                'reference' => 'payment_account/'.$data['parent_key']
             );
 
             if ($prev_key) {
@@ -1336,16 +1405,113 @@ function get_payment_navigation($data, $user, $smarty, $db) {
             }
 
 
+        } elseif ($data['parent'] == 'store_payment_account') {
+
+            $tmp = preg_split('/\_/', $data['parent_key']);
+
+            $sections = get_sections('accounting', $tmp[0]);
+
+            $sections['payments']['selected'] = true;
+
+
+            $up_button = array(
+                'icon'      => 'arrow-up',
+                'title'     => _("Payment account").' '.$data['_parent']->get('Payment Account Name'),
+                'reference' => 'payment_accounts/'.$tmp[0].'/'.$tmp[1]
+            );
+
+            if ($prev_key) {
+                $left_buttons[] = array(
+                    'icon'      => 'arrow-left',
+                    'title'     => $prev_title,
+                    'reference' => 'payment_accounts/'.$tmp[0].'/'.$tmp[1].'/payment/'.$prev_key
+                );
+
+            } else {
+                $left_buttons[] = array(
+                    'icon'  => 'arrow-left disabled',
+                    'title' => '',
+                    'url'   => ''
+                );
+
+            }
+            $left_buttons[] = $up_button;
+
+
+            if ($next_key) {
+                $left_buttons[] = array(
+                    'icon'      => 'arrow-right',
+                    'title'     => $next_title,
+                    'reference' => 'payment_accounts/'.$tmp[0].'/'.$tmp[1].'/payment/'.$next_key
+                );
+
+            } else {
+                $left_buttons[] = array(
+                    'icon'  => 'arrow-right disabled',
+                    'title' => '',
+                    'url'   => ''
+                );
+
+            }
+
+
+        } elseif ($data['parent'] == 'store') {
+
+
+            $sections = get_sections('accounting', $data['parent_key']);
+
+            $sections['payments']['selected'] = true;
+
+
+            $up_button = array(
+                'icon'      => 'arrow-up',
+                'title'     => _("Payments").' '.$data['_parent']->get('Code'),
+                'reference' => 'payments/'.$data['parent_key']
+            );
+
+            if ($prev_key) {
+                $left_buttons[] = array(
+                    'icon'      => 'arrow-left',
+                    'title'     => $prev_title,
+                    'reference' => 'payments/'.$data['parent_key'].'/'.$prev_key
+                );
+
+            } else {
+                $left_buttons[] = array(
+                    'icon'  => 'arrow-left disabled',
+                    'title' => '',
+                    'url'   => ''
+                );
+
+            }
+            $left_buttons[] = $up_button;
+
+
+            if ($next_key) {
+                $left_buttons[] = array(
+                    'icon'      => 'arrow-right',
+                    'title'     => $next_title,
+                    'reference' => 'payments/'.$data['parent_key'].'/'.$next_key
+                );
+
+            } else {
+                $left_buttons[] = array(
+                    'icon'  => 'arrow-right disabled',
+                    'title' => '',
+                    'url'   => ''
+                );
+
+            }
+
+
         }
     } else {
         exit('');
 
     }
 
-    $sections = get_sections('accounting', '');
 
-
-    $sections[$_section]['selected'] = true;
+    // $sections[$_section]['selected'] = true;
 
 
     if ($data['_object']->get('Payment Method') == 'Account') {
@@ -1353,7 +1519,7 @@ function get_payment_navigation($data, $user, $smarty, $db) {
         $title    = sprintf(_('Credit for customer %s'), '<span class="link id" onclick="change_view(\'customers/'.$customer->get('Customer Store Key').'/'.$customer->id.'\')">'.$customer->get('Name')).'</span>';
     } else {
 
-        $title = _('Payment').' <span class="id">'.$data['_object']->get('Payment Key').' '.($data['_object']->get('Payment Transaction ID') != '' ? '('.$data['_object']->get('Payment Transaction ID').')' : '').' </span>';
+        $title = _('Payment').' <span class="id">'.$data['_object']->get('Payment Transaction ID').'</span>';
 
     }
 
@@ -1559,7 +1725,7 @@ function get_payments_by_store_navigation($data, $user) {
                 );
 
 
-                $title                            = _('Payments').' <span class="id" title="'.$store->get(
+                $title                              = _('Payments').' <span class="id" title="'.$store->get(
                         'Name'
                     ).'">'.$store->get('Code').'</span>';
                 $sections['accounting']['selected'] = true;
@@ -1597,7 +1763,7 @@ function get_invoices_server_navigation($data, $smarty, $user, $db, $account) {
     $block_view = $data['section'];
 
 
-    $sections = get_sections('accounting_server','all');
+    $sections = get_sections('accounting_server', 'all');
     switch ($block_view) {
 
         case 'invoices':
@@ -1649,16 +1815,13 @@ function get_invoices_server_navigation($data, $smarty, $user, $db, $account) {
 function get_invoices_categories_server_navigation($data, $smarty, $user, $db, $account) {
 
 
-
-
     global $user, $smarty;
-
 
 
     $block_view = $data['section'];
 
 
-    $sections = get_sections('accounting_server','all');
+    $sections = get_sections('accounting_server', 'all');
 
     $sections_class = '';
     $title          = _("Invoice's categories").' ('._('All stores').')';
@@ -1701,20 +1864,19 @@ function get_invoices_categories_server_navigation($data, $smarty, $user, $db, $
 function get_invoices_category_server_navigation($data, $smarty, $user, $db, $account) {
 
 
-
     $left_buttons = array();
 
 
     $right_buttons = array();
 
 
-    $sections = get_sections('accounting_server','all');
+    $sections = get_sections('accounting_server', 'all');
 
     $sections_class = '';
 
-    if($data['_object']->get('Category Branch Type')=='Root'){
-        $title=_("Invoice's categories");
-    }else{
+    if ($data['_object']->get('Category Branch Type') == 'Root') {
+        $title = _("Invoice's categories");
+    } else {
 
 
         $up_button = array(
@@ -1724,8 +1886,7 @@ function get_invoices_category_server_navigation($data, $smarty, $user, $db, $ac
         );
 
 
-        $title          = _("Invoice's category").' <span class="Category_Label id">'.$data['_object']->get('Label').'</span>';
-
+        $title = _("Invoice's category").' <span class="Category_Label id">'.$data['_object']->get('Label').'</span>';
 
 
         $left_buttons[] = $up_button;
@@ -1733,10 +1894,7 @@ function get_invoices_category_server_navigation($data, $smarty, $user, $db, $ac
     }
 
 
-
-
     // $up_button=array('icon'=>'arrow-up', 'title'=>_("Order's index"), 'reference'=>'account/orders');
-
 
 
     $sections['categories']['selected'] = true;
@@ -1763,14 +1921,13 @@ function get_invoices_category_server_navigation($data, $smarty, $user, $db, $ac
 }
 
 
-
 function get_invoices_navigation($data, $smarty, $user, $db, $account) {
 
     global $user, $smarty;
 
     switch ($data['parent']) {
         case 'store':
-            $store = get_object('Store',$data['parent_key']);
+            $store = get_object('Store', $data['parent_key']);
             break;
         default:
 
@@ -1906,6 +2063,10 @@ function get_invoice_navigation($data, $smarty, $user, $db, $account) {
                 $_section = 'customers';
                 break;
             case 'store':
+                $tab      = 'invoices';
+                $_section = 'invoices';
+                break;
+            case 'account':
                 $tab      = 'invoices';
                 $_section = 'invoices';
                 break;
@@ -2072,7 +2233,7 @@ function get_invoice_navigation($data, $smarty, $user, $db, $account) {
 
 
         } elseif ($data['parent'] == 'store') {
-            $store     = get_object('Store',$data['parent_key']);
+            $store     = get_object('Store', $data['parent_key']);
             $up_button = array(
                 'icon'      => 'arrow-up',
                 'title'     => _("Invoices").' ('.$store->get(
@@ -2117,6 +2278,52 @@ function get_invoice_navigation($data, $smarty, $user, $db, $account) {
 
 
             $sections = get_sections('accounting', $data['parent_key']);
+
+
+        } elseif ($data['parent'] == 'account') {
+
+            $up_button = array(
+                'icon'      => 'arrow-up',
+                'title'     => _("Invoices").' ('._('All stores').')',
+                'reference' => 'invoices/all'
+            );
+
+            if ($prev_key) {
+                $left_buttons[] = array(
+                    'icon'      => 'arrow-left',
+                    'title'     => $prev_title,
+                    'reference' => 'invoice/'.$prev_key
+                );
+
+            } else {
+                $left_buttons[] = array(
+                    'icon'  => 'arrow-left disabled',
+                    'title' => '',
+                    'url'   => ''
+                );
+
+            }
+            $left_buttons[] = $up_button;
+
+
+            if ($next_key) {
+                $left_buttons[] = array(
+                    'icon'      => 'arrow-right',
+                    'title'     => $next_title,
+                    'reference' => 'invoice/'.$next_key
+                );
+
+            } else {
+                $left_buttons[] = array(
+                    'icon'  => 'arrow-right disabled',
+                    'title' => '',
+                    'url'   => ''
+                );
+
+            }
+
+
+            $sections = get_sections('accounting_server', '');
 
 
         } elseif ($data['parent'] == 'order') {
@@ -2259,7 +2466,6 @@ function get_invoice_navigation($data, $smarty, $user, $db, $account) {
     return $html;
 
 }
-
 
 
 ?>

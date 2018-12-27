@@ -27,8 +27,7 @@ $nav_menu[] = array(
 );
 
 
-if ($user->can_view('customers')   ) {
-
+if ($user->can_view('customers')) {
 
 
     if ($user->get('User Hooked Store Key')) {
@@ -124,14 +123,14 @@ if ($user->can_view('orders')) {
 */
 
 
-        $nav_menu[] = array(
-            '<i class="button far fa-conveyor-belt-alt fa-fw"></i>',
-            _('Delivering'),
-            'delivery_notes/all',
-            'delivery_notes',
-            'module',
-            ''
-        );
+    $nav_menu[] = array(
+        '<i class="button far fa-conveyor-belt-alt fa-fw"></i>',
+        _('Delivering'),
+        'delivery_notes/all',
+        'delivery_notes',
+        'module',
+        ''
+    );
 
     /*
     $sections=get_sections('invoices', $data['parent_key']);
@@ -139,29 +138,29 @@ if ($user->can_view('orders')) {
         $nav_menu[] = array('<i class="button far fa-'.$section['icon'].' fa-fw"></i>',$section['label'], $section['reference'], $key, 'section', '');
     }
 */
-/*
+    /*
 
-    if ($user->get('User Hooked Store Key')) {
-        $nav_menu[] = array(
-            '<i class="button far fa-file-alt fa-fw"></i>',
-            _('Invoices'),
-            'invoices',
-            'invoices',
-            'module',
-            ''
-        );
-    } else {
-        $nav_menu[] = array(
-            '<i class="button far fa-file-alt fa-fw"></i>',
-            _('Invoices'),
-            'invoices/all',
-            'invoices',
-            'module',
-            ''
-        );
-    }
+        if ($user->get('User Hooked Store Key')) {
+            $nav_menu[] = array(
+                '<i class="button far fa-file-alt fa-fw"></i>',
+                _('Invoices'),
+                'invoices',
+                'invoices',
+                'module',
+                ''
+            );
+        } else {
+            $nav_menu[] = array(
+                '<i class="button far fa-file-alt fa-fw"></i>',
+                _('Invoices'),
+                'invoices/all',
+                'invoices',
+                'module',
+                ''
+            );
+        }
 
-*/
+    */
 
     /*
     $sections=get_sections('invoices', $data['parent_key']);
@@ -178,10 +177,6 @@ if ($user->can_view('orders')) {
     }
     */
 }
-
-
-
-
 
 
 /*
@@ -215,7 +210,6 @@ if ($user->can_view('marketing')) {
 }
 
 */
-
 
 
 if ($user->can_view('locations')) {
@@ -352,7 +346,6 @@ if ($user->get('User Hooked Store Key')) {
         '<i class="button fal fa-abacus fa-fw"></i>',
         _('Accounting'),
         'accounting/'.$user->get('User Hooked Store Key'),
-
         'accounting',
         'module',
         ''
@@ -360,11 +353,10 @@ if ($user->get('User Hooked Store Key')) {
 } else {
 
 
-
     $nav_menu[] = array(
         '<i class="button fal fa-abacus fa-fw"></i>',
         _('Accounting'),
-        'invoices/all',
+        'invoices/per_store',
         'accounting',
         'module',
         ''
@@ -446,14 +438,10 @@ if ($user->get('User Type') == 'Agent') {
     );
 
 
-}
-elseif ($user->get('User Type') == 'Supplier') {
-
+} elseif ($user->get('User Type') == 'Supplier') {
 
 
 } elseif ($user->get('User Type') == 'Warehouse') {
-
-
 
 
 } else {
@@ -506,6 +494,9 @@ if ($current_item == 'products_server') {
 }
 if ($current_item == 'orders_server') {
     $current_item = 'orders';
+}
+if ($current_item == 'accounting_server') {
+    $current_item = 'accounting';
 }
 if ($current_item == 'invoices_server') {
     $current_item = 'invoices';
