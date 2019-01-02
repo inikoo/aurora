@@ -64,7 +64,7 @@ switch ($tipo) {
                 } else {
                     $data['scope'] = 'stores';
                 }
-                search_orders($db, $account, $memcache_ip, $data);
+                search_orders($db, $account,$user, $data);
             } elseif ($data['state']['module'] == 'products') {
                 if ($data['state']['current_store']) {
                     $data['scope']     = 'store';
@@ -123,7 +123,7 @@ switch ($tipo) {
                 search_delivery_notes($db, $account, $memcache_ip, $data);
             } elseif ($data['state']['module'] == 'orders_server') {
                 $data['scope'] = 'stores';
-                search_orders($db, $account, $memcache_ip, $data);
+                search_orders($db, $account, $user,$data);
             } elseif ($data['state']['module'] == 'accounting_server') {
                 if (in_array(
                     $data['state']['section'], array(

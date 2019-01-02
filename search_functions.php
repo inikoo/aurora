@@ -1844,11 +1844,9 @@ function search_customers($db, $account, $memcache_ip, $data) {
 }
 
 
-function search_orders($db, $account, $memcache_ip, $data) {
+function search_orders($db, $account, $user, $data) {
 
-    $cache       = false;
     $max_results = 10;
-    $user        = $data['user'];
     $queries     = trim($data['query']);
 
     if ($queries == '') {
