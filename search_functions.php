@@ -1033,12 +1033,12 @@ function search_inventory($db, $account, $data) {
 }
 
 
-function search_products($db, $account, $data) {
+function search_products($db, $account, $user,$data) {
 
 
-    $cache       = false;
+  //  $cache       = false;
     $max_results = 16;
-    $user        = $data['user'];
+   // $user        = $data['user'];
     $queries     = trim($data['query']);
 
     if ($queries == '') {
@@ -1418,12 +1418,10 @@ function search_products($db, $account, $data) {
 }
 
 
-function search_customers($db, $account, $memcache_ip, $data) {
+function search_customers($db, $account, $user, $data) {
 
 
-    $cache       = false;
     $max_results = 10;
-    $user        = $data['user'];
     $queries     = trim($data['query']);
 
     if ($queries == '') {
@@ -2439,12 +2437,10 @@ function search_invoices($db, $account, $user, $data) {
 }
 
 
-function search_hr($db, $account, $memcache_ip, $data) {
+function search_hr($db, $account, $user, $data) {
 
 
-    $cache       = false;
     $max_results = 10;
-    $user        = $data['user'];
     $queries     = _trim($data['query']);
 
     if ($queries == '') {
@@ -2458,7 +2454,7 @@ function search_hr($db, $account, $memcache_ip, $data) {
         return;
     }
 
-
+/*
     $memcache_fingerprint = $account->get('Account Code').'SEARCH_HR'.md5(
             $queries
         );
@@ -2480,11 +2476,14 @@ function search_hr($db, $account, $memcache_ip, $data) {
 
     }
 
+ $results_data = $cache->get($memcache_fingerprint);
 
-    $results_data = $cache->get($memcache_fingerprint);
+*/
 
 
-    if (!$results_data or $cache) {
+
+
+    if (true) {
 
 
         $candidates = array();
@@ -3200,12 +3199,10 @@ function agent_search($db, $account, $user, $memcache_ip, $data) {
 }
 
 
-function search_webpages($db, $account, $memcache_ip, $data) {
+function search_webpages($db, $account, $user, $data) {
 
 
-    $cache       = false;
     $max_results = 16;
-    $user        = $data['user'];
     $queries     = trim($data['query']);
 
     if ($queries == '') {

@@ -56,7 +56,7 @@ switch ($tipo) {
                 } else {
                     $data['scope'] = 'stores';
                 }
-                search_customers($db, $account, $memcache_ip, $data);
+                search_customers($db, $account,$user, $data);
             } elseif ($data['state']['module'] == 'orders') {
                 if ($data['state']['current_store']) {
                     $data['scope']     = 'store';
@@ -81,9 +81,9 @@ switch ($tipo) {
                     ''
                 )
                 )) {
-                    search_webpages($db, $account, $memcache_ip, $data);
+                    search_webpages($db, $account, $user, $data);
                 } else {
-                    search_products($db, $account, $data);
+                    search_products($db, $account, $user,$data);
                 }
 
                 //  print_r($data['state']);
@@ -93,7 +93,7 @@ switch ($tipo) {
 
                 $data['scope'] = 'stores';
 
-                search_products($db, $account, $data);
+                search_products($db, $account, $user,$data);
             } elseif ($data['state']['module'] == 'inventory') {
                 if ($data['state']['current_warehouse']) {
                     $data['scope']     = 'warehouse';
@@ -103,7 +103,7 @@ switch ($tipo) {
                 }
                 search_inventory($db, $account, $data);
             } elseif ($data['state']['module'] == 'hr') {
-                search_hr($db, $account, $memcache_ip, $data);
+                search_hr($db, $account, $user, $data);
 
             } elseif ($data['state']['module'] == 'suppliers') {
                 search_suppliers($db, $account, $memcache_ip, $data);
