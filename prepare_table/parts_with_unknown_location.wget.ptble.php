@@ -29,7 +29,7 @@ if ($parameters['parent'] == 'supplier') {
     $table = "  `Part Location Dimension` PLD  left join `Part Dimension` P on (PLD.`Part SKU`=P.`Part SKU`) left join `Location Dimension` L on (PLD.`Location Key`=L.`Location Key`) ";
 
     $where = sprintf(
-        "where `Location Warehouse Key`=%d and PLD.`Location Key`=1 ", $parameters['parent_key']
+        "where `Location Warehouse Key`=%d and L.`Location Type`!='Unknown' ", $parameters['parent_key']
     );
 } else {
     exit("parent not found ".$parameters['parent']);
@@ -79,7 +79,7 @@ $fields
 P.`Part SKU`,`Part Reference`,`Part Package Description`,`Part Current Stock`,`Part Stock Status`,`Part Days Available Forecast`,`Location Warehouse Key`,
 `Location Code`,PLD.`Location Key`,`Part Location Warehouse Key`,
 `Quantity On Hand`,`Quantity In Process`,`Stock Value`,`Can Pick`,`Minimum Quantity`,`Maximum Quantity`,`Moving Quantity`,`Last Updated`,`Part Cost in Warehouse`,`Part Status`,
- IFNULL((select GROUP_CONCAT(L.`Location Key`,':',L.`Location Code`,':',ifnull(`Part Location Last Audit`,''),':',`Quantity On Hand`,':',ifnull(datediff(CURDATE(), `Part Location Last Audit`),'') SEPARATOR ',') from `Part Location Dimension` PLDD  left join `Location Dimension` L on (L.`Location Key`=PLDD.`Location Key`) where PLDD.`Location Key`!=1 and  PLDD.`Part SKU`=P.`Part SKU`),'') as location_data
+ IFNULL((select GROUP_CONCAT(L.`Location Key`,':',L.`Location Code`,':',ifnull(`Part Location Last Audit`,''),':',`Quantity On Hand`,':',ifnull(datediff(CURDATE(), `Part Location Last Audit`),'') SEPARATOR ',') from `Part Location Dimension` PLDD  left join `Location Dimension` L on (L.`Location Key`=PLDD.`Location Key`) where L.`Location Type`!='Unknown' and  PLDD.`Part SKU`=P.`Part SKU`),'') as location_data
 
 ";
 

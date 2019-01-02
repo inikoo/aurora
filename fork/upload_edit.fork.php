@@ -65,6 +65,8 @@ function fork_upload_edit($job) {
     $db->exec($sql);
 
 
+    //exit($upload->get('Upload Object'));
+
     switch ($upload->get('Upload Object')) {
         case 'supplier_part':
             include_once 'class.SupplierPart.php';
@@ -96,6 +98,14 @@ function fork_upload_edit($job) {
             $valid_fields = $export_edit_template_fields['supplier'];
             $object_name  = 'supplier';
             break;
+
+        case 'warehouse_area':
+            include_once 'class.WarehouseArea.php';
+            $valid_keys   = array('Warehouse Area Key');
+            $valid_fields = $export_edit_template_fields['warehouse_area'];
+            $object_name  = 'warehouse_area';
+            break;
+
         default:
             print 'error, Upload Object not set up, check: upload.edit.fork.php';
 
@@ -133,9 +143,7 @@ function fork_upload_edit($job) {
         }
     }
 
-    //print_r($valid_indexes);
 
-    // exit;
 
     if ($key_index < 0) {
         //$error_code     = 'missing_required_field';
@@ -157,7 +165,6 @@ function fork_upload_edit($job) {
             "UPDATE `Upload Dimension` SET `Upload State`='Finished' WHERE `Upload Key`=%d ", $upload->id
         );
         $db->exec($sql);
-
 
         return false;
 
@@ -216,6 +223,7 @@ function fork_upload_edit($job) {
             $record_data = json_decode($row['data'], true);
 
 
+
             if (strtolower($record_data[$key_index]) == 'new') {
 
 
@@ -257,7 +265,8 @@ function fork_upload_edit($job) {
                 );
 
 
-            } else {
+            }
+            else {
                 if ($record_data[$key_index] == '') {
 
                     $sql = sprintf(
@@ -634,7 +643,23 @@ function new_object($account, $db, $user, $editor, $data, $upload, $fork_key) {
                 );
             }
             break;
+        case 'warehouse_area':
+            include_once 'class.WarehouseArea.php';
+            $object = $parent->create_warehouse_area(
+                $data['fields_data']
+            );
+            if ($parent->error) {
+                $error          = $parent->error;
+                $error_metadata = (isset($parent->error_metadata) ? $parent->error_metadata : '');
+                $error_code     = $parent->error_code;
+            }
+
+
+            break;
         default:
+
+            print 'warning: object '.$data['object'].' still not configured';
+            exit;
             return false;
 
             break;

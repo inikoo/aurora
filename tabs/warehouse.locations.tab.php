@@ -48,46 +48,6 @@ if (!$user->can_view('locations') or !in_array(
     );
 
 
-    /*
-
-        $table_buttons = array();
-
-        if ($state['warehouse']->get('Warehouse Number Locations') > 0) {
-            $table_buttons[] = array(
-                'icon'  => 'edit',
-                'title' => _("Edit locations"),
-                'id'    => 'edit_table'
-            );
-        }
-
-
-        $table_buttons[] = array(
-            'icon'      => 'plus',
-            'title'     => _('New location'),
-            'reference' => "locations/".$warehouse->id."/new"
-        );
-
-        $smarty->assign('table_buttons', $table_buttons);
-
-        $smarty->assign(
-            'upload_file', array(
-                             'tipo'       => 'edit_objects',
-                             'icon'       => 'fa-cloud-upload',
-                             'parent'     => 'warehouse',
-                             'parent_key' => $warehouse->id,
-                             'object'     => 'location',
-                             'label'      => _("Upload locations")
-
-                         )
-        );
-
-
-
-
-
-
-        $smarty->assign('table_buttons', $table_buttons);
-    */
 
 
     include_once 'conf/export_edit_template_fields.php';
@@ -174,6 +134,14 @@ if (!$user->can_view('locations') or !in_array(
 
 
     $smarty->assign('aux_templates', array('edit_locations.tpl'));
+
+
+
+
+    $smarty->assign('title', _('Locations'));
+
+
+    $smarty->assign('view_position','<span onclick=\"change_view(\'warehouse/'.$warehouse->id.'\')\"><i class=\"fal  fa-warehouse-alt\"></i> <span class=\"id Warehouse_Code\">'.$warehouse->get('Code').'</span></span><i class=\"fa fa-angle-double-right separator\"></i>  '._('Locations').' </span>');
 
 
     include 'utils/get_table_html.php';

@@ -50,7 +50,7 @@
   /*}
 
 
-        <link href="/css/au_app.min.css?v181213" rel="stylesheet">
+        <link href="/css/au_app.min.css?v181228v3" rel="stylesheet">
 
 
         {if $_server_name!='au.bali'}

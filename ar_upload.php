@@ -62,6 +62,7 @@ switch ($tipo) {
                          'parent'                         => array('type' => 'string'),
                          'parent_key'                     => array('type' => 'numeric'),
                          'objects'                        => array('type' => 'string'),
+                         'upload_type'                        => array('type' => 'string','optional'=>true),
                          'allow_duplicate_part_reference' => array(
                              'type'     => 'string',
                              'optional' => true
@@ -1075,6 +1076,9 @@ function edit_objects($account, $db, $user, $editor, $data, $smarty) {
         $upload_data = array(
             'editor'            => $editor,
             'Upload Type'       => 'EditObjects',
+            'Upload Type'       => (!empty($data['upload_type']) ?$data['upload_type']:  'EditObjects'),
+
+
             'Upload Object'     => $data['objects'],
             'Upload Parent'     => $data['parent'],
             'Upload Parent Key' => $data['parent_key'],

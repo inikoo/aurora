@@ -5990,9 +5990,11 @@ $modules = array(
                         'icon'  => 'pallet',
                     ),
                     'warehouse.areas'     => array(
-                        'label' => _('Warehouse areas'),
-                        'title' => _('Warehouse areas (Rankings, aisles, rooms)'),
-                        'icon'  => 'inventory'
+                        'label'     => _('Warehouse areas'),
+                        'title'     => _('Warehouse areas (Rankings, aisles, rooms)'),
+                        'icon'      => 'inventory',
+                        'dynamic_reference' => 'warehouse/%d/areas',
+
                     ),
 
                 )
@@ -6060,16 +6062,18 @@ $modules = array(
                         ),
                         'icon'  => 'exchange'
                     ),
-                    'location.history'            => array(
-                        'label' => _(
-                            'History/Notes'
+
+                    'location.history' => array(
+                        'title'         => _('History'),
+                        'label'         => '',
+                        'quantity_data' => array(
+                            'object' => '_object',
+                            'field'  => 'Number History Records'
                         ),
-                        'title' => _(
-                            'History/Notes'
-                        ),
-                        'icon'  => 'road',
-                        'class' => 'right icon_only'
+                        'icon'          => 'road',
+                        'class'         => 'right icon_only'
                     ),
+
 
                 )
 

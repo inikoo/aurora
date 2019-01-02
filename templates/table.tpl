@@ -52,7 +52,7 @@
                 <form method="post" action="/ar_edit.php" enctype="multipart/form-data" novalidate>
 
                     <input style="display:none" type="file" name="upload" id="table_edit_items_file_upload" class="table_input_file"
-                           data-data='{ "tipo":"{$edit_table_dialog.spreadsheet_edit.tipo}","parent":"{$edit_table_dialog.spreadsheet_edit.parent}","parent_key":"{$edit_table_dialog.spreadsheet_edit.parent_key}", "object":"{$edit_table_dialog.spreadsheet_edit.object}" }'
+                           data-data='{ "tipo":"{$edit_table_dialog.spreadsheet_edit.tipo}","parent":"{$edit_table_dialog.spreadsheet_edit.parent}","parent_key":"{$edit_table_dialog.spreadsheet_edit.parent_key}", "object":"{$edit_table_dialog.spreadsheet_edit.object}","upload_type":"NewObjects"  }'
                     />
                     <label for="table_edit_items_file_upload"> <i class="fa fa-upload button" aria-hidden="true"></i></label>
                 </form>
@@ -85,7 +85,7 @@
                 <form method="post" action="/ar_edit.php" enctype="multipart/form-data" novalidate>
 
                     <input style="display:none" type="file" name="upload" id="table_add_items_file_upload" class="table_input_file"
-                           data-data='{ "tipo":"{$edit_table_dialog.upload_items.tipo}","parent":"{$edit_table_dialog.upload_items.parent}","parent_key":"{$edit_table_dialog.upload_items.parent_key}","object":"{$edit_table_dialog.upload_items.object}" }'
+                           data-data='{ "tipo":"{$edit_table_dialog.upload_items.tipo}","parent":"{$edit_table_dialog.upload_items.parent}","parent_key":"{$edit_table_dialog.upload_items.parent_key}","object":"{$edit_table_dialog.upload_items.object}","upload_type":"NewObjects"  }'
                     />
                     <label for="table_add_items_file_upload"> <i class="fa fa-upload button" aria-hidden="true"></i></label>
                 </form>
@@ -213,6 +213,7 @@
             ajaxData.append("parent", $(this).data('data').parent)
             ajaxData.append("parent_key",$(this).data('data').parent_key)
             ajaxData.append("objects",$(this).data('data').object)
+            ajaxData.append("upload_type",$(this).data('data').upload_type)
 
 
             if($('.allow_duplicate_part_reference').length){
@@ -417,7 +418,7 @@
         {if $button.icon=='edit_add'}
         <span id="show_edit_table_dialog_button" class="fa-stack" onclick="show_edit_table_dialog()" >
                                         <i class="fa fa-plus fa-stack-1x " style="font-size:70%; margin-right:-50%;margin-left:-25%;margin-top:-10%"></i>
-            <i class="fa fa-pencil fa-stack-1x " style="margin-right:10%;margin-left:10%;"></i>
+            <i class="fa fa-pencil fa-stack-1x " style="margin-right:0%;margin-left:0%;"></i>
                 </span>
 
 

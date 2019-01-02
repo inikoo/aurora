@@ -15,7 +15,7 @@ if (!$user->can_view('locations') or !in_array($state['warehouse']->id, $user->w
 } else {
 
 
-    $warehouse=$state['warehouse'];
+    $warehouse = $state['warehouse'];
 
 
     $tab     = 'warehouse_area.locations';
@@ -46,70 +46,127 @@ if (!$user->can_view('locations') or !in_array($state['warehouse']->id, $user->w
     );
 
 
+    $table_buttons = array();
 
 
+    include_once 'conf/export_edit_template_fields.php';
 
 
+    $edit_table_dialog = array(
+        'labels'           => array(
+            'add_items'  => _("Add location(s)").":",
+            'edit_items' => _("Edit location(s)").":"
+        ),
+        'new_item'         => array(
+            'icon'      => 'plus',
+            'reference' => "warehouse/".$warehouse->id."/areas/".$state['key']."/location/new"
+        ),
+        'upload_items'     => array(
+            'icon'         => 'plus',
+            'label'        => _("Upload locations"),
+            'template_url' => '/upload_arrangement.php?object=location&parent=warehouse_area&parent_key='.$state['key'],
+
+            'tipo'       => 'edit_objects',
+            'parent'     => 'warehouse_area',
+            'parent_key' => $state['key'],
+
+            'object' => 'location',
+        ),
+        'inline_edit'      => array(),
+        'spreadsheet_edit' => array(
+            'tipo' => 'edit_objects',
+
+            'parent'      => 'warehouse_area',
+            'parent_key'  => $state['_object']->id,
+            'object'      => 'location',
+            'parent_code' => preg_replace("/[^A-Za-z0-9 ]/", '', $state['_object']->get('Code')),
+        ),
+
+    );
+    $smarty->assign('edit_table_dialog', $edit_table_dialog);
+
+    $objects = 'location';
+
+
+    $edit_fields = $export_edit_template_fields[$objects];
+
+
+    $smarty->assign('edit_fields', $edit_fields);
 
 
     $table_buttons = array();
 
-    if ($state['warehouse']->get('Warehouse Number Locations') > 0) {
-        $table_buttons[] = array(
-            'icon'  => 'edit',
-            'title' => _("Edit locations"),
-            'id'    => 'edit_table'
-        );
-    }
-
-
     $table_buttons[] = array(
-        'icon'      => 'plus',
-        'title'     => _('New location'),
-        'reference' => "locations/".$warehouse->id."/new"
-    );
-
-    $smarty->assign('table_buttons', $table_buttons);
-
-    $smarty->assign(
-        'upload_file', array(
-                         'tipo'       => 'edit_objects',
-                         'icon'       => 'fa-cloud-upload',
-                         'parent'     => 'warehouse',
-                         'parent_key' => $warehouse->id,
-                         'object'     => 'location',
-                         'label'      => _("Upload locations")
-
-                     )
+        'icon'  => 'edit_add',
+        'title' => _("Edit locations"),
+        'id'    => 'edit_dialog'
     );
 
 
+    /*
 
 
 
-
-    $smarty->assign('table_buttons', $table_buttons);
-
-    $flags=array();
-
-    $sql=sprintf('select `Warehouse Flag Key`,`Warehouse Flag Color`,`Warehouse Flag Label` FROM `Warehouse Flag Dimension` where `Warehouse Flag Warehouse Key`=%d ',
-                 $warehouse->id
-    );
-
-    $flags=array();
-    if ($result=$db->query($sql)) {
-        foreach ($result as $row) {
-            $flags[$row['Warehouse Flag Key']]=array('color'=>strtolower($row['Warehouse Flag Color']),'key'=>$row['Warehouse Flag Key'],'label'=>$row['Warehouse Flag Label']);
+        if ($state['warehouse']->get('Warehouse Number Locations') > 0) {
+            $table_buttons[] = array(
+                'icon'  => 'edit',
+                'title' => _("Edit locations"),
+                'id'    => 'edit_table'
+            );
         }
-    }else {
-        print_r($error_info=$this->db->errorInfo());
+
+
+        $table_buttons[] = array(
+            'icon'      => 'plus',
+            'title'     => _('New location'),
+            'reference' => "locations/".$warehouse->id."/new"
+        );
+
+        $smarty->assign('table_buttons', $table_buttons);
+
+        $smarty->assign(
+            'upload_file', array(
+                             'tipo'       => 'edit_objects',
+                             'icon'       => 'fa-cloud-upload',
+                             'parent'     => 'warehouse',
+                             'parent_key' => $warehouse->id,
+                             'object'     => 'location',
+                             'label'      => _("Upload locations")
+
+                         )
+        );
+
+
+
+    */
+
+
+    $smarty->assign('table_buttons', $table_buttons);
+
+    $flags = array();
+
+    $sql = sprintf(
+        'select `Warehouse Flag Key`,`Warehouse Flag Color`,`Warehouse Flag Label` FROM `Warehouse Flag Dimension` where `Warehouse Flag Warehouse Key`=%d ',
+        $warehouse->id
+    );
+
+    $flags = array();
+    if ($result = $db->query($sql)) {
+        foreach ($result as $row) {
+            $flags[$row['Warehouse Flag Key']] = array(
+                'color' => strtolower($row['Warehouse Flag Color']),
+                'key'   => $row['Warehouse Flag Key'],
+                'label' => $row['Warehouse Flag Label']
+            );
+        }
+    } else {
+        print_r($error_info = $this->db->errorInfo());
         print "$sql\n";
         exit;
     }
 
 
     $smarty->assign('flags', $flags);
-
 
 
     $smarty->assign('aux_templates', array('edit_locations.tpl'));

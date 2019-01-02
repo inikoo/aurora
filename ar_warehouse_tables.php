@@ -178,37 +178,32 @@ function areas($_data, $db, $user) {
 function locations($_data, $db, $user, $account) {
 
 
+
+
     $rtext_label = 'location';
     include_once 'prepare_table/init.php';
 
     $sql   = "select $fields from $table $where $wheref order by $order $order_direction limit $start_from,$number_results";
     $adata = array();
 
+
+   // print_r($_data);
+
+    switch ($_data['parameters']['parent']) {
+        case 'warehouse_area':
+
+            $warehouse_area=get_object('WarehouseArea',$_data['parameters']['parent_key']);
+
+            $link = 'warehouse/'.$warehouse_area->get('Warehouse Key').'/areas/'.$_data['parameters']['parent_key'].'/location/';
+            break;
+        case 'warehouse':
+            $link = 'locations/'.$_data['parameters']['parent_key'].'/';
+            break;
+    }
+
+
     foreach ($db->query($sql) as $data) {
 
-        /*
-
-        switch ($data['Location Mainly Used For']) {
-            case 'Picking':
-                $used_for = _('Picking');
-                break;
-            case 'Storing':
-                $used_for = _('Storing');
-                break;
-            case 'Loading':
-                $used_for = _('Loading');
-                break;
-            case 'Displaying':
-                $used_for = _('Displaying');
-                break;
-            case 'Other':
-                $used_for = _('Other');
-                break;
-            default:
-                $used_for = $data['Location Mainly Used For'];
-                break;
-        }
-*/
 
         if ($data['Location Max Weight'] == '' or $data['Location Max Weight'] <= 0) {
             $max_weight = '<span class="super_discreet italic">'._('Unknown').'</span>';
@@ -222,21 +217,22 @@ function locations($_data, $db, $user, $account) {
         }
 
 
+        $code = sprintf('<span class="link" onclick="change_view(\'%s/%d\')">%s</span>', $link, $data['Location Key'], $data['Location Code']);
+        $area = sprintf('<span class="link" onclick="change_view(\'warehouse/%d/areas/%d\')">%s</span>', $data['Location Warehouse Key'],$data['Location Warehouse Area Key'], $data['Warehouse Area Code']);
+
         $adata[] = array(
-            'id'                 => (integer)$data['Location Key'],
-            'warehouse_key'      => (integer)$data['Location Warehouse Key'],
-            'warehouse_area_key' => (integer)$data['Location Warehouse Area Key'],
-            'code'               => $data['Location Code'],
-            'flag'               => ($data['Warehouse Flag Key'] ? sprintf(
+            'id'          => (integer)$data['Location Key'],
+            'code'        => $code,
+            'flag'        => ($data['Warehouse Flag Key'] ? sprintf(
                 '<i id="flag_location_%d" class="fa fa-flag %s button" aria-hidden="true" onclick="show_edit_flag_dialog(this)" location_key="%d" title="%s"></i>', $data['Location Key'], strtolower($data['Warehouse Flag Color']), $data['Location Key'],
                 $data['Warehouse Flag Label']
             ) : '<i id="flag_location_'.$data['Location Key'].'"  class="far fa-flag super_discreet button" aria-hidden="true" onclick="show_edit_flag_dialog(this)" key="" ></i>'),
-            'flag_key'           => $data['Warehouse Flag Key'],
-            'area'               => $data['Warehouse Area Code'],
-            'max_weight'         => $max_weight,
-            'max_volume'         => $max_vol,
-            'parts'              => number($data['Location Distinct Parts']),
-            'stock_value'        => money($data['Location Stock Value'], $account->get('Account Currency')),
+            'flag_key'    => $data['Warehouse Flag Key'],
+            'area'        => $area,
+            'max_weight'  => $max_weight,
+            'max_volume'  => $max_vol,
+            'parts'       => number($data['Location Distinct Parts']),
+            'stock_value' => money($data['Location Stock Value'], $account->get('Account Currency')),
 
             // 'used_for'           => $used_for
         );
@@ -1473,7 +1469,7 @@ function return_checking_items($_data, $db, $user, $account) {
             );
 
 
-           // print_r($data);
+            // print_r($data);
 
             $quantity = ($data['Supplier Delivery Checked Units'] - $data['Supplier Delivery Placed Units']) / $data['Part Units Per Package'];
 
@@ -1577,8 +1573,6 @@ function return_checking_items($_data, $db, $user, $account) {
 }
 
 
-
-
 function return_items_done($_data, $db, $user) {
 
 
@@ -1617,7 +1611,7 @@ function return_items_done($_data, $db, $user) {
             $reference = sprintf(
                 '<span class="link" onclick="change_view(\'/part/%d\')" title="%s" >%s</span>', $data['Part SKU'], _('Part reference'), $data['Part Reference']
             );
-            $quantity = ($data['Supplier Delivery Checked Units'] - $data['Supplier Delivery Placed Units']) / $data['Part Units Per Package'];
+            $quantity  = ($data['Supplier Delivery Checked Units'] - $data['Supplier Delivery Placed Units']) / $data['Part Units Per Package'];
 
 
             if ($data['Metadata'] == '') {
@@ -1659,14 +1653,14 @@ function return_items_done($_data, $db, $user) {
 
             $table_data[] = array(
 
-                'id'                => (integer)$data['Part SKU'],
+                'id' => (integer)$data['Part SKU'],
 
 
                 'part_reference' => $reference,
                 'description'    => $data['Part Package Description'],
 
-                'received_quantity'             => number($data['skos_in']),
-                'checked_quantity'             => number($data['checked_quantity']),
+                'received_quantity' => number($data['skos_in']),
+                'checked_quantity'  => number($data['checked_quantity']),
 
                 'items_amount'                  => $items_amount,
                 'extra_amount'                  => $extra_amount,
@@ -1678,7 +1672,7 @@ function return_items_done($_data, $db, $user) {
 
                 'total_paid' => $total_paid,
                 'sko_cost'   => $sko_cost,
-                'placement' => $placement
+                'placement'  => $placement
             );
 
 

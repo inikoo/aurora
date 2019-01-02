@@ -42,6 +42,7 @@ class Upload extends DB_Table {
         }
         if ($this->data = $this->db->query($sql)->fetch()) {
             $this->id = $this->data['Upload Key'];
+            $this->metadata=$this->get('Metadata');
         }
 
 
@@ -66,7 +67,7 @@ class Upload extends DB_Table {
         $keys   = '(';
         $values = 'values(';
         foreach ($base_data as $key => $value) {
-            $keys .= "`$key`,";
+            $keys   .= "`$key`,";
             $values .= prepare_mysql($value).",";
         }
         $keys   = preg_replace('/,$/', ')', $keys);
@@ -121,9 +122,9 @@ class Upload extends DB_Table {
     function is_in_process() {
         if (in_array(
             $this->data['Upload State'], array(
-                'Finished',
-                'Cancelled'
-            )
+                                           'Finished',
+                                           'Cancelled'
+                                       )
         )) {
             return false;
 
@@ -164,11 +165,7 @@ class Upload extends DB_Table {
             case 'User Alias':
 
 
-
-
                 $user = get_object('User', $this->data['Upload User Key']);
-
-
 
 
                 return $user->get('Handle');
@@ -190,6 +187,12 @@ class Upload extends DB_Table {
                     case 'part':
                         $object = _("parts");
                         break;
+                    case 'location':
+                        $object = _("locations");
+                        break;
+                    case 'warehouse_area':
+                        $object = _("warehouse areas");
+                        break;
                     default:
                         $object = $this->data['Upload Object'];
                 }
@@ -199,23 +202,26 @@ class Upload extends DB_Table {
                 break;
             case 'Parent':
 
-                $parent=get_object($this->data['Upload Parent'],$this->data['Upload Parent Key']);
+                $parent = get_object($this->data['Upload Parent'], $this->data['Upload Parent Key']);
 
 
                 switch ($this->data['Upload Parent']) {
                     case 'supplier':
-                        $parent = sprintf(_("supplier %s"),sprintf('<span  class="link"  onclick="change_view(\'supplier/%d\')"  >%s</span>',$this->data['Upload Parent Key'],$parent->get('Code')));
+                        $parent = sprintf(_("supplier %s"), sprintf('<span  class="link"  onclick="change_view(\'supplier/%d\')"  >%s</span>', $this->data['Upload Parent Key'], $parent->get('Code')));
+                        break;
+                    case 'warehouse':
+                        $parent = sprintf(_("warehouse %s"), sprintf('<span  class="link"  onclick="change_view(\'warehouse/%d\')"  >%s</span>', $this->data['Upload Parent Key'], $parent->get('Code')));
                         break;
                     case 'category':
-                        if($this->data['Upload Object']=='part'){
-                            $parent = sprintf(_("part's category %s"),sprintf('<span  class="link"  onclick="change_view(\'category/%d\')"  >%s</span>',$this->data['Upload Parent Key'],$parent->get('Code')));
+                        if ($this->data['Upload Object'] == 'part') {
+                            $parent = sprintf(_("part's category %s"), sprintf('<span  class="link"  onclick="change_view(\'category/%d\')"  >%s</span>', $this->data['Upload Parent Key'], $parent->get('Code')));
 
 
-                        }else{
-                            $parent = sprintf(_("category %s"),sprintf('<span  class="link"  onclick="change_view(\'category/%d\')"  >%s</span>',$this->data['Upload Parent Key'],$parent->get('Code')));
+                        } else {
+                            $parent = sprintf(_("category %s"), sprintf('<span  class="link"  onclick="change_view(\'category/%d\')"  >%s</span>', $this->data['Upload Parent Key'], $parent->get('Code')));
 
                         }
-                    break;
+                        break;
                     default:
                         $parent = $this->data['Upload Parent'];
                 }
@@ -250,8 +256,13 @@ class Upload extends DB_Table {
                 }
 
                 return json_decode($this->data['Upload Metadata'], true);
+                break;
+            case 'Filename':
+               if(isset($this->metadata['files_data'][0]['Upload File Name'])){
+                   return $this->metadata['files_data'][0]['Upload File Name'];
+               }
 
-
+                break;
             default:
 
                 if (array_key_exists($key, $this->data)) {
@@ -319,9 +330,9 @@ class Upload extends DB_Table {
         $this->cancelled = false;
         if (in_array(
             $this->data['Upload State'], array(
-                'InProcess',
-                'Queued'
-            )
+                                           'InProcess',
+                                           'Queued'
+                                       )
         )) {
 
             $sql = sprintf(
@@ -346,9 +357,9 @@ class Upload extends DB_Table {
 
         } elseif (in_array(
             $this->data['Upload State'], array(
-                'Uploading',
-                'Review'
-            )
+                                           'Uploading',
+                                           'Review'
+                                       )
         )) {
 
             $sql = sprintf(
@@ -428,10 +439,10 @@ class Upload extends DB_Table {
         $this->deleted = false;
         if (in_array(
             $this->data['Upload State'], array(
-                'Uploading',
-                'Review',
-                'Queued'
-            )
+                                           'Uploading',
+                                           'Review',
+                                           'Queued'
+                                       )
         )) {
 
             $sql = sprintf(

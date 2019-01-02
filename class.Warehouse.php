@@ -364,36 +364,53 @@ class Warehouse extends DB_Table {
 
         */
 
-        if (isset($data['Location Flag Color'])) {
+        if (!empty($data['Location Flag Color'])) {
 
-            if ($data['Location Flag Color'] != '') {
 
-                $sql = sprintf(
-                    "SELECT `Warehouse Flag Key` FROM  `Warehouse Flag Dimension` WHERE `Warehouse Flag Color`=%s", prepare_mysql(ucfirst($data['Location Flag Color']))
-                );
+            $sql = sprintf(
+                "SELECT `Warehouse Flag Key` FROM  `Warehouse Flag Dimension` WHERE `Warehouse Flag Color`=%s", prepare_mysql(ucfirst($data['Location Flag Color']))
+            );
 
-                if ($result = $this->db->query($sql)) {
-                    if ($row = $result->fetch()) {
+            if ($result = $this->db->query($sql)) {
+                if ($row = $result->fetch()) {
 
-                        $data['Location Warehouse Flag Key'] = $row['Warehouse Flag Key'];
+                    $data['Location Warehouse Flag Key'] = $row['Warehouse Flag Key'];
 
-                    } else {
-                        $this->error      = true;
-                        $this->msg        = _('Flag invalid colour');
-                        $this->error_code = 'location_flag_color_not_valid';
-
-                    }
                 } else {
-                    print_r($error_info = $this->db->errorInfo());
-                    print "$sql\n";
-                    exit;
+                    $this->error      = true;
+                    $this->msg        = _('Flag invalid colour');
+                    $this->error_code = 'location_flag_color_not_valid';
+
                 }
+            } else {
+                print_r($error_info = $this->db->errorInfo());
+                print "$sql\n";
+                exit;
             }
+        }
+
+        if (!empty($data['Warehouse Area Code'])) {
+
+
+
+            include_once 'class.WarehouseArea.php';
+            $warehouse_area = new WarehouseArea('warehouse_code', $this->id, $data['Warehouse Area Code']);
+
+
+
+            if ($warehouse_area->id) {
+                $data['Location Warehouse Area Key'] = $warehouse_area->id;
+            }
+
+            unset($data['Warehouse Area Code']);
+
 
         }
 
 
+
         $data['Location Warehouse Key'] = $this->id;
+
 
 
         $location = new Location('find', $data, 'create');
@@ -963,11 +980,51 @@ class Warehouse extends DB_Table {
         include_once 'class.WarehouseArea.php';
 
 
+        $this->error_metadata = array();
+
         // print_r($data);
         $this->new_warehouse_area             = false;
         $data['Warehouse Area Warehouse Key'] = $this->id;
         $data['editor']                       = $this->editor;
-        $warehouse_area                       = new WarehouseArea('find', $data, 'create');
+
+
+        if ($data['Warehouse Area Code'] == '' and $data['Warehouse Area Name'] == '') {
+            $this->error_code       = 'missing_required_fields';
+            $this->error            = true;
+            $this->msg              = _('Missing field');
+            $this->error_metadata[] = _('Code');
+            $this->error_metadata[] = _('Name');
+            $this->error_metadata   = json_encode($this->error_metadata);
+
+
+            // $this->duplicated_field = 'Warehouse Area Code';
+            return;
+        }
+
+
+        if ($data['Warehouse Area Code'] == '') {
+            $this->error_code       = 'missing_required_fields';
+            $this->error            = true;
+            $this->msg              = _('Missing field');
+            $this->error_metadata[] = _('Code');
+            $this->error_metadata   = json_encode($this->error_metadata);
+
+            return;
+        }
+
+        if ($data['Warehouse Area Name'] == '') {
+            $this->error            = true;
+            $this->error_code       = 'missing_required_fields';
+            $this->msg              = _('Missing field');
+            $this->error_metadata[] = _('Name');
+            $this->error_metadata   = json_encode($this->error_metadata);
+
+            return;
+        }
+
+
+        $warehouse_area = new WarehouseArea('find', $data, 'create');
+
 
         if ($warehouse_area->id) {
 
@@ -976,15 +1033,18 @@ class Warehouse extends DB_Table {
                 $this->new_warehouse_area     = true;
                 $this->new_warehouse_area_key = $warehouse_area->id;
             } else {
-                $this->error = true;
-                $this->msg   = $warehouse_area->msg;
+                $this->error          = true;
+                $this->error_code     = 'duplicated_field';
+                $this->error_metadata = json_encode(array($warehouse_area->duplicated_field));
+                $this->msg            = $warehouse_area->msg;
 
             }
 
             return $warehouse_area;
         } else {
-            $this->error = true;
-            $this->msg   = $warehouse_area->msg;
+            $this->error      = true;
+            $this->msg        = $warehouse_area->msg;
+            $this->error_code = $warehouse_area->error_code;
 
             return false;
         }
@@ -1973,7 +2033,10 @@ class Warehouse extends DB_Table {
         $assigned_weight      = 0;
 
 
-        $sql = sprintf('select count(*) as num, sum( if(`Delivery Note Weight Source`="Estimated",`Delivery Note Estimated Weight` ,`Delivery Note Weight`)  ) as weight,  `Delivery Note State` from `Delivery Note Dimension` where `Delivery Note Warehouse Key`=%d group by `Delivery Note State`', $this->id);
+        $sql = sprintf(
+            'select count(*) as num, sum( if(`Delivery Note Weight Source`="Estimated",`Delivery Note Estimated Weight` ,`Delivery Note Weight`)  ) as weight,  `Delivery Note State` from `Delivery Note Dimension` where `Delivery Note Warehouse Key`=%d group by `Delivery Note State`',
+            $this->id
+        );
 
         if ($result = $this->db->query($sql)) {
             foreach ($result as $row) {
@@ -2003,8 +2066,8 @@ class Warehouse extends DB_Table {
             array(
                 'Warehouse Delivery Notes Ready to Pick Number' => $ready_to_pick_number,
                 'Warehouse Delivery Notes Ready to Pick Weight' => $ready_to_pick_weight,
-                'Warehouse Delivery Notes Assigned Number' => $assigned_number,
-                'Warehouse Delivery Notes Assigned Weight' => $assigned_weight,
+                'Warehouse Delivery Notes Assigned Number'      => $assigned_number,
+                'Warehouse Delivery Notes Assigned Weight'      => $assigned_weight,
 
             )
         );

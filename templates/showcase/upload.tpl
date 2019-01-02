@@ -2,7 +2,7 @@
     <div id="contact_data" style="float:left;width:600px">
         <div class="showcase">
 
-            <h1>{$_title}</h1>
+            <h1 class="hide">{$_title}</h1>
             <table class="">
 
 

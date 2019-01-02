@@ -983,6 +983,10 @@ $elements_options = array(
         'flags' => array(
             'label' => _('Flags'),
             'items' => array(
+                'None'   => array(
+                    'label'    => 'None',
+                    'selected' => true
+                ),
                 'Blue'   => array(
                     'label'    => 'Blue',
                     'selected' => true

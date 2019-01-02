@@ -92,8 +92,6 @@ function get_warehouses_navigation($data, $smarty, $user, $db, $account) {
 function get_new_warehouse_navigation($data, $smarty, $user, $db, $account) {
 
 
-
-
     $left_buttons = array();
 
     $left_buttons[] = array(
@@ -138,8 +136,6 @@ function get_new_warehouse_navigation($data, $smarty, $user, $db, $account) {
 function get_new_warehouse_area_navigation($data, $smarty, $user, $db, $account) {
 
 
-
-
     $left_buttons = array();
 
     $left_buttons[] = array(
@@ -182,7 +178,6 @@ function get_new_warehouse_area_navigation($data, $smarty, $user, $db, $account)
 
 
 function get_warehouse_navigation($data, $smarty, $user, $db, $account) {
-
 
 
     $warehouse = new Warehouse($data['key']);
@@ -240,16 +235,13 @@ function get_warehouse_navigation($data, $smarty, $user, $db, $account) {
 }
 
 
-
 function get_warehouse_areas_navigation($data, $smarty, $user, $db, $account) {
-
 
 
     $warehouse = new Warehouse($data['key']);
 
 
-    $left_buttons   = array();
-
+    $left_buttons = array();
 
 
     $right_buttons = array();
@@ -260,7 +252,7 @@ function get_warehouse_areas_navigation($data, $smarty, $user, $db, $account) {
     }
 
 
-    $title =sprintf(_('Warehouse areas for %s'),' <span  class="id Warehouse_Code" >'.$warehouse->get('Code').'</span>');
+    $title = sprintf(_('Warehouse areas for %s'), ' <span  class="id Warehouse_Code" >'.$warehouse->get('Code').'</span>');
 
 
     if (!$user->can_view('locations')) {
@@ -299,7 +291,6 @@ function get_warehouse_areas_navigation($data, $smarty, $user, $db, $account) {
 
 
 function get_locations_navigation($data, $smarty, $user, $db, $account) {
-
 
 
     switch ($data['parent']) {
@@ -359,6 +350,10 @@ function get_location_navigation($data, $smarty, $user, $db, $account) {
             $tab      = 'warehouse.locations';
             $_section = 'locations';
             break;
+        case 'warehouse_area':
+            $tab      = 'warehouse_area.locations';
+            $_section = 'locations';
+            break;
         default:
 
             exit('location navigation no parent');
@@ -366,7 +361,6 @@ function get_location_navigation($data, $smarty, $user, $db, $account) {
 
 
     if (isset($_SESSION['table_state'][$tab])) {
-
 
 
         $number_results  = $_SESSION['table_state'][$tab]['nr'];
@@ -377,19 +371,17 @@ function get_location_navigation($data, $smarty, $user, $db, $account) {
         $parameters      = $_SESSION['table_state'][$tab];
     } else {
 
-        $default                  = $user->get_tab_defaults($tab);
-        $number_results           = $default['rpp'];
-        $start_from               = 0;
-        $order                    = $default['sort_key'];
-        $order_direction          = ($default['sort_order'] == 1 ? 'desc' : '');
-        $f_value                  = '';
-        $parameters               = $default;
+        $default         = $user->get_tab_defaults($tab);
+        $number_results  = $default['rpp'];
+        $start_from      = 0;
+        $order           = $default['sort_key'];
+        $order_direction = ($default['sort_order'] == 1 ? 'desc' : '');
+        $f_value         = '';
+        $parameters      = $default;
 
     }
     $parameters['parent']     = $data['parent'];
     $parameters['parent_key'] = $data['parent_key'];
-
-
 
 
     include_once 'prepare_table/'.$tab.'.ptble.php';
@@ -408,21 +400,16 @@ function get_location_navigation($data, $smarty, $user, $db, $account) {
     $sql        = trim($sql_totals." $wheref");
 
 
-
     if ($result2 = $db->query($sql)) {
-        if ($row2 = $result2->fetch() ) {
-
-
+        if ($row2 = $result2->fetch()) {
 
 
             if ($row2['num'] > 1) {
 
 
-
-
                 $sql = sprintf(
                     "select `Location Code` object_name,L.`Location Key` as object_key from %s %s %s
-	                and ($_order_field < %s OR ($_order_field = %s AND L.`Location Key` < %d))  order by $_order_field desc , L.`Location Key` desc limit 1",  $table  , $where ,$wheref , prepare_mysql($_order_field_value), prepare_mysql($_order_field_value), $object->id
+	                and ($_order_field < %s OR ($_order_field = %s AND L.`Location Key` < %d))  order by $_order_field desc , L.`Location Key` desc limit 1", $table, $where, $wheref, prepare_mysql($_order_field_value), prepare_mysql($_order_field_value), $object->id
                 );
                 if ($result = $db->query($sql)) {
                     if ($row = $result->fetch()) {
@@ -432,11 +419,9 @@ function get_location_navigation($data, $smarty, $user, $db, $account) {
                 }
 
 
-
-
                 $sql = sprintf(
                     "select `Location Code` object_name,L.`Location Key` as object_key from  %s %s %s
-	                and ($_order_field  > %s OR ($_order_field  = %s AND L.`Location Key` > %d))  order by $_order_field   , L.`Location Key`  limit 1", $table ,  $where, $wheref, prepare_mysql($_order_field_value), prepare_mysql($_order_field_value), $object->id
+	                and ($_order_field  > %s OR ($_order_field  = %s AND L.`Location Key` > %d))  order by $_order_field   , L.`Location Key`  limit 1", $table, $where, $wheref, prepare_mysql($_order_field_value), prepare_mysql($_order_field_value), $object->id
                 );
 
                 if ($result = $db->query($sql)) {
@@ -490,6 +475,50 @@ function get_location_navigation($data, $smarty, $user, $db, $account) {
                                 'icon'      => 'arrow-right',
                                 'title'     => $next_title,
                                 'reference' => 'locations/'.$data['parent_key'].'/'.$next_key
+                            );
+
+                        } else {
+                            $left_buttons[] = array(
+                                'icon'  => 'arrow-right disabled',
+                                'title' => '',
+                                'url'   => ''
+                            );
+
+                        }
+
+                        break;
+                    case 'warehouse_area':
+
+                        $up_button = array(
+                            'icon'      => 'arrow-up',
+                            'title'     => _('Warehouse area').' '.$data['_parent']->get('Code'),
+                            'reference' => 'warehouse/'.$data['_parent']->get('Warehouse Key').'/areas/'.$data['_parent']->id,
+                            'parent'    => ''
+                        );
+
+
+                        if ($prev_key) {
+                            $left_buttons[] = array(
+                                'icon'      => 'arrow-left',
+                                'title'     => $prev_title,
+                                'reference' => 'warehouse/'.$data['_parent']->get('Warehouse Key').'/areas/'.$data['_parent']->id.'/location/'.$prev_key,
+                            );
+
+                        } else {
+                            $left_buttons[] = array(
+                                'icon'  => 'arrow-left disabled',
+                                'title' => ''
+                            );
+
+                        }
+                        $left_buttons[] = $up_button;
+
+
+                        if ($next_key) {
+                            $left_buttons[] = array(
+                                'icon'      => 'arrow-right',
+                                'title'     => $next_title,
+                                'reference' => 'warehouse/'.$data['_parent']->get('Warehouse Key').'/areas/'.$data['_parent']->id.'/location/'.$next_key,
                             );
 
                         } else {
@@ -594,18 +623,35 @@ function get_locations_new_main_category_navigation($data, $smarty, $user, $db, 
 function get_new_location_navigation($data, $smarty, $user, $db, $account) {
 
 
-    $sections       = get_sections('warehouses', $data['parent_key']);
-    $left_buttons   = array();
-    $left_buttons[] = array(
-        'icon'      => 'arrow-up',
-        'title'     => _('Locations'),
-        'reference' => 'locations/'.$data['parent_key'],
-        'parent'    => ''
-    );
+    $sections     = get_sections('warehouses', $data['_parent']->get('Warehouse Key'));
+    $left_buttons = array();
+
 
     $right_buttons = array();
 
     $sections['locations']['selected'] = true;
+
+
+    switch ($data['_parent']->get_object_name()) {
+        case 'Warehouse Area':
+            $title          = sprintf(_("New location in area %s"), '<span class="id">'.$data['_parent']->get('Code').'</span>');
+            $left_buttons[] = array(
+                'icon'      => 'arrow-up',
+                'title'     => _('Warehouse area'),
+                'reference' => 'warehouse/'.$data['_parent']->get('Warehouse Key').'/areas/'.$data['parent_key'],
+                'parent'    => ''
+            );
+            break;
+        case 'Warehouse':
+            $title          = sprintf(_("New location in warehouse %s"), '<span class="id">'.$data['_parent']->get('Code').'</span>');
+            $left_buttons[] = array(
+                'icon'      => 'arrow-up',
+                'title'     => _('Locations'),
+                'reference' => 'locations/'.$data['parent_key'],
+                'parent'    => ''
+            );
+            break;
+    }
 
 
     $_content = array(
@@ -613,7 +659,7 @@ function get_new_location_navigation($data, $smarty, $user, $db, $account) {
         'sections'       => $sections,
         'left_buttons'   => $left_buttons,
         'right_buttons'  => $right_buttons,
-        'title'          => _("New location"),
+        'title'          => $title,
         'search'         => array(
             'show'        => true,
             'placeholder' => _('Search locations')
@@ -632,8 +678,6 @@ function get_new_location_navigation($data, $smarty, $user, $db, $account) {
 
 
 function get_categories_navigation($data, $smarty, $user, $db, $account) {
-
-
 
 
     require_once 'class.Store.php';
@@ -1040,7 +1084,7 @@ function get_deleted_location_navigation($data, $smarty, $user, $db, $account) {
     $left_buttons = array();
 
     $right_buttons = array();
-    $sections = get_sections('warehouses', $warehouse->id);
+    $sections      = get_sections('warehouses', $warehouse->id);
     if (isset($sections[$_section])) {
         $sections[$_section]['selected'] = true;
     }
@@ -1135,7 +1179,6 @@ function get_timeseries_record_navigation($data, $smarty, $user, $db, $account) 
     $timeseries = $data['_object'];
 
     // print_r($timeseries);
-
 
 
     $left_buttons  = array();
@@ -1330,7 +1373,6 @@ function get_timeseries_record_navigation($data, $smarty, $user, $db, $account) 
 }
 
 
-
 function get_returns_navigation($data, $smarty, $user, $db, $account) {
 
 
@@ -1434,7 +1476,6 @@ function get_shipper_navigation($data, $smarty, $user, $db, $account) {
     if (isset($_SESSION['table_state'][$tab])) {
 
 
-
         $number_results  = $_SESSION['table_state'][$tab]['nr'];
         $start_from      = 0;
         $order           = $_SESSION['table_state'][$tab]['o'];
@@ -1443,19 +1484,17 @@ function get_shipper_navigation($data, $smarty, $user, $db, $account) {
         $parameters      = $_SESSION['table_state'][$tab];
     } else {
 
-        $default                  = $user->get_tab_defaults($tab);
-        $number_results           = $default['rpp'];
-        $start_from               = 0;
-        $order                    = $default['sort_key'];
-        $order_direction          = ($default['sort_order'] == 1 ? 'desc' : '');
-        $f_value                  = '';
-        $parameters               = $default;
+        $default         = $user->get_tab_defaults($tab);
+        $number_results  = $default['rpp'];
+        $start_from      = 0;
+        $order           = $default['sort_key'];
+        $order_direction = ($default['sort_order'] == 1 ? 'desc' : '');
+        $f_value         = '';
+        $parameters      = $default;
 
     }
     $parameters['parent']     = $data['parent'];
     $parameters['parent_key'] = $data['parent_key'];
-
-
 
 
     include_once 'prepare_table/'.$tab.'.ptble.php';
@@ -1474,21 +1513,16 @@ function get_shipper_navigation($data, $smarty, $user, $db, $account) {
     $sql        = trim($sql_totals." $wheref");
 
 
-
     if ($result2 = $db->query($sql)) {
-        if ($row2 = $result2->fetch() ) {
-
-
+        if ($row2 = $result2->fetch()) {
 
 
             if ($row2['num'] > 1) {
 
 
-
-
                 $sql = sprintf(
                     "select `Location Code` object_name,L.`Location Key` as object_key from %s %s %s
-	                and ($_order_field < %s OR ($_order_field = %s AND L.`Location Key` < %d))  order by $_order_field desc , L.`Location Key` desc limit 1",  $table  , $where ,$wheref , prepare_mysql($_order_field_value), prepare_mysql($_order_field_value), $object->id
+	                and ($_order_field < %s OR ($_order_field = %s AND L.`Location Key` < %d))  order by $_order_field desc , L.`Location Key` desc limit 1", $table, $where, $wheref, prepare_mysql($_order_field_value), prepare_mysql($_order_field_value), $object->id
                 );
                 if ($result = $db->query($sql)) {
                     if ($row = $result->fetch()) {
@@ -1498,11 +1532,9 @@ function get_shipper_navigation($data, $smarty, $user, $db, $account) {
                 }
 
 
-
-
                 $sql = sprintf(
                     "select `Location Code` object_name,L.`Location Key` as object_key from  %s %s %s
-	                and ($_order_field  > %s OR ($_order_field  = %s AND L.`Location Key` > %d))  order by $_order_field   , L.`Location Key`  limit 1", $table ,  $where, $wheref, prepare_mysql($_order_field_value), prepare_mysql($_order_field_value), $object->id
+	                and ($_order_field  > %s OR ($_order_field  = %s AND L.`Location Key` > %d))  order by $_order_field   , L.`Location Key`  limit 1", $table, $where, $wheref, prepare_mysql($_order_field_value), prepare_mysql($_order_field_value), $object->id
                 );
 
                 if ($result = $db->query($sql)) {
@@ -1620,7 +1652,6 @@ function get_shipper_navigation($data, $smarty, $user, $db, $account) {
 }
 
 
-
 function get_warehouse_area_navigation($data, $smarty, $user, $db, $account) {
 
 
@@ -1628,7 +1659,6 @@ function get_warehouse_area_navigation($data, $smarty, $user, $db, $account) {
     $object    = $data['_object'];
 
     $left_buttons = array();
-
 
 
     switch ($data['parent']) {
@@ -1645,7 +1675,6 @@ function get_warehouse_area_navigation($data, $smarty, $user, $db, $account) {
     if (isset($_SESSION['table_state'][$tab])) {
 
 
-
         $number_results  = $_SESSION['table_state'][$tab]['nr'];
         $start_from      = 0;
         $order           = $_SESSION['table_state'][$tab]['o'];
@@ -1654,19 +1683,17 @@ function get_warehouse_area_navigation($data, $smarty, $user, $db, $account) {
         $parameters      = $_SESSION['table_state'][$tab];
     } else {
 
-        $default                  = $user->get_tab_defaults($tab);
-        $number_results           = $default['rpp'];
-        $start_from               = 0;
-        $order                    = $default['sort_key'];
-        $order_direction          = ($default['sort_order'] == 1 ? 'desc' : '');
-        $f_value                  = '';
-        $parameters               = $default;
+        $default         = $user->get_tab_defaults($tab);
+        $number_results  = $default['rpp'];
+        $start_from      = 0;
+        $order           = $default['sort_key'];
+        $order_direction = ($default['sort_order'] == 1 ? 'desc' : '');
+        $f_value         = '';
+        $parameters      = $default;
 
     }
     $parameters['parent']     = $data['parent'];
     $parameters['parent_key'] = $data['parent_key'];
-
-
 
 
     include_once 'prepare_table/'.$tab.'.ptble.php';
@@ -1686,20 +1713,17 @@ function get_warehouse_area_navigation($data, $smarty, $user, $db, $account) {
 
 
     if ($result2 = $db->query($sql)) {
-        if ($row2 = $result2->fetch() ) {
-
+        if ($row2 = $result2->fetch()) {
 
 
             if ($row2['num'] > 1) {
 
 
-
-
                 $sql = sprintf(
                     "select `Warehouse Area Code` object_name,`Warehouse Area Key` as object_key from %s %s %s
-	                and ($_order_field < %s OR ($_order_field = %s AND `Warehouse Area Key` < %d))  order by $_order_field desc , `Warehouse Area Key` desc limit 1",  $table  , $where ,$wheref , prepare_mysql($_order_field_value), prepare_mysql($_order_field_value), $object->id
+	                and ($_order_field < %s OR ($_order_field = %s AND `Warehouse Area Key` < %d))  order by $_order_field desc , `Warehouse Area Key` desc limit 1", $table, $where, $wheref, prepare_mysql($_order_field_value), prepare_mysql($_order_field_value),
+                    $object->id
                 );
-
 
 
                 if ($result = $db->query($sql)) {
@@ -1710,11 +1734,9 @@ function get_warehouse_area_navigation($data, $smarty, $user, $db, $account) {
                 }
 
 
-
-
                 $sql = sprintf(
                     "select `Warehouse Area Code` object_name,`Warehouse Area Key` as object_key from  %s %s %s
-	                and ($_order_field  > %s OR ($_order_field  = %s AND `Warehouse Area Key` > %d))  order by $_order_field   , `Warehouse Area Key`  limit 1", $table ,  $where, $wheref, prepare_mysql($_order_field_value), prepare_mysql($_order_field_value), $object->id
+	                and ($_order_field  > %s OR ($_order_field  = %s AND `Warehouse Area Key` > %d))  order by $_order_field   , `Warehouse Area Key`  limit 1", $table, $where, $wheref, prepare_mysql($_order_field_value), prepare_mysql($_order_field_value), $object->id
                 );
 
                 if ($result = $db->query($sql)) {
@@ -1833,10 +1855,10 @@ function get_warehouse_area_navigation($data, $smarty, $user, $db, $account) {
 function get_return_navigation($data, $smarty, $user, $db, $account) {
 
 
-    $object        = $data['_object'];
+    $object = $data['_object'];
 
 
-    if (!($object->get('Supplier Delivery Parent')=='Order' and $object->get('Supplier Delivery Parent Key'))) {
+    if (!($object->get('Supplier Delivery Parent') == 'Order' and $object->get('Supplier Delivery Parent Key'))) {
         return '';
     }
 
@@ -2001,7 +2023,6 @@ function get_return_navigation($data, $smarty, $user, $db, $account) {
             $search_placeholder = _('Search warehouse');
 
 
-
         }
 
     } else {
@@ -2010,24 +2031,21 @@ function get_return_navigation($data, $smarty, $user, $db, $account) {
     }
 
 
-
     if (isset($sections[$_section])) {
         $sections[$_section]['selected'] = true;
     }
 
 
+    $order = get_object('order', $object->get('Supplier Delivery Parent Key'));
 
 
-    $order=get_object('order',$object->get('Supplier Delivery Parent Key'));
+    $title = sprintf(
+        _('Return %s for %s'),
+        '<span class="id Supplier_Delivery_Public_ID">'.$object->get('Public ID').'</span>',
+        '<span class="button small "  onClick="change_view(\'/orders/'.$order->get('Order Store Key').'/order/'.$order->id.'\')"  > <i class="fa small fa-shopping-cart " title="'._('Order').'"  ></i> <span class="link Order_Public_ID " >'.$order->get('Order Public ID')
+        .'</span></span>'
 
-
-    $title =sprintf(_('Return %s for %s'),
-                    '<span class="id Supplier_Delivery_Public_ID">'.$object->get('Public ID').'</span>',
-                    '<span class="button small "  onClick="change_view(\'/orders/'.$order->get('Order Store Key').'/order/'.$order->id.'\')"  > <i class="fa small fa-shopping-cart " title="'._('Order').'"  ></i> <span class="link Order_Public_ID " >'.$order->get('Order Public ID').'</span></span>'
-
-        );
-
-
+    );
 
 
     $_content = array(
@@ -2051,5 +2069,254 @@ function get_return_navigation($data, $smarty, $user, $db, $account) {
 
 }
 
+
+function get_upload_navigation($data, $smarty, $user, $db) {
+
+
+    $left_buttons  = array();
+    $right_buttons = array();
+
+
+    $warehouse = $data['warehouse'];
+    $sections  = get_sections('warehouses', $warehouse->id);
+    $_section  = 'locations';
+    if (isset($sections[$_section])) {
+        $sections[$_section]['selected'] = true;
+    };
+
+
+
+
+    if ($data['_object']->get('Upload Type') == 'EditObjects') {
+
+        switch ($data['parent']) {
+            case 'warehouse':
+
+
+                switch ($data['_object']->get('Upload Object')) {
+
+                    case 'warehouse_area':
+
+                        $up_button = array(
+                            'icon'      => 'arrow-up',
+                            'title'     => _('Warehouse areas'),
+                            'reference' => 'warehouse/'.$data['parent_key'].'/areas'
+                        );
+
+                        $title = sprintf(
+                            _('Editing %s from warehouse (%s)'), '<span class="id">'._('warehouse areas').'</span>', '<span>'.$data['_parent']->get('Code').'</span>'
+                        );
+
+
+                        break;
+                    case 'location':
+
+
+                        $up_button = array(
+                            'icon'      => 'arrow-up',
+                            'title'     => _('Locations'),
+                            'reference' => 'warehouse/'.$data['parent_key'].'/locations'
+                        );
+
+                        $title = sprintf(
+                            _('Editing %s from warehouse (%s)'), '<span class="id">'._('locations').'</span>', '<span>'.$data['_parent']->get('Code').'</span>'
+                        );
+
+
+                        break;
+                    default:
+                        $title = '';
+
+                }
+                break;
+            case 'warehouse_area':
+
+                $up_button = array(
+                    'icon'      => 'arrow-up',
+                    'title'     => _('Warehouse area').' ('.$data['_parent']->get('Code').')',
+                    'reference' => 'warehouse/'.$warehouse->id.'/areas/'.$data['parent_key']
+                );
+                switch ($data['_object']->get('Upload Object')) {
+
+
+                    case 'location':
+                        $title = sprintf(
+                            _('Editing %s from warehouse area (%s)'), '<span class="id">'._('locations').'</span>', '<span>'.$data['_parent']->get('Code').'</span>'
+                        );
+
+
+                        break;
+                    default:
+                        $title = '';
+
+                }
+                break;
+
+        }
+
+
+    } else {
+
+        switch ($data['parent']) {
+            case 'warehouse':
+
+
+                switch ($data['_object']->get('Upload Object')) {
+
+                    case 'warehouse_area':
+
+                        $up_button = array(
+                            'icon'      => 'arrow-up',
+                            'title'     => _('Warehouse areas'),
+                            'reference' => 'warehouse/'.$data['parent_key'].'/areas'
+                        );
+
+                        $title = sprintf(
+                            _('Adding %s to warehouse (%s)'), '<span class="id">'._('warehouse areas').'</span>', '<span>'.$data['_parent']->get('Code').'</span>'
+                        );
+
+
+                        break;
+                    case 'location':
+
+
+                        $up_button = array(
+                            'icon'      => 'arrow-up',
+                            'title'     => _('Locations'),
+                            'reference' => 'warehouse/'.$data['parent_key'].'/locations'
+                        );
+
+                        $title = sprintf(
+                            _('Adding %s to warehouse (%s)'), '<span class="id">'._('locations').'</span>', '<span>'.$data['_parent']->get('Code').'</span>'
+                        );
+
+
+                        break;
+                    default:
+                        $title = '';
+
+                }
+                break;
+            case 'warehouse_area':
+
+                $up_button = array(
+                    'icon'      => 'arrow-up',
+                    'title'     => _('Warehouse area').' ('.$data['_parent']->get('Code').')',
+                    'reference' => 'warehouse/'.$warehouse->id.'/areas/'.$data['parent_key']
+                );
+                switch ($data['_object']->get('Upload Object')) {
+
+
+                    case 'location':
+                        $title = sprintf(
+                            _('Adding %s to warehouse area (%s)'), '<span class="id">'._('locations').'</span>', '<span>'.$data['_parent']->get('Code').'</span>'
+                        );
+
+
+                        break;
+                    default:
+                        $title = '';
+
+                }
+                break;
+
+        }
+
+    }
+
+
+    /*
+    exit;
+
+    if ($data['parent'] == 'warehouse') {
+
+
+        $sections = get_sections('warehouses', $data['_parent']->id);
+
+
+        if ($data['_object']->get('Upload Type') == 'EditObjects') {
+            switch ($data['_object']->get('Upload Object')) {
+
+                case 'warehouse_area':
+                    $title = sprintf(
+                        _('Editing %s (%s) locations'), '<span >'._('warehouse areas').'</span>', '<span class="id">'.$data['_parent']->get('Code').'</span>'
+                    );
+
+                    $up_button = array(
+                        'icon'      => 'arrow-up',
+                        'title'     => _('Warehouse areas').' ('.$data['_parent']->get('Code').')',
+                        'reference' => 'warehouse/'.$data['parent_key'].'/areas'
+                    );
+                    break;
+                case 'location':
+                    $title     = sprintf(
+                        _('Editing %s (%s) locations'), '<span >'._('warehouse areas').'</span>', '<span class="id">'.$data['_parent']->get('Code').'</span>'
+                    );
+                    $up_button = array(
+                        'icon'      => 'arrow-up',
+                        'title'     => _('Locations').' ('.$data['_parent']->get('Code').')',
+                        'reference' => 'warehouse/'.$data['parent_key'].'/locations'
+                    );
+                    break;
+                default:
+                    $title = '';
+
+            }
+        } else {
+            switch ($data['_object']->get('Upload Object')) {
+
+                case 'warehouse_area':
+                    $title = sprintf(
+                        _('Upload %s into warehouse %s'), '<span class="id">'._('warehouse areas').'</span>', '<span class="id">'.$data['_parent']->get('Code').'</span>'
+                    );
+
+                    $up_button = array(
+                        'icon'      => 'arrow-up',
+                        'title'     => _('Warehouse areas').' ('.$data['_parent']->get('Code').')',
+                        'reference' => 'warehouse/'.$data['parent_key'].'/areas'
+                    );
+                    break;
+                case 'location':
+                    $title     = sprintf(
+                        _('Upload %s into warehouse %s'), '<span class="id">'._('locations').'</span>', '<span class="id">'.$data['_parent']->get('Code').'</span>'
+                    );
+                    $up_button = array(
+                        'icon'      => 'arrow-up',
+                        'title'     => _('Locations').' ('.$data['_parent']->get('Code').')',
+                        'reference' => 'warehouse/'.$data['parent_key'].'/locations'
+                    );
+                    break;
+                default:
+                    $title = '';
+
+            }
+        }
+
+
+    }
+
+*/
+    $left_buttons[] = $up_button;
+
+    $_content = array(
+        'sections_class' => '',
+        'sections'       => $sections,
+        'left_buttons'   => $left_buttons,
+        'right_buttons'  => $right_buttons,
+        'title'          => $title,
+        'search'         => array(
+            'show'        => true,
+            'placeholder' => _('Search inventory')
+        )
+
+    );
+    $smarty->assign('_content', $_content);
+
+
+    $html = $smarty->fetch('navigation.tpl');
+
+    return $html;
+
+}
 
 ?>

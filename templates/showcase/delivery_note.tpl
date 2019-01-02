@@ -359,7 +359,7 @@
                     </div>
 
                     <div id="shipper_options" class="{if $delivery_note->get('Delivery Note Shipper Key')>0}hide{/if}">
-                        
+
                             {foreach from=$shippers item=shipper}
                                 <span id="shipper_option_{$shipper.key}" onclick="select_courier({$shipper.key})" class="button option {if $delivery_note->get('Delivery Note Shipper Key')==$shipper.key}selected{/if}" title="{$shipper.name}">{$shipper.code}</span>
                             {/foreach}

@@ -16,8 +16,15 @@ include_once 'conf/object_fields.php';
 include_once 'class.Location.php';
 
 
+
+
 $object_fields = get_object_fields(
-    $state['_object'], $db, $user, $smarty, array('new' => true,'warehouse_key'=>$state['warehouse']->id)
+    $state['_object'], $db, $user, $smarty, array(
+        'new' => true,
+        'parent'=>$state['parent'],
+        'parent_key'=>$state['parent_key'],
+        'warehouse_key'=>$state['_parent']->get('Warehouse Key'),
+        )
 );
 
 

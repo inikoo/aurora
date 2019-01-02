@@ -62,6 +62,11 @@ switch ($object->get_object_name()) {
 
         $key_field    = 'Id: Location Key';
         break;
+    case 'Warehouse Area':
+        $filename = _('new_warehouse_area');
+        $valid_fields = $export_edit_template_fields['warehouse_area'];
+        $key_field    = 'Id: Warehouse Area Key';
+        break;
     default:
         exit('Object not defined '.$object->get_object_name());
         break;

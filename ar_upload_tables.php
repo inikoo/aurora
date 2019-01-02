@@ -57,7 +57,6 @@ switch ($tipo) {
 
 function records($_data, $db, $user) {
 
-
     $rtext_label = 'record';
 
     include_once 'prepare_table/init.php';
@@ -72,6 +71,8 @@ function records($_data, $db, $user) {
 
     if ($result = $db->query($sql)) {
         foreach ($result as $data) {
+
+
 
             switch ($data['Upload Record State']) {
                 case 'InProcess':
@@ -103,15 +104,13 @@ function records($_data, $db, $user) {
                 case 'Error':
                     $state
                          = '<i class="fa error fa-exclamation-circle padding_left_10"></i>';
-                    $msg = '';
+
 
                     switch ($data['Upload Record Message Code']) {
                         case 'missing_required_fields':
                             $msg = _('Missing required fields').': ';
 
-                            $fields  = json_decode(
-                                $data['Upload Record Message Metadata']
-                            );
+                            $fields  = json_decode($data['Upload Record Message Metadata']);
                             $_fields = '';
                             foreach ($fields as $field) {
                                 $_fields .= _($field).', ';
@@ -119,20 +118,13 @@ function records($_data, $db, $user) {
                             $msg .= ' '.preg_replace('/\, $/', '', $_fields);
 
                             break;
-                        case 'missing_required_fields':
-                            $msg    = _('Missing required field').': ';
-                            $fields = json_decode(
-                                $data['Upload Record Message Metadata']
-                            );
 
-                            foreach ($fields as $field) {
-                                $msg .= _($field);
-                            }
-                            break;
                         case 'duplicated_field':
-                        default:
+
                             $msg = _('Duplicated unique field');
                             break;
+                        default:
+                            $msg='';
                     }
 
 
