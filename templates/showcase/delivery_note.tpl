@@ -359,14 +359,12 @@
                     </div>
 
                     <div id="shipper_options" class="{if $delivery_note->get('Delivery Note Shipper Key')>0}hide{/if}">
-                        {if $number_shippers<=5}
+                        
                             {foreach from=$shippers item=shipper}
                                 <span id="shipper_option_{$shipper.key}" onclick="select_courier({$shipper.key})" class="button option {if $delivery_note->get('Delivery Note Shipper Key')==$shipper.key}selected{/if}" title="{$shipper.name}">{$shipper.code}</span>
                             {/foreach}
                             <span id="shipper_option_" onclick="select_courier('')" class="button option " title="{t}Skip set courier{/t}"><i class="error fa fa-ban"></i></span>
-                        {else}
 
-                        {/if}
 
                     </div>
                 </td>
