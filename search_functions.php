@@ -10,12 +10,12 @@
 */
 
 
-function search_suppliers($db, $account, $memcache_ip, $data) {
+function search_suppliers($db, $account, $user, $data) {
 
 
     $cache       = false;
     $max_results = 10;
-    $user        = $data['user'];
+
     $queries     = trim($data['query']);
 
     if ($queries == '') {
@@ -692,12 +692,10 @@ function search_suppliers($db, $account, $memcache_ip, $data) {
 }
 
 
-function search_inventory($db, $account, $data) {
+function search_inventory($db, $account, $user,$data) {
 
 
-    $cache       = false;
     $max_results = 10;
-    $user        = $data['user'];
     $queries     = trim($data['query']);
 
     if ($queries == '') {
@@ -711,7 +709,7 @@ function search_inventory($db, $account, $data) {
         return;
     }
 
-
+/*
     if (strlen($queries) <= 2) {
         $memcache_time = 295200;
     }
@@ -724,6 +722,7 @@ function search_inventory($db, $account, $data) {
         $memcache_time = 300;
 
     }
+*/
 
     $candidates = array();
 
@@ -2022,11 +2021,10 @@ function search_orders($db, $account, $user, $data) {
 }
 
 
-function search_delivery_notes($db, $account, $memcache_ip, $data) {
+function search_delivery_notes($db, $account, $user, $data) {
 
-    $cache       = false;
+    //$cache       = false;
     $max_results = 10;
-    $user        = $data['user'];
     $queries     = trim($data['query']);
 
     if ($queries == '') {
@@ -2061,6 +2059,8 @@ function search_delivery_notes($db, $account, $memcache_ip, $data) {
 
         $stores = join(',', $user->stores);
     }
+
+    /*
     $memcache_fingerprint = $account->get('Account Code').'SEARCH_DN'.$stores.md5($queries);
 
     $cache = new Memcached();
@@ -2081,9 +2081,9 @@ function search_delivery_notes($db, $account, $memcache_ip, $data) {
 
 
     $results_data = $cache->get($memcache_fingerprint);
+*/
 
-
-    if (!$results_data or $cache) {
+    if (true) {
 
 
         $candidates = array();
@@ -2635,12 +2635,12 @@ function search_hr($db, $account, $user, $data) {
 }
 
 
-function search_locations($db, $account, $data, $response_type = 'echo') {
+function search_locations($db, $account,$user, $data, $response_type = 'echo') {
 
 
-    $cache       = false;
+    //$cache       = false;
     $max_results = 10;
-    $user        = $data['user'];
+
     $queries     = trim($data['query']);
 
 
@@ -2687,6 +2687,8 @@ function search_locations($db, $account, $data, $response_type = 'echo') {
 
         $warehouses = join(',', $user->stores);
     }
+
+    /*
     $memcache_fingerprint = $account->get('Account Code').'SEARCH_LOC'.$warehouses.md5($queries);
 
 
@@ -2702,7 +2704,7 @@ function search_locations($db, $account, $data, $response_type = 'echo') {
         $memcache_time = 300;
 
     }
-
+*/
 
     //    $results_data = $cache->get($memcache_fingerprint);
 

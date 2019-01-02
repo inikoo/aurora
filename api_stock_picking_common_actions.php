@@ -408,7 +408,7 @@ switch ($_REQUEST['action']) {
         );
 
 
-        $_response = search_locations($db, $account, $data, 'data');
+        $_response = search_locations($db, $account, $user,$data, 'data');
 
         $response = array(
             'state' => 'OK',

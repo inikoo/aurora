@@ -101,12 +101,12 @@ switch ($tipo) {
                 } else {
                     $data['scope'] = 'warehouses';
                 }
-                search_inventory($db, $account, $data);
+                search_inventory($db, $account, $user,$data);
             } elseif ($data['state']['module'] == 'hr') {
                 search_hr($db, $account, $user, $data);
 
             } elseif ($data['state']['module'] == 'suppliers') {
-                search_suppliers($db, $account, $memcache_ip, $data);
+                search_suppliers($db, $account, $user, $data);
 
             } elseif ($data['state']['module'] == 'delivery_notes') {
                 if ($data['state']['current_store']) {
@@ -115,12 +115,12 @@ switch ($tipo) {
                 } else {
                     $data['scope'] = 'stores';
                 }
-                search_delivery_notes($db, $account, $memcache_ip, $data);
+                search_delivery_notes($db, $account, $user, $data);
             } elseif ($data['state']['module'] == 'delivery_notes_server') {
 
                 $data['scope'] = 'stores';
 
-                search_delivery_notes($db, $account, $memcache_ip, $data);
+                search_delivery_notes($db, $account, $user, $data);
             } elseif ($data['state']['module'] == 'orders_server') {
                 $data['scope'] = 'stores';
                 search_orders($db, $account, $user,$data);
@@ -178,7 +178,7 @@ switch ($tipo) {
                 } else {
                     $data['scope'] = 'warehouses';
                 }
-                search_locations($db, $account, $data);
+                search_locations($db, $account, $user,$data);
             }
         }
         break;
