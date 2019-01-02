@@ -2826,13 +2826,11 @@ function search_locations($db, $account,$user, $data, $response_type = 'echo') {
 }
 
 
-function agent_search($db, $account, $user, $memcache_ip, $data) {
+function agent_search($db, $account, $user, $data) {
 
     $agent_key = $user->get('User Parent Key');
 
-    $cache       = false;
     $max_results = 10;
-    $user        = $data['user'];
     $queries     = trim($data['query']);
 
     if ($queries == '') {
@@ -2845,7 +2843,7 @@ function agent_search($db, $account, $user, $memcache_ip, $data) {
 
         return;
     }
-
+/*
 
     $memcache_fingerprint = $account->get('Account Code').'AGENTSERCH'.md5(
             $queries
@@ -2871,8 +2869,8 @@ function agent_search($db, $account, $user, $memcache_ip, $data) {
 
     $results_data = $cache->get($memcache_fingerprint);
 
-
-    if (!$results_data or true) {
+*/
+    if ( true) {
 
 
         $candidates = array();

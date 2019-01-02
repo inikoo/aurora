@@ -42,7 +42,7 @@ switch ($tipo) {
 
 
         if ($user->get('User Type') == 'Agent') {
-            agent_search($db, $account, $user, $memcache_ip, $data);
+            agent_search($db, $account, $user, $data);
         } else {
 
 
