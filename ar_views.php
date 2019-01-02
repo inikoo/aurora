@@ -225,10 +225,16 @@ function get_view($db, $smarty, $user, $account, $modules) {
 
             break;
         case 'warehouse':
-            include_once 'class.Warehouse.php';
-            $_parent                    = new Warehouse($state['parent_key']);
+            $_parent                    = get_object('Warehouse', $state['parent_key']);
             $warehouse                  = $_parent;
             $state['current_warehouse'] = $_parent->id;
+
+            break;
+        case 'warehouse_area':
+            $_parent = get_object($state['parent'], $state['parent_key']);
+
+            $warehouse                  = get_object('Warehouse', $_parent->get('Warehouse Key'));
+            $state['current_warehouse'] = $warehouse->id;
 
             break;
         case 'category':
@@ -312,9 +318,13 @@ function get_view($db, $smarty, $user, $account, $modules) {
             $store                  = new Store($_object->get('Store Key'));
             $state['current_store'] = $store->id;
         }
+
+
         if (is_numeric($_object->get('Warehouse Key'))) {
-            include_once 'class.Warehouse.php';
-            $warehouse                  = new Warehouse($_object->get('Warehouse Key'));
+            $warehouse                  = get_object('Warehouse', $_object->get('Warehouse Key'));
+            $state['current_warehouse'] = $warehouse->id;
+        } elseif ($state['object'] == 'location') {
+            $warehouse                  = get_object('Warehouse', $_parent->get('Warehouse Key'));
             $state['current_warehouse'] = $warehouse->id;
         }
 
@@ -2231,6 +2241,7 @@ function get_navigation($user, $smarty, $data, $db, $account) {
         case ('warehouses_server'):
             require_once 'navigation/warehouses.nav.php';
 
+
             switch ($data['section']) {
                 case ('dashboard'):
                     return get_dashboard_navigation(
@@ -2324,6 +2335,9 @@ function get_navigation($user, $smarty, $data, $db, $account) {
                     break;
                 case ('shipper.new'):
                     return get_shipper_new_navigation($data, $smarty, $user, $db, $account);
+                    break;
+                case ('upload'):
+                    return get_upload_navigation($data, $smarty, $user, $db, $account);
                     break;
 
 
@@ -7192,16 +7206,41 @@ function get_view_position($db, $state, $user, $smarty, $account) {
                 case 'location':
 
 
-                    $branch[] = array(
-                        'label'     => '<span class=" Warehouse_Code">'.$state['warehouse']->get('Code').'</span>',
-                        'icon'      => 'warehouse-alt',
-                        'reference' => 'warehouse/'.$state['parent_key']
-                    );
-                    $branch[] = array(
-                        'label'     => _('Locations'),
-                        'icon'      => '',
-                        'reference' => 'warehouse/'.$state['parent_key'].'/locations'
-                    );
+                    switch ($state['_parent']->get_object_name()) {
+                        case 'Warehouse Area':
+                            $branch[] = array(
+                                'label'     => '<span class="id Warehouse_Code">'.$state['warehouse']->get('Code').'</span>',
+                                'icon'      => 'warehouse-alt',
+                                'reference' => 'warehouse/'.$state['warehouse']->id
+                            );
+                            $branch[] = array(
+                                'label'     => _('Warehouse areas'),
+                                'icon'      => 'inventory',
+                                'reference' => 'warehouse/'.$state['warehouse']->id.'/areas'
+                            );
+                            $branch[] = array(
+                                'label'     => '<span class="id Warehouse_Area_Code">'.$state['_parent']->get('Code').'</span>',
+                                'icon'      => 'inventory',
+                                'reference' => 'warehouse/'.$state['warehouse']->id.'/areas/'.$state['_parent']->id
+                            );
+                            break;
+                        case 'Warehouse':
+
+                            $branch[] = array(
+                                'label'     => '<span class=" Warehouse_Code">'.$state['warehouse']->get('Code').'</span>',
+                                'icon'      => 'warehouse-alt',
+                                'reference' => 'warehouse/'.$state['parent_key']
+                            );
+                            $branch[] = array(
+                                'label'     => _('Locations'),
+                                'icon'      => '',
+                                'reference' => 'warehouse/'.$state['parent_key'].'/locations'
+                            );
+
+                            break;
+                    }
+
+
                     $branch[] = array(
                         'label'     => '<span class="id Location_Code">'.$state['_object']->get('Code').'</span>',
                         'icon'      => 'inventory',
@@ -7209,6 +7248,43 @@ function get_view_position($db, $state, $user, $smarty, $account) {
                     );
 
                     break;
+
+                case 'location.new':
+
+
+                    switch ($state['_parent']->get_object_name()) {
+                        case 'Warehouse Area':
+                            $branch[] = array(
+                                'label'     => '<span class="id Warehouse_Code">'.$state['warehouse']->get('Code').'</span>',
+                                'icon'      => 'warehouse-alt',
+                                'reference' => 'warehouse/'.$state['warehouse']->id
+                            );
+                            $branch[] = array(
+                                'label'     => _('Warehouse areas'),
+                                'icon'      => 'inventory',
+                                'reference' => 'warehouse/'.$state['warehouse']->id.'/areas'
+                            );
+                            $branch[] = array(
+                                'label'     => '<span class="id Warehouse_Area_Code">'.$state['_parent']->get('Code').'</span>',
+                                'icon'      => 'inventory',
+                                'reference' => 'warehouse/'.$state['warehouse']->id.'/areas/'.$state['_parent']->id
+                            );
+                            break;
+                        case 'Warehouse':
+
+                            break;
+                    }
+
+
+                    $branch[] = array(
+                        'label'     => _('New location'),
+                        'icon'      => '',
+                        'reference' => ''
+                    );
+
+
+                    break;
+
                 case 'categories':
                     $branch[] = array(
                         'label'     => _("Locations's categories"),
@@ -7422,6 +7498,195 @@ function get_view_position($db, $state, $user, $smarty, $account) {
                         'icon'      => '',
                         'reference' => ''
                     );
+                    break;
+
+                case 'upload':
+
+                    $branch[] = array(
+                        'label'     => '<span class=" Warehouse_Code">'.$state['warehouse']->get('Code').'</span>',
+                        'icon'      => 'warehouse-alt',
+                        'reference' => 'warehouse/'.$state['parent_key']
+                    );
+
+
+
+                    if ($state['_object']->get('Upload Type') == 'EditObjects') {
+
+
+                        switch ($state['_object']->get('Upload Object')) {
+                            case 'warehouse_area':
+
+                                $branch[] = array(
+                                    'label'     => _('Warehouse areas'),
+                                    'icon'      => '',
+                                    'reference' => 'warehouse/'.$state['parent_key'].'/areas'
+                                );
+
+
+
+                                $branch[] = array(
+                                    'label'     => _('Editing warehouse areas').' ('.$state['_object']->get('Filename').')',
+                                    'icon'      => 'upload',
+                                    'reference' => ''
+                                );
+
+                                break;
+                            case 'location':
+
+
+                                switch ($state['parent']) {
+                                    case 'warehouse':
+
+
+
+
+                                        $branch[] = array(
+                                            'label'     => _('Locations'),
+                                            'icon'      => '',
+                                            'reference' => 'warehouse/'.$state['parent_key'].'/locations'
+                                        );
+
+                                        break;
+                                    case 'warehouse_area':
+
+                                        $branch[] = array(
+                                            'label'     => _('Warehouse areas'),
+                                            'icon'      => '',
+                                            'reference' => 'warehouse/'.$state['parent_key'].'/areas'
+                                        );
+
+                                        $branch[] = array(
+                                            'label'     => '<span class="id Warehouse_Area_Code">'.$state['_parent']->get('Code').'</span>',
+                                            'icon'      => 'inventory',
+                                            'reference' => 'warehouse/'.$state['warehouse']->id.'/areas/'.$state['_parent']->id
+                                        );
+
+                                        break;
+                                }
+
+
+                                $branch[] = array(
+                                    'label'     => _('Editing locations').' ('.$state['_object']->get('Filename').')',
+                                    'icon'      => 'upload',
+                                    'reference' => ''
+                                );
+
+
+                                break;
+                        }
+
+
+                    }else{
+
+                        switch ($state['_object']->get('Upload Object')) {
+                            case 'warehouse_area':
+
+                                $branch[] = array(
+                                    'label'     => _('Warehouse areas'),
+                                    'icon'      => '',
+                                    'reference' => 'warehouse/'.$state['parent_key'].'/areas'
+                                );
+
+
+
+                                $branch[] = array(
+                                    'label'     => _('Adding warehouse areas').' ('.$state['_object']->get('Filename').')',
+                                    'icon'      => 'upload',
+                                    'reference' => ''
+                                );
+
+                                break;
+                            case 'location':
+
+
+                                switch ($state['parent']) {
+                                    case 'warehouse':
+
+
+
+
+                                        $branch[] = array(
+                                            'label'     => _('Locations'),
+                                            'icon'      => '',
+                                            'reference' => 'warehouse/'.$state['parent_key'].'/locations'
+                                        );
+
+                                        break;
+                                    case 'warehouse_area':
+
+                                        $branch[] = array(
+                                            'label'     => _('Warehouse areas'),
+                                            'icon'      => '',
+                                            'reference' => 'warehouse/'.$state['parent_key'].'/areas'
+                                        );
+
+                                        $branch[] = array(
+                                            'label'     => '<span class="id Warehouse_Area_Code">'.$state['_parent']->get('Code').'</span>',
+                                            'icon'      => 'inventory',
+                                            'reference' => 'warehouse/'.$state['warehouse']->id.'/areas/'.$state['_parent']->id
+                                        );
+
+                                        break;
+                                }
+
+
+                                $branch[] = array(
+                                    'label'     => _('Adding locations').' ('.$state['_object']->get('Filename').')',
+                                    'icon'      => 'upload',
+                                    'reference' => ''
+                                );
+
+
+                                break;
+                        }
+
+
+                    }
+
+
+                    /*
+
+                    switch ($data['parent']) {
+
+
+                    }
+
+                    switch ($state['_object']->get('Upload Object')) {
+                        case 'location':
+
+                            $branch[] = array(
+                                'label'     => _('Locations'),
+                                'icon'      => '',
+                                'reference' => 'warehouse/'.$state['parent_key'].'/locations'
+                            );
+
+                            $branch[] = array(
+                                'label'     => _('Uploading new locations').' ('.$state['_object']->get('Filename').')',
+                                'icon'      => 'upload',
+                                'reference' => ''
+                            );
+                            break;
+                        case 'warehouse_area':
+
+                            $branch[] = array(
+                                'label'     => _('Warehouse areas'),
+                                'icon'      => '',
+                                'reference' => 'warehouse/'.$state['parent_key'].'/areas'
+                            );
+
+
+                            $branch[] = array(
+                                'label'     => '<span title="'.$state['_object']->get('Filename').'">'._('Uploading new warehouse areas').'</span>',
+                                'icon'      => 'upload',
+                                'reference' => ''
+                            );
+
+
+                            break;
+
+                    }
+
+*/
                     break;
 
             }

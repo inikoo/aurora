@@ -176,8 +176,9 @@ input {
     color: #fff; }
   #top_bar #view_position {
     color: #eee; }
-    #top_bar #view_position .fa {
-      opacity: .6;
+    #top_bar #view_position .fa, #top_bar #view_position .fas {
+      opacity: .6; }
+    #top_bar #view_position .fa, #top_bar #view_position .fas, #top_bar #view_position .fal, #top_bar #view_position .far, #top_bar #view_position .fab {
       padding-right: 3px; }
     #top_bar #view_position span {
       cursor: pointer; }
@@ -340,7 +341,7 @@ input {
         #app_main #navigation #address_bar .section:hover, #app_main #navigation #address_bar .section.selected {
           background-color: #edf3f8;
           color: #000; }
-        #app_main #navigation #address_bar .section:hover, #app_main #navigation #address_bar .section.selected > .fa {
+        #app_main #navigation #address_bar .section:hover, #app_main #navigation #address_bar .section.selected > .fa, #app_main #navigation #address_bar .section .far, #app_main #navigation #address_bar .section .fas, #app_main #navigation #address_bar .section .fab, #app_main #navigation #address_bar .section .fal {
           color: #666; }
         #app_main #navigation #address_bar .section.icon_only {
           padding: 0px 10px 0px 15px;
@@ -492,7 +493,7 @@ input {
       border-left: 1px solid #ccc; }
     .tabs .tab.icon_only, .tabs .element.icon_only, .subtabs .tab.icon_only, .subtabs .element.icon_only {
       padding: 0 10px; }
-    .tabs .tab .fa, .tabs .element .fa, .subtabs .tab .fa, .subtabs .element .fa {
+    .tabs .tab .fa, .tabs .tab .far, .tabs .tab .fas, .tabs .tab .fab, .tabs .tab .fab, .tabs .tab .fal, .tabs .element .fa, .tabs .element .far, .tabs .element .fas, .tabs .element .fab, .tabs .element .fab, .tabs .element .fal, .subtabs .tab .fa, .subtabs .tab .far, .subtabs .tab .fas, .subtabs .tab .fab, .subtabs .tab .fab, .subtabs .tab .fal, .subtabs .element .fa, .subtabs .element .far, .subtabs .element .fas, .subtabs .element .fab, .subtabs .element .fab, .subtabs .element .fal {
       font-size: 75%;
       color: #888;
       position: relative;
@@ -500,7 +501,7 @@ input {
   .tabs .tab:hover, .tabs .tab.selected, .subtabs .tab:hover, .subtabs .tab.selected {
     background-color: #edf3f8;
     color: #000; }
-  .tabs .tab:hover, .tabs .tab.selected > .fa, .subtabs .tab:hover, .subtabs .tab.selected > .fa {
+  .tabs .tab:hover, .tabs .tab.selected > .fa, .tabs .tab .far, .tabs .tab .fas, .tabs .tab .fab, .tabs .tab .fal, .subtabs .tab:hover, .subtabs .tab.selected > .fa, .subtabs .tab .far, .subtabs .tab .fas, .subtabs .tab .fab, .subtabs .tab .fal {
     color: #666; }
   .tabs .element .qty, .subtabs .element .qty {
     color: #aaa; }
@@ -508,9 +509,9 @@ input {
     color: #222; }
   .tabs .element.selected > .qty, .subtabs .element.selected > .qty {
     color: #111; }
-  .tabs .element:hover, .tabs .element.selected > .fa, .subtabs .element:hover, .subtabs .element.selected > .fa {
+  .tabs .element:hover, .tabs .element.selected > .fa, .tabs .element .far, .tabs .element .fas, .tabs .element .fab, .tabs .element .fal, .subtabs .element:hover, .subtabs .element.selected > .fa, .subtabs .element .far, .subtabs .element .fas, .subtabs .element .fab, .subtabs .element .fal {
     color: #000; }
-  .tabs .element .fa, .subtabs .element .fa {
+  .tabs .element .fa, .tabs .element .far, .tabs .element .fas, .tabs .element .fab, .tabs .element .fal, .subtabs .element .fa, .subtabs .element .far, .subtabs .element .fas, .subtabs .element .fab, .subtabs .element .fal {
     font-size: 100%;
     position: relative;
     top: 1px;

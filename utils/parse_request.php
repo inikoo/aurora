@@ -3066,6 +3066,7 @@ function parse_request($_data, $db, $modules, $account = '', $user = '', $is_set
                                 $parent     = 'warehouse';
                                 $parent_key = $key;
 
+
                                 if (isset($view_path[2])) {
                                     if ($view_path[2] == 'upload') {
 
@@ -3083,12 +3084,16 @@ function parse_request($_data, $db, $modules, $account = '', $user = '', $is_set
 
                                     }
 
+                                } else {
+                                    $_data['tab'] = 'warehouse.locations';
                                 }
 
 
                             } elseif ($view_path[1] == 'areas') {
-                                $section = 'warehouse_areas';
-                                $object  = '';
+                                $section = 'locations';
+
+
+                                $object = '';
 
                                 $parent     = 'warehouse';
                                 $parent_key = $key;
@@ -3105,9 +3110,74 @@ function parse_request($_data, $db, $modules, $account = '', $user = '', $is_set
                                         $key     = $view_path[2];
                                         $section = 'warehouse_area';
 
+                                        if (isset($view_path[3])) {
+
+                                            if ($view_path[3] == 'location') {
+
+
+                                                if (isset($view_path[4])) {
+
+                                                    $parent     = 'warehouse_area';
+                                                    $parent_key = $key;
+                                                    $object     = 'location';
+                                                    if ($view_path[4] == 'new') {
+
+
+                                                        $section = 'location.new';
+                                                        $key     = 0;
+
+
+                                                    } elseif (is_numeric($view_path[4])) {
+
+                                                        $section = 'location';
+                                                        $key     = $view_path[4];
+                                                    }
+
+                                                }
+
+                                            } elseif ($view_path[3] == 'upload') {
+
+
+                                                $parent     = 'warehouse_area';
+                                                $parent_key = $key;
+
+
+                                                $section = 'upload';
+
+                                                $object = 'upload';
+                                                if (isset($view_path[4])) {
+                                                    if (is_numeric($view_path[4])) {
+
+                                                        $key = $view_path[4];
+                                                    }
+                                                }
+
+                                            }
+
+
+                                        }
+
+
+                                    } elseif ($view_path[2] == 'all') {
+                                        $object       = '';
+                                        $_data['tab'] = 'warehouse.areas';
+
+                                    } elseif ($view_path[2] == 'upload') {
+                                        $section = 'upload';
+
+                                        $object = 'upload';
+                                        if (isset($view_path[3])) {
+                                            if (is_numeric($view_path[3])) {
+
+                                                $key = $view_path[3];
+                                            }
+                                        }
+
                                     }
 
 
+                                } else {
+                                    $_data['tab'] = 'warehouse.areas';
                                 }
 
 

@@ -957,10 +957,14 @@ ALTER TABLE `Order Transaction Fact` ADD `Order Transaction Metadata` JSON NULL 
 UPDATE `Order Transaction Fact` set `Order Transaction Metadata`='{}'  where  `Order Transaction Metadata` is NULL ;
 
 
-
-
 ALTER TABLE `Warehouse Dimension` ADD `Warehouse Delivery Notes Ready to Pick Number` SMALLINT UNSIGNED NOT NULL DEFAULT '0' AFTER `Warehouse Max Percentage Part Location Unknown Locations`, ADD `Warehouse Delivery Notes Ready to Pick Weight` DECIMAL(11,1) UNSIGNED NOT NULL DEFAULT '0' AFTER `Warehouse Delivery Notes Ready to Pick Number`, ADD `Warehouse Delivery Notes Assigned Number` SMALLINT UNSIGNED NOT NULL DEFAULT '0' AFTER `Warehouse Delivery Notes Ready to Pick Weight`, ADD `Warehouse Delivery Notes Assigned Weight` DECIMAL(11,1) UNSIGNED NOT NULL DEFAULT '0' AFTER `Warehouse Delivery Notes Assigned Number`;
 ALTER TABLE `Warehouse Dimension` ADD `Warehouse Delivery Notes Picking Number` SMALLINT UNSIGNED NOT NULL DEFAULT '0' AFTER `Warehouse Delivery Notes Assigned Weight`, ADD `Warehouse Delivery Notes Picking Weight` DECIMAL(11,1) UNSIGNED NOT NULL DEFAULT '0' AFTER `Warehouse Delivery Notes Picking Number`, ADD `Warehouse Delivery Notes Packing Number` SMALLINT UNSIGNED NOT NULL DEFAULT '0' AFTER `Warehouse Delivery Notes Picking Weight`, ADD `Warehouse Delivery Notes Packing Weight` DECIMAL(11,1) UNSIGNED NOT NULL DEFAULT '0' AFTER `Warehouse Delivery Notes Packing Number`;
+
+
+ ALTER TABLE `Location Dimension` ADD `Location Type` ENUM('Unknown','Storing','Picking','Showroom','Other')  NULL  DEFAULT 'Other'  AFTER `Location File As`;
+update `Location Dimension` set `Location Type`='Unknown' where `Location Key`=1;
+ ALTER TABLE `Location Dimension` ADD INDEX (`Location Type`);
+ALTER TABLE `Location Dimension` ADD `Location Number History Records` MEDIUMINT  UNSIGNED  NULL  DEFAULT '0'  AFTER `Location Warehouse Flag Key`;
 
 
 ======= fer migration ordering in dw and costa

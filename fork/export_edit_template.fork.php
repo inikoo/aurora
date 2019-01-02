@@ -15,9 +15,6 @@ function fork_export_edit_template($job) {
     include_once 'conf/export_edit_template_fields.php';
 
 
-
-
-
     if (!$_data = get_fork_metadata($job)) {
         return;
     }
@@ -31,8 +28,8 @@ function fork_export_edit_template($job) {
 
     $output_type = $fork_data['output'];
 
-    if($output_type=='Excel'){
-        $output_type='xls';
+    if ($output_type == 'Excel') {
+        $output_type = 'xls';
     }
 
 
@@ -48,8 +45,6 @@ function fork_export_edit_template($job) {
     $field_keys   = $fork_data['fields'];
     $metadata     = $fork_data['metadata'];
     $download_key = $fork_data['download_key'];
-
-
 
 
     $creator     = 'aurora.systems';
@@ -120,19 +115,28 @@ function fork_export_edit_template($job) {
             break;
 
         case 'location':
-            include_once 'class.Location.php';
+            // include_once 'class.Location.php';
             $object_id_name = 'Id: Location Key';
             switch ($parent) {
                 case 'warehouse':
 
-                    $warehouse = get_object('Warehouse', $parent_key);
+
+                    $sql_count = sprintf(
+                        'SELECT count(*) AS num FROM `Location Dimension` WHERE  `Location Warehouse Key`=%d  and `Location Type`!="Unknown" ', $parent_key
+                    );
+                    $sql_data  = sprintf(
+                        'SELECT `Location Key` AS id FROM `Location Dimension`  left join `Warehouse Area Dimension` WA on (`Warehouse Area Key`=`Location Warehouse Area Key`)  WHERE `Location Warehouse Key`=%d and `Location Type`!="Unknown"', $parent_key
+                    );
+
+                    break;
+                case 'warehouse_area':
 
 
                     $sql_count = sprintf(
-                        'SELECT count(*) AS num FROM `Location Dimension` WHERE  `Location Warehouse Key`=%d  and `Location Key`!=%d ', $parent_key,$warehouse->get('Warehouse Unknown Location Key')
+                        'SELECT count(*) AS num FROM `Location Dimension` WHERE  `Location Warehouse Area Key`=%d  and `Location Type`!="Unknown" ', $parent_key
                     );
                     $sql_data  = sprintf(
-                        'SELECT `Location Key` AS id FROM `Location Dimension` WHERE `Location Warehouse Key`=%d and `Location Key`!=%d ', $parent_key,$warehouse->get('Warehouse Unknown Location Key')
+                        'SELECT `Location Key` AS id FROM `Location Dimension`  left join `Warehouse Area Dimension` WA on (`Warehouse Area Key`=`Location Warehouse Area Key`) WHERE `Location Warehouse Area Key`=%d and `Location Type`!="Unknown" ', $parent_key
                     );
 
                     break;
@@ -141,7 +145,20 @@ function fork_export_edit_template($job) {
                     break;
             }
             break;
+        case 'warehouse_area':
+            $object_id_name = 'Id: Warehouse Area Key';
 
+
+            $sql_count = sprintf(
+                'SELECT count(*) AS num FROM `Warehouse Area Dimension` WHERE  `Warehouse Area Warehouse Key`=%d  ', $parent_key
+            );
+            $sql_data  = sprintf(
+                'SELECT `Warehouse Area Key` AS id FROM `Warehouse Area Dimension`  WHERE  `Warehouse Area Warehouse Key`=%d  ', $parent_key
+            );
+
+            break;
+
+            break;
         case 'product':
             include_once 'class.Product.php';
             include_once 'class.Store.php';
@@ -267,7 +284,7 @@ function fork_export_edit_template($job) {
 
     $fields = array();
     foreach ($field_keys as $field_key) {
-        if($field_key!=''){
+        if ($field_key != '') {
             $fields[] = $export_edit_template_fields[$_objects][$field_key];
 
         }
@@ -289,8 +306,6 @@ function fork_export_edit_template($job) {
     $row_index = 1;
 
     $show_feedback = (float)microtime(true) + .400;
-
-
 
 
     if ($result = $db->query($sql_data)) {
@@ -321,7 +336,27 @@ function fork_export_edit_template($job) {
 
                     break;
                 case 'location':
-                    $object = new Location($row['id']);
+                    $object = get_object('Location', $row['id']);
+
+                    $data_rows = array();
+
+                    $data_rows[] = array(
+                        'cell_type' => 'auto',
+                        'value'     => $object->id
+                    );
+
+                    foreach ($fields as $field) {
+
+                        $data_rows[] = array(
+                            'cell_type' => (isset($field['cell_type']) ? $field['cell_type'] : 'auto'),
+                            'value'     => $object->get($field['name']),
+                            'field'     => $field['name']
+                        );
+                    }
+
+                    break;
+                case 'warehouse_area':
+                    $object = get_object('WarehouseArea', $row['id']);
 
                     $data_rows = array();
 
@@ -469,12 +504,8 @@ function fork_export_edit_template($job) {
                                             case 'Product Name':
                                                 $value = $object->get('Part Recommended Product Unit Name');
                                                 break;
-
-
                                             case 'Product Inner':
-
                                                 $value = $object->get('Part Units Per Package');
-
                                                 break;
                                             case 'Product Family Category Code':
                                                 $value = $family->get('Code');
@@ -483,7 +514,7 @@ function fork_export_edit_template($job) {
                                                 $value = $object->get('Part Label in Family');
                                                 break;
                                             case 'Product Units Per Case':
-                                                $value = $object->get('Part Units Per Package')* $skos_per_outer;
+                                                $value = $object->get('Part Units Per Package') * $skos_per_outer;
                                                 break;
                                             case 'Product Unit Label':
                                                 $value = $object->get('Part Unit Label');
@@ -511,9 +542,10 @@ function fork_export_edit_template($job) {
                                                 }
                                                 break;
 
-                                           // case 'Product Units Per Case':
+
+                                            // case 'Product Units Per Case':
                                             //    $value = $object->get('Part Units Per Package') * $skos_per_outer;
-                                             //   break;
+                                            //   break;
                                             default:
                                                 $value = $object->get($field['name']);
                                                 break;
@@ -690,13 +722,13 @@ function fork_export_edit_template($job) {
     $cellIterator = $sheet->getRowIterator()->current()->getCellIterator();
 
 
-   // exit('cacaca');
+    // exit('cacaca');
 
-try {
-    $cellIterator->setIterateOnlyExistingCells(true);
-}catch(PHPExcel_Exception $e) {
+    try {
+        $cellIterator->setIterateOnlyExistingCells(true);
+    } catch (PHPExcel_Exception $e) {
 
-}
+    }
 
     /** @var PHPExcel_Cell $cell */
     foreach ($cellIterator as $cell) {
@@ -716,8 +748,6 @@ try {
 
 
     $download_path = 'tmp/';
-
-
 
 
     switch ($output_type) {
@@ -776,7 +806,6 @@ try {
     );
 
     $db->exec($sql);
-
 
 
     $socket->send(

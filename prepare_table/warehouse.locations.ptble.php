@@ -31,50 +31,73 @@ switch ($parameters['parent']) {
         exit ('parent not found '.$parameters['parent']);
 }
 
-$where.=' and `Location Key`!=1';
+$where.=' and `Location Type`!="Unknown"';
 
 
-switch ($parameters['elements_type']) {
-    case 'flags':
-
-        $_elements      = '';
-        $count_elements = 0;
-        foreach (
-            $parameters['elements'][$parameters['elements_type']]['items'] as $_key => $_value
-        ) {
-            if ($_value['selected']) {
-                $count_elements++;
-                if ($_key == 'Blue') {
-                    $_elements .= ",'Blue'";
-                } elseif ($_key == 'Green') {
-                    $_elements .= ",'Green'";
-                } elseif ($_key == 'Orange') {
-                    $_elements .= ",'Orange'";
-                } elseif ($_key == 'Pink') {
-                    $_elements .= ",'Pink'";
-                } elseif ($_key == 'Purple') {
-                    $_elements .= ",'Purple'";
-                } elseif ($_key == 'Red') {
-                    $_elements .= ",'Red'";
-                } elseif ($_key == 'Yellow') {
-                    $_elements .= ",'Yellow'";
+if(!empty($parameters['elements_type'])){
+    switch ($parameters['elements_type']) {
+        case 'flags':
+            $with_none=false;
+            $_elements      = '';
+            $count_elements = 0;
+            foreach (
+                $parameters['elements'][$parameters['elements_type']]['items'] as $_key => $_value
+            ) {
+                if ($_value['selected']) {
+                    $count_elements++;
+                    if ($_key == 'Blue') {
+                        $_elements .= ",'Blue'";
+                    } elseif ($_key == 'Green') {
+                        $_elements .= ",'Green'";
+                    } elseif ($_key == 'Orange') {
+                        $_elements .= ",'Orange'";
+                    } elseif ($_key == 'Pink') {
+                        $_elements .= ",'Pink'";
+                    } elseif ($_key == 'Purple') {
+                        $_elements .= ",'Purple'";
+                    } elseif ($_key == 'Red') {
+                        $_elements .= ",'Red'";
+                    } elseif ($_key == 'Yellow') {
+                        $_elements .= ",'Yellow'";
+                    }elseif ($_key == 'None') {
+                        $with_none=true;
+                    }
                 }
             }
-        }
 
-        $_elements = preg_replace('/^\,/', '', $_elements);
-        if ($_elements == '') {
-            $where .= ' and false';
-        } elseif ($count_elements < 7) {
-            $where .= ' and `Warehouse Flag Color` in ('.$_elements.')';
+            $_elements = preg_replace('/^\,/', '', $_elements);
 
 
-        }
+            if ($_elements == '' and !$with_none) {
+                $where .= ' and false';
+            } elseif ($count_elements < 8) {
 
-        break;
+                if($_elements!=''){
+                    {$where .= ' and ( `Warehouse Flag Color` in ('.$_elements.')';}
 
 
+                }
+
+
+                if($with_none){
+                    $where .= ' or `Warehouse Flag Color` is null ) ';
+
+                }else{
+                    $where .= ') ';
+                }
+
+
+
+            }
+
+
+            break;
+
+
+    }
 }
+
+
 
 
 $wheref = '';
@@ -118,7 +141,6 @@ $fields
     = "`Location Key`,`Warehouse Flag Label`,`Warehouse Flag Color`,`Location Warehouse Key`,`Location Warehouse Area Key`,`Location Code`,`Location Distinct Parts`,`Location Max Volume`,`Location Max Weight`, `Location Mainly Used For`,`Warehouse Area Code`,`Warehouse Flag Key`,`Warehouse Code`,`Location Stock Value`";
 
 $sql_totals = "select count(*) as num from $table $where ";
-
 
 
 ?>

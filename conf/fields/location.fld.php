@@ -13,26 +13,28 @@
 
 if (isset($options['new']) and $options['new']) {
     $new = true;
+
+
 } else {
     $new = false;
 }
 
 
-$sql=sprintf('select `Warehouse Flag Key`,`Warehouse Flag Color`,`Warehouse Flag Label` FROM `Warehouse Flag Dimension` where `Warehouse Flag Warehouse Key`=%d ',
-    ($new ? $options['warehouse_key']:$object->get('Location Warehouse Key'))
-    );
+$sql = sprintf(
+    'select `Warehouse Flag Key`,`Warehouse Flag Color`,`Warehouse Flag Label` FROM `Warehouse Flag Dimension` where `Warehouse Flag Warehouse Key`=%d ',
+    ($new ? $options['warehouse_key'] : $object->get('Location Warehouse Key'))
+);
 
-$flags=array();
-if ($result=$db->query($sql)) {
-		foreach ($result as $row) {
-            $flags[$row['Warehouse Flag Key']]=sprintf('<i class="fa fa-flag %s padding_right_10 "  aria-hidden="true"></i> %s', strtolower($row['Warehouse Flag Color']),$row['Warehouse Flag Label']);
-		}
-}else {
-		print_r($error_info=$this->db->errorInfo());
-		print "$sql\n";
-		exit;
+$flags = array();
+if ($result = $db->query($sql)) {
+    foreach ($result as $row) {
+        $flags[$row['Warehouse Flag Key']] = sprintf('<i class="fa fa-flag %s padding_right_10 "  aria-hidden="true"></i> %s', strtolower($row['Warehouse Flag Color']), $row['Warehouse Flag Label']);
+    }
+} else {
+    print_r($error_info = $this->db->errorInfo());
+    print "$sql\n";
+    exit;
 }
-
 
 
 $used_for_options = array(
@@ -65,8 +67,8 @@ $object_fields = array(
                 'type'              => 'value'
             ),
             array(
-                'edit' => ($edit ? 'option' : ''),
-            'render'=>false,
+                'edit'            => ($edit ? 'option' : ''),
+                'render'          => false,
                 'id'              => 'Location_Mainly_Used_For',
                 'value'           => $object->get('Location Mainly Used For'),
                 'formatted_value' => $object->get('Mainly Used For'),
@@ -101,27 +103,27 @@ $object_fields = array(
             array(
                 'edit' => ($edit ? 'numeric_unsigned' : ''),
 
-                'id'                => 'Location_Max_Weight',
-                'value'             => $object->get('Location Max Weight'),
-                'formatted_value'   => $object->get('Max Weight'),
-                'label'             => ucfirst($object->get_field_label('Location Max Weight')),
-                'invalid_msg'       => get_invalid_message('numeric'),
-                'required'          => false,
-               'placeholder'=>'Kg',
-                'type'              => 'value'
+                'id'              => 'Location_Max_Weight',
+                'value'           => $object->get('Location Max Weight'),
+                'formatted_value' => $object->get('Max Weight'),
+                'label'           => ucfirst($object->get_field_label('Location Max Weight')),
+                'invalid_msg'     => get_invalid_message('numeric'),
+                'required'        => false,
+                'placeholder'     => 'Kg',
+                'type'            => 'value'
             ),
 
             array(
                 'edit' => ($edit ? 'numeric_unsigned' : ''),
 
-                'id'                => 'Location_Max_Volume',
-                'value'             => $object->get('Location Max Volume'),
-                'formatted_value'   => $object->get('Max Volume'),
-                'label'             => ucfirst($object->get_field_label('Location Max Volume')),
-                'invalid_msg'       => get_invalid_message('numeric'),
-                'required'          => false,
-                'placeholder'=>_('Cubic meters'),
-                'type'              => 'value'
+                'id'              => 'Location_Max_Volume',
+                'value'           => $object->get('Location Max Volume'),
+                'formatted_value' => $object->get('Max Volume'),
+                'label'           => ucfirst($object->get_field_label('Location Max Volume')),
+                'invalid_msg'     => get_invalid_message('numeric'),
+                'required'        => false,
+                'placeholder'     => _('Cubic meters'),
+                'type'            => 'value'
             ),
 
 
@@ -129,8 +131,31 @@ $object_fields = array(
     ),
 
 
-
 );
+
+    $object_fields[] = array(
+        'label'      => _('Warehouse area'),
+        'show_title' => true,
+        'fields'     => array(
+
+            array(
+                'id'                       => 'Location_Warehouse_Area_Key',
+                'edit'                     => 'dropdown_select',
+                'scope'                    => 'warehouse_areas',
+                'parent'                   => 'warehouse',
+                'parent_key'               => ($new ? $options['warehouse_key'] : $object->get('Location Warehouse Key')),
+                'value'                    => htmlspecialchars($object->get('Location Warehouse Area Key')),
+                'formatted_value'          => $object->get('Warehouse Area Key'),
+                'stripped_formatted_value' => '',
+                'label'                    => _('Area'),
+                'required'                 => true,
+                'type'                     => 'value'
+            ),
+
+
+        )
+    );
+
 
 
 if (!$new) {
@@ -144,8 +169,8 @@ if (!$new) {
                 'id'        => 'delete_location',
                 'class'     => 'operation',
                 'value'     => '',
-                'label'     => '<i class="fa fa-fw fa-lock button" onClick="toggle_unlock_delete_object(this)" style="margin-right:20px"></i> <span data-data=\'{ "object": "'.$object->get_object_name(
-                    ).'", "key":"'.$object->id.'"}\' onClick="delete_object(this)" class="delete_object disabled">'._("Delete location").' <i class="far fa-trash-alt new_button link"></i></span>',
+                'label'     => '<i class="fa fa-fw fa-lock button" onClick="toggle_unlock_delete_object(this)" style="margin-right:20px"></i> <span data-data=\'{ "object": "'.$object->get_object_name().'", "key":"'.$object->id
+                    .'"}\' onClick="delete_object(this)" class="delete_object disabled">'._("Delete location").' <i class="far fa-trash-alt new_button link"></i></span>',
                 'reference' => '',
                 'type'      => 'operation'
             ),

@@ -98,7 +98,9 @@ switch ($tipo) {
             case 'location':
                 find_location($db, $account, $memcache_ip, $data, $user);
                 break;
-
+            case 'warehouse_area':
+                find_warehouse_area($db, $account, $memcache_ip, $data, $user);
+                break;
             default:
                 $response = array(
                     'state' => 405,
@@ -182,6 +184,9 @@ switch ($tipo) {
                 break;
             case 'locations':
                 find_locations($db, $account, $memcache_ip, $data, $user);
+                break;
+            case 'warehouse_areas':
+                find_warehouse_areas($db, $account, $memcache_ip, $data, $user);
                 break;
             case 'parts':
                 find_parts($db, $account, $memcache_ip, $data);
@@ -660,7 +665,7 @@ function find_locations($db, $account, $memcache_ip, $data, $user) {
 
 
     $where_warehouses = sprintf(
-        ' and `Location Warehouse Key` in (%s) and `Location Key`!=1 ', join(',', $user->warehouses)
+        ' and `Location Warehouse Key` in (%s) and `Location Type`!="Unknown"', join(',', $user->warehouses)
     );
 
 
@@ -734,6 +739,161 @@ function find_locations($db, $account, $memcache_ip, $data, $user) {
 
             'value'           => $location_key,
             'formatted_value' => $candidates_data[$location_key]['Location Code']
+
+
+        );
+
+    }
+
+
+    $results_data = array(
+        'n' => count($results),
+        'd' => $results
+    );
+
+
+    $response = array(
+        'state'          => 200,
+        'number_results' => $results_data['n'],
+        'results'        => $results_data['d'],
+        'q'              => $q
+    );
+
+    echo json_encode($response);
+
+}
+
+
+function find_warehouse_areas($db, $account, $memcache_ip, $data, $user) {
+
+
+    $cache       = false;
+    $max_results = 10;
+    //    $user        = $data['user'];
+    $q = trim($data['query']);
+
+
+    if ($q == '') {
+        $response = array(
+            'state'   => 200,
+            'results' => 0,
+            'data'    => ''
+        );
+        echo json_encode($response);
+
+        return;
+    }
+
+
+
+    $where_warehouses = sprintf(
+        ' and `Warehouse Area Warehouse Key`=%d',$data['parent_key']
+    );
+
+
+    $candidates = array();
+
+    $candidates_data = array();
+
+
+    $sql = sprintf(
+        "select `Warehouse Area Key`,`Warehouse Area Code`,`Warehouse Area Name`,`Warehouse Key`,`Warehouse Code` from `Warehouse Area Dimension` left join `Warehouse Dimension` on (`Warehouse Key`=`Warehouse Area Warehouse Key`) where true $where_warehouses and `Warehouse Area Code` like '%s%%' order by `Warehouse Area Code` limit $max_results ",
+        $q
+    );
+
+
+    if ($result = $db->query($sql)) {
+        foreach ($result as $row) {
+
+            if ($row['Warehouse Area Code'] == $q) {
+                $candidates[$row['Warehouse Area Key']] = 1000;
+            } else {
+
+                $len_name                         = strlen(
+                    $row['Warehouse Area Code']
+                );
+                $len_q                            = strlen($q);
+                $factor                           = $len_q / $len_name;
+                $candidates[$row['Warehouse Area Key']] = 500 * $factor;
+            }
+
+            $candidates_data[$row['Warehouse Area Key']] = array(
+                'Warehouse Area Code'  => $row['Warehouse Area Code'],
+                'Warehouse Code' => $row['Warehouse Code'],
+                'Warehouse Area Name' => $row['Warehouse Area Name']
+            );
+
+        }
+    } else {
+        print_r($error_info = $db->errorInfo());
+        exit;
+    }
+
+
+    $sql = sprintf(
+        "select `Warehouse Area Key`,`Warehouse Area Code`,`Warehouse Area Name`,`Warehouse Key`,`Warehouse Code` from `Warehouse Area Dimension` left join `Warehouse Dimension` on (`Warehouse Key`=`Warehouse Area Warehouse Key`) where true $where_warehouses and  `Warehouse Area Name` REGEXP \"[[:<:]]%s\"    order by `Warehouse Area Code` limit $max_results ",
+        $q
+    );
+
+
+    if ($result = $db->query($sql)) {
+        foreach ($result as $row) {
+
+            if ($row['Warehouse Area Name'] == $q) {
+                $candidates[$row['Warehouse Area Key']] = 700;
+            } else {
+
+                $len_name                         = strlen($row['Warehouse Area Name']);
+                $len_q                            = strlen($q);
+                $factor                           = $len_q / $len_name;
+                $candidates[$row['Warehouse Area Key']] = 200 * $factor;
+            }
+
+            $candidates_data[$row['Warehouse Area Key']] = array(
+                'Warehouse Area Code'  => $row['Warehouse Area Code'],
+                'Warehouse Code' => $row['Warehouse Code'],
+                'Warehouse Area Name' => $row['Warehouse Area Name']
+            );
+
+        }
+    } else {
+        print_r($error_info = $db->errorInfo());
+        exit;
+    }
+
+
+    arsort($candidates);
+
+
+    $total_candidates = count($candidates);
+
+    if ($total_candidates == 0) {
+        $response = array(
+            'state'   => 200,
+            'results' => 0,
+            'data'    => ''
+        );
+        echo json_encode($response);
+
+        return;
+    }
+
+
+    $results = array();
+    foreach ($candidates as $location_key => $candidate) {
+
+
+        $results[$location_key] = array(
+            'code'        => highlightkeyword($candidates_data[$location_key]['Warehouse Area Code'] , $q),
+            'description' => highlightkeyword(
+                sprintf(
+                    '%s', $candidates_data[$location_key]['Warehouse Area Name']
+                ), $q
+            ),
+
+
+            'value'           => $location_key,
+            'formatted_value' => $candidates_data[$location_key]['Warehouse Area Code']
 
 
         );

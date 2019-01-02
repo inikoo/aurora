@@ -16,6 +16,7 @@ if (!$user->can_view('locations') or !in_array(
     $html = '';
 } else {
 
+    $warehouse = $state['warehouse'];
 
     $tab     = 'warehouse.areas';
     $ar_file = 'ar_warehouse_tables.php';
@@ -40,16 +41,74 @@ if (!$user->can_view('locations') or !in_array(
     $table_buttons=array();
 
 
+    /*
     $table_buttons[] = array(
         'icon'      => 'plus',
         'title'     => _('New warehouse area'),
        'reference' => "warehouse/".  $state['parent_key']."/areas/new"
     );
+    */
 
 
+
+    include_once 'conf/export_edit_template_fields.php';
+
+
+    $edit_table_dialog = array(
+        'labels'=>array(
+            'add_items'=>_("Add area(s)").":",
+            'edit_items'=>_("Edit area(s)").":"
+        ),
+        'new_item'         => array(
+            'icon'      => 'plus',
+            'reference' => "warehouse/".  $state['parent_key']."/areas/new"
+        ),
+        'upload_items'     => array(
+            'icon'         => 'plus',
+            'label'        => _("Upload warehouse areas"),
+            'template_url' => '/upload_arrangement.php?object=warehouse_area&parent=warehouse&parent_key='.$warehouse->id,
+
+            'tipo'       => 'edit_objects',
+            'parent'      => 'warehouse',
+            'parent_key' => $warehouse->id,
+
+            'object' => 'warehouse_area',
+        ),
+        'inline_edit'      => array(),
+        'spreadsheet_edit' => array(
+            'tipo'        => 'edit_objects',
+
+            'parent'      => 'warehouse',
+            'parent_key'  => $warehouse->id,
+            'object'      => 'warehouse_area',
+            'parent_code' => preg_replace("/[^A-Za-z0-9 ]/", '', $warehouse->get('Code')),
+        ),
+
+    );
+    $smarty->assign('edit_table_dialog', $edit_table_dialog);
+
+    $objects = 'warehouse_area';
+
+
+    $edit_fields = $export_edit_template_fields[$objects];
+
+
+    $smarty->assign('edit_fields', $edit_fields);
+
+
+    $table_buttons = array();
+
+    $table_buttons[] = array(
+        'icon'  => 'edit_add',
+        'title' => _("Edit warehouse areas"),
+        'id'    => 'edit_dialog'
+    );
 
 
     $smarty->assign('table_buttons', $table_buttons);
+
+    $smarty->assign('title', _('Warehouse areas'));
+    $smarty->assign('view_position','<span onclick=\"change_view(\'warehouse/'.$warehouse->id.'\')\"><i class=\"fal  fa-warehouse-alt\"></i> <span class=\"id Warehouse_Code\">'.$warehouse->get('Code').'</span></span><i class=\"fa fa-angle-double-right separator\"></i>  '._('Warehouse areas').' </span>');
 
 
     include 'utils/get_table_html.php';

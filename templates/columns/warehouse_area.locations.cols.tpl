@@ -37,44 +37,9 @@ editable: false,
 sortType: "toggle",
 
 cell: Backgrid.HtmlCell.extend({
-orderSeparator: '',
-events: {
-"click": function() {
-change_view('locations/{$data['parent_key']}/' + this.model.get("id"))
-}
-},
-className: "link"
 
 })
 
-},{
-name: "area",
-label: "{t}Area{/t}",
-renderable:false,
-editable: false,
-sortType: "toggle",
-
-cell: Backgrid.HtmlCell.extend({
-orderSeparator: '',
-events: {
-"click": function() {
-change_view('warehouse/{$data['parent_key']}/area/' + this.model.get("warehouse_area_key"))
-}
-},
-className: "link"
-
-})
-
-}, {
-name: "used_for",
-renderable:false,
-label: "{t}Used for{/t}",
-sortType: "toggle",
-{if $sort_key=='location'}direction: '{if $sort_order==1}descending{else}ascending{/if}',{/if}
-
-editable: false,
-
-cell: "string"
 }, {
 name: "max_weight",
 label: "{t}Max weight{/t}",

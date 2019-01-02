@@ -730,6 +730,43 @@ function upload_records($_data, $db, $user, $account) {
                     $state  = '<span >'.$data['Upload Record Message Metadata'].'</span>';
 
                     switch ($data['Upload Record Message Code']) {
+
+                        case 'missing_required_fields':
+
+
+                            $fields  = json_decode($data['Upload Record Message Metadata']);
+
+                            $num_fields=count($fields);
+
+                            if($num_fields==1){
+                                $state = _('Missing field').': ';
+                            }else{
+                                $state = _('Missing required fields').': ';
+                            }
+
+
+                            $_fields = '';
+                            foreach ($fields as $field) {
+                                $_fields .= '<span class="strong">'._($field).'</span>, ';
+                            }
+                            $state .= ' '.preg_replace('/\, $/', '', $_fields);
+
+                            break;
+
+
+                        case 'duplicated_field':
+
+                            switch ($data['Upload Record Message Metadata']) {
+                                case '["Warehouse Area Code"]':
+                                    $state =  ' <span class="error"><i class="fa fa-exclamation-circle fa-fw" aria-hidden="true"></i> '._("Duplicate code").'</span>';
+                                    break;
+                                default:
+                                    $state =  ' <span class="error"><i class="fa fa-exclamation-circle fa-fw" aria-hidden="true"></i> '._("Duplicate field").'</span>';
+
+                            }
+
+
+                            break;
                         case 'no_change':
                             $state .= ' <span class="very_discreet ">'._('Record not changed').'</span>';
                             break;

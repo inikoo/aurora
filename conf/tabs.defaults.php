@@ -623,7 +623,7 @@ $tab_defaults = array(
         'f_field'     => 'code',
 
     ),
-    'return.new.items' => array(
+    'return.new.items'      => array(
         'view'        => 'overview',
         'sort_key'    => 'id',
         'sort_order'  => 1,
@@ -650,7 +650,7 @@ $tab_defaults = array(
         'f_field'     => 'code',
 
     ),
-    'return.items'     => array(
+    'return.items'          => array(
         'view'        => 'overview',
         'sort_key'    => 'id',
         'sort_order'  => 1,
@@ -718,7 +718,7 @@ $tab_defaults = array(
 
     ),
 
-    'invoice.items'                 => array(
+    'invoice.items'          => array(
         'view'        => 'overview',
         'sort_key'    => 'id',
         'sort_order'  => 1,
@@ -727,7 +727,7 @@ $tab_defaults = array(
         'f_field'     => 'code',
 
     ),
-    'invoice.orders'                => array(
+    'invoice.orders'         => array(
         'view'          => 'overview',
         'sort_key'      => 'id',
         'sort_order'    => 1,
@@ -738,7 +738,7 @@ $tab_defaults = array(
 
 
     ),
-    'invoice.delivery_notes'        => array(
+    'invoice.delivery_notes' => array(
         'view'          => 'overview',
         'sort_key'      => 'id',
         'sort_order'    => 1,
@@ -749,7 +749,7 @@ $tab_defaults = array(
 
 
     ),
-    'invoice.history'               => array(
+    'invoice.history'        => array(
         'view'        => 'overview',
         'sort_key'    => 'date',
         'sort_order'  => 1,
@@ -757,7 +757,7 @@ $tab_defaults = array(
         'rpp_options' => $default_rrp_options,
         'f_field'     => 'note'
     ),
-    'invoices'                      => array(
+    'invoices'               => array(
         'view'          => 'overview',
         'sort_key'      => 'id',
         'sort_order'    => 1,
@@ -773,14 +773,13 @@ $tab_defaults = array(
 
     ),
 
-    'invoices_per_store'      => array(
-        'view'          => 'overview',
-        'sort_key'      => 'code',
-        'sort_order'    => 1,
-        'rpp'           => 100,
-        'rpp_options'   => $default_rrp_options,
-        'f_field'       => 'code',
-
+    'invoices_per_store' => array(
+        'view'        => 'overview',
+        'sort_key'    => 'code',
+        'sort_order'  => 1,
+        'rpp'         => 100,
+        'rpp_options' => $default_rrp_options,
+        'f_field'     => 'code',
 
 
     ),
@@ -802,16 +801,16 @@ $tab_defaults = array(
     ),
 
     'sales_representative.invoices_group_by_customer' => array(
-        'view'          => 'overview',
-        'sort_key'      => 'id',
-        'sort_order'    => 1,
-        'rpp'           => 100,
-        'rpp_options'   => $default_rrp_options,
-        'f_field'       => 'customer',
-        'from'          => '',
-        'to'            => '',
-        'period'        => 'all',
-     //   'export_fields' => $export_fields['invoices_group_by_customer']
+        'view'        => 'overview',
+        'sort_key'    => 'id',
+        'sort_order'  => 1,
+        'rpp'         => 100,
+        'rpp_options' => $default_rrp_options,
+        'f_field'     => 'customer',
+        'from'        => '',
+        'to'          => '',
+        'period'      => 'all',
+        //   'export_fields' => $export_fields['invoices_group_by_customer']
 
     ),
 
@@ -914,7 +913,7 @@ $tab_defaults = array(
 
     ),
 
-    'delivery_notes.ready_to_pick'     => array(
+    'delivery_notes.ready_to_pick' => array(
         'view'        => 'overview',
         'sort_key'    => 'id',
         'sort_order'  => 1,
@@ -925,7 +924,7 @@ $tab_defaults = array(
 
     ),
 
-    'orders_index'               => array(
+    'orders_index' => array(
         'view'        => 'overview',
         'sort_key'    => 'code',
         'sort_order'  => -1,
@@ -965,7 +964,7 @@ $tab_defaults = array(
     ),
 
 
-    'stores'               => array(
+    'stores'                       => array(
         'view'        => 'overview',
         'sort_key'    => 'id',
         'sort_order'  => 1,
@@ -975,7 +974,7 @@ $tab_defaults = array(
         'f_period'    => 'ytd',
 
     ),
-    'stores.sales.history' => array(
+    'stores.sales.history'         => array(
         'view'        => 'overview',
         'sort_key'    => 'id',
         'sort_order'  => 1,
@@ -985,7 +984,7 @@ $tab_defaults = array(
         'f_field'     => '',
 
     ),
-    'store.charges'        => array(
+    'store.charges'                => array(
         'view'        => 'overview',
         'sort_key'    => 'id',
         'sort_order'  => 1,
@@ -1389,13 +1388,13 @@ $tab_defaults = array(
 
     ),
     'webpage_type.online_webpages'  => array(
-        'view'          => 'overview',
-        'sort_key'      => 'id',
-        'sort_order'    => 1,
-        'rpp'           => 100,
-        'rpp_options'   => $default_rrp_options,
-        'f_field'       => 'code',
-        'f_period'      => 'ytd',
+        'view'        => 'overview',
+        'sort_key'    => 'id',
+        'sort_order'  => 1,
+        'rpp'         => 100,
+        'rpp_options' => $default_rrp_options,
+        'f_field'     => 'code',
+        'f_period'    => 'ytd',
         //'elements_type' => array_keys($elements_options['online_webpages_in_webpage_type'])[0],
         //'elements'      => $elements_options['online_webpages'],
     ),
@@ -1891,7 +1890,7 @@ $tab_defaults = array(
         'f_field'     => 'code',
 
     ),
-    'return.items_done' => array(
+    'return.items_done'            => array(
         'view'        => 'overview',
         'sort_key'    => 'id',
         'sort_order'  => 1,
@@ -1910,7 +1909,7 @@ $tab_defaults = array(
         'f_field'     => 'code',
 
     ),
-    'return.check_items' => array(
+    'return.check_items'            => array(
         'view'        => 'overview',
         'sort_key'    => 'id',
         'sort_order'  => 1,
@@ -2118,7 +2117,7 @@ $tab_defaults = array(
     ),
 
 
-    'agent.users'                  => array(
+    'agent.users'       => array(
         'view'        => 'overview',
         'sort_key'    => 'id',
         'sort_order'  => 1,
@@ -2126,7 +2125,7 @@ $tab_defaults = array(
         'rpp_options' => $default_rrp_options,
         'f_field'     => 'handle'
     ),
-    'warehouses'                   => array(
+    'warehouses'        => array(
         'view'        => 'overview',
         'sort_key'    => 'id',
         'sort_order'  => 1,
@@ -2134,7 +2133,7 @@ $tab_defaults = array(
         'rpp_options' => $default_rrp_options,
         'f_field'     => 'code',
     ),
-    'warehouse.areas'                   => array(
+    'warehouse.areas'   => array(
         'view'        => 'overview',
         'sort_key'    => 'id',
         'sort_order'  => 1,
@@ -2142,7 +2141,7 @@ $tab_defaults = array(
         'rpp_options' => $default_rrp_options,
         'f_field'     => 'code',
     ),
-    'warehouse.returns'    => array(
+    'warehouse.returns' => array(
         'view'          => 'overview',
         'sort_key'      => 'id',
         'sort_order'    => 1,
@@ -2164,7 +2163,7 @@ $tab_defaults = array(
         'rpp'         => 100,
         'rpp_options' => $default_rrp_options,
         'f_field'     => 'code',
-       
+
     ),
 
     'locations.categories' => array(
@@ -2296,8 +2295,8 @@ $tab_defaults = array(
         'rpp'           => 100,
         'rpp_options'   => $default_rrp_options,
         'f_field'       => 'code',
-        'elements_type' => array_keys($elements_options['locations'])[0],
-        'elements'      => $elements_options['locations'],
+        //  'elements_type' => array_keys($elements_options['locations'])[0],
+        //  'elements'      => $elements_options['locations'],
         'export_fields' => $export_fields['locations']
     ),
 
@@ -2328,18 +2327,18 @@ $tab_defaults = array(
         'f_field'     => 'reference',
 
     ),
-    'warehouse_area.locations'         => array(
+    'warehouse_area.locations'                  => array(
         'view'          => 'overview',
         'sort_key'      => 'code',
         'sort_order'    => 1,
         'rpp'           => 100,
         'rpp_options'   => $default_rrp_options,
         'f_field'       => 'code',
-        'elements_type' => array_keys($elements_options['locations'])[0],
-        'elements'      => $elements_options['locations'],
+        //  'elements_type' => array_keys($elements_options['locations'])[0],
+        //  'elements'      => $elements_options['locations'],
         'export_fields' => $export_fields['locations']
     ),
-    'warehouse_area.parts'                           => array(
+    'warehouse_area.parts'                      => array(
         'view'          => 'overview',
         'sort_key'      => 'reference',
         'sort_order'    => 1,
@@ -2349,7 +2348,7 @@ $tab_defaults = array(
         'export_fields' => $export_fields['part_locations']
 
     ),
-    'warehouse_area.history'           => array(
+    'warehouse_area.history'                    => array(
         'view'        => 'overview',
         'sort_key'    => 'date',
         'sort_order'  => 1,
@@ -2357,7 +2356,7 @@ $tab_defaults = array(
         'rpp_options' => $default_rrp_options,
         'f_field'     => 'note'
     ),
-    'parts_with_unknown_location.wget' => array(
+    'parts_with_unknown_location.wget'          => array(
         'view'        => 'overview',
         'sort_key'    => 'reference',
         'sort_order'  => 1,
@@ -3123,12 +3122,12 @@ $tab_defaults = array(
 
     ),
     'account.payments'          => array(
-        'view'        => 'overview',
-        'sort_key'    => 'date',
-        'sort_order'  => -1,
-        'rpp'         => 100,
-        'rpp_options' => $default_rrp_options,
-        'f_field'     => 'reference',
+        'view'          => 'overview',
+        'sort_key'      => 'date',
+        'sort_order'    => -1,
+        'rpp'           => 100,
+        'rpp_options'   => $default_rrp_options,
+        'f_field'       => 'reference',
         'elements_type' => each($elements_options['payments']) ['key'],
         'elements'      => $elements_options['payments'],
 
@@ -3155,7 +3154,7 @@ $tab_defaults = array(
 
 
     ),
-    'store.credits' => array(
+    'store.credits'   => array(
         'view'        => 'overview',
         'sort_key'    => 'customer',
         'sort_order'  => 1,
@@ -3220,22 +3219,22 @@ $tab_defaults = array(
         'f_field'     => 'note'
     ),
     'payment_account.payments' => array(
-        'view'        => 'overview',
-        'sort_key'    => 'date',
-        'sort_order'  => -1,
-        'rpp'         => 100,
-        'rpp_options' => $default_rrp_options,
-        'f_field'     => 'reference',
+        'view'          => 'overview',
+        'sort_key'      => 'date',
+        'sort_order'    => -1,
+        'rpp'           => 100,
+        'rpp_options'   => $default_rrp_options,
+        'f_field'       => 'reference',
         'elements_type' => each($elements_options['payments']) ['key'],
         'elements'      => $elements_options['payments'],
     ),
-    'store.payments' => array(
-        'view'        => 'overview',
-        'sort_key'    => 'date',
-        'sort_order'  => -1,
-        'rpp'         => 100,
-        'rpp_options' => $default_rrp_options,
-        'f_field'     => 'reference',
+    'store.payments'           => array(
+        'view'          => 'overview',
+        'sort_key'      => 'date',
+        'sort_order'    => -1,
+        'rpp'           => 100,
+        'rpp_options'   => $default_rrp_options,
+        'f_field'       => 'reference',
         'elements_type' => each($elements_options['payments']) ['key'],
         'elements'      => $elements_options['payments'],
     ),
@@ -3257,7 +3256,7 @@ $tab_defaults = array(
     ),
 
 
-    'payment.history'     => array(
+    'payment.history'          => array(
         'view'        => 'overview',
         'sort_key'    => 'date',
         'sort_order'  => 1,
@@ -3265,7 +3264,7 @@ $tab_defaults = array(
         'rpp_options' => $default_rrp_options,
         'f_field'     => 'note'
     ),
-    'account.payment_accounts'    => array(
+    'account.payment_accounts' => array(
         'view'        => 'overview',
         'sort_key'    => 'code',
         'sort_order'  => 1,
@@ -3273,7 +3272,7 @@ $tab_defaults = array(
         'rpp_options' => $default_rrp_options,
         'f_field'     => 'code'
     ),
-    'store.payment_accounts'    => array(
+    'store.payment_accounts'   => array(
         'view'        => 'overview',
         'sort_key'    => 'code',
         'sort_order'  => 1,
@@ -3281,7 +3280,7 @@ $tab_defaults = array(
         'rpp_options' => $default_rrp_options,
         'f_field'     => 'code'
     ),
-    'account.users.staff' => array(
+    'account.users.staff'      => array(
         'view'        => 'privileges',
         'sort_key'    => 'id',
         'sort_order'  => 1,
@@ -3476,7 +3475,7 @@ $tab_defaults = array(
 
     ),
 
-    'sales'                    => array(
+    'sales' => array(
         'view'        => 'overview',
         'sort_key'    => 'store',
         'sort_order'  => 1,
@@ -3490,7 +3489,7 @@ $tab_defaults = array(
 
     ),
 
-     'sales_invoice_category'                    => array(
+    'sales_invoice_category' => array(
         'view'        => 'overview',
         'sort_key'    => 'category',
         'sort_order'  => 1,
@@ -3503,7 +3502,6 @@ $tab_defaults = array(
         'currency'    => 'account'
 
     ),
-
 
 
     'report_orders'            => array(
@@ -3925,7 +3923,7 @@ $tab_defaults = array(
         'rpp'         => 100,
         'rpp_options' => $default_rrp_options,
         'f_field'     => 'reference',
-        
+
     ),
     'supplier.todo_parts.wget'                 => array(
         'view'        => 'overview',
@@ -3934,7 +3932,7 @@ $tab_defaults = array(
         'rpp'         => 100,
         'rpp_options' => $default_rrp_options,
         'f_field'     => 'reference',
-       
+
     ),
     'supplier.todo_paid_parts.wget'            => array(
         'view'        => 'overview',
@@ -3943,7 +3941,7 @@ $tab_defaults = array(
         'rpp'         => 1000,
         'rpp_options' => $default_rrp_options,
         'f_field'     => 'reference',
-    
+
     ),
 
     'category.webpage.logbook' => array(
@@ -4235,13 +4233,13 @@ $tab_defaults = array(
 
 
     ),
-    'order.deals'            => array(
-        'view'          => 'overview',
-        'sort_key'      => 'name',
-        'sort_order'    => 1,
-        'rpp'           => 100,
-        'rpp_options'   => $default_rrp_options,
-        'f_field'       => 'name',
+    'order.deals'                     => array(
+        'view'        => 'overview',
+        'sort_key'    => 'name',
+        'sort_order'  => 1,
+        'rpp'         => 100,
+        'rpp_options' => $default_rrp_options,
+        'f_field'     => 'name',
 
     ),
     'purge.purged_orders'             => array(

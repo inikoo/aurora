@@ -52,6 +52,13 @@ $parameters = array(
 );
 
 
+
+
+$smarty->assign('title', _('Invoices').' ('._('All stores').')');
+//$smarty->assign('view_position', '<i class=\"fal fa-sitemap\"></i> '._('Invoices per category'));
+
+
+
 include 'utils/get_table_html.php';
 
 

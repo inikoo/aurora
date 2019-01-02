@@ -65,7 +65,7 @@ class Location extends DB_Table {
         );
 
         //exit;
-        $warehouse = new Warehouse($this->data['Location Warehouse Key']);
+        $warehouse = get_object('Warehouse', $this->data['Location Warehouse Key']);
         if (!$warehouse->id) {
             $this->error = true;
             $this->msg   = 'Warehouse not found';
@@ -341,6 +341,7 @@ class Location extends DB_Table {
             return;
         }
 
+
         switch ($field) {
             case('Location Code'):
 
@@ -376,7 +377,29 @@ class Location extends DB_Table {
                 $this->update_field('Location Code', $code, $options);
                 break;
 
+            case 'Warehouse Area Code':
+
+
+                if ($value == '') {
+                    $this->update_field_switcher('Location Warehouse Area Key', 0, $options);
+                } else {
+                    include_once 'class.WarehouseArea.php';
+                    $warehouse_area = new WarehouseArea('warehouse_code', $this->data['Location Warehouse Key'], $value);
+
+
+
+                    if ($warehouse_area->id) {
+                        $this->update_field_switcher('Location Warehouse Area Key', $warehouse_area->id, $options);
+                    } else {
+                        $this->error = true;
+                        $this->msg   = _('Warehouse area not found').' ('.$value.')';
+                    }
+                }
+
+
+                break;
             case('Location Area Key'):
+            case('Location Warehouse Area Key'):
                 $this->update_area_key($value);
                 break;
             //  case('Location Mainly Used For'):
@@ -624,7 +647,20 @@ class Location extends DB_Table {
                 }
 
                 break;
+            case 'Warehouse Area Key':
+                if (!$this->warehouse_area) {
+                    $warehouse_area = get_object(
+                        'WarehouseArea',
+                        $this->data['Location Warehouse Area Key']
+                    );
+                }
+
+                return $warehouse_area->get('Code');
+                break;
+
             /*
+             *
+             *
 
         case 'Mainly Used For':
             switch ($this->data['Location Mainly Used For']) {
@@ -666,7 +702,8 @@ class Location extends DB_Table {
 
                 if (preg_match('/^warehouse area/i', $key)) {
                     if (!$this->warehouse_area) {
-                        $warehouse_area = new WarehouseArea(
+                        $warehouse_area = get_object(
+                            'WarehouseArea',
                             $this->data['Location Warehouse Area Key']
                         );
                     }
@@ -720,11 +757,10 @@ class Location extends DB_Table {
 
 */
 
-    function update_area_key($data) {
+    function update_area_key($value) {
 
 
-        $warehouse = get_object('Warehouse', $this->get('Location Warehouse Key'));
-        if ($this->id == $warehouse->get('Warehouse Unknown Location Key')) {
+        if ($this->get('Location Type') == 'Unknown') {
             $this->deleted_msg = 'Error location unknown can not be edited';
             $this->error       = true;
 
@@ -732,33 +768,85 @@ class Location extends DB_Table {
         }
 
 
-        if ($data == $this->data['Location Warehouse Area Key']) {
-            $this->msg = 'no_change';
+        if($value>0){
+            if ($value == $this->data['Location Warehouse Area Key']) {
+                $this->msg = 'no_change';
 
-            return;
+                return;
+            }
+        }else{
+            if (!$this->data['Location Warehouse Area Key']) {
+                $this->msg = 'no_change';
+
+                return;
+            }
         }
 
-        $old_area = new WarehouseArea(
-            $this->data['Location Warehouse Area Key']
+
+
+        if ($this->data['Location Warehouse Area Key']) {
+            $old_area = get_object('WarehouseArea', $this->data['Location Warehouse Area Key']);
+        }
+
+
+        $this->updated=true;
+
+        $this->fast_update(
+            array(
+                'Location Warehouse Area Key' => ($value > 0 ? $value : '')
+            )
         );
 
-        $new_area = new WarehouseArea($data);
+        if ($value > 0) {
+            $new_area = get_object('WarehouseArea', $value);
 
-        if ($new_area->id) {
-            $this->data['Location Warehouse Area Key'] = $new_area->id;
-            $this->data['Location Shelf Key']          = 0;
+            $new_area->update_warehouse_area_locations();
 
 
-            $sql = sprintf(
-                "UPDATE `Location Dimension` SET `Location Warehouse Area Key`=%d,`Location Shelf Key`=%d WHERE `Location Key`=%d", $this->data['Location Warehouse Area Key'], $this->data['Location Shelf Key'], $this->id
+            if (isset($old_area) and $old_area->id) {
+                $history_data = array(
+                    'History Abstract' => sprintf(
+                        _('Location moved from to warehouse area %s to %s'),
+                        '<span title="'.$old_area->get('Name').'" class="link discreet" onclick="change_view(\'warehouse/'.$old_area->get('Warehouse Key').'/areas/'.$old_area->id.'\')" >'.$old_area->get('Code').'</span>',
+                        '<span title="'.$new_area->get('Name').'" class="link strong" onclick="change_view(\'warehouse/'.$new_area->get('Warehouse Key').'/areas/'.$new_area->id.'\')" >'.$new_area->get('Code').'</span>'
+
+                    ),
+                    'History Details'  => '',
+                    'Action'           => 'edited'
+                );
+            } else {
+                $history_data = array(
+                    'History Abstract' => sprintf(
+                        _('Location associated to warehouse area %s'), '<span title="'.$new_area->get('Name').'" class="link" onclick="change_view(\'warehouse/'.$new_area->get('Warehouse Key').'/areas/'.$new_area->id.'\')" >'.$new_area->get('Code').'</span>'
+                    ),
+                    'History Details'  => '',
+                    'Action'           => 'edited'
+                );
+            }
+
+
+            $this->add_subject_history(
+                $history_data, true, 'No', 'Changes', $this->get_object_name(), $this->id
             );
-            $this->db->exec($sql);
-            $this->msg       = _('Location warehouse area changed');
-            $this->updated   = true;
-            $this->new_value = array(
-                'code' => $new_area->data['Warehouse Area Code'],
-                'key'  => $new_area->id
+
+            $history_data = array(
+                'History Abstract' => '<i class="fa fa-link"></i>'.sprintf(_('Location %s associated'), '<span class="link" onclick="change_view(\'locations/'.$new_area->get('Warehouse Key').'/areas/'.$this->id.'\')" >'.$this->get('Code').'</span>'),
+                'History Details'  => '',
+                'Action'           => 'edited'
             );
+
+            $new_area->add_subject_history(
+                $history_data, true, 'No', 'Changes', $new_area->get_object_name(), $new_area->id
+            );
+
+
+        } else {
+
+
+        }
+
+        if (isset($old_area) and $old_area->id) {
+            $old_area->update_warehouse_area_locations();
 
         }
 
@@ -827,7 +915,10 @@ class Location extends DB_Table {
 
         $this->fast_update(
             array(
-            'Location Stock Value', $stock_value));
+                'Location Stock Value',
+                $stock_value
+            )
+        );
 
 
     }

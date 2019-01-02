@@ -797,6 +797,16 @@ $export_edit_template_fields = array(
             'header'        => 'Code',
             'name'          => 'Location Code',
             'label'         => _('Code'),
+            'checked'       => 1,
+            'cell_type'     => 'string'
+        ),
+        array(
+            'default_value' => '',
+            'show_for_new'  => true,
+            'required'      => false,
+            'header'        => 'Area',
+            'name'          => 'Warehouse Area Code',
+            'label'         => _('Area'),
             'checked'       => 0,
             'cell_type'     => 'string'
         ),
@@ -841,6 +851,64 @@ $export_edit_template_fields = array(
             'label'         => ucfirst(_('max volume')).' (m³)',
             'checked'       => 0
         ),
+
+
+    ),
+    'warehouse_area' => array(
+        array(
+            'default_value' => '',
+            'show_for_new'  => true,
+            'required'      => true,
+            'header'        => 'Code',
+            'name'          => 'Warehouse Area Code',
+            'label'         => _('Code'),
+            'checked'       => 0,
+            'cell_type'     => 'string'
+        ),
+
+        array(
+            'default_value' => '',
+            'show_for_new'  => true,
+            'required'      => true,
+            'header'        => 'Name',
+            'name'          => 'Warehouse Area Name',
+            'label'         => _('Name'),
+            'checked'       => 0,
+            'cell_type'     => 'string'
+        ),
+        array(
+            'default_value' => '',
+            'show_for_new'  => true,
+            'required'      => false,
+            'header'        => 'Locations',
+            'name'          => 'Location Codes',
+            'label'         => _('Locations'),
+            'checked'       => 0,
+            'cell_type'     => 'string'
+        ),
+        array(
+            'default_value' => '',
+            'show_for_new'  => false,
+            'required'      => false,
+            'header'        => 'Locations add',
+            'name'          => 'Locations Add',
+            'label'         => _('Locations to add'),
+            'checked'       => 0,
+            'cell_type'     => 'string'
+        ),
+        array(
+            'default_value' => '',
+            'show_for_new'  => false,
+            'required'      => false,
+            'header'        => 'Locations remove',
+            'name'          => 'Locations Delete',
+            'label'         => _('Locations to remove'),
+            'checked'       => 0,
+            'cell_type'     => 'string'
+        ),
+
+
+
 
 
     ),

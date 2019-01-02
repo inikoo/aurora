@@ -290,8 +290,11 @@ input {
   }
   #view_position {
     color: #eee;
-    .fa {
+    .fa,.fas {
       opacity: .6;
+
+    }
+    .fa,.fas,.fal,.far,.fab {
       padding-right: 3px;
     }
     span {
@@ -463,9 +466,10 @@ input {
           background-color: #edf3f8;
           color: #000;
         }
-        &:hover, &.selected > .fa {
+        &:hover, &.selected > .fa,.far,.fas,.fab,.fal {
           color: #666;
         }
+
 
         &.icon_only {
           padding: 0px 10px 0px 15px;
@@ -592,7 +596,7 @@ input {
       padding: 0 10px
     }
 
-    .fa {
+    .fa,.far,.fas,.fab,.fab,.fal {
       font-size: 75%;
       color: #888;
       position: relative;
@@ -604,7 +608,7 @@ input {
       background-color: #edf3f8;
       color: #000;
     }
-    &:hover, &.selected > .fa {
+    &:hover, &.selected > .fa,.far,.fas,.fab,.fal {
       color: #666;
     }
   }
@@ -618,10 +622,10 @@ input {
     &.selected > .qty {
       color: #111;
     }
-    &:hover, &.selected > .fa {
+    &:hover, &.selected > .fa,.far,.fas,.fab,.fal {
       color: #000;
     }
-    .fa {
+    .fa,.far,.fas,.fab,.fal {
       font-size: 100%;
       position: relative;
       top: 1px;

@@ -159,6 +159,7 @@ switch ($tab) {
         get_part_categories_elements($db, $data['parameters'], $user);
         break;
     case 'warehouse.locations':
+    case 'warehouse_area.locations':
         $data = prepare_values(
             $_REQUEST, array(
                          'parameters' => array('type' => 'json array')
@@ -902,6 +903,7 @@ function get_warehouse_locations_elements($db, $data, $user) {
 
     $elements_numbers = array(
         'flags' => array(
+            'None'   => 0,
             'Blue'   => 0,
             'Green'  => 0,
             'Orange' => 0,
@@ -914,12 +916,15 @@ function get_warehouse_locations_elements($db, $data, $user) {
     );
 
 
-    $table = '`Location Dimension` left join `Warehouse Flag Dimension` on (`Warehouse Flag Key`=`Location Warehouse Flag Key`) ';
+    $table = '`Location Dimension` left join `Warehouse Flag Dimension` on (`Warehouse Flag Key`=`Location Warehouse Flag Key`)     where   `Location Type`!="Unknown" ';
+
     switch ($data['parent']) {
         case 'warehouse':
-            $where = sprintf(' where `Location Warehouse Key`=%d  ', $data['parent_key']);
+            $where = sprintf(' and `Location Warehouse Key`=%d  ', $data['parent_key']);
             break;
-
+        case 'warehouse_area':
+            $where = sprintf(' and `Location Warehouse Area Key`=%d  ', $data['parent_key']);
+            break;
             break;
         default:
             $response = array(
@@ -933,11 +938,16 @@ function get_warehouse_locations_elements($db, $data, $user) {
 
 
     $sql = sprintf("select count(*) as number,`Warehouse Flag Color` as element from $table $where  group by `Location Warehouse Flag Key` ");
-
     if ($result = $db->query($sql)) {
         foreach ($result as $row) {
+
+
+
             if ($row['element'] != '') {
                 $elements_numbers['flags'][preg_replace('/\s/', '', $row['element'])] = number($row['number']);
+            }else{
+                $elements_numbers['flags']['None'] = number($row['number']);
+
             }
         }
     } else {

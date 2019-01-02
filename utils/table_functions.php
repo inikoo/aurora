@@ -357,6 +357,10 @@ function get_rtext($record_label, $total_records) {
                 '%s deleted contractor', '%s deleted contractors', $total_records
             ), number($total_records)
         );
+    } elseif ($record_label == 'location') {
+        return sprintf(
+            ngettext('%s location', '%s locations', $total_records), number($total_records)
+        );
     } elseif ($record_label == 'part location') {
         return sprintf(
             ngettext('%s part location', '%s part locations', $total_records), number($total_records)
@@ -818,6 +822,12 @@ function get_rtext_with_filter($record_label, $total_with_filter, $total_no_filt
         return sprintf(
             ngettext(
                 '%s deleted contractor of %s', '%s deleted contractors of %s', $total_with_filter
+            ), number($total_with_filter), number($total_no_filter)
+        );
+    } elseif ($record_label == 'location') {
+        return sprintf(
+            ngettext(
+                '%s location of %s', '%s locations of %s', $total_with_filter
             ), number($total_with_filter), number($total_no_filter)
         );
     } elseif ($record_label == 'part location') {
