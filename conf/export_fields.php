@@ -744,6 +744,11 @@ $export_fields = array(
             'checked' => 1
         ),
         array(
+            'name'    => '`Location File As`',
+            'label'   => _('Location expanded code'),
+            'checked' => 0
+        ),
+        array(
             'name'    => '`Location Code`',
             'label'   => _('Location code'),
             'checked' => 1
