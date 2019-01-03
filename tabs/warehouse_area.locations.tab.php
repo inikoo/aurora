@@ -108,6 +108,35 @@ if (!$user->can_view('locations') or !in_array($state['warehouse']->id, $user->w
     );
 
 
+    $table_buttons[] = array(
+        'icon'              => 'link',
+        'title'             => _('Associate location'),
+        'id'                => 'new_record',
+        'inline_new_object' => array(
+            'field_id'                 => 'WarehouseArea_Location_Code',
+            'field_label'              => _('Associate location').':',
+            'field_edit'               => 'dropdown',
+            'object'                   => 'WarehouseArea_Location',
+            'parent'                   => $state['object'],
+            'parent_key'               => $state['key'],
+            'placeholder'              => _("Location's code"),
+            'dropdown_select_metadata' => base64_encode(
+                json_encode(
+                    array(
+                        'scope'      => 'locations',
+                        'parent'     => 'warehouse',
+                        'parent_key' => $state['_object']->get(
+                            'Warehouse Key'
+                        ),
+                        'options'    => array()
+                    )
+                )
+            )
+        )
+
+    );
+
+
     /*
 
 

@@ -10,7 +10,7 @@
  Version 3.0
 */
 
-
+/** @return object|false */
 function get_object($object_name, $key, $load_other_data = false) {
 
     if ($object_name == '') {
@@ -128,7 +128,8 @@ function get_object($object_name, $key, $load_other_data = false) {
         case 'warehousearea':
         case 'warehouse area':
             include_once 'class.WarehouseArea.php';
-            $object = new WarehouseArea($key);
+        /** @var WarehouseArea */
+        $object = new WarehouseArea($key);
             break;
         case 'part':
             include_once 'class.Part.php';

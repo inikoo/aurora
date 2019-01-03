@@ -1408,6 +1408,39 @@ function new_object($account, $db, $user, $editor, $data, $smarty) {
             }
             break;
 
+
+        case 'WarehouseArea_Location':
+            include_once 'class.Location.php';
+
+         
+
+            if (isset($data['fields_data']['WarehouseArea Location Code'])) {
+                $object = new Location('warehouse_code', $parent->get('Warehouse Key'), $data['fields_data']['WarehouseArea Location Code']);
+            } else {
+                $object = get_object('Location',$data['fields_data']['WarehouseArea Location Key']);
+
+            }
+
+
+            if ($object->id) {
+
+                $object->update_area_key($parent->id);
+
+
+            } else {
+
+                $response = array(
+                    'state' => 400,
+                    'resp'  => _('Location not found')
+                );
+                echo json_encode($response);
+                exit;
+            }
+            $pcard        = '';
+            $updated_data = array();
+
+
+            break;
         case 'Category_Product':
 
             include_once 'class.Product.php';
