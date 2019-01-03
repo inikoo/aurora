@@ -11,6 +11,8 @@
 
  Version 2.0
 */
+
+
 include_once 'class.DB_Table.php';
 
 class Warehouse extends DB_Table {
@@ -40,29 +42,30 @@ class Warehouse extends DB_Table {
     function get_data($key, $tag) {
 
         if ($key == 'id') {
-            $sql = sprintf(
-                "SELECT * FROM `Warehouse Dimension` WHERE `Warehouse Key`=%d", $tag
-            );
+            $sql = "SELECT * FROM `Warehouse Dimension` WHERE `Warehouse Key`=?";
+        } elseif ($key == 'code') {
+            $sql = "SELECT * FROM `Warehouse Dimension` WHERE `Warehouse Code`=?";
+        } elseif ($key == 'name') {
+            $sql = "SELECT * FROM `Warehouse Dimension` WHERE `Warehouse Name`=?";
         } else {
-            if ($key == 'code') {
-                $sql = sprintf(
-                    "SELECT  * FROM `Warehouse Dimension` WHERE `Warehouse Code`=%s ", prepare_mysql($tag)
-                );
-            } else {
-                if ($key == 'name') {
-                    $sql = sprintf(
-                        "SELECT  *  FROM `Warehouse Dimension` WHERE `Warehouse Name`=%s ", prepare_mysql($tag)
-                    );
-                } else {
-                    return;
-                }
-            }
+            return;
         }
 
 
-        if ($this->data = $this->db->query($sql)->fetch()) {
-            $this->id   = $this->data['Warehouse Key'];
-            $this->code = $this->data['Warehouse Code'];
+        $stmt = $this->db->prepare($sql);
+        if ($stmt->execute(
+            array(
+                $tag
+            )
+        )) {
+            if ($row = $stmt->fetch()) {
+                $this->data = $row;
+                $this->id   = $this->data['Warehouse Key'];
+                $this->code = $this->data['Warehouse Code'];
+            }
+        } else {
+            print_r($error_info = $this->db->errorInfo());
+            exit();
         }
 
 
@@ -81,7 +84,7 @@ class Warehouse extends DB_Table {
         $this->found_key = false;
 
         $create = '';
-        $update = '';
+
         if (preg_match('/create/i', $options)) {
             $create = 'create';
         }
@@ -209,7 +212,7 @@ class Warehouse extends DB_Table {
                 $this->db->exec($sql);
 
             }
-*/
+    */
 
             $flags = array(
                 'Blue'   => _('Blue'),
@@ -392,10 +395,8 @@ class Warehouse extends DB_Table {
         if (!empty($data['Warehouse Area Code'])) {
 
 
-
             include_once 'class.WarehouseArea.php';
             $warehouse_area = new WarehouseArea('warehouse_code', $this->id, $data['Warehouse Area Code']);
-
 
 
             if ($warehouse_area->id) {
@@ -408,9 +409,7 @@ class Warehouse extends DB_Table {
         }
 
 
-
         $data['Location Warehouse Key'] = $this->id;
-
 
 
         $location = new Location('find', $data, 'create');
@@ -1023,6 +1022,37 @@ class Warehouse extends DB_Table {
         }
 
 
+        $locations_keys = array();
+
+        if (isset($data['Location Codes'])) {
+            $location_codes = preg_split('/\s*\,\s*/', $data['Location Codes']);
+            unset($data['Location Codes']);
+
+
+            foreach ($location_codes as $code) {
+                $sql = 'select `Location Key`,`Location Warehouse Area Key` from `Location Dimension` where `Location Code` =? and `Location Warehouse Key`= ?';
+
+                $stmt = $this->db->prepare($sql);
+                if ($stmt->execute(
+                    array(
+                        $code,
+                        $this->id
+                    )
+                )) {
+                    while ($row = $stmt->fetch()) {
+                        $locations_keys[$row['Location Key']] = $row['Location Key'];
+                    }
+                } else {
+                    print_r($error_info = $this->db->errorInfo());
+                    exit();
+                }
+
+            }
+
+
+        }
+
+
         $warehouse_area = new WarehouseArea('find', $data, 'create');
 
 
@@ -1032,6 +1062,14 @@ class Warehouse extends DB_Table {
             if ($warehouse_area->new) {
                 $this->new_warehouse_area     = true;
                 $this->new_warehouse_area_key = $warehouse_area->id;
+
+
+                foreach ($locations_keys as $locations_key) {
+                    $location = get_object('Location', $locations_key);
+                    $location->update_area_key($warehouse_area->id);
+                }
+
+
             } else {
                 $this->error          = true;
                 $this->error_code     = 'duplicated_field';

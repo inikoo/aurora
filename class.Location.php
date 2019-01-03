@@ -14,7 +14,6 @@
  Version 2.0
 */
 
-
 class Location extends DB_Table {
 
 
@@ -46,7 +45,7 @@ class Location extends DB_Table {
 
             return;
         }
-        $this->get_data($arg1, $arg2);
+        $this->get_data($arg1, $arg2,$arg2);
 
     }
 
@@ -70,7 +69,7 @@ class Location extends DB_Table {
             $this->error = true;
             $this->msg   = 'Warehouse not found';
 
-            return;
+            return false;
         }
 
 
@@ -136,6 +135,16 @@ class Location extends DB_Table {
             $this->new = true;
 
             $this->get_data('id', $this->id);
+
+
+
+            if($this->data['Location Warehouse Area Key']){
+                $warehouse_area=get_object('WarehouseArea',$this->data['Location Warehouse Area Key']);
+                if($warehouse_area->id){
+                    $warehouse_area->update_warehouse_area_locations();
+                }
+            }
+
 
 
             return $this;
@@ -216,7 +225,7 @@ class Location extends DB_Table {
 
     }
 
-    function get_data($key, $tag) {
+    function get_data($key, $tag,$tag2='') {
 
 
         $sql = sprintf("SELECT * FROM `Location Dimension`");
@@ -230,7 +239,11 @@ class Location extends DB_Table {
             $sql .= sprintf(
                 "where  `Location Code`=%s ", prepare_mysql($tag)
             );
-        } else {
+        } elseif ($key == 'warehouse+code') {
+            $sql .= sprintf(
+                "where  `Location Warehouse Key`=%d and  `Location Code`=%s ", prepare_mysql($tag)
+            );
+        }else {
             return;
         }
 
@@ -757,7 +770,7 @@ class Location extends DB_Table {
 
 */
 
-    function update_area_key($value) {
+    function update_area_key($warehouse_area_key) {
 
 
         if ($this->get('Location Type') == 'Unknown') {
@@ -768,8 +781,8 @@ class Location extends DB_Table {
         }
 
 
-        if($value>0){
-            if ($value == $this->data['Location Warehouse Area Key']) {
+        if($warehouse_area_key>0){
+            if ($warehouse_area_key == $this->data['Location Warehouse Area Key']) {
                 $this->msg = 'no_change';
 
                 return;
@@ -791,14 +804,16 @@ class Location extends DB_Table {
 
         $this->updated=true;
 
+
+
         $this->fast_update(
             array(
-                'Location Warehouse Area Key' => ($value > 0 ? $value : '')
+                'Location Warehouse Area Key' => ($warehouse_area_key > 0 ? $warehouse_area_key : '')
             )
         );
 
-        if ($value > 0) {
-            $new_area = get_object('WarehouseArea', $value);
+        if ($warehouse_area_key > 0) {
+            $new_area = get_object('WarehouseArea', $warehouse_area_key);
 
             $new_area->update_warehouse_area_locations();
 
