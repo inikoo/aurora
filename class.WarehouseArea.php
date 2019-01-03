@@ -508,6 +508,12 @@ class WarehouseArea extends DB_Table {
 
     }
 
+
+    /**
+     * Calculate number of locations in the warehouse area
+     *
+     *@return void
+     */
     function update_warehouse_area_locations() {
         $number_locations = 0;
 

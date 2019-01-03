@@ -133,6 +133,9 @@ $object_fields = array(
 
 );
 
+
+
+if($options['parent']!='warehouse_area'){
     $object_fields[] = array(
         'label'      => _('Warehouse area'),
         'show_title' => true,
@@ -155,6 +158,8 @@ $object_fields = array(
 
         )
     );
+}
+
 
 
 
@@ -182,6 +187,3 @@ if (!$new) {
 
     $object_fields[] = $operations;
 }
-
-
-?>
