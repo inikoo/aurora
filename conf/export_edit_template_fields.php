@@ -881,31 +881,12 @@ $export_edit_template_fields = array(
             'show_for_new'  => true,
             'required'      => false,
             'header'        => 'Locations',
-            'name'          => 'Location Codes',
+            'name'          => 'Warehouse Area Location Codes',
             'label'         => _('Locations'),
             'checked'       => 0,
             'cell_type'     => 'string'
         ),
-        array(
-            'default_value' => '',
-            'show_for_new'  => false,
-            'required'      => false,
-            'header'        => 'Locations add',
-            'name'          => 'Locations Add',
-            'label'         => _('Locations to add'),
-            'checked'       => 0,
-            'cell_type'     => 'string'
-        ),
-        array(
-            'default_value' => '',
-            'show_for_new'  => false,
-            'required'      => false,
-            'header'        => 'Locations remove',
-            'name'          => 'Locations Delete',
-            'label'         => _('Locations to remove'),
-            'checked'       => 0,
-            'cell_type'     => 'string'
-        ),
+
 
 
 

@@ -826,8 +826,8 @@ class Warehouse extends DB_Table {
     function update_field_switcher($field, $value, $options = '', $metadata = '') {
 
 
-        if ($this->deleted) {
-            return;
+        if ($this->deleted or !$this->id) {
+            return '';
         }
 
         switch ($field) {
@@ -1024,33 +1024,7 @@ class Warehouse extends DB_Table {
 
         $locations_keys = array();
 
-        if (isset($data['Location Codes'])) {
-            $location_codes = preg_split('/\s*\,\s*/', $data['Location Codes']);
-            unset($data['Location Codes']);
 
-
-            foreach ($location_codes as $code) {
-                $sql = 'select `Location Key`,`Location Warehouse Area Key` from `Location Dimension` where `Location Code` =? and `Location Warehouse Key`= ?';
-
-                $stmt = $this->db->prepare($sql);
-                if ($stmt->execute(
-                    array(
-                        $code,
-                        $this->id
-                    )
-                )) {
-                    while ($row = $stmt->fetch()) {
-                        $locations_keys[$row['Location Key']] = $row['Location Key'];
-                    }
-                } else {
-                    print_r($error_info = $this->db->errorInfo());
-                    exit();
-                }
-
-            }
-
-
-        }
 
 
         $warehouse_area = new WarehouseArea('find', $data, 'create');
@@ -1064,10 +1038,7 @@ class Warehouse extends DB_Table {
                 $this->new_warehouse_area_key = $warehouse_area->id;
 
 
-                foreach ($locations_keys as $locations_key) {
-                    $location = get_object('Location', $locations_key);
-                    $location->update_area_key($warehouse_area->id);
-                }
+
 
 
             } else {

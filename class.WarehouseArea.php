@@ -70,6 +70,14 @@ class WarehouseArea extends DB_Table {
         }
 
 
+        if (isset($data['Location Codes'])) {
+            $location_codes=$data['Location Codes'];
+            unset($data['Location Codes']);
+        }else{
+            $location_codes='';
+        }
+
+
 
         $sql = sprintf(
             "INSERT INTO `Warehouse Area Dimension` (`%s`) values (%s)",
@@ -93,6 +101,15 @@ class WarehouseArea extends DB_Table {
             $this->id  = $this->db->lastInsertId();
             $this->new = true;
             $this->get_data('id', $this->id);
+
+
+            if($location_codes!=''){
+                $locations_keys=$this->get_location_keys_from_codes($location_codes);
+                foreach ($locations_keys as $locations_key) {
+                    $location = get_object('Location', $locations_key);
+                    $location->update_area_key($this->id);
+                }
+            }
 
 
             $history_data = array(
@@ -161,7 +178,7 @@ class WarehouseArea extends DB_Table {
 
         switch ($key) {
 
-
+            case('Warehouse Area Location Codes'):
             case('Location Codes'):
 
                 $location_codes = $this->get_locations('codes');
@@ -198,7 +215,7 @@ class WarehouseArea extends DB_Table {
                 $fields = '`Location Key`';
         }
 
-        $sql = sprintf('select %s from `Location Dimension` where `Location Warehouse Area Key`=%d ', $fields, $this->id);
+        $sql = sprintf('select %s from `Location Dimension` where `Location Warehouse Area Key`=%d  order by `Location File As`', $fields, $this->id);
 
 
         if ($result = $this->db->query($sql)) {
@@ -512,7 +529,7 @@ class WarehouseArea extends DB_Table {
     /**
      * Calculate number of locations in the warehouse area
      *
-     *@return void
+     * @return void
      */
     function update_warehouse_area_locations() {
         $number_locations = 0;
@@ -543,7 +560,114 @@ class WarehouseArea extends DB_Table {
 
     }
 
+    function update_field_switcher($field, $value, $options = '', $metadata = '') {
+
+
+        if (!$this->deleted and $this->id) {
+
+            switch ($field) {
+
+                case 'Warehouse Area Location Codes':
+
+
+
+
+
+                    $locations_keys=$this->get_location_keys_from_codes($value);
+
+                  
+
+
+
+                    $old_locations_keys = $this->get_locations();
+
+                    $locations_to_remove = array_diff($old_locations_keys, $locations_keys);
+                    $locations_to_add = array_diff($locations_keys,$old_locations_keys);
+
+
+
+                    foreach ($locations_to_remove as $locations_key) {
+                        $location = get_object('Location', $locations_key);
+                        $location->update_area_key('');
+                    }
+
+                    foreach ($locations_to_add as $locations_key) {
+                        $location = get_object('Location', $locations_key);
+                        $location->update_area_key($this->id);
+                    }
+
+                    if(count($locations_to_remove)>0 or count($locations_to_add)>0){
+                        $this->updated=true;
+
+                    }
+
+
+                    breaK;
+                default:
+                    $base_data = $this->base_data();
+                    if (array_key_exists($field, $base_data)) {
+                        if ($value != $this->data[$field]) {
+                            $this->update_field($field, $value, $options);
+                        }
+                    }
+
+
+            }
+        }
+    }
+    
+    private function get_location_keys_from_codes($codes){
+        $locations_keys = array();
+
+        if (preg_match('/\/(.+)\//',$codes,$matches)) {
+
+
+
+            $sql = 'select `Location Key`,`Location Warehouse Area Key` from `Location Dimension` where `Location Code` REGEXP ? and `Location Warehouse Key`= ?';
+
+
+            $stmt = $this->db->prepare($sql);
+            if ($stmt->execute(
+                array(
+                    $matches[1],
+                    $this->data['Warehouse Area Warehouse Key']
+                )
+            )) {
+                while ($row = $stmt->fetch()) {
+                    $locations_keys[$row['Location Key']] = $row['Location Key'];
+                }
+            } else {
+                print_r($error_info = $this->db->errorInfo());
+                exit();
+            }
+
+        } else {
+
+            $location_codes = preg_split('/\s*\,\s*/', $codes);
+            foreach ($location_codes as $code) {
+                $sql = 'select `Location Key`,`Location Warehouse Area Key` from `Location Dimension` where `Location Code` =? and `Location Warehouse Key`= ?';
+
+                $stmt = $this->db->prepare($sql);
+                if ($stmt->execute(
+                    array(
+                        $code,
+                        $this->data['Warehouse Area Warehouse Key']
+                    )
+                )) {
+                    while ($row = $stmt->fetch()) {
+                        $locations_keys[$row['Location Key']] = $row['Location Key'];
+                    }
+                } else {
+                    print_r($error_info = $this->db->errorInfo());
+                    exit();
+                }
+
+            }
+        }
+
+        return  $locations_keys ;
+    }
+
 
 }
 
-?>
