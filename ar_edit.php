@@ -273,6 +273,7 @@ switch ($tipo) {
 function edit_field($account, $db, $user, $editor, $data, $smarty) {
 
 
+
     $object = get_object($data['object'], $data['key']);
 
 
@@ -362,7 +363,6 @@ function edit_field($account, $db, $user, $editor, $data, $smarty) {
 
     if ($field == 'Product Category Department Category Key') {
         $formatted_field = 'Department Category Code';
-
     }
 
     if ($field == 'Staff Position' and $data['object'] == 'User') {
@@ -441,7 +441,6 @@ function edit_field($account, $db, $user, $editor, $data, $smarty) {
             }
 
 
-            // print $formatted_field;
 
             $formatted_value = $object->get($formatted_field);
 
@@ -1412,7 +1411,7 @@ function new_object($account, $db, $user, $editor, $data, $smarty) {
         case 'WarehouseArea_Location':
             include_once 'class.Location.php';
 
-         
+
 
             if (isset($data['fields_data']['WarehouseArea Location Code'])) {
                 $object = new Location('warehouse_code', $parent->get('Warehouse Key'), $data['fields_data']['WarehouseArea Location Code']);

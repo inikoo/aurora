@@ -52,6 +52,8 @@ class Location extends DB_Table {
     function create($data) {
 
 
+
+
         $this->data = $this->base_data();
         foreach ($data as $key => $value) {
             if (array_key_exists($key, $this->data)) {
@@ -136,6 +138,7 @@ class Location extends DB_Table {
                     $warehouse_area->update_warehouse_area_locations();
                 }
             }
+
 
 
             return $this;
