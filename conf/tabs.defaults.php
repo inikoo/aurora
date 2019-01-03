@@ -2295,8 +2295,8 @@ $tab_defaults = array(
         'rpp'           => 100,
         'rpp_options'   => $default_rrp_options,
         'f_field'       => 'code',
-        //  'elements_type' => array_keys($elements_options['locations'])[0],
-        //  'elements'      => $elements_options['locations'],
+        'elements_type' => array_keys($elements_options['locations'])[0],
+        'elements'      => $elements_options['locations'],
         'export_fields' => $export_fields['locations']
     ),
 
@@ -2334,8 +2334,8 @@ $tab_defaults = array(
         'rpp'           => 100,
         'rpp_options'   => $default_rrp_options,
         'f_field'       => 'code',
-        //  'elements_type' => array_keys($elements_options['locations'])[0],
-        //  'elements'      => $elements_options['locations'],
+        'elements_type' => array_keys($elements_options['locations'])[0],
+        'elements'      => $elements_options['locations'],
         'export_fields' => $export_fields['locations']
     ),
     'warehouse_area.parts'                      => array(
