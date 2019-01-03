@@ -44,6 +44,9 @@ if ($redis->connect('127.0.0.1', 6379)) {
     $redis_on = false;
 }
 
+/**
+ * @var PDO
+ */
 $db = new PDO(
     "mysql:host=$dns_host;dbname=$dns_db;charset=utf8", $dns_user, $dns_pwd, array(\PDO::MYSQL_ATTR_INIT_COMMAND => "SET time_zone = '+0:00';")
 );

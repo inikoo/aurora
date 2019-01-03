@@ -91,6 +91,11 @@ if (!$user->can_view('locations') or !in_array($state['warehouse']->id, $user->w
     $edit_fields = $export_edit_template_fields[$objects];
 
 
+
+
+
+
+
     $smarty->assign('edit_fields', $edit_fields);
 
 

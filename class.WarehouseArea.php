@@ -69,27 +69,27 @@ class WarehouseArea extends DB_Table {
             $this->data['Warehouse Area Name'] = $this->data['Warehouse Area Code'];
         }
 
-        $keys   = '(';
-        $values = 'values(';
-        foreach ($this->data as $key => $value) {
 
-            $keys  .= "`$key`,";
-            $_mode = true;
-            if ($key == 'Warehouse Area Description') {
-                $_mode = false;
-            }
-            $values .= prepare_mysql($value, $_mode).",";
-        }
-
-        $keys   = preg_replace('/,$/', ')', $keys);
-        $values = preg_replace('/,$/', ')', $values);
 
         $sql = sprintf(
-            "INSERT INTO `Warehouse Area Dimension` %s %s", $keys, $values
+            "INSERT INTO `Warehouse Area Dimension` (`%s`) values (%s)",
+            join('`,`', array_keys($this->data)),
+            join(',', array_fill(0, count($this->data), '?'))
         );
 
+        $stmt = $this->db->prepare($sql);
 
-        if ($this->db->exec($sql)) {
+        $i = 1;
+        foreach ($this->data as $key => $value) {
+            if ($key != 'Warehouse Area Description' and $value == '') {
+                $value = null;
+            }
+            $stmt->bindValue($i, $value);
+            $i++;
+        }
+
+
+        if ($stmt->execute()) {
             $this->id  = $this->db->lastInsertId();
             $this->new = true;
             $this->get_data('id', $this->id);
@@ -107,6 +107,9 @@ class WarehouseArea extends DB_Table {
 
 
         } else {
+            //print_r($error_info = $this->db->errorInfo());
+            //exit;
+
             $this->error = true;
             $this->msg   = 'Error inserting warehouse area record';
         }
@@ -316,39 +319,38 @@ class WarehouseArea extends DB_Table {
         $this->deleted     = false;
         $this->deleted_msg = '';
 
-        if ($this->id == 1) {
-            $this->deleted_msg = 'Error area unknown can not be deleted';
 
-            return;
-        }
+        $sql = "SELECT `Location Key` FROM `Location Dimension` WHERE `Location Warehouse Area Key`=?";
 
-        $move_all_locations = true;
-        $sql                = sprintf(
-            "SELECT `Location Key` FROM `Location Dimension` WHERE `Location Warehouse Area Key`=%d", $this->id
-        );
-        $result             = mysql_query($sql);
-        while ($row = mysql_fetch_assoc($result)) {
-            $location = new Location($row['Location Key']);
-            $location->update(array('Location Warehouse Area Key' => '1'));
-            if (!$location->updated) {
-                $move_all_locations &= false;
+
+        $stmt = $this->db->prepare($sql);
+        if ($stmt->execute(
+            array(
+                $this->id
+            )
+        )) {
+            while ($row = $stmt->fetch()) {
+                $location = new Location($row['Location Key']);
+                $location->update(array('Location Warehouse Area Key' => ''));
+
             }
+        } else {
+            print_r($error_info = $this->db->errorInfo());
+            exit();
         }
 
 
-        if ($move_all_locations) {
-            $sql = sprintf(
-                "DELETE FROM `Warehouse Area Dimension` WHERE `Warehouse Area Key`=%d", $this->id
-            );
-            mysql_query($sql);
-        }
+        $sql  = sprintf("DELETE FROM `Warehouse Area Dimension` WHERE `Warehouse Area Key`=?");
+        $stmt = $this->db->prepare($sql);
+        $stmt->bindValue(1, $this->id);
 
-
-        if (mysql_affected_rows() > 0) {
+        if ($stmt->execute()) {
             $this->deleted = true;
+
         } else {
             $this->deleted_msg = 'Error area can not be deleted';
         }
+
 
     }
 
@@ -410,7 +412,7 @@ class WarehouseArea extends DB_Table {
                     $this->error_code = 'duplicate_location_code_reference';
                     $this->metadata   = $data['Location Code'];
 
-                    return;
+                    return false;
                 }
             }
         } else {

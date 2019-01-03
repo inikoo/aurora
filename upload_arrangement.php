@@ -57,13 +57,17 @@ switch ($object->get_object_name()) {
         // $options=array('parent'=>'supplier','parent_object'=>$supplier,'new'=>true,'supplier_part_scope'=>true);
         break;
     case 'Location':
-        $filename = _('new_locations');
+        $filename     = _('new_locations');
         $valid_fields = $export_edit_template_fields['location'];
+        if (isset($_REQUEST['parent']) and $_REQUEST['parent'] == 'warehouse_area') {
+            unset($valid_fields[1]);
+        }
+        $key_field = 'Id: Location Key';
 
-        $key_field    = 'Id: Location Key';
+
         break;
     case 'Warehouse Area':
-        $filename = _('new_warehouse_area');
+        $filename     = _('new_warehouse_area');
         $valid_fields = $export_edit_template_fields['warehouse_area'];
         $key_field    = 'Id: Warehouse Area Key';
         break;

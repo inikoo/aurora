@@ -1,4 +1,14 @@
 <div class="subject_profile">
+
+
+    <ul class="tags Warehouse_Area {if !$location->get('Location Warehouse Area Key')}hide{/if}" style="float:right">
+
+            <li><span class="button" onclick="change_view('warehouse/{$location->get('Warehouse Key')}/areas/{$location->get('Location Warehouse Area Key')}')" title="{$location->get('Warehouse Area Code')}">{$location->get('Warehouse Area Name')}</span></li>
+
+    </ul>
+    <div style="clear:both">
+    </div>
+
     <div id="contact_data"></div>
     <div id="info">
         <div id="overviews">

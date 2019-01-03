@@ -1,6 +1,11 @@
 <?php
 
 abstract class DB_Table extends stdClass {
+
+    /**
+     * @var PDO
+     */
+    public $db;
     public $errors_while_updating = array();
     public $updated_fields = array();
     public $data = array();
@@ -219,41 +224,25 @@ abstract class DB_Table extends stdClass {
         $old_formatted_value = $this->get($formatted_field);
 
 
-        if (preg_match('/^custom_field_part/i', $field)) {
-            if (is_string($value)) {
-                $sql = sprintf(
-                    "UPDATE `Part Custom Field Dimension` SET `%s`='%s' WHERE `Part SKU`=%d", $field1, $value, $table_key
-                );
-            } else {
-                $sql = sprintf(
-                    "UPDATE `Part Custom Field Dimension` SET `%s`='%d' WHERE `Part SKU`=%d", $field1, $value, $table_key
-                );
-            }
-        } elseif (preg_match('/^custom_field_customer/i', $field)) {
-            if (is_string($value)) {
-                $sql = sprintf(
-                    "UPDATE `Customer Custom Field Dimension` SET `%s`='%s' WHERE `Customer Key`=%d", $r['Custom Field Key'], $value, $table_key
-                );
-            } else {
-                $sql = sprintf(
-                    "UPDATE `Customer Custom Field Dimension` SET `%s`='%d' WHERE `Customer Key`=%d", $r['Custom Field Key'], $value, $table_key
-                );
-            }
+        $sql = sprintf(
+            "UPDATE `%s` SET `%s`=? WHERE `%s`=?", addslashes($table_full_name), addslashes($field), addslashes($key_field)
+        );
 
 
-        } else {
-            $sql = sprintf(
-                "UPDATE `%s` SET `%s`=%s WHERE `%s`=%d", addslashes($table_full_name), addslashes($field), prepare_mysql($value, $null_if_empty), addslashes($key_field), $table_key
-            );
+        //prepare_mysql($value, $null_if_empty)
+        // $table_key
+        $stmt = $this->db->prepare($sql);
 
-
+        if ($value == '' and $null_if_empty) {
+            $value = null;
         }
 
-        //print "$sql\n";
+        $stmt->bindParam(1, $value);
+        $stmt->bindParam(2, $table_key);
 
-        $update_op = $this->db->prepare($sql);
-        $update_op->execute();
-        $affected = $update_op->rowCount();
+
+        $stmt->execute();
+        $affected = $stmt->rowCount();
 
         //print "$affected\n";
 
@@ -559,21 +548,37 @@ abstract class DB_Table extends stdClass {
         }
 
 
-        $sql = sprintf(
-            "INSERT INTO `History Dimension` (`Author Name`,`History Date`,`Subject`,`Subject Key`,`Action`,`Direct Object`,`Direct Object Key`,`Preposition`,`Indirect Object`,`Indirect Object Key`,`History Abstract`,`History Details`,`User Key`,`Deep`,`Metadata`) VALUES (%s,%s,%s,%d,%s,%s,%d,%s,%s,%d,%s,%s,%d,%s,%s)",
-            prepare_mysql($data['Author Name']), prepare_mysql($data['Date']), prepare_mysql($data['Subject']), $data['Subject Key'], prepare_mysql($data['Action']), prepare_mysql($data['Direct Object']), $data['Direct Object Key'],
-            prepare_mysql($data['Preposition'], false), prepare_mysql($data['Indirect Object'], false), $data['Indirect Object Key'], prepare_mysql($data['History Abstract']), prepare_mysql($data['History Details']), $data['User Key'], prepare_mysql($data['Deep']),
-            prepare_mysql($data['Metadata'])
-        );
+        $sql =
+            "INSERT INTO `History Dimension` (`Author Name`,`History Date`,`Subject`,`Subject Key`,`Action`,`Direct Object`,`Direct Object Key`,`Preposition`,`Indirect Object`,`Indirect Object Key`,`History Abstract`,`History Details`,`User Key`,`Deep`,`Metadata`) VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)";
 
 
-        //  print $sql;
+        $stmt = $this->db->prepare($sql);
 
-        $this->db->exec($sql);
+        $stmt->bindValue(1, $data['Author Name']);
+        $stmt->bindValue(2, $data['Date']);
+        $stmt->bindValue(3, $data['Subject']);
+        $stmt->bindValue(4, $data['Subject Key'], PDO::PARAM_INT);
+        $stmt->bindValue(5, $data['Action']);
+        $stmt->bindValue(6, $data['Direct Object']);
+        $stmt->bindValue(7, $data['Direct Object Key']);
+        $stmt->bindValue(8, $data['Preposition']);
+        $stmt->bindValue(9, $data['Indirect Object']);
+        $stmt->bindValue(10, $data['Indirect Object Key']);
+        $stmt->bindValue(11, $data['History Abstract']);
+        $stmt->bindValue(12, $data['History Details']);
+        $stmt->bindValue(13, $data['User Key'], PDO::PARAM_INT);
+        $stmt->bindValue(14, $data['Deep']);
+        $stmt->bindValue(15, $data['Metadata']);
 
-        $history_key = $this->db->lastInsertId();
 
-        return $history_key;
+        if ($stmt->execute()) {
+            $history_key = $this->db->lastInsertId();
+
+            return $history_key;
+        } else {
+            print_r($error_info = $this->db->errorInfo());
+            exit();
+        }
 
 
     }
@@ -736,12 +741,22 @@ abstract class DB_Table extends stdClass {
 
 
             $sql = sprintf(
-                "UPDATE `%s` SET `%s`=%s WHERE `%s`=%d", addslashes($table_full_name), addslashes($field), prepare_mysql($value, $null_if_empty), addslashes($key_field), $this->id
+                "UPDATE `%s` SET `%s`=? WHERE `%s`=?", addslashes($table_full_name), addslashes($field), addslashes($key_field)
             );
 
-            // print "$sql;\n";
+            $stmt = $this->db->prepare($sql);
 
-            $this->db->exec($sql);
+
+            if ($value == '' and $null_if_empty) {
+                $value = null;
+            }
+
+            $stmt->bindParam(1, $value);
+            $stmt->bindParam(2, $this->id);
+
+
+            $stmt->execute();
+
             $this->data[$field] = $value;
 
         }

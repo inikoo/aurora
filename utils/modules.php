@@ -5988,6 +5988,8 @@ $modules = array(
                     'warehouse.locations' => array(
                         'label' => _('Locations'),
                         'icon'  => 'pallet',
+                        'dynamic_reference' => 'warehouse/%d/locations',
+
                     ),
                     'warehouse.areas'     => array(
                         'label'     => _('Warehouse areas'),
