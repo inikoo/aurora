@@ -13,6 +13,8 @@
  Version 2.0
 */
 
+require_once 'vendor/autoload.php';
+
 error_reporting(E_ALL ^ E_DEPRECATED);
 
 
@@ -31,12 +33,13 @@ include_once 'class.Account.php';
 
 
 
-include_once 'external_libs/Smarty/Smarty.class.php';
+
 $smarty               = new Smarty();
-$smarty->template_dir = 'templates';
-$smarty->compile_dir  = 'server_files/smarty/templates_c';
-$smarty->cache_dir    = 'server_files/smarty/cache';
-$smarty->config_dir   = 'server_files/smarty/configs';
+$smarty->setTemplateDir('templates');
+$smarty->setCompileDir('server_files/smarty/templates_c');
+$smarty->setCacheDir('server_files/smarty/cache');
+$smarty->setConfigDir('server_files/smarty/configs');
+$smarty->addPluginsDir('./smarty_plugins');
 
 $smarty->assign('_DEVEL', _DEVEL);
 

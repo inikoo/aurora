@@ -10,6 +10,8 @@
 
 */
 
+require_once '../vendor/autoload.php';
+
 require 'keyring/key.php';
 
 session_start();

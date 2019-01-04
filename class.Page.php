@@ -1361,7 +1361,7 @@ class Page extends DB_Table {
 */
 
 
-        require_once 'external_libs/Smarty/Smarty.class.php';
+
         $smarty_web = new Smarty();
 
         if (empty($this->fork)) {
@@ -1375,6 +1375,7 @@ class Page extends DB_Table {
         $smarty_web->compile_dir  = $base.'EcomB2B/server_files/smarty/templates_c';
         $smarty_web->cache_dir    = $base.'EcomB2B/server_files/smarty/cache';
         $smarty_web->config_dir   = $base.'EcomB2B/server_files/smarty/configs';
+        $smarty_web->addPluginsDir('./smarty_plugins');
 
 
         $smarty_web->setCaching(Smarty::CACHING_LIFETIME_CURRENT);
@@ -1629,7 +1630,7 @@ class Page extends DB_Table {
         }
 
 
-        require_once 'external_libs/Smarty/Smarty.class.php';
+
         $smarty_web = new Smarty();
 
 
@@ -1644,7 +1645,7 @@ class Page extends DB_Table {
         $smarty_web->compile_dir  = $base.'EcomB2B/server_files/smarty/templates_c';
         $smarty_web->cache_dir    = $base.'EcomB2B/server_files/smarty/cache';
         $smarty_web->config_dir   = $base.'EcomB2B/server_files/smarty/configs';
-
+        $smarty_web->addPluginsDir('./smarty_plugins');
 
         $smarty_web->setCaching(Smarty::CACHING_LIFETIME_CURRENT);
 
@@ -1832,7 +1833,7 @@ class Page extends DB_Table {
             $this->updated = true;
 
 
-            require_once 'external_libs/Smarty/Smarty.class.php';
+
             $smarty_web = new Smarty();
 
             if (empty($this->fork)) {
@@ -1846,7 +1847,7 @@ class Page extends DB_Table {
             $smarty_web->compile_dir  = $base.'EcomB2B/server_files/smarty/templates_c';
             $smarty_web->cache_dir    = $base.'EcomB2B/server_files/smarty/cache';
             $smarty_web->config_dir   = $base.'EcomB2B/server_files/smarty/configs';
-
+            $smarty_web->addPluginsDir('./smarty_plugins');
 
             $smarty_web->setCaching(Smarty::CACHING_LIFETIME_CURRENT);
 
@@ -3120,7 +3121,7 @@ class Page extends DB_Table {
         }
 
 
-        require_once 'external_libs/Smarty/Smarty.class.php';
+
         $smarty_web = new Smarty();
 
         if (empty($this->fork)) {
@@ -3134,7 +3135,7 @@ class Page extends DB_Table {
         $smarty_web->compile_dir  = $base.'EcomB2B/server_files/smarty/templates_c';
         $smarty_web->cache_dir    = $base.'EcomB2B/server_files/smarty/cache';
         $smarty_web->config_dir   = $base.'EcomB2B/server_files/smarty/configs';
-
+        $smarty_web->addPluginsDir('./smarty_plugins');
 
         $smarty_web->setCaching(Smarty::CACHING_LIFETIME_CURRENT);
 
