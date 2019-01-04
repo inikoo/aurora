@@ -10,22 +10,21 @@
 
 */
 
-require 'vendor/autoload.php';
+require_once '../vendor/autoload.php';
 
 
 include_once 'ar_web_common_logged_in.php';
 require_once 'utils/placed_order_functions.php';
 require_once 'utils/aes.php';
 
-require_once 'external_libs/Smarty/Smarty.class.php';
 
 
 $smarty               = new Smarty();
-$smarty->template_dir = 'templates';
-$smarty->compile_dir  = 'server_files/smarty/templates_c';
-$smarty->cache_dir    = 'server_files/smarty/cache';
-$smarty->config_dir   = 'server_files/smarty/configs';
-
+$smarty->setTemplateDir('templates');
+$smarty->setCompileDir('server_files/smarty/templates_c');
+$smarty->setCacheDir('server_files/smarty/cache');
+$smarty->setConfigDir('server_files/smarty/configs');
+$smarty->addPluginsDir('./smarty_plugins');
 
 $account = get_object('Account', 1);
 

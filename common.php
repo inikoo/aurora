@@ -111,12 +111,17 @@ $session->start();
 
 $session->set('account', $account->get('Code'));
 
-require 'external_libs/Smarty/Smarty.class.php';
+
+
+/**
+ * @var Smarty
+ */
 $smarty               = new Smarty();
-$smarty->template_dir = 'templates';
-$smarty->compile_dir  = 'server_files/smarty/templates_c';
-$smarty->cache_dir    = 'server_files/smarty/cache';
-$smarty->config_dir   = 'server_files/smarty/configs';
+$smarty->setTemplateDir('templates');
+$smarty->setCompileDir('server_files/smarty/templates_c');
+$smarty->setCacheDir('server_files/smarty/cache');
+$smarty->setConfigDir('server_files/smarty/configs');
+$smarty->addPluginsDir('./smarty_plugins');
 $smarty->assign('_DEVEL', _DEVEL);
 
 $is_already_logged_in = (isset($_SESSION['logged_in']) and $_SESSION['logged_in'] ? true : false);

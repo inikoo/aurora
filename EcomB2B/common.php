@@ -12,34 +12,26 @@
 
 error_reporting(E_ALL ^ E_DEPRECATED);
 
-require_once 'vendor/autoload.php';
+require_once '../vendor/autoload.php';
+
 require_once 'utils/sentry.php';
-
-
-
-
-
-
-
-
 
 include_once 'utils/natural_language.php';
 include_once 'utils/general_functions.php';
 include_once 'utils/public_object_functions.php';
 include_once 'utils/detect_agent.php';
 include_once 'utils/aes.php';
-require_once 'external_libs/Smarty/Smarty.class.php';
 include_once 'external_libs/ImageCache.php';
 
 $imagecache = new ImageCache();
 $imagecache->cached_image_directory = 'server_files/cached_images';
 
 $smarty               = new Smarty();
-$smarty->template_dir = 'templates';
-$smarty->compile_dir  = 'server_files/smarty/templates_c';
-$smarty->cache_dir    = 'server_files/smarty/cache';
-$smarty->config_dir   = 'server_files/smarty/configs';
-
+$smarty->setTemplateDir('templates');
+$smarty->setCompileDir('server_files/smarty/templates_c');
+$smarty->setCacheDir('server_files/smarty/cache');
+$smarty->setConfigDir('server_files/smarty/configs');
+$smarty->addPluginsDir('./smarty_plugins');
 
 
 if(session_id() == '' || !isset($_SESSION)) {

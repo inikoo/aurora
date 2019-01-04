@@ -51,16 +51,15 @@ switch ($tipo) {
 
 function get_thanks_html($data, $customer,$db) {
 
-    require_once 'external_libs/Smarty/Smarty.class.php';
 
     $template_suffix=$data['device_prefix'];
 
     $smarty               = new Smarty();
-    $smarty->template_dir = 'templates';
-    $smarty->compile_dir  = 'server_files/smarty/templates_c';
-    $smarty->cache_dir    = 'server_files/smarty/cache';
-    $smarty->config_dir   = 'server_files/smarty/configs';
-
+    $smarty->setTemplateDir('templates');
+    $smarty->setCompileDir('server_files/smarty/templates_c');
+    $smarty->setCacheDir('server_files/smarty/cache');
+$smarty->setConfigDir('server_files/smarty/configs');
+    $smarty->addPluginsDir('./smarty_plugins');
 
 
 

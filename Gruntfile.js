@@ -397,6 +397,8 @@ module.exports = function (grunt) {
                 }, {
                     expand: true, src: ['locale/**'], dest: 'build/fork/'
                 }, {
+                    expand: true, src: ['smarty_plugins/**'], dest: 'build/fork/'
+                }, {
                     expand: true, cwd: 'fork/', src: ['*.php'], dest: 'build/fork/'
                 }, {
                     expand: true, src: ['composer.json'], dest: 'build/fork/composer'

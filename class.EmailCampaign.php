@@ -1074,13 +1074,12 @@ class EmailCampaign extends DB_Table {
         include_once 'class.Email_Tracking.php';
 
 
-        require_once 'external_libs/Smarty/Smarty.class.php';
         $smarty               = new Smarty();
-        $smarty->template_dir = 'templates';
-        $smarty->compile_dir  = 'server_files/smarty/templates_c';
-        $smarty->cache_dir    = 'server_files/smarty/cache';
-        $smarty->config_dir   = 'server_files/smarty/configs';
-
+        $smarty->setTemplateDir('templates');
+        $smarty->setCompileDir('server_files/smarty/templates_c');
+        $smarty->setCacheDir('server_files/smarty/cache');
+$smarty->setConfigDir('server_files/smarty/configs');
+        $smarty->addPluginsDir('./smarty_plugins');
 
         $store   = get_object('Store', $this->data['Email Campaign Store Key']);
         $website = get_object('Website', $store->get('Store Website Key'));
@@ -1375,13 +1374,12 @@ class EmailCampaign extends DB_Table {
         include_once 'class.Email_Tracking.php';
 
 
-        require_once 'external_libs/Smarty/Smarty.class.php';
         $smarty               = new Smarty();
-        $smarty->template_dir = 'templates';
-        $smarty->compile_dir  = 'server_files/smarty/templates_c';
-        $smarty->cache_dir    = 'server_files/smarty/cache';
-        $smarty->config_dir   = 'server_files/smarty/configs';
-
+        $smarty->setTemplateDir('templates');
+        $smarty->setCompileDir('server_files/smarty/templates_c');
+        $smarty->setCacheDir('server_files/smarty/cache');
+$smarty->setConfigDir('server_files/smarty/configs');
+        $smarty->addPluginsDir('./smarty_plugins');
 
         $store   = get_object('Store', $this->data['Email Campaign Store Key']);
         $website = get_object('Website', $store->get('Store Website Key'));

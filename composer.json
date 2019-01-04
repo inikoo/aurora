@@ -8,7 +8,9 @@
         "sentry/sentry": "^1.10",
         "guzzlehttp/guzzle": "~6.0",
         "braintree/braintree_php" : "3.37.0",
-        "ext-json": "*"
-
+        "ext-json": "*",
+        "ext-memcached": "*",
+        "ext-redis": "*",
+        "smarty/smarty": "~3.1"
     }
 }

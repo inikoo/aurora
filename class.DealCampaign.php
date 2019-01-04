@@ -421,12 +421,13 @@ class DealCampaign extends DB_Table {
 
         }
 
-        require_once 'external_libs/Smarty/Smarty.class.php';
         $smarty_web               = new Smarty();
         $smarty_web->template_dir = 'EcomB2B/templates';
         $smarty_web->compile_dir  = 'EcomB2B/server_files/smarty/templates_c';
         $smarty_web->cache_dir    = 'EcomB2B/server_files/smarty/cache';
         $smarty_web->config_dir   = 'EcomB2B/server_files/smarty/configs';
+        $smarty_web->addPluginsDir('./smarty_plugins');
+
         $smarty_web->setCaching(Smarty::CACHING_LIFETIME_CURRENT);
 
 

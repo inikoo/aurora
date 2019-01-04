@@ -9,7 +9,6 @@
 
 */
 
-require_once 'vendor/autoload.php';
 
 
 use CommerceGuys\Addressing\Zone\Zone;

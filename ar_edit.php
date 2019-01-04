@@ -112,7 +112,7 @@ switch ($tipo) {
                      )
         );
 
-        edit_field($account, $db, $user, $editor, $data, $smarty);
+        edit_field($account, $db, $editor, $data, $smarty);
         break;
     case 'object_operation':
 
@@ -270,7 +270,7 @@ switch ($tipo) {
 }
 
 
-function edit_field($account, $db, $user, $editor, $data, $smarty) {
+function edit_field($account, $db, $editor, $data, $smarty) {
 
 
 
