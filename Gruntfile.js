@@ -477,7 +477,7 @@ module.exports = function (grunt) {
                 }
             }, fork_composer: {
                 options: {
-                    local_path: '../fork/composer/composer.json',
+                    local_path: '../fork/composer_config',
                     deploy_path: '/home/fork/composer',
                     host: '<%= secret.fork.host %>',
                     username: '<%= secret.fork.username %>',
@@ -601,7 +601,7 @@ module.exports = function (grunt) {
         'uglify:pweb_desktop_image_gallery'
     ]);
     grunt.registerTask('deploy_fork_stones', ['clean:fork', 'copy:fork_stones', 'copy:fork', 'ssh_deploy:fork_external_libs']);
-    grunt.registerTask('deploy_fork_composer', ['clean:fork', 'copy:fork_stones', 'copy:fork', 'ssh_deploy:fork_composer']);
+    grunt.registerTask('deploy_fork_composer', [ 'copy:fork', 'ssh_deploy:fork_composer']);
 
     grunt.registerTask('deploy_qfork', ['copy:fork', 'ssh_deploy:fork']);
     grunt.registerTask('deploy_websocket_composer', ['clean:websocket',  'copy:websocket', 'ssh_deploy:websocket_composer']);
