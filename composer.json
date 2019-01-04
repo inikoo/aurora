@@ -11,6 +11,7 @@
         "ext-json": "*",
         "ext-memcached": "*",
         "ext-redis": "*",
+        "ext-pdo": "*",
         "smarty/smarty": "~3.1"
     }
 }

@@ -88,6 +88,7 @@ test.php
 
 vendor/*
 EcomB2B/vendor/*
+websocket_server/vendor/*
 
 composer.lock
 
@@ -108,3 +109,20 @@ js/libs/telephone_utils.old.js
 
 EcomB2B/templates/theme_1/blk.checkout.theme_1.EcomB2B.bkup.tpl
 EcomB2B/braintree_paypal_iframe.php
+css/theme_1/
+websocket_server/vendor/guzzlehttp/psr7/.editorconfig
+websocket_server/vendor/guzzlehttp/psr7/src/Rfc7230.php
+websocket_server/vendor/psr/log/Psr/Log/Test/TestLogger.php
+websocket_server/vendor/ralouphie/
+websocket_server/vendor/symfony/contracts/
+websocket_server/vendor/symfony/event-dispatcher/Tests/Debug/WrappedListenerTest.php
+websocket_server/vendor/symfony/http-foundation/Session/SessionUtils.php
+websocket_server/vendor/symfony/http-foundation/Tests/Session/Storage/Handler/Fixtures/with_samesite.expected
+websocket_server/vendor/symfony/http-foundation/Tests/Session/Storage/Handler/Fixtures/with_samesite.php
+websocket_server/vendor/symfony/http-foundation/Tests/Session/Storage/Handler/Fixtures/with_samesite_and_migration.expected
+websocket_server/vendor/symfony/http-foundation/Tests/Session/Storage/Handler/Fixtures/with_samesite_and_migration.php
+websocket_server/vendor/symfony/http-foundation/Tests/Session/Storage/Handler/RedisClusterSessionHandlerTest.php
+websocket_server/vendor/symfony/polyfill-mbstring/Resources/unidata/titleCaseRegexp.php
+websocket_server/vendor/symfony/routing/Matcher/Dumper/PhpMatcherTrait.php
+websocket_server/vendor/symfony/routing/Tests/Fixtures/AnnotationFixtures/RequirementsWithoutPlaceholderNameController.php
+websocket_server/vendor/symfony/routing/Tests/Fixtures/requirements_without_placeholder_name.yml
