@@ -1,8 +1,0 @@
-#!/bin/sh
-set -x
-
-mkdir crossbar
-
-cd crossbar
-
-git clone https://github.com/crossbario/crossbar-starter.git

@@ -477,7 +477,7 @@ module.exports = function (grunt) {
                 }
             }, fork_composer: {
                 options: {
-                    local_path: '../fork/composer',
+                    local_path: '../fork/composer/composer.json',
                     deploy_path: '/home/fork/composer',
                     host: '<%= secret.fork.host %>',
                     username: '<%= secret.fork.username %>',

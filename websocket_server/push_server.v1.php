@@ -1,7 +1,9 @@
 <?php
 require 'vendor/autoload.php';
+
 use Ratchet\Session\SessionProvider;
 use Symfony\Component\HttpFoundation\Session\Session;
+
 use Symfony\Component\HttpFoundation\Session\Storage\NativeSessionStorage;
 use Symfony\Component\HttpFoundation\Session\Storage\Handler\MemcachedSessionHandler;
 use Symfony\Component\HttpFoundation\Session\Storage\Handler;
