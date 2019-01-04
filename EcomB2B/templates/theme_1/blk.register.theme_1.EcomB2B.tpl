@@ -78,15 +78,15 @@
                 <div class="row">
                     <section class="col col-6 " >
                         <label id="_tax_number" class="input" >
-                            <input type="text" name="tax_number" placeholder="{if isset($data.labels._tax_number) and $data.labels._tax_number!=''}{$data.labels._tax_number}{else}{t}Tax number{/t}{/if}">
-                            <b id="_tax_number_tooltip"  class="tooltip tooltip-bottom-right">{if isset($data.labels._tax_number_tooltip) and $data.labels._tax_number_tooltip!=''}{$data.labels._tax_number_tooltip}{else}{t}Tax number{/t}{/if}</b>
+                            <input type="text" name="tax_number" placeholder="{if !empty($data.labels._tax_number) }{$data.labels._tax_number}{else}{t}Tax number{/t}{/if}">
+                            <b id="_tax_number_tooltip"  class="tooltip tooltip-bottom-right">{if !empty($data.labels._tax_number_tooltip)}{$data.labels._tax_number_tooltip}{else}{t}Tax number{/t}{/if}</b>
 
                         </label>
                     </section>
                     <section class="col col-6">
                         <label id="_registration_number" class="input" ">
-                        <input type="text" name="registration_number" placeholder="{if isset($data.labels._registration_number) and $data.labels._registration_number!=''}{$data.labels._registration_number}{else}{t}Registration number{/t}{/if}">
-                        <b id="_registration_number_tooltip"  class="tooltip tooltip-bottom-right">{if isset($data.labels._registration_number_tooltip) and $data.labels._registration_number_tooltip!=''}{$data.labels._registration_number_tooltip}{else}{t}Registration number{/t}{/if}</b>
+                        <input type="text" name="registration_number" placeholder="{if !empty($data.labels._registration_number) }{$data.labels._registration_number}{else}{t}Registration number{/t}{/if}">
+                        <b id="_registration_number_tooltip"  class="tooltip tooltip-bottom-right">{if !empty($data.labels._registration_number_tooltip) }{$data.labels._registration_number_tooltip}{else}{t}Registration number{/t}{/if}</b>
 
                         </label>
                     </section>
@@ -101,15 +101,15 @@
                 <section id="addressLine1" class="{if 'addressLine1'|in_array:$used_address_fields}{else}hide{/if}">
 
                     <label for="file" class="input">
-                        <input type="text"  name="addressLine1" class="{if 'addressLine1'|in_array:$used_address_fields}{else}ignore{/if}" placeholder="{if isset($labels.address_addressLine1) and $labels.address_addressLine1!=''}{$labels.address_addressLine1}{else}{t}Address Line 1{/t}{/if}">
-                        <b class="tooltip tooltip-bottom-right">{if isset($labels.address_addressLine1) and $labels.address_addressLine1!=''}{$labels.address_addressLine1}{else}{t}Address Line 1{/t}{/if}</b>
+                        <input type="text"  name="addressLine1" class="{if 'addressLine1'|in_array:$used_address_fields}{else}ignore{/if}" placeholder="{if !empty($labels.address_addressLine1) }{$labels.address_addressLine1}{else}{t}Address Line 1{/t}{/if}">
+                        <b class="tooltip tooltip-bottom-right">{if !empty($labels.address_addressLine1) }{$labels.address_addressLine1}{else}{t}Address Line 1{/t}{/if}</b>
                     </label>
                 </section>
 
                 <section id="addressLine2" class="{if 'addressLine2'|in_array:$used_address_fields}{else}hide{/if}">
                     <label for="file" class="input">
-                        <input type="text" name="addressLine2" class="{if 'addressLine2'|in_array:$used_address_fields}{else}ignore{/if}" placeholder="{if isset($labels.address_addressLine2) and $labels.address_addressLine2!=''}{$labels.address_addressLine2}{else}{t}Address Line 2{/t}{/if}">
-                        <b class="tooltip tooltip-bottom-right">{if isset($labels.address_addressLine2) and $labels.address_addressLine2!=''}{$labels.address_addressLine2}{else}{t}Address Line 2{/t}{/if}</b>
+                        <input type="text" name="addressLine2" class="{if 'addressLine2'|in_array:$used_address_fields}{else}ignore{/if}" placeholder="{if !empty($labels.address_addressLine2) }{$labels.address_addressLine2}{else}{t}Address Line 2{/t}{/if}">
+                        <b class="tooltip tooltip-bottom-right">{if !empty($labels.address_addressLine2) }{$labels.address_addressLine2}{else}{t}Address Line 2{/t}{/if}</b>
                     </label>
                 </section>
 
@@ -118,8 +118,8 @@
                 <div id="sortingCode" class="row {if 'sortingCode'|in_array:$used_address_fields}{else}hide{/if}">
                     <section class="col col-6 " >
                         <label class="input">
-                            <input type="text" name="sortingCode" class="{if 'sortingCode'|in_array:$used_address_fields}{else}ignore{/if}" placeholder="{if isset($labels.address_sorting_code) and $labels.address_sorting_code!=''}{$labels.address_sorting_code}{else}{t}Sorting code{/t}{/if}">
-                            <b class="tooltip tooltip-bottom-right">{if isset($labels.address_sorting_code) and $labels.address_sorting_code!=''}{$labels.address_sorting_code}{else}{t}Sorting code{/t}{/if}</b>
+                            <input type="text" name="sortingCode" class="{if 'sortingCode'|in_array:$used_address_fields}{else}ignore{/if}" placeholder="{if !empty($labels.address_sorting_code) }{$labels.address_sorting_code}{else}{t}Sorting code{/t}{/if}">
+                            <b class="tooltip tooltip-bottom-right">{if !empty($labels.address_sorting_code) }{$labels.address_sorting_code}{else}{t}Sorting code{/t}{/if}</b>
                         </label>
                     </section>
 
@@ -129,8 +129,8 @@
                 <div id="postalCode" class="row {if 'postalCode'|in_array:$used_address_fields}{else}hide{/if}">
                     <section class="col col-6 " >
                         <label class="input">
-                            <input type="text" name="postalCode" class="{if 'postalCode'|in_array:$used_address_fields}{else}ignore{/if}" placeholder="{if isset($labels["postalCode_`$address_labels.postalCode.code`"]) and $labels["postalCode_`$address_labels.postalCode.code`"]!=''}{$labels["postalCode_`$address_labels.postalCode.code`"]}{else}{$address_labels.postalCode.label}{/if}">
-                            <b class="tooltip tooltip-bottom-right">{if isset($labels["postalCode_`$address_labels.postalCode.code`"]) and $labels["postalCode_`$address_labels.postalCode.code`"]!=''}{$labels["postalCode_`$address_labels.postalCode.code`"]}{else}{$address_labels.postalCode.label}{/if}</b>
+                            <input type="text" name="postalCode" class="{if 'postalCode'|in_array:$used_address_fields}{else}ignore{/if}" placeholder="{if !empty($labels["postalCode_`$address_labels.postalCode.code`"]) }{$labels["postalCode_`$address_labels.postalCode.code`"]}{else}{$address_labels.postalCode.label}{/if}">
+                            <b class="tooltip tooltip-bottom-right">{if !empty($labels["postalCode_`$address_labels.postalCode.code`"]) }{$labels["postalCode_`$address_labels.postalCode.code`"]}{else}{$address_labels.postalCode.label}{/if}</b>
                         </label>
                     </section>
 
@@ -141,7 +141,7 @@
                     <section class="col col-6 " >
                         <label class="input">
                             <input type="text" name="dependentLocality" class="{if 'dependentLocality'|in_array:$used_address_fields}{else}ignore{/if}" placeholder="{if !empty($labels["dependentLocality_`$address_labels.dependentLocality.code`"]) }{$labels["dependentLocality_`$address_labels.dependentLocality.code`"]}{else}{$address_labels.dependentLocality.label}{/if}">
-                            <b class="tooltip tooltip-bottom-right">{if isset($labels["dependentLocality_`$address_labels.dependentLocality.code`"]) and $labels["dependentLocality_`$address_labels.dependentLocality.code`"]!=''}{$labels["dependentLocality_`$address_labels.dependentLocality.code`"]}{else}{$address_labels.dependentLocality.label}{/if}</b>
+                            <b class="tooltip tooltip-bottom-right">{if !empty($labels["dependentLocality_`$address_labels.dependentLocality.code`"]) }{$labels["dependentLocality_`$address_labels.dependentLocality.code`"]}{else}{$address_labels.dependentLocality.label}{/if}</b>
                         </label>
                     </section>
 
@@ -150,7 +150,7 @@
                 <div id="locality" class="row {if 'locality'|in_array:$used_address_fields}{else}hide{/if}">
                     <section class="col col-6 " >
                         <label class="input">
-                            <input type="text" name="locality" class="{if 'locality'|in_array:$used_address_fields}{else}ignore{/if}" placeholder="{if isset($labels["locality_`$address_labels.locality.code`"]) and $labels["locality_`$address_labels.locality.code`"]!=''}{$labels["locality_`$address_labels.locality.code`"]}{else}{$address_labels.locality.label}{/if}">
+                            <input type="text" name="locality" class="{if 'locality'|in_array:$used_address_fields}{else}ignore{/if}" placeholder="{if !empty($labels["locality_`$address_labels.locality.code`"]) }{$labels["locality_`$address_labels.locality.code`"]}{else}{$address_labels.locality.label}{/if}">
                             <b class="tooltip tooltip-bottom-right"></b>
                         </label>
                     </section>
@@ -162,7 +162,7 @@
                     <section class="col col-6 " >
                         <label class="input">
                             <input type="text" name="administrativeArea" class="{if 'administrativeArea'|in_array:$used_address_fields}{else}ignore{/if}" placeholder="{if !empty($labels["administrativeArea_`$address_labels.administrativeArea.code`"])}{$labels["administrativeArea_`$address_labels.administrativeArea.code`"]}{else}{$address_labels.administrativeArea.label}{/if}">
-                            <b class="tooltip tooltip-bottom-right">{if isset($labels["administrativeArea_`$address_labels.administrativeArea.code`"]) and $labels["administrativeArea_`$address_labels.administrativeArea.code`"]!=''}{$labels["administrativeArea_`$address_labels.administrativeArea.code`"]}{else}{$address_labels.administrativeArea.label}{/if}</b>
+                            <b class="tooltip tooltip-bottom-right">{if !empty($labels["administrativeArea_`$address_labels.administrativeArea.code`"]) }{$labels["administrativeArea_`$address_labels.administrativeArea.code`"]}{else}{$address_labels.administrativeArea.label}{/if}</b>
                         </label>
                     </section>
 
@@ -173,7 +173,7 @@
                     <section class="col col-5">
                         <label class="select">
                             <select id="country_select" name="country">
-                                <option value="0" selected disabled>{if isset($labels.address_country) and $labels.address_country!=''}{$labels.address_country}{else}{t}Country{/t}{/if}</option>
+                                <option value="0" selected disabled>{if !empty($labels.address_country) }{$labels.address_country}{else}{t}Country{/t}{/if}</option>
 
                                 {foreach from=$countries item=country}
                                     <option value="{$country.2alpha}" {if $country.2alpha==$selected_country}selected{/if} >{$country.name}</option>
