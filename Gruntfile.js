@@ -5,7 +5,7 @@ module.exports = function (grunt) {
 
         clean: {
             app: ["build/app/*", "!build/app/keyring/**", "!build/app/server_files/**"],
-            fork: ["build/fork/*", "!build/fork/keyring/**", "!build/fork/server_files/**"],
+            fork: ["../fork/*", "!../fork/keyring/**", "!../fork/server_files/**"],
             websocket: ["build/websocket/*"],
         }, concat: {
             js_libs: {
@@ -393,15 +393,15 @@ module.exports = function (grunt) {
 
             fork_stones: {
                 files: [{
-                    expand: true, src: ['external_libs/**'], dest: 'build/fork/'
+                    expand: true, src: ['external_libs/**'], dest: '../fork/'
                 }, {
-                    expand: true, src: ['locale/**'], dest: 'build/fork/'
+                    expand: true, src: ['locale/**'], dest: '../fork/'
                 }, {
-                    expand: true, src: ['smarty_plugins/**'], dest: 'build/fork/'
+                    expand: true, src: ['smarty_plugins/**'], dest: '../fork/'
                 }, {
-                    expand: true, cwd: 'fork/', src: ['*.php'], dest: 'build/fork/'
+                    expand: true, cwd: 'fork/', src: ['*.php'], dest: '../fork/'
                 }, {
-                    expand: true, src: ['composer.json'], dest: 'build/fork/composer'
+                    expand: true, src: ['composer.json'], dest: '../fork/composer'
                 }
 
                 ]
@@ -409,25 +409,25 @@ module.exports = function (grunt) {
 
             fork: {
                 files: [{
-                    expand: true, cwd: 'fork/', src: ['tmp/*.txt'], dest: 'build/fork/'
+                    expand: true, cwd: 'fork/', src: ['tmp/*.txt'], dest: '../fork/'
                 }, {
-                    expand: true, src: ['class.*.php'], dest: 'build/fork/'
+                    expand: true, src: ['class.*.php'], dest: '../fork/'
                 }, {
-                    expand: true, src: ['trait.*.php'], dest: 'build/fork/'
+                    expand: true, src: ['trait.*.php'], dest: '../fork/'
                 }, {
-                    expand: true, src: ['conf/*.php'], dest: 'build/fork/'
+                    expand: true, src: ['conf/*.php'], dest: '../fork/'
                 }, {
-                    expand: true, src: ['nano_services/*.php'], dest: 'build/fork/'
+                    expand: true, src: ['nano_services/*.php'], dest: '../fork/'
                 }, {
-                    expand: true, src: ['conf/fields/*.php'], dest: 'build/fork/'
+                    expand: true, src: ['conf/fields/*.php'], dest: '../fork/'
                 }, {
-                    expand: true, src: ['utils/*.php'], dest: 'build/fork/'
+                    expand: true, src: ['utils/*.php'], dest: '../fork/'
                 }, {
-                    expand: true, src: ['widgets/*.php'], dest: 'build/fork/'
+                    expand: true, src: ['widgets/*.php'], dest: '../fork/'
                 }, {
-                    expand: true, cwd: 'fork/', src: ['*.php'], dest: 'build/fork/'
+                    expand: true, cwd: 'fork/', src: ['*.php'], dest: '../fork/'
                 }, {
-                    expand: true, src: ['templates/unsubscribe*.tpl'], dest: 'build/fork/'
+                    expand: true, src: ['templates/unsubscribe*.tpl'], dest: '../fork/'
                 }
 
                 ],
@@ -453,7 +453,7 @@ module.exports = function (grunt) {
                 current_symlink: 'current', zip_deploy: true, max_buffer: 200 * 1024 * 1024
             }, fork: {
                 options: {
-                    local_path: 'build/fork/',
+                    local_path: '../fork/',
                     deploy_path: '/home/fork/fork',
                     host: '<%= secret.fork.host %>',
                     username: '<%= secret.fork.username %>',
@@ -466,7 +466,7 @@ module.exports = function (grunt) {
                 }
             }, fork_external_libs: {
                 options: {
-                    local_path: 'build/fork/external_libs',
+                    local_path: '../fork/external_libs',
                     deploy_path: '/home/fork/external_libs',
                     host: '<%= secret.fork.host %>',
                     username: '<%= secret.fork.username %>',
@@ -477,7 +477,7 @@ module.exports = function (grunt) {
                 }
             }, fork_composer: {
                 options: {
-                    local_path: 'build/fork/composer',
+                    local_path: '../fork/composer',
                     deploy_path: '/home/fork/composer',
                     host: '<%= secret.fork.host %>',
                     username: '<%= secret.fork.username %>',
