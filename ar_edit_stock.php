@@ -79,7 +79,7 @@ switch ($tipo) {
         );
 
 
-        edit_part_move_stock($account, $db, $user, $editor, $data, $smarty);
+        edit_part_move_stock($editor, $data, $smarty);
         break;
     case 'set_as_picking_location':
 
@@ -701,7 +701,9 @@ function new_part_location($account, $db, $user, $editor, $data, $smarty) {
         */
 
         $picking_location_icon = sprintf(
-            '<i onclick="set_as_picking_location(%d,%d)" class="fa fa-fw fa-shopping-basket %s" aria-hidden="true" title="%s" ></i></span>', $part_location->part->id, $part_location->location->id,
+            '<i onclick="set_as_picking_location(%d,%d)" class="fa fa-fw fa-shopping-basket %s" aria-hidden="true" title="%s" ></i></span>',
+            $part_location->part->id,
+            $part_location->location->id,
             ($part_location->get('Can Pick') == 'Yes' ? '' : 'super_discreet_on_hover button'), ($part_location->get('Can Pick') == 'Yes' ? _('Picking location') : _('Set as picking location'))
 
         );
@@ -828,7 +830,12 @@ function edit_part_location_stock($account, $db, $user, $editor, $data, $smarty)
 
 }
 
-function edit_part_move_stock($account, $db, $user, $editor, $data, $smarty) {
+/**
+ * @param $editor   array
+ * @param $data array
+ * @param $smarty \Smarty
+ */
+function edit_part_move_stock( $editor, $data, $smarty) {
 
 
     $part = get_object('Part', $data['part_sku']);
@@ -890,7 +897,21 @@ function edit_part_move_stock($account, $db, $user, $editor, $data, $smarty) {
         }
 
         $part_location_from         = new PartLocation($part->sku, $movement['from_location_key']);
+
+        if(!$part_location_from->ok){
+            $response = array(
+                'state' => 400,
+                'msg'   => 'from location_part not found'
+            );
+            echo json_encode($response);
+            exit;
+
+        }
+
         $part_location_from->editor = $editor;
+
+
+
 
 
         $part_location_to         = new PartLocation($part->sku, $movement['to_location_key']);
@@ -938,9 +959,7 @@ function edit_part_move_stock($account, $db, $user, $editor, $data, $smarty) {
         'Stock_Status_Icon'        => $part->get('Stock Status Icon'),
         'Current_Stock'            => $part->get('Current Stock'),
         'Current_Stock_Picked'     => $part->get('Current Stock Picked'),
-        'Current_Stock_In_Process' => $part->get(
-            'Current Stock In Process'
-        ),
+        'Current_Stock_In_Process' => $part->get('Current Stock In Process'),
         'Current_Stock_Available'  => $part->get('Current Stock Available'),
         'Available_Forecast'       => $part->get('Available Forecast'),
         'Part_Locations'           => $part_locations,
