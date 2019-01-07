@@ -15,10 +15,12 @@ class Public_Email_Template {
 
     public $id = 0;
 
-    function _constructor($a1, $a2 = false, $a3 = false) {
+    function __construct($a1, $a2 = false, $a3 = false) {
 
         global $db;
         $this->db = $db;
+
+
 
         $this->table_name    = 'Email Template';
         $this->ignore_fields = array('Email Template Key');
@@ -39,6 +41,8 @@ class Public_Email_Template {
 
     function get_data($tag, $key) {
 
+
+
         if ($tag == 'id') {
 
             $sql = sprintf(
@@ -47,6 +51,8 @@ class Public_Email_Template {
         } else {
             return;
         }
+
+
 
 
 

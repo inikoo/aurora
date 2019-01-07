@@ -83,8 +83,11 @@ function get_object($object_name, $key, $load_other_data = false) {
             break;
 
         case 'email_template':
+
             require_once "class.Public_Email_Template.php";
             $object = new Public_Email_Template($key);
+
+
             break;
         case 'published_email_template':
             require_once "class.Public_Published_Email_Template.php";

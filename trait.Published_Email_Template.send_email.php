@@ -37,6 +37,9 @@ trait Send_Email {
         }
 
 
+
+
+
         if ($this->get('Published Email Template Subject') == '') {
 
             $this->error = true;
@@ -316,6 +319,9 @@ trait Send_Email {
                 ],
             )
         );
+
+
+
 
 
         try {
