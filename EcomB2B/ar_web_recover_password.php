@@ -11,6 +11,7 @@
 
 //use Aws\Ses\SesClient;
 
+include_once '../vendor/autoload.php';
 
 require_once 'common.php';
 require_once 'utils/ar_web_common.php';
@@ -105,12 +106,17 @@ function recover_password($db, $data, $editor, $website, $account) {
             $published_email_template = get_object('published_email_template', $email_template->get('Email Template Published Email Key'));
 
 
+
+
             $send_data=array(
                 'Email_Template_Type'=>$email_template_type,
                 'Email_Template'=>$email_template,
                 'Reset_Password_URL'=>'https://'.$website->get('Website URL').'/reset.php?s='.$selector.'&a='.$authenticator
 
             );
+
+
+
 
             $published_email_template->send($customer,$send_data);
 
