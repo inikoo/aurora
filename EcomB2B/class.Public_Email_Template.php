@@ -15,7 +15,7 @@ class Public_Email_Template {
 
     public $id = 0;
 
-    function Public_Email_Template($a1, $a2 = false, $a3 = false) {
+    function _constructor($a1, $a2 = false, $a3 = false) {
 
         global $db;
         $this->db = $db;
