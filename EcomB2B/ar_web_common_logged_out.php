@@ -10,6 +10,8 @@
 
 */
 
+include_once '../vendor/autoload.php';
+
 require_once 'keyring/key.php';
 include_once 'utils/public_object_functions.php';
 
