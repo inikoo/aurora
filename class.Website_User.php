@@ -16,7 +16,7 @@ include_once 'class.DB_Table.php';
 class Website_User extends DB_Table {
 
 
-    function Website_User($a1 = 'id', $a2 = false, $a3 = false) {
+    function __construct($a1 = 'id', $a2 = false, $a3 = false) {
         global $db;
         $this->db = $db;
 
