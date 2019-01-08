@@ -23,13 +23,13 @@ if ($parameters['parent'] == 'supplier') {
     $table = "  `Part Location Dimension` PLD  left join `Part Dimension` P on (PLD.`Part SKU`=P.`Part SKU`) left join `Supplier Part Dimension` SP on (SP.`Supplier Part Part SKU`=P.`Part SKU`) left join `Location Dimension` L on (PLD.`Location Key`=L.`Location Key`) ";
 
     $where = sprintf(
-        "where `Supplier Part Supplier Key`=%d and PLD.`Location Key`=1 ", $parameters['parent_key']
+        "where `Supplier Part Supplier Key`=%d and L.`Location Type`='Unknown'", $parameters['parent_key']
     );
 }else if ($parameters['parent'] == 'warehouse') {
     $table = "  `Part Location Dimension` PLD  left join `Part Dimension` P on (PLD.`Part SKU`=P.`Part SKU`) left join `Location Dimension` L on (PLD.`Location Key`=L.`Location Key`) ";
 
     $where = sprintf(
-        "where `Location Warehouse Key`=%d and L.`Location Type`!='Unknown' ", $parameters['parent_key']
+        "where `Location Warehouse Key`=%d and L.`Location Type`='Unknown' ", $parameters['parent_key']
     );
 } else {
     exit("parent not found ".$parameters['parent']);
@@ -72,6 +72,8 @@ if ($order == 'reference') {
 
 $sql_totals = "select count(*) as num from $table  $where  ";
 
+
+//print $sql_totals;
 
 
 $fields
