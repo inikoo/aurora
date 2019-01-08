@@ -16,7 +16,7 @@ include_once 'class.DBW_Table.php';
 class Public_Website_User extends DBW_Table {
 
 
-    function Public_Website_User($a1 = 'id', $a2 = false, $a3 = false) {
+    function __construct($a1 = 'id', $a2 = false, $a3 = false) {
         global $db;
         $this->db = $db;
 
