@@ -294,6 +294,7 @@ trait Send_Email {
             if (isset($data['Unsubscribe URL'])) {
 
 
+
                 $smarty->assign('localised_labels', $localised_labels);
 
 
