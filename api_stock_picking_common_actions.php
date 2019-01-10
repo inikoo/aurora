@@ -818,7 +818,7 @@ switch ($_REQUEST['action']) {
             array(
                 'Destination Key'  => $_REQUEST['location_to_key'],
                 'Quantity To Move' => $_REQUEST['qty']
-            ), $editor['Date']
+            )
         );
 
 
