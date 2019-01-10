@@ -92,7 +92,9 @@ function place_order_pay_sofort($store, $order, $data, $customer, $website, $edi
     );
 
 
+
     $sofort = new Sofortueberweisung($payment_account->get('Payment Account Password'));
+
 
     require_once "external_libs/random/lib/random.php";
     $secret = hash('crc32', base64_url_encode(random_bytes(9)), false);
@@ -109,7 +111,6 @@ function place_order_pay_sofort($store, $order, $data, $customer, $website, $edi
 
 
 
-
     $sofort->setReason(sprintf('Payment order %s', $order->get('Order Public ID')));
     $sofort->setSuccessUrl('https://'.$website->get('Website URL').'/sofort.php?conf='.$secret.'&tx=-TRANSACTION-&order_key='.$order->id, true);
     $sofort->setAbortUrl('https://'.$website->get('Website URL').'/sofort.php?cancel=1&conf='.$secret.'&tx=-TRANSACTION-&order_key='.$order->id, true);
@@ -120,7 +121,7 @@ function place_order_pay_sofort($store, $order, $data, $customer, $website, $edi
     $sofort->sendRequest();
     if ($sofort->isError()) {
 
-        print_r($sofort);
+       // print_r($sofort);
 
         $response = array(
 
