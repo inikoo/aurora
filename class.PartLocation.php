@@ -1166,9 +1166,7 @@ class PartLocation extends DB_Table {
         }
 
 
-        $transaction_id = $this->stock_transfer(
-            $stock_transfer_data, $date
-        );
+        $transaction_id = $this->stock_transfer($stock_transfer_data);
 
         if (!$transaction_id) {
             $this->error = true;
@@ -1183,8 +1181,7 @@ class PartLocation extends DB_Table {
 
     }
 
-    function stock_transfer($data, $date = '') {
-        // this is real time function
+    function stock_transfer($data) {
 
 
         global $account;
@@ -1213,9 +1210,15 @@ class PartLocation extends DB_Table {
             "UPDATE `Part Location Dimension` SET `Quantity On Hand`=%f ,`Stock Value`=%.3f, `Last Updated`=NOW()  WHERE `Part SKU`=%d AND `Location Key`=%d ", $this->data['Quantity On Hand'] + $qty_change,
             ($this->data['Quantity On Hand'] + $qty_change) * $this->part->get('Part Cost in Warehouse'), $this->part_sku, $this->location_key
         );
-        //print $sql;
+
+
+
+        $trigger_discontinued=$this->part->trigger_discontinued;
+
         $this->db->exec($sql);
         $this->get_data();
+
+        $this->part->trigger_discontinued=$trigger_discontinued;
 
 
         $details = '';
@@ -1312,6 +1315,7 @@ class PartLocation extends DB_Table {
         $transaction_id = $this->db->lastInsertId();
 
 
+
         $this->part->update_stock();
 
         $this->part->update_unknown_location();
@@ -1392,7 +1396,13 @@ class PartLocation extends DB_Table {
 
     }
 
-    function move_stock($data, $date) {
+    function move_stock($data) {
+
+
+        $this->part->trigger_discontinued=false;
+
+
+
 
 
         if ($this->error) {
@@ -1437,6 +1447,18 @@ class PartLocation extends DB_Table {
 
         $destination = new PartLocation('find', $destination_data, 'create');
 
+
+
+
+        if(!$destination->ok){
+            $this->error = true;
+            $this->msg   = 'to location_part not found';
+
+            return;
+
+        }
+
+
         if (!is_numeric($destination->data['Quantity On Hand'])) {
             $this->error = true;
             $this->msg   = _('Unknown stock in the destination location');
@@ -1452,7 +1474,7 @@ class PartLocation extends DB_Table {
                     'Transaction Type' => 'Move Out',
                     'Destination'      => $destination->location->data['Location Code']
 
-                ), $date
+                )
             );
             if ($this->error) {
                 return;
@@ -1465,7 +1487,7 @@ class PartLocation extends DB_Table {
                     'Origin'           => $this->location->data['Location Code'],
                     //  'Value'            => -1 * $this->value_change
 
-                ), $date
+                )
             );
 
 
@@ -1536,7 +1558,7 @@ class PartLocation extends DB_Table {
         );
         //print_r($_data);
 
-        $this->stock_transfer($_data, $date);
+        $this->stock_transfer($_data);
 
     }
 

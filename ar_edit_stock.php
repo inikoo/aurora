@@ -914,15 +914,15 @@ function edit_part_move_stock( $editor, $data, $smarty) {
 
 
 
-        $part_location_to         = new PartLocation($part->sku, $movement['to_location_key']);
-        $part_location_to->editor = $editor;
+        //$part_location_to         = new PartLocation($part->sku, $movement['to_location_key']);
+        //$part_location_to->editor = $editor;
 
 
         $part_location_from->move_stock(
             array(
                 'Destination Key'  => $movement['to_location_key'],
                 'Quantity To Move' => $movement['move_qty']
-            ), $editor['Date']
+            )
         );
 
     } else {
@@ -933,6 +933,16 @@ function edit_part_move_stock( $editor, $data, $smarty) {
         echo json_encode($response);
         exit;
     }
+
+    if($part_location_from->error){
+        $response = array(
+            'state' => 400,
+            'msg'   => $part_location_from->msg
+        );
+        echo json_encode($response);
+        exit;
+    }
+
 
 
     $response = array('state' => 200);
@@ -1008,7 +1018,7 @@ function edit_stock_to_delete($account, $db, $user, $editor, $data, $smarty) {
             array(
                 'Destination Key'  => $movement['to_location_key'],
                 'Quantity To Move' => $movement['move_qty']
-            ), $editor['Date']
+            )
         );
 
     }
