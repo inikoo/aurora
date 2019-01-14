@@ -64,7 +64,7 @@ function save_whiteboard_content(object){
 
 
     $.ajax({
-        url: "/ar_help.php", type: 'POST', data: ajaxData, dataType: 'json', cache: false, contentType: false, processData: false,
+        url: "/ar_edit_help.php", type: 'POST', data: ajaxData, dataType: 'json', cache: false, contentType: false, processData: false,
         complete: function () {
         }, success: function (data) {
 
@@ -89,20 +89,20 @@ function save_whiteboard_content(object){
 
 function help() {
 
-    var request = "/ar_help.php?tipo=help&state=" + JSON.stringify(state)
+    var request = "/ar_help.php?state=" +JSON.stringify(state)
 
     $.getJSON(request, function (data) {
 
-        if (typeof(data.title) != "undefined" && data.title !== null && data.title != '') {
+        if (typeof(data.help.title) != "undefined" && data.help.title !== null && data.help.title != '') {
 
-            $('#help  .help_title').html(data.title).removeClass('hide');
+            $('#help  .help_title').html(data.help.title).removeClass('hide');
         } else {
             $('#help  .help_title').html('').addClass('hide');
         }
 
-        if (typeof(data.content) != "undefined" && data.content !== null && data.content != '') {
+        if (typeof(data.help.content) != "undefined" && data.help.content !== null && data.help.content != '') {
 
-            $('#help  .content').html(data.content).removeClass('hide');
+            $('#help  .content').html(data.help.content).removeClass('hide');
 
             if ($('#help  .content .question').length == 1) {
                 show_answer($('#help  .content .question')[0])
@@ -115,11 +115,32 @@ function help() {
         }
 
 
+
+        $('#whiteboard_content').html(data.whiteboard.content).removeClass('hide').data.whiteboard('empty',data.whiteboard.empty);
+        $('#whiteboard_content_tab').html(data.whiteboard.content_tab).removeClass('hide').data.whiteboard('empty',data.whiteboard.empty_tab);
+
+
+
+
+
+        $('#whiteboard_content_title').html(data.whiteboard.page_title);
+        $('#whiteboard_content_tab_title').html(data.whiteboard.tab_title);
+
+        if(data.whiteboard.has_tab){
+            $('#whiteboard_content_tab').removeClass('hide')
+        }else{
+            $('#whiteboard_content_tab').addClass('hide')
+        }
+
+
+
+
     })
 
 
 }
 
+/*
 function whiteboard() {
 
     var request = "/ar_help.php?tipo=whiteboard&state=" + JSON.stringify(state)
@@ -163,7 +184,7 @@ function whiteboard() {
 
 
 }
-
+*/
 
 function show_answer(element) {
 
@@ -190,8 +211,8 @@ function show_answer(element) {
 
 
 function show_side_content(type) {
-
-
+    help()
+/*
     $('.side_content').addClass('hide')
     $('.side_content_icon').removeClass('selected')
 
@@ -209,10 +230,10 @@ function show_side_content(type) {
     }
 
 
-    var request = "/ar_help.php?tipo=side_block&value=" + type
+    var request = "/ar_edit_help.php?tipo=side_block&value=" + type
 
     $.getJSON(request, function (data) {
     })
 
-
+*/
 }

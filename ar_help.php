@@ -10,294 +10,73 @@
  Version 3.0
 */
 
-
-require_once 'common.php';
-require_once 'utils/ar_common.php';
-
-
-$tipo = $_REQUEST['tipo'];
-
-
-switch ($tipo) {
-
-    case 'help':
-        $data = prepare_values($_REQUEST, array('state' => array('type' => 'json array'),));
-        get_help($data, $modules, $db, $account, $user, $smarty);
-        break;
-    case 'whiteboard':
-        $data = prepare_values($_REQUEST, array('state' => array('type' => 'json array'),));
-        get_whiteboard($data, $modules, $db, $account, $user, $smarty);
-        break;
-    case 'save_whiteboard':
-        $data = prepare_values(
-            $_REQUEST, array(
-                         'state'   => array('type' => 'json array'),
-                         'block'   => array('type' => 'string'),
-                         'content' => array('type' => 'string'),
-                     )
-        );
-        save_whiteboard($data, $modules, $db, $account, $user, $editor);
-        break;
-    case 'side_block':
-        $data                   = prepare_values($_REQUEST, array('value' => array('type' => 'string')));
-        $_SESSION['side_block'] = $data['value'];
-        break;
-    default:
-        $response = array(
-            'state' => 404,
-            'resp'  => 'Operation not found 2'
-        );
-        echo json_encode($response);
-
-}
-
-function save_whiteboard($data, $modules, $db, $account, $user, $editor) {
-
-
-    if (!isset($data['state']['module']) or !isset($data['state']['section'])) {
-        $response = array(
-            'status' => 400
-        );
-
-
-        echo json_encode($response);
-        exit;
-    }
-
-    $module  = $data['state']['module'];
-    $section = $data['state']['section'];
-
-    $tab = ($data['state']['subtab'] == '' ? $data['state']['tab'] : $data['state']['subtab']);
-
-
-    if ($data['block'] == 'tab') {
-
-        $hash = hash('crc32', $module.$section.$tab, false);
-        $type = 'Tab';
-    } else {
-        $hash = hash('crc32', $module.$section.'=P=', false);
-        $type = 'Page';
-    }
-
-
-    $date = gmdate('Y-m-d H:i:s');
-
-    $sql = sprintf(
-        'INSERT INTO `Whiteboard Dimension` (`Whiteboard Hash`,`Whiteboard Type`,`Whiteboard Module`,`Whiteboard Section`,`Whiteboard Tab`,`Whiteboard Text`,`Whiteboard Created`,`Whiteboard Updated`,`Whiteboard Last Updated User Key`,`Whiteboard Last Updated Staff Key`) 
-        VALUES (%s,%s,%s,%s,%s,%s,%s,%s,%d,%d) ON DUPLICATE KEY UPDATE `Whiteboard Text`=%s,`Whiteboard Updated`=%s,`Whiteboard Last Updated User Key`=%d ,`Whiteboard Last Updated Staff Key`=%d ', prepare_mysql($hash), prepare_mysql($type), prepare_mysql($module),
-        prepare_mysql($section), prepare_mysql($tab),
-        prepare_mysql($data['content'], false), prepare_mysql($date), prepare_mysql($date), $user->id, $user->get_staff_key(), prepare_mysql($data['content'], false), prepare_mysql($date), $user->id, $user->get_staff_key()
-
-    );
-
-
-    $db->exec($sql);
-
-
-    $response = array(
-        'status' => 200
-    );
-    echo json_encode($response);
-
+$redis = new Redis();
+if ($redis->connect('127.0.0.1', 6379)) {
+    $redis_on = true;
+} else {
+    $redis_on = false;
 }
 
 
-function get_help($data, $modules, $db, $account, $user, $smarty) {
-
-    if (empty($state['module']) or empty($state['tab'])) {
-
-        $response = array(
-            'title'   => '',
-            'content' => _('There is not help for this section')
-        );
-
-    } else {
-        $title   = get_title($data['state'], $account, $user);
-        $content = get_content($data['state'], $smarty, $account, $user);
-
-        $response = array(
-            'title'   => $title,
-            'content' => $content
-        );
-    }
+$state = json_decode($_REQUEST['state'], true);
 
 
-    echo json_encode($response);
 
+$section = $state['section'];
 
+if (empty($state['tab'])) {
+    $state['tab'] = '';
+}
+
+if (empty($state['subtab'])) {
+    $state['subtab'] = '';
+}
+
+if (empty($state['section'])) {
+    $state['section'] = '';
+}
+
+if (empty($state['module'])) {
+    $state['module'] = '';
 }
 
 
-function get_title($state, $account, $user) {
+
+$help_cache_key = 'au_help|'.hash('crc32', $state['module'].'|'.$state['section']).'|'.hash('crc32', $state['tab'].$state['subtab']);
+
+if ($redis->exists($help_cache_key) ) {
+
+    $response = $redis->get($help_cache_key);
 
 
-    if (empty($state['tab'])) {
-        return '';
-    }
 
-    if ($state['tab'] == 'supplier.supplier_parts') {
-        return _("Supplier's part list & adding supplier parts");
-    } elseif ($state['tab'] == 'employees') {
-        if ($user->can_create('staff')) {
-            return _('Employees list & adding employees');
-        } else {
+    echo $response;
 
-            return _('Employees list');
-        }
-    } elseif ($state['tab'] == 'employee.new') {
-        return _('Adding an employee');
+} else {
 
-    } elseif ($state['tab'] == 'warehouse.locations') {
-        return _("Locations list");
+    include_once 'common.php';
 
-    }
+    include_once 'utils/help.functions.php';
 
-    return '';
-}
-
-
-function get_content($state, $smarty, $account, $user) {
-
-    if (empty($state['module']) or empty($state['tab'])) {
-        return '';
-    }
-
-
-    $smarty->assign('user', $user);
-    $smarty->assign('object', $state['object']);
-    $smarty->assign('key', $state['key']);
-
-    $smarty->assign('account', $account);
-
-
-    $template = 'help/'.$state['module'].'.'.$state['tab'].'.quick.tpl';
-    if ($smarty->templateExists($template)) {
-        return $smarty->fetch($template);
-    } else {
-        return _('There is not help for this section').' '.$state['module'].'.'.$state['tab'];
-
-    }
-
-}
-
-
-function get_whiteboard($data, $modules, $db, $account, $user, $smarty) {
-
-
-    if (!isset($data['state']['module']) or !isset($data['state']['section'])) {
-        $response = array(
-            'status' => 400
+    $response =
+        array(
+            'help' =>
+                array(
+                    'title'   => get_help_title($state, $user),
+                    'content' => get_help_content($state, $smarty, $account, $user)
+                ),
+            'whiteboard'=>get_whiteboard($state['module'], $state['section'], $state['tab'], $state['subtab'], $modules, $db)
         );
 
 
-        echo json_encode($response);
-        exit;
-    }
-
-    $module  = $data['state']['module'];
-    $section = $data['state']['section'];
-
-    $tab = ($data['state']['subtab'] == '' ? $data['state']['tab'] : $data['state']['subtab']);
 
 
-    $hash_page = hash('crc32', $module.$section.'=P=', false);
+    $redis->set($help_cache_key, $response);
 
-    $hash_tab = hash('crc32', $module.$section.$tab, false);
-
-
-    $page_title = sprintf(_('%s (page)'), (isset($modules[$module]['sections'][$section]['label']) ? $modules[$module]['sections'][$section]['label'] : $section));
-
-
-    $empty_tab = true;
-    $has_tab   = false;
-    $text_tab  = '';
-    $tab_title = '';
-    if (isset($modules[$module]['sections'][$section]['tabs']) and count($modules[$module]['sections'][$section]['tabs']) > 1) {
-        $has_tab = true;
-
-        if ($data['state']['subtab'] == '') {
-
-
-            $tab_title = sprintf(_('%s (tab)'), (isset($modules[$module]['sections'][$section]['tabs'][$tab]['label']) ? $modules[$module]['sections'][$section]['tabs'][$tab]['label'] : $tab));
-
-        } else {
-
-
-            $tab_title = sprintf(
-                _('%s (tab)'), (
-            isset($modules[$module]['sections'][$section]['tabs'] [$data['state']['tab']] ['subtabs'][$data['state']['subtab']]['label'])
-                ?
-                $modules[$module]['sections'][$section]['tabs'][$data['state']['tab']]['subtabs'][$data['state']['subtab']]['label']
-                : $tab
-            )
-            );
-
-        }
-
-
-        $sql = sprintf('SELECT `Whiteboard Text` FROM `Whiteboard Dimension` WHERE `Whiteboard Hash`=%s ', prepare_mysql($hash_tab));
-
-
-        if ($result = $db->query($sql)) {
-            if ($row = $result->fetch()) {
-
-                if ($row['Whiteboard Text'] == '') {
-                    $text_tab  = '<em class="very_discreet">'._('Feel free to type something about this tab').' ('.$tab.') </em>';
-                    $empty_tab = true;
-                } else {
-
-                    $text_tab  = $row['Whiteboard Text'];
-                    $empty_tab = false;
-                }
-
-
-            } else {
-                $text_tab  = '<em class="very_discreet">'._('Feel free to type something about this tab').' ('.$tab.') </em>';
-                $empty_tab = true;
-            }
-        } else {
-            print_r($error_info = $db->errorInfo());
-            print "$sql\n";
-            exit;
-        }
-
-
-    }
-
-
-    $sql = sprintf('SELECT `Whiteboard Text` FROM `Whiteboard Dimension` WHERE `Whiteboard Hash`=%s ', prepare_mysql($hash_page));
-    if ($result = $db->query($sql)) {
-        if ($row = $result->fetch()) {
-
-
-            $text  = $row['Whiteboard Text'];
-            $empty = false;
-        } else {
-            $text  = '<em class="very_discreet">'._('Feel free to type something about this page').' ('.$data['state']['section'].') </em>';
-            $empty = true;
-        }
-    } else {
-        print_r($error_info = $db->errorInfo());
-        print "$sql\n";
-        exit;
-    }
-
-
-    $response = array(
-        'status'      => 200,
-        'empty'       => $empty,
-        'content'     => $text,
-        'has_tab'     => $has_tab,
-        'empty_tab'   => $empty_tab,
-        'content_tab' => $text_tab,
-        'page_title'  => $page_title,
-        'tab_title'   => $tab_title,
-
-    );
 
     echo json_encode($response);
 
 }
 
 
-?>
+
