@@ -354,7 +354,10 @@ function send_test_email($data, $smarty) {
 
         if(isset($data['options']) and  $data['options']=='with_tracking_code'){
 
-            $request['Message']['Body']['Html']['Data']=preg_replace('/\[Not Tracking START\].*\[END\]/','',$request['Message']['Body']['Html']['Data']);
+
+
+
+            $request['Message']['Body']['Html']['Data']=preg_replace('/\[Not Tracking START\].*\[END\]/i','',$request['Message']['Body']['Html']['Data']);
 
             if(preg_match('/\[Tracking START\](.*)\[END\]/',$request['Message']['Body']['Html']['Data'],$matches)){
                 $request['Message']['Body']['Html']['Data']=preg_replace('/\[Tracking START\].*\[END\]/',$matches[1],$request['Message']['Body']['Html']['Data']);
@@ -362,7 +365,7 @@ function send_test_email($data, $smarty) {
             }
 
         }else{
-            $request['Message']['Body']['Html']['Data']=preg_replace('/\[Tracking START\].*\[END\]/','',$request['Message']['Body']['Html']['Data']);
+            $request['Message']['Body']['Html']['Data']=preg_replace('/\[Tracking START\].*\[END\]/i','',$request['Message']['Body']['Html']['Data']);
 
             if(preg_match('/\[Not Tracking START\](.*)\[END\]/',$request['Message']['Body']['Html']['Data'],$matches)){
                 $request['Message']['Body']['Html']['Data']=preg_replace('/\[Not Tracking START\].*\[END\]/',$matches[1],$request['Message']['Body']['Html']['Data']);
@@ -386,7 +389,7 @@ function send_test_email($data, $smarty) {
     );
 
 
-  
+
 
     try {
         $result    = $client->sendEmail($request);

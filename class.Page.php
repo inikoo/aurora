@@ -2967,6 +2967,7 @@ class Page extends DB_Table {
 
     function publish($note = '') {
 
+
         $website = get_object('Website', $this->get('Webpage Website Key'));
 
 
@@ -3122,43 +3123,15 @@ class Page extends DB_Table {
 
 
 
-        $smarty_web = new Smarty();
 
-        if (empty($this->fork)) {
-            $base = '';
-        } else {
-            $account = get_object('Account', 1);
-            $base    = 'base_dirs/_home.'.strtoupper($account->get('Account Code')).'/';
-        }
-
-        $smarty_web->template_dir = $base.'EcomB2B/templates';
-        $smarty_web->compile_dir  = $base.'EcomB2B/server_files/smarty/templates_c';
-        $smarty_web->cache_dir    = $base.'EcomB2B/server_files/smarty/cache';
-        $smarty_web->config_dir   = $base.'EcomB2B/server_files/smarty/configs';
-        $smarty_web->addPluginsDir('./smarty_plugins');
-
-        $smarty_web->setCaching(Smarty::CACHING_LIFETIME_CURRENT);
-
-        //$theme='theme_1';
-        //$website_type='EcomB2B';
-
-
-        $cache_id = $this->get('Webpage Website Key').'|'.$this->id;
-        $smarty_web->clearCache(null, $cache_id);
-
-
-        $redis = new Redis();
-        if ($redis->connect('127.0.0.1', 6379)) {
-
-
-            $url_cache_key = 'pwc2|'.DNS_ACCOUNT_CODE.'|'.$this->get('Webpage Website Key').'_'.$this->get('Webpage Code');
-            $redis->set($url_cache_key, $this->id);
-            $url_cache_key = 'pwc2|'.DNS_ACCOUNT_CODE.'|'.$this->get('Webpage Website Key').'_'.strtoupper($this->get('Webpage Code'));
-            $redis->set($url_cache_key, $this->id);
-            $url_cache_key = 'pwc2|'.DNS_ACCOUNT_CODE.'|'.$this->get('Webpage Website Key').'_'.strtolower($this->get('Webpage Code'));
-            $redis->set($url_cache_key, $this->id);
-
-        }
+        $account=get_object('Account',1);
+        require_once 'utils/new_fork.php';
+        new_housekeeping_fork(
+            'au_housekeeping', array(
+            'type'        => 'clean_webpage_cache',
+            'webpage_key' => $this->id,
+        ), $account->get('Account Code'), $this->db
+        );
 
 
         $this->update_metadata = array(
