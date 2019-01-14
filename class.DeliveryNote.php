@@ -1075,7 +1075,7 @@ class DeliveryNote extends DB_Table {
 
             case 'Delivery Note State':
 
-                $this->update_state($value);
+                $this->update_state($value,$options,$metadata);
                 break;
 
             case 'Delivery Note Shipper Key':
@@ -1670,20 +1670,24 @@ class DeliveryNote extends DB_Table {
 
                 if ($this->data['Delivery Note Type'] == 'Order') {
 
-                    $order->update(array('Order State' => 'Dispatched'));
+                    $order->update(array('Order State' => 'Dispatched'), '',array('delivery_note_key'=>$this->id));
                 } else {
                     $order->update(
                         array(
-                            'Order Replacement State'                 => 'Dispatched',
+                            'Order Replacement State' => 'Dispatched',
+                        )
+                    );
+                    $order->fast_update(
+                        array(
                             'Order Post Transactions Dispatched Date' => $date
                         )
                     );
-
 
                     new_housekeeping_fork(
                         'au_housekeeping', array(
                         'type'      => 'order_state_changed',
                         'order_key' => $order->id,
+
                     ), $account->get('Account Code')
                     );
 
@@ -2101,9 +2105,7 @@ class DeliveryNote extends DB_Table {
                     $picked  = $qty;
 
 
-
-
-                    $part_location = new PartLocation($row['Part SKU'].'_'.$row['Location Key']);
+                    $part_location             = new PartLocation($row['Part SKU'].'_'.$row['Location Key']);
                     $location_stock_icon_class = 'button ';
                     $stock_in_location         = sprintf(_('Stock in location: %s'), $part_location->get('Quantity On Hand'));
 
@@ -2199,7 +2201,6 @@ class DeliveryNote extends DB_Table {
                     );
 
 
-
                 } else {
                     $this->error = true;
                     $this->msg   = 'Trying to set as not picked more items than required';
@@ -2209,7 +2210,7 @@ class DeliveryNote extends DB_Table {
                 }
 
 
-            }else{
+            } else {
                 $this->error = true;
                 $this->msg   = 'Itf not found';
 
@@ -2223,7 +2224,6 @@ class DeliveryNote extends DB_Table {
 
 
         //=========
-
 
 
     }

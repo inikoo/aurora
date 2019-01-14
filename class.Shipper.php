@@ -217,38 +217,7 @@ class Shipper extends DB_Table {
 
 
         switch ($key) {
-            case('num_areas'):
-            case('number_areas'):
-                if (!$this->areas) {
-                    $this->load('areas');
-                }
 
-                return count($this->areas);
-                break;
-            case('areas'):
-                if (!$this->areas) {
-                    $this->load('areas');
-                }
-
-                return $this->areas;
-                break;
-            case('area'):
-                if (!$this->areas) {
-                    $this->load('areas');
-                }
-                if (isset($this->areas[$data['id']])) {
-                    return $this->areas[$data['id']];
-                }
-                break;
-            case('Leakage Timeseries From'):
-                if ($this->data['Shipper Leakage Timeseries From'] == '') {
-                    return '';
-                } else {
-                    return strftime("%a %e %b %Y", strtotime($this->data['Shipper Leakage Timeseries From'].' +0:00'));
-                }
-
-
-                break;
             default:
 
 

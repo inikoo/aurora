@@ -48,7 +48,7 @@ if ($email_template->id and !($email_template->get('Email Template Type') == 'HT
 
     $merge_tags     = '';
     $merge_contents = '';
-
+    $special_links  = '';
 
     if ($email_template->get('Email Template Role') == 'Password Reminder') {
         $merge_tags = ",{ name: '"._('Reset password URL')."',value: '[Reset_Password_URL]'}";
@@ -60,6 +60,13 @@ if ($email_template->id and !($email_template->get('Email Template Type') == 'HT
     } elseif ($email_template->get('Email Template Role') == 'OOS Notification') {
         $merge_tags = ",{ name: '"._('Back in stock products')."',value: '[Products]'}";
 
+    } elseif ($email_template->get('Email Template Role') == 'Delivery Confirmation') {
+        $merge_tags = ",{ name: '"._('Tracking code block')
+            ."',value: '[Tracking START]Your tracking number is [Tracking Number].[END] [Not Tracking START]You should shortly receive email from one of our courier companies with tracking number and estimated delivery times.[END]'}";
+
+
+        $special_links="{ type: '"._('Tracking link')."',link: '[Tracking URL]', label: '"._('here')."'}";
+
     } elseif ($email_template->get('Email Template Role') == 'GR Reminder') {
         $merge_tags = ",{ name: '"._('Last order number')."',value: '[Order Number]'},{ name: '"._('Last order date')."',value: '[Order Date]'},
                 { name: '"._('Last order date + n days (Replace n for a number, default 30)')."',value: '[Order Date + n days]'},
@@ -70,11 +77,13 @@ if ($email_template->id and !($email_template->get('Email Template Type') == 'HT
         $merge_contents = "{ name: '"._('Unsubscribe')."',value: '[Unsubscribe]'}";
 
 
-    }
 
+    }
 
     $smarty->assign('merge_tags', $merge_tags);
     $smarty->assign('merge_contents', $merge_contents);
+    $smarty->assign('special_links', $special_links);
+
 
     $smarty->assign('send_email_to', $send_email_to);
 

@@ -18,6 +18,7 @@ function fork_housekeeping($job) {
     }
 
 
+
     list($account, $db, $data, $editor, $session) = $_data;
 
 
@@ -703,24 +704,24 @@ function fork_housekeeping($job) {
 
             //
 
-/*
-            $editor = array(
+            /*
+                        $editor = array(
 
 
-                'Author Type'  => '',
-                'Author Key'   => '',
-                'User Key'     => 0,
-                'Date'         => gmdate('Y-m-d H:i:s'),
-                'Subject'=>'System',
-                'Subject Key'=>0,
-                'Author Name'=>'System (Stock change)',
-                'Author Alias' => 'System (Stock change)',
-                'v'=>3
+                            'Author Type'  => '',
+                            'Author Key'   => '',
+                            'User Key'     => 0,
+                            'Date'         => gmdate('Y-m-d H:i:s'),
+                            'Subject'=>'System',
+                            'Subject Key'=>0,
+                            'Author Name'=>'System (Stock change)',
+                            'Author Alias' => 'System (Stock change)',
+                            'v'=>3
 
-'email_tacking_ses','product_web_state_legacy','update_part_products_availability','part_stock_in_paid_orders','full_after_part_stock_update_legacy'
+            'email_tacking_ses','product_web_state_legacy','update_part_products_availability','part_stock_in_paid_orders','full_after_part_stock_update_legacy'
 
-            );
-            */
+                        );
+                        */
 
             $date = gmdate('Y-m-d H:i:s');
             $sql  = sprintf(
@@ -827,7 +828,7 @@ function fork_housekeeping($job) {
                         $row['Product Part Part SKU'],
                         prepare_mysql($date)
 
-                   );
+                    );
                     $db->exec($sql);
 
                     // $part = get_object('Part', $row['Product Part Part SKU']);
@@ -936,7 +937,10 @@ function fork_housekeeping($job) {
             break;
 
         case 'order_dispatched':
-            $order   = get_object('Order', $data['order_key']);
+            $order         = get_object('Order', $data['order_key']);
+            $delivery_note = get_object('Delivery_Note', $data['delivery_note_key']);
+
+
             $account = get_object('Account', '');
             $store   = get_object('Store', $order->get('Store Key'));
 
@@ -960,7 +964,7 @@ function fork_housekeeping($job) {
                 'Email_Template_Type' => $email_template_type,
                 'Email_Template'      => $email_template,
                 'Order'               => $order,
-
+                'Delivery_Note'       => $delivery_note,
 
             );
 
@@ -969,11 +973,18 @@ function fork_housekeeping($job) {
 
 
             if ($published_email_template->sent) {
-                $sql = sprintf(
-                    'insert into `Order Sent Email Bridge` (`Order Sent Email Order Key`,`Order Sent Email Email Tracking Key`,`Order Sent Email Type`) values (%d,%d,%s)', $order->id, $published_email_template->email_tracking->id, prepare_mysql('Dispatch Notification')
+
+
+                $stmt = $db->prepare("INSERT INTO `Order Sent Email Bridge` (`Order Sent Email Order Key`,`Order Sent Email Email Tracking Key`,`Order Sent Email Type`) VALUES (?, ?, ?)");
+                $stmt->execute(
+                    array(
+                        $order->id,
+                        $published_email_template->email_tracking->id,
+                        'Dispatch Notification'
+                    )
                 );
 
-                $db->exec($sql);
+
             }
 
 
@@ -1124,7 +1135,7 @@ function fork_housekeeping($job) {
                         $part = get_object('Part', $row['Part SKU']);
 
 
-                        if($part->id){
+                        if ($part->id) {
                             $date = gmdate('Y-m-d H:i:s');
                             $sql  = sprintf(
                                 'insert into `Stack Dimension` (`Stack Creation Date`,`Stack Last Update Date`,`Stack Operation`,`Stack Object Key`) values (%s,%s,%s,%d) 
@@ -1137,7 +1148,6 @@ function fork_housekeeping($job) {
 
                             );
                             $db->exec($sql);
-
 
 
                             foreach ($part->get_suppliers() as $suppliers_key) {
@@ -1179,7 +1189,7 @@ function fork_housekeeping($job) {
             foreach ($suppliers as $supplier_key) {
                 $supplier = get_object('Supplier', $supplier_key);
 
-                if($supplier->id){
+                if ($supplier->id) {
                     $date = gmdate('Y-m-d H:i:s');
                     $sql  = sprintf(
                         'insert into `Stack Dimension` (`Stack Creation Date`,`Stack Last Update Date`,`Stack Operation`,`Stack Object Key`) values (%s,%s,%s,%d) 
@@ -1199,7 +1209,6 @@ function fork_housekeeping($job) {
                 }
 
 
-
             }
 
             foreach ($suppliers_categories as $supplier_category_key) {
@@ -1216,7 +1225,6 @@ function fork_housekeeping($job) {
                 );
                 $db->exec($sql);
             }
-
 
 
             return;
@@ -1241,9 +1249,6 @@ function fork_housekeeping($job) {
             require_once 'class.Timeserie.php';
 
             $timeseries = get_time_series_config();
-
-
-
 
 
             //$sql = sprintf('select `Part SKU`  FROM `Inventory Transaction Fact` WHERE  `Delivery Note Key`=%d  and `Inventory Transaction Type`="Sale" ', $data['delivery_note_key']);
@@ -1567,7 +1572,6 @@ function fork_housekeeping($job) {
         case 'update_ISF':
 
 
-
             $date = gmdate('Y-m-d H:i:s');
             $sql  = sprintf(
                 'insert into `Stack BiKey Dimension` (`Stack BiKey Creation Date`,`Stack BiKey Last Update Date`,`Stack BiKey Operation`,`Stack BiKey Object Key One`,`Stack BiKey Object Key Two`) values (%s,%s,%s,%d,%d) 
@@ -1581,9 +1585,6 @@ function fork_housekeeping($job) {
 
             );
             $db->exec($sql);
-
-
-
 
 
             return true;
@@ -1747,7 +1748,7 @@ function fork_housekeeping($job) {
             $supplier_delivery = get_object('supplier_delivery', $data['supplier_delivery_key']);
 
 
-            if($supplier_delivery->get('Supplier Delivery Purchase Order Key')){
+            if ($supplier_delivery->get('Supplier Delivery Purchase Order Key')) {
                 $po = get_object('purchase_order', $supplier_delivery->get('Supplier Delivery Purchase Order Key'));
 
                 $po->editor = $editor;
@@ -1756,10 +1757,6 @@ function fork_housekeeping($job) {
                 }
 
             }
-
-
-
-
 
 
             break;

@@ -324,14 +324,59 @@ function open_send_test_email_dialog(htmlFile) {
     }
 
 
-    $('#send_email_to').data('html', htmlFile)
-    $('#send_email_to').val($('#email_template_data').data('send_email_to'))
+    $('#send_test_email_to').data('html', htmlFile)
+    $('#send_test_email_to').val($('#email_template_data').data('send_email_to'))
 
 
     $('#send_email_ok').addClass('hide')
 
 
 }
+
+
+
+$(document).on('input propertychange', '#send_test_email_to', function () {
+
+    validate_send_test_email_to()
+
+
+});
+
+function validate_send_test_email_to(){
+
+    var input=$('#send_test_email_to')
+    var icon=input.next('i')
+    var validation=client_validation('email',false,input.val())
+
+
+
+
+
+
+    console.log(validation)
+
+
+    input.removeClass('error')
+    icon.removeClass('valid invalid')
+
+    if(validation.class=='invalid'){
+        input.addClass('error')
+        icon.addClass('invalid')
+
+    }else if(validation.class=='valid'){
+
+        icon.addClass('valid')
+    }
+
+    if(input.val()!=''){
+        icon.addClass('changed')
+    }else{
+        icon.removeClass('changed valid')
+    }
+
+}
+
+
 
 function open_save_as_blueprint_dialog(jsonFile) {
 
@@ -351,8 +396,16 @@ function send_test_email() {
 
     ajaxData.append("tipo", 'send_test_email')
     ajaxData.append("email_template_key", $('#email_template_data').data('email_template_key'))
-    ajaxData.append("html", $('#send_email_to').data('html'))
-    ajaxData.append("email", $('#send_email_to').val())
+    ajaxData.append("html", $('#send_test_email_to').data('html'))
+    ajaxData.append("email", $('#send_test_email_to').val())
+
+    if(!$('.toggle_send_test_email_with_tracking_code').hasClass('hide')){
+        if($('.toggle_send_test_email_with_tracking_code').find('i').hasClass('fa-toggle-on')){
+            ajaxData.append("options", 'with_tracking_code')
+        }
+
+    }
+
 
 
     $.ajax({

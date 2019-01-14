@@ -205,16 +205,36 @@ trait Send_Email {
             case 'Delivery Confirmation':
 
                 $order = $data['Order'];
+                $delivery_note=$data['Delivery_Note'];
 
                 $placeholders['[Order Number]'] = $order->get('Public ID');
                 $placeholders['[Order Amount]'] = $order->get('Total');
                 $placeholders['[Order Date]']   = $order->get('Dispatched Date');
+
+                $placeholders['[Tracking Number]'] = $delivery_note->get('Delivery Note Shipper Tracking');
+
+
+
+                $shipper=$delivery_note->get('Shipper');
+
+
+
+                if(is_object($shipper) and $shipper->id){
+                    $placeholders['[Tracking URL]']    = $shipper->get('Shipper Tracking URL');
+                }else{
+                    $placeholders['[Tracking URL]']    = '';
+
+                }
+
+
 
 
             default:
 
 
         }
+
+
 
         $from_name            = base64_encode($store->get('Name'));
         $sender_email_address = $store->get('Send Email Address');
@@ -230,7 +250,6 @@ trait Send_Email {
         }
 
 
-        // $to_address='raul@inikoo.com';
 
 
         $request                                    = array();
@@ -284,6 +303,28 @@ trait Send_Email {
                 return strftime("%a, %e %b %Y", strtotime($_date.' +'.$match_data[1].' months'));
             }, $request['Message']['Body']['Html']['Data']
             );
+
+
+        }elseif ($email_template->get('Email Template Role') == 'Delivery Confirmation') {
+
+
+            if( $placeholders['[Tracking Number]']!='' and  $placeholders['[Tracking URL]']!=''){
+
+                $request['Message']['Body']['Html']['Data']=preg_replace('/\[Not Tracking START\].*\[END\]/','',$request['Message']['Body']['Html']['Data']);
+
+                if(preg_match('/\[Tracking START\](.*)\[END\]/',$request['Message']['Body']['Html']['Data'],$matches)){
+                    $request['Message']['Body']['Html']['Data']=preg_replace('/\[Tracking START\].*\[END\]/',$matches[1],$request['Message']['Body']['Html']['Data']);
+
+                }
+
+            }else{
+                $request['Message']['Body']['Html']['Data']=preg_replace('/\[Tracking START\].*\[END\]/','',$request['Message']['Body']['Html']['Data']);
+
+                if(preg_match('/\[Not Tracking START\](.*)\[END\]/',$request['Message']['Body']['Html']['Data'],$matches)){
+                    $request['Message']['Body']['Html']['Data']=preg_replace('/\[Not Tracking START\].*\[END\]/',$matches[1],$request['Message']['Body']['Html']['Data']);
+
+                }
+            }
 
 
         }

@@ -1464,8 +1464,8 @@ function get_shipper_navigation($data, $smarty, $user, $db, $account) {
 
     switch ($data['parent']) {
         case 'warehouse':
-            $tab      = 'warehouse.locations';
-            $_section = 'locations';
+            $tab      = 'shippers';
+            $_section = 'warehouse';
             break;
         default:
 
@@ -1512,7 +1512,6 @@ function get_shipper_navigation($data, $smarty, $user, $db, $account) {
     $next_key   = 0;
     $sql        = trim($sql_totals." $wheref");
 
-
     if ($result2 = $db->query($sql)) {
         if ($row2 = $result2->fetch()) {
 
@@ -1521,26 +1520,27 @@ function get_shipper_navigation($data, $smarty, $user, $db, $account) {
 
 
                 $sql = sprintf(
-                    "select `Location Code` object_name,L.`Location Key` as object_key from %s %s %s
-	                and ($_order_field < %s OR ($_order_field = %s AND L.`Location Key` < %d))  order by $_order_field desc , L.`Location Key` desc limit 1", $table, $where, $wheref, prepare_mysql($_order_field_value), prepare_mysql($_order_field_value), $object->id
+                    "select `Shipper Code` object_name,`Shipper Key` as object_key from %s %s %s
+	                and ($_order_field < %s OR ($_order_field = %s AND `Shipper Key` < %d))  order by $_order_field desc , `Shipper Key` desc limit 1", $table, $where, $wheref, prepare_mysql($_order_field_value), prepare_mysql($_order_field_value), $object->id
                 );
                 if ($result = $db->query($sql)) {
                     if ($row = $result->fetch()) {
                         $prev_key   = $row['object_key'];
-                        $prev_title = _("Product").' '.$row['object_name'].' ('.$row['object_key'].')';
+                        $prev_title = _("Shipper").' '.$row['object_name'];
                     }
                 }
 
 
+//print $sql;
                 $sql = sprintf(
-                    "select `Location Code` object_name,L.`Location Key` as object_key from  %s %s %s
-	                and ($_order_field  > %s OR ($_order_field  = %s AND L.`Location Key` > %d))  order by $_order_field   , L.`Location Key`  limit 1", $table, $where, $wheref, prepare_mysql($_order_field_value), prepare_mysql($_order_field_value), $object->id
+                    "select `Shipper Code` object_name,`Shipper Key` as object_key from  %s %s %s
+	                and ($_order_field  > %s OR ($_order_field  = %s AND `Shipper Key` > %d))  order by $_order_field   , `Shipper Key`  limit 1", $table, $where, $wheref, prepare_mysql($_order_field_value), prepare_mysql($_order_field_value), $object->id
                 );
 
                 if ($result = $db->query($sql)) {
                     if ($row = $result->fetch()) {
                         $next_key   = $row['object_key'];
-                        $next_title = _("Product").' '.$row['object_name'].' ('.$row['object_key'].')';
+                        $next_title = _("Shipper").' '.$row['object_name'];
                     }
                 }
 
@@ -1572,7 +1572,7 @@ function get_shipper_navigation($data, $smarty, $user, $db, $account) {
                             $left_buttons[] = array(
                                 'icon'      => 'arrow-left',
                                 'title'     => $prev_title,
-                                'reference' => 'locations/'.$data['parent_key'].'/'.$prev_key
+                                'reference' => 'warehouse/'.$data['parent_key'].'/shippers/'.$prev_key
                             );
 
                         } else {
@@ -1589,7 +1589,7 @@ function get_shipper_navigation($data, $smarty, $user, $db, $account) {
                             $left_buttons[] = array(
                                 'icon'      => 'arrow-right',
                                 'title'     => $next_title,
-                                'reference' => 'locations/'.$data['parent_key'].'/'.$next_key
+                                'reference' => 'warehouse/'.$data['parent_key'].'/shippers/'.$next_key
                             );
 
                         } else {
@@ -1617,7 +1617,7 @@ function get_shipper_navigation($data, $smarty, $user, $db, $account) {
     }
 
 
-    $title = _('Location').' <span  class="id Location_Code" >'.$data['_object']->get('Code').'</span>';
+    $title = _('Shipper').' <span  class="id Shipper_Code" >'.$data['_object']->get('Code').'</span>';
 
     if (!$user->can_view('locations')) {
 
@@ -1639,7 +1639,7 @@ function get_shipper_navigation($data, $smarty, $user, $db, $account) {
         'title'         => $title,
         'search'        => array(
             'show'        => true,
-            'placeholder' => _('Search locations')
+            'placeholder' => _('Search consignments')
         )
 
     );

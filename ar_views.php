@@ -1204,6 +1204,10 @@ function get_object_showcase($showcase, $data, $smarty, $user, $db, $account) {
             include_once 'showcase/purge.show.php';
             $html = get_purge_showcase($data, $smarty, $user, $db);
             break;
+        case 'shipper':
+            include_once 'showcase/shipper.show.php';
+            $html = get_shipper_showcase($data, $smarty, $user, $db);
+            break;
         default:
             $html = $data['object'].' -> '.$data['key'];
             break;
@@ -7135,6 +7139,9 @@ function get_view_position($db, $state, $user, $smarty, $account) {
 
 
                 case 'warehouse':
+
+
+
 
                     $branch[] = array(
                         'label'     => '<span class="id Warehouse_Code">'.$state['warehouse']->get('Code').'</span>',
