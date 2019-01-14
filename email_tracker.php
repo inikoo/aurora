@@ -67,7 +67,8 @@ if ($validator->isValid($sns)) {
     )) {
 
         file_get_contents($sns['SubscribeURL']);
-    } else {
+    }
+    else {
 
         $sns_id = $sns['MessageId'];
 

@@ -53,8 +53,7 @@ switch ($object->get_object_name()) {
 
         $valid_fields = $export_edit_template_fields['supplier_part'];
         $key_field    = 'Id: Supplier Part Key';
-        // $supplier=get_object('Supplier',$_REQUEST['parent_key']);
-        // $options=array('parent'=>'supplier','parent_object'=>$supplier,'new'=>true,'supplier_part_scope'=>true);
+
         break;
     case 'Location':
         $filename     = _('new_locations');

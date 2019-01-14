@@ -28,7 +28,7 @@ About:
             {t}Click in the <i class="fa fa-cloud-upload"></i>
                 icon at the table header to upload a excel or a CSV file with the following fields{/t} — <i
                     class="fa fa-file-excel"></i> <a title="{t}You can use this file as template{/t}"
-                                                       href="/upload_arrangement.php?object=supplier_part&parent={$object}&parent_key={$key}"> {t}template{/t}</a>
+                                                       href="/upload_arrangement.php?object=supplier_part"> {t}template{/t}</a>
             —
         </p>
         <ul>

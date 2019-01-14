@@ -277,9 +277,7 @@
     <aside id="notifications" data-current_side_view="{$_side_block}" >
         <div class="top_buttons">
 
-            <div id="whiteboard_button" onclick="show_side_content('whiteboard')" class="side_content_icon square_button {if $_side_block='whiteboard'}selected{/if}" title="{t}Whiteboard{/t}">
-                <i class="fa fa-edit fa-fw  "></i>
-            </div>
+
             <div id="help_button" onclick="show_side_content('help')" class="side_content_icon square_button {if $_side_block=='help'}selected{/if}" title="{t}Help{/t}">
                 <i class="fa fa-question-circle fa-fw  "></i>
             </div>
@@ -287,7 +285,10 @@
 
             <div style="clear:both"></div>
         </div>
-        <div id="help" class="side_content {if $_side_block!='help'}hide{/if}">
+
+
+
+        <div id="help" class="side_content ">
             <div class="top">
                 {t}Help{/t}
             </div>
@@ -297,7 +298,9 @@
             <div class="content">
             </div>
         </div>
-        <div id="whiteboard" class="side_content {if $_side_block!='whiteboard'}hide{/if}">
+
+
+        <div id="whiteboard" class="side_content ">
             <div class="top">
                 {t}Whiteboard{/t}
             </div>
@@ -313,6 +316,7 @@
 
 
         </div>
+
 
     </aside>
 </div>
