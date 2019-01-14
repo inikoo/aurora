@@ -38,6 +38,9 @@ $_data = prepare_values(
 $dont_save_table_state = true;
 $_data['nr']           = 1000000;
 $_data['page']         = 1;
+
+$_data['type']=strtolower($_data['type']);
+
 include 'conf/export_fields.php';
 
 
