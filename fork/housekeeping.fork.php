@@ -18,7 +18,6 @@ function fork_housekeeping($job) {
     }
 
 
-
     list($account, $db, $data, $editor, $session) = $_data;
 
 
@@ -1919,6 +1918,54 @@ function fork_housekeeping($job) {
             } else {
                 print_r($error_info = $db->errorInfo());
                 exit;
+            }
+
+
+            break;
+
+
+        case 'clean_webpage_cache':
+
+
+            $webpage = get_object('Webpage', $data['webpage_key']);
+
+            $smarty_web = new Smarty();
+
+
+            $account = get_object('Account', 1);
+            $base    = 'base_dirs/_home.'.strtoupper($account->get('Account Code')).'/';
+
+
+            $smarty_web->setTemplateDir($base.'EcomB2B/templates');
+
+            $smarty_web->setCompileDir($base.'EcomB2B/server_files/smarty/templates_c');
+            $smarty_web->setCacheDir($base.'EcomB2B/server_files/smarty/cache');
+            $smarty_web->setConfigDir($base.'EcomB2B/server_files/smarty/configs');
+            $smarty_web->addPluginsDir('./smarty_plugins');
+
+
+            $smarty_web->setCaching(Smarty::CACHING_LIFETIME_CURRENT);
+
+
+            $cache_id = $webpage->get('Webpage Website Key').'|'.$webpage->id;
+            $smarty_web->clearCache(null, $cache_id);
+
+
+            $redis = new Redis();
+
+
+
+            if ($redis->connect('127.0.0.1', 6379)) {
+
+
+
+                $url_cache_key = 'pwc2|'.DNS_ACCOUNT_CODE.'|'.$webpage->get('Webpage Website Key').'_'.$webpage->get('Webpage Code');
+                $redis->set($url_cache_key, $webpage->id);
+                $url_cache_key = 'pwc2|'.DNS_ACCOUNT_CODE.'|'.$webpage->get('Webpage Website Key').'_'.strtoupper($webpage->get('Webpage Code'));
+                $redis->set($url_cache_key, $webpage->id);
+                $url_cache_key = 'pwc2|'.DNS_ACCOUNT_CODE.'|'.$webpage->get('Webpage Website Key').'_'.strtolower($webpage->get('Webpage Code'));
+                $redis->set($url_cache_key, $webpage->id);
+
             }
 
 

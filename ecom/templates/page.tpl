@@ -50,6 +50,9 @@
 	{if $css_files!=''}
 	<link rel="stylesheet" href="min/f={$css_files}" type="text/css"/>
 	{/if}
+	
+	
+
 	{if $js_files!=''}
 	<script async type="text/javascript" src="min/f={$js_files}"></script>
 	{/if}
