@@ -386,8 +386,7 @@ function send_test_email($data, $smarty) {
     );
 
 
-    print $request['Message']['Body']['Html']['Data'];
-    exit;
+  
 
     try {
         $result    = $client->sendEmail($request);

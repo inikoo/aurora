@@ -89,7 +89,7 @@
         <script src="/js/app.js?v181122bis"></script>
         <script src="/js/search.js"></script>
         <script src="/js/table.js?v201808v2"></script>
-        <script src="/js/validation.js?v171206v6"></script>
+        <script src="/js/validation.js?v171206v6v2"></script>
         <script src="/js/pdf.js?v1800612v2"></script>
         <script src="/utils/country_data.js.php?v=v181115&locale={$locale}"></script>
         <script src="/js/edit.js?v181115"></script>
