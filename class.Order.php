@@ -909,6 +909,7 @@ class Order extends DB_Table {
                         'au_housekeeping', array(
                         'type'      => 'order_dispatched',
                         'order_key' => $this->id,
+                        'delivery_note_key'=>$metadata['delivery_note_key']
                     ), $account->get('Account Code')
                     );
 

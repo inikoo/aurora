@@ -54,6 +54,40 @@ $object_fields[] = array(
 );
 
 $object_fields[] = array(
+    'label'      => _('Contact'),
+    'show_title' => true,
+    'fields'     => array(
+
+
+        array(
+            'id'              => 'Shipper_Telephone',
+            'edit'            => ($edit ? 'telephone' : ''),
+            'value'           => $object->get('Shipper Telephone'),
+            'formatted_value' => $object->get('Telephone'),
+            'label'           => ucfirst($object->get_field_label('Shipper Telephone')),
+            'invalid_msg'     => get_invalid_message('telephone'),
+            'required'        => false,
+            'type'            => 'value'
+        ),
+        array(
+            'edit'            => ($edit ? 'string' : ''),
+            'id'              => 'Shipper_Website',
+            'value'           => $object->get('Shipper Website'),
+            'formatted_value' => $object->get('Website'),
+
+            'label'       => ucfirst($object->get_field_label('Shipper Website')),
+            'invalid_msg' => get_invalid_message('string'),
+            'required'    => true,
+            'type'        => 'value'
+        ),
+    ),
+
+
+);
+
+
+
+$object_fields[] = array(
     'label'      => _('Tracking'),
     'show_title' => true,
     'fields'     => array(

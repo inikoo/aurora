@@ -1243,7 +1243,7 @@ function shippers($_data, $db, $user, $account) {
             }
 
 
-            $code = sprintf('<span class="link" onclick="change_view(\'warehouse/%d/shipper/%d\')">%s</span>', $data['Shipper Warehouse Key'], $data['Shipper Key'], $data['Shipper Code']);
+            $code = sprintf('<span class="link" onclick="change_view(\'warehouse/%d/shippers/%d\')">%s</span>', $data['Shipper Warehouse Key'], $data['Shipper Key'], $data['Shipper Code']);
 
 
             $record_data[] = array(

@@ -185,13 +185,9 @@ if ($new) {
 
                     'id'              => 'Customer_Main_Plain_Telephone',
                     'edit'            => ($_edit ? 'telephone' : ''),
-                    'value'           => $object->get(
-                        'Customer Main Plain Telephone'
-                    ),
+                    'value'           => $object->get('Customer Main Plain Telephone'),
                     'formatted_value' => $object->get('Main Plain Telephone'),
-                    'label'           => ucfirst(
-                            $object->get_field_label(
-                                'Customer Main Plain Telephone'
+                    'label'           => ucfirst($object->get_field_label('Customer Main Plain Telephone'
                             )
                         ).($object->get('Customer Main Plain Telephone') != '' ? ($object->get('Customer Preferred Contact Number') == 'Telephone'
                             ? ''

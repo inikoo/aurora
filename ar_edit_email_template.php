@@ -67,11 +67,14 @@ switch ($tipo) {
                          'html'               => array('type' => 'string'),
                          'email'              => array('type' => 'string'),
                          'email_template_key' => array('type' => 'key'),
+                         'options'            => array('type'     => 'string',
+                                                       'optional' => true
+                         ),
 
 
                      )
         );
-        send_test_email($data, $editor, $smarty, $db);
+        send_test_email($data, $smarty);
         break;
 
 
@@ -203,8 +206,8 @@ function send_email($data, $editor, $smarty, $db) {
     $published_template = new Published_Email_Template('new', $published_email_template_data);
 
 
-    $recipient = get_object($data['recipient'], $data['recipient_key']);
-    $recipient->editor=$editor;
+    $recipient         = get_object($data['recipient'], $data['recipient_key']);
+    $recipient->editor = $editor;
 
 
     $recipient->send_personalized_invitation($published_template);
@@ -220,14 +223,10 @@ function send_email($data, $editor, $smarty, $db) {
 }
 
 
-function send_test_email($data, $editor, $smarty, $db) {
+function send_test_email($data, $smarty) {
 
 
-    //  require 'external_libs/aws.phar';
-
-    include_once 'class.Email_Template.php';
-
-    $email_template = new Email_Template($data['email_template_key']);
+    $email_template = get_object('Email_Template', $data['email_template_key']);
 
     if ($email_template->get('Email Template Subject') == '') {
         $response = array(
@@ -297,6 +296,14 @@ function send_test_email($data, $editor, $smarty, $db) {
         $placeholders['[Order Date + n months]'] = strftime("%a, %e %b %Y", strtotime($_date.' +1 month'));
 
 
+    } elseif ($email_template->get('Email Template Role') == 'Delivery Confirmation') {
+
+
+        $placeholders['[Tracking Number]'] = substr(md5(date('U')), 16);
+
+        $placeholders['[Tracking URL]']    = 'http://example.com/';
+
+
     }
 
 
@@ -318,6 +325,7 @@ function send_test_email($data, $editor, $smarty, $db) {
 
     if ($email_template->get('Email Template Role') == 'GR Reminder') {
 
+        $_date = date('Y-m-d', strtotime('now -11 days'));
 
         $request['Message']['Body']['Text']['Data'] = preg_replace_callback(
             '/\[Order Date \+\s*(\d+)\s*days\]/', function ($match_data) use ($_date) {
@@ -342,6 +350,26 @@ function send_test_email($data, $editor, $smarty, $db) {
         );
 
 
+    }elseif ($email_template->get('Email Template Role') == 'Delivery Confirmation') {
+
+        if(isset($data['options']) and  $data['options']=='with_tracking_code'){
+
+            $request['Message']['Body']['Html']['Data']=preg_replace('/\[Not Tracking START\].*\[END\]/','',$request['Message']['Body']['Html']['Data']);
+
+            if(preg_match('/\[Tracking START\](.*)\[END\]/',$request['Message']['Body']['Html']['Data'],$matches)){
+                $request['Message']['Body']['Html']['Data']=preg_replace('/\[Tracking START\].*\[END\]/',$matches[1],$request['Message']['Body']['Html']['Data']);
+
+            }
+
+        }else{
+            $request['Message']['Body']['Html']['Data']=preg_replace('/\[Tracking START\].*\[END\]/','',$request['Message']['Body']['Html']['Data']);
+
+            if(preg_match('/\[Not Tracking START\](.*)\[END\]/',$request['Message']['Body']['Html']['Data'],$matches)){
+                $request['Message']['Body']['Html']['Data']=preg_replace('/\[Not Tracking START\].*\[END\]/',$matches[1],$request['Message']['Body']['Html']['Data']);
+
+            }
+        }
+
     }
 
     $request['Message']['Body']['Html']['Data'] = preg_replace_callback(
@@ -358,8 +386,8 @@ function send_test_email($data, $editor, $smarty, $db) {
     );
 
 
-    // print $request['Message']['Body']['Html']['Data'];
-    //exit;
+    print $request['Message']['Body']['Html']['Data'];
+    exit;
 
     try {
         $result    = $client->sendEmail($request);
@@ -465,9 +493,6 @@ function publish_email_template($data, $editor, $smarty, $db) {
 
 
     $publish_email_template = $email_template->publish();
-
-
-
 
 
     if ($publish_email_template->id) {

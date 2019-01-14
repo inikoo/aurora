@@ -19,8 +19,16 @@
 
         <i onclick="$(this).closest('div').addClass('hide')" style="position:relative;left:-10px;top:-10px" class="fa fa-window-close button" aria-hidden="true"></i>
 
-        {t}Email{/t} <input id="send_email_to" value="{$send_email_to}" style="width:300px"> <i style="margin-left:5px" id="send_email" onclick="send_test_email()"
-                                                                                                class=" fa fa-paper-plane save {if $send_email_to!=''}valid changed{/if} aria-hidden=" true"></i>
+
+
+
+            <div style="margin-bottom: 15px"   class="toggle_send_test_email_with_tracking_code {if $email_template->get('Email Template Role')!='Delivery Confirmation'}hide{/if}"  >  <span class="button "    onclick="toggle_send_test_email_with_tracking_code()" ><i class="fa fa-toggle-on"></i> {t}Tracking code{/t}</span></div>
+
+
+
+
+        {t}Email{/t} <input id="send_test_email_to" value="{$send_email_to}" style="width:300px"> <i style="margin-left:5px" id="send_email" onclick="send_test_email()"
+                                                                                                class=" fa fa-paper-plane save {if $send_email_to!=''}changed{/if}" aria-hidden=" true"></i>
 
     </div>
 
@@ -92,6 +100,20 @@
 
 <script>
 
+    validate_send_test_email_to()
+
+    function toggle_send_test_email_with_tracking_code(){
+
+        var icon= $('.toggle_send_test_email_with_tracking_code').find('i')
+
+       if(icon.hasClass('fa-toggle-on')){
+           icon.removeClass('fa-toggle-on').addClass('fa-toggle-off')
+       }else{
+           icon.removeClass('fa-toggle-off').addClass('fa-toggle-on')
+
+       }
+
+    }
 
     var mergeTags = [{
         name: '{t}Greetings{/t}', value: '[Greetings]'
@@ -112,16 +134,23 @@
         {$merge_contents}
     ]
 
+    var specialLinks= [
+        {if isset($special_links)}{$special_links}{/if}
+    ];
+
+
     var beeConfig = {
         uid: 'CmsUserName', // [mandatory] identifies the set of resources to load
         container: 'email_template_html_container', // [mandatory] the id of div element that contains BEE Plugin
         //autosave: 15, // [optional, default:false] in seconds, allowed min-value: 15
         //language: 'en-US', // [optional, default:'en-US'] if language is not supported the default language is loaded (value must follow ISO 639-1  format)
-        //specialLinks: specialLinks, // [optional, default:[]] Array of Object to specify special links
+        specialLinks: specialLinks, // [optional, default:[]] Array of Object to specify special links
         mergeTags: mergeTags, // [optional, default:[]] Array of Object to specify special merge Tags
         mergeContents: mergeContents, // [optional, default:[]] Array of Object to specify merge content
         //preventClose: false, // [optional, default:false] if true an alert is shown before browser closure
-        onSave: save_email_template, onSaveAsTemplate: open_save_as_blueprint_dialog, onSend: open_send_test_email_dialog, //onError: function(errorMessage) { /* Implements function to handle error messages */ } // [optional]
+        onSave: save_email_template,
+        onSaveAsTemplate: open_save_as_blueprint_dialog,
+        onSend: open_send_test_email_dialog, //onError: function(errorMessage) { /* Implements function to handle error messages */ } // [optional]
     };
 
     $.getJSON('/ar_edit_email_template.php?tipo=bee_token', function (data) {

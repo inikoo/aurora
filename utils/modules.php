@@ -1978,9 +1978,19 @@ $modules = array(
                 'type'      => 'navigation',
                 'label'     => _('Returns'),
                 'icon'      => 'backspace',
-                'reference' => 'warehouse/%d/returns',
+                'reference' => 'returns/all',
                 'tabs'      => array(
-                    'warehouse.returns' => array()
+                    'returns_server'         => array(
+                        'icon'  => 'backspace',
+                        'label' => _('Returns'),
+
+                    ),
+
+                    'returns_group_by_warehouse' => array(
+                        'label' => _('Group by warehouse'),
+                        'icon'  => 'layer-group',
+
+                    )
                 )
             ),
 
