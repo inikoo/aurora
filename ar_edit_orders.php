@@ -32,6 +32,17 @@ $tipo = $_REQUEST['tipo'];
 
 switch ($tipo) {
 
+
+
+    case 'get_input_delivery_note_packing_all_locations':
+        $data = prepare_values(
+            $_REQUEST, array(
+
+                         'metadata' => array('type' => 'json array'),
+                     )
+        );
+        get_input_delivery_note_packing_all_locations($data, $editor, $smarty, $db, $account, $user);
+        break;
     case 'get_picked_offline_input_all_locations':
         $data = prepare_values(
             $_REQUEST, array(
@@ -111,7 +122,7 @@ switch ($tipo) {
         );
 
 
-        new_payment($data, $editor, $smarty, $db, $account, $user);
+        new_payment($data, $editor, $db, $account, $user);
 
 
         break;
@@ -672,14 +683,14 @@ function set_state($data, $editor, $smarty, $db) {
 
 }
 
-function new_payment($data, $editor, $smarty, $db, $account, $user) {
+function new_payment($data, $editor, $db, $account, $user) {
 
     include_once 'utils/currency_functions.php';
 
 
     $payback_refund = false;
 
-    if ($data['parent'] == 'invoice') {
+    if ($data['parent'] == 'invoice' or $data['parent'] == 'refund' ) {
 
         $invoice = get_object($data['parent'], $data['parent_key']);
 
@@ -735,6 +746,8 @@ function new_payment($data, $editor, $smarty, $db, $account, $user) {
     );
 
     $customer = get_object('Customer', $order->get('Customer Key'));
+
+
 
     if ($payment_account->get('Payment Account Block') == 'Accounts' and !$payback_refund) {
 
@@ -1514,6 +1527,101 @@ function set_po_transaction_amount_to_current_cost($data, $editor, $account, $db
 
 
 }
+
+
+
+
+function get_input_delivery_note_packing_all_locations($data, $editor, $smarty, $db, $account, $user) {
+
+
+    include_once 'utils/order_handing_functions.php';
+
+    $total_required       = 0;
+    $total_picked         = 0;
+    $locations            = '';
+    $picked_offline_input = '';
+    $date                 = gmdate('Y-m-d Hi:i:s');
+
+
+    $itf_data = array();
+    $sql      = sprintf(
+        'SELECT `Location Key`,sum(`Picked`) as picked,  sum(`Required`+`Given`) AS required ,group_concat(`Inventory Transaction Key`) as itf_keys FROM `Inventory Transaction Fact` ITF   WHERE   `Delivery Note Key`=%d  and  ITF.`Part SKU`=%d  group by `Location Key` ',
+        $data['metadata']['delivery_note_key'],
+        $data['metadata']['part_sku']
+    );
+
+    if ($result = $db->query($sql)) {
+        foreach ($result as $row) {
+
+
+            $itf_data[$row['Location Key']] = array(
+                'required' => $row['required'],
+                'picked'   => $row['picked'],
+                'pending'  => $row['required'] - $row['picked'],
+                'itf_keys' => $row['itf_keys']
+            );
+
+
+            $total_required += $row['required'];
+            $total_picked   += $row['picked'];
+        }
+    } else {
+        print_r($error_info = $db->errorInfo());
+        print "$sql\n";
+        exit;
+    }
+
+
+    $part = get_object('part', $data['metadata']['part_sku']);
+    foreach ($part->get_locations('part_location_object', '', true) as $part_location) {
+
+
+        //     $pending, $quantity_on_location, $date_picked,
+        // $location_key, $location_code,
+        // $part_stock, $part_barcode,$part_distinct_locations, $part_sku,
+        // $itf_key,$delivery_note_key ) {
+
+        $locations .= '<div style="height: 32px">'.get_delivery_note_fast_track_packing_item_location(
+                $total_required - $total_picked,
+                $part_location->get('Quantity On Hand'),
+                $date,
+                $part_location->location->id,
+                $part_location->location->get('Code'),
+                $part_location->part->get('Part Current On Hand Stock'),
+                1,
+                $part_location->part->sku,
+                (isset($itf_data[$part_location->location->id]) ? $itf_data[$part_location->location->id]['itf_keys'] : ''),
+                $data['metadata']['delivery_note_key']
+            ).'</div>';
+        //function get_picked_offline_input($total_required,$total_picked,$picked_in_location, $quantity_on_location, $itf_key, $part_sku,  $part_stock) {
+        $picked_offline_input .= '<div style="margin-bottom: 4px">'.get_delivery_note_fast_track_packing_input(
+                $total_required,
+                $total_picked,
+                (isset($itf_data[$part_location->location->id]) ? $itf_data[$part_location->location->id]['picked'] : 0),
+                ($part_location->get('Can Pick') == 'Yes' ? (isset($itf_data[$part_location->location->id]) ? $itf_data[$part_location->location->id]['pending'] : 0) : 0),
+                $part_location->get('Quantity On Hand'),
+
+                (isset($itf_data[$part_location->location->id]) ? $itf_data[$part_location->location->id]['itf_keys'] : ''),
+                $part_location->part->sku,
+                $part_location->part->get('Part Current On Hand Stock'),
+                $part_location->location->id
+            ).'</div>';
+
+    }
+
+
+
+    $response = array(
+        'state'                => 200,
+        'locations'            => $locations,
+        'picked_offline_input' => $picked_offline_input
+    );
+
+    echo json_encode($response);
+    exit;
+
+}
+
 
 function get_picked_offline_input_all_locations($data, $editor, $smarty, $db, $account, $user) {
 
