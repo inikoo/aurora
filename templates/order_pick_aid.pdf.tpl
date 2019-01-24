@@ -77,7 +77,10 @@
 <!--mpdf
 <htmlpageheader name="myheader">
 <table width="100%"><tr>
-<td width="50%" style="color:#000;"><span style="font-weight: bold; font-size: 14pt;">{t}Order Pick Aid{/t} {$delivery_note->get('Delivery Note ID')}</span><br />(C{$delivery_note->get('Delivery Note Customer Key')})  {$delivery_note->get('Delivery Note Customer Name')}<br /></td>
+<td width="50%" style="color:#000;"><span style="font-weight: bold; font-size: 14pt;">{t}Order Pick Aid{/t} {$delivery_note->get('Delivery Note ID')}</span><br />
+
+
+(C{"%05d"|sprintf:$delivery_note->get('Delivery Note Customer Key')})  {$delivery_note->get('Delivery Note Customer Name')}<br /></td>
 <td width="50%" style="text-align: right;">
 {if $delivery_note->get('Delivery Note Order Date Placed')}
 <div style="text-align: right">{t}Order date{/t}: {$delivery_note->get('Order Date Placed')}</div>
@@ -131,7 +134,11 @@ mpdf-->
 </table>
 <br>
 <div style="height:70px;border:0.1mm  solid #000;margin-bottom:20px;padding:10px">
-	<span style="font-size: 7pt; color: #555555; font-family: sans-serif;">{t}Notes{/t}:</span><br> {$delivery_note->get('Delivery Note Warehouse Note')|nl2br}<br>
+	{assign expected_payment $order->get('Expected Payment')}
+	{if $expected_payment!=''}<div style="font-size: 7pt;font-family: sans-serif;">{$expected_payment}</div>{/if}
+	<span style="font-size: 7pt; color: #555555; font-family: sans-serif;">{t}Notes{/t}:</span>
+
+	<br> {$delivery_note->get('Delivery Note Warehouse Note')|nl2br}<br>
 </div>
 <div style=" font-size: 9pt;margin-botom:2pt">
 	{$formatted_number_of_items}, {$formatted_number_of_picks}

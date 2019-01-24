@@ -134,7 +134,13 @@ div.inline { float:left; }
 			</div>
 			</td>
 			<td width="10%">&nbsp;</td>
-			<td width="45%" style="text-align: right"> 
+			<td width="45%" style="text-align: right">
+
+				{assign expected_payment $order->get('Expected Payment')}
+				{if $expected_payment!=''}
+					<div><b>{$expected_payment}</b></div>
+				{/if}
+
 			<div style="text-align: right; {if $delivery_note->get_formatted_parcels()==''}display:none{/if}">
 				{t}Parcels{/t}:<b> {$delivery_note->get_formatted_parcels()}</b>
 			</div>

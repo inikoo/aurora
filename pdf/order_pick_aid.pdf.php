@@ -19,6 +19,7 @@ if (!$delivery_note->id) {
 }
 $store    = get_object('Store',$delivery_note->get('Delivery Note Store Key'));
 $customer    = get_object('Customer',$delivery_note->get('Delivery Note Customer Key'));
+$order    = get_object('Order',$delivery_note->get('Delivery Note Order Key'));
 
 
 
@@ -47,6 +48,8 @@ $mpdf->SetAuthor($store->data['Store Name']);
 //$mpdf->SetJS('this.print();');    // set when we want to print....
 
 $smarty->assign('store', $store);
+$smarty->assign('order', $order);
+
 $smarty->assign('delivery_note', $delivery_note);
 
 
