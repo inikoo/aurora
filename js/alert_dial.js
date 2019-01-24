@@ -88,7 +88,18 @@
             var percentage = number / total;
 
 
-            shifted_percentage = (percentage - min_percentage) / (max_percentage - min_percentage)
+            //console.log(percentage)
+            //console.log(min_percentage)
+
+            //console.log(max_percentage)
+
+
+
+            var tmp=percentage - min_percentage;
+            var tmp2=max_percentage - min_percentage;
+
+
+            var shifted_percentage = tmp/tmp2;
 
             if (shifted_percentage > 1)shifted_percentage = 1;
             if (shifted_percentage < 0)shifted_percentage = 0;
@@ -279,7 +290,7 @@
 
             var subtext = [Math.round(percentage * 100), '%'].join('')
 
-            text = number
+            var text = number
 
             this.text.attr({
                 text: text
@@ -320,16 +331,16 @@
 
         moveKnob: function (angle) {
 
-            console.log(angle)
+           // console.log(angle)
 
             if(isNaN(angle)){
                 angle=315;
             }
-            console.log(angle)
+           // console.log(angle)
 
             var dropShadowAlignment = calculateDropShadowAngle(angle);
 
-        console.log(dropShadowAlignment)
+       // console.log(dropShadowAlignment)
             var dropShadow = this.generateDropShadow({x: dropShadowAlignment[0], y: dropShadowAlignment[1]});
 
             this.innerCircle.attr({
