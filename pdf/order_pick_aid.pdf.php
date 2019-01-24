@@ -54,7 +54,7 @@ $transactions = array();
 
 
 $sql    = sprintf(
-    "SELECT  `Map To Order Transaction Fact Parts Multiplicity` AS part_multiplicity,`Map To Order Transaction Fact XHTML Info` AS multiple_parts_info,Part.`Part Current On Hand Stock` AS total_stock, PLD.`Quantity On Hand` AS stock_in_picking,`Part Current Stock`,`Part Reference` AS reference,`Picking Note` AS notes,ITF.`Part SKU`,`Part Package Description` AS description,
+    "SELECT  Part.`Part Current On Hand Stock` AS total_stock, PLD.`Quantity On Hand` AS stock_in_picking,`Part Current Stock`,`Part Reference` AS reference,`Picking Note` AS notes,ITF.`Part SKU`,`Part Package Description` AS description,
 (`Required`+`Given`) AS qty,`Location Code` AS location ,
 `Part UN Number` AS un_number,
 `Part Packing Group` AS part_packing_group

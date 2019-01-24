@@ -16,7 +16,7 @@ require_once 'utils/get_addressing.php';
 require_once 'class.Country.php';
 
 
-//set_shipping_zones($db);
+set_shipping_zones($db);
 //test_shipping_zones($db);
 //migrate_shipping_zones($db);
 
@@ -26,7 +26,7 @@ require_once 'class.Country.php';
 
 
 
-test_api($db);
+//test_api($db);
 
 
 function test_api($db) {
@@ -283,15 +283,18 @@ function set_shipping_zones($db) {
     $shipping_zones_data = get_shipping_zones_data($account->get('Code'));
 
 
-    $sql = sprintf('truncate `Shipping Zone Schema Dimension`;truncate `Shipping Zone Schema Data`;truncate `Shipping Zone Dimension`;truncate `Shipping Zone Data`;');
-    $db->exec($sql);
+    //$sql = sprintf('truncate `Shipping Zone Schema Dimension`;truncate `Shipping Zone Schema Data`;truncate `Shipping Zone Dimension`;truncate `Shipping Zone Data`;');
+    //$db->exec($sql);
 
     $sql = sprintf(
-        'SELECT `Store Key` FROM `Store Dimension`  '
+        'SELECT `Store Key` FROM `Store Dimension` where `Store Code`="PL" '
     );
     if ($result = $db->query($sql)) {
         foreach ($result as $row) {
             $store                = get_object('store', $row['Store Key']);
+
+
+            /*
             $shipping_zone_schema = $store->create_shipping_zone_schema(
                 array(
                     'Shipping Zone Schema Label'         => sprintf(_('%s shipping zones'), $store->get('Code')),
@@ -306,12 +309,21 @@ function set_shipping_zones($db) {
 
 
             $store->fast_update_json_field('Store Properties', 'current_shipping_zone_schema', $shipping_zone_schema->id);
+*/
 
+            $shipping_zone_schema_key = $store->properties['current_shipping_zone_schema'];
+            $shipping_zone_schema=get_object('shipping_zone_schema',$shipping_zone_schema_key);
+
+
+            print_r($shipping_zone_schema);
 
             if (isset($shipping_zones_data[$store->get('Code')])) {
 
                 foreach (array_reverse($shipping_zones_data[$store->get('Code')]) as $_data) {
-                    $shipping_zone_schema->create_shipping_zone($_data);
+
+                    print_r($_data);
+
+                   $shipping_zone_schema->create_shipping_zone($_data);
                 }
 
 
@@ -959,6 +971,162 @@ function get_shipping_zones_data($account_code) {
                                     ),
                                     array(
                                         'from'  => 20495,
+                                        'to'    => 'INF',
+                                        'price' => 0
+                                    )
+
+                                )
+                            )
+                        ),
+                        'Shipping Zone Territories' => json_encode(
+                            array(
+                                array(
+                                    'country_code' => 'BG'
+                                ),
+                                array(
+                                    'country_code' => 'EE'
+                                ),
+                                array(
+                                    'country_code' => 'FI'
+                                ),
+                                array(
+                                    'country_code' => 'SE'
+                                ),
+                                array(
+                                    'country_code' => 'IE'
+                                ),
+                                array(
+                                    'country_code' => 'LT'
+                                ),
+                                array(
+                                    'country_code' => 'LV'
+                                ),
+                                array(
+                                    'country_code' => 'PT'
+                                ),
+                                array(
+                                    'country_code' => 'RO'
+                                ),
+                                array(
+                                    'country_code' => 'ES'
+                                )
+                            )
+                        )
+                    )
+                ),
+                'PL' => array(
+
+                    array(
+                        'Shipping Zone Code'        => 'Z1',
+                        'Shipping Zone Name'        => 'Strefa 1',
+                        'Shipping Zone Price'       => json_encode(
+                            array(
+                                'type'  => 'Step Order Items Net Amount',
+                                'steps' => array(
+                                    array(
+                                        'from'  => 0,
+                                        'to'    => 1095,
+                                        'price' => 40
+                                    ),
+                                    array(
+                                        'from'  => 1095,
+                                        'to'    => 'INF',
+                                        'price' => 0
+                                    )
+
+                                )
+                            )
+                        ),
+                        'Shipping Zone Territories' => json_encode(
+                            array(
+                                array(
+                                    'country_code' => 'AT'
+                                ),
+                                array(
+                                    'country_code' => 'SK'
+                                ),
+                                array(
+                                    'country_code' => 'CZ'
+                                ),
+                                array(
+                                    'country_code' => 'DE'
+                                ),
+                                array(
+                                    'country_code' => 'HU'
+                                ),
+                                array(
+                                    'country_code' => 'PL'
+                                )
+                            )
+                        )
+                    ),
+                    array(
+                        'Shipping Zone Code'        => 'Z2',
+                        'Shipping Zone Name'        => 'Strefa 2',
+                        'Shipping Zone Price'       => json_encode(
+                            array(
+                                'type'  => 'Step Order Items Net Amount',
+                                'steps' => array(
+                                    array(
+                                        'from'  => 0,
+                                        'to'    => 1495,
+                                        'price' => 65
+                                    ),
+                                    array(
+                                        'from'  => 1495,
+                                        'to'    => 'INF',
+                                        'price' => 0
+                                    )
+
+                                )
+                            )
+                        ),
+                        'Shipping Zone Territories' => json_encode(
+                            array(
+                                array(
+                                    'country_code' => 'FR'
+                                ),
+                                array(
+                                    'country_code' => 'BE'
+                                ),
+                                array(
+                                    'country_code' => 'LU'
+                                ),
+                                array(
+                                    'country_code' => 'NL'
+                                ),
+                                array(
+                                    'country_code' => 'HR'
+                                ),
+                                array(
+                                    'country_code' => 'DK'
+                                ),
+                                array(
+                                    'country_code' => 'IT'
+                                ),
+                                array(
+                                    'country_code' => 'SI'
+                                ),
+                                array(
+                                    'country_code' => 'GB'
+                                )
+                            )
+                        )
+                    ),
+                    array(
+                        'Shipping Zone Code'        => 'Z3',
+                        'Shipping Zone Name'        => 'Strefa 3',
+                        'Shipping Zone Price'       => json_encode(
+                            array(
+                                'type'  => 'Step Order Items Net Amount',
+                                'steps' => array(
+                                    array(
+                                        'from'  => 0,
+                                        'to'    => 3945,
+                                        'price' => 130
+                                    ),
+                                    array(
+                                        'from'  => 3945,
                                         'to'    => 'INF',
                                         'price' => 0
                                     )

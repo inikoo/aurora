@@ -40,13 +40,29 @@ headerCell: integerHeaderCell
 {
 name: "quantity",
 label: "{t}Quantity{/t}",
+renderable: {if $object->get('Order State')=='InBasket' or $object->get('Order State')=='InProcess'}false{else}true{/if},
+
 defaultOrder:1,
 editable: false,
 sortType: "toggle",
 {if $sort_key=='quantity'}direction: '{if $sort_order==1}descending{else}ascending{/if}',{/if}
 cell: Backgrid.HtmlCell.extend({ className: "aright"} ),
 headerCell: integerHeaderCell
-}, {
+},
+{
+name: "quantity_edit",
+label: "{t}Quantity{/t}",
+renderable: {if $object->get('Order State')=='InBasket' or $object->get('Order State')=='InProcess'}true{else}false{/if},
+
+defaultOrder:1,
+editable: false,
+sortType: "toggle",
+{if $sort_key=='quantity'}direction: '{if $sort_order==1}descending{else}ascending{/if}',{/if}
+cell: Backgrid.HtmlCell.extend({ className: "aright"} ),
+headerCell: integerHeaderCell
+},
+
+{
 name: "net",
 label: "{t}Net{/t}",
 defaultOrder:1,

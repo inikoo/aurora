@@ -112,18 +112,28 @@ class Order extends DB_Table {
                 $number_deliveries = 0;
                 $deliveries_xhtml  = '';
 
+                $store=get_object('Store',$this->get('Store Key'));
+
                 foreach ($this->get_deliveries('objects') as $dn) {
                     $number_deliveries++;
                     $deliveries_xhtml .= sprintf(
                         ' <div class="node"  id="delivery_node_%d"><span class="node_label"><i class="fa fa-truck fa-flip-horizontal fa-fw" aria-hidden="true"></i> 
                                <span class="link" onClick="change_view(\'%s\')">%s</span> (<span class="Delivery_Note_State">%s</span>)
+                                <a title="%s" class="pdf_link %s" target="_blank" href="/pdf/order_pick_aid.pdf.php?id=%d"> <i class="fal fa-clipboard-list-check " style="font-size: larger"></i></a>
                                 <a class="pdf_link %s" target=\'_blank\' href="/pdf/dn.pdf.php?id=%d"> <img style="width: 50px;height:16px;position: relative;top:2px" src="/art/pdf.gif"></a>
-
-                               </span></div>', $dn->id, 'delivery_notes/'.$dn->get('Delivery Note Store Key').'/'.$dn->id, $dn->get('ID'), $dn->get('Abbreviated State'), ($dn->get('State Index') < 90 ? 'hide' : ''), $dn->id
+                               </span>
+                                <div class="order_operation data_entry_delivery_note %s"><div class="square_button right" title="%s"><i class="fa fa-keyboard" aria-hidden="true" onclick="data_entry_delivery_note(%s)"></i></div></div>
+                               </div>', $dn->id, 'delivery_notes/'.$dn->get('Delivery Note Store Key').'/'.$dn->id, $dn->get('ID'), $dn->get('Abbreviated State'),
+                        _('Picking sheet'), ($dn->get('State Index') != 10 ? 'hide' : ''), $dn->id,
+                        ($dn->get('State Index') < 90 ? 'hide' : ''), $dn->id,
+                        (($dn->get('State Index') != 10 or $store->settings('data_entry_picking_aid')!='Yes')? 'hide' : ''), _('Input picking sheet data'), $dn->id
 
                     );
 
                 }
+
+
+
 
 
                 $this->update_metadata = array(
@@ -984,7 +994,7 @@ class Order extends DB_Table {
                                </div>', $dn->id, 'delivery_notes/'.$dn->get('Delivery Note Store Key').'/'.$dn->id, $dn->get('ID'), $dn->get('Abbreviated State'),
                 _('Picking sheet'), ($dn->get('State Index') != 10 ? 'hide' : ''), $dn->id,
                 ($dn->get('State Index') < 90 ? 'hide' : ''), $dn->id,
-                ($dn->get('State Index') != 10 ? 'hide' : ''), _('Input picking sheet data'), $dn->id
+                (($dn->get('State Index') != 10 or $store->settings('data_entry_picking_aid')!='Yes')? 'hide' : ''), _('Input picking sheet data'), $dn->id
 
             );
 

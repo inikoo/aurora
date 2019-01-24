@@ -967,6 +967,9 @@ update `Location Dimension` set `Location Type`='Unknown' where `Location Key`=1
 ALTER TABLE `Location Dimension` ADD `Location Number History Records` MEDIUMINT  UNSIGNED  NULL  DEFAULT '0'  AFTER `Location Warehouse Flag Key`;
 
 
+ALTER TABLE `Inventory Transaction Fact` CHANGE `Map To Order Transaction Fact Parts Multiplicity` `Map To Order Transaction Fact Parts Multiplicity` SMALLINT(5) UNSIGNED NULL DEFAULT NULL;
+
+
 ======= fer migration ordering in dw and costa
 
                     ALTER TABLE `Invoice Tax Dimension` ADD `Invoice Tax Key` INT UNSIGNED NOT NULL AUTO_INCREMENT FIRST, ADD PRIMARY KEY (`Invoice Tax Key`);

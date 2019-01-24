@@ -2834,6 +2834,7 @@ function get_navigation($user, $smarty, $data, $db, $account) {
 function get_tabs($data, $db, $account, $modules, $user, $smarty, $requested_tab = '') {
 
 
+
     if (preg_match('/\_edit$/', $data['tab'])) {
         return array(
             $data,
@@ -2893,6 +2894,8 @@ function get_tabs($data, $db, $account, $modules, $user, $smarty, $requested_tab
 
 
     );
+
+
 
 
     if ($data['section'] == 'email_campaign') {
@@ -3135,7 +3138,8 @@ function get_tabs($data, $db, $account, $modules, $user, $smarty, $requested_tab
         }
 
 
-    } elseif ($data['section'] == 'category') {
+    }
+    elseif ($data['section'] == 'category') {
 
         if ($data['_object']->get('Category Scope') == 'Product') {
 
@@ -3271,7 +3275,8 @@ function get_tabs($data, $db, $account, $modules, $user, $smarty, $requested_tab
         //print_r($_content);
 
 
-    } elseif ($data['section'] == 'prospects.email_template') {
+    }
+    elseif ($data['section'] == 'prospects.email_template') {
 
         if ($requested_tab != '') {
             $data['tab'] = $requested_tab;
@@ -3282,7 +3287,8 @@ function get_tabs($data, $db, $account, $modules, $user, $smarty, $requested_tab
         }
 
 
-    } elseif ($data['section'] == 'email_campaign_type') {
+    }
+    elseif ($data['section'] == 'email_campaign_type') {
 
 
         if ($data['_object']->get('Email Campaign Type Code') == 'Newsletter') {
@@ -3358,9 +3364,27 @@ function get_tabs($data, $db, $account, $modules, $user, $smarty, $requested_tab
         }
 
 
-    } elseif ($data['section'] == 'order') {
+    }
+    elseif ($data['section'] == 'order') {
 
         if ($data['module'] == 'orders') {
+
+
+
+            if($requested_tab=='order.input_picking_sheet'){
+                $_content['tabs']['order.input_picking_sheet']['class'] = '';
+
+            }else{
+                if ($data['tab'] == 'order.input_picking_sheet') {
+                    $data['tab'] = 'order.items';
+                    $_content['tabs']['order.items']['selected'] = true;
+                }
+
+            }
+
+
+
+
             if ($data['_object']->get('State Index') > 40 or $data['_object']->get('State Index') < 0) {
 
                 $_content['tabs']['order.all_products']['class'] = 'hide';

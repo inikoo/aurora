@@ -1074,11 +1074,11 @@ class EmailCampaign extends DB_Table {
         include_once 'class.Email_Tracking.php';
 
 
-        $smarty               = new Smarty();
+        $smarty = new Smarty();
         $smarty->setTemplateDir('templates');
         $smarty->setCompileDir('server_files/smarty/templates_c');
         $smarty->setCacheDir('server_files/smarty/cache');
-$smarty->setConfigDir('server_files/smarty/configs');
+        $smarty->setConfigDir('server_files/smarty/configs');
         $smarty->addPluginsDir('./smarty_plugins');
 
         $store   = get_object('Store', $this->data['Email Campaign Store Key']);
@@ -1172,7 +1172,7 @@ $smarty->setConfigDir('server_files/smarty/configs');
 
         $sql = sprintf('select `Email Tracking Key`,`Email Tracking Recipient`,`Email Tracking Recipient Key` ,`Email Tracking Recipient Key` from `Email Tracking Dimension` where `Email Tracking Email Mailshot Key`=%d and `Email Tracking State`="Ready" ', $this->id);
 
-        // print $sql;
+
 
 
         if ($result = $this->db->query($sql)) {
@@ -1208,7 +1208,10 @@ $smarty->setConfigDir('server_files/smarty/configs');
                 }
 
 
+
+
                 $published_email_template->send(get_object($row['Email Tracking Recipient'], $row['Email Tracking Recipient Key']), $send_data, $smarty);
+
 
 
                 // print_r($published_email_template);
@@ -1224,6 +1227,8 @@ $smarty->setConfigDir('server_files/smarty/configs');
             print "$sql\n";
             exit;
         }
+
+
 
         // exit('xxx');
         $this->update_state('Sent');
@@ -1294,13 +1299,6 @@ $smarty->setConfigDir('server_files/smarty/configs');
                         $this->data['Email Campaign Store Key'], $metadata['Days Last Updated']
                     );
                 }
-
-
-
-
-
-
-
 
 
                 return $sql;
@@ -1374,11 +1372,11 @@ $smarty->setConfigDir('server_files/smarty/configs');
         include_once 'class.Email_Tracking.php';
 
 
-        $smarty               = new Smarty();
+        $smarty = new Smarty();
         $smarty->setTemplateDir('templates');
         $smarty->setCompileDir('server_files/smarty/templates_c');
         $smarty->setCacheDir('server_files/smarty/cache');
-$smarty->setConfigDir('server_files/smarty/configs');
+        $smarty->setConfigDir('server_files/smarty/configs');
         $smarty->addPluginsDir('./smarty_plugins');
 
         $store   = get_object('Store', $this->data['Email Campaign Store Key']);

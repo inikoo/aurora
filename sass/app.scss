@@ -342,7 +342,7 @@ input {
   position: relative;
   top: 1px;
 
-  z-index: 2000;
+  z-index: 1000;
   border-left: 1px solid #ccc;
   background-color: $color_background;
   margin-top: $height_short_row;
@@ -1136,6 +1136,7 @@ right connector from last child*/
 @import '_froala';
 @import '_webpage_previews';
 @import 'datepicker';
+@import 'nice-select';
 
 
 .adr {

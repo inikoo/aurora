@@ -30,10 +30,22 @@ if (!isset($_REQUEST['tipo'])) {
 
 $tipo = $_REQUEST['tipo'];
 
+
 switch ($tipo) {
 
+    case 'data_entry_picking_aid':
+        $data = prepare_values(
+            $_REQUEST, array(
+                         'delivery_note_key' => array('type' => 'key'),
+                         'order_key'         => array('type' => 'key'),
+                         'level'             => array('type' => 'numeric'),
+                         'items'             => array('type' => 'json array'),
+                         'fields'            => array('type' => 'json array'),
+                     )
+        );
+        data_entry_picking_aid($data, $editor, $smarty, $db, $account, $user);
 
-
+        break;
     case 'get_input_delivery_note_packing_all_locations':
         $data = prepare_values(
             $_REQUEST, array(
@@ -690,7 +702,7 @@ function new_payment($data, $editor, $db, $account, $user) {
 
     $payback_refund = false;
 
-    if ($data['parent'] == 'invoice' or $data['parent'] == 'refund' ) {
+    if ($data['parent'] == 'invoice' or $data['parent'] == 'refund') {
 
         $invoice = get_object($data['parent'], $data['parent_key']);
 
@@ -729,7 +741,7 @@ function new_payment($data, $editor, $db, $account, $user) {
         'Payment Sender Email'                => $order->get('Email'),
         'Payment Sender Card Type'            => '',
         'Payment Created Date'                => $date,
-        'Payment Order Key'                       => $order->id,
+        'Payment Order Key'                   => $order->id,
         'Payment Completed Date'              => $date,
         'Payment Last Updated Date'           => $date,
         'Payment Transaction Status'          => 'Completed',
@@ -746,7 +758,6 @@ function new_payment($data, $editor, $db, $account, $user) {
     );
 
     $customer = get_object('Customer', $order->get('Customer Key'));
-
 
 
     if ($payment_account->get('Payment Account Block') == 'Accounts' and !$payback_refund) {
@@ -910,7 +921,6 @@ function refund_payment($data, $editor, $smarty, $db, $account, $user) {
     $payment_account->editor = $editor;
 
     $order = get_object('Order', $payment->get('Payment Order Key'));
-
 
 
     switch ($data['operation']) {
@@ -1092,14 +1102,11 @@ function refund_payment($data, $editor, $smarty, $db, $account, $user) {
 
             if ($data['parent'] == 'Invoice') {
                 $payment_data['Payment Invoice Key'] = $data['parent_key'];
-                $payment_data['Payment Type'] = 'Refund';
+                $payment_data['Payment Type']        = 'Refund';
 
-            }else{
+            } else {
                 $payment_data['Payment Type'] = 'Return';
             }
-
-
-
 
 
             $refund = $payment_account->create_payment($payment_data);
@@ -1119,7 +1126,7 @@ function refund_payment($data, $editor, $smarty, $db, $account, $user) {
 
             $store = get_object('Store', $order->get('Store Key'));
 
-            $reference    = '';
+            $reference = '';
 
             $payment_data = array(
                 'Payment Store Key'                      => $order->get('Store Key'),
@@ -1152,13 +1159,11 @@ function refund_payment($data, $editor, $smarty, $db, $account, $user) {
 
             if ($data['parent'] == 'Invoice') {
                 $payment_data['Payment Invoice Key'] = $data['parent_key'];
-                $payment_data['Payment Type'] = 'Refund';
+                $payment_data['Payment Type']        = 'Refund';
 
-            }else{
+            } else {
                 $payment_data['Payment Type'] = 'Return';
             }
-
-
 
 
             $refund = $payment_account->create_payment($payment_data);
@@ -1529,8 +1534,6 @@ function set_po_transaction_amount_to_current_cost($data, $editor, $account, $db
 }
 
 
-
-
 function get_input_delivery_note_packing_all_locations($data, $editor, $smarty, $db, $account, $user) {
 
 
@@ -1545,7 +1548,7 @@ function get_input_delivery_note_packing_all_locations($data, $editor, $smarty, 
 
     $itf_data = array();
     $sql      = sprintf(
-        'SELECT `Location Key`,sum(`Picked`) as picked,  sum(`Required`+`Given`) AS required ,group_concat(`Inventory Transaction Key`) as itf_keys FROM `Inventory Transaction Fact` ITF   WHERE   `Delivery Note Key`=%d  and  ITF.`Part SKU`=%d  group by `Location Key` ',
+        'SELECT `Location Key`, sum(`Required`+`Given`) AS required ,group_concat(`Inventory Transaction Key`) as itf_keys FROM `Inventory Transaction Fact` ITF   WHERE   `Delivery Note Key`=%d  and  ITF.`Part SKU`=%d  group by `Location Key` ',
         $data['metadata']['delivery_note_key'],
         $data['metadata']['part_sku']
     );
@@ -1556,14 +1559,13 @@ function get_input_delivery_note_packing_all_locations($data, $editor, $smarty, 
 
             $itf_data[$row['Location Key']] = array(
                 'required' => $row['required'],
-                'picked'   => $row['picked'],
-                'pending'  => $row['required'] - $row['picked'],
+                'picked'   => 0,
+                'pending'  => $row['required'],
                 'itf_keys' => $row['itf_keys']
             );
 
 
             $total_required += $row['required'];
-            $total_picked   += $row['picked'];
         }
     } else {
         print_r($error_info = $db->errorInfo());
@@ -1575,11 +1577,6 @@ function get_input_delivery_note_packing_all_locations($data, $editor, $smarty, 
     $part = get_object('part', $data['metadata']['part_sku']);
     foreach ($part->get_locations('part_location_object', '', true) as $part_location) {
 
-
-        //     $pending, $quantity_on_location, $date_picked,
-        // $location_key, $location_code,
-        // $part_stock, $part_barcode,$part_distinct_locations, $part_sku,
-        // $itf_key,$delivery_note_key ) {
 
         $locations .= '<div style="height: 32px">'.get_delivery_note_fast_track_packing_item_location(
                 $total_required - $total_picked,
@@ -1593,7 +1590,7 @@ function get_input_delivery_note_packing_all_locations($data, $editor, $smarty, 
                 (isset($itf_data[$part_location->location->id]) ? $itf_data[$part_location->location->id]['itf_keys'] : ''),
                 $data['metadata']['delivery_note_key']
             ).'</div>';
-        //function get_picked_offline_input($total_required,$total_picked,$picked_in_location, $quantity_on_location, $itf_key, $part_sku,  $part_stock) {
+
         $picked_offline_input .= '<div style="margin-bottom: 4px">'.get_delivery_note_fast_track_packing_input(
                 $total_required,
                 $total_picked,
@@ -1608,7 +1605,6 @@ function get_input_delivery_note_packing_all_locations($data, $editor, $smarty, 
             ).'</div>';
 
     }
-
 
 
     $response = array(
@@ -1706,6 +1702,44 @@ function get_picked_offline_input_all_locations($data, $editor, $smarty, $db, $a
         'state'                => 200,
         'locations'            => $locations,
         'picked_offline_input' => $picked_offline_input
+    );
+
+    echo json_encode($response);
+    exit;
+
+}
+
+
+function data_entry_picking_aid($data, $editor, $smarty, $db, $account) {
+
+    include_once 'utils/data_entry_picking_aid.class.php';
+
+
+    $data_entry_picking_aid = new data_entry_picking_aid($data, $editor, $db, $account);
+
+
+    $validation = $data_entry_picking_aid->parse_input_data();
+    if (!$validation['valid']) {
+
+
+        echo json_encode($validation['response']);
+        exit;
+    }
+
+
+    $data_entry_picking_aid->update_delivery_note();
+
+
+    $data_entry_picking_aid->process_transactions();
+
+    $data_entry_picking_aid->finish_packing();
+
+
+    //  print_r($data);
+
+
+    $response = array(
+        'state' => 200
     );
 
     echo json_encode($response);

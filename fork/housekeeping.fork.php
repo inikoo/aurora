@@ -20,11 +20,7 @@ function fork_housekeeping($job) {
 
     list($account, $db, $data, $editor, $session) = $_data;
 
-
     print_r($data);
-
-
-    //return true;
 
 
     switch ($data['type']) {
@@ -1954,9 +1950,7 @@ function fork_housekeeping($job) {
             $redis = new Redis();
 
 
-
             if ($redis->connect('127.0.0.1', 6379)) {
-
 
 
                 $url_cache_key = 'pwc2|'.DNS_ACCOUNT_CODE.'|'.$webpage->get('Webpage Website Key').'_'.$webpage->get('Webpage Code');
@@ -1969,6 +1963,12 @@ function fork_housekeeping($job) {
             }
 
 
+            break;
+
+        case 'update_part_location_stock':
+
+            $part_location = get_object('Part_Location', $data['part_sku'].'_'. $data['location_key']);
+            $part_location->update_stock();
             break;
 
         default:
