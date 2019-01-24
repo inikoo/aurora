@@ -131,6 +131,12 @@ switch ($tipo) {
     case 'delivery_note.items':
         delivery_note_items(get_table_parameters(), $db, $user);
         break;
+
+    case 'delivery_note.picking_aid':
+        delivery_note_picking_aid(get_table_parameters(), $db, $user);
+        break;
+
+
     case 'delivery_note.fast_track_packing':
         delivery_note_fast_track_packing(get_table_parameters(), $db, $user);
         break;
@@ -1724,15 +1730,6 @@ function order_items($_data, $db, $user) {
     $adata = array();
     foreach ($db->query($sql) as $data) {
 
-        /*
-                if ($data['Order Bonus Quantity'] != 0) {
-                    if ($data['Order Quantity'] != 0) {
-                        $quantity .= '<br/> +'.number($data['Order Bonus Quantity']).' '._('free');
-                    } else {
-                        $quantity = number($data['Order Bonus Quantity']).' '._('free');
-                    }
-                }
-        */
 
         if (is_numeric($data['Product Availability'])) {
             $stock = number($data['Product Availability']);
@@ -1773,12 +1770,27 @@ function order_items($_data, $db, $user) {
 
         if ($data['Current Dispatching State'] == 'Out of Stock in Basket') {
             $description .= '<br> <span class="warning"><i class="fa fa-exclamation-circle" aria-hidden="true"></i> '._('Product out of stock, removed from basket').'</span>';
-            $quantity    = number($data['Out of Stock Quantity']);
-
-            $class = 'out_of_stock';
+            //$quantity    = number($data['Out of Stock Quantity']);
+            //$class = 'out_of_stock';
 
         }
 
+
+
+
+        if ($data['Order Quantity'] != $data['Delivery Note Quantity']  and  in_array(
+                $customer_order->get('Order State'), array(
+                                                       'PackedDone',
+                                                       'Approved',
+                                                       'Dispatched'
+                                                   )
+            ) ) {
+            $quantity = '<span class="discreet " title="'.sprintf(_('%s ordered by customer'), number($data['Order Quantity'])).'" >(<span class="strikethrough">'.number($data['Order Quantity']).'</span>)</span> '.number($data['Delivery Note Quantity']);
+
+        } else {
+            $quantity = number($data['Order Quantity']);
+
+        }
 
         if (in_array(
             $customer_order->get('Order State'), array(
@@ -1787,24 +1799,23 @@ function order_items($_data, $db, $user) {
                                                    'InBasket'
                                                )
         )) {
-            $quantity = sprintf(
+            $quantity_edit = sprintf(
                 '<span    data-settings=\'{"field": "Order Quantity", "transaction_key":"%d","item_key":%d, "item_historic_key":%d ,"on":1 }\'   >
             <i onClick="save_item_qty_change(this)" class="fa minus  fa-minus fa-fw button" aria-hidden="true"></i>
             <input class="order_qty width_50" style="text-align: center" value="%s" ovalue="%s"> 
             <i onClick="save_item_qty_change(this)" class="fa plus  fa-plus fa-fw button" aria-hidden="true"></i></span>', $data['Order Transaction Fact Key'], $data['Product ID'], $data['Product Key'], $data['Order Quantity'] + 0, $data['Order Quantity'] + 0
             );
+
+
+
+
         } else {
 
-            if ($data['Order Quantity'] != $data['Delivery Note Quantity']) {
-                // $quantity = number($data['Delivery Note Quantity']).' <i class="fa fa-exclamation-circle error"></i> <span class="discreet " title="'._('Ordered quantity').'">('.$data['Order Quantity'].')</span>';
-                $quantity = '<span class="discreet " title="'.sprintf(_('%s ordered by customer'), number($data['Order Quantity'])).'" >(<span class="strikethrough">'.number($data['Order Quantity']).'</span>)</span> '.number($data['Delivery Note Quantity']);
 
-            } else {
-                $quantity = number($data['Order Quantity']);
-
-            }
-
+            $quantity_edit = '';
         }
+
+
 
 
         if (in_array(
@@ -1835,6 +1846,8 @@ function order_items($_data, $db, $user) {
             'code'        => sprintf('<span class="link" onclick="change_view(\'/products/%d/%d\')">%s</span>', $customer_order->get('Order Store Key'), $data['Product ID'], $data['Product Code']),
             'description' => $description,
             'quantity'    => $quantity,
+            'quantity_edit'    => $quantity_edit,
+
             'discounts'   => '<span id="transaction_discounts_'.$data['Order Transaction Fact Key'].'" class="_item_discounts">'.$discounts.'</span>',
 
 
@@ -1992,46 +2005,7 @@ function delivery_note_fast_track_packing($_data, $db, $user) {
     $adata = array();
     foreach ($db->query($sql) as $data) {
 
-        // print_r($data);
 
-        /*
-                $to_pick = $data['quantity'] - $data['Picked'];
-                $to_pack = $data['quantity'] - $data['Packed'];
-
-
-                switch ($dn->data['Delivery Note State']) {
-                    case 'Dispatched':
-                        $state = _('dispatched');
-                        break;
-                    case 'Cancelled':
-                        $state = '';
-                        break;
-                    case 'Cancelled to Restock':
-                        $state = _('to be restocked');
-                        break;
-                    default:
-                        $state = _('to be dispatched');
-                        break;
-                }
-
-
-                $notes = '<b>'.number(-1 * $data['Inventory Transaction Quantity']).'</b> '.$state.'<br/>';
-
-                if ($data['Out of Stock'] != 0) {
-                    $notes .= '<span style="margin-left:10px">'.number(
-                            $data['Out of Stock']
-                        ).'</span> '._('out of stock').'<br/>';
-                }
-                if ($data['Not Found'] != 0) {
-                    $notes .= number($data['Not Found']).' '._('Not found').'<br/>';
-                }
-                if ($data['No Picked Other'] != 0) {
-                    $notes .= _('not picked (other)').' '.number(
-                            $data['No Picked Other']
-                        ).'<br/>';
-                }
-
-        */
         $description = $data['Part Package Description'];
 
 
@@ -2040,7 +2014,7 @@ function delivery_note_fast_track_packing($_data, $db, $user) {
         }
 
 
-        $pending = $data['required'] - $data['Picked'];
+        $pending = $data['required'];
 
 
         $available = $data['required'] - $data['cant_pick'];
@@ -2055,7 +2029,7 @@ function delivery_note_fast_track_packing($_data, $db, $user) {
         }
         $quantity = '<div class="quantity_components">'.$_quantity.'</div>';
 
-        $location = '<div class="location_components" style="margin-top: 2px">'.get_item_location(
+        $location = '<div class="location_components" style="margin-top: 2px">'.get_delivery_note_fast_track_packing_item_location(
                 $pending,
                 $data['Quantity On Hand'],
                 $data['Date Picked'],
@@ -2064,7 +2038,6 @@ function delivery_note_fast_track_packing($_data, $db, $user) {
                 $data['Location Code'],
 
                 $data['Part Current On Hand Stock'],
-                $data['Part SKO Barcode'],
                 $data['Part Distinct Locations'],
 
                 $data['Part SKU'],
@@ -2083,17 +2056,29 @@ function delivery_note_fast_track_packing($_data, $db, $user) {
 */
 
 
-        $picked_offline_done = sprintf(
-            '<i onClick="set_picked_offline_item_as_done(this)" class="picked_offline_status  fa fa-check-circle %s "  aria-hidden="true"></i>',
-            ($data['Part Current On Hand Stock'] < 1 && $pending > 0 ? 'success blocked' : 'super_discreet button')
+        $total_pending = $data['required'];
+
+        if ($data['Quantity On Hand'] < $total_pending) {
+            $formatted_diff = $data['Quantity On Hand'] - $total_pending;
+            $status_icon    = 'error fa-exclamation-circle';
+        } else {
+            $formatted_diff = '';
+            $status_icon    = 'success  fa-check-circle';
+        }
+
+
+        $picked_offline_status = sprintf(
+            '<span class="picked_offline_status_notes error">%s</span> <i  class="picked_offline_status  fa %s " ></i>',
+            $formatted_diff,
+            $status_icon
         );
 
-        //$total_qty,$total_picked,$picked_in_location, $quantity_on_location, $itf_key, $part_sku,  $part_stock
-        $picked_offline_input = '<div class="picked_quantity_components" data-pending="'.$pending.'">'.get_picked_offline_input(
+
+        $picked_offline_input = '<div class="picked_quantity_components" data-pending="'.$pending.'">'.get_delivery_note_fast_track_packing_input(
                 $data['required'],
-                $data['Picked'],
-                $data['Picked'],
-                $data['required']-$data['Picked'],
+                0,
+                0,
+                $data['required'],
                 $data['Quantity On Hand'],
                 $data['Inventory Transaction Key'],
                 $data['Part SKU'],
@@ -2106,21 +2091,13 @@ function delivery_note_fast_track_packing($_data, $db, $user) {
         $adata[] = array(
             'id' => (integer)$data['Inventory Transaction Key'],
 
-            'reference'            => sprintf('<span onclick="change_view(\'part/%d\')">%s</span>', $data['Part SKU'], $data['Part Reference']),
-            //   'product_pid' => $data['Product ID'],
-            'description'          => $description,
-            'quantity'             => $quantity,
-            //'dispatched'        => number(-1 * $data['Inventory Transaction Quantity']),
-            //'overview_required' => number($data['Required']),
+            'reference'   => sprintf('<span onclick="change_view(\'part/%d\')">%s</span>', $data['Part SKU'], $data['Part Reference']),
+            'description' => $description,
+            'quantity'    => $quantity,
 
-            //'overview_packed'  => number($data['Packed']),
-            //'overview_picked'  => number($data['Picked']),
-            //'overview_problem' => number($data['Out of Stock']),
-            'picked_offline_done'  => $picked_offline_done,
+            'picked_offline_status' => $picked_offline_status,
 
-            //  'packed'               => $packed,
-            //    'picked'               => $picked,
-            //  'picked_info'          => $picked_info,
+
             'location'             => $location,
             'picked_offline_input' => $picked_offline_input
 
@@ -2144,9 +2121,12 @@ function delivery_note_fast_track_packing($_data, $db, $user) {
 }
 
 
-function delivery_note_items($_data, $db, $user) {
+function delivery_note_picking_aid($_data, $db, $user) {
 
     //print_r($_data);
+
+    // todo show when it work
+    exit();
 
     include_once('class.DeliveryNote.php');
     include_once('utils/order_handing_functions.php');
@@ -2298,7 +2278,7 @@ function delivery_note_items($_data, $db, $user) {
 
             'overview_packed'  => number($data['Packed']),
             'overview_picked'  => number($data['Picked']),
-            'overview_problem' => number($data['Out of Stock']),
+            'overview_problem' => '<span class="'.($data['Out of Stock'] == 0 ? 'very_discreet' : 'error').'">'.number($data['Out of Stock']).'</span>',
 
 
             'packed'               => $packed,
@@ -2308,6 +2288,102 @@ function delivery_note_items($_data, $db, $user) {
             'picked_offline_input' => $picked_offline_input,
 
             'overview_state' => $state
+
+
+        );
+
+    }
+
+    $response = array(
+        'resultset' => array(
+            'state'         => 200,
+            'data'          => $adata,
+            'rtext'         => $rtext,
+            'sort_key'      => $_order,
+            'sort_dir'      => $_dir,
+            'total_records' => $total
+
+        )
+    );
+    echo json_encode($response);
+}
+
+
+function delivery_note_items($_data, $db, $user) {
+
+
+    include_once('class.DeliveryNote.php');
+    include_once('utils/order_handing_functions.php');
+
+
+    global $_locale;// fix this locale stuff
+
+    $rtext_label = 'item';
+
+
+    //$dn = new DeliveryNote($_data['parameters']['parent_key']);
+
+    include_once 'prepare_table/init.php';
+
+    $sql = "select $fields from $table $where $wheref  $group_by order by $order $order_direction  limit $start_from,$number_results";
+
+    $adata = array();
+
+
+    foreach ($db->query($sql) as $data) {
+
+
+        $description = $data['Part Package Description'];
+
+
+        if ($data['Part UN Number']) {
+            $description .= ' <small style="background-color:#f6972a;border:.5px solid #231e23;color:#231e23;padding:0px;font-size:90%">'.$data['Part UN Number'].'</small>';
+        }
+
+
+        $state_picking = '';
+        $state_packing = '';
+        if ($data['Required'] > 0) {
+
+            if ($data['Picked'] == $data['Required']) {
+
+                $state_picking = sprintf('<i class="fa-dolly-flatbed-alt fa success discreet fa-fw " title="%s"></i>', _('Picked'));
+            } elseif ($data['Picked'] > 0) {
+                $state_picking = sprintf('<i class="fa-dolly-flatbed-alt fa discreet fa-fw " title="%s"></i>', _('Picking'));
+
+            } else {
+                $state_picking = sprintf('<i class="fa-dolly-flatbed-empty fa discreet fa-fw " title="%s"></i>', _('To be picked'));
+
+            }
+
+
+            if ($data['Packed'] == $data['Required']) {
+
+                $state_packing = sprintf('<i class="fa-check-circle fa success fa-fw " title="%s"></i>', _('Packed'));
+                $state_picking = '';
+            } elseif ($data['Packed'] > 0) {
+                $state_packing = sprintf('<i class="fa-arrow-alt-circle-down error discreet fa fa-fw " title="%s"></i>', _('Packing'));
+                $state_picking = '';
+            } else {
+                $state_packing = '';
+
+            }
+
+
+        }
+
+        $state = '<span class="padding_left_20">'.$state_picking.' '.$state_packing.'</span>';
+
+
+        $adata[] = array(
+            'id'                => (integer)$data['Part SKU'],
+            'reference'         => sprintf('<span onclick="change_view(\'part/%d\')">%s</span>', $data['Part SKU'], $data['Part Reference']),
+            'description'       => $description,
+            'overview_required' => number($data['Required']).($data['Given'] != 0 ? '<i class="fa fa-gift padding_left_10"></i> '.number($data['Given']) : ''),
+            'overview_packed'   => number($data['Packed']),
+            'overview_picked'   => number($data['Picked']),
+            'overview_problem'  => '<span class="'.($data['Out of Stock'] == 0 ? 'very_discreet' : 'error').'">'.number($data['Out of Stock']).'</span>',
+            'overview_state'    => $state
 
 
         );
@@ -2390,7 +2466,6 @@ function delivery_note_cancelled_items($_data, $db, $user) {
     );
     echo json_encode($response);
 }
-
 
 
 function orders_in_website_mailshots($_data, $db, $user) {

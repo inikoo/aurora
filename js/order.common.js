@@ -5,6 +5,31 @@
 
 
 
+$(document).on('input propertychange', '.order_qty', function (evt) {
+
+    if ($(this).val() == $(this).attr('ovalue')) {
+        $(this).closest('span').find('i.plus').removeClass('fa-cloud fa-exclamation-circle error').addClass('fa-plus')
+        $(this).closest('span').find('i.minus').removeClass('invisible')
+
+    } else {
+
+        var labels=$('body').data('labels');
+
+
+
+        if (!validate_signed_integer($(this).val(), 4294967295) || $(this).val() == '') {
+            $(this).closest('span').find('i.plus').removeClass('fa-plus fa-exclamation-circle error').addClass('fa-cloud').prop('title',labels.save)
+            $(this).closest('span').find('i.minus').removeClass('fa-minus').addClass('fa-undo very_discreet').prop('title',labels.undo)
+
+            $(this).addClass('discreet')
+        } else {
+            $(this).closest('span').find('i.plus').removeClass('fa-plus fa-cloud').addClass('fa-exclamation-circle error').prop('title',labels.invalid_val)
+            $(this).closest('span').find('i.minus').removeClass('fa-minus').addClass('fa-undo very_discreet').prop('title',labels.undo)
+
+
+        }
+    }
+});
 
 
 
@@ -641,7 +666,7 @@ function save_item_qty_change(element) {
     $(element).addClass('fa-spinner fa-spin')
 
     var input = $(element).closest('span').find('input')
-    var icon = $(element)
+
     var settings = $(element).closest('span').data('settings')
 
     if ($(element).hasClass('fa-plus')) {
@@ -669,9 +694,22 @@ function save_item_qty_change(element) {
 
         var _icon = 'fa-minus'
 
-    } else {
-        qty = parseFloat(input.val())
+    }else if ($(element).hasClass('fa-undo')) {
 
+
+            qty = input.attr('ovalue')
+
+
+
+        var _icon = 'fa-minus'
+
+    } else {
+
+        if (isNaN(parseFloat(input.val())) || input.val() == '' || input.val() == 0) {
+            var qty = 0
+        } else {
+            qty = parseFloat(input.val())
+        }
 
         var _icon = 'fa-cloud'
 
@@ -768,9 +806,9 @@ function save_item_qty_change(element) {
 
     request.done(function (data) {
 
-
-        $(element).closest('span').find('i.plus').removeClass('fa-spinner fa-spin fa-cloud').addClass('fa-plus')
-        $(element).closest('span').find('i.minus').removeClass('fa-spinner fa-spin invisible').addClass('fa-minus')
+        var labels=$('body').data('labels');
+        $(element).closest('span').find('i.plus').removeClass('fa-spinner fa-spin fa-cloud error fa-exclamation-circle').addClass('fa-plus').prop('title',labels.add)
+        $(element).closest('span').find('i.minus').removeClass('fa-spinner fa-spin invisible fa-undo very_discreet').addClass('fa-minus').prop('title',labels.remove)
 
 
         if (data.state == 200) {
@@ -1569,7 +1607,7 @@ function save_new_payment() {
 
 
 
-                if(object_data.object=='invoice') {
+                if(object_data.object=='invoice' ) {
 
                     $('#tabs').removeClass('hide')
 

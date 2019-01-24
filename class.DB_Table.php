@@ -774,14 +774,15 @@ abstract class DB_Table extends stdClass {
         $key_field = $this->table_name." Key";
 
         $sql = sprintf(
-            "UPDATE `%s` SET `%s`= JSON_SET(`%s`,'$.%s','%s') WHERE `%s`=%d",
-            addslashes($table_full_name), addslashes($field), addslashes($field),
-            addslashes($key), addslashes($value), addslashes($key_field), $this->id
+            "UPDATE `%s` SET `%s`= JSON_SET(`%s`,'$.%s',?) WHERE `%s`=?",
+            addslashes($table_full_name), addslashes($field), addslashes($field), addslashes($key), addslashes($key_field)
         );
 
 
-        $this->db->exec($sql);
-
+        $stmt = $this->db->prepare($sql);
+        $stmt->bindParam(1, $value);
+        $stmt->bindParam(2, $this->id);
+        $stmt->execute();
 
         $this->get_data('id', $this->id);
 

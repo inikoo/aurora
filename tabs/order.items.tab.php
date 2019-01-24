@@ -77,6 +77,7 @@ if($state['_object']->get('State Index')>0 and  $state['_object']->get('State In
 }
 
 
+$smarty->assign('object', $state['_object']);
 
 
 $smarty->assign('table_buttons', $table_buttons);
@@ -97,9 +98,6 @@ $smarty->assign(
 
 
 
-$smarty->assign(
-    'js_code', 'js/injections/order.'.(_DEVEL ? '' : 'min.').'js'
-);
 
 
 include('utils/get_table_html.php');

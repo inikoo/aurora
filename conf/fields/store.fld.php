@@ -61,6 +61,28 @@ if ($result = $db->query($sql)) {
 
 asort($options_currencies);
 
+$options_Staff    = array();
+$options_Staff[0] = _('No default');
+$sql              = sprintf(
+    'SELECT `Staff Name`,`Staff Key`,`Staff Alias` FROM `Staff Dimension` WHERE `Staff Currently Working`="Yes" order by `Staff Alias` '
+);
+foreach ($db->query($sql) as $row) {
+    $options_Staff[$row['Staff Key']] = $row['Staff Alias'];
+
+}
+
+
+$options_Shipper    = array();
+$options_Shipper[0] = _('No default');
+$sql              = sprintf(
+    'SELECT `Shipper Name`,`Shipper Key`,`Shipper Code` FROM `Shipper Dimension` WHERE  `Shipper Active`="Yes" order by `Shipper Name` '
+);
+foreach ($db->query($sql) as $row) {
+    $options_Shipper[$row['Shipper Key']] = $row['Shipper Name'].' ('.$row['Shipper Code'].')';
+
+}
+
+
 
 $object_fields = array(
     array(
@@ -143,9 +165,7 @@ $object_fields = array(
                 'edit'        => ($edit ? 'email' : ''),
                 'id'          => 'Store_Email',
                 'value'       => $object->get('Store Email'),
-                'label'       => ucfirst(
-                    $object->get_field_label('Store Email')
-                ),
+                'label'       => ucfirst($object->get_field_label('Store Email')),
                 'invalid_msg' => get_invalid_message('email'),
                 'required'    => false,
 
@@ -158,9 +178,7 @@ $object_fields = array(
                 'id'              => 'Store_Telephone',
                 'value'           => $object->get('Store Telephone'),
                 'formatted_value' => $object->get('Telephone'),
-                'label'           => ucfirst(
-                    $object->get_field_label('Store Telephone')
-                ),
+                'label'           => ucfirst($object->get_field_label('Store Telephone')),
                 'invalid_msg'     => get_invalid_message('telephone'),
                 'required'        => false,
                 'type'            => 'value'
@@ -243,10 +261,14 @@ $object_fields = array(
             array(
                 'id'              => 'Store_Collect_Address',
                 'edit'            => 'address',
-                'render'=>($object->get('Store Can Collect')=='Yes'?true:false),
+                'render'          => ($object->get('Store Can Collect') == 'Yes' ? true : false),
                 'countries'       => $countries,
                 'value'           => htmlspecialchars($object->get('Store Collect Address')),
-                'formatted_value' => ($object->get('Store Collect Address Formatted')==''?'<span class="warning" style="position: relative;top:5px"><i class="fa fa-warning "></i>  '._('Input collection address').'</span>':$object->get('Store Collect Address Formatted')),
+                'formatted_value' => ($object->get('Store Collect Address Formatted') == ''
+                    ? '<span class="warning" style="position: relative;top:5px"><i class="fa fa-warning "></i>  '._('Input collection address').'</span>'
+                    : $object->get(
+                        'Store Collect Address Formatted'
+                    )),
                 'label'           => ucfirst($object->get_field_label('Store Collect Address')),
                 'invalid_msg'     => get_invalid_message('address'),
                 'required'        => false
@@ -262,34 +284,145 @@ $object_fields = array(
         'fields'     => array(
 
 
-    array(
-        'edit'     => ($edit ? 'string' : ''),
-        'id'       => 'Store_Order_Public_ID_Format',
-        'value'    => $object->get('Store Order Public ID Format'),
-        'label'    => ucfirst($object->get_field_label('Store Order Public ID Format')).' <i class="fa fa-exclamation-triangle yellow" aria-hidden="true"  title="'._('Warning, misconfiguration of this variable can affect the creation of new orders').'" ></i>',
-        'required' => true,
+            array(
+                'edit'     => ($edit ? 'string' : ''),
+                'id'       => 'Store_Order_Public_ID_Format',
+                'value'    => $object->get('Store Order Public ID Format'),
+                'label'    => ucfirst($object->get_field_label('Store Order Public ID Format')).' <i class="fa fa-exclamation-triangle yellow" aria-hidden="true"  title="'._('Warning, misconfiguration of this variable can affect the creation of new orders').'" ></i>',
+                'required' => true,
 
-        'type' => 'value'
+                'type' => 'value'
 
 
+            ),
+
+            array(
+                'edit'     => ($edit ? 'numeric' : ''),
+                'id'       => 'Store_Order_Last_Order_ID',
+                'value'    => $object->get('Store Order Last Order ID'),
+                'label'    => ucfirst($object->get_field_label('Store Order Last Order ID')).' <i class="fa fa-exclamation-triangle yellow" aria-hidden="true"  title="'._('Warning, misconfiguration of this variable can affect the creation of new orders').'" ></i>',
+                'required' => true,
+
+                'type' => 'value'
+
+
+            ),
+
+
+        )
     ),
 
+
     array(
-        'edit'     => ($edit ? 'numeric' : ''),
-        'id'       => 'Store_Order_Last_Order_ID',
-        'value'    => $object->get('Store Order Last Order ID'),
-        'label'    => ucfirst($object->get_field_label('Store Order Last Order ID')).' <i class="fa fa-exclamation-triangle yellow" aria-hidden="true"  title="'._('Warning, misconfiguration of this variable can affect the creation of new orders').'" ></i>',
-        'required' => true,
-
-        'type' => 'value'
+        'label'      => _('Data entry of paper picking aid').' <i class="fa fa-keyboard padding_left_5" style="font-size: 110%;position: relative;top:.5px"></i>',
+        'show_title' => true,
+        'fields'     => array(
 
 
+            array(
+                'edit'            => 'no_icon',
+                'id'              => 'Store_Allow_Data_Entry_Picking_Aid',
+                'value'           => $object->settings('data_entry_picking_aid'),
+                'formatted_value' => '<span class="button" onclick="toggle_allow_data_entry_picking_aid(this)"  field="data_entry_picking_aid"  style="margin-right:40px"><i class=" fa fa-fw '.($object->settings('data_entry_picking_aid') == 'Yes' ? 'fa-toggle-on'
+                        : 'fa-toggle-off')
+                    .'" aria-hidden="true"></i> <span class="'.($object->settings('data_entry_picking_aid') == 'Yes' ? '' : 'discreet').'">'._('Allow').'</span></span>  
+                    
+                    ',
+
+                'label'    => _('Data entry of paper picking aid'),
+                'required' => true,
+
+                'type' => ''
+
+
+            ),
+            array(
+                'edit'            => 'no_icon',
+                'id'              => 'Store_Allow_Data_Entry_Picking_Aid_Settings',
+                'class'           => 'data_entry_picking_aid_defaults',
+                'render'          => ($object->settings('data_entry_picking_aid') == 'Yes' ? true : false),
+                'value'           => '',
+                'formatted_value' => '
+                    
+                    <span  data-value="0"  class="button  " onclick="toggle_allow_data_entry_picking_aid(this)"  field="data_entry_picking_aid_state_after_save"  >'._('Just set as packed').' <i class=" far fa-fw fa-check-circle" aria-hidden="true"></i></span>  <i class="fas fa-angle-double-right"></i> 
+                    <span  data-value="10" class="button data_entry_picking_aid_state_after_save level_10  '.($object->settings('data_entry_picking_aid_state_after_save') >= 10 ? '' : 'very_discreet')
+                    .' " onclick="toggle_allow_data_entry_picking_aid(this)"  field="data_entry_picking_aid_state_after_save"  >'._('Set as closed').' <i class=" far fa-fw '.($object->settings('data_entry_picking_aid_state_after_save') >= 10 ? 'fa-check-circle'
+                        : 'fa-circle').'" aria-hidden="true"></i></span>   <i class="fas fa-angle-double-right"></i>
+                     <span  data-value="20"  class="button data_entry_picking_aid_state_after_save level_20 '.($object->settings('data_entry_picking_aid_state_after_save') >= 20 ? '' : 'very_discreet')
+                    .'" onclick="toggle_allow_data_entry_picking_aid(this)"  field="data_entry_picking_aid_state_after_save"  >'._('Create invoice').' <i class=" far fa-fw '.($object->settings('data_entry_picking_aid_state_after_save') >= 20 ? 'fa-check-circle'
+                        : 'fa-circle').'" aria-hidden="true"></i></span>  <i class="fas fa-angle-double-right"></i>
+                    <span  data-value="30"  class="button data_entry_picking_aid_state_after_save level_30 '.($object->settings('data_entry_picking_aid_state_after_save') >= 30 ? '' : 'very_discreet')
+                    .'" onclick="toggle_allow_data_entry_picking_aid(this)"  field="data_entry_picking_aid_state_after_save" >'._('Set as dispatched').' <i class=" far fa-fw '.($object->settings('data_entry_picking_aid_state_after_save') >= 30 ? 'fa-check-circle'
+                        : 'fa-circle').'" aria-hidden="true"></i></span> 
+
+                    ',
+
+                'label'    => _('Actions after data entry'),
+                'required' => true,
+
+                'type' => ''
+
+
+            ),
+
+            array(
+                'render'          => ($object->settings('data_entry_picking_aid') == 'Yes' ? true : false),
+                'class'           => 'data_entry_picking_aid_defaults',
+                'id'              => 'data_entry_picking_aid_default_picker',
+                'edit'            => ($edit ? 'option' : ''),
+                'value'           => $object->settings('data_entry_picking_aid_default_picker'),
+                'formatted_value' => $object->get('data entry picking aid default picker'),
+                'options'         => $options_Staff,
+                'label'           => _('Default picker'),
+                'required'        => false,
+                'type'            => ''
+
+            ),
+            array(
+                'render' => ($object->settings('data_entry_picking_aid') == 'Yes' ? true : false),
+                'class'  => 'data_entry_picking_aid_defaults',
+
+                'id'              => 'data_entry_picking_aid_default_packer',
+                'edit'            => ($edit ? 'option' : ''),
+                'value'           => $object->settings('data_entry_picking_aid_default_packer'),
+                'formatted_value' => $object->get('data entry picking aid default packer'),
+                'options'         => $options_Staff,
+                'label'           => _('Default packer'),
+                'required'        => false,
+                'type'            => ''
+
+            ),
+
+            array(
+                'render' => ($object->settings('data_entry_picking_aid') == 'Yes' ? true : false),
+                'class'  => 'data_entry_picking_aid_defaults',
+
+                'id'              => 'data_entry_picking_aid_default_shipper',
+                'edit'            => ($edit ? 'option' : ''),
+                'value'           => $object->settings('data_entry_picking_aid_default_shipper'),
+                'formatted_value' => $object->get('data entry picking aid default shipper'),
+                'options'         => $options_Shipper,
+                'label'           => _('Default courier'),
+                'required'        => false,
+                'type'            => ''
+
+            ),
+
+            array(
+                'render'          => ($object->settings('data_entry_picking_aid') == 'Yes' ? true : false),
+                'class'           => 'data_entry_picking_aid_defaults',
+                'id'              => 'data_entry_picking_aid_default_number_boxes',
+                'edit'            => ($edit ? 'smallint_unsigned' : ''),
+                'value'           => $object->settings('data_entry_picking_aid_default_number_boxes'),
+                'formatted_value' => $object->get('data entry picking aid default number boxes'),
+                'label'           => _('Default number boxes'),
+                'required'        => false,
+                'type'            => ''
+
+            ),
+
+        )
     ),
-
-
-
-        )),
-
 
 
     array(
@@ -337,7 +470,6 @@ $object_fields = array(
     ),
 
 
-
 );
 
 if (!$new) {
@@ -352,8 +484,8 @@ if (!$new) {
                 'id'        => 'delete_store',
                 'class'     => 'operation',
                 'value'     => '',
-                'label'     => '<i class="fa fa-fw fa-lock button" onClick="toggle_unlock_delete_object(this)" style="margin-right:20px"></i> <span data-data=\'{ "object": "'.$object->get_object_name(
-                    ).'", "key":"'.$object->id.'"}\' onClick="delete_object(this)" class="delete_object disabled">'.($object->get('Store Contacts') > 0 ? _('Close store') : _("Delete store"))
+                'label'     => '<i class="fa fa-fw fa-lock button" onClick="toggle_unlock_delete_object(this)" style="margin-right:20px"></i> <span data-data=\'{ "object": "'.$object->get_object_name().'", "key":"'.$object->id
+                    .'"}\' onClick="delete_object(this)" class="delete_object disabled">'.($object->get('Store Contacts') > 0 ? _('Close store') : _("Delete store"))
                     .' <i class="far fa-trash-alt new_button link"></i></span>',
                 'reference' => '',
                 'type'      => 'operation'

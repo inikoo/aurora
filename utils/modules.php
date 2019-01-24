@@ -1157,8 +1157,9 @@ $modules = array(
                     ),
 
                     'order.input_picking_sheet' => array(
-                        'label' => '',
-                        'icon'  => ''
+                        'label' => _('Picking/Packing data entry'),
+                        'icon'  => 'keyboard',
+                        'class'=>'hide'
                     ),
 
 
@@ -2913,9 +2914,9 @@ $modules = array(
 
                 'tabs' => array(
                     'store.details' => array(
-                        'label' => _('Data'),
-                        'icon'  => 'database',
-                        'title' => _('Details')
+                        'label' => _('Settings'),
+                        'icon'  => 'sliders-h',
+                        'title' => _('Settings')
                     ),
                     'store.sales'   => array(
                         'label' => _('Sales'),

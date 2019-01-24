@@ -13,9 +13,6 @@
 include_once 'utils/static_data.php';
 
 
-
-
-
 $smarty->assign('customer', $object);
 
 $countries = get_countries($db);
@@ -35,15 +32,16 @@ $options_delivery_address_link = array(
 
 
 $options_sales_representative = array();
-$sql                          = sprintf(
+
+$sql = sprintf(
     'SELECT `User Alias`,U.`User Key`,`User Handle` from `User Dimension` U LEFT JOIN `User Group User Bridge` B ON (U.`User Key`=B.`User Key`) WHERE  `User Type` in  ("Staff","Contractor")  and `User Group Key`=2     and `User Active`="Yes"  group by U.`User Key` order by `User Alias`  '
 );
 
 
-if($object->get('Customer Sales Representative Key')){
+if ($object->get('Customer Sales Representative Key')) {
     $options_sales_representative[0] = array(
-        'label' => _('Remove account manager'),
-        'label2' => _('Remove account manager'),
+        'label'    => _('Remove account manager'),
+        'label2'   => _('Remove account manager'),
         'selected' => false
     );
 }
@@ -51,7 +49,7 @@ if($object->get('Customer Sales Representative Key')){
 
 foreach ($db->query($sql) as $row) {
     $options_sales_representative[$row['User Key']] = array(
-        'label' =>$row['User Alias'].' ('.$row['User Handle'].')',
+        'label'    => $row['User Alias'].' ('.$row['User Handle'].')',
         'label2'   => $row['User Alias'].' ('.sprintf('%03d', $row['User Key']).')',
         'selected' => false
     );
@@ -59,19 +57,19 @@ foreach ($db->query($sql) as $row) {
 
 
 if (isset($options['new']) and $options['new']) {
-    $new = true;
-    $store=get_object('Store',$options['store_key']);
+    $new   = true;
+    $store = get_object('Store', $options['store_key']);
 
 } else {
-    $new = false;
-    $store=get_object('Store',$object->get('Store Key'));
+    $new   = false;
+    $store = get_object('Store', $object->get('Store Key'));
 
 }
 
 $edit = true;
 
 
-$_edit=($store->get('Store Version')==2?true:false);
+$_edit = ($store->get('Store Version') == 2 ? true : false);
 
 
 if ($new) {
@@ -187,7 +185,9 @@ if ($new) {
                     'edit'            => ($_edit ? 'telephone' : ''),
                     'value'           => $object->get('Customer Main Plain Telephone'),
                     'formatted_value' => $object->get('Main Plain Telephone'),
-                    'label'           => ucfirst($object->get_field_label('Customer Main Plain Telephone'
+                    'label'           => ucfirst(
+                            $object->get_field_label(
+                                'Customer Main Plain Telephone'
                             )
                         ).($object->get('Customer Main Plain Telephone') != '' ? ($object->get('Customer Preferred Contact Number') == 'Telephone'
                             ? ''

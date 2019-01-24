@@ -660,6 +660,24 @@ class DeliveryNote extends DB_Table {
 
                 break;
 
+
+            case 'Delivery Note Assigned Picker Name':
+            case 'Delivery Note Assigned Packer Name':
+
+
+                $staff_key = $this->get(preg_replace('/ Name$/', ' Key', $key));
+
+                if (is_numeric($staff_key) and $staff_key > 0) {
+                    $staff = get_object('Staff', $staff_key);
+
+                    return $staff->get('Name');
+                } else {
+                    return '';
+                }
+
+                break;
+
+
         }
 
 
@@ -1075,7 +1093,7 @@ class DeliveryNote extends DB_Table {
 
             case 'Delivery Note State':
 
-                $this->update_state($value,$options,$metadata);
+                $this->update_state($value, $options, $metadata);
                 break;
 
             case 'Delivery Note Shipper Key':
@@ -1285,9 +1303,11 @@ class DeliveryNote extends DB_Table {
                 if ($this->get('State Index') > 70 or $this->get('State Index') < 10) {
                     return;
                 }
-                $this->update_field('Delivery Note Date Finish Packing', $date, 'no_history');
-                $this->update_field(
-                    'Delivery Note State', $value, 'no_history'
+                $this->fast_update(
+                    array(
+                        'Delivery Note Date Finish Packing' => $date,
+                        'Delivery Note State'               => $value
+                    )
                 );
 
 
@@ -1325,7 +1345,7 @@ class DeliveryNote extends DB_Table {
                     // todo make it work for multiple parts
 
                     $sql = sprintf(
-                        'SELECT `Packed`,`Required`,`Given`, `Out of Stock`,`No Authorized`,`Not Found`,`No Picked Other`,  `Map To Order Transaction Fact Key` FROM `Inventory Transaction Fact` WHERE  `Delivery Note Key`=%d ', $this->id
+                        'SELECT sum(`Packed`) as `Packed`,sum(`Required`) as `Required` ,sum(`Given`) as `Given`, `Map To Order Transaction Fact Key` FROM `Inventory Transaction Fact` WHERE  `Delivery Note Key`=%d  group by `Map To Order Transaction Fact Key` ', $this->id
                     );
 
 
@@ -1357,8 +1377,8 @@ class DeliveryNote extends DB_Table {
 
                             $sql = sprintf(
                                 'UPDATE `Order Transaction Fact`  SET 
-                            `Delivery Note Quantity`=(`Order Quantity`+`Order Bonus Quantity`)*%f ,
-                             `No Shipped Due Out of Stock`=(`Order Quantity`+`Order Bonus Quantity`)*(1-%f),
+                            `Delivery Note Quantity`=ROUND((`Order Quantity`+`Order Bonus Quantity`)*%f ,8),
+                             `No Shipped Due Out of Stock`=ROUND((`Order Quantity`+`Order Bonus Quantity`)*(1-%f),8),
                             `Order Transaction Out of Stock Amount`=`Order Transaction Amount`*(1-%f) ,
                                `Order Transaction Amount`=`Order Transaction Amount`*%f 
                                      WHERE `Order Transaction Fact Key`=%d ', $ratio_of_packing, $ratio_of_packing, $ratio_of_packing, $ratio_of_packing, $otf
@@ -1670,7 +1690,7 @@ class DeliveryNote extends DB_Table {
 
                 if ($this->data['Delivery Note Type'] == 'Order') {
 
-                    $order->update(array('Order State' => 'Dispatched'), '',array('delivery_note_key'=>$this->id));
+                    $order->update(array('Order State' => 'Dispatched'), '', array('delivery_note_key' => $this->id));
                 } else {
                     $order->update(
                         array(

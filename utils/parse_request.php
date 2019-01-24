@@ -24,7 +24,12 @@ function parse_request($_data, $db, $modules, $account = '', $user = '', $is_set
 
 
     $original_request = preg_replace('/^\//', '', $request);
+
     $view_path        = preg_split('/\//', $original_request);
+
+
+
+    $view_path=array_filter($view_path);
 
     $module     = 'utils';
     $section    = 'not_found';
@@ -2580,9 +2585,10 @@ function parse_request($_data, $db, $modules, $account = '', $user = '', $is_set
                 }
 
 
-                $module = 'orders';
+
                 if (isset($view_path[0])) {
 
+                    $module = 'orders';
                     if (is_numeric($view_path[0])) {
                         $section = 'order';
                         $object  = 'order';
@@ -5398,6 +5404,8 @@ function parse_request($_data, $db, $modules, $account = '', $user = '', $is_set
     }
 
 
+   // print_r($_data);
+
     list($tab, $subtab) = parse_tabs($module, $section, $_data, $modules);
 
 
@@ -5457,6 +5465,10 @@ function parse_tabs($module, $section, $_data, $modules) {
 
 
         if (!empty($tmp[$module][$section]['tab'])) {
+
+
+
+
             $tab = $tmp[$module][$section]['tab'];
 
         } else {

@@ -74,6 +74,8 @@ class Staff extends DB_Table {
         } else {
             return;
         }
+
+
         if ($this->data = $this->db->query($sql)->fetch()) {
             $this->id = $this->data['Staff Key'];
         }

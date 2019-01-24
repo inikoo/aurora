@@ -51,8 +51,8 @@ headerCell: integerHeaderCell
 },
 
 {
-name: "picked_offline_done",
-label: "{t}Done{/t}",
+name: "picked_offline_status",
+label: "{t}Status{/t}",
 defaultOrder:1,
 editable: false,
 sortType: "toggle",
@@ -65,7 +65,7 @@ headerCell: integerHeaderCell
 
 {
 name: "picked_offline_input",
-label: "{t}Picked{/t}",
+label: "{t}Picked & packed{/t}",
 defaultOrder:1,
 editable: false,
 sortType: "toggle",

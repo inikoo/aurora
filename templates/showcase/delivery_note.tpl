@@ -230,7 +230,7 @@
 
                 <div id="fast_track_packing_operations" class="order_operation {if $delivery_note->get('State Index')!=20    }hide{/if}">
                     <div class="square_button right  " title="{t}Fast track packing{/t}">
-                        <i id="show_fast_track_packing_button" class="fa fa-bolt  fa-fw  very_discreet " aria-hidden="true" onclick="show_fast_track_packing(this)"></i>
+                        <i id="show_fast_track_packing_button" class="fa fa-bolt  fa-fw  very_discreet " aria-hidden="true" onclick="show_temporal_message()"></i>
 
                     </div>
                 </div>
@@ -238,7 +238,7 @@
                 <div id="start_picking_operations" class="order_operation {if $delivery_note->get('State Index')!=10    }hide{/if}">
                     <div class="square_button right  " title="{t}Start picking{/t}">
                         <i id="start_picking_save_buttons" class="far fa-hand-holding-box  button   fa-fw  very_discreet fa-flip-vertical"
-                           data-data='{  "field": "Delivery Note State","value": "Picking","dialog_name":"start_picking"}' aria-hidden="true" onclick="save_order_operation(this)"></i>
+                           data-data='{  "field": "Delivery Note State","value": "Picking","dialog_name":"start_picking"}' aria-hidden="true" onclick="show_temporal_message()"></i>
 
                     </div>
                 </div>
@@ -266,6 +266,17 @@
                 </div>
             </div>
         </div>
+
+        <script>
+
+            function show_temporal_message() {
+                swal({
+                    html: 'Picking delivery moved to order ( <i class=\'fa fa-keyboard\'></i> button). <div style=\'margin-top:10px\' class=\'small\'>Click <i class=\'fas fa-headset fa-fw\' style=\'color:cornflowerblue;opacity:.75\'></i> on left menu for help</div>'
+                })
+            }
+
+
+            </script>
 
         <div class="{if $delivery_note->get('State Index')<90 }hide{/if}" style="text-align: center;border-bottom: 1px solid #ccc;padding:5px 0px;">
             <a class="pdf_link" target='_blank' href="/pdf/dn.pdf.php?id={$delivery_note->id}"> <img style="width: 50px;height:16px" src="/art/pdf.gif"></a>

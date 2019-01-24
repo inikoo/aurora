@@ -44,7 +44,19 @@
 
 <div  style="border-bottom: 1px solid #ccc;">
 
-<table class="input_picking_sheet_table"  border="0">
+<table class="input_picking_sheet_table"  data-order_key="{$order->id}" data-delivery_note_key="{$dn->id}" border="0" data-labels='{
+"missing_fields":"{t}Missing required fields:{/t}",
+"packer":"{t}Packer{/t}",
+"picker":"{t}Picker{/t}",
+"parcels":"{t}Number of parcels{/t}",
+"shipper":"{t}Courier{/t}",
+"are_you_sure":"{t}Are you sure you want to continue?{/t}",
+"issues":"{t}There is some issues with this order{/t}",
+"confirm_button_text":"{t}Yes, continue{/t}",
+"out_of_stock":"{t}Some products where mark as out of stock{/t}",
+"tracking_number":"{t}Tracking number is missing{/t}"
+
+}'>
 
     <tr class="top">
         <td class="label" >
@@ -53,13 +65,14 @@
 
             <label>{t}Picker{/t}</label>
 
-            <input id="set_picker" type="hidden" class=" input_field" value="" has_been_valid="0"/>
+            <input id="set_picker" type="hidden" data-field="Delivery Note Assigned Picker Key" class=" input_field" value="{$store->settings('data_entry_picking_aid_default_picker')}" has_been_valid="0"/>
 
-            <input id="set_picker_dropdown_select_label" field="set_picker" style="width:170px"
+            <input id="set_picker_dropdown_select_label" field="set_picker" style="width:170px"  name="picker" autocomplete="off"
                    scope="employee" parent="account"
                    parent_key="1" class="dropdown_select"
                    data-metadata='{ "option":"only_working"}'
-                   value="{$dn->get('Delivery Note Assigned Picker Alias')}" has_been_valid="0"
+                   value="{if $dn->get('Delivery Note Assigned Picker Key')>0 }{$dn->get('Delivery Note Assigned Picker Name')}{else}{$store->get('data entry picking aid default picker')}{/if}"
+                   has_been_valid="0"
                    placeholder="{t}Name{/t}"/>
             <span id="set_picker_msg" class="msg"></span>
 
@@ -68,7 +81,7 @@
                 <table id="set_picker_results" border="0"  >
 
                     <tr class="hide" id="set_picker_search_result_template" field="" value=""
-                        formatted_value="" onClick="select_dropdown_handler('picker',this)">
+                        formatted_value="" onClick="select_dropdown_handler_for_fast_track_packing('picker',this)">
                         <td class="code"></td>
                         <td style="width:85%" class="label"></td>
 
@@ -98,49 +111,44 @@
 
         <td  >
 
-            <input class="set_dn_weight width_50 " type="number" class=" input_field" value="" has_been_valid="0"/> Kg
+            <input id="set_dn_weight" data-field="Delivery Note Weight" class=" width_50 input_field  field_to_check" type="number"  min="0" value="" has_been_valid="0"/> Kg
 
         </td>
 
-        <td class="label">
-            <div id="shipper" class="{if $dn->get('Delivery Note Shipper Key')==''}hide{/if}">
-                {assign "shipper" $dn->get('Shipper')}
-                {if $shipper}
-                    <span class="Shipper_Code" title="{$shipper->get('Name')}">{$shipper->get('Code')}</span>
-                {else}
-                    <span class="Shipper_Code" title=""></span>
-                {/if}
 
-                <i onclick="show_shipper_options()" class="fal fa-pen discreet button margin_left_10"></i>
+        <td class="label" rowspan="2" style="padding: 0px 20px">
 
-
-            </div>
-
-            <div id="shipper_options" class="{if $dn->get('Delivery Note Shipper Key')>0}hide{/if}">
-                {if $number_shippers<=5}
+            <div >
+                <input id="set_shipper" data-field="Delivery Note Shipper Key"  type="hidden" class="selected_shipper input_field" value="{if $store->settings('data_entry_picking_aid_default_shipper')>0}{$store->settings('data_entry_picking_aid_default_shipper')}{else}__none__{/if}">
+                 <select class="shippers_options small" style="width: 200px">
+                    <option data-display="{t}Select courier{/t}" value="">{t}No courier{/t}</option>
                     {foreach from=$shippers item=shipper}
-                        <span id="shipper_option_{$shipper.key}" onclick="select_courier({$shipper.key})" class="button option {if $dn->get('Delivery Note Shipper Key')==$shipper.key}selected{/if}" title="{$shipper.name}">{$shipper.code}</span>
+                        <option value="{$shipper.key}" {if $store->settings('data_entry_picking_aid_default_shipper')==$shipper.key}selected="selected"{/if} >{$shipper.code}</option>
                     {/foreach}
-                    <span id="shipper_option_" onclick="select_courier('')" class="button option " title="{t}Skip set courier{/t}"><i class="error fa fa-ban"></i></span>
-                {else}
 
-                {/if}
 
+                </select>
+                <div class="clear:both"></div>
+            </div>
+            <div style="clear: both;padding-top: 10px">
+            <input id="set_tracking_number" data-field="Delivery Note Shipper Tracking" class="tracking_number input_field field_to_check" placeholder="{t}Tracking number{/t}">
             </div>
         </td>
 
         <td class="label" rowspan="2" style="padding: 0px 20px">
-
-            <div><i class="far fa-square"></i>  {t}Set as closed{/t} </div>
-            <div style="margin-top:5px;margin-bottom: 5px"><i class="far fa-square"></i>  {t}Create invoice{/t} </div>
-            <div><i class="far fa-square"></i>  {t}Set as dispatched{/t} </div>
+            <input type="hidden" class="order_data_entry_picking_aid_state_after_save"  value="{$store->settings('data_entry_picking_aid_state_after_save')}" >
+            <div><span data-level="L10" class="button L10" onclick="change_order_data_entry_picking_aid_state_after_save(this)"><i class="far {if $store->settings('data_entry_picking_aid_state_after_save')>=10}fa-check-square{else}fa-square{/if}"></i>  {t}Set as closed{/t} </span></div>
+            <div style="margin-top:5px;margin-bottom: 5px"><span  data-level="L20" class="button L20" onclick="change_order_data_entry_picking_aid_state_after_save(this)"><i class="far {if $store->settings('data_entry_picking_aid_state_after_save')>=20}fa-check-square{else}fa-square{/if}"></i>  {t}Create invoice{/t}  </span></div>
+            <div><span class="button L30"  data-level="L30" onclick="change_order_data_entry_picking_aid_state_after_save(this)"><i class="far {if $store->settings('data_entry_picking_aid_state_after_save')>=30}fa-check-square{else}fa-square{/if}"></i>  {t}Set as dispatched{/t} </span> </div>
         </td>
 
         <td class="label" rowspan="2" style="padding: 0px 20px">
 
-            <div  style="margin-bottom: 5px;font-size: x-small;position: relative;bottom: 10px"><i class="fa fa-sign-out fa-flip-horizontal fa-fw"></i>  {t}Cancel{/t} </div>
+            <div  style="margin-bottom: 5px;font-size: x-small;position: relative;bottom: 10px"><span class="button" onclick="close_data_entry_delivery_note()"><i class="fa fa-sign-out fa-flip-horizontal fa-fw"></i>  {t}Cancel{/t} </span></div>
 
-            <div><i class="save fa fa-cloud"></i>  {t}Save{/t} </div>
+            <div>
+                <span class="save" onclick="confirm_save_data_entry_picking_aid(this)"> {t}Save{/t} <i class="save_data_entry_picking_aid_icon fas fa-cloud "></i>  </span>
+            </div>
         </td>
 
     </tr>
@@ -150,15 +158,16 @@
 
 
 
-            <label>{t}Picker{/t}</label>
+            <label>{t}Packer{/t}</label>
 
-            <input id="set_packer" type="hidden" class=" input_field" value="" has_been_valid="0"/>
+            <input id="set_packer" type="hidden" data-field="Delivery Note Assigned Packer Key" class=" input_field" value="{$store->settings('data_entry_picking_aid_default_packer')}" has_been_valid="0"/>
 
-            <input id="set_packer_dropdown_select_label" field="set_packer" style="width:170px"
+            <input id="set_packer_dropdown_select_label" field="set_packer" style="width:170px" name="packer" autocomplete="off"
                    scope="employee" parent="account"
                    parent_key="1" class="dropdown_select"
                    data-metadata='{ "option":"only_working"}'
-                   value="{$dn->get('Delivery Note Assigned Picker Alias')}" has_been_valid="0"
+                   value="{if $dn->get('Delivery Note Assigned Packer Key')>0 }{$dn->get('Delivery Note Assigned Packer Name')}{else}{$store->get('data entry picking aid default packer')}{/if}"
+                   has_been_valid="0"
                    placeholder="{t}Name{/t}"/>
             <span id="set_packer_msg" class="msg"></span>
 
@@ -167,7 +176,7 @@
                 <table id="set_packer_results" border="0"  >
 
                     <tr class="hide" id="set_packer_search_result_template" field="" value=""
-                        formatted_value="" onClick="select_dropdown_handler('packer',this)">
+                        formatted_value="" onClick="select_dropdown_handler_for_fast_track_packing('packer',this)">
                         <td class="code"></td>
                         <td style="width:85%" class="label"></td>
 
@@ -185,8 +194,6 @@
             </script>
 
 
-
-
         </td>
         <td class="label" style="width: 1%" >
 
@@ -195,12 +202,10 @@
         </td>
         <td style="" >
 
-            <input class="set_dn_parcels width_50" type="number" class=" input_field" value="" has_been_valid="0"/>
+            <input id="set_dn_parcels" data-field="Delivery Note Number Parcels" class=" width_50 field_to_check input_field " type="number"  min="0"  value="{$store->settings('data_entry_picking_aid_default_number_boxes')}" has_been_valid="0"/>
 
         </td>
 
-<td class="label">
-</td>
 
 
     </tr>
@@ -211,3 +216,43 @@
 </table>
     <div style="clear: both"></div>
 </div>
+
+
+<script>
+
+
+
+    $('.shippers_options').niceSelect();
+
+    $( ".shippers_options" ).on('change',
+        function() {
+
+        var value=$( ".shippers_options option:selected" ).val();
+        $('.selected_shipper').val(value)
+
+        if(value==''){
+            $( ".shippers_options .current" ).html('{t}No courier{/t}')
+            $('.tracking_number').addClass('invisible')
+        }else{
+            $('.tracking_number').removeClass('invisible')
+        }
+            validate_data_entry_picking_aid()
+
+    });
+
+
+    var check_list = {
+        'picker':          { filled:false,valid:true},
+        'packer':          { filled:false,valid:true},
+        'weight':         { filled:false,valid:true},
+        'parcels':         { filled:false,valid:true},
+        'shipper':        { filled:false,valid:true},
+        'tracking_number': { filled:false,valid:true},
+        'items':           { filled:true,valid:true},
+    };
+
+
+
+
+
+</script>

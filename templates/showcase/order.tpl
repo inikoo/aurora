@@ -277,6 +277,10 @@
             <span style="float:left;padding-left:10px;padding-top:5px" class="Order_State"> {$order->get('State')} </span>
             <div id="forward_operations" class="{if $store->get('Store Version')<2}hide{/if}">
 
+
+
+
+
                 <div id="proforma_operations" oncontextmenu="return false;"
                      class="order_operation {if  $order->get('State Index')<10 or  $order->get('State Index')>=80    or  $order->get('Order Number Items')==0 }hide{/if}">
                     <div class="square_button right proforma_button " data-order_key="{$order->id}" title="{t}Proforma invoice{/t}">
@@ -452,7 +456,15 @@
                 </div>
 
 
+                <div class="order_operation edit_order_in_warehouse {if $order->get('Order State')!='InWarehouse'  }hide{/if}">
+                    <div class="square_button right" title="{t}Edit order items{/t}">
+                        <i class="far fa-pencil-alt" aria-hidden="true" onclick="edit_order_in_warehouse()"></i>
+                    </div>
+                </div>
+
             </div>
+
+
         </div>
 
         <table border="0" class="info_block acenter">
@@ -529,7 +541,7 @@
                     </span>
 
 
-                    <div class="order_operation data_entry_delivery_note {if $dn->get('State Index')!=10}hide{/if}">
+                    <div class="delivery_note_operation data_entry_delivery_note {if $dn->get('State Index')>=80 or $dn->get('State Index')<0  or $store->settings('data_entry_picking_aid')!='Yes' }hide{/if}">
                         <div class="square_button right" title="{t}Input picking sheet data{/t}">
                             <i class="fa fa-keyboard" aria-hidden="true" onclick="data_entry_delivery_note({$dn->id})"></i>
                         </div>
@@ -862,17 +874,6 @@
 
     var out_of_stock_dialog_open=false;
 
-
-    function data_entry_delivery_note(dn_key){
-
-        $('#tabs').html('');
-
-        change_view(state.request + '&tab=order.input_picking_sheet' , {
-            'dn_key':dn_key})
-
-
-
-    }
 
 
     $(document).on('click', '#Shipping_Net_Amount', function (evt) {
@@ -1372,5 +1373,42 @@
 
     }
 
+    function edit_order_in_warehouse(){
+
+        console.log($('#forward_operations .edit_order_in_warehouse i'))
+
+
+        if($('#forward_operations .edit_order_in_warehouse i').hasClass('far')){
+
+            Swal.fire({
+                title: '{t}Are you sure you want to modify an order already in warehouse?{/t}',
+                html: '{t}Please notify warehouse staff of changes{/t} <div style="margin-top:10px" class="small error">This is a <em>beta</em> (untested) feature</div>',
+                type: 'warning',
+                showCancelButton: true,
+                confirmButtonColor: '#3085d6',
+                cancelButtonColor: '#d33',
+                confirmButtonText: '{t}Yes, i want to modify it!{/t}'
+            }).then((result) => {
+                if (result.value) {
+
+                grid.columns.findWhere({ name: 'quantity'} ).set("renderable", false)
+                grid.columns.findWhere({ name: 'quantity_edit'} ).set("renderable", true)
+
+                $('#forward_operations .edit_order_in_warehouse i').removeClass('far').addClass('fas')
+
+
+            }
+        })
+        }else{
+            grid.columns.findWhere({ name: 'quantity'} ).set("renderable", true)
+            grid.columns.findWhere({ name: 'quantity_edit'} ).set("renderable", false)
+            $('#forward_operations .edit_order_in_warehouse i').addClass('far').removeClass('fas')
+
+        }
+
+
+
+
+    }
 
 </script>

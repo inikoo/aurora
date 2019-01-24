@@ -23,13 +23,6 @@ cell: "html"
 
 },
 
-{
-name: "location",
-label: "{t}Location{/t}",
-editable: false,
-cell: "html"
-
-},
 
 
 
@@ -48,7 +41,7 @@ headerCell: integerHeaderCell
 
 {
 name: "overview_problem",
-label: "{t}Problem{/t}",
+label: "{t}Out of stock{/t}",
 defaultOrder:1,
 editable: false,
 sortType: "toggle",
@@ -94,128 +87,10 @@ cell: Backgrid.HtmlCell.extend({ className: "acenter"} ),
 
 
 
-
-
-{
-name: "quantity",
-label: "{t}Qty{/t}",
-defaultOrder:1,
-editable: false,
-sortType: "toggle",
-{if $sort_key=='quantity'}direction: '{if $sort_order==1}descending{else}ascending{/if}',{/if}
-cell: Backgrid.HtmlCell.extend({ className: "aright"} ),
-headerCell: integerHeaderCell
-},
-
-{
-name: "picked",
-label: "{t}Picked{/t}",
-defaultOrder:1,
-editable: false,
-sortType: "toggle",
-{if $sort_key=='picked'}direction: '{if $sort_order==1}descending{else}ascending{/if}',{/if}
-cell: Backgrid.HtmlCell.extend({ className: "aright"} ),
-headerCell: integerHeaderCell
-},
-{
-name: "picked_info",
-label: "{t}Picked{/t}",
-editable: false,
-cell: "html"
-
-},
-
-{
-name: "packed",
-label: "{t}Packed{/t}",
-defaultOrder:1,
-editable: false,
-sortType: "toggle",
-{if $sort_key=='packed'}direction: '{if $sort_order==1}descending{else}ascending{/if}',{/if}
-
-
-cell: Backgrid.HtmlCell.extend({ className: "aright"} ),
-headerCell: integerHeaderCell
-},
-
-{
-name: "picked_offline_input",
-label: "{t}Picked{/t}",
-defaultOrder:1,
-editable: false,
-sortType: "toggle",
-{if $sort_key=='picked_offline_input'}direction: '{if $sort_order==1}descending{else}ascending{/if}',{/if}
-
-
-cell: Backgrid.HtmlCell.extend({ className: "aright"} ),
-headerCell: integerHeaderCell
-}
-
-
 ]
 
 
 function change_table_view(view,save_state){
-
-$('.view').removeClass('selected');
-$('#view_'+view).addClass('selected');
-
-
-grid.columns.findWhere({ name: 'reference'} ).set("renderable", false)
-grid.columns.findWhere({ name: 'description'} ).set("renderable", false)
-grid.columns.findWhere({ name: 'location'} ).set("renderable", false)
-grid.columns.findWhere({ name: 'quantity'} ).set("renderable", false)
-grid.columns.findWhere({ name: 'picked'} ).set("renderable", false)
-grid.columns.findWhere({ name: 'packed'} ).set("renderable", false)
-grid.columns.findWhere({ name: 'picked_info'} ).set("renderable", false)
-grid.columns.findWhere({ name: 'picked_offline_input'} ).set("renderable", false)
-
-
-
-grid.columns.findWhere({ name: 'overview_required'} ).set("renderable", false)
-grid.columns.findWhere({ name: 'overview_problem'} ).set("renderable", false)
-grid.columns.findWhere({ name: 'overview_picked'} ).set("renderable", false)
-grid.columns.findWhere({ name: 'overview_packed'} ).set("renderable", false)
-grid.columns.findWhere({ name: 'overview_state'} ).set("renderable", false)
-
-
-if(view=='overview'){
-grid.columns.findWhere({ name: 'reference'} ).set("renderable", true)
-grid.columns.findWhere({ name: 'description'} ).set("renderable", true)
-
-grid.columns.findWhere({ name: 'overview_required'} ).set("renderable", true)
-grid.columns.findWhere({ name: 'overview_problem'} ).set("renderable", true)
-grid.columns.findWhere({ name: 'overview_picked'} ).set("renderable", true)
-grid.columns.findWhere({ name: 'overview_packed'} ).set("renderable", true)
-grid.columns.findWhere({ name: 'overview_state'} ).set("renderable", true)
-}else if(view=='picking_aid'){
-grid.columns.findWhere({ name: 'reference'} ).set("renderable", true)
-grid.columns.findWhere({ name: 'description'} ).set("renderable", true)
-grid.columns.findWhere({ name: 'quantity'} ).set("renderable", true)
-grid.columns.findWhere({ name: 'location'} ).set("renderable", true)
-grid.columns.findWhere({ name: 'picked'} ).set("renderable", true)
-
-}else if(view=='picking_aid_offline'){
-grid.columns.findWhere({ name: 'reference'} ).set("renderable", true)
-grid.columns.findWhere({ name: 'description'} ).set("renderable", true)
-grid.columns.findWhere({ name: 'quantity'} ).set("renderable", true)
-grid.columns.findWhere({ name: 'location'} ).set("renderable", true)
-grid.columns.findWhere({ name: 'picked_offline_input'} ).set("renderable", true)
-
-}else if(view=='packing_aid'){
-grid.columns.findWhere({ name: 'reference'} ).set("renderable", true)
-grid.columns.findWhere({ name: 'description'} ).set("renderable", true)
-grid.columns.findWhere({ name: 'quantity'} ).set("renderable", true)
-grid.columns.findWhere({ name: 'packed'} ).set("renderable", true)
-grid.columns.findWhere({ name: 'picked_info'} ).set("renderable", true)
-
-}
-
-if(save_state){
-var request = "/ar_state.php?tipo=set_table_view&tab={$tab}&table_view=" + view
-
-$.getJSON(request, function(data) {});
-}
 
 
 }

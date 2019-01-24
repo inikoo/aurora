@@ -152,17 +152,17 @@ mpdf-->
 	</thead>
 	<tbody>
 	{foreach from=$transactions item=transaction name=products}
-		<tr class="{if $smarty.foreach.products.last}last{/if} {if $smarty.foreach.products.iteration is even} even{/if} {if $transaction.part_multiplicity>1}multiple_parts{/if}">
+		<tr class="{if $smarty.foreach.products.last}last{/if} {if $smarty.foreach.products.iteration is even} even{/if} ">
 			<td align="left">{$transaction.location}</td>
 			<td align="center">{$transaction.reference}</td>
 			<td align="left">{$transaction.description}</td>
 			<td align="left">{$transaction.stock}</td>
-			<td align="center" class="{if $transaction.part_multiplicity>1}multiple_parts{/if}">{$transaction.qty}</td>
+			<td align="center" >{$transaction.qty}</td>
 			<td align="right"></td>
 			<td align="left" style="font-size: 6pt;">
 				{if $transaction.un_number>1}<span style="background-color:#f6972a;border:.5px solid #231e23;color:#231e23;">&nbsp;{$transaction.un_number|strip_tags}&nbsp;</span> {/if}
 				{if $transaction.part_packing_group!='None'}PG <b>{$transaction.part_packing_group}</b> {/if}
-				{if $transaction.part_multiplicity>1}<b>[{$transaction.multiple_parts_info|strip_tags} *]</b> {/if}
+
 				{$transaction.notes}
 			</td>
 		</tr>

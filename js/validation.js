@@ -806,6 +806,8 @@ function validate_number(value, min, max) {
     var max = parseFloat(max)
 
 
+    console.log(min)
+
     if (min != undefined && value < min) {
 
         //console.log(value)
@@ -877,7 +879,7 @@ function validate_integer(value, min_value,max_value) {
         }
     }
 
-    if (value > max_value) {
+    if (max_value != undefined &&  value > max_value) {
         return {
             class: 'invalid',
 

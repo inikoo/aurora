@@ -4,39 +4,10 @@ module.exports = function (grunt) {
         pkg: grunt.file.readJSON('package.json'), secret: grunt.file.readJSON('deployment.secret.json'),
 
         clean: {
-            app: ["build/app/*", "!build/app/keyring/**", "!build/app/server_files/**"],
             fork: ["../fork/*", "!../fork/keyring/**", "!../fork/server_files/**"],
-            websocket: ["build/websocket/*"],
-        }, concat: {
-            js_libs: {
-                src: ['js/libs/jquery-2.2.1.js', 'js/libs/jquery-ui.js', 'js/libs/moment-with-locales.js', 'js/libs/chrono.js', 'js/libs/sha256.js', 'js/libs/underscore.js', 'js/libs/backbone.js', 'js/libs/backbone.paginator.js', 'js/libs/backgrid.js', 'js/libs/backgrid-filter.js', 'js/libs/intlTelInput-jquery.14.0.6.js', 'js/libs/d3.js', 'js/libs/d3fc.layout.js', 'js/libs/d3fc.js'],
-                dest: 'build/app/js/libs.js',
-            }, js_aurora: {
-                src: ['js/app.js', 'js/keyboard_shortcuts.js', 'js/search.js', 'js/table.js', 'js/validation.js', 'js/edit.js', 'js/new.js', 'js/order.js', 'js/supplier.order.js', 'js/supplier.delivery.js', 'js/help.js'],
-                dest: 'build/app/js/app.js',
-            }
-
-
         },
         uglify: {
-            libs: {
-                src: 'build/app/js/libs.js', dest: 'build/app/js/libs.min.js',
-            }, aurora: {
-                src: 'build/app/js/app.js', dest: 'build/app/js/app.min.js',
-            }, injections: {
-                files: [{
-                    expand: true, src: 'js/injections/*.js', dest: 'build/app/', ext: '.min.js'
-                }]
-            },
-
-
-            login: {
-                src: ['js/libs/jquery-2.2.1.js', 'js/libs/sha256.js', 'js/libs/aes.js', 'js/login/login.js'], dest: 'build/app/js/login.min.js'
-            }, login_setup: {
-                src: ['js/libs/jquery-2.2.1.js', 'js/libs/sha256.js', 'js/libs/aes.js', 'js/setup/login.setup.js'], dest: 'build/app/js/login.setup.min.js'
-            }, setup: {
-                src: ['js/setup/setup.js'], dest: 'build/app/js/setup.min.js'
-            }, pweb_desktop: {
+            pweb_desktop: {
                 options: {
                     sourceMap: true,
                 },
@@ -199,6 +170,84 @@ module.exports = function (grunt) {
                     'EcomB2B/theme_1/tablet/custom.js',
                 ], dest: 'EcomB2B/js/tablet.custom.min.js',
 
+            }, aurora: {
+                options: {
+
+                    sourceMap: true,
+                },
+                src: [
+                    'js/libs/jquery-3.3.1.min.js',
+                    'js/libs/jquery-migrate-3.0.1.js',
+                    'js/libs/jquery-ui.1.12.1.js',
+                    'js/libs/jquery.nice-select.js',
+                    'js/libs/moment-with-locales.js',
+                    'js/libs/chrono.js',
+                    'js/libs/sha256.js',
+                    'js/libs/underscore.min.js',
+                    'js/libs/backbone.min.js',
+                    'js/libs/backbone.paginator.js',
+                    'js/libs/backgrid.js',
+                    'js/libs/backgrid-filter.js',
+                    'js/libs/snap.svg.js',
+                    'js/libs/svg-dial.js',
+                    'js/libs/countrySelect.js',
+                    'js/libs/intlTelInput-jquery.14.0.6.js',
+                    'js/libs/d3.js',
+                    'js/libs/d3fc.layout.js',
+                    'js/libs/d3fc.js',
+                    'js/libs/sweetalert2.all.min.js',
+                    'js/libs/tooltipster.bundle.min.js',
+                    'js/libs/jquery-qrcode-0.14.0.min.js',
+                    'js/alert_dial.js',
+                    'js/libs/editor_v1/froala_editor.min.js',
+                    //'js/libs/editor_v1/codemirror.js',
+                    //'js/libs/editor_v1/codemirror.xml.js',
+                    //'js/libs/editor_v1/codemirror_active-line.js',
+                    'js/libs/editor_v1/plugins/align.min.js',
+                    'js/libs/editor_v1/plugins/draggable.min.js',
+                    'js/libs/editor_v1/plugins/char_counter.min.js',
+                    'js/libs/editor_v1/plugins/code_beautifier.min.js',
+                    'js/libs/editor_v1/plugins/code_view.min.js',
+                    'js/libs/editor_v1/plugins/colors.min.js',
+                    'js/libs/editor_v1/plugins/emoticons.min.js',
+                    'js/libs/editor_v1/plugins/entities.min.js',
+                    'js/libs/editor_v1/plugins/file.min.js',
+                    'js/libs/editor_v1/plugins/font_family.min.js',
+                    'js/libs/editor_v1/plugins/font_size.min.js',
+                    'js/libs/editor_v1/plugins/fullscreen.min.js',
+                    'js/libs/editor_v1/plugins/image.min.js',
+                    'js/libs/editor_v1/plugins/image_manager.min.js',
+                    'js/libs/editor_v1/plugins/inline_style.min.js',
+                    'js/libs/editor_v1/plugins/line_breaker.min.js',
+                    'js/libs/editor_v1/plugins/link.min.js',
+                    'js/libs/editor_v1/plugins/lists.min.js',
+                    'js/libs/editor_v1/plugins/paragraph_format.min.js',
+                    'js/libs/editor_v1/plugins/paragraph_style.min.js',
+                    'js/libs/editor_v1/plugins/quick_insert.min.js',
+                    'js/libs/editor_v1/plugins/quote.min.js',
+                    'js/libs/editor_v1/plugins/table.min.js',
+                    'js/libs/editor_v1/plugins/save.min.js',
+                    'js/libs/editor_v1/plugins/url.min.js',
+                    'js/libs/editor_v1/plugins/video.min.js',
+                    'js/libs/amcharts/amcharts.js',
+                    'js/libs/amcharts/serial.js',
+                    'js/libs/amcharts/amstock.js',
+                    'js/libs/amcharts/plugins/dataloader/dataloader.min.js',
+                    'js/libs/amcharts/plugins/export/export.min.js',
+                    'js/help.js',
+                    'js/keyboard_shortcuts.js',
+                    'js/barcode_scanner.js',
+
+                    'js/libs/jquery.fancybox.min.js',
+                    'js/libs/jquery.awesome-cursor.min.js',
+                    'js/libs/base64.js',
+                    'js/libs/jquery.formatCurrency-1.4.0.min.js',
+                    'js/libs/autobahn.v1.js'
+
+
+
+], dest: 'js/aurora.min.js',
+
             }
 
         },
@@ -241,11 +290,6 @@ module.exports = function (grunt) {
         cssmin: {
             options: {
                 shorthandCompacting: false, roundingPrecision: -1, sourceMap: true,
-            }, libs: {
-                files: {
-                    'build/app/css/libs.min.css': ['css/jquery-ui.css', 'css/font-awesome.css', 'css/intlTelInput.css', 'css/d3fc.css', 'css/backgrid.css', 'css/backgrid-filter.css']
-
-                }
             },
 
             pweb: {
@@ -346,50 +390,9 @@ module.exports = function (grunt) {
         },
         copy: {
 
-            app: {
-                files: [{
-                    expand: true, src: ['fonts/*'], dest: 'build/app/'
-                }, {
-                    expand: true, src: ['css/images/*'], dest: 'build/app/'
-                },
-
-                    {
-                        expand: true, src: ['*.php'], dest: 'build/app/'
-                    }, {
-                        expand: true, src: ['external_libs/**'], dest: 'build/app/'
-                    }, {
-                        expand: true, src: ['locale/**'], dest: 'build/app/'
-                    }, {
-                        expand: true, src: ['conf/*.php'], dest: 'build/app/'
-                    }, {
-                        expand: true, src: ['utils/*.php'], dest: 'build/app/'
-                    }, {
-                        expand: true, src: ['cron/*.php'], dest: 'build/app/'
-                    }, {
-                        expand: true, src: ['navigation/*.php'], dest: 'build/app/'
-                    }, {
-                        expand: true, src: ['pdf/*.php'], dest: 'build/app/'
-                    }, {
-                        expand: true, src: ['prepare_table/*.php'], dest: 'build/app/'
-                    },
-
-                ],
-            },
 
 
 
-            websocket: {
-                files: [{
-                    expand: true, cwd: 'websocket_server/', src: ['app/**'], dest: 'build/websocket/'
-                },{
-                    expand: true,cwd: 'websocket_server/',  src: ['*.php'], dest: 'build/websocket/'
-                },{
-                    expand: true,cwd: 'websocket_server/',  src: ['composer.json'], dest: 'build/websocket/'
-                }
-
-
-                ]
-            },
 
             fork_stones: {
                 files: [{
@@ -434,17 +437,7 @@ module.exports = function (grunt) {
             },
 
 
-        }, imagemin: {
-            aurora: {
-                options: {
-                    optimizationLevel: 3,
-
-                }, files: [{
-                    expand: true, cwd: 'art/', src: ['**/*.{png,jpg,gif}'], dest: 'build/app/art/'
-                }]
-            }
         },
-
 
         environments: {
 
@@ -488,58 +481,7 @@ module.exports = function (grunt) {
 
                     releases_to_keep: '3'
                 }
-            }, websocket_composer: {
-                options: {
-                    local_path: 'build/websocket_composer',
-                    deploy_path: '/home/fork/websocket_composer',
-                    host: '<%= secret.fork.host %>',
-                    username: '<%= secret.fork.username %>',
-                    password: '<%= secret.fork.password %>',
-                    port: '<%= secret.fork.port %>',
-                    debug: true,
-                    after_deploy: 'cd /home/fork/websocket_composer/current && composer install',
-
-                    // after_deploy: 'cd /home/fork/websocket_composer/current && composer install && sudo kill $(ps -aef | grep "push_server.v1.php" | grep -v "grep" | awk \'{print $2}\')',
-                    releases_to_keep: '1'
-                }
-            },websocket: {
-                options: {
-                    local_path: 'build/websocket/',
-                    deploy_path: '/home/fork/websocket/',
-                    host: '<%= secret.fork.host %>',
-                    username: '<%= secret.fork.username %>',
-                    password: '<%= secret.fork.password %>',
-                    port: '<%= secret.fork.port %>',
-                    debug: true,
-                    releases_to_keep: '3',
-                    //exclude: ['keyring', 'external_libs', 'server_files'],
-                    after_deploy: 'cd /home/fork/websocket/current && composer install '
-                }
-            }, ecom: {
-                options: {
-                    local_path: 'ecom/',
-                    deploy_path: '/home/inikoo/ecom',
-                    host: '<%= secret.ecom.host %>',
-                    username: '<%= secret.ecom.username %>',
-                    password: '<%= secret.ecom.password %>',
-                    port: '<%= secret.ecom.port %>',
-                    debug: true,
-                    releases_to_keep: '3'
-
-                }
-            }, b2becom: {
-                options: {
-                    local_path: 'ecom/',
-                    deploy_path: '/home/inikoo/ecom',
-                    host: '<%= secret.ecom.host %>',
-                    username: '<%= secret.ecom.username %>',
-                    password: '<%= secret.ecom.password %>',
-                    port: '<%= secret.ecom.port %>',
-                    debug: true,
-                    releases_to_keep: '3'
-
-                }
-            },
+            }
 
 
         },
@@ -580,7 +522,7 @@ module.exports = function (grunt) {
     grunt.registerTask('qws', ['copy:websocket']);
 
 
-    grunt.registerTask('au', ['sass:aurora_public','sass:login', 'cssmin:au', 'cssmin:au_login']);
+    grunt.registerTask('au', ['sass:aurora','sass:aurora_public','sass:login', 'cssmin:au', 'cssmin:au_login','uglify:aurora']);
 
 
     grunt.registerTask('pweb', ['sass:aurora_public', 'cssmin:pweb','uglify:pweb_mobile',

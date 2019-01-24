@@ -116,8 +116,8 @@ function help() {
 
 
 
-        $('#whiteboard_content').html(data.whiteboard.content).removeClass('hide').data.whiteboard('empty',data.whiteboard.empty);
-        $('#whiteboard_content_tab').html(data.whiteboard.content_tab).removeClass('hide').data.whiteboard('empty',data.whiteboard.empty_tab);
+        $('#whiteboard_content').html(data.whiteboard.content).removeClass('hide').data('empty',data.whiteboard.empty);
+        $('#whiteboard_content_tab').html(data.whiteboard.content_tab).removeClass('hide').data('empty',data.whiteboard.empty_tab);
 
 
 

@@ -647,7 +647,45 @@ class Store extends DB_Table {
 
                 break;
 
+            case 'data entry picking aid default picker':
+            case 'data entry picking aid default packer':
 
+
+                $staff_key=$this->settings(preg_replace('/\s/','_',$key));
+
+                if(is_numeric($staff_key) and $staff_key>0){
+                    $staff=get_object('Staff',$staff_key);
+                    return $staff->get('Name');
+                }else{
+                    return '';
+                }
+
+                break;
+            case 'data entry picking aid default shipper':
+
+
+                $shipper_key=$this->settings(preg_replace('/\s/','_',$key));
+
+                if(is_numeric($shipper_key) and $shipper_key>0){
+                    $shipper=get_object('Shipper',$shipper_key);
+                    return $shipper->get('Name');
+                }else{
+                    return '';
+                }
+
+                break;
+            case 'data entry picking aid default number boxes':
+
+               $default_number_of_boxed=$this->settings(preg_replace('/\s/','_',$key));
+
+                if( $default_number_of_boxed>0){
+
+                    return number($default_number_of_boxed);
+                }else{
+                    return '';
+                }
+
+                break;
         }
 
 
@@ -3586,20 +3624,14 @@ class Store extends DB_Table {
                 if ($product_parts_data) {
 
 
-
                     $product->update_part_list($product_parts_data, 'no_history');
 
 
                 }
 
 
-
-
-
-
                 if ($product->get('Product Number of Parts') == 1) {
                     foreach ($product->get_parts('objects') as $part) {
-
 
 
                         $part->updated_linked_products();
@@ -3961,10 +3993,18 @@ class Store extends DB_Table {
 
     function update_field_switcher($field, $value, $options = '', $metadata = '') {
 
-
         switch ($field) {
 
+            case 'data entry picking aid':
+            case 'data entry picking aid state after save':
+            case 'data entry picking aid default picker':
+            case 'data entry picking aid default packer':
+            case 'data entry picking aid default shipper':
+            case 'data entry picking aid default number boxes':
 
+                $this->fast_update_json_field('Store Settings', preg_replace('/\s/', '_', $field), $value);
+
+                break;
             case 'Store Can Collect':
 
                 $this->update_field($field, $value, $options);
@@ -4076,7 +4116,7 @@ class Store extends DB_Table {
 
         if (preg_match('/gb|im|jy|gg/i', $fields['Address Country 2 Alpha Code'])) {
             include_once 'utils/geography_functions.php';
-            $fields['Address Postal Code']=gbr_pretty_format_post_code($fields['Address Postal Code']);
+            $fields['Address Postal Code'] = gbr_pretty_format_post_code($fields['Address Postal Code']);
         }
 
         foreach ($fields as $field => $value) {
@@ -4118,9 +4158,6 @@ class Store extends DB_Table {
 
 
         include_once 'utils/get_addressing.php';
-
-
-
 
 
         $new_checksum = md5(
@@ -4219,6 +4256,9 @@ class Store extends DB_Table {
         // todo: make stats for purges
     }
 
+    function settings($key) {
+        return (isset($this->settings[$key]) ? $this->settings[$key] : '');
+    }
 
 }
 

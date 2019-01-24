@@ -11,9 +11,9 @@
 
 
 
-$tab     = 'delivery_note.items';
+$tab     = 'delivery_note.picking_aid';
 $ar_file = 'ar_orders_tables.php';
-$tipo    = 'delivery_note.items';
+$tipo    = 'delivery_note.picking_aid';
 
 $default = $user->get_tab_defaults($tab);
 

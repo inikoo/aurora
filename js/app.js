@@ -40,10 +40,10 @@ $(document).ready(function () {
     })
 
 
-    $(document).scannerDetection(function (value) {
-
-        scanned_barcode(value)
-    });
+ //   $(document).scannerDetection(function (value) {
+//
+//        scanned_barcode(value)
+//    });
 
 
 
