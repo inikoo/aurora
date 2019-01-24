@@ -259,7 +259,7 @@
 
 <script>
 
-
+    /*
     var myCodeMirror = CodeMirror.fromTextArea(document.getElementById('code_editor'),
         {
             lineNumbers: true,
@@ -270,7 +270,7 @@
     );
 
     $('#code_editor').data('CodeMirrorInstance', myCodeMirror);
-
+*/
 
     {include file="js/webpage.preview.publish.tpl.js" }
     {include file="js/webpage.preview.description_block.tpl.js" }
