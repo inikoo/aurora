@@ -21,7 +21,7 @@
         <script src="https://browser.sentry-cdn.com/4.3.4/bundle.min.js" crossorigin="anonymous"></script>
         {/if}
 
-        <script src="/js/aurora.min.js?v190124"></script>
+        <script src="/js/aurora.min.js?v190124bis"></script>
         <script src="/js/app.js?v190124"></script>
         <script src="/js/search.js?v190124"></script>
         <script src="/js/table.js?v190124"></script>
