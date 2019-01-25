@@ -165,7 +165,7 @@ function products($_data, $db, $user, $account) {
         include_once 'class.Category.php';
         $category = new Category($_data['parameters']['parent_key']);
 
-        $path = sprintf('products/%d/category/%s/', $category->get('Category Store Key'), $category->get('Category Position'));
+        $path = sprintf('category/%s/', $category->get('Category Position'));
     }
 
     include_once 'prepare_table/init.php';
@@ -296,6 +296,9 @@ function products($_data, $db, $user, $account) {
                     $exchange * $data['Product Price'] - $data['Product Cost'], $exchange * $data['Product Price']
                 ).'<span>';
 
+
+
+
             switch ($_data['parameters']['parent']) {
 
                 case 'part':
@@ -324,7 +327,7 @@ function products($_data, $db, $user, $account) {
                 case 'category':
                     $name = '<span >'.$data['Product Units Per Case'].'</span>x <span>'.$data['Product Name'].'</span>';
 
-                    $code = sprintf('<span class="link" onClick="change_view(\'%sproduct/%d\')" title="%s">%s</span>', $path, $data['Product ID'], $name, $data['Product Code']);
+                    $code = sprintf('<span class="link" onClick="change_view(\'products/%d/%sproduct/%d\')" title="%s">%s</span>', $data['Store Key'],$path, $data['Product ID'], $name, $data['Product Code']);
 
                     break;
                 default:
