@@ -1353,6 +1353,8 @@ class DeliveryNote extends DB_Table {
                         foreach ($result as $row) {
 
 
+
+
                             $to_pack = $row['Required'] + $row['Given'];
 
                             if ($to_pack == 0) {
@@ -1383,6 +1385,8 @@ class DeliveryNote extends DB_Table {
                                `Order Transaction Amount`=`Order Transaction Amount`*%f 
                                      WHERE `Order Transaction Fact Key`=%d ', $ratio_of_packing, $ratio_of_packing, $ratio_of_packing, $ratio_of_packing, $otf
                             );
+
+
 
 
                             $this->db->exec($sql);
