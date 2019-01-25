@@ -367,84 +367,12 @@ $elements_options = array(
     ),
 
 
-    'orders_archived' => array(
-        'dispatch' => array(
-            'label' => _('Dispatched'),
-            'items' => array(
-
-                'Dispatched' => array(
-                    'label'    => _('Dispatched'),
-                    'selected' => true
-                ),
-                'Cancelled'  => array(
-                    'label'    => _('Cancelled'),
-                    'selected' => false
-                ),
-
-            ),
-        ),
-        'type'     => array(
-            'label' => _('Type'),
-            'items' => array(
-                'Order'    => array(
-                    'label'    => _('Order'),
-                    'selected' => true
-                ),
-                'Sample'   => array(
-                    'label'    => _('Sample'),
-                    'selected' => true
-                ),
-                'Donation' => array(
-                    'label'    => _('Donation'),
-                    'selected' => true
-                ),
-                'Other'    => array(
-                    'label'    => _('Other'),
-                    'selected' => true
-                ),
-            )
-        ),
-
-
-        'source' => array(
-            'label' => _('Source'),
-            'items' => array(
-                'Internet' => array(
-                    'label'    => _('Website'),
-                    'selected' => true
-                ),
-                'Call'     => array(
-                    'label'    => _('Telephone'),
-                    'selected' => true
-                ),
-                'Store'    => array(
-                    'label'    => _('Showroom'),
-                    'selected' => true
-                ),
-                'Email'    => array(
-                    'label'    => _('Email'),
-                    'selected' => true
-                ),
-                'Fax'      => array(
-                    'label'    => _('Fax'),
-                    'selected' => true
-                ),
-                'Other'    => array(
-                    'label'    => _('Other'),
-                    'selected' => true
-                )
-            ),
-
-        ),
-
-
-    ),
 
     'orders' => array(
 
 
         'state' => array(
-            'label' => _('state'),
+            'label' => _('State'),
             'items' => array(
                 'InBasket'    => array(
                     'label'    => _('In basket'),

@@ -3151,7 +3151,7 @@ $tab_defaults = array(
         'rpp'           => 100,
         'rpp_options'   => $default_rrp_options,
         'f_field'       => 'reference',
-        'elements_type' => each($elements_options['payments']) ['key'],
+        'elements_type' => array_keys($elements_options['payments'])[0],
         'elements'      => $elements_options['payments'],
 
 
@@ -3248,7 +3248,7 @@ $tab_defaults = array(
         'rpp'           => 100,
         'rpp_options'   => $default_rrp_options,
         'f_field'       => 'reference',
-        'elements_type' => each($elements_options['payments']) ['key'],
+        'elements_type' => array_keys($elements_options['payments'])[0],
         'elements'      => $elements_options['payments'],
     ),
     'store.payments'           => array(
@@ -3258,7 +3258,7 @@ $tab_defaults = array(
         'rpp'           => 100,
         'rpp_options'   => $default_rrp_options,
         'f_field'       => 'reference',
-        'elements_type' => each($elements_options['payments']) ['key'],
+        'elements_type' => array_keys($elements_options['payments'])[0],
         'elements'      => $elements_options['payments'],
     ),
     'payment_account.stores'   => array(
