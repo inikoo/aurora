@@ -468,7 +468,7 @@ class data_entry_picking_aid {
                         );
 
 
-                        if ($original_qty > abs($original_diff)) {
+                    //    if ($original_qty > abs($original_diff)) {
 
                             $sql = 'update  `Inventory Transaction Fact` set `Required`=? ,`Given`=? where `Inventory Transaction Key`=? ';
 
@@ -490,15 +490,12 @@ class data_entry_picking_aid {
                             }
 
 
-                        } else {
-                            $sql = 'delete from  `Inventory Transaction Fact` WHERE  `Inventory Transaction Key` =?';
-
-                            //print $sql;
-
-                            $stmt = $this->db->prepare($sql);
-                            $stmt->bindParam(1, $row['Inventory Transaction Key']);
-                            $stmt->execute();
-                        }
+                       // } else {
+                       //     $sql = 'delete from  `Inventory Transaction Fact` WHERE  `Inventory Transaction Key` =?';
+                       //     $stmt = $this->db->prepare($sql);
+                       //     $stmt->bindParam(1, $row['Inventory Transaction Key']);
+                       //     $stmt->execute();
+                       // }
 
 
                     }
