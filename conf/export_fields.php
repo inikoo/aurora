@@ -157,11 +157,7 @@ $export_fields = array(
             'label'   => _('Mobile'),
             'checked' => 0
         ),
-        array(
-            'name'    => '`Prospect Tax Number`',
-            'label'   => _('Tax Number'),
-            'checked' => 0
-        ),
+
         array(
             'name'    => 'REPLACE(`Prospect Contact Address Formatted`,"<br/>","\n") as`Prospect Address`',
             'label'   => _('Contact address'),
@@ -172,16 +168,25 @@ $export_fields = array(
             'label'   => _('Contact address (Postal label)'),
             'checked' => 0
         ),
+   
         array(
-            'name'    => '`Prospect Main Address Line 1`,`Prospect Main Address Line 2`,`Prospect Main Address Line 3`,`Prospect Main Town`,`Prospect Main Postal Code`,`Prospect Main Country Second Division`,`Prospect Main Country First Division`,`Prospect Main Country Code`',
+            'name'    => '`Prospect Contact Address Line 1`,`Prospect Contact Address Line 2`,`Prospect Contact Address Sorting Code`,`Prospect Contact Address Postal Code`,`Prospect Contact Address Dependent Locality`,`Prospect Contact Address Locality`,`Prospect Contact Address Administrative Area`,`Prospect Contact Address Country 2 Alpha Code`',
             'label'   => _('Contact address (Separated fields)'),
-            'checked' => 0
+            'checked' => 0,
+            'labels'  => array(
+                _('Contact address'),
+                _('Contact address line 2'),
+                _('Contact address sorting code'),
+                _('Contact address postal code'),
+                _('Contact address dependent locality'),
+                _('Contact address locality'),
+                _('Contact address administrative area'),
+                _('Contact address country'),
+
+            )
         ),
-        array(
-            'name'    => '`Prospect Main Address Lines`',
-            'label'   => _('Contact address (Lines)'),
-            'checked' => 0
-        ),
+
+
 
 
     ),
