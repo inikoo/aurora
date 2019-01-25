@@ -138,7 +138,6 @@ class Account extends DB_Table {
     }
 
 
-
     function create_staff($data) {
         $this->new_employee = false;
 
@@ -1287,9 +1286,15 @@ class Account extends DB_Table {
         }
 
 
-        $this->update(array('Account Suppliers' => $number_suppliers), 'no_history');
-        $this->update(array('Account Agents' => $number_agents), 'no_history');
-        $this->update(array('Account Manufacturers' => $number_manufacturers), 'no_history');
+        $this->fast_update(
+            array(
+                'Account Suppliers'     => $number_suppliers,
+                'Account Agents'        => $number_agents,
+                'Account Manufacturers' => $number_manufacturers
+            )
+        );
+
+
     }
 
     function create_agent($data) {

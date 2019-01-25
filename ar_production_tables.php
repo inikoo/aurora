@@ -489,11 +489,7 @@ function supplier_parts($_data, $db, $user, $account) {
 
             $adata[] = array(
                 'id'               => (integer)$data['Supplier Part Key'],
-                'supplier_key'     => (integer)$data['Supplier Part Supplier Key'],
-                'supplier_code'    => $data['Supplier Code'],
-                'part_key'         => (integer)$data['Supplier Part Part SKU'],
-                'part_reference'   => $data['Part Reference'],
-                'reference'        => $data['Supplier Part Reference'],
+                'reference'        => sprintf('<span class="link" onclick="change_view(\'/production/%d/part/%d\')">%s</span>',$data['Supplier Part Supplier Key'],$data['Supplier Part Key'],$data['Supplier Part Reference']),
                 'part_description' => $part_description,
 
 
@@ -506,11 +502,11 @@ function supplier_parts($_data, $db, $user, $account) {
                         $exchange * ($data['Supplier Part Unit Cost'] + $data['Supplier Part Unit Extra Cost']), $account->get('Account Currency')
                     ).'</span>',
                 'packing'        => '
-				 <div style="float:right;min-width:30px;;text-align:right" title="'._('Units per carton').'"><span class="discreet" >'.($data['Part Units Per Package']
-                        * $data['Supplier Part Packages Per Carton'].'</span></div>
-				<div style="float:right;min-width:70px;text-align:center;"> <i  class="fa fa-arrow-right very_discreet padding_right_10 padding_left_10"></i><span>['
-                        .$data['Supplier Part Packages Per Carton'].']</span></div>
-				<div style="float:right;min-width:20px;text-align:right"><span>'.$data['Part Units Per Package'].'</span></div>
+				   <div style="float:right;min-width:30px;;text-align:right" title="'._('Units per part').'"> <span class="strong" >'.($data['Part Units Per Package'] * $data['Supplier Part Packages Per Carton'].'</span></div>
+				   <div style="float:right;min-width:40px;text-align:center;"><i class="far fa-equals"></i></div>
+				<div style="float:right;min-width:20px;text-align:right;" title="'._('Packages per part').'"><span>'.$data['Supplier Part Packages Per Carton'].'</span></div>
+				<div style="float:right;min-width:40px;text-align:center;"><i class="far fa-times"></i></div>
+				<div style="float:right;min-width:20px;text-align:right" title="'._('Packed in (Units per packages)').'"><span>'.$data['Part Units Per Package'].'</span></div>
 				 '),
                 'stock'          => number(floor($data['Part Current On Hand Stock']))." $stock_status",
 

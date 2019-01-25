@@ -496,7 +496,7 @@ function change_menu_view(module){
             change_view('suppliers')
             break;
         case 'production':
-            if(state.current_store){
+            if(state.current_production){
                 change_view('production/'+state.current_production)
             }else{
                 change_view('production/all')
