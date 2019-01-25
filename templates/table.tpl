@@ -17,9 +17,9 @@
             <div id="elements_group_{$_elements_type}" elements_type="$_elements_type" class="elements_group {if $_elements_type!=$elements_type}hide{/if}">
                 {foreach from=$element_group['items']|@array_reverse item=element key=id}
                     <div id="element_{$id}" item_key="{$id}" class="element right  {if isset($element.selected) and $element.selected}selected{/if}"  data-item="{$id}"
-                         title="{$elements[$elements_type]['label']}: {if isset($element.title)}{$element.title|strip_tags}{else}{$element.label|strip_tags}{/if}">
-                        <i id="element_checkbox_{$id}" class="far element_checkbox {if $element.selected}fa-check-square{else}fa-square{/if}"></i> <span class="label"> {$element.label}  </span> <span class="qty"
-                                                                                                                                                                                          id="element_qty_{$id}"></span>
+                         title="{$elements[$elements_type]['label']}: {if isset($element.title)}{$element.title|strip_tags}{elseif isset($element.label)}{$element.label|strip_tags}{/if}">
+                        <i id="element_checkbox_{$id}" class="far element_checkbox {if $element.selected}fa-check-square{else}fa-square{/if}"></i> <span class="label"> {$element.label}  </span>
+                        <span class="qty" id="element_qty_{$id}"></span>
                     </div>
                 {/foreach}
             </div>
