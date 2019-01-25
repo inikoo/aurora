@@ -21,12 +21,6 @@ editable: false,
 sortType: "toggle",
 
 cell: Backgrid.HtmlCell.extend({
-events: {
-"click": function() {
-change_view('/production/' + this.model.get("supplier_key") + '/part/' + this.model.get("id"))
-}
-},
-className: "link"
 
 })
 
@@ -94,14 +88,6 @@ cell: Backgrid.HtmlCell.extend({ className: "aright"} ),
 headerCell: integerHeaderCell
 
 }, {
-name: "delivered_cost",
-label: "{t}Delivered Cost{/t}",
-editable: false,
-sortType: "toggle",
-cell: Backgrid.HtmlCell.extend({ className: "aright"} ),
-headerCell: integerHeaderCell
-
-}, {
 name: "packing",
 label: "{t}Packing{/t}",
 editable: false,
@@ -125,14 +111,11 @@ grid.columns.findWhere({ name: 'description'} ).set("renderable", false)
 grid.columns.findWhere({ name: 'part_reference'} ).set("renderable", false)
 grid.columns.findWhere({ name: 'stock'} ).set("renderable", false)
 grid.columns.findWhere({ name: 'cost'} ).set("renderable", false)
-grid.columns.findWhere({ name: 'delivered_cost'} ).set("renderable", false)
 grid.columns.findWhere({ name: 'packing'} ).set("renderable", false)
 
 if(view=='overview'){
-grid.columns.findWhere({ name: 'part_description'} ).set("renderable", true)
 grid.columns.findWhere({ name: 'status'} ).set("renderable", true)
 grid.columns.findWhere({ name: 'cost'} ).set("renderable", true)
-grid.columns.findWhere({ name: 'delivered_cost'} ).set("renderable", true)
 grid.columns.findWhere({ name: 'packing'} ).set("renderable", true)
 grid.columns.findWhere({ name: 'description'} ).set("renderable", true)
 

@@ -294,6 +294,7 @@ if ($user->can_view('suppliers')) {
 if ($user->can_view('production') and $account->get('Account Manufacturers') > 0) {
 
 
+
     if ($user->get('User Hooked Production Key')) {
         $nav_menu[] = array(
             '<i class="button far fa-industry fa-fw"></i>',
@@ -317,6 +318,9 @@ if ($user->can_view('production') and $account->get('Account Manufacturers') > 0
             print "$sql\n";
             exit;
         }
+
+
+
 
         $nav_menu[] = array(
             '<i class="button far fa-industry fa-fw"></i>',
