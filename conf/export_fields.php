@@ -168,7 +168,7 @@ $export_fields = array(
             'label'   => _('Contact address (Postal label)'),
             'checked' => 0
         ),
-   
+
         array(
             'name'    => '`Prospect Contact Address Line 1`,`Prospect Contact Address Line 2`,`Prospect Contact Address Sorting Code`,`Prospect Contact Address Postal Code`,`Prospect Contact Address Dependent Locality`,`Prospect Contact Address Locality`,`Prospect Contact Address Administrative Area`,`Prospect Contact Address Country 2 Alpha Code`',
             'label'   => _('Contact address (Separated fields)'),

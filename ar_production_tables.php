@@ -38,11 +38,14 @@ if (!isset($_REQUEST['tipo'])) {
 $tipo = $_REQUEST['tipo'];
 
 switch ($tipo) {
+    case 'bill_of_materials':
+        bill_of_materials(get_table_parameters(), $db, $user, $account);
+        break;
     case 'suppliers':
         suppliers(get_table_parameters(), $db, $user, $account);
         break;
-    case 'supplier_parts':
-        supplier_parts(get_table_parameters(), $db, $user, $account);
+    case 'production_parts':
+        production_parts(get_table_parameters(), $db, $user, $account);
         break;
     case 'materials':
         materials(get_table_parameters(), $db, $user, $account);
@@ -261,8 +264,8 @@ function suppliers($_data, $db, $user, $account) {
                     : (ratio(
                         $data['Supplier Number Surplus Parts'], $data['Supplier Number Parts']
                     ) > .5 ? 'warning' : '')), percentage(
-                    $data['Supplier Number Surplus Parts'], $data['Supplier Number Parts']
-                ), number($data['Supplier Number Surplus Parts'])
+                        $data['Supplier Number Surplus Parts'], $data['Supplier Number Parts']
+                    ), number($data['Supplier Number Surplus Parts'])
                 ),
                 'optimal'      => sprintf(
                     '<span  title="%s">%s</span>', percentage(
@@ -277,8 +280,8 @@ function suppliers($_data, $db, $user, $account) {
                     : (ratio(
                         $data['Supplier Number Low Parts'], $data['Supplier Number Parts']
                     ) > .25 ? 'warning' : '')), percentage(
-                    $data['Supplier Number Low Parts'], $data['Supplier Number Parts']
-                ), number($data['Supplier Number Low Parts'])
+                        $data['Supplier Number Low Parts'], $data['Supplier Number Parts']
+                    ), number($data['Supplier Number Low Parts'])
                 ),
                 'critical'     => sprintf(
                     '<span class="%s" title="%s">%s</span>', ($data['Supplier Number Critical Parts'] == 0
@@ -286,8 +289,8 @@ function suppliers($_data, $db, $user, $account) {
                     : (ratio(
                         $data['Supplier Number Critical Parts'], $data['Supplier Number Parts']
                     ) > .25 ? 'error' : 'warning')), percentage(
-                    $data['Supplier Number Critical Parts'], $data['Supplier Number Parts']
-                ), number($data['Supplier Number Critical Parts'])
+                        $data['Supplier Number Critical Parts'], $data['Supplier Number Parts']
+                    ), number($data['Supplier Number Critical Parts'])
                 ),
                 'out_of_stock' => sprintf(
                     '<span class="%s" title="%s">%s</span>', ($data['Supplier Number Out Of Stock Parts'] == 0
@@ -295,8 +298,8 @@ function suppliers($_data, $db, $user, $account) {
                     : (ratio(
                         $data['Supplier Number Out Of Stock Parts'], $data['Supplier Number Parts']
                     ) > .10 ? 'error' : 'warning')), percentage(
-                    $data['Supplier Number Out Of Stock Parts'], $data['Supplier Number Parts']
-                ), number($data['Supplier Number Out Of Stock Parts'])
+                        $data['Supplier Number Out Of Stock Parts'], $data['Supplier Number Parts']
+                    ), number($data['Supplier Number Out Of Stock Parts'])
                 ),
 
 
@@ -332,7 +335,7 @@ function suppliers($_data, $db, $user, $account) {
     echo json_encode($response);
 }
 
-function supplier_parts($_data, $db, $user, $account) {
+function production_parts($_data, $db, $user, $account) {
 
 
     include_once 'utils/currency_functions.php';
@@ -489,7 +492,7 @@ function supplier_parts($_data, $db, $user, $account) {
 
             $adata[] = array(
                 'id'               => (integer)$data['Supplier Part Key'],
-                'reference'        => sprintf('<span class="link" onclick="change_view(\'/production/%d/part/%d\')">%s</span>',$data['Supplier Part Supplier Key'],$data['Supplier Part Key'],$data['Supplier Part Reference']),
+                'reference'        => sprintf('<span class="link" onclick="change_view(\'/production/%d/part/%d\')">%s</span>', $data['Supplier Part Supplier Key'], $data['Supplier Part Key'], $data['Supplier Part Reference']),
                 'part_description' => $part_description,
 
 
@@ -745,5 +748,103 @@ function materials($_data, $db, $user, $account) {
     );
     echo json_encode($response);
 }
+
+
+function bill_of_materials($_data, $db, $user, $account) {
+
+
+    include_once 'utils/currency_functions.php';
+
+
+    $rtext_label = 'components';
+    include_once 'prepare_table/init.php';
+
+    $sql
+           = "select $fields from $table $where $wheref order by $order $order_direction limit $start_from,$number_results";
+    $adata = array();
+
+
+    global $session;
+
+    $production_key = $session->get('current_production');
+
+
+    if ($result = $db->query($sql)) {
+
+
+        foreach ($result as $data) {
+
+
+            switch ($data['Part Stock Status']) {
+                case 'Surplus':
+                    $stock_status
+                        = '<i class="fa  fa-plus-circle fa-fw" aria-hidden="true"></i>';
+                    break;
+                case 'Optimal':
+                    $stock_status
+                        = '<i class="fa fa-check-circle fa-fw" aria-hidden="true"></i>';
+                    break;
+                case 'Low':
+                    $stock_status
+                        = '<i class="fa fa-minus-circle fa-fw" aria-hidden="true"></i>';
+                    break;
+                case 'Critical':
+                    $stock_status
+                        = '<i class="fa error fa-minus-circle fa-fw" aria-hidden="true"></i>';
+                    break;
+                case 'Out_Of_Stock':
+                    $stock_status
+                        = '<i class="fa error fa-ban fa-fw" aria-hidden="true"></i>';
+                    break;
+                case 'Error':
+                    $stock_status
+                        = '<i class="fa fa-question-circle error fa-fw" aria-hidden="true"></i>';
+                    break;
+                default:
+                    $stock_status = $data['Part Stock Status'];
+                    break;
+            }
+
+
+            $adata[] = array(
+                'id'        => (integer)$data['Part SKU'],
+                'reference' => sprintf('<span class="link" onclick="change_view(\'/production/%d/materials/%d\')">%s</span>', $production_key, $data['Part SKU'], $data['Part Reference']),
+
+
+                'description' => $data['Part Unit Description'].' <span class="italic very_discreet">('.sprintf(_('%s units per SKO'),$data['Part Units per Package']).')</span>',
+                'cost_unit'        => money($data['Part Cost in Warehouse'] * $data['Bill of Materials Quantity'], $account->get('Account Currency')),
+                'qty'         => number($data['Bill of Materials Quantity']*$data['Part Units per Package']),
+                'qty_skos'         => number($data['Bill of Materials Quantity'],4),
+
+                'stock'       => number(floor($data['Part Current On Hand Stock'])),
+                'stock_status'       => $stock_status,
+                'available_to_make_up'       => number($data['Part Current On Hand Stock']/$data['Bill of Materials Quantity'],0)
+
+
+            );
+
+
+        }
+    } else {
+        print_r($error_info = $db->errorInfo());
+        print $sql;
+        exit;
+    }
+
+
+    $response = array(
+        'resultset' => array(
+            'state'         => 200,
+            'data'          => $adata,
+            'rtext'         => $rtext,
+            'sort_key'      => $_order,
+            'sort_dir'      => $_dir,
+            'total_records' => $total
+
+        )
+    );
+    echo json_encode($response);
+}
+
 
 ?>

@@ -244,7 +244,10 @@
         form_data.append("parent", table_metadata.parent)
         form_data.append("parent_key", table_metadata.parent_key)
         form_data.append("item_key", $('#add_item_save').attr('item_key'))
-        form_data.append("item_historic_key", $('#add_item_save').attr('item_historic_key'))
+        if($('#add_item_save').attr('item_historic_key')!=''){
+            form_data.append("item_historic_key", $('#add_item_save').attr('item_historic_key'))
+
+        }
         form_data.append("qty", $('#add_item_qty').val())
 
         var request = $.ajax({

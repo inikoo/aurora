@@ -11,14 +11,20 @@
 */
 
 
+/**
+ * @param $object \DB_Table
+ * @param      $db \PDO
+ * @param      $user \User
+ * @param      $smarty \Smarty
+ * @param array $options
+ *
+ * @return array|string
+ */
 function get_object_fields($object, $db, $user, $smarty, $options = false) {
 
 
     $account = new Account($db);
-
     $edit = true;
-
-
 
 
     switch ($object->get_object_name()) {
@@ -383,11 +389,50 @@ function get_object_fields($object, $db, $user, $smarty, $options = false) {
                     } else {
 
 
-                        //  $part = get_object('Part', $object->get('Supplier Part Part SKU'));
 
-                        //$object_fields_part = get_object_fields($part, $db, $user, $smarty, array('supplier_part_scope' => true));
+                        $operations = array(
+                            'label'      => _('Operations'),
+                            'show_title' => true,
+                            'class'      => 'operations',
+                            'fields'     => array(
 
-                        // $supplier_part_fields = array_merge($supplier_part_fields, $object_fields_part);
+                                array(
+                                    'id'    => 'delete_supplier_part',
+                                    'class' => 'operation',
+                                    'value' => '',
+                                    'label' => '<i class="fa fa-fw fa-lock button" onClick="toggle_unlock_delete_object(this)" style="margin-right:20px"></i> <span data-data=\'{ "object": "'.$object->get_object_name().'", "key":"'.$object->id
+                                        .'"}\' onClick="delete_object(this)" class="delete_object disabled">'._(
+                                            "Delete supplier's part & related part"
+                                        ).' <i class="far fa-trash-alt new_button link"></i></span>',
+
+                                    'reference' => '',
+                                    'type'      => 'operation'
+                                ),
+
+
+                            )
+
+                        );
+
+                        $supplier_part_fields[] = $operations;
+                    }
+
+
+                    return $supplier_part_fields;
+                }elseif ($options['parent'] == 'production') {
+
+
+
+                    include 'fields/production_part.fld.php';
+
+
+                    if (isset($options['new'])) {
+                        $object = get_object('Part',0);
+                        include 'fields/part.fld.php';
+                        $supplier_part_fields = array_merge($supplier_part_fields, $part_fields);
+                    } else {
+
+
 
                         $operations = array(
                             'label'      => _('Operations'),

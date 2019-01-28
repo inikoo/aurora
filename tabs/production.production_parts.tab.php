@@ -10,9 +10,9 @@
 */
 
 
-$tab     = 'production.supplier_parts';
+$tab     = 'production.production_parts';
 $ar_file = 'ar_production_tables.php';
-$tipo    = 'supplier_parts';
+$tipo    = 'production_parts';
 
 $default = $user->get_tab_defaults($tab);
 

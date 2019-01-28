@@ -80,7 +80,7 @@ function get_materials_navigation($data, $smarty, $user, $db) {
 
 }
 
-function get_supplier_parts_navigation($data, $smarty, $user, $db) {
+function get_production_parts_navigation($data, $smarty, $user, $db) {
 
 
     $left_buttons  = array();
@@ -525,7 +525,7 @@ function get_manufacture_task_navigation($data, $smarty, $user, $db) {
 
 }
 
-function get_supplier_part_navigation($data, $smarty, $user, $db, $account) {
+function get_production_part_navigation($data, $smarty, $user, $db, $account) {
 
     $block_view = $data['section'];
 
@@ -537,8 +537,8 @@ function get_supplier_part_navigation($data, $smarty, $user, $db, $account) {
 
         switch ($data['parent']) {
             case 'supplier_production':
-                $tab      = 'production.supplier_parts';
-                $_section = 'supplier_parts';
+                $tab      = 'production.production_parts';
+                $_section = 'production_parts';
                 break;
 
             default:
@@ -703,7 +703,7 @@ function get_supplier_part_navigation($data, $smarty, $user, $db, $account) {
     }
 
 
-    $title = _("Supplier's part").' <span class="id Supplier_Part_Reference">'.$data['_object']->get('Reference').'</span>';
+    $title = _("Production's part").' <span class="id Supplier_Part_Reference">'.$data['_object']->get('Reference').'</span>';
     $title .= ' <small class="padding_left_10"> <i class="fa fa-long-arrow-right padding_left_10"></i> <i class="fa fa-box button" title="'._('Part').'" onCLick="change_view(\'/part/'
         .$data['_object']->part->id.'\')" ></i> <span class="Part_Reference button"  onCLick="change_view(\'part/'.$data['_object']->part->id.'\')">'.$data['_object']->part->get(
             'Reference'

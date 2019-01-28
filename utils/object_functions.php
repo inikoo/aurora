@@ -231,6 +231,10 @@ function get_object($object_name, $key, $load_other_data = false) {
             require_once "class.SupplierPart.php";
             $object = new SupplierPart($key);
             break;
+        case 'production_part':
+            require_once "class.ProductionPart.php";
+            $object = new ProductionPart($key);
+            break;
         case 'barcode':
             require_once "class.Barcode.php";
             $object = new Barcode($key);

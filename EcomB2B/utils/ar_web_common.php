@@ -92,20 +92,20 @@ function prepare_values($data, $value_names) {
 
 
         }
-        $spected_type = $extra_data['type'];
+        $expected_type = $extra_data['type'];
 
-        switch ($spected_type) {
+        switch ($expected_type) {
             case('no empty string'):
             case('string with value'):
             case('string'):
             case('key'):
             case('numeric'):
-                if (!is_type($spected_type, $data[$value_name])) {
+                if (!is_type($expected_type, $data[$value_name])) {
                     exit(
                     json_encode(
                         array(
                             'state' => 400,
-                            'msg'   => 'Error wrong value 3 '.$spected_type
+                            'msg'   => 'Error wrong value 3 '.$expected_type
                         )
                     )
                     );

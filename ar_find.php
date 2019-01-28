@@ -154,11 +154,14 @@ switch ($tipo) {
                 if ($data['metadata']['scope'] == 'supplier_part') {
                     find_supplier_parts($db, $account, $memcache_ip, $data);
 
-                } else {
-                    if ($data['metadata']['scope'] == 'product') {
-                        find_products($db, $account, $memcache_ip, $data);
+                } elseif ($data['metadata']['scope'] == 'product') {
+                    find_products($db, $account, $memcache_ip, $data);
 
-                    }
+
+                }elseif ($data['metadata']['scope'] == 'part') {
+                    find_parts($db, $account, $memcache_ip, $data);
+
+
                 }
                 break;
             case 'allowance_target':
@@ -404,15 +407,17 @@ function find_suppliers($db, $account, $memcache_ip, $data) {
 
 
                         ),
-                        'Supplier_Part_Reference' => array(
-                            'field'           => 'Supplier_Part_Reference',
-                            'render'          => true,
-                            'value'           => '',
-                            'formatted_value' => '',
-                            'locked'          => false,
+                        'Supplier_Part_Reference'       => array(
+                            'field'             => 'Supplier_Part_Reference',
+                            'render'            => true,
+                            'value'             => '',
+                            'formatted_value'   => '',
+                            'locked'            => false,
                             'server_validation' => json_encode(
-                                array('tipo' => 'check_for_duplicates',
-                                      'parent'=>'supplier', 'parent_key'=>$row['Supplier Key']
+                                array(
+                                    'tipo'       => 'check_for_duplicates',
+                                    'parent'     => 'supplier',
+                                    'parent_key' => $row['Supplier Key']
                                 )
                             ),
 
@@ -785,9 +790,8 @@ function find_warehouse_areas($db, $account, $memcache_ip, $data, $user) {
     }
 
 
-
     $where_warehouses = sprintf(
-        ' and `Warehouse Area Warehouse Key`=%d',$data['parent_key']
+        ' and `Warehouse Area Warehouse Key`=%d', $data['parent_key']
     );
 
 
@@ -809,17 +813,17 @@ function find_warehouse_areas($db, $account, $memcache_ip, $data, $user) {
                 $candidates[$row['Warehouse Area Key']] = 1000;
             } else {
 
-                $len_name                         = strlen(
+                $len_name                               = strlen(
                     $row['Warehouse Area Code']
                 );
-                $len_q                            = strlen($q);
-                $factor                           = $len_q / $len_name;
+                $len_q                                  = strlen($q);
+                $factor                                 = $len_q / $len_name;
                 $candidates[$row['Warehouse Area Key']] = 500 * $factor;
             }
 
             $candidates_data[$row['Warehouse Area Key']] = array(
-                'Warehouse Area Code'  => $row['Warehouse Area Code'],
-                'Warehouse Code' => $row['Warehouse Code'],
+                'Warehouse Area Code' => $row['Warehouse Area Code'],
+                'Warehouse Code'      => $row['Warehouse Code'],
                 'Warehouse Area Name' => $row['Warehouse Area Name']
             );
 
@@ -843,15 +847,15 @@ function find_warehouse_areas($db, $account, $memcache_ip, $data, $user) {
                 $candidates[$row['Warehouse Area Key']] = 700;
             } else {
 
-                $len_name                         = strlen($row['Warehouse Area Name']);
-                $len_q                            = strlen($q);
-                $factor                           = $len_q / $len_name;
+                $len_name                               = strlen($row['Warehouse Area Name']);
+                $len_q                                  = strlen($q);
+                $factor                                 = $len_q / $len_name;
                 $candidates[$row['Warehouse Area Key']] = 200 * $factor;
             }
 
             $candidates_data[$row['Warehouse Area Key']] = array(
-                'Warehouse Area Code'  => $row['Warehouse Area Code'],
-                'Warehouse Code' => $row['Warehouse Code'],
+                'Warehouse Area Code' => $row['Warehouse Area Code'],
+                'Warehouse Code'      => $row['Warehouse Code'],
                 'Warehouse Area Name' => $row['Warehouse Area Name']
             );
 
@@ -884,7 +888,7 @@ function find_warehouse_areas($db, $account, $memcache_ip, $data, $user) {
 
 
         $results[$location_key] = array(
-            'code'        => highlightkeyword($candidates_data[$location_key]['Warehouse Area Code'] , $q),
+            'code'        => highlightkeyword($candidates_data[$location_key]['Warehouse Area Code'], $q),
             'description' => highlightkeyword(
                 sprintf(
                     '%s', $candidates_data[$location_key]['Warehouse Area Name']
@@ -1237,12 +1241,18 @@ function find_parts($db, $account, $memcache_ip, $data) {
         $candidates_data = array();
 
 
+
         if (!empty($data['metadata']['with_no_sko_barcodes'])) {
             $scope = 'barcodes';
+
+        } elseif (!empty($data['metadata']['for_bill_of_materials'])) {
+            $scope = 'bill_of_materials';
 
         } else {
             $scope = '';
         }
+
+
 
 
         // todo a way t only displays parts in Purchase order (Supplier Delivery)
@@ -1257,7 +1267,7 @@ function find_parts($db, $account, $memcache_ip, $data) {
 
         $where = " and `Part Status` in ('In Use','Discontinuing','In Process')";
         $sql   = sprintf(
-            "select `Part SKU`,`Part Reference`,`Part Package Description`,`Part SKO Barcode` from `Part Dimension`  where  `Part Reference` like '%s%%'  %s   order by `Part Reference` limit $max_results ", $q, $where
+            "select `Part SKU`,`Part Reference`,`Part Package Description`,`Part Units Per Package`,`Part Unit Description`,`Part SKO Barcode` from `Part Dimension`  where  `Part Reference` like '%s%%'  %s   order by `Part Reference` limit $max_results ", $q, $where
         );
 
 
@@ -1277,6 +1287,8 @@ function find_parts($db, $account, $memcache_ip, $data) {
                 $candidates_data[$row['Part SKU']] = array(
                     'Part Reference'           => $row['Part Reference'],
                     'Part Package Description' => $row['Part Package Description'],
+                    'Part Unit Description' => $row['Part Unit Description'].($row['Part Units Per Package']>1?' <span class="discreet" >(<span style="letter-spacing: -1px;">1/'.$row['Part Units Per Package'].'</span>)<span>':''),
+
                     'Part SKO Barcode'         => $row['Part SKO Barcode']
                 );
 
@@ -1313,7 +1325,10 @@ function find_parts($db, $account, $memcache_ip, $data) {
                         : '  <i class="fa fa-barcode" aria-hidden="true"></i> '.$candidates_data[$part_sku]['Part SKO Barcode']).'  </span>';
                 $code        = '<span class="'.($candidates_data[$part_sku]['Part SKO Barcode'] != '' ? 'strikethrough  discreet ' : '').'" >'.$candidates_data[$part_sku]['Part Reference'].'</span>';
 
-            } else {
+            } elseif($scope == 'bill_of_materials') {
+                $description = $candidates_data[$part_sku]['Part Unit Description'];
+                $code        = $candidates_data[$part_sku]['Part Reference'];
+            }else {
                 $description = $candidates_data[$part_sku]['Part Package Description'];
                 $code        = $candidates_data[$part_sku]['Part Reference'];
             }
@@ -1797,8 +1812,7 @@ function find_assets_on_sale($db, $account, $memcache_ip, $data) {
 function find_supplier_parts($db, $account, $memcache_ip, $data) {
 
 
-
-  //  print_r($data);
+    //  print_r($data);
 
     $cache       = false;
     $max_results = 5;
@@ -1818,7 +1832,7 @@ function find_supplier_parts($db, $account, $memcache_ip, $data) {
     }
 
 
-    $table= "FROM   `Supplier Part Dimension` SP LEFT JOIN  `Part Dimension` ON (`Supplier Part Part SKU`=`Part SKU`) ";
+    $table = "FROM   `Supplier Part Dimension` SP LEFT JOIN  `Part Dimension` ON (`Supplier Part Part SKU`=`Part SKU`) ";
 
     if ($data['metadata']['parent'] == 'Supplier') {
 
@@ -1828,7 +1842,7 @@ function find_supplier_parts($db, $account, $memcache_ip, $data) {
 
     } elseif (strtolower($data['metadata']['parent']) == 'agent') {
 
-        $table= "FROM   `Supplier Part Dimension` SP  left join `Agent Supplier Bridge` on (SP.`Supplier Part Supplier Key`=`Agent Supplier Supplier Key`) LEFT JOIN  `Part Dimension` ON (`Supplier Part Part SKU`=`Part SKU`) ";
+        $table = "FROM   `Supplier Part Dimension` SP  left join `Agent Supplier Bridge` on (SP.`Supplier Part Supplier Key`=`Agent Supplier Supplier Key`) LEFT JOIN  `Part Dimension` ON (`Supplier Part Part SKU`=`Part SKU`) ";
 
 
         $where = sprintf(
@@ -1845,7 +1859,6 @@ function find_supplier_parts($db, $account, $memcache_ip, $data) {
     }
 
 
-
     $candidates = array();
 
     $candidates_data = array();
@@ -1853,9 +1866,8 @@ function find_supplier_parts($db, $account, $memcache_ip, $data) {
 
     $sql = sprintf(
         "SELECT `Supplier Part Reference`,`Supplier Part Historic Key`,`Supplier Part Key`,`Part Reference`,`Supplier Part Description` %s WHERE %s `Supplier Part Reference` LIKE '%s%%'  ORDER BY `Supplier Part Reference` LIMIT %d ",
-        $table ,$where, $q, $max_results
+        $table, $where, $q, $max_results
     );
-
 
 
     if ($result = $db->query($sql)) {
@@ -1890,7 +1902,7 @@ function find_supplier_parts($db, $account, $memcache_ip, $data) {
 
     $sql = sprintf(
         "SELECT `Supplier Part Key`,`Supplier Part Historic Key`,`Supplier Part Reference`,`Part Reference`,`Supplier Part Description`   %s WHERE %s `Part Reference` LIKE '%s%%'  ORDER BY `Part Reference` LIMIT %d ",
-        $table,$where, $q, $max_results
+        $table, $where, $q, $max_results
     );
 
     if ($result = $db->query($sql)) {

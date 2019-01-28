@@ -865,6 +865,16 @@ function get_tab($db, $smarty, $user, $account, $tab, $subtab, $state = false, $
 }
 
 
+/**
+ * @param $showcase
+ * @param $data
+ * @param $smarty \Smarty
+ * @param $user \User
+ * @param $db \PDO
+ * @param $account \Account
+ *
+ * @return mixed|string
+ */
 function get_object_showcase($showcase, $data, $smarty, $user, $db, $account) {
 
     if (preg_match('/\_edit$/', $data['tab'])) {
@@ -1207,6 +1217,10 @@ function get_object_showcase($showcase, $data, $smarty, $user, $db, $account) {
         case 'shipper':
             include_once 'showcase/shipper.show.php';
             $html = get_shipper_showcase($data, $smarty, $user, $db);
+            break;
+        case 'production_part':
+            include_once 'showcase/production_part.show.php';
+            $html = get_production_part_showcase($data, $smarty);
             break;
         default:
             $html = $data['object'].' -> '.$data['key'];
@@ -1967,13 +1981,13 @@ function get_navigation($user, $smarty, $data, $db, $account) {
                         $data, $smarty, $user, $db, $account
                     );
                     break;
-                case ('supplier_parts'):
-                    return get_supplier_parts_navigation(
+                case ('production_parts'):
+                    return get_production_parts_navigation(
                         $data, $smarty, $user, $db, $account
                     );
                     break;
-                case ('supplier_part'):
-                    return get_supplier_part_navigation(
+                case ('production_part'):
+                    return get_production_part_navigation(
                         $data, $smarty, $user, $db, $account
                     );
                     break;
@@ -9008,12 +9022,14 @@ function get_view_position($db, $state, $user, $smarty, $account) {
 
         case 'production':
 
+
+            /*
             $branch[] = array(
                 'label'     => _("(All manufactures)"),
                 'icon'      => '',
                 'reference' => 'production/all'
             );
-
+            */
             $branch[] = array(
                 'label'     => _("Production").' <span class="id Supplier_Code">'.$state['_object']->get('Code').'</span>',
                 'icon'      => 'industry',
@@ -9062,6 +9078,28 @@ function get_view_position($db, $state, $user, $smarty, $account) {
                 $branch[] = array(
                     'label'     => _('Materials'),
                     'icon'      => 'puzzle-piece',
+                    'reference' => ''
+                );
+
+            } elseif ($state['section'] == 'production_parts') {
+
+                $branch[] = array(
+                    'label'     => _('Parts'),
+                    'icon'      => 'hand-receiving',
+                    'reference' => ''
+                );
+
+            }elseif ($state['section'] == 'production_part') {
+
+                $branch[] = array(
+                    'label'     => _('Parts'),
+                    'icon'      => 'hand-receiving',
+                    'reference' => 'production/'.$state['current_production'].'/parts'
+                );
+
+                $branch[] = array(
+                    'label'     => $state['_object']->get('Reference'),
+                    'icon'      => 'box',
                     'reference' => ''
                 );
 

@@ -67,7 +67,6 @@ function prepare_values($data, $value_names) {
     }
 
     foreach ($value_names as $value_name => $extra_data) {
-        $optional = false;
         $optional = (isset($extra_data['optional']) and $extra_data['optional'] ? true : false);
         if (!isset($data[$value_name])) {
 
@@ -84,19 +83,19 @@ function prepare_values($data, $value_names) {
 
 
         }
-        $spected_type = $extra_data['type'];
+        $expected_type = $extra_data['type'];
 
-        switch ($spected_type) {
+        switch ($expected_type) {
             case('no empty string'):
             case('string with value'):
             case('string'):
             case('key'):
             case('numeric'):
-                if (!is_type($spected_type, $data[$value_name])) {
+                if (!is_type($expected_type, $data[$value_name])) {
                     exit(json_encode(
                         array(
                             'state' => 400,
-                            'msg'   => 'Error wrong value 3'
+                            'msg'   => 'Error wrong value ('.$value_name.') '.$expected_type.' -> '.$data[$value_name]
                         )
                     ));
                 }
@@ -111,7 +110,7 @@ function prepare_values($data, $value_names) {
                     exit(json_encode(
                         array(
                             'state' => 400,
-                            'msg'   => "Error wroxng value 4 ".$extra_data['valid values regex']."  "
+                            'msg'   => "Error wrong value 4 ".$extra_data['valid values regex']."  "
                         )
                     ));
                 }
