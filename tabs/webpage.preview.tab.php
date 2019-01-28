@@ -56,7 +56,15 @@ else {
 
     $theme = $website->get('Website Theme');
 
+    //todo remove this after migration
+    if(preg_match('/\.sys$/',$webpage->get('Code'))){
+        $theme='theme_1';
+    }
+
+
     if ($theme=='old') {
+
+
         $html = '<div style="padding:40px">'.'Old webpage version'.'</div>';
 
         return;
