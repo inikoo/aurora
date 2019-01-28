@@ -19,6 +19,10 @@ include_once 'utils/natural_language.php';
 class SupplierPart extends DB_Table {
     use NotesSubject;
 
+    /**
+     * @var \Part
+     */
+    public $part;
 
     function __construct($a1, $a2 = false, $a3 = false, $_db = false) {
 
@@ -53,7 +57,8 @@ class SupplierPart extends DB_Table {
 
         if ($this->data = $this->db->query($sql)->fetch()) {
             $this->id   = $this->data['Supplier Part Key'];
-            $this->part = new Part('id', $this->data['Supplier Part Part SKU'], false, $this->db);
+
+            $this->part = get_object('Part', $this->data['Supplier Part Part SKU'], false, $this->db);
         }
 
 

@@ -4328,39 +4328,51 @@ $modules = array(
             ),
 
 
-            'supplier_parts' => array(
+            'production_parts' => array(
                 'type'      => 'navigation',
                 'label'     => _('Parts'),
                 'icon'      => 'hand-receiving',
                 'reference' => 'production/%d/parts',
                 'tabs'      => array(
-                    'production.supplier_parts' => array('label' => _('Parts'))
+                    'production.production_parts' => array('label' => _('Parts'))
                 )
 
 
             ),
-            'supplier_part'  => array(
+            'production_part'  => array(
                 'type' => 'object',
 
 
                 'tabs' => array(
 
 
-                    'supplier_part.details' => array(
-                        'label' => _(
-                            'Data'
-                        ),
+                    'production_part.details' => array(
+                        'label' => _('Data'),
                         'icon'  => 'database'
                     ),
 
 
-                    'supplier_part.images'  => array(
+                    'bill_of_materials' => array(
+                        'label' => _('Bill of materials'),
+                        'icon'  => 'puzzle-piece'
+                    ),
+                    'production_part.tasks' => array(
+                        'label' => _('List of tasks'),
+                        'icon'  => 'tasks'
+                    ),
+
+                    'production_part.details' => array(
+                        'label' => _('Data'),
+                        'icon'  => 'database'
+                    ),
+
+                    'production_part.images'  => array(
                         'label' => '',
                         'title' => _('Images'),
                         'icon'  => 'camera-retro',
                         'class' => 'right icon_only'
                     ),
-                    'supplier_part.history' => array(
+                    'production_part.history' => array(
                         'label' => '',
                         'title' => _('History/Notes'),
                         'icon'  => 'road',

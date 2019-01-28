@@ -2682,7 +2682,7 @@ $tab_defaults = array(
 
 
     ),
-    'production.supplier_parts'    => array(
+    'production.production_parts'    => array(
         'view'          => 'overview',
         'sort_key'      => 'reference',
         'sort_order'    => 1,
@@ -2704,6 +2704,25 @@ $tab_defaults = array(
         'elements_type' => array_keys($elements_options['supplier_parts'])[0],
         'elements'      => $elements_options['supplier_parts'],
         'export_fields' => $export_fields['supplier_parts']
+
+    ),
+    'bill_of_materials'         => array(
+        'view'          => 'overview',
+        'sort_key'      => 'reference',
+        'sort_order'    => 1,
+        'rpp'           => 100,
+        'rpp_options'   => $default_rrp_options,
+        'f_field'       => 'reference',
+
+
+    ),
+    'production_part.tasks'         => array(
+        'view'          => 'overview',
+        'sort_key'      => 'code',
+        'sort_order'    => 1,
+        'rpp'           => 100,
+        'rpp_options'   => $default_rrp_options,
+        'f_field'       => 'code',
 
     ),
     'operatives'                   => array(

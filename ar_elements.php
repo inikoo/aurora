@@ -294,7 +294,7 @@ switch ($tab) {
     case 'supplier.supplier_parts':
     case 'agent.supplier_parts':
     case 'supplier.order.supplier_parts':
-    case 'production.supplier_parts':
+    case 'production.production_parts':
         $data = prepare_values(
             $_REQUEST, array(
                          'parameters' => array('type' => 'json array')
@@ -1632,6 +1632,12 @@ function get_orders_element_numbers($db, $data, $user) {
     $sql = sprintf(
         "SELECT %s AS number,`Order Payment State` AS element FROM %s  %s %s GROUP BY `Order Current Payment State` ", $count, $table, $where, $where_interval
     );
+
+
+
+
+
+
     foreach ($db->query($sql) as $row) {
         $_element = $row['element'];
 

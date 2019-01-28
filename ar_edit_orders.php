@@ -351,7 +351,16 @@ function edit_item_in_order($account, $db, $user, $editor, $data, $smarty) {
     }
 
 
-    $transaction_data = $parent->update_item($data);
+    if($data['parent']=='production_part'){
+        $transaction_data = $parent->update_bill_of_materials($data);
+
+
+    }else{
+        $transaction_data = $parent->update_item($data);
+
+    }
+
+
 
 
     $discounts_data = array();

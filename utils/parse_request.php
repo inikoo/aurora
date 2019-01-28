@@ -3740,14 +3740,14 @@ function parse_request($_data, $db, $modules, $account = '', $user = '', $is_set
                                 $section = 'materials';
 
                             } elseif ($view_path[1] == 'parts') {
-                                $section = 'supplier_parts';
+                                $section = 'production_parts';
 
                             } elseif ($view_path[1] == 'part') {
 
-                                $section    = 'supplier_part';
+                                $section    = 'production_part';
                                 $parent     = 'supplier_production';
                                 $parent_key = $key;
-                                $object     = 'supplier_part';
+                                $object     = 'production_part';
                                 if (isset($view_path[2])) {
                                     if (is_numeric($view_path[2])) {
 
@@ -3760,7 +3760,7 @@ function parse_request($_data, $db, $modules, $account = '', $user = '', $is_set
                                             if ($view_path[3] == 'order') {
                                                 $section = 'order';
 
-                                                $parent     = 'supplier_part';
+                                                $parent     = 'production_part';
                                                 $parent_key = $key;
                                                 $object     = 'purchase_order';
 
@@ -3805,10 +3805,10 @@ function parse_request($_data, $db, $modules, $account = '', $user = '', $is_set
 
                                     } elseif ($view_path[2] == 'new') {
                                         $key     = 0;
-                                        $section = 'supplier_part.new';
+                                        $section = 'production_part.new';
                                     } elseif ($view_path[2] == 'hk') {
-                                        $object  = 'supplier_part_historic';
-                                        $section = 'supplier_part.historic';
+                                        $object  = 'production_part_historic';
+                                        $section = 'production_part.historic';
                                         if (isset($view_path[3])) {
                                             if (is_numeric($view_path[3])) {
                                                 $key = $view_path[3];
