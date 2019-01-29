@@ -160,7 +160,16 @@ $part_fields[] = array(
 
     'show_title' => true,
     'fields'     => array(
-
+        array(
+            'id'     => 'Part_Recommended_Product_Unit_Name',
+            'edit'   => ($edit ? 'string' : ''),
+            'render' => ($supplier_part_scope ? false : true),
+            'value'           => htmlspecialchars($object->get('Part Recommended Product Unit Name')),
+            'formatted_value' => $object->get('Recommended Product Unit Name'),
+            'label'           => ucfirst($object->get_field_label('Part Recommended Product Unit Name')),
+            'required'        => true,
+            'type'            => 'value'
+        ),
         array(
             'id'     => 'Part_Barcode',
             'render' => ($supplier_part_scope ? false : true),
@@ -245,31 +254,16 @@ $part_fields[] = array(
             'id'     => 'Part_Unit_RRP',
             'edit'   => 'amount_margin',
             'render' => (!($supplier_part_scope or $new) ? true : false),
-
-            'value'           => htmlspecialchars(
-                $object->get('Part Unit RRP')
-            ),
+            'value'           => htmlspecialchars($object->get('Part Unit RRP')),
             'formatted_value' => $object->get('Unit RRP'),
-            'label'           => ucfirst(
-                $object->get_field_label('Part Unit RRP')
-            ),
+            'label'           => ucfirst($object->get_field_label('Part Unit RRP')),
             'required'        => true,
             'placeholder'     => sprintf(
                 _('amount in %s or margin (%%)'), $account->get('Currency Code')
             ),
             'type'            => 'value'
         ),
-        array(
-            'id'     => 'Part_Recommended_Product_Unit_Name',
-            'edit'   => ($edit ? 'string' : ''),
-            'render' => ($supplier_part_scope ? false : true),
 
-            'value'           => htmlspecialchars($object->get('Part Recommended Product Unit Name')),
-            'formatted_value' => $object->get('Recommended Product Unit Name'),
-            'label'           => ucfirst($object->get_field_label('Part Recommended Product Unit Name')).' ('._('website').')',
-            'required'        => true,
-            'type'            => 'value'
-        ),
 
 
     )

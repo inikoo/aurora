@@ -49,7 +49,7 @@ $locations
 ";
 
 $fields
-    = "`Purchase Order Transaction Part SKU`,`Part Unit Description`,`Part SKO Image Key`,`Part SKO Barcode`,`Supplier Delivery Units`,`Supplier Delivery Key`,`Part Reference`,P.`Part SKU`,`Supplier Delivery Checked Units`,`Part Package Description`,`Supplier Delivery Transaction Placed`,`Supplier Delivery Placed Units`,`Metadata`,
+    = "`Purchase Order Transaction Part SKU`,`Part Recommended Product Unit Name`,`Part SKO Image Key`,`Part SKO Barcode`,`Supplier Delivery Units`,`Supplier Delivery Key`,`Part Reference`,P.`Part SKU`,`Supplier Delivery Checked Units`,`Part Package Description`,`Supplier Delivery Transaction Placed`,`Supplier Delivery Placed Units`,`Metadata`,
 `Purchase Order Transaction Fact Key`,`Part Units Per Package`,`Part Package Weight`,`Supplier Delivery CBM`,`Supplier Delivery Weight`,`Supplier Key`,`Purchase Order Submitted Unit Cost`,`Purchase Order Submitted Unit Extra Cost Percentage`,
 `Supplier Delivery Net Amount`,`Currency Code` $locations
 

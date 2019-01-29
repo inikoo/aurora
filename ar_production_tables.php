@@ -340,54 +340,6 @@ function production_parts($_data, $db, $user, $account) {
 
     include_once 'utils/currency_functions.php';
 
-    if ($user->get('User Type') == 'Agent') {
-        // $_data['parameters']['parent']=='supplier' and $_data['parameters']['parent_key']==$user->get('User Parent Key')
-        if (!$_data['parameters']['parent'] == 'supplier') {
-            echo json_encode(
-                array(
-                    'state' => 405,
-                    'resp'  => 'Forbidden'
-                )
-            );
-            exit;
-        } else {
-            $sql = sprintf(
-                'SELECT count(*) AS num FROM `Agent Supplier Bridge` WHERE `Agent Supplier Agent Key`=%d AND `Agent Supplier Supplier Key`=%d ', $user->get('User Parent Key'),
-                $_data['parameters']['parent_key']
-            );
-
-            $ok = 0;
-            if ($result = $db->query($sql)) {
-                if ($row = $result->fetch()) {
-                    $ok = $row['num'];
-                }
-            } else {
-                print_r($error_info = $db->errorInfo());
-                exit;
-            }
-            if ($ok == 0) {
-                echo json_encode(
-                    array(
-                        'state' => 405,
-                        'resp'  => 'Forbidden'
-                    )
-                );
-                exit;
-            }
-
-        }
-
-
-    } elseif (!$user->can_view('suppliers')) {
-        echo json_encode(
-            array(
-                'state' => 405,
-                'resp'  => 'Forbidden'
-            )
-        );
-        exit;
-    }
-
 
     $rtext_label = 'production part';
     include_once 'prepare_table/init.php';
@@ -397,52 +349,11 @@ function production_parts($_data, $db, $user, $account) {
     $adata = array();
 
 
-    $exchange = -1;
-
-
     if ($result = $db->query($sql)) {
 
 
         foreach ($result as $data) {
 
-
-            if ($exchange < 0) {
-                $exchange = currency_conversion($db, $data['Supplier Part Currency Code'], $account->get('Account Currency'), '- 1 day');
-            }
-
-            if ($exchange != 1) {
-
-                $exchange_info = money(
-                        ($data['Supplier Part Unit Cost'] + $data['Supplier Part Unit Extra Cost']), $data['Supplier Part Currency Code']
-                    ).' @'.$data['Supplier Part Currency Code'].'/'.$account->get('Account Currency').' '.sprintf(
-                        '%.6f', $exchange
-                    );
-            } else {
-                $exchange_info = '';
-            }
-
-            switch ($data['Supplier Part Status']) {
-                case 'Available':
-                    $status = sprintf(
-                        '<i class="fa fa-stop success" title="%s"></i>', _('Available')
-                    );
-                    break;
-                case 'NoAvailable':
-                    $status = sprintf(
-                        '<i class="fa fa-stop warning" title="%s"></i>', _('No available')
-                    );
-
-                    break;
-                case 'Discontinued':
-                    $status = sprintf(
-                        '<i class="fa fa-ban error" title="%s"></i>', _('Discontinued')
-                    );
-
-                    break;
-                default:
-                    $status = $data['Supplier Part Status'];
-                    break;
-            }
 
             switch ($data['Part Stock Status']) {
                 case 'Surplus':
@@ -462,8 +373,11 @@ function production_parts($_data, $db, $user, $account) {
                         = '<i class="fa error fa-minus-circle fa-fw" aria-hidden="true"></i>';
                     break;
                 case 'Out_Of_Stock':
-                    $stock_status
-                        = '<i class="fa error fa-ban fa-fw" aria-hidden="true"></i>';
+                    $stock_status = '<i class="fa error fa-ban fa-fw" aria-hidden="true"></i>';
+                    if ($data['Supplier Part Status'] == 'Discontinued') {
+
+                    }
+
                     break;
                 case 'Error':
                     $stock_status
@@ -474,254 +388,68 @@ function production_parts($_data, $db, $user, $account) {
                     break;
             }
 
-            if ($data['Part Status'] == 'Not In Use') {
-                $part_status
-                    = '<i class="far fa-box fa-fw  very_discreet" aria-hidden="true"></i> ';
+            $stock = number(floor($data['Part Current On Hand Stock']))." $stock_status";
 
-            } elseif ($data['Part Status'] == 'Discontinuing') {
-                $part_status
-                    = '<i class="far fa-box fa-fw  very_discreet" aria-hidden="true"></i> ';
 
-            } else {
-                $part_status
-                    = '<i class="far fa-box fa-fw " aria-hidden="true"></i> ';
+            switch ($data['Supplier Part Status']) {
+                case 'Available':
+                    $status = sprintf(
+                        '<i class="fa fa-stop success" title="%s"></i>', _('Available')
+                    );
+                    break;
+                case 'NoAvailable':
+                    $status = sprintf(
+                        '<i class="fa fa-stop warning" title="%s"></i>', _('No available')
+                    );
+
+                    break;
+                case 'Discontinued':
+                    $status = sprintf(
+                        '<i class="fa fa-ban error" title="%s"></i>', _('Discontinued')
+                    );
+
+                    if ($data['Part Current On Hand Stock'] == 0) {
+                        $stock = '';
+                    }else{
+                        $stock = '<span class="error">'.number(floor($data['Part Current On Hand Stock'])).'</span>';
+
+                    }
+
+
+                    break;
+                default:
+                    $status = $data['Supplier Part Status'];
+                    break;
             }
 
-            $part_description = $part_status.'<span style="min-width:80px;display: inline-block;" class="link padding_right_10" onClick="change_view(\'part/'.$data['Supplier Part Part SKU'].'\')">'
-                .$data['Part Reference'].'</span> ';
+
+
+
+
+
+            $description=$data['Part Package Description'].'<div class="italic very_discreet">('.sprintf(_('%s units per SKO'),$data['Part Units per Package']).')</div>';
 
             $adata[] = array(
                 'id'               => (integer)$data['Supplier Part Key'],
                 'reference'        => sprintf('<span class="link" onclick="change_view(\'/production/%d/part/%d\')">%s</span>', $data['Supplier Part Supplier Key'], $data['Supplier Part Key'], $data['Supplier Part Reference']),
-                'part_description' => $part_description,
 
 
-                'description'    => $data['Supplier Part Description'],
-                'status'         => $status,
-                'cost'           => money(
+                'description' => $description,
+                'status'      => $status,
+                'cost'        => money(
                     $data['Supplier Part Unit Cost'], $data['Supplier Part Currency Code']
                 ),
-                'delivered_cost' => '<span title="'.$exchange_info.'">'.money(
-                        $exchange * ($data['Supplier Part Unit Cost'] + $data['Supplier Part Unit Extra Cost']), $account->get('Account Currency')
-                    ).'</span>',
-                'packing'        => '
+
+                'packing' => '
 				   <div style="float:right;min-width:30px;;text-align:right" title="'._('Units per part').'"> <span class="strong" >'.($data['Part Units Per Package'] * $data['Supplier Part Packages Per Carton'].'</span></div>
 				   <div style="float:right;min-width:40px;text-align:center;"><i class="far fa-equals"></i></div>
 				<div style="float:right;min-width:20px;text-align:right;" title="'._('Packages per part').'"><span>'.$data['Supplier Part Packages Per Carton'].'</span></div>
 				<div style="float:right;min-width:40px;text-align:center;"><i class="far fa-times"></i></div>
 				<div style="float:right;min-width:20px;text-align:right" title="'._('Packed in (Units per packages)').'"><span>'.$data['Part Units Per Package'].'</span></div>
 				 '),
-                'stock'          => number(floor($data['Part Current On Hand Stock']))." $stock_status",
-
-
-            );
-
-
-        }
-    } else {
-        print_r($error_info = $db->errorInfo());
-        print $sql;
-        exit;
-    }
-
-
-    $response = array(
-        'resultset' => array(
-            'state'         => 200,
-            'data'          => $adata,
-            'rtext'         => $rtext,
-            'sort_key'      => $_order,
-            'sort_dir'      => $_dir,
-            'total_records' => $total
-
-        )
-    );
-    echo json_encode($response);
-}
-
-function materials($_data, $db, $user, $account) {
-
-
-    include_once 'utils/currency_functions.php';
-
-    if ($user->get('User Type') == 'Agent') {
-        // $_data['parameters']['parent']=='supplier' and $_data['parameters']['parent_key']==$user->get('User Parent Key')
-        if (!$_data['parameters']['parent'] == 'supplier') {
-            echo json_encode(
-                array(
-                    'state' => 405,
-                    'resp'  => 'Forbidden'
-                )
-            );
-            exit;
-        } else {
-            $sql = sprintf(
-                'SELECT count(*) AS num FROM `Agent Supplier Bridge` WHERE `Agent Supplier Agent Key`=%d AND `Agent Supplier Supplier Key`=%d ', $user->get('User Parent Key'),
-                $_data['parameters']['parent_key']
-            );
-
-            $ok = 0;
-            if ($result = $db->query($sql)) {
-                if ($row = $result->fetch()) {
-                    $ok = $row['num'];
-                }
-            } else {
-                print_r($error_info = $db->errorInfo());
-                exit;
-            }
-            if ($ok == 0) {
-                echo json_encode(
-                    array(
-                        'state' => 405,
-                        'resp'  => 'Forbidden'
-                    )
-                );
-                exit;
-            }
-
-        }
-
-
-    } elseif (!$user->can_view('suppliers')) {
-        echo json_encode(
-            array(
-                'state' => 405,
-                'resp'  => 'Forbidden'
-            )
-        );
-        exit;
-    }
-
-
-    $rtext_label = 'material';
-    include_once 'prepare_table/init.php';
-
-    $sql
-           = "select $fields from $table $where $wheref order by $order $order_direction limit $start_from,$number_results";
-    $adata = array();
-
-
-    $exchange = -1;
-
-
-    if ($result = $db->query($sql)) {
-
-
-        foreach ($result as $data) {
-
-
-            if ($exchange < 0) {
-                $exchange = currency_conversion(
-                    $db, $data['Supplier Part Currency Code'], $account->get('Account Currency'), '- 1 day'
-                );
-            }
-
-            if ($exchange != 1) {
-
-                $exchange_info = money(
-                        ($data['Supplier Part Unit Cost'] + $data['Supplier Part Unit Extra Cost']), $data['Supplier Part Currency Code']
-                    ).' @'.$data['Supplier Part Currency Code'].'/'.$account->get('Account Currency').' '.sprintf(
-                        '%.6f', $exchange
-                    );
-            } else {
-                $exchange_info = '';
-            }
-
-            switch ($data['Supplier Part Status']) {
-                case 'Available':
-                    $status = sprintf(
-                        '<i class="fa fa-stop success" title="%s"></i>', _('Available')
-                    );
-                    break;
-                case 'NoAvailable':
-                    $status = sprintf(
-                        '<i class="fa fa-stop warning" title="%s"></i>', _('No available')
-                    );
-
-                    break;
-                case 'Discontinued':
-                    $status = sprintf(
-                        '<i class="fa fa-ban error" title="%s"></i>', _('Discontinued')
-                    );
-
-                    break;
-                default:
-                    $status = $data['Supplier Part Status'];
-                    break;
-            }
-
-            switch ($data['Part Stock Status']) {
-                case 'Surplus':
-                    $stock_status
-                        = '<i class="fa  fa-plus-circle fa-fw" aria-hidden="true"></i>';
-                    break;
-                case 'Optimal':
-                    $stock_status
-                        = '<i class="fa fa-check-circle fa-fw" aria-hidden="true"></i>';
-                    break;
-                case 'Low':
-                    $stock_status
-                        = '<i class="fa fa-minus-circle fa-fw" aria-hidden="true"></i>';
-                    break;
-                case 'Critical':
-                    $stock_status
-                        = '<i class="fa error fa-minus-circle fa-fw" aria-hidden="true"></i>';
-                    break;
-                case 'Out_Of_Stock':
-                    $stock_status
-                        = '<i class="fa error fa-ban fa-fw" aria-hidden="true"></i>';
-                    break;
-                case 'Error':
-                    $stock_status
-                        = '<i class="fa fa-question-circle error fa-fw" aria-hidden="true"></i>';
-                    break;
-                default:
-                    $stock_status = $data['Part Stock Status'];
-                    break;
-            }
-
-            if ($data['Part Status'] == 'Not In Use') {
-                $part_status
-                    = '<i class="far fa-box fa-fw  very_discreet" aria-hidden="true"></i> ';
-
-            } elseif ($data['Part Status'] == 'Discontinuing') {
-                $part_status
-                    = '<i class="far fa-box fa-fw  very_discreet" aria-hidden="true"></i> ';
-
-            } else {
-                $part_status
-                    = '<i class="far fa-box fa-fw " aria-hidden="true"></i> ';
-            }
-
-            $part_description = $part_status.'<span style="min-width:80px;display: inline-block;" class="link padding_right_10" onClick="change_view(\'part/'.$data['Supplier Part Part SKU'].'\')">'
-                .$data['Part Reference'].'</span> ';
-
-            $adata[] = array(
-                'id'               => (integer)$data['Supplier Part Key'],
-                'supplier_key'     => (integer)$data['Supplier Part Supplier Key'],
-                'supplier_code'    => $data['Supplier Code'],
-                'part_key'         => (integer)$data['Supplier Part Part SKU'],
-                'part_reference'   => $data['Part Reference'],
-                'reference'        => $data['Supplier Part Reference'],
-                'part_description' => $part_description,
-
-
-                'description'    => $data['Supplier Part Description'],
-                'status'         => $status,
-                'cost'           => money(
-                    $data['Supplier Part Unit Cost'], $data['Supplier Part Currency Code']
-                ),
-                'delivered_cost' => '<span title="'.$exchange_info.'">'.money(
-                        $exchange * ($data['Supplier Part Unit Cost'] + $data['Supplier Part Unit Extra Cost']), $account->get('Account Currency')
-                    ).'</span>',
-                'packing'        => '
-				 <div style="float:right;min-width:30px;;text-align:right" title="'._('Units per carton').'"><span class="discreet" >'.($data['Part Units Per Package']
-                        * $data['Supplier Part Packages Per Carton'].'</span></div>
-				<div style="float:right;min-width:70px;text-align:center;"> <i  class="fa fa-arrow-right very_discreet padding_right_10 padding_left_10"></i><span>['
-                        .$data['Supplier Part Packages Per Carton'].']</span></div>
-				<div style="float:right;min-width:20px;text-align:right"><span>'.$data['Part Units Per Package'].'</span></div>
-				 '),
-                'stock'          => number(floor($data['Part Current On Hand Stock']))." $stock_status",
+                'stock'   => $stock,
+                'components'=>number($data['Part Number Components']),
+                'tasks'=>number($data['Part Number Production Tasks'])
 
 
             );
@@ -811,14 +539,106 @@ function bill_of_materials($_data, $db, $user, $account) {
                 'reference' => sprintf('<span class="link" onclick="change_view(\'/production/%d/materials/%d\')">%s</span>', $production_key, $data['Part SKU'], $data['Part Reference']),
 
 
-                'description' => $data['Part Unit Description'].' <span class="italic very_discreet">('.sprintf(_('%s units per SKO'),$data['Part Units per Package']).')</span>',
-                'cost_unit'        => money($data['Part Cost in Warehouse'] * $data['Bill of Materials Quantity'], $account->get('Account Currency')),
-                'qty'         => number($data['Bill of Materials Quantity']*$data['Part Units per Package']),
-                'qty_skos'         => number($data['Bill of Materials Quantity'],4),
+                'description' => $data['Part Recommended Product Unit Name'].' <span class="italic very_discreet">('.sprintf(_('%s units per SKO'), $data['Part Units per Package']).')</span>',
+                'cost_unit'   => money($data['Part Cost in Warehouse'] * $data['Bill of Materials Quantity'], $account->get('Account Currency')),
+                'qty'         => number($data['Bill of Materials Quantity'] * $data['Part Units per Package']),
+                'qty_skos'    => number($data['Bill of Materials Quantity'], 4),
 
-                'stock'       => number(floor($data['Part Current On Hand Stock'])),
-                'stock_status'       => $stock_status,
-                'available_to_make_up'       => number($data['Part Current On Hand Stock']/$data['Bill of Materials Quantity'],0)
+                'stock'                => number(floor($data['Part Current On Hand Stock'])),
+                'stock_status'         => $stock_status,
+                'available_to_make_up' => number($data['Part Current On Hand Stock'] / $data['Bill of Materials Quantity'], 0)
+
+
+            );
+
+
+        }
+    } else {
+        print_r($error_info = $db->errorInfo());
+        print $sql;
+        exit;
+    }
+
+
+    $response = array(
+        'resultset' => array(
+            'state'         => 200,
+            'data'          => $adata,
+            'rtext'         => $rtext,
+            'sort_key'      => $_order,
+            'sort_dir'      => $_dir,
+            'total_records' => $total
+
+        )
+    );
+    echo json_encode($response);
+}
+
+
+function materials($_data, $db, $user, $account) {
+
+
+    include_once 'utils/currency_functions.php';
+
+
+    $rtext_label = 'components';
+    include_once 'prepare_table/init.php';
+
+    $sql
+           = "select $fields from $table $where $wheref order by $order $order_direction limit $start_from,$number_results";
+    $adata = array();
+
+
+    $production_key = $_data['parameters']['parent_key'];
+
+
+    if ($result = $db->query($sql)) {
+
+
+        foreach ($result as $data) {
+
+
+            switch ($data['Part Stock Status']) {
+                case 'Surplus':
+                    $stock_status
+                        = '<i class="fa  fa-plus-circle fa-fw" aria-hidden="true"></i>';
+                    break;
+                case 'Optimal':
+                    $stock_status
+                        = '<i class="fa fa-check-circle fa-fw" aria-hidden="true"></i>';
+                    break;
+                case 'Low':
+                    $stock_status
+                        = '<i class="fa fa-minus-circle fa-fw" aria-hidden="true"></i>';
+                    break;
+                case 'Critical':
+                    $stock_status
+                        = '<i class="fa error fa-minus-circle fa-fw" aria-hidden="true"></i>';
+                    break;
+                case 'Out_Of_Stock':
+                    $stock_status
+                        = '<i class="fa error fa-ban fa-fw" aria-hidden="true"></i>';
+                    break;
+                case 'Error':
+                    $stock_status
+                        = '<i class="fa fa-question-circle error fa-fw" aria-hidden="true"></i>';
+                    break;
+                default:
+                    $stock_status = $data['Part Stock Status'];
+                    break;
+            }
+
+
+            $adata[] = array(
+                'id'        => (integer)$data['Part SKU'],
+                'reference' => sprintf('<span class="link" onclick="change_view(\'/part/%d\')">%s</span>', $data['Part SKU'], $data['Part Reference']),
+
+
+                'description' => $data['Part Recommended Product Unit Name'].' <span class="italic very_discreet">('.sprintf(_('%s units per SKO'), $data['Part Units per Package']).')</span>',
+
+                'stock_units'      => number(floor($data['Part Current On Hand Stock'] * $data['Part Units per Package'])),
+                'stock_status'     => $stock_status,
+                'production_links' => number($data['Part Number Production Links'])
 
 
             );

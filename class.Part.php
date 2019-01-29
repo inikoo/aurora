@@ -30,9 +30,9 @@ class Part extends Asset {
             $this->db = $_db;
         }
 
-        $this->table_name    = 'Part';
-        $this->ignore_fields = array('Part Key');
-        $this->trigger_discontinued=true;
+        $this->table_name           = 'Part';
+        $this->ignore_fields        = array('Part Key');
+        $this->trigger_discontinued = true;
 
         if (is_numeric($arg1) and !$arg2) {
             $this->get_data('id', $arg1);
@@ -83,7 +83,9 @@ class Part extends Asset {
 
         if ($this->data = $this->db->query($sql)->fetch()) {
             $this->id  = $this->data['Part SKU'];
-            $this->sku = $this->data['Part SKU'];
+            $this->sku = $this->id;
+            $this->properties = json_decode($this->data['Part Properties'], true);
+
         }
 
 
@@ -730,26 +732,7 @@ class Part extends Asset {
                 }
 
 
-                if ($value != '' and (!is_numeric($value) or $value < 0)) {
-                    $this->error = true;
-                    $this->msg   = sprintf(
-                        _('Invalid carton CBM (%s)'), $value
-                    );
 
-                    return;
-                }
-
-
-                $this->update_field($field, $value, $options);
-                if (!preg_match('/skip_update_historic_object/', $options)) {
-                    $this->update_historic_object();
-                }
-
-                $this->update_metadata = array(
-                    'class_html' => array(
-                        'Carton_CBM' => $this->get('Carton CBM')
-                    )
-                );
 
 
                 break;
@@ -2000,8 +1983,6 @@ class Part extends Asset {
                 include_once 'utils/parse_materials.php';
 
 
-
-
                 $materials_to_update = array();
 
                 $sql = sprintf(
@@ -2071,7 +2052,6 @@ class Part extends Asset {
 
                     }
                 }
-
 
 
                 $this->update_field('Part Materials', $materials, $options);
@@ -2851,7 +2831,7 @@ class Part extends Asset {
     function discontinue_trigger() {
 
 
-        if($this->trigger_discontinued) {
+        if ($this->trigger_discontinued) {
 
             if ($this->get('Part Status') == 'Discontinuing' and ($this->data['Part Current On Hand Stock'] <= 0 and $this->data['Part Current Stock In Process'] == 0)) {
                 $this->update_status('Not In Use');
@@ -2870,7 +2850,7 @@ class Part extends Asset {
 
 
             }
-        }else{
+        } else {
 
 
         }
@@ -2878,8 +2858,6 @@ class Part extends Asset {
     }
 
     function update_stock() {
-
-
 
 
         $old_value             = $this->data['Part Current Value'];
@@ -2935,10 +2913,8 @@ class Part extends Asset {
         ) {
 
 
-
             $this->activate();
             $this->discontinue_trigger();
-
 
 
             $this->update_stock_status();
@@ -4555,7 +4531,7 @@ class Part extends Asset {
                 $label = _('SKOs per selling carton');
                 break;
             case 'Part Recommended Product Unit Name':
-                $label = _('Unit recommended description');
+                $label = _('Unit description');
                 break;
             case 'Part Production Supply':
                 $label = _('used in production');

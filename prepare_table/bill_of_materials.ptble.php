@@ -13,7 +13,7 @@ $table
        = "`Bill of Materials Bridge`   left join `Part Dimension` P on (P.`Part SKU`=`Bill of Materials Supplier Part Component Key`)   ";
 
 $fields
-    = '`Part SKU`,`Part Cost in Warehouse`,`Part Status`,`Part Reference`,`Part Unit Description`,`Part Current Stock`,`Part Stock Status`,`Part Status`,`Part Current On Hand Stock`,`Bill of Materials Quantity`,`Part Units per Package`
+    = '`Part SKU`,`Part Cost in Warehouse`,`Part Status`,`Part Reference`,`Part Recommended Product Unit Name`,`Part Current Stock`,`Part Stock Status`,`Part Status`,`Part Current On Hand Stock`,`Bill of Materials Quantity`,`Part Units per Package`
 ';
 
 $filter_msg = '';

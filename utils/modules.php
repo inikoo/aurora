@@ -4382,6 +4382,8 @@ $modules = array(
 
                 )
             ),
+
+            /*
             'batches'        => array(
                 'type'      => 'navigation',
                 'label'     => _('Batches'),
@@ -4393,7 +4395,7 @@ $modules = array(
 
 
             ),
-
+*/
             'materials' => array(
                 'type'      => 'navigation',
                 'label'     => _('Materials'),
@@ -4457,6 +4459,8 @@ $modules = array(
 
 
             ),
+
+            /*
             'settings'   => array(
                 'type'      => 'navigation',
                 'label'     => '',
@@ -4477,6 +4481,7 @@ $modules = array(
 
 
             ),
+            */
 
         )
     ),

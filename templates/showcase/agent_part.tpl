@@ -16,8 +16,8 @@
 {/if}
 
 <div class="name_and_categories">
-    <span class="strong"><span class="Supplier_Part_Unit_Description">{$part->get('Part Unit Description')}</span> <span
-                class="Store_Product_Price">{$part->get('Price')}</span> </span>
+    <span class="strong"><span class="Supplier_Part_Description">{$supplier_part->get('Supplier Part Description')}</span></span>
+
 
     <div style="clear:both">
     </div>

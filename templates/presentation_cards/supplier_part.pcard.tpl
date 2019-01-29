@@ -22,13 +22,11 @@
             <td><span  onClick="change_view('supplier/{$supplier_part->get('Supplier Part Supplier Key')}/part/{$supplier_part->id}')" class="marked_link">{$supplier_part->get('Reference')}</span></td>
         </tr>
         <tr>
-            <td class="label">{$supplier_part->part->get_field_label('Part Reference')|capitalize}</td>
-            <td>{$supplier_part->part->get('Reference')}</td>
+            <td class="label">{$supplier_part->get_field_label('Supplier Part Description')|capitalize}</td>
+            <td>{$supplier_part->get('Supplier Part Description')}</td>
         </tr>
-        <tr>
-            <td class="label">{$supplier_part->part->get_field_label('Part Unit Description')|capitalize}</td>
-            <td>{$supplier_part->part->get('Unit Description')}</td>
-        </tr>
+
+
 
     </table>
 

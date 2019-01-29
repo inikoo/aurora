@@ -1411,7 +1411,7 @@ function return_checking_items($_data, $db, $user, $account) {
 
             $description = '<div style="font-size:90%" >';
 
-            $description = $description.'<span class="">'.$data['Part Units Per Package'].'</span><span class="discreet ">x</span> '.$data['Part Unit Description'].'<br/> 
+            $description = $description.'<span class="">'.$data['Part Units Per Package'].'</span><span class="discreet ">x</span> '.$data['Part Recommended Product Unit Name'].'<br/> 
              <span class="discreet">'.sprintf(_('Packed in <b>%ds</b>'), $data['Part Units Per Package']).' <span class="" title="'._('SKOs per carton').'">, sko/C: <b>'.$data['Part Units Per Package'].'</b></span>';
 
 
