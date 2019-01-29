@@ -670,7 +670,7 @@ class Supplier extends SubjectSupplier {
 
     }
 
-    function create_supplier_part_record($data,$allow_duplicate_part_reference='No') {
+    function create_supplier_part_record($data, $allow_duplicate_part_reference = 'No') {
 
 
         $data['editor'] = $this->editor;
@@ -758,8 +758,7 @@ class Supplier extends SubjectSupplier {
         );
 
 
-
-        if($allow_duplicate_part_reference=='No'){
+        if ($allow_duplicate_part_reference == 'No') {
 
 
             if ($result = $this->db->query($sql)) {
@@ -781,15 +780,13 @@ class Supplier extends SubjectSupplier {
             }
 
 
-        }else{
+        } else {
             if ($result = $this->db->query($sql)) {
                 if ($row = $result->fetch()) {
 
 
-
                     $part_exist = true;
                     $part       = get_object('Part', $row['Part SKU']);
-
 
 
                     unset($data['Part Reference']);
@@ -802,9 +799,6 @@ class Supplier extends SubjectSupplier {
             }
 
         }
-
-
-
 
 
         if (!$part_exist) {
@@ -1053,24 +1047,6 @@ class Supplier extends SubjectSupplier {
         }
 
 
-        /*
-        if (!isset($data['Supplier Part Unit Extra Cost']) or $data['Supplier Part Unit Extra Cost'] == '') {
-            $data['Supplier Part Unit Extra Cost'] = 0;
-        }
-
-        if (!is_numeric($data['Supplier Part Unit Extra Cost']) or $data['Supplier Part Unit Extra Cost'] < 0) {
-            $this->error      = true;
-            $this->msg        = sprintf(
-                _('Invalid extra cost (%s)'), $data['Supplier Part Unit Extra Cost']
-            );
-            $this->error_code = 'invalid_supplier_part_unit_extra_cost';
-            $this->metadata   = $data['Supplier Part Unit Extra Cost'];
-
-            return;
-        }
-
-        */
-
         if (isset($data['Supplier Part Carton CBM']) and $data['Supplier Part Carton CBM'] != '') {
             if (!is_numeric($data['Supplier Part Carton CBM']) or $data['Supplier Part Carton CBM'] < 0) {
                 $this->error      = true;
@@ -1108,9 +1084,6 @@ class Supplier extends SubjectSupplier {
         }
 
 
-
-
-
         if (preg_match('/\%$/', $data['Supplier Part Unit Extra Cost Percentage'])) {
             $data['Supplier Part Unit Extra Cost Percentage'] = floatval(preg_replace('/\%$/', '', $data['Supplier Part Unit Extra Cost Percentage'])) / 100;
             // $value = $this->data['Supplier Part Unit Cost'] * $value / 100;
@@ -1127,7 +1100,7 @@ class Supplier extends SubjectSupplier {
 
 
         $data['Supplier Part Supplier Key'] = $this->id;
-        $data['Supplier Part Production'] = $this->get('Supplier Production');
+        $data['Supplier Part Production']   = $this->get('Supplier Production');
 
         $data['Supplier Part Minimum Carton Order'] = ceil($data['Supplier Part Minimum Carton Order']);
 
@@ -1179,9 +1152,6 @@ class Supplier extends SubjectSupplier {
                 }
 
 
-
-
-
                 if (!empty($data['Supplier Part Packages Per Carton'])) {
                     $data['Part SKOs per Carton'] = $data['Supplier Part Packages Per Carton'];
 
@@ -1190,6 +1160,7 @@ class Supplier extends SubjectSupplier {
 
 
                 if (!$part_exist) {
+
 
                     $part = new Part('find', $data, 'create');
 
@@ -1238,8 +1209,11 @@ class Supplier extends SubjectSupplier {
                         $supplier_part->update_historic_object();
                         $this->update_supplier_parts();
                         $part->update_cost();
-                    }
-                    else {
+
+                        $part->update_made_in_production_data();
+
+
+                    } else {
 
                         $this->error = true;
                         if ($part->found) {
@@ -1286,7 +1260,7 @@ class Supplier extends SubjectSupplier {
                         $supplier_part = new SupplierPart(0);
 
                     }
-                }else{
+                } else {
                     $supplier_part->update(array('Supplier Part Part SKU' => $part->sku));
                     $supplier_part->get_data('id', $supplier_part->id);
 
@@ -1295,8 +1269,6 @@ class Supplier extends SubjectSupplier {
                     $this->update_supplier_parts();
                     $part->update_cost();
                 }
-
-
 
 
             } else {
@@ -1949,7 +1921,6 @@ class Supplier extends SubjectSupplier {
             $index++;
 
 
-
             $sales_data = $this->get_sales_data($date_frequency_period['from'], $date_frequency_period['to']);
 
 
@@ -1989,10 +1960,10 @@ class Supplier extends SubjectSupplier {
 
                 if (in_array(
                     $timeseries->get('Timeseries Frequency'), array(
-                    'Monthly',
-                    'Quarterly',
-                    'Yearly'
-                )
+                                                                'Monthly',
+                                                                'Quarterly',
+                                                                'Yearly'
+                                                            )
                 )) {
 
                     foreach (preg_split('/\,/', $this->get_part_family_keys()) as $family_key) {
