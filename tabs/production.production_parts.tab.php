@@ -21,13 +21,7 @@ $table_views = array(
     'overview' => array(
         'label' => _('Overview'),
         'title' => _('Overview')
-    ),
-    'parts'    => array(
-        'label' => _('Inventory Part'),
-        'title' => _('Part details')
-    ),
-    'reorder'  => array('label' => _('Reorder')),
-
+    )
 );
 
 $table_filters = array(

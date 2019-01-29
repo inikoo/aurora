@@ -2701,9 +2701,7 @@ $tab_defaults = array(
         'rpp'           => 100,
         'rpp_options'   => $default_rrp_options,
         'f_field'       => 'reference',
-        'elements_type' => array_keys($elements_options['supplier_parts'])[0],
-        'elements'      => $elements_options['supplier_parts'],
-        'export_fields' => $export_fields['supplier_parts']
+
 
     ),
     'bill_of_materials'         => array(

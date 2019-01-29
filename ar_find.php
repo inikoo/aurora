@@ -1267,7 +1267,7 @@ function find_parts($db, $account, $memcache_ip, $data) {
 
         $where = " and `Part Status` in ('In Use','Discontinuing','In Process')";
         $sql   = sprintf(
-            "select `Part SKU`,`Part Reference`,`Part Package Description`,`Part Units Per Package`,`Part Unit Description`,`Part SKO Barcode` from `Part Dimension`  where  `Part Reference` like '%s%%'  %s   order by `Part Reference` limit $max_results ", $q, $where
+            "select `Part SKU`,`Part Reference`,`Part Package Description`,`Part Units Per Package`,`Part Recommended Product Unit Name`,`Part SKO Barcode` from `Part Dimension`  where  `Part Reference` like '%s%%'  %s   order by `Part Reference` limit $max_results ", $q, $where
         );
 
 
@@ -1287,7 +1287,7 @@ function find_parts($db, $account, $memcache_ip, $data) {
                 $candidates_data[$row['Part SKU']] = array(
                     'Part Reference'           => $row['Part Reference'],
                     'Part Package Description' => $row['Part Package Description'],
-                    'Part Unit Description' => $row['Part Unit Description'].($row['Part Units Per Package']>1?' <span class="discreet" >(<span style="letter-spacing: -1px;">1/'.$row['Part Units Per Package'].'</span>)<span>':''),
+                    'Part Recommended Product Unit Name' => $row['Part Recommended Product Unit Name'].($row['Part Units Per Package']>1?' <span class="discreet" >(<span style="letter-spacing: -1px;">1/'.$row['Part Units Per Package'].'</span>)<span>':''),
 
                     'Part SKO Barcode'         => $row['Part SKO Barcode']
                 );
@@ -1326,7 +1326,7 @@ function find_parts($db, $account, $memcache_ip, $data) {
                 $code        = '<span class="'.($candidates_data[$part_sku]['Part SKO Barcode'] != '' ? 'strikethrough  discreet ' : '').'" >'.$candidates_data[$part_sku]['Part Reference'].'</span>';
 
             } elseif($scope == 'bill_of_materials') {
-                $description = $candidates_data[$part_sku]['Part Unit Description'];
+                $description = $candidates_data[$part_sku]['Part Recommended Product Unit Name'];
                 $code        = $candidates_data[$part_sku]['Part Reference'];
             }else {
                 $description = $candidates_data[$part_sku]['Part Package Description'];

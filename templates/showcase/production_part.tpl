@@ -10,8 +10,7 @@
 *}
 
 <div class="name_and_categories">
-    <span class="strong"><span class="Supplier_Part_Unit_Description">{$part->get('Part Unit Description')}</span> <span
-                class="Store_Product_Price">{$part->get('Price')}</span> </span>
+    <span class="strong"><span class="Supplier_Part_Description">{$production_part->get('Supplier Part Description')}</span></span>
     <ul class="tags Categories" style="float:right">
         {foreach from=$part->get_category_data() item=item key=key}
             <li><span class="button" onclick="change_view('category/{$item.category_key}')"
