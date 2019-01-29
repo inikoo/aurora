@@ -49,7 +49,7 @@ $table_buttons[] = array(
     'add_item' => array(
         'placeholder_qty' => _('qty (Units)'),
         'placeholder'     => _('Part reference'),
-        'field_label'     => _("Component").':',
+        'field_label'     => _("Material").':',
         'metadata'        => base64_encode(
             json_encode(
                 array(
