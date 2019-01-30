@@ -1669,13 +1669,24 @@ class DeliveryNote extends DB_Table {
                     return;
                 }
 
-                $value = 'Approved';
+                $order = get_object('Order', $this->data['Delivery Note Order Key']);
+
+
+                if($order->get('Order Invoice Key')){
+                    $value = 'Approved';
+                }else{
+                    $value = 'Packed Done';
+                }
+
+
+
+
+
                 $this->update_field('Delivery Note Date Dispatched', '', 'no_history');
                 $this->update_field('Delivery Note Date', $date, 'no_history');
                 $this->update_field('Delivery Note State', $value, 'no_history');
 
 
-                $order = get_object('Order', $this->data['Delivery Note Order Key']);
                 $order->update(array('Order State' => 'un_dispatch'));
 
                 break;
