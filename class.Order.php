@@ -848,7 +848,15 @@ class Order extends DB_Table {
                         return;
 
                     }
-                    $value = 'Approved';
+
+
+                    if($this->get('Order Invoice Key')){
+                        $value = 'Approved';
+                    }else{
+                        $value = 'PackedDone';
+                    }
+
+
 
                     $this->update_field('Order State', $value, 'no_history');
                     $this->update_field('Order Dispatched Date', '', 'no_history');
