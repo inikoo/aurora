@@ -852,7 +852,7 @@ function save_field(object, key, field) {
 
 
     if (!$("#" + field + '_field').hasClass('changed')) {
-
+        console.log($("#" + field + '_field'))
         console.log('no_change :(' + field)
         return;
     }
@@ -914,6 +914,8 @@ function save_field(object, key, field) {
 
 
     var metadata = {};
+
+    console.log(type)
 
     if (type == 'date') {
         value = value + ' ' + $('#' + field + '_time').val()
@@ -995,6 +997,45 @@ function save_field(object, key, field) {
 
 
         value = JSON.stringify(webpage_related_products)
+
+    }else if (type == 'mixed_recipients') {
+
+        external_emails = [];
+        user_keys = [];
+
+
+        var mixed_recipients_container=$('#' + field + '_field').find('.mixed_recipients_container')
+
+        $('.external_email_mixed_recipients_value',mixed_recipients_container).each(function (i, obj) {
+
+
+            if (!$(obj).closest('tr').hasClass('very_discreet')) {
+
+                if ($(obj).val() != '') {
+                    external_emails.push($(obj).val())
+                }
+            }
+
+        });
+
+        $('.user_key',mixed_recipients_container).each(function (i, obj) {
+
+
+            if (!$(obj).closest('tr').hasClass('very_discreet')) {
+
+                if ($(obj).val() != '') {
+                    user_keys.push($(obj).val())
+                }
+            }
+
+        });
+
+        var mixed_recipients= {
+            external_emails: external_emails,
+            user_keys: user_keys
+        }
+
+        value = JSON.stringify(mixed_recipients)
 
     }
 

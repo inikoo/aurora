@@ -469,8 +469,27 @@ $object_fields = array(
         )
     ),
 
+    array(
+        'label'      => _('Notifications'),
+        'show_title' => true,
+        'fields'     => array(
 
+
+            array(
+                'id'              => 'Store_Notification_New_Order_Recipients',
+                'edit'            => 'mixed_recipients',
+                'value'           => '',
+                'formatted_value' => $object->get('Notification New Order Recipients'),
+                'label'           => _('New order'),
+                'required'        => false,
+                'type'            => ''
+            )
+
+
+        )
+    ),
 );
+
 
 if (!$new) {
     $operations = array(

@@ -158,7 +158,7 @@ switch ($tipo) {
                     find_products($db, $account, $memcache_ip, $data);
 
 
-                }elseif ($data['metadata']['scope'] == 'part') {
+                } elseif ($data['metadata']['scope'] == 'part') {
                     find_parts($db, $account, $memcache_ip, $data);
 
 
@@ -229,6 +229,9 @@ switch ($tipo) {
             case 'category_webpages':
                 find_category_webpages($db, $account, $memcache_ip, $data, $smarty);
                 break;
+            case 'users':
+                find_users($db, $data);
+                break;
             default:
                 $response = array(
                     'state' => 405,
@@ -250,6 +253,175 @@ switch ($tipo) {
         break;
 }
 
+
+function find_users($db, $data) {
+
+
+    $max_results = 10;
+
+    $queries = trim($data['query']);
+
+    if ($queries == '') {
+        $response = array(
+            'state'   => 200,
+            'results' => 0,
+            'data'    => ''
+        );
+        echo json_encode($response);
+
+        return;
+    }
+
+
+   if (!empty($data['metadata']['for_mixed_recipients'])) {
+        $scope = 'for_mixed_recipients';
+
+    } else {
+        $scope = '';
+    }
+
+
+    $candidates = array();
+
+    $query_array = preg_split('/\s+/', $queries);
+
+
+    foreach ($query_array as $q) {
+
+
+        $sql = "SELECT `User Key`,`User Handle` FROM `User Dimension` WHERE  `User Active`='Yes' and `User Type` in ('Staff','Contractor') and  `User Handle` LIKE ? LIMIT 20 ";
+
+        $stmt = $db->prepare($sql);
+        if ($stmt->execute(
+            array($q.'%')
+        )) {
+            while ($row = $stmt->fetch()) {
+
+                if ($row['User Handle'] == $q) {
+                    $candidates[$row['User Key']] = 1000;
+                } else {
+
+                    $len_name                     = strlen($row['User Handle']);
+                    $len_q                        = strlen($q);
+                    $factor                       = $len_q / $len_name;
+                    $candidates[$row['User Key']] = 500 * $factor;
+                }
+                }
+        } else {
+            print_r($error_info = $db->errorInfo());
+            exit();
+        }
+
+
+
+
+
+        $sql = "SELECT `User Key`,`User Alias` FROM `User Dimension` WHERE  `User Active`='Yes' and `User Type` in ('Staff','Contractor') and  `User Alias`  REGEXP ? LIMIT 100 ";
+
+
+        $stmt = $db->prepare($sql);
+        if ($stmt->execute(
+            array(
+                '[[:<:]]'.$q
+            )
+        )) {
+            while ($row = $stmt->fetch()) {
+                if ($row['User Alias'] == $q) {
+                    $candidates[$row['User Key']] = 55;
+                } else {
+
+                    $len_name                     = strlen($row['User Alias']);
+                    $len_q                        = strlen($q);
+                    $factor                       = $len_q / $len_name;
+                    $candidates[$row['User Key']] = 50 * $factor;
+                }
+                }
+        } else {
+            print_r($error_info = $db->errorInfo());
+            exit();
+        }
+
+
+
+
+    }
+
+
+    arsort($candidates);
+
+
+    $total_candidates = count($candidates);
+
+    if ($total_candidates == 0) {
+        $response = array(
+            'state'   => 200,
+            'results' => 0,
+            'data'    => ''
+        );
+        echo json_encode($response);
+
+        return;
+    }
+
+
+    $results      = array();
+
+
+    $candidates = array_slice(array_keys($candidates), 0, $max_results);
+    $sql = 'SELECT `User Handle`,`User Key`,`User Alias`,`User Password Recovery Email` FROM `User Dimension`  WHERE `User Key` IN ('.implode(',', array_fill(1,count($candidates),'?')).')';
+
+
+    $stmt = $db->prepare($sql);
+    if ($stmt->execute(
+        $candidates
+    )) {
+        while ($row = $stmt->fetch()) {
+
+
+            if($scope=='for_mixed_recipients'){
+                $formatted_value=$row['User Alias'];
+            }else{
+                $formatted_value=$row['User Alias'].($row['User Password Recovery Email']==''?' <i class="fa padding_left_10 error fa-exclamation-circle"></i> <span class="error very_discreet italic">'._('No email set').'</span>':' <span class="italic padding_left_5 discreet">('.$row['User Password Recovery Email'].')</span>');
+            }
+
+
+            $results[$row['User Key']] = array(
+                'code'        => highlightkeyword(sprintf('%s', $row['User Handle']), $queries),
+                'description' => highlightkeyword($row['User Alias'], $queries),
+
+                'value'           => $row['User Key'],
+                'formatted_value' =>$formatted_value,
+                'metadata'        => array(
+                    'email'=>$row['User Password Recovery Email'],
+                    'handle'=>$row['User Handle']
+                )
+
+
+            );
+            }
+    } else {
+        print_r($error_info = $db->errorInfo());
+        exit();
+    }
+
+
+
+
+    $results_data = array(
+        'n' => count($results),
+        'd' => $results
+    );
+
+    $response = array(
+        'state'          => 200,
+        'number_results' => $results_data['n'],
+        'results'        => $results_data['d'],
+        'q'              => $queries
+    );
+
+    echo json_encode($response);
+
+}
 
 function find_suppliers($db, $account, $memcache_ip, $data) {
 
@@ -1241,7 +1413,6 @@ function find_parts($db, $account, $memcache_ip, $data) {
         $candidates_data = array();
 
 
-
         if (!empty($data['metadata']['with_no_sko_barcodes'])) {
             $scope = 'barcodes';
 
@@ -1251,8 +1422,6 @@ function find_parts($db, $account, $memcache_ip, $data) {
         } else {
             $scope = '';
         }
-
-
 
 
         // todo a way t only displays parts in Purchase order (Supplier Delivery)
@@ -1267,7 +1436,8 @@ function find_parts($db, $account, $memcache_ip, $data) {
 
         $where = " and `Part Status` in ('In Use','Discontinuing','In Process')";
         $sql   = sprintf(
-            "select `Part SKU`,`Part Reference`,`Part Package Description`,`Part Units Per Package`,`Part Recommended Product Unit Name`,`Part SKO Barcode` from `Part Dimension`  where  `Part Reference` like '%s%%'  %s   order by `Part Reference` limit $max_results ", $q, $where
+            "select `Part SKU`,`Part Reference`,`Part Package Description`,`Part Units Per Package`,`Part Recommended Product Unit Name`,`Part SKO Barcode` from `Part Dimension`  where  `Part Reference` like '%s%%'  %s   order by `Part Reference` limit $max_results ",
+            $q, $where
         );
 
 
@@ -1285,11 +1455,11 @@ function find_parts($db, $account, $memcache_ip, $data) {
                 }
 
                 $candidates_data[$row['Part SKU']] = array(
-                    'Part Reference'           => $row['Part Reference'],
-                    'Part Package Description' => $row['Part Package Description'],
-                    'Part Recommended Product Unit Name' => $row['Part Recommended Product Unit Name'].($row['Part Units Per Package']>1?' <span class="discreet" >(<span style="letter-spacing: -1px;">1/'.$row['Part Units Per Package'].'</span>)<span>':''),
+                    'Part Reference'                     => $row['Part Reference'],
+                    'Part Package Description'           => $row['Part Package Description'],
+                    'Part Recommended Product Unit Name' => $row['Part Recommended Product Unit Name'].($row['Part Units Per Package'] > 1 ? ' <span class="discreet" >(<span style="letter-spacing: -1px;">1/'.$row['Part Units Per Package'].'</span>)<span>' : ''),
 
-                    'Part SKO Barcode'         => $row['Part SKO Barcode']
+                    'Part SKO Barcode' => $row['Part SKO Barcode']
                 );
 
             }
@@ -1325,10 +1495,10 @@ function find_parts($db, $account, $memcache_ip, $data) {
                         : '  <i class="fa fa-barcode" aria-hidden="true"></i> '.$candidates_data[$part_sku]['Part SKO Barcode']).'  </span>';
                 $code        = '<span class="'.($candidates_data[$part_sku]['Part SKO Barcode'] != '' ? 'strikethrough  discreet ' : '').'" >'.$candidates_data[$part_sku]['Part Reference'].'</span>';
 
-            } elseif($scope == 'bill_of_materials') {
+            } elseif ($scope == 'bill_of_materials') {
                 $description = $candidates_data[$part_sku]['Part Recommended Product Unit Name'];
                 $code        = $candidates_data[$part_sku]['Part Reference'];
-            }else {
+            } else {
                 $description = $candidates_data[$part_sku]['Part Package Description'];
                 $code        = $candidates_data[$part_sku]['Part Reference'];
             }

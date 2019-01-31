@@ -651,12 +651,13 @@ class Store extends DB_Table {
             case 'data entry picking aid default packer':
 
 
-                $staff_key=$this->settings(preg_replace('/\s/','_',$key));
+                $staff_key = $this->settings(preg_replace('/\s/', '_', $key));
 
-                if(is_numeric($staff_key) and $staff_key>0){
-                    $staff=get_object('Staff',$staff_key);
+                if (is_numeric($staff_key) and $staff_key > 0) {
+                    $staff = get_object('Staff', $staff_key);
+
                     return $staff->get('Name');
-                }else{
+                } else {
                     return '';
                 }
 
@@ -664,28 +665,57 @@ class Store extends DB_Table {
             case 'data entry picking aid default shipper':
 
 
-                $shipper_key=$this->settings(preg_replace('/\s/','_',$key));
+                $shipper_key = $this->settings(preg_replace('/\s/', '_', $key));
 
-                if(is_numeric($shipper_key) and $shipper_key>0){
-                    $shipper=get_object('Shipper',$shipper_key);
+                if (is_numeric($shipper_key) and $shipper_key > 0) {
+                    $shipper = get_object('Shipper', $shipper_key);
+
                     return $shipper->get('Name');
-                }else{
+                } else {
                     return '';
                 }
 
                 break;
             case 'data entry picking aid default number boxes':
 
-               $default_number_of_boxed=$this->settings(preg_replace('/\s/','_',$key));
+                $default_number_of_boxed = $this->settings(preg_replace('/\s/', '_', $key));
 
-                if( $default_number_of_boxed>0){
+                if ($default_number_of_boxed > 0) {
 
                     return number($default_number_of_boxed);
-                }else{
+                } else {
                     return '';
                 }
 
                 break;
+
+            case 'Store_Notification_New_Order_Recipients':
+            case 'Store Notification New Order Recipients':
+            case 'Store Notification Deleted Invoice Recipients':
+            case 'Store Notification Undispatched Delivery Note Recipients':
+
+                $encoded_value = $this->settings(preg_replace('/\s/', '_', $key));
+
+                if ($encoded_value != '') {
+
+                    $mixed_recipients =json_decode($encoded_value, true);
+                    $mixed_recipients['users']=array();
+                    foreach($mixed_recipients['user_keys'] as $user_key){
+                        $mixed_recipients['users'][]=get_object('User',$user_key);
+                    }
+
+
+                    return $mixed_recipients;
+                } else {
+                    return array(
+                        'external_emails' => array(),
+                        'user_keys'       => array(),
+                        'user'       => array(),
+                    );
+                }
+
+                break;
+
         }
 
 
@@ -853,6 +883,10 @@ class Store extends DB_Table {
         }
 
 
+    }
+
+    function settings($key) {
+        return (isset($this->settings[$key]) ? $this->settings[$key] : '');
     }
 
     function create_timeseries($data, $fork_key = 0) {
@@ -2370,7 +2404,6 @@ class Store extends DB_Table {
 
     }
 
-
     function update_orders_approved_data() {
 
         $data = array(
@@ -2541,7 +2574,6 @@ class Store extends DB_Table {
         $this->fast_update($data_to_update, 'Store DC Data');
     }
 
-
     function update_orders_cancelled() {
 
         $data = array(
@@ -2665,7 +2697,6 @@ class Store extends DB_Table {
 
     }
 
-
     function update_previous_years_data() {
 
         foreach (range(1, 5) as $i) {
@@ -2758,7 +2789,6 @@ class Store extends DB_Table {
 
 
     }
-
 
     function update_sales_from_invoices($interval, $this_year = true, $last_year = true) {
 
@@ -2936,7 +2966,6 @@ class Store extends DB_Table {
 
     }
 
-
     function post_add_history($history_key, $type = false) {
 
         if (!$type) {
@@ -2951,7 +2980,6 @@ class Store extends DB_Table {
 
 
     }
-
 
     function get_payment_accounts($type = 'objects', $filter = '') {
 
@@ -2986,7 +3014,6 @@ class Store extends DB_Table {
         return $payment_accounts;
 
     }
-
 
     function get_field_label($field) {
 
@@ -3753,7 +3780,6 @@ class Store extends DB_Table {
 
     }
 
-
     function create_poll_query($data) {
 
         $this->new_poll_query = false;
@@ -3995,6 +4021,13 @@ class Store extends DB_Table {
 
         switch ($field) {
 
+
+            case 'Store Notification New Order Recipients':
+
+                $this->update_notifications($field, $value, 'set');
+
+                break;
+
             case 'data entry picking aid':
             case 'data entry picking aid state after save':
             case 'data entry picking aid default picker':
@@ -4104,6 +4137,7 @@ class Store extends DB_Table {
 
 
     }
+
 
     function update_address($type, $fields, $options = '') {
 
@@ -4251,14 +4285,70 @@ class Store extends DB_Table {
 
     }
 
-
     function update_purges_data() {
         // todo: make stats for purges
     }
 
-    function settings($key) {
-        return (isset($this->settings[$key]) ? $this->settings[$key] : '');
+    function update_notifications($field, $values, $operation) {
+
+        $values    = json_decode($values, true);
+        $old_value = $this->get($field);
+
+        if ($operation == 'set') {
+
+
+            $external_emails = array();
+            $user_keys = array();
+            foreach ($values['external_emails'] as $external_email) {
+
+                if (filter_var($external_email, FILTER_VALIDATE_EMAIL)) {
+                    $external_emails[$external_email] = $external_email;
+                } else {
+                    $this->error = true;
+                    $this->msg   = _('Invalid email');
+
+                    return;
+                }
+
+
+            }
+
+            foreach ($values['user_keys'] as $user_key) {
+
+                $_user=get_object('User',$user_key);
+                if ($_user->id and in_array($_user->get('User Type'),array('Staff','Contractor'))  ) {
+                    $user_keys[$user_key] = $user_key;
+                } else {
+                    $this->error = true;
+                    $this->msg   = _('Invalid user');
+
+                    return;
+                }
+
+
+            }
+
+
+            $recipients_data = array(
+                'external_emails' => array_values($external_emails),
+                'user_keys'       => array_values($user_keys),
+            );
+
+
+        } else {
+            $recipients_data = $old_value;
+        }
+
+
+
+
+        $this->fast_update_json_field('Store Settings',preg_replace('/\s/', '_', $field),json_encode($recipients_data));
+
+
+      //  print_r($recipients_data);
+
     }
+
 
 }
 

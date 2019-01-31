@@ -32,6 +32,7 @@ $smarty->assign(
 $object_fields = get_object_fields($store, $db, $user, $smarty, array());
 $smarty->assign('object_fields', $object_fields);
 $smarty->assign('state', $state);
+$smarty->assign('object', $store);
 
 $smarty->assign('js_code', 'js/injections/store_settings.'.(_DEVEL ? '' : 'min.').'js');
 
