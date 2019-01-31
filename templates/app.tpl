@@ -14,7 +14,7 @@
 
 
 
-        <link href="/css/au_app.min.css?v190124" rel="stylesheet">
+        <link href="/css/au_app.min.css?v190131" rel="stylesheet">
 
 
         {if $_server_name!='au.bali'}

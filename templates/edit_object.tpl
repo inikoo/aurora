@@ -408,9 +408,9 @@
                                 {elseif $edit=='salary'  }
                                     {include file="salary.edit.tpl" field=$field salary=$salary }
                                 {elseif $edit=='parts_list'  }
-
                                     {include file="parts_list.edit.tpl" field=$field parts_list=$object->get_parts_data(true) mode='edit'}
-
+                                {elseif $edit=='mixed_recipients'  }
+                                    {include file="mixed_recipients.edit.tpl" field=$field mixed_recipients=$object->get($field.id) mode='edit'}
                                 {elseif $edit=='webpage_see_also'  }
                                     <div class="webpage_see_also_editor">
                                         {include file="webpage_see_also.edit.tpl"  data=$object->get_see_also_data() mode='edit'}
