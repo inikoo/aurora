@@ -10,6 +10,8 @@
 */
 
 $theme=$state['_object']->get('Website Theme');
+// todo change after migration
+$theme='theme_1';
 
 $smarty->assign('website',$state['_object']);
 $smarty->assign('theme',$theme);
