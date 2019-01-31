@@ -12,7 +12,8 @@
 
 $website = $state['_object'];
 $theme   = $website->get('Website Theme');
-
+// todo change after migration
+$theme='theme_1';
 $store = get_object('Public_Store', $website->get('Website Store Key'));
 
 

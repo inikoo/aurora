@@ -12,9 +12,13 @@
 
 $website=$state['_object'];
 $theme=$website->get('Website Theme');
+// todo change after migration
+$theme='theme_1';
+
 
 $smarty->assign('website',$website);
 $smarty->assign('theme',$theme);
+
 
 $smarty->assign('settings',$website->settings);
 
