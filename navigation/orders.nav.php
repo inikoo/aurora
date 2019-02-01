@@ -635,7 +635,6 @@ function get_delivery_notes_server_navigation($data, $smarty, $user, $db, $accou
 
 function get_order_navigation($data, $smarty, $user, $db, $account) {
 
-
     $object        = $data['_object'];
     $left_buttons  = array();
     $right_buttons = array();
@@ -709,66 +708,49 @@ function get_order_navigation($data, $smarty, $user, $db, $account) {
     $sql        = trim($sql_totals." $wheref");
 
 
-    if ($result2 = $db->query($sql)) {
-        if ($row2 = $result2->fetch()) {
-
-
-            if ($row2['num'] > 1) {
-
-
-                $sql = sprintf(
-                    "select `Order Public ID` object_name,O.`Order Key` as object_key from $table   $where $wheref
+    $sql = sprintf(
+        "select `Order Public ID` object_name,O.`Order Key` as object_key from $table   $where $wheref
 	                and ($_order_field < %s OR ($_order_field = %s AND O.`Order Key` < %d))  order by $_order_field desc , O.`Order Key` desc limit 1",
 
-                    prepare_mysql($_order_field_value), prepare_mysql($_order_field_value), $object->id
-                );
+        prepare_mysql($_order_field_value), prepare_mysql($_order_field_value), $object->id
+    );
 
-                if ($result = $db->query($sql)) {
-                    if ($row = $result->fetch()) {
-                        $prev_key   = $row['object_key'];
-                        $prev_title = _("Order").' '.$row['object_name'].' ('.$row['object_key'].')';
-                    }
-                } else {
-                    print_r($error_info = $db->errorInfo());
-                    exit;
-                }
 
-                // print "$sql ";
+    if ($result = $db->query($sql)) {
+        if ($row = $result->fetch()) {
+            $prev_key   = $row['object_key'];
+            $prev_title = _("Order").' '.$row['object_name'].' ('.$row['object_key'].')';
+        }
+    } else {
+        print_r($error_info = $db->errorInfo());
+        exit;
+    }
 
-                $sql = sprintf(
-                    "select `Order Public ID` object_name,O.`Order Key` as object_key from $table   $where $wheref
+
+    $sql = sprintf(
+        "select `Order Public ID` object_name,O.`Order Key` as object_key from $table   $where $wheref
 	                and ($_order_field  > %s OR ($_order_field  = %s AND O.`Order Key` > %d))  order by $_order_field   , O.`Order Key`  limit 1", prepare_mysql($_order_field_value), prepare_mysql($_order_field_value), $object->id
-                );
+    );
 
-                if ($result = $db->query($sql)) {
-                    if ($row = $result->fetch()) {
-                        $next_key   = $row['object_key'];
-                        $next_title = _("Order").' '.$row['object_name'].' ('.$row['object_key'].')';
-
-                    }
-                } else {
-                    print_r($error_info = $db->errorInfo());
-                    exit;
-                }
-                //  print "$sql ";
-
-                if ($order_direction == 'desc') {
-                    $_tmp1      = $prev_key;
-                    $_tmp2      = $prev_title;
-                    $prev_key   = $next_key;
-                    $prev_title = $next_title;
-                    $next_key   = $_tmp1;
-                    $next_title = $_tmp2;
-                }
-
-
-            }
-
+    if ($result = $db->query($sql)) {
+        if ($row = $result->fetch()) {
+            $next_key   = $row['object_key'];
+            $next_title = _("Order").' '.$row['object_name'].' ('.$row['object_key'].')';
 
         }
     } else {
         print_r($error_info = $db->errorInfo());
         exit;
+    }
+    //  print "$sql ";
+
+    if ($order_direction == 'desc') {
+        $_tmp1      = $prev_key;
+        $_tmp2      = $prev_title;
+        $prev_key   = $next_key;
+        $prev_title = $next_title;
+        $next_key   = $_tmp1;
+        $next_title = $_tmp2;
     }
 
 
@@ -1524,10 +1506,10 @@ function get_invoice_navigation($data, $smarty, $user, $db, $account) {
 
                     if ($result = $db->query($sql)) {
                         if ($row = $result->fetch()) {
-                            $prev_key   = $row['object_key'];
+                            $prev_key = $row['object_key'];
 
 
-                            $prev_title = ($row['Invoice Type']=='Invoice'?_("Invoice"):_('Refund')).' '.$row['object_name'].' ('.$row['object_key'].')';
+                            $prev_title = ($row['Invoice Type'] == 'Invoice' ? _("Invoice") : _('Refund')).' '.$row['object_name'].' ('.$row['object_key'].')';
                             $prev_type  = strtolower($row['Invoice Type']);
 
                         }
@@ -1546,7 +1528,7 @@ function get_invoice_navigation($data, $smarty, $user, $db, $account) {
                     if ($result = $db->query($sql)) {
                         if ($row = $result->fetch()) {
                             $next_key   = $row['object_key'];
-                            $next_title = ($row['Invoice Type']=='Invoice'?_("Invoice"):_('Refund')).' '.$row['object_name'].' ('.$row['object_key'].')';
+                            $next_title = ($row['Invoice Type'] == 'Invoice' ? _("Invoice") : _('Refund')).' '.$row['object_name'].' ('.$row['object_key'].')';
                             $next_type  = strtolower($row['Invoice Type']);
                         }
                     } else {
@@ -1556,16 +1538,16 @@ function get_invoice_navigation($data, $smarty, $user, $db, $account) {
 
 
                     if ($order_direction == 'desc') {
-                        $_tmp1      = $prev_key;
-                        $_tmp2      = $prev_title;
-                        $_tmp3      = $prev_type;
+                        $_tmp1 = $prev_key;
+                        $_tmp2 = $prev_title;
+                        $_tmp3 = $prev_type;
 
                         $prev_key   = $next_key;
                         $prev_title = $next_title;
-                        $prev_type = $next_type;
+                        $prev_type  = $next_type;
                         $next_key   = $_tmp1;
                         $next_title = $_tmp2;
-                        $next_type=$_tmp3;
+                        $next_type  = $_tmp3;
                     }
 
 
@@ -1624,8 +1606,7 @@ function get_invoice_navigation($data, $smarty, $user, $db, $account) {
             );
 
 
-        }
-        elseif ($data['parent'] == 'store') {
+        } elseif ($data['parent'] == 'store') {
             $store     = new Store($data['parent_key']);
             $up_button = array(
                 'icon'      => 'arrow-up',
@@ -1671,8 +1652,7 @@ function get_invoice_navigation($data, $smarty, $user, $db, $account) {
             $sections = get_sections('orders', $data['parent_key']);
 
 
-        }
-        elseif ($data['parent'] == 'order') {
+        } elseif ($data['parent'] == 'order') {
             $order     = get_object('Order', $data['parent_key']);
             $up_button = array(
                 'icon'      => 'arrow-up',

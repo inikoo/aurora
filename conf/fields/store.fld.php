@@ -82,7 +82,7 @@ foreach ($db->query($sql) as $row) {
 
 }
 
-
+$object->smarty=$smarty;
 
 $object_fields = array(
     array(
@@ -481,6 +481,24 @@ $object_fields = array(
                 'value'           => '',
                 'formatted_value' => $object->get('Notification New Order Recipients'),
                 'label'           => _('New order'),
+                'required'        => false,
+                'type'            => ''
+            ),
+            array(
+                'id'              => 'Store_Notification_Invoice_Deleted_Recipients',
+                'edit'            => 'mixed_recipients',
+                'value'           => '',
+                'formatted_value' => $object->get('Notification Invoice Deleted Recipients'),
+                'label'           => _('Invoice deleted'),
+                'required'        => false,
+                'type'            => ''
+            ),
+            array(
+                'id'              => 'Store_Notification_Delivery_Note_Undispatched_Recipients',
+                'edit'            => 'mixed_recipients',
+                'value'           => '',
+                'formatted_value' => $object->get('Notification Delivery Note Undispatched Recipients'),
+                'label'           => _('Delivery note undispatched'),
                 'required'        => false,
                 'type'            => ''
             )

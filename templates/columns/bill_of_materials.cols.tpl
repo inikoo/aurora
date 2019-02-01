@@ -78,6 +78,18 @@ name: "qty",
 label: "{t}Units{/t}",
 editable: false,
 sortType: "toggle",
+{if $sort_key=='qty'}direction: '{if $sort_order==1}descending{else}ascending{/if}',{/if}
+
+cell: Backgrid.HtmlCell.extend({ className: "aright"} ),
+headerCell: integerHeaderCell
+
+}, {
+name: "qty_edit",
+label: "{t}Units{/t}",
+editable: false,
+sortType: "toggle",
+{if $sort_key=='qty_edit'}direction: '{if $sort_order==1}descending{else}ascending{/if}',{/if}
+
 cell: Backgrid.HtmlCell.extend({ className: "aright"} ),
 headerCell: integerHeaderCell
 

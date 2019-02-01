@@ -31,8 +31,7 @@ class Asset extends DB_Table {
 
 
                 if ($value == '') {
-                    include_once 'class.Barcode.php';
-                    $barcode         = new Barcode($this->get('Barcode Key'));
+                    $barcode         = get_object('Barcode',$this->get('Barcode Key'));
                     $barcode->editor = $this->editor;
                     if ($barcode->id) {
                         $asset_data = array(

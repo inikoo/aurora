@@ -82,6 +82,7 @@ $smarty->assign(
 
 );
 
+$smarty->assign('table_top_template', 'bill_of_materials.edit.tpl');
 
 include 'utils/get_table_html.php';
 

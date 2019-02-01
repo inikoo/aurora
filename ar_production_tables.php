@@ -410,7 +410,7 @@ function production_parts($_data, $db, $user, $account) {
 
                     if ($data['Part Current On Hand Stock'] == 0) {
                         $stock = '';
-                    }else{
+                    } else {
                         $stock = '<span class="error">'.number(floor($data['Part Current On Hand Stock'])).'</span>';
 
                     }
@@ -423,15 +423,11 @@ function production_parts($_data, $db, $user, $account) {
             }
 
 
-
-
-
-
-            $description=$data['Part Package Description'].'<div class="italic very_discreet">('.sprintf(_('%s units per SKO'),$data['Part Units per Package']).')</div>';
+            $description = $data['Part Package Description'].'<div class="italic very_discreet">('.sprintf(_('%s units per SKO'), $data['Part Units per Package']).')</div>';
 
             $adata[] = array(
-                'id'               => (integer)$data['Supplier Part Key'],
-                'reference'        => sprintf('<span class="link" onclick="change_view(\'/production/%d/part/%d\')">%s</span>', $data['Supplier Part Supplier Key'], $data['Supplier Part Key'], $data['Supplier Part Reference']),
+                'id'        => (integer)$data['Supplier Part Key'],
+                'reference' => sprintf('<span class="link" onclick="change_view(\'/production/%d/part/%d\')">%s</span>', $data['Supplier Part Supplier Key'], $data['Supplier Part Key'], $data['Supplier Part Reference']),
 
 
                 'description' => $description,
@@ -440,16 +436,16 @@ function production_parts($_data, $db, $user, $account) {
                     $data['Supplier Part Unit Cost'], $data['Supplier Part Currency Code']
                 ),
 
-                'packing' => '
+                'packing'    => '
 				   <div style="float:right;min-width:30px;;text-align:right" title="'._('Units per part').'"> <span class="strong" >'.($data['Part Units Per Package'] * $data['Supplier Part Packages Per Carton'].'</span></div>
 				   <div style="float:right;min-width:40px;text-align:center;"><i class="far fa-equals"></i></div>
 				<div style="float:right;min-width:20px;text-align:right;" title="'._('Packages per part').'"><span>'.$data['Supplier Part Packages Per Carton'].'</span></div>
 				<div style="float:right;min-width:40px;text-align:center;"><i class="far fa-times"></i></div>
 				<div style="float:right;min-width:20px;text-align:right" title="'._('Packed in (Units per packages)').'"><span>'.$data['Part Units Per Package'].'</span></div>
 				 '),
-                'stock'   => $stock,
-                'components'=>number($data['Part Number Components']),
-                'tasks'=>number($data['Part Number Production Tasks'])
+                'stock'      => $stock,
+                'components' => number($data['Part Number Components']),
+                'tasks'      => number($data['Part Number Production Tasks'])
 
 
             );
@@ -534,6 +530,14 @@ function bill_of_materials($_data, $db, $user, $account) {
             }
 
 
+            $qty_units = $data['Bill of Materials Quantity'] * $data['Part Units per Package'];
+            $qty_edit  = sprintf(
+                '<span    data-settings=\'{"field": "Units", "item_key":%d  }\'   >
+            <input class="bill_of_materials_item width_50" type="number" style="text-align: center" value="%s" ovalue="%s"> 
+            <i onClick="save_bill_of_materials_item_change(this)" class="fa save  fa-cloud fa-fw button" ></i></span>', $data['Part SKU'], $qty_units, $qty_units
+            );
+
+
             $adata[] = array(
                 'id'        => (integer)$data['Part SKU'],
                 'reference' => sprintf('<span class="link" onclick="change_view(\'/production/%d/materials/%d\')">%s</span>', $production_key, $data['Part SKU'], $data['Part Reference']),
@@ -541,12 +545,13 @@ function bill_of_materials($_data, $db, $user, $account) {
 
                 'description' => $data['Part Recommended Product Unit Name'].' <span class="italic very_discreet">('.sprintf(_('%s units per SKO'), $data['Part Units per Package']).')</span>',
                 'cost_unit'   => money($data['Part Cost in Warehouse'] * $data['Bill of Materials Quantity'], $account->get('Account Currency')),
-                'qty'         => number($data['Bill of Materials Quantity'] * $data['Part Units per Package']),
+                'qty'         => number($qty_units),
+                'qty_edit'    => $qty_edit,
                 'qty_skos'    => number($data['Bill of Materials Quantity'], 4),
 
                 'stock'                => number(floor($data['Part Current On Hand Stock'])),
                 'stock_status'         => $stock_status,
-                'available_to_make_up' => number($data['Part Current On Hand Stock'] / $data['Bill of Materials Quantity'], 0)
+                'available_to_make_up' => '<span class="item_available_to_make_up">'.number($data['Part Current On Hand Stock'] / $data['Bill of Materials Quantity'], 0).'</span>>'
 
 
             );

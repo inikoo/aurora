@@ -707,9 +707,17 @@ function confirm_save_data_entry_picking_aid(element) {
             showCancelButton: true,
 
             confirmButtonText:labels.confirm_button_text,
-        }).then((result) => {if (result.value) {
-            save_data_entry_picking_aid()
-        }})
+        }).then(function (result) {
+
+
+
+            if (result.value) {
+
+                save_data_entry_picking_aid();
+            }
+        });
+
+
 
         return;
     }

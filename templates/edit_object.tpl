@@ -282,10 +282,12 @@
 
                                 {if $edit=='editor'}
                                     <div id="{$field.id}_formatted_value" class="{$field.id} {$edit} fr-view  formatted_value " ondblclick="open_edit_this_field(this)">{$field.formatted_value}</div>
-                                {elseif $edit=='no_icon'}
-                                    <span id="{$field.id}_formatted_value" class="formatted_value " >{$field.formatted_value}</span>
-
+                                {elseif $edit=='no_icon' }
+                                    <span id="{$field.id}_formatted_value" class=" " >{$field.formatted_value}</span>
+                                {elseif  $edit=='mixed_recipients'}
+                                    <div id="{$field.id}_formatted_value" class=" {$field.id} " >{$field.formatted_value}</div>
                                 {else}
+
                                      <span id="{$field.id}_formatted_value" class="{$field.id} {$edit} formatted_value " ondblclick="open_edit_this_field(this)">{if isset($field.formatted_value)}{$field.formatted_value}{else}{$field.value}{/if}</span>
                                 {/if}
                                 <input id="{$field.id}_value" type='hidden' class="unformatted_value" value="{$field.value}"/>
@@ -410,7 +412,7 @@
                                 {elseif $edit=='parts_list'  }
                                     {include file="parts_list.edit.tpl" field=$field parts_list=$object->get_parts_data(true) mode='edit'}
                                 {elseif $edit=='mixed_recipients'  }
-                                    {include file="mixed_recipients.edit.tpl" field=$field mixed_recipients=$object->get($field.id) mode='edit'}
+                                    {include file="mixed_recipients.edit.tpl" field_id=$field.id mixed_recipients=$object->get(preg_replace('/_/',' ',$field.id)) mode='edit'}
                                 {elseif $edit=='webpage_see_also'  }
                                     <div class="webpage_see_also_editor">
                                         {include file="webpage_see_also.edit.tpl"  data=$object->get_see_also_data() mode='edit'}

@@ -204,7 +204,11 @@ function open_edit_field(object, key, field) {
             $('#parts_list').removeClass('hide')
             $('#' + field + '_save_button').removeClass('hide')
             break;
+        case 'mixed_recipients':
+            $('#' + field + '_container').find('.mixed_recipients_container').removeClass('hide')
+            $('#' + field + '_save_button').removeClass('hide')
 
+            break;
         case 'webpage_see_also':
             $('#webpage_see_also').removeClass('hide')
             $('#' + field + '_save_button').removeClass('hide')
@@ -216,6 +220,9 @@ function open_edit_field(object, key, field) {
         default:
 
     }
+
+
+
     key_scope = {
         type: type, object: object, key: key, field: field
     };
@@ -467,7 +474,9 @@ function close_edit_field(field) {
         case 'parts_list':
             $('#parts_list').addClass('hide')
             break;
-
+        case 'mixed_recipients':
+            $('#' + field + '_container').find('.mixed_recipients_container').addClass('hide')
+            break;
         case 'webpage_see_also':
             $('#webpage_see_also').addClass('hide')
             break;
