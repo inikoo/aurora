@@ -2065,6 +2065,10 @@ textarea {
     opacity: 1;
     border-color: #000; }
 
+.mixed_recipients_table td.operations {
+  width: 24px;
+  text-align: center; }
+
 .presentation_card {
   padding: 10px; }
 

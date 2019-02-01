@@ -16,6 +16,8 @@ include_once 'class.DB_Table.php';
 class Store extends DB_Table {
 
 
+    public $smarty;
+
     function __construct($a1, $a2 = false, $a3 = false, $_db = false) {
 
         if (!$_db) {
@@ -689,19 +691,18 @@ class Store extends DB_Table {
 
                 break;
 
-            case 'Store_Notification_New_Order_Recipients':
             case 'Store Notification New Order Recipients':
-            case 'Store Notification Deleted Invoice Recipients':
-            case 'Store Notification Undispatched Delivery Note Recipients':
+            case 'Store Notification Invoice Deleted Recipients':
+            case 'Store Notification Delivery Note Undispatched Recipients':
 
                 $encoded_value = $this->settings(preg_replace('/\s/', '_', $key));
 
                 if ($encoded_value != '') {
 
-                    $mixed_recipients =json_decode($encoded_value, true);
-                    $mixed_recipients['users']=array();
-                    foreach($mixed_recipients['user_keys'] as $user_key){
-                        $mixed_recipients['users'][]=get_object('User',$user_key);
+                    $mixed_recipients          = json_decode($encoded_value, true);
+                    $mixed_recipients['users'] = array();
+                    foreach ($mixed_recipients['user_keys'] as $user_key) {
+                        $mixed_recipients['users'][] = get_object('User', $user_key);
                     }
 
 
@@ -710,11 +711,24 @@ class Store extends DB_Table {
                     return array(
                         'external_emails' => array(),
                         'user_keys'       => array(),
-                        'user'       => array(),
+                        'users'           => array(),
                     );
                 }
 
                 break;
+
+            case 'Notification New Order Recipients':
+            case 'Notification Invoice Deleted Recipients':
+            case 'Notification Delivery Note Undispatched Recipients':
+
+                $this->smarty->assign('mixed_recipients', $this->get('Store '.$key));
+                $this->smarty->assign('mode', 'formatted_value');
+                $this->smarty->assign('field_id', '');
+
+                return $this->smarty->fetch('mixed_recipients.edit.tpl');
+
+                break;
+
 
         }
 
@@ -2182,7 +2196,8 @@ class Store extends DB_Table {
             'Store Orders In Process Paid Number'     => $data['in_process_paid']['number'],
             'Store Orders In Process Paid Amount'     => round($data['in_process_paid']['amount'], 2),
             'Store Orders In Process Not Paid Number' => $data['in_process_not_paid']['number'],
-            'Store Orders In Process Not Paid Amount' => round($data['in_process_not_paid']['amount'], 2)
+            'Store Orders In Process Not Paid Amount' => round($data['in_process_not_paid']['amount'], 2),
+            'Store Orders In Process Number'          => $data['in_process_paid']['number'] + $data['in_process_not_paid']['number'],
 
 
         );
@@ -4023,6 +4038,8 @@ class Store extends DB_Table {
 
 
             case 'Store Notification New Order Recipients':
+            case 'Store Notification Invoice Deleted Recipients':
+            case 'Store Notification Delivery Note Undispatched Recipients':
 
                 $this->update_notifications($field, $value, 'set');
 
@@ -4138,6 +4155,68 @@ class Store extends DB_Table {
 
     }
 
+    function update_notifications($field, $values, $operation) {
+
+        $values    = json_decode($values, true);
+        $old_value = $this->get($field);
+
+        if ($operation == 'set') {
+
+
+            $external_emails = array();
+            $user_keys       = array();
+            foreach ($values['external_emails'] as $external_email) {
+
+                if (filter_var($external_email, FILTER_VALIDATE_EMAIL)) {
+                    $external_emails[$external_email] = $external_email;
+                } else {
+                    $this->error = true;
+                    $this->msg   = _('Invalid email');
+
+                    return;
+                }
+
+
+            }
+
+            foreach ($values['user_keys'] as $user_key) {
+
+                $_user = get_object('User', $user_key);
+                if ($_user->id and in_array(
+                        $_user->get('User Type'), array(
+                                                    'Staff',
+                                                    'Contractor'
+                                                )
+                    )) {
+                    $user_keys[$user_key] = $user_key;
+                } else {
+                    $this->error = true;
+                    $this->msg   = _('Invalid user');
+
+                    return;
+                }
+
+
+            }
+
+
+            $recipients_data = array(
+                'external_emails' => array_values($external_emails),
+                'user_keys'       => array_values($user_keys),
+            );
+
+
+        } else {
+            $recipients_data = $old_value;
+        }
+
+
+        $this->fast_update_json_field('Store Settings', preg_replace('/\s/', '_', $field), json_encode($recipients_data));
+
+
+        //  print_r($recipients_data);
+
+    }
 
     function update_address($type, $fields, $options = '') {
 
@@ -4287,66 +4366,6 @@ class Store extends DB_Table {
 
     function update_purges_data() {
         // todo: make stats for purges
-    }
-
-    function update_notifications($field, $values, $operation) {
-
-        $values    = json_decode($values, true);
-        $old_value = $this->get($field);
-
-        if ($operation == 'set') {
-
-
-            $external_emails = array();
-            $user_keys = array();
-            foreach ($values['external_emails'] as $external_email) {
-
-                if (filter_var($external_email, FILTER_VALIDATE_EMAIL)) {
-                    $external_emails[$external_email] = $external_email;
-                } else {
-                    $this->error = true;
-                    $this->msg   = _('Invalid email');
-
-                    return;
-                }
-
-
-            }
-
-            foreach ($values['user_keys'] as $user_key) {
-
-                $_user=get_object('User',$user_key);
-                if ($_user->id and in_array($_user->get('User Type'),array('Staff','Contractor'))  ) {
-                    $user_keys[$user_key] = $user_key;
-                } else {
-                    $this->error = true;
-                    $this->msg   = _('Invalid user');
-
-                    return;
-                }
-
-
-            }
-
-
-            $recipients_data = array(
-                'external_emails' => array_values($external_emails),
-                'user_keys'       => array_values($user_keys),
-            );
-
-
-        } else {
-            $recipients_data = $old_value;
-        }
-
-
-
-
-        $this->fast_update_json_field('Store Settings',preg_replace('/\s/', '_', $field),json_encode($recipients_data));
-
-
-      //  print_r($recipients_data);
-
     }
 
 

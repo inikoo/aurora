@@ -18,6 +18,7 @@ require_once 'utils/object_functions.php';
 $tipo = $_REQUEST['tipo'];
 
 
+
 switch ($tipo) {
     case 'views':
         get_view($db, $smarty, $user, $account, $modules);
@@ -82,6 +83,8 @@ function get_widget_details($db, $smarty, $user, $account, $modules) {
 
 
 function get_view($db, $smarty, $user, $account, $modules) {
+
+
 
     global $session;
 
@@ -624,9 +627,10 @@ function get_view($db, $smarty, $user, $account, $modules) {
         }
     }
 
-    if ($state['module'] == 'production') {
-        $production = $state['_object'];
-    }
+    //if ($state['module'] == 'production') {
+    //    $production = $state['_object'];
+   // }
+    //print microtime_float()-$timer."<br>\n";$timer=microtime_float();
 
 
     $state['store']      = $store;
@@ -640,9 +644,9 @@ function get_view($db, $smarty, $user, $account, $modules) {
     if (is_object($warehouse) and $warehouse->id) {
         $state['current_warehouse'] = $warehouse->id;
     }
-    if (is_object($production) and $production->id) {
-        $state['current_production'] = $production->id;
-    }
+    //if (is_object($production) and $production->id) {
+    //    $state['current_production'] = $production->id;
+    //}
 
 
     $sql = sprintf(
@@ -667,7 +671,7 @@ function get_view($db, $smarty, $user, $account, $modules) {
 
     // todo implement correctly if multiprouction ever done,
 
-    if (isset($state['current_production'])) {$session->set('current_production', $state['current_production']);}
+    //if (isset($state['current_production'])) {$session->set('current_production', $state['current_production']);}
 
     $response = array('state' => array());
 
@@ -689,6 +693,7 @@ function get_view($db, $smarty, $user, $account, $modules) {
 
 
         $response['navigation'] = get_navigation($user, $smarty, $state, $db, $account);
+
     }
     if ($reload) {
         $response['logout_label'] = _('Logout');
@@ -798,6 +803,9 @@ function get_view($db, $smarty, $user, $account, $modules) {
     unset($state['production']);
 
     $response['state'] = $state;
+
+
+
 
 
     // print_r($response);

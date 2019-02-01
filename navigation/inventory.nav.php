@@ -409,6 +409,17 @@ function get_part_navigation($data, $smarty, $user, $db, $account) {
 
     }
 
+
+    $object->update_made_in_production_data();
+
+
+    if($object->get('Part Made in Production')=='Yes'){
+        foreach($object->get('made_in_production_data') as $made_in_production_data){
+            $title .='<span class="link" onclick=""><i class="fa fa-industry"></i></span>';
+        }
+    }
+
+
     $right_buttons[] = array(
         'icon'  => 'sticky-note',
         'title' => _('Sticky note'),
@@ -606,6 +617,8 @@ function get_part_image_navigation($data, $smarty, $user, $db, $account) {
     if (isset($sections[$_section])) {
         $sections[$_section]['selected'] = true;
     }
+
+
 
 
     $_content = array(

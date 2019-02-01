@@ -1573,6 +1573,33 @@ class SupplierPart extends DB_Table {
 
                 return $status;
                 break;
+            case 'Status Icon':
+
+                switch ($this->data['Supplier Part Status']) {
+                    case 'Available':
+                        $status = sprintf(
+                            '<i title="%s" class="fa fa-hand-receiving success" ></i> ', _('Available')
+                        );
+                        break;
+                    case 'NoAvailable':
+                        $status = sprintf(
+                            '<i title="%s" class="fa fa-hand-receiving warning" ></i> ', _('No available')
+                        );
+
+                        break;
+                    case 'Discontinued':
+                        $status = sprintf(
+                            '<i title="%s" class="fa fa-hand-receiving error" ></i> ', _('Discontinued')
+                        );
+
+                        break;
+                    default:
+                        $status = $this->data['Supplier Part Status'];
+                        break;
+                }
+
+                return $status;
+                break;
             case 'On Demand':
             case 'Fresh':
 
@@ -1637,6 +1664,18 @@ class SupplierPart extends DB_Table {
 
 
                 break;
+
+            case 'Available to Make up':
+
+                if(!empty($this->data['Supplier Part Available to Make up'])){
+                    return number($this->data['Supplier Part Available to Make up']);
+
+                }else{
+                    return '?';
+                }
+
+                break;
+
             default:
                 if (preg_match('/^Part /', $key)) {
 

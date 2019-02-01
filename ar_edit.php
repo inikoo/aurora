@@ -288,6 +288,7 @@ function edit_field($account, $db, $editor, $data, $smarty) {
     }
 
     $object->editor = $editor;
+    $object->smarty = $smarty;
 
 
     if ($data['object'] == 'Website' and preg_match('/^Localised_Labels/', $data['field'])) {
@@ -445,6 +446,9 @@ function edit_field($account, $db, $editor, $data, $smarty) {
             $formatted_value = $object->get($formatted_field);
 
 
+
+
+
             $action = 'updated';
 
             if ($field == 'Product Parts') {
@@ -572,6 +576,8 @@ function edit_field($account, $db, $editor, $data, $smarty) {
 
 
         } else {
+
+
 
             $msg             = '';
             $formatted_value = $object->get($formatted_field);

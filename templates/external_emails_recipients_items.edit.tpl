@@ -17,7 +17,9 @@
             <i class="far fa-trash-alt very_discreet_on_hover  button" aria-hidden="true" onclick="remove_recipient(this)"></i>
         </td>
         <td class="mixed_recipients">
-            <input class="valid external_email_mixed_recipients_value" value="{$external_email}" ovalue={$external_email}"   placeholder="{t}External email{/t}">
+            <input class="valid external_email_mixed_recipients_value" value="{$external_email}" type="hidden">
+
+            <span class="discreet italic recipient">{$external_email}</span>
 
         </td>
     </tr>

@@ -4356,6 +4356,12 @@ $modules = array(
                         'label' => _('Bill of materials'),
                         'icon'  => 'puzzle-piece'
                     ),
+
+                    'bill_of_materials_edit' => array(
+                        'class'=>'hide',
+                        'label' => _('Edit bill of materials'),
+                        'icon'  => 'puzzle-piece'
+                    ),
                     'production_part.tasks' => array(
                         'label' => _('List of tasks'),
                         'icon'  => 'tasks'

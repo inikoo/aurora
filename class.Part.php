@@ -672,6 +672,18 @@ class Part extends Asset {
 
         switch ($key) {
 
+            case 'made_in_production_data':
+
+                $made_in_production_data=$this->properties($key);
+                if($made_in_production_data==''){
+                    return array();
+                }else{
+                    return json_decode($made_in_production_data,true);
+                }
+
+
+                break;
+
             case 'Unknown Location Stock':
 
                 if ($this->data['Part Unknown Location Stock'] > 0) {
@@ -5104,9 +5116,18 @@ class Part extends Asset {
             )
         );
 
+
+
+
         $this->fast_update_json_field('Part Properties', 'made_in_production_data', json_encode($made_in_production_data));
 
+
+
+
     }
+
+
+
 
 
     function update_production_supply_data() {
@@ -5128,7 +5149,7 @@ class Part extends Asset {
             exit();
         }
 
-        $this->part->fast_update(
+        $this->fast_update(
             array(
                 'Part Number Production Links' => $number_of_parts_using_part,
             )
@@ -5136,7 +5157,7 @@ class Part extends Asset {
 
 
         if ($number_of_parts_using_part > 0) {
-            $this->part->fast_update(
+            $this->fast_update(
                 array(
                     'Part Production Supply' => 'Yes',
                 )
@@ -5146,6 +5167,9 @@ class Part extends Asset {
 
     }
 
+    function properties($key) {
+        return (isset($this->properties[$key]) ? $this->properties[$key] : '');
+    }
 
 }
 

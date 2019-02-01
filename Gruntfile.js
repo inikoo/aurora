@@ -170,7 +170,7 @@ module.exports = function (grunt) {
                     'EcomB2B/theme_1/tablet/custom.js',
                 ], dest: 'EcomB2B/js/tablet.custom.min.js',
 
-            }, aurora: {
+            }, aurora_libs: {
                 options: {
 
                     sourceMap: true,
@@ -234,19 +234,53 @@ module.exports = function (grunt) {
                     'js/libs/amcharts/amstock.js',
                     'js/libs/amcharts/plugins/dataloader/dataloader.min.js',
                     'js/libs/amcharts/plugins/export/export.min.js',
-                    'js/help.js',
-                    'js/keyboard_shortcuts.js',
-                    'js/barcode_scanner.js',
-
                     'js/libs/jquery.fancybox.min.js',
                     'js/libs/jquery.awesome-cursor.min.js',
                     'js/libs/base64.js',
                     'js/libs/jquery.formatCurrency-1.4.0.min.js',
-                    'js/libs/autobahn.v1.js'
+                    'js/libs/autobahn.v1.js',
 
 
 
-], dest: 'js/aurora.min.js',
+
+
+], dest: 'js/aurora_libs.min.js',
+
+            }, aurora: {
+                options: {
+
+                    sourceMap: true,
+                },
+                src: [
+
+                    'js/help.js',
+                    'js/keyboard_shortcuts.js',
+                    'js/barcode_scanner.js',
+                    'js/edit.js',
+                    'js/new.js',
+                    'js/mixed_recipients.edit.js',
+                    'js/search.js',
+                    'js/table.js',
+                    'js/validation.js',
+                    'js/pdf.js',
+                    'js/edit_webpage_edit.js',
+                    'js/new.js',
+                    'js/order.common.js',
+                    'js/email_campaign.common.js',
+                    'js/supplier.order.js',
+                    'js/supplier.delivery.js',
+                    'js/part_locations.edit.js',
+                    'js/part_locations.edit_locations.js',
+                    'js/part_locations.stock_check.js',
+                    'js/part_locations.move_stock.js',
+                    'js/picking_and_packing.js',
+                    'js/fast_track_packing.js',
+                    'js/app.js'
+
+
+
+
+                ], dest: 'js/aurora.min.js',
 
             }
 
@@ -522,7 +556,7 @@ module.exports = function (grunt) {
     grunt.registerTask('qws', ['copy:websocket']);
 
 
-    grunt.registerTask('au', ['sass:aurora','sass:aurora_public','sass:login', 'cssmin:au', 'cssmin:au_login','uglify:aurora']);
+    grunt.registerTask('au', ['sass:aurora','sass:aurora_public','sass:login', 'cssmin:au', 'cssmin:au_login','uglify:aurora_libs','uglify:aurora']);
 
 
     grunt.registerTask('pweb', ['sass:aurora_public', 'cssmin:pweb','uglify:pweb_mobile',
