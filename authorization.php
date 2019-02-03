@@ -166,6 +166,7 @@ if ($auth->is_authenticated()) {
     $session->set('current_production', $production_key);
 
 
+
     if (isset($_REQUEST['url']) and $_REQUEST['url'] != '') {
 
         header("Location: ".urldecode($_REQUEST['url']));
@@ -182,7 +183,13 @@ if ($auth->is_authenticated()) {
 
     $target = $_SERVER['PHP_SELF'];
     if (!preg_match('/(js|js\.php)$/', $target)) {
-        header('Location: login.php?e=1');
+        if (isset($_REQUEST['url']) and $_REQUEST['url'] != '') {
+            header('Location: login.php?e=1&ref='.$_REQUEST['url']);
+        }else{
+            header('Location: login.php?e=1');
+        }
+
+
         exit;
     }
 }

@@ -1422,6 +1422,7 @@ function get_delivery_note_navigation($data, $smarty, $user, $db, $account) {
 
 }
 
+/*
 
 function get_invoice_navigation($data, $smarty, $user, $db, $account) {
 
@@ -1788,7 +1789,7 @@ function get_invoice_navigation($data, $smarty, $user, $db, $account) {
     return $html;
 
 }
-
+*/
 
 function get_pick_aid_navigation($data, $smarty, $user, $db, $account) {
 

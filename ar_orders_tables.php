@@ -113,18 +113,22 @@ switch ($tipo) {
     case 'return.new.items':
         return_new_items(get_table_parameters(), $db, $user);
         break;
-    case 'refund.items':
-        refund_items(get_table_parameters(), $db, $user);
-        break;
+
     case 'replacement.new.items':
         replacment_items(get_table_parameters(), $db, $user);
         break;
     case 'invoice.items':
-        invoice_items(get_table_parameters(), $db, $user);
+            case 'refund.items':
+
+        invoice_items(get_table_parameters(),$db, $user);
         break;
-    case 'refund.items':
-        refund_items(get_table_parameters(), $db, $user);
+
+    case 'deleted_invoice.items':
+            case 'deleted_refund.items':
+
+        deleted_invoice_items(get_table_parameters(), $db, $user);
         break;
+
     case 'delivery_note_cancelled.items':
         delivery_note_cancelled_items(get_table_parameters(), $db, $user);
         break;
@@ -1873,10 +1877,7 @@ function order_items($_data, $db, $user) {
 }
 
 
-function invoice_items($_data, $db, $user) {
-
-
-
+function invoice_items($_data,$db, $user) {
 
     global $_locale;// fix this locale stuff
 
@@ -1884,10 +1885,10 @@ function invoice_items($_data, $db, $user) {
     include_once 'utils/geography_functions.php';
 
     include_once 'prepare_table/init.php';
-    include_once 'class.Invoice.php';
 
 
-    $invoice = new Invoice($_data['parameters']['parent_key']);
+    $invoice = get_object('Invoice',$_data['parameters']['parent_key']);
+    $type=$invoice->get('Invoice Type');
     if (in_array(
         $invoice->data['Invoice Delivery Country Code'], get_countries_EC_Fiscal_VAT_area($db)
     )) {
@@ -1901,20 +1902,27 @@ function invoice_items($_data, $db, $user) {
 
     // print $sql;
 
+    if($type=='Invoice'){
+        $factor=1;
+    }else{
+        $factor=-1;
+    }
+
     $adata = array();
     foreach ($db->query($sql) as $data) {
 
         $net = money(
-            ($data['Order Transaction Amount']), $data['Invoice Currency Code']
+            ($factor * $data['Order Transaction Amount']), $data['Invoice Currency Code']
         );
 
+        /*
         $tax    = money(
             ($data['Invoice Transaction Item Tax Amount']), $data['Invoice Currency Code']
         );
         $amount = money(
             ($data['Invoice Transaction Gross Amount'] - $data['Invoice Transaction Total Discount Amount'] + $data['Invoice Transaction Item Tax Amount']), $data['Invoice Currency Code']
         );
-
+*/
 
         $discount = ($data['Invoice Transaction Total Discount Amount'] == 0
             ? ''
@@ -1933,33 +1941,40 @@ function invoice_items($_data, $db, $user) {
         }
         $desc .= ' '.$name;
         if ($price > 0) {
-            $desc .= ' ('.money($price, $currency, $_locale).')';
+            $desc .= ' <br>'._('Price').': '.money($price, $currency, $_locale).'';
         }
 
         $description = $desc;
+
+
+        if ($data['Product RRP'] != 0) {
+            $description .= ', '._('RRP').': '.money(
+                    $data['Product RRP'], $data['Invoice Currency Code']
+                );
+        }
+
 
         if ($discount != '') {
             $description .= ' '._('Discount').':'.$discount;
         }
 
-        if ($data['Product RRP'] != 0) {
-            $description .= ' <br>'._('RRP').': '.money(
-                    $data['Product RRP'], $data['Invoice Currency Code']
-                );
-        }
-
+        if($type=='Invoice')
         if ($print_tariff_code and $data['Product Tariff Code'] != '') {
             $description .= '<br>'._('Tariff Code').': '.$data['Product Tariff Code'];
         }
 
+        if($type=='Invoice'){
+            $quantity = number($data['Delivery Note Quantity']);
 
-        $quantity = number($data['Delivery Note Quantity']);
+        }else {
+            $quantity = '<span class="italic discreet"><span >~</span>'.number(-1 * $data['Order Transaction Amount'] / $data['Product History Price']).'</span>';
+
+        }
 
 
         $adata[] = array(
             'id'          => (integer)$data['Order Transaction Fact Key'],
-            'product_pid' => (integer)$data['Product ID'],
-            'code'        => $data['Product Code'],
+            'code'        => sprintf('<span class="link" onclick="change_view(\'products/%d/%d\')">%s</span>', $data['Store Key'], $data['Product ID'], $data['Product History Code']),
             'description' => $description,
             'quantity'    => $quantity,
             'net'         => $net,
@@ -1979,6 +1994,63 @@ function invoice_items($_data, $db, $user) {
             'sort_key'      => $_order,
             'sort_dir'      => $_dir,
             'total_records' => $total
+
+        )
+    );
+    echo json_encode($response);
+}
+
+
+
+
+function deleted_invoice_items($_data,$db, $user) {
+
+    global $_locale;// fix this locale stuff
+
+    $rtext_label = 'item';
+    include_once 'utils/geography_functions.php';
+
+
+
+    $invoice = get_object('Invoice_Deleted',$_data['parameters']['parent_key']);
+    $type=$invoice->get('Invoice Type');
+    if (in_array(
+        $invoice->data['Invoice Delivery Country Code'], get_countries_EC_Fiscal_VAT_area($db)
+    )) {
+        $print_tariff_code = false;
+    } else {
+        $print_tariff_code = true;
+    }
+
+    // print $sql;
+
+    if($type=='Invoice'){
+        $factor=1;
+    }else{
+        $factor=-1;
+    }
+
+    $adata = array();
+    $counter=0;
+    foreach ($invoice->items as  $data) {
+
+        $data['id']=$counter++;
+
+
+        $adata[] = $data;
+
+    }
+
+    $rtext=ngettext('item', 'items', $counter);
+
+    $response = array(
+        'resultset' => array(
+            'state'         => 200,
+            'data'          => $adata,
+            'rtext'         => $rtext,
+            'sort_key'      => 'id',
+            'sort_dir'      => 'desc',
+            'total_records' => $counter
 
         )
     );
@@ -2682,115 +2754,6 @@ function refund_new_items($_data, $db, $user) {
 }
 
 
-function refund_items($_data, $db, $user) {
-
-    global $_locale;// fix this locale stuff
-
-    $rtext_label = 'item';
-    include_once 'utils/geography_functions.php';
-
-    include_once 'prepare_table/init.php';
-    include_once 'class.Invoice.php';
-
-
-    $invoice = new Invoice($_data['parameters']['parent_key']);
-    if (in_array(
-        $invoice->data['Invoice Delivery Country Code'], get_countries_EC_Fiscal_VAT_area($db)
-    )) {
-        $print_tariff_code = false;
-    } else {
-        $print_tariff_code = true;
-    }
-
-
-    $sql = "select $fields from $table $where $wheref order by $order $order_direction limit $start_from,$number_results";
-
-    // print $sql;
-
-    $adata = array();
-    foreach ($db->query($sql) as $data) {
-
-        $net = money(
-            (-1 * $data['Order Transaction Amount']), $data['Invoice Currency Code']
-        );
-
-        $tax    = money(
-            ($data['Invoice Transaction Item Tax Amount']), $data['Invoice Currency Code']
-        );
-        $amount = money(
-            ($data['Invoice Transaction Gross Amount'] - $data['Invoice Transaction Total Discount Amount'] + $data['Invoice Transaction Item Tax Amount']), $data['Invoice Currency Code']
-        );
-
-
-        $discount = ($data['Invoice Transaction Total Discount Amount'] == 0
-            ? ''
-            : percentage(
-                $data['Invoice Transaction Total Discount Amount'], $data['Invoice Transaction Gross Amount'], 0
-            ));
-
-        $units    = $data['Product Units Per Case'];
-        $name     = $data['Product History Name'];
-        $price    = $data['Product History Price'];
-        $currency = $data['Product Currency'];
-
-        $desc = '';
-        if ($units > 1) {
-            $desc = number($units).'x ';
-        }
-        $desc .= ' '.$name;
-        if ($price > 0) {
-            $desc .= ' <br>'._('Price').': '.money($price, $currency, $_locale).'';
-        }
-
-        $description = $desc;
-
-
-        if ($data['Product RRP'] != 0) {
-            $description .= ', '._('RRP').': '.money(
-                    $data['Product RRP'], $data['Invoice Currency Code']
-                );
-        }
-
-
-        if ($discount != '') {
-            $description .= ' '._('Discount').':'.$discount;
-        }
-
-        //if ($print_tariff_code and $data['Product Tariff Code'] != '') {
-        //    $description .= '<br>'._('Tariff Code').': '.$data['Product Tariff Code'];
-        //}
-
-
-        $quantity = '<span class="italic discreet"><span >~</span>'.number(-1 * $data['Order Transaction Amount'] / $data['Product History Price']).'</span>';
-
-
-        $adata[] = array(
-            'id'          => (integer)$data['Order Transaction Fact Key'],
-            'code'        => sprintf('<span class="link" onclick="change_view(\'products/%d/%d\')">%s</span>', $data['Store Key'], $data['Product ID'], $data['Product History Code']),
-            'description' => $description,
-            'quantity'    => $quantity,
-            'net'         => $net,
-            'tax'         => $net,
-            'amount'      => $net,
-
-
-        );
-
-    }
-
-    $response = array(
-        'resultset' => array(
-            'state'         => 200,
-            'data'          => $adata,
-            'rtext'         => $rtext,
-            'sort_key'      => $_order,
-            'sort_dir'      => $_dir,
-            'total_records' => $total
-
-        )
-    );
-    echo json_encode($response);
-}
 
 
 function replacement_new_items($_data, $db, $user) {

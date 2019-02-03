@@ -10,7 +10,6 @@
 */
 
 
-
 include_once 'ar_web_common_logged_out.php';
 
 
@@ -37,7 +36,7 @@ switch ($tipo) {
                          'store_key' => array('type' => 'key')
                      )
         );
-        register($db, $website, $data, $editor);
+        register($db, $website, $data, $editor, $account);
         break;
 
 
@@ -51,9 +50,9 @@ switch ($tipo) {
         break;
 }
 
-function register($db, $website, $data, $editor) {
+function register($db, $website, $data, $editor, $account) {
 
-
+    include_once 'utils/new_fork.php';
     include_once 'class.Public_Store.php';
 
     $store = new Public_Store($data['store_key']);
@@ -134,21 +133,15 @@ function register($db, $website, $data, $editor) {
 
 
 
-            $email_template_type=get_object('Email_Template_Type','Registration|'.$website->get('Website Store Key'),'code_store');
-            $email_template = get_object('email_template', $email_template_type->get('Email Campaign Type Email Template Key'));
-            $published_email_template = get_object('published_email_template', $email_template->get('Email Template Published Email Key'));
+            new_housekeeping_fork(
+                'au_housekeeping', array(
+                'type'         => 'customer_registered',
+                'customer_key' => $customer->id,
+                'website_key'  => $website->id
 
 
-            $send_data=array(
-                'Email_Template_Type'=>$email_template_type,
-                'Email_Template'=>$email_template,
-
+            ), $account->get('Account Code')
             );
-
-            $published_email_template->send($customer,$send_data);
-
-
-
 
 
             if ($website->get('Website Registration Type') != 'ApprovedOnly') {
@@ -237,7 +230,6 @@ function register($db, $website, $data, $editor) {
 
 
 }
-
 
 
 ?>

@@ -23,6 +23,7 @@ function parse_request($_data, $db, $modules, $account = '', $user = '', $is_set
     }
 
 
+
     $original_request = preg_replace('/^\//', '', $request);
 
     $view_path        = preg_split('/\//', $original_request);
@@ -5424,6 +5425,7 @@ function parse_request($_data, $db, $modules, $account = '', $user = '', $is_set
     );
 
 
+
     if (isset($_data['otf'])) {
         $state['otf'] = $_data['otf'];
     }
@@ -5445,6 +5447,9 @@ function parse_request($_data, $db, $modules, $account = '', $user = '', $is_set
 function parse_tabs($module, $section, $_data, $modules) {
 
     global $session;
+
+
+
 
 
     if (isset($_data['subtab'])) {
@@ -5485,7 +5490,6 @@ function parse_tabs($module, $section, $_data, $modules) {
 
         $subtab = parse_subtab($module, $section, $tab, $modules);
     }
-
 
     return array(
         $tab,

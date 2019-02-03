@@ -17,10 +17,9 @@ function fork_housekeeping($job) {
         return true;
     }
 
-
     list($account, $db, $data, $editor, $session) = $_data;
 
-    print_r($data);
+    print $data['type']."\n";
 
 
     switch ($data['type']) {
@@ -898,9 +897,11 @@ function fork_housekeeping($job) {
             break;
 
         case 'order_submitted_by_client':
-            $order            = get_object('Order', $data['order_key']);
-            $website          = get_object('Website', $data['website_key']);
-            $customer         = get_object('Customer', $data['customer_key']);
+            $order    = get_object('Order', $data['order_key']);
+            $website  = get_object('Website', $data['website_key']);
+            $customer = get_object('Customer', $data['customer_key']);
+            $store    = get_object('Store', $customer->get('Customer Store Key'));
+
             $customer->editor = $editor;
 
 
@@ -928,6 +929,78 @@ function fork_housekeeping($job) {
 
                 $db->exec($sql);
             }
+
+
+            $smarty = new Smarty();
+            $base   = '';
+            $smarty->setTemplateDir($base.'templates');
+            $smarty->setCompileDir($base.'server_files/smarty/templates_c');
+            $smarty->setCacheDir($base.'server_files/smarty/cache');
+            $smarty->setConfigDir($base.'server_files/smarty/configs');
+            $smarty->addPluginsDir('./smarty_plugins');
+
+
+            $recipients = $store->get_notification_recipients('New Order');
+
+
+            if (count($recipients) > 0) {
+                include_once 'utils/email_notification.class.php';
+
+                $email_notification = new email_notification();
+                foreach ($recipients as $recipient) {
+                    $email_notification->mail->addAddress($recipient);
+
+                }
+
+
+                $subject    = _('New order').' '.$store->get('Name');
+                $title      = '<b>'._('New order').'</b> '.$order->get('Total Amount').' '.$store->get('Name');
+                $link_label = _('Link to order');
+
+                $link = sprintf(
+                    '%s/orders/%d/%d',
+                    $account->get('Account System Public URL'),
+                    $store->id,
+                    $order->id
+                );
+
+
+                $info = sprintf(
+                    _('New order %s (%s) has been placed by %s'),
+                    '<a href="'.$link.'">'.$order->get('Public ID').'</a>',
+                    '<b>'.$order->get('Total Amount').'</b>',
+                    '<b>'.$customer->get('Name').'</b>'
+
+                );
+
+
+                $smarty->assign('type', 'Success');
+
+                $smarty->assign('store', $store);
+                $smarty->assign('account', $account);
+                $smarty->assign('title', $title);
+                $smarty->assign('subject', $subject);
+                $smarty->assign('link_label', $link_label);
+                $smarty->assign('link', $link);
+                $smarty->assign('info', $info);
+                $smarty->assign('customer', $customer);
+                $smarty->assign('order', $order);
+
+                $email_notification->mail->Subject = $subject;
+
+                try {
+                    $email_notification->mail->msgHTML($smarty->fetch('notification_emails/new_order.ntfy.tpl'));
+                    $email_notification->mail->AltBody = strip_tags($info);
+
+                } catch (Exception $e) {
+                    echo 'Caught exception: ', $e->getMessage(), "\n";
+                }
+
+
+                $email_notification->send();
+              
+            }
+
 
             break;
 
@@ -1967,9 +2040,300 @@ function fork_housekeeping($job) {
 
         case 'update_part_location_stock':
 
-            $part_location = get_object('Part_Location', $data['part_sku'].'_'. $data['location_key']);
+            $part_location = get_object('Part_Location', $data['part_sku'].'_'.$data['location_key']);
             $part_location->update_stock();
             break;
+
+        case 'invoice_deleted':
+
+            $invoice = get_object('Invoice_deleted', $data['invoice_key']);
+
+
+            $store = get_object('Store', $data['store_key']);
+
+
+            $smarty = new Smarty();
+            $base   = '';
+            $smarty->setTemplateDir($base.'templates');
+            $smarty->setCompileDir($base.'server_files/smarty/templates_c');
+            $smarty->setCacheDir($base.'server_files/smarty/cache');
+            $smarty->setConfigDir($base.'server_files/smarty/configs');
+            $smarty->addPluginsDir('./smarty_plugins');
+
+            $recipients = $store->get_notification_recipients('Invoice Deleted');
+
+
+            if (count($recipients) > 0) {
+                include_once 'utils/email_notification.class.php';
+
+                $email_notification = new email_notification();
+                foreach ($recipients as $recipient) {
+                    $email_notification->mail->addAddress($recipient);
+
+                }
+
+
+                $deleted_by = get_object('User', $invoice->get('Invoice Deleted User Key'));
+
+                if ($invoice->get('Invoice Type') == 'Invoice') {
+                    $subject              = _('Invoice deleted').' '.$store->get('Name');
+                    $title                = '<b>'._('Invoice deleted').'</b> '.$store->get('Name');
+                    $link_label           = _('Link to deleted invoice');
+                    $deleted_invoice_info = sprintf(
+                        _('Invoice %s (%s, %s) has been deleted by %s.'),
+                        $invoice->get('Public ID'),
+                        '<b>'.$invoice->get('Total Amount').'</b>',
+                        $invoice->get_date('Invoice Date'), $deleted_by->get('Alias')
+
+                    );
+
+                } else {
+                    $subject = _('Refund deleted').' '.$store->get('Name');
+                    $title   = _('Refund deleted').' '.$store->get('Name');
+
+                    $link_label           = _('Link to deleted refund');
+                    $deleted_invoice_info = sprintf(
+                        _('Refund %s (%s, %s) has been deleted by %s.'),
+                        $invoice->get('Public ID'),
+                        '<b>'.$invoice->get('Total Amount').'</b>',
+                        $invoice->get_date('Invoice Date'), $deleted_by->get('Alias')
+
+                    );
+                }
+
+
+                $deleted_invoice_link = sprintf(
+                    '%s/orders/%d/%d/invoice/%d',
+                    $account->get('Account System Public URL'),
+
+                    $store->id,
+                    $invoice->get('Invoice Order Key'),
+                    $invoice->id
+                );
+
+                $smarty->assign('type', 'Warning');
+
+                $smarty->assign('store', $store);
+                $smarty->assign('account', $account);
+                $smarty->assign('title', $title);
+                $smarty->assign('subject', $subject);
+                $smarty->assign('link_label', $link_label);
+                $smarty->assign('deleted_invoice_link', $deleted_invoice_link);
+                $smarty->assign('deleted_invoice_info', $deleted_invoice_info);
+
+                $email_notification->mail->Subject = $subject;
+
+                try {
+                    $email_notification->mail->msgHTML($smarty->fetch('notification_emails/alert.ntfy.tpl'));
+                    $email_notification->mail->AltBody = strip_tags($deleted_invoice_info);
+
+                } catch (Exception $e) {
+                    echo 'Caught exception: ', $e->getMessage(), "\n";
+                }
+
+
+                $email_notification->send();
+
+
+            }
+
+
+            $customer = get_object('Customer', $data['customer_key']);
+            $customer->update_invoices();
+
+
+            break;
+
+        case 'delivery_note_un_dispatched':
+
+            $delivery_note = get_object('delivery_note', $data['delivery_note_key']);
+
+
+            $store = get_object('Store', $delivery_note->get('Delivery Note Store Key'));
+
+
+            $smarty = new Smarty();
+            $base   = '';
+            $smarty->setTemplateDir($base.'templates');
+            $smarty->setCompileDir($base.'server_files/smarty/templates_c');
+            $smarty->setCacheDir($base.'server_files/smarty/cache');
+            $smarty->setConfigDir($base.'server_files/smarty/configs');
+            $smarty->addPluginsDir('./smarty_plugins');
+
+            $recipients = $store->get_notification_recipients('Delivery Note Undispatched');
+
+
+            if (count($recipients) > 0) {
+                include_once 'utils/email_notification.class.php';
+
+                $email_notification = new email_notification();
+                foreach ($recipients as $recipient) {
+                    $email_notification->mail->addAddress($recipient);
+
+                }
+
+
+                $author = get_object('User', $data['user_key']);
+
+
+                if ($delivery_note->get('Delivery Note Type') == 'Replacement') {
+                    $subject    = _('Replacement undispatched').' '.$store->get('Name');
+                    $title      = '<b>'._('Replacement undispatched').'</b> '.$store->get('Name');
+                    $link_label = _('Link to replacement');
+
+
+                    $info = sprintf(
+                        _('Replacement %s has been undispatched by %s.'),
+                        '<b>'.$delivery_note->get('ID').'</b>',
+                        $author->get('Alias')
+
+                    );
+                } else {
+                    $subject    = _('Delivery note undispatched').' '.$store->get('Name');
+                    $title      = '<b>'._('Delivery note undispatched').'</b> '.$store->get('Name');
+                    $link_label = _('Link to delivery note');
+
+
+                    $info = sprintf(
+                        _('Delivery note %s has been undispatched by %s.'),
+                        '<b>'.$delivery_note->get('ID').'</b>',
+                        $author->get('Alias')
+
+                    );
+                }
+
+
+                $link = sprintf(
+                    '%s/delivery_notes/%d/%d',
+                    $account->get('Account System Public URL'),
+                    $store->id,
+                    $delivery_note->id
+                );
+
+                $smarty->assign('type', 'Warning');
+
+                $smarty->assign('store', $store);
+                $smarty->assign('account', $account);
+                $smarty->assign('title', $title);
+                $smarty->assign('subject', $subject);
+                $smarty->assign('link_label', $link_label);
+                $smarty->assign('link', $link);
+                $smarty->assign('info', $info);
+
+                $email_notification->mail->Subject = $subject;
+
+                try {
+                    $email_notification->mail->msgHTML($smarty->fetch('notification_emails/alert.ntfy.tpl'));
+                    $email_notification->mail->AltBody = strip_tags($info);
+
+                } catch (Exception $e) {
+                    echo 'Caught exception: ', $e->getMessage(), "\n";
+                }
+
+
+                $email_notification->send();
+
+
+            }
+
+
+            break;
+
+
+        case 'customer_registered':
+
+            $customer = get_object('customer', $data['customer_key']);
+            $website  = get_object('website', $data['website_key']);
+
+
+            $store = get_object('Store', $customer->get('Customer Store Key'));
+
+
+            $smarty = new Smarty();
+            $base   = '';
+            $smarty->setTemplateDir($base.'templates');
+            $smarty->setCompileDir($base.'server_files/smarty/templates_c');
+            $smarty->setCacheDir($base.'server_files/smarty/cache');
+            $smarty->setConfigDir($base.'server_files/smarty/configs');
+            $smarty->addPluginsDir('./smarty_plugins');
+
+
+            $email_template_type      = get_object('Email_Template_Type', 'Registration|'.$website->get('Website Store Key'), 'code_store');
+            $email_template           = get_object('email_template', $email_template_type->get('Email Campaign Type Email Template Key'));
+            $published_email_template = get_object('published_email_template', $email_template->get('Email Template Published Email Key'));
+
+
+            $send_data = array(
+                'Email_Template_Type' => $email_template_type,
+                'Email_Template'      => $email_template,
+
+            );
+
+            $published_email_template->send($customer, $send_data);
+
+
+            $recipients = $store->get_notification_recipients('New Customer');
+
+
+            if (count($recipients) > 0) {
+                include_once 'utils/email_notification.class.php';
+
+                $email_notification = new email_notification();
+                foreach ($recipients as $recipient) {
+                    $email_notification->mail->addAddress($recipient);
+
+                }
+
+
+                $subject    = _('New customer registration').' '.$store->get('Name');
+                $title      = '<b>'._('New customer registration').'</b> '.$store->get('Name');
+                $link_label = _('Link to customer');
+
+
+                $info = sprintf(
+                    _('%s (%s) has registered'),
+                    '<b>'.$customer->get('Name').'</b>',
+                    '<a href="href="mailto:'.$customer->get('Customer Main Plain Email').'"">'.$customer->get('Customer Main Plain Email').'</a>'
+
+                );
+
+                $link = sprintf(
+                    '%s/customers/%d/%d',
+                    $account->get('Account System Public URL'),
+                    $store->id,
+                    $customer->id
+                );
+
+                $smarty->assign('type', 'Success');
+
+                $smarty->assign('store', $store);
+                $smarty->assign('account', $account);
+                $smarty->assign('title', $title);
+                $smarty->assign('subject', $subject);
+                $smarty->assign('link_label', $link_label);
+                $smarty->assign('link', $link);
+                $smarty->assign('info', $info);
+
+
+                $email_notification->mail->Subject = $subject;
+
+                try {
+                    $email_notification->mail->msgHTML($smarty->fetch('notification_emails/alert.ntfy.tpl'));
+                    $email_notification->mail->AltBody = strip_tags($info);
+
+                } catch (Exception $e) {
+                    echo 'Caught exception: ', $e->getMessage(), "\n";
+                }
+
+
+                $email_notification->send();
+
+
+            }
+
+
+            break;
+
 
         default:
             break;

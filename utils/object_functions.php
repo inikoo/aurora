@@ -72,6 +72,10 @@ function get_object($object_name, $key, $load_other_data = false) {
             include_once 'class.Invoice.php';
             $object = new Invoice($key);
             break;
+        case 'invoice_deleted':
+            include_once 'class.Invoice.php';
+            $object = new Invoice('deleted',$key);
+            break;
         case 'delivery_note':
         case 'delivery note':
         case 'deliverynote':

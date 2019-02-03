@@ -1194,7 +1194,6 @@ class DeliveryNote extends DB_Table {
 
     function update_state($value, $options = '', $metadata = array()) {
 
-
         include_once 'utils/new_fork.php';
 
 
@@ -1345,14 +1344,13 @@ class DeliveryNote extends DB_Table {
                     // todo make it work for multiple parts
 
                     $sql = sprintf(
-                        'SELECT sum(`Packed`) as `Packed`,sum(`Required`) as `Required` ,sum(`Given`) as `Given`, `Map To Order Transaction Fact Key` FROM `Inventory Transaction Fact` WHERE  `Delivery Note Key`=%d  group by `Map To Order Transaction Fact Key` ', $this->id
+                        'SELECT sum(`Packed`) as `Packed`,sum(`Required`) as `Required` ,sum(`Given`) as `Given`, `Map To Order Transaction Fact Key` FROM `Inventory Transaction Fact` WHERE  `Delivery Note Key`=%d  group by `Map To Order Transaction Fact Key` ',
+                        $this->id
                     );
 
 
                     if ($result = $this->db->query($sql)) {
                         foreach ($result as $row) {
-
-
 
 
                             $to_pack = $row['Required'] + $row['Given'];
@@ -1385,8 +1383,6 @@ class DeliveryNote extends DB_Table {
                                `Order Transaction Amount`=`Order Transaction Amount`*%f 
                                      WHERE `Order Transaction Fact Key`=%d ', $ratio_of_packing, $ratio_of_packing, $ratio_of_packing, $ratio_of_packing, $otf
                             );
-
-
 
 
                             $this->db->exec($sql);
@@ -1672,14 +1668,11 @@ class DeliveryNote extends DB_Table {
                 $order = get_object('Order', $this->data['Delivery Note Order Key']);
 
 
-                if($order->get('Order Invoice Key')){
+                if ($order->get('Order Invoice Key')) {
                     $value = 'Approved';
-                }else{
+                } else {
                     $value = 'Packed Done';
                 }
-
-
-
 
 
                 $this->update_field('Delivery Note Date Dispatched', '', 'no_history');
@@ -1688,6 +1681,16 @@ class DeliveryNote extends DB_Table {
 
 
                 $order->update(array('Order State' => 'un_dispatch'));
+
+                new_housekeeping_fork(
+                    'au_housekeeping', array(
+                    'type'              => 'delivery_note_un_dispatched',
+                    'user_key'            => $this->editor['User Key'],
+                    'delivery_note_key' => $this->id,
+
+                ), $account->get('Account Code')
+                );
+
 
                 break;
             case 'Dispatched':
@@ -1865,7 +1868,6 @@ class DeliveryNote extends DB_Table {
                 }
 
 
-                include_once 'utils/new_fork.php';
                 new_housekeeping_fork(
                     'au_housekeeping', array(
                     'type' => 'update_cancelled_delivery_note_products_sales_data',

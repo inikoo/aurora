@@ -114,6 +114,9 @@ function get_view($db, $smarty, $user, $account, $modules) {
                  )
     );
 
+
+
+
     if (isset($data['metadata']['help']) and $data['metadata']['help']) {
         get_help($data, $modules, $db);
 
@@ -472,6 +475,16 @@ function get_view($db, $smarty, $user, $account, $modules) {
                     $state['tab']     = 'supplier.history';
 
                 }
+            }elseif ($state['object'] == 'invoice') {
+                $_object          = get_object('invoice_deleted', $state['key']);
+                $state['_object'] = $_object;
+                if ($_object->id) {$state['section'] = 'deleted_invoice';
+                }
+            }elseif ($state['object'] == 'refund') {
+                $_object          = get_object('invoice_deleted', $state['key']);
+                $state['_object'] = $_object;
+                if ($_object->id) {$state['section'] = 'deleted_invoice';
+                }
             } elseif ($state['object'] == 'purchase_order') {
                 $_object          = new PurchaseOrder('deleted', $state['key']);
                 $state['_object'] = $_object;
@@ -763,7 +776,13 @@ function get_view($db, $smarty, $user, $account, $modules) {
 
     //  print_r($state);
 
-    if ($state['object'] != '' and ($modules[$state['module']]['sections'][$state['section']]['type'] == 'object' or isset($modules[$state['module']]['sections'][$state['section']]['showcase']))) {
+
+
+    if ($state['object'] != ''
+        and (
+            $modules[$state['module']]['sections'][$state['section']]['type'] == 'object'
+            or
+            isset($modules[$state['module']]['sections'][$state['section']]['showcase']))) {
 
         if (isset($data['metadata']['reload_showcase']) or !($data['old_state']['module'] == $state['module'] and $data['old_state']['section'] == $state['section'] and $data['old_state']['object'] == $state['object'] and $data['old_state']['key'] == $state['key'])) {
 
@@ -1714,6 +1733,9 @@ function get_navigation($user, $smarty, $data, $db, $account) {
         case ('orders'):
             require_once 'navigation/orders.nav.php';
             switch ($data['section']) {
+
+
+
                 case ('dashboard'):
                     return get_dashboard_navigation($data, $smarty, $user, $db, $account);
                     break;
@@ -1733,15 +1755,22 @@ function get_navigation($user, $smarty, $data, $db, $account) {
                 case ('order'):
                     return get_order_navigation($data, $smarty, $user, $db, $account);
                     break;
+                case ('invoice'):
+                    include_once 'navigation/invoice.nav.php';
+                    return get_invoice_navigation($data, $smarty, $user, $db, $account);
+                    break;
+
+                case ('refund'):
+                    include_once 'navigation/invoice.nav.php';
+                    return get_invoice_navigation($data, $smarty, $user, $db, $account);
+                    break;
                 case ('delivery_note'):
                     return get_delivery_note_navigation($data, $smarty, $user, $db, $account);
                     break;
                 case ('invoices'):
                     return get_invoices_navigation($data, $smarty, $user, $db, $account);
                     break;
-                case ('invoice'):
-                    return get_invoice_navigation($data, $smarty, $user, $db, $account);
-                    break;
+
                 case ('payment'):
                     return get_payment_navigation($data, $smarty, $user, $db, $account);
                     break;
@@ -1757,9 +1786,7 @@ function get_navigation($user, $smarty, $data, $db, $account) {
                 case ('return.new'):
                     return get_return_new_navigation($data, $smarty, $user, $db, $account);
                     break;
-                case ('refund'):
-                    return get_invoice_navigation($data, $smarty, $user, $db, $account);
-                    break;
+
                 case ('replacement'):
                     return get_replacement_navigation($data, $smarty, $user, $db, $account);
                     break;
@@ -1772,8 +1799,12 @@ function get_navigation($user, $smarty, $data, $db, $account) {
                 case ('purge'):
                     return get_purge_navigation($data, $smarty, $user, $db, $account);
                     break;
+                case ('deleted_invoice'):
+                    include_once 'navigation/invoice.nav.php';
+                    return get_deleted_invoice_navigation($data, $smarty, $user, $db, $account);
+                    break;
                 default:
-                    return 'View not found '.$data['section'];
+                    return 'View not found x2'.$data['section'];
 
             }
             break;
@@ -1789,7 +1820,9 @@ function get_navigation($user, $smarty, $data, $db, $account) {
                 case ('delivery_note'):
                     return get_delivery_note_navigation($data, $smarty, $user, $db, $account);
                     break;
+
                 case ('invoice'):
+                    include_once 'navigation/invoice.nav.php';
                     return get_invoice_navigation($data, $smarty, $user, $db, $account);
                     break;
                 case ('order'):
@@ -1802,7 +1835,7 @@ function get_navigation($user, $smarty, $data, $db, $account) {
                     return get_pack_aid_navigation($data, $smarty, $user, $db, $account);
                     break;
                 default:
-                    return 'View not found '.$data['section'];
+                    return 'View not found x1'.$data['section'];
 
             }
             break;
@@ -2540,6 +2573,7 @@ function get_navigation($user, $smarty, $data, $db, $account) {
                     return get_payments_by_store_navigation($data, $user, $smarty, $db);
                     break;
                 case ('invoice'):
+                    include_once 'navigation/invoice.nav.php';
                     return get_invoice_navigation($data, $smarty, $user, $db, $account);
                     break;
                 case ('invoices'):
@@ -2556,6 +2590,9 @@ function get_navigation($user, $smarty, $data, $db, $account) {
             break;
         case ('accounting'):
             require_once 'navigation/accounting.nav.php';
+
+
+
             switch ($data['section']) {
 
 
@@ -2563,9 +2600,13 @@ function get_navigation($user, $smarty, $data, $db, $account) {
                     return get_invoices_navigation($data, $smarty, $user, $db, $account);
                     break;
                 case ('invoice'):
+                    include_once 'navigation/invoice.nav.php';
                     return get_invoice_navigation($data, $smarty, $user, $db, $account);
                     break;
+                case ('deleted_invoice'):
 
+                    return get_deleted_invoice_navigation($data, $smarty, $user, $db, $account);
+                    break;
                 case ('payment_service_provider'):
                     return get_payment_service_provider_navigation(
                         $data, $user, $smarty, $db
@@ -2854,6 +2895,7 @@ function get_navigation($user, $smarty, $data, $db, $account) {
 
 
 function get_tabs($data, $db, $account, $modules, $user, $smarty, $requested_tab = '') {
+
 
 
 
@@ -3444,7 +3486,8 @@ function get_tabs($data, $db, $account, $modules, $user, $smarty, $requested_tab
 
             }
         }
-    } elseif ($data['section'] == 'delivery') {
+    }
+    elseif ($data['section'] == 'delivery') {
         if ($data['module'] == 'suppliers') {
             $_content['tabs']['supplier.delivery.items_done']['class'] = 'hide';
             $_content['tabs']['supplier.delivery.costing']['class']    = 'hide';
@@ -3527,7 +3570,8 @@ function get_tabs($data, $db, $account, $modules, $user, $smarty, $requested_tab
 
             }
         }
-    } elseif ($data['section'] == 'webpage') {
+    }
+    elseif ($data['section'] == 'webpage') {
 
         if ($data['module'] == 'products') {
             if (!in_array(
@@ -3550,7 +3594,8 @@ function get_tabs($data, $db, $account, $modules, $user, $smarty, $requested_tab
         }
 
 
-    } elseif ($data['section'] == 'website') {
+    }
+    elseif ($data['section'] == 'website') {
 
 
         if ($data['website']->get('Website Status') == 'Active') {
@@ -3562,7 +3607,8 @@ function get_tabs($data, $db, $account, $modules, $user, $smarty, $requested_tab
         }
 
 
-    } elseif ($data['section'] == 'delivery_note') {
+    }
+    elseif ($data['section'] == 'delivery_note') {
 
 
         if ($data['tab'] == 'set_delivery_note.fast_track_packing') {
@@ -3588,7 +3634,8 @@ function get_tabs($data, $db, $account, $modules, $user, $smarty, $requested_tab
         //  exit;
 
 
-    } elseif ($data['section'] == 'poll_query') {
+    }
+    elseif ($data['section'] == 'poll_query') {
 
 
         if ($data['_object']->get('Customer Poll Query Type') == 'Options') {
@@ -3614,7 +3661,8 @@ function get_tabs($data, $db, $account, $modules, $user, $smarty, $requested_tab
         }
 
 
-    } elseif ($data['section'] == 'return') {
+    }
+    elseif ($data['section'] == 'return') {
 
 
         $_content['tabs']['return.items_done']['class'] = 'hide';
@@ -3672,6 +3720,30 @@ function get_tabs($data, $db, $account, $modules, $user, $smarty, $requested_tab
         }
 
     }
+    elseif ($data['section'] == 'deleted_invoice') {
+
+
+
+        if ($data['tab'] != 'invoice.history') {
+            $data['tab'] = 'deleted_invoice.items';
+            $_content['tabs']['deleted_invoice.items']['selected'] = true;
+        }
+
+
+
+    } elseif ($data['section'] == 'invoice') {
+
+
+
+        if ($data['tab'] == 'deleted_invoice.items') {
+            $data['tab'] = 'invoice.items';
+            $_content['tabs']['invoice.items']['selected'] = true;
+        }
+
+
+
+    }
+
 
     //print_r($_content['tabs']);
     // print_r($_content['subtabs']);
@@ -5922,7 +5994,8 @@ function get_view_position($db, $state, $user, $smarty, $account) {
 
                 case 'invoice':
                 case 'refund':
-
+                case 'deleted_invoice':
+                case 'deleted_refund':
                     $store = new Store($state['_object']->data['Invoice Store Key']);
 
                     if ($user->get_number_stores() > 1) {
@@ -5940,21 +6013,27 @@ function get_view_position($db, $state, $user, $smarty, $account) {
 
                     $parent   = new Order($state['parent_key']);
                     $branch[] = array(
-                        'label'     => $parent->get(
-                            'Order Public ID'
-                        ),
+                        'label'     => $parent->get('Order Public ID'),
                         'icon'      => 'shopping-cart',
                         'reference' => 'orders/'.$store->id.'/'.$state['parent_key']
                     );
 
 
-                    $branch[] = array(
-                        'label'     => $state['_object']->get(
-                            'Invoice Public ID'
-                        ),
-                        'icon'      => 'file-alt',
-                        'reference' => ''
-                    );
+                    if($state['_object']->deleted){
+                        $branch[] = array(
+                            'label'     => '<span class="strikethrough">'.$state['_object']->get('Invoice Public ID').'</span> ('._('Deleted').')',
+                            'icon'      => 'file-alt',
+                            'reference' => ''
+                        );
+                    }else{
+                        $branch[] = array(
+                            'label'     => $state['_object']->get('Invoice Public ID'),
+                            'icon'      => 'file-alt',
+                            'reference' => ''
+                        );
+                    }
+
+
                     break;
                 case 'email_campaign':
 

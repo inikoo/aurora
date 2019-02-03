@@ -465,6 +465,8 @@ module.exports = function (grunt) {
                     expand: true, cwd: 'fork/', src: ['*.php'], dest: '../fork/'
                 }, {
                     expand: true, src: ['templates/unsubscribe*.tpl'], dest: '../fork/'
+                }, {
+                    expand: true, src: ['templates/notification_emails/*.tpl'], dest: '../fork/'
                 }
 
                 ],

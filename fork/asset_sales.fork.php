@@ -20,7 +20,6 @@ function fork_asset_sales($job) {
 
 
 
-
     list($account, $db, $data,$editor,$session) = $_data;
     print_r($data);
    //return true;
@@ -567,7 +566,17 @@ function fork_asset_sales($job) {
 
             break;
         case 'update_deleted_invoice_products_sales_data':
+
+
             update_deleted_invoice_products_sales_data($db, $data, $account);
+
+
+
+
+
+
+
+
 
 
 
