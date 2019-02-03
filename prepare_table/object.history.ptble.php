@@ -99,6 +99,11 @@ if ($parameters['parent'] == 'customer' or $parameters['parent'] == 'order_custo
         ' where   B.`Invoice Key`=%d   ', $parameters['parent_key']
     );
     $subject = 'Invoice';
+}  elseif ($parameters['parent'] == 'refund') {
+    $where   = sprintf(
+        ' where   B.`Invoice Key`=%d   ', $parameters['parent_key']
+    );
+    $subject = 'Invoice';
 } elseif ($parameters['parent'] == 'supplier') {
     $where   = sprintf(
         ' where   B.`Supplier Key`=%d   ', $parameters['parent_key']

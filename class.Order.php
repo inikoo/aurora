@@ -112,7 +112,7 @@ class Order extends DB_Table {
                 $number_deliveries = 0;
                 $deliveries_xhtml  = '';
 
-                $store=get_object('Store',$this->get('Store Key'));
+                $store = get_object('Store', $this->get('Store Key'));
 
                 foreach ($this->get_deliveries('objects') as $dn) {
                     $number_deliveries++;
@@ -126,14 +126,11 @@ class Order extends DB_Table {
                                </div>', $dn->id, 'delivery_notes/'.$dn->get('Delivery Note Store Key').'/'.$dn->id, $dn->get('ID'), $dn->get('Abbreviated State'),
                         _('Picking sheet'), ($dn->get('State Index') != 10 ? 'hide' : ''), $dn->id,
                         ($dn->get('State Index') < 90 ? 'hide' : ''), $dn->id,
-                        (($dn->get('State Index') != 10 or $store->settings('data_entry_picking_aid')!='Yes')? 'hide' : ''), _('Input picking sheet data'), $dn->id
+                        (($dn->get('State Index') != 10 or $store->settings('data_entry_picking_aid') != 'Yes') ? 'hide' : ''), _('Input picking sheet data'), $dn->id
 
                     );
 
                 }
-
-
-
 
 
                 $this->update_metadata = array(
@@ -191,873 +188,6 @@ class Order extends DB_Table {
 
                 }
         }
-
-    }
-
-    function get_deliveries($scope = 'keys') {
-
-
-        $deliveries = array();
-        $sql        = sprintf(
-            "SELECT `Delivery Note Key` FROM `Delivery Note Dimension` WHERE `Delivery Note Order Key`=%d ORDER BY `Delivery Note Key` DESC ", $this->id
-        );
-
-        if ($result = $this->db->query($sql)) {
-            foreach ($result as $row) {
-                if ($row['Delivery Note Key'] == '') {
-                    continue;
-                }
-
-                if ($scope == 'objects') {
-
-                    $deliveries[$row['Delivery Note Key']] = get_object('DeliveryNote', $row['Delivery Note Key']);
-
-                } else {
-                    $deliveries[$row['Delivery Note Key']] = $row['Delivery Note Key'];
-                }
-            }
-        } else {
-            print_r($error_info = $this->db->errorInfo());
-            exit;
-        }
-
-
-        return $deliveries;
-
-    }
-
-    function update_state($value, $options = '', $metadata = array()) {
-
-        include_once 'utils/new_fork.php';
-
-
-        $date = gmdate('Y-m-d H:i:s');
-
-        $account = get_object('Account', 1);
-
-
-        $old_value         = $this->get('Order State');
-        $operations        = array();
-        $deliveries_xhtml  = '';
-        $number_deliveries = 0;
-        $invoices_xhtml    = '';
-        $number_invoices   = 0;
-
-        if ($old_value != $value) {
-
-            switch ($value) {
-
-
-                case 'Cancelled':
-
-
-                    $this->updated = $this->cancel();
-
-
-                    break;
-
-
-                case 'InBasket':
-
-
-                    if ($this->data['Order State'] != 'InProcess') {
-                        $this->error = true;
-                        $this->msg   = 'Order is not in process: :(';
-
-                        return;
-
-                    }
-
-
-                    $this->update_field('Order State', $value, 'no_history');
-                    $this->update_field('Order Submitted by Customer Date', '', 'no_history');
-                    $this->update_field('Order Date', $date, 'no_history');
-
-
-                    $history_data = array(
-                        'History Abstract' => _('Order send back to basket'),
-                        'History Details'  => '',
-                    );
-                    $this->add_subject_history($history_data, $force_save = true, $deletable = 'No', $type = 'Changes', $this->get_object_name(), $this->id, $update_history_records_data = true);
-
-                    $operations = array(
-                        'send_to_warehouse_operations',
-                        'cancel_operations',
-                        'submit_operations'
-                    );
-
-
-                    $sql = sprintf(
-                        "UPDATE `Order Transaction Fact` SET `Current Dispatching State`='In Process' WHERE `Order Key`=%d  AND `Current Dispatching State` NOT IN ('Out of Stock in Basket')  ", $this->id
-
-
-                    );
-
-                    // todo check 'Out of Stock in Basket' etc
-
-                    $this->db->exec($sql);
-
-
-                    //todo if user want to keep old allowances  you must do an if here
-                    $this->fast_update(
-                        array(
-                            'Order Pinned Deal Components' => json_encode(array())
-                        )
-                    );
-
-
-                    $sql = sprintf(
-                        "UPDATE `Order Transaction Deal Bridge` SET `Order Transaction Deal Pinned`='No' WHERE `Order Key`=%d   ",
-
-
-                        $this->id
-                    );
-
-                    $this->db->exec($sql);
-
-
-                    $this->update_totals();
-                    $this->update_discounts_items();
-                    $this->update_shipping(false, false);
-                    $this->update_charges(false, false);
-                    $this->update_discounts_no_items();
-                    $this->update_deal_bridge();
-                    $this->update_totals();
-
-
-                    break;
-
-                case 'InProcess':
-
-
-                    if ($this->data['Order State'] == 'Cancelled' or $this->data['Order State'] == 'Dispatched') {
-                        $this->error = true;
-                        $this->msg   = 'Cant set as in process :(';
-
-                        return;
-
-                    }
-
-
-                    $this->update_field('Order State', $value, 'no_history');
-                    $this->update_field('Order Submitted by Customer Date', $date, 'no_history');
-                    $this->update_field('Order Date', $date, 'no_history');
-
-
-                    $history_data = array(
-                        'History Abstract' => _('Order submited'),
-                        'History Details'  => '',
-                    );
-                    $this->add_subject_history($history_data, $force_save = true, $deletable = 'No', $type = 'Changes', $this->get_object_name(), $this->id, $update_history_records_data = true);
-
-                    $operations = array(
-                        'send_to_warehouse_operations',
-                        'cancel_operations',
-                        'undo_submit_operations'
-                    );
-
-                    $sql = sprintf(
-                        "UPDATE `Order Transaction Fact` SET `Current Dispatching State`='Submitted by Customer' WHERE `Order Key`=%d  AND `Current Dispatching State` NOT IN ('Out of Stock in Basket')  ",
-
-
-                        $this->id
-                    );
-
-                    $this->db->exec($sql);
-
-                    $deals_component_data = array();
-
-                    $deal_components = '';
-
-                    $sql = sprintf('select group_concat(`Deal Component Key`) as deal_components from `Order Transaction Deal Bridge` where `Order Key`=%d ', $this->id);
-                    if ($result = $this->db->query($sql)) {
-                        if ($row = $result->fetch()) {
-                            $deal_components = $row['deal_components'];
-                        }
-                    } else {
-                        print_r($error_info = $this->db->errorInfo());
-                        print "$sql\n";
-                        exit;
-                    }
-
-
-                    $sql = sprintf('select group_concat(`Deal Component Key`) as deal_components from `Order No Product Transaction Deal Bridge` where `Order Key`=%d ', $this->id);
-                    if ($result = $this->db->query($sql)) {
-                        if ($row = $result->fetch()) {
-
-                            if ($row['deal_components'] != '') {
-                                if ($deal_components == '') {
-                                    $deal_components = $row['deal_components'];
-
-                                } else {
-                                    $deal_components .= ','.$row['deal_components'];
-
-                                }
-
-                            }
-
-
-                        }
-                    } else {
-                        print_r($error_info = $this->db->errorInfo());
-                        print "$sql\n";
-                        exit;
-                    }
-
-                    if ($deal_components != '') {
-                        $sql = sprintf(
-                            "select * from `Deal Component Dimension` left join `Deal Dimension` D on (D.`Deal Key`=`Deal Component Deal Key`)  where `Deal Component Key` in (%s)",
-                            $deal_components
-                        );
-
-
-                        if ($result = $this->db->query($sql)) {
-                            foreach ($result as $row) {
-
-                                $deals_component_data[$row['Deal Component Key']] = $row;
-                            }
-                        } else {
-                            print_r($error_info = $this->db->errorInfo());
-                            print "$sql\n";
-                            exit;
-                        }
-                    }
-
-
-                    $sql = sprintf(
-                        "UPDATE `Order Transaction Deal Bridge` SET `Order Transaction Deal Pinned`='Yes' WHERE `Order Key`=%d   ",
-                        $this->id
-                    );
-                    $this->db->exec($sql);
-                    $sql = sprintf(
-                        "UPDATE `Order No Product Transaction Deal Bridge` SET `Order Transaction Deal Pinned`='Yes' WHERE `Order Key`=%d   ",
-                        $this->id
-                    );
-
-                    $this->db->exec($sql);
-
-                    $this->fast_update(
-                        array(
-                            'Order Pinned Deal Components' => json_encode($deals_component_data)
-                        )
-                    );
-
-
-                    break;
-
-                case 'Delivery Note Cancelled':
-
-
-                    if ($this->data['Order State'] == 'Cancelled') {
-                        return;
-                    }
-
-
-                    if ($this->get('Order State') >= 90) {
-                        $this->error = true;
-                        $this->msg   = 'Cant set as back to in process :(';
-
-                        return;
-
-                    }
-
-                    $value = 'InProcess';
-
-                    $this->update_field('Order State', $value, 'no_history');
-                    $this->update_field('Order Date', $date, 'no_history');
-
-
-                    $this->update_field('Order Send to Warehouse Date', '', 'no_history');
-                    $this->update_field('Order Packed Done Date', '', 'no_history');
-
-
-                    $this->update_field('Order Date', $this->data['Order Submitted by Customer Date'], 'no_history');
-                    $this->update_field('Order Delivery Note Key', '', 'no_history');
-
-
-                    $history_data = array(
-                        'History Abstract' => _('Delivery note cancelled, order back to submited state'),
-                        'History Details'  => '',
-                    );
-                    $this->add_subject_history($history_data, $force_save = true, $deletable = 'No', $type = 'Changes', $this->get_object_name(), $this->id, $update_history_records_data = true);
-
-                    $operations = array(
-                        'send_to_warehouse_operations',
-                        'cancel_operations',
-                        'undo_submit_operations'
-                    );
-
-                    $sql = sprintf(
-
-
-                        "UPDATE `Order Transaction Fact` SET `Current Dispatching State`='Submitted by Customer' WHERE `Order Key`=%d  AND `Current Dispatching State` NOT IN ('Out of Stock in Basket')  ", $this->id
-
-                    );
-
-                    $this->db->exec($sql);
-
-                    $customer = get_object('Customer', $this->data['Order Customer Key']);
-                    $customer->update_last_dispatched_order_key();
-
-
-                    break;
-
-
-                case 'InWarehouse':
-
-                    global $session;
-                    $warehouse_key = $session->get('current_warehouse');
-
-                    include_once('class.DeliveryNote.php');
-
-
-                    if (!($this->data['Order State'] == 'InProcess' or $this->data['Order State'] == 'InBasket')) {
-                        $this->error = true;
-                        $this->msg   = 'Order is not in process';
-
-                        return false;
-
-                    }
-
-
-                    if ($this->data['Order For Collection'] == 'Yes') {
-                        $dispatch_method = 'Collection';
-                    } else {
-                        $dispatch_method = 'Dispatch';
-                    }
-
-                    $store = get_object('Store', $this->data['Order Store Key']);
-
-                    $data_dn                                              = array(
-                        'Delivery Note Warehouse Key' => $warehouse_key,
-                        'Delivery Note Date Created'  => $date,
-                        'Delivery Note Date'          => $date,
-                        'Delivery Note Order Key'     => $this->id,
-                        'Delivery Note Store Key'     => $this->data['Order Store Key'],
-
-                        'Delivery Note Order Date Placed'            => $this->data['Order Date'],
-                        'Delivery Note ID'                           => $this->data['Order Public ID'],
-                        'Delivery Note File As'                      => $this->data['Order File As'],
-                        'Delivery Note Type'                         => $this->data['Order Type'],
-                        'Delivery Note Dispatch Method'              => $dispatch_method,
-                        'Delivery Note Title'                        => '',
-                        'Delivery Note Customer Key'                 => $this->data['Order Customer Key'],
-                        'Delivery Note Metadata'                     => $this->data['Order Original Metadata'],
-                        'Delivery Note Customer Name'                => $this->data['Order Customer Name'],
-                        'Delivery Note Customer Contact Name'        => $this->data['Order Customer Contact Name'],
-                        'Delivery Note Telephone'                    => $this->data['Order Telephone'],
-                        'Delivery Note Email'                        => $this->data['Order Email'],
-                        'Delivery Note Address Recipient'            => $this->data['Order Delivery Address Recipient'],
-                        'Delivery Note Address Organization'         => $this->data['Order Delivery Address Organization'],
-                        'Delivery Note Address Line 1'               => $this->data['Order Delivery Address Line 1'],
-                        'Delivery Note Address Line 2'               => $this->data['Order Delivery Address Line 2'],
-                        'Delivery Note Address Sorting Code'         => $this->data['Order Delivery Address Sorting Code'],
-                        'Delivery Note Address Postal Code'          => $this->data['Order Delivery Address Postal Code'],
-                        'Delivery Note Address Dependent Locality'   => $this->data['Order Delivery Address Dependent Locality'],
-                        'Delivery Note Address Locality'             => $this->data['Order Delivery Address Locality'],
-                        'Delivery Note Address Administrative Area'  => $this->data['Order Delivery Address Administrative Area'],
-                        'Delivery Note Address Country 2 Alpha Code' => $this->data['Order Delivery Address Country 2 Alpha Code'],
-                        'Delivery Note Address Checksum'             => $this->data['Order Delivery Address Checksum'],
-                        'Delivery Note Address Formatted'            => $this->data['Order Delivery Address Formatted'],
-                        'Delivery Note Address Postal Label'         => $this->data['Order Delivery Address Postal Label'],
-                        'Delivery Note Show in Warehouse Orders'     => $store->get('Store Show in Warehouse Orders')
-                    );
-                    $this->data['Delivery Note Show in Warehouse Orders'] = $store->data['Store Show in Warehouse Orders'];
-
-
-                    $delivery_note = new DeliveryNote('create', $data_dn, $this);
-
-
-                    new_housekeeping_fork(
-                        'au_housekeeping', array(
-                        'type'              => 'delivery_note_created',
-                        'delivery_note_key' => $delivery_note->id,
-                        'customer_key'      => $delivery_note->get('Delivery Note Customer Key'),
-                        'store_key'         => $delivery_note->get('Delivery Note Store Key'),
-                    ), $account->get('Account Code')
-                    );
-
-
-                    if ($this->get('Order State') == 'InBasket') {
-
-                        $this->update_field('Order Submitted by Customer Date', $date);
-
-                    }
-                    $this->update_field('Order State', $value, 'no_history');
-                    $this->update_field('Order Send to Warehouse Date', $date, 'no_history');
-                    $this->update_field('Order Date', $date, 'no_history');
-                    $this->update_field('Order Delivery Note Key', $delivery_note->id, 'no_history');
-
-
-                    $history_data = array(
-                        'History Abstract' => _('Order send to warehouse'),
-                        'History Details'  => '',
-                    );
-                    $this->add_subject_history($history_data, $force_save = true, $deletable = 'No', $type = 'Changes', $this->table_name, $this->id);
-
-
-                    $operations = array('cancel_operations');
-
-
-                    $sql = sprintf(
-
-
-                        "UPDATE `Order Transaction Fact` SET `Current Dispatching State`='Ready to Pick' WHERE `Order Key`=%d  AND `Current Dispatching State` NOT IN ('Out of Stock in Basket')  ", $this->id
-
-
-                    );
-
-                    $this->db->exec($sql);
-
-
-                    break;
-                case 'PackedDone':
-
-
-                    if ($this->data['Order State'] != 'InWarehouse') {
-                        $this->error = true;
-                        $this->msg   = 'Order is not in warehouse: :(';
-
-                        return;
-
-                    }
-
-
-                    $this->update_field('Order State', $value, 'no_history');
-                    $this->update_field('Order Packed Done Date', $date, 'no_history');
-                    $this->update_field('Order Date', $date, 'no_history');
-
-
-                    $history_data = array(
-                        'History Abstract' => _('Order packed and closed'),
-                        'History Details'  => '',
-                    );
-                    $this->add_subject_history($history_data, $force_save = true, $deletable = 'No', $type = 'Changes', $this->get_object_name(), $this->id, $update_history_records_data = true);
-
-                    $operations = array(
-                        'invoice_operations',
-                        'cancel_operations'
-                    );
-
-                    $sql = sprintf(
-                        "UPDATE `Order Transaction Fact` SET `Current Dispatching State`='Packed Done' WHERE `Order Key`=%d  AND `Current Dispatching State` NOT IN ('No Picked Due Out of Stock','No Picked Due No Authorised','No Picked Due Not Found','No Picked Due Other','Out of Stock in Basket')  ",
-                        $this->id
-
-                    );
-
-                    $this->db->exec($sql);
-
-                    $this->update_totals();
-
-                    break;
-
-
-
-                case 'Undo PackedDone':
-
-
-                    if ($this->data['Order State'] != 'PackedDone') {
-                        $this->error = true;
-                        $this->msg   = 'Order is PackedDone: :(';
-
-                        return;
-
-                    }
-
-
-                    $this->update_field('Order State', 'InWarehouse', 'no_history');
-                    $this->update_field('Order Packed Done Date', '', 'no_history');
-                    $this->update_field('Order Date', $date, 'no_history');
-
-
-                    $history_data = array(
-                        'History Abstract' => _('Undo packed and closed'),
-                        'History Details'  => '',
-                    );
-                    $this->add_subject_history($history_data, $force_save = true, $deletable = 'No', $type = 'Changes', $this->get_object_name(), $this->id, $update_history_records_data = true);
-
-                    $operations = array(
-                        'cancel_operations'
-                    );
-
-
-
-                    $this->update_totals();
-
-                    break;
-
-                case 'Invoice Deleted':
-
-
-                    switch ($this->get('Order State')) {
-                        case 'Approved':
-
-                            $this->fast_update(
-                                array(
-                                    'Order State'            => 'PackedDone',
-                                    'Order Packed Done Date' => $date,
-                                    'Order Invoiced Date'    => '',
-                                    'Order Invoice Key'      => '',
-                                    'Order Date'             => $date
-                                )
-                            );
-
-
-                            $history_data = array(
-                                'History Abstract' => _('Invoice deleted, order state back to packed and closed'),
-                                'History Details'  => '',
-                            );
-                            $this->add_subject_history($history_data, $force_save = true, $deletable = 'No', $type = 'Changes', $this->get_object_name(), $this->id, $update_history_records_data = true);
-
-                            $operations = array(
-                                'invoice_operations',
-                                'cancel_operations'
-                            );
-
-                            $sql = sprintf(
-                                "UPDATE `Order Transaction Fact` SET `Current Dispatching State`='Packed Done' WHERE `Order Key`=%d  AND `Current Dispatching State` NOT IN ('No Picked Due Out of Stock','No Picked Due No Authorised','No Picked Due Not Found','No Picked Due Other','Out of Stock in Basket')  ",
-                                $this->id
-
-
-                            );
-
-                            $this->db->exec($sql);
-                            break;
-
-                        case 'Dispatched':
-
-                            $this->fast_update(
-                                array(
-                                    'Order Invoiced Date' => '',
-                                    'Order Invoice Key'   => '',
-                                    'Order Date'          => $date
-                                )
-                            );
-
-
-                            $history_data = array(
-                                'History Abstract' => _('Invoice deleted'),
-                                'History Details'  => '',
-                            );
-                            $this->add_subject_history($history_data, $force_save = true, $deletable = 'No', $type = 'Changes', $this->get_object_name(), $this->id, $update_history_records_data = true);
-
-                            $operations = array();
-
-
-                            break;
-
-
-                            break;
-                        default:
-                            $this->error = true;
-                            $this->msg   = 'Order is not in Approved: :(';
-
-                            return;
-
-
-                    }
-
-
-                    $dn = get_object('DeliveryNote', $this->data['Order Delivery Note Key']);
-
-                    $dn->fast_update(
-                        array(
-                            'Delivery Note Invoiced'                    => 'No',
-                            'Delivery Note Invoiced Net DC Amount'      => 0,
-                            'Delivery Note Invoiced Shipping DC Amount' => 0,
-                        )
-                    );
-
-                    $dn->update(
-                        array(
-
-                            'Delivery Note State' => 'Invoice Deleted',
-                        )
-                    );
-
-
-                    break;
-
-                case 'Approved':
-
-
-                    include_once('class.Invoice.php');
-
-
-                    if (!$this->data['Order State'] == 'PackedDone') {
-                        $this->error = true;
-                        $this->msg   = 'Order is not in packed done';
-
-                        return false;
-
-                    }
-                    $this->update_field('Order State', $value, 'no_history');
-
-
-                    $invoice = $this->create_invoice($date);
-
-                    $dn = get_object('DeliveryNote', $this->data['Order Delivery Note Key']);
-
-
-                    $dn->update(
-                        array(
-                            'Delivery Note Invoiced'                    => 'Yes',
-                            'Delivery Note Invoiced Net DC Amount'      => $invoice->get('Invoice Total Net Amount') * $invoice->get('Invoice Currency Exchange'),
-                            'Delivery Note Invoiced Shipping DC Amount' => $invoice->get('Invoice Shipping Net Amount') * $invoice->get('Invoice Currency Exchange'),
-                            'Delivery Note State'                       => 'Approved',
-                        )
-                    );
-
-
-                    $this->update_field('Order Invoiced Date', $date, 'no_history');
-                    $this->update_field('Order Date', $date, 'no_history');
-                    $this->update_field('Order Invoice Key', $invoice->id, 'no_history');
-
-
-                    $history_data = array(
-                        'History Abstract' => _('Order invoiced'),
-                        'History Details'  => '',
-                    );
-                    $this->add_subject_history($history_data, $force_save = true, $deletable = 'No', $type = 'Changes', $this->table_name, $this->id);
-
-
-                    $operations = array('cancel_operations');
-
-                    //'In Process by Customer','Submitted by Customer','In Process','Ready to Pick','Picking','Ready to Pack','Ready to Ship','Dispatched','Unknown','Packing','Packed','Packed Done','Cancelled','No Picked Due Out of Stock','No Picked Due No Authorised','No Picked Due Not Found','No Picked Due Other','Suspended','Cancelled by Customer','Out of Stock in Basket'
-
-                    $sql = sprintf(
-
-                        "UPDATE `Order Transaction Fact` SET `Current Dispatching State`='Ready to Ship' WHERE `Order Key`=%d  AND `Current Dispatching State` NOT IN ('No Picked Due Out of Stock','No Picked Due No Authorised','No Picked Due Not Found','No Picked Due Other','Out of Stock in Basket')  ",
-                        $this->id
-
-                    );
-
-                    $this->db->exec($sql);
-
-
-                    break;
-
-
-                case 'un_dispatch':
-
-
-                    if ($this->data['Order State'] != 'Dispatched') {
-                        $this->error = true;
-                        $this->msg   = 'Order is not in Dispatched: :(';
-
-                        return;
-
-                    }
-
-
-                    if($this->get('Order Invoice Key')){
-                        $value = 'Approved';
-                    }else{
-                        $value = 'PackedDone';
-                    }
-
-
-
-                    $this->update_field('Order State', $value, 'no_history');
-                    $this->update_field('Order Dispatched Date', '', 'no_history');
-
-
-                    $history_data = array(
-                        'History Abstract' => _('Order set as not dispatched'),
-                        'History Details'  => '',
-                    );
-                    $this->add_subject_history($history_data, $force_save = true, $deletable = 'No', $type = 'Changes', $this->get_object_name(), $this->id, $update_history_records_data = true);
-
-                    $operations = array();
-                    //'In Process by Customer','Submitted by Customer','In Process','Ready to Pick','Picking','Ready to Pack','Ready to Ship','Dispatched','Unknown','Packing','Packed','Packed Done','Cancelled','No Picked Due Out of Stock','No Picked Due No Authorised','No Picked Due Not Found','No Picked Due Other','Suspended','Cancelled by Customer','Out of Stock in Basket'
-
-                    $sql = sprintf(
-                        "UPDATE `Order Transaction Fact` SET `Current Dispatching State`='Ready to Ship' WHERE `Order Key`=%d  AND `Current Dispatching State` NOT IN ('No Picked Due Out of Stock','No Picked Due No Authorised','No Picked Due Not Found','No Picked Due Other','Out of Stock in Basket')  ",
-                        $this->id
-                    );
-
-                    $this->db->exec($sql);
-
-                    $customer = get_object('Customer', $this->data['Order Customer Key']);
-                    $customer->update_last_dispatched_order_key();
-
-
-                    break;
-
-                case 'Dispatched':
-
-
-                    if ($this->data['Order State'] != 'Approved') {
-                        $this->error = true;
-                        $this->msg   = 'Order is not in Approved: :(';
-
-                        return;
-
-                    }
-
-
-                    $this->update_field('Order State', $value, 'no_history');
-                    $this->update_field('Order Dispatched Date', $date, 'no_history');
-
-
-                    $history_data = array(
-                        'History Abstract' => _('Order dispatched'),
-                        'History Details'  => '',
-                    );
-                    $this->add_subject_history($history_data, $force_save = true, $deletable = 'No', $type = 'Changes', $this->get_object_name(), $this->id, $update_history_records_data = true);
-
-                    $operations = array();
-
-
-                    $sql = sprintf(
-                        "UPDATE `Order Transaction Fact` SET `Current Dispatching State`='Dispatched' WHERE `Order Key`=%d  AND `Current Dispatching State` NOT IN ('No Picked Due Out of Stock','No Picked Due No Authorised','No Picked Due Not Found','No Picked Due Other','Out of Stock in Basket')  ",
-                        $this->id
-
-                    );
-
-                    $this->db->exec($sql);
-
-                    $customer = get_object('Customer', $this->data['Order Customer Key']);
-
-
-                    $customer->fast_update(array('Customer Last Dispatched Order Key' => $this->id));
-
-
-                    new_housekeeping_fork(
-                        'au_housekeeping', array(
-                        'type'      => 'order_dispatched',
-                        'order_key' => $this->id,
-                        'delivery_note_key'=>$metadata['delivery_note_key']
-                    ), $account->get('Account Code')
-                    );
-
-
-                    break;
-                case 'ReInvoice':
-
-
-                    if ($this->get('State Index') <= 80) {
-                        $this->error = true;
-                        $this->msg   = 'try invoice_recreated but Order has State Index <=80';
-
-                        return false;
-
-                    }
-
-                    include_once('class.Invoice.php');
-
-
-                    $invoice = $this->create_invoice($date);
-
-                    $dn = get_object('DeliveryNote', $this->data['Order Delivery Note Key']);
-
-
-                    $dn->update(
-                        array(
-                            'Delivery Note Invoiced'                    => 'Yes',
-                            'Delivery Note Invoiced Net DC Amount'      => $invoice->get('Invoice Total Net Amount') * $invoice->get('Invoice Currency Exchange'),
-                            'Delivery Note Invoiced Shipping DC Amount' => $invoice->get('Invoice Shipping Net Amount') * $invoice->get('Invoice Currency Exchange'),
-                        )
-                    );
-
-
-                    $this->fast_update(
-                        array(
-                            'Order Invoiced Date' => $date,
-                            'Order Date'          => $date,
-                            'Order Invoice Key'   => $invoice->id,
-                        )
-                    );
-
-
-                    $history_data = array(
-                        'History Abstract' => _('Order invoiced again'),
-                        'History Details'  => '',
-                    );
-                    $this->add_subject_history($history_data, $force_save = true, $deletable = 'No', $type = 'Changes', $this->table_name, $this->id);
-
-
-                    $operations = array('');
-
-
-                    break;
-
-                default:
-                    exit('unknown state:::'.$value);
-                    break;
-            }
-
-
-        }
-
-        foreach ($this->get_deliveries('objects') as $dn) {
-            $number_deliveries++;
-            $deliveries_xhtml .= sprintf(
-                ' <div class="node"  id="delivery_node_%d"><span class="node_label"><i class="fa fa-truck fa-flip-horizontal fa-fw" aria-hidden="true"></i> 
-                               <span class="link" onClick="change_view(\'%s\')">%s</span> (<span class="Delivery_Note_State">%s</span>)
-                                <a title="%s" class="pdf_link %s" target="_blank" href="/pdf/order_pick_aid.pdf.php?id=%d"> <i class="fal fa-clipboard-list-check " style="font-size: larger"></i></a>
-                                <a class="pdf_link %s" target=\'_blank\' href="/pdf/dn.pdf.php?id=%d"> <img style="width: 50px;height:16px;position: relative;top:2px" src="/art/pdf.gif"></a>
-                               </span>
-                                <div class="order_operation data_entry_delivery_note %s"><div class="square_button right" title="%s"><i class="fa fa-keyboard" aria-hidden="true" onclick="data_entry_delivery_note(%s)"></i></div></div>
-                               </div>', $dn->id, 'delivery_notes/'.$dn->get('Delivery Note Store Key').'/'.$dn->id, $dn->get('ID'), $dn->get('Abbreviated State'),
-                _('Picking sheet'), ($dn->get('State Index') != 10 ? 'hide' : ''), $dn->id,
-                ($dn->get('State Index') < 90 ? 'hide' : ''), $dn->id,
-                (($dn->get('State Index') != 10 or $store->settings('data_entry_picking_aid')!='Yes')? 'hide' : ''), _('Input picking sheet data'), $dn->id
-
-            );
-
-        }
-
-        foreach ($this->get_invoices('objects') as $invoice) {
-            $number_invoices++;
-            $invoices_xhtml .= sprintf(
-                ' <div class="node" id="invoice_%d">
-                    <span class="node_label" >
-                        <i class="fal fa-file-alt fa-fw %s" aria-hidden="true"></i>
-                        <span class="link %s" onClick="change_view(\'%s\')">%s</span>
-                        <img class="button pdf_link" onclick="download_pdf_from_list(%d,$(\'.pdf_invoice_dialog img\'))" style="width: 50px;height:16px;position: relative;top:2px" src="/art/pdf.gif">
-                        <i onclick="show_pdf_invoice_dialog(this,%d)" title="%s" class="far very_discreet fa-sliders-h-square button"></i>
-                    </span>
-                    <div class="red" style="float: right;padding-right: 10px;padding-top: 5px">%s
-                    </div>
-                </div>', $invoice->id, ($invoice->get('Invoice Type') == 'Refund' ? 'error' : ''), ($invoice->get('Invoice Type') == 'Refund' ? 'error' : ''), 'invoices/'.$invoice->get('Invoice Store Key').'/'.$invoice->id, $invoice->get('Invoice Public ID'),
-                $invoice->id, $invoice->id, _('PDF invoice display settings'),
-                ($invoice->get('Invoice Type') == 'Refund' ? $invoice->get('Refund Total Amount').' '.($invoice->get('Invoice Paid') != 'Yes' ? '<i class="fa fa-exclamation-triangle warning fa-fw" aria-hidden="true" title="'._('Return payment pending').'"></i>' : '')
-                    : '')
-
-            );
-
-        }
-
-
-        $this->update_metadata = array(
-            'class_html'        => array(
-                'Order_State'                  => $this->get('State'),
-                'Order_Submitted_Date'         => '&nbsp;'.$this->get('Submitted by Customer Date'),
-                'Order_Send_to_Warehouse_Date' => '&nbsp;'.$this->get('Send to Warehouse Date'),
-                'Order_Invoiced_Date'          => '&nbsp;'.$this->get('Invoiced Date'),
-
-
-            ),
-            'operations'        => $operations,
-            'state_index'       => $this->get('State Index'),
-            'deliveries_xhtml'  => $deliveries_xhtml,
-            'invoices_xhtml'    => $invoices_xhtml,
-            'number_deliveries' => $number_deliveries,
-            'number_invoices'   => $number_invoices
-        );
-
-
-        if ($this->data['Order State'] != 'Cancelled') {
-
-            new_housekeeping_fork(
-                'au_housekeeping', array(
-                'type'      => 'order_state_changed',
-                'order_key' => $this->id,
-            ), $account->get('Account Code')
-            );
-        }
-
 
     }
 
@@ -1555,6 +685,870 @@ class Order extends DB_Table {
         return false;
     }
 
+    function get_deliveries($scope = 'keys') {
+
+
+        $deliveries = array();
+        $sql        = sprintf(
+            "SELECT `Delivery Note Key` FROM `Delivery Note Dimension` WHERE `Delivery Note Order Key`=%d ORDER BY `Delivery Note Key` DESC ", $this->id
+        );
+
+        if ($result = $this->db->query($sql)) {
+            foreach ($result as $row) {
+                if ($row['Delivery Note Key'] == '') {
+                    continue;
+                }
+
+                if ($scope == 'objects') {
+
+                    $deliveries[$row['Delivery Note Key']] = get_object('DeliveryNote', $row['Delivery Note Key']);
+
+                } else {
+                    $deliveries[$row['Delivery Note Key']] = $row['Delivery Note Key'];
+                }
+            }
+        } else {
+            print_r($error_info = $this->db->errorInfo());
+            exit;
+        }
+
+
+        return $deliveries;
+
+    }
+
+    function update_state($value, $options = '', $metadata = array()) {
+
+        include_once 'utils/new_fork.php';
+
+
+        $date = gmdate('Y-m-d H:i:s');
+
+        $account = get_object('Account', 1);
+
+
+        $old_value         = $this->get('Order State');
+        $operations        = array();
+        $deliveries_xhtml  = '';
+        $number_deliveries = 0;
+        $invoices_xhtml    = '';
+        $number_invoices   = 0;
+
+        if ($old_value != $value) {
+
+            switch ($value) {
+
+
+                case 'Cancelled':
+
+
+                    $this->updated = $this->cancel();
+
+
+                    break;
+
+
+                case 'InBasket':
+
+
+                    if ($this->data['Order State'] != 'InProcess') {
+                        $this->error = true;
+                        $this->msg   = 'Order is not in process: :(';
+
+                        return;
+
+                    }
+
+
+                    $this->update_field('Order State', $value, 'no_history');
+                    $this->update_field('Order Submitted by Customer Date', '', 'no_history');
+                    $this->update_field('Order Date', $date, 'no_history');
+
+
+                    $history_data = array(
+                        'History Abstract' => _('Order send back to basket'),
+                        'History Details'  => '',
+                    );
+                    $this->add_subject_history($history_data, $force_save = true, $deletable = 'No', $type = 'Changes', $this->get_object_name(), $this->id, $update_history_records_data = true);
+
+                    $operations = array(
+                        'send_to_warehouse_operations',
+                        'cancel_operations',
+                        'submit_operations'
+                    );
+
+
+                    $sql = sprintf(
+                        "UPDATE `Order Transaction Fact` SET `Current Dispatching State`='In Process' WHERE `Order Key`=%d  AND `Current Dispatching State` NOT IN ('Out of Stock in Basket')  ", $this->id
+
+
+                    );
+
+                    // todo check 'Out of Stock in Basket' etc
+
+                    $this->db->exec($sql);
+
+
+                    //todo if user want to keep old allowances  you must do an if here
+                    $this->fast_update(
+                        array(
+                            'Order Pinned Deal Components' => json_encode(array())
+                        )
+                    );
+
+
+                    $sql = sprintf(
+                        "UPDATE `Order Transaction Deal Bridge` SET `Order Transaction Deal Pinned`='No' WHERE `Order Key`=%d   ",
+
+
+                        $this->id
+                    );
+
+                    $this->db->exec($sql);
+
+
+                    $this->update_totals();
+                    $this->update_discounts_items();
+                    $this->update_shipping(false, false);
+                    $this->update_charges(false, false);
+                    $this->update_discounts_no_items();
+                    $this->update_deal_bridge();
+                    $this->update_totals();
+
+
+                    break;
+
+                case 'InProcess':
+
+
+                    if ($this->data['Order State'] == 'Cancelled' or $this->data['Order State'] == 'Dispatched') {
+                        $this->error = true;
+                        $this->msg   = 'Cant set as in process :(';
+
+                        return;
+
+                    }
+
+
+                    $this->update_field('Order State', $value, 'no_history');
+                    $this->update_field('Order Submitted by Customer Date', $date, 'no_history');
+                    $this->update_field('Order Date', $date, 'no_history');
+
+
+                    $history_data = array(
+                        'History Abstract' => _('Order submited'),
+                        'History Details'  => '',
+                    );
+                    $this->add_subject_history($history_data, $force_save = true, $deletable = 'No', $type = 'Changes', $this->get_object_name(), $this->id, $update_history_records_data = true);
+
+                    $operations = array(
+                        'send_to_warehouse_operations',
+                        'cancel_operations',
+                        'undo_submit_operations'
+                    );
+
+                    $sql = sprintf(
+                        "UPDATE `Order Transaction Fact` SET `Current Dispatching State`='Submitted by Customer' WHERE `Order Key`=%d  AND `Current Dispatching State` NOT IN ('Out of Stock in Basket')  ",
+
+
+                        $this->id
+                    );
+
+                    $this->db->exec($sql);
+
+                    $deals_component_data = array();
+
+                    $deal_components = '';
+
+                    $sql = sprintf('select group_concat(`Deal Component Key`) as deal_components from `Order Transaction Deal Bridge` where `Order Key`=%d ', $this->id);
+                    if ($result = $this->db->query($sql)) {
+                        if ($row = $result->fetch()) {
+                            $deal_components = $row['deal_components'];
+                        }
+                    } else {
+                        print_r($error_info = $this->db->errorInfo());
+                        print "$sql\n";
+                        exit;
+                    }
+
+
+                    $sql = sprintf('select group_concat(`Deal Component Key`) as deal_components from `Order No Product Transaction Deal Bridge` where `Order Key`=%d ', $this->id);
+                    if ($result = $this->db->query($sql)) {
+                        if ($row = $result->fetch()) {
+
+                            if ($row['deal_components'] != '') {
+                                if ($deal_components == '') {
+                                    $deal_components = $row['deal_components'];
+
+                                } else {
+                                    $deal_components .= ','.$row['deal_components'];
+
+                                }
+
+                            }
+
+
+                        }
+                    } else {
+                        print_r($error_info = $this->db->errorInfo());
+                        print "$sql\n";
+                        exit;
+                    }
+
+                    if ($deal_components != '') {
+                        $sql = sprintf(
+                            "select * from `Deal Component Dimension` left join `Deal Dimension` D on (D.`Deal Key`=`Deal Component Deal Key`)  where `Deal Component Key` in (%s)",
+                            $deal_components
+                        );
+
+
+                        if ($result = $this->db->query($sql)) {
+                            foreach ($result as $row) {
+
+                                $deals_component_data[$row['Deal Component Key']] = $row;
+                            }
+                        } else {
+                            print_r($error_info = $this->db->errorInfo());
+                            print "$sql\n";
+                            exit;
+                        }
+                    }
+
+
+                    $sql = sprintf(
+                        "UPDATE `Order Transaction Deal Bridge` SET `Order Transaction Deal Pinned`='Yes' WHERE `Order Key`=%d   ",
+                        $this->id
+                    );
+                    $this->db->exec($sql);
+                    $sql = sprintf(
+                        "UPDATE `Order No Product Transaction Deal Bridge` SET `Order Transaction Deal Pinned`='Yes' WHERE `Order Key`=%d   ",
+                        $this->id
+                    );
+
+                    $this->db->exec($sql);
+
+                    $this->fast_update(
+                        array(
+                            'Order Pinned Deal Components' => json_encode($deals_component_data)
+                        )
+                    );
+
+
+                    break;
+
+                case 'Delivery Note Cancelled':
+
+
+                    if ($this->data['Order State'] == 'Cancelled') {
+                        return;
+                    }
+
+
+                    if ($this->get('Order State') >= 90) {
+                        $this->error = true;
+                        $this->msg   = 'Cant set as back to in process :(';
+
+                        return;
+
+                    }
+
+                    $value = 'InProcess';
+
+                    $this->update_field('Order State', $value, 'no_history');
+                    $this->update_field('Order Date', $date, 'no_history');
+
+
+                    $this->update_field('Order Send to Warehouse Date', '', 'no_history');
+                    $this->update_field('Order Packed Done Date', '', 'no_history');
+
+
+                    $this->update_field('Order Date', $this->data['Order Submitted by Customer Date'], 'no_history');
+                    $this->update_field('Order Delivery Note Key', '', 'no_history');
+
+
+                    $history_data = array(
+                        'History Abstract' => _('Delivery note cancelled, order back to submited state'),
+                        'History Details'  => '',
+                    );
+                    $this->add_subject_history($history_data, $force_save = true, $deletable = 'No', $type = 'Changes', $this->get_object_name(), $this->id, $update_history_records_data = true);
+
+                    $operations = array(
+                        'send_to_warehouse_operations',
+                        'cancel_operations',
+                        'undo_submit_operations'
+                    );
+
+                    $sql = sprintf(
+
+
+                        "UPDATE `Order Transaction Fact` SET `Current Dispatching State`='Submitted by Customer' WHERE `Order Key`=%d  AND `Current Dispatching State` NOT IN ('Out of Stock in Basket')  ", $this->id
+
+                    );
+
+                    $this->db->exec($sql);
+
+                    $customer = get_object('Customer', $this->data['Order Customer Key']);
+                    $customer->update_last_dispatched_order_key();
+
+
+                    break;
+
+
+                case 'InWarehouse':
+
+                    global $session;
+                    $warehouse_key = $session->get('current_warehouse');
+
+                    include_once('class.DeliveryNote.php');
+
+
+                    if (!($this->data['Order State'] == 'InProcess' or $this->data['Order State'] == 'InBasket')) {
+                        $this->error = true;
+                        $this->msg   = 'Order is not in process';
+
+                        return false;
+
+                    }
+
+
+                    if ($this->data['Order For Collection'] == 'Yes') {
+                        $dispatch_method = 'Collection';
+                    } else {
+                        $dispatch_method = 'Dispatch';
+                    }
+
+                    $store = get_object('Store', $this->data['Order Store Key']);
+
+                    $data_dn                                              = array(
+                        'Delivery Note Warehouse Key' => $warehouse_key,
+                        'Delivery Note Date Created'  => $date,
+                        'Delivery Note Date'          => $date,
+                        'Delivery Note Order Key'     => $this->id,
+                        'Delivery Note Store Key'     => $this->data['Order Store Key'],
+
+                        'Delivery Note Order Date Placed'            => $this->data['Order Date'],
+                        'Delivery Note ID'                           => $this->data['Order Public ID'],
+                        'Delivery Note File As'                      => $this->data['Order File As'],
+                        'Delivery Note Type'                         => $this->data['Order Type'],
+                        'Delivery Note Dispatch Method'              => $dispatch_method,
+                        'Delivery Note Title'                        => '',
+                        'Delivery Note Customer Key'                 => $this->data['Order Customer Key'],
+                        'Delivery Note Metadata'                     => $this->data['Order Original Metadata'],
+                        'Delivery Note Customer Name'                => $this->data['Order Customer Name'],
+                        'Delivery Note Customer Contact Name'        => $this->data['Order Customer Contact Name'],
+                        'Delivery Note Telephone'                    => $this->data['Order Telephone'],
+                        'Delivery Note Email'                        => $this->data['Order Email'],
+                        'Delivery Note Address Recipient'            => $this->data['Order Delivery Address Recipient'],
+                        'Delivery Note Address Organization'         => $this->data['Order Delivery Address Organization'],
+                        'Delivery Note Address Line 1'               => $this->data['Order Delivery Address Line 1'],
+                        'Delivery Note Address Line 2'               => $this->data['Order Delivery Address Line 2'],
+                        'Delivery Note Address Sorting Code'         => $this->data['Order Delivery Address Sorting Code'],
+                        'Delivery Note Address Postal Code'          => $this->data['Order Delivery Address Postal Code'],
+                        'Delivery Note Address Dependent Locality'   => $this->data['Order Delivery Address Dependent Locality'],
+                        'Delivery Note Address Locality'             => $this->data['Order Delivery Address Locality'],
+                        'Delivery Note Address Administrative Area'  => $this->data['Order Delivery Address Administrative Area'],
+                        'Delivery Note Address Country 2 Alpha Code' => $this->data['Order Delivery Address Country 2 Alpha Code'],
+                        'Delivery Note Address Checksum'             => $this->data['Order Delivery Address Checksum'],
+                        'Delivery Note Address Formatted'            => $this->data['Order Delivery Address Formatted'],
+                        'Delivery Note Address Postal Label'         => $this->data['Order Delivery Address Postal Label'],
+                        'Delivery Note Show in Warehouse Orders'     => $store->get('Store Show in Warehouse Orders')
+                    );
+                    $this->data['Delivery Note Show in Warehouse Orders'] = $store->data['Store Show in Warehouse Orders'];
+
+
+                    $delivery_note = new DeliveryNote('create', $data_dn, $this);
+
+
+                    new_housekeeping_fork(
+                        'au_housekeeping', array(
+                        'type'              => 'delivery_note_created',
+                        'delivery_note_key' => $delivery_note->id,
+                        'customer_key'      => $delivery_note->get('Delivery Note Customer Key'),
+                        'store_key'         => $delivery_note->get('Delivery Note Store Key'),
+                    ), $account->get('Account Code')
+                    );
+
+
+                    if ($this->get('Order State') == 'InBasket') {
+
+                        $this->update_field('Order Submitted by Customer Date', $date);
+
+                    }
+                    $this->update_field('Order State', $value, 'no_history');
+                    $this->update_field('Order Send to Warehouse Date', $date, 'no_history');
+                    $this->update_field('Order Date', $date, 'no_history');
+                    $this->update_field('Order Delivery Note Key', $delivery_note->id, 'no_history');
+
+
+                    $history_data = array(
+                        'History Abstract' => _('Order send to warehouse'),
+                        'History Details'  => '',
+                    );
+                    $this->add_subject_history($history_data, $force_save = true, $deletable = 'No', $type = 'Changes', $this->table_name, $this->id);
+
+
+                    $operations = array('cancel_operations');
+
+
+                    $sql = sprintf(
+
+
+                        "UPDATE `Order Transaction Fact` SET `Current Dispatching State`='Ready to Pick' WHERE `Order Key`=%d  AND `Current Dispatching State` NOT IN ('Out of Stock in Basket')  ", $this->id
+
+
+                    );
+
+                    $this->db->exec($sql);
+
+
+                    break;
+                case 'PackedDone':
+
+
+                    if ($this->data['Order State'] != 'InWarehouse') {
+                        $this->error = true;
+                        $this->msg   = 'Order is not in warehouse: :(';
+
+                        return;
+
+                    }
+
+
+                    $this->update_field('Order State', $value, 'no_history');
+                    $this->update_field('Order Packed Done Date', $date, 'no_history');
+                    $this->update_field('Order Date', $date, 'no_history');
+
+
+                    $history_data = array(
+                        'History Abstract' => _('Order packed and closed'),
+                        'History Details'  => '',
+                    );
+                    $this->add_subject_history($history_data, $force_save = true, $deletable = 'No', $type = 'Changes', $this->get_object_name(), $this->id, $update_history_records_data = true);
+
+                    $operations = array(
+                        'invoice_operations',
+                        'cancel_operations'
+                    );
+
+                    $sql = sprintf(
+                        "UPDATE `Order Transaction Fact` SET `Current Dispatching State`='Packed Done' WHERE `Order Key`=%d  AND `Current Dispatching State` NOT IN ('No Picked Due Out of Stock','No Picked Due No Authorised','No Picked Due Not Found','No Picked Due Other','Out of Stock in Basket')  ",
+                        $this->id
+
+                    );
+
+                    $this->db->exec($sql);
+
+                    $this->update_totals();
+
+                    break;
+
+
+                case 'Undo PackedDone':
+
+
+                    if ($this->data['Order State'] != 'PackedDone') {
+                        $this->error = true;
+                        $this->msg   = 'Order is PackedDone: :(';
+
+                        return;
+
+                    }
+
+
+                    $this->update_field('Order State', 'InWarehouse', 'no_history');
+                    $this->update_field('Order Packed Done Date', '', 'no_history');
+                    $this->update_field('Order Date', $date, 'no_history');
+
+
+                    $history_data = array(
+                        'History Abstract' => _('Undo packed and closed'),
+                        'History Details'  => '',
+                    );
+                    $this->add_subject_history($history_data, $force_save = true, $deletable = 'No', $type = 'Changes', $this->get_object_name(), $this->id, $update_history_records_data = true);
+
+                    $operations = array(
+                        'cancel_operations'
+                    );
+
+
+                    $this->update_totals();
+
+                    break;
+
+                case 'Invoice Deleted':
+
+
+                    switch ($this->get('Order State')) {
+                        case 'Approved':
+
+                            $this->fast_update(
+                                array(
+                                    'Order State'            => 'PackedDone',
+                                    'Order Packed Done Date' => $date,
+                                    'Order Invoiced Date'    => '',
+                                    'Order Invoice Key'      => '',
+                                    'Order Date'             => $date
+                                )
+                            );
+
+
+                            $history_data = array(
+                                'History Abstract' => _('Invoice deleted, order state back to packed and closed'),
+                                'History Details'  => '',
+                            );
+                            $this->add_subject_history($history_data, $force_save = true, $deletable = 'No', $type = 'Changes', $this->get_object_name(), $this->id, $update_history_records_data = true);
+
+                            $operations = array(
+                                'invoice_operations',
+                                'cancel_operations'
+                            );
+
+                            $sql = sprintf(
+                                "UPDATE `Order Transaction Fact` SET `Current Dispatching State`='Packed Done' WHERE `Order Key`=%d  AND `Current Dispatching State` NOT IN ('No Picked Due Out of Stock','No Picked Due No Authorised','No Picked Due Not Found','No Picked Due Other','Out of Stock in Basket')  ",
+                                $this->id
+
+
+                            );
+
+                            $this->db->exec($sql);
+                            break;
+
+                        case 'Dispatched':
+
+                            $this->fast_update(
+                                array(
+                                    'Order Invoiced Date' => '',
+                                    'Order Invoice Key'   => '',
+                                    'Order Date'          => $date
+                                )
+                            );
+
+
+                            $history_data = array(
+                                'History Abstract' => _('Invoice deleted'),
+                                'History Details'  => '',
+                            );
+                            $this->add_subject_history($history_data, $force_save = true, $deletable = 'No', $type = 'Changes', $this->get_object_name(), $this->id, $update_history_records_data = true);
+
+                            $operations = array();
+
+
+                            break;
+
+
+                            break;
+                        default:
+                            $this->error = true;
+                            $this->msg   = 'Order is not in Approved: :(';
+
+                            return;
+
+
+                    }
+
+
+                    $dn = get_object('DeliveryNote', $this->data['Order Delivery Note Key']);
+
+                    $dn->fast_update(
+                        array(
+                            'Delivery Note Invoiced'                    => 'No',
+                            'Delivery Note Invoiced Net DC Amount'      => 0,
+                            'Delivery Note Invoiced Shipping DC Amount' => 0,
+                        )
+                    );
+
+                    $dn->update(
+                        array(
+
+                            'Delivery Note State' => 'Invoice Deleted',
+                        )
+                    );
+
+
+                    break;
+
+                case 'Approved':
+
+
+                    include_once('class.Invoice.php');
+
+
+                    if (!$this->data['Order State'] == 'PackedDone') {
+                        $this->error = true;
+                        $this->msg   = 'Order is not in packed done';
+
+                        return false;
+
+                    }
+                    $this->update_field('Order State', $value, 'no_history');
+
+
+                    $invoice = $this->create_invoice($date);
+
+                    $dn = get_object('DeliveryNote', $this->data['Order Delivery Note Key']);
+
+
+                    $dn->update(
+                        array(
+                            'Delivery Note Invoiced'                    => 'Yes',
+                            'Delivery Note Invoiced Net DC Amount'      => $invoice->get('Invoice Total Net Amount') * $invoice->get('Invoice Currency Exchange'),
+                            'Delivery Note Invoiced Shipping DC Amount' => $invoice->get('Invoice Shipping Net Amount') * $invoice->get('Invoice Currency Exchange'),
+                            'Delivery Note State'                       => 'Approved',
+                        )
+                    );
+
+
+                    $this->update_field('Order Invoiced Date', $date, 'no_history');
+                    $this->update_field('Order Date', $date, 'no_history');
+                    $this->update_field('Order Invoice Key', $invoice->id, 'no_history');
+
+
+                    $history_data = array(
+                        'History Abstract' => _('Order invoiced'),
+                        'History Details'  => '',
+                    );
+                    $this->add_subject_history($history_data, $force_save = true, $deletable = 'No', $type = 'Changes', $this->table_name, $this->id);
+
+
+                    $operations = array('cancel_operations');
+
+                    //'In Process by Customer','Submitted by Customer','In Process','Ready to Pick','Picking','Ready to Pack','Ready to Ship','Dispatched','Unknown','Packing','Packed','Packed Done','Cancelled','No Picked Due Out of Stock','No Picked Due No Authorised','No Picked Due Not Found','No Picked Due Other','Suspended','Cancelled by Customer','Out of Stock in Basket'
+
+                    $sql = sprintf(
+
+                        "UPDATE `Order Transaction Fact` SET `Current Dispatching State`='Ready to Ship' WHERE `Order Key`=%d  AND `Current Dispatching State` NOT IN ('No Picked Due Out of Stock','No Picked Due No Authorised','No Picked Due Not Found','No Picked Due Other','Out of Stock in Basket')  ",
+                        $this->id
+
+                    );
+
+                    $this->db->exec($sql);
+
+
+                    break;
+
+
+                case 'un_dispatch':
+
+
+                    if ($this->data['Order State'] != 'Dispatched') {
+                        $this->error = true;
+                        $this->msg   = 'Order is not in Dispatched: :(';
+
+                        return;
+
+                    }
+
+
+                    if ($this->get('Order Invoice Key')) {
+                        $value = 'Approved';
+                    } else {
+                        $value = 'PackedDone';
+                    }
+
+
+                    $this->update_field('Order State', $value, 'no_history');
+                    $this->update_field('Order Dispatched Date', '', 'no_history');
+
+
+                    $history_data = array(
+                        'History Abstract' => _('Order set as not dispatched'),
+                        'History Details'  => '',
+                    );
+                    $this->add_subject_history($history_data, $force_save = true, $deletable = 'No', $type = 'Changes', $this->get_object_name(), $this->id, $update_history_records_data = true);
+
+                    $operations = array();
+                    //'In Process by Customer','Submitted by Customer','In Process','Ready to Pick','Picking','Ready to Pack','Ready to Ship','Dispatched','Unknown','Packing','Packed','Packed Done','Cancelled','No Picked Due Out of Stock','No Picked Due No Authorised','No Picked Due Not Found','No Picked Due Other','Suspended','Cancelled by Customer','Out of Stock in Basket'
+
+                    $sql = sprintf(
+                        "UPDATE `Order Transaction Fact` SET `Current Dispatching State`='Ready to Ship' WHERE `Order Key`=%d  AND `Current Dispatching State` NOT IN ('No Picked Due Out of Stock','No Picked Due No Authorised','No Picked Due Not Found','No Picked Due Other','Out of Stock in Basket')  ",
+                        $this->id
+                    );
+
+                    $this->db->exec($sql);
+
+                    $customer = get_object('Customer', $this->data['Order Customer Key']);
+                    $customer->update_last_dispatched_order_key();
+
+
+                    break;
+
+                case 'Dispatched':
+
+
+                    if ($this->data['Order State'] != 'Approved') {
+                        $this->error = true;
+                        $this->msg   = 'Order is not in Approved: :(';
+
+                        return;
+
+                    }
+
+
+                    $this->update_field('Order State', $value, 'no_history');
+                    $this->update_field('Order Dispatched Date', $date, 'no_history');
+
+
+                    $history_data = array(
+                        'History Abstract' => _('Order dispatched'),
+                        'History Details'  => '',
+                    );
+                    $this->add_subject_history($history_data, $force_save = true, $deletable = 'No', $type = 'Changes', $this->get_object_name(), $this->id, $update_history_records_data = true);
+
+                    $operations = array();
+
+
+                    $sql = sprintf(
+                        "UPDATE `Order Transaction Fact` SET `Current Dispatching State`='Dispatched' WHERE `Order Key`=%d  AND `Current Dispatching State` NOT IN ('No Picked Due Out of Stock','No Picked Due No Authorised','No Picked Due Not Found','No Picked Due Other','Out of Stock in Basket')  ",
+                        $this->id
+
+                    );
+
+                    $this->db->exec($sql);
+
+                    $customer = get_object('Customer', $this->data['Order Customer Key']);
+
+
+                    $customer->fast_update(array('Customer Last Dispatched Order Key' => $this->id));
+
+
+                    new_housekeeping_fork(
+                        'au_housekeeping', array(
+                        'type'              => 'order_dispatched',
+                        'order_key'         => $this->id,
+                        'delivery_note_key' => $metadata['delivery_note_key']
+                    ), $account->get('Account Code')
+                    );
+
+
+                    break;
+                case 'ReInvoice':
+
+
+                    if ($this->get('State Index') <= 80) {
+                        $this->error = true;
+                        $this->msg   = 'try invoice_recreated but Order has State Index <=80';
+
+                        return false;
+
+                    }
+
+                    include_once('class.Invoice.php');
+
+
+                    $invoice = $this->create_invoice($date);
+
+                    $dn = get_object('DeliveryNote', $this->data['Order Delivery Note Key']);
+
+
+                    $dn->update(
+                        array(
+                            'Delivery Note Invoiced'                    => 'Yes',
+                            'Delivery Note Invoiced Net DC Amount'      => $invoice->get('Invoice Total Net Amount') * $invoice->get('Invoice Currency Exchange'),
+                            'Delivery Note Invoiced Shipping DC Amount' => $invoice->get('Invoice Shipping Net Amount') * $invoice->get('Invoice Currency Exchange'),
+                        )
+                    );
+
+
+                    $this->fast_update(
+                        array(
+                            'Order Invoiced Date' => $date,
+                            'Order Date'          => $date,
+                            'Order Invoice Key'   => $invoice->id,
+                        )
+                    );
+
+
+                    $history_data = array(
+                        'History Abstract' => _('Order invoiced again'),
+                        'History Details'  => '',
+                    );
+                    $this->add_subject_history($history_data, $force_save = true, $deletable = 'No', $type = 'Changes', $this->table_name, $this->id);
+
+
+                    $operations = array('');
+
+
+                    break;
+
+                default:
+                    exit('unknown state:::'.$value);
+                    break;
+            }
+
+
+        }
+
+        foreach ($this->get_deliveries('objects') as $dn) {
+            $number_deliveries++;
+            $deliveries_xhtml .= sprintf(
+                ' <div class="node"  id="delivery_node_%d"><span class="node_label"><i class="fa fa-truck fa-flip-horizontal fa-fw" aria-hidden="true"></i> 
+                               <span class="link" onClick="change_view(\'%s\')">%s</span> (<span class="Delivery_Note_State">%s</span>)
+                                <a title="%s" class="pdf_link %s" target="_blank" href="/pdf/order_pick_aid.pdf.php?id=%d"> <i class="fal fa-clipboard-list-check " style="font-size: larger"></i></a>
+                                <a class="pdf_link %s" target=\'_blank\' href="/pdf/dn.pdf.php?id=%d"> <img style="width: 50px;height:16px;position: relative;top:2px" src="/art/pdf.gif"></a>
+                               </span>
+                                <div class="order_operation data_entry_delivery_note %s"><div class="square_button right" title="%s"><i class="fa fa-keyboard" aria-hidden="true" onclick="data_entry_delivery_note(%s)"></i></div></div>
+                               </div>', $dn->id, 'delivery_notes/'.$dn->get('Delivery Note Store Key').'/'.$dn->id, $dn->get('ID'), $dn->get('Abbreviated State'),
+                _('Picking sheet'), ($dn->get('State Index') != 10 ? 'hide' : ''), $dn->id,
+                ($dn->get('State Index') < 90 ? 'hide' : ''), $dn->id,
+                (($dn->get('State Index') != 10 or $store->settings('data_entry_picking_aid') != 'Yes') ? 'hide' : ''), _('Input picking sheet data'), $dn->id
+
+            );
+
+        }
+
+        foreach ($this->get_invoices('objects') as $invoice) {
+            $number_invoices++;
+            $invoices_xhtml .= sprintf(
+                ' <div class="node" id="invoice_%d">
+                    <span class="node_label" >
+                        <i class="fal fa-file-alt fa-fw %s" aria-hidden="true"></i>
+                        <span class="link %s" onClick="change_view(\'%s\')">%s</span>
+                        <img class="button pdf_link" onclick="download_pdf_from_list(%d,$(\'.pdf_invoice_dialog img\'))" style="width: 50px;height:16px;position: relative;top:2px" src="/art/pdf.gif">
+                        <i onclick="show_pdf_invoice_dialog(this,%d)" title="%s" class="far very_discreet fa-sliders-h-square button"></i>
+                    </span>
+                    <div class="red" style="float: right;padding-right: 10px;padding-top: 5px">%s
+                    </div>
+                </div>', $invoice->id, ($invoice->get('Invoice Type') == 'Refund' ? 'error' : ''), ($invoice->get('Invoice Type') == 'Refund' ? 'error' : ''), 'invoices/'.$invoice->get('Invoice Store Key').'/'.$invoice->id, $invoice->get('Invoice Public ID'),
+                $invoice->id, $invoice->id, _('PDF invoice display settings'),
+                ($invoice->get('Invoice Type') == 'Refund' ? $invoice->get('Refund Total Amount').' '.($invoice->get('Invoice Paid') != 'Yes' ? '<i class="fa fa-exclamation-triangle warning fa-fw" aria-hidden="true" title="'._('Return payment pending').'"></i>' : '')
+                    : '')
+
+            );
+
+        }
+
+
+        $this->update_metadata = array(
+            'class_html'        => array(
+                'Order_State'                  => $this->get('State'),
+                'Order_Submitted_Date'         => '&nbsp;'.$this->get('Submitted by Customer Date'),
+                'Order_Send_to_Warehouse_Date' => '&nbsp;'.$this->get('Send to Warehouse Date'),
+                'Order_Invoiced_Date'          => '&nbsp;'.$this->get('Invoiced Date'),
+
+
+            ),
+            'operations'        => $operations,
+            'state_index'       => $this->get('State Index'),
+            'deliveries_xhtml'  => $deliveries_xhtml,
+            'invoices_xhtml'    => $invoices_xhtml,
+            'number_deliveries' => $number_deliveries,
+            'number_invoices'   => $number_invoices
+        );
+
+
+        if ($this->data['Order State'] != 'Cancelled') {
+
+            new_housekeeping_fork(
+                'au_housekeeping', array(
+                'type'      => 'order_state_changed',
+                'order_key' => $this->id,
+            ), $account->get('Account Code')
+            );
+        }
+
+
+    }
+
     function cancel($note = '', $fork = true) {
 
 
@@ -1871,6 +1865,7 @@ class Order extends DB_Table {
 
 
         $data_invoice = array(
+            'editor'                                => $this->editor,
             'Invoice Date'                          => $date,
             'Invoice Type'                          => 'Invoice',
             'Invoice Public ID'                     => $invoice_public_id,
@@ -1984,6 +1979,37 @@ class Order extends DB_Table {
 
 
         }
+
+    }
+
+    function get_deleted_invoices($scope = 'keys') {
+
+
+        $deleted_invoices = array();
+        $sql              = sprintf(
+            "SELECT `Invoice Deleted Key` FROM `Invoice Deleted Dimension` WHERE `Invoice Deleted Order Key`=%d  ", $this->id
+        );
+
+        if ($result = $this->db->query($sql)) {
+            foreach ($result as $row) {
+                if ($row['Invoice Deleted Key'] == '') {
+                    continue;
+                }
+
+                if ($scope == 'objects') {
+
+                    $deleted_invoices[$row['Invoice Deleted Key']] = get_object('Invoice_Deleted', $row['Invoice Deleted Key']);
+
+                } else {
+                    $deleted_invoices[$row['Invoice Deleted Key']] = $row['Invoice Deleted Key'];
+                }
+            }
+        } else {
+            print_r($error_info = $this->db->errorInfo());
+            exit;
+        }
+
+        return $deleted_invoices;
 
     }
 
@@ -2138,12 +2164,15 @@ class Order extends DB_Table {
 
     function get_items() {
 
+
         $sql = sprintf(
-            'SELECT `Webpage State`,`Webpage URL`,`Product Main Image`,`Order State`,`Delivery Note Quantity`,`Order State`,OTF.`Product ID`,OTF.`Product Key`,`Order Transaction Fact Key`,`Order Currency Code`,`Order Transaction Amount`,`Order Quantity`,`Product History Name`,`Product History Units Per Case`,PD.`Product Code`,`Product Name`,`Product Units Per Case` 
+            'SELECT `Deal Info`,`Current Dispatching State`,`Webpage State`,`Webpage URL`,`Product Main Image`,`Order State`,`Delivery Note Quantity`,`Order State`,OTF.`Product ID`,OTF.`Product Key`,OTF.`Order Transaction Fact Key`,`Order Currency Code`,`Order Transaction Amount`,`Order Quantity`,`Product History Name`,`Product History Units Per Case`,PD.`Product Code`,`Product Name`,`Product Units Per Case` 
       FROM `Order Transaction Fact` OTF LEFT JOIN `Product History Dimension` PHD ON (OTF.`Product Key`=PHD.`Product Key`) LEFT JOIN 
       `Product Dimension` PD ON (PD.`Product ID`=PHD.`Product ID`)  LEFT JOIN 
         `Order Dimension` O ON (O.`Order Key`=OTF.`Order Key`) Left join 
-        `Page Store Dimension` W on (`Page Key`=`Product Webpage Key`)
+        `Page Store Dimension` W on (`Page Key`=`Product Webpage Key`) left join 
+        `Order Transaction Deal Bridge` B on (OTF.`Order Transaction Fact Key`=B.`Order Transaction Fact Key`)
+
       WHERE OTF.`Order Key`=%d  ORDER BY `Product Code File As` ', $this->id
         );
 
@@ -2166,15 +2195,31 @@ class Order extends DB_Table {
 
                 }
 
+
+                $deal_info = $row['Deal Info'];
+
+
+                if ($row['Current Dispatching State'] == 'Out of Stock in Basket') {
+                    $out_of_stock_info = _('Product out of stock, removed from basket');
+
+
+                } else {
+
+                    $out_of_stock_info = '';
+                }
+
+
                 $items[] = array(
-                    'code'          => $row['Product Code'],
-                    'description'   => $row['Product History Units Per Case'].'x '.$row['Product History Name'],
-                    'qty'           => $qty,
-                    'edit_qty'      => $edit_quantity,
-                    'amount'        => '<span class="item_amount">'.money($row['Order Transaction Amount'], $row['Order Currency Code']).'</span>',
-                    'webpage_url'   => $row['Webpage URL'],
-                    'image'         => $row['Product Main Image'],
-                    'webpage_state' => $row['Webpage State']
+                    'code'              => $row['Product Code'],
+                    'description'       => $row['Product History Units Per Case'].'x '.$row['Product History Name'],
+                    'deal_info'         => $deal_info,
+                    'out_of_stock_info' => $out_of_stock_info,
+                    'qty'               => $qty,
+                    'edit_qty'          => $edit_quantity,
+                    'amount'            => '<span class="item_amount">'.money($row['Order Transaction Amount'], $row['Order Currency Code']).'</span>',
+                    'webpage_url'       => $row['Webpage URL'],
+                    'image'             => $row['Product Main Image'],
+                    'webpage_state'     => $row['Webpage State']
 
                 );
 
@@ -2742,6 +2787,7 @@ class Order extends DB_Table {
 
 
         $refund_data = array(
+            'editor'                                => $this->editor,
             'Invoice Date'                          => $date,
             'Invoice Type'                          => 'Refund',
             'Invoice Public ID'                     => $invoice_public_id,

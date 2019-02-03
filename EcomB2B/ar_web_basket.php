@@ -516,7 +516,7 @@ function get_basket_html($data, $customer) {
     $smarty->setTemplateDir('templates');
     $smarty->setCompileDir('server_files/smarty/templates_c');
     $smarty->setCacheDir('server_files/smarty/cache');
-$smarty->setConfigDir('server_files/smarty/configs');
+    $smarty->setConfigDir('server_files/smarty/configs');
     $smarty->addPluginsDir('./smarty_plugins');
 
     $order = get_object('Order', $customer->get_order_in_process_key());

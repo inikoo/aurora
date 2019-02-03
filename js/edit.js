@@ -2080,13 +2080,13 @@ function save_object_operation(type, element) {
     }
 
 
-    if (type == 'delete') var icon = 'fa-trash'; else if (type == 'archive') var icon = 'fa-archive'; else if (type == 'unarchive') var icon = 'fa-folder-open';
+    if (type == 'delete') var icon = 'fa-trash-alt'; else if (type == 'archive') var icon = 'fa-archive'; else if (type == 'unarchive') var icon = 'fa-folder-open';
 
-    if (!$(element).find('i.fa').removeClass(icon)) return;
 
-    $(element).find('i.fa').removeClass(icon).addClass('fa-spinner fa-spin')
+    $(element).find('i').removeClass(icon).addClass('fa-spinner fa-spin')
 
     var request = '/ar_edit.php?tipo=object_operation&operation=' + type + '&object=' + $(element).data('data').object + '&key=' + $(element).data('data').key+'&state='+JSON.stringify(state)
+
     $.getJSON(request, function (data) {
         if (data.state == 200) {
 
@@ -2099,7 +2099,7 @@ function save_object_operation(type, element) {
             }
 
         } else if (data.state == 400) {
-            $(element).find('i.fa').addClass(icon).removeClass('fa-spinner fa-spin')
+            $(element).find('i').addClass(icon).removeClass('fa-spinner fa-spin')
 
         }
     })

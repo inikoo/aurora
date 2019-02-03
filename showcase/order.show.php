@@ -14,6 +14,8 @@ function get_order_showcase($data, $smarty, $user, $db) {
 
 
 
+
+
     require_once 'utils/geography_functions.php';
 
     if (!$data['_object']->id) {
@@ -23,6 +25,7 @@ function get_order_showcase($data, $smarty, $user, $db) {
 
     $order = $data['_object'];
     $store = get_object('store', $order->get('Store Key'));
+
 
     //$order->update_totals();
 

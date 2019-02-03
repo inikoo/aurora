@@ -692,6 +692,7 @@ class Store extends DB_Table {
                 break;
 
             case 'Store Notification New Order Recipients':
+            case 'Store Notification New Customer Recipients':
             case 'Store Notification Invoice Deleted Recipients':
             case 'Store Notification Delivery Note Undispatched Recipients':
 
@@ -718,6 +719,7 @@ class Store extends DB_Table {
                 break;
 
             case 'Notification New Order Recipients':
+            case 'Notification New Customer Recipients':
             case 'Notification Invoice Deleted Recipients':
             case 'Notification Delivery Note Undispatched Recipients':
 
@@ -960,6 +962,29 @@ class Store extends DB_Table {
             }
 
         }
+
+    }
+
+
+    function get_notification_recipients($type){
+
+        $recipients = array();
+        $recipients_data = $this->get('Store Notification '.$type.' Recipients');
+
+        foreach ($recipients_data['external_emails'] as $external_emails) {
+            $recipients[$external_emails] = $external_emails;
+        }
+
+
+        foreach ($recipients_data['users'] as $user) {
+            if($user->get('User Active')=='Yes' and $user->get('User Password Recovery Email')!=''){
+                $recipients[$user->get('User Password Recovery Email')] = $user->get('User Password Recovery Email');
+            }
+
+
+        }
+
+        return array_values($recipients);
 
     }
 
@@ -4038,6 +4063,7 @@ class Store extends DB_Table {
 
 
             case 'Store Notification New Order Recipients':
+            case 'Store Notification New Customer Recipients':
             case 'Store Notification Invoice Deleted Recipients':
             case 'Store Notification Delivery Note Undispatched Recipients':
 

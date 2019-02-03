@@ -32,8 +32,8 @@ if ($order == 'code') {
 
 $table
     = "
-`Order Transaction Fact` O  left join `Product History Dimension` PH on (O.`Product Key`=PH.`Product Key`) left join
-  `Product Dimension` P on (PH.`Product ID`=P.`Product ID`)";
+`Order Transaction Fact` O  left join `Product History Dimension` PH on (O.`Product Key`=PH.`Product Key`) left join  `Product Dimension` P on (PH.`Product ID`=P.`Product ID`)
+";
 
 $sql_totals
     = "select count(distinct  P.`Product ID`) as num from $table $where";

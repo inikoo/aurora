@@ -736,6 +736,15 @@ $tab_defaults = array(
         'f_field'     => 'code',
 
     ),
+
+    'deleted_invoice.items'          => array(
+        'view'        => 'overview',
+        'sort_key'    => 'id',
+        'sort_order'  => 1,
+        'rpp'         => 1000,
+        'rpp_options' => $default_rrp_options,
+
+    ),
     'invoice.orders'         => array(
         'view'          => 'overview',
         'sort_key'      => 'id',

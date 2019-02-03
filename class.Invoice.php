@@ -26,6 +26,8 @@ class Invoice extends DB_Table {
         $this->table_name      = 'Invoice';
         $this->ignore_fields   = array('Invoice Key');
         $this->update_customer = true;
+        $this->deleted = false;
+
         global $db;
         $this->db = $db;
 
@@ -68,6 +70,10 @@ class Invoice extends DB_Table {
             $sql = sprintf(
                 "SELECT * FROM `Invoice Dimension` WHERE  `Invoice Public ID`=%s", prepare_mysql($tag)
             );
+        } elseif ($tipo == 'deleted') {
+            $this->get_deleted_data($tag);
+
+            return;
         } else {
             return;
         }
@@ -81,6 +87,39 @@ class Invoice extends DB_Table {
 
     }
 
+    function get_deleted_data($tag) {
+
+        $this->deleted = true;
+        $sql           = sprintf(
+            "SELECT * FROM `Invoice Deleted Dimension` WHERE `Invoice Deleted Key`=%d", $tag
+        );
+        if ($this->data = $this->db->query($sql)->fetch()) {
+            $this->id = $this->data['Invoice Deleted Key'];
+
+
+
+            foreach (
+                json_decode($this->data['Invoice Deleted Metadata'], true) as $key => $value
+            ) {
+
+
+
+
+                if($key=='items'){
+                    $this->items = $value;
+                }else{
+                    $this->data[$key] = $value;
+                }
+
+
+
+            }
+
+            unset($this->data['Invoice Deleted Metadata']);
+
+        }
+    }
+
     function create_refund($invoice_data, $transactions) {
 
         include_once 'utils/new_fork.php';
@@ -90,6 +129,11 @@ class Invoice extends DB_Table {
         include_once 'utils/currency_functions.php';
 
         $account = get_object('Account', 1);
+
+
+        $this->editor = $invoice_data['editor'];
+
+        unset($invoice_data['editor']);
 
         $base_data = $this->base_data();
 
@@ -402,6 +446,16 @@ class Invoice extends DB_Table {
 
             $this->update_billing_region();
 
+            $history_data = array(
+                'History Abstract' => sprintf(_('Refund %s created'), $this->get('Public ID')),
+                'History Details'  => '',
+                'Action'           => 'created'
+            );
+
+            $this->add_subject_history(
+                $history_data, true, 'No', 'Changes', $this->get_object_name(), $this->id
+            );
+
 
             new_housekeeping_fork(
                 'au_housekeeping', array(
@@ -573,6 +627,11 @@ class Invoice extends DB_Table {
                     "%a %e %b %Y %H:%M %Z", strtotime($this->data['Invoice Date'].' +0:00')
                 );
                 break;
+            case('Deleted Date'):
+                return strftime(
+                    "%a %e %b %Y %H:%M %Z", strtotime($this->data['Invoice Deleted Date'].' +0:00')
+                );
+                break;
             case('Payment Method'):
 
                 switch ($this->data['Invoice Main Payment Method']) {
@@ -626,9 +685,9 @@ class Invoice extends DB_Table {
                 }
             case 'Margin':
 
-                if($this->data['Invoice Items Net Amount']>0){
+                if ($this->data['Invoice Items Net Amount'] > 0) {
                     return percentage($this->data['Invoice Total Profit'] / $this->data['Invoice Items Net Amount'], 1);
-                }else{
+                } else {
                     return '-';
                 }
 
@@ -818,6 +877,9 @@ class Invoice extends DB_Table {
 
         $base_data = $this->base_data();
 
+        $this->editor = $invoice_data['editor'];
+
+        unset($invoice_data['editor']);
 
         foreach ($invoice_data as $key => $value) {
             if (array_key_exists($key, $invoice_data)) {
@@ -1021,6 +1083,18 @@ class Invoice extends DB_Table {
             //$this->distribute_insurance_over_the_otf();
 
 
+
+            $history_data = array(
+                'History Abstract' => sprintf(_('Invoice %s created'), $this->get('Public ID')),
+                'History Details'  => '',
+                'Action'           => 'created'
+            );
+
+            $this->add_subject_history(
+                $history_data, true, 'No', 'Changes', $this->get_object_name(), $this->id
+            );
+
+
             new_housekeeping_fork(
                 'au_housekeeping', array(
                 'type'         => 'invoice_created',
@@ -1171,7 +1245,7 @@ class Invoice extends DB_Table {
         return strftime("%e %b %Y", strtotime($this->data[$field].' +0:00'));
     }
 
-    function delete($note='') {
+    function delete($note = '') {
 
         $is_refund = ($this->data['Invoice Type'] == 'Refund' ? true : false);
 
@@ -1198,20 +1272,88 @@ class Invoice extends DB_Table {
         $invoice_category_key = $this->get('Invoice Category Key');
         $invoice_date         = gmdate('Y-m-d', strtotime($this->get('Invoice Date').' +0:00'));
 
-        $sql = sprintf(
-            "SELECT `Product ID`,`Invoice Date` FROM `Order Transaction Fact` WHERE `Invoice Key`=%d", $this->id
-        );
+
+        $items_data = array();
 
 
-        if ($result = $this->db->query($sql)) {
-            foreach ($result as $row) {
+        $sql =
+            "SELECT `Invoice Date`,
+O.`Order Transaction Fact Key`,`Product Currency`,`Product History Price`,`Product History Code`,`Order Transaction Amount`,`Delivery Note Quantity`,`Product History Name`,`Product History Price`,`Product Units Per Case`,`Product History XHTML Short Description`,`Product Name`,`Product RRP`,`Product Tariff Code`,`Product Tariff Code`,`Invoice Transaction Gross Amount`,`Invoice Transaction Total Discount Amount`,`Invoice Transaction Item Tax Amount`,`Invoice Quantity`,`Invoice Transaction Tax Refund Amount`,`Invoice Currency Code`,`Invoice Transaction Net Refund Amount`,`Product XHTML Short Description`,P.`Product ID`,O.`Product Code`
 
+
+FROM `Order Transaction Fact` O  left join `Product History Dimension` PH on (O.`Product Key`=PH.`Product Key`) left join  `Product Dimension` P on (PH.`Product ID`=P.`Product ID`) WHERE `Invoice Key`=?";
+
+
+        $stmt = $this->db->prepare($sql);
+        if ($stmt->execute(
+            array(
+                $this->id
+            )
+        )) {
+            while ($row = $stmt->fetch()) {
                 $products[$row['Product ID']] = 1;
                 $dates[$row['Invoice Date']]  = 1;
 
 
+                $discount = ($row['Invoice Transaction Total Discount Amount'] == 0
+                    ? ''
+                    : percentage(
+                        $row['Invoice Transaction Total Discount Amount'], $row['Invoice Transaction Gross Amount'], 0
+                    ));
+
+                $units    = $row['Product Units Per Case'];
+                $name     = $row['Product History Name'];
+                $price    = $row['Product History Price'];
+                $currency = $row['Product Currency'];
+
+                $desc = '';
+                if ($units > 1) {
+                    $desc = number($units).'x ';
+                }
+                $desc .= ' '.$name;
+                if ($price > 0) {
+                    $desc .= ' ('.money($price, $currency).')';
+                }
+
+                $description = $desc;
+
+                if ($discount != '') {
+                    $description .= ' '._('Discount').':'.$discount;
+                }
+
+                if ($row['Product RRP'] != 0) {
+                    $description .= ' <br>'._('RRP').': '.money($row['Product RRP'], $row['Invoice Currency Code']);
+                }
+
+                if ($row['Product Tariff Code'] != '') {
+                    $description .= '<br>'._('Tariff Code').': '.$row['Product Tariff Code'];
+                }
+
+
+                if($this->get('Invoice Type')=='Invoice'){
+                    $quantity=number($row['Delivery Note Quantity']);
+                    $factor=1;
+                }else{
+                    $quantity = '<span class="italic discreet"><span >~</span>'.number(-1 * $row['Order Transaction Amount'] / $row['Product History Price']).'</span>';
+                    $factor=-1;
+                }
+
+
+                $items_data[] = array(
+                    'product_pid' => $row['Product ID'],
+                    'code'        => $row['Product Code'],
+                    'description' => $description,
+                    'quantity'    => $quantity,
+                    'net'         => money($factor*$row['Order Transaction Amount'], $row['Invoice Currency Code'])
+                );
             }
+        } else {
+            print_r($error_info = $this->db->errorInfo());
+            exit();
         }
+
+
+
 
 
         $sql = sprintf("DELETE FROM `Invoice Tax Bridge` WHERE `Invoice Key`=%d", $this->id);
@@ -1346,18 +1488,31 @@ class Invoice extends DB_Table {
         );
         $this->db->exec($sql);
 
+        $this->data['items']=$items_data;
 
 
 
-        $sql = sprintf(
-            "INSERT INTO `Invoice Deleted Dimension` (`Invoice Deleted Key`,`Invoice Deleted Store Key`,`Invoice Deleted Public ID`,`Invoice Deleted Metadata`,`Invoice Deleted Date`,`Invoice Deleted Note`,`Invoice Deleted User Key`,`Invoice Deleted Type`,`Invoice Deleted Total Amount`) VALUE (%d,%d,%s,%s,%s,%s,%d,%s,%.2f) ",
-            $this->id, $this->data['Invoice Store Key'], prepare_mysql($this->data['Invoice Public ID']),
-            prepare_mysql(json_encode($this->data)), prepare_mysql($this->editor['Date']), prepare_mysql($note, false), $this->editor['User Key'],
-            prepare_mysql($this->data['Invoice Type']),$this->data['Invoice Total Amount']
+        $sql =
+            "INSERT INTO `Invoice Deleted Dimension` (`Invoice Deleted Key`,`Invoice Deleted Store Key`,`Invoice Deleted Order Key`,`Invoice Deleted Public ID`,`Invoice Deleted Metadata`,`Invoice Deleted Date`,`Invoice Deleted Note`,`Invoice Deleted User Key`,`Invoice Deleted Type`,`Invoice Deleted Total Amount`) VALUE (?,?,?,?,?,?,?,?,?,?) ";
+
+
+
+
+        $this->db->prepare($sql)->execute(
+            array(
+                $this->id,
+                $this->data['Invoice Store Key'],
+                $this->data['Invoice Order Key'],
+                $this->data['Invoice Public ID'],
+                json_encode($this->data),
+                $this->editor['Date'],
+                $note,
+                $this->editor['User Key'],
+                $this->data['Invoice Type'],
+                $this->data['Invoice Total Amount']
+            )
         );
 
-
-        $this->db->exec($sql);
 
 
         if (!$is_refund) {
@@ -1375,11 +1530,21 @@ class Invoice extends DB_Table {
                 )
             );
 
-            $order->update_state('Invoice Deleted', $options = '', $metadata = array('note'=>$note));
+            $order->update_state('Invoice Deleted', $options = '', $metadata = array('note' => $note));
         } else {
 
             $order->update_totals();
         }
+
+        $history_data = array(
+            'History Abstract' => sprintf(_('Invoice %s deleted'), $this->get('Public ID')),
+            'History Details'  => '',
+            'Action'           => 'deleted'
+        );
+
+        $this->add_subject_history(
+            $history_data, true, 'No', 'Changes', $this->get_object_name(), $this->id
+        );
 
 
         include_once 'utils/new_fork.php';
@@ -1396,11 +1561,15 @@ class Invoice extends DB_Table {
         );
 
 
-        $customer = get_object('Customer', $customer_key);
-        $customer->update_invoices();
+        new_housekeeping_fork(
+            'au_housekeeping', array(
+            'type'         => 'invoice_deleted',
+            'invoice_key'  => $this->id,
+            'customer_key' => $customer_key,
+            'store_key'    => $store_key,
 
-
-        $this->deleted = true;
+        ), $account->get('Account Code')
+        );
 
 
         return sprintf('/orders/%d/%d', $order->get('Store Key'), $order->id);

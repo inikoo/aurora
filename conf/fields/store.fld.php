@@ -74,7 +74,7 @@ foreach ($db->query($sql) as $row) {
 
 $options_Shipper    = array();
 $options_Shipper[0] = _('No default');
-$sql              = sprintf(
+$sql                = sprintf(
     'SELECT `Shipper Name`,`Shipper Key`,`Shipper Code` FROM `Shipper Dimension` WHERE  `Shipper Active`="Yes" order by `Shipper Name` '
 );
 foreach ($db->query($sql) as $row) {
@@ -82,7 +82,7 @@ foreach ($db->query($sql) as $row) {
 
 }
 
-$object->smarty=$smarty;
+$object->smarty = $smarty;
 
 $object_fields = array(
     array(
@@ -481,6 +481,15 @@ $object_fields = array(
                 'value'           => '',
                 'formatted_value' => $object->get('Notification New Order Recipients'),
                 'label'           => _('New order'),
+                'required'        => false,
+                'type'            => ''
+            ),
+            array(
+                'id'              => 'Store_Notification_New_Customer_Recipients',
+                'edit'            => 'mixed_recipients',
+                'value'           => '',
+                'formatted_value' => $object->get('Notification New Customer Recipients'),
+                'label'           => _('Customer registration'),
                 'required'        => false,
                 'type'            => ''
             ),

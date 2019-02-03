@@ -2,6 +2,8 @@
 {assign returns $order->get_returns('objects')}
 
 {assign invoices $order->get_invoices('objects')}
+{assign deleted_invoices $order->get_deleted_invoices('objects')}
+
 {assign payments $order->get_payments('objects','Completed')}
 
 
@@ -498,7 +500,7 @@
 
             <tr class="subtotal first error">
                 <td class="label small"><i class="fa fa-cube fa-fw  " aria-hidden="true"></i> {t}lost revenue{/t}</td>
-                <td class="aright Items_Discount_Amount">{$order->get('Items Out of Stock Amount')}</td>
+                <td class="aright Items_Out_of_Stock_Amount">{$order->get('Items Out of Stock Amount')}</td>
             </tr>
 
 
@@ -610,11 +612,22 @@
 
                 </div>
             {/foreach}
+        </div>
+
+        <div id="deleted_invoices" class="invoices {if $deleted_invoices|@count == 0}hide{/if}" style="">
 
 
+            {foreach from=$deleted_invoices item=invoice}
+                <div class="node" id="invoice_{$invoice->id}">
+                    <span class="node_label">
+                        <i class="fal fa-file-alt fa-fw {if $invoice->get('Invoice Type')=='Refund'}error {/if}" aria-hidden="true"></i>
+                        <span class="link  strikethrough {if $invoice->get('Invoice Type')=='Refund'}error{/if}" onClick="change_view('orders/{$invoice->get('Invoice Store Key')}/{$order->id}/{$invoice->get('Invoice Type')|lower}/{$invoice->id}')">{$invoice->get('Invoice Public ID')}</span>
+
+                    </span>
 
 
-
+                </div>
+            {/foreach}
         </div>
 
         <div class="pdf_invoice_dialog options_dialog  hide" style="min-width: 150px" data-data='{ "type":"invoice_from_list"}'>

@@ -4349,7 +4349,7 @@ class Part extends Asset {
                 "Part $i Year Ago With Stock Days"  => $data_iy_ago['with_stock_days'],
             );
 
-            $this->update($data_to_update, 'no_history');
+            $this->fast_update($data_to_update,'Part Data');
         }
 
     }
@@ -4392,7 +4392,7 @@ class Part extends Asset {
                 "Part $i Quarter Ago 1YB Keeping Day"      => $sales_data_1yb['keep_days'],
                 "Part $i Quarter Ago 1YB With Stock Days"  => $sales_data_1yb['with_stock_days'],
             );
-            $this->update($data_to_update, 'no_history');
+            $this->fast_update($data_to_update,'Part Data');
         }
 
     }

@@ -1196,6 +1196,22 @@ $modules = array(
 
             ),
 
+            'deleted_invoice'        => array(
+                'type' => 'object',
+                'tabs' => array(
+                    'deleted_invoice.items'    => array(
+                        'label' => _('Items'),
+                        'icon'  => 'bars'
+                    ),
+                    'invoice.history' => array(
+                        'label' => _('History'),
+                        'icon'  => 'road'
+                    ),
+
+
+                )
+            ),
+
             'delivery_note' => array(
                 'type' => 'object',
                 'tabs' => array(
@@ -2323,6 +2339,23 @@ $modules = array(
 
                 )
 
+            ),
+
+
+            'deleted_invoice'        => array(
+                'type' => 'object',
+                'tabs' => array(
+                    'deleted_invoice.items'    => array(
+                        'label' => _('Items'),
+                        'icon'  => 'bars'
+                    ),
+                    'invoice.history' => array(
+                        'label' => _('History'),
+                        'icon'  => 'road'
+                    ),
+
+
+                )
             ),
 
             'payments' => array(

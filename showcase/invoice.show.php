@@ -95,33 +95,47 @@ function get_invoice_showcase($data, $smarty, $user, $db) {
     $smarty->assign('pdf_with_rrp', $pdf_with_rrp);
 
 
-    if ($data['_object']->get('Invoice Type') == 'Refund') {
+    if ($invoice->deleted) {
+        if ($data['_object']->get('Invoice Type') == 'Refund') {
 
 
-        $smarty->assign(
-            'object_data',
-            json_encode(
-                array(
-                    'object'              => $data['object'],
-                    'key'                 => $data['key'],
-                    'symbol'              => currency_symbol($invoice->get('Order Currency')),
-                    'tax_rate'            => $invoice->get('Invoice Tax Rate'),
-                    'available_to_refund' => $invoice->get('Invoice Total Amount'),
-                    'tab'                 => $data['tab'],
-                    'order_type'          => $invoice->get('Invoice Type'),
-                )
-            )
+            return $smarty->fetch('showcase/deleted_refund.tpl');
 
-        );
+        } else {
+            return $smarty->fetch('showcase/deleted_invoice.tpl');
 
-
-        return $smarty->fetch('showcase/refund.tpl');
+        }
 
     } else {
-        return $smarty->fetch('showcase/invoice.tpl');
 
+
+        if ($data['_object']->get('Invoice Type') == 'Refund') {
+
+
+            $smarty->assign(
+                'object_data',
+                json_encode(
+                    array(
+                        'object'              => $data['object'],
+                        'key'                 => $data['key'],
+                        'symbol'              => currency_symbol($invoice->get('Order Currency')),
+                        'tax_rate'            => $invoice->get('Invoice Tax Rate'),
+                        'available_to_refund' => $invoice->get('Invoice Total Amount'),
+                        'tab'                 => $data['tab'],
+                        'order_type'          => $invoice->get('Invoice Type'),
+                    )
+                )
+
+            );
+
+
+            return $smarty->fetch('showcase/refund.tpl');
+
+        } else {
+            return $smarty->fetch('showcase/invoice.tpl');
+
+        }
     }
-
 
 }
 
