@@ -16,9 +16,9 @@
         <script src="https://browser.sentry-cdn.com/4.3.4/bundle.min.js" crossorigin="anonymous"></script>
         <script src="https://wchat.freshchat.com/js/widget.js"></script>
     {/if}
-    <script src="/js/aurora_libs.min.js?v190201v3"></script>
+    <script src="/js/aurora_libs.min.js?v190205v2"></script>
 
-    <script src="/js/aurora.min.js?v190205"></script>
+    <script src="/js/aurora.min.js?v190201v3"></script>
 
     <script src="/utils/country_data.js.php?v=v190124&locale={$locale}"></script>
 
@@ -67,7 +67,7 @@
         Sentry.init({
             dsn: 'https://8f17945abb95493692010f7026553f71@sentry.io/1329970'});
 
-        Sentry.configureScope((scope) = > {
+        Sentry.configureScope((scope) => {
             scope
             .setUser({
                 "id":       "{$user->id}",
