@@ -1,19 +1,15 @@
+{*
+<!--
+ About:
+ Author: Raul Perusquia <raul@inikoo.com>
+ Created: 5 February 2019 at 00:08:38 GMT+8, Kuala Lumpur Malaysia
+ Copyright (c) 2019, Inikoo
+
+ Version 3
+-->
+*}
+
 var columns = [
-{
-name: "id",
-label: "",
-editable: false,
-renderable: false,
-cell: "string",
-
-},{
-name: "employee_key",
-label: "",
-editable: false,
-renderable: false,
-cell: "string",
-
-},
 {
 name: "active_icon",
 label: "{t}Active{/t}",
@@ -21,6 +17,15 @@ editable: false,
 sortType: "active",
 {if $sort_key=='active_icon'}direction: '{if $sort_order==1}descending{else}ascending{/if}',{/if}
 cell: "Html"
+},
+{
+name: "type",
+label: "{t}Category{/t}",
+editable: false,
+sortType: "toggle",
+{if $sort_key=='type'}direction: '{if $sort_order==1}descending{else}ascending{/if}',{/if}
+cell: Backgrid.HtmlCell.extend({
+})
 },
 {
 name: "handle",
@@ -36,13 +41,18 @@ cell: Backgrid.HtmlCell.extend({
 }, {
 name: "name",
 label: "{t}Name{/t}",
+editable: false,
 sortType: "toggle",
 cell: Backgrid.HtmlCell.extend({
-events: {
-"click": function() {
-change_view('employee/' + +this.model.get("employee_key"))
-}
-}
+
+})
+}, {
+name: "email",
+label: "{t}Email{/t}",
+editable: false,
+sortType: "toggle",
+cell: Backgrid.HtmlCell.extend({
+
 })
 }, {
 name: "groups",
@@ -72,7 +82,36 @@ editable: false,
 sortType: "toggle",
 {if $sort_key=='websites'}direction: '{if $sort_order==1}descending{else}ascending{/if}',{/if}
 cell: "string"
-}
+},{
+name: "logins",
+label: "{t}Logins{/t}",
+editable: false,
+sortType: "toggle",
+{if $sort_key=='logins'}direction: '{if $sort_order==1}descending{else}ascending{/if}',{/if}
+cell: Backgrid.HtmlCell.extend({ className: "aright"}),
+headerCell: integerHeaderCell
+
+},
+{
+name: "last_login",
+label: "{t}Last login{/t}",
+editable: false,
+sortType: "toggle",
+{if $sort_key=='last_login'}direction: '{if $sort_order==1}descending{else}ascending{/if}',{/if}
+cell: Backgrid.HtmlCell.extend({ className: "aright"}),
+headerCell: integerHeaderCell
+
+},
+{
+name: "fail_logins",
+label: "{t}Fail logins{/t}",
+editable: false,
+sortType: "toggle",
+{if $sort_key=='fail_logins'}direction: '{if $sort_order==1}descending{else}ascending{/if}',{/if}
+cell: Backgrid.HtmlCell.extend({ className: "aright"}),
+headerCell: integerHeaderCell
+
+},
 
 ]
 
@@ -85,19 +124,35 @@ grid.columns.findWhere({ name: 'groups'} ).set("renderable", false)
 grid.columns.findWhere({ name: 'stores'} ).set("renderable", false)
 grid.columns.findWhere({ name: 'warehouses'} ).set("renderable", false)
 grid.columns.findWhere({ name: 'websites'} ).set("renderable", false)
+grid.columns.findWhere({ name: 'last_login'} ).set("renderable", false)
+grid.columns.findWhere({ name: 'email'} ).set("renderable", false)
+grid.columns.findWhere({ name: 'logins'} ).set("renderable", false)
+grid.columns.findWhere({ name: 'fail_logins'} ).set("renderable", false)
+
+
+
 
 grid.columns.findWhere({ name: 'name'} ).set("renderable", false)
+if(view=='overview'){
 
-if(view=='privileges'){
+grid.columns.findWhere({ name: 'name'} ).set("renderable", true)
+grid.columns.findWhere({ name: 'email'} ).set("renderable", true)
+grid.columns.findWhere({ name: 'last_login'} ).set("renderable", true)
+grid.columns.findWhere({ name: 'logins'} ).set("renderable", true)
+
+
+}else if(view=='privileges'){
 grid.columns.findWhere({ name: 'stores'} ).set("renderable", true)
 grid.columns.findWhere({ name: 'warehouses'} ).set("renderable", true)
 grid.columns.findWhere({ name: 'websites'} ).set("renderable", true)
-grid.columns.findWhere({ name: 'name'} ).set("renderable", true)
 
 }else if(view=='groups'){
 grid.columns.findWhere({ name: 'groups'} ).set("renderable", true)
 }else if(view=='weblog'){
 
+grid.columns.findWhere({ name: 'last_login'} ).set("renderable", true)
+grid.columns.findWhere({ name: 'logins'} ).set("renderable", true)
+grid.columns.findWhere({ name: 'fail_logins'} ).set("renderable", true)
 
 }
 

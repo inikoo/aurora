@@ -1685,6 +1685,23 @@ $elements_options = array(
 
         )
     ),
+
+    'users' => array(
+        'active' => array(
+            'label' => _('Active'),
+            'items' => array(
+                'Yes'   => array(
+                    'label'    => _('Active'),
+                    'selected' => true
+                ),
+                'No' => array(
+                    'label'    => _('Suspended'),
+                    'selected' => true
+                ),
+            ),
+
+        )
+    ),
 );
 
 ?>

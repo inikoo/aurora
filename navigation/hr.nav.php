@@ -196,7 +196,7 @@ function get_employee_navigation($data, $smarty, $user, $db) {
             = array(
             'icon'     => 'terminal',
             'title'    => '',
-            'click'    => "change_view('/account/user/".$_user->id."')",
+            'click'    => "change_view('/users/".$_user->id."')",
             'pre_text' => _('User'),
             'class'    => 'text'
         );

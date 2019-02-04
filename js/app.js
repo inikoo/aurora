@@ -507,7 +507,9 @@ function change_menu_view(module){
         case 'reports':
         case 'profile':
         case 'account':
+        case 'users':
         case 'agent_parts':
+            console.log(module)
             change_view(module)
             break;
         case 'agent_client_orders':

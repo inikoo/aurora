@@ -2,26 +2,20 @@
 /*
  About:
  Author: Raul Perusquia <raul@inikoo.com>
- Refurbished: 5 February 2019 at 00:05:23 GMT+8
- Copyright (c) 2018, Inikoo
+ Refurbished: 1 October 2015 at 12:18:06 BST, Sheffield, UK
+ Copyright (c) 2015, Inikoo
 
  Version 3
 
 */
 
 
-//print_r($parameters);
 
 $group_by = '';
+$table
+    = '`User Dimension` U left join `Staff Dimension` SD  on (`User Parent Key`=`Staff Key`)';
 
-
-$table = '`User Dimension` U ';
-
-$where = sprintf(
-    " where  `User Type`!='Customer' "
-);
-
-
+$where = " where  `User Type`='Staff' ";
 $wheref = '';
 if ($parameters['f_field'] == 'name' and $f_value != '') {
     $wheref .= " and  `User Alias` like '".addslashes($f_value)."%'    ";
@@ -32,6 +26,7 @@ if ($parameters['f_field'] == 'name' and $f_value != '') {
         $wheref .= sprintf(" and  %s=%d ", $parameters['f_field'], $f_value);
     }
 }
+
 
 
 switch ($parameters['elements_type']) {
@@ -60,6 +55,8 @@ switch ($parameters['elements_type']) {
 }
 
 
+
+
 $_order = $order;
 $_dir   = $order_direction;
 
@@ -79,8 +76,8 @@ if ($order == 'name') {
     $order = '`User Failed Login Count`';
 } elseif ($order == 'fail_last_login') {
     $order = '`User Last Failed Login`';
-} elseif ($order == 'type') {
-    $order = '`User Type`';
+} elseif ($order == 'payroll_id') {
+    $order = '`Staff ID`';
 } else {
     $order = '`User Key`';
 }
@@ -91,18 +88,13 @@ $sql_totals
 
 //print $sql_totals;
 
-/*
+
 $fields
-    = "`User Failed Login Count`,`User Last Failed Login`,`User Last Login`,`User Login Count`,`User Alias`,`User Handle`,`User Password Recovery Email`,`User Type`,`User Parent Key`,
+    = "`User Failed Login Count`,`User Last Failed Login`,`User Last Login`,`User Login Count`,`User Alias`,`User Handle`,`User Password Recovery Email`,`Staff Key`,`Staff ID`,
 	(select GROUP_CONCAT(S.`Store Code` SEPARATOR ', ') from `User Right Scope Bridge` URSB  left join `Store Dimension` S on (URSB.`Scope Key`=S.`Store Key`) where URSB.`User Key`=U.`User Key` and `Scope`='Store' ) as Stores,
 	(select GROUP_CONCAT(S.`Warehouse Code` SEPARATOR ', ') from `User Right Scope Bridge` URSB left join `Warehouse Dimension` S on (URSB.`Scope Key`=S.`Warehouse Key`) where URSB.`User Key`=U.`User Key`and `Scope`='Warehouse'  ) as Warehouses ,
 	(select GROUP_CONCAT(S.`Site Code` SEPARATOR ', ') from `User Right Scope Bridge` URSB left join `Site Dimension` S on (URSB.`Scope Key`=S.`Site Key`)  where URSB.`User Key`=U.`User Key`and `Scope`='Website'  ) as Sites ,
 
 	(select GROUP_CONCAT(S.`User Group Name` SEPARATOR ', ') from `User Group User Bridge` URSB left join `User Group Dimension` S on (URSB.`User Group Key`=S.`User Group Key`)   where URSB.`User Key`=U.`User Key` ) as Groups,`User Key`,`User Active`
 ";
-*/
 
-
-$fields
-    = "`User Failed Login Count`,`User Last Failed Login`,`User Last Login`,`User Login Count`,`User Alias`,`User Handle`,`User Password Recovery Email`,`User Type`,`User Parent Key`,`User Key`,`User Active`";
-?>

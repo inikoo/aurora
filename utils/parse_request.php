@@ -23,14 +23,12 @@ function parse_request($_data, $db, $modules, $account = '', $user = '', $is_set
     }
 
 
-
     $original_request = preg_replace('/^\//', '', $request);
 
-    $view_path        = preg_split('/\//', $original_request);
+    $view_path = preg_split('/\//', $original_request);
 
 
-
-    $view_path=array_filter($view_path);
+    $view_path = array_filter($view_path);
 
     $module     = 'utils';
     $section    = 'not_found';
@@ -2497,9 +2495,6 @@ function parse_request($_data, $db, $modules, $account = '', $user = '', $is_set
                     $parent_key = 1;
 
 
-
-
-
                 } elseif (is_numeric($arg1)) {
                     $section    = 'returns';
                     $parent     = 'warehouse';
@@ -2584,7 +2579,6 @@ function parse_request($_data, $db, $modules, $account = '', $user = '', $is_set
                     $section = 'forbidden';
                     break;
                 }
-
 
 
                 if (isset($view_path[0])) {
@@ -4801,7 +4795,54 @@ function parse_request($_data, $db, $modules, $account = '', $user = '', $is_set
                 }
 
                 break;
+            case 'users':
+                if (!$is_setup) {
 
+                    if (!$user->can_view('account')) {
+                        $module  = 'utils';
+                        $section = 'forbidden';
+                        break;
+                    }
+                }
+
+                $module  = 'users';
+                $section = 'users';
+
+
+
+                if (isset($view_path[0])) {
+
+                    if ($view_path[0] == 'staff') {
+                        $section = 'staff';
+
+                    } elseif ($view_path[0] == 'groups') {
+                        $section = 'groups';
+
+                    } elseif ($view_path[0] == 'contractors') {
+                        $section = 'contractors';
+                    } elseif ($view_path[0] == 'warehouse') {
+                        $section = 'warehouse';
+                    } elseif ($view_path[0] == 'root') {
+                        $section = 'root';
+                    } elseif ($view_path[0] == 'suppliers') {
+                        $section = 'suppliers';
+                    } elseif ($view_path[0] == 'agents') {
+                        $section = 'agents';
+                    }elseif ($view_path[0] == 'deleted_users') {
+                        if (!isset($_data['tab'])) {
+                            $_data['tab'] = 'deleted.users';
+                        }
+                    }elseif( is_numeric($view_path[0]) ) {
+
+                        $section = 'user';
+                        $object = 'user';
+                        $key = $view_path[0];
+
+                    }
+                }
+
+
+                break;
             case 'account':
 
 
@@ -4831,34 +4872,6 @@ function parse_request($_data, $db, $modules, $account = '', $user = '', $is_set
 
                         }
 
-
-                    } elseif ($view_path[0] == 'users') {
-                        $section = 'users';
-
-                        if (isset($view_path[1])) {
-
-                            if ($view_path[1] == 'staff') {
-                                $section = 'staff';
-
-                            } elseif ($view_path[1] == 'contractors') {
-                                $section = 'contractors';
-                            } elseif ($view_path[1] == 'warehouse') {
-                                $section = 'warehouse';
-                            } elseif ($view_path[1] == 'root') {
-                                $section = 'root';
-                            } elseif ($view_path[1] == 'suppliers') {
-                                $section = 'suppliers';
-                            } elseif ($view_path[1] == 'agents') {
-                                $section = 'agents';
-
-                            }
-                        }
-
-                    } elseif ($view_path[0] == 'deleted_users') {
-                        $section = 'users';
-                        if (!isset($_data['tab'])) {
-                            $_data['tab'] = 'account.deleted.users';
-                        }
 
                     } elseif ($view_path[0] == 'settings') {
                         $section = 'settings';
@@ -5405,7 +5418,7 @@ function parse_request($_data, $db, $modules, $account = '', $user = '', $is_set
     }
 
 
-   // print_r($_data);
+    // print_r($_data);
 
     list($tab, $subtab) = parse_tabs($module, $section, $_data, $modules);
 
@@ -5423,7 +5436,6 @@ function parse_request($_data, $db, $modules, $account = '', $user = '', $is_set
         'extra'      => $extra,
         'extra_tab'  => $extra_tab
     );
-
 
 
     if (isset($_data['otf'])) {
@@ -5449,9 +5461,6 @@ function parse_tabs($module, $section, $_data, $modules) {
     global $session;
 
 
-
-
-
     if (isset($_data['subtab'])) {
 
         // print_r($_data);
@@ -5470,8 +5479,6 @@ function parse_tabs($module, $section, $_data, $modules) {
 
 
         if (!empty($tmp[$module][$section]['tab'])) {
-
-
 
 
             $tab = $tmp[$module][$section]['tab'];
