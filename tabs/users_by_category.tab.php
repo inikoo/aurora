@@ -1,3 +1,4 @@
+
 <?php
 /*
  About:
@@ -10,7 +11,7 @@
 */
 
 
-$tab     = 'account.users';
+$tab     = 'user_categories';
 $ar_file = 'ar_users_tables.php';
 $tipo    = 'user_categories';
 
@@ -24,6 +25,11 @@ $parameters = array(
     'parent'     => '',
     'parent_key' => '',
 );
+
+
+$smarty->assign('title', _('Users by category'));
+$smarty->assign('view_position', '<i class=\"fal fa-users-class\"></i> '._('Users by category'));
+
 
 include('utils/get_table_html.php');
 

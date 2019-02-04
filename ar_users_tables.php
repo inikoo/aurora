@@ -95,24 +95,114 @@ function users($_data, $db, $user) {
 
     foreach ($db->query($sql) as $data) {
         if ($data['User Active'] == 'Yes') {
-            $active = _('Yes');
-            $active_icon=sprintf('<a class="fas fa-check-circle success" title="%s"></a>',_('Active'));
+            $active      = _('Yes');
+            $active_icon = sprintf('<a class="fas fa-check-circle success" title="%s"></a>', _('Active'));
         } else {
-            $active = _('No');
-            $active_icon=sprintf('<a class="fas fa-times-circle error" title="%s"></a>',_('Inactive'));
+            $active      = _('No');
+            $active_icon = sprintf('<a class="fas fa-times-circle error" title="%s"></a>', _('Inactive'));
         }
 
+
+        switch ($data['User Type']) {
+            case 'Staff':
+                $type = '<span class="link" onclick="change_view(\'employee/'.$data['User Parent Key'].'\')">'._('Employee').'</span>';
+                break;
+            case 'Contractor':
+                $type = '<span class="link" onclick="change_view(\'contractor/'.$data['User Parent Key'].'\')">'._('Contractor').'</span>';
+
+                break;
+            case 'Agent':
+                $type = '<span class="link" onclick="change_view(\'agent/'.$data['User Parent Key'].'\')">'._('Agent').'</span>';
+                break;
+            case 'Supplier':
+                $type = '<span class="link" onclick="change_view(\'supplier/'.$data['User Parent Key'].'\')">'._('Supplier').'</span>';
+
+                break;
+            case 'Warehouse':
+                $type = _('Warehouse');
+                break;
+
+            case 'Administrator':
+                $type = _('Administrator');
+                break;
+
+            default:
+                $type = $data['User Type'];
+        }
+
+
         // $groups     = preg_split('/,/', $data['Groups']);
-        $stores     = preg_split('/,/', $data['Stores']);
-        $warehouses = preg_split('/,/', $data['Warehouses']);
+        // $stores     = preg_split('/,/', $data['Stores']);
+        // $warehouses = preg_split('/,/', $data['Warehouses']);
         //$sites      = preg_split('/,/', $data['Sites']);
 
         $adata[] = array(
             'id'              => (integer)$data['User Key'],
-            'handle'          =>sprintf('<span class="link" onclick="change_view(\'account/user/%d\')">%s</span>', $data['User Key'],$data['User Handle']),
+            'type'            => $type,
+            'handle'          => sprintf('<span class="link" onclick="change_view(\'users/%d\')">%s</span>', $data['User Key'], $data['User Handle']),
             'name'            => $data['User Alias'],
-            'active_icon'          => $active_icon,
-            'active'          => $active, //todo remove this after update the vcols files
+            'email'           => $data['User Password Recovery Email'],
+            'active_icon'     => $active_icon,
+            'active'          => $active,
+            'logins'          => number($data['User Login Count']),
+            'last_login'      => ($data ['User Last Login'] == '' ? '' : strftime("%e %b %Y %H:%M %Z", strtotime($data ['User Last Login']." +00:00"))),
+            'fail_logins'     => number($data['User Failed Login Count']),
+            'fail_last_login' => ($data ['User Last Failed Login'] == '' ? '' : strftime("%e %b %Y %H:%M %Z", strtotime($data ['User Last Failed Login']." +00:00"))),
+
+            //'groups'     => $data['Groups'],
+            //'stores'     => $stores,
+            //'warehouses' => $warehouses,
+            //'websites'   => $data['Sites'],
+        );
+
+    }
+
+    $response = array(
+        'resultset' => array(
+            'state'         => 200,
+            'data'          => $adata,
+            'rtext'         => $rtext,
+            'sort_key'      => $_order,
+            'sort_dir'      => $_dir,
+            'total_records' => $total
+
+        )
+    );
+    echo json_encode($response);
+}
+
+function staff($_data, $db, $user) {
+
+    $rtext_label = 'user';
+    include_once 'prepare_table/init.php';
+
+    $sql = "select $fields from $table $where $wheref order by $order $order_direction limit $start_from,$number_results";
+
+    //print $sql;
+    $adata = array();
+
+    foreach ($db->query($sql) as $data) {
+        if ($data['User Active'] == 'Yes') {
+            $active      = _('Yes');
+            $active_icon = sprintf('<a class="fas fa-check-circle success" title="%s"></a>', _('Active'));
+        } else {
+            $active      = _('No');
+            $active_icon = sprintf('<a class="fas fa-times-circle error" title="%s"></a>', _('Inactive'));
+        }
+
+
+        $stores     = preg_split('/,/', $data['Stores']);
+        $warehouses = preg_split('/,/', $data['Warehouses']);
+
+        $adata[] = array(
+            'id'         => (integer)$data['User Key'],
+            'handle'     => sprintf('<span class="link" onclick="change_view(\'users/%d\')">%s</span>', $data['User Key'], $data['User Handle']),
+            'name'       => $data['User Alias'],
+            'email'      => $data['User Password Recovery Email'],
+            'payroll_id' => sprintf('<span class="link" onclick="change_view(\'employee/%d\')">%s</span>', $data['Staff Key'], $data['Staff ID']),
+
+            'active_icon'     => $active_icon,
+            'active'          => $active,
             'logins'          => number($data['User Login Count']),
             'last_login'      => ($data ['User Last Login'] == '' ? '' : strftime("%e %b %Y %H:%M %Z", strtotime($data ['User Last Login']." +00:00"))),
             'fail_logins'     => number($data['User Failed Login Count']),
@@ -148,38 +238,36 @@ function contractors($_data, $db, $user) {
 
     $sql = "select $fields from $table $where $wheref order by $order $order_direction limit $start_from,$number_results";
 
-
+    //print $sql;
     $adata = array();
 
     foreach ($db->query($sql) as $data) {
+
         if ($data['User Active'] == 'Yes') {
-            $is_active = _('Yes');
+            $active      = _('Yes');
+            $active_icon = sprintf('<a class="fas fa-check-circle success" title="%s"></a>', _('Active'));
         } else {
-            $is_active = _('No');
+            $active      = _('No');
+            $active_icon = sprintf('<a class="fas fa-times-circle error" title="%s"></a>', _('Inactive'));
         }
 
-        $groups     = preg_split('/,/', $data['Groups']);
+
         $stores     = preg_split('/,/', $data['Stores']);
         $warehouses = preg_split('/,/', $data['Warehouses']);
-        $sites      = preg_split('/,/', $data['Sites']);
 
         $adata[] = array(
-            'id'              => (integer)$data['User Key'],
-            'handle'          => $data['User Handle'],
-            'name'            => $data['User Alias'],
-            'active'          => $is_active,
+            'id'         => (integer)$data['User Key'],
+            'handle'     => sprintf('<span class="link" onclick="change_view(\'users/%d\')">%s</span>', $data['User Key'], $data['User Handle']),
+            'name'       => $data['User Alias'],
+            'email'      => $data['User Password Recovery Email'],
+            'payroll_id' => sprintf('<span class="link" onclick="change_view(\'contractor/%d\')">%s</span>', $data['Staff Key'], $data['Staff ID']),
+
+            'active_icon'     => $active_icon,
+            'active'          => $active,
             'logins'          => number($data['User Login Count']),
-            'last_login'      => ($data ['User Last Login'] == ''
-                ? ''
-                : strftime(
-                    "%e %b %Y %H:%M %Z", strtotime($data ['User Last Login']." +00:00")
-                )),
+            'last_login'      => ($data ['User Last Login'] == '' ? '' : strftime("%e %b %Y %H:%M %Z", strtotime($data ['User Last Login']." +00:00"))),
             'fail_logins'     => number($data['User Failed Login Count']),
-            'fail_last_login' => ($data ['User Last Failed Login'] == ''
-                ? ''
-                : strftime(
-                    "%e %b %Y %H:%M %Z", strtotime($data ['User Last Failed Login']." +00:00")
-                )),
+            'fail_last_login' => ($data ['User Last Failed Login'] == '' ? '' : strftime("%e %b %Y %H:%M %Z", strtotime($data ['User Last Failed Login']." +00:00"))),
 
             'groups'     => $data['Groups'],
             'stores'     => $stores,
@@ -213,24 +301,78 @@ function agents($_data, $db, $user) {
     $adata = array();
 
     foreach ($db->query($sql) as $data) {
+
+
         if ($data['User Active'] == 'Yes') {
-            $active_icon=sprintf('<a class="fas fa-check-circle success" title="%s"></a>',_('Active'));
+            $active      = _('Yes');
+            $active_icon = sprintf('<a class="fas fa-check-circle success" title="%s"></a>', _('Active'));
         } else {
-            $active_icon=sprintf('<a class="fas fa-times-circle error" title="%s"></a>',_('Inactive'));
+            $active      = _('No');
+            $active_icon = sprintf('<a class="fas fa-times-circle error" title="%s"></a>', _('Inactive'));
         }
 
 
         $adata[] = array(
             'id'              => (integer)$data['User Key'],
-            'handle'          =>sprintf('<span class="link" onclick="change_view(\'account/user/%d\')">%s</span>', $data['User Key'],$data['User Handle']),
+            'handle'          => sprintf('<span class="link" onclick="change_view(\'users/%d\')">%s</span>', $data['User Key'], $data['User Handle']),
             'name'            => $data['User Alias'],
+            'agent_link'      => sprintf('<span class="link" onclick="change_view(\'agent/%d\')">%s</span>', $data['Agent Key'], $data['Agent Code']),
+            'active_icon'     => $active_icon,
+            'active'          => $active,
+            'logins'          => number($data['User Login Count']),
+            'last_login'      => ($data ['User Last Login'] == '' ? '' : strftime("%e %b %Y %H:%M %Z", strtotime($data ['User Last Login']." +00:00"))),
+            'fail_logins'     => number($data['User Failed Login Count']),
+            'fail_last_login' => ($data ['User Last Failed Login'] == '' ? '' : strftime("%e %b %Y %H:%M %Z", strtotime($data ['User Last Failed Login']." +00:00"))),
+
+
+        );
+
+    }
+
+    $response = array(
+        'resultset' => array(
+            'state'         => 200,
+            'data'          => $adata,
+            'rtext'         => $rtext,
+            'sort_key'      => $_order,
+            'sort_dir'      => $_dir,
+            'total_records' => $total
+
+        )
+    );
+    echo json_encode($response);
+}
+
+function suppliers($_data, $db, $user) {
+
+    $rtext_label = 'user';
+    include_once 'prepare_table/init.php';
+
+    $sql   = "select $fields from $table $where $wheref order by $order $order_direction limit $start_from,$number_results";
+    $adata = array();
+
+
+    foreach ($db->query($sql) as $data) {
+
+
+        if ($data['User Active'] == 'Yes') {
+            $active_icon = sprintf('<a class="fas fa-check-circle success" title="%s"></a>', _('Active'));
+        } else {
+            $active_icon = sprintf('<a class="fas fa-times-circle error" title="%s"></a>', _('Inactive'));
+        }
+
+
+        $adata[] = array(
+            'id'              => (integer)$data['User Key'],
+            'handle'          => sprintf('<span class="link" onclick="change_view(\'users/%d\')">%s</span>', $data['User Key'], $data['User Handle']),
+            'name'            => $data['User Alias'],
+            'supplier_link'   => sprintf('<span class="link" onclick="change_view(\'supplier/%d\')">%s</span>', $data['Supplier Key'], $data['Supplier Code']),
             'active_icon'          => $active_icon,
             'logins'          => number($data['User Login Count']),
             'last_login'      => ($data ['User Last Login'] == '' ? '' : strftime("%e %b %Y %H:%M %Z", strtotime($data ['User Last Login']." +00:00"))),
             'fail_logins'     => number($data['User Failed Login Count']),
             'fail_last_login' => ($data ['User Last Failed Login'] == '' ? '' : strftime("%e %b %Y %H:%M %Z", strtotime($data ['User Last Failed Login']." +00:00"))),
 
-            'groups'     => $data['Groups'],
 
         );
 
@@ -340,27 +482,27 @@ function user_categories($_data, $db, $user) {
         switch ($data['User Type']) {
             case 'Staff':
                 $type    = _('Employees');
-                $request = 'account/users/staff';
+                $request = 'users/staff';
                 break;
             case 'Contractor':
                 $type    = _('Contractors');
-                $request = 'account/users/contractors';
+                $request = 'users/contractors';
                 break;
             case 'Warehouse':
                 $type    = _('Warehouse');
-                $request = 'account/users/warehouse';
+                $request = 'users/warehouse';
                 break;
             case 'Administrator':
                 $type    = _('Administrator');
-                $request = 'account/users/root';
+                $request = 'users/root';
                 break;
             case 'Supplier':
                 $type    = _('Suppliers');
-                $request = 'account/users/suppliers';
+                $request = 'users/suppliers';
                 break;
             case 'Agent':
                 $type    = _('Agents');
-                $request = 'account/users/agents';
+                $request = 'users/agents';
                 break;
             default:
                 $type = '**'.$data['User Type'];
@@ -368,9 +510,10 @@ function user_categories($_data, $db, $user) {
         }
 
         $adata[] = array(
-            'request'      => $request,
-            'type'         => $type,
-            'active_users' => number($data['active_users']),
+            'request'        => $request,
+            'type'           => sprintf('<span class="link" onclick="change_view(\'%s\')">%s</span>', $request, $type),
+            'active_users'   => number($data['active_users']),
+            'inactive_users' => number($data['inactive_users']),
         );
 
     }
@@ -488,7 +631,7 @@ function api_keys($_data, $db, $user) {
 
         $adata[] = array(
             'id'     => (integer)$data['API Key Key'],
-            'code'   => sprintf('<span class="link" onclick="change_view(\'account/user/%d/api_key/%d\')">%s</span>', $data['API Key User Key'], $data['API Key Key'], $data['API Key Code']),
+            'code'   => sprintf('<span class="link" onclick="change_view(\'users/%d/api_key/%d\')">%s</span>', $data['API Key User Key'], $data['API Key Key'], $data['API Key Code']),
             'active' => $active,
             'scope'  => $scope,
 
@@ -543,7 +686,7 @@ function deleted_api_keys($_data, $db, $user) {
 
         $adata[] = array(
             'id'           => (integer)$data['API Key Deleted Key'],
-            'code'         => sprintf('<span class="link" onclick="change_view(\'account/user/%d/api_key/%d\')">%s</span>', $data['API Key Deleted User Key'], $data['API Key Deleted Key'], $data['API Key Deleted Code']),
+            'code'         => sprintf('<span class="link" onclick="change_view(\'users/%d/api_key/%d\')">%s</span>', $data['API Key Deleted User Key'], $data['API Key Deleted Key'], $data['API Key Deleted Code']),
             'scope'        => $scope,
             'deleted_date' => strftime("%a %e %b %Y %H:%M %Z", strtotime($data['API Key Deleted Date'])),
         );
@@ -630,9 +773,7 @@ function api_requests($_data, $db, $user) {
                 'formatted_id' => sprintf('%04d', $data['API Key Key']),
                 'user'         => $data['User Alias'],
 
-                'date'          => ($data['Date'] != '' ? strftime(
-                    "%a %e %b %Y %H:%M %Z", strtotime($data['Date'])
-                ) : ''),
+                'date'          => ($data['Date'] != '' ? strftime("%a %e %b %Y %H:%M %Z", strtotime($data['Date'])) : ''),
                 'ip'            => $data['IP'],
                 'method'        => $data['HTTP Method'],
                 'response'      => $response,

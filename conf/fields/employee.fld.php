@@ -517,7 +517,7 @@ if (!$new) {
 
 
         $object_fields[] = array(
-            'label'      => _('System user').' <i  onClick="change_view(\'account/user/'.$employee->get(
+            'label'      => _('System user').' <i  onClick="change_view(\'users/'.$employee->get(
                     'Staff User Key'
                 ).'\')" class="fa fa-terminal link"></i>',
             'show_title' => true,

@@ -1159,7 +1159,7 @@ $modules = array(
                     'order.input_picking_sheet' => array(
                         'label' => _('Picking/Packing data entry'),
                         'icon'  => 'keyboard',
-                        'class'=>'hide'
+                        'class' => 'hide'
                     ),
 
 
@@ -1196,14 +1196,14 @@ $modules = array(
 
             ),
 
-            'deleted_invoice'        => array(
+            'deleted_invoice' => array(
                 'type' => 'object',
                 'tabs' => array(
-                    'deleted_invoice.items'    => array(
+                    'deleted_invoice.items' => array(
                         'label' => _('Items'),
                         'icon'  => 'bars'
                     ),
-                    'invoice.history' => array(
+                    'invoice.history'       => array(
                         'label' => _('History'),
                         'icon'  => 'road'
                     ),
@@ -1997,7 +1997,7 @@ $modules = array(
                 'icon'      => 'backspace',
                 'reference' => 'returns/all',
                 'tabs'      => array(
-                    'returns_server'         => array(
+                    'returns_server' => array(
                         'icon'  => 'backspace',
                         'label' => _('Returns'),
 
@@ -2342,14 +2342,14 @@ $modules = array(
             ),
 
 
-            'deleted_invoice'        => array(
+            'deleted_invoice' => array(
                 'type' => 'object',
                 'tabs' => array(
-                    'deleted_invoice.items'    => array(
+                    'deleted_invoice.items' => array(
                         'label' => _('Items'),
                         'icon'  => 'bars'
                     ),
-                    'invoice.history' => array(
+                    'invoice.history'       => array(
                         'label' => _('History'),
                         'icon'  => 'road'
                     ),
@@ -4391,11 +4391,11 @@ $modules = array(
                     ),
 
                     'bill_of_materials_edit' => array(
-                        'class'=>'hide',
+                        'class' => 'hide',
                         'label' => _('Edit bill of materials'),
                         'icon'  => 'puzzle-piece'
                     ),
-                    'production_part.tasks' => array(
+                    'production_part.tasks'  => array(
                         'label' => _('List of tasks'),
                         'icon'  => 'tasks'
                     ),
@@ -4435,7 +4435,7 @@ $modules = array(
 
             ),
 */
-            'materials' => array(
+            'materials'        => array(
                 'type'      => 'navigation',
                 'label'     => _('Materials'),
                 'icon'      => 'puzzle-piece',
@@ -5372,7 +5372,7 @@ $modules = array(
         )
     ),
 
-    'inventory'       => array(
+    'inventory'  => array(
         'sections' => array(
 
             'dashboard' => array(
@@ -5932,7 +5932,7 @@ $modules = array(
 
         )
     ),
-    'warehouses'      => array(
+    'warehouses' => array(
         'sections' => array(
 
 
@@ -6053,15 +6053,15 @@ $modules = array(
 
 
                     'warehouse.locations' => array(
-                        'label' => _('Locations'),
-                        'icon'  => 'pallet',
+                        'label'             => _('Locations'),
+                        'icon'              => 'pallet',
                         'dynamic_reference' => 'warehouse/%d/locations',
 
                     ),
                     'warehouse.areas'     => array(
-                        'label'     => _('Warehouse areas'),
-                        'title'     => _('Warehouse areas (Rankings, aisles, rooms)'),
-                        'icon'      => 'inventory',
+                        'label'             => _('Warehouse areas'),
+                        'title'             => _('Warehouse areas (Rankings, aisles, rooms)'),
+                        'icon'              => 'inventory',
                         'dynamic_reference' => 'warehouse/%d/areas',
 
                     ),
@@ -6292,7 +6292,7 @@ $modules = array(
 
         )
     ),
-    'reports'         => array(
+    'reports'    => array(
 
         'sections' => array(
             'reports' => array(
@@ -6605,7 +6605,7 @@ $modules = array(
 
         )
     ),
-    'hr'              => array(
+    'hr'         => array(
 
         'sections' => array(
             'employees' => array(
@@ -7096,7 +7096,7 @@ $modules = array(
 
         )
     ),
-    'profile'         => array(
+    'profile'    => array(
 
 
         'sections' => array(
@@ -7154,6 +7154,259 @@ $modules = array(
         )
 
     ),
+
+
+    'users' => array(
+
+
+        'sections' => array(
+
+
+            'users' => array(
+                'type'      => 'navigation',
+                'label'     => _('Users').' ('._('All').')',
+                'icon'      => 'users-class',
+                'reference' => 'users',
+
+                'tabs' => array(
+                    'users'             => array(
+                        'label' => _('Users')
+                    ),
+                    'users_by_category' => array(
+                        'label' => _('Users categories')
+                    ),
+
+
+                    'deleted.users' => array(
+                        'label' => _('Deleted users'),
+                        'class' => 'right'
+                    ),
+                )
+            ),
+            /*
+            'groups' => array(
+                'type'  => 'navigation',
+                'label' => _('Groups'),
+                'icon'  => 'ball-pile',
+                'reference' => 'users/groups',
+                'tabs'  => array(
+                    'users.groups' => array(
+                        'label' => _('groups')
+                    ),
+                )
+            ),
+*/
+            'staff' => array(
+                'type'      => 'navigation',
+                'label'     => _('Employees'),
+                'icon'      => 'user-headset',
+                'reference' => 'users/staff',
+
+                'tabs' => array(
+                    'users.staff'        => array(
+                        'label' => _('Users')
+                    ),
+
+                    'users.staff.login_history' => array(
+                        'label' => _('Login History')
+                    ),
+                    'deleted.staff.users'       => array(
+                        'label' => _('Deleted users'),
+                        'class' => 'right'
+                    ),
+                )
+            ),
+
+
+            'contractors' => array(
+                'type'      => 'navigation',
+                'label'     => _('Contractors'),
+                'icon'      => 'user-hard-hat',
+                'reference' => 'users/contractors',
+
+                'tabs' => array(
+                    'users.contractors'        => array(
+                        'label' => _('Users')
+                    ),
+
+
+                    'users.contractors.login_history' => array(
+                        'label' => _('Login History')
+                    ),
+                    'deleted.contractors.users'       => array(
+                        'label' => _('Deleted users'),
+                        'class' => 'right'
+                    ),
+                )
+            ),
+
+
+            'suppliers' => array(
+                'type'  => 'navigation',
+                'label' => _('Suppliers'),
+                'reference' => 'users/suppliers',
+
+                'icon'  => 'hand-holding-box',
+                'tabs'  => array(
+                    'users.suppliers' => array(
+                        'label' => _(
+                            'Suppliers'
+                        )
+                    ),
+                )
+            ),
+
+            'agents' => array(
+                'type'  => 'navigation',
+                'label' => _('Agents'),
+                'icon'  => 'user-secret',
+                'reference' => 'users/agents',
+
+                'tabs'  => array(
+                    'users.agents' => array(
+                        'label' => _(
+                            'Agents'
+                        )
+                    ),
+                )
+            ),
+            /*
+                        'others'      => array(
+                            'type'  => 'navigation',
+                            'label' => _('Other'),
+                            'icon'  => 'users-crown',
+                            'reference' => 'users/others',
+
+                            'tabs'  => array(
+                                'root.user' => array(
+                                    'label' => _('Root user')
+                                ),
+                                'warehouse.user' => array(
+                                    'label' => _('Warehouse user')
+                                ),
+                            )
+                        ),
+
+            */
+
+            'user' => array(
+                'type' => 'object',
+                'tabs' => array(
+                    'user.details'       => array(
+                        'label' => _(
+                            'Data'
+                        ),
+                        'icon'  => 'database',
+                        'title' => _(
+                            'Details'
+                        )
+                    ),
+                    'user.login_history' => array(
+                        'label' => _(
+                            'Login history'
+                        ),
+                        'title' => _('Login history'),
+                        'icon'  => 'sign-in'
+                    ),
+                    'user.api_keys'      => array(
+                        'label' => _('API keys'),
+                        'icon'  => 'key'
+                    ),
+
+
+                    'user.history'          => array(
+                        'label' => '',
+                        'title' => _('History/Notes'),
+                        'icon'  => 'road',
+                        'class' => 'right icon_only'
+                    ),
+                    'user.deleted_api_keys' => array(
+                        'icon'  => 'ban',
+                        'label' => _('Deleted API keys'),
+                        'title' => _('Deleted API keys'),
+                        'class' => 'right icon_only'
+                    ),
+
+
+                )
+            ),
+
+
+            'deleted.user' => array(
+                'type' => 'object',
+                'tabs' => array(
+
+                    'deleted.user.login_history' => array(
+                        'label' => _(
+                            'Login history'
+                        ),
+                        'title' => _(
+                            'Login history'
+                        )
+                    ),
+                    'deleted.user.history'       => array(
+                        'label' => _(
+                            'History/Notes'
+                        ),
+                        'icon'  => 'road',
+                        'class' => 'right icon_only'
+                    )
+
+                )
+
+            ),
+
+
+            'user.api_key.new' => array(
+                'type' => 'new_object',
+                'tabs' => array(
+                    'user.api_key.new' => array(
+                        'label' => _(
+                            'New API'
+                        )
+                    ),
+
+                )
+            ),
+            'user.api_key'     => array(
+                'type' => 'object',
+                'tabs' => array(
+                    'user.api_key.details'  => array(
+                        'label' => _('Data'),
+                        'icon'  => 'database'
+                    ),
+                    'user.api_key.requests' => array(
+                        'label' => _('Requests'),
+                        'icon'  => 'arrow-circle-right'
+                    ),
+                    'user.api_key.history'  => array(
+                        'label' => _('History/Notes'),
+                        'icon'  => 'road',
+                        'class' => 'right icon_only'
+                    ),
+
+                )
+            ),
+            'deleted_api_key'  => array(
+                'type'     => 'object',
+                'showcase' => 'deleted_api_key',
+                'tabs'     => array(
+
+                    'api_key.history' => array(
+                        'label' => _('History/Notes'),
+                        'icon'  => 'road',
+                        'class' => 'right icon_only'
+                    ),
+
+
+                )
+            ),
+
+
+        )
+
+    ),
+
     'account'         => array(
 
 
@@ -7230,25 +7483,6 @@ $modules = array(
                 )
             ),
 
-            'users' => array(
-                'type'      => 'navigation',
-                'label'     => _('Users'),
-                'icon'      => 'terminal',
-                'reference' => 'account/users',
-                'tabs'      => array(
-                    'account.users'         => array(
-                        'label' => _(
-                            'Users categories'
-                        )
-                    ),
-                    'account.deleted.users' => array(
-                        'label' => _(
-                            'Deleted users'
-                        ),
-                        'class' => 'right'
-                    ),
-                )
-            ),
 
             'orders_index' => array(
                 'type'      => '',
@@ -7441,203 +7675,6 @@ $modules = array(
             ),
 
 
-            'staff' => array(
-                'type'      => 'object',
-                'label'     => _('Staff'),
-                'title'     => _("Staff users"),
-                'icon'      => 'hand-rock',
-                'reference' => 'users',
-                'tabs'      => array(
-                    'account.users.staff'       => array(
-                        'label' => _(
-                            'Users'
-                        )
-                    ),
-                    'users.staff.groups'        => array(
-                        'label' => _(
-                            "Groups"
-                        )
-                    ),
-                    'users.staff.login_history' => array(
-                        'label' => _(
-                            'Login History'
-                        )
-                    ),
-
-                )
-
-            ),
-
-            'suppliers' => array(
-                'type'      => 'object',
-                'label'     => _('Suppliers'),
-                'title'     => _('Suppliers users'),
-                'icon'      => 'hand-holding-box',
-                'reference' => 'users/suppliers',
-            ),
-            'warehouse' => array(
-                'type'      => 'object',
-                'label'     => _('Warehouse'),
-                'title'     => _('Warehouse users'),
-                'icon'      => 'warehouse-alt',
-                'reference' => 'users/warehouse',
-            ),
-            'root'      => array(
-                'type'      => 'object',
-                'label'     => 'Root',
-                'title'     => _('Root user'),
-                'icon'      => 'dot-circle',
-                'reference' => 'suppliers',
-            ),
-            'user'      => array(
-                'type' => 'object',
-                'tabs' => array(
-                    'user.details'       => array(
-                        'label' => _(
-                            'Data'
-                        ),
-                        'icon'  => 'database',
-                        'title' => _(
-                            'Details'
-                        )
-                    ),
-                    'user.login_history' => array(
-                        'label' => _(
-                            'Login history'
-                        ),
-                        'title' => _('Login history'),
-                        'icon'  => 'sign-in'
-                    ),
-                    'user.api_keys'      => array(
-                        'label' => _('API keys'),
-                        'icon'  => 'key'
-                    ),
-
-
-                    'user.history'          => array(
-                        'label' => '',
-                        'title' => _('History/Notes'),
-                        'icon'  => 'road',
-                        'class' => 'right icon_only'
-                    ),
-                    'user.deleted_api_keys' => array(
-                        'icon'  => 'ban',
-                        'label' => _('Deleted API keys'),
-                        'title' => _('Deleted API keys'),
-                        'class' => 'right icon_only'
-                    ),
-
-
-                )
-            ),
-
-
-            'deleted.user' => array(
-                'type' => 'object',
-                'tabs' => array(
-
-                    'deleted.user.login_history' => array(
-                        'label' => _(
-                            'Login history'
-                        ),
-                        'title' => _(
-                            'Login history'
-                        )
-                    ),
-                    'deleted.user.history'       => array(
-                        'label' => _(
-                            'History/Notes'
-                        ),
-                        'icon'  => 'road',
-                        'class' => 'right icon_only'
-                    )
-
-                )
-
-            ),
-
-
-            'user.api_key.new' => array(
-                'type' => 'new_object',
-                'tabs' => array(
-                    'user.api_key.new' => array(
-                        'label' => _(
-                            'New API'
-                        )
-                    ),
-
-                )
-            ),
-            'user.api_key'     => array(
-                'type' => 'object',
-                'tabs' => array(
-                    'user.api_key.details'  => array(
-                        'label' => _('Data'),
-                        'icon'  => 'database'
-                    ),
-                    'user.api_key.requests' => array(
-                        'label' => _('Requests'),
-                        'icon'  => 'arrow-circle-right'
-                    ),
-                    'user.api_key.history'  => array(
-                        'label' => _('History/Notes'),
-                        'icon'  => 'road',
-                        'class' => 'right icon_only'
-                    ),
-
-                )
-            ),
-            'deleted_api_key'  => array(
-                'type'     => 'object',
-                'showcase' => 'deleted_api_key',
-                'tabs'     => array(
-
-                    'api_key.history' => array(
-                        'label' => _('History/Notes'),
-                        'icon'  => 'road',
-                        'class' => 'right icon_only'
-                    ),
-
-
-                )
-            ),
-
-            'agents'      => array(
-                'type'  => '',
-                'label' => _('Agents'),
-                'icon'  => 'terminal',
-                'tabs'  => array(
-                    'account.users.agents' => array(
-                        'label' => _(
-                            'Agents'
-                        )
-                    ),
-                )
-            ),
-            'suppliers'   => array(
-                'type'  => '',
-                'label' => _('Suppliers'),
-                'icon'  => 'terminal',
-                'tabs'  => array(
-                    'account.users.suppliers' => array(
-                        'label' => _(
-                            'Suppliers'
-                        )
-                    ),
-                )
-            ),
-            'contractors' => array(
-                'type'  => '',
-                'label' => _('Contractors'),
-                'icon'  => 'terminal',
-                'tabs'  => array(
-                    'account.users.contractors' => array(
-                        'label' => _(
-                            'Contractors'
-                        )
-                    ),
-                )
-            ),
 
 
         )

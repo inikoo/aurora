@@ -10,7 +10,7 @@
 */
 
 
-$where  = " where `User Type`!='Customer' and `User Active`='Yes'  ";
+$where  = " where `User Type`!='Customer'  ";
 $wheref = '';
 
 $_order = $order;
@@ -19,7 +19,9 @@ $_dir   = $order_direction;
 
 if ($order == 'active_users') {
     $order = 'active_users';
-} else {
+}elseif ($order == 'inactive_users') {
+    $order = 'inactive_users';
+}else {
     $order = 'U.`User Type`';
 }
 
@@ -29,6 +31,6 @@ $table = '`User Dimension` U';
 
 $sql_totals = false;
 
-$fields = "`User Type`,count(*) as active_users";
+$fields = "`User Type`,sum(if(`User Active`='Yes',1,0)) as active_users,sum(if(`User Active`='No',1,0)) as inactive_users";
 
 ?>

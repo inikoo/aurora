@@ -693,7 +693,7 @@ if ($object->get('Supplier Type') != 'Archived') {
 
 
             $object_fields[]=array(
-                'label'=>_('System user').' <i  onClick="change_view(\'account/user/'.$object->get('Supplier User Key').'\')" class="fa fa-link link"></i>',
+                'label'=>_('System user').' <i  onClick="change_view(\'users/'.$object->get('Supplier User Key').'\')" class="fa fa-link link"></i>',
                 'show_title'=>true,
                 'class'=>'edit_fields',
                 'fields'=>array(

@@ -10,7 +10,7 @@
 */
 
 
-$tab     = 'account.deleted.users';
+$tab     = 'deleted.users';
 $ar_file = 'ar_users_tables.php';
 $tipo    = 'deleted_users';
 
@@ -42,7 +42,12 @@ $parameters = array(
 );
 
 
+
+$smarty->assign('title', _('Deleted users').' ('._('All').')');
+$smarty->assign('view_position', '<i class=\"fal fa-users-class\"></i> '._('Deleted users'));
+
+
 include('utils/get_table_html.php');
 
 
-?>
+

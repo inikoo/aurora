@@ -10,28 +10,29 @@
 */
 
 
-$tab     = 'account.users.agents';
+$tab     = 'users.contractors';
 $ar_file = 'ar_users_tables.php';
-$tipo    = 'agents';
+$tipo    = 'contractors';
 
 $default = $user->get_tab_defaults($tab);
 
 
 $table_views = array(
-    'privileges' => array('label' => _('Overview')),
-    'groups'      => array('label' => _('Permissions')),
+    'overview' => array('label' => _('Overview')),
+    'privileges'      => array('label' => _('Permissions')),
+    'groups'      => array('label' => _('Groups')),
     'weblog'      => array('label' => _('Syslog')),
 
 );
 
 $table_filters = array(
-    'handle' => array('label' => _('Email')),
+    'handle' => array('label' => _('Handle')),
     'name'   => array('label' => _('Name')),
 
 );
 
 $parameters = array(
-    'parent'     => $state['parent'],
+    'parent'     => 'account',
     'parent_key' => $state['parent_key'],
 
 );

@@ -471,6 +471,16 @@ if ($user->can_view('account')) {
 
 
     $nav_menu[] = array(
+        '<i class="button fal fa-users-class fa-fw"></i>',
+        _('Users'),
+        '/users',
+        'users',
+        'module',
+        ''
+    );
+
+
+    $nav_menu[] = array(
         '<i class="button far fa-toolbox fa-fw"></i>',
         _('Account'),
         '/account',

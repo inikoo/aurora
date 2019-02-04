@@ -2646,11 +2646,7 @@ function get_navigation($user, $smarty, $data, $db, $account) {
                         $data, $smarty, $user, $db, $account
                     );
                     break;
-                case ('users'):
-                    return get_users_navigation(
-                        $data, $smarty, $user, $db, $account
-                    );
-                    break;
+
                 case ('data_sets'):
                     return get_data_sets_navigation(
                         $data, $smarty, $user, $db, $account
@@ -2711,79 +2707,12 @@ function get_navigation($user, $smarty, $data, $db, $account) {
                         $data, $smarty, $user, $db, $account
                     );
                     break;
-                case ('staff'):
-                    return get_staff_navigation(
-                        $data, $smarty, $user, $db, $account
-                    );
-                    break;
-                case ('contractors'):
-                    return get_contractors_navigation(
-                        $data, $smarty, $user, $db, $account
-                    );
-                    break;
-                case ('suppliers'):
-                    return get_suppliers_navigation(
-                        $data, $smarty, $user, $db, $account
-                    );
-                    break;
-                case ('agents'):
-                    return get_agents_navigation(
-                        $data, $smarty, $user, $db, $account
-                    );
-                    break;
-                case ('warehouse'):
-                    return get_warehouse_navigation(
-                        $data, $smarty, $user, $db, $account
-                    );
-                    break;
-                case ('root'):
-                    return get_root_navigation(
-                        $data, $smarty, $user, $db, $account
-                    );
-                    break;
-                case ('user'):
-                    return get_user_navigation(
-                        $data, $smarty, $user, $db, $account
-                    );
-                    break;
-                case ('deleted.user'):
-                    return get_deleted_user_navigation(
-                        $data, $smarty, $user, $db, $account
-                    );
-                    break;
-                case ('suppliers.user'):
-                    return get_supplierss_user_navigation(
-                        $data, $smarty, $user, $db, $account
-                    );
-                    break;
-
-                case ('warehouse.user'):
-                    return get_warehouse_user_navigation(
-                        $data, $smarty, $user, $db, $account
-                    );
-                    break;
-                case ('root.user'):
-                    return get_root_user_navigation(
-                        $data, $smarty, $user, $db, $account
-                    );
-                    break;
                 case ('settings'):
                     return get_settings_navigation(
                         $data, $smarty, $user, $db, $account
                     );
                     break;
-                case ('user.api_key') :
-                    return get_api_key_navigation(
-                        $data, $smarty, $user, $db, $account
-                    );
-                    break;
-                case ('user.api_key.new') :
-                    return get_new_api_key_navigation($data, $smarty, $user, $db, $account);
-                case ('deleted_api_key') :
-                    return get_deleted_api_key_navigation(
-                        $data, $smarty, $user, $db, $account
-                    );
-                    break;
+
 
 
             }
@@ -2884,6 +2813,87 @@ function get_navigation($user, $smarty, $data, $db, $account) {
                     );
                     break;
 
+
+            }
+            break;
+        case 'users':
+            require_once 'navigation/users.nav.php';
+            switch ($data['section']) {
+                case ('users'):
+                    return get_users_navigation(
+                        $data, $smarty, $user, $db, $account
+                    );
+                    break;
+
+
+                case ('staff'):
+                    return get_staff_navigation(
+                        $data, $smarty, $user, $db, $account
+                    );
+                    break;
+                case ('contractors'):
+                    return get_contractors_navigation(
+                        $data, $smarty, $user, $db, $account
+                    );
+                    break;
+                case ('suppliers'):
+                    return get_suppliers_navigation(
+                        $data, $smarty, $user, $db, $account
+                    );
+                    break;
+                case ('agents'):
+                    return get_agents_navigation(
+                        $data, $smarty, $user, $db, $account
+                    );
+                    break;
+                case ('warehouse'):
+                    return get_warehouse_navigation(
+                        $data, $smarty, $user, $db, $account
+                    );
+                    break;
+                case ('root'):
+                    return get_root_navigation(
+                        $data, $smarty, $user, $db, $account
+                    );
+                    break;
+                case ('user'):
+                    return get_user_navigation(
+                        $data, $smarty, $user, $db, $account
+                    );
+                    break;
+                case ('deleted.user'):
+                    return get_deleted_user_navigation(
+                        $data, $smarty, $user, $db, $account
+                    );
+                    break;
+                case ('suppliers.user'):
+                    return get_supplierss_user_navigation(
+                        $data, $smarty, $user, $db, $account
+                    );
+                    break;
+
+                case ('warehouse.user'):
+                    return get_warehouse_user_navigation(
+                        $data, $smarty, $user, $db, $account
+                    );
+                    break;
+                case ('root.user'):
+                    return get_root_user_navigation(
+                        $data, $smarty, $user, $db, $account
+                    );
+                    break;
+                case ('user.api_key') :
+                    return get_api_key_navigation(
+                        $data, $smarty, $user, $db, $account
+                    );
+                    break;
+                case ('user.api_key.new') :
+                    return get_new_api_key_navigation($data, $smarty, $user, $db, $account);
+                case ('deleted_api_key') :
+                    return get_deleted_api_key_navigation(
+                        $data, $smarty, $user, $db, $account
+                    );
+                    break;
 
             }
             break;
@@ -8591,58 +8601,58 @@ function get_view_position($db, $state, $user, $smarty, $account) {
                 $branch[] = array(
                     'label'     => _('Users'),
                     'icon'      => 'terminal',
-                    'reference' => 'account/users'
+                    'reference' => 'users'
                 );
 
             } elseif ($state['section'] == 'staff') {
                 $branch[] = array(
                     'label'     => _('Users'),
                     'icon'      => '',
-                    'reference' => 'account/users'
+                    'reference' => 'users'
                 );
                 $branch[] = array(
                     'label'     => _('Employees'),
                     'icon'      => 'terminal',
-                    'reference' => 'account/users/staff'
+                    'reference' => 'users/staff'
                 );
             } elseif ($state['section'] == 'contractors') {
                 $branch[] = array(
                     'label'     => _('Users'),
                     'icon'      => '',
-                    'reference' => 'account/users'
+                    'reference' => 'users'
                 );
                 $branch[] = array(
                     'label'     => _('Contractors'),
                     'icon'      => 'terminal',
-                    'reference' => 'account/users/contractors'
+                    'reference' => 'users/contractors'
                 );
             } elseif ($state['section'] == 'suppliers') {
                 $branch[] = array(
                     'label'     => _('Users'),
                     'icon'      => '',
-                    'reference' => 'account/users'
+                    'reference' => 'users'
                 );
                 $branch[] = array(
                     'label'     => _('Suppliers'),
                     'icon'      => 'terminal',
-                    'reference' => 'account/users/suppliers'
+                    'reference' => 'users/suppliers'
                 );
             } elseif ($state['section'] == 'agents') {
                 $branch[] = array(
                     'label'     => _('Users'),
                     'icon'      => '',
-                    'reference' => 'account/users'
+                    'reference' => 'users'
                 );
                 $branch[] = array(
                     'label'     => _('Agents'),
                     'icon'      => 'terminal',
-                    'reference' => 'account/users/agents'
+                    'reference' => 'users/agents'
                 );
             } elseif ($state['section'] == 'user') {
                 $branch[] = array(
                     'label'     => _('Users'),
                     'icon'      => '',
-                    'reference' => 'account/users'
+                    'reference' => 'users'
                 );
 
 
@@ -8651,28 +8661,28 @@ function get_view_position($db, $state, $user, $smarty, $account) {
                         $branch[] = array(
                             'label'     => _('Employees'),
                             'icon'      => '',
-                            'reference' => 'account/users/staff'
+                            'reference' => 'users/staff'
                         );
                         break;
                     case 'Contractor':
                         $branch[] = array(
                             'label'     => _('Contractors'),
                             'icon'      => '',
-                            'reference' => 'account/users/contractors'
+                            'reference' => 'users/contractors'
                         );
                         break;
                     case 'Agent':
                         $branch[] = array(
                             'label'     => _('Agents'),
                             'icon'      => '',
-                            'reference' => 'account/users/agents'
+                            'reference' => 'users/agents'
                         );
                         break;
                     case 'Suppliers':
                         $branch[] = array(
                             'label'     => _('Suppliers'),
                             'icon'      => '',
-                            'reference' => 'account/users/suppliers'
+                            'reference' => 'users/suppliers'
                         );
                         break;
                     default:
@@ -8684,7 +8694,7 @@ function get_view_position($db, $state, $user, $smarty, $account) {
                 $branch[] = array(
                     'label'     => '<span id="id">'.$state['_object']->get('User Handle').'</span>',
                     'icon'      => 'terminal',
-                    'reference' => 'account/user/'.$state['_object']->id
+                    'reference' => 'users/'.$state['_object']->id
                 );
 
             } elseif ($state['section'] == 'deleted.user') {
@@ -8698,7 +8708,7 @@ function get_view_position($db, $state, $user, $smarty, $account) {
                 $branch[] = array(
                     'label'     => '<span id="id">'.$state['_object']->get('User Handle').'</span>  <i class="far fa-trash-alt padding_left_5" aria-hidden="true"></i> ',
                     'icon'      => 'terminal',
-                    'reference' => 'account/user/'.$state['_object']->id
+                    'reference' => 'users/'.$state['_object']->id
                 );
 
             } elseif ($state['section'] == 'user.api_key') {
@@ -8706,7 +8716,7 @@ function get_view_position($db, $state, $user, $smarty, $account) {
                 $branch[] = array(
                     'label'     => _('Users'),
                     'icon'      => '',
-                    'reference' => 'account/users'
+                    'reference' => 'users'
                 );
 
                 switch ($state['_parent']->get('User Type')) {
@@ -8714,28 +8724,28 @@ function get_view_position($db, $state, $user, $smarty, $account) {
                         $branch[] = array(
                             'label'     => _('Employees'),
                             'icon'      => '',
-                            'reference' => 'account/users/staff'
+                            'reference' => 'users/staff'
                         );
                         break;
                     case 'Contractor':
                         $branch[] = array(
                             'label'     => _('Contractors'),
                             'icon'      => '',
-                            'reference' => 'account/users/contractors'
+                            'reference' => 'users/contractors'
                         );
                         break;
                     case 'Agent':
                         $branch[] = array(
                             'label'     => _('Agents'),
                             'icon'      => '',
-                            'reference' => 'account/users/agents'
+                            'reference' => 'users/agents'
                         );
                         break;
                     case 'Suppliers':
                         $branch[] = array(
                             'label'     => _('Suppliers'),
                             'icon'      => '',
-                            'reference' => 'account/users/suppliers'
+                            'reference' => 'users/suppliers'
                         );
                         break;
                     default:
@@ -8745,7 +8755,7 @@ function get_view_position($db, $state, $user, $smarty, $account) {
                 $branch[] = array(
                     'label'     => '<span >'.$state['_parent']->get('User Handle').'</span>',
                     'icon'      => 'terminal',
-                    'reference' => 'account/user/'.$state['_parent']->id
+                    'reference' => 'users/'.$state['_parent']->id
                 );
 
                 $branch[] = array(
@@ -8760,7 +8770,7 @@ function get_view_position($db, $state, $user, $smarty, $account) {
                 $branch[] = array(
                     'label'     => _('Users'),
                     'icon'      => '',
-                    'reference' => 'account/users'
+                    'reference' => 'users'
                 );
 
                 switch ($state['_parent']->get('User Type')) {
@@ -8768,28 +8778,28 @@ function get_view_position($db, $state, $user, $smarty, $account) {
                         $branch[] = array(
                             'label'     => _('Employees'),
                             'icon'      => '',
-                            'reference' => 'account/users/staff'
+                            'reference' => 'users/staff'
                         );
                         break;
                     case 'Contractor':
                         $branch[] = array(
                             'label'     => _('Contractors'),
                             'icon'      => '',
-                            'reference' => 'account/users/contractors'
+                            'reference' => 'users/contractors'
                         );
                         break;
                     case 'Agent':
                         $branch[] = array(
                             'label'     => _('Agents'),
                             'icon'      => '',
-                            'reference' => 'account/users/agents'
+                            'reference' => 'users/agents'
                         );
                         break;
                     case 'Suppliers':
                         $branch[] = array(
                             'label'     => _('Suppliers'),
                             'icon'      => '',
-                            'reference' => 'account/users/suppliers'
+                            'reference' => 'users/suppliers'
                         );
                         break;
                     default:
@@ -8799,7 +8809,7 @@ function get_view_position($db, $state, $user, $smarty, $account) {
                 $branch[] = array(
                     'label'     => '<span >'.$state['_parent']->get('User Handle').'</span>',
                     'icon'      => 'terminal',
-                    'reference' => 'account/user/'.$state['_parent']->id
+                    'reference' => 'users/'.$state['_parent']->id
                 );
 
                 $branch[] = array(
@@ -8814,7 +8824,7 @@ function get_view_position($db, $state, $user, $smarty, $account) {
                 $branch[] = array(
                     'label'     => _('Users'),
                     'icon'      => '',
-                    'reference' => 'account/users'
+                    'reference' => 'users'
                 );
 
                 switch ($state['_parent']->get('User Type')) {
@@ -8822,28 +8832,28 @@ function get_view_position($db, $state, $user, $smarty, $account) {
                         $branch[] = array(
                             'label'     => _('Employees'),
                             'icon'      => '',
-                            'reference' => 'account/users/staff'
+                            'reference' => 'users/staff'
                         );
                         break;
                     case 'Contractor':
                         $branch[] = array(
                             'label'     => _('Contractors'),
                             'icon'      => '',
-                            'reference' => 'account/users/contractors'
+                            'reference' => 'users/contractors'
                         );
                         break;
                     case 'Agent':
                         $branch[] = array(
                             'label'     => _('Agents'),
                             'icon'      => '',
-                            'reference' => 'account/users/agents'
+                            'reference' => 'users/agents'
                         );
                         break;
                     case 'Suppliers':
                         $branch[] = array(
                             'label'     => _('Suppliers'),
                             'icon'      => '',
-                            'reference' => 'account/users/suppliers'
+                            'reference' => 'users/suppliers'
                         );
                         break;
                     default:
@@ -8853,7 +8863,7 @@ function get_view_position($db, $state, $user, $smarty, $account) {
                 $branch[] = array(
                     'label'     => '<span >'.$state['_parent']->get('User Handle').'</span>',
                     'icon'      => 'terminal',
-                    'reference' => 'account/user/'.$state['_parent']->id
+                    'reference' => 'users/'.$state['_parent']->id
                 );
 
                 $branch[] = array(

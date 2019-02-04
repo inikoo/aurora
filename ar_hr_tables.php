@@ -187,8 +187,8 @@ function employees($_data, $db, $user, $type = '') {
                 'job_title'          => $data['Staff Job Title'],
                 'user_login'         => $data['User Handle'],
 
-                'user_login'         => sprintf('<span class="link" onCLick="change_view(\'account/user/%d\')">%s</span>',$data['User Key'],$data['User Handle']),
-                'user_name_bis'         => sprintf('<span class="link" onCLick="change_view(\'account/user/%d\')">%s</span>',$data['User Key'],$data['User Handle']),
+                'user_login'         => sprintf('<span class="link" onCLick="change_view(\'users/%d\')">%s</span>',$data['User Key'],$data['User Handle']),
+                'user_name_bis'         => sprintf('<span class="link" onCLick="change_view(\'users/%d\')">%s</span>',$data['User Key'],$data['User Handle']),
 
 
 
@@ -1415,8 +1415,8 @@ function salesmen($_data, $db, $user, $type = '') {
                 'job_title'          => $data['Staff Job Title'],
                 'user_login'         => $data['User Handle'],
 
-                'user_login'         => sprintf('<span class="link" onCLick="change_view(\'account/user/%d\')">%s</span>',$data['User Key'],$data['User Handle']),
-                'user_name_bis'         => sprintf('<span class="link" onCLick="change_view(\'account/user/%d\')">%s</span>',$data['User Key'],$data['User Handle']),
+                'user_login'         => sprintf('<span class="link" onCLick="change_view(\'users/%d\')">%s</span>',$data['User Key'],$data['User Handle']),
+                'user_name_bis'         => sprintf('<span class="link" onCLick="change_view(\'users/%d\')">%s</span>',$data['User Key'],$data['User Handle']),
 
 
 

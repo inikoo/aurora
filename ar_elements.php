@@ -370,6 +370,27 @@ switch ($tab) {
         $data = prepare_values($_REQUEST, array('parameters' => array('type' => 'json array')));
         get_account_mailshots_elements($db, $data['parameters'], $user);
         break;
+    case 'users.staff':
+        $data = prepare_values($_REQUEST, array('parameters' => array('type' => 'json array')));
+        get_users_elements($db, 'Staff');
+        break;
+    case 'users.contractors':
+        $data = prepare_values($_REQUEST, array('parameters' => array('type' => 'json array')));
+        get_users_elements($db, 'Contractor');
+        break;
+    case 'users.suppliers':
+        $data = prepare_values($_REQUEST, array('parameters' => array('type' => 'json array')));
+        get_users_elements($db, 'Supplier');
+        break;
+    case 'users.agents':
+        $data = prepare_values($_REQUEST, array('parameters' => array('type' => 'json array')));
+        get_users_elements($db, 'Agent');
+        break;
+
+    case 'users':
+        $data = prepare_values($_REQUEST, array('parameters' => array('type' => 'json array')));
+        get_all_users_elements($db, 'Staff');
+        break;
 
     default:
         $response = array(
@@ -3296,6 +3317,97 @@ function get_account_mailshots_elements($db, $data) {
     foreach ($elements_numbers['type'] as $_key => $_value) {
         $elements_numbers['type'][$_key] = number($_value);
     }
+
+
+    $response = array(
+        'state'            => 200,
+        'elements_numbers' => $elements_numbers
+    );
+    echo json_encode($response);
+
+
+}
+
+
+
+function get_users_elements($db, $user_type) {
+
+
+
+    $elements_numbers = array(
+
+        'active' => array(
+            'Yes'      => 0,
+            'No'       => 0,
+
+
+
+        )
+    );
+
+
+    $sql = "select count(*) as number,`User Active` as element from `User Dimension` where `User Type`=?  group by `User Active`";
+
+    $stmt = $db->prepare($sql);
+    if ($stmt->execute(
+        array(
+            $user_type
+        )
+    )) {
+        while ($row = $stmt->fetch()) {
+            $elements_numbers['active'][$row['element']] = number($row['number']);
+
+        }
+    } else {
+        print_r($error_info = $db->errorInfo());
+        exit();
+    }
+
+
+
+
+
+    $response = array(
+        'state'            => 200,
+        'elements_numbers' => $elements_numbers
+    );
+    echo json_encode($response);
+
+
+}
+
+
+function get_all_users_elements($db) {
+
+
+
+    $elements_numbers = array(
+
+        'active' => array(
+            'Yes'      => 0,
+            'No'       => 0,
+
+
+
+        )
+    );
+
+
+    $sql = "select count(*) as number,`User Active` as element from `User Dimension` where `User Type`!='Customer'  group by `User Active`";
+
+    $stmt = $db->prepare($sql);
+    if ($stmt->execute()) {
+        while ($row = $stmt->fetch()) {
+            $elements_numbers['active'][$row['element']] = number($row['number']);
+
+        }
+    } else {
+        print_r($error_info = $db->errorInfo());
+        exit();
+    }
+
+
+
 
 
     $response = array(

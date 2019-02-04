@@ -3134,14 +3134,23 @@ $tab_defaults = array(
         'rpp_options' => $default_rrp_options,
         'f_field'     => '',
     ),
-
-    'account.users'             => array(
+    'user_categories'             => array(
         'view'        => 'overview',
         'sort_key'    => 'id',
         'sort_order'  => 1,
         'rpp'         => 100,
         'rpp_options' => $default_rrp_options,
         'f_field'     => '',
+    ),
+    'users'             => array(
+        'view'        => 'overview',
+        'sort_key'    => 'id',
+        'sort_order'  => 1,
+        'rpp'         => 100,
+        'rpp_options' => $default_rrp_options,
+        'f_field'     => 'handle',
+        'elements_type' => array_keys($elements_options['users'])[0],
+        'elements'      => $elements_options['users'],
     ),
     'users.staff.groups'        => array(
         'view'        => 'overview',
@@ -3329,13 +3338,15 @@ $tab_defaults = array(
         'rpp_options' => $default_rrp_options,
         'f_field'     => 'code'
     ),
-    'account.users.staff'      => array(
-        'view'        => 'privileges',
+    'users.staff'      => array(
+        'view'        => 'overview',
         'sort_key'    => 'id',
         'sort_order'  => 1,
         'rpp'         => 100,
         'rpp_options' => $default_rrp_options,
-        'f_field'     => 'handle'
+        'f_field'     => 'handle',
+        'elements_type' => array_keys($elements_options['users'])[0],
+        'elements'      => $elements_options['users'],
     ),
 
 
@@ -3454,32 +3465,38 @@ $tab_defaults = array(
 
     ),
 
-    'account.users.suppliers'   => array(
-        'view'        => 'privileges',
+    'users.suppliers'   => array(
+        'view'        => 'overview',
         'sort_key'    => 'id',
         'sort_order'  => 1,
         'rpp'         => 100,
         'rpp_options' => $default_rrp_options,
-        'f_field'     => 'handle'
+        'f_field'     => 'handle',
+        'elements_type' => array_keys($elements_options['users'])[0],
+        'elements'      => $elements_options['users'],
     ),
-    'account.users.contractors' => array(
-        'view'        => 'privileges',
+    'users.contractors' => array(
+        'view'        => 'overview',
         'sort_key'    => 'id',
         'sort_order'  => 1,
         'rpp'         => 100,
         'rpp_options' => $default_rrp_options,
-        'f_field'     => 'handle'
+        'f_field'     => 'handle',
+        'elements_type' => array_keys($elements_options['users'])[0],
+        'elements'      => $elements_options['users'],
     ),
-    'account.users.agents'      => array(
-        'view'        => 'privileges',
+    'users.agents'      => array(
+        'view'        => 'overview',
         'sort_key'    => 'id',
         'sort_order'  => 1,
         'rpp'         => 100,
         'rpp_options' => $default_rrp_options,
-        'f_field'     => 'handle'
+        'f_field'     => 'handle',
+        'elements_type' => array_keys($elements_options['users'])[0],
+        'elements'      => $elements_options['users'],
     ),
-    'account.deleted.users'     => array(
-        'view'        => 'privileges',
+    'deleted.users'     => array(
+        'view'        => 'overview',
         'sort_key'    => 'id',
         'sort_order'  => 1,
         'rpp'         => 100,

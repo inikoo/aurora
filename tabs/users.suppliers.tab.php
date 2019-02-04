@@ -10,29 +10,34 @@
 */
 
 
-$tab     = 'account.users.suppliers';
+$tab     = 'users.suppliers';
 $ar_file = 'ar_users_tables.php';
-$tipo    = 'agents';
+$tipo    = 'suppliers';
 
 $default = $user->get_tab_defaults($tab);
 
 
 $table_views = array(
-    'privileges' => array('label' => _('Overview')),
-    'groups'      => array('label' => _('Permissions')),
-    'weblog'      => array('label' => _('Syslog')),
-
+    'overview'   => array('label' => _('Overview')),
+    'weblog'     => array('label' => _('Syslog')),
 );
 
 $table_filters = array(
-    'handle' => array('label' => _('Email')),
-    'name'   => array('label' => _('Name')),
+    'handle' => array(
+        'label' => _('Handle'),
+        'title' => _('User handle')
+    ),
+    'name'   => array(
+        'label' => _('Code'),
+        'title' => _('Supplier code')
+    ),
 
 );
 
 $parameters = array(
-    'parent'     => $state['parent'],
+    'parent'     => 'account',
     'parent_key' => $state['parent_key'],
+
 
 );
 
@@ -40,4 +45,4 @@ $parameters = array(
 include('utils/get_table_html.php');
 
 
-?>
+

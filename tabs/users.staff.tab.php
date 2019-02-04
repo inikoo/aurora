@@ -10,17 +10,18 @@
 */
 
 
-$tab     = 'account.users.staff';
+$tab     = 'users.staff';
 $ar_file = 'ar_users_tables.php';
-$tipo    = 'users';
+$tipo    = 'staff';
 
 $default = $user->get_tab_defaults($tab);
 
 
 $table_views = array(
-    'privileges' => array('label' => _('Overview')),
-    'groups'      => array('label' => _('Permissions')),
-    'weblog'      => array('label' => _('Syslog')),
+    'overview'   => array('label' => _('Overview')),
+    'privileges' => array('label' => _('Permissions')),
+    'groups'     => array('label' => _('Groups')),
+    'weblog'     => array('label' => _('Syslog')),
 
 );
 
@@ -37,7 +38,7 @@ $table_filters = array(
 );
 
 $parameters = array(
-    'parent'     => 'store',
+    'parent'     => 'account',
     'parent_key' => $state['parent_key'],
 
 );
