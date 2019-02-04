@@ -9,7 +9,7 @@
     <link href="/art/aurora_log_v2_orange_small.png" rel="shortcut icon" type="image/x-icon"/>
 
 
-    <link href="/css/au_app.min.css?v190201" rel="stylesheet">
+    <link href="/css/au_app.min.css?v190204" rel="stylesheet">
 
 
     {if $_server_name!='au.bali'}
