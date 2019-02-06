@@ -578,8 +578,10 @@
             <tr>
                 <td><i class="fa fa-sign-out fa-flip-horizontal button" aria-hidden="true"
                        onclick="close_create_delivery()"></i></td>
-                <td class="buttons save" onclick="save_create_delivery()"><span>{t}Save{/t}</span> <i
-                            class=" fa fa-cloud fa-flip-horizontal " aria-hidden="true"></i></td>
+                <td class="buttons save" onclick="save_create_delivery()"><span>{t}Save{/t}</span>
+                    <i class=" fa fa-cloud fa-flip-horizontal " aria-hidden="true"></i>
+
+                </td>
             </tr>
         </table>
     </div>
