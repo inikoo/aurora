@@ -56,6 +56,9 @@ function show_create_delivery() {
 
         $('#delivery_number').val('').focus()
 
+        validate_new_supplier_delivery();
+
+
     } else {
         close_create_delivery()
     }
@@ -310,7 +313,7 @@ function validate_new_supplier_delivery(){
     $('.order_units_qty').each(function(i, obj) {
         if($(obj).hasClass('error')){
             with_error=true;
-            error_msg='units item with error'
+            error_msg='Items with error'
 
             return false;
         }

@@ -1751,7 +1751,12 @@ function order_items($_data, $db, $user, $account) {
             $cartons_qty     = $skos_qty / $data['Supplier Part Packages Per Carton'];
             $transaction_key = $data['Purchase Order Transaction Fact Key'];
 
-            if ($data['Purchase Order Submitted Units'] % ($data['Part Units Per Package'] * $data['Supplier Part Packages Per Carton']) != 0 or $data['Purchase Order Submitted Units'] % ($data['Part Units Per Package']) != 0) {
+            if (
+
+            floor($data['Purchase Order Submitted Units']) != $data['Purchase Order Submitted Units'] or
+            floor($skos_qty) != $skos_qty
+
+            ){
                 $class = 'error';
             } else {
                 $class = '';
