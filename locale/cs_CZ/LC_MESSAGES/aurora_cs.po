@@ -3,7 +3,7 @@ msgstr ""
 "Project-Id-Version: Aurora.systems\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2019-02-04 18:13+0800\n"
-"PO-Revision-Date: 2019-02-06 18:48+0800\n"
+"PO-Revision-Date: 2019-02-06 18:53+0800\n"
 "Last-Translator: Raul <raul@inikoo.com>\n"
 "Language-Team: \n"
 "Language: cs_CZ\n"
@@ -1812,7 +1812,7 @@ msgstr "Ponuka"
 #: _smarty.php:3452 _web_smarty.php:56 ar_orders_tables.php:1958
 #: class.Invoice.php:1321 trait.OrderDiscountOperations.php:117
 msgid "Discount"
-msgstr "Slevax"
+msgstr "Sleva"
 
 #: EcomB2B/trait.OrderDiscountOperations.php:1995
 #: trait.OrderDiscountOperations.php:1995
@@ -4398,7 +4398,7 @@ msgstr "Položky Gross"
 #: _smarty.php:16367 conf/website_system_webpages.php:450 utils/modules.php:770
 #: utils/modules.php:1141
 msgid "Discounts"
-msgstr "Slevyx"
+msgstr "Slevy"
 
 #: _smarty.php:1550 _smarty.php:3170 _smarty.php:14957 _smarty.php:15479
 #: _web_smarty.php:176 _web_smarty.php:668 _web_smarty.php:920
