@@ -171,7 +171,7 @@
         <td width="50%" style="vertical-align:bottom;border: 0mm solid #888888;">
 
             <div style="text-align: right">
-                <b>{$purchase_order->get('Parent Name')}</b>{if $purchase_order->get('Parent Name')!=$purchase_order->get('Parent Code') } ({$purchase_order->get('Parent Code')}){/if}
+                <b>{$purchase_order->get('Parent Name')}</b>
             </div>
 
         </td>
