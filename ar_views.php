@@ -2524,7 +2524,7 @@ function get_navigation($user, $smarty, $data, $db, $account) {
 
             break;
         case ('profile'):
-            require_once 'navigation/account.nav.php';
+            require_once 'navigation/users.nav.php';
 
             switch ($data['section']) {
                 case ('profile.api_key.new'):
