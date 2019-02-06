@@ -611,6 +611,11 @@ class Warehouse extends DB_Table {
                 return weight($this->data['Warehouse '.$key]);
                 break;
 
+            case 'Address':
+
+
+                return '<div style="line-height: 150%">'.nl2br($this->data['Warehouse Address']).'</div>';
+                break;
 
             default:
 
