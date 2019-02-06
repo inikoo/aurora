@@ -43,6 +43,7 @@ if (!empty($_REQUEST['locale'])) {
 
 }
 
+
 if (!empty($_REQUEST['commodity'])) {
     $print_tariff_code = true;
 } else {
@@ -613,6 +614,7 @@ $html = $smarty->fetch('invoice.pdf.tpl');
 
 //}
 
+$html = mb_convert_encoding($html, 'UTF-8', 'UTF-8');
 
 $mpdf->WriteHTML($html);
 //$mpdf->WriteHTML('<pagebreak resetpagenum="1" pagenumstyle="1" suppress="off" />');
