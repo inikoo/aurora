@@ -290,6 +290,9 @@ function validate_new_supplier_delivery(){
 
     var with_error=false;
 
+    var error_msg='';
+
+
     if($('#delivery_number').val()==''){
         var changed=false;
     }else{
@@ -299,6 +302,7 @@ function validate_new_supplier_delivery(){
 
     if($('#delivery_number').hasClass('error')){
          with_error=true;
+        error_msg='invalid delivery number'
     }
 
 
@@ -306,6 +310,8 @@ function validate_new_supplier_delivery(){
     $('.order_units_qty').each(function(i, obj) {
         if($(obj).hasClass('error')){
             with_error=true;
+            error_msg='units item with error'
+
             return false;
         }
 
@@ -329,7 +335,10 @@ function validate_new_supplier_delivery(){
 
     if(with_error){
         save_buttons.addClass('invalid changed').removeClass('valid')
+        save_buttons.find('.error_msg').html(error_msg)
     }else{
+        save_buttons.find('.error_msg').html('')
+
         save_buttons.removeClass('invalid')
 
         if(changed && with_items){
@@ -481,6 +490,9 @@ function create_delivery_change_quantity(qty,element) {
 
 
     var tr=$(element).closest('tr')
+
+    console.log(settings.type)
+
     switch (settings.type) {
         case 'Cartons':
 
@@ -522,13 +534,30 @@ function create_delivery_change_quantity(qty,element) {
             break;
 
     }
+    console.log('----')
 
-    if(units_qty%skos_qty || units_qty%cartons_qty){
+    console.log(units_qty)
+    console.log(skos_qty)
+    console.log(cartons_qty)
+    console.log('----')
+    console.log(units_qty%skos_qty)
+    console.log(units_qty%cartons_qty)
+
+    if(  !Number.isInteger(units_qty)  || !Number.isInteger(skos_qty)){
         tr.find('.create_delivery_item_qty').addClass('error')
     }else{
         tr.find('.create_delivery_item_qty').removeClass('error')
 
     }
+
+    /*
+    if((units_qty%skos_qty)>0.001 || (units_qty%cartons_qty)>0.001 ){
+        tr.find('.create_delivery_item_qty').addClass('error')
+    }else{
+        tr.find('.create_delivery_item_qty').removeClass('error')
+
+    }
+    */
 
     $(element).removeClass('discreet')
 
