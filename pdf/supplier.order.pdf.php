@@ -95,29 +95,33 @@ $adata = array();
 if ($result = $db->query($sql)) {
     foreach ($result as $data) {
 
-        $units_per_carton= $data['Part Units Per Package'] * $data['Supplier Part Packages Per Carton'];
+        $units_per_carton = $data['Part Units Per Package'] * $data['Supplier Part Packages Per Carton'];
+
 
         $items_qty = $data['Purchase Order Submitted Units'].'<span class="small discreet">u.</span> | ';
 
-        if ($data['Purchase Order Submitted Units'] % $data['Part Units Per Package'] != 0) {
-            $items_qty .= '<span class="error">'.number($data['Purchase Order Submitted Units'] / $data['Part Units Per Package'], 3).'<span class="small discreet">sko.</span></span> | ';
+        if ($data['Part Units Per Package'] != 1) {
 
-        } else {
-            $items_qty .= number($data['Purchase Order Submitted Units'] / $data['Part Units Per Package'], 3).'<span class="small discreet">sko.</span> | ';
+            if ($data['Purchase Order Submitted Units'] % $data['Part Units Per Package'] != 0) {
+                $items_qty .= '<span class="error">'.number($data['Purchase Order Submitted Units'] / $data['Part Units Per Package'], 3).'<span class="small discreet">sko.</span></span> | ';
 
+            } else {
+                $items_qty .= number($data['Purchase Order Submitted Units'] / $data['Part Units Per Package'], 3).'<span class="small discreet">pks.</span> | ';
+
+            }
+        }
+        if ($data['Supplier Part Packages Per Carton'] != 1) {
+
+            if ($data['Purchase Order Submitted Units'] % ($data['Part Units Per Package'] * $data['Supplier Part Packages Per Carton']) != 0) {
+                $items_qty .= '<span class="error">'.number($data['Purchase Order Submitted Units'] / $data['Part Units Per Package'] / $data['Supplier Part Packages Per Carton'], 3).'<span title="'._('Cartons').'" class="small discreet">C.</span></span>';
+
+            } else {
+                $items_qty .= number($data['Purchase Order Submitted Units'] / $data['Part Units Per Package'] / $data['Supplier Part Packages Per Carton'], 3).'<span title="'._('Cartons').'" class="small discreet">C.</span>';
+
+            }
         }
 
-
-        if ($data['Purchase Order Submitted Units'] % ($data['Part Units Per Package'] * $data['Supplier Part Packages Per Carton']) != 0) {
-            $items_qty .= '<span class="error">'.number($data['Purchase Order Submitted Units'] / $data['Part Units Per Package'] / $data['Supplier Part Packages Per Carton'], 3).'<span title="'._('Cartons').'" class="small discreet">C.</span></span>';
-
-        } else {
-            $items_qty .= number($data['Purchase Order Submitted Units'] / $data['Part Units Per Package'] / $data['Supplier Part Packages Per Carton'], 3).'<span title="'._('Cartons').'" class="small discreet">C.</span>';
-
-        }
-
-
-        $items_qty = '<span class="submitted_items_qty" onclick="use_submitted_qty_in_delivery(this,'.$data['Purchase Order Submitted Units'].')">'.$items_qty.'</span>';
+        $items_qty=preg_replace('/\|\s$/','',$items_qty);
 
 
         $description = $data['Supplier Part Description'].' @'.money(
@@ -151,6 +155,7 @@ if ($result = $db->query($sql)) {
         }
         $description .= '</span>';
 
+        $unit_cost = money($data['Supplier Part Unit Cost'], $purchase_order->get('Purchase Order Currency Code'));
 
         $amount = money($data['Purchase Order Submitted Units'] * $data['Supplier Part Unit Cost'], $purchase_order->get('Purchase Order Currency Code'));
 
@@ -160,6 +165,7 @@ if ($result = $db->query($sql)) {
             'reference'   => $data['Supplier Part Reference'],
             'description' => $description,
             'ordered'     => $items_qty,
+            'unit_cost'   => $unit_cost,
             'amount'      => $amount
 
 
