@@ -90,7 +90,6 @@ $sql = "select $fields from $table $where $wheref order by $order $order_directi
 $adata = array();
 
 
-$adata = array();
 
 if ($result = $db->query($sql)) {
     foreach ($result as $data) {
