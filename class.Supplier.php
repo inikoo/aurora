@@ -1124,7 +1124,7 @@ class Supplier extends SubjectSupplier {
                 if($this->get('Supplier Production')=='Yes'){
 
                     $sql = "INSERT INTO `Supplier Part Production Dimension` (`Supplier Part Key`) VALUES (?)";
-                    $this->db-->prepare($sql)->execute([$supplier_part->id]);
+                    $this->db->prepare($sql)->execute([$supplier_part->id]);
 
                 }
 
