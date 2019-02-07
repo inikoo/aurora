@@ -2795,7 +2795,7 @@ function parse_request($_data, $db, $modules, $account = '', $user = '', $is_set
                 $module = 'products';
 
                 if (isset($view_path[0])) {
-                    $section = 'campaigns';
+                    $section = 'marketing';
 
 
                     $parent     = 'store';
@@ -2852,6 +2852,10 @@ function parse_request($_data, $db, $modules, $account = '', $user = '', $is_set
 
 
                     }
+
+
+
+
 
                 }
                 break;
