@@ -584,7 +584,7 @@ VALUES (%f,%s,%f,%s,%s,%s,%s,%s,%s,
     function get_items() {
 
         $sql = sprintf(
-            'SELECT `Order State`,`Delivery Note Quantity`,`Current Dispatching State`,`Deal Info`,OTF.`Product ID`,OTF.`Product Key`,OTF.`Order Transaction Fact Key`,`Order Currency Code`,`Order Transaction Amount`,`Order Quantity`,`Product History Name`,`Product History Units Per Case`,PD.`Product Code`,`Product Name`,`Product Units Per Case` 
+            'SELECT      (select group_concat(`Deal Info`) from `Order Transaction Deal Bridge` B  where B.`Order Transaction Fact Key`=OTF.`Order Transaction Fact Key` ) as deal_info,  `Order State`,`Delivery Note Quantity`,`Current Dispatching State`,`Deal Info`,OTF.`Product ID`,OTF.`Product Key`,OTF.`Order Transaction Fact Key`,`Order Currency Code`,`Order Transaction Amount`,`Order Quantity`,`Product History Name`,`Product History Units Per Case`,PD.`Product Code`,`Product Name`,`Product Units Per Case` 
 FROM `Order Transaction Fact` OTF 
 LEFT JOIN `Product History Dimension` PHD ON (OTF.`Product Key`=PHD.`Product Key`)
  LEFT JOIN `Product Dimension` PD ON (PD.`Product ID`=PHD.`Product ID`)  
@@ -600,8 +600,8 @@ LEFT JOIN `Product History Dimension` PHD ON (OTF.`Product Key`=PHD.`Product Key
         if ($result = $this->db->query($sql)) {
             foreach ($result as $row) {
 
-
-                $deal_info = '<div id="transaction_deal_info_'.$row['Order Transaction Fact Key'].'" class="deal_info">'.$row['Deal Info'].'</div>';
+                
+                $deal_info = '<div id="transaction_deal_info_'.$row['Order Transaction Fact Key'].'" class="deal_info">'.$row['deal_info'].'</div>';
 
 
                 if ($row['Current Dispatching State'] == 'Out of Stock in Basket') {
