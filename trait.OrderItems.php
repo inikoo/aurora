@@ -600,7 +600,7 @@ LEFT JOIN `Product History Dimension` PHD ON (OTF.`Product Key`=PHD.`Product Key
         if ($result = $this->db->query($sql)) {
             foreach ($result as $row) {
 
-                
+
                 $deal_info = '<div id="transaction_deal_info_'.$row['Order Transaction Fact Key'].'" class="deal_info">'.$row['deal_info'].'</div>';
 
 
