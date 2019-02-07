@@ -38,7 +38,7 @@ class Order extends DB_Table {
     var $amount_off_allowance_data = false;
     var $ghost_order = false;
     var $update_stock = true;
-    var $skip_update_after_individual_transaction = true;
+    var $skip_update_after_individual_transaction = false;
 
     function __construct($arg1 = false, $arg2 = false) {
 

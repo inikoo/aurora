@@ -17,7 +17,6 @@ trait OrderItems {
 
 
 
-
         $gross = 0;
 
         $otf_key = 0;
@@ -104,6 +103,8 @@ trait OrderItems {
         );
 
 
+
+
         if ($dn_key) {
             $sql .= sprintf(' and `Delivery Note Key`=%d', $dn_key);
         }
@@ -157,7 +158,7 @@ trait OrderItems {
                     );
 
 
-                    //  print $sql;
+
 
                     if ($result = $this->db->query($sql)) {
                         if ($row = $result->fetch()) {
@@ -199,6 +200,10 @@ trait OrderItems {
 
                 $total_quantity = $quantity + $bonus_quantity;
 
+
+                //print 'Q'.$quantity.' B'.$bonus_quantity.'|';
+
+
                 if ($total_quantity > 0) {
 
 
@@ -228,6 +233,7 @@ VALUES (%f,%s,%f,%s,%s,%s,%s,%s,%s,
                     $this->db->exec($sql);
 
                     $otf_key = $this->db->lastInsertId();
+
 
 
                     if ($dn_key) {
@@ -301,211 +307,250 @@ VALUES (%f,%s,%f,%s,%s,%s,%s,%s,%s,
         }
 
 
-        $this->update_totals();
 
-        $this->update_discounts_items();
-        $this->update_totals();
+        if(!$this->skip_update_after_individual_transaction) {
 
 
-        $this->update_shipping($dn_key, false);
+            $this->update_totals();
+            $this->update_discounts_items();
+            $this->update_totals();
+            $this->update_shipping($dn_key, false);
+            $this->update_charges($dn_key, false);
+            $this->update_discounts_no_items();
+            $this->update_deal_bridge();
 
 
-        $this->update_charges($dn_key, false);
-        $this->update_discounts_no_items();
-        $this->update_deal_bridge();
+            $this->update_totals();
 
 
-        $this->update_totals();
+            if ($dn_key) {
 
 
-        if ($dn_key) {
+                $dn->update_inventory_transaction_fact($otf_key, $quantity, $bonus_quantity);
 
+                $dn->update_totals();
 
-            $dn->update_inventory_transaction_fact($otf_key, $quantity, $bonus_quantity);
-
-            $dn->update_totals();
-
-        }
-
-
-        //print "xx $gross $gross_discounts ";
-
-
-        $net_amount = $gross;
-
-
-        if ($this->get('Order State') == 'InBasket') {
-
-
-            if ($this->get('Order Number Items') == 0) {
-                $operations = array(
-                    'cancel_operations',
-                );
-            } else {
-                $operations = array(
-                    'send_to_warehouse_operations',
-                    'cancel_operations',
-                    'submit_operations',
-                    'proforma_operations'
-                );
             }
 
 
-        } elseif ($this->get('Order State') == 'InProcess') {
+            //print "xx $gross $gross_discounts ";
 
-            if ($this->get('Order Number Items') == 0) {
+
+            $net_amount = $gross;
+
+
+            if ($this->get('Order State') == 'InBasket') {
+
+
+                if ($this->get('Order Number Items') == 0) {
+                    $operations = array(
+                        'cancel_operations',
+                    );
+                } else {
+                    $operations = array(
+                        'send_to_warehouse_operations',
+                        'cancel_operations',
+                        'submit_operations',
+                        'proforma_operations'
+                    );
+                }
+
+
+            } elseif ($this->get('Order State') == 'InProcess') {
+
+                if ($this->get('Order Number Items') == 0) {
+                    $operations = array(
+                        'cancel_operations',
+                        'undo_submit_operations'
+                    );
+                } else {
+                    $operations = array(
+                        'send_to_warehouse_operations',
+                        'cancel_operations',
+                        'undo_submit_operations',
+                        'proforma_operations'
+                    );
+                }
+
+
+            } elseif ($this->get('Order State') == 'InWarehouse') {
+                $operations = array('cancel_operations');
+            } elseif ($this->get('Order State') == 'PackedDone') {
                 $operations = array(
-                    'cancel_operations',
-                    'undo_submit_operations'
+                    'invoice_operations',
+                    'cancel_operations'
                 );
             } else {
-                $operations = array(
-                    'send_to_warehouse_operations',
-                    'cancel_operations',
-                    'undo_submit_operations',
-                    'proforma_operations'
-                );
+                $operations = array();
             }
 
 
-        } elseif ($this->get('Order State') == 'InWarehouse') {
-            $operations = array('cancel_operations');
-        } elseif ($this->get('Order State') == 'PackedDone') {
-            $operations = array(
-                'invoice_operations',
-                'cancel_operations'
+            //  print_r($operations);
+
+            $hide         = array();
+            $show         = array();
+            $add_class    = array();
+            $remove_class = array();
+
+
+            if ($this->get('Order Charges Net Amount') == 0) {
+
+                $add_class['order_charges_container'] = 'very_discreet';
+
+                $hide[] = 'order_charges_info';
+            } else {
+                $remove_class['order_charges_container'] = 'very_discreet';
+
+                $show[] = 'order_charges_info';
+            }
+
+
+            if ($this->get('Order Items Discount Amount') == 0) {
+
+
+                $hide[] = 'order_items_discount_container';
+            } else {
+
+                $show[] = 'order_items_discount_container';
+            }
+
+
+            if ($this->get('Order Charges Discount Amount') == 0) {
+
+
+                $hide[] = 'Charges_Discount_Amount_tr';
+            } else {
+
+                $show[] = 'Charges_Discount_Amount_tr';
+            }
+
+            $this->update_metadata = array(
+
+                'class_html'   => array(
+                    'Order_State'      => $this->get('State'),
+                    'Items_Net_Amount' => $this->get('Items Net Amount'),
+
+                    'Items_Discount_Amount'         => $this->get('Items Discount Amount'),
+                    'Items_Discount_Percentage'     => $this->get('Items Discount Percentage'),
+                    'Shipping_Net_Amount'           => $this->get('Shipping Net Amount'),
+                    'Charges_Net_Amount'            => $this->get('Charges Net Amount'),
+                    'Total_Net_Amount'              => $this->get('Total Net Amount'),
+                    'Total_Tax_Amount'              => $this->get('Total Tax Amount'),
+                    'Total_Amount'                  => $this->get('Total Amount'),
+                    'Total_Amount_Account_Currency' => $this->get('Total Amount Account Currency'),
+                    'To_Pay_Amount'                 => $this->get('To Pay Amount'),
+                    'Payments_Amount'               => $this->get('Payments Amount'),
+
+                    'Profit_Amount'                 => $this->get('Profit Amount'),
+                    'Order_Margin'                  => $this->get('Margin'),
+                    'Order_Number_items'            => $this->get('Number Items'),
+                    'Order_Number_Items_with_Deals' => $this->get('Number Items with Deals'),
+                    'Charges_Discount_Amount'       => $this->get('Charges Discount Amount'),
+                    'Charges_Discount_Percentage'   => $this->get('Charges Discount Percentage')
+
+                ),
+                'hide'         => $hide,
+                'show'         => $show,
+                'add_class'    => $add_class,
+                'remove_class' => $remove_class,
+
+                'operations'  => $operations,
+                'state_index' => $this->get('State Index'),
+                'to_pay'      => $this->get('Order To Pay Amount'),
+                'total'       => $this->get('Order Total Amount'),
+                'payments'    => $this->get('Order Payments Amount'),
+                'items'       => $this->get('Order Number Items'),
+                'shipping'    => $this->get('Order Shipping Net Amount'),
+                'charges'     => $this->get('Order Charges Net Amount'),
+
             );
-        } else {
-            $operations = array();
+
+
+            if (in_array(
+                $this->get('Order State'), array(
+                                             'Cancelled',
+                                             'Approved',
+                                             'Dispatched',
+                                         )
+            )) {
+                $discounts_class = '';
+                $discounts_input = '';
+            } else {
+                $discounts_class = 'button';
+                $discounts_input = sprintf(
+                    '<span class="hide order_item_percentage_discount_form" data-settings=\'{ "field": "Percentage" ,"transaction_key":"%d"  }\'   ><input class="order_item_percentage_discount_input" style="width: 70px" value="%s"> <i class="fa save fa-cloud" aria-hidden="true"></i></span>',
+                    $row['Order Transaction Fact Key'], percentage($gross_discounts, $gross)
+                );
+            }
+            $discounts = $discounts_input.'<span class="order_item_percentage_discount   '.$discounts_class.' '.($gross_discounts == 0 ? 'super_discreet' : '').'"><span style="padding-right:5px">'.percentage(
+                    $gross_discounts, $gross
+                ).'</span> <span class="'.($gross_discounts == 0 ? 'hide' : '').'">'.money($gross_discounts, $this->data['Order Currency']).'</span></span>';
+
+
+            $account = get_object('Account', '');
+
+            require_once 'utils/new_fork.php';
+            new_housekeeping_fork(
+                'au_housekeeping', array(
+                'type'      => 'order_items_changed',
+                'order_key' => $this->id,
+            ), $account->get('Account Code'), $this->db
+            );
+
+
+            return array(
+                'updated'        => true,
+                'otf_key'        => $otf_key,
+                'to_charge'      => money($net_amount, $this->data['Order Currency']),
+                'item_discounts' => $discounts,
+
+                'net_amount'          => $net_amount,
+                'delta_net_amount'    => $net_amount - $old_net_amount,
+                'qty'                 => $quantity,
+                'delta_qty'           => $quantity - $old_quantity,
+                'bonus qty'           => $bonus_quantity,
+                'discount_percentage' => ($gross_discounts > 0 ? percentage($gross_discounts, $gross, $fixed = 1, $error_txt = 'NA', $percentage_sign = '') : '')
+            );
+
         }
+        else{
+
+            $net_amount = $gross;
+            if (in_array(
+                $this->get('Order State'), array(
+                                             'Cancelled',
+                                             'Approved',
+                                             'Dispatched',
+                                         )
+            )) {
+                $discounts_class = '';
+                $discounts_input = '';
+            } else {
+                $discounts_class = 'button';
+                $discounts_input = sprintf(
+                    '<span class="hide order_item_percentage_discount_form" data-settings=\'{ "field": "Percentage" ,"transaction_key":"%d"  }\'   ><input class="order_item_percentage_discount_input" style="width: 70px" value="%s"> <i class="fa save fa-cloud" aria-hidden="true"></i></span>',
+                    $row['Order Transaction Fact Key'], percentage($gross_discounts, $gross)
+                );
+            }
+            $discounts = $discounts_input.'<span class="order_item_percentage_discount   '.$discounts_class.' '.($gross_discounts == 0 ? 'super_discreet' : '').'"><span style="padding-right:5px">'.percentage(
+                    $gross_discounts, $gross
+                ).'</span> <span class="'.($gross_discounts == 0 ? 'hide' : '').'">'.money($gross_discounts, $this->data['Order Currency']).'</span></span>';
 
 
-      //  print_r($operations);
+            return array(
+                'updated'        => true,
+                'otf_key'        => $otf_key,
+                'to_charge'      => money($net_amount, $this->data['Order Currency']),
+                'item_discounts' => $discounts,
 
-        $hide         = array();
-        $show         = array();
-        $add_class    = array();
-        $remove_class = array();
-
-
-        if ($this->get('Order Charges Net Amount') == 0) {
-
-            $add_class['order_charges_container'] = 'very_discreet';
-
-            $hide[] = 'order_charges_info';
-        } else {
-            $remove_class['order_charges_container'] = 'very_discreet';
-
-            $show[] = 'order_charges_info';
-        }
-
-
-        if ($this->get('Order Items Discount Amount') == 0) {
-
-
-            $hide[] = 'order_items_discount_container';
-        } else {
-
-            $show[] = 'order_items_discount_container';
-        }
-
-
-        if ($this->get('Order Charges Discount Amount') == 0) {
-
-
-            $hide[] = 'Charges_Discount_Amount_tr';
-        } else {
-
-            $show[] = 'Charges_Discount_Amount_tr';
-        }
-
-        $this->update_metadata = array(
-
-            'class_html'   => array(
-                'Order_State'      => $this->get('State'),
-                'Items_Net_Amount' => $this->get('Items Net Amount'),
-
-                'Items_Discount_Amount'         => $this->get('Items Discount Amount'),
-                'Items_Discount_Percentage'     => $this->get('Items Discount Percentage'),
-                'Shipping_Net_Amount'           => $this->get('Shipping Net Amount'),
-                'Charges_Net_Amount'            => $this->get('Charges Net Amount'),
-                'Total_Net_Amount'              => $this->get('Total Net Amount'),
-                'Total_Tax_Amount'              => $this->get('Total Tax Amount'),
-                'Total_Amount'                  => $this->get('Total Amount'),
-                'Total_Amount_Account_Currency' => $this->get('Total Amount Account Currency'),
-                'To_Pay_Amount'                 => $this->get('To Pay Amount'),
-                'Payments_Amount'               => $this->get('Payments Amount'),
-
-                'Profit_Amount'                 => $this->get('Profit Amount'),
-                'Order_Margin'                  => $this->get('Margin'),
-                'Order_Number_items'            => $this->get('Number Items'),
-                'Order_Number_Items_with_Deals' => $this->get('Number Items with Deals'),
-                'Charges_Discount_Amount'       => $this->get('Charges Discount Amount'),
-                'Charges_Discount_Percentage'     => $this->get('Charges Discount Percentage')
-
-            ),
-            'hide'         => $hide,
-            'show'         => $show,
-            'add_class'    => $add_class,
-            'remove_class' => $remove_class,
-
-            'operations'  => $operations,
-            'state_index' => $this->get('State Index'),
-            'to_pay'      => $this->get('Order To Pay Amount'),
-            'total'       => $this->get('Order Total Amount'),
-            'payments'    => $this->get('Order Payments Amount'),
-            'items'       => $this->get('Order Number Items'),
-            'shipping'    => $this->get('Order Shipping Net Amount'),
-            'charges'     => $this->get('Order Charges Net Amount'),
-
-        );
-
-
-        if (in_array(
-            $this->get('Order State'), array(
-                                         'Cancelled',
-                                         'Approved',
-                                         'Dispatched',
-                                     )
-        )) {
-            $discounts_class = '';
-            $discounts_input = '';
-        } else {
-            $discounts_class = 'button';
-            $discounts_input = sprintf(
-                '<span class="hide order_item_percentage_discount_form" data-settings=\'{ "field": "Percentage" ,"transaction_key":"%d"  }\'   ><input class="order_item_percentage_discount_input" style="width: 70px" value="%s"> <i class="fa save fa-cloud" aria-hidden="true"></i></span>',
-                $row['Order Transaction Fact Key'], percentage($gross_discounts, $gross)
+                'net_amount'          => $net_amount,
+                'delta_net_amount'    => $net_amount - $old_net_amount,
+                'qty'                 => $quantity,
+                'delta_qty'           => $quantity - $old_quantity,
+                'bonus qty'           => $bonus_quantity,
+                'discount_percentage' => ($gross_discounts > 0 ? percentage($gross_discounts, $gross, $fixed = 1, $error_txt = 'NA', $percentage_sign = '') : '')
             );
         }
-        $discounts = $discounts_input.'<span class="order_item_percentage_discount   '.$discounts_class.' '.($gross_discounts == 0 ? 'super_discreet' : '').'"><span style="padding-right:5px">'.percentage(
-                $gross_discounts, $gross
-            ).'</span> <span class="'.($gross_discounts == 0 ? 'hide' : '').'">'.money($gross_discounts, $this->data['Order Currency']).'</span></span>';
-
-
-        $account = get_object('Account', '');
-
-        require_once 'utils/new_fork.php';
-        new_housekeeping_fork(
-            'au_housekeeping', array(
-            'type'      => 'order_items_changed',
-            'order_key' => $this->id,
-        ), $account->get('Account Code'), $this->db
-        );
-
-
-        return array(
-            'updated'        => true,
-            'otf_key'        => $otf_key,
-            'to_charge'      => money($net_amount, $this->data['Order Currency']),
-            'item_discounts' => $discounts,
-
-            'net_amount'          => $net_amount,
-            'delta_net_amount'    => $net_amount - $old_net_amount,
-            'qty'                 => $quantity,
-            'delta_qty'           => $quantity - $old_quantity,
-            'bonus qty'           => $bonus_quantity,
-            'discount_percentage' => ($gross_discounts > 0 ? percentage($gross_discounts, $gross, $fixed = 1, $error_txt = 'NA', $percentage_sign = '') : '')
-        );
 
 
     }
