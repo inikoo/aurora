@@ -439,7 +439,7 @@ class data_entry_picking_aid {
 
 
                         $original_diff = $_diff;
-                        $original_qty  = $row['Required'] + $row['Given'];
+                      //  $original_qty  = $row['Required'] + $row['Given'];
 
                         $_diff = abs($_diff);
                         $tmp   = min($row['Required'], $_diff);
@@ -470,13 +470,14 @@ class data_entry_picking_aid {
 
                     //    if ($original_qty > abs($original_diff)) {
 
-                            $sql = 'update  `Inventory Transaction Fact` set `Required`=? ,`Given`=? where `Inventory Transaction Key`=? ';
+                            $sql = 'update  `Inventory Transaction Fact` set `Required`=`Required`-? ,`Given`=`Given`-? where `Inventory Transaction Key`=? ';
 
 
                             $stmt = $this->db->prepare($sql);
                             if (!$stmt) {
                                 print_r($this->db->errorInfo());
                             }
+
 
 
                             if (!$stmt->execute(
@@ -593,6 +594,7 @@ class data_entry_picking_aid {
                     $sql = 'update  `Inventory Transaction Fact` set `Required`=`Required`+? ,`Given`=`Given`+? where `Inventory Transaction Key`=? ';
 
 
+
                     $stmt = $this->db->prepare($sql);
                     if (!$stmt) {
                         print_r($this->db->errorInfo());
@@ -668,11 +670,15 @@ class data_entry_picking_aid {
         include_once 'utils/new_fork.php';
 
 
-        //   print_r($this->data['items']);
+
+
+
 
         foreach ($this->data['items'] as $part_sku => $_transaction) {
 
             foreach ($_transaction as $transaction) {
+
+
 
                 if ($transaction['itf_key'] != '') {
                     $sql = sprintf('SELECT `Part SKU`,`Required`,`Given`,`Map To Order Transaction Fact Key`,`Location Key` FROM `Inventory Transaction Fact` WHERE `Inventory Transaction Key`=%d AND `Delivery Note Key`=%d ', $transaction['itf_key'], $this->dn->id);
@@ -732,6 +738,8 @@ class data_entry_picking_aid {
                                 $transaction['qty'],
                                 $out_of_stock, prepare_mysql($out_of_stock_tag), $this->dn->get('Delivery Note Assigned Picker Key'), $this->dn->get('Delivery Note Assigned Packer Key'), prepare_mysql($state), $transaction['itf_key']
                             );
+
+
 
 
                             $this->dn->db->exec($sql);

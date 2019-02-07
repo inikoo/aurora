@@ -31,6 +31,7 @@ if (!isset($_REQUEST['tipo'])) {
 $tipo = $_REQUEST['tipo'];
 
 
+
 switch ($tipo) {
 
     case 'data_entry_picking_aid':
@@ -1720,6 +1721,8 @@ function get_picked_offline_input_all_locations($data, $editor, $smarty, $db, $a
 
 
 function data_entry_picking_aid($data, $editor, $smarty, $db, $account) {
+
+
 
     include_once 'utils/data_entry_picking_aid.class.php';
 
