@@ -84,6 +84,42 @@ function get_new_campaign_navigation($data, $smarty, $user, $db) {
 
 }
 
+function get_offers_navigation($data, $smarty, $user, $db) {
+
+
+    $left_buttons  = array();
+    $right_buttons = array();
+    $sections      = get_sections('products', $data['parent_key']);
+
+    if (isset($sections[$data['section']])) {
+        $sections[$data['section']]['selected'] = true;
+    }
+
+
+    $_content = array(
+
+        'sections_class' => '',
+        'sections'       => $sections,
+        'left_buttons'   => $left_buttons,
+        'right_buttons'  => $right_buttons,
+        'title'          => _('Campaigns & offers').' <span class="id">'.$data['_parent']->get('Code').'</span>',
+        'search'         => array(
+            'show'        => true,
+            'placeholder' => _('Search offers')
+        )
+
+    );
+    $smarty->assign('_content', $_content);
+
+    $html = $smarty->fetch('navigation.tpl');
+
+    return $html;
+
+}
+
+
+
+
 function get_marketing_navigation($data, $smarty, $user, $db) {
 
 
@@ -116,6 +152,8 @@ function get_marketing_navigation($data, $smarty, $user, $db) {
     return $html;
 
 }
+
+
 
 function get_campaigns_navigation($data, $smarty, $user, $db) {
 
