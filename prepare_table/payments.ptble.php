@@ -83,9 +83,13 @@ if ($order == 'reference') {
     $order = 'Store Code`';
 } elseif ($order == 'order') {
     $order = 'Order Public ID`';
+}elseif ($order == 'account') {
+    $order = 'Payment Account Code`';
 } else {
     $order = 'P.`Payment Key`';
 }
+
+
 
 
 $sql_totals = "select count(P.`Payment Key`) as num from $table  $where  ";

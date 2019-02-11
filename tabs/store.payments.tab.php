@@ -9,7 +9,7 @@
 
 */
 
-$tab     = 'payments';
+$tab     = 'store.payments';
 $ar_file = 'ar_accounting_tables.php';
 $tipo    = 'payments';
 
