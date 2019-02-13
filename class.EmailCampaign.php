@@ -275,7 +275,15 @@ class EmailCampaign extends DB_Table {
                         }
                         break;
                     case 'ComposingEmail':
-                        return _('Composing email');
+                        if ($this->get('Email Campaign Selecting Blueprints') == 'No') {
+                            return _('Composing email');
+
+                        } else {
+                            return _('Changing template');
+
+                        }
+
+
                         break;
                     case 'Ready':
                         return _('Ready to send');
@@ -548,9 +556,6 @@ class EmailCampaign extends DB_Table {
 
                                 $sql = "select count(Distinct C.`Customer Key`) as num from $table  $where ";
 
-
-                                // print_r($data);
-                                //print $sql;
 
                                 if ($result = $this->db->query($sql)) {
                                     if ($row = $result->fetch()) {
@@ -999,6 +1004,7 @@ class EmailCampaign extends DB_Table {
 
         $this->update_metadata = array(
             'class_html'  => array(
+                'Email_Campaign_Name'            => $this->get('Name'),
                 'Email_Campaign_State'           => $this->get('State'),
                 'Email_Campaign_Setup_Date'      => '&nbsp;'.$this->get('Setup Date'),
                 'Email_Campaign_Composed_Date'   => '&nbsp;'.$this->get('Composed Date'),
@@ -1173,8 +1179,6 @@ class EmailCampaign extends DB_Table {
         $sql = sprintf('select `Email Tracking Key`,`Email Tracking Recipient`,`Email Tracking Recipient Key` ,`Email Tracking Recipient Key` from `Email Tracking Dimension` where `Email Tracking Email Mailshot Key`=%d and `Email Tracking State`="Ready" ', $this->id);
 
 
-
-
         if ($result = $this->db->query($sql)) {
             foreach ($result as $row) {
 
@@ -1208,10 +1212,7 @@ class EmailCampaign extends DB_Table {
                 }
 
 
-
-
                 $published_email_template->send(get_object($row['Email Tracking Recipient'], $row['Email Tracking Recipient Key']), $send_data, $smarty);
-
 
 
                 // print_r($published_email_template);
@@ -1227,7 +1228,6 @@ class EmailCampaign extends DB_Table {
             print "$sql\n";
             exit;
         }
-
 
 
         // exit('xxx');

@@ -68,8 +68,8 @@ function send_mailshot_now(element) {
                 console.log(data)
 
 
-                $('#email_campaign\\.published_email').removeClass('hide')
-                change_tab('email_campaign.published_email')
+                $('#mailshot\\.published_email').removeClass('hide')
+                change_tab('mailshot.published_email')
 
 
                 for (var key in data.update_metadata.class_html) {
@@ -129,8 +129,8 @@ function resume_mailshot(element) {
 
             if (data.state == '200') {
 
-                $('#email_campaign\\.published_email').removeClass('hide')
-                change_tab('email_campaign.published_email')
+                $('#mailshot\\.published_email').removeClass('hide')
+                change_tab('mailshot.published_email')
 
 
                 for (var key in data.update_metadata.class_html) {
@@ -253,8 +253,8 @@ function save_email_campaign_operation(element) {
                 })
             }
             if(data.update_metadata.tab!=undefined) {
-                $('#email_campaign\\.' + data.update_metadata.tab).removeClass('hide')
-                change_tab('email_campaign.' + data.update_metadata.tab)
+                $('#mailshot\\.' + data.update_metadata.tab).removeClass('hide')
+                change_tab('mailshot.' + data.update_metadata.tab)
             }
             for (var key in data.update_metadata.class_html) {
                 $('.' + key).html(data.update_metadata.class_html[key])
@@ -506,10 +506,10 @@ function save_email_template(jsonFile, htmlFile) {
                 // hack for email campaigns showcase
                 if (data.update_metadata.state_index == 30) {
 
-                    $('#email_campaign\\.workshop').addClass('hide')
-                    $('#email_campaign\\.published_email').removeClass('hide')
+                    $('#mailshot\\.workshop').addClass('hide')
+                    $('#mailshot\\.published_email').removeClass('hide')
 
-                    change_tab('email_campaign.published_email')
+                    change_tab('mailshot.published_email')
 
                     $('#composed_email_node').addClass('complete')
 
@@ -609,15 +609,82 @@ $(document).on('input propertychange', ".save_template", function () {
 
 $(document).on('input propertychange', "#email_template_text", function () {
 
+$('#email_template_text_save').addClass('changed valid')
 
-    if ($("#email_template_text").val() == '') {
-        $('#email_template_text_button').addClass('error very_discreet')
-    } else {
-        $('#email_template_text_button').removeClass('error very_discreet')
-    }
+
 
 
 });
+
+
+
+
+function save_email_template_text() {
+
+    if( $('#email_template_text_save').hasClass('waiting')){
+        return;
+    }
+
+    $('#email_template_text_save').addClass('waiting').find('i').addClass('fa-spin fa-spinner')
+
+
+
+    var ajaxData = new FormData();
+
+    ajaxData.append("tipo", 'save_email_template_text_part')
+    ajaxData.append("email_template_key", $('#email_template_data').data('email_template_key'))
+
+    ajaxData.append("subject", $("#email_template_subject").val())
+    ajaxData.append("text", $("#email_template_text").val())
+
+
+    $.ajax({
+        url: "/ar_edit_email_template.php", type: 'POST', data: ajaxData, dataType: 'json', cache: false, contentType: false, processData: false, complete: function () {
+        }, success: function (data) {
+
+            if (data.state == '200') {
+
+
+
+
+                for (var key in data.update_metadata.class_html) {
+                    $('.' + key).html(data.update_metadata.class_html[key])
+                }
+
+
+                for (var key in data.update_metadata.hide) {
+                    $('.' + data.update_metadata.hide[key]).addClass('hide')
+                }
+
+                for (var key in data.update_metadata.show) {
+
+                    $('.' + data.update_metadata.show[key]).removeClass('hide')
+                }
+
+                $('.email_campaign_operation').addClass('hide')
+
+                for (var key in data.update_metadata.operations) {
+                    $('#' + data.update_metadata.operations[key]).removeClass('hide')
+                }
+
+
+            } else if (data.state == '400') {
+                swal(data.msg)
+            }
+
+
+
+
+            $('#email_template_text_save').removeClass('valid changed waiting').find('i').addClass('fa-cloud').removeClass('fa-spin fa-spinner')
+
+
+        }, error: function () {
+
+        }
+    });
+
+}
+
 
 $(document).on('input propertychange', "#email_template_subject", function () {
     if ($("#email_template_subject").val() == '') {
@@ -627,6 +694,250 @@ $(document).on('input propertychange', "#email_template_subject", function () {
     }
 
 });
+
+
+function delete_blueprint(element,blueprint_key) {
+
+
+    if($(element).hasClass('super_discreet')){
+        return;
+    }
+
+    var tr = $('#delete_blueprint_button_' + blueprint_key).closest('tr')
+
+    if (tr.hasClass('deleting_tr') || tr.hasClass('deleted_tr')) {
+        return;
+    }
+
+    tr.addClass('deleting_tr')
+
+    // tr.addClass('deleted_tr')
+    //return;
+
+
+    var ajaxData = new FormData();
+
+    ajaxData.append("tipo", 'object_operation')
+    ajaxData.append("operation", 'delete')
+    ajaxData.append("object", 'Email_Blueprint')
+    ajaxData.append("key", blueprint_key)
+
+
+
+    $.ajax({
+        url: "/ar_edit.php", type: 'POST', data: ajaxData, dataType: 'json', cache: false, contentType: false, processData: false,
+        complete: function () {
+        }, success: function (data) {
+
+            if (data.state == '200') {
+
+                tr.removeClass('deleting_tr').addClass('deleted_tr')
+                $('#delete_blueprint_button_' + blueprint_key).html(data.msg).closest('td').addClass('hide').html('')
+
+            } else if (data.state == '400') {
+                tr.removeClass('deleting_tr')
+                swal(data.msg);
+            }
+
+
+
+        }, error: function () {
+
+        }
+    });
+
+
+
+}
+
+function select_blueprint_from_table(element,scope,scope_key,blueprint_key,redirect) {
+
+
+
+
+    icon=$(element).find('i')
+
+
+    if(icon.hasClass('fa-spin')){
+        return
+    }
+
+    icon.removeClass('fa-trophy')
+
+    icon.addClass('fa-spinner fa-spin')
+
+
+    var ajaxData = new FormData();
+
+    ajaxData.append("tipo", 'use_template')
+    ajaxData.append("scope", scope)
+    ajaxData.append("scope_key", scope_key)
+
+    ajaxData.append("blueprint_key", blueprint_key)
+
+
+
+    $.ajax({
+        url: "/ar_edit_email_template.php", type: 'POST', data: ajaxData, dataType: 'json', cache: false, contentType: false, processData: false,
+        complete: function () {
+        }, success: function (data) {
+
+            if (data.state == '200') {
+                change_tab(redirect,{'reload_showcase': 1})
+                // change_view(state.request + redirect)
+            } else if (data.state == '400') {
+                icon.removeClass('fa-spinner fa-spin')
+
+                swal(data.msg);
+            }
+
+
+
+        }, error: function () {
+
+        }
+    });
+}
+
+function unlock_delete_blueprint(element){
+
+    if( $(element).hasClass('fa-lock')){
+        $(element).removeClass('fa-lock').addClass('fa-unlock').next('span').removeClass('super_discreet').addClass('button')
+    }else{
+        $(element).addClass('fa-lock').removeClass('fa-unlock').next('span').addClass('super_discreet').removeClass('button')
+
+    }
+
+
+}
+
+
+function clone_sent_mailshot_from_table(element,object,key,mailshot_clone_key,redirect) {
+
+
+
+
+    icon=$(element).find('i')
+
+
+    if(icon.hasClass('fa-spin')){
+        return
+    }
+
+    icon.removeClass('fa-clone')
+
+    icon.addClass('fa-spinner fa-spin')
+
+
+    var ajaxData = new FormData();
+
+    ajaxData.append("tipo", 'clone_sent_mailshot')
+
+    ajaxData.append("object", object)
+    ajaxData.append("key", key)
+    ajaxData.append("mailshot_clone_key", mailshot_clone_key)
+
+
+
+    $.ajax({
+        url: "/ar_edit_email_template.php", type: 'POST', data: ajaxData, dataType: 'json', cache: false, contentType: false, processData: false,
+        complete: function () {
+        }, success: function (data) {
+
+            if (data.state == '200') {
+                change_tab(redirect)
+                // change_view(state.request + redirect)
+            } else if (data.state == '400') {
+                icon.removeClass('fa-spinner fa-spin')
+
+                swal(data.msg);
+            }
+
+
+
+        }, error: function () {
+
+        }
+    });
+}
+
+
+function set_email_template_as_selecting_blueprints(email_template_key){
+
+    var ajaxData = new FormData();
+
+    ajaxData.append("tipo", 'set_email_template_as_selecting_blueprints')
+
+
+    ajaxData.append("email_template_key", email_template_key)
+
+
+
+    $.ajax({
+        url: "/ar_edit_email_template.php", type: 'POST', data: ajaxData, dataType: 'json', cache: false, contentType: false, processData: false,
+        complete: function () {
+        }, success: function (data) {
+
+            if (data.state == '200') {
+               // change_tab(redirect)
+                 change_view(state.request ,{'reload_showcase': 1})
+            } else if (data.state == '400') {
+
+
+
+                swal(data.msg);
+            }
+
+
+
+        }, error: function () {
+
+        }
+    });
+
+
+   // change_view(state.request + '&tab={$blueprints_redirect}')
+
+}
+
+
+function undo_email_template_as_selecting_blueprints(email_template_key){
+
+    var ajaxData = new FormData();
+
+    ajaxData.append("tipo", 'undo_email_template_as_selecting_blueprints')
+
+
+    ajaxData.append("email_template_key", email_template_key)
+
+
+
+    $.ajax({
+        url: "/ar_edit_email_template.php", type: 'POST', data: ajaxData, dataType: 'json', cache: false, contentType: false, processData: false,
+        complete: function () {
+        }, success: function (data) {
+
+            if (data.state == '200') {
+                change_view(state.request ,{'reload_showcase': 1})
+                // change_tab(redirect)
+                // change_view(state.request + redirect)
+            } else if (data.state == '400') {
+
+                swal(data.msg);
+            }
+
+
+
+        }, error: function () {
+
+        }
+    });
+
+
+    // change_view(state.request + '&tab={$blueprints_redirect}')
+
+}
+
 
 /*
 

@@ -204,6 +204,12 @@ class EmailCampaignType extends DB_Table {
                     case 'GR Reminder':
                         $name = _('Reorder reminders');
                         break;
+                    case 'Invite Mailshot':
+                        $name = _("Prospect's invitations");
+                        break;
+                    case 'Invite':
+                        $name = _("Personalised prospect invitations");
+                        break;
                     default:
                         $name = $this->data['Email Campaign Type Code'];
 
@@ -216,7 +222,7 @@ class EmailCampaignType extends DB_Table {
             case 'Status Label':
 
 
-                if ($this->get('Email Campaign Type Code') == 'Newsletter' or $this->get('Email Campaign Type Code') == 'Marketing') {
+                if ($this->get('Email Campaign Type Scope') == 'Marketing') {
                     return '';
                 }
 
@@ -698,6 +704,22 @@ class EmailCampaignType extends DB_Table {
 
 
         return $estimated_recipients;
+
+    }
+
+    function update_number_subscribers() {
+
+        if ($this->data['Email Campaign Type Scope'] == 'User Notification') {
+            $store      = get_object('Store', $this->data['Email Campaign Type Store Key']);
+            $recipients = $store->get_notification_recipients($this->data['Email Campaign Type Code']);
+
+            $this->fast_update(
+                array(
+                    'Email Campaign Type Subscribers' => count($recipients)
+                )
+            );
+        }
+
 
     }
 

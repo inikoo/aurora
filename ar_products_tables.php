@@ -90,7 +90,9 @@ switch ($tipo) {
     case 'customers':
         customers(get_table_parameters(), $db, $user);
         break;
-
+    case 'user_notifications':
+        user_notifications(get_table_parameters(), $db, $user);
+        break;
     default:
         $response = array(
             'state' => 405,
@@ -227,9 +229,8 @@ function products($_data, $db, $user, $account) {
                 case 'Out of Stock':
 
 
-                        $web_state = '<span  class="'.(($data['Product Availability'] > 0 and $data['Product Number of Parts'] > 0) ? 'error' : '').'">'._('Out of Stock').'</span>'.($data['Product Web Configuration'] == 'Online Force Out of Stock'
-                                ? ' <i class="fa fa-thumb-tack padding_left_5" aria-hidden="true"></i>' : '');
-
+                    $web_state = '<span  class="'.(($data['Product Availability'] > 0 and $data['Product Number of Parts'] > 0) ? 'error' : '').'">'._('Out of Stock').'</span>'.($data['Product Web Configuration'] == 'Online Force Out of Stock'
+                            ? ' <i class="fa fa-thumb-tack padding_left_5" aria-hidden="true"></i>' : '');
 
 
                     break;
@@ -297,37 +298,35 @@ function products($_data, $db, $user, $account) {
                 ).'<span>';
 
 
-
-
             switch ($_data['parameters']['parent']) {
 
                 case 'part':
 
                     $code = sprintf(
-                        '<span class="link" onClick="change_view(\'part/%d/product/%d\')" title="%s">%s</span>', $_data['parameters']['parent_key'], $data['Product ID'], '<span >'.$data['Product Units Per Case'].'</span>x <span>'.$data['Product Name'].'</span>', $data['Product Code']
+                        '<span class="link" onClick="change_view(\'part/%d/product/%d\')" title="%s">%s</span>', $_data['parameters']['parent_key'], $data['Product ID'], '<span >'.$data['Product Units Per Case'].'</span>x <span>'.$data['Product Name'].'</span>',
+                        $data['Product Code']
                     );
-                    $name = number($data['Product Part Ratio']).' <i class="far fa-box" title="'.sprintf(_('Each outer pick %s part SKOs'),number($data['Product Part Ratio'])).'"></i> =  '.$data['Product Name'].($data['Product Units Per Case']!=1?'<span class="discreet italic small">('.$data['Product Units Per Case'].' '._('units').')</span>':'');
+                    $name = number($data['Product Part Ratio']).' <i class="far fa-box" title="'.sprintf(_('Each outer pick %s part SKOs'), number($data['Product Part Ratio'])).'"></i> =  '.$data['Product Name'].($data['Product Units Per Case'] != 1
+                            ? '<span class="discreet italic small">('.$data['Product Units Per Case'].' '._('units').')</span>' : '');
 
 
+                    if ($data['Part Units Per Package'] != 0 and $data['Part Unit Price'] != 0 and $exchange != 0 and $data['Product Price'] > 0) {
+                        $_recommended_margin_ratio = ($data['Part Unit Price'] - ($data['Part Cost in Warehouse'] / $data['Part Units Per Package'])) / $data['Part Unit Price'];
 
-                    if($data['Part Units Per Package']!=0 and  $data['Part Unit Price']!=0 and $exchange!=0 and  $data['Product Price']>0){
-                        $_recommended_margin_ratio= ($data['Part Unit Price'] - ($data['Part Cost in Warehouse']/$data['Part Units Per Package']))/  $data['Part Unit Price'];
+                        $_actual_margin_ratio = ($exchange * $data['Product Price'] - $data['Product Cost']) / ($exchange * $data['Product Price']);
 
-                        $_actual_margin_ratio=($exchange * $data['Product Price'] - $data['Product Cost'])/( $exchange * $data['Product Price']);
-
-                        if($_recommended_margin_ratio*.8>$_actual_margin_ratio){
-                            $margin='<i class="fa yellow fa-exclamation-triangle " title="'.sprintf(_('Margin %s lower than expected'),percentage($_actual_margin_ratio,$_recommended_margin_ratio)).'"></i> '.$margin;
+                        if ($_recommended_margin_ratio * .8 > $_actual_margin_ratio) {
+                            $margin = '<i class="fa yellow fa-exclamation-triangle " title="'.sprintf(_('Margin %s lower than expected'), percentage($_actual_margin_ratio, $_recommended_margin_ratio)).'"></i> '.$margin;
                         }
 
                     }
-
 
 
                     break;
                 case 'category':
                     $name = '<span >'.$data['Product Units Per Case'].'</span>x <span>'.$data['Product Name'].'</span>';
 
-                    $code = sprintf('<span class="link" onClick="change_view(\'products/%d/%sproduct/%d\')" title="%s">%s</span>', $data['Store Key'],$path, $data['Product ID'], $name, $data['Product Code']);
+                    $code = sprintf('<span class="link" onClick="change_view(\'products/%d/%sproduct/%d\')" title="%s">%s</span>', $data['Store Key'], $path, $data['Product ID'], $name, $data['Product Code']);
 
                     break;
                 default:
@@ -353,9 +352,6 @@ function products($_data, $db, $user, $account) {
                         className: "link width_150",
 
             */
-
-
-
 
 
             $record_data[] = array(
@@ -1029,10 +1025,10 @@ function parts($_data, $db, $user, $account) {
             );
 
 
-            $reference=sprintf('<span class="link" onclick="change_view(\'part/%d\')">%s</span>',$data['Part SKU'],($data['Part Reference']==''?'<i class="fa error fa-exclamation-circle"></i> <span class="discreet italic">'._('Reference missing').'</span>':$data['Part Reference']));
-
-
-
+            $reference = sprintf(
+                '<span class="link" onclick="change_view(\'part/%d\')">%s</span>', $data['Part SKU'],
+                ($data['Part Reference'] == '' ? '<i class="fa error fa-exclamation-circle"></i> <span class="discreet italic">'._('Reference missing').'</span>' : $data['Part Reference'])
+            );
 
 
             $record_data[] = array(
@@ -1043,7 +1039,8 @@ function parts($_data, $db, $user, $account) {
                 'picking_note'        => $data['Product Part Note'],
                 'stock_status'        => $stock_status,
                 'stock_status_label'  => $stock_status_label,
-                'stock'               => '<span  class="  '.($data['Part Current On Hand Stock'] < 0 ? 'error' : '').'">'.number(floor($data['Part Current On Hand Stock'])).'</span>  <i class="fa fa-fighter-jet padding_left_5 super_discreet  '.($data['Part On Demand'] == 'Yes' ? ''
+                'stock'               => '<span  class="  '.($data['Part Current On Hand Stock'] < 0 ? 'error' : '').'">'.number(floor($data['Part Current On Hand Stock'])).'</span>  <i class="fa fa-fighter-jet padding_left_5 super_discreet  '.($data['Part On Demand']
+                    == 'Yes' ? ''
                         : 'invisible').' " title='._('On demand').' aria-hidden="true"></i>     ',
                 'weeks_available'     => $weeks_available,
                 'dispatched_per_week' => $dispatched_per_week
@@ -1501,27 +1498,26 @@ function shipping_zones($_data, $db, $user) {
     $sql         = "select $fields from $table $where $wheref order by $order $order_direction limit $start_from,$number_results";
     $record_data = array();
 
-    if ($result=$db->query($sql)) {
-    		foreach ($result as $data) {
+    if ($result = $db->query($sql)) {
+        foreach ($result as $data) {
 
-                $price='';
-                $territories='';
+            $price       = '';
+            $territories = '';
 
-                $record_data[] = array(
-                    'id'   => (integer)$data['Shipping Zone Key'],
-                    'code' => sprintf('<span class="link" onClick="change_view(\'store/%d/shipping_zone/%d\')" >%s</span>', $data['Shipping Zone Store Key'], $data['Shipping Zone Key'], $data['Shipping Zone Code']),
-                    'name' => sprintf('<span >%s</span>', $data['Shipping Zone Name']),
-                    'price'=>$price,
-                    'territories'=>$territories,
+            $record_data[] = array(
+                'id'          => (integer)$data['Shipping Zone Key'],
+                'code'        => sprintf('<span class="link" onClick="change_view(\'store/%d/shipping_zone/%d\')" >%s</span>', $data['Shipping Zone Store Key'], $data['Shipping Zone Key'], $data['Shipping Zone Code']),
+                'name'        => sprintf('<span >%s</span>', $data['Shipping Zone Name']),
+                'price'       => $price,
+                'territories' => $territories,
 
-                );
-    		}
-    }else {
-    		print_r($error_info=$db->errorInfo());
-    		print "$sql\n";
-    		exit;
+            );
+        }
+    } else {
+        print_r($error_info = $db->errorInfo());
+        print "$sql\n";
+        exit;
     }
-
 
 
     $response = array(
@@ -1539,7 +1535,6 @@ function shipping_zones($_data, $db, $user) {
 }
 
 
-
 function shipping_zones_schemas($_data, $db, $user) {
 
 
@@ -1550,41 +1545,40 @@ function shipping_zones_schemas($_data, $db, $user) {
     $sql         = "select $fields from $table $where $wheref order by $order $order_direction limit $start_from,$number_results";
     $record_data = array();
 
-    if ($result=$db->query($sql)) {
+    if ($result = $db->query($sql)) {
         foreach ($result as $data) {
-            switch ($data['Shipping Zone Schema Type']){
+            switch ($data['Shipping Zone Schema Type']) {
                 case 'Current':
-                    $type='<i class="fa fa-play success margin_right_5"></i> '._('Current');
+                    $type = '<i class="fa fa-play success margin_right_5"></i> '._('Current');
                     break;
                 case 'InReserve':
-                    $type='<i class="fa fa-pause discreet margin_right_5"></i> '._('In reserve');
+                    $type = '<i class="fa fa-pause discreet margin_right_5"></i> '._('In reserve');
                     break;
                 case 'Deal':
-                    $type='<i class="fa fa-tag  margin_right_5"></i> '._('Offer');
+                    $type = '<i class="fa fa-tag  margin_right_5"></i> '._('Offer');
                     break;
                 case 'Discontinued':
-                    $type='<i class="fa fa-skull discreet margin_right_5"></i> '._('Discontinued');
+                    $type = '<i class="fa fa-skull discreet margin_right_5"></i> '._('Discontinued');
                     break;
                 default:
 
-                    $type=$data['Shipping Zone Schema Type'];
+                    $type = $data['Shipping Zone Schema Type'];
             }
 
 
             $record_data[] = array(
-                'id'   => (integer)$data['Shipping Zone Schema Key'],
-                'type'=>$type,
+                'id'    => (integer)$data['Shipping Zone Schema Key'],
+                'type'  => $type,
                 'label' => sprintf('<span class="link" onClick="change_view(\'store/%d/shipping_zone/%d\')" >%s</span>', $data['Shipping Zone Schema Store Key'], $data['Shipping Zone Schema Key'], $data['Shipping Zone Schema Label']),
 
 
             );
         }
-    }else {
-        print_r($error_info=$db->errorInfo());
+    } else {
+        print_r($error_info = $db->errorInfo());
         print "$sql\n";
         exit;
     }
-
 
 
     $response = array(
@@ -1627,9 +1621,8 @@ function back_to_stock_notification_request_products($_data, $db, $user, $accoun
                 case 'Out of Stock':
 
 
-                        $web_state = '<span  class="'.(($data['Product Availability'] > 0 and $data['Product Number of Parts'] > 0) ? 'error' : '').'">'._('Out of Stock').'</span>'.($data['Product Web Configuration'] == 'Online Force Out of Stock'
-                                ? ' <i class="fa fa-thumb-tack padding_left_5" aria-hidden="true"></i>' : '');
-
+                    $web_state = '<span  class="'.(($data['Product Availability'] > 0 and $data['Product Number of Parts'] > 0) ? 'error' : '').'">'._('Out of Stock').'</span>'.($data['Product Web Configuration'] == 'Online Force Out of Stock'
+                            ? ' <i class="fa fa-thumb-tack padding_left_5" aria-hidden="true"></i>' : '');
 
 
                     break;
@@ -1681,10 +1674,10 @@ function back_to_stock_notification_request_products($_data, $db, $user, $accoun
 
             $record_data[] = array(
 
-                'id'     => (integer)$data['Product ID'],
-                'code'   => $code,
-                'name'   => $name,
-                'status' => $status,
+                'id'        => (integer)$data['Product ID'],
+                'code'      => $code,
+                'name'      => $name,
+                'status'    => $status,
                 'web_state' => $web_state,
                 'customers' => sprintf('<span>%s</span>', number($data['customers']))
 
@@ -1887,4 +1880,143 @@ function back_to_stock_notification_request_customers($_data, $db, $user) {
     echo json_encode($response);
 }
 
-?>
+
+function user_notifications($_data, $db, $user) {
+
+    $rtext_label = 'operational email';
+
+
+    include_once 'prepare_table/init.php';
+
+
+    $sql = "select $fields from $table $where $wheref order by $order $order_direction limit $start_from,$number_results";
+
+    //print $sql;
+
+    $adata = array();
+
+
+    foreach ($db->query($sql) as $data) {
+
+        switch ($data['Email Campaign Type Status']) {
+            case 'InProcess':
+                $status = sprintf('<i class="far discreet fa-seedling" title="%s" ></i>', _('Composing email template'));
+                break;
+            case 'Active':
+                $status = sprintf('<i class="far success fa-broadcast-tower" title="%s"></i>', _('Live'));
+                break;
+            case 'Suspended':
+                $status = sprintf('<i class="fa error fa-stop" title="%s"></i>', _('Suspended'));
+                break;
+
+            default:
+                $status = '';
+
+
+        }
+
+
+        switch ($data['Email Campaign Type Code']) {
+            case 'New Order':
+                $_type = _('New order');
+                break;
+            case 'New Customer':
+                $_type = _('New customer');
+
+                break;
+            case 'Invoice Deleted':
+                $_type = _('Invoice deleted');
+
+                break;
+            case 'Delivery Note Undispatched':
+                $_type = _('Delivery note undispatched');
+
+                break;
+
+            default:
+                $_type = $data['Email Campaign Type Code'];
+
+
+        }
+
+
+        $type = sprintf('<span class="link" onClick="change_view(\'customers/%d/notifications/%d\')">%s</span>', $data['Email Campaign Type Store Key'], $data['Email Campaign Type Key'], $_type);
+
+
+        $adata[] = array(
+            'id' => (integer)$data['Email Campaign Type Key'],
+
+            '_type'       => $_type,
+            'type'        => $type,
+            'subscribers' => number($data['Email Campaign Type Subscribers']),
+            'sent'        => number($data['Email Campaign Type Sent']),
+
+            'hard_bounces' => sprintf(
+                '<span class="%s" title="%s">%s</span>', ($data['Email Campaign Type Delivered'] == 0 ? 'super_discreet' : ($data['Email Campaign Type Hard Bounces'] == 0 ? 'success super_discreet' : '')), number($data['Email Campaign Type Hard Bounces']),
+                percentage($data['Email Campaign Type Hard Bounces'], $data['Email Campaign Type Sent'])
+            ),
+            'soft_bounces' => sprintf(
+                '<span class="%s" title="%s">%s</span>', ($data['Email Campaign Type Delivered'] == 0 ? 'super_discreet' : ($data['Email Campaign Type Soft Bounces'] == 0 ? 'success super_discreet' : '')), number($data['Email Campaign Type Soft Bounces']),
+                percentage($data['Email Campaign Type Soft Bounces'], $data['Email Campaign Type Sent'])
+            ),
+
+            'bounces' => sprintf(
+                '<span class="%s" title="%s">%s</span>', ($data['Email Campaign Type Delivered'] == 0 ? 'super_discreet' : ($data['Email Campaign Type Bounces'] == 0 ? 'success super_discreet' : '')), number($data['Email Campaign Type Bounces']),
+                percentage($data['Email Campaign Type Bounces'], $data['Email Campaign Type Sent'])
+            ),
+
+            'delivered' => ($data['Email Campaign Type Sent'] == 0 ? '<span class="super_discreet">'._('NA').'</span>' : number($data['Email Campaign Type Delivered'])),
+
+            'open'    => sprintf(
+                '<span class="%s" title="%s">%s</span>', ($data['Email Campaign Type Delivered'] == 0 ? 'super_discreet' : ''), number($data['Email Campaign Type Open']), percentage($data['Email Campaign Type Open'], $data['Email Campaign Type Delivered'])
+            ),
+            'clicked' => sprintf(
+                '<span class="%s" title="%s">%s</span>', ($data['Email Campaign Type Delivered'] == 0 ? 'super_discreet' : ''), number($data['Email Campaign Type Clicked']), percentage($data['Email Campaign Type Clicked'], $data['Email Campaign Type Delivered'])
+            ),
+            'spam'    => sprintf(
+                '<span class="%s " title="%s">%s</span>', ($data['Email Campaign Type Delivered'] == 0 ? 'super_discreet' : ($data['Email Campaign Type Spams'] == 0 ? 'success super_discreet' : '')), number($data['Email Campaign Type Spams']),
+                percentage($data['Email Campaign Type Spams'], $data['Email Campaign Type Delivered'])
+            ),
+
+
+        );
+
+    }
+
+    if ($_order == 'type') {
+
+
+        $type = array();
+        foreach ($adata as $key => $row) {
+            $type[$key] = $row['_type'];
+        }
+
+
+        if ($_dir == 'desc') {
+            array_multisort($type, SORT_DESC, $adata);
+
+        } else {
+            array_multisort($type, SORT_ASC, $adata);
+
+        }
+
+
+    }
+
+    // print_r($_order);
+
+
+    $response = array(
+        'resultset' => array(
+            'state'         => 200,
+            'data'          => $adata,
+            'rtext'         => $rtext,
+            'sort_key'      => $_order,
+            'sort_dir'      => $_dir,
+            'total_records' => $total
+
+        )
+    );
+    echo json_encode($response);
+}
+

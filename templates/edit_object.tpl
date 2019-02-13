@@ -286,6 +286,8 @@
                                     <span id="{$field.id}_formatted_value" class=" " >{$field.formatted_value}</span>
                                 {elseif  $edit=='mixed_recipients'}
                                     <div id="{$field.id}_formatted_value" class=" {$field.id} " >{$field.formatted_value}</div>
+                                {elseif  $edit=='date_interval'}
+                                    <div id="{$field.id}_formatted_value" class=" {$field.id} " >to do</div>
                                 {else}
 
                                      <span id="{$field.id}_formatted_value" class="{$field.id} {$edit} formatted_value " ondblclick="open_edit_this_field(this)">{if isset($field.formatted_value)}{$field.formatted_value}{else}{$field.value}{/if}</span>
@@ -641,6 +643,121 @@
                                             {/foreach}
                                         </ul>
                                     </div>
+                                {elseif $edit=='date_interval' }
+                                    <input id="{$field.id}_From" type="hidden"  class="value"  field="{$field.id}_From"  field_type="date_interval" value="{$field.value['From']}" has_been_valid="0"   />
+                                    <input id="{$field.id}_From_time" type="hidden" value="{$field.time['From']}" />
+                                    <input id="{$field.id}_formatted_From" class="option_input_field "  value="{$field.formatted_value['From']}" />
+                                    <span id="{$field.id}_msg_From" class="msg"></span>
+                                    <div id="{$field.id}_From_datepicker" class="hide datepicker"></div>
+
+                                    <input id="{$field.id}_To" type="hidden"  class="value"  field="{$field.id}_To"  field_type="date_interval"  value="{$field.value['To']}" has_been_valid="0"/>
+                                    <input id="{$field.id}_To_time" type="hidden" value="{$field.time['To']}" />
+                                    <input id="{$field.id}_formatted_To" class="option_input_field "  value="{$field.formatted_value['To']}" />
+                                    <span id="{$field.id}_msg_To" class="msg"></span>
+                                    <div id="{$field.id}_To_datepicker" class="hide datepicker"></div>
+                                    <script>
+
+                                        $(function() {
+                                            $("#{$field.id}_From_datepicker").datepicker({
+                                                showOtherMonths: true,
+                                                selectOtherMonths: true,
+                                                defaultDate: new Date('{$field.value['From']}'),
+                                                altField: "#{$field.id}_From",
+                                                altFormat: "yy-mm-dd",
+                                                onSelect: function() {
+                                                    $('#{$field.id}').change();
+                                                    $('#{$field.id}_formatted_From').val($.datepicker.formatDate("dd/mm/yy", $(this).datepicker("getDate")))
+                                                    $('#{$field.id}_From_datepicker').addClass('hide')
+                                                    post_process_form_validation();
+                                                }
+                                            });
+
+
+                                            $("#{$field.id}_To_datepicker").datepicker({
+                                                showOtherMonths: true,
+                                                selectOtherMonths: true,
+                                                defaultDate: new Date('{$field.value['To']}'),
+                                                altField: "#{$field.id}_To",
+                                                altFormat: "yy-mm-dd",
+                                                onSelect: function() {
+                                                    $('#{$field.id}').change();
+                                                    $('#{$field.id}_formatted_To').val($.datepicker.formatDate("dd/mm/yy", $(this).datepicker("getDate")))
+                                                    $('#{$field.id}_To_datepicker').addClass('hide')
+                                                    post_process_form_validation();
+                                                }
+                                            });
+
+
+                                        });
+
+                                        $('#{$field.id}_formatted_From').focusin(function() {
+                                            $('#{$field.id}_From_datepicker').removeClass('hide')
+
+                                        });
+
+                                        $('#{$field.id}_formatted_From').on('input', function() {
+                                            var date = chrono.parseDate($('#{$field.id}_formatted_From').val())
+
+                                            if (date == null) {
+                                                var value = '';
+                                            } else {
+                                                var value = date.toISOString().slice(0, 10)
+                                                $("#{$field.id}_From_datepicker").datepicker("setDate", date);
+                                            }
+
+
+                                            $('#{$field.id}_From').val(value).change()
+
+
+                                        });
+
+
+                                        $('#{$field.id}_From').on('change', function() {
+
+
+                                            on_changed_value('{$field.id}_From', $('#{$field.id}_From').val())
+                                            post_process_form_validation();
+                                        });
+
+                                        if ('{$field.value['From']}' == '') {
+                                            $('#{$field.id}_From').val('')
+                                        }
+
+
+                                        $('#{$field.id}_formatted_To').focusin(function() {
+                                            $('#{$field.id}_To_datepicker').removeClass('hide')
+
+                                        });
+
+                                        $('#{$field.id}_formatted_To').on('input', function() {
+                                            var date = chrono.parseDate($('#{$field.id}_formatted_To').val())
+
+                                            if (date == null) {
+                                                var value = '';
+                                            } else {
+                                                var value = date.toISOString().slice(0, 10)
+                                                $("#{$field.id}_To_datepicker").datepicker("setDate", date);
+                                            }
+
+
+                                            $('#{$field.id}_To').val(value).change()
+
+
+                                        });
+                                        $('#{$field.id}_To').on('change', function() {
+                                            on_changed_value('{$field.id}_To', $('#{$field.id}_To').val())
+                                            post_process_form_validation();
+
+                                        });
+
+                                        if ('{$field.value['To']}' == '') {
+                                            $('#{$field.id}_To').val('')
+                                        }
+
+
+
+                                    </script>
+
                                 {elseif $edit=='date' }
                                     <input id="{$field.id}" type="hidden" value="{$field.value}" has_been_valid="0"/>
                                     <input id="{$field.id}_time" type="hidden" value="{$field.time}"/>

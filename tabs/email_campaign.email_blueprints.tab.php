@@ -31,7 +31,7 @@ $table_filters = array(
 $parameters = array(
     'parent'     => 'EmailCampaignType',
     'parent_key' => $email_template_type->id,
-    'redirect' => base64_url_encode('email_campaign.workshop'),
+    'redirect' => base64_url_encode('mailshot.workshop'),
 );
 
 
@@ -40,16 +40,13 @@ $smarty->assign('scope_key', $email_template->id);
 
 $smarty->assign('role', $email_template->get('Email Template Role'));
 
-$smarty->assign('blueprints_redirect', 'email_campaign.workshop');
+$smarty->assign('blueprints_redirect', 'mailshot.workshop');
 
 
 
-$smarty->assign('email_template_redirect', '&tab=email_campaign.workshop');
+$smarty->assign('email_template_redirect', '&tab=mailshot.workshop');
 $smarty->assign('table_top_template', 'email_blueprints.showcase.tpl');
 
-$smarty->assign(
-    'js_code', 'js/injections/edit_blueprints.'.(_DEVEL ? '' : 'min.').'js'
-);
 
 
 include 'utils/get_table_html.php';

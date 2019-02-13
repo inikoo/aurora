@@ -29,7 +29,8 @@ $editor = array(
 
 
 
-exit;
+
+
 
 $sql = 'truncate `Payment Account Dimension`';
 $db->exec($sql);

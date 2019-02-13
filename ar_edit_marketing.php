@@ -99,7 +99,7 @@ switch ($tipo) {
         $data = prepare_values(
             $_REQUEST, array(
                          'object'      => array('type' => 'string'),
-                         'key'  => array('type' => 'string'),
+                         'key'         => array('type' => 'string'),
                          'fields_data' => array('type' => 'json array')
                      )
         );
@@ -399,8 +399,19 @@ function set_mailing_list($account, $db, $user, $editor, $data, $smarty) {
     include_once 'utils/parse_customer_list.php';
 
 
-    $email_campaign                   = get_object('Email_Campaign', $data['key']);
-    $data['fields_data']['store_key'] = $email_campaign->get('Store Key');
+    $mailshot = get_object('Mailshot', $data['key']);
+
+    $data['fields_data']['store_key'] = $mailshot->get('Store Key');
+
+
+    if (isset($data['fields_data']['Email Campaign Name'])) {
+        $mailshot->fast_update(
+            array(
+                'Email Campaign Name' => $data['fields_data']['Email Campaign Name']
+            )
+        );
+        unset($data['fields_data']['Email Campaign Name']);
+    }
 
 
     $metadata = array(
@@ -408,19 +419,21 @@ function set_mailing_list($account, $db, $user, $editor, $data, $smarty) {
         'fields' => $data['fields_data']
     );
 
-    $email_campaign->fast_update(
+    $mailshot->fast_update(
         array(
             'Email Campaign Metadata' => json_encode($metadata)
         )
     );
-    $email_campaign->update_estimated_recipients();
+    $mailshot->update_estimated_recipients();
 
-    $email_campaign->update_state('ComposingEmail');
+    $mailshot->update_state('ComposingEmail');
+
+
 
 
     $response = array(
-        'state'    => 200,
-        'update_metadata' => $email_campaign->get_update_metadata(),
+        'state'           => 200,
+        'update_metadata' => $mailshot->get_update_metadata(),
 
     );
 

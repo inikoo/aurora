@@ -38,6 +38,10 @@ if (!isset($_REQUEST['tipo'])) {
 $tipo = $_REQUEST['tipo'];
 
 switch ($tipo) {
+    case 'marketing_emails':
+        marketing_emails(get_table_parameters(), $db, $user);
+        break;
+
     case 'marketing_server':
         marketing_server(get_table_parameters(), $db, $user);
         break;
@@ -68,6 +72,8 @@ switch ($tipo) {
     case 'email_template_types':
         email_template_types(get_table_parameters(), $db, $user);
         break;
+
+
     default:
         $response = array(
             'state' => 405,
@@ -232,14 +238,14 @@ function deals($_data, $db, $user) {
 
 
             $adata[] = array(
-                'id'          => (integer)$data['Deal Key'],
-                'current_deal_status'      => $status,
-                'name'        => $name,
-                'description' => $description,
-                'from'        => $from,
-                'to'          => $to,
-                'orders'      => number($data['Deal Total Acc Used Orders']),
-                'customers'   => number($data['Deal Total Acc Used Customers'])
+                'id'                  => (integer)$data['Deal Key'],
+                'current_deal_status' => $status,
+                'name'                => $name,
+                'description'         => $description,
+                'from'                => $from,
+                'to'                  => $to,
+                'orders'              => number($data['Deal Total Acc Used Orders']),
+                'customers'           => number($data['Deal Total Acc Used Customers'])
 
             );
 
@@ -351,8 +357,7 @@ function campaigns($_data, $db, $user) {
                 'name'      => $data['Deal Campaign Name'],
                 'from'      => $from,
                 'to'        => $to,
-                'deals'     => number(
-                    $data['Deal Campaign Number Current Deals']
+                'deals'     => number($data['Deal Campaign Number Current Deals']
                 ),
 
                 'orders'    => number(
@@ -1008,28 +1013,28 @@ function email_template_types($_data, $db, $user) {
 
         }
 
-        $mailshots='';
+        $mailshots = '';
         switch ($data['Email Campaign Type Code']) {
             case 'Newsletter':
-                $_type  = _('Newsletters');
-                $status = '';
-                $mailshots=number($data['Email Campaign Type Mailshots']);
+                $_type     = _('Newsletters');
+                $status    = '';
+                $mailshots = number($data['Email Campaign Type Mailshots']);
                 break;
             case 'Marketing':
-                $_type  = _('Marketing mailshots');
-                $status = '';
-                $mailshots=number($data['Email Campaign Type Mailshots']);
+                $_type     = _('Marketing mailshots');
+                $status    = '';
+                $mailshots = number($data['Email Campaign Type Mailshots']);
 
                 break;
             case 'AbandonedCart':
-                $_type  = _('Orders in basket');
-                $status = '';
-                $mailshots=number($data['Email Campaign Type Mailshots']);
+                $_type     = _('Orders in basket');
+                $status    = '';
+                $mailshots = number($data['Email Campaign Type Mailshots']);
 
                 break;
             case 'OOS Notification':
-                $_type = _('Back in stock emails');
-                $mailshots=number($data['Email Campaign Type Mailshots']);
+                $_type     = _('Back in stock emails');
+                $mailshots = number($data['Email Campaign Type Mailshots']);
 
                 break;
             case 'Registration':
@@ -1042,8 +1047,8 @@ function email_template_types($_data, $db, $user) {
                 $_type = _('Order confirmations');
                 break;
             case 'GR Reminder':
-                $_type = _('Reorder reminders');
-                $mailshots=number($data['Email Campaign Type Mailshots']);
+                $_type     = _('Reorder reminders');
+                $mailshots = number($data['Email Campaign Type Mailshots']);
 
                 break;
             case 'Invite Mailshot':
@@ -1068,9 +1073,9 @@ function email_template_types($_data, $db, $user) {
             'id'     => (integer)$data['Email Campaign Type Key'],
             'status' => $status,
 
-            '_type' => $_type,
-            'type'  => $type,
-            'mailshots' =>$mailshots,
+            '_type'     => $_type,
+            'type'      => $type,
+            'mailshots' => $mailshots,
 
             'sent' => number($data['Email Campaign Type Sent']),
 
@@ -1115,6 +1120,157 @@ function email_template_types($_data, $db, $user) {
         }
 
 
+        if ($_dir == 'desc') {
+            array_multisort($type, SORT_DESC, $adata);
+
+        } else {
+            array_multisort($type, SORT_ASC, $adata);
+
+        }
+
+
+    }
+
+    // print_r($_order);
+
+
+    $response = array(
+        'resultset' => array(
+            'state'         => 200,
+            'data'          => $adata,
+            'rtext'         => $rtext,
+            'sort_key'      => $_order,
+            'sort_dir'      => $_dir,
+            'total_records' => $total
+
+        )
+    );
+    echo json_encode($response);
+}
+
+
+function marketing_emails($_data, $db, $user) {
+
+    $rtext_label = 'operational email';
+
+
+    include_once 'prepare_table/init.php';
+
+
+    $sql = "select $fields from $table $where $wheref order by $order $order_direction limit $start_from,$number_results";
+
+    //print $sql;
+
+    $adata = array();
+
+
+    foreach ($db->query($sql) as $data) {
+
+        switch ($data['Email Campaign Type Status']) {
+            case 'InProcess':
+                $status = sprintf('<i class="far discreet fa-seedling" title="%s" ></i>', _('Composing email template'));
+                break;
+            case 'Active':
+                $status = sprintf('<i class="far success fa-broadcast-tower" title="%s"></i>', _('Live'));
+                break;
+            case 'Suspended':
+                $status = sprintf('<i class="fa error fa-stop" title="%s"></i>', _('Suspended'));
+                break;
+
+            default:
+                $status = '';
+
+
+        }
+
+        $mailshots = '';
+        switch ($data['Email Campaign Type Code']) {
+            case 'Newsletter':
+                $_type     = _('Newsletters');
+                $status    = '';
+                $mailshots = number($data['Email Campaign Type Mailshots']);
+                break;
+            case 'Marketing':
+                $_type     = _('Marketing mailshots');
+                $status    = '';
+                $mailshots = number($data['Email Campaign Type Mailshots']);
+
+                break;
+            case 'AbandonedCart':
+                $_type     = _('Orders in basket');
+                $status    = '';
+                $mailshots = number($data['Email Campaign Type Mailshots']);
+
+                break;
+
+
+            case 'Invite Mailshot':
+                $_type  = _('Invitation');
+                $status = '';
+                break;
+            case 'Invite':
+                $_type  = _('Invitation (Personalized)');
+                $status = '';
+                break;
+            default:
+                $_type = $data['Email Campaign Type Code'];
+
+
+        }
+
+
+        $type = sprintf('<span class="link" onClick="change_view(\'marketing/%d/emails/%d\')">%s</span>', $data['Email Campaign Type Store Key'], $data['Email Campaign Type Key'], $_type);
+
+
+        $adata[] = array(
+            'id'     => (integer)$data['Email Campaign Type Key'],
+            'status' => $status,
+
+            '_type'     => $_type,
+            'type'      => $type,
+            'mailshots' => $mailshots,
+
+            'sent' => number($data['Email Campaign Type Sent']),
+
+            'hard_bounces' => sprintf(
+                '<span class="%s" title="%s">%s</span>', ($data['Email Campaign Type Delivered'] == 0 ? 'super_discreet' : ($data['Email Campaign Type Hard Bounces'] == 0 ? 'success super_discreet' : '')), number($data['Email Campaign Type Hard Bounces']),
+                percentage($data['Email Campaign Type Hard Bounces'], $data['Email Campaign Type Sent'])
+            ),
+            'soft_bounces' => sprintf(
+                '<span class="%s" title="%s">%s</span>', ($data['Email Campaign Type Delivered'] == 0 ? 'super_discreet' : ($data['Email Campaign Type Soft Bounces'] == 0 ? 'success super_discreet' : '')), number($data['Email Campaign Type Soft Bounces']),
+                percentage($data['Email Campaign Type Soft Bounces'], $data['Email Campaign Type Sent'])
+            ),
+
+            'bounces' => sprintf(
+                '<span class="%s" title="%s">%s</span>', ($data['Email Campaign Type Delivered'] == 0 ? 'super_discreet' : ($data['Email Campaign Type Bounces'] == 0 ? 'success super_discreet' : '')), number($data['Email Campaign Type Bounces']),
+                percentage($data['Email Campaign Type Bounces'], $data['Email Campaign Type Sent'])
+            ),
+
+            'delivered' => ($data['Email Campaign Type Sent'] == 0 ? '<span class="super_discreet">'._('NA').'</span>' : number($data['Email Campaign Type Delivered'])),
+
+            'open'    => sprintf(
+                '<span class="%s" title="%s">%s</span>', ($data['Email Campaign Type Delivered'] == 0 ? 'super_discreet' : ''), number($data['Email Campaign Type Open']), percentage($data['Email Campaign Type Open'], $data['Email Campaign Type Delivered'])
+            ),
+            'clicked' => sprintf(
+                '<span class="%s" title="%s">%s</span>', ($data['Email Campaign Type Delivered'] == 0 ? 'super_discreet' : ''), number($data['Email Campaign Type Clicked']), percentage($data['Email Campaign Type Clicked'], $data['Email Campaign Type Delivered'])
+            ),
+            'spam'    => sprintf(
+                '<span class="%s " title="%s">%s</span>', ($data['Email Campaign Type Delivered'] == 0 ? 'super_discreet' : ($data['Email Campaign Type Spams'] == 0 ? 'success super_discreet' : '')), number($data['Email Campaign Type Spams']),
+                percentage($data['Email Campaign Type Spams'], $data['Email Campaign Type Delivered'])
+            ),
+
+
+        );
+
+    }
+
+    if ($_order == 'type') {
+
+
+        $type = array();
+        foreach ($adata as $key => $row) {
+            $type[$key] = $row['_type'];
+        }
 
 
         if ($_dir == 'desc') {
@@ -1144,7 +1300,6 @@ function email_template_types($_data, $db, $user) {
     );
     echo json_encode($response);
 }
-
 
 
 ?>

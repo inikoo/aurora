@@ -969,6 +969,12 @@ ALTER TABLE `Location Dimension` ADD `Location Number History Records` MEDIUMINT
 
 ALTER TABLE `Inventory Transaction Fact` CHANGE `Map To Order Transaction Fact Parts Multiplicity` `Map To Order Transaction Fact Parts Multiplicity` SMALLINT(5) UNSIGNED NULL DEFAULT NULL;
 
+ALTER TABLE `Email Template Dimension` ADD `Email Template HTML` MEDIUMTEXT  CHARACTER SET utf8  COLLATE utf8_general_ci  NULL  AFTER `Email Template Unsubscribed`;
+ALTER TABLE `Email Template Dimension` MODIFY COLUMN `Email Template HTML` MEDIUMTEXT CHARACTER SET utf8 COLLATE utf8_general_ci AFTER `Email Template Subject`;
+ALTER TABLE `Email Template Dimension` ADD `Email Template Selecting Blueprints` ENUM('Yes','No') NOT NULL DEFAULT 'No' AFTER `Email Template State`;
+ALTER TABLE `Email Campaign Dimension` ADD `Email Campaign Selecting Blueprints` ENUM('Yes','No') NOT NULL DEFAULT 'No' AFTER `Email Campaign State`;
+
+
 
 ======= fer migration ordering in dw and costa
 

@@ -163,6 +163,17 @@
 
                     </div>
 
+
+
+                    <div id="undo_set_selecting_blueprint" class="email_campaign_operation {if !($email_campaign->get('Email Campaign State')=='ComposingEmail' and   $email_campaign->get('Email Campaign Selecting Blueprints')=='Yes') }hide{/if}">
+                        <div class="square_button left  " title="{t}Undo{/t}">
+                            <i class="fa  fa-undo button " id="stop_save_buttons" aria-hidden="true"
+                               onclick="undo_email_template_as_selecting_blueprints({$email_campaign->get('Email Campaign Email Template Key')})"></i>
+
+                        </div>
+                    </div>
+
+
                     <div id="undo_set_as_ready_operations" class="email_campaign_operation {if $email_campaign->get('State Index')!=30   }hide{/if}">
                         <div class="square_button left  " title="{t}Edit email{/t}">
                             <i class="fa discreet fa-edit button" id="undo_set_as_ready_save_buttons" aria-hidden="true"
@@ -425,7 +436,7 @@
 /*
     function set_up_mailing_list(){
 
-        $('#email_campaign\\.set_mail_list').removeClass('hide')
+        $('#mailshot\\.set_mail_list').removeClass('hide')
         change_tab('email_campaign.set_mail_list')
 
     }
@@ -452,8 +463,8 @@
             if (field_type == 'time') {
                 value = clean_time($('#' + field).val())
             } else if (field_type == 'date' || field_type == 'date_interval') {
-                if($('#' + field).val()!='') {
-                    value = $('#' + field).val() + ' ' + $('#' + field + '_time').val()
+                if($('#' + field+'_value').val()!='') {
+                    value = $('#' + field+'_value').val() + ' ' + $('#' + field + '_time').val()
                 }else{
                     value=''
                 }
@@ -537,8 +548,8 @@
 
             switch (data.update_metadata.state) {
                 case 'ComposingEmail':
-                    $('#email_campaign\\.workshop').removeClass('hide')
-                    change_tab('email_campaign.workshop')
+                    $('#mailshot\\.workshop').removeClass('hide')
+                    change_tab('mailshot.workshop')
                     break;
 
 

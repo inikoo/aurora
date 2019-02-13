@@ -206,7 +206,7 @@
                                                                         </td>
                                                                         <td class="alignright" width="20%"
                                                                             style="font-family: 'Helvetica Neue',Helvetica,Arial,sans-serif; box-sizing: border-box; font-size: 14px; vertical-align: top; text-align: right; border-top-width: 1px; border-top-color: #aaa; border-top-style: solid; margin: 0; padding: 5px 0;"
-                                                                            align="right" valign="top">$ {$order->get('Items Net Amount')}
+                                                                            align="right" valign="top"> {$order->get('Items Net Amount')}
                                                                         </td>
                                                                     </tr>
                                                                     <tr class="subtotal" style="font-family: 'Helvetica Neue',Helvetica,Arial,sans-serif; box-sizing: border-box; font-size: 14px; margin: 0;">
@@ -217,7 +217,7 @@
                                                                         </td>
                                                                         <td class="alignright" width="20%"
                                                                             style="font-family: 'Helvetica Neue',Helvetica,Arial,sans-serif; box-sizing: border-box; font-size: 14px; vertical-align: top; text-align: right; border-top-width: 1px; border-top-color: #333; border-top-style: solid; margin: 0; padding: 5px 0;"
-                                                                            align="right" valign="top">$ {$order->get('Charges Net Amount')}
+                                                                            align="right" valign="top"> {$order->get('Charges Net Amount')}
                                                                         </td>
                                                                     </tr>
                                                                     <tr class="subtotal" style="font-family: 'Helvetica Neue',Helvetica,Arial,sans-serif; box-sizing: border-box; font-size: 14px; margin: 0;">
@@ -228,7 +228,7 @@
                                                                         </td>
                                                                         <td class="alignright" width="20%"
                                                                             style="font-family: 'Helvetica Neue',Helvetica,Arial,sans-serif; box-sizing: border-box; font-size: 14px; vertical-align: top; text-align: right; border-top-width: 1px; border-top-color: #eee; border-top-style: solid; margin: 0; padding: 5px 0;"
-                                                                            align="right" valign="top">$ {$order->get('Shipping Net Amount')}
+                                                                            align="right" valign="top"> {$order->get('Shipping Net Amount')}
                                                                         </td>
                                                                     </tr>
                                                                     <tr class="subtotal" style="font-family: 'Helvetica Neue',Helvetica,Arial,sans-serif; box-sizing: border-box; font-size: 14px; margin: 0;">
@@ -239,7 +239,7 @@
                                                                         </td>
                                                                         <td class="alignright" width="20%"
                                                                             style="font-family: 'Helvetica Neue',Helvetica,Arial,sans-serif; box-sizing: border-box; font-size: 14px; vertical-align: top; text-align: right; border-top-width: 1px; border-top-color: #333; border-top-style: solid; margin: 0; padding: 5px 0;"
-                                                                            align="right" valign="top">$ {$order->get('Total Net Amount')}
+                                                                            align="right" valign="top"> {$order->get('Total Net Amount')}
                                                                         </td>
                                                                     </tr>
                                                                     <tr class="subtotal" style="font-family: 'Helvetica Neue',Helvetica,Arial,sans-serif; box-sizing: border-box; font-size: 14px; margin: 0;">
@@ -250,7 +250,7 @@
                                                                         </td>
                                                                         <td class="alignright" width="20%"
                                                                             style="font-family: 'Helvetica Neue',Helvetica,Arial,sans-serif; box-sizing: border-box; font-size: 14px; vertical-align: top; text-align: right; border-top-width: 1px; border-top-color: #eee; border-top-style: solid; margin: 0; padding: 5px 0;"
-                                                                            align="right" valign="top">$ {$order->get('Total Tax Amount')}
+                                                                            align="right" valign="top"> {$order->get('Total Tax Amount')}
                                                                         </td>
                                                                     </tr>
 
@@ -262,7 +262,7 @@
                                                                         </td>
                                                                         <td class="alignright" width="20%"
                                                                             style="font-family: 'Helvetica Neue',Helvetica,Arial,sans-serif; box-sizing: border-box; font-size: 14px; vertical-align: top; text-align: right; border-top-width: 2px; border-top-color: #333; border-top-style: solid; border-bottom-color: #333; border-bottom-width: 2px; border-bottom-style: solid; font-weight: 700; margin: 0; padding: 5px 0;"
-                                                                            align="right" valign="top">$ {$order->get('Total Amount')}
+                                                                            align="right" valign="top"> {$order->get('Total Amount')}
                                                                         </td>
                                                                     </tr>
                                                                 </table>

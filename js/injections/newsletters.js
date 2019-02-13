@@ -3,6 +3,10 @@
  Copyright (c) 2015, Inikoo
  Version 3.0*/
 
+// todo remove this file
+
+/*
+
 $("#new_newsletter").on( 'click',function () {
     new_newsletter(this)
 })
@@ -72,3 +76,5 @@ function new_newsletter(element) {
 
 
 }
+
+*/

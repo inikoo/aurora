@@ -13,7 +13,7 @@
 
 function parse_customer_list($data, $db) {
 
-    //  print_r($data);
+     // print_r($data);
 
     $table = '`Customer Dimension` C  ';
     $group = '';

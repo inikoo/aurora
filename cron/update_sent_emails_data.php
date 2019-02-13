@@ -15,9 +15,6 @@ require_once 'utils/natural_language.php';
 require_once 'utils/object_functions.php';
 
 
-
-
-
 $editor = array(
     'Author Name'  => '',
     'Author Alias' => '',
@@ -35,13 +32,13 @@ print date('l jS \of F Y h:i:s A')."\n";
 $account = new Account();
 
 
-
 $sql = sprintf("SELECT `Email Campaign Type Key` FROM `Email Campaign Type Dimension`");
 if ($result = $db->query($sql)) {
     foreach ($result as $row) {
         $email_template_type = get_object('Email Campaign Type', $row['Email Campaign Type Key']);
 
         $email_template_type->update_sent_emails_totals();
+        $email_template_type->update_number_subscribers();
 
     }
 

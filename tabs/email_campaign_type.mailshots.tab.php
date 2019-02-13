@@ -11,16 +11,15 @@
 
 
 $parameters = array(
-    'parent'     =>$state['object'],
+    'parent'     => $state['object'],
     'parent_key' => $state['key'],
 
 );
 
 
-  $tab     = 'email_campaign_type.mailshots';
-        $ar_file = 'ar_mailshot_tables.php';
-        $tipo    = 'mailshots';
-
+$tab     = 'email_campaign_type.mailshots';
+$ar_file = 'ar_mailshots_tables.php';
+$tipo    = 'mailshots';
 
 
 $default = $user->get_tab_defaults($tab);
@@ -35,7 +34,7 @@ $table_views = array(
 );
 
 $table_filters = array(
-    'name'         => array(
+    'name' => array(
         'label' => _('Name'),
         'title' => _('name')
     )
@@ -43,21 +42,18 @@ $table_filters = array(
 );
 
 
+$table_buttons = array();
 
-
-$table_buttons   = array();
-
-if($state['_object']->get('Code')=='Newsletter'){
-
+if ($state['_object']->get('Code') == 'Newsletter') {
 
 
     $table_buttons[] = array(
-        'icon'      => 'plus',
-        'title'     => _('New newsletter'),
-        'id'=>'new_newsletter',
-        'attr'=>array(
-            'parent'=>'Store',
-            'parent_key'=>$state['_object']->get('Store Key'),
+        'icon'  => 'plus',
+        'title' => _('New newsletter'),
+        'id'    => 'new_newsletter',
+        'attr'  => array(
+            'parent'     => 'Store',
+            'parent_key' => $state['_object']->get('Store Key'),
 
         )
 
@@ -68,18 +64,16 @@ if($state['_object']->get('Code')=='Newsletter'){
     );
 
 
-}elseif($state['_object']->get('Code')=='Marketing') {
-
-
+} elseif ($state['_object']->get('Code') == 'Marketing') {
 
 
     $table_buttons[] = array(
-        'icon'      => 'plus',
-        'title'     => _('New marketing mailshot'),
-        'id'=>'new_mailshot',
-        'attr'=>array(
-            'parent'=>'Store',
-            'parent_key'=>$state['_object']->get('Store Key'),
+        'icon'  => 'plus',
+        'title' => _('New marketing mailshot'),
+        'id'    => 'new_mailshot',
+        'attr'  => array(
+            'parent'     => 'Store',
+            'parent_key' => $state['_object']->get('Store Key'),
 
         )
 
@@ -90,17 +84,15 @@ if($state['_object']->get('Code')=='Newsletter'){
     );
 
 
-
-
-}elseif($state['_object']->get('Code')=='AbandonedCart') {
+} elseif ($state['_object']->get('Code') == 'AbandonedCart') {
 
     $table_buttons[] = array(
-        'icon'      => 'plus',
-        'title'     => _('New mailshot for orders in basket'),
-        'id'=>'new_orders_in_website_mailshot',
-        'attr'=>array(
-            'parent'=>'Store',
-            'parent_key'=>$state['_object']->get('Store Key'),
+        'icon'  => 'plus',
+        'title' => _('New mailshot for orders in basket'),
+        'id'    => 'new_orders_in_website_mailshot',
+        'attr'  => array(
+            'parent'     => 'Store',
+            'parent_key' => $state['_object']->get('Store Key'),
 
         )
 
@@ -113,10 +105,7 @@ if($state['_object']->get('Code')=='Newsletter'){
 }
 
 
-
 $smarty->assign('table_buttons', $table_buttons);
-
-
 
 
 include 'utils/get_table_html.php';

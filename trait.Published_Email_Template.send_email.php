@@ -17,11 +17,10 @@ use Aws\Ses\SesClient;
 trait Send_Email {
     function send($recipient, $data, $smarty = false) {
 
-
         $this->sent = false;
 
-        $this->error = false;
-        $account     = get_object('Account', 1);
+        $this->error   = false;
+        $this->account = get_object('Account', 1);
 
         if (empty($data['Email_Template'])) {
             $email_template = get_object('Email_Template', $this->data['Published Email Template Email Template Key']);
@@ -30,27 +29,15 @@ trait Send_Email {
             unset($data['Email_Template']);
         }
         if (empty($data['Email_Template_Type'])) {
-            $email_template_type = get_object('Email_Template_Type', $email_template->get('Email Template Email Campaign Type Key'));
+            $this->email_template_type = get_object('Email_Template_Type', $email_template->get('Email Template Email Campaign Type Key'));
         } else {
-            $email_template_type = $data['Email_Template_Type'];
+            $this->email_template_type = $data['Email_Template_Type'];
             unset($data['Email_Template_Type']);
         }
 
 
-
-
-
-        if ($this->get('Published Email Template Subject') == '') {
-
-            $this->error = true;
-            $this->msg   = _('Empty email subject');
-
-            return false;
-
-        }
-
-        if ($email_template_type->id) {
-            if ($email_template_type->get('Email Campaign Type Status') != 'Active') {
+        if ($this->email_template_type->id) {
+            if ($this->email_template_type->get('Email Campaign Type Status') != 'Active') {
                 $this->error = true;
                 $this->msg   = 'Email Campaign Type Status not active';
 
@@ -59,21 +46,11 @@ trait Send_Email {
         }
 
 
-        $store = get_object('Store', $email_template_type->get('Store Key'));
+        $this->store = get_object('Store', $this->email_template_type->get('Store Key'));
 
-        $website          = get_object('Website', $store->get('Store Website Key'));
+        $website          = get_object('Website', $this->store->get('Store Website Key'));
         $localised_labels = $website->get('Localised Labels');
 
-
-        if ($store->get('Send Email Address') == '') {
-
-            $this->error = true;
-            $this->msg   = 'Sender email address not configured';
-
-            return false;
-
-
-        }
 
         if (empty($data['Email_Tracking'])) {
 
@@ -82,7 +59,7 @@ trait Send_Email {
             $email_tracking_data = array(
                 'Email Tracking Email' => $recipient->get('Main Plain Email'),
 
-                'Email Tracking Email Template Type Key'      => $email_template_type->id,
+                'Email Tracking Email Template Type Key'      => $this->email_template_type->id,
                 'Email Tracking Email Template Key'           => $email_template->id,
                 'Email Tracking Published Email Template Key' => $this->id,
                 'Email Tracking Recipient'                    => $recipient->get_object_name(),
@@ -97,147 +74,74 @@ trait Send_Email {
         }
 
 
-        $placeholders = array(
-            '[Greetings]'     => $recipient->get_greetings(),
-            '[Customer Name]' => $recipient->get('Name'),
-            '[Name]'          => $recipient->get('Main Contact Name'),
-            '[Name,Company]'  => preg_replace('/^, /', '', $recipient->get('Main Contact Name').($recipient->get('Company Name') == '' ? '' : ', '.$recipient->get('Company Name'))),
-            '[Signature]'     => $store->get('Signature'),
-        );
+        if ($this->email_template_type->get('Email Campaign Type Code') == 'OOS Notification') {
+
+            $with_products = 0;
+
+            $sql = sprintf(
+                'select `Back in Stock Reminder Product ID`,`Back in Stock Reminder Key` from `Back in Stock Reminder Fact` where `Back in Stock Reminder Customer Key`=%d and `Back in Stock Reminder State`="Ready"  ', $recipient->id
+            );
 
 
-        switch ($email_template_type->get('Email Campaign Type Code')) {
-
-            case 'Invite':
-            case 'Invite Mailshot':
-
-                $placeholders['[Prospect Name]'] = $recipient->get('Name');
-
-                break;
-            case 'OOS Notification':
+            if ($result = $this->db->query($sql)) {
+                foreach ($result as $row) {
+                    $product = get_object('Product', $row['Back in Stock Reminder Product ID']);
+                    $webpage = $product->get_webpage();
 
 
-                $oos_notification_reminder_keys = array();
-                $products                       = '';
-
-                $sql = sprintf(
-                    'select `Back in Stock Reminder Product ID`,`Back in Stock Reminder Key` from `Back in Stock Reminder Fact` where `Back in Stock Reminder Customer Key`=%d and `Back in Stock Reminder State`="Ready"  ', $recipient->id
-                );
-
-
-                if ($result = $this->db->query($sql)) {
-                    foreach ($result as $row) {
-                        $product = get_object('Product', $row['Back in Stock Reminder Product ID']);
-                        $webpage = $product->get_webpage();
-
-
-                        if ($product->id and $product->get('Product Web State') == 'For Sale' and $webpage->id and $webpage->get('Webpage State') == 'Online') {
-                            $oos_notification_reminder_keys[] = $row['Back in Stock Reminder Key'];
-                            $products                         .= sprintf(
-                                '<a ses:tags="scope:product;scope_key:%d;webpage_key:%d;" href="%s"><b>%s</b> %s</a>, ', $product->id, $webpage->id, $webpage->get('Webpage URL'), $product->get('Code'), $product->get('Name')
-
-                            );
-
-
-                        }
+                    if ($product->id and $product->get('Product Web State') == 'For Sale' and $webpage->id and $webpage->get('Webpage State') == 'Online') {
+                        $with_products++;
+                        break;
 
 
                     }
 
 
-                } else {
-                    print_r($error_info = $this->db->errorInfo());
-                    print "$sql\n";
-                    exit;
                 }
 
 
-                if (count($oos_notification_reminder_keys) == 0) {
-                    $email_tracking->fast_update(
-                        array(
-                            'Email Tracking State' => "Error",
+            } else {
+                print_r($error_info = $this->db->errorInfo());
+                print "$sql\n";
+                exit;
+            }
+
+            if ($with_products == 0) {
+                $email_tracking->fast_update(
+                    array(
+                        'Email Tracking State' => "Error",
 
 
-                        )
-                    );
+                    )
+                );
 
 
-                    $this->error = true;
-                    $this->msg   = _('Error, email not send');
+                $this->error = true;
+                $this->msg   = _('Error, email not send');
 
-                }
+                return false;
 
-                $products = preg_replace('/\, $/', '', $products);
-
-                $placeholders['[Products]'] = $products;
-
-                break;
-            case 'Password Reminder':
+            }
 
 
-                $placeholders['[Reset_Password_URL]'] = $data['Reset_Password_URL'];
+        }
 
-                break;
-            case 'GR Reminder':
+        if ($this->store->get('Send Email Address') == '') {
 
-                $order = get_object('Order', $data['Order Key']);
+            $this->error = true;
+            $this->msg   = 'Sender email address not configured';
 
-
-                $placeholders['[Order Number]']          = $order->get('Public ID');
-                $placeholders['[Order Amount]']          = $order->get('Total');
-                $placeholders['[Order Date]']            = strftime("%a, %e %b %Y", strtotime($order->get('Order Dispatched Date').' +0:00'));
-                $placeholders['[Order Date + n days]']   = strftime("%a, %e %b %Y", strtotime($order->get('Order Dispatched Date').' +30 days  +0:00'));
-                $placeholders['[Order Date + n weeks]']  = strftime("%a, %e %b %Y", strtotime($order->get('Order Dispatched Date').' +1 week  +0:00'));
-                $placeholders['[Order Date + n months]'] = strftime("%a, %e %b %Y", strtotime($order->get('Order Dispatched Date').' +1 month  +0:00'));
-
-                break;
-
-            case 'Order Confirmation':
-
-                $order = $data['Order'];
-
-                $placeholders['[Order Number]'] = $order->get('Public ID');
-                $placeholders['[Order Amount]'] = $order->get('Total');
-                $placeholders['[Order Date]']   = $order->get('Date');
-                $placeholders['[Pay Info]']     = $data['Pay Info'];
-                $placeholders['[Order]']        = $data['Order Info'];
-                break;
-            case 'Delivery Confirmation':
-
-                $order = $data['Order'];
-                $delivery_note=$data['Delivery_Note'];
-
-                $placeholders['[Order Number]'] = $order->get('Public ID');
-                $placeholders['[Order Amount]'] = $order->get('Total');
-                $placeholders['[Order Date]']   = $order->get('Dispatched Date');
-
-                $placeholders['[Tracking Number]'] = $delivery_note->get('Delivery Note Shipper Tracking');
-
-
-
-                $shipper=$delivery_note->get('Shipper');
-
-
-
-                if(is_object($shipper) and $shipper->id){
-                    $placeholders['[Tracking URL]']    = $shipper->get('Shipper Tracking URL');
-                }else{
-                    $placeholders['[Tracking URL]']    = '';
-
-                }
-
-
-
-
-            default:
+            return false;
 
 
         }
 
 
+        $this->get_placeholders($recipient, $data);
 
-        $from_name            = base64_encode($store->get('Name'));
-        $sender_email_address = $store->get('Send Email Address');
+
+        $from_name            = base64_encode($this->store->get('Name'));
+        $sender_email_address = $this->store->get('Send Email Address');
         $_source              = "=?utf-8?B?$from_name?= <$sender_email_address>";
 
 
@@ -246,130 +150,54 @@ trait Send_Email {
         if (preg_match('/bali/', gethostname())) {
 
 
-            $to_address = 'raul@inikoo.com';
+            //  $to_address = 'raul@inikoo.com';
         }
 
 
+        $request                               = array();
+        $request['Source']                     = $_source;
+        $request['Destination']['ToAddresses'] = array($to_address);
+        $request['ConfigurationSetName']       = $this->account->get('Account Code');
 
 
-        $request                                    = array();
-        $request['Source']                          = $_source;
-        $request['Destination']['ToAddresses']      = array($to_address);
-        $request['Message']['Subject']['Data']      = $this->get('Published Email Template Subject');
-        $request['Message']['Body']['Text']['Data'] = strtr($this->get('Published Email Template Text'), $placeholders);
-        $request['ConfigurationSetName']            = $account->get('Account Code');
+        $request['Message']['Subject']['Data'] = $this->get_email_subject();
 
 
-        if ($this->get('Published Email Template HTML') != '') {
+        if ($request['Message']['Subject']['Data'] == '') {
 
-            $request['Message']['Body']['Html']['Data'] = strtr($this->get('Published Email Template HTML'), $placeholders);
+            $this->error = true;
+            $this->msg   = _('Empty email subject');
+
+            return false;
 
         }
 
-        if ($email_template_type->get('Email Campaign Type Code') == 'GR Reminder') {
+        $request['Message']['Body']['Text']['Data'] = $this->get_email_plain_text();
 
 
-            $_date = date('Y-m-d', strtotime($order->get('Order Dispatched Date')));
+        // if ($this->get('Published Email Template HTML') != '') {
+
+        $request['Message']['Body']['Html']['Data'] = $this->get_email_html($email_tracking, $recipient, $data, $smarty, $localised_labels);
 
 
-            if ($request['Message']['Body']['Text']['Data'] != '') {
-                $request['Message']['Body']['Text']['Data'] = preg_replace_callback(
-                    '/\[Order Date \+\s*(\d+)\s*days\]/', function ($match_data) use ($_date) {
-                    return strftime("%a, %e %b %Y", strtotime($_date.' +'.$match_data[1].' days'));
-                }, $request['Message']['Body']['Text']['Data']
-                );
-
-
-                $request['Message']['Body']['Text']['Data'] = preg_replace_callback(
-                    '/\[Order Date \+\s*(\d+)\s*weeks\]/', function ($match_data) use ($_date) {
-                    return strftime("%a, %e %b %Y", strtotime($_date.' +'.$match_data[1].' weeks'));
-                }, $request['Message']['Body']['Text']['Data']
-                );
-
-
-            }
-
-
-            $request['Message']['Body']['Html']['Data'] = preg_replace_callback(
-                '/\[Order Date \+\s*(\d+)\s*days\]/', function ($match_data) use ($_date) {
-
-
-                return strftime("%a, %e %b %Y", strtotime($_date.' +'.$match_data[1].' days'));
-            }, $request['Message']['Body']['Html']['Data']
+        if (!isset($this->ses_client)) {
+            $this->ses_client = SesClient::factory(
+                array(
+                    'version'     => 'latest',
+                    'region'      => 'eu-west-1',
+                    'credentials' => [
+                        'key'    => AWS_ACCESS_KEY_ID,
+                        'secret' => AWS_SECRET_ACCESS_KEY,
+                    ],
+                )
             );
-
-            $request['Message']['Body']['Html']['Data'] = preg_replace_callback(
-                '/\[Order Date \+\s*(\d+)\s*months\]/', function ($match_data) use ($_date) {
-                return strftime("%a, %e %b %Y", strtotime($_date.' +'.$match_data[1].' months'));
-            }, $request['Message']['Body']['Html']['Data']
-            );
-
-
-        }elseif ($email_template->get('Email Template Role') == 'Delivery Confirmation') {
-
-
-            if( $placeholders['[Tracking Number]']!='' and  $placeholders['[Tracking URL]']!=''){
-
-                $request['Message']['Body']['Html']['Data']=preg_replace('/\[Not Tracking START\].*\[END\]/','',$request['Message']['Body']['Html']['Data']);
-
-                if(preg_match('/\[Tracking START\](.*)\[END\]/',$request['Message']['Body']['Html']['Data'],$matches)){
-                    $request['Message']['Body']['Html']['Data']=preg_replace('/\[Tracking START\].*\[END\]/',$matches[1],$request['Message']['Body']['Html']['Data']);
-
-                }
-
-            }else{
-                $request['Message']['Body']['Html']['Data']=preg_replace('/\[Tracking START\].*\[END\]/','',$request['Message']['Body']['Html']['Data']);
-
-                if(preg_match('/\[Not Tracking START\](.*)\[END\]/',$request['Message']['Body']['Html']['Data'],$matches)){
-                    $request['Message']['Body']['Html']['Data']=preg_replace('/\[Not Tracking START\].*\[END\]/',$matches[1],$request['Message']['Body']['Html']['Data']);
-
-                }
-            }
-
-
         }
-
-        $request['Message']['Body']['Html']['Data'] = preg_replace_callback(
-            '/\[Unsubscribe]/', function () use ($email_tracking, $recipient, $data, $smarty, $localised_labels) {
-
-            if (isset($data['Unsubscribe URL'])) {
-
-
-
-                $smarty->assign('localised_labels', $localised_labels);
-
-
-                $smarty->assign('link', $data['Unsubscribe URL'].'?s='.$email_tracking->id.'&a='.hash('sha256', IKEY.$recipient->id.$email_tracking->id));
-
-                // print $smarty->fetch('unsubscribe_marketing_email.placeholder.tpl');
-
-                return $smarty->fetch('unsubscribe_marketing_email.placeholder.tpl');;
-
-            }
-
-
-        }, $request['Message']['Body']['Html']['Data']
-        );
-
-        $client = SesClient::factory(
-            array(
-                'version'     => 'latest',
-                'region'      => 'eu-west-1',
-                'credentials' => [
-                    'key'    => AWS_ACCESS_KEY_ID,
-                    'secret' => AWS_SECRET_ACCESS_KEY,
-                ],
-            )
-        );
-
-
-
 
 
         try {
 
 
-            $result = $client->sendEmail($request);
+            $result = $this->ses_client->sendEmail($request);
 
 
             $email_tracking->fast_update(
@@ -381,34 +209,34 @@ trait Send_Email {
                 )
             );
 
-
             /*
 
-                                    $email_tracking->fast_update(
-                                        array(
-                                            'Email Tracking State'  => "Sent to SES",
-                                            "Email Tracking SES Id" => 'xxxx'.date('U'),
+                                $email_tracking->fast_update(
+                                    array(
+                                        'Email Tracking State'  => "Sent to SES",
+                                        "Email Tracking SES Id" => 'xxxx'.date('U'),
 
 
-                                        )
-                                    );
-
-                                    sleep(1);
-
+                                    )
+                                );
             */
 
+
+            //  sleep(1);
+
+
             if (in_array(
-                $email_template_type->get('Email Campaign Type Code'), array(
-                                                                         'Order Confirmation',
-                                                                         'Delivery Confirmation',
-                                                                         'OOS Notification',
-                                                                         'Password Reminder',
-                                                                         'Invite',
-                                                                         'Invite Mailshot',
-                                                                         'GR Reminder',
-                                                                         'Registration',
-                                                                         'AbandonedCart'
-                                                                     )
+                $this->email_template_type->get('Email Campaign Type Code'), array(
+                                                                               'Order Confirmation',
+                                                                               'Delivery Confirmation',
+                                                                               'OOS Notification',
+                                                                               'Password Reminder',
+                                                                               'Invite',
+                                                                               'Invite Mailshot',
+                                                                               'GR Reminder',
+                                                                               'Registration',
+                                                                               'AbandonedCart'
+                                                                           )
             )) {
 
                 $sql = sprintf(
@@ -472,7 +300,7 @@ trait Send_Email {
 
             $email_template->update_sent_emails_totals();
 
-            $email_template_type->update_sent_emails_totals();
+            $this->email_template_type->update_sent_emails_totals();
 
             $email_campaign = get_object('email_campaign', $email_tracking->get('Email Tracking Email Mailshot Key'));
             $email_campaign->update_sent_emails_totals();
@@ -518,10 +346,10 @@ trait Send_Email {
                 $this->socket->send(
                     json_encode(
                         array(
-                            'channel' => 'real_time.'.strtolower($account->get('Account Code')),
+                            'channel' => 'real_time.'.strtolower($this->account->get('Account Code')),
                             'objects' => array(
                                 array(
-                                    'object' => 'email_campaign',
+                                    'object' => 'mailshot',
                                     'key'    => $email_campaign->id,
 
                                     'update_metadata' => array(
@@ -537,9 +365,9 @@ trait Send_Email {
 
                             'tabs' => array(
                                 array(
-                                    'tab'        => 'email_campaign.sent_emails',
+                                    'tab'        => 'mailshot.sent_emails',
                                     'parent'     => 'email_campaign_type',
-                                    'parent_key' => $email_template_type->id,
+                                    'parent_key' => $this->email_template_type->id,
                                     'cell'       => array(
                                         'email_tracking_state_'.$email_tracking->id => $state
                                     )
@@ -549,7 +377,7 @@ trait Send_Email {
                                 array(
                                     'tab'        => 'email_campaign_type.mailshots',
                                     'parent'     => 'store',
-                                    'parent_key' => $email_template_type->get('Store Key'),
+                                    'parent_key' => $this->email_template_type->get('Store Key'),
                                     'cell'       => array(
                                         'date_'.$email_campaign->id  => strftime("%a, %e %b %Y %R", strtotime($email_campaign->get('Email Campaign Last Updated Date')." +00:00")),
                                         'state_'.$email_campaign->id => $email_campaign->get('State'),
@@ -577,13 +405,546 @@ trait Send_Email {
                 'email_template_type_key' => $email_tracking->get('Email Tracking Email Template Type Key'),
                 'email_mailshot_key'      => $email_tracking->get('Email Tracking Email Mailshot Key'),
 
-            ), $account->get('Account Code')
+            ), $this->account->get('Account Code')
             );
         }
 
 
         return $email_tracking;
 
+    }
+
+    function get_placeholders($recipient, $data) {
+
+
+        $this->placeholders = array(
+            '[Greetings]'     => $recipient->get_greetings(),
+            '[Customer Name]' => $recipient->get('Name'),
+            '[Name]'          => $recipient->get('Main Contact Name'),
+            '[Name,Company]'  => preg_replace('/^, /', '', $recipient->get('Main Contact Name').($recipient->get('Company Name') == '' ? '' : ', '.$recipient->get('Company Name'))),
+            '[Signature]'     => $this->store->get('Signature'),
+        );
+
+
+        switch ($this->email_template_type->get('Email Campaign Type Code')) {
+
+            case 'Invite':
+            case 'Invite Mailshot':
+
+                $this->placeholders['[Prospect Name]'] = $recipient->get('Name');
+
+                break;
+            case 'OOS Notification':
+
+
+                $oos_notification_reminder_keys = array();
+                $products                       = '';
+
+                $sql = sprintf(
+                    'select `Back in Stock Reminder Product ID`,`Back in Stock Reminder Key` from `Back in Stock Reminder Fact` where `Back in Stock Reminder Customer Key`=%d and `Back in Stock Reminder State`="Ready"  ', $recipient->id
+                );
+
+
+                if ($result = $this->db->query($sql)) {
+                    foreach ($result as $row) {
+                        $product = get_object('Product', $row['Back in Stock Reminder Product ID']);
+                        $webpage = $product->get_webpage();
+
+
+                        if ($product->id and $product->get('Product Web State') == 'For Sale' and $webpage->id and $webpage->get('Webpage State') == 'Online') {
+                            $oos_notification_reminder_keys[] = $row['Back in Stock Reminder Key'];
+                            $products                         .= sprintf(
+                                '<a ses:tags="scope:product;scope_key:%d;webpage_key:%d;" href="%s"><b>%s</b> %s</a>, ', $product->id, $webpage->id, $webpage->get('Webpage URL'), $product->get('Code'), $product->get('Name')
+
+                            );
+
+
+                        }
+
+
+                    }
+
+
+                } else {
+                    print_r($error_info = $this->db->errorInfo());
+                    print "$sql\n";
+                    exit;
+                }
+
+
+                $products = preg_replace('/\, $/', '', $products);
+
+                $this->placeholders['[Products]'] = $products;
+
+                break;
+            case 'Password Reminder':
+
+
+                $this->placeholders['[Reset_Password_URL]'] = $data['Reset_Password_URL'];
+
+                break;
+            case 'GR Reminder':
+
+                $this->order = get_object('Order', $data['Order Key']);
+
+
+                $this->placeholders['[Order Number]']          = $this->order->get('Public ID');
+                $this->placeholders['[Order Amount]']          = $this->order->get('Total');
+                $this->placeholders['[Order Date]']            = strftime("%a, %e %b %Y", strtotime($this->order->get('Order Dispatched Date').' +0:00'));
+                $this->placeholders['[Order Date + n days]']   = strftime("%a, %e %b %Y", strtotime($this->order->get('Order Dispatched Date').' +30 days  +0:00'));
+                $this->placeholders['[Order Date + n weeks]']  = strftime("%a, %e %b %Y", strtotime($this->order->get('Order Dispatched Date').' +1 week  +0:00'));
+                $this->placeholders['[Order Date + n months]'] = strftime("%a, %e %b %Y", strtotime($this->order->get('Order Dispatched Date').' +1 month  +0:00'));
+
+                break;
+
+            case 'Order Confirmation':
+
+                $this->order = $data['Order'];
+
+                $this->placeholders['[Order Number]'] = $this->order->get('Public ID');
+                $this->placeholders['[Order Amount]'] = $this->order->get('Total');
+                $this->placeholders['[Order Date]']   = $this->order->get('Date');
+                $this->placeholders['[Pay Info]']     = $data['Pay Info'];
+                $this->placeholders['[Order]']        = $data['Order Info'];
+                break;
+            case 'Delivery Confirmation':
+
+                $this->order   = $data['Order'];
+                $delivery_note = $data['Delivery_Note'];
+
+                $this->placeholders['[Order Number]'] = $this->order->get('Public ID');
+                $this->placeholders['[Order Amount]'] = $this->order->get('Total');
+                $this->placeholders['[Order Date]']   = $this->order->get('Dispatched Date');
+
+                $this->placeholders['[Tracking Number]'] = $delivery_note->get('Delivery Note Shipper Tracking');
+
+
+                $shipper = $delivery_note->get('Shipper');
+
+
+                if (is_object($shipper) and $shipper->id) {
+                    $this->placeholders['[Tracking URL]'] = $shipper->get('Shipper Tracking URL');
+                } else {
+                    $this->placeholders['[Tracking URL]'] = '';
+
+                }
+            case 'New Customer':
+
+                $this->new_customer = get_object('Customer', $data['customer_key']);
+
+
+                break;
+            case 'New Order':
+
+                $this->order                       = get_object('Order', $data['order_key']);
+                $this->notification_trigger_author = get_object('Customer', $data['customer_key']);
+
+
+                break;
+            case 'Invoice Deleted':
+
+                $this->invoice                     = get_object('Invoice_deleted', $data['invoice_key']);
+                $this->notification_trigger_author = get_object('User', $data['user_key']);
+
+
+                break;
+            case 'Delivery Note Undispatched':
+
+                $this->delivery_note               = get_object('delivery_note', $data['delivery_note_key']);
+                $this->notification_trigger_author = get_object('User', $data['user_key']);
+
+                break;
+            default:
+
+
+        }
+
+
+    }
+
+    function get_email_subject() {
+
+
+        switch ($this->email_template_type->get('Email Campaign Type Code')) {
+            case 'New Customer':
+                $subject = _('New customer registration').' '.$this->store->get('Name');
+                break;
+            case 'New Order':
+                $subject = _('New order').' '.$this->store->get('Name');
+                break;
+            case 'Invoice Deleted':
+                if ($this->invoice->get('Invoice Type') == 'Invoice') {
+                    $subject = _('Invoice deleted').' '.$this->store->get('Name');
+                } else {
+                    $subject = _('Refund deleted').' '.$this->store->get('Name');
+                }
+
+                break;
+            case 'Delivery Note Undispatched':
+                if ($this->delivery_note->get('Delivery Note Type') == 'Replacement') {
+                    $subject = _('Replacement undispatched').' '.$this->store->get('Name');
+                } else {
+                    $subject = _('Delivery note undispatched').' '.$this->store->get('Name');
+                }
+
+                break;
+            default:
+                $subject = $this->get('Published Email Template Subject');
+
+        }
+
+        return $subject;
+    }
+
+    function get_email_plain_text() {
+
+
+        switch ($this->email_template_type->get('Email Campaign Type Code')) {
+            case 'New Customer':
+                $text = sprintf(
+                    _('%s (%s) has registered'),
+                    $this->new_customer->get('Name'),
+                    $this->new_customer->get('Customer Main Plain Email')
+
+                );
+                break;
+            case 'New Order':
+
+                $text = sprintf(
+                    _('New order %s (%s) has been placed by %s'),
+                    $this->order->get('Public ID'),
+                    $this->order->get('Total Amount'),
+                    $this->notification_trigger_author->get('Name')
+
+                );
+                break;
+            case 'Invoice Deleted':
+                if ($this->invoice->get('Invoice Type') == 'Invoice') {
+                    $text = sprintf(
+                        _('Invoice %s (%s, %s) has been deleted by %s.'),
+                        $this->invoice->get('Public ID'),
+                        $this->invoice->get('Total Amount'),
+                        $this->invoice->get_date('Invoice Date'), $this->notification_trigger_author->get('Alias')
+
+                    );
+                } else {
+                    $text = sprintf(
+                        _('Refund %s (%s, %s) has been deleted by %s.'),
+                        $this->invoice->get('Public ID'),
+                        $this->invoice->get('Total Amount'),
+                        $this->invoice->get_date('Invoice Date'), $this->notification_trigger_author->get('Alias')
+
+                    );
+                }
+
+                break;
+            case 'Delivery Note Undispatched':
+                if ($this->delivery_note->get('Delivery Note Type') == 'Replacement') {
+                    $text = sprintf(
+                        _('Replacement %s has been undispatched by %s.'),
+                        $this->delivery_note->get('ID'),
+                        $this->notification_trigger_author->get('Alias')
+
+                    );
+                } else {
+
+                    $text = sprintf(
+                        _('Delivery note %s has been undispatched by %s.'),
+                        $this->delivery_note->get('ID'),
+                        $this->notification_trigger_author->get('Alias')
+
+                    );
+                }
+
+                break;
+            default:
+
+                $text = strtr($this->get('Published Email Template Text'), $this->placeholders);
+
+                if ($this->email_template_type->get('Email Campaign Type Code') == 'GR Reminder') {
+
+
+                    $_date = date('Y-m-d', strtotime($this->order->get('Order Dispatched Date')));
+
+
+                    if ($text != '') {
+                        $text = preg_replace_callback(
+                            '/\[Order Date \+\s*(\d+)\s*days\]/', function ($match_data) use ($_date) {
+                            return strftime("%a, %e %b %Y", strtotime($_date.' +'.$match_data[1].' days'));
+                        }, $text
+                        );
+
+
+                        $text = preg_replace_callback(
+                            '/\[Order Date \+\s*(\d+)\s*weeks\]/', function ($match_data) use ($_date) {
+                            return strftime("%a, %e %b %Y", strtotime($_date.' +'.$match_data[1].' weeks'));
+                        }, $text
+                        );
+
+
+                    }
+
+
+                }
+
+        }
+
+
+        return $text;
+
+    }
+
+    function get_email_html($email_tracking, $recipient, $data, $smarty, $localised_labels) {
+
+        switch ($this->email_template_type->get('Email Campaign Type Code')) {
+            case 'New Customer':
+
+                $subject    = _('New customer registration').' '.$this->store->get('Name');
+                $title      = '<b>'._('New customer registration').'</b> '.$this->store->get('Name');
+                $link_label = _('Link to customer');
+
+
+                $info = sprintf(
+                    _('%s (%s) has registered'),
+                    '<b>'.$this->new_customer->get('Name').'</b>',
+                    '<a href="href="mailto:'.$this->new_customer->get('Customer Main Plain Email').'"">'.$this->new_customer->get('Customer Main Plain Email').'</a>'
+
+                );
+
+                $link = sprintf(
+                    '%s/customers/%d/%d',
+                    $this->account->get('Account System Public URL'),
+                    $this->store->id,
+                    $this->new_customer->id
+                );
+
+                $smarty->assign('type', 'Success');
+
+                $smarty->assign('store', $this->store);
+                $smarty->assign('account', $this->account);
+                $smarty->assign('title', $title);
+                $smarty->assign('subject', $subject);
+                $smarty->assign('link_label', $link_label);
+                $smarty->assign('link', $link);
+                $smarty->assign('info', $info);
+
+                $html = $smarty->fetch('notification_emails/alert.ntfy.tpl');
+                break;
+            case 'New Order':
+
+
+                $subject    = _('New order').' '.$this->store->get('Name');
+                $title      = '<b>'._('New order').'</b> '.$this->order->get('Total Amount').' '.$this->store->get('Name');
+                $link_label = _('Link to order');
+
+                $link = sprintf(
+                    '%s/orders/%d/%d',
+                    $this->account->get('Account System Public URL'),
+                    $this->store->id,
+                    $this->order->id
+                );
+
+
+                $info = sprintf(
+                    _('New order %s (%s) has been placed by %s'),
+                    '<a href="'.$link.'">'.$this->order->get('Public ID').'</a>',
+                    '<b>'.$this->order->get('Total Amount').'</b>',
+                    '<b>'.$this->notification_trigger_author->get('Name').'</b>'
+
+                );
+
+
+                $smarty->assign('type', 'Success');
+
+                $smarty->assign('store', $this->store);
+                $smarty->assign('account', $this->account);
+                $smarty->assign('title', $title);
+                $smarty->assign('subject', $subject);
+                $smarty->assign('link_label', $link_label);
+                $smarty->assign('link', $link);
+                $smarty->assign('info', $info);
+
+                $smarty->assign('customer', $this->notification_trigger_author);
+                $smarty->assign('order', $this->order);
+
+                $html = $smarty->fetch('notification_emails/new_order.ntfy.tpl');
+
+                break;
+            case 'Invoice Deleted':
+
+                if ($this->invoice->get('Invoice Type') == 'Invoice') {
+                    $subject    = _('Invoice deleted').' '.$this->store->get('Name');
+                    $title      = '<b>'._('Invoice deleted').'</b> '.$this->store->get('Name');
+                    $link_label = _('Link to deleted invoice');
+                    $info       = sprintf(
+                        _('Invoice %s (%s, %s) has been deleted by %s.'),
+                        $this->invoice->get('Public ID'),
+                        '<b>'.$this->invoice->get('Total Amount').'</b>',
+                        $this->invoice->get_date('Invoice Date'), $this->notification_trigger_author->get('Alias')
+
+                    );
+
+                } else {
+                    $subject = _('Refund deleted').' '.$this->store->get('Name');
+                    $title   = _('Refund deleted').' '.$this->store->get('Name');
+
+                    $link_label = _('Link to deleted refund');
+                    $info       = sprintf(
+                        _('Refund %s (%s, %s) has been deleted by %s.'),
+                        $this->invoice->get('Public ID'),
+                        '<b>'.$this->invoice->get('Total Amount').'</b>',
+                        $this->invoice->get_date('Invoice Date'), $this->notification_trigger_author->get('Alias')
+
+                    );
+                }
+
+
+                $link = sprintf(
+                    '%s/orders/%d/%d/invoice/%d',
+                    $this->account->get('Account System Public URL'),
+
+                    $this->store->id,
+                    $this->invoice->get('Invoice Order Key'),
+                    $this->invoice->id
+                );
+
+                $smarty->assign('type', 'Warning');
+
+                $smarty->assign('store', $this->store);
+                $smarty->assign('account', $this->account);
+                $smarty->assign('title', $title);
+                $smarty->assign('subject', $subject);
+                $smarty->assign('link_label', $link_label);
+                $smarty->assign('link', $link);
+                $smarty->assign('info', $info);
+
+                $html = $smarty->fetch('notification_emails/alert.ntfy.tpl');
+
+                break;
+            case 'Delivery Note Undispatched':
+
+                if ($this->delivery_note->get('Delivery Note Type') == 'Replacement') {
+                    $subject    = _('Replacement undispatched').' '.$this->store->get('Name');
+                    $title      = '<b>'._('Replacement undispatched').'</b> '.$this->store->get('Name');
+                    $link_label = _('Link to replacement');
+
+
+                    $info = sprintf(
+                        _('Replacement %s has been undispatched by %s.'),
+                        '<b>'.$this->delivery_note->get('ID').'</b>',
+                        $this->notification_trigger_author->get('Alias')
+
+                    );
+                } else {
+                    $subject    = _('Delivery note undispatched').' '.$this->store->get('Name');
+                    $title      = '<b>'._('Delivery note undispatched').'</b> '.$this->store->get('Name');
+                    $link_label = _('Link to delivery note');
+
+
+                    $info = sprintf(
+                        _('Delivery note %s has been undispatched by %s.'),
+                        '<b>'.$this->delivery_note->get('ID').'</b>',
+                        $this->notification_trigger_author->get('Alias')
+
+                    );
+                }
+
+
+                $link = sprintf(
+                    '%s/delivery_notes/%d/%d',
+                    $this->account->get('Account System Public URL'),
+                    $this->store->id,
+                    $this->delivery_note->id
+                );
+
+
+                $smarty->assign('type', 'Warning');
+
+                $smarty->assign('store', $this->store);
+                $smarty->assign('account', $this->account);
+                $smarty->assign('title', $title);
+                $smarty->assign('subject', $subject);
+                $smarty->assign('link_label', $link_label);
+                $smarty->assign('link', $link);
+                $smarty->assign('info', $info);
+
+                $html = $smarty->fetch('notification_emails/alert.ntfy.tpl');
+
+
+                break;
+            default:
+
+                $html = strtr($this->get('Published Email Template HTML'), $this->placeholders);
+
+
+                if ($this->email_template_type->get('Email Campaign Type Code') == 'GR Reminder') {
+
+
+                    $_date = date('Y-m-d', strtotime($this->order->get('Order Dispatched Date')));
+
+
+                    $html = preg_replace_callback(
+                        '/\[Order Date \+\s*(\d+)\s*days\]/', function ($match_data) use ($_date) {
+
+
+                        return strftime("%a, %e %b %Y", strtotime($_date.' +'.$match_data[1].' days'));
+                    }, $html
+                    );
+
+                    $html = preg_replace_callback(
+                        '/\[Order Date \+\s*(\d+)\s*months\]/', function ($match_data) use ($_date) {
+                        return strftime("%a, %e %b %Y", strtotime($_date.' +'.$match_data[1].' months'));
+                    }, $html
+                    );
+
+
+                } elseif ($this->email_template_type->get('Email Campaign Type Code') == 'Delivery Confirmation') {
+
+
+                    if ($this->placeholders['[Tracking Number]'] != '' and $this->placeholders['[Tracking URL]'] != '') {
+
+                        $html = preg_replace('/\[Not Tracking START\].*\[END\]/', '', $html);
+
+                        if (preg_match('/\[Tracking START\](.*)\[END\]/', $html, $matches)) {
+                            $html = preg_replace('/\[Tracking START\].*\[END\]/', $matches[1], $html);
+
+                        }
+
+                    } else {
+                        $html = preg_replace('/\[Tracking START\].*\[END\]/', '', $html);
+
+                        if (preg_match('/\[Not Tracking START\](.*)\[END\]/', $html, $matches)) {
+                            $html = preg_replace('/\[Not Tracking START\].*\[END\]/', $matches[1], $html);
+
+                        }
+                    }
+
+
+                }
+
+                $html = preg_replace_callback(
+                    '/\[Unsubscribe]/', function () use ($email_tracking, $recipient, $data, $smarty, $localised_labels) {
+
+                    if (isset($data['Unsubscribe URL'])) {
+
+
+                        $smarty->assign('localised_labels', $localised_labels);
+
+
+                        $smarty->assign('link', $data['Unsubscribe URL'].'?s='.$email_tracking->id.'&a='.hash('sha256', IKEY.$recipient->id.$email_tracking->id));
+
+                        // print $smarty->fetch('unsubscribe_marketing_email.placeholder.tpl');
+
+                        return $smarty->fetch('unsubscribe_marketing_email.placeholder.tpl');;
+
+                    }
+
+
+                }, $html
+                );
+        }
+
+        return $html;
     }
 
 

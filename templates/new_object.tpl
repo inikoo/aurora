@@ -472,13 +472,18 @@
                     <input id="{$field.id}_From" type="hidden"  class="value"  field="{$field.id}_From"  field_type="date_interval" value="{$field.value['From']}" has_been_valid="0"   />
                     <input id="{$field.id}_From_time" type="hidden" value="{$field.time['From']}" />
                     <input id="{$field.id}_formatted_From" class="option_input_field "  value="{$field.formatted_value['From']}" />
-                    <span id="{$field.id}_msg_From" class="msg"></span>
+                        <input id="{$field.id}_From_value" type="hidden"  class=" "  value="{$field.value['From']}" />
+
+
+                        <span id="{$field.id}_msg_From" class="msg"></span>
                     <div id="{$field.id}_From_datepicker" class="hide datepicker"></div>
 
                     <input id="{$field.id}_To" type="hidden"  class="value"  field="{$field.id}_To"  field_type="date_interval"  value="{$field.value['To']}" has_been_valid="0"/>
                     <input id="{$field.id}_To_time" type="hidden" value="{$field.time['To']}" />
                     <input id="{$field.id}_formatted_To" class="option_input_field "  value="{$field.formatted_value['To']}" />
-                    <span id="{$field.id}_msg_To" class="msg"></span>
+                        <input id="{$field.id}_To_value" type="hidden"  class=" "  value="{$field.value['To']}" />
+
+                        <span id="{$field.id}_msg_To" class="msg"></span>
                     <div id="{$field.id}_To_datepicker" class="hide datepicker"></div>
                     <script>
 
@@ -486,12 +491,15 @@
                             $("#{$field.id}_From_datepicker").datepicker({
                                 showOtherMonths: true,
                                 selectOtherMonths: true,
-                                defaultDate: new Date('{$field.value['From']}'),
+                               // defaultDate: new Date('{$field.value['From']}'),
+                                defaultDate:'',
                                 altField: "#{$field.id}_From",
                                 altFormat: "yy-mm-dd",
                                 onSelect: function() {
                                     $('#{$field.id}').change();
                                     $('#{$field.id}_formatted_From').val($.datepicker.formatDate("dd/mm/yy", $(this).datepicker("getDate")))
+                                    $('#{$field.id}_From_value').val($.datepicker.formatDate("YYYY-mm-dd", $(this).datepicker("getDate")))
+
                                     $('#{$field.id}_From_datepicker').addClass('hide')
                                     post_process_form_validation();
                                 }
@@ -507,6 +515,8 @@
                                 onSelect: function() {
                                     $('#{$field.id}').change();
                                     $('#{$field.id}_formatted_To').val($.datepicker.formatDate("dd/mm/yy", $(this).datepicker("getDate")))
+                                    $('#{$field.id}_To_value').val($.datepicker.formatDate("YYYY-mm-dd", $(this).datepicker("getDate")))
+
                                     $('#{$field.id}_To_datepicker').addClass('hide')
                                     post_process_form_validation();
                                 }

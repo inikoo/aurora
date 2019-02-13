@@ -28,28 +28,28 @@ function get_object_fields($object, $db, $user, $smarty, $options = false) {
 
 
     switch ($object->get_object_name()) {
-        case 'Email Campaign':
-
+        case 'Email Campaign':// to deete this line
+        case 'Mailshot':
 
 
             switch ($object->get('Email Campaign Type')) {
                 case 'AbandonedCart':
-                    include 'fields/email_campaign.abandoned_cart.fld.php';
+                    include 'fields/mailshot.abandoned_cart.fld.php';
                     break;
                 case 'Marketing':
 
 
 
                     if ($options['type'] == 'mailing_list') {
-                        include 'fields/email_campaign.mailing_list.fld.php';
+                        include 'fields/mailshot.mailing_list.fld.php';
                     }else{
-                        include 'fields/email_campaign.marketing.fld.php';
+                        include 'fields/mailshot.marketing.fld.php';
                     }
 
 
                     break;
                 default:
-                    include 'fields/email_campaign.fld.php';
+                    include 'fields/mailshot.fld.php';
             }
 
 
