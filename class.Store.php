@@ -965,29 +965,6 @@ class Store extends DB_Table {
 
     }
 
-
-    function get_notification_recipients($type){
-
-        $recipients = array();
-        $recipients_data = $this->get('Store Notification '.$type.' Recipients');
-
-        foreach ($recipients_data['external_emails'] as $external_emails) {
-            $recipients[$external_emails] = $external_emails;
-        }
-
-
-        foreach ($recipients_data['users'] as $user) {
-            if($user->get('User Active')=='Yes' and $user->get('User Password Recovery Email')!=''){
-                $recipients[$user->get('User Password Recovery Email')] = $user->get('User Password Recovery Email');
-            }
-
-
-        }
-
-        return array_values($recipients);
-
-    }
-
     function update_timeseries_record($timeseries, $from, $to, $fork_key = false) {
 
         if ($timeseries->get('Type') == 'StoreSales') {
@@ -1285,6 +1262,71 @@ class Store extends DB_Table {
 
 
         $this->update(array('Store Active Deal Campaigns' => $campaigns), 'no_history');
+
+    }
+
+    function get_notification_recipients($type) {
+
+        $recipients      = array();
+        $recipients_data = $this->get('Store Notification '.$type.' Recipients');
+
+        foreach ($recipients_data['external_emails'] as $external_emails) {
+            $recipients[$external_emails] = $external_emails;
+        }
+
+
+        foreach ($recipients_data['users'] as $user) {
+            if ($user->get('User Active') == 'Yes' and $user->get('User Password Recovery Email') != '') {
+                $recipients[$user->get('User Password Recovery Email')] = $user->get('User Password Recovery Email');
+            }
+
+
+        }
+
+        return array_values($recipients);
+
+    }
+
+    function get_notification_recipients_objects($type) {
+
+        include_once 'utils/email_recipient.class.php';
+
+        $recipients      = array();
+        $recipients_data = $this->get('Store Notification '.$type.' Recipients');
+
+        foreach ($recipients_data['external_emails'] as $external_email) {
+            $recipients[$external_email] = new email_recipient(
+
+                0,
+                array(
+                    'object_name'      => 'external_email',
+                    'Main Plain Email' => $external_email
+                )
+
+            );
+        }
+
+
+        foreach ($recipients_data['users'] as $user) {
+            if ($user->get('User Active') == 'Yes' and $user->get('User Password Recovery Email') != '') {
+                $recipients[$user->get('User Password Recovery Email')] = new email_recipient(
+
+                    $user->id,
+                    array(
+                        'object_name'      => 'User',
+                        'Main Plain Email' => $user->get('User Password Recovery Email'),
+                        'Name'             => $user->get('Alias'),
+                    )
+
+                );
+
+
+            }
+
+
+        }
+
+        return array_values($recipients);
 
     }
 
@@ -4238,6 +4280,13 @@ class Store extends DB_Table {
 
 
         $this->fast_update_json_field('Store Settings', preg_replace('/\s/', '_', $field), json_encode($recipients_data));
+
+
+        if (preg_match('/Store Notification (.+) Recipients/', $field, $matches)) {
+
+            $email_template_type = get_object('Email_Template_Type', $matches[1].'|'.$this->id, 'code_store');
+            $email_template_type->update_number_subscribers();
+        }
 
 
         //  print_r($recipients_data);

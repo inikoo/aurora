@@ -36,6 +36,43 @@ $editor = array(
 );
 
 
+add_notifications($db);
+
+
+function add_notifications($db) {
+
+
+    $sql = sprintf("SELECT `Store Key` FROM `Store Dimension`");
+    if ($result = $db->query($sql)) {
+        foreach ($result as $row) {
+            $store = new Store('id', $row['Store Key']);
+
+            $email_campaign_type='Store Notifications';
+            $sql = sprintf(
+                'insert into `Email Campaign Type Dimension`  (`Email Campaign Type Store Key`,`Email Campaign Type Code`) values (%d,%s) ', $store->id, prepare_mysql($email_campaign_type)
+
+            );
+            //print "$sql\n";
+            $db->exec($sql);
+            $email_campaign_type = new EmailCampaignType('code_store', $email_campaign_type, $store->id);
+
+
+
+
+
+        }
+
+    } else {
+        print_r($error_info = $db->errorInfo());
+        exit;
+    }
+
+}
+
+
+exit;
+
+
 $sql = sprintf('select * from `Email Tracking Event Dimension` where `Email Tracking Event Tracking Key`=3093860 ');
 $sql = sprintf('select * from `Email Tracking Event Dimension` ');
 
@@ -436,6 +473,7 @@ $email_campaign_types = array(
     'Delivery Confirmation',
     'Invite',
     'Invite Mailshot',
+    'Store Notifications'
 );
 
 $sql = sprintf("SELECT `Store Key` FROM `Store Dimension`");

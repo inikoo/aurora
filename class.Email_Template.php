@@ -15,7 +15,7 @@ include_once 'class.DB_Table.php';
 class Email_Template extends DB_Table {
 
 
-    function Email_Template($a1, $a2 = false, $a3 = false) {
+    function __construct($a1, $a2 = false, $a3 = false) {
 
         global $db;
         $this->db = $db;
@@ -325,9 +325,14 @@ class Email_Template extends DB_Table {
         return $suffix;
     }
 
+
+
+
     function publish() {
 
         include_once 'class.Published_Email_Template.php';
+
+
 
         $data = array(
             'Published Email Template JSON'               => $this->data['Email Template Editing JSON'],

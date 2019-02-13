@@ -20,7 +20,7 @@ $where = 'where `Order State`="InBasket" and `Customer Main Plain Email`!="" and
 $table = '`Order Dimension` O  left join `Customer Dimension` on (`Order Customer Key`=`Customer Key`) ';
 
 
-if ($parameters['parent'] == 'email_campaign') {
+if ($parameters['parent'] == 'mailshot') {
 
     $mailshot = get_object('mailshot', $parameters['parent_key']);
 

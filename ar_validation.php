@@ -150,7 +150,6 @@ function check_for_duplicates($data, $db, $user, $account) {
     $options_where = '';
 
 
-
     switch ($data['object']) {
 
         case 'Customers_List':
@@ -952,6 +951,30 @@ function check_for_duplicates($data, $db, $user, $account) {
                         prepare_mysql($data['value']), $data['parent_key'], prepare_mysql($data['metadata']['role'])
 
                     );
+                    $validation_sql_queries[] = array(
+                        'sql'         => $sql,
+                        'invalid_msg' => $invalid_msg
+                    );
+
+            }
+
+            break;
+        case 'Email_Campaign':
+
+
+
+            switch ($field) {
+                case 'Email Campaign Name':
+
+
+                    $invalid_msg              = _('There is another mailshot  que this name');
+                    $sql                      = sprintf(
+                        "SELECT `Email Campaign Key` AS `key` ,`Email Campaign Name` AS field FROM `Email Campaign Dimension`  WHERE  `Email Campaign Name`=%s  AND `Email Campaign Email Template Type Key`=%d and `Email Campaign Key`!=%d  ",
+                        prepare_mysql($data['value']), $data['parent_key'], $data['key']
+
+                    );
+
+
                     $validation_sql_queries[] = array(
                         'sql'         => $sql,
                         'invalid_msg' => $invalid_msg

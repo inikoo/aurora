@@ -18,7 +18,7 @@ $parameters = array(
 
 
 $tab     = 'account.mailshots';
-$ar_file = 'ar_mailshot_tables.php';
+$ar_file = 'ar_mailshots_tables.php';
 $tipo    = 'account_mailshots';
 
 

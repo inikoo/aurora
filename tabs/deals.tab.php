@@ -50,7 +50,7 @@ $smarty->assign('table_buttons', $table_buttons);
 
 
 
-$smarty->assign('title', _('Campaigns').' <span class=\'id\'>'.$state['_parent']->get('Code').'</span>');
+$smarty->assign('title', _('Offers').' <span class=\'id\'>'.$state['_parent']->get('Code').'</span>');
 $smarty->assign('view_position', ' <span onclick=\"change_view(\'stores\')\">'._('Stores').'</span>  <i class=\"fa fa-angle-double-right separator\"></i>  <i class=\"fal fa-tags\"></i> '._('Offers').' <span class=\'id\'>'.$state['_parent']->get('Code').'</span>');
 
 

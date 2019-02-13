@@ -27,6 +27,8 @@ $object_fields = get_object_fields(
 
 
 $smarty->assign('state', $state);
+
+
 $smarty->assign('object', $state['_object']);
 
 $smarty->assign('object_name', 'Email_Campaign');

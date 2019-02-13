@@ -643,7 +643,7 @@ class Prospect extends Subject {
 
         if (!$email_template_type->id) {
             $this->error = true;
-            $this->msg   = 'EmailCampaignType Invite for this store not found';
+            $this->msg   = 'Email Campaign Type Invite for this store not found';
 
             return;
         }
@@ -985,7 +985,7 @@ class Prospect extends Subject {
 
         if (!$email_template_type->id) {
             $this->error = true;
-            $this->msg   = 'EmailCampaignType Invite for this store not found';
+            $this->msg   = 'Email Campaign Type Invite for this store not found';
 
             return;
         }

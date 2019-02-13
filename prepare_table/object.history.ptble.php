@@ -198,7 +198,7 @@ if ($parameters['parent'] == 'customer' or $parameters['parent'] == 'order_custo
         ' where   B.`Charge Key`=%d   ', $parameters['parent_key']
     );
     $subject = 'Charge';
-}  elseif ($parameters['parent'] == 'email_campaign') {
+}  elseif ($parameters['parent'] == 'mailshot' or $parameters['parent'] == 'email_campaign') {
     $where   = sprintf(
         ' where   B.`Email Campaign Key`=%d   ', $parameters['parent_key']
     );

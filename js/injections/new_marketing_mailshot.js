@@ -41,7 +41,7 @@ function new_mailshot(element) {
         if (data.state == 200) {
 
                 change_view('email_campaign_type/' + data.updated_data.store_key + '/' + data.updated_data.email_template_type_key + '/mailshot/' + data.new_id, {
-                    tab: 'email_campaign.details'})
+                    tab: 'mailshot.details'})
 
           
 

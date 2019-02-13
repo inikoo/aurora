@@ -61,7 +61,6 @@ function email_blueprints($_data, $db, $user) {
 
     $sql = "select $fields from $table $where $wheref order by $order $order_direction limit $start_from,$number_results";
 
-//print_r($_data);
     //  print $sql;
 
     $adata = array();
@@ -76,7 +75,11 @@ function email_blueprints($_data, $db, $user) {
 
 
             $operations .= sprintf(
-                '<span class="button" onClick="select_blueprint_from_table(this,%d,\'%s\')"><i class="fa fa-trophy fa-fw"></i> %s</span>', $data['Email Blueprint Key'], base64_url_decode($_data['parameters']['redirect']), _('Use me')
+                '<span class="button" onClick="select_blueprint_from_table(this,\'%s\',%d,%d,\'%s\')"><i class="fa fa-trophy fa-fw"></i> %s</span>',
+                $_data['parameters']['parent'],
+                $_data['parameters']['parent_key'],
+
+            $data['Email Blueprint Key'], base64_url_decode($_data['parameters']['redirect']), _('Use me')
             );
 
 

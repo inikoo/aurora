@@ -226,9 +226,15 @@ function connect_websocket(){
 
             websocket_connected=true;
 
-            ws_connection.subscribe('real_time.'+$('#account_name').data('account_code').toLowerCase(), function(topic, data) {
 
+            console.log('real_time.'+$('#account_name').data('account_code').toLowerCase())
+
+            ws_connection.subscribe('real_time.'+$('#account_name').data('account_code').toLowerCase(), function(topic, data) {
+                console.log(state.object)
                 for (var i in data.objects) {
+
+
+
                     if (state.object == data.objects[i].object && state.key == data.objects[i].key) {
 
 

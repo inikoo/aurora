@@ -23,14 +23,14 @@ $table = '`Customer Dimension`  ';
 
 
 
-if ($parameters['parent'] == 'email_campaign') {
+if ($parameters['parent'] == 'mailshot') {
 
     $where = sprintf(' where `Customer Store Key`=%d and `Customer Main Plain Email`!="" and `Customer Send Newsletter`="Yes" ',$parameters['store_key']);
 
 
 
 } else{
-    exit('error abandoned_cart.mail_list E.l.1');
+    exit('error abandoned_cart.mail_list E.l.1a');
 }
 
 

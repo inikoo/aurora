@@ -48,9 +48,6 @@ $smarty->assign('blueprints_redirect', 'email_campaign_type.workshop');
 $smarty->assign('email_template_redirect', '&tab=email_campaign_type.workshop');
 $smarty->assign('table_top_template', 'email_blueprints.showcase.tpl');
 
-$smarty->assign(
-    'js_code', 'js/injections/edit_blueprints.'.(_DEVEL ? '' : 'min.').'js'
-);
 
 
 include 'utils/get_table_html.php';

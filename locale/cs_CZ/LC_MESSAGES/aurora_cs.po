@@ -353,7 +353,7 @@ msgstr ""
 msgid "Mailshots"
 msgstr ""
 
-#: EcomB2B/class.EmailCampaignType.php:190 ar_mailshot_tables.php:308
+#: EcomB2B/class.EmailCampaignType.php:190 ar_mailshots_tables.php:308
 #: ar_marketing_tables.php:923 ar_marketing_tables.php:1025
 #: class.EmailCampaignType.php:190 conf/elements_options.php:1618
 #: conf/email_templates_data.php:47
@@ -1170,8 +1170,8 @@ msgstr "Zaplatené"
 #: _web_smarty.php:2576 _web_smarty.php:2726 _web_smarty.php:2729
 #: _web_smarty.php:2732 _web_smarty.php:2750 _web_smarty.php:2768
 #: _web_smarty.php:2792 ar_accounting_tables.php:348 ar_agents_tables.php:816
-#: ar_inventory_tables.php:182 ar_mailshot_tables.php:116
-#: ar_mailshot_tables.php:355 ar_orders_tables.php:3124
+#: ar_inventory_tables.php:182 ar_mailshots_tables.php:116
+#: ar_mailshots_tables.php:355 ar_orders_tables.php:3124
 #: ar_products_tables.php:1010 ar_reports_tables.php:2848 ar_upload.php:555
 #: ar_upload.php:568 ar_upload.php:658 ar_upload.php:671 ar_upload.php:808
 #: class.FTP.php:86 class.FTP.php:111 class.Part.php:780 class.Payment.php:198
@@ -1916,7 +1916,7 @@ msgid "Error, email not send"
 msgstr "E-mail neodeslán"
 
 #: EcomB2B/trait.Published_Email_Template.send_email.php:486
-#: ar_mailshot_tables.php:99 ar_mailshot_tables.php:339
+#: ar_mailshots_tables.php:99 ar_mailshots_tables.php:339
 #: ar_marketing_tables.php:845 ar_orders_tables.php:2578
 #: ar_orders_tables.php:3107 class.EmailCampaign.php:281 email_tracker.php:448
 #: trait.Published_Email_Template.send_email.php:486
@@ -1924,7 +1924,7 @@ msgid "Ready to send"
 msgstr "Připraveno k odeslání"
 
 #: EcomB2B/trait.Published_Email_Template.send_email.php:489
-#: ar_mailshot_tables.php:102 ar_mailshot_tables.php:342
+#: ar_mailshots_tables.php:102 ar_mailshots_tables.php:342
 #: ar_marketing_tables.php:851 ar_orders_tables.php:2585
 #: ar_orders_tables.php:3110 class.EmailCampaign.php:288
 #: conf/elements_options.php:1572 email_tracker.php:451
@@ -1934,7 +1934,7 @@ msgstr "Odesíláno"
 
 #: EcomB2B/trait.Published_Email_Template.send_email.php:493 _smarty.php:5897
 #: _smarty.php:7292 _smarty.php:9779 _smarty.php:15872 _smarty.php:15890
-#: ar_mailshot_tables.php:107 ar_mailshot_tables.php:346
+#: ar_mailshots_tables.php:107 ar_mailshots_tables.php:346
 #: ar_orders_tables.php:3115 conf/elements_options.php:1576
 #: email_tracker.php:455 trait.Published_Email_Template.send_email.php:493
 msgid "Delivered"
@@ -1942,8 +1942,8 @@ msgstr "Doručený"
 
 #: EcomB2B/trait.Published_Email_Template.send_email.php:496 _smarty.php:5900
 #: _smarty.php:7295 _smarty.php:9782 _smarty.php:15875 _smarty.php:15893
-#: ar_mailshot_tables.php:110 ar_mailshot_tables.php:209
-#: ar_mailshot_tables.php:349 ar_orders_tables.php:3118
+#: ar_mailshots_tables.php:110 ar_mailshots_tables.php:209
+#: ar_mailshots_tables.php:349 ar_orders_tables.php:3118
 #: conf/elements_options.php:1580 email_tracker.php:458
 #: trait.Published_Email_Template.send_email.php:496
 msgid "Opened"
@@ -1951,28 +1951,28 @@ msgstr "Otevřený"
 
 #: EcomB2B/trait.Published_Email_Template.send_email.php:499 _smarty.php:5903
 #: _smarty.php:7298 _smarty.php:8273 _smarty.php:9785 _smarty.php:15878
-#: _smarty.php:15896 ar_mailshot_tables.php:113 ar_mailshot_tables.php:202
-#: ar_mailshot_tables.php:352 ar_orders_tables.php:3121
+#: _smarty.php:15896 ar_mailshots_tables.php:113 ar_mailshots_tables.php:202
+#: ar_mailshots_tables.php:352 ar_orders_tables.php:3121
 #: conf/elements_options.php:1584 email_tracker.php:461
 #: trait.Published_Email_Template.send_email.php:499
 msgid "Clicked"
 msgstr "Kliknutý"
 
 #: EcomB2B/trait.Published_Email_Template.send_email.php:505
-#: ar_mailshot_tables.php:119 ar_orders_tables.php:3127
+#: ar_mailshots_tables.php:119 ar_orders_tables.php:3127
 #: conf/elements_options.php:1588 email_tracker.php:467
 #: trait.Published_Email_Template.send_email.php:505
 msgid "Bounced"
 msgstr ""
 
 #: EcomB2B/trait.Published_Email_Template.send_email.php:508
-#: ar_mailshot_tables.php:122 ar_orders_tables.php:3130 email_tracker.php:470
+#: ar_mailshots_tables.php:122 ar_orders_tables.php:3130 email_tracker.php:470
 #: trait.Published_Email_Template.send_email.php:508
 msgid "Probable bounce"
 msgstr ""
 
 #: EcomB2B/trait.Published_Email_Template.send_email.php:511
-#: ar_mailshot_tables.php:125 ar_mailshot_tables.php:370
+#: ar_mailshots_tables.php:125 ar_mailshots_tables.php:370
 #: ar_orders_tables.php:3133 email_tracker.php:473
 #: trait.Published_Email_Template.send_email.php:511
 msgid "Mark as spam"
@@ -7289,7 +7289,7 @@ msgstr "Pridaj Zákazníka"
 
 #: _smarty.php:5891 _smarty.php:7271 _smarty.php:9758 _smarty.php:10268
 #: _smarty.php:14459 _smarty.php:15788 _smarty.php:15860 _smarty.php:15881
-#: ar_mailshot_tables.php:603 ar_mailshot_tables.php:703
+#: ar_mailshots_tables.php:603 ar_mailshots_tables.php:703
 #: class.EmailCampaign.php:295
 msgid "Sent"
 msgstr ""
@@ -8705,7 +8705,7 @@ msgid "Sum orders"
 msgstr "Dodavatelia"
 
 #: _smarty.php:9050 _smarty.php:9707 _smarty.php:14234 class.ReadEmail.php:192
-#: class.ReadEmail.php:251 tabs/email_campaign.published_email.tab.php:27
+#: class.ReadEmail.php:251 tabs/mailshot.published_email.tab.php:27
 #: tabs/email_tracking.email.tab.php:22 tabs/email_tracking.email.tab.php:44
 #: tabs/prospect.sent_emails.tab.php:38 tabs/prospect.sent_emails.tab.php:39
 #: tabs/prospect_agent.sent_emails.tab.php:38
@@ -10259,11 +10259,11 @@ msgstr "časová zóna"
 msgid "Resume sending"
 msgstr "Pripravené na skenovanie"
 
-#: _smarty.php:15866 _smarty.php:15884 ar_mailshot_tables.php:216
+#: _smarty.php:15866 _smarty.php:15884 ar_mailshots_tables.php:216
 msgid "Hard bounce"
 msgstr ""
 
-#: _smarty.php:15869 _smarty.php:15887 ar_mailshot_tables.php:228
+#: _smarty.php:15869 _smarty.php:15887 ar_mailshots_tables.php:228
 msgid "Soft bounce"
 msgstr ""
 
@@ -11418,7 +11418,7 @@ msgstr "Přihlašovací e-mail"
 msgid "Write a custom made invitation email"
 msgstr "Konfigurácia"
 
-#: _smarty.php:19448 ar_mailshot_tables.php:329
+#: _smarty.php:19448 ar_mailshots_tables.php:329
 #, fuzzy
 msgid "Personalized invitation"
 msgstr "Konfigurácia"
@@ -11631,7 +11631,7 @@ msgid "You are already logged in"
 msgstr "Obrázok bol už pridaný"
 
 #: _web_smarty.php:464 _web_smarty.php:2216 _web_smarty.php:2630
-#: ar_mailshot_tables.php:302 ar_mailshot_tables.php:712
+#: ar_mailshots_tables.php:302 ar_mailshots_tables.php:712
 #: ar_marketing_tables.php:917 ar_views.php:4992
 #: conf/email_templates_data.php:54 conf/email_templates_data.php:55
 #: conf/fields/customer.fld.php:288 conf/fields/customer.fld.php:678
@@ -13005,54 +13005,54 @@ msgstr[0] "Objednavky"
 msgstr[1] "Objednavky"
 msgstr[2] "Objednavky"
 
-#: ar_mailshot_tables.php:305 conf/email_templates_data.php:61
+#: ar_mailshots_tables.php:305 conf/email_templates_data.php:61
 #, fuzzy
 msgid "Marketing mailshot"
 msgstr "Emailová Adresa"
 
-#: ar_mailshot_tables.php:311
+#: ar_mailshots_tables.php:311
 #, fuzzy
 msgid "Back in stock email"
 msgstr "Vyrobky na predaj"
 
-#: ar_mailshot_tables.php:314
+#: ar_mailshots_tables.php:314
 #, fuzzy
 #| msgid "Welcome email"
 msgid "Welcome email"
 msgstr "Uvítací email"
 
-#: ar_mailshot_tables.php:317
+#: ar_mailshots_tables.php:317
 #, fuzzy
 msgid "Password reset email"
 msgstr "Heslo"
 
-#: ar_mailshot_tables.php:320 conf/email_templates_data.php:33
+#: ar_mailshots_tables.php:320 conf/email_templates_data.php:33
 #: conf/email_templates_data.php:34
 msgid "Order confirmation"
 msgstr "Potvrdenie objednávky"
 
-#: ar_mailshot_tables.php:323 ar_marketing_tables.php:938
+#: ar_mailshots_tables.php:323 ar_marketing_tables.php:938
 #: conf/elements_options.php:1622 conf/email_templates_data.php:75
 #: conf/email_templates_data.php:76
 #, fuzzy
 msgid "Reorder reminder"
 msgstr "Objednavky"
 
-#: ar_mailshot_tables.php:326 ar_marketing_tables.php:1050
+#: ar_mailshots_tables.php:326 ar_marketing_tables.php:1050
 #: conf/email_templates_data.php:82
 #, fuzzy
 #| msgid "Information"
 msgid "Invitation"
 msgstr "Informácia"
 
-#: ar_mailshot_tables.php:600 ar_mailshot_tables.php:700
+#: ar_mailshots_tables.php:600 ar_mailshots_tables.php:700
 #: ar_marketing_tables.php:842 ar_orders_tables.php:2575
 #: class.EmailCampaign.php:278
 #, fuzzy
 msgid "Composing email"
 msgstr "Pridaj Zákazníka"
 
-#: ar_mailshot_tables.php:641 ar_mailshot_tables.php:755
+#: ar_mailshots_tables.php:641 ar_mailshots_tables.php:755
 #: ar_marketing_tables.php:1091 ar_production_tables.php:157
 msgid "NA"
 msgstr "Nie je k dispozícii"

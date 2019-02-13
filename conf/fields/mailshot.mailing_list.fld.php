@@ -19,7 +19,6 @@ if (isset($options['new']) and $options['new']) {
 $new = true;
 
 
-
 $new = true;
 
 
@@ -32,6 +31,32 @@ $options_list_type = array(
 $object_fields = array();
 
 
+    $object_fields[] = array(
+        'label'      => _('Id'),
+        'show_title' => true,
+        'fields'     => array(
+            array(
+                'edit'            => ($edit ? 'string' : ''),
+                'id'              => 'Email_Campaign_Name',
+                'value'           => $object->get('Email Campaign Name'),
+                'formatted_value' => $object->get('Name'),
+
+                'label'             => ucfirst($object->get_field_label('Email Campaign Name')),
+                'invalid_msg'       => get_invalid_message('string'),
+                'required'          => true,
+                'server_validation' => json_encode(
+                    array(
+                        'tipo' => 'check_for_duplicates',
+                        'key'  => $object->id
+                    )
+                ),
+                'type'              => 'value'
+            )
+        )
+    );
+
+
+
 $object_fields[] = array(
     'label'      => _('Contact status'),
     'show_title' => true,
@@ -42,11 +67,11 @@ $object_fields[] = array(
             'id'              => 'Customer_Status',
             'edit'            => 'no_icon',
             'value'           => '',
-            'formatted_value' => '<span id="Customer_Status_Active_field" class="button value valid" onclick="toggle_list_elements(this)" field_type="elements" field="Customer_Status_Active"  style="margin-right:40px"><i class=" fa fa-fw fa-check-square" aria-hidden="true"></i> <span class="unselectable">'
+            'formatted_value' => '<span id="Customer_Status_Active_field" class="button value valid" onclick="toggle_list_elements(this)" field_type="elements" field="Customer_Status_Active"  style="margin-right:40px"><i class=" far fa-fw fa-check-square" aria-hidden="true"></i> <span class="unselectable">'
                 ._('Active').'</span></span>'
-                .'<span id="Customer_Status_Loosing_field" onclick="toggle_list_elements(this)"  field_type="elements"  field="Customer_Status_Loosing" class="button value valid" style="margin-right:40px"><i class=" fa fa-fw fa-check-square" aria-hidden="true"></i> <span class="unselectable">'
+                .'<span id="Customer_Status_Loosing_field" onclick="toggle_list_elements(this)"  field_type="elements"  field="Customer_Status_Loosing" class="button value valid" style="margin-right:40px"><i class=" far fa-fw fa-check-square" aria-hidden="true"></i> <span class="unselectable">'
                 ._('Loosing').'</span></span>'
-                .'<span id="Customer_Status_Lost_field" onclick="toggle_list_elements(this)"  field_type="elements"  field="Customer_Status_Lost" class="value valid button" style="margin-right:40px"><i class=" fa fa-fw fa-check-square" aria-hidden="true"></i> <span class="unselectable">'
+                .'<span id="Customer_Status_Lost_field" onclick="toggle_list_elements(this)"  field_type="elements"  field="Customer_Status_Lost" class="value valid button" style="margin-right:40px"><i class=" far fa-fw fa-check-square" aria-hidden="true"></i> <span class="unselectable">'
                 ._('Lost').'</span></span>',
             'label'           => _('Customer status'),
             'required'        => false,
@@ -57,17 +82,28 @@ $object_fields[] = array(
 
             'id'              => 'Register_Date',
             'edit'            => 'date_interval',
-            'class'=>'valid',
-            'time'            => array('From'=>'00:00:00','To'=>'23:59:59'),
-            'value'           => array('From'=>'','To'=>''),
-            'formatted_value' => array('From'=>'','To'=>''),
-            'placeholder' => array('From'=>_('from'),'To'=>_('until')),
+            'class'           => 'valid',
+            'time'            => array(
+                'From' => '00:00:00',
+                'To'   => '23:59:59'
+            ),
+            'value'           => array(
+                'From' => '',
+                'To'   => ''
+            ),
+            'formatted_value' => array(
+                'From' => '',
+                'To'   => ''
+            ),
+            'placeholder'     => array(
+                'From' => _('from'),
+                'To'   => _('until')
+            ),
             'label'           => _('Registered interval'),
             'invalid_msg'     => get_invalid_message('date'),
             'required'        => false,
             'type'            => ''
         ),
-
 
 
     ),
@@ -91,8 +127,6 @@ $object_fields[] = array(
             'required'    => false,
             'type'        => 'value'
         ),
-
-
 
 
         array(
@@ -140,16 +174,27 @@ $object_fields[] = array(
         ),
 
 
-
         array(
 
             'id'              => 'Ordered_Date',
             'edit'            => 'date_interval',
-            'class'=>'valid',
-            'time'            => array('From'=>'00:00:00','To'=>'23:59:59'),
-            'value'           => array('From'=>'','To'=>''),
-            'formatted_value' => array('From'=>'','To'=>''),
-            'placeholder' => array('From'=>_('from'),'To'=>_('until')),
+            'class'           => 'valid',
+            'time'            => array(
+                'From' => '00:00:00',
+                'To'   => '23:59:59'
+            ),
+            'value'           => array(
+                'From' => '',
+                'To'   => ''
+            ),
+            'formatted_value' => array(
+                'From' => '',
+                'To'   => ''
+            ),
+            'placeholder'     => array(
+                'From' => _('from'),
+                'To'   => _('until')
+            ),
             'label'           => _('Ordered interval'),
             'invalid_msg'     => get_invalid_message('date'),
             'required'        => false,
@@ -159,7 +204,7 @@ $object_fields[] = array(
         array(
             'id'              => 'Order_State',
             'edit'            => 'no_icon',
-            'class'=>'super_discreet',
+            'class'           => 'super_discreet',
             'value'           => '',
             'formatted_value' => '<span id="Order_State_Basket_field" class="button value valid" onclick="toggle_list_elements(this)" field_type="elements" field="Order_State_Basket"  style="margin-right:40px"><i class=" fa fa-fw fa-check-square" aria-hidden="true"></i> <span class="unselectable">'
                 ._('Basket').'</span></span>'
@@ -173,7 +218,6 @@ $object_fields[] = array(
             'required'        => false,
             'type'            => ''
         ),
-
 
 
     ),
@@ -210,9 +254,8 @@ $object_fields[] = array(
 
 );
 
-$list_fields=$object_fields;
+$list_fields = $object_fields;
 unset($list_fields[0]);
-
 
 
 ?>

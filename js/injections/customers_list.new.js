@@ -219,11 +219,18 @@ function estimate_number_list_items(){
         if (field_type == 'time') {
             value = clean_time($('#' + field).val())
         } else if (field_type == 'date' || field_type == 'date_interval') {
-            if($('#' + field).val()!='') {
-                value = $('#' + field).val() + ' ' + $('#' + field + '_time').val()
+
+
+            if($('#' + field+'_value').val()!='') {
+                value = $('#' + field+'_value').val() + ' ' + $('#' + field + '_time').val()
             }else{
                 value=''
             }
+
+
+
+
+
         } else if (field_type == 'password' || field_type == 'password_with_confirmation' || field_type == 'password_with_confirmation_paranoid' || field_type == 'pin' || field_type == 'pin_with_confirmation' || field_type == 'pin_with_confirmation_paranoid') {
             value = sha256_digest($('#' + field).val())
         } else if (field_type == 'attachment') {

@@ -1870,8 +1870,38 @@ function parse_request($_data, $db, $modules, $account = '', $user = '', $is_set
                         } elseif ($view_path[0] == 'categories') {
                             $section = 'categories';
 
-                        } elseif ($view_path[0] == 'email_campaigns') {
-                            $section = 'email_campaigns';
+                        } elseif ($view_path[0] == 'notifications') {
+                            $section = 'customer_notifications';
+
+                            if (isset($view_path[1])) {
+                                if (is_numeric($view_path[1])) {
+                                    $section = 'email_campaign_type';
+                                    $object  = 'email_campaign_type';
+                                    $key     = $view_path[1];
+
+                                    if (isset($view_path[2])) {
+                                        if ($view_path[2] == 'tracking') {
+
+
+                                            $section = 'email_tracking';
+
+                                            $parent     = 'email_campaign_type';
+                                            $parent_key = $key;
+
+                                            if (is_numeric($view_path[3])) {
+                                                $section = 'email_tracking';
+                                                $object  = 'email_tracking';
+                                                $key     = $view_path[3];
+
+
+                                            }
+
+                                        }
+                                    }
+
+
+                                }
+                            }
 
                         } elseif ($view_path[0] == 'email_campaign_type') {
 
@@ -2764,6 +2794,33 @@ function parse_request($_data, $db, $modules, $account = '', $user = '', $is_set
 
                 break;
 
+            case 'offers':
+                if (!$user->can_view('marketing')) {
+                    $module  = 'utils';
+                    $section = 'forbidden';
+                    break;
+                }
+
+                $module = 'products';
+
+
+                if (isset($view_path[0])) {
+                    if (is_numeric($view_path[0])) {
+
+                        $parent     = 'store';
+                        $parent_key = $view_path[0];
+
+                        $section = 'offers';
+
+                    } elseif ($view_path[0] == 'all') {
+                        $module  = 'offers_server';
+                        $section = 'offers';
+                    }
+
+                }
+
+
+                break;
             case 'marketing':
                 if (!$user->can_view('marketing')) {
                     $module  = 'utils';
@@ -2780,7 +2837,85 @@ function parse_request($_data, $db, $modules, $account = '', $user = '', $is_set
                         $parent     = 'store';
                         $parent_key = $view_path[0];
 
-                        $section = 'marketing';
+                        if (isset($view_path[1])) {
+                            if ($view_path[1] == 'emails') {
+
+                                $section = 'marketing';
+                                if (isset($view_path[2])) {
+                                    if (is_numeric($view_path[2])) {
+
+                                        $section = 'email_campaign_type';
+                                        $object  = 'email_campaign_type';
+
+                                        $key = $view_path[2];
+
+
+
+
+                                        if (isset($view_path[3])) {
+                                            if ($view_path[3] == 'mailshot') {
+
+
+
+                                                $section = 'mailshot';
+
+                                                $parent     = 'email_campaign_type';
+                                                $parent_key = $key;
+
+
+                                                if (isset($view_path[4])) {
+                                                    if (is_numeric($view_path[4])) {
+
+                                                        $section = 'mailshot';
+                                                        $object  = 'mailshot';
+                                                        $key     = $view_path[4];
+                                                        if (isset($view_path[5])) {
+
+
+                                                            if ($view_path[5] == 'tracking') {
+
+
+                                                                $section = 'email_tracking';
+
+                                                                $parent     = 'mailshot';
+                                                                $parent_key = $key;
+
+                                                                if (is_numeric($view_path[6])) {
+                                                                    $section = 'email_tracking';
+                                                                    $object  = 'email_tracking';
+                                                                    $key     = $view_path[6];
+
+
+                                                                }
+
+                                                            }
+                                                        }
+
+
+
+
+
+
+                                                    }
+
+                                                }
+                                            }
+
+
+                                        }
+
+
+
+
+
+                                    }
+
+                                }
+                            }
+
+
+                        }
+
 
                     } elseif ($view_path[0] == 'all') {
                         $module  = 'marketing_server';
@@ -2852,9 +2987,6 @@ function parse_request($_data, $db, $modules, $account = '', $user = '', $is_set
 
 
                     }
-
-
-
 
 
                 }
@@ -4813,7 +4945,6 @@ function parse_request($_data, $db, $modules, $account = '', $user = '', $is_set
                 $section = 'users';
 
 
-
                 if (isset($view_path[0])) {
 
                     if ($view_path[0] == 'staff') {
@@ -4832,15 +4963,15 @@ function parse_request($_data, $db, $modules, $account = '', $user = '', $is_set
                         $section = 'suppliers';
                     } elseif ($view_path[0] == 'agents') {
                         $section = 'agents';
-                    }elseif ($view_path[0] == 'deleted_users') {
+                    } elseif ($view_path[0] == 'deleted_users') {
                         if (!isset($_data['tab'])) {
                             $_data['tab'] = 'deleted.users';
                         }
-                    }elseif( is_numeric($view_path[0]) ) {
+                    } elseif (is_numeric($view_path[0])) {
 
                         $section = 'user';
-                        $object = 'user';
-                        $key = $view_path[0];
+                        $object  = 'user';
+                        $key     = $view_path[0];
 
                     }
                 }
@@ -5453,7 +5584,6 @@ function parse_request($_data, $db, $modules, $account = '', $user = '', $is_set
     if (isset($store_key)) {
         $state['store_key'] = $store_key;
     }
-
 
     return $state;
 

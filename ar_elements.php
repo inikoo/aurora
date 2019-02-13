@@ -272,7 +272,7 @@ switch ($tab) {
     case 'category.webpage.logbook':
     case 'supplier.history':
     case 'charge.history':
-    case 'email_campaign.history':
+    case 'mailshot.history':
     case 'poll_query_option.history':
     case 'poll_query.history':
     case 'purge.history':
@@ -1473,7 +1473,7 @@ function get_history_elements($db, $data) {
         $sql = sprintf(
             "SELECT count(*) AS num ,`Type` FROM  `Charge History Bridge` WHERE  `Charge Key`=%d GROUP BY  `Type`", $data['parent_key']
         );
-    } elseif ($data['parent'] == 'email_campaign') {
+    } elseif ($data['parent'] == 'mailshot') {
         $sql = sprintf(
             "SELECT count(*) AS num ,`Type` FROM  `Email Campaign History Bridge` WHERE  `Email Campaign Key`=%d GROUP BY  `Type`", $data['parent_key']
         );
