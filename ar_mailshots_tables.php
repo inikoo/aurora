@@ -295,6 +295,21 @@ function sent_emails($_data, $db, $user) {
         $_parent = get_object('customer', $_data['parameters']['parent_key']);
     }
 
+    if ($_data['parameters']['parent'] == 'mailshot') {
+
+        if ($email_campaign_type->get('Email Campaign Type Scope') == 'Marketing') {
+            $link = 'marketing/%d/emails/%d/mailshot/%d/tracking/%d';
+
+
+        } else {
+            $link = 'customers/%d/notifications/%d/mailshot/%d/tracking/%d';
+
+        }
+
+
+    }
+
+
     //'Ready','Send to SES','Rejected by SES','Send','Read','Hard Bounce','Soft Bounce','Spam','Delivered','Opened','Clicked','Error'
 
 
@@ -398,7 +413,7 @@ function sent_emails($_data, $db, $user) {
             } elseif ($_data['parameters']['parent'] == 'mailshot') {
 
                 $email = sprintf(
-                    '<span class="link" onclick="change_view(\'marketing/%d/emails/%d/mailshot/%d/tracking/%d\')"  >%s</span>', $email_campaign_type->get('Store Key'), $email_campaign_type->id, $parent->id, $data['Email Tracking Key'], $data['Email Tracking Email']
+                    '<span class="link" onclick="change_view(\''.$link.'\')"  >%s</span>', $email_campaign_type->get('Store Key'), $email_campaign_type->id, $parent->id, $data['Email Tracking Key'], $data['Email Tracking Email']
                 );
 
             } elseif ($_data['parameters']['parent'] == 'customer') {
@@ -595,6 +610,16 @@ function mailshots($_data, $db, $user) {
     }
 
 
+    if ($email_template_type->get('Email Campaign Type Scope') == 'Marketing') {
+        $link = 'marketing/%d/emails/%d/mailshot/%d';
+
+
+    } else {
+        $link = 'customers/%d/notifications/%d/mailshot/%d';
+
+    }
+
+
     include_once 'prepare_table/init.php';
 
     $sql   = "select $fields from $table $where $wheref $group order by $order $order_direction  limit $start_from,$number_results";
@@ -619,7 +644,7 @@ function mailshots($_data, $db, $user) {
 
 
             $name = sprintf(
-                '<span class="link" onclick="change_view(\'marketing/%d/emails/%d/mailshot/%d\')"  >%s</span>', $data['Email Campaign Store Key'], $_data['parameters']['parent_key'], $data['Email Campaign Key'], $data['Email Campaign Name']
+                '<span class="link" onclick="change_view(\''.$link.'\')"  >%s</span>', $data['Email Campaign Store Key'], $_data['parameters']['parent_key'], $data['Email Campaign Key'], $data['Email Campaign Name']
             );
 
 
@@ -802,8 +827,8 @@ function account_mailshots($_data, $db, $user) {
 function previous_mailshots($_data, $db, $user) {
 
 
-    $mailshot = get_object('Mailshot', $_data['parameters']['parent_key']);
-    $mailshot_key=$mailshot->id;
+    $mailshot     = get_object('Mailshot', $_data['parameters']['parent_key']);
+    $mailshot_key = $mailshot->id;
     if ($mailshot->get('Email Campaign Type') == 'Newsletter') {
         $rtext_label = 'newsletter';
 
@@ -811,7 +836,7 @@ function previous_mailshots($_data, $db, $user) {
         $rtext_label = 'mailshot';
 
     }
-    $_data['parameters']['email_campaign_type_key']=$mailshot->get('Email Campaign Email Template Type Key');
+    $_data['parameters']['email_campaign_type_key'] = $mailshot->get('Email Campaign Email Template Type Key');
 
 
     include_once 'prepare_table/init.php';
@@ -833,7 +858,7 @@ function previous_mailshots($_data, $db, $user) {
 
 
             $operations .= sprintf(
-                '<span class="button" onClick="clone_sent_mailshot_from_table(this,\'Mailshot\',%d,%d,\'%s\')"><i class="fa fa-clone fa-fw"></i> %s</span>', $mailshot_key,$data['Email Campaign Key'], base64_url_decode($_data['parameters']['redirect']), _('Clone me')
+                '<span class="button" onClick="clone_sent_mailshot_from_table(this,\'Mailshot\',%d,%d,\'%s\')"><i class="fa fa-clone fa-fw"></i> %s</span>', $mailshot_key, $data['Email Campaign Key'], base64_url_decode($_data['parameters']['redirect']), _('Clone me')
             );
 
 
@@ -897,12 +922,11 @@ function previous_mailshots($_data, $db, $user) {
 }
 
 
-
 function other_stores_mailshots($_data, $db, $user) {
 
 
-    $mailshot = get_object('Mailshot', $_data['parameters']['parent_key']);
-    $mailshot_key=$mailshot->id;
+    $mailshot     = get_object('Mailshot', $_data['parameters']['parent_key']);
+    $mailshot_key = $mailshot->id;
     if ($mailshot->get('Email Campaign Type') == 'Newsletter') {
         $rtext_label = 'newsletter';
 
@@ -912,7 +936,7 @@ function other_stores_mailshots($_data, $db, $user) {
     }
 
 
-    $_data['parameters']['email_campaign_type_key']=$mailshot->get('Email Campaign Email Template Type Key');
+    $_data['parameters']['email_campaign_type_key'] = $mailshot->get('Email Campaign Email Template Type Key');
 
     include_once 'prepare_table/init.php';
 
@@ -933,14 +957,14 @@ function other_stores_mailshots($_data, $db, $user) {
 
 
             $operations .= sprintf(
-                '<span class="button" onClick="clone_sent_mailshot_from_table(this,\'Mailshot\',%d,%d,\'%s\')"><i class="fa fa-clone fa-fw"></i> %s</span>', $mailshot_key,$data['Email Campaign Key'], base64_url_decode($_data['parameters']['redirect']), _('Clone me')
+                '<span class="button" onClick="clone_sent_mailshot_from_table(this,\'Mailshot\',%d,%d,\'%s\')"><i class="fa fa-clone fa-fw"></i> %s</span>', $mailshot_key, $data['Email Campaign Key'], base64_url_decode($_data['parameters']['redirect']), _('Clone me')
             );
 
 
             $adata[] = array(
                 'id' => (integer)$data['Email Campaign Key'],
 
-                'name' => sprintf('<span class="name_%d">%s</span>', $data['Email Campaign Key'], $name),
+                'name'  => sprintf('<span class="name_%d">%s</span>', $data['Email Campaign Key'], $name),
                 'store' => sprintf('<span title="%s">%s</span>', $data['Store Name'], $data['Store Code']),
 
                 'date'    => sprintf('<span class="date_%d">%s</span>', $data['Email Campaign Key'], strftime("%a, %e %b %Y", strtotime($data['Email Campaign Last Updated Date']." +00:00"))),

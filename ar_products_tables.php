@@ -1898,22 +1898,7 @@ function user_notifications($_data, $db, $user) {
 
     foreach ($db->query($sql) as $data) {
 
-        switch ($data['Email Campaign Type Status']) {
-            case 'InProcess':
-                $status = sprintf('<i class="far discreet fa-seedling" title="%s" ></i>', _('Composing email template'));
-                break;
-            case 'Active':
-                $status = sprintf('<i class="far success fa-broadcast-tower" title="%s"></i>', _('Live'));
-                break;
-            case 'Suspended':
-                $status = sprintf('<i class="fa error fa-stop" title="%s"></i>', _('Suspended'));
-                break;
 
-            default:
-                $status = '';
-
-
-        }
 
 
         switch ($data['Email Campaign Type Code']) {
@@ -1921,7 +1906,7 @@ function user_notifications($_data, $db, $user) {
                 $_type = _('New order');
                 break;
             case 'New Customer':
-                $_type = _('New customer');
+                $_type = _('New registration');
 
                 break;
             case 'Invoice Deleted':
@@ -1940,7 +1925,7 @@ function user_notifications($_data, $db, $user) {
         }
 
 
-        $type = sprintf('<span class="link" onClick="change_view(\'customers/%d/notifications/%d\')">%s</span>', $data['Email Campaign Type Store Key'], $data['Email Campaign Type Key'], $_type);
+        $type = sprintf('<span class="link" onClick="change_view(\'store/%d/notifications/%d\')">%s</span>', $data['Email Campaign Type Store Key'], $data['Email Campaign Type Key'], $_type);
 
 
         $adata[] = array(
