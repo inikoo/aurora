@@ -51,6 +51,12 @@ switch ($tipo) {
     case 'sent_emails':
         sent_emails(get_table_parameters(), $db, $user);
         break;
+
+    case 'user_notification_sent_emails':
+        user_notification_sent_emails(get_table_parameters(), $db, $user);
+        break;
+
+
     case 'email_tracking_events':
         email_tracking_events(get_table_parameters(), $db, $user);
         break;
@@ -277,6 +283,7 @@ function email_tracking_events($_data, $db, $user) {
 }
 
 
+
 function sent_emails($_data, $db, $user) {
 
     $rtext_label = 'email';
@@ -450,6 +457,137 @@ function sent_emails($_data, $db, $user) {
                 'subject'  => $subject,
                 'prospect' => $prospects,
                 'customer' => $customer,
+                'date'     => strftime("%a, %e %b %Y %R:%S", strtotime($data['Email Tracking Created Date']." +00:00")),
+
+
+            );
+
+
+        }
+    } else {
+        print_r($error_info = $db->errorInfo());
+        exit;
+    }
+
+
+    $response = array(
+        'resultset' => array(
+            'state'         => 200,
+            'data'          => $adata,
+            'rtext'         => $rtext,
+            'sort_key'      => $_order,
+            'sort_dir'      => $_dir,
+            'total_records' => $total
+
+        )
+    );
+    echo json_encode($response);
+}
+
+
+
+function user_notification_sent_emails($_data, $db, $user) {
+
+    $rtext_label = 'email';
+    include_once 'prepare_table/init.php';
+    include_once 'utils/parse_email_status_codes.php';
+
+
+    $sql   = "select $fields from $table $where $wheref order by $order $order_direction limit $start_from,$number_results";
+    $adata = array();
+
+
+    $parent = get_object($_data['parameters']['parent'], $_data['parameters']['parent_key']);
+    if ($_data['parameters']['parent'] == 'mailshot' or $_data['parameters']['parent'] == 'email_campaign') {
+        $email_campaign_type = get_object('email_campaign_type', $parent->get('Email Campaign Email Template Type Key'));
+    } elseif ($_data['parameters']['parent'] == 'customer') {
+        $_parent = get_object('customer', $_data['parameters']['parent_key']);
+    }
+
+    if ($_data['parameters']['parent'] == 'mailshot') {
+
+        if ($email_campaign_type->get('Email Campaign Type Scope') == 'Marketing') {
+            $link = 'marketing/%d/emails/%d/mailshot/%d/tracking/%d';
+
+
+        } else {
+            $link = 'customers/%d/notifications/%d/mailshot/%d/tracking/%d';
+
+        }
+
+
+    }
+
+
+    //'Ready','Send to SES','Rejected by SES','Send','Read','Hard Bounce','Soft Bounce','Spam','Delivered','Opened','Clicked','Error'
+
+
+    if ($result = $db->query($sql)) {
+        foreach ($result as $data) {
+
+
+
+            switch ($data['Email Tracking State']) {
+                case 'Ready':
+                    $state = _('Ready to send');
+                    break;
+                case 'Sent to SES':
+                    $state = _('Sending');
+                    break;
+                    break;
+                case 'Delivered':
+                    $state = _('Delivered');
+                    break;
+                case 'Opened':
+                    $state = _('Opened');
+                    break;
+                case 'Clicked':
+                    $state = _('Clicked');
+                    break;
+                case 'Error':
+                    $state = '<span class="warning">'._('Error').'</span>';
+                    break;
+                case 'Hard Bounce':
+
+                    $status_code = parse_email_status_code($data['Email Tracking State'], $data['Email Tracking Delivery Status Code']);
+
+                    $state = '<span class="error"><i class="fa fa-exclamation-circle"></i>  '.$status_code.'</span>';
+                    break;
+                case 'Soft Bounce':
+                    $status_code = parse_email_status_code($data['Email Tracking State'], $data['Email Tracking Delivery Status Code']);
+                    $state       = '<span class="warning"><i class="fa fa-exclamation-circle error"></i>  '.$status_code.'</span>';
+
+
+                    break;
+                case 'Spam':
+                    $state = '<span class="error"><i class="fa fa-exclamation-circle"></i>  '._('Mark as spam').'</span>';
+                    break;
+                default:
+                    $state = $data['Email Tracking State'];
+            }
+
+            $state = sprintf('<span class="email_tracking_state_%d">%s</span>', $data['Email Tracking Key'], $state);
+
+
+            if($data['recipient_key']){
+                $recipient  = sprintf('<span class="link" onclick="change_view(\'users/%d\')"  >%s</span>', $data['recipient_key'], $data['recipient_name']);
+
+            }else{
+                $recipient  = sprintf('<span class="italic discreet"   >%s</span>',_('External email'));
+
+            }
+
+            $subject = '';
+
+            $email = sprintf('<span class="link" onclick="change_view(\'store/%d/notifications/%d/tracking/%d\')"  >%s</span>', $parent->get('Store Key'), $parent->id, $data['Email Tracking Key'], $data['Email Tracking Email']);
+
+
+            $adata[] = array(
+                'id'       => (integer)$data['Email Tracking Key'],
+                'state'    => $state,
+                'email'    => $email,
+                'subject'  => $subject,
+                'recipient' => $recipient,
                 'date'     => strftime("%a, %e %b %Y %R:%S", strtotime($data['Email Tracking Created Date']." +00:00")),
 
 
