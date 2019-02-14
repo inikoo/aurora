@@ -17,9 +17,26 @@ $parameters = array(
 );
 
 
-$tab     = 'email_campaign_type.sent_emails';
-$ar_file = 'ar_mailshots_tables.php';
-$tipo    = 'sent_emails';
+
+if($state['_object']->get('Email Campaign Type Scope')=='User Notification'){
+    $tab     = 'user_notification.sent_emails';
+    $ar_file = 'ar_mailshots_tables.php';
+    $tipo    = 'user_notification_sent_emails';
+}else{
+
+    $tab     = 'email_campaign_type.sent_emails';
+    $ar_file = 'ar_mailshots_tables.php';
+    $tipo    = 'sent_emails';
+
+    if($state['_object']->get('Code')=='Invite' or $state['_object']->get('Code')=='Invite Mailshot') {
+        $smarty->assign('recipient', 'prospect');
+        $smarty->assign('recipient_label', _('Prospects'));
+    }else{
+        $smarty->assign('recipient', 'customer');
+        $smarty->assign('recipient_label', _('Customers'));
+    }
+
+}
 
 
 $default = $user->get_tab_defaults($tab);
@@ -56,13 +73,7 @@ $table_filters = array(
 
 $table_buttons = array();
 
-if($state['_object']->get('Code')=='Invite' or $state['_object']->get('Code')=='Invite Mailshot') {
-    $smarty->assign('recipient', 'prospect');
-    $smarty->assign('recipient_label', _('Prospects'));
-}else{
-    $smarty->assign('recipient', 'customer');
-    $smarty->assign('recipient_label', _('Customers'));
-}
+
 
 include 'utils/get_table_html.php';
 

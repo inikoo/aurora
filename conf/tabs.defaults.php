@@ -4162,6 +4162,15 @@ $tab_defaults = array(
         'f_field'     => 'email',
 
     ),
+    'user_notification.sent_emails' => array(
+        'view'        => 'overview',
+        'sort_key'    => 'email',
+        'sort_order'  => 1,
+        'rpp'         => 100,
+        'rpp_options' => $default_rrp_options,
+        'f_field'     => 'email',
+
+    ),
     'mailshot.sent_emails'            => array(
         'view'        => 'overview',
         'sort_key'    => 'email',
