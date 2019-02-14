@@ -2369,7 +2369,7 @@ function fork_housekeeping($job) {
 
                     $published_email_template->send($recipient, $send_data, $smarty);
 
-                    print_r($published_email_template->msg);
+                  //  print_r($published_email_template->msg);
 
 
                 }
