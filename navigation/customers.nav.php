@@ -911,8 +911,6 @@ function get_customers_server_navigation($data, $smarty, $user, $db) {
 }
 
 
-
-
 function get_email_communications_server_navigation($data, $smarty, $user, $db) {
 
 
@@ -930,8 +928,6 @@ function get_email_communications_server_navigation($data, $smarty, $user, $db) 
     $left_buttons = array();
 
     $title = _('Customer notifications');
-
-
 
 
     $right_buttons = array();
@@ -2037,7 +2033,6 @@ function get_customers_poll_query_option_navigation($data, $smarty, $user, $db) 
 }
 
 
-
 function get_prospects_navigation($data, $smarty, $user, $db) {
 
 
@@ -2459,15 +2454,11 @@ function get_email_tracking_navigation($data, $smarty, $user, $db) {
                 break;
             case 'email_campaign_type':
                 $tab      = 'email_campaign_type.sent_emails';
-                $_section = 'emails';
+                $_section = 'customer_notifications';
                 break;
             case 'mailshot':
                 $tab      = 'mailshot.sent_emails';
-                $_section = 'emails';
-                break;
-            case 'email_campaign':
-                $tab      = 'email_campaign.sent_emails';
-                $_section = 'emails';
+                $_section = 'customer_notifications';
                 break;
 
 
@@ -2512,66 +2503,55 @@ function get_email_tracking_navigation($data, $smarty, $user, $db) {
         $next_title = '';
         $prev_key   = 0;
         $next_key   = 0;
-        $sql        = trim($sql_totals." $wheref");
-
-        if ($result2 = $db->query($sql)) {
-            if ($row2 = $result2->fetch() and $row2['num'] > 1) {
 
 
-                $sql = sprintf(
-                    "select `Email Tracking Email` object_name, `Email Tracking Created Date` as object_date,  `Email Tracking Key` as object_key from $table   $where $wheref
+        $sql = sprintf(
+            "select `Email Tracking Email` object_name, `Email Tracking Created Date` as object_date,  `Email Tracking Key` as object_key from $table   $where $wheref
 	                and ($_order_field < %s OR ($_order_field = %s AND `Email Tracking Key` < %d))  order by $_order_field desc , `Email Tracking Key` desc limit 1",
 
-                    prepare_mysql($_order_field_value), prepare_mysql($_order_field_value), $data['_object']->id
-                );
+            prepare_mysql($_order_field_value), prepare_mysql($_order_field_value), $data['_object']->id
+        );
 
 
-                if ($result = $db->query($sql)) {
-                    if ($row = $result->fetch()) {
-                        $prev_key   = $row['object_key'];
-                        $prev_title = _("Email tracking").' '.$row['object_name'].' ('.strftime("%a, %e %b %Y %R:%S", strtotime($row['object_date']." +00:00")).')';
-
-                    }
-                } else {
-                    print_r($error_info = $db->errorInfo());
-                    exit;
-                }
-
-
-                $sql = sprintf(
-                    "select `Email Tracking Email` object_name, `Email Tracking Created Date` as object_date,`Email Tracking Key` as object_key from $table   $where $wheref
-	                and ($_order_field  > %s OR ($_order_field  = %s AND `Email Tracking Key` > %d))  order by $_order_field   , `Email Tracking Key`  limit 1", prepare_mysql($_order_field_value), prepare_mysql($_order_field_value), $data['_object']->id
-                );
-
-                // print $sql;
-
-
-                if ($result = $db->query($sql)) {
-                    if ($row = $result->fetch()) {
-                        $next_key   = $row['object_key'];
-                        $prev_title = _("Email tracking").' '.$row['object_name'].' ('.strftime("%a, %e %b %Y %R:%S", strtotime($row['object_date']." +00:00")).')';
-
-                    }
-                } else {
-                    print_r($error_info = $db->errorInfo());
-                    exit;
-                }
-
-
-                if ($order_direction == 'desc') {
-                    $_tmp1      = $prev_key;
-                    $_tmp2      = $prev_title;
-                    $prev_key   = $next_key;
-                    $prev_title = $next_title;
-                    $next_key   = $_tmp1;
-                    $next_title = $_tmp2;
-                }
-
+        if ($result = $db->query($sql)) {
+            if ($row = $result->fetch()) {
+                $prev_key   = $row['object_key'];
+                $prev_title = _("Email tracking").' '.$row['object_name'].' ('.strftime("%a, %e %b %Y %R:%S", strtotime($row['object_date']." +00:00")).')';
 
             }
         } else {
             print_r($error_info = $db->errorInfo());
             exit;
+        }
+
+
+        $sql = sprintf(
+            "select `Email Tracking Email` object_name, `Email Tracking Created Date` as object_date,`Email Tracking Key` as object_key from $table   $where $wheref
+	                and ($_order_field  > %s OR ($_order_field  = %s AND `Email Tracking Key` > %d))  order by $_order_field   , `Email Tracking Key`  limit 1", prepare_mysql($_order_field_value), prepare_mysql($_order_field_value), $data['_object']->id
+        );
+
+        // print $sql;
+
+
+        if ($result = $db->query($sql)) {
+            if ($row = $result->fetch()) {
+                $next_key   = $row['object_key'];
+                $prev_title = _("Email tracking").' '.$row['object_name'].' ('.strftime("%a, %e %b %Y %R:%S", strtotime($row['object_date']." +00:00")).')';
+
+            }
+        } else {
+            print_r($error_info = $db->errorInfo());
+            exit;
+        }
+
+
+        if ($order_direction == 'desc') {
+            $_tmp1      = $prev_key;
+            $_tmp2      = $prev_title;
+            $prev_key   = $next_key;
+            $prev_title = $next_title;
+            $next_key   = $_tmp1;
+            $next_title = $_tmp2;
         }
 
 
@@ -2681,8 +2661,7 @@ function get_email_tracking_navigation($data, $smarty, $user, $db) {
             case 'email_campaign_type':
 
 
-
-                switch ($data['_parent']->get('Email Campaign Type Scope')){
+                switch ($data['_parent']->get('Email Campaign Type Scope')) {
                     case 'Customer Notification':
 
 
@@ -2737,9 +2716,9 @@ function get_email_tracking_navigation($data, $smarty, $user, $db) {
                 }
 
 
-
                 break;
-            case 'email_campaign':
+
+            case 'mailshot':
 
                 $email_campaign_type = get_object('email_campaign_type', $data['_parent']->get('Email Campaign Email Template Type Key'));
 
@@ -2751,14 +2730,14 @@ function get_email_tracking_navigation($data, $smarty, $user, $db) {
                 $up_button = array(
                     'icon'      => 'arrow-up',
                     'title'     => $data['_parent']->get('Label'),
-                    'reference' => 'email_campaign_type/'.$email_campaign_type->get('Store Key').'/'.$email_campaign_type->id.'/mailshot/'.$data['_parent']->id
+                    'reference' => 'customers/'.$email_campaign_type->get('Store Key').'/notifications/'.$email_campaign_type->id.'/mailshot/'.$data['_parent']->id
                 );
 
                 if ($prev_key) {
                     $left_buttons[] = array(
                         'icon'      => 'arrow-left',
                         'title'     => $prev_title,
-                        'reference' => 'email_campaign_type/'.$email_campaign_type->get('Store Key').'/'.$email_campaign_type->id.'/mailshot/'.$data['_parent']->id.'/tracking/'.$prev_key
+                        'reference' => 'customers/'.$email_campaign_type->get('Store Key').'/notifications/'.$email_campaign_type->id.'/mailshot/'.$data['_parent']->id.'/tracking/'.$prev_key
                     );
 
                 } else {
@@ -2776,61 +2755,7 @@ function get_email_tracking_navigation($data, $smarty, $user, $db) {
                     $left_buttons[] = array(
                         'icon'      => 'arrow-right',
                         'title'     => $next_title,
-                        'reference' => 'email_campaign_type/'.$email_campaign_type->get('Store Key').'/'.$email_campaign_type->id.'/mailshot/'.$data['_parent']->id.'/tracking/'.$next_key
-                    );
-
-                } else {
-                    $left_buttons[] = array(
-                        'icon'  => 'arrow-right disabled',
-                        'title' => '',
-                        'url'   => ''
-                    );
-
-                }
-
-
-                $title = sprintf(_('Tracking email sent to %s'), '<span class="id">'.$data['_object']->get('Email Tracking Email').'</span>');
-
-
-                break;
-                case 'mailshot':
-
-                $email_campaign_type = get_object('email_campaign_type', $data['_parent']->get('Email Campaign Email Template Type Key'));
-
-
-                $placeholder = _('Search emails');
-                $sections    = get_sections('customers', $email_campaign_type->get('Store Key'));
-
-
-                $up_button = array(
-                    'icon'      => 'arrow-up',
-                    'title'     => $data['_parent']->get('Label'),
-                    'reference' => 'email_campaign_type/'.$email_campaign_type->get('Store Key').'/'.$email_campaign_type->id.'/mailshot/'.$data['_parent']->id
-                );
-
-                if ($prev_key) {
-                    $left_buttons[] = array(
-                        'icon'      => 'arrow-left',
-                        'title'     => $prev_title,
-                        'reference' => 'email_campaign_type/'.$email_campaign_type->get('Store Key').'/'.$email_campaign_type->id.'/mailshot/'.$data['_parent']->id.'/tracking/'.$prev_key
-                    );
-
-                } else {
-                    $left_buttons[] = array(
-                        'icon'  => 'arrow-left disabled',
-                        'title' => '',
-                        'url'   => ''
-                    );
-
-                }
-                $left_buttons[] = $up_button;
-
-
-                if ($next_key) {
-                    $left_buttons[] = array(
-                        'icon'      => 'arrow-right',
-                        'title'     => $next_title,
-                        'reference' => 'email_campaign_type/'.$email_campaign_type->get('Store Key').'/'.$email_campaign_type->id.'/mailshot/'.$data['_parent']->id.'/tracking/'.$next_key
+                        'reference' => 'customers/'.$email_campaign_type->get('Store Key').'/notifications/'.$email_campaign_type->id.'/mailshot/'.$data['_parent']->id.'/tracking/'.$next_key
                     );
 
                 } else {
@@ -3337,8 +3262,8 @@ function get_customer_product_navigation($data, $smarty, $user, $db) {
 
 
     $customer = $data['_parent'];
-    $product = $data['_object'];
-    $store=get_object('Store',$customer->get('Store Key'));
+    $product  = $data['_object'];
+    $store    = get_object('Store', $customer->get('Store Key'));
     if (!$customer->id) {
         return;
     }
@@ -3382,26 +3307,18 @@ function get_customer_product_navigation($data, $smarty, $user, $db) {
 
 
     // todo find way to do this
-    if($order=='amount' or $order=='qty' or $order=='invoices') {
-        $order='P.`Product Code`';
+    if ($order == 'amount' or $order == 'qty' or $order == 'invoices') {
+        $order = 'P.`Product Code`';
     }
 
 
-    $_order_field       = $order;
-    $order              = preg_replace('/^.*\.`/', '', $order);
-    $order              = preg_replace('/^`/', '', $order);
-    $order              = preg_replace('/`$/', '', $order);
+    $_order_field = $order;
+    $order        = preg_replace('/^.*\.`/', '', $order);
+    $order        = preg_replace('/^`/', '', $order);
+    $order        = preg_replace('/`$/', '', $order);
 
 
-
-
-
-
-
-        $_order_field_value = $product->get($order);
-
-
-
+    $_order_field_value = $product->get($order);
 
 
     $prev_title = '';
@@ -3409,9 +3326,6 @@ function get_customer_product_navigation($data, $smarty, $user, $db) {
     $prev_key   = 0;
     $next_key   = 0;
     $sql        = trim($sql_totals." $wheref");
-
-
-
 
 
     if ($result2 = $db->query($sql)) {
@@ -3426,11 +3340,11 @@ function get_customer_product_navigation($data, $smarty, $user, $db) {
             );
 
 
-           // print $sql;
+            // print $sql;
 
             if ($result = $db->query($sql)) {
                 if ($row = $result->fetch()) {
-                   // print_r($row);
+                    // print_r($row);
 
                     $prev_key   = $row['object_key'];
                     $prev_title = _("Product").' '.$row['object_name'];
@@ -3544,6 +3458,189 @@ function get_customer_product_navigation($data, $smarty, $user, $db) {
         'search'         => array(
             'show'        => true,
             'placeholder' => $placeholder
+        )
+
+    );
+    $smarty->assign('_content', $_content);
+
+
+    $html = $smarty->fetch('navigation.tpl');
+
+    return $html;
+
+}
+
+
+function get_mailshot_navigation($data, $smarty, $user, $db, $account) {
+
+
+    $object        = $data['_object'];
+    $left_buttons  = array();
+    $right_buttons = array();
+
+
+    $_section = 'customer_notifications';
+
+    switch ($data['section']) {
+
+
+        case 'mailshot':
+            $tab = 'email_campaign_type.mailshots';
+            break;
+
+    }
+
+    if (isset($_SESSION['table_state'][$tab])) {
+        $number_results  = $_SESSION['table_state'][$tab]['nr'];
+        $start_from      = 0;
+        $order           = $_SESSION['table_state'][$tab]['o'];
+        $order_direction = ($_SESSION['table_state'][$tab]['od'] == 1 ? 'desc' : '');
+        $f_value         = $_SESSION['table_state'][$tab]['f_value'];
+        $parameters      = $_SESSION['table_state'][$tab];
+    } else {
+
+        $default = $user->get_tab_defaults($tab);
+
+        $number_results           = $default['rpp'];
+        $start_from               = 0;
+        $order                    = $default['sort_key'];
+        $order_direction          = ($default['sort_order'] == 1 ? 'desc' : '');
+        $f_value                  = '';
+        $parameters               = $default;
+        $parameters['parent']     = $data['parent'];
+        $parameters['parent_key'] = $data['parent_key'];
+
+    }
+
+
+    include_once 'prepare_table/'.$tab.'.ptble.php';
+    $_order_field       = $order;
+    $order              = preg_replace('/^.*\.`/', '', $order);
+    $order              = preg_replace('/^`/', '', $order);
+    $order              = preg_replace('/`$/', '', $order);
+    $_order_field_value = $object->get($order);
+
+
+    $prev_title = '';
+    $next_title = '';
+    $prev_key   = 0;
+    $next_key   = 0;
+
+
+    $sql = sprintf(
+        "select `Email Campaign Name` object_name,`Email Campaign Key` as object_key from $table   $where $wheref
+	                and ($_order_field < %s OR ($_order_field = %s AND `Email Campaign Key` < %d))  order by $_order_field desc , `Email Campaign Key` desc limit 1",
+
+        prepare_mysql($_order_field_value), prepare_mysql($_order_field_value), $object->id
+    );
+
+
+    if ($result = $db->query($sql)) {
+        if ($row = $result->fetch()) {
+            $prev_key = $row['object_key'];
+
+
+            $prev_title = _("Mailshot").' '.$row['object_name'];
+
+
+        }
+    } else {
+        print $sql;
+
+        print_r($error_info = $db->errorInfo());
+        exit;
+    }
+
+
+    $sql = sprintf(
+        "select `Email Campaign Name` object_name,`Email Campaign Key` as object_key from $table   $where $wheref
+	                and ($_order_field  > %s OR ($_order_field  = %s AND `Email Campaign Key` > %d))  order by $_order_field   , `Email Campaign Key`  limit 1", prepare_mysql($_order_field_value), prepare_mysql($_order_field_value), $object->id
+    );
+
+    if ($result = $db->query($sql)) {
+        if ($row = $result->fetch()) {
+            $next_key = $row['object_key'];
+
+            $next_title = _("Mailshot").' '.$row['object_name'];
+
+
+        }
+    } else {
+        print_r($error_info = $db->errorInfo());
+        exit;
+    }
+
+
+    if ($order_direction == 'desc') {
+        $_tmp1      = $prev_key;
+        $_tmp2      = $prev_title;
+        $prev_key   = $next_key;
+        $prev_title = $next_title;
+        $next_key   = $_tmp1;
+        $next_title = $_tmp2;
+    }
+
+
+    $title     = _('Mailshot').' <span class="id Email_Campaign_Name">'.$object->get('Name').'</span>';
+    $up_button = array(
+        'icon'      => 'arrow-up',
+        'title'     => _("Mailshots").' ('.$data['store']->get('Code').')',
+        'reference' => 'customers/'.$data['_parent']->get('Store Key').'/notifications/'.$data['_parent']->id
+    );
+
+
+    if ($prev_key) {
+        $left_buttons[] = array(
+            'icon'      => 'arrow-left',
+            'title'     => $prev_title,
+            'reference' => 'customers/'.$data['_parent']->get('Store Key').'/notifications/'.$data['_parent']->id.'/mailshot/'.$prev_key
+        );
+
+    } else {
+        $left_buttons[] = array(
+            'icon'  => 'arrow-left disabled',
+            'title' => '',
+            'url'   => ''
+        );
+
+    }
+    $left_buttons[] = $up_button;
+
+
+    if ($next_key) {
+        $left_buttons[] = array(
+            'icon'      => 'arrow-right',
+            'title'     => $next_title,
+            'reference' => 'customers/'.$data['_parent']->get('Store Key').'/notifications/'.$data['_parent']->id.'/mailshot/'.$next_key
+        );
+
+    } else {
+        $left_buttons[] = array(
+            'icon'  => 'arrow-right disabled',
+            'title' => '',
+            'url'   => ''
+        );
+
+    }
+
+
+    $sections = get_sections('customers', $data['_parent']->get('Store Key'));
+
+
+    if (isset($sections[$_section])) {
+        $sections[$_section]['selected'] = true;
+    }
+
+
+    $_content = array(
+        'sections_class' => '',
+        'sections'       => $sections,
+        'left_buttons'   => $left_buttons,
+        'right_buttons'  => $right_buttons,
+        'title'          => $title,
+        'search'         => array(
+            'show'        => true,
+            'placeholder' => _('Search customers')
         )
 
     );

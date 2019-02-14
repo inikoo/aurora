@@ -210,6 +210,18 @@ class EmailCampaignType extends DB_Table {
                     case 'Invite':
                         $name = _("Personalised prospect invitations");
                         break;
+                    case 'New Order':
+                        $name = _('New order notification');
+                        break;
+                    case 'New Customer':
+                        $name = _('New registration notification');
+                        break;
+                    case 'Invoice Deleted':
+                        $name = _('Deleted invoice notification');
+                        break;
+                    case 'Delivery Note Undispatched':
+                        $name = _('Undispatched delivery notification');
+                        break;
                     default:
                         $name = $this->data['Email Campaign Type Code'];
 
