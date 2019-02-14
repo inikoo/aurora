@@ -528,6 +528,7 @@ trait Send_Email {
                     $this->placeholders['[Tracking URL]'] = '';
 
                 }
+                break;
             case 'New Customer':
 
                 $this->new_customer = get_object('Customer', $data['customer_key']);
