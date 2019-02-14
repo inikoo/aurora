@@ -835,6 +835,7 @@ function get_customers_notifications_navigation($data, $smarty, $user, $db) {
         $sections[$data['section']]['selected'] = true;
     }
 
+
     $_content = array(
         'sections_class' => '',
         'sections'       => $sections,
