@@ -54,9 +54,12 @@
 
                     </p>
 
-
+                    {if   $product->get('Next Supplier Shipment Timestamp')>$smarty.now   }
+                        <div class="color-red-dark " style="line-height: 20px;font-size: 140%">{t}Expected{/t}: {$product->get('Next Supplier Shipment Timestamp')|date_format:"%x"}<br></div>
+                    {/if}
                 </div>
 
+    </div>
 
 
 

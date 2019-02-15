@@ -66,7 +66,8 @@
 
                         {if $product->get('Web State')=='Out of Stock'}
                             <div style="margin-top: 10px" class="notification-small  bg-red-light ">
-                                <strong class="bg-red-dark "><i class="fa fa-frown"></i></strong>
+                                <strong class="bg-red-dark ">
+                                    <i class="fa fa-frown"></i></strong>
                                 <p style="line-height: 50px;font-size: 120%">
                                     {if empty($labels.out_of_stock)}{t}Out of stock{/t}{else}{$labels.out_of_stock}{/if}
 
@@ -77,7 +78,12 @@
 
 
                                 </p>
+
+
                             </div>
+                            {if   $product->get('Next Supplier Shipment Timestamp')>$smarty.now   }
+                                <div class="color-red-dark " style="line-height: 20px;font-size: 100%">{t}Expected{/t}: {$product->get('Next Supplier Shipment Timestamp')|date_format:"%x"}</div>
+                            {/if}
                         {elseif $product->get('Web State')=='For Sale'}
                             <div  >
 
