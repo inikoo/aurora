@@ -35,8 +35,33 @@ print date('l jS \of F Y h:i:s A')."\n";
 
 //update_categories_data($db);
 
-update_products_data($db);
+//update_products_data($db);
 
+update_products_next_shipment_date($db);
+
+
+
+
+function update_products_next_shipment_date($db) {
+
+    $sql = sprintf(
+        "SELECT `Product ID` FROM `Product Dimension`  "
+    );
+    if ($result = $db->query($sql)) {
+        foreach ($result as $row) {
+
+
+            $product = new Product($row['Product ID']);
+            $product->update_next_shipment();
+            $this->update_webpages();
+        }
+
+    } else {
+        print_r($error_info = $db->errorInfo());
+        exit;
+    }
+
+}
 
 function update_products_data($db) {
 

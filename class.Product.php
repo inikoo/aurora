@@ -2450,7 +2450,7 @@ class Product extends Asset {
 
 
             $new_value = (!$next_delivery_time ? '' : gmdate('Y-m-d H:i:s', $next_delivery_time));
-            if ($old_value != $new_value or true) {
+            if ($old_value != $new_value ) {
                 $this->fast_update(
                     array(
                         'Product Next Supplier Shipment' => $new_value
