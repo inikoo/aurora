@@ -49,7 +49,12 @@
                                            data-label_add_notification="{if empty($labels.add_notification)}{t}Click to be notified by email when back in stock{/t},{else}{$labels.add_notification}{/if}"   title="{if empty($labels.add_notification)}{t}Click to be notified by email when back in stock{/t},{else}{$labels.add_notification}{/if}"    class="far fa-envelope like_button reminder out_of_stock_reminders_{$item.product_id} margin_left_5" aria-hidden="true"></i>
 
                                     </span>
+
+
                                 </div>
+                                 {if !empty($item.next_shipment_timestamp)  and $item.next_shipment_timestamp>$smarty.now }
+                                <div  style="margin-top:8px;padding-left: 0px;font-size: 90%">{t}Expected{/t}: {$item.next_shipment_timestamp|date_format:"%x"}</div>
+                                {/if}
                             {elseif $item.web_state=='For Sale'}
                                 <div class="mobile_ordering"  data-settings='{ "pid":{$item.product_id} }'>
                                 <i onclick="save_item_qty_change(this)" class="ordering_button one_less fa fa-fw  fa-minus-circle color-red-dark"></i>

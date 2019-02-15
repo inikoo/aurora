@@ -66,17 +66,26 @@
                         {if $logged_in}
 
                             {if $item.web_state=='Out of Stock'}
-                                <div class="ordering log_in can_not_order  out_of_stock_row  out_of_stock ">
 
+                                {if !empty($item.next_shipment_timestamp)  and $item.next_shipment_timestamp>$smarty.now }
+                                    <div class="  out_of_stock_row  out_of_stock "
+                                         style="z-index:1000;opacity:1;font-style: italic;;position:absolute;bottom:28px;height: 16px;line-height: 16px;padding:0px;padding-top:3px;font-size: 12px;width: 224px" >
+                                        <span style="padding-left: 10px">{t}Expected{/t}: {$item.next_shipment_timestamp|date_format:"%x"}</span>
+                                    </div>
+                                {/if}
+
+
+                                <div class="ordering log_in can_not_order  out_of_stock_row  out_of_stock ">
+                                    <span {if !empty($item.next_shipment_timestamp)  and $item.next_shipment_timestamp>$smarty.now }style="position: relative;top:5px;"{/if}>
                                     <span class="product_footer label ">{if empty($labels.out_of_stock)}{t}Out of stock{/t}{else}{$labels.out_of_stock}{/if}</span>
                                     <i data-product_id="{$item.product_id}"
                                        data-label_remove_notification="{if empty($labels.remove_notification)}{t}Click to remove notification{/t},{else}{$labels.remove_notification}{/if}"
                                        data-label_add_notification="{if empty($labels.add_notification)}{t}Click to be notified by email when back in stock{/t},{else}{$labels.add_notification}{/if}"   title="{if empty($labels.add_notification)}{t}Click to be notified by email when back in stock{/t},{else}{$labels.add_notification}{/if}"    class="far fa-envelope like_button reminder out_of_stock_reminders_{$item.product_id} margin_left_5" aria-hidden="true"></i>
-
-
-
-
+                                    </span>
                                 </div>
+
+
+
                             {elseif  $item.web_state=='For Sale'}
 
                                 <div class="mobile_ordering" style="text-align:center;font-size: 14px;" data-settings='{ "pid":{$item.product_id} }'>

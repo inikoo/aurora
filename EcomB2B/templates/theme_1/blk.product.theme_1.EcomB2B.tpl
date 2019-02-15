@@ -64,6 +64,8 @@
             <div class="ordering-container  log_in" style="display: flex;margin-top:40px;clear:both">
 
                 {if $logged_in}
+
+
                 <div class="product_prices log_in " style="margin-left:0px;padding-left:0px;font-size: 120%;width:250px">
                     <div class="product_price">{if empty($labels._product_price)}{t}Price{/t}{else}{$labels._product_price}{/if}: {$product->get('Price')} <small>{$product->get('Price Per Unit')}</small></div>
                     {assign 'rrp' $product->get('RRP')}
@@ -73,13 +75,21 @@
 
 
                     {if $product->get('Web State')=='Out of Stock'}
+
+
+
+
                         <div style="height:40px;line-height:40px;padding:0px 20px"   class="   out_of_stock ">
+
+
 
                             <span class="product_footer label ">{if empty($labels.out_of_stock)}{t}Out of stock{/t}{else}{$labels.out_of_stock}{/if}</span>
                             <span class="product_footer reminder"><i class="fa fa-envelope hide" aria-hidden="true"></i>  </span>
 
 
                         </div>
+
+
 
                         <i data-product_id="{$product->id}"
                            data-label_remove_notification="{if empty($labels.remove_notification)}{t}Click to remove notification{/t},{else}{$labels.remove_notification}{/if}"
@@ -116,6 +126,11 @@
                 {/if}
 
             </div>
+            {if $logged_in and $product->get('Web State')=='Out of Stock' and  $product->get('Next Supplier Shipment Timestamp')>$smarty.now   }
+            <div style="padding-left: 262px">{t}Expected{/t}: {$product->get('Next Supplier Shipment Timestamp')|date_format:"%x"}<br></div>
+            {/if}
+
+
             <div id="product_description" class="product_description_block fr-view ">
                 {$data.text}
             </div>
