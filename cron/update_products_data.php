@@ -53,7 +53,7 @@ function update_products_next_shipment_date($db) {
 
             $product = new Product($row['Product ID']);
             $product->update_next_shipment();
-            $this->update_webpages();
+            $product->update_webpages();
         }
 
     } else {
