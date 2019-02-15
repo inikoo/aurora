@@ -21,9 +21,10 @@ $table_filters = array(
     'number' => array('label' => _('Number')),
 );
 
+
 $parameters = array(
-    'parent'     => $state['object'],
-    'parent_key' => $state['key'],
+    'parent'     => $state['parent'],
+    'parent_key' => $state['parent_key'],
 
 );
 
