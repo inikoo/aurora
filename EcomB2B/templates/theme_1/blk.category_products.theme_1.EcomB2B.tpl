@@ -64,7 +64,16 @@
                         {if $logged_in}
 
                             {if $item.web_state=='Out of Stock'}
-                                <div class="ordering log_in can_not_order  out_of_stock_row  out_of_stock ">
+
+
+                                {if !empty($item.next_shipment_timestamp)  }
+                                    <div class="  out_of_stock_row  out_of_stock {if  $item.next_shipment_timestamp<$smarty.now}hide{/if} "   style="opacity:1;font-style: italic;;position:absolute;bottom:15px;height: 16px;line-height: 16px;padding:0px;padding-top:3px;font-size: 12px;width: 226px" >
+                                        <span style="padding-left: 10px">{t}Expected{/t}: {$item.next_shipment_timestamp|date_format:"%x"}</span>
+                                    </div>
+                                {/if}
+
+
+                                <div class="ordering log_in can_not_order  out_of_stock_row  out_of_stock " style="">
                                     <span class="product_footer label ">{if empty($labels.out_of_stock)}{t}Out of stock{/t}{else}{$labels.out_of_stock}{/if}</span>
                                     <i data-product_id="{$item.product_id}"
                                        data-label_remove_notification="{if empty($labels.remove_notification)}{t}Click to remove notification{/t},{else}{$labels.remove_notification}{/if}"
@@ -72,6 +81,9 @@
 
 
                                 </div>
+
+
+
                             {elseif  $item.web_state=='For Sale'}
 
                                 <div class="order_row empty  order_row_{$item.product_id} ">

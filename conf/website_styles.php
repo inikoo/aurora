@@ -108,7 +108,7 @@ $website_styles=array(
     array('.ordered:hover', 'background-color','orange'),
     array('.ordered:hover', 'color','white'),
 
-    array('.out_of_stock', 'background-color','rgba(204, 204, 204, 0.9)'),
+    array('.out_of_stock', 'background-color','rgba(204, 204, 204, 1)'),
     array('.out_of_stock', 'color','white'),
     array('.out_of_stock:hover', 'background-color','#ccc'),
     array('.out_of_stock:hover', 'color','white'),

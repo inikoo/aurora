@@ -631,17 +631,16 @@ class Product extends Asset {
                 break;
             case 'Product Unit RRP':
 
-                if($this->data['Product RRP']==''){
+                if ($this->data['Product RRP'] == '') {
                     return '';
                 }
 
 
-                if($this->data['Product Units Per Case']>0){
+                if ($this->data['Product Units Per Case'] > 0) {
                     return $this->data['Product RRP'] / $this->data['Product Units Per Case'];
-                }else{
+                } else {
                     return '';
                 }
-
 
 
                 break;
@@ -1827,12 +1826,18 @@ class Product extends Asset {
     function update_webpages() {
 
 
+        $webpages_to_reindex = array();
+
         $sql = sprintf(
             'select `Website Webpage Scope Webpage Key`  from `Website Webpage Scope Map` where `Website Webpage Scope Scope`="Product" and `Website Webpage Scope Scope Key`=%d ', $this->id
         );
 
         if ($result = $this->db->query($sql)) {
             foreach ($result as $row) {
+
+                $webpages_to_reindex[$row['Website Webpage Scope Webpage Key']] = $row['Website Webpage Scope Webpage Key'];
+
+                /*
                 $webpage = get_object('Webpage', $row['Website Webpage Scope Webpage Key']);
 
                 if (!empty($this->fork)) {
@@ -1840,14 +1845,37 @@ class Product extends Asset {
                 }
 
                 $webpage->reindex_items();
+                */
+
+
             }
         } else {
             print_r($error_info = $this->db->errorInfo());
             print "$sql\n";
             exit;
         }
+        $webpages_to_reindex[$this->get('Product Webpage Key')] = $this->get('Product Webpage Key');
 
+        $date = gmdate('Y-m-d H:i:s');
+        foreach ($webpages_to_reindex as $webpage_to_reindex_key) {
+            if ($webpage_to_reindex_key > 0) {
+                $sql = sprintf(
+                    'insert into `Stack Dimension` (`Stack Creation Date`,`Stack Last Update Date`,`Stack Operation`,`Stack Object Key`) values (%s,%s,%s,%d) 
+                      ON DUPLICATE KEY UPDATE `Stack Last Update Date`=%s ,`Stack Counter`=`Stack Counter`+1 ',
+                    prepare_mysql($date),
+                    prepare_mysql($date),
+                    prepare_mysql('reindex_webpage'),
+                    $webpage_to_reindex_key,
+                    prepare_mysql($date)
 
+                );
+                $this->db->exec($sql);
+
+            }
+
+        }
+
+        /*
         $webpage = get_object('Webpage', $this->get('Product Webpage Key'));
 
         if (!empty($this->fork)) {
@@ -1855,7 +1883,11 @@ class Product extends Asset {
         }
 
         $webpage->reindex_items();
+*/
 
+        /*
+
+        */
 
     }
 
@@ -2386,9 +2418,9 @@ class Product extends Asset {
             'SELECT `Part Current On Hand Stock`,`Part Next Shipment Date` FROM  `Product Part Bridge` LEFT JOIN `Part Dimension` ON (`Part SKU`=`Product Part Part SKU`)   WHERE `Product Part Product ID`=%d ', $this->id
         );
 
-
         if ($result = $this->db->query($sql)) {
             foreach ($result as $row) {
+
 
 
                 if (($row['Part Current On Hand Stock'] <= 0 or $row['Part Current On Hand Stock'] == '') and $row['Part Next Shipment Date'] == '') {
@@ -2407,15 +2439,28 @@ class Product extends Asset {
                         $next_delivery_time = strtotime($_next_delivery_time.' +0:00');
 
                     } elseif (strtotime($_next_delivery_time) > $next_delivery_time) {
-                        $next_delivery_time = $_next_delivery_time;
+                        $next_delivery_time = strtotime($_next_delivery_time.' +0:00');
                     }
                 }
 
             }
 
+            $old_value = $this->data['Product Next Supplier Shipment'];
 
-            $this->update_field_switcher('Product Next Supplier Shipment', (!$next_delivery_time ? '' : gmdate('Y-m-d H:i:s', $next_delivery_time)), 'no_history');
 
+
+            $new_value = (!$next_delivery_time ? '' : gmdate('Y-m-d H:i:s', $next_delivery_time));
+            if ($old_value != $new_value or true) {
+                $this->fast_update(
+                    array(
+                        'Product Next Supplier Shipment' => $new_value
+                    )
+                );
+
+
+                $this->update_webpages();
+
+            }
 
         } else {
             print_r($error_info = $this->db->errorInfo());
@@ -2837,7 +2882,7 @@ class Product extends Asset {
 
                 foreach ($materials_to_update as $material_key => $update) {
                     if ($update) {
-                        $material = get_object('Material',$material_key);
+                        $material = get_object('Material', $material_key);
                         $material->update_stats();
 
                     }
@@ -3488,6 +3533,35 @@ class Product extends Asset {
 
     }
 
+    function update_part_numbers() {
+
+        $number_parts = 0;
+
+        $sql = sprintf(
+            'SELECT count(`Product Part Part SKU`) AS num FROM `Product Part Bridge`  WHERE `Product Part Product ID`=%d', $this->id
+        );
+
+        if ($result = $this->db->query($sql)) {
+            if ($row = $result->fetch()) {
+                $number_parts = $row['num'];
+            }
+        } else {
+            print_r($error_info = $this->db->errorInfo());
+            exit;
+        }
+
+
+        $this->fast_update(
+            array(
+                'Product Number of Parts' => $number_parts,
+
+
+            )
+        );
+
+
+    }
+
     function get_category_data() {
 
 
@@ -3543,35 +3617,6 @@ class Product extends Asset {
 
 
         return $category_data;
-    }
-
-    function update_part_numbers() {
-
-        $number_parts = 0;
-
-        $sql = sprintf(
-            'SELECT count(`Product Part Part SKU`) AS num FROM `Product Part Bridge`  WHERE `Product Part Product ID`=%d', $this->id
-        );
-
-        if ($result = $this->db->query($sql)) {
-            if ($row = $result->fetch()) {
-                $number_parts = $row['num'];
-            }
-        } else {
-            print_r($error_info = $this->db->errorInfo());
-            exit;
-        }
-
-
-        $this->fast_update(
-            array(
-                'Product Number of Parts' => $number_parts,
-
-
-            )
-        );
-
-
     }
 
     function update_cost() {

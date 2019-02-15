@@ -555,11 +555,25 @@ class Public_Product {
                 break;
             case 'Next Supplier Shipment':
 
-                return strftime("%e %b %y", strtotime($this->data['Product Next Supplier Shipment'].' +0:00'));
+                if($this->data['Product Next Supplier Shipment']!='' and $this->data['Product Next Supplier Shipment']!='0000-00-00 00:00:00'){
+                    return strftime("%e %b %y", strtotime($this->data['Product Next Supplier Shipment'].' +0:00'));
+
+                }else{
+                    return '';
+                }
 
                 break;
 
+            case 'Next Supplier Shipment Timestamp':
 
+                if($this->data['Product Next Supplier Shipment']!='' and $this->data['Product Next Supplier Shipment']!='0000-00-00 00:00:00'){
+                    return strtotime($this->data['Product Next Supplier Shipment'].' +0:00');
+
+                }else{
+                    return '';
+                }
+
+                break;
             case 'Unit Weight':
                 include_once 'utils/natural_language.php';
 

@@ -16,7 +16,6 @@ include_once('utils/website_functions.php');
 $logged = true;
 
 
-
 $category = $state['_object'];
 
 /*
@@ -29,27 +28,19 @@ if ($category->get('Product Category Public')=='No') {
 */
 
 
+$webpage = $category->get_webpage();
 
 
-$webpage  = $category->get_webpage();
+$website = get_object('Website', $webpage->get('Webpage Website Key'));
 
 
-
-
-$website=get_object('Website',$webpage->get('Webpage Website Key'));
-
-
-
-if($webpage->get('Webpage Template Filename')=='category_categories' or $webpage->get('Webpage Template Filename')=='category_products'){
+if ($webpage->get('Webpage Template Filename') == 'category_categories' or $webpage->get('Webpage Template Filename') == 'category_products') {
 
     if (!$webpage->id) {
         $html = '<div style="padding:40px">'.'Webpage not found'.'</div>';
 
         return;
     }
-
-
-
 
 
     $website = new Website($webpage->get('Webpage Website Key'));
@@ -63,10 +54,9 @@ if($webpage->get('Webpage Template Filename')=='category_categories' or $webpage
     $smarty->assign('content', $webpage->get('Content Data'));
     $smarty->assign('metadata', $webpage->get('Scope MetaData'));
 
-//print_r( $webpage->get('Content Data'));
+    //print_r( $webpage->get('Content Data'));
 
     $control_template = $theme.'/control.'.strtolower($webpage->get('Webpage Template Filename')).'.'.$theme.'.tpl';
-
 
 
     if (file_exists('templates/'.$control_template)) {
@@ -85,18 +75,16 @@ if($webpage->get('Webpage Template Filename')=='category_categories' or $webpage
     // print_r( $webpage->get('Content Data'));
 
 
-
-    if ($category->get('Product Category Public')=='No') {
+    if ($category->get('Product Category Public') == 'No') {
 
         $html = '<div style="background-color: tomato;color:whitesmoke;padding:5px 20px"><h1>'._('Category not public, webpage offline').'</h1></div>';
-    }else{
-        $html='';
+    } else {
+        $html = '';
     }
 
     $html .= $smarty->fetch('webpage_preview.tpl');
 
-}else{
-
+} else {
 
 
     $smarty->assign('webpage', $webpage);
@@ -113,7 +101,6 @@ if($webpage->get('Webpage Template Filename')=='category_categories' or $webpage
     }
 
 
-
     $public_category = new Public_Category($category->id);
     $public_category->load_webpage();
     $content_data = $category->webpage->get('Content Data');
@@ -122,13 +109,10 @@ if($webpage->get('Webpage Template Filename')=='category_categories' or $webpage
     //print_r($content_data);
 
 
-
-    if($webpage->get('Page Store Content Display Type')=='Template') {
+    if ($webpage->get('Page Store Content Display Type') == 'Template') {
 
         switch ($webpage->get('Page Store Content Template Filename')) {
             case 'products_showcase':
-
-
 
 
                 // todo remove this when all descriptions are moved inside webpage content data
@@ -188,13 +172,7 @@ if($webpage->get('Webpage Template Filename')=='category_categories' or $webpage
                 }
 
 
-
-
-
                 $category->create_stack_index(true);
-
-
-
 
 
                 $html = '';
@@ -207,8 +185,6 @@ if($webpage->get('Webpage Template Filename')=='category_categories' or $webpage
                 }
 
 
-
-
                 ksort($panels);
                 $products = array();
 
@@ -216,7 +192,6 @@ if($webpage->get('Webpage Template Filename')=='category_categories' or $webpage
                     "SELECT `Product Category Index Key`,`Product Category Index Content Data`,`Product Category Index Product ID`,`Product Category Index Category Key`,`Product Category Index Stack`, P.`Product ID`,`Product Code`,`Product Web State` FROM `Category Bridge` B  LEFT JOIN `Product Dimension` P ON (`Subject Key`=P.`Product ID`)  LEFT JOIN `Product Category Index` S ON (`Subject Key`=S.`Product Category Index Product ID` AND S.`Product Category Index Category Key`=B.`Category Key`)  WHERE  `Category Key`=%d  AND `Product Web State` IN  ('For Sale','Out of Stock')   ORDER BY `Product Web State`,   ifnull(`Product Category Index Stack`,99999999)",
                     $public_category->id
                 );
-
 
 
                 $stack_index         = 0;
@@ -365,11 +340,7 @@ if($webpage->get('Webpage Template Filename')=='category_categories' or $webpage
                 }
 
 
-
                 // print_r($panel_rows);
-
-
-
 
 
                 $related_products = array();
@@ -402,8 +373,6 @@ if($webpage->get('Webpage Template Filename')=='category_categories' or $webpage
                     print "$sql\n";
                     exit;
                 }
-
-
 
 
                 $smarty->assign('products', $products);
@@ -585,7 +554,7 @@ if($webpage->get('Webpage Template Filename')=='category_categories' or $webpage
                 //  $webpage->reindex_items();
 
 
-                $smarty->assign('sections',  (isset($content_data['sections'])?$content_data['sections']:array()));
+                $smarty->assign('sections', (isset($content_data['sections']) ? $content_data['sections'] : array()));
 
                 //  print_r($content_data['sections']);
 
@@ -597,9 +566,6 @@ if($webpage->get('Webpage Template Filename')=='category_categories' or $webpage
                 $smarty->assign('store_key', $category->get('Category Store Key'));
 
 
-
-
-
                 $html = $smarty->fetch('webpage.preview.categories_showcase.tpl');
 
                 break;
@@ -609,14 +575,12 @@ if($webpage->get('Webpage Template Filename')=='category_categories' or $webpage
 
         }
 
-    }else{
+    } else {
         $html = '<div style="padding:40px">'."There is not preview for white canvas template".'</div>';
 
         return;
     }
 }
-
-
 
 
 ?>
