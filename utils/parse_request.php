@@ -2587,15 +2587,15 @@ function parse_request($_data, $db, $modules, $account = '', $user = '', $is_set
                                 }
                 */
                 break;
-
+/*
             case 'returns':
 
-                $module = 'delivery_notes';
+                $module = 'warehouses';
 
                 $arg1 = array_shift($view_path);
 
                 if ($arg1 == 'all') {
-                    $module     = 'delivery_notes_server';
+                    $module     = 'warehouses_server';
                     $section    = 'returns';
                     $parent     = 'account';
                     $parent_key = 1;
@@ -2608,16 +2608,15 @@ function parse_request($_data, $db, $modules, $account = '', $user = '', $is_set
 
                     if (isset($view_path[0]) and is_numeric($view_path[0])) {
                         $section    = 'return';
-                        $object     = 'delivery_note';
+                        $object     = 'return';
                         $parent     = 'warehouse';
-                        $parent_key = $arg1;
-                        $key        = $view_path[0];
+
 
                     }
 
                 }
 
-
+*/
                 break;
             case 'delivery_notes':
                 if (!$user->can_view('orders')) {

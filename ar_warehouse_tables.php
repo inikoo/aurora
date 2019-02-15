@@ -1314,7 +1314,9 @@ function returns($_data, $db, $user) {
                 case 'Cancelled':
                     $state = sprintf('%s', _('Cancelled'));
                     break;
-
+                case 'Dispatched':
+                    $state = _('Waiting to receive return');
+                    break;
                 default:
                     $state = $data['Supplier Delivery State'];
                     break;

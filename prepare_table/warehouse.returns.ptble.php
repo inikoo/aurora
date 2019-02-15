@@ -16,6 +16,7 @@ $wheref   = '';
 $currency = '';
 
 
+
 $where = 'where true ';
 $table = '`Supplier Delivery Dimension` D   left join `Order Dimension` O on (`Order Key`=`Supplier Delivery Parent Key`) left join `Store Dimension` on (`Store Key`=`Order Store Key`) '  ;
 
@@ -29,7 +30,7 @@ switch ($parameters['parent']){
         );
         break;
     default:
-        exit ('no parent');
+        exit ('no parent ->'.$parameters['parent']);
 }
 
 
@@ -54,6 +55,9 @@ if (isset($parameters['elements_type'])) {
 
     switch ($parameters['elements_type']) {
         case('state'):
+
+
+
             $_elements            = '';
             $num_elements_checked = 0;
 
@@ -64,7 +68,15 @@ if (isset($parameters['elements_type'])) {
                 if ($_value) {
                     $num_elements_checked++;
 
-                    $_elements .= ",'".addslashes($_key)."'";
+
+                    if ($_key == 'InProcess') {
+                        $_elements .= ",'InProcess','Dispatched','Consolidated'";
+                    }if ($_key == 'Placed') {
+                        $_elements .= ",'Placed','Costing'";
+                    } else {
+
+                        $_elements .= ",'".addslashes($_key)."'";
+                    }
 
                 }
             }
@@ -73,19 +85,12 @@ if (isset($parameters['elements_type'])) {
                 $where .= ' and false';
             } elseif ($num_elements_checked < 6) {
 
-               if ($_key == 'Placed') {
-                    $_elements .= ",'InProcess','Dispatched','Consolidated'";
-                }if ($_key == 'InProcess') {
-                    $_elements .= ",'Placed','Costing'";
-                } else {
 
-                    $_elements .= ",'".addslashes($_key)."'";
-                }
 
 
                 $_elements = preg_replace('/^,/', '', $_elements);
-
-
+//'InProcess','Consolidated','Dispatched','Received','Checked','Placed','Costing','Cancelled','InvoiceChecked'
+                //'InProcess','Received','Checked','Placed','InvoiceChecked','Cancelled'
 
 
                 $where .= ' and `Supplier Delivery State` in ('.$_elements.')';
