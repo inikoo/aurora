@@ -499,7 +499,7 @@ left join `Supplier Part Historic Dimension` SPH on (POTF.`Supplier Part Histori
             );
             $this->db->exec($sql);
 
-            $this->update_affected_parts();
+            $this->update_parts_next_delivery();
 
             $parent = get_object('Supplier', $this->data['Agent Supplier Purchase Order Supplier Key']);
 
@@ -814,7 +814,7 @@ left join `Supplier Part Historic Dimension` SPH on (POTF.`Supplier Part Histori
 
     }
 
-    function update_affected_parts() {
+    function update_parts_next_delivery() {
 
 
         $sql = sprintf(
@@ -903,7 +903,7 @@ left join `Supplier Part Historic Dimension` SPH on (POTF.`Supplier Part Histori
         $this->get_data(
             'id', $this->id
         );
-        $this->update_affected_parts();
+        $this->update_parts_next_delivery();
 
         $history_data = array(
             'History Abstract' => _('Purchase order marked as confirmed'),
@@ -940,7 +940,7 @@ left join `Supplier Part Historic Dimension` SPH on (POTF.`Supplier Part Histori
         $this->db->exec($sql);
 
 
-        $this->update_affected_parts();
+        $this->update_parts_next_delivery();
 
         $history_data = array(
             'History Abstract' => _('Purchase order submitted'),
@@ -983,7 +983,7 @@ left join `Supplier Part Historic Dimension` SPH on (POTF.`Supplier Part Histori
                 break;
             case 'Agent Supplier Purchase Order Estimated Receiving Date':
                 $this->update_field($field, $value, $options);
-                $this->update_affected_parts();
+                $this->update_parts_next_delivery();
 
                 $this->update_metadata = array(
                     'class_html' => array(

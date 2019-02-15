@@ -285,7 +285,7 @@ class Part extends Asset {
         $this->fast_update(
             array(
                 'Part Next Deliveries Data'     => json_encode($data['deliveries']),
-                'Part Next Shipment Date'       => $data['next_delivery_time'],
+                'Part Next Shipment Date'       => ($data['next_delivery_time']!=''?gmdate('Y-m-d H:i:s',$data['next_delivery_time']):''),
                 'Part Number Active Deliveries' => $data['number_non_draft_POs'],
                 'Part Number Draft Deliveries'  => $data['number_draft_POs']
             )
@@ -332,7 +332,6 @@ class Part extends Asset {
                 foreach ($result as $row) {
 
 
-                    // print_r($row);
 
 
                     if ($row['Supplier Delivery Checked Units'] > 0 or $row['Supplier Delivery Checked Units'] == '') {
@@ -410,6 +409,8 @@ class Part extends Asset {
             }
 
 
+
+
             $sql = sprintf(
                 'SELECT `Supplier Part Packages Per Carton`,POTF.`Purchase Order Transaction State`,`Purchase Order Submitted Units`,`Supplier Delivery Key` ,`Purchase Order Estimated Receiving Date`,`Purchase Order Public ID`,POTF.`Purchase Order Key` ,
                 `Part Units Per Package`,`Purchase Order Ordering Units`,`Purchase Order Submitted Units`
@@ -485,6 +486,7 @@ class Part extends Asset {
             }
 
         }
+
 
 
         return array(

@@ -20,7 +20,7 @@ function fork_housekeeping($job) {
     list($account, $db, $data, $editor, $session) = $_data;
 
     print $data['type']."\n";
-
+    // return true;
     switch ($data['type']) {
 
         case 'update_parts_inventory_snapshot_fact':
@@ -1853,6 +1853,34 @@ function fork_housekeeping($job) {
 
 
             break;
+        case 'update_parts_next_delivery':
+            $po         = get_object('purchase_order', $data['po_key']);
+            $po->editor = $editor;
+            if ($po->id) {
+                $sql = sprintf(
+                    "SELECT `Supplier Part Key` FROM `Purchase Order Transaction Fact` WHERE `Purchase Order Key`=%d", $po->id
+                );
+
+
+                if ($result = $db->query($sql)) {
+                    foreach ($result as $row) {
+                        $supplier_part = get_object('SupplierPart', $row['Supplier Part Key']);
+                        $supplier_part->editor= $editor;
+                        if (isset($supplier_part->part)) {
+                            $supplier_part->part->update_next_deliveries_data();
+                        }
+
+
+                    }
+                } else {
+                    print_r($error_info = $db->errorInfo());
+                    print "$sql\n";
+                    exit;
+                }
+            }
+
+
+            break;
 
         case 'update_active_parts_commercial_value':
 
@@ -2369,7 +2397,7 @@ function fork_housekeeping($job) {
 
                     $published_email_template->send($recipient, $send_data, $smarty);
 
-                  //  print_r($published_email_template->msg);
+                    //  print_r($published_email_template->msg);
 
 
                 }

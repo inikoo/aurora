@@ -1308,7 +1308,7 @@ sum(`Purchase Order Net Amount`) AS items_net, sum(`Purchase Order Extra Cost Am
             $this->db->exec($sql);
 
 
-            $this->update_affected_parts();
+            $this->update_parts_next_delivery();
 
             $parent = get_object($this->data['Purchase Order Parent'], $this->data['Purchase Order Parent Key']);
 
@@ -1383,28 +1383,22 @@ sum(`Purchase Order Net Amount`) AS items_net, sum(`Purchase Order Extra Cost Am
 
     }
 
-    function update_affected_parts() {
+    function update_parts_next_delivery() {
 
+        $account=get_object('account',1);
 
-        $sql = sprintf(
-            "SELECT `Supplier Part Key` FROM `Purchase Order Transaction Fact` WHERE `Purchase Order Key`=%d", $this->id
+        require_once 'utils/new_fork.php';
+        new_housekeeping_fork(
+            'au_housekeeping', array(
+            'type'        => 'update_parts_next_delivery',
+            'po_key' => $this->id,
+            'editor'      => $this->editor
+        ), $account->get('Account Code'), $this->db
         );
 
 
-        if ($result = $this->db->query($sql)) {
-            foreach ($result as $row) {
-                $supplier_part = get_object('SupplierPart', $row['Supplier Part Key']);
-                if (isset($supplier_part->part)) {
-                    $supplier_part->part->update_next_deliveries_data();
-                }
 
 
-            }
-        } else {
-            print_r($error_info = $this->db->errorInfo());
-            print "$sql\n";
-            exit;
-        }
 
 
     }
@@ -1944,7 +1938,7 @@ sum(`Purchase Order Net Amount`) AS items_net, sum(`Purchase Order Extra Cost Am
         $this->get_data(
             'id', $this->id
         );
-        $this->update_affected_parts();
+        $this->update_parts_next_delivery();
 
         $history_data = array(
             'History Abstract' => _('Purchase order marked as confirmed'),
@@ -1978,7 +1972,7 @@ sum(`Purchase Order Net Amount`) AS items_net, sum(`Purchase Order Extra Cost Am
         $this->db->exec($sql);
 
 
-        $this->update_affected_parts();
+        $this->update_parts_next_delivery();
 
         $history_data = array(
             'History Abstract' => _('Purchase order submitted'),
@@ -2032,13 +2026,11 @@ sum(`Purchase Order Net Amount`) AS items_net, sum(`Purchase Order Extra Cost Am
                 break;
             case 'Purchase Order Estimated Receiving Date':
                 $this->update_field($field, $value, $options);
-                $this->update_affected_parts();
+                $this->update_parts_next_delivery();
 
                 $this->update_metadata = array(
                     'class_html' => array(
-                        'Purchase_Order_Received_Date' => $this->get(
-                            'Received Date'
-                        ),
+                        'Purchase_Order_Received_Date' => $this->get('Received Date'),
 
                     )
                 );
