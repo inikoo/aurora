@@ -9,7 +9,7 @@
 -->
 *}
 
-<input class="value Customer_List_Key" id="Customer_List_Key"  value="" type="hidden">
+<input class=" Customer_List_Key" id="Customer_List_Key"  value="" type="hidden">
 <span class="Customer_List_Select" onclick="change_customer(this)"></span>
 <input class="Customer_List_Select_value" value="" ovalue="" placeholder="{t}Customer list name{/t}" parent_key="{$store_key}"  parent="store" scope="customer_lists">
 <div class="search_results_container">

@@ -91,7 +91,7 @@ $object_fields[] = array(
         ),
         array(
             'edit'        => 'no_icon',
-            'class'       => 'hide',
+            'class'       => 'xhide',
             'id'          => '_Customer_Selected',
             'value'       => '',
             'formatted_value' =>'',
@@ -102,7 +102,7 @@ $object_fields[] = array(
         ),
         array(
             'edit'        => 'customer_list',
-            'class'       => 'hide',
+            'class'       => 'xhide',
             'id'          => 'customer_list',
             'value'       => '',
             'label'       => _('Customer list'),

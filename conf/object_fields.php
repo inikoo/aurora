@@ -242,7 +242,6 @@ function get_object_fields($object, $db, $user, $smarty, $options = false) {
 
                        include 'fields/new_deal.fld.php';
 
-
                        break;
                    case 'category':
 
