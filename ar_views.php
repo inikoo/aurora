@@ -749,7 +749,7 @@ function get_view($db, $smarty, $user, $account, $modules) {
         }
     } elseif ($state['module'] == 'orders') {
 
-        if ($state['section'] == 'email_campaign') {
+        if ($state['section'] == 'mailshot') {
 
             switch ($state['_object']->get('Email Campaign State')) {
 
@@ -1180,7 +1180,6 @@ function get_object_showcase($showcase, $data, $smarty, $user, $db, $account) {
             include_once 'showcase/timeseries_record.show.php';
             $html = get_timeseries_record_showcase($data, $smarty, $user, $db, $account);
             break;
-        case 'email_campaign':
         case 'mailshot':
             include_once 'showcase/email_campaign.show.php';
             $html = get_email_campaign_showcase($data, $smarty, $user, $db, $account);
@@ -1718,7 +1717,7 @@ function get_navigation($user, $smarty, $data, $db, $account) {
                     break;
 
 
-                case ('email_campaign'):
+                case ('mailshot'):
                     return get_abandoned_card_email_navigation(
                         $data, $smarty, $user, $db, $account
                     );
@@ -1791,7 +1790,7 @@ function get_navigation($user, $smarty, $data, $db, $account) {
                 case ('payment'):
                     return get_payment_navigation($data, $smarty, $user, $db, $account);
                     break;
-                case ('email_campaign'):
+                case ('mailshot'):
                     return get_abandoned_card_email_navigation($data, $smarty, $user, $db, $account);
                     break;
                 case ('refund.new'):
@@ -4792,7 +4791,7 @@ function get_view_position($db, $state, $user, $smarty, $account) {
                                          'email_campaigns',
                                          'email_campaign_type',
                                          'email_tracking',
-                                         'email_campaign'
+                                         'mailshot'
                                      )
                 )) {
                     $branch[] = array(
@@ -5841,7 +5840,7 @@ function get_view_position($db, $state, $user, $smarty, $account) {
                     'icon'      => '',
                     'reference' => ''
                 );
-            } elseif ($state['section'] == 'email_campaign') {
+            } elseif ($state['section'] == 'mailshot') {
 
 
                 $branch[] = array(
@@ -6246,7 +6245,7 @@ function get_view_position($db, $state, $user, $smarty, $account) {
 
 
                     break;
-                case 'email_campaign':
+                case 'mailshot':
 
 
                     if ($user->get_number_stores() > 1) {
