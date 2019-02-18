@@ -257,7 +257,7 @@ module.exports = function (grunt) {
                     'js/keyboard_shortcuts.js',
                     'js/barcode_scanner.js',
                     'js/edit.js',
-                    'js/new.js',
+
                     'js/mixed_recipients.edit.js',
                     'js/search.js',
                     'js/table.js',

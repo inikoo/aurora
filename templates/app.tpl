@@ -9,14 +9,14 @@
     <link href="/art/aurora_log_v2_orange_small.png" rel="shortcut icon" type="image/x-icon"/>
 
 
-    <link href="/css/au_app.min.css?v190204" rel="stylesheet">
+    <link href="/css/au_app.min.css?v190204v2" rel="stylesheet">
 
 
     {if $_server_name!='au.bali'}
         <script src="https://browser.sentry-cdn.com/4.3.4/bundle.min.js" crossorigin="anonymous"></script>
         <script src="https://wchat.freshchat.com/js/widget.js"></script>
     {/if}
-    <script src="/js/aurora_libs.min.js?v190205v2"></script>
+    <script src="/js/aurora_libs.min.js?v190205v3"></script>
 
     <script src="/js/aurora.min.js?v190201v4"></script>
 

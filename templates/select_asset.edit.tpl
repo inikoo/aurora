@@ -9,7 +9,7 @@
 -->
 *}
 
-<input class="value Asset_Key" id="Asset_Key"  value="" type="hidden">
+<input class=" Asset_Key" id="Asset_Key"  value="" type="hidden">
 <span class="Asset_Select" onclick="change_customer(this)"></span>
 <input class="Asset_Select_value" value="" ovalue="" placeholder="{t}Product{/t}/{t}Category{/t}" parent_key="{$store_key}"  parent="store" scope="assets_on_sale">
 <div class="search_results_container">
