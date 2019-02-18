@@ -794,10 +794,10 @@ function select_blueprint($data, $editor, $db) {
 
     //  print $scope->get_object_name();
 
-    $update_metadata = array();
+   // $update_metadata = array();
 
 
-    if ($scope->get_object_name() == 'Email Campaign') {
+    if ($data['scope'] == 'Mailshot') {
 
 
         $email_template = get_object('Email_Template', $scope->get('Email Campaign Email Template Key'));
@@ -820,9 +820,12 @@ function select_blueprint($data, $editor, $db) {
 
             $email_template->fast_update(
                 array(
+                    'Email Template Selecting Blueprints' => 'No',
                     'Email Template Editing Checksum' => $checksum,
                 )
             );
+
+
 
 
         } else {
@@ -1763,15 +1766,19 @@ function use_template($data, $editor, $db) {
 
         } else {
 
-            $text    = (isset($email_templates_data[$data['role']]['text']) ? $email_templates_data[$data['role']]['text'] : '');
-            $subject = (isset($email_templates_data[$data['role']]['subject']) ? $email_templates_data[$data['role']]['subject'] : $data['role']);
-            $name    = (isset($email_templates_data[$data['role']]['name']) ? $email_templates_data[$data['role']]['name'] : $data['role']);
+
+
+
+
+            $text    ='';
+            $subject =$blueprint->get('Name');
+            $name    =$blueprint->get('Role');
 
 
             $email_template_data = array(
                 'Email Template Name'                    => $name,
                 'Email Template Role Type'               => 'Marketing',
-                'Email Template Role'                    => $data['role'],
+                'Email Template Role'                    => $blueprint->get('Role'),
                 'Email Template Scope'                   => $data['scope'],
                 'Email Template Scope Key'               => $data['scope_key'],
                 'Email Template Text'                    => $text,
@@ -1780,6 +1787,7 @@ function use_template($data, $editor, $db) {
 
                 'Email Template Editing JSON' => $blueprint_json
             );
+
 
 
             $email_template = new Email_Template('find', $email_template_data, 'create');
@@ -1871,8 +1879,11 @@ function use_template($data, $editor, $db) {
         }
 
 
-    } elseif ($scope->get_object_name() == 'Email Template') {
+    }
 
+
+    elseif ($scope->get_object_name() == 'Email Template') {
+/*
 
         if ($scope->id) {
             $email_template = $scope;
@@ -1921,7 +1932,7 @@ function use_template($data, $editor, $db) {
 
         }
 
-
+*/
     } else {
 
 

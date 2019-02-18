@@ -1484,7 +1484,7 @@ $modules = array(
             ),
 
 
-            'email_campaign' => array(
+            'mailshot' => array(
                 'type' => 'object',
                 'tabs' => array(
                     'email_campaign.details'          => array(

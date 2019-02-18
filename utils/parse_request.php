@@ -1570,15 +1570,14 @@ function parse_request($_data, $db, $modules, $account = '', $user = '', $is_set
 
                                     $store_key = $arg1;
 
-                                    $section = 'email_campaign';
-                                    $section = 'email_campaign';
+                                    $section = 'mailshot';
 
                                     $parent     = 'email_campaign_type';
                                     $parent_key = $key;
 
                                     if (is_numeric($view_path[2])) {
-                                        $section = 'email_campaign';
-                                        $object  = 'email_campaign';
+                                        $section = 'mailshot';
+                                        $object  = 'mailshot';
                                         $key     = $view_path[2];
                                         if (isset($view_path[3])) {
 
@@ -1588,7 +1587,7 @@ function parse_request($_data, $db, $modules, $account = '', $user = '', $is_set
 
                                                 $section = 'email_tracking';
 
-                                                $parent     = 'email_campaign';
+                                                $parent     = 'mailshot';
                                                 $parent_key = $key;
 
                                                 if (is_numeric($view_path[4])) {
@@ -2081,7 +2080,7 @@ function parse_request($_data, $db, $modules, $account = '', $user = '', $is_set
 
                     if (isset($view_path[1])) {
 
-                        $object = 'email_campaign';
+                        $object = 'mailshot';
                         $key    = $view_path[1];
 
                     }
@@ -2153,8 +2152,8 @@ function parse_request($_data, $db, $modules, $account = '', $user = '', $is_set
                                         if (is_numeric($view_path[3])) {
 
 
-                                            $section = 'email_campaign';
-                                            $object  = 'email_campaign';
+                                            $section = 'mailshot';
+                                            $object  = 'mailshot';
                                             $key     = $view_path[3];
 
 
@@ -2202,8 +2201,8 @@ function parse_request($_data, $db, $modules, $account = '', $user = '', $is_set
 
                                             if (is_numeric($view_path[3])) {
 
-                                                $section = 'email_campaign';
-                                                $object  = 'email_campaign';
+                                                $section = 'mailshot';
+                                                $object  = 'mailshot';
                                                 $key     = $view_path[3];
 
 
