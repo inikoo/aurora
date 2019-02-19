@@ -506,8 +506,7 @@
                                     </label>
                                 </section>
 
-
-
+                                {if !empty($poll_queries)}
                                 {foreach from=$poll_queries item=query}
 
                                     <section class="poll_query_section" style="position: relative">
@@ -536,7 +535,7 @@
                                     {/if}
                                     </section>
                                 {/foreach}
-
+                                {/if}
 
 
 
