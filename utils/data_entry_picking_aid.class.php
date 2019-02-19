@@ -237,6 +237,47 @@ class data_entry_picking_aid {
                         $extra_itf_keys[$transaction['itf_key']] = $transaction['itf_key'];
                     }
                 }
+
+
+                if ($transaction['location_key'] <= 0) {
+
+                    $response = array(
+                        'state' => 400,
+                        'msg'   => 'transaction with wrong location'
+                    );
+
+                    return array(
+                        'valid'    => false,
+                        'response' => $response
+                    );
+                }
+
+                if ($transaction['part_sku'] <= 0) {
+
+                    $response = array(
+                        'state' => 400,
+                        'msg'   => 'part key invalid'
+                    );
+
+                    return array(
+                        'valid'    => false,
+                        'response' => $response
+                    );
+                }
+
+                if ($transaction['qty'] <0) {
+
+                    $response = array(
+                        'state' => 400,
+                        'msg'   => 'part quantity negative'
+                    );
+
+                    return array(
+                        'valid'    => false,
+                        'response' => $response
+                    );
+                }
+
             }
 
 
