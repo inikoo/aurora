@@ -3,7 +3,7 @@
 
   About:
   Author: Raul Perusquia <raul@inikoo.com>
-  created: 9 May 2017 at 22:06:41 GMT-5, CdMx Mexico  
+  created: 9 May 2017 at 22:06:41 GMT-5, CdMx Mexico
 
   Copyright (c) 2017, Inikoo
 
