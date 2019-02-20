@@ -219,7 +219,7 @@ class data_entry_picking_aid {
             print_r($error_info = $this->db->errorInfo());
             exit();
         }
-        
+
 
         $missing_itf_keys = $itf_keys;
         $extra_itf_keys   = array();
@@ -846,12 +846,13 @@ class data_entry_picking_aid {
 
         $this->dn->update_state('Packed');
 
+
         if ($this->level >= 10) {
             $this->dn->update_state('Packed Done');
         }
 
 
-        if ($this->level >= 20) {
+        if ($this->level >= 20 and $this->dn->get('Delivery Note Type')=='Order') {
             $order         = get_object('order', $this->data['order_key']);
             $order->editor = $this->editor;
             $order->update_state('Approved');

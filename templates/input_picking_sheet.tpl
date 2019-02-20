@@ -138,7 +138,12 @@
         <td class="label" rowspan="2" style="padding: 0px 20px">
             <input type="hidden" class="order_data_entry_picking_aid_state_after_save"  value="{if $store->settings('data_entry_picking_aid_state_after_save')==''  }0{else}{$store->settings('data_entry_picking_aid_state_after_save')}{/if}" >
             <div><span data-level="L10" class="button L10" onclick="change_order_data_entry_picking_aid_state_after_save(this)"><i class="far {if $store->settings('data_entry_picking_aid_state_after_save')>=10}fa-check-square{else}fa-square{/if}"></i>  {t}Set as closed{/t} </span></div>
+            {if $dn->get('Delivery Note Type')!='Replacement'}
             <div style="margin-top:5px;margin-bottom: 5px"><span  data-level="L20" class="button L20" onclick="change_order_data_entry_picking_aid_state_after_save(this)"><i class="far {if $store->settings('data_entry_picking_aid_state_after_save')>=20}fa-check-square{else}fa-square{/if}"></i>  {t}Create invoice{/t}  </span></div>
+            {else}
+                <div class="hide"><span  data-level="L20" class="button L20" ><i class="far fa-square"></i>  </span></div>
+
+            {/if}
             <div><span class="button L30"  data-level="L30" onclick="change_order_data_entry_picking_aid_state_after_save(this)"><i class="far {if $store->settings('data_entry_picking_aid_state_after_save')>=30}fa-check-square{else}fa-square{/if}"></i>  {t}Set as dispatched{/t} </span> </div>
         </td>
 
