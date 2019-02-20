@@ -364,8 +364,18 @@ function get_webpage_blocks($theme = '') {
         ),
         'search' => array(
             'type'          => 'search',
-            'label'         => _('search'),
+            'label'         => _('Search'),
             'icon'          => 'fa-search',
+            'show'          => 1,
+            'top_margin'    => 40,
+            'bottom_margin' => 60,
+            'labels'        => array()
+
+        ),
+        'reviews' => array(
+            'type'          => 'reviews',
+            'label'         => _('Reviews'),
+            'icon'          => 'fa-comment-alt-smile',
             'show'          => 1,
             'top_margin'    => 40,
             'bottom_margin' => 60,

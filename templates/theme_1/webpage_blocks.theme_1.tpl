@@ -816,6 +816,38 @@
 
             switch ($(obj).attr('block')) {
 
+                case 'reviews':
+
+                    content_data = {
+
+                    };
+
+
+                    $('[contenteditable=true]', obj).each(function (i, obj2) {
+
+
+                        content_data[$(obj2).attr('id')] = $(obj2).html()
+
+
+
+                    })
+
+
+
+                    blocks.push({
+                        type: 'reviews',
+                        label: '{t}Reviews{/t}',
+                        icon: 'fa-comment-smile',
+                        show: ($(obj).hasClass('hide') ? 0 : 1),
+                        top_margin: $(obj).attr('top_margin'),
+                        bottom_margin: $(obj).attr('bottom_margin'),
+                        html: $(obj).html()
+
+                    })
+
+
+                    break;
+
                 case 'unsubscribe':
 
                     content_data = {

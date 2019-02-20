@@ -10,9 +10,8 @@
 */
 
 
-
 if ($_SERVER['SERVER_NAME'] == 'ecom.bali' ) {
-    $_SESSION['website_key'] = 12;
+    $_SESSION['website_key'] = 2;
 } else {
 
     include_once 'utils/general_functions.php';
