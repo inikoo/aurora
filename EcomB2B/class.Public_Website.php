@@ -64,10 +64,20 @@ class Public_Website {
             $this->code = $this->data['Website Code'];
 
 
+
             if (empty($this->data['Website Settings'] )) {
                 $this->settings = array();
             } else {
+
+               //  echo setlocale(LC_NUMERIC, 0);
+
+
                 $this->settings = json_decode($this->data['Website Settings'], true);
+
+             //  print_r($this->settings);
+               //
+               // exit;
+
             }
 
             if (empty($this->data['Website Style'])) {

@@ -28,7 +28,7 @@ if (!isset($db)) {
 date_default_timezone_set('UTC');
 $logged_in = get_logged_in();
 
-$smarty               = new Smarty();
+$smarty = new Smarty();
 $smarty->setTemplateDir('templates');
 $smarty->setCompileDir('server_files/smarty/templates_c');
 $smarty->setCacheDir('server_files/smarty/cache');
@@ -128,7 +128,6 @@ $cache_id = $_SESSION['website_key'].'|'.$webpage_key.'|'.($logged_in ? 'in' : '
 
 $template = $theme.'/webpage_blocks.'.$theme.'.'.$website_type.$template_suffix.'.tpl';
 
-
 if (!(isset($is_unsubscribe) or isset($is_reset))) {
 
 
@@ -142,7 +141,6 @@ if (!(isset($is_unsubscribe) or isset($is_reset))) {
 
 if (!$smarty->isCached($template, $cache_id) or isset($is_unsubscribe) or isset($is_reset)) {
 
-
     include_once 'utils/public_object_functions.php';
 
     include_once 'utils/natural_language.php';
@@ -150,7 +148,11 @@ if (!$smarty->isCached($template, $cache_id) or isset($is_unsubscribe) or isset(
 
     $webpage = get_object('Webpage', $webpage_key);
     $website = get_object('Website', $webpage->get('Webpage Website Key'));
-    $theme   = $website->get('Website Theme');
+
+    $website_settings = $website->settings;
+
+
+    $theme = $website->get('Website Theme');
 
     $store = get_object('Store', $website->get('Website Store Key'));
 
@@ -178,6 +180,8 @@ if (!$smarty->isCached($template, $cache_id) or isset($is_unsubscribe) or isset(
     $smarty->assign('store', $store);
     $smarty->assign('footer_data', $website->get('Footer Data'));
     $smarty->assign('header_data', $website->get('Header Data'));
+
+
     $smarty->assign('logged_in', $logged_in);
 
 
@@ -207,7 +211,10 @@ if (!$smarty->isCached($template, $cache_id) or isset($is_unsubscribe) or isset(
 
     if ($webpage->get('Webpage Code') == 'register.sys') {
         require_once 'utils/get_addressing.php';
+        //print_r( $website->settings);
+
         list($address_format, $address_labels, $used_fields, $hidden_fields, $required_fields, $no_required_fields) = get_address_form_data($store->get('Store Home Country Code 2 Alpha'), $website->get('Website Locale'));
+        //print_r( $website->settings);
 
         require_once 'utils/get_countries.php';
         $countries = get_countries($website->get('Website Locale'));
@@ -230,6 +237,7 @@ if (!$smarty->isCached($template, $cache_id) or isset($is_unsubscribe) or isset(
         $smarty->assign('countries', $countries);
         $smarty->assign('selected_country', $store->get('Store Home Country Code 2 Alpha'));
 
+
     }
 
 
@@ -238,7 +246,7 @@ if (!$smarty->isCached($template, $cache_id) or isset($is_unsubscribe) or isset(
         if (!empty($_REQUEST['invoice_pdf'])) {
             $smarty->assign('redirect_after_login', '/invoice.pdf.php?id='.$_REQUEST['invoice_pdf']);
 
-        }elseif (!empty($_REQUEST['order'])) {
+        } elseif (!empty($_REQUEST['order'])) {
             $smarty->assign('redirect_after_login', '/profile.sys?order='.$_REQUEST['order']);
 
         }
@@ -259,17 +267,15 @@ if (!$smarty->isCached($template, $cache_id) or isset($is_unsubscribe) or isset(
 
     }
 
+
     $smarty->assign('webpage', $webpage);
     $smarty->assign('content', $webpage->get('Content Data'));
-    $smarty->assign('settings', $website->settings);
+    $smarty->assign('settings', $website_settings);
 
-
-   // print_r($website->settings);
 
     //print $template;
 
 } else {
-
 }
 
 
