@@ -92,6 +92,12 @@ else {
 
         include_once 'conf/webpage_blocks.php';
         $blocks = get_webpage_blocks();
+
+
+
+        if(!$state['store']->get('Reviews Settings')){
+            unset($blocks['reviews']);
+        }
         $smarty->assign('blocks', $blocks);
 
         $smarty->assign('control_template', $theme.'/control.webpage_blocks.'.$theme.'.tpl');

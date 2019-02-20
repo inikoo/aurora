@@ -51,6 +51,8 @@
     {assign "with_telephone" false}
     {assign "with_product_order_input" false}
     {assign "with_order" false}
+    {assign "with_reviews" false}
+
 
     {foreach from=$content.blocks item=$block }
         {if $block.show}
@@ -107,6 +109,8 @@
                 <script src="js/tablet.min.js"></script>
                 <script src="js/mobile.forms.min.js"></script>
                 <script src="js/sweetalert.min.js"></script>
+            {elseif $block.type=='reviews'}
+                {assign "with_reviews" 1}
             {else}
                 {if $block.type=='search'   }{assign "with_search" 1}{/if}
                 {if $block.type=='iframe'   }{assign "with_iframe" 1}{/if}
@@ -134,6 +138,10 @@
     {/if}
 
 
+    {if $with_reviews==1}
+        <script src="https://widget.reviews.io/rich-snippet-reviews-widgets/dist.js"></script>
+
+    {/if}
     {if $with_basket==1}
         <script src="https://www.paypalobjects.com/api/checkout.min.js" async></script>
     {/if}

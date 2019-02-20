@@ -220,8 +220,44 @@ function webpage_block($data, $db, $user, $smarty) {
         $smarty->assign('template', 't1');
 
        // $block['text_blocks'][0]['text'] = preg_replace('/block_block_key_t1_editor/', 'block_'.$block_id.'_t1_editor', $block['text_blocks'][0]['text']);
-    }elseif ($data['code'] == 'map') {
+    }elseif ($data['code'] == 'map' ) {
         $smarty->assign('store', get_object('store',$data['store_key']));
+
+    }elseif ( $data['code'] == 'reviews' ) {
+        $store=get_object('store',$data['store_key']);
+
+        $reviews_data=$store->get('Reviews Settings');
+
+
+        if(!$reviews_data){
+            $review_widget='';
+        }else{
+            if($reviews_data['provider']=='reviews.io'){
+
+                $review_widget="
+                 <div id=\"carousel-inline-widget-810\" style=\"width:100%;margin:0 auto;\"></div>
+            <script>
+                richSnippetReviewsWidgets('carousel-inline-widget-810', {
+                    store:         '".$reviews_data['data']['store']."',
+                    widgetName:    'carousel-inline',
+                    primaryClr:    '#f47e27',
+                    neutralClr:    '#f4f4f4',
+                    reviewTextClr: '#2f2f2f',
+                    ratingTextClr: '#2f2f2f',
+                    layout:        'fullWidth',
+                    numReviews:    21
+                });
+            </script>
+                
+                ";
+
+            }
+
+
+        }
+
+        $block['html']=$review_widget;
+
 
     }
 
@@ -236,7 +272,7 @@ function webpage_block($data, $db, $user, $smarty) {
     }
 
     $smarty->assign('key', $block_id);
-//print_r($block);
+
 
     $smarty->assign('data', $block);
     $smarty->assign('block', $block);

@@ -71,6 +71,7 @@
     {assign "with_thanks" false}
     {assign "with_gallery" false}
     {assign "with_telephone" false}
+    {assign "with_reviews" false}
     {assign "with_product_order_input" false}
     {assign "with_reset_password" false}
 
@@ -103,6 +104,8 @@
             {else}
                 {assign "with_favourites" 1}
             {/if}
+        {elseif $block.type=='reviews'}
+            {assign "with_reviews" 1}
         {elseif $block.type=='thanks'}
             {if !$logged_in}
                 {assign "with_not_found" 1}
@@ -161,7 +164,10 @@
 
 
 
+    {if $with_reviews==1}
+        <script src="https://widget.reviews.io/rich-snippet-reviews-widgets/dist.js"></script>
 
+    {/if}
 
     {if $with_forms==1}
         <link rel="stylesheet" href="css/forms.min.css?v2.0" type="text/css"/>

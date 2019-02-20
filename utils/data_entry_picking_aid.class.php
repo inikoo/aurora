@@ -219,7 +219,7 @@ class data_entry_picking_aid {
             print_r($error_info = $this->db->errorInfo());
             exit();
         }
-
+        
 
         $missing_itf_keys = $itf_keys;
         $extra_itf_keys   = array();

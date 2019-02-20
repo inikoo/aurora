@@ -53,6 +53,8 @@
     {assign "with_gallery" false}
     {assign "with_telephone" false}
     {assign "with_product_order_input" false}
+    {assign "with_reviews" false}
+
 
 
 
@@ -122,6 +124,8 @@
                 <script src="js/tablet.min.js"></script>
                 <script src="js/mobile.forms.min.js"></script>
                 <script src="js/sweetalert.min.js"></script>
+            {elseif $block.type=='reviews'}
+                {assign "with_reviews" 1}
             {else}
                 {if $block.type=='search'   }{assign "with_search" 1}{/if}
                 {if $block.type=='iframe'   }{assign "with_iframe" 1}{/if}
@@ -135,6 +139,13 @@
             {/if}
         {/if}
     {/foreach}
+
+
+
+    {if $with_reviews==1}
+        <script src="https://widget.reviews.io/rich-snippet-reviews-widgets/dist.js"></script>
+
+    {/if}
 
     {if $with_forms==1}
         <link rel="stylesheet" href="css/forms.min.css?v2.0" type="text/css"/>
