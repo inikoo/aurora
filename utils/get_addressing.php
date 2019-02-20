@@ -253,6 +253,8 @@ function get_address_form_data($country_code, $locale = 'en_GB') {
     $address_labels['dependentLocality']['label']  = capitalize($address_labels['dependentLocality']['label']);
     $address_labels['postalCode']['label']         = capitalize($address_labels['postalCode']['label']);
 
+    setlocale(LC_NUMERIC, 'C');
+
     return array(
         $address_format,
         $address_labels,
