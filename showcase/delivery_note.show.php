@@ -68,9 +68,14 @@ function get_delivery_note_showcase($data) {
     $smarty->assign('order', $order);
     $smarty->assign('store', $store);
 
-
-
+if($delivery_note->get('Delivery Note Type')=='Order'){
     return $smarty->fetch('showcase/delivery_note.tpl');
+
+}else{
+    return $smarty->fetch('showcase/replacement.tpl');
+
+}
+
 
 
 }

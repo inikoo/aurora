@@ -1695,9 +1695,17 @@ class DeliveryNote extends DB_Table {
                 break;
             case 'Dispatched':
 
-                if ($this->get('State Index') != 90) {
-                    return;
-                }
+                 if ($this->data['Delivery Note Type'] == 'Order') {
+                     if ($this->get('State Index') != 90) {
+                         return;
+                     }
+                 }else{
+                     if (!($this->get('State Index') == 80 or $this->get('State Index') == 90)) {
+                         return;
+                     }
+                 }
+
+
 
 
                 $this->update_field('Delivery Note Date Dispatched', $date, 'no_history');

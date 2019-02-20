@@ -228,21 +228,6 @@
             <div id="forward_operations" class="{if $store->get('Store Version')<2}hide{/if}">
 
 
-                <div id="fast_track_packing_operations" class="order_operation {if $delivery_note->get('State Index')!=20    }hide{/if}">
-                    <div class="square_button right  " title="{t}Fast track packing{/t}">
-                        <i id="show_fast_track_packing_button" class="fa fa-bolt  fa-fw  very_discreet " aria-hidden="true" onclick="show_temporal_message()"></i>
-
-                    </div>
-                </div>
-
-                <div id="start_picking_operations" class="order_operation {if $delivery_note->get('State Index')!=10    }hide{/if}">
-                    <div class="square_button right  " title="{t}Start picking{/t}">
-                        <i id="start_picking_save_buttons" class="far fa-hand-holding-box  button   fa-fw  very_discreet fa-flip-vertical"
-                           data-data='{  "field": "Delivery Note State","value": "Picking","dialog_name":"start_picking"}' aria-hidden="true" onclick="show_temporal_message()"></i>
-
-                    </div>
-                </div>
-
 
                 <div id="packed_done_operations" class="order_operation {if $delivery_note->get('State Index')!=70    }hide{/if}">
                     <div class="square_button right  " title="{t}Close boxes{/t}">
