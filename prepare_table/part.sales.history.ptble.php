@@ -24,6 +24,7 @@ switch ($parameters['parent']) {
 
 $where .= " and `Inventory Transaction Type`='Sale' ";
 
+
 if ($parameters['frequency'] == 'annually') {
     $group_by          = ' group by Year(`Date`) ';
     $sql_totals_fields = 'Year(`Date`)';
@@ -36,6 +37,12 @@ if ($parameters['frequency'] == 'annually') {
 } elseif ($parameters['frequency'] == 'daily') {
     $group_by          = ' group by Date(`Date`) ';
     $sql_totals_fields = '`Date`';
+}elseif ($parameters['frequency'] == 'quarterly') {
+
+    $group_by          = ' group by YEAR(`Date`), QUARTER(`Date`)';
+    $sql_totals_fields = 'concat(Year(`Date`),Quarter(`Date`))';
+
+
 }
 
 
