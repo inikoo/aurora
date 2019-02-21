@@ -227,10 +227,10 @@ function connect_websocket(){
             websocket_connected=true;
 
 
-            console.log('real_time.'+$('#account_name').data('account_code').toLowerCase())
+           // console.log('real_time.'+$('#account_name').data('account_code').toLowerCase())
 
             ws_connection.subscribe('real_time.'+$('#account_name').data('account_code').toLowerCase(), function(topic, data) {
-                console.log(state.object)
+               // console.log(state.object)
                 for (var i in data.objects) {
 
 
@@ -379,9 +379,52 @@ function change_browser_history_state(request) {
     if (old_state_request != request) {
 
 
+
         if ($('#_server_name').val() != 'au.bali') {
+
+
+            switch (state.module) {
+                case 'dashboard':
+                    break;
+                case 'customers':
+                case 'customers_server':
+                    ga('set', 'contentGroup1', 'Customers');
+                    break;
+                case 'orders':
+                case 'delivery_notes':
+                case 'orders_server':
+                case 'accounting':
+                case 'delivery_notes_server':
+                case 'accounting_server':
+                    ga('set', 'contentGroup2', 'Orders');
+                    break;
+                case 'inventory':
+                case 'suppliers':
+                case 'warehouses_server':
+                case 'warehouses':
+                case 'production_server':
+                case 'production':
+                    ga('set', 'contentGroup3', 'Inventory');
+                    break;
+                case 'products':
+                case 'products_server':
+                    ga('set', 'contentGroup4', 'Products');
+                    break;
+                default:
+                    ga('set', 'contentGroup5', 'Other');
+
+            }
+
+
+
+
+
             ga('set', 'page', request);
             ga('send', 'pageview');
+
+
+
+
         }
 
         //console.log(request)
@@ -449,7 +492,7 @@ function get_widget_details(element, widget, metadata) {
 
 function change_menu_view(module){
 
-    console.log(module)
+   // console.log(module)
 
     switch (module){
         case '_dashboard':
@@ -515,7 +558,7 @@ function change_menu_view(module){
         case 'account':
         case 'users':
         case 'agent_parts':
-            console.log(module)
+           // console.log(module)
             change_view(module)
             break;
         case 'agent_client_orders':

@@ -18,7 +18,7 @@
     {/if}
     <script src="/js/aurora_libs.min.js?v190205v3"></script>
 
-    <script src="/js/aurora.min.js?v190201v4"></script>
+    <script src="/js/aurora.min.js?v190221v1"></script>
 
 
 
