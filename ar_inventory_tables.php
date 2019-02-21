@@ -1913,7 +1913,13 @@ function sales_history($_data, $db, $user, $account) {
 
 
     $sql = sprintf(
-        "select $fields from $table $where $wheref and %s>=%s and  %s<=%s %s order by $date_field    ", $date_field, prepare_mysql($from_date), $date_field, prepare_mysql($to_date), " $group_by "
+        "select $fields from $table $where $wheref and %s>=%s and  %s<=%s %s order by $date_field    ",
+
+        $date_field,
+        prepare_mysql($from_date),
+        $date_field,
+        prepare_mysql($to_date),
+         $group_by
     );
 
 
