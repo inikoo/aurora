@@ -684,7 +684,7 @@ class Asset extends DB_Table {
                                     )
                                 ).' ('.$data['units'].')';
                             $dimensions .= '<span class="discreet volume">, '.volume($data['vol']).'</span>';
-                            if ($this->data[$this->table_name." $tag Weight"] > 0) {
+                            if ($this->data[$this->table_name." $tag Weight"] > 0 and  $data['vol']>0) {
 
                                 $dimensions .= '<span class="discreet density">, '.number(
                                         $this->data[$this->table_name." $tag Weight"] / $data['vol'], 3
@@ -716,7 +716,7 @@ class Asset extends DB_Table {
                                     )
                                 ).' ('.$data['units'].')';
                             $dimensions .= '<span class="discreet volume">, '.volume($data['vol']).'</span>';
-                            if ($this->data[$this->table_name." $tag Weight"] > 0) {
+                            if ($this->data[$this->table_name." $tag Weight"] > 0 and $data['vol']>0) {
                                 $dimensions .= '<span class="discreet density">, '.number(
                                         $this->data[$this->table_name." $tag Weight"] / $data['vol']
                                     ).'Kg/L</span>';
@@ -746,7 +746,7 @@ class Asset extends DB_Table {
                             $dimensions .= ', <span class="discreet">'.volume(
                                     $data['vol']
                                 ).'</span>';
-                            if ($this->data[$this->table_name." $tag Weight"] > 0) {
+                            if ($this->data[$this->table_name." $tag Weight"] > 0 and $data['vol']>0) {
                                 $dimensions .= '<span class="discreet">, '.number(
                                         $this->data[$this->table_name." $tag Weight"] / $data['vol']
                                     ).'Kg/L</span>';
