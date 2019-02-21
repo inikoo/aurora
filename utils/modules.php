@@ -4258,6 +4258,7 @@ $modules = array(
         )
     ),
 
+/*
 
     'marketingx'        => array(
         'section'     => 'marketing',
@@ -4403,33 +4404,7 @@ $modules = array(
 
             ),
 
-            /*
-			,
-			'enewsletters'=>array('type'=>'navigation', 'label'=>_('eNewsletters'), 'title'=>_('eNewsletters'), 'icon'=>'newspaper', 'reference'=>'marketing/%d/enewsletters',
-				'tabs'=>array(
-					'enewsletters'=>array()
-				)
-			),
-			'mailshots'=>array('type'=>'navigation', 'label'=>_('Mailshots'), 'title'=>_('Mailshots'), 'icon'=>'at', 'reference'=>'marketing/%d/mailshots',
-				'tabs'=>array(
-					'mailshots'=>array()
-				)),
-			'marketing_post'=>array('type'=>'navigation', 'label'=>_('Marketing Post'), 'title'=>_('Marketing Post'), 'icon'=>'envelope', 'reference'=>'marketing/%d/marketing_post',
-				'tabs'=>array(
-					'marketing_post'=>array()
-				)
-			),
-			'marketing_media'=>array('type'=>'navigation', 'label'=>_('Marketing Media'), 'title'=>_('Marketing Media'), 'icon'=>'google', 'reference'=>'marketing/%d/marketing_media',
-				'tabs'=>array(
-					'marketing_media'=>array()
-				)
-			),
-			'ereminders'=>array('type'=>'navigation', 'label'=>_('eReminders'), 'title'=>_('eReminders'), 'icon'=>'bell', 'reference'=>'marketing/%d/ereminders',
-				'tabs'=>array(
-					'ereminders'=>array()
-				)
-			),
-*/
+
 
 
         )
@@ -4455,7 +4430,7 @@ $modules = array(
 
     ),
 
-
+*/
     'production_server' => array(
         'sections' => array(
 
@@ -6535,6 +6510,9 @@ $modules = array(
 
         )
     ),
+
+
+
     'reports'    => array(
 
         'sections' => array(
@@ -7980,6 +7958,9 @@ $modules = array(
             )
         )
     ),
+
+
+
     'agent_profile'   => array(
         'sections' => array(
             'profile' => array(
