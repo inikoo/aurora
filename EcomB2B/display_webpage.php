@@ -165,8 +165,7 @@ if (!$smarty->isCached($template, $cache_id) or isset($is_unsubscribe) or isset(
 
 
     $account = get_object('Account', 1);
-    $smarty->assign('analytics_id', $account->get('Account Analytics ID'));
-
+    $smarty->assign('account_code', $account->get('Code'));
     $smarty->assign('client_tag_google_manager_id', $website->get('Website Google Tag Manager Code'));
     $smarty->assign('zendesk_chat_code', $website->get('Website Zendesk Chat Code'));
     $smarty->assign('tawk_chat_code', $website->get('Website Tawk Chat Code'));
