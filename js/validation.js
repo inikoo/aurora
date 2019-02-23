@@ -99,7 +99,7 @@ function validate_address(field) {
 function client_validation(type, required, value, field) {
 
 
-   // console.log(type + ' ' + value + ' ' + field+ ' required:' + required)
+    console.log(type + ' ' + value + ' ' + field+ ' required:' + required)
 
     var valid_state = {
         class: 'valid', type: ''

@@ -988,6 +988,27 @@ $elements_options = array(
         )
     ),
 
+    'fixed_deals' => array(
+        'status'  => array(
+            'label' => _('Status'),
+            'items' => array(
+                'Active'    => array(
+                    'label'    => _('Active'),
+                    'selected' => true
+                ),
+
+                'Suspended' => array(
+                    'label'    => _('Suspended'),
+                    'selected' => true
+                ),
+
+
+            ),
+
+        )
+
+    ),
+
     'deals' => array(
         'status'  => array(
             'label' => _('Status'),

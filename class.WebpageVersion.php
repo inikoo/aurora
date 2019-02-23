@@ -15,7 +15,7 @@ include_once 'class.DB_Table.php';
 class WebpageVersion extends DB_Table {
 
 
-    function WebpageVersion($a1, $a2 = false, $a3 = false) {
+    function __construct($a1, $a2 = false, $a3 = false) {
 
         global $db;
         $this->db = $db;

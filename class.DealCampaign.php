@@ -17,7 +17,7 @@ include_once 'class.DB_Table.php';
 class DealCampaign extends DB_Table {
 
 
-    function DealCampaign($a1, $a2 = false, $a3 = false, $_db = false) {
+    function __construct($a1, $a2 = false, $a3 = false, $_db = false) {
 
         if (!$_db) {
             global $db;
@@ -51,6 +51,10 @@ class DealCampaign extends DB_Table {
         if ($tipo == 'id') {
             $sql = sprintf(
                 "SELECT * FROM `Deal Campaign Dimension` WHERE `Deal Campaign Key`=%d", $tag
+            );
+        } elseif ($tipo == 'code_store') {
+            $sql = sprintf(
+                "SELECT * FROM `Deal Campaign Dimension` WHERE `Deal Campaign Code`=%s AND `Deal Campaign Store Key`=%d", prepare_mysql($tag), $tag2
             );
         } elseif ($tipo == 'name_store') {
             $sql = sprintf(
@@ -325,9 +329,10 @@ class DealCampaign extends DB_Table {
     function update_websites() {
 
         $webpage_keys = array();
-
+        $products = array();
         $families    = array();
         $departments = array();
+
         $sql         = sprintf(
             'select `Deal Component Trigger Key`,`Category Scope` from  `Deal Component Dimension`  left join `Category Dimension` on (`Deal Component Trigger Key`=`Category Key`)   where `Deal Component Campaign Key`=%d  and `Deal Component Trigger`="Category"  ',
             $this->id
@@ -421,6 +426,7 @@ class DealCampaign extends DB_Table {
 
         }
 
+
         $smarty_web               = new Smarty();
         $smarty_web->template_dir = 'EcomB2B/templates';
         $smarty_web->compile_dir  = 'EcomB2B/server_files/smarty/templates_c';
@@ -444,7 +450,7 @@ class DealCampaign extends DB_Table {
 
     }
 
-    function add_deal($data) {
+    function create_deal_old($data) {
 
 
         include_once 'class.Deal.php';

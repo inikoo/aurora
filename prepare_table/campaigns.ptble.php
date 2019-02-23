@@ -81,8 +81,8 @@ if ($order == 'name') {
 }
 $table = '`Deal Campaign Dimension` C ';
 $fields
-       = "`Deal Campaign Key`,`Deal Campaign Name`,`Deal Campaign Store Key`,`Deal Campaign Status`,`Deal Campaign Valid From`,`Deal Campaign Valid To`,
-`Deal Campaign Total Acc Used Orders`,`Deal Campaign Total Acc Used Customers`,`Deal Campaign Status`,`Deal Campaign Number Current Deals`";
+       = "`Deal Campaign Key`,`Deal Campaign Code`,`Deal Campaign Name`,`Deal Campaign Store Key`,`Deal Campaign Status`,`Deal Campaign Valid From`,`Deal Campaign Valid To`,
+`Deal Campaign Total Acc Used Orders`,`Deal Campaign Total Acc Used Customers`,`Deal Campaign Status`,`Deal Campaign Number Current Deals`,`Deal Campaign Icon`";
 
 
 $sql_totals = "select count(*) as num from $table $where ";

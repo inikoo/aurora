@@ -19,10 +19,20 @@ function get_new_deal_navigation($data, $smarty, $user, $db) {
     $sections      = get_sections('products', $data['parent_key']);
 
 
-    $sections['campaigns']['selected'] = true;
+    $sections['offers']['selected'] = true;
 
     if ($data['parent'] == 'campaign') {
-        $title = sprintf(_('New offer for campaign %s'), '<span class="id">'.$data['_parent']->get('Name')).'</span>';
+
+        switch ($data['_parent']->get('Code')){
+            case 'VO':
+                $title = _('New voucher');
+
+                break;
+            default:
+                $title = sprintf(_('New offer for campaign %s'), '<span class="id">'.$data['_parent']->get('Name')).'</span>';
+
+        }
+
 
     } else {
         $title = _('New offer');
@@ -456,7 +466,7 @@ function get_campaign_navigation($data, $smarty, $user, $db) {
         switch ($data['parent']) {
             case 'store':
                 $tab      = 'campaigns';
-                $_section = 'marketing';
+                $_section = 'offers';
                 break;
 
         }
@@ -495,57 +505,18 @@ function get_campaign_navigation($data, $smarty, $user, $db) {
         $next_title = '';
         $prev_key   = 0;
         $next_key   = 0;
-        $sql        = trim($sql_totals." $wheref");
-
-        if ($result2 = $db->query($sql)) {
-            if ($row2 = $result2->fetch() and $row2['num'] > 1) {
 
 
-                $sql = sprintf(
-                    "select `Deal Campaign Name` object_name,C.`Deal Campaign Key` as object_key from $table   $where $wheref
+        $sql = sprintf(
+            "select `Deal Campaign Name` object_name,C.`Deal Campaign Key` as object_key from $table   $where $wheref
 	                and ($_order_field < %s OR ($_order_field = %s AND C.`Deal Campaign Key` < %d))  order by $_order_field desc , C.`Deal Campaign Key` desc limit 1",
 
-                    prepare_mysql($_order_field_value), prepare_mysql($_order_field_value), $object->id
-                );
-                if ($result = $db->query($sql)) {
-                    if ($row = $result->fetch()) {
-                        $prev_key   = $row['object_key'];
-                        $prev_title = _("Campaign").' '.$row['object_name'].' ('.$row['object_key'].')';
-
-                    }
-                } else {
-                    print_r($error_info = $db->errorInfo());
-                    exit;
-                }
-
-
-                $sql = sprintf(
-                    "select `Deal Campaign Name` object_name,C.`Deal Campaign Key` as object_key from $table   $where $wheref
-	                and ($_order_field  > %s OR ($_order_field  = %s AND C.`Deal Campaign Key` > %d))  order by $_order_field   , C.`Deal Campaign Key`  limit 1", prepare_mysql($_order_field_value),
-                    prepare_mysql($_order_field_value), $object->id
-                );
-
-                if ($result = $db->query($sql)) {
-                    if ($row = $result->fetch()) {
-                        $next_key   = $row['object_key'];
-                        $next_title = _("Campaign").' '.$row['object_name'].' ('.$row['object_key'].')';
-
-                    }
-                } else {
-                    print_r($error_info = $db->errorInfo());
-                    exit;
-                }
-
-
-                if ($order_direction == 'desc') {
-                    $_tmp1      = $prev_key;
-                    $_tmp2      = $prev_title;
-                    $prev_key   = $next_key;
-                    $prev_title = $next_title;
-                    $next_key   = $_tmp1;
-                    $next_title = $_tmp2;
-                }
-
+            prepare_mysql($_order_field_value), prepare_mysql($_order_field_value), $object->id
+        );
+        if ($result = $db->query($sql)) {
+            if ($row = $result->fetch()) {
+                $prev_key   = $row['object_key'];
+                $prev_title = _("Offer category").' '.$row['object_name'].' ('.$row['object_key'].')';
 
             }
         } else {
@@ -554,14 +525,43 @@ function get_campaign_navigation($data, $smarty, $user, $db) {
         }
 
 
+        $sql = sprintf(
+            "select `Deal Campaign Name` object_name,C.`Deal Campaign Key` as object_key from $table   $where $wheref
+	                and ($_order_field  > %s OR ($_order_field  = %s AND C.`Deal Campaign Key` > %d))  order by $_order_field   , C.`Deal Campaign Key`  limit 1", prepare_mysql($_order_field_value),
+            prepare_mysql($_order_field_value), $object->id
+        );
+
+        if ($result = $db->query($sql)) {
+            if ($row = $result->fetch()) {
+                $next_key   = $row['object_key'];
+                $next_title = _("Offer category").' '.$row['object_name'].' ('.$row['object_key'].')';
+
+            }
+        } else {
+            print_r($error_info = $db->errorInfo());
+            exit;
+        }
+
+
+        if ($order_direction == 'desc') {
+            $_tmp1      = $prev_key;
+            $_tmp2      = $prev_title;
+            $prev_key   = $next_key;
+            $prev_title = $next_title;
+            $next_key   = $_tmp1;
+            $next_title = $_tmp2;
+        }
+
+
         if ($data['parent'] == 'store') {
 
             $up_button = array(
                 'icon'      => 'arrow-up',
                 'title'     => _(
-                        "Campaigns"
+                        "Offer's categories"
                     ).' '.$data['store']->get('Code'),
-                'reference' => 'marketing/'.$data['store']->id
+                'reference' => 'offers/'.$data['store']->id,
+                'metadata'=>'{tab:\'campaigns\'}'
             );
 
             if ($prev_key) {
@@ -606,11 +606,6 @@ function get_campaign_navigation($data, $smarty, $user, $db) {
         $_section = 'marketing';
 
     }
-    //$right_buttons[]=array('icon'=>'edit', 'title'=>_('Edit customer'), 'url'=>'edit_customer.php?id='.$object->id);
-    //$right_buttons[]=array('icon'=>'sticky-note', 'title'=>_('History note'), 'id'=>'note');
-    //$right_buttons[]=array('icon'=>'paperclip', 'title'=>_('Attachement'), 'id'=>'attach');
-    //$right_buttons[]=array('icon'=>'shopping-cart', 'title'=>_('New order'), 'id'=>'take_order');
-    //$right_buttons[]=array('icon'=>'sticky-note', 'title'=>_('Sticky note'), 'id'=>'sticky_note_button', 'class'=> ($object->get('Sticky Note')==''?'':'hide'));
 
     $sections = get_sections('products', $data['store']->id);
 
@@ -621,7 +616,7 @@ function get_campaign_navigation($data, $smarty, $user, $db) {
     }
 
 
-    $title = _('Campaign').' <span class="id Deal_Campaign_Name">'.$object->get('Name').'</span>';
+    $title ='<span class="id Deal_Campaign_Name" title="'. _('Offer category').'">'.$object->get('Name').'</span> <span class="padding_left_5">'.$object->get('Icon').'</span>';
 
 
     $_content = array(

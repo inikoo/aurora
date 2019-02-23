@@ -130,11 +130,15 @@ switch ($tab) {
         break;
     case 'deals':
         $data = prepare_values(
-            $_REQUEST, array(
-                         'parameters' => array('type' => 'json array')
-                     )
+            $_REQUEST, array('parameters' => array('type' => 'json array'))
         );
         get_deals_element_numbers($db, $data['parameters'], $user);
+        break;
+    case 'campaign_bulk_deals':
+        $data = prepare_values(
+            $_REQUEST, array('parameters' => array('type' => 'json array'))
+        );
+        get_fixed_deals_element_numbers($db, $data['parameters'], $user);
         break;
     case 'inventory.parts':
     case 'category.parts':
@@ -612,6 +616,68 @@ function get_deals_element_numbers($db, $data, $user) {
         $elements_numbers['trigger'][preg_replace('/\s/', '_', $row['element'])] = number($row['number']);
 
     }
+
+
+    $response = array(
+        'state'            => 200,
+        'elements_numbers' => $elements_numbers
+    );
+    echo json_encode($response);
+
+
+}
+
+
+function get_fixed_deals_element_numbers($db, $data, $user) {
+
+
+
+    $elements_numbers = array(
+        'status'  => array(
+            'Active'    => 0,
+
+            'Suspended' => 0,
+        ),
+
+
+    );
+
+
+    switch ($data['parent']) {
+        case 'store':
+            $where = sprintf(
+                ' where `Deal Store Key`=%d and D.`Deal Campaign Key` is NULL ', $data['parent_key']
+            );
+            break;
+        case 'campaign':
+            $where = sprintf(
+                ' where `Deal Campaign Key`=%d  ', $data['parent_key']
+            );
+            break;
+        default:
+            $response = array(
+                'state' => 405,
+                'resp'  => 'customer parent not found '.$data['parent']
+            );
+            echo json_encode($response);
+
+            return;
+    }
+
+
+    $sql = sprintf(
+        "select count(*) as number,`Deal Status` as element from `Deal Dimension` D $where  group by `Deal Status` "
+    );
+    foreach ($db->query($sql) as $row) {
+
+        if($row['element']!='Active'){
+            $row['element']='Suspended';
+        }
+
+        $elements_numbers['status'][$row['element']] +=$row['number'];
+
+    }
+
 
 
     $response = array(
