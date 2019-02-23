@@ -76,7 +76,6 @@ if (!$is_cached) {
     include_once 'class.Public_Order.php';
 
     $account = new Public_Account($db);
-    $smarty->assign('analytics_id', $account->get('Account Analytics ID'));
 
 
     require_once 'external_libs/mobile_detect/Mobile_Detect.php';
