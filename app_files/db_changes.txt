@@ -976,6 +976,8 @@ ALTER TABLE `Email Campaign Dimension` ADD `Email Campaign Selecting Blueprints`
 
 ALTER TABLE `Deal Campaign Dimension` ADD `Deal Campaign Code` VARCHAR(16) NULL DEFAULT NULL AFTER `Deal Campaign Key`;
 ALTER TABLE `Deal Campaign Dimension` ADD UNIQUE (`Deal Campaign Code`, `Deal Campaign Store Key`);
+---
+ALTER TABLE `Deal Dimension` CHANGE `Deal Trigger Key` `Deal Trigger Key` MEDIUMINT(9) NULL DEFAULT '0';
 
 
 ======= fer migration ordering in dw and costa

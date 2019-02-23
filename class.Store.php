@@ -1330,6 +1330,7 @@ class Store extends DB_Table {
 
     }
 
+    /*
     function create_deal($data, $component_data) {
 
 
@@ -1487,7 +1488,7 @@ class Store extends DB_Table {
         }
 
     }
-
+*/
     function create_customers_list($data) {
 
         $this->new_list = false;

@@ -14,7 +14,7 @@ include_once 'class.DB_Table.php';
 class Voucher extends DB_Table {
 
 
-    function Voucher($a1, $a2 = false, $a3 = false) {
+    function __construct($a1, $a2 = false, $a3 = false) {
 
         $this->table_name    = 'Voucher';
         $this->ignore_fields = array('Voucher Key');

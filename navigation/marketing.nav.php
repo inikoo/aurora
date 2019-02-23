@@ -644,7 +644,7 @@ function get_campaign_navigation($data, $smarty, $user, $db) {
 function get_deal_navigation($data, $smarty, $user, $db) {
 
 
-    $_section = 'marketing';
+    $_section = 'offers';
 
     $object = $data['_object'];
 
@@ -662,11 +662,11 @@ function get_deal_navigation($data, $smarty, $user, $db) {
         switch ($data['parent']) {
             case 'store':
                 $tab      = 'deals';
-                $_section = 'marketing';
+                $_section = 'offers';
                 break;
             case 'campaign':
                 $tab      = 'deals';
-                $_section = 'marketing';
+                $_section = 'offers';
                 break;
             case 'category':
                 $tab      = 'category.deals';
@@ -948,7 +948,7 @@ function get_deal_navigation($data, $smarty, $user, $db) {
 
 
     } else {
-        $_section = 'marketing';
+        $_section = 'offers';
 
     }
     //$right_buttons[]=array('icon'=>'edit', 'title'=>_('Edit customer'), 'url'=>'edit_customer.php?id='.$object->id);

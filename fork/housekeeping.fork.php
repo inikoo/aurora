@@ -189,6 +189,7 @@ function fork_housekeeping($job) {
 
 
             $deal = get_object('Deal', $data['deal_key']);
+            $campaign = get_object('Campaign', $deal->get('Deal Campaign Key'));
 
 
             if ($deal->get('Deal Status') == 'Active' and !$deal->get('Deal Voucher Key')) {
@@ -235,6 +236,9 @@ function fork_housekeeping($job) {
                 }
 
             }
+
+
+            $campaign->update_number_of_deals();
 
 
             break;
