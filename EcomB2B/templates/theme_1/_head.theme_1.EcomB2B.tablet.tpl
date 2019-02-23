@@ -32,13 +32,18 @@
                 (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
                 m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
             })(window,document,'script','https://www.google-analytics.com/analytics.js','ga');
-
+            {/literal}
             ga('create', 'UA-100778677-1', 'auto', 'auTracker');
             ga('auTracker.send', 'pageview');
+            {if  !empty($account_code)}
+            ga('auTracker.set', 'contentGroup1', '{$account_code}');
+            {/if}
+            ga('auTracker.set', 'contentGroup2', '{$smarty.server.SERVER_NAME}');
 
         </script>
-    {/literal}
+
     {/if}
+
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
     <meta name="viewport" content="user-scalable=no, initial-scale=1.0, maximum-scale=1.0" />
     <meta name="apple-mobile-web-app-capable" content="yes" />
