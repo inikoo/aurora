@@ -10,8 +10,8 @@
 
 */
 
-$_handle = fopen("sk.csv", "r");
-$handle  = fopen("sk.csv", "r");
+//$_handle = fopen("sk.csv", "r");
+//$handle  = fopen("sk.csv", "r");
 
 chdir('../');
 require_once 'vendor/autoload.php';
