@@ -234,8 +234,9 @@ function toggle_voucher_auto_code(element){
 
         $('#Deal_Voucher_Auto_Code_field').addClass('hide')
         $('#Deal_Voucher_Code_field').removeClass('hide')
-        //$('#Deal_Voucher_Code').addClass('hide')
+        $('#Deal_Voucher_Code').removeClass('hide')
 
+        update_field({field:'Deal_Voucher_Code',render:true,required:true})
 
     }
 

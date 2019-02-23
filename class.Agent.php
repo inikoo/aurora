@@ -17,7 +17,7 @@ class Agent extends SubjectSupplier {
     var $new = false;
     public $locale = 'en_GB';
 
-    function Agent($arg1 = false, $arg2 = false, $arg3 = false,$_db = false) {
+    function __construct($arg1 = false, $arg2 = false, $arg3 = false,$_db = false) {
 
 
         if (!$_db) {

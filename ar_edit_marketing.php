@@ -271,7 +271,7 @@ function add_target_to_campaign($account, $db, $user, $editor, $data, $smarty) {
         );
 
 
-        $deal = $campaign->add_deal($deal_data);
+        $deal = $campaign->create_deal($deal_data);
 
 
         $component_data = array(

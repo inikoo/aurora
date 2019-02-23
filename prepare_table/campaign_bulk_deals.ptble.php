@@ -25,6 +25,51 @@ if ($parameters['f_field'] == 'name' and $f_value != '') {
     );
 }
 
+
+
+if (isset($parameters['elements_type'])) {
+    switch ($parameters['elements_type']) {
+        case 'status':
+
+            $_elements      = '';
+            $count_elements = 0;
+            foreach (
+                $parameters['elements'][$parameters['elements_type']]['items'] as $_key => $_value
+            ) {
+                if ($_value['selected']) {
+                    $count_elements++;
+
+                    if($_key=='Suspended'){
+                        $_elements="'Suspended','Waiting','Finish'";
+
+                    }else{
+                        $_elements .= ",'".addslashes($_key)."'";
+
+                    }
+
+
+
+                }
+            }
+
+            $_elements = preg_replace('/^\,/', '', $_elements);
+            if ($_elements == '') {
+                $where .= ' and false';
+            } elseif ($count_elements < 2) {
+                $where .= ' and `Deal Status` in ('.$_elements.')';
+
+
+            }
+
+            break;
+
+
+    }
+}
+
+
+
+
 $_order = $order;
 $_dir   = $order_direction;
 

@@ -18,8 +18,12 @@
     {/if}
     <script src="/js/aurora_libs.min.js?v190205v3"></script>
 
-    <script src="/js/aurora.min.js?v190221v1"></script>
+    <script src="/js/aurora.min.js?v190222"></script>
 
+    <script src="/js/edit.js"></script>
+    <script src="/js/validation.js"></script>
+
+    <script src="/js/new.js"></script>
 
 
 
@@ -101,7 +105,7 @@
                     {$user->get('User Alias')}
                 </div>
             </div>
-            <div id="account_name" class="link Account_Name" data-account_code="{$account->get('Account Code')}" onclick="change_view('account')">{$account->get('Account Name')}</div>
+            <div id="account_name" class="link Account_Name" data-user_handle="{$user->get('Handle')}" data-account_code="{$account->get('Account Code')}" onclick="change_view('account')">{$account->get('Account Name')}</div>
 
             <div id="aurora_logo_small_screen">
                 <img src="/art/aurora_log_v2_orange_small.png"/>

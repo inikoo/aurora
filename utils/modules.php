@@ -296,18 +296,18 @@ $modules = array(
     'dashboard'        => array(
 
         'section'     => 'dashboard',
+
         'parent'      => 'none',
         'parent_type' => 'none',
         'sections'    => array(
             'dashboard' => array(
                 'type'  => 'widgets',
                 'label' => _('Home'),
+                'title'       => _('Dashboard'),
                 'icon'  => 'home',
                 'tabs'  => array(
                     'dashboard' => array(
-                        'label' => _(
-                            'Dashboard'
-                        )
+                        'label' => _('Dashboard')
                     ),
 
                 )
@@ -335,6 +335,7 @@ $modules = array(
             'prospects' => array(
                 'type'      => 'navigation',
                 'label'     => _('Prospects'),
+                'title'     => _('Prospects'),
                 'icon'      => 'user-friends',
                 'reference' => 'prospects/%d',
                 'tabs'      => array(
@@ -561,8 +562,6 @@ $modules = array(
                 )
 
             ),
-
-
 
 
             'list' => array(
@@ -1318,7 +1317,7 @@ $modules = array(
 
                 )
             ),
-            'mailshot' => array(
+            'mailshot'        => array(
                 'type'           => 'object',
                 'subtabs_parent' => array(
                     'mailshot.workshop.templates'              => 'mailshot.workshop',
@@ -1802,6 +1801,7 @@ $modules = array(
             ),
             'delivery_note' => array(
                 'type' => 'object',
+                'title'=>_('Delivery note'),
                 'tabs' => array(
 
 
@@ -1991,8 +1991,6 @@ $modules = array(
                 )
 
             ),
-
-
 
 
         )
@@ -2858,7 +2856,7 @@ $modules = array(
         */
 
 
-    'products'        => array(
+    'products'          => array(
         'section'  => 'products',
         'sections' => array(
             /*
@@ -2886,7 +2884,7 @@ $modules = array(
                     'store.current_shipping_zones' => 'store.shipping_zones',
                     'store.shipping_zones_schemas' => 'store.shipping_zones',
 
-                    'user_notifications' => 'store.notifications',
+                    'user_notifications'             => 'store.notifications',
                     'store.notifications_recipients' => 'store.notifications'
 
                 ),
@@ -2983,6 +2981,7 @@ $modules = array(
 
             'store.new' => array(
                 'type' => 'new_object',
+                'title'=>_('New store'),
                 'tabs' => array(
                     'store.new' => array(
                         'label' => _(
@@ -3007,7 +3006,7 @@ $modules = array(
             'products' => array(
                 'type'      => 'navigation',
                 'label'     => _('Products'),
-                'title'     => _("Products database"),
+                'title'     => _("Products"),
                 'icon'      => 'cube',
                 'reference' => 'products/%d',
                 'tabs'      => array(
@@ -3309,6 +3308,7 @@ $modules = array(
 
             'webpage.new' => array(
                 'type' => 'new_object',
+                'title'     => _("New website"),
                 'tabs' => array(
                     'webpage.new' => array(
                         'label' => _(
@@ -3409,6 +3409,7 @@ $modules = array(
 
             'deleted.webpage' => array(
                 'type' => 'object',
+                'title'=>_('Deleted web page'),
                 'tabs' => array(
 
 
@@ -3431,7 +3432,7 @@ $modules = array(
                 'reference' => 'offers/%d',
                 'tabs'      => array(
                     'campaigns' => array(
-                        'label' => _('Campaigns'),
+                        'label' => _("Offer's categories"),
                         'icon'  => 'tags',
                     ),
                     'deals'     => array(
@@ -3501,6 +3502,7 @@ $modules = array(
 
             'mailshot' => array(
                 'type'           => 'object',
+                'title'     => _("Mailshot"),
                 'subtabs_parent' => array(
                     'mailshot.workshop.templates'              => 'mailshot.workshop',
                     'mailshot.workshop.previous_mailshots'     => 'mailshot.workshop',
@@ -3591,9 +3593,10 @@ $modules = array(
             ),
 
 
-
             'email_tracking' => array(
                 'type' => 'object',
+                'title'     => _("Email tracking"),
+
                 'tabs' => array(
                     'email_tracking.email' => array(
                         'label' => _('Email'),
@@ -3605,26 +3608,69 @@ $modules = array(
                         'icon'  => 'stopwatch'
                     ),
 
+                )
+            ),
+
+            'vouchers'       => array(
+                'type' => 'object',
+                'title'     => _("Vouchers"),
+
+                'tabs' => array(
+
+
+                    'campaign.deals'     => array(
+                        'label'         => _('Vouchers'),
+                        'icon'          => 'money-bill-wave',
+
+                    ),
+                    'campaign.orders'    => array(
+                        'label'         => _('Orders'),
+                        'icon'          => 'shopping-cart',
+                        'quantity_data' => array(
+                            'object' => '_object',
+                            'field'  => 'Used Orders'
+                        ),
+                    ),
+                    'campaign.customers' => array(
+                        'label'         => _('Customers'),
+                        'icon'          => 'users',
+                        'quantity_data' => array(
+                            'object' => '_object',
+                            'field'  => 'Used Customers'
+                        ),
+                    ),
+                    'campaign.history'   => array(
+                        'title'         => _('History, notes'),
+                        'label'         => '',
+                        'icon'          => 'road',
+                        'class'         => 'right icon_only',
+                        'quantity_data' => array(
+                            'object' => '_object',
+                            'field'  => 'Number History Records'
+                        ),
+                    ),
+                    'campaign.details' => array(
+                        'class'         => 'right icon_only',
+                        'label'         => '',
+                        'icon'  => 'sliders-h',
+                        'title' => _('Settings')
+                    ),
 
                 )
             ),
             'campaign'       => array(
                 'type' => 'object',
-
+                'title'     => _("Offer category"),
 
                 'tabs' => array(
-                    'campaign.details' => array(
-                        'label' => _('Data'),
-                        'icon'  => 'database',
-                        'title' => _('Details')
-                    ),
+
 
                     'campaign.deals'     => array(
                         'label'         => _('Offers'),
                         'icon'          => 'tags',
                         'quantity_data' => array(
                             'object' => '_object',
-                            'field'  => 'Deals Numbers'
+                            'field'  => 'Number Current Deals'
                         ),
                     ),
                     'campaign.orders'    => array(
@@ -3653,6 +3699,12 @@ $modules = array(
                             'field'  => 'Number History Records'
                         ),
                     ),
+                    'campaign.details' => array(
+                        'class'         => 'right icon_only',
+                        'label'         => '',
+                        'icon'  => 'sliders-h',
+                        'title' => _('Settings')
+                    ),
 
                 )
             ),
@@ -3660,7 +3712,7 @@ $modules = array(
 
             'campaign_order_recursion' => array(
                 'type' => 'object',
-
+                'title'     => _("Reorder incentive"),
 
                 'tabs' => array(
                     'campaign.details' => array(
@@ -3715,7 +3767,7 @@ $modules = array(
 
             'deal' => array(
                 'type' => 'object',
-
+                'title'     => _("Offer"),
 
                 'tabs' => array(
                     'deal.details' => array(
@@ -3780,6 +3832,7 @@ $modules = array(
 
             'deal.new' => array(
                 'type' => 'new_object',
+                'title'     => _("New offer"),
                 'tabs' => array(
                     'deal.new' => array(
                         'label' => _(
@@ -4187,7 +4240,7 @@ $modules = array(
 
         )
     ),
-    'products_server' => array(
+    'products_server'   => array(
 
         'parent'      => 'none',
         'parent_type' => 'none',
@@ -4258,179 +4311,179 @@ $modules = array(
         )
     ),
 
-/*
+    /*
 
-    'marketingx'        => array(
-        'section'     => 'marketing',
-        'parent'      => 'store',
-        'parent_type' => 'key',
-        'sections'    => array(
+        'marketingx'        => array(
+            'section'     => 'marketing',
+            'parent'      => 'store',
+            'parent_type' => 'key',
+            'sections'    => array(
 
-            'dashboard' => array(
-                'type'      => 'navigation',
-                'label'     => _('Dashboard'),
-                'title'     => _("Marketing dashboard"),
-                'icon'      => 'tachometer',
-                'reference' => 'marketing/%d',
-                'tabs'      => array(
-                    'marketing.dashboard' => array()
-                )
-            ),
-
-
-            'deals' => array(
-                'type'      => 'navigation',
-                'label'     => _('Offers'),
-                'icon'      => 'tag',
-                'reference' => 'deals/%d',
-                'tabs'      => array(
-
-                    'deals' => array(
-                        'label' => _('Offers')
-                    ),
-
-                )
+                'dashboard' => array(
+                    'type'      => 'navigation',
+                    'label'     => _('Dashboard'),
+                    'title'     => _("Marketing dashboard"),
+                    'icon'      => 'tachometer',
+                    'reference' => 'marketing/%d',
+                    'tabs'      => array(
+                        'marketing.dashboard' => array()
+                    )
+                ),
 
 
-            ),
+                'deals' => array(
+                    'type'      => 'navigation',
+                    'label'     => _('Offers'),
+                    'icon'      => 'tag',
+                    'reference' => 'deals/%d',
+                    'tabs'      => array(
 
-            'campaigns' => array(
-                'type'      => 'navigation',
-                'label'     => _('Campaigns'),
-                'icon'      => 'tags',
-                'reference' => 'campaigns/%d',
-                'tabs'      => array(
-                    'campaigns' => array(
-                        'label' => _('Campaigns')
+                        'deals' => array(
+                            'label' => _('Offers')
+                        ),
+
                     )
 
 
-                )
+                ),
+
+                'campaigns' => array(
+                    'type'      => 'navigation',
+                    'label'     => _('Campaigns'),
+                    'icon'      => 'tags',
+                    'reference' => 'campaigns/%d',
+                    'tabs'      => array(
+                        'campaigns' => array(
+                            'label' => _('Campaigns')
+                        )
 
 
-            ),
-
-
-            'campaign' => array(
-                'type' => 'object',
-
-
-                'tabs' => array(
-                    'campaign.details' => array(
-                        'label' => _('Data'),
-                        'icon'  => 'database',
-                        'title' => _('Details')
-                    ),
-
-                    'campaign.deals'     => array(
-                        'label' => _('Offers'),
-                        'icon'  => 'tags'
-                    ),
-                    'campaign.orders'    => array(
-                        'label' => _('Orders'),
-                        'icon'  => 'shopping-cart'
-                    ),
-                    'campaign.customers' => array(
-                        'label' => _('Customers'),
-                        'icon'  => 'users'
-                    ),
-                    'campaign.history'   => array(
-                        'label' => _(
-                            'History, notes'
-                        ),
-                        'icon'  => 'road',
-                        'class' => 'right icon_only'
-                    ),
-
-                )
-            ),
-            'deal'     => array(
-                'type' => 'object',
-
-
-                'tabs' => array(
-                    'campaign.details'    => array(
-                        'label' => _('Data'),
-                        'icon'  => 'database',
-                        'title' => _('Details')
-                    ),
-                    'campaign.history'    => array(
-                        'label' => _(
-                            'History, notes'
-                        ),
-                        'icon'  => 'sticky-note'
-                    ),
-                    'campaign.allowances' => array(
-                        'label' => _('Allowances'),
-                        'icon'  => ''
-                    ),
-                    'campaign.orders'     => array(
-                        'label' => _('Orders'),
-                        'icon'  => 'shopping-cart'
-                    ),
-                    'campaign.customers'  => array(
-                        'label' => _('Customers'),
-                        'icon'  => 'users'
                     )
 
-                )
-            ),
+
+                ),
 
 
-            'deal.new' => array(
-                'type' => 'new_object',
-                'tabs' => array(
-                    'deal.new' => array(
-                        'label' => _(
-                            'New offer'
+                'campaign' => array(
+                    'type' => 'object',
+
+
+                    'tabs' => array(
+                        'campaign.details' => array(
+                            'label' => _('Data'),
+                            'icon'  => 'database',
+                            'title' => _('Details')
+                        ),
+
+                        'campaign.deals'     => array(
+                            'label' => _('Offers'),
+                            'icon'  => 'tags'
+                        ),
+                        'campaign.orders'    => array(
+                            'label' => _('Orders'),
+                            'icon'  => 'shopping-cart'
+                        ),
+                        'campaign.customers' => array(
+                            'label' => _('Customers'),
+                            'icon'  => 'users'
+                        ),
+                        'campaign.history'   => array(
+                            'label' => _(
+                                'History, notes'
+                            ),
+                            'icon'  => 'road',
+                            'class' => 'right icon_only'
+                        ),
+
+                    )
+                ),
+                'deal'     => array(
+                    'type' => 'object',
+
+
+                    'tabs' => array(
+                        'campaign.details'    => array(
+                            'label' => _('Data'),
+                            'icon'  => 'database',
+                            'title' => _('Details')
+                        ),
+                        'campaign.history'    => array(
+                            'label' => _(
+                                'History, notes'
+                            ),
+                            'icon'  => 'sticky-note'
+                        ),
+                        'campaign.allowances' => array(
+                            'label' => _('Allowances'),
+                            'icon'  => ''
+                        ),
+                        'campaign.orders'     => array(
+                            'label' => _('Orders'),
+                            'icon'  => 'shopping-cart'
+                        ),
+                        'campaign.customers'  => array(
+                            'label' => _('Customers'),
+                            'icon'  => 'users'
                         )
-                    ),
 
-                )
-
-            ),
+                    )
+                ),
 
 
-            'campaign.new' => array(
-                'type' => 'new_object',
-                'tabs' => array(
-                    'campaign.new' => array(
-                        'label' => _(
-                            'New campaign'
-                        )
-                    ),
+                'deal.new' => array(
+                    'type' => 'new_object',
+                    'tabs' => array(
+                        'deal.new' => array(
+                            'label' => _(
+                                'New offer'
+                            )
+                        ),
 
-                )
+                    )
 
-            ),
-
-
+                ),
 
 
-        )
-    ),
-    'marketingx_server' => array(
+                'campaign.new' => array(
+                    'type' => 'new_object',
+                    'tabs' => array(
+                        'campaign.new' => array(
+                            'label' => _(
+                                'New campaign'
+                            )
+                        ),
 
-        'parent'      => 'none',
-        'parent_type' => 'none',
-        'section'     => 'marketing',
-        'sections'    => array(
-            'marketing' => array(
-                'type'      => 'navigation',
-                'label'     => _('Marketing (All stores)'),
-                'title'     => _('Marketing (All stores)'),
-                'icon'      => '',
-                'reference' => 'marketing/all',
-                'tabs'      => array(
-                    'marketing_server' => array()
-                )
-            ),
+                    )
 
-        )
+                ),
 
-    ),
 
-*/
+
+
+            )
+        ),
+        'marketingx_server' => array(
+
+            'parent'      => 'none',
+            'parent_type' => 'none',
+            'section'     => 'marketing',
+            'sections'    => array(
+                'marketing' => array(
+                    'type'      => 'navigation',
+                    'label'     => _('Marketing (All stores)'),
+                    'title'     => _('Marketing (All stores)'),
+                    'icon'      => '',
+                    'reference' => 'marketing/all',
+                    'tabs'      => array(
+                        'marketing_server' => array()
+                    )
+                ),
+
+            )
+
+        ),
+
+    */
     'production_server' => array(
         'sections' => array(
 
@@ -5541,6 +5594,7 @@ $modules = array(
 
             'dashboard' => array(
                 'type'      => 'navigation',
+                'title'     => _('Inventory dashboard'),
                 'label'     => _('Dashboard'),
                 'icon'      => 'tachometer',
                 'reference' => 'inventory/dashboard',
@@ -5594,6 +5648,7 @@ $modules = array(
             ),
             'barcode'           => array(
                 'type' => 'object',
+                'title'=>_('Barcode'),
                 'tabs' => array(
                     'barcode.details' => array(
                         'label' => _('Data'),
@@ -5613,6 +5668,7 @@ $modules = array(
             ),
             'deleted_barcode'   => array(
                 'type' => 'object',
+                'title'=>_('Deleted barcode'),
                 'tabs' => array(
                     'barcode.history' => array(
                         'label' => _('History'),
@@ -5650,6 +5706,7 @@ $modules = array(
             ),
             'category'          => array(
                 'type'           => 'object',
+                'title'=>_('Category (Part)'),
                 'subtabs_parent' => array(
 
                     'category.part.sales.plot'     => 'category.part.sales',
@@ -5760,6 +5817,7 @@ $modules = array(
 
             'part' => array(
                 'type'           => 'object',
+                'title'=>_('Part'),
                 'subtabs_parent' => array(
                     'part.sales.overview'      => 'part.sales',
                     'part.sales.history'       => 'part.sales',
@@ -6512,8 +6570,7 @@ $modules = array(
     ),
 
 
-
-    'reports'    => array(
+    'reports' => array(
 
         'sections' => array(
             'reports' => array(
@@ -6826,7 +6883,7 @@ $modules = array(
 
         )
     ),
-    'hr'         => array(
+    'hr'      => array(
 
         'sections' => array(
             'employees' => array(
@@ -7317,7 +7374,7 @@ $modules = array(
 
         )
     ),
-    'profile'    => array(
+    'profile' => array(
 
 
         'sections' => array(
@@ -7628,7 +7685,7 @@ $modules = array(
 
     ),
 
-    'account'         => array(
+    'account' => array(
 
 
         'sections' => array(
@@ -7899,7 +7956,7 @@ $modules = array(
         )
 
     ),
-    'utils'           => array(
+    'utils'   => array(
         'sections' => array(
             'forbidden' => array(
                 'type'  => 'object',
@@ -7935,7 +7992,7 @@ $modules = array(
 
         )
     ),
-    'help'            => array(
+    'help'    => array(
         'sections' => array(
             'help' => array(
                 'type'  => 'object',
@@ -7958,7 +8015,6 @@ $modules = array(
             )
         )
     ),
-
 
 
     'agent_profile'   => array(

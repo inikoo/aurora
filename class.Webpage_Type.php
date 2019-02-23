@@ -13,7 +13,7 @@
 class Webpage_Type extends DB_Table {
 
 
-    function Webpage_Type($a1, $a2 = false, $a3 = false) {
+    function __construct($a1, $a2 = false, $a3 = false) {
 
         global $db;
         $this->db = $db;

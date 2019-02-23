@@ -189,7 +189,7 @@ $object_fields[] = array(
             'class'           => 'hide',
             'id'              => 'add_extra_term',
             'value'           => '',
-            'formatted_value' => '<span onClick="show_extra_term()" class="button "><i class="fa fa-plus fa-fw"></i> '._('Add term').'</span>',
+            'formatted_value' => '<span onClick="show_extra_term()" class="button "><i class="fa fa-plus fa-fw"></i> '._('Add minimum order').'</span>',
             'label'           => '',
             'invalid_msg'     => get_invalid_message('string'),
             'required'        => false,
@@ -219,13 +219,88 @@ $object_fields[] = array(
             'invalid_msg' => get_invalid_message('amount'),
             'required'    => false,
             'type'        => 'value'
-        )
+        ),
+
+
+        array(
+            'id'   => 'Deal_Voucher_Auto_Code',
+            'edit' => 'custom',
+
+            'class'    => 'hides',
+            'value'    => false,
+            'custom'   => '<span class="button value"  field_type="toggle" onclick="toggle_voucher_auto_code(this)"  field="Deal_Voucher_Auto_Code"  style="margin-right:40px"><i id="toggle_voucher_auto_code_icon" class="Deal_Voucher_Auto_Code_toggle fa fa-fw fa-toggle-on" aria-hidden="true"></i> <span class="discreet">'
+                ._('Automatically generated').'</span></span>',
+            'label'    => _('Voucher code'),
+            'required' => false,
+            'type'     => ''
+        ),
+        array(
+            'edit'  => ($edit ? 'string' : ''),
+            'id'    => 'Deal_Voucher_Code',
+            'class' => 'hides',
+
+            'value'             => '',
+            'label'             => ucfirst($object->get_field_label('Voucher code')).' <i onClick="set_voucher_code_as_auto()" class="fa fa-magic button padding_left_10" title="'._('Automatically generated voucher code').'"></i>',
+            'invalid_msg'       => get_invalid_message('string'),
+            'required'          => false,
+            'server_validation' => json_encode(array('tipo' => 'check_for_duplicates')),
+            'type'              => 'value'
+        ),
+
+
+
 
 
     ),
 
 
 );
+
+$object_fields[] = array(
+    'label'      => _('Offer'),
+    'show_title' => true,
+    'class'      => 'deal_type_title hide',
+    'fields'     => array(
+
+        array(
+            'id'       => 'Type',
+            'edit'     => 'custom',
+            'class'    => 'hidex',
+            'value'    => false,
+            'custom'   => '
+<div class="button_radio_options">
+<span id="Deal_Type_Percentage_Off_field" field_type="button_radio_options" field="Deal_Type_Percentage_Off" onclick="toggle_category_deal_type(this)" class="button value" style="border:1px solid #ccc;padding:5px;margin:4px">'._('Percentage off').'</span>
+<span id="Deal_Type_Buy_n_get_n_free_field" field_type="button_radio_options" field="Deal_Type_Buy_n_get_n_free" onclick="toggle_category_deal_type(this)" class="button value" style="border:1px solid #ccc;padding:5px;margin:4px">'.sprintf(
+                    _('Buy %s get %s free'), '<span>2</span>', 1
+                ).'</span>
+<span id="Deal_Type_Buy_n_pay_n_field" field_type="button_radio_options" field="Deal_Type_Buy_n_pay_n" onclick="toggle_category_deal_type(this)" class="button value" style="border:1px solid #ccc;padding:5px;margin:4px">'.sprintf(_("Buy %s cheapest %s free"), 3, 1).' ('._('Mix & match').')  </span>
+</div>
+',
+            'label'    => _('Choose offer'),
+            'required' => false,
+            'type'     => ''
+        ),
+
+        array(
+            'id'    => 'Percentage',
+            'class' => 'Deal_Type',
+            'edit'  => 'custom',
+            'class' => 'hidec',
+            'value' => '%',
+
+            'custom'   => '<input id="Percentage_Off_field" field_type="input_with_field" field="Percentage_Off" value="10" class="value valid" style="margin-left:5px;width:30px" /> %',
+            'label'    => '',
+            'required' => false,
+            'type'     => ''
+        ),
+
+
+
+    ),
+
+
+);
+
 
 
 ?>

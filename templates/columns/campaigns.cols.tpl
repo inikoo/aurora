@@ -6,70 +6,36 @@ editable: false,
 renderable: false,
 cell: "string",
 
-}, {
-name: "store_key",
-label: "",
-editable: false,
-renderable: false,
-cell: "string",
-sortType: "toggle",
-
 },
+
+
 {
-name: "status",
-label: "",
+name: "code",
 editable: false,
+
+label: "",
+sortable:false,
 sortType: "toggle",
 cell: Backgrid.HtmlCell.extend({
-className: "width_20"
-})
+className: "width_30 align_center"
 
+})
 },
+
 {
 name: "name",
+editable: false,
+
 label: "{t}Name{/t}",
 sortType: "toggle",
 cell: Backgrid.HtmlCell.extend({
-events: {
-"click": function() {
-change_view('campaigns/'+this.model.get("store_key")+'/' + this.model.get("id")  )
 
-
-}
-},
-className:"link"
 })
 },
 
 {
-name: "from",
-label: "{t}From{/t}",
-defaultOrder:1,
-editable: false,
-sortType: "toggle",
-{if $sort_key=='from'}direction: '{if $sort_order==1}descending{else}ascending{/if}',{/if}
-
-
-cell: Backgrid.HtmlCell.extend({ className: "aright"} ),
-headerCell: integerHeaderCell
-
-},
-{
-name: "to",
-label: "{t}To{/t}",
-defaultOrder:1,
-editable: false,
-sortType: "toggle",
-{if $sort_key=='to'}direction: '{if $sort_order==1}descending{else}ascending{/if}',{/if}
-
-
-cell: Backgrid.HtmlCell.extend({ className: "aright"} ),
-headerCell: integerHeaderCell
-
-},
-{
 name: "deals",
-label: "{t}Offers{/t}",
+label: "{t}Active offers{/t}",
 defaultOrder:1,
 editable: false,
 sortType: "toggle",

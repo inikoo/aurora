@@ -291,27 +291,17 @@
                     {elseif $edit=='hidden' }
                             <input id="{$field.id}" type="hidden" value="{$field.value}" has_been_valid="0" />
 
-                        {elseif $edit=='barcode'  }
-
-
-
-
-
-
-
-
-                    <input id="{$field.id}" class="input_field " value="{$field.value}" has_been_valid="0" {if isset($field.placeholder)}placeholder="{$field.placeholder}"{/if} />
-                    <span id="{$field.id}_next_barcode_msg" class="hide discreet" style="font-style:italic" >{t}Next available barcode will be assigned{/t}</span>
-                    <span id="{$field.id}_assign_available_barcode" class="fa-stack fa-lg button " available_barcodes="{$available_barcodes}" title="{t}Assign next available barcode{/t}" onClick="assign_available_barcode_to_new_object('{$field.id}')">
-              <i class="fa fa-barcode fa-stack-1x"></i>
-              <i class="fa fa-caret-right fa-inverse fa-stack-1x"></i>
-            </span>
-                    <i id="{$field.id}_input_barcode" class="fa fa-undo hide padding_left_10 button" aria-hidden="true" title="{t}Input barcode{/t}" onClick="input_barcode_to_new_object('{$field.id}')"></i>
-
-                    <span id="{$field.id}_msg" class="msg"></span>
-                    <span id="{$field.id}_info" class="hide"></span>
-
-            <script>
+                    {elseif $edit=='barcode'  }
+                        <input id="{$field.id}" class="input_field " value="{$field.value}" has_been_valid="0" {if isset($field.placeholder)}placeholder="{$field.placeholder}"{/if} />
+                        <span id="{$field.id}_next_barcode_msg" class="hide discreet" style="font-style:italic" >{t}Next available barcode will be assigned{/t}</span>
+                        <span id="{$field.id}_assign_available_barcode" class="fa-stack fa-lg button " available_barcodes="{$available_barcodes}" title="{t}Assign next available barcode{/t}" onClick="assign_available_barcode_to_new_object('{$field.id}')">
+                            <i class="fa fa-barcode fa-stack-1x"></i>
+                            <i class="fa fa-caret-right fa-inverse fa-stack-1x"></i>
+                         </span>
+                        <i id="{$field.id}_input_barcode" class="fa fa-undo hide padding_left_10 button" aria-hidden="true" title="{t}Input barcode{/t}" onClick="input_barcode_to_new_object('{$field.id}')"></i>
+                        <span id="{$field.id}_msg" class="msg"></span>
+                        <span id="{$field.id}_info" class="hide"></span>
+                    <script>
 
 
             function assign_available_barcode_to_new_object(field) {
@@ -647,83 +637,9 @@
         on_changed_value($(this).attr('id'), $(this).val())
     });
 
-     $(".value").each(function(index) {
-
-       // if($(this).hasClass('address_value')){
-       //     return;
-       // }
+    new_object_init();
 
 
-
-
-        var field = $(this).attr('field')
-
-        var value = $('#' + field).val()
-
-
-
-
-
-
-        var field_data = $('#' + field + '_container')
-
-
-if(field_data.length==0){
-            if(field=='Register_Date_From'){
-                  field_data = $('#Register_Date_container')
-            }else if(field=='Register_Date_To'){
-                  field_data = $('#Register_Date_container')
-            }
-}
-
-
-        var type = field_data.attr('field_type')
-
-
-
-        if(field_data.hasClass('address_value')){
-                var required = field_data.closest('tbody.address_fields').attr('_required')
-
-        }else{
-        var required = field_data.attr('_required')
-        }
-
-        var server_validation = field_data.attr('server_validation')
-        var parent = field_data.attr('parent')
-        var parent_key = field_data.attr('parent_key')
-        var _object = field_data.attr('object')
-        var key = field_data.attr('key')
-
-
-//console.log(field)
-//console.log(value)
-
-
-        var validation = validate_field(field, value, type, required, server_validation, parent, parent_key, _object, key)
-
-
-            if (validation.class == 'invalid' && value == '') {
-                validation.class = 'potentially_valid'
-            }
-            //console.log(field)
-           // console.log('#' + field + '_field')
-
-
-if(type!='date_interval'){
-
-             $('#' + field + '_field').removeClass('invalid potentially_valid valid').addClass(validation.class)
-
-}
-
-
-
-
-    });
-
-   var form_validation = get_form_validation_state()
-
-
-    process_form_validation(form_validation)
 
 
     $(".confirm_input_field").on("input propertychange", function(evt) {

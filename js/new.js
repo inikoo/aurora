@@ -3,6 +3,64 @@
  Copyright (c) 2015, Inikoo
  Version 3.0*/
 
+
+function new_object_init() {
+    $(".value").each(function(index) {
+
+        var field = $(this).attr('field')
+        var value = $('#' + field).val()
+        var field_data = $('#' + field + '_container')
+
+
+        if(field_data.length==0){
+            if(field=='Register_Date_From'){
+                field_data = $('#Register_Date_container')
+            }else if(field=='Register_Date_To'){
+                field_data = $('#Register_Date_container')
+            }
+        }
+
+
+        var type = field_data.attr('field_type')
+
+
+
+        if(field_data.hasClass('address_value')){
+            var required = field_data.closest('tbody.address_fields').attr('_required')
+        }else{
+            var required = field_data.attr('_required')
+        }
+
+        var server_validation = field_data.attr('server_validation')
+        var parent = field_data.attr('parent')
+        var parent_key = field_data.attr('parent_key')
+        var _object = field_data.attr('object')
+        var key = field_data.attr('key')
+
+
+
+        var validation = validate_field(field, value, type, required, server_validation, parent, parent_key, _object, key)
+
+
+        if (validation.class == 'invalid' && value == '') {
+            validation.class = 'potentially_valid'
+        }
+        //console.log(field)
+        // console.log('#' + field + '_field')
+
+
+        if(type!='date_interval'){
+            $('#' + field + '_field').removeClass('invalid potentially_valid valid').addClass(validation.class)
+        }
+
+
+
+
+    });
+    var form_validation = get_form_validation_state()
+    process_form_validation(form_validation)
+}
+
 function toggle_options(field) {
     if ($('#' + field + '_options').hasClass('hide')) {
 
@@ -81,7 +139,6 @@ function get_form_validation_state(submitting) {
 
 }
 
-
 function process_form_validation(validation, submitting) {
 
     if (submitting && validation == 'potentially_valid') {
@@ -117,7 +174,7 @@ function process_form_validation(validation, submitting) {
 
 }
 
-function  post_process_form_validation(){
+function post_process_form_validation(){
 
     if($('#fields').attr('Object')=='Customers_List'){
         post_process_new_customer_list_form_validation()
@@ -127,7 +184,6 @@ function  post_process_form_validation(){
 
 }
 
-
 function check_if_form_is_valid() {
 
 
@@ -135,7 +191,7 @@ function check_if_form_is_valid() {
     var valid = true;
     $(".value").each(function (index) {
         var field = $(this).attr('field')
-        var value = $('#' + field).val()
+       // var value = $('#' + field).val()
 
         //console.log(field + ' ' + $("#" + field).hasClass('valid') + ' ' + $("#" + field).hasClass('potentially_valid'))
         if (!$("#" + field + '_validation').hasClass('valid')) {
@@ -569,7 +625,6 @@ function toggle_inline_new_object_form(trigger) {
 
 }
 
-
 function clone_it() {
     $('#result').html('')
 
@@ -578,13 +633,11 @@ function clone_it() {
 
 }
 
-
 function change_to_new_object_view() {
     var object = $('#fields').attr('object');
     request = $('#' + object + '_go_new').attr('request');
     change_view(request);
 }
-
 
 function reset_controls() {
     var object = $('#fields').attr('object');
@@ -595,7 +648,6 @@ function reset_controls() {
     $('#save_msg').html('').addClass('hide').removeClass('success');
     $('#' + object + '_go_new').attr('request', '')
 }
-
 
 function update_new_address_fields(field, country_code, hide_recipient_fields, arg) {
 
@@ -699,7 +751,6 @@ function update_new_address_fields(field, country_code, hide_recipient_fields, a
 
 }
 
-
 function update_related_fields(country_data) {
 
     // console.log(country_data.iso2)
@@ -739,9 +790,6 @@ function update_related_fields(country_data) {
 
 }
 
-
-
-
 function show_field_options(element) {
 
     $(element).addClass('hide')
@@ -749,7 +797,6 @@ function show_field_options(element) {
     $('#' + $(element).attr('field') + '_options_ul').removeClass('hide')
 
 }
-
 
 function select_option_for_new_object(element, field, value, formatted_value) {
 

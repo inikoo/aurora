@@ -264,6 +264,16 @@ function get_object($object_name, $key, $load_other_data = false) {
             require_once "class.DealCampaign.php";
             $object = new DealCampaign($key);
             break;
+
+        case 'campaign_code-store_key':
+            require_once "class.DealCampaign.php";
+
+            $keys = preg_split('/\|/', $key);
+
+            $object = new DealCampaign('code_store', $keys[0], $keys[1]);
+            break;
+
+
         case 'deal':
             require_once "class.Deal.php";
             $object = new Deal($key);

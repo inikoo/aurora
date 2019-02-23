@@ -222,9 +222,11 @@ function open_edit_field(object, key, field) {
     }
 
 
-
     key_scope = {
-        type: type, object: object, key: key, field: field
+        type:   type,
+        object: object,
+        key:    key,
+        field:  field
     };
 }
 
@@ -733,7 +735,6 @@ function select_option(element, field, value) {
     if ($('#fields').hasClass('new_object')) {
 
 
-
         //   $('#' + field + '_options').addClass('hide')
     }
 
@@ -951,7 +952,10 @@ function save_field(object, key, field) {
                 var ratio = $(obj).find('.parts_per_product').val()
             }
             var part_data = {
-                'Key': $(obj).find('.product_part_key').val(), 'Part SKU': $(obj).find('.sku').val(), 'Ratio': ratio, 'Note': $(obj).find('.note').val(),
+                'Key':      $(obj).find('.product_part_key').val(),
+                'Part SKU': $(obj).find('.sku').val(),
+                'Ratio':    ratio,
+                'Note':     $(obj).find('.note').val(),
 
             }
             part_list_data.push(part_data)
@@ -1007,15 +1011,15 @@ function save_field(object, key, field) {
 
         value = JSON.stringify(webpage_related_products)
 
-    }else if (type == 'mixed_recipients') {
+    } else if (type == 'mixed_recipients') {
 
         external_emails = [];
         user_keys = [];
 
 
-        var mixed_recipients_container=$('#' + field + '_field').find('.mixed_recipients_container')
+        var mixed_recipients_container = $('#' + field + '_field').find('.mixed_recipients_container')
 
-        $('.external_email_mixed_recipients_value',mixed_recipients_container).each(function (i, obj) {
+        $('.external_email_mixed_recipients_value', mixed_recipients_container).each(function (i, obj) {
 
 
             if (!$(obj).closest('tr').hasClass('very_discreet')) {
@@ -1027,7 +1031,7 @@ function save_field(object, key, field) {
 
         });
 
-        $('.user_key',mixed_recipients_container).each(function (i, obj) {
+        $('.user_key', mixed_recipients_container).each(function (i, obj) {
 
 
             if (!$(obj).closest('tr').hasClass('very_discreet')) {
@@ -1039,9 +1043,9 @@ function save_field(object, key, field) {
 
         });
 
-        var mixed_recipients= {
+        var mixed_recipients = {
             external_emails: external_emails,
-            user_keys: user_keys
+            user_keys:       user_keys
         }
 
         value = JSON.stringify(mixed_recipients)
@@ -1058,7 +1062,7 @@ function save_field(object, key, field) {
         var request = '/ar_edit.php?tipo=edit_field&object=' + object + '&key=' + key + '&field=' + field + '&value=' + fixedEncodeURIComponent(value) + '&metadata=' + JSON.stringify(metadata)
     }
 
-   // console.log(request)
+    // console.log(request)
 
 
     var ajaxData = new FormData();
@@ -1071,12 +1075,19 @@ function save_field(object, key, field) {
     ajaxData.append('metadata', JSON.stringify(metadata))
 
     $.ajax({
-        url: request_file, type: 'POST', data: ajaxData, dataType: 'json', cache: false, contentType: false, processData: false,
+        url:         request_file,
+        type:        'POST',
+        data:        ajaxData,
+        dataType:    'json',
+        cache:       false,
+        contentType: false,
+        processData: false,
 
 
         complete: function () {
 
-        }, success: function (data) {
+        },
+        success:  function (data) {
             console.log(data)
             $('#' + field + '_save_button').addClass('fa-cloud').removeClass('fa-spinner fa-spin')
             if (data.state == 100) {
@@ -1178,7 +1189,8 @@ function save_field(object, key, field) {
 
             }
 
-        }, error: function () {
+        },
+        error:    function () {
 
         }
     });
@@ -1193,9 +1205,9 @@ function pre_save_actions(field, data) {
 function post_save_actions(field, data) {
 
 //    console.log(field)
-     //  console.log(data)
+    //  console.log(data)
 
-     // console.log(field)
+    // console.log(field)
 
     switch (field) {
         case 'Prospect_Customer_Key':
@@ -1296,7 +1308,9 @@ function create_new_field(_data) {
 
 
         $("#" + clone_field).intlTelInput({
-            utilsScript: "/js/libs/telephone_utils.js", defaultCountry: 'GB', preferredCountries: ['GB', 'US']
+            utilsScript:        "/js/libs/telephone_utils.js",
+            defaultCountry:     'GB',
+            preferredCountries: ['GB', 'US']
         });
         $("#" + clone_field).intlTelInput("setNumber", _data.value);
 
@@ -1336,7 +1350,8 @@ function create_new_field(_data) {
 
 
         $('#' + clone_field + '_country_select').intlTelInput({
-            initialCountry: initial_country, preferredCountries: $('#preferred_countries').val().split(',')
+            initialCountry:     initial_country,
+            preferredCountries: $('#preferred_countries').val().split(',')
         });
 
         $('#' + clone_field + '_country_select').on("country-change", function (event, arg) {
@@ -1395,7 +1410,7 @@ function update_field(data) {
 
     var field = data.field
     var type = $('#' + field + '_container').attr('c')
-    //console.log(data)
+    console.log(data)
 
 
     //console.log(data.render)
@@ -1410,6 +1425,20 @@ function update_field(data) {
 
     if (data.label != undefined) {
         $('#' + field + '_label').html(data.label)
+    }
+
+
+    if (data.required != undefined) {
+
+        if (data.required) {
+            $("#" + field+'_validation').addClass('required')
+
+        } else {
+            $("#" + field+'_validation').removeClass('required')
+
+        }
+        $("#" + field+'_container').attr('_required',data.required)
+
     }
 
     if (data.placeholder != undefined) {
@@ -1613,15 +1642,15 @@ function delayed_on_change_address_field(object, timeout) {
 
 function get_address_value(field) {
     var value = {
-        "Address Recipient": null,
-        "Address Organization": null,
-        "Address Line 1": null,
-        "Address Line 2": null,
-        "Address Sorting Code": null,
-        "Address Postal Code": null,
-        "Address Dependent Locality": null,
-        "Address Locality": null,
-        "Address Administrative Area": null,
+        "Address Recipient":            null,
+        "Address Organization":         null,
+        "Address Line 1":               null,
+        "Address Line 2":               null,
+        "Address Sorting Code":         null,
+        "Address Postal Code":          null,
+        "Address Dependent Locality":   null,
+        "Address Locality":             null,
+        "Address Administrative Area":  null,
         "Address Country 2 Alpha Code": null
     }
 
@@ -1746,12 +1775,14 @@ function show_sticky_note_edit_dialog(anchor) {
 
 
             $('#edit_sticky_note_dialog').css({
-                'left': position.left - $('#edit_sticky_note_dialog').width(), 'top': position.top + $('#' + anchor).height()
+                'left': position.left - $('#edit_sticky_note_dialog').width(),
+                'top':  position.top + $('#' + anchor).height()
             })
         } else {
             var position = $('#showcase_sticky_note .sticky_note').position();
             $('#edit_sticky_note_dialog').css({
-                'left': position.left, 'top': position.top
+                'left': position.left,
+                'top':  position.top
             })
         }
 
@@ -1811,7 +1842,8 @@ function delayed_on_change_dropdown_select_field(object, timeout) {
     var new_value = field_element.val()
 
     key_scope = {
-        type: 'dropdown_select', field: field_element.attr('field')
+        type:  'dropdown_select',
+        field: field_element.attr('field')
     };
 
 
@@ -1996,7 +2028,6 @@ function toggle_unlock_delete_object(element) {
 }
 
 
-
 function toggle_prospect_link_to_customer(element) {
 
 
@@ -2006,8 +2037,7 @@ function toggle_prospect_link_to_customer(element) {
         $(element).nextAll('span:first').removeClass('disabled').addClass('button')
 
 
-
-            open_edit_field($('#fields').attr('object'), $('#fields').attr('key'), field)
+        open_edit_field($('#fields').attr('object'), $('#fields').attr('key'), field)
 
 
     } else {
@@ -2019,8 +2049,6 @@ function toggle_prospect_link_to_customer(element) {
 
     }
 }
-
-
 
 
 function delete_object(element) {
@@ -2085,7 +2113,7 @@ function save_object_operation(type, element) {
 
     $(element).find('i').removeClass(icon).addClass('fa-spinner fa-spin')
 
-    var request = '/ar_edit.php?tipo=object_operation&operation=' + type + '&object=' + $(element).data('data').object + '&key=' + $(element).data('data').key+'&state='+JSON.stringify(state)
+    var request = '/ar_edit.php?tipo=object_operation&operation=' + type + '&object=' + $(element).data('data').object + '&key=' + $(element).data('data').key + '&state=' + JSON.stringify(state)
 
     $.getJSON(request, function (data) {
         if (data.state == 200) {
@@ -2254,7 +2282,6 @@ function erase_date_field(field) {
 function toggle_field_value(element) {
 
 
-
     var icon = $(element).find('i')
 
     if (icon.hasClass('fa-toggle-on')) {
@@ -2268,7 +2295,6 @@ function toggle_field_value(element) {
 }
 
 function check_field_value(element) {
-
 
 
     var icon = $(element).find('i')

@@ -221,6 +221,14 @@ function get_object_fields($object, $db, $user, $smarty, $options = false) {
 
                 include 'fields/campaign_bulk_discounts.fld.php';
 
+            }elseif ($object->get('Deal Campaign Code')=='VO') {
+
+                $deals = $object->get_deals();
+                $deal  = array_pop($deals);
+                $store = $options['store'];
+
+                include 'fields/vouchers.fld.php';
+
             } else {
                 include 'fields/campaign.fld.php';
 
@@ -240,7 +248,19 @@ function get_object_fields($object, $db, $user, $smarty, $options = false) {
                switch ($options['parent']){
                    case 'campaign':
 
-                       include 'fields/new_deal.fld.php';
+                       switch ($options['parent_object']->get('Deal Campaign Code')){
+                           case 'VO':
+                               $store    = get_object('Store', $options['store_key']);
+;
+                               include 'fields/new_voucher.fld.php';
+                               break;
+                           default:
+                               $store    = get_object('Store', $options['store_key']);
+
+                               include 'fields/new_deal.fld.php';
+                       }
+
+
 
                        break;
                    case 'category':

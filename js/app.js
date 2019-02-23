@@ -178,25 +178,26 @@ $(document).ready(function () {
 
 */
 
-    connect_websocket();
 
 
-    setInterval(function(){
-        if(!websocket_connected_connecting && !websocket_connected){
-            connect_websocket();
-        }
+        connect_websocket();
 
 
+        setInterval(function () {
+            if (!websocket_connected_connecting && !websocket_connected) {
+                connect_websocket();
+            }
 
-    }, 1000);
 
-    setInterval(function(){
+        }, 1000);
 
-        if(websocket_connected){
-            ws_connection.publish('ping','hi')
-        }
+        setInterval(function () {
 
-    }, 60000);
+            if (websocket_connected) {
+                ws_connection.publish('ping', 'hi')
+            }
+
+        }, 60000);
 
 
 
@@ -374,46 +375,26 @@ function change_browser_history_state(request) {
         request = '/' + request
     }
 
-    // console.log(old_state_request + ' _> ' + request)
+     console.log(old_state_request + ' _> ' + request)
+
+
+
+
 
     if (old_state_request != request) {
 
 
 
+
+
         if ($('#_server_name').val() != 'au.bali') {
 
+            var _tmp=$('#account_name');
+            ga('set', 'contentGroup1', state.module.replace("_", " ").capitalize());
+            ga('set', 'contentGroup2', state.section.replace("_", " ").capitalize());
+            ga('set', 'contentGroup3', _tmp.data('user_handle').capitalize()+' '+_tmp.data('account_code'));
 
-            switch (state.module) {
-                case 'dashboard':
-                    break;
-                case 'customers':
-                case 'customers_server':
-                    ga('set', 'contentGroup1', 'Customers');
-                    break;
-                case 'orders':
-                case 'delivery_notes':
-                case 'orders_server':
-                case 'accounting':
-                case 'delivery_notes_server':
-                case 'accounting_server':
-                    ga('set', 'contentGroup2', 'Orders');
-                    break;
-                case 'inventory':
-                case 'suppliers':
-                case 'warehouses_server':
-                case 'warehouses':
-                case 'production_server':
-                case 'production':
-                    ga('set', 'contentGroup3', 'Inventory');
-                    break;
-                case 'products':
-                case 'products_server':
-                    ga('set', 'contentGroup4', 'Products');
-                    break;
-                default:
-                    ga('set', 'contentGroup5', 'Other');
 
-            }
 
 
 
@@ -429,6 +410,9 @@ function change_browser_history_state(request) {
 
         //console.log(request)
         window.top.history.pushState({request: request}, '', request)
+
+
+
 
         old_state_request = request
     }
@@ -709,6 +693,13 @@ function change_view(_request, metadata) {
 
                 $("div[id='tab_delivery_note.fast_track_packing']").addClass('hide')
             }
+
+            if(state.title!=undefined && state.title!=''){
+                document.title = state.title;
+            }else{
+                document.title = 'Aurora';
+            }
+
 
             change_browser_history_state(data.state.request)
             show_side_content($('#notifications').data('current_side_view'))

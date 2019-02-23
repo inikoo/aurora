@@ -974,6 +974,8 @@ ALTER TABLE `Email Template Dimension` MODIFY COLUMN `Email Template HTML` MEDIU
 ALTER TABLE `Email Template Dimension` ADD `Email Template Selecting Blueprints` ENUM('Yes','No') NOT NULL DEFAULT 'No' AFTER `Email Template State`;
 ALTER TABLE `Email Campaign Dimension` ADD `Email Campaign Selecting Blueprints` ENUM('Yes','No') NOT NULL DEFAULT 'No' AFTER `Email Campaign State`;
 
+ALTER TABLE `Deal Campaign Dimension` ADD `Deal Campaign Code` VARCHAR(16) NULL DEFAULT NULL AFTER `Deal Campaign Key`;
+ALTER TABLE `Deal Campaign Dimension` ADD UNIQUE (`Deal Campaign Code`, `Deal Campaign Store Key`);
 
 
 ======= fer migration ordering in dw and costa

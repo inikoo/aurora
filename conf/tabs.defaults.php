@@ -3835,8 +3835,8 @@ $tab_defaults = array(
         'rpp'           => 100,
         'rpp_options'   => $default_rrp_options,
         'f_field'       => 'name',
-        'elements_type' => array_keys($elements_options['campaigns'])[0],
-        'elements'      => $elements_options['campaigns'],
+       // 'elements_type' => array_keys($elements_options['campaigns'])[0],
+       // 'elements'      => $elements_options['campaigns'],
     ),
     'campaign.history' => array(
         'view'          => 'overview',
@@ -3859,6 +3859,17 @@ $tab_defaults = array(
         'elements'      => $elements_options['deals'],
     ),
 
+    'vouchers'   => array(
+        'view'          => 'overview',
+        'sort_key'      => 'name',
+        'sort_order'    => 1,
+        'rpp'           => 100,
+        'rpp_options'   => $default_rrp_options,
+        'f_field'       => 'name',
+        'elements_type' => array_keys($elements_options['deals'])[0],
+        'elements'      => $elements_options['deals'],
+    ),
+
     'campaign_bulk_deals'                 => array(
         'view'        => 'overview',
         'sort_key'    => 'from',
@@ -3866,6 +3877,8 @@ $tab_defaults = array(
         'rpp'         => 100,
         'rpp_options' => $default_rrp_options,
         'f_field'     => 'target',
+        'elements_type' => array_keys($elements_options['deals'])[0],
+        'elements'      => $elements_options['fixed_deals'],
 
     ),
     'campaign.orders'                     => array(

@@ -14,6 +14,7 @@ $_handle = fopen("sk.csv", "r");
 $handle  = fopen("sk.csv", "r");
 
 chdir('../');
+require_once 'vendor/autoload.php';
 
 require_once 'keyring/dns.php';
 require_once 'keyring/key.php';
@@ -54,7 +55,6 @@ require_once 'utils/object_functions.php';
 require_once 'utils/parse_natural_language.php';
 require_once 'class.User.php';
 
-require_once 'class.Site.php';
 require_once 'class.Page.php';
 require_once 'class.Website.php';
 require_once 'class.WebsiteNode.php';
@@ -85,45 +85,165 @@ $editor = array(
     'Date'         => gmdate('Y-m-d H:i:s')
 );
 
+//Second part migration run fist one forst
+
+
+
+
+
+$sql = sprintf('SELECT `Deal Campaign Store Key`,`Deal Campaign Key` FROM `Deal Campaign Dimension`   left join `Store Dimension` on (`Store Key`=`Deal Campaign Store Key`)  where `Store Version`=2 ');
+if ($result = $db->query($sql)) {
+    foreach ($result as $row) {
+
+        $store = get_object('Store', $row['Deal Campaign Store Key']);
+
+        $campaign = get_object('DealCampaign', $row['Deal Campaign Key']);
+
+        print $store->get('Store Order Recursion Campaign Key').' '.$campaign->id."\n";
+        if ($store->get('Store Order Recursion Campaign Key') == $campaign->id) {
+            $campaign->fast_update(array('Deal Campaign Code' => 'OR'));
+        }
+        if ($store->get('Store Bulk Discounts Campaign Key') == $campaign->id) {
+            $campaign->fast_update(array('Deal Campaign Code' => 'VL'));
+        }
+        if ($store->get('Store First Order Campaign Key') == $campaign->id) {
+            $campaign->fast_update(array('Deal Campaign Code' => 'FO'));
+        }
+
+
+        $categories_deals_data = array(
+            'Deal Campaign Code'       => 'CA',
+            'Deal Campaign Name'       => 'Family offers',
+            'Deal Campaign Valid From' => gmdate('Y-m-d'),
+            'Deal Campaign Valid To'   => '',
+
+
+        );
+
+        $categories_deals = $store->create_campaign($categories_deals_data);
+
+
+        $sql = sprintf(
+            'update `Deal Dimension` set `Deal Campaign Key`=%d where `Deal Campaign Key` is null and `Deal Store Key`=%d ',
+            $categories_deals->id,
+            $store->id
+        );
+
+        $db->exec($sql);
+
+
+
+        $categories_deals->update_usage();
+        $categories_deals->update_number_of_deals();
+        $categories_deals->update_websites();
+
+
+
+
+
+
+        $categories_deals_data = array(
+            'Deal Campaign Code'       => 'CU',
+            'Deal Campaign Name'       => 'Customers offers',
+            'Deal Campaign Valid From' => gmdate('Y-m-d'),
+            'Deal Campaign Valid To'   => '',
+
+
+        );
+
+        $categories_deals = $store->create_campaign($categories_deals_data);
+
+
+        $categories_deals_data = array(
+            'Deal Campaign Code'       => 'VO',
+            'Deal Campaign Name'       => 'Vouchers',
+            'Deal Campaign Valid From' => gmdate('Y-m-d'),
+            'Deal Campaign Valid To'   => '',
+
+
+        );
+
+        $categories_deals = $store->create_campaign($categories_deals_data);
+
+        $categories_deals_data = array(
+            'Deal Campaign Code'       => 'SO',
+            'Deal Campaign Name'       => 'Store offers',
+            'Deal Campaign Valid From' => gmdate('Y-m-d'),
+            'Deal Campaign Valid To'   => '',
+
+
+        );
+
+        $categories_deals = $store->create_campaign($categories_deals_data);
+
+    }
+}
+
+
+$sql=sprintf('update `Deal Campaign Dimension` set `Deal Campaign Icon`=%s where `Deal Campaign Code`="VO" ',prepare_mysql('<i class="far fa-money-bill-wave"></i>'));
+$db->exec($sql);
+
+$sql=sprintf('update `Deal Campaign Dimension` set `Deal Campaign Icon`=%s where `Deal Campaign Code`="VL" ',prepare_mysql('<i class="far fa-ball-pile"></i>'));
+$db->exec($sql);
+
+$sql=sprintf('update `Deal Campaign Dimension` set `Deal Campaign Icon`=%s where `Deal Campaign Code`="SO" ',prepare_mysql('<i class="far fa-badge-percent"></i>'));
+$db->exec($sql);
+
+$sql=sprintf('update `Deal Campaign Dimension` set `Deal Campaign Icon`=%s where `Deal Campaign Code`="OR" ',prepare_mysql('<i class="far fa-repeat-1"></i>'));
+$db->exec($sql);
+
+$sql=sprintf('update `Deal Campaign Dimension` set `Deal Campaign Icon`=%s where `Deal Campaign Code`="CU" ',prepare_mysql('<i class="far fa-user-crown"></i>'));
+$db->exec($sql);
+
+$sql=sprintf('update `Deal Campaign Dimension` set `Deal Campaign Icon`=%s where `Deal Campaign Code`="FO" ',prepare_mysql('<i class="far fa-trophy-alt"></i>'));
+$db->exec($sql);
+
+
+$sql=sprintf('update `Deal Campaign Dimension` set `Deal Campaign Icon`=%s where `Deal Campaign Code`="CA" ',prepare_mysql('<i class="far fa-bullseye-arrow"></i>'));
+$db->exec($sql);
+
+
+
+exit;
+// Here first part of the migration
 
 $sql = sprintf('SELECT `Deal Component Key`,`Deal Component Deal Key`,`Deal Component Campaign Key` FROM `Deal Component Dimension`  ');
 if ($result = $db->query($sql)) {
     foreach ($result as $row) {
 
 
-     //   print_r($row);
+        //   print_r($row);
 
 
         $deal           = get_object('Deal', $row['Deal Component Deal Key']);
         $deal_component = get_object('DealComponent', $row['Deal Component Key']);
-        $deal_campaign = get_object('DealCampaign', $row['Deal Component Campaign Key']);
-
+        $deal_campaign  = get_object('DealCampaign', $row['Deal Component Campaign Key']);
 
 
         $store = get_object('Store', $deal_component->data['Deal Component Store Key']);
 
 
         if ($deal_component->data['Deal Component Campaign Key'] == $store->get('Store Order Recursion Campaign Key')) {
-            $icon= '<i class="fa fa-tag gold-text "  aria-hidden="true"></i>';
+            $icon = '<i class="fa fa-tag gold-text "  aria-hidden="true"></i>';
         } elseif ($deal_component->data['Deal Component Campaign Key'] == $store->get('Store Bulk Discounts Campaign Key')) {
-            $icon= '<i class="fa fa-tag  " style="color:#31B96E" aria-hidden="true"></i>';
-        }else{
-            $icon= '<i class="fa fa-tag  "  aria-hidden="true"></i>';
+            $icon = '<i class="fa fa-tag  " style="color:#31B96E" aria-hidden="true"></i>';
+        } else {
+            $icon = '<i class="fa fa-tag  "  aria-hidden="true"></i>';
         }
 
         $deal_campaign->update(
             array(
-                'Deal Campaign Icon'=>$icon,
-                'Deal Campaign Name'=>$deal_campaign->get('Deal Campaign Name'),
+                'Deal Campaign Icon' => $icon,
+                'Deal Campaign Name' => $deal_campaign->get('Deal Campaign Name'),
 
-            ),'no_history'
+            ), 'no_history'
 
         );
 
         $deal->update(
             array(
-                'Deal Term Label'=>$deal->get('Deal XHTML Terms Description Label'),
-            ),'no_history'
+                'Deal Term Label' => $deal->get('Deal XHTML Terms Description Label'),
+            ), 'no_history'
 
         );
 
@@ -133,8 +253,8 @@ if ($result = $db->query($sql)) {
         $deal_component->update(
             array(
 
-                'Deal Component Allowance Label'=>$deal_component->get('Deal Component Allowance Description')
-            ),'no_history'
+                'Deal Component Allowance Label' => $deal_component->get('Deal Component Allowance Description')
+            ), 'no_history'
 
         );
 
@@ -197,11 +317,11 @@ if ($result = $db->query($sql)) {
 
 
         );
-        $deal      = $gold_reward_campaign->add_deal($deal_data);
+        $deal      = $gold_reward_campaign->create_deal($deal_data);
 
         $component_data = array(
-            'Deal Component Terms Type' => 'Order Interval',
-            'Deal Component Trigger'    => 'Order',
+            'Deal Component Terms Type'                        => 'Order Interval',
+            'Deal Component Trigger'                           => 'Order',
             'Deal Component Allowance Type'                    => 'Get Free',
             'Deal Component Allowance Target'                  => 'Charge',
             'Deal Component Allowance Target Type'             => 'No Items',
@@ -239,7 +359,7 @@ if ($result = $db->query($sql)) {
 
 
         );
-        $deal      = $gold_reward_campaign->add_deal($deal_data);
+        $deal      = $gold_reward_campaign->create_deal($deal_data);
 
 
         $families_category_data = array(
@@ -340,7 +460,7 @@ if ($result = $db->query($sql)) {
                 );
 
                 // print_r($deal_data);
-                $deal = $bulk_campaign->add_deal($deal_data);
+                $deal = $bulk_campaign->create_deal($deal_data);
 
                 $component_data = array(
                     'Deal Component Terms Type'                   => 'Category Quantity Ordered',

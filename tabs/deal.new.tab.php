@@ -34,7 +34,16 @@ $smarty->assign('object_fields', $object_fields);
 $smarty->assign('store_key', $state['_parent']->get('Store Key'));
 
 
-$smarty->assign('js_code', 'js/injections/deal.new.'.(_DEVEL ? '' : 'min.').'js');
+switch ($state['_parent']->get('Code')){
+    case 'VO':
+        $smarty->assign('js_code', 'js/injections/voucher.new.'.(_DEVEL ? '' : 'min.').'js');
+
+        break;
+    default:
+        $smarty->assign('js_code', 'js/injections/deal.new.'.(_DEVEL ? '' : 'min.').'js');
+
+}
+
 
 $html = $smarty->fetch('new_object.tpl');
 
