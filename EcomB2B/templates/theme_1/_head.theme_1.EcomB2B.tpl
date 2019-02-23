@@ -14,7 +14,9 @@
 <html lang="en-gb" class="no-js"> <!--<![endif]-->
 
 <head>
-    {if $smarty.server.SERVER_NAME!='ecom.bali'  and $client_tag_google_manager_id!=''}
+    {if $smarty.server.SERVER_NAME!='ecom.bali'  }
+
+       {if  $client_tag_google_manager_id!=''}
         <!-- Google Tag Manager -->
         <script>(function (w, d, s, l, i) {
                 w[l] = w[l] || [];
@@ -27,7 +29,23 @@
                 f.parentNode.insertBefore(j, f);
             })(window, document, 'script', 'dataLayer', '{$client_tag_google_manager_id}');</script>
         <!-- End Google Tag Manager -->
+        {/if}
+        {literal}
+        <script>
+            (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+            (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+                m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+            })(window,document,'script','https://www.google-analytics.com/analytics.js','ga');
+
+            ga('create', 'UA-100778677-1', 'auto', 'auTracker');
+            ga('auTracker.send', 'pageview');
+
+        </script>
+        {/literal}
     {/if}
+
+
+
     <title>{$webpage->get('Webpage Browser Title')}</title>
     <meta charset="utf-8">
     <meta name="keywords" content=""/>
