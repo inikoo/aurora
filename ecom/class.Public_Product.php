@@ -231,7 +231,8 @@ class Public_Product {
                 break;
 
             case 'Product Name':
-                return $this->data['Product Name'];
+            case 'Product Price':
+                return $this->data[$key];
 
 
                 break;
@@ -284,8 +285,8 @@ class Public_Product {
                         );
                     } else {
                         $image_data = array(
-                            'key' => 0,
-                            'src' => '/art/nopic.png',
+                            'key'           => 0,
+                            'src'           => '/art/nopic.png',
                             'caption'       => '',
                             'width'         => 190,
                             'height'        => 130,
@@ -326,15 +327,12 @@ class Public_Product {
                 global $imagecache;
 
 
-                if(!is_object($imagecache)){
+                if (!is_object($imagecache)) {
                     require_once 'external_libs/ImageCache.php';
 
                     $imagecache                         = new ImageCache();
                     $imagecache->cached_image_directory = 'server_files/cached_images/';
                 }
-
-
-
 
 
                 $image_key = $this->data['Product Main Image Key'];
@@ -467,7 +465,6 @@ class Public_Product {
                 $price = money($this->data['Product Price'], $this->data['Store Currency Code']);
 
 
-
                 return $price;
                 break;
 
@@ -479,8 +476,8 @@ class Public_Product {
                     $price = '('.preg_replace('/PLN/', 'zł ', money($this->data['Product Price'] / $this->data['Product Units Per Case'], $this->data['Store Currency Code'])).'/'.$this->data['Product Unit Label'].')';
 
 
-                }else{
-                    $price='';
+                } else {
+                    $price = '';
                 }
 
 
@@ -506,26 +503,24 @@ class Public_Product {
             case 'Out of Stock Label':
 
 
+                if ($this->data['Product Next Supplier Shipment'] != '') {
+                    $title = _('Expected').': '.strftime("%a %e %b %Y", strtotime($this->data['Product Next Supplier Shipment'].' +0:00'));
 
 
-                    if ($this->data['Product Next Supplier Shipment'] != '') {
-                        $title = _('Expected').': '.strftime("%a %e %b %Y", strtotime($this->data['Product Next Supplier Shipment'].' +0:00'));
+                    $label = _('Out of stock').' <span style="font-size:80%" title="'.$title.'">('.$this->get('Next Supplier Shipment').')</span>';
+                } else {
+                    $label = _('Out of stock');
+                }
 
-
-                        $label = _('Out of stock').' <span style="font-size:80%" title="'.$title.'">('.$this->get('Next Supplier Shipment').')</span>';
-                    } else {
-                        $label = _('Out of stock');
-                    }
-
-                    return $label;
+                return $label;
 
 
                 break;
 
             case 'Out of Stock Class':
 
-                    return 'out_of_stock';
-                    //return 'launching_soon';
+                return 'out_of_stock';
+            //return 'launching_soon';
 
 
             case 'Unit Type':
@@ -555,10 +550,10 @@ class Public_Product {
                 break;
             case 'Next Supplier Shipment':
 
-                if($this->data['Product Next Supplier Shipment']!='' and $this->data['Product Next Supplier Shipment']!='0000-00-00 00:00:00'){
+                if ($this->data['Product Next Supplier Shipment'] != '' and $this->data['Product Next Supplier Shipment'] != '0000-00-00 00:00:00') {
                     return strftime("%e %b %y", strtotime($this->data['Product Next Supplier Shipment'].' +0:00'));
 
-                }else{
+                } else {
                     return '';
                 }
 
@@ -566,10 +561,10 @@ class Public_Product {
 
             case 'Next Supplier Shipment Timestamp':
 
-                if($this->data['Product Next Supplier Shipment']!='' and $this->data['Product Next Supplier Shipment']!='0000-00-00 00:00:00'){
+                if ($this->data['Product Next Supplier Shipment'] != '' and $this->data['Product Next Supplier Shipment'] != '0000-00-00 00:00:00') {
                     return strtotime($this->data['Product Next Supplier Shipment'].' +0:00');
 
-                }else{
+                } else {
                     return '';
                 }
 
@@ -615,7 +610,7 @@ class Public_Product {
                                     )
                                 ).' ('.$data['units'].')';
                             $dimensions .= '<span class="discreet volume">, '.volume($data['vol']).'</span>';
-                            if ($this->data[$this->table_name." $tag Weight"] > 0 and $data['vol']>0) {
+                            if ($this->data[$this->table_name." $tag Weight"] > 0 and $data['vol'] > 0) {
 
                                 $dimensions .= '<span class="discreet density">, '.number(
                                         $this->data[$this->table_name." $tag Weight"] / $data['vol'], 3
@@ -677,7 +672,7 @@ class Public_Product {
                             $dimensions .= ', <span class="discreet">'.volume(
                                     $data['vol']
                                 ).'</span>';
-                            if ($this->data[$this->table_name." $tag Weight"] > 0 and $data['vol']>0) {
+                            if ($this->data[$this->table_name." $tag Weight"] > 0 and $data['vol'] > 0) {
                                 $dimensions .= '<span class="discreet">, '.number(
                                         $this->data[$this->table_name." $tag Weight"] / $data['vol']
                                     ).'Kg/L</span>';
@@ -805,7 +800,7 @@ class Public_Product {
                                     )
                                 ).$data['units'];
 
-                        break;
+                            break;
                         case 'String':
                             $dimensions = number(
                                     convert_units(
@@ -887,6 +882,25 @@ class Public_Product {
                 }
                 break;
 
+            case 'Family Code':
+
+                $family_code = '';
+                $sql         = 'select `Category Code` from `Category Dimension` where `Category Key`=?';
+
+                $stmt = $this->db->prepare($sql);
+                if ($stmt->execute(
+                    array(
+                        $this->data['Product Family Category Key']
+                    )
+                )) {
+                    if ($row = $stmt->fetch()) {
+                        $family_code = $row['Category Code'];
+                    }
+                }
+
+                return $family_code;
+
+                break;
 
             default:
 
@@ -895,6 +909,11 @@ class Public_Product {
 
     }
 
+    function load_webpage() {
+
+        include_once 'class.Public_Webpage.php';
+        $this->webpage = new Public_Webpage('scope', 'Product', $this->id);
+    }
 
     function get_attachments() {
 
@@ -934,13 +953,6 @@ class Public_Product {
 
     }
 
-
-    function load_webpage() {
-
-        include_once 'class.Public_Webpage.php';
-        $this->webpage = new Public_Webpage('scope', 'Product', $this->id);
-    }
-
     function load_acc_data() {
 
         $sql = sprintf(
@@ -976,8 +988,6 @@ class Public_Product {
 
 
     }
-
-
 
 
     function get_image_gallery() {
@@ -1511,6 +1521,7 @@ class Public_Product {
 
         return $parent_categories;
     }
+
 
     function get_parent_category($scope = 'keys') {
 
