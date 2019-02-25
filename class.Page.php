@@ -2062,8 +2062,10 @@ class Page extends DB_Table {
                         }
 
 
-                        $content_data['blocks'][$block_key]['items'][$item_key]['web_state']  = $product->get('Web State');
-                        $content_data['blocks'][$block_key]['items'][$item_key]['price']      = $product->get('Price');
+                        $content_data['blocks'][$block_key]['items'][$item_key]['web_state'] = $product->get('Web State');
+                        $content_data['blocks'][$block_key]['items'][$item_key]['price']     = $product->get('Price');
+
+
                         $content_data['blocks'][$block_key]['items'][$item_key]['price_unit'] = $product->get('Price Per Unit');
 
                         $content_data['blocks'][$block_key]['items'][$item_key]['rrp']          = $product->get('RRP');
@@ -2074,11 +2076,14 @@ class Page extends DB_Table {
                         $content_data['blocks'][$block_key]['items'][$item_key]['webpage_key']  = $product->webpage->id;
 
 
-                        $content_data['blocks'][$block_key]['items'][$item_key]['out_of_stock_class']     = $product->get('Out of Stock Class');
-                        $content_data['blocks'][$block_key]['items'][$item_key]['out_of_stock_label']     = $product->get('Out of Stock Label');
-                        $content_data['blocks'][$block_key]['items'][$item_key]['sort_code']              = $product->get('Code File As');
-                        $content_data['blocks'][$block_key]['items'][$item_key]['sort_name']              = $product->get('Product Name');
+                        $content_data['blocks'][$block_key]['items'][$item_key]['out_of_stock_class']      = $product->get('Out of Stock Class');
+                        $content_data['blocks'][$block_key]['items'][$item_key]['out_of_stock_label']      = $product->get('Out of Stock Label');
+                        $content_data['blocks'][$block_key]['items'][$item_key]['sort_code']               = $product->get('Code File As');
+                        $content_data['blocks'][$block_key]['items'][$item_key]['sort_name']               = $product->get('Product Name');
                         $content_data['blocks'][$block_key]['items'][$item_key]['next_shipment_timestamp'] = $product->get('Next Supplier Shipment Timestamp');
+
+                        $content_data['blocks'][$block_key]['items'][$item_key]['category']  = $product->get('Family Code');
+                        $content_data['blocks'][$block_key]['items'][$item_key]['raw_price'] = $product->get('Product Price');
 
 
                         unset($items_product_id_index[$item['product_id']]);
@@ -2106,25 +2111,27 @@ class Page extends DB_Table {
 
 
                 $item = array(
-                    'type'                   => 'product',
-                    'product_id'             => $product_id,
-                    'web_state'              => $product->get('Web State'),
-                    'price'                  => $product->get('Price'),
-                    'rrp'                    => $product->get('RRP'),
-                    'header_text'            => '',
-                    'code'                   => $product->get('Code'),
-                    'name'                   => $product->get('Name'),
-                    'link'                   => $product->webpage->get('URL'),
-                    'webpage_code'           => $product->webpage->get('Webpage Code'),
-                    'webpage_key'            => $product->webpage->id,
-                    'image_src'              => $product->get('Image'),
-                    'image_mobile_website'   => '',
-                    'image_website'          => '',
-                    'out_of_stock_class'     => $product->get('Out of Stock Class'),
-                    'out_of_stock_label'     => $product->get('Out of Stock Label'),
-                    'sort_code'              => $product->get('Code File As'),
-                    'sort_name'              => $product->get('Product Name'),
+                    'type'                    => 'product',
+                    'product_id'              => $product_id,
+                    'web_state'               => $product->get('Web State'),
+                    'price'                   => $product->get('Price'),
+                    'rrp'                     => $product->get('RRP'),
+                    'header_text'             => '',
+                    'code'                    => $product->get('Code'),
+                    'name'                    => $product->get('Name'),
+                    'link'                    => $product->webpage->get('URL'),
+                    'webpage_code'            => $product->webpage->get('Webpage Code'),
+                    'webpage_key'             => $product->webpage->id,
+                    'image_src'               => $product->get('Image'),
+                    'image_mobile_website'    => '',
+                    'image_website'           => '',
+                    'out_of_stock_class'      => $product->get('Out of Stock Class'),
+                    'out_of_stock_label'      => $product->get('Out of Stock Label'),
+                    'sort_code'               => $product->get('Code File As'),
+                    'sort_name'               => $product->get('Product Name'),
                     'next_shipment_timestamp' => $product->get('Next Supplier Shipment Timestamp'),
+                    'category'                => $product->get('Family Code'),
+                    'raw_price'               => $product->get('Product Price'),
 
 
                 );
@@ -3304,26 +3311,27 @@ class Page extends DB_Table {
 
 
                         $items[] = array(
-                            'type'                   => 'product',
-                            'product_id'             => $product->id,
-                            'web_state'              => $product->get('Web State'),
-                            'price'                  => $product->get('Price'),
-                            'rrp'                    => $product->get('RRP'),
-                            'header_text'            => '',
-                            'code'                   => $product->get('Code'),
-                            'name'                   => $product->get('Name'),
-                            'link'                   => $product->webpage->get('URL'),
-                            'webpage_code'           => $product->webpage->get('Webpage Code'),
-                            'webpage_key'            => $product->webpage->id,
-                            'image_src'              => $product->get('Image'),
-                            'image_mobile_website'   => '',
-                            'image_website'          => '',
-                            'out_of_stock_class'     => $product->get('Out of Stock Class'),
-                            'out_of_stock_label'     => $product->get('Out of Stock Label'),
-                            'sort_code'              => $product->get('Code File As'),
-                            'sort_name'              => $product->get('Product Name'),
+                            'type'                    => 'product',
+                            'product_id'              => $product->id,
+                            'web_state'               => $product->get('Web State'),
+                            'price'                   => $product->get('Price'),
+                            'rrp'                     => $product->get('RRP'),
+                            'header_text'             => '',
+                            'code'                    => $product->get('Code'),
+                            'name'                    => $product->get('Name'),
+                            'link'                    => $product->webpage->get('URL'),
+                            'webpage_code'            => $product->webpage->get('Webpage Code'),
+                            'webpage_key'             => $product->webpage->id,
+                            'image_src'               => $product->get('Image'),
+                            'image_mobile_website'    => '',
+                            'image_website'           => '',
+                            'out_of_stock_class'      => $product->get('Out of Stock Class'),
+                            'out_of_stock_label'      => $product->get('Out of Stock Label'),
+                            'sort_code'               => $product->get('Code File As'),
+                            'sort_name'               => $product->get('Product Name'),
                             'next_shipment_timestamp' => $product->get('Next Supplier Shipment Timestamp'),
-
+                            'category'                => $product->get('Family Code'),
+                            'raw_price'               => $product->get('Product Price'),
                         );
 
 
@@ -5050,20 +5058,23 @@ class Page extends DB_Table {
                         $product->load_webpage();
 
 
-                        $content_data['blocks'][$block_key]['items'][$item_key]['web_state']              = $product->get('Web State');
-                        $content_data['blocks'][$block_key]['items'][$item_key]['price']                  = $product->get('Price');
-                        $content_data['blocks'][$block_key]['items'][$item_key]['price_unit']             = $product->get('Price Per Unit');
-                        $content_data['blocks'][$block_key]['items'][$item_key]['rrp']                    = $product->get('RRP');
-                        $content_data['blocks'][$block_key]['items'][$item_key]['code']                   = $product->get('Code');
-                        $content_data['blocks'][$block_key]['items'][$item_key]['name']                   = $product->get('Name');
-                        $content_data['blocks'][$block_key]['items'][$item_key]['link']                   = $product->webpage->get('URL');
-                        $content_data['blocks'][$block_key]['items'][$item_key]['webpage_code']           = $product->webpage->get('Webpage Code');
-                        $content_data['blocks'][$block_key]['items'][$item_key]['webpage_key']            = $product->webpage->id;
-                        $content_data['blocks'][$block_key]['items'][$item_key]['out_of_stock_class']     = $product->get('Out of Stock Class');
-                        $content_data['blocks'][$block_key]['items'][$item_key]['out_of_stock_label']     = $product->get('Out of Stock Label');
-                        $content_data['blocks'][$block_key]['items'][$item_key]['sort_code']              = $product->get('Code File As');
-                        $content_data['blocks'][$block_key]['items'][$item_key]['sort_name']              = $product->get('Product Name');
+                        $content_data['blocks'][$block_key]['items'][$item_key]['web_state']               = $product->get('Web State');
+                        $content_data['blocks'][$block_key]['items'][$item_key]['price']                   = $product->get('Price');
+                        $content_data['blocks'][$block_key]['items'][$item_key]['price_unit']              = $product->get('Price Per Unit');
+                        $content_data['blocks'][$block_key]['items'][$item_key]['rrp']                     = $product->get('RRP');
+                        $content_data['blocks'][$block_key]['items'][$item_key]['code']                    = $product->get('Code');
+                        $content_data['blocks'][$block_key]['items'][$item_key]['name']                    = $product->get('Name');
+                        $content_data['blocks'][$block_key]['items'][$item_key]['link']                    = $product->webpage->get('URL');
+                        $content_data['blocks'][$block_key]['items'][$item_key]['webpage_code']            = $product->webpage->get('Webpage Code');
+                        $content_data['blocks'][$block_key]['items'][$item_key]['webpage_key']             = $product->webpage->id;
+                        $content_data['blocks'][$block_key]['items'][$item_key]['out_of_stock_class']      = $product->get('Out of Stock Class');
+                        $content_data['blocks'][$block_key]['items'][$item_key]['out_of_stock_label']      = $product->get('Out of Stock Label');
+                        $content_data['blocks'][$block_key]['items'][$item_key]['sort_code']               = $product->get('Code File As');
+                        $content_data['blocks'][$block_key]['items'][$item_key]['sort_name']               = $product->get('Product Name');
                         $content_data['blocks'][$block_key]['items'][$item_key]['next_shipment_timestamp'] = $product->get('Next Supplier Shipment Timestamp');
+                        $content_data['blocks'][$block_key]['items'][$item_key]['category']                = $product->get('Family Code');
+                        $content_data['blocks'][$block_key]['items'][$item_key]['raw_price']               = $product->get('Product Price');
+
 
                     } else {
                         unset($content_data['blocks'][$block_key]['items'][$item_key]);
