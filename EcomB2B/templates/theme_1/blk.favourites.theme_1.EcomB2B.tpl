@@ -32,20 +32,31 @@
 
 
 <div class="warp products no_items_header clear">
+    {counter start=-1 print=false assign="counter"}
     {foreach from=$products item=item }
-
+        {counter print=false assign="counter"}
     <div class="product_wrap wrap type_{$item.type} " data-type="{$item.type}" {if $item.type=='product'} data-sort_code="{$item.sort_code}" data-sort_name="{$item.sort_name}{/if} ">
         <div class="product_block item product_container" data-product_id="{$item.product_id}">
 
 
 
             <div class="wrap_to_center product_image" >
-                <a href="{$item.link}"><i class="fal fa-fw fa-external-link-square more_info" aria-hidden="true"  title="{t}More info{/t}"  ></i></a>
+                <a href="{$item.link}"
+                   data-analytics='{ "id": "{$item.code}", "name": "{$item.name|escape:'quotes'}",{if isset($item.category)} "category": "{$item.category}",{/if}{if isset($item.raw_price)} "price": "{$item.raw_price}",{/if}"list": "Family", "position":{$counter}}'
+                   data-list="Products"
+                   onclick="onProductClick(this); return !ga.loaded;"
+                ><i class="fal fa-fw fa-external-link-square more_info" aria-hidden="true"  title="{t}More info{/t}"  ></i></a>
 
                 {if $logged_in}
                     <i    data-product_id="{$item.product_id}" data-favourite_key="0" class="favourite_{$item.product_id} favourite far  fa-heart" aria-hidden="true"></i>
                 {/if}
+                <a href="{$item.link}"
+                   data-analytics='{ "id": "{$item.code}", "name": "{$item.name|escape:'quotes'}",{if isset($item.category)} "category": "{$item.category}",{/if}{if isset($item.raw_price)} "price": "{$item.raw_price}",{/if}"list": "Family", "position":{$counter}}'
+                   data-list="Products"
+                   onclick="onProductClick(this); return !ga.loaded;"
+                >
                 <img src="{$item.image_src}"  />
+                </a>
             </div>
 
 
@@ -121,3 +132,9 @@
 </div>
 
 </div>
+<script>
+    {foreach from=$products item=item  name=analytics_data}
+    {if $item.type=='product'}ga('auTracker.ec:addImpression', { 'id': '{$item.code}', 'name': '{$item.name|escape:'quotes'}',{if isset($item.category)} 'category': '{$item.category}',{/if}{if isset($item.raw_price)} 'price': '{$item.raw_price}',{/if}'list': 'Favourites', 'position':{$smarty.foreach.analytics_data.index}});
+    {/if}
+    {/foreach}
+</script>

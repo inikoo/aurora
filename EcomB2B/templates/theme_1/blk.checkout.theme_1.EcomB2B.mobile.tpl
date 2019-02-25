@@ -74,7 +74,7 @@
 
 
 
-                    <a  class="but like_button payment_method_button no-smoothState {if $smarty.foreach.foo.first}bg-blue-light border-blue-dark{else}bg-black border-gray-dark{/if}" {if !$smarty.foreach.foo.first} style="opacity: .2"{/if}  data-tab="payment_account_item_{$payment_account.object->get('Block')}">
+                    <a   data-analytics_label="{$payment_account.analytics_label}" class="but like_button payment_method_button no-smoothState {if $smarty.foreach.foo.first}bg-blue-light border-blue-dark{else}bg-black border-gray-dark{/if}" {if !$smarty.foreach.foo.first} style="opacity: .2"{/if}  data-tab="payment_account_item_{$payment_account.object->get('Block')}">
                         <i class="{$payment_account.icon}" aria-hidden="true"></i>
                         <em>{if $payment_account.tab_label==''}{$data.labels[$payment_account.tab_label_index]}{else}{$payment_account.tab_label}{/if}</em>
                     </a>
@@ -940,7 +940,6 @@
 
                                     }, '#paypal-button').then(function () {
 
-                                        console.log('cacaac')
 
                                         $('#loading_paypal-button').addClass('hide')
                                         $('#paypal-button').removeClass('hide')
@@ -978,6 +977,22 @@
 
         $('.payment_method_block').addClass('hide')
         $('#'+$(this).data('tab')).removeClass('hide')
+
+        ga('auTracker.ec:setAction', 'checkout_option', {
+            'step': 2,
+            'option': $(this).data('analytics_label')
+        });
+
     });
+
+
+    {foreach from=$order->get_items() item="item" }
+    ga('auTracker.ec:addProduct',{$item.analytics_data} );
+    {/foreach}
+    ga('auTracker.ec:setAction','checkout', {
+        'step': 2,
+    });
+    ga('auTracker.send', 'pageview');
+
 </script>
 

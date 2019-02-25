@@ -16,7 +16,6 @@ trait OrderItems {
     function update_item($data) {
 
 
-
         $gross = 0;
 
         $otf_key = 0;
@@ -103,8 +102,6 @@ trait OrderItems {
         );
 
 
-
-
         if ($dn_key) {
             $sql .= sprintf(' and `Delivery Note Key`=%d', $dn_key);
         }
@@ -156,8 +153,6 @@ trait OrderItems {
                         $estimated_weight, $quantity, $bonus_quantity, prepare_mysql(gmdate('Y-m-d H:i:s')), $gross, 0, $gross, prepare_mysql($data['Current Dispatching State']), $cost, $row['Order Transaction Fact Key']
 
                     );
-
-
 
 
                     if ($result = $this->db->query($sql)) {
@@ -235,7 +230,6 @@ VALUES (%f,%s,%f,%s,%s,%s,%s,%s,%s,
                     $otf_key = $this->db->lastInsertId();
 
 
-
                     if ($dn_key) {
 
                         $sql = sprintf(
@@ -262,26 +256,25 @@ VALUES (%f,%s,%f,%s,%s,%s,%s,%s,%s,
             $this->update_field('Order Date', gmdate('Y-m-d H:i:s'), 'no_history');
 
 
-        }
-        else {
+        } else {
             $history_abstract = '';
             if ($delta_qty > 0) {
                 $history_abstract = sprintf(
                     _('%1$s %2$s added'),
                     $delta_qty,
-                    sprintf('<span class="link" onclick="change_view(\'products/%d/%d\')">%s</span>', $product->get('Store Key'),$product->id, $product->get('Product Code'))
+                    sprintf('<span class="link" onclick="change_view(\'products/%d/%d\')">%s</span>', $product->get('Store Key'), $product->id, $product->get('Product Code'))
                 );
             } elseif ($delta_qty < 0) {
 
                 if ($quantity == 0) {
                     $history_abstract = sprintf(
-                        _('%s %s removed, none in the order anymore'), -$delta_qty, sprintf('<span class="link" onclick="change_view(\'products/%d/%d\')">%s</span>', $product->get('Store Key'),$product->id, $product->get('Product Code'))
+                        _('%s %s removed, none in the order anymore'), -$delta_qty, sprintf('<span class="link" onclick="change_view(\'products/%d/%d\')">%s</span>', $product->get('Store Key'), $product->id, $product->get('Product Code'))
                     );
 
                 } else {
 
                     $history_abstract = sprintf(
-                        _('%s %s removed'), -$delta_qty, sprintf('<span class="link" onclick="change_view(\'products/%d/%d\')">%s</span>', $product->get('Store Key'),$product->id, $product->get('Product Code'))
+                        _('%s %s removed'), -$delta_qty, sprintf('<span class="link" onclick="change_view(\'products/%d/%d\')">%s</span>', $product->get('Store Key'), $product->id, $product->get('Product Code'))
                     );
                 }
             }
@@ -307,8 +300,7 @@ VALUES (%f,%s,%f,%s,%s,%s,%s,%s,%s,
         }
 
 
-
-        if(!$this->skip_update_after_individual_transaction) {
+        if (!$this->skip_update_after_individual_transaction) {
 
 
             $this->update_totals();
@@ -499,11 +491,10 @@ VALUES (%f,%s,%f,%s,%s,%s,%s,%s,%s,
 
 
             return array(
-                'updated'        => true,
-                'otf_key'        => $otf_key,
-                'to_charge'      => money($net_amount, $this->data['Order Currency']),
-                'item_discounts' => $discounts,
-
+                'updated'             => true,
+                'otf_key'             => $otf_key,
+                'to_charge'           => money($net_amount, $this->data['Order Currency']),
+                'item_discounts'      => $discounts,
                 'net_amount'          => $net_amount,
                 'delta_net_amount'    => $net_amount - $old_net_amount,
                 'qty'                 => $quantity,
@@ -512,8 +503,7 @@ VALUES (%f,%s,%f,%s,%s,%s,%s,%s,%s,
                 'discount_percentage' => ($gross_discounts > 0 ? percentage($gross_discounts, $gross, $fixed = 1, $error_txt = 'NA', $percentage_sign = '') : '')
             );
 
-        }
-        else{
+        } else {
 
             $net_amount = $gross;
             if (in_array(
@@ -584,13 +574,13 @@ VALUES (%f,%s,%f,%s,%s,%s,%s,%s,%s,
     function get_items() {
 
         $sql = sprintf(
-            'SELECT      (select group_concat(`Deal Info`) from `Order Transaction Deal Bridge` B  where B.`Order Transaction Fact Key`=OTF.`Order Transaction Fact Key` ) as deal_info,  `Order State`,`Delivery Note Quantity`,`Current Dispatching State`,`Deal Info`,OTF.`Product ID`,OTF.`Product Key`,OTF.`Order Transaction Fact Key`,`Order Currency Code`,`Order Transaction Amount`,`Order Quantity`,`Product History Name`,`Product History Units Per Case`,PD.`Product Code`,`Product Name`,`Product Units Per Case` 
+            'SELECT  `Category Code`,`Product Price`,    (select group_concat(`Deal Info`) from `Order Transaction Deal Bridge` B  where B.`Order Transaction Fact Key`=OTF.`Order Transaction Fact Key` ) as deal_info,  `Order State`,`Delivery Note Quantity`,`Current Dispatching State`,`Deal Info`,OTF.`Product ID`,OTF.`Product Key`,OTF.`Order Transaction Fact Key`,`Order Currency Code`,`Order Transaction Amount`,`Order Quantity`,`Product History Name`,`Product History Units Per Case`,PD.`Product Code`,`Product Name`,`Product Units Per Case` 
 FROM `Order Transaction Fact` OTF 
 LEFT JOIN `Product History Dimension` PHD ON (OTF.`Product Key`=PHD.`Product Key`)
  LEFT JOIN `Product Dimension` PD ON (PD.`Product ID`=PHD.`Product ID`)  
   left join  `Order Transaction Deal Bridge` B on (OTF.`Order Transaction Fact Key`=B.`Order Transaction Fact Key`)
     left join       `Order Dimension` O ON (O.`Order Key`=OTF.`Order Key`) 
-
+      left join       `Category Dimension` C ON (C.`Category Key`=PD.`Product Family Category Key`) 
  WHERE OTF.`Order Key`=%d  ORDER BY `Product Code File As` ', $this->id
         );
 
@@ -647,13 +637,24 @@ LEFT JOIN `Product History Dimension` PHD ON (OTF.`Product Key`=PHD.`Product Key
                     'code'             => sprintf('<a href="/%s">%s</a>', strtolower($row['Product Code']), $row['Product Code']),
                     'code_description' => '<b>'.$row['Product Code'].'</b> '.$row['Product History Units Per Case'].'x '.$row['Product History Name'].$deal_info.$out_of_stock_info,
                     'description'      => $row['Product History Units Per Case'].'x '.$row['Product History Name'].$deal_info.$out_of_stock_info,
-                    'qty'              => $qty,
-                    'qty_raw'          => $row['Order Quantity'] + 0,
-                    'pid'              => $row['Product ID'],
-                    'otf_key'          => $row['Order Transaction Fact Key'],
-                    'edit_qty'         => $edit_quantity,
-                    'amount'           => '<span id="transaction_item_net_'.$row['Order Transaction Fact Key'].'" class="item_amount">'.money($row['Order Transaction Amount'], $row['Order Currency Code']).'</span>',
-                    'state'            => $row['Current Dispatching State']
+
+                    'qty'            => $qty,
+                    'qty_raw'        => $row['Order Quantity'] + 0,
+                    'pid'            => $row['Product ID'],
+                    'otf_key'        => $row['Order Transaction Fact Key'],
+                    'edit_qty'       => $edit_quantity,
+                    'amount'         => '<span id="transaction_item_net_'.$row['Order Transaction Fact Key'].'" class="item_amount">'.money($row['Order Transaction Amount'], $row['Order Currency Code']).'</span>',
+                    'state'          => $row['Current Dispatching State'],
+                    'analytics_data' => json_encode(
+                        array(
+                            'id'       => $row['Product Code'],
+                            'name'     => ($row['Product History Units Per Case'] > 1 ? $row['Product History Units Per Case'].'x ' : '').$row['Product Name'],
+                            'category' => $row['Category Code'],
+                            'price'    => $row['Product Price'],
+                            'quantity' => $row['Order Quantity']
+                        )
+
+                    )
                 );
 
 

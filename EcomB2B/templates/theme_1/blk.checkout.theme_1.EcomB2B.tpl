@@ -147,7 +147,10 @@
 
                     {foreach from=$payment_accounts item=payment_account key=key}
                         <li>
-                            <a href="#payment_account_item_{$payment_account.object->get('Block')}" target="_self"><i class="{$payment_account.icon}" aria-hidden="true"></i>
+                            <a href="#payment_account_item_{$payment_account.object->get('Block')}" target="_self" data-analytics_label="{$payment_account.analytics_label}" class="payment_option_chooser" >
+
+
+                                <i class="{$payment_account.icon}" aria-hidden="true"></i>
                                 <span>{if $payment_account.tab_label==''}{$data.labels[$payment_account.tab_label_index]}{else}{$payment_account.tab_label}{/if}</span>
                             </a>
                         </li>
@@ -1022,7 +1025,7 @@
 
                                     }, '#paypal-button').then(function () {
 
-                                        console.log('cacaac')
+
 
                                         $('#loading_paypal-button').addClass('hide')
                                         $('#paypal-button').removeClass('hide')
@@ -1049,4 +1052,26 @@
     <div class="clear"> </div>
 </div>
 
+<script>
 
+
+    $( ".payment_option_chooser" ).click(function() {
+
+        ga('auTracker.ec:setAction', 'checkout_option', {
+            'step': 2,
+            'option': $(this).data('analytics_label')
+        });
+
+    });
+
+
+
+
+    {foreach from=$order->get_items() item="item" }
+        ga('auTracker.ec:addProduct',{$item.analytics_data} );
+    {/foreach}
+    ga('auTracker.ec:setAction','checkout', {
+        'step': 2,
+    });
+    ga('auTracker.send', 'pageview');
+</script>

@@ -10,6 +10,7 @@
 *}
 
 
+{assign "items_data" $order->get_items()}
 
 <div id="block_{$key}"  class="{$data.type} _block  " style="Width:100%;margin-top: 10px" >
 
@@ -142,7 +143,7 @@
                     </thead>
                     <tbody>
 
-                    {foreach from=$order->get_items() item="item" }
+                    {foreach from=$items_data item="item" }
 
                         <tr>
                             <td style="text-align: left">{$item.code_description}
@@ -835,7 +836,16 @@
     });
 
 
+    {foreach from=$items_data item="item" }
+    ga('auTracker.ec:addProduct',{$item.analytics_data} );
+    {/foreach}
 
+
+
+    ga('auTracker.ec:setAction','checkout', {
+        'step': 1,
+    });
+    ga('auTracker.send', 'pageview');
 
 </script>
 

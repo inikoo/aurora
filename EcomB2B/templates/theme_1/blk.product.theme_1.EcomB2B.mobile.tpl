@@ -160,6 +160,11 @@
     </div>
 </div>
 
+<script>
+    ga('auTracker.ec:addProduct', { 'id': '{$product->get('Code')}',  'category': '{$product->get('Family Code')}','price': '{$product->get('Product Price')}','name': '{$product->get('Name')|escape:'quotes'}', });
+    ga('auTracker.ec:setAction', 'detail');
+</script>
+
 
 
            

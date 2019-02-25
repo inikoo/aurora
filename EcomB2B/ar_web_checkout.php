@@ -18,8 +18,7 @@ require_once 'utils/placed_order_functions.php';
 require_once 'utils/aes.php';
 
 
-
-$smarty               = new Smarty();
+$smarty = new Smarty();
 $smarty->setTemplateDir('templates');
 $smarty->setCompileDir('server_files/smarty/templates_c');
 $smarty->setCacheDir('server_files/smarty/cache');
@@ -109,8 +108,16 @@ switch ($tipo) {
 
         place_order($store, $order, $payment_account_key, $customer, $website, $editor, $smarty, $account, $db);
         $response = array(
-            'state'     => 200,
-            'order_key' => $order->id,
+            'state'          => 200,
+            'order_key'      => $order->id,
+            'analytics_data' => array(
+                'id'          => $order->get('Public ID'),
+                'affiliation' => $store->get('Name'),
+                'revenue'     => $order->get('Order Total Amount'),
+                'tax'         => $order->get('Order Total Tax Amount'),
+                'shipping'    => $order->get('Order Shipping Net Amount')
+
+            )
 
         );
 
@@ -229,6 +236,15 @@ function place_order_pay_braintree($store, $_data, $order, $customer, $website, 
             $response = array(
                 'state'     => 200,
                 'order_key' => $order->id,
+                'analytics_data'=>array(
+                    'id'=>$order->get('Public ID'),
+                    'affiliation'=>$store->get('Name'),
+                    'revenue'=>$order->get('Order Total Amount'),
+                    'tax'=>$order->get('Order Total Tax Amount'),
+                    'shipping'=>$order->get('Order Shipping Net Amount')
+
+
+                )
 
             );
 
@@ -644,6 +660,15 @@ function place_order_pay_braintree_using_saved_card($store, $_data, $order, $cus
                 $response = array(
                     'state'     => 200,
                     'order_key' => $order->id,
+                    'analytics_data'=>array(
+                        'id'=>$order->get('Public ID'),
+                        'affiliation'=>$store->get('Name'),
+                        'revenue'=>$order->get('Order Total Amount'),
+                        'tax'=>$order->get('Order Total Tax Amount'),
+                        'shipping'=>$order->get('Order Shipping Net Amount')
+
+
+                    )
 
                 );
 
@@ -853,9 +878,17 @@ function process_braintree_order($braintree_data, $order, $gateway, $customer, $
 
             place_order($store, $order, $payment_account->id, $customer, $website, $editor, $smarty, $account, $db);
             $response = array(
-                'state'     => 200,
-                'order_key' => $order->id,
+                'state'          => 200,
+                'order_key'      => $order->id,
+                'analytics_data' => array(
+                    'id'          => $order->get('Public ID'),
+                    'affiliation' => $store->get('Name'),
+                    'revenue'     => $order->get('Order Total Amount'),
+                    'tax'         => $order->get('Order Total Tax Amount'),
+                    'shipping'    => $order->get('Order Shipping Net Amount')
 
+
+                )
             );
 
             return $response;

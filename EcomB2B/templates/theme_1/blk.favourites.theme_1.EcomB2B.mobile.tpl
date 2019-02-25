@@ -23,16 +23,21 @@
     </div>
 
 
-
+    {counter start=-1 print=false assign="counter"}
     {foreach from=$products item=product_data }
-
+        {counter print=false assign="counter"}
 
 
         <div class="store-item-list">
                     <span class="sub_wrap" style="">
 
 
-                        <a href="{$product_data.code|strtolower}" style="z-index: 10000;"><img src="{$product_data.image_mobile_website}" alt="{$product_data.name|escape}"></a>
+                        <a href="{$item.link}"
+                           data-analytics='{ "id": "{$product_data.code}", "name": "{$product_data.name|escape:'quotes'}",{if isset($product_data.category)} "category": "{$product_data.category}",{/if}{if isset($product_data.raw_price)} "price": "{$product_data.raw_price}",{/if}"list": "Family", "position":{$counter}}'
+                           data-list="Products"
+                           onclick="onProductClick(this); return !ga.loaded;"
+
+                           style="z-index: 10000;"><img src="{$product_data.image_mobile_website}" alt="{$product_data.name|escape}"></a>
 
 
 
@@ -63,7 +68,7 @@
 
                                 <div class="mobile_ordering" data-settings='{ "pid":{$product_data.product_id} }'>
                                 <i onclick="save_item_qty_change(this)" class="ordering_button one_less fa fa-fw  fa-minus-circle color-red-dark"></i>
-                                <input type="number" min="0" value="" class="needsclick order_qty">
+                                <input  type="number" min="0" value="" class="needsclick order_qty  order_qty_{$product_data.product_id}">
                                 <i onclick="save_item_qty_change(this)" class="hide ordering_button save fa fa-save fa-fw color-blue-dark"></i>
                                 <i onclick="save_item_qty_change(this)" class="ordering_button add_one fa fa-fw  fa-plus-circle color-green-dark"></i>
                             </div>
@@ -80,3 +85,9 @@
     {/foreach}
 </div>
 
+<script>
+    {foreach from=$products item=item  name=analytics_data}
+    {if $item.type=='product'}ga('auTracker.ec:addImpression', { 'id': '{$item.code}', 'name': '{$item.name|escape:'quotes'}',{if isset($item.category)} 'category': '{$item.category}',{/if}{if isset($item.raw_price)} 'price': '{$item.raw_price}',{/if}'list': 'Favourites', 'position':{$smarty.foreach.analytics_data.index}});
+    {/if}
+    {/foreach}
+</script>

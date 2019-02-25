@@ -60,14 +60,37 @@ function search($db, $website, $data, $smarty, $template_suffix, $order_key) {
 
     $smarty->assign('results', $results['results']);
 
+
+
     $response = array(
-        'state'   => 200,
-        'results' => $smarty->fetch("$theme/_search_results.$theme.EcomB2B".$template_suffix.'.tpl')
+        'state'     => 200,
+        'results'   => $smarty->fetch("$theme/_search_results.$theme.EcomB2B".$template_suffix.'.tpl'),
+        'analytics' => get_search_results_analytics_data($results['results'])
     );
     echo json_encode($response);
 
 }
 
+
+function get_search_results_analytics_data($results) {
+
+
+    $analytics_data = array();
+    foreach ($results as $result) {
+
+
+        if ($result['scope'] == 'Product') {
+            $analytics_data[] = array(
+                'id'       => $result['code'],
+                'name'       => $result['name'],
+                'category' => $result['family_code'],
+                'price'    => $result['raw_price']
+            );
+        }
+    }
+
+    return $analytics_data;
+}
 
 function process_search($q, $db, $website, $order_key) {
 
@@ -117,10 +140,10 @@ function process_search($q, $db, $website, $order_key) {
 
 
         $sql = sprintf(
-            'SELECT  %s `Product Currency`,`Product Price`,`Product ID`,`Webpage Code`,`Page Key` ,`Product Web State`,`Product Main Image Key`,`Product Web State`,`Webpage URL`,`Webpage Name`,`Product Name`,`Product Code`,`Webpage Meta Description`,`Product Units Per Case`
+            'SELECT  %s `Product Currency`,`Category Code`,`Product Price`,`Product ID`,`Webpage Code`,`Page Key` ,`Product Web State`,`Product Main Image Key`,`Product Web State`,`Webpage URL`,`Webpage Name`,`Product Name`,`Product Code`,`Webpage Meta Description`,`Product Units Per Case`
             FROM  `Product Dimension` P  
             LEFT JOIN `Page Store Dimension` PAS ON (PAS.`Page Key`=P.`Product Webpage Key`)
-
+            left join  `Category Dimension`  on (`Category Key`=`Product Family Category Key`)
 
 		 WHERE `Webpage Website Key`=%d AND `Product Code` LIKE %s  AND  `Webpage State`="Online" AND `Product Status` IN ("Active","Discontinuing")   ', $ordered, $website->id, prepare_mysql($code_q)
         );
@@ -159,15 +182,17 @@ function process_search($q, $db, $website, $order_key) {
                 $candidates[$row['Page Key']]['title']        = $row['Webpage Name'];
                 $candidates[$row['Page Key']]['key']          = $row['Product ID'];
                 $candidates[$row['Page Key']]['ordered']      = $row['ordered'];
+                $candidates[$row['Page Key']]['family_code']  = $row['Category Code'];
+                $candidates[$row['Page Key']]['raw_price']        = $row['Product Price'];
 
-                $candidates[$row['Page Key']]['web_state']     = $row['Product Web State'];
+                $candidates[$row['Page Key']]['web_state'] = $row['Product Web State'];
                 // todo a proper way to do this class
-                $candidates[$row['Page Key']]['out_of_stock_class']     = 'out_of_stock';
-                $candidates[$row['Page Key']]['out_of_stock_label']     = _('Out of stock');
+                $candidates[$row['Page Key']]['out_of_stock_class'] = 'out_of_stock';
+                $candidates[$row['Page Key']]['out_of_stock_label'] = _('Out of stock');
 
 
                 $candidates[$row['Page Key']]['code']  = $row['Product Code'];
-                $candidates[$row['Page Key']]['name']  = $row['Product Units Per Case'].'x '.$row['Product Name'];
+                $candidates[$row['Page Key']]['name']  = ($row['Product Units Per Case']>1?$row['Product Units Per Case'].'x ':'').$row['Product Name'];
                 $candidates[$row['Page Key']]['price'] = money($row['Product Price'], $row['Product Currency']);
 
                 $candidates[$row['Page Key']]['description']       = $row['Webpage Meta Description'];
@@ -246,8 +271,8 @@ function process_search($q, $db, $website, $order_key) {
             }
 
             $sql = sprintf(
-                'SELECT %s `Product Currency`,`Product Price`,`Product ID`,`Product Web State`, `Webpage Code`,`Page Key` ,`Product Main Image Key`,`Product Web State`,`Webpage URL`,`Webpage Name`,`Product Name`,`Product Code`,`Webpage Meta Description`,`Product Units Per Case`
-     FROM  `Product Dimension` P  LEFT JOIN `Page Store Dimension` PAS ON (PAS.`Page Key`=P.`Product Webpage Key`) 
+                'SELECT %s `Product Currency`,`Category Code`,`Product Price`,`Product ID`,`Product Web State`, `Webpage Code`,`Page Key` ,`Product Main Image Key`,`Product Web State`,`Webpage URL`,`Webpage Name`,`Product Name`,`Product Code`,`Webpage Meta Description`,`Product Units Per Case`
+     FROM  `Product Dimension` P  LEFT JOIN `Page Store Dimension` PAS ON (PAS.`Page Key`=P.`Product Webpage Key`)  left join  `Category Dimension`  on (`Category Key`=`Product Family Category Key`)
 
 
 		 WHERE `Webpage Website Key`=%d AND `Product Name`  REGEXP \'[[:<:]]%s\'   AND  `Webpage State`="Online"   AND `Product Status` IN ("Active","Discontinuing")  ', $ordered, $website->id, $_q
@@ -271,28 +296,28 @@ function process_search($q, $db, $website, $order_key) {
                     }
 
 
-
-
-
                     $page_scores[$row['Page Key']]                = $score_match_product_code;
                     $candidates[$row['Page Key']]                 = array();
                     $candidates[$row['Page Key']]['webpage_key']  = $row['Page Key'];
                     $candidates[$row['Page Key']]['image_mobile'] = $image_mobile;
 
-                    $candidates[$row['Page Key']]['scope']   = 'Product';
-                    $candidates[$row['Page Key']]['image']   = $image;
-                    $candidates[$row['Page Key']]['score']   = $score_match_product_code;
-                    $candidates[$row['Page Key']]['url']     = '/'.strtolower($row['Webpage Code']);
-                    $candidates[$row['Page Key']]['key']     = $row['Product ID'];
-                    $candidates[$row['Page Key']]['code']    = $row['Product Code'];
-                    $candidates[$row['Page Key']]['name']    = $row['Product Units Per Case'].'x '.$row['Product Name'];
-                    $candidates[$row['Page Key']]['price']   = money($row['Product Price'], $row['Product Currency']);
-                    $candidates[$row['Page Key']]['ordered'] = $row['ordered'];
+                    $candidates[$row['Page Key']]['scope']       = 'Product';
+                    $candidates[$row['Page Key']]['image']       = $image;
+                    $candidates[$row['Page Key']]['score']       = $score_match_product_code;
+                    $candidates[$row['Page Key']]['url']         = '/'.strtolower($row['Webpage Code']);
+                    $candidates[$row['Page Key']]['key']         = $row['Product ID'];
+                    $candidates[$row['Page Key']]['code']        = $row['Product Code'];
+                    $candidates[$row['Page Key']]['name']  = ($row['Product Units Per Case']>1?$row['Product Units Per Case'].'x ':'').$row['Product Name'];
+                    $candidates[$row['Page Key']]['price']       = money($row['Product Price'], $row['Product Currency']);
+                    $candidates[$row['Page Key']]['ordered']     = $row['ordered'];
+                    $candidates[$row['Page Key']]['family_code'] = $row['Category Code'];
+                    $candidates[$row['Page Key']]['raw_price']       = $row['Product Price'];
 
-                    $candidates[$row['Page Key']]['web_state']     = $row['Product Web State'];
+
+                    $candidates[$row['Page Key']]['web_state'] = $row['Product Web State'];
                     // todo a proper way to do this class
-                    $candidates[$row['Page Key']]['out_of_stock_class']     = 'out_of_stock';
-                    $candidates[$row['Page Key']]['out_of_stock_label']     = _('Out of stock');
+                    $candidates[$row['Page Key']]['out_of_stock_class'] = 'out_of_stock';
+                    $candidates[$row['Page Key']]['out_of_stock_label'] = _('Out of stock');
 
 
                     $candidates[$row['Page Key']]['title']             = $row['Webpage Name'];

@@ -19,13 +19,24 @@
      style="clear:both;padding-top:{$top_margin}px;padding-bottom:{$bottom_margin}px">
     <h1 class="products_title {if !$block.show_title}hide{/if}" style="margin-left:20px;">{$data.title}</h1>
     <div >
+
+        {counter start=-1 print=false assign="counter"}
         {foreach from=$data.items item=item}
+            {counter print=false assign="counter"}
             <div class="store-item-list">
                     <span class="sub_wrap" style="">
 
 
-                        <a href="{$item.link}" style="z-index: 10000;"><img src="{$item.image_mobile_website}" alt="{$item.name|escape}"></a>
-                         <a class="go_product" href="{$item.link}" ><i  class="fal fa-external-link"></i></a>
+                        <a href="{$item.link}" style="z-index: 10000;"
+                           data-analytics='{ "id": "{$item.code}", "name": "{$item.name|escape:'quotes'}",{if isset($item.category)} "category": "{$item.category}",{/if}{if isset($item.raw_price)} "price": "{$item.raw_price}",{/if}"list": "Family", "position":{$counter}}'
+                           data-list="Products"
+                           onclick="onProductClick(this); return !ga.loaded;"
+                        ><img src="{$item.image_mobile_website}" alt="{$item.name|escape}"></a>
+                         <a class="go_product" href="{$item.link}"
+                            data-analytics='{ "id": "{$item.code}", "name": "{$item.name|escape:'quotes'}",{if isset($item.category)} "category": "{$item.category}",{/if}{if isset($item.raw_price)} "price": "{$item.raw_price}",{/if}"list": "Family", "position":{$counter}}'
+                            data-list="Products"
+                            onclick="onProductClick(this); return !ga.loaded;"
+                         ><i  class="fal fa-external-link"></i></a>
 
 
 
@@ -79,5 +90,11 @@
 </div>
 
 
+<script>
+    {foreach from=$data.items item=item  name=analytics_data}
+    {if $item.type=='product'}ga('auTracker.ec:addImpression', { 'id': '{$item.code}', 'name': '{$item.name|escape:'quotes'}',{if isset($item.category)} 'category': '{$item.category}',{/if}{if isset($item.raw_price)} 'price': '{$item.raw_price}',{/if}'list': 'Products', 'position':{$smarty.foreach.analytics_data.index}});
+    {/if}
+    {/foreach}
+</script>
 
 

@@ -124,6 +124,7 @@
                             {include file="theme_1/blk.forbidden.theme_1.EcomB2B.tpl" data=$block key=$key   }
                         {/if}
                     {elseif $block.type=='favourites'}
+
                         {if $logged_in}{assign "with_favourites" 1}
                             <div id="favourites">
                                 <div style="text-align: center">
@@ -280,7 +281,7 @@
             var _args=document.location.href.split("?")[1];
 
 
-            console.log(_args)
+            //console.log(_args)
 
             if(_args!=undefined){
                 args=_args.split("=");
@@ -295,10 +296,7 @@
             }
 
             $('#search_icon').on("click", function () {
-
                 search($('#search_input').val());
-
-
             });
 
             $(document).on('keyup', '#search_input', function (e) {
@@ -307,11 +305,7 @@
                 }
             });
 
-                {/if}
-
-
-
-
+            {/if}
             {if $with_reset_password==1}
             getScript('/js/desktop.logged_in.min.js?v=181124', function () {
                 getScript('/js/desktop.forms.min.js', function () {
@@ -427,9 +421,6 @@
             })
 
             {/if}
-
-
-
             {if $with_basket==1}
             getScript('/js/desktop.logged_in.min.js?v=181124', function () {
                 getScript('/js/desktop.forms.min.js', function () {
@@ -546,7 +537,6 @@
             })
 
             {/if}
-
             {if $with_profile==1}
             getScript('/js/desktop.forms.min.js', function () {
                 getScript('/js/desktop.profile.min.js', function () {
@@ -563,7 +553,6 @@
                 })
             })
             {/if}
-
             {if $with_register==1}
             $('#register_header_button').addClass('hide')
             getScript('/js/desktop.forms.min.js', function () {
@@ -1101,7 +1090,6 @@
 
             })
             {/if}
-
             {if $with_gallery==1}
 
 
@@ -1131,10 +1119,6 @@
 
             })
             {/if}
-
-
-
-
             {if $with_iframe==1}
 
             $(document).ready(function () {
@@ -1158,15 +1142,9 @@
 
 
             {/if}
-
-
-
             {if $logged_in}
-
-
-            {if $with_product_order_input==1}
-
-            $.getJSON("ar_web_customer_products.php?tipo=category_products&webpage_key={$webpage->id}", function (data) {
+                {if $with_product_order_input==1}
+                $.getJSON("ar_web_customer_products.php?tipo=category_products&webpage_key={$webpage->id}", function (data) {
 
                 // console.log(data)
 
@@ -1197,13 +1175,8 @@
                 $('#header_order_totals').find('i').attr('title',data.label)
 
             });
-
-
-
-
-
-            {else}
-            $.getJSON("ar_web_customer_products.php?tipo=total_basket", function (data) {
+                {else}
+                $.getJSON("ar_web_customer_products.php?tipo=total_basket", function (data) {
 
 
                 $('#header_order_totals').find('.ordered_products_number').html(data.items)
@@ -1214,9 +1187,8 @@
 
 
             });
-            {/if}
-
-            getScript('/js/desktop.logged_in.min.js?v=181124', function () {
+                {/if}
+                getScript('/js/desktop.logged_in.min.js?v=181124', function () {
                 $('#logout i').removeClass('fa-spinner fa-spin').addClass('fa-sign-out')
 
 
@@ -1256,6 +1228,7 @@
                             $('#header_order_totals').find('.ordered_products_number').html(data.items)
                             $('#header_order_totals').find('.order_amount').html(data.total)
                             $('#header_order_totals').find('i').attr('title',data.label)
+                            ga('auTracker.send', 'pageview');
 
                         });
 
@@ -1269,13 +1242,20 @@
 
 
             })
-
             {/if}
+
+
+
+
 
 
         });
     })();
 
+
+    {if $with_search!=1 and $with_favourites!=1 and $with_basket!=1 and $with_checkout!=1}
+    ga('auTracker.send', 'pageview');
+    {/if}
 
 </script>
 

@@ -16,19 +16,32 @@
 
 <div id="block_{$key}" data-block_key="{$key}"  block="{$data.type}" class="{$data.type} _block {if !$data.show}hide{/if}" top_margin="{$top_margin}" bottom_margin="{$bottom_margin}" style="padding-top:{$top_margin}px;padding-bottom:{$bottom_margin}px"  >
 
-
+    {counter start=-1 print=false assign="counter"}
     {foreach from=$data.items item=item key=stack_index}
 
 
         {if $item.type=='product'}
+            {counter print=false assign="counter"}
 
             <div class="store-item-list">
                     <span class="sub_wrap" style="">
 
 
-                        <a href="{$item.link}" style="z-index: 10000;"><img src="{$item.image_mobile_website}" alt="{$item.name|escape}"></a>
+                        <a href="{$item.link}"
 
-                         <a class="go_product" href="{$item.link}" style="z-index: 10000;"><i  class="fal fa-external-link"></i></a>
+                           data-analytics='{ "id": "{$item.code}", "name": "{$item.name|escape:'quotes'}",{if isset($item.category)} "category": "{$item.category}",{/if}{if isset($item.raw_price)} "price": "{$item.raw_price}",{/if}"list": "Family", "position":{$counter}}'
+                           data-list="Family"
+                           onclick="onProductClick(this); return !ga.loaded;"
+
+                           style="z-index: 10000;"><img src="{$item.image_mobile_website}" alt="{$item.name|escape}"></a>
+
+                         <a class="go_product" href="{$item.link}"
+
+                            data-analytics='{ "id": "{$item.code}", "name": "{$item.name|escape:'quotes'}",{if isset($item.category)} "category": "{$item.category}",{/if}{if isset($item.raw_price)} "price": "{$item.raw_price}",{/if}"list": "Family", "position":{$counter}}'
+                            data-list="Family"
+                            onclick="onProductClick(this); return !ga.loaded;"
+
+                            style="z-index: 10000;"><i  class="fal fa-external-link"></i></a>
 
                         <em style="margin-left:185px;padding-left: 0px;" class="single_line_height">
 
@@ -85,3 +98,10 @@
     {/foreach}
 
 </div>
+
+<script>
+    {foreach from=$data.items item=item  name=analytics_data}
+    {if $item.type=='product'}ga('auTracker.ec:addImpression', { 'id': '{$item.code}', 'name': '{$item.name|escape:'quotes'}',{if isset($item.category)} 'category': '{$item.category}',{/if}{if isset($item.raw_price)} 'price': '{$item.raw_price}',{/if}'list': 'Family', 'position':{$smarty.foreach.analytics_data.index}});
+    {/if}
+    {/foreach}
+</script>

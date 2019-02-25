@@ -259,7 +259,7 @@
         });
 
 
-getScript('/js/tablet.custom.min.js?v=2', function () {
+            getScript('/js/tablet.custom.min.js?v=2', function () {
 
 
             {if $with_search==1}
@@ -1257,9 +1257,9 @@ getScript('/js/tablet.custom.min.js?v=2', function () {
 
 
 
-
-
-
+    {if $with_search!=1 and $with_favourites!=1 and $with_basket!=1 and $with_checkout!=1}
+    ga('auTracker.send', 'pageview');
+    {/if}
 
 
 

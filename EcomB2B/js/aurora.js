@@ -4,7 +4,7 @@
  Version 3.0*/
 
 
-
+/*
 
 $(function() {
 
@@ -62,8 +62,32 @@ function search(query){
 
       $('#search_results').html(data.results)
 
+        for(var i = 0; i < data.analytics.length; i++) {
+            var product = data.analytics[i];
+
+            console.log({
+                'id': product.id,
+                'name': product.name,
+                'category': product.category,
+                'price': product.price,
+                'list': 'Search Results',
+                'position': i+1
+            })
+
+            ga('auTracker.ec:addImpression', {
+                'id': product.id,
+                'name': product.name,
+                'category': product.category,
+                'price': product.price,
+                'list': 'Search Results',
+                'position': i+1
+            });
+        }
+
+        ga('auTracker.send', 'pageview');
 
     })
 
 }
 
+*/

@@ -13,10 +13,9 @@
 <table class="order_items" >
     <thead>
     <tr>
-        <th class="text-left">{t}Code{/t}</th>
-        <th class="text-left">{t}Description{/t}</th>
-        <th class="text-right">{t}Quantity{/t}</th>
-        <th class="text-right">{t}Amount net{/t}</th>
+        <th class="text-left" style="padding-left: 10px">{t}Items{/t}</th>
+        <th class="text-right"></th>
+        <th class="text-right"></th>
     </tr>
     </thead>
     <tbody>
@@ -24,8 +23,8 @@
     {foreach from=$order->get_items() item="item" }
 
     <tr>
-        <td>{$item.code}</td>
-        <td>{$item.description}</td>
+
+        <td class="text-left">{$item.code} {$item.description}</td>
         {if $edit}
         <td class="text-right">{$item.edit_qty}</td>
         {else}

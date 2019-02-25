@@ -11,14 +11,28 @@
 
 
 
-
+{counter start=-1 print=false assign="counter"}
     {foreach from=$results item="result" }
 
         <div class="content text_blocks text_template_13">
 
             <div class="text_block_container" style="position: relative;text-align: center">
 
-                <a href="{$result.url}"><img style="max-height: 150px" src="{$result.image}"/></a>
+
+                <a href="{$result.url}"
+                    {if $result.scope=='Product'}
+                    {counter print=false assign="counter"}
+                   data-analytics='{
+                   "id":"{$result.code}",
+                   "name":"{$result.name|escape:quotes}",
+                   "category":"{$result.family_code}",
+                    {if isset($result.raw_price)}"price":"{$result.raw_price}",{/if}
+                    "position":{$counter}
+                    }'
+                   data-list="Search"
+                   onclick="onProductClick(this); return !ga.loaded;"
+                    {/if}
+                ><img style="max-height: 150px" src="{$result.image}"/></a>
             </div>
 
             <div class="text_block_container" style="position: relative">
