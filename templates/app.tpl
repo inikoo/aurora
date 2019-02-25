@@ -16,7 +16,7 @@
         <script src="https://browser.sentry-cdn.com/4.3.4/bundle.min.js" crossorigin="anonymous"></script>
         <script src="https://wchat.freshchat.com/js/widget.js"></script>
     {/if}
-    <script src="/js/aurora_libs.min.js?v190225"></script>
+    <script src="/js/aurora_libs.min.js?v190225v2"></script>
 
     <script src="/js/aurora.min.js?v190222"></script>
 
