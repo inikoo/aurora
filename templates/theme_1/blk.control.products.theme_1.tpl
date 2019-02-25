@@ -78,7 +78,7 @@
 
         <span id='toggle_products_title' onclick="toggle_block_title(this)" class="padding_left_20 unselectable button"><i class="fa {if $block.show_title}fa-toggle-on{else}fa-toggle-off{/if}"></i> {t}Title{/t}</span>
 
-        <span id='toggle_category_products_item_headers' onclick="toggle_products_item_headers(this)" class="padding_left_20 unselectable button" title="{t}Product's headers{/t}"><i class="fa {if $block.item_headers}fa-toggle-on{else}fa-toggle-off{/if}"></i> {t}headers{/t}</span>
+        <span class="hide" id='toggle_category_products_item_headers' onclick="toggle_products_item_headers(this)" class="padding_left_20 unselectable button" title="{t}Product's headers{/t}"><i class="fa {if $block.item_headers}fa-toggle-on{else}fa-toggle-off{/if}"></i> {t}headers{/t}</span>
 
         <span id='open_add_product_dialog' onclick="open_products_add_product_dialog(this)" class="padding_left_20 unselectable button"><i class="fa fa-plus"></i> {t}Product{/t}</span>
 
