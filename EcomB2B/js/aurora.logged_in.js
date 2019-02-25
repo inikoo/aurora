@@ -56,15 +56,7 @@ $(function() {
 
     $(document).on('click', '.favourite', function (e) {
 
-
-
-
-
         var icon = $(this)
-
-
-
-
         if (icon.hasClass('far')) {
             console.log('add')
 

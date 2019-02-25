@@ -185,7 +185,7 @@
 
 
 
-            <script src="js/desktop.min.js"></script>
+            <script src="js/desktop.min.js?v201902"></script>
 
             <script src="js/desktop.forms.min.js"></script>
             <script src="js/sweetalert.min.js"></script>
