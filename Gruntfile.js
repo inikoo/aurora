@@ -240,7 +240,8 @@ module.exports = function (grunt) {
                     'js/libs/jquery.fancybox.min.js',
                     'js/libs/jquery.awesome-cursor.min.js',
                     'js/libs/base64.js',
-                    'js/libs/jquery.formatCurrency-1.4.0.min.js',
+                    //'js/libs/jquery.formatCurrency-1.4.0.min.js',
+                    'js/libs/jquery.formatCurrency.js',
                     'js/libs/autobahn.v1.js',
 
 

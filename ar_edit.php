@@ -1594,7 +1594,7 @@ function new_object($account, $db, $user, $editor, $data, $smarty) {
             }
             break;
         case 'SupplierDelivery':
-          
+
             include_once 'class.SupplierDelivery.php';
 
             $data['fields_data']['user'] = $user;
