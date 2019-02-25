@@ -29,6 +29,7 @@ if (!isset($_REQUEST['tipo'])) {
 $tipo = $_REQUEST['tipo'];
 
 
+
 switch ($tipo) {
 
 
@@ -229,7 +230,10 @@ switch ($tipo) {
                      )
         );
 
+
+
         new_object($account, $db, $user, $editor, $data, $smarty);
+
         break;
     case 'get_available_barcode':
         get_available_barcode($db);
@@ -993,7 +997,7 @@ function new_object($account, $db, $user, $editor, $data, $smarty) {
     $redirect          = '';
     $redirect_metadata = '';
 
-    print_r($data);
+
 
     switch ($data['object']) {
 
@@ -1590,11 +1594,12 @@ function new_object($account, $db, $user, $editor, $data, $smarty) {
             }
             break;
         case 'SupplierDelivery':
+          
             include_once 'class.SupplierDelivery.php';
 
             $data['fields_data']['user'] = $user;
-
             $object = $parent->create_delivery($data['fields_data']);
+
             if (!$parent->error) {
 
                 $pcard        = '';
