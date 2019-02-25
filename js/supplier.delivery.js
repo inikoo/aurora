@@ -224,6 +224,8 @@ function place_item(element) {
         $('.items_operation').addClass('hide')
 
         for (var key in data.update_metadata.operations) {
+
+            console.log( data.update_metadata.operations[key])
             $('#' + data.update_metadata.operations[key]).removeClass('hide')
         }
 
