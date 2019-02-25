@@ -64,19 +64,18 @@ class Public_Website {
             $this->code = $this->data['Website Code'];
 
 
-
-            if (empty($this->data['Website Settings'] )) {
+            if (empty($this->data['Website Settings'])) {
                 $this->settings = array();
             } else {
 
-               //  echo setlocale(LC_NUMERIC, 0);
+                //  echo setlocale(LC_NUMERIC, 0);
 
 
                 $this->settings = json_decode($this->data['Website Settings'], true);
 
-             //  print_r($this->settings);
-               //
-               // exit;
+                //  print_r($this->settings);
+                //
+                // exit;
 
             }
 
@@ -356,12 +355,14 @@ class Public_Website {
                         $tab_label_index = '_credit_card_label';
                         $tab_label       = '';
                         $short_label     = '<i class="fa fa-credit-card" aria-hidden="true"></i>';
+                        $analytics_label = 'Credit card';
                         break;
                     case 'BTreePaypal':
                         $icon            = 'fab fa-paypal';
                         $tab_label       = 'Paypal';
                         $tab_label_index = '';
                         $short_label     = '<i class="fab fa-paypal" aria-hidden="true"></i>';
+                        $analytics_label = 'Paypal';
 
                         break;
                     case 'Paypal':
@@ -369,21 +370,21 @@ class Public_Website {
                         $tab_label       = 'Paypal';
                         $tab_label_index = '';
                         $short_label     = '<i class="fab fa-paypal" aria-hidden="true"></i>';
-
+                        $analytics_label = 'Paypal';
                         break;
                     case 'Sofort':
                         $icon            = 'fa fa-hand-peace ';
                         $tab_label       = 'Sofort';
                         $tab_label_index = '';
                         $short_label     = '<i class="fa fa-hand-peace" aria-hidden="true"></i>';
-
+                        $analytics_label = 'Sofort';
                         break;
                     case 'Bank':
                         $icon            = 'fa fa-university';
                         $tab_label_index = '_bank_label';
                         $tab_label       = '';
                         $short_label     = '';
-
+                        $analytics_label = 'Bank';
                         break;
 
                     case 'ConD':
@@ -398,6 +399,7 @@ class Public_Website {
                         $tab_label_index = '_cash_on_delivery_label';
                         $tab_label       = '';
                         $short_label     = '';
+                        $analytics_label = 'Cash on delivery';
                         break;
                     default:
 
@@ -410,7 +412,8 @@ class Public_Website {
                     'icon'            => $icon,
                     'tab_label_index' => $tab_label_index,
                     'tab_label'       => $tab_label,
-                    'short_label'     => $short_label
+                    'short_label'     => $short_label,
+                    'analytics_label' => $analytics_label
                 );
 
             }
@@ -513,12 +516,12 @@ class Public_Website {
                     }
 
                     $row['Options'] = $options;
-                    $reply=0;
+                    $reply          = 0;
                     if ($customer_key) {
                         $sql = sprintf('SELECT `Customer Poll Query Option Key` FROM `Customer Poll Fact` WHERE `Customer Poll Customer Key`=%d AND `Customer Poll Query Key`=%d ', $customer_key, $row['Customer Poll Query Key']);
                         if ($result2 = $this->db->query($sql)) {
                             if ($row2 = $result2->fetch()) {
-                                $reply=$row2['Customer Poll Query Option Key'];
+                                $reply = $row2['Customer Poll Query Option Key'];
                             }
                         } else {
                             print_r($error_info = $this->db->errorInfo());
@@ -526,15 +529,15 @@ class Public_Website {
                             exit;
                         }
                     }
-                    $row['Reply']=$reply;
+                    $row['Reply'] = $reply;
 
-                }else{
-                    $reply='';
+                } else {
+                    $reply = '';
                     if ($customer_key) {
                         $sql = sprintf('SELECT `Customer Poll Reply` FROM `Customer Poll Fact` WHERE `Customer Poll Customer Key`=%d AND `Customer Poll Query Key`=%d ', $customer_key, $row['Customer Poll Query Key']);
                         if ($result2 = $this->db->query($sql)) {
                             if ($row2 = $result2->fetch()) {
-                                $reply=$row2['Customer Poll Reply'];
+                                $reply = $row2['Customer Poll Reply'];
                             }
                         } else {
                             print_r($error_info = $this->db->errorInfo());
@@ -542,7 +545,7 @@ class Public_Website {
                             exit;
                         }
                     }
-                    $row['Reply']=$reply;
+                    $row['Reply'] = $reply;
 
                 }
 

@@ -58,6 +58,11 @@ function place_order(element) {
                 $('.ordered_products_number').html('0')
                 $('.order_total').html('')
 
+
+                ga('auTracker.ec:setAction', 'purchase', data.analytics_data);
+
+
+
                 window.location.replace("thanks.sys?order_key="+data.order_key);
 
             } else if (data.state == '400') {

@@ -12,6 +12,7 @@
 
 {if isset($data.top_margin)}{assign "top_margin" $data.top_margin}{else}{assign "top_margin" "30"}{/if}
 {if isset($data.bottom_margin)}{assign "bottom_margin" $data.bottom_margin}{else}{assign "bottom_margin" "0"}{/if}
+{assign "items_data" $order->get_items()}
 
 
 <div id="block_{$key}"  class="clear content {if !$data.show}hide{/if}"  style="padding-top:{$top_margin}px;padding-bottom:{$bottom_margin}px"  >
@@ -151,7 +152,7 @@
                     </thead>
                     <tbody>
 
-                    {foreach from=$order->get_items() item="item" }
+                    {foreach from=$items_data item="item" }
 
                         <tr>
                             <td style="text-align: left">{$item.code_description}</td>
@@ -842,8 +843,16 @@
     }
     });
 
+    {foreach from=$items_data item="item" }
+    ga('auTracker.ec:addProduct',{$item.analytics_data} );
+    {/foreach}
 
 
+
+    ga('auTracker.ec:setAction','checkout', {
+        'step': 1,
+    });
+    ga('auTracker.send', 'pageview');
 
 </script>
 

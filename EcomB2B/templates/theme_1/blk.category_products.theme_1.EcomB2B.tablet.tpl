@@ -24,6 +24,7 @@
     }'></span>
 
     <div class="products {if !$data.item_headers}no_items_header{/if}"  data-sort="{$data.sort}" >
+        {counter start=-1 print=false assign="counter"}
         {foreach from=$data.items item=item}
 
 
@@ -31,6 +32,7 @@
 
 
                 {if $item.type=='product'}
+                    {counter print=false assign="counter"}
 
                     <div class="product_block tablet item product_container" data-product_id="{$item.product_id}">
                         <div class="product_header_text fr-view" >
@@ -38,7 +40,12 @@
                         </div>
 
                         <div class="wrap_to_center product_image" >
-                            <a href="{$item.link}"><i class="fal fa-fw fa-external-link-square more_info" aria-hidden="true"></i></a>
+                            <a href="{$item.link}"
+                               data-analytics='{ "id": "{$item.code}", "name": "{$item.name|escape:'quotes'}",{if isset($item.category)} "category": "{$item.category}",{/if}{if isset($item.raw_price)} "price": "{$item.raw_price}",{/if}"list": "Family", "position":{$counter}}'
+                               data-list="Family"
+                               onclick="onProductClick(this); return !ga.loaded;"
+
+                            ><i class="fal fa-fw fa-external-link-square more_info" aria-hidden="true"></i></a>
                             {if $logged_in}<i    data-product_id="{$item.product_id}" data-favourite_key="0" class="favourite_{$item.product_id} favourite far  fa-heart" aria-hidden="true"></i>
                             {/if}
                             <img src="{$item.image_website}"  />
@@ -148,3 +155,10 @@
 
     <div style="clear:both"></div>
 </div>
+
+<script>
+    {foreach from=$data.items item=item  name=analytics_data}
+    {if $item.type=='product'}ga('auTracker.ec:addImpression', { 'id': '{$item.code}', 'name': '{$item.name|escape:'quotes'}',{if isset($item.category)} 'category': '{$item.category}',{/if}{if isset($item.raw_price)} 'price': '{$item.raw_price}',{/if}'list': 'Family', 'position':{$smarty.foreach.analytics_data.index}});
+    {/if}
+    {/foreach}
+</script>

@@ -32,40 +32,37 @@ switch ($tipo) {
                              'type'     => 'string',
                              'optional' => true
                          ),
-                         'order_key' => array(
+                         'order_key'     => array(
                              'type'     => 'string',
                              'optional' => true
                          )
                      )
         );
 
-        get_thanks_html($data, $customer,$db);
+        get_thanks_html($data, $customer, $db);
 
 
         break;
 
-   
- 
-   
+
 }
 
-function get_thanks_html($data, $customer,$db) {
+function get_thanks_html($data, $customer, $db) {
 
 
-    $template_suffix=$data['device_prefix'];
+    $template_suffix = $data['device_prefix'];
 
-    $smarty               = new Smarty();
+    $smarty = new Smarty();
     $smarty->setTemplateDir('templates');
     $smarty->setCompileDir('server_files/smarty/templates_c');
     $smarty->setCacheDir('server_files/smarty/cache');
-$smarty->setConfigDir('server_files/smarty/configs');
+    $smarty->setConfigDir('server_files/smarty/configs');
     $smarty->addPluginsDir('./smarty_plugins');
-
 
 
     $order = get_object('Order', $data['order_key']);
 
-    if(!$order->id or  $order->get('Order Customer Key')!=$customer->id ){
+    if (!$order->id or $order->get('Order Customer Key') != $customer->id) {
         $response = array(
             'state' => 200,
             'html'  => '',
@@ -78,7 +75,7 @@ $smarty->setConfigDir('server_files/smarty/configs');
     $website = get_object('Website', $_SESSION['website_key']);
     $theme   = $website->get('Website Theme');
 
-    $store   = get_object('Store', $website->get('Website Store Key'));
+    $store = get_object('Store', $website->get('Website Store Key'));
 
     $webpage = $website->get_webpage('thanks.sys');
 
@@ -126,7 +123,6 @@ $smarty->setConfigDir('server_files/smarty/configs');
     $smarty->assign('placed_order', $placed_order);
 
 
-
     $placeholders = array(
         '[Greetings]'     => $customer->get_greetings(),
         '[Customer Name]' => $customer->get('Name'),
@@ -145,18 +141,15 @@ $smarty->setConfigDir('server_files/smarty/configs');
     );
 
 
-    $block['text']=strtr($block['text'], $placeholders);
+    $block['text'] = strtr($block['text'], $placeholders);
 
 
-    if($template_suffix1=''){
-        $block['text'] = str_replace('<br/>', '',  $block['text']);
-        $block['text'] = str_replace('<br>', '',  $block['text']);
-        $block['text'] = str_replace('<p></p>', '',  $block['text']);
+    if ($template_suffix1 = '') {
+        $block['text'] = str_replace('<br/>', '', $block['text']);
+        $block['text'] = str_replace('<br>', '', $block['text']);
+        $block['text'] = str_replace('<p></p>', '', $block['text']);
     }
     $smarty->assign('data', $block);
-
-
-
 
 
     $response = array(

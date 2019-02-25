@@ -98,7 +98,7 @@ function save_item_qty_change(element) {
     var settings = order_div.data('settings')
 
 
-    var request = 'ar_web_basket.php?tipo=update_item&product_id=' + settings.pid + '&order_key=' + $('#webpage_data').data('order_key') + '&qty=' + qty + '&webpage_key=' + $('#webpage_data').data('webpage_key') + '&page_section_type=Basket'
+    var request = 'ar_web_basket.php?tipo=update_item&product_id=' + settings.pid +'&qty=' + qty + '&webpage_key=' + $('#webpage_data').data('webpage_key') + '&page_section_type=Basket'
 
 
     //console.log(request)
@@ -177,7 +177,13 @@ function save_item_qty_change(element) {
             if (data.quantity == 0) data.quantity = ''
 
 
+            if(data.analytics.action!=''){
 
+
+                ga('auTracker.ec:addProduct', data.analytics.product_data);
+                ga('auTracker.ec:setAction', data.analytics.action);
+                ga('auTracker.send', 'event', 'UX', 'click',data.analytics.event);
+            }
 
 
 

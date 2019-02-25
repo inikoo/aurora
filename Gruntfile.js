@@ -17,6 +17,7 @@ module.exports = function (grunt) {
                     'EcomB2B/js/jquery.hoverIntent.js',
                     'EcomB2B/js/menu.js',
                     'EcomB2B/js/search.js',
+                    'EcomB2B/js/analytics.js',
 
 
                 ], dest: 'EcomB2B/js/desktop.min.js'
@@ -91,6 +92,7 @@ module.exports = function (grunt) {
                     'EcomB2B/theme_1/mobile/plugins.js',
                     'EcomB2B/theme_1/mobile/custom.js',
                     'EcomB2B/js/search.js',
+                    'EcomB2B/js/analytics.js',
                 ], dest: 'EcomB2B/js/mobile.min.js',
 
             }, pweb_mobile_logged_in: {
@@ -158,6 +160,7 @@ module.exports = function (grunt) {
                    // 'EcomB2B/js/swiper.js',
                   //  'EcomB2B/theme_1/tablet/custom.js',
                     'EcomB2B/js/search.js',
+                    'EcomB2B/js/analytics.js',
                 ], dest: 'EcomB2B/js/tablet.min.js',
 
             }, pweb_tablet_custom: {

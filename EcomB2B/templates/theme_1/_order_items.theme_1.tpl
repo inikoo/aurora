@@ -23,7 +23,8 @@
     </thead>
     <tbody>
 
-    {foreach from=$order->get_items() item="item" }
+
+    {foreach from=$items_data item="item" }
 
     <tr>
         <td>{$item.code}</td>
@@ -38,13 +39,8 @@
     </tr>
 
 
+
     {/foreach}
     </tbody>
 </table>
 
-<script>
-
-
-
-
-</script>

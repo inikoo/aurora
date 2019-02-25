@@ -136,71 +136,187 @@ $(function() {
     });
 
 
-
- $('.order_row .label').on( 'click',function () {
-
-        var element = $(this);
-        var order_row = $(this).closest('.order_row');
-        if ($(this).find('i').hasClass('fa-spinner')) return;
+    $(".label_when_log_out").each(function (index) {
 
 
-        var input = order_row.find('.order_input')
+        var len_fit = 10;
+        var un = $(this)
 
-        var order_qty = input.val()
-        $(this).find('i').removeClass('fa-hand-pointer').addClass('fa-spinner fa-spin  ')
-        input.prop('readonly', true);
 
-        var order_key = $('#webpage_data').data('order_key');
-        if (order_key == '') order_key = 0;
+        var len_user_name = un.html().length;
+        if (len_fit < len_user_name) {
 
-        if (order_qty > 0) {
-            order_row.addClass('ordered').removeClass('empty')
-        } else {
-            //   order_row.removeClass('ordered').addClass('empty')
+            var size_now = parseInt(un.css("font-size"));
+            var size_new = size_now * len_fit / len_user_name;
+            un.css("font-size", size_new);
 
         }
 
+    });
 
-        var request = 'ar_web_basket.php?tipo=update_item&product_id=' + $(this).closest('.product_container').data('product_id') + '&order_key=' + order_key + '&qty=' + order_qty + '&webpage_key=' + $('#webpage_data').data('webpage_key') + '&page_section_type=Family'
-
-        console.log(request)
-        $.getJSON(request, function (data) {
+    $(".order_button_text").each(function (index) {
 
 
-            if (data.state == 200) {
+        var len_fit = 9;
+        var un = $(this)
+
+
+        var len_user_name = un.html().length;
+        if (len_fit < len_user_name) {
+
+            var size_now = parseInt(un.css("font-size"));
+            var size_new = size_now * len_fit / len_user_name;
+
+
+            un.css("font-size", size_new);
+
+        }
+
+    });
+
+
+    $(".item_name").each(function (index) {
+
+
+        var len_fit = 50; // According to your question, 10 letters can fit in.
+        var un = $(this)
+
+        // Get the lenght of user name.
+        var len_user_name = un.html().length;
+        if (len_fit < len_user_name) {
+
+            // Calculate the new font size.
+            var size_now = parseInt(un.css("font-size"));
+            var size_new = size_now * len_fit / len_user_name;
+
+            // Set the new font size to the user name.
+            un.css("font-size", size_new);
+
+        }
+
+    });
 
 
 
-                for (var key in data.metadata.class_html) {
-                    $('.' + key).html(data.metadata.class_html[key])
-                }
+    function validate_integer(value, min_value,max_value) {
+
+        if (!$.isNumeric(value)) {
+            return {
+                class: 'invalid', type: 'not_integer'
+            }
+        }
+
+        if (value > max_value) {
+            return {
+                class: 'invalid',
+
+                type: 'too_big'
+            }
+        }
+
+        if (value < min_value) {
+            return {
+                class: 'invalid',
+
+                type: 'too_small'
+            }
+        }
+        if (Math.floor(value) != value) {
 
 
-                if (data.quantity > 0) {
-                    element.html($('#ordering_settings').data('labels').ordered)
-                    order_row.addClass('ordered').removeClass('empty')
-                } else {
-                    element.html($('#ordering_settings').data('labels').order)
-                    order_row.removeClass('ordered').addClass('empty')
-                }
+            return {
+                class: 'invalid',
 
-                if (data.quantity == 0) data.quantity = ''
+                type: 'not_integer'
+            }
+        }
 
-                input.val(data.quantity).data('ovalue', data.quantity).prop('readonly', false);
+        return false
+    }
 
-            } else if (data.state == 201) {
 
-                window.location.href = 'waiting_payment_confirmation.php?referral_key=' + $('#webpage_data').data('webpage_key')
 
+
+    /*
+
+     $('.order_row .label').on( 'click',function () {
+
+
+
+
+
+            var element = $(this);
+            var order_row = $(this).closest('.order_row');
+            if ($(this).find('i').hasClass('fa-spinner')) return;
+
+
+            var input = order_row.find('.order_input')
+
+            var order_qty = input.val()
+            $(this).find('i').removeClass('fa-hand-pointer').addClass('fa-spinner fa-spin  ')
+            input.prop('readonly', true);
+
+            var order_key = $('#webpage_data').data('order_key');
+            if (order_key == '') order_key = 0;
+
+            if (order_qty > 0) {
+                order_row.addClass('ordered').removeClass('empty')
+            } else {
+                //   order_row.removeClass('ordered').addClass('empty')
 
             }
 
 
-        })
+            var request = 'ar_web_basket.php?tipo=update_item&product_id=' + $(this).closest('.product_container').data('product_id') + '&order_key=' + order_key + '&qty=' + order_qty + '&webpage_key=' + $('#webpage_data').data('webpage_key') + '&page_section_type=Family'
+
+            //console.log(request)
+            $.getJSON(request, function (data) {
 
 
-    });
+                if (data.state == 200) {
 
+
+
+                    for (var key in data.metadata.class_html) {
+                        $('.' + key).html(data.metadata.class_html[key])
+                    }
+
+
+                    if (data.quantity > 0) {
+                        element.html($('#ordering_settings').data('labels').ordered)
+                        order_row.addClass('ordered').removeClass('empty')
+                    } else {
+                        element.html($('#ordering_settings').data('labels').order)
+                        order_row.removeClass('ordered').addClass('empty')
+                    }
+
+                    if (data.quantity == 0) data.quantity = ''
+
+                    input.val(data.quantity).data('ovalue', data.quantity).prop('readonly', false);
+                    //console.log(data.analytics)
+                    if(data.analytics.action!=''){
+
+
+                        ga('ec:addProduct', data.analytics.product_data);
+                        ga('ec:setAction', data.analytics.action);
+                        ga('send', 'event', 'UX', 'click',data.analytics.event);
+                    }
+
+
+
+
+                } else if (data.state == 201) {
+
+
+
+                }
+
+
+            })
+
+
+        });
+    */
 
 
 });

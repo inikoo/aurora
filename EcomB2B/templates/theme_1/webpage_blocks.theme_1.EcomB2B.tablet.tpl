@@ -1189,7 +1189,9 @@
 
 
 
-
+        {if $with_search!=1 and $with_favourites!=1 and $with_basket!=1 and $with_checkout!=1}
+        ga('auTracker.send', 'pageview');
+        {/if}
 
 
 

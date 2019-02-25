@@ -18,7 +18,9 @@
     </tr>
     </thead>
     <tbody>
-{foreach from=$results item="result" }
+    {counter start=-1 print=false assign="counter"}
+
+    {foreach from=$results item="result" }
     <tr>
 
 
@@ -50,7 +52,20 @@
             {/if}
 
                 <div  style="float:right;margin-right: 10px" class="mobile_ordering" >
-                    <a href="{$result.url}" style="color:#555"> <i  class="fa fa-reply fa-flip-horizontal"></i></a>
+                    {if $result.scope=='Product'}
+                    {counter print=false assign="counter"}
+                    <a href="{$result.url}"
+                       data-analytics='{
+                   "id":"{$result.code}",
+                   "name":"{$result.name|escape:quotes}",
+                   "category":"{$result.family_code}",
+                    {if isset($result.raw_price)}"price":"{$result.raw_price}",{/if}
+                    "position":{$counter}
+                    }'
+                       data-list="Search"
+                       onclick="onProductClick(this); return !ga.loaded;"
+                            {/if}
+                       style="color:#555"> <i  class="fa fa-reply fa-flip-horizontal"></i></a>
                 </div>
             </div>
 

@@ -4,40 +4,34 @@
  Version 3.0*/
 
 
-/*
-
-$(function() {
-
-
-
-    $("form").on('submit', function (e) {
-
-        e.preventDefault();
-        e.returnValue = false;
-
-    });
-
-   
-
-
-
-
-
-});
-*/
 
 function search(query){
 
 
     var request = "/ar_web_search.php?tipo=search&query=" +encodeURIComponent(query)
-    console.log(request)
+   // console.log(request)
 
     $.getJSON(request, function (data) {
 
-      $('#search_results').html(data.results)
+        $('#search_results').html(data.results)
 
+        for(var i = 0; i < data.analytics.length; i++) {
+            var product = data.analytics[i];
+
+
+
+            ga('auTracker.ec:addImpression', {
+                'id': product.id,
+                'name': product.name,
+                'category': product.category,
+                'price': product.price,
+                'list': 'Search Results',
+                'position': i+1
+            });
+        }
+
+        ga('auTracker.send', 'pageview');
 
     })
 
 }
-

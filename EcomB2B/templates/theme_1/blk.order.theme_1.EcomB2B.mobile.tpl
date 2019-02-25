@@ -118,7 +118,7 @@
         </table>
 
 
-    {include file="theme_1/_order_items.theme_1.mobile.tpl" edit=false hide_title=true order=$order }
+    {include file="theme_1/_order_items.theme_1.EcomB2B.mobile.tpl" edit=false hide_title=true order=$order }
 
 
 </div>

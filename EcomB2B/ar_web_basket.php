@@ -244,10 +244,11 @@ function update_item($_data, $customer, $order, $editor, $db) {
             'available_credit_amount' => $order->get('Available Credit Amount'),
             'order_shipping'          => $shipping_amount,
             'order_total'             => $order->get('Total Amount'),
-            'to_pay_amount'             => $order->get('Basket To Pay Amount'),
+            'to_pay_amount'           => $order->get('Basket To Pay Amount'),
             'ordered_products_number' => $order->get('Products'),
             'order_amount'            => ((!empty($website->settings['Info Bar Basket Amount Type']) and $website->settings['Info Bar Basket Amount Type'] == 'items_net') ? $order->get('Items Net Amount') : $order->get('Total'))
         );
+
 
 
         $response = array(
@@ -268,12 +269,30 @@ function update_item($_data, $customer, $order, $editor, $db) {
             ),
 
 
+
+
+
             'to_charge'      => $transaction_data['to_charge'],
             'discounts_data' => $discounts_data,
             'discounts'      => ($order->data['Order Items Discount Amount'] != 0 ? true : false),
             'charges'        => ($order->data['Order Charges Net Amount'] != 0 ? true : false),
 
-            'order_empty' => ($order->get('Products') == 0 ? true : false)
+            'order_empty' => ($order->get('Products') == 0 ? true : false),
+            'analytics'   => array(
+                'action'       => ($transaction_data['delta_qty'] > 0 ? 'add' : ($transaction_data['delta_qty'] < 0 ? 'remove' :   '')),
+                'event'       => ($transaction_data['delta_qty'] > 0 ? 'Add to cart' : ($transaction_data['delta_qty'] < 0 ? 'Remove from cart' :   '')),
+
+                'product_data' => array(
+                    'id'       => $product->get('Code'),
+                    'name'     => $product->get('Name'),
+                    'category' => $product->get('Family Code'),
+                    'price'    => $product->get('Product Price'),
+                    'quantity' => abs($transaction_data['delta_qty']),
+                )
+
+
+            )
+
 
         );
     } else {
@@ -289,7 +308,7 @@ function create_order($editor, $customer) {
 
 
     $order_data = array(
-        'editor'                       => $editor
+        'editor' => $editor
     );
 
 
@@ -511,8 +530,7 @@ function get_charges_info($order) {
 function get_basket_html($data, $customer) {
 
 
-
-    $smarty               = new Smarty();
+    $smarty = new Smarty();
     $smarty->setTemplateDir('templates');
     $smarty->setCompileDir('server_files/smarty/templates_c');
     $smarty->setCacheDir('server_files/smarty/cache');
