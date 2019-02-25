@@ -229,7 +229,7 @@
 
 
 
-    getScript('/js/tablet.min.js?v=4', function () {
+    getScript('/js/tablet.min.js?v=190225', function () {
 
 
         {if $website->get('Website Text Font')!=''  and !$logged_in}
@@ -285,9 +285,9 @@
             {/if}
 
             {if $with_basket==1}
-            getScript('/js/mobile.logged_in.min.js?v=181124', function () {
+            getScript('/js/mobile.logged_in.min.js?v=190225', function () {
                 getScript('/js/mobile.forms.min.js', function () {
-                    getScript('/js/mobile.basket.min.js?v3', function () {
+                    getScript('/js/mobile.basket.min.js?v=190225', function () {
                     $.getJSON("ar_web_basket.php?tipo=get_basket_html&device_prefix=mobile", function (data) {
 
                         $('#basket').html(data.html)
@@ -343,7 +343,7 @@
 
             {/if}
             {if $with_thanks==1}
-            getScript('/js/mobile.logged_in.min.js?v=181124', function () {
+            getScript('/js/mobile.logged_in.min.js?v=190225', function () {
 
                 var _args=document.location.href.split("?")[1];
 
@@ -372,7 +372,7 @@
 
             {/if}
             {if $with_checkout==1}
-            getScript('/js/mobile.logged_in.min.js?v=181124', function () {
+            getScript('/js/mobile.logged_in.min.js?v=190225', function () {
                 getScript('/js/mobile.forms.min.js', function () {
                     getScript('/js/mobile.checkout.min.js?v3', function () {
                         $.getJSON("ar_web_checkout.php?tipo=get_checkout_html&device_prefix=mobile", function (data) {
@@ -400,7 +400,7 @@
 
             {/if}
             {if $with_favourites==1}
-            getScript('/js/mobile.logged_in.min.js?v=181124', function () {
+            getScript('/js/mobile.logged_in.min.js?v=190225', function () {
 
                 $.getJSON("ar_web_favourites.php?tipo=get_favourites_html&device_prefix=mobile", function (data) {
 

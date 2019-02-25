@@ -220,7 +220,7 @@
             head.appendChild(script);
         }
 
-        getScript('/js/desktop.min.js?v=2', function () {
+        getScript('/js/desktop.min.js?v=190225', function () {
 
 
 
@@ -307,7 +307,7 @@
 
             {/if}
             {if $with_reset_password==1}
-            getScript('/js/desktop.logged_in.min.js?v=181124', function () {
+            getScript('/js/desktop.logged_in.min.js?v=190225', function () {
                 getScript('/js/desktop.forms.min.js', function () {
 
                     $("form").on('submit', function (e) {
@@ -422,9 +422,9 @@
 
             {/if}
             {if $with_basket==1}
-            getScript('/js/desktop.logged_in.min.js?v=181124', function () {
+            getScript('/js/desktop.logged_in.min.js?v=190225', function () {
                 getScript('/js/desktop.forms.min.js', function () {
-                    getScript('/js/desktop.basket.min.js?v2', function () {
+                    getScript('/js/desktop.basket.min.js?v=190225', function () {
 
                     $.getJSON("ar_web_basket.php?tipo=get_basket_html&device_prefix=", function (data) {
 
@@ -465,7 +465,7 @@
 
             {/if}
             {if $with_thanks==1}
-            getScript('/js/desktop.logged_in.min.js?v=181124', function () {
+            getScript('/js/desktop.logged_in.min.js?v=190225', function () {
 
                 var _args=document.location.href.split("?")[1];
 
@@ -494,9 +494,9 @@
 
             {/if}
             {if $with_checkout==1}
-            getScript('/js/desktop.logged_in.min.js?v=181124', function () {
+            getScript('/js/desktop.logged_in.min.js?v=190225', function () {
                 getScript('/js/desktop.forms.min.js', function () {
-                    getScript('/js/desktop.checkout.min.js?v3', function () {
+                    getScript('/js/desktop.checkout.min.js?v=190225', function () {
                         $.getJSON("ar_web_checkout.php?tipo=get_checkout_html&device_prefix=", function (data) {
 
 
@@ -1188,7 +1188,7 @@
 
             });
                 {/if}
-                getScript('/js/desktop.logged_in.min.js?v=181124', function () {
+                getScript('/js/desktop.logged_in.min.js?v=190225', function () {
                 $('#logout i').removeClass('fa-spinner fa-spin').addClass('fa-sign-out')
 
 
