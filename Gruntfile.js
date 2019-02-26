@@ -83,18 +83,6 @@ module.exports = function (grunt) {
                 src: [
                     'EcomB2B/js/order_totals.js',
                 ], dest: 'EcomB2B/js/desktop.profile.min.js'
-            }, pweb_mobile: {
-                options: {
-                    sourceMap: true,
-                },
-                src: [
-                    'EcomB2B/theme_1/local/jquery.js',
-                    'EcomB2B/theme_1/mobile/plugins.js',
-                    'EcomB2B/theme_1/mobile/custom.js',
-                    'EcomB2B/js/search.js',
-                    'EcomB2B/js/analytics.js',
-                ], dest: 'EcomB2B/js/mobile.min.js',
-
             }, pweb_mobile_logged_in: {
                 options: {
                     sourceMap: true,
@@ -565,8 +553,8 @@ module.exports = function (grunt) {
     grunt.registerTask('au', ['sass:aurora','sass:aurora_public','sass:login', 'cssmin:au', 'cssmin:au_login','uglify:aurora_libs','uglify:aurora']);
 
 
-    grunt.registerTask('pweb', ['sass:aurora_public', 'cssmin:pweb','uglify:pweb_mobile',
-        'uglify:pweb_mobile',
+    grunt.registerTask('pweb', ['sass:aurora_public', 'cssmin:pweb',
+      
         'uglify:pweb_mobile_logged_in',
         'uglify:pweb_mobile_forms',
         'uglify:pweb_mobile_profile',
