@@ -888,15 +888,15 @@ class Deal extends DB_Table {
         $data['Deal Component Store Key']    = $this->data['Deal Store Key'];
         $data['Deal Component Campaign Key'] = $this->data['Deal Campaign Key'];
         $data['Deal Component Begin Date']   = gmdate('Y-m-d H:i:s');
+        $data['Deal Component Icon']       = $campaign->get('Deal Campaign Icon');
 
 
-        if ($campaign->id) {
-            $data['Deal Component Icon']       = $campaign->get('Deal Campaign Icon');
-            $data['Deal Component Name Label'] = $campaign->get('Deal Campaign Name');
-        } else {
-            $data['Deal Component Icon']       = '<i class="fa fa-tag "></i>';
+        if(empty($data['Deal Component Name Label'])){
+
             $data['Deal Component Name Label'] = $this->get('Deal Name');
         }
+
+
 
 
         $hereditary_fields = array(

@@ -295,7 +295,7 @@ $_service = array(
 $modules = array(
     'dashboard'        => array(
 
-        'section'     => 'dashboard',
+        'section' => 'dashboard',
 
         'parent'      => 'none',
         'parent_type' => 'none',
@@ -303,7 +303,7 @@ $modules = array(
             'dashboard' => array(
                 'type'  => 'widgets',
                 'label' => _('Home'),
-                'title'       => _('Dashboard'),
+                'title' => _('Dashboard'),
                 'icon'  => 'home',
                 'tabs'  => array(
                     'dashboard' => array(
@@ -1800,9 +1800,9 @@ $modules = array(
 
             ),
             'delivery_note' => array(
-                'type' => 'object',
-                'title'=>_('Delivery note'),
-                'tabs' => array(
+                'type'  => 'object',
+                'title' => _('Delivery note'),
+                'tabs'  => array(
 
 
                     'delivery_note.items' => array(
@@ -2980,9 +2980,9 @@ $modules = array(
             ),
 
             'store.new' => array(
-                'type' => 'new_object',
-                'title'=>_('New store'),
-                'tabs' => array(
+                'type'  => 'new_object',
+                'title' => _('New store'),
+                'tabs'  => array(
                     'store.new' => array(
                         'label' => _(
                             'New store'
@@ -3307,9 +3307,9 @@ $modules = array(
 */
 
             'webpage.new' => array(
-                'type' => 'new_object',
-                'title'     => _("New website"),
-                'tabs' => array(
+                'type'  => 'new_object',
+                'title' => _("New website"),
+                'tabs'  => array(
                     'webpage.new' => array(
                         'label' => _(
                             'New Webpage'
@@ -3408,9 +3408,9 @@ $modules = array(
 
 
             'deleted.webpage' => array(
-                'type' => 'object',
-                'title'=>_('Deleted web page'),
-                'tabs' => array(
+                'type'  => 'object',
+                'title' => _('Deleted web page'),
+                'tabs'  => array(
 
 
                     'deleted.webpage.history' => array(
@@ -3502,7 +3502,7 @@ $modules = array(
 
             'mailshot' => array(
                 'type'           => 'object',
-                'title'     => _("Mailshot"),
+                'title'          => _("Mailshot"),
                 'subtabs_parent' => array(
                     'mailshot.workshop.templates'              => 'mailshot.workshop',
                     'mailshot.workshop.previous_mailshots'     => 'mailshot.workshop',
@@ -3594,8 +3594,8 @@ $modules = array(
 
 
             'email_tracking' => array(
-                'type' => 'object',
-                'title'     => _("Email tracking"),
+                'type'  => 'object',
+                'title' => _("Email tracking"),
 
                 'tabs' => array(
                     'email_tracking.email' => array(
@@ -3611,16 +3611,16 @@ $modules = array(
                 )
             ),
 
-            'vouchers'       => array(
-                'type' => 'object',
-                'title'     => _("Vouchers"),
+            'vouchers' => array(
+                'type'  => 'object',
+                'title' => _("Vouchers"),
 
                 'tabs' => array(
 
 
                     'campaign.deals'     => array(
-                        'label'         => _('Vouchers'),
-                        'icon'          => 'money-bill-wave',
+                        'label' => _('Vouchers'),
+                        'icon'  => 'money-bill-wave',
 
                     ),
                     'campaign.orders'    => array(
@@ -3649,18 +3649,18 @@ $modules = array(
                             'field'  => 'Number History Records'
                         ),
                     ),
-                    'campaign.details' => array(
-                        'class'         => 'right icon_only',
-                        'label'         => '',
+                    'campaign.details'   => array(
+                        'class' => 'right icon_only',
+                        'label' => '',
                         'icon'  => 'sliders-h',
                         'title' => _('Settings')
                     ),
 
                 )
             ),
-            'campaign'       => array(
-                'type' => 'object',
-                'title'     => _("Offer category"),
+            'campaign' => array(
+                'type'  => 'object',
+                'title' => _("Offer category"),
 
                 'tabs' => array(
 
@@ -3699,9 +3699,9 @@ $modules = array(
                             'field'  => 'Number History Records'
                         ),
                     ),
-                    'campaign.details' => array(
-                        'class'         => 'right icon_only',
-                        'label'         => '',
+                    'campaign.details'   => array(
+                        'class' => 'right icon_only',
+                        'label' => '',
                         'icon'  => 'sliders-h',
                         'title' => _('Settings')
                     ),
@@ -3711,8 +3711,8 @@ $modules = array(
 
 
             'campaign_order_recursion' => array(
-                'type' => 'object',
-                'title'     => _("Reorder incentive"),
+                'type'  => 'object',
+                'title' => _("Reorder incentive"),
 
                 'tabs' => array(
                     'campaign.details' => array(
@@ -3766,8 +3766,8 @@ $modules = array(
 
 
             'deal' => array(
-                'type' => 'object',
-                'title'     => _("Offer"),
+                'type'  => 'object',
+                'title' => _("Offer"),
 
                 'tabs' => array(
                     'deal.details' => array(
@@ -3817,6 +3817,49 @@ $modules = array(
                 )
             ),
 
+
+            'deal_component' => array(
+                'type'  => 'object',
+                'title' => _("Offer"),
+
+                'tabs' => array(
+                    'deal_component.details' => array(
+                        'label' => _('Settings'),
+                        'icon'  => 'sliders-h',
+                    ),
+
+
+                    'deal_component.orders'    => array(
+                        'label' => _('Orders'),
+                        'icon'  => 'shopping-cart',
+
+                        'quantity_data' => array(
+                            'object' => '_object',
+                            'field'  => 'Used Orders'
+                        ),
+                    ),
+                    'deal_component.customers' => array(
+                        'label'         => _('Customers'),
+                        'icon'          => 'users',
+                        'quantity_data' => array(
+                            'object' => '_object',
+                            'field'  => 'Used Customers'
+                        ),
+                    ),
+                    'deal_component.history'   => array(
+                        'title'         => _('History/Notes'),
+                        'label'         => '',
+                        'quantity_data' => array(
+                            'object' => '_object',
+                            'field'  => 'Number History Records'
+                        ),
+                        'icon'          => 'road',
+                        'class'         => 'right icon_only'
+                    ),
+
+                )
+            ),
+
             'campaign.new' => array(
                 'type' => 'new_object',
                 'tabs' => array(
@@ -3830,11 +3873,24 @@ $modules = array(
 
             ),
 
-            'deal.new' => array(
-                'type' => 'new_object',
-                'title'     => _("New offer"),
-                'tabs' => array(
+            'deal.new'           => array(
+                'type'  => 'new_object',
+                'title' => _("New offer"),
+                'tabs'  => array(
                     'deal.new' => array(
+                        'label' => _(
+                            'New offer'
+                        )
+                    ),
+
+                )
+
+            ),
+            'deal_component.new' => array(
+                'type'  => 'new_object',
+                'title' => _("New offer"),
+                'tabs'  => array(
+                    'deal_component.new' => array(
                         'label' => _(
                             'New offer'
                         )
@@ -5647,9 +5703,9 @@ $modules = array(
                 )
             ),
             'barcode'           => array(
-                'type' => 'object',
-                'title'=>_('Barcode'),
-                'tabs' => array(
+                'type'  => 'object',
+                'title' => _('Barcode'),
+                'tabs'  => array(
                     'barcode.details' => array(
                         'label' => _('Data'),
                         'icon'  => 'database'
@@ -5667,9 +5723,9 @@ $modules = array(
                 )
             ),
             'deleted_barcode'   => array(
-                'type' => 'object',
-                'title'=>_('Deleted barcode'),
-                'tabs' => array(
+                'type'  => 'object',
+                'title' => _('Deleted barcode'),
+                'tabs'  => array(
                     'barcode.history' => array(
                         'label' => _('History'),
                         'icon'  => 'road'
@@ -5706,7 +5762,7 @@ $modules = array(
             ),
             'category'          => array(
                 'type'           => 'object',
-                'title'=>_('Category (Part)'),
+                'title'          => _('Category (Part)'),
                 'subtabs_parent' => array(
 
                     'category.part.sales.plot'     => 'category.part.sales',
@@ -5817,7 +5873,7 @@ $modules = array(
 
             'part' => array(
                 'type'           => 'object',
-                'title'=>_('Part'),
+                'title'          => _('Part'),
                 'subtabs_parent' => array(
                     'part.sales.overview'      => 'part.sales',
                     'part.sales.history'       => 'part.sales',

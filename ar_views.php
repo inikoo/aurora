@@ -298,7 +298,6 @@ function get_view($db, $smarty, $user, $account, $modules) {
             } else {
 
 
-
                 $_parent = get_object('campaign_code-store_key', strtoupper($state['parent_key']).'|'.$state['extra']);
 
                 $state['parent_key'] = $_parent->id;
@@ -969,6 +968,10 @@ function get_object_showcase($showcase, $data, $smarty, $user, $db, $account) {
             include_once 'showcase/deal.show.php';
             $html = get_deal_showcase($data, $smarty, $user, $db);
             break;
+        case 'deal_component':
+            include_once 'showcase/deal_component.show.php';
+            $html = get_deal_component_showcase($data, $smarty, $user, $db);
+            break;
         case 'store':
 
             include_once 'showcase/store.show.php';
@@ -1482,12 +1485,21 @@ function get_navigation($user, $smarty, $data, $db, $account) {
                         $data, $smarty, $user, $db, $account
                     );
                     break;
+                case ('deal_component.new'):
+                    return get_new_deal_component_navigation(
+                        $data, $smarty, $user, $db, $account
+                    );
+                    break;
                 case ('deal'):
                     return get_deal_navigation(
                         $data, $smarty, $user, $db, $account
                     );
                     break;
-
+                case ('deal_component'):
+                    return get_deal_component_navigation(
+                        $data, $smarty, $user, $db, $account
+                    );
+                    break;
                 case ('enewsletters'):
                     return get_enewsletters_navigation(
                         $data, $smarty, $user, $db, $account
@@ -4796,6 +4808,82 @@ function get_view_position($db, $state, $user, $smarty, $account) {
                 );
 
 
+            } elseif ($state['section'] == 'deal_component') {
+
+
+                if ($state['parent'] == 'campaign') {
+                    $branch[] = array(
+                        'label'     => _('Offers').' <span class="Store_Code">'.$state['store']->get('Code').'</span>',
+                        'icon'      => 'tags',
+                        'reference' => 'marketing/'.$state['store']->id
+                    );
+
+                    $branch[] = array(
+                        'label'     => '<span class="Deal_Campaign_Name">'.$state['_parent']->get('Name').'</span>',
+                        'icon'      => 'tags',
+                        'reference' => 'campaigns/'.$state['store']->id.'/'.$state['_parent']->id
+                    );
+
+                } elseif ($state['parent'] == 'category') {
+
+
+                    $category = $state['_parent'];
+                    $branch[] = array(
+                        'label'     => _("Products's categories").' <span class="id">'.$state['store']->get('Code').'</span>',
+                        'icon'      => 'sitemap',
+                        'reference' => 'products/'.$category->get(
+                                'Store Key'
+                            ).'/categories'
+                    );
+
+
+                    if (isset($state['metadata'])) {
+                        $parent_category_keys = $state['metadata'];
+                    } else {
+
+                        $parent_category_keys = preg_split(
+                            '/\>/', $category->get('Category Position')
+                        );
+                    }
+
+
+                    foreach ($parent_category_keys as $category_key) {
+                        if (!is_numeric($category_key)) {
+                            continue;
+                        }
+                        if ($category_key == $state['key']) {
+                            $branch[] = array(
+                                'label'     => '<span class="Category_Code">'.$category->get('Code').'</span> <span class="italic hide Category_Label">'.$category->get('Label').'</span>',
+                                'icon'      => '',
+                                'reference' => ''
+                            );
+                            break;
+                        } else {
+
+                            $parent_category = new Category($category_key);
+                            if ($parent_category->id) {
+
+                                $branch[] = array(
+                                    'label'     => $parent_category->get(
+                                        'Code'
+                                    ),
+                                    'icon'      => '',
+                                    'reference' => 'products/'.$category->get('Store Key').'/category/'.$parent_category->id
+                                );
+
+                            }
+                        }
+                    }
+
+                }
+
+                $branch[] = array(
+                    'label'     => '<span class="Deal_Component_Name_Label">'.$state['_object']->get('Name Label').'</span>',
+                    'icon'      => 'tag',
+                    'reference' => ''
+                );
+            } else {
+                //print 'section not found: '.$state['section'];
             }
 
 

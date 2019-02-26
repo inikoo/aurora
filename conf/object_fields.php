@@ -239,11 +239,6 @@ function get_object_fields($object, $db, $user, $smarty, $options = false) {
             break;
         case 'Deal':
 
-
-
-
-
-
             if(isset($options['new'])){
                switch ($options['parent']){
                    case 'campaign':
@@ -292,6 +287,62 @@ function get_object_fields($object, $db, $user, $smarty, $options = false) {
                     include 'fields/deal.fld.php';
 
                 }
+
+
+
+            }
+            return $object_fields;
+            break;
+        case 'Deal Component':
+
+            if(isset($options['new'])){
+                switch ($options['parent']){
+                    case 'campaign':
+
+                        switch ($options['parent_object']->get('Deal Campaign Code')){
+                            case 'VO':
+                                $store    = get_object('Store', $options['store_key']);;
+                                include 'fields/new_voucher.fld.php';
+                                break;
+
+                            default:
+                                $store    = get_object('Store', $options['store_key']);
+
+                                include 'fields/new_deal.fld.php';
+                        }
+
+
+
+                        break;
+                    case 'category':
+
+                        $smarty->assign('control_class','hide');
+
+                        $smarty->assign('overwrite_parent_key',$options['store_key']);
+
+                        include 'fields/new_category_deal.fld.php';
+
+
+                        break;
+                }
+
+            }else{
+
+                $campaign = get_object('DealCampaign', $object->get('Deal Component Campaign Key'));
+               // $store    = get_object('Store', $object->get('Deal Store Key'));
+
+
+                switch ($campaign->get('Code')){
+                    case 'OR':
+                        include 'fields/order_recursion_deal_component.fld.php';
+                        break;
+                    case 'VL':
+                        include 'fields/bulk_deal_component.fld.php';
+                        break;
+                    default:
+                        include 'fields/deal_component.fld.php';
+                }
+
 
 
 

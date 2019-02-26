@@ -925,7 +925,7 @@ function save_field(object, key, field) {
 
     var metadata = {};
 
-    console.log(type)
+    //console.log(type)
 
     if (type == 'date') {
         value = value + ' ' + $('#' + field + '_time').val()

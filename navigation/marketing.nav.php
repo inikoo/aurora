@@ -23,7 +23,7 @@ function get_new_deal_navigation($data, $smarty, $user, $db) {
 
     if ($data['parent'] == 'campaign') {
 
-        switch ($data['_parent']->get('Code')){
+        switch ($data['_parent']->get('Code')) {
             case 'VO':
                 $title = _('New voucher');
 
@@ -58,6 +58,62 @@ function get_new_deal_navigation($data, $smarty, $user, $db) {
     return $html;
 
 }
+
+
+function get_new_deal_component_navigation($data, $smarty, $user, $db) {
+
+
+    $left_buttons  = array();
+    $right_buttons = array();
+    $sections      = get_sections('products', $data['parent_key']);
+
+
+    $sections['offers']['selected'] = true;
+
+    if ($data['parent'] == 'campaign') {
+
+        switch ($data['_parent']->get('Code')) {
+            case 'VO':
+                $title = _('New voucher');
+
+                break;
+            default:
+                $title = sprintf(_('New offer for campaign %s'), '<span class="id">'.$data['_parent']->get('Name')).'</span>';
+
+        }
+
+
+    } elseif ($data['parent'] == 'category') {
+
+
+        $title = sprintf(_('New offer for category %s'), '<span class="id">'.$data['_parent']->get('Code')).'</span>';
+
+
+    } else {
+        $title = _('New offer');
+    }
+
+    $_content = array(
+
+        'sections_class' => '',
+        'sections'       => $sections,
+        'left_buttons'   => $left_buttons,
+        'right_buttons'  => $right_buttons,
+        'title'          => $title,
+        'search'         => array(
+            'show'        => true,
+            'placeholder' => _('Search offers')
+        )
+
+    );
+    $smarty->assign('_content', $_content);
+
+    $html = $smarty->fetch('navigation.tpl');
+
+    return $html;
+
+}
+
 
 function get_new_campaign_navigation($data, $smarty, $user, $db) {
 
@@ -561,7 +617,7 @@ function get_campaign_navigation($data, $smarty, $user, $db) {
                         "Offer's categories"
                     ).' '.$data['store']->get('Code'),
                 'reference' => 'offers/'.$data['store']->id,
-                'metadata'=>'{tab:\'campaigns\'}'
+                'metadata'  => '{tab:\'campaigns\'}'
             );
 
             if ($prev_key) {
@@ -616,7 +672,7 @@ function get_campaign_navigation($data, $smarty, $user, $db) {
     }
 
 
-    $title ='<span class="id Deal_Campaign_Name" title="'. _('Offer category').'">'.$object->get('Name').'</span> <span class="padding_left_5">'.$object->get('Icon').'</span>';
+    $title = '<span class="id Deal_Campaign_Name" title="'._('Offer category').'">'.$object->get('Name').'</span> <span class="padding_left_5">'.$object->get('Icon').'</span>';
 
 
     $_content = array(
@@ -1866,6 +1922,336 @@ function get_email_tracking_navigation($data, $smarty, $user, $db) {
         'search'         => array(
             'show'        => true,
             'placeholder' => $placeholder
+        )
+
+    );
+    $smarty->assign('_content', $_content);
+
+
+    $html = $smarty->fetch('navigation.tpl');
+
+    return $html;
+
+}
+
+
+function get_deal_component_navigation($data, $smarty, $user, $db) {
+
+
+    $_section = 'offers';
+
+    $object = $data['_object'];
+
+    if (!$object->id) {
+        return;
+    }
+
+
+    $left_buttons  = array();
+    $right_buttons = array();
+
+
+    if ($data['parent']) {
+
+        switch ($data['parent']) {
+            case 'store':
+                $tab      = 'deal_components';
+                $_section = 'offers';
+                break;
+            case 'campaign':
+                $tab      = 'deal_components';
+                $_section = 'offers';
+                break;
+            case 'category':
+                $tab      = 'category.deal_components';
+                $_section = 'categories';
+                break;
+        }
+
+
+        if (isset($_SESSION['table_state'][$tab])) {
+            $number_results           = $_SESSION['table_state'][$tab]['nr'];
+            $start_from               = 0;
+            $order                    = $_SESSION['table_state'][$tab]['o'];
+            $order_direction          = ($_SESSION['table_state'][$tab]['od'] == 1 ? 'desc' : '');
+            $f_value                  = $_SESSION['table_state'][$tab]['f_value'];
+            $parameters               = $_SESSION['table_state'][$tab];
+            $parameters['parent']     = $data['parent'];
+            $parameters['parent_key'] = $data['parent_key'];
+        } else {
+
+            $default                  = $user->get_tab_defaults($tab);
+            $number_results           = $default['rpp'];
+            $start_from               = 0;
+            $order                    = $default['sort_key'];
+            $order_direction          = ($default['sort_order'] == 1 ? 'desc' : '');
+            $f_value                  = '';
+            $parameters               = $default;
+            $parameters['parent']     = $data['parent'];
+            $parameters['parent_key'] = $data['parent_key'];
+        }
+
+        //print_r($parameters);
+
+        include_once 'prepare_table/'.$tab.'.ptble.php';
+
+        $_order_field       = $order;
+        $order              = preg_replace('/^.*\.`/', '', $order);
+        $order              = preg_replace('/^`/', '', $order);
+        $order              = preg_replace('/`$/', '', $order);
+        $_order_field_value = $object->get($order);
+
+
+        $prev_title = '';
+        $next_title = '';
+        $prev_key   = 0;
+        $next_key   = 0;
+        // $sql        = trim($sql_totals." $wheref");
+
+
+        if ($order_direction == 'desc') {
+            $sql = sprintf(
+                "select `Deal Name` object_name,DCD.`Deal Component Key` as object_key from $table   $where $wheref
+	                and ($_order_field > %s OR ($_order_field = %s AND DCD.`Deal Component Key` < %d))  order by $_order_field  , DCD.`Deal Component Key` desc  limit 1",
+
+                prepare_mysql($_order_field_value), prepare_mysql($_order_field_value), $object->id
+
+            );
+
+        } else {
+            $sql = sprintf(
+                "select `Deal Name` object_name,DCD.`Deal Component Key` as object_key from $table   $where $wheref
+	                and ($_order_field < %s OR ($_order_field = %s AND DCD.`Deal Component Key` < %d))  order by $_order_field desc , DCD.`Deal Component Key` desc limit 1",
+
+                prepare_mysql($_order_field_value), prepare_mysql($_order_field_value), $object->id
+
+            );
+
+        }
+
+        //        print $order_direction;
+
+
+        if ($result = $db->query($sql)) {
+            if ($row = $result->fetch()) {
+                $prev_key   = $row['object_key'];
+                $prev_title = _("Offer").' '.$row['object_name'].' ('.$row['object_key'].')';
+
+            }
+        } else {
+            print_r($error_info = $db->errorInfo());
+            print 'X1:'.$sql;
+            exit;
+        }
+
+
+        if ($order_direction == 'desc') {
+            $sql = sprintf(
+                "select `Deal Name` object_name,DCD.`Deal Component Key` as object_key from $table   $where $wheref
+	                and ($_order_field  %s %s OR ($_order_field  = %s AND DCD.`Deal Component Key` > %d))  order by $_order_field %s  , DCD.`Deal Component Key`  limit 1",
+                ($order_direction == 'desc' ? '<' : '>'),
+                prepare_mysql($_order_field_value),
+                prepare_mysql($_order_field_value), $object->id,
+                $order_direction
+            );
+
+        } else {
+            $sql = sprintf(
+                "select `Deal Name` object_name,DCD.`Deal Component Key` as object_key from $table   $where $wheref
+	                and ($_order_field  %s %s OR ($_order_field  = %s AND DCD.`Deal Component Key` > %d))  order by $_order_field   , DCD.`Deal Component Key`   limit 1",
+                ($order_direction == 'desc' ? '<' : '>'),
+                prepare_mysql($_order_field_value),
+                prepare_mysql($_order_field_value), $object->id
+
+            );
+
+        }
+
+
+        //print $order_direction;
+        //print $sql;
+
+        if ($result = $db->query($sql)) {
+            if ($row = $result->fetch()) {
+                $next_key   = $row['object_key'];
+                $next_title = _("Offer").' '.$row['object_name'].' ('.$row['object_key'].')';
+
+            }
+        } else {
+            print_r($error_info = $db->errorInfo());
+            print 'X2:'.$sql;
+            exit;
+        }
+
+
+        if ($data['parent'] == 'store') {
+
+            $up_button = array(
+                'icon'      => 'arrow-up',
+                'title'     => _("Marketing").' '.$data['store']->get('Code'),
+                'reference' => 'marketing/'.$data['store']->id.'&tab=deals'
+            );
+
+            if ($prev_key) {
+                $left_buttons[] = array(
+                    'icon'      => 'arrow-left',
+                    'title'     => $prev_title,
+                    'reference' => 'deals/'.$data['parent_key'].'/'.$prev_key
+                );
+
+            } else {
+                $left_buttons[] = array(
+                    'icon'  => 'arrow-left disabled',
+                    'title' => '',
+                    'url'   => ''
+                );
+
+            }
+            $left_buttons[] = $up_button;
+
+
+            if ($next_key) {
+                $left_buttons[] = array(
+                    'icon'      => 'arrow-right',
+                    'title'     => $next_title,
+                    'reference' => 'deals/'.$data['parent_key'].'/'.$next_key
+                );
+
+            } else {
+                $left_buttons[] = array(
+                    'icon'  => 'arrow-right disabled',
+                    'title' => '',
+                    'url'   => ''
+                );
+
+            }
+
+
+        } elseif ($data['parent'] == 'campaign') {
+
+            $up_button = array(
+                'icon'      => 'arrow-up',
+                'title'     => _("Campaign").' '.$data['_parent']->get('Code'),
+                'reference' => 'campaigns/'.$data['store']->id.'/'.$data['parent_key']
+            );
+
+            if ($prev_key) {
+                $left_buttons[] = array(
+                    'icon'      => 'arrow-left',
+                    'title'     => $prev_title,
+                    'reference' => 'campaigns/'.$data['store']->id.'/'.$data['parent_key'].'/deal/'.$prev_key
+                );
+
+            } else {
+                $left_buttons[] = array(
+                    'icon'  => 'arrow-left disabled',
+                    'title' => '',
+                    'url'   => ''
+                );
+
+            }
+            $left_buttons[] = $up_button;
+
+
+            if ($next_key) {
+                $left_buttons[] = array(
+                    'icon'      => 'arrow-right',
+                    'title'     => $next_title,
+                    'reference' => 'campaigns/'.$data['store']->id.'/'.$data['parent_key'].'/deal/'.$next_key
+                );
+
+
+            } else {
+                $left_buttons[] = array(
+                    'icon'  => 'arrow-right disabled',
+                    'title' => '',
+                    'url'   => ''
+                );
+
+            }
+
+
+        } elseif ($data['parent'] == 'category') {
+
+            $up_button = array(
+                'icon'      => 'arrow-up',
+                'title'     => _("Category").' '.$data['_parent']->get('Code'),
+                'reference' => 'products/'.$data['store']->id.'/category/'.$data['parent_key']
+            );
+
+            if ($prev_key) {
+                $left_buttons[] = array(
+                    'icon'      => 'arrow-left',
+                    'title'     => $prev_title,
+                    'reference' => 'products/'.$data['store']->id.'/category/'.$data['parent_key'].'/deal_component/'.$prev_key
+                );
+
+            } else {
+                $left_buttons[] = array(
+                    'icon'  => 'arrow-left disabled',
+                    'title' => '',
+                    'url'   => ''
+                );
+
+            }
+            $left_buttons[] = $up_button;
+
+
+            if ($next_key) {
+                $left_buttons[] = array(
+                    'icon'      => 'arrow-right',
+                    'title'     => $next_title,
+                    'reference' => 'products/'.$data['store']->id.'/category/'.$data['parent_key'].'/deal_component/'.$next_key
+                );
+
+
+            } else {
+                $left_buttons[] = array(
+                    'icon'  => 'arrow-right disabled',
+                    'title' => '',
+                    'url'   => ''
+                );
+
+            }
+
+
+        }
+
+
+    } else {
+        $_section = 'offers';
+
+    }
+    //$right_buttons[]=array('icon'=>'edit', 'title'=>_('Edit customer'), 'url'=>'edit_customer.php?id='.$object->id);
+    //$right_buttons[]=array('icon'=>'sticky-note', 'title'=>_('History note'), 'id'=>'note');
+    //$right_buttons[]=array('icon'=>'paperclip', 'title'=>_('Attachement'), 'id'=>'attach');
+    //$right_buttons[]=array('icon'=>'shopping-cart', 'title'=>_('New order'), 'id'=>'take_order');
+    //$right_buttons[]=array('icon'=>'sticky-note', 'title'=>_('Sticky note'), 'id'=>'sticky_note_button', 'class'=> ($object->get('Sticky Note')==''?'':'hide'));
+
+    $sections = get_sections('products', $data['store']->id);
+
+
+    if (isset($sections[$_section])) {
+        $sections[$_section]['selected'] = true;
+    }
+    if ($data['parent'] == 'category') {
+        $title = $data['_parent']->get('Code').': <span class="id"><span class="Deal_Component_Name_Label">'.$object->get('Name Label').'</span> </span>';
+
+    } else {
+        $title = '<span class="id"><span class="Deal_Component_Name_Label">'.$object->get('Name Label').'</span> </span>';
+
+    }
+
+
+    $_content = array(
+        'sections_class' => '',
+        'sections'       => $sections,
+        'left_buttons'   => $left_buttons,
+        'right_buttons'  => $right_buttons,
+        'title'          => $title,
+        'search'         => array(
+            'show'        => true,
+            'placeholder' => _('Search offers')
         )
 
     );
