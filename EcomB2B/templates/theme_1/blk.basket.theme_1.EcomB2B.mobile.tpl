@@ -840,6 +840,7 @@
     ga('auTracker.ec:addProduct',{$item.analytics_data} );
     {/foreach}
 
+    ga('auTracker.send', 'event', 'Order', 'basket');
 
 
     ga('auTracker.ec:setAction','checkout', {

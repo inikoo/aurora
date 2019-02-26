@@ -53,7 +53,7 @@
                 </div>
 
                 {if $logged_in}
-                    <i  style="float: right;font-size: 22px"  data-product_id="{$product->id}" data-favourite_key="0" class="sim_button favourite_{$product->id} favourite  far  fa-heart" aria-hidden="true"></i>
+                    <i  style="float: right;font-size: 22px"  data-product_code="{$product->get('Code')}" data-product_id="{$product->id}" data-favourite_key="0" class="sim_button favourite_{$product->id} favourite  far  fa-heart" aria-hidden="true"></i>
                 {/if}
 
             </div>

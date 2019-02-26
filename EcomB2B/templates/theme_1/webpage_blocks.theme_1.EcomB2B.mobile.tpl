@@ -285,7 +285,7 @@
             {/if}
 
             {if $with_basket==1}
-            getScript('/js/mobile.logged_in.min.js?v=190225', function () {
+            getScript('/js/mobile.logged_in.min.js?v=190227', function () {
                 getScript('/js/mobile.forms.min.js', function () {
                     getScript('/js/mobile.basket.min.js?v=190225', function () {
                     $.getJSON("ar_web_basket.php?tipo=get_basket_html&device_prefix=mobile", function (data) {
@@ -343,7 +343,7 @@
 
             {/if}
             {if $with_thanks==1}
-            getScript('/js/mobile.logged_in.min.js?v=190225', function () {
+            getScript('/js/mobile.logged_in.min.js?v=190227', function () {
 
                 var _args=document.location.href.split("?")[1];
 
@@ -372,9 +372,9 @@
 
             {/if}
             {if $with_checkout==1}
-            getScript('/js/mobile.logged_in.min.js?v=190225', function () {
+            getScript('/js/mobile.logged_in.min.js?v=190227', function () {
                 getScript('/js/mobile.forms.min.js', function () {
-                    getScript('/js/mobile.checkout.min.js?v3', function () {
+                    getScript('/js/mobile.checkout.min.js?v=190227', function () {
                         $.getJSON("ar_web_checkout.php?tipo=get_checkout_html&device_prefix=mobile", function (data) {
 
 
@@ -400,7 +400,7 @@
 
             {/if}
             {if $with_favourites==1}
-            getScript('/js/mobile.logged_in.min.js?v=190225', function () {
+            getScript('/js/mobile.logged_in.min.js?v=190227', function () {
 
                 $.getJSON("ar_web_favourites.php?tipo=get_favourites_html&device_prefix=mobile", function (data) {
 
@@ -574,7 +574,7 @@
                                     if (data.state == '200') {
 
 
-
+                                        ga('auTracker.send', 'event', 'Register', 'register');
 
                                         window.location.replace("welcome.sys");
 
@@ -922,6 +922,8 @@
 
                                 if (data.state == '200') {
 
+                                    ga('auTracker.send', 'event', 'Login', 'login');
+
                                     {if isset($redirect_after_login)}
                                     window.location.replace('{$redirect_after_login}');
 
@@ -1242,7 +1244,7 @@
             });
             {/if}
 
-            getScript('/js/mobile.logged_in.min.js?v=181124', function () {
+            getScript('/js/mobile.logged_in.min.js?v=190227', function () {
                 $('#logout i').removeClass('fa-spinner fa-spin').addClass('fa-sign-out')
 
             })

@@ -307,7 +307,7 @@
 
             {/if}
             {if $with_reset_password==1}
-            getScript('/js/desktop.logged_in.min.js?v=190225', function () {
+            getScript('/js/desktop.logged_in.min.js?v=190227', function () {
                 getScript('/js/desktop.forms.min.js', function () {
 
                     $("form").on('submit', function (e) {
@@ -422,7 +422,7 @@
 
             {/if}
             {if $with_basket==1}
-            getScript('/js/desktop.logged_in.min.js?v=190225', function () {
+            getScript('/js/desktop.logged_in.min.js?v=190227', function () {
                 getScript('/js/desktop.forms.min.js', function () {
                     getScript('/js/desktop.basket.min.js?v=190225', function () {
 
@@ -465,7 +465,7 @@
 
             {/if}
             {if $with_thanks==1}
-            getScript('/js/desktop.logged_in.min.js?v=190225', function () {
+            getScript('/js/desktop.logged_in.min.js?v=190227', function () {
 
                 var _args=document.location.href.split("?")[1];
 
@@ -494,9 +494,9 @@
 
             {/if}
             {if $with_checkout==1}
-            getScript('/js/desktop.logged_in.min.js?v=190225', function () {
+            getScript('/js/desktop.logged_in.min.js?v=190227', function () {
                 getScript('/js/desktop.forms.min.js', function () {
-                    getScript('/js/desktop.checkout.min.js?v=190225', function () {
+                    getScript('/js/desktop.checkout.min.js?v=190227', function () {
                         $.getJSON("ar_web_checkout.php?tipo=get_checkout_html&device_prefix=", function (data) {
 
 
@@ -673,7 +673,7 @@
 
                                 if (data.state == '200') {
 
-
+                                    ga('auTracker.send', 'event', 'Register', 'register');
 
                                     window.location.replace("welcome.sys");
 
@@ -914,7 +914,10 @@
                                 if (data.state == '200') {
 
 
-                                   {if isset($redirect_after_login)}
+                                    ga('auTracker.send', 'event', 'Login', 'login');
+
+
+                                {if isset($redirect_after_login)}
                                     window.location.replace('{$redirect_after_login}');
 
                                     {else}
@@ -1188,7 +1191,7 @@
 
             });
                 {/if}
-                getScript('/js/desktop.logged_in.min.js?v=190225', function () {
+                getScript('/js/desktop.logged_in.min.js?v=190227', function () {
                 $('#logout i').removeClass('fa-spinner fa-spin').addClass('fa-sign-out')
 
 

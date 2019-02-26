@@ -102,7 +102,7 @@
 
 
 
-            getScript('/theme_1/js/mobile.logged_in.min.js?v=181124', function () {
+            getScript('/theme_1/js/mobile.logged_in.min.js?v=190227', function () {
                 $('#logout i').removeClass('fa-spinner fa-spin').addClass('fa-sign-out')
 
             })
