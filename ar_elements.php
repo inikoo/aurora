@@ -397,7 +397,12 @@ switch ($tab) {
         $data = prepare_values($_REQUEST, array('parameters' => array('type' => 'json array')));
         get_all_users_elements($db, 'Staff');
         break;
-
+    case 'category.deal_components':
+        $data = prepare_values(
+            $_REQUEST, array('parameters' => array('type' => 'json array'))
+        );
+        get_category_deal_components_element_numbers($db, $data['parameters'], $user);
+        break;
     default:
         $response = array(
             'state' => 405,
@@ -555,8 +560,6 @@ function get_webnodes_element_numbers($db, $data, $user) {
 function get_deals_element_numbers($db, $data, $user) {
 
 
-    $parent_key = $data['parent_key'];
-
     $elements_numbers = array(
         'status'  => array(
             'Active'    => 0,
@@ -631,10 +634,9 @@ function get_deals_element_numbers($db, $data, $user) {
 function get_fixed_deals_element_numbers($db, $data, $user) {
 
 
-
     $elements_numbers = array(
-        'status'  => array(
-            'Active'    => 0,
+        'status' => array(
+            'Active' => 0,
 
             'Suspended' => 0,
         ),
@@ -670,14 +672,13 @@ function get_fixed_deals_element_numbers($db, $data, $user) {
     );
     foreach ($db->query($sql) as $row) {
 
-        if($row['element']!='Active'){
-            $row['element']='Suspended';
+        if ($row['element'] != 'Active') {
+            $row['element'] = 'Suspended';
         }
 
-        $elements_numbers['status'][$row['element']] +=$row['number'];
+        $elements_numbers['status'][$row['element']] += $row['number'];
 
     }
-
 
 
     $response = array(
@@ -1031,10 +1032,9 @@ function get_warehouse_locations_elements($db, $data, $user) {
         foreach ($result as $row) {
 
 
-
             if ($row['element'] != '') {
                 $elements_numbers['flags'][preg_replace('/\s/', '', $row['element'])] = number($row['number']);
-            }else{
+            } else {
                 $elements_numbers['flags']['None'] = number($row['number']);
 
             }
@@ -1721,10 +1721,6 @@ function get_orders_element_numbers($db, $data, $user) {
     $sql = sprintf(
         "SELECT %s AS number,`Order Payment State` AS element FROM %s  %s %s GROUP BY `Order Current Payment State` ", $count, $table, $where, $where_interval
     );
-
-
-
-
 
 
     foreach ($db->query($sql) as $row) {
@@ -2477,7 +2473,6 @@ function get_agent_client_orders_elements($db, $data, $user) {
 function get_supplier_deliveries_element_numbers($db, $data) {
 
 
-
     list(
         $db_interval, $from, $to, $from_date_1yb, $to_1yb
         ) = calculate_interval_dates(
@@ -2556,7 +2551,6 @@ function get_supplier_deliveries_element_numbers($db, $data) {
 
 
 function get_returns_element_numbers($db, $data) {
-
 
 
     list(
@@ -3480,17 +3474,14 @@ function get_account_mailshots_elements($db, $data) {
 }
 
 
-
 function get_users_elements($db, $user_type) {
-
 
 
     $elements_numbers = array(
 
         'active' => array(
-            'Yes'      => 0,
-            'No'       => 0,
-
+            'Yes' => 0,
+            'No'  => 0,
 
 
         )
@@ -3515,9 +3506,6 @@ function get_users_elements($db, $user_type) {
     }
 
 
-
-
-
     $response = array(
         'state'            => 200,
         'elements_numbers' => $elements_numbers
@@ -3531,13 +3519,11 @@ function get_users_elements($db, $user_type) {
 function get_all_users_elements($db) {
 
 
-
     $elements_numbers = array(
 
         'active' => array(
-            'Yes'      => 0,
-            'No'       => 0,
-
+            'Yes' => 0,
+            'No'  => 0,
 
 
         )
@@ -3558,7 +3544,46 @@ function get_all_users_elements($db) {
     }
 
 
+    $response = array(
+        'state'            => 200,
+        'elements_numbers' => $elements_numbers
+    );
+    echo json_encode($response);
 
+
+}
+
+
+function get_category_deal_components_element_numbers($db, $data, $user) {
+
+
+    $elements_numbers = array(
+        'status' => array(
+            'Active'    => 0,
+            'Waiting'   => 0,
+            'Suspended' => 0,
+            'Finish'    => 0
+        )
+
+    );
+
+
+    $sql = "select count(*) as number,`Deal Component Status` as element from `Deal Component Dimension` D where  `Deal Component Allowance Target`='Category' AND `Deal Component Allowance Target Key`=? group by `Deal Component Status` ";
+
+    $stmt = $db->prepare($sql);
+    if ($stmt->execute(
+        array(
+            $data['parent_key']
+        )
+    )) {
+        while ($row = $stmt->fetch()) {
+            $elements_numbers['status'][$row['element']] = number($row['number']);
+
+        }
+    } else {
+        print_r($error_info = $db->errorInfo());
+        exit();
+    }
 
 
     $response = array(

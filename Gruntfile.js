@@ -554,7 +554,7 @@ module.exports = function (grunt) {
 
 
     grunt.registerTask('pweb', ['sass:aurora_public', 'cssmin:pweb',
-      
+
         'uglify:pweb_mobile_logged_in',
         'uglify:pweb_mobile_forms',
         'uglify:pweb_mobile_profile',
