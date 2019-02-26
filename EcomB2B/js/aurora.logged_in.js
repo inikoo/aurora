@@ -58,13 +58,13 @@ $(function() {
 
         var icon = $(this)
         if (icon.hasClass('far')) {
-            console.log('add')
+           // console.log('add')
 
            icon.removeClass('far').addClass('fas').addClass('marked')
 
         } else {
-            console.log('off')
-            console.log(icon)
+            //console.log('off')
+            //console.log(icon)
             icon.removeClass('fa fas').addClass('far').removeClass('marked')
 
 
@@ -76,10 +76,19 @@ $(function() {
 
         var request = 'ar_web_favourites.php?tipo=update_favourite&pid=' + $(this).data('product_id') +'&favourite_key=' + $(this).data('favourite_key')
 
-        console.log(request)
+        //console.log(request)
         $.getJSON(request, function (data) {
 
-            console.log(data)
+           // console.log(data)
+
+            if(data.favourite_key){
+                ga('auTracker.send', 'event', 'Favourites', 'add', icon.data('product_code'));
+
+            }else{
+                ga('auTracker.send', 'event', 'Favourites', 'remove', icon.data('product_code'));
+
+            }
+
 
             icon.data('favourite_key',data.favourite_key)
 
@@ -111,7 +120,7 @@ $(function() {
                 // console.log(data)
 
                 if (data.state == '200') {
-
+                    ga('auTracker.send', 'event', 'Login', 'logout');
                     location.reload();
 
                 } else if (data.state == '400') {

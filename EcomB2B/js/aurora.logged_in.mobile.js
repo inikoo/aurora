@@ -116,6 +116,7 @@ $(function() {
 
                 if (data.state == '200') {
 
+                    ga('auTracker.send', 'event', 'Login', 'logout');
                     location.reload();
 
                 } else if (data.state == '400') {

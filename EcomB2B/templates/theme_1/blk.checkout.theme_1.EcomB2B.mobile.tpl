@@ -985,7 +985,7 @@
 
     });
 
-
+    ga('auTracker.send', 'event', 'Order', 'checkout');
     {foreach from=$order->get_items() item="item" }
     ga('auTracker.ec:addProduct',{$item.analytics_data} );
     {/foreach}

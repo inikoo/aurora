@@ -44,7 +44,7 @@
                         ><i class="fal fa-fw fa-external-link-square more_info" aria-hidden="true"></i></a>
 
                         {if $logged_in}
-                            <i    data-product_id="{$item.product_id}" data-favourite_key="0" class="favourite_{$item.product_id} favourite far  fa-heart" aria-hidden="true"></i>
+                            <i  data-product_code="{$item.code}"  data-product_id="{$item.product_id}" data-favourite_key="0" class="favourite_{$item.product_id} favourite far  fa-heart" aria-hidden="true"></i>
                         {/if}
                         <img src="{$item.image_website}"  />
                     </div>

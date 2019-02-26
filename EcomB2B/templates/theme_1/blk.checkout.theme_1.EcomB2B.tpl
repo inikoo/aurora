@@ -1064,6 +1064,7 @@
 
     });
 
+    ga('auTracker.send', 'event', 'Order', 'checkout');
 
 
 

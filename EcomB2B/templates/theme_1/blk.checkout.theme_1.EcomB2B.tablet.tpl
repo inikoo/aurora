@@ -998,7 +998,7 @@
 
     });
 
-
+    ga('auTracker.send', 'event', 'Order', 'checkout');
 
 
     {foreach from=$order->get_items() item="item" }
