@@ -10,13 +10,12 @@
 */
 
 
-$table  = ' `Deal Component Dimension` DCD left join   `Deal Dimension` D on (`Deal Key`=`Deal Component Deal Key`) left join `Deal Campaign Dimension` C on (C.`Deal Campaign Key`=D.`Deal Campaign Key`) left join `Store Dimension` on (`Deal Store Key`=`Store Key`)';
+$table = ' `Deal Component Dimension` DCD left join   `Deal Dimension` D on (`Deal Key`=`Deal Component Deal Key`) left join `Deal Campaign Dimension` C on (C.`Deal Campaign Key`=D.`Deal Campaign Key`) left join `Store Dimension` on (`Deal Store Key`=`Store Key`)';
 
 
-
-        $where = sprintf(
-            ' where  `Deal Component Allowance Target`="Category" AND `Deal Component Allowance Target Key`=%d ', $parameters['parent_key']
-        );
+$where = sprintf(
+    ' where  `Deal Component Allowance Target`="Category" AND `Deal Component Allowance Target Key`=%d ', $parameters['parent_key']
+);
 
 
 if (isset($parameters['elements_type'])) {
@@ -46,32 +45,7 @@ if (isset($parameters['elements_type'])) {
             }
 
             break;
-        case 'trigger':
-            $_elements      = '';
-            $count_elements = 0;
-            foreach (
-                $parameters['elements'][$parameters['elements_type']]['items'] as $_key => $_value
-            ) {
-                if ($_value['selected']) {
-                    $count_elements++;
-                    $_elements .= ",'".addslashes(
-                            preg_replace('/_/', ' ', $_key)
-                        )."'";
 
-
-                }
-            }
-
-            $_elements = preg_replace('/^\,/', '', $_elements);
-            if ($_elements == '') {
-                $where .= ' and false';
-            } elseif ($count_elements < 7) {
-                $where .= ' and `Deal Trigger` in ('.$_elements.')';
-
-
-            }
-
-            break;
 
     }
 }
