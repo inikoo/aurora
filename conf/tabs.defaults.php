@@ -3829,14 +3829,14 @@ $tab_defaults = array(
         'elements'      => $elements_options['deals'],
     ),
     'campaigns'        => array(
-        'view'          => 'overview',
-        'sort_key'      => 'name',
-        'sort_order'    => 1,
-        'rpp'           => 100,
-        'rpp_options'   => $default_rrp_options,
-        'f_field'       => 'name',
-       // 'elements_type' => array_keys($elements_options['campaigns'])[0],
-       // 'elements'      => $elements_options['campaigns'],
+        'view'        => 'overview',
+        'sort_key'    => 'name',
+        'sort_order'  => 1,
+        'rpp'         => 100,
+        'rpp_options' => $default_rrp_options,
+        'f_field'     => 'name',
+        // 'elements_type' => array_keys($elements_options['campaigns'])[0],
+        // 'elements'      => $elements_options['campaigns'],
     ),
     'campaign.history' => array(
         'view'          => 'overview',
@@ -3859,7 +3859,7 @@ $tab_defaults = array(
         'elements'      => $elements_options['deals'],
     ),
 
-    'vouchers'   => array(
+    'vouchers' => array(
         'view'          => 'overview',
         'sort_key'      => 'name',
         'sort_order'    => 1,
@@ -3871,12 +3871,12 @@ $tab_defaults = array(
     ),
 
     'campaign_bulk_deals'                 => array(
-        'view'        => 'overview',
-        'sort_key'    => 'from',
-        'sort_order'  => -1,
-        'rpp'         => 100,
-        'rpp_options' => $default_rrp_options,
-        'f_field'     => 'target',
+        'view'          => 'overview',
+        'sort_key'      => 'from',
+        'sort_order'    => -1,
+        'rpp'           => 100,
+        'rpp_options'   => $default_rrp_options,
+        'f_field'       => 'target',
         'elements_type' => array_keys($elements_options['deals'])[0],
         'elements'      => $elements_options['fixed_deals'],
 
@@ -3959,6 +3959,17 @@ $tab_defaults = array(
     ),
 
     'category.deal_components' => array(
+        'view'          => 'overview',
+        'sort_key'      => 'name',
+        'sort_order'    => 1,
+        'rpp'           => 100,
+        'rpp_options'   => $default_rrp_options,
+        'f_field'       => 'name',
+        'elements_type' => array_keys($elements_options['deal_components'])[0],
+        'elements'      => $elements_options['deal_components'],
+    ),
+
+    'category.deals' => array(
         'view'          => 'overview',
         'sort_key'      => 'name',
         'sort_order'    => 1,
@@ -4175,7 +4186,7 @@ $tab_defaults = array(
         'f_field'     => 'email',
 
     ),
-    'user_notification.sent_emails' => array(
+    'user_notification.sent_emails'   => array(
         'view'        => 'overview',
         'sort_key'    => 'email',
         'sort_order'  => 1,

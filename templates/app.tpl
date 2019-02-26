@@ -18,12 +18,8 @@
     {/if}
     <script src="/js/aurora_libs.min.js?v190225v2"></script>
 
-    <script src="/js/aurora.min.js?v190222"></script>
+    <script src="/js/aurora.min.js?v190226"></script>
 
-    <script src="/js/edit.js"></script>
-    <script src="/js/validation.js"></script>
-
-    <script src="/js/new.js"></script>
 
 
 

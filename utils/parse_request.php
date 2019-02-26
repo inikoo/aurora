@@ -666,9 +666,11 @@ function parse_request($_data, $db, $modules, $account = '', $user = '', $is_set
                                                     }
 
 
-                                                } elseif ($view_path[3] == 'deal') {
-                                                    $section    = 'deal';
-                                                    $object     = 'deal';
+                                                } elseif ($view_path[3] == 'deal_component') {
+
+
+                                                    $section    = 'deal_component';
+                                                    $object     = 'deal_component';
                                                     $parent     = 'category';
                                                     $parent_key = $category->id;
 
@@ -680,7 +682,7 @@ function parse_request($_data, $db, $modules, $account = '', $user = '', $is_set
 
 
                                                             $key     = 0;
-                                                            $section = 'deal.new';
+                                                            $section = 'deal_component.new';
 
                                                         }
 

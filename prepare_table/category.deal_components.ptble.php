@@ -39,7 +39,7 @@ if (isset($parameters['elements_type'])) {
             if ($_elements == '') {
                 $where .= ' and false';
             } elseif ($count_elements < 4) {
-                $where .= ' and `Deal Status` in ('.$_elements.')';
+                $where .= ' and `Deal Component Status` in ('.$_elements.')';
 
 
             }
@@ -63,23 +63,23 @@ $_dir   = $order_direction;
 
 
 if ($order == 'name') {
-    $order = '`Deal Name`';
+    $order = '`Deal Component Name Label`';
 } elseif ($order == 'orders') {
-    $order = '`Deal Total Acc Used Orders`';
+    $order = '`Deal Component Total Acc Used Orders`';
 } elseif ($order == 'customers') {
-    $order = '`Deal Total Acc Used Customers`';
+    $order = '`Deal Component Total Acc Used Customers`';
 } elseif ($order == 'from') {
-    $order = '`Deal Begin Date`';
+    $order = '`Deal Component Begin Date`';
 } elseif ($order == 'to') {
-    $order = '`Deal Expiration Date`';
+    $order = '`Deal Component Expiration Date`';
 } elseif ($order == 'description') {
-    $order = '`Deal Term Allowances Label`';
+    $order = '`Deal Component Term Allowances Label`';
 } else {
-    $order = '`Deal Key`';
+    $order = '`Deal Component Key`';
 }
 $fields = "`Deal Component Key`,`Deal Name`,`Deal Term Allowances Label`,`Deal Component Store Key`,D.`Deal Campaign Key`,`Deal Component Status`,`Deal Component Begin Date`,`Deal Component Expiration Date`,
 `Deal Component Total Acc Used Orders`,`Deal Component Total Acc Used Customers`,`Store Bulk Discounts Campaign Key`,`Deal Component Name Label`,`Deal Component Allowance Type`,
-`Deal Component Allowance`,`Deal Component Allowance Target`,`Deal Component Allowance Target Key`,`Deal Component Allowance Target Label`,`Deal Component Term Label`,`Deal Component Allowance Label`
+`Deal Component Allowance`,`Deal Component Allowance Target`,`Deal Component Allowance Target Key`,`Deal Component Allowance Target Label`,`Deal Component Term Label`,`Deal Component Allowance Label`,`Deal Component Deal Key`
 
 ";
 

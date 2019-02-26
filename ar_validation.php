@@ -249,7 +249,29 @@ function check_for_duplicates($data, $db, $user, $account) {
                     break;
             }
             break;
+        case 'Deal_Component':
+            switch ($field) {
+                case 'Deal Component Name Label':
+                    $invalid_msg = _('Another offer has this name');
+                    $sql         = sprintf(
+                        "SELECT `Deal Component Key`AS `key` ,`Deal Component Name Label` AS field FROM `Deal Component Dimension` WHERE `Deal Component Name Label`=%s  and `Deal Component Store Key`=%d ", prepare_mysql($data['value']),$data['parent_key']
+                    );
 
+
+
+                    $validation_sql_queries[] = array(
+                        'sql'         => $sql,
+                        'invalid_msg' => $invalid_msg
+                    );
+                    break;
+
+
+
+                default:
+
+                    break;
+            }
+            break;
         case 'Contractor':
 
             switch ($field) {

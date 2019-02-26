@@ -12,7 +12,7 @@
 
 $tab     = 'category.deal_components';
 $ar_file = 'ar_marketing_tables.php';
-$tipo    = 'deal_components';
+$tipo    = 'category_deal_components';
 
 $default = $user->get_tab_defaults($tab);
 
@@ -42,7 +42,7 @@ $table_buttons   = array();
 $table_buttons[] = array(
     'icon'      => 'plus',
     'title'     => _('New offer'),
-    'reference' => "products/".$state['parent_key']."/category/".$state['key']."/deal/new"
+    'reference' => "products/".$state['parent_key']."/category/".$state['key']."/deal_component/new"
 );
 $smarty->assign('table_buttons', $table_buttons);
 

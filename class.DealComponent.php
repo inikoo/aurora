@@ -63,6 +63,66 @@ class DealComponent extends DB_Table {
 
         switch ($key) {
 
+            case 'Deal Component Allowance Percentage':
+            case 'Allowance Percentage':
+
+                return percentage($this->get('Deal Component Allowance'), 1, 0);
+
+
+                break;
+
+            case 'Status Icon':
+                switch ($this->data['Deal Component Status']) {
+                    case 'Waiting':
+                        $status = sprintf(
+                            '<i class="far fa-clock discreet fa-fw" aria-hidden="true" title="%s" ></i>', _('Waiting')
+                        );
+                        break;
+                    case 'Active':
+                        $status = sprintf(
+                            '<i class="fa fa-play success fa-fw" aria-hidden="true" title="%s" ></i>', _('Active')
+                        );
+                        break;
+                    case 'Suspended':
+                        $status = sprintf(
+                            '<i class="fa fa-pause error fa-fw" aria-hidden="true" title="%s" ></i>', _('Suspended')
+                        );
+                        break;
+                    case 'Finish':
+                        $status = sprintf(
+                            '<i class="fa fa-stop discreet fa-fw" aria-hidden="true" title="%s" ></i>', _('Finished')
+                        );
+                        break;
+                    default:
+                        $status = '';
+                }
+
+                return $status;
+
+                break;
+            case 'Status':
+                switch ($this->data['Deal Component Status']) {
+                    case 'Waiting':
+                        return _('Waiting');
+                        break;
+                    case 'Suspended':
+                        return _('Suspended');
+                        break;
+                    case 'Active':
+                        return _('Active');
+                        break;
+                    case 'Finish':
+                        return _('Finished');
+                        break;
+                    case 'Waiting':
+                        return _('Waiting');
+                        break;
+                    default:
+                        return $this->data['Deal Component Status'];
+                }
+
+                break;
+
             case 'Allowance':
 
                 return $this->get_formatted_allowances();
@@ -72,6 +132,29 @@ class DealComponent extends DB_Table {
             case('Deal Description'):
                 return $this->get_formatted_terms().' <i class="far fa-arrow-right"></i> '.$this->get_formatted_allowances();
                 break;
+
+            case 'Used Orders':
+            case 'Used Customers':
+            case 'Applied Orders':
+            case 'Applied Customers':
+
+
+                return number($this->data['Deal Component Total Acc '.$key]);
+
+            case 'Number History Records':
+            case 'Number Active Components':
+                return number($this->data['Deal Component '.$key]);
+                break;
+            case 'Begin Date':
+            case 'Expiration Date':
+
+                if ($this->data['Deal Component '.$key] == '') {
+                    return '';
+                } else {
+                    return strftime("%a, %e %h %Y", strtotime($this->data['Deal Component '.$key]." +00:00"));
+                }
+
+
         }
 
         if (isset($this->data[$key])) {
@@ -107,7 +190,18 @@ class DealComponent extends DB_Table {
 
 
                 break;
+            case 'Get Free':
 
+              switch($this->data['Deal Component Allowance Target']) {
+              case 'Charge':
+                  $allowance=_('Free charges');
+                  break;
+              default:
+                  break;
+              }
+
+
+                break;
             default:
                 $allowance = $this->data['Deal Component Allowance'];
 
@@ -133,7 +227,13 @@ class DealComponent extends DB_Table {
             case 'Category Quantity Ordered':
 
 
-                $terms = sprintf('order %d or more %s', $this->data['Deal Component Terms'], $this->get('Deal Component Allowance Target Label'));
+                if($this->data['Deal Component Terms']==1){
+                    $terms = $this->get('Deal Component Allowance Target Label');
+
+                }else{
+                    $terms = sprintf('order %d or more %s', $this->data['Deal Component Terms'], $this->get('Deal Component Allowance Target Label'));
+
+                }
 
 
                 break;
@@ -260,7 +360,15 @@ class DealComponent extends DB_Table {
 
         switch ($field) {
 
+            case 'Deal Component Allowance Percentage':
 
+                //used for bulk discounts campaign
+
+
+                $value = floatval($value) / 100;
+
+                $this->update(array('Deal Component Allowance' => $value), $options);
+                break;
             case 'Deal Component Status':
 
                 $this->update_status($value, $options);
@@ -333,7 +441,7 @@ class DealComponent extends DB_Table {
         }
     }
 
-    function update_status($value, $options = '') {
+    function update_status($value='', $options = '') {
 
 
         $old_value = $this->data['Deal Component Status'];
@@ -358,6 +466,10 @@ class DealComponent extends DB_Table {
 
         }
     }
+
+
+
+
 
 
     function update_deal_component_assets() {
@@ -735,6 +847,38 @@ class DealComponent extends DB_Table {
 
     }
 
+    function get_field_label($field) {
+
+        switch ($field) {
+
+            case 'Deal Component Name Label':
+                $label = _('name');
+                break;
+
+
+            default:
+                $label = $field;
+
+        }
+
+        return $label;
+
+    }
+
+    function suspend() {
+        $this->update_status('Suspended');
+    }
+
+
+
+    function activate() {
+        $this->update_status();
+    }
+
 }
+
+
+
+
 
 ?>

@@ -28,12 +28,16 @@ $object_fields[] = array(
 
         array(
             'edit'              => ($edit ? 'string' : ''),
-            'id'                => 'Deal_Name',
-            'value'             => $object->get('Deal Name'),
-            'label'             => ucfirst($object->get_field_label('Deal Name')),
+            'id'                => 'Deal_Component_Name_Label',
+            'value'             => '',
+            'label'             => ucfirst($object->get_field_label('Deal Component Name Label')),
             'invalid_msg'       => get_invalid_message('string'),
             'required'          => true,
-            'server_validation' => json_encode(array('tipo' => 'check_for_duplicates')),
+            'server_validation' => json_encode(
+                array(
+                    'tipo' => 'check_for_duplicates'
+                )
+            ),
             'type'              => 'value'
         ),
 
@@ -41,11 +45,23 @@ $object_fields[] = array(
 
             'id'              => 'Deal_Interval',
             'edit'            => 'date_interval',
-            'class'=>'valid',
-            'time'            => array('From'=>'00:00:00','To'=>'23:59:59'),
-            'value'           => array('From'=>date('Y-m-d'),'To'=>date('Y-m-d',strtotime('now + 7 days'))),
-            'formatted_value' => array('From'=>date('d/m/Y'),'To'=>date('d/m/Y',strtotime('now + 7 days'))),
-            'placeholder' => array('From'=>_('from'),'To'=>_('until')),
+            'class'           => 'valid',
+            'time'            => array(
+                'From' => '00:00:00',
+                'To'   => '23:59:59'
+            ),
+            'value'           => array(
+                'From' => date('Y-m-d'),
+                'To'   => date('Y-m-d', strtotime('now + 7 days'))
+            ),
+            'formatted_value' => array(
+                'From' => date('d/m/Y'),
+                'To'   => date('d/m/Y', strtotime('now + 7 days'))
+            ),
+            'placeholder'     => array(
+                'From' => _('from'),
+                'To'   => _('until')
+            ),
             'label'           => _('Duration'),
             'invalid_msg'     => get_invalid_message('date'),
             'required'        => true,
@@ -129,7 +145,8 @@ $object_fields[] = array(
 <span id="Deal_Type_Buy_n_get_n_free_field" field_type="button_radio_options" field="Deal_Type_Buy_n_get_n_free" onclick="toggle_category_deal_type(this)" class="button value" style="border:1px solid #ccc;padding:5px;margin:4px">'.sprintf(
                     _('Buy %s get %s free'), '<span>2</span>', 1
                 ).'</span>
-<span id="Deal_Type_Buy_n_pay_n_field" field_type="button_radio_options" field="Deal_Type_Buy_n_pay_n" onclick="toggle_category_deal_type(this)" class="button value" style="border:1px solid #ccc;padding:5px;margin:4px">'.sprintf(_("Buy %s cheapest %s free"), 3, 1).' ('._('Mix & match').')  </span>
+<span id="Deal_Type_Buy_n_pay_n_field" field_type="button_radio_options" field="Deal_Type_Buy_n_pay_n" onclick="toggle_category_deal_type(this)" class="button value" style="border:1px solid #ccc;padding:5px;margin:4px">'.sprintf(_("Buy %s cheapest %s free"), 3, 1).' ('
+                ._('Mix & match').')  </span>
 </div>
 ',
             'label'    => _('Choose offer'),

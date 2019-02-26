@@ -489,7 +489,7 @@ class DealCampaign extends DB_Table {
                 $this->new_object = true;
                 $deal->add_component($component_data);
 
-                print_r($data);
+               // print_r($data);
 
 
                 if ($data['Voucher']) {
@@ -506,7 +506,7 @@ class DealCampaign extends DB_Table {
                     $voucher_ok = false;
 
 
-                    print_r($voucher_data);
+                   // print_r($voucher_data);
                     if (!$data['Voucher Data']['Voucher Auto Code'] and $data['Voucher Data']['Voucher Code'] != '') {
                         $voucher_data['Voucher Code'] = $data['Voucher Data']['Voucher Code'];
                         $voucher                      = new Voucher('find create', $voucher_data);

@@ -540,7 +540,7 @@ function toggle_category_deal_type(element){
 
     }
     console.log('xx')
-    $('#Deal_controls').removeClass('hide')
+    $('#Deal_Component_controls').removeClass('hide')
 
 
 }
