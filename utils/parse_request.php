@@ -2896,6 +2896,24 @@ function parse_request($_data, $db, $modules, $account = '', $user = '', $is_set
 
                                 $object = 'campaign';
                                 $key    = $view_path[1];
+                            } elseif ($view_path[1] == 'or') {
+
+                                $section = 'campaign_order_recursion';
+
+                                $object = 'campaign';
+                                $key    = $view_path[1];
+                            } elseif ($view_path[1] == 'vl'
+                                or $view_path[1] == 'vl'
+                                or $view_path[1] == 'so'
+                                or $view_path[1] == 'fo'
+                                or $view_path[1] == 'ca'
+                                or $view_path[1] == 'cu'
+                            ) {
+
+                                $section = 'campaign';
+
+                                $object = 'campaign';
+                                $key    = $view_path[1];
                             }
 
                             if (isset($view_path[2])) {
