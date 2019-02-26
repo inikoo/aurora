@@ -3658,6 +3658,9 @@ $modules = array(
 
                 )
             ),
+
+
+
             'campaign' => array(
                 'type'  => 'object',
                 'title' => _("Offer category"),
@@ -3715,14 +3718,9 @@ $modules = array(
                 'title' => _("Reorder incentive"),
 
                 'tabs' => array(
-                    'campaign.details' => array(
-                        'label' => _('Data'),
-                        'icon'  => 'database',
-                        'title' => _('Details')
-                    ),
 
                     'campaign_order_recursion.components' => array(
-                        'label'         => _('Allowances'),
+                        'label'         => _('Offers'),
                         'icon'          => 'tags',
                         'quantity_data' => array(
                             'object' => '_object',
@@ -3759,6 +3757,12 @@ $modules = array(
                             'object' => '_object',
                             'field'  => 'Number History Records'
                         ),
+                    ),
+                    'campaign.details'   => array(
+                        'class' => 'right icon_only',
+                        'label' => '',
+                        'icon'  => 'sliders-h',
+                        'title' => _('Settings')
                     ),
 
                 )

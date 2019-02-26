@@ -31,7 +31,7 @@ $editor = array(
     'Date'         => gmdate('Y-m-d H:i:s'),
     'Subject'      => 'System',
     'Subject Key'  => 0,
-    'Author Name'  => 'Email tracker'
+    'Author Name'  => 'Script'
 );
 
 //'AbandonedCart','Delivery Confirmation','GR Reminder','Invite','Invite Mailshot','Marketing','Newsletter','OOS Notification','Order Confirmation','Password Reminder','Registration'
