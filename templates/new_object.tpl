@@ -488,7 +488,7 @@
                                 onSelect: function() {
                                     $('#{$field.id}').change();
                                     $('#{$field.id}_formatted_From').val($.datepicker.formatDate("dd/mm/yy", $(this).datepicker("getDate")))
-                                    $('#{$field.id}_From_value').val($.datepicker.formatDate("YYYY-mm-dd", $(this).datepicker("getDate")))
+                                    $('#{$field.id}_From_value').val($.datepicker.formatDate("yy-mm-dd", $(this).datepicker("getDate")))
 
                                     $('#{$field.id}_From_datepicker').addClass('hide')
                                     post_process_form_validation();
@@ -505,7 +505,7 @@
                                 onSelect: function() {
                                     $('#{$field.id}').change();
                                     $('#{$field.id}_formatted_To').val($.datepicker.formatDate("dd/mm/yy", $(this).datepicker("getDate")))
-                                    $('#{$field.id}_To_value').val($.datepicker.formatDate("YYYY-mm-dd", $(this).datepicker("getDate")))
+                                    $('#{$field.id}_To_value').val($.datepicker.formatDate("yy-mm-dd", $(this).datepicker("getDate")))
 
                                     $('#{$field.id}_To_datepicker').addClass('hide')
                                     post_process_form_validation();

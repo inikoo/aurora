@@ -1400,6 +1400,8 @@ function new_object($account, $db, $user, $editor, $data, $smarty) {
                     );
 
 
+                 
+
                     if ($data['fields_data']['Deal Type Percentage Off']) {
 
 
