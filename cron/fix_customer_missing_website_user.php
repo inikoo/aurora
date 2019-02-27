@@ -52,19 +52,17 @@ if ($result2 = $db->query($sql)) {
                     $store = get_object('store', $customer->get('Customer Store Key'));
 
 
-                    if($store->get('Store Version')==2){
+                    if ($store->get('Store Version') == 2) {
                         $website = get_object('website', $store->get('Store Website Key'));
-
-
 
 
                         $user_data['Website User Handle']       = $customer->get('Customer Main Plain Email');
                         $user_data['Website User Customer Key'] = $customer->id;
-                        $user_data['Website User Password'] = sha1(date('U').'dadasda');
-                        $user_data['Website User Website Key'] = $website->id;
+                        $user_data['Website User Password']     = sha1(date('U').'dadasda');
+                        $user_data['Website User Website Key']  = $website->id;
 
 
-                        $website_user                           = $website->create_user($user_data);
+                        $website_user = $website->create_user($user_data);
 
                         include_once 'utils/new_fork.php';
 
@@ -83,8 +81,6 @@ if ($result2 = $db->query($sql)) {
                         ), $account->get('Account Code')
                         );
                     }
-
-
 
 
                 }
