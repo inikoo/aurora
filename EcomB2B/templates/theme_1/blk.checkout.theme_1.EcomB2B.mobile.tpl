@@ -276,10 +276,6 @@
                                     ajaxData.append("payment_account_key", BTree_account_key)
 
 
-
-
-
-
                                     $.ajax({
                                         url: "/ar_web_checkout.php", type: 'POST', data: ajaxData, dataType: 'json', cache: false, contentType: false, processData: false,
                                         complete: function () {
@@ -652,6 +648,9 @@
                                                         $('.ordered_products_number').html('0')
                                                         $('.order_total').html('')
 
+                                                        ga('auTracker.send', 'event', 'Order', 'purchase',data.analytics_data.affiliation, data.analytics_data.revenue);
+                                                        ga('auTracker.ec:setAction', 'purchase', data.analytics_data);
+
                                                         window.location.replace("thanks.sys?order_key="+data.order_key);
 
 
@@ -785,6 +784,10 @@
                                                         $('.ordered_products_number').html('0')
                                                         $('.order_total').html('')
 
+                                                        ga('auTracker.send', 'event', 'Order', 'purchase',data.analytics_data.affiliation, data.analytics_data.revenue);
+                                                        ga('auTracker.ec:setAction', 'purchase', data.analytics_data);
+
+
                                                         window.location.replace("thanks.sys?order_key="+data.order_key);
 
 
@@ -879,6 +882,8 @@
 
 
 
+                                                                ga('auTracker.send', 'event', 'Order', 'purchase',data.analytics_data.affiliation, data.analytics_data.revenue);
+                                                                ga('auTracker.ec:setAction', 'purchase', data.analytics_data);
 
                                                                 window.location.replace("thanks.sys?order_key="+data.order_key);
 

@@ -353,13 +353,7 @@
 
                                         ajaxData.append("tipo", 'delete_braintree_saved_card')
                                         ajaxData.append("token", $(element).closest('.credit_cards_row').find('.card_info').data('token'))
-
                                         ajaxData.append("payment_account_key", BTree_account_key)
-
-
-
-
-
 
                                         $.ajax({
                                             url: "/ar_web_checkout.php", type: 'POST', data: ajaxData, dataType: 'json', cache: false, contentType: false, processData: false,
@@ -739,8 +733,16 @@
 
 
                                                         if (data.state == '200') {
+
+
+
+
                                                             $('.ordered_products_number').html('0')
                                                             $('.order_total').html('')
+
+                                                            ga('auTracker.send', 'event', 'Order', 'purchase',data.analytics_data.affiliation, data.analytics_data.revenue);
+                                                            ga('auTracker.ec:setAction', 'purchase', data.analytics_data);
+
 
                                                             window.location.replace("thanks.sys?order_key="+data.order_key);
 
@@ -875,6 +877,10 @@
                                                             $('.ordered_products_number').html('0')
                                                             $('.order_total').html('')
 
+                                                            ga('auTracker.send', 'event', 'Order', 'purchase',data.analytics_data.affiliation, data.analytics_data.revenue);
+                                                            ga('auTracker.ec:setAction', 'purchase', data.analytics_data);
+
+
                                                             window.location.replace("thanks.sys?order_key="+data.order_key);
 
 
@@ -963,6 +969,8 @@
                                                             if (data.state == '200') {
 
 
+                                                                ga('auTracker.send', 'event', 'Order', 'purchase',data.analytics_data.affiliation, data.analytics_data.revenue);
+                                                                ga('auTracker.ec:setAction', 'purchase', data.analytics_data);
 
 
                                                                 window.location.replace("thanks.sys?order_key="+data.order_key);
