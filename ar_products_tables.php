@@ -583,13 +583,15 @@ function categories($_data, $db, $user) {
                     $level = $data['Category Branch Type'];
                     break;
             }
-            $level = $data['Category Branch Type'];
 
 
             $record_data[] = array(
                 'id'                  => (integer)$data['Category Key'],
                 'store_key'           => (integer)$data['Category Store Key'],
-                'code'                => $data['Category Code'],
+                'code'                => sprintf('<span class="link" onclick="change_view(\'products/%d/category/%d\')">%s</span>',
+                                                 $data['Category Store Key'],
+                                                 $data['Category Key'],
+                                                 $data['Category Code']),
                 'label'               => $data['Category Label'],
                 'subjects'            => number(
                     $data['Category Number Subjects']
