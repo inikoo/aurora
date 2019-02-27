@@ -29,10 +29,10 @@ require_once 'utils/order_functions.php';
             $deal->update_term_allowances();
 
 
-            //$deal->update_status_from_dates(false);
-            //foreach ($deal->get_deal_components('objects', 'all') as $component) {
-            //    $component->update_status_from_dates();
-            //}
+            $deal->update_status_from_dates(false);
+            foreach ($deal->get_deal_components('objects', 'all') as $component) {
+                $component->update_status_from_dates();
+            }
 
 
         }
