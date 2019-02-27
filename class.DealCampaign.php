@@ -29,7 +29,7 @@ class DealCampaign extends DB_Table {
 
         $this->table_name    = 'Deal Campaign';
         $this->ignore_fields = array('Deal Campaign Key');
-
+        $this->new_deal_component=false;
         if (is_numeric($a1) and !$a2) {
             $this->get_data('id', $a1);
         } else {
@@ -491,7 +491,10 @@ class DealCampaign extends DB_Table {
 
             if ($deal->new) {
                 $this->new_object = true;
-                $deal->add_component($component_data);
+                $deal_component=$deal->add_component($component_data);
+
+
+                $this->new_deal_component=$deal_component;
 
                // print_r($data);
 

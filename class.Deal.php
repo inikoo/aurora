@@ -16,7 +16,7 @@ include_once 'class.DB_Table.php';
 class Deal extends DB_Table {
 
 
-    function Deal($a1, $a2 = false, $a3 = false) {
+    function __construct($a1, $a2 = false, $a3 = false) {
 
         global $db;
         $this->db = $db;
@@ -167,6 +167,7 @@ class Deal extends DB_Table {
 
 
             $this->update_status_from_dates();
+
             $this->update_term_allowances();
 
 
@@ -307,14 +308,13 @@ class Deal extends DB_Table {
 
 
         $this->update_field_switcher(
-            'Deal Term Allowances Label', $this->get_formatted_terms().' &#8594; '.$this->get_formatted_allowances(), 'no_history'
+            'Deal Term Allowances Label', '<span class="term">'.$this->get_formatted_terms().'</span> <i class="fa fa-arrow-right"></i> <span class="allowance">'.$this->get_formatted_allowances().'</span>', 'no_history'
         );
     }
 
     function get_formatted_terms() {
 
         $terms = '';
-
 
         switch ($this->data['Deal Terms Type']) {
 
@@ -329,7 +329,9 @@ class Deal extends DB_Table {
 
                 if (count($component) > 0) {
                     $component = array_pop($component);
+                    $terms=$component->get_formatted_terms();
 
+                    /*
 
                     if ($this->data['Deal Terms'] == 1) {
                         $terms = sprintf('order %d', $component->get('Deal Component Allowance Target Label'));
@@ -338,7 +340,7 @@ class Deal extends DB_Table {
                         $terms = sprintf('order %d or more %s', $this->data['Deal Terms'], $component->get('Deal Component Allowance Target Label'));
 
                     }
-
+*/
 
                 } else {
                     $terms = '';
@@ -858,6 +860,7 @@ class Deal extends DB_Table {
         $data['Deal Component Begin Date']   = gmdate('Y-m-d H:i:s');
         $data['Deal Component Icon']       = $campaign->get('Deal Campaign Icon');
 
+        $data['Deal Component Status']       = $this->data['Deal Status'];
 
         if(empty($data['Deal Component Name Label'])){
 
@@ -953,6 +956,7 @@ class Deal extends DB_Table {
     function update_status($value = '') {
 
 
+
         if ($value == 'Suspended') {
 
 
@@ -971,7 +975,7 @@ class Deal extends DB_Table {
         foreach ($this->get_deal_components('objects', 'all') as $component) {
 
 
-            $component->update(array('Deal Component Status' => $value), 'no_history');
+          //  $component->update(array('Deal Component Status' => $value), 'no_history');
         }
 
     }
@@ -979,13 +983,15 @@ class Deal extends DB_Table {
 
 
         if ($this->data['Deal Expiration Date'] != '' and strtotime($this->data['Deal Expiration Date'].' +0:00') <= strtotime('now +0:00')) {
-            $this->update_field_switcher('Deal Status', 'Finish', 'no_history');
+            $this->fast_update(array(
+                'Deal Status'=> 'Finish'));
 
             if ($this->data['Deal Voucher Key']) {
                 $voucher = Voucher($this->data['Deal Voucher Key']);
-                $voucher->update_field_switcher(
-                    'Voucher Status', 'Finish', 'no_history'
-                );
+                $voucher->editor=$this->editor;
+                $voucher->fast_update(array(
+                                       'Voucher Status'=> 'Finish'));
+
 
             }
 
@@ -997,15 +1003,18 @@ class Deal extends DB_Table {
             return;
         }
 
-        if (strtotime($this->data['Deal Begin Date'].' +0:00') >= strtotime('now +0:00')) {
-            $this->update_field_switcher('Deal Status', 'Waiting', 'no_history');
+        if (strtotime($this->data['Deal Begin Date'].' +0:00') >strtotime('now +0:00')) {
+
+            $this->fast_update(array(
+                                   'Deal Status'=> 'Waiting'));
+
         }
 
 
         if (strtotime($this->data['Deal Begin Date'].' +0:00') <= strtotime('now +0:00')) {
+            $this->fast_update(array(
+                                   'Deal Status'=> 'Active'));
 
-
-            $this->update_field_switcher('Deal Status', 'Active', 'no_history');
         }
 
 

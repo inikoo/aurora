@@ -16,7 +16,7 @@ include_once 'class.Deal.php';
 class DealComponent extends DB_Table {
 
 
-    function DealComponent($a1, $a2 = false) {
+    function __construct($a1, $a2 = false) {
 
 
         global $db;
@@ -47,11 +47,12 @@ class DealComponent extends DB_Table {
             $sql = sprintf(
                 "SELECT * FROM `Deal Component Dimension` WHERE `Deal Component Key`=%d", $tag
             );
+        }else{
+           return;
         }
 
 
         if ($this->data = $this->db->query($sql)->fetch()) {
-            $this->calculate_deal = create_function('$transaction_data,$customer_id,$date', $this->get('Deal Component'));
             $this->id             = $this->data['Deal Component Key'];
         }
 
@@ -153,6 +154,36 @@ class DealComponent extends DB_Table {
                 } else {
                     return strftime("%a, %e %h %Y", strtotime($this->data['Deal Component '.$key]." +00:00"));
                 }
+                break;
+
+            case 'Duration':
+                $duration = '';
+                if ($this->data['Deal Component Expiration Date'] == '' and $this->data['Deal Component Begin Date'] == '') {
+                    $duration = _('permanent');
+                } else {
+
+                    if ($this->data['Deal Component Begin Date'] != '') {
+                        $duration = strftime(
+                            "%a, %e %h %Y", strtotime($this->data['Deal Component Begin Date']." +00:00")
+                        );
+
+                    }
+                    $duration .= ' - ';
+                    if ($this->data['Deal Component Expiration Date'] != '') {
+                        $duration .= strftime(
+                            "%a, %e %h %Y", strtotime(
+                                              $this->data['Deal Component Expiration Date']." +00:00"
+                                          )
+                        );
+
+                    } else {
+                        $duration .= _('permanent');
+                    }
+
+                }
+
+                return $duration;
+                break;
 
 
         }
@@ -174,7 +205,16 @@ class DealComponent extends DB_Table {
 
         switch ($this->data['Deal Component Allowance Type']) {
             case 'Percentage Off':
-                $allowance = sprintf(_('%s off'), percentage($this->data['Deal Component Allowance'], 1, 0));
+
+
+                if($this->data['Deal Component Allowance Target']=='Category' and $this->data['Deal Component Terms Type']!='Category Quantity Ordered'){
+                    $allowance = sprintf(_('%s %s off'),$this->data['Deal Component Allowance Target Label'], percentage($this->data['Deal Component Allowance'], 1, 0));
+
+                }else{
+                    $allowance = sprintf(_('%s off'), percentage($this->data['Deal Component Allowance'], 1, 0));
+
+                }
+
 
                 break;
 
@@ -347,6 +387,12 @@ class DealComponent extends DB_Table {
         if ($this->db->exec($sql)) {
             $this->id = $this->db->lastInsertId();
             $this->get_data('id', $this->id);
+
+            if($this->data['Deal Component Status']=='Active'){
+                $this->update_deal_component_assets();
+            }
+
+
 
             $this->new = true;
         } else {
@@ -547,6 +593,8 @@ class DealComponent extends DB_Table {
     function update_status_from_dates($force = false) {
 
 
+
+
         $old_value = $this->data['Deal Component Status'];
 
         if ($this->data['Deal Component Expiration Date'] != '' and strtotime(
@@ -575,7 +623,7 @@ class DealComponent extends DB_Table {
             return;
         }
 
-        if (strtotime($this->data['Deal Component Begin Date'].' +0:00') >= strtotime('now +0:00')) {
+        if (strtotime($this->data['Deal Component Begin Date'].' +0:00') > strtotime('now +0:00')) {
             $this->update_field(
                 'Deal Component Status', 'Waiting', 'no_history'
             );
@@ -586,6 +634,7 @@ class DealComponent extends DB_Table {
             );
             $value = 'Active';
         }
+
 
 
         if ($old_value != $value) {

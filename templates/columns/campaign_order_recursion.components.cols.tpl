@@ -131,7 +131,7 @@ editable: false,
 sortable:false,
 
 cell: Backgrid.HtmlCell.extend({
-className: "width_30 align_center"
+className: "width_40 align_center"
 })
 
 },
