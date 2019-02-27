@@ -16,6 +16,9 @@ class Voucher extends DB_Table {
 
     function __construct($a1, $a2 = false, $a3 = false) {
 
+        global $db;
+        $this->db = $db;
+
         $this->table_name    = 'Voucher';
         $this->ignore_fields = array('Voucher Key');
 
