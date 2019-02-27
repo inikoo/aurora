@@ -9,6 +9,9 @@
 
  Version 3.0
 */
+
+$can_delete=true;
+
 if (isset($options['new']) and $options['new']) {
     $new = true;
 
@@ -29,6 +32,14 @@ switch ($options['Category Scope']) {
         $subject_value           = 'Product';
         $subject_formatted_value = _('Products');
         $subject_render          = true;
+
+
+        if($object->get('Category Branch Type')=='Root'){
+            $can_delete=false;
+
+        }
+
+
 
         break;
     case 'Part':
@@ -161,7 +172,7 @@ switch ($options['Category Scope']) {
 }
 
 
-if (!$new) {
+if (!$new and $can_delete) {
     $operations        = array(
         'label'      => _('Operations'),
         'show_title' => true,

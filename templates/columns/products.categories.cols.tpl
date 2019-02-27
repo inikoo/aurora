@@ -11,22 +11,6 @@ name: "code",
 label: "{t}Code{/t}",
 editable: false,
 cell: Backgrid.HtmlCell.extend({
-orderSeparator: '',
-events: {
-"click": function() {
-change_view('products/'+this.model.get("store_key")+'/category/' + this.model.get("id") )
-}
-},
-className: "link",
-
-render: function () {
-this.constructor.__super__.render.apply(this, arguments);
-if(this.model.get('id')==''){
-this.$el.removeClass('link');
-}
-return this;
-}
-
 
 })
 }, {

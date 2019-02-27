@@ -127,3 +127,4 @@ websocket_server/vendor/symfony/routing/Matcher/Dumper/PhpMatcherTrait.php
 websocket_server/vendor/symfony/routing/Tests/Fixtures/AnnotationFixtures/RequirementsWithoutPlaceholderNameController.php
 websocket_server/vendor/symfony/routing/Tests/Fixtures/requirements_without_placeholder_name.yml
 ecom/page.php
+cron/tmp.php
