@@ -634,9 +634,9 @@ class WebAuth {
 
                 if (hash_equals(
                         $row['Website Recover Token Hash'], hash(
-                        'sha256', $authenticator
+                                                              'sha256', $authenticator
 
-                    )
+                                                          )
                     ) and $website_key == $row['Website Recover Token Website Key']) {
 
 
