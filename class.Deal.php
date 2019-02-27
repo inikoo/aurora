@@ -180,43 +180,7 @@ class Deal extends DB_Table {
         }
     }
 
-    function update_status_from_dates($force = false) {
 
-
-        if ($this->data['Deal Expiration Date'] != '' and strtotime($this->data['Deal Expiration Date'].' +0:00') <= strtotime('now +0:00')) {
-            $this->update_field_switcher('Deal Status', 'Finish', 'no_history');
-
-            if ($this->data['Deal Voucher Key']) {
-                $voucher = Voucher($this->data['Deal Voucher Key']);
-                $voucher->update_field_switcher(
-                    'Voucher Status', 'Finish', 'no_history'
-                );
-
-            }
-
-            return;
-        }
-
-
-        if (!$force and $this->data['Deal Status'] == 'Suspended') {
-            return;
-        }
-
-        if (strtotime($this->data['Deal Begin Date'].' +0:00') >= strtotime('now +0:00')) {
-            $this->update_field_switcher('Deal Status', 'Waiting', 'no_history');
-        }
-
-
-        if (strtotime($this->data['Deal Begin Date'].' +0:00') <= strtotime(
-                'now +0:00'
-            )) {
-
-
-            $this->update_field_switcher('Deal Status', 'Active', 'no_history');
-        }
-
-
-    }
 
     function update_field_switcher($field, $value, $options = '', $metadata = '') {
 
@@ -281,6 +245,10 @@ class Deal extends DB_Table {
                 break;
             case('Deal Expiration Date'):
                 $this->update_expiration_date($value, $options);
+                break;
+            case 'Deal Status':
+
+                $this->update_status($value);
                 break;
             default:
                 $base_data = $this->base_data();
@@ -977,6 +945,11 @@ class Deal extends DB_Table {
         $this->update_status('Suspended');
     }
 
+    function activate() {
+        $this->update_status();
+    }
+
+
     function update_status($value = '') {
 
 
@@ -1002,10 +975,42 @@ class Deal extends DB_Table {
         }
 
     }
+    function update_status_from_dates($force = false) {
 
-    function activate() {
-        $this->update_status();
+
+        if ($this->data['Deal Expiration Date'] != '' and strtotime($this->data['Deal Expiration Date'].' +0:00') <= strtotime('now +0:00')) {
+            $this->update_field_switcher('Deal Status', 'Finish', 'no_history');
+
+            if ($this->data['Deal Voucher Key']) {
+                $voucher = Voucher($this->data['Deal Voucher Key']);
+                $voucher->update_field_switcher(
+                    'Voucher Status', 'Finish', 'no_history'
+                );
+
+            }
+
+            return;
+        }
+
+
+        if (!$force and $this->data['Deal Status'] == 'Suspended') {
+            return;
+        }
+
+        if (strtotime($this->data['Deal Begin Date'].' +0:00') >= strtotime('now +0:00')) {
+            $this->update_field_switcher('Deal Status', 'Waiting', 'no_history');
+        }
+
+
+        if (strtotime($this->data['Deal Begin Date'].' +0:00') <= strtotime('now +0:00')) {
+
+
+            $this->update_field_switcher('Deal Status', 'Active', 'no_history');
+        }
+
+
     }
+
 
 
     function get_to_date() {

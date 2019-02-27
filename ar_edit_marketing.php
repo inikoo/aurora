@@ -52,7 +52,8 @@ switch ($tipo) {
             $_REQUEST, array(
                          'deal_component_key' => array('type' => 'key'),
                          'allowance'          => array('type' => 'string'),
-                         'description'        => array('type' => 'string')
+                         'description'        => array('type' => 'string'),
+                         'name'        => array('type' => 'string')
 
 
                      )
@@ -130,7 +131,9 @@ function edit_campaign_order_recursion_data($account, $db, $user, $editor, $data
     $deal_component->update(
         array(
             'Deal Component Allowance'       => $allowance,
-            'Deal Component Allowance Label' => $data['description']
+            'Deal Component Allowance Label' => $data['description'],
+            'Deal Component Name Label'      => $data['name']
+
         )
 
     );
@@ -151,6 +154,7 @@ function edit_campaign_order_recursion_data($account, $db, $user, $editor, $data
         'state'              => 200,
         'allowance'          => $allowance,
         'description'        => $deal_component->get('Deal Component Allowance Label'),
+        'name'               => $deal_component->get('Deal Component Name Label'),
         'deal_component_key' => $deal_component->id
     );
     echo json_encode($response);
@@ -427,8 +431,6 @@ function set_mailing_list($account, $db, $user, $editor, $data, $smarty) {
     $mailshot->update_estimated_recipients();
 
     $mailshot->update_state('ComposingEmail');
-
-
 
 
     $response = array(

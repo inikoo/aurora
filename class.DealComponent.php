@@ -373,7 +373,7 @@ class DealComponent extends DB_Table {
 
                 $this->update_status($value, $options);
                 break;
-
+/*
             case 'Deal Component Name Label':
 
                 if ($this->data['Deal Component Campaign Key']) {
@@ -390,7 +390,7 @@ class DealComponent extends DB_Table {
 
 
                 break;
-
+*/
             case 'Deal Component Term Label':
                 $deal         = get_object('Deal', $this->data['Deal Component Deal Key']);
                 $deal->editor = $this->editor;
