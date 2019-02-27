@@ -2896,6 +2896,27 @@ function parse_request($_data, $db, $modules, $account = '', $user = '', $is_set
 
                                 $object = 'campaign';
                                 $key    = $view_path[1];
+
+
+                                if (isset($view_path[2])) {
+                                    if ($view_path[2] == 'new') {
+
+                                        $parent     = 'campaign';
+                                        $parent_key = $view_path[1];
+                                        $extra = $view_path[0];
+                                        $object  = 'deal';
+                                        $key     = 0;
+                                        $section = 'deal.new';
+
+
+                                    }
+
+                                }
+
+
+
+
+
                             } elseif ($view_path[1] == 'or') {
 
                                 $section = 'campaign_order_recursion';

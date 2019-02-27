@@ -18,7 +18,7 @@ class Site extends DB_Table {
 
     var $new = false;
 
-    function Site($arg1 = false, $arg2 = false) {
+    function __construct($arg1 = false, $arg2 = false) {
 
         global $db;
         $this->db = $db;

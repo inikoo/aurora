@@ -1700,13 +1700,13 @@ function new_object($account, $db, $user, $editor, $data, $smarty) {
 
 
                     $object = $campaign->create_deal($deal_new_data, $new_component_data);
-
-                    // print_r($deal);
+                    print_r($campaign);
+                    print_r($object);
 
                     $pcard = '';
 
 
-                    //    $redirect     = 'products/'.$category->get('Store Key').'/category/'.$category->id.'/deal/'.$object->id;
+                    $redirect     = 'offers/'.$object->get('Store Key').'/'.strtolower($campaign->get('Code')).'/deal/'.$object->id;
                     $updated_data = array();
 
 
