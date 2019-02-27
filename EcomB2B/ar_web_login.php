@@ -58,19 +58,18 @@ function login($db, $data, $website) {
     $auth = new WebAuth();
 
 
+    list($logged_in, $result, $customer_key, $website_user_key, $website_user_log_key) = $auth->authenticate_from_login($data['handle'], $data['pwd'], $website, $data['keep_logged']);
 
-    list($logged_in,$result,$customer_key,$website_user_key,$website_user_log_key)=$auth->authenticate_from_login($data['handle'],$data['pwd'],$website,$data['keep_logged']);
 
+    if ($logged_in) {
 
-    if($logged_in){
-
-        $_SESSION['logged_in']=true;
-        $_SESSION['customer_key']=$customer_key;
-        $_SESSION['website_user_key']=$website_user_key;
-        $_SESSION['website_user_log_key']=$website_user_log_key;
+        $_SESSION['logged_in']            = true;
+        $_SESSION['customer_key']         = $customer_key;
+        $_SESSION['website_user_key']     = $website_user_key;
+        $_SESSION['website_user_log_key'] = $website_user_log_key;
 
         require_once "external_libs/random/lib/random.php";
-        $selector = base64_encode(random_bytes(9));
+        $selector      = base64_encode(random_bytes(9));
         $authenticator = random_bytes(33);
 
         setcookie(
@@ -80,69 +79,66 @@ function login($db, $data, $website) {
             '/'
 
 
-            ,'',
+            , '',
             true, // TLS-only
             true  // http-only
         );
 
 
-        $sql=sprintf('insert into `Website Auth Token Dimension` (`Website Auth Token Website Key`,`Website Auth Token Selector`,`Website Auth Token Hash`,`Website Auth Token Website User Key`,`Website Auth Token Customer Key`,`Website Auth Token Website User Log Key`,`Website Auth Token Expire`) 
+        $sql = sprintf(
+            'insert into `Website Auth Token Dimension` (`Website Auth Token Website Key`,`Website Auth Token Selector`,`Website Auth Token Hash`,`Website Auth Token Website User Key`,`Website Auth Token Customer Key`,`Website Auth Token Website User Log Key`,`Website Auth Token Expire`) 
             values (%d,%s,%s,%d,%d,%d,%s)',
-                     $website->id,
-                     prepare_mysql($selector),
-                     prepare_mysql(hash('sha256', $authenticator)),
-                     $website_user_key,
-                     $customer_key,
-                     $website_user_log_key,
-                     prepare_mysql(date('Y-m-d H:i:s', time() + 864000))
+            $website->id,
+            prepare_mysql($selector),
+            prepare_mysql(hash('sha256', $authenticator)),
+            $website_user_key,
+            $customer_key,
+            $website_user_log_key,
+            prepare_mysql(date('Y-m-d H:i:s', time() + 864000))
 
-            );
+        );
 
-       // print $sql;
+        // print $sql;
 
         $db->exec($sql);
-
-
 
 
         echo json_encode(
             array(
                 'state' => 200,
-                'msg'=>'L1'
+                'msg'   => 'L1'
             )
         );
         exit;
 
-    }else{
+    } else {
 
-        switch ($result){
+        switch ($result) {
             case 'handle':
-                $msg=_('Email not registered');
+                $msg = _('Email not registered');
                 break;
             case 'handle_active':
-                $msg=_('This account is banned');
+                $msg = _('This account is banned');
                 break;
             case 'password':
-                $msg=_('Incorrect password');
+                $msg = _('Incorrect password');
                 break;
             case 'approved':
-                $msg=_('Account waiting for approval');
+                $msg = _('Account waiting for approval');
                 break;
             default:
-                $msg=_('Invalid login credentials');
+                $msg = _('Invalid login credentials');
         }
 
 
         echo json_encode(
             array(
                 'state' => 400,
-                'msg'   =>$msg
+                'msg'   => $msg
             )
         );
         exit;
     }
-
-
 
 
 }
