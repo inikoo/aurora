@@ -174,7 +174,7 @@ class DealCampaign extends DB_Table {
                 'History Details'  => ''
             );
             $this->add_subject_history($history_data, true, 'No', 'Changes', $this->get_object_name(), $this->id);
-            $this->update_status_from_dates();
+            //$this->update_status_from_dates();
 
 
             return $this;
@@ -187,6 +187,8 @@ class DealCampaign extends DB_Table {
 
     }
 
+
+    /*
     function update_status_from_dates() {
 
 
@@ -205,6 +207,8 @@ class DealCampaign extends DB_Table {
 
 
     }
+
+    */
 
     function update_field_switcher($field, $value, $options = '', $metadata = '') {
 

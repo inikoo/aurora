@@ -29,17 +29,21 @@
 
 <div id="campaign_order_recursion_components_edit_dialog" class="hide" style="position:absolute;width:300px;background: #fff;border: 1px solid #ccc;padding: 10px">
 
-    <table border="0">
+    <table border="0" style="width: 100%">
         <tr>
             <td class="target italic discreet"></td>
             <td class="aright"><i onclick="$('#campaign_order_recursion_components_edit_dialog').addClass('hide')" class="fa fa-window-close button"></i></td>
+        </tr>
+        <tr>
+            <td>{t}Name{/t}</td>
+            <td><input class="name" style=""></td>
         </tr>
         <tr>
             <td>{t}Allowance{/t}</td>
             <td><input class="allowance" style=""></td>
         </tr>
         <tr>
-            <td>{t}Description{/t}</td>
+            <td>{t}Label{/t}</td>
             <td><input class="description" style=""></td>
         </tr>
         <tr>
@@ -77,11 +81,12 @@
 
     function edit_component_allowance(element) {
         $('#campaign_order_recursion_components_edit_dialog').removeClass('hide').offset({
-            top: $(element).offset().top - 5, left: $(element).offset().left
+            top: $(element).offset().top - 5, left: $(element).offset().left-$('#campaign_order_recursion_components_edit_dialog').width()
         }).attr('key', $(element).attr('key'))
-        $('#campaign_order_recursion_components_edit_dialog').find('.target').html($(element).attr('target'))
-        $('#campaign_order_recursion_components_edit_dialog').find('.description').val($(element).attr('description'))
-        $('#campaign_order_recursion_components_edit_dialog').find('.allowance').val($(element).attr('allowance'))
+        $('#campaign_order_recursion_components_edit_dialog').find('.target').html($(element).data('target'))
+        $('#campaign_order_recursion_components_edit_dialog').find('.description').val($(element).data('description'))
+        $('#campaign_order_recursion_components_edit_dialog').find('.allowance').val($(element).data('allowance'))
+        $('#campaign_order_recursion_components_edit_dialog').find('.name').val($(element).data('name'))
 
         $('#campaign_order_recursion_components_edit_dialog').find('.save').removeClass('error changed valid').find('i').removeClass('fa-spinner fa-spin')
         $('#campaign_order_recursion_components_status_edit_dialog').addClass('hide')
@@ -123,11 +128,12 @@
 
         var error = false;
 
-        allowance = $('#campaign_order_recursion_components_edit_dialog').find('.allowance')
-        description = $('#campaign_order_recursion_components_edit_dialog').find('.description')
+        var allowance = $('#campaign_order_recursion_components_edit_dialog').find('.allowance')
+        var description = $('#campaign_order_recursion_components_edit_dialog').find('.description')
+        var name_label  = $('#campaign_order_recursion_components_edit_dialog').find('.name')
 
 
-        validation_allowance = client_validation('percentage', true, allowance.val())
+        var validation_allowance = client_validation('percentage', true, allowance.val())
 
         if (validation_allowance.class == 'valid') {
 
@@ -144,6 +150,15 @@
             description.addClass('error')
         } else {
             description.removeClass('error')
+
+        }
+
+
+        if (name_label.val() == '') {
+            error = true;
+            name_label.addClass('error')
+        } else {
+            name_label.removeClass('error')
 
         }
 
@@ -183,6 +198,7 @@
         form_data.append("deal_component_key", $('#campaign_order_recursion_components_edit_dialog').attr('key'))
         form_data.append("allowance", $('#campaign_order_recursion_components_edit_dialog').find('.allowance').val())
         form_data.append("description", $('#campaign_order_recursion_components_edit_dialog').find('.description').val())
+        form_data.append("name", $('#campaign_order_recursion_components_edit_dialog').find('.name').val())
 
 
         var request = $.ajax({
@@ -192,6 +208,7 @@
         })
 
         request.done(function (data) {
+            $(element).removeClass('wait')
 
 
             $('#campaign_order_recursion_components_edit_dialog').addClass('hide')
@@ -199,6 +216,7 @@
 
             $('#deal_component_description_' + data.deal_component_key).html(data.description)
             $('#deal_component_allowance_' + data.deal_component_key).html(data.allowance)
+            $('#deal_component_name_' + data.deal_component_key).html(data.name)
 
             for (var key in data.updated_fields) {
                 //console.log(key)
@@ -212,6 +230,7 @@
         })
 
         request.fail(function (jqXHR, textStatus) {
+            $(element).removeClass('wait')
         });
 
     }
