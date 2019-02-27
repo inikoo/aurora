@@ -184,7 +184,7 @@ if ($category->get('Category Scope') == 'Product') {
             'parent_key' => $state['key'],
 
         );
-
+/*
 
         $table_buttons[] = array(
             'icon'       => 'sitemap',
@@ -192,7 +192,7 @@ if ($category->get('Category Scope') == 'Product') {
             'change_tab' => 'category.all_subjects',
             'class'      => 'move_left'
         );
-
+*/
 
         $table_buttons[] = array(
             'icon'              => 'link',
