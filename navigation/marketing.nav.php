@@ -1959,8 +1959,20 @@ function get_deal_component_navigation($data, $smarty, $user, $db) {
                 $_section = 'offers';
                 break;
             case 'campaign':
-                $tab      = 'deal_components';
+
+                switch ($data['_parent']->get('Code')) {
+                    case 'OR':
+                        $tab = 'campaign_order_recursion.components';
+
+                        break;
+                    default:
+                        $tab = 'deal_components';
+                }
+
+
                 $_section = 'offers';
+
+
                 break;
             case 'category':
                 $tab      = 'category.deal_components';
@@ -2131,15 +2143,15 @@ function get_deal_component_navigation($data, $smarty, $user, $db) {
 
             $up_button = array(
                 'icon'      => 'arrow-up',
-                'title'     => _("Campaign").' '.$data['_parent']->get('Code'),
-                'reference' => 'campaigns/'.$data['store']->id.'/'.$data['parent_key']
+                'title'     => $data['_parent']->get('Name'),
+                'reference' => 'offers/'.$data['store']->id.'/'.strtolower($data['_parent']->get('Code'))
             );
 
             if ($prev_key) {
                 $left_buttons[] = array(
                     'icon'      => 'arrow-left',
                     'title'     => $prev_title,
-                    'reference' => 'campaigns/'.$data['store']->id.'/'.$data['parent_key'].'/deal/'.$prev_key
+                    'reference' => 'offers/'.$data['store']->id.'/'.strtolower($data['_parent']->get('Code')).'/deal_component/'.$prev_key
                 );
 
             } else {
@@ -2157,7 +2169,7 @@ function get_deal_component_navigation($data, $smarty, $user, $db) {
                 $left_buttons[] = array(
                     'icon'      => 'arrow-right',
                     'title'     => $next_title,
-                    'reference' => 'campaigns/'.$data['store']->id.'/'.$data['parent_key'].'/deal/'.$next_key
+                    'reference' => 'offers/'.$data['store']->id.'/'.strtolower($data['_parent']->get('Code')).'/deal_component/'.$next_key
                 );
 
 
@@ -2236,6 +2248,30 @@ function get_deal_component_navigation($data, $smarty, $user, $db) {
     }
     if ($data['parent'] == 'category') {
         $title = $data['_parent']->get('Code').': <span class="id"><span class="Deal_Component_Name_Label">'.$object->get('Name Label').'</span> </span>';
+
+    }
+    if ($data['parent'] == 'campaign') {
+
+        switch ($data['_parent']->get('Code')) {
+            case 'OR':
+                if ($data['_object']->get('Deal Component Allowance Target') == 'Category') {
+                    $target = sprintf(
+                        ' <span class="allowance link" onclick="change_view(\'products/%s/category/%s\')">%s</span>',
+                        $data['_object']->get('Deal Component Store Key'),
+                        $data['_object']->get('Deal Component Allowance Target Key'),
+                        $data['_object']->get('Deal Component Allowance Target Label')
+                    );
+                } else {
+                    $target = '';
+                }
+
+                $title = '<span class="id"><span class="Deal_Component_Name_Label">'.$object->get('Name Label').'</span>'.$target.'</span>';
+                break;
+            default:
+                $title = '<span class="id"><span class="Deal_Component_Name_Label">'.$object->get('Name Label').'</span> </span>';
+
+        }
+
 
     } else {
         $title = '<span class="id"><span class="Deal_Component_Name_Label">'.$object->get('Name Label').'</span> </span>';

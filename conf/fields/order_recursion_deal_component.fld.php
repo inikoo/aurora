@@ -25,7 +25,7 @@ $object_fields[] = array(
         array(
             'edit'              => ($edit ? 'string' : ''),
             'id'                => 'Deal_Component_Name_Label',
-            'value'             => $object->get('Deal Component Name Label '),
+            'value'             => $object->get('Deal Component Name Label'),
             'formatted_value'   => $object->get('Name Label'),
             'label'             => ucfirst($object->get_field_label('Deal Component Name Label')),
             'invalid_msg'       => get_invalid_message('string'),

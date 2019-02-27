@@ -2902,6 +2902,31 @@ function parse_request($_data, $db, $modules, $account = '', $user = '', $is_set
 
                                 $object = 'campaign';
                                 $key    = $view_path[1];
+
+                                if (isset($view_path[2])) {
+                                    if ($view_path[2] == 'deal_component') {
+
+                                        $parent     = 'campaign';
+                                        $parent_key = $view_path[1];
+                                        $object  = 'deal_component';
+                                        $section  = 'deal_component';
+                                        $extra = $view_path[0];
+                                        $key=0;
+                                        if (isset($view_path[3])) {
+                                            if (is_numeric($view_path[3])) {
+
+                                                $key    = $view_path[3];
+
+
+
+                                            }
+
+                                        }
+
+                                    }
+
+                                }
+
                             } elseif ($view_path[1] == 'vl'
                                 or $view_path[1] == 'vl'
                                 or $view_path[1] == 'so'
@@ -2914,24 +2939,25 @@ function parse_request($_data, $db, $modules, $account = '', $user = '', $is_set
 
                                 $object = 'campaign';
                                 $key    = $view_path[1];
-                            }
 
-                            if (isset($view_path[2])) {
-                                if ($view_path[2] == 'new') {
+                                if (isset($view_path[2])) {
+                                    if ($view_path[2] == 'new') {
 
-                                    $parent     = 'campaign';
-                                    $parent_key = $view_path[1];
+                                        $parent     = 'campaign';
+                                        $parent_key = $view_path[1];
+                                        $extra = $view_path[0];
+                                        $object  = 'deal';
+                                        $key     = 0;
+                                        $section = 'deal.new';
 
-                                    $extra = $view_path[0];
 
-                                    $object  = 'deal';
-                                    $key     = 0;
-                                    $section = 'deal.new';
-
+                                    }
 
                                 }
 
                             }
+
+
 
 
                         }

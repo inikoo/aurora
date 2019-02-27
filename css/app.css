@@ -8383,6 +8383,20 @@ input.input_file {
 .no-csspointerevents .nice-select.open .list {
   display: block; }
 
+.term {
+  color: #9068be; }
+
+.allowance {
+  color: #686bbe; }
+
+.offer_text_banner {
+  border: 1px solid #ccc;
+  padding: 10px 20px;
+  margin-bottom: 20px;
+  line-height: 170%; }
+  .offer_text_banner .name {
+    font-weight: bold; }
+
 .progress_bar_container {
   width: 120px;
   align: center;

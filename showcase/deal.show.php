@@ -18,9 +18,8 @@ function get_deal_showcase($data, $smarty) {
         return "";
     }
 
-    $deal->update_usage();
-    $deal->update_number_components();
-   // $deal->update_term_allowances();
+
+    $deal->update_term_allowances();
 
 
 

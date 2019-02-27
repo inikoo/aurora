@@ -1483,10 +1483,16 @@ function new_object($account, $db, $user, $editor, $data, $smarty) {
 
                     $object = $campaign->create_deal($deal_new_data, $new_component_data);
 
-                    $deal_components        = $object->get_deal_components('objects');
-                    $deal_component         = array_pop($deal_components);
+                    //$deal_components        = $object->get_deal_components('objects');
+                    $deal_component         = $campaign->new_deal_component;
+
+
+
+                  //  print_r($deal_component);
 
                     $pcard = '';
+
+
 
 
                     $redirect     = 'products/'.$category->get('Store Key').'/category/'.$category->id.'/deal_component/'.$deal_component->id;
