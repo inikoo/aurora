@@ -634,6 +634,7 @@ function get_products_category_navigation($data, $smarty, $user, $db) {
         $category_title_label = _('Category');
         $title                = $category_title_label.' <span class="Category_Code id">'.$data['_object']->get('Code').'</span>';
 
+       /*
         $right_buttons[] = array(
             'icon'  => 'sticky-note',
             'title' => _('Sticky note'),
@@ -641,6 +642,7 @@ function get_products_category_navigation($data, $smarty, $user, $db) {
             'click' => "show_sticky_note_edit_dialog('sticky_note_button')",
             'class' => ($category->get('Sticky Note') == '' ? '' : 'hide')
         );
+       */
 
     }
 
@@ -658,7 +660,7 @@ function get_products_category_navigation($data, $smarty, $user, $db) {
     );
     $sections['categories']['selected'] = true;
 
-
+/*
     if ($category->get('Category Branch Type') != 'Root') {
 
         $right_buttons[] = array(
@@ -669,7 +671,7 @@ function get_products_category_navigation($data, $smarty, $user, $db) {
         );
 
     }
-
+*/
     $_content = array(
         'sections_class' => '',
         'sections'       => $sections,
