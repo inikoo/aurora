@@ -36,10 +36,12 @@ $parameters = array(
 );
 
 
+
+
 $smarty->assign('scope', 'Mailshot');
 $smarty->assign('scope_key', $state['_object']->id);
 
-$smarty->assign('role', $email_template->get('Email Template Role'));
+$smarty->assign('role', $state['_object']->get('Email Campaign Type'));
 
 //$smarty->assign('blueprints_redirect', 'mailshot.workshop');
 $smarty->assign('email_template_redirect', '&tab=mailshot.workshop');
