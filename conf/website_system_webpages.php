@@ -369,7 +369,7 @@ function website_system_webpages_config($website_type) {
         ),
 
 
-        'profile.sys'   => array(
+        'profile.sys' => array(
             'Webpage Scope'             => 'UserProfile',
             'Webpage Scope Metadata'    => '',
             'Webpage Template Filename' => 'profile',
@@ -498,7 +498,7 @@ function website_system_webpages_config($website_type) {
             ),
 
 
-            'Page Store Content Data'   => json_encode(
+            'Page Store Content Data' => json_encode(
 
                 array(
                     'blocks' => array(
@@ -535,7 +535,7 @@ function website_system_webpages_config($website_type) {
         ),
 
 
-        'not_found.sys'  => array(
+        'not_found.sys' => array(
             'Webpage Scope'             => 'NotFound',
             'Webpage Scope Metadata'    => '',
             'Webpage Template Filename' => 'not_found',
@@ -557,7 +557,7 @@ function website_system_webpages_config($website_type) {
 
 
         ),
-        'offline.sys'    => array(
+        'offline.sys'   => array(
             'Webpage Scope'             => 'Offline',
             'Webpage Scope Metadata'    => '',
             'Webpage Template Filename' => 'offline',
@@ -566,24 +566,39 @@ function website_system_webpages_config($website_type) {
             'Webpage Browser Title'     => _('Offline'),
             'Webpage Name'              => _('Offline'),
             'Webpage Meta Description'  => '',
-            'Page Store Content Data'   => json_encode(
 
+            'Page Store Content Data' => json_encode(
                 array(
+
                     'blocks' => array(
-                        $blocks['offline'],
+
+                        array(
+                            'locked' => true,
+                            'type'   => 'offline',
+                            'label'  => _('Offline'),
+                            'icon'   => 'fa-ban',
+                            'show'   => 1,
+                            'labels'   => array(
+                                '_strong_title' => '410',
+                                '_title'        => _('Discounts'),
+                                '_items_net'    => _('Oops... This page is gone!'),
+                                '_text'         => _('Sorry this page has been removed.'),
+                                '_home_label'   => _('Go to homepage'),
+                                '_home_guide'   => _('Try using the button below to go to main page of the site'),
+
+
+                            )
+                        )
+
+
                     )
 
-                )
 
+                )
             ),
 
 
         ),
-
-
-
-
-
 
 
         'in_process.sys' => array(

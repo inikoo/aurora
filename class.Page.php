@@ -3429,7 +3429,8 @@ class Page extends DB_Table {
             }
 
 
-        } elseif ($this->get('Webpage Scope') == 'Category Categories') {
+        }
+        elseif ($this->get('Webpage Scope') == 'Category Categories') {
 
 
             //  $category=get_object('Category',$this->get('Webpage Scope Key'));
@@ -3613,7 +3614,8 @@ class Page extends DB_Table {
             }
 
 
-        } elseif ($this->get('Webpage Scope') == 'Product') {
+        }
+        elseif ($this->get('Webpage Scope') == 'Product') {
 
 
             //  $category=get_object('Category',$this->get('Webpage Scope Key'));
@@ -3730,11 +3732,10 @@ class Page extends DB_Table {
 
         } else {
 
-            include_once 'class.Website.php';
 
             include_once 'conf/website_system_webpages.php';
 
-            $website = new Website($this->get('Webpage Website Key'));
+            $website = get_object('Website',$this->get('Webpage Website Key'));
 
             $website_system_webpages = website_system_webpages_config($website->get('Website Type'));
 
@@ -3743,6 +3744,8 @@ class Page extends DB_Table {
 
                 $this->update(array('Page Store Content Data' => $website_system_webpages[$this->get('Webpage Code')]['Page Store Content Data']), 'no_history');
             }
+
+
 
 
         }
