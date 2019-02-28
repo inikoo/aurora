@@ -62,14 +62,7 @@ else {
     }
 
 
-    if ($theme=='old') {
-
-
-        $html = '<div style="padding:40px">'.'Old webpage version'.'</div>';
-
-        return;
-    }
-
+  
 
     $smarty->assign('theme', $theme);
     $smarty->assign('webpage', $webpage);
