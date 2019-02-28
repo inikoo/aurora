@@ -25,7 +25,12 @@ if($time=='00:00'  ){
     ), $account->get('Account Code')
     );
 
+    new_housekeeping_fork(
+        'au_housekeeping', array(
+        'type'                    => 'update_deals_status_from_dates',
 
+    ), $account->get('Account Code')
+    );
 
     new_housekeeping_fork(
         'au_housekeeping', array(

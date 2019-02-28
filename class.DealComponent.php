@@ -47,13 +47,185 @@ class DealComponent extends DB_Table {
             $sql = sprintf(
                 "SELECT * FROM `Deal Component Dimension` WHERE `Deal Component Key`=%d", $tag
             );
-        }else{
-           return;
+        } else {
+            return;
         }
 
 
         if ($this->data = $this->db->query($sql)->fetch()) {
-            $this->id             = $this->data['Deal Component Key'];
+            $this->id = $this->data['Deal Component Key'];
+        }
+
+
+    }
+
+    function find($raw_data, $options) {
+
+        if (isset($raw_data['editor']) and is_array($raw_data['editor'])) {
+            foreach ($raw_data['editor'] as $key => $value) {
+
+                if (array_key_exists($key, $this->editor)) {
+                    $this->editor[$key] = $value;
+                }
+
+            }
+        }
+
+        $this->candidate = array();
+        $this->found     = false;
+        $this->found_key = 0;
+        $create          = '';
+        if (preg_match('/create/i', $options)) {
+            $create = 'create';
+        }
+
+        $data = $this->base_data();
+        foreach ($raw_data as $key => $value) {
+
+            if (array_key_exists($key, $data)) {
+                $data[$key] = $value;
+            }
+
+        }
+
+
+        $sql = sprintf(
+            "SELECT `Deal Component Key` FROM `Deal Component Dimension` WHERE `Deal Component Deal Key`=%d AND  `Deal Component Trigger`=%s AND `Deal Component Trigger Key`=%d AND `Deal Component Terms Type`=%s AND `Deal Component Allowance Type`=%s AND `Deal Component Allowance Target`=%s AND `Deal Component Allowance Target Key`=%d ",
+            $data['Deal Component Deal Key'], prepare_mysql($data['Deal Component Trigger']), $data['Deal Component Trigger Key'], prepare_mysql($data['Deal Component Terms Type']), prepare_mysql($data['Deal Component Allowance Type']),
+            prepare_mysql($data['Deal Component Allowance Target']), $data['Deal Component Allowance Target Key']
+
+        );
+
+
+        if ($result = $this->db->query($sql)) {
+            if ($row = $result->fetch()) {
+                $this->found     = true;
+                $this->found_key = $row['Deal Component Key'];
+                $this->get_data('id', $row['Deal Component Key']);
+            }
+        } else {
+            print_r($error_info = $this->db->errorInfo());
+            print "$sql\n";
+            exit;
+        }
+
+
+        if ($create and !$this->found) {
+            $this->create($data);
+
+        }
+
+
+    }
+
+    function create($data) {
+
+
+        if ($data['Deal Component Trigger Key'] == '') {
+            $data['Deal Component Trigger Key'] = 0;
+        }
+        if ($data['Deal Component Allowance Target Key'] == '') {
+            $data['Deal Component Allowance Target Key'] = 0;
+        }
+
+
+        $keys   = '(';
+        $values = 'values(';
+        foreach ($data as $key => $value) {
+            $keys .= "`$key`,";
+
+            $values .= prepare_mysql($value).",";
+
+        }
+        $keys   = preg_replace('/,$/', ')', $keys);
+        $values = preg_replace('/,$/', ')', $values);
+        $sql    = sprintf(
+            "INSERT INTO `Deal Component Dimension` %s %s", $keys, $values
+        );
+        // print "$sql\n";
+
+
+        if ($this->db->exec($sql)) {
+            $this->id = $this->db->lastInsertId();
+            $this->get_data('id', $this->id);
+
+            if ($this->data['Deal Component Status'] == 'Active') {
+                $this->update_deal_component_assets();
+            }
+
+
+            $this->new = true;
+        } else {
+            print "Error can not create deal component\n $sql\n";
+            exit;
+
+        }
+    }
+
+    function update_deal_component_assets() {
+        $account = get_object('Account', 1);
+        require_once 'utils/new_fork.php';
+        new_housekeeping_fork(
+            'au_housekeeping', array(
+            'type'     => 'deal_updated',
+            'deal_key' => $this->get('Deal Component Deal Key')
+        ), $account->get('Account Code'), $this->db
+        );
+
+
+        $smarty_web               = new Smarty();
+        $smarty_web->template_dir = 'EcomB2B/templates';
+        $smarty_web->compile_dir  = 'EcomB2B/server_files/smarty/templates_c';
+        $smarty_web->cache_dir    = 'EcomB2B/server_files/smarty/cache';
+        $smarty_web->config_dir   = 'EcomB2B/server_files/smarty/configs';
+        $smarty_web->addPluginsDir('./smarty_plugins');
+        $smarty_web->setCaching(Smarty::CACHING_LIFETIME_CURRENT);
+
+
+        switch ($this->get('Deal Component Allowance Target')) {
+
+
+            case 'Category':
+
+
+                $category = get_object('Category', $this->get('Deal Component Allowance Target Key'));
+
+                $webpage = $category->get_webpage();
+
+                if ($webpage->id) {
+
+
+                    $cache_id = $webpage->get('Webpage Website Key').'|'.$webpage->id;
+                    $smarty_web->clearCache(null, $cache_id);
+
+                }
+
+                $sql = sprintf(
+                    "SELECT `Product Webpage Key`  FROM `Category Bridge` B  LEFT JOIN `Product Dimension` P ON (`Subject Key`=P.`Product ID`)  
+                    WHERE  `Category Key`=%d  AND `Product Web State` IN  ('For Sale','Out of Stock')   ", $category->id
+                );
+
+
+                if ($result = $this->db->query($sql)) {
+                    foreach ($result as $row) {
+
+                        $webpage = get_object('Webpage', $row['Product Webpage Key']);
+                        if ($webpage->id) {
+                            $cache_id = $webpage->get('Webpage Website Key').'|'.$webpage->id;
+                            $smarty_web->clearCache(null, $cache_id);
+                        }
+
+                    }
+                } else {
+                    print_r($error_info = $this->db->errorInfo());
+                    print "$sql\n";
+                    exit;
+                }
+
+
+                break;
+            default:
+                break;
         }
 
 
@@ -207,10 +379,10 @@ class DealComponent extends DB_Table {
             case 'Percentage Off':
 
 
-                if($this->data['Deal Component Allowance Target']=='Category' and $this->data['Deal Component Terms Type']!='Category Quantity Ordered'){
-                    $allowance = sprintf(_('%s %s off'),$this->data['Deal Component Allowance Target Label'], percentage($this->data['Deal Component Allowance'], 1, 0));
+                if ($this->data['Deal Component Allowance Target'] == 'Category' and $this->data['Deal Component Terms Type'] != 'Category Quantity Ordered') {
+                    $allowance = sprintf(_('%s %s off'), $this->data['Deal Component Allowance Target Label'], percentage($this->data['Deal Component Allowance'], 1, 0));
 
-                }else{
+                } else {
                     $allowance = sprintf(_('%s off'), percentage($this->data['Deal Component Allowance'], 1, 0));
 
                 }
@@ -232,13 +404,13 @@ class DealComponent extends DB_Table {
                 break;
             case 'Get Free':
 
-              switch($this->data['Deal Component Allowance Target']) {
-              case 'Charge':
-                  $allowance=_('Free charges');
-                  break;
-              default:
-                  break;
-              }
+                switch ($this->data['Deal Component Allowance Target']) {
+                    case 'Charge':
+                        $allowance = _('Free charges');
+                        break;
+                    default:
+                        break;
+                }
 
 
                 break;
@@ -267,10 +439,10 @@ class DealComponent extends DB_Table {
             case 'Category Quantity Ordered':
 
 
-                if($this->data['Deal Component Terms']==1){
+                if ($this->data['Deal Component Terms'] == 1) {
                     $terms = $this->get('Deal Component Allowance Target Label');
 
-                }else{
+                } else {
                     $terms = sprintf('order %d or more %s', $this->data['Deal Component Terms'], $this->get('Deal Component Allowance Target Label'));
 
                 }
@@ -298,110 +470,6 @@ class DealComponent extends DB_Table {
         return $terms;
     }
 
-    function find($raw_data, $options) {
-
-        if (isset($raw_data['editor']) and is_array($raw_data['editor'])) {
-            foreach ($raw_data['editor'] as $key => $value) {
-
-                if (array_key_exists($key, $this->editor)) {
-                    $this->editor[$key] = $value;
-                }
-
-            }
-        }
-
-        $this->candidate = array();
-        $this->found     = false;
-        $this->found_key = 0;
-        $create          = '';
-        if (preg_match('/create/i', $options)) {
-            $create = 'create';
-        }
-
-        $data = $this->base_data();
-        foreach ($raw_data as $key => $value) {
-
-            if (array_key_exists($key, $data)) {
-                $data[$key] = $value;
-            }
-
-        }
-
-
-        $sql = sprintf(
-            "SELECT `Deal Component Key` FROM `Deal Component Dimension` WHERE `Deal Component Deal Key`=%d AND  `Deal Component Trigger`=%s AND `Deal Component Trigger Key`=%d AND `Deal Component Terms Type`=%s AND `Deal Component Allowance Type`=%s AND `Deal Component Allowance Target`=%s AND `Deal Component Allowance Target Key`=%d ",
-            $data['Deal Component Deal Key'], prepare_mysql($data['Deal Component Trigger']), $data['Deal Component Trigger Key'], prepare_mysql($data['Deal Component Terms Type']), prepare_mysql($data['Deal Component Allowance Type']),
-            prepare_mysql($data['Deal Component Allowance Target']), $data['Deal Component Allowance Target Key']
-
-        );
-
-
-        if ($result = $this->db->query($sql)) {
-            if ($row = $result->fetch()) {
-                $this->found     = true;
-                $this->found_key = $row['Deal Component Key'];
-                $this->get_data('id', $row['Deal Component Key']);
-            }
-        } else {
-            print_r($error_info = $this->db->errorInfo());
-            print "$sql\n";
-            exit;
-        }
-
-
-        if ($create and !$this->found) {
-            $this->create($data);
-
-        }
-
-
-    }
-
-    function create($data) {
-
-
-        if ($data['Deal Component Trigger Key'] == '') {
-            $data['Deal Component Trigger Key'] = 0;
-        }
-        if ($data['Deal Component Allowance Target Key'] == '') {
-            $data['Deal Component Allowance Target Key'] = 0;
-        }
-
-
-        $keys   = '(';
-        $values = 'values(';
-        foreach ($data as $key => $value) {
-            $keys .= "`$key`,";
-
-            $values .= prepare_mysql($value).",";
-
-        }
-        $keys   = preg_replace('/,$/', ')', $keys);
-        $values = preg_replace('/,$/', ')', $values);
-        $sql    = sprintf(
-            "INSERT INTO `Deal Component Dimension` %s %s", $keys, $values
-        );
-        // print "$sql\n";
-
-
-        if ($this->db->exec($sql)) {
-            $this->id = $this->db->lastInsertId();
-            $this->get_data('id', $this->id);
-
-            if($this->data['Deal Component Status']=='Active'){
-                $this->update_deal_component_assets();
-            }
-
-
-
-            $this->new = true;
-        } else {
-            print "Error can not create deal component\n $sql\n";
-            exit;
-
-        }
-    }
-
     function update_field_switcher($field, $value, $options = '', $metadata = '') {
 
         switch ($field) {
@@ -419,24 +487,24 @@ class DealComponent extends DB_Table {
 
                 $this->update_status($value, $options);
                 break;
-/*
-            case 'Deal Component Name Label':
+            /*
+                        case 'Deal Component Name Label':
 
-                if ($this->data['Deal Component Campaign Key']) {
-                    $campaign         = get_object('DealCampaign', $this->data['Deal Component Campaign Key']);
-                    $campaign->editor = $this->editor;
-                    $campaign->update(array('Deal Campaign Name' => $value));
-                } else {
-                    $deal         = get_object('Deal', $this->data['Deal Component Deal Key']);
-                    $deal->editor = $this->editor;
-                    $deal->update(array('Deal Name Label' => $value));
-                    $this->update_field('Deal Component Name Label', $value, $options);
+                            if ($this->data['Deal Component Campaign Key']) {
+                                $campaign         = get_object('DealCampaign', $this->data['Deal Component Campaign Key']);
+                                $campaign->editor = $this->editor;
+                                $campaign->update(array('Deal Campaign Name' => $value));
+                            } else {
+                                $deal         = get_object('Deal', $this->data['Deal Component Deal Key']);
+                                $deal->editor = $this->editor;
+                                $deal->update(array('Deal Name Label' => $value));
+                                $this->update_field('Deal Component Name Label', $value, $options);
 
-                }
+                            }
 
 
-                break;
-*/
+                            break;
+            */
             case 'Deal Component Term Label':
                 $deal         = get_object('Deal', $this->data['Deal Component Deal Key']);
                 $deal->editor = $this->editor;
@@ -487,7 +555,7 @@ class DealComponent extends DB_Table {
         }
     }
 
-    function update_status($value='', $options = '') {
+    function update_status($value = '', $options = '') {
 
 
         $old_value = $this->data['Deal Component Status'];
@@ -495,9 +563,6 @@ class DealComponent extends DB_Table {
         if ($value == 'Suspended') {
 
             $this->update_field('Deal Component Status', $value, $options);
-
-
-
 
 
         } else {
@@ -513,86 +578,7 @@ class DealComponent extends DB_Table {
         }
     }
 
-
-
-
-
-
-    function update_deal_component_assets() {
-        $account = get_object('Account', 1);
-        require_once 'utils/new_fork.php';
-        new_housekeeping_fork(
-            'au_housekeeping', array(
-            'type'     => 'deal_updated',
-            'deal_key' => $this->get('Deal Component Deal Key')
-        ), $account->get('Account Code'), $this->db
-        );
-
-
-        $smarty_web               = new Smarty();
-        $smarty_web->template_dir = 'EcomB2B/templates';
-        $smarty_web->compile_dir  = 'EcomB2B/server_files/smarty/templates_c';
-        $smarty_web->cache_dir    = 'EcomB2B/server_files/smarty/cache';
-        $smarty_web->config_dir   = 'EcomB2B/server_files/smarty/configs';
-        $smarty_web->addPluginsDir('./smarty_plugins');
-        $smarty_web->setCaching(Smarty::CACHING_LIFETIME_CURRENT);
-
-
-
-        switch ($this->get('Deal Component Allowance Target')) {
-
-
-
-            case 'Category':
-
-
-                $category = get_object('Category', $this->get('Deal Component Allowance Target Key'));
-
-                $webpage = $category->get_webpage();
-
-                if ($webpage->id) {
-
-
-                    $cache_id = $webpage->get('Webpage Website Key').'|'.$webpage->id;
-                    $smarty_web->clearCache(null, $cache_id);
-
-                }
-
-                $sql = sprintf(
-                    "SELECT `Product Webpage Key`  FROM `Category Bridge` B  LEFT JOIN `Product Dimension` P ON (`Subject Key`=P.`Product ID`)  
-                    WHERE  `Category Key`=%d  AND `Product Web State` IN  ('For Sale','Out of Stock')   ", $category->id
-                );
-
-
-                if ($result = $this->db->query($sql)) {
-                    foreach ($result as $row) {
-
-                        $webpage = get_object('Webpage', $row['Product Webpage Key']);
-                        if ($webpage->id) {
-                            $cache_id = $webpage->get('Webpage Website Key').'|'.$webpage->id;
-                            $smarty_web->clearCache(null, $cache_id);
-                        }
-
-                    }
-                } else {
-                    print_r($error_info = $this->db->errorInfo());
-                    print "$sql\n";
-                    exit;
-                }
-
-
-                break;
-            default:
-                break;
-        }
-
-
-    }
-
-
     function update_status_from_dates($force = false) {
-
-
 
 
         $old_value = $this->data['Deal Component Status'];
@@ -612,7 +598,7 @@ class DealComponent extends DB_Table {
 
 
                 $this->update_deal_component_assets();
-
+                $this->update_deal_component_orders_in_basket_after_status_change($old_value, $value);
             }
 
             return;
@@ -636,14 +622,71 @@ class DealComponent extends DB_Table {
         }
 
 
-
         if ($old_value != $value) {
 
             $this->update_deal_component_assets();
+            $this->update_deal_component_orders_in_basket_after_status_change($old_value, $value);
 
 
         }
 
+
+    }
+
+    function update_deal_component_orders_in_basket_after_status_change($old_value, $value) {
+
+        if ($old_value == $value) {
+            return;
+        }
+        $date = gmdate('Y-m-d H:i:s');
+
+        $sql = $this->get_eligible_basket_orders_sql();
+
+
+
+        $counter=0;
+        if ($result = $this->db->query($sql)) {
+            foreach ($result as $row) {
+
+
+                if($counter<100){
+                    $operation='update_order_in_basket';
+                }else{
+                    $operation='update_order_in_basket_low_priority';
+
+                }
+
+                $sql = sprintf(
+                    'insert into `Stack Dimension` (`Stack Creation Date`,`Stack Last Update Date`,`Stack Operation`,`Stack Object Key`) values (%s,%s,%s,%d) 
+                      ON DUPLICATE KEY UPDATE `Stack Last Update Date`=%s ,`Stack Counter`=`Stack Counter`+1 ',
+                    prepare_mysql($date),
+                    prepare_mysql($date),
+                    prepare_mysql($operation),
+                    $row['Order Key'],
+                    prepare_mysql($date)
+
+                );
+                $this->db->exec($sql);
+                $counter++;
+
+            }
+        }
+
+
+
+
+    }
+
+    function get_eligible_basket_orders_sql() {
+
+        switch ($this->data['Deal Component Trigger']) {
+            // todo get only the orders affected by the deal
+            default:
+                $sql = sprintf("SELECT `Order Key` FROM `Order Dimension`  left join `Store Dimension` on (`Store Key`=`Order Store Key`) where `Order State`='InBasket'and `Store Version`=2 and `Store Key`=%d order by `Order Last Updated Date` desc ", $this->data['Deal Component Store Key']);
+
+        }
+
+        return $sql;
 
     }
 
@@ -787,6 +830,7 @@ class DealComponent extends DB_Table {
 
     }
 
+
     function update_target_bridge() {
 
         if ($this->data['Deal Component Status'] == 'Finish') {
@@ -919,15 +963,11 @@ class DealComponent extends DB_Table {
     }
 
 
-
     function activate() {
         $this->update_status();
     }
 
 }
-
-
-
 
 
 ?>
