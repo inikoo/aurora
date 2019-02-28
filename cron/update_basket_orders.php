@@ -14,6 +14,23 @@ require_once 'common.php';
 require_once 'utils/natural_language.php';
 require_once 'utils/order_functions.php';
 
+$print_est = true;
+
+
+$sql = sprintf("SELECT count(*) as num FROM `Order Dimension`  left join `Store Dimension` on (`Store Key`=`Order Store Key`) where `Order State`='InBasket'and `Store Version`=2 ");
+if ($result = $db->query($sql)) {
+    if ($row = $result->fetch()) {
+        $total = $row['num'];
+    } else {
+        $total = 0;
+    }
+} else {
+    print_r($error_info = $db->errorInfo());
+    exit;
+}
+
+$lap_time0 = date('U');
+$contador  = 0;
 
 $sql = sprintf("SELECT `Order Key` FROM `Order Dimension`  left join `Store Dimension` on (`Store Key`=`Order Store Key`) where `Order State`='InBasket'and `Store Version`=2 ");
 if ($result = $db->query($sql)) {
@@ -52,6 +69,15 @@ if ($result = $db->query($sql)) {
 
         $order->update_totals();
 
+
+        $contador++;
+        $lap_time1 = date('U');
+
+        if ($print_est) {
+            print 'Pa '.percentage($contador, $total, 3)."  lap time ".sprintf("%.2f", ($lap_time1 - $lap_time0) / $contador)." EST  ".sprintf(
+                    "%.1f", (($lap_time1 - $lap_time0) / $contador) * ($total - $contador) / 3600
+                )."h  ($contador/$total) \r";
+        }
 
     }
 

@@ -2466,6 +2466,34 @@ function fork_housekeeping($job) {
 
             break;
 
+        case 'update_deals_status_from_dates':
+
+            $sql = sprintf("SELECT `Deal Key` FROM `Deal Dimension`  left join `Store Dimension` on (`Deal Store Key`=`Store Key`) where `Store Version`=2 and `Deal Expiration Date` is not null  and `Deal Status` not in ('Finished')");
+            if ($result = $db->query($sql)) {
+                foreach ($result as $row) {
+
+
+                    $deal = get_object('Deal', $row['Deal Key']);
+
+
+
+                    $deal->update_status_from_dates(false);
+                    foreach ($deal->get_deal_components('objects', 'all') as $component) {
+                        $component->update_status_from_dates();
+                    }
+
+
+                }
+
+            } else {
+                print_r($error_info = $db->errorInfo());
+                exit;
+            }
+
+
+
+            break;
+
 
         default:
             break;

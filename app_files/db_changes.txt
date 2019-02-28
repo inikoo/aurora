@@ -980,6 +980,10 @@ ALTER TABLE `Deal Campaign Dimension` ADD UNIQUE (`Deal Campaign Code`, `Deal Ca
 ALTER TABLE `Deal Dimension` CHANGE `Deal Trigger Key` `Deal Trigger Key` MEDIUMINT(9) NULL DEFAULT '0';
 
 
+ALTER TABLE `Stack Dimension` CHANGE `Stack Operation` `Stack Operation` ENUM('update_order_in_basket_low_priority','update_order_in_basket','reindex_webpage','warehouse_ISF','product_web_state_legacy','update_part_products_availability','part_stock_in_paid_orders','full_after_part_stock_update_legacy','product_sales','product_family_sales','product_department_sales','part_sales','part_category_sales','supplier_sales','supplier_category_sales') CHARACTER SET utf8 COLLATE utf8_unicode_ci NULL DEFAULT NULL;
+
+
+
 ======= fer migration ordering in dw and costa
 
                     ALTER TABLE `Invoice Tax Dimension` ADD `Invoice Tax Key` INT UNSIGNED NOT NULL AUTO_INCREMENT FIRST, ADD PRIMARY KEY (`Invoice Tax Key`);
@@ -1021,6 +1025,9 @@ ALTER TABLE `Purchase Order Dimension` ADD `Purchase Order Extra Cost Amount` DE
 
 ALTER TABLE `Purchase Order Transaction Fact` DROP `Supplier Delivery Exchange Rate`, DROP `Supplier Delivery Paid Amount`;
 ALTER TABLE `Purchase Order Transaction Fact` DROP `Purchase Order Tax Code`, DROP `Purchase Order Tax Amount`, DROP `Purchase Order Shipping Contribution Amount`,  DROP `Supplier Delivery Tax Amount`;
+
+
+
 
 
 ===============
