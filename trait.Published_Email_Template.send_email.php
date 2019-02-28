@@ -76,6 +76,9 @@ trait Send_Email {
 
         if ($this->email_template_type->get('Email Campaign Type Code') == 'OOS Notification') {
 
+            $this->oos_notification_reminder_keys = array();
+
+
             $with_products = 0;
 
             $sql = sprintf(
@@ -150,7 +153,7 @@ trait Send_Email {
         if (preg_match('/bali/', gethostname())) {
 
 
-              $to_address = 'raul@inikoo.com';
+            $to_address = 'raul@inikoo.com';
         }
 
 
@@ -285,8 +288,8 @@ trait Send_Email {
         }
 
 
-        if (isset($oos_notification_reminder_keys)) {
-            foreach ($oos_notification_reminder_keys as $oos_notification_reminder_key) {
+        if (isset($this->oos_notification_reminder_keys)) {
+            foreach ($this->oos_notification_reminder_keys as $oos_notification_reminder_key) {
                 $sql = sprintf(
                     'delete from `Back in Stock Reminder Fact` where `Back in Stock Reminder Key`=%d  ', $oos_notification_reminder_key
                 );
@@ -437,8 +440,7 @@ trait Send_Email {
             case 'OOS Notification':
 
 
-                $oos_notification_reminder_keys = array();
-                $products                       = '';
+                $products = '';
 
                 $sql = sprintf(
                     'select `Back in Stock Reminder Product ID`,`Back in Stock Reminder Key` from `Back in Stock Reminder Fact` where `Back in Stock Reminder Customer Key`=%d and `Back in Stock Reminder State`="Ready"  ', $recipient->id
@@ -452,8 +454,8 @@ trait Send_Email {
 
 
                         if ($product->id and $product->get('Product Web State') == 'For Sale' and $webpage->id and $webpage->get('Webpage State') == 'Online') {
-                            $oos_notification_reminder_keys[] = $row['Back in Stock Reminder Key'];
-                            $products                         .= sprintf(
+                            $this->oos_notification_reminder_keys[] = $row['Back in Stock Reminder Key'];
+                            $products                               .= sprintf(
                                 '<a ses:tags="scope:product;scope_key:%d;webpage_key:%d;" href="%s"><b>%s</b> %s</a>, ', $product->id, $webpage->id, $webpage->get('Webpage URL'), $product->get('Code'), $product->get('Name')
 
                             );
