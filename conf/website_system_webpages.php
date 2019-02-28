@@ -167,47 +167,36 @@ function website_system_webpages_config($website_type) {
 
                 array(
                     'blocks' => array(
+
+
                         array(
-
-                            array(
-
-                                'reset_password'=> array(
-                                    'type'          => 'reset_password',
-                                    'label'         => _('Reset password'),
-                                    'icon'          => 'fa-lock-open-alt',
-                                    'show'          => 1,
-                                    'top_margin'    => 40,
-                                    'bottom_margin' => 60,
-                                    'labels'        => array(
-                                        '_title' => _('Reset password'),
-
-
-                                        '_submit_label' => _('Save'),
-
-                                        '_success_msg'               => _('Your request successfully sent!'),
-                                        '_error_email_msg'           => _('Provide a valid email please'),
-                                        '_error_email_not_found_msg' => _('Email not registered'),
-                                        '_error_captcha_msg'         => _('Error validating reCAPTCHA'),
-
-
-                                        '_password_tooltip'             => _('Password'),
-                                        '_password_confirm_tooltip'     => _('Confirm password'),
-                                        '_password_placeholder'         => _('password'),
-                                        '_password_confirm_placeholder' => _('Confirm password'),
-
-                                        'password_reset_success_msg'             => _('Your password has been changed successfully'),
-                                        'password_reset_expired_token_error_msg' => _('Sorry, password reset expired'),
-                                        'password_reset_error_msg'               => _("Sorry, password reset incorrect or expired days ago"),
-                                        'password_reset_logged_in_error_msg'     => _('You are already logged in'),
-                                        'password_reset_go_back'                 => _('Try again'),
-                                        'password_reset_go_home'                 => _('Go to our homepage'),
-
-
-                                    )
-                                )
-
+                            'type'          => 'login',
+                            'label'         => _('Login'),
+                            'icon'          => 'fa-sign-in-alt',
+                            'show'          => 1,
+                            'top_margin'    => 80,
+                            'bottom_margin' => 120,
+                            'labels'        => array(
+                                '_title'          => _('Login form'),
+                                '_title_recovery' => _('Password recovery'),
+                                '_email_label'          => _('E-mail'),
+                                '_password_label'       => _('Password'),
+                                '_email_recovery_label' => _('E-mail'),
+                                '_forgot_password_label' => _('Forgot password?'),
+                                '_keep_logged_in_label'  => _('Keep me logged in'),
+                                '_register_label' => _('Register'),
+                                '_log_in_label'   => _('Log in'),
+                                '_submit_label'   => _('Submit'),
+                                '_close_label'    => _('Go back'),
+                                '_password_recovery_success_msg'                  => _('Your request successfully sent!'),
+                                '_password_recovery_email_not_register_error_msg' => _('Email is not registered in our system'),
+                                '_password_recovery_unknown_error_msg'            => _("Recovery email could't be send, please contact customer services"),
+                                '_password_recovery_go_back'                      => _('Try again'),
                             )
                         )
+
+                      
+
 
                     )
                 )
