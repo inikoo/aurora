@@ -784,7 +784,6 @@ function select_blueprint($data, $editor, $db) {
 
     include 'conf/email_templates_data.php';
 
-
     $key = $email_templates_data[$data['role']]['key'];
 
 
