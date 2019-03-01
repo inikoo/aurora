@@ -960,11 +960,35 @@ class DealComponent extends DB_Table {
 
     function suspend() {
         $this->update_status('Suspended');
+
+
+
+
+
     }
 
 
     function activate() {
         $this->update_status();
+    }
+
+
+    function suspend_parent() {
+
+        $deal=get_object('Deal',$this->get('Deal Component Deal Key'));
+        $deal->suspend();
+
+
+
+
+    }
+
+
+    function activate_parent() {
+        $deal=get_object('Deal',$this->get('Deal Component Deal Key'));
+
+
+        $deal->activate();
     }
 
 }

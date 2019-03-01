@@ -282,6 +282,8 @@ class Deal extends DB_Table {
             "SELECT `Deal Component Key` FROM `Deal Component Dimension` WHERE `Deal Component Deal Key`=%d  $where", $this->id
         );
 
+
+
         if ($result = $this->db->query($sql)) {
             foreach ($result as $row) {
 
@@ -945,11 +947,30 @@ class Deal extends DB_Table {
 
 
     function suspend() {
+
+
+
         $this->update_status('Suspended');
+
+
+        foreach ($this->get_deal_components('objects', 'all') as $component) {
+            $component->update_status('Suspended');
+        }
+
     }
 
     function activate() {
         $this->update_status();
+
+
+
+
+        foreach ($this->get_deal_components('objects', 'all') as $component) {
+
+
+
+            $component->update_status();
+        }
     }
 
 
