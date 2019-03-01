@@ -885,6 +885,12 @@ function object_operation($account, $db, $user, $editor, $data, $smarty) {
         case 'activate':
             $request = $object->activate();
             break;
+        case 'suspend_parent':
+            $request = $object->suspend_parent();
+            break;
+        case 'activate_parent':
+            $request = $object->activate_parent();
+            break;
         case 'approve':
             $request = $object->approve();
             break;
