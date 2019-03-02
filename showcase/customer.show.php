@@ -18,7 +18,7 @@ function get_customer_showcase($data, $smarty) {
         return "";
     }
 
-$customer->update_account_balance();
+//$customer->update_account_balance();
     //$customer->update_orders();
     //$customer->update_last_dispatched_order_key();
     //$customer->update_invoices();
