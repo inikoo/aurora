@@ -467,7 +467,7 @@
                     <tr>
                         <td id="" class="label">{t}Button text{/t}</td>
                         <td>
-                    <span data-scope="button_background-color" class="fa-stack color_picker scope_background-color like_button">
+                    <span data-scope="button_color" class="fa-stack color_picker scope_color like_button">
                          <i class="fas fa-circle fa-stack-1x "></i>
                          <i class="fas fa-circle fa-stack-1x "></i>
                     </span>
@@ -1062,7 +1062,7 @@
 
 
 
-                    <form action="" method="post" enctype="multipart/form-data"  class="sky-form" style="box-shadow: none">
+                    <div action="" method="post" enctype="multipart/form-data"  class="sky-form" style="box-shadow: none">
 
                         <section class="col ">
                             <button  id="basket_go_to_checkout"   onClick="open_button_style(this)" style="margin:0px;" type="submit" class="button">{t}Button{/t}  <i  class="fas fa-fw fa-arrow-right" aria-hidden="true"></i> </button>
@@ -1072,7 +1072,7 @@
                         </section>
 
 
-                    </form>
+                    </div>
 
                 </div>
 
