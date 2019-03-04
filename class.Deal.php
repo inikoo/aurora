@@ -613,7 +613,7 @@ class Deal extends DB_Table {
     function update_websites() {
 
         $webpage_keys = array();
-
+        $products = array();
         $families    = array();
         $departments = array();
         $sql         = sprintf(
@@ -1008,7 +1008,7 @@ class Deal extends DB_Table {
                 'Deal Status'=> 'Finish'));
 
             if ($this->data['Deal Voucher Key']) {
-                $voucher = Voucher($this->data['Deal Voucher Key']);
+                $voucher = get_object('Voucher',$this->data['Deal Voucher Key']);
                 $voucher->editor=$this->editor;
                 $voucher->fast_update(array(
                                        'Voucher Status'=> 'Finish'));

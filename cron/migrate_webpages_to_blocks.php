@@ -36,8 +36,21 @@ $editor = array(
     'Date'         => gmdate('Y-m-d H:i:s')
 );
 
+ini_set('memory_limit', '10000M');
+$website_key = 7;
 
-$where=' and `Webpage Website Key`=14';
+$where = " and `Webpage Website Key`=$website_key";
+
+$sql = sprintf('update `Website Dimension` set `Website Theme`="theme_1"  where `Website Key`=%d', $website_key);
+$db->exec($sql);
+
+migrate_products();
+
+
+migrate_families();
+migrate_departments();
+
+
 //$where=' and true';
 //migrate_families();
 //migrate_departments();
@@ -51,23 +64,34 @@ migrate_thanks();
 migrate_search();
 migrate_profile();
 migrate_favourites();
-migrate_login();
-migrate_register();
+
 migrate_not_found();
 migrate_offline();
 migrate_checkout();
 migrate_blocks();
 
 migrate_products();
-
-*/
 migrate_reset_password();
 
-function migrate_reset_password(){
+*/
 
-    global $db,$where;
+//migrate_products();
+//migrate_families();
+//migrate_departments();
+//migrate_login();
+//migrate_register();
 
-    $sql = sprintf('SELECT `Page Key`,`Page Store Key` ,`Page Store Section`,`Page Parent Code` FROM `Page Store Dimension` WHERE  `Webpage Template Filename`="reset_password"  %s ',$where);
+//migrate_register();
+
+//migrate_profile();
+//migrate_favourites();
+//migrate_checkout();
+
+function migrate_reset_password() {
+
+    global $db, $where;
+
+    $sql = sprintf('SELECT `Page Key`,`Page Store Key` ,`Page Store Section`,`Page Parent Code` FROM `Page Store Dimension` WHERE  `Webpage Template Filename`="reset_password"  %s ', $where);
 
 
     if ($result = $db->query($sql)) {
@@ -76,8 +100,6 @@ function migrate_reset_password(){
 
 
             $content_data = $webpage->get('Content Data');
-
-
 
 
             $new_content_data = array(
@@ -89,11 +111,10 @@ function migrate_reset_password(){
                         'show'          => 1,
                         'top_margin'    => 40,
                         'bottom_margin' => 60,
-                        'labels'          => $content_data
+                        'labels'        => $content_data
 
 
                     )
-
 
 
                 )
@@ -113,9 +134,6 @@ function migrate_reset_password(){
             print_r($new_content_data);
 
 
-
-
-
             $sql = sprintf('UPDATE `Page Store Dimension` SET `Webpage Template Filename`="reset_password2" WHERE `Page Key`=%d ', $webpage->id);
 
             $db->exec($sql);
@@ -126,7 +144,7 @@ function migrate_reset_password(){
                     'Page Store Content Data' => json_encode($new_content_data)
                 ), 'no_history'
             );
-
+            $webpage->reindex();
 
         }
     }
@@ -134,9 +152,9 @@ function migrate_reset_password(){
 
 function migrate_blocks() {
 
-    global $db,$where;
-   // $sql = sprintf('SELECT `Page Key`,`Page Store Key` ,`Page Store Section`,`Page Parent Code` FROM `Page Store Dimension` where `Page Key`=47952 ');
-   $sql = sprintf('SELECT `Page Key`,`Page Store Key` ,`Page Store Section`,`Page Parent Code` FROM `Page Store Dimension` where true  %s ',$where);
+    global $db, $where;
+    // $sql = sprintf('SELECT `Page Key`,`Page Store Key` ,`Page Store Section`,`Page Parent Code` FROM `Page Store Dimension` where `Page Key`=47952 ');
+    $sql = sprintf('SELECT `Page Key`,`Page Store Key` ,`Page Store Section`,`Page Parent Code` FROM `Page Store Dimension` where true  %s ', $where);
 
 
     if ($result = $db->query($sql)) {
@@ -181,17 +199,14 @@ function migrate_blocks() {
 
                         //print_r($row);
 
-                      //  exit;
-
+                        //  exit;
 
 
                         switch ($block['type']) {
 
                             case 'six_pack':
 
-                              //  print_r($block);
-
-
+                                //  print_r($block);
 
 
                                 $_text1 = '';
@@ -213,9 +228,7 @@ function migrate_blocks() {
                                 $_text3 .= $block['columns'][2][0]['text'];
 
 
-
-
-                                $new_block = array(
+                                $new_block                     = array(
                                     'type'          => 'text',
                                     'label'         => _('Text'),
                                     'icon'          => 'fa-font',
@@ -242,8 +255,6 @@ function migrate_blocks() {
                                 $_content_data['blocks'][$key] = $new_block;
 
 
-
-
                                 $_text1 = '';
                                 if ($block['columns'][0][1]['title'] != '') {
                                     $_text1 .= sprintf('<h4>%s</h4>', $block['columns'][0][1]['title']);
@@ -261,8 +272,6 @@ function migrate_blocks() {
                                     $_text3 .= sprintf('<h4>%s</h4>', $block['columns'][2][1]['title']);
                                 }
                                 $_text3 .= $block['columns'][2][1]['text'];
-
-
 
 
                                 $new_block = array(
@@ -289,15 +298,11 @@ function migrate_blocks() {
 
 
                                 );
-                                array_splice($_content_data['blocks'], $key , 0, array($new_block));
-
+                                array_splice($_content_data['blocks'], $key, 0, array($new_block));
 
 
                                 break 2;
                             case 'three_pack':
-
-
-
 
 
                                 $text = '';
@@ -444,7 +449,7 @@ function migrate_blocks() {
 
                             case 'one_pack':
                                 $text = '';
-                                if (!empty($block['_title'] )) {
+                                if (!empty($block['_title'])) {
                                     $text .= sprintf('<h1>%s</h1>', $block['_title']);
                                 }
                                 if (!empty($block['_subtitle'])) {
@@ -537,12 +542,11 @@ function migrate_blocks() {
 
 }
 
-function migrate_thanks()
-{
+function migrate_thanks() {
 
-    global $db,$where;
+    global $db, $where;
 
-    $sql = sprintf('SELECT `Page Key`,`Page Store Key` ,`Page Store Section`,`Page Parent Code` FROM `Page Store Dimension` WHERE  `Webpage Template Filename`="thanks"  %s ',$where);
+    $sql = sprintf('SELECT `Page Key`,`Page Store Key` ,`Page Store Section`,`Page Parent Code` FROM `Page Store Dimension` WHERE  `Webpage Template Filename`="thanks"  %s ', $where);
 
 
     if ($result = $db->query($sql)) {
@@ -612,9 +616,9 @@ function migrate_thanks()
 
 function migrate_search() {
 
-    global $db,$where;
+    global $db, $where;
 
-    $sql = sprintf('SELECT `Page Key`,`Page Store Key` ,`Page Store Section`,`Page Parent Code` FROM `Page Store Dimension` WHERE  `Webpage Template Filename`="search"  %s ',$where);
+    $sql = sprintf('SELECT `Page Key`,`Page Store Key` ,`Page Store Section`,`Page Parent Code` FROM `Page Store Dimension` WHERE  `Webpage Template Filename`="search"  %s ', $where);
 
 
     if ($result = $db->query($sql)) {
@@ -674,9 +678,9 @@ function migrate_search() {
 
 function migrate_profile() {
 
-    global $db,$where;
+    global $db, $where;
 
-    $sql = sprintf('SELECT `Page Key`,`Page Store Key` ,`Page Store Section`,`Page Parent Code` FROM `Page Store Dimension` WHERE  `Webpage Template Filename`="profile"  %s ',$where);
+    $sql = sprintf('SELECT `Page Key`,`Page Store Key` ,`Page Store Section`,`Page Parent Code` FROM `Page Store Dimension` WHERE  `Webpage Template Filename`="profile"  %s ', $where);
 
 
     if ($result = $db->query($sql)) {
@@ -741,9 +745,9 @@ function migrate_profile() {
 
 function migrate_favourites() {
 
-    global $db,$where;
+    global $db, $where;
 
-    $sql = sprintf('SELECT `Page Key`,`Page Store Key` ,`Page Store Section`,`Page Parent Code` FROM `Page Store Dimension` WHERE  `Webpage Template Filename`="favourites"  %s ',$where);
+    $sql = sprintf('SELECT `Page Key`,`Page Store Key` ,`Page Store Section`,`Page Parent Code` FROM `Page Store Dimension` WHERE  `Webpage Template Filename`="favourites"  %s ', $where);
 
 
     if ($result = $db->query($sql)) {
@@ -821,9 +825,9 @@ function migrate_favourites() {
 
 function migrate_checkout() {
 
-    global $db,$where;
+    global $db, $where;
 
-    $sql = sprintf('SELECT `Page Key`,`Page Store Key` ,`Page Store Section`,`Page Parent Code` FROM `Page Store Dimension` WHERE  `Webpage Template Filename`="checkout"  %s ',$where);
+    $sql = sprintf('SELECT `Page Key`,`Page Store Key` ,`Page Store Section`,`Page Parent Code` FROM `Page Store Dimension` WHERE  `Webpage Template Filename`="checkout"  %s ', $where);
 
 
     if ($result = $db->query($sql)) {
@@ -891,9 +895,9 @@ function migrate_checkout() {
 
 function migrate_offline() {
 
-    global $db,$where;
+    global $db, $where;
 
-    $sql = sprintf('SELECT `Page Key`,`Page Store Key` ,`Page Store Section`,`Page Parent Code` FROM `Page Store Dimension` WHERE  `Webpage Template Filename`="offline"   %s ',$where);
+    $sql = sprintf('SELECT `Page Key`,`Page Store Key` ,`Page Store Section`,`Page Parent Code` FROM `Page Store Dimension` WHERE  `Webpage Template Filename`="offline"   %s ', $where);
 
 
     if ($result = $db->query($sql)) {
@@ -960,9 +964,9 @@ function migrate_offline() {
 
 function migrate_not_found() {
 
-    global $db,$where;
+    global $db, $where;
 
-    $sql = sprintf('SELECT `Page Key`,`Page Store Key` ,`Page Store Section`,`Page Parent Code` FROM `Page Store Dimension` WHERE  `Webpage Template Filename`="not_found"   %s ',$where);
+    $sql = sprintf('SELECT `Page Key`,`Page Store Key` ,`Page Store Section`,`Page Parent Code` FROM `Page Store Dimension` WHERE  `Webpage Template Filename`="not_found"   %s ', $where);
 
 
     if ($result = $db->query($sql)) {
@@ -1029,13 +1033,19 @@ function migrate_not_found() {
 
 function migrate_register() {
 
-    global $db,$where;
+    global $db, $where;
 
-    $sql = sprintf('SELECT `Page Key`,`Page Store Key` ,`Page Store Section`,`Page Parent Code` FROM `Page Store Dimension` WHERE  `Webpage Template Filename`="register"   %s ',$where);
+    $sql = sprintf('SELECT `Page Key`,`Page Store Key` ,`Page Store Section`,`Page Parent Code` FROM `Page Store Dimension` WHERE  `Webpage Template Filename`="register"   %s ', $where);
 
+
+    print $sql;
 
     if ($result = $db->query($sql)) {
         foreach ($result as $row) {
+
+
+            print_r($row);
+
             $webpage = get_object('Webpage', $row['Page Key']);
 
 
@@ -1098,9 +1108,9 @@ function migrate_register() {
 
 function migrate_login() {
 
-    global $db,$where;
+    global $db, $where;
 
-    $sql = sprintf('SELECT `Page Key`,`Page Store Key` ,`Page Store Section`,`Page Parent Code` FROM `Page Store Dimension` WHERE  `Webpage Template Filename`="login"   %s ',$where);
+    $sql = sprintf('SELECT `Page Key`,`Page Store Key` ,`Page Store Section`,`Page Parent Code` FROM `Page Store Dimension` WHERE  `Webpage Template Filename`="login"   %s ', $where);
 
 
     if ($result = $db->query($sql)) {
@@ -1164,13 +1174,34 @@ function migrate_login() {
 }
 
 function migrate_products() {
-    global $db,$where;
+    global $db, $where, $website_key;
 
-    $sql = sprintf('SELECT `Webpage Scope Key`,`Page Key`,`Webpage Website Key` FROM `Page Store Dimension` WHERE `Webpage Template Filename`="product"  %s order by `Product Code` ',$where);
-    //   $sql = sprintf('SELECT `Webpage Scope Key`,`Page Key`,`Webpage Website Key` FROM `Page Store Dimension` WHERE `Page Key`=2572 ');
+    $print_est = true;
+
+    $sql = sprintf("select count(*) as num FROM `Page Store Dimension` WHERE `Webpage Template Filename`='product' and `Webpage Website Key`=%d ", $website_key);
+    if ($result = $db->query($sql)) {
+        if ($row = $result->fetch()) {
+            $total = $row['num'];
+        } else {
+            $total = 0;
+        }
+    } else {
+        print_r($error_info = $db->errorInfo());
+        exit;
+    }
+
+    $lap_time0 = date('U');
+    $contador  = 0;
+
+    $sql = sprintf('SELECT `Webpage Scope Key`,`Page Key`,`Webpage Website Key` FROM `Page Store Dimension` WHERE `Webpage Template Filename`="product"  %s order by `Product Code` ', $where);
+    $sql = sprintf('SELECT `Webpage Scope Key`,`Page Key`,`Webpage Website Key` FROM `Page Store Dimension` WHERE `Webpage Template Filename`="product" and `Webpage Website Key`=%d ', $website_key);
 
     if ($result3 = $db->query($sql)) {
         foreach ($result3 as $row3) {
+
+
+
+
 
 
             $webpage = get_object('Webpage', $row3['Page Key']);
@@ -1244,39 +1275,31 @@ function migrate_products() {
 
                 // if(preg_match('/font/',$content)){
                 //  print $webpage->id."\n";
-                //print $content."|\n";
                 // }
 
 
             }
 
 
-            switch ($row3['Webpage Website Key']) {
-                case 12:
-                    $title = 'Pozrite si tiež';
 
-                    break;
-                case 6:
+            // specific to AW
+            switch ($row3['Webpage Website Key']) {
+
+                case 5:
                     $title = 'Voir aussi';
 
                     break;
-                case 8:
+                case 9:
                     $title = 'Guarda anche';
 
                     break;
-                case 10:
+                case 7:
                     $title = 'Zobacz także';
 
                     break;
-                case 141:
-                    $title = 'Viz též';
 
-                    break;
-                case 16:
-                    $title = 'Lásd még';
 
-                    break;
-                case 4:
+                case 3:
 
                     $title = 'Siehe auch';
 
@@ -1286,16 +1309,27 @@ function migrate_products() {
             }
 
 
+
+
             $product    = get_object('Public_Product', $webpage->get('Webpage Scope Key'));
-            $image_data = $product->get('Image Data');
+
+
+
+            $image_data = $product->get('Image Data2');
+
 
 
             $image_gallery = array();
-            foreach ($product->get_image_gallery() as $image_item) {
+
+
+
+            foreach ($product->get_image_gallery2() as $image_item) {
                 if ($image_item['key'] != $image_data['key']) {
                     $image_gallery[] = $image_item;
                 }
             }
+
+
 
 
             $new_content_data = array(
@@ -1345,6 +1379,8 @@ function migrate_products() {
             );
 
 
+
+
             $x = json_encode($new_content_data);
             if ($x == '') {
                 print_r($row3);
@@ -1365,9 +1401,19 @@ function migrate_products() {
                 ), 'no_history'
             );
 
-            $webpage->reindex_items();
-            $webpage->refill_see_also();
-            $webpage->update_navigation();
+            //$webpage->reindex_items();
+            //$webpage->refill_see_also();
+            //$webpage->update_navigation();
+
+
+            $contador++;
+            $lap_time1 = date('U');
+
+            if ($print_est) {
+                print 'P   '.percentage($contador, $total, 3)."  lap time ".sprintf("%.4f", ($lap_time1 - $lap_time0) / $contador)." EST  ".sprintf(
+                        "%.4f", (($lap_time1 - $lap_time0) / $contador) * ($total - $contador) / 60
+                    )."m  ($contador/$total) \r";
+            }
 
         }
     } else {
@@ -1381,22 +1427,19 @@ function migrate_products() {
 
 function migrate_families() {
 
-    global $db,$where;
+    global $db, $where, $website_key;
     $left_offset = 158;
 
 
-
-    $sql = sprintf('SELECT `Webpage Scope Key`,`Page Key`,`Webpage Website Key` FROM `Page Store Dimension` WHERE `Webpage Template Filename`="products_showcase"  %s ',$where);
-    //$sql = sprintf('SELECT `Webpage Scope Key`,`Page Key`,`Webpage Website Key` FROM `Page Store Dimension` WHERE  `Page Key`=32302 ');
-
-
+    $sql = sprintf('SELECT `Webpage Scope Key`,`Page Key`,`Webpage Website Key` FROM `Page Store Dimension` WHERE `Webpage Template Filename`="products_showcase"  %s ', $where);
+    $sql = sprintf('SELECT `Webpage Scope Key`,`Page Key`,`Webpage Website Key` FROM `Page Store Dimension` WHERE  `Webpage Template Filename`="products_showcase" and `Webpage Website Key`=%d ', $website_key);
 
 
     if ($result = $db->query($sql)) {
         foreach ($result as $row3) {
 
 
-            print_r($row3);
+            //            print_r($row3);
 
             $webpage = get_object('Webpage', $row3['Page Key']);
 
@@ -1597,8 +1640,8 @@ function migrate_families() {
                 $row3['Webpage Scope Key']
             );
 
-            $has_header = false;
-            $header_text='';
+            $has_header  = false;
+            $header_text = '';
 
             if ($result = $db->query($sql)) {
                 foreach ($result as $row) {
@@ -2011,13 +2054,12 @@ function migrate_families() {
 
 function migrate_departments() {
 
-    global $db,$where;
+    global $db, $where, $website_key;
 
     $left_offset = 158;
 
-    $sql = sprintf('SELECT `Page Key`,`Page Store Key` ,`Page Store Section`,`Page Parent Code` FROM `Page Store Dimension` WHERE  `Webpage Template Filename`="categories_showcase"   %s ',$where);
-    //  $sql = sprintf('SELECT `Page Key`,`Page Store Key` ,`Page Store Section`,`Page Parent Code` FROM `Page Store Dimension` WHERE   `Page Key`=2972 ');
-
+    $sql = sprintf('SELECT `Page Key`,`Page Store Key` ,`Page Store Section`,`Page Parent Code` FROM `Page Store Dimension` WHERE  `Webpage Template Filename`="categories_showcase"   %s ', $where);
+    $sql = sprintf('SELECT `Page Key`,`Page Store Key` ,`Page Store Section`,`Page Parent Code` FROM `Page Store Dimension` WHERE  `Webpage Template Filename`="categories_showcase"  and  `Webpage Website Key`=%d ', $website_key);
 
 
     if ($result = $db->query($sql)) {

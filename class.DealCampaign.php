@@ -27,9 +27,9 @@ class DealCampaign extends DB_Table {
         }
 
 
-        $this->table_name    = 'Deal Campaign';
-        $this->ignore_fields = array('Deal Campaign Key');
-        $this->new_deal_component=false;
+        $this->table_name         = 'Deal Campaign';
+        $this->ignore_fields      = array('Deal Campaign Key');
+        $this->new_deal_component = false;
         if (is_numeric($a1) and !$a2) {
             $this->get_data('id', $a1);
         } else {
@@ -174,6 +174,7 @@ class DealCampaign extends DB_Table {
                 'History Details'  => ''
             );
             $this->add_subject_history($history_data, true, 'No', 'Changes', $this->get_object_name(), $this->id);
+
             //$this->update_status_from_dates();
 
 
@@ -333,11 +334,11 @@ class DealCampaign extends DB_Table {
     function update_websites() {
 
         $webpage_keys = array();
-        $products = array();
-        $families    = array();
-        $departments = array();
+        $products     = array();
+        $families     = array();
+        $departments  = array();
 
-        $sql         = sprintf(
+        $sql = sprintf(
             'select `Deal Component Trigger Key`,`Category Scope` from  `Deal Component Dimension`  left join `Category Dimension` on (`Deal Component Trigger Key`=`Category Key`)   where `Deal Component Campaign Key`=%d  and `Deal Component Trigger`="Category"  ',
             $this->id
         );
@@ -454,7 +455,7 @@ class DealCampaign extends DB_Table {
 
     }
 
-    function create_deal($data,$component_data) {
+    function create_deal($data, $component_data) {
 
 
         include_once 'class.Deal.php';
@@ -481,8 +482,6 @@ class DealCampaign extends DB_Table {
         $data['editor'] = $this->editor;
 
 
-
-
         $deal = new Deal('find create', $data);
 
 
@@ -491,12 +490,12 @@ class DealCampaign extends DB_Table {
 
             if ($deal->new) {
                 $this->new_object = true;
-                $deal_component=$deal->add_component($component_data);
+                $deal_component   = $deal->add_component($component_data);
 
 
-                $this->new_deal_component=$deal_component;
+                $this->new_deal_component = $deal_component;
 
-               // print_r($data);
+                // print_r($data);
 
 
                 if ($data['Voucher']) {
@@ -513,7 +512,7 @@ class DealCampaign extends DB_Table {
                     $voucher_ok = false;
 
 
-                   // print_r($voucher_data);
+                    // print_r($voucher_data);
                     if (!$data['Voucher Data']['Voucher Auto Code'] and $data['Voucher Data']['Voucher Code'] != '') {
                         $voucher_data['Voucher Code'] = $data['Voucher Data']['Voucher Code'];
                         $voucher                      = new Voucher('find create', $voucher_data);
@@ -617,7 +616,6 @@ class DealCampaign extends DB_Table {
             }
 
 
-
             return $deal;
         } else {
             $this->error = true;
@@ -625,7 +623,7 @@ class DealCampaign extends DB_Table {
         }
 
 
-//        $deal->update_status_from_dates();
+        //        $deal->update_status_from_dates();
 
 
         //$this->update_number_of_deals();
@@ -635,10 +633,14 @@ class DealCampaign extends DB_Table {
     }
 
     function update_number_of_deals() {
-        $number_deals                   = 0;
-        $number_current_deals           = 0;
-        $number_deal_components         = 0;
-        $number_current_deal_components = 0;
+        $number_deals           = 0;
+        $number_current_deals   = 0;
+        $number_deal_components = 0;
+
+        $number_active_deal_components     = 0;
+        $number_suspended_deal_components = 0;
+        $number_waiting_deal_components    = 0;
+        $number_finish_deal_components     = 0;
 
         $sql = sprintf("SELECT count(*) AS num FROM `Deal Dimension` WHERE `Deal Campaign Key`=%d  AND `Deal Status`='Active'  ", $this->id);
 
@@ -665,16 +667,34 @@ class DealCampaign extends DB_Table {
         }
 
 
-        $sql = sprintf("SELECT count(*) AS num FROM `Deal Component Dimension` WHERE `Deal Component Campaign Key`=%d  AND `Deal Component Status`='Active'  ", $this->id);
+        $sql = "SELECT count(*) AS num ,`Deal Component Status` FROM `Deal Component Dimension` WHERE `Deal Component Campaign Key`=?  group by `Deal Component Status`  ";
 
-        if ($result = $this->db->query($sql)) {
-            if ($row = $result->fetch()) {
-                $number_current_deal_components = $row['num'];
-            }
+
+        $stmt = $this->db->prepare($sql);
+        if ($stmt->execute(
+            array(
+                $this->id
+            )
+        )) {
+            while ($row = $stmt->fetch()) {
+                switch ($row['Deal Component Status']) {
+                    case 'Active':
+                        $number_active_deal_components = $row['num'];
+                        break;
+                    case 'Suspended':
+                        $number_suspended_deal_components = $row['num'];
+                        break;
+                    case 'Waiting':
+                        $number_waiting_deal_components = $row['num'];
+                        break;
+                    case 'Finish':
+                        $number_finish_deal_components = $row['num'];
+                        break;
+                }
+                }
         } else {
             print_r($error_info = $this->db->errorInfo());
-            print "$sql\n";
-            exit;
+            exit();
         }
 
         $sql = sprintf("SELECT count(*) AS num FROM `Deal Component Dimension` WHERE `Deal Component Campaign Key`=%d ", $this->id);
@@ -692,10 +712,13 @@ class DealCampaign extends DB_Table {
 
         $this->fast_update(
             array(
-                'Deal Campaign Number Deals'                  => $number_deals,
-                'Deal Campaign Number Current Deals'          => $number_current_deals,
-                'Deal Campaign Number Deal Components'        => $number_deal_components,
-                'Deal Campaign Number Active Deal Components' => $number_current_deal_components
+                'Deal Campaign Number Deals'                     => $number_deals,
+                'Deal Campaign Number Current Deals'             => $number_current_deals,
+                'Deal Campaign Number Deal Components'           => $number_deal_components,
+                'Deal Campaign Number Active Deal Components'    => $number_active_deal_components,
+                'Deal Campaign Number Suspended Deal Components' => $number_suspended_deal_components,
+                'Deal Campaign Number Waiting Deal Components'   => $number_waiting_deal_components,
+                'Deal Campaign Number Finish Deal Components'    => $number_finish_deal_components
 
             )
         );

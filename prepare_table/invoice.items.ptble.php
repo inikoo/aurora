@@ -10,8 +10,9 @@
  Version 2.0
 */
 
+// todo remove `Order Transaction Type` not in ("Resend")  used for Stores Version, replacements  `Order Transaction Type`='Resend' should be deleted as in version 2
 
-$where  = sprintf(' where O.`Invoice Key`=%d', $parameters['parent_key']);
+$where  = sprintf(' where O.`Invoice Key`=%d AND  `Order Transaction Type` not in ("Resend")  ', $parameters['parent_key']);
 $wheref = '';
 if ($parameters['f_field'] == 'code' and $f_value != '') {
     $wheref .= " and O.`Product Code` like '".addslashes($f_value)."%'";

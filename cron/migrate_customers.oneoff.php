@@ -14,17 +14,7 @@ require_once 'common.php';
 require_once 'vendor/autoload.php';
 
 
-$default_DB_link = @mysql_connect($dns_host, $dns_user, $dns_pwd);
-if (!$default_DB_link) {
-    print "Error can not connect with database server\n";
-}
-$db_selected = mysql_select_db($dns_db, $default_DB_link);
-if (!$db_selected) {
-    print "Error can not access the database\n";
-    exit;
-}
-mysql_set_charset('utf8');
-mysql_query("SET time_zone='+0:00'");
+
 
 
 require_once 'utils/get_addressing.php';
@@ -45,8 +35,10 @@ $editor = array(
     'Author Name'  => 'Script (migration to aurora)'
 );
 
+$store_key=7;
+
 $print_est = true;
-$sql = sprintf("select count(*) as num FROM `Customer Dimension` O left join `Store Dimension` on (`Store Key`=`Customer Store Key`)  where `Store Version`=1 ");
+$sql = sprintf("select count(*) as num FROM `Customer Dimension` O left join `Store Dimension` on (`Store Key`=`Customer Store Key`)  where `Store Key`=%d ",$store_key);
 if ($result = $db->query($sql)) {
     if ($row = $result->fetch()) {
         $total = $row['num'];
@@ -63,9 +55,9 @@ $contador  = 0;
 
 
 $sql = sprintf(
-    'SELECT `Customer Key` FROM `Customer Dimension` WHERE `Customer Key`=71245 ORDER BY `Customer Key` DESC '
+    'SELECT `Customer Key` FROM `Customer Dimension` WHERE `Customer Key`=338310 ORDER BY `Customer Key` DESC '
 );
-$sql = sprintf('SELECT `Customer Key` FROM `Customer Dimension`  left join `Store Dimension` on (`Store Key`=`Customer Store Key`) where `Store Version`=1   ORDER BY `Customer Key` DESC ');
+$sql = sprintf('SELECT `Customer Key` FROM `Customer Dimension`  left join `Store Dimension` on (`Store Key`=`Customer Store Key`) where `Store Key`=%d   ORDER BY `Customer Key` DESC ',$store_key);
 
 if ($result = $db->query($sql)) {
     foreach ($result as $row) {
@@ -73,7 +65,12 @@ if ($result = $db->query($sql)) {
 
 
 
+
+
         $customer = new Customer($row['Customer Key']);
+
+        //print $customer->id." \n";
+
         $editor['Date']= gmdate('Y-m-d H:i:s');
         $customer->editor=$editor;
 
@@ -120,6 +117,8 @@ if ($result = $db->query($sql)) {
                 $customer->get('Customer Main Address Key'), $recipient, $organization, $default_country
             );
         }
+
+
 
 
         $customer->update_address('Contact', $address_fields,'no_history  ');
@@ -178,9 +177,7 @@ if ($result = $db->query($sql)) {
                 );
                 if (strtolower($address_contact) == strtolower($recipient)) {
 
-                } elseif (strtolower($address_contact) == strtolower(
-                        $organization
-                    )
+                } elseif (strtolower($address_contact) == strtolower($organization)
                 ) {
 
                 } else {
@@ -276,20 +273,10 @@ if ($result = $db->query($sql)) {
 
                 $address = new _Address($other_delivery_address_key);
                 if ($address->data['Address Contact'] != '') {
-                    $address_contact = trim(
-                        preg_replace(
-                            '/\s+/', ' ', $address->data['Address Contact']
-                        )
-                    );
-                    if (strtolower($address_contact) == strtolower(
-                            $recipient
-                        )
-                    ) {
+                    $address_contact = trim(preg_replace('/\s+/', ' ', $address->data['Address Contact']));
+                    if (strtolower($address_contact) == strtolower($recipient)) {
 
-                    } elseif (strtolower($address_contact) == strtolower(
-                            $organization
-                        )
-                    ) {
+                    } elseif (strtolower($address_contact) == strtolower($organization)) {
 
                     } else {
                         print $customer->id." Other DEL ==================\n";
@@ -422,10 +409,9 @@ function address_fields($address_key, $recipient, $organization, $default_countr
             'Address Dependent Locality'   => $address->display('Town Divisions'),
             'Address Locality'             => $address->get('Address Town'),
             'Address Administrative Area'  => $address->display('Country Divisions'),
-            'Address Country 2 Alpha Code' => ($address->data['Address Country 2 Alpha Code'] == 'XX' ? $default_country : $address->data['Address Country 2 Alpha Code']),
+            'Address Country 2 Alpha Code' => ( ($address->data['Address Country 2 Alpha Code'] == 'XX' or $address->data['Address Country 2 Alpha Code']=='')  ? $default_country : $address->data['Address Country 2 Alpha Code']),
 
         );
-        //print_r($used_fields);
 
         //if (!in_array('recipient', $used_fields) or !in_array('organization', $used_fields) or !in_array('addressLine1', $used_fields)) {
         ////    print_r($used_fields);
@@ -579,6 +565,8 @@ function address_fields($address_key, $recipient, $organization, $default_countr
 
 
 function get_fiscal_name($customer) {
+
+    global $db;
     if ($customer->data['Customer Type'] == 'Person') {
         $customer->data['Customer Fiscal Name']
             = $customer->data['Customer Name'];
@@ -592,17 +580,23 @@ function get_fiscal_name($customer) {
     $sql = sprintf(
         "select `$subject Fiscal Name` as fiscal_name from `$subject Dimension` where `$subject Key`=%d ", $subject_key
     );
-    $res = mysql_query($sql);
 
-    if ($row = mysql_fetch_assoc($res)) {
-        $customer->data['Customer Fiscal Name'] = $row['fiscal_name'];
+    if ($result = $db->query($sql)) {
+        foreach ($result as $row) {
+            $customer->data['Customer Fiscal Name'] = $row['fiscal_name'];
 
-        return $customer->data['Customer Fiscal Name'];
+            return $customer->data['Customer Fiscal Name'];
+
+        }
+
     } else {
-        $customer->error;
-
-        return '';
+        print_r($error_info = $db->errorInfo());
+        exit;
     }
+
+
+
+
 
 
 }

@@ -31,9 +31,9 @@ class migrate_order
 
             $store           = get_object('Store',$order->get('Store Key'));
 
-            if($store->get('Store Version')!=1){
-                return $order;
-            }
+            //if($store->get('Store Version')!=1){
+            //    return $order;
+           // }
 
 
             $data_to_update = array();
@@ -62,11 +62,14 @@ class migrate_order
             if (!$order->get('Order Invoice Key')) {
                 $sql = sprintf("select DN.`Invoice Key` from `Order Transaction Fact` OTF  left join `Invoice Dimension` DN on (DN.`Invoice Key`=OTF.`Invoice Key`) where `Invoice Type`='Invoice' and `Order Key`=%d and  OTF.`Invoice Key`>0", $order->id);
 
+
+
                 if ($result2 = $this->db->query($sql)) {
                     if ($row2 = $result2->fetch()) {
                         $invoice = get_object('Invoice', $row2['Invoice Key']);
                         if ($invoice->id) {
                             $data_to_update['Order Invoice Key'] = $invoice->id;
+                            $data_to_update['Order Invoiced Date'] = $invoice->get('Invoice Date');
 
                         }
 
@@ -108,7 +111,10 @@ class migrate_order
 
 
 
-                //print_r($data_to_update);
+               //print_r($data_to_update);
+
+
+                //exit;
                 //print_r($address_billing_fields_to_update);
                 // print_r($address_shipping_fields_to_update);
 

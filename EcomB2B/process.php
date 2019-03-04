@@ -28,11 +28,43 @@ require 'keyring/dns.php';
 
 
 session_start();
-
-
 if (empty($_SESSION['website_key'])) {
+
+
+    if (isset($_SESSION['site_key']) or isset($_SESSION['logged_in'])) {
+
+        $_SESSION = array();
+
+        if (ini_get("session.use_cookies")) {
+            $params = session_get_cookie_params();
+
+            setcookie(
+                'sk', '', time() - 42000,
+                $params["path"], $params["domain"],
+                $params["secure"], $params["httponly"]
+            );
+            setcookie(
+                'page_key', '', time() - 42000,
+                $params["path"], $params["domain"],
+                $params["secure"], $params["httponly"]
+            );
+            $resxx = setcookie(
+                'user_handle', '', time() - 42000,
+                $params["path"], $params["domain"],
+                $params["secure"], $params["httponly"]
+            );
+        }
+        session_regenerate_id();
+        session_destroy();
+
+        session_start();
+    }
+
     include('utils/find_website_key.include.php');
 }
+
+
+
 
 
 $url = preg_replace('/^\//', '', $_SERVER['REQUEST_URI']);

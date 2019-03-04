@@ -3591,6 +3591,59 @@ class Customer extends Subject {
 
     }
 
+    function set_account_balance_adjust($amount, $note) {
+
+        include_once "utils/currency_functions.php";
+
+        if ($amount == 0) {
+            return;
+        }
+
+        $account = get_object('Account', $this->db);
+        $date    = gmdate('Y-m-d H:i:s');
+
+        $exchange = currency_conversion(
+            $this->db, $this->data['Customer Currency Code'], $account->get('Account Currency'), '- 180 minutes'
+        );
+
+
+        $sql = sprintf(
+            'INSERT INTO `Credit Transaction Fact` 
+                    (`Credit Transaction Date`,`Credit Transaction Amount`,`Credit Transaction Currency Code`,`Credit Transaction Currency Exchange Rate`,`Credit Transaction Customer Key`) 
+                    VALUES (%s,%.2f,%s,%f,%d) ', prepare_mysql($date), $amount, prepare_mysql($this->data['Customer Currency Code']), $exchange, $this->id
+
+
+        );
+
+        $this->db->exec($sql);
+        $credit_key = $this->db->lastInsertId();
+
+
+        $history_data = array(
+            'History Abstract' => sprintf(_('Customer account balance adjusted %s'),
+                                          ($amount > 0 ? '+' : ':').money($amount, $this->data['Customer Currency Code']).($note != '' ? ' ('.$note.')' : '')
+            ),
+            'History Details'  => '',
+            'Action'           => 'edited'
+        );
+
+        $history_key = $this->add_subject_history(
+            $history_data, true, 'No', 'Changes', $this->get_object_name(), $this->id
+        );
+
+        $sql = sprintf(
+            'INSERT INTO `Credit Transaction History Bridge` 
+                    (`Credit Transaction History Credit Transaction Key`,`Credit Transaction History History Key`) 
+                    VALUES (%d,%d) ', $credit_key, $history_key
+
+
+        );
+        $this->db->exec($sql);
+
+
+    }
+
+
     function approve() {
 
         $this->update(array('Customer Type by Activity' => 'Active'));
@@ -4004,6 +4057,7 @@ class Customer extends Subject {
         );
 
     }
+
 
 }
 

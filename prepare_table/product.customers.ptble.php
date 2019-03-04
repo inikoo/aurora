@@ -72,7 +72,7 @@ include_once 'utils/object_functions.php';
 $product=get_object('Product',$parameters['parent_key']);
 $store=get_object('store',$product->get('Store Key'));
 
-if($store->get('Store Version')==1){
+if($store->get('Store Version')==1){ //todo Checked OK
 
 
     $fields='C.`Customer Key`,`Customer Name`,`Customer Location`,`Customer Type by Activity`,`Customer Store Key`,count(Distinct `Order Key`) as orders,`Store Currency Code`,

@@ -601,7 +601,7 @@ class Subject extends DB_Table {
 
             //todo remove after migration
             $store = get_object('Store', $this->get('Store Key'));
-            if ($store->get('Store Version') == 2) {
+            if ($store->get('Store Version') == 2) { //todo Checked ok
                 if ($type == 'Invoice') {
                     $sql = sprintf('SELECT `Order Key` FROM `Order Dimension` WHERE  `Order State` IN ("InBasket")   AND `Order Customer Key`=%d ', $this->id);
                     // print "$sql\n";

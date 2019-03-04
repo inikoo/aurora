@@ -36,9 +36,11 @@ $editor = array(
 );
 
 
+$store_key=7;
+
 $print_est = true;
 
-$sql = sprintf("select count(*) as num FROM `Invoice Dimension` O left join `Store Dimension` on (`Store Key`=`Invoice Store Key`)  where `Store Version`=1 ");
+$sql = sprintf("select count(*) as num FROM `Invoice Dimension` O left join `Store Dimension` on (`Store Key`=`Invoice Store Key`)  where `Store key`=%d and `Invoice Type`='Invoice' ",$store_key);
 if ($result = $db->query($sql)) {
     if ($row = $result->fetch()) {
         $total = $row['num'];
@@ -54,8 +56,8 @@ $lap_time0 = date('U');
 $contador  = 0;
 
 
-$sql = sprintf('SELECT `Invoice Key` FROM `Invoice Dimension`  where `Invoice Key`=1880040 order by `Invoice Key` desc ');
-$sql = sprintf('SELECT `Invoice Key` FROM `Invoice Dimension` left join `Store Dimension` on (`Store Key`=`Invoice Store Key`)  where `Store Version`=1 order by `Invoice Key` desc ');
+$sql = sprintf('SELECT `Invoice Key` FROM `Invoice Dimension`  where `Invoice Key`=1913501 order by `Invoice Key` desc ');
+$sql = sprintf('SELECT `Invoice Key` FROM `Invoice Dimension` left join `Store Dimension` on (`Store Key`=`Invoice Store Key`)  where `Store key`=%d  and `Invoice Type`="Invoice" order by `Invoice Key` desc ',$store_key);
 
 if ($result = $db->query($sql)) {
     foreach ($result as $row) {
@@ -69,6 +71,10 @@ if ($result = $db->query($sql)) {
 
         if ($result2 = $db->query($sql)) {
             if ($row2 = $result2->fetch()) {
+
+
+               // print_r($row2);
+
 
                 $order = get_object('Order', $row2['Order Key']);
 
@@ -127,7 +133,7 @@ if ($result = $db->query($sql)) {
 
         $invoice->fast_update($data_to_update);
         $invoice->fast_update($address_fields_to_update);
-
+        $invoice->update_payments_totals();
 
         //print_r($data_to_update);
         //print_r($address_fields_to_update);

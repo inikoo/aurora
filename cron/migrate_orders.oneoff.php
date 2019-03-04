@@ -23,10 +23,12 @@ $editor = array(
     'Date'         => gmdate('Y-m-d H:i:s')
 );
 
+$store_key = 7;
+
 $account = new Account();
 
-$print_est = false;
-$sql       = sprintf("select count(*) as num FROM `Order Dimension` O left join `Store Dimension` on (`Store Key`=`Order Store Key`)  where `Store Version`=1 ");
+$print_est = true;
+$sql       = sprintf("select count(*) as num FROM `Order Dimension` O left join `Store Dimension` on (`Store Key`=`Order Store Key`)  where `Store Key`=%d ", $store_key);
 if ($result = $db->query($sql)) {
     if ($row = $result->fetch()) {
         $total = $row['num'];
@@ -41,11 +43,13 @@ if ($result = $db->query($sql)) {
 $lap_time0 = date('U');
 $contador  = 0;
 
+$sql = sprintf('SELECT `Order Key` FROM `Order Dimension` O left join `Store Dimension` on (`Store Key`=`Order Store Key`)  where  `Order Key`=%d order by O.`Order Key` desc ', 2339791);
 
-$sql = sprintf('SELECT `Order Key` FROM `Order Dimension` O left join `Store Dimension` on (`Store Key`=`Order Store Key`)  where `Store Version`=1  order by O.`Order Key` desc ');
+$sql = sprintf('SELECT `Order Key` FROM `Order Dimension` O left join `Store Dimension` on (`Store Key`=`Order Store Key`)  where  `Store Key`=%d order by O.`Order Key` desc ', $store_key);
 
 if ($result = $db->query($sql)) {
     foreach ($result as $row) {
+
 
         $order = (new migrate_order($db))->migrate($row['Order Key']);
 

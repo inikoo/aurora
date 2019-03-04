@@ -34,18 +34,72 @@ cell: Backgrid.HtmlCell.extend({
 },
 
 {
-name: "deals",
-label: "{t}Active offers{/t}",
+name: "active_deal_components",
+title: "{t}Active offers{/t}",
+label:'',
+html_label: '<i class="fa success fa-play"></i>',
 defaultOrder:1,
 editable: false,
 sortType: "toggle",
-{if $sort_key=='orders'}direction: '{if $sort_order==1}descending{else}ascending{/if}',{/if}
+{if $sort_key=='active_deal_components'}direction: '{if $sort_order==1}descending{else}ascending{/if}',{/if}
 
 
 cell: Backgrid.HtmlCell.extend({ className: "aright"} ),
-headerCell: integerHeaderCell
+headerCell: rightHeaderHtmlCell
 
 },
+
+
+
+
+{
+name: "waiting_deal_components",
+title: "{t}Active offers{/t}",
+label:'',
+html_label: '<i class="far discreet  fa-clock"></i>',
+defaultOrder:1,
+editable: false,
+sortType: "toggle",
+{if $sort_key=='waiting_deal_components'}direction: '{if $sort_order==1}descending{else}ascending{/if}',{/if}
+
+
+cell: Backgrid.HtmlCell.extend({ className: "aright"} ),
+headerCell: rightHeaderHtmlCell
+
+},
+
+
+{
+name: "suspended_deal_components",
+title: "{t}Active offers{/t}",
+label:'',
+html_label: '<i class="fa error fa-pause"></i>',
+defaultOrder:1,
+editable: false,
+sortType: "toggle",
+{if $sort_key=='suspended_deal_components'}direction: '{if $sort_order==1}descending{else}ascending{/if}',{/if}
+
+
+cell: Backgrid.HtmlCell.extend({ className: "aright"} ),
+headerCell: rightHeaderHtmlCell
+
+},
+{
+name: "finish_deal_components",
+title: "{t}Active offers{/t}",
+label:'',
+html_label: '<i class="fa discreet fa-skull"></i>',
+defaultOrder:1,
+editable: false,
+sortType: "toggle",
+{if $sort_key=='finish_deal_components'}direction: '{if $sort_order==1}descending{else}ascending{/if}',{/if}
+
+
+cell: Backgrid.HtmlCell.extend({ className: "aright"} ),
+headerCell: rightHeaderHtmlCell
+
+},
+
 {
 name: "orders",
 label: "{t}Orders{/t}",
